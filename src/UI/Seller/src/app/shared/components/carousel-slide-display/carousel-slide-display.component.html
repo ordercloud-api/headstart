@@ -1,0 +1,70 @@
+<div class="border p-3 m-3 shadow-sm">
+  <fa-icon
+    (click)="deleteSlide()"
+    class="float-right icon-button--hover-reactive text-danger mb-2 pl-3"
+    [icon]="faTrash"
+  ></fa-icon>
+  <fa-icon
+    (click)="textChanges()"
+    [ngClass]="{ disabled: saveDisabled() }"
+    class="float-right icon-button--hover-reactive mb-2 text-primary"
+    [icon]="faSave"
+  ></fa-icon>
+  <div class="row">
+    <div class="col-lg-4">
+      <img [src]="slide.URL" class="img-fluid" />
+    </div>
+    <div class="col-lg-8">
+      <form
+        novalidate
+        [formGroup]="carouselForm"
+        name="CarouselForm"
+        class="pt-3"
+      >
+        <div [hidden]="true" class="form-group">
+          <input
+            type="text"
+            formControlName="URL"
+            class="form-control"
+            id="ID"
+            placeholder="ID"
+          />
+        </div>
+        <div class="form-group">
+          <input
+            type="text"
+            formControlName="headerText"
+            class="form-control"
+            placeholder="Title... (optional)"
+          />
+          <span *ngIf="hasPatternError('headerText')" class="error-message"
+            >Max 100 characters</span
+          >
+        </div>
+        <div class="form-group">
+          <input
+            type="text"
+            formControlName="bodyText"
+            class="form-control"
+            placeholder="Body... (optional)"
+          />
+          <span *ngIf="hasPatternError('bodyText')" class="error-message"
+            >Max 100 characters</span
+          >
+        </div>
+      </form>
+      <form>
+        <input
+          [hidden]="true"
+          id="carsousel-image"
+          type="file"
+          (change)="fileChange($event)"
+          placeholder="Upload file"
+        />
+        <label for="carsousel-image" class="btn btn-primary">
+          <fa-icon [icon]="faUpload"></fa-icon> Change Image
+        </label>
+      </form>
+    </div>
+  </div>
+</div>

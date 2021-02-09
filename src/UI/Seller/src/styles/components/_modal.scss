@@ -1,0 +1,13 @@
+.confirm-modal {
+  @include media-breakpoint-down(sm) {
+    // Mobile Modal Styles
+    max-width: 100%;
+    position: fixed;
+    margin: auto;
+    bottom: 0;
+    width: 100vw;
+    border-radius: none;
+    padding: 10px 10px 20px 10px;
+    border-radius: 15px 15px 0px 0px;
+  }
+}

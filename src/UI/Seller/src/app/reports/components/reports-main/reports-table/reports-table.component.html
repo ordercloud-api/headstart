@@ -1,0 +1,25 @@
+<resource-table-component
+  [resourceList]="resourceList"
+  [selectedResourceID]="selectedResourceID"
+  [updatedResource]="updatedResource"
+  [resourceInSelection]="resourceInSelection"
+  [ocService]="ocService"
+  [dataIsSaving]="dataIsSaving"
+  [resourceForm]="resourceForm"
+  [filterConfig]="filterConfig"
+  (searched)="searchResources($event)"
+  [shouldShowCreateNew]="false"
+  [shouldShowResourceActions]="false"
+  [excludeFromFilterBar]="true"
+  [excludeFromFullTableView]="true"
+  (hitScrollEnd)="handleScrollEnd()"
+  (changesSaved)="saveUpdates()"
+  (changesDiscarded)="discardChanges()"
+  (resourceDelete)="deleteResource()"
+  (resourceSelected)="selectResource($event)"
+  [canBeDeleted]="!isSupplierUser"
+  [labelSingular]="'Report'"
+  [labelPlural]="'Reports'"
+>
+  <app-reports class="resource-edit"></app-reports>
+</resource-table-component>

@@ -1,0 +1,47 @@
+.add-card-form {
+  display: inline-block;
+  width: 100%;
+}
+
+.cards-light {
+  color: grey;
+}
+
+.card-name {
+  width: 100%;
+}
+.card-number {
+  width: 50%;
+}
+
+.card-submit {
+  display: block;
+}
+
+#cvv {
+  -webkit-text-security: disc;
+}
+
+.visa {
+  color: #1a1f71;
+}
+
+.mastercard {
+  color: #cc0000;
+}
+
+.discover {
+  color: #ff6000;
+}
+
+.credit-card-submit-button {
+  width: 100%;
+}
+
+.payment-icon {
+  font-size: 2.5rem;
+}
+
+.zip-input {
+  width: 30%;
+}

@@ -1,0 +1,34 @@
+<div *ngIf="reportSelectionForm" class="container-fluid resource-edit">
+  <form [formGroup]="reportSelectionForm">
+    <reports-selection-component
+      [reportTypes]="reportTypes"
+      [reportTemplates]="reportTemplates"
+      [reportSelectionForm]="reportSelectionForm"
+      [displayHeaders]="displayHeaders"
+      [adHocFilters]="adHocFilters"
+      (handleReportTypeSelection)="handleReportTypeSelection($event)"
+      (handleReportTemplateSelection)="handleReportTemplateSelection($event)"
+      (handleReportAdHocFiltersSelection)="
+        handleReportAdHocFiltersSelection($event)
+      "
+    >
+    </reports-selection-component>
+    <reports-processing-component
+      [selectedTemplateID]="selectedTemplateID"
+      [reportDownloading]="reportDownloading"
+      [fetchingPreview]="fetchingPreview"
+      [reportSelectionForm]="reportSelectionForm"
+      [adHocFilters]="adHocFilters"
+      (handlePreviewReport)="handlePreviewReport($event)"
+      (handleDownloadReport)="handleDownloadReport($event)"
+    >
+    </reports-processing-component>
+    <reports-preview-component
+      [reportData]="reportData"
+      [originalHeaders]="selectedTemplate?.Headers"
+      [displayHeaders]="displayHeaders"
+      [selectedTemplateID]="selectedTemplateID"
+    >
+    </reports-preview-component>
+  </form>
+</div>

@@ -1,0 +1,78 @@
+@import "../../.././styles/main.scss";
+
+.nav-link {
+    text-align:right;
+    &__user {
+        color: white;
+        font-weight: 500;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        &:hover {
+            color: white;
+        }
+        &[aria-expanded="true"] {
+            background-color: lighten($primary, 3%);
+        }
+    }
+    &::after {
+        display: none;
+    }
+}
+.resource-nav-link-container{
+    width: 800px;
+    margin-left: 100px;
+}
+
+@include media-breakpoint-down(md) {
+    .dropdown-menu {
+        border: none;
+        background-color: $primary;
+        .dropdown-item {
+            color: rgba(255, 255, 255, 0.75);
+            background-color: $primary;
+            &:active {
+                background-color: $primary;
+            }
+            &:hover {
+                color: white;
+            }
+        }
+    }
+}
+
+.current-user {
+    color: white;
+    transition: 200ms ease all;
+    &:hover {
+        background-color: lighten($primary, 3%);
+    }
+}
+
+
+.account-dropdown-alignment {
+    right: 0;
+    left: auto;
+  }
+
+// TODO: Fix for single level nav items
+// .active-nav-group {
+//     @include media-breakpoint-up(md) {
+//         &:after {
+//             position: absolute;
+//             bottom: -15px;
+//             left: 0;
+//             width: 100%;
+//             content: " ";
+//             border-bottom: 3px solid $brand-orange !important;
+//         }
+//     }
+// }
+.avatar {
+    vertical-align: middle;
+    object-fit: cover;
+    width: 34px;
+    height: 34px;
+    border-radius: 0.25rem;
+  }
+  

@@ -1,0 +1,137 @@
+<nav class="navbar navbar-dark navbar-expand-lg bg-primary base-layout-item">
+  <!-- Brand Logo -->
+  <a class="navbar-brand clickable cursor-pointer">
+    <img
+      class="nav-link navbar-brand"
+      routerLink="/home"
+      width="150px"
+      src="https://four51.io/wp-content/uploads/2019/08/Four51_Logo_MPLS_White@2x@1x.png"
+    />
+  </a>
+  <!-- /Brand Logo -->
+  <!-- Mobile Menu Toggle -->
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-toggle="collapse"
+    data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent"
+    aria-label="Toggle navigation"
+    [attr.aria-expanded]="!isCollapsed"
+    (click)="isCollapsed = !isCollapsed"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <!-- /Mobile Menu Toggle -->
+  <!-- Collapsible Navbar Menu -->
+  <div
+    [ngClass]="{ collapse: isCollapsed, 'navbar-collapse': true }"
+    id="navbarSupportedContent"
+  >
+    <ul class="navbar-nav mr-auto">
+      <li
+        *ngFor="let nav of headerConfig"
+        class="nav-item clickable cursor-pointer"
+        [ngClass]="{
+          'active-nav-group': nav.title === activeTitle,
+          dropdown: nav.subRoutes
+        }"
+      >
+        <!-- [routerLink]="nav.route" -->
+        <div
+          ngbDropdown
+          *ngIf="nav.subRoutes"
+          role="button"
+          [ngClass]="{ active: nav.title === activeTitle }"
+        >
+          <a
+            class="nav-link navbarDropdown"
+            data-toggle="dropdown"
+            ngbDropdownToggle
+            aria-haspopup="true"
+            aria-expanded="false"
+            translate
+            >{{ nav.title }}
+          </a>
+          <!-- Nav Item Dropdown -->
+          <div
+            ngbDropdownMenu
+            *ngIf="nav.subRoutes"
+            class="dropdown-menu"
+            aria-labelledby="navbarDropdown"
+          >
+            <a
+              [routerLink]="route.route"
+              [queryParams]="route.queryParams"
+              (click)="isCollapsed = !isCollapsed"
+              class="dropdown-item"
+              *ngFor="let route of nav.subRoutes"
+              translate
+              >{{ route.title }}</a
+            >
+          </div>
+          <!-- /Nav Item Dropdown -->
+        </div>
+
+        <!-- Single Level Nav Items -->
+        <a
+          *ngIf="!nav.subRoutes"
+          [routerLink]="nav.route"
+          [queryParams]="nav.queryParams"
+          (click)="isCollapsed = !isCollapsed"
+          [ngClass]="{ active: nav.title === activeTitle }"
+          class="nav-link"
+          translate
+          >{{ nav.title }}
+        </a>
+        <!-- /Single Level Nav Items -->
+      </li>
+    </ul>
+  </div>
+
+  <div class="nav-item dropdown cursor-pointer current-user" ngbDropdown>
+    <div>
+      <a
+        class="nav-link navbarDropdown nav-link__user"
+        data-toggle="dropdown"
+        ngbDropdownToggle
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <span>
+          {{ user?.FirstName }} {{ user?.LastName }}
+          <small class="d-block">{{ organizationName }}</small>
+        </span>
+        <img
+          *ngIf="hasProfileImg"
+          class="avatar ml-2"
+          [src]="myProfileImg"
+          alt="ProfileImg"
+          id="ProfileImgThumb"
+        />
+        <div
+          *ngIf="!hasProfileImg && currentUserInitials !== 'undefinedundefined'"
+          [attr.data-letters]="currentUserInitials"
+          class="avatar avatar-sm ml-2"
+        ></div>
+      </a>
+    </div>
+    <div
+      class="dropdown-menu account-dropdown-alignment"
+      aria-labelledby="user-dropdown"
+      ngbDropdownMenu
+    >
+      <!-- <h6 class="dropdown-header">{{ organizationName }}</h6> -->
+      <a class="dropdown-item" (click)="toAccount()" translate>
+        <fa-icon [icon]="faUserCircle"></fa-icon> ADMIN.COMMON.MY_ACCOUNT
+      </a>
+      <a class="dropdown-item" (click)="toNotifications()" translate>
+        <fa-icon [icon]="faEnvelope"></fa-icon> ADMIN.COMMON.NOTIFICATIONS
+      </a>
+      <div class="dropdown-divider"></div>
+      <a class="dropdown-item" (click)="logout()" href="/login" translate>
+        <fa-icon [icon]="faSignOutAlt"></fa-icon> ADMIN.COMMON.LOGOUT
+      </a>
+    </div>
+  </div>
+</nav>

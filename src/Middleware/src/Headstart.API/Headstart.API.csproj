@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <StartupObject></StartupObject>
+    <LangVersion>8</LangVersion>
+    <ApplicationInsightsResourceId>/subscriptions/736cd8bd-0185-4184-b3dd-8c372c076f3f/resourceGroups/Marketplace/providers/microsoft.insights/components/marketplace-middleware</ApplicationInsightsResourceId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\..\..\..\docs\Reference.md" Link="Reference.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.16.0" />
+    <PackageReference Include="SendGrid" Version="9.22.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Headstart.Common\Headstart.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Program.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Web.Debug.config">
+      <DependentUpon>web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>web.config</DependentUpon>
+    </Content>
+  </ItemGroup>
+</Project>

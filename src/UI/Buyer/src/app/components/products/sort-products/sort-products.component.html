@@ -1,0 +1,16 @@
+<form class="d-flex" [formGroup]="form">
+  <label class="pt-1 mr-3 d-none d-md-block" translate>PRODUCTS.SORT.BY</label>
+  <div class="form-group flex-grow-1 flex-md-grow-0">
+    <label class="d-md-none mb-2" translate>PRODUCTS.SORT.BY</label>
+    <select
+      class="custom-select custom-select-sm"
+      formControlName="sortBy"
+      (change)="sortStrategyChanged()"
+    >
+      <option [ngValue]="null" disabled translate>PRODUCTS.SORT.NONE</option>
+      <option *ngFor="let option of options" [ngValue]="option.value">
+        {{ option.label }}
+      </option>
+    </select>
+  </div>
+</form>

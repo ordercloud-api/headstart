@@ -1,0 +1,92 @@
+<ng-container *ngIf="!isLoading">
+  <ngx-spinner
+    bdColor="rgba(255, 255, 255, 0.9)"
+    color="var(--primary)"
+    size="small"
+    type="ball-spin-clockwise-fade"
+    [fullScreen]="false"
+  >
+    <small>Loading Shipping Selections...</small>
+  </ngx-spinner>
+  <div class="form-group">
+    <label for="selectBuyerLocation" translate
+      >CHECKOUT.CHECKOUT_ADDRESS.BUYER_LOCATION</label
+    >
+    <select
+      [ngModel]="selectedBuyerLocation?.ID"
+      (ngModelChange)="onBuyerLocationChange($event)"
+      class="custom-select"
+      id="selectBuyerLocation"
+    >
+      <option [ngValue]="null" default disabled translate>
+        CHECKOUT.CHECKOUT_ADDRESS.SELECT_BUYER_LOCATION
+      </option>
+      <option
+        *ngFor="let location of existingBuyerLocations?.Items"
+        [ngValue]="location.ID"
+      >
+        <span class="font-weight-bold"
+          >{{ location.Street1
+          }}<span *ngIf="location.Street2"> {{ location.Street2 }}</span
+          >, {{ location.City }} {{ location.State }} {{ location.Zip }}</span
+        >
+      </option>
+    </select>
+    <br />
+  </div>
+  <div class="form-group" *ngIf="selectedBuyerLocation">
+    <label for="selectAddress" translate
+      >CHECKOUT.CHECKOUT_ADDRESS.SHIPPING_ADDRESS</label
+    >
+    <select
+      [ngModel]="selectedShippingAddress?.ID"
+      (ngModelChange)="onShippingAddressChange($event)"
+      class="custom-select"
+      id="selectAddress"
+    >
+      <option [ngValue]="null" default disabled translate>
+        CHECKOUT.CHECKOUT_ADDRESS.SELECT_ADDRESS
+      </option>
+      <option
+        *ngFor="let address of existingShippingAddresses?.Items"
+        [ngValue]="address.ID"
+      >
+        <span class="font-weight-bold"
+          >{{ address.Street1
+          }}<span *ngIf="address.Street2"> {{ address.Street2 }}</span
+          >, {{ address.City }} {{ address.State }} {{ address.Zip }}
+        </span>
+      </option>
+    </select>
+    <button
+      (click)="showNewAddress()"
+      class="btn btn-outline-primary btn-sm mr-2 mt-3"
+      translate
+    >
+      Add New Address
+    </button>
+    <button
+      type="submit"
+      *ngIf="!showNewAddressForm"
+      [disabled]="!selectedShippingAddress || !selectedBuyerLocation"
+      (click)="saveAddressesAndContinue()"
+      class="btn btn-secondary btn-sm mr-2 mt-3"
+      translate
+    >
+      CHECKOUT.CHECKOUT_ADDRESS.SAVE_CONTINUE
+    </button>
+  </div>
+  <ocm-address-form
+    *ngIf="showNewAddressForm"
+    [existingAddress]="selectedShippingAddress"
+    [suggestedAddresses]="suggestedAddresses"
+    [showOptionToSave]="true"
+    [homeCountry]="homeCountry"
+    [btnText]="'Save and Continue'"
+    [addressError]="_addressError"
+    (formDismissed)="showNewAddressForm = false"
+    (formChanged)="addressFormChanged($event.detail)"
+    (formSubmitted)="saveAddressesAndContinue($event.detail.address)"
+  >
+  </ocm-address-form>
+</ng-container>

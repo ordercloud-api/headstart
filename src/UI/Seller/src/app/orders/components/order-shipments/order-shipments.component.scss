@@ -1,0 +1,13 @@
+//Images with white backgrounds will be transparent with bg-light color
+img {
+    mix-blend-mode: multiply;
+}
+
+.inline-header {
+    display: inline;
+}
+
+.align-right {
+    float: right;
+    margin-right: 0.5rem;
+}

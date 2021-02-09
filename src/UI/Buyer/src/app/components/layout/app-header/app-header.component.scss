@@ -1,0 +1,58 @@
+.badge__counter--large {
+  ::ng-deep {
+    .fa-layers-counter {
+      height: 1.5em;
+      top: -10px;
+      right: -12px;
+      font-size: 45px;
+    }
+  }
+}
+
+.account-dropdown-alignment {
+  right: 0;
+  left: auto;
+}
+
+.category-toggle {
+  width: 25px;
+  height:25px;
+  border-radius: 0.15rem;
+  background: var(--light);
+  padding: 1rem;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  &>fa-icon {
+    font-size: 1.2rem;
+  }
+  &:hover {
+    background: #dadada;
+    &>.category-toggle__active {
+      &::after {
+        background: #dadada !important;
+      }
+    }
+  }
+  &__active {
+    &::after {
+      position: absolute;
+      bottom: -4px;
+      width: 10px;
+      right: 36%;
+      height: 10px;
+      content: '';
+      transform: rotate(45deg);
+      z-index: -1;
+      background: #ecebec;
+    }
+  }
+}
+
+.dropdown-position {
+  position: fixed; 
+  height: 100vh; 
+  top: 0
+}

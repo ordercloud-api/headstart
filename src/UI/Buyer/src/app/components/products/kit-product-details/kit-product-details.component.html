@@ -1,0 +1,59 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-5">
+      <ocm-image-gallery *ngIf="_product" [images]="images"></ocm-image-gallery>
+      <ocm-kit-variant-selector
+        *ngIf="productSelectionEvent?.variantSelection"
+        [kitProduct]="_product"
+        [event]="productSelectionEvent"
+        [allLineItems]="lineItemsToAdd"
+        (addLineItem)="addLineItem($event.detail)"
+      >
+      </ocm-kit-variant-selector>
+    </div>
+    <div class="col-md-7">
+      <ocm-product-attachments
+        *ngIf="_product"
+        [attachments]="_product.Attachments"
+      ></ocm-product-attachments>
+      <div class="alert alert-info mt-4 mb-1" translate>
+        PRODUCTS.KITS.YOU_MUST_MATCH_AT_LEAST_ONE_VARIANT_UNLESS_OPTIONAL
+      </div>
+      <ng-container *ngIf="_product?.ProductAssignments?.ProductsInKit?.length">
+        <ng-container
+          *ngFor="
+            let productKitDetails of _product.ProductAssignments.ProductsInKit
+          "
+        >
+          <ocm-kit-static-card
+            *ngIf="productKitDetails.Static"
+            [kitProduct]="_product"
+            [productKitDetails]="productKitDetails"
+            (selectProduct)="selectProduct($event.detail)"
+            (addLineItem)="addLineItem($event.detail)"
+            (removeLineItem)="removeLineItem($event.detail)"
+          >
+          </ocm-kit-static-card>
+          <ocm-kit-variable-card
+            *ngIf="!productKitDetails.Static"
+            [kitProduct]="_product"
+            [productKitDetails]="productKitDetails"
+            (selectProduct)="selectProduct($event.detail)"
+            (removeLineItem)="removeLineItem($event.detail)"
+            [allLineItems]="lineItemsToAdd"
+          ></ocm-kit-variable-card>
+        </ng-container>
+      </ng-container>
+
+      <button
+        class="btn btn-block btn-primary my-4 shadow"
+        type="submit"
+        [disabled]="isAddingToCart || !canAddToCart()"
+        (click)="addToCart()"
+        translate
+      >
+        PRODUCTS.DETAILS.ADD_TO_CART
+      </button>
+    </div>
+  </div>
+</div>

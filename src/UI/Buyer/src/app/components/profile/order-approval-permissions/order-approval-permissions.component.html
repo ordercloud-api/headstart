@@ -1,0 +1,195 @@
+<div class="mb-5">
+  <!-- User Permissions -->
+  <div class="row pt-3 mt-3 bg-white shadow-sm info-edit-container">
+    <div class="col-md-5">
+      <h4 translate>USERS.USER_MGMT.ORDER_APPROVAL</h4>
+      <p class="font-italic" translate>USERS.USER_MGMT.SET_PERMISSIONS</p>
+      <!-- could be refactored to use checkbox in table header with indeterminant state -->
+      <button
+        class="mt-3 btn btn-outline-primary"
+        (click)="toggleAllNeedingApproval()"
+        translate
+      >
+        <ng-container
+          *ngIf="areAllUsersAssignedToNeedsApproval; else reqNone"
+          translate
+        >
+          USERS.USER_MGMT.REQ_NONE
+        </ng-container>
+        <ng-template #reqNone translate> USERS.USER_MGMT.REQ_ALL </ng-template>
+      </button>
+    </div>
+    <div class="col-md-7">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col" translate>USERS.USER_MGMT.USER</th>
+            <th scope="col" translate>USERS.USER_MGMT.CAN_APPROVE</th>
+            <th scope="col" translate>
+              <div translate>USERS.USER_MGMT.NEEDS_APPROVAL</div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td>{{ user.Username }}</td>
+            <td class="justify-content-start cursor-pointer align-items-center">
+              <label class="switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  (click)="toggleAssignment(user.ID, 'OrderApprover')"
+                  [checked]="isAssigned(user.ID, 'OrderApprover')"
+                />
+                <span class="slider round"></span>
+              </label>
+            </td>
+            <td class="justify-content-start cursor-pointer align-items-center">
+              <label class="switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  (click)="toggleAssignment(user.ID, 'NeedsApproval')"
+                  [checked]="isAssigned(user.ID, 'NeedsApproval')"
+                />
+                <span class="slider round"></span>
+              </label>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="pb-3">
+        <button
+          [disabled]="!areChanges"
+          class="btn btn-link"
+          (click)="discardUserUserGroupAssignmentChanges()"
+          translate
+        >
+          <ng-container *ngIf="areChanges; else noChanges" translate>
+            USERS.USER_MGMT.CANCEL
+          </ng-container>
+          <ng-template #noChanges translate>
+            USERS.USER_MGMT.NO_CHANGES
+          </ng-template>
+        </button>
+        <button
+          *ngIf="areChanges && !requestedUserConfirmation"
+          [disabled]="!areChanges || requestedUserConfirmation"
+          class="btn btn-outline-primary"
+          (click)="requestUserConfirmation()"
+          translate
+        >
+          <ng-container *ngIf="requestedUserConfirmation; else save" translate>
+            USERS.USER_MGMT.PENDING_CONFIRMATION
+          </ng-container>
+          <ng-template #save translate> USERS.USER_MGMT.SAVE </ng-template>
+        </button>
+        <button
+          *ngIf="requestedUserConfirmation && areChanges"
+          class="btn btn-primary"
+          (click)="executeUserUserGroupAssignmentRequests()"
+          translate
+        >
+          USERS.USER_MGMT.CONFIRM
+        </button>
+      </div>
+    </div>
+    <div class="col-md-5 border-top pt-3">
+      <h4 translate>USERS.USER_MGMT.THRESHOLD</h4>
+      <p class="font-italic" translate>USERS.USER_MGMT.SET_THRESHOLD</p>
+    </div>
+    <div class="col-md-7 border-top pt-3">
+      <div class="btn-group" role="group" aria-label="Basic example">
+        <button
+          type="button"
+          (click)="setThreshold(0)"
+          [ngClass]="{ active: currentLocationApprovalThresholdEditable === 0 }"
+          class="btn btn-outline-primary"
+          translate
+        >
+          USERS.USER_MGMT.ALL_ORDERS
+        </button>
+        <button
+          type="button"
+          (click)="
+            setThreshold(currentLocationApprovalThresholdEditable || 100)
+          "
+          [ngClass]="{ active: !!currentLocationApprovalThresholdEditable }"
+          class="btn btn-outline-primary"
+          translate
+        >
+          USERS.USER_MGMT.SOME_ORDERS
+        </button>
+      </div>
+      <div class="row mt-3">
+        <div class="input-group mb-3 col-md-6">
+          <div class="input-group-prepend">
+            <span class="input-group-text">$</span>
+          </div>
+          <input
+            type="number"
+            min="0"
+            max="100000"
+            value="{{ currentLocationApprovalThresholdEditable }}"
+            class="form-control"
+            (change)="setThresholdFromEvent($event)"
+            aria-label="Amount (to the nearest dollar)"
+          />
+          <div class="input-group-append">
+            <span class="input-group-text">.00</span>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <button
+            [disabled]="
+              currentLocationApprovalThresholdEditable ===
+              currentLocationApprovalThresholdStatic
+            "
+            class="btn btn-link"
+            *ngIf="
+              currentLocationApprovalThresholdEditable !==
+              currentLocationApprovalThresholdStatic
+            "
+            (click)="
+              currentLocationApprovalThresholdEditable = currentLocationApprovalThresholdStatic
+            "
+          >
+            <span
+              *ngIf="
+                currentLocationApprovalThresholdEditable !==
+                currentLocationApprovalThresholdStatic
+              "
+              translate
+            >
+              USERS.USER_MGMT.CANCEL
+            </span>
+            <span
+              *ngIf="
+                currentLocationApprovalThresholdEditable ===
+                currentLocationApprovalThresholdStatic
+              "
+              translate
+            >
+              USERS.USER_MGMT.NO_CHANGES
+            </span>
+          </button>
+          <button
+            *ngIf="
+              currentLocationApprovalThresholdEditable !==
+              currentLocationApprovalThresholdStatic
+            "
+            [disabled]="
+              currentLocationApprovalThresholdEditable ===
+              currentLocationApprovalThresholdStatic
+            "
+            class="btn btn-outline-primary"
+            (click)="saveNewThreshold()"
+            translate
+          >
+            USERS.USER_MGMT.SAVE
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

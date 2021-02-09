@@ -1,0 +1,16 @@
+//Images with white backgrounds will be transparent with bg-light color
+img {
+    mix-blend-mode: multiply;
+}
+
+table {
+    width: 100%;
+}
+
+.mat-row {
+  height: auto;
+}
+  
+.mat-cell {
+  padding: 8px 20px 8px 0;
+}

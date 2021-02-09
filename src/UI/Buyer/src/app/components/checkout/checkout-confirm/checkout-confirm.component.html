@@ -1,0 +1,44 @@
+<button
+  class="btn btn-block btn-primary mb-4"
+  [disabled]="isSubmittingOrder"
+  (click)="saveCommentsAndSubmitOrder()"
+  translate
+>
+  CHECKOUT.CHECKOUT_CONFIRM.SUBMIT_ORDER
+</button>
+
+<div *ngIf="lineItems">
+  <!-- Currently, payments are not created until submit. This will likely change in the future. -->
+  <ocm-payment-list *ngIf="payments" [payments]="payments"></ocm-payment-list>
+  <div class="row mb-4">
+    <div class="col-sm-12">
+      <small class="font-weight-bold text-muted text-uppercase"
+        ><span translate>CHECKOUT.CHECKOUT_CONFIRM.SHIP_TO</span>:</small
+      >
+      <ocm-address-card
+        *ngIf="lineItems?.Items[0].ShippingAddress"
+        [address]="lineItems?.Items[0].ShippingAddress"
+        addressTitle="Shipping Address"
+      >
+      </ocm-address-card>
+    </div>
+  </div>
+  <ocm-lineitem-table
+    [lineItems]="lineItems?.Items"
+    [readOnly]="true"
+    [groupByKits]="false"
+    [hideStatus]="true"
+    class="my-3"
+  >
+  </ocm-lineitem-table>
+  <form *ngIf="!isAnon" novalidate [formGroup]="form">
+    <textarea
+      type="text"
+      maxlength="2000"
+      placeholder="Order Comments (Optional) - visible to all suppliers. If your request is for a specific supplier please indicate which one."
+      formControlName="comments"
+      class="form-control"
+    >
+    </textarea>
+  </form>
+</div>

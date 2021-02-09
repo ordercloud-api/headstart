@@ -1,0 +1,52 @@
+<div *ngIf="selectedTemplateID" class="row mt-5">
+  <div class="col-md-5">
+    <h5 translate>ADMIN.REPORTS.REPORT_PROCESSING</h5>
+    <p translate>ADMIN.REPORTS.PREVIEW_THE_REPORT</p>
+  </div>
+  <div class="col-md-7 form-row">
+    <div class="form-group col-md-3">
+      <button
+        class="btn btn-block btn-outline-primary mt-3 mt-md-0"
+        [disabled]="
+          fetchingPreview || this.reportSelectionForm.status === 'INVALID'
+        "
+        (click)="previewReport(selectedTemplateID)"
+      >
+        <span *ngIf="!fetchingPreview" translate
+          >ADMIN.REPORTS.PREVIEW_REPORT</span
+        >
+        <span
+          *ngIf="fetchingPreview"
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        <span *ngIf="fetchingPreview" translate>
+          ADMIN.REPORTS.FETCHING_PREVIEW</span
+        >
+      </button>
+    </div>
+    <div class="form-group col-md-3">
+      <button
+        class="btn btn-block btn-outline-primary mt-3 mt-md-0"
+        [disabled]="
+          reportDownloading || this.reportSelectionForm.status === 'INVALID'
+        "
+        (click)="downloadReport(selectedTemplateID)"
+      >
+        <span *ngIf="!reportDownloading" translate
+          >ADMIN.REPORTS.DOWNLOAD_REPORT</span
+        >
+        <span
+          *ngIf="reportDownloading"
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        <span *ngIf="reportDownloading" translate>
+          ADMIN.REPORTS.DOWNLOADING</span
+        >
+      </button>
+    </div>
+  </div>
+</div>

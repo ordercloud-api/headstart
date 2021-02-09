@@ -1,0 +1,54 @@
+.resource-table tbody .selectable-row {
+  cursor: pointer;
+}
+
+.resource-search {
+  width: 200px;
+}
+
+.selected-resource {
+  background-color: lightgrey;
+}
+
+.upload-btn-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.btn-upload {
+  border: 2px solid gray;
+  color: gray;
+  background-color: white;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.upload-btn-wrapper input[type='file'] {
+  font-size: 100px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}
+
+.quill-container {
+  height: 400px;
+}
+
+.dropzone {
+  background-image: url('../../../../../assets/FileUploadCircle.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-size: 60px;
+  background-position: center;
+  min-height: 100px;
+  min-width: 100px;
+  display: table;
+  width: 100px;
+  background-color: #d8e9f5 !important;
+  opacity: 0.8;
+  border: 2px dashed rgb(141, 194, 231);
+}

@@ -1,0 +1,37 @@
+// Flex uitilies
+
+.flex-shrink-0          {  flex-shrink: 0; }
+.flex-none              {  flex: none; }
+
+.cursor-pointer         { cursor: pointer;  }
+
+.line-height-1          {  line-height: 1.2; }
+.line-height-2          {  line-height: 2.1; }
+.line-height-inherit    {  line-height: inherit; }
+
+.font-weight-medium     { font-weight: 500 !important; }
+.font-weight-semibold   { font-weight: 600 !important; }
+
+.white-space-pre        { white-space: pre !important;  }
+
+.object-fit-contain     { object-fit: contain !important; }
+.object-fit-cover       { object-fit: cover !important; }
+
+.border-rounded-left    { border-top-left-radius: $border-radius; border-bottom-left-radius: $border-radius !important;}
+.border-rounded-right   { border-top-right-radius: $border-radius; border-bottom-right-radius: $border-radius !important;}
+
+.squared                { border-radius: 0 !important; }
+
+.border-hover {
+  transition: border-color 0.25s ease;
+  &:hover, &:focus, &:active {
+    border: 1px solid $secondary;
+  }
+}
+
+
+.text-md-right {
+  @include media-breakpoint-up(md) {
+    text-align: right;
+  }
+}

@@ -1,0 +1,25 @@
+<div *ngIf="reportData.length" class="col-md-12">
+  <table class="table table-bordered table-hover display-table">
+    <thead>
+      <tr>
+        <th *ngFor="let header of displayHeaders">{{ header }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Display only the first 25 records -->
+      <tr *ngFor="let item of reportData | slice: 0:25; let i = index">
+        <td *ngFor="let header of originalHeaders">
+          <span *ngIf="!requiresPipe(header)">{{
+            formatData(item, header)
+          }}</span>
+          <span *ngIf="requiresPipe(header) && pipeName === 'phone'">
+            {{ formatData(item, header) | tel }}
+          </span>
+          <span *ngIf="requiresPipe(header) && pipeName === 'currency'">
+            {{ formatData(item, header) | currency }}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

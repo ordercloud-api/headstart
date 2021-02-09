@@ -1,0 +1,88 @@
+<form
+  (ngSubmit)="onSubmit()"
+  novalidate
+  [formGroup]="profileForm"
+  name="ProfileForm"
+>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="FirstName" translate>PROFILE.PROFILE_FORM.FIRST</label>
+      <input
+        type="text"
+        formControlName="FirstName"
+        class="form-control"
+        id="FirstName"
+        placeholder="First Name"
+        autocomplete="off"
+        showErrors
+      />
+    </div>
+    <div class="form-group col-md-6">
+      <label for="LastName" translate>PROFILE.PROFILE_FORM.LAST</label>
+      <input
+        type="text"
+        formControlName="LastName"
+        class="form-control"
+        id="LastName"
+        placeholder="Last Name"
+        autocomplete="off"
+        showErrors
+      />
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="Username" translate>PROFILE.PROFILE_FORM.USERNAME</label>
+    <input
+      type="text"
+      formControlName="Username"
+      class="form-control"
+      id="Username"
+      placeholder="Username"
+      autofocus="true"
+      autocomplete="off"
+      showErrors
+    />
+  </div>
+  <div class="form-group">
+    <label for="Email" translate>PROFILE.PROFILE_FORM.EMAIL</label>
+    <input
+      type="email"
+      formControlName="Email"
+      class="form-control"
+      id="Email"
+      placeholder="Email"
+      autocomplete="off"
+      showErrors
+    />
+  </div>
+  <div class="form-group">
+    <label for="Phone" translate>PROFILE.PROFILE_FORM.PHONE</label>
+    <input
+      type="text"
+      formControlName="Phone"
+      class="form-control"
+      id="Phone"
+      placeholder="Phone Number"
+      autocomplete="off"
+      showErrors
+    />
+  </div>
+  <div class="d-flex justify-content-start align-items-center">
+    <button
+      [disabled]="profileForm.status !== 'VALID'"
+      type="submit"
+      class="btn btn-primary"
+      translate
+    >
+      PROFILE.PROFILE_FORM.SAVE
+    </button>
+    <button
+      type="button"
+      class="btn btn-link text-danger"
+      (click)="dismissForm()"
+      translate
+    >
+      PROFILE.PROFILE_FORM.CANCEL
+    </button>
+  </div>
+</form>

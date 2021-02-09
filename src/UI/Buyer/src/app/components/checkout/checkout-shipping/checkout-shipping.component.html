@@ -1,0 +1,57 @@
+<div *ngIf="_shipEstimates">
+  <div *ngFor="let shipEstimate of _shipEstimates; let i = index">
+    <ocm-lineitem-table
+      [lineItems]="_lineItemsByShipEstimate[i]"
+      [readOnly]="true"
+      [groupByKits]="false"
+      [hideStatus]="true"
+      [displayShippingInfo]="true"
+    >
+      <ocm-shipping-selection-form
+        [shipEstimate]="shipEstimate"
+        [supplierID]="getSupplierID(shipEstimate)"
+        [shipFromAddressID]="getShipFromAddressID(shipEstimate)"
+        (selectionChanged)="selectRate($event.detail)"
+      >
+      </ocm-shipping-selection-form>
+    </ocm-lineitem-table>
+  </div>
+  <p
+    *ngIf="!_areAllShippingSelectionsMade"
+    class="mb-0 font-italic text-danger"
+    translate
+  >
+    <fa-icon
+      class="fa-sm"
+      aria-hidden="true"
+      [icon]="faExclamationCircle"
+    ></fa-icon>
+    CHECKOUT.CHECKOUT_SHIPPING.SHIPPING_SPEED
+  </p>
+  <button
+    *ngIf="_areAllShippingSelectionsMade"
+    type="submit"
+    class="btn btn-secondary btn-sm mr-2"
+    (click)="onContinueClicked()"
+    translate
+  >
+    CHECKOUT.CHECKOUT_SHIPPING.SAVE_CONTINUE
+  </button>
+</div>
+<div *ngIf="!_shipEstimates">
+  <div>
+    <div class="text-danger">
+      We apologize for the inconvenience, we are currently unable to display
+      your shipping estimates for this cart. Please try a different address or
+      contact the vendor with further questions.
+    </div>
+    <button
+      class="btn btn-block btn-primary"
+      title="Change Shipping Address"
+      (click)="onChangeAddressClicked()"
+      translate
+    >
+      CHECKOUT.CHECKOUT.CHANGE_ADDRESS
+    </button>
+  </div>
+</div>

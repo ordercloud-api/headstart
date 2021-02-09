@@ -1,0 +1,102 @@
+<section class="container mt-5">
+  <div class="row">
+    <ocm-profile-nav class="col-md-3"> </ocm-profile-nav>
+    <div class="col-md-9" *ngIf="!isLoading">
+      <h1 class="page-heading mt-0" translate>
+        PAYMENTS.PAYMENT_METHODS.PAYMENT_METHODS
+      </h1>
+      <div class="row mt-3">
+        <h2 class="col-6 h3 text-secondary" translate>
+          PAYMENTS.PAYMENT_METHODS.CC
+        </h2>
+        <div class="col-6 text-right">
+          <button
+            (click)="showAdd()"
+            *ngIf="!showCardForm"
+            class="btn btn-sm btn-outline-primary"
+            translate
+          >
+            <fa-icon [icon]="faPlus"></fa-icon> PAYMENTS.PAYMENT_METHODS.ADD
+          </button>
+        </div>
+      </div>
+      <hr />
+      <ocm-modal [state]="areYouSureModal" [modalTitle]="'Delete this Card?'">
+        <div>
+          <button
+            class="btn btn-sm btn-primary"
+            (click)="deleteCard(currentCard)"
+            translate
+          >
+            PAYMENTS.PAYMENT_METHODS.DELETE
+          </button>
+          <button
+            class="btn btn-sm float-right"
+            (click)="closeAreYouSure()"
+            translate
+          >
+            PAYMENTS.PAYMENT_METHODS.CANCEL
+          </button>
+        </div>
+      </ocm-modal>
+      <div class="row">
+        <div class="col-lg-6 d-lg-none d-block mb-3" *ngIf="showCardForm">
+          <ocm-credit-card-form
+            [showCardDetails]="true"
+            [submitText]="'Add Card'"
+            [termsAccepted]="true"
+            (formSubmitted)="addCard($event.detail)"
+            (formDismissed)="dismissAddCardForm()"
+          >
+          </ocm-credit-card-form>
+        </div>
+        <div
+          [ngClass]="{ 'col-lg-12': !showCardForm, 'col-lg-6': showCardForm }"
+        >
+          <div class="payment-card pb-3 mb-3" *ngFor="let card of cards?.Items">
+            <ocm-credit-card-display
+              [card]="card"
+              [highlight]="currentCard === card"
+              class="col-12 my-2"
+            >
+              <!-- Delete Button -->
+              <div
+                class="btn btn-outline-danger btn-icon ripple"
+                (click)="showAreYouSure(card)"
+              >
+                <fa-icon [icon]="faTrashAlt" class="icon-wrapper">
+                  <span class="sr-only">Delete This Payment Selection?</span>
+                </fa-icon>
+              </div>
+            </ocm-credit-card-display>
+          </div>
+        </div>
+        <!-- Display the Card Form on Desktop View (lg+) -->
+        <div
+          class="col-lg-6 d-none d-lg-block border-left"
+          *ngIf="showCardForm"
+        >
+          <ocm-credit-card-form
+            [showCardDetails]="true"
+            [submitText]="'Add Card'"
+            [termsAccepted]="true"
+            (formSubmitted)="addCard($event.detail)"
+            (formDismissed)="dismissAddCardForm()"
+          >
+          </ocm-credit-card-form>
+        </div>
+      </div>
+      <div *ngIf="isLoading">
+        <ocm-loading-layout
+          height="335px"
+          width="100%"
+          mb="1.5rem"
+          [resource]="addresses"
+          [rows]="3"
+          [columns]="3"
+          [isLoading]="isLoading"
+        ></ocm-loading-layout>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,130 @@
+<div class="text-center mt-3">
+  <p translate>
+    AUTHENTICATION.REGISTER.EXISTING_ACC
+    <button type="button" class="btn btn-link" routerLink="/login" translate>
+      COMMON.LOGIN
+    </button>
+  </p>
+  <img
+    class="img-fluid"
+    width="300px"
+    alt="{{ appName }}"
+    [src]="appConfig.theme.logoSrc"
+  />
+</div>
+<div class="row">
+  <div class="col-lg-6 mx-auto width-400">
+    <h3 class="text-center text-gradient headline-text" translate>
+      AUTHENTICATION.REGISTER.SIGN_UP
+    </h3>
+    <form
+      (ngSubmit)="onSubmit()"
+      novalidate
+      [formGroup]="form"
+      name="RegisterForm"
+    >
+      <div class="form-group">
+        <label class="sr-only" for="Username" translate>COMMON.USERNAME</label>
+        <input
+          type="text"
+          formControlName="Username"
+          class="form-control"
+          id="Username"
+          placeholder="Username"
+          autofocus="true"
+          autocomplete="off"
+          showErrors
+        />
+      </div>
+      <div class="form-group">
+        <label class="sr-only" for="FirstName" translate>COMMON.FIRST</label>
+        <input
+          type="text"
+          formControlName="FirstName"
+          class="form-control"
+          id="FirstName"
+          placeholder="First Name"
+          autocomplete="off"
+          showErrors
+        />
+      </div>
+      <div class="form-group">
+        <label class="sr-only" for="LastName" translate>COMMON.LAST</label>
+        <input
+          type="text"
+          formControlName="LastName"
+          class="form-control"
+          id="LastName"
+          placeholder="Last Name"
+          autocomplete="off"
+          showErrors
+        />
+      </div>
+      <div class="form-group">
+        <label class="sr-only" for="Email" translate>COMMON.EMAIL</label>
+        <input
+          type="email"
+          formControlName="Email"
+          class="form-control"
+          id="Email"
+          placeholder="Email"
+          autocomplete="off"
+          showErrors
+        />
+      </div>
+      <div class="form-group">
+        <label class="sr-only" for="Phone" translate>COMMON.PHONE</label>
+        <input
+          type="text"
+          formControlName="Phone"
+          class="form-control"
+          id="Phone"
+          placeholder="Phone Number"
+          autocomplete="off"
+          showErrors
+        />
+      </div>
+      <div class="form-group">
+        <label class="sr-only" for="Password" translate>COMMON.PASSWORD</label>
+        <input
+          type="password"
+          formControlName="Password"
+          class="form-control"
+          id="Password"
+          placeholder="Password"
+          autocomplete="off"
+          showErrors
+        />
+      </div>
+      <div class="form-group">
+        <label class="sr-only" for="ConfirmPassword" translate
+          >COMMON.CONFIRM_PASSWORD</label
+        >
+        <input
+          type="password"
+          formControlName="ConfirmPassword"
+          class="form-control"
+          id="ConfirmPassword"
+          placeholder="Confirm Password"
+          autocomplete="off"
+          showErrors
+        />
+      </div>
+      <button
+        type="submit"
+        class="btn btn-primary btn-lg btn-block mt-4"
+        translate
+      >
+        AUTHENTICATION.REGISTER.REGISTER
+      </button>
+    </form>
+    <button
+      type="button"
+      class="btn btn-link btn-block"
+      routerLink="/forgot-password"
+      translate
+    >
+      AUTHENTICATION.REGISTER.FORGOT_PASS
+    </button>
+  </div>
+</div>

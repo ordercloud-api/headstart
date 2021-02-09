@@ -1,0 +1,507 @@
+<resource-breadcrumbs-component></resource-breadcrumbs-component>
+<div class="container-fluid">
+  <!-- Page Title -->
+  <div class="row base-layout-item">
+    <div class="col-md-12">
+      <div class="py-3">
+        <h1 class="resource-name mb-0" translate>
+          {{
+            getTitle(
+              isMyResource,
+              _currentResourceNamePlural,
+              selectedParentResouceName
+            )
+          }}
+        </h1>
+      </div>
+    </div>
+    <!-- /Page Title -->
+  </div>
+  <!-- /Page Title -->
+  <!-- Filter Bar -->
+  <div
+    *ngIf="
+      (!isMyResource || _currentResourceNamePlural !== 'suppliers') &&
+      !excludeFromFilterBar
+    "
+    class="row additional-item-edit-resource additional-item-table"
+  >
+    <div
+      *ngIf="parentResourceService && !isMyResource"
+      class="col-lg-3 col-md-4 col-sm-5 parent-resources"
+    >
+      <!-- parent resource dropdown -->
+      <resource-select-dropdown-component
+        class="btn-block resource-btn mr-1 mb-1"
+        [parentService]="parentResourceService"
+        [ocService]="_ocService"
+      >
+      </resource-select-dropdown-component>
+      <!-- /parent resource dropdown -->
+      <!-- sub resource dropdown -->
+      <div
+        *ngIf="!excludeFromSubResourceView"
+        ngbDropdown
+        class="d-inline-block parent-resource-dropdown btn-block mt-0 mb-1"
+      >
+        <!-- change to currently selected option  -->
+        <button
+          class="btn btn-block btn-outline-dark"
+          id="parentresourcedropdown"
+          ngbDropdownToggle
+        >
+          {{ labelPlural | translate }}
+        </button>
+        <div
+          ngbDropdownMenu
+          aria-labelledby="parent resource dropdown"
+          class="w-100"
+        >
+          <button
+            ngbDropdownItem
+            *ngFor="let subResource of parentResourceService.subResourceList"
+          >
+            <a
+              routerLink="/{{ _ocService.primaryResourceLevel }}/{{
+                selectedParentResourceID
+              }}/{{ subResource.route }}"
+              translate
+            >
+              {{ subResource.display }}
+            </a>
+          </button>
+        </div>
+      </div>
+      <!-- /sub resource dropdown -->
+    </div>
+    <div
+      class="col-lg-2 col-md-1 col-sm-7 d-flex justify-content-start align-items-center"
+      *ngIf="shouldShowCreateNew"
+    >
+      <!-- route accidentally works for both subresoures and first level resources because the extra / are ignored by the router it appears-->
+      <button
+        *ngIf="_currentResourceNamePlural !== 'products'"
+        class="btn btn-block brand-button--orange"
+        routerLink="/{{
+          isMyResource ? _ocService.myRoute : _ocService.route
+        }}/{{ selectedParentResourceID }}/{{
+          _ocService.secondaryResourceLevel
+        }}/new"
+        [disabled]="isCreatingNew"
+      >
+        Create New {{ labelSingular | translate }}
+      </button>
+      <div
+        ngbDropdown
+        class="d-inline-block"
+        *ngIf="_currentResourceNamePlural === 'products'"
+      >
+        <button
+          ngbDropdownToggle
+          class="btn btn-block brand-button--orange"
+          [disabled]="isCreatingNew"
+        >
+          Create New {{ labelSingular | translate }}
+        </button>
+        <div ngbDropdownMenu>
+          <button
+            ngbDropdownItem
+            *ngFor="let type of availableProductTypes"
+            routerLink="/{{
+              isMyResource ? _ocService.myRoute : _ocService.route
+            }}/{{ selectedParentResourceID }}/{{
+              _ocService.secondaryResourceLevel
+            }}/new/{{ type.Link }}"
+          >
+            {{ type.Display }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      [ngClass]="{
+        'col-lg-7 col-md-7': parentResourceService,
+        'col-lg-10 col-md-10': !parentResourceService && shouldShowCreateNew,
+        'col-lg-12': !parentResourceService && !shouldShowCreateNew
+      }"
+    >
+      <!-- Resource Search -->
+      <div class="mr-2">
+        <div class="row">
+          <div class="col-md-5 d-flex align-items-center">
+            <search-component
+              class="w-100"
+              id="product-search"
+              [placeholderText]="labelPlural"
+              [searchTermInput]="searchTerm"
+              (searched)="searchedResources($event)"
+            >
+            </search-component>
+          </div>
+          <div class="col-md-1 d-flex align-items-center">
+            <div class="d-flex justify-content-start align-items-center">
+              <div *ngIf="filterForm"
+                class="icon-button ripple"
+                placement="{{
+                  screenSize === 'xs' && 'sm' && 'md' ? 'left' : 'bottom'
+                }}"
+                [ngbPopover]="filters"
+                autoClose="outside"
+                triggers="manual"
+                #popover="ngbPopover"
+                (click)="openPopover()"
+                popoverTitle="Filter"
+              >
+                <fa-layers class="fa-layers fa-fw">
+                  <fa-icon [icon]="faFilter"> </fa-icon>
+                  <fa-layers-counter
+                    *ngIf="activeFilterCount && activeFilterCount > 0"
+                    class="badge__counter--large layers-background"
+                    [content]="activeFilterCount"
+                  >
+                  </fa-layers-counter>
+                </fa-layers>
+              </div>
+              <div
+                *ngIf="filterForm && activeFilterCount > 0"
+                class="icon-button ripple"
+                (click)="clearAllFilters()"
+              >
+                <fa-icon [icon]="faTimes"></fa-icon>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6 d-flex align-items-center">
+            <ng-content select=".actionBar"></ng-content>
+          </div>
+        </div>
+      </div>
+      <!-- ngContent for filters popover -->
+      <ng-template #filters>
+        <div>
+          <!-- filter component -->
+          <!-- <form *ngIf="filterForm" -->
+          <form class="d-flex flex-column filters" [formGroup]="filterForm">
+            <div
+              *ngFor="let filter of _filterConfig?.Filters"
+              class="group mt-2"
+            >
+              <div *ngIf="shouldFilterDisplay(filter)">
+                <label translate>{{ filter.Display }}</label>
+                <select
+                  class="form-control input-sm"
+                  *ngIf="
+                    filter?.Type === 'Dropdown' ||
+                    filter?.BuyerAppFilterType === 'SelectOption' ||
+                    filter?.BuyerAppFilterType === 'NonUI'
+                  "
+                  type="select"
+                  required
+                  [formControlName]="filter.Path"
+                >
+                  <ng-container *ngFor="let option of filter.Items">
+                    <option
+                      *ngIf="isBoolean(option.Value)"
+                      value="{{ option.Value }}"
+                      translate
+                    >
+                      {{ option.Text | yesNo }}
+                    </option>
+                    <option
+                      *ngIf="!isBoolean(option.Value)"
+                      value="{{ option.Value }}"
+                      translate
+                    >
+                      {{ option.Text }}
+                    </option>
+                  </ng-container>
+                </select>
+                <div class="input-group" *ngIf="filter?.Type === 'DateFilter'">
+                  <input
+                    class="form-control"
+                    placeholder="yyyy-mm-dd"
+                    value="{{ filter.Path === 'from' ? fromDate : toDate }}"
+                    name="datePicker"
+                    [formControlName]="filter.Path"
+                    ngbDatepicker
+                    #d="ngbDatepicker"
+                  />
+                  <div class="input-group-append">
+                    <button
+                      class="btn btn-outline-primary calendar"
+                      (click)="d.toggle()"
+                      type="button"
+                    >
+                      <fa-icon
+                        [icon]="faCalendar"
+                        id="calendar-addon-from"
+                      ></fa-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+          <div class="d-flex justify-content-between align-items-center mt-3">
+            <button
+              (click)="closePopover()"
+              class="btn btn-sm btn-link text-dark"
+            >
+              Cancel
+            </button>
+            <button
+              (click)="handleApplyFilters()"
+              class="btn btn-sm btn-primary"
+            >
+              Apply
+            </button>
+          </div>
+        </div>
+      </ng-template>
+      <!-- /ngContent for filters popover -->
+    </div>
+  </div>
+  <!-- /Filter Bar -->
+  <div class="row">
+    <div class="col-md-12">
+      <!-- full table view -->
+      <div
+        *ngIf="
+          !selectedResourceID &&
+          !isCreatingNew &&
+          (!isMyResource || shouldDisplayList) &&
+          !excludeFromFullTableView
+        "
+      >
+        <perfect-scrollbar
+          id="perfectScroll"
+          class="scrollbar-top full-width"
+          [ngStyle]="{ 'height.px': tableHeight }"
+          (psYReachEnd)="handleScrollEnd()"
+        >
+          <full-resource-table-component
+            [resourceType]="
+              _ocService.secondaryResourceLevel ||
+              _ocService.primaryResourceLevel
+            "
+            [requestStatus]="requestStatus"
+            (resourceSelected)="handleSelectResource($event)"
+            [resourceList]="resourceList"
+            [ocService]="_ocService"
+          >
+          </full-resource-table-component>
+          <request-status
+            [requestStatus]="requestStatus"
+            [subResourceName]="(labelPlural | translate) || ''"
+            [selectedParentResouceName]="selectedParentResourceName"
+          >
+          </request-status>
+        </perfect-scrollbar>
+      </div>
+      <!-- editing/creating view -->
+      <div
+        *ngIf="
+          (selectedResourceID || isCreatingNew) &&
+          (!isMyResource || shouldDisplayList)
+        "
+        class="row resource-table-container"
+      >
+        <div class="col-3 p-0 d-md-block d-none">
+          <perfect-scrollbar
+            [ngStyle]="{ 'height.px': tableHeight }"
+            (psYReachEnd)="handleScrollEnd()"
+            class="resource-table-side full-width"
+          >
+            <table
+              *ngIf="
+                requestStatus === 'GETTING_NEW_ITEMS' ||
+                requestStatus === 'SUCCESSFUL_WITH_ITEMS' ||
+                requestStatus === 'REFRESHING_ITEMS' ||
+                requestStatus === 'FETCHING_SUBSEQUENT_PAGES'
+              "
+              class="table table-hover resource-table"
+            >
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                </tr>
+              </thead>
+
+              <!-- successfull response with items -->
+              <tbody>
+                <tr
+                  *ngIf="isCreatingNew"
+                  class="selectable-row selected-resource"
+                >
+                  <td>
+                    <summary-resource-display-component
+                      [isNewPlaceHolder]="true"
+                      [resourceType]="
+                        _ocService.secondaryResourceLevel ||
+                        _ocService.primaryResourceLevel
+                      "
+                      [isCreatingSubResource]="isCreatingSubResource"
+                    >
+                    </summary-resource-display-component>
+                  </td>
+                </tr>
+                <tr
+                  *ngFor="let resource of resourceList.Items"
+                  (click)="handleSelectResource(resource)"
+                  class="selectable-row"
+                  [ngClass]="{
+                    'selected-resource': selectedResourceID === resource.ID
+                  }"
+                >
+                  <td>
+                    <summary-resource-display-component
+                      [resource]="resource"
+                      [resourceList]="resourceList.Items"
+                      [resourceType]="
+                        _ocService.secondaryResourceLevel ||
+                        _ocService.primaryResourceLevel
+                      "
+                      [parentResourceID]="selectedParentResourceID"
+                    >
+                    </summary-resource-display-component>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <request-status
+              [requestStatus]="requestStatus"
+              [subResourceName]="(labelPlural | translate) || ''"
+              [selectedParentResouceName]="selectedParentResourceName"
+            >
+            </request-status>
+          </perfect-scrollbar>
+          <resource-list-meta
+            *ngIf="selectedResourceID || isCreatingNew"
+            [selectedResourceID]="selectedResourceID || isCreatingNew"
+            [listPage]="_ocService?.resourceSubject?.value"
+          >
+          </resource-list-meta>
+        </div>
+        <div class="col-md-9 col-sm-12 bg-light contents">
+          <div
+            *ngIf="shouldShowTitleContainer"
+            class="py-1 d-flex flex-row justify-content-between resource-title-container additional-item-edit-resource"
+          >
+            <span
+              class="d-flex flex-row justify-content-start align-items-center"
+            >
+              <div
+                class="icon-button ripple hover-btn"
+                (click)="handleSelectResource({})"
+              >
+                <div class="icon-wrapper">
+                  <fa-icon class="text-dark" [icon]="faChevronLeft"> </fa-icon>
+                </div>
+              </div>
+              <h3 *ngIf="isCreatingNew" class="d-inline-block ml-1 mb-0">
+                New {{ resourceType | titlecase }}
+                {{ labelSingular | translate }}
+              </h3>
+              <h3 *ngIf="!isCreatingNew" class="d-inline-block ml-1 mb-0">
+                {{ getHeaderText(_resourceInSelection) }}
+              </h3>
+            </span>
+            <button
+              *ngIf="canImpersonateResource && !isCreatingNew"
+              (click)="impersonateUser()"
+              class="btn brand-button--orange"
+            >
+              Impersonate
+            </button>
+            <span
+              class="d-flex align-items-center"
+              *ngIf="
+                !parentResourceService &&
+                _ocService.subResourceList &&
+                _ocService.subResourceList.length &&
+                !isCreatingNew
+              "
+            >
+              <a
+                class="btn btn-outline-info ml-3"
+                *ngFor="let subResource of _ocService.subResourceList"
+                [routerLink]="[subResource.route]"
+              >
+                {{ subResource.display | translate }}
+              </a>
+            </span>
+          </div>
+          <div *ngIf="!isMyResource || shouldDisplayList">
+            <ng-content *ngTemplateOutlet="editUnwrapped"> </ng-content>
+          </div>
+        </div>
+      </div>
+
+      <!-- ng content can only be used once for transclusion, ngTemplatOutlets are required so that 
+      we are only using the component once in the resource table -->
+
+      <ng-container
+        *ngIf="(isMyResource && !shouldDisplayList) || excludeFromFullTableView"
+      >
+        <div *ngTemplateOutlet="editUnwrapped"></div>
+      </ng-container>
+      <ng-template #editUnwrapped>
+        <div class="bg-light">
+          <perfect-scrollbar
+            class="full-width"
+            id="resource-edit-scroll"
+            [ngStyle]="{ 'height.px': editResourceHeight }"
+          >
+            <ng-content select=".resource-edit"> </ng-content>
+          </perfect-scrollbar>
+          <!-- TODO: 1/2 Abstract into component to be used anywhere using inputs and outputs -->
+          <div
+            *ngIf="shouldShowResourceActions"
+            class="d-flex justify-content-between align-items-center py-2 additional-item-edit-resource"
+          >
+            <delete-confirm-modal-component
+              *ngIf="!isCreatingNew && !isMyResource && canBeDeleted"
+              buttonText="{{ labelSingular }}"
+              (deleteConfirmed)="handleDelete($event)"
+            >
+            </delete-confirm-modal-component>
+            <div *ngIf="!canBeDeleted">
+              <button
+                class="btn btn-link text-muted"
+                ngbTooltip="This {{
+                  labelSingular | translate
+                }} is in use and cannot be deleted."
+                placement="top"
+              >
+                Delete {{ labelSingular | translate | titlecase }}
+              </button>
+            </div>
+            <div>
+              <button
+                class="btn btn-primary"
+                type="submit"
+                [disabled]="!areChanges || resourceForm?.status === 'INVALID' || dataIsSaving"
+                (click)="handleSave()"
+              >
+                {{ getSaveBtnText() }}
+              </button>
+              <button
+                class="btn brand-button ml-3"
+                (click)="handleDiscardChanges()"
+                *ngIf="areChanges && !isCreatingNew"
+              >
+                Discard Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+  <resource-list-meta
+    *ngIf="!selectedResourceID && !isCreatingNew"
+    [selectedResourceID]="selectedResourceID"
+    [listPage]="_ocService?.resourceSubject?.value"
+  >
+  </resource-list-meta>
+</div>

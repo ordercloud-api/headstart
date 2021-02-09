@@ -1,0 +1,16 @@
+.chip {
+  display: inline-flex;
+  align-items: center;
+  height: auto;
+  width: max-content;
+  padding: .25rem .75rem;
+  border-radius: 50px;
+  &.chip-xs {
+    font-size: .65rem;
+  }
+  // DESIGN: if you include the `.position-absolute` class next to chip, it will go top right
+  &.position-absolute {
+    top: 12px;
+    left: 8px;
+  }
+}

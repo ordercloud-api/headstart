@@ -1,0 +1,30 @@
+<resource-table-component
+  [resourceList]="resourceList"
+  [selectedResourceID]="selectedResourceID"
+  [updatedResource]="updatedResource"
+  [resourceInSelection]="resourceInSelection"
+  [ocService]="ocService"
+  [dataIsSaving]="dataIsSaving"
+  [resourceForm]="resourceForm"
+  [filterConfig]="filterConfig"
+  (searched)="searchResources($event)"
+  [shouldShowCreateNew]="!isSupplierUser"
+  (hitScrollEnd)="handleScrollEnd()"
+  (changesSaved)="saveUpdates()"
+  (changesDiscarded)="discardChanges()"
+  (resourceDelete)="deleteResource()"
+  (resourceSelected)="selectResource($event)"
+  [canBeDeleted]="!isSupplierUser"
+  [labelSingular]="'ALIAS.SUPPLIER'"
+  [labelPlural]="'ALIAS.SUPPLIERS'"
+>
+  <app-supplier-edit
+    class="resource-edit"
+    *ngIf="resourceForm"
+    [resourceForm]="resourceForm"
+    [filterConfig]="filterConfig"
+    [supplierEditable]="updatedResource"
+    (updateResource)="updateResource($event)"
+    (logoStaged)="handleStagedFile($event)"
+  ></app-supplier-edit>
+</resource-table-component>

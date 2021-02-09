@@ -1,0 +1,12 @@
+@import '../../../../../styles/main.scss';
+.resource-name {
+    font-size: 22px;
+    @include media-breakpoint-up(sm) {
+        font-size: 28px;
+    }
+    // margin-top: -24px;
+}
+
+.cms-height {
+    min-height: 500px
+}

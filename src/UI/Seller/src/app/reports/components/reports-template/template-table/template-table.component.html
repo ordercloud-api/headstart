@@ -1,0 +1,34 @@
+<resource-table-component
+  [resourceList]="resourceList"
+  [selectedResourceID]="selectedResourceID"
+  [updatedResource]="updatedResource"
+  [resourceInSelection]="resourceInSelection"
+  [ocService]="ocService"
+  [dataIsSaving]="dataIsSaving"
+  [parentResourceService]="reportsTypeService"
+  [resourceForm]="resourceForm"
+  [filterConfig]="filterConfig"
+  [excludeFromSubResourceView]="true"
+  (searched)="searchResources($event)"
+  (hitScrollEnd)="handleScrollEnd()"
+  (changesSaved)="saveUpdates()"
+  (changesDiscarded)="discardChanges()"
+  (resourceDelete)="deleteResource()"
+  (resourceSelected)="selectResource($event)"
+  [canBeDeleted]="!isSupplierUser"
+  [labelSingular]="'ADMIN.NAV.TEMPLATE'"
+  [labelPlural]="'ADMIN.NAV.TEMPLATES'"
+>
+  <div class="resource-edit">
+    <template-edit-component
+      *ngIf="resourceForm"
+      class="resource-edit"
+      [resourceForm]="resourceForm"
+      [reportType]="reportType"
+      [resourceInSelection]="resourceInSelection"
+      [updatedResource]="updatedResource"
+      (updateResource)="updateResource($event)"
+    >
+    </template-edit-component>
+  </div>
+</resource-table-component>

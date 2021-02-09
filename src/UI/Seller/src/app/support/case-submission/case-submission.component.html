@@ -1,0 +1,215 @@
+<div class="container-fluid">
+  <div class="py-3">
+    <h1 class="resource-name mb-0" translate>Submit a Case for Support</h1>
+  </div>
+  <form
+    *ngIf="caseSubmissionForm"
+    [formGroup]="caseSubmissionForm"
+    (ngSubmit)="sendCaseSubmission()"
+    name="CaseSubmissionForm"
+    autocomplete="off"
+    novalidate
+  >
+    <div class="row pt-3">
+      <div class="col-md-8 form-group">
+        <div class="card py-2 px-3 mt-3 bg-white">
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="firstName">
+                First Name
+                <sup *ngIf="isRequired('FirstName')">
+                  <fa-icon
+                    class="tab-status-icon text-danger"
+                    [icon]="faAsterisk"
+                  >
+                  </fa-icon>
+                </sup>
+              </label>
+              <input
+                id="firstName"
+                formControlName="FirstName"
+                type="text"
+                class="form-control"
+                placeholder="First Name"
+                aria-describedby="FirstName"
+                autofocus
+                showErrors
+              />
+            </div>
+            <div class="form-group col-md-6">
+              <label for="lastName">
+                Last Name
+                <sup *ngIf="isRequired('LastName')">
+                  <fa-icon
+                    class="tab-status-icon text-danger"
+                    [icon]="faAsterisk"
+                  >
+                  </fa-icon>
+                </sup>
+              </label>
+              <input
+                id="lastName"
+                formControlName="LastName"
+                type="text"
+                class="form-control"
+                placeholder="Last Name"
+                aria-describedby="LastName"
+                autofocus
+                showErrors
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="email">
+                Email Address
+                <sup *ngIf="isRequired('Email')">
+                  <fa-icon
+                    class="tab-status-icon text-danger"
+                    [icon]="faAsterisk"
+                  >
+                  </fa-icon>
+                </sup>
+              </label>
+              <input
+                id="email"
+                formControlName="Email"
+                type="text"
+                class="form-control"
+                placeholder="Email Address"
+                aria-describedby="Email"
+                autofocus
+                showErrors
+              />
+            </div>
+            <div class="form-group col-md-6">
+              <label for="vendor">
+                Vendor Name
+                <sup *ngIf="isRequired('Vendor')">
+                  <fa-icon
+                    class="tab-status-icon text-danger"
+                    [icon]="faAsterisk"
+                  >
+                  </fa-icon>
+                </sup>
+                <small *ngIf="!isRequired('Vendor')">(Optional)</small>
+              </label>
+              <input
+                id="vendor"
+                formControlName="Vendor"
+                type="text"
+                class="form-control"
+                placeholder="Vendor Name"
+                aria-describedby="Vendor"
+                autofocus
+                showErrors
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="subject">
+                Subject
+                <sup *ngIf="isRequired('Subject')">
+                  <fa-icon
+                    class="tab-status-icon text-danger"
+                    [icon]="faAsterisk"
+                  >
+                  </fa-icon>
+                </sup>
+              </label>
+              <select
+                type="dropdown"
+                class="form-control"
+                formControlName="Subject"
+                id="subject"
+                aria-describedby="Subject"
+              >
+                <option [value]="null" disabled>Select a Subject...</option>
+                <option
+                  *ngFor="let subject of subjectOptions"
+                  [value]="subject"
+                >
+                  {{ subject }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-10">
+              <label for="message">
+                Message
+                <sup *ngIf="isRequired('Message')">
+                  <fa-icon
+                    class="tab-status-icon text-danger"
+                    [icon]="faAsterisk"
+                  >
+                  </fa-icon>
+                </sup>
+              </label>
+              <textarea
+                type="text"
+                class="form-control"
+                formControlName="Message"
+                placeholder="Please describe your question/issue here"
+              ></textarea>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-10">
+              <label for="attachment" class="d-block">
+                Attachment
+                <small>(Optional)</small>
+              </label>
+              <div *ngIf="!attachmentFile">
+                <label
+                  class="rmpm dropzone"
+                  for="attachmentUpload"
+                  appDrag
+                  (files)="onAttachmentDrop($event)"
+                ></label>
+                <input
+                  class="d-none"
+                  id="attachmentUpload"
+                  type="file"
+                  (change)="onAttachmentUpload($event)"
+                />
+              </div>
+              <div *ngIf="attachmentFile">
+                <img
+                  *ngIf="isImageFileType"
+                  class="d-block"
+                  id="supplier-logo"
+                  [src]="stagedAttachmentUrl"
+                  width="auto"
+                  height="100px"
+                />
+                <small>
+                  {{ attachmentFile.name }}
+                </small>
+                <div class="mt-3">
+                  <button
+                    type="button"
+                    (click)="removeAttachment()"
+                    class="btn btn-sm btn-link"
+                  >
+                    Remove Attachment
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button
+            type="submit"
+            class="btn btn-primary mt-4 w-100"
+            [disabled]="
+              caseSubmissionForm?.status === 'INVALID' || submitBtnDisabled
+            "
+          >
+            Submit
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

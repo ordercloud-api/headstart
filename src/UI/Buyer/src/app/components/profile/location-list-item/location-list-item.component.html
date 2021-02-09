@@ -1,0 +1,36 @@
+<div class="bg-white shadow-sm p-4 mt-3">
+  <div class="row">
+    <div class="col-4">
+      <h5 class="mb-0 text-capitalize font-weight-bold">
+        {{ location?.CompanyName }}
+      </h5>
+      <h4 class="mb-0 text-capitalize">{{ location?.AddressName }}</h4>
+    </div>
+    <div class="col-4">
+      <p class="mb-0 text-capitalize font-weight-bold">
+        {{ location?.Street1 }}<span>, {{ location?.Street2 }}</span>
+      </p>
+      <p class="mb-0 text-capitalize font-weight-bold">
+        {{ location?.City }}, {{ location?.State }} {{ location?.Zip }}
+      </p>
+      <small *ngIf="getFullName(location) || location?.Phone" class="mb-0">
+        <span>
+          {{ getFullName(location) }}
+        </span>
+        <span *ngIf="getFullName(location) && location?.Phone"> | </span>
+        <span>
+          {{ location?.Phone }}
+        </span>
+      </small>
+    </div>
+    <div class="col-3">
+      <button
+        type="button"
+        (click)="toLocationManagement()"
+        class="btn btn-sm btn-outline-primary"
+      >
+        Location Details
+      </button>
+    </div>
+  </div>
+</div>

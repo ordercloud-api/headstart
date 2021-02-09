@@ -1,0 +1,38 @@
+<form [formGroup]="form">
+  <div class="form-group mb-0">
+    <label for="quantity" class="sr-only" translate
+      >PRODUCTS.QTY_INPUT.QTY</label
+    >
+    <input
+      *ngIf="!isQtyRestricted"
+      id="quantity"
+      type="number"
+      formControlName="quantity"
+      class="form-control text-center input-width"
+      placeholder="0"
+      [attr.min]="0"
+      [attr.max]="getMaxQty()"
+      [attr.disabled]="disabled ? '' : null"
+      aria-label="Quantity Input Selector"
+      aria-describedby="quantity"
+    />
+    <select
+      *ngIf="isQtyRestricted"
+      class="form-control text-center input-width"
+      [attr.disabled]="disabled ? '' : null"
+      formControlName="quantity"
+      id="quantity"
+    >
+      <option *ngFor="let qty of restrictedQuantities" [value]="qty">
+        {{ qty }}
+      </option>
+    </select>
+  </div>
+</form>
+<small
+  *ngIf="errorMsg !== '' && !gridDisplay"
+  class="alert alert-danger error-message c-error-message text-center"
+>
+  {{ errorMsg }}
+  <br />
+</small>

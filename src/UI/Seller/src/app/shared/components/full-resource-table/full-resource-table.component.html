@@ -1,0 +1,83 @@
+<table class="table table-hover resource-table">
+  <thead>
+    <tr>
+      <th *ngFor="let header of headers" nowrap scope="col" translate>
+        {{ header.header }}
+        <button
+          *ngIf="header.sortable"
+          type="button"
+          class="sortButton"
+          (click)="handleSort(header.path)"
+          ngbTooltip="Sort"
+          placement="bottom"
+        >
+          <fa-icon [icon]="getSortArrowDirection(header.path)"></fa-icon>
+        </button>
+      </th>
+    </tr>
+  </thead>
+  <tbody
+    *ngIf="
+      requestStatus === 'SUCCESSFUL_WITH_ITEMS' ||
+      requestStatus === 'REFRESHING_ITEMS' ||
+      requestStatus === 'FETCHING_SUBSEQUENT_PAGES'
+    "
+  >
+    <tr
+      *ngFor="let row of rows; index as index"
+      (click)="selectResource(row.resource)"
+      class="selectable-row"
+      [ngClass]="{ 'selected-resource': selectedIndex === index }"
+      select="table-body-row"
+    >
+      <td class="align-middle" *ngFor="let cell of row.cells">
+        <span *ngIf="cell.type === 'BOOLEAN'" translate>
+          {{ cell.value | yesNo }}
+        </span>
+        <span *ngIf="cell.type === 'BASIC_STRING'">
+          {{ cell.value }}
+        </span>
+        <span *ngIf="cell.type === 'DATE_TIME'">
+          {{ cell.value | date: 'short' }}
+        </span>
+        <span *ngIf="cell.type === 'CURRENCY'">
+          {{ cell.value | currency: 'USD' }}
+        </span>
+        <div class="d-flex" *ngIf="cell.type === 'STRING_WITH_IMAGE'">
+          <img
+            alt="Avatar"
+            class="avatar rounded-circle"
+            src="{{ row.imgPath }}"
+            alt=""
+          />
+          <span class="ml-3 d-flex flex-column justify-content-center">
+            <div class="h6">{{ cell.value }}</div>
+          </span>
+        </div>
+        <span *ngIf="cell.type === 'COPY_OBJECT'">
+          <button
+            class="btn btn-light"
+            ngbTooltip="{{ objectPreviewText }}"
+            placement="left-top left left-bottom auto"
+            (mouseover)="previewObject(row.resource)"
+            (click)="copyObject(row.resource)"
+          >
+            <fa-icon [icon]="faCopy"></fa-icon>
+          </button>
+        </span>
+        <span
+          *ngIf="
+            cell.type === 'IMPERSONATE_BUTTON' && routeUrl?.includes('buyers')
+          "
+        >
+          <button
+            (click)="impersonateUser(row.resource)"
+            class="btn brand-button--orange"
+          >
+            Impersonate
+          </button>
+        </span>
+      </td>
+    </tr>
+  </tbody>
+</table>

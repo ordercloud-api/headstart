@@ -1,0 +1,39 @@
+<div class="container mt-4" *ngIf="category">
+  <div class="row">
+    <div class="col-12">
+      <nav class="breadcrumb" aria-label="breadcrumb">
+        <a class="breadcrumb-item link-text" [routerLink]="['/categories']"
+          >All Categories</a
+        >
+        <a class="breadcrumb-item link-text">{{ category.Name }}</a>
+      </nav>
+    </div>
+  </div>
+  <h4>
+    <small class="text-muted">Category</small> <br />
+    {{ category.Name }}
+  </h4>
+  <div class="mt-3">
+    <ngb-tabset>
+      <ngb-tab>
+        <ng-template ngbTabTitle>
+          <fa-icon [icon]="faSitemap"></fa-icon> Category
+        </ng-template>
+        <ng-template ngbTabContent>
+          <div class="m-3 category-form-container">
+            <category-form
+              btnText="Update Category Info"
+              [existingCategory]="category"
+              (formSubmitted)="updateCategory($event)"
+            ></category-form>
+          </div>
+        </ng-template>
+      </ngb-tab>
+      <ngb-tab>
+        <ng-template ngbTabTitle>
+          <fa-icon [icon]="faBoxOpen"></fa-icon> Assign Products
+        </ng-template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+</div>

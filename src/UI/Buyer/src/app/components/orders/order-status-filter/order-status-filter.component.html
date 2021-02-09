@@ -1,0 +1,15 @@
+<form [formGroup]="form">
+  <div class="form-group">
+    <label for="status" translate>ORDERS.STATUS_FILTER</label>
+    <select
+      id="status"
+      (change)="selectStatus()"
+      class="form-control"
+      formControlName="status"
+    >
+      <option *ngFor="let status of statuses" [ngValue]="status || ''">
+        {{ status | orderStatusDisplay }}
+      </option>
+    </select>
+  </div>
+</form>

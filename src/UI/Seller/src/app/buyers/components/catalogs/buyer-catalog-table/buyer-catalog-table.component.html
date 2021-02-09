@@ -1,0 +1,38 @@
+<resource-table-component
+  [resourceList]="resourceList"
+  [selectedResourceID]="selectedResourceID"
+  [updatedResource]="updatedResource"
+  [resourceInSelection]="resourceInSelection"
+  [ocService]="ocService"
+  [dataIsSaving]="dataIsSaving"
+  [parentResourceService]="buyerService"
+  [resourceForm]="resourceForm"
+  (searched)="searchResources($event)"
+  (hitScrollEnd)="handleScrollEnd()"
+  (changesSaved)="saveUpdates()"
+  (changesDiscarded)="discardChanges()"
+  (resourceDelete)="deleteResource()"
+  (resourceSelected)="selectResource($event)"
+  [labelSingular]="'ADMIN.NAV.CATALOG'"
+  [labelPlural]="'ADMIN.NAV.CATALOGS'"
+>
+  <div class="resource-edit">
+    <form *ngIf="resourceForm" [formGroup]="resourceForm">
+      <div class="form-group">
+        <label for="Name">Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="Name"
+          showErrors
+          aria-describedby="Name"
+          maxlength="100"
+          [resourceForm]="resourceForm"
+          formControlName="Name"
+          (input)="handleUpdateResource($event, 'Name')"
+          placeholder="Enter Name"
+        />
+      </div>
+    </form>
+  </div>
+</resource-table-component>

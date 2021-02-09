@@ -1,0 +1,4 @@
+//Images with white backgrounds will be transparent with bg-light color
+img {
+    mix-blend-mode: multiply;
+}

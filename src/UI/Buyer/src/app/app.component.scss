@@ -1,0 +1,9 @@
+:host::ng-deep {
+  display: flex;
+  flex-flow: column nowrap;
+  min-height: calc(100vh - 120px);
+  ::ng-deep ng-component {
+    min-height: 50vh;
+    flex-grow: 1;
+  }
+}

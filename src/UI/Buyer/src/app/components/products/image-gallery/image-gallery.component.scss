@@ -1,0 +1,34 @@
+// DESIGN: As long as there is a wrapper that defines the width, we should be able to just tell it to stretch to fill.
+
+::ng-deep .ngxImageZoomContainer {
+  height: unset !important;
+  width: unset !important;
+  max-height: 65vh;
+  img {
+    height: auto;
+    max-width: 100%;
+    margin: 0 auto;
+    display: block;
+    object-fit: contain;
+  }
+  .ngxImageZoomLensEnabled {
+    border: 1px solid var(--primary) !important;
+  }
+}
+
+.gallery-container {
+  .gallery-item {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    opacity: .5;
+    padding: 3px !important;
+    img {
+      width: auto;
+      height: 70px;
+    }
+  }
+  .gallery-item.active {
+    opacity: 1;
+  }
+}

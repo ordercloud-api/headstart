@@ -1,0 +1,64 @@
+// --------------------------------------------------------------------------------------
+// This file should include variable overrides as well as custom variables
+//
+// we've included a subset of common bootstrap variables you might want to override
+// to start you off. want to see the full list of bootstrap variables?
+// check out node_modules/bootstrap/variables.scss
+// --------------------------------------------------------------------------------------
+
+$gray-100:          #f7f9fa;
+$gray-200:          #eff2f4; // brand guideline color
+$gray-300:          #d9d9da;
+$gray-400:          #d1d1d3;
+$gray-500:          #bbbcbf;
+$gray-600:          #8e9094;
+$gray-700:          #616469;
+$gray-800:          #1d2129;
+$gray-900:          #15181f;
+
+$black:             #000000;
+$white:             #ffffff;
+
+$sherpablue-200:    #8195a1; 
+$sherpablue-500:    #032a43; 
+$sherpablue-700:    #021f34; 
+$flame-500:         #f16122;
+$seafoam-500:       #20abad;
+$sizzlingred-500:   #ff4c5b;
+$sunset-500:        #f8ac1a;
+$junglegreen-500:   #13AE87;
+
+// Bootstrap color palette: These variables are used to generate your theme. 
+// *** Only include variables you intend to override. ***
+
+$blue:              $sherpablue-500;    // primary
+$red:               $sizzlingred-500;   // contextual color
+$yellow:            $sunset-500;        // contextual color
+$orange:            $flame-500;         // accent
+$green:             $junglegreen-500;   // contextual color
+$teal:              $seafoam-500;       // accent
+
+$primary:           $blue;
+$secondary:         $orange;
+$gray-light:        $gray-400;
+$light:             $gray-100;
+$medium:            $gray-700;
+$dark:              $gray-800;
+$primary-dark:      $sherpablue-700;
+$primary-light:     $sherpablue-200;
+
+$theme-colors: (
+  'primary':        $blue,        
+  'secondary':      $orange,
+  'medium':         $gray-500,
+  'teal':           $teal,
+  'primary-dark':   $primary-dark,
+  'primary-light':  $primary-light
+);
+
+// Body
+//
+// Settings for the `<body>` element.
+
+$body-bg:           white;
+$body-color:          $gray-800;

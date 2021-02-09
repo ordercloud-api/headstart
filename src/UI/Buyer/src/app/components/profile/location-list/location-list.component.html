@@ -1,0 +1,41 @@
+<section class="container mt-3">
+  <div class="row">
+    <ocm-profile-nav class="col-md-3"> </ocm-profile-nav>
+    <div class="col-md-9" *ngIf="!isLoading">
+      <h1
+        class="d-flex justify-content-between align-items-center border-bottom pb-4 mb-4 mt-0"
+        translate
+      >
+        PROFILE.LOCATION_LIST.LOCATIONS
+      </h1>
+      <div class="row">
+        <div class="col-lg-12">
+          <ocm-generic-list
+            [meta]="locations?.Meta"
+            [searchPlaceholder]="'locations'"
+            (requestOptionsUpdated)="updateRequestOptions($event.detail)"
+          >
+            <div
+              class="address-card pb-3 mb-3"
+              *ngFor="let location of locations.Items"
+            >
+              <ocm-location-list-item [location]="location">
+              </ocm-location-list-item>
+            </div>
+          </ocm-generic-list>
+        </div>
+      </div>
+    </div>
+    <ng-container *ngIf="isLoading">
+      <ocm-loading-layout
+        height="335px"
+        width="100%"
+        mb="1.5rem"
+        [resource]="addresses"
+        [rows]="3"
+        [columns]="3"
+        [isLoading]="isLoading"
+      ></ocm-loading-layout>
+    </ng-container>
+  </div>
+</section>

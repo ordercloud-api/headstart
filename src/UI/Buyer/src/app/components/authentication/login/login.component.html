@@ -1,0 +1,84 @@
+<div class="logged-out__container">
+  <div class="logged-out__card">
+    <p *ngIf="showRegisterLink()" translate>
+      AUTHENTICATION.LOGIN.NO_ACCOUNT
+      <button
+        type="button"
+        class="btn btn-link"
+        routerLink="/register"
+        translate
+      >
+        AUTHENTICATION.LOGIN.SIGN_UP
+      </button>
+    </p>
+    <img
+      class="img-fluid"
+      width="300px"
+      alt="{{ appName }}"
+      [src]="appConfig.theme.logoSrc"
+    />
+    <h3 class="text-center text-gradient headline-text" translate>
+      AUTHENTICATION.LOGIN.ACCOUNT_LOGIN
+    </h3>
+    <form
+      (ngSubmit)="onSubmit()"
+      [formGroup]="form"
+      name="LoginForm"
+      autocomplete="off"
+      novalidate
+    >
+      <div class="form-group">
+        <label for="username" translate>COMMON.USERNAME</label>
+        <input
+          formControlName="username"
+          id="username"
+          type="text"
+          class="form-control"
+          placeholder="Username"
+          autocapitalize="off"
+          autofocus
+        />
+      </div>
+      <div class="form-group">
+        <label for="password" translate>COMMON.PASSWORD</label>
+        <input
+          formControlName="password"
+          type="password"
+          class="form-control"
+          placeholder="Password"
+          id="password"
+        />
+      </div>
+      <div class="form-group text-center">
+        <div class="checkbox">
+          <label for="rememberMeId">
+            <input
+              formControlName="rememberMe"
+              type="checkbox"
+              id="rememberMeId"
+              class="mr-1"
+            />
+            <span translate>AUTHENTICATION.LOGIN.REMEMBER_ME</span>
+          </label>
+        </div>
+      </div>
+      <button
+        id="submitBtn"
+        type="submit"
+        [disabled]="!form.valid"
+        class="btn btn-primary btn-lg btn-block"
+        translate
+      >
+        COMMON.SUBMIT
+      </button>
+    </form>
+    <button
+      type="button"
+      class="btn btn-link"
+      routerLink="/forgot-password"
+      translate
+    >
+      AUTHENTICATION.LOGIN.RESET_PASS
+    </button>
+  </div>
+</div>

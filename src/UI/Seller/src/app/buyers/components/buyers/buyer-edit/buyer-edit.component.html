@@ -1,0 +1,72 @@
+<div *ngIf="resourceForm" class="container-fluid resource-edit">
+  <form [formGroup]="resourceForm">
+    <div class="row pt-3">
+      <div class="col-md-5">
+        <h5>{{ 'ALIAS.BUYER' | translate }} Details</h5>
+        <p>Basic details of the {{ 'ALIAS.BUYER' | translate | lowercase }}.</p>
+      </div>
+      <div class="col-md-7 form-group">
+        <div class="form-group">
+          <label for="Name">Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="Name"
+            showErrors
+            aria-describedby="Name"
+            maxlength="100"
+            [resourceForm]="resourceForm"
+            formControlName="Name"
+            (input)="updateResourceFromEvent($event, 'Buyer.Name')"
+            placeholder="Enter Name"
+          />
+        </div>
+        <div class="form-group">
+          <p class="mb-1">Active</p>
+          <label class="switch mb-0" for="Active">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="Active"
+              showErrors
+              [resourceForm]="resourceForm"
+              aria-describedby="Active"
+              formControlName="Active"
+              (input)="updateResourceFromEvent($event, 'Buyer.Active')"
+            />
+            <span class="slider round cursor-pointer"></span>
+          </label>
+        </div>
+        <div class="form-group">
+          <label for="Markup">Product Markup Percent</label>
+          <input
+            type="number"
+            class="form-control"
+            id="Markup"
+            showErrors
+            aria-describedby="Markup"
+            maxlength="100"
+            [resourceForm]="resourceForm"
+            formControlName="Markup"
+            (input)="updateResourceFromEvent($event, 'Markup.Percent')"
+            placeholder="Enter Markup"
+          />
+        </div>
+      </div>
+    </div>
+  </form>
+  <action-menu-component
+    [isCreatingNew]="isCreatingNew"
+    [dataIsSaving]="dataIsSaving"
+    [areChanges]="areChanges"
+    [allowDiscard]="true"
+    [isDeletable]="true"
+    [allowDelete]="!isCreatingNew"
+    [requireConfirmation]="true"
+    [disableSave]="dataIsSaving || !areChanges"
+    [labelSingular]="labelSingular"
+    (executeSaveAction)="handleSave()"
+    (executeDiscardAction)="discardChanges()"
+    (executeDelete)="deleteBuyer()"
+  ></action-menu-component>
+</div>

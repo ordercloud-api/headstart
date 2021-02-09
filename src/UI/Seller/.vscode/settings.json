@@ -1,0 +1,15 @@
+{
+  "editor.formatOnSave": false, // dont set this true, in general we want it off as it clashes with eslint, only turn on for html and format with prettier
+  "[html]": {
+      // use prettier to format html
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true // autofix eslint on save
+  },
+  "eslint.validate": [
+    "javascript",
+    "typescript"
+  ]
+}

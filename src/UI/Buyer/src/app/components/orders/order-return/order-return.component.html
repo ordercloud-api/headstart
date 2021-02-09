@@ -1,0 +1,37 @@
+<div class="row mb-5">
+  <div *ngIf="suppliers" class="col-12">
+    <h2 class="mb-3" translate>
+      {{
+        this._action === 'return'
+          ? 'ORDERS.DETAIL.REQUEST_A_RETURN'
+          : 'ORDERS.DETAIL.REQUEST_A_CANCEL'
+      }}
+    </h2>
+    <form [formGroup]="requestReturnForm">
+      <div
+        *ngFor="
+          let liGroupForm of requestReturnForm.controls.liGroups.controls;
+          index as i
+        "
+        class="mb-5"
+      >
+        <ocm-order-return-table
+          [liGroup]="liGroupedByShipFrom[i]"
+          [liGroupForm]="liGroupForm"
+          [supplier]="suppliers[i]?.supplier"
+          [action]="_action"
+        >
+        </ocm-order-return-table>
+      </div>
+    </form>
+    <div>
+      <button
+        (click)="onSubmit()"
+        class="btn btn-primary btn-block-xs mt-4 mr-2"
+        [disabled]="!requestReturnForm.valid || !isAnyRowSelected() || isSaving"
+      >
+        Submit Request
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,18 @@
+<form class="d-flex align-items-center" [formGroup]="form">
+  <div class="group mb-3">
+    <select
+      class="custom-select"
+      type="select"
+      required
+      (change)="sortStrategyChanged()"
+      formControlName="sortBy"
+    >
+      <option [ngValue]="null" disabled translate>SUPPLIERS.SORT.NONE</option>
+      <option *ngFor="let option of options" [ngValue]="option.value">
+        {{ option.label }}
+      </option>
+    </select>
+    <span class="highlight"></span>
+    <label translate>SUPPLIERS.SORT.SORT_BY</label>
+  </div>
+</form>

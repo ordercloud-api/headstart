@@ -1,0 +1,100 @@
+<div *ngIf="_productKitDetails">
+  <ngb-accordion
+    #accordion
+    [closeOthers]="false"
+    [activeIds]="panelActiveIDs"
+    [ngClass]="{ 'hide-tabpanel': !variantLineItems.length }"
+  >
+    <ngb-panel [id]="_productKitDetails.Product.ID">
+      <ng-template ngbPanelHeader>
+        <div
+          class="d-flex justify-content-end"
+          *ngIf="_productKitDetails.Optional"
+        >
+          <span class="float-right">(Optional)</span>
+        </div>
+        <div class="row align-items-center" (click)="selectVariant()">
+          <div class="d-block col-md">
+            <img class="img-thumbnail kit-thumbnail"
+              [src]="imageUrl"
+              alt="{{ 'Image for ' + _productKitDetails.Product.Name }}"
+            />
+          </div>
+          <h6 class="mb-0 col-md">
+            {{ _productKitDetails.Product.Name }}
+          </h6>
+          <div class="col-md">
+            <button
+              class="btn btn-xs btn-secondary"
+              *ngIf="!variantLineItems.length"
+            >
+              <span translate> PRODUCTS.KITS.CLICK_TO_SELECT_VARIANT </span>
+            </button>
+            <span *ngIf="variantLineItems.length">
+              ({{ variantLineItemsTotalQuantity }})
+            </span>
+          </div>
+          <div class="col-md">
+            <span *ngIf="variantLineItems.length">
+              {{ variantLineItemsTotalPrice | currency: userCurrency }}
+            </span>
+          </div>
+          <!-- accordion toggle -->
+          <div class="col-md flex-grow-0">
+            <button
+              ngbPanelToggle
+              type="button"
+              class="btn icon-button"
+              *ngIf="variantLineItems?.length"
+            >
+              <fa-icon
+                class="icon-wrapper"
+                [icon]="
+                  accordion.isExpanded(_productKitDetails.Product.ID)
+                    ? faCaretDown
+                    : faCaretRight
+                "
+              >
+                <span class="sr-only"
+                  ><span translate>PRODUCTS.KITS.EXPAND_AND_COLLAPSE</span>
+                  {{ _productKitDetails.Product.Name }}</span
+                >
+              </fa-icon>
+            </button>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template *ngIf="variantLineItems.length" ngbPanelContent>
+        <div class="card-body" *ngFor="let li of variantLineItems">
+          <div class="row align-items-center">
+            <div class="d-block col-md">
+              <img class="img-thumbnail kit-thumbnail"
+                [src]="li.xp.ImageUrl"
+                alt="{{ 'Image for ' + _productKitDetails.Product.Name }}"
+              />
+            </div>
+            <h6 class="mb-0 col-md">
+              {{ li | productNameWithSpecs }}
+            </h6>
+            <span class="col-md" *ngIf="variantLineItems.length">
+              ({{ li.Quantity }})
+            </span>
+            <span class="col-md">{{ li.Price | currency: userCurrency }}</span>
+            <div class="col-md">
+              <div
+                class="btn btn-outline-danger btn-icon ripple"
+                (click)="removeVariantLineItem(li)"
+              >
+                <fa-icon [icon]="faTrashAlt" class="icon-wrapper">
+                  <span class="sr-only" translate
+                    >PRODUCTS.KITS.DELETE_SELECTION</span
+                  >
+                </fa-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+    </ngb-panel>
+  </ngb-accordion>
+</div>

@@ -1,0 +1,16 @@
+.nav-link {
+  border: 1px solid transparent;
+  color: var(--primary);
+  transition: border-color .15s ease-out;
+  &:hover,
+  &:focus {
+    color: var(--primary);
+    border-color: var(--primary);
+  }
+  &:active,
+  &.active {
+    border-color: var(--primary);
+    background-color: var(--primary);
+    color: #fff;
+  }
+}

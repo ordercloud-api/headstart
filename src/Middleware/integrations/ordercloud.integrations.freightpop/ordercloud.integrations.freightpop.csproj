@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1;netcoreapp2.2</TargetFrameworks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>0.0.1</Version>
+    <Authors>Four51, Inc.</Authors>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Flurl" Version="2.8.2" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\ordercloud.integrations.library\ordercloud.integrations.library.csproj" />
+  </ItemGroup>
+
+</Project>

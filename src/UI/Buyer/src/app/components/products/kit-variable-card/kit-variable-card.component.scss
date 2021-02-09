@@ -1,0 +1,13 @@
+.kit-card {
+  // same color as ngb-accordion applies to card
+  background-color: rgba(23, 17, 24, 0.03);
+}
+
+// when a kit doesn't have any selected variantProducts
+// we want to hide the tab panel completely but ngb-bootstrap
+// doesn't currently allow that so we apply this class to do it ourselves
+.hide-tabpanel {
+  ::ng-deep .show {
+    display: none !important;
+  }
+}

@@ -1,0 +1,28 @@
+<resource-table-component
+  [resourceList]="resourceList"
+  [selectedResourceID]="selectedResourceID"
+  [updatedResource]="updatedResource"
+  [resourceInSelection]="resourceInSelection"
+  [ocService]="ocService"
+  [dataIsSaving]="dataIsSaving"
+  [resourceForm]="resourceForm"
+  [filterConfig]="filterConfig"
+  (searched)="searchResources($event)"
+  (hitScrollEnd)="handleScrollEnd()"
+  (changesSaved)="saveUpdates()"
+  (changesDiscarded)="discardChanges()"
+  (resourceDelete)="deleteResource()"
+  (resourceSelected)="selectResource($event)"
+  [shouldShowResourceActions]="false"
+  [labelSingular]="'ADMIN.NAV.FACET'"
+  [labelPlural]="'ADMIN.NAV.FACETS'"
+>
+  <app-facet-edit
+    class="resource-edit"
+    [resourceInSelection]="resourceInSelection"
+    [filterConfig]="filterConfig"
+    [updatedResource]="updatedResource"
+    (updateResource)="updateResource($event)"
+  >
+  </app-facet-edit>
+</resource-table-component>

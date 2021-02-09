@@ -1,0 +1,26 @@
+<resource-table-component
+  [resourceList]="resourceList"
+  [selectedResourceID]="selectedResourceID"
+  [updatedResource]="updatedResource"
+  [resourceInSelection]="resourceInSelection"
+  [shouldShowResourceActions]="false"
+  [ocService]="ocService"
+  [dataIsSaving]="dataIsSaving"
+  [resourceForm]="resourceForm"
+  (searched)="searchResources($event)"
+  (hitScrollEnd)="handleScrollEnd()"
+  (changesSaved)="saveUpdates()"
+  (changesDiscarded)="discardChanges()"
+  (resourceDelete)="deleteResource()"
+  (resourceSelected)="selectResource($event)"
+  [labelSingular]="'ALIAS.BUYER'"
+  [labelPlural]="'ALIAS.BUYERS'"
+>
+  <app-buyer-edit
+    class="resource-edit"
+    [labelSingular]="'ALIAS.BUYER'"
+    [orderCloudBuyer]="resourceInSelection"
+    (resourceDelete)="deleteResource()"
+  >
+  </app-buyer-edit>
+</resource-table-component>

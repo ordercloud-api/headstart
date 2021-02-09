@@ -1,0 +1,61 @@
+<nav class="category-nav">
+  <ul class="category-nav__menu">
+    <li
+      *ngFor="let parentCategory of parentCategories"
+      class="level-top parent"
+      (mouseover)="hoverSetActiveParentCat(parentCategory.ID)"
+    >
+      <a
+        class="level-top"
+        [ngClass]="{ 'menu-active': parentCategory.ID === activeCatID }"
+        (click)="setActiveCategory(parentCategory.ID)"
+        >{{ parentCategory.Name }}
+        <fa-icon
+          *ngIf="checkForChildren(parentCategory)"
+          [icon]="faCaretRight"
+        ></fa-icon>
+      </a>
+      <ul
+        [ngClass]="{
+          'menu-active': parentCategory.ID === activeCatID,
+          show: checkForChildren(parentCategory)
+        }"
+        class="second-level-category"
+      >
+        <li
+          *ngFor="
+            let subCategory of subCategories
+              | childCategoryFilter: parentCategory.ID
+          "
+          class="background-hover"
+          [ngClass]="{
+            'background-hover__parent': checkForChildren(subCategory)
+          }"
+          (mouseover)="hoverSetActiveSubCat(subCategory.ID)"
+        >
+          <a (click)="setActiveCategory(subCategory.ID)" class="sub-category"
+            >{{ subCategory.Name }}
+            <!-- <fa-icon *ngIf="checkForChildren(subCategory)"
+                     [icon]="faCaretRight"></fa-icon> -->
+          </a>
+          <ul class="third-level-category">
+            <li
+              *ngFor="
+                let subSubCategory of subSubCategories
+                  | childCategoryFilter: subCategory.ID
+              "
+              class="background-hover"
+            >
+              <a
+                (click)="setActiveCategory(subSubCategory.ID)"
+                class="sub-category"
+                >{{ subSubCategory.Name }}</a
+              >
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+<div class="background-overlay"></div>

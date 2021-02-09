@@ -1,0 +1,28 @@
+<resource-table-component
+  [resourceList]="resourceList"
+  [selectedResourceID]="selectedResourceID"
+  [updatedResource]="updatedResource"
+  [resourceInSelection]="resourceInSelection"
+  [ocService]="ocService"
+  [dataIsSaving]="dataIsSaving"
+  [resourceForm]="resourceForm"
+  (searched)="searchResources($event)"
+  (hitScrollEnd)="handleScrollEnd()"
+  (changesSaved)="saveUpdates()"
+  (changesDiscarded)="discardChanges()"
+  (resourceDelete)="deleteResource()"
+  (resourceSelected)="selectResource($event)"
+  [labelSingular]="'ADMIN.NAV.USER'"
+  [labelPlural]="'ADMIN.NAV.USERS'"
+>
+  <!-- edit user -->
+  <div class="resource-edit">
+    <app-seller-user-edit
+      class="resource-edit"
+      [resourceInSelection]="resourceInSelection"
+      [filterConfig]="filterConfig"
+      (updateResource)="updateResource($event)"
+    >
+    </app-seller-user-edit>
+  </div>
+</resource-table-component>

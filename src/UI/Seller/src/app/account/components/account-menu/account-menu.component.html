@@ -1,0 +1,22 @@
+<nav class="seller-nav" [ngStyle]="{ 'height.px': menuHeight }">
+  <li class="seller-nav__item">
+    <a
+      [ngClass]="{ 'seller-nav__active': activePage === undefined }"
+      (click)="toPage()"
+      class="seller-nav__link"
+    >
+      <fa-icon class="seller-nav__link__icon" [icon]="faUserCircle"></fa-icon
+      >Account
+    </a>
+  </li>
+  <li *ngIf="isSeller" class="seller-nav__item">
+    <a
+      [ngClass]="{ 'seller-nav__active': activePage === 'notifications' }"
+      (click)="toPage('notifications')"
+      class="seller-nav__link"
+    >
+      <fa-icon class="seller-nav__link__icon" [icon]="faEnvelope"></fa-icon
+      >Notifications
+    </a>
+  </li>
+</nav>

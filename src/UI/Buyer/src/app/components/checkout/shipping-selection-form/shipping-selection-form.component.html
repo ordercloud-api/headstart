@@ -1,0 +1,31 @@
+<form [formGroup]="form" class="py-3">
+  <p translate>CHECKOUT.SHIPPING_SELECTION_FORM.DELIVERY_OPTIONS</p>
+  <small class="d-block text-muted mb-3">
+    <fa-icon [icon]="faExclamationTriangle"></fa-icon
+    ><span translate>
+      CHECKOUT.SHIPPING_SELECTION_FORM.SHIP_ESTIMATES_BASED_ON_DELIVERY</span
+    >
+  </small>
+  <select
+    class="custom-select"
+    formControlName="ShipMethodID"
+    (change)="onFormChanges()"
+  >
+    <option [ngValue]="null" disabled translate>
+      CHECKOUT.SHIPPING_SELECTION_FORM.HOW_FAST
+    </option>
+    <option
+      *ngFor="let shipMethod of _shipEstimate?.ShipMethods"
+      [ngValue]="shipMethod.ID"
+    >
+      {{ shipMethod.EstimatedTransitDays }}
+      <span translate>CHECKOUT.SHIPPING_SELECTION_FORM.DAY</span
+      >{{ detectPlural(shipMethod.EstimatedTransitDays) }} -
+      {{
+        shipMethod.xp.FreeShippingApplied
+          ? 'FREE'
+          : (shipMethod.Cost | currency: _orderCurrency)
+      }}
+    </option>
+  </select>
+</form>

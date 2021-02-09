@@ -1,0 +1,55 @@
+<!-- Facet Name -->
+<button
+  type="button"
+  class="btn btn-block p-0 d-flex align-items-center justify-content-between"
+  (click)="toggleCollapsed()"
+>
+  <h3 *ngIf="_facet?.Name === 'Supplier'" class="h6 mb-0" translate>
+    ALIAS.SUPPLIER
+  </h3>
+  <h3 *ngIf="_facet?.Name !== 'Supplier'" class="h6 mb-0">
+    {{ _facet?.Name | titlecase }}
+  </h3>
+  <fa-icon
+    class="text-muted"
+    [icon]="isCollapsed ? faPlusSquare : faMinusSquare"
+    pull="right"
+  ></fa-icon>
+</button>
+
+<!-- Facet Values -->
+<form id="facetValues" class="ml-3 mt-2" [ngbCollapse]="isCollapsed">
+  <div
+    class="custom-control custom-checkbox"
+    *ngFor="
+      let checkbox of checkboxArray | slice: 0:visibleFacetLength;
+      let i = index
+    "
+  >
+    <input
+      (click)="handleCheckBoxClick(checkbox.facet.Value)"
+      [ngModel]="checkbox.checked"
+      type="checkbox"
+      class="custom-control-input my-1"
+      name="{{ _facet.Name }}facetCheckbox{{ i }}"
+      id="{{ _facet.Name }}facetCheckbox{{ i }}"
+    />
+    <label
+      for="{{ _facet.Name }}facetCheckbox{{ i }}"
+      class="custom-control-label text-capitalize"
+      >{{ checkbox.facet.Value
+      }}<small
+        class="text-secondary font-weight-bold ml-2 badge badge-pill badge-light"
+        >({{ checkbox.facet.Count }})</small
+      ></label
+    >
+  </div>
+  <a
+    *ngIf="visibleFacetLength < checkboxArray.length"
+    (click)="showAll()"
+    class="d-block text-right text-primary"
+  >
+    <small translate>PRODUCTS.FACETS</small>
+  </a>
+  <hr />
+</form>

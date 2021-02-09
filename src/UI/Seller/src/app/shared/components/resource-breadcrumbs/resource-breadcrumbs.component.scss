@@ -1,0 +1,33 @@
+@import "../../../../styles/main.scss";
+
+.breadcrumb {
+    background: transparent;
+    margin-bottom: 0;
+    font-weight: 500;
+    font-size: 0.9rem;
+    .breadcrumb-item {
+      display: flex;
+      align-items: center;
+      &:first-child {
+        &::before {
+          display: none;
+        }
+      }
+      &::before {
+        content: "\f054";
+        font-weight: 300;
+        font-size: 0.5rem;
+        margin-top: 0.2rem;
+        font-family: FontAwesome;
+        color: $primary-light;
+      }
+      .breadcrumb-link {
+        color: $primary-light;
+      }
+      &:last-child {
+        .breadcrumb-link {
+          color: $light;
+        }
+      }
+    }
+  }

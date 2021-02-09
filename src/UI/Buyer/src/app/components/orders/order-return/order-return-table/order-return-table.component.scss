@@ -1,0 +1,20 @@
+//Images with white backgrounds will be transparent
+img {
+    mix-blend-mode: multiply;
+}
+
+table {
+    width: 100%;
+}
+
+.mat-row {
+  height: auto;
+}
+
+.mat-quantityToReturn {
+  max-width: 100px;
+}
+  
+.mat-cell {
+  padding: 8px 10px 8px 10px;
+}

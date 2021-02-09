@@ -1,0 +1,21 @@
+<div [ngClass]="{ 'bg-light': highlight }">
+  <div class="d-flex flex-wrap justify-content-between align-items-center">
+    <div>
+      <address class="address-detail mb-0">
+        {{ address?.CompanyName }}<br />
+        {{ address?.Street1 }}<span *ngIf="address?.Street2">,</span>
+        {{ address?.Street2 }}<br />
+        {{ address?.City }}, {{ address?.State }} {{ address?.Zip }}
+      </address>
+      <small class="mb-0">
+        {{ getFullName(address) }}
+        <span *ngIf="getFullName(address) && address?.Phone"> | </span>
+        <a href="tel:{{ address?.Phone }}">{{
+          address?.Phone | phoneFormat
+        }}</a>
+      </small>
+    </div>
+    <!-- When creating an instance of this component, you may use transclusion to add action-buttons here -->
+    <slot></slot>
+  </div>
+</div>

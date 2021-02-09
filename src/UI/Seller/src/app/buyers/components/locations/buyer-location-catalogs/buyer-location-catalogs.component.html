@@ -1,0 +1,56 @@
+<div class="row pt-3 mt-3 bg-white shadow-sm card-highlight-border">
+  <div class="col-md-5">
+    <h5>Catalogs</h5>
+    <p class="font-italic">
+      Show or hide catalogs to this
+      {{ 'ALIAS.BUYER_LOCATION' | translate | lowercase }}.
+    </p>
+  </div>
+  <div class="col-md-7">
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">Assigned</th>
+          <th scope="col">Catalog</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          class="cursor-pointer"
+          *ngFor="let catalog of catalogs"
+          (click)="toggleAssignment(catalog)"
+        >
+          <td class="d-flex justify-content-start align-items-center">
+            <label class="switch mb-0">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                (click)="toggleAssignment(catalog)"
+                [checked]="isAssigned(catalog)"
+              />
+              <span class="slider round"></span>
+            </label>
+          </td>
+          <td>{{ catalog.Name }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="!isCreatingNew" class="pb-3">
+      <button
+        [disabled]="!areChanges"
+        class="btn btn-link"
+        (click)="discardChanges()"
+      >
+        {{ areChanges ? 'Cancel' : 'No Changes' }}
+      </button>
+      <button
+        *ngIf="areChanges"
+        [disabled]="!areChanges"
+        class="btn brand-button"
+        (click)="saveChanges()"
+      >
+        Save Changes
+      </button>
+    </div>
+  </div>
+</div>

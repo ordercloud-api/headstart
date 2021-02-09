@@ -1,0 +1,86 @@
+<div class="card py-2 px-3 mt-3 bg-white">
+  <h6 class="font-weight-medium" translate>
+    Choose which email notifications you would like to recieve.
+  </h6>
+  <form *ngIf="sellerUserForm" [formGroup]="sellerUserForm">
+    <div class="custom-control custom-checkbox">
+      <input
+        type="checkbox"
+        class="custom-control-input"
+        formControlName="RequestInfoEmails"
+        (click)="toggleRequestInfoEmails($event)"
+        id="RequestInfoEmails"
+      />
+      <label class="custom-control-label" for="RequestInfoEmails" translate
+        >Product Information Requests</label
+      >
+    </div>
+    <div class="custom-control custom-checkbox">
+      <input
+        type="checkbox"
+        class="custom-control-input"
+        formControlName="OrderEmails"
+        (click)="toggleOrderEmails($event)"
+        id="OrderEmails"
+      />
+      <label class="custom-control-label" for="OrderEmails" translate
+        >Order Updates (line item, etc)</label
+      >
+    </div>
+    <div class="custom-control custom-checkbox">
+      <input
+        type="checkbox"
+        class="custom-control-input"
+        formControlName="ProductEmails"
+        (click)="toggleProductEmails($event)"
+        id="ProductEmails"
+      />
+      <label class="custom-control-label" for="ProductEmails" translate
+        >Product Updates</label
+      >
+    </div>
+  </form>
+  <ng-container
+    *ngIf="
+      user?.xp?.OrderEmails ||
+      user?.xp?.ProductEmails ||
+      user?.xp?.RequestInfoEmails
+    "
+  >
+    <hr />
+    <label for="AdditionalEmails" class="h6 font-weight-medium"
+      >Additional Recipients</label
+    >
+    <div class="input-group">
+      <input
+        id="AdditionalEmail"
+        class="form-control"
+        type="text"
+        placeholder="Enter additional email"
+      />
+      <div class="input-group-append rounded-right">
+        <button (click)="addAddtlRcpt()" class="btn btn-teal">Add</button>
+      </div>
+    </div>
+    <small class="d-block">
+      <fa-icon class="color-beige" [icon]="faExclamationCircle"></fa-icon>
+      <span translate>
+        Enter additional emails you would like to recieve notifications.</span
+      >
+    </small>
+    <div
+      *ngFor="let rcpt of user?.xp?.AddtlRcpts; let i = index"
+      class="email-tile d-flex justify-content-between align-items-center"
+    >
+      <span class="d-block p">{{ rcpt }}</span>
+      <div
+        class="icon-button icon-button-sm ripple hover-btn"
+        (click)="removeAddtlRcpt(i)"
+      >
+        <div class="icon-wrapper">
+          <fa-icon [icon]="faTimesCircle"></fa-icon>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

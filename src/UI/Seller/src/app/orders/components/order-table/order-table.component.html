@@ -1,0 +1,48 @@
+<resource-table-component
+  [resourceList]="resourceList"
+  [selectedResourceID]="selectedResourceID"
+  [updatedResource]="updatedResource"
+  [resourceInSelection]="resourceInSelection"
+  [ocService]="ocService"
+  [dataIsSaving]="dataIsSaving"
+  [resourceForm]="resourceForm"
+  [shouldShowCreateNew]="false"
+  [filterConfig]="filterConfig"
+  (searched)="searchResources($event)"
+  (hitScrollEnd)="handleScrollEnd()"
+  (changesSaved)="saveUpdates()"
+  (changesDiscarded)="discardChanges()"
+  (resourceDelete)="deleteResource()"
+  (resourceSelected)="selectResource($event)"
+  [shouldShowResourceActions]="false"
+  [labelSingular]="'ADMIN.NAV.ORDER'"
+  [labelPlural]="'ADMIN.NAV.ORDERS'"
+>
+  <div
+    class="actionBar btn-group w-50"
+    *ngIf="shouldShowOrderToggle"
+    role="group"
+    aria-label="order direction selector"
+  >
+    <button
+      type="button"
+      class="btn btn-outline-primary btn-sm"
+      [ngClass]="{ active: activeOrderDirectionButton === 'Incoming' }"
+      (click)="setOrderDirection('Incoming')"
+      translate
+    >
+      ADMIN.NAV.SALES_ORDERS
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-primary btn-sm"
+      [ngClass]="{ active: activeOrderDirectionButton === 'Outgoing' }"
+      (click)="setOrderDirection('Outgoing')"
+      translate
+    >
+      ADMIN.NAV.PURCHASE_ORDERS
+    </button>
+  </div>
+  <app-order-details class="resource-edit" [order]="resourceInSelection">
+  </app-order-details>
+</resource-table-component>

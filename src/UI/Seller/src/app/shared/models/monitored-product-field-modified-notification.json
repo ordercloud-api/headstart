@@ -1,0 +1,81 @@
+{
+    "ID": "MonitoredProductFieldModifiedNotification",
+    "RestrictedAssignmentTypes": [],
+    "Schema": {
+        "type": "object",
+        "properties": {
+            "Supplier": {
+                "type": "object",
+                "properties": {
+                    "ID": {
+                        "type": "string"
+                    },
+                    "Name": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "ID", "Name"
+                ]
+            },
+            "Product": {
+                "type": "object",
+                "properties": {
+                    "ID": {
+                        "type": "string"
+                    },
+                    "Name": {
+                        "type": "string"
+                    },
+                    "FieldChanged": {
+                        "type": "string"
+                    },
+                    "PreviousValue": {
+                        "type":["number","string","boolean","object","array", "null"]
+                    },
+                    "CurrentValue": {
+                        "type":["number","string","boolean","object","array", "null"]
+                    }
+                },
+                "required": [
+                    "ID", "Name", "FieldChanged", "PreviousValue", "CurrentValue"
+                ]
+            },
+            "Status": {
+                "type": "string",
+                "enum": ["SUBMITTED", "ACCEPTED", "DISMISSED", "REJECTED"]
+            },
+            "History": {
+                "type": "object",
+                "properties": {
+                    "ModifiedBy": {
+                        "type": "object",
+                        "properties": {
+                            "ID": {
+                                "type": "string"
+                            },
+                            "Name": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "ID", "Name"
+                        ]
+                    },
+                    "DateModified": {
+                        "type": "string",
+                        "format": "date"
+                    }
+                },
+                "required": [
+                    "ModifiedBy", "DateModified"
+                ]
+            }
+        },
+        "required": [
+            "Supplier", "Product", "Status", "History"
+        ],
+        "additionalProperties": false,
+        "title": "Seller Notification of A Modified Monitored SuperProduct Field"
+    }
+}

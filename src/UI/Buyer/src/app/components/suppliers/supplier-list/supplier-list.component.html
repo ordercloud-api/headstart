@@ -1,0 +1,134 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div>
+        <h1 id="supplier-title" translate>ALIAS.SUPPLIERS</h1>
+      </div>
+      <div class="d-flex justify-content-between align-items-center">
+        <form class="d-flex">
+          <ocm-search
+            class="mr-3 w-100"
+            [placeholderText]="'ALIAS.SUPPLIERS'"
+            [searchTermInput]="searchTermForSuppliers"
+            (searched)="searchSuppliers($event.detail)"
+          >
+          </ocm-search>
+        </form>
+        <div class="d-flex align-items-center justify-content-start">
+          <ng-template #filters>
+            <div>
+              <div *ngIf="_supplierFilterConfig">
+                <form class="d-flex flex-column" [formGroup]="filterForm">
+                  <ng-container *ngFor="let filter of _supplierFilterConfig">
+                    <div
+                      *ngIf="filter.BuyerAppFilterType === 'SelectOption'"
+                      class="group"
+                    >
+                      <select
+                        class="custom-select input-sm"
+                        type="select"
+                        required
+                        [formControlName]="filter.Path"
+                      >
+                        <option
+                          *ngFor="let option of filter.Items"
+                          value="{{ option.Value }}"
+                        >
+                          {{ option.Text }}
+                        </option>
+                      </select>
+                      <span class="highlight"></span>
+                      <label>{{ filter.Display }}</label>
+                    </div>
+                  </ng-container>
+                </form>
+              </div>
+              <div class="d-flex justify-content-between align-items-center">
+                <button
+                  (click)="closePopover()"
+                  class="btn btn-sm btn-link text-dark"
+                  translate
+                >
+                  SUPPLIERS.LIST.CANCEL
+                </button>
+                <button
+                  (click)="applyFilters()"
+                  class="btn btn-sm btn-primary"
+                  translate
+                >
+                  SUPPLIERS.LIST.APPLY
+                </button>
+              </div>
+            </div>
+          </ng-template>
+          <div
+            class="btn btn-light mr-2"
+            placement="bottom"
+            [ngbPopover]="filters"
+            autoClose="outside"
+            triggers="manual"
+            #popover="ngbPopover"
+            (click)="openPopover()"
+            popoverTitle="Filter"
+          >
+            Filter <span translate>ALIAS.SUPPLIERS</span>
+            <fa-layers class="fa-layers fa-fw">
+              <fa-icon [icon]="faFilter"> </fa-icon>
+              <fa-layers-counter
+                *ngIf="activeFilterCount && activeFilterCount > 0"
+                class="badge__counter--large layers-background"
+                [content]="activeFilterCount"
+              >
+              </fa-layers-counter>
+            </fa-layers>
+          </div>
+          <ocm-supplier-sort
+            (closePopoverEvent)="closePopover($event.detail)"
+          ></ocm-supplier-sort>
+          <div *ngIf="activeFilterCount > 0" class="btn-icon ripple">
+            <div class="icon-wrapper">
+              <fa-icon [icon]="faTimes" (click)="clearFilters()"></fa-icon>
+            </div>
+          </div>
+        </div>
+      </div>
+      <ocm-loading-layout
+        height="234px"
+        width="100%"
+        mb="1.5rem"
+        [resource]="suppliers"
+        [columns]="1"
+        [rows]="4"
+      >
+      </ocm-loading-layout>
+      <div class="card" *ngIf="suppliers && suppliers.Items.length === 0">
+        <div class="card">
+          <p class="card-body text-center" translate>
+            SUPPLIERS.LIST.NO_SUPPLIERS
+            <br />
+            <a (click)="clearFilters()" translate
+              >SUPPLIERS.LIST.CLEAR_FILTERS</a
+            >
+          </p>
+        </div>
+      </div>
+      <div *ngIf="suppliers && suppliers.Items.length > 0">
+        <div class="supplier-list" *ngFor="let supplier of suppliers.Items">
+          <ocm-supplier-card [supplier]="supplier"></ocm-supplier-card>
+        </div>
+        <ngb-pagination
+          *ngIf="suppliers.Meta.TotalPages > 1"
+          maxSize="10"
+          class="d-flex justify-content-center"
+          [collectionSize]="suppliers.Meta.TotalCount"
+          [pageSize]="suppliers.Meta.PageSize"
+          [(page)]="suppliers.Meta.Page"
+          (pageChange)="changePage($event)"
+          [rotate]="true"
+          [boundaryLinks]="true"
+        >
+        </ngb-pagination>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+.supplier-card {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-top: 8px solid var(--medium);
+  transition: all 200ms ease;
+  // max-width: 32rem;
+  &--logo {
+    max-width: 100px;
+    height: auto;
+  }
+
+  &--supplier-name {
+    transition: 200ms all ease;
+    color: var(--medium);
+    &:hover {
+      color: var(--dark);
+      text-decoration: underline;
+    }
+  }
+
+  &:hover {
+    border-top: 8px solid var(--primary);
+    box-shadow: 0 4px 12px -1px rgba(0, 0, 0, 0.1), 0 2px 8px -1px rgba(0, 0, 0, 0.06);
+  }
+}

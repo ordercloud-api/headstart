@@ -1,0 +1,260 @@
+{
+	"ID": "047bc888-d21d-4287-b133-4e26ce1c42ff",
+	"Token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c3IiOiJkZXZfRm91ck92ZXIiLCJjaWQiOiI1Zjk1MTUzYi04MDRkLTQ3Y2MtODkxNS1iMzdlZGI1YWQ2NDAiLCJ1IjoiMjY5NDQ4NiIsInVzcnR5cGUiOiJzdXBwbGllciIsInJvbGUiOiJGdWxsQWNjZXNzIiwiaXNzIjoiaHR0cHM6Ly9zdGFnaW5nYXV0aC5vcmRlcmNsb3VkLmlvIiwiYXVkIjoiaHR0cHM6Ly9zdGFnaW5nYXBpLm9yZGVyY2xvdWQuaW8iLCJleHAiOjE1OTQxMDQ0MTUsIm5iZiI6MTU5NDA2ODQxNX0.23B5LSzss3nTEXjGrOX5DYtaQAulbO8Fej_UdstzraQ",
+	"ClientId": "5f95153b-804d-47cc-8915-b37edb5ad640",
+	"Model": {
+		"ID": "047bc888-d21d-4287-b133-4e26ce1c42ff",
+		"Product": {
+			"xp": {
+				"Facets": {
+					"category": [
+						"Business Cards"
+					],
+					"shape": [
+						"Rectangle"
+					],
+					"size": [
+						"2\" x 3\""
+					],
+					"stock": [
+						"18PT Uncoated Kraft"
+					],
+					"supplier": [
+						"4Over"
+					],
+					"manufacturer": [
+						"4Over"
+					]
+				},
+				"IntegrationData": {
+					"v": null,
+					"sid": "047bc888-d21d-4287-b133-4e26ce1c42ff",
+					"u": null
+				},
+				"Status": "Published",
+				"HasVariants": false,
+				"Note": null,
+				"Tax": {
+					"Category": "P0000000",
+					"Code": "SP106914",
+					"Description": "Printing"
+				},
+				"UnitOfMeasure": {
+					"Qty": 0,
+					"Unit": null
+				},
+				"ProductType": "Standard",
+				"IsResale": false,
+				"Accessorials": null,
+				"Currency": null
+			},
+			"OwnerID": null,
+			"DefaultPriceScheduleID": "047bc888-d21d-4287-b133-4e26ce1c42ff",
+			"AutoForward": false,
+			"ID": "047bc888-d21d-4287-b133-4e26ce1c42ff",
+			"Name": "18PTUCKRAFT-BCUC-2X3",
+			"Description": "2\" X 3\" 18PT Uncoated Brown Kraft Business Cards",
+			"QuantityMultiplier": 1,
+			"ShipWeight": 1.0,
+			"ShipHeight": 3.0,
+			"ShipWidth": 3.0,
+			"ShipLength": 9.0,
+			"Active": true,
+			"SpecCount": 0,
+			"VariantCount": 0,
+			"ShipFromAddressID": "4over_corporate",
+			"Inventory": null,
+			"DefaultSupplierID": "FourOver"
+		},
+		"PriceSchedule": {
+			"ID": "047bc888-d21d-4287-b133-4e26ce1c42ff",
+			"Name": "18PTUCKRAFT-BCUC-2X3",
+			"ApplyTax": true,
+			"ApplyShipping": true,
+			"MinQuantity": 100,
+			"MaxQuantity": 1000,
+			"UseCumulativeQuantity": false,
+			"RestrictedQuantity": true,
+			"PriceBreaks": [
+				{
+					"Quantity": 100,
+					"Price": 9.74
+				},
+				{
+					"Quantity": 250,
+					"Price": 10.83
+				},
+				{
+					"Quantity": 500,
+					"Price": 18.41
+				},
+				{
+					"Quantity": 1000,
+					"Price": 34.11
+				}
+			],
+			"xp": null
+		},
+		"Specs": [
+			{
+				"ID": "047bc888-d21d-4287-b133-4e26ce1c42ff_b6f8d6b4-9909-4cd7-bbc0-b65b6e6460eb",
+				"ListOrder": 0,
+				"Name": "Product Type",
+				"DefaultValue": null,
+				"Required": true,
+				"AllowOpenText": false,
+				"DefaultOptionID": null,
+				"DefinesVariant": false,
+				"xp": {},
+				"OptionCount": 0,
+				"Options": null
+			},
+			{
+				"ID": "047bc888-d21d-4287-b133-4e26ce1c42ff_d10848ac-8885-441a-a835-3c38050ff964",
+				"ListOrder": 0,
+				"Name": "Majestic Type",
+				"DefaultValue": null,
+				"Required": true,
+				"AllowOpenText": false,
+				"DefaultOptionID": null,
+				"DefinesVariant": false,
+				"xp": {},
+				"OptionCount": 0,
+				"Options": null
+			},
+			{
+				"ID": "047bc888-d21d-4287-b133-4e26ce1c42ff_b19d4ac3-2d48-40c0-9729-e35af6846271",
+				"ListOrder": 0,
+				"Name": "Product Category",
+				"DefaultValue": null,
+				"Required": true,
+				"AllowOpenText": false,
+				"DefaultOptionID": null,
+				"DefinesVariant": false,
+				"xp": {},
+				"OptionCount": 0,
+				"Options": null
+			},
+			{
+				"ID": "047bc888-d21d-4287-b133-4e26ce1c42ff_34f407f8-0b50-4227-9378-10fddefbe596",
+				"ListOrder": 0,
+				"Name": "Size",
+				"DefaultValue": null,
+				"Required": true,
+				"AllowOpenText": false,
+				"DefaultOptionID": null,
+				"DefinesVariant": false,
+				"xp": {},
+				"OptionCount": 0,
+				"Options": null
+			},
+			{
+				"ID": "047bc888-d21d-4287-b133-4e26ce1c42ff_88c28e92-7c8c-4c05-9908-dcd495e0957a",
+				"ListOrder": 0,
+				"Name": "Product Orientation",
+				"DefaultValue": null,
+				"Required": true,
+				"AllowOpenText": false,
+				"DefaultOptionID": null,
+				"DefinesVariant": false,
+				"xp": {},
+				"OptionCount": 0,
+				"Options": null
+			},
+			{
+				"ID": "047bc888-d21d-4287-b133-4e26ce1c42ff_5fffd29b-af78-41af-a216-7cdaf8d55177",
+				"ListOrder": 0,
+				"Name": "Shape",
+				"DefaultValue": null,
+				"Required": true,
+				"AllowOpenText": false,
+				"DefaultOptionID": null,
+				"DefinesVariant": false,
+				"xp": {},
+				"OptionCount": 0,
+				"Options": null
+			},
+			{
+				"ID": "047bc888-d21d-4287-b133-4e26ce1c42ff_24865ffa-793d-43ea-b3b1-d1b5cf22268d",
+				"ListOrder": 0,
+				"Name": "Stock",
+				"DefaultValue": null,
+				"Required": true,
+				"AllowOpenText": false,
+				"DefaultOptionID": null,
+				"DefinesVariant": false,
+				"xp": {},
+				"OptionCount": 0,
+				"Options": null
+			},
+			{
+				"ID": "047bc888-d21d-4287-b133-4e26ce1c42ff_26ca0df3-0682-4f37-8979-409868e2df2d",
+				"ListOrder": 0,
+				"Name": "Coating",
+				"DefaultValue": null,
+				"Required": true,
+				"AllowOpenText": false,
+				"DefaultOptionID": null,
+				"DefinesVariant": false,
+				"xp": {},
+				"OptionCount": 0,
+				"Options": null
+			},
+			{
+				"ID": "047bc888-d21d-4287-b133-4e26ce1c42ff_38d33954-5a42-4112-a905-215eb827e62c",
+				"ListOrder": 0,
+				"Name": "Colorspec",
+				"DefaultValue": null,
+				"Required": true,
+				"AllowOpenText": false,
+				"DefaultOptionID": null,
+				"DefinesVariant": false,
+				"xp": {},
+				"OptionCount": 0,
+				"Options": null
+			},
+			{
+				"ID": "047bc888-d21d-4287-b133-4e26ce1c42ff_87e09691-ef33-4cf4-8f17-48af06ce84f4",
+				"ListOrder": 0,
+				"Name": "Runsize",
+				"DefaultValue": null,
+				"Required": true,
+				"AllowOpenText": false,
+				"DefaultOptionID": null,
+				"DefinesVariant": false,
+				"xp": {},
+				"OptionCount": 0,
+				"Options": null
+			},
+			{
+				"ID": "047bc888-d21d-4287-b133-4e26ce1c42ff_ed16daf6-77e4-4133-8d65-3947d5d19f52",
+				"ListOrder": 0,
+				"Name": "Additional Options",
+				"DefaultValue": null,
+				"Required": true,
+				"AllowOpenText": false,
+				"DefaultOptionID": null,
+				"DefinesVariant": false,
+				"xp": {},
+				"OptionCount": 0,
+				"Options": null
+			},
+			{
+				"ID": "047bc888-d21d-4287-b133-4e26ce1c42ff_f80e8179-b264-42ce-9f80-bb258a09a1fe",
+				"ListOrder": 0,
+				"Name": "Turn-Around",
+				"DefaultValue": null,
+				"Required": true,
+				"AllowOpenText": false,
+				"DefaultOptionID": null,
+				"DefinesVariant": false,
+				"xp": {},
+				"OptionCount": 0,
+				"Options": null
+			}
+		],
+		"Variants": null,
+		"Images": null,
+		"Attachments": null
+	}
+}

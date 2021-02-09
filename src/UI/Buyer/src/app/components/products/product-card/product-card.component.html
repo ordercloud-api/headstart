@@ -1,0 +1,95 @@
+<div class="card card-hover mb-5 w-100 cursor-pointer">
+  <div class="ribbon ribbon-top-right bg-light">
+    <ocm-toggle-favorite
+      title="Favorite"
+      (click)="$event.stopPropagation()"
+      [favorite]="_isFavorite"
+      (favoriteChanged)="setIsFavorite($event.detail)"
+    ></ocm-toggle-favorite>
+  </div>
+  <a
+    class="clickable-card d-flex flex-fill flex-column position-relative"
+    name="{{ _product.Name }}"
+    (click)="toDetails()"
+  >
+    <figure class="card-img-top">
+      <img
+        class="product-card-image"
+        [src]="getImageUrl()"
+        alt="{{ _product.ID }}"
+      />
+    </figure>
+    <div
+      *ngIf="isCanadianShipFromAddress()"
+      class="chip chip-xs bg-white shadow position-absolute"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+        class="mr-1"
+        viewBox="0 0 512 512"
+        width="15px"
+      >
+        <path
+          fill="#f5f5f5"
+          d="M498.5 105.6v300.7c-.1 4.7-3.9 8.5-8.6 8.5H22c-4.7 0-8.5-3.8-8.5-8.5V105.6c0-4.7 3.8-8.5 8.5-8.5h468c4.7 0 8.5 3.7 8.5 8.5z"
+        />
+        <path
+          fill="#ff4b55"
+          d="M21.9 97.2c-4.6 0-8.3 3.7-8.3 8.3v300.9c0 4.6 3.7 8.3 8.3 8.3h100.3V97.1l-100.3.1zm468.3 0H389.8v317.6h100.3c4.6 0 8.3-3.7 8.3-8.3V105.6c0-4.6-3.7-8.4-8.2-8.4zM306.8 292.7l49.6-28.4-11.4-5.7c-3.2-1.6-5-5.1-4.6-8.6l3.7-27.8-21 6.1c-4.6 1.3-9.4-1.5-10.5-6.2l-2-9.1-19.7 23.1c-2.8 3.2-8 .8-7.3-3.4l8.4-49-12.9 3.6c-3.8 1-7.8-.7-9.6-4.1l-13.6-25.4v-.1.1l-13.4 25.5c-1.9 3.5-5.8 5.1-9.6 4.1l-12.9-3.5 8.4 49c.7 4.2-4.5 6.6-7.3 3.4l-19.7-23.1-2 9.1c-1 4.7-5.8 7.6-10.5 6.2l-21-6.1 3.7 27.8c.4 3.5-1.3 7-4.6 8.6l-11.4 5.7 49.6 28.4c5.1 3 7.4 9.2 5.3 14.7l-4.2 11.4 42.5-3.7c2.4-.2 4.4 1.7 4.3 4l-1.3 45.5h8.3l-1.3-45.5c-.1-2.4 1.9-4.2 4.3-4l42.6 3.7-4.2-11.4c-2.1-5.7.1-11.9 5.3-14.9z"
+        />
+      </svg>
+      <small class="text-medium"> Product Ships From Canada </small>
+    </div>
+    <div class="card-body">
+      <h5 class="card-title" title="{{ _product.Name }}">
+        {{ _product.Name }}
+      </h5>
+      <small class="card-text text-muted" [innerHtml]="_product.ID">
+        {{ _product.ID }}
+      </small>
+      <p class="card-text">
+        {{
+          _product?.xp?.Facets?.supplier && _product?.xp?.Facets?.supplier[0]
+        }}
+      </p>
+      <div
+        class="d-flex flex-wrap justify-content-between align-items-center card-price"
+      >
+        <p class="card-text mb-0" *ngIf="_product.PriceSchedule?.PriceBreaks">
+          {{ _price | currency: _userCurrency }}
+        </p>
+        <small class="card-text text-muted">{{ _product | UofM }}</small>
+        <label for="quantity" class="sr-only" translate
+          >PRODUCTS.CARD.QUANTITY</label
+        >
+      </div>
+    </div>
+  </a>
+  <div
+    class="card-footer"
+    *ngIf="showAddToCart() && !_product.xp.ArtworkRequired"
+  >
+    <ocm-quantity-input
+      id="quantity"
+      [existingQty]="null"
+      [product]="_product"
+      [priceSchedule]="_product.PriceSchedule"
+      [isAddingToCart]="isAddingToCart"
+      (qtyChange)="setQuantity($event.detail)"
+    >
+    </ocm-quantity-input>
+    <button
+      (click)="$event.stopPropagation(); addToCart()"
+      [disabled]="isAddingToCart || !qtyValid"
+      class="btn btn-outline-secondary btn-block btn-sm"
+      type="submit"
+      translate
+    >
+      PRODUCTS.CARD.ADD
+      <span class="d-md-none d-lg-inline" translate>
+        PRODUCTS.CARD.TO_CART</span
+      >
+    </button>
+  </div>
+</div>

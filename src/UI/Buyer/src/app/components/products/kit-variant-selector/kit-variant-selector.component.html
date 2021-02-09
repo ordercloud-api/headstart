@@ -1,0 +1,58 @@
+<div *ngIf="selection">
+  <h3>{{ productKitDetails.Product.Name }}</h3>
+  <div>
+    <strong translate>PRODUCTS.DETAILS.DESCRIPTION</strong>
+    <p
+      [innerHTML]="
+        productKitDetails.Product.Description ||
+          'This product has no description.' | safeHTML
+      "
+    ></p>
+  </div>
+  <ocm-product-attachments
+    *ngIf="productKitDetails"
+    [attachments]="productKitDetails.Attachments"
+  >
+  </ocm-product-attachments>
+  <ocm-spec-form
+    class="mb-3"
+    *ngIf="productKitDetails.Specs?.length > 0"
+    [disabledVariants]="disabledVariants"
+    [compact]="true"
+    [currency]="productKitDetails.Product?.xp?.Currency"
+    [specs]="productKitDetails.Specs"
+    (specFormChange)="onSpecFormChange($event.detail)"
+  >
+  </ocm-spec-form>
+  <p class="mb-0 col-md kit-price">
+    {{ price | currency: userCurrency }}
+  </p>
+  <div class="row">
+    <div class="col-md">
+      <ocm-quantity-input
+        *ngIf="resetFormToggle"
+        class="col-md kit-qty-input"
+        [gridDisplay]="false" 
+        [existingQty]="selection.quantity"
+        [product]="productKitDetails.Product"
+        [priceSchedule]="productKitDetails.Product.PriceSchedule"
+        (qtyChange)="qtyChange($event.detail)"
+      >
+      </ocm-quantity-input>
+      <small class="text-danger" *ngIf="errorMessage">{{ errorMessage }}</small>
+    </div>
+    <div class="col-md">
+      <button
+        class="btn btn-primary"
+        [disabled]="
+          !quantityValid ||
+          (!specForm.valid && productKitDetails?.Specs?.length > 0)
+        "
+        (click)="addVariantSelection()"
+        translate
+      >
+        PRODUCTS.KITS.ADD_VARIANT_SELECTION
+      </button>
+    </div>
+  </div>
+</div>

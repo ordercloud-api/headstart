@@ -1,0 +1,21 @@
+// target the button links generated from the ngb-accordion
+
+:host::ng-deep ngb-accordion {
+  .btn.btn-link {
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    &:hover,
+    &:focus {
+      text-decoration-color: var(--primary);
+    }
+  }
+}
+
+.order-summary {
+  top: 140px; // TODO: Design, Magic number for proper height from top.
+}

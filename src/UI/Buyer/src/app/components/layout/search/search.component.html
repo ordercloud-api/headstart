@@ -1,0 +1,38 @@
+<form [formGroup]="form" #searchform>
+  <label for="search-addon" class="sr-only">{{
+    placeholderText || 'Search...'
+  }}</label>
+  <div class="input-group">
+    <div class="input-group-prepend">
+      <div class="input-group-text">
+        <fa-icon [icon]="faSearch"></fa-icon>
+      </div>
+    </div>
+    <input
+      type="search"
+      class="form-control"
+      placeholder="{{
+        ('ADMIN.COMMON.SEARCH' | translate) +
+          ' ' +
+          (placeholderText | translate) +
+          '...'
+      }}"
+      aria-label="search"
+      id="search-addon"
+      formControlName="search"
+      (keyup.enter)="search()"
+      autocomplete="off"
+    />
+    <div *ngIf="showClear()" class="input-group-append">
+      <button
+        (click)="clear()"
+        type="button"
+        class="btn btn-outline-danger border-rounded-right"
+      >
+        <fa-icon [icon]="faTimes">
+          <span class="sr-only">Button To Clear Current Search</span>
+        </fa-icon>
+      </button>
+    </div>
+  </div>
+</form>

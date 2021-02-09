@@ -1,0 +1,138 @@
+/*******************************************************************************************************************************
+
+How to use _shame.scss:
+
+    (1) If it’s a hack or a hotfix, it goes in _shame.scss.
+    (2) Document all declarations fully:
+        (a) What part of the codebase does it relate to?
+        (b) Why was this needed?
+        (c) How does this fix it?
+        (d) How might you fix it properly, given more time?
+        (e) AT VERY MINIMUM: INCLUDE A COMMENT WITH EVERY DECLARATION.
+    (3) Do not blame the developer; if they explained why they had to do it then their reasons are probably (hopefully) valid.
+    (4) Try and clean shame.css up when you have some time.
+
+*******************************************************************************************************************************/
+
+// this makes all address cards the same height
+shared-address-display {
+  display: flex;
+  flex: 1 1 auto;
+
+  .card {
+    @extend shared-address-display;
+  }
+}
+
+// Bootstrap IE issue with the last panel of ng-accordian
+.card-body#confirm {
+  flex: none;
+}
+.mini-cart-popover {
+  .popover-body {
+    padding: 0;
+  }
+}
+
+//DESIGN: Refactor candidate
+.orders-awaiting-approval-popover {
+  width: 30rem;
+  .popover-body {
+    padding: 0;
+  }
+}
+
+// Styles for the progress loader
+ng-progress {
+  .ng-progress-bar {
+    .ng-bar-placeholder {
+      height: 3px !important;
+      .ng-bar {
+        background-color: $primary !important;
+      }
+    }
+  }
+}
+
+//DESIGN: Refactor candidate
+.info-edit-container {
+  border-radius: $border-radius;
+  border-left: 5px solid $primary;
+}
+
+
+.table {
+  thead {
+    color: $gray-600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+  }
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 45px;
+  height: 24px;
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    &:checked {
+      + .slider {
+        background-color: $primary;
+        &:before {
+          -webkit-transform: translateX(20px);
+          -ms-transform: translateX(20px);
+          transform: translateX(20px);
+        }
+      }
+    }
+    &:focus {
+      + .slider {
+        box-shadow: 0 0 1px $primary;
+      }
+    }
+  }
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: 0.2s;
+    transition: 0.2s;
+    &.round {
+      border-radius: 34px;
+      &:before {
+        border-radius: 50%;
+      }
+    }
+    &:before {
+      position: absolute;
+      content: '';
+      height: 16px;
+      width: 16px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: 0.2s;
+      transition: 0.2s;
+    }
+  }
+}
+
+#zsiqwidget {
+  bottom: 120px;
+}
+
+// where should breadcrumb styles live?
+.breadcrumb {
+  background-color: $light;
+  margin-top: 1rem;
+  .breadcrumb-item {
+    color: $dark;
+  }
+}

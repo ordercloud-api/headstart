@@ -1,0 +1,16 @@
+{
+  "hostedApp": true,
+  "appname": "Default Buyer",
+  "appID": "defaultbuyer-production",
+  "clientID": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "incrementorPrefix": "DB",
+  "baseUrl": "https://my-default-buyer.com",
+  "middlewareUrl": "https://my-middleware-api.com",
+  "cmsUrl": "https://ordercloud-cms.azurewebsites.net",
+  "creditCardIframeUrl": "https://fts.cardconnect.com/itoke/ajax-tokenizer.html",
+  "sellerID": "my-seller-id",
+  "translateBlobUrl": "https://my-blob-root/ngx-translate/i18n/",
+  "orderCloudApiUrl": "https://api.ordercloud.io",
+  "theme": { "logoSrc": "assets/generic-logo.png" },
+  "appInsightsInstrumentationKey": null
+}

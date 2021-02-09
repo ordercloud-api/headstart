@@ -1,0 +1,18 @@
+.dropzone {
+  background-image: url('../../../../assets/FileUploadCircle.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-size: 60px;
+  background-position: center;
+  min-height: 100px;
+  min-width: 100px;
+  display: table;
+  width: 100px;
+  background-color: #d8e9f5 !important;
+  opacity: 0.8;
+  border: 2px dashed rgb(141, 194, 231);
+}
+
+.width-50 {
+  width: 50rem
+}

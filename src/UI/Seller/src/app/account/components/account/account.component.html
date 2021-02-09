@@ -1,0 +1,147 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2 bg-white border-right">
+      <account-menu></account-menu>
+    </div>
+    <div class="col-md-10 bg-light">
+      <perfect-scrollbar class="full-width"
+        [ngStyle]="{ 'height.px': contentHeight }"
+      >
+        <div class="container-fluid py-3">
+          <div class="row">
+            <div class="col-md-7">
+              <div class="d-flex justify-content-between align-items-center">
+                <h1 class="resource-name mb-0" translate>My Account</h1>
+                <div>
+                  <button
+                    class="btn btn-primary btn-sm"
+                    *ngIf="areChanges"
+                    (click)="patchUser(['FirstName', 'LastName', 'Username'])"
+                  >
+                    Save Changes
+                  </button>
+                  <button
+                    class="btn btn-outline-teal btn-sm ml-2"
+                    *ngIf="areChanges"
+                    (click)="discardChanges()"
+                  >
+                    Discard Changes
+                  </button>
+                </div>
+              </div>
+              <div class="card mt-3 bg-white">
+                <div
+                  class="card-header py-4 px-3 bg-white d-flex align-items-center"
+                >
+                  <img
+                    *ngIf="!profileImgLoading && hasProfileImg"
+                    class="avatar"
+                    [src]="myProfileImg"
+                    alt="ProfileImg"
+                    id="ProfileImgThumb"
+                  />
+                  <div
+                    *ngIf="
+                      !hasProfileImg &&
+                      !profileImgLoading &&
+                      currentUserInitials !== 'undefinedundefined'
+                    "
+                    [attr.data-letters]="currentUserInitials"
+                    class="avatar avatar-sm"
+                  ></div>
+                  <div
+                    *ngIf="profileImgLoading"
+                    class="spinner-border"
+                    role="status"
+                  >
+                    <span class="sr-only" translate>ADMIN.COMMON.LOADING</span>
+                  </div>
+                  <label
+                    for="imageUpload"
+                    class="btn btn-outline-dark ml-2 mb-0"
+                    >{{
+                      hasProfileImg ? 'Update Photo' : 'Upload Photo'
+                    }}</label
+                  >
+                  <button
+                    *ngIf="hasProfileImg"
+                    (click)="removeProfileImg()"
+                    class="btn btn-outline-dark ml-2"
+                  >
+                    Remove Photo
+                  </button>
+                  <input
+                    class="d-none"
+                    id="imageUpload"
+                    type="file"
+                    (change)="manualFileUpload($event)"
+                  />
+                </div>
+                <div class="card-body py-2 px-3">
+                  <h6 class="font-weight-medium" translate>Personal Details</h6>
+                  <form *ngIf="userForm" [formGroup]="userForm">
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="FirstName">First Name</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          id="FirstName"
+                          name="FirstName"
+                          formControlName="FirstName"
+                          [value]="userEditable?.FirstName"
+                          (input)="updateUserFromEvent($event, 'FirstName')"
+                        />
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="LastName">Last Name</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          id="LastName"
+                          name="LastName"
+                          formControlName="LastName"
+                          [value]="userEditable?.LastName"
+                          (input)="updateUserFromEvent($event, 'LastName')"
+                        />
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group col-md-6">
+                        <label for="Email">Email</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          id="Email"
+                          name="Email"
+                          formControlName="Email"
+                          [value]="userEditable?.Email"
+                          (input)="updateUserFromEvent($event, 'Email')"
+                        />
+                      </div>
+                      <div class="form-group col-md-6">
+                        <label for="Username">Username</label>
+                        <input
+                          class="form-control"
+                          type="text"
+                          id="Username"
+                          name="Username"
+                          formControlName="Username"
+                          [value]="userEditable?.Username"
+                          (input)="updateUserFromEvent($event, 'Username')"
+                        />
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-5">
+              <account-summary [user]="userEditable"></account-summary>
+            </div>
+          </div>
+        </div>
+      </perfect-scrollbar>
+    </div>
+  </div>
+</div>

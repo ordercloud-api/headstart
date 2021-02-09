@@ -1,0 +1,157 @@
+<div
+  class="container-fluid bg-light py-3"
+  [ngStyle]="{ 'min-height.px': contentHeight }"
+>
+  <div class="row">
+    <div class="col-md-12 d-flex flex-column align-items-center">
+      <div class="card p-4 shadow-sm width-50">
+        <h5>Upload Shipments</h5>
+        <p class="text-muted mb-0">
+          Use this tool to import tracking numbers for items on orders you have
+          received. You will need to use the Order Reports to identify OrderIDs
+          as well as Line Item IDs before shipping. Once you have this
+          information, you can add the tracking number, carrier, and ship date
+          for the shipment
+        </p>
+      </div>
+      <div class="card mt-3 p-4 shadow-sm width-50">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5>Open or download template</h5>
+          <small class="d-block text-uppercase text-muted font-weight-bold mb-2"
+            >Step 1 of 4</small
+          >
+        </div>
+        <p class="text-muted">
+          No template? No problem! Click here to download it.
+        </p>
+        <button class="btn btn-primary" (click)="downloadTemplate()">
+          Download Template
+        </button>
+      </div>
+      <div class="card mt-3 p-4 shadow-sm width-50">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5>Fill out spreadsheet</h5>
+          <small class="d-block text-uppercase text-muted font-weight-bold mb-2"
+            >Step 2 of 4</small
+          >
+        </div>
+        <p class="mb-0">
+          Add all necessary information to the spreadsheet for the orders
+        </p>
+      </div>
+      <div class="card mt-3 p-4 shadow-sm width-50">
+        <div class="d-flex justify-content-between align-items-center">
+          <h5>Upload filled out spreadsheet below</h5>
+          <small class="d-block text-uppercase text-muted font-weight-bold mb-2"
+            >Step 3 of 4</small
+          >
+        </div>
+        <div class="d-flex justify-content-center pt-4">
+          <label
+            class="dropzone"
+            for="shipmentUpload"
+            appDrag
+            (files)="manualFileUpload($event[0], 'staticContent')"
+          >
+          </label>
+          <input
+            class="d-none"
+            id="shipmentUpload"
+            type="file"
+            (change)="manualFileUpload($event.target.files, 'staticContent')"
+          />
+        </div>
+      </div>
+      <div
+        *ngIf="showUploadSummary"
+        class="card mt-3 p-4 shadow-sm width-50"
+      >
+        <div class="d-flex justify-content-between align-items-center">
+          <ng-container *ngIf="!showResults && showUploadSummary">
+            <ngx-spinner
+              bdColor="rgba(255, 255, 255, 0.9)"
+              color="var(--primary)"
+              size="small"
+              type="ball-spin-clockwise-fade"
+              [fullScreen]="false"
+            >
+              <small>Processing Uploaded File...</small>
+            </ngx-spinner>
+          </ng-container>
+
+          <h5 *ngIf="showResults">Upload complete!</h5>
+          <small class="d-block text-uppercase text-muted font-weight-bold mb-2"
+            >Step 4 of 4</small
+          >
+        </div>
+        <div *ngIf="showResults">
+          <strong
+            >Successful uploads:
+            {{ batchProcessResult?.Meta?.SuccessfulCount }}</strong
+          >
+
+          <table
+            *ngIf="batchProcessResult?.SuccessfulList.length > 0"
+            class="table"
+          >
+            <tr>
+              <th>ID</th>
+              <th>Date Shipped</th>
+              <th>Tracking Number</th>
+            </tr>
+            <tr
+              *ngFor="let successfulRow of batchProcessResult?.SuccessfulList"
+            >
+              <td>{{ successfulRow?.ID }}</td>
+              <td>{{ successfulRow?.DateShipped | date }}</td>
+              <td>{{ successfulRow?.TrackingNumber }}</td>
+            </tr>
+          </table>
+        </div>
+        <div *ngIf="showResults">
+          <strong
+            >Failed uploads:
+            {{
+              batchProcessResult?.Meta?.ProcessFailureListCount +
+                batchProcessResult?.Meta?.DocumentFailureListCount
+            }}</strong
+          >
+          <table
+            *ngIf="batchProcessResult?.InvalidRowFailureList?.length > 0"
+            class="table"
+          >
+            <tr>
+              <th>Row</th>
+              <th>Column Name</th>
+              <th>Error</th>
+            </tr>
+            <tr
+              *ngFor="
+                let documentRowError of batchProcessResult.InvalidRowFailureList
+              "
+            >
+              <td>{{ documentRowError?.Row }}</td>
+              <td>{{ getColumnHeader(documentRowError?.Column) }}</td>
+              <td>{{ documentRowError.ErrorMessage }}</td>
+            </tr>
+          </table>
+          <br />
+
+          <table
+            *ngIf="batchProcessResult?.ProcessFailureList?.length > 0"
+            class="table"
+          >
+            <tr>
+              <th>ShipmentID</th>
+              <th>Error</th>
+            </tr>
+            <tr *ngFor="let failure of batchProcessResult?.ProcessFailureList">
+              <td>{{ failure?.Shipment?.ID }}</td>
+              <td>{{ failure?.Error }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

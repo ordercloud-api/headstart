@@ -1,0 +1,7 @@
+<button class="btn btn-link font-weight-bold" (click)="changeSort()">
+  <ng-content></ng-content>
+  <fa-icon
+    *ngIf="showCaretIcon()"
+    [icon]="currentSort === fieldName ? faCaretDown : faCaretUp"
+  ></fa-icon>
+</button>

@@ -1,0 +1,37 @@
+<!-- parent resource dropdown -->
+<div ngbDropdown class="parent-resource-dropdown btn-block">
+  <button
+    class="resource-btn btn btn-outline-dark additional-item-resource-select-dropdown"
+    id="parentresourcedropdown"
+    ngbDropdownToggle
+  >
+    {{ selectedParentResourceName }}
+  </button>
+  <div ngbDropdownMenu aria-labelledby="parent resource dropdown">
+    <search-component
+      class="mr-3 w-100 additional-item-resource-select-dropdown"
+      id="resource-search"
+      [placeholderText]="''"
+      [searchTermInput]="searchTerm"
+      (searched)="searchedResources($event)"
+    >
+    </search-component>
+    <perfect-scrollbar
+      class="dropdown-ps"
+      (psYReachEnd)="handleScrollEnd()"
+      [ngStyle]="{ 'height.px': resourceSelectDropdownHeight }"
+    >
+      <button
+        ngbDropdownItem
+        *ngFor="let resource of parentResourceList.Items"
+        (click)="selectParentResource(resource)"
+      >
+        <summary-resource-display-component
+          [resource]="resource"
+          [resourceType]="ocService.primaryResourceLevel"
+        >
+        </summary-resource-display-component>
+      </button>
+    </perfect-scrollbar>
+  </div>
+</div>

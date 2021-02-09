@@ -1,0 +1,113 @@
+<form
+  *ngIf="myBuyerLocations"
+  (ngSubmit)="onSubmit()"
+  novalidate
+  [formGroup]="contactSupplierForm"
+  name="ContactSupplierForm"
+>
+  <div [formGroup]="contactSupplierForm">
+    <p class="lead" translate>PRODUCTS.CONTACT_SUPPLIER.PLEASE_VERIFY</p>
+    <div class="form-row mt-4">
+      <div class="form-group col-md-6">
+        <label for="FirstName" translate>PRODUCTS.CONTACT_SUPPLIER.FIRST</label>
+        <input
+          type="text"
+          formControlName="FirstName"
+          class="form-control form-control-sm"
+          id="FirstName"
+          placeholder="{{ 'PRODUCTS.CONTACT_SUPPLIER.FIRST' | translate }}"
+          autofocus="true"
+          autocomplete="off"
+          showErrors
+        />
+      </div>
+      <div class="form-group col-md-6">
+        <label for="LastName" translate>PRODUCTS.CONTACT_SUPPLIER.LAST</label>
+        <input
+          type="text"
+          formControlName="LastName"
+          class="form-control form-control-sm"
+          id="LastName"
+          placeholder="{{ 'PRODUCTS.CONTACT_SUPPLIER.LAST' | translate }}"
+          autocomplete="off"
+          showErrors
+        />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="BuyerLocation" translate
+        >PRODUCTS.CONTACT_SUPPLIER.FOR_LOCATION</label
+      >
+      <select
+        id="BuyerLocation"
+        class="custom-select custom-select-sm"
+        formControlName="BuyerLocation"
+      >
+        <option
+          *ngFor="let location of myBuyerLocations"
+          [ngValue]="location?.AddressName || ''"
+        >
+          {{ location?.AddressName }}
+        </option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="Email" translate>PRODUCTS.CONTACT_SUPPLIER.EMAIL</label>
+        <input
+          type="text"
+          formControlName="Email"
+          class="form-control form-control-sm"
+          id="Email"
+          placeholder="{{ 'PRODUCTS.CONTACT_SUPPLIER.EMAIL' | translate }}"
+          autocomplete="off"
+          showErrors
+        />
+      </div>
+      <div class="form-group col-md-6">
+        <label for="Phone" translate>PRODUCTS.CONTACT_SUPPLIER.PHONE</label>
+        <input
+          type="text"
+          formControlName="Phone"
+          class="form-control form-control-sm"
+          id="Phone"
+          placeholder="{{ 'PRODUCTS.CONTACT_SUPPLIER.PHONE' | translate }}"
+          autocomplete="off"
+          showErrors
+        />
+      </div>
+    </div>
+    <div class="form-group">
+      <form novalidate [formGroup]="contactSupplierForm">
+        <label for="Comments" translate
+          >PRODUCTS.CONTACT_SUPPLIER.COMMENTS</label
+        >
+        <textarea
+          type="text"
+          formControlName="Comments"
+          class="form-control form-control-sm"
+          id="Comments"
+          placeholder="{{ 'PRODUCTS.CONTACT_SUPPLIER.COMMENTS' | translate }}"
+          autocomplete="off"
+          maxlength="2000"
+          rows="3"
+          showErrors
+        >
+        </textarea>
+      </form>
+    </div>
+  </div>
+  <div class="d-flex justify-content-space-between align-items-center">
+    <button type="submit" class="btn btn-primary mr-2" translate>
+      PRODUCTS.CONTACT_SUPPLIER.SUBMIT
+    </button>
+    <button
+      type="button"
+      class="btn btn-link text-danger"
+      (click)="dismissForm()"
+      translate
+    >
+      PRODUCTS.CONTACT_SUPPLIER.CANCEL
+    </button>
+  </div>
+</form>

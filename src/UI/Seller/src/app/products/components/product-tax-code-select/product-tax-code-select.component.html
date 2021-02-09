@@ -1,0 +1,86 @@
+<div class="card py-2 px-3 mt-3 bg-white">
+  <div class="d-flex justify-content-between align-items-center">
+    <h6 class="font-weight-medium">Tax Categorization</h6>
+    <fa-icon
+      [hidden]="productForm.controls['ProductType'].value === 'Quote'"
+      class="tab-status-icon text-danger"
+      [icon]="faAsterisk"
+      *ngIf="isCreatingNew && !taxSelectionsValid()"
+    >
+    </fa-icon>
+    <fa-icon
+      [hidden]="productForm.controls['ProductType'].value === 'Quote'"
+      class="text-success"
+      [icon]="faCheckCircle"
+      *ngIf="isCreatingNew && taxSelectionsValid()"
+    >
+    </fa-icon>
+  </div>
+  <form [formGroup]="productForm">
+    <div class="form-row">
+      <div class="form-group col-6">
+        <label for="TaxCodeCategory" translate
+          >ADMIN.PRODUCT_EDIT.TAX_CATEGORY
+        </label>
+        <select
+          [attr.disabled]="readonly ? true : null"
+          type="dropdown"
+          class="form-control"
+          id="TaxCodeCategory"
+          aria-describedby="Tax code category"
+          (change)="onTaxCodeCategorySelection($event)"
+          formControlName="TaxCodeCategory"
+        >
+          <option default disabled [ngValue]="null">
+            Which category best describes this product?
+          </option>
+          <!-- These are the 5 'parent' tax categories.  They are always consistent. -->
+          <option value="D0000000" translate>
+            ADMIN.PRODUCT_EDIT.DIGITAL_GOODS
+          </option>
+          <option value="FR000000" translate>ADMIN.PRODUCT_EDIT.FREIGHT</option>
+          <option value="P0000000" translate>ADMIN.PRODUCT_EDIT.TPP</option>
+          <option value="S0000000" translate>
+            ADMIN.PRODUCT_EDIT.SERVICES
+          </option>
+          <option value="O0000000" translate>ADMIN.PRODUCT_EDIT.OTHER</option>
+        </select>
+        <small>Which broad category does this product fit best?</small>
+      </div>
+      <div
+        [hidden]="!productForm.controls['TaxCodeCategory'].value"
+        class="form-group col-6"
+      >
+        <product-tax-code-select-dropdown
+          [readonly]="readonly"
+          class="btn-block resource-btn mr-1 mb-1"
+          [taxCodes]="taxCodes"
+          [productForm]="productForm"
+          [superHSProductEditable]="superHSProductEditable"
+          [isRequired]="isRequired"
+          [isCreatingNew]="isCreatingNew"
+          (taxCodesSearched)="onTaxCodesSearched($event)"
+          (onScrollEnd)="handleScrollEnd($event)"
+          (onSelectTaxCode)="handleSelectTaxCode($event)"
+        >
+        </product-tax-code-select-dropdown>
+      </div>
+    </div>
+    <hr />
+    <h6 class="font-weight-medium">Resale Status</h6>
+    <div class="form-group">
+      <div class="custom-control custom-checkbox">
+        <input
+          type="checkbox"
+          class="custom-control-input"
+          formControlName="IsResale"
+          (input)="handleIsResaleInput($event.target.checked)"
+          id="IsResale"
+        />
+        <label class="custom-control-label" for="IsResale" translate
+          >ADMIN.PRODUCT_EDIT.RESALE</label
+        >
+      </div>
+    </div>
+  </form>
+</div>

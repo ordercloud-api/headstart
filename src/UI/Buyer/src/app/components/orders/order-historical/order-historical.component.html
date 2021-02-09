@@ -1,0 +1,128 @@
+<div class="row mb-5" *ngIf="order">
+  <div class="col-6">
+    <div *ngIf="buyerLocation?.CompanyName">
+      <span class="mb-3" translate>ALIAS.BUYER_LOCATION</span>
+      <p>
+        <strong>{{ buyerLocation?.CompanyName }}</strong>
+      </p>
+    </div>
+
+    <div *ngIf="lineItems[0]?.ShippingAddress">
+      <span translate>ORDERS.HISTORICAL.SHIPPING_ADDRESS</span>
+      <!-- Not using address card component due to Shadow DOM preventing component from displaying on PDF render. -->
+      <div class="d-flex flex-wrap justify-content-between align-items-center">
+        <address class="mb-0">
+          {{ lineItems[0].ShippingAddress.CompanyName }}<br />
+          {{ lineItems[0].ShippingAddress.Street1
+          }}<span *ngIf="lineItems[0].ShippingAddress.Street2">,</span>
+          {{ lineItems[0].ShippingAddress.Street2 }}<br />
+          {{ lineItems[0].ShippingAddress.City }},
+          {{ lineItems[0].ShippingAddress.State }}
+          {{ lineItems[0].ShippingAddress.Zip }}
+          <small class="mt-1 d-block">
+            <a href="tel:{{ lineItems[0].ShippingAddress.Phone }}">{{
+              lineItems[0].ShippingAddress.Phone | phoneFormat
+            }}</a>
+          </small>
+        </address>
+      </div>
+    </div>
+  </div>
+  <div class="col-6" *ngIf="!isQuoteOrder(order)">
+    <div *ngIf="order.Comments" class="alert alert-secondary small">
+      <strong><span translate>ORDERS.HISTORICAL.COMMENTS</span>: </strong>
+      {{ order.Comments }}
+    </div>
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <span class="mb-3">Buyer</span>
+        <p class="mb-0 text-capitalize font-weight-bold">
+          {{ order.FromUser.FirstName }} {{ order.FromUser.LastName }}
+        </p>
+        <p *ngIf="order.FromUser.Phone" class="mb-0">
+          <small class="mb-0">{{ order.FromUser.Phone | phoneFormat }}</small>
+        </p>
+        <p *ngIf="order.FromUser.Email" class="mb-0">
+          <small class="mb-0">{{ order.FromUser.Email }}</small>
+        </p>
+      </div>
+    </div>
+    <hr />
+    <strong translate>ORDERS.HISTORICAL.SUBTOTAL</strong>
+    <span class="float-right">{{
+      order.Subtotal | currency: _userCurrency
+    }}</span
+    ><br />
+    <strong translate>ORDERS.HISTORICAL.SHIPPING</strong>
+    <span class="float-right">{{
+      order.ShippingCost | currency: _userCurrency
+    }}</span
+    ><br />
+    <strong translate>ORDERS.HISTORICAL.TAX</strong>
+    <span class="float-right">{{
+      order.TaxCost | currency: _userCurrency
+    }}</span
+    ><br />
+    <div *ngIf="order.PromotionDiscount">
+      <strong class="text-danger" translate>ORDERS.HISTORICAL.PROMO</strong>
+      <span class="float-right text-danger"
+        >-{{ order.PromotionDiscount | currency: _userCurrency }}</span
+      >
+    </div>
+    <hr />
+    <div class="text-right lead" translate>
+      <b class="float-left"><span translate>ORDERS.HISTORICAL.TOTAL</span>:</b
+      ><span class="order-total">{{
+        order.Total | currency: _userCurrency
+      }}</span>
+    </div>
+    <hr *ngIf="isOrderToApprove" />
+    <ocm-payment-list
+      *ngIf="payments && !isOrderToApprove"
+      [payments]="payments"
+    ></ocm-payment-list>
+    <hr />
+    <ul>
+      <li *ngFor="let approval of approvals" translate>
+        {{ approval.Approver.FirstName }} {{ approval.Approver.LastName }}
+        {{ approval.Status }} - {{ approval.DateCreated | date: 'short' }}
+        <div>
+          <small *ngIf="approval.Comments">"{{ approval.Comments }}"</small>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <!-- QUOTE ORDER DETAILS -->
+  <div *ngIf="isQuoteOrder(order)" class="col-6">
+    <strong><span translate>ORDERS.HISTORICAL.SUBMITTED_BY</span>: </strong>
+    <p>
+      {{ order.xp?.QuoteOrderInfo?.FirstName }}
+      {{ order.xp?.QuoteOrderInfo?.LastName }}
+    </p>
+    <!-- <p>{{order.xp?.BuyerLocation}}</p> -->
+    <p>
+      {{ order.xp?.QuoteOrderInfo?.Phone | phoneFormat }}
+    </p>
+    <p>
+      {{ order.xp?.QuoteOrderInfo?.Email }}
+    </p>
+    <p>
+      {{ order.xp?.QuoteOrderInfo?.BuyerLocation }}
+    </p>
+    <div
+      *ngIf="order?.xp?.QuoteOrderInfo?.Comments"
+      class="alert alert-secondary small"
+    >
+      <strong translate>ORDERS.HISTORICAL.COMMENTS </strong>:
+      {{ order.xp?.QuoteOrderInfo?.Comments }}
+    </div>
+  </div>
+</div>
+<ocm-lineitem-table
+  *ngIf="lineItems && lineItems.length"
+  [lineItems]="lineItems"
+  [orderType]="order?.xp?.OrderType"
+  [groupByKits]="true"
+  [readOnly]="true"
+>
+</ocm-lineitem-table>

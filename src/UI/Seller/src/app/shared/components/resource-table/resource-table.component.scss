@@ -1,0 +1,110 @@
+@import "../../../../styles/main.scss";
+
+.resource-table tbody .selectable-row {
+    cursor: pointer;
+}
+
+.resource-table-side {
+    border-right: 1px solid $gray-300;
+}
+
+.resource-search {
+    width: 200px;
+}
+
+.selected-resource {
+    background-color: lightgrey;
+}
+
+.badge__counter--large {
+  ::ng-deep {
+    .fa-layers-counter {
+      height: 1.5em;
+      top: -10px;
+      right: -11px;
+      font-size: 45px;
+      background-color: $primary;
+    }
+  }
+}
+
+.resource-name {
+  font-size: 22px;
+  @include media-breakpoint-up(sm) {
+    font-size: 28px;
+  }
+  // margin-top: -24px;
+}
+
+.breadcrumb {
+  background: transparent;
+  margin-bottom: 0;
+  font-weight: 500;
+  font-size: 0.9rem;
+  .breadcrumb-item {
+    display: flex;
+    align-items: center;
+    &:first-child {
+      &::before {
+        display: none;
+      }
+    }
+    &::before {
+      content: "\f054";
+      font-weight: 300;
+      font-size: 0.5rem;
+      margin-top: 0.2rem;
+      font-family: FontAwesome;
+      color: $primary-light;
+    }
+    .breadcrumb-link {
+      color: $primary-light;
+    }
+    &:last-child {
+      .breadcrumb-link {
+        color: $light;
+      }
+    }
+  }
+}
+
+.parent-resources {
+  @include media-breakpoint-up(sm) {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+  }
+}
+.form-group.hidden {
+  width: 0;
+  margin: 0;
+  border: none;
+  padding: 0;
+}
+.custom-day {
+  text-align: center;
+  padding: 0.185rem 0.25rem;
+  display: inline-block;
+  height: 2rem;
+  width: 2rem;
+}
+.custom-day.focused {
+  background-color: rgba($gray-900, 0.1);
+}
+.custom-day.range, .custom-day:hover {
+  background-color: $primary-light;
+  color: white;
+}
+.custom-day.faded {
+  background-color: $primary-light;
+}
+
+.resource-table-container {
+  .contents {
+    background-color: white;
+  }
+}
+
+.layers-background {
+  background: gray
+}

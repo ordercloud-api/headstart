@@ -1,0 +1,26 @@
+<div *ngIf="suggestedAddresses?.length > 0">
+  <h5 class="text-center font-weight-light border-bottom pb-3" translate>
+    LAYOUT.ADDRESS_SUGGESTIONS
+  </h5>
+  <div
+    class="address-card pb-3 mb-3"
+    *ngFor="let address of suggestedAddresses"
+  >
+    <ocm-address-card
+      [address]="address"
+      [highlight]="activeAddress === address"
+    >
+      <div
+        class="btn btn-light btn-icon ripple"
+        (click)="setActiveAddress(address)"
+      >
+        <div class="icon-wrapper">
+          <fa-icon *ngIf="activeAddress !== address" [icon]="faSquare">
+          </fa-icon>
+          <fa-icon *ngIf="activeAddress === address" [icon]="faCheckSquare">
+          </fa-icon>
+        </div>
+      </div>
+    </ocm-address-card>
+  </div>
+</div>

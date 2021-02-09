@@ -1,0 +1,26 @@
+<resource-table-component
+  [resourceList]="resourceList"
+  [selectedResourceID]="selectedResourceID"
+  [updatedResource]="updatedResource"
+  [resourceInSelection]="resourceInSelection"
+  [ocService]="ocService"
+  [dataIsSaving]="dataIsSaving"
+  [parentResourceService]="buyerService"
+  [resourceForm]="resourceForm"
+  (searched)="searchResources($event)"
+  (hitScrollEnd)="handleScrollEnd()"
+  (changesSaved)="saveUpdates()"
+  (changesDiscarded)="discardChanges()"
+  (resourceDelete)="deleteResource()"
+  (resourceSelected)="selectResource($event)"
+  [labelSingular]="'ADMIN.NAV.CATEGORY'"
+  [labelPlural]="'ADMIN.NAV.CATEGORIES'"
+>
+  <div class="resource-edit">
+    <app-buyer-category-edit
+      (updateCategory)="updateResource($event)"
+      [resource]="updatedResource"
+    >
+    </app-buyer-category-edit>
+  </div>
+</resource-table-component>

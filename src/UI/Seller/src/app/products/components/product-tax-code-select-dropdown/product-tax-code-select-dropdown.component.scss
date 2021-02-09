@@ -1,0 +1,9 @@
+.product-tax-code-dropdown {
+    .product-tax-code-dropdown-toggle {
+        text-overflow: ellipsis;
+        &-text {
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+    }
+}

@@ -1,0 +1,155 @@
+<section class="container mt-2">
+  <div class="row">
+    <div class="col-12">
+      <nav class="breadcrumb" aria-label="breadcrumb">
+        <a class="breadcrumb-item" (click)="clearAllFilters()" translate
+          >PRODUCTS.LIST.ALL</a
+        >
+        <a
+          *ngFor="let category of categoryCrumbs"
+          class="breadcrumb-item"
+          (click)="setActiveCategory(category.ID)"
+        >
+          {{ category.Name }}
+        </a>
+      </nav>
+    </div>
+  </div>
+  <div class="mt-1 mb-3">
+    <h2 class="text-primary" *ngIf="categoryCrumbs.length >= 1">
+      {{ categoryCrumbs[categoryCrumbs.length - 1].Name }}
+    </h2>
+    <h2 class="text-primary" *ngIf="searchTermForProducts">
+      <span translate>PRODUCTS.LIST.SEARCH_RESULTS</span>: "{{
+        searchTermForProducts
+      }}"
+    </h2>
+  </div>
+  <!-- Mobile section for filtering on favorites -->
+  <div class="d-md-none mb-2">
+    <div class="col-xs-6">
+      <div (click)="toggleFilterByFavorites()">
+        <label translate>PRODUCTS.LIST.REFINE</label>
+        <button
+          class="btn btn-block btn-default btn-outline-dark mb-2"
+          for="favorite"
+          translate
+        >
+          <ocm-toggle-favorite
+            [favorite]="showingFavoritesOnly"
+          ></ocm-toggle-favorite>
+          PRODUCTS.LIST.FAVORITES
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4 col-lg-3 d-md-block d-none">
+      <div class="card squared shadow-sm mb-4">
+        <div class="card-header p-3">
+          <h2 class="h5 card-title mb-0" translate>PRODUCTS.LIST.REFINE</h2>
+        </div>
+        <div class="p-3">
+          <button
+            *ngIf="hasFilters"
+            class="btn btn-block btn-sm btn-light mb-4"
+            type="button"
+            (click)="clearAllFilters()"
+            translate
+          >
+            PRODUCTS.LIST.CLEAR_FILTERS
+          </button>
+          <ocm-product-facet-list
+            *ngIf="products?.Meta?.Facets?.length"
+            [facetList]="products.Meta.Facets"
+          >
+          </ocm-product-facet-list>
+          <div (click)="toggleFilterByFavorites()">
+            <span class="sr-only" translate>PRODUCTS.LIST.SORT_BY_FAV</span>
+            <ocm-toggle-favorite
+              [favorite]="showingFavoritesOnly"
+            ></ocm-toggle-favorite>
+            <label class="ml-2" for="favorite" translate>
+              PRODUCTS.LIST.FAVORITES</label
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-9 col-md-8">
+      <div class="row flex-wrap-reverse">
+        <div class="col-12 col-md-auto mr-auto">
+          <div class="m-0 mt-1 text-center" *ngIf="products">
+            <span *ngIf="products && products.Meta.TotalPages > 1">
+              {{ (products.Meta.Page - 1) * products.Meta.PageSize + 1 }}
+              - {{ products.Meta.Page * products.Meta.PageSize }}
+              <span translate>PRODUCTS.LIST.OF</span>
+            </span>
+            {{ products?.Meta.TotalCount }}
+            <span translate>PRODUCTS.LIST.RESULTS</span>
+          </div>
+        </div>
+        <div class="col-12 d-md-none mb-2">
+          <button
+            *ngIf="hasFilters"
+            class="btn btn-block btn-default btn-outline-dark mb-2"
+            type="button"
+            (click)="clearAllFilters()"
+            translate
+          >
+            PRODUCTS.LIST.CLEAR_FILTERS
+          </button>
+        </div>
+        <div class="col-12 col-md-auto">
+          <ocm-product-sort></ocm-product-sort>
+        </div>
+      </div>
+      <div class="card" *ngIf="products && products.Items.length === 0">
+        <div class="card">
+          <p class="card-body text-center" translate>
+            PRODUCTS.LIST.NO_PRODUCTS
+            <br />
+            <a (click)="clearAllFilters()" translate
+              >PRODUCTS.LIST.CLEAR_FILTERS</a
+            >
+          </p>
+        </div>
+      </div>
+      <ocm-loading-layout
+        height="432px"
+        width="100%"
+        mb="1.5rem"
+        [resource]="products"
+        [isLoading]="isProductListLoading"
+        [columns]="4"
+        [rows]="4"
+      >
+      </ocm-loading-layout>
+      <div
+        *ngIf="!isProductListLoading && products && products.Items.length > 0"
+      >
+        <div class="row align-items-stretch">
+          <ocm-product-card
+            *ngFor="let product of products.Items; let i = index"
+            class="col-md-6 col-lg-4 d-flex"
+            [product]="product"
+            [shipFromSources]="shipFromSources"
+            [isFavorite]="isFavorite(product.ID)"
+          >
+          </ocm-product-card>
+        </div>
+        <ngb-pagination
+          *ngIf="products && products.Meta.TotalPages > 1"
+          [maxSize]="numberOfItemsInPagination"
+          class="d-flex justify-content-center"
+          [collectionSize]="products.Meta.TotalCount"
+          [pageSize]="products.Meta.PageSize"
+          [(page)]="products.Meta.Page"
+          (pageChange)="changePage($event)"
+          [rotate]="true"
+        >
+        </ngb-pagination>
+      </div>
+    </div>
+  </div>
+</section>

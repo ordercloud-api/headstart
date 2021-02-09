@@ -1,0 +1,643 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-8">
+      <div class="card py-2 px-3 mt-3 bg-white">
+        <small class="d-block mb-0" *ngIf="variableTextSpecs"
+          ><span translate>ADMIN.PRODUCT_EDIT.THIS_PRODUCT_HAS </span>
+          <span class="font-weight-bold">{{ variableTextSpecs?.length }}</span>
+          options for customization.
+        </small>
+      </div>
+    </div>
+  </div>
+  <!-- Product Customizations -->
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card p-4 mt-3 bg-white">
+        <div class="d-flex justify-content-between align-items-center">
+          <h6 class="font-weight-medium" translate>Customization</h6>
+          <div class="d-flex align-items-center">
+            <small class="mr-2 font-weight-bolder">{{
+              addVariableTextSpecs ? 'On' : 'Off'
+            }}</small>
+            <label class="switch mb-0" for="AddVariableTextSpecs">
+              <input
+                type="checkbox"
+                [checked]="addVariableTextSpecs"
+                class="form-check-input"
+                id="AddVariableTextSpecs"
+                aria-describedby="AddVariableTextSpecs"
+                (input)="toggleAddVariableTextSpecs($event)"
+              />
+              <span class="slider round cursor-pointer"></span>
+            </label>
+          </div>
+        </div>
+        <p class="font-italic small mt-3 mb-0" translate>
+          {{
+            readonly
+              ? 'Open Text Specifications as defined by the supplier.'
+              : 'Do you need to collect customized input from the buyer to fulfill this product?  Shirt text? Sign verbiage? Configure the options here.'
+          }}
+        </p>
+        <table *ngIf="addVariableTextSpecs" class="table table-borderless">
+          <colgroup>
+            <col span="1" class="width-60" />
+            <col span="1" class="width-20" />
+            <col span="1" class="width-25" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th translate>Customization Name</th>
+              <th translate>Char. Limit</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="" *ngFor="let spec of variableTextSpecs; let i = index">
+              <td class="vertical-align-middle">
+                {{ spec.Name }} <span *ngIf="!spec?.Required">(optional)</span>
+              </td>
+              <td class="vertical-align-middle">
+                {{ spec?.xp?.CharacterLimit || 'No Limit' }}
+              </td>
+              <td class="vertical-align-middle">
+                <button
+                  class="btn btn-sm btn-block btn-link text-muted"
+                  (click)="removeSpec(spec)"
+                  translate
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+            <tr class="bg-light">
+              <td class="py-3 px-2">
+                <input
+                  type="text"
+                  class="form-control form-control-sm"
+                  id="AddVariableTextSpec"
+                  placeholder="{{
+                    'Back of shirt, Sign, Line 1 etc' | translate
+                  }}"
+                />
+                <div class="custom-control custom-checkbox mt-3">
+                  <input
+                    type="checkbox"
+                    [checked]="!customizationRequired"
+                    (change)="customizationRequired = !customizationRequired"
+                    class="custom-control-input"
+                    id="optionalCustomizationCheckbox"
+                  />
+                  <label
+                    class="custom-control-label small custom-label-height"
+                    for="optionalCustomizationCheckbox"
+                    >This customization is optional</label
+                  >
+                </div>
+              </td>
+              <td class="py-3 px-2">
+                <input
+                  type="number"
+                  min="0"
+                  class="form-control form-control-sm"
+                  id="CharacterLimit"
+                />
+              </td>
+              <td class="py-3 px-2">
+                <button
+                  class="btn btn-sm btn-block btn-outline-dark"
+                  (click)="addVariableTextSpec()"
+                  translate
+                >
+                  ADMIN.PRODUCT_EDIT.ADD
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Product Variations -->
+      <div class="card p-4 mt-3 bg-white">
+        <div class="d-flex justify-content-between align-items-center">
+          <h6 class="font-weight-medium" translate>
+            ADMIN.PRODUCT_EDIT.PRODUCT_VARIATIONS
+          </h6>
+          <div class="d-flex align-items-center">
+            <small class="mr-2 font-weight-bolder">{{
+              editSpecs ? 'On' : 'Off'
+            }}</small>
+            <label class="switch mb-0" for="ConfigureVariations">
+              <input
+                type="checkbox"
+                [checked]="editSpecs"
+                class="form-check-input"
+                id="ConfigureVariations"
+                aria-describedby="ConfigureVariations"
+                (input)="toggleEditSpecs()"
+              />
+              <span class="slider round cursor-pointer"></span>
+            </label>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <small class="font-italic d-block mb-0" translate>{{
+              readonly
+                ? 'ADMIN.PRODUCT_EDIT.PRODUCT_VARIETIES_DEFINED'
+                : 'ADMIN.PRODUCT_EDIT.DOES_YOUR_PRODUCT'
+            }}</small>
+            <small class="d-block mb-0" *ngIf="variants"
+              ><span translate>ADMIN.PRODUCT_EDIT.THIS_PRODUCT_HAS </span>
+              <span
+                [ngClass]="{ 'text-danger': !variantsValid }"
+                class="font-weight-bold"
+                >{{ variants?.getValue()?.length }}</span
+              >
+              <span translate>
+                ADMIN.PRODUCT_EDIT.VARIANTS_LIMIT_100</span
+              ></small
+            >
+            <p *ngIf="!variantsValid" class="text-danger">
+              <fa-icon [icon]="faExclamationCircle"></fa-icon>
+              <span translate>ADMIN.PRODUCT_EDIT.THIS_PRODUCT_EXCEEDS</span>
+            </p>
+          </div>
+        </div>
+        <div class="row mt-3">
+          <div class="col-md-12">
+            <div class="form-group" *ngIf="editSpecs">
+              <label for="AddVariation" translate
+                >ADMIN.PRODUCT_EDIT.ADD_VARIATION</label
+              >
+              <input
+                type="text"
+                class="form-control add-variation"
+                id="AddVariation"
+                placeholder="{{
+                  'ADMIN.PRODUCT_EDIT.NAME_THE_VARIATION' | translate
+                }}"
+              />
+
+              <div class="custom-control custom-checkbox mt-3">
+                <input
+                  type="checkbox"
+                  [checked]="shouldDefinesVariantBeChecked()"
+                  (change)="definesVariant = !definesVariant"
+                  [disabled]="
+                    !variantsValid || variants?.getValue()?.length === 100
+                  "
+                  class="custom-control-input"
+                  id="skuVariationCheckbox"
+                />
+                <label
+                  class="custom-control-label small custom-label-height"
+                  for="skuVariationCheckbox"
+                  translate
+                  >ADMIN.PRODUCT_EDIT.SKUS_VARY</label
+                >
+              </div>
+              <button
+                class="btn btn-outline-secondary mt-3"
+                (click)="addSpec()"
+                translate
+              >
+                ADMIN.PRODUCT_EDIT.ADD_VARIATION
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Variation Options -->
+        <ng-container *ngIf="nonVariableTextSpecs && editSpecs">
+          <div
+            class="row pt-3 border-top"
+            *ngFor="let spec of nonVariableTextSpecs; let specIndex = index"
+          >
+            <div class="col-md-12">
+              <div class="d-flex justify-content-between align-items-center">
+                <h6>{{ spec.Name }}</h6>
+                <button
+                  class="btn btn-sm btn-link text-muted"
+                  (click)="removeSpec(spec)"
+                  translate
+                >
+                  Remove variation
+                </button>
+              </div>
+              <div class="table-responsive">
+                <table class="table table-borderless">
+                  <colgroup>
+                    <col span="1" class="width-40" />
+                    <col span="1" class="width-20" />
+                    <col span="1" class="width-20" />
+                    <col span="1" class="width-20" />
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th translate>ADMIN.PRODUCT_EDIT.OPTION</th>
+                      <th translate>ADMIN.PRODUCT_EDIT.DEFAULT</th>
+                      <th translate>ADMIN.PRODUCT_EDIT.PRICE_MARKUP</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="bg-light">
+                      <td class="py-3 px-2">
+                        <input
+                          class="form-control form-control-sm"
+                          id="{{ spec.ID }}"
+                          type="text"
+                          maxlength="30"
+                          placeholder="{{
+                            'ADMIN.PRODUCT_EDIT.NAME' | translate
+                          }}"
+                        />
+                      </td>
+                      <td class="p-3">--</td>
+                      <td class="py-3 px-2">
+                        <input
+                          class="form-control form-control-sm"
+                          id="{{ spec.ID }}Markup"
+                          type="number"
+                          placeholder="{{
+                            'ADMIN.PRODUCT_EDIT.MARKUP' | translate
+                          }}"
+                        />
+                      </td>
+                      <td class="py-3 px-2">
+                        <button
+                          class="btn btn-sm btn-block btn-outline-dark"
+                          [disabled]="shouldDisableAddSpecOptBtn(spec)"
+                          (click)="addSpecOption(spec)"
+                          translate
+                        >
+                          ADMIN.PRODUCT_EDIT.ADD
+                        </button>
+                      </td>
+                    </tr>
+                    <tr
+                      id="optionResults"
+                      *ngFor="let opt of spec.Options; let optionIndex = index"
+                    >
+                      <td class="vertical-align-middle">{{ opt.Value }}</td>
+                      <td class="vertical-align-middle">
+                        <div class="custom-control custom-checkbox">
+                          <input
+                            type="checkbox"
+                            class="custom-control-input"
+                            [checked]="isDefaultSpecOption(spec.ID, opt.ID)"
+                            (change)="
+                              isCreatingNew
+                                ? stageDefaultSpecOption(spec.ID, opt.ID)
+                                : setDefaultSpecOption(spec.ID, opt.ID)
+                            "
+                            [disabled]="disableSpecOption(spec.ID, opt)"
+                            id="DefaultSpecOption_{{ opt.ID }}"
+                            [ngbTooltip]="
+                              disableSpecOption(spec.ID, opt)
+                                ? 'Product must be saved before setting this new option as default'
+                                : ''
+                            "
+                          />
+                          <label
+                            class="custom-control-label small custom-label-height"
+                            for="DefaultSpecOption_{{ opt.ID }}"
+                            >Default
+                          </label>
+                        </div>
+                      </td>
+                      <td class="vertical-align-middle">
+                        {{
+                          getPriceMarkup(opt) | currency: myCurrency?.Currency
+                        }}
+                      </td>
+                      <td class="vertical-align-middle">
+                        <button
+                          class="btn btn-sm btn-block btn-link text-muted"
+                          (click)="removeSpecOption(spec, optionIndex)"
+                          translate
+                        >
+                          ADMIN.PRODUCT_EDIT.REMOVE_OPTION
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- Variant Matrix -->
+  <div class="row my-4 product-variations">
+    <div class="variant-overlay" *ngIf="assignVariantImages">
+      <div class="row">
+        <div class="col-md-12">
+          <img
+            *ngFor="let img of superProductEditable?.Images"
+            class="product-image"
+            [class.selected-image]="isImageSelected(img)"
+            [src]="img.Url"
+            (click)="toggleAssignImage(img, variantInSelection.xp?.SpecCombo)"
+            alt=""
+          />
+          <div>
+            <button
+              class="btn btn-outline-dark"
+              (click)="updateProductImageTags()"
+              translate
+            >
+              ADMIN.PRODUCT_EDIT.DONE
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <ng-container *ngIf="variants?.getValue()?.length > 0">
+        <h6 class="my-2" translate>
+          ADMIN.PRODUCT_EDIT.THE_FOLLOWING_VARIATIONS_HAVE
+        </h6>
+        <perfect-scrollbar
+          class="product-table ps-show-always variations-scrollbar"
+        >
+          <table class="table table-borderless mb-0">
+            <thead class="bg-white">
+              <tr>
+                <th scope="col" translate>ADMIN.PRODUCT_EDIT.DETAILS</th>
+                <th
+                  *ngFor="let spec of specsWithVariations; let i = index"
+                  scope="col"
+                >
+                  {{ variants.getValue()[0]?.xp?.SpecValues[i]?.SpecName }}
+                </th>
+                <th scope="col" translate>ADMIN.PRODUCT_EDIT.ACTIVE</th>
+                <th scope="col" translate>ADMIN.PRODUCT_EDIT.SKU</th>
+                <th
+                  *ngIf="
+                    superProductEditable?.Product?.Inventory
+                      ?.VariantLevelTracking
+                  "
+                  scope="col"
+                  translate
+                >
+                  ADMIN.PRODUCT_EDIT.INVENTORY
+                </th>
+                <th scope="col" translate>ADMIN.PRODUCT_EDIT.TOTAL_MARKUP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <ng-container
+                *ngFor="let variant of variants | async; let i = index"
+              >
+                <tr
+                  [ngClass]="{
+                    'selected-variant': variant === variantInSelection
+                  }"
+                >
+                  <td class="d-flex">
+                    <div
+                      class="icon-button ripple"
+                      (click)="
+                        variantInSelection?.ID === variant?.ID
+                          ? closeVariantDetails()
+                          : openVariantDetails(variant)
+                      "
+                    >
+                      <div class="icon-wrapper">
+                        <fa-icon
+                          [icon]="
+                            variantInSelection?.ID === variant?.ID
+                              ? faCaretDown
+                              : faCaretRight
+                          "
+                        >
+                        </fa-icon>
+                      </div>
+                    </div>
+                  </td>
+                  <td
+                    class="vertical-align-middle"
+                    *ngFor="let specValue of variant.xp?.SpecValues"
+                  >
+                    {{ specValue.SpecOptionValue }}
+                    <span class="font-weight-bold" *ngIf="specValue.PriceMarkup"
+                      >(+{{
+                        specValue.PriceMarkup | currency: myCurrency?.Currency
+                      }})</span
+                    >
+                  </td>
+                  <td class="vertical-align-middle">
+                    <div
+                      *ngIf="readonly"
+                      class="chip supplier-facet-chip readonly active"
+                    >
+                      {{ getVariantStatusDisplay(variant) }}
+                      <fa-icon [icon]="faCheckCircle"></fa-icon>
+                    </div>
+                    <div
+                      *ngIf="!readonly"
+                      class="chip editable supplier-facet-chip"
+                      (click)="toggleActive(variant)"
+                      [ngClass]="{ active: variant.Active }"
+                    >
+                      {{ getVariantStatusDisplay(variant) }}
+                      <fa-icon
+                        *ngIf="variant.Active"
+                        [icon]="faCheckCircle"
+                      ></fa-icon>
+                    </div>
+                  </td>
+                  <td class="vertical-align-middle">
+                    <div class="input-group-sm">
+                      <input
+                        class="form-control input-sm"
+                        type="text"
+                        [disabled]="readonly || variant === variantInSelection"
+                        (change)="updateSku($event, i)"
+                        [value]="variant?.xp?.NewID || variant?.ID"
+                      />
+                    </div>
+                  </td>
+                  <td
+                    class="vertical-align-middle"
+                    *ngIf="
+                      superProductEditable?.Product?.Inventory
+                        ?.VariantLevelTracking
+                    "
+                  >
+                    <div class="input-group-sm">
+                      <input
+                        class="form-control input-sm"
+                        type="number"
+                        min="0"
+                        [disabled]="readonly || variant === variantInSelection"
+                        (change)="updateVariantInventory($event, i)"
+                        [value]="variant?.Inventory?.QuantityAvailable"
+                      />
+                    </div>
+                  </td>
+                  <td>
+                    {{
+                      getTotalMarkup(variant.xp?.SpecValues)
+                        | currency: myCurrency?.Currency
+                    }}
+                  </td>
+                </tr>
+                <tr
+                  *ngIf="
+                    !isCreatingNew && variantInSelection?.ID === variant.ID
+                  "
+                >
+                  <td
+                    class="vertical-align-middle"
+                    [attr.colspan]="getVariantDetailColSpan()"
+                  >
+                    <div class="my-2">
+                      <fa-icon
+                        *ngIf="
+                          superProductEditable?.Images?.length && !readonly
+                        "
+                        (click)="assignVariantImages = true"
+                        [icon]="faPlusCircle"
+                        class="mr-2"
+                        size="lg"
+                      >
+                      </fa-icon>
+                    </div>
+                    <img
+                      class="variant-img"
+                      *ngFor="let img of getVariantImages(variantInSelection)"
+                      [src]="img.Url"
+                      alt="Variant Image"
+                    />
+                    <div class="form-row">
+                      <div class="form-group col-3">
+                        <label for="shipWidth" translate
+                          >ADMIN.PRODUCT_EDIT.SHIP_WIDTH</label
+                        >
+                        <input
+                          class="form-control input-sm"
+                          id="shipWidth"
+                          [disabled]="readonly"
+                          [value]="variantInSelection?.ShipWidth"
+                          (focusout)="
+                            variantShippingDimensionUpdate(
+                              $event,
+                              'ShipWidth',
+                              i
+                            )
+                          "
+                          placeholder="{{
+                            'ADMIN.PRODUCT_EDIT.WIDTH' | translate
+                          }}"
+                        />
+                      </div>
+                      <div class="form-group col-3">
+                        <label for="shipHeight" translate
+                          >ADMIN.PRODUCT_EDIT.SHIP_HEIGHT</label
+                        >
+                        <input
+                          class="form-control input-sm"
+                          id="shipHeight"
+                          [disabled]="readonly"
+                          [value]="variantInSelection?.ShipHeight"
+                          (focusout)="
+                            variantShippingDimensionUpdate(
+                              $event,
+                              'ShipHeight',
+                              i
+                            )
+                          "
+                          placeholder="{{
+                            'ADMIN.PRODUCT_EDIT.HEIGHT' | translate
+                          }}"
+                        />
+                      </div>
+                      <div class="form-group col-3">
+                        <label for="shipLength" translate
+                          >ADMIN.PRODUCT_EDIT.SHIP_LENGTH</label
+                        >
+                        <input
+                          class="form-control input-sm"
+                          id="shipLength"
+                          [disabled]="readonly"
+                          [value]="variantInSelection?.ShipLength"
+                          (focusout)="
+                            variantShippingDimensionUpdate(
+                              $event,
+                              'ShipLength',
+                              i
+                            )
+                          "
+                          placeholder="{{
+                            'ADMIN.PRODUCT_EDIT.LENGTH' | translate
+                          }}"
+                        />
+                      </div>
+                      <div class="form-group col-3">
+                        <label for="shipWeight" translate
+                          >ADMIN.PRODUCT_EDIT.SHIP_WEIGHT</label
+                        >
+                        <input
+                          class="form-control input-sm"
+                          id="shipWeight"
+                          [disabled]="readonly"
+                          [value]="variantInSelection?.ShipWeight"
+                          (focusout)="
+                            variantShippingDimensionUpdate(
+                              $event,
+                              'ShipWeight',
+                              i
+                            )
+                          "
+                          placeholder="{{
+                            'ADMIN.PRODUCT_EDIT.WEIGHT' | translate
+                          }}"
+                        />
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </ng-container>
+            </tbody>
+          </table>
+        </perfect-scrollbar>
+      </ng-container>
+      <ng-container *ngIf="specsWithoutVariations?.length">
+        <h6 class="my-2" translate>
+          ADMIN.PRODUCT_EDIT.THE_FOLLOWING_VARIATIONS_DONT
+        </h6>
+        <perfect-scrollbar
+          class="product-table ps-show-always variations-scrollbar"
+        >
+          <table class="table table-borderless mb-0">
+            <thead class="bg-white">
+              <tr>
+                <th translate>ADMIN.PRODUCT_EDIT.VARIATION</th>
+                <th translate>ADMIN.PRODUCT_EDIT.OPTION</th>
+                <th translate>ADMIN.PRODUCT_EDIT.PRICE_MARKUP</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let spec of specsWithoutVariations">
+              <tr *ngFor="let option of spec.Options">
+                <td>{{ spec.Name }}</td>
+                <td>{{ option.Value }}</td>
+                <td>
+                  {{ option.PriceMarkup || 0 | currency: myCurrency?.Currency }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </perfect-scrollbar>
+      </ng-container>
+    </div>
+  </div>
+  <!-- /Variant Matrix -->
+  <!-- /Product Variations -->
+</div>

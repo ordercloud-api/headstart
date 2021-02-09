@@ -1,0 +1,14 @@
+<div
+  *ngIf="_listPage?.Meta?.TotalCount"
+  [ngClass]="{ row: !_selectedResourceID, 'border-right': _selectedResourceID }"
+  class="bg-light text-dark border-top additional-item-table"
+>
+  <div class="col-12">
+    <div class="py-2 d-flex justify-content-between align-items-center">
+      <p class="mb-0">{{ getResultsDisplayText(_listPage) }}</p>
+      <p *ngIf="_listPage?.Meta?.TotalCount > 0" class="mb-0">
+        Page {{ _listPage?.Meta?.Page }} of {{ _listPage?.Meta?.TotalPages }}
+      </p>
+    </div>
+  </div>
+</div>

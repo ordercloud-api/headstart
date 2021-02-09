@@ -1,0 +1,71 @@
+.card-img-top {
+  margin: 0;
+  height: 344px;
+  background: var(--white);
+  color: var(--medium);
+  display: flex;
+  @media (min-width: 768px) {
+    height: 209px;
+  }
+  @media (min-width: 992px) {
+    height: 254px;
+  }
+  img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 auto;
+  }
+}
+
+.card-body {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  margin-bottom: .25rem;
+  color: var(--dark);
+  flex: 1 1 auto;
+}
+.card-text {
+  margin: 0;
+}
+
+.card-price {
+  color: var(--secondary);
+  font-weight: bold;
+}
+
+// DESIGN: if we don't add something like this, your every text element will underline on card hover/focus/etc
+.clickable-card {
+  color: initial;
+  &:hover,
+  &:focus {
+    text-decoration: none;
+    color: initial;
+  }
+}
+
+.card-footer {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  ocm-quantity-input {
+    // DESIGN: this is bootstrap's .form-control-sm
+    input {
+      min-width: 35px;
+      height: calc(1.5em + 0.5rem + 2px);
+      padding: 0.25rem 0.5rem;
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+  }
+  button {
+    height: calc(1.5em + 0.5rem + 2px); // copy the input's height;
+  }
+}

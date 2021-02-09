@@ -1,0 +1,18 @@
+.payment-card {
+  .hover-btn {
+    opacity: 0;
+    @media (max-width: 768px) {
+      opacity: 1;
+    }
+    transition: 200ms ease all;
+  }
+  border-bottom: 1px solid var(--gray-light);
+  &:last-child {
+    border-bottom: none;
+  }
+  &:hover {
+    .hover-btn {
+      opacity: 1;
+    }
+  }
+}

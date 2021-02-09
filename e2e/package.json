@@ -1,0 +1,31 @@
+{
+	"name": "e2e",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"testCafe_CI_Execute_Tests": "node cli-scripts/execute-tests"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@types/faker": "^4.1.5",
+		"@typescript-eslint/eslint-plugin": "^2.18.0",
+		"@typescript-eslint/parser": "^2.18.0",
+		"axios": "^0.18.0",
+		"chalk": "^2.4.2",
+		"dotenv": "^8.2.0",
+		"eslint": "^6.8.0",
+		"eslint-config-prettier": "^6.10.0",
+		"eslint-plugin-prettier": "^3.1.2",
+		"faker": "^4.1.0",
+		"ordercloud-javascript-sdk": "^4.0.0",
+		"prettier": "^1.19.1",
+		"testcafe": "^1.8.6",
+		"testcafe-reporter-html": "^1.4.4",
+		"testcafe-reporter-testcafe-to-testrail": "^1.0.0-alpha.0",
+		"@ordercloud/headstart-sdk": "^1.8.3",
+		"@applitools/eyes-testcafe": "^1.11.1"
+	}
+}

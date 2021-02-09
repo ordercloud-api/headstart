@@ -1,0 +1,20 @@
+<h5 translate>PAYMENTS.PAYMENT_LIST.PAYMENTS</h5>
+<div class="my-3" *ngFor="let payment of payments?.Items">
+  <ocm-credit-card-icon
+    *ngIf="payment.Type === 'CreditCard'"
+    [cardType]="payment.xp.cardType"
+    translate
+  ></ocm-credit-card-icon
+  ><span translate> PAYMENTS.PAYMENT_LIST.ENDING_IN</span>
+  {{ payment?.xp?.partialAccountNumber }}
+  <span *ngIf="payment.Type === 'PurchaseOrder'" translate>
+    PAYMENTS.PAYMENT_LIST.PO <small>{{ payment.ID }}</small>
+  </span>
+  <span *ngIf="payment.Type === 'SpendingAccount'"
+    ><span translate>PAYMENTS.PAYMENT_LIST.SPENDING_ACC</span> :
+    {{ payment.Details.Name }}
+  </span>
+  <span class="font-weight-bold"
+    >-{{ payment.Amount | currency: _userCurrency }}</span
+  >
+</div>

@@ -1,0 +1,70 @@
+<div class="container-fluid">
+  <form *ngIf="resourceForm" [formGroup]="resourceForm">
+    <div class="form-group">
+      <label for="Username">Username</label>
+      <input
+        type="text"
+        class="form-control"
+        id="Username"
+        maxlength="100"
+        aria-describedby="Username"
+        formControlName="Username"
+        (input)="updateResourceFromEvent($event, 'Username')"
+        placeholder="Enter Username"
+      />
+      <label for="FirstName">First Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="FirstName"
+        maxlength="100"
+        aria-describedby="FirstName"
+        formControlName="FirstName"
+        (input)="updateResourceFromEvent($event, 'FirstName')"
+        placeholder="Enter FirstName"
+      />
+      <label for="LastName">Last Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="LastName"
+        maxlength="100"
+        aria-describedby="LastName"
+        formControlName="LastName"
+        (input)="updateResourceFromEvent($event, 'LastName')"
+        placeholder="Enter LastName"
+      />
+      <div class="form-group">
+        <label for="Email">Email</label>
+        <input
+          type="text"
+          class="form-control"
+          id="Email"
+          maxlength="200"
+          showErrors
+          [resourceForm]="resourceForm"
+          aria-describedby="Email"
+          formControlName="Email"
+          (input)="updateResourceFromEvent($event, 'Email')"
+          placeholder="Enter Email"
+        />
+      </div>
+      <div class="form-group">
+        <p class="mb-1">Active</p>
+        <label class="switch mb-0" for="Active">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            id="Active"
+            showErrors
+            [resourceForm]="resourceForm"
+            aria-describedby="Active"
+            formControlName="Active"
+            (input)="updateResourceFromEvent($event, 'Active')"
+          />
+          <span class="slider round cursor-pointer"></span>
+        </label>
+      </div>
+    </div>
+  </form>
+</div>

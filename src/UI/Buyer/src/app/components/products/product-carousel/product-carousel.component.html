@@ -1,0 +1,22 @@
+<h3 class="my-4 text-center title">{{ displayTitle }}</h3>
+<div class="row align-items-center">
+  <div class="col-1 carousel-arrow" *ngIf="index > 0">
+    <fa-icon [icon]="faAngleLeft" (click)="left()"></fa-icon>
+  </div>
+  <div [ngClass]="index > 0 ? 'col-10' : 'col'">
+    <div class="row d-flex align-items-stretch">
+      <ocm-product-card
+        *ngFor="let product of getProducts(); let i = index"
+        class="col-lg-3 col-md-4 col-sm-6 d-flex flex-grow-1 flex-shrink-1"
+        [product]="product"
+      >
+      </ocm-product-card>
+    </div>
+  </div>
+  <div
+    class="col-1 carousel-arrow"
+    *ngIf="index <= products.length - rowLength - 1"
+  >
+    <fa-icon [icon]="faAngleRight" (click)="right()"></fa-icon>
+  </div>
+</div>

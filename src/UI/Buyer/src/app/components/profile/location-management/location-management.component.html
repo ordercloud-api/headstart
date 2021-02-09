@@ -1,0 +1,103 @@
+<section class="container mt-3">
+  <div class="row">
+    <ocm-profile-nav class="col-md-3"> </ocm-profile-nav>
+    <div class="col-md-9">
+      <div>
+        <h1 class="page-heading mt-0" translate>
+          PROFILE.LOCATION_DETAILS.TITLE
+        </h1>
+        <h3
+          class="border-bottom pb-3 mb-3 d-flex justify-content-between border-bottom pb-2 mb-4"
+        >
+          <span>
+            <span *ngIf="address?.CompanyName">
+              {{ address?.CompanyName }}
+            </span>
+            <span *ngIf="address?.CompanyName && address?.AddressName">
+              |
+            </span>
+            <span *ngIf="address?.AddressName">
+              {{ address?.AddressName }}
+            </span>
+          </span>
+          <button
+            *ngIf="userCanViewLocationOrders"
+            type="button"
+            (click)="toLocationOrders()"
+            class="btn btn-outline-primary"
+          >
+            Orders Made in This Location
+          </button>
+        </h3>
+      </div>
+
+      <div
+        *ngIf="userCanAdminResaleCert"
+        class="row pt-3 mt-3 bg-white shadow-sm info-edit-container mb-5"
+      >
+        <div class="col-md-5">
+          <h4 translate>PROFILE.LOCATION_DETAILS.RESALE_TAX</h4>
+          <p class="font-italic" translate>
+            PROFILE.LOCATION_DETAILS.RESALE_TAX_INFO
+          </p>
+        </div>
+        <div class="col-md-7">
+          <div [ngClass]="{ 'bg-light': highlight }">
+            <div
+              *ngIf="hasCertificate()"
+              class="d-flex justify-content-between align-items-center mb-2"
+            >
+              <button
+                class="btn btn-outline-primary"
+                (click)="downloadCertificate()"
+                translate
+              >
+                PROFILE.LOCATION_DETAILS.DOWNLOAD_CERT
+                <fa-icon [icon]="faDownload"></fa-icon>
+              </button>
+              <p class="mb-0 text-capitalize" translate>
+                PROFILE.LOCATION_DETAILS.EXP
+                <span class="font-weight-bold">{{
+                  certificate?.ExpirationDate | date: 'MM/dd/yyyy'
+                }}</span>
+              </p>
+            </div>
+            <button
+              class="btn btn-outline-primary"
+              *ngIf="!showCertificateForm && userCanAdminResaleCert"
+              (click)="revealCertificateForm()"
+              translate
+            >
+              <ng-container *ngIf="hasCertificate(); else addNew" translate>
+                PROFILE.LOCATION_DETAILS.REPLACE
+              </ng-container>
+              <ng-template #addNew translate>
+                PROFILE.LOCATION_DETAILS.ADD
+              </ng-template>
+            </button>
+          </div>
+          <div *ngIf="showCertificateForm" class="mx-2 px-2 py-2 my-2 bg-light">
+            <p class="font-weight-bold" translate>
+              PROFILE.LOCATION_DETAILS.NEW_CERT
+            </p>
+            <ocm-certificate-form
+              (submitted)="saveCertificate($event.detail)"
+              (dismissed)="dismissCertificateForm()"
+            ></ocm-certificate-form>
+          </div>
+        </div>
+      </div>
+
+      <ocm-order-access-management
+        *ngIf="_locationID && userCanAdminPermissions"
+        [locationID]="_locationID"
+      >
+      </ocm-order-access-management>
+      <ocm-location-permissions-management
+        *ngIf="_locationID && userCanAdminPermissions"
+        [locationID]="_locationID"
+      >
+      </ocm-location-permissions-management>
+    </div>
+  </div>
+</section>

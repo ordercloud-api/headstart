@@ -1,0 +1,29 @@
+<resource-breadcrumbs-component></resource-breadcrumbs-component>
+<div class="container-fluid">
+  <div class="py-3 additional-item-resource">
+    <h1 class="resource-name mb-0">Pages</h1>
+  </div>
+  <!-- 
+    this ngStyle was applied to cms-page-list but was throwing a bunch of errors, work with DJ to find better solution
+    [ngStyle]="{'height.px': resourceHeight}"
+      -->
+  <cms-page-list
+    *ngIf="parentResourceID && editorOptions"
+    class="cms-height"
+    resourceType="ApiClients"
+    [resourceID]="parentResourceID"
+    renderSiteUrl="https://marketplace-buyer-ui-test.azurewebsites.net"
+    [editorOptions]="editorOptions"
+    [lockedSlugs]="['home']"
+    [beforeAssetUpload]="prefixAssetID"
+    [defaultListOptions]="assetFilterOptions"
+  >
+    <!-- TODO: The `renderSiteUrl` prop needs to be dynamic, based on which Api Client is selected -->
+    <resource-select-dropdown-component
+      class="cms-toolbar-additions"
+      [parentService]="storefrontsService"
+      [ocService]="ocService"
+    >
+    </resource-select-dropdown-component>
+  </cms-page-list>
+</div>

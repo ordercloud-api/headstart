@@ -1,0 +1,165 @@
+<!-- User Permissions -->
+<div class="row pt-3 mt-3 bg-white shadow-sm card-highlight-border">
+  <div class="col-md-5">
+    <h5>{{ displayText.Title }}</h5>
+    <p class="font-italic">{{ displayText.InfoText }}</p>
+  </div>
+  <div class="col-md-7">
+    <!-- TO-DO - May want to look into transclusion for this section (toggles/search). -->
+    <div
+      *ngIf="userGroupType === 'BuyerLocation' && !isCreatingNew"
+      class="actionBar btn-group w-50 mb-3"
+      role="group"
+    >
+      <button
+        type="button"
+        class="btn btn-outline-primary btn-sm"
+        [ngClass]="{ active: !viewAssignedUserGroups }"
+        (click)="toggleUserGroupAssignmentView(false)"
+        translate
+      >
+        View All
+      </button>
+      <button
+        type="button"
+        class="btn btn-outline-primary btn-sm"
+        [ngClass]="{ active: viewAssignedUserGroups }"
+        (click)="toggleUserGroupAssignmentView(true)"
+        translate
+      >
+        View Assigned
+      </button>
+    </div>
+    <search-component
+      *ngIf="userGroupType === 'BuyerLocation'"
+      class="mr-3 w-100 additional-item-resource-select-dropdown"
+      id="resource-search"
+      [placeholderText]="''"
+      [searchTermInput]="searchTermInput"
+      (searched)="searchedResources($event)"
+    >
+    </search-component>
+    <div
+      class="font-italic"
+      *ngIf="(!userGroups?.Items?.length && !userGroups?.Meta) || searching"
+    >
+      <div class="spinner-border mb-3" role="status">
+        <span class="sr-only" translate>ADMIN.COMMON.LOADING</span>
+      </div>
+    </div>
+    <perfect-scrollbar>
+      <table *ngIf="userGroups?.Meta" class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Assigned</th>
+            <th scope="col">{{ displayText.Column2 }}</th>
+            <th scope="col">ID</th>
+            <th scope="col" *ngIf="userGroupType === 'UserPermissions'">
+              Description
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="cursor-pointer" *ngFor="let group of userGroups.Items">
+            <td class="d-flex justify-content-start align-items-center">
+              <label class="switch mb-0">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  (click)="
+                    isCreatingNew
+                      ? addUserUserGroupAssignment(group)
+                      : toggleUserUserGroupAssignment(group)
+                  "
+                  [checked]="isAssigned(group)"
+                />
+                <span class="slider round"></span>
+              </label>
+            </td>
+            <td>{{ group.Name }}</td>
+            <td *ngIf="userGroupType === 'UserPermissions'">
+              {{ group.Description }}
+            </td>
+            <td>{{ group.ID }}</td>
+          </tr>
+          <tr *ngIf="!userGroups?.Items?.length">
+            <td>
+              <span *ngIf="searchTermInput" class="font-italic"
+                >Your search for "{{ searchTermInput }}" yielded no
+                results.</span
+              >
+              <span
+                *ngIf="!searchTermInput && viewAssignedUserGroups"
+                class="font-italic"
+                >This user has not been assigned to any locations.</span
+              >
+              <span
+                *ngIf="!searchTermInput && !viewAssignedUserGroups"
+                class="font-italic"
+                >There are no locations for this user's Home Country.</span
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </perfect-scrollbar>
+    <ngb-pagination
+      *ngIf="userGroups?.Meta?.TotalPages > 1 && !viewAssignedUserGroups"
+      maxSize="10"
+      class="d-flex justify-content-center mt-3"
+      [collectionSize]="userGroups.Meta.TotalCount"
+      [pageSize]="userGroups.Meta.PageSize"
+      [(page)]="userGroups.Meta.Page"
+      (pageChange)="changePage($event)"
+      [rotate]="true"
+    >
+    </ngb-pagination>
+    <div *ngIf="!isCreatingNew" class="pb-3">
+      <button
+        [disabled]="!areChanges"
+        class="btn btn-link"
+        (click)="discardUserUserGroupAssignmentChanges()"
+      >
+        {{ areChanges ? 'Cancel' : 'No Changes' }}
+      </button>
+      <button
+        *ngIf="areChanges && !requestedUserConfirmation"
+        [disabled]="!areChanges || requestedUserConfirmation"
+        class="btn brand-button"
+        (click)="requestUserConfirmation()"
+      >
+        {{
+          requestedUserConfirmation ? 'Pending Confirmation' : 'Save Changes'
+        }}
+      </button>
+      <button
+        *ngIf="requestedUserConfirmation && areChanges"
+        class="btn btn-primary"
+        (click)="executeUserUserGroupAssignmentRequests()"
+      >
+        Confirm
+      </button>
+      <div
+        *ngIf="areChanges && requestedUserConfirmation"
+        class="mt-3 pb-3 border-top"
+      >
+        <div class="p-4 border-radius border-primary bg-light">
+          <div class="d-flex justify-content-start align-items-center">
+            <fa-icon
+              [icon]="faExclamationCircle"
+              class="alert-icon mr-3"
+            ></fa-icon>
+            <p class="mb-0 d-flex flex-column">
+              <small class="font-weight-bold"
+                >This is a potentially destructive action that affects
+                {{ displayText.Title }}.</small
+              >
+              {{ displayText.ConfirmText }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /User Permissions  -->

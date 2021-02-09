@@ -1,0 +1,122 @@
+<div class="container-fluid">
+  <form *ngIf="resourceForm" [formGroup]="resourceForm">
+    <div class="row pt-3">
+      <div class="col-md-5">
+        <h5 translate>ADMIN.FACETS.PRODUCT_FACET_INFO</h5>
+        <p class="font-italic" translate>ADMIN.FACETS.INFO_ABOUT_FACET</p>
+      </div>
+      <div class="col-md-7 form-group">
+        <div class="form-group" *ngIf="isCreatingNew">
+          <label for="ID" translate>ADMIN.FACETS.FACET_ID</label>
+          <input
+            type="text"
+            class="form-control"
+            id="ID"
+            showErrors
+            aria-describedby="ID"
+            maxlength="100"
+            [resourceForm]="resourceForm"
+            formControlName="ID"
+            (input)="updateResourceFromEvent($event, 'ID')"
+            placeholder="{{ 'ADMIN.FACETS.ENTER_FACET_ID' | translate }}"
+          />
+        </div>
+        <div class="form-group" *ngIf="!isCreatingNew">
+          <label for="ID" translate>ADMIN.FACETS.FACET_ID</label>
+          <input class="form-control" formControlName="ID" disabled />
+        </div>
+        <div class="form-group">
+          <label for="Name" translate>ADMIN.FACETS.NAME</label>
+          <input
+            type="text"
+            class="form-control"
+            id="Name"
+            maxlength="100"
+            aria-describedby="Name"
+            formControlName="Name"
+            (input)="updateResourceFromEvent($event, 'Name')"
+            placeholder="{{ 'ADMIN.FACETS.ENTER_FACET_NAME' | translate }}"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="row pt-3">
+      <div class="col-md-5">
+        <h5 translate>ADMIN.FACETS.FACET_OPTIONS</h5>
+        <p class="font-italic" translate>ADMIN.FACETS.WHAT_OPTIONS_AVAILABLE</p>
+      </div>
+      <div class="col-md-7 form-group">
+        <div class="form-group">
+          <label
+            [ngClass]="{ 'font-weight-bold': facetOptionLimitReached() }"
+            for="addFacetOption"
+            >{{ _facetEditable?.xp?.Options?.length || 0 }} / 25
+            {{ 'ADMIN.FACETS.OPTIONS' | translate }}</label
+          >
+          <div class="input-group w-50">
+            <input
+              class="form-control"
+              type="text"
+              placeholder="{{ 'ADMIN.FACETS.ADD_FACET_OPTION' | translate }}"
+              id="newFacetOption"
+            />
+            <div class="input-group-append">
+              <button
+                class="btn btn-dark"
+                type="submit"
+                [disabled]="facetOptionLimitReached()"
+                (click)="addFacetOption()"
+                [attr.title]="
+                  facetOptionLimitReached()
+                    ? ('ADMIN.FACETS.LIMIT_OF_25' | translate)
+                    : null
+                "
+                data-toggle="tooltip"
+                data-placement="bottom"
+                translate
+              >
+                ADMIN.FACETS.ADD
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="chip" *ngFor="let option of _facetEditable?.xp?.Options">
+          {{ option }}
+          <fa-icon
+            (click)="removeFacetOption(option)"
+            [icon]="faTimesCircle"
+          ></fa-icon>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div
+    class="d-flex justify-content-between align-items-center py-2 facet-edit-actions"
+  >
+    <delete-confirm-modal-component
+      *ngIf="!isCreatingNew"
+      buttonText="ADMIN.NAV.FACET"
+      (deleteConfirmed)="handleDelete($event)"
+    >
+    </delete-confirm-modal-component>
+    <div>
+      <button
+        *ngIf="areChanges"
+        class="btn btn-primary"
+        type="submit"
+        [disabled]="resourceForm?.status === 'INVALID' || dataIsSaving"
+        (click)="saveResource()"
+      >
+        {{ getSaveBtnText() }}
+      </button>
+      <button
+        class="btn brand-button ml-3"
+        (click)="handleDiscardChanges()"
+        *ngIf="areChanges && !isCreatingNew"
+        translate
+      >
+        COMMON.DISCARD_CHANGES
+      </button>
+    </div>
+  </div>
+</div>

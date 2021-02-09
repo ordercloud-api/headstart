@@ -1,0 +1,26 @@
+<!-- /Product Details -->
+<div class="container-fluid">
+  <div class="row pt-3">
+    <div class="col">
+      <h3 class="text-muted text-uppercase" translate>
+        ADMIN.PRODUCT_EDIT.BUYER_VISIBILITY
+      </h3>
+      <p class="font-italic" translate>
+        ADMIN.PRODUCT_EDIT.CONFIGURE_WHICH_BUYERS
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <ul class="list-group w-100">
+        <li *ngFor="let buyer of buyers" class="list-group-item">
+          <buyer-visibility-configuration-component
+            [product]="product"
+            [buyer]="buyer"
+            [isAssigned]="isAssigned(buyer)"
+          ></buyer-visibility-configuration-component>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

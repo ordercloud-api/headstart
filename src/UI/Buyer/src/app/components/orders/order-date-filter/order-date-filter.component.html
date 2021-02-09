@@ -1,0 +1,69 @@
+<form [formGroup]="form" name="DateFilterForm" novalidate>
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label for="dFrom" translate>ORDERS.DATE_FILTER.FROM</label>
+        <div class="input-group">
+          <input
+            formControlName="fromDate"
+            class="form-control border-right-0"
+            placeholder="yyyy-mm-dd"
+            ngbDatepicker
+            #dFrom="ngbDatepicker"
+            id="dFrom"
+            showErrors
+          />
+          <div class="input-group-append">
+            <span
+              *ngIf="form.value.fromDate"
+              (click)="clearFromDate()"
+              class="input-group-text bg-white"
+            >
+              <fa-icon [icon]="faTimes"></fa-icon>
+            </span>
+            <button
+              class="btn btn-outline-secondary"
+              (click)="dFrom.toggle()"
+              type="button"
+            >
+              <fa-icon [icon]="faCalendar" id="calendar-addon-from"></fa-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div class="form-group">
+        <label for="dTo" translate>ORDERS.DATE_FILTER.TO</label>
+        <div class="input-group">
+          <input
+            formControlName="toDate"
+            class="form-control border-right-0"
+            placeholder="yyyy-mm-dd"
+            ngbDatepicker
+            minDate="today"
+            #dTo="ngbDatepicker"
+            showErrors
+            id="dTo"
+          />
+          <div class="input-group-append">
+            <span
+              *ngIf="form.value.toDate"
+              (click)="clearToDate()"
+              class="input-group-text bg-white"
+            >
+              <fa-icon [icon]="faTimes"></fa-icon>
+            </span>
+            <button
+              class="btn btn-outline-secondary"
+              (click)="dTo.toggle()"
+              type="button"
+            >
+              <fa-icon [icon]="faCalendar" id="calendar-addon-to"></fa-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

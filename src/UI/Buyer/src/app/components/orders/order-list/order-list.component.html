@@ -1,0 +1,124 @@
+<div class="table-responsive" *ngIf="orders?.Items.length">
+  <table class="table table-striped table-bordered table-hover bg-light">
+    <caption class="sr-only" translate>
+      ORDERS.LIST.ORDER_LIST
+    </caption>
+    <thead>
+      <tr>
+        <th *ngIf="columns.includes('Favorite')"></th>
+        <th (click)="updateSort('ID')" *ngIf="columns.includes('ID')">
+          <button class="btn btn-link font-weight-bold" translate>
+            ORDERS.LIST.ID
+            <fa-icon
+              *ngIf="sortBy === 'ID' || sortBy === '!ID'"
+              [icon]="sortBy === 'ID' ? faCaretDown : faCaretUp"
+            ></fa-icon>
+          </button>
+        </th>
+        <th (click)="updateSort('Status')" *ngIf="columns.includes('Status')">
+          <button class="btn btn-link font-weight-bold" translate>
+            ORDERS.LIST.STATUS
+            <fa-icon
+              *ngIf="
+                sortBy === 'xp?.SubmittedOrderStatus' ||
+                sortBy === '!xp?.SubmittedOrderStatus'
+              "
+              [icon]="
+                sortBy === 'xp?.SubmittedOrderStatusStatus'
+                  ? faCaretDown
+                  : faCaretUp
+              "
+            ></fa-icon>
+          </button>
+        </th>
+        <th
+          (click)="updateSort('DateSubmitted')"
+          *ngIf="columns.includes('DateSubmitted')"
+        >
+          <button class="btn btn-link font-weight-bold" translate>
+            ORDERS.LIST.DATE_SUBMITTED
+            <fa-icon
+              *ngIf="sortBy === 'DateSubmitted' || sortBy === '!DateSubmitted'"
+              [icon]="sortBy === 'DateSubmitted' ? faCaretDown : faCaretUp"
+            ></fa-icon>
+          </button>
+        </th>
+        <th *ngIf="columns.includes('SubmittedBy')">
+          <button class="btn btn-link font-weight-bold" translate>
+            ORDERS.LIST.SUBMITTED_BY
+          </button>
+        </th>
+        <th (click)="updateSort('Total')" *ngIf="columns.includes('Total')">
+          <button class="btn btn-link font-weight-bold" translate>
+            ORDERS.LIST.TOTAL
+            <fa-icon
+              *ngIf="sortBy === 'Total' || sortBy === '!Total'"
+              [icon]="sortBy === 'Total' ? faCaretDown : faCaretUp"
+            ></fa-icon>
+          </button>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        class="cursor-pointer"
+        *ngFor="let order of orders?.Items"
+        (click)="toOrderDetails(order.ID)"
+      >
+        <td
+          *ngIf="columns.includes('Favorite')"
+          (click)="$event.stopPropagation()"
+        >
+          <ocm-toggle-favorite
+            [favorite]="isFavorite(order.ID)"
+            (favoriteChanged)="setIsFavorite($event.detail, order.ID)"
+          >
+          </ocm-toggle-favorite>
+        </td>
+        <td *ngIf="columns.includes('ID')" class="text-primary">
+          {{ order.ID }}
+          <span
+            *ngIf="order.xp.OrderType === 'Quote'"
+            class="badge badge-pill badge-secondary ml-2"
+            >{{ order.xp.OrderType }}</span
+          >
+        </td>
+        <td *ngIf="columns.includes('Status')">
+          <ocm-order-status-icon
+            [status]="getOrderStatus(order)"
+          ></ocm-order-status-icon>
+          {{ getOrderStatus(order) }}
+        </td>
+        <td *ngIf="columns.includes('DateSubmitted')">
+          {{ order.DateSubmitted | date: 'short' || 'N/A' }}
+        </td>
+        <td *ngIf="columns.includes('SubmittedBy')">
+          {{ order.FromUser.FirstName }} {{ order.FromUser.LastName }}
+        </td>
+        <td *ngIf="columns.includes('Total')">
+          {{
+            isQuoteOrder(order)
+              ? 'N/A'
+              : (order.Total | currency: _userCurrency)
+          }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div
+  class="card bg-light p-3 flex-row justify-content-center"
+  *ngIf="!orders?.Items.length"
+>
+  <p class="mb-0" translate>ORDERS.LIST.NO_ORDERS</p>
+</div>
+<ngb-pagination
+  *ngIf="orders?.Meta.TotalPages > 1"
+  maxSize="10"
+  class="d-flex justify-content-center"
+  [collectionSize]="orders.Meta.TotalCount"
+  [pageSize]="orders.Meta.PageSize"
+  [(page)]="orders.Meta.Page"
+  (pageChange)="changePage($event)"
+  [rotate]="true"
+></ngb-pagination>

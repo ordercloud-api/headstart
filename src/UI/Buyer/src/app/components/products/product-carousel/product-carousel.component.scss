@@ -1,0 +1,20 @@
+.title {
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.15rem;
+}
+
+:host() {
+  ::ng-deep ocm-product-card {
+    .card {
+      .clickable-card {
+        @media (min-width: 576px) {
+          .card-img-top {
+            height: unset;
+            max-height: 300px;
+          }
+        }
+      }
+    }
+  }
+}

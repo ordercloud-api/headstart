@@ -1,0 +1,278 @@
+<div class="container">
+  <div class="container order-detail-pdf-range">
+    <div *ngIf="order">
+      <nav class="breadcrumb" aria-label="breadcrumb">
+        <a class="breadcrumb-item" (click)="toAllOrders()" translate
+          >ORDERS.DETAIL.ALL</a
+        >
+        <a class="breadcrumb-item" aria-current="page">{{ order.ID }}</a>
+      </nav>
+      <div class="pb-2 mt-4 mb-2">
+        <h2>
+          <span class="text-muted"
+            ><span translate>ORDERS.DETAIL.ORDER</span> #:</span
+          >
+          {{ order.ID }}
+          <span
+            *ngIf="order.xp.OrderType === 'Quote'"
+            class="badge badge-pill badge-primary ml-2"
+            >{{ order.xp.OrderType }}</span
+          >
+          <div *ngIf="subView === 'details'" class="float-right">
+            <button
+              class="btn btn-outline-secondary d-print-none"
+              (click)="createAndSavePDF()"
+              translate
+            >
+              ORDERS.DETAIL.DOWNLOAD_AS_PDF
+            </button>
+          </div>
+        </h2>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div>
+            <span translate>ORDERS.DETAIL.STATUS</span>:
+            <ocm-order-status-icon
+              [status]="getOrderStatus()"
+            ></ocm-order-status-icon>
+            {{ getOrderStatus() }}
+          </div>
+          <div>
+            <span translate>ORDERS.DETAIL.SHIPPING_STATUS</span>:
+            <ocm-order-status-icon
+              [status]="order.xp.ShippingStatus"
+            ></ocm-order-status-icon>
+            {{ order.xp.ShippingStatus | orderStatusDisplay }}
+          </div>
+          <div>
+            <span translate>ORDERS.DETAIL.CLAIM_STATUS</span>:
+            <ocm-order-status-icon
+              [status]="order.xp.ClaimStatus"
+            ></ocm-order-status-icon>
+            {{ order.xp.ClaimStatus | orderStatusDisplay }}
+          </div>
+          <small class="float-left"
+            ><span translate>ORDERS.DETAIL.SUBMITTED</span>
+            {{ order.DateSubmitted | date: 'short' }}</small
+          >
+        </div>
+        <div class="col-md-8">
+          <ocm-order-approval
+            *ngIf="approvalVersion"
+            class="float-right"
+            [orderID]="order.ID"
+          ></ocm-order-approval>
+
+          <button
+            *ngIf="!approvalVersion"
+            class="btn btn-outline-secondary float-right d-print-none"
+            (click)="toggleFavorite(order)"
+            translate
+          >
+            ORDERS.DETAIL.FAVORITE
+            <ocm-toggle-favorite
+              title="Favorite"
+              [favorite]="isFavorite(order.ID)"
+            >
+            </ocm-toggle-favorite>
+          </button>
+          <button
+            *ngIf="
+              !approvalVersion &&
+              !isQuoteOrder(order) &&
+              order.Status !== 'Unsubmitted'
+            "
+            class="btn btn-secondary float-right mr-2 d-print-none"
+            (click)="open(reorderModal)"
+            translate
+          >
+            ORDERS.DETAIL.REORDER
+          </button>
+          <button
+            *ngIf="
+              !showRequestReturn &&
+              !showRequestCancel &&
+              canRequestReturn() &&
+              !approvalVersion &&
+              !isQuoteOrder(order)
+            "
+            class="btn btn-secondary float-right mr-2 d-print-none"
+            (click)="toggleRequestReturn()"
+            translate
+          >
+            ORDERS.DETAIL.REQUEST_A_RETURN
+          </button>
+          <button
+            *ngIf="
+              showRequestCancel &&
+              !isQuoteOrder(order) &&
+              order.Status !== 'Unsubmitted'
+            "
+            class="btn btn-secondary float-right mr-2 d-print-none"
+            (click)="toggleRequestCancel()"
+            translate
+          >
+            ORDERS.DETAIL.DISCARD_CANCEL_REQUEST
+          </button>
+          <button
+            *ngIf="
+              !showRequestCancel &&
+              !showRequestReturn &&
+              canRequestCancel() &&
+              !approvalVersion &&
+              !isQuoteOrder(order)
+            "
+            class="btn btn-secondary float-right mr-2 d-print-none"
+            (click)="toggleRequestCancel()"
+            translate
+          >
+            ORDERS.DETAIL.REQUEST_A_CANCEL
+          </button>
+          <button
+            *ngIf="
+              showRequestReturn &&
+              !isQuoteOrder(order) &&
+              order.Status !== 'Unsubmitted'
+            "
+            class="btn btn-secondary float-right mr-2 d-print-none"
+            (click)="toggleRequestReturn()"
+            translate
+          >
+            ORDERS.DETAIL.DISCARD_RETURN_REQUEST
+          </button>
+
+          <button
+            *ngIf="
+              !approvalVersion &&
+              !isQuoteOrder(order) &&
+              order.Status === 'Unsubmitted'
+            "
+            class="btn btn-secondary float-right mr-2 d-print-none"
+            (click)="open(updateOrderModal)"
+            translate
+          >
+            ORDERS.DETAIL.UPDATE
+          </button>
+          <!-- TODO: refactor the reorder process to not be in a modal -->
+          <ng-template #reorderModal let-modal class="confirm-modal">
+            <confirm-modal
+              [modalTitle]="'Reorder'"
+              aria-labelledby="confirm-modal"
+            >
+              <div
+                class="alert"
+                [ngClass]="{
+                  'alert-danger': message.classType == 'danger',
+                  'alert-warning': message.classType == 'warning',
+                  'alert-success': message.classType == 'success'
+                }"
+              >
+                <p [innerHTML]="message.string"></p>
+              </div>
+              <ocm-lineitem-table
+                *ngIf="reorderResponse.InvalidLi.length"
+                [lineItems]="reorderResponse.InvalidLi"
+                [groupByKits]="true"
+                [readOnly]="true"
+              >
+              </ocm-lineitem-table>
+              <div
+                class="row d-flex justify-content-space-between justify-content-between mr-2 ml-2"
+              >
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-md"
+                  (click)="modal.dismiss()"
+                  translate
+                >
+                  ORDERS.DETAIL.CANCEL
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-md"
+                  [disabled]="!reorderResponse?.ValidLi?.length"
+                  (click)="addToCart(); modal.dismiss()"
+                  translate
+                >
+                  ORDERS.DETAIL.ADD_TO_CART
+                </button>
+              </div>
+            </confirm-modal>
+          </ng-template>
+          <ng-template #updateOrderModal let-modal class="confirm-modal">
+            <confirm-modal
+              [modalTitle]="'Update Order'"
+              aria-labelledby="confirm-modal"
+            >
+              <div class="alert alert-warning">
+                <p translate>ORDERS.DETAIL.WARNING</p>
+              </div>
+              <div
+                class="row d-flex justify-content-space-between justify-content-between mr-2 ml-2"
+              >
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-md"
+                  (click)="modal.dismiss()"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary btn-md"
+                  (click)="moveOrderToCart(); modal.dismiss()"
+                  translate
+                >
+                  ORDERS.DETAIL.MOVE_TO_CART
+                </button>
+              </div>
+            </confirm-modal>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+    <ul *ngIf="!approvalVersion" class="nav nav-tabs mb-3 d-print-none">
+      <li class="nav-item">
+        <button class="btn btn-link nav-link" (click)="toDetails()" translate>
+          <fa-icon [icon]="faCube"></fa-icon>
+          ORDERS.DETAIL.DETAILS
+        </button>
+      </li>
+      <li class="nav-item">
+        <button class="btn btn-link nav-link" (click)="toShipments()" translate>
+          <fa-icon [icon]="faTruck"></fa-icon>
+          ORDERS.DETAIL.SHIPMENTS
+        </button>
+      </li>
+    </ul>
+    <div>
+      <ocm-order-historical
+        class="col-md-6"
+        *ngIf="
+          orderDetails &&
+          showDetails() &&
+          !showRequestReturn &&
+          !showRequestCancel
+        "
+        [isOrderToApprove]="isOrderToApprove"
+        [orderDetails]="orderDetails"
+      >
+      </ocm-order-historical>
+    </div>
+  </div>
+  <ocm-order-shipments
+    *ngIf="showShipments() && !showRequestReturn"
+    [orderID]="order.ID"
+  >
+  </ocm-order-shipments>
+  <ocm-order-return
+    class="col-md-6"
+    *ngIf="showRequestReturn || showRequestCancel"
+    (viewReturnFormEvent)="toggleShowRequestForm($event.detail)"
+    [isOrderToApprove]="isOrderToApprove"
+    [orderDetails]="orderDetails"
+    [action]="showRequestReturn ? 'return' : 'cancel'"
+  >
+  </ocm-order-return>
+</div>

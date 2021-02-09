@@ -1,0 +1,108 @@
+<form
+  *ngIf="myBuyerLocations"
+  (ngSubmit)="onSubmit()"
+  novalidate
+  [formGroup]="quoteRequestForm"
+  name="QuoteRequestForm"
+>
+  <div [formGroup]="quoteRequestForm">
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="FirstName" translate>PRODUCTS.QUOTE_REQ.FIRST</label>
+        <input
+          type="text"
+          formControlName="FirstName"
+          class="form-control form-control-sm"
+          id="FirstName"
+          placeholder="First Name"
+          autofocus="true"
+          autocomplete="off"
+          showErrors
+        />
+      </div>
+      <div class="form-group col-md-6">
+        <label for="LastName" translate>PRODUCTS.QUOTE_REQ.LAST</label>
+        <input
+          type="text"
+          formControlName="LastName"
+          class="form-control form-control-sm"
+          id="LastName"
+          placeholder="Last Name"
+          autocomplete="off"
+          showErrors
+        />
+      </div>
+    </div>
+    <div *ngIf="myBuyerLocations.length > 0" class="form-group">
+      <label for="BuyerLocation" translate>For Location</label>
+      <select
+        #LocationDropdown
+        id="BuyerLocation"
+        class="custom-select custom-select-sm"
+        formControlName="BuyerLocation"
+        (change)="onLocationChange(LocationDropdown.value)"
+        showErrors
+      >
+        <option
+          *ngFor="let location of myBuyerLocations"
+          [ngValue]="location?.AddressName || ''"
+        >
+          {{ location?.AddressName }}
+        </option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-6">
+        <label for="Phone" translate>PRODUCTS.QUOTE_REQ.PHONE</label>
+        <input
+          type="text"
+          formControlName="Phone"
+          class="form-control form-control-sm"
+          id="Phone"
+          placeholder="Phone Number"
+          autocomplete="off"
+          showErrors
+        />
+      </div>
+      <div class="form-group col-md-6">
+        <label for="Email" translate>PRODUCTS.QUOTE_REQ.EMAIL</label>
+        <input
+          type="text"
+          formControlName="Email"
+          class="form-control form-control-sm"
+          id="Email"
+          placeholder="Email"
+          autocomplete="off"
+          showErrors
+        />
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="Comments" translate>PRODUCTS.QUOTE_REQ.COMMENTS</label>
+      <textarea
+        type="text"
+        formControlName="Comments"
+        class="form-control form-control-sm"
+        id="Comments"
+        placeholder="Comments"
+        rows="3"
+        autocomplete="off"
+        maxlength="200"
+        showErrors
+      ></textarea>
+    </div>
+  </div>
+  <div class="d-flex justify-content-space-between align-items-center">
+    <button type="submit" class="btn btn-primary btn-sm mr-2" translate>
+      PRODUCTS.QUOTE_REQ.SUBMIT
+    </button>
+    <button
+      type="button"
+      class="btn btn-link text-danger"
+      (click)="dismissForm()"
+      translate
+    >
+      PRODUCTS.QUOTE_REQ.CANCEL
+    </button>
+  </div>
+</form>

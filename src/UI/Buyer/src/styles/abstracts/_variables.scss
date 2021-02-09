@@ -1,0 +1,15 @@
+// -----------------------------------------------------------------------------
+// This file contains all application-wide Sass variables.
+// -----------------------------------------------------------------------------
+// Reference node_modules/bootstrap/scss/_variables.scss and copy any EXISTING
+// variables that you wish to override below. If you are creating NEW variables, 
+// add directly to: src/styles/themes/_default.scss
+// -----------------------------------------------------------------------------
+
+/// Relative or absolute URL where all assets are served from
+/// @type String
+/// @example scss - When using a CDN
+/// $base-url: 'http://cdn.example.com/assets/';
+
+$base-url:          '/assets/' !default;
+$icon-font-path:    '~bootstrap-sass/assets/fonts/bootstrap/';

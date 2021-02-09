@@ -1,0 +1,15 @@
+@import '../../../../styles/main.scss';
+
+.resource-btn {
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dropdown-ps {
+    width: 92vw;
+    @include media-breakpoint-up(sm) {
+        width: 500px;
+        height: 400px;
+    }
+}

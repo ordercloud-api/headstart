@@ -1,0 +1,26 @@
+<form [formGroup]="form" #searchform>
+  <label for="search-addon" class="sr-only">{{
+    ('ADMIN.COMMON.SEARCH' | translate) + placeholderText
+  }}</label>
+  <div class="input-group">
+    <div class="input-group-prepend">
+      <div class="input-group-text search-input-icon">
+        <fa-icon [icon]="faSearch"></fa-icon>
+      </div>
+    </div>
+    <input
+      type="search"
+      class="form-control search-input"
+      placeholder="{{
+        ('ADMIN.COMMON.SEARCH' | translate) +
+          ' ' +
+          (placeholderText | translate)
+      }}"
+      aria-label="search"
+      [id]="id"
+      formControlName="search"
+      (keyup.enter)="search()"
+      autocomplete="off"
+    />
+  </div>
+</form>

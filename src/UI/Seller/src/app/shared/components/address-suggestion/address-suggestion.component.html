@@ -1,0 +1,21 @@
+<div *ngIf="suggestedAddresses">
+  <table class="table table-hover resource-table">
+    <thead>
+      Did you mean...
+    </thead>
+    <tbody>
+      <tr
+        class="selectable-row"
+        [ngClass]="{ 'selected-resource': activeAddress === address }"
+        *ngFor="let address of suggestedAddresses"
+        (click)="setActiveAddress(address)"
+      >
+        <th scope="row">{{ address.CompanyName }}</th>
+        <td>
+          {{ address.Street1 }} {{ address.Street2 }}, {{ address.City }},
+          {{ address.State }} {{ address.Zip }} {{ address.Country }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

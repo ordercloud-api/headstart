@@ -1,0 +1,47 @@
+<div>
+  <ocm-search
+    class="mt-1"
+    placeholderText="{{ _searchPlaceholder }}"
+    (searched)="
+      requestOptionsUpdated.emit({
+        search: $event.detail || undefined,
+        page: undefined
+      })
+    "
+  >
+  </ocm-search>
+  <div *ngIf="meta?.TotalPages > 1" class="my-2 row">
+    <div class="col-12">
+      <div class="float-right">
+        {{ (meta.Page - 1) * meta.PageSize + 1 }} -
+        {{ meta.Page * meta.PageSize }}
+        <span translate>LAYOUT.GENERIC_LIST.OF</span> {{ meta?.TotalCount }}
+        <span translate>LAYOUT.GENERIC_LIST.RESULTS</span>
+      </div>
+    </div>
+  </div>
+  <div class="my-3 row">
+    <div class="col-12">
+      <ng-content></ng-content>
+    </div>
+    <div
+      class="card bg-light p-3 mx-4 w-100 text-center"
+      *ngIf="meta && meta.TotalCount === 0"
+    >
+      <p class="mb-0">
+        <span translate>LAYOUT.GENERIC_LIST.NO</span> {{ _searchPlaceholder }}
+        <span translate>LAYOUT.GENERIC_LIST.FOUND</span>
+      </p>
+    </div>
+  </div>
+  <ngb-pagination
+    *ngIf="meta?.TotalPages > 1"
+    maxSize="10"
+    class="d-flex justify-content-center"
+    [collectionSize]="meta.TotalCount"
+    [pageSize]="meta.PageSize"
+    [(page)]="meta.Page"
+    (pageChange)="requestOptionsUpdated.emit({ page: $event })"
+    [rotate]="true"
+  ></ngb-pagination>
+</div>

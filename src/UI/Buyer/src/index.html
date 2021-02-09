@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <base href="/" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="favicon.png" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+      crossorigin="anonymous"
+    />
+    <!-- client-theme-placeholder -->
+  </head>
+
+  <body class="mat-typography">
+    <app-root></app-root>
+  </body>
+</html>
+<script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.0.3/custom-elements-es5-adapter.js"></script>
+<script type="text/javascript">
+  var $zoho = $zoho || {}
+  $zoho.salesiq = $zoho.salesiq || {
+    widgetcode:
+      '5470571528817f5e4513521233375ca37e6a5be46e879507a11a4b90e5da4bd25ce03d78cc99c442b126c5fd53f6e8ce',
+    values: {},
+    ready: function () {},
+  }
+  var d = document
+  s = d.createElement('script')
+  s.type = 'text/javascript'
+  s.id = 'zsiqscript'
+  s.defer = true
+  s.src = 'https://salesiq.zoho.com/widget'
+  t = d.getElementsByTagName('script')[0]
+  t.parentNode.insertBefore(s, t)
+  d.write("<div id='zsiqwidget'></div>")
+
+  $zoho.salesiq.ready = function (embedinfo) {
+    $zoho.salesiq.customfield.add({
+      name: 'Location ID',
+      hint: 'Location ID',
+      type: 'text',
+      required: 'true',
+      visibility: 'both',
+      callback: function (value) {},
+    })
+  }
+</script>

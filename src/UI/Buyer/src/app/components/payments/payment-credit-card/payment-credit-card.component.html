@@ -1,0 +1,29 @@
+<form class="form-group" [formGroup]="form">
+  <div *ngIf="paymentError" class="text-danger">{{ paymentError }}</div>
+  <select
+    formControlName="cardID"
+    (change)="toggleShowCCForm($event)"
+    class="custom-select my-2"
+    id="selectCard"
+  >
+    <option disabled [value]="null" translate>
+      PAYMENTS.PAYMENT.CHOOSE_CC
+    </option>
+    <option *ngFor="let card of cards?.Items" [value]="card.ID">
+      <ocm-credit-card-display
+        class="col-12 my-2"
+        [card]="card"
+      ></ocm-credit-card-display>
+    </option>
+    <option value="new" translate>PAYMENTS.PAYMENT.ADD_CC</option>
+  </select>
+  <ocm-credit-card-form
+    [submitText]="'Save and Continue'"
+    [showCVV]="true"
+    [showCardDetails]="showNewCCForm"
+    [termsAccepted]="termsAccepted"
+    (formSubmitted)="submit($event.detail)"
+    class="w-100"
+  >
+  </ocm-credit-card-form>
+</form>

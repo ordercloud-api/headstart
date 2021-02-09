@@ -1,0 +1,137 @@
+<section class="container mt-3">
+  <div class="row">
+    <ocm-profile-nav class="col-md-3"> </ocm-profile-nav>
+    <div class="col-md-9" *ngIf="!isLoading">
+      <div
+        class="d-flex justify-content-between align-items-center border-bottom pb-4 mb-4"
+      >
+        <h1 class="my-0" translate>PROFILE.ADDRESS_LIST.ADDRESS_BOOK</h1>
+        <button
+          (click)="showAddAddress()"
+          class="btn btn-sm btn-outline-primary"
+          id="add-address-button"
+          translate
+        >
+          <fa-icon [icon]="faPlus" aria-hidden="true"></fa-icon>
+          PROFILE.ADDRESS_LIST.ADD
+        </button>
+      </div>
+      <ocm-modal
+        [state]="areYouSureModal"
+        [modalTitle]="'Delete this Address?'"
+      >
+        <div>
+          <button
+            class="btn btn-sm btn-primary"
+            id="confirm-address-delete"
+            (click)="deleteAddress(currentAddress)"
+            translate
+          >
+            PROFILE.ADDRESS_LIST.DELETE
+          </button>
+          <button
+            class="btn btn-sm float-right"
+            (click)="closeAreYouSure()"
+            translate
+          >
+            PROFILE.ADDRESS_LIST.CANCEL
+          </button>
+        </div>
+      </ocm-modal>
+      <div class="row">
+        <!-- Display the address form on mobile (md-) -->
+        <div
+          class="col-lg-6 d-lg-none d-block mb-3"
+          *ngIf="showCreateAddressForm"
+        >
+          <ocm-address-form
+            [existingAddress]="currentAddress"
+            [homeCountry]="homeCountry"
+            [btnText]="currentAddress ? 'Save Changes' : 'Create Address'"
+            [addressError]="_addressError"
+            (formSubmitted)="addressFormSubmitted($event.detail.address)"
+            (formChanged)="addressFormChanged($event.detail)"
+            (formDismissed)="dismissEditAddressForm()"
+          >
+          </ocm-address-form>
+        </div>
+        <div
+          [ngClass]="{
+            'col-lg-12': !showCreateAddressForm,
+            'col-lg-6': showCreateAddressForm
+          }"
+        >
+          <ocm-generic-list
+            [meta]="addresses?.Meta"
+            [searchPlaceholder]="'addresses'"
+            (requestOptionsUpdated)="updateRequestOptions($event.detail)"
+          >
+            <div
+              class="address-card pb-3 mb-3"
+              *ngFor="let address of addresses?.Items"
+            >
+              <ocm-address-card
+                [address]="address"
+                [highlight]="currentAddress === address"
+              >
+                <!-- Action Buttons for SLOT in Generic List -->
+                <div
+                  class="d-flex justify-content-between align-items-center"
+                  *ngIf="address.Editable"
+                >
+                  <!-- Edit Button -->
+                  <div
+                    class="btn btn-light btn-icon ripple address-edit"
+                    (click)="showEditAddress(address)"
+                  >
+                    <div class="icon-wrapper">
+                      <fa-icon [icon]="faEdit"> </fa-icon>
+                    </div>
+                  </div>
+                  <!-- Delete Button -->
+                  <div
+                    class="btn btn-light btn-icon ripple address-delete"
+                    (click)="showAreYouSure(address)"
+                  >
+                    <div class="icon-wrapper">
+                      <fa-icon class="text-danger" [icon]="faTrashAlt">
+                      </fa-icon>
+                    </div>
+                  </div>
+                </div>
+              </ocm-address-card>
+            </div>
+          </ocm-generic-list>
+        </div>
+        <!-- Display the Address Form on Desktop View (lg+) -->
+        <div
+          class="col-lg-6 d-none d-lg-block border-left"
+          *ngIf="showCreateAddressForm"
+        >
+          <ocm-address-form
+            [existingAddress]="currentAddress"
+            [suggestedAddresses]="suggestedAddresses"
+            [homeCountry]="homeCountry"
+            [btnText]="currentAddress ? 'Save Changes' : 'Create Address'"
+            [addressError]="_addressError"
+            (formSubmitted)="addressFormSubmitted($event.detail.address)"
+            (formChanged)="addressFormChanged($event.detail)"
+            (formDismissed)="dismissEditAddressForm()"
+          >
+          </ocm-address-form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <ng-container *ngIf="isLoading">
+    <ocm-loading-layout
+      height="335px"
+      width="100%"
+      mb="1.5rem"
+      [resource]="addresses"
+      [rows]="3"
+      [columns]="3"
+      [isLoading]="isLoading"
+    ></ocm-loading-layout>
+  </ng-container>
+</section>

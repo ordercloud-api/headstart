@@ -1,0 +1,21 @@
+.avatar-container {
+    display: flex;
+    justify-content: center;
+    z-index: 12;
+    position: relative;
+    .avatar {
+        vertical-align: middle;
+        object-fit: cover;
+        width: 100px;
+        height: 100px;
+        border-radius: .25rem;
+      }
+}
+
+.profile-card {
+    margin-top: -80px;
+    z-index: 1;
+    &__body {
+        margin-top: 6rem;
+    }
+}

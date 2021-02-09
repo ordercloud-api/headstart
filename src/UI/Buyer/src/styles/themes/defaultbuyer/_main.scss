@@ -1,0 +1,48 @@
+@charset 'UTF-8';
+
+// Theme Variables - must come before vendor
+@import '_theme_variables';
+
+// Vendors
+@import '../../vendor/bootstrap', 
+        '../../vendor/normalize', 
+        '../../vendor/ngx-toastr';
+
+// Theme Styles
+@import '_theme_styles';
+
+// Abstracts
+@import '../../abstracts/custom-utilities', 
+        '../../abstracts/variables', 
+        '../../abstracts/functions', 
+        '../../abstracts/mixins';
+
+// Scaffolding
+@import '../../base/base',
+        '../../base/animations';
+
+// Layout
+@import '../../layout/header', 
+        '../../layout/footer';
+
+// Components
+@import '../../components/buttons', 
+        '../../components/_cards',
+        '../../components/_card-ribbon', 
+        '../../components/chip', 
+        '../../components/_forms', 
+        '../../components/_product-list', 
+        '../../components/_list-items.scss', 
+        '../../components/_carousel-arrow.scss', 
+        '../../components/_modal.scss';
+
+// Pages
+@import '../../pages/_home';
+
+@import '../../_shame';
+
+/*******************************************************************************************************************************
+    Keep this file clear of styling declarations!
+    Drop them into _components, the actual component scss file, 
+    or _shame.scss if you need to just kick the can down the road!
+******************************************************************************************************************************/

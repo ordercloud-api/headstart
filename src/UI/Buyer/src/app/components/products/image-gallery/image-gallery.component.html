@@ -1,0 +1,30 @@
+<lib-ngx-image-zoom
+  [thumbImage]="
+    imgUrls && imgUrls[selectedIndex]
+      ? imgUrls[selectedIndex]
+      : 'http://placehold.it/500x500'
+  "
+  [fullImage]="imgUrls && imgUrls[selectedIndex] ? imgUrls[selectedIndex] : []"
+  [zoomMode]="'hover'"
+  [enableScrollZoom]="true"
+  [enableLens]="true"
+  [lensWidth]="200"
+  [lensHeight]="200"
+></lib-ngx-image-zoom>
+
+<div class="gallery-container row py-2" *ngIf="imgUrls.length > 1">
+  <div class="col carousel-arrow" (click)="backward()">
+    <fa-icon [icon]="faAngleLeft"></fa-icon>
+  </div>
+  <div
+    class="col gallery-item"
+    *ngFor="let image of getGallery()"
+    [ngClass]="{ active: isSelected(image) }"
+    (click)="select(image.Url)"
+  >
+    <img [src]="image.Url" />
+  </div>
+  <div class="col carousel-arrow" (click)="forward()">
+    <fa-icon [icon]="faAngleRight"></fa-icon>
+  </div>
+</div>

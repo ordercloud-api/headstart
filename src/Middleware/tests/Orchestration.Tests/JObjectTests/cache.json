@@ -1,0 +1,62 @@
+{
+  "OwnerID": "FourOver",
+  "DefaultPriceScheduleID": "1b9b314d-85f5-4f17-b2dd-ad666ffb4e67",
+  "AutoForward": false,
+  "ID": "1b9b314d-85f5-4f17-b2dd-ad666ffb4e67",
+  "Name": "16PT-ACMATT-5X7",
+  "Description": "5\" X 7\" 16PT Matte/Dull Finish Announcement Cards, FLAT - No Scoring",
+  "QuantityMultiplier": 1,
+  "ShipWeight": 1.0,
+  "ShipHeight": 3.0,
+  "ShipWidth": 3.0,
+  "ShipLength": 9.0,
+  "Active": true,
+  "SpecCount": 13,
+  "VariantCount": 0,
+  "ShipFromAddressID": null,
+  "Inventory": null,
+  "DefaultSupplierID": "FourOver",
+  "xp": {
+    "Facets": {
+      "category": [
+        "Announcement Cards"
+      ],
+      "shape": [
+        "Rectangle"
+      ],
+      "size": [
+        "5\" x 7\""
+      ],
+      "stock": [
+        "16PT C2S"
+      ],
+      "supplier": [
+        "4Over"
+      ],
+      "manufacturer": [
+        "4Over"
+      ]
+    },
+    "IntegrationData": {
+      "v": null,
+      "sid": "1b9b314d-85f5-4f17-b2dd-ad666ffb4e67",
+      "u": "https://s3.dualstack.us-east-1.amazonaws.com/staticcintas.eretailing.com/images/product/front"
+    },
+    "Status": "Draft",
+    "HasVariants": false,
+    "Note": null,
+    "Tax": {
+      "Category": "P0000000",
+      "Code": "SP106914",
+      "Description": "Printing"
+    },
+    "UnitOfMeasure": {
+      "Qty": 1,
+      "Unit": "Box"
+    },
+    "ProductType": "Standard",
+    "IsResale": false,
+    "Accessorials": null,
+    "Currency": null
+  }
+}

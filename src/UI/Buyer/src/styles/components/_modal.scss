@@ -1,0 +1,41 @@
+/*------------------------------- MODAL STYLES-------------------------------*/
+
+ocm-modal {
+  /* modals are hidden by default */
+  display: none;
+
+  .shared-modal {
+    /* modal container fixed across whole screen */
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: 0 auto;
+    z-index: $zindex-modal;
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .shared-modal-body {
+      background-color: $white;
+      padding: 3rem;
+      box-shadow: 0 1rem 3rem rgba(23, 17, 24, 0.75); // .shadow-lg with *significantly* more opacity
+    }
+  }
+  .shared-modal__background {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, .75);
+    z-index: $zindex-modal-backdrop;
+  }
+}
+
+
+body.shared-modal--open {
+  /* body overflow is hidden to hide main scrollbar when modal window is open */
+  overflow: hidden;
+}

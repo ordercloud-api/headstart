@@ -1,0 +1,9 @@
+{
+    "prettier.requireConfig": true,
+    "beautify.ignore": "**/*.{js,ts,json,css,scss}",
+    "editor.formatOnSave": true,
+    "tslint.autoFixOnSave": true,
+    "[scss]": {
+        "editor.formatOnSave": false
+    }
+}

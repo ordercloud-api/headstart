@@ -1,0 +1,47 @@
+@import '../../../../styles/main.scss';
+
+
+.dropzone {
+    background-image: url("../../../../assets/FileUploadCircle.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-size: 60px;
+    background-position: center;
+    min-height: 100px;
+    min-width: 100px;
+    display: table;
+    width: 100px;
+    background-color: #d8e9f5 !important;
+    opacity: 0.8;
+    border: 2px dashed rgb(141, 194, 231);
+}
+.product-img-wrapper {
+    position: relative;
+    display: inline-block;
+    .primary-badge {
+        top: 0;
+        left: 0;
+        z-index: 12;
+        background-color: rgba($primary, .6)
+    }
+    &:hover {
+        .product-img-delete {
+            opacity: 1;
+        }
+    }
+    .product-img-delete {
+        @include media-breakpoint-down(sm) {
+            // Display action buttons on mobile
+            opacity: 1;
+          }
+        transition: 200ms all ease;
+        opacity: 0;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        .icon-smaller {
+            font-size: 0.75rem;
+        }
+    }
+}

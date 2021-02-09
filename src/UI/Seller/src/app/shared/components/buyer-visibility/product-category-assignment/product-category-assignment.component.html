@@ -1,0 +1,133 @@
+<h5 class="mt-4" translate>ADMIN.PRODUCT_EDIT.CATEGORIES</h5>
+<p
+  *ngIf="!highLevelOptions.length"
+  class="alert alert-info font-weight-bold mb-0 p-3 shadow-sm"
+  translate
+>
+  ADMIN.PRODUCT_EDIT.NO_CATEGORIES
+</p>
+<ng-container *ngIf="highLevelOptions.length">
+  <div class="card shadow-sm p-4 my-3">
+    <div class="row">
+      <div class="col-md-5">
+        <div class="row">
+          <div class="col-md-6">
+            <label translate>ADMIN.PRODUCT_EDIT.HIGH_LEVEL_CATEGORY</label>
+            <select
+              class="form-control"
+              (change)="selectHighLevelCategory($event)"
+            >
+              <option selected disabled [ngValue]="null">Select</option>
+              <option
+                *ngFor="let category of highLevelOptions"
+                [value]="category.ID"
+              >
+                {{ category.Name }}
+              </option>
+            </select>
+            <ng-container
+              *ngIf="
+                midLevelOptions.length && !showMidLevel && highLevelSelection
+              "
+            >
+              <button
+                class="btn btn-sm btn-medium"
+                type="submit"
+                (click)="showMidLevel = true"
+                translate
+              >
+                ADMIN.PRODUCT_EDIT.BROWSE_SUBCATEGORIES
+              </button>
+            </ng-container>
+            <div *ngIf="showMidLevel">
+              <label translate>ADMIN.PRODUCT_EDIT.MID_LEVEL_CATEGORY</label>
+              <select
+                class="form-control"
+                (change)="selectMidLevelCategory($event)"
+              >
+                <option selected disabled [ngValue]="null">Select</option>
+                <option
+                  *ngFor="let category of midLevelOptions"
+                  [value]="category.ID"
+                >
+                  {{ category.Name }}
+                </option>
+              </select>
+            </div>
+            <ng-container
+              *ngIf="
+                lowLevelOptions.length && !showLowLevel && midLevelSelection
+              "
+            >
+              <button
+                class="btn btn-sm btn-medium"
+                type="submit"
+                (click)="showLowLevel = true"
+                translate
+              >
+                ADMIN.PRODUCT_EDIT.BROWSE_SUBCATEGORIES
+              </button>
+            </ng-container>
+            <div *ngIf="showLowLevel">
+              <label>ADMIN.PRODUCT_EDIT.LOW_LEVEL_CATEGORY</label>
+              <select
+                class="form-control"
+                (change)="selectLowLevelCategory($event)"
+              >
+                <option selected disabled [ngValue]="null">Select</option>
+                <option
+                  *ngFor="let category of lowLevelOptions"
+                  [value]="category.ID"
+                >
+                  {{ category.Name }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <button
+              class="btn btn-block btn-outline-primary mt-3 mt-md-0"
+              type="submit"
+              (click)="addAssignment()"
+              [disabled]="!highLevelSelection"
+              translate
+            >
+              ADMIN.PRODUCT_EDIT.ADD_ASSIGNMENT
+            </button>
+            <small class="d-block font-italic mt-2" translate>
+              ADMIN.PRODUCT_EDIT.YOU_MAY_ASSIGN
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-7 d-flex">
+        <div
+          class="card d-table-cell shadow-sm p-3 table-display"
+        >
+          <span
+            class="chip editable active chip-sm"
+            *ngFor="let category of _assignedCategoriesEditable; index as i"
+          >
+            <span>{{ category[0].Name }}</span>
+            <fa-icon
+              class="mx-1"
+              [icon]="faAngleRight"
+              *ngIf="category.length > 1"
+            >
+            </fa-icon>
+            <span *ngIf="category.length > 1">{{ category[1].Name }}</span>
+            <fa-icon
+              class="mx-1"
+              [icon]="faAngleRight"
+              *ngIf="category.length > 2"
+            >
+            </fa-icon>
+            <span *ngIf="category.length > 2">{{ category[2].Name }}</span>
+            <fa-icon (click)="removeAssignment(i)" [icon]="faTimesCircle">
+            </fa-icon>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

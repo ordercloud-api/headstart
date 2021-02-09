@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Polly" Version="7.2.1" />
+    <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ordercloud.integrations.library\ordercloud.integrations.library.csproj" />
+  </ItemGroup>
+
+</Project>

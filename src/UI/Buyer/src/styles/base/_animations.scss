@@ -1,0 +1,127 @@
+.shine {
+  background: $gray-100;
+  background-image: linear-gradient(to right, #f6f7f8 0%, #f4f5f7 20%, #fcfcfc 40%, #f7f7f7 100%);
+  background-repeat: no-repeat;
+  display: inline-block;
+  position: relative;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeholderShimmer;
+  animation-timing-function: linear;
+
+  -webkit-animation-duration: 1s;
+  -webkit-animation-fill-mode: forwards;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-name: placeholderShimmer;
+  -webkit-animation-timing-function: linear;
+}
+@keyframes placeholderShimmer {
+  0% {
+    background-position: -468px 0;
+  }
+
+  100% {
+    background-position: 468px 0;
+  }
+}
+@-webkit-keyframes placeholderShimmer {
+  0% {
+    background-position: -468px 0;
+  }
+
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+// Ripple Effect
+.ripple {
+  position: relative;
+  overflow: hidden;
+  transform: translate3d(0, 0, 0);
+}
+
+.ripple:after {
+  content: '';
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgb(73, 73, 73) 10%, transparent 5.01%);
+  background-repeat: no-repeat;
+  background-position: 50%;
+  transform: scale(10, 10);
+  opacity: 0;
+  transition: transform 0.5s, opacity 1s;
+}
+
+.ripple:active:after {
+  transform: scale(0, 0);
+  opacity: 0.3;
+  transition: 0s;
+}
+
+
+// just apply .fancy-underline to the element and, presto!
+.fancy-underline {
+  border: none;
+  border-radius: 0;
+  position: relative;
+  text-decoration: none;
+}
+
+.fancy-underline:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  bottom: 0px;
+  background-color: currentColor;
+  visibility: hidden;
+  -webkit-transform: scaleX(0);
+  transform: scaleX(0);
+  -webkit-transition: all 0.3s ease-in-out 0s;
+  transition: all 0.3s ease-in-out 0s;
+}
+
+.fancy-underline:hover:before,
+.fancy-underline:focus:before {
+  visibility: visible;
+  -webkit-transform: scaleX(1);
+  transform: scaleX(1);
+}
+
+/* Wobble */
+
+.wobble {
+  display: inline-block;
+  -webkit-tap-highlight-color: transparent;
+  transform: translateZ(0);
+  box-shadow: 0 0 1px transparent;
+}
+.wobble:hover {
+  animation-name: wobble;
+  animation-duration: .5s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: 1;
+}
+
+@keyframes wobble {
+  15% {
+    transform: translateX(2px);
+  }
+  30% {
+    transform: translateX(-2px);
+  }
+  60% {
+    transform: translateX(1px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

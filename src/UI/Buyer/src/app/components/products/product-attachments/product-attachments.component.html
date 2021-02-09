@@ -1,0 +1,13 @@
+<div class="my-3" *ngIf="attachments && attachments.length">
+  <strong><span translate>PRODUCTS.DETAILS.DOCS</span>:</strong>
+  <div class="mt-2">
+    <a
+      class="border border-medium border-radius p-2 my-2 d-block"
+      *ngFor="let attachment of attachments"
+      [href]="attachment.Url"
+      target="_blank"
+      download="attachment.FileName"
+      >{{ attachment.FileName }}</a
+    >
+  </div>
+</div>

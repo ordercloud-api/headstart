@@ -1,0 +1,6 @@
+// use this anywhere you need a list
+// of text and dont want the bullet point formatting
+.oc-list-items { 
+    list-style: none;
+    padding-left: 0;
+}

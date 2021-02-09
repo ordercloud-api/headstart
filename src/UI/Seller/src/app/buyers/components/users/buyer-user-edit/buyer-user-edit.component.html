@@ -1,0 +1,167 @@
+<div class="container-fluid">
+  <user-group-assignments
+    *ngIf="selectedResource && !isCreatingNew"
+    [isCreatingNew]="isCreatingNew"
+    userGroupType="BuyerLocation"
+    [user]="selectedResource"
+    (assignmentsToAdd)="addUserGroupAssignments($event)"
+    (hasAssignments)="userHasAssignments($event)"
+    [userPermissionsService]="buyerUserService"
+  >
+  </user-group-assignments>
+  <form *ngIf="resourceForm" [formGroup]="resourceForm">
+    <div class="row pt-3">
+      <div class="col-md-5">
+        <h5>Account Information</h5>
+        <p class="font-italic">
+          Information about this user's Headstart account.
+        </p>
+      </div>
+      <div class="col-md-7 form-group">
+        <div class="form-group">
+          <p class="mb-1">Active</p>
+          <label class="switch mb-0" for="Active">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="Active"
+              showErrors
+              [resourceForm]="resourceForm"
+              aria-describedby="Active"
+              formControlName="Active"
+              (input)="updateResourceFromEvent()"
+            />
+            <span class="slider round cursor-pointer"></span>
+          </label>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="Username">Username</label>
+            <input
+              type="text"
+              class="form-control"
+              id="Username"
+              maxlength="100"
+              showErrors
+              aria-describedby="Username"
+              formControlName="Username"
+              (input)="updateResourceFromEvent()"
+              placeholder="Enter Username"
+            />
+          </div>
+          <div class="form-group col-md-6">
+            <label for="Email">Email</label>
+            <input
+              type="text"
+              class="form-control"
+              id="Email"
+              maxlength="200"
+              showErrors
+              [resourceForm]="resourceForm"
+              aria-describedby="Email"
+              formControlName="Email"
+              (input)="updateResourceFromEvent()"
+              placeholder="Enter Email"
+            />
+            <span *ngIf="hasValidEmailError()"
+            class="error-message">Please enter a valid email address</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row pt-3">
+      <div class="col-md-5">
+        <h5>Personal Information</h5>
+        <p class="font-italic">Information about this user.</p>
+      </div>
+      <div class="col-md-7 form-group">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="FirstName">First Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="FirstName"
+              maxlength="100"
+              showErrors
+              aria-describedby="FirstName"
+              formControlName="FirstName"
+              (input)="updateResourceFromEvent()"
+              placeholder="Enter First Name"
+            />
+          </div>
+          <div class="form-group col-md-6">
+            <label for="LastName">Last Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="LastName"
+              maxlength="100"
+              showErrors
+              aria-describedby="LastName"
+              formControlName="LastName"
+              (input)="updateResourceFromEvent()"
+              placeholder="Enter Last Name"
+            />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="Country">Home Country</label>
+            <select
+              *ngIf="countryOptions.length"
+              type="dropdown"
+              class="form-control"
+              formControlName="Country"
+              id="Country"
+              showErrors
+              aria-describedby="Country"
+              (change)="updateResourceFromEvent()"
+            >
+              <option [ngValue]="''" disabled>Select a Country</option>
+              <option
+                *ngFor="let country of countryOptions"
+                [value]="country.abbreviation"
+              >
+                {{ country.label }}
+              </option>
+            </select>
+            <input
+              *ngIf="!countryOptions.length"
+              type="text"
+              class="form-control"
+              id="Country"
+              showErrors
+              aria-describedby="Country"
+              maxlength="2"
+              [resourceForm]="resourceForm"
+              formControlName="Country"
+              (input)="updateResourceFromEvent()"
+              placeholder="Enter Country Code"
+            />
+            <p
+              *ngIf="isUserAssignedToGroups"
+              class="mt-2 font-italic text-muted"
+            >
+              Unassign locations to change Home Country.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <user-group-assignments
+    *ngIf="
+      selectedResource &&
+      isCreatingNew &&
+      this.resourceForm.controls.Country.value
+    "
+    [isCreatingNew]="isCreatingNew"
+    userGroupType="BuyerLocation"
+    [user]="selectedResource"
+    [homeCountry]="resourceForm.controls.Country.value"
+    (assignmentsToAdd)="addUserGroupAssignments($event)"
+    [userPermissionsService]="buyerUserService"
+  >
+  </user-group-assignments>
+</div>

@@ -1,0 +1,9 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">{{ modalTitle }}</h4>
+</div>
+<div class="modal-body" [innerHtml]="description"></div>
+<div
+  class="modal-footer w-100 d-flex justify-content-space-between justify-content-between"
+>
+  <ng-content></ng-content>
+</div>

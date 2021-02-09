@@ -1,0 +1,25 @@
+// pay no attention to these temporary styles
+
+.container {
+  height: calc(100vh - 122.4px); // navbar height + a nudge upward
+  width: 100%;
+  display: grid;
+  place-items: center center;
+
+  h1 {
+    line-height: 1;
+    font-size: clamp(2.5rem, 6vw, 6rem);
+    text-transform: uppercase;
+    color: var(--teal);
+    text-align: center;
+    font-weight: 900;
+    animation: float-in .5s .5s ease-in-out backwards;
+  }
+}
+
+@keyframes float-in {
+  0% {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+}

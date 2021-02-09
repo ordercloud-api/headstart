@@ -1,0 +1,19 @@
+<div
+  class="d-flex justify-content-between align-items-center bg-primary-dark base-layout-item"
+>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-oc">
+      <!--home icon -->
+      <li class="breadcrumb-item">
+        <a class="breadcrumb-link" [routerLink]="'/'">
+          <fa-icon [icon]="faHome"> </fa-icon>
+        </a>
+      </li>
+      <li *ngFor="let breadCrumb of breadCrumbs" class="breadcrumb-item">
+        <a class="breadcrumb-link" [routerLink]="[breadCrumb.route]"
+          >{{ breadCrumb.displayText | titlecase }}
+        </a>
+      </li>
+    </ol>
+  </nav>
+</div>

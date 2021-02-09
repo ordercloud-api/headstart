@@ -1,0 +1,37 @@
+<form class="my-3">
+  <input
+    [hidden]="true"
+    id="carsousel-image"
+    type="file"
+    (change)="addImage($event)"
+    placeholder="Upload file"
+  />
+  <label for="carsousel-image" class="btn btn-primary">
+    <fa-icon [icon]="faUpload"></fa-icon> Add Image</label
+  >
+</form>
+<div class="product-list-grid row align-items-stretch">
+  <div
+    *ngFor="let url of product?.xp?.imageURLs; index as i"
+    class="col-sm-6 col-md-4 col-lg-3 d-flex mb-4"
+  >
+    <div class="card mb-5 w-100" [ngClass]="{ 'border-primary': i === 0 }">
+      <img class="card-img-top img-fluid flex-shrink-0" [src]="url" />
+      <div class="card-body bg-light">
+        <button
+          *ngIf="i !== 0"
+          class="btn btn-primary btn-sm float-left"
+          (click)="setPrimaryImage(url, i)"
+        >
+          Make Primary
+        </button>
+        <button
+          class="btn btn-danger btn-sm float-right"
+          (click)="deleteImage(i)"
+        >
+          <fa-icon [icon]="faTrash"></fa-icon> Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

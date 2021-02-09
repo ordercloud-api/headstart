@@ -1,0 +1,24 @@
+<div *ngIf="_formControlForText && !readonly">
+  <quill-editor [formControl]="_formControlForText" id="Description">
+  </quill-editor>
+  <div
+    [ngClass]="{ 'error-message': _formControlForText.status === 'INVALID' }"
+  >
+    <span translate>ADMIN.PRODUCT_EDIT.CHARACTERS</span>: &nbsp;{{
+      _formControlForText.value?.length || 0
+    }}/2000 &nbsp;<span translate
+      >ADMIN.PRODUCT_EDIT.INCLUDES_HTML_FORMATTING</span
+    >
+  </div>
+</div>
+<ng-container *ngIf="readonly">
+  <p [innerHtml]="_formControlForText.value"></p>
+  <p
+    *ngIf="
+      _formControlForText.value === '' || _formControlForText.value === null
+    "
+    translate
+  >
+    ADMIN.PRODUCT_EDIT.NO_DESCRIPTION
+  </p>
+</ng-container>

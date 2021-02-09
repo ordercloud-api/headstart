@@ -1,0 +1,69 @@
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title text-center" id="modal-basic-title">
+      Process Return
+    </h4>
+    <button
+      type="button"
+      class="close"
+      aria-label="Close"
+      (click)="modal.dismiss()"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <form
+      (ngSubmit)="onReturnFormSubmit()"
+      novalidate
+      [formGroup]="returnForm"
+      name="ReturnForm"
+    >
+      <div class="form-row">
+        <div class="form-group">
+          <label for="Comment">Return Comment</label>
+          <input
+            type="text"
+            class="form-control"
+            id="Comment"
+            showErrors
+            aria-describedby="Comment"
+            maxlength="150"
+            formControlName="Comment"
+            placeholder="Enter return comment"
+          />
+        </div>
+      </div>
+      <div class="d-flex flex-column">
+        <Label for="Complete">Return Complete?</Label>
+        <select class="form-control" id="Complete" formControlName="Complete">
+          <option [ngValue]="true">Yes</option>
+          <option [ngValue]="false">No</option>
+        </select>
+      </div>
+    </form>
+  </div>
+  <div
+    class="modal-footer w-100 d-flex justify-content-space-between justify-content-between"
+  >
+    <button class="btn brand-button mt-3 w-25 mr-3" (click)="modal.dismiss()">
+      Cancel
+    </button>
+    <button
+      type="submit"
+      id="submitBtn"
+      (click)="onReturnFormSubmit()"
+      (click)="modal.close()"
+      class="btn btn-primary mt-3 w-25"
+    >
+      Save
+    </button>
+  </div>
+</ng-template>
+<button
+  class="btn btn-sm btn-outline-primary mt-2"
+  [disabled]="isSaving"
+  (click)="open(content)"
+>
+  Process Return
+</button>

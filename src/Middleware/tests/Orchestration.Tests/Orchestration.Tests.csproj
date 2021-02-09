@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+
+    <LangVersion>8</LangVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="JObjectTests\cache.json" />
+    <None Remove="JObjectTests\current.json" />
+    <None Remove="JObjectTests\hydrated.json" />
+    <None Remove="Orchestration.Tests.csproj.DotSettings" />
+    <None Remove="TemplateTests\TemplateCsv.csv" />
+    <None Remove="TemplateTests\TemplateExcel.xlsx" />
+    <None Remove="TemplateTests\TemplateSheets.xlsx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="JObjectTests\cache.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JObjectTests\current.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="JObjectTests\hydrated.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TemplateTests\TemplateCsv.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TemplateTests\TemplateExcel.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TemplateTests\TemplateSheets.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CreditCardValidator" Version="1.4.6" />
+    <PackageReference Include="JsonDiffPatch.Net" Version="2.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="NSubstitute" Version="4.2.1" />
+    <PackageReference Include="nunit" Version="3.12.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="3.16.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Headstart.API\Headstart.API.csproj" />
+    <ProjectReference Include="..\..\src\Headstart.Common\Headstart.Common.csproj" />
+    <ProjectReference Include="..\..\src\Orchestration.Functions\Headstart.Orchestration\Headstart.Orchestration.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="JObjectTests\hydrated.json" />
+  </ItemGroup>
+
+</Project>

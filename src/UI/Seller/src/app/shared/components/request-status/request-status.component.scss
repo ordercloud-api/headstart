@@ -1,0 +1,45 @@
+@import '../../../../styles/main.scss';
+.shine {
+  background: #f6f7f8;
+  background-image: linear-gradient(to right, #f6f7f8 0%, #edeef1 20%, #f6f7f8 40%, #f6f7f8 100%);
+  background-repeat: no-repeat;
+  background-size: 800px 104px; 
+  display: inline-block;
+  position: relative; 
+  
+  -webkit-animation-duration: 2s;
+  animation-duration: 2s;
+  -webkit-animation-fill-mode: forwards; 
+  animation-fill-mode: forwards;
+  -webkit-animation-iteration-count: infinite;
+  animation-iteration-count: infinite;
+  -webkit-animation-name: placeholderShimmer;
+  animation-name: placeholderShimmer;
+  -webkit-animation-timing-function: linear;
+  animation-timing-function: linear;
+  height: 4rem;
+}
+
+@keyframes placeholderShimmer {
+  0% {
+    background-position: -1468px 0;
+  }
+
+  100% {
+    background-position: 1468px 0; 
+  }
+}
+
+@-webkit-keyframes placeholderShimmer {
+  0% {
+    background-position: -1468px 0;
+  }
+
+  100% {
+    background-position: 1468px 0; 
+  }
+}
+
+.null-svg {
+  max-width: 500px;
+}

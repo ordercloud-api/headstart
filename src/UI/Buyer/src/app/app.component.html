@@ -1,0 +1,4 @@
+<ocm-app-header class="fixed-top" *ngIf="showHeader"></ocm-app-header>
+<router-outlet class="outlet"></router-outlet>
+<ocm-app-footer [showFooter]="showHeader" *ngIf="showHeader"></ocm-app-footer>
+<ng-progress></ng-progress>

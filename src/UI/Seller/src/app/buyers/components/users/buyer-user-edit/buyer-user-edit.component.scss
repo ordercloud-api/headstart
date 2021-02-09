@@ -1,0 +1,23 @@
+.resource-table tbody .selectable-row {
+    cursor: pointer;
+}
+
+.resource-search {
+    width: 200px;
+}
+
+.selected-resource {
+    background-color: lightgrey;
+}
+
+// quill-editor {
+//     display: block;
+  
+//     /deep/ .ql-editor {
+//       min-height: 150px;
+//     }
+//   }
+
+.quill-container {
+    height: 400px;
+}

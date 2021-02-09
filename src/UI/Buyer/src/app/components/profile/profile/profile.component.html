@@ -1,0 +1,62 @@
+<section class="container mt-3">
+  <div class="row">
+    <ocm-profile-nav class="col-md-3"> </ocm-profile-nav>
+    <div class="col-md-9">
+      <div
+        class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-4"
+      >
+        <h1 class="page-heading mt-0" translate>PROFILE.PROFILE.ACC_DETAILS</h1>
+        <button
+          (click)="showEditProfile()"
+          class="btn btn-sm btn-outline-primary"
+          translate
+        >
+          <fa-icon [icon]="faEdit"></fa-icon> PROFILE.PROFILE.EDIT
+        </button>
+      </div>
+      <div class="row">
+        <!-- Display the Profile Edit form on mobile (md-) -->
+        <div
+          class="col-lg-6 d-lg-none d-block mb-3"
+          *ngIf="showEditProfileForm"
+        >
+          <ocm-profile-form
+            [me]="me"
+            (formSubmitted)="profileFormSubmitted($event.detail.me)"
+            (formDismissed)="dismissProfileEditForm()"
+          >
+          </ocm-profile-form>
+        </div>
+        <!-- /Display -->
+        <div class="col-lg-6">
+          <h3 class="text-uppercase">{{ me.FirstName }} {{ me.LastName }}</h3>
+          <p *ngIf="me.Username" class="mb-2">
+            <fa-icon class="small text-muted" [icon]="faUser"></fa-icon>
+            {{ me.Username }}
+          </p>
+          <p *ngIf="me.Phone" class="mb-2">
+            <fa-icon class="small text-muted" [icon]="faPhone"></fa-icon>
+            {{ me.Phone }}
+          </p>
+          <p *ngIf="me.Email" class="mb-2">
+            <fa-icon class="small text-muted" [icon]="faEnvelope"></fa-icon>
+            {{ me.Email }}
+          </p>
+        </div>
+        <!-- Display the Profile Edit form on desktop (lg+) -->
+        <div
+          class="col-lg-6 d-none d-lg-block border-left"
+          *ngIf="showEditProfileForm"
+        >
+          <ocm-profile-form
+            [me]="me"
+            (formSubmitted)="profileFormSubmitted($event.detail.me)"
+            (formDismissed)="dismissProfileEditForm()"
+          >
+          </ocm-profile-form>
+        </div>
+        <!-- /Display -->
+      </div>
+    </div>
+  </div>
+</section>

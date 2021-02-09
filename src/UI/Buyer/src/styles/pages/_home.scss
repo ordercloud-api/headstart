@@ -1,0 +1,33 @@
+// -----------------------------------------------------------------------------
+// This file contains styles that are specific to the home page.
+// -----------------------------------------------------------------------------
+.wtc-image {
+  max-width: 100%;
+}
+
+.supplier {
+  margin-top: 2rem;
+  background-color: $light;
+  &-featured {
+    padding: 2rem;
+    margin-block-start: 0.75rem;
+    margin-block-end: 0.75rem;
+    width: 40rem;
+    &:first-of-type {
+      border-right: 1px solid #eef0f1;
+    }
+    &-header {
+      margin-bottom: 0;
+      color: #ffc712;
+      font-weight: bolder;
+      letter-spacing: 0.15rem;
+      text-transform: uppercase;
+    }
+  }
+}
+
+.wave {
+  z-index: 1;
+  margin-top: -6.5rem;
+  max-width: 100%;
+}

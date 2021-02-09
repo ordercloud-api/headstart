@@ -1,0 +1,27 @@
+<div [ngClass]="{ 'bg-light': highlight }">
+  <div class="d-flex justify-content-between align-items-center">
+    <div>
+      <p class="mb-0 text-capitalize font-weight-bold">
+        XXXX-XXXX-XXXX-{{ creditCard?.PartialAccountNumber }}
+      </p>
+      <div>
+        <small class="mb-0"
+          >{{ creditCard?.CardholderName
+          }}<span>
+            | Expires
+            {{ creditCard?.ExpirationDate | date: 'MM/yy':'UTC' }}</span
+          ></small
+        >
+      </div>
+      <div>
+        <small class="mb-0"
+          ><span translate>PAYMENTS.CC_DISPLAY.BILLING_ADDRESS</span> -
+          {{ address?.Street1 }} {{ address?.City }} {{ address?.State }}
+          {{ address?.Zip }}</small
+        >
+      </div>
+    </div>
+    <!-- When creating an instance of this component, you may use transclusion to add action-buttons here -->
+    <ng-content></ng-content>
+  </div>
+</div>
