@@ -6,6 +6,6 @@
 
 const fs = require('fs')
 
-const sourceDir = `./dist/default-components`
+const sourceDir = `./dist`
 
 fs.copyFileSync(`${sourceDir}/index.html`, `${sourceDir}/index-original.html`)

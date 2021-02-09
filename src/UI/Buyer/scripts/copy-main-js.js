@@ -6,7 +6,7 @@
 
 const fs = require('fs')
 
-const sourceDir = `./dist/default-components`
+const sourceDir = `./dist`
 const mainJs = fs
   .readdirSync(sourceDir)
   .find((filename) => filename.startsWith('main.') && filename.endsWith('.js'))

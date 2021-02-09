@@ -8,7 +8,7 @@ const fs = require('fs')
 
 let manifest = {}
 
-const sourceDir = './dist/default-components'
+const sourceDir = './dist'
 fs.readdirSync(sourceDir)
   .filter((filename) => filename.endsWith('.css'))
   .forEach((filename) => {
