@@ -16,9 +16,9 @@ namespace Headstart.Common.Controllers
     public class SupplierController: BaseController
     {
 
-		private readonly IHeadstartSupplierCommand _command;
+		private readonly IHSSupplierCommand _command;
         private readonly IOrderCloudClient _oc;
-        public SupplierController(IHeadstartSupplierCommand command, IOrderCloudClient oc, AppSettings settings) : base(settings)
+        public SupplierController(IHSSupplierCommand command, IOrderCloudClient oc, AppSettings settings) : base(settings)
         {
             _command = command;
 			_oc = oc;

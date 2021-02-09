@@ -28,7 +28,7 @@ namespace Headstart.API.Commands
 		private readonly IOrderCloudClient _oc;
 		private readonly AppSettings _settings;
 		private readonly IPortalService _portal;
-		private readonly IHeadstartSupplierCommand _supplierCommand;
+		private readonly IHSSupplierCommand _supplierCommand;
 		private readonly IHSBuyerCommand _buyerCommand;
 		private readonly ICMSClient _cms;
 
@@ -42,7 +42,7 @@ namespace Headstart.API.Commands
 		public EnvironmentSeedCommand(
 			AppSettings settings,
 			IPortalService portal,
-			IHeadstartSupplierCommand supplierCommand,
+			IHSSupplierCommand supplierCommand,
 			IHSBuyerCommand buyerCommand,
 			ICMSClient cms,
 			IOrderCloudClient oc

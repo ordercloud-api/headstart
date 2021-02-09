@@ -13,14 +13,14 @@ using Headstart.Common;
 
 namespace Headstart.API.Commands
 {
-    public interface IHeadstartSupplierCommand
+    public interface IHSSupplierCommand
     {
         Task<HSSupplier> Create(HSSupplier supplier, string accessToken, bool isSeedingEnvironment = false);
         Task<HSSupplier> GetMySupplier(string supplierID, VerifiedUserContext user);
         Task<HSSupplier> UpdateSupplier(string supplierID, PartialSupplier supplier, VerifiedUserContext user);
         Task<HSSupplierOrderData> GetSupplierOrderData(string supplierOrderID, VerifiedUserContext user);
     }
-    public class HSSupplierCommand : IHeadstartSupplierCommand
+    public class HSSupplierCommand : IHSSupplierCommand
     {
         private readonly IOrderCloudClient _oc;
         private readonly ISupplierSyncCommand _supplierSync;
