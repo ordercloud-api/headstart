@@ -334,13 +334,21 @@ namespace Headstart.API.Commands
 				RefreshTokenDuration = 43200
 			};
 
-			var integrationsClientRequest = _oc.ApiClients.CreateAsync(integrationsClient, token);
-			var sellerClientRequest = _oc.ApiClients.CreateAsync(sellerClient, token);
-			var buyerClientRequest = _oc.ApiClients.CreateAsync(buyerClient, token);
-			var buyerLocalClientRequest = _oc.ApiClients.CreateAsync(buyerLocalClient, token);
+			var existingClients = await ListAllAsync.List(page => _oc.ApiClients.ListAsync(page: page, pageSize: 100, accessToken: token));
+
+			var integrationsClientRequest = GetClientRequest(existingClients, integrationsClient, token);
+			var sellerClientRequest = GetClientRequest(existingClients, sellerClient, token);
+			var buyerClientRequest = GetClientRequest(existingClients, buyerClient, token);
+			var buyerLocalClientRequest = GetClientRequest(existingClients, buyerLocalClient, token);
 
 			await Task.WhenAll(integrationsClientRequest, sellerClientRequest, buyerClientRequest, buyerLocalClientRequest);
 		}
+
+		private Task<ApiClient> GetClientRequest(List<ApiClient> existingClients, ApiClient client, string token)
+        {
+			var match = existingClients.Find(c => c.AppName == client.AppName);
+			return match != null ? _oc.ApiClients.SaveAsync(match.ID, client, token) : _oc.ApiClients.CreateAsync(client, token);
+        }
 
 		private async Task CreateMessageSenders(string accessToken)
 		{
