@@ -179,7 +179,7 @@ namespace Headstart.API.Commands
 					Buyer = buyer,
 					Markup = new BuyerMarkup() { Percent = 0 }
 				};
-				await _buyerCommand.Create(superBuyer, token, isSeedingEnvironment: true);
+				await _buyerCommand.Update(buyer.ID, superBuyer, token);
 			}
 		}
 
@@ -229,7 +229,17 @@ namespace Headstart.API.Commands
 		{
 			foreach (var index in DefaultIndices)
 			{
-				await _oc.XpIndices.PutAsync(index, token);
+				//PutAsync is throwing id already exists error. Seems like it is trying to create.
+				//That is why we are using try catch here
+				//Bug in sdk?
+				try
+                {
+					await _oc.XpIndices.PutAsync(index, token);
+				} catch(Exception ex)
+                {
+					Console.WriteLine(ex);
+                }
+				
 			}
 		}
 
@@ -324,10 +334,10 @@ namespace Headstart.API.Commands
 				RefreshTokenDuration = 43200
 			};
 
-			var integrationsClientRequest = _oc.ApiClients.SaveAsync(integrationsClient.ID, integrationsClient, token);
-			var sellerClientRequest = _oc.ApiClients.SaveAsync(sellerClient.ID, sellerClient, token);
-			var buyerClientRequest = _oc.ApiClients.SaveAsync(buyerClient.ID, buyerClient, token);
-			var buyerLocalClientRequest = _oc.ApiClients.SaveAsync(buyerLocalClient.ID, buyerLocalClient, token);
+			var integrationsClientRequest = _oc.ApiClients.CreateAsync(integrationsClient, token);
+			var sellerClientRequest = _oc.ApiClients.CreateAsync(sellerClient, token);
+			var buyerClientRequest = _oc.ApiClients.CreateAsync(buyerClient, token);
+			var buyerLocalClientRequest = _oc.ApiClients.CreateAsync(buyerLocalClient, token);
 
 			await Task.WhenAll(integrationsClientRequest, sellerClientRequest, buyerClientRequest, buyerLocalClientRequest);
 		}
@@ -342,7 +352,7 @@ namespace Headstart.API.Commands
 		}
 		private async Task CreateAndAssignIntegrationEvents(string[] buyerClientIDs, string localBuyerClientID, string token)
 		{
-			await _oc.IntegrationEvents.CreateAsync(new IntegrationEvent()
+			var checkoutEvent = new IntegrationEvent()
 			{
 				ElevatedRoles = new[] { ApiRole.FullAccess },
 				ID = "HeadStartCheckout",
@@ -355,8 +365,10 @@ namespace Headstart.API.Commands
 					ExcludePOProductsFromShipping = false,
 					ExcludePOProductsFromTax = true,
 				}
-			}, token);
-			await _oc.IntegrationEvents.CreateAsync(new IntegrationEvent()
+			};
+			await _oc.IntegrationEvents.SaveAsync(checkoutEvent.ID, checkoutEvent, token);
+
+			var localCheckoutEvent = new IntegrationEvent()
 			{
 				ElevatedRoles = new[] { ApiRole.FullAccess },
 				ID = "HeadStartCheckoutLOCAL",
@@ -369,7 +381,8 @@ namespace Headstart.API.Commands
 					ExcludePOProductsFromShipping = false,
 					ExcludePOProductsFromTax = true,
 				}
-			}, token);
+			};
+			await _oc.IntegrationEvents.SaveAsync(localCheckoutEvent.ID, localCheckoutEvent, token);
 
 			await _oc.ApiClients.PatchAsync(localBuyerClientID, new PartialApiClient { OrderCheckoutIntegrationEventID = "HeadStartCheckoutLOCAL" }, token);
 			await Throttler.RunAsync(buyerClientIDs, 500, 20, clientID =>
@@ -551,6 +564,7 @@ namespace Headstart.API.Commands
 			return new List<MessageSender>() {
 				new MessageSender()
 				{
+					ID = "passwordReset",
 					Name = "Password Reset",
 					MessageTypes = new[] { MessageType.ForgottenPassword },
 					URL = "/passwordreset",
@@ -567,6 +581,7 @@ namespace Headstart.API.Commands
 				},
 				new MessageSender()
 				{
+					ID = "registration",
 					Name = "New User Registration",
 					MessageTypes = new[] { MessageType.NewUserInvitation },
 					URL = "/newuser",

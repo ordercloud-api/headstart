@@ -1,4 +1,4 @@
-﻿using Headstart.Models;
+using Headstart.Models;
 using OrderCloud.SDK;
 using System.Threading.Tasks;
 using Headstart.Models.Misc;
@@ -124,7 +124,7 @@ namespace Headstart.API.Commands
         {
             // to move from xp to contentdocs, that logic will go here instead of a patch
             // currently duplicate of the function above, this might need to be duplicated since there wont be a need to save the contentdocs assignment again
-            var updatedBuyer = await _oc.Buyers.PatchAsync(buyerID, new PartialBuyer() { xp = new { MarkupPercent = markup.Percent } });
+            var updatedBuyer = await _oc.Buyers.PatchAsync(buyerID, new PartialBuyer() { xp = new { MarkupPercent = markup.Percent } }, token);
             return new BuyerMarkup()
             {
                 Percent = (int)updatedBuyer.xp.MarkupPercent
