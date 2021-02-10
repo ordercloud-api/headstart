@@ -102,7 +102,6 @@ namespace Headstart.API.Commands
                 Email = user.Email,
                 FirstName = "Integration",
                 LastName = "Developer",
-                Password = "Four51Yet!", // _settings.OrderCloudSettings.DefaultPassword,
                 Username = $"dev_{ocSupplierID}"
             }, token);
 

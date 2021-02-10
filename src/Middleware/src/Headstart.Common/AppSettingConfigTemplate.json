@@ -37,7 +37,6 @@
   "OrderCloudSettings:ApiUrl": "",
   "OrderCloudSettings:MiddlewareClientID": "",
   "OrderCloudSettings:MiddlewareClientSecret": "",
-  "OrderCloudSettings:DefaultPassword": "",
   "OrderCloudSettings:IncrementorPrefix": "",
   "OrderCloudSettings:WebhookHashKey": "",
   "SendGridSettings:ApiKey": "",
