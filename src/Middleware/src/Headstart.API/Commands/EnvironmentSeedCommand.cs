@@ -413,16 +413,9 @@ namespace Headstart.API.Commands
                 Name = _fullAccessSecurityProfile,
                 ID = _fullAccessSecurityProfile
             });
-			Console.WriteLine(profiles);
 
 			var profileCreateRequests = profiles.Select(p => _oc.SecurityProfiles.SaveAsync(p.ID, p, accessToken));
-			try
-            {
-				await Task.WhenAll(profileCreateRequests);
-			} catch (Exception ex)
-            {
-				Console.WriteLine(ex);
-            }
+			await Task.WhenAll(profileCreateRequests);
 		}
 
 		public async Task DeleteAllWebhooks(string token)
