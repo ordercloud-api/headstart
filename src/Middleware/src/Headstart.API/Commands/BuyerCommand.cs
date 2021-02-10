@@ -10,7 +10,7 @@ namespace Headstart.API.Commands
 {
     public interface IHSBuyerCommand
     {
-        Task<SuperHSBuyer> Create(SuperHSBuyer buyer, VerifiedUserContext user, bool isSeedingEnvironment = false);
+        Task<SuperHSBuyer> Create(SuperHSBuyer buyer, string accessToken, bool isSeedingEnvironment = false);
         Task<SuperHSBuyer> Get(string buyerID, string token = null);
         Task<SuperHSBuyer> Update(string buyerID, SuperHSBuyer buyer, string token);
     }
@@ -24,10 +24,10 @@ namespace Headstart.API.Commands
             _settings = settings;
             _oc = oc;
         }
-        public async Task<SuperHSBuyer> Create(SuperHSBuyer superBuyer, VerifiedUserContext user, bool isSeedingEnvironment = false)
+        public async Task<SuperHSBuyer> Create(SuperHSBuyer superBuyer, string accessToken, bool isSeedingEnvironment = false)
         {
-            var createdBuyer = await CreateBuyerAndRelatedFunctionalResources(superBuyer.Buyer, user, isSeedingEnvironment);
-            var createdMarkup = await CreateMarkup(superBuyer.Markup, createdBuyer.ID, user.AccessToken);
+            var createdBuyer = await CreateBuyerAndRelatedFunctionalResources(superBuyer.Buyer, accessToken, isSeedingEnvironment);
+            var createdMarkup = await CreateMarkup(superBuyer.Markup, createdBuyer.ID, accessToken);
             return new SuperHSBuyer()
             {
                 Buyer = createdBuyer,
@@ -68,12 +68,12 @@ namespace Headstart.API.Commands
             };
         }
 
-        public async Task<HSBuyer> CreateBuyerAndRelatedFunctionalResources(HSBuyer buyer, VerifiedUserContext user, bool isSeedingEnvironment = false)
+        public async Task<HSBuyer> CreateBuyerAndRelatedFunctionalResources(HSBuyer buyer, string accessToken, bool isSeedingEnvironment = false)
         {
-            var token = isSeedingEnvironment ? user.AccessToken : null;
+            var token = isSeedingEnvironment ? accessToken : null;
             buyer.ID = "{buyerIncrementor}";
             buyer.Active = true;
-            var ocBuyer = await _oc.Buyers.CreateAsync(buyer, user.AccessToken);
+            var ocBuyer = await _oc.Buyers.CreateAsync(buyer, accessToken);
             buyer.ID = ocBuyer.ID;
             var ocBuyerID = ocBuyer.ID;
 

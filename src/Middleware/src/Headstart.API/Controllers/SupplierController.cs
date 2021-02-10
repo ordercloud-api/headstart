@@ -35,7 +35,7 @@ namespace Headstart.Common.Controllers
 		[HttpPost, OrderCloudIntegrationsAuth(ApiRole.SupplierAdmin)]
 		public async Task<HSSupplier> Create([FromBody] HSSupplier supplier)
 		{
-			return await _command.Create(supplier, VerifiedUserContext);
+			return await _command.Create(supplier, VerifiedUserContext.AccessToken);
 		}
 
 		[DocName("GET If Location Deletable")]

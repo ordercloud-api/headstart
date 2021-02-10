@@ -85,16 +85,12 @@ namespace Headstart.API.Commands
 			await CreateMessageSenders(orgToken);
 			await CreateIncrementors(orgToken); // must be before CreateBuyers
 
-			var userContext = await GetVerifiedUserContext(apiClients.MiddlewareApiClient);
-			await CreateBuyers(seed, userContext);
+			await CreateBuyers(seed, orgToken);
 			await CreateXPIndices(orgToken);
 			await CreateAndAssignIntegrationEvents(new string[] { apiClients.BuyerUiApiClient.ID }, apiClients.BuyerLocalUiApiClient.ID, orgToken);
-			await CreateSuppliers(userContext, seed, orgToken);
-			await CreateContentDocSchemas(userContext);
-			await CreateDefaultContentDocs(userContext);
+			await CreateSuppliers(seed, orgToken);
 
 			return orgToken;
-
 		}
 
 		public async Task VerifyOrgExists(string orgID, string devToken)
@@ -164,7 +160,7 @@ namespace Headstart.API.Commands
 			}, orgToken);
 		}
 
-		private async Task CreateBuyers(EnvironmentSeed seed, VerifiedUserContext user)
+		private async Task CreateBuyers(EnvironmentSeed seed, string token)
 		{
 			seed.Buyers.Add(new HSBuyer
 			{
@@ -183,133 +179,17 @@ namespace Headstart.API.Commands
 					Buyer = buyer,
 					Markup = new BuyerMarkup() { Percent = 0 }
 				};
-				await _buyerCommand.Create(superBuyer, user, isSeedingEnvironment: true);
+				await _buyerCommand.Create(superBuyer, token, isSeedingEnvironment: true);
 			}
 		}
 
-		private async Task CreateSuppliers(VerifiedUserContext user, EnvironmentSeed seed, string token)
+		private async Task CreateSuppliers(EnvironmentSeed seed, string token)
 		{
 			// Create Suppliers and necessary user groups and security profile assignments
 			foreach (HSSupplier supplier in seed.Suppliers)
 			{
-				await _supplierCommand.Create(supplier, user, isSeedingEnvironment: true);
+				await _supplierCommand.Create(supplier, token, isSeedingEnvironment: true);
 			}
-		}
-
-		private async Task<VerifiedUserContext> GetVerifiedUserContext(ApiClient middlewareApiClient)
-		{
-			// some endpoints such as documents and documentschemas require a verified user context for a user in the seller org
-			// however the context that we get when calling this endpoint is for the dev user so we need to create a user context
-			// with the seller user
-			var ocConfig = new OrderCloudClientConfig
-			{
-				ApiUrl = _settings.OrderCloudSettings.ApiUrl,
-				AuthUrl = _settings.OrderCloudSettings.ApiUrl,
-				ClientId = middlewareApiClient.ID,
-				ClientSecret = middlewareApiClient.ClientSecret,
-				GrantType = GrantType.ClientCredentials,
-				Roles = new[]
-				{
-					ApiRole.FullAccess
-				}
-			};
-			return await new VerifiedUserContext(_oc).Define(ocConfig);
-		}
-
-		private async Task CreateContentDocSchemas(VerifiedUserContext userContext)
-		{
-			var kitSchema = new DocSchema
-			{
-				ID = "HSKitProductAssignment",
-				RestrictedAssignmentTypes = new List<ResourceType> { },
-				Schema = JObject.Parse(File.ReadAllText("../Headstart.Common/Assets/ContentDocSchemas/kitproduct.json"))
-			};
-
-			var supplierFilterConfigSchema = new DocSchema
-			{
-				ID = "SupplierFilterConfig",
-				RestrictedAssignmentTypes = new List<ResourceType> { },
-				Schema = JObject.Parse(File.ReadAllText("../Headstart.Common/Assets/ContentDocSchemas/supplierfilterconfig.json"))
-			};
-
-			await Task.WhenAll(
-				_cms.Schemas.Create(kitSchema, userContext.AccessToken),
-				_cms.Schemas.Create(supplierFilterConfigSchema, userContext.AccessToken)
-			);
-		}
-
-		private async Task CreateDefaultContentDocs(VerifiedUserContext userContext)
-		{
-			// any default created docs should be generic enough to be used by all orgs
-			await Task.WhenAll(
-				_cms.Documents.Create("SupplierFilterConfig", GetCountriesServicingDoc(), userContext.AccessToken),
-				_cms.Documents.Create("SupplierFilterConfig", GetServiceCategoryDoc(), userContext.AccessToken),
-				_cms.Documents.Create("SupplierFilterConfig", GetVendorLevelDoc(), userContext.AccessToken)
-			);
-		}
-
-		private Document<SupplierFilterConfig> GetCountriesServicingDoc()
-		{
-			return new Document<SupplierFilterConfig>
-			{
-				ID = "CountriesServicing",
-				Doc = new SupplierFilterConfig
-				{
-					Display = "Countries Servicing",
-					Path = "xp.CountriesServicing",
-					Items = new List<Filter>
-					{
-						new Filter
-						{
-							Text = "UnitedStates",
-							Value = "US"
-						}
-					},
-					AllowSellerEdit = true,
-					AllowSupplierEdit = true,
-					BuyerAppFilterType = "NonUI"
-				}
-			};
-		}
-
-		private dynamic GetServiceCategoryDoc()
-		{
-			return new Document<SupplierFilterConfig>
-			{
-				ID = "ServiceCategory",
-				Doc = new SupplierFilterConfig
-				{
-					Display = "Service Category",
-					Path = "xp.Categories.ServiceCategory",
-					AllowSupplierEdit = false,
-					AllowSellerEdit = true,
-					BuyerAppFilterType = "SelectOption",
-					Items = new List<Filter>
-					{
-
-					}
-				}
-			};
-		}
-
-		private Document<SupplierFilterConfig> GetVendorLevelDoc()
-		{
-			return new Document<SupplierFilterConfig>
-			{
-				ID = "VendorLevel",
-				Doc = new SupplierFilterConfig
-				{
-					Display = "Vendor Level",
-					Path = "xp.Categories.VendorLevel",
-					AllowSupplierEdit = true,
-					AllowSellerEdit = true,
-					BuyerAppFilterType = "SelectOption",
-					Items = new List<Filter>
-					{
-
-					}
-				}
-			};
 		}
 
 		private async Task CreateDefaultSellerUser(string token)
