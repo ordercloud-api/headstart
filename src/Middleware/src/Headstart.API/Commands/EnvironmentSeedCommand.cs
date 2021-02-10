@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -323,7 +323,7 @@ namespace Headstart.API.Commands
 				FirstName = "Default",
 				LastName = "User"
 			};
-			await _oc.AdminUsers.CreateAsync(defaultSellerUser, token);
+			await _oc.AdminUsers.SaveAsync(defaultSellerUser.ID, defaultSellerUser, token);
 		}
 
 		static readonly List<XpIndex> DefaultIndices = new List<XpIndex>() {
@@ -363,7 +363,7 @@ namespace Headstart.API.Commands
 		{
 			foreach (var incrementor in DefaultIncrementors)
 			{
-				await _oc.Incrementors.CreateAsync(incrementor, token);
+				await _oc.Incrementors.SaveAsync(incrementor.ID, incrementor, token);
 			}
 		}
 
@@ -444,10 +444,10 @@ namespace Headstart.API.Commands
 				RefreshTokenDuration = 43200
 			};
 
-			var integrationsClientRequest = _oc.ApiClients.CreateAsync(integrationsClient, token);
-			var sellerClientRequest = _oc.ApiClients.CreateAsync(sellerClient, token);
-			var buyerClientRequest = _oc.ApiClients.CreateAsync(buyerClient, token);
-			var buyerLocalClientRequest = _oc.ApiClients.CreateAsync(buyerLocalClient, token);
+			var integrationsClientRequest = _oc.ApiClients.SaveAsync(integrationsClient.ID, integrationsClient, token);
+			var sellerClientRequest = _oc.ApiClients.SaveAsync(sellerClient.ID, sellerClient, token);
+			var buyerClientRequest = _oc.ApiClients.SaveAsync(buyerClient.ID, buyerClient, token);
+			var buyerLocalClientRequest = _oc.ApiClients.SaveAsync(buyerLocalClient.ID, buyerLocalClient, token);
 
 			await Task.WhenAll(integrationsClientRequest, sellerClientRequest, buyerClientRequest, buyerLocalClientRequest);
 		}
@@ -457,7 +457,7 @@ namespace Headstart.API.Commands
 			foreach (var messageSender in DefaultMessageSenders())
 			{
 				messageSender.URL = $"{_settings.EnvironmentSettings.BaseUrl}{messageSender.URL}";
-				await _oc.MessageSenders.CreateAsync(messageSender, accessToken);
+				await _oc.MessageSenders.SaveAsync(messageSender.ID, messageSender, accessToken);
 			}
 		}
 		private async Task CreateAndAssignIntegrationEvents(string[] buyerClientIDs, string localBuyerClientID, string token)
@@ -514,15 +514,22 @@ namespace Headstart.API.Commands
 					Roles = p.Roles
 				}).ToList();
 
-			profiles.Add(new SecurityProfile()
-			{
-				Roles = new List<ApiRole> { ApiRole.FullAccess },
-				Name = _fullAccessSecurityProfile,
-				ID = _fullAccessSecurityProfile
-			});
+            profiles.Add(new SecurityProfile()
+            {
+                Roles = new List<ApiRole> { ApiRole.FullAccess },
+                Name = _fullAccessSecurityProfile,
+                ID = _fullAccessSecurityProfile
+            });
+			Console.WriteLine(profiles);
 
-			var profileCreateRequests = profiles.Select(p => _oc.SecurityProfiles.CreateAsync(p, accessToken));
-			await Task.WhenAll(profileCreateRequests);
+			var profileCreateRequests = profiles.Select(p => _oc.SecurityProfiles.SaveAsync(p.ID, p, accessToken));
+			try
+            {
+				await Task.WhenAll(profileCreateRequests);
+			} catch (Exception ex)
+            {
+				Console.WriteLine(ex);
+            }
 		}
 
 		public async Task DeleteAllWebhooks(string token)
