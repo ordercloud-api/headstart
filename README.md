@@ -38,7 +38,7 @@ You will need an azure app configuration for each environment (we recommend thre
 
 ### Creating Azure Pipelines
 
-[Azure Pipeline](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/what-is-azure-pipelines?view=azure-devops) - In order to deploy the code, you will need to set up a pipeline within Azure. To get setup and running quickly, we have included a YAML file that will build the middleware, run middleware tests, build/publish both UIs, along with publishing all the artifacts. [The template](./docs/Headstart-Azure-Pipeline.yml) is located within the docs folder in the root of the repo. The only change that is needed is within the "Get Build Number" job, update the URL to point to your app's middleware.
+[Azure Pipeline](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/what-is-azure-pipelines?view=azure-devops) - In order to deploy the code, you will need to set up a pipeline within Azure. To get setup and running quickly, we have included a YAML file that will build the middleware, run middleware tests, build/publish both UIs, along with publishing all the artifacts. [The template](./docs/Headstart-Azure-Pipeline.yml) is located within the docs folder in the root of the repo. The only change that is needed is within the "Get Build Number" job, update the URL to point to your app's middleware. Information on how to use the YAML file can be found [here](https://docs.microsoft.com/en-us/azure/devops/pipelines/customize-pipeline?view=azure-devops).
 
 ### Seeding OrderCloud Data
 
