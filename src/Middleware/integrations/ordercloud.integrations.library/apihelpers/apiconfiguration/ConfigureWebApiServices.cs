@@ -5,10 +5,7 @@ using Headstart.Common.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using System;
 using Microsoft.Extensions.DependencyInjection;
-using ordercloud.integrations.library;
 using OrderCloud.SDK;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Mvc;
 
 namespace ordercloud.integrations.library
 {

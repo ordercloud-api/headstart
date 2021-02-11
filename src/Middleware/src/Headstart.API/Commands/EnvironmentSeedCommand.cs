@@ -66,9 +66,9 @@ namespace Headstart.API.Commands
 			{
 				throw new Exception("Missing required app setting OrderCloudSettings:WebhookHashKey");
 			}
-			if (string.IsNullOrEmpty(_settings.EnvironmentSettings.BaseUrl))
+			if (string.IsNullOrEmpty(_settings.EnvironmentSettings.MiddlewareBaseUrl))
 			{
-				throw new Exception("Missing required app setting EnvironmentSettings:BaseUrl");
+				throw new Exception("Missing required app setting EnvironmentSettings:MiddlewareBaseUrl");
 			}
 
 			var portalUserToken = await _portal.Login(seed.PortalUsername, seed.PortalPassword);
@@ -456,7 +456,7 @@ namespace Headstart.API.Commands
 		{
 			foreach (var messageSender in DefaultMessageSenders())
 			{
-				messageSender.URL = $"{_settings.EnvironmentSettings.BaseUrl}{messageSender.URL}";
+				messageSender.URL = $"{_settings.EnvironmentSettings.MiddlewareBaseUrl}{messageSender.URL}";
 				await _oc.MessageSenders.CreateAsync(messageSender, accessToken);
 			}
 		}
@@ -468,7 +468,7 @@ namespace Headstart.API.Commands
 				ID = "HeadStartCheckout",
 				EventType = IntegrationEventType.OrderCheckout,
 				Name = "HeadStart Checkout",
-				CustomImplementationUrl = _settings.EnvironmentSettings.BaseUrl,
+				CustomImplementationUrl = _settings.EnvironmentSettings.MiddlewareBaseUrl,
 				HashKey = _settings.OrderCloudSettings.WebhookHashKey,
 				ConfigData = new
 				{
@@ -653,7 +653,7 @@ namespace Headstart.API.Commands
 		};
 			foreach (Webhook webhook in DefaultWebhooks)
 			{
-				webhook.Url = $"{_settings.EnvironmentSettings.BaseUrl}{webhook.Url}";
+				webhook.Url = $"{_settings.EnvironmentSettings.MiddlewareBaseUrl}{webhook.Url}";
 				webhook.HashKey = _settings.OrderCloudSettings.WebhookHashKey;
 				await _oc.Webhooks.CreateAsync(webhook, accessToken: token);
 			}

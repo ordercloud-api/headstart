@@ -29,7 +29,7 @@ namespace Headstart.Common.Controllers
                     Name = "Headstart",
                     ContactEmail = "oheywood@four51.com",
                     Description = "Headstart API",
-                    Host = _settings.EnvironmentSettings.BaseUrl,
+                    Host = _settings.EnvironmentSettings.MiddlewareBaseUrl,
                     Title = "Headstart API",
                     Url = "https://ordercloud.io",
                     Version = "1.0"

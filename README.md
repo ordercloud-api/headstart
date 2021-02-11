@@ -3,7 +3,7 @@ Welcome! The purpose of this project is to give you and your business a "headsta
 
 1. [Middleware](./src/Middleware/README.md) - The backend written in ASP.NET Core. Extends and enhances the capabilities of OrderCloud by integrating with best of breed services.
 2. [Buyer](./src/UI/Buyer/README.md) - The frontend buyer application written in Angular. This includes the entire shopping experience from the perspective of a buyer user.
-3. [Seller](./src/UI/Seller/README.md) - The frontend admin application written in Angular. This includes everything needed to manage the data in your buyer application.
+3. [Seller](./src/UI/Seller/README.md) - The frontend admin application written in Angular. This includes everything needed to manage the data in your buyer application(s).
 
 ## Initial Setup
 There are some tasks that must be completed before you can get an instance of Headstart running. This section will walk you through each of them.
@@ -13,9 +13,10 @@ This solution relies on various third party services and credentials for those s
 
 1. [Avalara](https://www.avalara.com/us/en/get-started/get-started-b.html?adobe_mc_ref=https%3A%2F%2Fwww.avalara.com%2Fus%2Fen%2Findex.html) - Tax calculation
 2. [CardConnect](https://cardconnect.com/signup) - Credit card payment processor
-3. [Sendgrid](https://signup.sendgrid.com/) - Transactional emails
-4. [EasyPost](https://www.easypost.com/signup) - Shipping estimates
-5. [SmartyStreets](https://smartystreets.com/pricing) - Address validation
+3. [EasyPost](https://www.easypost.com/signup) - Shipping estimates
+4. [SmartyStreets](https://smartystreets.com/pricing) - Address validation
+5. [Sendgrid](https://signup.sendgrid.com/) - Transactional emails **(Optional but emails won't work until set up)**
+6. [Zoho](https://www.zoho.com/signup.html) - ERP **(Optional)**
 
 ### Provisioning Azure Resources
 
@@ -63,7 +64,7 @@ For security reasons we don't create an admin user for you during the seeding pr
 
 Next, fire up your server following the instructions [here](./src/Middleware/README.md). At the same time, build your seller application locally by following the steps [here](./src/UI/Seller/README.md). You should be able to log in as your admin user, create a buyer organization as well as a buyer user. 
 
-Once you've created a buyer user you can fire up your buyer application locally by following the instructions [here](./src/Buyer/README.md). You will need to use the forgot password feature before logging in for the first time. You will receive an email and once your password has been reset you should be able to log in.
+Once you've created a buyer user you can fire up your buyer application locally by following the instructions [here](./src/Buyer/README.md). You will need to use the forgot password feature before logging in for the first time, if you don't have a sendgrid account yet you'll need to set the password in the portal. You will receive an email and once your password has been reset you should be able to log in.
 
 ## Git Flow
 
