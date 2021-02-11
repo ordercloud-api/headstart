@@ -27,7 +27,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, OrderCloudIntegrationsAuth(ApiRole.BuyerAdmin)]
         public async Task<SuperHSBuyer> Create([FromBody] SuperHSBuyer buyer)
         {
-            return await _command.Create(buyer, VerifiedUserContext);
+            return await _command.Create(buyer, VerifiedUserContext.AccessToken);
         }
 
         [DocName("PUT Headstart Buyer")]
