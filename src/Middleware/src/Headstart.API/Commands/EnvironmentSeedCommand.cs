@@ -235,11 +235,7 @@ namespace Headstart.API.Commands
 				try
                 {
 					await _oc.XpIndices.PutAsync(index, token);
-				} catch(Exception ex)
-                {
-					Console.WriteLine(ex);
-                }
-				
+				} catch(Exception ex) {}
 			}
 		}
 
