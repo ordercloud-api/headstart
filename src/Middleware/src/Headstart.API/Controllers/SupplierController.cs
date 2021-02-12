@@ -16,9 +16,9 @@ namespace Headstart.Common.Controllers
     public class SupplierController: BaseController
     {
 
-		private readonly IHeadstartSupplierCommand _command;
+		private readonly IHSSupplierCommand _command;
         private readonly IOrderCloudClient _oc;
-        public SupplierController(IHeadstartSupplierCommand command, IOrderCloudClient oc, AppSettings settings) : base(settings)
+        public SupplierController(IHSSupplierCommand command, IOrderCloudClient oc, AppSettings settings) : base(settings)
         {
             _command = command;
 			_oc = oc;
@@ -35,7 +35,7 @@ namespace Headstart.Common.Controllers
 		[HttpPost, OrderCloudIntegrationsAuth(ApiRole.SupplierAdmin)]
 		public async Task<HSSupplier> Create([FromBody] HSSupplier supplier)
 		{
-			return await _command.Create(supplier, VerifiedUserContext);
+			return await _command.Create(supplier, VerifiedUserContext.AccessToken);
 		}
 
 		[DocName("GET If Location Deletable")]

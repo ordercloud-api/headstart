@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,7 +28,7 @@ namespace Headstart.API.Commands
 		private readonly IOrderCloudClient _oc;
 		private readonly AppSettings _settings;
 		private readonly IPortalService _portal;
-		private readonly IHeadstartSupplierCommand _supplierCommand;
+		private readonly IHSSupplierCommand _supplierCommand;
 		private readonly IHSBuyerCommand _buyerCommand;
 		private readonly ICMSClient _cms;
 
@@ -42,7 +42,7 @@ namespace Headstart.API.Commands
 		public EnvironmentSeedCommand(
 			AppSettings settings,
 			IPortalService portal,
-			IHeadstartSupplierCommand supplierCommand,
+			IHSSupplierCommand supplierCommand,
 			IHSBuyerCommand buyerCommand,
 			ICMSClient cms,
 			IOrderCloudClient oc
@@ -85,16 +85,12 @@ namespace Headstart.API.Commands
 			await CreateMessageSenders(orgToken);
 			await CreateIncrementors(orgToken); // must be before CreateBuyers
 
-			var userContext = await GetVerifiedUserContext(apiClients.MiddlewareApiClient);
-			await CreateBuyers(seed, userContext);
+			await CreateBuyers(seed, orgToken);
 			await CreateXPIndices(orgToken);
 			await CreateAndAssignIntegrationEvents(new string[] { apiClients.BuyerUiApiClient.ID }, apiClients.BuyerLocalUiApiClient.ID, orgToken);
-			await CreateSuppliers(userContext, seed, orgToken);
-			await CreateContentDocSchemas(userContext);
-			await CreateDefaultContentDocs(userContext);
+			await CreateSuppliers(seed, orgToken);
 
 			return orgToken;
-
 		}
 
 		public async Task VerifyOrgExists(string orgID, string devToken)
@@ -164,7 +160,7 @@ namespace Headstart.API.Commands
 			}, orgToken);
 		}
 
-		private async Task CreateBuyers(EnvironmentSeed seed, VerifiedUserContext user)
+		private async Task CreateBuyers(EnvironmentSeed seed, string token)
 		{
 			seed.Buyers.Add(new HSBuyer
 			{
@@ -183,133 +179,17 @@ namespace Headstart.API.Commands
 					Buyer = buyer,
 					Markup = new BuyerMarkup() { Percent = 0 }
 				};
-				await _buyerCommand.Create(superBuyer, user, isSeedingEnvironment: true);
+				await _buyerCommand.Update(buyer.ID, superBuyer, token);
 			}
 		}
 
-		private async Task CreateSuppliers(VerifiedUserContext user, EnvironmentSeed seed, string token)
+		private async Task CreateSuppliers(EnvironmentSeed seed, string token)
 		{
 			// Create Suppliers and necessary user groups and security profile assignments
 			foreach (HSSupplier supplier in seed.Suppliers)
 			{
-				await _supplierCommand.Create(supplier, user, isSeedingEnvironment: true);
+				await _supplierCommand.Create(supplier, token, isSeedingEnvironment: true);
 			}
-		}
-
-		private async Task<VerifiedUserContext> GetVerifiedUserContext(ApiClient middlewareApiClient)
-		{
-			// some endpoints such as documents and documentschemas require a verified user context for a user in the seller org
-			// however the context that we get when calling this endpoint is for the dev user so we need to create a user context
-			// with the seller user
-			var ocConfig = new OrderCloudClientConfig
-			{
-				ApiUrl = _settings.OrderCloudSettings.ApiUrl,
-				AuthUrl = _settings.OrderCloudSettings.ApiUrl,
-				ClientId = middlewareApiClient.ID,
-				ClientSecret = middlewareApiClient.ClientSecret,
-				GrantType = GrantType.ClientCredentials,
-				Roles = new[]
-				{
-					ApiRole.FullAccess
-				}
-			};
-			return await new VerifiedUserContext(_oc).Define(ocConfig);
-		}
-
-		private async Task CreateContentDocSchemas(VerifiedUserContext userContext)
-		{
-			var kitSchema = new DocSchema
-			{
-				ID = "HSKitProductAssignment",
-				RestrictedAssignmentTypes = new List<ResourceType> { },
-				Schema = JObject.Parse(File.ReadAllText("../Headstart.Common/Assets/ContentDocSchemas/kitproduct.json"))
-			};
-
-			var supplierFilterConfigSchema = new DocSchema
-			{
-				ID = "SupplierFilterConfig",
-				RestrictedAssignmentTypes = new List<ResourceType> { },
-				Schema = JObject.Parse(File.ReadAllText("../Headstart.Common/Assets/ContentDocSchemas/supplierfilterconfig.json"))
-			};
-
-			await Task.WhenAll(
-				_cms.Schemas.Create(kitSchema, userContext.AccessToken),
-				_cms.Schemas.Create(supplierFilterConfigSchema, userContext.AccessToken)
-			);
-		}
-
-		private async Task CreateDefaultContentDocs(VerifiedUserContext userContext)
-		{
-			// any default created docs should be generic enough to be used by all orgs
-			await Task.WhenAll(
-				_cms.Documents.Create("SupplierFilterConfig", GetCountriesServicingDoc(), userContext.AccessToken),
-				_cms.Documents.Create("SupplierFilterConfig", GetServiceCategoryDoc(), userContext.AccessToken),
-				_cms.Documents.Create("SupplierFilterConfig", GetVendorLevelDoc(), userContext.AccessToken)
-			);
-		}
-
-		private Document<SupplierFilterConfig> GetCountriesServicingDoc()
-		{
-			return new Document<SupplierFilterConfig>
-			{
-				ID = "CountriesServicing",
-				Doc = new SupplierFilterConfig
-				{
-					Display = "Countries Servicing",
-					Path = "xp.CountriesServicing",
-					Items = new List<Filter>
-					{
-						new Filter
-						{
-							Text = "UnitedStates",
-							Value = "US"
-						}
-					},
-					AllowSellerEdit = true,
-					AllowSupplierEdit = true,
-					BuyerAppFilterType = "NonUI"
-				}
-			};
-		}
-
-		private dynamic GetServiceCategoryDoc()
-		{
-			return new Document<SupplierFilterConfig>
-			{
-				ID = "ServiceCategory",
-				Doc = new SupplierFilterConfig
-				{
-					Display = "Service Category",
-					Path = "xp.Categories.ServiceCategory",
-					AllowSupplierEdit = false,
-					AllowSellerEdit = true,
-					BuyerAppFilterType = "SelectOption",
-					Items = new List<Filter>
-					{
-
-					}
-				}
-			};
-		}
-
-		private Document<SupplierFilterConfig> GetVendorLevelDoc()
-		{
-			return new Document<SupplierFilterConfig>
-			{
-				ID = "VendorLevel",
-				Doc = new SupplierFilterConfig
-				{
-					Display = "Vendor Level",
-					Path = "xp.Categories.VendorLevel",
-					AllowSupplierEdit = true,
-					AllowSellerEdit = true,
-					BuyerAppFilterType = "SelectOption",
-					Items = new List<Filter>
-					{
-
-					}
-				}
-			};
 		}
 
 		private async Task CreateDefaultSellerUser(string token)
@@ -323,7 +203,7 @@ namespace Headstart.API.Commands
 				FirstName = "Default",
 				LastName = "User"
 			};
-			await _oc.AdminUsers.CreateAsync(defaultSellerUser, token);
+			await _oc.AdminUsers.SaveAsync(defaultSellerUser.ID, defaultSellerUser, token);
 		}
 
 		static readonly List<XpIndex> DefaultIndices = new List<XpIndex>() {
@@ -349,7 +229,13 @@ namespace Headstart.API.Commands
 		{
 			foreach (var index in DefaultIndices)
 			{
-				await _oc.XpIndices.PutAsync(index, token);
+				//PutAsync is throwing id already exists error. Seems like it is trying to create.
+				//That is why we are using try catch here
+				//Bug in sdk?
+				try
+                {
+					await _oc.XpIndices.PutAsync(index, token);
+				} catch(Exception ex) {}
 			}
 		}
 
@@ -363,7 +249,7 @@ namespace Headstart.API.Commands
 		{
 			foreach (var incrementor in DefaultIncrementors)
 			{
-				await _oc.Incrementors.CreateAsync(incrementor, token);
+				await _oc.Incrementors.SaveAsync(incrementor.ID, incrementor, token);
 			}
 		}
 
@@ -444,25 +330,33 @@ namespace Headstart.API.Commands
 				RefreshTokenDuration = 43200
 			};
 
-			var integrationsClientRequest = _oc.ApiClients.CreateAsync(integrationsClient, token);
-			var sellerClientRequest = _oc.ApiClients.CreateAsync(sellerClient, token);
-			var buyerClientRequest = _oc.ApiClients.CreateAsync(buyerClient, token);
-			var buyerLocalClientRequest = _oc.ApiClients.CreateAsync(buyerLocalClient, token);
+			var existingClients = await ListAllAsync.List(page => _oc.ApiClients.ListAsync(page: page, pageSize: 100, accessToken: token));
+
+			var integrationsClientRequest = GetClientRequest(existingClients, integrationsClient, token);
+			var sellerClientRequest = GetClientRequest(existingClients, sellerClient, token);
+			var buyerClientRequest = GetClientRequest(existingClients, buyerClient, token);
+			var buyerLocalClientRequest = GetClientRequest(existingClients, buyerLocalClient, token);
 
 			await Task.WhenAll(integrationsClientRequest, sellerClientRequest, buyerClientRequest, buyerLocalClientRequest);
 		}
+
+		private Task<ApiClient> GetClientRequest(List<ApiClient> existingClients, ApiClient client, string token)
+        {
+			var match = existingClients.Find(c => c.AppName == client.AppName);
+			return match != null ? _oc.ApiClients.SaveAsync(match.ID, client, token) : _oc.ApiClients.CreateAsync(client, token);
+        }
 
 		private async Task CreateMessageSenders(string accessToken)
 		{
 			foreach (var messageSender in DefaultMessageSenders())
 			{
-				messageSender.URL = $"{_settings.EnvironmentSettings.MiddlewareBaseUrl}{messageSender.URL}";
-				await _oc.MessageSenders.CreateAsync(messageSender, accessToken);
+				messageSender.URL = $"{_settings.EnvironmentSettings.BaseUrl}{messageSender.URL}";
+				await _oc.MessageSenders.SaveAsync(messageSender.ID, messageSender, accessToken);
 			}
 		}
 		private async Task CreateAndAssignIntegrationEvents(string[] buyerClientIDs, string localBuyerClientID, string token)
 		{
-			await _oc.IntegrationEvents.CreateAsync(new IntegrationEvent()
+			var checkoutEvent = new IntegrationEvent()
 			{
 				ElevatedRoles = new[] { ApiRole.FullAccess },
 				ID = "HeadStartCheckout",
@@ -475,8 +369,10 @@ namespace Headstart.API.Commands
 					ExcludePOProductsFromShipping = false,
 					ExcludePOProductsFromTax = true,
 				}
-			}, token);
-			await _oc.IntegrationEvents.CreateAsync(new IntegrationEvent()
+			};
+			await _oc.IntegrationEvents.SaveAsync(checkoutEvent.ID, checkoutEvent, token);
+
+			var localCheckoutEvent = new IntegrationEvent()
 			{
 				ElevatedRoles = new[] { ApiRole.FullAccess },
 				ID = "HeadStartCheckoutLOCAL",
@@ -489,7 +385,8 @@ namespace Headstart.API.Commands
 					ExcludePOProductsFromShipping = false,
 					ExcludePOProductsFromTax = true,
 				}
-			}, token);
+			};
+			await _oc.IntegrationEvents.SaveAsync(localCheckoutEvent.ID, localCheckoutEvent, token);
 
 			await _oc.ApiClients.PatchAsync(localBuyerClientID, new PartialApiClient { OrderCheckoutIntegrationEventID = "HeadStartCheckoutLOCAL" }, token);
 			await Throttler.RunAsync(buyerClientIDs, 500, 20, clientID =>
@@ -514,14 +411,14 @@ namespace Headstart.API.Commands
 					Roles = p.Roles
 				}).ToList();
 
-			profiles.Add(new SecurityProfile()
-			{
-				Roles = new List<ApiRole> { ApiRole.FullAccess },
-				Name = _fullAccessSecurityProfile,
-				ID = _fullAccessSecurityProfile
-			});
+            profiles.Add(new SecurityProfile()
+            {
+                Roles = new List<ApiRole> { ApiRole.FullAccess },
+                Name = _fullAccessSecurityProfile,
+                ID = _fullAccessSecurityProfile
+            });
 
-			var profileCreateRequests = profiles.Select(p => _oc.SecurityProfiles.CreateAsync(p, accessToken));
+			var profileCreateRequests = profiles.Select(p => _oc.SecurityProfiles.SaveAsync(p.ID, p, accessToken));
 			await Task.WhenAll(profileCreateRequests);
 		}
 
@@ -664,6 +561,7 @@ namespace Headstart.API.Commands
 			return new List<MessageSender>() {
 				new MessageSender()
 				{
+					ID = "passwordReset",
 					Name = "Password Reset",
 					MessageTypes = new[] { MessageType.ForgottenPassword },
 					URL = "/passwordreset",
@@ -680,6 +578,7 @@ namespace Headstart.API.Commands
 				},
 				new MessageSender()
 				{
+					ID = "registration",
 					Name = "New User Registration",
 					MessageTypes = new[] { MessageType.NewUserInvitation },
 					URL = "/newuser",
