@@ -74,7 +74,7 @@ For security reasons we don't create an admin user for you during the seeding pr
 
 Next, fire up your server following the instructions [here](./src/Middleware/README.md). At the same time, build your seller application locally by following the steps [here](./src/UI/Seller/README.md). You should be able to log in as your admin user, create a buyer organization as well as a buyer user.
 
-Once you've created a buyer user you can fire up your buyer application locally by following the instructions [here](./src/Buyer/README.md). You will need to use the forgot password feature before logging in for the first time, if you don't have a sendgrid account yet you'll need to set the password in the portal. You will receive an email and once your password has been reset you should be able to log in.
+Once you've created a buyer user you can fire up your buyer application locally by following the instructions [here](./src/Buyer/README.md). You will need to use the forgot password feature before logging in for the first time, if you don't have a sendgrid account yet you will not receive a forgotten password email, and you'll have to reset your password manually in the portal. You will receive an email and once your password has been reset you should be able to log in.
 
 ## Git Flow
 
