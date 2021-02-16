@@ -42,7 +42,7 @@ namespace Headstart.Common
         public AppEnvironment Environment { get; set; }
         public string BuildNumber { get; set; } // set during deploy
         public string Commit { get; set; } // set during deploy
-        public string BaseUrl { get; set; }
+        public string MiddlewareBaseUrl { get; set; }
         public string AFStorefrontBaseUrl { get; set; }
         public string AFStorefrontClientID { get; set; }
         public string WTCStorefrontBaseUrl { get; set; }
