@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using OrderCloud.SDK;
 using System.Threading.Tasks;
 using Headstart.Models.Attributes;
@@ -78,7 +78,11 @@ namespace Headstart.Common.Controllers
 					BuyerAppFilterType = "SelectOption",
 					Items = new List<Filter>
 					{
-
+						new Filter
+                        {
+							Text = "Default Service Category",
+							Value = "DefaultServiceCategory"
+						}
 					}
 				}
 			};
@@ -98,7 +102,11 @@ namespace Headstart.Common.Controllers
 					BuyerAppFilterType = "SelectOption",
 					Items = new List<Filter>
 					{
-
+						new Filter
+                        {
+							Text = "Default Vendor Level",
+							Value = "DefaultVendorLevel"
+                        }
 					}
 				}
 			};

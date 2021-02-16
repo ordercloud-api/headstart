@@ -350,7 +350,7 @@ namespace Headstart.API.Commands
 		{
 			foreach (var messageSender in DefaultMessageSenders())
 			{
-				messageSender.URL = $"{_settings.EnvironmentSettings.BaseUrl}{messageSender.URL}";
+				messageSender.URL = $"{_settings.EnvironmentSettings.MiddlewareBaseUrl}{messageSender.URL}";
 				await _oc.MessageSenders.SaveAsync(messageSender.ID, messageSender, accessToken);
 			}
 		}
