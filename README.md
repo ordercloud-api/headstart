@@ -54,7 +54,7 @@ Detailed Steps:
 3. Find your organization and save the unique identifier this is your SellerID in step 6.
 4. Follow the instructions [here](./src/Middleware/README.md) to start your server locally
 5. Download and open [Postman](https://www.postman.com/downloads/) so that you can make API calls to your local server
-6. Make a POST to `/seed` endpoint with the body as defined [here]('./src/Middleware/src/Headstart.Common/Models/Misc/EnvironmentSeed.cs)
+6. Make a POST to `/seed` endpoint with the body as defined [here](./src/Middleware/src/Headstart.Common/Models/Misc/EnvironmentSeed.cs)
 7. Validate data has been seeded in your organization. You should be able to list api clients. You'll want to find the api client with the name `Middleware Integrations` and set its ID in your azure app configuration as `OrderCloudSettings:MiddlewareClientID` and the secret to `OrderCloudSettings:MiddlewareClientSecret`
 
 ### Frontend Configuration
