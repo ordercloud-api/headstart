@@ -121,24 +121,20 @@
               </option>
             </select>
           </div>
-          <div class="form-group col-md-6">
-            <p class="mb-1">Use 3rd Party Shipping</p>
-            <label class="switch mb-0" for="SyncFreightPop">
-              <input
-                type="checkbox"
-                class="form-check-input"
-                id="SyncFreightPop"
-                showErrors
-                aria-describedby="SyncFreightPop"
-                formControlName="SyncFreightPop"
-                (input)="updateResourceFromEvent($event, 'xp.SyncFreightPop')"
-              />
-              <span class="slider round cursor-pointer"></span>
-            </label>
-          </div>
 
           <div class="form-group col-md-12" formGroupName="ProductTypes">
-            <label>Product Types</label>
+            <label
+              >Product Types
+              <small
+                *ngIf="isCreatingNew"
+                class="text-danger font-weight-bolder"
+                >*</small
+              >
+              <small id="productTypesHelp" class="form-text text-muted">
+                What types of products is this supplier able to sell? Check at
+                least one.
+              </small>
+            </label>
             <div class="d-flex justify-content-start align-items-center">
               <div class="custom-control custom-checkbox mr-3">
                 <input
@@ -190,10 +186,6 @@
                 >
               </div>
             </div>
-            <small id="productTypesHelp" class="form-text text-muted">
-              What types of products is this supplier able to sell? Check at
-              least one.
-            </small>
           </div>
           <div class="form-group">
             <label>Free Shipping</label>
@@ -231,7 +223,14 @@
             </div>
           </div>
           <div class="mt-3 form-group col-md-12">
-            <label for="Category">Categories</label>
+            <label for="Category"
+              >Categories
+              <small
+                *ngIf="isCreatingNew"
+                class="text-danger font-weight-bolder"
+                >*</small
+              >
+            </label>
             <supplier-category-select-component
               [categorySelectionsControl]="resourceForm?.controls.Categories"
               [filterConfig]="filterConfig"

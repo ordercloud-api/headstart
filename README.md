@@ -62,7 +62,7 @@ Detailed Steps:
 Your backend middleware is configured and all your resources have been provisioned and your data is seeded. Now we'll need to configure your buyer and seller applications. You can have any number of configurations each representing a deployment. By default we've created three such deployments one for each environment.
 
 - [Buyer](./src/UI/Buyer/src/assets/appConfigs)
-- [Seller](./src/UI/Seller/src/assets/appCOnfigs)
+- [Seller](./src/UI/Seller/src/assets/appConfigs)
 
 ### Validating Setup
 

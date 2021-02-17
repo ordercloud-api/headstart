@@ -18,12 +18,14 @@ import {
   BatchProcessResult,
   SupplierFilterConfigDocument,
   SuperHSShipment,
+  HSSupplier,
 } from '@ordercloud/headstart-sdk'
 import { Observable } from 'rxjs'
 
 @Injectable({
   providedIn: 'root',
 })
+// TODO: replace these manually written API calls with the headstart sdk
 export class MiddlewareAPIService {
   readonly headers = {
     headers: new HttpHeaders({
@@ -46,7 +48,10 @@ export class MiddlewareAPIService {
     return await this.http.get<boolean>(url, this.headers).toPromise()
   }
 
-  async updateSupplier(supplierID: string, supplier: any): Promise<any> {
+  async updateSupplier(
+    supplierID: string,
+    supplier: HSSupplier
+  ): Promise<HSSupplier> {
     const url = `${this.appConfig.middlewareUrl}/supplier/${supplierID}`
     return await this.http.patch(url, supplier, this.headers).toPromise()
   }
