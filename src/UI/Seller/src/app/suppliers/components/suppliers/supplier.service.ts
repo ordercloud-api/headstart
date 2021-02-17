@@ -48,9 +48,7 @@ export class SupplierService extends ResourceCrudService<Supplier> {
     )
   }
 
-  async createNewResource(
-    resource: HSSupplier & { xp: { Images: { URL: string }[] } }
-  ): Promise<any> {
+  async createNewResource(resource: any): Promise<any> {
     resource.ID = '{supplierIncrementor}'
     if (!resource.xp?.Images[0]?.URL) resource.xp.Images = []
     const newSupplier = await HeadStartSDK.Suppliers.Create(resource)
