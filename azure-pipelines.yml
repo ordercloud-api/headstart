@@ -1,19 +1,120 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+resources:
+  repositories:
+  - repository: self
+    type: git
+    ref: development
+jobs:
+- job: Job_1
+  displayName: Agent job 1
+  pool:
+    vmImage: windows-2019
+  steps:
+  - checkout: self
+  - task: PowerShell@2
+    displayName: Get Build Number
+    inputs:
+      targetType: inline
+      script: >-
+        try {
+            # call out to hosted endpoint to get the current version and add one for this build
+            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+            $response = Invoke-RestMethod -Uri "https://headstartdemo-middleware.azurewebsites.net/env"
+            $newversion = [int]$response.BuildNumber.Split(".")[2] + 1
+        Write-Host "##vso[build.updatebuildnumber]1.0.$newversion.$(Build.BuildId)"
 
-trigger:
-- development
+        } catch {
+            $newversion = 1
+            Write-Host "##vso[build.updatebuildnumber]1.0.$newversion.$(Build.BuildId)"
+        }
+  - task: NuGetToolInstaller@1
+    displayName: 'Use NuGet '
+  - task: NuGetCommand@2
+    displayName: NuGet restore
+  - task: CmdLine@2
+    displayName: Azure Storage for tests
+    inputs:
+      script: >-
+        sqllocaldb create MSSQLLocalDB
 
-pool:
-  vmImage: ubuntu-default
+        sqllocaldb start MSSQLLocalDB
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+        sqllocaldb info MSSQLLocalDB
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+
+        "C:\Program Files (x86)\Microsoft SDKs\Azure\Storage Emulator\AzureStorageEmulator.exe" start
+  - task: VSBuild@1
+    displayName: Build solution src/Middleware/Headstart.sln
+    inputs:
+      solution: src/Middleware/Headstart.sln
+  - task: VSTest@2
+    displayName: Run C# Unit tests
+    inputs:
+      testAssemblyVer2: >-
+        **\*.tests.dll
+
+        !**\obj\**
+  - task: DotNetCoreCLI@2
+    displayName: Build Middleware
+    inputs:
+      projects: '**/Headstart.API.csproj'
+      arguments: --configuration Release
+  - task: DotNetCoreCLI@2
+    displayName: Publish Middleware
+    inputs:
+      command: publish
+      publishWebProjects: false
+      projects: '**/Headstart.API.csproj'
+      arguments: --configuration Release --output middleware
+      zipAfterPublish: false
+  - task: NodeTool@0
+    displayName: Use Node 12.x
+    inputs:
+      versionSpec: 12.x
+  - task: Cache@2
+    displayName: Buyer Dependencies Cache
+    inputs:
+      key: npm | buyer | "$(Agent.OS)" | src/UI/Buyer/package-lock.json | src/UI/Buyer/package.json
+      path: src/UI/Buyer/node_modules
+      cacheHitVar: BuyerCacheRestored
+  - task: Npm@1
+    displayName: npm install - Buyer
+    inputs:
+      workingDir: src/UI/Buyer
+      verbose: false
+  - task: CmdLine@2
+    displayName: Build Buyer
+    inputs:
+      script: npm run build
+      workingDirectory: src/UI/Buyer
+  - task: Cache@2
+    displayName: Seller Dependencies Cache
+    inputs:
+      key: npm | seller | v2 | "$(Agent.OS)" | src/UI/Seller/package-lock.json | src/UI/Seller/package.json
+      path: src/UI/Seller/node_modules
+      cacheHitVar: SellerCacheRestoredV2
+  - task: Npm@1
+    displayName: npm install - Seller
+    inputs:
+      workingDir: src/UI/Seller
+      verbose: false
+  - task: CmdLine@2
+    displayName: Build Seller
+    inputs:
+      script: npm run build
+      workingDirectory: src/UI/Seller
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Buyer'
+    inputs:
+      PathtoPublish: src/UI/Buyer/dist
+      ArtifactName: buyer
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Seller'
+    inputs:
+      PathtoPublish: src/UI/Seller/dist
+      ArtifactName: seller
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: Middleware'
+    inputs:
+      PathtoPublish: middleware
+      ArtifactName: middleware
+...
