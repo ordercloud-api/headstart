@@ -95,13 +95,16 @@ namespace Headstart.API.Commands
             supplier.ID = ocSupplier.ID;
             var ocSupplierID = ocSupplier.ID;
      
-            // Create Integrations Supplier User
+            // This supplier user is created so that we can define an api client with it as the default context user
+            // this allows us to perform elevated supplier actions on behalf of that supplier company
+            // It is not an actual user that will login so there is no password or valid email
             var supplierUser = await _oc.SupplierUsers.CreateAsync(ocSupplierID, new User()
             {
                 Active = true,
                 FirstName = "Integration",
                 LastName = "Developer",
-                Username = $"dev_{ocSupplierID}"
+                Username = $"dev_{ocSupplierID}",
+                Email = "test@test.com"
             }, token);
 
             await CreateUserTypeUserGroupsAndSecurityProfileAssignments(supplierUser, token, ocSupplierID);
