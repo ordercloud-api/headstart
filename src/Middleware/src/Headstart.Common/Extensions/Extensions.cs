@@ -1,4 +1,5 @@
 using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Models;
 using Headstart.Models.Headstart;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,11 @@ namespace Headstart.Common.Extensions
         public static IEnumerable<HSLineItem> GetBuyerLineItemsBySupplierID(this HSOrderWorksheet buyerWorksheet, string supplierID)
         {
             return buyerWorksheet?.LineItems?.Where(li => li.SupplierID == supplierID).Select(li => li);
+        }
+
+        public static IEnumerable<HSLineItem> GetLineItemsByProductType(this HSOrderWorksheet buyerWorksheet, ProductType type)
+        {
+            return buyerWorksheet?.LineItems.Where(li => li.Product.xp.ProductType == type);
         }
     }
 }
