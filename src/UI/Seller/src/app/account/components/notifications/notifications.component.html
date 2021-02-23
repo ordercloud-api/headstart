@@ -4,7 +4,8 @@
       <account-menu></account-menu>
     </div>
     <div class="col-md-10 bg-light">
-      <perfect-scrollbar class="full-width"
+      <perfect-scrollbar
+        class="full-width"
         [ngStyle]="{ 'height.px': contentHeight }"
       >
         <div class="container-fluid py-3">
@@ -45,29 +46,10 @@
               >
               </seller-email-notifications>
               <div class="mb-0" class="notification-header-container">
-                <h1 class="resource-name mb-0"
-                  translate
-                >
+                <h1 class="resource-name mb-0" translate>
                   Notification Center
                 </h1>
 
-                <ng-container
-                  *ngIf="
-                    userContext?.UserType === 'SELLER' ||
-                    notificationsToReview?.length > 0
-                  "
-                >
-                  <div *ngFor="let notification of notificationsToReview">
-                    <monitored-product-notification
-                      [notification]="notification"
-                      (onActionTaken)="
-                        notificationActionTaken($event, notification)
-                      "
-                      (goToProductPage)="goToProductPage($event)"
-                    >
-                    </monitored-product-notification>
-                  </div>
-                </ng-container>
                 <div *ngIf="!notificationsToReview?.length">
                   <div class="card align-items-center notification-container">
                     <h5 class="mb-0">You are all caught up!</h5>

@@ -15,7 +15,6 @@ import { isEqual as _isEqual, set as _set, get as _get } from 'lodash'
 import { HeadStartSDK, Asset, AssetUpload } from '@ordercloud/headstart-sdk'
 import { JDocument } from '@ordercloud/cms-sdk'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
-import { NotificationStatus } from '@app-seller/models/notification.types'
 import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { UserContext } from '@app-seller/models/user.types'
 import { AppConfig } from '@app-seller/models/environment.types'
@@ -59,9 +58,6 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
       : (this.organizationName = this.appConfig.sellerName)
     this.refresh(this.userContext.Me)
     this.setProfileImgSrc()
-    if (this.userContext?.UserType === 'SELLER') {
-      this.retrieveNotifications()
-    }
   }
 
   setUpSubs(): void {
@@ -72,27 +68,6 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
     this.currentUserService.profileImgSubject.subscribe((img) => {
       this.hasProfileImg = Object.keys(img).length > 0
     })
-  }
-
-  async retrieveNotifications(): Promise<void> {
-    try {
-      await ContentManagementClient.Documents.List(
-        'MonitoredProductFieldModifiedNotification',
-        {
-          pageSize: 100,
-          sortBy: ['!History.DateUpdated'],
-        }
-      ).then((results: ListPage<JDocument>) => {
-        if (results?.Items?.length > 0) {
-          this.notificationsToReview = results?.Items.filter(
-            (i: { Doc: { Status: NotificationStatus } }) =>
-              i?.Doc?.Status === NotificationStatus.SUBMITTED
-          )
-        }
-      })
-    } catch (error) {
-      console.log(`No documents are found`)
-    }
   }
 
   setCurrentUserInitials(user: MeUser): void {
