@@ -6,11 +6,6 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Inject, Injectable } from '@angular/core'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppConfig } from '@app-seller/models/environment.types'
-import {
-  MonitoredProductFieldModifiedNotificationDocument,
-  NotificationStatus,
-} from '@app-seller/models/notification.types'
-
 import { OcTokenService, Order } from '@ordercloud/angular-sdk'
 import {
   ListPage,
@@ -68,34 +63,6 @@ export class MiddlewareAPIService {
   async getSupplierData(supplierOrderID: string): Promise<any> {
     const url = `${this.appConfig.middlewareUrl}/supplier/orderdetails/${supplierOrderID}`
     return await this.http.get<any>(url, this.headers).toPromise()
-  }
-
-  async updateProductNotifications(
-    notification: MonitoredProductFieldModifiedNotificationDocument
-  ): Promise<SuperHSProduct> {
-    return await this.http
-      .put<SuperHSProduct>(
-        `${this.appConfig.middlewareUrl}/notifications/monitored-product-field-modified/${notification.ID}`,
-        notification,
-        this.headers
-      )
-      .toPromise()
-  }
-
-  async getProductNotifications(
-    superProduct: SuperHSProduct
-  ): Promise<MonitoredProductFieldModifiedNotificationDocument[]> {
-    const productModifiedNotifications = await this.http
-      .post<ListPage<MonitoredProductFieldModifiedNotificationDocument>>(
-        `${this.appConfig.middlewareUrl}/notifications/monitored-product-notification`,
-        superProduct,
-        this.headers
-      )
-      .toPromise()
-
-    return productModifiedNotifications.Items?.filter(
-      (i) => i?.Doc?.Status === NotificationStatus.SUBMITTED
-    )
   }
 
   async patchLineItems(
