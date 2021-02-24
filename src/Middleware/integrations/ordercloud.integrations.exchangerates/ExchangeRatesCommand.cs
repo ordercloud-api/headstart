@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -53,7 +53,18 @@ namespace ordercloud.integrations.exchangerates
         /// <returns></returns>
         public async Task<ListPage<OrderCloudIntegrationsConversionRate>> Get(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencySymbol currency)
         {
+            try
+            {
+                return await GetCachedRates(rateArgs, currency);
+            } catch (Exception ex)
+            {
+                await Update();
+                return await GetCachedRates(rateArgs, currency);
+            }   
+        }
 
+        private async Task<ListPage<OrderCloudIntegrationsConversionRate>> GetCachedRates(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencySymbol currency)
+        {
             var rates = await _cache.GetOrAddAsync($"exchangerates_{currency}", () => {
                 return _blob.Get<OrderCloudIntegrationsExchangeRate>($"{currency}.json");
             }, TimeSpan.FromHours(1));
