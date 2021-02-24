@@ -5,6 +5,7 @@
       type="text"
       class="form-control"
       id="{{ field.field }}"
+      [maxLength]="field.maxLength"
       aria-describedby="field.field"
       value="{{ _resource[field.field] }}"
       (input)="handleUpdateResource($event)"
@@ -16,6 +17,20 @@
     <input
       *ngIf="field.type === 'number'"
       type="number"
+      class="form-control"
+      id="{{ field.field }}"
+      aria-describedby="field.field"
+      value="{{ _resource[field.field] }}"
+      (input)="handleUpdateResource($event)"
+      [maxlength]="field.maxLength"
+      placeholder="Enter {{ field.field }}"
+    />
+  </div>
+  <div *ngIf="field.type === 'date'" class="form-group">
+    <label for="field.field">{{ field.field }}</label>
+    <input
+      *ngIf="field.type === 'date'"
+      type="date"
       class="form-control"
       id="{{ field.field }}"
       aria-describedby="field.field"
