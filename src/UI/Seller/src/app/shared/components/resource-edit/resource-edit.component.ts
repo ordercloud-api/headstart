@@ -49,6 +49,7 @@ export class ResourceEditComponent {
         return {
           field: key,
           type: value['type'],
+          maxLength: (value['maxLength'] || 1000)
         }
       })
       .filter((r) => r.field !== 'xp')

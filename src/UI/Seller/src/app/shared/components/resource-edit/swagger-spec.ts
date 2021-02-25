@@ -825,7 +825,7 @@ export const schemas = {
         type: 'string',
       },
       DateCreated: {
-        type: 'string',
+        type: 'date',
         format: 'date-time',
         readOnly: true,
       },
@@ -840,7 +840,7 @@ export const schemas = {
         type: 'string',
       },
       ExpirationDate: {
-        type: 'string',
+        type: 'date',
         format: 'date-time',
       },
       xp: {
