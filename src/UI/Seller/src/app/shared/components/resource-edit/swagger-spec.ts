@@ -1,3 +1,5 @@
+import { RegexDictionary, ValidateNoSpecialCharactersAndSpaces } from "@app-seller/validators/validators";
+
 export const schemas = {
   AccessToken: {
     type: 'object',
@@ -820,6 +822,7 @@ export const schemas = {
     properties: {
       ID: {
         type: 'string',
+        validators: [ValidateNoSpecialCharactersAndSpaces]
       },
       Token: {
         type: 'string',

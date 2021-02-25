@@ -6,6 +6,7 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { REDIRECT_TO_FIRST_PARENT } from '@app-seller/layout/header/header.config'
 import { ListPage } from '@ordercloud/headstart-sdk'
 import { BehaviorSubject } from 'rxjs'
+import { assign as _assign } from 'lodash'
 import { ResourceUpdate } from '@app-seller/models/shared.types'
 
 export abstract class ResourceCrudComponent<ResourceType>
@@ -159,13 +160,23 @@ export abstract class ResourceCrudComponent<ResourceType>
     this.navigate(newURL, { queryParams })
   }
 
-  updateResource(resourceUpdate: ResourceUpdate): void {
-    this.updatedResource = this.ocService.getUpdatedEditableResource(
-      resourceUpdate,
-      this.updatedResource
-    )
+  updateResource($event: any): void {
+    this.updatedResource = _assign({}, this.updatedResource, $event.value)
+    this.resourceForm = $event;
     this.changeDetectorRef.detectChanges()
   }
+
+  // updateResource(resourceUpdate: ResourceUpdate): void {
+  //   console.log(this.updatedResource)
+  //   debugger;
+  //   this.updatedResource = this.ocService.getUpdatedEditableResource(
+  //     resourceUpdate,
+  //     this.updatedResource
+  //   )
+  //   console.log(this.updatedResource)
+  //   debugger;
+  //   this.changeDetectorRef.detectChanges()
+  // }
 
   handleUpdateResource(event: any, field: string): void {
     const resourceUpdate = {
