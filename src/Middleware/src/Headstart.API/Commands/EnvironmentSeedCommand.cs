@@ -81,7 +81,6 @@ namespace Headstart.API.Commands
 			await AssignSecurityProfiles(seed, orgToken);
 
 			var apiClients = await GetApiClients(orgToken);
-			await CreateWebhooks(new string[] { apiClients.BuyerUiApiClient.ID }, apiClients.AdminUiApiClient.ID, orgToken);
 			await CreateMessageSenders(orgToken);
 			await CreateIncrementors(orgToken); // must be before CreateBuyers
 
@@ -114,17 +113,15 @@ namespace Headstart.API.Commands
 			var storefrontClientIDs = await GetStoreFrontClientIDs(token);
 
 			var deleteMS = DeleteAllMessageSenders(token);
-			var deleteWH = DeleteAllWebhooks(token);
 			var deleteIE = DeleteAllIntegrationEvents(token);
-			await Task.WhenAll(deleteMS, deleteWH, deleteIE);
+			await Task.WhenAll(deleteMS, deleteIE);
 
 			// recreate with environment specific data
 			var createMS = CreateMessageSenders(token);
-			var createWH = CreateWebhooks(storefrontClientIDs, apiClients.AdminUiApiClient.ID, token);
 			var createIE = CreateAndAssignIntegrationEvents(storefrontClientIDs, apiClients.BuyerLocalUiApiClient.ID, token);
 			var shutOffSupplierEmails = ShutOffSupplierEmailsAsync(token); // shut off email notifications for all suppliers
 
-			await Task.WhenAll(createMS, createWH, createIE, shutOffSupplierEmails);
+			await Task.WhenAll(createMS, createIE, shutOffSupplierEmails);
 		}
 
 
@@ -422,13 +419,6 @@ namespace Headstart.API.Commands
 			await Task.WhenAll(profileCreateRequests);
 		}
 
-		public async Task DeleteAllWebhooks(string token)
-		{
-			var webhooks = await ListAllAsync.List(page => _oc.Webhooks.ListAsync(page: page, pageSize: 100, accessToken: token));
-			await Throttler.RunAsync(webhooks, 500, 20, webhook =>
-				_oc.Webhooks.DeleteAsync(webhook.ID, accessToken: token));
-		}
-
 		public async Task DeleteAllMessageSenders(string token)
 		{
 			var messageSenders = await ListAllAsync.List(page => _oc.MessageSenders.ListAsync(page: page, pageSize: 100, accessToken: token));
@@ -446,114 +436,6 @@ namespace Headstart.API.Commands
 			var integrationEvents = await ListAllAsync.List(page => _oc.IntegrationEvents.ListAsync(page: page, pageSize: 100, accessToken: token));
 			await Throttler.RunAsync(integrationEvents, 500, 20, integrationEvent =>
 				_oc.IntegrationEvents.DeleteAsync(integrationEvent.ID, accessToken: token));
-		}
-
-		private async Task CreateWebhooks(string[] buyerClientIDs, string adminUiApiClientID, string token)
-		{
-			var DefaultWebhooks = new List<Webhook>() {
-			new Webhook() {
-			  Name = "Order Shipped",
-			  Description = "Triggers email letting user know the order was shipped.",
-			  Url = "/ordershipped",
-			  ElevatedRoles =
-				new List<ApiRole>
-				{
-					ApiRole.FullAccess
-				},
-			  BeforeProcessRequest = false,
-			  WebhookRoutes = new List<WebhookRoute>
-			  {
-				new WebhookRoute() { Route = "v1/orders/{direction}/{orderID}/ship", Verb = "POST" }
-			  },
-			  ApiClientIDs = new [] { adminUiApiClientID }
-			},
-			new Webhook() {
-			  Name = "Order Cancelled",
-			  Description = "Triggers email letting user know the order has been cancelled.",
-			  Url = "/ordercancelled",
-			  ElevatedRoles =
-				new List<ApiRole>
-				{
-					ApiRole.FullAccess
-				},
-			  BeforeProcessRequest = false,
-			  WebhookRoutes = new List<WebhookRoute>
-			  {
-				new WebhookRoute() { Route = "v1/orders/{direction}/{orderID}/cancel", Verb = "POST" }
-			  },
-			  ApiClientIDs = new [] { adminUiApiClientID }
-			},
-			new Webhook() {
-			  Name = "New User",
-			  Description = "Triggers an email welcoming the buyer user.  Triggers an email letting admin know about the new buyer user.",
-			  Url = "/newuser",
-			  ElevatedRoles =
-				new List<ApiRole>
-				{
-					ApiRole.FullAccess
-				},
-			  BeforeProcessRequest = false,
-			  WebhookRoutes = new List<WebhookRoute>
-			  {
-				new WebhookRoute() { Route = "v1/buyers/{buyerID}/users", Verb = "POST" }
-			  },
-			  ApiClientIDs = new [] { adminUiApiClientID }.Concat(buyerClientIDs).ToArray()
-			},
-			new Webhook() {
-			  Name = "Product Created",
-			  Description = "Triggers email to user with details of newly created product.",
-			  Url = "/productcreated",
-			  ElevatedRoles =
-				new List<ApiRole>
-				{
-					ApiRole.FullAccess
-				},
-			  BeforeProcessRequest = false,
-			  WebhookRoutes = new List<WebhookRoute>
-			  {
-				new WebhookRoute() { Route = "v1/products", Verb = "POST" }
-			  },
-			  ApiClientIDs = new [] { adminUiApiClientID }
-			},
-			new Webhook() {
-			  Name = "Product Update",
-			  Description = "Triggers email to user indicating that a product has been updated.",
-			  Url = "/productupdate",
-			  ElevatedRoles =
-				new List<ApiRole>
-				{
-					ApiRole.FullAccess
-				},
-			  BeforeProcessRequest = false,
-			  WebhookRoutes = new List<WebhookRoute>
-			  {
-				new WebhookRoute() { Route = "v1/products/{productID}", Verb = "PATCH" }
-			  },
-			  ApiClientIDs = new [] { adminUiApiClientID }
-			},
-			new Webhook() {
-			  Name = "Supplier Updated",
-			  Description = "Triggers email letting user know the supplier has been updated.",
-			  Url = "/supplierupdated",
-			  ElevatedRoles =
-				new List<ApiRole>
-				{
-					ApiRole.FullAccess
-				},
-			  BeforeProcessRequest = false,
-			  WebhookRoutes = new List<WebhookRoute>
-			  {
-				new WebhookRoute() { Route = "v1/suppliers/{supplierID}", Verb = "PATCH" }
-			  },
-			 ApiClientIDs = new [] { adminUiApiClientID }
-			},
-		};
-			foreach (Webhook webhook in DefaultWebhooks)
-			{
-				webhook.Url = $"{_settings.EnvironmentSettings.MiddlewareBaseUrl}{webhook.Url}";
-				webhook.HashKey = _settings.OrderCloudSettings.WebhookHashKey;
-				await _oc.Webhooks.CreateAsync(webhook, accessToken: token);
-			}
 		}
 
 		private List<MessageSender> DefaultMessageSenders()
