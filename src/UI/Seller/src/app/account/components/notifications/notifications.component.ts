@@ -59,19 +59,6 @@ export class NotificationsComponent extends AccountContent {
     this.updateUserFromEvent({ target: { value: value } }, 'xp.ProductEmails')
   }
 
-  notificationActionTaken(event: string, notification: JDocument) {
-    if (event === 'ACCEPTED') {
-      this.notificationsToReview.splice(
-        this.notificationsToReview.indexOf(notification),
-        1
-      )
-    }
-  }
-
-  goToProductPage(product: string) {
-    this.navigateToPage(`/products/${product}`)
-  }
-
   addAddtlRcpt() {
     const addtlEmail = (document.getElementById('AdditionalEmail') as any).value
     const isValid = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,24}$/.test(addtlEmail)

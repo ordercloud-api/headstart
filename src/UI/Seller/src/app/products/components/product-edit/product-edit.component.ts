@@ -61,10 +61,7 @@ import { getProductMediumImageUrl } from '@app-seller/products/product-image.hel
 import { takeWhile } from 'rxjs/operators'
 import { SizerTiersDescriptionMap } from './size-tier.constants'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import {
-  MonitoredProductFieldModifiedNotificationDocument,
-  NotificationStatus,
-} from '@app-seller/models/notification.types'
+
 import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { ToastrService } from 'ngx-toastr'
 import { Subscription } from 'rxjs'
@@ -142,7 +139,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   availableSizeTiers = SizerTiersDescriptionMap
   active: number
   alive = true
-  productInReviewNotifications: MonitoredProductFieldModifiedNotificationDocument[]
   sizeTierSubscription: Subscription
   inventoryValidatorSubscription: Subscription
 
@@ -222,12 +218,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   }
 
   async refreshProductData(superProduct: SuperHSProduct): Promise<void> {
-    void this.middleware
-      .getProductNotifications(superProduct)
-      .then((result) => {
-        this.productInReviewNotifications = result
-      })
-
     // If a seller, and not editing the product, grab the currency from the product xp.
     this.supplierCurrency = this._exchangeRates?.find(
       (r) => r.Currency === superProduct?.Product?.xp?.Currency
@@ -586,8 +576,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
           superProduct.Product.ID
         )
       this.refreshProductData(superProduct)
-      //TODO: Add back in once CMS is working
-      this.createMonitoredProductDocument(superProduct)
       this.router.navigateByUrl(`/products/${superProduct.Product.ID}`)
       this.dataIsSaving = false
     } catch (ex) {
@@ -599,47 +587,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       throw ex
     }
   }
-  async createMonitoredProductDocument(superProduct: SuperHSProduct) {
-    const mySupplier = await this.currentUserService.getMySupplier()
-    const myContext = await this.currentUserService.getUserContext()
-    const document = {
-      Supplier: {
-        ID: mySupplier?.ID,
-        Name: mySupplier?.Name,
-      },
-      Product: {
-        ID: superProduct?.Product?.ID,
-        Name: superProduct?.Product?.Name,
-        FieldModified: 'Product Created',
-        PreviousValue: null,
-        CurrentValue: superProduct.Product.Name,
-      },
-      Status: NotificationStatus.SUBMITTED,
-      History: {
-        ModifiedBy: {
-          ID: myContext?.Me?.ID,
-          Name: `${myContext?.Me?.FirstName} ${myContext?.Me?.LastName}`,
-        },
-        ReviewedBy: { ID: '', Name: '' },
-        DateModified: new Date().toISOString(),
-        // TODO: Figure out how to get the API to accept a null value...
-        DateReviewed: new Date().toISOString(),
-      },
-    }
-    const headers = {
-      headers: new HttpHeaders({
-        Authorization: `Bearer ${this.ocTokenService.GetAccess()}`,
-      }),
-    }
-    // TODO: Replace with the SDK
-    const updatedProduct = await this.http
-      .post<SuperHSProduct>(
-        `${this.appConfig.middlewareUrl}/notifications/monitored-product-field-modified`,
-        document,
-        headers
-      )
-      .toPromise()
-  }
 
   async updateProduct(): Promise<void> {
     try {
@@ -650,9 +597,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         JSON.stringify(this._superHSProductStatic)
       ) {
         superProduct = await this.updateHSProduct(this._superHSProductEditable)
-      }
-      if (this.appConfig?.superProductFieldsToMonitor.length > 0) {
-        superProduct = await this.checkForFieldsToMonitor(superProduct)
       }
       this.refreshProductData(superProduct)
       if (this.imageFiles.length > 0)
@@ -672,81 +616,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       }
       throw ex
     }
-  }
-
-  async checkForFieldsToMonitor(
-    editedSuperProduct: SuperHSProduct
-  ): Promise<SuperHSProduct> {
-    const fieldsToMonitorForChanges = this.appConfig
-      ?.superProductFieldsToMonitor
-    const mySupplier = await this.currentUserService.getMySupplier()
-    const myContext = await this.currentUserService.getUserContext()
-    const headers = {
-      headers: new HttpHeaders({
-        Authorization: `Bearer ${this.ocTokenService.GetAccess()}`,
-      }),
-    }
-    let superProduct = editedSuperProduct
-    await Promise.all(
-      fieldsToMonitorForChanges.map(async (f) => {
-        const fieldChanged =
-          JSON.stringify(_get(editedSuperProduct, f)) !==
-          JSON.stringify(_get(this._superHSProductStatic, f))
-        if (fieldChanged) {
-          const document = {
-            Supplier: {
-              ID: mySupplier?.ID,
-              Name: mySupplier?.Name,
-            },
-            Product: {
-              ID: this._superHSProductStatic?.Product?.ID,
-              Name: this._superHSProductStatic?.Product?.Name,
-              FieldModified: f,
-              PreviousValue: _get(this._superHSProductStatic, f),
-              CurrentValue: _get(this._superHSProductEditable, f),
-            },
-            Status: NotificationStatus.SUBMITTED,
-            History: {
-              ModifiedBy: {
-                ID: myContext?.Me?.ID,
-                Name: `${myContext?.Me?.FirstName} ${myContext?.Me?.LastName}`,
-              },
-              ReviewedBy: { ID: '', Name: '' },
-              DateModified: new Date().toISOString(),
-              // TODO: Figure out how to get the API to accept a null value...
-              DateReviewed: new Date().toISOString(),
-            },
-          }
-          // TODO: Replace with the SDK
-          superProduct = await this.http
-            .post<SuperHSProduct>(
-              `${this.appConfig.middlewareUrl}/notifications/monitored-product-field-modified`,
-              document,
-              headers
-            )
-            .toPromise()
-        }
-      })
-    )
-    return superProduct
-  }
-
-  async reviewMonitoredFieldChange(
-    status: NotificationStatus,
-    notification: MonitoredProductFieldModifiedNotificationDocument
-  ): Promise<void> {
-    const myContext = await this.currentUserService.getUserContext()
-    notification.Doc.Status = status
-    notification.Doc.History.ReviewedBy = {
-      ID: myContext?.Me?.ID,
-      Name: `${myContext?.Me?.FirstName} ${myContext?.Me?.LastName}`,
-    }
-    notification.Doc.History.DateReviewed = new Date().toISOString()
-
-    const superProduct = await this.middleware.updateProductNotifications(
-      notification
-    )
-    void this.refreshProductData(superProduct)
   }
 
   updateProductResource(productUpdate: any): void {
