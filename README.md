@@ -57,6 +57,23 @@ Detailed Steps:
 6. Make a POST to `/seed` endpoint with the body as defined [here](./src/Middleware/src/Headstart.Common/Models/Misc/EnvironmentSeed.cs)
 7. Validate data has been seeded in your organization. You should be able to list api clients. You'll want to find the api client with the name `Middleware Integrations` and set its ID in your azure app configuration as `OrderCloudSettings:MiddlewareClientID` and the secret to `OrderCloudSettings:MiddlewareClientSecret`
 
+### Sendgrid Configuration
+In order to send emails each email type that you want to send needs to have an associated template that exists in your Sendgrid account and you'll need to populate the ID to each template in app settings.
+
+|        Email Type         | Description                                                                                                                     |
+| :-----------------------: | ------------------------------------------------------------------------------------------------------------------------------- |
+|      CriticalSupport      | sent to support when criticial failures occur that require manual intervention                                                  |
+|   LineItemStatusChange    | sent to the buyer user, seller user, and relevant supplier user when the status for line items on an order change               |
+|          NewUser          | sent to the buyer user when their account is first created with username and instructions to set their password                 |
+|       OrderApproval       | sent to the approving buyer user when an order requires their approval                                                          |
+|        OrderSubmit        | sent to the buyer user when their order is submitted                                                                            |
+|       PasswordReset       | sent to the buyer user when requesting password reset                                                                           |
+| ProductInformationRequest | sent to the supplier (supplier.xp.SupportContact.Email) when a buyer user requests more information about one of their products |
+|     QuoteOrderSubmit      | sent to the buyer user when their quote is submitted                                                                            |
+|                           |                                                                                                                                 |
+
+You can use [these default templates](./src/Middleware/src/Headstart.Common/Assets/EmailTemplates) to get started but will want to update the contact email and may want to add a company banner. If you want to build up your own completely custom template that is also possible. Take a look at the [sendgrid service](src/Middleware/src/Headstart.Common/Services/SendgridService.cs) to see which template variables are available to you or even add your own.
+
 ### Frontend Configuration
 
 Your backend middleware is configured and all your resources have been provisioned and your data is seeded. Now we'll need to configure your buyer and seller applications. You can have any number of configurations each representing a deployment. By default we've created three such deployments one for each environment.

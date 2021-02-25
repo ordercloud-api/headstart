@@ -17,7 +17,7 @@ namespace Headstart.Common.Controllers
             _orderCommand = orderCommand;
         }
 
-        [HttpPost, Route("newuser")] // TO DO: send email to mp manager
+        [HttpPost, Route("newuser")]
         [OrderCloudWebhookAuth]
         public async void HandleNewUser([FromBody] MessageNotification<PasswordResetEventBody> payload)
         {
@@ -26,7 +26,7 @@ namespace Headstart.Common.Controllers
 
         [HttpPost, Route("passwordreset")]
         [OrderCloudWebhookAuth]
-        public async void HandleBuyerPasswordReset([FromBody] MessageNotification<PasswordResetEventBody> payload)
+        public async void HandlePasswordReset([FromBody] MessageNotification<PasswordResetEventBody> payload)
         {
             await _sendgridService.SendPasswordResetEmail(payload);
         }

@@ -45,11 +45,6 @@ namespace Headstart.Common.Models
             public string SpecCombo { get; set; }
         }
 
-        public class ProductUpdateData
-        {
-            public string date { get; set; }
-        }
-
         public class NewUserData
         {
             public string FirstName { get; set; }
@@ -59,7 +54,7 @@ namespace Headstart.Common.Models
             public string Username { get; set; }
         }
 
-        public class InformationRequestData
+        public class ProductInformationRequestData
         {
             public string ProductID { get; set; }
             public string ProductName { get; set; }

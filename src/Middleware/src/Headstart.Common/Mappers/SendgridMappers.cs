@@ -93,13 +93,13 @@ namespace Headstart.Common.Mappers
             switch (subject.ToLower())
             {
                 case "general":
-                    return settings.SendgridSettings.SEBSupportCaseEmail;
+                    return settings.SendgridSettings.SupportCaseEmail;
                 case "report an error/bug":
-                    return settings.SendgridSettings.SEBSupportCaseEmail;
+                    return settings.SendgridSettings.SupportCaseEmail;
                 case "payment, billing, or refunds":
-                    return settings.SendgridSettings.SEBBillingEmail;
+                    return settings.SendgridSettings.BillingEmail;
                 default:
-                    return settings.SendgridSettings.SEBSupportCaseEmail;
+                    return settings.SendgridSettings.SupportCaseEmail;
             }
         }
 

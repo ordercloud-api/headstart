@@ -46,14 +46,14 @@ namespace Headstart.API
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-			var cosmosConfig = new CosmosConfig(
+            var cosmosConfig = new CosmosConfig(
                 _settings.CosmosSettings.DatabaseName,
                 _settings.CosmosSettings.EndpointUri,
                 _settings.CosmosSettings.PrimaryKey,
                 _settings.CosmosSettings.RequestTimeoutInSeconds
             );
-            var cosmosContainers = new List<ContainerInfo>() 
-            { 
+            var cosmosContainers = new List<ContainerInfo>()
+            {
                 new ContainerInfo()
                 {
                     Name = "rmas",
@@ -64,11 +64,11 @@ namespace Headstart.API
             var avalaraConfig = new AvalaraConfig()
             {
                 BaseApiUrl = _settings.AvalaraSettings.BaseApiUrl,
-				AccountID = _settings.AvalaraSettings.AccountID,
-				LicenseKey = _settings.AvalaraSettings.LicenseKey,
-				CompanyCode = _settings.AvalaraSettings.CompanyCode,
+                AccountID = _settings.AvalaraSettings.AccountID,
+                LicenseKey = _settings.AvalaraSettings.LicenseKey,
+                CompanyCode = _settings.AvalaraSettings.CompanyCode,
                 CompanyID = _settings.AvalaraSettings.CompanyID
-			};
+            };
 
             var currencyConfig = new BlobServiceConfig()
             {
@@ -89,8 +89,6 @@ namespace Headstart.API
                 .OrderCloudIntegrationsConfigureWebApiServices(_settings, middlewareErrorsConfig, corsPolicyName: "headstarcors")
                 .InjectCosmosStore<LogQuery, OrchestrationLog>(cosmosConfig)
                 .InjectCosmosStore<ReportTemplateQuery, ReportTemplate>(cosmosConfig)
-                .InjectCosmosStore<ResourceHistoryQuery<ProductHistory>, ProductHistory>(cosmosConfig)
-                .InjectCosmosStore<ResourceHistoryQuery<PriceScheduleHistory>, PriceScheduleHistory>(cosmosConfig)
                 .AddCosmosDb(_settings.CosmosSettings.EndpointUri, _settings.CosmosSettings.PrimaryKey, _settings.CosmosSettings.DatabaseName, cosmosContainers)
                 .Inject<IPortalService>()
                 .Inject<ISmartyStreetsCommand>()
@@ -117,13 +115,14 @@ namespace Headstart.API
                 .Inject<IRMARepo>()
                 .Inject<IZohoClient>()
                 .AddSingleton<IZohoCommand>(z => new ZohoCommand(new ZohoClient(
-                    new ZohoClientConfig() {
+                    new ZohoClientConfig()
+                    {
                         ApiUrl = "https://books.zoho.com/api/v3",
                         AccessToken = _settings.ZohoSettings.AccessToken,
                         ClientId = _settings.ZohoSettings.ClientId,
                         ClientSecret = _settings.ZohoSettings.ClientSecret,
                         OrganizationID = _settings.ZohoSettings.OrgID
-                    }, flurlClientFactory), 
+                    }, flurlClientFactory),
                     new OrderCloudClient(new OrderCloudClientConfig
                     {
                         ApiUrl = _settings.OrderCloudSettings.ApiUrl,
@@ -131,12 +130,13 @@ namespace Headstart.API
                         ClientId = _settings.OrderCloudSettings.MiddlewareClientID,
                         ClientSecret = _settings.OrderCloudSettings.MiddlewareClientSecret,
                         Roles = new[] { ApiRole.FullAccess }
-                })))
+                    })))
                 .AddSingleton<IOrderCloudIntegrationsExchangeRatesClient, OrderCloudIntegrationsExchangeRatesClient>()
                 .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand(currencyConfig, flurlClientFactory, provider.GetService<IAppCache>()))
-                .AddSingleton<IAvalaraCommand>(x => new AvalaraCommand(avalaraConfig, 
-                        new AvaTaxClient("four51 marketplace", "v1", "machine_name", new Uri(avalaraConfig.BaseApiUrl))
-                            .WithSecurity(_settings.AvalaraSettings.AccountID, _settings.AvalaraSettings.LicenseKey)))
+                .AddSingleton<IAvalaraCommand>(x => new AvalaraCommand(
+                    avalaraConfig,
+                    new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(avalaraConfig.BaseApiUrl)
+                   ).WithSecurity(_settings.AvalaraSettings.AccountID, _settings.AvalaraSettings.LicenseKey)))
                 .AddSingleton<IEasyPostShippingService>(x => new EasyPostShippingService(new EasyPostConfig() { APIKey = _settings.EasyPostSettings.APIKey }))
                 .AddSingleton<ISmartyStreetsService>(x => new SmartyStreetsService(_settings.SmartyStreetSettings, smartyStreetsUsClient))
                 .AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(_settings.CardConnectSettings, flurlClientFactory))
@@ -161,7 +161,8 @@ namespace Headstart.API
             services
                 .AddAuthenticationScheme<OrderCloudIntegrationsAuthOptions, OrderCloudIntegrationsAuthHandler>("OrderCloudIntegrations", opts => opts.OrderCloudClient = serviceProvider.GetService<IOrderCloudClient>())
                 .AddAuthenticationScheme<OrderCloudWebhookAuthOptions, OrderCloudWebhookAuthHandler>("OrderCloudWebhook", opts => opts.HashKey = _settings.OrderCloudSettings.WebhookHashKey)
-                .AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions {
+                .AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions
+                {
                     EnableAdaptiveSampling = false, // retain all data
                     InstrumentationKey = _settings.ApplicationInsightsSettings.InstrumentationKey
                 });
