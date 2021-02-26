@@ -9,18 +9,16 @@ using Headstart.Models.Headstart;
 using ordercloud.integrations.library;
 using OrderCloud.SDK;
 using System.IO;
-using Newtonsoft.Json.Linq;
-using Headstart.Common.Services.CMS;
-using Headstart.Common.Services.CMS.Models;
 using ordercloud.integrations.library.helpers;
 using Headstart.Common.Services;
 using Headstart.Common;
+using ordercloud.integrations.exchangerates;
 
 namespace Headstart.API.Commands
 {
     public interface IEnvironmentSeedCommand
     {
-        Task<string> Seed(EnvironmentSeed seed);
+        Task Seed(EnvironmentSeed seed);
         Task PostStagingRestore();
     }
     public class EnvironmentSeedCommand : IEnvironmentSeedCommand
@@ -30,7 +28,8 @@ namespace Headstart.API.Commands
         private readonly IPortalService _portal;
         private readonly IHSSupplierCommand _supplierCommand;
         private readonly IHSBuyerCommand _buyerCommand;
-        private readonly ICMSClient _cms;
+        private readonly IExchangeRatesCommand _exhangeRates;
+        private readonly IOrderCloudIntegrationsBlobService _translationsBlob;
 
         private readonly string _buyerApiClientName = "Default HeadStart Buyer UI";
         private readonly string _buyerLocalApiClientName = "Default HeadStart Buyer UI LOCAL"; // used for pointing integration events to the ngrok url
@@ -44,19 +43,25 @@ namespace Headstart.API.Commands
             IPortalService portal,
             IHSSupplierCommand supplierCommand,
             IHSBuyerCommand buyerCommand,
-            ICMSClient cms,
-            IOrderCloudClient oc
+            IOrderCloudClient oc,
+            IExchangeRatesCommand exhangeRates
         )
         {
             _settings = settings;
             _portal = portal;
             _supplierCommand = supplierCommand;
             _buyerCommand = buyerCommand;
-            _cms = cms;
             _oc = oc;
+            _exhangeRates = exhangeRates;
+            var translationsConfig = new BlobServiceConfig()
+            {
+                ConnectionString = _settings.BlobSettings.ConnectionString,
+                Container = _settings.BlobSettings.ContainerNameTranslations
+            };
+            _translationsBlob = new OrderCloudIntegrationsBlobService(translationsConfig);
         }
 
-        public async Task<string> Seed(EnvironmentSeed seed)
+        public async Task Seed(EnvironmentSeed seed)
         {
             if (string.IsNullOrEmpty(_settings.OrderCloudSettings.ApiUrl))
             {
@@ -89,7 +94,14 @@ namespace Headstart.API.Commands
             await CreateAndAssignIntegrationEvents(new string[] { apiClients.BuyerUiApiClient.ID }, apiClients.BuyerLocalUiApiClient.ID, orgToken);
             await CreateSuppliers(seed, orgToken);
 
-            return orgToken;
+            // populates exchange rates into blob container name: settings.BlobSettings.ContainerNameExchangeRates or "currency" if setting is not defined
+            await _exhangeRates.Update();
+
+            // populate default english translations into blob container name: settings.BlobSettings.ContainerNameTranslations or "ngx-translate" if setting is not defined
+            // provide other language files to support multiple languages
+            var currentDirectory = Directory.GetCurrentDirectory();
+            var englishTranslationsPath = Path.GetFullPath(Path.Combine(currentDirectory, @"..\Headstart.Common\Assets\english-translations.json"));
+            await _translationsBlob.Save("i18n/en.json", File.ReadAllText(englishTranslationsPath));
         }
 
         public async Task VerifyOrgExists(string orgID, string devToken)
@@ -127,7 +139,6 @@ namespace Headstart.API.Commands
 
             await Task.WhenAll(createMS, createIE, shutOffSupplierEmails);
         }
-
 
         private async Task AssignSecurityProfiles(EnvironmentSeed seed, string orgToken)
         {
@@ -505,8 +516,6 @@ namespace Headstart.API.Commands
             new HSSecurityProfile() { ID = CustomRole.HSStorefrontAdmin, CustomRoles = new CustomRole[] { CustomRole.HSStorefrontAdmin }, Roles = new ApiRole[] { ApiRole.ProductFacetAdmin, ApiRole.ProductFacetReader } },
             new HSSecurityProfile() { ID = CustomRole.HSSupplierAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSupplierAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAddressAdmin, ApiRole.SupplierAdmin, ApiRole.SupplierUserAdmin } },
             new HSSecurityProfile() { ID = CustomRole.HSSupplierUserGroupAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSupplierUserGroupAdmin }, Roles = new ApiRole[] { ApiRole.SupplierReader, ApiRole.SupplierUserGroupAdmin } },
-
-
 			
 			// buyer - this is the only role needed for a buyer user to successfully check out
 			new HSSecurityProfile() { ID = CustomRole.HSBaseBuyer, CustomRoles = new CustomRole[] { CustomRole.HSBaseBuyer }, Roles = new ApiRole[] { ApiRole.MeAddressAdmin, ApiRole.MeAdmin, ApiRole.MeCreditCardAdmin, ApiRole.MeXpAdmin, ApiRole.ProductFacetReader, ApiRole.Shopper, ApiRole.SupplierAddressReader, ApiRole.SupplierReader } },

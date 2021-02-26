@@ -1,19 +1,19 @@
 {
   "ALIAS": {
-    "ALL_BUYERS": "All Brands",
-    "ALL_SUPPLIERS": "All Vendors",
+    "ALL_BUYERS": "All Buyers",
+    "ALL_SUPPLIERS": "All Suppliers",
     "BUYER": "Brand",
-    "BUYER_LOCATION": "Franchise Location",
-    "BUYER_LOCATIONS": "Franchise Locations",
-    "BUYERS": "Brands",
+    "BUYER_LOCATION": "Buyer Location",
+    "BUYER_LOCATIONS": "Buyer Locations",
+    "BUYERS": "Buyers",
     "SELLER": "Seller",
     "SELLERS": "Sellers",
-    "SUPPLIER": "Vendor",
-    "SUPPLIER_LOWERCASE": "vendor",
-    "SUPPLIER_PROFILE": "Vendor Profile",
-    "SUPPLIER_LOCATION": "Warehouse",
-    "SUPPLIER_LOCATIONS": "Warehouses",
-    "SUPPLIERS": "Vendors"
+    "SUPPLIER": "Supplier",
+    "SUPPLIER_LOWERCASE": "supplier",
+    "SUPPLIER_PROFILE": "Supplier Profile",
+    "SUPPLIER_LOCATION": "Supplier Address",
+    "SUPPLIER_LOCATIONS": "Supplier Addresses",
+    "SUPPLIERS": "Suppliers"
   },
   "ADMIN": {
     "COMMON": {
