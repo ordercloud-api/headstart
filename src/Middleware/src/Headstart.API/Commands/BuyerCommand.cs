@@ -81,7 +81,7 @@ namespace Headstart.API.Commands
             await _oc.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment
             {
                 BuyerID = ocBuyerID,
-                SecurityProfileID = CustomRole.MPBaseBuyer.ToString()
+                SecurityProfileID = CustomRole.HSBaseBuyer.ToString()
             }, token);
 
             // list message senders

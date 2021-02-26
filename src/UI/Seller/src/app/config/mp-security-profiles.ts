@@ -1,33 +1,33 @@
 /*
  * Headstart has distinct roles which are sometimes a combination of OrderCloud roles or sometimes a single OrderCloud role
- * We have choosen to represent these MP roles with security profiles and identifying custom roles for example: MPProductAdmin (OrderCloud roles: ProductAdmin, FacetAdmin, SpecAdmin)
+ * We have choosen to represent these HS roles with security profiles and identifying custom roles for example: HSProductAdmin (OrderCloud roles: ProductAdmin, FacetAdmin, SpecAdmin)
  *
  */
 
-import { MPRole } from '@app-seller/models/user.types'
+import { HSRole } from '@app-seller/models/user.types'
 
-export const MPRoles = {
-  MPMeProductAdmin: 'MPMeProductAdmin',
-  MPMeProductReader: 'MPMeProductReader',
-  MPProductAdmin: 'MPProductAdmin',
-  MPProductReader: 'MPProductReader',
-  MPPromotionAdmin: 'MPPromotionAdmin',
-  MPPromotionReader: 'MPPromotionReader',
-  MPCategoryAdmin: 'MPCategoryAdmin',
-  MPCategoryReader: 'MPCategoryReader',
-  MPOrderAdmin: 'MPOrderAdmin',
-  MPOrderReader: 'MPOrderReader',
-  MPShipmentAdmin: 'MPShipmentAdmin',
-  MPBuyerAdmin: 'MPBuyerAdmin',
-  MPBuyerReader: 'MPBuyerReader',
-  MPSellerAdmin: 'MPSellerAdmin',
-  MPSupplierAdmin: 'MPSupplierAdmin',
-  MPMeSupplierAdmin: 'MPMeSupplierAdmin',
-  MPMeSupplierAddressAdmin: 'MPMeSupplierAddressAdmin',
-  MPMeSupplierUserAdmin: 'MPMeSupplierUserAdmin',
-  MPReportReader: 'MPReportReader',
-  MPReportAdmin: 'MPReportAdmin',
-  MPStorefrontAdmin: 'MPStorefrontAdmin',
+export const HSRoles = {
+  HSMeProductAdmin: 'HSMeProductAdmin',
+  HSMeProductReader: 'HSMeProductReader',
+  HSProductAdmin: 'HSProductAdmin',
+  HSProductReader: 'HSProductReader',
+  HSPromotionAdmin: 'HSPromotionAdmin',
+  HSPromotionReader: 'HSPromotionReader',
+  HSCategoryAdmin: 'HSCategoryAdmin',
+  HSCategoryReader: 'HSCategoryReader',
+  HSOrderAdmin: 'HSOrderAdmin',
+  HSOrderReader: 'HSOrderReader',
+  HSShipmentAdmin: 'HSShipmentAdmin',
+  HSBuyerAdmin: 'HSBuyerAdmin',
+  HSBuyerReader: 'HSBuyerReader',
+  HSSellerAdmin: 'HSSellerAdmin',
+  HSSupplierAdmin: 'HSSupplierAdmin',
+  HSMeSupplierAdmin: 'HSMeSupplierAdmin',
+  HSMeSupplierAddressAdmin: 'HSMeSupplierAddressAdmin',
+  HSMeSupplierUserAdmin: 'HSMeSupplierUserAdmin',
+  HSReportReader: 'HSReportReader',
+  HSReportAdmin: 'HSReportAdmin',
+  HSStorefrontAdmin: 'HSStorefrontAdmin',
 }
 
 const OrderCloudRoles = {
@@ -109,26 +109,26 @@ const OrderCloudRoles = {
   XpIndexAdmin: 'XpIndexAdmin',
 }
 
-const MPMeProductAdmin: MPRole = {
+const HSMeProductAdmin: HSRole = {
   // Assigned to user types who want to manage own products in OC
-  RoleName: MPRoles.MPMeProductAdmin,
+  RoleName: HSRoles.HSMeProductAdmin,
   OrderCloudRoles: [
     OrderCloudRoles.ProductAdmin,
     OrderCloudRoles.PriceScheduleAdmin,
     OrderCloudRoles.InventoryAdmin,
   ],
 }
-const MPMeProductReader: MPRole = {
+const HSMeProductReader: HSRole = {
   // Assigned to user types who want to view own products in OC
-  RoleName: MPRoles.MPMeProductReader,
+  RoleName: HSRoles.HSMeProductReader,
   OrderCloudRoles: [
     OrderCloudRoles.ProductReader,
     OrderCloudRoles.PriceScheduleReader,
   ],
 }
-const MPProductAdmin: MPRole = {
+const HSProductAdmin: HSRole = {
   // Assigned to user types who want to manager the display to buyers of others products in OC
-  RoleName: MPRoles.MPProductAdmin,
+  RoleName: HSRoles.HSProductAdmin,
   OrderCloudRoles: [
     OrderCloudRoles.ProductReader,
     OrderCloudRoles.CatalogAdmin,
@@ -136,59 +136,67 @@ const MPProductAdmin: MPRole = {
     OrderCloudRoles.ProductFacetAdmin,
   ],
 }
-const MPProductReader: MPRole = {
+const HSProductReader: HSRole = {
   // Assigned to user types who want to view the display to buyers of others products in OC but cannot manager (might not be needed for SEB)
-  RoleName: MPRoles.MPProductReader,
+  RoleName: HSRoles.HSProductReader,
   OrderCloudRoles: [
     OrderCloudRoles.ProductReader,
     OrderCloudRoles.CatalogReader,
     OrderCloudRoles.ProductFacetReader,
   ],
 }
-const MPPromotionAdmin: MPRole = {
+const HSPromotionAdmin: HSRole = {
   // Assigned to user types who want to administer promotions
-  RoleName: MPRoles.MPPromotionAdmin,
+  RoleName: HSRoles.HSPromotionAdmin,
   OrderCloudRoles: [OrderCloudRoles.PromotionAdmin],
 }
-const MPPromotionReader: MPRole = {
+const HSPromotionReader: HSRole = {
   // Assigned to user types who want to view promotions
-  RoleName: MPRoles.MPPromotionReader,
+  RoleName: HSRoles.HSPromotionReader,
   OrderCloudRoles: [OrderCloudRoles.PromotionReader],
 }
-const MPCategoryAdmin: MPRole = {
+const HSCategoryAdmin: HSRole = {
   // Assigned to user types who want to administer categorys and assignments
-  RoleName: MPRoles.MPCategoryAdmin,
+  RoleName: HSRoles.HSCategoryAdmin,
   OrderCloudRoles: [OrderCloudRoles.CategoryAdmin],
 }
-const MPCategoryReader: MPRole = {
+const HSCategoryReader: HSRole = {
   // Assigned to user types who want to view categorys
-  RoleName: MPRoles.MPCategoryReader,
+  RoleName: HSRoles.HSCategoryReader,
   OrderCloudRoles: [OrderCloudRoles.CategoryReader],
 }
-const MPOrderAdmin: MPRole = {
+const HSOrderAdmin: HSRole = {
   // Assigned to user types who want to edit orders, line items, and shipments. Would likely by a supplier who needs to make manual updates to an order
-  RoleName: MPRoles.MPOrderAdmin,
-  OrderCloudRoles: [OrderCloudRoles.OrderAdmin, OrderCloudRoles.ShipmentReader, OrderCloudRoles.AddressReader],
+  RoleName: HSRoles.HSOrderAdmin,
+  OrderCloudRoles: [
+    OrderCloudRoles.OrderAdmin,
+    OrderCloudRoles.ShipmentReader,
+    OrderCloudRoles.AddressReader,
+  ],
 }
-const MPOrderReader: MPRole = {
+const HSOrderReader: HSRole = {
   // Assigned to a user type who wants to view orders. Would likely be a seller user who shouldn't edit orders but wants to view
-  RoleName: MPRoles.MPOrderReader,
+  RoleName: HSRoles.HSOrderReader,
   OrderCloudRoles: [
     OrderCloudRoles.OrderReader,
     OrderCloudRoles.ShipmentReader,
-    OrderCloudRoles.AddressReader
+    OrderCloudRoles.AddressReader,
   ],
 }
-const MPShipmentAdmin: MPRole = {
+const HSShipmentAdmin: HSRole = {
   // Assigned to a user type who wants to administer shipping for a supplier
-  RoleName: MPRoles.MPShipmentAdmin,
-  OrderCloudRoles: [OrderCloudRoles.OrderReader, OrderCloudRoles.ShipmentAdmin, OrderCloudRoles.AddressReader],
+  RoleName: HSRoles.HSShipmentAdmin,
+  OrderCloudRoles: [
+    OrderCloudRoles.OrderReader,
+    OrderCloudRoles.ShipmentAdmin,
+    OrderCloudRoles.AddressReader,
+  ],
 }
 // unclear if we need a MeBuyerAdmin
 // will need to be some disucssion about the breakout of these for SEB
-const MPBuyerAdmin: MPRole = {
+const HSBuyerAdmin: HSRole = {
   // Assigned to a user type who wants to administer buyers and related subresources
-  RoleName: MPRoles.MPBuyerAdmin,
+  RoleName: HSRoles.HSBuyerAdmin,
   OrderCloudRoles: [
     OrderCloudRoles.BuyerAdmin,
     OrderCloudRoles.BuyerUserAdmin,
@@ -198,9 +206,9 @@ const MPBuyerAdmin: MPRole = {
     OrderCloudRoles.ApprovalRuleAdmin,
   ],
 }
-const MPBuyerReader: MPRole = {
+const HSBuyerReader: HSRole = {
   // Assigned to a user type who wants to view buyers and related subresources
-  RoleName: MPRoles.MPBuyerReader,
+  RoleName: HSRoles.HSBuyerReader,
   OrderCloudRoles: [
     OrderCloudRoles.BuyerReader,
     OrderCloudRoles.BuyerUserReader,
@@ -210,55 +218,55 @@ const MPBuyerReader: MPRole = {
     OrderCloudRoles.ApprovalRuleReader,
   ],
 }
-const MPSellerAdmin: MPRole = {
+const HSSellerAdmin: HSRole = {
   // Assigned to a user type who wants to view buyers and related subresources
-  RoleName: MPRoles.MPSellerAdmin,
+  RoleName: HSRoles.HSSellerAdmin,
   OrderCloudRoles: [OrderCloudRoles.AdminUserAdmin],
 }
-const MPSupplierAdmin: MPRole = {
+const HSSupplierAdmin: HSRole = {
   // Assigned to a user type who wants to view buyers and related subresources
-  RoleName: MPRoles.MPSupplierAdmin,
+  RoleName: HSRoles.HSSupplierAdmin,
   OrderCloudRoles: [
     OrderCloudRoles.SupplierAdmin,
     OrderCloudRoles.SupplierUserAdmin,
     OrderCloudRoles.SupplierAddressAdmin,
   ],
 }
-const MPMeSupplierAdmin: MPRole = {
-  RoleName: MPRoles.MPMeSupplierAdmin,
+const HSMeSupplierAdmin: HSRole = {
+  RoleName: HSRoles.HSMeSupplierAdmin,
   OrderCloudRoles: [
     OrderCloudRoles.SupplierAdmin,
     OrderCloudRoles.SupplierAddressReader,
     OrderCloudRoles.SupplierUserReader,
   ],
 }
-const MPMeSupplierAddressAdmin: MPRole = {
-  RoleName: MPRoles.MPMeSupplierAddressAdmin,
+const HSMeSupplierAddressAdmin: HSRole = {
+  RoleName: HSRoles.HSMeSupplierAddressAdmin,
   OrderCloudRoles: [
     OrderCloudRoles.SupplierReader,
     OrderCloudRoles.SupplierAddressAdmin,
   ],
 }
-const MPMeSupplierUserAdmin: MPRole = {
-  RoleName: MPRoles.MPMeSupplierUserAdmin,
+const HSMeSupplierUserAdmin: HSRole = {
+  RoleName: HSRoles.HSMeSupplierUserAdmin,
   OrderCloudRoles: [
     OrderCloudRoles.SupplierReader,
     OrderCloudRoles.SupplierUserAdmin,
   ],
 }
-const MPReportReader: MPRole = {
-  RoleName: MPRoles.MPReportReader,
+const HSReportReader: HSRole = {
+  RoleName: HSRoles.HSReportReader,
   OrderCloudRoles: [
     OrderCloudRoles.SupplierReader,
     OrderCloudRoles.SupplierAdmin,
   ],
 }
-const MPReportAdmin: MPRole = {
-  RoleName: MPRoles.MPReportAdmin,
+const HSReportAdmin: HSRole = {
+  RoleName: HSRoles.HSReportAdmin,
   OrderCloudRoles: [OrderCloudRoles.AdminUserAdmin],
 }
-const MPStorefrontAdmin: MPRole = {
-  RoleName: MPRoles.MPStorefrontAdmin,
+const HSStorefrontAdmin: HSRole = {
+  RoleName: HSRoles.HSStorefrontAdmin,
   OrderCloudRoles: [
     OrderCloudRoles.ProductFacetAdmin,
     OrderCloudRoles.ProductFacetReader,
@@ -267,18 +275,18 @@ const MPStorefrontAdmin: MPRole = {
 
 const HSManager = {
   Name: 'HSManager',
-  MPRoles: [
-    MPProductReader,
-    MPPromotionReader,
-    MPCategoryReader,
-    MPOrderReader,
-    MPBuyerReader,
-    MPSellerAdmin,
-    MPSupplierAdmin,
-    MPMeSupplierAdmin,
-    MPStorefrontAdmin,
-    MPReportReader,
-    MPReportAdmin,
+  HSRoles: [
+    HSProductReader,
+    HSPromotionReader,
+    HSCategoryReader,
+    HSOrderReader,
+    HSBuyerReader,
+    HSSellerAdmin,
+    HSSupplierAdmin,
+    HSMeSupplierAdmin,
+    HSStorefrontAdmin,
+    HSReportReader,
+    HSReportAdmin,
   ],
 }
 
@@ -287,26 +295,26 @@ const HSManager = {
 
 const SupplierManager = {
   Name: 'SupplierManager',
-  MPRoles: [
-    MPMeProductAdmin,
-    MPCategoryReader,
-    MPOrderAdmin,
-    MPShipmentAdmin,
-    MPMeSupplierAdmin,
-    MPMeSupplierAddressAdmin,
-    MPMeSupplierUserAdmin,
-    MPReportReader,
+  HSRoles: [
+    HSMeProductAdmin,
+    HSCategoryReader,
+    HSOrderAdmin,
+    HSShipmentAdmin,
+    HSMeSupplierAdmin,
+    HSMeSupplierAddressAdmin,
+    HSMeSupplierUserAdmin,
+    HSReportReader,
   ],
 }
 const SupplierTeamMember = {
   Name: 'SupplierTeamMember',
-  MPRoles: [
-    MPMeProductAdmin,
-    MPOrderAdmin,
-    MPShipmentAdmin,
-    MPMeSupplierAdmin,
-    MPMeSupplierAddressAdmin,
-    MPReportReader,
+  HSRoles: [
+    HSMeProductAdmin,
+    HSOrderAdmin,
+    HSShipmentAdmin,
+    HSMeSupplierAdmin,
+    HSMeSupplierAddressAdmin,
+    HSReportReader,
   ],
 }
 const SEBUserTypes = [SupplierManager, SupplierTeamMember, HSManager]

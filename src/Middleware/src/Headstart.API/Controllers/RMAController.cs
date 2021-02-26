@@ -41,7 +41,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, Route("list/buyer"), OrderCloudIntegrationsAuth]
         public async Task<CosmosListPage<RMA>> ListBuyerRMAs([FromBody] CosmosListOptions listOptions)
         {
-            RequireOneOf(CustomRole.MPLocationViewAllOrders);
+            RequireOneOf(CustomRole.HSLocationViewAllOrders);
             return await _rmaCommand.ListBuyerRMAs(listOptions, VerifiedUserContext);
         }
 

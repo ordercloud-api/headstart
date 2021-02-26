@@ -31,17 +31,13 @@ export const ocAppConfig: AppConfig = {
     'PasswordReset',
     'SupplierReader',
     'SupplierAddressReader',
-    'MPApprovalRuleAdmin',
+    'HSApprovalRuleAdmin',
 
     // location roles, will appear on jwt if a user
     // has this role for any location
-    'MPLocationPermissionAdmin',
-    'MPLocationOrderApprover',
-    'MPLocationNeedsApproval',
-    'MPLocationViewAllOrders',
-    'MPLocationCreditCardAdmin',
-    'MPLocationAddressAdmin',
-    'MPLocationResaleCertAdmin',
+    'HSLocationOrderApprover',
+    'HSLocationViewAllOrders',
+    'HSLocationAddressAdmin',
 
     'DocumentReader',
   ] as ApiRole[],
