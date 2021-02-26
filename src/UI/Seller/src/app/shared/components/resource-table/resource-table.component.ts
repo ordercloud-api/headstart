@@ -37,7 +37,6 @@ import { transformDateMMDDYYYY } from '@app-seller/shared/services/date.helper'
 import { TranslateService } from '@ngx-translate/core'
 import { ImpersonationService } from '@app-seller/shared/services/impersonation/impersonation.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
-import OrderCloudError from 'ordercloud-javascript-sdk/dist/utils/OrderCloudError'
 
 @Component({
   selector: 'resource-table-component',
@@ -149,7 +148,13 @@ export class ResourceTableComponent
   }
   @Input()
   set submitError(value: any) {
-    this._errorMessage = value?.errors?.Errors[0]?.Message;
+    const error = value?.errors?.Errors[0];
+    if(value?.status === 404) {
+      this._errorMessage = `${error?.Data?.ObjectType}: "${error?.Data?.ObjectID}". ${error.Message}` 
+    } else {
+      this._errorMessage = error?.Message
+    }
+    
   }
   @Input()
   resourceForm: FormGroup
