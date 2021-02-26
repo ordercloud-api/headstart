@@ -46,6 +46,7 @@ import { ConfirmModal } from './components/confirm-modal/confirm-modal.component
 import { PhoneFormatPipe } from './pipes/phone-format.pipe'
 import { YesNoFormatPipe } from './pipes/yes-no-format.pipe'
 import { SafeHTMLPipe } from './pipes/safe-html.pipe'
+import {UnCamelPipe} from './pipes/un-camel-case.pipe'
 import { UserGroupAssignments } from './components/user-group-assignments/user-group-assignments.component'
 import { LocationIDInputDirective } from './directives/location-id-input.directive'
 import { ActionMenuComponent } from './components/action-menu/action-menu.component'
@@ -130,6 +131,7 @@ import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
     YesNoFormatPipe,
     SafeHTMLPipe,
     ProductNameWithSpecsPipe,
+    UnCamelPipe,
     ActionMenuComponent,
     ConfirmModal,
     UserGroupAssignments,
@@ -176,6 +178,7 @@ import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
     ResourceBreadcrumbsComponent,
     SafeHTMLPipe,
     ProductNameWithSpecsPipe,
+    UnCamelPipe
   ],
 })
 export class SharedModule {

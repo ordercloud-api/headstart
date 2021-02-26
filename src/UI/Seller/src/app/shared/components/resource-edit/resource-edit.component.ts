@@ -10,6 +10,7 @@ import {
 } from '@app-seller/models/shared.types'
 import { schemas } from './swagger-spec'
 import { FormControl, FormGroup } from '@angular/forms'
+import OrderCloudError from 'ordercloud-javascript-sdk/dist/utils/OrderCloudError'
 
 @Component({
   selector: 'resource-edit-component',
@@ -33,10 +34,11 @@ export class ResourceEditComponent {
     this._resourceFields = this.buildResourceFields(value)
     this.resourceForm = this.buildForm(value);
   }
+
   @Output()
   updateResource = new EventEmitter<FormGroup>()
 
-  handleUpdateResource(event: any, fieldType: string) {
+  handleUpdateResource() {
     this.updateResource.emit(this.resourceForm)
   }
 
@@ -58,6 +60,7 @@ export class ResourceEditComponent {
         return {
           field: key,
           type: value['type'],
+          maxLength: (value['maxLength'] || 1000 )
         }
       })
       .filter((r) => r.field !== 'xp')

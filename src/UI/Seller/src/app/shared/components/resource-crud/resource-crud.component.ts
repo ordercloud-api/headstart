@@ -8,6 +8,7 @@ import { ListPage } from '@ordercloud/headstart-sdk'
 import { BehaviorSubject } from 'rxjs'
 import { assign as _assign } from 'lodash'
 import { ResourceUpdate } from '@app-seller/models/shared.types'
+import OrderCloudError from 'ordercloud-javascript-sdk/dist/utils/OrderCloudError'
 
 export abstract class ResourceCrudComponent<ResourceType>
   implements OnInit, OnDestroy {
@@ -23,6 +24,7 @@ export abstract class ResourceCrudComponent<ResourceType>
   isSupplierUser = false
   parentResourceID: string
   parentResourceIDSubject = new BehaviorSubject<string>(undefined)
+  submitError: OrderCloudError
 
   // form setting defined in component implementing this component
   createForm: (resource: any) => FormGroup
@@ -166,18 +168,6 @@ export abstract class ResourceCrudComponent<ResourceType>
     this.changeDetectorRef.detectChanges()
   }
 
-  // updateResource(resourceUpdate: ResourceUpdate): void {
-  //   console.log(this.updatedResource)
-  //   debugger;
-  //   this.updatedResource = this.ocService.getUpdatedEditableResource(
-  //     resourceUpdate,
-  //     this.updatedResource
-  //   )
-  //   console.log(this.updatedResource)
-  //   debugger;
-  //   this.changeDetectorRef.detectChanges()
-  // }
-
   handleUpdateResource(event: any, field: string): void {
     const resourceUpdate = {
       field,
@@ -217,6 +207,7 @@ export abstract class ResourceCrudComponent<ResourceType>
       this.dataIsSaving = false
     } catch (ex) {
       this.dataIsSaving = false
+      this.submitError = ex;
       throw ex
     }
   }
@@ -239,6 +230,7 @@ export abstract class ResourceCrudComponent<ResourceType>
       this.dataIsSaving = false
     } catch (ex) {
       this.dataIsSaving = false
+      this.submitError = ex;
       throw ex
     }
   }

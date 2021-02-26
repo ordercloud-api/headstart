@@ -37,6 +37,7 @@ import { transformDateMMDDYYYY } from '@app-seller/shared/services/date.helper'
 import { TranslateService } from '@ngx-translate/core'
 import { ImpersonationService } from '@app-seller/shared/services/impersonation/impersonation.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
+import OrderCloudError from 'ordercloud-javascript-sdk/dist/utils/OrderCloudError'
 
 @Component({
   selector: 'resource-table-component',
@@ -64,6 +65,7 @@ export class ResourceTableComponent
   _currentResourceNameSingular: string
   _ocService: ResourceCrudService<any>
   _filterConfig: any
+  _errorMessage: string
   areChanges: boolean
   parentResources: ListPage<any>
   requestStatus: RequestStatus
@@ -144,6 +146,10 @@ export class ResourceTableComponent
   set filterConfig(value: any) {
     this._filterConfig = value
     this.setFilterForm()
+  }
+  @Input()
+  set submitError(value: any) {
+    this._errorMessage = value?.errors?.Errors[0]?.Message;
   }
   @Input()
   resourceForm: FormGroup
