@@ -6,10 +6,11 @@ import {
   EventEmitter,
 } from '@angular/core'
 import {
-  ResourceUpdate,
   SwaggerSpecProperty,
 } from '@app-seller/models/shared.types'
 import { schemas } from './swagger-spec'
+import { FormControl, FormGroup } from '@angular/forms'
+import OrderCloudError from 'ordercloud-javascript-sdk/dist/utils/OrderCloudError'
 
 @Component({
   selector: 'resource-edit-component',
@@ -19,8 +20,9 @@ import { schemas } from './swagger-spec'
 export class ResourceEditComponent {
   _resource: any
   _resourceFields: SwaggerSpecProperty[]
+  resourceForm: FormGroup
 
-  constructor(private changeDetectorRef: ChangeDetectorRef) {}
+  constructor(private changeDetectorRef: ChangeDetectorRef,) {}
 
   @Input()
   set resource(value: any) {
@@ -30,18 +32,27 @@ export class ResourceEditComponent {
   @Input()
   set resourceType(value: string) {
     this._resourceFields = this.buildResourceFields(value)
+    this.resourceForm = this.buildForm(value);
   }
-  @Output()
-  updateResource = new EventEmitter<ResourceUpdate>()
 
-  handleUpdateResource(event: any, fieldType: string) {
-    const resourceUpdate = {
-      field: event.target.id,
-      value:
-        fieldType === 'boolean' ? event.target.checked : event.target.value,
-    }
-    this.updateResource.emit(resourceUpdate)
+  @Output()
+  updateResource = new EventEmitter<FormGroup>()
+
+  handleUpdateResource() {
+    this.updateResource.emit(this.resourceForm)
   }
+
+ buildForm(resourceType: string): FormGroup {
+   var formGroup = new FormGroup({});
+   Object.entries(schemas[resourceType].properties)
+   .forEach(([key, value]) => {
+     if(key !== 'xp') {
+       var control = new FormControl('', value['validators'])
+       formGroup.addControl(key, control)
+     }
+   })
+   return formGroup
+ }
 
   buildResourceFields(resourceType: string): SwaggerSpecProperty[] {
     return Object.entries(schemas[resourceType].properties)
@@ -49,7 +60,7 @@ export class ResourceEditComponent {
         return {
           field: key,
           type: value['type'],
-          maxLength: (value['maxLength'] || 1000)
+          maxLength: (value['maxLength'] || 1000 )
         }
       })
       .filter((r) => r.field !== 'xp')

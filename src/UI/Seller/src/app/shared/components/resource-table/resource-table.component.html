@@ -492,6 +492,10 @@
               >
                 Discard Changes
               </button>
+
+            </div>
+            <div *ngIf="_errorMessage && _errorMessage.length > 0" class="text-danger">
+              {{_errorMessage}}
             </div>
           </div>
         </div>

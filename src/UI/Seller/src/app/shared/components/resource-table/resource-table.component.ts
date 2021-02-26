@@ -64,6 +64,7 @@ export class ResourceTableComponent
   _currentResourceNameSingular: string
   _ocService: ResourceCrudService<any>
   _filterConfig: any
+  _errorMessage: string
   areChanges: boolean
   parentResources: ListPage<any>
   requestStatus: RequestStatus
@@ -144,6 +145,16 @@ export class ResourceTableComponent
   set filterConfig(value: any) {
     this._filterConfig = value
     this.setFilterForm()
+  }
+  @Input()
+  set submitError(value: any) {
+    const error = value?.errors?.Errors[0];
+    if(value?.status === 404) {
+      this._errorMessage = `${error?.Data?.ObjectType}: "${error?.Data?.ObjectID}". ${error.Message}` 
+    } else {
+      this._errorMessage = error?.Message
+    }
+    
   }
   @Input()
   resourceForm: FormGroup

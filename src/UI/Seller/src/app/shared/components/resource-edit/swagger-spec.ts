@@ -1,3 +1,6 @@
+import { Validators } from "@angular/forms";
+import { ValidateNoSpecialCharactersAndSpaces } from "@app-seller/validators/validators";
+
 export const schemas = {
   AccessToken: {
     type: 'object',
@@ -239,6 +242,7 @@ export const schemas = {
     properties: {
       ID: {
         type: 'string',
+        validators: [ValidateNoSpecialCharactersAndSpaces]
       },
       Name: {
         type: 'string',
@@ -250,10 +254,12 @@ export const schemas = {
       },
       ApprovingGroupID: {
         type: 'string',
+        validators: [Validators.required]
       },
       RuleExpression: {
         type: 'string',
         maxLength: 400,
+        validators: [Validators.required]
       },
       xp: {
         type: 'object',
@@ -820,6 +826,7 @@ export const schemas = {
     properties: {
       ID: {
         type: 'string',
+        validators: [ValidateNoSpecialCharactersAndSpaces]
       },
       Token: {
         type: 'string',

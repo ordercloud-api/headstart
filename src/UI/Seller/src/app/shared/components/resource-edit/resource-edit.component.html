@@ -1,56 +1,61 @@
-<div *ngFor="let field of _resourceFields">
-  <div *ngIf="field.type === 'string'" class="form-group">
-    <label for="field.field">{{ field.field }}</label>
-    <input
-      type="text"
-      class="form-control"
-      id="{{ field.field }}"
-      [maxLength]="field.maxLength"
-      aria-describedby="field.field"
-      value="{{ _resource[field.field] }}"
-      (input)="handleUpdateResource($event)"
-      placeholder="Enter {{ field.field }}"
-    />
-  </div>
-  <div *ngIf="field.type === 'number'" class="form-group">
-    <label for="field.field">{{ field.field }}</label>
-    <input
-      *ngIf="field.type === 'number'"
-      type="number"
-      class="form-control"
-      id="{{ field.field }}"
-      aria-describedby="field.field"
-      value="{{ _resource[field.field] }}"
-      (input)="handleUpdateResource($event)"
-      [maxlength]="field.maxLength"
-      placeholder="Enter {{ field.field }}"
-    />
-  </div>
-  <div *ngIf="field.type === 'date'" class="form-group">
-    <label for="field.field">{{ field.field }}</label>
-    <input
-      *ngIf="field.type === 'date'"
-      type="date"
-      class="form-control"
-      id="{{ field.field }}"
-      aria-describedby="field.field"
-      value="{{ _resource[field.field] }}"
-      (input)="handleUpdateResource($event)"
-      placeholder="Enter {{ field.field }}"
-    />
-  </div>
-  <div *ngIf="field.type === 'boolean'">
-    <p class="mb-1">{{ field.field }}</p>
-    <label class="switch mb-0" for="{{ field.field }}">
+<form *ngIf="resourceForm" [formGroup]="resourceForm">
+  <div *ngFor="let field of _resourceFields">
+    <div *ngIf="field.type === 'string'" class="form-group">
+      <label for="field.field">{{ field.field | uncamel }}</label>
       <input
-        type="checkbox"
-        class="form-check-input"
+        type="text"
+        class="form-control"
         id="{{ field.field }}"
-        [checked]="_resource[field.field]"
         aria-describedby="field.field"
-        (input)="handleUpdateResource($event, 'boolean')"
+        [resourceForm]="resourceForm"
+        [maxLength]="field.maxLength"
+        formControlName="{{ field.field }}"
+        (input)="handleUpdateResource($event)"
+        placeholder="Enter {{ field.field }}"
       />
-      <span class="slider round cursor-pointer"></span>
-    </label>
+    </div>
+    <div *ngIf="field.type === 'number'" class="form-group">
+      <label for="field.field">{{ field.field | uncamel }}</label>
+      <input
+        *ngIf="field.type === 'number'"
+        type="number"
+        class="form-control"
+        id="{{ field.field }}"
+        aria-describedby="field.field"
+        [resourceForm]="resourceForm"
+        formControlName="{{ field.field }}"
+        (input)="handleUpdateResource($event)"
+        placeholder="Enter {{ field.field }}"
+      />
+    </div>
+    <div *ngIf="field.type === 'date'" class="form-group">
+      <label for="field.field">{{ field.field | uncamel }}</label>
+      <input
+        *ngIf="field.type === 'date'"
+        type="date"
+        class="form-control"
+        id="{{ field.field }}"
+        aria-describedby="field.field"
+        [resourceForm]="resourceForm"
+        formControlName="{{ field.field }}"
+        (input)="handleUpdateResource($event)"
+        placeholder="Enter {{ field.field }}"
+      />
+    </div>
+    <div *ngIf="field.type === 'boolean'">
+      <p class="mb-1">{{ field.field | uncamel }}</p>
+      <label class="switch mb-0" for="{{ field.field }}">
+        <input
+          type="checkbox"
+          class="form-check-input"
+          id="{{ field.field }}"
+          aria-describedby="field.field"
+          [resourceForm]="resourceForm"
+          formControlName="{{ field.field }}"
+          (input)="handleUpdateResource($event, 'boolean')"
+        />
+        <span class="slider round cursor-pointer"></span>
+      </label>
+    </div>
   </div>
-</div>
+</form>

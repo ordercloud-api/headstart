@@ -6,7 +6,9 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { REDIRECT_TO_FIRST_PARENT } from '@app-seller/layout/header/header.config'
 import { ListPage } from '@ordercloud/headstart-sdk'
 import { BehaviorSubject } from 'rxjs'
+import { assign as _assign } from 'lodash'
 import { ResourceUpdate } from '@app-seller/models/shared.types'
+import OrderCloudError from 'ordercloud-javascript-sdk/dist/utils/OrderCloudError'
 
 export abstract class ResourceCrudComponent<ResourceType>
   implements OnInit, OnDestroy {
@@ -22,6 +24,7 @@ export abstract class ResourceCrudComponent<ResourceType>
   isSupplierUser = false
   parentResourceID: string
   parentResourceIDSubject = new BehaviorSubject<string>(undefined)
+  submitError: OrderCloudError
 
   // form setting defined in component implementing this component
   createForm: (resource: any) => FormGroup
@@ -159,11 +162,9 @@ export abstract class ResourceCrudComponent<ResourceType>
     this.navigate(newURL, { queryParams })
   }
 
-  updateResource(resourceUpdate: ResourceUpdate): void {
-    this.updatedResource = this.ocService.getUpdatedEditableResource(
-      resourceUpdate,
-      this.updatedResource
-    )
+  updateResource($event: any): void {
+    this.updatedResource = _assign({}, this.updatedResource, $event.value)
+    this.resourceForm = $event;
     this.changeDetectorRef.detectChanges()
   }
 
@@ -206,6 +207,7 @@ export abstract class ResourceCrudComponent<ResourceType>
       this.dataIsSaving = false
     } catch (ex) {
       this.dataIsSaving = false
+      this.submitError = ex;
       throw ex
     }
   }
@@ -228,6 +230,7 @@ export abstract class ResourceCrudComponent<ResourceType>
       this.dataIsSaving = false
     } catch (ex) {
       this.dataIsSaving = false
+      this.submitError = ex;
       throw ex
     }
   }
