@@ -71,7 +71,11 @@ body > [uib-modal-window]:not([modal-render]) {
   top: 0;
   left: 0;
   pointer-events: none;
-  background-image: radial-gradient(circle, rgb(73, 73, 73) 10%, transparent 5.01%);
+  background-image: radial-gradient(
+    circle,
+    rgb(73, 73, 73) 10%,
+    transparent 5.01%
+  );
   background-repeat: no-repeat;
   background-position: 50%;
   transform: scale(10, 10);
@@ -113,7 +117,7 @@ body > [uib-modal-window]:not([modal-render]) {
 
 .brand-button {
   color: $primary-dark;
-  background-color: $light;
+  background-color: $primary-light;
   transition: 200ms all ease;
   &:hover {
     color: $primary-dark;
@@ -543,7 +547,7 @@ body > [uib-modal-window]:not([modal-render]) {
 .email-tile {
   background-color: var(--light);
   padding: 0.5rem 0.8rem;
-  border-radius: .25rem;
+  border-radius: 0.25rem;
   margin: 0.25rem 0rem;
 }
 
@@ -560,8 +564,8 @@ body > [uib-modal-window]:not([modal-render]) {
   padding: 1.25rem 0.75rem;
   color: var(--primary);
   font-weight: bolder;
-  &>fa-icon {
-      color: lighten(#032a43, 55%);
+  & > fa-icon {
+    color: lighten(#032a43, 55%);
   }
 }
 
@@ -570,13 +574,13 @@ body > [uib-modal-window]:not([modal-render]) {
 }
 
 .set-to-top {
-  top: 0
+  top: 0;
 }
 
 .color-beige {
-  color: #cccccc
+  color: #cccccc;
 }
 
 .full-width {
-  width: 100%
+  width: 100%;
 }
