@@ -20,6 +20,7 @@ import OrderCloudError from 'ordercloud-javascript-sdk/dist/utils/OrderCloudErro
 export class ResourceEditComponent {
   _resource: any
   _resourceFields: SwaggerSpecProperty[]
+  _resourceType: string
   resourceForm: FormGroup
 
   constructor(private changeDetectorRef: ChangeDetectorRef,) {}
@@ -28,11 +29,12 @@ export class ResourceEditComponent {
   set resource(value: any) {
     this._resource = value
     this.changeDetectorRef.detectChanges()
+    this.resourceForm = this.buildForm(value)
   }
   @Input()
   set resourceType(value: string) {
+    this._resourceType = value;
     this._resourceFields = this.buildResourceFields(value)
-    this.resourceForm = this.buildForm(value);
   }
 
   @Output()
@@ -42,12 +44,12 @@ export class ResourceEditComponent {
     this.updateResource.emit(this.resourceForm)
   }
 
- buildForm(resourceType: string): FormGroup {
+  buildForm(resource: any): FormGroup {
    var formGroup = new FormGroup({});
-   Object.entries(schemas[resourceType].properties)
+   Object.entries(schemas[this._resourceType]?.properties)
    .forEach(([key, value]) => {
      if(key !== 'xp') {
-       var control = new FormControl('', value['validators'])
+      var control = new FormControl(resource[key], value['validators'])
        formGroup.addControl(key, control)
      }
    })
