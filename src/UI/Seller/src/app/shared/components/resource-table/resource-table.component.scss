@@ -28,6 +28,10 @@
   }
 }
 
+.squareButton {
+  border-radius: 0px !important;
+}
+
 .resource-name {
   font-size: 22px;
   @include media-breakpoint-up(sm) {

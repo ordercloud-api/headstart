@@ -60,15 +60,11 @@
           <button
             ngbDropdownItem
             *ngFor="let subResource of parentResourceService.subResourceList"
+            (click)="navigateToSubResource(subResource.route)"
+            translate
           >
-            <a
-              routerLink="/{{ _ocService.primaryResourceLevel }}/{{
-                selectedParentResourceID
-              }}/{{ subResource.route }}"
-              translate
-            >
               {{ subResource.display }}
-            </a>
+
           </button>
         </div>
       </div>
