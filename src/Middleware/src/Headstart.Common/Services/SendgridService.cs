@@ -507,10 +507,14 @@ namespace Headstart.Common.Services
             {
                 Data = new SupportTemplateData
                 {
-                    FirstName = supportCase?.FirstName,
-                    LastName = supportCase?.LastName,
-                    Email = supportCase?.Email,
-                    Vendor = supportCase?.Vendor ?? "N/A"
+                    DynamicPropertyName1 = "FirstName",
+                    DynamicPropertyValue1 = supportCase.FirstName,
+                    DynamicPropertyName2 = "LastName",
+                    DynamicPropertyValue2 = supportCase.LastName,
+                    DynamicPropertyName3 = "Email",
+                    DynamicPropertyValue3 = supportCase.Email,
+                    DynamicPropertyName4 = "Vendor",
+                    DynamicPropertyValue4 = supportCase.Vendor ?? "N/A",
                 },
                 Message = new EmailDisplayText()
                 {
