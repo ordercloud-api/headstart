@@ -70,6 +70,8 @@ namespace Headstart.Common.Models
 
         public class SupportTemplateData
         {
+            public string OrderID { get; set; }
+            public string ErrorJsonString { get; set; }
             public string DynamicPropertyName1 { get; set; }
             public string DynamicPropertyValue1 { get; set; }
             public string DynamicPropertyName2 { get; set; }

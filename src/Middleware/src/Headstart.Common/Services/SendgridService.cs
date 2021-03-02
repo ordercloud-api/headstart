@@ -479,11 +479,15 @@ namespace Headstart.Common.Services
             {
                 Data = new SupportTemplateData
                 {
-                    orderID = order?.ID,
-                    BuyerID = order?.FromCompanyID,
-                    Username = order?.FromUser?.Username,
-                    PaymentID = payment?.ID,
-                    TransactionID = transactionID,
+                    OrderID = order.ID,
+                    DynamicPropertyName1 = "BuyerID",
+                    DynamicPropertyValue1 = order.FromCompanyID,
+                    DynamicPropertyName2 = "Username",
+                    DynamicPropertyValue2 = order.FromUser.Username,
+                    DynamicPropertyName3 = "PaymentID",
+                    DynamicPropertyValue3 = payment.ID,
+                    DynamicPropertyName4 = "TransactionID",
+                    DynamicPropertyValue4 = transactionID,
                     ErrorJsonString = JsonConvert.SerializeObject(ex.ApiError)
                 },
                 Message = new EmailDisplayText()
