@@ -1,59 +1,58 @@
-import { MPRoles } from '@app-seller/config/mp-security-profiles'
-import { MPRoute } from '@app-seller/models/shared.types'
+import { HSRoles } from '@app-seller/config/mp-security-profiles'
+import { HSRoute } from '@app-seller/models/shared.types'
 import { SELLER, SUPPLIER } from '@app-seller/models/user.types'
 
 // ! included to ensure no overlap with ordercloud ids as this in invalid in ids
 export const REDIRECT_TO_FIRST_PARENT = '!'
 
-
 // Products
-const AllProducts: MPRoute = {
+const AllProducts: HSRoute = {
   rolesWithAccess: [
-    MPRoles.MPProductAdmin,
-    MPRoles.MPProductReader,
-    MPRoles.MPMeProductAdmin,
+    HSRoles.HSProductAdmin,
+    HSRoles.HSProductReader,
+    HSRoles.HSMeProductAdmin,
   ],
   title: 'ADMIN.NAV.ALL_PRODUCTS',
   route: '/products',
 }
 // TODO: Reimplement once UI is added to address these xp values
-// const LiveProducts: MPRoute = {
-//   rolesWithAccess: [MPRoles.MPProductAdmin, MPRoles.MPProductReader, MPRoles.MPMeProductAdmin],
+// const LiveProducts: HSRoute = {
+//   rolesWithAccess: [HSRoles.HSProductAdmin, HSRoles.HSProductReader, HSRoles.HSMeProductAdmin],
 //   title: 'ADMIN.NAV.LIVE_PRODUCTS',
 //   route: '/products',
 //   queryParams: { 'xp.Status': 'Published' },
 // };
 
-// const PendingProducts: MPRoute = {
-//   rolesWithAccess: [MPRoles.MPProductAdmin, MPRoles.MPProductReader, MPRoles.MPMeProductAdmin],
+// const PendingProducts: HSRoute = {
+//   rolesWithAccess: [HSRoles.HSProductAdmin, HSRoles.HSProductReader, HSRoles.HSMeProductAdmin],
 //   title: 'ADMIN.NAV.PENDING_PRODUCTS',
 //   route: '/products',
 //   queryParams: { 'xp.Status': 'Draft' },
 // };
 
-const Promotions: MPRoute = {
-  rolesWithAccess: [MPRoles.MPPromotionAdmin, MPRoles.MPPromotionReader],
+const Promotions: HSRoute = {
+  rolesWithAccess: [HSRoles.HSPromotionAdmin, HSRoles.HSPromotionReader],
   title: 'ADMIN.NAV.PROMOTIONS',
   route: '/promotions',
 }
 
-// const Kits: MPRoute = {
-//   rolesWithAccess: [MPRoles.MPStorefrontAdmin],
+// const Kits: HSRoute = {
+//   rolesWithAccess: [HSRoles.HSStorefrontAdmin],
 //   title: 'Kits',
 //   route: '/kitproducts',
 // }
 
-const ProductFacets: MPRoute = {
-  rolesWithAccess: [MPRoles.MPStorefrontAdmin],
+const ProductFacets: HSRoute = {
+  rolesWithAccess: [HSRoles.HSStorefrontAdmin],
   title: 'ADMIN.NAV.FACETS',
   route: '/facets',
 }
 
-const ProductNavGrouping: MPRoute = {
+const ProductNavGrouping: HSRoute = {
   rolesWithAccess: [
-    MPRoles.MPProductAdmin,
-    MPRoles.MPProductReader,
-    MPRoles.MPMeProductAdmin,
+    HSRoles.HSProductAdmin,
+    HSRoles.HSProductReader,
+    HSRoles.HSMeProductAdmin,
   ],
   title: 'ADMIN.NAV.PRODUCTS',
   route: '/products',
@@ -61,54 +60,54 @@ const ProductNavGrouping: MPRoute = {
 }
 
 // Orders
-const BuyerOrders: MPRoute = {
+const BuyerOrders: HSRoute = {
   rolesWithAccess: [
-    MPRoles.MPOrderAdmin,
-    MPRoles.MPOrderReader,
-    MPRoles.MPShipmentAdmin,
+    HSRoles.HSOrderAdmin,
+    HSRoles.HSOrderReader,
+    HSRoles.HSShipmentAdmin,
   ],
   title: 'ADMIN.NAV.SALES_ORDERS',
   route: '/orders',
   queryParams: { OrderDirection: 'Incoming' },
 }
 
-const SupplierPurchaseOrders: MPRoute = {
+const SupplierPurchaseOrders: HSRoute = {
   rolesWithAccess: [
-    MPRoles.MPOrderAdmin,
-    MPRoles.MPOrderReader,
-    MPRoles.MPShipmentAdmin,
+    HSRoles.HSOrderAdmin,
+    HSRoles.HSOrderReader,
+    HSRoles.HSShipmentAdmin,
   ],
   title: 'ADMIN.NAV.PURCHASE_ORDERS',
   route: '/orders',
   queryParams: { OrderDirection: 'Outgoing' },
 }
 
-const RequiringAttentionOrders: MPRoute = {
+const RequiringAttentionOrders: HSRoute = {
   rolesWithAccess: [
-    MPRoles.MPOrderAdmin,
-    MPRoles.MPOrderReader,
-    MPRoles.MPShipmentAdmin,
+    HSRoles.HSOrderAdmin,
+    HSRoles.HSOrderReader,
+    HSRoles.HSShipmentAdmin,
   ],
   title: 'ADMIN.NAV.NEEDING_ATTENTION',
   route: '/orders',
   queryParams: { OrderDirection: 'Incoming', 'xp.NeedsAttention': 'true' },
 }
 
-const Orders: MPRoute = {
+const Orders: HSRoute = {
   rolesWithAccess: [
-    MPRoles.MPOrderAdmin,
-    MPRoles.MPOrderReader,
-    MPRoles.MPShipmentAdmin,
+    HSRoles.HSOrderAdmin,
+    HSRoles.HSOrderReader,
+    HSRoles.HSShipmentAdmin,
   ],
   title: 'ADMIN.NAV.ORDERS',
   route: '/orders',
 }
 
-const SellerOrderNavGrouping: MPRoute = {
+const SellerOrderNavGrouping: HSRoute = {
   rolesWithAccess: [
-    MPRoles.MPOrderAdmin,
-    MPRoles.MPOrderReader,
-    MPRoles.MPShipmentAdmin,
+    HSRoles.HSOrderAdmin,
+    HSRoles.HSOrderReader,
+    HSRoles.HSShipmentAdmin,
   ],
   title: 'ADMIN.NAV.ORDERS',
   route: '/orders',
@@ -116,21 +115,21 @@ const SellerOrderNavGrouping: MPRoute = {
   subRoutes: [BuyerOrders, SupplierPurchaseOrders, RequiringAttentionOrders],
 }
 
-const SupplierOrderBatchUpload: MPRoute = {
+const SupplierOrderBatchUpload: HSRoute = {
   rolesWithAccess: [
-    MPRoles.MPOrderAdmin,
-    MPRoles.MPOrderReader,
-    MPRoles.MPShipmentAdmin,
+    HSRoles.HSOrderAdmin,
+    HSRoles.HSOrderReader,
+    HSRoles.HSShipmentAdmin,
   ],
   title: 'ADMIN.NAV.ORDERS_BATCH',
   route: '/orders/uploadshipments',
 }
 
-const SupplierOrderNavGrouping: MPRoute = {
+const SupplierOrderNavGrouping: HSRoute = {
   rolesWithAccess: [
-    MPRoles.MPOrderAdmin,
-    MPRoles.MPOrderReader,
-    MPRoles.MPShipmentAdmin,
+    HSRoles.HSOrderAdmin,
+    HSRoles.HSOrderReader,
+    HSRoles.HSShipmentAdmin,
   ],
   title: 'ADMIN.NAV.ORDERS',
   route: '/orders',
@@ -139,50 +138,50 @@ const SupplierOrderNavGrouping: MPRoute = {
 }
 
 // Buyers
-const AllBuyers: MPRoute = {
-  rolesWithAccess: [MPRoles.MPBuyerAdmin, MPRoles.MPBuyerReader],
+const AllBuyers: HSRoute = {
+  rolesWithAccess: [HSRoles.HSBuyerAdmin, HSRoles.HSBuyerReader],
   title: 'ALIAS.ALL_BUYERS',
   route: '/buyers',
 }
 
-const BuyerUsers: MPRoute = {
-  rolesWithAccess: [MPRoles.MPBuyerAdmin, MPRoles.MPBuyerReader],
+const BuyerUsers: HSRoute = {
+  rolesWithAccess: [HSRoles.HSBuyerAdmin, HSRoles.HSBuyerReader],
   title: 'ADMIN.NAV.USERS',
   route: `/buyers/${REDIRECT_TO_FIRST_PARENT}/users`,
 }
 
-const BuyerPurchasingLocations: MPRoute = {
-  rolesWithAccess: [MPRoles.MPBuyerAdmin, MPRoles.MPBuyerReader],
+const BuyerPurchasingLocations: HSRoute = {
+  rolesWithAccess: [HSRoles.HSBuyerAdmin, HSRoles.HSBuyerReader],
   title: 'ALIAS.BUYER_LOCATIONS',
   route: `/buyers/${REDIRECT_TO_FIRST_PARENT}/locations`,
 }
 
-const BuyerPaymentMethods: MPRoute = {
-  rolesWithAccess: [MPRoles.MPBuyerAdmin, MPRoles.MPBuyerReader],
+const BuyerPaymentMethods: HSRoute = {
+  rolesWithAccess: [HSRoles.HSBuyerAdmin, HSRoles.HSBuyerReader],
   title: 'ADMIN.NAV.PAYMENT_METHODS',
   route: `/buyers/${REDIRECT_TO_FIRST_PARENT}/payments`,
 }
 
-const BuyerApprovalRules: MPRoute = {
-  rolesWithAccess: [MPRoles.MPBuyerAdmin, MPRoles.MPBuyerReader],
+const BuyerApprovalRules: HSRoute = {
+  rolesWithAccess: [HSRoles.HSBuyerAdmin, HSRoles.HSBuyerReader],
   title: 'ADMIN.NAV.APPROVAL_RULES',
   route: `/buyers/${REDIRECT_TO_FIRST_PARENT}/approvals`,
 }
 
-const BuyerCatalogs: MPRoute = {
-  rolesWithAccess: [MPRoles.MPBuyerAdmin, MPRoles.MPBuyerReader],
+const BuyerCatalogs: HSRoute = {
+  rolesWithAccess: [HSRoles.HSBuyerAdmin, HSRoles.HSBuyerReader],
   title: 'ADMIN.NAV.CATALOGS',
   route: `/buyers/${REDIRECT_TO_FIRST_PARENT}/catalogs`,
 }
 
-const BuyerCategories: MPRoute = {
-  rolesWithAccess: [MPRoles.MPBuyerAdmin, MPRoles.MPBuyerReader],
+const BuyerCategories: HSRoute = {
+  rolesWithAccess: [HSRoles.HSBuyerAdmin, HSRoles.HSBuyerReader],
   title: 'ADMIN.NAV.CATEGORIES',
   route: `/buyers/${REDIRECT_TO_FIRST_PARENT}/categories`,
 }
 
 const BuyerNavGrouping = {
-  rolesWithAccess: [MPRoles.MPBuyerAdmin, MPRoles.MPBuyerReader],
+  rolesWithAccess: [HSRoles.HSBuyerAdmin, HSRoles.HSBuyerReader],
   title: 'ALIAS.BUYERS',
   route: '/buyers',
   subRoutes: [
@@ -197,95 +196,95 @@ const BuyerNavGrouping = {
 }
 
 // Suppliers
-const AllSuppliers: MPRoute = {
-  rolesWithAccess: [MPRoles.MPSupplierAdmin],
+const AllSuppliers: HSRoute = {
+  rolesWithAccess: [HSRoles.HSSupplierAdmin],
   title: 'ALIAS.ALL_SUPPLIERS',
   route: '/suppliers',
 }
 
-const SupplierUsers: MPRoute = {
-  rolesWithAccess: [MPRoles.MPSupplierAdmin],
+const SupplierUsers: HSRoute = {
+  rolesWithAccess: [HSRoles.HSSupplierAdmin],
   title: 'ADMIN.NAV.USERS',
   route: `/suppliers/${REDIRECT_TO_FIRST_PARENT}/users`,
 }
 
-const SupplierLocations: MPRoute = {
-  rolesWithAccess: [MPRoles.MPSupplierAdmin, MPRoles.MPMeSupplierAdmin],
+const SupplierLocations: HSRoute = {
+  rolesWithAccess: [HSRoles.HSSupplierAdmin, HSRoles.HSMeSupplierAdmin],
   title: 'ALIAS.SUPPLIER_LOCATIONS',
   route: `/suppliers/${REDIRECT_TO_FIRST_PARENT}/locations`,
 }
 
-const SupplierNavGrouping: MPRoute = {
-  rolesWithAccess: [MPRoles.MPSupplierAdmin],
+const SupplierNavGrouping: HSRoute = {
+  rolesWithAccess: [HSRoles.HSSupplierAdmin],
   title: 'ALIAS.SUPPLIERS',
   route: '/suppliers',
   subRoutes: [AllSuppliers, SupplierUsers, SupplierLocations],
 }
 
 const OrchestrationLogs = {
-  rolesWithAccess: [MPRoles.MPReportReader],
+  rolesWithAccess: [HSRoles.HSReportReader],
   title: 'ADMIN.NAV.ORCHESTRATION_LOGS',
   route: 'reports/logs',
 }
 
 const ProcessReports = {
-  rolesWithAccess: [MPRoles.MPReportReader],
+  rolesWithAccess: [HSRoles.HSReportReader],
   title: 'ADMIN.NAV.PROCESS_REPORTS',
   route: 'reports/reports',
 }
 
 const ReportTemplates = {
-  rolesWithAccess: [MPRoles.MPReportAdmin],
-  title: 'ADMIN.NAV.REPORT_TEMPLATES',
+  rolesWithAccess: [HSRoles.HSReportAdmin],
+  title: 'ADMIN.NAV.REPORT_TEHSLATES',
   route: `reports/${REDIRECT_TO_FIRST_PARENT}/templates`,
 }
 
 const ReportsNavGrouping = {
-  rolesWithAccess: [MPRoles.MPReportAdmin, MPRoles.MPReportReader],
+  rolesWithAccess: [HSRoles.HSReportAdmin, HSRoles.HSReportReader],
   title: 'ADMIN.NAV.REPORTS',
   route: '/reports',
   subRoutes: [OrchestrationLogs, ProcessReports, ReportTemplates],
 }
 
 const SellerUsers = {
-  rolesWithAccess: [MPRoles.MPSellerAdmin],
+  rolesWithAccess: [HSRoles.HSSellerAdmin],
   title: 'ADMIN.NAV.SELLER_USERS',
   route: '/seller-users',
 }
 
 const AllStorefronts = {
-  rolesWithAccess: [MPRoles.MPStorefrontAdmin],
+  rolesWithAccess: [HSRoles.HSStorefrontAdmin],
   title: 'All Storefronts',
   route: '/storefronts',
 }
 
 const Pages = {
-  rolesWithAccess: [MPRoles.MPStorefrontAdmin],
+  rolesWithAccess: [HSRoles.HSStorefrontAdmin],
   title: 'Pages',
   route: `/storefronts/${REDIRECT_TO_FIRST_PARENT}/pages`,
 }
 
 const StorefrontNavGrouping = {
-  rolesWithAccess: [MPRoles.MPStorefrontAdmin],
+  rolesWithAccess: [HSRoles.HSStorefrontAdmin],
   title: 'Storefronts',
   route: '/storefronts',
   subRoutes: [AllStorefronts, Pages],
 }
 
 const MySupplierProfile = {
-  rolesWithAccess: [MPRoles.MPMeSupplierAdmin],
+  rolesWithAccess: [HSRoles.HSMeSupplierAdmin],
   title: 'ALIAS.SUPPLIER_PROFILE',
   route: '/my-supplier',
 }
 
 const MySupplierLocations = {
-  rolesWithAccess: [MPRoles.MPMeSupplierAddressAdmin],
+  rolesWithAccess: [HSRoles.HSMeSupplierAddressAdmin],
   title: 'ALIAS.SUPPLIER_LOCATIONS',
   route: '/my-supplier/locations',
 }
 
 const MySupplerUsers = {
-  rolesWithAccess: [MPRoles.MPMeSupplierUserAdmin],
+  rolesWithAccess: [HSRoles.HSMeSupplierUserAdmin],
   title: 'ADMIN.NAV.USERS',
   route: '/my-supplier/users',
 }
@@ -297,7 +296,7 @@ const Support = {
   route: '/support',
 }
 
-const AllNavGroupings: MPRoute[] = [
+const AllNavGroupings: HSRoute[] = [
   ProductNavGrouping,
   SupplierOrderNavGrouping,
   SellerOrderNavGrouping,
@@ -315,7 +314,7 @@ const AllNavGroupings: MPRoute[] = [
 export const getHeaderConfig = (
   userRoles: string[],
   orderCloudUserType: string
-): MPRoute[] => {
+): HSRoute[] => {
   const navGroupingsApplicableToUser = filterOutNavGroupings(
     AllNavGroupings,
     userRoles,
@@ -337,10 +336,10 @@ export const getHeaderConfig = (
 }
 
 const filterOutNavGroupings = (
-  navGroupings: MPRoute[],
+  navGroupings: HSRoute[],
   userRoles: string[] = [],
   orderCloudUserType: string
-): MPRoute[] => {
+): HSRoute[] => {
   return navGroupings.filter((navGrouping) => {
     return (
       (navGrouping.rolesWithAccess.some((role) => userRoles?.includes(role)) ||

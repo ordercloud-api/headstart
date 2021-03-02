@@ -12,7 +12,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { MeUser, OcTokenService } from '@ordercloud/angular-sdk'
 import { Router, NavigationEnd } from '@angular/router'
-import { AppConfig, AppStateService, MPRoute } from '@app-seller/shared'
+import { AppConfig, AppStateService, HSRoute } from '@app-seller/shared'
 import { getHeaderConfig } from './header.config'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
@@ -38,7 +38,7 @@ export class HeaderComponent implements OnInit {
   faUserCircle = faUserCircle
   faEnvelope = faEnvelope
   activeTitle = ''
-  headerConfig: MPRoute[]
+  headerConfig: HSRoute[]
   hasProfileImg = false
   myProfileImg: string
   currentUserInitials: string

@@ -104,7 +104,6 @@ export class SupplierCategorySelectComponent {
   }
 
   addCategory(): void {
-    debugger
     if (
       !this._serviceCatagoryConfig?.Items?.length ||
       !this._vendorLevelConfig?.Items?.length

@@ -81,21 +81,15 @@ namespace Headstart.API.Commands
             await _oc.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment
             {
                 BuyerID = ocBuyerID,
-                SecurityProfileID = CustomRole.MPBaseBuyer.ToString()
+                SecurityProfileID = CustomRole.HSBaseBuyer.ToString()
             }, token);
 
-            // list message senders
-            var msList = await _oc.MessageSenders.ListAsync(accessToken: token);
-            // create message sender assignment
-            var assignmentList = msList.Items.Select(ms =>
+            // assign message sender
+            await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
             {
-                return new MessageSenderAssignment
-                {
-                    MessageSenderID = ms.ID,
-                    BuyerID = ocBuyerID
-                };
-            });
-            await Throttler.RunAsync(assignmentList, 100, 5, a => _oc.MessageSenders.SaveAssignmentAsync(a, token));
+                MessageSenderID = "BuyerEmails",
+                BuyerID = ocBuyer.ID
+            }, token);
 
             await _oc.Incrementors.CreateAsync(new Incrementor { ID = $"{ocBuyerID}-UserIncrementor", LastNumber = 0, LeftPaddingCount = 5, Name = "User Incrementor" }, token);
             await _oc.Incrementors.CreateAsync(new Incrementor { ID = $"{ocBuyerID}-LocationIncrementor", LastNumber = 0, LeftPaddingCount = 4, Name = "Location Incrementor" }, token);

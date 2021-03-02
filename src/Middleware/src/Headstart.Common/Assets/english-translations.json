@@ -1,19 +1,19 @@
 {
   "ALIAS": {
-    "ALL_BUYERS": "All Brands",
-    "ALL_SUPPLIERS": "All Vendors",
+    "ALL_BUYERS": "All Buyers",
+    "ALL_SUPPLIERS": "All Suppliers",
     "BUYER": "Brand",
-    "BUYER_LOCATION": "Franchise Location",
-    "BUYER_LOCATIONS": "Franchise Locations",
-    "BUYERS": "Brands",
+    "BUYER_LOCATION": "Buyer Location",
+    "BUYER_LOCATIONS": "Buyer Locations",
+    "BUYERS": "Buyers",
     "SELLER": "Seller",
     "SELLERS": "Sellers",
-    "SUPPLIER": "Vendor",
-    "SUPPLIER_LOWERCASE": "vendor",
-    "SUPPLIER_PROFILE": "Vendor Profile",
-    "SUPPLIER_LOCATION": "Warehouse",
-    "SUPPLIER_LOCATIONS": "Warehouses",
-    "SUPPLIERS": "Vendors"
+    "SUPPLIER": "Supplier",
+    "SUPPLIER_LOWERCASE": "supplier",
+    "SUPPLIER_PROFILE": "Supplier Profile",
+    "SUPPLIER_LOCATION": "Supplier Address",
+    "SUPPLIER_LOCATIONS": "Supplier Addresses",
+    "SUPPLIERS": "Suppliers"
   },
   "ADMIN": {
     "COMMON": {
@@ -246,6 +246,9 @@
       "FILTER_OPTIONS": "Filter Options",
       "FILTERS": "Filters",
       "FIRST_SELECT_CATEGORY": "First, select a tax category",
+      "FREE_SHIPPING": "This product has free shipping",
+      "FREE_SHIPPING_MESSAGE": "Free shipping message",
+      "FREE_SHIPPING_MESSAGE_INFO": "What would you like the buyer to see on this product during checkout?",
       "FREIGHT": "Freight",
       "HEIGHT": "Height",
       "HIGH_LEVEL_CATEGORY": "High Level Category",
@@ -485,6 +488,7 @@
   "AUTHENTICATION": {
     "FORGOT_PASSWORD": {
       "HEADER": "Forgot Password",
+      "SUBHEADER": "Please provide either your email or username",
       "LOGIN": "Return to Login",
       "SEND_EMAIL": "Send Email"
     },
@@ -711,7 +715,7 @@
       "PURCHASE_NOT_APPROVED": "Purchase was not approved",
       "PURCHASED_BY_MISTAKE": "Purchased by mistake",
       "PURCHASED_INCORRECT_SIZE": "Purchased incorrect size/style",
-      "RECEIVED_EXTRA_PRODUCT": "Received extra product that I didn’t buy",
+      "RECEIVED_EXTRA_PRODUCT": "Received extra product that I didnï¿½t buy",
       "SHIPPING_BOX_DAMAGED": "Shipping box is damaged",
       "FOUND_DIFFERENT_PRODUCT": "Found a different product I lliked better",
       "FULFILLMENT_TOO_LONG": "Product took too long to fulfill"

@@ -20,9 +20,9 @@ namespace Headstart.Common.Controllers
         }
 
         [HttpPost, Route("seed")]
-        public async Task Seed([FromBody] EnvironmentSeed seed)
+        public async Task<EnvironmentSeedResponse> Seed([FromBody] EnvironmentSeed seed)
         {
-            await _command.Seed(seed);
+            return await _command.Seed(seed);
         }
 
 		[HttpPost, Route("post-staging-restore"), OrderCloudWebhookAuth]

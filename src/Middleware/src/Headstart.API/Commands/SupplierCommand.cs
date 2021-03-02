@@ -141,28 +141,23 @@ namespace Headstart.API.Commands
                 ApiClientID = apiClient.ID,
                 SupplierID = ocSupplierID
             }, token);
-            // list message senders
-            var msList = await _oc.MessageSenders.ListAsync(accessToken: token);
-            // create message sender assignment
-            var assignmentList = msList.Items.Select(ms =>
+
+            // assign to message sender
+            await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
             {
-                return new MessageSenderAssignment
-                {
-                    MessageSenderID = ms.ID,
-                    SupplierID = ocSupplierID
-                };
+                MessageSenderID = "SupplierEmails",
+                SupplierID = ocSupplierID
             });
-            await Throttler.RunAsync(assignmentList, 100, 5, a => _oc.MessageSenders.SaveAssignmentAsync(a, token));
             return supplier;
         }
     
         public async Task CreateUserTypeUserGroupsAndSecurityProfileAssignments(User user, string token, string supplierID)
         {
-            // Assign supplier to MPMeAdmin security profile
+            // Assign supplier to HSMeAdmin security profile
             await _oc.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment()
             {
                 SupplierID = supplierID,
-                SecurityProfileID = "MPMeAdmin"
+                SecurityProfileID = "HSMeAdmin"
             }, token);
 
             foreach(var userType in HSUserTypes.Supplier())
