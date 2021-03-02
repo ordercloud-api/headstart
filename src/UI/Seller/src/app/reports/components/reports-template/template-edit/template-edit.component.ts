@@ -50,7 +50,6 @@ export class TemplateEditComponent implements OnChanges {
   set resourceInSelection(template: ReportTemplate) {
     this.reportTemplate = template
     this.setHeadersAndFilters(this.reportType)
-    this.updateResource.emit({ value: this.reportType, field: 'ReportType' })
     if (this.reportsTemplateService.checkIfCreatingNew()) {
       this.isCreatingNew = true
       this.handleSelectAllHeaders()
@@ -98,7 +97,7 @@ export class TemplateEditComponent implements OnChanges {
     const value = ['AvailableToSuppliers'].includes(field)
       ? event.target.checked
       : event.target.value
-    this.updateResource.emit({ value, field })
+    this.updateResource.emit(this.resourceForm)
   }
 
   setHeadersAndFilters(reportType: string): void {
@@ -172,7 +171,7 @@ export class TemplateEditComponent implements OnChanges {
       (a, b) => headersToCompare.indexOf(a) - headersToCompare.indexOf(b)
     )
     this.resourceForm.controls.Headers.setValue(headers)
-    this.updateResource.emit({ value: headers, field: 'Headers' })
+    this.updateResource.emit(this.resourceForm)
   }
 
   toggleFilter(filter: FilterObject, filterValue: any): void {
@@ -195,7 +194,7 @@ export class TemplateEditComponent implements OnChanges {
     }
     selectedFilterValues?.sort()
     this.resourceForm.controls.Filters.setValue(filters)
-    this.updateResource.emit({ value: filters, field: 'Filters' })
+    this.updateResource.emit(this.resourceForm)
   }
 
   toggleIncludeAllValues(includeAll: boolean, filter: FilterObject): void {
@@ -206,18 +205,12 @@ export class TemplateEditComponent implements OnChanges {
       )
       this.updatedResource.Filters[filter.path] = []
       this.resourceForm.controls.Filters.setValue(this.updatedResource.Filters)
-      this.updateResource.emit({
-        value: this.updatedResource.Filters,
-        field: 'Filters',
-      })
+      this.updateResource.emit(this.resourceForm)
     } else {
       this.filterChipsToDisplay.push(filter)
       this.updatedResource.Filters[filter.path] = []
       this.resourceForm.controls.Filters.setValue(this.updatedResource.Filters)
-      this.updateResource.emit({
-        value: this.updatedResource.Filters,
-        field: 'Filters',
-      })
+      this.updateResource.emit(this.resourceForm)
     }
   }
 
@@ -228,15 +221,12 @@ export class TemplateEditComponent implements OnChanges {
   handleSelectAllHeaders(): void {
     const headersPaths = this.headers.map((header) => header.path)
     this.resourceForm.controls.Headers.setValue(headersPaths)
-    this.updateResource.emit({ value: headersPaths, field: 'Headers' })
+    this.updateResource.emit(this.resourceForm)
   }
 
   handleUnselectAllHeaders(): void {
     this.updatedResource.Headers = []
     this.resourceForm.controls.Headers.setValue(this.updatedResource.Headers)
-    this.updateResource.emit({
-      value: this.updatedResource.Headers,
-      field: 'Headers',
-    })
+    this.updateResource.emit(this.resourceForm)
   }
 }
