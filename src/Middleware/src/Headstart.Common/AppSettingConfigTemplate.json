@@ -37,7 +37,6 @@
   "OrderCloudSettings:ApiUrl": "https://sandboxapi.ordercloud.io",
   "OrderCloudSettings:MiddlewareClientID": "",
   "OrderCloudSettings:MiddlewareClientSecret": "",
-  "OrderCloudSettings:DefaultPassword": "",
   "OrderCloudSettings:IncrementorPrefix": "DB_TEST",
   "OrderCloudSettings:WebhookHashKey": "",
   "SendGridSettings:ApiKey": "",

@@ -4,7 +4,7 @@ import { FormGroup, Validators, FormControl } from '@angular/forms'
 // angular libs
 
 // ordercloud
-import { PasswordReset, TokenPasswordReset } from 'ordercloud-javascript-sdk'
+import { ForgottenPassword, PasswordReset } from 'ordercloud-javascript-sdk'
 import {
   ValidateStrongPassword,
   ValidateFieldMatches,
@@ -21,7 +21,7 @@ import { AppConfig } from 'src/app/models/environment.types'
 export class OCMResetPassword implements OnInit {
   form: FormGroup
   username: string
-  token: string
+  code: string
   appName: string
 
   constructor(
@@ -32,12 +32,12 @@ export class OCMResetPassword implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // TODO - figure out how to access url.
     const urlParams = this.activatedRoute.snapshot.queryParams
-    this.token = urlParams['token']
-    // this.username = urlParams['user'];
+    this.code = urlParams['code'] as string
+    this.username = urlParams['username'] as string
     this.appName = this.context.appSettings.appname
     this.form = new FormGroup({
+      username: new FormControl(this.username),
       password: new FormControl('', [
         Validators.required,
         ValidateStrongPassword,
@@ -53,11 +53,13 @@ export class OCMResetPassword implements OnInit {
     if (this.form.status === 'INVALID') {
       return
     }
-
-    const config: TokenPasswordReset = {
-      NewPassword: this.form.get('password').value,
+    const password = this.form.get('password').value as string
+    const config: PasswordReset = {
+      ClientID: this.appConfig.clientID,
+      Username: this.username,
+      Password: password,
     }
-    await this.context.authentication.resetPassword(this.token, config)
+    await ForgottenPassword.ResetPasswordByVerificationCode(this.code, config)
     this.toasterService.success('Password Reset', 'Success')
     this.context.router.toLogin()
   }

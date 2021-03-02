@@ -41,60 +41,53 @@ export class ProductListWrapperComponent implements OnInit, OnDestroy {
   private handleFiltersChange = async (): Promise<void> => {
     this.isProductListLoading = true
     const user = this.context.currentUser.get()
-    if (user?.UserGroups?.length) {
-      try {
-        this.products = await this.context.productFilters.listProducts()
-        let sourceIds = {}
-        // gather supplier IDs and unique shipFromAddress IDs per supplier
-        this.products.Items.forEach((p) => {
-          if (!p.DefaultSupplierID || !p.ShipFromAddressID) return
-          const source = sourceIds[p.DefaultSupplierID]
-          if (!source) {
-            sourceIds[p.DefaultSupplierID] = [p.ShipFromAddressID]
-          } else {
-            sourceIds[p.DefaultSupplierID] = _uniq([
-              ...source,
-              p.ShipFromAddressID,
-            ])
+    const userGroups = user?.UserGroups?.length
+    if (!userGroups) {
+      throw new Error(
+        'User is not configured - must be assigned to at least one location group'
+      )
+    }
+    try {
+      this.products = await this.context.productFilters.listProducts()
+      const sourceIds = {}
+      // gather supplier IDs and unique shipFromAddress IDs per supplier
+      this.products.Items.forEach((p) => {
+        if (!p.DefaultSupplierID || !p.ShipFromAddressID) return
+        const source = sourceIds[p.DefaultSupplierID]
+        if (!source) {
+          sourceIds[p.DefaultSupplierID] = [p.ShipFromAddressID]
+        } else {
+          sourceIds[p.DefaultSupplierID] = _uniq([
+            ...source,
+            p.ShipFromAddressID,
+          ])
+        }
+      })
+      Object.keys(sourceIds).forEach((supplierId) => {
+        sourceIds[supplierId].forEach(async (addressId) => {
+          if (!this.shipFromSources[supplierId]) {
+            this.shipFromSources[supplierId] = []
+          }
+          if (
+            !this.shipFromSources[supplierId].length ||
+            this.shipFromSources[supplierId]
+              .map((address) => address.ID)
+              .indexOf(addressId) < 0
+          ) {
+            const address = await this.supplierFilterService.getSupplierAddress(
+              supplierId,
+              addressId
+            )
+            this.shipFromSources[supplierId] = [
+              ...this.shipFromSources[supplierId],
+              address,
+            ]
           }
         })
-        Object.keys(sourceIds).forEach((supplierId) => {
-          sourceIds[supplierId].forEach(async (addressId) => {
-            if (!this.shipFromSources[supplierId]) {
-              this.shipFromSources[supplierId] = []
-            }
-            if (
-              !this.shipFromSources[supplierId].length ||
-              this.shipFromSources[supplierId]
-                .map((address) => address.ID)
-                .indexOf(addressId) < 0
-            ) {
-              const address = await this.supplierFilterService.getSupplierAddress(
-                supplierId,
-                addressId
-              )
-              this.shipFromSources[supplierId] = [
-                ...this.shipFromSources[supplierId],
-                address,
-              ]
-            }
-          })
-        })
-      } finally {
-        window.scroll(0, 0)
-        this.isProductListLoading = false
-      }
-    } else {
-      this.products = {
-        Meta: {
-          Page: 1,
-          PageSize: 20,
-          TotalCount: 0,
-          TotalPages: 0,
-          ItemRange: [1, 0],
-        },
-        Items: [],
-      }
+      })
+    } finally {
+      window.scroll(0, 0)
+      this.isProductListLoading = false
     }
   }
 }

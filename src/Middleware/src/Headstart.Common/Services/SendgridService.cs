@@ -68,7 +68,11 @@ namespace Headstart.Common.Services
                 var fromEmail = new EmailAddress(from);
                 var toEmail = new EmailAddress(to);
                 var msg = MailHelper.CreateSingleTemplateEmail(fromEmail, toEmail, templateID, templateData);
-                await _client.SendEmailAsync(msg);
+                var response = await _client.SendEmailAsync(msg);
+                if(!response.IsSuccessStatusCode)
+                {
+                    throw new Exception("Error sending sendgrid email");
+                }
             }
         }
 
@@ -78,7 +82,11 @@ namespace Headstart.Common.Services
             {
                 var fromEmail = new EmailAddress(from);
                 var msg = MailHelper.CreateSingleTemplateEmailToMultipleRecipients(fromEmail, tos, templateID, templateData);
-                await _client.SendEmailAsync(msg);
+                var response = await _client.SendEmailAsync(msg);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception("Error sending sendgrid email");
+                }
             }
         }
 
@@ -92,7 +100,11 @@ namespace Headstart.Common.Services
                 {
                     await msg.AddAttachmentAsync(fileName, stream);
                 }
-                await _client.SendEmailAsync(msg);
+                var response = await _client.SendEmailAsync(msg);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception("Error sending sendgrid email");
+                }
             }
         }
 
@@ -110,7 +122,11 @@ namespace Headstart.Common.Services
                         await msg.AddAttachmentAsync(fileReference.FileName, stream);
                     }
                 }
-                await _client.SendEmailAsync(msg);
+                var response = await _client.SendEmailAsync(msg);
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception("Error sending sendgrid email");
+                }
             }
         }
 
@@ -122,6 +138,8 @@ namespace Headstart.Common.Services
                 {
                     FirstName = messageNotification?.Recipient?.FirstName,
                     LastName = messageNotification?.Recipient?.LastName,
+                    Username = messageNotification?.Recipient?.Username,
+                    PasswordRenewalVerificationCode = messageNotification?.EventBody?.PasswordRenewalVerificationCode,
                     PasswordRenewalAccessToken = messageNotification?.EventBody?.PasswordRenewalAccessToken,
                     PasswordRenewalUrl = messageNotification?.EventBody?.PasswordRenewalUrl
                 }
@@ -215,12 +233,6 @@ namespace Headstart.Common.Services
 
         public async Task SendNewUserEmail(MessageNotification<PasswordResetEventBody> messageNotification)
         {
-            string BaseAppURL = _settings.UI.BaseAdminUrl;
-            var jwt = messageNotification.EventBody.PasswordRenewalAccessToken;
-            var handler = new JwtSecurityTokenHandler();
-            var token = handler.ReadJwtToken(jwt);
-            var cid = token.Claims.FirstOrDefault(c => c.Type == "cid");
-            var apiClient = await _oc.ApiClients.GetAsync(cid.Value);            
             var templateData = new EmailTemplate<NewUserData>()
             {
                 Data = new NewUserData

@@ -4,8 +4,8 @@
 // ====================================================================
 const brand = Brand.DEFAULT_BUYER
 const appEnvironment = Environment.TEST
-const useLocalMiddleware = false
-const localMiddlewareURL = 'https://localhost:44304'
+const useLocalMiddleware = true
+const localMiddlewareURL = 'https://localhost:5001'
 // ====================================================================
 // ======= UNLESS YOU ARE DOING SOMETHING WEIRD =======================
 

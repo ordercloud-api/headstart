@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authentication;
 using System;
 using Microsoft.Extensions.DependencyInjection;
 using OrderCloud.SDK;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.Builder;
 
 namespace ordercloud.integrations.library
 {
@@ -14,6 +16,18 @@ namespace ordercloud.integrations.library
         public static IServiceCollection OrderCloudIntegrationsConfigureWebApiServices<T>(this IServiceCollection services, T settings, BlobServiceConfig errorLogBlobConfig, string corsPolicyName = null)
             where T : class
         {
+            // false became the default in asp.net core 3.0 to combat application hangs
+            // however we're using synchronous APIs when validating webhook hash
+            // specifically ComputeHash will trigger an error here
+            // TODO: figure out how to compute the hash in an async manner so we can remove this
+            services.Configure<KestrelServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
+            services.Configure<IISServerOptions>(options =>
+            {
+                options.AllowSynchronousIO = true;
+            });
             services.AddSingleton(x => new GlobalExceptionHandler(errorLogBlobConfig));
             services.Inject<IOrderCloudClient>();
             services.AddSingleton(settings);

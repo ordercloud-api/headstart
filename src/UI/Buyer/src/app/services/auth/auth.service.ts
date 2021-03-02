@@ -10,11 +10,8 @@ import {
   Me,
   Auth,
   MeUser,
-  ForgottenPassword,
   AccessTokenBasic,
-  TokenPasswordReset,
 } from 'ordercloud-javascript-sdk'
-// import { CookieService } from '@gorniv/ngx-universal';
 import { CookieService } from 'ngx-cookie'
 import { CurrentUserService } from '../current-user/current-user.service'
 import { CurrentOrderService } from '../order/order.service'
@@ -66,7 +63,7 @@ export class AuthService {
   }
 
   // change all this unreadable observable stuff
-  refresh(): Observable<void> {
+  refresh(): Observable<any> {
     this.fetchingRefreshToken = true
     return from(this.refreshTokenLogin()).pipe(
       tap((token) => {
@@ -79,7 +76,7 @@ export class AuthService {
         setTimeout(() => {
           this.failedRefreshAttempt = false
         }, 3000)
-        this.logout()
+        void this.logout()
         return of(null)
       }),
       finalize(() => {
@@ -94,16 +91,7 @@ export class AuthService {
     this.isLoggedIn = true
   }
 
-  async forgotPasssword(email: string): Promise<void> {
-    await ForgottenPassword.SendVerificationCode({
-      Email: email,
-      ClientID: this.appConfig.clientID,
-      URL: this.appConfig.baseUrl,
-    })
-    this.router.navigateByUrl('/login')
-  }
-
-  async register(me: MeUser<any>): Promise<AccessTokenBasic> {
+  async register(me: MeUser): Promise<AccessTokenBasic> {
     const token = await Me.Register(me)
     return token
   }
@@ -126,7 +114,7 @@ export class AuthService {
       false,
       rememberMe
     )
-    this.router.navigateByUrl('/home')
+    void this.router.navigateByUrl('/home')
     return creds
   }
 
@@ -149,7 +137,7 @@ export class AuthService {
       Tokens.SetRefreshToken(refreshToken)
       this.setRememberMeStatus(true)
     }
-    this.ordersToApproveStateService.alertIfOrdersToApprove()
+    void this.ordersToApproveStateService.alertIfOrdersToApprove()
   }
 
   async anonymousLogin(): Promise<AccessToken> {
@@ -163,7 +151,7 @@ export class AuthService {
       this.setToken(creds.access_token)
       return creds
     } catch (err) {
-      this.logout()
+      void this.logout()
       throw new Error(err)
     }
   }
@@ -175,11 +163,11 @@ export class AuthService {
     this.isLoggedIn = false
     this.appInsightsService.clearUser()
     if (this.appConfig.anonymousShoppingEnabled) {
-      this.router.navigate(['/home'])
+      void this.router.navigate(['/home'])
       await this.currentUser.reset()
-      this.currentOrder.reset() // TODO - can we get rid of Auth's dependency on current Order and User?
+      void this.currentOrder.reset() // TODO - can we get rid of Auth's dependency on current Order and User?
     } else {
-      this.router.navigate(['/login'])
+      void this.router.navigate(['/login'])
     }
   }
 
@@ -195,14 +183,6 @@ export class AuthService {
       this.appConfig.scope
     )
     await Me.ResetPasswordByToken({ NewPassword: newPassword })
-  }
-
-  async resetPassword(
-    token: string,
-    config: TokenPasswordReset
-  ): Promise<void> {
-    await Me.ResetPasswordByToken(config, { accessToken: token })
-    // await ForgottenPassword.ResetPasswordByVerificationCode(code, config);
   }
 
   setRememberMeStatus(status: boolean): void {

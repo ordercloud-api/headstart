@@ -13,12 +13,13 @@ using ordercloud.integrations.library.helpers;
 using Headstart.Common.Services;
 using Headstart.Common;
 using ordercloud.integrations.exchangerates;
+using Headstart.Common.Models;
 
 namespace Headstart.API.Commands
 {
     public interface IEnvironmentSeedCommand
     {
-        Task Seed(EnvironmentSeed seed);
+        Task<EnvironmentSeedResponse> Seed(EnvironmentSeed seed);
         Task PostStagingRestore();
     }
     public class EnvironmentSeedCommand : IEnvironmentSeedCommand
@@ -61,7 +62,7 @@ namespace Headstart.API.Commands
             _translationsBlob = new OrderCloudIntegrationsBlobService(translationsConfig);
         }
 
-        public async Task Seed(EnvironmentSeed seed)
+        public async Task<EnvironmentSeedResponse> Seed(EnvironmentSeed seed)
         {
             if (string.IsNullOrEmpty(_settings.OrderCloudSettings.ApiUrl))
             {
@@ -80,14 +81,14 @@ namespace Headstart.API.Commands
             await VerifyOrgExists(seed.SellerOrgID, portalUserToken);
             var orgToken = await _portal.GetOrgToken(seed.SellerOrgID, portalUserToken);
 
-            await CreateDefaultSellerUser(orgToken);
+            await CreateDefaultSellerUsers(seed, orgToken);
             await CreateApiClients(orgToken);
-            await CreateSecurityProfiles(seed, orgToken);
+            await CreateSecurityProfiles(orgToken);
             await AssignSecurityProfiles(seed, orgToken);
 
             var apiClients = await GetApiClients(orgToken);
-            await CreateMessageSenders(orgToken);
             await CreateIncrementors(orgToken); // must be before CreateBuyers
+            await CreateMessageSenders(seed, orgToken); // must be before CreateBuyers and CreateSuppliers
 
             await CreateBuyers(seed, orgToken);
             await CreateXPIndices(orgToken);
@@ -102,6 +103,27 @@ namespace Headstart.API.Commands
             var currentDirectory = Directory.GetCurrentDirectory();
             var englishTranslationsPath = Path.GetFullPath(Path.Combine(currentDirectory, @"..\Headstart.Common\Assets\english-translations.json"));
             await _translationsBlob.Save("i18n/en.json", File.ReadAllText(englishTranslationsPath));
+
+            return new EnvironmentSeedResponse
+            {
+                Comments = "Success! Your environment is now seeded. The following clientIDs & secrets should be used to finalize the configuration of your application. The initial admin username and password can be used to sign into your admin application",
+                ApiClients = new Dictionary<string, dynamic>
+                {
+                    ["Middleware"] = new
+                    {
+                        ClientID = apiClients.MiddlewareApiClient.ID,
+                        ClientSecret = apiClients.MiddlewareApiClient.ClientSecret
+                    },
+                    ["Seller"] = new
+                    {
+                        ClientID = apiClients.AdminUiApiClient.ID
+                    },
+                    ["Buyer"] = new
+                    {
+                        ClientID = apiClients.BuyerUiApiClient.ID
+                    }
+                }
+            };
         }
 
         public async Task VerifyOrgExists(string orgID, string devToken)
@@ -113,31 +135,29 @@ namespace Headstart.API.Commands
             catch
             {
                 // the portal API no longer allows us to create a production organization outside of portal
-                // though its possible to create on sandbox for consistency sake we'll require its created before seeding
+                // though its possible to create on sandbox - for consistency sake we'll require its created before seeding
                 throw new Exception("Failed to retrieve seller organization with SellerOrgID. The organization must exist before it can be seeded");
             }
         }
 
         /// <summary>
         /// The staging environment gets restored weekly from production
-        /// during that restore things like webhooks and message senders are shut off (so you don't email production customers)
-        /// this process restores those things with environment specific settings (not production)
+        /// during that restore things like webhooks, message senders, and integration events are shut off (so you don't for example email production customers)
+        /// this process restores integration events which are required for checkout (with environment specific settings)
         public async Task PostStagingRestore()
         {
             var token = (await _oc.AuthenticateAsync()).AccessToken;
             var apiClients = await GetApiClients(token);
             var storefrontClientIDs = await GetStoreFrontClientIDs(token);
 
-            var deleteMS = DeleteAllMessageSenders(token);
             var deleteIE = DeleteAllIntegrationEvents(token);
-            await Task.WhenAll(deleteMS, deleteIE);
+            await Task.WhenAll(deleteIE);
 
             // recreate with environment specific data
-            var createMS = CreateMessageSenders(token);
             var createIE = CreateAndAssignIntegrationEvents(storefrontClientIDs, apiClients.BuyerLocalUiApiClient.ID, token);
             var shutOffSupplierEmails = ShutOffSupplierEmailsAsync(token); // shut off email notifications for all suppliers
 
-            await Task.WhenAll(createMS, createIE, shutOffSupplierEmails);
+            await Task.WhenAll(createIE, shutOffSupplierEmails);
         }
 
         private async Task AssignSecurityProfiles(EnvironmentSeed seed, string orgToken)
@@ -176,7 +196,6 @@ namespace Headstart.API.Commands
         {
             seed.Buyers.Add(new HSBuyer
             {
-                ID = "Default_HeadStart_Buyer",
                 Name = "Default HeadStart Buyer",
                 Active = true,
                 xp = new BuyerXp
@@ -191,8 +210,19 @@ namespace Headstart.API.Commands
                     Buyer = buyer,
                     Markup = new BuyerMarkup() { Percent = 0 }
                 };
-                await _buyerCommand.Update(buyer.ID, superBuyer, token);
+
+                var exists = await BuyerExistsAsync(buyer.Name, token);
+                if(!exists)
+                {
+                    await _buyerCommand.Create(superBuyer, token, isSeedingEnvironment: true);
+                }
             }
+        }
+
+        private async Task<bool> BuyerExistsAsync(string buyerName, string token)
+        {
+            var list = await _oc.Buyers.ListAsync(filters: new { Name = buyerName }, accessToken: token);
+            return list.Items.Any();
         }
 
         private async Task CreateSuppliers(EnvironmentSeed seed, string token)
@@ -200,22 +230,46 @@ namespace Headstart.API.Commands
             // Create Suppliers and necessary user groups and security profile assignments
             foreach (HSSupplier supplier in seed.Suppliers)
             {
-                await _supplierCommand.Create(supplier, token, isSeedingEnvironment: true);
+                var exists = await SupplierExistsAsync(supplier.Name, token);
+                if (!exists)
+                {
+                    await _supplierCommand.Create(supplier, token, isSeedingEnvironment: true);
+                }
             }
         }
 
-        private async Task CreateDefaultSellerUser(string token)
+        private async Task<bool> SupplierExistsAsync(string supplierName, string token)
         {
-            var defaultSellerUser = new User
+            var list = await _oc.Suppliers.ListAsync(filters: new { Name = supplierName }, accessToken: token);
+            return list.Items.Any();
+        }
+
+        private async Task CreateDefaultSellerUsers(EnvironmentSeed seed, string token)
+        {
+            // the middleware api client will use this user as the default context user
+            var middlewareIntegrationsUser = new User
             {
-                ID = "Default_Admin",
+                ID = "MiddlewareIntegrationsUser",
                 Username = _sellerUserName,
                 Email = "test@test.com",
                 Active = true,
                 FirstName = "Default",
                 LastName = "User"
             };
-            await _oc.AdminUsers.SaveAsync(defaultSellerUser.ID, defaultSellerUser, token);
+            await _oc.AdminUsers.SaveAsync(middlewareIntegrationsUser.ID, middlewareIntegrationsUser, token);
+
+            // used to log in immediately after seeding the organization
+            var initialAdminUser = new User
+            {
+                ID = "InitialAdminUser",
+                Username = seed.InitialAdminUsername,
+                Password = seed.InitialAdminPassword,
+                Email = "test@test.com",
+                Active = true,
+                FirstName = "Initial",
+                LastName = "User"
+            };
+            await _oc.AdminUsers.SaveAsync(initialAdminUser.ID, initialAdminUser, token);
         }
 
         static readonly List<XpIndex> DefaultIndices = new List<XpIndex>() {
@@ -253,9 +307,9 @@ namespace Headstart.API.Commands
         }
 
         static readonly List<Incrementor> DefaultIncrementors = new List<Incrementor>() {
-            new Incrementor { ID = "orderIncrementor", Name = "Order Incrementor", LastNumber = 1, LeftPaddingCount = 6 },
-            new Incrementor { ID = "supplierIncrementor", Name = "Supplier Incrementor", LastNumber = 1, LeftPaddingCount = 3 },
-            new Incrementor { ID = "buyerIncrementor", Name = "Buyer Incrementor", LastNumber = 1, LeftPaddingCount = 4 }
+            new Incrementor { ID = "orderIncrementor", Name = "Order Incrementor", LastNumber = 0, LeftPaddingCount = 6 },
+            new Incrementor { ID = "supplierIncrementor", Name = "Supplier Incrementor", LastNumber = 0, LeftPaddingCount = 3 },
+            new Incrementor { ID = "buyerIncrementor", Name = "Buyer Incrementor", LastNumber = 0, LeftPaddingCount = 4 }
         };
 
         public async Task CreateIncrementors(string token)
@@ -359,14 +413,43 @@ namespace Headstart.API.Commands
             return match != null ? _oc.ApiClients.SaveAsync(match.ID, client, token) : _oc.ApiClients.CreateAsync(client, token);
         }
 
-        private async Task CreateMessageSenders(string accessToken)
+        private async Task CreateMessageSenders(EnvironmentSeed seed, string accessToken)
         {
-            foreach (var messageSender in DefaultMessageSenders())
+            foreach (var sender in DefaultMessageSenders())
             {
-                messageSender.URL = $"{_settings.EnvironmentSettings.MiddlewareBaseUrl}{messageSender.URL}";
-                await _oc.MessageSenders.SaveAsync(messageSender.ID, messageSender, accessToken);
+                var messageSender = await _oc.MessageSenders.SaveAsync(sender.ID, sender, accessToken);
+                if (messageSender.ID == "BuyerEmails")
+                {
+                    foreach (var buyer in seed.Buyers)
+                    {
+                        await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
+                        {
+                            MessageSenderID = messageSender.ID,
+                            BuyerID = buyer.ID
+                        }, accessToken);
+                    }
+                }
+                else if (messageSender.ID == "SellerEmails")
+                {
+                    await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
+                    {
+                        MessageSenderID = messageSender.ID
+                    }, accessToken);
+                }
+                else if (messageSender.ID == "SupplierEmails")
+                {
+                    foreach (var supplier in seed.Suppliers)
+                    {
+                        await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
+                        {
+                            MessageSenderID = messageSender.ID,
+                            SupplierID = supplier.ID
+                        }, accessToken);
+                    }
+                }
             }
         }
+
         private async Task CreateAndAssignIntegrationEvents(string[] buyerClientIDs, string localBuyerClientID, string token)
         {
             var checkoutEvent = new IntegrationEvent()
@@ -408,12 +491,12 @@ namespace Headstart.API.Commands
 
         private async Task ShutOffSupplierEmailsAsync(string token)
         {
-            var allSuppliers = await ListAllAsync.List(page => _oc.Suppliers.ListAsync<HSSupplier>(page: page, pageSize: 100));
+            var allSuppliers = await ListAllAsync.List(page => _oc.Suppliers.ListAsync<HSSupplier>(page: page, pageSize: 100, accessToken: token));
             await Throttler.RunAsync(allSuppliers, 500, 20, supplier =>
                 _oc.Suppliers.PatchAsync(supplier.ID, new PartialSupplier { xp = new { NotificationRcpts = new string[] { } } }, token));
         }
 
-        public async Task CreateSecurityProfiles(EnvironmentSeed seed, string accessToken)
+        public async Task CreateSecurityProfiles(string accessToken)
         {
             var profiles = DefaultSecurityProfiles.Select(p =>
                 new SecurityProfile()
@@ -459,37 +542,41 @@ namespace Headstart.API.Commands
             return new List<MessageSender>() {
                 new MessageSender()
                 {
-                    ID = "passwordReset",
-                    Name = "Password Reset",
-                    MessageTypes = new[] { MessageType.ForgottenPassword },
-                    URL = "/passwordreset",
-                    SharedKey = _settings.OrderCloudSettings.WebhookHashKey,
-                    xp = new {
-                            MessageTypeConfig = new {
-                                MessageType = "ForgottenPassword",
-                                FromEmail = "noreply@ordercloud.io",
-                                Subject = "Here is the link to reset your password",
-                                TemplateName = "ForgottenPassword",
-                                MainContent = "ForgottenPassword"
-                            }
-                    }
+                    ID = "BuyerEmails",
+                    Name = "Buyer Emails",
+                    MessageTypes = new[] {
+                        MessageType.ForgottenPassword,
+                        MessageType.NewUserInvitation,
+                        MessageType.OrderApproved,
+                        MessageType.OrderDeclined,
+                        // MessageType.OrderSubmitted, this is currently being handled in PostOrderSubmitCommand, possibly move to message senders
+                        MessageType.OrderSubmittedForApproval,
+                        // MessageType.OrderSubmittedForYourApprovalHasBeenApproved, // too noisy
+                        // MessageType.OrderSubmittedForYourApprovalHasBeenDeclined, // too noisy
+                        // MessageType.ShipmentCreated this is currently being triggered in-app possibly move to message senders
+                    },
+                    URL = _settings.EnvironmentSettings.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
+                    SharedKey = _settings.OrderCloudSettings.WebhookHashKey
                 },
                 new MessageSender()
                 {
-                    ID = "registration",
-                    Name = "New User Registration",
-                    MessageTypes = new[] { MessageType.NewUserInvitation },
-                    URL = "/newuser",
-                    SharedKey = _settings.OrderCloudSettings.WebhookHashKey,
-                    xp = new {
-                            MessageTypeConfig = new {
-                                MessageType = "NewUserInvitation",
-                                FromEmail = "noreply@ordercloud.io",
-                                Subject = "New User Registration",
-                                TemplateName = "ForgottenPassword",
-                                MainContent = "NewUserInvitation"
-                            }
-                    }
+                    ID = "SellerEmails",
+                    Name = "Seller Emails",
+                    MessageTypes = new[] {
+                        MessageType.ForgottenPassword,
+                    },
+                    URL = _settings.EnvironmentSettings.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
+                    SharedKey = _settings.OrderCloudSettings.WebhookHashKey
+                },
+                new MessageSender()
+                {
+                    ID = "SupplierEmails",
+                    Name = "Supplier Emails",
+                    MessageTypes = new[] {
+                        MessageType.ForgottenPassword,
+                    },
+                    URL = _settings.EnvironmentSettings.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
+                    SharedKey = _settings.OrderCloudSettings.WebhookHashKey
                 }
             };
         }
@@ -519,9 +606,6 @@ namespace Headstart.API.Commands
 			
 			// buyer - this is the only role needed for a buyer user to successfully check out
 			new HSSecurityProfile() { ID = CustomRole.HSBaseBuyer, CustomRoles = new CustomRole[] { CustomRole.HSBaseBuyer }, Roles = new ApiRole[] { ApiRole.MeAddressAdmin, ApiRole.MeAdmin, ApiRole.MeCreditCardAdmin, ApiRole.MeXpAdmin, ApiRole.ProductFacetReader, ApiRole.Shopper, ApiRole.SupplierAddressReader, ApiRole.SupplierReader } },
-			
-			// buyer impersonation - indicating the most roles a buyer user could have for impersonation purposes
-			new HSSecurityProfile() { ID = CustomRole.HSBaseBuyer, CustomRoles = new[] { CustomRole.HSBaseBuyer, CustomRole.HSLocationOrderApprover, CustomRole.HSLocationViewAllOrders }, Roles = new ApiRole[] { ApiRole.MeAddressAdmin, ApiRole.MeAdmin, ApiRole.MeCreditCardAdmin, ApiRole.MeXpAdmin, ApiRole.ProductFacetReader, ApiRole.Shopper, ApiRole.SupplierAddressReader, ApiRole.SupplierReader } },
 
 			/* these roles don't do much, access to changing location information will be done through middleware calls that
 			*  confirm the user is in the location specific access user group. These roles will be assigned to the location 
