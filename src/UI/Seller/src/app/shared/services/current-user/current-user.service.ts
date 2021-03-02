@@ -61,6 +61,19 @@ export class CurrentUserService {
     this.appStateService.isLoggedIn.next(true)
     this.me = await this.ocMeService.Get().toPromise()
     this.userSubject.next(this.me)
+    if (this.me?.Supplier) {
+      this.mySupplier = await HeadStartSDK.Suppliers.GetMySupplier(
+        this.me?.Supplier?.ID
+      )
+    }
+    try {
+      await this.setImageAssets()
+    } catch(err) {
+      // do not display login error if problem in getting assets
+    }
+  }
+
+  async setImageAssets() {
     let imgAssets: ListPage<Asset>
     if (this.me.Supplier) {
       imgAssets = await ContentManagementClient.Assets.ListAssetsOnChild(
@@ -79,10 +92,6 @@ export class CurrentUserService {
     }
     if (imgAssets.Items.length > 0)
       this.profileImgSubject.next(imgAssets.Items[0])
-    if (this.me?.Supplier)
-      this.mySupplier = await HeadStartSDK.Suppliers.GetMySupplier(
-        this.me?.Supplier?.ID
-      )
   }
 
   async getUser(): Promise<MeUser> {
