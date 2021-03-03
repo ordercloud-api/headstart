@@ -10,13 +10,14 @@ using Headstart.Common.Services.ShippingIntegration.Models;
 using ordercloud.integrations.cardconnect;
 using Headstart.API.Controllers;
 using Headstart.API.Commands;
+using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
     [DocComments("\"Headstart Orders\" for handling order commands in Headstart")]
     [HSSection.Headstart(ListOrder = 2)]
     [Route("order")]
-    public class OrderController : BaseController
+    public class OrderController : HeadstartController
     {
         
         private readonly IOrderCommand _command;
@@ -34,7 +35,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, Route("{direction}/{orderID}/submit"), OrderCloudIntegrationsAuth(ApiRole.Shopper)]
         public async Task<HSOrder> Submit(OrderDirection direction, string orderID, [FromBody] OrderCloudIntegrationsCreditCardPayment payment)
         {
-            return await _orderSubmitCommand.SubmitOrderAsync(orderID, direction, payment, VerifiedUserContext.AccessToken);
+            return await _orderSubmitCommand.SubmitOrderAsync(orderID, direction, payment, Context.RawToken);
         }
 
         [DocName("POST Acknowledge Quote Order")]
@@ -48,56 +49,56 @@ namespace Headstart.Common.Controllers
         [HttpGet, Route("location/{locationID}"), OrderCloudIntegrationsAuth(ApiRole.Shopper)]
         public async Task<ListPage<HSOrder>> ListLocationOrders(string locationID, ListArgs<HSOrder> listArgs)
         {
-            return await _command.ListOrdersForLocation(locationID, listArgs, VerifiedUserContext);
+            return await _command.ListOrdersForLocation(locationID, listArgs, Context);
         }
 
         [DocName("GET order details as buyer, ensures user has access to location orders or created the order themselves")]
         [HttpGet, Route("{orderID}/details"), OrderCloudIntegrationsAuth(ApiRole.Shopper)]
         public async Task<OrderDetails> GetOrderDetails(string orderID)
         {
-            return await _command.GetOrderDetails(orderID, VerifiedUserContext);
+            return await _command.GetOrderDetails(orderID, Context);
         }
 
         [DocName("GET order shipments as buyer, ensures user has access to location orders or created the order themselves")]
         [HttpGet, Route("{orderID}/shipmentswithitems"), OrderCloudIntegrationsAuth(ApiRole.Shopper)]
         public async Task<List<HSShipmentWithItems>> ListShipmentsWithItems(string orderID)
         {
-            return await _command.ListHSShipmentWithItems(orderID, VerifiedUserContext);
+            return await _command.ListHSShipmentWithItems(orderID, Context);
         }
 
         [DocName("Add or update a line item to an order")]
         [HttpPut, Route("{orderID}/lineitems"), OrderCloudIntegrationsAuth(ApiRole.Shopper)]
         public async Task<HSLineItem> UpsertLineItem(string orderID, [FromBody] HSLineItem li)
         {
-            return await _lineItemCommand.UpsertLineItem(orderID, li, VerifiedUserContext);
+            return await _lineItemCommand.UpsertLineItem(orderID, li, Context);
         }
 
         [DocName("Delete a line item")]
         [HttpDelete, Route("{orderID}/lineitems/{lineItemID}"), OrderCloudIntegrationsAuth(ApiRole.Shopper)]
         public async Task DeleteLineItem(string orderID, string lineItemID)
         {
-            await _lineItemCommand.DeleteLineItem(orderID, lineItemID, VerifiedUserContext);
+            await _lineItemCommand.DeleteLineItem(orderID, lineItemID, Context);
         }
 
         [DocName("Apply a promotion to an order")]
         [HttpPost, Route("{orderID}/promotions/{promoCode}")]
         public async Task<HSOrder> AddPromotion(string orderID, string promoCode)
         {
-            return await _command.AddPromotion(orderID, promoCode, VerifiedUserContext);
+            return await _command.AddPromotion(orderID, promoCode, Context);
         }
 
         [DocName("Seller or Supplier Set Line Item Statuses On Order with Related Notification")]
         [HttpPost, Route("{orderID}/{orderDirection}/lineitem/status"), OrderCloudIntegrationsAuth(ApiRole.OrderAdmin)]
         public async Task<List<HSLineItem>> SellerSupplierUpdateLineItemStatusesWithNotification(string orderID, OrderDirection orderDirection, [FromBody] LineItemStatusChanges lineItemStatusChanges)
         {
-            return await _lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(orderDirection, orderID, lineItemStatusChanges, VerifiedUserContext);
+            return await _lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(orderDirection, orderID, lineItemStatusChanges, Context);
         }
 
         [DocName("Buyer Set Line Item Statuses On Order with Related Notification")]
         [HttpPost, Route("{orderID}/lineitem/status"), OrderCloudIntegrationsAuth(ApiRole.Shopper)]
         public async Task<List<HSLineItem>> BuyerUpdateLineItemStatusesWithNotification(string orderID, [FromBody] LineItemStatusChanges lineItemStatusChanges)
         {
-            return await _lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Outgoing, orderID, lineItemStatusChanges, VerifiedUserContext);
+            return await _lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Outgoing, orderID, lineItemStatusChanges, Context);
         }
 
         [DocName("Apply Automatic Promtions to order and remove promotions no longer valid on order")]

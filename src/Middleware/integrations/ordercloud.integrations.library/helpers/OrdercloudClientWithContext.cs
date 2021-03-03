@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 using Flurl.Http;
 using ordercloud.integrations.library.extensions;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
 namespace ordercloud.integrations.library
@@ -19,7 +20,7 @@ namespace ordercloud.integrations.library
 			this(jwt.RawData, jwt.GetApiUrl(), jwt.GetAuthUrl(), jwt.GetClientID(), jwt.GetExpiresUTC()) { }
 
 		public OrderCloudClientWithContext(VerifiedUserContext user) : 
-			this(user.AccessToken, user.ApiUrl, user.AuthUrl, user.ClientID, user.AccessTokenExpiresUTC) { } 
+			this(user.RawToken, user.ParsedToken.ApiUrl, user.ParsedToken.AuthUrl, user.ParsedToken.ClientID, user.ParsedToken.ExpiresUTC) { } 
 
         private OrderCloudClientWithContext(string token, string apiUrl, string authUrl, string clientID, DateTime tokenExpiresUTC) : base(
             new OrderCloudClientConfig()

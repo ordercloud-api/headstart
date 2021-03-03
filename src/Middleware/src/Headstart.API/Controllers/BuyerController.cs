@@ -12,7 +12,7 @@ namespace Headstart.Common.Controllers
     [DocComments("\"Buyers\" represents Buyers for Headstart")]
     [HSSection.Headstart(ListOrder = 1)]
     [Route("buyer")]
-    public class BuyerController : BaseController
+    public class BuyerController : HeadstartController
     {
         
         private readonly IHSBuyerCommand _command;
@@ -27,21 +27,21 @@ namespace Headstart.Common.Controllers
         [HttpPost, OrderCloudIntegrationsAuth(ApiRole.BuyerAdmin)]
         public async Task<SuperHSBuyer> Create([FromBody] SuperHSBuyer buyer)
         {
-            return await _command.Create(buyer, VerifiedUserContext.AccessToken);
+            return await _command.Create(buyer, Context.RawToken);
         }
 
         [DocName("PUT Headstart Buyer")]
         [HttpPut, Route("{buyerID}"), OrderCloudIntegrationsAuth(ApiRole.BuyerAdmin)]
         public async Task<SuperHSBuyer> Put([FromBody] SuperHSBuyer superBuyer, string buyerID)
         {
-            return await _command.Update(buyerID, superBuyer, VerifiedUserContext.AccessToken);
+            return await _command.Update(buyerID, superBuyer, Context.RawToken);
         }
 
         [DocName("GET Headstart Buyer")]
         [HttpGet, Route("{buyerID}"), OrderCloudIntegrationsAuth(ApiRole.BuyerAdmin)]
         public async Task<SuperHSBuyer> Get(string buyerID)
         {
-            return await _command.Get(buyerID, VerifiedUserContext.AccessToken);
+            return await _command.Get(buyerID, Context.RawToken);
         }
     }
 }

@@ -13,7 +13,6 @@ using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
 using Headstart.Models.Misc;
 using Microsoft.WindowsAzure.Storage.Blob;
-using ordercloud.integrations.library.helpers;
 using OrderCloud.SDK;
 using SendGrid;
 using SendGrid.Helpers.Mail;
@@ -24,6 +23,7 @@ using ordercloud.integrations.cardconnect;
 using Headstart.Common.Models.Misc;
 using ordercloud.integrations.library;
 using Headstart.Models.Headstart;
+using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Services
 {
@@ -455,11 +455,7 @@ namespace Headstart.Common.Services
                 }
             };
             await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, supplierEmail, _settings?.SendgridSettings?.ProductInformationRequestTemplateID, templateData);
-            var sellerUsers = await ListAllAsync.List((page) => _oc.AdminUsers.ListAsync<HSUser>(
-                    filters: $"xp.RequestInfoEmails=true",
-                    page: page,
-                    pageSize: 100
-                 ));
+            var sellerUsers = await _oc.AdminUsers.ListAllAsync<HSUser>(filters: $"xp.RequestInfoEmails=true");
             foreach (var sellerUser in sellerUsers)
             {
                 await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, sellerUser.Email, _settings?.SendgridSettings?.ProductInformationRequestTemplateID, templateData);

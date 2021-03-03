@@ -8,6 +8,7 @@ using Headstart.Models.Attributes;
 using Headstart.Models.Misc;
 using Microsoft.AspNetCore.Mvc;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Controllers
@@ -15,7 +16,7 @@ namespace Headstart.Common.Controllers
 	[DocComments("Me and my stuff")]
 	[HSSection.Headstart(ListOrder = 10)]
 	[Route("me")]
-	public class MeController : BaseController
+	public class MeController : HeadstartController
 	{
 
 		private readonly IMeProductCommand _meProductCommand;
@@ -30,14 +31,14 @@ namespace Headstart.Common.Controllers
 		[HttpGet, Route("products/{productID}"), OrderCloudIntegrationsAuth(ApiRole.Shopper)]
 		public async Task<SuperHSMeProduct> GetSuperProduct(string productID)
 		{
-			return await _meProductCommand.Get(productID, VerifiedUserContext);
+			return await _meProductCommand.Get(productID, Context);
 		}
 
 		[DocName("LIST products")]
 		[HttpGet, Route("products"), OrderCloudIntegrationsAuth(ApiRole.Shopper)]
 		public async Task<ListPageWithFacets<HSMeProduct>> ListMeProducts(ListArgs<HSMeProduct> args)
 		{
-			return await _meProductCommand.List(args, VerifiedUserContext);
+			return await _meProductCommand.List(args, Context);
 		}
 
 		[DocName("POST request information about product")]

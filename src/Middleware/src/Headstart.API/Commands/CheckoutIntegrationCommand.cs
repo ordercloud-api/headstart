@@ -12,6 +12,7 @@ using ordercloud.integrations.avalara;
 using ordercloud.integrations.easypost;
 using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
@@ -273,7 +274,7 @@ namespace Headstart.API.Commands
 
         public async Task<HSOrderCalculateResponse> CalculateOrder(string orderID, VerifiedUserContext user)
         {
-            var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID, user.AccessToken);
+            var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID, user.RawToken);
             return await this.CalculateOrder(new HSOrderCalculatePayload()
             {
                 ConfigData = null,

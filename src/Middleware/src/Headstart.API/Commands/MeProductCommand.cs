@@ -11,6 +11,7 @@ using ordercloud.integrations.library;
 using OrderCloud.SDK;
 using Headstart.API.Commands.Crud;
 using Headstart.Models.Headstart;
+using OrderCloud.Catalyst;
 
 namespace Headstart.API.Commands
 {
@@ -48,11 +49,11 @@ namespace Headstart.API.Commands
 		}
 		public async Task<SuperHSMeProduct> Get(string id, VerifiedUserContext user)
 		{
-			var _product = _oc.Me.GetProductAsync<HSMeProduct>(id, user.AccessToken);
-			var _specs = _oc.Me.ListSpecsAsync(id, null, null, user.AccessToken);
+			var _product = _oc.Me.GetProductAsync<HSMeProduct>(id, user.RawToken);
+			var _specs = _oc.Me.ListSpecsAsync(id, null, null, user.RawToken);
 			var _variants = _oc.Products.ListVariantsAsync<HSVariant>(id, null, null, null, 1, 100, null);
-			var _images = _hsProductCommand.GetProductImages(id, user.AccessToken);
-			var _attachments = _hsProductCommand.GetProductAttachments(id, user.AccessToken);
+			var _images = _hsProductCommand.GetProductImages(id, user.RawToken);
+			var _attachments = _hsProductCommand.GetProductAttachments(id, user.RawToken);
 			var unconvertedSuperHsProduct = new SuperHSMeProduct 
 			{
 				Product = await _product,
@@ -68,7 +69,7 @@ namespace Headstart.API.Commands
 		private async Task<SuperHSMeProduct> ApplyBuyerPricing(SuperHSMeProduct superHsProduct, VerifiedUserContext user)
 		{
 			var defaultMarkupMultiplierRequest = GetDefaultMarkupMultiplier(user);
-			var exchangeRatesRequest = GetExchangeRatesForUser(user.AccessToken);
+			var exchangeRatesRequest = GetExchangeRatesForUser(user.RawToken);
 			await Task.WhenAll(defaultMarkupMultiplierRequest, exchangeRatesRequest);
 
 			var defaultMarkupMultiplier = await defaultMarkupMultiplierRequest;
@@ -86,7 +87,7 @@ namespace Headstart.API.Commands
 		public async Task<HSMeKitProduct> ApplyBuyerPricing(HSMeKitProduct kitProduct, VerifiedUserContext user)
 		{
 			var defaultMarkupMultiplierRequest = GetDefaultMarkupMultiplier(user);
-			var exchangeRatesRequest = GetExchangeRatesForUser(user.AccessToken);
+			var exchangeRatesRequest = GetExchangeRatesForUser(user.RawToken);
 			await Task.WhenAll(defaultMarkupMultiplierRequest, exchangeRatesRequest);
 
 			var defaultMarkupMultiplier = await defaultMarkupMultiplierRequest;
@@ -126,10 +127,10 @@ namespace Headstart.API.Commands
 			var searchText = args.Search ?? "";
 			var searchFields = args.Search!=null ? "ID,Name,Description,xp.Facets.supplier" : "";
 			var sortBy = args.SortBy.FirstOrDefault();
-			var meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: args.ToFilterString(), page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.ExactPhrasePrefix, sortBy: sortBy,  accessToken: user.AccessToken);
+			var meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: args.ToFilterString(), page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.ExactPhrasePrefix, sortBy: sortBy,  accessToken: user.RawToken);
 			if(!(bool)(meProducts?.Items?.Any()))
             {
-				meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: args.ToFilterString(), page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.AnyTerm, sortBy: sortBy, accessToken: user.AccessToken);
+				meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: args.ToFilterString(), page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.AnyTerm, sortBy: sortBy, accessToken: user.RawToken);
 				if (!(bool)(meProducts?.Items?.Any()))
                 {
 					//if no products after retry search, avoid making extra calls for pricing details
@@ -138,7 +139,7 @@ namespace Headstart.API.Commands
 			}
 
 			var defaultMarkupMultiplierRequest = GetDefaultMarkupMultiplier(user);
-			var exchangeRatesRequest = GetExchangeRatesForUser(user.AccessToken);
+			var exchangeRatesRequest = GetExchangeRatesForUser(user.RawToken);
 			await Task.WhenAll(defaultMarkupMultiplierRequest, exchangeRatesRequest);
 			var defaultMarkupMultiplier = await defaultMarkupMultiplierRequest;
 			var exchangeRates = await exchangeRatesRequest;
@@ -198,7 +199,7 @@ namespace Headstart.API.Commands
 
 		private async Task<decimal> GetDefaultMarkupMultiplier(VerifiedUserContext user)
 		{
-			var buyer = await _cache.GetOrAddAsync($"buyer_{user.BuyerID}", () => _hsBuyerCommand.Get(user.BuyerID), TimeSpan.FromHours(1));
+			var buyer = await _cache.GetOrAddAsync($"buyer_{user.User.Buyer.ID}", () => _hsBuyerCommand.Get(user.User.Buyer.ID), TimeSpan.FromHours(1));
 
 			// must convert markup to decimal before division to prevent rouding error
 			var markupPercent = (decimal)buyer.Markup.Percent / 100;

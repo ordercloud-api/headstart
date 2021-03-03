@@ -10,6 +10,7 @@ using ordercloud.integrations.library;
 using AutoFixture;
 using Flurl.Http.Configuration;
 using LazyCache.Mocks;
+using OrderCloud.Catalyst;
 
 namespace exchangerates.tests
 {
@@ -89,8 +90,8 @@ namespace exchangerates.tests
                 {
                     new ListFilter()
                     {
-                        Name = "Symbol",
-                        Values = new List<ListFilterValue>()
+                        PropertyName = "Symbol",
+                        FilterValues = new List<ListFilterValue>()
                         {
                             new ListFilterValue() { Operator = ListFilterOperator.Equal, Term = "CAD" },
                             new ListFilterValue() { Operator = ListFilterOperator.Equal, Term = "USD" }

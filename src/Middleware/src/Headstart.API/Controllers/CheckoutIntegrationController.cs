@@ -5,10 +5,11 @@ using OrderCloud.SDK;
 using ordercloud.integrations.library;
 using Headstart.API.Controllers;
 using Headstart.API.Commands;
+using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
-	public class CheckoutIntegrationController: BaseController
+	public class CheckoutIntegrationController: HeadstartController
 	{
 		private readonly ICheckoutIntegrationCommand _checkoutIntegrationCommand;
 		private readonly IPostSubmitCommand _postSubmitCommand;
@@ -39,7 +40,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, OrderCloudIntegrationsAuth(ApiRole.IntegrationEventAdmin)]
         public async Task<OrderCalculateResponse> CalculateOrder(string orderID)
         {
-            var orderCalculationResponse = await _checkoutIntegrationCommand.CalculateOrder(orderID, this.VerifiedUserContext);
+            var orderCalculationResponse = await _checkoutIntegrationCommand.CalculateOrder(orderID, Context);
             return orderCalculationResponse;
         }
 

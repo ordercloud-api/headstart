@@ -12,11 +12,11 @@ using Headstart.Models.Headstart;
 using ordercloud.integrations.avalara;
 using ordercloud.integrations.library;
 using Headstart.Models.Extended;
-using ordercloud.integrations.library.helpers;
 using Headstart.Common.Constants;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Common;
 using Headstart.API.Commands.Zoho;
+using OrderCloud.Catalyst;
 
 namespace Headstart.API.Commands
 {
@@ -234,7 +234,7 @@ namespace Headstart.API.Commands
                         Success = true
                 };
             }
-            catch (OrderCloudIntegrationException integrationEx)
+            catch (CatalystBaseException integrationEx)
             {
                 return new ProcessResultAction()
                 {
@@ -280,7 +280,7 @@ namespace Headstart.API.Commands
                     await func
                 );
             }
-            catch (OrderCloudIntegrationException integrationEx)
+            catch (CatalystBaseException integrationEx)
             {
                 return new Tuple<ProcessResultAction, T>(new ProcessResultAction()
                 {
@@ -346,7 +346,7 @@ namespace Headstart.API.Commands
         {
             var updatedSupplierOrders = new List<HSOrder>();
             var supplierIDs = new List<string>();
-            var lineItems = await ListAllAsync.List((page) => _oc.LineItems.ListAsync(OrderDirection.Incoming, buyerOrder.Order.ID, page: page, pageSize: 100));
+            var lineItems = await _oc.LineItems.ListAllAsync(OrderDirection.Incoming, buyerOrder.Order.ID);
             var shipFromAddressIDs = lineItems.DistinctBy(li => li.ShipFromAddressID).Select(li => li.ShipFromAddressID).ToList();
 
             foreach (var supplierOrder in supplierOrders)

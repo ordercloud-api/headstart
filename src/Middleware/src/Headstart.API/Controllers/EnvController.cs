@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Headstart.Common.Controllers
 {
     [Route("env")]
-    public class EnvController : BaseController
+    public class EnvController : HeadstartController
     {
         public EnvController(AppSettings settings) : base(settings)
         {

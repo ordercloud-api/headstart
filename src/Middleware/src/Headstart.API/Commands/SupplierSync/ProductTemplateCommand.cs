@@ -13,6 +13,7 @@ using Npoi.Mapper;
 using ordercloud.integrations.easypost;
 using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 using IPartial = ordercloud.integrations.library.IPartial;
 

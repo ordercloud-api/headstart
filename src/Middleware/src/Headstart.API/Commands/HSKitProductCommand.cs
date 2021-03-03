@@ -7,8 +7,7 @@ using Headstart.Common.Services.CMS;
 using Headstart.Common.Services.CMS.Models;
 using Headstart.Models;
 using Headstart.Models.Headstart;
-using ordercloud.integrations.library;
-using ordercloud.integrations.library.helpers;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
 
@@ -75,10 +74,10 @@ namespace Headstart.API.Commands.Crud
         }
         public async Task<HSMeKitProduct> GetMeKit(string id, VerifiedUserContext user)
         {
-            var _product = await _oc.Me.GetProductAsync<HSMeProduct>(id, user.AccessToken);
-            var _images = GetProductImages(id, user.AccessToken);
-            var _attachments = GetProductAttachments(id, user.AccessToken);
-            var _productAssignments = await _cms.Documents.Get<HSMeKitProductAssignment>("HSKitProductAssignment", _product.ID, user.AccessToken);
+            var _product = await _oc.Me.GetProductAsync<HSMeProduct>(id, user.RawToken);
+            var _images = GetProductImages(id, user.RawToken);
+            var _attachments = GetProductAttachments(id, user.RawToken);
+            var _productAssignments = await _cms.Documents.Get<HSMeKitProductAssignment>("HSKitProductAssignment", _product.ID, user.RawToken);
             var meKitProduct = new HSMeKitProduct
             {
                 ID = _product.ID,
@@ -86,7 +85,7 @@ namespace Headstart.API.Commands.Crud
                 Product = _product,
                 Images = await _images,
                 Attachments = await _attachments,
-                ProductAssignments = await _getMeKitDetails(_productAssignments.Doc, user.AccessToken)
+                ProductAssignments = await _getMeKitDetails(_productAssignments.Doc, user.RawToken)
             };
             return await _meProductCommand.ApplyBuyerPricing(meKitProduct, user);
         }
@@ -164,8 +163,8 @@ namespace Headstart.API.Commands.Crud
                 try
                 {
                     var productRequest = _oc.Products.GetAsync<HSProduct>(p.ID);
-                    var specListRequest = ListAllAsync.List((page) => _oc.Products.ListSpecsAsync(p.ID, page: page, pageSize: 100));
-                    var variantListRequest = ListAllAsync.List((page) => _oc.Products.ListVariantsAsync(p.ID, page: page, pageSize: 100));
+                    var specListRequest = _oc.Products.ListAllSpecsAsync(p.ID);
+                    var variantListRequest = _oc.Products.ListAllVariantsAsync(p.ID);
                     await Task.WhenAll(specListRequest, variantListRequest);
 
                     p.Product = await productRequest;
@@ -193,8 +192,8 @@ namespace Headstart.API.Commands.Crud
                 try
                 {
                     var productRequest = _oc.Me.GetProductAsync<HSMeProduct>(p.ID, token);
-                    var specListRequest = ListAllAsync.List((page) => _oc.Products.ListSpecsAsync(p.ID, page: page, pageSize: 100));
-                    var variantListRequest = ListAllAsync.List((page) => _oc.Products.ListVariantsAsync(p.ID, page: page, pageSize: 100));
+                    var specListRequest = _oc.Products.ListAllSpecsAsync(p.ID);
+                    var variantListRequest = _oc.Products.ListAllVariantsAsync(p.ID);
                     await Task.WhenAll(specListRequest, variantListRequest);
 
                     var product = await productRequest;

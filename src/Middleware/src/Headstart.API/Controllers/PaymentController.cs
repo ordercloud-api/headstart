@@ -14,7 +14,7 @@ namespace Headstart.Common.Controllers
     [DocComments("\"Headstart Orders\" for handling payment commands in Headstart")]
     [HSSection.Headstart(ListOrder = 2)]
     [Route("payments")]
-    public class PaymentController : BaseController
+    public class PaymentController : HeadstartController
     {
 
         private readonly IPaymentCommand _command;
@@ -30,7 +30,7 @@ namespace Headstart.Common.Controllers
         [HttpPut, Route("{orderID}/update"), OrderCloudIntegrationsAuth(ApiRole.Shopper)]
         public async Task<IList<HSPayment>> SavePayments(string orderID, [FromBody] PaymentUpdateRequest request)
         {
-            return await _command.SavePayments(orderID, request.Payments, VerifiedUserContext.AccessToken);
+            return await _command.SavePayments(orderID, request.Payments, Context.RawToken);
         }
     }
 }

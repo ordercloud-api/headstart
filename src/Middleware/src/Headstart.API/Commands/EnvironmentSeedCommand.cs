@@ -9,11 +9,11 @@ using Headstart.Models.Headstart;
 using ordercloud.integrations.library;
 using OrderCloud.SDK;
 using System.IO;
-using ordercloud.integrations.library.helpers;
 using Headstart.Common.Services;
 using Headstart.Common;
 using ordercloud.integrations.exchangerates;
 using Headstart.Common.Models;
+using OrderCloud.Catalyst;
 
 namespace Headstart.API.Commands
 {
@@ -322,7 +322,7 @@ namespace Headstart.API.Commands
 
         private async Task<ApiClientIDs> GetApiClients(string token)
         {
-            var list = await ListAllAsync.List(page => _oc.ApiClients.ListAsync(page: page, pageSize: 100, accessToken: token));
+            var list = await _oc.ApiClients.ListAllAsync(accessToken: token);
             var appNames = list.Select(x => x.AppName);
             var adminUIApiClient = list.First(a => a.AppName == _sellerApiClientName);
             var buyerUIApiClient = list.First(a => a.AppName == _buyerApiClientName);
@@ -339,7 +339,7 @@ namespace Headstart.API.Commands
 
         private async Task<string[]> GetStoreFrontClientIDs(string token)
         {
-            var list = await ListAllAsync.List(page => _oc.ApiClients.ListAsync(page: page, pageSize: 100, filters: new { AppName = "Storefront - *" }, accessToken: token));
+            var list = await _oc.ApiClients.ListAllAsync(filters: new { AppName = "Storefront - *" }, accessToken: token);
             return list.Select(client => client.ID).ToArray();
         }
 
@@ -397,7 +397,7 @@ namespace Headstart.API.Commands
                 RefreshTokenDuration = 43200
             };
 
-            var existingClients = await ListAllAsync.List(page => _oc.ApiClients.ListAsync(page: page, pageSize: 100, accessToken: token));
+            var existingClients = await _oc.ApiClients.ListAllAsync(accessToken: token);
 
             var integrationsClientRequest = GetClientRequest(existingClients, integrationsClient, token);
             var sellerClientRequest = GetClientRequest(existingClients, sellerClient, token);
@@ -491,7 +491,7 @@ namespace Headstart.API.Commands
 
         private async Task ShutOffSupplierEmailsAsync(string token)
         {
-            var allSuppliers = await ListAllAsync.List(page => _oc.Suppliers.ListAsync<HSSupplier>(page: page, pageSize: 100, accessToken: token));
+            var allSuppliers = await _oc.Suppliers.ListAllAsync<HSSupplier>(accessToken: token);
             await Throttler.RunAsync(allSuppliers, 500, 20, supplier =>
                 _oc.Suppliers.PatchAsync(supplier.ID, new PartialSupplier { xp = new { NotificationRcpts = new string[] { } } }, token));
         }
@@ -520,7 +520,7 @@ namespace Headstart.API.Commands
 
         public async Task DeleteAllMessageSenders(string token)
         {
-            var messageSenders = await ListAllAsync.List(page => _oc.MessageSenders.ListAsync(page: page, pageSize: 100, accessToken: token));
+            var messageSenders = await _oc.MessageSenders.ListAllAsync(accessToken: token);
             await Throttler.RunAsync(messageSenders, 500, 20, messageSender =>
                 _oc.MessageSenders.DeleteAsync(messageSender.ID, accessToken: token));
         }
@@ -528,11 +528,11 @@ namespace Headstart.API.Commands
         public async Task DeleteAllIntegrationEvents(string token)
         {
             // can't delete integration event if its referenced by an api client so first patch it to null
-            var apiClientsWithIntegrationEvent = await ListAllAsync.List(page => _oc.ApiClients.ListAsync(page: page, pageSize: 100, filters: new { OrderCheckoutIntegrationEventID = "*" }, accessToken: token));
+            var apiClientsWithIntegrationEvent = await _oc.ApiClients.ListAllAsync(filters: new { OrderCheckoutIntegrationEventID = "*" }, accessToken: token);
             await Throttler.RunAsync(apiClientsWithIntegrationEvent, 500, 20, apiClient =>
                 _oc.ApiClients.PatchAsync(apiClient.ID, new PartialApiClient { OrderCheckoutIntegrationEventID = null }, accessToken: token));
 
-            var integrationEvents = await ListAllAsync.List(page => _oc.IntegrationEvents.ListAsync(page: page, pageSize: 100, accessToken: token));
+            var integrationEvents = await _oc.IntegrationEvents.ListAllAsync(accessToken: token);
             await Throttler.RunAsync(integrationEvents, 500, 20, integrationEvent =>
                 _oc.IntegrationEvents.DeleteAsync(integrationEvent.ID, accessToken: token));
         }

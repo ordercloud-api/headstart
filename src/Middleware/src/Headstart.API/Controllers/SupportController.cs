@@ -16,7 +16,7 @@ namespace Headstart.Common.Controllers
 {
     [DocIgnore]
     [Route("support")]
-    public class SupportController : BaseController
+    public class SupportController : HeadstartController
     {
         private static ICheckoutIntegrationCommand _checkoutIntegrationCommand;
         private static IPostSubmitCommand _postSubmitCommand;
@@ -50,7 +50,7 @@ namespace Headstart.Common.Controllers
         [HttpGet, OrderCloudIntegrationsAuth(ApiRole.IntegrationEventAdmin)]
         public async Task<OrderCalculateResponse> CalculateOrder(string orderID)
         {
-            var orderCalculationResponse = await _checkoutIntegrationCommand.CalculateOrder(orderID, this.VerifiedUserContext);
+            var orderCalculationResponse = await _checkoutIntegrationCommand.CalculateOrder(orderID, Context);
             return orderCalculationResponse;
         }
 
@@ -64,7 +64,7 @@ namespace Headstart.Common.Controllers
         [HttpGet, Route("shipping/validate/{orderID}"), OrderCloudIntegrationsAuth(ApiRole.IntegrationEventAdmin)]
         public async Task<OrderSubmitResponse> RetryShippingValidate(string orderID)
         {
-            var retry = await _postSubmitCommand.HandleShippingValidate(orderID, this.VerifiedUserContext);
+            var retry = await _postSubmitCommand.HandleShippingValidate(orderID, Context);
             return retry;
         }
 

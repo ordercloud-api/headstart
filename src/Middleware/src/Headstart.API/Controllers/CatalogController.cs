@@ -6,13 +6,14 @@ using Headstart.Models.Attributes;
 using ordercloud.integrations.library;
 using Headstart.API.Controllers;
 using Headstart.API.Commands.Crud;
+using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
 	[DocComments("\"Headstart Catalogs\" for product groupings and visibility in Headstart")]
 	[HSSection.Headstart(ListOrder = 2)]
 	[Route("buyers")]
-	public class CatalogController : BaseController
+	public class CatalogController : HeadstartController
 	{
 
 		private readonly IHSCatalogCommand _command;
@@ -25,49 +26,49 @@ namespace Headstart.Common.Controllers
 		[HttpGet, Route("{buyerID}/catalogs"), OrderCloudIntegrationsAuth(ApiRole.ProductAdmin, ApiRole.ProductReader)]
 		public async Task<ListPage<HSCatalog>> List(ListArgs<HSCatalog> args, string buyerID)
 		{
-			return await _command.List(buyerID, args, VerifiedUserContext);
+			return await _command.List(buyerID, args, Context);
 		}
 
 		[DocName("GET a single Catalog")]
 		[HttpGet, Route("{buyerID}/catalogs/{catalogID}"), OrderCloudIntegrationsAuth(ApiRole.ProductAdmin, ApiRole.ProductReader)]
 		public async Task<HSCatalog> Get(string buyerID, string catalogID)
 		{
-			return await _command.Get(buyerID, catalogID, VerifiedUserContext);
+			return await _command.Get(buyerID, catalogID, Context);
 		}
 
 		[DocName("Create a new Catalog")]
 		[HttpPost, Route("{buyerID}/catalogs"), OrderCloudIntegrationsAuth(ApiRole.ProductAdmin)]
 		public async Task<HSCatalog> Post([FromBody] HSCatalog obj, string buyerID)
 		{
-			return await _command.Post(buyerID, obj, VerifiedUserContext);
+			return await _command.Post(buyerID, obj, Context);
 		}
 
 		[DocName("Get a list of catalog location assignments")]
 		[HttpGet, Route("{buyerID}/catalogs/assignments"), OrderCloudIntegrationsAuth(ApiRole.ProductAdmin)]
 		public async Task<ListPage<HSCatalogAssignment>> GetAssignments(string buyerID, [FromQuery(Name = "catalogID")] string catalogID = "", [FromQuery(Name = "locationID")] string locationID = "")
 		{
-			return await _command.GetAssignments(buyerID, locationID, VerifiedUserContext);
+			return await _command.GetAssignments(buyerID, locationID, Context);
 		}
 
 		[DocName("Set catalog assignments for a location")]
 		[HttpPost, Route("{buyerID}/{locationID}/catalogs/assignments"), OrderCloudIntegrationsAuth(ApiRole.UserGroupAdmin)]
 		public async Task SetAssignments(string buyerID, string locationID, [FromBody] HSCatalogAssignmentRequest assignmentRequest)
 		{
-			await _command.SetAssignments(buyerID, locationID, assignmentRequest.CatalogIDs, VerifiedUserContext.AccessToken);
+			await _command.SetAssignments(buyerID, locationID, assignmentRequest.CatalogIDs, Context.RawToken);
 		}
 
 		[DocName("PUT Catalog")]
 		[HttpPut, Route("{buyerID}/catalogs/{catalogID}"), OrderCloudIntegrationsAuth(ApiRole.ProductAdmin)]
 		public async Task<HSCatalog> Put([FromBody] HSCatalog obj, string buyerID, string catalogID)
 		{
-			return await _command.Put(buyerID, catalogID, obj, this.VerifiedUserContext);
+			return await _command.Put(buyerID, catalogID, obj, Context);
 		}
 
 		[DocName("DELETE Catalog")]
 		[HttpDelete, Route("{buyerID}/catalogs/{catalogID}"), OrderCloudIntegrationsAuth(ApiRole.ProductAdmin)]
 		public async Task Delete(string buyerID, string catalogID)
 		{
-			await _command.Delete(buyerID, catalogID, VerifiedUserContext);
+			await _command.Delete(buyerID, catalogID, Context);
 		}
 
         [DocName("SYNC User Catalogs Assignments")]

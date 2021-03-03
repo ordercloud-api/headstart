@@ -4,10 +4,11 @@ using Headstart.Models.Misc;
 using ordercloud.integrations.library;
 using Headstart.API.Controllers;
 using Headstart.API.Commands;
+using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
-    public class EnvironmentSeedController : BaseController
+    public class EnvironmentSeedController : HeadstartController
     {
         private readonly IEnvironmentSeedCommand _command;
 

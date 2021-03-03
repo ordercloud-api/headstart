@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ordercloud.integrations.library;
 using System.Linq;
+using OrderCloud.Catalyst;
 
 namespace ordercloud.integrations.avalara
 {
@@ -120,12 +121,7 @@ namespace ordercloud.integrations.avalara
 				}
 				catch (AvaTaxError e)
 				{
-					throw new OrderCloudIntegrationException(new ApiError
-					{
-						ErrorCode = "AvalaraTaxError",
-						Message = e.error.error.message,
-						Data = e.error.error
-					});
+					throw new CatalystBaseException("AvalaraTaxError", 400, e.error.error.message, e.error.error);
 				}
 			} else
             {

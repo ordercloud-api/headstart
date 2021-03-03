@@ -7,13 +7,14 @@ using OrderCloud.SDK;
 using System.Collections.Generic;
 using Headstart.API.Controllers;
 using Headstart.API.Commands.Crud;
+using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
 	[DocComments("\"Products\" represents Products for Headstart")]
 	[HSSection.Headstart(ListOrder = 3)]
 	[Route("products")]
-	public class ProductController : BaseController
+	public class ProductController : HeadstartController
 	{
 
 		private readonly IHSProductCommand _command;
@@ -26,35 +27,35 @@ namespace Headstart.Common.Controllers
 		[HttpGet, Route("{id}"), OrderCloudIntegrationsAuth(ApiRole.ProductAdmin, ApiRole.ProductReader)]
 		public async Task<SuperHSProduct> Get(string id)
 		{
-			return await _command.Get(id, VerifiedUserContext.AccessToken);
+			return await _command.Get(id, Context.RawToken);
 		}
 
 		[DocName("LIST Super Product")]
 		[HttpGet, OrderCloudIntegrationsAuth(ApiRole.ProductAdmin, ApiRole.ProductReader)]
 		public async Task<ListPage<SuperHSProduct>> List(ListArgs<HSProduct> args)
 		{
-			return await _command.List(args, VerifiedUserContext.AccessToken);
+			return await _command.List(args, Context.RawToken);
 		}
 
 		[DocName("POST Super Product")]
 		[HttpPost, OrderCloudIntegrationsAuth(ApiRole.ProductAdmin)]
 		public async Task<SuperHSProduct> Post([FromBody] SuperHSProduct obj)
 		{
-			return await _command.Post(obj, VerifiedUserContext);
+			return await _command.Post(obj, Context);
 		}
 
 		[DocName("PUT Super Product")]
 		[HttpPut, Route("{id}"), OrderCloudIntegrationsAuth(ApiRole.ProductAdmin)]
 		public async Task<SuperHSProduct> Put([FromBody] SuperHSProduct obj, string id)
 		{
-			return await _command.Put(id, obj, this.VerifiedUserContext.AccessToken);
+			return await _command.Put(id, obj, Context.RawToken);
 		}
 
 		[DocName("DELETE Product")]
 		[HttpDelete, Route("{id}"), OrderCloudIntegrationsAuth(ApiRole.ProductAdmin)]
 		public async Task Delete(string id)
 		{
-			await _command.Delete(id, VerifiedUserContext.AccessToken);
+			await _command.Delete(id, Context.RawToken);
 		}
 
 
@@ -63,7 +64,7 @@ namespace Headstart.Common.Controllers
 		[HttpGet, Route("{id}/pricingoverride/buyer/{buyerID}"), OrderCloudIntegrationsAuth(ApiRole.ProductAdmin)]
 		public async Task<HSPriceSchedule> GetPricingOverride(string id, string buyerID)
 		{
-			return await _command.GetPricingOverride(id, buyerID, VerifiedUserContext.AccessToken);
+			return await _command.GetPricingOverride(id, buyerID, Context.RawToken);
 		}
 
 		// todo add auth for seller user
@@ -71,7 +72,7 @@ namespace Headstart.Common.Controllers
 		[HttpPost, Route("{id}/pricingoverride/buyer/{buyerID}"), OrderCloudIntegrationsAuth(ApiRole.ProductAdmin)]
 		public async Task<HSPriceSchedule> CreatePricingOverride(string id, string buyerID, [FromBody] HSPriceSchedule priceSchedule)
 		{
-			return await _command.CreatePricingOverride(id, buyerID, priceSchedule, VerifiedUserContext.AccessToken);
+			return await _command.CreatePricingOverride(id, buyerID, priceSchedule, Context.RawToken);
 		}
 
 		// todo add auth for seller user
@@ -79,7 +80,7 @@ namespace Headstart.Common.Controllers
 		[HttpPut, Route("{id}/pricingoverride/buyer/{buyerID}"), OrderCloudIntegrationsAuth(ApiRole.ProductAdmin)]
 		public async Task<HSPriceSchedule> UpdatePricingOverride(string id, string buyerID, [FromBody] HSPriceSchedule priceSchedule)
 		{
-			return await _command.UpdatePricingOverride(id, buyerID, priceSchedule, VerifiedUserContext.AccessToken);
+			return await _command.UpdatePricingOverride(id, buyerID, priceSchedule, Context.RawToken);
 		}
 
 		// todo add auth for seller user
@@ -87,7 +88,7 @@ namespace Headstart.Common.Controllers
 		[HttpDelete, Route("{id}/pricingoverride/buyer/{buyerID}"), OrderCloudIntegrationsAuth(ApiRole.ProductAdmin)]
 		public async Task DeletePricingOverride(string id, string buyerID)
 		{
-			await _command.DeletePricingOverride(id, buyerID, VerifiedUserContext.AccessToken);
+			await _command.DeletePricingOverride(id, buyerID, Context.RawToken);
 		}
 
 		[DocName("PATCH Product filter option override")]
@@ -96,7 +97,7 @@ namespace Headstart.Common.Controllers
         {
 			IDictionary<string, object> facets = product.xp.Facets;
 			var supplierID = product.DefaultSupplierID;
-			return await _command.FilterOptionOverride(id, supplierID, facets, VerifiedUserContext);
+			return await _command.FilterOptionOverride(id, supplierID, facets, Context);
         }
 	}
 }

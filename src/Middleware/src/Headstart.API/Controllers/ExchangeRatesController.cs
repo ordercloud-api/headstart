@@ -7,6 +7,7 @@ using Headstart.Models.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Controllers
@@ -14,7 +15,7 @@ namespace Headstart.Common.Controllers
     [DocComments("\"Integration\" represents Currency Conversion Charts")]
     [HSSection.Integration(ListOrder = 4)]
     [Route("exchangerates")]
-    public class ExchangeRatesController : BaseController
+    public class ExchangeRatesController : HeadstartController
     {
         private readonly IExchangeRatesCommand _command;
 

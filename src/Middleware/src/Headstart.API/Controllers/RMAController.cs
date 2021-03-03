@@ -13,7 +13,7 @@ namespace Headstart.Common.Controllers
     [DocComments("\"Headstart RMAs\" for managing RMAs in the Headstart application")]
     [HSSection.Headstart(ListOrder = 12)]
     [Route("rma")]
-    public class RMAController : BaseController
+    public class RMAController : HeadstartController
     {
         private readonly IRMACommand _rmaCommand;
 
@@ -27,14 +27,14 @@ namespace Headstart.Common.Controllers
         [HttpPost, OrderCloudIntegrationsAuth(ApiRole.Shopper)]
         public async Task<RMA> GenerateRMA([FromBody] RMA rma)
         {
-            return await _rmaCommand.GenerateRMA(rma, VerifiedUserContext);
+            return await _rmaCommand.GenerateRMA(rma, Context);
         }
 
         [DocName("LIST Me Headstart RMAs")]
         [HttpPost, Route("list/me"), OrderCloudIntegrationsAuth(ApiRole.Shopper)]
         public async Task<CosmosListPage<RMA>> ListMeRMAs([FromBody] CosmosListOptions listOptions)
         {
-            return await _rmaCommand.ListMeRMAs(listOptions, VerifiedUserContext);
+            return await _rmaCommand.ListMeRMAs(listOptions, Context);
         }
 
         [DocName("LIST Buyer Headstart RMAs")]
@@ -42,7 +42,7 @@ namespace Headstart.Common.Controllers
         public async Task<CosmosListPage<RMA>> ListBuyerRMAs([FromBody] CosmosListOptions listOptions)
         {
             RequireOneOf(CustomRole.HSLocationViewAllOrders);
-            return await _rmaCommand.ListBuyerRMAs(listOptions, VerifiedUserContext);
+            return await _rmaCommand.ListBuyerRMAs(listOptions, Context);
         }
 
         // Seller/Supplier Routes (TO-DO)

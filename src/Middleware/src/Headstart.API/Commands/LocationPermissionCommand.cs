@@ -9,7 +9,7 @@ using Headstart.Models.Misc;
 using ordercloud.integrations.library;
 using Headstart.Common.Constants;
 using Azure.Core;
-using ordercloud.integrations.library.helpers;
+using OrderCloud.Catalyst;
 
 namespace Headstart.API.Commands
 {
@@ -111,7 +111,7 @@ namespace Headstart.API.Commands
 
         public async Task<bool> IsUserInAccessGroup(string locationID, string groupSuffix, VerifiedUserContext verifiedUser)
         {
-            var buyerID = verifiedUser.BuyerID;
+            var buyerID = verifiedUser.User.Buyer.ID;
             var userGroupID = $"{locationID}-{groupSuffix}";
             return await IsUserInUserGroup(buyerID, userGroupID, verifiedUser);
         }
@@ -129,8 +129,7 @@ namespace Headstart.API.Commands
                 userID
                 );
             var userGroups = new ListPage<HSLocationUserGroup>();
-            var assigned = args.Filters.FirstOrDefault(f => f.Name == "assigned").QueryParams.
-                              FirstOrDefault(q => q.Item1 == "assigned").Item2;
+            var assigned = args.Filters.FirstOrDefault(f => f.PropertyName == "assigned").FilterExpression;
 
             if (!bool.Parse(assigned))
             {
@@ -172,7 +171,7 @@ namespace Headstart.API.Commands
 
     private async Task<bool> IsUserInUserGroup(string buyerID, string userGroupID, VerifiedUserContext verifiedUser)
         {
-            var userGroupAssignmentForAccess = await _oc.UserGroups.ListUserAssignmentsAsync(buyerID, userGroupID, verifiedUser.UserID);
+            var userGroupAssignmentForAccess = await _oc.UserGroups.ListUserAssignmentsAsync(buyerID, userGroupID, verifiedUser.User.ID);
             return userGroupAssignmentForAccess.Items.Count > 0;
         }
 
@@ -180,22 +179,18 @@ namespace Headstart.API.Commands
         {
             if (userGroupType == "UserPermissions")
             {
-                return await ListAllAsync.List((page) => _oc.SupplierUserGroups.ListUserAssignmentsAsync(
+                return await  _oc.SupplierUserGroups.ListAllUserAssignmentsAsync(
                    parentID,
                    userID: userID,
-                   page: page,
-                   pageSize: 100,
-                   accessToken: verifiedUser.AccessToken
-                   ));
+                   accessToken: verifiedUser.RawToken
+                   );
             } else
             {
-                return await ListAllAsync.List((page) => _oc.UserGroups.ListUserAssignmentsAsync(
+                return await _oc.UserGroups.ListAllUserAssignmentsAsync(
                    parentID,
                    userID: userID,
-                   page: page,
-                   pageSize: 100,
-                   accessToken: verifiedUser.AccessToken
-                   ));
+                   accessToken: verifiedUser.RawToken
+                   );
             }
         }
 

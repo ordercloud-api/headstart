@@ -18,7 +18,7 @@ namespace Headstart.Common.Controllers
 
     [DocComments("\"Supplier Filter Config\" represents Supplier Category Configuration")]
     [HSSection.Headstart(ListOrder = 5)]
-    public class SupplierFilterConfigController : BaseController
+    public class SupplierFilterConfigController : HeadstartController
     {
         public SupplierFilterConfigController(AppSettings settings) : base(settings)
         {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Helpers
@@ -14,17 +15,17 @@ namespace Headstart.Common.Helpers
         public MultiTenantOCClient(VerifiedUserContext user) : base(
             new OrderCloudClientConfig()
             {
-                ApiUrl = user.ApiUrl,
-                AuthUrl = user.AuthUrl,
-                ClientId = user.ClientID,
+                ApiUrl = user.ParsedToken.ApiUrl,
+                AuthUrl = user.ParsedToken.AuthUrl,
+                ClientId = user.ParsedToken.ClientID,
                 Roles = new[] { ApiRole.FullAccess }
             }
         )
         {
             TokenResponse = new TokenResponse()
             {
-                AccessToken = user.AccessToken,
-                ExpiresUtc = user.AccessTokenExpiresUTC
+                AccessToken = user.RawToken,
+                ExpiresUtc = user.ParsedToken.ExpiresUTC
             };
         }
 

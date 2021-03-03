@@ -10,7 +10,7 @@ namespace Headstart.Common.Controllers.CardConnect
 {
     [DocComments("\"Integration\" represents ME Credit Card Payments for Headstart")]
     [HSSection.Integration(ListOrder = 2)]
-    public class MePaymentController : BaseController
+    public class MePaymentController : HeadstartController
     {
         private readonly ICreditCardCommand _card;
         private readonly AppSettings _settings;
@@ -32,13 +32,13 @@ namespace Headstart.Common.Controllers.CardConnect
             else
                 merchantID = _settings.CardConnectSettings.EurMerchantID;
                 
-            return await _card.AuthorizePayment(payment, VerifiedUserContext.AccessToken, merchantID);
+            return await _card.AuthorizePayment(payment, Context.RawToken, merchantID);
         }
     }
 
     [DocComments("\"Integration\" represents ME Credit Card Tokenization for Headstart")]
     [HSSection.Integration(ListOrder = 3)]
-    public class MeCreditCardAuthorizationController : BaseController
+    public class MeCreditCardAuthorizationController : HeadstartController
     {
         private readonly ICreditCardCommand _card;
         public MeCreditCardAuthorizationController(AppSettings settings, ICreditCardCommand card) : base(settings)
@@ -50,13 +50,13 @@ namespace Headstart.Common.Controllers.CardConnect
         [HttpPost, Route("me/creditcards"), OrderCloudIntegrationsAuth(ApiRole.MeCreditCardAdmin, ApiRole.CreditCardAdmin)]
         public async Task<BuyerCreditCard> MePost([FromBody] OrderCloudIntegrationsCreditCardToken card)
         {
-            return await _card.MeTokenizeAndSave(card, this.VerifiedUserContext);
+            return await _card.MeTokenizeAndSave(card, Context);
         }
     }
 
     [DocComments("\"Integration\" represents Credit Card Tokenization for Headstart")]
     [HSSection.Integration(ListOrder = 4)]
-    public class CreditCardController : BaseController
+    public class CreditCardController : HeadstartController
     {
         private readonly ICreditCardCommand _card;
         public CreditCardController(AppSettings settings, ICreditCardCommand card) : base(settings)
@@ -68,7 +68,7 @@ namespace Headstart.Common.Controllers.CardConnect
         [HttpPost, Route("buyers/{buyerID}/creditcards"), OrderCloudIntegrationsAuth(ApiRole.CreditCardAdmin)]
         public async Task<CreditCard> Post([FromBody] OrderCloudIntegrationsCreditCardToken card, string buyerID)
         {
-            return await _card.TokenizeAndSave(buyerID, card, VerifiedUserContext);
+            return await _card.TokenizeAndSave(buyerID, card, Context);
         }
     }
 }

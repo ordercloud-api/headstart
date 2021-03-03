@@ -13,7 +13,7 @@ namespace Headstart.Common.Controllers
     [DocComments("\"Headstart Shipments\" for making shipments in seller app")]
     [HSSection.Headstart(ListOrder = 2)]
     [Route("shipment")]
-    public class ShipmentController : BaseController
+    public class ShipmentController : HeadstartController
     {
         
         private readonly IShipmentCommand _command;
@@ -30,7 +30,7 @@ namespace Headstart.Common.Controllers
             // ocAuth is the token for the organization that is specified in the AppSettings
 
             // todo add auth to make sure suppliers are creating shipments for their own orders
-            return await _command.CreateShipment(superShipment, VerifiedUserContext.AccessToken);
+            return await _command.CreateShipment(superShipment, Context.RawToken);
         } 
 
         [DocName("POST Batch Shipment Update")]
@@ -38,7 +38,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, OrderCloudIntegrationsAuth(ApiRole.ShipmentAdmin)]
         public async Task<BatchProcessResult> UploadShipments([FromForm] FileUpload fileRequest)
         {
-            return  await _command.UploadShipments(fileRequest?.File, VerifiedUserContext);
+            return  await _command.UploadShipments(fileRequest?.File, Context);
         }
     }
 

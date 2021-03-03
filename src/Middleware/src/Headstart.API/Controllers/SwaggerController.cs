@@ -9,7 +9,7 @@ using ErrorCodes = Headstart.Models.ErrorCodes;
 namespace Headstart.Common.Controllers
 {
     [Route("swagger")]
-    public class SwaggerController : BaseController
+    public class SwaggerController : HeadstartController
     {
         private readonly AppSettings _settings;
 
@@ -22,7 +22,7 @@ namespace Headstart.Common.Controllers
         public async Task<JObject> Get()
         {
             var reference = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            var g = new OpenApiGenerator<BaseController, OrderCloudIntegrationsAuthAttribute>()
+            var g = new OpenApiGenerator<HeadstartController, OrderCloudIntegrationsAuthAttribute>()
                 .CollectMetaData(Path.Combine(reference, "reference.md"), ErrorCodes.All)
                 .DefineSpec(new SwaggerConfig()
                 {

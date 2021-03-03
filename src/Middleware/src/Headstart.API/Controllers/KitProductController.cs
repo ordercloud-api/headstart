@@ -13,7 +13,7 @@ namespace Headstart.Common.Controllers
     [DocComments("\"Kit Products\" represents Kit Products for Headstart")]
     [HSSection.Headstart(ListOrder = 3)]
     [Route("kitproducts")]
-    public class KitProductController : BaseController
+    public class KitProductController : HeadstartController
     {
         private readonly IHSKitProductCommand _command;
         public KitProductController(AppSettings settings, IHSKitProductCommand command) : base(settings)

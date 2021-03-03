@@ -34,13 +34,13 @@ namespace Headstart.Tests
             mockOrderCloudClient.Me.GetAsync().ReturnsForAnyArgs(user);
             var functionToken = new OrderCloudIntegrationsFunctionToken(Substitute.For<AppSettings>());
             var verifiedUser = await functionToken.Authorize(mockHttpRequest, new[] { ApiRole.OrderAdmin }, mockOrderCloudClient);
-            Assert.IsTrue(user.ID == verifiedUser.UserID);
+            Assert.IsTrue(user.ID == verifiedUser.User.ID);
             if (user.Supplier != null)
-                Assert.IsTrue(user.Supplier.ID == verifiedUser.SupplierID);
+                Assert.IsTrue(user.Supplier.ID == verifiedUser.User.Supplier.ID);
             if (user.Buyer != null)
-                Assert.IsTrue(user.Buyer.ID == verifiedUser.BuyerID);
-            Assert.IsTrue(user.Email == verifiedUser.Email);
-            Assert.IsTrue(user.Username == verifiedUser.Username);
+                Assert.IsTrue(user.Buyer.ID == verifiedUser.User.Buyer.ID);
+            Assert.IsTrue(user.Email == verifiedUser.User.Email);
+            Assert.IsTrue(user.Username == verifiedUser.User.Username);
         }
 
         [Test]

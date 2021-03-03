@@ -2,6 +2,7 @@ using System;
 using Headstart.Common;
 using Microsoft.AspNetCore.Hosting;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 
 namespace Headstart.API
 {
@@ -13,7 +14,7 @@ namespace Headstart.API
 			// Set this in your visual studio Env Variables.
 			var connectionString = Environment.GetEnvironmentVariable("APP_CONFIG_CONNECTION"); 
 
-			OrderCloudWebHostBuilder
+			CatalystWebHostBuilder
 				.CreateWebHostBuilder<Startup, AppSettings>(args, connectionString)
 				.Build()
 				.Run();
