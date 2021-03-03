@@ -481,7 +481,6 @@ export class ResourceTableComponent
   }
 
   navigateToSubResource(subResource: string) {
-    console.log("navigating")
     this.router.navigateByUrl('/' + this._ocService.primaryResourceLevel + 
     '/' + this.selectedParentResourceID + 
     '/' + subResource )
