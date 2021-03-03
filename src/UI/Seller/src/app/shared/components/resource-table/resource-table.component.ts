@@ -480,6 +480,11 @@ export class ResourceTableComponent
     )
   }
 
+  navigateToSubResource(subResource: string) {
+    this.router.navigateByUrl('/' + this._ocService.primaryResourceLevel + 
+    '/' + this.selectedParentResourceID + 
+    '/' + subResource )
+  }
   ngOnDestroy() {
     this.alive = false
   }
