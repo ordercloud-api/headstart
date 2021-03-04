@@ -49,8 +49,6 @@ export class BuyerCategoryEditComponent {
     this.resourceForm.patchValue({
       [field]: event.target.checked
     })
-    console.log(this.resourceForm)
-    debugger;
     this.updateCategory.emit(this.resourceForm)
   }
 
