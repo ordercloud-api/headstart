@@ -128,7 +128,10 @@ export class OrderStateService {
     } else if (ordersNeverSubmitted.Items.length) {
       this.order = ordersNeverSubmitted.Items[0]
     } else if (this.appConfig.anonymousShoppingEnabled) {
-      this.order = { ID: this.tokenHelper.getAnonymousOrderID() }
+      this.order = (await Orders.Create('Outgoing', 
+      { ID: this.tokenHelper.getAnonymousOrderID(),
+        ...this.DefaultOrder as Order }
+      )) as HSOrder
     } else {
       this.DefaultOrder.xp.Currency = this.currentUserService.get().Currency
       this.order = (await Orders.Create(

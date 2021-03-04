@@ -81,7 +81,7 @@
         </div>
         <!-- /Mobile Profile Menu Items -->
       </ul>
-      <div class="form-inline" *ngIf="user.IsAnonymous">
+      <div class="form-inline" *ngIf="isAnonymous">
         <a
           class="btn btn-sm btn-outline-dark"
           (click)="isCollapsed = !isCollapsed; context.router.toLogin()"
@@ -99,7 +99,7 @@
       <!-- Order -->
       <ul
         class="navbar-nav"
-        *ngIf="!user.IsAnonymous && screenSize !== 'xs' && screenSize !== 'sm'"
+        *ngIf="!isAnonymous && screenSize !== 'xs' && screenSize !== 'sm'"
       >
         <li
           class="nav-item dropdown cursor-pointer"
@@ -193,7 +193,7 @@
       <!-- Profile -->
       <ul
         class="navbar-nav"
-        *ngIf="!user.IsAnonymous && screenSize !== 'xs' && screenSize !== 'sm'"
+        *ngIf="!isAnonymous && screenSize !== 'xs' && screenSize !== 'sm'"
       >
         <li
           class="nav-item dropdown cursor-pointer"

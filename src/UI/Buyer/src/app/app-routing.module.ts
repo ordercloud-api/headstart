@@ -97,17 +97,17 @@ const HeadstartRoutes: Routes = [
       },
       {
         path: 'orders',
-        canActivate: [IsProfiledUserGuard],
         children: [
-          { path: 'approve/:orderID', component: OrderDetailWrapperComponent },
-          { path: 'approve', component: OrderHistoryWrapperComponent },
+          { path: 'approve/:orderID', component: OrderDetailWrapperComponent, canActivate: [IsProfiledUserGuard] },
+          { path: 'approve', component: OrderHistoryWrapperComponent, canActivate: [IsProfiledUserGuard] },
           {
             path: 'location/:locationFilter',
             component: OrderDetailWrapperComponent,
+            canActivate: [IsProfiledUserGuard]
           },
-          { path: 'location', component: OrderHistoryWrapperComponent },
-          { path: ':orderID', component: OrderDetailWrapperComponent },
-          { path: '', component: OrderHistoryWrapperComponent },
+          { path: 'location', component: OrderHistoryWrapperComponent, canActivate: [IsProfiledUserGuard] },
+          { path: ':orderID', component: OrderDetailWrapperComponent, canActivate: [HasTokenGuard] },
+          { path: '', component: OrderHistoryWrapperComponent, canActivate: [IsProfiledUserGuard]},
         ],
       },
       { path: ':staticPageUrl', component: StaticPageWrapperComponent },
