@@ -26,14 +26,15 @@ namespace Headstart.API.Commands
         public static string SellerUserName = "Default_Admin";
         public static string FullAccessSecurityProfile = "DefaultContext";
         public static string DefaultBuyerName = "Default HeadStart Buyer";
+        public static string DefaultLocationID = "default-buyerLocation";
         public static string AllowedSecretChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
         public static HSUser AnonymousBuyer()
         {
             return new HSUser()
             {
-                ID = "default-headstart-buyer",
-                Username = "default-headstart-buyer",
+                ID = "default-buyer-user",
+                Username = "default-buyer-user",
                 FirstName = "Default",
                 LastName = "Buyer",
                 Active = true,
@@ -62,6 +63,7 @@ namespace Headstart.API.Commands
         {
             return new HSBuyer
             {
+                ID = "default-buyer",
                 Name = DefaultBuyerName,
                 Active = true,
                 xp = new BuyerXp
@@ -136,7 +138,9 @@ namespace Headstart.API.Commands
                 AllowAnySupplier = false,
                 AllowSeller = false,
                 AccessTokenDuration = 600,
-                RefreshTokenDuration = 43200
+                RefreshTokenDuration = 43200,
+                DefaultContextUserName = AnonymousBuyer().ID,
+                IsAnonBuyer = true
             };
         }
 
@@ -150,13 +154,15 @@ namespace Headstart.API.Commands
                 AllowAnySupplier = false,
                 AllowSeller = false,
                 AccessTokenDuration = 600,
-                RefreshTokenDuration = 43200
+                RefreshTokenDuration = 43200,
+                DefaultContextUserName = AnonymousBuyer().ID,
+                IsAnonBuyer = true
             };
         }
         #endregion
 
         #region IntegrationEvents
-        public static IntegrationEvent CheckoutEvent(string url, string hashKey)
+        public static IntegrationEvent CheckoutEvent(AppSettings settings)
         {
             return new IntegrationEvent()
             {
@@ -164,8 +170,8 @@ namespace Headstart.API.Commands
                 ID = "HeadStartCheckout",
                 EventType = IntegrationEventType.OrderCheckout,
                 Name = "HeadStart Checkout",
-                CustomImplementationUrl = url,
-                HashKey = hashKey,
+                CustomImplementationUrl = settings.EnvironmentSettings.MiddlewareBaseUrl,
+                HashKey = settings.OrderCloudSettings.WebhookHashKey,
                 ConfigData = new
                 {
                     ExcludePOProductsFromShipping = false,
@@ -174,7 +180,7 @@ namespace Headstart.API.Commands
             };
         }
 
-        public static IntegrationEvent LocalCheckoutEvent(string webhookHashKey)
+        public static IntegrationEvent LocalCheckoutEvent(AppSettings settings)
         {
             return new IntegrationEvent()
             {
@@ -183,7 +189,7 @@ namespace Headstart.API.Commands
                 EventType = IntegrationEventType.OrderCheckout,
                 CustomImplementationUrl = "https://marketplaceteam.ngrok.io", // local webhook url
                 Name = "HeadStart Checkout LOCAL",
-                HashKey = webhookHashKey,
+                HashKey = settings.OrderCloudSettings.WebhookHashKey,
                 ConfigData = new
                 {
                     ExcludePOProductsFromShipping = false,
@@ -194,7 +200,7 @@ namespace Headstart.API.Commands
         #endregion
 
         #region MessageSenders
-        public static MessageSender BuyerEmails(string url, string webhookHashKey)
+        public static MessageSender BuyerEmails(AppSettings settings)
         {
             return new MessageSender()
             {
@@ -211,12 +217,12 @@ namespace Headstart.API.Commands
                         // MessageType.OrderSubmittedForYourApprovalHasBeenDeclined, // too noisy
                         // MessageType.ShipmentCreated this is currently being triggered in-app possibly move to message senders
                     },
-                URL = url,
-                SharedKey = webhookHashKey
+                URL = settings.EnvironmentSettings.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
+                SharedKey = settings.OrderCloudSettings.WebhookHashKey
             };
         }
 
-        public static MessageSender SellerEmails(string url, string webhookHashKey)
+        public static MessageSender SellerEmails(AppSettings settings)
         {
             return new MessageSender()
             {
@@ -225,12 +231,12 @@ namespace Headstart.API.Commands
                 MessageTypes = new[] {
                         MessageType.ForgottenPassword,
                     },
-                URL = url,
-                SharedKey = webhookHashKey
+                URL = settings.EnvironmentSettings.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
+                SharedKey = settings.OrderCloudSettings.WebhookHashKey
             };
         }
 
-        public static MessageSender SuplierEmails(string url, string webhookHashKey)
+        public static MessageSender SuplierEmails(AppSettings settings)
         {
             return new MessageSender()
             {
@@ -239,8 +245,8 @@ namespace Headstart.API.Commands
                 MessageTypes = new[] {
                         MessageType.ForgottenPassword,
                     },
-                URL = url,
-                SharedKey = webhookHashKey
+                URL = settings.EnvironmentSettings.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
+                SharedKey = settings.OrderCloudSettings.WebhookHashKey
             };
         }
         #endregion
@@ -301,6 +307,32 @@ namespace Headstart.API.Commands
         };
         #endregion
 
+        #region Buyer Location 
+        public static HSBuyerLocation DefaultBuyerLocation()
+        {
+            return new HSBuyerLocation()
+            {
+                UserGroup = new HSLocationUserGroup()
+                {
+                    Name = "Default Headstart Location",
+                    xp = new HSLocationUserGroupXp()
+                    {
+                        Type = "BuyerLocation",
+                        Currency = CurrencySymbol.USD,
+                        Country = "US"
+                    }
+                },
+                Address = new HSAddressBuyer()
+                {
+                    AddressName = "Default Headstart Address",
+                    City = "Minneaplis",
+                    State = "Minnesota",
+                    Country = "US"
+                }
+            };
+        }
+
+        #endregion
 
     }
 }

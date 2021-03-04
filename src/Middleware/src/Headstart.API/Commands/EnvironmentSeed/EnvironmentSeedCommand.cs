@@ -29,6 +29,7 @@ namespace Headstart.API.Commands
         private readonly IPortalService _portal;
         private readonly IHSSupplierCommand _supplierCommand;
         private readonly IHSBuyerCommand _buyerCommand;
+        private readonly IHSBuyerLocationCommand _buyerLocationCommand;
         private readonly IExchangeRatesCommand _exhangeRates;
         private readonly IOrderCloudIntegrationsBlobService _translationsBlob;
 
@@ -37,6 +38,7 @@ namespace Headstart.API.Commands
             IPortalService portal,
             IHSSupplierCommand supplierCommand,
             IHSBuyerCommand buyerCommand,
+            IHSBuyerLocationCommand buyerLocationCommand,
             IOrderCloudClient oc,
             IExchangeRatesCommand exhangeRates
         )
@@ -45,6 +47,7 @@ namespace Headstart.API.Commands
             _portal = portal;
             _supplierCommand = supplierCommand;
             _buyerCommand = buyerCommand;
+            _buyerLocationCommand = buyerLocationCommand;
             _oc = oc;
             _exhangeRates = exhangeRates;
             var translationsConfig = new BlobServiceConfig()
@@ -84,7 +87,7 @@ namespace Headstart.API.Commands
             await CreateMessageSenders(seed, orgToken); // must be before CreateBuyers and CreateSuppliers
 
             await CreateBuyers(seed, orgToken);
-            await CreateAnonymousBuyer(seed, orgToken);
+            await CreateConfigureAnonBuyer(orgToken);
             await CreateXPIndices(orgToken);
             await CreateAndAssignIntegrationEvents(new string[] { apiClients.BuyerUiApiClient.ID }, apiClients.BuyerLocalUiApiClient.ID, orgToken);
             await CreateSuppliers(seed, orgToken);
@@ -201,21 +204,27 @@ namespace Headstart.API.Commands
                 if(!exists)
                 {
                     var createdBuyer = await _buyerCommand.Create(superBuyer, token, isSeedingEnvironment: true);
-                    if(seed.DefaultBuyerID == null && createdBuyer.Buyer.Name == SeedConstants.DefaultBuyerName)
-                    {
-                        // if a default buyer ID is not specified. Assign the default buyer we create as the default buyer ID. 
-                        // this is used in creating the anonymous buyer.
-                        seed.DefaultBuyerID = createdBuyer.Buyer.ID;
-                    }
                 }
             }
         }
 
-        private async Task CreateAnonymousBuyer(EnvironmentSeed seed, string token)
+        private async Task CreateConfigureAnonBuyer(string token)
         {
             var anonBuyer = SeedConstants.AnonymousBuyer();
-            await _oc.Users.SaveAsync(seed.DefaultBuyerID, anonBuyer.ID, anonBuyer, token);
-            var existingClients = await ListAllAsync.List(page => _oc.ApiClients.ListAsync(page: page, pageSize: 100, accessToken: token));
+            var defaultBuyer = SeedConstants.DefaultBuyer();
+
+            //create anonymous buyer user
+            var buyerCreate = _oc.Users.SaveAsync(defaultBuyer.ID, anonBuyer.ID, anonBuyer, token);
+
+            //create and assign initial buyer location
+            var locationCreate = _buyerLocationCommand.Save(defaultBuyer.ID, SeedConstants.DefaultLocationID, SeedConstants.DefaultBuyerLocation(), token);
+            var assignment = new UserGroupAssignment()
+            {
+                UserGroupID = SeedConstants.DefaultLocationID,
+                UserID = anonBuyer.ID
+            };
+            var assignmentCreate = _oc.UserGroups.SaveUserAssignmentAsync(defaultBuyer.ID, assignment, token);
+            await Task.WhenAll(buyerCreate, locationCreate, assignmentCreate);
         }
 
         private async Task<bool> BuyerExistsAsync(string buyerName, string token)
@@ -338,13 +347,11 @@ namespace Headstart.API.Commands
 
         private async Task CreateMessageSenders(EnvironmentSeed seed, string accessToken)
         {
-            var url = _settings.EnvironmentSettings.MiddlewareBaseUrl + "/messagesenders/{messagetype}";
-            var sharedKey = _settings.OrderCloudSettings.WebhookHashKey;
             var defaultMessageSenders = new List<MessageSender>()
             {
-                SeedConstants.BuyerEmails(url, sharedKey),
-                SeedConstants.SellerEmails(url, sharedKey),
-                SeedConstants.SuplierEmails(url, sharedKey)
+                SeedConstants.BuyerEmails(_settings),
+                SeedConstants.SellerEmails(_settings),
+                SeedConstants.SuplierEmails(_settings)
             };
             foreach (var sender in defaultMessageSenders)
             {
@@ -383,9 +390,9 @@ namespace Headstart.API.Commands
 
         private async Task CreateAndAssignIntegrationEvents(string[] buyerClientIDs, string localBuyerClientID, string token)
         {
-            var checkoutEvent = SeedConstants.CheckoutEvent(_settings.EnvironmentSettings.MiddlewareBaseUrl, _settings.OrderCloudSettings.WebhookHashKey);
+            var checkoutEvent = SeedConstants.CheckoutEvent(_settings);
             await _oc.IntegrationEvents.SaveAsync(checkoutEvent.ID, checkoutEvent, token);
-            var localCheckoutEvent = SeedConstants.LocalCheckoutEvent(_settings.OrderCloudSettings.WebhookHashKey);
+            var localCheckoutEvent = SeedConstants.LocalCheckoutEvent(_settings);
             await _oc.IntegrationEvents.SaveAsync(localCheckoutEvent.ID, localCheckoutEvent, token);
 
             await _oc.ApiClients.PatchAsync(localBuyerClientID, new PartialApiClient { OrderCheckoutIntegrationEventID = "HeadStartCheckoutLOCAL" }, token);
