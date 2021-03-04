@@ -32,13 +32,6 @@ namespace Headstart.API.Commands
         private readonly IExchangeRatesCommand _exhangeRates;
         private readonly IOrderCloudIntegrationsBlobService _translationsBlob;
 
-        private readonly string _buyerApiClientName = "Default HeadStart Buyer UI";
-        private readonly string _buyerLocalApiClientName = "Default HeadStart Buyer UI LOCAL"; // used for pointing integration events to the ngrok url
-        private readonly string _sellerApiClientName = "Default HeadStart Admin UI";
-        private readonly string _integrationsApiClientName = "Middleware Integrations";
-        private readonly string _sellerUserName = "Default_Admin";
-        private readonly string _fullAccessSecurityProfile = "DefaultContext";
-
         public EnvironmentSeedCommand(
             AppSettings settings,
             IPortalService portal,
@@ -91,6 +84,7 @@ namespace Headstart.API.Commands
             await CreateMessageSenders(seed, orgToken); // must be before CreateBuyers and CreateSuppliers
 
             await CreateBuyers(seed, orgToken);
+            await CreateAnonymousBuyer(seed, orgToken);
             await CreateXPIndices(orgToken);
             await CreateAndAssignIntegrationEvents(new string[] { apiClients.BuyerUiApiClient.ID }, apiClients.BuyerLocalUiApiClient.ID, orgToken);
             await CreateSuppliers(seed, orgToken);
@@ -174,7 +168,7 @@ namespace Headstart.API.Commands
             await Task.WhenAll(buyerSecurityProfileAssignmentRequests);
 
             // assign seller security profiles to seller org
-            var sellerSecurityProfileAssignmentRequests = SellerHsRoles.Select(role =>
+            var sellerSecurityProfileAssignmentRequests = SeedConstants.SellerHsRoles.Select(role =>
             {
                 return _oc.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment()
                 {
@@ -184,25 +178,17 @@ namespace Headstart.API.Commands
             await Task.WhenAll(sellerSecurityProfileAssignmentRequests);
 
             // assign full access security profile to default admin user
-            var defaultAdminUser = (await _oc.AdminUsers.ListAsync(accessToken: orgToken)).Items.First(u => u.Username == _sellerUserName);
+            var defaultAdminUser = (await _oc.AdminUsers.ListAsync(accessToken: orgToken)).Items.First(u => u.Username == SeedConstants.SellerUserName);
             await _oc.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment()
             {
-                SecurityProfileID = _fullAccessSecurityProfile,
+                SecurityProfileID = SeedConstants.FullAccessSecurityProfile,
                 UserID = defaultAdminUser.ID
             }, orgToken);
         }
 
         private async Task CreateBuyers(EnvironmentSeed seed, string token)
         {
-            seed.Buyers.Add(new HSBuyer
-            {
-                Name = "Default HeadStart Buyer",
-                Active = true,
-                xp = new BuyerXp
-                {
-                    MarkupPercent = 0
-                }
-            });
+            seed.Buyers.Add(SeedConstants.DefaultBuyer());
             foreach (var buyer in seed.Buyers)
             {
                 var superBuyer = new SuperHSBuyer()
@@ -214,9 +200,22 @@ namespace Headstart.API.Commands
                 var exists = await BuyerExistsAsync(buyer.Name, token);
                 if(!exists)
                 {
-                    await _buyerCommand.Create(superBuyer, token, isSeedingEnvironment: true);
+                    var createdBuyer = await _buyerCommand.Create(superBuyer, token, isSeedingEnvironment: true);
+                    if(seed.DefaultBuyerID == null && createdBuyer.Buyer.Name == SeedConstants.DefaultBuyerName)
+                    {
+                        // if a default buyer ID is not specified. Assign the default buyer we create as the default buyer ID. 
+                        // this is used in creating the anonymous buyer.
+                        seed.DefaultBuyerID = createdBuyer.Buyer.ID;
+                    }
                 }
             }
+        }
+
+        private async Task CreateAnonymousBuyer(EnvironmentSeed seed, string token)
+        {
+            var anonBuyer = SeedConstants.AnonymousBuyer();
+            await _oc.Users.SaveAsync(seed.DefaultBuyerID, anonBuyer.ID, anonBuyer, token);
+            var existingClients = await ListAllAsync.List(page => _oc.ApiClients.ListAsync(page: page, pageSize: 100, accessToken: token));
         }
 
         private async Task<bool> BuyerExistsAsync(string buyerName, string token)
@@ -247,15 +246,8 @@ namespace Headstart.API.Commands
         private async Task CreateDefaultSellerUsers(EnvironmentSeed seed, string token)
         {
             // the middleware api client will use this user as the default context user
-            var middlewareIntegrationsUser = new User
-            {
-                ID = "MiddlewareIntegrationsUser",
-                Username = _sellerUserName,
-                Email = "test@test.com",
-                Active = true,
-                FirstName = "Default",
-                LastName = "User"
-            };
+            var middlewareIntegrationsUser = SeedConstants.MIddlewareIntegrationsUser();
+
             await _oc.AdminUsers.SaveAsync(middlewareIntegrationsUser.ID, middlewareIntegrationsUser, token);
 
             // used to log in immediately after seeding the organization
@@ -272,28 +264,9 @@ namespace Headstart.API.Commands
             await _oc.AdminUsers.SaveAsync(initialAdminUser.ID, initialAdminUser, token);
         }
 
-        static readonly List<XpIndex> DefaultIndices = new List<XpIndex>() {
-            new XpIndex { ThingType = XpThingType.UserGroup, Key = "Type" },
-            new XpIndex { ThingType = XpThingType.UserGroup, Key = "Role" },
-            new XpIndex { ThingType = XpThingType.UserGroup, Key = "Country" },
-            new XpIndex { ThingType = XpThingType.Company, Key = "Data.ServiceCategory" },
-            new XpIndex { ThingType = XpThingType.Company, Key = "Data.VendorLevel" },
-            new XpIndex { ThingType = XpThingType.Company, Key = "SyncFreightPop" },
-            new XpIndex { ThingType = XpThingType.Company, Key = "CountriesServicing" },
-            new XpIndex { ThingType = XpThingType.Order, Key = "NeedsAttention" },
-            new XpIndex { ThingType = XpThingType.Order, Key = "StopShipSync" },
-            new XpIndex { ThingType = XpThingType.Order, Key = "OrderType" },
-            new XpIndex { ThingType = XpThingType.Order, Key = "LocationID" },
-            new XpIndex { ThingType = XpThingType.Order, Key = "SubmittedOrderStatus" },
-            new XpIndex { ThingType = XpThingType.Order, Key = "IsResubmitting" },
-            new XpIndex { ThingType = XpThingType.Order, Key = "SupplierIDs" },
-            new XpIndex { ThingType = XpThingType.User, Key = "UserGroupID" },
-            new XpIndex { ThingType = XpThingType.User, Key = "RequestInfoEmails" },
-        };
-
         public async Task CreateXPIndices(string token)
         {
-            foreach (var index in DefaultIndices)
+            foreach (var index in SeedConstants.DefaultIndices)
             {
                 //PutAsync is throwing id already exists error. Seems like it is trying to create.
                 //That is why we are using try catch here
@@ -306,15 +279,9 @@ namespace Headstart.API.Commands
             }
         }
 
-        static readonly List<Incrementor> DefaultIncrementors = new List<Incrementor>() {
-            new Incrementor { ID = "orderIncrementor", Name = "Order Incrementor", LastNumber = 0, LeftPaddingCount = 6 },
-            new Incrementor { ID = "supplierIncrementor", Name = "Supplier Incrementor", LastNumber = 0, LeftPaddingCount = 3 },
-            new Incrementor { ID = "buyerIncrementor", Name = "Buyer Incrementor", LastNumber = 0, LeftPaddingCount = 4 }
-        };
-
         public async Task CreateIncrementors(string token)
         {
-            foreach (var incrementor in DefaultIncrementors)
+            foreach (var incrementor in SeedConstants.DefaultIncrementors)
             {
                 await _oc.Incrementors.SaveAsync(incrementor.ID, incrementor, token);
             }
@@ -324,10 +291,10 @@ namespace Headstart.API.Commands
         {
             var list = await ListAllAsync.List(page => _oc.ApiClients.ListAsync(page: page, pageSize: 100, accessToken: token));
             var appNames = list.Select(x => x.AppName);
-            var adminUIApiClient = list.First(a => a.AppName == _sellerApiClientName);
-            var buyerUIApiClient = list.First(a => a.AppName == _buyerApiClientName);
-            var buyerLocalUIApiClient = list.First(a => a.AppName == _buyerLocalApiClientName);
-            var middlewareApiClient = list.First(a => a.AppName == _integrationsApiClientName);
+            var adminUIApiClient = list.First(a => a.AppName == SeedConstants.SellerApiClientName);
+            var buyerUIApiClient = list.First(a => a.AppName == SeedConstants.BuyerApiClientName);
+            var buyerLocalUIApiClient = list.First(a => a.AppName == SeedConstants.BuyerLocalApiClientName);
+            var middlewareApiClient = list.First(a => a.AppName == SeedConstants.IntegrationsApiClientName);
             return new ApiClientIDs()
             {
                 AdminUiApiClient = adminUIApiClient,
@@ -353,56 +320,12 @@ namespace Headstart.API.Commands
 
         private async Task CreateApiClients(string token)
         {
-            var allowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            var integrationsClient = new ApiClient()
-            {
-                AppName = _integrationsApiClientName,
-                Active = true,
-                AllowAnyBuyer = false,
-                AllowAnySupplier = false,
-                AllowSeller = true,
-                AccessTokenDuration = 600,
-                RefreshTokenDuration = 43200,
-                DefaultContextUserName = _sellerUserName,
-                ClientSecret = RandomGen.GetString(allowedChars, 60)
-            };
-            var sellerClient = new ApiClient()
-            {
-                AppName = _sellerApiClientName,
-                Active = true,
-                AllowAnyBuyer = false,
-                AllowAnySupplier = true,
-                AllowSeller = true,
-                AccessTokenDuration = 600,
-                RefreshTokenDuration = 43200
-            };
-            var buyerClient = new ApiClient()
-            {
-                AppName = _buyerApiClientName,
-                Active = true,
-                AllowAnyBuyer = true,
-                AllowAnySupplier = false,
-                AllowSeller = false,
-                AccessTokenDuration = 600,
-                RefreshTokenDuration = 43200
-            };
-            var buyerLocalClient = new ApiClient()
-            {
-                AppName = _buyerLocalApiClientName,
-                Active = true,
-                AllowAnyBuyer = true,
-                AllowAnySupplier = false,
-                AllowSeller = false,
-                AccessTokenDuration = 600,
-                RefreshTokenDuration = 43200
-            };
-
             var existingClients = await ListAllAsync.List(page => _oc.ApiClients.ListAsync(page: page, pageSize: 100, accessToken: token));
 
-            var integrationsClientRequest = GetClientRequest(existingClients, integrationsClient, token);
-            var sellerClientRequest = GetClientRequest(existingClients, sellerClient, token);
-            var buyerClientRequest = GetClientRequest(existingClients, buyerClient, token);
-            var buyerLocalClientRequest = GetClientRequest(existingClients, buyerLocalClient, token);
+            var integrationsClientRequest = GetClientRequest(existingClients, SeedConstants.IntegrationsClient(), token);
+            var sellerClientRequest = GetClientRequest(existingClients, SeedConstants.SellerClient(), token);
+            var buyerClientRequest = GetClientRequest(existingClients, SeedConstants.BuyerClient(), token);
+            var buyerLocalClientRequest = GetClientRequest(existingClients, SeedConstants.BuyerLocalClient(), token);
 
             await Task.WhenAll(integrationsClientRequest, sellerClientRequest, buyerClientRequest, buyerLocalClientRequest);
         }
@@ -415,7 +338,15 @@ namespace Headstart.API.Commands
 
         private async Task CreateMessageSenders(EnvironmentSeed seed, string accessToken)
         {
-            foreach (var sender in DefaultMessageSenders())
+            var url = _settings.EnvironmentSettings.MiddlewareBaseUrl + "/messagesenders/{messagetype}";
+            var sharedKey = _settings.OrderCloudSettings.WebhookHashKey;
+            var defaultMessageSenders = new List<MessageSender>()
+            {
+                SeedConstants.BuyerEmails(url, sharedKey),
+                SeedConstants.SellerEmails(url, sharedKey),
+                SeedConstants.SuplierEmails(url, sharedKey)
+            };
+            foreach (var sender in defaultMessageSenders)
             {
                 var messageSender = await _oc.MessageSenders.SaveAsync(sender.ID, sender, accessToken);
                 if (messageSender.ID == "BuyerEmails")
@@ -452,36 +383,9 @@ namespace Headstart.API.Commands
 
         private async Task CreateAndAssignIntegrationEvents(string[] buyerClientIDs, string localBuyerClientID, string token)
         {
-            var checkoutEvent = new IntegrationEvent()
-            {
-                ElevatedRoles = new[] { ApiRole.FullAccess },
-                ID = "HeadStartCheckout",
-                EventType = IntegrationEventType.OrderCheckout,
-                Name = "HeadStart Checkout",
-                CustomImplementationUrl = _settings.EnvironmentSettings.MiddlewareBaseUrl,
-                HashKey = _settings.OrderCloudSettings.WebhookHashKey,
-                ConfigData = new
-                {
-                    ExcludePOProductsFromShipping = false,
-                    ExcludePOProductsFromTax = true,
-                }
-            };
+            var checkoutEvent = SeedConstants.CheckoutEvent(_settings.EnvironmentSettings.MiddlewareBaseUrl, _settings.OrderCloudSettings.WebhookHashKey);
             await _oc.IntegrationEvents.SaveAsync(checkoutEvent.ID, checkoutEvent, token);
-
-            var localCheckoutEvent = new IntegrationEvent()
-            {
-                ElevatedRoles = new[] { ApiRole.FullAccess },
-                ID = "HeadStartCheckoutLOCAL",
-                EventType = IntegrationEventType.OrderCheckout,
-                CustomImplementationUrl = "https://marketplaceteam.ngrok.io", // local webhook url
-                Name = "HeadStart Checkout LOCAL",
-                HashKey = _settings.OrderCloudSettings.WebhookHashKey,
-                ConfigData = new
-                {
-                    ExcludePOProductsFromShipping = false,
-                    ExcludePOProductsFromTax = true,
-                }
-            };
+            var localCheckoutEvent = SeedConstants.LocalCheckoutEvent(_settings.OrderCloudSettings.WebhookHashKey);
             await _oc.IntegrationEvents.SaveAsync(localCheckoutEvent.ID, localCheckoutEvent, token);
 
             await _oc.ApiClients.PatchAsync(localBuyerClientID, new PartialApiClient { OrderCheckoutIntegrationEventID = "HeadStartCheckoutLOCAL" }, token);
@@ -498,7 +402,7 @@ namespace Headstart.API.Commands
 
         public async Task CreateSecurityProfiles(string accessToken)
         {
-            var profiles = DefaultSecurityProfiles.Select(p =>
+            var profiles = SeedConstants.DefaultSecurityProfiles.Select(p =>
                 new SecurityProfile()
                 {
                     Name = p.ID.ToString(),
@@ -510,8 +414,8 @@ namespace Headstart.API.Commands
             profiles.Add(new SecurityProfile()
             {
                 Roles = new List<ApiRole> { ApiRole.FullAccess },
-                Name = _fullAccessSecurityProfile,
-                ID = _fullAccessSecurityProfile
+                Name = SeedConstants.FullAccessSecurityProfile,
+                ID = SeedConstants.FullAccessSecurityProfile
             });
 
             var profileCreateRequests = profiles.Select(p => _oc.SecurityProfiles.SaveAsync(p.ID, p, accessToken));
@@ -536,103 +440,5 @@ namespace Headstart.API.Commands
             await Throttler.RunAsync(integrationEvents, 500, 20, integrationEvent =>
                 _oc.IntegrationEvents.DeleteAsync(integrationEvent.ID, accessToken: token));
         }
-
-        private List<MessageSender> DefaultMessageSenders()
-        {
-            return new List<MessageSender>() {
-                new MessageSender()
-                {
-                    ID = "BuyerEmails",
-                    Name = "Buyer Emails",
-                    MessageTypes = new[] {
-                        MessageType.ForgottenPassword,
-                        MessageType.NewUserInvitation,
-                        MessageType.OrderApproved,
-                        MessageType.OrderDeclined,
-                        // MessageType.OrderSubmitted, this is currently being handled in PostOrderSubmitCommand, possibly move to message senders
-                        MessageType.OrderSubmittedForApproval,
-                        // MessageType.OrderSubmittedForYourApprovalHasBeenApproved, // too noisy
-                        // MessageType.OrderSubmittedForYourApprovalHasBeenDeclined, // too noisy
-                        // MessageType.ShipmentCreated this is currently being triggered in-app possibly move to message senders
-                    },
-                    URL = _settings.EnvironmentSettings.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
-                    SharedKey = _settings.OrderCloudSettings.WebhookHashKey
-                },
-                new MessageSender()
-                {
-                    ID = "SellerEmails",
-                    Name = "Seller Emails",
-                    MessageTypes = new[] {
-                        MessageType.ForgottenPassword,
-                    },
-                    URL = _settings.EnvironmentSettings.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
-                    SharedKey = _settings.OrderCloudSettings.WebhookHashKey
-                },
-                new MessageSender()
-                {
-                    ID = "SupplierEmails",
-                    Name = "Supplier Emails",
-                    MessageTypes = new[] {
-                        MessageType.ForgottenPassword,
-                    },
-                    URL = _settings.EnvironmentSettings.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
-                    SharedKey = _settings.OrderCloudSettings.WebhookHashKey
-                }
-            };
-        }
-
-        static readonly List<HSSecurityProfile> DefaultSecurityProfiles = new List<HSSecurityProfile>() {
-			
-			// seller/supplier
-			new HSSecurityProfile() { ID = CustomRole.HSBuyerAdmin, CustomRoles = new CustomRole[] { CustomRole.HSBuyerAdmin }, Roles = new ApiRole[] { ApiRole.AddressAdmin, ApiRole.ApprovalRuleAdmin, ApiRole.BuyerAdmin, ApiRole.BuyerUserAdmin, ApiRole.CreditCardAdmin, ApiRole.UserGroupAdmin } },
-            new HSSecurityProfile() { ID = CustomRole.HSBuyerImpersonator, CustomRoles = new CustomRole[] { CustomRole.HSBuyerImpersonator }, Roles = new ApiRole[] { ApiRole.BuyerImpersonation } },
-            new HSSecurityProfile() { ID = CustomRole.HSCategoryAdmin, CustomRoles = new CustomRole[] { CustomRole.HSCategoryAdmin }, Roles = new ApiRole[] { ApiRole.CategoryAdmin } },
-            new HSSecurityProfile() { ID = CustomRole.HSContentAdmin, CustomRoles = new CustomRole[] { CustomRole.AssetAdmin, CustomRole.DocumentAdmin, CustomRole.SchemaAdmin }, Roles = new ApiRole[] { ApiRole.ApiClientAdmin } },
-            new HSSecurityProfile() { ID = CustomRole.HSMeAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeAdmin }, Roles = new ApiRole[] { ApiRole.MeAdmin, ApiRole.MeXpAdmin } },
-            new HSSecurityProfile() { ID = CustomRole.HSMeProductAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeProductAdmin }, Roles = new ApiRole[] { ApiRole.InventoryAdmin, ApiRole.PriceScheduleAdmin, ApiRole.ProductAdmin, ApiRole.ProductFacetReader, ApiRole.SupplierAddressReader } },
-            new HSSecurityProfile() { ID = CustomRole.HSMeSupplierAddressAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeSupplierAddressAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAddressAdmin, ApiRole.SupplierReader } },
-            new HSSecurityProfile() { ID = CustomRole.HSMeSupplierAdmin, CustomRoles = new CustomRole[] { CustomRole.AssetAdmin, CustomRole.HSMeSupplierAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAdmin, ApiRole.SupplierReader } },
-            new HSSecurityProfile() { ID = CustomRole.HSMeSupplierUserAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeSupplierUserAdmin }, Roles = new ApiRole[] { ApiRole.SupplierReader, ApiRole.SupplierUserAdmin } },
-            new HSSecurityProfile() { ID = CustomRole.HSOrderAdmin, CustomRoles = new CustomRole[] { CustomRole.HSOrderAdmin }, Roles = new ApiRole[] { ApiRole.AddressReader, ApiRole.OrderAdmin, ApiRole.ShipmentReader } },
-            new HSSecurityProfile() { ID = CustomRole.HSProductAdmin, CustomRoles = new CustomRole[] { CustomRole.HSProductAdmin }, Roles = new ApiRole[] { ApiRole.AdminAddressReader, ApiRole.CatalogAdmin, ApiRole.PriceScheduleAdmin, ApiRole.ProductAdmin, ApiRole.ProductAssignmentAdmin, ApiRole.ProductFacetAdmin, ApiRole.SupplierAddressReader } },
-            new HSSecurityProfile() { ID = CustomRole.HSPromotionAdmin, CustomRoles = new CustomRole[] { CustomRole.HSPromotionAdmin }, Roles = new ApiRole[] { ApiRole.PromotionAdmin } },
-            new HSSecurityProfile() { ID = CustomRole.HSReportAdmin, CustomRoles = new CustomRole[] { CustomRole.HSReportAdmin }, Roles = new ApiRole[] { } },
-            new HSSecurityProfile() { ID = CustomRole.HSReportReader, CustomRoles = new CustomRole[] { CustomRole.HSReportReader }, Roles = new ApiRole[] { } },
-            new HSSecurityProfile() { ID = CustomRole.HSSellerAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSellerAdmin }, Roles = new ApiRole[] { ApiRole.AdminUserAdmin } },
-            new HSSecurityProfile() { ID = CustomRole.HSShipmentAdmin, CustomRoles = new CustomRole[] { CustomRole.HSShipmentAdmin }, Roles = new ApiRole[] { ApiRole.AddressReader, ApiRole.OrderReader, ApiRole.ShipmentAdmin } },
-            new HSSecurityProfile() { ID = CustomRole.HSStorefrontAdmin, CustomRoles = new CustomRole[] { CustomRole.HSStorefrontAdmin }, Roles = new ApiRole[] { ApiRole.ProductFacetAdmin, ApiRole.ProductFacetReader } },
-            new HSSecurityProfile() { ID = CustomRole.HSSupplierAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSupplierAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAddressAdmin, ApiRole.SupplierAdmin, ApiRole.SupplierUserAdmin } },
-            new HSSecurityProfile() { ID = CustomRole.HSSupplierUserGroupAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSupplierUserGroupAdmin }, Roles = new ApiRole[] { ApiRole.SupplierReader, ApiRole.SupplierUserGroupAdmin } },
-			
-			// buyer - this is the only role needed for a buyer user to successfully check out
-			new HSSecurityProfile() { ID = CustomRole.HSBaseBuyer, CustomRoles = new CustomRole[] { CustomRole.HSBaseBuyer }, Roles = new ApiRole[] { ApiRole.MeAddressAdmin, ApiRole.MeAdmin, ApiRole.MeCreditCardAdmin, ApiRole.MeXpAdmin, ApiRole.ProductFacetReader, ApiRole.Shopper, ApiRole.SupplierAddressReader, ApiRole.SupplierReader } },
-
-			/* these roles don't do much, access to changing location information will be done through middleware calls that
-			*  confirm the user is in the location specific access user group. These roles will be assigned to the location 
-			*  specific user group and allow us to determine if a user has an admin role for at least one location through 
-			*  the users JWT
-			*/
-			new HSSecurityProfile() { ID = CustomRole.HSLocationOrderApprover, CustomRoles = new CustomRole[] { CustomRole.HSLocationOrderApprover }, Roles = new ApiRole[] { } },
-            new HSSecurityProfile() { ID = CustomRole.HSLocationViewAllOrders, CustomRoles = new CustomRole[] { CustomRole.HSLocationViewAllOrders }, Roles = new ApiRole[] { } },
-            new HSSecurityProfile() { ID = CustomRole.HSLocationAddressAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationAddressAdmin }, Roles = new ApiRole[] { } },
-        };
-
-        static readonly List<CustomRole> SellerHsRoles = new List<CustomRole>() {
-            CustomRole.HSBuyerAdmin,
-            CustomRole.HSBuyerImpersonator,
-            CustomRole.HSCategoryAdmin,
-            CustomRole.HSContentAdmin,
-            CustomRole.HSMeAdmin,
-            CustomRole.HSOrderAdmin,
-            CustomRole.HSProductAdmin,
-            CustomRole.HSPromotionAdmin,
-            CustomRole.HSReportAdmin,
-            CustomRole.HSReportReader,
-            CustomRole.HSSellerAdmin,
-            CustomRole.HSShipmentAdmin,
-            CustomRole.HSStorefrontAdmin,
-            CustomRole.HSSupplierAdmin,
-            CustomRole.HSSupplierUserGroupAdmin
-        };
     }
 }

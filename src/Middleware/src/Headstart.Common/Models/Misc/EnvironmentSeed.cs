@@ -53,6 +53,8 @@ namespace Headstart.Models.Misc
 		/// An optional array of buyers to create as part of the initial seeding
 		/// </summary>
 		public List<HSBuyer> Buyers { get; set; } = new List<HSBuyer> { };
+		public HSUser DefaultBuyerUser { get; set; } = new HSUser() { };
+		public string DefaultBuyerID { get; set; }
 	}
 
 	[DocIgnore]
