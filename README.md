@@ -86,15 +86,56 @@ Your backend middleware is configured and all your resources have been provision
 
 ### Validating Setup
 
-<!-- TODO: make this better, can probably do some simple product visibility stuff -->
-
 Once your organization has been seeded and your applications are configured you'll want to make sure everything is working well.
 
-For security reasons we don't create an admin user for you during the seeding process so you'll want to start by creating your first admin user in [the portal](https://portal.ordercloud.io/). Make sure you set the user to `"Active": true` and pick a strong password.
+First, fire up all three applications
+* [Middleware](./src/Middleware/README.md)
+* [Seller](./src/UI/Seller/README.md)
+* [Buyer](./src/Buyer/README.md)
 
-Next, fire up your server following the instructions [here](./src/Middleware/README.md). At the same time, build your seller application locally by following the steps [here](./src/UI/Seller/README.md). You should be able to log in as your admin user, create a buyer organization as well as a buyer user.
+Then, follow these steps. Our goal is to get to the point where our buyer user can add a product to their cart.
+1. Open your admin application and sign in with your initial admin user credentials
+2. Navigate to the "Suppliers" tab - suppliers are responsible for creating products so we will need to do that first
+3. Click "Create New supplier". Fill in the required details and create a new supplier.
+4. Within that supplier click "Supplier Addresses"
+5. Click "Create New Supplier Address", fill in the details and create a new address. Use an actual address or it will fail address validation
+6. Go back to the supplier detail page and then click "Users"
+7. Note that there is already a user here with an ID that starts with `dev_` this user exists so that the middleware can act on behalf of it if needed to act as that supplier. Do not delete this user.
+8. Click "Create New User" and fill out the details. Make sure to set "Active" true and for now assign all permissions to the user.
+9. If you have [emails set up](#sendgrid-email-configuration) you can use the "forgot password" feature to set a password for the supplier user otherwise set the password for that user in the portal
+10. Next click on "Buyers"
+11. Click "Default HeadStart Buyer"
+12. Click "Catalogs"
+13. Click "Create New Catalog" this will ultimately be the container that holds our products
+14. Go back to buyer detail page
+15. Click "Buyer Locations"
+16. Click "Create New Buyer Location" - fill in the details and use a real address so it passes valiation. At the bottom assign our previously created Catalog to that buyer location.
+17. Go back to buyer detail page
+18. Click "Users"
+19. Click "Create a New User" - make sure Active is set to true
+20. If you have [emails set up](#sendgrid-email-configuration) you can use the "forgot password" feature to set a password for the buyer user on your buyer application otherwise set the password for that user in the portal
+21. At this point we've done all we can as a seller user. We now need to log in to the admin application as a supplier user to create our product
+22. Log out of seller application
+23. Log in as your previously created supplier user
+24. Click on "Products"
+25. Click "Create New Product" - select "Standard Product". Enter required fields - sections marked with a red asterix in Product tab and Pricing tab
+26. Now that the product is created our seller needs to define visibility
+27. Log out of seller application
+28. Log in as your initial admin user
+29. Click on "Products"
+30. Click on the previously created product
+31. Click "Buyer Visibility" tab
+32. Click "Edit" on "Default Headstart Buyer"
+33. Click the toggle to make the product visible to our previously created catalog
+34. Click "Save"
+35. Go to your buyer application
+36. Sign in as your buyer user
+37. Click on "Products"
+38. You should see your product in the list, click it.
+39. Click "Add to cart"
+40. Click the cart icon
 
-Once you've created a buyer user you can fire up your buyer application locally by following the instructions [here](./src/Buyer/README.md). You will need to use the forgot password feature before logging in for the first time, if you don't have a sendgrid account yet you will not receive a forgotten password email, and you'll have to reset your password manually in the portal. You will receive an email and once your password has been reset you should be able to log in.
+Congrats! Hopefully you didn't get any errors and understand a little bit more about how everything is connected. If you did encounter errors please capture the details and submit an issue on Github.
 
 ## Deploying your application
 We recommend using [Azure Pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/what-is-azure-pipelines?view=azure-devops) for building and releasing your code. 
