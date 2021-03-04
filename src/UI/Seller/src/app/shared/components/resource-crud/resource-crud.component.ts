@@ -164,7 +164,7 @@ export abstract class ResourceCrudComponent<ResourceType>
 
   updateResource($event: any): void {
     this.updatedResource = _assign({}, this.updatedResource, $event.value)
-    this.resourceForm = this.createForm($event)
+    this.resourceForm = $event
     this.changeDetectorRef.detectChanges()
   }
 
