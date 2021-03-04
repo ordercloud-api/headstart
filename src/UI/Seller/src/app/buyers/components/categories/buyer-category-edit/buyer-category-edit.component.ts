@@ -65,8 +65,7 @@ export class BuyerCategoryEditComponent {
 
   buildForm(resource: Category): FormGroup {
     var formGroup = new FormGroup({})
-    this._categoryFields
-    .forEach((item) => {
+    this._categoryFields?.forEach((item) => {
       var control = new FormControl((resource[item.field] || ''), item.validators)
       formGroup.addControl(item.field, control)
     })
