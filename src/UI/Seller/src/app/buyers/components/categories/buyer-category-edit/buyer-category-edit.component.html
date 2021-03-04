@@ -7,7 +7,7 @@
       *ngIf="field.type === 'string' && field.field === 'ParentID' && _params"
       class="form-group"
     >
-      <label for="field.field">{{ field.field }}</label>
+      <label for="field.field">{{ field.field | uncamel}}</label>
       <input
         type="text"
         class="form-control"
@@ -24,7 +24,7 @@
       *ngIf="field.type === 'string' && field.field === 'ParentID' && !_params"
       class="form-group"
     >
-      <label for="field.field">{{ field.field }}</label>
+      <label for="field.field">{{ field.field | uncamel}}</label>
       <input
         type="text"
         class="form-control"
@@ -39,7 +39,7 @@
       *ngIf="field.type === 'string' && field.field !== 'ParentID'"
       class="form-group"
     >
-      <label for="field.field">{{ field.field }}</label>
+      <label for="field.field">{{ field.field | uncamel}}</label>
       <input
         type="text"
         class="form-control"
@@ -51,7 +51,7 @@
       />
     </div>
     <div *ngIf="field.type === 'boolean'" class="form-group">
-      <p class="mb-1">{{ field.field }}</p>
+      <p class="mb-1">{{ field.field | uncamel}}</p>
       <label class="switch mb-0" for="{{ field.field }}">
         <input
           type="checkbox"
