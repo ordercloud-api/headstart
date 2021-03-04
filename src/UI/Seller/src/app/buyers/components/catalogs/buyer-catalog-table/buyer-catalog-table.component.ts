@@ -27,4 +27,9 @@ export class BuyerCatalogTableComponent extends ResourceCrudComponent<Category> 
       ngZone,
     )
   }
+
+  handleCatalogUpdate($event: any) {
+    $event.value.Type="Catalog"
+    this.updateResource($event)
+  }
 }
