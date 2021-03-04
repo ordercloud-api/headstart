@@ -4,14 +4,6 @@ import { Category } from '@ordercloud/angular-sdk'
 import { Router, ActivatedRoute } from '@angular/router'
 import { BuyerService } from '../../buyers/buyer.service'
 import { BuyerCatalogService } from '../buyer-catalog.service'
-import { FormControl, FormGroup, Validators } from '@angular/forms'
-import { HSUserGroup } from '@ordercloud/headstart-sdk'
-
-function createBuyerCatalogForm(userGroup: HSUserGroup) {
-  return new FormGroup({
-    Name: new FormControl(userGroup?.Name, Validators.required),
-  })
-}
 
 @Component({
   selector: 'app-buyer-catalog-table',
@@ -33,7 +25,6 @@ export class BuyerCatalogTableComponent extends ResourceCrudComponent<Category> 
       router,
       activatedroute,
       ngZone,
-      createBuyerCatalogForm
     )
   }
 }
