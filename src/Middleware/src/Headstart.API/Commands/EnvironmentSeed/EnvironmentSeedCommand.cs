@@ -382,10 +382,14 @@ namespace Headstart.API.Commands
                 }
                 else if (messageSender.ID == "SellerEmails")
                 {
-                    await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
+                    try
                     {
-                        MessageSenderID = messageSender.ID
-                    }, accessToken);
+                        await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
+                        {
+                            MessageSenderID = messageSender.ID
+                        }, accessToken);
+                    } catch(Exception ex) { }
+                    
                 }
                 else if (messageSender.ID == "SupplierEmails")
                 {
