@@ -78,13 +78,14 @@ namespace Headstart.API.Commands
 
         public async Task<ListPage<HSOrder>> ListOrdersForLocation(string locationID, ListArgs<HSOrder> listArgs, VerifiedUserContext verifiedUser)
         {
+            listArgs.Filters.Add(new ListFilter() { PropertyName = "BillingAddress.ID", FilterExpression = locationID });
             await EnsureUserCanAccessLocationOrders(locationID, verifiedUser);
             return await _oc.Orders.ListAsync<HSOrder>(OrderDirection.Incoming,
                 page: listArgs.Page,
                 pageSize: listArgs.PageSize,
                 search: listArgs.Search,
                 sortBy: listArgs.SortBy.FirstOrDefault(),
-                filters: $"BillingAddress.ID={locationID}");
+                filters: listArgs.ToFilterString());
         }
 
         public async Task<OrderDetails> GetOrderDetails(string orderID, VerifiedUserContext verifiedUser)
