@@ -29,7 +29,7 @@ namespace Headstart.API.Commands
         public static string DefaultLocationID = "default-buyerLocation";
         public static string AllowedSecretChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-        public static HSUser AnonymousBuyer()
+        public static HSUser AnonymousBuyerUser()
         {
             return new HSUser()
             {
@@ -37,6 +37,7 @@ namespace Headstart.API.Commands
                 Username = "default-buyer-user",
                 FirstName = "Default",
                 LastName = "Buyer",
+                Email = "default-buyer-user@test.com",
                 Active = true,
                 DateCreated = DateTime.Now,
                 xp = new UserXp()
@@ -63,7 +64,6 @@ namespace Headstart.API.Commands
         {
             return new HSBuyer
             {
-                ID = "default-buyer",
                 Name = DefaultBuyerName,
                 Active = true,
                 xp = new BuyerXp
@@ -139,7 +139,7 @@ namespace Headstart.API.Commands
                 AllowSeller = false,
                 AccessTokenDuration = 600,
                 RefreshTokenDuration = 43200,
-                DefaultContextUserName = AnonymousBuyer().ID,
+                DefaultContextUserName = AnonymousBuyerUser().ID,
                 IsAnonBuyer = true
             };
         }
@@ -155,7 +155,7 @@ namespace Headstart.API.Commands
                 AllowSeller = false,
                 AccessTokenDuration = 600,
                 RefreshTokenDuration = 43200,
-                DefaultContextUserName = AnonymousBuyer().ID,
+                DefaultContextUserName = AnonymousBuyerUser().ID,
                 IsAnonBuyer = true
             };
         }
@@ -325,7 +325,9 @@ namespace Headstart.API.Commands
                 Address = new HSAddressBuyer()
                 {
                     AddressName = "Default Headstart Address",
+                    Street1 = "110 5th St",
                     City = "Minneaplis",
+                    Zip = "55403",
                     State = "Minnesota",
                     Country = "US"
                 }

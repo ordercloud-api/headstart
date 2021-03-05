@@ -13,7 +13,7 @@ namespace Headstart.API.Commands
     {
         Task<HSBuyerLocation> Create(string buyerID, HSBuyerLocation buyerLocation, string token);
         Task<HSBuyerLocation> Get(string buyerID, string buyerLocationID, string token);
-        Task<HSBuyerLocation> Save(string buyerID, string buyerLocationID, HSBuyerLocation buyerLocation, string token);
+        Task<HSBuyerLocation> Save(string buyerID, string buyerLocationID, HSBuyerLocation buyerLocation, string token, bool isSeedEnv = false);
         Task Delete(string buyerID, string buyerLocationID, string token);
     }
 
@@ -86,7 +86,7 @@ namespace Headstart.API.Commands
             await _oc.Addresses.SaveAssignmentAsync(buyerID, assignment, accessToken: token);
         }
 
-        public async Task<HSBuyerLocation> Save(string buyerID, string buyerLocationID, HSBuyerLocation buyerLocation, string token)
+        public async Task<HSBuyerLocation> Save(string buyerID, string buyerLocationID, HSBuyerLocation buyerLocation, string token, bool isSeedEnv = false)
         {
             buyerLocation.Address.ID = buyerLocationID;
             buyerLocation.UserGroup.ID = buyerLocationID;
@@ -104,9 +104,9 @@ namespace Headstart.API.Commands
             };
             if (existingLocation == null)
 			{
-                var assingments = CreateUserGroupAndAssignments(token, buyerID, buyerLocationID);
-                var groups =  CreateLocationUserGroupsAndApprovalRule(token, buyerLocationID, buyerLocation.Address.AddressName);
-                await Task.WhenAll(assingments, groups);
+                var assignments = CreateUserGroupAndAssignments(buyerID, buyerLocationID, token);
+                var groups = CreateLocationUserGroupsAndApprovalRule(buyerLocationID, buyerLocation.Address.AddressName, token, isSeedEnv);
+                await Task.WhenAll(assignments, groups);
             }
             return location;
         }
@@ -118,21 +118,23 @@ namespace Headstart.API.Commands
             await Task.WhenAll(deleteAddressReq, deleteUserGroupReq);
         }
 
-        public async Task CreateLocationUserGroupsAndApprovalRule(string buyerLocationID, string locationName, string token)
+        public async Task CreateLocationUserGroupsAndApprovalRule(string buyerLocationID, string locationName, string token, bool isSeedEnv = false)
         {
             var buyerID = buyerLocationID.Split('-').First();
             var AddUserTypeRequests = HSUserTypes.BuyerLocation().Select(userType => AddUserTypeToLocation(token, buyerLocationID, userType));
             await Task.WhenAll(AddUserTypeRequests);
-
-            var approvingGroupID = $"{buyerLocationID}-{UserGroupSuffix.OrderApprover.ToString()}";
-            await _oc.ApprovalRules.CreateAsync(buyerID, new ApprovalRule()
+            if(!isSeedEnv)
             {
-                ID = buyerLocationID,
-                ApprovingGroupID = approvingGroupID,
-                Description = "General Approval Rule for Location. Every Order Over a Certain Limit will Require Approval for the designated group of users.",
-                Name = $"{locationName} General Location Approval Rule",
-                RuleExpression = $"order.xp.ApprovalNeeded = '{buyerLocationID}' & order.Total > 0"
-            });
+                var approvingGroupID = $"{buyerLocationID}-{UserGroupSuffix.OrderApprover.ToString()}";
+                await _oc.ApprovalRules.CreateAsync(buyerID, new ApprovalRule()
+                {
+                    ID = buyerLocationID,
+                    ApprovingGroupID = approvingGroupID,
+                    Description = "General Approval Rule for Location. Every Order Over a Certain Limit will Require Approval for the designated group of users.",
+                    Name = $"{locationName} General Location Approval Rule",
+                    RuleExpression = $"order.xp.ApprovalNeeded = '{buyerLocationID}' & order.Total > 0"
+                });
+            }
         }
 
         public async Task AddUserTypeToLocation(string token, string buyerLocationID, HSUserType hsUserType)

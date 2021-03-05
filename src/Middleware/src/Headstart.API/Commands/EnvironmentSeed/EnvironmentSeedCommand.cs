@@ -78,16 +78,18 @@ namespace Headstart.API.Commands
             var orgToken = await _portal.GetOrgToken(seed.SellerOrgID, portalUserToken);
 
             await CreateDefaultSellerUsers(seed, orgToken);
-            await CreateApiClients(orgToken);
-            await CreateSecurityProfiles(orgToken);
-            await AssignSecurityProfiles(seed, orgToken);
 
-            var apiClients = await GetApiClients(orgToken);
             await CreateIncrementors(orgToken); // must be before CreateBuyers
             await CreateMessageSenders(seed, orgToken); // must be before CreateBuyers and CreateSuppliers
 
+            await CreateSecurityProfiles(orgToken);
             await CreateBuyers(seed, orgToken);
-            await CreateConfigureAnonBuyer(orgToken);
+            await CreateConfigureAnonBuyer(seed, orgToken);
+
+            await CreateApiClients(orgToken);
+            await AssignSecurityProfiles(seed, orgToken);
+
+            var apiClients = await GetApiClients(orgToken);
             await CreateXPIndices(orgToken);
             await CreateAndAssignIntegrationEvents(new string[] { apiClients.BuyerUiApiClient.ID }, apiClients.BuyerLocalUiApiClient.ID, orgToken);
             await CreateSuppliers(seed, orgToken);
@@ -191,7 +193,8 @@ namespace Headstart.API.Commands
 
         private async Task CreateBuyers(EnvironmentSeed seed, string token)
         {
-            seed.Buyers.Add(SeedConstants.DefaultBuyer());
+            var defaultBuyer = SeedConstants.DefaultBuyer();
+            seed.Buyers.Add(defaultBuyer);
             foreach (var buyer in seed.Buyers)
             {
                 var superBuyer = new SuperHSBuyer()
@@ -201,36 +204,46 @@ namespace Headstart.API.Commands
                 };
 
                 var exists = await BuyerExistsAsync(buyer.Name, token);
-                if(!exists)
+                if(exists == null || exists.Count == 0)
                 {
                     var createdBuyer = await _buyerCommand.Create(superBuyer, token, isSeedingEnvironment: true);
+                    if(createdBuyer.Buyer.Name == defaultBuyer.Name && seed.AnonymousShoppingBuyerID == null)
+                    {
+                        seed.AnonymousShoppingBuyerID = createdBuyer.Buyer.ID;
+                    }
+                } else
+                {
+                    seed.AnonymousShoppingBuyerID = exists.FirstOrDefault().ID;
                 }
             }
         }
 
-        private async Task CreateConfigureAnonBuyer(string token)
+        private async Task CreateConfigureAnonBuyer(EnvironmentSeed seed, string token)
         {
-            var anonBuyer = SeedConstants.AnonymousBuyer();
+            var anonBuyer = SeedConstants.AnonymousBuyerUser();
             var defaultBuyer = SeedConstants.DefaultBuyer();
 
             //create anonymous buyer user
-            var buyerCreate = _oc.Users.SaveAsync(defaultBuyer.ID, anonBuyer.ID, anonBuyer, token);
+            var createUser = _oc.Users.SaveAsync(seed.AnonymousShoppingBuyerID, anonBuyer.ID, anonBuyer, token);
 
             //create and assign initial buyer location
-            var locationCreate = _buyerLocationCommand.Save(defaultBuyer.ID, SeedConstants.DefaultLocationID, SeedConstants.DefaultBuyerLocation(), token);
+            var createBuyerLocation = _buyerLocationCommand.Save(seed.AnonymousShoppingBuyerID, 
+                $"{seed.AnonymousShoppingBuyerID}-{SeedConstants.DefaultLocationID}", 
+                SeedConstants.DefaultBuyerLocation(), token, true);
+
             var assignment = new UserGroupAssignment()
             {
-                UserGroupID = SeedConstants.DefaultLocationID,
+                UserGroupID = $"{seed.AnonymousShoppingBuyerID}-{SeedConstants.DefaultLocationID}",
                 UserID = anonBuyer.ID
             };
-            var assignmentCreate = _oc.UserGroups.SaveUserAssignmentAsync(defaultBuyer.ID, assignment, token);
-            await Task.WhenAll(buyerCreate, locationCreate, assignmentCreate);
+            var saveAssignment = _oc.UserGroups.SaveUserAssignmentAsync(seed.AnonymousShoppingBuyerID, assignment, token);
+            await Task.WhenAll(createUser, createBuyerLocation, saveAssignment);
         }
 
-        private async Task<bool> BuyerExistsAsync(string buyerName, string token)
+        private async Task<List<Buyer>> BuyerExistsAsync(string buyerName, string token)
         {
             var list = await _oc.Buyers.ListAsync(filters: new { Name = buyerName }, accessToken: token);
-            return list.Items.Any();
+            return list.Items.ToList();
         }
 
         private async Task CreateSuppliers(EnvironmentSeed seed, string token)
