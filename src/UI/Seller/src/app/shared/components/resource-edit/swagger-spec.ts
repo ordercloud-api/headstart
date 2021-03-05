@@ -4144,10 +4144,12 @@ export const schemas = {
     properties: {
       ID: {
         type: 'string',
+        validators: [ValidateNoSpecialCharactersAndSpaces]
       },
       Name: {
         type: 'string',
         maxLength: 100,
+        validators: [Validators.required]
       },
       Description: {
         type: 'string',

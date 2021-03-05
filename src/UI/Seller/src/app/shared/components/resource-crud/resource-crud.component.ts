@@ -164,7 +164,7 @@ export abstract class ResourceCrudComponent<ResourceType>
 
   updateResource($event: any): void {
     this.updatedResource = _assign({}, this.updatedResource, $event.value)
-    this.resourceForm = $event;
+    this.resourceForm = $event
     this.changeDetectorRef.detectChanges()
   }
 
@@ -207,7 +207,7 @@ export abstract class ResourceCrudComponent<ResourceType>
       this.dataIsSaving = false
     } catch (ex) {
       this.dataIsSaving = false
-      this.submitError = ex;
+      this.submitError = ex
       throw ex
     }
   }
@@ -230,7 +230,7 @@ export abstract class ResourceCrudComponent<ResourceType>
       this.dataIsSaving = false
     } catch (ex) {
       this.dataIsSaving = false
-      this.submitError = ex;
+      this.submitError = ex
       throw ex
     }
   }
