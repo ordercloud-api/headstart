@@ -15,13 +15,24 @@
   (resourceSelected)="selectResource($event)"
   [labelSingular]="'ADMIN.NAV.CATALOG'"
   [labelPlural]="'ADMIN.NAV.CATALOGS'"
-  [submitError]="submitError"
 >
   <div class="resource-edit">
-    <resource-edit-component 
-      resourceType="UserGroup"
-      (updateResource)="handleCatalogUpdate($event)"
-      [resource]="updatedResource">    
-    </resource-edit-component>
+    <form *ngIf="resourceForm" [formGroup]="resourceForm">
+      <div class="form-group">
+        <label for="Name">Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="Name"
+          showErrors
+          aria-describedby="Name"
+          maxlength="100"
+          [resourceForm]="resourceForm"
+          formControlName="Name"
+          (input)="handleUpdateResource($event, 'Name')"
+          placeholder="Enter Name"
+        />
+      </div>
+    </form>
   </div>
 </resource-table-component>

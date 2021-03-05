@@ -58,7 +58,7 @@
           class="form-check-input"
           id="{{ field.field }}"
           formControlName="Active"
-          (change)="handleCheckChange($event, field.field)"
+          (input)="handleUpdateCategory($event, 'boolean')"
         />
         <span class="slider round cursor-pointer"></span>
       </label>

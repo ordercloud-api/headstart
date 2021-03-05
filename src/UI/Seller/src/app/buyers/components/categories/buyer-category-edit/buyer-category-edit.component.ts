@@ -7,8 +7,9 @@ import {
 } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router'
-import { Category } from '@ordercloud/angular-sdk'
-import { ValidateNoSpecialCharactersAndSpaces } from "@app-seller/validators/validators";
+import { ResourceFormUpdate } from '@app-seller/shared'
+import { ValidateNoSpecialCharactersAndSpaces } from '@app-seller/validators/validators'
+import { Category } from 'ordercloud-javascript-sdk'
 
 @Component({
   selector: 'app-buyer-category-edit',
@@ -39,17 +40,16 @@ export class BuyerCategoryEditComponent {
     this.changeDetectorRef.detectChanges()
   }
   @Output()
-  updateCategory = new EventEmitter()
+  updateCategory = new EventEmitter<ResourceFormUpdate>()
 
-  handleUpdateCategory(event: any, fieldType?: string) {
-    this.updateCategory.emit(this.resourceForm)
-  }
-
-  handleCheckChange(event: any, field: string) {
-    this.resourceForm.patchValue({
-      [field]: event.target.checked
-    })
-    this.updateCategory.emit(this.resourceForm)
+  handleUpdateCategory(event: any, fieldType: string) {
+    const categoryUpdate = {
+      field: event.target.id,
+      value:
+        fieldType === 'boolean' ? event.target.checked : event.target.value,
+      form: this.resourceForm
+    }
+    this.updateCategory.emit(categoryUpdate)
   }
 
   checkForParent() {
