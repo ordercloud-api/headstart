@@ -6,11 +6,11 @@ import {
   EventEmitter,
 } from '@angular/core'
 import {
+  ResourceFormUpdate,
   SwaggerSpecProperty,
 } from '@app-seller/models/shared.types'
 import { schemas } from './swagger-spec'
 import { FormControl, FormGroup } from '@angular/forms'
-import OrderCloudError from 'ordercloud-javascript-sdk/dist/utils/OrderCloudError'
 
 @Component({
   selector: 'resource-edit-component',
@@ -35,21 +35,27 @@ export class ResourceEditComponent {
   set resourceType(value: string) {
     this._resourceType = value;
     this._resourceFields = this.buildResourceFields(value)
+    
   }
 
   @Output()
-  updateResource = new EventEmitter<FormGroup>()
+  updateResource = new EventEmitter<ResourceFormUpdate>()
 
-  handleUpdateResource() {
-    this.updateResource.emit(this.resourceForm)
+  handleUpdateResource(event: any, fieldType: string) {
+    const resourceupdate = {
+      field: event.target.id,
+      value: fieldType === 'boolean' ? event.target.checked : event.target.value,
+      form: this.resourceForm
+    };
+    this.updateResource.emit(resourceupdate);
   }
 
-  buildForm(resource: any): FormGroup {
+ buildForm(resource: any): FormGroup {
    var formGroup = new FormGroup({});
    Object.entries(schemas[this._resourceType]?.properties)
    .forEach(([key, value]) => {
      if(key !== 'xp') {
-      var control = new FormControl(resource[key], value['validators'])
+       var control = new FormControl(resource[key], value['validators'])
        formGroup.addControl(key, control)
      }
    })
@@ -57,7 +63,7 @@ export class ResourceEditComponent {
  }
 
   buildResourceFields(resourceType: string): SwaggerSpecProperty[] {
-    return Object.entries(schemas[resourceType].properties)
+    return Object.entries(schemas[resourceType]?.properties)
       .map(([key, value]) => {
         return {
           field: key,

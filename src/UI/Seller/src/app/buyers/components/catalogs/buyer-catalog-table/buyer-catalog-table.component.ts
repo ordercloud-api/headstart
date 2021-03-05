@@ -4,6 +4,13 @@ import { Category } from '@ordercloud/angular-sdk'
 import { Router, ActivatedRoute } from '@angular/router'
 import { BuyerService } from '../../buyers/buyer.service'
 import { BuyerCatalogService } from '../buyer-catalog.service'
+import { FormControl, FormGroup, Validators } from '@angular/forms'
+
+function createBuyerCatalogForm(userGroup: any) {
+  return new FormGroup({
+    Name: new FormControl(userGroup?.Name, Validators.required),
+  })
+}
 
 @Component({
   selector: 'app-buyer-catalog-table',
@@ -19,17 +26,6 @@ export class BuyerCatalogTableComponent extends ResourceCrudComponent<Category> 
     private buyerService: BuyerService,
     ngZone: NgZone
   ) {
-    super(
-      changeDetectorRef,
-      buyerCatalogService,
-      router,
-      activatedroute,
-      ngZone,
-    )
-  }
-
-  handleCatalogUpdate($event: any) {
-    $event.value.Type="Catalog"
-    this.updateResource($event)
+    super(changeDetectorRef, buyerCatalogService, router, activatedroute, ngZone, createBuyerCatalogForm)
   }
 }

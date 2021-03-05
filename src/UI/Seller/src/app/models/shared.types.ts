@@ -1,3 +1,5 @@
+import { FormGroup } from "@angular/forms";
+
 export interface Route {
   title: string
   route: string
@@ -22,6 +24,10 @@ export interface HSRoute {
 export interface ResourceUpdate {
   field: string
   value: any
+}
+
+export interface ResourceFormUpdate extends ResourceUpdate {
+  form?: FormGroup
 }
 
 export interface SwaggerSpecProperty {

@@ -7,7 +7,7 @@ import { REDIRECT_TO_FIRST_PARENT } from '@app-seller/layout/header/header.confi
 import { ListPage } from '@ordercloud/headstart-sdk'
 import { BehaviorSubject } from 'rxjs'
 import { assign as _assign } from 'lodash'
-import { ResourceUpdate } from '@app-seller/models/shared.types'
+import { ResourceFormUpdate, ResourceUpdate } from '@app-seller/models/shared.types'
 import OrderCloudError from 'ordercloud-javascript-sdk/dist/utils/OrderCloudError'
 
 export abstract class ResourceCrudComponent<ResourceType>
@@ -162,9 +162,11 @@ export abstract class ResourceCrudComponent<ResourceType>
     this.navigate(newURL, { queryParams })
   }
 
-  updateResource($event: any): void {
-    this.updatedResource = _assign({}, this.updatedResource, $event.value)
-    this.resourceForm = $event
+  updateResource(resourceUpdate: ResourceFormUpdate): void {
+    this.updatedResource = this.ocService.getUpdatedEditableResource(resourceUpdate as ResourceUpdate, this.updatedResource)
+    if(resourceUpdate.form) {
+      this.resourceForm = resourceUpdate.form
+    }
     this.changeDetectorRef.detectChanges()
   }
 
