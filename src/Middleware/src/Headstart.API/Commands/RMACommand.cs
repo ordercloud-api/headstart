@@ -32,7 +32,7 @@ namespace Headstart.API.Commands
 
         public async Task<CosmosListPage<RMA>> ListMeRMAs(CosmosListOptions listOptions, VerifiedUserContext verifiedUser)
         {
-            IQueryable<RMA> queryable = _rmaRepo.GetQueryable().Where(rma => rma.FromBuyerUserID == verifiedUser.User.ID);
+            IQueryable<RMA> queryable = _rmaRepo.GetQueryable().Where(rma => rma.FromBuyerUserID == verifiedUser.ID);
 
             CosmosListPage<RMA> rmas = await GenerateRMAList(queryable, listOptions);
             return rmas;
@@ -40,7 +40,7 @@ namespace Headstart.API.Commands
 
         public async Task<CosmosListPage<RMA>> ListBuyerRMAs(CosmosListOptions listOptions, VerifiedUserContext verifiedUser)
         {
-            IQueryable<RMA> queryable = _rmaRepo.GetQueryable().Where(rma => rma.FromBuyerID == verifiedUser.User.Buyer.ID);
+            IQueryable<RMA> queryable = _rmaRepo.GetQueryable().Where(rma => rma.FromBuyerID == verifiedUser.Buyer.ID);
 
             CosmosListPage<RMA> rmas = await GenerateRMAList(queryable, listOptions);
             return rmas;

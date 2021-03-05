@@ -1,19 +1,19 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
-using Headstart.API.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using ErrorCodes = Headstart.Models.ErrorCodes;
 
 namespace Headstart.Common.Controllers
 {
     [Route("swagger")]
-    public class SwaggerController : HeadstartController
+    public class SwaggerController : BaseController
     {
         private readonly AppSettings _settings;
 
-        public SwaggerController(AppSettings settings) : base(settings)
+        public SwaggerController(AppSettings settings)
         {
             _settings = settings;
         }
@@ -22,7 +22,7 @@ namespace Headstart.Common.Controllers
         public async Task<JObject> Get()
         {
             var reference = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            var g = new OpenApiGenerator<HeadstartController, OrderCloudIntegrationsAuthAttribute>()
+            var g = new OpenApiGenerator<BaseController>()
                 .CollectMetaData(Path.Combine(reference, "reference.md"), ErrorCodes.All)
                 .DefineSpec(new SwaggerConfig()
                 {

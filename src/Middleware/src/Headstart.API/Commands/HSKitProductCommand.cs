@@ -74,10 +74,10 @@ namespace Headstart.API.Commands.Crud
         }
         public async Task<HSMeKitProduct> GetMeKit(string id, VerifiedUserContext user)
         {
-            var _product = await _oc.Me.GetProductAsync<HSMeProduct>(id, user.RawToken);
-            var _images = GetProductImages(id, user.RawToken);
-            var _attachments = GetProductAttachments(id, user.RawToken);
-            var _productAssignments = await _cms.Documents.Get<HSMeKitProductAssignment>("HSKitProductAssignment", _product.ID, user.RawToken);
+            var _product = await _oc.Me.GetProductAsync<HSMeProduct>(id, user.AccessToken);
+            var _images = GetProductImages(id, user.AccessToken);
+            var _attachments = GetProductAttachments(id, user.AccessToken);
+            var _productAssignments = await _cms.Documents.Get<HSMeKitProductAssignment>("HSKitProductAssignment", _product.ID, user.AccessToken);
             var meKitProduct = new HSMeKitProduct
             {
                 ID = _product.ID,
@@ -85,7 +85,7 @@ namespace Headstart.API.Commands.Crud
                 Product = _product,
                 Images = await _images,
                 Attachments = await _attachments,
-                ProductAssignments = await _getMeKitDetails(_productAssignments.Doc, user.RawToken)
+                ProductAssignments = await _getMeKitDetails(_productAssignments.Doc, user.AccessToken)
             };
             return await _meProductCommand.ApplyBuyerPricing(meKitProduct, user);
         }

@@ -111,7 +111,7 @@ namespace Headstart.API.Commands
 
         public async Task<bool> IsUserInAccessGroup(string locationID, string groupSuffix, VerifiedUserContext verifiedUser)
         {
-            var buyerID = verifiedUser.User.Buyer.ID;
+            var buyerID = verifiedUser.Buyer.ID;
             var userGroupID = $"{locationID}-{groupSuffix}";
             return await IsUserInUserGroup(buyerID, userGroupID, verifiedUser);
         }
@@ -171,7 +171,7 @@ namespace Headstart.API.Commands
 
     private async Task<bool> IsUserInUserGroup(string buyerID, string userGroupID, VerifiedUserContext verifiedUser)
         {
-            var userGroupAssignmentForAccess = await _oc.UserGroups.ListUserAssignmentsAsync(buyerID, userGroupID, verifiedUser.User.ID);
+            var userGroupAssignmentForAccess = await _oc.UserGroups.ListUserAssignmentsAsync(buyerID, userGroupID, verifiedUser.ID);
             return userGroupAssignmentForAccess.Items.Count > 0;
         }
 
@@ -182,14 +182,14 @@ namespace Headstart.API.Commands
                 return await  _oc.SupplierUserGroups.ListAllUserAssignmentsAsync(
                    parentID,
                    userID: userID,
-                   accessToken: verifiedUser.RawToken
+                   accessToken: verifiedUser.AccessToken
                    );
             } else
             {
                 return await _oc.UserGroups.ListAllUserAssignmentsAsync(
                    parentID,
                    userID: userID,
-                   accessToken: verifiedUser.RawToken
+                   accessToken: verifiedUser.AccessToken
                    );
             }
         }

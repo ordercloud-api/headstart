@@ -79,7 +79,7 @@ namespace Headstart.API.Commands
         // all line item status changes should go through here
         public async Task<List<HSLineItem>> UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection orderDirection, string orderID, LineItemStatusChanges lineItemStatusChanges, VerifiedUserContext verifiedUser = null)
         {
-            var userType = verifiedUser?.ParsedToken.UserType ?? "noUser";
+            var userType = verifiedUser?.UserType ?? "noUser";
             var verifiedUserType = userType.Reserialize<VerifiedUserType>();
             
             var buyerOrderID = orderID.Split('-')[0];
@@ -90,7 +90,7 @@ namespace Headstart.API.Commands
             {
                 var newPartialLineItem = BuildNewPartialLineItem(lineItemStatusChange, previousLineItemsStates.ToList(), lineItemStatusChanges.Status);
                // if there is no verified user passed in it has been called from somewhere else in the code base and will be done with the client grant access
-               return verifiedUser != null ? _oc.LineItems.PatchAsync<HSLineItem>(orderDirection, orderID, lineItemStatusChange.ID, newPartialLineItem, verifiedUser.RawToken) : _oc.LineItems.PatchAsync<HSLineItem>(orderDirection, orderID, lineItemStatusChange.ID, newPartialLineItem);
+               return verifiedUser != null ? _oc.LineItems.PatchAsync<HSLineItem>(orderDirection, orderID, lineItemStatusChange.ID, newPartialLineItem, verifiedUser.AccessToken) : _oc.LineItems.PatchAsync<HSLineItem>(orderDirection, orderID, lineItemStatusChange.ID, newPartialLineItem);
             });
 
             var buyerOrder = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, buyerOrderID);
@@ -383,7 +383,7 @@ namespace Headstart.API.Commands
         {
             // get me product with markedup prices correct currency and the existing line items in parellel
             var productRequest = _meProductCommand.Get(liReq.ProductID, user);
-            var existingLineItemsRequest = _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, orderID, filters: $"Product.ID={liReq.ProductID}", accessToken: user.RawToken);
+            var existingLineItemsRequest = _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, orderID, filters: $"Product.ID={liReq.ProductID}", accessToken: user.AccessToken);
             var orderRequest = _oc.Orders.GetAsync(OrderDirection.Incoming, orderID);
             var existingLineItems = await existingLineItemsRequest;
             var product = await productRequest;
@@ -412,7 +412,7 @@ namespace Headstart.API.Commands
         {
             LineItem lineItem = await _oc.LineItems.GetAsync(OrderDirection.Incoming, orderID, lineItemID);
             await _oc.LineItems.DeleteAsync(OrderDirection.Incoming, orderID, lineItemID);
-            List<HSLineItem> existingLineItems = await _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, orderID, filters: $"Product.ID={lineItem.ProductID}", accessToken: verifiedUser.RawToken);
+            List<HSLineItem> existingLineItems = await _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, orderID, filters: $"Product.ID={lineItem.ProductID}", accessToken: verifiedUser.AccessToken);
             if (existingLineItems != null && existingLineItems.Count > 0)
             {
                 var product = await _meProductCommand.Get(lineItem.ProductID, verifiedUser);

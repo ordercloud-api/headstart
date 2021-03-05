@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
@@ -70,7 +71,9 @@ namespace Headstart.Common.Helpers
 
             if (!user.Active || user.Username != usr)
                 throw new Exception("Invalid User");
+            cid.AddClaim(new Claim("userrecordjson", JsonConvert.SerializeObject(user)));
             cid.AddClaim(new Claim("username", user.Username));
+            cid.AddClaim(new Claim("access", user.Username));
             cid.AddClaim(new Claim("userid", user.ID));
             cid.AddClaim(new Claim("email", user.Email ?? ""));
             cid.AddClaim(new Claim("buyer", user.Buyer?.ID ?? ""));

@@ -7,7 +7,6 @@ using ordercloud.integrations.library;
 using Headstart.Models.Attributes;
 using Headstart.Common.Models;
 using Headstart.Models.Misc;
-using Headstart.API.Controllers;
 using Headstart.API.Commands;
 using Headstart.Models.Headstart;
 using OrderCloud.Catalyst;
@@ -17,12 +16,16 @@ namespace Headstart.Common.Controllers
     [DocComments("\"Headstart Reports\" for generating and downloading reports in the Admin application")]
     [HSSection.Headstart(ListOrder = 11)]
     [Route("reports")]
-    public class ReportController : HeadstartController
+    public class ReportController : BaseController
     {
         private readonly IHSReportCommand _reportDataCommand;
-        private readonly DownloadReportCommand _downloadReportCommand;
+		private readonly DownloadReportCommand _downloadReportCommand;
+        private const string HSReportReader = "HSReportReader";
+        private const string HSReportAdmin = "HSReportAdmin";
+		private const string HSShipmentAdmin = "HSShipmentAdmin";
+        private const string AdminUserAdmin = "AdminUserAdmin";
 
-        public ReportController(IHSReportCommand reportDataCommand, AppSettings settings, DownloadReportCommand downloadReportCommand) : base(settings)
+        public ReportController(IHSReportCommand reportDataCommand, AppSettings settings, DownloadReportCommand downloadReportCommand)
         {
             _reportDataCommand = reportDataCommand;
             _downloadReportCommand = downloadReportCommand;
@@ -33,112 +36,97 @@ namespace Headstart.Common.Controllers
             public string[] Headers { get; set; }
         }
 
-        [HttpGet, Route("fetchAllReportTypes"), OrderCloudIntegrationsAuth]
+        [HttpGet, Route("fetchAllReportTypes"), OrderCloudUserAuth(HSReportReader, HSReportAdmin)]
         public ListPage<ReportTypeResource> FetchAllReportTypes()
         {
-            RequireOneOf(CustomRole.HSReportReader, CustomRole.HSReportAdmin);
-            return _reportDataCommand.FetchAllReportTypes(Context);
+            return _reportDataCommand.FetchAllReportTypes(UserContext);
         }
 
-        [HttpGet, Route("BuyerLocation/preview/{templateID}"), OrderCloudIntegrationsAuth]
+        [HttpGet, Route("BuyerLocation/preview/{templateID}"), OrderCloudUserAuth(HSReportReader, HSReportAdmin)]
         public async Task<List<HSAddressBuyer>> BuyerLocation(string templateID)
         {
-            RequireOneOf(CustomRole.HSReportReader, CustomRole.HSReportAdmin);
-            return await _reportDataCommand.BuyerLocation(templateID, Context);
+            return await _reportDataCommand.BuyerLocation(templateID, UserContext);
         }
 
-        [HttpPost, Route("BuyerLocation/download/{templateID}"), OrderCloudIntegrationsAuth]
+        [HttpPost, Route("BuyerLocation/download/{templateID}"), OrderCloudUserAuth(HSReportReader, HSReportAdmin)]
         public async Task<string> DownloadBuyerLocation([FromBody] ReportTemplate reportTemplate, string templateID)
         {
-            RequireOneOf(CustomRole.HSReportReader, CustomRole.HSReportAdmin);
-            var reportData = await _reportDataCommand.BuyerLocation(templateID, Context);
+            var reportData = await _reportDataCommand.BuyerLocation(templateID, UserContext);
             return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.BuyerLocation, reportTemplate, reportData);
         }
 
-        [HttpGet, Route("SalesOrderDetail/preview/{templateID}"), OrderCloudIntegrationsAuth]
+        [HttpGet, Route("SalesOrderDetail/preview/{templateID}"), OrderCloudUserAuth(HSReportAdmin)]
         public async Task<List<HSOrder>> SalesOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args)
         {
-            RequireOneOf(CustomRole.HSReportAdmin);
-            return await _reportDataCommand.SalesOrderDetail(templateID, args, Context);
+            return await _reportDataCommand.SalesOrderDetail(templateID, args, UserContext);
         }
 
-        [HttpPost, Route("SalesOrderDetail/download/{templateID}"), OrderCloudIntegrationsAuth]
+        [HttpPost, Route("SalesOrderDetail/download/{templateID}"), OrderCloudUserAuth(HSReportAdmin)]
         public async Task<string> DownloadSalesOrderDetail([FromBody] ReportTemplate reportTemplate, string templateID, ListArgs<ReportAdHocFilters> args)
         {
-            RequireOneOf(CustomRole.HSReportAdmin);
-            var reportData = await _reportDataCommand.SalesOrderDetail(templateID, args, Context);
+            var reportData = await _reportDataCommand.SalesOrderDetail(templateID, args, UserContext);
             return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.SalesOrderDetail, reportTemplate, reportData);
         }
 
-        [HttpGet, Route("PurchaseOrderDetail/preview/{templateID}"), OrderCloudIntegrationsAuth]
+        [HttpGet, Route("PurchaseOrderDetail/preview/{templateID}"), OrderCloudUserAuth(HSReportReader, HSReportAdmin)]
         public async Task<List<HSOrder>> PurchaseOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args)
         {
-            RequireOneOf(CustomRole.HSReportReader, CustomRole.HSReportAdmin);
-            return await _reportDataCommand.PurchaseOrderDetail(templateID, args, Context);
+            return await _reportDataCommand.PurchaseOrderDetail(templateID, args, UserContext);
         }
 
-        [HttpPost, Route("PurchaseOrderDetail/download/{templateID}"), OrderCloudIntegrationsAuth]
+        [HttpPost, Route("PurchaseOrderDetail/download/{templateID}"), OrderCloudUserAuth(HSReportReader, HSReportAdmin)]
         public async Task<string> DownloadPurchaseOrderDetail([FromBody] ReportTemplate reportTemplate, string templateID, ListArgs<ReportAdHocFilters> args)
         {
-            RequireOneOf(CustomRole.HSReportReader, CustomRole.HSReportAdmin);
-            var reportData = await _reportDataCommand.PurchaseOrderDetail(templateID, args, Context);
+            var reportData = await _reportDataCommand.PurchaseOrderDetail(templateID, args, UserContext);
             return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.PurchaseOrderDetail, reportTemplate, reportData);
         }
 
-        [HttpGet, Route("LineItemDetail/preview/{templateID}"), OrderCloudIntegrationsAuth]
+        [HttpGet, Route("LineItemDetail/preview/{templateID}"), OrderCloudUserAuth(HSReportReader, HSReportAdmin)]
         public async Task<List<HSLineItemOrder>> LineItemDetail(string templateID, ListArgs<ReportAdHocFilters> args)
         {
-            RequireOneOf(CustomRole.HSReportReader, CustomRole.HSReportAdmin);
-            return await _reportDataCommand.LineItemDetail(templateID, args, Context);
+            return await _reportDataCommand.LineItemDetail(templateID, args, UserContext);
         }
 
-        [HttpPost, Route("LineItemDetail/download/{templateID}"), OrderCloudIntegrationsAuth]
+        [HttpPost, Route("LineItemDetail/download/{templateID}"), OrderCloudUserAuth(HSReportReader, HSReportAdmin)]
         public async Task<string> DownloadLineItemDetail([FromBody] ReportTemplate reportTemplate, string templateID, ListArgs<ReportAdHocFilters> args)
         {
-            RequireOneOf(CustomRole.HSReportReader, CustomRole.HSReportAdmin);
-            var reportData = await _reportDataCommand.LineItemDetail(templateID, args, Context);
+            var reportData = await _reportDataCommand.LineItemDetail(templateID, args, UserContext);
             return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.LineItemDetail, reportTemplate, reportData);
         }
 
-        [HttpGet, Route("download-shared-access/{fileName}"), OrderCloudIntegrationsAuth]
+        [HttpGet, Route("download-shared-access/{fileName}"), OrderCloudUserAuth(HSReportReader, HSReportAdmin, HSShipmentAdmin)]
         public string GetSharedAccessSignature(string fileName)
         {
-            RequireOneOf(CustomRole.HSReportReader, CustomRole.HSReportAdmin, CustomRole.HSShipmentAdmin);
             return _downloadReportCommand.GetSharedAccessSignature(fileName);
         }
 
-        [HttpGet, Route("{reportType}/listtemplates"), OrderCloudIntegrationsAuth]
+        [HttpGet, Route("{reportType}/listtemplates"), OrderCloudUserAuth(HSReportReader, HSReportAdmin)]
         public async Task<List<ReportTemplate>> ListReportTemplatesByReportType(ReportTypeEnum reportType)
         {
-            RequireOneOf(CustomRole.HSReportReader, CustomRole.HSReportAdmin);
-            return await _reportDataCommand.ListReportTemplatesByReportType(reportType, Context);
+            return await _reportDataCommand.ListReportTemplatesByReportType(reportType, UserContext);
         }
 
-        [HttpPost, Route("{reportType}"), OrderCloudIntegrationsAuth(ApiRole.AdminUserAdmin)]
+        [HttpPost, Route("{reportType}"), OrderCloudUserAuth(HSReportAdmin, AdminUserAdmin)]
         public async Task<ReportTemplate> PostReportTemplate(ReportTypeEnum reportType, [FromBody] ReportTemplate reportTemplate)
         {
-            RequireOneOf(CustomRole.HSReportAdmin);
-            return await _reportDataCommand.PostReportTemplate(reportTemplate, Context);
+            return await _reportDataCommand.PostReportTemplate(reportTemplate, UserContext);
         }
 
-        [HttpGet, Route("{id}"), OrderCloudIntegrationsAuth(ApiRole.AdminUserAdmin)]
+        [HttpGet, Route("{id}"), OrderCloudUserAuth(HSReportAdmin, AdminUserAdmin)]
         public async Task<ReportTemplate> GetReportTemplate(string id)
         {
-            RequireOneOf(CustomRole.HSReportAdmin);
-            return await _reportDataCommand.GetReportTemplate(id, Context);
+            return await _reportDataCommand.GetReportTemplate(id, UserContext);
         }
 
-        [HttpPut, Route("{id}"), OrderCloudIntegrationsAuth(ApiRole.AdminUserAdmin)]
+        [HttpPut, Route("{id}"), OrderCloudUserAuth(HSReportAdmin, AdminUserAdmin)]
         public async Task<ReportTemplate> UpdateReportTemplate(string id, [FromBody] ReportTemplate reportTemplate)
         {
-            RequireOneOf(CustomRole.HSReportAdmin);
-            return await _reportDataCommand.UpdateReportTemplate(id, reportTemplate, Context);
+            return await _reportDataCommand.UpdateReportTemplate(id, reportTemplate, UserContext);
         }
 
-        [HttpDelete, Route("{id}"), OrderCloudIntegrationsAuth(ApiRole.AdminUserAdmin)]
+        [HttpDelete, Route("{id}"), OrderCloudUserAuth(HSReportAdmin, AdminUserAdmin)]
         public async Task DeleteReportTemplate(string id)
         {
-            RequireOneOf(CustomRole.HSReportAdmin);
             await _reportDataCommand.DeleteReportTemplate(id);
         }
     }

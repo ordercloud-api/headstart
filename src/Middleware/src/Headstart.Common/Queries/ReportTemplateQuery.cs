@@ -30,12 +30,12 @@ namespace Headstart.Common.Queries
 
         public async Task<List<ReportTemplate>> List(ReportTypeEnum reportType, VerifiedUserContext verifiedUser)
         {
-            var feedOptions = new FeedOptions() { PartitionKey = new PartitionKey($"{verifiedUser.User.Seller.ID}") };
+            var feedOptions = new FeedOptions() { PartitionKey = new PartitionKey($"{verifiedUser.Seller.ID}") };
             var templates = new List<ReportTemplate>();
-            if (verifiedUser.ParsedToken.UserType == "admin")
+            if (verifiedUser.UserType == "admin")
             {
                 templates = await _store.Query(feedOptions).Where(x => x.ReportType == reportType).ToListAsync();
-            } else if (verifiedUser.ParsedToken.UserType == "supplier")
+            } else if (verifiedUser.UserType == "supplier")
             {
                 templates = await _store.Query(feedOptions).Where(x => x.ReportType == reportType && x.AvailableToSuppliers == true).ToListAsync();
             }
@@ -45,7 +45,7 @@ namespace Headstart.Common.Queries
         public async Task<ReportTemplate> Post(ReportTemplate reportTemplate, VerifiedUserContext verifiedUser)
         {
             var template = reportTemplate;
-            template.SellerID = verifiedUser.User.Seller.ID;
+            template.SellerID = verifiedUser.Seller.ID;
             var newTemplate = await _store.AddAsync(template);
             return newTemplate;
         }

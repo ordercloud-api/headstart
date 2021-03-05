@@ -53,13 +53,13 @@ namespace ordercloud.integrations.cardconnect
 
 		public async Task<CreditCard> TokenizeAndSave(string buyerID, OrderCloudIntegrationsCreditCardToken card, VerifiedUserContext user)
 		{
-			var creditCard = await _oc.CreditCards.CreateAsync(buyerID, await Tokenize(card, user.RawToken), user.RawToken);
+			var creditCard = await _oc.CreditCards.CreateAsync(buyerID, await Tokenize(card, user.AccessToken), user.AccessToken);
 			return creditCard;
 		}
 
 		public async Task<BuyerCreditCard> MeTokenizeAndSave(OrderCloudIntegrationsCreditCardToken card, VerifiedUserContext user)
 		{
-			var buyerCreditCard = await _oc.Me.CreateCreditCardAsync(await MeTokenize(card, user.RawToken), user.RawToken);
+			var buyerCreditCard = await _oc.Me.CreateCreditCardAsync(await MeTokenize(card, user.AccessToken), user.AccessToken);
 			return buyerCreditCard;
 		}
 

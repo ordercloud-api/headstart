@@ -331,7 +331,7 @@ namespace Headstart.API.Commands
                     
                 };
 
-                ocShipment = await GetShipmentByTrackingNumber(shipment, userContext?.RawToken);
+                ocShipment = await GetShipmentByTrackingNumber(shipment, userContext?.AccessToken);
 
                 //If a user included a ShipmentID in the spreadsheet, find that shipment and patch it with the information on that row
                 if (ocShipment != null)
@@ -341,14 +341,14 @@ namespace Headstart.API.Commands
 
                 if (newShipment != null)
                 {
-                    Shipment processedShipment = await _oc.Shipments.PatchAsync(newShipment.ID, newShipment, userContext?.RawToken);
+                    Shipment processedShipment = await _oc.Shipments.PatchAsync(newShipment.ID, newShipment, userContext?.AccessToken);
 
                     //Before updating shipment item, must post the shipment line item comment to the order line item due to OC bug.
                     await PatchPartialLineItemComment(shipment, newShipment.ID);
 
                     await PatchLineItemStatus(shipment.OrderID, newShipmentItem, userContext);
                     //POST a shipment item, passing it a Shipment ID parameter, and a request body of Order ID, Line Item ID, and Quantity Shipped
-                    await _oc.Shipments.SaveItemAsync(newShipment.ID, newShipmentItem, accessToken: userContext?.RawToken);
+                    await _oc.Shipments.SaveItemAsync(newShipment.ID, newShipmentItem, accessToken: userContext?.AccessToken);
 
                     //Re-patch the shipment adding the date shipped now due to oc bug
                     var repatchedShipment = PatchShipment(ocShipment, shipment);

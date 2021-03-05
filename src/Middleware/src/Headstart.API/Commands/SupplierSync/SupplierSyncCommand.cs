@@ -27,7 +27,7 @@ namespace Headstart.API.Commands
         public async Task<JObject> GetOrderAsync(string ID, VerifiedUserContext user)
         {
             var supplierID = ID.Split("-")[1];
-            Require.That(user.ParsedToken.UserType == "admin" || supplierID == user.User.Supplier.ID, new ErrorCode("Unauthorized", 401, $"You are not authorized view this order"));
+            Require.That(user.UserType == "admin" || supplierID == user.Supplier.ID, new ErrorCode("Unauthorized", 401, $"You are not authorized view this order"));
             try
             {
                 var type = 

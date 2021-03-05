@@ -41,7 +41,7 @@ namespace Headstart.API.Commands
         public ListPage<ReportTypeResource> FetchAllReportTypes(VerifiedUserContext verifiedUser)
         {
             var types = ReportTypeResource.ReportTypes.ToList();
-            if (verifiedUser.ParsedToken.UserType == "supplier")
+            if (verifiedUser.UserType == "supplier")
             {
                 types = types.Where(type => type.AvailableToSuppliers).ToList();
             }
@@ -148,11 +148,11 @@ namespace Headstart.API.Commands
             string timeLow = GetAdHocFilterValue(args, "TimeLow");
             string dateHigh = GetAdHocFilterValue(args, "DateHigh");
             string timeHigh = GetAdHocFilterValue(args, "TimeHigh");
-            var orderDirection = verifiedUser.ParsedToken.UserType == "admin" ? OrderDirection.Outgoing : OrderDirection.Incoming;
+            var orderDirection = verifiedUser.UserType == "admin" ? OrderDirection.Outgoing : OrderDirection.Incoming;
             var orders = await _oc.Orders.ListAllAsync<HSOrder>(
                 orderDirection,
                 filters: $"from={dateLow}&to={dateHigh}",
-                accessToken: verifiedUser.RawToken
+                accessToken: verifiedUser.AccessToken
                 );
 
             // From User headers must pull from the Sales Order record
@@ -196,7 +196,7 @@ namespace Headstart.API.Commands
                         orderDirection,
                         order.ID,
                         pageSize: 1,
-                        accessToken: verifiedUser.RawToken
+                        accessToken: verifiedUser.AccessToken
                         );
                         order.xp.ShippingAddress = new HSAddressBuyer()
                         {
@@ -225,7 +225,7 @@ namespace Headstart.API.Commands
             var orders = await _oc.Orders.ListAllAsync<HSOrder>(
                 OrderDirection.Incoming,
                 filters: $"from={dateLow}&to={dateHigh}",
-                accessToken: verifiedUser.RawToken
+                accessToken: verifiedUser.AccessToken
                 );
 
             // From User headers must pull from the Sales Order record
@@ -253,7 +253,7 @@ namespace Headstart.API.Commands
             foreach (var order in filteredOrders)
             {
                 // If suppliers are reporting on From User information, this must come from the seller order instead.
-                if (template.Headers.Any(header => header.Contains("FromUser") && verifiedUser.ParsedToken.UserType == "supplier"))
+                if (template.Headers.Any(header => header.Contains("FromUser") && verifiedUser.UserType == "supplier"))
                 {
                     var matchingSalesOrder = salesOrders.Find(salesOrder => order.ID.Split('-')[0] == salesOrder.ID);
                     order.FromUser = matchingSalesOrder?.FromUser;
@@ -262,7 +262,7 @@ namespace Headstart.API.Commands
                 lineItems.AddRange(await _oc.LineItems.ListAllAsync<HSLineItem>(
                     OrderDirection.Incoming,
                     order.ID,
-                    accessToken: verifiedUser.RawToken
+                    accessToken: verifiedUser.AccessToken
                     ));
                 foreach (var lineItem in lineItems)
                 {
@@ -392,7 +392,7 @@ namespace Headstart.API.Commands
             {
                 return await _oc.Orders.ListAllAsync<HSOrder>(
                 OrderDirection.Incoming,
-                filters: verifiedUser.ParsedToken.UserType == "supplier" ? $"from={dateLow}&to={dateHigh}&xp.SupplierIDs={verifiedUser.User.Supplier.ID}" : $"from={dateLow}&to={dateHigh}"
+                filters: verifiedUser.UserType == "supplier" ? $"from={dateLow}&to={dateHigh}&xp.SupplierIDs={verifiedUser.Supplier.ID}" : $"from={dateLow}&to={dateHigh}"
                 );
             }
             return null;

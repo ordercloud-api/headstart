@@ -5,41 +5,41 @@ using System.Threading.Tasks;
 using Headstart.Models.Attributes;
 using ordercloud.integrations.library;
 using Headstart.Models;
-using Headstart.API.Controllers;
 using Headstart.API.Commands;
+using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
     [DocComments("\"Headstart Suppliers\" represents Supplier in Headstart")]
     [HSSection.Headstart(ListOrder = 2)]
     [Route("supplier")]
-    public class SupplierController: HeadstartController
+    public class SupplierController: BaseController
     {
 
 		private readonly IHSSupplierCommand _command;
         private readonly IOrderCloudClient _oc;
-        public SupplierController(IHSSupplierCommand command, IOrderCloudClient oc, AppSettings settings) : base(settings)
+        public SupplierController(IHSSupplierCommand command, IOrderCloudClient oc)
         {
             _command = command;
 			_oc = oc;
         }
 
 		[DocName("GET HSSupplier")]
-		[HttpGet, Route("me/{supplierID}"), OrderCloudIntegrationsAuth]
+		[HttpGet, Route("me/{supplierID}"), OrderCloudUserAuth]
 		public async Task<HSSupplier> GetMySupplier(string supplierID)
 		{
-			return await _command.GetMySupplier(supplierID, Context);
+			return await _command.GetMySupplier(supplierID, UserContext);
 		}
 
 		[DocName("POST Headstart Supplier")]
-		[HttpPost, OrderCloudIntegrationsAuth(ApiRole.SupplierAdmin)]
+		[HttpPost, OrderCloudUserAuth(ApiRole.SupplierAdmin)]
 		public async Task<HSSupplier> Create([FromBody] HSSupplier supplier)
 		{
-			return await _command.Create(supplier, Context.RawToken);
+			return await _command.Create(supplier, UserContext.AccessToken);
 		}
 
 		[DocName("GET If Location Deletable")]
-		[HttpGet, Route("candelete/{locationID}"), OrderCloudIntegrationsAuth(ApiRole.SupplierAddressAdmin)]
+		[HttpGet, Route("candelete/{locationID}"), OrderCloudUserAuth(ApiRole.SupplierAddressAdmin)]
 		public async Task<bool> CanDeleteLocation(string locationID)
 		{
 			var productList = await _oc.Products.ListAsync(filters: $"ShipFromAddressID={locationID}");
@@ -48,17 +48,17 @@ namespace Headstart.Common.Controllers
 
 		[DocName("PATCH Supplier")]
 		[DocIgnore] // PartialSupplier throws an openapi error?
-		[HttpPatch, Route("{supplierID}"), OrderCloudIntegrationsAuth]
+		[HttpPatch, Route("{supplierID}"), OrderCloudUserAuth]
 		public async Task<HSSupplier> UpdateSupplier(string supplierID, [FromBody] PartialSupplier supplier)
 		{
-			return await _command.UpdateSupplier(supplierID, supplier, Context);
+			return await _command.UpdateSupplier(supplierID, supplier, UserContext);
 		}
 
 		[DocName("GET Supplier Order Details")]
-		[HttpGet, Route("orderdetails/{supplierOrderID}"), OrderCloudIntegrationsAuth(ApiRole.OrderAdmin, ApiRole.OrderReader)]
+		[HttpGet, Route("orderdetails/{supplierOrderID}"), OrderCloudUserAuth(ApiRole.OrderAdmin, ApiRole.OrderReader)]
 		public async Task<HSSupplierOrderData> GetSupplierOrder(string supplierOrderID)
         {
-			return await _command.GetSupplierOrderData(supplierOrderID, Context);
+			return await _command.GetSupplierOrderData(supplierOrderID, UserContext);
         }
 
 	}

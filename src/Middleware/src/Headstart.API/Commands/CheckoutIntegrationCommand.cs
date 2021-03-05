@@ -274,7 +274,7 @@ namespace Headstart.API.Commands
 
         public async Task<HSOrderCalculateResponse> CalculateOrder(string orderID, VerifiedUserContext user)
         {
-            var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID, user.RawToken);
+            var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID, user.AccessToken);
             return await this.CalculateOrder(new HSOrderCalculatePayload()
             {
                 ConfigData = null,

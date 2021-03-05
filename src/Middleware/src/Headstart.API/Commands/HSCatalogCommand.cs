@@ -32,7 +32,7 @@ namespace Headstart.API.Commands.Crud
 
 		public async Task<HSCatalog> Get(string buyerID, string catalogID, VerifiedUserContext user)
 		{
-			return await _oc.UserGroups.GetAsync<HSCatalog>(buyerID, catalogID, user.RawToken);
+			return await _oc.UserGroups.GetAsync<HSCatalog>(buyerID, catalogID, user.AccessToken);
 		}
 
 		public async Task<ListPage<HSCatalog>> List(string buyerID, ListArgs<HSCatalog> args, VerifiedUserContext user)
@@ -42,7 +42,7 @@ namespace Headstart.API.Commands.Crud
 				search: args.Search,
 				pageSize: args.PageSize,
 				page: args.Page,
-				accessToken: user.RawToken);
+				accessToken: user.AccessToken);
 		}
 		
 		public async Task<ListPage<HSCatalogAssignment>> GetAssignments(string buyerID, string locationID, VerifiedUserContext user)
@@ -51,7 +51,7 @@ namespace Headstart.API.Commands.Crud
 			// currently they can only be assessed by location ID
 			// limiting to 20 catalog assignments for now
 
-			var location = await _oc.UserGroups.GetAsync<HSLocationUserGroup>(buyerID, locationID, user.RawToken);
+			var location = await _oc.UserGroups.GetAsync<HSLocationUserGroup>(buyerID, locationID, user.AccessToken);
 
 			var catalogAssignments = new List<HSCatalogAssignment>{};
 			
@@ -118,17 +118,17 @@ namespace Headstart.API.Commands.Crud
 
 		public async Task<HSCatalog> Post(string buyerID, HSCatalog catalog, VerifiedUserContext user)
 		{
-			return await _oc.UserGroups.CreateAsync<HSCatalog>(buyerID, catalog, user.RawToken);
+			return await _oc.UserGroups.CreateAsync<HSCatalog>(buyerID, catalog, user.AccessToken);
 		}
 
 		public async Task<HSCatalog> Put(string buyerID, string catalogID, HSCatalog catalog, VerifiedUserContext user)
 		{
-			return await _oc.UserGroups.SaveAsync<HSCatalog>(buyerID, catalogID, catalog, user.RawToken);
+			return await _oc.UserGroups.SaveAsync<HSCatalog>(buyerID, catalogID, catalog, user.AccessToken);
 		}
 
 		public async Task Delete(string buyerID, string catalogID, VerifiedUserContext user)
 		{
-			await _oc.UserGroups.DeleteAsync(buyerID, catalogID, user.RawToken);
+			await _oc.UserGroups.DeleteAsync(buyerID, catalogID, user.AccessToken);
 		}
 	}
 }

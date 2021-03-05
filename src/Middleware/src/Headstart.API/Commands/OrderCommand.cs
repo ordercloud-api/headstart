@@ -154,7 +154,7 @@ namespace Headstart.API.Commands
              * 3) the order is awaiting approval and the user is in the approving group 
              */ 
 
-            var isOrderSubmitter = order.FromUserID == verifiedUser.User.ID;
+            var isOrderSubmitter = order.FromUserID == verifiedUser.ID;
             if (isOrderSubmitter)
             {
                 return;

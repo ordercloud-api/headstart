@@ -87,7 +87,9 @@ namespace Headstart.API
 
             services
                 .AddLazyCache()
-                .ConfigureServices<AppSettings>(new OrderCloudWebhookAuthOptions { HashKey = _settings.OrderCloudSettings.WebhookHashKey })
+                .ConfigureServices()
+                .AddOrderCloudUserAuth<AppSettings>()
+                .AddOrderCloudWebhookAuth(opts => opts.HashKey = _settings.OrderCloudSettings.WebhookHashKey)
                 .InjectCosmosStore<LogQuery, OrchestrationLog>(cosmosConfig)
                 .InjectCosmosStore<ReportTemplateQuery, ReportTemplate>(cosmosConfig)
                 .AddCosmosDb(_settings.CosmosSettings.EndpointUri, _settings.CosmosSettings.PrimaryKey, _settings.CosmosSettings.DatabaseName, cosmosContainers)
@@ -156,8 +158,7 @@ namespace Headstart.API
                 {
                     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Headstart API", Version = "v1" });
                     c.CustomSchemaIds(x => x.FullName);
-                })
-                .AddAuthentication();
+                });
             var serviceProvider = services.BuildServiceProvider();
             services
                 .AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions
