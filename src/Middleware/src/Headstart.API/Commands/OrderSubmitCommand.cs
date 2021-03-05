@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models.Headstart;
 using Headstart.Common;
+using OrderCloud.Catalyst;
 
 namespace Headstart.API.Commands
 {
@@ -94,12 +95,7 @@ namespace Headstart.API.Commands
                 var errors = ex.Errors.Where(ex => ex.ErrorCode != "Order.CannotSubmitWithUnaccceptedPayments");
                 if(errors.Any())
                 {
-                    throw new OrderCloudIntegrationException(new ApiError
-                    {
-                        ErrorCode = "OrderSubmit.OrderCloudValidationError",
-                        Message = "Failed ordercloud validation, see Data for details",
-                        Data = errors
-                    });
+                    throw new CatalystBaseException("OrderSubmit.OrderCloudValidationError", 400, "Failed ordercloud validation, see Data for details", errors);
                 }
             }
             

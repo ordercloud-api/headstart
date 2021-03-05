@@ -3,6 +3,7 @@ using OrderCloud.SDK;
 using System;
 using System.Linq;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 
 namespace ordercloud.integrations.avalara
 {
@@ -33,7 +34,7 @@ namespace ordercloud.integrations.avalara
 
 		public static TaxCodesListArgs Map(ListArgs<TaxCode> source)
 		{
-			var taxCategory = source?.Filters?[0]?.Values?[0]?.Term ?? ""; // TODO - error if no term provided
+			var taxCategory = source?.Filters?[0]?.FilterValues?[0]?.Term ?? ""; // TODO - error if no term provided
 			var taxCategorySearch = taxCategory.Trim('0');
 			var search = source.Search;
 			var filter = search != "" ? $"isActive eq true and taxCode startsWith '{taxCategorySearch}' and (taxCode contains '{search}' OR description contains '{search}')" : $"isActive eq true and taxCode startsWith '{taxCategorySearch}'";

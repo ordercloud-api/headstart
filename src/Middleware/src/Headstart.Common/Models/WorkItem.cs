@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Models
 {

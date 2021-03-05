@@ -12,6 +12,7 @@ using Headstart.Models;
 using System;
 using NSubstitute.ExceptionExtensions;
 using Headstart.API.Commands;
+using OrderCloud.Catalyst;
 
 namespace Headstart.Tests
 {
@@ -57,7 +58,7 @@ namespace Headstart.Tests
             }));
 
             // Act
-            var ex = Assert.ThrowsAsync<OrderCloudIntegrationException>(async () => await _sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new OrderCloudIntegrationsCreditCardPayment { }, "mockUserToken"));
+            var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => await _sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new OrderCloudIntegrationsCreditCardPayment { }, "mockUserToken"));
 
             // Assert
             Assert.AreEqual("OrderSubmit.AlreadySubmitted", ex.ApiError.ErrorCode);
@@ -87,7 +88,7 @@ namespace Headstart.Tests
             }));
 
             // Act
-            var ex = Assert.ThrowsAsync<OrderCloudIntegrationException>(async () => await _sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new OrderCloudIntegrationsCreditCardPayment { }, "mockUserToken"));
+            var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => await _sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new OrderCloudIntegrationsCreditCardPayment { }, "mockUserToken"));
 
             // Assert
             Assert.AreEqual("OrderSubmit.MissingShippingSelections", ex.ApiError.ErrorCode);
@@ -126,7 +127,7 @@ namespace Headstart.Tests
             }));
 
             // Act
-            var ex = Assert.ThrowsAsync<OrderCloudIntegrationException>(async () => await _sut.SubmitOrderAsync("mockOrderID", OrderDirection.Outgoing, null, "mockUserToken"));
+            var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => await _sut.SubmitOrderAsync("mockOrderID", OrderDirection.Outgoing, null, "mockUserToken"));
 
             // Assert
             Assert.AreEqual("OrderSubmit.MissingPayment", ex.ApiError.ErrorCode);

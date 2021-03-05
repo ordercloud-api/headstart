@@ -2,6 +2,7 @@
 using Flurl.Http;
 using Headstart.Common.Services.CMS.Models;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
@@ -84,11 +85,6 @@ namespace Headstart.Common.Services.CMS
 
 		protected async Task<ListPage<T>> ListAsync<T>(ListArgs<T> args, string token, params string[] pathSegments)
 		{
-			var filters = args.Filters.Select(f => {
-				var param = f.QueryParams.FirstOrDefault();
-				return new { key = param.Item1, value = param.Item2 };
-			});
-
 			var queryParams = new Dictionary<string, string>()
 			{
 				{ "search", args.Search },
@@ -102,7 +98,7 @@ namespace Headstart.Common.Services.CMS
 
 			return await BuildRequest(token, pathSegments)
 				.SetQueryParams(queryParams)
-				.SetQueryParams(filters)
+				.SetQueryParams(args.ToFilterString())
 				.GetJsonAsync<ListPage<T>>();
 		}
 

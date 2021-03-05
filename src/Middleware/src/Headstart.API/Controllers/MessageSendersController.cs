@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Headstart.Models.Misc;
 using ordercloud.integrations.library;
 using Headstart.API.Commands;
+using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {

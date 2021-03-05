@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 using RequiredAttribute = OrderCloud.SDK.RequiredAttribute;
 
@@ -40,13 +41,12 @@ namespace ordercloud.integrations.library
 
         private static readonly HashSet<Type> _customTypes = new HashSet<Type>();
 
-        public static ApiMetaData GetMetaData<TController, TAttribute>(string refPath, IDictionary<string, IErrorCode> errors)
+        public static ApiMetaData GetMetaData<TController>(string refPath, IDictionary<string, IErrorCode> errors)
             where TController : Controller
-            where TAttribute : Attribute, IApiAuthAttribute
         {
             return new ApiMetaData
             {
-                Sections = GetSections<TController, TAttribute>(refPath).ToList(),
+                Sections = GetSections<TController>(refPath).ToList(),
                 Models = (
                     from t in _customTypes
                     where !t.IsEnum
@@ -66,9 +66,8 @@ namespace ordercloud.integrations.library
             };
         }
 
-        private static IEnumerable<ApiSection> GetSections<TController, TAttribute>(string refPath)
+        private static IEnumerable<ApiSection> GetSections<TController>(string refPath)
             where TController : Controller
-            where TAttribute : Attribute, IApiAuthAttribute
         {
             var isComment = false;
             ApiSection section = null;
@@ -95,7 +94,7 @@ namespace ordercloud.integrations.library
                         if (section != null)
                             yield return section;
 
-                        var res = GetResources<TController, TAttribute>(id).ToList();
+                        var res = GetResources<TController>(id).ToList();
                         section = new ApiSection
                         {
                             ID = id,
@@ -115,7 +114,7 @@ namespace ordercloud.integrations.library
                 yield return section;
         }
 
-        private static IEnumerable<ApiResource> GetResources<TController, TAttribute>(string sectionID) where TAttribute : Attribute, IApiAuthAttribute
+        private static IEnumerable<ApiResource> GetResources<TController>(string sectionID)
         {
             var temp = Assembly.GetAssembly(typeof(TController)).GetExportedTypes();
 
@@ -126,7 +125,7 @@ namespace ordercloud.integrations.library
                 let section = c.GetAttribute<DocSection>()
                 where section != null && section.ID == sectionID
                 let name = c.ControllerFriendlyName()
-                let endpoints = GetEndpoints<TController, TAttribute>(c, name).ToList()
+                let endpoints = GetEndpoints<TController>(c, name).ToList()
                 where endpoints.Any()
                 orderby section.ListOrder, name
                 select new ApiResource
@@ -140,7 +139,7 @@ namespace ordercloud.integrations.library
             return resource;
         }
 
-        private static IEnumerable<ApiEndpoint> GetEndpoints<TController, TAttribute>(Type c, string resource) where TAttribute : Attribute, IApiAuthAttribute
+        private static IEnumerable<ApiEndpoint> GetEndpoints<TController>(Type c, string resource)
         {
             var result = from m in c.GetMethods()
                          let verb =
@@ -168,18 +167,18 @@ namespace ordercloud.integrations.library
                              RequestModel = GetModelFromType(requestType, m, false, true),
                              ResponseModel = GetModelFromType(responseType, m, true, false),
                              HttpStatus = responseType.HttpStatusCode(verb),
-                             RequiredRoles = GetRequiredRoles<TAttribute>(m),
+                             RequiredRoles = GetRequiredRoles(m),
                              IsList = responseType.UnwrapGeneric(typeof(Task<>)).IsListPage(),
                              HasListArgs = m.GetParameters().Any(p => p.ParameterType.WithoutGenericArgs() == typeof(ListArgs<>))
                          };
             return result;
         }
 
-        private static IList<string> GetRequiredRoles<T>(MethodInfo m) where T : Attribute, IApiAuthAttribute
+        private static IList<string> GetRequiredRoles(MethodInfo m)
         {
-            var roles = m.GetAttributes<T>().SelectMany(r => r.ApiRoles).ToList();
-            if (roles.Any() && !roles.Contains(ApiRole.FullAccess))
-                roles.Insert(0, ApiRole.FullAccess);
+            var roles = m.GetAttributes<OrderCloudUserAuthAttribute>().SelectMany(r => r.Roles.Split(",")).ToList();
+            if (roles.Any() && !roles.Contains("FullAccess"))
+                roles.Insert(0, "FullAccess");
 
             return roles.Select(r => r.ToString()).ToList();
         }

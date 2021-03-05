@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Humanizer;
 using Newtonsoft.Json.Linq;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
 namespace ordercloud.integrations.library

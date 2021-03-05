@@ -5,6 +5,7 @@ using Headstart.Common.Models;
 using System.Linq;
 using Headstart.Common.Repositories;
 using Microsoft.Azure.Cosmos;
+using OrderCloud.Catalyst;
 
 namespace Headstart.API.Commands
 {
@@ -31,7 +32,7 @@ namespace Headstart.API.Commands
 
         public async Task<CosmosListPage<RMA>> ListMeRMAs(CosmosListOptions listOptions, VerifiedUserContext verifiedUser)
         {
-            IQueryable<RMA> queryable = _rmaRepo.GetQueryable().Where(rma => rma.FromBuyerUserID == verifiedUser.UserID);
+            IQueryable<RMA> queryable = _rmaRepo.GetQueryable().Where(rma => rma.FromBuyerUserID == verifiedUser.ID);
 
             CosmosListPage<RMA> rmas = await GenerateRMAList(queryable, listOptions);
             return rmas;
@@ -39,7 +40,7 @@ namespace Headstart.API.Commands
 
         public async Task<CosmosListPage<RMA>> ListBuyerRMAs(CosmosListOptions listOptions, VerifiedUserContext verifiedUser)
         {
-            IQueryable<RMA> queryable = _rmaRepo.GetQueryable().Where(rma => rma.FromBuyerID == verifiedUser.BuyerID);
+            IQueryable<RMA> queryable = _rmaRepo.GetQueryable().Where(rma => rma.FromBuyerID == verifiedUser.Buyer.ID);
 
             CosmosListPage<RMA> rmas = await GenerateRMAList(queryable, listOptions);
             return rmas;

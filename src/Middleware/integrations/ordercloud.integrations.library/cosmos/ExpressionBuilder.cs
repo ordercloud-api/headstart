@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 
 namespace ordercloud.integrations.library.Cosmos
 {
@@ -24,7 +25,7 @@ namespace ordercloud.integrations.library.Cosmos
         private static Expression GetExpression<T>(Expression param, ListFilter filter)
         {
             var member = param;
-            member = filter.Name.Split(".").Aggregate(member, Expression.Property); // takes X.X notation and gets to the nested property member
+            member = filter.PropertyName.Split(".").Aggregate(member, Expression.Property); // takes X.X notation and gets to the nested property member
 
             var propertyType = ((PropertyInfo)member.To<MemberExpression>().Member).PropertyType;
             if (propertyType.GetInterface(nameof(IList)) != null) {
@@ -40,7 +41,7 @@ namespace ordercloud.integrations.library.Cosmos
         private static Expression ORExpressions(this ListFilter filter, Func<ListFilterValue, Expression> func)
 		{
             var seed = Expression.Constant(false);
-            return filter.Values.Aggregate<ListFilterValue, Expression>(seed, (expression, filter) => Expression.OrElse(expression, func(filter)));
+            return filter.FilterValues.Aggregate<ListFilterValue, Expression>(seed, (expression, filter) => Expression.OrElse(expression, func(filter)));
         }
 
         private static Expression ANDExpressions(this IList<ListFilter> filters, Func<ListFilter, Expression> func)
@@ -57,8 +58,8 @@ namespace ordercloud.integrations.library.Cosmos
 
             var expr = GetExpression<T>(param, new ListFilter()
             {
-                Name = args?.SearchOn,
-                Values = new List<ListFilterValue>()
+                PropertyName = args?.SearchOn,
+                FilterValues = new List<ListFilterValue>()
                 {
                     new ListFilterValue() { Operator = ListFilterOperator.Equal, Term = args?.Search, WildcardPositions = new List<int>(){0,1} }
                 }

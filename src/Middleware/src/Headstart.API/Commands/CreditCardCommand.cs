@@ -9,6 +9,7 @@ using Headstart.Models;
 using Headstart.Models.Headstart;
 using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 using Polly;
 using Polly.Retry;
@@ -89,11 +90,7 @@ namespace ordercloud.integrations.cardconnect
 			var ocPayment = ocPayments.Any() ? ocPayments[0] : null;
 			if(ocPayment == null)
             {
-				throw new OrderCloudIntegrationException(new ApiError
-				{
-					ErrorCode = "Payment.MissingCreditCardPayment",
-					Message = "Order is missing credit card payment"
-				});
+				throw new CatalystBaseException("Payment.MissingCreditCardPayment", 400, "Order is missing credit card payment");
             }
             try
             {
@@ -115,12 +112,7 @@ namespace ordercloud.integrations.cardconnect
             {
                 ocPayment = await WithRetry().ExecuteAsync(() => _oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, order.ID, ocPayment.ID, new PartialPayment { Accepted = false, Amount = ccAmount }));
 				await WithRetry().ExecuteAsync(() => _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, ocPayment.ID, CardConnectMapper.Map(ocPayment, ex.Response)));
-                throw new OrderCloudIntegrationException(new ApiError()
-                {
-                    Data = ex.Response,
-                    Message = ex.ApiError.Message,
-                    ErrorCode = $"CreditCardAuth.{ex.ApiError.ErrorCode}"
-                });
+				throw new CatalystBaseException($"CreditCardAuth.{ex.ApiError.ErrorCode}", 400, ex.ApiError.Message, ex.Response);
 			}
 		}
 
@@ -166,11 +158,7 @@ namespace ordercloud.integrations.cardconnect
 
 				await _supportAlerts.VoidAuthorizationFailed(payment, transactionID, order, ex);
 				await WithRetry().ExecuteAsync(() => _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, ex.Response)));
-				throw new OrderCloudIntegrationException(new ApiError
-				{
-					ErrorCode = "Payment.FailedToVoidAuthorization",
-					Message = ex.ApiError.Message
-				});
+				throw new CatalystBaseException("Payment.FailedToVoidAuthorization", 400, ex.ApiError.Message);
 			}
 		}
 

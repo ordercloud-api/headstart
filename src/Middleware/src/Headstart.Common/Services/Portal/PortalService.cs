@@ -4,6 +4,7 @@ using Flurl.Http;
 using Flurl.Http.Configuration;
 using Headstart.Common.Services.Portal.Models;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Services
@@ -43,10 +44,10 @@ namespace Headstart.Common.Services
                 return response.access_token;
             } catch(FlurlHttpException ex)
             {
-                throw new OrderCloudIntegrationException(new ApiError {
-                    Message = "Error logging in to portal. Please make sure your username and password are correct",
-                    ErrorCode = ex.Call.Response.StatusCode.ToString()
-                });
+                throw new CatalystBaseException(
+                    ex.Call.Response.StatusCode.ToString(),
+                    400,
+                    "Error logging in to portal. Please make sure your username and password are correct");
             }
         }
 

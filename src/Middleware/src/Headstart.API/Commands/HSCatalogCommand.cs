@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Headstart.Common;
 using Headstart.Models;
 using ordercloud.integrations.library;
-using ordercloud.integrations.library.helpers;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Commands.Crud
@@ -37,12 +37,8 @@ namespace Headstart.API.Commands.Crud
 
 		public async Task<ListPage<HSCatalog>> List(string buyerID, ListArgs<HSCatalog> args, VerifiedUserContext user)
 		{
-			var queryParamsForCatalogUserGroup = new Tuple<string, string>("xp.Type", "Catalog");
-			args.Filters.Add(new ListFilter()
-			{
-				QueryParams = new List<Tuple<string, string>> { queryParamsForCatalogUserGroup }
-			});
-			return await _oc.UserGroups.ListAsync<HSCatalog>(buyerID, filters: args.ToFilterString(),
+			return await _oc.UserGroups.ListAsync<HSCatalog>(buyerID, 
+				filters: "xp.Type=Catalog",
 				search: args.Search,
 				pageSize: args.PageSize,
 				page: args.Page,
@@ -81,7 +77,7 @@ namespace Headstart.API.Commands.Crud
 		//	Then we add or remove usergroup assignments so the actual assignments allign with what is in the BuyerLocation usergroups
 		public async Task SyncUserCatalogAssignments(string buyerID, string userID)
         {
-			var currentAssignments = await ListAllAsync.List((page) => _oc.UserGroups.ListUserAssignmentsAsync(buyerID: buyerID, userID: userID, page: page, pageSize: 100));
+			var currentAssignments = await _oc.UserGroups.ListAllUserAssignmentsAsync(buyerID: buyerID, userID: userID);
 			var currentAssignedCatalogIDs = currentAssignments?.Select(assignment => assignment?.UserGroupID)?.ToList();
 			var currentUserGroups = await _oc.UserGroups.ListAsync<HSLocationUserGroup>(buyerID: buyerID, filters: $"ID={string.Join("|", currentAssignedCatalogIDs)}");
 			var catalogsUserShouldSee = currentUserGroups?.Items?.Where(item => (item?.xp?.Type == "BuyerLocation"))?.SelectMany(c => c?.xp?.CatalogAssignments);
@@ -108,7 +104,7 @@ namespace Headstart.API.Commands.Crud
 		{
 			try
 			{
-				var users = await ListAllAsync.List((page) => _oc.Users.ListAsync<HSUser>(buyerID, userGroupID: locationID, page: page, pageSize: 100));
+				var users = await _oc.Users.ListAllAsync<HSUser>(buyerID, userGroupID: locationID);
 				await Throttler.RunAsync(users, 100, 4, user =>
 				{
 					return SyncUserCatalogAssignments(buyerID, user.ID);
