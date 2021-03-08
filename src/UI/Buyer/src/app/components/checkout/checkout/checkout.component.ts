@@ -121,7 +121,7 @@ export class OCMCheckout implements OnInit {
       void this.router.navigate(['/cart'])
     } else {
       await this.reIDLineItems()
-      this.destoryLoadingIndicator(this.currentPanel)
+      this.destoryLoadingIndicator(this.isAnon ? 'login' : 'shippingAddress')
     }
   }
 

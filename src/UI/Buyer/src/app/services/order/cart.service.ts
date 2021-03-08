@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { Orders, LineItems, Me, LineItemSpec } from 'ordercloud-javascript-sdk'
+import { Orders, LineItems, Me, LineItemSpec, Order, LineItem } from 'ordercloud-javascript-sdk'
 import { Subject } from 'rxjs'
 import { OrderStateService } from './order-state.service'
 import { isUndefined as _isUndefined } from 'lodash'
@@ -11,6 +11,7 @@ import {
 } from '@ordercloud/headstart-sdk'
 import { CheckoutService } from './checkout.service'
 import { listAll } from '../listAll'
+import { CurrentUserService } from '../current-user/current-user.service'
 
 @Injectable({
   providedIn: 'root',
@@ -24,7 +25,8 @@ export class CartService {
 
   constructor(
     private state: OrderStateService,
-    private checkout: CheckoutService
+    private checkout: CheckoutService,
+    private userService: CurrentUserService
   ) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.onChange = this.state.onLineItemsChange.bind(this.state)
@@ -99,7 +101,11 @@ export class CartService {
     }
     if (!this.initializingOrder) {
       this.initializingOrder = true
-      await this.state.reset()
+      if(this.userService.isAnonymous()) {
+        await this.state.createAndSetOrder(this.order)
+      } else {
+        await this.state.reset()
+      }
       this.initializingOrder = false
       return await this.upsertLineItem(lineItem)
     }
@@ -153,6 +159,20 @@ export class CartService {
     } finally {
       await this.state.reset()
     }
+  }
+
+  async AddValidLineItemsToCart(validLi: Array<LineItem>): Promise<void> {
+    const items = validLi.map((li) => {
+      return {
+        ProductID: li.Product.ID,
+        Quantity: li.Quantity,
+        Specs: li.Specs,
+        xp: {
+          ImageUrl: li.xp?.ImageUrl,
+        },
+      }
+    })
+    await this.addMany(items);
   }
 
   async addMany(

@@ -55,7 +55,8 @@
                 <div class="col-4">
                   <button
                     class="btn btn-block btn-primary"
-                    routerLink="/login"
+                    [routerLink]="['/login']"
+                    [queryParams]="{redirect: 'checkout'}"
                     translate
                   >
                     COMMON.LOGIN
