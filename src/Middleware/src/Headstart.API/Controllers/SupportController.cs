@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Headstart.API.Commands;
 using Headstart.API.Commands.Zoho;
-using Headstart.API.Controllers;
 using Headstart.Common.Models.Misc;
 using Headstart.Common.Services;
 using Headstart.Common.Services.ShippingIntegration.Models;
@@ -10,6 +9,7 @@ using Headstart.Models;
 using Headstart.Models.Headstart;
 using Microsoft.AspNetCore.Mvc;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Controllers
@@ -23,7 +23,7 @@ namespace Headstart.Common.Controllers
         private readonly IOrderCloudClient _oc;
         private readonly ISendgridService _sendgrid;
 
-        public SupportController(AppSettings settings, ICheckoutIntegrationCommand checkoutIntegrationCommand, IPostSubmitCommand postSubmitCommand, IZohoCommand zoho, IOrderCloudClient oc, ISupportAlertService supportAlertService, ISendgridService sendgrid) : base(settings)
+        public SupportController(ICheckoutIntegrationCommand checkoutIntegrationCommand, IPostSubmitCommand postSubmitCommand, IZohoCommand zoho, IOrderCloudClient oc, ISupportAlertService supportAlertService, ISendgridService sendgrid)
         {
             _checkoutIntegrationCommand = checkoutIntegrationCommand;
             _postSubmitCommand = postSubmitCommand;
@@ -47,10 +47,10 @@ namespace Headstart.Common.Controllers
         }
 
         [Route("tax/{orderID}")]
-        [HttpGet, OrderCloudIntegrationsAuth(ApiRole.IntegrationEventAdmin)]
+        [HttpGet, OrderCloudUserAuth(ApiRole.IntegrationEventAdmin)]
         public async Task<OrderCalculateResponse> CalculateOrder(string orderID)
         {
-            var orderCalculationResponse = await _checkoutIntegrationCommand.CalculateOrder(orderID, this.VerifiedUserContext);
+            var orderCalculationResponse = await _checkoutIntegrationCommand.CalculateOrder(orderID, UserContext);
             return orderCalculationResponse;
         }
 
@@ -61,10 +61,10 @@ namespace Headstart.Common.Controllers
             return retry;
         }
 
-        [HttpGet, Route("shipping/validate/{orderID}"), OrderCloudIntegrationsAuth(ApiRole.IntegrationEventAdmin)]
+        [HttpGet, Route("shipping/validate/{orderID}"), OrderCloudUserAuth(ApiRole.IntegrationEventAdmin)]
         public async Task<OrderSubmitResponse> RetryShippingValidate(string orderID)
         {
-            var retry = await _postSubmitCommand.HandleShippingValidate(orderID, this.VerifiedUserContext);
+            var retry = await _postSubmitCommand.HandleShippingValidate(orderID, UserContext);
             return retry;
         }
 
@@ -75,7 +75,7 @@ namespace Headstart.Common.Controllers
             return await _checkoutIntegrationCommand.GetRatesAsync(orderID);
         }
 
-        [HttpPost, Route("postordersubmit/{orderID}"), OrderCloudIntegrationsAuth]
+        [HttpPost, Route("postordersubmit/{orderID}"), OrderCloudUserAuth]
         public async Task<OrderSubmitResponse> ManuallyRunPostOrderSubmit(string orderID)
         {
             var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);

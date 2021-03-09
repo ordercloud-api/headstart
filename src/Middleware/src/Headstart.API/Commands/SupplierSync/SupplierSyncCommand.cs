@@ -5,6 +5,7 @@ using Headstart.Common;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
@@ -26,7 +27,7 @@ namespace Headstart.API.Commands
         public async Task<JObject> GetOrderAsync(string ID, VerifiedUserContext user)
         {
             var supplierID = ID.Split("-")[1];
-            Require.That(user.UsrType == "admin" || supplierID == user.SupplierID, new ErrorCode("Unauthorized", 401, $"You are not authorized view this order"));
+            Require.That(user.UserType == "admin" || supplierID == user.Supplier.ID, new ErrorCode("Unauthorized", 401, $"You are not authorized view this order"));
             try
             {
                 var type = 

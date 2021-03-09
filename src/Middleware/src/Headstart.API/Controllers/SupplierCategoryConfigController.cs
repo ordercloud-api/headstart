@@ -6,8 +6,8 @@ using ordercloud.integrations.library;
 using Headstart.Models;
 using Headstart.Common.Services.CMS;
 using Headstart.Common.Services.CMS.Models;
-using Headstart.API.Controllers;
 using System.Collections.Generic;
+using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
@@ -20,13 +20,13 @@ namespace Headstart.Common.Controllers
     [HSSection.Headstart(ListOrder = 5)]
     public class SupplierFilterConfigController : BaseController
     {
-        public SupplierFilterConfigController(AppSettings settings) : base(settings)
+        public SupplierFilterConfigController()
         {
 
         }
 
         [DocName("GET SupplierCategoryConfig")]
-        [HttpGet, Route("/supplierfilterconfig"), OrderCloudIntegrationsAuth(ApiRole.Shopper, ApiRole.SupplierReader)]
+        [HttpGet, Route("/supplierfilterconfig"), OrderCloudUserAuth(ApiRole.Shopper, ApiRole.SupplierReader)]
         public async Task<ListPage<SupplierFilterConfigDocument>> Get()
         {
 			return new ListPage<SupplierFilterConfigDocument>

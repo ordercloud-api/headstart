@@ -12,6 +12,7 @@ using ordercloud.integrations.avalara;
 using ordercloud.integrations.easypost;
 using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Commands

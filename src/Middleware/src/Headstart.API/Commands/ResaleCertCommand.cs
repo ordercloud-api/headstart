@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Headstart.Models.Misc;
 using Headstart.Models;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 
 namespace Headstart.API.Commands
 {

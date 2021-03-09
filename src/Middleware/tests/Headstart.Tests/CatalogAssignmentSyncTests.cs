@@ -8,7 +8,6 @@ using AutoFixture;
 using OrderCloud.SDK;
 using Headstart.Models;
 using Headstart.Common;
-using ordercloud.integrations.library.helpers;
 using Headstart.API.Commands.Crud;
 
 namespace Headstart.Tests

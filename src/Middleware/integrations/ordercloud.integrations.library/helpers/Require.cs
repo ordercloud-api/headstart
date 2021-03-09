@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OrderCloud.Catalyst;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
@@ -17,7 +18,7 @@ namespace ordercloud.integrations.library
         {
             if (!condition)
             {
-                throw new OrderCloudIntegrationException(errorCode, model);
+                throw new CatalystBaseException(errorCode.Code, errorCode.HttpStatus, errorCode.DefaultMessage, model);
             }
         }
 
@@ -30,7 +31,7 @@ namespace ordercloud.integrations.library
         {
             if (!condition)
             {
-                throw new OrderCloudIntegrationException(errorCode, buildModel());
+               throw new CatalystBaseException(errorCode.Code, errorCode.HttpStatus, errorCode.DefaultMessage, buildModel());
             }
         }
         /// <summary>
@@ -40,7 +41,7 @@ namespace ordercloud.integrations.library
         {
             if (!condition)
             {
-                throw new OrderCloudIntegrationException(errorCode, data);
+                throw new CatalystBaseException(errorCode.Code, errorCode.HttpStatus, errorCode.DefaultMessage, data);
             }
         }
 
@@ -59,7 +60,7 @@ namespace ordercloud.integrations.library
         public static void Allowed(bool condition, ErrorCode errorCode)
         {
             if (!condition)
-                throw new OrderCloudIntegrationException(errorCode, null);
+                throw new CatalystBaseException(errorCode.Code, errorCode.HttpStatus, errorCode.DefaultMessage, null);
         }
 
         public static void DoesNotExist<TModel>(object thing, Func<TModel> op)
@@ -74,7 +75,7 @@ namespace ordercloud.integrations.library
         public static void Exists<TModel>(object thing, ErrorCode<TModel> errorCode, TModel model)
         {
             if (thing == null)
-                throw new OrderCloudIntegrationException(errorCode, model);
+                throw new CatalystBaseException(errorCode.Code, errorCode.HttpStatus, errorCode.DefaultMessage, model);
         }
         /// <summary>
         /// For when you don't need to pass back an object
@@ -82,7 +83,7 @@ namespace ordercloud.integrations.library
         public static void Exists(object thing, ErrorCode errorCode)
         {
             if (thing == null)
-                throw new OrderCloudIntegrationException(errorCode, null);
+                throw new CatalystBaseException(errorCode.Code, errorCode.HttpStatus, errorCode.DefaultMessage, null);
         }
 
         /// <summary>
@@ -99,7 +100,7 @@ namespace ordercloud.integrations.library
         public static T MustExist<T>(this T thing, string thingName, string interopID) where T : class
         {
             if (thing == null)
-                throw new OrderCloudIntegrationException.NotFoundException(thingName, interopID);
+                throw new NotFoundException(thingName, interopID);
             return thing;
         }
 
@@ -109,7 +110,7 @@ namespace ordercloud.integrations.library
         public static T MustExist<T>(this T? thing, string thingName, string interopID) where T : struct
         {
             if (thing == null)
-                throw new OrderCloudIntegrationException.NotFoundException(thingName, interopID);
+                throw new NotFoundException(thingName, interopID);
             return thing.Value;
         }
     }

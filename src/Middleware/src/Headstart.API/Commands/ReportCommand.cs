@@ -8,8 +8,8 @@ using Headstart.Common.Queries;
 using System;
 using System.Linq;
 using System.Reflection;
-using ordercloud.integrations.library.helpers;
 using Headstart.Models.Headstart;
+using OrderCloud.Catalyst;
 
 namespace Headstart.API.Commands
 {
@@ -41,7 +41,7 @@ namespace Headstart.API.Commands
         public ListPage<ReportTypeResource> FetchAllReportTypes(VerifiedUserContext verifiedUser)
         {
             var types = ReportTypeResource.ReportTypes.ToList();
-            if (verifiedUser.UsrType == "supplier")
+            if (verifiedUser.UserType == "supplier")
             {
                 types = types.Where(type => type.AvailableToSuppliers).ToList();
             }
@@ -68,11 +68,7 @@ namespace Headstart.API.Commands
             //Logic if no Buyer ID is supplied
             if (template.Filters.BuyerID.Count == 0)
             {
-                var buyers = await ListAllAsync.List((page) => _oc.Buyers.ListAsync<HSBuyer>(
-                    filters: null,
-                    page: page,
-                    pageSize: 100
-                 ));
+                var buyers = await _oc.Buyers.ListAllAsync<HSBuyer>();
                 foreach (var buyer in buyers)
                 {
                     template.Filters.BuyerID.Add(buyer.ID);
@@ -82,12 +78,7 @@ namespace Headstart.API.Commands
             foreach (var buyerID in template.Filters.BuyerID)
             {
                 //For every buyer included in the template filters, grab all buyer locations (exceeding 100 maximum)
-                var buyerLocations = await ListAllAsync.List((page) => _oc.Addresses.ListAsync<HSAddressBuyer>(
-                    buyerID,
-                    filters: null,
-                    page: page,
-                    pageSize: 100
-                ));
+                var buyerLocations = await _oc.Addresses.ListAllAsync<HSAddressBuyer>(buyerID);
                 allBuyerLocations.AddRange(buyerLocations);
             }
             //Use reflection to determine available filters from model
@@ -123,12 +114,10 @@ namespace Headstart.API.Commands
             string timeLow = GetAdHocFilterValue(args, "TimeLow");
             string dateHigh = GetAdHocFilterValue(args, "DateHigh");
             string timeHigh = GetAdHocFilterValue(args, "TimeHigh");
-            var orders = await ListAllAsync.List((page) => _oc.Orders.ListAsync<HSOrder>(
+            var orders = await _oc.Orders.ListAllAsync<HSOrder>(
                 OrderDirection.Incoming,
-                filters: $"from={dateLow}&to={dateHigh}",
-                page: page,
-                pageSize: 100
-                 ));
+                filters: $"from={dateLow}&to={dateHigh}"           
+                 );
             var filterClassProperties = template.Filters.GetType().GetProperties();
             var filtersToEvaluateMap = new Dictionary<PropertyInfo, List<string>>();
             foreach (var property in filterClassProperties)
@@ -159,14 +148,12 @@ namespace Headstart.API.Commands
             string timeLow = GetAdHocFilterValue(args, "TimeLow");
             string dateHigh = GetAdHocFilterValue(args, "DateHigh");
             string timeHigh = GetAdHocFilterValue(args, "TimeHigh");
-            var orderDirection = verifiedUser.UsrType == "admin" ? OrderDirection.Outgoing : OrderDirection.Incoming;
-            var orders = await ListAllAsync.List((page) => _oc.Orders.ListAsync<HSOrder>(
+            var orderDirection = verifiedUser.UserType == "admin" ? OrderDirection.Outgoing : OrderDirection.Incoming;
+            var orders = await _oc.Orders.ListAllAsync<HSOrder>(
                 orderDirection,
                 filters: $"from={dateLow}&to={dateHigh}",
-                page: page,
-                pageSize: 100,
                 accessToken: verifiedUser.AccessToken
-                 ));
+                );
 
             // From User headers must pull from the Sales Order record
             var salesOrders = await GetSalesOrdersIfNeeded(template, dateLow, dateHigh, verifiedUser);
@@ -235,13 +222,11 @@ namespace Headstart.API.Commands
             string timeLow = GetAdHocFilterValue(args, "TimeLow");
             string dateHigh = GetAdHocFilterValue(args, "DateHigh");
             string timeHigh = GetAdHocFilterValue(args, "TimeHigh");
-            var orders = await ListAllAsync.List((page) => _oc.Orders.ListAsync<HSOrder>(
+            var orders = await _oc.Orders.ListAllAsync<HSOrder>(
                 OrderDirection.Incoming,
                 filters: $"from={dateLow}&to={dateHigh}",
-                page: page,
-                pageSize: 100,
                 accessToken: verifiedUser.AccessToken
-                 ));
+                );
 
             // From User headers must pull from the Sales Order record
             var salesOrders = await GetSalesOrdersIfNeeded(template, dateLow, dateHigh, verifiedUser);
@@ -268,19 +253,17 @@ namespace Headstart.API.Commands
             foreach (var order in filteredOrders)
             {
                 // If suppliers are reporting on From User information, this must come from the seller order instead.
-                if (template.Headers.Any(header => header.Contains("FromUser") && verifiedUser.UsrType == "supplier"))
+                if (template.Headers.Any(header => header.Contains("FromUser") && verifiedUser.UserType == "supplier"))
                 {
                     var matchingSalesOrder = salesOrders.Find(salesOrder => order.ID.Split('-')[0] == salesOrder.ID);
                     order.FromUser = matchingSalesOrder?.FromUser;
                 }
                 var lineItems = new List<HSLineItem>();
-                lineItems.AddRange(await ListAllAsync.List((page) => _oc.LineItems.ListAsync<HSLineItem>(
+                lineItems.AddRange(await _oc.LineItems.ListAllAsync<HSLineItem>(
                     OrderDirection.Incoming,
                     order.ID,
-                    page: page,
-                    pageSize: 100,
                     accessToken: verifiedUser.AccessToken
-                    )));
+                    ));
                 foreach (var lineItem in lineItems)
                 {
                     lineItemOrders.Add(new HSLineItemOrder()
@@ -322,8 +305,7 @@ namespace Headstart.API.Commands
         }
         private string GetAdHocFilterValue(ListArgs<ReportAdHocFilters> args, string propertyName)
         {
-            return args.Filters.FirstOrDefault(Filter => Filter.Name == propertyName)?.QueryParams
-                .FirstOrDefault(q => q?.Item1 == propertyName)?.Item2;
+            return args.Filters.FirstOrDefault(Filter => Filter.PropertyName == propertyName)?.FilterExpression;
         }
 
         private bool PassesFilters(object data, Dictionary<PropertyInfo, List<string>> filtersToEvaluate)
@@ -408,12 +390,10 @@ namespace Headstart.API.Commands
         {
             if (template.Headers.Any(header => header.Contains("FromUser")))
             {
-                return await ListAllAsync.List((page) => _oc.Orders.ListAsync<HSOrder>(
+                return await _oc.Orders.ListAllAsync<HSOrder>(
                 OrderDirection.Incoming,
-                filters: verifiedUser.UsrType == "supplier" ? $"from={dateLow}&to={dateHigh}&xp.SupplierIDs={verifiedUser.SupplierID}" : $"from={dateLow}&to={dateHigh}",
-                page: page,
-                pageSize: 100
-               ));
+                filters: verifiedUser.UserType == "supplier" ? $"from={dateLow}&to={dateHigh}&xp.SupplierIDs={verifiedUser.Supplier.ID}" : $"from={dateLow}&to={dateHigh}"
+                );
             }
             return null;
         }

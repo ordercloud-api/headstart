@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 
 namespace library.tests
 {
@@ -14,7 +15,7 @@ namespace library.tests
         [Test, TestCaseSource(typeof(ParseFactory), nameof(ParseFactory.TestCases))]
         public void list_filter_parse_test(string expression, dynamic filter)
         {
-            var parse = ListFilter.Parse("", expression).Values.First();
+            var parse = ListFilter.Parse("", expression).FilterValues.First();
             Assert.IsTrue(parse.Operator == filter.Operator);
             Assert.IsTrue(parse.Term == filter.Term);
             Assert.IsTrue(parse.HasWildcard == filter.HasWildcard);

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Headstart.API.Controllers;
 using Headstart.Models.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Controllers
@@ -18,7 +18,7 @@ namespace Headstart.Common.Controllers
     {
         private readonly IExchangeRatesCommand _command;
 
-        public ExchangeRatesController(AppSettings settings, IExchangeRatesCommand command) : base(settings)
+        public ExchangeRatesController(IExchangeRatesCommand command) 
         {
             _command = command;
         }

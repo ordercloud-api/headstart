@@ -1,19 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Headstart.Common.Helpers;
 using Headstart.Models;
 using Headstart.Models.Misc;
-using Headstart.Models.Headstart;
-using ordercloud.integrations.library;
 using OrderCloud.SDK;
-using System.IO;
-using ordercloud.integrations.library.helpers;
-using Headstart.Common.Services;
 using Headstart.Common;
 using ordercloud.integrations.exchangerates;
-using Headstart.Common.Models;
 
 namespace Headstart.API.Commands
 {

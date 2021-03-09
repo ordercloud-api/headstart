@@ -9,6 +9,7 @@ using OrderCloud.SDK;
 using Newtonsoft.Json;
 using Flurl.Http.Configuration;
 using LazyCache;
+using OrderCloud.Catalyst;
 
 namespace ordercloud.integrations.exchangerates
 {
@@ -73,11 +74,11 @@ namespace ordercloud.integrations.exchangerates
 
         public ListPage<OrderCloudIntegrationsConversionRate> Filter(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, OrderCloudIntegrationsExchangeRate rates)
         {
-            if (rateArgs.Filters?.Any(filter => filter.Name == "Symbol") ?? false)
+            if (rateArgs.Filters?.Any(filter => filter.PropertyName == "Symbol") ?? false)
             {
                 rates.Rates = (
                         from rate in rates.Rates
-                        from s in rateArgs.Filters.FirstOrDefault(r => r.Name == "Symbol")?.Values
+                        from s in rateArgs.Filters.FirstOrDefault(r => r.PropertyName == "Symbol")?.FilterValues
                         where rate.Currency == s.Term.To<CurrencySymbol>()
                         select rate).ToList();
             }

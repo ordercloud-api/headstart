@@ -8,9 +8,10 @@
   <ItemGroup>
     <PackageReference Include="Flurl" Version="2.8.2" />
     <PackageReference Include="LazyCache.AspNetCore" Version="2.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.12" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.16.0" />
     <PackageReference Include="Microsoft.Azure.CosmosDB.BulkExecutor" Version="2.4.1-preview" />
+    <PackageReference Include="ordercloud-dotnet-catalyst" Version="1.0.2" />
     <PackageReference Include="OrderCloud.SDK" Version="0.10.0" />
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
     <PackageReference Include="Cosmonaut" Version="2.11.3" />
@@ -18,7 +19,7 @@
     <PackageReference Include="Microsoft.Azure.DocumentDB.Core" Version="2.10.3" />
     <PackageReference Include="Humanizer.Core" Version="2.5.16" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.5.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="4.1.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.0.0" />
   </ItemGroup>
 

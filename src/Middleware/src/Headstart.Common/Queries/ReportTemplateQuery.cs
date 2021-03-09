@@ -7,8 +7,7 @@ using Cosmonaut.Extensions;
 using Headstart.Common.Models;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
-using ordercloud.integrations.library;
-using static Headstart.Common.Models.ReportTemplate;
+using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Queries
 {
@@ -31,12 +30,12 @@ namespace Headstart.Common.Queries
 
         public async Task<List<ReportTemplate>> List(ReportTypeEnum reportType, VerifiedUserContext verifiedUser)
         {
-            var feedOptions = new FeedOptions() { PartitionKey = new PartitionKey($"{verifiedUser.SellerID}") };
+            var feedOptions = new FeedOptions() { PartitionKey = new PartitionKey($"{verifiedUser.Seller.ID}") };
             var templates = new List<ReportTemplate>();
-            if (verifiedUser.UsrType == "admin")
+            if (verifiedUser.UserType == "admin")
             {
                 templates = await _store.Query(feedOptions).Where(x => x.ReportType == reportType).ToListAsync();
-            } else if (verifiedUser.UsrType == "supplier")
+            } else if (verifiedUser.UserType == "supplier")
             {
                 templates = await _store.Query(feedOptions).Where(x => x.ReportType == reportType && x.AvailableToSuppliers == true).ToListAsync();
             }
@@ -46,7 +45,7 @@ namespace Headstart.Common.Queries
         public async Task<ReportTemplate> Post(ReportTemplate reportTemplate, VerifiedUserContext verifiedUser)
         {
             var template = reportTemplate;
-            template.SellerID = verifiedUser.SellerID;
+            template.SellerID = verifiedUser.Seller.ID;
             var newTemplate = await _store.AddAsync(template);
             return newTemplate;
         }

@@ -8,7 +8,7 @@ using Headstart.Models.Misc;
 using ordercloud.integrations.library;
 using Headstart.Models.Extended;
 using Headstart.Common.Services.ShippingIntegration.Models;
-using ordercloud.integrations.library.helpers;
+using OrderCloud.Catalyst;
 
 namespace Headstart.API.Commands
 {
@@ -78,15 +78,8 @@ namespace Headstart.API.Commands
 
         public async Task<ListPage<HSOrder>> ListOrdersForLocation(string locationID, ListArgs<HSOrder> listArgs, VerifiedUserContext verifiedUser)
         {
+            listArgs.Filters.Add(new ListFilter() { PropertyName = "BillingAddress.ID", FilterExpression = locationID });
             await EnsureUserCanAccessLocationOrders(locationID, verifiedUser);
-            if(listArgs.Filters == null)
-            {
-                listArgs.Filters = new List<ListFilter>() { };
-            }
-            listArgs.Filters.Add(new ListFilter()
-            {
-                QueryParams = new List<Tuple<string, string>>() { new Tuple<string, string>("BillingAddress.ID", locationID) }
-            });
             return await _oc.Orders.ListAsync<HSOrder>(OrderDirection.Incoming,
                 page: listArgs.Page,
                 pageSize: listArgs.PageSize,
@@ -100,17 +93,17 @@ namespace Headstart.API.Commands
             var order = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
             await EnsureUserCanAccessOrder(order, verifiedUser);
 
-            var lineItems = ListAllAsync.List((page) => _oc.LineItems.ListAsync(OrderDirection.Incoming, orderID, page: page, pageSize: 100));
-            var promotions = _oc.Orders.ListPromotionsAsync(OrderDirection.Incoming, orderID, pageSize: 100);
-            var payments = _oc.Payments.ListAsync(OrderDirection.Incoming, order.ID, pageSize: 100);
-            var approvals = _oc.Orders.ListApprovalsAsync(OrderDirection.Incoming, orderID, pageSize: 100);
+            var lineItems = _oc.LineItems.ListAllAsync(OrderDirection.Incoming, orderID);
+            var promotions = _oc.Orders.ListAllPromotionsAsync(OrderDirection.Incoming, orderID);
+            var payments = _oc.Payments.ListAllAsync(OrderDirection.Incoming, order.ID);
+            var approvals = _oc.Orders.ListAllApprovalsAsync(OrderDirection.Incoming, orderID);
             return new OrderDetails
             {
                 Order = order,
-                LineItems = (await lineItems),
-                Promotions = (await promotions).Items,
-                Payments = (await payments).Items,
-                Approvals = (await approvals).Items
+                LineItems = await lineItems,
+                Promotions = await promotions,
+                Payments = await payments,
+                Approvals = await approvals
             };
         }
 
@@ -119,7 +112,7 @@ namespace Headstart.API.Commands
             var order = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
             await EnsureUserCanAccessOrder(order, verifiedUser);
 
-            var lineItems = await ListAllAsync.List((page) => _oc.LineItems.ListAsync(OrderDirection.Incoming, orderID, page: page, pageSize: 100));
+            var lineItems = await _oc.LineItems.ListAllAsync(OrderDirection.Incoming, orderID);
             var shipments = await _oc.Orders.ListShipmentsAsync<HSShipmentWithItems>(OrderDirection.Incoming, orderID);
             var shipmentsWithItems = await Throttler.RunAsync(shipments.Items, 100, 5, (HSShipmentWithItems shipment) => GetShipmentWithItems(shipment, lineItems.ToList()));
             return shipmentsWithItems.ToList();
@@ -162,7 +155,7 @@ namespace Headstart.API.Commands
              * 3) the order is awaiting approval and the user is in the approving group 
              */ 
 
-            var isOrderSubmitter = order.FromUserID == verifiedUser.UserID;
+            var isOrderSubmitter = order.FromUserID == verifiedUser.ID;
             if (isOrderSubmitter)
             {
                 return;
