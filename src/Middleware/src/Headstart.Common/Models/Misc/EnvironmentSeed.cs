@@ -53,6 +53,12 @@ namespace Headstart.Models.Misc
 		/// An optional array of buyers to create as part of the initial seeding
 		/// </summary>
 		public List<HSBuyer> Buyers { get; set; } = new List<HSBuyer> { };
+
+		/// <summary>
+		/// An optional string to specify a buyer which the anonymous buyer user will be assigned to
+		/// Otherwise we will assign the default buyer that is created in seeding.
+		/// </summary>
+		public string AnonymousShoppingBuyerID { get; set; }
 	}
 
 	[DocIgnore]

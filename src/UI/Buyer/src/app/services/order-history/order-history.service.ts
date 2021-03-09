@@ -6,6 +6,7 @@ import {
   Suppliers,
   SupplierAddresses,
   Tokens,
+  LineItem,
 } from 'ordercloud-javascript-sdk'
 import { ReorderHelperService } from '../reorder/reorder.service'
 import { OrderFilterService } from './order-filter.service'

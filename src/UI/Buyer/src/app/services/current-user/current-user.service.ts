@@ -30,7 +30,7 @@ export class CurrentUserService {
     private tokenHelper: TokenHelperService,
     public cards: CreditCardService,
     public http: HttpClient,
-    private appConfig: AppConfig
+    private appConfig: AppConfig,
   ) {}
 
   get(): CurrentUser {

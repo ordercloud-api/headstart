@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { Observable, of, BehaviorSubject, from } from 'rxjs'
 import { tap, catchError, finalize } from 'rxjs/operators'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 
 // 3rd party
 import {
@@ -21,6 +21,7 @@ import { ApplicationInsightsService } from '../application-insights/application-
 import { TokenHelperService } from '../token-helper/token-helper.service'
 import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { AppConfig } from 'src/app/models/environment.types'
+import { BaseResolveService } from '../base-resolve/base-resolve.service'
 
 @Injectable({
   providedIn: 'root',
@@ -44,7 +45,9 @@ export class AuthService {
     private ordersToApproveStateService: OrdersToApproveStateService,
     private appConfig: AppConfig,
     private tokenHelper: TokenHelperService,
-    private appInsightsService: ApplicationInsightsService
+    private appInsightsService: ApplicationInsightsService,
+    private activatedRoute: ActivatedRoute,
+    private baseResolveService: BaseResolveService
   ) {}
 
   // All this isLoggedIn stuff is only used in the header wrapper component
@@ -114,7 +117,12 @@ export class AuthService {
       false,
       rememberMe
     )
-    void this.router.navigateByUrl('/home')
+    const urlParams = this.activatedRoute.snapshot.queryParams
+    if(urlParams.redirect){
+      void this.router.navigate([`/${urlParams.redirect}`])
+    } else {
+      void this.router.navigate(['/home'])
+    }
     return creds
   }
 
@@ -163,9 +171,10 @@ export class AuthService {
     this.isLoggedIn = false
     this.appInsightsService.clearUser()
     if (this.appConfig.anonymousShoppingEnabled) {
-      void this.router.navigate(['/home'])
-      await this.currentUser.reset()
-      void this.currentOrder.reset() // TODO - can we get rid of Auth's dependency on current Order and User?
+      await this.anonymousLogin()
+      void this.router.navigate(['home']).then(async () => {
+        await this.baseResolveService.resolve()
+      })
     } else {
       void this.router.navigate(['/login'])
     }

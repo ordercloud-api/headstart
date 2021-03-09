@@ -12,6 +12,7 @@ import {
   OrderPromotion,
   ShipEstimate,
   IntegrationEvents,
+  LineItem,
 } from 'ordercloud-javascript-sdk'
 import { BehaviorSubject } from 'rxjs'
 import { AppConfig } from 'src/app/models/environment.types'
@@ -62,7 +63,7 @@ export class OrderStateService {
   constructor(
     private tokenHelper: TokenHelperService,
     private currentUserService: CurrentUserService,
-    private appConfig: AppConfig
+    private appConfig: AppConfig,
   ) {}
 
   get order(): HSOrder {
@@ -123,25 +124,49 @@ export class OrderStateService {
       this.getOrdersForResubmit(),
       this.getOrdersNeverSubmitted(),
     ])
-    if (ordersForResubmit.Items.length) {
-      this.order = ordersForResubmit.Items[0]
-    } else if (ordersNeverSubmitted.Items.length) {
-      this.order = ordersNeverSubmitted.Items[0]
-    } else if (this.appConfig.anonymousShoppingEnabled) {
-      this.order = { ID: this.tokenHelper.getAnonymousOrderID() }
+    if(!ordersForResubmit.Items.length && 
+      !ordersNeverSubmitted.Items.length && 
+      this.appConfig.anonymousShoppingEnabled) {
+        await this.initOrder()
+        this.setEmptyLineItems();
+        this.orderPromos = null;
     } else {
-      this.DefaultOrder.xp.Currency = this.currentUserService.get().Currency
-      this.order = (await Orders.Create(
-        'Outgoing',
-        this.DefaultOrder as Order
-      )) as HSOrder
+      if (ordersForResubmit.Items.length) {
+        this.order = ordersForResubmit.Items[0]
+      } else if (ordersNeverSubmitted.Items.length) {
+        this.order = ordersNeverSubmitted.Items[0]
+      } else {
+        await this.initOrder()
+      }
+      if (this.order.DateCreated) {
+        await this.resetLineItems()
+      }
+      this.orderPromos = await Orders.ListPromotions('Outgoing', this.order.ID)
+      await this.getShipEstimates()
     }
-    if (this.order.DateCreated) {
-      await this.resetLineItems()
-    }
-    this.orderPromos = await Orders.ListPromotions('Outgoing', this.order.ID)
+    
+  }
 
-    await this.getShipEstimates()
+  async initOrder(): Promise<void> {
+    this.DefaultOrder.xp.Currency = this.currentUserService.get().Currency
+    if(this.currentUserService.isAnonymous()) {
+      //  for anonymous shopping dont create order until they add to cart
+      this.order = { ID: this.tokenHelper.getAnonymousOrderID(),
+        ...this.DefaultOrder as Order }
+    } else {
+      this.createAndSetOrder(this.DefaultOrder)
+    }
+  }
+
+  setEmptyLineItems() {
+    this.lineItems = {
+      Items: [],
+      Meta: {}
+    }
+  }
+
+  async createAndSetOrder(order: HSOrder): Promise<void> {
+    this.order = await Orders.Create('Outgoing', order as Order) as HSOrder
   }
 
   async getShipEstimates(): Promise<void> {
