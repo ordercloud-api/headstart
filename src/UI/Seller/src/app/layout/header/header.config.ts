@@ -252,25 +252,6 @@ const SellerUsers = {
   route: '/seller-users',
 }
 
-const AllStorefronts = {
-  rolesWithAccess: [HSRoles.HSStorefrontAdmin],
-  title: 'All Storefronts',
-  route: '/storefronts',
-}
-
-const Pages = {
-  rolesWithAccess: [HSRoles.HSStorefrontAdmin],
-  title: 'Pages',
-  route: `/storefronts/${REDIRECT_TO_FIRST_PARENT}/pages`,
-}
-
-const StorefrontNavGrouping = {
-  rolesWithAccess: [HSRoles.HSStorefrontAdmin],
-  title: 'Storefronts',
-  route: '/storefronts',
-  subRoutes: [AllStorefronts, Pages],
-}
-
 const MySupplierProfile = {
   rolesWithAccess: [HSRoles.HSMeSupplierAdmin],
   title: 'ALIAS.SUPPLIER_PROFILE',
@@ -304,7 +285,6 @@ const AllNavGroupings: HSRoute[] = [
   SupplierNavGrouping,
   ReportsNavGrouping,
   SellerUsers,
-  StorefrontNavGrouping,
   MySupplierProfile,
   MySupplierLocations,
   MySupplerUsers,

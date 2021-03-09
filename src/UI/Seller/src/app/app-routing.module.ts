@@ -69,13 +69,6 @@ const routes: Routes = [
           import('./reports/reports.module').then((m) => m.ReportsModule),
       },
       {
-        path: 'storefronts',
-        loadChildren: () =>
-          import('./storefronts/storefronts.module').then(
-            (m) => m.StorefrontsModule
-          ),
-      },
-      {
         path: 'account',
         loadChildren: () =>
           import('./account/account.module').then((m) => m.AccountModule),
