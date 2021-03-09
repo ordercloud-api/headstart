@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 
 namespace avalara.tests
 {

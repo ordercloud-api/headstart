@@ -1,4 +1,5 @@
 ﻿using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
@@ -6,15 +7,9 @@ using System.Text;
 
 namespace ordercloud.integrations.easypost.Exceptions
 {
-	public class EasyPostException : OrderCloudIntegrationException
+	public class EasyPostException : CatalystBaseException
 	{
-		public EasyPostException(EasyPostApiError error) : base(
-				new ApiError { 
-					ErrorCode = $"EasyPost.{error.error.code}",
-					Message = error.error.message,
-					Data = error.error
-				}
-			) { }
+		public EasyPostException(EasyPostApiError error) : base($"EasyPost.{error.error.code}", 400, error.error.message, error.error) { }
 	}
 
 	public class EasyPostApiError

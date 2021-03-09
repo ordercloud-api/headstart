@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 using ordercloud.integrations.library;
 using System.Linq;
 using Headstart.Common.Constants;
-using ordercloud.integrations.library.helpers;
 using Headstart.Models;
 using System;
 using System.Collections.Generic;
 using Headstart.Common.Helpers;
 using Headstart.Common;
+using OrderCloud.Catalyst;
 
 namespace Headstart.API.Commands
 {
@@ -36,31 +36,29 @@ namespace Headstart.API.Commands
         }
         public async Task<HSSupplier> GetMySupplier(string supplierID, VerifiedUserContext user)
         {
-            Require.That(supplierID == user.SupplierID,
-                new ErrorCode("Unauthorized", 401, $"You are only authorized to view {user.SupplierID}."));
+            Require.That(supplierID == user.Supplier.ID,
+                new ErrorCode("Unauthorized", 401, $"You are only authorized to view {user.Supplier.ID}."));
             return await _oc.Suppliers.GetAsync<HSSupplier>(supplierID);
         }
 
         public async Task<HSSupplier> UpdateSupplier(string supplierID, PartialSupplier supplier, VerifiedUserContext user)
         {
-            Require.That(user.UsrType == "admin" || supplierID == user.SupplierID, new ErrorCode("Unauthorized", 401, $"You are not authorized to update supplier {supplierID}"));
+            Require.That(user.UserType == "admin" || supplierID == user.Supplier.ID, new ErrorCode("Unauthorized", 401, $"You are not authorized to update supplier {supplierID}"));
             var currentSupplier = await _oc.Suppliers.GetAsync<HSSupplier>(supplierID);
             var updatedSupplier = await _oc.Suppliers.PatchAsync<HSSupplier>(supplierID, supplier);
             // Update supplier products only on a name change
             if (currentSupplier.Name != supplier.Name || currentSupplier.xp.Currency.ToString() != supplier.xp.Currency.Value)
             {
-                var productsToUpdate = await ListAllAsync.ListWithFacets((page) => _oc.Products.ListAsync<HSProduct>(
+                var productsToUpdate = await _oc.Products.ListAllAsync<HSProduct>(
                 supplierID: supplierID,
-                page: page,
-                pageSize: 100,
                 accessToken: user.AccessToken
-                ));
+                );
                 ApiClient supplierClient = await _apiClientHelper.GetSupplierApiClient(supplierID, user.AccessToken);
                 if (supplierClient == null) { throw new Exception($"Default supplier client not found. SupplierID: {supplierID}"); }
                 var configToUse = new OrderCloudClientConfig
                 {
-                    ApiUrl = user.ApiUrl,
-                    AuthUrl = user.AuthUrl,
+                    ApiUrl = user.TokenApiUrl,
+                    AuthUrl = user.TokenAuthUrl,
                     ClientId = supplierClient.ID,
                     ClientSecret = supplierClient.ClientSecret,
                     GrantType = GrantType.ClientCredentials,

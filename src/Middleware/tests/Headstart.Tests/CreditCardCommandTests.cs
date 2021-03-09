@@ -9,6 +9,7 @@ using NUnit.Framework;
 using ordercloud.integrations.cardconnect;
 using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
@@ -84,7 +85,7 @@ namespace Headstart.Tests
 			var payment = ValidIntegrationsPayment();
 
 			// Act
-			var ex = Assert.ThrowsAsync<OrderCloudIntegrationException>(async () => await _sut.AuthorizePayment(payment, userToken, merchantID));
+			var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => await _sut.AuthorizePayment(payment, userToken, merchantID));
 
 			// Assert
 			Assert.AreEqual("Payment.MissingCreditCardPayment", ex.ApiError.ErrorCode);
@@ -318,7 +319,7 @@ namespace Headstart.Tests
 				.Do(x => throw new CreditCardAuthorizationException(new ApiError { }, new CardConnectAuthorizationResponse { }));
 
 			// Act
-			var ex = Assert.ThrowsAsync<OrderCloudIntegrationException>(async () => await _sut.AuthorizePayment(payment, userToken, merchantID));
+			var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => await _sut.AuthorizePayment(payment, userToken, merchantID));
 
 			// Assert
 			Assert.AreEqual("CreditCardAuth.", ex.ApiError.ErrorCode);
@@ -363,7 +364,7 @@ namespace Headstart.Tests
 				.Do(x => throw new CreditCardVoidException(new ApiError { }, new CardConnectVoidResponse { }));
 
 			// Act
-			var ex = Assert.ThrowsAsync<OrderCloudIntegrationException>(async () => await _sut.AuthorizePayment(payment, userToken, merchantID));
+			var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => await _sut.AuthorizePayment(payment, userToken, merchantID));
 
 			// Assert
 			Assert.AreEqual("Payment.FailedToVoidAuthorization", ex.ApiError.ErrorCode);

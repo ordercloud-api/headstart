@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Headstart.Models.Misc;
 using ordercloud.integrations.library;
-using Headstart.API.Controllers;
 using Headstart.API.Commands;
+using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
@@ -12,9 +12,8 @@ namespace Headstart.Common.Controllers
         private readonly IEnvironmentSeedCommand _command;
 
         public EnvironmentSeedController(
-            AppSettings settings,
             IEnvironmentSeedCommand command
-        ) : base(settings)
+        )
         {
             _command = command;
         }

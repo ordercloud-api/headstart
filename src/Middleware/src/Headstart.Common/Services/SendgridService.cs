@@ -13,7 +13,6 @@ using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
 using Headstart.Models.Misc;
 using Microsoft.WindowsAzure.Storage.Blob;
-using ordercloud.integrations.library.helpers;
 using OrderCloud.SDK;
 using SendGrid;
 using SendGrid.Helpers.Mail;
@@ -24,6 +23,7 @@ using ordercloud.integrations.cardconnect;
 using Headstart.Common.Models.Misc;
 using ordercloud.integrations.library;
 using Headstart.Models.Headstart;
+using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Services
 {
@@ -455,11 +455,7 @@ namespace Headstart.Common.Services
                 }
             };
             await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, supplierEmail, _settings?.SendgridSettings?.ProductInformationRequestTemplateID, templateData);
-            var sellerUsers = await ListAllAsync.List((page) => _oc.AdminUsers.ListAsync<HSUser>(
-                    filters: $"xp.RequestInfoEmails=true",
-                    page: page,
-                    pageSize: 100
-                 ));
+            var sellerUsers = await _oc.AdminUsers.ListAllAsync<HSUser>(filters: $"xp.RequestInfoEmails=true");
             foreach (var sellerUser in sellerUsers)
             {
                 await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, sellerUser.Email, _settings?.SendgridSettings?.ProductInformationRequestTemplateID, templateData);
@@ -479,11 +475,15 @@ namespace Headstart.Common.Services
             {
                 Data = new SupportTemplateData
                 {
-                    orderID = order?.ID,
-                    BuyerID = order?.FromCompanyID,
-                    Username = order?.FromUser?.Username,
-                    PaymentID = payment?.ID,
-                    TransactionID = transactionID,
+                    OrderID = order.ID,
+                    DynamicPropertyName1 = "BuyerID",
+                    DynamicPropertyValue1 = order.FromCompanyID,
+                    DynamicPropertyName2 = "Username",
+                    DynamicPropertyValue2 = order.FromUser.Username,
+                    DynamicPropertyName3 = "PaymentID",
+                    DynamicPropertyValue3 = payment.ID,
+                    DynamicPropertyName4 = "TransactionID",
+                    DynamicPropertyValue4 = transactionID,
                     ErrorJsonString = JsonConvert.SerializeObject(ex.ApiError)
                 },
                 Message = new EmailDisplayText()
@@ -507,10 +507,14 @@ namespace Headstart.Common.Services
             {
                 Data = new SupportTemplateData
                 {
-                    FirstName = supportCase?.FirstName,
-                    LastName = supportCase?.LastName,
-                    Email = supportCase?.Email,
-                    Vendor = supportCase?.Vendor ?? "N/A"
+                    DynamicPropertyName1 = "FirstName",
+                    DynamicPropertyValue1 = supportCase.FirstName,
+                    DynamicPropertyName2 = "LastName",
+                    DynamicPropertyValue2 = supportCase.LastName,
+                    DynamicPropertyName3 = "Email",
+                    DynamicPropertyValue3 = supportCase.Email,
+                    DynamicPropertyName4 = "Vendor",
+                    DynamicPropertyValue4 = supportCase.Vendor ?? "N/A",
                 },
                 Message = new EmailDisplayText()
                 {

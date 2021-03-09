@@ -7,7 +7,7 @@ using Headstart.Models.Headstart;
 using Microsoft.ApplicationInsights;
 using Newtonsoft.Json;
 using ordercloud.integrations.library;
-using ordercloud.integrations.library.helpers;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 using SendGrid.Helpers.Mail;
 using System;
@@ -46,7 +46,7 @@ namespace Headstart.API.Commands
         // used on post order submit
         public async Task<List<HSLineItem>> SetInitialSubmittedLineItemStatuses(string buyerOrderID)
         {
-            var lineItems = await ListAllAsync.List((page) => _oc.LineItems.ListAsync<HSLineItem>(OrderDirection.Incoming, buyerOrderID, page: page, pageSize: 100));
+            var lineItems = await _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Incoming, buyerOrderID);
             var updatedLineItems = await Throttler.RunAsync(lineItems, 100, 5, li =>
             {
                 var partial = new PartialLineItem()
@@ -79,11 +79,11 @@ namespace Headstart.API.Commands
         // all line item status changes should go through here
         public async Task<List<HSLineItem>> UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection orderDirection, string orderID, LineItemStatusChanges lineItemStatusChanges, VerifiedUserContext verifiedUser = null)
         {
-            var userType = verifiedUser?.UsrType ?? "noUser";
+            var userType = verifiedUser?.UserType ?? "noUser";
             var verifiedUserType = userType.Reserialize<VerifiedUserType>();
             
             var buyerOrderID = orderID.Split('-')[0];
-            var previousLineItemsStates = await ListAllAsync.List((page) => _oc.LineItems.ListAsync<HSLineItem>(OrderDirection.Incoming, buyerOrderID, page: page, pageSize: 100));
+            var previousLineItemsStates = await _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Incoming, buyerOrderID);
 
             ValidateLineItemStatusChange(previousLineItemsStates.ToList(), lineItemStatusChanges, verifiedUserType);
             var updatedLineItems = await Throttler.RunAsync(lineItemStatusChanges.Changes, 100, 5, (lineItemStatusChange) =>
@@ -94,7 +94,7 @@ namespace Headstart.API.Commands
             });
 
             var buyerOrder = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, buyerOrderID);
-            var allLineItemsForOrder = await ListAllAsync.List((page) => _oc.LineItems.ListAsync<HSLineItem>(OrderDirection.Incoming, buyerOrderID, page: page, pageSize: 100));
+            var allLineItemsForOrder = await  _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Incoming, buyerOrderID);
             var lineItemsChanged = allLineItemsForOrder.Where(li => lineItemStatusChanges.Changes.Select(li => li.ID).Contains(li.ID)).ToList();
             var supplierIDsRelatingToChange = lineItemsChanged.Select(li => li.SupplierID).Distinct().ToList();
             var relatedSupplierOrderIDs = supplierIDsRelatingToChange.Select(supplierID => $"{buyerOrderID}-{supplierID}").ToList();
@@ -383,7 +383,7 @@ namespace Headstart.API.Commands
         {
             // get me product with markedup prices correct currency and the existing line items in parellel
             var productRequest = _meProductCommand.Get(liReq.ProductID, user);
-            var existingLineItemsRequest = ListAllAsync.List((page) => _oc.LineItems.ListAsync<HSLineItem>(OrderDirection.Outgoing, orderID, page: page, pageSize: 100, filters: $"Product.ID={liReq.ProductID}",  accessToken: user.AccessToken));
+            var existingLineItemsRequest = _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, orderID, filters: $"Product.ID={liReq.ProductID}", accessToken: user.AccessToken);
             var orderRequest = _oc.Orders.GetAsync(OrderDirection.Incoming, orderID);
             var existingLineItems = await existingLineItemsRequest;
             var product = await productRequest;
@@ -412,7 +412,7 @@ namespace Headstart.API.Commands
         {
             LineItem lineItem = await _oc.LineItems.GetAsync(OrderDirection.Incoming, orderID, lineItemID);
             await _oc.LineItems.DeleteAsync(OrderDirection.Incoming, orderID, lineItemID);
-            List<HSLineItem> existingLineItems = await ListAllAsync.List((page) => _oc.LineItems.ListAsync<HSLineItem>(OrderDirection.Outgoing, orderID, page: page, pageSize: 100, filters: $"Product.ID={lineItem.ProductID}", accessToken: verifiedUser.AccessToken));
+            List<HSLineItem> existingLineItems = await _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, orderID, filters: $"Product.ID={lineItem.ProductID}", accessToken: verifiedUser.AccessToken);
             if (existingLineItems != null && existingLineItems.Count > 0)
             {
                 var product = await _meProductCommand.Get(lineItem.ProductID, verifiedUser);

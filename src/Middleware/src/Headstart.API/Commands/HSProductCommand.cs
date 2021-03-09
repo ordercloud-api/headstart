@@ -11,7 +11,7 @@ using Headstart.Common.Services.CMS.Models;
 using Headstart.Models;
 using ordercloud.integrations.library;
 using ordercloud.integrations.library.Cosmos;
-using ordercloud.integrations.library.helpers;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 using Polly;
 using Polly.Retry;
@@ -240,7 +240,7 @@ namespace Headstart.API.Commands.Crud
 			}
 			superProduct.Product.DefaultPriceScheduleID = _priceSchedule.ID;
 			// Create Product
-			var supplierName = await GetSupplierNameForXpFacet(user.SupplierID, user.AccessToken);
+			var supplierName = await GetSupplierNameForXpFacet(user.Supplier.ID, user.AccessToken);
 			superProduct.Product.xp.Facets.Add("supplier", new List<string>() { supplierName });
 			var _product = await _oc.Products.CreateAsync<HSProduct>(superProduct.Product, user.AccessToken);
 			// Make Spec Product Assignments
@@ -293,7 +293,7 @@ namespace Headstart.API.Commands.Crud
 
 			try
 			{
-				List<Product> allProducts = await ListAllAsync.ListWithFacets(page => _oc.Products.ListAsync(page: page, pageSize: 100, accessToken: token));
+				var allProducts = await _oc.Products.ListAllAsync(accessToken: token);
 
 				if (allProducts == null || !allProducts.Any()) { return; }
 
@@ -497,8 +497,8 @@ namespace Headstart.API.Commands.Crud
 					ApplyShipping = updated.ApplyShipping,
 					ApplyTax = updated.ApplyTax
 				};
-				var relatedPriceSchedules = await ListAllAsync.List((page) => _oc.PriceSchedules.ListAsync(search: initial.ID, page: page, pageSize: 100));
-				var priceSchedulesToUpdate = relatedPriceSchedules.Where(p => p.ID.StartsWith(updated.ID) && p.ID != updated.ID);
+				var relatedPriceSchedules = await _oc.PriceSchedules.ListAllAsync(filters: $"ID={initial.ID}*");
+				var priceSchedulesToUpdate = relatedPriceSchedules.Where(p => p.ID != updated.ID);
 				await Throttler.RunAsync(priceSchedulesToUpdate, 100, 5, p =>
 				{
 					return _oc.PriceSchedules.PatchAsync(p.ID, patch, ocAuth.AccessToken);
@@ -590,8 +590,8 @@ namespace Headstart.API.Commands.Crud
 			if (supplierClient == null) { throw new Exception($"Default supplier client not found. SupplierID: {supplierID}"); }
 			var configToUse = new OrderCloudClientConfig
 			{
-				ApiUrl = user.ApiUrl,
-				AuthUrl = user.AuthUrl,
+				ApiUrl = user.TokenApiUrl,
+				AuthUrl = user.TokenAuthUrl,
 				ClientId = supplierClient.ID,
 				ClientSecret = supplierClient.ClientSecret,
 				GrantType = GrantType.ClientCredentials,

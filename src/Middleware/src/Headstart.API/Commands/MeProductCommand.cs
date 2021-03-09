@@ -11,6 +11,7 @@ using ordercloud.integrations.library;
 using OrderCloud.SDK;
 using Headstart.API.Commands.Crud;
 using Headstart.Models.Headstart;
+using OrderCloud.Catalyst;
 
 namespace Headstart.API.Commands
 {
@@ -198,7 +199,7 @@ namespace Headstart.API.Commands
 
 		private async Task<decimal> GetDefaultMarkupMultiplier(VerifiedUserContext user)
 		{
-			var buyer = await _cache.GetOrAddAsync($"buyer_{user.BuyerID}", () => _hsBuyerCommand.Get(user.BuyerID), TimeSpan.FromHours(1));
+			var buyer = await _cache.GetOrAddAsync($"buyer_{user.Buyer.ID}", () => _hsBuyerCommand.Get(user.Buyer.ID), TimeSpan.FromHours(1));
 
 			// must convert markup to decimal before division to prevent rouding error
 			var markupPercent = (decimal)buyer.Markup.Percent / 100;

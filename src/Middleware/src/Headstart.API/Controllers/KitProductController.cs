@@ -5,8 +5,8 @@ using Headstart.Models.Attributes;
 using ordercloud.integrations.library;
 using Headstart.Models;
 using Headstart.Common.Services.CMS.Models;
-using Headstart.API.Controllers;
 using Headstart.API.Commands.Crud;
+using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
@@ -16,7 +16,7 @@ namespace Headstart.Common.Controllers
     public class KitProductController : BaseController
     {
         private readonly IHSKitProductCommand _command;
-        public KitProductController(AppSettings settings, IHSKitProductCommand command) : base(settings)
+        public KitProductController(IHSKitProductCommand command)
         {
             _command = command;
         }

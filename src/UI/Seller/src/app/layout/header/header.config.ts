@@ -235,7 +235,7 @@ const ProcessReports = {
 
 const ReportTemplates = {
   rolesWithAccess: [HSRoles.HSReportAdmin],
-  title: 'ADMIN.NAV.REPORT_TEHSLATES',
+  title: 'ADMIN.NAV.REPORT_TEMPLATES',
   route: `reports/${REDIRECT_TO_FIRST_PARENT}/templates`,
 }
 
@@ -243,7 +243,7 @@ const ReportsNavGrouping = {
   rolesWithAccess: [HSRoles.HSReportAdmin, HSRoles.HSReportReader],
   title: 'ADMIN.NAV.REPORTS',
   route: '/reports',
-  subRoutes: [OrchestrationLogs, ProcessReports, ReportTemplates],
+  subRoutes: [ProcessReports, ReportTemplates],
 }
 
 const SellerUsers = {

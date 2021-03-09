@@ -30,6 +30,8 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using Microsoft.OpenApi.Models;
+using OrderCloud.Catalyst;
+using OrderCloud.Common.Services;
 
 namespace Headstart.API
 {
@@ -85,8 +87,10 @@ namespace Headstart.API
             var smartyStreetsUsClient = new ClientBuilder(_settings.SmartyStreetSettings.AuthID, _settings.SmartyStreetSettings.AuthToken).BuildUsStreetApiClient();
 
             services
-                .AddLazyCache()
-                .OrderCloudIntegrationsConfigureWebApiServices(_settings, middlewareErrorsConfig, corsPolicyName: "headstarcors")
+                .AddSingleton<ISimpleCache, LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
+                .ConfigureServices()
+                .AddOrderCloudUserAuth<AppSettings>()
+                .AddOrderCloudWebhookAuth(opts => opts.HashKey = _settings.OrderCloudSettings.WebhookHashKey)
                 .InjectCosmosStore<LogQuery, OrchestrationLog>(cosmosConfig)
                 .InjectCosmosStore<ReportTemplateQuery, ReportTemplate>(cosmosConfig)
                 .AddCosmosDb(_settings.CosmosSettings.EndpointUri, _settings.CosmosSettings.PrimaryKey, _settings.CosmosSettings.DatabaseName, cosmosContainers)
@@ -155,12 +159,9 @@ namespace Headstart.API
                 {
                     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Headstart API", Version = "v1" });
                     c.CustomSchemaIds(x => x.FullName);
-                })
-                .AddAuthentication();
+                });
             var serviceProvider = services.BuildServiceProvider();
             services
-                .AddAuthenticationScheme<OrderCloudIntegrationsAuthOptions, OrderCloudIntegrationsAuthHandler>("OrderCloudIntegrations", opts => opts.OrderCloudClient = serviceProvider.GetService<IOrderCloudClient>())
-                .AddAuthenticationScheme<OrderCloudWebhookAuthOptions, OrderCloudWebhookAuthHandler>("OrderCloudWebhook", opts => opts.HashKey = _settings.OrderCloudSettings.WebhookHashKey)
                 .AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions
                 {
                     EnableAdaptiveSampling = false, // retain all data
@@ -175,7 +176,7 @@ namespace Headstart.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.OrderCloudIntegrationsConfigureWebApp(env, corsPolicyName: "headstarcors")
+            CatalystApplicationBuilder.CreateApplicationBuilder(app, env)
                 .UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint($"/swagger", $"API v1");

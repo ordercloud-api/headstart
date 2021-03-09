@@ -52,6 +52,8 @@ export class TemplateEditComponent implements OnChanges {
     this.setHeadersAndFilters(this.reportType)
     if (this.reportsTemplateService.checkIfCreatingNew()) {
       this.isCreatingNew = true
+      this.resourceForm.controls['ReportType'].setValue(this.reportType)
+      this.updateResource.emit(this.resourceForm)
       this.handleSelectAllHeaders()
     }
   }

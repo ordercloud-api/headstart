@@ -9,6 +9,7 @@ using ordercloud.integrations.easypost.Exceptions;
 using Polly.Retry;
 using Polly;
 using System.Net;
+using OrderCloud.Catalyst;
 
 namespace ordercloud.integrations.easypost
 {

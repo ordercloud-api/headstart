@@ -70,17 +70,16 @@ namespace Headstart.Common.Models
 
         public class SupportTemplateData
         {
-            public string FirstName { get; set; }
-            public string LastName { get; set; }
-            public string Email { get; set; }
-            public string Vendor { get; set; }
-            public string orderID { get; set; }
-            public string BuyerID { get; set; }
-            public string Username { get; set; }
-            public string PaymentID { get; set; }
-            public string TransactionID { get; set; }
+            public string OrderID { get; set; }
             public string ErrorJsonString { get; set; }
-
+            public string DynamicPropertyName1 { get; set; }
+            public string DynamicPropertyValue1 { get; set; }
+            public string DynamicPropertyName2 { get; set; }
+            public string DynamicPropertyValue2 { get; set; }
+            public string DynamicPropertyName3 { get; set; }
+            public string DynamicPropertyValue3 { get; set; }
+            public string DynamicPropertyName4 { get; set; }
+            public string DynamicPropertyValue4 { get; set; }
         }
 
 

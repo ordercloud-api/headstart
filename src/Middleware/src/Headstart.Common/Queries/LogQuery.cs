@@ -7,6 +7,7 @@ using Cosmonaut.Extensions;
 using Headstart.Common.Models;
 using Microsoft.Azure.Documents.Client;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Queries

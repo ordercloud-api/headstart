@@ -1,65 +1,69 @@
 <h4 class="mt-3" *ngIf="checkForParent()">
   Add a Sub-Category to {{ _params }}
 </h4>
-<div *ngFor="let field of _categoryFields">
-  <div
-    *ngIf="field.type === 'string' && field.field === 'ParentID' && _params"
-    class="form-group"
-  >
-    <label for="field.field">{{ field.field }}</label>
-    <input
-      type="text"
-      class="form-control"
-      id="{{ field.field }}"
-      aria-describedby="field.field"
-      value="{{ _params }}"
-      (input)="handleUpdateCategory($event)"
-      placeholder="Enter {{ field.field }}"
-      readonly
-    />
-  </div>
-  <div
-    *ngIf="field.type === 'string' && field.field === 'ParentID' && !_params"
-    class="form-group"
-  >
-    <label for="field.field">{{ field.field }}</label>
-    <input
-      type="text"
-      class="form-control"
-      id="{{ field.field }}"
-      aria-describedby="field.field"
-      value="{{ _category[field.field] }}"
-      (input)="handleUpdateCategory($event)"
-      placeholder="Enter {{ field.field }}"
-    />
-  </div>
-  <div
-    *ngIf="field.type === 'string' && field.field !== 'ParentID'"
-    class="form-group"
-  >
-    <label for="field.field">{{ field.field }}</label>
-    <input
-      type="text"
-      class="form-control"
-      id="{{ field.field }}"
-      aria-describedby="field.field"
-      value="{{ _category[field.field] }}"
-      (input)="handleUpdateCategory($event)"
-      placeholder="Enter {{ field.field }}"
-    />
-  </div>
-  <div *ngIf="field.type === 'boolean'">
-    <p class="mb-1">{{ field.field }}</p>
-    <label class="switch mb-0" for="{{ field.field }}">
+<form *ngIf="resourceForm" [formGroup]="resourceForm">
+  <div *ngFor="let field of _categoryFields">
+    <div
+      *ngIf="field.type === 'string' && field.field === 'ParentID' && _params"
+      class="form-group"
+    >
+      <label for="field.field">{{ field.field | uncamel}}</label>
       <input
-        type="checkbox"
-        class="form-check-input"
+        type="text"
+        class="form-control"
         id="{{ field.field }}"
-        [checked]="_category[field.field]"
         aria-describedby="field.field"
-        (input)="handleUpdateCategory($event, 'boolean')"
+        [resourceForm]="resourceForm"
+        formControlName="{{ field.field }}"
+        (input)="handleUpdateCategory($event)"
+        placeholder="Enter {{ field.field }}"
+        readonly
       />
-      <span class="slider round cursor-pointer"></span>
-    </label>
+    </div>
+    <div
+      *ngIf="field.type === 'string' && field.field === 'ParentID' && !_params"
+      class="form-group"
+    >
+      <label for="field.field">{{ field.field | uncamel}}</label>
+      <input
+        type="text"
+        class="form-control"
+        id="{{ field.field }}"
+        aria-describedby="field.field"
+        formControlName="{{ field.field }}"
+        (input)="handleUpdateCategory($event)"
+        placeholder="Enter {{ field.field }}"
+      />
+    </div>
+    <div
+      *ngIf="field.type === 'string' && field.field !== 'ParentID'"
+      class="form-group"
+    >
+      <label for="field.field">{{ field.field | uncamel}}</label>
+      <input
+        type="text"
+        class="form-control"
+        id="{{ field.field }}"
+        aria-describedby="field.field"
+        formControlName="{{ field.field }}"
+        (input)="handleUpdateCategory($event)"
+        placeholder="Enter {{ field.field }}"
+      />
+    </div>
+    <div *ngIf="field.type === 'boolean'" class="form-group">
+      <p class="mb-1">{{ field.field | uncamel}}</p>
+      <label class="switch mb-0" for="{{ field.field }}">
+        <input
+          type="checkbox"
+          class="form-check-input"
+          id="{{ field.field }}"
+          formControlName="Active"
+          (input)="handleUpdateCategory($event, 'boolean')"
+        />
+        <span class="slider round cursor-pointer"></span>
+      </label>
+    </div>
   </div>
-</div>
+</form>
+
+
