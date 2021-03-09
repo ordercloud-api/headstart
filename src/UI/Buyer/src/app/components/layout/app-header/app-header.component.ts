@@ -83,9 +83,11 @@ export class OCMAppHeader implements OnInit {
     this.appName = this.context.appSettings.appname
     this.activePath = this.context.router.getActiveUrl();
     this.isSSO = this.context.currentUser.isSSO()
-    this.isAnonymous = this.context.currentUser.isAnonymous()
     this.context.order.onChange((order) => (this.order = order))
-    this.context.currentUser.onChange((user) => (this.user = user))
+    this.context.currentUser.onChange((user) => {
+      this.user = user
+      this.isAnonymous = this.context.currentUser.isAnonymous()
+    })
     this.context.productFilters.activeFiltersSubject
       .pipe(takeWhile(() => this.alive))
       .subscribe(this.handleFiltersChange)

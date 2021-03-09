@@ -128,6 +128,7 @@ export class OrderStateService {
       !ordersNeverSubmitted.Items.length && 
       this.appConfig.anonymousShoppingEnabled) {
         await this.initOrder()
+        this.setEmptyLineItems();
         this.orderPromos = null;
     } else {
       if (ordersForResubmit.Items.length) {
@@ -154,6 +155,13 @@ export class OrderStateService {
         ...this.DefaultOrder as Order }
     } else {
       this.createAndSetOrder(this.DefaultOrder)
+    }
+  }
+
+  setEmptyLineItems() {
+    this.lineItems = {
+      Items: [],
+      Meta: {}
     }
   }
 

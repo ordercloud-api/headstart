@@ -203,6 +203,7 @@ import { TokenHelperService } from './services/token-helper/token-helper.service
 import { CMSConfiguration } from '@ordercloud/cms-sdk'
 import { AppConfig } from './models/environment.types'
 import { OCMKitLineitemTable } from './components/cart/lineitem-table/kit-lineitem-table/kit-lineitem-table.component'
+import { BaseResolveService } from './services/base-resolve/base-resolve.service'
 
 export function HttpLoaderFactory(
   http: HttpClient,
@@ -403,6 +404,7 @@ const components = [
     CheckoutService,
     OrderStateService,
     ShopperContextService,
+    BaseResolveService,
     { provide: AppConfig, useValue: ocAppConfig },
     { provide: NgbDateAdapter, useClass: NgbDateNativeAdapter },
     { provide: ErrorHandler, useClass: AppErrorHandler },

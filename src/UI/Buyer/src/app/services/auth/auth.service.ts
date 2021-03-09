@@ -21,6 +21,7 @@ import { ApplicationInsightsService } from '../application-insights/application-
 import { TokenHelperService } from '../token-helper/token-helper.service'
 import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { AppConfig } from 'src/app/models/environment.types'
+import { BaseResolveService } from '../base-resolve/base-resolve.service'
 
 @Injectable({
   providedIn: 'root',
@@ -45,7 +46,8 @@ export class AuthService {
     private appConfig: AppConfig,
     private tokenHelper: TokenHelperService,
     private appInsightsService: ApplicationInsightsService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private baseResolveService: BaseResolveService
   ) {}
 
   // All this isLoggedIn stuff is only used in the header wrapper component
@@ -169,8 +171,10 @@ export class AuthService {
     this.isLoggedIn = false
     this.appInsightsService.clearUser()
     if (this.appConfig.anonymousShoppingEnabled) {
-      void this.router.navigate(['home'])
-        .then(() => window.location.reload())
+      await this.anonymousLogin()
+      void this.router.navigate(['home']).then(async () => {
+        await this.baseResolveService.resolve()
+      })
     } else {
       void this.router.navigate(['/login'])
     }
