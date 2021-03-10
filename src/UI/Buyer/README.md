@@ -5,7 +5,7 @@
 2. Navigate to the `buyer` Directory with `cd src/UI/Buyer`
 
 3. Install dependencies with `npm install`
-4. Fill out the [test app configuration](rc/assets/appConfigs/defaultbuyer-test.json)
+4. Fill out the [test app configuration](src/assets/appConfigs/defaultbuyer-test.json)
 
 5. Run `npm run start` for a dev server. The app will automatically reload if you change any of the source files.
 
