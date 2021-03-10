@@ -30,21 +30,21 @@ namespace ordercloud.integrations.exchangerates
     {
         private readonly IOrderCloudIntegrationsExchangeRatesClient _client;
         private readonly IOrderCloudIntegrationsBlobService _blob;
-        private readonly IAppCache _cache;
+        private readonly ISimpleCache _cache;
 
-        public ExchangeRatesCommand(BlobServiceConfig config, IFlurlClientFactory flurlFactory, IAppCache cache)
+        public ExchangeRatesCommand(BlobServiceConfig config, IFlurlClientFactory flurlFactory, ISimpleCache cache)
         {
             _client = new OrderCloudIntegrationsExchangeRatesClient(flurlFactory);
             _blob = new OrderCloudIntegrationsBlobService(config);
             _cache = cache;
         }
 
-        public ExchangeRatesCommand(IOrderCloudIntegrationsBlobService blob, IFlurlClientFactory flurlFactory, IAppCache cache)
-        {
-            _client = new OrderCloudIntegrationsExchangeRatesClient(flurlFactory);
-            _blob = blob;
-            _cache = cache;
-        }
+        //public ExchangeRatesCommand(IOrderCloudIntegrationsBlobService blob, IFlurlClientFactory flurlFactory, ISimpleCache cache)
+        //{
+        //    _client = new OrderCloudIntegrationsExchangeRatesClient(flurlFactory);
+        //    _blob = blob;
+        //    _cache = cache;
+        //}
 
         /// <summary>
         /// Intended for public API based consumption. Hence the ListArgs implementation
@@ -66,9 +66,9 @@ namespace ordercloud.integrations.exchangerates
 
         private async Task<ListPage<OrderCloudIntegrationsConversionRate>> GetCachedRates(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencySymbol currency)
         {
-            var rates = await _cache.GetOrAddAsync($"exchangerates_{currency}", () => {
+            var rates = await _cache.GetOrAddAsync($"exchangerates_{currency}", TimeSpan.FromHours(1), () => {
                 return _blob.Get<OrderCloudIntegrationsExchangeRate>($"{currency}.json");
-            }, TimeSpan.FromHours(1));
+            });
             return Filter(rateArgs, rates);
         }
 

@@ -29,14 +29,14 @@ namespace Headstart.API.Commands
 		private readonly IHSBuyerCommand _hsBuyerCommand;
 		private readonly IHSProductCommand _hsProductCommand;
 		private readonly ISendgridService _sendgridService;
-		private readonly IAppCache _cache;
+		private readonly ISimpleCache _cache;
 		private readonly IExchangeRatesCommand _exchangeRatesCommand;
 		public MeProductCommand(
 			IOrderCloudClient elevatedOc, 
 			IHSBuyerCommand hsBuyerCommand,
 			IHSProductCommand hsProductCommand,
 			ISendgridService sendgridService,
-			IAppCache cache,
+			ISimpleCache cache,
 			IExchangeRatesCommand exchangeRatesCommand
 		)
 		{
@@ -199,7 +199,7 @@ namespace Headstart.API.Commands
 
 		private async Task<decimal> GetDefaultMarkupMultiplier(VerifiedUserContext user)
 		{
-			var buyer = await _cache.GetOrAddAsync($"buyer_{user.Buyer.ID}", () => _hsBuyerCommand.Get(user.Buyer.ID), TimeSpan.FromHours(1));
+			var buyer = await _cache.GetOrAddAsync($"buyer_{user.Buyer.ID}", TimeSpan.FromHours(1), () => _hsBuyerCommand.Get(user.Buyer.ID));
 
 			// must convert markup to decimal before division to prevent rouding error
 			var markupPercent = (decimal)buyer.Markup.Percent / 100;

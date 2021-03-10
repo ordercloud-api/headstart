@@ -136,7 +136,7 @@ namespace Headstart.API
                         Roles = new[] { ApiRole.FullAccess }
                     })))
                 .AddSingleton<IOrderCloudIntegrationsExchangeRatesClient, OrderCloudIntegrationsExchangeRatesClient>()
-                .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand(currencyConfig, flurlClientFactory, provider.GetService<IAppCache>()))
+                .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand(currencyConfig, flurlClientFactory, provider.GetService<ISimpleCache>()))
                 .AddSingleton<IAvalaraCommand>(x => new AvalaraCommand(
                     avalaraConfig,
                     new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(avalaraConfig.BaseApiUrl)
