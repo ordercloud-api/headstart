@@ -4,10 +4,8 @@ resources:
       type: git
       ref: development
 jobs:
-  - job: Job_1
-    displayName: Agent job 1
-    pool:
-      vmImage: windows-2019
+  - job: Build_MiddleWare
+    displayName: Build Middleware
     steps:
       - checkout: self
       - task: PowerShell@2
@@ -66,6 +64,14 @@ jobs:
           projects: "**/Headstart.API.csproj"
           arguments: --configuration Release --output middleware
           zipAfterPublish: false
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Artifact: Middleware"
+        inputs:
+          PathtoPublish: middleware
+          ArtifactName: middleware
+  - job: Build_Buyer
+    displayName: Build Buyer
+    steps:
       - task: NodeTool@0
         displayName: Use Node 12.x
         inputs:
@@ -86,6 +92,18 @@ jobs:
         inputs:
           script: npm run build
           workingDirectory: src/UI/Buyer
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Artifact: Buyer"
+        inputs:
+          PathtoPublish: src/UI/Buyer/dist
+          ArtifactName: buyer
+  - job: Build_Seller
+    displayName: Build Seller
+    steps:
+      - task: NodeTool@0
+        displayName: Use Node 12.x
+        inputs:
+          versionSpec: 12.x
       - task: Cache@2
         displayName: Seller Dependencies Cache
         inputs:
@@ -103,17 +121,8 @@ jobs:
           script: npm run build
           workingDirectory: src/UI/Seller
       - task: PublishBuildArtifacts@1
-        displayName: "Publish Artifact: Buyer"
-        inputs:
-          PathtoPublish: src/UI/Buyer/dist
-          ArtifactName: buyer
-      - task: PublishBuildArtifacts@1
         displayName: "Publish Artifact: Seller"
         inputs:
           PathtoPublish: src/UI/Seller/dist
           ArtifactName: seller
-      - task: PublishBuildArtifacts@1
-        displayName: "Publish Artifact: Middleware"
-        inputs:
-          PathtoPublish: middleware
-          ArtifactName: middleware
+
