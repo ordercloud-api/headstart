@@ -11,6 +11,7 @@ using AutoFixture;
 using Flurl.Http.Configuration;
 using LazyCache.Mocks;
 using OrderCloud.Catalyst;
+using OrderCloud.SDK;
 
 namespace exchangerates.tests
 {
@@ -110,8 +111,11 @@ namespace exchangerates.tests
             var baseCurrency = CurrencySymbol.EUR;
             var toCurrency = CurrencySymbol.MYR;
             double returnedRate = 4.6982;
-            var returned = GetExchangeRate(baseCurrency, toCurrency, returnedRate);
-            _blob.Get<OrderCloudIntegrationsExchangeRate>(Arg.Any<string>()).ReturnsForAnyArgs(returned);
+
+            _simpleCache.GetOrAddAsync(Arg.Any<string>(), Arg.Any<TimeSpan>(), Arg.Any<Func<Task<OrderCloudIntegrationsExchangeRate>>>())
+                .ReturnsForAnyArgs(
+                    GetExchangeRate(baseCurrency, toCurrency, returnedRate)
+                ); ;
             
 
             //Act
