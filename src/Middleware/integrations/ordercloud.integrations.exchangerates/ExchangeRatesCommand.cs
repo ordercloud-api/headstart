@@ -32,10 +32,10 @@ namespace ordercloud.integrations.exchangerates
         private readonly IOrderCloudIntegrationsBlobService _blob;
         private readonly ISimpleCache _cache;
 
-        public ExchangeRatesCommand(BlobServiceConfig config, IFlurlClientFactory flurlFactory, ISimpleCache cache)
+        public ExchangeRatesCommand(IOrderCloudIntegrationsBlobService blob, IFlurlClientFactory flurlFactory, ISimpleCache cache)
         {
             _client = new OrderCloudIntegrationsExchangeRatesClient(flurlFactory);
-            _blob = new OrderCloudIntegrationsBlobService(config);
+            _blob = blob;
             _cache = cache;
         }
 
