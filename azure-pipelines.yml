@@ -5,6 +5,8 @@ resources:
       ref: development
 jobs:
   - job: Build_MiddleWare
+    pool:
+      vmImage: windows-2019
     displayName: Build Middleware
     steps:
       - checkout: self
