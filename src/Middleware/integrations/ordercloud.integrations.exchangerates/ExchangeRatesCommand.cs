@@ -39,13 +39,6 @@ namespace ordercloud.integrations.exchangerates
             _cache = cache;
         }
 
-        //public ExchangeRatesCommand(IOrderCloudIntegrationsBlobService blob, IFlurlClientFactory flurlFactory, ISimpleCache cache)
-        //{
-        //    _client = new OrderCloudIntegrationsExchangeRatesClient(flurlFactory);
-        //    _blob = blob;
-        //    _cache = cache;
-        //}
-
         /// <summary>
         /// Intended for public API based consumption. Hence the ListArgs implementation
         /// </summary>
