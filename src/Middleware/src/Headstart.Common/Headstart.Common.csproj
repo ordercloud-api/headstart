@@ -7,6 +7,16 @@
     <StartupObject />
     <LangVersion>8.0</LangVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\english-translations.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\english-translations.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Cosmonaut.Extensions.Microsoft.DependencyInjection" Version="2.3.0" />
     <PackageReference Include="CreditCardValidator" Version="1.4.6" />
