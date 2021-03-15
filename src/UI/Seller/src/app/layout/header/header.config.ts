@@ -221,12 +221,6 @@ const SupplierNavGrouping: HSRoute = {
   subRoutes: [AllSuppliers, SupplierUsers, SupplierLocations],
 }
 
-const OrchestrationLogs = {
-  rolesWithAccess: [HSRoles.HSReportReader],
-  title: 'ADMIN.NAV.ORCHESTRATION_LOGS',
-  route: 'reports/logs',
-}
-
 const ProcessReports = {
   rolesWithAccess: [HSRoles.HSReportReader],
   title: 'ADMIN.NAV.PROCESS_REPORTS',
