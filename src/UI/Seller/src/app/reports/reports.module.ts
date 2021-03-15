@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core'
 import { SharedModule } from '@app-seller/shared'
 import { ReportsRoutingModule } from './reports-routing.module'
-import { OrchestrationLogsTableComponent } from './components/orchestration-logs-table/orchestration-logs-table.component'
 import { ReportsTableComponent } from './components/reports-main/reports-table/reports-table.component'
 import { ReportsComponent } from './components/reports-main/reports/reports.component'
 import { ReportsSelectionComponent } from './components/reports-main/reports-selection/reports-selection.component'
@@ -13,7 +12,6 @@ import { TemplateEditComponent } from './components/reports-template/template-ed
 @NgModule({
   imports: [SharedModule, ReportsRoutingModule],
   declarations: [
-    OrchestrationLogsTableComponent,
     ReportsTableComponent,
     ReportsComponent,
     ReportsSelectionComponent,
