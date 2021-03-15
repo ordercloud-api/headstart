@@ -1,6 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 import { Category } from '@ordercloud/angular-sdk'
-import { FormGroup, FormBuilder, Validators } from '@angular/forms'
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  MaxLengthValidator,
+} from '@angular/forms'
 import { AppFormErrorService } from '@app-seller/shared/services/form-error/form-error.service'
 import { RegexService } from '@app-seller/shared/services/regex/regex.service'
 
@@ -47,12 +52,20 @@ export class CategoryFormComponent implements OnInit {
       ID: [
         this._existingCategory.ID || '',
         Validators.pattern(this.regexService.ID),
+        Validators.maxLength(10),
       ],
       Name: [
         this._existingCategory.Name || '',
-        [Validators.required, Validators.pattern(this.regexService.ObjectName)],
+        [
+          Validators.required,
+          Validators.pattern(this.regexService.ObjectName),
+          [Validators.maxLength(10)],
+        ],
       ],
-      Description: [this._existingCategory.Description || ''],
+      Description: [
+        this._existingCategory.Description || '',
+        [Validators.maxLength(10)],
+      ],
       Active: [!!this._existingCategory.Active],
     })
   }
