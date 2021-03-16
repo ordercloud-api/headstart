@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core'
+import { Component, Input, Output, EventEmitter, OnDestroy } from '@angular/core'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { BuyerTempService } from '@app-seller/shared/services/middleware-api/buyer-temp.service'
 import { HSBuyer } from '@ordercloud/headstart-sdk'
@@ -8,18 +8,20 @@ import { Router } from '@angular/router'
 import { isEqual as _isEqual } from 'lodash'
 import { HSBuyerPriceMarkup } from '@app-seller/models/buyer-markups.types'
 import { OcImpersonationConfigService } from '@ordercloud/angular-sdk'
-import { ImpersonationConfigs } from 'ordercloud-javascript-sdk'
+import { Subscription } from 'rxjs'
+import { ResourceFormUpdate } from '@app-seller/shared'
 @Component({
   selector: 'app-buyer-edit',
   templateUrl: './buyer-edit.component.html',
   styleUrls: ['./buyer-edit.component.scss'],
 })
-export class BuyerEditComponent {
+export class BuyerEditComponent implements OnDestroy {
   resourceForm: FormGroup
   showImpersonation: boolean
   isCreatingNew = false
   areChanges = false
   dataIsSaving = false
+  impersonationSubscription: Subscription
 
   _superBuyerStatic: HSBuyerPriceMarkup
   _superBuyerEditable: HSBuyerPriceMarkup
@@ -46,17 +48,22 @@ export class BuyerEditComponent {
   ) {}
 
   updateResourceFromEvent(event: any, field: string): void {
-    let resourceUpdate;
+    let resourceUpdate: ResourceFormUpdate;
     if(field==="ImpersonatingEnabled") {
       resourceUpdate= {
         field: 'ImpersonationConfig',
-        value: this.showImpersonation ? null : this._superBuyerStatic?.ImpersonationConfig
+        value: this.showImpersonation ? null : this._superBuyerStatic?.ImpersonationConfig,
+        form: this.resourceForm
       }
       this.showImpersonation = !this.showImpersonation
     } else {
       const value =
       field === 'Buyer.Active' ? event.target.checked : event.target.value
-      resourceUpdate = { field, value }
+      resourceUpdate = { 
+        field, 
+        value,
+        form: this.resourceForm
+      }
     }
     this._superBuyerEditable = this.buyerService.getUpdatedEditableResource<HSBuyerPriceMarkup>(
       resourceUpdate,
@@ -78,13 +85,23 @@ export class BuyerEditComponent {
       URL: new FormControl((Buyer.xp as any).URL),
       ClientID: new FormControl(ImpersonationConfig?.ClientID) 
     })
+    this.setImpersonationValidator()
+  }
+
+  setImpersonationValidator(): void {
+    const url = this.resourceForm.get('URL')
+    const ClientID = this.resourceForm.get('ClientID')
+    this.impersonationSubscription = this.resourceForm
+    .get('ImpersonatingEnabled')
+    .valueChanges.subscribe((impersonation) => {
+      if(impersonation) {
+        url.setValidators([Validators.required])
+        ClientID.setValidators([Validators.required, Validators.minLength(36)])
+      }
+    })
   }
 
   async handleSelectedBuyerChange(buyer: HSBuyer): Promise<void> {
-    //const buyerReq = this.buyerTempService.get(buyer.ID)
-    //var impReq = this.ocImpersonationService.List({filters: {"BuyerID": buyer.ID}}).toPromise()
-    //var test = await Promise.all([buyerReq, impReq]);
-    //console.log(test)
     const superHSBuyer = await this.buyerTempService.get(buyer.ID)
     this.refreshBuyerData(superHSBuyer)
   }
@@ -147,5 +164,9 @@ export class BuyerEditComponent {
 
   deleteBuyer(): void {
     this.resourceDelete.emit()
+  }
+
+  ngOnDestroy(): void {
+    this.impersonationSubscription.unsubscribe()
   }
 }
