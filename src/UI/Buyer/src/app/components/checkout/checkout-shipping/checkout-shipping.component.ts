@@ -9,6 +9,8 @@ import {
   ShipMethodSelection,
 } from 'ordercloud-javascript-sdk'
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
+import { CheckoutService } from 'src/app/services/order/checkout.service'
+import { LineItemGroupSupplier } from 'src/app/models/line-item.types'
 
 function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
   return value !== null && value !== undefined
@@ -20,7 +22,10 @@ function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
 })
 export class OCMCheckoutShipping implements OnInit {
   @Input() order?: HSOrder
-  @Input() lineItems?: ListPage<HSLineItem>
+  @Input() set lineItems(value: ListPage<HSLineItem>) {
+    this._lineItems = value;
+    this.getSupplierData()
+  } 
   @Input() set shipEstimates(value: ShipEstimate[]) {
     this._shipEstimates = value
     this._areAllShippingSelectionsMade = this.areAllShippingSelectionsMade(
@@ -39,13 +44,21 @@ export class OCMCheckoutShipping implements OnInit {
   _areAllShippingSelectionsMade = false
   _lineItemsByShipEstimate?: HSLineItem[][]
   faExclamationCircle = faExclamationCircle
+  _lineItems: ListPage<HSLineItem>
+  _supplierData: LineItemGroupSupplier[]
 
-  constructor() {
+  constructor(private checkoutService: CheckoutService) {
     this.order = undefined
     this.lineItems = undefined
   }
 
   ngOnInit(): void {}
+
+  async getSupplierData(): Promise<void> {
+    if(this._lineItems) {
+      this._supplierData = await this.checkoutService.buildSupplierData(this._lineItems.Items)
+    }
+  }
 
   getLineItemsForShipEstimate(
     shipEstimate: ShipEstimate
@@ -53,7 +66,7 @@ export class OCMCheckoutShipping implements OnInit {
     if (!shipEstimate.ShipEstimateItems) {
       return []
     }
-    if (!this.lineItems || !this.lineItems?.Items) {
+    if (!this._lineItems || !this._lineItems?.Items) {
       return []
     }
     const lineItemsByShipFromAddressID = this.lineItems?.Items?.filter(
@@ -98,7 +111,7 @@ export class OCMCheckoutShipping implements OnInit {
       return
     }
     const firstLineItemID = shipEstimate.ShipEstimateItems[0].LineItemID
-    return this.lineItems.Items.find(
+    return this._lineItems.Items.find(
       (lineItem) => lineItem.ID === firstLineItemID
     )
   }

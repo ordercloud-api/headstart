@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import { HSLineItem } from '@ordercloud/headstart-sdk'
 import { NgxSpinnerService } from 'ngx-spinner'
 import { ToastrService } from 'ngx-toastr'
+import { CheckoutService } from 'src/app/services/order/checkout.service'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 import { OCMLineitemTable } from '../lineitem-table.component'
 
@@ -16,9 +17,9 @@ export class OCMKitLineitemTable extends OCMLineitemTable {
   constructor(
       context: ShopperContextService,
       spinner: NgxSpinnerService,
-      toastrService: ToastrService
+      checkoutService: CheckoutService
   ) {
-      super(context, spinner, toastrService)
+      super(context, spinner, checkoutService)
   }
 
   toggleKitDetails(): void {

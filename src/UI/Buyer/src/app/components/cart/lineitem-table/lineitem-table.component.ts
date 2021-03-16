@@ -1,7 +1,7 @@
 import { Component } from '@angular/core'
 import { groupBy as _groupBy } from 'lodash'
 import { NgxSpinnerService } from 'ngx-spinner'
-import { ToastrService } from 'ngx-toastr'
+import { CheckoutService } from 'src/app/services/order/checkout.service'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 import { OCMParentTableComponent } from './parent-table-component'
 
@@ -13,8 +13,8 @@ export class OCMLineitemTable extends OCMParentTableComponent {
   constructor(
     context: ShopperContextService,
     spinner: NgxSpinnerService,
-    toastrService: ToastrService
+    checkoutService: CheckoutService
   ) {
-    super(context, spinner, toastrService);
+    super(context, spinner, checkoutService);
   }
 }
