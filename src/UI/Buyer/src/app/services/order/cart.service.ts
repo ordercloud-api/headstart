@@ -22,6 +22,7 @@ export class CartService {
     callback: (lineItems: ListPage<HSLineItem>) => void
   ) => void
   private initializingOrder = false
+  public isCartValidSubject = new Subject<boolean>()
 
   constructor(
     private state: OrderStateService,
@@ -34,6 +35,10 @@ export class CartService {
 
   get(): ListPage<HSLineItem> {
     return this.lineItems
+  }
+
+  setIsCartValid(isCartValid: boolean): void {
+    this.isCartValidSubject.next(isCartValid)
   }
 
   async getInvalidLineItems(): Promise<HSLineItem[]> {
@@ -266,6 +271,7 @@ export class CartService {
   private async upsertLineItem(
     lineItem: HSLineItem
   ): Promise<HSLineItem> {
+    this.isCartValidSubject.next(false)
     try {
       return await HeadStartSDK.Orders.UpsertLineItem(this.order?.ID, lineItem)
     } finally {
@@ -274,6 +280,7 @@ export class CartService {
         await this.checkout.calculateOrder()
       }
       await this.state.reset()
+      this.isCartValidSubject.next(true)
     }
   }
 

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core'
+import { Component, Input, OnDestroy, OnInit } from '@angular/core'
 import { ListPage, OrderPromotion } from 'ordercloud-javascript-sdk'
 import {
   HSLineItem,
@@ -11,12 +11,13 @@ import { LineItemWithProduct } from 'src/app/models/line-item.types'
 import { ModalState } from 'src/app/models/shared.types'
 import { faShoppingCart } from '@fortawesome/free-solid-svg-icons'
 import { getPrimaryLineItemImage } from 'src/app/services/images.helpers'
+import { CurrentOrderService } from 'src/app/services/order/order.service'
 
 @Component({
   templateUrl: './cart.component.html',
   styleUrls: ['./cart.component.scss'],
 })
-export class OCMCart {
+export class OCMCart implements OnInit, OnDestroy {
   _order: HSOrder
   _orderPromos: ListPage<OrderPromotion>
   _lineItems: ListPage<LineItemWithProduct>
@@ -27,6 +28,7 @@ export class OCMCart {
   orderErrorModal = ModalState.Closed
   orderError: string
   faShoppingCart = faShoppingCart
+  _isCartValid: boolean
   @Input() set invalidLineItems(value: HSLineItem[]) {
     this._invalidLineItems = value
     if (
@@ -58,7 +60,14 @@ export class OCMCart {
     }
   }
 
-  constructor(private context: ShopperContextService) {}
+  constructor(private context: ShopperContextService,
+    private currentOrder: CurrentOrderService) {}
+
+  ngOnInit(): void {
+    this.currentOrder.cart.isCartValidSubject.subscribe((valid) => {
+      this._isCartValid = valid;
+    })
+  }
 
   setOrderSummaryMeta(): void {
     if (this._order && this._lineItems && this._orderPromos) {
@@ -108,5 +117,9 @@ export class OCMCart {
       this._invalidLineItems,
       this.context.currentUser.get()
     )
+  }
+  
+  ngOnDestroy(): void {
+    this.currentOrder.cart.isCartValidSubject.unsubscribe();
   }
 }

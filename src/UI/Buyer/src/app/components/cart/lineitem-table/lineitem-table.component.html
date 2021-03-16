@@ -212,6 +212,7 @@
                   [priceSchedule]="li.Product.PriceSchedule"
                   [isQtyChanging]="isQtyChanging(li.ID)"
                   [variantID]="li.Variant?.ID"
+                  [noChange]="li.ID !== _changedLineItemID"
                   (qtyChange)="changeQuantity(li.ID, $event.detail)"
                 >
                 </ocm-quantity-input>

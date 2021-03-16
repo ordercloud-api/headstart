@@ -27,6 +27,7 @@ export class OCMQuantityInput implements OnInit, OnChanges {
   @Input() isAddingToCart: boolean
   @Input() existingQty: number
   @Input() gridDisplay? = false
+  @Input() noChange? = false
   @Input() isQtyChanging
   @Input() resetGridQtyFields
   @Output() qtyChange = new EventEmitter<QtyChangeEvent>()
@@ -64,7 +65,8 @@ export class OCMQuantityInput implements OnInit, OnChanges {
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (
-      changes?.variantID?.previousValue !== changes?.variantID?.currentValue
+      changes?.variantID?.previousValue !== changes?.variantID?.currentValue &&
+      !this.noChange
     ) {
       const _product = await HeadStartSDK.Mes.GetSuperProduct(this.product?.ID)
       const variant = _product?.Variants?.find((v) => v.ID === this.variantID)
