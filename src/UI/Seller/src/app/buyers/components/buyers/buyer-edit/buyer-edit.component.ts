@@ -7,6 +7,8 @@ import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { Router } from '@angular/router'
 import { isEqual as _isEqual } from 'lodash'
 import { HSBuyerPriceMarkup } from '@app-seller/models/buyer-markups.types'
+import { OcImpersonationConfigService } from '@ordercloud/angular-sdk'
+import { ImpersonationConfigs } from 'ordercloud-javascript-sdk'
 @Component({
   selector: 'app-buyer-edit',
   templateUrl: './buyer-edit.component.html',
@@ -14,6 +16,7 @@ import { HSBuyerPriceMarkup } from '@app-seller/models/buyer-markups.types'
 })
 export class BuyerEditComponent {
   resourceForm: FormGroup
+  showImpersonation: boolean
   isCreatingNew = false
   areChanges = false
   dataIsSaving = false
@@ -36,15 +39,25 @@ export class BuyerEditComponent {
 
   constructor(
     private buyerService: BuyerService,
+    private ocImpersonationService: OcImpersonationConfigService,
     private router: Router,
     private buyerTempService: BuyerTempService,
     private appAuthService: AppAuthService
   ) {}
 
   updateResourceFromEvent(event: any, field: string): void {
-    const value =
+    let resourceUpdate;
+    if(field==="ImpersonatingEnabled") {
+      resourceUpdate= {
+        field: 'ImpersonationConfig',
+        value: this.showImpersonation ? null : this._superBuyerStatic?.ImpersonationConfig
+      }
+      this.showImpersonation = !this.showImpersonation
+    } else {
+      const value =
       field === 'Buyer.Active' ? event.target.checked : event.target.value
-    const resourceUpdate = { field, value }
+      resourceUpdate = { field, value }
+    }
     this._superBuyerEditable = this.buyerService.getUpdatedEditableResource<HSBuyerPriceMarkup>(
       resourceUpdate,
       this._superBuyerEditable
@@ -52,18 +65,26 @@ export class BuyerEditComponent {
     this.checkForChanges()
   }
 
-  createBuyerForm(superBuyer: HSBuyerPriceMarkup): void {
-    const buyer = superBuyer.Buyer
-    const markup = superBuyer.Markup
+  createBuyerForm(superBuyer: any): void {
+    const {Buyer, Markup, ImpersonationConfig} = superBuyer;
+    this.showImpersonation = ImpersonationConfig && ImpersonationConfig !== null
+
     this.resourceForm = new FormGroup({
-      Name: new FormControl(buyer.Name, Validators.required),
-      Active: new FormControl(buyer.Active),
-      Markup: new FormControl(markup.Percent),
-      ChiliPublishFolder: new FormControl(buyer.xp.ChiliPublishFolder),
+      Name: new FormControl(Buyer.Name, Validators.required),
+      Active: new FormControl(Buyer.Active),
+      Markup: new FormControl(Markup.Percent),
+      ChiliPublishFolder: new FormControl(Buyer.xp.ChiliPublishFolder),
+      ImpersonatingEnabled: new FormControl(this.showImpersonation),
+      URL: new FormControl((Buyer.xp as any).URL),
+      ClientID: new FormControl(ImpersonationConfig?.ClientID) 
     })
   }
 
   async handleSelectedBuyerChange(buyer: HSBuyer): Promise<void> {
+    //const buyerReq = this.buyerTempService.get(buyer.ID)
+    //var impReq = this.ocImpersonationService.List({filters: {"BuyerID": buyer.ID}}).toPromise()
+    //var test = await Promise.all([buyerReq, impReq]);
+    //console.log(test)
     const superHSBuyer = await this.buyerTempService.get(buyer.ID)
     this.refreshBuyerData(superHSBuyer)
   }
