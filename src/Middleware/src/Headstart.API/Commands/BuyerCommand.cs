@@ -5,6 +5,7 @@ using Headstart.Models.Misc;
 using ordercloud.integrations.library;
 using System.Linq;
 using Headstart.Common;
+using System;
 
 namespace Headstart.API.Commands
 {
@@ -28,10 +29,12 @@ namespace Headstart.API.Commands
         {
             var createdBuyer = await CreateBuyerAndRelatedFunctionalResources(superBuyer.Buyer, accessToken, isSeedingEnvironment);
             var createdMarkup = await CreateMarkup(superBuyer.Markup, createdBuyer.ID, accessToken);
+            var createdImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, createdBuyer.ID, accessToken);
             return new SuperHSBuyer()
             {
                 Buyer = createdBuyer,
-                Markup = createdMarkup
+                Markup = createdMarkup,
+                ImpersonationConfig = createdImpersonationConfig
             };
         }
 
@@ -42,17 +45,21 @@ namespace Headstart.API.Commands
 
             var updatedBuyer = await _oc.Buyers.SaveAsync<HSBuyer>(buyerID, superBuyer.Buyer, token);
             var updatedMarkup = await UpdateMarkup(superBuyer.Markup, superBuyer.Buyer.ID, token);
+            var updatedImpersonation = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, buyerID, token);
             return new SuperHSBuyer()
             {
                 Buyer = updatedBuyer,
-                Markup = updatedMarkup
+                Markup = updatedMarkup,
+                ImpersonationConfig = updatedImpersonation
             };
         }
 
         public async Task<SuperHSBuyer> Get(string buyerID, string token = null)
         {
             var request = token != null ? _oc.Buyers.GetAsync<HSBuyer>(buyerID, token) : _oc.Buyers.GetAsync<HSBuyer>(buyerID);
+            var configReq = GetImpersonationByBuyerID(buyerID);
             var buyer = await request;
+            var config = await configReq;
 
             // to move into content docs logic
             var markupPercent = buyer.xp?.MarkupPercent ?? 0;
@@ -64,8 +71,15 @@ namespace Headstart.API.Commands
             return new SuperHSBuyer()
             {
                 Buyer = buyer,
-                Markup = markup
+                Markup = markup,
+                ImpersonationConfig = config
             };
+        }
+
+        private async Task<ImpersonationConfig> GetImpersonationByBuyerID(string buyerID)
+        {
+            var config = await _oc.ImpersonationConfigs.ListAsync(filters: $"BuyerID={buyerID}");
+            return config?.Items?.FirstOrDefault();
         }
 
         public async Task<HSBuyer> CreateBuyerAndRelatedFunctionalResources(HSBuyer buyer, string accessToken, bool isSeedingEnvironment = false)
@@ -114,6 +128,26 @@ namespace Headstart.API.Commands
             {
                 Percent = (int)updatedBuyer.xp.MarkupPercent
             };
+        }
+
+        private async Task<ImpersonationConfig> SaveImpersonationConfig(ImpersonationConfig impersonation, string buyerID, string token)
+        {
+            var currentConfig = await GetImpersonationByBuyerID(buyerID);
+            if(currentConfig != null && impersonation == null)
+            {
+                await _oc.ImpersonationConfigs.DeleteAsync(currentConfig.ID);
+                return null;
+            }
+            else if(currentConfig != null)
+            {
+                return await _oc.ImpersonationConfigs.SaveAsync(currentConfig.ID, impersonation, token);
+            } else
+            {
+                impersonation.BuyerID = buyerID;
+                impersonation.SecurityProfileID = Enum.GetName(typeof(CustomRole), CustomRole.HSBaseBuyer);
+                impersonation.ID = $"hs_admin_{buyerID}";
+                return await _oc.ImpersonationConfigs.CreateAsync(impersonation);
+            }
         }
 
         private async Task<BuyerMarkup> UpdateMarkup(BuyerMarkup markup, string buyerID, string token)

@@ -8,6 +8,7 @@ namespace Headstart.Models
     {
         public HSBuyer Buyer { get; set; }
         public BuyerMarkup Markup { get; set; }
+        public ImpersonationConfig ImpersonationConfig { get; set; }
     }
 
     [SwaggerModel]
@@ -29,5 +30,6 @@ namespace Headstart.Models
         // temporary field while waiting on content docs
         public int MarkupPercent { get; set; }
         public string ChiliPublishFolder { get; set; }
+        public string URL { get; set; }
     }
 }
