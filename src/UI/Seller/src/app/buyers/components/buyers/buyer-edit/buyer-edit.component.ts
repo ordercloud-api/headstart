@@ -45,12 +45,12 @@ export class BuyerEditComponent implements OnDestroy {
     private router: Router,
     private buyerTempService: BuyerTempService,
     private appAuthService: AppAuthService
-  ) {}
+  ) { }
 
   updateResourceFromEvent(event: any, field: string): void {
     let resourceUpdate: ResourceFormUpdate;
-    if(field==="ImpersonatingEnabled") {
-      resourceUpdate= {
+    if (field === "ImpersonatingEnabled") {
+      resourceUpdate = {
         field: 'ImpersonationConfig',
         value: this.showImpersonation ? null : this._superBuyerStatic?.ImpersonationConfig,
         form: this.resourceForm
@@ -58,9 +58,9 @@ export class BuyerEditComponent implements OnDestroy {
       this.showImpersonation = !this.showImpersonation
     } else {
       const value =
-      field === 'Buyer.Active' ? event.target.checked : event.target.value
-      resourceUpdate = { 
-        field, 
+        field === 'Buyer.Active' ? event.target.checked : event.target.value
+      resourceUpdate = {
+        field,
         value,
         form: this.resourceForm
       }
@@ -73,7 +73,7 @@ export class BuyerEditComponent implements OnDestroy {
   }
 
   createBuyerForm(superBuyer: any): void {
-    const {Buyer, Markup, ImpersonationConfig} = superBuyer;
+    const { Buyer, Markup, ImpersonationConfig } = superBuyer;
     this.showImpersonation = ImpersonationConfig && ImpersonationConfig !== null
 
     this.resourceForm = new FormGroup({
@@ -83,7 +83,7 @@ export class BuyerEditComponent implements OnDestroy {
       ChiliPublishFolder: new FormControl(Buyer.xp.ChiliPublishFolder),
       ImpersonatingEnabled: new FormControl(this.showImpersonation),
       URL: new FormControl((Buyer.xp as any).URL),
-      ClientID: new FormControl(ImpersonationConfig?.ClientID) 
+      ClientID: new FormControl(ImpersonationConfig?.ClientID)
     })
     this.setImpersonationValidator()
   }
@@ -92,13 +92,13 @@ export class BuyerEditComponent implements OnDestroy {
     const url = this.resourceForm.get('URL')
     const ClientID = this.resourceForm.get('ClientID')
     this.impersonationSubscription = this.resourceForm
-    .get('ImpersonatingEnabled')
-    .valueChanges.subscribe((impersonation) => {
-      if(impersonation) {
-        url.setValidators([Validators.required])
-        ClientID.setValidators([Validators.required, Validators.minLength(36)])
-      }
-    })
+      .get('ImpersonatingEnabled')
+      .valueChanges.subscribe((impersonation) => {
+        if (impersonation) {
+          url.setValidators([Validators.required])
+          ClientID.setValidators([Validators.required, Validators.minLength(36)])
+        }
+      })
   }
 
   async handleSelectedBuyerChange(buyer: HSBuyer): Promise<void> {
