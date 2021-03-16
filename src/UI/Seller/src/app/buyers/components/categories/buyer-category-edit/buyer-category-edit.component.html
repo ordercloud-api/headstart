@@ -7,8 +7,9 @@
       *ngIf="field.type === 'string' && field.field === 'ParentID' && _params"
       class="form-group"
     >
-      <label for="field.field">{{ field.field | uncamel}}</label>
+      <label for="field.field">{{ field.field | uncamel }}</label>
       <input
+        maxlength="100"
         type="text"
         class="form-control"
         id="{{ field.field }}"
@@ -24,8 +25,9 @@
       *ngIf="field.type === 'string' && field.field === 'ParentID' && !_params"
       class="form-group"
     >
-      <label for="field.field">{{ field.field | uncamel}}</label>
+      <label for="field.field">{{ field.field | uncamel }}</label>
       <input
+        maxlength="100"
         type="text"
         class="form-control"
         id="{{ field.field }}"
@@ -35,12 +37,35 @@
         placeholder="Enter {{ field.field }}"
       />
     </div>
+
     <div
-      *ngIf="field.type === 'string' && field.field !== 'ParentID'"
+      *ngIf="field.type === 'string' && field.field === 'Description'"
       class="form-group"
     >
-      <label for="field.field">{{ field.field | uncamel}}</label>
+      <label for="field.field">{{ field.field | uncamel }}</label>
       <input
+        maxlength="200"
+        type="text"
+        class="form-control"
+        id="{{ field.field }}"
+        aria-describedby="field.field"
+        formControlName="{{ field.field }}"
+        (input)="handleUpdateCategory($event)"
+        placeholder="Enter {{ field.field }}"
+      />
+    </div>
+
+    <div
+      *ngIf="
+        field.type === 'string' &&
+        field.field !== 'ParentID' &&
+        field.field !== 'Description'
+      "
+      class="form-group"
+    >
+      <label for="field.field">{{ field.field | uncamel }}</label>
+      <input
+        maxlength="100"
         type="text"
         class="form-control"
         id="{{ field.field }}"
@@ -51,7 +76,7 @@
       />
     </div>
     <div *ngIf="field.type === 'boolean'" class="form-group">
-      <p class="mb-1">{{ field.field | uncamel}}</p>
+      <p class="mb-1">{{ field.field | uncamel }}</p>
       <label class="switch mb-0" for="{{ field.field }}">
         <input
           type="checkbox"
@@ -65,5 +90,3 @@
     </div>
   </div>
 </form>
-
-
