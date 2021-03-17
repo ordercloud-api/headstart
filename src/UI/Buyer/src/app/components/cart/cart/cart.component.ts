@@ -28,7 +28,7 @@ export class OCMCart implements OnInit, OnDestroy {
   orderErrorModal = ModalState.Closed
   orderError: string
   faShoppingCart = faShoppingCart
-  _isCartValid: boolean
+  _isCartValid = true
   @Input() set invalidLineItems(value: HSLineItem[]) {
     this._invalidLineItems = value
     if (
