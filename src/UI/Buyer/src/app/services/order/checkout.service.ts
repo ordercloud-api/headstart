@@ -7,6 +7,8 @@ import {
   IntegrationEvents,
   ShipMethodSelection,
   LineItems,
+  Suppliers,
+  SupplierAddresses,
 } from 'ordercloud-javascript-sdk'
 import { Injectable } from '@angular/core'
 import { PaymentHelperService } from '../payment-helper/payment-helper.service'
@@ -20,8 +22,9 @@ import {
   HSAddressBuyer,
   OrderCloudIntegrationsCreditCardPayment,
 } from '@ordercloud/headstart-sdk'
-import { max } from 'lodash'
+import { isEqual, max, uniqWith } from 'lodash'
 import { TempSdk } from '../temp-sdk/temp-sdk.service'
+import { LineItemGroupSupplier } from 'src/app/models/line-item.types'
 
 @Injectable({
   providedIn: 'root',
@@ -192,6 +195,29 @@ export class CheckoutService {
     )
     this.order = orderWorksheet.Order
     return orderWorksheet
+  }
+
+  async buildSupplierData(lineItems: HSLineItem[]): Promise<LineItemGroupSupplier[]> {
+    const supplierData = lineItems?.map(li => (
+      {
+        supplierID: li?.SupplierID,
+        ShipFromAddressID: li?.ShipFromAddressID
+      }
+    ))
+    const uniqueSuppliers = uniqWith(supplierData, isEqual)
+    const supplierIDs = uniqueSuppliers.map(s => s.supplierID)
+    const suppliers = await Suppliers.List({filters: {'ID': supplierIDs.join("|")}})
+    const supplierItems: LineItemGroupSupplier[] = [];
+    for(const combo of uniqueSuppliers) {
+      const supplier = suppliers.Items.find(s => s.ID === combo.supplierID)
+      if(combo.supplierID && combo.ShipFromAddressID) {
+        const shipFrom = await SupplierAddresses.Get(combo.supplierID, combo.ShipFromAddressID);
+        supplierItems.push({supplier,shipFrom})
+      } else {
+        supplierItems.push({supplier, shipFrom: null})
+      }
+    }
+    return supplierItems
   }
 
   async calculateOrder(): Promise<HSOrder> {
