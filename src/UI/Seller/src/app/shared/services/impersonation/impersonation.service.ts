@@ -31,8 +31,9 @@ export class ImpersonationService {
         CustomRoles: userCustomRoles,
       })
       .toPromise()
-    const url =
-      Buyer.xp.URL + 'impersonation?token=' + auth.access_token
+    const url = Buyer.xp.URL[Buyer.xp.URL.length - 1] === '/' ?
+      Buyer.xp.URL + 'impersonation?token=' + auth.access_token :
+      Buyer.xp.URL + '/impersonation?token=' + auth.access_token 
     window.open(url, '_blank')
   }
 
