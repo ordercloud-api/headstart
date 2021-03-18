@@ -74,7 +74,6 @@ export class SupplierService extends ResourceCrudService<Supplier> {
   }
 
   addIntrinsicListArgs(options: ListArgs): ListArgs {
-    options.sortBy = ['NAME']
     return options
   }
 }
