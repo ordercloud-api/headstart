@@ -92,6 +92,10 @@ namespace Headstart.API
                 {
                     options.AllowSynchronousIO = true;
                 })
+                .Configure<IISServerOptions>(options =>
+                {
+                    options.AllowSynchronousIO = true;
+                })
                 .AddSingleton<ISimpleCache, LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
                 .ConfigureServices()
                 .AddOrderCloudUserAuth<AppSettings>()
