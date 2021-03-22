@@ -450,7 +450,7 @@ export class KitsEditComponent implements OnInit {
       File: file.File,
       FileName: file.Filename,
     } as AssetUpload
-    const newAsset: Asset = await HeadStartSDK.Upload.UploadAsset(
+    const newAsset: Asset = await ContentManagementClient.Assets.Upload(
       asset,
       accessToken
     )
