@@ -96,7 +96,7 @@ namespace Headstart.API
                 {
                     options.AllowSynchronousIO = true;
                 })
-                .AddSingleton<ISimpleCache, LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
+                .AddSingleton<ISimpleCache, OrderCloud.Common.Services.LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
                 .ConfigureServices()
                 .AddOrderCloudUserAuth<AppSettings>()
                 .AddOrderCloudWebhookAuth(opts => opts.HashKey = _settings.OrderCloudSettings.WebhookHashKey)

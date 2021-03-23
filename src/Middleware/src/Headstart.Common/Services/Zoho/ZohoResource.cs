@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -63,26 +63,26 @@ namespace Headstart.Common.Services.Zoho
                 }));
             }));
 
-        private async Task<T> Parse<T>(HttpResponseMessage res) =>
-            JObject.Parse(await res.Content.ReadAsStringAsync()).SelectToken(_resource).ToObject<T>();
+        private async Task<T> Parse<T>(IFlurlResponse res) =>
+            JObject.Parse(await res.ResponseMessage.Content.ReadAsStringAsync()).SelectToken(_resource).ToObject<T>();
     }
 
     //https://stackoverflow.com/questions/52541918/flurl-extension-for-multi-part-put
     public static class MultipartPutExtensions
     {
-        public static Task<HttpResponseMessage> PutMultipartAsync(this IFlurlRequest request, Action<CapturedMultipartContent> buildContent, CancellationToken cancellationToken = default(CancellationToken))
+        public static Task<IFlurlResponse> PutMultipartAsync(this IFlurlRequest request, Action<CapturedMultipartContent> buildContent, CancellationToken cancellationToken = default(CancellationToken))
         {
             var cmc = new CapturedMultipartContent(request.Settings);
             buildContent(cmc);
             return request.SendAsync(HttpMethod.Put, cmc, cancellationToken);
         }
 
-        public static Task<HttpResponseMessage> PutMultipartAsync(this Url url, Action<CapturedMultipartContent> buildContent, CancellationToken cancellationToken = default(CancellationToken))
+        public static Task<IFlurlResponse> PutMultipartAsync(this Url url, Action<CapturedMultipartContent> buildContent, CancellationToken cancellationToken = default(CancellationToken))
         {
             return new FlurlRequest(url).PutMultipartAsync(buildContent, cancellationToken);
         }
 
-        public static Task<HttpResponseMessage> PutMultipartAsync(this string url, Action<CapturedMultipartContent> buildContent, CancellationToken cancellationToken = default(CancellationToken))
+        public static Task<IFlurlResponse> PutMultipartAsync(this string url, Action<CapturedMultipartContent> buildContent, CancellationToken cancellationToken = default(CancellationToken))
         {
             return new FlurlRequest(url).PutMultipartAsync(buildContent, cancellationToken);
         }
