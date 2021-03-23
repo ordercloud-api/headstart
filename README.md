@@ -40,6 +40,8 @@ In order for you application to consume the settings, you'll need to define the 
 - For **local** development - In Visual Studio right-click the Headstart.API project and go to Properties -> Debug -> Environment Variables.
 - For **hosted** apps - In Azure navigate to your app service. Go to the correct deployment slot, and go to Settings -> Configuration -> New application setting
 
+It is also possible to consume app settings from a JSON file while developing locally. Simply add an `appSettings.json` file to the root of the Headstart.API project. Settings defined here are applied after and override any settings in the azure app configuration.
+
 ### Seeding OrderCloud Data
 
 This solution depends on a lot of data to be initialized in a particular way. To make it easy when starting a new project we've created an endpoint that does this for you. Just call it with some information, wait a few seconds, and presto: You'll have an organization that is seeded with all the right data to get you started immediately.
