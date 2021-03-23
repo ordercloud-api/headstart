@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core'
 import { faTimes, faListUl, faTh } from '@fortawesome/free-solid-svg-icons'
-import { Spec, PriceBreak, SpecOption } from 'ordercloud-javascript-sdk'
+import { Spec, PriceBreak, SpecOption, Suppliers } from 'ordercloud-javascript-sdk'
 import { PriceSchedule } from 'ordercloud-javascript-sdk'
 import {
   HSLineItem,
@@ -10,6 +10,7 @@ import {
   HSVariant,
   HeadStartSDK,
   HSMeProduct,
+  HSSupplier,
 } from '@ordercloud/headstart-sdk'
 import { Observable } from 'rxjs'
 import { SpecFormService } from '../spec-form/spec-form.service'
@@ -67,11 +68,12 @@ export class OCMProductDetails implements OnInit {
   _disabledVariants: HSVariant[]
   variant: HSVariant
   variantInventory: number
+  _productSupplier: HSSupplier
   constructor(
     private specFormService: SpecFormService,
     private context: ShopperContextService,
     private productDetailService: ProductDetailService,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
   ) {}
 
   @Input() set product(superProduct: SuperHSProduct) {
@@ -86,6 +88,7 @@ export class OCMProductDetails implements OnInit {
     this.isOrderable = !!superProduct.PriceSchedule
     this.supplierNote = this._product.xp && this._product.xp.Note
     this.specs = superProduct.Specs
+    this.setSupplier(this._product.DefaultSupplierID)
     this.setPageTitle()
     this.populateInactiveVariants(superProduct)
   }
@@ -97,6 +100,10 @@ export class OCMProductDetails implements OnInit {
     this.context.currentUser.onChange(
       (user) => (this.favoriteProducts = user.FavoriteProductIDs)
     )
+  }
+
+  async setSupplier(supplierID: string): Promise<void> {
+    this._productSupplier = await Suppliers.Get(supplierID)
   }
 
   setPageTitle() {
