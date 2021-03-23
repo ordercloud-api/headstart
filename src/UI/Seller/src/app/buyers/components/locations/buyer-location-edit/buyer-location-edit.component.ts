@@ -90,10 +90,6 @@ export class BuyerLocationEditComponent implements OnInit {
         buyerLocation.UserGroup.Name,
         Validators.required
       ),
-      AddressName: new FormControl(
-        buyerLocation.Address.AddressName,
-        Validators.required
-      ),
       CompanyName: new FormControl(
         buyerLocation.Address.CompanyName,
         Validators.required
@@ -161,9 +157,9 @@ export class BuyerLocationEditComponent implements OnInit {
     try {
       this.dataIsSaving = true
       this.buyerLocationEditable.UserGroup.xp.Type = 'BuyerLocation'
+      this.buyerLocationEditable.Address.AddressName = this.buyerLocationEditable?.Address?.CompanyName
       this.buyerLocationEditable.UserGroup.ID = this.buyerLocationEditable.Address.ID
-      ;(this.buyerLocationEditable.UserGroup
-        .xp as any).Country = this.buyerLocationEditable.Address.Country
+      this.buyerLocationEditable.UserGroup.xp.Country = this.buyerLocationEditable.Address.Country
       const newBuyerLocation = await HeadStartSDK.BuyerLocations.Create(
         this.buyerID,
         this.buyerLocationEditable
