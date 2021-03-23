@@ -58,7 +58,6 @@
               [resourceForm]="resourceForm"
               formControlName="LocationName"
               (input)="handleUpdateBuyerLocation($event, 'UserGroup.Name')"
-              (input)="handleUpdateBuyerLocation($event, 'Address.AddressName')"
               placeholder="Enter Location Name"
             />
           </div>
@@ -324,7 +323,7 @@
           class="btn btn-primary"
           type="submit"
           [disabled]="
-            productForm?.status === 'INVALID' ||
+            resourceForm?.status === 'INVALID' ||
             dataIsSaving ||
             resourceForm.controls.Currency.value === null
           "
