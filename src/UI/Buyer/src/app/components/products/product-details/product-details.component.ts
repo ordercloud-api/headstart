@@ -74,7 +74,6 @@ export class OCMProductDetails implements OnInit {
     private context: ShopperContextService,
     private productDetailService: ProductDetailService,
     private toastrService: ToastrService,
-    //private ocSupplierService: OcSupplier
   ) {}
 
   @Input() set product(superProduct: SuperHSProduct) {
