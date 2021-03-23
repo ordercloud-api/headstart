@@ -27,9 +27,13 @@ namespace Headstart.API.Commands
         }
         public async Task<SuperHSBuyer> Create(SuperHSBuyer superBuyer, string accessToken, bool isSeedingEnvironment = false)
         {
+            var createdImpersonationConfig = new ImpersonationConfig();
             var createdBuyer = await CreateBuyerAndRelatedFunctionalResources(superBuyer.Buyer, accessToken, isSeedingEnvironment);
             var createdMarkup = await CreateMarkup(superBuyer.Markup, createdBuyer.ID, accessToken);
-            var createdImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, createdBuyer.ID, accessToken);
+            if(superBuyer?.ImpersonationConfig != null)
+            {
+                createdImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, createdBuyer.ID, accessToken);
+            }
             return new SuperHSBuyer()
             {
                 Buyer = createdBuyer,
