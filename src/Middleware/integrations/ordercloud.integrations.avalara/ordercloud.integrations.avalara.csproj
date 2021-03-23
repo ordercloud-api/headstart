@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="Avalara.AvaTax" Version="20.1.1" />
-    <PackageReference Include="Flurl" Version="2.8.2" />
+    <PackageReference Include="Flurl" Version="3.0.1" />
   </ItemGroup>
 
   <ItemGroup>

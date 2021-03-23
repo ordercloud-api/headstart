@@ -63,7 +63,7 @@ namespace Headstart.Common.Services.Zoho
                     .SetQueryParam("refresh_token", Config.AccessToken)
                     .SetQueryParam("redirect_uri", "https://ordercloud.io")
                     .PostAsync(null);
-                this.TokenResponse = JObject.Parse(await response.Content.ReadAsStringAsync()).ToObject<ZohoTokenResponse>();
+                this.TokenResponse = JObject.Parse(await response.ResponseMessage.Content.ReadAsStringAsync()).ToObject<ZohoTokenResponse>();
                 return this.TokenResponse;
             }
             catch (FlurlHttpException ex)
