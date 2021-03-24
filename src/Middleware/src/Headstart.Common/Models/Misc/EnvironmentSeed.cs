@@ -5,6 +5,7 @@ using SendGrid.Helpers.Mail;
 using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 using Headstart.Models.Headstart;
+using Headstart.Common;
 
 namespace Headstart.Models.Misc
 {
@@ -59,7 +60,11 @@ namespace Headstart.Models.Misc
 		/// Otherwise we will assign the default buyer that is created in seeding.
 		/// </summary>
 		public string AnonymousShoppingBuyerID { get; set; }
-	}
+
+		public string MiddlewareBaseUrl { get; set; }
+        public OrderCloudSettings OrderCloudSettings { get; set; }
+		public BlobSettings BlobSettings { get; set; }
+    }
 
 	[DocIgnore]
 	public class EnvironmentSeedResponse

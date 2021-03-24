@@ -21,6 +21,7 @@ namespace Headstart.API.Commands
         Task<EnvironmentSeedResponse> Seed(EnvironmentSeed seed);
         Task PostStagingRestore();
     }
+
     public class EnvironmentSeedCommand : IEnvironmentSeedCommand
     {
         private readonly IOrderCloudClient _oc;
@@ -30,7 +31,6 @@ namespace Headstart.API.Commands
         private readonly IHSBuyerCommand _buyerCommand;
         private readonly IHSBuyerLocationCommand _buyerLocationCommand;
         private readonly IExchangeRatesCommand _exhangeRates;
-        private readonly IOrderCloudIntegrationsBlobService _translationsBlob;
 
         public EnvironmentSeedCommand(
             AppSettings settings,
@@ -42,35 +42,29 @@ namespace Headstart.API.Commands
             IExchangeRatesCommand exhangeRates
         )
         {
-            _settings = settings;
             _portal = portal;
             _supplierCommand = supplierCommand;
             _buyerCommand = buyerCommand;
             _buyerLocationCommand = buyerLocationCommand;
             _oc = oc;
             _exhangeRates = exhangeRates;
-            var translationsConfig = new BlobServiceConfig()
-            {
-                ConnectionString = _settings.BlobSettings.ConnectionString,
-                Container = _settings.BlobSettings.ContainerNameTranslations
-            };
-            _translationsBlob = new OrderCloudIntegrationsBlobService(translationsConfig);
+            _settings = settings;
         }
 
         public async Task<EnvironmentSeedResponse> Seed(EnvironmentSeed seed)
         {
-            if (string.IsNullOrEmpty(_settings.OrderCloudSettings.ApiUrl))
+            if (string.IsNullOrEmpty(seed.OrderCloudSettings.ApiUrl))
             {
-                throw new Exception("Missing required app setting OrderCloudSettings:ApiUrl");
+                throw new Exception("Missing required seeding field OrderCloudSettings:ApiUrl");
             }
-            if (string.IsNullOrEmpty(_settings.OrderCloudSettings.WebhookHashKey))
+            if (string.IsNullOrEmpty(seed.OrderCloudSettings.WebhookHashKey))
             {
-                throw new Exception("Missing required app setting OrderCloudSettings:WebhookHashKey");
+                throw new Exception("Missing required seeding field OrderCloudSettings:WebhookHashKey");
             }
-            if (string.IsNullOrEmpty(_settings.EnvironmentSettings.MiddlewareBaseUrl))
-            {
-                throw new Exception("Missing required app setting EnvironmentSettings:MiddlewareBaseUrl");
-            }
+            //if (string.IsNullOrEmpty(seed.MiddlewareBaseUrl))
+            //{
+            //    throw new Exception("Missing required seeding field MiddlewareBaseUrl");
+            //}
 
             var portalUserToken = await _portal.Login(seed.PortalUsername, seed.PortalPassword);
             await VerifyOrgExists(seed.SellerOrgID, portalUserToken);
@@ -90,7 +84,7 @@ namespace Headstart.API.Commands
 
             var apiClients = await GetApiClients(orgToken);
             await CreateXPIndices(orgToken);
-            await CreateAndAssignIntegrationEvents(new string[] { apiClients.BuyerUiApiClient.ID }, apiClients.BuyerLocalUiApiClient.ID, orgToken);
+            await CreateAndAssignIntegrationEvents(new string[] { apiClients.BuyerUiApiClient.ID }, apiClients.BuyerLocalUiApiClient.ID, orgToken, seed);
             await CreateSuppliers(seed, orgToken);
 
             // populates exchange rates into blob container name: settings.BlobSettings.ContainerNameExchangeRates or "currency" if setting is not defined
@@ -100,7 +94,17 @@ namespace Headstart.API.Commands
             // provide other language files to support multiple languages
             var currentDirectory = Directory.GetCurrentDirectory();
             var englishTranslationsPath = Path.GetFullPath(Path.Combine(currentDirectory, @"..\Headstart.Common\Assets\english-translations.json"));
-            await _translationsBlob.Save("i18n/en.json", File.ReadAllText(englishTranslationsPath));
+            if(seed?.BlobSettings?.ConnectionString !=null && seed?.BlobSettings?.ContainerNameTranslations != null)
+            {
+                var translationsConfig = new BlobServiceConfig()
+                {
+                    ConnectionString = _settings.BlobSettings.ConnectionString,
+                    Container = _settings.BlobSettings.ContainerNameTranslations
+                };
+                var translationsBlob = new OrderCloudIntegrationsBlobService(translationsConfig);
+                await translationsBlob.Save("i18n/en.json", File.ReadAllText(englishTranslationsPath));
+            }
+            
 
             return new EnvironmentSeedResponse
             {
@@ -226,9 +230,13 @@ namespace Headstart.API.Commands
             var createUser = _oc.Users.SaveAsync(seed.AnonymousShoppingBuyerID, anonBuyer.ID, anonBuyer, token);
 
             //create and assign initial buyer location
-            var createBuyerLocation = _buyerLocationCommand.Save(seed.AnonymousShoppingBuyerID, 
+            var createBuyerLocation = await _buyerLocationCommand.Save(seed.AnonymousShoppingBuyerID, 
                 $"{seed.AnonymousShoppingBuyerID}-{SeedConstants.DefaultLocationID}", 
                 SeedConstants.DefaultBuyerLocation(), token, true);
+            Console.WriteLine(createBuyerLocation);
+            var test = await _oc.UserGroups.GetAsync(seed.AnonymousShoppingBuyerID, $"{seed.AnonymousShoppingBuyerID}-{SeedConstants.DefaultLocationID}");
+            Console.WriteLine(test);
+
 
             var assignment = new UserGroupAssignment()
             {
@@ -236,7 +244,10 @@ namespace Headstart.API.Commands
                 UserID = anonBuyer.ID
             };
             var saveAssignment = _oc.UserGroups.SaveUserAssignmentAsync(seed.AnonymousShoppingBuyerID, assignment, token);
-            await Task.WhenAll(createUser, createBuyerLocation, saveAssignment);
+            await createUser;
+
+            await saveAssignment;
+            //await Task.WhenAll(createUser, createBuyerLocation, saveAssignment);
         }
 
         private async Task<List<Buyer>> BuyerExistsAsync(string buyerName, string token)
@@ -361,9 +372,9 @@ namespace Headstart.API.Commands
         {
             var defaultMessageSenders = new List<MessageSender>()
             {
-                SeedConstants.BuyerEmails(_settings),
-                SeedConstants.SellerEmails(_settings),
-                SeedConstants.SuplierEmails(_settings)
+                SeedConstants.BuyerEmails(seed),
+                SeedConstants.SellerEmails(seed),
+                SeedConstants.SuplierEmails(seed)
             };
             foreach (var sender in defaultMessageSenders)
             {
@@ -404,11 +415,13 @@ namespace Headstart.API.Commands
             }
         }
 
-        private async Task CreateAndAssignIntegrationEvents(string[] buyerClientIDs, string localBuyerClientID, string token)
+        private async Task CreateAndAssignIntegrationEvents(string[] buyerClientIDs, string localBuyerClientID, string token, EnvironmentSeed seed = null)
         {
-            var checkoutEvent = SeedConstants.CheckoutEvent(_settings);
+            var middlewareBaseUrl = seed != null ? seed.MiddlewareBaseUrl : _settings.EnvironmentSettings.MiddlewareBaseUrl;
+            var webhookHashKey = seed != null ? seed.OrderCloudSettings.WebhookHashKey : _settings.OrderCloudSettings.WebhookHashKey;
+            var checkoutEvent = SeedConstants.CheckoutEvent(middlewareBaseUrl, webhookHashKey);
             await _oc.IntegrationEvents.SaveAsync(checkoutEvent.ID, checkoutEvent, token);
-            var localCheckoutEvent = SeedConstants.LocalCheckoutEvent(_settings);
+            var localCheckoutEvent = SeedConstants.LocalCheckoutEvent(webhookHashKey);
             await _oc.IntegrationEvents.SaveAsync(localCheckoutEvent.ID, localCheckoutEvent, token);
 
             await _oc.ApiClients.PatchAsync(localBuyerClientID, new PartialApiClient { OrderCheckoutIntegrationEventID = "HeadStartCheckoutLOCAL" }, token);
