@@ -58,7 +58,7 @@
               [resourceForm]="resourceForm"
               formControlName="LocationName"
               (input)="handleUpdateBuyerLocation($event, 'UserGroup.Name')"
-              placeholder="Enter Location Name"
+              placeholder="Enter {{ 'ALIAS.BUYER_LOCATION' | translate }} Name"
             />
           </div>
           <div class="form-group col-md-6">
