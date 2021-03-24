@@ -44,7 +44,6 @@ export class SellerUserService extends ResourceCrudService<User> {
         ...this.resourceSubject.value.Items,
         newResource,
       ]
-      this.resourceSubject.next(this.resourceSubject.value)
       return newResource
     } catch (err) {
       this.toastrService.error(
