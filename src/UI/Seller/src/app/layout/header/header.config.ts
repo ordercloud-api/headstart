@@ -156,12 +156,6 @@ const BuyerPurchasingLocations: HSRoute = {
   route: `/buyers/${REDIRECT_TO_FIRST_PARENT}/locations`,
 }
 
-const BuyerPaymentMethods: HSRoute = {
-  rolesWithAccess: [HSRoles.HSBuyerAdmin, HSRoles.HSBuyerReader],
-  title: 'ADMIN.NAV.PAYMENT_METHODS',
-  route: `/buyers/${REDIRECT_TO_FIRST_PARENT}/payments`,
-}
-
 const BuyerApprovalRules: HSRoute = {
   rolesWithAccess: [HSRoles.HSBuyerAdmin, HSRoles.HSBuyerReader],
   title: 'ADMIN.NAV.APPROVAL_RULES',
@@ -188,7 +182,6 @@ const BuyerNavGrouping = {
     AllBuyers,
     BuyerUsers,
     BuyerPurchasingLocations,
-    BuyerPaymentMethods,
     BuyerApprovalRules,
     BuyerCatalogs,
     BuyerCategories,
@@ -219,12 +212,6 @@ const SupplierNavGrouping: HSRoute = {
   title: 'ALIAS.SUPPLIERS',
   route: '/suppliers',
   subRoutes: [AllSuppliers, SupplierUsers, SupplierLocations],
-}
-
-const OrchestrationLogs = {
-  rolesWithAccess: [HSRoles.HSReportReader],
-  title: 'ADMIN.NAV.ORCHESTRATION_LOGS',
-  route: 'reports/logs',
 }
 
 const ProcessReports = {

@@ -399,6 +399,7 @@ namespace Headstart.API.Commands
             var preExistingLi = ((List<HSLineItem>)existingLineItems).Find(eli => LineItemsMatch(eli, liReq));
             if (preExistingLi != null)
             {
+                liReq.ID = preExistingLi.ID; //ensure we do not change the line item id when updating
                 li = await _oc.LineItems.SaveAsync<HSLineItem>(OrderDirection.Incoming, orderID, preExistingLi.ID, liReq);
             } else
             {

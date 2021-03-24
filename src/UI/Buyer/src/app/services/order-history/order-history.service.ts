@@ -22,6 +22,7 @@ import { HttpHeaders, HttpClient } from '@angular/common/http'
 import { AppConfig } from 'src/app/models/environment.types'
 import { LineItemGroupSupplier } from 'src/app/models/line-item.types'
 import { OrderReorderResponse } from 'src/app/models/order.types'
+import { flatten, uniq } from 'lodash'
 @Injectable({
   providedIn: 'root',
 })
@@ -87,25 +88,27 @@ export class OrderHistoryService {
   async getLineItemSuppliers(
     liGroups: HSLineItem[][]
   ): Promise<LineItemGroupSupplier[]> {
-    const suppliers: LineItemGroupSupplier[] = []
+    var supplierIDs = uniq(flatten(liGroups).map(li => li.SupplierID))
+    var suppliers = await Suppliers.List({
+      filters: {'ID': supplierIDs.join("|")}
+    })
+    const supplierItems: LineItemGroupSupplier[] = []
     for (const group of liGroups) {
       const line = group[0]
-      if (line?.SupplierID) {
-        const supplier = await Suppliers.Get(line.SupplierID)
-        if (line.ShipFromAddressID) {
-          const shipFrom = await SupplierAddresses.Get(
-            line.SupplierID,
-            line.ShipFromAddressID
-          )
-          suppliers.push({ supplier, shipFrom })
-        } else {
-          suppliers.push({ supplier, shipFrom: null })
-        }
+      const supplier = suppliers.Items.find(s => s.ID === line.SupplierID)
+      if (supplier && line.ShipFromAddressID) {
+        const shipFrom = await SupplierAddresses.Get(
+          line.SupplierID,
+          line.ShipFromAddressID
+        )
+        supplierItems.push({ supplier, shipFrom })
+      } else {
+        supplierItems.push({ supplier, shipFrom: null })
       }
     }
-    return suppliers
+    return supplierItems
   }
-
+  
   async listShipments(
     orderID: string = this.activeOrderID
   ): Promise<HSShipmentWithItems[]> {

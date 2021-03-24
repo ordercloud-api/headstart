@@ -153,8 +153,8 @@ namespace ordercloud.integrations.easypost
 			return Policy
 				.Handle<FlurlHttpTimeoutException>()
 				.Or<FlurlHttpException>(ex => 
-					ex.Call.HttpStatus == HttpStatusCode.InternalServerError ||
-					ex.Call.HttpStatus == HttpStatusCode.TooManyRequests)
+					ex.Call.HttpResponseMessage.StatusCode == HttpStatusCode.InternalServerError ||
+					ex.Call.HttpResponseMessage.StatusCode == HttpStatusCode.TooManyRequests)
 				.WaitAndRetryAsync(new[] {
 					TimeSpan.FromSeconds(2),
 					TimeSpan.FromSeconds(3),

@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Flurl" Version="2.8.2" />
-    <PackageReference Include="OrderCloud.SDK" Version="0.10.0" />
+    <PackageReference Include="Flurl" Version="3.0.1" />
+    <PackageReference Include="OrderCloud.SDK" Version="0.10.1" />
   </ItemGroup>
 
   <ItemGroup>

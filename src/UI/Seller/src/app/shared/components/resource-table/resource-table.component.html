@@ -63,8 +63,7 @@
             (click)="navigateToSubResource(subResource.route)"
             translate
           >
-              {{ subResource.display }}
-
+            {{ subResource.display }}
           </button>
         </div>
       </div>
@@ -72,11 +71,16 @@
     </div>
     <div
       class="col-lg-2 col-md-1 col-sm-7 d-flex justify-content-start align-items-center"
-      *ngIf="shouldShowCreateNew"
+      *ngIf="
+        shouldShowCreateNew && _currentResourceNamePlural !== 'storefronts'
+      "
     >
       <!-- route accidentally works for both subresoures and first level resources because the extra / are ignored by the router it appears-->
       <button
-        *ngIf="_currentResourceNamePlural !== 'products'"
+        *ngIf="
+          _currentResourceNamePlural !== 'products' &&
+          _currentResourceNamePlural !== 'storefronts'
+        "
         class="btn btn-block brand-button--orange"
         routerLink="/{{
           isMyResource ? _ocService.myRoute : _ocService.route
@@ -87,6 +91,7 @@
       >
         Create New {{ labelSingular | translate }}
       </button>
+
       <div
         ngbDropdown
         class="d-inline-block"
@@ -136,7 +141,8 @@
           </div>
           <div class="col-md-1 d-flex align-items-center">
             <div class="d-flex justify-content-start align-items-center">
-              <div *ngIf="filterForm"
+              <div
+                *ngIf="filterForm"
                 class="icon-button ripple"
                 placement="{{
                   screenSize === 'xs' && 'sm' && 'md' ? 'left' : 'bottom'
@@ -476,7 +482,11 @@
               <button
                 class="btn btn-primary"
                 type="submit"
-                [disabled]="!areChanges || resourceForm?.status === 'INVALID' || dataIsSaving"
+                [disabled]="
+                  !areChanges ||
+                  resourceForm?.status === 'INVALID' ||
+                  dataIsSaving
+                "
                 (click)="handleSave()"
               >
                 {{ getSaveBtnText() }}
@@ -488,10 +498,12 @@
               >
                 Discard Changes
               </button>
-
             </div>
-            <div *ngIf="_errorMessage && _errorMessage.length > 0" class="text-danger">
-              {{_errorMessage}}
+            <div
+              *ngIf="_errorMessage && _errorMessage.length > 0"
+              class="text-danger"
+            >
+              {{ _errorMessage }}
             </div>
           </div>
         </div>

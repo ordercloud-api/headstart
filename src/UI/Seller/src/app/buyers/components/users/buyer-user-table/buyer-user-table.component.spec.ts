@@ -4,7 +4,6 @@ import { HttpClient } from '@angular/common/http'
 import { Router, ActivatedRoute } from '@angular/router'
 import { of } from 'rxjs'
 import { BuyerService } from '../../buyers/buyer.service'
-import { BuyerPaymentTableComponent } from '../../payments/buyer-payment-table/buyer-payment-table.component'
 import { BuyerUserService } from '../buyer-user.service'
 
 describe('BuyerUserTableComponent', () => {

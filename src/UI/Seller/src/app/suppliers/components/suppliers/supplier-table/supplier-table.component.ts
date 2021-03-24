@@ -166,7 +166,7 @@ export class SupplierTableComponent extends ResourceCrudComponent<Supplier> {
           FileName: this.file.name,
           Tags: ['Logo'],
         }
-        const newAsset: Asset = await HeadStartSDK.Upload.UploadAsset(
+        const newAsset: Asset = await ContentManagementClient.Assets.Upload(
           asset,
           accessToken
         )

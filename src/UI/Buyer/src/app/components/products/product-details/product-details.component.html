@@ -268,7 +268,9 @@
       </ng-container>
       <div
         class="border-top border-light mt-3"
-        *ngIf="_product.xp.ProductType === 'Standard'"
+        *ngIf="_product.xp.ProductType === 'Standard' && 
+        _productSupplier?.xp?.SupportContact?.Email && 
+        _productSupplier?.xp?.SupportContact?.Email !== ''"
       >
         <button
           type="button"

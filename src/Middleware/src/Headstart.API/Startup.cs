@@ -32,6 +32,7 @@ using System.Net;
 using Microsoft.OpenApi.Models;
 using OrderCloud.Catalyst;
 using OrderCloud.Common.Services;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 namespace Headstart.API
 {
@@ -87,7 +88,15 @@ namespace Headstart.API
             var smartyStreetsUsClient = new ClientBuilder(_settings.SmartyStreetSettings.AuthID, _settings.SmartyStreetSettings.AuthToken).BuildUsStreetApiClient();
 
             services
-                .AddSingleton<ISimpleCache, LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
+                .Configure<KestrelServerOptions>(options =>
+                {
+                    options.AllowSynchronousIO = true;
+                })
+                .Configure<IISServerOptions>(options =>
+                {
+                    options.AllowSynchronousIO = true;
+                })
+                .AddSingleton<ISimpleCache, OrderCloud.Common.Services.LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
                 .ConfigureServices()
                 .AddOrderCloudUserAuth<AppSettings>()
                 .AddOrderCloudWebhookAuth(opts => opts.HashKey = _settings.OrderCloudSettings.WebhookHashKey)
