@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Flurl.Http;
 using Flurl.Http.Configuration;
@@ -78,8 +78,9 @@ namespace Headstart.Common.Services
 
         public async Task CreateOrganization(Organization org, string token)
         {
-            // doesn't return anything
-            await _client.Request("organizations", token)
+            //  doesn't return anything
+            await _client.Request($"organizations/{org.Id}")
+                .WithOAuthBearerToken(token)
                 .PutJsonAsync(org);
         }
     }

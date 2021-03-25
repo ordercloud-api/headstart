@@ -39,11 +39,12 @@ namespace Headstart.Models.Misc
 		public string InitialAdminPassword { get; set; }
 
 		/// <summary>
-		/// The ID of the seller organization to be seeded
-		/// it is not currently possible to create an organization outside of the portal
+		/// Optionally pass in a value if you have an existing organization you would like to seed. If no value is present a new org will be created
+		/// Creating an org via seeding is only possible in the sandbox api environment
 		/// </summary>
-		[Required]
 		public string SellerOrgID { get; set; }
+
+		public string SellerOrgName { get; set; }
 
 		/// <summary>
 		/// An optional array of suppliers to create as part of the initial seeding
@@ -62,7 +63,7 @@ namespace Headstart.Models.Misc
 		public string AnonymousShoppingBuyerID { get; set; }
 
 		public string MiddlewareBaseUrl { get; set; }
-        public OrderCloudSettings OrderCloudSettings { get; set; }
+        public OrderCloudSeedRequest OrderCloudSettings { get; set; }
 		public BlobSettings BlobSettings { get; set; }
     }
 
@@ -70,6 +71,34 @@ namespace Headstart.Models.Misc
 	public class EnvironmentSeedResponse
     {
 		public string Comments { get; set; }
+		public string OrganizationName { get; set; }
+		public string OrganizationID { get; set; }
+		public string OrderCloudEnvironment { get; set; }
 		public Dictionary<string, dynamic> ApiClients { get; set; }
+    }
+
+	public class OrderCloudSeedRequest : OrderCloudSettings
+	{
+		public string Environment { get; set; }
+	}
+
+	public class OrderCloudEnvironments
+    {
+		public static OcEnv Production = new OcEnv()
+		{
+			environmentName = "Production",
+			apiUrl = "https://api.ordercloud.io"
+		};
+		public static OcEnv Sandbox = new OcEnv()
+		{
+			environmentName = "Sandbox",
+			apiUrl = "https://sandboxapi.ordercloud.io"
+		};
+    }
+
+	public class OcEnv
+    {
+        public string environmentName { get; set; }
+		public string apiUrl { get; set; }
     }
 }

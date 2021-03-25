@@ -13,6 +13,7 @@ using Headstart.Common;
 using ordercloud.integrations.exchangerates;
 using Headstart.Common.Models;
 using OrderCloud.Catalyst;
+using Headstart.Common.Services.Portal.Models;
 
 namespace Headstart.API.Commands
 {
@@ -24,7 +25,7 @@ namespace Headstart.API.Commands
 
     public class EnvironmentSeedCommand : IEnvironmentSeedCommand
     {
-        private readonly IOrderCloudClient _oc;
+        private IOrderCloudClient _oc;
         private readonly AppSettings _settings;
         private readonly IPortalService _portal;
         private readonly IHSSupplierCommand _supplierCommand;
@@ -53,18 +54,42 @@ namespace Headstart.API.Commands
 
         public async Task<EnvironmentSeedResponse> Seed(EnvironmentSeed seed)
         {
-            if (string.IsNullOrEmpty(seed.OrderCloudSettings.ApiUrl))
+            if (string.IsNullOrEmpty(seed.OrderCloudSettings.Environment))
             {
-                throw new Exception("Missing required seeding field OrderCloudSettings:ApiUrl");
+                throw new Exception("Missing required seeding field OrderCloudSettings:Environment");
             }
             if (string.IsNullOrEmpty(seed.OrderCloudSettings.WebhookHashKey))
             {
                 throw new Exception("Missing required seeding field OrderCloudSettings:WebhookHashKey");
             }
+            var requestedEnv = validateEnvironment(seed.OrderCloudSettings.Environment);
+            if (requestedEnv == null)
+            {
+                throw new Exception("Invalid value in OrderCloudSettingsa:Environment. Please specify 'Sandbox' or 'Production'");
+            }
+            if(requestedEnv.environmentName == OrderCloudEnvironments.Production.environmentName && seed.SellerOrgID == null)
+            {
+                throw new Exception("Cannot create a production environment via the environment seed endpoint. Please contact an OrderCloud Developer to create a production org.");
+            }
+
+            _oc = new OrderCloudClient(new OrderCloudClientConfig
+            {
+                ApiUrl = requestedEnv.apiUrl,
+                AuthUrl = requestedEnv.apiUrl,
+                ClientId = seed.OrderCloudSettings.MiddlewareClientID != null ? 
+                    seed.OrderCloudSettings.MiddlewareClientID : _settings.OrderCloudSettings.MiddlewareClientID,
+                ClientSecret = seed.OrderCloudSettings.MiddlewareClientSecret != null ? 
+                    seed.OrderCloudSettings.MiddlewareClientSecret :  _settings.OrderCloudSettings.MiddlewareClientSecret,
+                Roles = new[]
+                    {
+                        ApiRole.FullAccess
+                    }
+            });
+            
 
             var portalUserToken = await _portal.Login(seed.PortalUsername, seed.PortalPassword);
-            await VerifyOrgExists(seed.SellerOrgID, portalUserToken);
-            var orgToken = await _portal.GetOrgToken(seed.SellerOrgID, portalUserToken);
+            var sellerOrg = await GetOrCreateOrg(portalUserToken, requestedEnv.environmentName, seed.SellerOrgName, seed.SellerOrgID);
+            var orgToken = await _portal.GetOrgToken(sellerOrg.Id, portalUserToken);
 
             await CreateDefaultSellerUsers(seed, orgToken);
 
@@ -100,11 +125,14 @@ namespace Headstart.API.Commands
                 var translationsBlob = new OrderCloudIntegrationsBlobService(translationsConfig);
                 await translationsBlob.Save("i18n/en.json", File.ReadAllText(englishTranslationsPath));
             }
-            
+
 
             return new EnvironmentSeedResponse
             {
                 Comments = "Success! Your environment is now seeded. The following clientIDs & secrets should be used to finalize the configuration of your application. The initial admin username and password can be used to sign into your admin application",
+                OrganizationName = sellerOrg.Name,
+                OrganizationID = sellerOrg.Id,
+                OrderCloudEnvironment = requestedEnv.environmentName,
                 ApiClients = new Dictionary<string, dynamic>
                 {
                     ["Middleware"] = new
@@ -124,11 +152,24 @@ namespace Headstart.API.Commands
             };
         }
 
-        public async Task VerifyOrgExists(string orgID, string devToken)
+        private OcEnv validateEnvironment(string environment)
+        {
+            var ProdEnvs = new List<string>() { "production", "prod" };
+            if (ProdEnvs.Contains(environment.ToLower()))
+            {
+                return OrderCloudEnvironments.Production;
+            }
+            else if (environment.ToLower() == "sandbox")
+            {
+                return OrderCloudEnvironments.Sandbox;
+            }
+            else return null;
+        }
+        public async Task<Organization> VerifyOrgExists(string orgID, string devToken)
         {
             try
             {
-                await _portal.GetOrganization(orgID, devToken);
+                return await _portal.GetOrganization(orgID, devToken);
             }
             catch
             {
@@ -136,6 +177,34 @@ namespace Headstart.API.Commands
                 // though its possible to create on sandbox - for consistency sake we'll require its created before seeding
                 throw new Exception("Failed to retrieve seller organization with SellerOrgID. The organization must exist before it can be seeded");
             }
+        }
+
+        public async Task<Organization> GetOrCreateOrg(string token, string env, string orgName, string orgID = null)
+        {
+            if(orgID != null)
+            {
+                var org = await VerifyOrgExists(orgID, token);
+                return org;
+            } else
+            {
+                var org = new Organization()
+                {
+                    Id = RandomString(10),
+                    Environment = env,
+                    Name = orgName == null ? "My Headstart Organization" : orgName
+
+                };
+                await _portal.CreateOrganization(org, token);
+                return await _portal.GetOrganization(org.Id, token);
+            }
+        }
+
+        private static Random random = new Random();
+        public static string RandomString(int length)
+        {
+         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            return new string(Enumerable.Repeat(chars, length)
+              .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
         /// <summary>
