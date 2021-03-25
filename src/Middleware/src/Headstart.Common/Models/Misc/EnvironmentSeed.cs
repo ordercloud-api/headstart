@@ -5,6 +5,8 @@ using SendGrid.Helpers.Mail;
 using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 using Headstart.Models.Headstart;
+using Headstart.Common;
+using System.Linq;
 
 namespace Headstart.Models.Misc
 {
@@ -38,11 +40,12 @@ namespace Headstart.Models.Misc
 		public string InitialAdminPassword { get; set; }
 
 		/// <summary>
-		/// The ID of the seller organization to be seeded
-		/// it is not currently possible to create an organization outside of the portal
+		/// Optionally pass in a value if you have an existing organization you would like to seed. If no value is present a new org will be created
+		/// Creating an org via seeding is only possible in the sandbox api environment
 		/// </summary>
-		[Required]
 		public string SellerOrgID { get; set; }
+
+		public string SellerOrgName { get; set; }
 
 		/// <summary>
 		/// An optional array of suppliers to create as part of the initial seeding
@@ -59,12 +62,73 @@ namespace Headstart.Models.Misc
 		/// Otherwise we will assign the default buyer that is created in seeding.
 		/// </summary>
 		public string AnonymousShoppingBuyerID { get; set; }
-	}
+
+		public string MiddlewareBaseUrl { get; set; }
+
+		/// <summary>
+		/// OrderCloud values that tell us what OC environment to use.
+		/// Environment and WebhookHashKey are the only required fields for seeding.
+		/// Your environment will be either sandbox or production. Your WebhookHashKey can be any string of your choosing.
+		/// </summary>
+		public OrderCloudSeedRequest OrderCloudSettings { get; set; }
+
+		/// <summary>
+		/// An optional object of storage settings for your translations container. 
+		/// If none are provided the seeding funciton will not create a translation file.
+		/// Provide a valid ConnectionString and ContainerNameTranslations to have the seeding function generate your translation file
+		/// </summary>
+		public BlobSettings BlobSettings { get; set; }
+    }
 
 	[DocIgnore]
 	public class EnvironmentSeedResponse
     {
 		public string Comments { get; set; }
+		public string OrganizationName { get; set; }
+		public string OrganizationID { get; set; }
+		public string OrderCloudEnvironment { get; set; }
 		public Dictionary<string, dynamic> ApiClients { get; set; }
+    }
+
+	public class OrderCloudSeedRequest : OrderCloudSettings
+	{
+		[Required]
+		[ValueRange(AllowableValues = new[] { "production", "prod", "sandbox" })]
+		public string Environment { get; set; }
+	}
+
+	public class OrderCloudEnvironments
+    {
+		public static OcEnv Production = new OcEnv()
+		{
+			environmentName = "Production",
+			apiUrl = "https://api.ordercloud.io"
+		};
+		public static OcEnv Sandbox = new OcEnv()
+		{
+			environmentName = "Sandbox",
+			apiUrl = "https://sandboxapi.ordercloud.io"
+		};
+    }
+
+	public class ValueRange : ValidationAttribute
+    {
+		public string[] AllowableValues { get; set; }
+
+		protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+		{
+			if (AllowableValues?.Contains(value?.ToString().ToLower()) == true)
+			{
+				return ValidationResult.Success;
+			}
+			var msg = $"Please enter one of the allowable values: {string.Join(", ", (AllowableValues ?? new string[] { "No allowable values found" }))}.";
+			return new ValidationResult(msg);
+		}
+	}
+
+	public class OcEnv
+    {
+        public string environmentName { get; set; }
+		public string apiUrl { get; set; }
     }
 }
