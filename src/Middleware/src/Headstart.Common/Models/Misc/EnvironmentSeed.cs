@@ -73,7 +73,8 @@ namespace Headstart.Models.Misc
 		public OrderCloudSeedRequest OrderCloudSettings { get; set; }
 
 		/// <summary>
-		/// Optionally provide blob storage settings for your translations container. If none are provided the seeding funciton will not create a translation file.
+		/// An optional object of storage settings for your translations container. 
+		/// If none are provided the seeding funciton will not create a translation file.
 		/// Provide a valid ConnectionString and ContainerNameTranslations to have the seeding function generate your translation file
 		/// </summary>
 		public BlobSettings BlobSettings { get; set; }
@@ -92,7 +93,7 @@ namespace Headstart.Models.Misc
 	public class OrderCloudSeedRequest : OrderCloudSettings
 	{
 		[Required]
-		[ValueRange(AllowableValues = new[] { "production", "prod", "staging" })]
+		[ValueRange(AllowableValues = new[] { "production", "prod", "sandbox" })]
 		public string Environment { get; set; }
 	}
 
