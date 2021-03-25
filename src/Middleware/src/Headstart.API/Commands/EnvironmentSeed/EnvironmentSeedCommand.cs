@@ -234,8 +234,6 @@ namespace Headstart.API.Commands
                 $"{seed.AnonymousShoppingBuyerID}-{SeedConstants.DefaultLocationID}", 
                 SeedConstants.DefaultBuyerLocation(), token, true);
             Console.WriteLine(createBuyerLocation);
-            var test = await _oc.UserGroups.GetAsync(seed.AnonymousShoppingBuyerID, $"{seed.AnonymousShoppingBuyerID}-{SeedConstants.DefaultLocationID}");
-            Console.WriteLine(test);
 
 
             var assignment = new UserGroupAssignment()
@@ -243,7 +241,7 @@ namespace Headstart.API.Commands
                 UserGroupID = $"{seed.AnonymousShoppingBuyerID}-{SeedConstants.DefaultLocationID}",
                 UserID = anonBuyer.ID
             };
-            var saveAssignment = _oc.UserGroups.SaveUserAssignmentAsync(seed.AnonymousShoppingBuyerID, assignment, token);
+            var saveAssignment = _oc.UserGroups.SaveUserAssignmentAsync(seed.AnonymousShoppingBuyerID, assignment, accessToken: token);
             await createUser;
 
             await saveAssignment;
