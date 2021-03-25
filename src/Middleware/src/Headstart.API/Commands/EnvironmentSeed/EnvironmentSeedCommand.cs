@@ -54,18 +54,11 @@ namespace Headstart.API.Commands
 
         public async Task<EnvironmentSeedResponse> Seed(EnvironmentSeed seed)
         {
-            if (string.IsNullOrEmpty(seed.OrderCloudSettings.Environment))
-            {
-                throw new Exception("Missing required seeding field OrderCloudSettings:Environment");
-            }
+            var requestedEnv = validateEnvironment(seed.OrderCloudSettings.Environment);
+
             if (string.IsNullOrEmpty(seed.OrderCloudSettings.WebhookHashKey))
             {
                 throw new Exception("Missing required seeding field OrderCloudSettings:WebhookHashKey");
-            }
-            var requestedEnv = validateEnvironment(seed.OrderCloudSettings.Environment);
-            if (requestedEnv == null)
-            {
-                throw new Exception("Invalid value in OrderCloudSettingsa:Environment. Please specify 'Sandbox' or 'Production'");
             }
             if(requestedEnv.environmentName == OrderCloudEnvironments.Production.environmentName && seed.SellerOrgID == null)
             {
@@ -107,9 +100,6 @@ namespace Headstart.API.Commands
             await CreateXPIndices(orgToken);
             await CreateAndAssignIntegrationEvents(new string[] { apiClients.BuyerUiApiClient.ID }, apiClients.BuyerLocalUiApiClient.ID, orgToken, seed);
             await CreateSuppliers(seed, orgToken);
-
-            // populates exchange rates into blob container name: settings.BlobSettings.ContainerNameExchangeRates or "currency" if setting is not defined
-            await _exhangeRates.Update();
 
             // populate default english translations into blob container name: settings.BlobSettings.ContainerNameTranslations or "ngx-translate" if setting is not defined
             // provide other language files to support multiple languages

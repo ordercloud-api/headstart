@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 using Headstart.Models.Headstart;
 using Headstart.Common;
+using System.Linq;
 
 namespace Headstart.Models.Misc
 {
@@ -63,7 +64,18 @@ namespace Headstart.Models.Misc
 		public string AnonymousShoppingBuyerID { get; set; }
 
 		public string MiddlewareBaseUrl { get; set; }
-        public OrderCloudSeedRequest OrderCloudSettings { get; set; }
+
+		/// <summary>
+		/// OrderCloud values that tell us what OC environment to use.
+		/// Environment and WebhookHashKey are the only required fields for seeding.
+		/// Your environment will be either sandbox or production. Your WebhookHashKey can be any string of your choosing.
+		/// </summary>
+		public OrderCloudSeedRequest OrderCloudSettings { get; set; }
+
+		/// <summary>
+		/// Optionally provide blob storage settings for your translations container. If none are provided the seeding funciton will not create a translation file.
+		/// Provide a valid ConnectionString and ContainerNameTranslations to have the seeding function generate your translation file
+		/// </summary>
 		public BlobSettings BlobSettings { get; set; }
     }
 
@@ -79,6 +91,8 @@ namespace Headstart.Models.Misc
 
 	public class OrderCloudSeedRequest : OrderCloudSettings
 	{
+		[Required]
+		[ValueRange(AllowableValues = new[] { "production", "prod", "staging" })]
 		public string Environment { get; set; }
 	}
 
@@ -95,6 +109,21 @@ namespace Headstart.Models.Misc
 			apiUrl = "https://sandboxapi.ordercloud.io"
 		};
     }
+
+	public class ValueRange : ValidationAttribute
+    {
+		public string[] AllowableValues { get; set; }
+
+		protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+		{
+			if (AllowableValues?.Contains(value?.ToString().ToLower()) == true)
+			{
+				return ValidationResult.Success;
+			}
+			var msg = $"Please enter one of the allowable values: {string.Join(", ", (AllowableValues ?? new string[] { "No allowable values found" }))}.";
+			return new ValidationResult(msg);
+		}
+	}
 
 	public class OcEnv
     {
