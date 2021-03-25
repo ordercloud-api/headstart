@@ -61,10 +61,6 @@ namespace Headstart.API.Commands
             {
                 throw new Exception("Missing required seeding field OrderCloudSettings:WebhookHashKey");
             }
-            //if (string.IsNullOrEmpty(seed.MiddlewareBaseUrl))
-            //{
-            //    throw new Exception("Missing required seeding field MiddlewareBaseUrl");
-            //}
 
             var portalUserToken = await _portal.Login(seed.PortalUsername, seed.PortalPassword);
             await VerifyOrgExists(seed.SellerOrgID, portalUserToken);
