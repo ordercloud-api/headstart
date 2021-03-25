@@ -20,9 +20,11 @@ namespace Headstart.API
 				.UseDefaultServiceProvider(options => options.ValidateScopes = false)
 				.ConfigureAppConfiguration((context, config) =>
 				{
-					config
-						.AddAzureAppConfiguration(appConfigConnectionString, optional: true)
-						.AddJsonFile("appSettings.json", optional: true);
+					if(appConfigConnectionString != null)
+                    {
+						config.AddAzureAppConfiguration(appConfigConnectionString);
+					}
+					config.AddJsonFile("appSettings.json", optional: true);
 				})
 				.UseStartup<Startup>()
 				.ConfigureServices((ctx, services) =>

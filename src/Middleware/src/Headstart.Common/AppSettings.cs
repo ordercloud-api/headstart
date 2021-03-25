@@ -11,8 +11,8 @@ namespace Headstart.Common
         public UI UI { get; set; }
         public EnvironmentSettings EnvironmentSettings { get; set; } = new EnvironmentSettings();
         public ApplicationInsightsSettings ApplicationInsightsSettings { get; set; } = new ApplicationInsightsSettings();
-        public AvalaraSettings AvalaraSettings { get; set; }
-        public BlobSettings BlobSettings { get; set; }
+        public AvalaraSettings AvalaraSettings { get; set; } = new AvalaraSettings();
+        public BlobSettings BlobSettings { get; set; } = new BlobSettings();
         public CosmosSettings CosmosSettings { get; set; } = new CosmosSettings();
         public OrderCloudSettings OrderCloudSettings { get; set; } = new OrderCloudSettings();
         public OrderCloudIntegrationsCardConnectConfig CardConnectSettings { get; set; } = new OrderCloudIntegrationsCardConnectConfig();
