@@ -298,7 +298,6 @@ namespace Headstart.API.Commands
             var createBuyerLocation = await _buyerLocationCommand.Save(seed.AnonymousShoppingBuyerID, 
                 $"{seed.AnonymousShoppingBuyerID}-{SeedConstants.DefaultLocationID}", 
                 SeedConstants.DefaultBuyerLocation(), token, true);
-            Console.WriteLine(createBuyerLocation);
 
 
             var assignment = new UserGroupAssignment()
@@ -310,7 +309,6 @@ namespace Headstart.API.Commands
             await createUser;
 
             await saveAssignment;
-            //await Task.WhenAll(createUser, createBuyerLocation, saveAssignment);
         }
 
         private async Task<List<Buyer>> BuyerExistsAsync(string buyerName, string token)
