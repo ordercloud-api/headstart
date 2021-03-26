@@ -135,7 +135,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
 
   async setUpSuppliers(existingSupplierID?: string): Promise<void> {
     const supplierResponse = await this.ocSupplierService
-      .List({ pageSize: 100, sortBy: 'Name' })
+      .List({ pageSize: 100, sortBy: ['Name'] })
       .toPromise()
     this.suppliers = supplierResponse.Items
     await this.selectSupplier(existingSupplierID || this.suppliers[0].ID)
