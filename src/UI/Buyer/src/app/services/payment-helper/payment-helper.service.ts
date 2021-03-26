@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
-import { Payment, Payments, Me, BuyerCreditCard } from 'ordercloud-javascript-sdk'
-import { ListPage, OrderCloudIntegrationsCreditCardToken } from '@ordercloud/headstart-sdk'
+import { Payment, Payments, Me } from 'ordercloud-javascript-sdk'
+import { ListPage } from '@ordercloud/headstart-sdk'
 
 @Injectable({
   providedIn: 'root',
@@ -20,35 +20,16 @@ export class PaymentHelperService {
     return { Items, Meta: payments.Meta }
   }
 
-  async ListAnonPaymentsOnOrder(orderID: string, creditCard?: OrderCloudIntegrationsCreditCardToken): Promise<ListPage<Payment>> {
-    const payments = await Payments.List('Outgoing', orderID);
-    const withDetails = payments.Items.map((payment) => 
-      this.setAnonPaymentDetails(payment, creditCard)
-    )
-    return {
-      Items: withDetails,
-      Meta: payments.Meta
-    }
-  }
-
-  private setAnonPaymentDetails(payment: Payment, creditCard?: OrderCloudIntegrationsCreditCardToken): Payment {
-    const details: BuyerCreditCard = {
-      PartialAccountNumber: creditCard?.AccountNumber?.substr(creditCard?.AccountNumber?.length - 4)
-    }
-    ;(payment as any).Details = details;
-    return payment;
-  }
-
   private async setPaymentDetails(
     payment: Payment,
     includeDetails: boolean
   ): Promise<Payment> {
     if (includeDetails) {
-      const details = await this.getPaymentDetails(payment)
-      ;(payment as any).Details = details
+      const details = await this.getPaymentDetails(payment);
+      (payment as any).Details = details
       return payment
     } else {
-      ;(payment as any).Details = {}
+      (payment as any).Details = {}
       return payment
     }
   }
