@@ -14,12 +14,14 @@
         }
       }
       &::before {
-        content: "\f054";
-        font-weight: 300;
-        font-size: 0.5rem;
-        margin-top: 0.2rem;
-        font-family: FontAwesome;
-        color: $primary-light;
+        height: 1ch;
+        content: '';
+        -webkit-mask: url(../../../../assets/svg/angle-right.svg) no-repeat left center;
+        mask: url(../../../../assets/svg/angle-right.svg) no-repeat left center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+        background-color: $primary-light;
+        margin: .15rem .65rem 0 .5rem;
       }
       .breadcrumb-link {
         color: $primary-light;
