@@ -4,7 +4,6 @@ import { applicationConfiguration } from '@app-seller/config/app.config'
 import { HSBuyerPriceMarkup } from '@app-seller/models/buyer-markups.types'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { OcTokenService } from '@ordercloud/angular-sdk'
-import { HSBuyer } from '@ordercloud/headstart-sdk'
 
 // WHOPLE FILE TO BE REPLACED BY SDK
 
@@ -50,5 +49,10 @@ export class BuyerTempService {
         headers: this.buildHeaders(),
       })
       .toPromise()
+  }
+
+  async createPermissionGroup(buyerID: string, buyerLocationID: string, permissionGroupID: string): Promise<any> {
+    const url = `${this.appConfig.middlewareUrl}/buyerlocations/${buyerID}/${buyerLocationID}/permissions/${permissionGroupID}`
+    return await this.http.post(url, {headers: this.buildHeaders()}).toPromise()
   }
 }

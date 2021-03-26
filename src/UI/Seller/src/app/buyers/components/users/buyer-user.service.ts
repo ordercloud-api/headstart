@@ -14,6 +14,7 @@ import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/
 import { Users } from 'ordercloud-javascript-sdk'
 import { IUserPermissionsService } from '@app-seller/models/user.types'
 import { ListArgs } from '@ordercloud/headstart-sdk'
+import { BuyerTempService } from '@app-seller/shared/services/middleware-api/buyer-temp.service'
 
 // TODO - this service is only relevent if you're already on the buyer details page. How can we enforce/inidcate that?
 @Injectable({
@@ -35,7 +36,8 @@ export class BuyerUserService
     activatedRoute: ActivatedRoute,
     private ocBuyerUserGroupService: OcUserGroupService,
     public currentUserService: CurrentUserService,
-    private catalogsTempService: CatalogsTempService
+    private catalogsTempService: CatalogsTempService,
+    private buyerTempService: BuyerTempService
   ) {
     super(
       router,
@@ -47,6 +49,31 @@ export class BuyerUserService
       BUYER_SUB_RESOURCE_LIST,
       'users'
     )
+  }
+
+  async updateBuyerPermissionGroupAssignments(
+    buyerLocationID: string,
+    add: UserGroupAssignment[],
+    del: UserGroupAssignment[],
+  ): Promise<void> {
+    const buyerID = buyerLocationID.split("-")[0];
+    const addRequests = add.map((newAssignment) => 
+      this.addBuyerPermissionGroupAssignment(buyerID, buyerLocationID, newAssignment)
+    )
+    const deleteRequests = del.map((assignmentToRemove) =>
+      this.removeBuyerUserUserGroupAssignment(buyerID, assignmentToRemove,
+      )
+    )
+    await Promise.all([...addRequests, ...deleteRequests])
+  }
+
+  async addBuyerPermissionGroupAssignment(buyerID: string, buyerLocationID: string, assignment: UserGroupAssignment): Promise<void> {
+    try {
+      await this.ocBuyerUserGroupService.SaveUserAssignment(buyerID, assignment).toPromise()
+    } catch (err) {
+      await this.buyerTempService.createPermissionGroup(buyerID, buyerLocationID, assignment.UserGroupID)
+      await this.ocBuyerUserGroupService.SaveUserAssignment(buyerID, assignment).toPromise()
+    }
   }
 
   async updateUserUserGroupAssignments(

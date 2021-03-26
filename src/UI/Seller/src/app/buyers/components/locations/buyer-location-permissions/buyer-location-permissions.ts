@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core'
 import { UserGroupAssignment, User } from '@ordercloud/angular-sdk'
 import { BuyerLocationService } from '../buyer-location.service'
 import { REDIRECT_TO_FIRST_PARENT } from '@app-seller/layout/header/header.config'
-import { PermissionTypes } from '../buyer-location.service'
+import { PermissionTypes } from '../buyer-location-permissions/buyer-location-permissions.constants'
 import { BuyerUserService } from '../../users/buyer-user.service'
 import { PermissionType } from '@app-seller/models/user.types'
 
@@ -110,8 +110,8 @@ export class BuyerLocationPermissions {
 
   async executeUserUserGroupAssignmentRequests(): Promise<void> {
     this.requestedUserConfirmation = false
-    await this.buyerUserService.updateUserUserGroupAssignments(
-      this._locationID.split('-')[0],
+    await this.buyerUserService.updateBuyerPermissionGroupAssignments(
+      this._locationID,
       this.add,
       this.del
     )
