@@ -1,7 +1,6 @@
 <form class="form-group" [formGroup]="form">
   <div *ngIf="paymentError" class="text-danger">{{ paymentError }}</div>
-  <select
-    [value]="_noSavedCards ? new : null"   
+  <select *ngIf="!_noSavedCards"
     formControlName="cardID"
     (change)="toggleShowCCForm($event)"
     class="custom-select my-2"

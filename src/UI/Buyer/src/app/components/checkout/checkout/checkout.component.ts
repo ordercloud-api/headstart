@@ -15,6 +15,7 @@ import {
   HSPayment,
   OrderCloudIntegrationsCreditCardPayment,
   HeadStartSDK,
+  OrderCloudIntegrationsCreditCardToken,
 } from '@ordercloud/headstart-sdk'
 import {
   getOrderSummaryMeta,
@@ -174,6 +175,18 @@ export class OCMCheckout implements OnInit {
     }
   }
 
+  buildCCPaymentFromNewCard(card: OrderCloudIntegrationsCreditCardToken): Payment {
+    return {
+      DateCreated: new Date().toDateString(),
+      Accepted: false,
+      Type: 'CreditCard',
+      xp: {
+        partialAccountNumber: card.AccountNumber.substr(card.AccountNumber.length - 4),
+        cardType: card.CardType,
+      }
+    }
+  }
+
   buildPOPayment(): Payment {
     // amount gets calculated in middleware
     return {
@@ -187,13 +200,7 @@ export class OCMCheckout implements OnInit {
     const payments: HSPayment[] = []
     this.selectedCard = output
     if (!output.SavedCard) {
-      // need to figure out how to use the platform. ran into creditCardID cannot be null.
-      // so for now I always save any credit card in OC.
-      this.selectedCard.SavedCard = await this.context.currentUser.cards.Save(
-        output.NewCard
-      )
-      this.isNewCard = true
-      payments.push(this.buildCCPayment(this.selectedCard.SavedCard))
+      payments.push(await this.handleNewCard(output))
     } else {
       payments.push(this.buildCCPayment(output.SavedCard))
       delete this.selectedCard.NewCard
@@ -210,6 +217,18 @@ export class OCMCheckout implements OnInit {
     } catch (exception) {
       this.setValidation('payment', false)
       await this.handleSubmitError(exception)
+    }
+  }
+
+  async handleNewCard(output: SelectedCreditCard): Promise<HSPayment> {
+    this.isNewCard = true
+    if(this.isAnon) {
+      return this.buildCCPaymentFromNewCard(output.NewCard)
+    } else {
+      this.selectedCard.SavedCard = await this.context.currentUser.cards.Save(
+        output.NewCard
+      )
+      return this.buildCCPayment(this.selectedCard.SavedCard)
     }
   }
 
@@ -246,9 +265,6 @@ export class OCMCheckout implements OnInit {
         await this.checkout.appendPaymentMethodToOrderXp(order.ID, payment)
         this.isLoading = false
         await this.context.order.reset() // get new current order
-        if(this.isAnon) {
-          this.context.currentUser.cards.Delete(payment.CreditCardID)
-        }
         this.toastrService.success('Order submitted successfully', 'Success')
         this.context.router.toMyOrderDetails(order.ID)
       } catch (e) {
