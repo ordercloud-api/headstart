@@ -72,6 +72,7 @@ namespace Headstart.API.Commands
             new XpIndex { ThingType = XpThingType.Company, Key = "Data.ServiceCategory" },
             new XpIndex { ThingType = XpThingType.Company, Key = "Data.VendorLevel" },
             new XpIndex { ThingType = XpThingType.Company, Key = "SyncFreightPop" },
+            new XpIndex { ThingType = XpThingType.Company, Key = "BuyersServicing" },
             new XpIndex { ThingType = XpThingType.Company, Key = "CountriesServicing" },
             new XpIndex { ThingType = XpThingType.Order, Key = "NeedsAttention" },
             new XpIndex { ThingType = XpThingType.Order, Key = "StopShipSync" },
