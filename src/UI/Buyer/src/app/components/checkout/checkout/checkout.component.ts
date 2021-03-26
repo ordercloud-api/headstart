@@ -145,7 +145,7 @@ export class OCMCheckout implements OnInit {
   async doneWithShippingRates(): Promise<void> {
     this.initLoadingIndicator('shippingSelectionLoading')
     await this.checkout.calculateOrder()
-    this.cards = await this.context.currentUser.cards.List()
+    this.cards = await this.context.currentUser.cards.List(this.isAnon)
     await this.context.order.promos.applyAutomaticPromos()
     this.order = this.context.order.get()
     if (this.order.IsSubmitted) {
@@ -246,6 +246,9 @@ export class OCMCheckout implements OnInit {
         await this.checkout.appendPaymentMethodToOrderXp(order.ID, payment)
         this.isLoading = false
         await this.context.order.reset() // get new current order
+        if(this.isAnon) {
+          this.context.currentUser.cards.Delete(payment.CreditCardID)
+        }
         this.toastrService.success('Order submitted successfully', 'Success')
         this.context.router.toMyOrderDetails(order.ID)
       } catch (e) {

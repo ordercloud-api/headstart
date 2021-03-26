@@ -8,11 +8,22 @@ import { CreditCardFormOutput, SelectedCreditCard } from 'src/app/models/credit-
   styleUrls: ['./payment-credit-card.component.scss'],
 })
 export class OCMPaymentCreditCard implements OnInit {
-  @Input() cards: ListPage<BuyerCreditCard>
+  @Input() set cards(value: ListPage<BuyerCreditCard>) {
+    this._cards = value
+    if(value?.Items === null || value?.Items?.length<1) {
+      this._noSavedCards = true
+      this._showNewCCForm = true
+    } else {
+      this._noSavedCards = false
+      this._showNewCCForm = false
+    }
+  } 
   @Input() termsAccepted: boolean
   @Input() paymentError: string
   @Output() cardSelected = new EventEmitter<SelectedCreditCard>()
-  showNewCCForm = false
+  _cards: ListPage<BuyerCreditCard>
+  _showNewCCForm: boolean
+  _noSavedCards: boolean
 
   form = new FormGroup({
     cardID: new FormControl(null, Validators.required),
@@ -25,11 +36,11 @@ export class OCMPaymentCreditCard implements OnInit {
 
   submit(output: CreditCardFormOutput): void {
     const cardID = this.form.value.cardID
-    const SavedCard = this.cards.Items.find((c) => c.ID === cardID)
+    const SavedCard = this._cards.Items.find((c) => c.ID === cardID)
     this.cardSelected.emit({ SavedCard, CVV: output.cvv, NewCard: output.card })
   }
 
   toggleShowCCForm(event: any): void {
-    this.showNewCCForm = event.target.value === 'new'
+    this._showNewCCForm = event.target.value === 'new'
   }
 }

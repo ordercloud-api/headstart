@@ -30,8 +30,15 @@ export class CreditCardService {
     return await Me.DeleteCreditCard(cardID)
   }
 
-  async List(): Promise<ListPage<HSBuyerCreditCard>> {
-    return await Me.ListCreditCards({ pageSize: 100 })
+  async List(isAnon?: boolean): Promise<ListPage<HSBuyerCreditCard>> {
+    if(isAnon && isAnon === true) {
+      var res: ListPage<HSBuyerCreditCard> = {
+        Items: []
+      }
+      return Promise.resolve(res)
+    } else {
+      return await Me.ListCreditCards({ pageSize: 100 })
+    }
   }
 
   private getPartialAccountNumber(token: string): string {
