@@ -15,6 +15,7 @@ namespace Headstart.API.Commands
         Task<HSBuyerLocation> Get(string buyerID, string buyerLocationID, string token);
         Task<HSBuyerLocation> Save(string buyerID, string buyerLocationID, HSBuyerLocation buyerLocation, string token, bool isSeedEnv = false);
         Task Delete(string buyerID, string buyerLocationID, string token);
+        Task CreateSinglePermissionGroup(string token, string buyerLocationID, string permissionGroupID);
     }
 
     public class HSBuyerLocationCommand : IHSBuyerLocationCommand
@@ -135,6 +136,12 @@ namespace Headstart.API.Commands
                     RuleExpression = $"order.xp.ApprovalNeeded = '{buyerLocationID}' & order.Total > 0"
                 });
             }
+        }
+
+        public async Task CreateSinglePermissionGroup(string token, string buyerLocationID, string permissionGroupID)
+        {
+            var permissionGroup = HSUserTypes.BuyerLocation().Find(userType => permissionGroupID.Contains(userType.UserGroupIDSuffix));
+            await AddUserTypeToLocation(token, buyerLocationID, permissionGroup);
         }
 
         public async Task AddUserTypeToLocation(string token, string buyerLocationID, HSUserType hsUserType)

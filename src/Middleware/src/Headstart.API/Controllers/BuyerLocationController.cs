@@ -42,6 +42,14 @@ namespace Headstart.Common.Controllers
             return await _buyerLocationCommand.Create(buyerID, buyerLocation, ocAuth.AccessToken);
         }
 
+        [DocName("POST a Buyer Location permission group")]
+        [HttpPost, Route("{buyerID}/{buyerLocationID}/permissions/{permissionGroupID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
+        public async Task CreatePermissionGroup(string buyerID, string buyerLocationID, string permissionGroupID)
+        {
+            var ocAuth = await _oc.AuthenticateAsync();
+            await _buyerLocationCommand.CreateSinglePermissionGroup(ocAuth.AccessToken, buyerLocationID, permissionGroupID);
+        }
+
         [DocName("PUT a Buyer Location")]
         [HttpPut, Route("{buyerID}/{buyerLocationID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
         public async Task<HSBuyerLocation> Save(string buyerID, string buyerLocationID, [FromBody] HSBuyerLocation buyerLocation)

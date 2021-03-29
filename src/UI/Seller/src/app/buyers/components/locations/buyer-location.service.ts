@@ -13,18 +13,9 @@ import { HeadStartSDK } from '@ordercloud/headstart-sdk'
 import { BuyerUserService } from '../users/buyer-user.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { Addresses } from 'ordercloud-javascript-sdk'
-import { PermissionType } from '@app-seller/models/user.types'
+import { PermissionTypes } from './buyer-location-permissions/buyer-location-permissions.constants'
 
 
-export const PermissionTypes: PermissionType[] = [
-  { UserGroupSuffix: 'PermissionAdmin', DisplayText: 'Permission Admin' },
-  { UserGroupSuffix: 'ResaleCertAdmin', DisplayText: 'Resale Cert Admin' },
-  { UserGroupSuffix: 'OrderApprover', DisplayText: 'Order Approver' },
-  { UserGroupSuffix: 'NeedsApproval', DisplayText: 'Needs Approval' },
-  { UserGroupSuffix: 'ViewAllOrders', DisplayText: 'View All Orders' },
-  { UserGroupSuffix: 'CreditCardAdmin', DisplayText: 'Credit Card Admin' },
-  { UserGroupSuffix: 'AddressAdmin', DisplayText: 'Address Admin' },
-]
 
 // TODO - this service is only relevent if you're already on the supplier details page. How can we enforce/inidcate that?
 @Injectable({
