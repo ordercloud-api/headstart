@@ -35,7 +35,6 @@ export class OCMCheckoutShipping implements OnInit {
       .map((shipEstimate) => {
         return this.getLineItemsForShipEstimate(shipEstimate)
       })
-      .filter(notEmpty)
   }
   @Output() selectShipRate = new EventEmitter<ShipMethodSelection>()
   @Output() continue = new EventEmitter()
@@ -69,7 +68,7 @@ export class OCMCheckoutShipping implements OnInit {
     if (!this._lineItems || !this._lineItems?.Items) {
       return []
     }
-    const lineItemsByShipFromAddressID = this.lineItems?.Items?.filter(
+    const lineItemsByShipFromAddressID = this._lineItems?.Items?.filter(
       (li) => li.ShipFromAddressID === shipEstimate?.xp?.ShipFromAddressID
     )
     return lineItemsByShipFromAddressID.filter(notEmpty)

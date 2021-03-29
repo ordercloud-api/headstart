@@ -9,10 +9,10 @@ import { getPsHeight } from '@app-seller/shared/services/dom.helper'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { environment } from 'src/environments/environment.local'
-import { ListPage, MeUser } from '@ordercloud/angular-sdk'
+import { MeUser } from '@ordercloud/angular-sdk'
 import { FormGroup, FormControl } from '@angular/forms'
 import { isEqual as _isEqual, set as _set, get as _get } from 'lodash'
-import { HeadStartSDK, Asset, AssetUpload } from '@ordercloud/headstart-sdk'
+import { Asset, AssetUpload } from '@ordercloud/headstart-sdk'
 import { JDocument } from '@ordercloud/cms-sdk'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { ContentManagementClient } from '@ordercloud/cms-sdk'
@@ -204,7 +204,7 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
       Tags: ['ProfileImg'],
     }
     // Upload the asset, then make the asset assignment to Suppliers
-    const newAsset: Asset = await HeadStartSDK.Upload.UploadAsset(
+    const newAsset: Asset = await ContentManagementClient.Assets.Upload(
       asset,
       accessToken
     )

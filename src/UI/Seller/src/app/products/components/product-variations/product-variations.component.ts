@@ -144,6 +144,19 @@ export class ProductVariations implements OnChanges {
   }
 
   toggleEditSpecs(): void {
+    if (this.editSpecs) {
+      const updateProductResourceCopy = this.productService.copyResource(
+        this.superProductEditable || this.productService.emptyResource
+      )
+      // Remove all specs that are *not* variable text specs
+      updateProductResourceCopy.Specs = updateProductResourceCopy.Specs.filter(
+        (s) => s.AllowOpenText
+      )
+      updateProductResourceCopy.Variants = []
+      this.superProductEditable = updateProductResourceCopy
+      this.checkForSpecChanges()
+      this.productVariationsChanged.emit(this.superProductEditable)
+    }
     this.editSpecs = !this.editSpecs
   }
 
@@ -231,6 +244,18 @@ export class ProductVariations implements OnChanges {
   }
 
   toggleAddVariableTextSpecs(event: any): void {
+    if (this.addVariableTextSpecs) {
+      const updateProductResourceCopy = this.productService.copyResource(
+        this.superProductEditable || this.productService.emptyResource
+      )
+      // Remove all specs that are variable text specs
+      updateProductResourceCopy.Specs = updateProductResourceCopy.Specs.filter(
+        (s) => !s.AllowOpenText
+      )
+      this.superProductEditable = updateProductResourceCopy
+      this.checkForSpecChanges()
+      this.productVariationsChanged.emit(this.superProductEditable)
+    }
     this.addVariableTextSpecs = event?.target?.checked
   }
 

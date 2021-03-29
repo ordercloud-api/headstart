@@ -72,6 +72,7 @@ namespace Headstart.API.Commands
             new XpIndex { ThingType = XpThingType.Company, Key = "Data.ServiceCategory" },
             new XpIndex { ThingType = XpThingType.Company, Key = "Data.VendorLevel" },
             new XpIndex { ThingType = XpThingType.Company, Key = "SyncFreightPop" },
+            new XpIndex { ThingType = XpThingType.Company, Key = "BuyersServicing" },
             new XpIndex { ThingType = XpThingType.Company, Key = "CountriesServicing" },
             new XpIndex { ThingType = XpThingType.Order, Key = "NeedsAttention" },
             new XpIndex { ThingType = XpThingType.Order, Key = "StopShipSync" },
@@ -154,7 +155,7 @@ namespace Headstart.API.Commands
         #endregion
 
         #region IntegrationEvents
-        public static IntegrationEvent CheckoutEvent(AppSettings settings)
+        public static IntegrationEvent CheckoutEvent(string middlewareBaseUrl, string webhookHashKey)
         {
             return new IntegrationEvent()
             {
@@ -162,8 +163,8 @@ namespace Headstart.API.Commands
                 ID = "HeadStartCheckout",
                 EventType = IntegrationEventType.OrderCheckout,
                 Name = "HeadStart Checkout",
-                CustomImplementationUrl = settings.EnvironmentSettings.MiddlewareBaseUrl,
-                HashKey = settings.OrderCloudSettings.WebhookHashKey,
+                CustomImplementationUrl = middlewareBaseUrl,
+                HashKey = webhookHashKey,
                 ConfigData = new
                 {
                     ExcludePOProductsFromShipping = false,
@@ -172,7 +173,7 @@ namespace Headstart.API.Commands
             };
         }
 
-        public static IntegrationEvent LocalCheckoutEvent(AppSettings settings)
+        public static IntegrationEvent LocalCheckoutEvent(string webhookHashKey)
         {
             return new IntegrationEvent()
             {
@@ -181,7 +182,7 @@ namespace Headstart.API.Commands
                 EventType = IntegrationEventType.OrderCheckout,
                 CustomImplementationUrl = "https://marketplaceteam.ngrok.io", // local webhook url
                 Name = "HeadStart Checkout LOCAL",
-                HashKey = settings.OrderCloudSettings.WebhookHashKey,
+                HashKey = webhookHashKey,
                 ConfigData = new
                 {
                     ExcludePOProductsFromShipping = false,
@@ -192,7 +193,7 @@ namespace Headstart.API.Commands
         #endregion
 
         #region MessageSenders
-        public static MessageSender BuyerEmails(AppSettings settings)
+        public static MessageSender BuyerEmails(EnvironmentSeed seed)
         {
             return new MessageSender()
             {
@@ -209,12 +210,12 @@ namespace Headstart.API.Commands
                         // MessageType.OrderSubmittedForYourApprovalHasBeenDeclined, // too noisy
                         // MessageType.ShipmentCreated this is currently being triggered in-app possibly move to message senders
                     },
-                URL = settings.EnvironmentSettings.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
-                SharedKey = settings.OrderCloudSettings.WebhookHashKey
+                URL = seed.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
+                SharedKey = seed.OrderCloudSettings.WebhookHashKey
             };
         }
 
-        public static MessageSender SellerEmails(AppSettings settings)
+        public static MessageSender SellerEmails(EnvironmentSeed seed)
         {
             return new MessageSender()
             {
@@ -223,12 +224,12 @@ namespace Headstart.API.Commands
                 MessageTypes = new[] {
                         MessageType.ForgottenPassword,
                     },
-                URL = settings.EnvironmentSettings.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
-                SharedKey = settings.OrderCloudSettings.WebhookHashKey
+                URL = seed.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
+                SharedKey = seed.OrderCloudSettings.WebhookHashKey
             };
         }
 
-        public static MessageSender SuplierEmails(AppSettings settings)
+        public static MessageSender SuplierEmails(EnvironmentSeed seed)
         {
             return new MessageSender()
             {
@@ -237,8 +238,8 @@ namespace Headstart.API.Commands
                 MessageTypes = new[] {
                         MessageType.ForgottenPassword,
                     },
-                URL = settings.EnvironmentSettings.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
-                SharedKey = settings.OrderCloudSettings.WebhookHashKey
+                URL = seed.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
+                SharedKey = seed.OrderCloudSettings.WebhookHashKey
             };
         }
         #endregion
@@ -278,6 +279,12 @@ namespace Headstart.API.Commands
 			new HSSecurityProfile() { ID = CustomRole.HSLocationOrderApprover, CustomRoles = new CustomRole[] { CustomRole.HSLocationOrderApprover }, Roles = new ApiRole[] { } },
             new HSSecurityProfile() { ID = CustomRole.HSLocationViewAllOrders, CustomRoles = new CustomRole[] { CustomRole.HSLocationViewAllOrders }, Roles = new ApiRole[] { } },
             new HSSecurityProfile() { ID = CustomRole.HSLocationAddressAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationAddressAdmin }, Roles = new ApiRole[] { } },
+            new HSSecurityProfile() { ID = CustomRole.HSLocationPermissionAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationPermissionAdmin }, Roles = new ApiRole[] { } },
+            new HSSecurityProfile() { ID = CustomRole.HSLocationNeedsApproval, CustomRoles = new CustomRole[] { CustomRole.HSLocationNeedsApproval }, Roles = new ApiRole[] { } },
+            new HSSecurityProfile() { ID = CustomRole.HSLocationCreditCardAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationCreditCardAdmin }, Roles = new ApiRole[] { } },
+            new HSSecurityProfile() { ID = CustomRole.HSLocationResaleCertAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationResaleCertAdmin }, Roles = new ApiRole[] { } },
+
+
         };
 
         public static readonly List<CustomRole> SellerHsRoles = new List<CustomRole>() {

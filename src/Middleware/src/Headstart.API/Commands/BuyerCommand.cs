@@ -27,9 +27,13 @@ namespace Headstart.API.Commands
         }
         public async Task<SuperHSBuyer> Create(SuperHSBuyer superBuyer, string accessToken, bool isSeedingEnvironment = false)
         {
+            var createdImpersonationConfig = new ImpersonationConfig();
             var createdBuyer = await CreateBuyerAndRelatedFunctionalResources(superBuyer.Buyer, accessToken, isSeedingEnvironment);
             var createdMarkup = await CreateMarkup(superBuyer.Markup, createdBuyer.ID, accessToken);
-            var createdImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, createdBuyer.ID, accessToken);
+            if(superBuyer?.ImpersonationConfig != null)
+            {
+                createdImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, createdBuyer.ID, accessToken);
+            }
             return new SuperHSBuyer()
             {
                 Buyer = createdBuyer,
@@ -42,15 +46,19 @@ namespace Headstart.API.Commands
         {
             // to prevent changing buyerIDs
             superBuyer.Buyer.ID = buyerID;
+            var updatedImpersonationConfig = new ImpersonationConfig();
 
             var updatedBuyer = await _oc.Buyers.SaveAsync<HSBuyer>(buyerID, superBuyer.Buyer, token);
             var updatedMarkup = await UpdateMarkup(superBuyer.Markup, superBuyer.Buyer.ID, token);
-            var updatedImpersonation = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, buyerID, token);
+            if(superBuyer.ImpersonationConfig != null)
+            {
+                updatedImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, buyerID, token);
+            }
             return new SuperHSBuyer()
             {
                 Buyer = updatedBuyer,
                 Markup = updatedMarkup,
-                ImpersonationConfig = updatedImpersonation
+                ImpersonationConfig = updatedImpersonationConfig
             };
         }
 

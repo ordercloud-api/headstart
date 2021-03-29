@@ -272,8 +272,7 @@ export class SupplierEditComponent implements OnInit, OnChanges {
       FileName: file.name,
       Tags: ['Logo'],
     }
-    // Upload the asset, then make the asset assignment to Suppliers
-    const newAsset: Asset = await HeadStartSDK.Upload.UploadAsset(
+    const newAsset: Asset = await ContentManagementClient.Assets.Upload(
       asset,
       accessToken
     )

@@ -59,6 +59,15 @@ namespace Headstart.Common.Constants
         {
             return new List<HSUserType>()
             {
+                 new HSUserType {
+                    UserGroupName = "Location Permission Admin",
+                    UserGroupType = UserGroupType.LocationPermissions,
+                    UserGroupIDSuffix = UserGroupSuffix.PermissionAdmin.ToString(),
+                    CustomRoles = new List<CustomRole>
+                    {
+                        CustomRole.HSLocationPermissionAdmin,
+                    }
+                },
                 new HSUserType {
                     UserGroupName = "Location Order Approver",
                     UserGroupType = UserGroupType.LocationPermissions,
@@ -66,6 +75,15 @@ namespace Headstart.Common.Constants
                     CustomRoles = new List<CustomRole>
                     {
                         CustomRole.HSLocationOrderApprover,
+                    }
+                },
+                new HSUserType {
+                    UserGroupName = "Location Needs Approval",
+                    UserGroupType = UserGroupType.LocationPermissions,
+                    UserGroupIDSuffix = UserGroupSuffix.NeedsApproval.ToString(),
+                    CustomRoles = new List<CustomRole>
+                    {
+                        CustomRole.HSLocationNeedsApproval,
                     }
                 },
                 new HSUserType {
@@ -78,6 +96,15 @@ namespace Headstart.Common.Constants
                     }
                 },
                 new HSUserType {
+                    UserGroupName = "Credit Card Admin",
+                    UserGroupType = UserGroupType.LocationPermissions,
+                    UserGroupIDSuffix = UserGroupSuffix.CreditCardAdmin.ToString(),
+                    CustomRoles = new List<CustomRole>
+                    {
+                        CustomRole.HSLocationCreditCardAdmin,
+                    }
+                },
+                new HSUserType {
                     UserGroupName = "Address Admin",
                     UserGroupType = UserGroupType.LocationPermissions,
                     UserGroupIDSuffix = UserGroupSuffix.AddressAdmin.ToString(),
@@ -85,7 +112,16 @@ namespace Headstart.Common.Constants
                     {
                         CustomRole.HSLocationAddressAdmin,
                     }
-                }
+                },
+                   new HSUserType {
+                    UserGroupName = "Resale Cert Admin",
+                    UserGroupType = UserGroupType.LocationPermissions,
+                    UserGroupIDSuffix = UserGroupSuffix.ResaleCertAdmin.ToString(),
+                    CustomRoles = new List<CustomRole>
+                    {
+                        CustomRole.HSLocationResaleCertAdmin,
+                    }
+                },
             };
         }
     }

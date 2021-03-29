@@ -28,6 +28,10 @@ namespace Headstart.Models.Misc
 		HSLocationAddressAdmin,
 		HSLocationOrderApprover,
 		HSLocationViewAllOrders,
+		HSLocationPermissionAdmin,
+		HSLocationNeedsApproval,
+		HSLocationCreditCardAdmin,
+		HSLocationResaleCertAdmin,
 
 		// cms 
 		AssetAdmin,

@@ -27,8 +27,8 @@ export class AppErrorHandler extends ErrorHandler {
       ex = ex.rejection
     }
     let message = ''
-    if (ex?.error?.Errors?.length) {
-      const e = ex.error.Errors[0]
+    if (ex?.errors?.Errors?.length) {
+      const e = ex.errors.Errors[0]
       if (e.Data && e.Data.WebhookName) {
         // webhook error
         message = e.Data.body
@@ -37,10 +37,10 @@ export class AppErrorHandler extends ErrorHandler {
       } else {
         message = e.Message
       }
-    } else if (ex?.error?.['error_description']) {
-      message = ex.error['error_description']
-    } else if (ex?.error?.[0]) {
-      message = ex?.error?.[0]?.Message
+    } else if (ex?.errors?.['error_description']) {
+      message = ex.errors['error_description']
+    } else if (ex?.errors?.[0]) {
+      message = ex?.errors?.[0]?.Message
     } else if (ex.message) {
       message = ex.message
     } else {
