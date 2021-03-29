@@ -502,10 +502,8 @@
           </div>
         </div>
         <div class="card bg-white shadow-sm p-4 mt-3">
-          <h6 class="font-weight-medium" translate>
-            ADMIN.PROMOTIONS.USAGE_LIMITS
-          </h6>
-          <div class="custom-control custom-checkbox">
+          <h6 class="mb-0" translate>ADMIN.PROMOTIONS.USAGE_LIMITS</h6>
+          <div class="custom-control custom-checkbox mt-3">
             <input
               type="checkbox"
               class="custom-control-input"
@@ -520,15 +518,19 @@
               >ADMIN.PROMOTIONS.LIMIT_TIMES_DISCOUNT</label
             >
           </div>
+          <label class="sr-only" for="RedemptionLimit"
+            >Enter Redemption Limit</label
+          >
           <input
             [hidden]="!hasRedemptionLimit"
-            class="form-control w-25"
+            class="form-control w-25 my-2"
             type="number"
             [value]="_promotionEditable?.RedemptionLimit"
             min="0"
             (input)="handleUpdatePromo($event, 'RedemptionLimit', 'number')"
             formControlName="RedemptionLimit"
             name="RedemptionLimit"
+            id="RedemptionLimit"
           />
           <div class="custom-control custom-checkbox">
             <input
@@ -542,9 +544,12 @@
               >ADMIN.PROMOTIONS.LIMIT_TIMES_REDEEM</label
             >
           </div>
+          <label class="sr-only" for="RedemptionLimitPerUser"
+            >Enter Redemption Limit Per User</label
+          >
           <input
             [hidden]="!limitPerUser"
-            class="form-control w-25"
+            class="form-control w-25 mt-2"
             type="number"
             [value]="_promotionEditable?.RedemptionLimitPerUser"
             min="0"
@@ -553,13 +558,14 @@
             "
             formControlName="RedemptionLimitPerUser"
             name="RedemptionLimitPerUser"
+            id="RedemptionLimitPerUser"
           />
         </div>
         <div class="card bg-white shadow-sm p-4 mt-3">
-          <h6 class="font-weight-medium" translate>
-            ADMIN.PROMOTIONS.ACTIVE_DATES
-          </h6>
-          <div class="form-group">
+          <label class="h6 mb-0" for="StartDate" translate
+            >ADMIN.PROMOTIONS.ACTIVE_DATES</label
+          >
+          <div class="form-group mt-3">
             <label for="StartDate" translate
               >ADMIN.PROMOTIONS.START_DATE_TIME
               <fa-icon
@@ -580,13 +586,13 @@
               [value]="_promotionEditable?.StartDate"
               (input)="handleUpdatePromo($event, 'StartDate')"
               name="StartDate"
+              id="StartDate"
               formControlName="StartDate"
               [min]="getMinDate()"
             />
           </div>
           <div class="custom-control custom-checkbox">
             <input
-              aria-labeledby="HasExpiration"
               type="checkbox"
               class="custom-control-input"
               (input)="toggleHasExpiration()"
@@ -598,7 +604,7 @@
             >
           </div>
           <div *ngIf="hasExpiration" class="form-group mt-3">
-            <label for="StartDate" translate
+            <label for="ExpirationDate" translate
               >ADMIN.PROMOTIONS.EXPIRATION_DATE_TIME<small>
                 <fa-icon
                   [icon]="faQuestionCircle"
@@ -616,6 +622,7 @@
               name="ExpirationDate"
               formControlName="ExpirationDate"
               [min]="getMinDate()"
+              id="ExpirationDate"
             />
           </div>
         </div>
