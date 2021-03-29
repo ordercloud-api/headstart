@@ -91,20 +91,10 @@ export class OCMCheckoutAddress implements OnInit {
       this.order = await this.context.order.checkout.setBuyerLocationByID(
         this.selectedBuyerLocation?.ID
       )
-      if (newShippingAddress != null) {
-        this.selectedShippingAddress = await this.saveNewShippingAddress(
-          newShippingAddress
-        )
-      }
-
-      if (this.selectedShippingAddress) {
-        await this.context.order.checkout.setShippingAddressByID(
-          this.selectedShippingAddress
-        )
-        this.continue.emit()
+      if(this.isAnon) {
+        await this.handleAnonShippingAddress(newShippingAddress)
       } else {
-        // not able to create address - display suggestions to user
-        this.spinner.hide()
+        this.handleLoggedInShippingAddress(newShippingAddress)
       }
     } catch (e) {
       if (e?.message === ErrorMessages.orderNotAccessibleError) {
@@ -114,6 +104,31 @@ export class OCMCheckoutAddress implements OnInit {
       } else {
         throw e
       }
+      this.spinner.hide()
+    }
+  }
+
+  async handleAnonShippingAddress(newShippingAddress: Address<any>): Promise<void> {
+    if(newShippingAddress != null) {
+      this.selectedShippingAddress = newShippingAddress;
+    }
+    this.context.order.checkout.setOneTimeShippingAddress((this.selectedShippingAddress as Address))
+    this.continue.emit()
+  }
+
+  async handleLoggedInShippingAddress(newShippingAddress: Address<any>): Promise<void> {
+    if (newShippingAddress != null) {
+      this.selectedShippingAddress = await this.saveNewShippingAddress(
+        newShippingAddress
+      )
+    }
+    if (this.selectedShippingAddress) {
+      await this.context.order.checkout.setShippingAddressByID(
+        this.selectedShippingAddress
+      )
+      this.continue.emit()
+    } else {
+      // not able to create address - display suggestions to user
       this.spinner.hide()
     }
   }
@@ -147,14 +162,6 @@ export class OCMCheckoutAddress implements OnInit {
     this.suggestedAddresses = []
   }
 
-  private async listAll(funct: (listOptions: any) => Promise<any>) {
-    const listOptions = {
-      page: 1,
-      pageSize: 100,
-    }
-
-  }
-
   private async ListAddressesForShipping() {
     const buyerLocationsFilter = {
       filters: {Editable: 'false'}
@@ -170,7 +177,7 @@ export class OCMCheckoutAddress implements OnInit {
 
     this.existingShippingAddresses = await listAll(Me, Me.ListAddresses, shippingAddressesFilter)
   }
-  
+
   private async saveNewShippingAddress(
     address: BuyerAddress
   ): Promise<HSAddressBuyer> {
