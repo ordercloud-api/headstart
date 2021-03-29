@@ -384,7 +384,7 @@ export class OCMCheckout implements OnInit {
       const prev = this.sections[i].id
       this.setValidation(prev, true)
     }
-    this.accordian.toggle(id)
+    this.accordian?.toggle(id)
   }
 
   beforeChange($event: NgbPanelChangeEvent): void {

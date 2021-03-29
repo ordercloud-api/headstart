@@ -15,8 +15,7 @@ export class CurrentUserService {
   private readonly MaxFavorites: number = 40
   private readonly favOrdersXP = 'FavoriteOrders'
   private readonly favProductsXP = 'FavoriteProducts'
-
-  private isAnon: boolean = null
+  public isAnonSubject: BehaviorSubject<boolean>;
   private userSubject: BehaviorSubject<CurrentUser> = new BehaviorSubject<CurrentUser>(
     null
   )
@@ -31,7 +30,9 @@ export class CurrentUserService {
     public cards: CreditCardService,
     public http: HttpClient,
     private appConfig: AppConfig,
-  ) {}
+  ) {
+    this.isAnonSubject = new BehaviorSubject(true);
+  }
 
   get(): CurrentUser {
     return this.user
@@ -43,7 +44,6 @@ export class CurrentUserService {
       Me.ListUserGroups({ pageSize: 100 }),
     ]
     const [user, userGroups] = await Promise.all(requests)
-    this.isAnon = this.tokenHelper.isTokenAnonymous()
     this.user = await this.MapToCurrentUser(user)
     this.userGroups.next(userGroups.Items)
   }
@@ -55,9 +55,7 @@ export class CurrentUserService {
   }
 
   isAnonymous(): boolean {
-    return this.isAnon !== null
-      ? this.isAnon
-      : this.tokenHelper.isTokenAnonymous()
+    return this.tokenHelper.isTokenAnonymous()
   }
 
   isSSO(): boolean {
