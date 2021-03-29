@@ -18,7 +18,7 @@ jobs:
             try {
                 # call out to hosted endpoint to get the current version and add one for this build
                 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-                $response = Invoke-RestMethod -Uri "https://brandweardesigns-middleware.azurewebsites.net/env"
+                $response = Invoke-RestMethod -Uri "https://headstartdemo-middleware-test.azurewebsites.net/env"
                 $newversion = [int]$response.BuildNumber.Split(".")[2] + 1
             Write-Host "##vso[build.updatebuildnumber]1.0.$newversion.$(Build.BuildId)"
 
