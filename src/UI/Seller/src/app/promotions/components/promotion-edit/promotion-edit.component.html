@@ -1,37 +1,41 @@
-<div class="container-fluid">
+<div class="container-fluid mt-3">
   <div class="row">
     <div class="col-md-7">
       <form [formGroup]="resourceForm">
-        <div class="card py-2 px-3 mt-3 bg-white">
+        <div class="card bg-white shadow-sm p-4">
           <div class="d-flex justify-content-between align-items-center">
-            <h6 class="font-weight-medium" translate>
+            <label for="discountCode" class="h6 mb-0" translate>
               ADMIN.PROMOTIONS.DISCOUNT_CODE
-            </h6>
-            <h6
-              class="btn-link cursor-pointer"
+            </label>
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-secondary"
               (click)="generateRandomCode()"
               translate
             >
               ADMIN.PROMOTIONS.GENERATE_RANDOM_CODE
-            </h6>
+            </button>
           </div>
           <input
             type="text"
-            class="form-control"
+            class="form-control mt-3"
             formControlName="Code"
             [value]="_promotionEditable?.Code"
             (input)="handleUpdatePromo($event, 'Code')"
             placeholder="{{
               'ADMIN.PROMOTIONS.PROMO_CODE_EXAMPLE' | translate
             }}"
+            id="discountCode"
           />
-          <small *ngIf="_promotionEditable?.xp?.Automatic" translate
-            >ADMIN.PROMOTIONS.AUTOMATIC_PROMO_CODE_EXPLANATION</small
-          >
-          <small *ngIf="!_promotionEditable?.xp?.Automatic" translate
-            >ADMIN.PROMOTIONS.PROMO_CODE_EXPLANATION</small
-          >
-          <div class="custom-control custom-checkbox mt-3">
+          <div class="my-2 text-medium">
+            <small *ngIf="_promotionEditable?.xp?.Automatic" translate
+              >ADMIN.PROMOTIONS.AUTOMATIC_PROMO_CODE_EXPLANATION</small
+            >
+            <small *ngIf="!_promotionEditable?.xp?.Automatic" translate
+              >ADMIN.PROMOTIONS.PROMO_CODE_EXPLANATION</small
+            >
+          </div>
+          <div class="custom-control custom-checkbox">
             <input
               type="checkbox"
               class="custom-control-input"
@@ -44,13 +48,14 @@
             >
           </div>
         </div>
-        <div class="card py-2 px-3 mt-3 bg-white">
-          <h6 class="font-weight-medium" translate>
+        <div class="card bg-white shadow-sm p-4 mt-3">
+          <label class="h6 mb-0" for="finePrint" translate>
             ADMIN.PROMOTIONS.FINE_PRINT
-          </h6>
+          </label>
           <textarea
             type="text"
-            class="form-control"
+            id="finePrint"
+            class="form-control mt-3"
             formControlName="FinePrint"
             [value]="_promotionEditable?.FinePrint"
             (input)="handleUpdatePromo($event, 'FinePrint')"
@@ -60,63 +65,69 @@
             rows="3"
             maxLength="100"
           ></textarea>
-          <small translate>ADMIN.PROMOTIONS.FINE_PRINT_EXPLANATION</small>
+          <small class="mt-2 text-medium" translate
+            >ADMIN.PROMOTIONS.FINE_PRINT_EXPLANATION</small
+          >
         </div>
-        <div class="card py-2 px-3 mt-3 bg-white">
-          <h6 class="font-weight-medium" translate>ADMIN.PROMOTIONS.TYPE</h6>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="Type"
-              id="Percentage"
-              value="Percentage"
-              formControlName="Type"
-              (change)="handleUpdatePromo($event, 'xp.Type')"
-              [checked]="promoTypeCheck('Percentage')"
-            />
-            <label class="form-check-label" for="Percentage" translate>
-              ADMIN.PROMOTIONS.PERCENTAGE
-            </label>
-          </div>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="Type"
-              id="FixedAmount"
-              value="FixedAmount"
-              formControlName="Type"
-              (change)="handleUpdatePromo($event, 'xp.Type')"
-              [checked]="promoTypeCheck('FixedAmount')"
-            />
-            <label class="form-check-label" for="FixedAmount" translate>
-              ADMIN.PROMOTIONS.FIXED_AMOUNT
-            </label>
-          </div>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="Type"
-              id="FreeShipping"
-              value="FreeShipping"
-              formControlName="Type"
-              (change)="handleUpdatePromo($event, 'xp.Type')"
-              [checked]="promoTypeCheck('FreeShipping')"
-            />
-            <label class="form-check-label" for="FreeShipping" translate>
-              ADMIN.PROMOTIONS.FREE_SHIPPING
-            </label>
+        <div class="card bg-white shadow-sm p-4 mt-3">
+          <h6 class="mb-0" translate>ADMIN.PROMOTIONS.TYPE</h6>
+          <div class="form-group mt-3 mb-0">
+            <div class="form-check">
+              <input
+                id="promoType"
+                class="form-check-input"
+                type="radio"
+                name="Type"
+                id="Percentage"
+                value="Percentage"
+                formControlName="Type"
+                (change)="handleUpdatePromo($event, 'xp.Type')"
+                [checked]="promoTypeCheck('Percentage')"
+              />
+              <label class="form-check-label" for="Percentage" translate>
+                ADMIN.PROMOTIONS.PERCENTAGE
+              </label>
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="Type"
+                id="FixedAmount"
+                value="FixedAmount"
+                formControlName="Type"
+                (change)="handleUpdatePromo($event, 'xp.Type')"
+                [checked]="promoTypeCheck('FixedAmount')"
+              />
+              <label class="form-check-label" for="FixedAmount" translate>
+                ADMIN.PROMOTIONS.FIXED_AMOUNT
+              </label>
+            </div>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="Type"
+                id="FreeShipping"
+                value="FreeShipping"
+                formControlName="Type"
+                (change)="handleUpdatePromo($event, 'xp.Type')"
+                [checked]="promoTypeCheck('FreeShipping')"
+              />
+              <label class="form-check-label" for="FreeShipping" translate>
+                ADMIN.PROMOTIONS.FREE_SHIPPING
+              </label>
+            </div>
           </div>
         </div>
         <div
           *ngIf="_promotionEditable?.xp?.Type !== 'FreeShipping'"
-          class="card py-2 px-3 mt-3 bg-white"
+          class="card bg-white shadow-sm p-4 mt-3"
         >
-          <h6 class="font-weight-medium" translate>ADMIN.PROMOTIONS.VALUE</h6>
-          <label for="Value"></label>
-          <div class="input-group w-25">
+          <label class="h6 mb-0" for="Value" translate
+            >ADMIN.PROMOTIONS.VALUE</label
+          >
+          <div class="input-group w-25 mt-3">
             <div
               *ngIf="_promotionEditable?.xp?.Type === 'FixedAmount'"
               class="input-group-prepend"
@@ -139,144 +150,174 @@
             </div>
           </div>
           <hr />
-          <h6 class="font-weight-medium" translate>
-            ADMIN.PROMOTIONS.APPLIES_TO
-          </h6>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="AppliesTo"
-              id="EntireOrder"
-              value="EntireOrder"
-              formControlName="AppliesTo"
-              (change)="handleUpdatePromo($event, 'xp.AppliesTo')"
-              [checked]="promoTypeCheck('EntireOrder')"
-            />
-            <label class="form-check-label" for="EntireOrder" translate>
-              ADMIN.PROMOTIONS.ENTIRE_ORDER
-            </label>
-          </div>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="AppliesTo"
-              id="SpecificSupplier"
-              value="SpecificSupplier"
-              formControlName="AppliesTo"
-              (change)="handleUpdatePromo($event, 'xp.AppliesTo')"
-              [checked]="promoTypeCheck('SpecificSupplier')"
-            />
-            <label class="form-check-label" for="SpecificSupplier" translate>
-              ADMIN.PROMOTIONS.SPECIFIC_SUPPLIER
-            </label>
-          </div>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="AppliesTo"
-              id="SpecificSKUs"
-              value="SpecificSKUs"
-              formControlName="AppliesTo"
-              (change)="handleUpdatePromo($event, 'xp.AppliesTo')"
-              [checked]="promoTypeCheck('SpecificSKUs')"
-            />
-            <label class="form-check-label" for="SpecificSKUs" translate>
-              Specific SKUs
-            </label>
-          </div>
-          <!-- TODO: MOVE TO SEPARATE COMPONENT WITH INPUTS/OUTPUTS -->
-          <!-- PRODUCT SELECT AND SEARCH -->
-          <span
-            *ngIf="_promotionEditable?.xp?.AppliesTo === 'SpecificSKUs'"
-            class="mt-2"
-          >
-            <div
-              id="productsCollapse"
-              [ngbCollapse]="productsCollapsed"
-              aria-labelledby="parent resource dropdown"
-            >
-              <search-component
-                class="mr-3 w-100"
-                id="resource-search"
-                [placeholderText]="''"
-                [searchTermInput]="searchTerm"
-                (searched)="searchedResources($event)"
-              >
-              </search-component>
-              <perfect-scrollbar
-                class="dropdown-ps product-search-area"
-                (psYReachEnd)="handleScrollEnd($event)"
-              >
-                <button
-                  ngbDropdownItem
-                  *ngFor="let resource of products | async"
-                  (click)="addSKU(resource.ID)"
-                  [disabled]="alreadySelected(resource.ID)"
-                >
-                  <div class="overflow-hidden">
-                    <summary-resource-display-component
-                      [resource]="resource"
-                      [resourceType]="'products'"
-                    >
-                    </summary-resource-display-component>
-                  </div>
-                </button>
-                <button *ngIf="!products?.length" ngbDropdownItem disabled>
-                  No results. Broaden your search and try again.
-                </button>
-              </perfect-scrollbar>
-            </div>
-            <div class="chip" *ngFor="let sku of _promotionEditable?.xp?.SKUs">
-              {{ sku }}
-              <fa-icon
-                (click)="removeSku(sku)"
-                [icon]="faTimesCircle"
-              ></fa-icon>
-            </div>
-          </span>
-          <!-- END PRODUCT SELECT AND SEARCH -->
-          <span
-            *ngIf="_promotionEditable?.xp?.AppliesTo === 'SpecificSupplier'"
-          >
-            <div
-              ngbDropdown
-              *ngIf="suppliers?.length && selectedSupplier"
-              class="btn-block"
-            >
-              <button
-                class="resource-btn btn btn-outline-dark"
-                id="supplierSelectDropdown"
-                ngbDropdownToggle
-              >
-                {{ selectedSupplier.Name }}
-              </button>
-              <div ngbDropdownMenu aria-labelledby="supplier select dropdown">
-                <button
-                  ngbDropdownItem
-                  *ngFor="let supplier of suppliers"
-                  (click)="selectSupplier(supplier.ID)"
-                >
-                  <summary-resource-display-component
-                    [resource]="supplier"
-                    [resourceType]="'suppliers'"
+          <h6 class="mb-0" translate>ADMIN.PROMOTIONS.APPLIES_TO</h6>
+          <div class="row mt-3">
+            <div class="col-md-4">
+              <div class="form-group mb-0">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="AppliesTo"
+                    id="EntireOrder"
+                    value="EntireOrder"
+                    formControlName="AppliesTo"
+                    (change)="handleUpdatePromo($event, 'xp.AppliesTo')"
+                    [checked]="promoTypeCheck('EntireOrder')"
+                  />
+                  <label class="form-check-label" for="EntireOrder" translate>
+                    ADMIN.PROMOTIONS.ENTIRE_ORDER
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="AppliesTo"
+                    id="SpecificSupplier"
+                    value="SpecificSupplier"
+                    formControlName="AppliesTo"
+                    (change)="handleUpdatePromo($event, 'xp.AppliesTo')"
+                    [checked]="promoTypeCheck('SpecificSupplier')"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="SpecificSupplier"
+                    translate
                   >
-                  </summary-resource-display-component>
-                </button>
+                    ADMIN.PROMOTIONS.SPECIFIC_SUPPLIER
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="AppliesTo"
+                    id="SpecificSKUs"
+                    value="SpecificSKUs"
+                    formControlName="AppliesTo"
+                    (change)="handleUpdatePromo($event, 'xp.AppliesTo')"
+                    [checked]="promoTypeCheck('SpecificSKUs')"
+                  />
+                  <label class="form-check-label" for="SpecificSKUs" translate>
+                    Specific SKUs
+                  </label>
+                </div>
               </div>
             </div>
-          </span>
+            <div class="col-md-8">
+              <!-- TODO: MOVE TO SEPARATE COMPONENT WITH INPUTS/OUTPUTS -->
+              <!-- PRODUCT SELECT AND SEARCH -->
+              <ng-container
+                *ngIf="_promotionEditable?.xp?.AppliesTo === 'SpecificSKUs'"
+              >
+                <div
+                  id="productsCollapse"
+                  [ngbCollapse]="productsCollapsed"
+                  aria-label="parent resource dropdown"
+                >
+                  <search-component
+                    class="mr-3 w-100"
+                    id="resource-search"
+                    [placeholderText]="''"
+                    [searchTermInput]="searchTerm"
+                    (searched)="searchedResources($event)"
+                  >
+                  </search-component>
+                  <perfect-scrollbar
+                    class="dropdown-ps product-search-area border border-light shadow-sm"
+                    (psYReachEnd)="handleScrollEnd($event)"
+                  >
+                    <button
+                      type="button"
+                      ngbDropdownItem
+                      *ngFor="let resource of products | async"
+                      (click)="addSKU(resource.ID)"
+                      [disabled]="alreadySelected(resource.ID)"
+                      aria-label="select your SKU"
+                    >
+                      <div class="overflow-hidden">
+                        <summary-resource-display-component
+                          [resource]="resource"
+                          [resourceType]="'products'"
+                        >
+                        </summary-resource-display-component>
+                      </div>
+                    </button>
+                    <p
+                      class="mb-0"
+                      *ngIf="!products?.length"
+                      ngbDropdownItem
+                      disabled
+                    >
+                      No results. Broaden your search and try again.
+                    </p>
+                  </perfect-scrollbar>
+                </div>
+                <div class="chip-bag">
+                  <div
+                    class="chip chip-sm"
+                    *ngFor="let sku of _promotionEditable?.xp?.SKUs"
+                  >
+                    {{ sku }}
+                    <fa-icon
+                      (click)="removeSku(sku)"
+                      [icon]="faTimesCircle"
+                    ></fa-icon>
+                  </div>
+                </div>
+              </ng-container>
+              <!-- END PRODUCT SELECT AND SEARCH -->
+              <!-- START SUPPLIER SPECIFIC -->
+              <ng-container
+                *ngIf="_promotionEditable?.xp?.AppliesTo === 'SpecificSupplier'"
+              >
+                <div
+                  ngbDropdown
+                  *ngIf="suppliers?.length && selectedSupplier"
+                  class="w-100"
+                >
+                  <button
+                    type="button"
+                    class="resource-btn btn btn-block btn-outline-medium text-left"
+                    id="supplierSelectDropdown"
+                    ngbDropdownToggle
+                  >
+                    {{ selectedSupplier.Name }}
+                  </button>
+                  <div ngbDropdownMenu class="dropdown-inline shadow-sm mt-2">
+                    <perfect-scrollbar
+                      class="dropdown-ps product-search-area border border-light shadow-sm"
+                      (psYReachEnd)="handleScrollEnd($event)"
+                    >
+                      <button
+                        type="button"
+                        ngbDropdownItem
+                        *ngFor="let supplier of suppliers"
+                        (click)="selectSupplier(supplier.ID)"
+                        aria-label="select your supplier"
+                      >
+                        <summary-resource-display-component
+                          [resource]="supplier"
+                          [resourceType]="'suppliers'"
+                        >
+                        </summary-resource-display-component>
+                      </button>
+                    </perfect-scrollbar>
+                  </div>
+                </div>
+              </ng-container>
+              <!-- END SUPPLIER SPECIFIC -->
+            </div>
+          </div>
         </div>
-        <div class="card py-2 px-3 mt-3 bg-white">
-          <h6 class="font-weight-medium" translate>
-            ADMIN.PROMOTIONS.MINIMUM_REQUIREMENTS
-          </h6>
-          <small>
+        <div class="card bg-white shadow-sm p-4 mt-3">
+          <h6 class="mb-0" translate>ADMIN.PROMOTIONS.MINIMUM_REQUIREMENTS</h6>
+          <small class="text-primary-light font-italic my-2">
             <fa-icon
-              class="color-beige"
+              class="mr-2"
               [icon]="faExclamationCircle"
+              aria-hidden="true"
             ></fa-icon>
             <span translate
               >ADMIN.PROMOTIONS.MINIMUM_REQUIREMENTS_EXPLANATION</span
@@ -322,6 +363,11 @@
             <div class="input-group-prepend">
               <span class="input-group-text">$</span>
             </div>
+            <label
+              for="inputMinReqInt"
+              class="sr-only"
+              aria-labelledby="inputMinReqInt"
+            ></label>
             <input
               class="form-control"
               type="number"
@@ -330,6 +376,8 @@
               (input)="handleUpdatePromo($event, 'xp.MinReq.Int', 'number')"
               formControlName="MinReqInt"
               name="MinReqInt"
+              id="inputMinReqInt"
+              placeholder="0.00"
             />
           </div>
           <div class="form-check">
@@ -337,13 +385,13 @@
               class="form-check-input"
               type="radio"
               name="MinReqType"
-              id="MinItemQty"
+              id="radioMinItemQty"
               value="MinItemQty"
               formControlName="MinReqType"
               (input)="handleUpdatePromo($event, 'xp.MinReq.Type')"
               [checked]="_promotionEditable?.xp?.MinReq?.Type === 'MinItemQty'"
             />
-            <label class="form-check-label" for="MinItemQty" translate>
+            <label class="form-check-label" for="radioMinItemQty" translate>
               ADMIN.PROMOTIONS.MINIMUM_QUANTITY_ITEMS
             </label>
           </div>
@@ -362,6 +410,8 @@
               (input)="handleUpdatePromo($event, 'xp.MinReq.Int', 'number')"
               formControlName="MinReqInt"
               name="MinReqInt"
+              id="inputMinItemQty"
+              placeholder="0"
             />
             <div class="input-group-append">
               <span class="input-group-text" translate
@@ -371,9 +421,7 @@
           </div>
           <ng-container *ngIf="_promotionEditable?.xp?.Type === 'FreeShipping'">
             <hr />
-            <h6 class="font-weight-medium" translate>
-              ADMIN.PROMOTIONS.SHIPPING
-            </h6>
+            <h6 class="mb-0" translate>ADMIN.PROMOTIONS.SHIPPING</h6>
             <div class="custom-control custom-checkbox">
               <input
                 type="checkbox"
@@ -402,15 +450,10 @@
             </div>
           </ng-container>
         </div>
-        <div class="card py-2 px-3 mt-3 bg-white">
-          <h6 class="font-weight-medium" translate>
-            ADMIN.PROMOTIONS.BUYER_ELIGIBILITY
-          </h6>
-          <small>
-            <fa-icon
-              class="color-beige"
-              [icon]="faExclamationCircle"
-            ></fa-icon>
+        <div class="card bg-white shadow-sm p-4 mt-3">
+          <h6 class="mb-0" translate>ADMIN.PROMOTIONS.BUYER_ELIGIBILITY</h6>
+          <small class="text-primary-light font-italic my-2">
+            <fa-icon class="mr-2" [icon]="faExclamationCircle"></fa-icon>
             <span translate>ADMIN.PROMOTIONS.ALL_PROMOTIONS_ELIGIBLE</span>
           </small>
           <div class="form-check">
@@ -458,7 +501,7 @@
             </label>
           </div>
         </div>
-        <div class="card py-2 px-3 mt-3 bg-white">
+        <div class="card bg-white shadow-sm p-4 mt-3">
           <h6 class="font-weight-medium" translate>
             ADMIN.PROMOTIONS.USAGE_LIMITS
           </h6>
@@ -512,22 +555,22 @@
             name="RedemptionLimitPerUser"
           />
         </div>
-        <div class="card py-2 px-3 mt-3 bg-white">
+        <div class="card bg-white shadow-sm p-4 mt-3">
           <h6 class="font-weight-medium" translate>
             ADMIN.PROMOTIONS.ACTIVE_DATES
           </h6>
           <div class="form-group">
             <label for="StartDate" translate
-              >ADMIN.PROMOTIONS.START_DATE_TIME<small>
-                <fa-icon
-                  class="color-beige"
-                  [icon]="faQuestionCircle"
-                  autoClose="outside"
-                  [ngbPopover]="utcinfo"
-                  triggers="hover"
-                  #popover="ngbPopover"
-                ></fa-icon> </small
-            ></label>
+              >ADMIN.PROMOTIONS.START_DATE_TIME
+              <fa-icon
+                [icon]="faQuestionCircle"
+                autoClose="outside"
+                [ngbPopover]="utcinfo"
+                triggers="hover"
+                #popover="ngbPopover"
+              >
+              </fa-icon>
+            </label>
             <ng-template #utcinfo>
               <p translate>ADMIN.PROMOTIONS.UTC_EXPLANATION</p>
             </ng-template>
@@ -558,7 +601,6 @@
             <label for="StartDate" translate
               >ADMIN.PROMOTIONS.EXPIRATION_DATE_TIME<small>
                 <fa-icon
-                  class="color-beige"
                   [icon]="faQuestionCircle"
                   autoClose="outside"
                   [ngbPopover]="utcinfo"
@@ -579,90 +621,120 @@
         </div>
       </form>
     </div>
-    <div class="col-md-5">
-      <div class="card py-2 px-3 mt-3 bg-white promo-summary">
-        <h6 class="font-weight-medium" translate>ADMIN.PROMOTIONS.SUMMARY</h6>
-        <div
-          *ngIf="!isCreatingNew && hasNotBegun"
-          class="headstart-alert my-2"
-          translate
-        >
-          <fa-icon [icon]="faExclamationCircle" class="mr-3"></fa-icon>
-          Begins {{ _promotionEditable?.StartDate | date: 'medium' }} UTC
-        </div>
-        <div class="d-flex justify-content-between align-items-center">
-          <h5 class="font-weight-bold">{{ _promotionEditable?.Code }}</h5>
-          <div class="d-flex justify-content-start align-items-center">
-            <span
-              *ngIf="_promotionEditable?.xp?.Automatic"
-              class="badge badge-pill badge-warning mr-1"
-              translate
-            >
-              ADMIN.PROMOTIONS.AUTOMATIC
-            </span>
-            <span
-              *ngIf="!isCreatingNew && !isExpired && !hasNotBegun"
-              class="badge badge-pill badge-success"
-              translate
-            >
-              ADMIN.PROMOTIONS.ACTIVE
-            </span>
-            <span
-              *ngIf="!isCreatingNew && isExpired"
-              class="badge badge-pill badge-light"
-              translate
-            >
-              ADMIN.PROMOTIONS.EXPIRED
-            </span>
+    <div class="col-md-5 mt-3 mt-md-0">
+      <div class="sticky-top">
+        <div class="card bg-white shadow-sm p-4">
+          <h6 class="mb-0" translate>ADMIN.PROMOTIONS.SUMMARY</h6>
+          <div
+            *ngIf="!isCreatingNew && hasNotBegun"
+            class="headstart-alert small shadow-sm my-3"
+            translate
+          >
+            <fa-icon [icon]="faExclamationCircle" class="mr-3"></fa-icon>
+            Begins {{ _promotionEditable?.StartDate | date: 'medium' }} UTC
           </div>
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="font-weight-bold my-2">
+              {{ _promotionEditable?.Code }}
+            </h5>
+            <div
+              *ngIf="
+                _promotionEditable?.xp?.Automatic ||
+                (!isCreatingNew && !isExpired && !hasNotBegun) ||
+                (isCreatingNew && isExpired)
+              "
+              class="d-flex justify-content-start align-items-center"
+            >
+              <span
+                *ngIf="_promotionEditable?.xp?.Automatic"
+                class="badge badge-pill badge-warning mr-1"
+                translate
+              >
+                ADMIN.PROMOTIONS.AUTOMATIC
+              </span>
+              <span
+                *ngIf="!isCreatingNew && !isExpired && !hasNotBegun"
+                class="badge badge-pill badge-success"
+                translate
+              >
+                ADMIN.PROMOTIONS.ACTIVE
+              </span>
+              <span
+                *ngIf="!isCreatingNew && isExpired"
+                class="badge badge-pill badge-light"
+                translate
+              >
+                ADMIN.PROMOTIONS.EXPIRED
+              </span>
+            </div>
+          </div>
+          <p
+            *ngIf="!_promotionEditable?.Code && !_promotionEditable?.xp?.Value"
+            translate
+          >
+            ADMIN.PROMOTIONS.NO_INFO_ENTERED
+          </p>
+          <ng-container
+            *ngIf="
+              _promotionEditable?.xp?.Value ||
+              _promotionEditable?.xp?.Type === 'FreeShipping'
+            "
+          >
+            <ul>
+              <li>{{ getValueDisplay() }}</li>
+              <li
+                *ngIf="
+                  _promotionEditable?.StartDate &&
+                  _promotionEditable?.ExpirationDate
+                "
+              >
+                {{ getDateRangeDisplay() }}
+              </li>
+              <li *ngIf="_promotionEditable?.xp?.MaxShipCost" translate>
+                ADMIN.PROMOTIONS.APPLIES_TO_RATES
+                {{ _promotionEditable?.xp?.MaxShipCost | currency }}
+              </li>
+              <li>{{ getEligibilityDisplay() }}</li>
+              <li
+                *ngIf="
+                  _promotionEditable?.RedemptionLimit ||
+                  _promotionEditable?.RedemptionLimitPerUser
+                "
+              >
+                {{ getUsageLimitDisplay() }}
+              </li>
+            </ul>
+          </ng-container>
+          <ng-container *ngIf="!isCreatingNew && _promotionStatic.ID">
+            <hr />
+            <h6 translate>ADMIN.PROMOTIONS.PERFORMANCE</h6>
+            <ul>
+              <li>
+                {{ this._promotionStatic?.RedemptionCount }}
+                {{ 'ADMIN.PROMOTIONS.USED' | translate }}
+              </li>
+            </ul>
+          </ng-container>
         </div>
-        <p
-          *ngIf="!_promotionEditable?.Code && !_promotionEditable?.xp?.Value"
-          translate
-        >
-          ADMIN.PROMOTIONS.NO_INFO_ENTERED
-        </p>
-        <ng-container
-          *ngIf="
-            _promotionEditable?.xp?.Value ||
-            _promotionEditable?.xp?.Type === 'FreeShipping'
-          "
-        >
-          <ul>
-            <li>{{ getValueDisplay() }}</li>
-            <li
-              *ngIf="
-                _promotionEditable?.StartDate &&
-                _promotionEditable?.ExpirationDate
-              "
-            >
-              {{ getDateRangeDisplay() }}
-            </li>
-            <li *ngIf="_promotionEditable?.xp?.MaxShipCost" translate>
-              ADMIN.PROMOTIONS.APPLIES_TO_RATES
-              {{ _promotionEditable?.xp?.MaxShipCost | currency }}
-            </li>
-            <li>{{ getEligibilityDisplay() }}</li>
-            <li
-              *ngIf="
-                _promotionEditable?.RedemptionLimit ||
-                _promotionEditable?.RedemptionLimitPerUser
-              "
-            >
-              {{ getUsageLimitDisplay() }}
-            </li>
-          </ul>
-        </ng-container>
-        <ng-container *ngIf="!isCreatingNew && _promotionStatic.ID">
-          <hr />
-          <h6 translate>ADMIN.PROMOTIONS.PERFORMANCE</h6>
-          <ul>
-            <li>
-              {{ this._promotionStatic?.RedemptionCount }}
-              {{ 'ADMIN.PROMOTIONS.USED' | translate }}
-            </li>
-          </ul>
-        </ng-container>
+        <div class="d-flex flex-row justify-content-end mt-3">
+          <button
+            *ngIf="areChanges"
+            class="btn btn-primary mr-2"
+            type="submit"
+            [disabled]="resourceForm?.status === 'INVALID' || dataIsSaving"
+            (click)="handleSave()"
+          >
+            {{ getSaveBtnText() }}
+          </button>
+          <button
+            class="btn brand-button ml-3"
+            (click)="handleDiscardChanges()"
+            *ngIf="areChanges && !isCreatingNew"
+            translate
+          >
+            ADMIN.PROMOTIONS.DISCARD_CHANGES
+          </button>
+        </div>
       </div>
     </div>
   </div>
