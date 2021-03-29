@@ -1,0 +1,13 @@
+html {
+    font-size: 0.9rem;
+  }
+  
+  body > [uib-modal-window]:not([modal-render]) {
+    display: none;
+  }
+
+  .cursor-pointer,
+.link,
+.btn {
+  cursor: $custom-range-track-cursor;
+}
