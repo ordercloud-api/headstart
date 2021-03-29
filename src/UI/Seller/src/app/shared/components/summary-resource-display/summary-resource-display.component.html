@@ -1,10 +1,10 @@
 <div class="d-flex flex-row">
-  <div *ngIf="_shouldShowImage" class="p-2">
+  <div *ngIf="_shouldShowImage" class="p-2 align-self-center">
     <img
       alt="Avatar"
       class="avatar rounded-circle"
       src="{{ _imgPath }}"
-      alt=""
+      alt="{{ _secondaryHeader }}"
     />
   </div>
   <div
@@ -26,12 +26,18 @@
     [style.marginLeft.px]="getIndent()"
   >
     <button
+      type="button"
       *ngIf="!isLoading"
       ngbDropdownItem
       (click)="toggleNestedResources()"
+      aria-label="Toggle Resource"
     >
-      <fa-icon *ngIf="!_isResourceExpanded" [icon]="faChevronRight"></fa-icon>
-      <fa-icon *ngIf="_isResourceExpanded" [icon]="faChevronDown"></fa-icon>
+      <fa-icon *ngIf="!_isResourceExpanded" [icon]="faChevronRight"
+        ><span class="sr-only">Expand Resource</span></fa-icon
+      >
+      <fa-icon *ngIf="_isResourceExpanded" [icon]="faChevronDown"
+        ><span class="sr-only">Collapse Resource</span></fa-icon
+      >
     </button>
     <div *ngIf="isLoading" class="ml-auto p-2 align-self-center">
       <div class="spinner-border" role="status">
