@@ -25,11 +25,11 @@ export class PaymentHelperService {
     includeDetails: boolean
   ): Promise<Payment> {
     if (includeDetails) {
-      const details = await this.getPaymentDetails(payment)
-      ;(payment as any).Details = details
+      const details = await this.getPaymentDetails(payment);
+      (payment as any).Details = details
       return payment
     } else {
-      ;(payment as any).Details = {}
+      (payment as any).Details = {}
       return payment
     }
   }
@@ -37,11 +37,19 @@ export class PaymentHelperService {
   private async getPaymentDetails(payment: Payment): Promise<any> {
     switch (payment.Type) {
       case 'CreditCard':
-        return Me.GetCreditCard(payment.CreditCardID)
+        return this.safeCall(Me.GetCreditCard(payment.CreditCardID))
       case 'SpendingAccount':
-        return Me.GetSpendingAccount(payment.SpendingAccountID)
+        return this.safeCall(Me.GetSpendingAccount(payment.SpendingAccountID))
       case 'PurchaseOrder':
-        return Promise.resolve({ PONumber: payment.ID })
+        return Promise.resolve({ PONumber: payment.ID });
+    }
+  }
+
+  private async safeCall( funct: Promise<any> ): Promise<any> {
+    try {
+      return await funct
+    } catch {
+      return Promise.resolve({})
     }
   }
 }
