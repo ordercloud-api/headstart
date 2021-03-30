@@ -6,6 +6,7 @@
       {{ 'ALIAS.BUYER_LOCATION' | translate | lowercase }}.
     </p>
     <div>
+      <perfect-scrollbar>
       <table class="table table-hover">
         <thead>
           <tr>
@@ -16,7 +17,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="cursor-pointer" *ngFor="let user of locationUsers">
+          <tr class="cursor-pointer" *ngFor="let user of locationUsers?.Items">
             <td class="d-flex justify-content-start align-items-center">
               {{ user.Username }}
             </td>
@@ -41,6 +42,18 @@
           </tr>
         </tbody>
       </table>
+    </perfect-scrollbar>
+    <ngb-pagination
+      *ngIf="LocationUsers?.Meta?.TotalPages > 1"
+      maxSize="10"
+      class="d-flex justify-content-center mt-3"
+      [collectionSize]="LocationUsers?.Meta.TotalCount"
+      [pageSize]="LocationUsers?.Meta.PageSize"
+      [(page)]="LocationUsers?.Meta.Page"
+      (pageChange)="changePage($event)"
+      [rotate]="true"
+    >
+    </ngb-pagination>
       <div class="pb-3">
         <button
           [disabled]="!areChanges"
