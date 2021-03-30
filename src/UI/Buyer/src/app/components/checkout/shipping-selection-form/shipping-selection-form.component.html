@@ -18,14 +18,15 @@
       *ngFor="let shipMethod of _shipEstimate?.ShipMethods"
       [ngValue]="shipMethod.ID"
     >
-      {{ shipMethod.EstimatedTransitDays }}
-      <span translate>CHECKOUT.SHIPPING_SELECTION_FORM.DAY</span
-      >{{ detectPlural(shipMethod.EstimatedTransitDays) }} -
       {{
         shipMethod.xp.FreeShippingApplied
           ? 'FREE'
           : (shipMethod.Cost | currency: _orderCurrency)
       }}
+      - {{ shipMethod?.Name | shipMethodNameMapper }} est.
+      {{ getEstTransitDays(shipMethod) }}
+      <span translate>CHECKOUT.SHIPPING_SELECTION_FORM.DAY</span
+      >{{ detectPlural(shipMethod) }}
     </option>
   </select>
 </form>

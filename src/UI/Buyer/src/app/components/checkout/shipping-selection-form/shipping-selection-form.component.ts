@@ -1,5 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
-import { ShipEstimate, ShipMethodSelection } from 'ordercloud-javascript-sdk'
+import {
+  ShipEstimate,
+  ShipMethod,
+  ShipMethodSelection,
+} from 'ordercloud-javascript-sdk'
 import { FormGroup, FormControl } from '@angular/forms'
 import {
   faExclamationTriangle,
@@ -48,5 +52,16 @@ export class OCMShippingSelectionForm implements OnInit {
 
   detectPlural(value: number): string {
     return value === 1 ? '' : 's'
+  }
+
+  getEstTransitDays(method: ShipMethod): number {
+    // If current day is Friday, Standard Overnight will return 3 days
+    // as the estimated delivery days since there is only delivery on
+    // business days.  We want to override this so it is always 1 day.
+    // Documentation: https://www.easypost.com/fedex-guide#levels
+    if (method.Name === 'STANDARD_OVERNIGHT') {
+      return 1
+    }
+    return method.EstimatedTransitDays
   }
 }

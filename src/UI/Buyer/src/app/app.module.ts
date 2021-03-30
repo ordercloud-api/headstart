@@ -204,6 +204,7 @@ import { CMSConfiguration } from '@ordercloud/cms-sdk'
 import { AppConfig } from './models/environment.types'
 import { OCMKitLineitemTable } from './components/cart/lineitem-table/kit-lineitem-table/kit-lineitem-table.component'
 import { BaseResolveService } from './services/base-resolve/base-resolve.service'
+import { ShipMethodNameMapperPipe } from './pipes/ship-method-name/ship-method-name.pipe'
 
 export function HttpLoaderFactory(
   http: HttpClient,
@@ -332,6 +333,7 @@ const components = [
     CreditCardInputDirective,
     SpecFieldDirective,
     ProductNameWithSpecsPipe,
+    ShipMethodNameMapperPipe,
     KitProductNameWithSpecsPipe,
     OrderStatusDisplayPipe,
     PhoneFormatPipe,

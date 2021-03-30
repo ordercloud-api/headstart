@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Headstart.Common;
 using Headstart.Common.Constants;
+using Headstart.Common.Extensions;
 using Headstart.Common.Models;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
@@ -70,8 +71,7 @@ namespace Headstart.API.Commands
                 var supplierID = groupedLineItems[i].First().SupplierID;
                 var profile = _profiles.FirstOrDefault(supplierID);
                 var methods = FilterMethodsBySupplierConfig(shipResponse.ShipEstimates[i].ShipMethods.Where(s => profile.CarrierAccountIDs.Contains(s.xp.CarrierAccountID)).ToList(), profile);
-                var cheapestMethods = WhereRateIsCheapestOfItsKind(methods);
-                shipResponse.ShipEstimates[i].ShipMethods = cheapestMethods.Select(s =>
+                shipResponse.ShipEstimates[i].ShipMethods = methods.Select(s =>
                 {
 
                     // there is logic here to support not marking up shipping over list rate. But USPS is always list rate
@@ -86,14 +86,11 @@ namespace Headstart.API.Commands
             }
             var buyerCurrency = worksheet.Order.xp.Currency ?? CurrencySymbol.USD;
 
-            if (buyerCurrency != CurrencySymbol.USD) // shipper currency is USD
-                shipResponse.ShipEstimates = await ConvertShippingRatesCurrency(shipResponse.ShipEstimates, CurrencySymbol.USD, buyerCurrency);
-            shipResponse.ShipEstimates = CheckForEmptyRates(shipResponse.ShipEstimates, _settings.EasyPostSettings.NoRatesFallbackCost, _settings.EasyPostSettings.NoRatesFallbackTransitDays);
-            shipResponse.ShipEstimates = UpdateFreeShippingRates(shipResponse.ShipEstimates, _settings.EasyPostSettings.FreeShippingTransitDays);
-            shipResponse.ShipEstimates = await ApplyFreeShipping(worksheet, shipResponse.ShipEstimates);
-            shipResponse.ShipEstimates = FilterSlowerRatesWithHighCost(shipResponse.ShipEstimates);
-            shipResponse.ShipEstimates = ApplyFlatRateShipping(worksheet, shipResponse.ShipEstimates);
-            
+            await shipResponse.ShipEstimates
+                .CheckForEmptyRates(_settings.EasyPostSettings.NoRatesFallbackCost, _settings.EasyPostSettings.NoRatesFallbackTransitDays)
+                .ApplyShippingLogic(worksheet, _oc, _settings.EasyPostSettings.FreeShippingTransitDays).Result
+                .ConvertCurrency(CurrencySymbol.USD, buyerCurrency, _exchangeRates);
+
             return shipResponse;
         }
 
