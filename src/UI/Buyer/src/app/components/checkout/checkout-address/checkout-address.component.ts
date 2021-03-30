@@ -45,7 +45,7 @@ export class OCMCheckoutAddress implements OnInit {
   constructor(
     private context: ShopperContextService,
     private spinner: NgxSpinnerService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     this.isAnon = this.context.currentUser.isAnonymous();
@@ -91,7 +91,7 @@ export class OCMCheckoutAddress implements OnInit {
       this.order = await this.context.order.checkout.setBuyerLocationByID(
         this.selectedBuyerLocation?.ID
       )
-      if(this.isAnon) {
+      if (this.isAnon) {
         await this.handleAnonShippingAddress(newShippingAddress)
       } else {
         this.handleLoggedInShippingAddress(newShippingAddress)
@@ -109,7 +109,7 @@ export class OCMCheckoutAddress implements OnInit {
   }
 
   async handleAnonShippingAddress(newShippingAddress: Address<any>): Promise<void> {
-    if(newShippingAddress != null) {
+    if (newShippingAddress != null) {
       this.selectedShippingAddress = newShippingAddress;
     }
     this.context.order.checkout.setOneTimeShippingAddress((this.selectedShippingAddress as Address))
@@ -134,8 +134,6 @@ export class OCMCheckoutAddress implements OnInit {
   }
 
   async SaveAddressPatchOrder(newAddress: Address<any>) {
-    if(this.isAnon) {
-    }
     if (newAddress != null) {
       this.selectedShippingAddress = await this.saveNewShippingAddress(
         newAddress
@@ -164,14 +162,14 @@ export class OCMCheckoutAddress implements OnInit {
 
   private async ListAddressesForShipping() {
     const buyerLocationsFilter = {
-      filters: {Editable: 'false'}
+      filters: { Editable: 'false' }
     }
     const shippingAddressesFilter = {
-      filters: {Shipping: 'true'}
+      filters: { Shipping: 'true' }
     }
     this.existingBuyerLocations = await listAll(Me, Me.ListAddresses, buyerLocationsFilter)
     this.homeCountry = this.existingBuyerLocations?.Items[0]?.Country || 'US'
-    if(this.existingBuyerLocations?.Items.length === 1) {
+    if (this.existingBuyerLocations?.Items.length === 1) {
       this.selectedBuyerLocation = this.selectedShippingAddress = this.existingBuyerLocations.Items[0]
     }
 
