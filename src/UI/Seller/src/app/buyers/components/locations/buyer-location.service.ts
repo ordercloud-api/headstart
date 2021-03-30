@@ -12,7 +12,7 @@ import { BUYER_SUB_RESOURCE_LIST } from '../buyers/buyer.service'
 import { HeadStartSDK } from '@ordercloud/headstart-sdk'
 import { BuyerUserService } from '../users/buyer-user.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
-import { Addresses } from 'ordercloud-javascript-sdk'
+import { Addresses, ListPage } from 'ordercloud-javascript-sdk'
 import { PermissionTypes } from './buyer-location-permissions/buyer-location-permissions.constants'
 
 
@@ -118,11 +118,11 @@ export class BuyerLocationService extends ResourceCrudService<BuyerAddress> {
     return responses.reduce((acc, value) => acc.concat(value.Items), [])
   }
 
-  async getLocationUsers(locationID: string): Promise<User[]> {
+  async getLocationUsers(locationID: string, page?: number): Promise<ListPage<User>> {
     const buyerID = locationID.split('-')[0]
     const userResponse = await this.ocUserService
-      .List(buyerID, { userGroupID: locationID })
+      .List(buyerID, { userGroupID: locationID, page: (page || 1) })
       .toPromise()
-    return userResponse.Items
+    return userResponse
   }
 }

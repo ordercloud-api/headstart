@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core'
-import { UserGroupAssignment, User } from '@ordercloud/angular-sdk'
+import { UserGroupAssignment, User, ListPage } from '@ordercloud/angular-sdk'
 import { BuyerLocationService } from '../buyer-location.service'
 import { REDIRECT_TO_FIRST_PARENT } from '@app-seller/layout/header/header.config'
 import { PermissionTypes } from '../buyer-location-permissions/buyer-location-permissions.constants'
@@ -17,7 +17,7 @@ export class BuyerLocationPermissions {
   add: UserGroupAssignment[]
   del: UserGroupAssignment[]
   areChanges = false
-  locationUsers: User[]
+  locationUsers: ListPage<User>
   _locationID: string
   permissionTypes: PermissionType[] = PermissionTypes
   requestedUserConfirmation = false
@@ -36,9 +36,12 @@ export class BuyerLocationPermissions {
     private buyerUserService: BuyerUserService
   ) {}
 
-  async updateLocationUsers(locationID: string): Promise<void> {
+  async changePage(page: number): Promise<void> {
+    await this.updateLocationUsers(this._locationID, page)
+  }
+  async updateLocationUsers(locationID: string, page?: number): Promise<void> {
     this.locationUsers = await this.buyerLocationService.getLocationUsers(
-      locationID
+      locationID, page
     )
   }
 
