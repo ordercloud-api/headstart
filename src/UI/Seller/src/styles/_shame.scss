@@ -1,0 +1,94 @@
+/*******************************************************************************************************************************
+
+How to use _shame.scss:
+
+    (1) If it’s a hack or a hotfix, it goes in _shame.scss.
+    (2) Document all declarations fully:
+        (a) What part of the codebase does it relate to?
+        (b) Why was this needed?
+        (c) How does this fix it?
+        (d) How might you fix it properly, given more time?
+    (3) Do not blame the developer; if they explained why they had to do it then their reasons are probably (hopefully) valid.
+    (4) Try and clean shame.scss up when you have some time.
+
+*******************************************************************************************************************************/
+
+
+
+// DESIGN: Refactor Candidate: Magic Number
+.large-paddding-top {
+    padding-top: 160px;
+  }
+  
+  .table {
+    thead {
+      color: $gray-600;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+    }
+  }
+  
+  .card-highlight-border {
+    border-radius: $border-radius;
+    border-left: 5px solid $primary;
+  
+    .alert-icon {
+      color: $light;
+      font-size: 1.4rem;
+    }
+  }
+  
+  .resource-name {
+    font-size: 22px;
+  
+    @include media-breakpoint-up(sm) {
+      font-size: 28px;
+    }
+  }
+  
+  .avatar[data-letters]:before {
+    content: attr(data-letters);
+    display: inline-block;
+    font-size: 3.5rem;
+    width: 100px;
+    height: 100px;
+    line-height: 6.75rem;
+    text-align: center;
+    border-radius: 0.25rem;
+    background: $teal;
+    vertical-align: middle;
+    margin-right: 1em;
+    color: darken($teal, 30%);
+    font-weight: 600;
+  }
+  
+  .avatar-sm[data-letters]:before {
+    width: 34px;
+    height: 34px;
+    margin-right: 0em;
+    line-height: 2.25rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+  
+  .email-tile {
+    background-color: var(--light);
+    padding: 0.5rem 0.8rem;
+    border-radius: 0.25rem;
+    margin: 0.25rem 0rem;
+  }
+  
+  .headstart-alert {
+    display: flex;
+    align-items: center;
+    border-radius: 0.15rem;
+    background-color: lighten(#032a43, 83%);
+    border-left: 5px solid var(--primary);
+    padding: 1.25rem 0.75rem;
+    color: var(--primary);
+    font-weight: bolder;
+  
+    &>fa-icon {
+      color: lighten(#032a43, 55%);
+    }
+  }

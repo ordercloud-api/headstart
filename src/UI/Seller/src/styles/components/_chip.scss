@@ -1,56 +1,57 @@
 .chip-bag {
-    margin: 1rem -.25rem;
+  margin: 1rem -.25rem;
 }
+
 .chip {
-    background: $gray-light;
-    display: inline-flex;
-    flex-flow: row wrap;
-    align-items: center;
-    justify-content: space-evenly;
-    line-height: 1;
-    padding: .5rem .75rem;
-    margin: .25rem;
-    border-radius: $border-radius;
-    color: $primary;
-    font-weight: 500;
-    transition: all 100ms ease-in-out;
-  
-    fa-icon {
-      margin-left: .5rem;
+  background: $gray-light;
+  display: inline-flex;
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: space-evenly;
+  line-height: 1;
+  padding: .5rem .75rem;
+  margin: .25rem;
+  border-radius: $border-radius;
+  color: $primary;
+  font-weight: 500;
+  transition: all 100ms ease-in-out;
+
+  fa-icon {
+    margin-left: .5rem;
+  }
+
+  &.chip-sm {
+    font-size: 80%;
+    padding: .25rem .5rem;
+  }
+
+  &.readonly {
+    &.active {
+      background: $gray-light;
+      color: $primary-light;
     }
-  
-    &.chip-sm {
-      font-size: 80%;
-      padding: .25rem .5rem;
+  }
+
+  &.editable {
+    &:hover {
+      background: $primary-dark;
+      color: white;
+      box-shadow: $box-shadow-sm;
     }
-  
-    &.readonly {
-      &.active {
-        background: $gray-light;
-        color: $primary-light;
-      }
-    }
-  
-    &.editable {
+
+    &.active {
+      background: $primary-dark;
+      color: white;
+
       &:hover {
-        background: $primary-dark;
-        color: white;
+        background: $primary-light;
+        color: $primary-dark;
         box-shadow: $box-shadow-sm;
-      }
-  
-      &.active {
-        background: $primary-dark;
-        color: white;
-  
-        &:hover {
-          background: $primary-light;
-          color: $primary-dark;
-          box-shadow: $box-shadow-sm;
-  
-          .supplier-facet-chip {
-            display: none;
-          }
+
+        .supplier-facet-chip {
+          display: none;
         }
       }
     }
   }
+}
