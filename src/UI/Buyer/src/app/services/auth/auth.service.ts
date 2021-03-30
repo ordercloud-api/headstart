@@ -95,7 +95,9 @@ export class AuthService {
   }
 
   async register(me: MeUser): Promise<AccessTokenBasic> {
-    const token = await Me.Register(me)
+    const anonToken = await this.getAnonymousToken()
+    const token = await Me.Register(me, {anonUserToken: anonToken.access_token})
+    this.loginWithTokens(token.access_token)
     return token
   }
 
@@ -150,18 +152,22 @@ export class AuthService {
 
   async anonymousLogin(): Promise<AccessToken> {
     try {
-      const creds = await Auth.Anonymous(
-        this.appConfig.clientID,
-        this.appConfig.scope
-      )
-      ContentManagementClient.Tokens.SetAccessToken(creds.access_token)
-      HeadStartSDK.Tokens.SetAccessToken(creds.access_token)
-      this.setToken(creds.access_token)
-      return creds
+      const anonToken = await this.getAnonymousToken()
+      ContentManagementClient.Tokens.SetAccessToken(anonToken.access_token)
+      HeadStartSDK.Tokens.SetAccessToken(anonToken.access_token)
+      this.setToken(anonToken.access_token)
+      return anonToken
     } catch (err) {
       void this.logout()
       throw new Error(err)
     }
+  }
+
+  async getAnonymousToken(): Promise<AccessToken> {
+    return await Auth.Anonymous(
+      this.appConfig.clientID,
+      this.appConfig.scope
+    )
   }
 
   async logout(): Promise<void> {
