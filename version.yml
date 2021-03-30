@@ -1,0 +1,17 @@
+steps:
+  - task: PowerShell@2
+    displayName: Get Build Number
+    inputs:
+      targetType: inline
+      script: >-
+        try {
+            # call out to hosted endpoint to get the current version and add one for this build
+            [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+            $response = Invoke-RestMethod -Uri "https://headstartdemo-middleware.azurewebsites.net/env"
+            $newversion = [int]$response.BuildNumber.Split(".")[2] + 1
+            Write-Host "##vso[build.updatebuildnumber]1.0.$newversion.$(Build.BuildId)"
+
+        } catch {
+            $newversion = 1
+            Write-Host "##vso[build.updatebuildnumber]1.0.$newversion.$(Build.BuildId)"
+        }

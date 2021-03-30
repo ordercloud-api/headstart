@@ -116,7 +116,7 @@ namespace exchangerates.tests
                 .ReturnsForAnyArgs(
                     GetExchangeRate(baseCurrency, toCurrency, returnedRate)
                 ); ;
-            
+
 
             //Act
             var rate = await _command.ConvertCurrency(baseCurrency, toCurrency, 1.33);

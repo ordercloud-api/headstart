@@ -160,6 +160,19 @@ This project follows the [build once, deploy many](https://earlyandoften.wordpre
 * Deploy Seller - Deploy seller artifacts to your seller app service test slot
 * Deploy Middleware - Deploy middleware artifacts to your middleware app service test slot. Make sure the environment variable `APP_CONFIG_CONNECTION` is set on your app service and points to the connection string to your azure app configuration
 
+## Docker
+
+You can run the project using Docker, sample docker-compose.yml file includes Buyer/Seller/Middleware as well as storage dependency.
+
+1. Make sure to [switch daemon to Linux containers](https://docs.docker.com/docker-for-windows/#switch-between-windows-and-linux-containers)
+2. Copy .env.template file to .env
+3. Populate the following variables in the .env file:
+   - SELLER_CLIENT_ID
+   - BUYER_CLIENT_ID
+   - OrderCloudSettings_MiddlewareClientID
+   - OrderCloudSettings_MiddlewareClientSecret
+4. From the project directory, start up your application by running **docker-compose up**
+
 ## Git Flow
 
 1.  **Fork** the repo on GitHub

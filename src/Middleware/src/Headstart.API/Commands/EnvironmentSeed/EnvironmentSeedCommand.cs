@@ -103,8 +103,9 @@ namespace Headstart.API.Commands
 
             // populate default english translations into blob container name: settings.BlobSettings.ContainerNameTranslations or "ngx-translate" if setting is not defined
             // provide other language files to support multiple languages
+
             var currentDirectory = Directory.GetCurrentDirectory();
-            var englishTranslationsPath = Path.GetFullPath(Path.Combine(currentDirectory, @"..\Headstart.Common\Assets\english-translations.json"));
+            var englishTranslationsPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "Assets", "english-translations.json"));
             if(seed?.BlobSettings?.ConnectionString !=null && seed?.BlobSettings?.ContainerNameTranslations != null)
             {
                 var translationsConfig = new BlobServiceConfig()
@@ -115,7 +116,6 @@ namespace Headstart.API.Commands
                 var translationsBlob = new OrderCloudIntegrationsBlobService(translationsConfig);
                 await translationsBlob.Save("i18n/en.json", File.ReadAllText(englishTranslationsPath));
             }
-
 
             return new EnvironmentSeedResponse
             {
