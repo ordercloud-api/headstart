@@ -166,9 +166,9 @@ export class CartService {
     }
   }
 
-  async AddValidLineItemsToCart(validLi: Array<LineItem>): Promise<void> {
-    const items = validLi.map((li) => {
-      return {
+  async AddValidLineItemsToCart(validLi: Array<LineItem>): Promise<HSLineItem[]> {
+    const items = validLi.map((li) => (
+      {
         ProductID: li.Product.ID,
         Quantity: li.Quantity,
         Specs: li.Specs,
@@ -176,8 +176,8 @@ export class CartService {
           ImageUrl: li.xp?.ImageUrl,
         },
       }
-    })
-    await this.addMany(items);
+    ))
+    return await this.addMany(items);
   }
 
   async addMany(

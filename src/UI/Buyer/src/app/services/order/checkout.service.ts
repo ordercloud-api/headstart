@@ -86,6 +86,11 @@ export class CheckoutService {
     }
   }
 
+  async setOneTimeShippingAddress(address: Address) {
+    delete address.ID;
+    await Orders.SetShippingAddress('Outgoing', this.order.ID, address);
+  }
+
   async setBuyerLocationByID(
     buyerLocationID: string
   ): Promise<HSOrder> {
