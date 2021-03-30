@@ -164,13 +164,14 @@ This project follows the [build once, deploy many](https://earlyandoften.wordpre
 
 You can run the project using Docker, sample docker-compose.yml file includes Buyer/Seller/Middleware as well as storage dependency.
 
-1. Make sure to use Linux Containers
-2. Populate the following variables in the .env file:
+1. Make sure to [switch daemon to Linux containers](https://docs.docker.com/docker-for-windows/#switch-between-windows-and-linux-containers)
+2. Copy .env.template file to .env
+3. Populate the following variables in the .env file:
    - SELLER_CLIENT_ID
    - BUYER_CLIENT_ID
    - OrderCloudSettings_MiddlewareClientID
    - OrderCloudSettings_MiddlewareClientSecret
-3. From the project directory, start up your application by running **docker-compose up**
+4. From the project directory, start up your application by running **docker-compose up**
 
 ## Git Flow
 
