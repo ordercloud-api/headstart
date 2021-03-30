@@ -2,18 +2,18 @@
   Add a Sub-Category to {{ _params }}
 </h4>
 <form *ngIf="resourceForm" [formGroup]="resourceForm">
-  <div *ngFor="let field of _categoryFields">
+  <ng-container *ngFor="let field of _categoryFields">
     <div
       *ngIf="field.type === 'string' && field.field === 'ParentID' && _params"
       class="form-group"
     >
-      <label for="field.field">{{ field.field | uncamel }}</label>
+      <label for="{{ field.field }}">{{ field.field | uncamel}}</label>
       <input
         maxlength="100"
         type="text"
         class="form-control"
         id="{{ field.field }}"
-        aria-describedby="field.field"
+        aria-describedby="{{ field.field }}"
         [resourceForm]="resourceForm"
         formControlName="{{ field.field }}"
         (input)="handleUpdateCategory($event)"
@@ -25,13 +25,13 @@
       *ngIf="field.type === 'string' && field.field === 'ParentID' && !_params"
       class="form-group"
     >
-      <label for="field.field">{{ field.field | uncamel }}</label>
+      <label for="{{ field.field }}">{{ field.field | uncamel}}</label>
       <input
         maxlength="100"
         type="text"
         class="form-control"
         id="{{ field.field }}"
-        aria-describedby="field.field"
+        aria-describedby="{{ field.field }}"
         formControlName="{{ field.field }}"
         (input)="handleUpdateCategory($event)"
         placeholder="Enter {{ field.field }}"
@@ -42,13 +42,13 @@
       *ngIf="field.type === 'string' && field.field === 'Description'"
       class="form-group"
     >
-      <label for="field.field">{{ field.field | uncamel }}</label>
+      <label for="{{ field.field }}">{{ field.field | uncamel}}</label>
       <input
         maxlength="200"
         type="text"
         class="form-control"
         id="{{ field.field }}"
-        aria-describedby="field.field"
+        aria-describedby="{{ field.field }}"
         formControlName="{{ field.field }}"
         (input)="handleUpdateCategory($event)"
         placeholder="Enter {{ field.field }}"
@@ -88,5 +88,5 @@
         <span class="slider round cursor-pointer"></span>
       </label>
     </div>
-  </div>
+  </ng-container>
 </form>

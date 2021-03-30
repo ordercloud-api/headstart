@@ -1,0 +1,22 @@
+.border-hover {
+    transition: border-color 0.25s ease;
+  
+    &:hover {
+      border: 1px solid $dark;
+    }
+  }
+
+//   DESIGN: I think we wanted `letter-spacing` or `font-kerning` here, but this should be it's own custom utility.
+//   .text-uppercase {
+//     kerning: 0.05rem;
+//   }
+
+.letter-spacing-1 { letter-spacing: .5ch;   }
+.letter-spacing-2 { letter-spacing: 1ch;    }
+.letter-spacing-3 { letter-spacing: 1.5ch;  }
+
+  .vertical-align-middle {  vertical-align: middle !important;  }
+
+  .set-to-top { top: 0; }
+  
+  .color-beige { color: #cccccc; }

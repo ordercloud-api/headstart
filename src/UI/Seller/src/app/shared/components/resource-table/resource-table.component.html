@@ -277,7 +277,7 @@
       >
         <perfect-scrollbar
           id="perfectScroll"
-          class="scrollbar-top full-width"
+          class="scrollbar-top w-100"
           [ngStyle]="{ 'height.px': tableHeight }"
           (psYReachEnd)="handleScrollEnd()"
         >
@@ -312,7 +312,7 @@
           <perfect-scrollbar
             [ngStyle]="{ 'height.px': tableHeight }"
             (psYReachEnd)="handleScrollEnd()"
-            class="resource-table-side full-width"
+            class="resource-table-side w-100"
           >
             <table
               *ngIf="
@@ -400,13 +400,13 @@
                   <fa-icon class="text-dark" [icon]="faChevronLeft"> </fa-icon>
                 </div>
               </div>
-              <h3 *ngIf="isCreatingNew" class="d-inline-block ml-1 mb-0">
+              <h2 *ngIf="isCreatingNew" class="h3 d-inline-block ml-1 mb-0">
                 New {{ resourceType | titlecase }}
                 {{ labelSingular | translate }}
-              </h3>
-              <h3 *ngIf="!isCreatingNew" class="d-inline-block ml-1 mb-0">
+              </h2>
+              <h2 *ngIf="!isCreatingNew" class="h3 d-inline-block ml-1 mb-0">
                 {{ getHeaderText(_resourceInSelection) }}
-              </h3>
+              </h2>
             </span>
             <button
               *ngIf="canImpersonateResource && !isCreatingNew"
@@ -450,7 +450,7 @@
       <ng-template #editUnwrapped>
         <div class="bg-light">
           <perfect-scrollbar
-            class="full-width"
+            class="w-100"
             id="resource-edit-scroll"
             [ngStyle]="{ 'height.px': editResourceHeight }"
           >
