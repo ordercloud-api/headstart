@@ -246,7 +246,7 @@
                     </button>
                     <p
                       class="mb-0"
-                      *ngIf="!products?.length"
+                      *ngIf="!products?.value?.length && searchTerm"
                       ngbDropdownItem
                       disabled
                     >
