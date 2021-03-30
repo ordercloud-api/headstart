@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core'
 import { SharedModule } from '@app-seller/shared'
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar'
 import { BuyersRoutingModule } from './buyers-routing.module'
 import { BuyerTableComponent } from './components/buyers/buyer-table/buyer-table.component'
 import { BuyerUserTableComponent } from './components/users/buyer-user-table/buyer-user-table.component'
@@ -15,7 +16,7 @@ import { BuyerCatalogTableComponent } from './components/catalogs/buyer-catalog-
 import { BuyerLocationCatalogs } from './components/locations/buyer-location-catalogs/buyer-location-catalogs.component'
 
 @NgModule({
-  imports: [SharedModule, BuyersRoutingModule],
+  imports: [SharedModule, BuyersRoutingModule, PerfectScrollbarModule],
   declarations: [
     BuyerTableComponent,
     BuyerEditComponent,
