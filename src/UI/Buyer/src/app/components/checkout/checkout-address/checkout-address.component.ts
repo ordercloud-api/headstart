@@ -133,23 +133,6 @@ export class OCMCheckoutAddress implements OnInit {
     }
   }
 
-  async SaveAddressPatchOrder(newAddress: Address<any>) {
-    if (newAddress != null) {
-      this.selectedShippingAddress = await this.saveNewShippingAddress(
-        newAddress
-      )
-    }
-    if (this.selectedShippingAddress) {
-      await this.context.order.checkout.setShippingAddressByID(
-        this.selectedShippingAddress
-      )
-      this.continue.emit()
-    } else {
-      // not able to create address - display suggestions to user
-      this.spinner.hide()
-    }
-  }
-
   addressFormChanged(address: BuyerAddress): void {
     this.selectedShippingAddress = address
   }
