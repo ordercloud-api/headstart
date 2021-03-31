@@ -41,12 +41,11 @@ namespace ordercloud.integrations.library
 
         private static readonly HashSet<Type> _customTypes = new HashSet<Type>();
 
-        public static ApiMetaData GetMetaData<TController>(string refPath, IDictionary<string, IErrorCode> errors)
-            where TController : Controller
+        public static ApiMetaData GetMetaData(string refPath, IDictionary<string, IErrorCode> errors)
         {
             return new ApiMetaData
             {
-                Sections = GetSections<TController>(refPath).ToList(),
+                Sections = GetSections(refPath).ToList(),
                 Models = (
                     from t in _customTypes
                     where !t.IsEnum
@@ -66,8 +65,7 @@ namespace ordercloud.integrations.library
             };
         }
 
-        private static IEnumerable<ApiSection> GetSections<TController>(string refPath)
-            where TController : Controller
+        private static IEnumerable<ApiSection> GetSections(string refPath)
         {
             var isComment = false;
             ApiSection section = null;
@@ -94,7 +92,7 @@ namespace ordercloud.integrations.library
                         if (section != null)
                             yield return section;
 
-                        var res = GetResources<TController>(id).ToList();
+                        var res = GetResources(id).ToList();
                         section = new ApiSection
                         {
                             ID = id,
@@ -114,18 +112,18 @@ namespace ordercloud.integrations.library
                 yield return section;
         }
 
-        private static IEnumerable<ApiResource> GetResources<TController>(string sectionID)
+        private static IEnumerable<ApiResource> GetResources(string sectionID)
         {
-            var temp = Assembly.GetAssembly(typeof(TController)).GetExportedTypes();
+            var temp = Assembly.GetEntryAssembly().GetExportedTypes();
 
-            var resource = from c in Assembly.GetAssembly(typeof(TController)).GetExportedTypes()
-                where c.IsSubclassOf(typeof(TController))
+            var resource = from c in Assembly.GetEntryAssembly().GetExportedTypes()
+                           where c.IsSubclassOf(typeof(Controller))
                 where !c.IsAbstract
                 where !c.HasAttribute<DocIgnoreAttribute>(false)
                 let section = c.GetAttribute<DocSection>()
                 where section != null && section.ID == sectionID
                 let name = c.ControllerFriendlyName()
-                let endpoints = GetEndpoints<TController>(c, name).ToList()
+                let endpoints = GetEndpoints(c, name).ToList()
                 where endpoints.Any()
                 orderby section.ListOrder, name
                 select new ApiResource
@@ -139,7 +137,7 @@ namespace ordercloud.integrations.library
             return resource;
         }
 
-        private static IEnumerable<ApiEndpoint> GetEndpoints<TController>(Type c, string resource)
+        private static IEnumerable<ApiEndpoint> GetEndpoints(Type c, string resource)
         {
             var result = from m in c.GetMethods()
                          let verb =
@@ -162,8 +160,8 @@ namespace ordercloud.integrations.library
                              MethodInfo = m,
                              Route = route,
                              HttpVerb = verb,
-                             PathArgs = GetArgs<TController>(requestType ?? responseType, m, route, true).ToList(),
-                             QueryArgs = GetArgs<TController>(requestType ?? responseType, m, route, false).ToList(),
+                             PathArgs = GetArgs(requestType ?? responseType, m, route, true).ToList(),
+                             QueryArgs = GetArgs(requestType ?? responseType, m, route, false).ToList(),
                              RequestModel = GetModelFromType(requestType, m, false, true),
                              ResponseModel = GetModelFromType(responseType, m, true, false),
                              HttpStatus = responseType.HttpStatusCode(verb),
@@ -176,7 +174,7 @@ namespace ordercloud.integrations.library
 
         private static IList<string> GetRequiredRoles(MethodInfo m)
         {
-            var roles = m.GetAttributes<OrderCloudUserAuthAttribute>().SelectMany(r => r.Roles.Split(",")).ToList();
+            var roles = m.GetAttributes<OrderCloudUserAuthAttribute>().SelectMany(r => r?.Roles?.Split(",") ?? new string[] { }).ToList();
             if (roles.Any() && !roles.Contains("FullAccess"))
                 roles.Insert(0, "FullAccess");
 
@@ -255,7 +253,7 @@ namespace ordercloud.integrations.library
             return comments;
         }
 
-        private static IEnumerable<ApiParameter> GetArgs<TController>(Type modelType, MethodInfo methodInfo, string path, bool inPath)
+        private static IEnumerable<ApiParameter> GetArgs(Type modelType, MethodInfo methodInfo, string path, bool inPath)
         {
             foreach (var param in methodInfo.GetParameters())
             {
@@ -287,7 +285,7 @@ namespace ordercloud.integrations.library
 
                 if (param.ParameterType.WithoutGenericArgs() == typeof(ListArgs<>))
                 {
-                    foreach (var arg in GetArgs<TController>(modelType, ListArgsReflector.Method, path, inPath))
+                    foreach (var arg in GetArgs(modelType, ListArgsReflector.Method, path, inPath))
                     {
                         arg.IsListArg = true;
                         yield return arg;

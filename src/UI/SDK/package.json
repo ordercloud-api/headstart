@@ -34,19 +34,13 @@
     "node": ">=0.10"
   },
   "scripts": {
-    "build": "run-s build:sdk build:docs",
+    "build": "run-s build:sdk",
     "prebuild:sdk": "npm run generate-sdk && npm run beautify",
     "build:sdk": "rollup --config",
     "postbuild:sdk": "shx cp dist/index.d.ts dist/index.esm.d.ts",
-    "build:docs": "typedoc src/",
-    "postbuild:docs": "shx rm docs/index.html && shx mv docs/globals.html docs/index.html",
-    "test": "npm run test:browser && npm run test:server",
-    "test:browser": "jest --config tests/config/browser.config.js",
-    "test:server": "jest --config tests/config/server.config.js",
     "beautify": "prettier --write codegen/**/*.ts --loglevel silent",
     "generate-sdk": "npm run buildCodegen && oc-codegen -i ./swagger.json -t codegen/templates -o ./src -b codegen/handlebars-extensions -k codegen/hooks.js",
     "debug-template-data": "npm run buildCodegen && oc-codegen -i ./swagger.json -d -k codegen/hooks.js > templateData.json",
-    "publish-please": "publish-please",
     "buildCodegen": "tsc --p codegen/tsconfig.json"
   },
   "devDependencies": {
@@ -64,15 +58,13 @@
     "lodash": "^4.17.15",
     "npm-run-all": "^4.1.5",
     "prettier": "^1.19.1",
-    "publish-please": "^5.5.1",
     "rollup": "^1.31.1",
     "rollup-plugin-terser": "^5.2.0",
     "rollup-plugin-typescript2": "^0.26.0",
     "shx": "^0.3.2",
     "ts-jest": "^25.2.1",
     "typedoc": "^0.16.10",
-    "typescript": "^3.8.2",
-    "yarn": "^1.22.0"
+    "typescript": "^4.2.3"
   },
   "dependencies": {},
   "peerDependencies": {

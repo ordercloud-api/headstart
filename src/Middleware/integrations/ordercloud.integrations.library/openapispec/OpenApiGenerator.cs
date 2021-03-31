@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ordercloud.integrations.library
 {
-    public class OpenApiGenerator<TController> where TController : Controller
+    public class OpenApiGenerator
     {
         private ApiMetaData _data;
         private JObject _spec;
@@ -19,13 +19,13 @@ namespace ordercloud.integrations.library
             return this._spec;
         }
 
-        public OpenApiGenerator<TController> CollectMetaData(string refPath, IDictionary<string, IErrorCode> errors)
+        public OpenApiGenerator CollectMetaData(string refPath, IDictionary<string, IErrorCode> errors)
         {
-            this._data = ApiReflector.GetMetaData<TController>(refPath, errors);
+            this._data = ApiReflector.GetMetaData(refPath, errors);
             return this;
         }
 
-        public OpenApiGenerator<TController> DefineSpec(SwaggerConfig config)
+        public OpenApiGenerator DefineSpec(SwaggerConfig config)
         {
             this._spec = new JObject()
                 .AddMetaData(config)

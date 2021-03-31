@@ -22,7 +22,7 @@ namespace Headstart.Common.Controllers
         public async Task<JObject> Get()
         {
             var reference = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            var g = new OpenApiGenerator<BaseController>()
+            var g = new OpenApiGenerator()
                 .CollectMetaData(Path.Combine(reference, "reference.md"), ErrorCodes.All)
                 .DefineSpec(new SwaggerConfig()
                 {
