@@ -25,6 +25,7 @@ import {
 import { isEqual, max, uniqWith } from 'lodash'
 import { TempSdk } from '../temp-sdk/temp-sdk.service'
 import { LineItemGroupSupplier } from 'src/app/models/line-item.types'
+import { AddressType } from 'src/app/models/checkout.types'
 
 @Injectable({
   providedIn: 'root',
@@ -86,9 +87,11 @@ export class CheckoutService {
     }
   }
 
-  async setOneTimeShippingAddress(address: Address) {
+  async setOneTimeAddress(address: Address, addressType: AddressType): Promise<void> {
     delete address.ID;
-    await Orders.SetShippingAddress('Outgoing', this.order.ID, address);
+    addressType === 'shipping' ? 
+      await Orders.SetShippingAddress('Outgoing', this.order.ID, address) : 
+      await Orders.SetBillingAddress('Outgoing', this.order.ID, address)
   }
 
   async setBuyerLocationByID(

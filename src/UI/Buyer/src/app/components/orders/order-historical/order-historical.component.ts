@@ -43,7 +43,7 @@ export class OCMOrderHistorical implements OnInit {
   }
 
   async getBuyerLocation(addressID: string): Promise<void> {
-    if (!this.isQuoteOrder(this.order)) {
+    if (!this.isQuoteOrder(this.order) && addressID !== null) {
       const buyerLocation = await this.context.addresses.get(addressID)
       this.buyerLocation = buyerLocation
     } else this.buyerLocation = null
