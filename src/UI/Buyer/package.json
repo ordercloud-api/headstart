@@ -5,6 +5,7 @@
     "ng": "ng",
     "test": "ng test",
     "e2e": "ng e2e",
+    "preinstall": "cd ../SDK && tsc",
     "start": "ng serve --configuration=dev --port=4300 --open",
     "build": "ng build --configuration=deploy && node scripts/hash-css-files && node scripts/move-release-scripts && node scripts/copy-main-js && node scripts/copy-index-html",
     "lint": "tsc --noEmit && eslint . --ext js,ts,json --quiet --fix",

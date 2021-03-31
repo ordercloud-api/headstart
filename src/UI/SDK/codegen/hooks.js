@@ -14,9 +14,10 @@ var __read = (this && this.__read) || function (o, n) {
     }
     return ar;
 };
-var __spread = (this && this.__spread) || function () {
-    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
-    return ar;
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
 };
 var filterModels = function (model) {
     // instead of the many similar list models that the spec spits out
@@ -56,21 +57,21 @@ var postFormatOperation = function (operation) {
         // instead of the many similar list models that the spec spits out
         // we're going to consolidate into two list types with type parameters ListPage and ListPageFacet
         // for example ListCreditCard becomes ListPage<CreditCard>
-        var newImports_1 = __spread(operation.fileImports);
+        var newImports_1 = __spreadArray([], __read(operation.fileImports));
         operation.fileImports.forEach(function (fileImport) {
             if (fileImport === operation.returnType) {
                 if (operation.isFacetList) {
-                    newImports_1 = __spread(newImports_1, ['ListPageFacet', operation.baseType]);
+                    newImports_1 = __spreadArray(__spreadArray([], __read(newImports_1)), ['ListPageFacet', operation.baseType]);
                 }
                 else {
-                    newImports_1 = __spread(newImports_1, ['ListPage', operation.baseType]);
+                    newImports_1 = __spreadArray(__spreadArray([], __read(newImports_1)), ['ListPage', operation.baseType]);
                 }
                 // remove the old list type
                 newImports_1 = newImports_1.filter(function (i) { return i !== fileImport; });
             }
             return fileImport;
         });
-        operation.fileImports = __spread(new Set(newImports_1)); // unique array
+        operation.fileImports = __spreadArray([], __read(new Set(newImports_1))); // unique array
     }
     var operationExpectsBody = operation.verb == 'post' ||
         operation.verb == 'put' ||
@@ -192,3 +193,4 @@ function inspectModelForTypeParams(allModels, rootModel, inspectModel, rootProp,
         }
     });
 }
+export {};
