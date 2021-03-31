@@ -1,0 +1,9 @@
+{{#model.fileImports}}
+import { {{this}} } from './{{this}}';
+{{/model.fileImports}}
+
+export interface {{model.name}} {
+    {{#model.properties}}
+    {{#if isReadOnly}}readonly {{/if}}{{name}}{{#if isRequired}}:{{else}}?:{{/if}} {{typescriptType}}
+    {{/model.properties}}
+}

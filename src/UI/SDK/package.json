@@ -1,0 +1,81 @@
+{
+  "name": "@ordercloud/headstart-sdk",
+  "description": "Javasript SDK for the Ordercloud HeadStart API",
+  "author": "Oliver Heywood",
+  "version": "1.21.6",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "homepage": "https://ordercloud.io/",
+  "bugs": {
+    "url": "https://github.com/oliverheywood451/Marketplace-Javascript-SDK/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/oliverheywood451/Marketplace-Javascript-SDK"
+  },
+  "keywords": [
+    "ordercloud",
+    "four51",
+    "b2b",
+    "b2c",
+    "javascript",
+    "typescript",
+    "ecommerce",
+    "api",
+    "headless",
+    "sdk"
+  ],
+  "license": "MIT",
+  "files": [
+    "dist/"
+  ],
+  "engines": {
+    "node": ">=0.10"
+  },
+  "scripts": {
+    "build": "run-s build:sdk build:docs",
+    "prebuild:sdk": "npm run generate-sdk && npm run beautify",
+    "build:sdk": "rollup --config",
+    "postbuild:sdk": "shx cp dist/index.d.ts dist/index.esm.d.ts",
+    "build:docs": "typedoc src/",
+    "postbuild:docs": "shx rm docs/index.html && shx mv docs/globals.html docs/index.html",
+    "test": "npm run test:browser && npm run test:server",
+    "test:browser": "jest --config tests/config/browser.config.js",
+    "test:server": "jest --config tests/config/server.config.js",
+    "beautify": "prettier --write codegen/**/*.ts --loglevel silent",
+    "generate-sdk": "npm run buildCodegen && oc-codegen -i ./swagger.json -t codegen/templates -o ./src -b codegen/handlebars-extensions -k codegen/hooks.js",
+    "debug-template-data": "npm run buildCodegen && oc-codegen -i ./swagger.json -d -k codegen/hooks.js > templateData.json",
+    "publish-please": "publish-please",
+    "buildCodegen": "tsc --p codegen/tsconfig.json"
+  },
+  "devDependencies": {
+    "@ordercloud/oc-codegen": "0.0.1-12",
+    "@types/jest": "^25.1.3",
+    "@typescript-eslint/eslint-plugin": "^2.21.0",
+    "@typescript-eslint/parser": "^2.21.0",
+    "add": "^2.0.6",
+    "axios": "^0.19.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-jest": "^23.8.1",
+    "eslint-plugin-prettier": "^3.1.2",
+    "jest": "^25.1.0",
+    "lodash": "^4.17.15",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^1.19.1",
+    "publish-please": "^5.5.1",
+    "rollup": "^1.31.1",
+    "rollup-plugin-terser": "^5.2.0",
+    "rollup-plugin-typescript2": "^0.26.0",
+    "shx": "^0.3.2",
+    "ts-jest": "^25.2.1",
+    "typedoc": "^0.16.10",
+    "typescript": "^3.8.2",
+    "yarn": "^1.22.0"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "axios": ">=0.19.2"
+  }
+}

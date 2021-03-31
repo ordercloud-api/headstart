@@ -1,0 +1,26 @@
+{{#resources}}
+import {{this.id}} from './{{this.id}}';
+{{/resources}}
+import Auth from './Auth';
+import Tokens from './Tokens';
+import Upload from './Upload';
+
+export { HeadStartSDK }
+
+const HeadStartSDK: HeadStartSDK = {
+    {{#resources}}
+    {{this.id}} : new {{this.id}}(),
+    {{/resources}}
+    Auth: new Auth(),
+    Tokens: new Tokens(),
+    Upload: new Upload()
+}
+
+interface HeadStartSDK {
+    {{#resources}}
+    {{this.id}} : {{this.id}},
+    {{/resources}}
+    Auth: Auth,
+    Tokens: Tokens,
+    Upload: Upload
+}

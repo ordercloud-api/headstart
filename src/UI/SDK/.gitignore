@@ -1,0 +1,7 @@
+node_modules
+dist
+.rpt2_cache
+templateData.json
+yarn-error.log
+codegen/handlebars-extensions.js
+codegen/hooks.js
