@@ -8,7 +8,7 @@
   >
     <small>Loading Shipping Selections...</small>
   </ngx-spinner>
-  <div class="form-group">
+  <div class="form-group" *ngIf="!isAnon">
     <label for="selectBuyerLocation" translate
       >CHECKOUT.CHECKOUT_ADDRESS.BUYER_LOCATION</label
     >
@@ -68,7 +68,7 @@
     <button
       type="submit"
       *ngIf="!showNewAddressForm"
-      [disabled]="!selectedShippingAddress || !selectedBuyerLocation"
+      [disabled]="!selectedShippingAddress || (!selectedBuyerLocation && !isAnon)"
       (click)="saveAddressesAndContinue()"
       class="btn btn-secondary btn-sm mr-2 mt-3"
       translate
@@ -77,7 +77,7 @@
     </button>
   </div>
   <ocm-address-form
-    *ngIf="showNewAddressForm"
+    *ngIf="showNewAddressForm && homeCountry"
     [existingAddress]="selectedShippingAddress"
     [suggestedAddresses]="suggestedAddresses"
     [showOptionToSave]="true"

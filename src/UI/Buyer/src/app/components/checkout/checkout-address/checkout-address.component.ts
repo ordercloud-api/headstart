@@ -49,6 +49,9 @@ export class OCMCheckoutAddress implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.isAnon = this.context.currentUser.isAnonymous();
+    if(this.isAnon) {
+      this.showNewAddress();
+    }
     this.spinner.hide()
     this.selectedShippingAddress = this.lineItems?.Items[0].ShippingAddress
     await this.ListAddressesForShipping()
@@ -83,17 +86,17 @@ export class OCMCheckoutAddress implements OnInit {
   async saveAddressesAndContinue(
     newShippingAddress: Address = null
   ): Promise<void> {
-    if (!this.selectedBuyerLocation) {
+    if (!this.selectedBuyerLocation && !this.isAnon) {
       throw new Error('Please select a location for this order')
     }
     try {
       this.spinner.show()
-      this.order = await this.context.order.checkout.setBuyerLocationByID(
-        this.selectedBuyerLocation?.ID
-      )
       if (this.isAnon) {
         await this.handleAnonShippingAddress(newShippingAddress)
       } else {
+        this.order = await this.context.order.checkout.setBuyerLocationByID(
+          this.selectedBuyerLocation?.ID
+        )
         this.handleLoggedInShippingAddress(newShippingAddress)
       }
     } catch (e) {
@@ -112,7 +115,7 @@ export class OCMCheckoutAddress implements OnInit {
     if (newShippingAddress != null) {
       this.selectedShippingAddress = newShippingAddress;
     }
-    this.context.order.checkout.setOneTimeShippingAddress((this.selectedShippingAddress as Address))
+    this.context.order.checkout.setOneTimeAddress((this.selectedShippingAddress as Address), 'shipping')
     this.continue.emit()
   }
 
