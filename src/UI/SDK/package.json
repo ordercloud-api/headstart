@@ -1,19 +1,11 @@
 {
   "name": "@ordercloud/headstart-sdk",
   "description": "Javasript SDK for the Ordercloud HeadStart API",
-  "author": "Oliver Heywood",
-  "version": "1.21.6",
+  "version": "0.0.0",
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "homepage": "https://ordercloud.io/",
-  "bugs": {
-    "url": "https://github.com/oliverheywood451/Marketplace-Javascript-SDK/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/oliverheywood451/Marketplace-Javascript-SDK"
-  },
   "keywords": [
     "ordercloud",
     "four51",
@@ -34,17 +26,10 @@
     "node": ">=0.10"
   },
   "scripts": {
-    "build": "run-s build:sdk",
-    "prebuild:sdk": "npm run generate-sdk && npm run beautify",
-    "build:sdk": "rollup --config",
-    "postbuild:sdk": "shx cp dist/index.d.ts dist/index.esm.d.ts",
-    "beautify": "prettier --write codegen/**/*.ts --loglevel silent",
-    "generate-sdk": "npm run buildCodegen && oc-codegen -i ./swagger.json -t codegen/templates -o ./src -b codegen/handlebars-extensions -k codegen/hooks.js",
-    "debug-template-data": "npm run buildCodegen && oc-codegen -i ./swagger.json -d -k codegen/hooks.js > templateData.json",
-    "buildCodegen": "tsc --p codegen/tsconfig.json"
+    "build": "rollup --config",
+    "postbuild": "shx cp dist/index.d.ts dist/index.esm.d.ts"
   },
   "devDependencies": {
-    "@ordercloud/oc-codegen": "0.0.1-12",
     "@typescript-eslint/eslint-plugin": "^2.21.0",
     "@typescript-eslint/parser": "^2.21.0",
     "add": "^2.0.6",
@@ -53,7 +38,6 @@
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
     "lodash": "^4.17.15",
-    "npm-run-all": "^4.1.5",
     "prettier": "^1.19.1",
     "rollup": "^1.31.1",
     "rollup-plugin-terser": "^5.2.0",
