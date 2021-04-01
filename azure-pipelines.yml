@@ -70,6 +70,12 @@ jobs:
           path: src/UI/SDK/node_modules
           cacheHitVar: SDKCacheRestored
       - task: Cache@2
+      - task: Cache@2
+        displayName: Seller Dependencies Cache
+        inputs:
+          key: npm | seller | v2 | "$(Agent.OS)" | src/UI/Seller/package-lock.json | src/UI/Seller/package.json
+          path: src/UI/Seller/node_modules
+          cacheHitVar: SellerCacheRestoredV2e
         displayName: Buyer Dependencies Cache
         inputs:
           key: npm | buyer | "$(Agent.OS)" | src/UI/Buyer/package-lock.json | src/UI/Buyer/package.json
@@ -94,28 +100,7 @@ jobs:
         displayName: "Publish Artifact: Buyer"
         inputs:
           PathtoPublish: src/UI/Buyer/dist
-          ArtifactName: buyer
-      - task: NodeTool@0
-        displayName: Use Node 12.x
-        inputs:
-          versionSpec: 12.x
-      - task: Cache@2
-        displayName: SDK Dependencies Cache
-        inputs:
-          key: npm | sdk2 | "$(Agent.OS)" | src/UI/SDK/package-lock.json | src/UI/SDK/package.json
-          path: src/UI/SDK/node_modules
-          cacheHitVar: SDKCacheRestored
-      - task: Cache@2
-        displayName: Seller Dependencies Cache
-        inputs:
-          key: npm | seller | v2 | "$(Agent.OS)" | src/UI/Seller/package-lock.json | src/UI/Seller/package.json
-          path: src/UI/Seller/node_modules
-          cacheHitVar: SellerCacheRestoredV2
-      - task: Npm@1
-        displayName: npm install - SDK
-        inputs:
-          workingDir: src/UI/SDK
-          verbose: false
+          ArtifactName: buyer 
       - task: Npm@1
         displayName: npm install - Seller
         inputs:
