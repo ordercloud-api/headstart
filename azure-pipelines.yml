@@ -95,7 +95,7 @@ jobs:
         inputs:
           PathtoPublish: src/UI/Buyer/dist
           ArtifactName: buyer
-          - task: NodeTool@0
+      - task: NodeTool@0
         displayName: Use Node 12.x
         inputs:
           versionSpec: 12.x
