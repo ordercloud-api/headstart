@@ -75,7 +75,7 @@ jobs:
           key: npm | buyer | "$(Agent.OS)" | src/UI/Buyer/package-lock.json | src/UI/Buyer/package.json
           path: src/UI/Buyer/node_modules
           cacheHitVar: BuyerCacheRestored
-          - task: Cache@2
+      - task: Cache@2
         displayName: Seller Dependencies Cache
         inputs:
           key: npm | seller | v2 | "$(Agent.OS)" | src/UI/Seller/package-lock.json | src/UI/Seller/package.json
@@ -107,8 +107,8 @@ jobs:
           workingDir: src/UI/Seller
           verbose: false
       - task: CmdLine@2
-        displayName: Build Seller
-        inputs:
+          displayName: Build Seller
+          inputs:
           script: npm run build
           workingDirectory: src/UI/Seller
       - task: PublishBuildArtifacts@1
