@@ -81,11 +81,11 @@ jobs:
           key: npm | buyer | "$(Agent.OS)" | src/UI/Buyer/package-lock.json | src/UI/Buyer/package.json
           path: src/UI/Buyer/node_modules
           cacheHitVar: BuyerCacheRestored
-      # - task: Npm@1
-      #   displayName: npm install - SDK
-      #   inputs:
-      #     workingDir: src/UI/SDK
-      #     verbose: false
+      - task: Npm@1
+        displayName: npm install - SDK
+        inputs:
+          workingDir: src/UI/SDK
+          verbose: false
       - task: Npm@1
         displayName: npm install - Buyer
         inputs:
