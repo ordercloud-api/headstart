@@ -27,6 +27,7 @@ export abstract class OCMParentTableComponent implements OnInit {
   @Input() orderType: OrderType
   @Input() hideStatus = false
   @Input() displayShippingInfo = false
+  @Input() invalidItem
   closeIcon = faTimes
   faTrashAlt = faTrashAlt
   _supplierArray: any[]
@@ -141,7 +142,9 @@ export abstract class OCMParentTableComponent implements OnInit {
     configurationID: string,
     documentID: string
   ): void {
+    if(!this.invalidItem) {
       this.context.router.toProductDetails(productID)
+    }
   }
 
   async changeQuantity(
