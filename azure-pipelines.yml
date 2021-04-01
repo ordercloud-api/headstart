@@ -66,13 +66,13 @@ jobs:
       - task: Cache@2
         displayName: SDK Dependencies Cache
         inputs:
-          key: npm | buyer | "$(Agent.OS)" | src/UI/SDK/package-lock.json | src/UI/SDK/package.json
+          key: npm | sdk1 | "$(Agent.OS)" | src/UI/SDK/package-lock.json | src/UI/SDK/package.json
           path: src/UI/SDK/node_modules
           cacheHitVar: SDKCacheRestored
       - task: Cache@2
         displayName: Buyer Dependencies Cache
         inputs:
-          key: npm | sdk | "$(Agent.OS)" | src/UI/Buyer/package-lock.json | src/UI/Buyer/package.json
+          key: npm | buyer | "$(Agent.OS)" | src/UI/Buyer/package-lock.json | src/UI/Buyer/package.json
           path: src/UI/Buyer/node_modules
           cacheHitVar: BuyerCacheRestored
       - task: Npm@1
@@ -105,7 +105,7 @@ jobs:
       - task: Cache@2
         displayName: SDK Dependencies Cache
         inputs:
-          key: npm | buyer | "$(Agent.OS)" | src/UI/SDK/package-lock.json | src/UI/SDK/package.json
+          key: npm | sdk2 | "$(Agent.OS)" | src/UI/SDK/package-lock.json | src/UI/SDK/package.json
           path: src/UI/SDK/node_modules
           cacheHitVar: SDKCacheRestored
       - task: Cache@2
