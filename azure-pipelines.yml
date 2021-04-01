@@ -56,19 +56,19 @@ jobs:
         inputs:
           PathtoPublish: middleware
           ArtifactName: middleware
-  - job: Build_Buyer
+  - job: Build_UIs
     displayName: Build Buyer
     steps:
       - task: NodeTool@0
         displayName: Use Node 12.x
         inputs:
           versionSpec: 12.x
-      - task: Cache@2
-        displayName: SDK Dependencies Cache
-        inputs:
-          key: npm | sdk1 | "$(Agent.OS)" | src/UI/SDK/package-lock.json | src/UI/SDK/package.json
-          path: src/UI/SDK/node_modules
-          cacheHitVar: SDKCacheRestored
+      # - task: Cache@2
+      #   displayName: SDK Dependencies Cache
+      #   inputs:
+      #     key: npm | sdk1 | "$(Agent.OS)" | src/UI/SDK/package-lock.json | src/UI/SDK/package.json
+      #     path: src/UI/SDK/node_modules
+      #     cacheHitVar: SDKCacheRestored
       - task: Cache@2
         displayName: Seller Dependencies Cache
         inputs:
@@ -81,11 +81,11 @@ jobs:
           key: npm | buyer | "$(Agent.OS)" | src/UI/Buyer/package-lock.json | src/UI/Buyer/package.json
           path: src/UI/Buyer/node_modules
           cacheHitVar: BuyerCacheRestored
-      - task: Npm@1
-        displayName: npm install - SDK
-        inputs:
-          workingDir: src/UI/SDK
-          verbose: false
+      # - task: Npm@1
+      #   displayName: npm install - SDK
+      #   inputs:
+      #     workingDir: src/UI/SDK
+      #     verbose: false
       - task: Npm@1
         displayName: npm install - Buyer
         inputs:
