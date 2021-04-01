@@ -18,6 +18,7 @@ export class OCMPaymentCreditCard implements OnInit {
       this._showNewCCForm = false
     }
   } 
+  @Input() isAnon: boolean
   @Input() termsAccepted: boolean
   @Input() paymentError: string
   @Output() cardSelected = new EventEmitter<SelectedCreditCard>()

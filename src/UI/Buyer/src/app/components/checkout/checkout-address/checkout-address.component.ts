@@ -94,9 +94,6 @@ export class OCMCheckoutAddress implements OnInit {
       if (this.isAnon) {
         await this.handleAnonShippingAddress(newShippingAddress)
       } else {
-        this.order = await this.context.order.checkout.setBuyerLocationByID(
-          this.selectedBuyerLocation?.ID
-        )
         this.handleLoggedInShippingAddress(newShippingAddress)
       }
     } catch (e) {
@@ -113,10 +110,14 @@ export class OCMCheckoutAddress implements OnInit {
 
   async handleAnonShippingAddress(newShippingAddress: Address<any>): Promise<void> {
     if (newShippingAddress != null) {
-      this.selectedShippingAddress = newShippingAddress;
+      this.selectedShippingAddress = await this.validateNewShippingAddress(newShippingAddress)
+    } if(this.selectedShippingAddress) {
+      this.context.order.checkout.setOneTimeAddress((this.selectedShippingAddress as Address), 'shipping')
+      this.continue.emit()
+    } else {
+      // not able to create address - display suggestions to user
+      this.spinner.hide()
     }
-    this.context.order.checkout.setOneTimeAddress((this.selectedShippingAddress as Address), 'shipping')
-    this.continue.emit()
   }
 
   async handleLoggedInShippingAddress(newShippingAddress: Address<any>): Promise<void> {
@@ -171,9 +172,22 @@ export class OCMCheckoutAddress implements OnInit {
       const savedAddress = await this.context.addresses.create(address)
       return savedAddress
     } catch (ex) {
-      this.suggestedAddresses = getSuggestedAddresses(ex)
-      if (!(this.suggestedAddresses?.length >= 1)) throw ex
-      return null // set this.selectedShippingAddress
+      return this.handleAddressError(ex);
     }
+  }
+
+  private async validateNewShippingAddress(address: BuyerAddress): Promise<HSAddressBuyer> {
+    try {
+      const validatedAddress = await this.context.addresses.validateAddress(address)
+      return validatedAddress
+    } catch (ex) {
+      return this.handleAddressError(ex)
+    }
+  }
+
+  private handleAddressError(ex: any): null {
+    this.suggestedAddresses = getSuggestedAddresses(ex)
+    if (!(this.suggestedAddresses?.length >= 1)) throw ex
+    return null // set this.selectedShippingAddress
   }
 }

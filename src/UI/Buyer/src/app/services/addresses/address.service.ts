@@ -81,6 +81,13 @@ export class AddressService {
     return response.data;
   }
 
+  // eventually replace with sdk
+  async validateAddress(address: HSAddressBuyer): Promise<HSAddressBuyer>  {
+    var url = `${this.appConfig.middlewareUrl}/me/addresses/validate`
+    var response = await Axios.post(url, address, this.BuildConfig());
+    return response.data;
+  }
+
   BuildConfig(): AxiosRequestConfig {
     return { headers: { Authorization: `Bearer ${Tokens.GetAccessToken()}`}};
   }
