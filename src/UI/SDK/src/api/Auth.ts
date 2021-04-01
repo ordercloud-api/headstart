@@ -1,8 +1,8 @@
 import axios from 'axios'
 import { AccessToken } from '../models/AccessToken'
-import Configuration from '../Configuration'
+import Configuration from '../configuration'
 import { SecurityProfile } from '../models/SecurityProfile'
-import serialize from '../utils/ParamsSerializer'
+import serialize from '../utils/paramsSerializer'
 
 export default class Auth {
   constructor() {

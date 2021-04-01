@@ -1,8 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios'
 import tokenService from '../api/Tokens'
-import Configuration from '../Configuration'
+import Configuration from '../configuration'
 import Auth from '../api/Auth'
-import paramsSerializer from './ParamsSerializer'
+import paramsSerializer from './paramsSerializer'
 import parseJwt from './ParseJwt'
 
 /**
