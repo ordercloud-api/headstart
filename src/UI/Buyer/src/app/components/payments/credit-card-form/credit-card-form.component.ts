@@ -22,6 +22,7 @@ import {
   CreditCard,
   CreditCardFormOutput,
 } from 'src/app/models/credit-card.types'
+import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 
 @Component({
   templateUrl: './credit-card-form.component.html',
@@ -35,6 +36,7 @@ export class OCMCreditCardForm implements OnChanges {
   @Input() termsAccepted: boolean
   @Input() showCVV: boolean
   @Input() showCardDetails: boolean
+  @Input() isAnon: boolean
   _termsAccepted: boolean
   _showCardDetails: boolean
   _showCVV: boolean
@@ -62,7 +64,10 @@ export class OCMCreditCardForm implements OnChanges {
   faCcAmex = faCcAmex
   private readonly defaultCountry = 'US'
 
-  constructor(private creditCardFormatPipe: CreditCardFormatPipe) {
+  constructor(
+    private creditCardFormatPipe: CreditCardFormatPipe,
+    private context: ShopperContextService
+    ) {
     this.countryOptions = GeographyConfig.getCountries()
     this.stateOptions = this.getStateOptions(this.defaultCountry)
   }
@@ -216,6 +221,28 @@ export class OCMCreditCardForm implements OnChanges {
       'country',
       new FormControl(form.country, Validators.required)
     )
+    this.cardForm.addControl('useShippingAddress',
+      new FormControl(false)
+    )
+  }
+
+  mapShippingAddressToBilling(event: Event) {
+    const value = (event.target as HTMLInputElement).checked
+    const lineItems = this.context.order.getLineItems()
+    if(value && lineItems?.Items && lineItems.Items[0]) {
+      const firstItem = lineItems.Items[0]
+      this.cardForm.controls['street'].setValue(firstItem.ShippingAddress?.Street1)
+      this.cardForm.controls['city'].setValue(firstItem.ShippingAddress?.City)
+      this.cardForm.controls['state'].setValue(firstItem.ShippingAddress?.State)
+      this.cardForm.controls['zip'].setValue(firstItem.ShippingAddress?.Zip)
+      this.cardForm.controls['country'].setValue(firstItem.ShippingAddress?.Country)
+    } else {
+      this.cardForm.controls['street'].setValue('')
+      this.cardForm.controls['city'].setValue('')
+      this.cardForm.controls['state'].setValue('')
+      this.cardForm.controls['zip'].setValue('')
+      this.cardForm.controls['country'].setValue('')
+    }
   }
 
   private removeCardDetailsForm(): void {

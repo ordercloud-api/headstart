@@ -160,19 +160,10 @@ export class OCMCheckout implements OnInit {
     this.toSection('shippingAddress')
   }
 
-  buildCCPayment(card: HSBuyerCreditCard): Payment {
+  async handleSavedCard(card: HSBuyerCreditCard): Promise<Payment> {
     // amount gets calculated in middleware
-    return {
-      DateCreated: new Date().toDateString(),
-      Accepted: false,
-      Type: 'CreditCard',
-      CreditCardID: card.ID,
-      xp: {
-        // any additions to the xp model must be updated in c# HSPaymentModel or won't show up
-        partialAccountNumber: card.PartialAccountNumber,
-        cardType: card.CardType,
-      },
-    }
+    await this.context.order.checkout.setOneTimeAddress(card.xp.CCBillingAddress, 'billing')
+    return this.buildCCPaymentFromSavedCard(card);
   }
 
   buildCCPaymentFromNewCard(card: OrderCloudIntegrationsCreditCardToken): Payment {
@@ -184,6 +175,20 @@ export class OCMCheckout implements OnInit {
         partialAccountNumber: card.AccountNumber.substr(card.AccountNumber.length - 4),
         cardType: card.CardType,
       }
+    }
+  }
+
+  buildCCPaymentFromSavedCard(card: HSBuyerCreditCard): Payment {
+    return {
+      DateCreated: new Date().toDateString(),
+      Accepted: false,
+      Type: 'CreditCard',
+      CreditCardID: card.ID,
+      xp: {
+        // any additions to the xp model must be updated in c# HSPaymentModel or won't show up
+        partialAccountNumber: card.PartialAccountNumber,
+        cardType: card.CardType,
+      },
     }
   }
 
@@ -202,7 +207,7 @@ export class OCMCheckout implements OnInit {
     if (!output.SavedCard) {
       payments.push(await this.handleNewCard(output))
     } else {
-      payments.push(this.buildCCPayment(output.SavedCard))
+      payments.push(await this.handleSavedCard(output.SavedCard))
       delete this.selectedCard.NewCard
     }
     if (this.orderSummaryMeta.POLineItemCount) {
@@ -222,14 +227,14 @@ export class OCMCheckout implements OnInit {
 
   async handleNewCard(output: SelectedCreditCard): Promise<HSPayment> {
     this.isNewCard = true
+    await this.context.order.checkout.setOneTimeAddress(output.NewCard.CCBillingAddress, 'billing')
     if(this.isAnon) {
-      await this.context.order.checkout.setOneTimeAddress(output.NewCard.CCBillingAddress, 'billing')
       return this.buildCCPaymentFromNewCard(output.NewCard)
     } else {
       this.selectedCard.SavedCard = await this.context.currentUser.cards.Save(
         output.NewCard
       )
-      return this.buildCCPayment(this.selectedCard.SavedCard)
+      return this.buildCCPaymentFromSavedCard(this.selectedCard.SavedCard)
     }
   }
 

@@ -15,13 +15,14 @@
         [card]="card"
       ></ocm-credit-card-display>
     </option>
-    <option [value]="new" translate>PAYMENTS.PAYMENT.ADD_CC</option>
+    <option value="new" translate>PAYMENTS.PAYMENT.ADD_CC</option>
   </select>
   <ocm-credit-card-form
     [submitText]="'Save and Continue'"
     [showCVV]="true"
     [showCardDetails]="_showNewCCForm"
     [termsAccepted]="termsAccepted"
+    [isAnon]="isAnon"
     (formSubmitted)="submit($event.detail)"
     class="w-100"
   >

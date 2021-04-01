@@ -93,6 +93,7 @@
   <ocm-payment-credit-card
     *ngIf="orderSummaryMeta.StandardLineItemCount"
     [cards]="cards"
+    [isAnon]="isAnon"
     [termsAccepted]="POTermsAccepted"
     [paymentError]="paymentError"
     (cardSelected)="onCardSelected($event.detail)"
