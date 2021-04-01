@@ -26,9 +26,10 @@
     "node": ">=0.10"
   },
   "scripts": {
-    "build": "rollup --config"
+    "build": "tsc"
   },
   "devDependencies": {
+    "@types/node": "^12.19.8",
     "@typescript-eslint/eslint-plugin": "^4.8.2",
     "@typescript-eslint/parser": "^4.8.2",
     "axios": "^0.19.2",
@@ -36,9 +37,6 @@
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.4",
     "prettier": "^2.2.1",
-    "rollup": "^1.31.1",
-    "rollup-plugin-terser": "^5.2.0",
-    "rollup-plugin-typescript2": "^0.26.0",
     "typescript": "~3.7.5"
   },
   "peerDependencies": {
