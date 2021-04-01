@@ -72,7 +72,7 @@ jobs:
       - task: Cache@2
         displayName: Buyer Dependencies Cache
         inputs:
-          key: npm | buyer | "$(Agent.OS)" | src/UI/Buyer/package-lock.json | src/UI/Buyer/package.json
+          key: npm | sdk | "$(Agent.OS)" | src/UI/Buyer/package-lock.json | src/UI/Buyer/package.json
           path: src/UI/Buyer/node_modules
           cacheHitVar: BuyerCacheRestored
       - task: Npm@1
