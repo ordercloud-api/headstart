@@ -56,8 +56,8 @@ jobs:
         inputs:
           PathtoPublish: middleware
           ArtifactName: middleware
-  - job: Build_UI
-    displayName: Build UI
+  - job: Build_Buyer
+    displayName: Build Buyer
     steps:
       - task: NodeTool@0
         displayName: Use Node 12.x
@@ -66,7 +66,7 @@ jobs:
       - task: Cache@2
         displayName: SDK Dependencies Cache
         inputs:
-          key: npm | sdk | "$(Agent.OS)" | src/UI/SDK/package-lock.json | src/UI/SDK/package.json
+          key: npm | sdk1 | "$(Agent.OS)" | src/UI/SDK/package-lock.json | src/UI/SDK/package.json
           path: src/UI/SDK/node_modules
           cacheHitVar: SDKCacheRestored
       - task: Cache@2
@@ -75,12 +75,6 @@ jobs:
           key: npm | buyer | "$(Agent.OS)" | src/UI/Buyer/package-lock.json | src/UI/Buyer/package.json
           path: src/UI/Buyer/node_modules
           cacheHitVar: BuyerCacheRestored
-      - task: Cache@2
-        displayName: Seller Dependencies Cache
-        inputs:
-          key: npm | seller | v2 | "$(Agent.OS)" | src/UI/Seller/package-lock.json | src/UI/Seller/package.json
-          path: src/UI/Seller/node_modules
-          cacheHitVar: SellerCacheRestoredV2
       - task: Npm@1
         displayName: npm install - SDK
         inputs:
@@ -101,14 +95,35 @@ jobs:
         inputs:
           PathtoPublish: src/UI/Buyer/dist
           ArtifactName: buyer
+          - task: NodeTool@0
+        displayName: Use Node 12.x
+        inputs:
+          versionSpec: 12.x
+      - task: Cache@2
+        displayName: SDK Dependencies Cache
+        inputs:
+          key: npm | sdk2 | "$(Agent.OS)" | src/UI/SDK/package-lock.json | src/UI/SDK/package.json
+          path: src/UI/SDK/node_modules
+          cacheHitVar: SDKCacheRestored
+      - task: Cache@2
+        displayName: Seller Dependencies Cache
+        inputs:
+          key: npm | seller | v2 | "$(Agent.OS)" | src/UI/Seller/package-lock.json | src/UI/Seller/package.json
+          path: src/UI/Seller/node_modules
+          cacheHitVar: SellerCacheRestoredV2
+      - task: Npm@1
+        displayName: npm install - SDK
+        inputs:
+          workingDir: src/UI/SDK
+          verbose: false
       - task: Npm@1
         displayName: npm install - Seller
         inputs:
           workingDir: src/UI/Seller
           verbose: false
       - task: CmdLine@2
-          displayName: Build Seller
-          inputs:
+        displayName: Build Seller
+        inputs:
           script: npm run build
           workingDirectory: src/UI/Seller
       - task: PublishBuildArtifacts@1
@@ -116,5 +131,5 @@ jobs:
         inputs:
           PathtoPublish: src/UI/Seller/dist
           ArtifactName: seller
-
+      
 
