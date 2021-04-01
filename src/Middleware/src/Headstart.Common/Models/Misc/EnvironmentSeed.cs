@@ -90,11 +90,14 @@ namespace Headstart.Models.Misc
 		public Dictionary<string, dynamic> ApiClients { get; set; }
     }
 
-	public class OrderCloudSeedRequest : OrderCloudSettings
+	public class OrderCloudSeedRequest
 	{
 		[Required]
 		[ValueRange(AllowableValues = new[] { "production", "prod", "sandbox" })]
 		public string Environment { get; set; }
+		public string WebhookHashKey { get; set; }
+		public string MiddlewareClientID { get; set; }
+		public string MiddlewareClientSecret { get; set; }
 	}
 
 	public class OrderCloudEnvironments
