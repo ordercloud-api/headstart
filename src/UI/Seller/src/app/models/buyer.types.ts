@@ -1,5 +1,5 @@
-import { ImpersonationConfig } from '@ordercloud/angular-sdk';
-import { HSBuyer } from '@ordercloud/headstart-sdk'
+import { Address, ImpersonationConfig } from '@ordercloud/angular-sdk';
+import { HSCatalog } from '@ordercloud/headstart-sdk'
 import { Buyer } from 'ordercloud-javascript-sdk';
 
 export interface HSBuyerPriceMarkup {
@@ -10,4 +10,9 @@ export interface HSBuyerPriceMarkup {
 
 interface BuyerMarkup {
   Percent: number
+}
+
+export interface HSBuyerData {
+    Addresses: Address[]
+    Catalogs: HSCatalog[]
 }

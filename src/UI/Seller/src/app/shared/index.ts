@@ -7,7 +7,7 @@ export * from '@app-seller/shared/guards/has-token/has-token.guard'
 // validators
 
 // models
-export * from '@app-seller/models/buyer-markups.types'
+export * from '@app-seller/models/buyer.types'
 export * from '@app-seller/models/carousel.types'
 export * from '@app-seller/models/category.types'
 export * from '@app-seller/models/currency-geography.types'
