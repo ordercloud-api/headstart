@@ -12,14 +12,12 @@ import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/
   styleUrls: ['./buyer-location-catalogs.component.scss'],
 })
 export class BuyerLocationCatalogs {
-  buyerID = ''
+  buyerID = this.router.routerState.snapshot.url.split('/')[2]
   locationID = ''
 
   @Input()
   set locationUserGroup(locationUserGroup: any) {
     if (locationUserGroup && Object.keys(locationUserGroup)) {
-      const routeUrl = this.router.routerState.snapshot.url
-      this.buyerID = routeUrl.split('/')[2]
       this.locationID = locationUserGroup?.ID
       this.resetAssignments(locationUserGroup.xp.CatalogAssignments || [])
     }
@@ -58,7 +56,9 @@ export class BuyerLocationCatalogs {
       (l) => !this.locationCatalogAssignmentsEditable.includes(l)
     )
     this.catalogAssignments.CatalogIDs = this.locationCatalogAssignmentsEditable
-    this.assignmentsToAdd.emit(this.catalogAssignments)
+    if(this.addLocationCatalogAssignments.length) {
+      this.assignmentsToAdd.emit(this.catalogAssignments)
+    }
     this.areChanges =
       !!this.delLocationCatalogAssignments.length ||
       !!this.addLocationCatalogAssignments.length

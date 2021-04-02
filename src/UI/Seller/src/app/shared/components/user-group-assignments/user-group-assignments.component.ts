@@ -29,6 +29,7 @@ import {
   IUserPermissionsService,
 } from '@app-seller/models/user.types'
 import { AppConfig } from '@app-seller/shared'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'user-group-assignments',
@@ -45,6 +46,7 @@ export class UserGroupAssignments implements OnChanges {
   @Output() hasAssignments = new EventEmitter<boolean>()
 
   userOrgID: string
+  buyerID = this.router.routerState.snapshot.url.split('/')[2]
   userID: string
   userGroups: ListPage<HSLocationUserGroup> | UserGroup[]
   add: UserGroupAssignment[]
@@ -65,6 +67,7 @@ export class UserGroupAssignments implements OnChanges {
   constructor(
     private http: HttpClient,
     private ocTokenService: OcTokenService,
+    private router: Router,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {}
 
