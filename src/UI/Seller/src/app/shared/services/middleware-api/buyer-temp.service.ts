@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Inject, Injectable } from '@angular/core'
 import { applicationConfiguration } from '@app-seller/config/app.config'
-import { HSBuyerPriceMarkup } from '@app-seller/models/buyer-markups.types'
+import { HSBuyerPriceMarkup } from '@app-seller/models/buyer.types'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { OcTokenService } from '@ordercloud/angular-sdk'
 

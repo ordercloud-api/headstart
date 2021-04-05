@@ -312,7 +312,6 @@ export class ProductVariations implements OnChanges {
     this.superProductEditable = updateProductResourceCopy
     this.customizationRequired = true
     this.checkForSpecChanges()
-    console.log(this.superProductEditable)
     this.productVariationsChanged.emit(this.superProductEditable)
   }
 

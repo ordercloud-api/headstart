@@ -101,6 +101,12 @@
       </div>
     </div>
   </form>
+  <div *ngIf="helperMessage" class="mb-4">
+    <span class="font-italic" translate>
+      {{helperMessage}}
+      <a href="{{helperLink}}" translate>{{helperAction}}</a>
+    </span>
+  </div>
   <action-menu-component
     [isCreatingNew]="isCreatingNew"
     [dataIsSaving]="dataIsSaving"

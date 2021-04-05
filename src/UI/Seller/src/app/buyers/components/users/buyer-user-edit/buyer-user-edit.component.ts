@@ -6,6 +6,7 @@ import { BuyerUserService } from '../buyer-user.service'
 import { ValidateEmail } from '@app-seller/validators/validators'
 import { GeographyConfig } from '@app-seller/shared/models/supported-countries.constant'
 import { AppFormErrorService, SupportedCountries } from '@app-seller/shared'
+import { UserGroupTypes } from '@app-seller/shared/components/user-group-assignments/user-group-assignments.constants'
 @Component({
   selector: 'app-buyer-user-edit',
   templateUrl: './buyer-user-edit.component.html',
@@ -44,6 +45,8 @@ export class BuyerUserEditComponent {
       LastName: new FormControl(user.LastName, Validators.required),
       Email: new FormControl(user.Email, [Validators.required, ValidateEmail]),
       Country: new FormControl(user.xp?.Country, Validators.required),
+      BuyerGroupAssignments: new FormControl(null, this.isCreatingNew ? [Validators.required] : null),
+      PermissionGroupAssignments: new FormControl()
     });
   }
 
@@ -52,7 +55,12 @@ export class BuyerUserEditComponent {
   }
 
   addUserGroupAssignments(event): void {
-    this.userGroupAssignments.emit(event)
+    if (event.UserGroupType === UserGroupTypes.BuyerLocation) {
+      this.resourceForm.controls["BuyerGroupAssignments"]?.setValue(event.Assignments)
+    } else if (event.UserGroupType === UserGroupTypes.UserPermissions) {
+      this.resourceForm.controls["PermissionGroupAssignments"]?.setValue(event.Assignments)
+    }
+    this.updateResource.emit(this.resourceForm)
   }
 
   userHasAssignments(event: boolean): void {
@@ -65,7 +73,6 @@ export class BuyerUserEditComponent {
     }
   }
 
-  hasValidEmailError = (): boolean => 
+  hasValidEmailError = (): boolean =>
     this.appFormErrorService.hasInvalidIdError(this.resourceForm.get('Email'))
-  
 }
