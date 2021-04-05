@@ -70,6 +70,11 @@ jobs:
           path: src/UI/Buyer/node_modules
           cacheHitVar: BuyerCacheRestored
       - task: Npm@1
+        displayName: npm install - SDK
+        inputs:
+          workingDir: src/UI/SDK
+          verbose: false
+      - task: Npm@1
         displayName: npm install - Buyer
         inputs:
           workingDir: src/UI/Buyer
