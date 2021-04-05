@@ -45,8 +45,8 @@ export class BuyerUserEditComponent {
       LastName: new FormControl(user.LastName, Validators.required),
       Email: new FormControl(user.Email, [Validators.required, ValidateEmail]),
       Country: new FormControl(user.xp?.Country, Validators.required),
-      BuyerGroupAssignments: new FormControl(undefined, this.isCreatingNew ? [Validators.required] : undefined),
-      PermissionGroupAssignments: new FormControl(undefined)
+      BuyerGroupAssignments: new FormControl(null, this.isCreatingNew ? [Validators.required] : null),
+      PermissionGroupAssignments: new FormControl()
     });
   }
 
@@ -55,10 +55,10 @@ export class BuyerUserEditComponent {
   }
 
   addUserGroupAssignments(event): void {
-    if(event.UserGroupType === UserGroupTypes.BuyerLocation) {
-      this.resourceForm.controls["BuyerGroupAssignments"].setValue(event.Assignments)
-    } else if(event.UserGroupType === UserGroupTypes.UserPermissions) {
-      this.resourceForm.controls["PermissionGroupAssignments"].setValue(event.Assignments)
+    if (event.UserGroupType === UserGroupTypes.BuyerLocation) {
+      this.resourceForm.controls["BuyerGroupAssignments"]?.setValue(event.Assignments)
+    } else if (event.UserGroupType === UserGroupTypes.UserPermissions) {
+      this.resourceForm.controls["PermissionGroupAssignments"]?.setValue(event.Assignments)
     }
     this.updateResource.emit(this.resourceForm)
   }
@@ -73,7 +73,6 @@ export class BuyerUserEditComponent {
     }
   }
 
-  hasValidEmailError = (): boolean => 
+  hasValidEmailError = (): boolean =>
     this.appFormErrorService.hasInvalidIdError(this.resourceForm.get('Email'))
-  
 }

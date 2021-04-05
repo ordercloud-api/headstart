@@ -6,6 +6,7 @@ import {
   OnChanges,
   SimpleChanges,
   Inject,
+  OnInit,
 } from '@angular/core'
 import {
   User,
@@ -36,7 +37,7 @@ import { Router } from '@angular/router'
   templateUrl: './user-group-assignments.component.html',
   styleUrls: ['./user-group-assignments.component.scss'],
 })
-export class UserGroupAssignments implements OnChanges {
+export class UserGroupAssignments implements OnInit, OnChanges {
   @Input() user: User
   @Input() userGroupType: string
   @Input() isCreatingNew: boolean
@@ -46,7 +47,7 @@ export class UserGroupAssignments implements OnChanges {
   @Output() hasAssignments = new EventEmitter<boolean>()
 
   userOrgID: string
-  buyerID = this.router.routerState.snapshot.url.split('/')[2]
+  buyerID: string
   userID: string
   userGroups: ListPage<HSLocationUserGroup> | UserGroup[]
   add: UserGroupAssignment[]
@@ -70,6 +71,13 @@ export class UserGroupAssignments implements OnChanges {
     private router: Router,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {}
+
+  ngOnInit() {
+    var url = this.router?.routerState?.snapshot?.url
+    if(url && url.split('/').length) {
+      this.buyerID = url.split('/')[2]
+    }
+  }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     this.updateForUserGroupAssignmentType()

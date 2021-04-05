@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core'
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core'
 import {
   HSCatalog,
   HSCatalogAssignmentRequest,
@@ -11,8 +11,8 @@ import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/
   templateUrl: './buyer-location-catalogs.component.html',
   styleUrls: ['./buyer-location-catalogs.component.scss'],
 })
-export class BuyerLocationCatalogs {
-  buyerID = this.router.routerState.snapshot.url.split('/')[2]
+export class BuyerLocationCatalogs implements OnInit {
+  buyerID: string
   locationID = ''
 
   @Input()
@@ -41,6 +41,13 @@ export class BuyerLocationCatalogs {
     private router: Router,
     private hsCatalogService: CatalogsTempService
   ) {}
+
+  ngOnInit() {
+    var url = this.router?.routerState?.snapshot?.url
+    if(url && url.split('/').length) {
+      this.buyerID = url.split('/')[2]
+    }
+  }
 
   resetAssignments(assignments: string[]): void {
     this.locationCatalogAssignmentsEditable = assignments

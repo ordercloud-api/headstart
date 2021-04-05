@@ -3,11 +3,10 @@ import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { BuyerTempService } from '@app-seller/shared/services/middleware-api/buyer-temp.service'
 import { HSBuyer } from '@ordercloud/headstart-sdk'
 import { BuyerService } from '../buyer.service'
-import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { Router } from '@angular/router'
 import { isEqual as _isEqual } from 'lodash'
-import { HSBuyerData, HSBuyerPriceMarkup } from '@app-seller/models/buyer.types'
-import { OcAddressService, OcImpersonationConfigService } from '@ordercloud/angular-sdk'
+import { HSBuyerPriceMarkup } from '@app-seller/models/buyer.types'
+import { OcAddressService } from '@ordercloud/angular-sdk'
 import { Subscription } from 'rxjs'
 import { ResourceFormUpdate } from '@app-seller/shared'
 import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/catalogs-temp.service'
@@ -48,24 +47,22 @@ export class BuyerEditComponent implements OnDestroy {
 
   constructor(
     private buyerService: BuyerService,
-    private ocImpersonationService: OcImpersonationConfigService,
     private router: Router,
     private translate: TranslateService,
     private buyerTempService: BuyerTempService,
-    private appAuthService: AppAuthService,
     private hsCatalogService: CatalogsTempService,
     private addressService: OcAddressService
   ) { }
 
   async getBuyerData(buyerID: string): Promise<void> {
     const [catalogs, addresses] = await Promise.all([
-      this.hsCatalogService.list(buyerID), 
-    this.addressService.List(buyerID).toPromise()])
-    if(!catalogs?.Items || catalogs.Items?.length === 0) {
+      this.hsCatalogService.list(buyerID),
+      this.addressService.List(buyerID).toPromise()])
+    if (!catalogs?.Items || catalogs.Items?.length === 0) {
       this.helperMessage = this.translate.instant('BUYER.HELPERMESSAGES.CATALOG.MESSAGE')
       this.helperAction = this.translate.instant('BUYER.HELPERMESSAGES.CATALOG.ACTION')
       this.helperLink = `/buyers/${buyerID}/catalogs/new`
-    } else if(!addresses || addresses.Items?.length === 0) {
+    } else if (!addresses || addresses.Items?.length === 0) {
       this.helperMessage = this.translate.instant('BUYER.HELPERMESSAGES.BUYERGROUP.MESSAGE')
       this.helperAction = this.translate.instant('BUYER.HELPERMESSAGES.BUYERGROUP.ACTION')
       this.helperLink = `/buyers/${buyerID}/locations/new`

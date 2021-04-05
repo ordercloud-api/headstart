@@ -257,7 +257,7 @@ export class BuyerLocationEditComponent implements OnInit {
   }
 
   addCatalogAssignments(event): void {
-    this.resourceForm.controls['CatalogAssignments'].setValue(event);
+    this.resourceForm.controls['CatalogAssignments']?.setValue(event);
   }
 
   private async handleSelectedAddressChange(address: Address): Promise<void> {
