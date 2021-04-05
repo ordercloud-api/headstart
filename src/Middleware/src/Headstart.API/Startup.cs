@@ -98,7 +98,7 @@ namespace Headstart.API
                 })
                 .AddSingleton<ISimpleCache, OrderCloud.Common.Services.LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
                 .ConfigureServices()
-                .AddOrderCloudUserAuth<AppSettings>()
+                .AddOrderCloudUserAuth()
                 .AddOrderCloudWebhookAuth(opts => opts.HashKey = _settings.OrderCloudSettings.WebhookHashKey)
                 .InjectCosmosStore<LogQuery, OrchestrationLog>(cosmosConfig)
                 .InjectCosmosStore<ReportTemplateQuery, ReportTemplate>(cosmosConfig)
@@ -185,7 +185,7 @@ namespace Headstart.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            CatalystApplicationBuilder.CreateApplicationBuilder(app, env)
+            CatalystApplicationBuilder.DefaultCatalystAppBuilder(app, env)
                 .UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint($"/swagger", $"API v1");

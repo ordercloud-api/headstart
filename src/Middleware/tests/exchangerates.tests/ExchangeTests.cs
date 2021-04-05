@@ -80,15 +80,7 @@ namespace exchangerates.tests
             {
                 Filters = new List<ListFilter>()
                 {
-                    new ListFilter()
-                    {
-                        PropertyName = "Symbol",
-                        FilterValues = new List<ListFilterValue>()
-                        {
-                            new ListFilterValue() { Operator = ListFilterOperator.Equal, Term = "CAD" },
-                            new ListFilterValue() { Operator = ListFilterOperator.Equal, Term = "USD" }
-                        }
-                    }
+                    new ListFilter("Symbol", "CAD|USD")
                 }
             };
             var rates = new OrderCloudIntegrationsExchangeRate()
