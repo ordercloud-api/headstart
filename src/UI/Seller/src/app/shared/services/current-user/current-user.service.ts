@@ -38,7 +38,7 @@ export class CurrentUserService {
     private appAuthService: AppAuthService,
     private appStateService: AppStateService,
     private ocSupplierService: OcSupplierService
-  ) {}
+  ) { }
 
   async login(username: string, password: string, rememberMe: boolean) {
     const accessToken = await this.ocAuthService
@@ -68,7 +68,7 @@ export class CurrentUserService {
     }
     try {
       await this.setImageAssets()
-    } catch(err) {
+    } catch (err) {
       // do not display login error if problem in getting assets
     }
   }
@@ -90,12 +90,18 @@ export class CurrentUserService {
         { filters: { Tags: ['ProfileImg'] } }
       )
     }
-    if (imgAssets.Items.length > 0)
+    if (imgAssets.Items.length > 0) {
       this.profileImgSubject.next(imgAssets.Items[0])
+    }
   }
 
   async getUser(): Promise<MeUser> {
-    return this.me ? this.me : await this.refreshUser()
+    const user = this.me ? this.me : await this.refreshUser()
+    if (!this.profileImgSubject.value ||
+      Object.keys(this.profileImgSubject.value).length === 0) {
+      await this.setImageAssets()
+    }
+    return user
   }
 
   async patchUser(patchObj: Partial<MeUser>): Promise<MeUser> {
