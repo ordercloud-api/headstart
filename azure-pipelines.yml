@@ -103,6 +103,11 @@ jobs:
           path: src/UI/Seller/node_modules
           cacheHitVar: SellerCacheRestoredV2
       - task: Npm@1
+        displayName: npm install - SDK
+        inputs:
+          workingDir: src/UI/SDK
+          verbose: false
+      - task: Npm@1
         displayName: npm install - Seller
         inputs:
           workingDir: src/UI/Seller
