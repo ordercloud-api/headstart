@@ -6,11 +6,11 @@ import { BuyerService } from '../buyer.service'
 import { Router } from '@angular/router'
 import { isEqual as _isEqual } from 'lodash'
 import { HSBuyerPriceMarkup } from '@app-seller/models/buyer.types'
-import { OcAddressService } from '@ordercloud/angular-sdk'
 import { Subscription } from 'rxjs'
 import { ResourceFormUpdate } from '@app-seller/shared'
 import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/catalogs-temp.service'
 import { TranslateService } from '@ngx-translate/core'
+import { Addresses } from 'ordercloud-javascript-sdk'
 @Component({
   selector: 'app-buyer-edit',
   templateUrl: './buyer-edit.component.html',
@@ -51,13 +51,13 @@ export class BuyerEditComponent implements OnDestroy {
     private translate: TranslateService,
     private buyerTempService: BuyerTempService,
     private hsCatalogService: CatalogsTempService,
-    private addressService: OcAddressService
   ) { }
 
   async getBuyerData(buyerID: string): Promise<void> {
     const [catalogs, addresses] = await Promise.all([
       this.hsCatalogService.list(buyerID),
-      this.addressService.List(buyerID).toPromise()])
+      Addresses.List(buyerID)
+    ])
     if (!catalogs?.Items || catalogs.Items?.length === 0) {
       this.helperMessage = this.translate.instant('BUYER.HELPERMESSAGES.CATALOG.MESSAGE')
       this.helperAction = this.translate.instant('BUYER.HELPERMESSAGES.CATALOG.ACTION')
