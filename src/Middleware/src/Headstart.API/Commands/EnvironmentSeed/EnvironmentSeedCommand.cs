@@ -54,7 +54,7 @@ namespace Headstart.API.Commands
 
         public async Task<EnvironmentSeedResponse> Seed(EnvironmentSeed seed)
         {
-            var requestedEnv = validateEnvironment(seed.OrderCloudSettings.Environment);
+            OcEnv requestedEnv = validateEnvironment(seed.OrderCloudSettings.Environment);
 
             if (string.IsNullOrEmpty(seed.OrderCloudSettings.WebhookHashKey))
             {
