@@ -18,15 +18,23 @@ ARG ROLE
 
 WORKDIR /build
 
-COPY src/UI/${ROLE}/package*.json ./
+COPY src/UI/SDK/package*.json SDK/
 
-RUN npm install
+COPY src/UI/${ROLE}/package*.json APP/
 
-COPY src/UI/${ROLE}/ .
+RUN cd /build/SDK && npm install
 
-RUN sed -i 's/useLocalMiddleware = true/useLocalMiddleware = false/g' /build/src/environments/environment.local.ts
+RUN cd /build/APP && npm install
 
-RUN npm run build --prod
+COPY src/UI/SDK SDK/
+
+COPY src/UI/${ROLE} APP/
+
+RUN sed -i 's/useLocalMiddleware = true/useLocalMiddleware = false/g' /build/APP/src/environments/environment.local.ts
+
+RUN cd /build/SDK && npm run build
+
+RUN cd /build/APP && npm run build --prod
 
 FROM nginx:1.19.8-alpine as production
 
@@ -42,7 +50,7 @@ COPY docker/build/UI/nginx/default.conf /etc/nginx/conf.d/default.conf
 
 COPY src/UI/${ROLE}/scripts /usr/share/nginx/html
 
-COPY --from=builder /build/dist /usr/share/nginx/html
+COPY --from=builder /build/APP/dist /usr/share/nginx/html
 
 RUN ["chmod", "+x", "./entrypoint.sh"]
 
