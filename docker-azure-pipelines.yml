@@ -2,9 +2,6 @@ resources:
   - repo: self
     clean: true
 
-variables:
-- name: build.updatebuildnumber
-  value: ""
 stages:
   - stage: Build_Headstart
     displayName: "Build Headstart Images"
@@ -21,7 +18,7 @@ stages:
             inputs:
               targetType: "inline"
               script: |
-                $version = if ([string]::IsNullOrEmpty("$(build.updatebuildnumber)")) {"latest"} else {"$(build.updatebuildnumber)"}
+                $version = if ([string]::IsNullOrEmpty("$(Build.BuildNumber)")) {"latest"} else {"$(Build.BuildNumber)"}
 
                 az login -u "$(container.registry.username)" -p "$(container.registry.password)" -t "$(container.registry.tenant)"
                 az acr login -n $(container.registry.short)
