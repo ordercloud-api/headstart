@@ -70,6 +70,11 @@ jobs:
           path: src/UI/Buyer/node_modules
           cacheHitVar: BuyerCacheRestored
       - task: Npm@1
+        displayName: npm install - SDK
+        inputs:
+          workingDir: src/UI/SDK
+          verbose: false
+      - task: Npm@1
         displayName: npm install - Buyer
         inputs:
           workingDir: src/UI/Buyer
@@ -97,6 +102,11 @@ jobs:
           key: npm | seller | v2 | "$(Agent.OS)" | src/UI/Seller/package-lock.json | src/UI/Seller/package.json
           path: src/UI/Seller/node_modules
           cacheHitVar: SellerCacheRestoredV2
+      - task: Npm@1
+        displayName: npm install - SDK
+        inputs:
+          workingDir: src/UI/SDK
+          verbose: false
       - task: Npm@1
         displayName: npm install - Seller
         inputs:
