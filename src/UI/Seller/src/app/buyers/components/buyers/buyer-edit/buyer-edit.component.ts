@@ -11,6 +11,7 @@ import { OcAddressService, OcImpersonationConfigService } from '@ordercloud/angu
 import { Subscription } from 'rxjs'
 import { ResourceFormUpdate } from '@app-seller/shared'
 import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/catalogs-temp.service'
+import { TranslateService } from '@ngx-translate/core'
 @Component({
   selector: 'app-buyer-edit',
   templateUrl: './buyer-edit.component.html',
@@ -49,6 +50,7 @@ export class BuyerEditComponent implements OnDestroy {
     private buyerService: BuyerService,
     private ocImpersonationService: OcImpersonationConfigService,
     private router: Router,
+    private translate: TranslateService,
     private buyerTempService: BuyerTempService,
     private appAuthService: AppAuthService,
     private hsCatalogService: CatalogsTempService,
@@ -60,12 +62,12 @@ export class BuyerEditComponent implements OnDestroy {
       this.hsCatalogService.list(buyerID), 
     this.addressService.List(buyerID).toPromise()])
     if(!catalogs?.Items || catalogs.Items?.length === 0) {
-      this.helperMessage = "Looks like this Buyer has no Catalogs."
-      this.helperAction = "Set Catalogs now"
+      this.helperMessage = this.translate.instant('BUYER.HELPERMESSAGES.CATALOG.MESSAGE')
+      this.helperAction = this.translate.instant('BUYER.HELPERMESSAGES.CATALOG.ACTION')
       this.helperLink = `/buyers/${buyerID}/catalogs/new`
     } else if(!addresses || addresses.Items?.length === 0) {
-      this.helperMessage = "Looks like this Buyer has no Buyer Groups."
-      this.helperAction = "Set Buyer Groups now"
+      this.helperMessage = this.translate.instant('BUYER.HELPERMESSAGES.BUYERGROUP.MESSAGE')
+      this.helperAction = this.translate.instant('BUYER.HELPERMESSAGES.BUYERGROUP.ACTION')
       this.helperLink = `/buyers/${buyerID}/locations/new`
     }
   }

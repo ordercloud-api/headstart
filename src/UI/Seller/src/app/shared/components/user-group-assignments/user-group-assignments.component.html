@@ -98,9 +98,9 @@
               <span
                 *ngIf="!searchTermInput && !viewAssignedUserGroups"
                 class="font-italic"
-                >There are no supplier addresses for this user's Home
-                Country.
-                <a href="{{'/buyers/' + buyerID + '/locations/new'}}">Set Buyer Groups now</a>
+                translate
+                >BUYER.HELPERMESSAGES.BUYERGROUP.WARNING
+                <a href="{{'/buyers/' + buyerID + '/locations/new'}}" translate>BUYER.HELPERMESSAGES.BUYERGROUP.ACTION</a>
                 </span
               >
             </td>

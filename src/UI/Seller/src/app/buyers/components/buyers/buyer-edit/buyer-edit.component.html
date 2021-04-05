@@ -102,9 +102,9 @@
     </div>
   </form>
   <div *ngIf="helperMessage" class="mb-4">
-    <span class="font-italic">
+    <span class="font-italic" translate>
       {{helperMessage}}
-      <a href="{{helperLink}}">{{helperAction}}</a>
+      <a href="{{helperLink}}" translate>{{helperAction}}</a>
     </span>
   </div>
   <action-menu-component
