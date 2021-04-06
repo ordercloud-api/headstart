@@ -188,6 +188,9 @@ export class ProductVariations implements OnChanges {
   }
 
   shouldDisableAddSpecOptBtn(spec: Spec): boolean {
+    if (this.readonly) {
+      return true
+    }
     if (!this.variantsValid) {
       return true
     } else {
@@ -514,6 +517,9 @@ export class ProductVariations implements OnChanges {
     )
   }
   disableSpecOption = (specID: string, option: SpecOption): boolean => {
+    if (this.readonly) {
+      return true
+    }
     const specIndex = this.getSpecIndex(specID)
     return this.isCreatingNew
       ? false

@@ -24,6 +24,7 @@
               <input
                 type="checkbox"
                 [checked]="addVariableTextSpecs"
+                [disabled]="readonly"
                 class="form-check-input"
                 id="AddVariableTextSpecs"
                 aria-describedby="AddVariableTextSpecs"
@@ -65,6 +66,7 @@
                 <button
                   class="btn btn-sm btn-block btn-link text-muted"
                   (click)="removeSpec(spec)"
+                  [disabled]="readonly"
                   translate
                 >
                   Delete
@@ -77,6 +79,7 @@
                   type="text"
                   class="form-control form-control-sm"
                   id="AddVariableTextSpec"
+                  [disabled]="readonly"
                   placeholder="{{
                     'Back of shirt, Sign, Line 1 etc' | translate
                   }}"
@@ -85,6 +88,7 @@
                   <input
                     type="checkbox"
                     [checked]="!customizationRequired"
+                    [disabled]="readonly"
                     (change)="customizationRequired = !customizationRequired"
                     class="custom-control-input"
                     id="optionalCustomizationCheckbox"
@@ -107,6 +111,7 @@
               <td class="py-3 px-2">
                 <button
                   class="btn btn-sm btn-block btn-outline-dark"
+                  [disabled]="readonly"
                   (click)="addVariableTextSpec()"
                   translate
                 >
@@ -131,6 +136,7 @@
             <label class="switch mb-0" for="ConfigureVariations">
               <input
                 type="checkbox"
+                [disabled]="readonly"
                 [checked]="editSpecs"
                 class="form-check-input"
                 id="ConfigureVariations"
@@ -175,6 +181,7 @@
                 type="text"
                 class="form-control add-variation"
                 id="AddVariation"
+                [disabled]="readonly"
                 placeholder="{{
                   'ADMIN.PRODUCT_EDIT.NAME_THE_VARIATION' | translate
                 }}"
@@ -186,7 +193,9 @@
                   [checked]="shouldDefinesVariantBeChecked()"
                   (change)="definesVariant = !definesVariant"
                   [disabled]="
-                    !variantsValid || variants?.getValue()?.length === 100
+                    !variantsValid ||
+                    variants?.getValue()?.length === 100 ||
+                    readonly
                   "
                   class="custom-control-input"
                   id="skuVariationCheckbox"
@@ -200,6 +209,7 @@
               </div>
               <button
                 class="btn btn-outline-secondary mt-3"
+                [disabled]="readonly"
                 (click)="addSpec()"
                 translate
               >
@@ -221,6 +231,7 @@
                 <button
                   class="btn btn-sm btn-link text-muted"
                   (click)="removeSpec(spec)"
+                  [disabled]="readonly"
                   translate
                 >
                   Remove variation
@@ -248,6 +259,7 @@
                         <input
                           class="form-control form-control-sm"
                           id="{{ spec.ID }}"
+                          [disabled]="readonly"
                           type="text"
                           maxlength="30"
                           placeholder="{{
@@ -260,6 +272,7 @@
                         <input
                           class="form-control form-control-sm"
                           id="{{ spec.ID }}Markup"
+                          [disabled]="readonly"
                           type="number"
                           placeholder="{{
                             'ADMIN.PRODUCT_EDIT.MARKUP' | translate
