@@ -115,6 +115,7 @@ export class AppModule {
     public translate: TranslateService
   ) {
     translate.setDefaultLang('en')
+    translate.use('en')
     HeadstartConfiguration.Set({
       baseApiUrl: this.appConfig.middlewareUrl,
     })
