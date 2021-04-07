@@ -2,17 +2,12 @@ using Headstart.Models;
 using ordercloud.integrations.cardconnect;
 using ordercloud.integrations.library;
 using OrderCloud.SDK;
-using Polly;
-using Polly.Retry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.ApplicationInsights;
-using Microsoft.ApplicationInsights.Extensibility;
 using System.Net;
-using Newtonsoft.Json;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models.Headstart;
 using Headstart.Common;
@@ -50,7 +45,7 @@ namespace Headstart.API.Commands
             }
             try
             {
-                return await WithRetry().ExecuteAsync(() => _oc.Orders.SubmitAsync<HSOrder>(direction, incrementedOrderID, userToken));
+                return await _oc.Orders.SubmitAsync<HSOrder>(direction, incrementedOrderID, userToken);
             }
             catch (Exception)
             {
@@ -149,18 +144,6 @@ namespace Headstart.API.Commands
                 merchantID = _settings.CardConnectSettings.EurMerchantID;
 
             return merchantID;
-        }
-
-        private AsyncRetryPolicy WithRetry()
-        {
-            // retries three times, waits two seconds in-between failures
-            return Policy
-                .Handle<OrderCloudException>(e => e.HttpStatus == HttpStatusCode.InternalServerError || e.HttpStatus == HttpStatusCode.RequestTimeout)
-                .WaitAndRetryAsync(new[] {
-                    TimeSpan.FromSeconds(2),
-                    TimeSpan.FromSeconds(2),
-                    TimeSpan.FromSeconds(2),
-                });
         }
     }
 }
