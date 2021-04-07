@@ -94,8 +94,8 @@ export class MiddlewareAPIService {
     formData.append('Url', asset.Url) 
     formData.append('Title', asset.Title)
     formData.append('File', asset.File)
-    return this.http.put(
-      this.appConfig.middlewareUrl + `/products/images/${productID}`, 
+    return this.http.post(
+      this.appConfig.middlewareUrl + '/images', 
       formData, 
       this.headers
     ).toPromise()

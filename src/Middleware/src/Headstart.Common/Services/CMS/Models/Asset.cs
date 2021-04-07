@@ -45,4 +45,10 @@ namespace Headstart.Common.Services.CMS.Models
         public string Tags { get; set; }
         public string Filename { get; set; }
     }
+
+	public class ImageUrls
+    {
+        public string ImageUrl { get; set; }
+        public string ThumbnailUrl { get; set; }
+    }
 }

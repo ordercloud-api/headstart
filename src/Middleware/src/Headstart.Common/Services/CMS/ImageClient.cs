@@ -1,7 +1,10 @@
-﻿using Headstart.Common.Services.CMS.Models;
+﻿using Headstart.Common.Extensions;
+using Headstart.Common.Services.CMS.Models;
 using ordercloud.integrations.library;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,7 +12,7 @@ namespace Headstart.Common.Services.CMS
 {
     public interface IImageClient
     {
-        Task<string> SaveProductImage(AssetUpload asset);
+        Task<ImageUrls> CreateImage(AssetUpload asset);
     }
 
     public class ImageClient : IImageClient
@@ -23,13 +26,32 @@ namespace Headstart.Common.Services.CMS
             _settings = settings;
         }
 
-        public async Task<string> SaveProductImage(AssetUpload asset)
+        public async Task<ImageUrls> CreateImage(AssetUpload asset)
         {
             var container = _blob.Container.Name;
             var assetGuid = Guid.NewGuid().ToString();
 
-            await _blob.Save(Guid.NewGuid().ToString(), asset.File, "image/jpeg");
-            return $"{_settings.BlobSettings.HostUrl}/{container}/{assetGuid}";
+            using(var image = Image.FromStream(asset.File.OpenReadStream()))
+            {
+                var small = image.ResizeSmallerDimensionToTarget(100);
+                var medium = image.ResizeSmallerDimensionToTarget(300);
+                try
+                {
+                    await Task.WhenAll(new[] {
+                        _blob.Save(assetGuid, medium.ToBytes(ImageFormat.Png), "image/png"),
+                        _blob.Save($"{assetGuid}-s", small.ToBytes(ImageFormat.Png), "image/png")
+                    });
+                } finally
+                {
+                    small.Dispose();
+                    medium.Dispose();
+                }
+            }
+            return new ImageUrls
+            {
+                ImageUrl = $"{_settings.BlobSettings.HostUrl}/{container}/{assetGuid}",
+                ThumbnailUrl = $"{_settings.BlobSettings.HostUrl}/{container}/{assetGuid}-s"
+            };
         }
     }
 }

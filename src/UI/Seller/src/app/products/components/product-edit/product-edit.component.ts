@@ -728,6 +728,9 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       File: file.File,
       FileName: file.Filename,
     } as Asset
+    const test = await this.middleware.uploadProductImage(productID, asset)
+    console.log(test)
+    debugger;
     const newAsset: Asset = await ContentManagementClient.Assets.Upload(
       asset,
       accessToken
