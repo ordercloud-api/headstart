@@ -14,6 +14,7 @@ import {
   SupplierFilterConfigDocument,
   SuperHSShipment,
   HSSupplier,
+  AssetUpload,
 } from '@ordercloud/headstart-sdk'
 import { Observable } from 'rxjs'
 
@@ -85,5 +86,18 @@ export class MiddlewareAPIService {
       formData,
       { headers }
     )
+  }
+
+  uploadProductImage(productID: string, asset: AssetUpload) {
+    const formData = new FormData()
+    formData.append('ID', asset.ID)
+    formData.append('Url', asset.Url) 
+    formData.append('Title', asset.Title)
+    formData.append('File', asset.File)
+    return this.http.put(
+      this.appConfig.middlewareUrl + `/products/images/${productID}`, 
+      formData, 
+      this.headers
+    ).toPromise()
   }
 }

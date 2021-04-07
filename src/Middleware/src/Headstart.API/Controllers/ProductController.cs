@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Headstart.Models;
 using Headstart.Models.Attributes;
@@ -7,6 +7,7 @@ using OrderCloud.SDK;
 using System.Collections.Generic;
 using Headstart.API.Commands.Crud;
 using OrderCloud.Catalyst;
+using Headstart.Common.Services.CMS.Models;
 
 namespace Headstart.Common.Controllers
 {
@@ -50,7 +51,15 @@ namespace Headstart.Common.Controllers
 			return await _command.Put(id, obj, UserContext.AccessToken);
 		}
 
-		[DocName("DELETE Product")]
+        [DocName("PUT Product Image")]
+        [HttpPut, Route("images/{id}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
+        public async Task Put([FromForm] AssetUpload asset, string id)
+        {
+            //return await _command.Put(id, obj, UserContext.AccessToken);
+            await _command.SaveProductImage(asset);
+        }
+
+        [DocName("DELETE Product")]
 		[HttpDelete, Route("{id}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
 		public async Task Delete(string id)
 		{

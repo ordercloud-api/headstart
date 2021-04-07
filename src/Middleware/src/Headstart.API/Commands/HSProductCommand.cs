@@ -32,6 +32,7 @@ namespace Headstart.API.Commands.Crud
 		Task<List<Asset>> GetProductImages(string productID, string token);
 		Task<List<Asset>> GetProductAttachments(string productID, string token);
 		Task<Product> FilterOptionOverride(string id, string supplierID, IDictionary<string, object> facets, VerifiedUserContext user);
+		Task SaveProductImage(AssetUpload asset);
 	}
 
 	public class DefaultOptionSpecAssignment
@@ -45,12 +46,14 @@ namespace Headstart.API.Commands.Crud
 		private readonly ICMSClient _cms;
 		private readonly AppSettings _settings;
 		private readonly ISupplierApiClientHelper _apiClientHelper;
-		public HSProductCommand(AppSettings settings, ICMSClient cms, IOrderCloudClient elevatedOc, ISupplierApiClientHelper apiClientHelper)
+		private readonly IImageClient _image;
+		public HSProductCommand(AppSettings settings, ICMSClient cms, IOrderCloudClient elevatedOc, ISupplierApiClientHelper apiClientHelper, IImageClient image)
 		{
 			_cms = cms;
 			_oc = elevatedOc;
 			_settings = settings;
 			_apiClientHelper = apiClientHelper;
+			_image = image;
 		}
 
 		public async Task<HSPriceSchedule> GetPricingOverride(string id, string buyerID, string token)
@@ -629,5 +632,10 @@ namespace Headstart.API.Commands.Crud
 			var supplier = await _oc.Suppliers.GetAsync(supplierID, accessToken);
 			return supplier.Name;
 		}
-	}
+
+        public async Task SaveProductImage(AssetUpload asset)
+        {
+			await _image.SaveProductImage(asset);
+        }
+    }
 }

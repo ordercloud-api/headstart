@@ -83,6 +83,11 @@ namespace Headstart.API
                 ConnectionString = _settings.BlobSettings.ConnectionString,
                 Container = "unhandled-errors-log"
             };
+            var imageConfig = new BlobServiceConfig()
+            {
+                ConnectionString = _settings.BlobSettings.ConnectionString,
+                Container = "images"
+            };
 
             var flurlClientFactory = new PerBaseUrlFlurlClientFactory();
             var smartyStreetsUsClient = new ClientBuilder(_settings.SmartyStreetSettings.AuthID, _settings.SmartyStreetSettings.AuthToken).BuildUsStreetApiClient();
@@ -145,6 +150,7 @@ namespace Headstart.API
                         Roles = new[] { ApiRole.FullAccess }
                     })))
                 .AddSingleton<IOrderCloudIntegrationsExchangeRatesClient, OrderCloudIntegrationsExchangeRatesClient>()
+                .AddSingleton<IImageClient>(provider => new ImageClient( new OrderCloudIntegrationsBlobService(imageConfig), _settings))
                 .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand( new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
                 .AddSingleton<IAvalaraCommand>(x => new AvalaraCommand(
                     avalaraConfig,
