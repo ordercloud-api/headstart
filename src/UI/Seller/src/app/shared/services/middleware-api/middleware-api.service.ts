@@ -88,15 +88,17 @@ export class MiddlewareAPIService {
     )
   }
 
-  uploadProductImage(productID: string, asset: AssetUpload) {
-    const formData = new FormData()
-    formData.append('ID', asset.ID)
-    formData.append('Url', asset.Url) 
-    formData.append('Title', asset.Title)
-    formData.append('File', asset.File)
+  uploadImage(assetData: FormData) {
     return this.http.post(
       this.appConfig.middlewareUrl + '/images', 
-      formData, 
+      assetData, 
+      this.headers
+    ).toPromise()
+  }
+
+  deleteImage(imageID: string) {
+    return this.http.delete(
+      this.appConfig.middlewareUrl + '/images/' + imageID,
       this.headers
     ).toPromise()
   }

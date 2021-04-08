@@ -21,5 +21,12 @@ namespace Headstart.API.Controllers
         {
             return await _command.CreateImage(asset);
         }
+
+        [DocName("DELETE Image")]
+        [HttpDelete, Route("{id}"), OrderCloudUserAuth()]
+        public async Task DeleteImage(string id)
+        {
+            await _command.DeleteImage(id);
+        }
     }
 }

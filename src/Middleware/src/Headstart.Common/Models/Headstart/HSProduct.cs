@@ -84,7 +84,15 @@ namespace Headstart.Models
         public bool PromotionEligible { get; set; }
         public bool FreeShipping { get; set; }
         public string FreeShippingMessage { get; set; }
+        public List<ImageData> Images { get; set; }
     }
+
+    [SwaggerModel]
+    public class ImageData
+    {
+        public string Url { get; set; }
+        public string ThumbnailUrl { get; set; }
+    };
 
 	[JsonConverter(typeof(StringEnumConverter))]
 	public enum ProductType

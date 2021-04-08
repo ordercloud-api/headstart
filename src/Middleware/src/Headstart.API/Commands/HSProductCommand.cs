@@ -134,7 +134,6 @@ namespace Headstart.API.Commands.Crud
 		public async Task<SuperHSProduct> Get(string id, string token)
 		{
 			var _product = await _oc.Products.GetAsync<HSProduct>(id, token);
-			// Get the price schedule, if it exists, if not - send empty price schedule
 			var _priceSchedule = new PriceSchedule();
 			try
 			{
@@ -146,7 +145,6 @@ namespace Headstart.API.Commands.Crud
 			}
 			var _specs = _oc.Products.ListSpecsAsync(id, null, null, null, 1, 100, null, token);
 			var _variants = _oc.Products.ListVariantsAsync<HSVariant>(id, null, null, null, 1, 100, null, token);
-			var _images = GetProductImages(id, token);
 			var _attachments = GetProductAttachments(id, token);
 			try
 			{
@@ -156,7 +154,6 @@ namespace Headstart.API.Commands.Crud
 					PriceSchedule = _priceSchedule,
 					Specs = (await _specs).Items,
 					Variants = (await _variants).Items,
-					Images = await _images,
 					Attachments = await _attachments
 				};
 			}

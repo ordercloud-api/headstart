@@ -1163,7 +1163,7 @@
           translate
           >ADMIN.PRODUCT_EDIT.IMAGES_AND_DOCUMENTS
           <span class="badge badge-pill badge-info">{{
-            _superHSProductEditable?.Images?.length +
+            _superHSProductEditable?.Product?.xp?.Images?.length + 
               _superHSProductEditable?.Attachments?.length +
               imageFiles?.length +
               staticContentFiles?.length
@@ -1190,7 +1190,7 @@
                     <div class="product-img">
                       <img
                         [id]="i"
-                        src="{{ image.Url }}-s"
+                        src="{{image.ThumbnailUrl}}"
                         width="auto"
                         height="100px"
                       />

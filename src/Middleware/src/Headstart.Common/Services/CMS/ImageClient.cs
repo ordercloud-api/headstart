@@ -13,6 +13,7 @@ namespace Headstart.Common.Services.CMS
     public interface IImageClient
     {
         Task<ImageUrls> CreateImage(AssetUpload asset);
+        Task DeleteImage(string id);
     }
 
     public class ImageClient : IImageClient
@@ -47,11 +48,21 @@ namespace Headstart.Common.Services.CMS
                     medium.Dispose();
                 }
             }
+            var baseUrl = _settings.BlobSettings.HostUrl.EndsWith("/") ? _settings.BlobSettings.HostUrl : _settings.BlobSettings.HostUrl + "/";
             return new ImageUrls
             {
-                ImageUrl = $"{_settings.BlobSettings.HostUrl}/{container}/{assetGuid}",
-                ThumbnailUrl = $"{_settings.BlobSettings.HostUrl}/{container}/{assetGuid}-s"
+                ImageUrl = $"{baseUrl}{container}/{assetGuid}",
+                ThumbnailUrl = $"{baseUrl}{container}/{assetGuid}-s"
             };
+        }
+
+        public async Task DeleteImage(string id)
+        {
+            await _blob.Delete(id);
+            try
+            {
+                await _blob.Delete($"{id}-s");
+            } catch { }
         }
     }
 }
