@@ -4,11 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ordercloud.integrations.library;
 using ordercloud.integrations.easypost.Exceptions;
-using Polly.Retry;
-using Polly;
-using System.Net;
 using OrderCloud.Catalyst;
 
 namespace ordercloud.integrations.easypost
@@ -134,32 +130,16 @@ namespace ordercloud.integrations.easypost
 		{
 			try
             {
-				return await WithRetry().ExecuteAsync(() => BaseUrl
+				return await BaseUrl
 					.WithBasicAuth(_config.APIKey, "")
 					.AppendPathSegment("shipments")
 					.PostJsonAsync(new { shipment })
-					.ReceiveJson<EasyPostShipment>()
-				);
+					.ReceiveJson<EasyPostShipment>();
 			} catch(FlurlHttpException ex)
             {
 				var error = await ex.GetResponseJsonAsync<EasyPostApiError>();
 				throw new EasyPostException(error);
 			}
-		}
-
-		private AsyncRetryPolicy WithRetry()
-		{
-			// retries three times on timeouts, 500's or 429's (rate limiting) before failing completely
-			return Policy
-				.Handle<FlurlHttpTimeoutException>()
-				.Or<FlurlHttpException>(ex => 
-					ex.Call.HttpResponseMessage.StatusCode == HttpStatusCode.InternalServerError ||
-					ex.Call.HttpResponseMessage.StatusCode == HttpStatusCode.TooManyRequests)
-				.WaitAndRetryAsync(new[] {
-					TimeSpan.FromSeconds(2),
-					TimeSpan.FromSeconds(3),
-					TimeSpan.FromSeconds(4),
-				});
 		}
 	}
 }
