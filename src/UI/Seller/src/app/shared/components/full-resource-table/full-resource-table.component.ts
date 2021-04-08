@@ -15,6 +15,7 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { ImpersonationService } from '@app-seller/shared/services/impersonation/impersonation.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppConfig, ResourceRow } from '@app-seller/shared'
+import { getProductSmallImageUrl } from '@app-seller/products/product-image.helper'
 
 @Component({
   selector: 'full-resource-table-component',
@@ -131,7 +132,9 @@ export class FullResourceTableComponent {
   getImage(resource: any): string {
     const resourceType =
       this.resourceType === 'kitproducts' ? 'products' : this.resourceType
-    return `${environment.cmsUrl}/assets/${this.appConfig.sellerID}/${resourceType}/${resource.ID}/thumbnail?size=s`
+    if(resourceType === 'products') {
+      return getProductSmallImageUrl(resource)
+    } else return ''
   }
 
   selectResource(value: any) {

@@ -10,24 +10,23 @@ export const PLACEHOLDER_URL = 'http://placehold.it/300x300'
 export const PRODUCT_IMAGE_PATH_STRATEGY = 'PRODUCT_IMAGE_PATH_STRATEGY'
 
 export function getProductSmallImageUrl(
-  product: HSProduct,
-  sellerID: string
+  product: HSProduct
 ): string {
-  return `${environment.cmsUrl}/assets/${sellerID}/products/${product.ID}/thumbnail?size=s`
+  const images = (product?.xp as any)?.Images
+  return images && images.length ? images[0].ThumbnailUrl : ''
 }
 
 export function getProductMediumImageUrl(
   product: HSProduct,
-  sellerID: string
 ): string {
-  return `${environment.cmsUrl}/assets/${sellerID}/products/${product.ID}/thumbnail?size=m`
+  const images = (product?.xp as any)?.Images
+  return images && images.length ? images[0].Url : ''
 }
 
 export const getPrimaryLineItemImage = (
   lineItemID: string,
   lineItems: HSLineItem[],
-  sellerID: string
 ): string => {
   const li = lineItems.find((item) => item.ID === lineItemID)
-  return getProductMediumImageUrl(li.Product, sellerID)
+  return getProductMediumImageUrl(li.Product)
 }

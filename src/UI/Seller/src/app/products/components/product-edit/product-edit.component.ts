@@ -239,7 +239,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     }
     this.staticContent = this._superHSProductEditable.Attachments
     this.images = (this._superHSProductEditable.Product?.xp as any)?.Images
-    debugger;
     this.taxCodeCategorySelected =
       this._superHSProductEditable.Product?.xp?.Tax?.Category !== null
     this.productType = this._superHSProductEditable.Product?.xp?.ProductType
@@ -988,8 +987,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     return (
       this.imageFiles[0]?.URL ||
       getProductMediumImageUrl(
-        this._superHSProductEditable?.Product,
-        this.appConfig.sellerID
+        this._superHSProductEditable?.Product
       )
     )
   }

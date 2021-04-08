@@ -4,7 +4,6 @@ import {
   Inject,
   Output,
   EventEmitter,
-  OnInit,
 } from '@angular/core'
 import { groupBy as _groupBy } from 'lodash'
 import { applicationConfiguration } from '@app-seller/config/app.config'
@@ -218,7 +217,6 @@ export class LineItemTableComponent {
     return getPrimaryLineItemImage(
       lineItemID,
       this._lineItems,
-      this.appConfig.sellerID
     )
   }
 }

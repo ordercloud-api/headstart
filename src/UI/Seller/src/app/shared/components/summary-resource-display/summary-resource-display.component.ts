@@ -110,12 +110,14 @@ export class SummaryResourceDisplay implements OnChanges {
   }
 
   getValueOnExistingResource(value: any, valueType: string) {
+    console.log(SUMMARY_RESOURCE_INFO_PATHS_DICTIONARY)
+    debugger; 
     const pathToValue =
       SUMMARY_RESOURCE_INFO_PATHS_DICTIONARY[this.resourceType][valueType]
     const piecesOfPath = pathToValue.split('.')
     if (pathToValue) {
       if (pathToValue === PRODUCT_IMAGE_PATH_STRATEGY) {
-        return getProductSmallImageUrl(value, this.appConfig.sellerID)
+        return getProductSmallImageUrl(value)
       } else if (pathToValue === SUPPLIER_LOGO_PATH_STRATEGY) {
         return getSupplierLogoSmallUrl(value, this.appConfig.sellerID)
       } else {
@@ -123,9 +125,12 @@ export class SummaryResourceDisplay implements OnChanges {
         piecesOfPath.forEach((piece) => {
           currentObject = currentObject && currentObject[piece]
         })
+        console.log(currentObject)
+        debugger;
         return currentObject
       }
     } else {
+      debugger; 
       return ''
     }
   }

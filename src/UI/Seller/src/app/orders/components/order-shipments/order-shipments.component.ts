@@ -269,7 +269,7 @@ export class OrderShipmentsComponent implements OnChanges {
 
   getImageUrl(lineItem: LineItem): string {
     const product = lineItem.Product
-    return getProductSmallImageUrl(product, this.appConfig.sellerID)
+    return getProductSmallImageUrl(product)
   }
 
   getCreateButtonAction(): string {
