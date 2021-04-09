@@ -629,7 +629,7 @@
       </form>
     </div>
     <div class="col-md-5 mt-3 mt-md-0">
-      <div class="sticky-top">
+      <div class="sticky-top pb-1">
         <div class="card bg-white shadow-sm p-4">
           <h6 class="mb-0" translate>ADMIN.PROMOTIONS.SUMMARY</h6>
           <div
@@ -725,8 +725,7 @@
         </div>
         <div class="d-flex flex-row justify-content-end mt-3">
           <button
-            *ngIf="areChanges"
-            class="btn btn-primary mr-2"
+            class="btn btn-primary"
             type="submit"
             [disabled]="resourceForm?.status === 'INVALID' || dataIsSaving"
             (click)="handleSave()"
