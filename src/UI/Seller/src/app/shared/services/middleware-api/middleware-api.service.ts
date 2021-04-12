@@ -90,7 +90,15 @@ export class MiddlewareAPIService {
 
   uploadImage(assetData: FormData) {
     return this.http.post(
-      this.appConfig.middlewareUrl + '/images', 
+      this.appConfig.middlewareUrl + 'assets/image', 
+      assetData, 
+      this.headers
+    ).toPromise()
+  }
+
+  uploadDocument(assetData: FormData) {
+    return this.http.post(
+      this.appConfig.middlewareUrl + 'assets/document', 
       assetData, 
       this.headers
     ).toPromise()
@@ -98,7 +106,7 @@ export class MiddlewareAPIService {
 
   deleteImage(imageID: string) {
     return this.http.delete(
-      this.appConfig.middlewareUrl + '/images/' + imageID,
+      this.appConfig.middlewareUrl + '/assets/' + imageID,
       this.headers
     ).toPromise()
   }

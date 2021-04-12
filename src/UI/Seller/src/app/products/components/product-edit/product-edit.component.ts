@@ -65,6 +65,7 @@ import { FileHandle } from '@app-seller/models/file-upload.types'
 import { UserContext } from '@app-seller/models/user.types'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { Products } from 'ordercloud-javascript-sdk'
+import { AssetType } from '@app-seller/models/Asset.types'
 
 @Component({
   selector: 'app-product-edit',
@@ -703,19 +704,10 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     this.checkForChanges()
   }
 
-  async uploadAsset(
-    file: FileHandle,
-    isAttachment = false
-  ): Promise<any> {
-    const data = new FormData()
-    data.append('File', file.File)
-    return await this.middleware.uploadImage(data)
-  }
-
   async addDocuments(files: FileHandle[], productID: string): Promise<void> {
     let superProduct
     for (const file of files) {
-      superProduct = await this.uploadAsset(file, true)
+      //superProduct = await this.uploadAsset(file, true)
     }
     this.staticContentFiles = []
     // Only need the `|| {}` to account for creating new product where this._superHSProductStatic doesn't exist yet.
@@ -723,9 +715,13 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     this.refreshProductData(superProduct)
   }
 
-  async addImages(files: FileHandle[]): Promise<any[]> {
+  async addAssets(files: FileHandle[], assetType: AssetType): Promise<any[]> {
     return await Promise.all(
-      files.map(file => this.uploadAsset(file))
+      files.map(file => {
+        const data = new FormData()
+        data.append('File', file.File)
+        return assetType === 'image' ? this.middleware.uploadImage(data) : this.middleware.uploadDocument(data)
+      })
     );
   }
 
@@ -871,8 +867,13 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     if (superHSProduct.PriceSchedule.PriceBreaks[0].Price === null)
       superHSProduct.PriceSchedule.PriceBreaks[0].Price = 0
     if (this.imageFiles.length > 0) {
-      const imgUrls = await this.addImages(this.imageFiles);
+      const imgUrls = await this.addAssets(this.imageFiles, 'image');
       (superHSProduct.Product.xp as any).Images = imgUrls
+    }
+    if (this.staticContentFiles.length > 0) {
+      const documentUrl = await this.addAssets(this.staticContentFiles, 'document')
+      console.log(documentUrl)
+      debugger;
     }
     try {
       return await HeadStartSDK.Products.Post(superHSProduct)
@@ -904,7 +905,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     // TODO: Temporary while Product set doesn't reflect the current strongly typed Xp
     superHSProduct.Product.xp.Status = 'Draft'
     if (this.imageFiles.length > 0) {
-      const imgUrls = await this.addImages(this.imageFiles);
+      const imgUrls = await this.addAssets(this.imageFiles, 'image');
       (superHSProduct.Product.xp as any).Images = [
         ...(superHSProduct.Product.xp as any)?.Images || [],
         ...imgUrls

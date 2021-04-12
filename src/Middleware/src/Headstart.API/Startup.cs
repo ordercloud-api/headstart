@@ -150,7 +150,7 @@ namespace Headstart.API
                         Roles = new[] { ApiRole.FullAccess }
                     })))
                 .AddSingleton<IOrderCloudIntegrationsExchangeRatesClient, OrderCloudIntegrationsExchangeRatesClient>()
-                .AddSingleton<IImageClient>(provider => new ImageClient( new OrderCloudIntegrationsBlobService(imageConfig), _settings))
+                .AddSingleton<IImageClient>(provider => new IAssetClient( new OrderCloudIntegrationsBlobService(imageConfig), _settings))
                 .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand( new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
                 .AddSingleton<IAvalaraCommand>(x => new AvalaraCommand(
                     avalaraConfig,
