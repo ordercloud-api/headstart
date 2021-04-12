@@ -727,12 +727,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     return await Promise.all(
       files.map(file => this.uploadAsset(file))
     );
-    // return imageResults.map(res => (
-    //   {
-    //     Url: res.ImageUrl,
-    //     ThumbnailUrl: res.ThumbnailUrl
-    //   }
-    // ))
   }
 
   async removeFile(file: any): Promise<void> {
