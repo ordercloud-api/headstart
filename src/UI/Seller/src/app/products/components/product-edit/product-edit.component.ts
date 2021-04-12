@@ -715,7 +715,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     file: FileHandle,
     isAttachment = false
   ): Promise<any> {
-    const accessToken = await this.appAuthService.fetchToken().toPromise()
     const data = new FormData()
     data.append('File', file.File)
     return await this.middleware.uploadImage(data)
