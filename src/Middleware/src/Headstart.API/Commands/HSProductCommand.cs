@@ -179,7 +179,6 @@ namespace Headstart.API.Commands.Crud
 				var priceSchedule = _oc.PriceSchedules.GetAsync(product.DefaultPriceScheduleID, token);
 				var _specs = _oc.Products.ListSpecsAsync(product.ID, null, null, null, 1, 100, null, token);
 				var _variants = _oc.Products.ListVariantsAsync<HSVariant>(product.ID, null, null, null, 1, 100, null, token);
-				var _images = GetProductImages(product.ID, token);
 				var _attachments = GetProductAttachments(product.ID, token);
 				_superProductsList.Add(new SuperHSProduct
 				{
@@ -187,7 +186,6 @@ namespace Headstart.API.Commands.Crud
 					PriceSchedule = await priceSchedule,
 					Specs = (await _specs).Items,
 					Variants = (await _variants).Items,
-					Images = await _images,
 					Attachments = await _attachments
 				});
 			});
@@ -278,7 +276,6 @@ namespace Headstart.API.Commands.Crud
 				PriceSchedule = _priceSchedule,
 				Specs = _specs.Items,
 				Variants = _variants.Items,
-				Images = new List<Asset>(),
 				Attachments = new List<Asset>()
 			};
 		}
@@ -433,9 +430,6 @@ namespace Headstart.API.Commands.Crud
 			// List Product Specs
 			var _specsReq = _oc.Products.ListSpecsAsync<Spec>(id, accessToken: token);
 			tasks.Add(_specsReq);
-			// List Product Images
-			var _imagesReq = GetProductImages(_updatedProduct.ID, token);
-			tasks.Add(_imagesReq);
 			// List Product Attachments
 			var _attachmentsReq = GetProductAttachments(_updatedProduct.ID, token);
 			tasks.Add(_attachmentsReq);
@@ -448,7 +442,6 @@ namespace Headstart.API.Commands.Crud
 				PriceSchedule = _priceScheduleReq?.Result,
 				Specs = _specsReq?.Result?.Items,
 				Variants = _variantsReq?.Result?.Items,
-				Images = _imagesReq?.Result,
 				Attachments = _attachmentsReq?.Result
 			};
 		}

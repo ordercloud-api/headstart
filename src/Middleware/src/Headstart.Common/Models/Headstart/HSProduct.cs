@@ -21,7 +21,6 @@ namespace Headstart.Models
         public PriceSchedule PriceSchedule { get; set; }
         public IList<Spec> Specs { get; set; }
         public IList<HSVariant> Variants { get; set; }
-        public IList<Asset> Images { get; set; }
         public IList<Asset> Attachments { get; set; }
     }
 

@@ -13,9 +13,6 @@ import { CurrentUserService } from '@app-seller/shared/services/current-user/cur
 import {
   Address,
   OcSupplierAddressService,
-  OcAdminAddressService,
-  OcProductService,
-  OcTokenService,
 } from '@ordercloud/angular-sdk'
 import {
   FormGroup,
@@ -61,9 +58,7 @@ import {
 import { getProductMediumImageUrl } from '@app-seller/products/product-image.helper'
 import { takeWhile } from 'rxjs/operators'
 import { SizerTiersDescriptionMap } from './size-tier.constants'
-import { HttpClient, HttpHeaders } from '@angular/common/http'
 
-import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { ToastrService } from 'ngx-toastr'
 import { Subscription } from 'rxjs'
 import { SupportedRates } from '@app-seller/models/currency-geography.types'
@@ -735,12 +730,16 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     const imageResults = await Promise.all(
       files.map(file => this.uploadAsset(file))
     );
-    return imageResults.map(res => (
-      {
-        Url: res.ImageUrl,
-        ThumbnailUrl: res.ThumbnailUrl
-      }
-    ))
+    try {
+      return imageResults.map(res => (
+        {
+          Url: res.ImageUrl,
+          ThumbnailUrl: res.ThumbnailUrl
+        }
+      ))
+    } finally {
+      this.imageFiles = []
+    }
   }
 
   async removeFile(file: any): Promise<void> {
