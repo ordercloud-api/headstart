@@ -210,7 +210,7 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
       await this.middleware.deleteImage(getImageIDFromUrl(this.user?.xp?.Image?.Url))
       const patchObj = {
         xp: {
-          Image: {}
+          Image: null
         }
       }
       await this.currentUserService.patchUser(patchObj)

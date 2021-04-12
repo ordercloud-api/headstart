@@ -198,4 +198,11 @@ export class SupplierTableComponent extends ResourceCrudComponent<Supplier> {
       throw ex
     }
   }
+
+  updateResourceInList(supplier: Supplier): void {
+    const index = this.resourceList?.Items?.findIndex(item => item.ID === supplier.ID) 
+    if(index && index !== -1) {
+      this.resourceList.Items[index] = supplier
+    }
+  }
 }

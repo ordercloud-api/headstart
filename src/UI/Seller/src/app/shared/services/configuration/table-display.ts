@@ -1,7 +1,6 @@
 import { SummaryResourceInfoPathsDictionary } from '@app-seller/models/shared.types'
 import { ResourceConfigurationDictionary } from '@app-seller/models/table-display.types'
-import { PRODUCT_IMAGE_PATH_STRATEGY } from '@app-seller/shared/services/image.helper'
-import { SUPPLIER_LOGO_PATH_STRATEGY } from '@app-seller/suppliers/supplier-logo.helper'
+import { PRODUCT_IMAGE_PATH_STRATEGY, SUPPLIER_LOGO_PATH_STRATEGY } from '@app-seller/shared/services/image.helper'
 
 
 

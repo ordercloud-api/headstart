@@ -17,13 +17,11 @@ import {
   PLACEHOLDER_URL,
   PRODUCT_IMAGE_PATH_STRATEGY,
   getProductSmallImageUrl,
+  SUPPLIER_LOGO_PATH_STRATEGY,
+  getSupplierLogoSmallUrl,
 } from '@app-seller/shared/services/image.helper'
 import { Router } from '@angular/router'
 import { applicationConfiguration } from '@app-seller/config/app.config'
-import {
-  SUPPLIER_LOGO_PATH_STRATEGY,
-  getSupplierLogoSmallUrl,
-} from '@app-seller/suppliers/supplier-logo.helper'
 import { AppConfig } from '@app-seller/shared'
 
 @Component({
@@ -117,7 +115,7 @@ export class SummaryResourceDisplay implements OnChanges {
       if (pathToValue === PRODUCT_IMAGE_PATH_STRATEGY) {
         return getProductSmallImageUrl(value)
       } else if (pathToValue === SUPPLIER_LOGO_PATH_STRATEGY) {
-        return getSupplierLogoSmallUrl(value, this.appConfig.sellerID)
+        return getSupplierLogoSmallUrl(value)
       } else {
         let currentObject = value
         piecesOfPath.forEach((piece) => {
