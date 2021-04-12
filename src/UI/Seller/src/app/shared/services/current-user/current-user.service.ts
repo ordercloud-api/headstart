@@ -6,7 +6,6 @@ import {
   OcTokenService,
   MeUser,
   OcSupplierService,
-  ListPage,
 } from '@ordercloud/angular-sdk'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
@@ -66,42 +65,10 @@ export class CurrentUserService {
         this.me?.Supplier?.ID
       )
     }
-    try {
-      await this.setImageAssets()
-    } catch (err) {
-      // do not display login error if problem in getting assets
-    }
-  }
-
-  async setImageAssets() {
-    let imgAssets: ListPage<Asset>
-    if (this.me.Supplier) {
-      imgAssets = await ContentManagementClient.Assets.ListAssetsOnChild(
-        'Suppliers',
-        this.me.Supplier.ID,
-        'SupplierUsers',
-        this.me?.ID,
-        { filters: { Tags: ['ProfileImg'] } }
-      )
-    } else {
-      imgAssets = await ContentManagementClient.Assets.ListAssets(
-        'AdminUsers',
-        this.me.ID,
-        { filters: { Tags: ['ProfileImg'] } }
-      )
-    }
-    if (imgAssets.Items.length > 0) {
-      this.profileImgSubject.next(imgAssets.Items[0])
-    }
   }
 
   async getUser(): Promise<MeUser> {
-    const user = this.me ? this.me : await this.refreshUser()
-    if (!this.profileImgSubject.value ||
-      Object.keys(this.profileImgSubject.value).length === 0) {
-      await this.setImageAssets()
-    }
-    return user
+    return this.me ? this.me : await this.refreshUser()
   }
 
   async patchUser(patchObj: Partial<MeUser>): Promise<MeUser> {

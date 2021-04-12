@@ -60,7 +60,6 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
       ? this.getSupplierOrg()
       : (this.organizationName = this.appConfig.sellerName)
     this.refresh(this.userContext.Me)
-    //this.setProfileImgSrc()
   }
 
   setUpSubs(): void {
@@ -145,13 +144,13 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
   async manualFileUpload(event): Promise<void> {
     this.profileImgLoading = true
     const file: File = event?.target?.files[0]
-    if(this.user.xp.Image.Url) {
+    if(this.user?.xp?.Image?.Url) {
       await this.middleware.deleteImage(getImageIDFromUrl(this.user.xp.Image.Url))
     }
     try {
       const data = new FormData()
       data.append('File', file)
-      const imgUrls = this.middleware.uploadImage(data)
+      const imgUrls = await this.middleware.uploadImage(data)
       const patchObj = {
         xp: {
           Image: imgUrls
@@ -165,8 +164,6 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
     } finally {
       this.hasProfileImg = true
       this.profileImgLoading = false
-      // Reset the img src for profileImg
-      //this.setProfileImgSrc()
     }
   }
 
@@ -224,14 +221,4 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
       this.profileImgLoading = false
     }
   }
-
-  // setProfileImgSrc(): void {
-  //   if (this.userContext.UserType === 'SELLER') {
-  //     const url = `${environment.cmsUrl}/assets/${this.appConfig.sellerID}/AdminUsers/${this.userContext.Me.ID}/thumbnail?size=m`
-  //     this.myProfileImg = url
-  //   } else {
-  //     const url = `${environment.cmsUrl}/assets/${this.appConfig.sellerID}/Suppliers/${this.userContext.Me.Supplier.ID}/SupplierUsers/${this.userContext.Me.ID}/thumbnail?size=m`
-  //     this.myProfileImg = url
-  //   }
-  // }
 }

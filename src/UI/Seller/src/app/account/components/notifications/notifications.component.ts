@@ -12,6 +12,7 @@ import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { get as _get } from 'lodash'
 import { JDocument } from '@ordercloud/cms-sdk'
 import { AppConfig } from '@app-seller/models/environment.types'
+import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 
 @Component({
   selector: 'account-notifications',
@@ -26,15 +27,17 @@ export class NotificationsComponent extends AccountContent {
     currentUserService: CurrentUserService,
     @Inject(applicationConfiguration) appConfig: AppConfig,
     appAuthService: AppAuthService,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
+    middleware: MiddlewareAPIService
   ) {
     super(
       router,
       activatedRoute,
       changeDetectorRef,
-      currentUserService,
       appConfig,
-      appAuthService
+      appAuthService,
+      currentUserService,
+      middleware
     )
   }
   faExclamationCircle = faExclamationCircle

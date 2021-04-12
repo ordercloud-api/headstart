@@ -40,7 +40,6 @@ export class HeaderComponent implements OnInit {
   activeTitle = ''
   headerConfig: HSRoute[]
   hasProfileImg = false
-  myProfileImg: string
   currentUserInitials: string
 
   constructor(
@@ -67,10 +66,8 @@ export class HeaderComponent implements OnInit {
   async getCurrentUser() {
     this.isSupplierUser = await this.currentUserService.isSupplierUser()
     if (this.isSupplierUser) {
-      this.myProfileImg = `${environment.cmsUrl}/assets/${environment.sellerID}/Suppliers/${this.user.Supplier.ID}/SupplierUsers/${this.user.ID}/thumbnail?size=s`
       this.getSupplierOrg()
     } else {
-      this.myProfileImg = `${environment.cmsUrl}/assets/${environment.sellerID}/AdminUsers/${this.user.ID}/thumbnail?size=s`
       this.organizationName = this.appConfig.sellerName
     }
   }
