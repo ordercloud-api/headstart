@@ -4,7 +4,6 @@
       <select
         class="form-control input-sm"
         type="select"
-        required
         [disabled]="_categoriesDisabled"
         (change)="makeSelection($event, 'ServiceCategory', i)"
         [value]="categorySelection.ServiceCategory"
@@ -55,9 +54,7 @@
     >Please complete category selection</span
   >
 </div>
-<span class="error-message" *ngIf="areNoCategories">
-  A supplier must but a part of at least one category</span
->
+
 <div>
   <button
     class="btn brand-button mt-1"
