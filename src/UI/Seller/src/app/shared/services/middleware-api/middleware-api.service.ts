@@ -96,9 +96,9 @@ export class MiddlewareAPIService {
     ).toPromise()
   }
 
-  uploadDocument(assetData: FormData) {
+  uploadDocument(assetData: FormData) { 
     return this.http.post(
-      this.appConfig.middlewareUrl + 'assets/document', 
+      this.appConfig.middlewareUrl + '/assets/document', 
       assetData, 
       this.headers
     ).toPromise()

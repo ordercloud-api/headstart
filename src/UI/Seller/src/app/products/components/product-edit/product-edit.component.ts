@@ -576,15 +576,20 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     }
   }
 
+  productWasModified(): boolean {
+    return (
+      JSON.stringify(this._superHSProductEditable) !==
+      JSON.stringify(this._superHSProductStatic) ||
+      this.imageFiles.length > 0 || 
+      this.staticContentFiles.length > 0 
+    )
+  }
+
   async updateProduct(): Promise<void> {
     try {
       this.dataIsSaving = true
       let superProduct = this._superHSProductStatic
-      if (
-        JSON.stringify(this._superHSProductEditable) !==
-        JSON.stringify(this._superHSProductStatic) ||
-        this.imageFiles.length > 0
-      ) {
+      if (this.productWasModified()) {
         superProduct = await this.updateHSProduct(this._superHSProductEditable)
         this.updateList.emit(superProduct.Product as Product)
       }
@@ -719,7 +724,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     return await Promise.all(
       files.map(file => {
         const data = new FormData()
-        data.append('File', file.File)
+        data.append('File', file.File)        
         return assetType === 'image' ? this.middleware.uploadImage(data) : this.middleware.uploadDocument(data)
       })
     );
@@ -872,8 +877,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     }
     if (this.staticContentFiles.length > 0) {
       const documentUrl = await this.addAssets(this.staticContentFiles, 'document')
-      console.log(documentUrl)
-      debugger;
     }
     try {
       return await HeadStartSDK.Products.Post(superHSProduct)
@@ -911,6 +914,9 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         ...imgUrls
       ]
     } 
+    if (this.staticContentFiles.length > 0) {
+      const documentUrl = await this.addAssets(this.staticContentFiles, 'document')
+    }
     try {
       return await HeadStartSDK.Products.Put(
         superHSProduct.Product.ID,
