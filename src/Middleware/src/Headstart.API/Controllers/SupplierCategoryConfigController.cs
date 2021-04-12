@@ -33,7 +33,7 @@ namespace Headstart.Common.Controllers
 			{
 				Items = new List<SupplierFilterConfigDocument>
 				{
-					GetCountriesServicingDoc(),
+					GetCountriesServicingDoc()
 				}
 			};
         }
