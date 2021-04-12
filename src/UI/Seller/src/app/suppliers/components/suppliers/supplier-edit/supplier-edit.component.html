@@ -223,14 +223,7 @@
             </div>
           </div>
           <div class="mt-3 form-group col-md-12">
-            <label for="Category"
-              >Categories
-              <small
-                *ngIf="isCreatingNew"
-                class="text-danger font-weight-bolder"
-                >*</small
-              >
-            </label>
+            <label for="Category">Categories </label>
             <supplier-category-select-component
               [categorySelectionsControl]="resourceForm?.controls.Categories"
               [filterConfig]="filterConfig"

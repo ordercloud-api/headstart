@@ -12,7 +12,6 @@ import {
   ValidateRichTextDescription,
   ValidateEmail,
   RequireCheckboxesToBeChecked,
-  ValidateSupplierCategorySelection,
 } from '@app-seller/validators/validators'
 import { SupplierService } from '../supplier.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
@@ -92,13 +91,10 @@ function createSupplierForm(supplier: HSSupplier) {
       supplier.xp?.FreeShippingThreshold != null
     ),
     FreeShippingThreshold: new FormControl(supplier.xp?.FreeShippingThreshold),
-    Categories: new FormControl(
-      {
-        value: _get(supplier, 'xp.Categories', []),
-        disabled: this.isSupplierUser,
-      },
-      ValidateSupplierCategorySelection
-    ),
+    Categories: new FormControl({
+      value: _get(supplier, 'xp.Categories', []),
+      disabled: this.isSupplierUser,
+    }),
   })
 }
 
