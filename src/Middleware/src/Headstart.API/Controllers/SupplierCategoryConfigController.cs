@@ -34,8 +34,6 @@ namespace Headstart.Common.Controllers
 				Items = new List<SupplierFilterConfigDocument>
 				{
 					GetCountriesServicingDoc(),
-					GetServiceCategoryDoc(),
-					GetVendorLevelDoc()
 				}
 			};
         }
@@ -60,54 +58,6 @@ namespace Headstart.Common.Controllers
 					AllowSellerEdit = true,
 					AllowSupplierEdit = true,
 					BuyerAppFilterType = "NonUI"
-				}
-			};
-		}
-
-		private SupplierFilterConfigDocument GetServiceCategoryDoc()
-		{
-			return new SupplierFilterConfigDocument
-			{
-				ID = "ServiceCategory",
-				Doc = new SupplierFilterConfig
-				{
-					Display = "Service Category",
-					Path = "xp.Categories.ServiceCategory",
-					AllowSupplierEdit = false,
-					AllowSellerEdit = true,
-					BuyerAppFilterType = "SelectOption",
-					Items = new List<Filter>
-					{
-						new Filter
-                        {
-							Text = "Default Service Category",
-							Value = "DefaultServiceCategory"
-						}
-					}
-				}
-			};
-		}
-
-		private SupplierFilterConfigDocument GetVendorLevelDoc()
-		{
-			return new SupplierFilterConfigDocument
-			{
-				ID = "VendorLevel",
-				Doc = new SupplierFilterConfig
-				{
-					Display = "Vendor Level",
-					Path = "xp.Categories.VendorLevel",
-					AllowSupplierEdit = true,
-					AllowSellerEdit = true,
-					BuyerAppFilterType = "SelectOption",
-					Items = new List<Filter>
-					{
-						new Filter
-                        {
-							Text = "Default Vendor Level",
-							Value = "DefaultVendorLevel"
-                        }
-					}
 				}
 			};
 		}
