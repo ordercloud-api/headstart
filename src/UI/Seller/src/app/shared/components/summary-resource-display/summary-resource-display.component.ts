@@ -115,7 +115,6 @@ export class SummaryResourceDisplay implements OnChanges {
     const piecesOfPath = pathToValue.split('.')
     if (pathToValue) {
       if (pathToValue === PRODUCT_IMAGE_PATH_STRATEGY) {
-        console.log("getting small product image")
         return getProductSmallImageUrl(value)
       } else if (pathToValue === SUPPLIER_LOGO_PATH_STRATEGY) {
         return getSupplierLogoSmallUrl(value, this.appConfig.sellerID)

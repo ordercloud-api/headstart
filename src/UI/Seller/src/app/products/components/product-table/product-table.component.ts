@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { ProductService } from '@app-seller/products/product.service'
 import { UserContext } from '@app-seller/models/user.types'
+import { HSProduct } from '@ordercloud/headstart-sdk'
 
 @Component({
   selector: 'app-product-table',
@@ -82,6 +83,13 @@ export class ProductTableComponent
       Path: 'DefaultSupplierID',
       Items: supplierFilterOptions,
       Type: 'Dropdown',
+    }
+  }
+  
+  updateResourceInList(product: Product): void {
+    const index = this.resourceList?.Items?.findIndex(item => item.ID === product.ID) 
+    if(index && index !== -1) {
+      this.resourceList.Items[index] = product
     }
   }
 }

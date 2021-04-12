@@ -46,7 +46,6 @@ import {
   TaxProperties,
   Asset,
   TaxCode,
-  HSProduct,
 } from '@ordercloud/headstart-sdk'
 import { Location } from '@angular/common'
 import { TabIndexMapper, setProductEditTab } from './tab-mapper'
@@ -90,6 +89,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   filterConfig
   @Output()
   updateResource = new EventEmitter<any>()
+  @Output()
+  updateList = new EventEmitter<Product>()
   @Input()
   addresses: ListPage<Address>
   @Input()
@@ -504,11 +505,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     } else {
       return true
     }
-
-    return (
-      this.productForm.controls.ShipFromAddressID.valid &&
-      this.productForm.controls.SizeTier.valid
-    )
   }
 
   unitOfMeasureValid(): boolean {
@@ -589,6 +585,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         this.imageFiles.length > 0
       ) {
         superProduct = await this.updateHSProduct(this._superHSProductEditable)
+        this.updateList.emit(superProduct.Product as Product)
       }
       this.refreshProductData(superProduct)
       if (this.staticContentFiles.length > 0) {
@@ -730,16 +727,12 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     const imageResults = await Promise.all(
       files.map(file => this.uploadAsset(file))
     );
-    try {
-      return imageResults.map(res => (
-        {
-          Url: res.ImageUrl,
-          ThumbnailUrl: res.ThumbnailUrl
-        }
-      ))
-    } finally {
-      this.imageFiles = []
-    }
+    return imageResults.map(res => (
+      {
+        Url: res.ImageUrl,
+        ThumbnailUrl: res.ThumbnailUrl
+      }
+    ))
   }
 
   async removeFile(file: any): Promise<void> {
@@ -753,6 +746,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       }
     }
     this._superHSProductStatic.Product = await Products.Patch(this._superHSProductEditable.Product.ID, patchObj)
+    this.updateList.emit(this._superHSProductStatic.Product as Product) 
     this.refreshProductData(this._superHSProductStatic)
   }
 
@@ -889,8 +883,12 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     if (this.imageFiles.length > 0) {
       const imgUrls = await this.addImages(this.imageFiles);
       (superHSProduct.Product.xp as any).Images = imgUrls
-    } 
-    return await HeadStartSDK.Products.Post(superHSProduct)
+    }
+    try {
+      return await HeadStartSDK.Products.Post(superHSProduct)
+    } finally {
+      this.imageFiles = []
+    }
   }
 
   async updateHSProduct(
@@ -922,10 +920,15 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         ...imgUrls
       ]
     } 
-    return await HeadStartSDK.Products.Put(
-      superHSProduct.Product.ID,
-      superHSProduct
-    )
+    try {
+      return await HeadStartSDK.Products.Put(
+        superHSProduct.Product.ID,
+        superHSProduct
+      )
+    } finally {
+      this.imageFiles = []
+    }
+    
   }
 
   async handleSelectedProductChange(product: Product): Promise<void> {
