@@ -29,7 +29,7 @@
               [resourceForm]="resourceForm"
               aria-describedby="Active"
               formControlName="Active"
-              (input)="updateResourceFromEvent()"
+              (input)="toggleActive($event)"
             />
             <span class="slider round cursor-pointer"></span>
           </label>
