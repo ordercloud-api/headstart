@@ -30,7 +30,7 @@ import {
   OrderDirection,
   ListPage,
 } from '@ordercloud/angular-sdk'
-import { getProductSmallImageUrl } from '@app-seller/products/product-image.helper'
+import { getProductSmallImageUrl } from '@app-seller/shared/services/image.helper'
 import { HttpHeaders } from '@angular/common/http'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'

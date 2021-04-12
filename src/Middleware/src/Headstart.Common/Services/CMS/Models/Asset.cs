@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using ordercloud.integrations.library;
 using System;
 using System.Collections.Generic;
@@ -48,7 +48,7 @@ namespace Headstart.Common.Services.CMS.Models
 
 	public class ImageUrls
     {
-        public string ImageUrl { get; set; }
+        public string Url { get; set; }
         public string ThumbnailUrl { get; set; }
     }
 }

@@ -51,7 +51,7 @@ namespace Headstart.Common.Services.CMS
             var baseUrl = _settings.BlobSettings.HostUrl.EndsWith("/") ? _settings.BlobSettings.HostUrl : _settings.BlobSettings.HostUrl + "/";
             return new ImageUrls
             {
-                ImageUrl = $"{baseUrl}{container}/{assetGuid}",
+                Url = $"{baseUrl}{container}/{assetGuid}",
                 ThumbnailUrl = $"{baseUrl}{container}/{assetGuid}-s"
             };
         }

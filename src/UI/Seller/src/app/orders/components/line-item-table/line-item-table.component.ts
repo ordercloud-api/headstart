@@ -19,7 +19,7 @@ import {
   CanChangeLineItemsOnOrderTo,
 } from '@app-seller/orders/line-item-status.helper'
 import { FormArray, Validators, FormControl } from '@angular/forms'
-import { getPrimaryLineItemImage } from '@app-seller/products/product-image.helper'
+import { getPrimaryLineItemImage } from '@app-seller/shared/services/image.helper'
 import { MeUser, OcOrderService } from '@ordercloud/angular-sdk'
 import { LineItem, LineItemSpec } from 'ordercloud-javascript-sdk'
 import { AppConfig, LineItemStatus, RegexService } from '@app-seller/shared'

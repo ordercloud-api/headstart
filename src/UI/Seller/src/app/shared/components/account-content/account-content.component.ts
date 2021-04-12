@@ -18,6 +18,8 @@ import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { UserContext } from '@app-seller/models/user.types'
 import { AppConfig } from '@app-seller/models/environment.types'
+import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
+import { getImageIDFromUrl } from '@app-seller/shared/services/image.helper'
 
 export abstract class AccountContent implements AfterViewChecked, OnInit {
   activePage: string
@@ -39,9 +41,10 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
     private router: Router,
     activatedRoute: ActivatedRoute,
     private changeDetectorRef: ChangeDetectorRef,
-    private currentUserService: CurrentUserService,
     @Inject(applicationConfiguration) private appConfig: AppConfig,
-    private appAuthService: AppAuthService
+    private appAuthService: AppAuthService,
+    private currentUserService: CurrentUserService,
+    private middleware: MiddlewareAPIService,
   ) {
     this.setUpSubs()
   }
@@ -57,17 +60,18 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
       ? this.getSupplierOrg()
       : (this.organizationName = this.appConfig.sellerName)
     this.refresh(this.userContext.Me)
-    this.setProfileImgSrc()
+    //this.setProfileImgSrc()
   }
 
   setUpSubs(): void {
     this.currentUserService.userSubject.subscribe((user) => {
       this.user = user
       this.setCurrentUserInitials(this.user)
+      this.hasProfileImg = user.xp?.Image?.ThumbnailUrl && user.xp?.Image?.ThumbnailUrl !== '' 
     })
-    this.currentUserService.profileImgSubject.subscribe((img) => {
-      this.hasProfileImg = Object.keys(img).length > 0
-    })
+    // this.currentUserService.profileImgSubject.subscribe((img) => {
+    //   this.hasProfileImg = Object.keys(img).length > 0
+    // })
   }
 
   setCurrentUserInitials(user: MeUser): void {
@@ -141,48 +145,19 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
   async manualFileUpload(event): Promise<void> {
     this.profileImgLoading = true
     const file: File = event?.target?.files[0]
-    if (this.userContext.UserType === 'SELLER') {
-      // seller stuff
-      if (
-        Object.keys(this.currentUserService.profileImgSubject.value).length > 0
-      ) {
-        // If logo exists, remove the assignment, then the logo itself
-        await ContentManagementClient.Assets.DeleteAssetAssignment(
-          this.currentUserService.profileImgSubject.value.ID,
-          this.userContext?.Me?.ID,
-          'AdminUsers',
-          null,
-          null
-        )
-        await ContentManagementClient.Assets.Delete(
-          this.currentUserService.profileImgSubject.value.ID
-        )
-      }
-    } else {
-      // supplier stuff
-      if (
-        Object.keys(this.currentUserService.profileImgSubject.value).length > 0
-      ) {
-        // If logo exists, remove the assignment, then the logo itself
-        await ContentManagementClient.Assets.DeleteAssetAssignment(
-          this.currentUserService.profileImgSubject.value.ID,
-          this.userContext?.Me?.ID,
-          'SupplierUsers',
-          this.userContext?.Me?.Supplier?.ID,
-          'Suppliers'
-        )
-        await ContentManagementClient.Assets.Delete(
-          this.currentUserService.profileImgSubject.value.ID
-        )
-      }
+    if(this.user.xp.Image.Url) {
+      await this.middleware.deleteImage(getImageIDFromUrl(this.user.xp.Image.Url))
     }
-    // Then upload logo asset
     try {
-      await this.uploadProfileImg(this.userContext?.Me?.ID, file).then(
-        (img) => {
-          this.currentUserService.profileImgSubject.next(img)
+      const data = new FormData()
+      data.append('File', file)
+      const imgUrls = this.middleware.uploadImage(data)
+      const patchObj = {
+        xp: {
+          Image: imgUrls
         }
-      )
+      }
+      await this.currentUserService.patchUser(patchObj);
     } catch (err) {
       this.hasProfileImg = false
       this.profileImgLoading = false
@@ -191,7 +166,7 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
       this.hasProfileImg = true
       this.profileImgLoading = false
       // Reset the img src for profileImg
-      this.setProfileImgSrc()
+      //this.setProfileImgSrc()
     }
   }
 
@@ -235,34 +210,13 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
   async removeProfileImg(): Promise<void> {
     this.profileImgLoading = true
     try {
-      if (this.userContext.UserType === 'SELLER') {
-        // Remove the profile img asset assignment
-        await ContentManagementClient.Assets.DeleteAssetAssignment(
-          this.currentUserService.profileImgSubject.value.ID,
-          this.userContext?.Me?.ID,
-          'AdminUsers',
-          null,
-          null
-        )
-        // Remove the profile img asset
-        await ContentManagementClient.Assets.Delete(
-          this.currentUserService.profileImgSubject.value.ID
-        )
-      } else {
-        // Remove the profile img asset assignment
-        await ContentManagementClient.Assets.DeleteAssetAssignment(
-          this.currentUserService.profileImgSubject.value.ID,
-          this.userContext?.Me?.ID,
-          'SupplierUsers',
-          this.userContext?.Me?.Supplier?.ID,
-          'Suppliers'
-        )
-        // Remove the profile img asset
-        await ContentManagementClient.Assets.Delete(
-          this.currentUserService.profileImgSubject.value.ID
-        )
+      await this.middleware.deleteImage(getImageIDFromUrl(this.user?.xp?.Image?.Url))
+      const patchObj = {
+        xp: {
+          Image: {}
+        }
       }
-      this.currentUserService.profileImgSubject.next({})
+      await this.currentUserService.patchUser(patchObj)
     } catch (err) {
       throw err
     } finally {
@@ -271,13 +225,13 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
     }
   }
 
-  setProfileImgSrc(): void {
-    if (this.userContext.UserType === 'SELLER') {
-      const url = `${environment.cmsUrl}/assets/${this.appConfig.sellerID}/AdminUsers/${this.userContext.Me.ID}/thumbnail?size=m`
-      this.myProfileImg = url
-    } else {
-      const url = `${environment.cmsUrl}/assets/${this.appConfig.sellerID}/Suppliers/${this.userContext.Me.Supplier.ID}/SupplierUsers/${this.userContext.Me.ID}/thumbnail?size=m`
-      this.myProfileImg = url
-    }
-  }
+  // setProfileImgSrc(): void {
+  //   if (this.userContext.UserType === 'SELLER') {
+  //     const url = `${environment.cmsUrl}/assets/${this.appConfig.sellerID}/AdminUsers/${this.userContext.Me.ID}/thumbnail?size=m`
+  //     this.myProfileImg = url
+  //   } else {
+  //     const url = `${environment.cmsUrl}/assets/${this.appConfig.sellerID}/Suppliers/${this.userContext.Me.Supplier.ID}/SupplierUsers/${this.userContext.Me.ID}/thumbnail?size=m`
+  //     this.myProfileImg = url
+  //   }
+  // }
 }

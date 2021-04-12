@@ -1,4 +1,3 @@
-import { environment } from 'src/environments/environment.local'
 import {
   HSProduct,
   HSLineItem,
@@ -30,3 +29,8 @@ export const getPrimaryLineItemImage = (
   const li = lineItems.find((item) => item.ID === lineItemID)
   return getProductMediumImageUrl(li.Product)
 }
+
+export const getImageIDFromUrl = (url: string): string => {
+    const split = url.split("/")
+    return split[split.length-1]
+  }

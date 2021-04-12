@@ -54,7 +54,7 @@ import {
   ValidateMinMax,
   ValidateNoSpecialCharactersAndSpaces,
 } from '../../../validators/validators'
-import { getProductMediumImageUrl } from '@app-seller/products/product-image.helper'
+import { getImageIDFromUrl, getProductMediumImageUrl } from '@app-seller/shared/services/image.helper'
 import { takeWhile } from 'rxjs/operators'
 import { SizerTiersDescriptionMap } from './size-tier.constants'
 
@@ -724,22 +724,22 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   }
 
   async addImages(files: FileHandle[]): Promise<any[]> {
-    const imageResults = await Promise.all(
+    return await Promise.all(
       files.map(file => this.uploadAsset(file))
     );
-    return imageResults.map(res => (
-      {
-        Url: res.ImageUrl,
-        ThumbnailUrl: res.ThumbnailUrl
-      }
-    ))
+    // return imageResults.map(res => (
+    //   {
+    //     Url: res.ImageUrl,
+    //     ThumbnailUrl: res.ThumbnailUrl
+    //   }
+    // ))
   }
 
   async removeFile(file: any): Promise<void> {
-    const imageID = this.getImageIDFromUrl(file.Url)
+    const imageID = getImageIDFromUrl(file.Url)
     await this.middleware.deleteImage(imageID)
     const newImages = (this._superHSProductEditable.Product?.xp as any)?.Images
-      .filter(image => this.getImageIDFromUrl(image.Url) !== imageID);
+      .filter(image => getImageIDFromUrl(image.Url) !== imageID);
     const patchObj = {
       xp: {
         Images: newImages
@@ -750,10 +750,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     this.refreshProductData(this._superHSProductStatic)
   }
 
-  getImageIDFromUrl(url: string): string {
-    const split = url.split("/")
-    return split[split.length-1]
-  }
 
   unstageFile(index: number, fileType: string): void {
     if (fileType === 'image') {

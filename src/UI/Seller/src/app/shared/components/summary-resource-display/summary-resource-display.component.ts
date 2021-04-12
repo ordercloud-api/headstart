@@ -17,7 +17,7 @@ import {
   PLACEHOLDER_URL,
   PRODUCT_IMAGE_PATH_STRATEGY,
   getProductSmallImageUrl,
-} from '@app-seller/products/product-image.helper'
+} from '@app-seller/shared/services/image.helper'
 import { Router } from '@angular/router'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import {

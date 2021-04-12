@@ -10,12 +10,11 @@ import {
 import { ToastrService } from 'ngx-toastr'
 import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
 import { SortDirection } from './sort-direction.enum'
-import { environment } from 'src/environments/environment.local'
 import { Router, ActivatedRoute } from '@angular/router'
 import { ImpersonationService } from '@app-seller/shared/services/impersonation/impersonation.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppConfig, ResourceRow } from '@app-seller/shared'
-import { getProductSmallImageUrl } from '@app-seller/products/product-image.helper'
+import { getProductSmallImageUrl } from '@app-seller/shared/services/image.helper'
 
 @Component({
   selector: 'full-resource-table-component',
