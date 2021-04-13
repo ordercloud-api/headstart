@@ -1,6 +1,6 @@
 <div class="container-fluid mt-3">
   <div class="row">
-    <div class="col-md-7">
+    <div class="col-md-7 mb-4">
       <form [formGroup]="resourceForm">
         <div class="card bg-white shadow-sm p-4">
           <div class="d-flex justify-content-between align-items-center">
@@ -9,7 +9,7 @@
             </label>
             <button
               type="button"
-              class="btn btn-sm btn-outline-secondary"
+              class="btn btn-sm btn-outline-primary-light"
               (click)="generateRandomCode()"
               translate
             >
@@ -70,86 +70,101 @@
           >
         </div>
         <div class="card bg-white shadow-sm p-4 mt-3">
-          <h6 class="mb-0" translate>ADMIN.PROMOTIONS.TYPE</h6>
-          <div class="form-group mt-3 mb-0">
-            <div class="form-check">
-              <input
-                id="promoType"
-                class="form-check-input"
-                type="radio"
-                name="Type"
-                id="Percentage"
-                value="Percentage"
-                formControlName="Type"
-                (change)="handleUpdatePromo($event, 'xp.Type')"
-                [checked]="promoTypeCheck('Percentage')"
-              />
-              <label class="form-check-label" for="Percentage" translate>
-                ADMIN.PROMOTIONS.PERCENTAGE
-              </label>
+          <div class="row">
+            <div class="col-md-4">
+              <h6 class="mb-0" translate>ADMIN.PROMOTIONS.TYPE</h6>
+              <div class="form-group mb-0 mt-3">
+                <div class="form-check">
+                  <input
+                    id="promoType"
+                    class="form-check-input"
+                    type="radio"
+                    name="Type"
+                    id="Percentage"
+                    value="Percentage"
+                    formControlName="Type"
+                    (change)="handleUpdatePromo($event, 'xp.Type')"
+                    [checked]="promoTypeCheck('Percentage')"
+                  />
+                  <label class="form-check-label" for="Percentage" translate>
+                    ADMIN.PROMOTIONS.PERCENTAGE
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="Type"
+                    id="FixedAmount"
+                    value="FixedAmount"
+                    formControlName="Type"
+                    (change)="handleUpdatePromo($event, 'xp.Type')"
+                    [checked]="promoTypeCheck('FixedAmount')"
+                  />
+                  <label class="form-check-label" for="FixedAmount" translate>
+                    ADMIN.PROMOTIONS.FIXED_AMOUNT
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="Type"
+                    id="FreeShipping"
+                    value="FreeShipping"
+                    formControlName="Type"
+                    (change)="handleUpdatePromo($event, 'xp.Type')"
+                    [checked]="promoTypeCheck('FreeShipping')"
+                  />
+                  <label class="form-check-label" for="FreeShipping" translate>
+                    ADMIN.PROMOTIONS.FREE_SHIPPING
+                  </label>
+                </div>
+              </div>
             </div>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="Type"
-                id="FixedAmount"
-                value="FixedAmount"
-                formControlName="Type"
-                (change)="handleUpdatePromo($event, 'xp.Type')"
-                [checked]="promoTypeCheck('FixedAmount')"
-              />
-              <label class="form-check-label" for="FixedAmount" translate>
-                ADMIN.PROMOTIONS.FIXED_AMOUNT
-              </label>
-            </div>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="radio"
-                name="Type"
-                id="FreeShipping"
-                value="FreeShipping"
-                formControlName="Type"
-                (change)="handleUpdatePromo($event, 'xp.Type')"
-                [checked]="promoTypeCheck('FreeShipping')"
-              />
-              <label class="form-check-label" for="FreeShipping" translate>
-                ADMIN.PROMOTIONS.FREE_SHIPPING
-              </label>
+            <div
+              class="col-md-8 d-flex flex-column justify-content-end align-items-end"
+              *ngIf="_promotionEditable?.xp?.Type !== 'FreeShipping'"
+            >
+              <label
+                *ngIf="_promotionEditable?.xp?.Type === 'Percentage'"
+                class="small text-muted"
+                for="{{ _promotionEditable?.xp?.Type }}"
+                >Enter Percentage</label
+              >
+              <label
+                *ngIf="_promotionEditable?.xp?.Type === 'FixedAmount'"
+                class="small text-muted"
+                for="{{ _promotionEditable?.xp?.Type }}"
+                >Enter Amount</label
+              >
+              <div class="input-group w-50">
+                <div
+                  *ngIf="_promotionEditable?.xp?.Type === 'FixedAmount'"
+                  class="input-group-prepend"
+                >
+                  <span class="input-group-text">$</span>
+                </div>
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="Value"
+                  min="0"
+                  (input)="handleUpdatePromo($event, 'xp.Value', 'number')"
+                  id="{{ _promotionEditable?.xp?.Type }}"
+                />
+                <div
+                  *ngIf="_promotionEditable?.xp?.Type === 'Percentage'"
+                  class="input-group-append"
+                >
+                  <span class="input-group-text">%</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div
-          *ngIf="_promotionEditable?.xp?.Type !== 'FreeShipping'"
-          class="card bg-white shadow-sm p-4 mt-3"
-        >
-          <label class="h6 mb-0" for="Value" translate
-            >ADMIN.PROMOTIONS.VALUE</label
-          >
-          <div class="input-group w-25 mt-3">
-            <div
-              *ngIf="_promotionEditable?.xp?.Type === 'FixedAmount'"
-              class="input-group-prepend"
-            >
-              <span class="input-group-text">$</span>
-            </div>
-            <input
-              type="number"
-              class="form-control"
-              formControlName="Value"
-              min="0"
-              (input)="handleUpdatePromo($event, 'xp.Value', 'number')"
-              id="Value"
-            />
-            <div
-              *ngIf="_promotionEditable?.xp?.Type === 'Percentage'"
-              class="input-group-append"
-            >
-              <span class="input-group-text">%</span>
-            </div>
-          </div>
-          <hr />
+
+        <div class="card bg-white shadow-sm p-4 mt-3">
           <h6 class="mb-0" translate>ADMIN.PROMOTIONS.APPLIES_TO</h6>
           <div class="row mt-3">
             <div class="col-md-4">
@@ -312,117 +327,155 @@
           </div>
         </div>
         <div class="card bg-white shadow-sm p-4 mt-3">
-          <h6 class="mb-0" translate>ADMIN.PROMOTIONS.MINIMUM_REQUIREMENTS</h6>
-          <small class="text-primary-light font-italic my-2">
-            <fa-icon
-              class="mr-2"
-              [icon]="faExclamationCircle"
-              aria-hidden="true"
-            ></fa-icon>
-            <span translate
-              >ADMIN.PROMOTIONS.MINIMUM_REQUIREMENTS_EXPLANATION</span
-            >
-          </small>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="MinReqType"
-              id="None"
-              [value]="null"
-              formControlName="MinReqType"
-              (input)="handleClearMinReq()"
-              [checked]="!_promotionEditable?.xp?.MinReq?.Type"
-            />
-            <label class="form-check-label" for="None" translate>
-              ADMIN.PROMOTIONS.NONE
-            </label>
-          </div>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="MinReqType"
-              id="MinPurchase"
-              value="MinPurchase"
-              formControlName="MinReqType"
-              (input)="handleUpdatePromo($event, 'xp.MinReq.Type')"
-              [checked]="_promotionEditable?.xp?.MinReq?.Type === 'MinPurchase'"
-            />
-            <label class="form-check-label" for="MinPurchase" translate>
-              ADMIN.PROMOTIONS.MINIMUM_PURCHASE_AMOUNT
-            </label>
-          </div>
-          <div
-            [hidden]="
-              !_promotionEditable?.xp?.MinReq?.Type ||
-              _promotionEditable?.xp?.MinReq?.Type === 'MinItemQty'
-            "
-            class="input-group w-25"
-          >
-            <div class="input-group-prepend">
-              <span class="input-group-text">$</span>
+          <div class="row">
+            <div class="col-12 mb-2">
+              <h6 class="mb-0" translate>
+                ADMIN.PROMOTIONS.MINIMUM_REQUIREMENTS
+              </h6>
+              <small class="text-primary-light font-italic my-2">
+                <fa-icon
+                  class="mr-2"
+                  [icon]="faExclamationCircle"
+                  aria-hidden="true"
+                ></fa-icon>
+                <span translate
+                  >ADMIN.PROMOTIONS.MINIMUM_REQUIREMENTS_EXPLANATION</span
+                >
+              </small>
             </div>
-            <label
-              for="inputMinReqInt"
-              class="sr-only"
-              aria-labelledby="inputMinReqInt"
-            ></label>
-            <input
-              class="form-control"
-              type="number"
-              [value]="_promotionEditable?.xp?.MinReq?.Int"
-              min="0"
-              (input)="handleUpdatePromo($event, 'xp.MinReq.Int', 'number')"
-              formControlName="MinReqInt"
-              name="MinReqInt"
-              id="inputMinReqInt"
-              placeholder="0.00"
-            />
-          </div>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="MinReqType"
-              id="radioMinItemQty"
-              value="MinItemQty"
-              formControlName="MinReqType"
-              (input)="handleUpdatePromo($event, 'xp.MinReq.Type')"
-              [checked]="_promotionEditable?.xp?.MinReq?.Type === 'MinItemQty'"
-            />
-            <label class="form-check-label" for="radioMinItemQty" translate>
-              ADMIN.PROMOTIONS.MINIMUM_QUANTITY_ITEMS
-            </label>
-          </div>
-          <div
-            [hidden]="
-              !_promotionEditable?.xp?.MinReq?.Type ||
-              _promotionEditable?.xp?.MinReq?.Type === 'MinPurchase'
-            "
-            class="input-group w-25"
-          >
-            <input
-              class="form-control"
-              type="number"
-              [value]="_promotionEditable?.xp?.MinReq?.Int"
-              min="0"
-              (input)="handleUpdatePromo($event, 'xp.MinReq.Int', 'number')"
-              formControlName="MinReqInt"
-              name="MinReqInt"
-              id="inputMinItemQty"
-              placeholder="0"
-            />
-            <div class="input-group-append">
-              <span class="input-group-text" translate
-                >ADMIN.PROMOTIONS.ITEMS</span
+            <div class="col-md-4">
+              <div class="form-group mb-0">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="MinReqType"
+                    id="None"
+                    [value]="null"
+                    formControlName="MinReqType"
+                    (input)="handleClearMinReq()"
+                    [checked]="!_promotionEditable?.xp?.MinReq?.Type"
+                  />
+                  <label class="form-check-label" for="None" translate>
+                    ADMIN.PROMOTIONS.NONE
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="MinReqType"
+                    id="MinPurchase"
+                    value="MinPurchase"
+                    formControlName="MinReqType"
+                    (input)="handleUpdatePromo($event, 'xp.MinReq.Type')"
+                    [checked]="
+                      _promotionEditable?.xp?.MinReq?.Type === 'MinPurchase'
+                    "
+                  />
+                  <label
+                    class="form-check-label text-capitalize"
+                    for="MinPurchase"
+                    translate
+                  >
+                    ADMIN.PROMOTIONS.MINIMUM_PURCHASE_AMOUNT
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="MinReqType"
+                    id="radioMinItemQty"
+                    value="MinItemQty"
+                    formControlName="MinReqType"
+                    (input)="handleUpdatePromo($event, 'xp.MinReq.Type')"
+                    [checked]="
+                      _promotionEditable?.xp?.MinReq?.Type === 'MinItemQty'
+                    "
+                  />
+                  <label
+                    class="form-check-label text-capitalize"
+                    for="radioMinItemQty"
+                    translate
+                  >
+                    ADMIN.PROMOTIONS.MINIMUM_QUANTITY_ITEMS
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div
+              class="col-md-8 d-flex flex-column justify-content-end align-items-md-end"
+            >
+              <label
+                [hidden]="!_promotionEditable?.xp?.MinReq?.Type"
+                class="small text-muted text-capitalize"
+                for="input{{ _promotionEditable?.xp?.MinReq?.Type }}"
+                >Enter
+                <span
+                  *ngIf="_promotionEditable?.xp?.MinReq?.Type === 'MinPurchase'"
+                  translate
+                  >ADMIN.PROMOTIONS.MINIMUM_PURCHASE_AMOUNT</span
+                >
+                <span
+                  *ngIf="_promotionEditable?.xp?.MinReq?.Type === 'MinItemQty'"
+                  translate
+                >
+                  ADMIN.PROMOTIONS.MINIMUM_QUANTITY_ITEMS
+                </span>
+              </label>
+              <div
+                [hidden]="
+                  !_promotionEditable?.xp?.MinReq?.Type ||
+                  _promotionEditable?.xp?.MinReq?.Type === 'MinItemQty'
+                "
+                class="input-group w-50"
               >
+                <div class="input-group-prepend">
+                  <span class="input-group-text">$</span>
+                </div>
+                <input
+                  class="form-control"
+                  type="number"
+                  [value]="_promotionEditable?.xp?.MinReq?.Int"
+                  min="0"
+                  (input)="handleUpdatePromo($event, 'xp.MinReq.Int', 'number')"
+                  formControlName="MinReqInt"
+                  name="MinReqInt"
+                  id="inputMinPurchase"
+                  placeholder="0.00"
+                />
+              </div>
+              <div
+                [hidden]="
+                  !_promotionEditable?.xp?.MinReq?.Type ||
+                  _promotionEditable?.xp?.MinReq?.Type === 'MinPurchase'
+                "
+                class="input-group w-50"
+              >
+                <input
+                  class="form-control"
+                  type="number"
+                  [value]="_promotionEditable?.xp?.MinReq?.Int"
+                  min="0"
+                  (input)="handleUpdatePromo($event, 'xp.MinReq.Int', 'number')"
+                  formControlName="MinReqInt"
+                  name="MinReqInt"
+                  id="inputMinItemQty"
+                  placeholder="0"
+                />
+                <div class="input-group-append">
+                  <span class="input-group-text" translate
+                    >ADMIN.PROMOTIONS.ITEMS</span
+                  >
+                </div>
+              </div>
             </div>
           </div>
           <ng-container *ngIf="_promotionEditable?.xp?.Type === 'FreeShipping'">
             <hr />
             <h6 class="mb-0" translate>ADMIN.PROMOTIONS.SHIPPING</h6>
-            <div class="custom-control custom-checkbox">
+            <div class="custom-control custom-checkbox mt-2">
               <input
                 type="checkbox"
                 class="custom-control-input"
@@ -438,7 +491,13 @@
               <div class="input-group-prepend">
                 <span class="input-group-text">$</span>
               </div>
+              <label
+                for="capShipCost"
+                class="sr-only"
+                aria-labelledby="capShipCost"
+              ></label>
               <input
+                aria-label="Max Shipping Cost"
                 class="form-control"
                 type="number"
                 [value]="_promotionEditable?.xp?.MaxShipCost"
@@ -446,6 +505,7 @@
                 (input)="handleUpdatePromo($event, 'xp.MaxShipCost', 'number')"
                 formControlName="MaxShipCost"
                 name="MaxShipCost"
+                id="capShipCost"
               />
             </div>
           </ng-container>
@@ -627,6 +687,32 @@
           </div>
         </div>
       </form>
+      <div class="justify-content-end mt-3 d-none d-md-flex">
+        <delete-confirm-modal-component
+          *ngIf="!isCreatingNew"
+          buttonText="ADMIN.NAV.PROMOTION"
+          (deleteConfirmed)="handleDelete($event)"
+          class="mr-auto ml-n2"
+        >
+        </delete-confirm-modal-component>
+        <button
+          class="btn btn-link mr-3"
+          (click)="handleDiscardChanges()"
+          *ngIf="!isCreatingNew"
+          [disabled]="!areChanges"
+          translate
+        >
+          ADMIN.PROMOTIONS.DISCARD_CHANGES
+        </button>
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="isSaveBtnDisabled()"
+          (click)="handleSave()"
+        >
+          {{ getSaveBtnText() }}
+        </button>
+      </div>
     </div>
     <div class="col-md-5 mt-3 mt-md-0">
       <div class="sticky-top pb-1">
@@ -676,6 +762,7 @@
             </div>
           </div>
           <p
+            class="mb-0"
             *ngIf="!_promotionEditable?.Code && !_promotionEditable?.xp?.Value"
             translate
           >
@@ -723,57 +810,31 @@
             </ul>
           </ng-container>
         </div>
-        <div class="d-flex flex-row justify-content-end mt-3">
-          <button
-            class="btn btn-primary"
-            type="submit"
-            [disabled]="resourceForm?.status === 'INVALID' || dataIsSaving"
-            (click)="handleSave()"
+        <div class="d-flex flex-row justify-content-md-end mt-3">
+          <delete-confirm-modal-component
+            *ngIf="!isCreatingNew"
+            buttonText="ADMIN.NAV.PROMOTION"
+            (deleteConfirmed)="handleDelete($event)"
+            class="mr-auto ml-n2"
           >
-            {{ getSaveBtnText() }}
-          </button>
+          </delete-confirm-modal-component>
           <button
-            class="btn brand-button ml-3"
+            class="btn btn-link mr-3"
             (click)="handleDiscardChanges()"
-            *ngIf="areChanges && !isCreatingNew"
+            *ngIf="!isCreatingNew"
+            [disabled]="!areChanges"
             translate
           >
             ADMIN.PROMOTIONS.DISCARD_CHANGES
           </button>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-12">
-      <!-- TODO: 2/2 Abstract into component to be used anywhere using inputs and outputs -->
-      <div class="d-flex justify-content-between align-items-center py-2">
-        <delete-confirm-modal-component
-          *ngIf="!isCreatingNew"
-          buttonText="ADMIN.NAV.PROMOTION"
-          (deleteConfirmed)="handleDelete($event)"
-        >
-        </delete-confirm-modal-component>
-        <div class="d-flex flex-column justify-content-end">
-          <div>
-            <button
-              *ngIf="areChanges"
-              class="btn btn-primary"
-              type="submit"
-              [disabled]="resourceForm?.status === 'INVALID' || dataIsSaving"
-              (click)="handleSave()"
-            >
-              {{ getSaveBtnText() }}
-            </button>
-            <button
-              class="btn brand-button ml-3"
-              (click)="handleDiscardChanges()"
-              *ngIf="areChanges && !isCreatingNew"
-              translate
-            >
-              ADMIN.PROMOTIONS.DISCARD_CHANGES
-            </button>
-          </div>
+          <button
+            class="btn btn-primary"
+            type="submit"
+            (click)="handleSave()"
+            [disabled]="isSaveBtnDisabled()"
+          >
+            {{ getSaveBtnText() }}
+          </button>
         </div>
       </div>
     </div>
