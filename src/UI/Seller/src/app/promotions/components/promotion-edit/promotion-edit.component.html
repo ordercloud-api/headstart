@@ -9,7 +9,7 @@
             </label>
             <button
               type="button"
-              class="btn btn-sm btn-outline-secondary"
+              class="btn btn-sm btn-outline-primary-light"
               (click)="generateRandomCode()"
               translate
             >
@@ -692,23 +692,25 @@
           *ngIf="!isCreatingNew"
           buttonText="ADMIN.NAV.PROMOTION"
           (deleteConfirmed)="handleDelete($event)"
+          class="mr-auto ml-n2"
         >
         </delete-confirm-modal-component>
         <button
-          class="btn btn-primary"
-          type="submit"
-          [disabled]="isBtnDisabled()"
-          (click)="handleSave()"
-        >
-          {{ getSaveBtnText() }}
-        </button>
-        <button
-          class="btn btn-link ml-3"
+          class="btn btn-link mr-3"
           (click)="handleDiscardChanges()"
-          *ngIf="areChanges && !isCreatingNew"
+          *ngIf="!isCreatingNew"
+          [disabled]="!areChanges"
           translate
         >
           ADMIN.PROMOTIONS.DISCARD_CHANGES
+        </button>
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="isSaveBtnDisabled()"
+          (click)="handleSave()"
+        >
+          {{ getSaveBtnText() }}
         </button>
       </div>
     </div>
@@ -813,23 +815,25 @@
             *ngIf="!isCreatingNew"
             buttonText="ADMIN.NAV.PROMOTION"
             (deleteConfirmed)="handleDelete($event)"
+            class="mr-auto ml-n2"
           >
           </delete-confirm-modal-component>
+          <button
+            class="btn btn-link mr-3"
+            (click)="handleDiscardChanges()"
+            *ngIf="!isCreatingNew"
+            [disabled]="!areChanges"
+            translate
+          >
+            ADMIN.PROMOTIONS.DISCARD_CHANGES
+          </button>
           <button
             class="btn btn-primary"
             type="submit"
             (click)="handleSave()"
-            [disabled]="isBtnDisabled()"
+            [disabled]="isSaveBtnDisabled()"
           >
             {{ getSaveBtnText() }}
-          </button>
-          <button
-            class="btn btn-link ml-3"
-            (click)="handleDiscardChanges()"
-            *ngIf="areChanges && !isCreatingNew"
-            translate
-          >
-            ADMIN.PROMOTIONS.DISCARD_CHANGES
           </button>
         </div>
       </div>
