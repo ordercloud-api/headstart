@@ -98,6 +98,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.isCreatingNew = this.promotionService.checkIfCreatingNew()
     this.listResources()
+    this.isBtnDisabled()
   }
 
   ngOnChanges(): void {
@@ -486,6 +487,18 @@ export class PromotionEditComponent implements OnInit, OnChanges {
       this.dataIsSaving,
       this.isCreatingNew
     )
+  }
+
+  isBtnDisabled(): boolean {
+    if (!this.areChanges && this.isCreatingNew) {
+      if (this.resourceForm?.status === 'INVALID' || this.dataIsSaving) {
+        return true
+      }
+    } else if (!this.areChanges && !this.isCreatingNew) {
+      return true
+    } else {
+      return null
+    }
   }
 
   handleClearMinReq(): void {
