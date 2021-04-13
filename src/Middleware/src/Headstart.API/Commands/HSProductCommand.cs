@@ -43,7 +43,7 @@ namespace Headstart.API.Commands.Crud
 		private readonly AppSettings _settings;
 		private readonly ISupplierApiClientHelper _apiClientHelper;
 		private readonly IAssetClient _assetClient;
-		public HSProductCommand(AppSettings settings, ICMSClient cms, IOrderCloudClient elevatedOc, ISupplierApiClientHelper apiClientHelper, IAssetClient assetClient)
+		public HSProductCommand(AppSettings settings, IOrderCloudClient elevatedOc, ISupplierApiClientHelper apiClientHelper, IAssetClient assetClient)
 		{
 			_oc = elevatedOc;
 			_settings = settings;
