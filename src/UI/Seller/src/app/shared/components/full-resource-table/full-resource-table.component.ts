@@ -14,7 +14,7 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { ImpersonationService } from '@app-seller/shared/services/impersonation/impersonation.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppConfig, ResourceRow } from '@app-seller/shared'
-import { getProductSmallImageUrl, getSupplierLogoSmallUrl } from '@app-seller/shared/services/image.helper'
+import { getProductSmallImageUrl, getSupplierLogoSmallUrl } from '@app-seller/shared/services/assets/asset.helper'
 
 @Component({
   selector: 'full-resource-table-component',

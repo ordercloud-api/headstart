@@ -16,6 +16,7 @@ namespace Headstart.Common.Services.CMS
         Task<ImageAsset> CreateImage(AssetUpload asset);
         Task DeleteAsset(string id);
         Task<DocumentAsset> CreateDocument(AssetUpload asset);
+        Task DeleteAssetByUrl(string assetUrl);
     }
 
     public class AssetClient : IAssetClient
@@ -76,6 +77,23 @@ namespace Headstart.Common.Services.CMS
             {
                 await _blob.Delete($"{id}-s");
             } catch { }
+        }
+
+        public async Task DeleteAssetByUrl(string assetUrl)
+        {
+            var id = GetAssetIDFromUrl(assetUrl);
+            await _blob.Delete(id);
+            try
+            {
+                await _blob.Delete($"{id}-s");
+            }
+            catch { }
+        }
+
+        public string GetAssetIDFromUrl(string url)
+        {
+            var parts = url.Split("/");
+            return parts[parts.Length - 1];
         }
 
         private string GetBaseUrl()

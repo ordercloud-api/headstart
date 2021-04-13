@@ -89,7 +89,7 @@ export class MiddlewareAPIService {
 
   uploadImage(assetData: FormData): Promise<ImageAsset> {
     return this.http.post<ImageAsset>(
-      this.appConfig.middlewareUrl + 'assets/image', 
+      this.appConfig.middlewareUrl + '/assets/image', 
       assetData, 
       this.headers
     ).toPromise()

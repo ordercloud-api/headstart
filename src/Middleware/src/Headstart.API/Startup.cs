@@ -86,7 +86,7 @@ namespace Headstart.API
             var imageConfig = new BlobServiceConfig()
             {
                 ConnectionString = _settings.BlobSettings.ConnectionString,
-                Container = "images"
+                Container = "assets"
             };
 
             var flurlClientFactory = new PerBaseUrlFlurlClientFactory();

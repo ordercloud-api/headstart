@@ -13,16 +13,10 @@ import {
   faChevronRight,
   faPlus,
 } from '@fortawesome/free-solid-svg-icons'
-import {
-  PLACEHOLDER_URL,
-  PRODUCT_IMAGE_PATH_STRATEGY,
-  getProductSmallImageUrl,
-  SUPPLIER_LOGO_PATH_STRATEGY,
-  getSupplierLogoSmallUrl,
-} from '@app-seller/shared/services/image.helper'
 import { Router } from '@angular/router'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppConfig } from '@app-seller/shared'
+import { getProductSmallImageUrl, getSupplierLogoSmallUrl, PLACEHOLDER_URL, PRODUCT_IMAGE_PATH_STRATEGY, SUPPLIER_LOGO_PATH_STRATEGY } from '@app-seller/shared/services/assets/asset.helper'
 
 @Component({
   selector: 'summary-resource-display-component',

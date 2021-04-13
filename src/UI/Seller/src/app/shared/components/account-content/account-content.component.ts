@@ -8,7 +8,6 @@ import {
 import { getPsHeight } from '@app-seller/shared/services/dom.helper'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
-import { environment } from 'src/environments/environment.local'
 import { MeUser } from '@ordercloud/angular-sdk'
 import { FormGroup, FormControl } from '@angular/forms'
 import { isEqual as _isEqual, set as _set, get as _get } from 'lodash'
@@ -19,7 +18,7 @@ import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { UserContext } from '@app-seller/models/user.types'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
-import { getAssetIDFromUrl } from '@app-seller/shared/services/image.helper'
+import { getAssetIDFromUrl } from '@app-seller/shared/services/assets/asset.helper'
 
 export abstract class AccountContent implements AfterViewChecked, OnInit {
   activePage: string

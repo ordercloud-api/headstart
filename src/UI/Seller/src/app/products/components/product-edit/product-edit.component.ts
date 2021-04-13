@@ -22,7 +22,6 @@ import {
 } from '@angular/forms'
 import { Router } from '@angular/router'
 import { Product } from '@ordercloud/angular-sdk'
-import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import {
@@ -54,7 +53,6 @@ import {
   ValidateMinMax,
   ValidateNoSpecialCharactersAndSpaces,
 } from '../../../validators/validators'
-import { getAssetIDFromUrl, getProductMediumImageUrl } from '@app-seller/shared/services/image.helper'
 import { takeWhile } from 'rxjs/operators'
 import { SizerTiersDescriptionMap } from './size-tier.constants'
 
@@ -64,8 +62,9 @@ import { SupportedRates } from '@app-seller/models/currency-geography.types'
 import { FileHandle } from '@app-seller/models/file-upload.types'
 import { UserContext } from '@app-seller/models/user.types'
 import { AppConfig } from '@app-seller/models/environment.types'
-import { Products } from 'ordercloud-javascript-sdk'
-import { AssetType, DocumentAsset, ImageAsset } from '@app-seller/models/Asset.types'
+import { AssetType } from '@app-seller/models/Asset.types'
+import { AssetService } from '@app-seller/shared/services/assets/asset.service'
+import { getProductMediumImageUrl } from '@app-seller/shared/services/assets/asset.helper'
 
 @Component({
   selector: 'app-product-edit',
@@ -150,10 +149,10 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     private productService: ProductService,
     private sanitizer: DomSanitizer,
     private modalService: NgbModal,
-    private middleware: MiddlewareAPIService,
     private appAuthService: AppAuthService,
     @Inject(applicationConfiguration) private appConfig: AppConfig,
     private toastrService: ToastrService,
+    private assetService: AssetService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -698,68 +697,14 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     this.checkForChanges()
   }
 
-  async addDocuments(files: FileHandle[]): Promise<DocumentAsset[]> {
-    return await Promise.all(
-      files.map(file => {  
-        return this.middleware.uploadDocument(this.mapFileToFormData(file))
-      })
-    );
-  }
-
-  async addImages(files: FileHandle[]): Promise<ImageAsset[]> {
-    return await Promise.all(
-      files.map(file => {
-        return this.middleware.uploadImage(this.mapFileToFormData(file))
-      })
-    );
-  }
-
-  mapFileToFormData(file: FileHandle): FormData {
-    const data = new FormData()
-    Object.keys(file).forEach(key => {
-      data.append(key, file[key])
-    })
-    return data;  
-  }
-
   async removeFile(file: any, assetType: AssetType): Promise<void> {
-    const assetID = getAssetIDFromUrl(file.Url)
-    try {
-      await this.middleware.deleteAsset(assetID)
-      await this.removeAssetFromProduct(assetID, assetType)
-    } catch(err) {
-      if(err?.status === 404 ) {
-        //  If the asset was not found on the delete request. Still delete asset from product
-        await this.removeAssetFromProduct(assetID, assetType)
-      } else {
-        throw err
-      }
-    }
+    this._superHSProductStatic.Product = await this.assetService.deleteAssetUpdateProduct(
+      this._superHSProductEditable.Product,
+      file.Url,
+      assetType
+    )
     this.updateList.emit(this._superHSProductStatic.Product as Product) 
     this.refreshProductData(this._superHSProductStatic)
-  }
-
-  async removeAssetFromProduct(assetID: string, assetType: AssetType): Promise<void> {
-    let patchObj: Partial<Product>
-    if(assetType === 'image') {
-      const newImages = (this._superHSProductEditable.Product?.xp as any)?.Images
-      .filter(image => getAssetIDFromUrl(image.Url) !== assetID);
-      patchObj = {
-        xp: {
-          Images: newImages
-        }
-      }
-    } else {
-      const newDocuments = (this._superHSProductEditable.Product?.xp as any)?.Documents
-      .filter(doc => getAssetIDFromUrl(doc.Url) !== assetID);
-      patchObj = {
-        xp: {
-          Documents: newDocuments
-        }
-      }
-    }
-    
-    this._superHSProductStatic.Product = await Products.Patch(this._superHSProductEditable.Product.ID, patchObj)
   }
 
 
@@ -889,11 +834,11 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     if (superHSProduct.PriceSchedule.PriceBreaks[0].Price === null)
       superHSProduct.PriceSchedule.PriceBreaks[0].Price = 0
     if (this.imageFiles.length > 0) {
-      const imgAssets = await this.addImages(this.imageFiles);
+      const imgAssets = await this.assetService.uploadImageFiles(this.imageFiles);
       (superHSProduct.Product.xp as any).Images = imgAssets
     }
     if (this.staticContentFiles.length > 0) {
-      const documentAssets = await this.addDocuments(this.staticContentFiles);
+      const documentAssets = await this.assetService.uploadDocumentFiles(this.staticContentFiles);
       (superHSProduct.Product.xp as any).Documents = documentAssets
     }
     try {
@@ -926,15 +871,15 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       superHSProduct.PriceSchedule = null
     superHSProduct.Product.xp.Status = 'Draft'
     if (this.imageFiles.length > 0) {
-      const imgAssets = await this.addImages(this.imageFiles);
+      const imgAssets = await this.assetService.uploadImageFiles(this.imageFiles);
     //  temporarily using 'as any' until sdk updated with new xp values
       (superHSProduct.Product.xp as any).Images = [
-        ...(superHSProduct.Product.xp as any)?.Images || [],
+        ...((superHSProduct.Product.xp as any)?.Images || []),
         ...imgAssets
       ]
     } 
     if (this.staticContentFiles.length > 0) {
-      const documentAssets = await this.addDocuments(this.staticContentFiles);
+      const documentAssets = await this.assetService.uploadDocumentFiles(this.staticContentFiles);
       (superHSProduct.Product.xp as any).Documents = [
         ...(superHSProduct.Product.xp as any)?.Documents || [],
         ...documentAssets
@@ -1008,9 +953,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   getProductPreviewImage(): string | SafeUrl {
     return (
       this.imageFiles[0]?.URL ||
-      getProductMediumImageUrl(
-        this._superHSProductEditable?.Product
-      )
+      getProductMediumImageUrl(this._superHSProductEditable?.Product)
     )
   }
 

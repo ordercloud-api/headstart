@@ -11,7 +11,6 @@ import {
 import {
   HeadStartSDK,
   Asset,
-  AssetUpload,
   ListPage,
   SuperHSProduct,
   HSKitProduct,
@@ -22,10 +21,12 @@ import { Router } from '@angular/router'
 import { DomSanitizer } from '@angular/platform-browser'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import { Location } from '@angular/common'
-import { Buyer, OcBuyerService } from '@ordercloud/angular-sdk'
+import { Buyer, OcBuyerService, Product } from '@ordercloud/angular-sdk'
 import { TabIndexMapper } from './tab-mapper'
-import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { FileHandle } from '@app-seller/models/file-upload.types'
+import { AssetType } from '@app-seller/models/Asset.types'
+import { AssetService } from '@app-seller/shared/services/assets/asset.service'
+import { Products } from 'ordercloud-javascript-sdk'
 @Component({
   selector: 'app-kits-edit',
   templateUrl: './kits-edit.component.html',
@@ -73,7 +74,8 @@ export class KitsEditComponent implements OnInit {
     private ocBuyerService: OcBuyerService,
     private kitService: KitService,
     private sanitizer: DomSanitizer,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private assetService: AssetService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -118,8 +120,8 @@ export class KitsEditComponent implements OnInit {
   async refreshProductData(product: HSKitProduct): Promise<void> {
     this.kitProductEditable = JSON.parse(JSON.stringify(product))
     this.kitProductStatic = JSON.parse(JSON.stringify(product))
-    this.staticContent = product.Attachments
-    this.images = product.Images
+    this.staticContent = (product.Product as any).xp.Documents
+    this.images = (product.Product as any).xp.Images
     this.setForms(product)
     this.isCreatingNew = this.kitService.checkIfCreatingNew()
     if (!this.isCreatingNew) await this.getProductsInKit(product)
@@ -418,72 +420,64 @@ export class KitsEditComponent implements OnInit {
     this.imageFiles = this.imageFiles.concat(files)
     this.checkForChanges()
   }
+
   async addDocuments(files: FileHandle[], productID: string): Promise<void> {
-    let superProduct
-    for (const file of files) {
-      superProduct = await this.uploadAsset(productID, file, true)
+    const accessToken = await this.appAuthService.fetchToken().toPromise()
+    const [documentAssets, currentProduct] = await Promise.all([
+      this.assetService.uploadDocumentFiles(files),
+      HeadStartSDK.Products.Get(productID, accessToken)
+    ])
+    const patchObj = {
+      xp: {
+        Documents: [
+          ...((currentProduct?.Product?.xp as any)?.Documents || []),
+          ...documentAssets
+        ]
+      }
+    }
+    var superProduct: HSKitProduct = {
+      ...currentProduct,
+      Product: await Products.Patch(productID, patchObj)
     }
     this.staticContentFiles = []
     // Only need the `|| {}` to account for creating new product where this._superHSProductStatic doesn't exist yet.
     superProduct = Object.assign(this.kitProductStatic || {}, superProduct)
     this.refreshProductData(superProduct)
   }
+
   async addImages(files: FileHandle[], productID: string): Promise<void> {
-    let superProduct
-    for (const file of files) {
-      superProduct = await this.uploadAsset(productID, file)
+    const accessToken = await this.appAuthService.fetchToken().toPromise()
+    const [imgAssets, currentProduct] = await Promise.all([
+      this.assetService.uploadImageFiles(files),
+      HeadStartSDK.Products.Get(productID, accessToken)
+    ]) 
+    const patchObj = {
+      xp: {
+        Images: [
+          ...((currentProduct?.Product?.xp as any)?.Images || []),
+          ...imgAssets
+        ]
+      }
+    }
+    var superProduct: HSKitProduct = {
+      ...currentProduct,
+      Product: await Products.Patch(productID, patchObj)
     }
     this.imageFiles = []
     // Only need the `|| {}` to account for creating new product where this._superHSProductStatic doesn't exist yet.
     superProduct = Object.assign(this.kitProductStatic || {}, superProduct)
     this.refreshProductData(superProduct)
   }
-  async uploadAsset(
-    productID: string,
-    file: FileHandle,
-    isAttachment = false
-  ): Promise<SuperHSProduct> {
-    const accessToken = await this.appAuthService.fetchToken().toPromise()
-    const asset = {
-      Active: true,
-      Title: isAttachment ? 'Product_Attachment' : null,
-      File: file.File,
-      FileName: file.Filename,
-    } as AssetUpload
-    const newAsset: Asset = await ContentManagementClient.Assets.Upload(
-      asset,
-      accessToken
-    )
-    await ContentManagementClient.Assets.SaveAssetAssignment(
-      { ResourceType: 'Products', ResourceID: productID, AssetID: newAsset.ID },
-      accessToken
-    )
-    return await HeadStartSDK.Products.Get(productID, accessToken)
-  }
 
-  async removeFile(file: Asset): Promise<void> {
-    const accessToken = await this.appAuthService.fetchToken().toPromise()
-    // Remove the image assignment, then remove the image
-    await ContentManagementClient.Assets.DeleteAssetAssignment(
-      file.ID,
-      this.kitProductStatic.ID,
-      'Products',
-      null,
-      null,
-      accessToken
-    )
-    await ContentManagementClient.Assets.Delete(file.ID, accessToken)
-    if (file.Type === 'Image') {
-      this.kitProductStatic.Images = this.kitProductStatic.Images.filter(
-        (i) => i.ID !== file.ID
-      )
-    } else {
-      this.kitProductStatic.Attachments = this.kitProductStatic.Attachments.filter(
-        (a) => a.ID !== file.ID
-      )
-    }
+  async removeFile(file: Asset, assetType: AssetType): Promise<void> {
+    this.kitProductStatic.Product = (await this.assetService.deleteAssetUpdateProduct(
+      this.kitProductStatic.Product,
+      file.Url,
+      assetType
+    ) as Product)
     this.refreshProductData(this.kitProductStatic)
   }
+
   unstageFile(index: number, fileType: string): void {
     if (fileType === 'image') {
       this.imageFiles.splice(index, 1)

@@ -3,16 +3,13 @@ import {
   Input,
   Output,
   EventEmitter,
-  ChangeDetectorRef,
   OnChanges,
   OnInit,
-  Inject,
   SimpleChanges,
 } from '@angular/core'
 import { get as _get } from 'lodash'
 import { FormGroup, FormControl } from '@angular/forms'
 import { SupplierService } from '../supplier.service'
-import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 import {
   ListPage,
@@ -26,19 +23,15 @@ import {
   faExclamationCircle,
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons'
-import { applicationConfiguration } from '@app-seller/config/app.config'
-import { ToastrService } from 'ngx-toastr'
 import { User, OcSupplierUserService, Buyer } from '@ordercloud/angular-sdk'
 import { Buyers, Supplier, Suppliers } from 'ordercloud-javascript-sdk'
 import { Router } from '@angular/router'
-import { AppConfig } from '@app-seller/models/environment.types'
 import { FileHandle } from '@app-seller/models/file-upload.types'
 import {
   SupportedCurrencies,
   SupportedRates,
 } from '@app-seller/models/currency-geography.types'
-import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
-import { getAssetIDFromUrl } from '@app-seller/shared/services/image.helper'
+import { getAssetIDFromUrl } from '@app-seller/shared/services/assets/asset.helper'
 @Component({
   selector: 'app-supplier-edit',
   templateUrl: './supplier-edit.component.html',

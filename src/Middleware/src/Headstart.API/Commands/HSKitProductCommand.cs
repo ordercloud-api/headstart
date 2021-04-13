@@ -21,8 +21,6 @@ namespace Headstart.API.Commands.Crud
         Task<HSKitProduct> Post(HSKitProduct kitProduct, string token);
         Task<HSKitProduct> Put(string id, HSKitProduct kitProduct, string token);
         Task Delete(string id, string token);
-        Task<List<Asset>> GetProductImages(string productID, string token);
-        Task<List<Asset>> GetProductAttachments(string productID, string token);
     }
 
     public class HSKitProductCommand : IHSKitProductCommand
@@ -30,36 +28,25 @@ namespace Headstart.API.Commands.Crud
         private readonly IOrderCloudClient _oc;
         private readonly ICMSClient _cms;
         private readonly IMeProductCommand _meProductCommand;
+        private readonly IAssetClient _assetClient;
 
         public HSKitProductCommand(
             AppSettings settings,
             ICMSClient cms,
             IOrderCloudClient elevatedOc,
-            IMeProductCommand meProductCommand
+            IMeProductCommand meProductCommand,
+            IAssetClient assetClient
         )
         {
             _cms = cms;
             _oc = elevatedOc;
             _meProductCommand = meProductCommand;
+            _assetClient = assetClient;
         }
 
-        public async Task<List<Asset>> GetProductImages(string productID, string token)
-        {
-            var assets = await _cms.Assets.ListAssets(ResourceType.Products, productID, new ListArgsPageOnly() { PageSize = 100}, token);
-            var images = assets.Items.Where(a => a.Type == AssetType.Image).ToList();
-            return images;
-        }
-        public async Task<List<Asset>> GetProductAttachments(string productID, string token)
-        {
-            var assets = await _cms.Assets.ListAssets(ResourceType.Products, productID, new ListArgsPageOnly() { PageSize = 100 }, token);
-            var attachments = assets.Items.Where(a => a.Title == "Product_Attachment").ToList();
-            return attachments;
-        }
         public async Task<HSKitProduct> Get(string id, string token)
         {
-            var _product = await _oc.Products.GetAsync<Product>(id, token);
-            var _images = GetProductImages(id, token);
-            var _attachments = GetProductAttachments(id, token);
+            var _product = await _oc.Products.GetAsync<HSProduct>(id, token);
             var _productAssignments = await _cms.Documents.Get<HSKitProductAssignment>("HSKitProductAssignment", _product.ID, token);
 
             return new HSKitProduct
@@ -67,24 +54,18 @@ namespace Headstart.API.Commands.Crud
                 ID = _product.ID,
                 Name = _product.Name,
                 Product = _product,
-                Images = await _images,
-                Attachments = await _attachments,
                 ProductAssignments = await _getKitDetails(_productAssignments.Doc, token)
             };
         }
         public async Task<HSMeKitProduct> GetMeKit(string id, VerifiedUserContext user)
         {
             var _product = await _oc.Me.GetProductAsync<HSMeProduct>(id, user.AccessToken);
-            var _images = GetProductImages(id, user.AccessToken);
-            var _attachments = GetProductAttachments(id, user.AccessToken);
             var _productAssignments = await _cms.Documents.Get<HSMeKitProductAssignment>("HSKitProductAssignment", _product.ID, user.AccessToken);
             var meKitProduct = new HSMeKitProduct
             {
                 ID = _product.ID,
                 Name = _product.Name,
                 Product = _product,
-                Images = await _images,
-                Attachments = await _attachments,
                 ProductAssignments = await _getMeKitDetails(_productAssignments.Doc, user.AccessToken)
             };
             return await _meProductCommand.ApplyBuyerPricing(meKitProduct, user);
@@ -97,16 +78,12 @@ namespace Headstart.API.Commands.Crud
 
             await Throttler.RunAsync(_kitProducts.Items, 100, 10, async product =>
             {
-                var parentProduct = await _oc.Products.GetAsync(product.ID);
-                var _images = GetProductImages(product.ID, token);
-                var _attachments = GetProductAttachments(product.ID, token);
+                var parentProduct = await _oc.Products.GetAsync<HSProduct>(product.ID);
                 _kitProductList.Add(new HSKitProduct
                 {
                     ID = parentProduct.ID,
                     Name = parentProduct.Name,
                     Product = parentProduct,
-                    Images = await _images,
-                    Attachments = await _attachments,
                     ProductAssignments = await _getKitDetails(product.Doc, token)
                 });
             });
@@ -118,7 +95,7 @@ namespace Headstart.API.Commands.Crud
         }
         public async Task<HSKitProduct> Post(HSKitProduct kitProduct, string token)
         {
-            var _product = await _oc.Products.CreateAsync<Product>(kitProduct.Product, token);
+            var _product = await _oc.Products.CreateAsync<HSProduct>(kitProduct.Product, token);
             var kitProductDoc = new Document<HSKitProductAssignment>();
             kitProductDoc.ID = _product.ID;
             kitProductDoc.Doc = kitProduct.ProductAssignments;
@@ -128,28 +105,22 @@ namespace Headstart.API.Commands.Crud
                 ID = _product.ID,
                 Name = _product.Name,
                 Product = _product,
-                Images = new List<Asset>(),
-                Attachments = new List<Asset>(),
                 ProductAssignments = await _getKitDetails(_productAssignments.Doc, token)
             };
         }
 
         public async Task<HSKitProduct> Put(string id, HSKitProduct kitProduct, string token)
         {
-            var _updatedProduct = await _oc.Products.SaveAsync<Product>(kitProduct.Product.ID, kitProduct.Product, token);
+            var _updatedProduct = await _oc.Products.SaveAsync<HSProduct>(kitProduct.Product.ID, kitProduct.Product, token);
             var kitProductDoc = new Document<HSKitProductAssignment>();
             kitProductDoc.ID = _updatedProduct.ID;
             kitProductDoc.Doc = kitProduct.ProductAssignments;
             var _productAssignments = await _cms.Documents.Save<HSKitProductAssignment>("HSKitProductAssignment", _updatedProduct.ID, kitProductDoc, token);
-            var _images = await GetProductImages(_updatedProduct.ID, token);
-            var _attachments = await GetProductAttachments(_updatedProduct.ID, token);
             return new HSKitProduct
             {
                 ID = _updatedProduct.ID,
                 Name = _updatedProduct.Name,
                 Product = _updatedProduct,
-                Images = _images,
-                Attachments = _attachments,
                 ProductAssignments = await _getKitDetails(_productAssignments.Doc, token)
             };
         }
@@ -170,8 +141,6 @@ namespace Headstart.API.Commands.Crud
                     p.Product = await productRequest;
                     p.Specs = await specListRequest;
                     p.Variants = await variantListRequest;
-                    p.Images = await GetProductImages(p.ID, token);
-                    p.Attachments = await GetProductAttachments(p.ID, token);
 
                 } catch(Exception)
                 {
@@ -222,8 +191,6 @@ namespace Headstart.API.Commands.Crud
                     p.Product = product;
                     p.Specs = await specListRequest;
                     p.Variants = await variantListRequest;
-                    p.Images = await GetProductImages(p.ID, token);
-                    p.Attachments = await GetProductAttachments(p.ID, token);
                 }
                 catch (Exception)
                 {
@@ -238,16 +205,21 @@ namespace Headstart.API.Commands.Crud
 
         public async Task Delete(string id, string token)
         {
-            var product = await _oc.Products.GetAsync(id);
-            var _images = await GetProductImages(id, token);
-            var _attachments = await GetProductAttachments(id, token);
+            var tasks = new List<Task>()
+            {
+                _oc.Products.DeleteAsync(id, token)
+            };
+            var product = await _oc.Products.GetAsync<HSProduct>(id);
+            if(product?.xp?.Images?.Count() > 0 )
+            {
+                tasks.Add(Throttler.RunAsync(product.xp.Images, 100, 5, i => _assetClient.DeleteAssetByUrl(i.Url)));
+            }
+            if(product?.xp?.Documents.Count() > 0)
+            {
+                tasks.Add(Throttler.RunAsync(product.xp.Documents, 100, 5, d => _assetClient.DeleteAssetByUrl(d.Url)));
+            }
             // Delete images, attachments, and assignments associated with the requested product
-            await Task.WhenAll(
-                Throttler.RunAsync(_images, 100, 5, i => _cms.Assets.Delete(i.ID, token)),
-                Throttler.RunAsync(_attachments, 100, 5, i => _cms.Assets.Delete(i.ID, token)),
-                _cms.Documents.Delete("HSKitProductAssignment", product.ID, token),
-            _oc.Products.DeleteAsync(id, token)
-            );
+            await Task.WhenAll(tasks);
         }
     }
 }
