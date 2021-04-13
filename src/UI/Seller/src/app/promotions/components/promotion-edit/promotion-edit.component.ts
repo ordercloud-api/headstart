@@ -491,9 +491,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
 
   isSaveBtnDisabled(): boolean {
     if (!this.areChanges && this.isCreatingNew) {
-      if (this.resourceForm?.status === 'INVALID' || this.dataIsSaving) {
-        return true
-      }
+      return this.resourceForm?.status === 'INVALID' || this.dataIsSaving
     } else if (!this.areChanges && !this.isCreatingNew) {
       return true
     } else {
