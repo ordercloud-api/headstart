@@ -11,7 +11,6 @@ using System.IO;
 using Headstart.Common.Services;
 using Headstart.Common;
 using ordercloud.integrations.exchangerates;
-using Headstart.Common.Models;
 using OrderCloud.Catalyst;
 using Headstart.Common.Services.Portal.Models;
 
@@ -414,7 +413,13 @@ namespace Headstart.API.Commands
         private Task<ApiClient> GetClientRequest(List<ApiClient> existingClients, ApiClient client, string token)
         {
             var match = existingClients.Find(c => c.AppName == client.AppName);
-            return match != null ? _oc.ApiClients.SaveAsync(match.ID, client, token) : _oc.ApiClients.CreateAsync(client, token);
+            if(match == null)
+            {
+                return _oc.ApiClients.CreateAsync(client, token);
+            }
+
+            client.ClientSecret = match.ClientSecret; // don't overwrite client secret
+            return _oc.ApiClients.SaveAsync(match.ID, client, token);
         }
 
         private async Task CreateMessageSenders(EnvironmentSeed seed, string accessToken)
