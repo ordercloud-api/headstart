@@ -21,7 +21,6 @@ namespace Headstart.Models
         public PriceSchedule PriceSchedule { get; set; }
         public IList<Spec> Specs { get; set; }
         public IList<HSVariant> Variants { get; set; }
-        public IList<Asset> Attachments { get; set; }
     }
 
     [SwaggerModel]
@@ -32,8 +31,6 @@ namespace Headstart.Models
         public PriceSchedule PriceSchedule { get; set; }
         public IList<Spec> Specs { get; set; }
         public IList<HSVariant> Variants { get; set; }
-        public IList<Asset> Images { get; set; }
-        public IList<Asset> Attachments { get; set; }
     }
 
 
@@ -83,15 +80,23 @@ namespace Headstart.Models
         public bool PromotionEligible { get; set; }
         public bool FreeShipping { get; set; }
         public string FreeShippingMessage { get; set; }
-        public List<ImageData> Images { get; set; }
+        public List<ImageAsset> Images { get; set; }
+        public List<DocumentAsset> Documents { get; set; }
     }
 
     [SwaggerModel]
-    public class ImageData
+    public class ImageAsset
     {
         public string Url { get; set; }
         public string ThumbnailUrl { get; set; }
     };
+
+    [SwaggerModel]
+    public class DocumentAsset
+    {
+        public string Url { get; set; }
+        public string FileName { get; set; }
+    }
 
 	[JsonConverter(typeof(StringEnumConverter))]
 	public enum ProductType

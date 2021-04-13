@@ -38,7 +38,7 @@ import {
   SupportedRates,
 } from '@app-seller/models/currency-geography.types'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
-import { getImageIDFromUrl } from '@app-seller/shared/services/image.helper'
+import { getAssetIDFromUrl } from '@app-seller/shared/services/image.helper'
 @Component({
   selector: 'app-supplier-edit',
   templateUrl: './supplier-edit.component.html',
@@ -216,8 +216,8 @@ export class SupplierEditComponent implements OnInit, OnChanges {
       this.logoLoading = true
       const file: File = event?.target?.files[0]
       if((this._supplierEditable?.xp as any)?.Image?.Url) {
-        await this.middleware.deleteImage(
-          getImageIDFromUrl((this._supplierEditable?.xp as any)?.Image?.Url)
+        await this.middleware.deleteAsset(
+          getAssetIDFromUrl((this._supplierEditable?.xp as any)?.Image?.Url)
           )
       }
       // Then upload logo asset
@@ -250,7 +250,7 @@ export class SupplierEditComponent implements OnInit, OnChanges {
     this.logoLoading = true
     try {
       if((this._supplierEditable.xp as any)?.Image?.Url) {
-        await this.middleware.deleteImage(getImageIDFromUrl((this._supplierEditable.xp as any)?.Image?.Url))
+        await this.middleware.deleteAsset(getAssetIDFromUrl((this._supplierEditable.xp as any)?.Image?.Url))
         const patchObj = {
           xp: {
             Image: null

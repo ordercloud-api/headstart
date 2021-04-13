@@ -1164,7 +1164,7 @@
           >ADMIN.PRODUCT_EDIT.IMAGES_AND_DOCUMENTS
           <span class="badge badge-pill badge-info">{{
             _superHSProductEditable?.Product?.xp?.Images?.length + 
-              _superHSProductEditable?.Attachments?.length +
+              _superHSProductEditable?.Product?.xp.Documents?.length +
               imageFiles?.length +
               staticContentFiles?.length
           }}</span></a
@@ -1232,7 +1232,7 @@
                           <button
                             type="button"
                             class="btn brand-button--danger"
-                            (click)="removeFile(image)"
+                            (click)="removeFile(image, 'image')"
                             (click)="modal.dismiss()"
                             translate
                           >
@@ -1392,7 +1392,7 @@
                             <button
                               type="button"
                               class="btn brand-button--danger"
-                              (click)="removeFile(file)"
+                              (click)="removeFile(file, 'document')"
                               (click)="modal.dismiss()"
                               translate
                             >

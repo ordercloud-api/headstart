@@ -1,5 +1,6 @@
 ﻿using Headstart.Common.Extensions;
 using Headstart.Common.Services.CMS.Models;
+using Headstart.Models;
 using ordercloud.integrations.library;
 using System;
 using System.Collections.Generic;
@@ -10,25 +11,25 @@ using System.Threading.Tasks;
 
 namespace Headstart.Common.Services.CMS
 {
-    public interface IImageClient
+    public interface IAssetClient
     {
-        Task<ImageUrls> CreateImage(AssetUpload asset);
+        Task<ImageAsset> CreateImage(AssetUpload asset);
         Task DeleteAsset(string id);
-        Task<string> CreateDocument(AssetUpload asset);
+        Task<DocumentAsset> CreateDocument(AssetUpload asset);
     }
 
-    public class IAssetClient : IImageClient
+    public class AssetClient : IAssetClient
     {
         private readonly IOrderCloudIntegrationsBlobService _blob;
         private readonly AppSettings _settings;
 
-        public IAssetClient(IOrderCloudIntegrationsBlobService blob, AppSettings settings)
+        public AssetClient(IOrderCloudIntegrationsBlobService blob, AppSettings settings)
         {
             _blob = blob;
             _settings = settings;
         }
 
-        public async Task<ImageUrls> CreateImage(AssetUpload asset)
+        public async Task<ImageAsset> CreateImage(AssetUpload asset)
         {
             var container = _blob.Container.Name;
             var assetGuid = Guid.NewGuid().ToString();
@@ -49,19 +50,23 @@ namespace Headstart.Common.Services.CMS
                     medium.Dispose();
                 }
             }
-            return new ImageUrls
+            return new ImageAsset
             {
                 Url = $"{GetBaseUrl()}{container}/{assetGuid}",
                 ThumbnailUrl = $"{GetBaseUrl()}{container}/{assetGuid}-s"
             };
         }
 
-        public async Task<string> CreateDocument(AssetUpload asset)
+        public async Task<DocumentAsset> CreateDocument(AssetUpload asset)
         {
             var container = _blob.Container.Name;
             var assetGuid = Guid.NewGuid().ToString();
             await _blob.Save(assetGuid, asset.File, "application/pdf");
-            return $"{GetBaseUrl()}{container}/{assetGuid}";
+            return new DocumentAsset()
+            {
+                FileName = asset.Filename,
+                Url = $"{GetBaseUrl()}{container}/{assetGuid}"
+            };
         }
 
         public async Task DeleteAsset(string id)

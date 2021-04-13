@@ -19,7 +19,7 @@ import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { UserContext } from '@app-seller/models/user.types'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
-import { getImageIDFromUrl } from '@app-seller/shared/services/image.helper'
+import { getAssetIDFromUrl } from '@app-seller/shared/services/image.helper'
 
 export abstract class AccountContent implements AfterViewChecked, OnInit {
   activePage: string
@@ -145,7 +145,7 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
     this.profileImgLoading = true
     const file: File = event?.target?.files[0]
     if(this.user?.xp?.Image?.Url) {
-      await this.middleware.deleteImage(getImageIDFromUrl(this.user.xp.Image.Url))
+      await this.middleware.deleteAsset(getAssetIDFromUrl(this.user.xp.Image.Url))
     }
     try {
       const data = new FormData()
@@ -207,7 +207,7 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
   async removeProfileImg(): Promise<void> {
     this.profileImgLoading = true
     try {
-      await this.middleware.deleteImage(getImageIDFromUrl(this.user?.xp?.Image?.Url))
+      await this.middleware.deleteAsset(getAssetIDFromUrl(this.user?.xp?.Image?.Url))
       const patchObj = {
         xp: {
           Image: null

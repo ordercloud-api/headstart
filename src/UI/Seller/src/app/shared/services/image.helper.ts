@@ -44,7 +44,7 @@ export const getPrimaryLineItemImage = (
   return getProductMediumImageUrl(li.Product)
 }
 
-export const getImageIDFromUrl = (url: string): string => {
+export const getAssetIDFromUrl = (url: string): string => {
     const split = url.split("/")
     return split[split.length-1]
   }

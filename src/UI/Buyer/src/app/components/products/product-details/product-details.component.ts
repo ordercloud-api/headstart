@@ -79,7 +79,7 @@ export class OCMProductDetails implements OnInit {
   @Input() set product(superProduct: SuperHSProduct) {
     this._superProduct = superProduct
     this._product = superProduct.Product
-    this.attachments = superProduct?.Attachments
+    this.attachments = (superProduct?.Product?.xp as any)?.Documents
     this.priceBreaks = superProduct.PriceSchedule?.PriceBreaks
     this.unitPrice =
       this.priceBreaks && this.priceBreaks.length
