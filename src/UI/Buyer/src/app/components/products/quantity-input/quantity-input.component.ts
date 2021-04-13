@@ -28,7 +28,7 @@ export class OCMQuantityInput implements OnInit, OnChanges {
   @Input() product: HSMeProduct
   @Input() selectedVariant: HSVariant
   @Input() li: HSLineItem
-  @Input() groupedLis: HSLineItem[]
+  @Input() groupedLineItems: HSLineItem[]
   @Input() variantInventory?: number
   @Input() variantID: string
   @Input() isAddingToCart: boolean
@@ -118,13 +118,13 @@ export class OCMQuantityInput implements OnInit, OnChanges {
     if (!this.existingQty) {
       this.emit(this.form.get('quantity').value)
     }
-    if (this.groupedLis && this.li) {
+    if (this.groupedLineItems && this.li) {
       // Filter through the lis down to ProductIDs matching the qty inputs li.Product.ID
-      this.cumulativeQuantity = this.groupedLis
+      this.cumulativeQuantity = this.groupedLineItems
         .filter((li) => li.Product?.ID === this.li?.Product?.ID)
         .map((f) => f.Quantity)
         .reduce((acc, curr) => acc + curr)
-      this.qtyPreUpdate = this.groupedLis.find(
+      this.qtyPreUpdate = this.groupedLineItems.find(
         (li) => li.ID === this.li.ID
       ).Quantity
     }
