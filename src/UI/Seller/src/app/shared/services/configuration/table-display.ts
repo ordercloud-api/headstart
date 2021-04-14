@@ -3,8 +3,6 @@ import { ResourceConfigurationDictionary } from '@app-seller/models/table-displa
 import { PRODUCT_IMAGE_PATH_STRATEGY } from '@app-seller/products/product-image.helper'
 import { SUPPLIER_LOGO_PATH_STRATEGY } from '@app-seller/suppliers/supplier-logo.helper'
 
-
-
 export const SUMMARY_RESOURCE_INFO_PATHS_DICTIONARY: SummaryResourceInfoPathsDictionary = {
   suppliers: {
     toPrimaryHeader: 'Name',
@@ -109,8 +107,6 @@ export const SUMMARY_RESOURCE_INFO_PATHS_DICTIONARY: SummaryResourceInfoPathsDic
     toExpandable: false,
   },
 }
-
-
 
 export const STRING_WITH_IMAGE = 'STRING_WITH_IMAGE'
 export const BOOLEAN = 'BOOLEAN'
@@ -406,6 +402,12 @@ export const FULL_TABLE_RESOURCE_DICTIONARY: ResourceConfigurationDictionary = {
         type: BOOLEAN,
         sortable: false,
         queryRestriction: 'OrderDirection=Incoming',
+      },
+      {
+        path: 'xp.HasSellerProducts',
+        header: 'ADMIN.HEADERS.SELLER_OWNED_PRODUCTS',
+        type: BOOLEAN,
+        sortable: false,
       },
       {
         path: 'xp.OrderReturnInfo.Comment',

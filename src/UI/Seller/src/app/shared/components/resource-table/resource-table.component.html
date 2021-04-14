@@ -207,7 +207,7 @@
                       value="{{ option.Value }}"
                       translate
                     >
-                      {{ option.Text | yesNo }}
+                      {{ option.Value | yesNo }}
                     </option>
                     <option
                       *ngIf="!isBoolean(option.Value)"
