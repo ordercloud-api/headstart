@@ -5,7 +5,7 @@ import { Component, Inject } from '@angular/core'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { Observable } from 'rxjs'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
-import { AssetUpload, HeadStartSDK } from '@ordercloud/headstart-sdk'
+import { AssetUpload } from '@ordercloud/headstart-sdk'
 import { getPsHeight } from '@app-seller/shared/services/dom.helper'
 import { NgxSpinnerService } from 'ngx-spinner'
 import { AppConfig } from '@app-seller/models/environment.types'
@@ -128,28 +128,34 @@ export class UploadShipmentsComponent {
     assetType: AssetType
   ): Promise<any> {
     if(assetType === 'image') {
-      const [imgURls, currentProduct] = await Promise.all([
+      const [imageData, currentProduct] = await Promise.all([
         this.middleware.uploadImage(mapFileToFormData(file)),
         Products.Get(productID)
       ])
+      const patchObj = {
+        xp: {
+          Images: [
+            ...(currentProduct?.xp?.Images || []),
+            imageData
+          ]
+        }
+      }
+      return await Products.Patch(productID, patchObj)
+    } else {
+      const [documentData, currentProduct] = await Promise.all([
+        this.middleware.uploadDocument(mapFileToFormData(file)),
+        Products.Get(productID)
+      ])
+      const patchObj = {
+        xp: {
+          Documents: [
+            ...(currentProduct?.xp?.Documents || []),
+            documentData
+          ]
+        }
+      }
+      return await Products.Patch(productID, patchObj)
     }
-
-    const accessToken = await this.appAuthService.fetchToken().toPromise()
-    const asset = {
-      Active: true,
-      Title: isAttachment ? 'Product_Attachment' : null,
-      File: file.File,
-      FileName: file.Filename,
-    } as AssetUpload
-    // const newAsset: Asset = await ContentManagementClient.Assets.Upload(
-    //   asset,
-    //   accessToken
-    // )
-    // await ContentManagementClient.Assets.SaveAssetAssignment(
-    //   { ResourceType: 'Products', ResourceID: productID, AssetID: newAsset.ID },
-    //   accessToken
-    // )
-    return await HeadStartSDK.Products.Get(productID, accessToken)
   }
 
   getColumnHeader(columnNumber: number): string {
