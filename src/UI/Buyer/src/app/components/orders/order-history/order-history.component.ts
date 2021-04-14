@@ -9,7 +9,11 @@ import { ListPage } from 'ordercloud-javascript-sdk'
 import { takeWhile } from 'rxjs/operators'
 import { HSOrder } from '@ordercloud/headstart-sdk'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
-import { OrderFilters, HeadstartOrderStatus, OrderViewContext } from 'src/app/models/order.types'
+import {
+  OrderFilters,
+  HeadstartOrderStatus,
+  OrderViewContext,
+} from 'src/app/models/order.types'
 import { RouteConfig } from 'src/app/models/shared.types'
 
 @Component({
@@ -70,6 +74,12 @@ export class OCMOrderHistory implements OnInit, AfterViewInit, OnDestroy {
 
   filterByFavorite(showOnlyFavorites: boolean): void {
     this.context.orderHistory.filters.filterByFavorites(showOnlyFavorites)
+  }
+
+  filterBySellerProduct(showOnlySellerProducts: boolean): void {
+    this.context.orderHistory.filters.filterBySellerProducts(
+      showOnlySellerProducts
+    )
   }
 
   ngOnDestroy(): void {

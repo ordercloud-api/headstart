@@ -205,6 +205,7 @@ import { AppConfig } from './models/environment.types'
 import { OCMKitLineitemTable } from './components/cart/lineitem-table/kit-lineitem-table/kit-lineitem-table.component'
 import { BaseResolveService } from './services/base-resolve/base-resolve.service'
 import { ShipMethodNameMapperPipe } from './pipes/ship-method-name/ship-method-name.pipe'
+import { OCMOrderSellerOwnedProductFilter } from './components/orders/order-seller-product-filter/seller-product-filter.component'
 
 export function HttpLoaderFactory(
   http: HttpClient,
@@ -475,6 +476,10 @@ export class AppModule {
     this.buildWebComponent(OCMModal, 'ocm-modal')
     this.buildWebComponent(OCMOrderStatusIcon, 'ocm-order-status-icon')
     this.buildWebComponent(OCMOrderStatusFilter, 'ocm-order-status-filter')
+    this.buildWebComponent(
+      OCMOrderSellerOwnedProductFilter,
+      'ocm-seller-product-filter'
+    )
     this.buildWebComponent(OCMOrderDateFilter, 'ocm-order-date-filter')
     this.buildWebComponent(OCMOrderLocationFilter, 'ocm-order-location-filter')
     this.buildWebComponent(OCMOrderList, 'ocm-order-list')

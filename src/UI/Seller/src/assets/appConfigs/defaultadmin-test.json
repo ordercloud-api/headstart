@@ -1,18 +1,19 @@
 {
   "hostedApp": true,
-  "sellerID": "my-seller-id",
-  "sellerName": "Default Admin",
-  "appname": "Default Admin",
-  "clientID": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-  "middlewareUrl": "https://my-default-admin-test.com",
+  "sellerID": "HEADSTARTDEMO_TEST",
+  "sellerName": "HEADSTARTDEMO Admin",
+  "clientID": "3330614E-D468-4694-AE87-23DD53872E83",
+  "middlewareUrl": "https://headstartdemo-middleware-test.azurewebsites.net",
   "cmsUrl": "https://ordercloud-cms-test.azurewebsites.net",
-  "translateBlobUrl": "https://my-translation-files/ngx-translate/i18n/",
-  "blobStorageUrl": "https://myblobstoragecontainer.blob.core.windows.net",
+  "appname": "Headstart Demo Admin",
+  "translateBlobUrl": "https://headstartdemo.blob.core.windows.net/ngx-translate/i18n/",
+  "blobStorageUrl": "https://headstartdemo.blob.core.windows.net",
   "orderCloudApiUrl": "https://sandboxapi.ordercloud.io",
+  "orderCloudApiVersion": "v1",
   "buyerConfigs": {
     "Default Buyer": {
-      "clientID": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-      "buyerUrl": "https://my-default-buyer-test.com/"
+      "clientID": "4E288BF1-5B2B-4558-83AD-0C5EAD429935",
+      "buyerUrl": "https://headstartdemo-buyer-ui-test.azurewebsites.net/"
     }
   },
   "superProductFieldsToMonitor": []

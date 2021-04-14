@@ -4,15 +4,15 @@ import { Router, Params, ActivatedRoute } from '@angular/router'
 import { CurrentUserService } from '../current-user/current-user.service'
 import { Me, Sortable, Tokens } from 'ordercloud-javascript-sdk'
 import { filter } from 'rxjs/operators'
-import {
-  HeadStartSDK,
-  ListPage,
-  HSOrder,
-} from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, ListPage, HSOrder } from '@ordercloud/headstart-sdk'
 import { ListArgs } from '@ordercloud/headstart-sdk'
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
 import { AppConfig } from 'src/app/models/environment.types'
-import { OrderFilters, OrderViewContext, HeadstartOrderStatus } from 'src/app/models/order.types'
+import {
+  OrderFilters,
+  OrderViewContext,
+  HeadstartOrderStatus,
+} from 'src/app/models/order.types'
 
 @Injectable({
   providedIn: 'root',
@@ -98,6 +98,12 @@ export class OrderFilterService {
     this.patchFilterState({
       fromDate: fromDate || undefined,
       toDate: toDate || undefined,
+    })
+  }
+
+  filterBySellerProducts(showOnlySellerOwnedProducts: boolean): void {
+    this.patchFilterState({
+      hasSellerProducts: showOnlySellerOwnedProducts || undefined,
     })
   }
 
@@ -219,6 +225,7 @@ export class OrderFilterService {
         from,
         to,
         xp: {
+          HasSellerProducts: undefined,
           SubmittedOrderStatus: undefined,
         },
         Status: undefined,
