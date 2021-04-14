@@ -126,7 +126,6 @@ namespace Headstart.API
                 .Inject<ISupportAlertService>()
                 .Inject<IOrderCalcService>()
                 .Inject<ISupplierApiClientHelper>()
-                .AddSingleton<ICMSClient>(new CMSClient(new CMSClientConfig() { BaseUrl = _settings.CMSSettings.BaseUrl }))
                 .AddSingleton<ISendGridClient>(x => new SendGridClient(_settings.SendgridSettings.ApiKey))
                 .AddSingleton<IFlurlClientFactory>(x => flurlClientFactory)
                 .AddSingleton<DownloadReportCommand>()
