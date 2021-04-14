@@ -2,9 +2,9 @@
   "ALIAS": {
     "ALL_BUYERS": "All Buyers",
     "ALL_SUPPLIERS": "All Suppliers",
-    "BUYER": "Brand",
-    "BUYER_LOCATION": "Buyer Location",
-    "BUYER_LOCATIONS": "Buyer Locations",
+    "BUYER": "Buyer",
+    "BUYER_LOCATION": "Buyer Group",
+    "BUYER_LOCATIONS": "Buyer Groups",
     "BUYERS": "Buyers",
     "SELLER": "Seller",
     "SELLERS": "Sellers",
@@ -114,6 +114,7 @@
       "COMMENTS": "Comments",
       "COPY": "Copy",
       "DESCRIPTION": "Description",
+      "FROM_COMPANY_ID": "From Company ID",
       "FROM_USER_USERNAME": "From User Username",
       "HAS_CLAIMS": "Has Claims",
       "ID": "ID",
@@ -133,6 +134,7 @@
       "ALL_BUYERS": "All Buyers",
       "ALL_PRODUCTS": "All Products",
       "ALL_SUPPLIERS": "All Suppliers",
+      "ALL_USERS": "All Users",
       "APPROVAL": "Approval",
       "APPROVAL_RULES": "Approval Rules",
       "APPROVALS": "Approvals",
@@ -169,6 +171,7 @@
       "REPORTS": "Reports",
       "SALES_ORDERS": "Sales Orders",
       "SELLER_USERS": "Seller Users",
+      "SELLER_USERS_BUYER_REQUESTS": "Buyer Impersonation Requests",
       "SHIPPED_ORDERS": "Shipped Orders",
       "STOREFRONTS": "Storefronts",
       "SUPPLIERS": "Suppliers",
@@ -488,13 +491,13 @@
   "AUTHENTICATION": {
     "FORGOT_PASSWORD": {
       "HEADER": "Forgot Password",
-      "SUBHEADER": "Please provide either your email or username",
       "LOGIN": "Return to Login",
-      "SEND_EMAIL": "Send Email"
+      "SEND_EMAIL": "Send Email",
+      "SUBHEADER": "Enter Email/Username to reset password"
     },
     "LOGIN": {
       "ACCOUNT_LOGIN": "Account Login",
-      "LOGIN": "Login",
+      "LOGIN": "Login with Anytime Fitness Account",
       "NO_ACCOUNT": "Don't have an account?",
       "REMEMBER_ME": "Remember Me",
       "RESET_PASS": "Reset Password",
@@ -505,11 +508,27 @@
       "EXISTING_ACC": "Already have an account?",
       "FORGOT_PASS": "Forgot Password",
       "REGISTER": "Register",
-      "SIGN_UP": "Sign Up"
+      "SIGN_UP": "Sign Up",
+      "REQUEST_BUYER_ACCESS": "Request Buyer Access",
+      "EXISTING_USER": "Existing User"
     },
     "RESET_PASSWORD": {
       "NEW_PASSWORD": "New Password",
       "SET_PASSWORD": "Set New Password"
+    }
+  },
+  "BUYER": {
+    "HELPERMESSAGES": {
+      "BUYERGROUP": {
+        "ACTION": "Set Buyer Groups now.",
+        "MESSAGE": "Looks like this Buyer has no Buyer Groups.",
+        "WARNING": "There are no supplier addresses for this user's Home Country."
+      },
+      "CATALOG": {
+        "ACTION": "Set Catalogs now.",
+        "MESSAGE": "Looks like this buyer has no Catalogs",
+        "WARNING": "No Catalogs available for this buyer."
+      }
     }
   },
   "CART": {
@@ -518,7 +537,9 @@
       "CHECKOUT": "CHECKOUT",
       "CONTINUE_SHOPPING": "Continue Shopping",
       "EMPTY_CART": "Empty Cart",
-      "SHOPPING_CART": "Shopping Cart"
+      "INVALID_ITEMS_NOTICE": "The following will be removed from your cart. Please review your updated cart before checking out.",
+      "SHOPPING_CART": "Shopping Cart",
+      "VIEW_CART": "View Cart"
     },
     "LINEITEM_TABLE": {
       "PRICE": "Price",
@@ -547,6 +568,7 @@
       "CONFIRM": "Order Review",
       "CREATE_ACCOUNT": "Create Account",
       "GUEST_CHECKOUT": "Checkout as Guest",
+      "ORDERREFERENCE": "Order Reference Number",
       "PAYMENT": "Payment & Promotions",
       "SHIPPING_ADDRESS": "Shipping Address",
       "SHIPPING_SELECTION": "Shipping Selection",
@@ -574,7 +596,9 @@
     },
     "CHECKOUT_SHIPPING": {
       "SAVE_CONTINUE": "Save and Continue",
-      "SHIPPING_SPEED": "Make Shipping Speed Selections To Continue"
+      "NO_RATES_RETURNED_MESSAGE": "No rates returned - shipping will be calculated after the order is placed",
+      "SHIP_ESTIMATES_BASED_ON_DELIVERY": "Shipping estimates are based on delivery speed after items have been shipped by the carrier. Items requiring customization could take longer to ship.",
+      "SHIPPING_SPEED": "Shipping Speed"
     },
     "SHIPPING_SELECTION_FORM": {
       "DAY": "day",
@@ -584,8 +608,11 @@
     }
   },
   "COMMON": {
+    "ADD": "Add",
+    "APPROVE": "Approve",
     "CANCEL": "Cancel",
     "CONFIRM_PASSWORD": "Confirm Password",
+    "DECLINE": "Decline",
     "DISCARD_CHANGES": "Discard Changes",
     "EMAIL": "Email",
     "FIRST": "First Name",
@@ -593,6 +620,7 @@
     "LOGIN": "Login",
     "PASSWORD": "Password",
     "PHONE": "Phone Number",
+    "SAVE": "Save",
     "SEARCH": "Search",
     "SUBMIT": "Submit",
     "USER": "User",
@@ -647,6 +675,7 @@
       "CANCEL": "Cancel",
       "DISCARD_RETURN_REQUEST": "Discard Return Request",
       "DISCARD_CANCEL_REQUEST": "Discard Cancel Request",
+      "DOWNLOAD_AS_PDF": "Download as PDF",
       "CLAIM_STATUS": "Claim Status",
       "DETAILS": "Details",
       "FAVORITE": "Favorite",
@@ -715,7 +744,7 @@
       "PURCHASE_NOT_APPROVED": "Purchase was not approved",
       "PURCHASED_BY_MISTAKE": "Purchased by mistake",
       "PURCHASED_INCORRECT_SIZE": "Purchased incorrect size/style",
-      "RECEIVED_EXTRA_PRODUCT": "Received extra product that I didn�t buy",
+      "RECEIVED_EXTRA_PRODUCT": "Received extra product that I didn’t buy",
       "SHIPPING_BOX_DAMAGED": "Shipping box is damaged",
       "FOUND_DIFFERENT_PRODUCT": "Found a different product I lliked better",
       "FULFILLMENT_TOO_LONG": "Product took too long to fulfill"
