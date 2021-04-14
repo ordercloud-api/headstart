@@ -58,7 +58,6 @@ export interface OrderFilters {
    */
   toDate?: string
   location?: string
-  hasSellerProducts?: boolean
 }
 
 export enum OrderViewContext {

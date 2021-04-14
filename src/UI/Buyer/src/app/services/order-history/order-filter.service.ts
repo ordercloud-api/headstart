@@ -101,12 +101,6 @@ export class OrderFilterService {
     })
   }
 
-  filterBySellerProducts(showOnlySellerOwnedProducts: boolean): void {
-    this.patchFilterState({
-      hasSellerProducts: showOnlySellerOwnedProducts || undefined,
-    })
-  }
-
   clearAllFilters(): void {
     this.patchFilterState(this.getDefaultParms())
   }
@@ -225,7 +219,6 @@ export class OrderFilterService {
         from,
         to,
         xp: {
-          HasSellerProducts: undefined,
           SubmittedOrderStatus: undefined,
         },
         Status: undefined,

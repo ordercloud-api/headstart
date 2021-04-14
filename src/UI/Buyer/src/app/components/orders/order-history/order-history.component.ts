@@ -76,12 +76,6 @@ export class OCMOrderHistory implements OnInit, AfterViewInit, OnDestroy {
     this.context.orderHistory.filters.filterByFavorites(showOnlyFavorites)
   }
 
-  filterBySellerProduct(showOnlySellerProducts: boolean): void {
-    this.context.orderHistory.filters.filterBySellerProducts(
-      showOnlySellerProducts
-    )
-  }
-
   ngOnDestroy(): void {
     this.alive = false
   }
