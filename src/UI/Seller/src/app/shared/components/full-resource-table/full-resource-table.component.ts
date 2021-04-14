@@ -129,11 +129,9 @@ export class FullResourceTableComponent {
   }
 
   getImage(resource: any): string {
-    const resourceType =
-      this.resourceType === 'kitproducts' ? 'products' : this.resourceType
-    if(resourceType === 'products') {
+    if(this.resourceType === 'products') {
       return getProductSmallImageUrl(resource)
-    } else if(resourceType === 'suppliers') {
+    } else if(this.resourceType === 'suppliers') {
       return getSupplierLogoSmallUrl(resource)
     } else return ''
   }

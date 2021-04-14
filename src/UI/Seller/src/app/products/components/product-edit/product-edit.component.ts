@@ -523,7 +523,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       'Standard',
       'Quote',
       'PurchaseOrder',
-      'Kit',
     ]
   }
 

@@ -36,12 +36,6 @@ const Promotions: HSRoute = {
   route: '/promotions',
 }
 
-// const Kits: HSRoute = {
-//   rolesWithAccess: [HSRoles.HSStorefrontAdmin],
-//   title: 'Kits',
-//   route: '/kitproducts',
-// }
-
 const ProductFacets: HSRoute = {
   rolesWithAccess: [HSRoles.HSStorefrontAdmin],
   title: 'ADMIN.NAV.FACETS',

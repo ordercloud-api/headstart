@@ -4,17 +4,18 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Component, Inject } from '@angular/core'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { Observable } from 'rxjs'
-import { DomSanitizer } from '@angular/platform-browser'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
-import { Asset, AssetUpload, HeadStartSDK } from '@ordercloud/headstart-sdk'
+import { AssetUpload, HeadStartSDK } from '@ordercloud/headstart-sdk'
 import { getPsHeight } from '@app-seller/shared/services/dom.helper'
 import { NgxSpinnerService } from 'ngx-spinner'
-import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { AppConfig } from '@app-seller/models/environment.types'
 import {
   BatchProcessResult,
   FileHandle,
 } from '@app-seller/models/file-upload.types'
+import { AssetType } from '@app-seller/models/Asset.types'
+import { mapFileToFormData } from '@app-seller/shared/services/assets/asset.helper'
+import { Products } from 'ordercloud-javascript-sdk'
 
 @Component({
   selector: 'upload-shipments',
@@ -28,7 +29,7 @@ export class UploadShipmentsComponent {
     private appAuthService: AppAuthService,
     private spinner: NgxSpinnerService,
     private ocTokenService: OcTokenService,
-    private middleware: MiddlewareAPIService
+    private middleware: MiddlewareAPIService,
   ) {
     this.contentHeight = getPsHeight('base-layout-item')
   }
@@ -124,8 +125,15 @@ export class UploadShipmentsComponent {
   async uploadAsset(
     productID: string,
     file: FileHandle,
-    isAttachment = false
+    assetType: AssetType
   ): Promise<any> {
+    if(assetType === 'image') {
+      const [imgURls, currentProduct] = await Promise.all([
+        this.middleware.uploadImage(mapFileToFormData(file)),
+        Products.Get(productID)
+      ])
+    }
+
     const accessToken = await this.appAuthService.fetchToken().toPromise()
     const asset = {
       Active: true,
@@ -133,14 +141,14 @@ export class UploadShipmentsComponent {
       File: file.File,
       FileName: file.Filename,
     } as AssetUpload
-    const newAsset: Asset = await ContentManagementClient.Assets.Upload(
-      asset,
-      accessToken
-    )
-    await ContentManagementClient.Assets.SaveAssetAssignment(
-      { ResourceType: 'Products', ResourceID: productID, AssetID: newAsset.ID },
-      accessToken
-    )
+    // const newAsset: Asset = await ContentManagementClient.Assets.Upload(
+    //   asset,
+    //   accessToken
+    // )
+    // await ContentManagementClient.Assets.SaveAssetAssignment(
+    //   { ResourceType: 'Products', ResourceID: productID, AssetID: newAsset.ID },
+    //   accessToken
+    // )
     return await HeadStartSDK.Products.Get(productID, accessToken)
   }
 

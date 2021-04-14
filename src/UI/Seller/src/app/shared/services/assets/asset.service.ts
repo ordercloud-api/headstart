@@ -6,7 +6,7 @@ import {
 } from '@ordercloud/headstart-sdk'
 import { Products, Product } from 'ordercloud-javascript-sdk'
 import { MiddlewareAPIService } from '../middleware-api/middleware-api.service'
-import { getAssetIDFromUrl } from './asset.helper'
+import { getAssetIDFromUrl, mapFileToFormData } from './asset.helper'
 
 @Injectable({
   providedIn: 'root',
@@ -14,58 +14,50 @@ import { getAssetIDFromUrl } from './asset.helper'
 export class AssetService {
   constructor(
     private middleware: MiddlewareAPIService
-   ){}
-
-  mapFileToFormData(file: FileHandle): FormData {
-    const data = new FormData()
-    Object.keys(file).forEach(key => {
-      data.append(key, file[key])
-    })
-    return data;  
-  }
+  ) { }
 
   async uploadImageFiles(files: FileHandle[]): Promise<ImageAsset[]> {
     return await Promise.all(
       files.map(file => {
-        return this.middleware.uploadImage(this.mapFileToFormData(file))
+        return this.middleware.uploadImage(mapFileToFormData(file))
       })
     );
   }
 
   async uploadDocumentFiles(files: FileHandle[]): Promise<DocumentAsset[]> {
     return await Promise.all(
-      files.map(file => {  
-        return this.middleware.uploadDocument(this.mapFileToFormData(file))
+      files.map(file => {
+        return this.middleware.uploadDocument(mapFileToFormData(file))
       })
     );
   }
 
   async deleteAssetUpdateProduct(
     product: HSProduct,
-    fileUrl: string, 
+    fileUrl: string,
     assetType: AssetType): Promise<HSProduct> {
-      const assetID = getAssetIDFromUrl(fileUrl)
-      try {
-        await this.middleware.deleteAsset(assetID)
+    const assetID = getAssetIDFromUrl(fileUrl)
+    try {
+      await this.middleware.deleteAsset(assetID)
+      return await this.removeAssetFromProduct(product, assetID, assetType)
+    } catch (err) {
+      if (err?.status === 404) {
+        //  If the asset was not found on the delete request. Still delete asset from product
         return await this.removeAssetFromProduct(product, assetID, assetType)
-      } catch(err) {
-        if(err?.status === 404 ) {
-          //  If the asset was not found on the delete request. Still delete asset from product
-          return await this.removeAssetFromProduct(product, assetID, assetType)
-        } else {
-          throw err
-        }
+      } else {
+        throw err
       }
     }
+  }
 
   async removeAssetFromProduct(
     product: any,
-    assetID: string, 
+    assetID: string,
     assetType: AssetType): Promise<Product> {
     let patchObj: Partial<Product>
-    if(assetType === 'image') {
+    if (assetType === 'image') {
       const newImages = (product?.xp as any)?.Images
-      .filter(image => getAssetIDFromUrl(image.Url) !== assetID);
+        .filter(image => getAssetIDFromUrl(image.Url) !== assetID);
       patchObj = {
         xp: {
           Images: newImages
@@ -73,7 +65,7 @@ export class AssetService {
       }
     } else {
       const newDocuments = (product?.xp as any)?.Documents
-      .filter(doc => getAssetIDFromUrl(doc.Url) !== assetID);
+        .filter(doc => getAssetIDFromUrl(doc.Url) !== assetID);
       patchObj = {
         xp: {
           Documents: newDocuments

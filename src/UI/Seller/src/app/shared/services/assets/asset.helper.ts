@@ -1,3 +1,4 @@
+import { FileHandle } from "@app-seller/shared"
 import { HSLineItem, HSProduct, HSSupplier } from "@ordercloud/headstart-sdk"
 
 export const IMAGE_HOST_URL =
@@ -43,4 +44,12 @@ export function getPrimaryLineItemImage(
 export function getAssetIDFromUrl(url: string): string {
     const split = url.split("/")
     return split[split.length - 1]
+}
+
+export function mapFileToFormData(file: FileHandle): FormData {
+    const data = new FormData()
+    Object.keys(file).forEach(key => {
+        data.append(key, file[key])
+    })
+    return data;
 }

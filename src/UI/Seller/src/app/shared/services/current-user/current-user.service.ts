@@ -54,7 +54,6 @@ export class CurrentUserService {
       this.appAuthService.setRememberStatus(true)
     }
     HeadStartSDK.Tokens.SetAccessToken(accessToken.access_token)
-    ContentManagementClient.Tokens.SetAccessToken(accessToken.access_token)
     Tokens.SetAccessToken(accessToken.access_token)
     this.ocTokenService.SetAccess(accessToken.access_token)
     this.appStateService.isLoggedIn.next(true)
