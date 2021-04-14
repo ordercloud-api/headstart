@@ -43,13 +43,14 @@ export class ProductDetailService {
   getGridLineItemPrice(
     priceBreaks: PriceBreak[],
     specs: GridSpecOption[],
-    quantity: number
+    quantity: number,
+    totalQtyOfItem?: number
   ): number {
     if (!priceBreaks?.length) return
     const startingBreak = _minBy(priceBreaks, 'Quantity')
     const selectedBreak = priceBreaks.reduce((current, candidate) => {
       return candidate.Quantity > current.Quantity &&
-        candidate.Quantity <= quantity
+        candidate.Quantity <= (totalQtyOfItem || quantity)
         ? candidate
         : current
     }, startingBreak)

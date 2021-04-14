@@ -1,6 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core'
 import { faTimes, faListUl, faTh } from '@fortawesome/free-solid-svg-icons'
-import { Spec, PriceBreak, SpecOption, Suppliers } from 'ordercloud-javascript-sdk'
+import {
+  Spec,
+  PriceBreak,
+  SpecOption,
+  Suppliers,
+} from 'ordercloud-javascript-sdk'
 import { PriceSchedule } from 'ordercloud-javascript-sdk'
 import {
   HSLineItem,
@@ -73,7 +78,7 @@ export class OCMProductDetails implements OnInit {
     private specFormService: SpecFormService,
     private context: ShopperContextService,
     private productDetailService: ProductDetailService,
-    private toastrService: ToastrService,
+    private toastrService: ToastrService
   ) {}
 
   @Input() set product(superProduct: SuperHSProduct) {
@@ -91,6 +96,7 @@ export class OCMProductDetails implements OnInit {
     this.setSupplier(this._product.DefaultSupplierID)
     this.setPageTitle()
     this.populateInactiveVariants(superProduct)
+    this.showGrid = superProduct?.PriceSchedule?.UseCumulativeQuantity
   }
 
   ngOnInit(): void {

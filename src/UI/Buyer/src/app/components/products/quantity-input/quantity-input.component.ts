@@ -10,7 +10,12 @@ import {
 import { FormGroup, Validators, FormControl } from '@angular/forms'
 import { PriceSchedule } from 'ordercloud-javascript-sdk'
 import { Router } from '@angular/router'
-import { HeadStartSDK, HSMeProduct, HSVariant } from '@ordercloud/headstart-sdk'
+import {
+  HeadStartSDK,
+  HSLineItem,
+  HSMeProduct,
+  HSVariant,
+} from '@ordercloud/headstart-sdk'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 import { QtyChangeEvent } from 'src/app/models/product.types'
 
@@ -22,6 +27,8 @@ export class OCMQuantityInput implements OnInit, OnChanges {
   @Input() priceSchedule: PriceSchedule
   @Input() product: HSMeProduct
   @Input() selectedVariant: HSVariant
+  @Input() li: HSLineItem
+  @Input() groupedLineItems: HSLineItem[]
   @Input() variantInventory?: number
   @Input() variantID: string
   @Input() isAddingToCart: boolean
@@ -39,7 +46,9 @@ export class OCMQuantityInput implements OnInit, OnChanges {
   inventory: number
   min: number
   max: number
+  cumulativeQuantity: number
   disabled = false
+  qtyPreUpdate: number
 
   constructor(private router: Router, private context: ShopperContextService) {}
 
@@ -109,6 +118,16 @@ export class OCMQuantityInput implements OnInit, OnChanges {
     if (!this.existingQty) {
       this.emit(this.form.get('quantity').value)
     }
+    if (this.groupedLineItems && this.li) {
+      // Filter through the lis down to ProductIDs matching the qty inputs li.Product.ID
+      this.cumulativeQuantity = this.groupedLineItems
+        .filter((li) => li.Product?.ID === this.li?.Product?.ID)
+        .map((f) => f.Quantity)
+        .reduce((acc, curr) => acc + curr)
+      this.qtyPreUpdate = this.groupedLineItems.find(
+        (li) => li.ID === this.li.ID
+      ).Quantity
+    }
   }
 
   quantityChangeListener(): void {
@@ -142,20 +161,41 @@ export class OCMQuantityInput implements OnInit, OnChanges {
         .get()
         ?.Items?.filter((i) => i.ProductID === this.product?.ID)
         ?.find((p) => p.Variant?.ID === this.selectedVariant?.ID)
-      if (productInCart) {
+      if (
+        productInCart &&
+        !this.product?.PriceSchedule?.UseCumulativeQuantity
+      ) {
         if (qty + productInCart.Quantity > this.max) {
           this.errorMsg = `The maximum is ${this.max} and your cart has ${productInCart.Quantity}.`
           return false
         }
         qty = qty + productInCart.Quantity
       }
+      if (productInCart && this.product?.PriceSchedule?.UseCumulativeQuantity) {
+        if (qty + this.cumulativeQuantity > this.max) {
+          this.errorMsg = `The maximum is ${this.max} and your cart has ${productInCart.Quantity}.`
+          return false
+        }
+        qty = qty + this.cumulativeQuantity
+      }
     }
     if (isNaN(qty)) {
       this.errorMsg = 'Please Enter a Quantity'
       return false
     }
-    if (qty < this.min || qty > this.max) {
+    if (
+      (!this.product?.PriceSchedule?.UseCumulativeQuantity && qty < this.min) ||
+      qty > this.max
+    ) {
       this.errorMsg = `Please order a quantity between ${this.min}-${this.max}.`
+      return false
+    }
+    if (
+      this.product?.PriceSchedule?.UseCumulativeQuantity &&
+      (this.cumulativeQuantity - this.qtyPreUpdate + qty < this.min ||
+        this.cumulativeQuantity - this.qtyPreUpdate + qty > this.max)
+    ) {
+      this.errorMsg = `Please order a total quantity between ${this.min}-${this.max}.`
       return false
     }
     if (qty > this.inventory) {
