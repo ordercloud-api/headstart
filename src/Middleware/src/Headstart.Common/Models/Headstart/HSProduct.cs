@@ -113,6 +113,7 @@ namespace Headstart.Models
         public string SpecCombo { get; set; }
         public List<HSSpecValue> SpecValues { get; set; }
         public string NewID { get; set; }
+        public List<ImageAsset> Images { get; set; }
     }
 
     [SwaggerModel]

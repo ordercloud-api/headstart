@@ -38,6 +38,8 @@ import { BehaviorSubject } from 'rxjs'
 import { Products } from 'ordercloud-javascript-sdk'
 import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { SupportedRates } from '@app-seller/shared'
+import { ImageAsset } from '@app-seller/models/Asset.types'
+import { set } from 'lodash'
 
 @Component({
   selector: 'product-variations-component',
@@ -549,15 +551,14 @@ export class ProductVariations implements OnChanges {
       .toPromise()
   }
 
-  isImageSelected(img: Asset): boolean {
-    if (!img.Tags) img.Tags = []
-    return img.Tags.includes(this.variantInSelection?.xp?.SpecCombo)
+  isImageSelected(img: ImageAsset): boolean {
+    return this.variantInSelection?.xp?.Images?.find((i: ImageAsset) => i.Url === img.Url)
   }
 
   openVariantDetails(variant: Variant): void {
     const variantBehaviorSubjectValue = this.variants?.getValue()
     this.viewVariantDetails = true
-    this.variantInSelection = variant
+    this.variantInSelection = variant 
     if (variantBehaviorSubjectValue !== null) {
       this.variantInSelection =
         variantBehaviorSubjectValue[
@@ -571,32 +572,33 @@ export class ProductVariations implements OnChanges {
     this.variantInSelection = null
   }
 
-  toggleAssignImage(img: Asset, specCombo: string): void {
-    this.imageInSelection = img
-    if (!this.imageInSelection.Tags) this.imageInSelection.Tags = []
-    this.imageInSelection.Tags.includes(specCombo)
-      ? this.imageInSelection.Tags.splice(
-          this.imageInSelection.Tags.indexOf(specCombo),
-          1
-        )
-      : this.imageInSelection.Tags.push(specCombo)
+  toggleAssignImage(img: ImageAsset, specCombo: string): void {
+    let newVariantImages: ImageAsset[]
+    if(this.isImageSelected(img)) {
+      newVariantImages = this.variantInSelection.xp.Images.filter((i: ImageAsset) => i.Url !== img.Url)
+    } else {
+      newVariantImages = [
+        ...(this.variantInSelection?.xp?.Images || []),
+        img
+      ]
+    }
+    set(this.variantInSelection, 'xp.Images', newVariantImages)
   }
 
   async updateProductImageTags(): Promise<void> {
+    const patchObj = {
+      xp: {
+        Images: this.variantInSelection?.xp?.Images
+      }
+    }
+    try {
+      await this.patchVariant(this.variantInSelection.ID, patchObj)
+      this.toasterService.success('Variant images updated', 'OK')
+    } catch (err) {
+      console.log(err)
+      this.toasterService.error('Something went wrong', 'Error')
+    }
     this.assignVariantImages = false
-    // Queue up image/content requests, then send them all at aonce
-    // TODO: optimize this so we aren't having to update all images, just 'changed' ones
-    const accessToken = await this.appAuthService.fetchToken().toPromise()
-    const requests = this.superProductEditable.Images.map((i) =>
-      ContentManagementClient.Assets.Save(i.ID, i, accessToken)
-    )
-    await Promise.all(requests)
-    // Ensure there is no mistaken change detection
-    Object.assign(
-      this.superProductStatic.Images,
-      this.superProductEditable.Images
-    )
-    this.imageInSelection = {}
   }
 
   getVariantImages(variant: Variant): Asset[] {
@@ -613,6 +615,21 @@ export class ProductVariations implements OnChanges {
     if (this.superProductEditable?.Product?.Inventory?.VariantLevelTracking)
       colSpan + 1
     return colSpan
+  }
+
+  async patchVariant(variantID: string, partial: Partial<Variant>) {
+    const patchedVariant = await Products.PatchVariant<HSVariant>(
+      this.superProductEditable.Product?.ID,
+      this.variantInSelection.ID,
+      partial
+    )
+    const variants = this.variants?.getValue();
+    if (variants !== null) {
+      const index = variants.findIndex(variant => variant.ID === variantID) 
+      variants[index] = JSON.parse(JSON.stringify(patchedVariant))
+      this.variants.next(variants)
+      this.variantInSelection = this.variants?.getValue()[index]
+    }
   }
 
   async variantShippingDimensionUpdate(
@@ -640,17 +657,7 @@ export class ProductVariations implements OnChanges {
         break
     }
     try {
-      const patchedVariant = await Products.PatchVariant<HSVariant>(
-        this.superProductEditable.Product?.ID,
-        this.variantInSelection.ID,
-        partialVariant
-      )
-      const variants = this.variants?.getValue()
-      if (variants !== null) {
-        variants[index] = JSON.parse(JSON.stringify(patchedVariant))
-        this.variants.next(variants)
-        this.variantInSelection = this.variants?.getValue()[index]
-      }
+      await this.patchVariant(this.variantInSelection.ID, partialVariant)
       this.toasterService.success('Shipping dimensions updated', 'OK')
     } catch (err) {
       console.log(err)
