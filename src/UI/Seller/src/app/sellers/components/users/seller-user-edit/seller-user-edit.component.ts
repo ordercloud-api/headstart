@@ -3,7 +3,7 @@ import { get as _get } from 'lodash'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { UserGroupAssignment, User } from '@ordercloud/angular-sdk'
 import { ValidateEmail } from '@app-seller/validators/validators'
-import { SellerUserService } from '@app-seller/seller-users/seller-user.service'
+import { SellerUserService } from '@app-seller/sellers/seller-admin.service'
 @Component({
   selector: 'app-seller-user-edit',
   templateUrl: './seller-user-edit.component.html',

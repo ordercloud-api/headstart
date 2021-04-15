@@ -1,4 +1,4 @@
-import { SellerUserService } from '@app-seller/seller-users/seller-user.service'
+import { SellerUserService } from '@app-seller/sellers/seller-admin.service'
 import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
 import { SellerUserTableComponent } from './seller-user-table.component'

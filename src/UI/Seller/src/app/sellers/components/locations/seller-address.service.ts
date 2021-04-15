@@ -1,0 +1,96 @@
+import { Injectable } from '@angular/core'
+import { Router, ActivatedRoute } from '@angular/router'
+import {
+  OcAdminAddressService,
+  Address,
+  User,
+  ListPage,
+} from '@ordercloud/angular-sdk'
+import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
+import { HeadStartSDK } from '@ordercloud/headstart-sdk'
+import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
+import { AdminAddresses } from 'ordercloud-javascript-sdk'
+
+const SELLER_SUB_RESOURCE_LIST = [
+  { route: 'users', display: 'ADMIN.NAV.USERS' },
+  { route: 'locations', display: 'ALIAS.SUPPLIER_LOCATIONS' },
+]
+
+@Injectable({
+  providedIn: 'root',
+})
+export class SellerAddressService extends ResourceCrudService<Address> {
+  constructor(
+    router: Router,
+    activatedRoute: ActivatedRoute,
+    private ocAdminAddressService: OcAdminAddressService,
+    public currentUserService: CurrentUserService
+  ) {
+    super(
+      router,
+      activatedRoute,
+      AdminAddresses,
+      currentUserService,
+      '/seller-admin/locations',
+      'sellerlocations'
+    )
+  }
+
+  async createNewResource(resource: any): Promise<any> {
+    // special iding process for supplier addresses
+    const parentResourceID = await this.getParentResourceID()
+    const existingAddresses = await AdminAddresses.List()
+    const newID = this.getIncrementedID(parentResourceID, existingAddresses)
+    resource.ID = newID
+
+    const newResource = await HeadStartSDK.ValidatedAddresses.CreateAdminAddress(
+      resource
+    )
+    this.resourceSubject.value.Items = [
+      ...this.resourceSubject.value.Items,
+      newResource,
+    ]
+    this.resourceSubject.next(this.resourceSubject.value)
+    return newResource
+  }
+
+  async updateResource(originalID: string, resource: any): Promise<any> {
+    const newResource = await HeadStartSDK.ValidatedAddresses.SaveAdminAddress(
+      originalID,
+      resource
+    )
+    const resourceIndex = this.resourceSubject.value.Items.findIndex(
+      (i: any) => i.ID === newResource.ID
+    )
+    this.resourceSubject.value.Items[resourceIndex] = newResource
+    this.resourceSubject.next(this.resourceSubject.value)
+    return newResource
+  }
+
+  private getIncrementedID(
+    supplierID: string,
+    existingAddresses: ListPage<Address>
+  ): string {
+    const numbers = existingAddresses.Items.map((a) =>
+      Number(a.ID.split('-')[1])
+    )
+    const highestNumber = Math.max(...numbers)
+    const nextID = highestNumber === -Infinity ? 1 : highestNumber + 1
+    return `${supplierID}-${nextID.toString().padStart(2, '0')}`
+  }
+
+  emptyResource = {
+    CompanyName: '',
+    FirstName: '',
+    LastName: '',
+    Street1: '',
+    Street2: '',
+    City: '',
+    State: '',
+    Zip: '',
+    Country: '',
+    Phone: '',
+    AddressName: '',
+    xp: null,
+  }
+}

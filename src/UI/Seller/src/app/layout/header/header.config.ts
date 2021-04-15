@@ -233,10 +233,24 @@ const ReportsNavGrouping = {
   subRoutes: [ProcessReports, ReportTemplates],
 }
 
+//Seller Admin
 const SellerUsers = {
   rolesWithAccess: [HSRoles.HSSellerAdmin],
-  title: 'ADMIN.NAV.SELLER_USERS',
-  route: '/seller-users',
+  title: 'ADMIN.NAV.SELLER_USERS', // TODO - Update Translation
+  route: '/seller-admin/users',
+}
+
+const SellerLocations = {
+  rolesWithAccess: [HSRoles.HSSellerAdmin],
+  title: 'Seller Addresses', // TODO - Add to Translation
+  route: '/seller-admin/locations',
+}
+
+const SellerNavGrouping: HSRoute = {
+  rolesWithAccess: [HSRoles.HSSellerAdmin],
+  title: 'Seller Admin', // TODO - Add to Translation
+  route: '/seller',
+  subRoutes: [SellerUsers, SellerLocations],
 }
 
 const AllStorefronts = {
@@ -290,7 +304,7 @@ const AllNavGroupings: HSRoute[] = [
   BuyerNavGrouping,
   SupplierNavGrouping,
   ReportsNavGrouping,
-  SellerUsers,
+  SellerNavGrouping,
   StorefrontNavGrouping,
   MySupplierProfile,
   MySupplierLocations,

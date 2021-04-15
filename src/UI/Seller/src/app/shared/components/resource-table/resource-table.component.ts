@@ -18,10 +18,7 @@ import {
   getScreenSizeBreakPoint,
 } from '@app-seller/shared/services/dom.helper'
 import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
-import {
-  Options,
-  RequestStatus,
-} from '@app-seller/models/resource-crud.types'
+import { Options, RequestStatus } from '@app-seller/models/resource-crud.types'
 import {
   faCalendar,
   faChevronLeft,
@@ -148,13 +145,12 @@ export class ResourceTableComponent
   }
   @Input()
   set submitError(value: any) {
-    const error = value?.errors?.Errors[0];
-    if(value?.status === 404) {
-      this._errorMessage = `${error?.Data?.ObjectType}: "${error?.Data?.ObjectID}". ${error.Message}` 
+    const error = value?.errors?.Errors[0]
+    if (value?.status === 404) {
+      this._errorMessage = `${error?.Data?.ObjectType}: "${error?.Data?.ObjectID}". ${error.Message}`
     } else {
       this._errorMessage = error?.Message
     }
-    
   }
   @Input()
   resourceForm: FormGroup
@@ -238,7 +234,8 @@ export class ResourceTableComponent
         this.resourceOptions = options
         this.searchTerm = (options && options.search) || ''
         this.activeFilterCount = options.filters
-          ? Object.keys(options.filters).filter(k => k !== 'searchType').length
+          ? Object.keys(options.filters).filter((k) => k !== 'searchType')
+              .length
           : 0
         this.setFilterForm()
         this.changeDetectorRef.detectChanges()
@@ -479,11 +476,23 @@ export class ResourceTableComponent
       resourceInSelection.AppName
     )
   }
-
+  showFilterBar(): boolean {
+    const test =
+      !this.selectedResourceID &&
+      !this.isCreatingNew &&
+      (!this.isMyResource || this.shouldDisplayList) &&
+      !this.excludeFromFullTableView
+    return test
+  }
   navigateToSubResource(subResource: string) {
-    this.router.navigateByUrl('/' + this._ocService.primaryResourceLevel + 
-    '/' + this.selectedParentResourceID + 
-    '/' + subResource )
+    this.router.navigateByUrl(
+      '/' +
+        this._ocService.primaryResourceLevel +
+        '/' +
+        this.selectedParentResourceID +
+        '/' +
+        subResource
+    )
   }
   ngOnDestroy() {
     this.alive = false

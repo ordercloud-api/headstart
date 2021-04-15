@@ -3,8 +3,6 @@ import { ResourceConfigurationDictionary } from '@app-seller/models/table-displa
 import { PRODUCT_IMAGE_PATH_STRATEGY } from '@app-seller/products/product-image.helper'
 import { SUPPLIER_LOGO_PATH_STRATEGY } from '@app-seller/suppliers/supplier-logo.helper'
 
-
-
 export const SUMMARY_RESOURCE_INFO_PATHS_DICTIONARY: SummaryResourceInfoPathsDictionary = {
   suppliers: {
     toPrimaryHeader: 'Name',
@@ -49,6 +47,12 @@ export const SUMMARY_RESOURCE_INFO_PATHS_DICTIONARY: SummaryResourceInfoPathsDic
     toExpandable: false,
   },
   locations: {
+    toPrimaryHeader: 'AddressName',
+    toSecondaryHeader: 'ID',
+    toImage: '',
+    toExpandable: false,
+  },
+  sellerlocations: {
     toPrimaryHeader: 'AddressName',
     toSecondaryHeader: 'ID',
     toImage: '',
@@ -109,8 +113,6 @@ export const SUMMARY_RESOURCE_INFO_PATHS_DICTIONARY: SummaryResourceInfoPathsDic
     toExpandable: false,
   },
 }
-
-
 
 export const STRING_WITH_IMAGE = 'STRING_WITH_IMAGE'
 export const BOOLEAN = 'BOOLEAN'
@@ -259,6 +261,23 @@ export const FULL_TABLE_RESOURCE_DICTIONARY: ResourceConfigurationDictionary = {
     imgPath: '',
   },
   locations: {
+    fields: [
+      {
+        path: 'AddressName',
+        header: 'ADMIN.HEADERS.ADDRESS_NAME',
+        type: BASIC_STRING,
+        sortable: true,
+      },
+      {
+        path: 'ID',
+        header: 'ADMIN.HEADERS.ID',
+        type: BASIC_STRING,
+        sortable: true,
+      },
+    ],
+    imgPath: '',
+  },
+  sellerlocations: {
     fields: [
       {
         path: 'AddressName',
