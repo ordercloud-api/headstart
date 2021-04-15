@@ -236,19 +236,19 @@ const ReportsNavGrouping = {
 //Seller Admin
 const SellerUsers = {
   rolesWithAccess: [HSRoles.HSSellerAdmin],
-  title: 'ADMIN.NAV.SELLER_USERS', // TODO - Update Translation
+  title: 'ADMIN.NAV.SELLER_USERS',
   route: '/seller-admin/users',
 }
 
 const SellerLocations = {
   rolesWithAccess: [HSRoles.HSSellerAdmin],
-  title: 'Seller Addresses', // TODO - Add to Translation
+  title: 'ALIAS.SELLER_LOCATIONS',
   route: '/seller-admin/locations',
 }
 
 const SellerNavGrouping: HSRoute = {
   rolesWithAccess: [HSRoles.HSSellerAdmin],
-  title: 'Seller Admin', // TODO - Add to Translation
+  title: 'ALIAS.SELLER_ADMIN',
   route: '/seller',
   subRoutes: [SellerUsers, SellerLocations],
 }

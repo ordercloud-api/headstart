@@ -32,7 +32,7 @@ export class SellerAddressService extends ResourceCrudService<Address> {
       AdminAddresses,
       currentUserService,
       '/seller-admin/locations',
-      'sellerlocations'
+      'locations'
     )
   }
 

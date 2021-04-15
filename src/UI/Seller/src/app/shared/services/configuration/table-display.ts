@@ -52,12 +52,6 @@ export const SUMMARY_RESOURCE_INFO_PATHS_DICTIONARY: SummaryResourceInfoPathsDic
     toImage: '',
     toExpandable: false,
   },
-  sellerlocations: {
-    toPrimaryHeader: 'AddressName',
-    toSecondaryHeader: 'ID',
-    toImage: '',
-    toExpandable: false,
-  },
   payments: {
     toPrimaryHeader: 'CardholderName',
     toSecondaryHeader: 'CardType',
@@ -261,23 +255,6 @@ export const FULL_TABLE_RESOURCE_DICTIONARY: ResourceConfigurationDictionary = {
     imgPath: '',
   },
   locations: {
-    fields: [
-      {
-        path: 'AddressName',
-        header: 'ADMIN.HEADERS.ADDRESS_NAME',
-        type: BASIC_STRING,
-        sortable: true,
-      },
-      {
-        path: 'ID',
-        header: 'ADMIN.HEADERS.ID',
-        type: BASIC_STRING,
-        sortable: true,
-      },
-    ],
-    imgPath: '',
-  },
-  sellerlocations: {
     fields: [
       {
         path: 'AddressName',
