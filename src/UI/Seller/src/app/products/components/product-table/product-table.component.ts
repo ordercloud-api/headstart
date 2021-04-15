@@ -88,7 +88,7 @@ export class ProductTableComponent
   
   updateResourceInList(product: Product): void {
     const index = this.resourceList?.Items?.findIndex(item => item.ID === product.ID) 
-    if(index && index !== -1) {
+    if(index !== -1) {
       this.resourceList.Items[index] = product
     }
   }
