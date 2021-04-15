@@ -13,7 +13,6 @@ import { AppStateService } from '../app-state/app-state.service'
 import { HeadStartSDK, Asset } from '@ordercloud/headstart-sdk'
 import { Tokens } from 'ordercloud-javascript-sdk'
 import { BehaviorSubject } from 'rxjs'
-import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { UserContext } from '@app-seller/models/user.types'
 

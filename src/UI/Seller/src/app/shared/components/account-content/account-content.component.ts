@@ -11,10 +11,8 @@ import { applicationConfiguration } from '@app-seller/config/app.config'
 import { MeUser } from '@ordercloud/angular-sdk'
 import { FormGroup, FormControl } from '@angular/forms'
 import { isEqual as _isEqual, set as _set, get as _get } from 'lodash'
-import { Asset, AssetUpload } from '@ordercloud/headstart-sdk'
 import { JDocument } from '@ordercloud/cms-sdk'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
-import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { UserContext } from '@app-seller/models/user.types'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
@@ -164,43 +162,6 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
       this.hasProfileImg = true
       this.profileImgLoading = false
     }
-  }
-
-  async uploadProfileImg(userID: string, file: File): Promise<Asset> {
-    const accessToken = await this.appAuthService.fetchToken().toPromise()
-    const asset: AssetUpload = {
-      Active: true,
-      File: file,
-      FileName: file.name,
-      Tags: ['ProfileImg'],
-    }
-    // Upload the asset, then make the asset assignment to Suppliers
-    const newAsset: Asset = await ContentManagementClient.Assets.Upload(
-      asset,
-      accessToken
-    )
-    if (this.userContext.UserType === 'SELLER') {
-      await ContentManagementClient.Assets.SaveAssetAssignment(
-        {
-          ResourceType: 'AdminUsers',
-          ResourceID: userID,
-          AssetID: newAsset.ID,
-        },
-        accessToken
-      )
-    } else {
-      await ContentManagementClient.Assets.SaveAssetAssignment(
-        {
-          ParentResourceType: 'Suppliers',
-          ParentResourceID: this.userContext.Me.Supplier.ID,
-          ResourceType: 'SupplierUsers',
-          ResourceID: userID,
-          AssetID: newAsset.ID,
-        },
-        accessToken
-      )
-    }
-    return newAsset
   }
 
   async removeProfileImg(): Promise<void> {
