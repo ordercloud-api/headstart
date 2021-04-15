@@ -703,26 +703,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       file.Url,
       assetType
     )
-    if(assetType === 'image') {
-      //  now delete this image from all product variants
-      const variants = this._superHSProductEditable.Variants
-      const variantsWithImg = variants.filter(v => 
-        (v?.xp as any)?.Images?.find(img => img?.Url === file.Url)
-      )
-      if(variantsWithImg?.length) {
-        const patchQueue = variantsWithImg.map(variant => {
-          const patchObj = {
-            xp: {
-              Images: (variant.xp as any).Images.filter(image => image.Url !== file.Url)
-            }
-          }
-          return Products.PatchVariant(this._superHSProductEditable.Product.ID, variant.ID, patchObj)
-        })
-        await Promise.all(patchQueue)
-        this._superHSProductStatic.Variants = (
-          await Products.ListVariants(this._superHSProductEditable.Product.ID)).Items
-      }
-    }
     this.updateList.emit(this._superHSProductStatic.Product as Product) 
     this.refreshProductData(this._superHSProductStatic)
   }

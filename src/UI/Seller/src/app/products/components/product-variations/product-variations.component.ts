@@ -36,7 +36,6 @@ import {
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { BehaviorSubject } from 'rxjs'
 import { Products } from 'ordercloud-javascript-sdk'
-import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { SupportedRates } from '@app-seller/shared'
 import { ImageAsset } from '@app-seller/models/Asset.types'
 import { set } from 'lodash'
@@ -526,8 +525,8 @@ export class ProductVariations implements OnChanges {
     return this.isCreatingNew
       ? false
       : !JSON.stringify(
-          this.superProductStatic?.Specs[specIndex]?.Options
-        )?.includes(JSON.stringify(option))
+        this.superProductStatic?.Specs[specIndex]?.Options
+      )?.includes(JSON.stringify(option))
   }
 
   stageDefaultSpecOption(specID: string, optionID: string): void {
@@ -552,17 +551,18 @@ export class ProductVariations implements OnChanges {
   }
 
   isImageSelected(img: ImageAsset): boolean {
-    return this.variantInSelection?.xp?.Images?.find((i: ImageAsset) => i.Url === img.Url)
+    if (!img.Tags) img.Tags = []
+    return img.Tags.includes(this.variantInSelection?.xp?.SpecCombo)
   }
 
   openVariantDetails(variant: Variant): void {
     const variantBehaviorSubjectValue = this.variants?.getValue()
     this.viewVariantDetails = true
-    this.variantInSelection = variant 
+    this.variantInSelection = variant
     if (variantBehaviorSubjectValue !== null) {
       this.variantInSelection =
         variantBehaviorSubjectValue[
-          variantBehaviorSubjectValue?.indexOf(variant)
+        variantBehaviorSubjectValue?.indexOf(variant)
         ]
     }
   }
@@ -573,41 +573,34 @@ export class ProductVariations implements OnChanges {
   }
 
   toggleAssignImage(img: ImageAsset, specCombo: string): void {
-    let newVariantImages: ImageAsset[]
-    if(this.isImageSelected(img)) {
-      newVariantImages = this.variantInSelection.xp.Images.filter((i: ImageAsset) => i.Url !== img.Url)
-    } else {
-      newVariantImages = [
-        ...(this.variantInSelection?.xp?.Images || []),
-        img
-      ]
-    }
-    set(this.variantInSelection, 'xp.Images', newVariantImages)
+    this.imageInSelection = img
+    if (!this.imageInSelection.Tags) this.imageInSelection.Tags = []
+    this.imageInSelection.Tags.includes(specCombo)
+      ? this.imageInSelection.Tags.splice(this.imageInSelection.Tags.indexOf(specCombo), 1)
+      : this.imageInSelection.Tags.push(specCombo)
   }
 
   async updateProductImageTags(): Promise<void> {
+    const images = (this.superProductEditable.Product?.xp as any)?.Images
     const patchObj = {
       xp: {
-        Images: this.variantInSelection?.xp?.Images
+        Images: images
       }
     }
-    try {
-      await this.patchVariant(this.variantInSelection.ID, patchObj)
-      this.toasterService.success('Variant images updated', 'OK')
-    } catch (err) {
-      console.log(err)
-      this.toasterService.error('Something went wrong', 'Error')
-    }
+    await Products.Patch(this.superProductEditable.Product.ID, patchObj)
+    Object.assign(this.superProductStatic.Product, this.superProductEditable.Product)
+    this.imageInSelection = {}
     this.assignVariantImages = false
   }
 
   getVariantImages(variant: Variant): Asset[] {
-    this.superProductEditable?.Images?.forEach((i) =>
+    (this.superProductEditable?.Product?.xp as any)?.Images?.forEach((i) =>
       !i.Tags ? (i.Tags = []) : null
     )
-    return this.superProductEditable?.Images?.filter((i) =>
+    const imgs = (this.superProductEditable?.Product?.xp as any)?.Images?.filter((i) =>
       i.Tags.includes(variant?.xp?.SpecCombo)
     )
+    return imgs
   }
 
   getVariantDetailColSpan(): number {
@@ -625,7 +618,7 @@ export class ProductVariations implements OnChanges {
     )
     const variants = this.variants?.getValue();
     if (variants !== null) {
-      const index = variants.findIndex(variant => variant.ID === variantID) 
+      const index = variants.findIndex(variant => variant.ID === variantID)
       variants[index] = JSON.parse(JSON.stringify(patchedVariant))
       this.variants.next(variants)
       this.variantInSelection = this.variants?.getValue()[index]

@@ -10,4 +10,5 @@ export interface DocumentAsset {
 export interface ImageAsset {
     Url: string,
     ThumbnailUrl: string
+    Tags?: string[]
 }

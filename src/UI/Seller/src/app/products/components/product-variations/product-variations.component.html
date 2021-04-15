@@ -525,7 +525,7 @@
                     </div>
                     <img
                       class="variant-img"
-                      *ngFor="let img of variantInSelection?.xp?.Images"
+                      *ngFor="let img of getVariantImages(variantInSelection)"
                       [src]="img.ThumbnailUrl"
                       alt="Variant Image"
                     />
