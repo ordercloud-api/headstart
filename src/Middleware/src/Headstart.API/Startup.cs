@@ -12,7 +12,6 @@ using Headstart.Common.Repositories;
 using Headstart.Common.Services;
 using Headstart.Common.Services.CMS;
 using Headstart.Common.Services.Zoho;
-using LazyCache;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,8 +30,10 @@ using System.Collections.Generic;
 using System.Net;
 using Microsoft.OpenApi.Models;
 using OrderCloud.Catalyst;
-using OrderCloud.Common.Services;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Polly;
+using Polly.Extensions.Http;
+using Polly.Contrib.WaitAndRetry;
 
 namespace Headstart.API
 {
@@ -120,6 +121,7 @@ namespace Headstart.API
                 .Inject<ICreditCardCommand>()
                 .Inject<ISupportAlertService>()
                 .Inject<IOrderCalcService>()
+                .Inject<IUserContextProvider>()
                 .Inject<ISupplierApiClientHelper>()
                 .AddSingleton<ICMSClient>(new CMSClient(new CMSClientConfig() { BaseUrl = _settings.CMSSettings.BaseUrl }))
                 .AddSingleton<ISendGridClient>(x => new SendGridClient(_settings.SendgridSettings.ApiKey))
@@ -180,6 +182,16 @@ namespace Headstart.API
 
             ServicePointManager.DefaultConnectionLimit = int.MaxValue;
             FlurlHttp.Configure(settings => settings.Timeout = TimeSpan.FromSeconds(_settings.FlurlSettings.TimeoutInSeconds));
+
+            // This adds retry logic for any api call that fails with a transient error (server errors, timeouts, or rate limiting requests)
+            // Will retry up to 3 times using exponential backoff and jitter, a mean of 3 seconds wait time in between retries
+            // https://github.com/App-vNext/Polly/wiki/Retry-with-jitter#more-complex-jitter
+            var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(3), retryCount: 3);
+            var policy = HttpPolicyExtensions
+                            .HandleTransientHttpError()
+                            .OrResult(response => response.StatusCode == HttpStatusCode.TooManyRequests)
+                            .WaitAndRetryAsync(delay);
+            FlurlHttp.Configure(settings => settings.HttpClientFactory = new PollyFactory(policy));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

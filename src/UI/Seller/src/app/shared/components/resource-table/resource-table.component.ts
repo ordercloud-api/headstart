@@ -260,6 +260,7 @@ export class ResourceTableComponent
       this.toDate = timeStamp + 'T23:59:59.999Z' // Since user selects a date, include all times in that day
       this.filterForm.value.timeStamp = '<=' + this.toDate
     }
+
     this._ocService.addFilters(
       this.removeFieldsWithNoValue(this.filterForm.value)
     )

@@ -33,7 +33,7 @@ export class OrderHistoryService {
     public filters: OrderFilterService,
     private reorderHelper: ReorderHelperService,
     private httpClient: HttpClient,
-    private appConfig: AppConfig,
+    private appConfig: AppConfig
   ) {}
 
   async getLocationsUserCanView(): Promise<HSAddressBuyer[]> {
@@ -88,14 +88,14 @@ export class OrderHistoryService {
   async getLineItemSuppliers(
     liGroups: HSLineItem[][]
   ): Promise<LineItemGroupSupplier[]> {
-    var supplierIDs = uniq(flatten(liGroups).map(li => li.SupplierID))
+    var supplierIDs = uniq(flatten(liGroups).map((li) => li.SupplierID))
     var suppliers = await Suppliers.List({
-      filters: {'ID': supplierIDs.join("|")}
+      filters: { ID: supplierIDs.join('|') },
     })
     const supplierItems: LineItemGroupSupplier[] = []
     for (const group of liGroups) {
       const line = group[0]
-      const supplier = suppliers.Items.find(s => s.ID === line.SupplierID)
+      const supplier = suppliers.Items.find((s) => s.ID === line.SupplierID)
       if (supplier && line.ShipFromAddressID) {
         const shipFrom = await SupplierAddresses.Get(
           line.SupplierID,
@@ -108,7 +108,7 @@ export class OrderHistoryService {
     }
     return supplierItems
   }
-  
+
   async listShipments(
     orderID: string = this.activeOrderID
   ): Promise<HSShipmentWithItems[]> {

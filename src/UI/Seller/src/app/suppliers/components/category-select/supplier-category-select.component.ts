@@ -67,7 +67,6 @@ export class SupplierCategorySelectComponent {
   _categoriesDisabled: boolean
 
   isSecondDuplicateCategory = isSecondDuplicateCategory
-  areNoCategories = false
 
   @Input()
   set categorySelectionsControl(value: FormControl) {
@@ -157,7 +156,6 @@ export class SupplierCategorySelectComponent {
   updateCategoryValidation(
     newCategorySelection: SupplierCategorySelection[]
   ): void {
-    this.areNoCategories = !newCategorySelection?.length
     this.canAddAnotherCategory = areAllCategoriesComplete(newCategorySelection)
   }
 }

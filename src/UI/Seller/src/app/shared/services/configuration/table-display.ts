@@ -427,6 +427,12 @@ export const FULL_TABLE_RESOURCE_DICTIONARY: ResourceConfigurationDictionary = {
         queryRestriction: 'OrderDirection=Incoming',
       },
       {
+        path: 'xp.HasSellerProducts',
+        header: 'ADMIN.HEADERS.SELLER_OWNED_PRODUCTS',
+        type: BOOLEAN,
+        sortable: false,
+      },
+      {
         path: 'xp.OrderReturnInfo.Comment',
         header: 'ADMIN.HEADERS.RETURN_COMMENT',
         type: BASIC_STRING,

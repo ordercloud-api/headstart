@@ -9,13 +9,9 @@ using Headstart.Common.Helpers;
 using Headstart.Common.Services.CMS;
 using Headstart.Common.Services.CMS.Models;
 using Headstart.Models;
-using ordercloud.integrations.library;
 using ordercloud.integrations.library.Cosmos;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
-using Polly;
-using Polly.Retry;
-
 namespace Headstart.API.Commands.Crud
 {
 	public interface IHSProductCommand
@@ -246,7 +242,7 @@ namespace Headstart.API.Commands.Crud
 			// Make Spec Product Assignments
 			await Throttler.RunAsync(superProduct.Specs, 100, 5, s => _oc.Specs.SaveProductAssignmentAsync(new SpecProductAssignment { ProductID = _product.ID, SpecID = s.ID }, accessToken: user.AccessToken));
 			// Generate Variants
-			await WithRetry().ExecuteAsync(() => _oc.Products.GenerateVariantsAsync(_product.ID, accessToken: user.AccessToken));
+			await _oc.Products.GenerateVariantsAsync(_product.ID, accessToken: user.AccessToken);
 			// Patch Variants with the User Specified ID(SKU) AND necessary display xp values
 			await Throttler.RunAsync(superProduct.Variants, 100, 5, v =>
 			{
@@ -401,7 +397,7 @@ namespace Headstart.API.Commands.Crud
 				await ValidateVariantsAsync(superProduct, token);
 
 				// Re-generate Variants
-				await WithRetry().ExecuteAsync(() => _oc.Products.GenerateVariantsAsync(id, overwriteExisting: true, accessToken: token));
+				await _oc.Products.GenerateVariantsAsync(id, overwriteExisting: true, accessToken: token);
 				// Patch NEW variants with the User Specified ID (Name,ID), and correct xp values (SKU)
 				await Throttler.RunAsync(superProduct.Variants, 100, 5, v =>
 				{
@@ -464,18 +460,6 @@ namespace Headstart.API.Commands.Crud
 				variant.xp.NewID = null;
             }
         }
-
-		private AsyncRetryPolicy WithRetry()
-		{
-			// retries three times, waits two seconds in-between failures
-			return Policy
-				.Handle<OrderCloudException>(e => e.HttpStatus == HttpStatusCode.InternalServerError || e.HttpStatus == HttpStatusCode.RequestTimeout)
-				.WaitAndRetryAsync(new[] {
-					TimeSpan.FromSeconds(2),
-					TimeSpan.FromSeconds(2),
-					TimeSpan.FromSeconds(2),
-				});
-		}
 
 		private async Task<PriceSchedule> UpdateRelatedPriceSchedules(PriceSchedule updated, string token)
 		{

@@ -12,7 +12,10 @@ import { NgbPopover } from '@ng-bootstrap/ng-bootstrap'
 import { takeWhile } from 'rxjs/operators'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 import { SupplierFilterConfig } from '@ordercloud/headstart-sdk/dist/models'
-import { BuyerAppFilterType, SupplierFilters } from 'src/app/models/filter-config.types'
+import {
+  BuyerAppFilterType,
+  SupplierFilters,
+} from 'src/app/models/filter-config.types'
 
 @Component({
   templateUrl: './supplier-list.component.html',
@@ -74,7 +77,7 @@ export class OCMSupplierList implements OnChanges, OnDestroy {
         filters[filterConfig.Path] = this.filterForm.value[filterConfig.Path]
     })
     this.context.supplierFilters.filterByFields(filters)
-    this.popover.close()
+    this.popover?.close()
   }
 
   clearFilters(): void {
@@ -82,15 +85,25 @@ export class OCMSupplierList implements OnChanges, OnDestroy {
   }
 
   openPopover(): void {
-    this.popover.open()
+    this.popover?.open()
   }
 
   closePopover(): void {
-    this.popover.close()
+    this.popover?.close()
   }
 
   ngOnDestroy(): void {
     this.alive = false
+  }
+
+  hasFiltersAvailable(): boolean {
+    if (this._supplierFilterConfig) {
+      const options = this._supplierFilterConfig.filter(
+        (filter) => filter.BuyerAppFilterType === 'SelectOption'
+      )
+      return options ? Boolean(options.length) : false
+    }
+    return false
   }
 
   private handleFiltersChange = (filters: SupplierFilters): void => {

@@ -2,13 +2,8 @@ import {
   AbstractControl,
   ValidationErrors,
   ValidatorFn,
-  ControlContainer,
   FormGroup,
 } from '@angular/forms'
-import {
-  areAllCategoriesComplete,
-  areDuplicateCategories,
-} from '@app-seller/suppliers/components/category-select/supplier-category-select.component'
 
 export const ErrorDictionary = {
   name: "Name can only contain characters Aa-Zz 0-9 - ' .",
@@ -195,16 +190,6 @@ export function ValidateRichTextDescription(
   return control.value && control.value.length >= 2000
     ? { richTextFormatError: true }
     : null
-}
-
-export function ValidateSupplierCategorySelection(
-  control: AbstractControl
-): ValidationErrors | null {
-  const isValidResource =
-    control.value?.length > 0 &&
-    areAllCategoriesComplete(control.value) &&
-    !areDuplicateCategories(control.value)
-  return isValidResource ? null : { SupplierCategoryError: true }
 }
 
 export function RequireCheckboxesToBeChecked(minRequired = 1): ValidatorFn {

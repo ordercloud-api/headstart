@@ -62,6 +62,7 @@
             </div>
           </ng-template>
           <div
+            *ngIf="hasFiltersAvailable()"
             class="btn btn-light mr-2"
             placement="bottom"
             [ngbPopover]="filters"
