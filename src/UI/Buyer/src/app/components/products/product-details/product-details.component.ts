@@ -6,9 +6,7 @@ import {
   HSLineItem,
   Asset,
   QuoteOrderInfo,
-  HSProductInKit,
   HSVariant,
-  HeadStartSDK,
   HSMeProduct,
   HSSupplier,
 } from '@ordercloud/headstart-sdk'
@@ -58,10 +56,6 @@ export class OCMProductDetails implements OnInit {
   submittedQuoteOrder: any
   showGrid = false
   isAddingToCart = false
-  isKitProduct: boolean
-  productsIncludedInKit: HSProductInKit[]
-  ocProductsInKit: any[]
-  isKitStatic = false
   contactRequest: ContactSupplierBody
   specForm: FormGroup
   isInactiveVariant: boolean
