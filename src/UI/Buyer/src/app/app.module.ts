@@ -421,6 +421,7 @@ export class AppModule {
     }
     Configuration.Set(this.getOrdercloudSDKConfig(appConfig))
     translate.setDefaultLang('en')
+    translate.use('en')
 
     this.buildWebComponent(OCMProfileNav, 'ocm-profile-nav')
     this.buildWebComponent(OCMQuantityInput, 'ocm-quantity-input')

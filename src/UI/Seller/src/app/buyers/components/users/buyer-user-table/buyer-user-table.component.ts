@@ -63,18 +63,14 @@ export class BuyerUserTableComponent extends ResourceCrudComponent<User> {
   }
 
   updateResource($event: any): void {
+    const allValues = $event.getRawValue() 
+    this.locationUserGroupAssignments = allValues.BuyerGroupAssignments || []
+    this.permissionUserGroupAssignments = allValues.PermissionGroupAssignments || []
     const buyerUserForm = {
-      Active: $event.value.Active,
-      Username: $event.value.Username,
-      FirstName: $event.value.FirstName,
-      LastName: $event.value.LastName,
-      Email: $event.value.Email,
-      Country: $event.value.Country,
+      ...allValues,
       ID: this.updatedResource.ID,
-      xp: { Country: $event.value.Country },
-    }
-    this.permissionUserGroupAssignments = $event.value.PermissionGroupAssignments
-    this.locationUserGroupAssignments = $event.value.BuyerGroupAssignments
+      xp: { Country: allValues.Country },
+    } 
     this.resourceForm = $event
     this.updatedResource = buyerUserForm
   }

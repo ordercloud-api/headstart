@@ -50,6 +50,11 @@ export class BuyerUserEditComponent {
     });
   }
 
+  toggleActive(event: Event) {
+    this.resourceForm.controls['Active'].setValue((event.target as HTMLInputElement).checked)
+    this.updateResourceFromEvent()
+  }
+
   updateResourceFromEvent(): void {
     this.updateResource.emit(this.resourceForm)
   }
