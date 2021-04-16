@@ -4,7 +4,6 @@ import {
   Inject,
   Output,
   EventEmitter,
-  OnInit,
 } from '@angular/core'
 import { groupBy as _groupBy } from 'lodash'
 import { applicationConfiguration } from '@app-seller/config/app.config'
@@ -20,10 +19,10 @@ import {
   CanChangeLineItemsOnOrderTo,
 } from '@app-seller/orders/line-item-status.helper'
 import { FormArray, Validators, FormControl } from '@angular/forms'
-import { getPrimaryLineItemImage } from '@app-seller/products/product-image.helper'
 import { MeUser, OcOrderService } from '@ordercloud/angular-sdk'
 import { LineItem, LineItemSpec } from 'ordercloud-javascript-sdk'
 import { AppConfig, LineItemStatus, RegexService } from '@app-seller/shared'
+import { getPrimaryLineItemImage } from '@app-seller/shared/services/assets/asset.helper'
 
 @Component({
   selector: 'app-line-item-table',
@@ -218,7 +217,6 @@ export class LineItemTableComponent {
     return getPrimaryLineItemImage(
       lineItemID,
       this._lineItems,
-      this.appConfig.sellerID
     )
   }
 }

@@ -11,7 +11,7 @@ export class OCMSupplierCard {
   _supplier: Supplier
   @Input() set supplier(s: Supplier) {
     this._supplier = s
-    this.logoUrl = `${this.context.appSettings.cmsUrl}/assets/${this.context.appSettings.sellerID}/Suppliers/${s.ID}/thumbnail?size=s`
+    this.logoUrl = s.xp?.Image?.ThumbnailUrl || '/assets/supplier.jpg'
   }
   logoUrl = ''
   constructor(

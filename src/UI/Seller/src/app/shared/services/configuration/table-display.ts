@@ -1,7 +1,6 @@
 import { SummaryResourceInfoPathsDictionary } from '@app-seller/models/shared.types'
 import { ResourceConfigurationDictionary } from '@app-seller/models/table-display.types'
-import { PRODUCT_IMAGE_PATH_STRATEGY } from '@app-seller/products/product-image.helper'
-import { SUPPLIER_LOGO_PATH_STRATEGY } from '@app-seller/suppliers/supplier-logo.helper'
+import { PRODUCT_IMAGE_PATH_STRATEGY, SUPPLIER_LOGO_PATH_STRATEGY } from '@app-seller/shared/services/assets/asset.helper'
 
 export const SUMMARY_RESOURCE_INFO_PATHS_DICTIONARY: SummaryResourceInfoPathsDictionary = {
   suppliers: {
@@ -17,12 +16,6 @@ export const SUMMARY_RESOURCE_INFO_PATHS_DICTIONARY: SummaryResourceInfoPathsDic
     toExpandable: false,
   },
   products: {
-    toPrimaryHeader: 'Name',
-    toSecondaryHeader: 'ID',
-    toImage: PRODUCT_IMAGE_PATH_STRATEGY,
-    toExpandable: false,
-  },
-  kitproducts: {
     toPrimaryHeader: 'Name',
     toSecondaryHeader: 'ID',
     toImage: PRODUCT_IMAGE_PATH_STRATEGY,
@@ -136,23 +129,6 @@ export const FULL_TABLE_RESOURCE_DICTIONARY: ResourceConfigurationDictionary = {
         header: 'ADMIN.HEADERS.ACTIVE',
         type: BASIC_STRING,
         sortable: false,
-      },
-    ],
-    imgPath: PRODUCT_IMAGE_PATH_STRATEGY,
-  },
-  kitproducts: {
-    fields: [
-      {
-        path: 'Product.Name',
-        header: 'ADMIN.HEADERS.NAME',
-        type: STRING_WITH_IMAGE,
-        sortable: true,
-      },
-      {
-        path: 'Product.ID',
-        header: 'ADMIN.HEADERS.ID',
-        type: BASIC_STRING,
-        sortable: true,
       },
     ],
     imgPath: PRODUCT_IMAGE_PATH_STRATEGY,
