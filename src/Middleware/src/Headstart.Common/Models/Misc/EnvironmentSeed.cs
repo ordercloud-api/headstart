@@ -1,18 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using ordercloud.integrations.library;
-using SendGrid.Helpers.Mail;
 using Newtonsoft.Json;
-using System.Text.Json.Serialization;
 using Headstart.Models.Headstart;
-using Headstart.Common;
 using System.Linq;
 
 namespace Headstart.Models.Misc
 {
-    [DocIgnore]
-    public class EnvironmentSeed
-    {
+	[DocIgnore]
+	public class EnvironmentSeed
+	{
+		#region Required settings
+
 		/// <summary>
 		/// The username for logging in to https://portal.ordercloud.io
 		/// </summary>
@@ -36,8 +35,25 @@ namespace Headstart.Models.Misc
 		/// </summary>
 		[Required]
 		[StringLength(100, ErrorMessage = "Password must be at least 8 characters long and maximum 100 characters long", MinimumLength = 8)]
-		[RegularExpression("^(?=.*[a-zA-Z])(?=.*[0-9]).+$", ErrorMessage = "Password must contain at least one letter and one number")]
+		[RegularExpression("^(?=.{10,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\\W).*$", ErrorMessage = "Password must contain one number, one uppercase letter, one lowercase letter, one special character and have a minimum of 10 characters total")]
 		public string InitialAdminPassword { get; set; }
+
+		/// <summary>
+		/// The url to your hosted middleware endpoint
+		/// needed for webhooks and message senders
+		/// </summary>
+		[Required]
+		public string MiddlewareBaseUrl { get; set; }
+
+		/// <summary>
+		/// Container for OrderCloud Settings
+		/// </summary>
+		[Required]
+		public OrderCloudSeedSettings OrderCloudSettings { get; set; }
+
+		#endregion
+
+		#region Optional settings
 
 		/// <summary>
 		/// Optionally pass in a value if you have an existing organization you would like to seed. If no value is present a new org will be created
@@ -45,6 +61,9 @@ namespace Headstart.Models.Misc
 		/// </summary>
 		public string SellerOrgID { get; set; }
 
+		/// <summary>
+		/// Optionally pass in a seller org name when first creating an organization
+		/// </summary>
 		public string SellerOrgName { get; set; }
 
 		/// <summary>
@@ -63,24 +82,17 @@ namespace Headstart.Models.Misc
 		/// </summary>
 		public string AnonymousShoppingBuyerID { get; set; }
 
-		public string MiddlewareBaseUrl { get; set; }
-
-		/// <summary>
-		/// OrderCloud values that tell us what OC environment to use.
-		/// Environment and WebhookHashKey are the only required fields for seeding.
-		/// Your environment will be either sandbox or production. Your WebhookHashKey can be any string of your choosing.
-		/// </summary>
-		public OrderCloudSeedRequest OrderCloudSettings { get; set; }
-
 		/// <summary>
 		/// An optional object of storage settings for your translations container. 
 		/// If none are provided the seeding funciton will not create a translation file.
-		/// Provide a valid ConnectionString and ContainerNameTranslations to have the seeding function generate your translation file
+		/// Provide a valid ConnectionString to have the seeding function generate your translation file
 		/// </summary>
-		public BlobSettings BlobSettings { get; set; }
+		public BlobSeedSettings BlobSettings { get; set; }
+
+        #endregion
     }
 
-	[DocIgnore]
+    [DocIgnore]
 	public class EnvironmentSeedResponse
     {
 		public string Comments { get; set; }
@@ -90,14 +102,29 @@ namespace Headstart.Models.Misc
 		public Dictionary<string, dynamic> ApiClients { get; set; }
     }
 
-	public class OrderCloudSeedRequest
-	{
+	public class OrderCloudSeedSettings
+    {
+		/// <summary>
+		/// The ordercloud environment
+		/// </summary>
 		[Required]
-		[ValueRange(AllowableValues = new[] { "production", "prod", "sandbox" })]
+		[ValueRange(AllowableValues = new[] { "production", "sandbox" })]
 		public string Environment { get; set; }
+
+		/// <summary>
+		/// Used to secure your webhook endpoints
+		/// provide a secure, non-guessable string
+		/// </summary>
+		[Required, MaxLength(15)]
 		public string WebhookHashKey { get; set; }
-		public string MiddlewareClientID { get; set; }
-		public string MiddlewareClientSecret { get; set; }
+	}
+
+	public class BlobSeedSettings
+    {
+		[Required]
+		public string ConnectionString { get; set; }
+		public string ContainerNameTranslations { get; set; } = "ngx-translate";
+
 	}
 
 	public class OrderCloudEnvironments

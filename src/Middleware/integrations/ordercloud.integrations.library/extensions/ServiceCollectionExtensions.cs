@@ -50,6 +50,13 @@ namespace ordercloud.integrations.library
             where TQuery : class
             where TModel : class
         {
+            if(config.DatabaseName == null || config.EndpointUri == null || config.PrimaryKey == null)
+            {
+                // allow server to be started up without these settings
+                // in case they're just trying to seed their environment
+                // in the future we'll remove this in favor of centralized seeding capability
+                return services;
+            }
             var settings = new CosmosStoreSettings(config.DatabaseName, config.EndpointUri, config.PrimaryKey,
                 new ConnectionPolicy
                 {
