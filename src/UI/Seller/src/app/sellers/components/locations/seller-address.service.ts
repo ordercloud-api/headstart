@@ -40,7 +40,7 @@ export class SellerAddressService extends ResourceCrudService<Address> {
     // special iding process for supplier addresses
     const parentResourceID = await this.getParentResourceID()
     const existingAddresses = await AdminAddresses.List()
-    const newID = this.getIncrementedID(parentResourceID, existingAddresses)
+    const newID = '{sellerLocationIncrementor}'
     resource.ID = newID
 
     const newResource = await HeadStartSDK.ValidatedAddresses.CreateAdminAddress(
@@ -65,18 +65,6 @@ export class SellerAddressService extends ResourceCrudService<Address> {
     this.resourceSubject.value.Items[resourceIndex] = newResource
     this.resourceSubject.next(this.resourceSubject.value)
     return newResource
-  }
-
-  private getIncrementedID(
-    supplierID: string,
-    existingAddresses: ListPage<Address>
-  ): string {
-    const numbers = existingAddresses.Items.map((a) =>
-      Number(a.ID.split('-')[1])
-    )
-    const highestNumber = Math.max(...numbers)
-    const nextID = highestNumber === -Infinity ? 1 : highestNumber + 1
-    return `${supplierID}-${nextID.toString().padStart(2, '0')}`
   }
 
   emptyResource = {
