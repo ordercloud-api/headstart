@@ -10,9 +10,9 @@ using OrderCloud.SDK;
 using System.IO;
 using Headstart.Common.Services;
 using Headstart.Common;
-using ordercloud.integrations.exchangerates;
 using OrderCloud.Catalyst;
 using Headstart.Common.Services.Portal.Models;
+using System.Net;
 
 namespace Headstart.API.Commands
 {
@@ -30,7 +30,6 @@ namespace Headstart.API.Commands
         private readonly IHSSupplierCommand _supplierCommand;
         private readonly IHSBuyerCommand _buyerCommand;
         private readonly IHSBuyerLocationCommand _buyerLocationCommand;
-        private readonly IExchangeRatesCommand _exhangeRates;
 
         public EnvironmentSeedCommand(
             AppSettings settings,
@@ -38,8 +37,7 @@ namespace Headstart.API.Commands
             IHSSupplierCommand supplierCommand,
             IHSBuyerCommand buyerCommand,
             IHSBuyerLocationCommand buyerLocationCommand,
-            IOrderCloudClient oc,
-            IExchangeRatesCommand exhangeRates
+            IOrderCloudClient oc
         )
         {
             _portal = portal;
@@ -47,7 +45,6 @@ namespace Headstart.API.Commands
             _buyerCommand = buyerCommand;
             _buyerLocationCommand = buyerLocationCommand;
             _oc = oc;
-            _exhangeRates = exhangeRates;
             _settings = settings;
         }
 
@@ -55,29 +52,17 @@ namespace Headstart.API.Commands
         {
             OcEnv requestedEnv = validateEnvironment(seed.OrderCloudSettings.Environment);
 
-            if (string.IsNullOrEmpty(seed.OrderCloudSettings.WebhookHashKey))
-            {
-                throw new Exception("Missing required seeding field OrderCloudSettings:WebhookHashKey");
-            }
-            if(requestedEnv.environmentName == OrderCloudEnvironments.Production.environmentName && seed.SellerOrgID == null)
+            if (requestedEnv.environmentName == OrderCloudEnvironments.Production.environmentName && seed.SellerOrgID == null)
             {
                 throw new Exception("Cannot create a production environment via the environment seed endpoint. Please contact an OrderCloud Developer to create a production org.");
             }
 
+            // lets us handle requests to multiple api environments
             _oc = new OrderCloudClient(new OrderCloudClientConfig
             {
                 ApiUrl = requestedEnv.apiUrl,
-                AuthUrl = requestedEnv.apiUrl,
-                ClientId = seed.OrderCloudSettings.MiddlewareClientID != null ? 
-                    seed.OrderCloudSettings.MiddlewareClientID : _settings.OrderCloudSettings.MiddlewareClientID,
-                ClientSecret = seed.OrderCloudSettings.MiddlewareClientSecret != null ? 
-                    seed.OrderCloudSettings.MiddlewareClientSecret :  _settings.OrderCloudSettings.MiddlewareClientSecret,
-                Roles = new[]
-                    {
-                        ApiRole.FullAccess
-                    }
+                AuthUrl = requestedEnv.apiUrl
             });
-            
 
             var portalUserToken = await _portal.Login(seed.PortalUsername, seed.PortalPassword);
             var sellerOrg = await GetOrCreateOrg(portalUserToken, requestedEnv.environmentName, seed.SellerOrgName, seed.SellerOrgID);
@@ -103,14 +88,13 @@ namespace Headstart.API.Commands
             // populate default english translations into blob container name: settings.BlobSettings.ContainerNameTranslations or "ngx-translate" if setting is not defined
             // provide other language files to support multiple languages
 
-            var currentDirectory = Directory.GetCurrentDirectory();
             var englishTranslationsPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "Assets", "english-translations.json"));
-            if(seed?.BlobSettings?.ConnectionString !=null && seed?.BlobSettings?.ContainerNameTranslations != null)
+            if (seed?.BlobSettings?.ConnectionString != null && seed?.BlobSettings?.ContainerNameTranslations != null)
             {
                 var translationsConfig = new BlobServiceConfig()
                 {
-                    ConnectionString = _settings.BlobSettings.ConnectionString,
-                    Container = _settings.BlobSettings.ContainerNameTranslations
+                    ConnectionString = seed.BlobSettings.ConnectionString,
+                    Container = seed.BlobSettings.ContainerNameTranslations
                 };
                 var translationsBlob = new OrderCloudIntegrationsBlobService(translationsConfig);
                 await translationsBlob.Save("i18n/en.json", File.ReadAllText(englishTranslationsPath));
@@ -143,8 +127,7 @@ namespace Headstart.API.Commands
 
         private OcEnv validateEnvironment(string environment)
         {
-            var ProdEnvs = new List<string>() { "production", "prod" };
-            if (ProdEnvs.Contains(environment.ToLower()))
+            if (environment.ToLower() == "production")
             {
                 return OrderCloudEnvironments.Production;
             }
@@ -170,11 +153,12 @@ namespace Headstart.API.Commands
 
         public async Task<Organization> GetOrCreateOrg(string token, string env, string orgName, string orgID = null)
         {
-            if(orgID != null)
+            if (orgID != null)
             {
                 var org = await VerifyOrgExists(orgID, token);
                 return org;
-            } else
+            }
+            else
             {
                 var org = new Organization()
                 {
@@ -186,7 +170,8 @@ namespace Headstart.API.Commands
                 {
                     await _portal.GetOrganization(org.Id, token);
                     return await GetOrCreateOrg(token, env, orgName, orgID);
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     await _portal.CreateOrganization(org, token);
                     return await _portal.GetOrganization(org.Id, token);
@@ -259,14 +244,15 @@ namespace Headstart.API.Commands
                 };
 
                 var exists = await BuyerExistsAsync(buyer.Name, token);
-                if(exists == null || exists.Count == 0)
+                if (exists == null || exists.Count == 0)
                 {
-                    var createdBuyer = await _buyerCommand.Create(superBuyer, token, isSeedingEnvironment: true);
-                    if(createdBuyer.Buyer.Name == defaultBuyer.Name && seed.AnonymousShoppingBuyerID == null)
+                    var createdBuyer = await _buyerCommand.Create(superBuyer, token, _oc);
+                    if (createdBuyer.Buyer.Name == defaultBuyer.Name && seed.AnonymousShoppingBuyerID == null)
                     {
                         seed.AnonymousShoppingBuyerID = createdBuyer.Buyer.ID;
                     }
-                } else
+                }
+                else
                 {
                     seed.AnonymousShoppingBuyerID = exists.FirstOrDefault().ID;
                 }
@@ -282,9 +268,9 @@ namespace Headstart.API.Commands
             var createUser = _oc.Users.SaveAsync(seed.AnonymousShoppingBuyerID, anonBuyer.ID, anonBuyer, token);
 
             //create and assign initial buyer location
-            var createBuyerLocation = await _buyerLocationCommand.Save(seed.AnonymousShoppingBuyerID, 
-                $"{seed.AnonymousShoppingBuyerID}-{SeedConstants.DefaultLocationID}", 
-                SeedConstants.DefaultBuyerLocation(), token, true);
+            var createBuyerLocation = await _buyerLocationCommand.Save(seed.AnonymousShoppingBuyerID,
+                $"{seed.AnonymousShoppingBuyerID}-{SeedConstants.DefaultLocationID}",
+                SeedConstants.DefaultBuyerLocation(), token, _oc);
 
 
             var assignment = new UserGroupAssignment()
@@ -413,7 +399,7 @@ namespace Headstart.API.Commands
         private Task<ApiClient> GetClientRequest(List<ApiClient> existingClients, ApiClient client, string token)
         {
             var match = existingClients.Find(c => c.AppName == client.AppName);
-            if(match == null)
+            if (match == null)
             {
                 return _oc.ApiClients.CreateAsync(client, token);
             }
@@ -437,11 +423,21 @@ namespace Headstart.API.Commands
                 {
                     foreach (var buyer in seed.Buyers)
                     {
-                        await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
+                        try
                         {
-                            MessageSenderID = messageSender.ID,
-                            BuyerID = buyer.ID
-                        }, accessToken);
+                            await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
+                            {
+                                MessageSenderID = messageSender.ID,
+                                BuyerID = buyer.ID
+                            }, accessToken);
+                        }
+                        catch (OrderCloudException ex)
+                        {
+                            if (ex.HttpStatus != HttpStatusCode.Conflict) // this is a bug in the api https://four51.atlassian.net/browse/EX-2210
+                            {
+                                throw ex;
+                            }
+                        }
                     }
                 }
                 else if (messageSender.ID == "SellerEmails")
@@ -452,18 +448,34 @@ namespace Headstart.API.Commands
                         {
                             MessageSenderID = messageSender.ID
                         }, accessToken);
-                    } catch(Exception ex) { }
-                    
+                    }
+                    catch (OrderCloudException ex)
+                    {
+                        if (ex.HttpStatus != HttpStatusCode.Conflict) // this is a bug in the api https://four51.atlassian.net/browse/EX-2210
+                        {
+                            throw ex;
+                        }
+                    }
                 }
                 else if (messageSender.ID == "SupplierEmails")
                 {
                     foreach (var supplier in seed.Suppliers)
                     {
-                        await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
+                        try
                         {
-                            MessageSenderID = messageSender.ID,
-                            SupplierID = supplier.ID
-                        }, accessToken);
+                            await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
+                            {
+                                MessageSenderID = messageSender.ID,
+                                SupplierID = supplier.ID
+                            }, accessToken);
+                        }
+                        catch (OrderCloudException ex)
+                        {
+                            if (ex.HttpStatus != HttpStatusCode.Conflict) // this is a bug in the api https://four51.atlassian.net/browse/EX-2210
+                            {
+                                throw ex;
+                            }
+                        }
                     }
                 }
             }
@@ -471,6 +483,7 @@ namespace Headstart.API.Commands
 
         private async Task CreateAndAssignIntegrationEvents(string[] buyerClientIDs, string localBuyerClientID, string token, EnvironmentSeed seed = null)
         {
+            // this gets called by both the /seed command and the post-staging restore so we need to handle getting settings from two sources
             var middlewareBaseUrl = seed != null ? seed.MiddlewareBaseUrl : _settings.EnvironmentSettings.MiddlewareBaseUrl;
             var webhookHashKey = seed != null ? seed.OrderCloudSettings.WebhookHashKey : _settings.OrderCloudSettings.WebhookHashKey;
             var checkoutEvent = SeedConstants.CheckoutEvent(middlewareBaseUrl, webhookHashKey);

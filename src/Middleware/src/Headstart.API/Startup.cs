@@ -181,7 +181,7 @@ namespace Headstart.API
 
 
             ServicePointManager.DefaultConnectionLimit = int.MaxValue;
-            FlurlHttp.Configure(settings => settings.Timeout = TimeSpan.FromSeconds(_settings.FlurlSettings.TimeoutInSeconds));
+            FlurlHttp.Configure(settings => settings.Timeout = TimeSpan.FromSeconds(_settings.FlurlSettings.TimeoutInSeconds == 0 ? 30 : _settings.FlurlSettings.TimeoutInSeconds));
 
             // This adds retry logic for any api call that fails with a transient error (server errors, timeouts, or rate limiting requests)
             // Will retry up to 3 times using exponential backoff and jitter, a mean of 3 seconds wait time in between retries
