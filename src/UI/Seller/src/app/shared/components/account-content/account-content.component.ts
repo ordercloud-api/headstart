@@ -15,8 +15,8 @@ import { JDocument } from '@ordercloud/cms-sdk'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { UserContext } from '@app-seller/models/user.types'
 import { AppConfig } from '@app-seller/models/environment.types'
-import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 import { getAssetIDFromUrl } from '@app-seller/shared/services/assets/asset.helper'
+import { HeadStartSDK } from '@ordercloud/headstart-sdk'
 
 export abstract class AccountContent implements AfterViewChecked, OnInit {
   activePage: string
@@ -41,7 +41,6 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
     @Inject(applicationConfiguration) private appConfig: AppConfig,
     private appAuthService: AppAuthService,
     private currentUserService: CurrentUserService,
-    private middleware: MiddlewareAPIService,
   ) {
     this.setUpSubs()
   }
@@ -142,12 +141,14 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
     this.profileImgLoading = true
     const file: File = event?.target?.files[0]
     if(this.user?.xp?.Image?.Url) {
-      await this.middleware.deleteAsset(getAssetIDFromUrl(this.user.xp.Image.Url))
+      await HeadStartSDK.Assets.Delete(getAssetIDFromUrl(this.user.xp.Image.Url))
     }
     try {
       const data = new FormData()
       data.append('File', file)
-      const imgUrls = await this.middleware.uploadImage(data)
+      const imgUrls = await HeadStartSDK.Assets.CreateImage({
+        File: file
+      })
       const patchObj = {
         xp: {
           Image: imgUrls
@@ -167,7 +168,7 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
   async removeProfileImg(): Promise<void> {
     this.profileImgLoading = true
     try {
-      await this.middleware.deleteAsset(getAssetIDFromUrl(this.user?.xp?.Image?.Url))
+      await HeadStartSDK.Assets.Delete(getAssetIDFromUrl(this.user?.xp?.Image?.Url))
       const patchObj = {
         xp: {
           Image: null

@@ -45,6 +45,7 @@ import {
   TaxProperties,
   Asset,
   TaxCode,
+  AssetType,
 } from '@ordercloud/headstart-sdk'
 import { Location } from '@angular/common'
 import { TabIndexMapper, setProductEditTab } from './tab-mapper'
@@ -62,10 +63,8 @@ import { SupportedRates } from '@app-seller/models/currency-geography.types'
 import { FileHandle } from '@app-seller/models/file-upload.types'
 import { UserContext } from '@app-seller/models/user.types'
 import { AppConfig } from '@app-seller/models/environment.types'
-import { AssetType } from '@app-seller/models/Asset.types'
 import { AssetService } from '@app-seller/shared/services/assets/asset.service'
 import { getProductMediumImageUrl } from '@app-seller/shared/services/assets/asset.helper'
-import { Products } from 'ordercloud-javascript-sdk'
 
 @Component({
   selector: 'app-product-edit',

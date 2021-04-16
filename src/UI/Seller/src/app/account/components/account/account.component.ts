@@ -6,7 +6,6 @@ import { applicationConfiguration } from '@app-seller/config/app.config'
 import { MeUser } from '@ordercloud/angular-sdk'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { AppConfig } from '@app-seller/models/environment.types'
-import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 
 @Component({
   selector: 'account',
@@ -23,7 +22,6 @@ export class AccountComponent extends AccountContent {
     currentUserService: CurrentUserService,
     @Inject(applicationConfiguration) appConfig: AppConfig,
     appAuthService: AppAuthService,
-    middleware: MiddlewareAPIService
   ) {
     super(
       router,
@@ -32,7 +30,6 @@ export class AccountComponent extends AccountContent {
       appConfig,
       appAuthService,
       currentUserService,
-      middleware
     )
   }
 }

@@ -7,7 +7,6 @@ import { MeUser } from '@ordercloud/angular-sdk'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { AppConfig } from '@app-seller/models/environment.types'
-import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 
 @Component({
   selector: 'account-summary',
@@ -25,7 +24,6 @@ export class AccountSummaryComponent extends AccountContent {
     currentUserService: CurrentUserService,
     @Inject(applicationConfiguration) appConfig: AppConfig,
     appAuthService: AppAuthService,
-    middleware: MiddlewareAPIService
   ) {
     super(
       router,
@@ -34,7 +32,6 @@ export class AccountSummaryComponent extends AccountContent {
       appConfig,
       appAuthService,
       currentUserService,
-      middleware
     )
   }
 }

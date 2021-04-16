@@ -10,7 +10,6 @@ import {
 import { get as _get } from 'lodash'
 import { FormGroup, FormControl } from '@angular/forms'
 import { SupplierService } from '../supplier.service'
-import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 import {
   ListPage,
   HSSupplier,
@@ -72,7 +71,6 @@ export class SupplierEditComponent implements OnInit, OnChanges {
     private sanitizer: DomSanitizer,
     private ocSupplierUserService: OcSupplierUserService,
     private router: Router,
-    private middleware: MiddlewareAPIService
   ) {
     this.isCreatingNew = this.supplierService.checkIfCreatingNew()
   }
@@ -209,9 +207,9 @@ export class SupplierEditComponent implements OnInit, OnChanges {
       this.logoLoading = true
       const file: File = event?.target?.files[0]
       if((this._supplierEditable?.xp as any)?.Image?.Url) {
-        await this.middleware.deleteAsset(
+        await HeadStartSDK.Assets.Delete(
           getAssetIDFromUrl((this._supplierEditable?.xp as any)?.Image?.Url)
-          )
+        )
       }
       // Then upload logo asset
       try {
@@ -228,9 +226,9 @@ export class SupplierEditComponent implements OnInit, OnChanges {
   }
 
   async uploadAsset(file: File): Promise<void> {
-    const data = new FormData()
-    data.append('File', file)
-    const imgUrls = await this.middleware.uploadImage(data)
+    const imgUrls = await HeadStartSDK.Assets.CreateImage({
+      File: file
+    })
     const patchObj = {
       xp: {
         Image: imgUrls
@@ -243,7 +241,7 @@ export class SupplierEditComponent implements OnInit, OnChanges {
     this.logoLoading = true
     try {
       if((this._supplierEditable.xp as any)?.Image?.Url) {
-        await this.middleware.deleteAsset(getAssetIDFromUrl((this._supplierEditable.xp as any)?.Image?.Url))
+        await HeadStartSDK.Assets.Delete(getAssetIDFromUrl((this._supplierEditable.xp as any)?.Image?.Url))
         const patchObj = {
           xp: {
             Image: null

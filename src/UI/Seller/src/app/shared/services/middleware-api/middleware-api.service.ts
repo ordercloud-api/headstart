@@ -5,7 +5,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Inject, Injectable } from '@angular/core'
 import { applicationConfiguration } from '@app-seller/config/app.config'
-import { DocumentAsset, ImageAsset } from '@app-seller/models/Asset.types'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { OcTokenService, Order } from '@ordercloud/angular-sdk'
 import {
@@ -36,11 +35,6 @@ export class MiddlewareAPIService {
   async acknowledgeQuoteOrder(orderID: string): Promise<Order> {
     const url = `${this.appConfig.middlewareUrl}/order/acknowledgequote/${orderID}`
     return await this.http.post<Order>(url, this.headers).toPromise()
-  }
-
-  async isLocationDeletable(locationID: string): Promise<boolean> {
-    const url = `${this.appConfig.middlewareUrl}/supplier/candelete/${locationID}`
-    return await this.http.get<boolean>(url, this.headers).toPromise()
   }
 
   async updateSupplier(
@@ -85,28 +79,5 @@ export class MiddlewareAPIService {
       formData,
       { headers }
     )
-  }
-
-  uploadImage(assetData: FormData): Promise<ImageAsset> {
-    return this.http.post<ImageAsset>(
-      this.appConfig.middlewareUrl + '/assets/image', 
-      assetData, 
-      this.headers
-    ).toPromise()
-  }
-
-  uploadDocument(assetData: FormData): Promise<DocumentAsset> { 
-    return this.http.post<DocumentAsset>(
-      this.appConfig.middlewareUrl + '/assets/document', 
-      assetData, 
-      this.headers
-    ).toPromise()
-  }
-
-  deleteAsset(imageID: string) {
-    return this.http.delete(
-      this.appConfig.middlewareUrl + '/assets/' + imageID,
-      this.headers
-    ).toPromise()
   }
 }

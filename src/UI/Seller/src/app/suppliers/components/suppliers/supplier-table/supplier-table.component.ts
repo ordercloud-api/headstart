@@ -16,6 +16,7 @@ import {
 import { SupplierService } from '../supplier.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import {
+  HeadStartSDK,
   HSSupplier,
 } from '@ordercloud/headstart-sdk'
 import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
@@ -152,9 +153,9 @@ export class SupplierTableComponent extends ResourceCrudComponent<Supplier> {
       )
       if (this.file) {
         // Upload their logo, if there is one.  Then, patch supplier xp
-        const data = new FormData()
-        data.append('File', this.file)
-        const imgUrls = await this.middleWareApiService.uploadImage(data)
+        const imgUrls = HeadStartSDK.Assets.CreateImage({
+          File: this.file
+        })
         const patchObj = {
           xp: {
             Image: imgUrls

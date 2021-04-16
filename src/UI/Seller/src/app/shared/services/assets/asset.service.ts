@@ -1,25 +1,29 @@
 import { Injectable } from '@angular/core'
-import { AssetType, DocumentAsset, ImageAsset } from '@app-seller/models/Asset.types'
 import { FileHandle } from '@app-seller/models/file-upload.types'
 import {
-  HSProduct,
+  AssetType,
+  DocumentAsset,
+  HeadStartSDK,
+  HSProduct, ImageAsset,
 } from '@ordercloud/headstart-sdk'
 import { Products, Product } from 'ordercloud-javascript-sdk'
 import { MiddlewareAPIService } from '../middleware-api/middleware-api.service'
-import { getAssetIDFromUrl, mapFileToFormData } from './asset.helper'
+import { getAssetIDFromUrl } from './asset.helper'
 
 @Injectable({
   providedIn: 'root',
 })
 export class AssetService {
   constructor(
-    private middleware: MiddlewareAPIService
   ) { }
 
   async uploadImageFiles(files: FileHandle[]): Promise<ImageAsset[]> {
     return await Promise.all(
       files.map(file => {
-        return this.middleware.uploadImage(mapFileToFormData(file))
+        return HeadStartSDK.Assets.CreateImage({
+          File: file.File,
+          Filename: file.Filename
+        })
       })
     );
   }
@@ -27,7 +31,10 @@ export class AssetService {
   async uploadDocumentFiles(files: FileHandle[]): Promise<DocumentAsset[]> {
     return await Promise.all(
       files.map(file => {
-        return this.middleware.uploadDocument(mapFileToFormData(file))
+        return HeadStartSDK.Assets.CreateDocument({
+          File: file.File,
+          Filename: file.Filename
+        })
       })
     );
   }
@@ -38,7 +45,7 @@ export class AssetService {
     assetType: AssetType): Promise<HSProduct> {
     const assetID = getAssetIDFromUrl(fileUrl)
     try {
-      await this.middleware.deleteAsset(assetID)
+      await HeadStartSDK.Assets.Delete(assetID)
       return await this.removeAssetFromProduct(product, assetID, assetType)
     } catch (err) {
       if (err?.status === 404) {

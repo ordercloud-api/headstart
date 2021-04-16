@@ -5,7 +5,7 @@ import { Component, Inject } from '@angular/core'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { Observable } from 'rxjs'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
-import { AssetUpload } from '@ordercloud/headstart-sdk'
+import { AssetType, AssetUpload, HeadStartSDK } from '@ordercloud/headstart-sdk'
 import { getPsHeight } from '@app-seller/shared/services/dom.helper'
 import { NgxSpinnerService } from 'ngx-spinner'
 import { AppConfig } from '@app-seller/models/environment.types'
@@ -13,8 +13,6 @@ import {
   BatchProcessResult,
   FileHandle,
 } from '@app-seller/models/file-upload.types'
-import { AssetType } from '@app-seller/models/Asset.types'
-import { mapFileToFormData } from '@app-seller/shared/services/assets/asset.helper'
 import { Products } from 'ordercloud-javascript-sdk'
 
 @Component({
@@ -129,7 +127,10 @@ export class UploadShipmentsComponent {
   ): Promise<any> {
     if(assetType === 'image') {
       const [imageData, currentProduct] = await Promise.all([
-        this.middleware.uploadImage(mapFileToFormData(file)),
+        HeadStartSDK.Assets.CreateImage({
+          File: file.File,
+          Filename: file.Filename
+        }),
         Products.Get(productID)
       ])
       const patchObj = {
@@ -143,7 +144,10 @@ export class UploadShipmentsComponent {
       return await Products.Patch(productID, patchObj)
     } else {
       const [documentData, currentProduct] = await Promise.all([
-        this.middleware.uploadDocument(mapFileToFormData(file)),
+        HeadStartSDK.Assets.CreateDocument({
+          File: file.File,
+          Filename: file.Filename
+        }),
         Products.Get(productID)
       ])
       const patchObj = {

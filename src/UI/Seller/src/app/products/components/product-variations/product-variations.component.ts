@@ -32,13 +32,12 @@ import {
   SuperHSProduct,
   Asset,
   HSVariant,
+  ImageAsset,
 } from '@ordercloud/headstart-sdk'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { BehaviorSubject } from 'rxjs'
 import { Products } from 'ordercloud-javascript-sdk'
 import { SupportedRates } from '@app-seller/shared'
-import { ImageAsset } from '@app-seller/models/Asset.types'
-import { set } from 'lodash'
 
 @Component({
   selector: 'product-variations-component',

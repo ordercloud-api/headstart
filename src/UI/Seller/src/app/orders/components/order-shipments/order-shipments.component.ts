@@ -39,7 +39,7 @@ import {
   CanChangeLineItemsOnOrderTo,
   NumberCanChangeTo,
 } from '@app-seller/orders/line-item-status.helper'
-import { HSLineItem, SuperHSShipment } from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, HSLineItem, SuperHSShipment } from '@ordercloud/headstart-sdk'
 import { flatten as _flatten } from 'lodash'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { LineItemStatus } from '@app-seller/models/order.types'

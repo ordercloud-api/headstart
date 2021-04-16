@@ -45,11 +45,3 @@ export function getAssetIDFromUrl(url: string): string {
     const split = url.split("/")
     return split[split.length - 1]
 }
-
-export function mapFileToFormData(file: FileHandle): FormData {
-    const data = new FormData()
-    Object.keys(file).forEach(key => {
-        data.append(key, file[key])
-    })
-    return data;
-}
