@@ -84,7 +84,7 @@ namespace Headstart.API
                 ConnectionString = _settings.BlobSettings.ConnectionString,
                 Container = "unhandled-errors-log"
             };
-            var imageConfig = new BlobServiceConfig()
+            var assetConfig = new BlobServiceConfig()
             {
                 ConnectionString = _settings.BlobSettings.ConnectionString,
                 Container = "assets"
@@ -151,7 +151,7 @@ namespace Headstart.API
                         Roles = new[] { ApiRole.FullAccess }
                     })))
                 .AddSingleton<IOrderCloudIntegrationsExchangeRatesClient, OrderCloudIntegrationsExchangeRatesClient>()
-                .AddSingleton<IAssetClient>(provider => new AssetClient( new OrderCloudIntegrationsBlobService(imageConfig), _settings))
+                .AddSingleton<IAssetClient>(provider => new AssetClient( new OrderCloudIntegrationsBlobService(assetConfig), _settings))
                 .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand( new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
                 .AddSingleton<IAvalaraCommand>(x => new AvalaraCommand(
                     avalaraConfig,

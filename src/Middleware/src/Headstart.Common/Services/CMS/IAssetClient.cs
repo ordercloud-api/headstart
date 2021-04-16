@@ -1,4 +1,4 @@
-﻿using Headstart.Common.Extensions;
+using Headstart.Common.Extensions;
 using Headstart.Common.Services.CMS.Models;
 using Headstart.Models;
 using ordercloud.integrations.library;
@@ -39,17 +39,10 @@ namespace Headstart.Common.Services.CMS
             {
                 var small = image.ResizeSmallerDimensionToTarget(100);
                 var medium = image.ResizeSmallerDimensionToTarget(300);
-                try
-                {
-                    await Task.WhenAll(new[] {
-                        _blob.Save(assetGuid, medium.ToBytes(ImageFormat.Png), "image/png"),
-                        _blob.Save($"{assetGuid}-s", small.ToBytes(ImageFormat.Png), "image/png")
-                    });
-                } finally
-                {
-                    small.Dispose();
-                    medium.Dispose();
-                }
+                await Task.WhenAll(new[] {
+                    _blob.Save(assetGuid, medium.ToBytes(ImageFormat.Png), "image/png"),
+                    _blob.Save($"{assetGuid}-s", small.ToBytes(ImageFormat.Png), "image/png")
+                }); 
             }
             return new ImageAsset
             {
