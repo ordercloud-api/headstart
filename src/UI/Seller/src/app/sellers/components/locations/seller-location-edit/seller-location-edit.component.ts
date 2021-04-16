@@ -7,7 +7,6 @@ import {
 } from '@angular/core'
 import { FormGroup, Validators, FormControl } from '@angular/forms'
 import { Address, ListPage } from '@ordercloud/angular-sdk'
-import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 import { ActivatedRoute } from '@angular/router'
 import { GeographyConfig } from '@app-seller/shared/models/supported-countries.constant'
 import {
@@ -66,7 +65,6 @@ export class SellerLocationEditComponent implements OnChanges {
   canDelete = new EventEmitter<boolean>()
 
   constructor(
-    private middleware: MiddlewareAPIService,
     private activatedRoute: ActivatedRoute,
     private sellerLocationService: SellerAddressService
   ) {
@@ -149,7 +147,9 @@ export class SellerLocationEditComponent implements OnChanges {
   }
 
   private async determineIfDeletable(locationID: string): Promise<void> {
-    const hasNoProducts = await this.middleware.isLocationDeletable(locationID)
+    const hasNoProducts = ((await HeadStartSDK.Suppliers.CanDeleteLocation(
+      locationID
+    )) as unknown) as boolean
     this.canDelete.emit(hasNoProducts)
   }
 
