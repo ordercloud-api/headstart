@@ -3,25 +3,18 @@ import {
   Input,
   Output,
   EventEmitter,
-  ChangeDetectorRef,
   OnChanges,
   OnInit,
-  Inject,
   SimpleChanges,
 } from '@angular/core'
 import { get as _get } from 'lodash'
 import { FormGroup, FormControl } from '@angular/forms'
 import { SupplierService } from '../supplier.service'
-import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
-import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 import {
   ListPage,
   HSSupplier,
   HeadStartSDK,
-  AssetUpload,
-  Asset,
 } from '@ordercloud/headstart-sdk'
-import { HeaderComponent } from '@app-seller/layout/header/header.component'
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser'
 import {
   faTimes,
@@ -29,20 +22,15 @@ import {
   faExclamationCircle,
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons'
-import { applicationConfiguration } from '@app-seller/config/app.config'
-import { environment } from 'src/environments/environment.local'
-import { ToastrService } from 'ngx-toastr'
 import { User, OcSupplierUserService, Buyer } from '@ordercloud/angular-sdk'
-import { Buyers } from 'ordercloud-javascript-sdk'
+import { Buyers, Supplier, Suppliers } from 'ordercloud-javascript-sdk'
 import { Router } from '@angular/router'
-import { ContentManagementClient } from '@ordercloud/cms-sdk'
-import { AppConfig } from '@app-seller/models/environment.types'
 import { FileHandle } from '@app-seller/models/file-upload.types'
 import {
   SupportedCurrencies,
   SupportedRates,
 } from '@app-seller/models/currency-geography.types'
-import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
+import { getAssetIDFromUrl } from '@app-seller/shared/services/assets/asset.helper'
 @Component({
   selector: 'app-supplier-edit',
   templateUrl: './supplier-edit.component.html',
@@ -57,6 +45,8 @@ export class SupplierEditComponent implements OnInit, OnChanges {
   updateResource = new EventEmitter<any>()
   @Output()
   logoStaged = new EventEmitter<File>()
+  @Output()
+  updateList = new EventEmitter<Supplier>()
   @Input() set supplierEditable(value: HSSupplier) {
     this._supplierEditable = value
   }
@@ -78,13 +68,9 @@ export class SupplierEditComponent implements OnInit, OnChanges {
 
   constructor(
     public supplierService: SupplierService,
-    private currentUserService: CurrentUserService,
     private sanitizer: DomSanitizer,
-    private appAuthService: AppAuthService,
-    @Inject(applicationConfiguration) private appConfig: AppConfig,
-    private toastrService: ToastrService,
     private ocSupplierUserService: OcSupplierUserService,
-    private router: Router
+    private router: Router,
   ) {
     this.isCreatingNew = this.supplierService.checkIfCreatingNew()
   }
@@ -105,23 +91,13 @@ export class SupplierEditComponent implements OnInit, OnChanges {
       changes?.supplierEditable?.currentValue?.ID !==
       changes?.supplierEditable?.previousValue?.ID
     ) {
-      await this.handleSelectedSupplierChange(
-        changes.supplierEditable.currentValue
-      )
+      await this.handleSelectedSupplierChange()
     }
   }
 
-  async handleSelectedSupplierChange(supplier: HSSupplier): Promise<void> {
-    this.logoUrl = `${environment.cmsUrl}/assets/${this.appConfig.sellerID}/Suppliers/${supplier.ID}/thumbnail?size=m`
+  async handleSelectedSupplierChange(): Promise<void> {
     !this.isCreatingNew &&
-      (this.hasLogo =
-        (
-          await await ContentManagementClient.Assets.ListAssets(
-            'Suppliers',
-            this._supplierEditable?.ID,
-            { filters: { Tags: ['Logo'] } }
-          )
-        ).Items?.length > 0)
+      (this.hasLogo = (this._supplierEditable?.xp as any)?.Image?.ThumbnailUrl && (this._supplierEditable?.xp as any)?.Image?.ThumbnailUrl !== '')
     !this.isCreatingNew &&
       (this.supplierUsers = await this.ocSupplierUserService
         .List(this._supplierEditable.ID)
@@ -207,7 +183,7 @@ export class SupplierEditComponent implements OnInit, OnChanges {
     } else {
       this.logoLoading = true
       try {
-        await this.uploadAsset(this._supplierEditable?.ID, event[0].File)
+        await this.uploadAsset(event[0].File)
       } catch (err) {
         this.hasLogo = false
         this.logoLoading = false
@@ -215,8 +191,6 @@ export class SupplierEditComponent implements OnInit, OnChanges {
       } finally {
         this.hasLogo = true
         this.logoLoading = false
-        // Reset the img src for logo
-        this.setLogoSrc()
       }
     }
   }
@@ -232,25 +206,14 @@ export class SupplierEditComponent implements OnInit, OnChanges {
     } else {
       this.logoLoading = true
       const file: File = event?.target?.files[0]
-      const logoAssets = await ContentManagementClient.Assets.ListAssets(
-        'Suppliers',
-        this._supplierEditable?.ID,
-        { filters: { Tags: ['Logo'] } }
-      )
-      if (logoAssets?.Items?.length > 0) {
-        // If logo exists, remove the assignment, then the logo itself
-        await ContentManagementClient.Assets.DeleteAssetAssignment(
-          logoAssets?.Items[0]?.ID,
-          this._supplierEditable?.ID,
-          'Suppliers',
-          null,
-          null
+      if((this._supplierEditable?.xp as any)?.Image?.Url) {
+        await HeadStartSDK.Assets.Delete(
+          getAssetIDFromUrl((this._supplierEditable?.xp as any)?.Image?.Url)
         )
-        await ContentManagementClient.Assets.Delete(logoAssets.Items[0].ID)
       }
       // Then upload logo asset
       try {
-        await this.uploadAsset(this._supplierEditable?.ID, file)
+        await this.uploadAsset(file)
       } catch (err) {
         this.hasLogo = false
         this.logoLoading = false
@@ -258,70 +221,46 @@ export class SupplierEditComponent implements OnInit, OnChanges {
       } finally {
         this.hasLogo = true
         this.logoLoading = false
-        // Reset the img src for logo
-        this.setLogoSrc()
       }
     }
   }
 
-  async uploadAsset(supplierID: string, file: File): Promise<void> {
-    const accessToken = await this.appAuthService.fetchToken().toPromise()
-    const asset: AssetUpload = {
-      Active: true,
-      File: file,
-      FileName: file.name,
-      Tags: ['Logo'],
+  async uploadAsset(file: File): Promise<void> {
+    const imgUrls = await HeadStartSDK.Assets.CreateImage({
+      File: file
+    })
+    const patchObj = {
+      xp: {
+        Image: imgUrls
+      }
     }
-    const newAsset: Asset = await ContentManagementClient.Assets.Upload(
-      asset,
-      accessToken
-    )
-    await ContentManagementClient.Assets.SaveAssetAssignment(
-      {
-        ResourceType: 'Suppliers',
-        ResourceID: supplierID,
-        AssetID: newAsset.ID,
-      },
-      accessToken
-    )
+    await this.PatchAndUpdateList(patchObj)
   }
 
   async removeLogo(): Promise<void> {
     this.logoLoading = true
     try {
-      // Get the logo asset
-      const logoAssets = await ContentManagementClient.Assets.ListAssets(
-        'Suppliers',
-        this._supplierEditable?.ID,
-        { filters: { Tags: ['Logo'] } }
-      )
-      // Remove the logo asset assignment
-      await ContentManagementClient.Assets.DeleteAssetAssignment(
-        logoAssets?.Items[0]?.ID,
-        this._supplierEditable?.ID,
-        'Suppliers',
-        null,
-        null
-      )
-      // Remove the logo asset
-      await ContentManagementClient.Assets.Delete(logoAssets.Items[0].ID)
+      if((this._supplierEditable.xp as any)?.Image?.Url) {
+        await HeadStartSDK.Assets.Delete(getAssetIDFromUrl((this._supplierEditable.xp as any)?.Image?.Url))
+        const patchObj = {
+          xp: {
+            Image: null
+          }
+        }
+        await this.PatchAndUpdateList(patchObj)
+      }
     } catch (err) {
       throw err
     } finally {
       this.hasLogo = false
       this.logoLoading = false
-      // Reset the img src for logo
-      this.setLogoSrc()
     }
   }
 
-  setLogoSrc(): void {
-    document
-      .getElementById('supplier-logo')
-      ?.setAttribute(
-        'src',
-        `${environment.cmsUrl}/assets/${this.appConfig.sellerID}/Suppliers/${this._supplierEditable?.ID}/thumbnail?size=m`
-      )
+  async PatchAndUpdateList(patchObj: Partial<Supplier>) {
+    const updatedSupplier = await Suppliers.Patch(this._supplierEditable?.ID, patchObj)
+    this.updateList.emit(updatedSupplier);
+    (this._supplierEditable.xp as any).Image = updatedSupplier.xp.Image; 
   }
 
   assignSupplierUser(email: string): void {

@@ -142,9 +142,7 @@ export class SupplierLocationEditComponent implements OnChanges {
   }
 
   private async determineIfDeletable(locationID: string): Promise<void> {
-    const hasNoProducts = ((await HeadStartSDK.Suppliers.CanDeleteLocation(
-      locationID
-    )) as unknown) as boolean
+    const hasNoProducts = await HeadStartSDK.Suppliers.CanDeleteLocation(locationID)
     this.canDelete.emit(hasNoProducts)
   }
 

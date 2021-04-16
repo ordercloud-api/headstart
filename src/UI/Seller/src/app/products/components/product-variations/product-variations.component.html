@@ -352,7 +352,7 @@
       <div class="row">
         <div class="col-md-12">
           <img
-            *ngFor="let img of superProductEditable?.Images"
+            *ngFor="let img of superProductEditable?.Product?.xp?.Images"
             class="product-image"
             [class.selected-image]="isImageSelected(img)"
             [src]="img.Url"
@@ -514,7 +514,7 @@
                     <div class="my-2">
                       <fa-icon
                         *ngIf="
-                          superProductEditable?.Images?.length && !readonly
+                          superProductEditable?.Product?.xp?.Images?.length && !readonly
                         "
                         (click)="assignVariantImages = true"
                         [icon]="faPlusCircle"
@@ -526,7 +526,7 @@
                     <img
                       class="variant-img"
                       *ngFor="let img of getVariantImages(variantInSelection)"
-                      [src]="img.Url"
+                      [src]="img.ThumbnailUrl"
                       alt="Variant Image"
                     />
                     <div class="form-row">

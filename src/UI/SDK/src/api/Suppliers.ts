@@ -32,7 +32,7 @@ export default class Suppliers {
     * @param locationID ID of the location.
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async CanDeleteLocation(locationID: string,  accessToken?: string ): Promise<void> {
+    public async CanDeleteLocation(locationID: string,  accessToken?: string ): Promise<boolean> {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.get(`/supplier/candelete/${locationID}`, { params: {  accessToken, impersonating } } );

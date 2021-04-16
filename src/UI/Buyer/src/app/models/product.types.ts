@@ -64,14 +64,3 @@ export interface FullSpecOption extends SpecOption {
       KitProductID: string
     }
   }
-
-export interface ProductSelectionEvent {
-  productKitDetails: HSMeProductInKit
-  variantSelection?: KitVariantSelection
-}
-
-export interface KitVariantSelection {
-  productID: string
-  specForm: FormGroup
-  quantity: number
-}

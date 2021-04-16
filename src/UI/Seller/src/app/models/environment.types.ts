@@ -6,7 +6,7 @@ export interface EnvironmentConfig {
   sellerName: string
   clientID: string
   middlewareUrl: string
-  cmsUrl: string
+  cmsUrl?: string
   appname: string
   translateBlobUrl: string
   blobStorageUrl: string
@@ -48,7 +48,10 @@ export interface AppConfig {
    * base path to middleware
    */
   middlewareUrl: string
-  cmsUrl: string
+  /**
+  * Optional base url to provide for OrderCloud CMS management. Note: this is a deprecated feature
+  */
+  cmsUrl?: string
   translateBlobUrl: string
   blobStorageUrl: string
 
