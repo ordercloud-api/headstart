@@ -268,12 +268,7 @@
     <div class="col-md-12">
       <!-- full table view -->
       <div
-        *ngIf="
-          !selectedResourceID &&
-          !isCreatingNew &&
-          (!isMyResource || shouldDisplayList) &&
-          !excludeFromFullTableView
-        "
+        *ngIf="showFilterBar()"
       >
         <perfect-scrollbar
           id="perfectScroll"

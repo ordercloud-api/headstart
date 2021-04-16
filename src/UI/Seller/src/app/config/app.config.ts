@@ -21,6 +21,7 @@ export const ocAppConfig: AppConfig = {
     // Will need to be updated to 'AdminAddressAdmin' when seller address create is implemented
     'ApiClientAdmin',
     'ApiClientReader',
+    'AdminAddressAdmin',
     'AdminAddressReader',
     'MeAddressAdmin',
     'AddressReader',

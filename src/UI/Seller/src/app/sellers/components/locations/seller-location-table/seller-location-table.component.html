@@ -1,0 +1,31 @@
+<resource-table-component
+  [resourceList]="resourceList"
+  [selectedResourceID]="selectedResourceID"
+  [updatedResource]="updatedResource"
+  [resourceInSelection]="resourceInSelection"
+  [ocService]="ocService"
+  [dataIsSaving]="dataIsSaving"
+  [parentResourceService]="supplierService"
+  [resourceForm]="resourceForm"
+  (searched)="searchResources($event)"
+  (hitScrollEnd)="handleScrollEnd()"
+  (changesSaved)="saveUpdates()"
+  (changesDiscarded)="discardChanges()"
+  (resourceDelete)="deleteResource()"
+  (resourceSelected)="selectResource($event)"
+  [canBeDeleted]="canBeDeleted"
+  [labelSingular]="'ALIAS.SELLER_LOCATION'"
+  [labelPlural]="'ALIAS.SELLER_LOCATIONS'"
+>
+
+  <app-seller-location-edit
+    class="resource-edit"
+    [suggestedAddresses]="suggestedAddresses"
+    [filterConfig]="filterConfig"
+    [location]="resourceInSelection"
+    (updateResource)="updateResource($event)"
+    (selectAddress)="handleSellerAddressSelect($event)"
+    (canDelete)="determineIfDeletable($event)"
+  >
+  </app-seller-location-edit>
+</resource-table-component>

@@ -477,7 +477,14 @@ export class ResourceTableComponent
       resourceInSelection.AppName
     )
   }
-
+  showFilterBar(): boolean {
+    const test =
+      !this.selectedResourceID &&
+      !this.isCreatingNew &&
+      (!this.isMyResource || this.shouldDisplayList) &&
+      !this.excludeFromFullTableView
+    return test
+  }
   navigateToSubResource(subResource: string) {
     this.router.navigateByUrl(
       '/' +

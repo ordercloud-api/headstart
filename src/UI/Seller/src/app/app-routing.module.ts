@@ -41,9 +41,9 @@ const routes: Routes = [
           import('./buyers/buyers.module').then((m) => m.BuyersModule),
       },
       {
-        path: 'seller-users',
+        path: 'seller-admin',
         loadChildren: () =>
-          import('./seller-users/seller-users.module').then(
+          import('./sellers/seller-admin.module').then(
             (m) => m.SellerUsersModule
           ),
       },
@@ -77,9 +77,9 @@ const routes: Routes = [
       },
       {
         path: 'support',
-        loadChildren: () => 
-          import('./support/support.module').then((m) => m.SupportModule)
-      }
+        loadChildren: () =>
+          import('./support/support.module').then((m) => m.SupportModule),
+      },
     ],
   },
 ]

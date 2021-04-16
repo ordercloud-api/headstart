@@ -20,7 +20,7 @@ export class SellerUserService extends ResourceCrudService<User> {
       activatedRoute,
       AdminUsers,
       currentUserService,
-      '/seller-users',
+      '/seller-admin/users',
       'users'
     )
   }

@@ -15,18 +15,19 @@ import {
   ValidatePhone,
 } from '@app-seller/validators/validators'
 import { takeWhile } from 'rxjs/operators'
-import { SupplierAddressService } from '../supplier-address.service'
+import { SellerAddressService } from '../seller-address.service'
 import {
   OrderCloudIntegrationsConversionRate,
   HeadStartSDK,
 } from '@ordercloud/headstart-sdk'
 import { SupportedCountries } from '@app-seller/models/currency-geography.types'
+
 @Component({
-  selector: 'app-supplier-location-edit',
-  templateUrl: './supplier-location-edit.component.html',
-  styleUrls: ['./supplier-location-edit.component.scss'],
+  selector: 'app-seller-location-edit',
+  templateUrl: './seller-location-edit.component.html',
+  styleUrls: ['./seller-location-edit.component.scss'],
 })
-export class SupplierLocationEditComponent implements OnChanges {
+export class SellerLocationEditComponent implements OnChanges {
   alive = true
   locationHasNoProducts: boolean
   countryOptions: SupportedCountries[]
@@ -43,12 +44,12 @@ export class SupplierLocationEditComponent implements OnChanges {
   countryHasBeenSelected = false
   currencyOptions: OrderCloudIntegrationsConversionRate[]
   @Input()
-  set location(supplierLocation: Address) {
-    if (supplierLocation.ID) {
-      void this.handleSelectedLocationChange(supplierLocation)
+  set location(sellerLocation: Address) {
+    if (sellerLocation.ID) {
+      void this.handleSelectedLocationChange(sellerLocation)
     } else {
       void this.handleSelectedLocationChange(
-        this.supplierLocationService.emptyResource
+        this.sellerLocationService.emptyResource
       )
     }
   }
@@ -65,7 +66,7 @@ export class SupplierLocationEditComponent implements OnChanges {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private supplierLocationService: SupplierAddressService
+    private sellerLocationService: SellerAddressService
   ) {
     this.countryOptions = GeographyConfig.getCountries()
   }
@@ -79,29 +80,29 @@ export class SupplierLocationEditComponent implements OnChanges {
       this.currencyOptions = res.Items
       location.Country && this.setFlag(location.Country)
     })
-    this.createSupplierLocationForm(location)
+    this.createSellerLocationForm(location)
   }
 
-  createSupplierLocationForm(supplierLocation: Address): void {
+  createSellerLocationForm(sellerLocation: Address): void {
     this.resourceForm = new FormGroup({
       AddressName: new FormControl(
-        supplierLocation.AddressName,
+        sellerLocation.AddressName,
         Validators.required
       ),
       CompanyName: new FormControl(
-        supplierLocation.CompanyName,
+        sellerLocation.CompanyName,
         Validators.required
       ),
-      Street1: new FormControl(supplierLocation.Street1, Validators.required),
-      Street2: new FormControl(supplierLocation.Street2),
-      City: new FormControl(supplierLocation.City, Validators.required),
-      State: new FormControl(supplierLocation.State, Validators.required),
-      Zip: new FormControl({ value: supplierLocation.Zip, disabled: true }, [
+      Street1: new FormControl(sellerLocation.Street1, Validators.required),
+      Street2: new FormControl(sellerLocation.Street2),
+      City: new FormControl(sellerLocation.City, Validators.required),
+      State: new FormControl(sellerLocation.State, Validators.required),
+      Zip: new FormControl({ value: sellerLocation.Zip, disabled: true }, [
         Validators.required,
         ValidateUSZip || ValidateCAZip,
       ]),
-      Country: new FormControl(supplierLocation.Country, Validators.required),
-      Phone: new FormControl(supplierLocation.Phone, ValidatePhone),
+      Country: new FormControl(sellerLocation.Country, Validators.required),
+      Phone: new FormControl(sellerLocation.Phone, ValidatePhone),
     })
     this.setZipValidator()
   }
@@ -142,7 +143,9 @@ export class SupplierLocationEditComponent implements OnChanges {
   }
 
   private async determineIfDeletable(locationID: string): Promise<void> {
-    const hasNoProducts = await HeadStartSDK.Suppliers.CanDeleteLocation(locationID)
+    const hasNoProducts = ((await HeadStartSDK.Suppliers.CanDeleteLocation(
+      locationID
+    )) as unknown) as boolean
     this.canDelete.emit(hasNoProducts)
   }
 
@@ -150,7 +153,7 @@ export class SupplierLocationEditComponent implements OnChanges {
     this.updateResource.emit({ value: event.target.value, field })
   }
 
-  handleAddressSelect(address: Address): void {
+  handleSellerAddressSelect(address: Address): void {
     this.selectAddress.emit(address)
   }
 
