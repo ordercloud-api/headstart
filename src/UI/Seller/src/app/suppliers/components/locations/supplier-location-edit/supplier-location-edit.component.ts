@@ -75,15 +75,11 @@ export class SupplierLocationEditComponent implements OnChanges {
   }
 
   async handleSelectedLocationChange(location: Address): Promise<void> {
-    // Bug with the SDK where GetRateList has wrong return type
-    try {
-      HeadStartSDK.ExchangeRates.GetRateList().then((res) => {
-        this.currencyOptions = res.Items
-        location.Country && this.setFlag(location.Country)
-      })
-    } finally {
-      this.createSupplierLocationForm(location)
-    }
+    void HeadStartSDK.ExchangeRates.GetRateList().then((res) => {
+      this.currencyOptions = res.Items
+      location.Country && this.setFlag(location.Country)
+    })
+    this.createSupplierLocationForm(location)
   }
 
   createSupplierLocationForm(supplierLocation: Address) {
