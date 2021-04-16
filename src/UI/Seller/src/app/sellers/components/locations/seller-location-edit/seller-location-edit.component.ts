@@ -46,9 +46,9 @@ export class SellerLocationEditComponent implements OnChanges {
   @Input()
   set location(sellerLocation: Address) {
     if (sellerLocation.ID) {
-      this.handleSelectedLocationChange(sellerLocation)
+      void this.handleSelectedLocationChange(sellerLocation)
     } else {
-      this.handleSelectedLocationChange(
+      void this.handleSelectedLocationChange(
         this.sellerLocationService.emptyResource
       )
     }
@@ -71,19 +71,19 @@ export class SellerLocationEditComponent implements OnChanges {
     this.countryOptions = GeographyConfig.getCountries()
   }
 
-  ngOnChanges() {
+  ngOnChanges(): void {
     this.setLocationID()
   }
 
   async handleSelectedLocationChange(location: Address): Promise<void> {
-    void HeadStartSDK.ExchangeRates.GetRateList().then((res) => {
+    await HeadStartSDK.ExchangeRates.GetRateList().then((res) => {
       this.currencyOptions = res.Items
       location.Country && this.setFlag(location.Country)
     })
     this.createSellerLocationForm(location)
   }
 
-  createSellerLocationForm(sellerLocation: Address) {
+  createSellerLocationForm(sellerLocation: Address): void {
     this.resourceForm = new FormGroup({
       AddressName: new FormControl(
         sellerLocation.AddressName,
@@ -107,12 +107,12 @@ export class SellerLocationEditComponent implements OnChanges {
     this.setZipValidator()
   }
 
-  setFlag(locationCountry: string) {
+  setFlag(locationCountry: string): void {
     const currency = this.getCurrencyFromCode(locationCountry)
     this.flag = this.getFlagForCountry(currency)
   }
 
-  setZipValidator() {
+  setZipValidator(): void {
     const zipControl = this.resourceForm.get('Zip')
     this.countryHasBeenSelected =
       this.resourceForm.controls['Country'].value !== ''
@@ -138,7 +138,7 @@ export class SellerLocationEditComponent implements OnChanges {
     const endUrl = splitUrl[splitUrl.length - 1]
     const urlParams = this.activatedRoute.snapshot.params
     if (urlParams.locationID) {
-      this.determineIfDeletable(urlParams.locationID)
+      void this.determineIfDeletable(urlParams.locationID)
     }
   }
 
@@ -153,7 +153,7 @@ export class SellerLocationEditComponent implements OnChanges {
     this.updateResource.emit({ value: event.target.value, field })
   }
 
-  handleSellerAddressSelect(address) {
+  handleSellerAddressSelect(address: Address): void {
     this.selectAddress.emit(address)
   }
 
