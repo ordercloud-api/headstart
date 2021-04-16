@@ -135,7 +135,7 @@ export class AuthService {
     rememberMe = false
   ): void {
     this.tokenHelper.setIsSSO(isSSO)
-    ContentManagementClient.Tokens.SetAccessToken(token)
+    this.setCMSTokenIfNeeded(token)
     HeadStartSDK.Tokens.SetAccessToken(token)
     this.setToken(token)
     if (rememberMe && refreshToken) {
@@ -153,7 +153,7 @@ export class AuthService {
   async anonymousLogin(): Promise<AccessToken> {
     try {
       const anonToken = await this.getAnonymousToken()
-      ContentManagementClient.Tokens.SetAccessToken(anonToken.access_token)
+      this.setCMSTokenIfNeeded(anonToken.access_token)
       HeadStartSDK.Tokens.SetAccessToken(anonToken.access_token)
       this.setToken(anonToken.access_token)
       return anonToken
@@ -170,9 +170,21 @@ export class AuthService {
     )
   }
 
+  setCMSTokenIfNeeded(token: string) {
+    if(this.appConfig.cmsUrl && this.appConfig.cmsUrl !== '') {
+      ContentManagementClient.Tokens.SetAccessToken(token)
+    }
+  }
+
+  removeCMSTokenIfNeeded() {
+    if(this.appConfig.cmsUrl && this.appConfig.cmsUrl !== '') {
+      ContentManagementClient.Tokens.RemoveAccessToken()
+    }
+  }
+
   async logout(): Promise<void> {
     Tokens.RemoveAccessToken()
-    ContentManagementClient.Tokens.RemoveAccessToken()
+    this.removeCMSTokenIfNeeded()
     HeadStartSDK.Tokens.RemoveAccessToken()
     this.isLoggedIn = false
     this.appInsightsService.clearUser()

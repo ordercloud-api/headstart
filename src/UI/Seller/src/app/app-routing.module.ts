@@ -18,11 +18,6 @@ const routes: Routes = [
         loadChildren: () =>
           import('./products/products.module').then((m) => m.ProductsModule),
       },
-      // {
-      //   path: 'kitproducts',
-      //   loadChildren: () =>
-      //     import('./kits/kits.module').then((m) => m.KitsModule),
-      // },
       {
         path: 'promotions',
         loadChildren: () =>

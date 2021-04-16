@@ -10,11 +10,11 @@ import {
 import { ToastrService } from 'ngx-toastr'
 import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
 import { SortDirection } from './sort-direction.enum'
-import { environment } from 'src/environments/environment.local'
 import { Router, ActivatedRoute } from '@angular/router'
 import { ImpersonationService } from '@app-seller/shared/services/impersonation/impersonation.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppConfig, ResourceRow } from '@app-seller/shared'
+import { getProductSmallImageUrl, getSupplierLogoSmallUrl } from '@app-seller/shared/services/assets/asset.helper'
 
 @Component({
   selector: 'full-resource-table-component',
@@ -129,9 +129,11 @@ export class FullResourceTableComponent {
   }
 
   getImage(resource: any): string {
-    const resourceType =
-      this.resourceType === 'kitproducts' ? 'products' : this.resourceType
-    return `${environment.cmsUrl}/assets/${this.appConfig.sellerID}/${resourceType}/${resource.ID}/thumbnail?size=s`
+    if(this.resourceType === 'products') {
+      return getProductSmallImageUrl(resource)
+    } else if(this.resourceType === 'suppliers') {
+      return getSupplierLogoSmallUrl(resource)
+    } else return ''
   }
 
   selectResource(value: any) {

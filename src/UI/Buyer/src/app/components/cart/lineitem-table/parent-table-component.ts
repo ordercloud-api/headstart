@@ -1,7 +1,7 @@
 import { Input, OnInit } from '@angular/core'
 import { faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { groupBy as _groupBy, isEqual, uniqWith } from 'lodash'
-import { HSKitProduct, HSLineItem } from '@ordercloud/headstart-sdk'
+import { HSLineItem } from '@ordercloud/headstart-sdk'
 import { getPrimaryLineItemImage } from 'src/app/services/images.helpers'
 import { CancelReturnReason } from '../../orders/order-return/order-return-table/models/cancel-return-translations.enum'
 import { NgxSpinnerService } from 'ngx-spinner'
@@ -34,15 +34,12 @@ export abstract class OCMParentTableComponent implements OnInit {
   suppliers: LineItemGroupSupplier[]
   selectedSupplier: LineItemGroupSupplier
   liGroupedByShipFrom: HSLineItem[][]
-  liGroupedByKit: HSLineItem[][]
-  productsInKit: HSKitProduct[] = []
   updatingLiIDs: string[] = []
   _groupByKits: boolean
   _lineItems: HSLineItem[] = []
   _orderCurrency: string
   _changedLineItemID: string
   _supplierData: LineItemGroupSupplier[]
-  showKitDetails = true
   showComments: Record<string, string> = {}
   constructor(
     public context: ShopperContextService,
@@ -72,7 +69,6 @@ export abstract class OCMParentTableComponent implements OnInit {
       return
     }
     this.liGroupedByShipFrom = this.groupLineItemsByShipFrom(this._lineItems)
-    this.liGroupedByKit = this.groupLineItemsByKitID(this._lineItems)
   }
 
   async setSupplierData(): Promise<void> {
@@ -101,19 +97,6 @@ export abstract class OCMParentTableComponent implements OnInit {
     this.suppliers = suppliers
   }
 
-  toggleKitDetails(): void {
-    this.showKitDetails = !this.showKitDetails
-  }
-
-  groupLineItemsByKitID(
-    lineItems: HSLineItem[]
-  ): HSLineItem[][] {
-    if (!this._groupByKits) return []
-    const kitLineItems = lineItems.filter((li) => li.xp.KitProductID)
-    const liKitGroups = _groupBy(kitLineItems, (li) => li.xp.KitProductID)
-    return Object.values(liKitGroups)
-  }
-
   groupLineItemsByShipFrom(
     lineItems: HSLineItem[]
   ): HSLineItem[][] {
@@ -131,10 +114,6 @@ export abstract class OCMParentTableComponent implements OnInit {
 
   async removeLineItem(lineItemID: string): Promise<void> {
     await this.context.order.cart.remove(lineItemID)
-  }
-
-  async removeKit(kit: HSLineItem[]): Promise<void> {
-    await this.context.order.cart.removeMany(kit)
   }
 
   toProductDetails(

@@ -9,7 +9,6 @@ import { AppConfig } from '@app-seller/models/environment.types'
 import { OcTokenService, Order } from '@ordercloud/angular-sdk'
 import {
   ListPage,
-  SuperHSProduct,
   BatchProcessResult,
   SupplierFilterConfigDocument,
   SuperHSShipment,
@@ -36,11 +35,6 @@ export class MiddlewareAPIService {
   async acknowledgeQuoteOrder(orderID: string): Promise<Order> {
     const url = `${this.appConfig.middlewareUrl}/order/acknowledgequote/${orderID}`
     return await this.http.post<Order>(url, this.headers).toPromise()
-  }
-
-  async isLocationDeletable(locationID: string): Promise<boolean> {
-    const url = `${this.appConfig.middlewareUrl}/supplier/candelete/${locationID}`
-    return await this.http.get<boolean>(url, this.headers).toPromise()
   }
 
   async updateSupplier(

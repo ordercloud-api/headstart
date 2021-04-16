@@ -10,7 +10,6 @@ import { CurrentUserService } from '../services/current-user/current-user.servic
   `,
 })
 export class ProductDetailWrapperComponent implements OnInit {
-  isKit: boolean
   product: SuperHSProduct
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -19,7 +18,6 @@ export class ProductDetailWrapperComponent implements OnInit {
 
   ngOnInit(): void {
     const product = this.activatedRoute.snapshot.data.product
-    //this.isKit = product.Product.xp.ProductType === 'Kit'
     this.product = product
   }
 }

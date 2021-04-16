@@ -50,7 +50,7 @@ export interface EnvironmentConfig {
   incrementorPrefix: string
   baseUrl: string
   middlewareUrl: string
-  cmsUrl: string
+  cmsUrl?: string
   creditCardIframeUrl: string
   sellerID: string
   translateBlobUrl: string
@@ -97,6 +97,10 @@ export class AppConfig {
    */
   translateBlobUrl: string
   orderCloudApiUrl: string
+
+  /**
+  * Optional base url to provide for OrderCloud CMS management. Note: this is a deprecated feature
+  */
   cmsUrl: string
   middlewareUrl: string
   creditCardIframeUrl: string

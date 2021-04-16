@@ -11,7 +11,6 @@ import {
 import { AppStateService } from '@app-seller/shared/services/app-state/app-state.service'
 
 import { OcTokenService, OcAuthService } from '@ordercloud/angular-sdk'
-import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { HeadStartSDK } from '@ordercloud/headstart-sdk'
 import { CookieService } from 'ngx-cookie'
 import { BehaviorSubject, Observable, of, throwError } from 'rxjs'
@@ -48,7 +47,6 @@ export class AppAuthService {
     return this.fetchRefreshToken().pipe(
       tap((token) => {
         this.ocTokenService.SetAccess(token)
-        ContentManagementClient.Tokens.SetAccessToken(token)
         this.refreshToken.next(token)
         this.appStateService.isLoggedIn.next(true)
       }),
@@ -118,7 +116,6 @@ export class AppAuthService {
         .pipe(
           map((authResponse) => authResponse.access_token),
           tap((token) => {
-            ContentManagementClient.Tokens.SetAccessToken(token)
             this.ocTokenService.SetAccess(token)
           }),
           catchError((error) => {
@@ -132,7 +129,6 @@ export class AppAuthService {
   logout(): Observable<any> {
     const cookiePrefix = this.appConfig.appname.replace(/ /g, '_').toLowerCase()
     HeadStartSDK.Tokens.RemoveAccessToken()
-    ContentManagementClient.Tokens.RemoveAccessToken()
     const appCookieNames = _keys(this.cookieService.getAll())
     appCookieNames.forEach((cookieName) => {
       if (cookieName.includes(cookiePrefix)) {
