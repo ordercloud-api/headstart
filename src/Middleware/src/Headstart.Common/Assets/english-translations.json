@@ -7,9 +7,12 @@
     "BUYER_LOCATIONS": "Buyer Groups",
     "BUYERS": "Buyers",
     "SELLER": "Seller",
+    "SELLER_ADMIN": "Seller Admin",
+    "SELLER_LOCATION": "Seller Address",
+    "SELLER_LOCATIONS": "Seller Addresses",
     "SELLERS": "Sellers",
     "SUPPLIER": "Supplier",
-    "SUPPLIER_LOWERCASE": "supplier",
+    "SUPPLIER_LOWERCASE": "Supplier",
     "SUPPLIER_PROFILE": "Supplier Profile",
     "SUPPLIER_LOCATION": "Supplier Address",
     "SUPPLIER_LOCATIONS": "Supplier Addresses",
@@ -101,6 +104,8 @@
       "RESULT": "Result",
       "STATUS": "Status",
       "SUPPLIER": "Supplier",
+      "SELLER_OWNED_PRODUCTS": "Has Seller Owned Products",
+
       "TO_DATE": "To Date"
     },
     "HEADERS": {
@@ -114,8 +119,8 @@
       "COMMENTS": "Comments",
       "COPY": "Copy",
       "DESCRIPTION": "Description",
-      "FROM_COMPANY_ID": "From Company ID",
       "FROM_USER_USERNAME": "From User Username",
+      "FROM_COMPANY_ID": "From Company ID",
       "HAS_CLAIMS": "Has Claims",
       "ID": "ID",
       "NAME": "Name",
@@ -125,6 +130,7 @@
       "RESULT": "Result",
       "RETURN_COMMENT": "Return Comment",
       "STATUS": "Status",
+      "SELLER_OWNED_PRODUCTS": "Has Seller Owned Products",
       "TIME_STAMP": "Time Stamp",
       "TIME_SUBMITTED": "Time Submitted",
       "TOTAL_AMOUNT": "Total Amount",
@@ -134,7 +140,6 @@
       "ALL_BUYERS": "All Buyers",
       "ALL_PRODUCTS": "All Products",
       "ALL_SUPPLIERS": "All Suppliers",
-      "ALL_USERS": "All Users",
       "APPROVAL": "Approval",
       "APPROVAL_RULES": "Approval Rules",
       "APPROVALS": "Approvals",
@@ -171,7 +176,6 @@
       "REPORTS": "Reports",
       "SALES_ORDERS": "Sales Orders",
       "SELLER_USERS": "Seller Users",
-      "SELLER_USERS_BUYER_REQUESTS": "Buyer Impersonation Requests",
       "SHIPPED_ORDERS": "Shipped Orders",
       "STOREFRONTS": "Storefronts",
       "SUPPLIERS": "Suppliers",
@@ -486,6 +490,9 @@
       "DOWNLOADING": "Downloading...",
       "REPORT_PROCESSING": "Report Processing",
       "PREVIEW_THE_REPORT": "Preview the report data in a table, or download the file."
+    },
+    "HELPERMESSAGE": {
+      "TEST": "this is a test."
     }
   },
   "AUTHENTICATION": {
@@ -497,7 +504,7 @@
     },
     "LOGIN": {
       "ACCOUNT_LOGIN": "Account Login",
-      "LOGIN": "Login",
+      "LOGIN": "Login with Anytime Fitness Account",
       "NO_ACCOUNT": "Don't have an account?",
       "REMEMBER_ME": "Remember Me",
       "RESET_PASS": "Reset Password",
@@ -508,36 +515,20 @@
       "EXISTING_ACC": "Already have an account?",
       "FORGOT_PASS": "Forgot Password",
       "REGISTER": "Register",
-      "SIGN_UP": "Sign Up",
-      "REQUEST_BUYER_ACCESS": "Request Buyer Access",
-      "EXISTING_USER": "Existing User"
+      "SIGN_UP": "Sign Up"
     },
     "RESET_PASSWORD": {
       "NEW_PASSWORD": "New Password",
       "SET_PASSWORD": "Set New Password"
     }
   },
-  "BUYER": {
-    "HELPERMESSAGES": {
-      "BUYERGROUP": {
-        "ACTION": "Set Buyer Groups now.",
-        "MESSAGE": "Looks like this Buyer has no Buyer Groups.",
-        "WARNING": "There are no supplier addresses for this user's Home Country."
-      },
-      "CATALOG": {
-        "ACTION": "Set Catalogs now.",
-        "MESSAGE": "Looks like this buyer has no Catalogs",
-        "WARNING": "No Catalogs available for this buyer."
-      }
-    }
-  },
   "CART": {
     "CART": {
       "CART_IS_EMPTY": "You do not have any items in your cart",
+      "INVALID_ITEMS_NOTICE": "The following will be removed from your cart. Please review your updated cart before checking out.",
       "CHECKOUT": "CHECKOUT",
       "CONTINUE_SHOPPING": "Continue Shopping",
       "EMPTY_CART": "Empty Cart",
-      "INVALID_ITEMS_NOTICE": "The following will be removed from your cart. Please review your updated cart before checking out.",
       "SHOPPING_CART": "Shopping Cart",
       "VIEW_CART": "View Cart"
     },
@@ -565,10 +556,10 @@
   "CHECKOUT": {
     "CHECKOUT": {
       "CHECKOUT": "Checkout",
+      "ORDERREFERENCE": "Order Reference Number",
       "CONFIRM": "Order Review",
       "CREATE_ACCOUNT": "Create Account",
       "GUEST_CHECKOUT": "Checkout as Guest",
-      "ORDERREFERENCE": "Order Reference Number",
       "PAYMENT": "Payment & Promotions",
       "SHIPPING_ADDRESS": "Shipping Address",
       "SHIPPING_SELECTION": "Shipping Selection",
@@ -596,23 +587,20 @@
     },
     "CHECKOUT_SHIPPING": {
       "SAVE_CONTINUE": "Save and Continue",
-      "NO_RATES_RETURNED_MESSAGE": "No rates returned - shipping will be calculated after the order is placed",
-      "SHIP_ESTIMATES_BASED_ON_DELIVERY": "Shipping estimates are based on delivery speed after items have been shipped by the carrier. Items requiring customization could take longer to ship.",
-      "SHIPPING_SPEED": "Shipping Speed"
+      "SHIPPING_SPEED": "Make Shipping Speed Selections To Continue"
     },
     "SHIPPING_SELECTION_FORM": {
       "DAY": "day",
       "DELIVERY_OPTIONS": "Delivery Options",
       "HOW_FAST": "How fast should this ship?",
-      "SHIPPING_SPEED": "Shipping Speed"
+      "SHIPPING_SPEED": "Shipping Speed",
+      "NO_RATES_RETURNED_MESSAGE": "No rates returned - shipping will be calculated after the order is placed",
+      "SHIP_ESTIMATES_BASED_ON_DELIVERY": "Shipping estimates are based on delivery speed after items have been shipped by the carrier. Items requiring customization could take longer to ship."
     }
   },
   "COMMON": {
-    "ADD": "Add",
-    "APPROVE": "Approve",
     "CANCEL": "Cancel",
     "CONFIRM_PASSWORD": "Confirm Password",
-    "DECLINE": "Decline",
     "DISCARD_CHANGES": "Discard Changes",
     "EMAIL": "Email",
     "FIRST": "First Name",
@@ -620,7 +608,6 @@
     "LOGIN": "Login",
     "PASSWORD": "Password",
     "PHONE": "Phone Number",
-    "SAVE": "Save",
     "SEARCH": "Search",
     "SUBMIT": "Submit",
     "USER": "User",
@@ -654,6 +641,20 @@
       "NO": "No",
       "OF": "of",
       "RESULTS": "results"
+    }
+  },
+  "BUYER": {
+    "HELPERMESSAGES": {
+      "CATALOG": {
+        "WARNING": "No Catalogs available for this buyer.",
+        "MESSAGE": "Looks like this buyer has no Catalogs",
+        "ACTION": "Set Catalogs now."
+      },
+      "BUYERGROUP": {
+        "WARNING": "There are no supplier addresses for this user's Home Country.",
+        "MESSAGE": "Looks like this Buyer has no Buyer Groups.",
+        "ACTION": "Set Buyer Groups now."
+      }
     }
   },
   "ORDERS": {
