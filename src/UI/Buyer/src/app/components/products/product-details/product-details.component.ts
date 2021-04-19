@@ -11,9 +11,7 @@ import {
   HSLineItem,
   Asset,
   QuoteOrderInfo,
-  HSProductInKit,
   HSVariant,
-  HeadStartSDK,
   HSMeProduct,
   HSSupplier,
 } from '@ordercloud/headstart-sdk'
@@ -63,10 +61,6 @@ export class OCMProductDetails implements OnInit {
   submittedQuoteOrder: any
   showGrid = false
   isAddingToCart = false
-  isKitProduct: boolean
-  productsIncludedInKit: HSProductInKit[]
-  ocProductsInKit: any[]
-  isKitStatic = false
   contactRequest: ContactSupplierBody
   specForm: FormGroup
   isInactiveVariant: boolean
@@ -84,7 +78,7 @@ export class OCMProductDetails implements OnInit {
   @Input() set product(superProduct: SuperHSProduct) {
     this._superProduct = superProduct
     this._product = superProduct.Product
-    this.attachments = superProduct?.Attachments
+    this.attachments = (superProduct?.Product?.xp as any)?.Documents
     this.priceBreaks = superProduct.PriceSchedule?.PriceBreaks
     this.unitPrice =
       this.priceBreaks && this.priceBreaks.length

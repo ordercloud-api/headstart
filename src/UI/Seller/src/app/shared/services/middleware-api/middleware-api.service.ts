@@ -9,7 +9,6 @@ import { AppConfig } from '@app-seller/models/environment.types'
 import { OcTokenService, Order } from '@ordercloud/angular-sdk'
 import {
   ListPage,
-  SuperHSProduct,
   BatchProcessResult,
   SupplierFilterConfigDocument,
   SuperHSShipment,

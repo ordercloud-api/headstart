@@ -19,6 +19,7 @@ namespace ordercloud.integrations.library
         Task Save(string reference, JObject blob, string fileType = null);
         Task Save(string reference, IFormFile blob, string fileType = null);
         Task Save(string reference, Stream file, string fileType = null);
+        Task Save(string reference, byte[] bytes, string fileType = null, string cacheControl = null);
         Task Save(BlobBase64Image base64Image);
         Task Delete(string id);
         Task DeleteContainer();

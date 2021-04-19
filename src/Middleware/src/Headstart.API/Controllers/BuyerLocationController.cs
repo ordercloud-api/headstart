@@ -30,24 +30,21 @@ namespace Headstart.Common.Controllers
         [HttpGet, Route("{buyerID}/{buyerLocationID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
         public async Task<HSBuyerLocation> Get(string buyerID, string buyerLocationID)
         {
-            return await _buyerLocationCommand.Get(buyerID, buyerLocationID, UserContext.AccessToken);
+            return await _buyerLocationCommand.Get(buyerID, buyerLocationID);
         }
 
         [DocName("POST a Buyer Location")]
         [HttpPost, Route("{buyerID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
         public async Task<HSBuyerLocation> Create(string buyerID, [FromBody] HSBuyerLocation buyerLocation)
         {
-            // ocAuth is the token for the organization that is specified in the AppSettings
-            var ocAuth = await _oc.AuthenticateAsync();
-            return await _buyerLocationCommand.Create(buyerID, buyerLocation, ocAuth.AccessToken);
+            return await _buyerLocationCommand.Create(buyerID, buyerLocation);
         }
 
         [DocName("POST a Buyer Location permission group")]
         [HttpPost, Route("{buyerID}/{buyerLocationID}/permissions/{permissionGroupID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
         public async Task CreatePermissionGroup(string buyerID, string buyerLocationID, string permissionGroupID)
         {
-            var ocAuth = await _oc.AuthenticateAsync();
-            await _buyerLocationCommand.CreateSinglePermissionGroup(ocAuth.AccessToken, buyerLocationID, permissionGroupID);
+            await _buyerLocationCommand.CreateSinglePermissionGroup(buyerLocationID, permissionGroupID);
         }
 
         [DocName("PUT a Buyer Location")]
@@ -61,7 +58,7 @@ namespace Headstart.Common.Controllers
         [HttpDelete, Route("{buyerID}/{buyerLocationID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
         public async Task Delete(string buyerID, string buyerLocationID)
         {
-            await _buyerLocationCommand.Delete(buyerID, buyerLocationID, UserContext.AccessToken);
+            await _buyerLocationCommand.Delete(buyerID, buyerLocationID);
         }
 
         [DocName("GET List of location permission user groups")]

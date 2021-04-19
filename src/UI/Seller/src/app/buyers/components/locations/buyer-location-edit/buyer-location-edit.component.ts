@@ -4,7 +4,6 @@ import { Address, BuyerAddress } from '@ordercloud/angular-sdk'
 import { BuyerLocationService } from '../buyer-location.service'
 import { ValidatePhone, ValidateEmail } from '@app-seller/validators/validators'
 import { Router } from '@angular/router'
-import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { getSuggestedAddresses } from '@app-seller/shared/services/address-suggestion.helper'
 import {
@@ -57,7 +56,6 @@ export class BuyerLocationEditComponent implements OnInit {
   constructor(
     private buyerLocationService: BuyerLocationService,
     private router: Router,
-    private middleware: MiddlewareAPIService,
     private currentUserService: CurrentUserService,
     private hsCatalogService: CatalogsTempService
   ) {

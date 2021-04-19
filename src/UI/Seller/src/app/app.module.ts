@@ -119,9 +119,11 @@ export class AppModule {
     HeadstartConfiguration.Set({
       baseApiUrl: this.appConfig.middlewareUrl,
     })
-    CMSConfiguration.Set({
-      baseApiUrl: this.appConfig.cmsUrl,
-    })
+    if(this.appConfig.cmsUrl && this.appConfig.cmsUrl !== '') {
+      CMSConfiguration.Set({
+        baseApiUrl: this.appConfig.cmsUrl,
+      })
+    }
     OcConfiguration.Set(this.getOrdercloudSDKConfig(appConfig))
   }
   private getOrdercloudSDKConfig(config: AppConfig): SdkConfiguration {

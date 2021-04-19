@@ -1,4 +1,3 @@
-import { ocAppConfig } from '../config/app.config'
 import { HSLineItem, HSMeProduct } from '@ordercloud/headstart-sdk'
 import { CurrentUser } from '../models/profile.types'
 
@@ -6,7 +5,8 @@ export const getPrimaryImageUrl = (
   product: HSMeProduct,
   user: CurrentUser
 ): string => {
-  return `${ocAppConfig.cmsUrl}/assets/${user.Seller.ID}/products/${product.ID}/thumbnail?size=M`
+  const images = (product?.xp as any)?.Images
+  return images && images.length ? images[0].Url : '/assets/product.jpg'
 }
 
 export const getPrimaryLineItemImage = (

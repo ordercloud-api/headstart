@@ -33,10 +33,12 @@ import TecraPdFs from './TecraPdFs';
 import Auth from './Auth';
 import Tokens from './Tokens';
 import Upload from './Upload';
+import Assets from './Assets';
 
 export { HeadStartSDK }
 
 const HeadStartSDK: HeadStartSDK = {
+    Assets : new Assets(),
     OrchestrationProducts : new OrchestrationProducts(),
     OrchestrationUsers : new OrchestrationUsers(),
     OrchestrationLogs : new OrchestrationLogs(),
@@ -75,6 +77,7 @@ const HeadStartSDK: HeadStartSDK = {
 }
 
 interface HeadStartSDK {
+    Assets : Assets,
     OrchestrationProducts : OrchestrationProducts,
     OrchestrationUsers : OrchestrationUsers,
     OrchestrationLogs : OrchestrationLogs,

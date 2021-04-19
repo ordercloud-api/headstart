@@ -103,14 +103,14 @@
           <small class="d-block">{{ organizationName }}</small>
         </span>
         <img
-          *ngIf="hasProfileImg"
+          *ngIf="user?.xp?.Image?.ThumbnailUrl"
           class="avatar ml-2"
-          [src]="myProfileImg"
+          [src]="user?.xp?.Image?.ThumbnailUrl"
           alt="ProfileImg"
           id="ProfileImgThumb"
         />
         <div
-          *ngIf="!hasProfileImg && currentUserInitials !== 'undefinedundefined'"
+          *ngIf="!user?.xp?.Image?.ThumbnailUrl && currentUserInitials !== 'undefinedundefined'"
           [attr.data-letters]="currentUserInitials"
           class="avatar avatar-sm ml-2"
         ></div>

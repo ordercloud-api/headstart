@@ -16,15 +16,13 @@ import {
 import { SupplierService } from '../supplier.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import {
-  HSSupplier,
   HeadStartSDK,
-  Asset,
-  AssetUpload,
+  HSSupplier,
 } from '@ordercloud/headstart-sdk'
 import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
-import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
+import { Suppliers } from 'ordercloud-javascript-sdk'
 
 function createSupplierForm(supplier: HSSupplier) {
   return new FormGroup({
@@ -154,26 +152,16 @@ export class SupplierTableComponent extends ResourceCrudComponent<Supplier> {
         this.updatedResource
       )
       if (this.file) {
-        // Upload their logo, if there is one.  Then, make the assignment
-        const accessToken = await this.appAuthService.fetchToken().toPromise()
-        const asset: AssetUpload = {
-          Active: true,
-          File: this.file,
-          FileName: this.file.name,
-          Tags: ['Logo'],
+        // Upload their logo, if there is one.  Then, patch supplier xp
+        const imgUrls = HeadStartSDK.Assets.CreateImage({
+          File: this.file
+        })
+        const patchObj = {
+          xp: {
+            Image: imgUrls
+          }
         }
-        const newAsset: Asset = await ContentManagementClient.Assets.Upload(
-          asset,
-          accessToken
-        )
-        await ContentManagementClient.Assets.SaveAssetAssignment(
-          {
-            ResourceType: 'Suppliers',
-            ResourceID: supplier.ID,
-            AssetID: newAsset.ID,
-          },
-          accessToken
-        )
+        await Suppliers.Patch(supplier.ID, patchObj)
       }
       // Default the NotificationRcpts to initial user
       const users = await this.ocSupplierUserService
@@ -192,6 +180,13 @@ export class SupplierTableComponent extends ResourceCrudComponent<Supplier> {
     } catch (ex) {
       this.dataIsSaving = false
       throw ex
+    }
+  }
+
+  updateResourceInList(supplier: Supplier): void {
+    const index = this.resourceList?.Items?.findIndex(item => item.ID === supplier.ID) 
+    if(index !== -1) {
+      this.resourceList.Items[index] = supplier
     }
   }
 }

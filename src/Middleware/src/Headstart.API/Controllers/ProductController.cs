@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Headstart.Models;
 using Headstart.Models.Attributes;
@@ -50,7 +50,7 @@ namespace Headstart.Common.Controllers
 			return await _command.Put(id, obj, UserContext.AccessToken);
 		}
 
-		[DocName("DELETE Product")]
+        [DocName("DELETE Product")]
 		[HttpDelete, Route("{id}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
 		public async Task Delete(string id)
 		{

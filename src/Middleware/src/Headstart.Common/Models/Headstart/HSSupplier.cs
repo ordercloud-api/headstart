@@ -29,6 +29,7 @@ namespace Headstart.Models.Headstart
         public List<SupplierCategory> Categories { get; set; }
         public List<string> NotificationRcpts { get; set; }
         public Nullable<int> FreeShippingThreshold { get; set; }
+        public ImageAsset Image { get; set; }
     }
 
     [SwaggerModel]

@@ -84,6 +84,11 @@ namespace Headstart.API
                 ConnectionString = _settings.BlobSettings.ConnectionString,
                 Container = "unhandled-errors-log"
             };
+            var assetConfig = new BlobServiceConfig()
+            {
+                ConnectionString = _settings.BlobSettings.ConnectionString,
+                Container = "assets"
+            };
 
             var flurlClientFactory = new PerBaseUrlFlurlClientFactory();
             var smartyStreetsUsClient = new ClientBuilder(_settings.SmartyStreetSettings.AuthID, _settings.SmartyStreetSettings.AuthToken).BuildUsStreetApiClient();
@@ -123,7 +128,6 @@ namespace Headstart.API
                 .Inject<IOrderCalcService>()
                 .Inject<IUserContextProvider>()
                 .Inject<ISupplierApiClientHelper>()
-                .AddSingleton<ICMSClient>(new CMSClient(new CMSClientConfig() { BaseUrl = _settings.CMSSettings.BaseUrl }))
                 .AddSingleton<ISendGridClient>(x => new SendGridClient(_settings.SendgridSettings.ApiKey))
                 .AddSingleton<IFlurlClientFactory>(x => flurlClientFactory)
                 .AddSingleton<DownloadReportCommand>()
@@ -147,6 +151,7 @@ namespace Headstart.API
                         Roles = new[] { ApiRole.FullAccess }
                     })))
                 .AddSingleton<IOrderCloudIntegrationsExchangeRatesClient, OrderCloudIntegrationsExchangeRatesClient>()
+                .AddSingleton<IAssetClient>(provider => new AssetClient( new OrderCloudIntegrationsBlobService(assetConfig), _settings))
                 .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand( new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
                 .AddSingleton<IAvalaraCommand>(x => new AvalaraCommand(
                     avalaraConfig,
@@ -181,7 +186,7 @@ namespace Headstart.API
 
 
             ServicePointManager.DefaultConnectionLimit = int.MaxValue;
-            FlurlHttp.Configure(settings => settings.Timeout = TimeSpan.FromSeconds(_settings.FlurlSettings.TimeoutInSeconds));
+            FlurlHttp.Configure(settings => settings.Timeout = TimeSpan.FromSeconds(_settings.FlurlSettings.TimeoutInSeconds == 0 ? 30 : _settings.FlurlSettings.TimeoutInSeconds));
 
             // This adds retry logic for any api call that fails with a transient error (server errors, timeouts, or rate limiting requests)
             // Will retry up to 3 times using exponential backoff and jitter, a mean of 3 seconds wait time in between retries

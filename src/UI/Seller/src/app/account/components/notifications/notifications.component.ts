@@ -10,7 +10,6 @@ import {
 import { ToastrService } from 'ngx-toastr'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { get as _get } from 'lodash'
-import { JDocument } from '@ordercloud/cms-sdk'
 import { AppConfig } from '@app-seller/models/environment.types'
 
 @Component({
@@ -26,15 +25,15 @@ export class NotificationsComponent extends AccountContent {
     currentUserService: CurrentUserService,
     @Inject(applicationConfiguration) appConfig: AppConfig,
     appAuthService: AppAuthService,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
   ) {
     super(
       router,
       activatedRoute,
       changeDetectorRef,
-      currentUserService,
       appConfig,
-      appAuthService
+      appAuthService,
+      currentUserService,
     )
   }
   faExclamationCircle = faExclamationCircle

@@ -19,11 +19,9 @@ namespace Headstart.Common.Controllers
 	{
 
 		private readonly IMeProductCommand _meProductCommand;
-		private readonly IHSKitProductCommand _kitProductCommand;
-		public MeController(IMeProductCommand meProductCommand, IHSKitProductCommand kitProductCommand)
+		public MeController(IMeProductCommand meProductCommand)
 		{
 			_meProductCommand = meProductCommand;
-			_kitProductCommand = kitProductCommand;
 		}
 
 		[DocName("GET Super Product")]
@@ -47,11 +45,5 @@ namespace Headstart.Common.Controllers
 			await _meProductCommand.RequestProductInfo(template);
         }
 
-		//[DocName("GET Kit Product")]
-		//[HttpGet, Route("kitproducts/{kitProductID}"), OrderCloudIntegrationsAuth(ApiRole.Shopper)]
-		//public async Task<HSMeKitProduct> GetMeKit(string kitProductID)
-		//{
-		//	return await _kitProductCommand.GetMeKit(kitProductID, VerifiedUserContext);
-		//}
 	}
 }
