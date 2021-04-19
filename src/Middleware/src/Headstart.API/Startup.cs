@@ -88,8 +88,8 @@ namespace Headstart.API
             var assetConfig = new BlobServiceConfig()
             {
                 ConnectionString = _settings.BlobSettings.ConnectionString,
-                Container = "assets",
-                AccessType = BlobContainerPublicAccessType.Blob
+                Container = "assets", 
+                AccessType = BlobContainerPublicAccessType.Container 
             };
 
             var flurlClientFactory = new PerBaseUrlFlurlClientFactory();
