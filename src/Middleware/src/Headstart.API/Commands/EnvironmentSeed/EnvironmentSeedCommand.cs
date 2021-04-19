@@ -13,6 +13,7 @@ using Headstart.Common;
 using OrderCloud.Catalyst;
 using Headstart.Common.Services.Portal.Models;
 using System.Net;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Headstart.API.Commands
 {
@@ -94,7 +95,8 @@ namespace Headstart.API.Commands
                 var translationsConfig = new BlobServiceConfig()
                 {
                     ConnectionString = seed.BlobSettings.ConnectionString,
-                    Container = seed.BlobSettings.ContainerNameTranslations
+                    Container = seed.BlobSettings.ContainerNameTranslations,
+                    AccessType = BlobContainerPublicAccessType.Container
                 };
                 var translationsBlob = new OrderCloudIntegrationsBlobService(translationsConfig);
                 await translationsBlob.Save("i18n/en.json", File.ReadAllText(englishTranslationsPath));
