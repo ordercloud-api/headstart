@@ -489,9 +489,6 @@
       "DOWNLOADING": "Downloading...",
       "REPORT_PROCESSING": "Report Processing",
       "PREVIEW_THE_REPORT": "Preview the report data in a table, or download the file."
-    },
-    "HELPERMESSAGE": {
-      "TEST": "this is a test."
     }
   },
   "AUTHENTICATION": {
