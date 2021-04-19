@@ -34,6 +34,7 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Polly;
 using Polly.Extensions.Http;
 using Polly.Contrib.WaitAndRetry;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Headstart.API
 {
@@ -87,7 +88,8 @@ namespace Headstart.API
             var assetConfig = new BlobServiceConfig()
             {
                 ConnectionString = _settings.BlobSettings.ConnectionString,
-                Container = "assets"
+                Container = "assets",
+                AccessType = BlobContainerPublicAccessType.Blob
             };
 
             var flurlClientFactory = new PerBaseUrlFlurlClientFactory();
