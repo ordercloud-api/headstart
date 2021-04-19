@@ -504,7 +504,7 @@
     },
     "LOGIN": {
       "ACCOUNT_LOGIN": "Account Login",
-      "LOGIN": "Login with Anytime Fitness Account",
+      "LOGIN": "Login",
       "NO_ACCOUNT": "Don't have an account?",
       "REMEMBER_ME": "Remember Me",
       "RESET_PASS": "Reset Password",
