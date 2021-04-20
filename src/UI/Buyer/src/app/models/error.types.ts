@@ -11,3 +11,14 @@ export interface MiddlewareError<TData = any> {
     QuantityRequested: number
     VariantID: string
   }
+
+  export interface ErrorDisplayData {
+    code?: string
+    title?: string
+    message?: string
+    buttonText?: string
+  }
+  
+  export interface ErrorTypes {
+    [key: string]: ErrorDisplayData
+  }

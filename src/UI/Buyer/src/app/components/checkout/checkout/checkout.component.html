@@ -9,10 +9,12 @@
 </div>
 <div class="container">
   <div *ngIf="order">
-    <ocm-modal [state]="orderErrorModal" [modalTitle]="orderError">
+    <ocm-modal [state]="orderErrorModal">
       <div class="text-center">
-        <button class="btn btn-primary align-self-center" routerLink="/home">
-          Back To Home
+        <h4 class="font-weight-bold">{{orderErrorTitle}}</h4>
+        <p *ngIf="orderErrorMessage">{{orderErrorMessage}}</p>
+        <button class="btn btn-primary align-self-center" (click)="handleCheckoutError()">
+          {{orderErrorButtonText}} 
         </button>
       </div>
     </ocm-modal>

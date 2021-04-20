@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios'
 import { Promotion } from 'ordercloud-javascript-sdk'
-import { MiddlewareError, InventoryErrorData } from '../models/error.types'
+import { MiddlewareError, InventoryErrorData, ErrorTypes, ErrorDisplayData } from '../models/error.types'
 
 export class ErrorMessages {
   public static get orderNotAccessibleError(): string {
@@ -8,25 +8,48 @@ export class ErrorMessages {
   }
 }
 
-export const ErrorCodes = {
-  Order: {
-    CannotSubmitBadStatus: 'Order.CannotSubmitBadStatus',
-    CannotSubmitUncalculatedOrder: 'Order.CannotSubmitUncalculatedOrder',
-    CannotSubmitWithUnaccceptedPayments:
-      'Order.CannotSubmitWithUnaccceptedPayments',
+export const ErrorCodes: ErrorTypes = {
+  FailedToVoidAuthorization: {
+    code: 'Payment.FailedToVoidAuthorization',
+    title: 'ERRORS.FAILED_TO_VOID_AUTHORIZATION.TITLE',
+    message: 'ERRORS.FAILED_TO_VOID_AUTHORIZATION.MESSAGE',
+    buttonText: 'ERRORS.FAILED_TO_VOID_AUTHORIZATION.BUTTONTEXT'
   },
-  Payment: {
-    FailedToVoidAuthorization: 'Payment.FailedToVoidAuthorization',
+  Insufficient: {
+    code: 'Inventory.Insufficient',
+    title: 'ERRORS.INSUFFICIENT.TITLE',
+    buttonText: 'ERRORS.INSUFFICIENT.BUTTONTEXT',
   },
-  Inventory: {
-    Insufficient: 'Inventory.Insufficient',
+  AlreadySubmitted: {
+    code: 'OrderSubmit.AlreadySubmitted',
+    title: 'ERRORS.ALREADY_SUBMITTED.TITLE',
+    buttonText: 'ERRORS.ALREADY_SUBMITTED.BUTTONTEXT'
   },
-  OrderSubmit: {
-    AlreadySubmitted: 'OrderSubmit.AlreadySubmitted',
-    MissingShippingSelections: 'OrderSubmit.MissingShippingSelections',
-    OrderCloudValidationError: 'OrderSubmit.OrderCloudValidationError',
+  MissingShippingSelections: {
+    code: 'OrderSubmit.MissingShippingSelections',
+    title: 'ERRORS.MISSING_SHIPPING_SELECTIONS.TITLE',
+    message: 'ERRORS.MISSING_SHIPPING_SELECTIONS.MESSAGE',
+    buttonText: 'ERRORS.MISSING_SHIPPING_SELECTIONS.BUTTONTEXT'
   },
-  InternalServerError: 'InternalServerError',
+  OrderCloudValidationError: {
+    code: 'OrderSubmit.OrderCloudValidationError'
+  },
+  CannotSubmitBadStatus: {
+    code: 'OrderSubmit.CannotSubmitBadStatus'
+  },
+  CannotSubmitUncalculatedOrder: { 
+    code: 'OrderSubmit.CannotSubmitUncalculatedOrder'
+  },
+  CannotSubmitWithUnaccceptedPayments: {
+    code: 'Order.CannotSubmitWithUnaccceptedPayments'
+  },
+  InternalServerError: {
+    code: 'InternalServerError'
+  },
+  CreditCardAuth: {
+    title: 'ERRORS.CREDIT_CARD_AUTH.TITLE',
+    buttonText: 'ERRORS.CREDIT_CARD_AUTH.BUTTONTEXT'
+  }
 }
 
 export function extractMiddlewareError(
@@ -41,14 +64,14 @@ export function extractMiddlewareError(
 export function isInventoryError(
   error: MiddlewareError
 ): error is MiddlewareError<InventoryErrorData> {
-  return error.ErrorCode === ErrorCodes.Inventory.Insufficient
+  return error.ErrorCode === ErrorCodes.Inventory.code
 }
 
 // order hasn't hit order calc endpoint
 export function isUncalculatedOrderError(
   error: MiddlewareError
 ): error is MiddlewareError<null> {
-  return error.ErrorCode === ErrorCodes.Order.CannotSubmitUncalculatedOrder
+  return error.ErrorCode === ErrorCodes.CannotSubmitUncalculatedOrder.code
 }
 
 export function isPromotionError(
@@ -60,10 +83,5 @@ export function isPromotionError(
 export function isBadStatusError(
   error: MiddlewareError
 ): error is MiddlewareError<null> {
-  return error.ErrorCode === ErrorCodes.Order.CannotSubmitBadStatus
-}
-
-export function getPaymentError(errorReason: string): string {
-  const reason = errorReason.replace('AVS', 'Address Verification') // AVS isn't likely something to be understood by a layperson
-  return `The authorization for your payment was declined by the processor due to: "${reason}". Please reenter your information or use a different card`
+  return error.ErrorCode === ErrorCodes.CannotSubmitBadStatus.code
 }
