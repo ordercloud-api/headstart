@@ -13,6 +13,7 @@ import { CurrentUserService } from '@app-seller/shared/services/current-user/cur
 import {
   Address,
   OcSupplierAddressService,
+  OcAdminAddressService,
 } from '@ordercloud/angular-sdk'
 import {
   FormGroup,
@@ -84,7 +85,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       this._superHSProductStatic = this.productService.emptyResource
     }
   }
-  @Input() readonly: boolean
+  readonly: boolean
+  sellerView: boolean
   @Input()
   filterConfig
   @Output()
@@ -146,6 +148,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     private location: Location,
     private currentUserService: CurrentUserService,
     private ocSupplierAddressService: OcSupplierAddressService,
+    private ocAdminAddressService: OcAdminAddressService,
     private productService: ProductService,
     private sanitizer: DomSanitizer,
     private modalService: NgbModal,
@@ -204,6 +207,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       this.addresses = await this.ocSupplierAddressService
         .List(context.Me.Supplier.ID)
         .toPromise()
+    } else if (context.Me.Seller) {
+      this.addresses = await this.ocAdminAddressService.List().toPromise()
     }
   }
 
@@ -233,13 +238,17 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     } else {
       this.taxCodes = { Meta: {}, Items: [] }
     }
-    this.staticContent = (this._superHSProductEditable.Product?.xp as any).Documents
+    this.staticContent = (this._superHSProductEditable.Product
+      ?.xp as any).Documents
     this.images = (this._superHSProductEditable.Product?.xp as any)?.Images
     this.taxCodeCategorySelected =
       this._superHSProductEditable.Product?.xp?.Tax?.Category !== null
     this.productType = this._superHSProductEditable.Product?.xp?.ProductType
     this.createProductForm(this._superHSProductEditable)
-    if (this.userContext?.UserType === 'SELLER') {
+    if (
+      this.userContext?.UserType === 'SELLER' &&
+      superProduct.Product.DefaultSupplierID
+    ) {
       this.addresses = await this.ocSupplierAddressService
         .List(this._superHSProductEditable?.Product?.DefaultSupplierID)
         .toPromise()
@@ -250,6 +259,15 @@ export class ProductEditComponent implements OnInit, OnDestroy {
             this._superHSProductEditable.Product.ShipFromAddressID
           )
           .toPromise()
+    } else if (
+      this.userContext?.UserType === 'SELLER' &&
+      !superProduct.Product.DefaultSupplierID
+    ) {
+      this.addresses = await this.ocAdminAddressService.List().toPromise()
+      if (superProduct.Product?.ShipFromAddressID)
+        this.shippingAddress = await this.ocAdminAddressService
+          .Get(this._superHSProductEditable.Product.ShipFromAddressID)
+          .toPromise()
     }
     this.isCreatingNew = this.productService.checkIfCreatingNew()
     this.checkForChanges()
@@ -257,6 +275,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
 
   createProductForm(superHSProduct: SuperHSProduct): void {
     if (superHSProduct.Product) {
+      this.readonly = superHSProduct.Product.DefaultSupplierID ? true : false
+      this.sellerView = this.userContext?.UserType === 'SELLER'
       this.productForm = new FormGroup(
         {
           Active: new FormControl(superHSProduct.Product.Active),
@@ -572,9 +592,9 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   productWasModified(): boolean {
     return (
       JSON.stringify(this._superHSProductEditable) !==
-      JSON.stringify(this._superHSProductStatic) ||
-      this.imageFiles.length > 0 || 
-      this.staticContentFiles.length > 0 
+        JSON.stringify(this._superHSProductStatic) ||
+      this.imageFiles.length > 0 ||
+      this.staticContentFiles.length > 0
     )
   }
 
@@ -702,10 +722,9 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       file.Url,
       assetType
     )
-    this.updateList.emit(this._superHSProductStatic.Product as Product) 
+    this.updateList.emit(this._superHSProductStatic.Product as Product)
     this.refreshProductData(this._superHSProductStatic)
   }
-
 
   unstageFile(index: number, fileType: string): void {
     if (fileType === 'image') {
@@ -833,12 +852,16 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     if (superHSProduct.PriceSchedule.PriceBreaks[0].Price === null)
       superHSProduct.PriceSchedule.PriceBreaks[0].Price = 0
     if (this.imageFiles.length > 0) {
-      const imgAssets = await this.assetService.uploadImageFiles(this.imageFiles);
-      (superHSProduct.Product.xp as any).Images = imgAssets
+      const imgAssets = await this.assetService.uploadImageFiles(
+        this.imageFiles
+      )
+      ;(superHSProduct.Product.xp as any).Images = imgAssets
     }
     if (this.staticContentFiles.length > 0) {
-      const documentAssets = await this.assetService.uploadDocumentFiles(this.staticContentFiles);
-      (superHSProduct.Product.xp as any).Documents = documentAssets
+      const documentAssets = await this.assetService.uploadDocumentFiles(
+        this.staticContentFiles
+      )
+      ;(superHSProduct.Product.xp as any).Documents = documentAssets
     }
     try {
       return await HeadStartSDK.Products.Post(superHSProduct)
@@ -870,18 +893,22 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       superHSProduct.PriceSchedule = null
     superHSProduct.Product.xp.Status = 'Draft'
     if (this.imageFiles.length > 0) {
-      const imgAssets = await this.assetService.uploadImageFiles(this.imageFiles);
-    //  temporarily using 'as any' until sdk updated with new xp values
-      (superHSProduct.Product.xp as any).Images = [
+      const imgAssets = await this.assetService.uploadImageFiles(
+        this.imageFiles
+      )
+      //  temporarily using 'as any' until sdk updated with new xp values
+      ;(superHSProduct.Product.xp as any).Images = [
         ...((superHSProduct.Product.xp as any)?.Images || []),
-        ...imgAssets
+        ...imgAssets,
       ]
-    } 
+    }
     if (this.staticContentFiles.length > 0) {
-      const documentAssets = await this.assetService.uploadDocumentFiles(this.staticContentFiles);
-      (superHSProduct.Product.xp as any).Documents = [
-        ...(superHSProduct.Product.xp as any)?.Documents || [],
-        ...documentAssets
+      const documentAssets = await this.assetService.uploadDocumentFiles(
+        this.staticContentFiles
+      )
+      ;(superHSProduct.Product.xp as any).Documents = [
+        ...((superHSProduct.Product.xp as any)?.Documents || []),
+        ...documentAssets,
       ]
     }
     try {
@@ -893,7 +920,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       this.imageFiles = []
       this.staticContentFiles = []
     }
-    
   }
 
   async handleSelectedProductChange(product: Product): Promise<void> {

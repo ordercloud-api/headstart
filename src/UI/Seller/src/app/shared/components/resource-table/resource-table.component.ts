@@ -184,10 +184,9 @@ export class ResourceTableComponent
     this.screenSize = getScreenSizeBreakPoint()
   }
 
-  async getAvailableProductTypes(): Promise<void> {
-    const supplier = await this.currentUserService.getMySupplier()
-    const formattedSupplierProductTypes = supplier?.xp?.ProductTypes.map(
-      (pt) => {
+  mapProductTypes(types: string[]): Params[] {
+    if (types) {
+      const mappedTypes = types.map((pt) => {
         const link = pt
           .match(/[A-Z][a-z]+/g)
           .map((t) => t.toLowerCase())
@@ -196,9 +195,22 @@ export class ResourceTableComponent
           Display: `${pt.match(/[A-Z][a-z]+/g).join(' ')} Product`,
           Link: link,
         }
-      }
+      })
+      return mappedTypes
+    } else {
+      return []
+    }
+  }
+
+  async getAvailableProductTypes(): Promise<void> {
+    const supplier = await this.currentUserService.getMySupplier()
+    const formattedSupplierProductTypes = this.mapProductTypes(
+      supplier?.xp?.ProductTypes
     )
-    this.availableProductTypes = formattedSupplierProductTypes || []
+    this.availableProductTypes =
+      formattedSupplierProductTypes.length > 0
+        ? formattedSupplierProductTypes
+        : this.mapProductTypes(['Standard', 'Quote', 'PurchaseOrder'])
   }
 
   getTitle(

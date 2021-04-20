@@ -8,7 +8,6 @@
   [resourceForm]="resourceForm"
   [shouldShowResourceActions]="false"
   [filterConfig]="filterConfig"
-  [shouldShowCreateNew]="userContext?.UserType !== 'SELLER'"
   (searched)="searchResources($event)"
   (hitScrollEnd)="handleScrollEnd()"
   (changesSaved)="saveUpdates()"
@@ -23,7 +22,6 @@
                     [orderCloudProduct]="resourceInSelection">
   </app-product-view> -->
   <app-product-edit
-    [readonly]="userContext?.UserType === 'SELLER'"
     class="resource-edit"
     [dataIsSaving]="dataIsSaving"
     [addresses]="addresses"

@@ -68,9 +68,7 @@
       ngbNav
       #nav="ngbNav"
       [(activeId)]="active"
-      (navChange)="
-        tabChanged($event, _superHSProductEditable?.Product?.ID)
-      "
+      (navChange)="tabChanged($event, _superHSProductEditable?.Product?.ID)"
       class="nav-pills border-top border-bottom nav-fill"
     >
       <!-- Product Details -->
@@ -184,7 +182,8 @@
                   <h6 class="font-weight-medium">
                     Personalization
                     <small class="d-block">
-                      <fa-icon class="color-beige"
+                      <fa-icon
+                        class="color-beige"
                         [icon]="faExclamationCircle"
                       ></fa-icon>
                       <span translate>
@@ -219,7 +218,8 @@
                   <h6 class="font-weight-medium" translate>
                     ADMIN.PRODUCT_EDIT.PRODUCT_SKU
                     <small *ngIf="isCreatingNew" class="d-block">
-                      <fa-icon class="color-beige"
+                      <fa-icon
+                        class="color-beige"
                         [icon]="faExclamationCircle"
                       ></fa-icon>
                       <span translate> ADMIN.PRODUCT_EDIT.NO_PROVIDED_SKU</span>
@@ -266,9 +266,7 @@
                         [attr.disabled]="readonly ? true : null"
                         type="checkbox"
                         (click)="handleUpdateProduct($event, 'Product.Active')"
-                        [checked]="
-                          _superHSProductEditable?.Product.Active
-                        "
+                        [checked]="_superHSProductEditable?.Product.Active"
                       />
                       <span class="slider round"></span>
                     </label>
@@ -433,10 +431,7 @@
                     </div>
                   </div>
                   <div
-                    *ngIf="
-                      _superHSProductEditable?.Product?.Inventory
-                        ?.Enabled
-                    "
+                    *ngIf="_superHSProductEditable?.Product?.Inventory?.Enabled"
                     class="form-group"
                   >
                     <div class="custom-control custom-checkbox">
@@ -467,10 +462,7 @@
                         : ''
                     "
                     placement="bottom-left"
-                    *ngIf="
-                      _superHSProductEditable?.Product?.Inventory
-                        ?.Enabled
-                    "
+                    *ngIf="_superHSProductEditable?.Product?.Inventory?.Enabled"
                     class="form-group"
                   >
                     <div class="custom-control custom-checkbox">
@@ -496,8 +488,7 @@
                   </div>
                   <div
                     *ngIf="
-                      _superHSProductEditable?.Product?.Inventory
-                        ?.Enabled &&
+                      _superHSProductEditable?.Product?.Inventory?.Enabled &&
                       !_superHSProductEditable?.Product?.Inventory
                         ?.VariantLevelTracking
                     "
@@ -535,8 +526,7 @@
                   </div>
                   <ng-container
                     *ngIf="
-                      _superHSProductEditable?.Product?.Inventory
-                        ?.Enabled &&
+                      _superHSProductEditable?.Product?.Inventory?.Enabled &&
                       _superHSProductEditable?.Product?.Inventory
                         ?.VariantLevelTracking
                     "
@@ -565,9 +555,7 @@
                 <product-tax-code-select-component
                   [readonly]="readonly"
                   [productForm]="productForm"
-                  [superHSProductEditable]="
-                    _superHSProductEditable
-                  "
+                  [superHSProductEditable]="_superHSProductEditable"
                   [taxCodes]="taxCodes"
                   [isRequired]="isRequired('TaxCodeCategory')"
                   [isCreatingNew]="isCreatingNew"
@@ -635,10 +623,7 @@
                       >
                     </div>
                     <div
-                      *ngIf="
-                        _superHSProductEditable?.Product?.xp
-                          ?.FreeShipping
-                      "
+                      *ngIf="_superHSProductEditable?.Product?.xp?.FreeShipping"
                       class="mb-3"
                     >
                       <label for="FreeShippingMessage" translate
@@ -660,7 +645,8 @@
                         "
                       />
                       <small class="d-block">
-                        <fa-icon class="color-beige"
+                        <fa-icon
+                          class="color-beige"
                           [icon]="faExclamationCircle"
                         ></fa-icon>
                         <span translate>
@@ -753,8 +739,7 @@
                       <option
                         *ngFor="let tier of availableSizeTiers"
                         [selected]="
-                          _superHSProductEditable?.xp?.SizeTier ===
-                          tier.Tier
+                          _superHSProductEditable?.xp?.SizeTier === tier.Tier
                         "
                         value="{{ tier.Tier }}"
                       >
@@ -762,7 +747,8 @@
                       </option>
                     </select>
                     <small>
-                      <fa-icon class="color-beige"
+                      <fa-icon
+                        class="color-beige"
                         [icon]="faExclamationCircle"
                       ></fa-icon>
                       <span translate> ADMIN.PRODUCT_EDIT.SIZE_TIER_INFO</span>
@@ -884,7 +870,8 @@
                       ></fa-icon>
                     </div>
                     <div>
-                      <img class="product-preview-img"
+                      <img
+                        class="product-preview-img"
                         [src]="getProductPreviewImage()"
                         [alt]="_superHSProductEditable?.Product?.Name"
                       />
@@ -902,10 +889,10 @@
                         }}</small>
                         <p class="card-text">
                           {{
-                            _superHSProductEditable?.Product?.xp
-                              ?.Facets?.supplier &&
-                              _superHSProductEditable?.Product?.xp
-                                ?.Facets?.supplier[0]
+                            _superHSProductEditable?.Product?.xp?.Facets
+                              ?.supplier &&
+                              _superHSProductEditable?.Product?.xp?.Facets
+                                ?.supplier[0]
                           }}
                         </p>
                         <div
@@ -944,7 +931,7 @@
       </li>
       <!-- /Product Details -->
       <!-- Buyer Visibility -->
-      <li [ngbNavItem]="1" *ngIf="readonly" id="1">
+      <li [ngbNavItem]="1" *ngIf="sellerView" id="1">
         <a
           [fragment]="catalog - assignments"
           class="text-muted"
@@ -1051,9 +1038,7 @@
       <li
         [ngbNavItem]="3"
         id="3"
-        [disabled]="
-          readonly && !_superHSProductEditable?.PriceSchedule?.ID
-        "
+        [disabled]="readonly && !_superHSProductEditable?.PriceSchedule?.ID"
       >
         <a
           [fragment]="price"
@@ -1163,7 +1148,7 @@
           translate
           >ADMIN.PRODUCT_EDIT.IMAGES_AND_DOCUMENTS
           <span class="badge badge-pill badge-info">{{
-            _superHSProductEditable?.Product?.xp?.Images?.length + 
+            _superHSProductEditable?.Product?.xp?.Images?.length +
               _superHSProductEditable?.Product?.xp.Documents?.length +
               imageFiles?.length +
               staticContentFiles?.length
@@ -1190,7 +1175,7 @@
                     <div class="product-img">
                       <img
                         [id]="i"
-                        src="{{image.ThumbnailUrl}}"
+                        src="{{ image.ThumbnailUrl }}"
                         width="auto"
                         height="100px"
                       />
@@ -1415,7 +1400,9 @@
   </form>
   <!-- TODO: 2/2 Abstract into component to be used anywhere using inputs and outputs -->
   <div
-    *ngIf="userContext?.UserType === 'SUPPLIER'"
+    *ngIf="
+      userContext?.UserType === 'SUPPLIER' || userContext?.UserType === 'SELLER'
+    "
     class="d-flex justify-content-between align-items-center py-2 product-edit-actions"
   >
     <delete-confirm-modal-component
