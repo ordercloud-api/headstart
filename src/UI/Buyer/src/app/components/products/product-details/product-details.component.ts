@@ -9,11 +9,11 @@ import {
 import { PriceSchedule } from 'ordercloud-javascript-sdk'
 import {
   HSLineItem,
-  Asset,
   QuoteOrderInfo,
   HSVariant,
   HSMeProduct,
   HSSupplier,
+  DocumentAsset,
 } from '@ordercloud/headstart-sdk'
 import { Observable } from 'rxjs'
 import { SpecFormService } from '../spec-form/spec-form.service'
@@ -43,7 +43,7 @@ export class OCMProductDetails implements OnInit {
   priceSchedule: PriceSchedule
   priceBreaks: PriceBreak[]
   unitPrice: number
-  attachments: Asset[] = []
+  attachments: DocumentAsset[] = []
   isOrderable = false
   quantity: number
   price: number
@@ -78,7 +78,7 @@ export class OCMProductDetails implements OnInit {
   @Input() set product(superProduct: SuperHSProduct) {
     this._superProduct = superProduct
     this._product = superProduct.Product
-    this.attachments = (superProduct?.Product?.xp as any)?.Documents
+    this.attachments = superProduct?.Product?.xp?.Documents
     this.priceBreaks = superProduct.PriceSchedule?.PriceBreaks
     this.unitPrice =
       this.priceBreaks && this.priceBreaks.length
@@ -195,7 +195,7 @@ export class OCMProductDetails implements OnInit {
         Specs: this.specFormService.getLineItemSpecs(this.specs, this.specForm),
         xp: {
           ImageUrl: this.specFormService.getLineItemImageUrl(
-            this._superProduct.Images,
+            this._superProduct.Product?.xp?.Images,
             this._superProduct.Specs,
             this.specForm
           ),
@@ -265,7 +265,7 @@ export class OCMProductDetails implements OnInit {
       )
       lineItem.xp = {
         ImageUrl: this.specFormService.getLineItemImageUrl(
-          this._superProduct.Images,
+          this._superProduct.Product?.xp?.Images,
           this._superProduct.Specs,
           this.specForm
         ),

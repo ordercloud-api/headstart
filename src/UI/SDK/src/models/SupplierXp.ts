@@ -1,3 +1,4 @@
+import { ImageAsset } from './Asset';
 import { Contact } from './Contact';
 import { SupplierCategory } from './SupplierCategory';
 
@@ -13,4 +14,5 @@ export interface SupplierXp {
     Categories?: SupplierCategory[]
     NotificationRcpts?: string[]
     FreeShippingThreshold?: number
+    Image?: ImageAsset
 }

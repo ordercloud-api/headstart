@@ -5,7 +5,7 @@ export const getPrimaryImageUrl = (
   product: HSMeProduct,
   user: CurrentUser
 ): string => {
-  const images = (product?.xp as any)?.Images
+  const images = product?.xp?.Images
   return images && images.length ? images[0].Url : '/assets/product.jpg'
 }
 

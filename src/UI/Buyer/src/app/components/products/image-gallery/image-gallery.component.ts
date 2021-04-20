@@ -7,7 +7,7 @@ import {
 } from '@angular/core'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { fromEvent } from 'rxjs'
-import { Asset, Spec } from '@ordercloud/headstart-sdk'
+import { ImageAsset } from '@ordercloud/headstart-sdk'
 import { SpecFormService } from '../spec-form/spec-form.service'
 
 @Component({
@@ -15,7 +15,7 @@ import { SpecFormService } from '../spec-form/spec-form.service'
   styleUrls: ['./image-gallery.component.scss'],
 })
 export class OCMImageGallery implements OnInit, OnChanges {
-  @Input() images: Asset[] = []
+  @Input() images: ImageAsset[] = []
   @Input() specs: any[] = []
   imgUrls: string[] = []
 
@@ -52,11 +52,11 @@ export class OCMImageGallery implements OnInit, OnChanges {
     this.selectedIndex = this.imgUrls.indexOf(url)
   }
 
-  isSelected(image: Asset): boolean {
+  isSelected(image: ImageAsset): boolean {
     return this.imgUrls.indexOf(image.Url) === this.selectedIndex
   }
 
-  isImageMatchingSpecs(image: Asset): boolean {
+  isImageMatchingSpecs(image: ImageAsset): boolean {
     // Examine all non-variable text specs, and find the image tag that matches all specs,
     // removing spaces where needed on the spec to find that match.
     const specs = this.specs.filter((s) => s !== null);
@@ -80,7 +80,7 @@ export class OCMImageGallery implements OnInit, OnChanges {
     }
   }
 
-  getGallery(): Asset[] {
+  getGallery(): ImageAsset[] {
     return this.images.slice(this.startIndex, this.endIndex + 1)
   }
 
