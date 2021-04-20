@@ -3,7 +3,7 @@ import { HSLineItem, HSProduct, HSSupplier } from "@ordercloud/headstart-sdk"
 
 export const IMAGE_HOST_URL =
     'https://s3.dualstack.us-east-1.amazonaws.com/staticcintas.eretailing.com/images/product'
-export const PLACEHOLDER_URL = 'http://placehold.it/300x300'
+export const PLACEHOLDER_URL = 'https://via.placeholder.com/300x300'
 export const PRODUCT_IMAGE_PATH_STRATEGY = 'PRODUCT_IMAGE_PATH_STRATEGY'
 export const SUPPLIER_LOGO_PATH_STRATEGY = 'SUPPLIER_LOGO_PATH_STRATEGY'
 
