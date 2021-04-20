@@ -6,7 +6,7 @@ import {
   PriceBreak,
 } from 'ordercloud-javascript-sdk'
 import { Injectable } from '@angular/core'
-import { Asset } from '@ordercloud/headstart-sdk'
+import { ImageAsset } from '@ordercloud/headstart-sdk'
 import { FormGroup } from '@angular/forms'
 import { GridSpecOption } from 'src/app/models/product.types'
 
@@ -66,7 +66,7 @@ export class SpecFormService {
   }
 
   public getLineItemImageUrl(
-    images: Asset[],
+    images: ImageAsset[],
     specs: Spec[],
     specForm?: FormGroup
   ): string {
@@ -82,7 +82,7 @@ export class SpecFormService {
   }
 
   private isImageMatchingSpecs(
-    image: Asset,
+    image: ImageAsset,
     specs: Spec[],
     specForm: FormGroup
   ): boolean {
@@ -91,7 +91,7 @@ export class SpecFormService {
     return this.AssetTagMatches(liSpecs, image);
   }
 
-  public AssetTagMatches(liSpecs: LineItemSpec[], image: Asset): boolean {
+  public AssetTagMatches(liSpecs: LineItemSpec[], image: ImageAsset): boolean {
     return liSpecs.every((spec) =>
       image?.Tags?.find((tag) =>
         !spec.Value
@@ -127,7 +127,7 @@ export class SpecFormService {
   }
 
   public getGridLineItemImageUrl(
-    images: Asset[],
+    images: ImageAsset[],
     specs: Spec[],
     specValues: string[]
   ): string {
@@ -143,7 +143,7 @@ export class SpecFormService {
   }
 
   private isGridImageMatchingSpecs(
-    image: Asset,
+    image: ImageAsset,
     specs: Spec[],
     specValues: string[]
   ): boolean {

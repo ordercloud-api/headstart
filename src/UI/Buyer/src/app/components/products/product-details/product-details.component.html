@@ -268,9 +268,11 @@
       </ng-container>
       <div
         class="border-top border-light mt-3"
-        *ngIf="_product.xp.ProductType === 'Standard' && 
-        _productSupplier?.xp?.SupportContact?.Email && 
-        _productSupplier?.xp?.SupportContact?.Email !== ''"
+        *ngIf="
+          _product.xp.ProductType === 'Standard' &&
+          _productSupplier?.xp?.SupportContact?.Email &&
+          _productSupplier?.xp?.SupportContact?.Email !== ''
+        "
       >
         <button
           type="button"
@@ -278,7 +280,7 @@
           (click)="openContactSupplierForm()"
         >
           <span translate>PRODUCTS.DETAILS.CONTACT_PART_ONE</span>
-          <span translate>ALIAS.SUPPLIER_LOWERCASE</span>
+          <span translate>ALIAS.SUPPLIER</span>
           <span translate>PRODUCTS.DETAILS.CONTACT_PART_TWO</span>
         </button>
       </div>

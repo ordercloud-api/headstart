@@ -104,7 +104,7 @@ export class OCMGridSpecForm {
       Specs: this.specFormService.getGridLineItemSpecs(this._specs, specArray),
       xp: {
         ImageUrl: this.specFormService.getGridLineItemImageUrl(
-          (this._superProduct.Product?.xp as any)?.Images,
+          this._superProduct.Product?.xp?.Images,
           this._specs,
           specArray
         ),

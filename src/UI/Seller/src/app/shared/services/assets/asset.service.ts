@@ -63,7 +63,7 @@ export class AssetService {
     assetType: AssetType): Promise<Product> {
     let patchObj: Partial<Product>
     if (assetType === 'image') {
-      const newImages = (product?.xp as any)?.Images
+      const newImages = product?.xp?.Images
         .filter(image => getAssetIDFromUrl(image.Url) !== assetID);
       patchObj = {
         xp: {
@@ -71,7 +71,7 @@ export class AssetService {
         }
       }
     } else {
-      const newDocuments = (product?.xp as any)?.Documents
+      const newDocuments = product?.xp?.Documents
         .filter(doc => getAssetIDFromUrl(doc.Url) !== assetID);
       patchObj = {
         xp: {

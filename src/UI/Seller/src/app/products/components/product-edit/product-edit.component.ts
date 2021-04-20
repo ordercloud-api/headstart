@@ -47,6 +47,7 @@ import {
   Asset,
   TaxCode,
   AssetType,
+  ImageAsset,
 } from '@ordercloud/headstart-sdk'
 import { Location } from '@angular/common'
 import { TabIndexMapper, setProductEditTab } from './tab-mapper'
@@ -101,7 +102,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   dataIsSaving = false
   userContext: any = {}
   hasVariations = false
-  images: Asset[] = []
+  images: ImageAsset[] = []
   files: FileHandle[] = []
   faTimes = faTimes
   faTrash = faTrash

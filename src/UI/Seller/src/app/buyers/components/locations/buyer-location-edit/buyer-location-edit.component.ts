@@ -182,8 +182,8 @@ export class BuyerLocationEditComponent implements OnInit {
   async updateBuyerLocation(): Promise<void> {
     try {
       this.dataIsSaving = true
-      ;(this.buyerLocationEditable.UserGroup
-        .xp as any).Country = this.buyerLocationEditable.Address.Country
+      this.buyerLocationEditable.UserGroup
+        .xp.Country = this.buyerLocationEditable.Address.Country
       var assignments = this.resourceForm.controls['CatalogAssignments']?.value
       this.buyerLocationEditable.UserGroup.xp.CatalogAssignments = assignments?.CatalogIDs
       const updatedBuyerLocation = await HeadStartSDK.BuyerLocations.Save(
