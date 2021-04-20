@@ -1,4 +1,4 @@
-<fa-icon
+<fa-icon *ngIf="!isAnonymous"
   class="cursor-pointer"
   [ngClass]="{ 'text-danger': favorite }"
   [icon]="favorite ? faHeartFilled : faHeartOutline"
