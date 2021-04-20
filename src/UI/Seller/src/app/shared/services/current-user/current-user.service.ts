@@ -10,7 +10,7 @@ import {
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { AppStateService } from '../app-state/app-state.service'
-import { HeadStartSDK, Asset } from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, ImageAsset } from '@ordercloud/headstart-sdk'
 import { Tokens } from 'ordercloud-javascript-sdk'
 import { BehaviorSubject } from 'rxjs'
 import { AppConfig } from '@app-seller/models/environment.types'
@@ -25,7 +25,7 @@ export class CurrentUserService {
   public userSubject: BehaviorSubject<MeUser<any>> = new BehaviorSubject<
     MeUser<any>
   >({})
-  public profileImgSubject: BehaviorSubject<Asset> = new BehaviorSubject<Asset>(
+  public profileImgSubject: BehaviorSubject<ImageAsset> = new BehaviorSubject<ImageAsset>(
     {}
   )
   constructor(

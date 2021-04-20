@@ -46,6 +46,7 @@ import {
   Asset,
   TaxCode,
   AssetType,
+  ImageAsset,
 } from '@ordercloud/headstart-sdk'
 import { Location } from '@angular/common'
 import { TabIndexMapper, setProductEditTab } from './tab-mapper'
@@ -99,7 +100,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   dataIsSaving = false
   userContext: any = {}
   hasVariations = false
-  images: Asset[] = []
+  images: ImageAsset[] = []
   files: FileHandle[] = []
   faTimes = faTimes
   faTrash = faTrash
@@ -233,8 +234,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     } else {
       this.taxCodes = { Meta: {}, Items: [] }
     }
-    this.staticContent = (this._superHSProductEditable.Product?.xp as any).Documents
-    this.images = (this._superHSProductEditable.Product?.xp as any)?.Images
+    this.staticContent = this._superHSProductEditable.Product?.xp?.Documents
+    this.images = this._superHSProductEditable.Product?.xp?.Images
     this.taxCodeCategorySelected =
       this._superHSProductEditable.Product?.xp?.Tax?.Category !== null
     this.productType = this._superHSProductEditable.Product?.xp?.ProductType
@@ -834,11 +835,11 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       superHSProduct.PriceSchedule.PriceBreaks[0].Price = 0
     if (this.imageFiles.length > 0) {
       const imgAssets = await this.assetService.uploadImageFiles(this.imageFiles);
-      (superHSProduct.Product.xp as any).Images = imgAssets
+      superHSProduct.Product.xp.Images = imgAssets
     }
     if (this.staticContentFiles.length > 0) {
       const documentAssets = await this.assetService.uploadDocumentFiles(this.staticContentFiles);
-      (superHSProduct.Product.xp as any).Documents = documentAssets
+      superHSProduct.Product.xp.Documents = documentAssets
     }
     try {
       return await HeadStartSDK.Products.Post(superHSProduct)
@@ -871,16 +872,15 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     superHSProduct.Product.xp.Status = 'Draft'
     if (this.imageFiles.length > 0) {
       const imgAssets = await this.assetService.uploadImageFiles(this.imageFiles);
-    //  temporarily using 'as any' until sdk updated with new xp values
-      (superHSProduct.Product.xp as any).Images = [
-        ...((superHSProduct.Product.xp as any)?.Images || []),
+      superHSProduct.Product.xp.Images = [
+        ...superHSProduct.Product.xp?.Images || [],
         ...imgAssets
       ]
     } 
     if (this.staticContentFiles.length > 0) {
       const documentAssets = await this.assetService.uploadDocumentFiles(this.staticContentFiles);
-      (superHSProduct.Product.xp as any).Documents = [
-        ...(superHSProduct.Product.xp as any)?.Documents || [],
+      superHSProduct.Product.xp.Documents = [
+        ...superHSProduct.Product.xp?.Documents || [],
         ...documentAssets
       ]
     }

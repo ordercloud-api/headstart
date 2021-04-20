@@ -28,9 +28,7 @@ import {
 import { ProductService } from '@app-seller/products/product.service'
 import { ToastrService } from 'ngx-toastr'
 import {
-  HeadStartSDK,
   SuperHSProduct,
-  Asset,
   HSVariant,
   ImageAsset,
 } from '@ordercloud/headstart-sdk'
@@ -110,7 +108,7 @@ export class ProductVariations implements OnChanges {
   assignVariantImages = false
   viewVariantDetails = false
   variantInSelection: Variant
-  imageInSelection: Asset
+  imageInSelection: ImageAsset
   addVariableTextSpecs = false
   customizationRequired = true
 
@@ -580,7 +578,7 @@ export class ProductVariations implements OnChanges {
   }
 
   async updateProductImageTags(): Promise<void> {
-    const images = (this.superProductEditable.Product?.xp as any)?.Images
+    const images = this.superProductEditable.Product?.xp?.Images
     const patchObj = {
       xp: {
         Images: images
@@ -592,11 +590,11 @@ export class ProductVariations implements OnChanges {
     this.assignVariantImages = false
   }
 
-  getVariantImages(variant: Variant): Asset[] {
-    (this.superProductEditable?.Product?.xp as any)?.Images?.forEach((i) =>
+  getVariantImages(variant: Variant): ImageAsset[] {
+    this.superProductEditable?.Product?.xp?.Images?.forEach((i) =>
       !i.Tags ? (i.Tags = []) : null
     )
-    const imgs = (this.superProductEditable?.Product?.xp as any)?.Images?.filter((i) =>
+    const imgs = this.superProductEditable?.Product?.xp?.Images?.filter((i) =>
       i.Tags.includes(variant?.xp?.SpecCombo)
     )
     return imgs

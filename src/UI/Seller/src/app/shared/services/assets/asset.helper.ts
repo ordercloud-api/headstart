@@ -10,14 +10,14 @@ export const SUPPLIER_LOGO_PATH_STRATEGY = 'SUPPLIER_LOGO_PATH_STRATEGY'
 export function getProductSmallImageUrl(
     product: HSProduct
 ): string {
-    const images = (product?.xp as any)?.Images
+    const images = product?.xp?.Images
     return images && images.length ? images[0].ThumbnailUrl : PLACEHOLDER_URL
 }
 
 export function getProductMediumImageUrl(
     product: HSProduct,
 ): string {
-    const images = (product?.xp as any)?.Images
+    const images = product?.xp?.Images
     return images && images.length ? images[0].Url : ''
 }
 

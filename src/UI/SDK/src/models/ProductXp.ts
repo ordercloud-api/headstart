@@ -1,3 +1,4 @@
+import { DocumentAsset, ImageAsset } from './Asset';
 import { TaxProperties } from './TaxProperties';
 import { UnitOfMeasure } from './UnitOfMeasure';
 
@@ -16,4 +17,6 @@ export interface ProductXp {
     PromotionEligible?: boolean
     FreeShipping?: boolean
     FreeShippingMessage?: string
+    Images?: ImageAsset[]
+    Documents?: DocumentAsset[]
 }
