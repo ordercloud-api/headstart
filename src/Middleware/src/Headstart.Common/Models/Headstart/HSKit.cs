@@ -12,8 +12,6 @@ namespace Headstart.Models.Headstart
         public string ID { get; set; }
         public string Name { get; set; }
         public HSMeProduct Product { get; set; }
-        public IList<Asset> Images { get; set; }
-        public IList<Asset> Attachments { get; set; }
         public HSMeKitProductAssignment ProductAssignments { get; set; }
     }
 
@@ -22,9 +20,7 @@ namespace Headstart.Models.Headstart
     {
         public string ID { get; set; }
         public string Name { get; set; }
-        public Product Product { get; set; }
-        public IList<Asset> Images { get; set; }
-        public IList<Asset> Attachments { get; set; }
+        public HSProduct Product { get; set; }
         public HSKitProductAssignment ProductAssignments { get; set; }
     }
 
@@ -52,8 +48,6 @@ namespace Headstart.Models.Headstart
         public IList<Variant> Variants { get; set; }
         public IList<Spec> Specs { get; set; }
         public HSProduct Product { get; set; }
-        public IList<Asset> Images { get; set; }
-        public IList<Asset> Attachments { get; set; }
     }
 
     [SwaggerModel]
@@ -68,8 +62,6 @@ namespace Headstart.Models.Headstart
         public IList<Variant> Variants { get; set; }
         public IList<Spec> Specs { get; set; }
         public HSMeProduct Product { get; set; }
-        public IList<Asset> Images { get; set; }
-        public IList<Asset> Attachments { get; set; }
     }
 
 }

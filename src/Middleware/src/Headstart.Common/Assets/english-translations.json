@@ -1,19 +1,21 @@
 {
   "ALIAS": {
-    "ALL_BUYERS": "All Brands",
-    "ALL_SUPPLIERS": "All Vendors",
-    "BUYER": "Brand",
-    "BUYER_LOCATION": "Franchise Location",
-    "BUYER_LOCATIONS": "Franchise Locations",
-    "BUYERS": "Brands",
+    "ALL_BUYERS": "All Buyers",
+    "ALL_SUPPLIERS": "All Suppliers",
+    "BUYER": "Buyer",
+    "BUYER_LOCATION": "Buyer Group",
+    "BUYER_LOCATIONS": "Buyer Groups",
+    "BUYERS": "Buyers",
     "SELLER": "Seller",
+    "SELLER_ADMIN": "Seller Admin",
+    "SELLER_LOCATION": "Seller Address",
+    "SELLER_LOCATIONS": "Seller Addresses",
     "SELLERS": "Sellers",
-    "SUPPLIER": "Vendor",
-    "SUPPLIER_LOWERCASE": "vendor",
-    "SUPPLIER_PROFILE": "Vendor Profile",
-    "SUPPLIER_LOCATION": "Warehouse",
-    "SUPPLIER_LOCATIONS": "Warehouses",
-    "SUPPLIERS": "Vendors"
+    "SUPPLIER": "Supplier",
+    "SUPPLIER_PROFILE": "Supplier Profile",
+    "SUPPLIER_LOCATION": "Supplier Address",
+    "SUPPLIER_LOCATIONS": "Supplier Addresses",
+    "SUPPLIERS": "Suppliers"
   },
   "ADMIN": {
     "COMMON": {
@@ -101,6 +103,8 @@
       "RESULT": "Result",
       "STATUS": "Status",
       "SUPPLIER": "Supplier",
+      "SELLER_OWNED_PRODUCTS": "Has Seller Owned Products",
+
       "TO_DATE": "To Date"
     },
     "HEADERS": {
@@ -115,6 +119,7 @@
       "COPY": "Copy",
       "DESCRIPTION": "Description",
       "FROM_USER_USERNAME": "From User Username",
+      "FROM_COMPANY_ID": "From Company ID",
       "HAS_CLAIMS": "Has Claims",
       "ID": "ID",
       "NAME": "Name",
@@ -124,6 +129,7 @@
       "RESULT": "Result",
       "RETURN_COMMENT": "Return Comment",
       "STATUS": "Status",
+      "SELLER_OWNED_PRODUCTS": "Has Seller Owned Products",
       "TIME_STAMP": "Time Stamp",
       "TIME_SUBMITTED": "Time Submitted",
       "TOTAL_AMOUNT": "Total Amount",
@@ -246,6 +252,9 @@
       "FILTER_OPTIONS": "Filter Options",
       "FILTERS": "Filters",
       "FIRST_SELECT_CATEGORY": "First, select a tax category",
+      "FREE_SHIPPING": "This product has free shipping",
+      "FREE_SHIPPING_MESSAGE": "Free shipping message",
+      "FREE_SHIPPING_MESSAGE_INFO": "What would you like the buyer to see on this product during checkout?",
       "FREIGHT": "Freight",
       "HEIGHT": "Height",
       "HIGH_LEVEL_CATEGORY": "High Level Category",
@@ -486,7 +495,8 @@
     "FORGOT_PASSWORD": {
       "HEADER": "Forgot Password",
       "LOGIN": "Return to Login",
-      "SEND_EMAIL": "Send Email"
+      "SEND_EMAIL": "Send Email",
+      "SUBHEADER": "Enter Email/Username to reset password"
     },
     "LOGIN": {
       "ACCOUNT_LOGIN": "Account Login",
@@ -511,10 +521,12 @@
   "CART": {
     "CART": {
       "CART_IS_EMPTY": "You do not have any items in your cart",
+      "INVALID_ITEMS_NOTICE": "The following will be removed from your cart. Please review your updated cart before checking out.",
       "CHECKOUT": "CHECKOUT",
       "CONTINUE_SHOPPING": "Continue Shopping",
       "EMPTY_CART": "Empty Cart",
-      "SHOPPING_CART": "Shopping Cart"
+      "SHOPPING_CART": "Shopping Cart",
+      "VIEW_CART": "View Cart"
     },
     "LINEITEM_TABLE": {
       "PRICE": "Price",
@@ -540,6 +552,7 @@
   "CHECKOUT": {
     "CHECKOUT": {
       "CHECKOUT": "Checkout",
+      "ORDERREFERENCE": "Order Reference Number",
       "CONFIRM": "Order Review",
       "CREATE_ACCOUNT": "Create Account",
       "GUEST_CHECKOUT": "Checkout as Guest",
@@ -576,7 +589,9 @@
       "DAY": "day",
       "DELIVERY_OPTIONS": "Delivery Options",
       "HOW_FAST": "How fast should this ship?",
-      "SHIPPING_SPEED": "Shipping Speed"
+      "SHIPPING_SPEED": "Shipping Speed",
+      "NO_RATES_RETURNED_MESSAGE": "No rates returned - shipping will be calculated after the order is placed",
+      "SHIP_ESTIMATES_BASED_ON_DELIVERY": "Shipping estimates are based on delivery speed after items have been shipped by the carrier. Items requiring customization could take longer to ship."
     }
   },
   "COMMON": {
@@ -624,6 +639,20 @@
       "RESULTS": "results"
     }
   },
+  "BUYER": {
+    "HELPERMESSAGES": {
+      "CATALOG": {
+        "WARNING": "No Catalogs available for this buyer.",
+        "MESSAGE": "Looks like this buyer has no Catalogs",
+        "ACTION": "Set Catalogs now."
+      },
+      "BUYERGROUP": {
+        "WARNING": "There are no supplier addresses for this user's Home Country.",
+        "MESSAGE": "Looks like this Buyer has no Buyer Groups.",
+        "ACTION": "Set Buyer Groups now."
+      }
+    }
+  },
   "ORDERS": {
     "APPROVAL": {
       "ADD_COMMENTS": "Add Comments to Response",
@@ -643,6 +672,7 @@
       "CANCEL": "Cancel",
       "DISCARD_RETURN_REQUEST": "Discard Return Request",
       "DISCARD_CANCEL_REQUEST": "Discard Cancel Request",
+      "DOWNLOAD_AS_PDF": "Download as PDF",
       "CLAIM_STATUS": "Claim Status",
       "DETAILS": "Details",
       "FAVORITE": "Favorite",
@@ -711,7 +741,7 @@
       "PURCHASE_NOT_APPROVED": "Purchase was not approved",
       "PURCHASED_BY_MISTAKE": "Purchased by mistake",
       "PURCHASED_INCORRECT_SIZE": "Purchased incorrect size/style",
-      "RECEIVED_EXTRA_PRODUCT": "Received extra product that I didn’t buy",
+      "RECEIVED_EXTRA_PRODUCT": "Received extra product that I didnâ€™t buy",
       "SHIPPING_BOX_DAMAGED": "Shipping box is damaged",
       "FOUND_DIFFERENT_PRODUCT": "Found a different product I lliked better",
       "FULFILLMENT_TOO_LONG": "Product took too long to fulfill"

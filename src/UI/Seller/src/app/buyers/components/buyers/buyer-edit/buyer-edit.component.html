@@ -52,9 +52,61 @@
             placeholder="Enter Markup"
           />
         </div>
+        <div class="form-group">
+          <p class="mb-1">Allow Impersonation</p>
+          <label class="switch mb-0" for="ImpersonatingEnabled">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="ImpersonatingEnabled"
+              showErrors
+              [resourceForm]="resourceForm"
+              aria-describedby="ImpersonatingEnabled"
+              formControlName="ImpersonatingEnabled"
+              (input)="updateResourceFromEvent($event, 'ImpersonatingEnabled')"
+            />
+            <span class="slider round cursor-pointer"></span>
+          </label>
+        </div>
+        <div class="form-group" *ngIf="showImpersonation">
+          <label for="Name">Buyer Site URL</label>
+          <input
+            type="text"
+            class="form-control"
+            id="URL"
+            showErrors
+            aria-describedby="URL"
+            maxlength="100"
+            [resourceForm]="resourceForm"
+            formControlName="URL"
+            (input)="updateResourceFromEvent($event, 'Buyer.xp.URL')"
+            placeholder="Enter Url used by buyer site"
+          />
+        </div>
+        <div class="form-group" *ngIf="showImpersonation">
+          <label for="Name">Buyer Site Client ID</label>
+          <input
+            type="text"
+            class="form-control"
+            id="ClientID"
+            showErrors
+            aria-describedby="ClientID"
+            maxlength="100"
+            [resourceForm]="resourceForm"
+            formControlName="ClientID"
+            (input)="updateResourceFromEvent($event, 'ImpersonationConfig.ClientID')"
+            placeholder="Enter client ID used by buyer site"
+          />
+        </div>
       </div>
     </div>
   </form>
+  <div *ngIf="helperMessage" class="mb-4">
+    <span class="font-italic" translate>
+      {{helperMessage}}
+      <a href="{{helperLink}}" translate>{{helperAction}}</a>
+    </span>
+  </div>
   <action-menu-component
     [isCreatingNew]="isCreatingNew"
     [dataIsSaving]="dataIsSaving"

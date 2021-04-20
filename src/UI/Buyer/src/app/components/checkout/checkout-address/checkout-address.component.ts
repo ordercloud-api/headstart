@@ -4,6 +4,7 @@ import {
   BuyerAddress,
   LineItem,
   ListPage,
+  Me,
 } from 'ordercloud-javascript-sdk'
 import {
   HSOrder,
@@ -15,6 +16,7 @@ import { NgxSpinnerService } from 'ngx-spinner'
 import { ErrorMessages } from '../../../services/error-constants'
 import { flatten as _flatten } from 'lodash'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
+import { listAll } from 'src/app/services/listAll'
 // TODO - Make this component "Dumb" by removing the dependence on context service
 // and instead have it use inputs and outputs to interact with the CheckoutComponent.
 // Goal is to get all the checkout logic and state into one component.
@@ -29,6 +31,7 @@ export class OCMCheckoutAddress implements OnInit {
   @Output() continue = new EventEmitter()
   @Output() handleOrderError = new EventEmitter()
   _addressError: string
+  isAnon: boolean
 
   readonly NEW_ADDRESS_CODE = 'new'
   existingBuyerLocations: ListPage<BuyerAddress>
@@ -42,14 +45,18 @@ export class OCMCheckoutAddress implements OnInit {
   constructor(
     private context: ShopperContextService,
     private spinner: NgxSpinnerService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
+    this.isAnon = this.context.currentUser.isAnonymous();
+    if(this.isAnon) {
+      this.showNewAddress();
+    }
     this.spinner.hide()
     this.selectedShippingAddress = this.lineItems?.Items[0].ShippingAddress
-    await this.listSavedShippingAddresses()
-    await this.listSavedBuyerLocations()
+    await this.ListAddressesForShipping()
   }
+
 
   onBuyerLocationChange(buyerLocationID: string): void {
     this.selectedBuyerLocation = this.existingBuyerLocations.Items.find(
@@ -79,28 +86,15 @@ export class OCMCheckoutAddress implements OnInit {
   async saveAddressesAndContinue(
     newShippingAddress: Address = null
   ): Promise<void> {
-    if (!this.selectedBuyerLocation) {
+    if (!this.selectedBuyerLocation && !this.isAnon) {
       throw new Error('Please select a location for this order')
     }
     try {
       this.spinner.show()
-      this.order = await this.context.order.checkout.setBuyerLocationByID(
-        this.selectedBuyerLocation?.ID
-      )
-      if (newShippingAddress != null) {
-        this.selectedShippingAddress = await this.saveNewShippingAddress(
-          newShippingAddress
-        )
-      }
-
-      if (this.selectedShippingAddress) {
-        await this.context.order.checkout.setShippingAddressByID(
-          this.selectedShippingAddress
-        )
-        this.continue.emit()
+      if (this.isAnon) {
+        await this.handleAnonShippingAddress(newShippingAddress)
       } else {
-        // not able to create address - display suggestions to user
-        this.spinner.hide()
+        this.handleLoggedInShippingAddress(newShippingAddress)
       }
     } catch (e) {
       if (e?.message === ErrorMessages.orderNotAccessibleError) {
@@ -110,6 +104,35 @@ export class OCMCheckoutAddress implements OnInit {
       } else {
         throw e
       }
+      this.spinner.hide()
+    }
+  }
+
+  async handleAnonShippingAddress(newShippingAddress: Address<any>): Promise<void> {
+    if (newShippingAddress != null) {
+      this.selectedShippingAddress = await this.validateNewShippingAddress(newShippingAddress)
+    } if(this.selectedShippingAddress) {
+      this.context.order.checkout.setOneTimeAddress((this.selectedShippingAddress as Address), 'shipping')
+      this.continue.emit()
+    } else {
+      // not able to create address - display suggestions to user
+      this.spinner.hide()
+    }
+  }
+
+  async handleLoggedInShippingAddress(newShippingAddress: Address<any>): Promise<void> {
+    if (newShippingAddress != null) {
+      this.selectedShippingAddress = await this.saveNewShippingAddress(
+        newShippingAddress
+      )
+    }
+    if (this.selectedShippingAddress) {
+      await this.context.order.checkout.setShippingAddressByID(
+        this.selectedShippingAddress
+      )
+      this.continue.emit()
+    } else {
+      // not able to create address - display suggestions to user
       this.spinner.hide()
     }
   }
@@ -124,71 +147,20 @@ export class OCMCheckoutAddress implements OnInit {
     this.suggestedAddresses = []
   }
 
-  private async listSavedBuyerLocations(): Promise<void> {
-    const listOptions = {
-      page: 1,
-      pageSize: 100,
+  private async ListAddressesForShipping() {
+    const buyerLocationsFilter = {
+      filters: { Editable: 'false' }
     }
-    this.existingBuyerLocations = await this.context.addresses.listBuyerLocations(
-      listOptions
-    )
+    const shippingAddressesFilter = {
+      filters: { Shipping: 'true' }
+    }
+    this.existingBuyerLocations = await listAll(Me, Me.ListAddresses, buyerLocationsFilter)
     this.homeCountry = this.existingBuyerLocations?.Items[0]?.Country || 'US'
-    if (this.existingBuyerLocations?.Meta.TotalPages <= 1) {
-      if (this.existingBuyerLocations?.Items.length === 1) {
-        this.selectedBuyerLocation = this.selectedShippingAddress = this.existingBuyerLocations.Items[0]
-      }
-    } else {
-      let requests = []
-      for (
-        let page = 2;
-        page <= this.existingBuyerLocations.Meta.TotalPages;
-        page++
-      ) {
-        listOptions.page = page;
-        // Hack to avoid page being mutated after the request has been added to the queue
-        const copiedListOptions = JSON.parse(JSON.stringify(listOptions));
-        requests = [
-          ...requests,
-          this.context.addresses.listBuyerLocations(copiedListOptions),
-        ]
-      }
-      return await Promise.all(requests).then((response) => {
-        this.existingBuyerLocations.Items = [
-          ...this.existingBuyerLocations.Items,
-          ..._flatten(response.map((r) => r.Items)),
-        ]
-      })
+    if (this.existingBuyerLocations?.Items.length === 1) {
+      this.selectedBuyerLocation = this.selectedShippingAddress = this.existingBuyerLocations.Items[0]
     }
-  }
 
-  private async listSavedShippingAddresses(): Promise<void> {
-    const listOptions = {
-      page: 1,
-      pageSize: 100
-    }
-    this.existingShippingAddresses = await this.context.addresses.listShippingAddresses(listOptions);
-    if (this.existingShippingAddresses?.Meta.TotalPages > 1) {
-      let requests = []
-      for (
-        let page = 2;
-        page <= this.existingShippingAddresses.Meta.TotalPages;
-        page++
-      ) {
-        listOptions.page = page;
-        // Hack to avoid page being mutated after the request has been added to the queue
-        const copiedListOptions = JSON.parse(JSON.stringify(listOptions));
-        requests = [
-          ...requests,
-          this.context.addresses.listShippingAddresses(copiedListOptions),
-        ]
-      }
-      return await Promise.all(requests).then((response) => {
-        this.existingShippingAddresses.Items = [
-          ...this.existingShippingAddresses.Items,
-          ..._flatten(response.map((r) => r.Items)),
-        ]
-      })
-    }
+    this.existingShippingAddresses = await listAll(Me, Me.ListAddresses, shippingAddressesFilter)
   }
 
   private async saveNewShippingAddress(
@@ -200,9 +172,22 @@ export class OCMCheckoutAddress implements OnInit {
       const savedAddress = await this.context.addresses.create(address)
       return savedAddress
     } catch (ex) {
-      this.suggestedAddresses = getSuggestedAddresses(ex)
-      if (!(this.suggestedAddresses?.length >= 1)) throw ex
-      return null // set this.selectedShippingAddress
+      return this.handleAddressError(ex);
     }
+  }
+
+  private async validateNewShippingAddress(address: BuyerAddress): Promise<HSAddressBuyer> {
+    try {
+      const validatedAddress = await this.context.addresses.validateAddress(address)
+      return validatedAddress
+    } catch (ex) {
+      return this.handleAddressError(ex)
+    }
+  }
+
+  private handleAddressError(ex: any): null {
+    this.suggestedAddresses = getSuggestedAddresses(ex)
+    if (!(this.suggestedAddresses?.length >= 1)) throw ex
+    return null // set this.selectedShippingAddress
   }
 }

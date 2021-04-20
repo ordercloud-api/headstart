@@ -13,7 +13,7 @@ import {
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import { SupportedRates } from '@app-seller/models/currency-geography.types'
 import { ResourceUpdate } from '@app-seller/models/shared.types'
-import { HSBuyerPriceMarkup } from '@app-seller/models/buyer-markups.types'
+import { HSBuyerPriceMarkup } from '@app-seller/models/buyer.types'
 
 @Component({
   selector: 'product-pricing-component',

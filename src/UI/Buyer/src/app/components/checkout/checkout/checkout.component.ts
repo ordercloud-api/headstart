@@ -15,6 +15,7 @@ import {
   HSPayment,
   OrderCloudIntegrationsCreditCardPayment,
   HeadStartSDK,
+  OrderCloudIntegrationsCreditCardToken,
 } from '@ordercloud/headstart-sdk'
 import {
   getOrderSummaryMeta,
@@ -121,7 +122,7 @@ export class OCMCheckout implements OnInit {
       void this.router.navigate(['/cart'])
     } else {
       await this.reIDLineItems()
-      this.destoryLoadingIndicator('shippingAddress')
+      this.destoryLoadingIndicator(this.isAnon ? 'login' : 'shippingAddress')
     }
   }
 
@@ -145,7 +146,7 @@ export class OCMCheckout implements OnInit {
   async doneWithShippingRates(): Promise<void> {
     this.initLoadingIndicator('shippingSelectionLoading')
     await this.checkout.calculateOrder()
-    this.cards = await this.context.currentUser.cards.List()
+    this.cards = await this.context.currentUser.cards.List(this.isAnon)
     await this.context.order.promos.applyAutomaticPromos()
     this.order = this.context.order.get()
     if (this.order.IsSubmitted) {
@@ -159,8 +160,25 @@ export class OCMCheckout implements OnInit {
     this.toSection('shippingAddress')
   }
 
-  buildCCPayment(card: HSBuyerCreditCard): Payment {
+  async handleSavedCard(card: HSBuyerCreditCard): Promise<Payment> {
     // amount gets calculated in middleware
+    await this.context.order.checkout.setOneTimeAddress(card.xp.CCBillingAddress, 'billing')
+    return this.buildCCPaymentFromSavedCard(card);
+  }
+
+  buildCCPaymentFromNewCard(card: OrderCloudIntegrationsCreditCardToken): Payment {
+    return {
+      DateCreated: new Date().toDateString(),
+      Accepted: false,
+      Type: 'CreditCard',
+      xp: {
+        partialAccountNumber: card.AccountNumber.substr(card.AccountNumber.length - 4),
+        cardType: card.CardType,
+      }
+    }
+  }
+
+  buildCCPaymentFromSavedCard(card: HSBuyerCreditCard): Payment {
     return {
       DateCreated: new Date().toDateString(),
       Accepted: false,
@@ -187,15 +205,9 @@ export class OCMCheckout implements OnInit {
     const payments: HSPayment[] = []
     this.selectedCard = output
     if (!output.SavedCard) {
-      // need to figure out how to use the platform. ran into creditCardID cannot be null.
-      // so for now I always save any credit card in OC.
-      this.selectedCard.SavedCard = await this.context.currentUser.cards.Save(
-        output.NewCard
-      )
-      this.isNewCard = true
-      payments.push(this.buildCCPayment(this.selectedCard.SavedCard))
+      payments.push(await this.handleNewCard(output))
     } else {
-      payments.push(this.buildCCPayment(output.SavedCard))
+      payments.push(await this.handleSavedCard(output.SavedCard))
       delete this.selectedCard.NewCard
     }
     if (this.orderSummaryMeta.POLineItemCount) {
@@ -210,6 +222,19 @@ export class OCMCheckout implements OnInit {
     } catch (exception) {
       this.setValidation('payment', false)
       await this.handleSubmitError(exception)
+    }
+  }
+
+  async handleNewCard(output: SelectedCreditCard): Promise<HSPayment> {
+    this.isNewCard = true
+    await this.context.order.checkout.setOneTimeAddress(output.NewCard.CCBillingAddress, 'billing')
+    if(this.isAnon) {
+      return this.buildCCPaymentFromNewCard(output.NewCard)
+    } else {
+      this.selectedCard.SavedCard = await this.context.currentUser.cards.Save(
+        output.NewCard
+      )
+      return this.buildCCPaymentFromSavedCard(this.selectedCard.SavedCard)
     }
   }
 
@@ -365,7 +390,7 @@ export class OCMCheckout implements OnInit {
       const prev = this.sections[i].id
       this.setValidation(prev, true)
     }
-    this.accordian.toggle(id)
+    this.accordian?.toggle(id)
   }
 
   beforeChange($event: NgbPanelChangeEvent): void {

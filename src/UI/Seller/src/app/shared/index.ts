@@ -7,14 +7,13 @@ export * from '@app-seller/shared/guards/has-token/has-token.guard'
 // validators
 
 // models
-export * from '@app-seller/models/buyer-markups.types'
+export * from '@app-seller/models/buyer.types'
 export * from '@app-seller/models/carousel.types'
 export * from '@app-seller/models/category.types'
 export * from '@app-seller/models/currency-geography.types'
 export * from '@app-seller/models/environment.types'
 export * from '@app-seller/models/file-upload.types'
 export * from '@app-seller/models/filter.types'
-export * from '@app-seller/models/notification.types'
 export * from '@app-seller/models/order.types'
 export * from '@app-seller/models/promo-types'
 export * from '@app-seller/models/report-types'

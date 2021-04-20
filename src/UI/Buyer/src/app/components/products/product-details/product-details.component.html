@@ -2,8 +2,8 @@
   <div class="row mb-5">
     <div [ngClass]="specs?.length > 3 ? 'col-md-4' : 'col-md-5'">
       <ocm-image-gallery
-        *ngIf="_superProduct.Images"
-        [images]="_superProduct.Images"
+        *ngIf="_superProduct.Product?.xp?.Images"
+        [images]="_superProduct.Product?.xp?.Images"
         [specs]="specForm?.value?.ctrls"
       ></ocm-image-gallery>
     </div>
@@ -251,7 +251,7 @@
         "
       ></p>
       <!-- PRODUCT DOCS -->
-      <ng-container *ngIf="attachments.length > 0">
+      <ng-container *ngIf="attachments?.length > 0">
         <h3 class="small font-weight-bolder text-muted" translate>
           PRODUCTS.DETAILS.DOCS
         </h3>
@@ -268,7 +268,11 @@
       </ng-container>
       <div
         class="border-top border-light mt-3"
-        *ngIf="_product.xp.ProductType === 'Standard'"
+        *ngIf="
+          _product.xp.ProductType === 'Standard' &&
+          _productSupplier?.xp?.SupportContact?.Email &&
+          _productSupplier?.xp?.SupportContact?.Email !== ''
+        "
       >
         <button
           type="button"
@@ -276,7 +280,7 @@
           (click)="openContactSupplierForm()"
         >
           <span translate>PRODUCTS.DETAILS.CONTACT_PART_ONE</span>
-          <span translate>ALIAS.SUPPLIER_LOWERCASE</span>
+          <span translate>ALIAS.SUPPLIER</span>
           <span translate>PRODUCTS.DETAILS.CONTACT_PART_TWO</span>
         </button>
       </div>
@@ -363,7 +367,7 @@
   </div>
   <ng-container *ngIf="relatedProducts$ | async; let relatedProducts">
     <ocm-product-carousel
-      *ngIf="relatedProducts.length > 0"
+      *ngIf="relatedProducts?.length > 0"
       displayTitle="Related Products"
       [products]="relatedProducts"
     >

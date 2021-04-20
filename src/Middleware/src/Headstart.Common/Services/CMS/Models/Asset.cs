@@ -1,4 +1,5 @@
-﻿using ordercloud.integrations.library;
+﻿using Microsoft.AspNetCore.Http;
+using ordercloud.integrations.library;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -32,4 +33,16 @@ namespace Headstart.Common.Services.CMS.Models
 		public decimal? ImageVerticalResolution { get; set; } = null; // pixels per inch
 		public decimal? ImageHorizontalResolution { get; set; } = null; // pixels per inch
 	}
+
+    public class AssetUpload
+    {
+        public string ID { get; set; }
+        public string Title { get; set; }
+        public bool Active { get; set; }
+        public IFormFile File { get; set; }
+		//public FormFile File { get; set; }
+        public string Url { get; set; }
+        public string Tags { get; set; }
+        public string Filename { get; set; }
+    }
 }

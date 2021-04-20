@@ -12,19 +12,10 @@ import { BUYER_SUB_RESOURCE_LIST } from '../buyers/buyer.service'
 import { HeadStartSDK } from '@ordercloud/headstart-sdk'
 import { BuyerUserService } from '../users/buyer-user.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
-import { Addresses } from 'ordercloud-javascript-sdk'
-import { PermissionType } from '@app-seller/models/user.types'
+import { Addresses, ListPage } from 'ordercloud-javascript-sdk'
+import { PermissionTypes } from './buyer-location-permissions/buyer-location-permissions.constants'
 
 
-export const PermissionTypes: PermissionType[] = [
-  { UserGroupSuffix: 'PermissionAdmin', DisplayText: 'Permission Admin' },
-  { UserGroupSuffix: 'ResaleCertAdmin', DisplayText: 'Resale Cert Admin' },
-  { UserGroupSuffix: 'OrderApprover', DisplayText: 'Order Approver' },
-  { UserGroupSuffix: 'NeedsApproval', DisplayText: 'Needs Approval' },
-  { UserGroupSuffix: 'ViewAllOrders', DisplayText: 'View All Orders' },
-  { UserGroupSuffix: 'CreditCardAdmin', DisplayText: 'Credit Card Admin' },
-  { UserGroupSuffix: 'AddressAdmin', DisplayText: 'Address Admin' },
-]
 
 // TODO - this service is only relevent if you're already on the supplier details page. How can we enforce/inidcate that?
 @Injectable({
@@ -127,11 +118,11 @@ export class BuyerLocationService extends ResourceCrudService<BuyerAddress> {
     return responses.reduce((acc, value) => acc.concat(value.Items), [])
   }
 
-  async getLocationUsers(locationID: string): Promise<User[]> {
+  async getLocationUsers(locationID: string, page?: number): Promise<ListPage<User>> {
     const buyerID = locationID.split('-')[0]
     const userResponse = await this.ocUserService
-      .List(buyerID, { userGroupID: locationID })
+      .List(buyerID, { userGroupID: locationID, page: (page || 1) })
       .toPromise()
-    return userResponse.Items
+    return userResponse
   }
 }

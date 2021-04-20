@@ -25,14 +25,7 @@ export class BuyerUserTableComponent extends ResourceCrudComponent<User> {
     super(changeDetectorRef, buyerUserService, router, activatedroute, ngZone)
   }
 
-  captureUserGroupAssignments(event): void {
-    if (event.UserGroupType === UserGroupTypes.UserPermissions) {
-      this.permissionUserGroupAssignments = event.Assignments
-    }
-    if (event.UserGroupType === UserGroupTypes.BuyerLocation) {
-      this.locationUserGroupAssignments = event.Assignments
-    }
-  }
+
 
   async createNewResource() {
     try {
@@ -70,11 +63,14 @@ export class BuyerUserTableComponent extends ResourceCrudComponent<User> {
   }
 
   updateResource($event: any): void {
+    const allValues = $event.getRawValue() 
+    this.locationUserGroupAssignments = allValues.BuyerGroupAssignments || []
+    this.permissionUserGroupAssignments = allValues.PermissionGroupAssignments || []
     const buyerUserForm = {
-      ...$event.value,
+      ...allValues,
       ID: this.updatedResource.ID,
-      xp: { Country: $event.value.Country },
-    }
+      xp: { Country: allValues.Country },
+    } 
     this.resourceForm = $event
     this.updatedResource = buyerUserForm
   }

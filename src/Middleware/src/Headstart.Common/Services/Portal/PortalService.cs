@@ -1,8 +1,11 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Flurl.Http;
 using Flurl.Http.Configuration;
 using Headstart.Common.Services.Portal.Models;
+using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
+using OrderCloud.SDK;
 
 namespace Headstart.Common.Services
 {
@@ -23,12 +26,14 @@ namespace Headstart.Common.Services
         public PortalService(AppSettings settings, IFlurlClientFactory flurlFactory)
         {
             _settings = settings;
-            _client = flurlFactory.Get("https://portal.ordercloud.io/api/v1/");
+            _client = flurlFactory.Get("https://portal.ordercloud.io/api/v1");
         }
 
         public async Task<string> Login(string username, string password)
         {
-            var response = await _client.Request("oauth", "token")
+            try
+            {
+                var response = await _client.Request("oauth", "token")
                         .PostUrlEncodedAsync(new
                         {
                             grant_type = "password",
@@ -36,7 +41,14 @@ namespace Headstart.Common.Services
                             password = password
                         }).ReceiveJson<PortalAuthResponse>();
 
-            return response.access_token;
+                return response.access_token;
+            } catch(FlurlHttpException ex)
+            {
+                throw new CatalystBaseException(
+                    ex.Call.Response.StatusCode.ToString(),
+                    400,
+                    "Error logging in to portal. Please make sure your username and password are correct");
+            }
         }
 
         public async Task<PortalUser> GetMe(string token)
@@ -66,8 +78,9 @@ namespace Headstart.Common.Services
 
         public async Task CreateOrganization(Organization org, string token)
         {
-            // doesn't return anything
-            await _client.Request("organizations", token)
+            //  doesn't return anything
+            await _client.Request($"organizations/{org.Id}")
+                .WithOAuthBearerToken(token)
                 .PutJsonAsync(org);
         }
     }

@@ -54,6 +54,6 @@ export class CanEditMySupplierGuard implements CanActivate {
       return false
     }
 
-    return decodedToken.role.includes('MPMeSupplierAdmin')
+    return decodedToken.role.includes('HSMeSupplierAdmin')
   }
 }

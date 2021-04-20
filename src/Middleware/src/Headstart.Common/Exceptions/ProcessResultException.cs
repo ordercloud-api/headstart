@@ -4,6 +4,7 @@ using System.Text;
 using Flurl.Http;
 using ordercloud.integrations.library;
 using Newtonsoft.Json;
+using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Exceptions
 {
@@ -15,7 +16,7 @@ namespace Headstart.Common.Exceptions
             this.ResponseBody = "";
         }
 
-        public ProcessResultException(OrderCloudIntegrationException ex)
+        public ProcessResultException(CatalystBaseException ex)
         {
             this.Message = ex.ApiError.Message;
             try

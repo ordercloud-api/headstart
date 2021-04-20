@@ -144,6 +144,7 @@
           [orderSummaryMeta]="orderSummaryMeta"
         ></ocm-order-summary>
         <button
+          [disabled]="!_isCartValid"
           class="btn btn-lg btn-primary btn-block my-4 font-weight-bold"
           (click)="toCheckout()"
           translate

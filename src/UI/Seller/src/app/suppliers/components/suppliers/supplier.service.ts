@@ -1,13 +1,8 @@
 import { Injectable } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
-import {
-  Supplier,
-  OcSupplierService,
-  OcMeService,
-  OcSupplierUserGroupService,
-} from '@ordercloud/angular-sdk'
+import { Supplier, OcSupplierService } from '@ordercloud/angular-sdk'
 import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
-import { HeadStartSDK, ListArgs } from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, HSSupplier, ListArgs } from '@ordercloud/headstart-sdk'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 import { Suppliers } from 'ordercloud-javascript-sdk'
@@ -26,21 +21,19 @@ export class SupplierService extends ResourceCrudService<Supplier> {
 
   emptyResource = {
     Name: '',
+    Active: true,
     xp: {
       Description: '',
       Currency: null,
       CountriesServicing: [],
       Images: [{ URL: '', Tag: null }],
       SupportContact: { Name: '', Email: '', Phone: '' },
-      SyncFrieghtPop: false,
     },
   }
 
   constructor(
     router: Router,
     activatedRoute: ActivatedRoute,
-    private ocSupplierUserGroupService: OcSupplierUserGroupService,
-    private ocMeService: OcMeService,
     public currentUserService: CurrentUserService,
     private middleware: MiddlewareAPIService
   ) {
@@ -67,7 +60,10 @@ export class SupplierService extends ResourceCrudService<Supplier> {
     return newSupplier
   }
 
-  async updateResource(originalID: string, resource: any): Promise<any> {
+  async updateResource(
+    originalID: string,
+    resource: HSSupplier
+  ): Promise<HSSupplier> {
     //  if supplier user updating supplier need to call route in middleware because they dont have required role.
     const newResource = await this.middleware.updateSupplier(
       originalID,
@@ -78,7 +74,6 @@ export class SupplierService extends ResourceCrudService<Supplier> {
   }
 
   addIntrinsicListArgs(options: ListArgs): ListArgs {
-    options.sortBy = ['NAME']
     return options
   }
 }

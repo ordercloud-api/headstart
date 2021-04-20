@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { Orders, LineItems, Me, LineItemSpec } from 'ordercloud-javascript-sdk'
+import { Orders, LineItems, Me, LineItemSpec, Order, LineItem } from 'ordercloud-javascript-sdk'
 import { Subject } from 'rxjs'
 import { OrderStateService } from './order-state.service'
 import { isUndefined as _isUndefined } from 'lodash'
@@ -11,6 +11,7 @@ import {
 } from '@ordercloud/headstart-sdk'
 import { CheckoutService } from './checkout.service'
 import { listAll } from '../listAll'
+import { CurrentUserService } from '../current-user/current-user.service'
 
 @Injectable({
   providedIn: 'root',
@@ -21,10 +22,12 @@ export class CartService {
     callback: (lineItems: ListPage<HSLineItem>) => void
   ) => void
   private initializingOrder = false
+  public isCartValidSubject = new Subject<boolean>()
 
   constructor(
     private state: OrderStateService,
-    private checkout: CheckoutService
+    private checkout: CheckoutService,
+    private userService: CurrentUserService
   ) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.onChange = this.state.onLineItemsChange.bind(this.state)
@@ -32,6 +35,10 @@ export class CartService {
 
   get(): ListPage<HSLineItem> {
     return this.lineItems
+  }
+
+  setIsCartValid(isCartValid: boolean): void {
+    this.isCartValidSubject.next(isCartValid)
   }
 
   async getInvalidLineItems(): Promise<HSLineItem[]> {
@@ -99,7 +106,11 @@ export class CartService {
     }
     if (!this.initializingOrder) {
       this.initializingOrder = true
-      await this.state.reset()
+      if(this.userService.isAnonymous()) {
+        await this.state.createAndSetOrder(this.order)
+      } else {
+        await this.state.reset()
+      }
       this.initializingOrder = false
       return await this.upsertLineItem(lineItem)
     }
@@ -153,6 +164,20 @@ export class CartService {
     } finally {
       await this.state.reset()
     }
+  }
+
+  async AddValidLineItemsToCart(validLi: Array<LineItem>): Promise<HSLineItem[]> {
+    const items = validLi.map((li) => (
+      {
+        ProductID: li.Product.ID,
+        Quantity: li.Quantity,
+        Specs: li.Specs,
+        xp: {
+          ImageUrl: li.xp?.ImageUrl,
+        },
+      }
+    ))
+    return await this.addMany(items);
   }
 
   async addMany(
@@ -246,6 +271,7 @@ export class CartService {
   private async upsertLineItem(
     lineItem: HSLineItem
   ): Promise<HSLineItem> {
+    this.isCartValidSubject.next(false)
     try {
       return await HeadStartSDK.Orders.UpsertLineItem(this.order?.ID, lineItem)
     } finally {
@@ -254,6 +280,7 @@ export class CartService {
         await this.checkout.calculateOrder()
       }
       await this.state.reset()
+      this.isCartValidSubject.next(true)
     }
   }
 

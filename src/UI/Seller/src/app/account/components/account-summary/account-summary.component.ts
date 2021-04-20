@@ -23,15 +23,15 @@ export class AccountSummaryComponent extends AccountContent {
     changeDetectorRef: ChangeDetectorRef,
     currentUserService: CurrentUserService,
     @Inject(applicationConfiguration) appConfig: AppConfig,
-    appAuthService: AppAuthService
+    appAuthService: AppAuthService,
   ) {
     super(
       router,
       activatedRoute,
       changeDetectorRef,
-      currentUserService,
       appConfig,
-      appAuthService
+      appAuthService,
+      currentUserService,
     )
   }
 }

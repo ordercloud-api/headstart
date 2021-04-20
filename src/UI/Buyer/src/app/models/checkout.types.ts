@@ -13,3 +13,5 @@ export interface IOrderPromotionDisplay {
 OrderPromotions: OrderPromotion[]
 DiscountTotal: number
 }
+
+export type AddressType = 'billing' | 'shipping'

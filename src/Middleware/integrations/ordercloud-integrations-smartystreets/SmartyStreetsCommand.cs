@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
 namespace ordercloud.integrations.smartystreets
@@ -35,9 +36,12 @@ namespace ordercloud.integrations.smartystreets
 	public class SmartyStreetsCommand : ISmartyStreetsCommand
 	{
 		private readonly ISmartyStreetsService _service;
-		public SmartyStreetsCommand(ISmartyStreetsService service)
+		private readonly IOrderCloudClient _oc;
+
+		public SmartyStreetsCommand(IOrderCloudClient oc, ISmartyStreetsService service)
 		{
 			_service = service;
+			_oc = oc;
 		}
 
 		public async Task<AddressValidation> ValidateAddress(Address address)
@@ -56,7 +60,10 @@ namespace ordercloud.integrations.smartystreets
 				{
 					// no valid address found
 					var suggestions = await _service.USAutoCompletePro($"{address.Street1} {address.Street2}");
-					response.SuggestedAddresses = AddressMapper.Map(suggestions, address);
+					if(suggestions.suggestions != null)
+                    {
+						response.SuggestedAddresses = AddressMapper.Map(suggestions, address);
+					}
 				}
 				if (!response.ValidAddressFound) throw new InvalidAddressException(response);
             } else
@@ -103,97 +110,97 @@ namespace ordercloud.integrations.smartystreets
 		public async Task<BuyerAddress> CreateMeAddress(BuyerAddress address, VerifiedUserContext user)
 		{
 			var validation = await ValidateAddress(address);
-			return await new OrderCloudClientWithContext(user).Me.CreateAddressAsync(validation.ValidAddress);
+			return await _oc.Me.CreateAddressAsync(validation.ValidAddress, user.AccessToken);
 		}
 
 		public async Task<BuyerAddress> SaveMeAddress(string addressID, BuyerAddress address, VerifiedUserContext user)
 		{
 			var validation = await ValidateAddress(address);
-			return await new OrderCloudClientWithContext(user).Me.SaveAddressAsync(addressID, validation.ValidAddress);
+			return await _oc.Me.SaveAddressAsync(addressID, validation.ValidAddress, user.AccessToken);
 		}
 
 		public async Task PatchMeAddress(string addressID, BuyerAddress patch, VerifiedUserContext user)
 		{
-			var current = await new OrderCloudClientWithContext(user).Me.GetAddressAsync<BuyerAddress>(addressID);
+			var current = await _oc.Me.GetAddressAsync<BuyerAddress>(addressID, user.AccessToken);
 			var patched = PatchHelper.PatchObject(patch, current);
 			await ValidateAddress(patched);
-			await new OrderCloudClientWithContext(user).Me.PatchAddressAsync(addressID, (PartialBuyerAddress)patch);
+			await _oc.Me.PatchAddressAsync(addressID, (PartialBuyerAddress)patch, user.AccessToken);
 		}
 
 		// BUYER endpoints
 		public async Task<Address> CreateBuyerAddress(string buyerID, Address address, VerifiedUserContext user)
 		{
 			var validation = await ValidateAddress(address);
-			return await new OrderCloudClientWithContext(user).Addresses.CreateAsync(buyerID, validation.ValidAddress);
+			return await _oc.Addresses.CreateAsync(buyerID, validation.ValidAddress, user.AccessToken);
 		}
 
 		public async Task<Address> SaveBuyerAddress(string buyerID, string addressID, Address address, VerifiedUserContext user)
 		{
 			var validation = await ValidateAddress(address);
-			return await new OrderCloudClientWithContext(user).Addresses.SaveAsync(buyerID, addressID, validation.ValidAddress);
+			return await _oc.Addresses.SaveAsync(buyerID, addressID, validation.ValidAddress, user.AccessToken);
 		}
 
 		public async Task<Address> PatchBuyerAddress(string buyerID, string addressID, Address patch, VerifiedUserContext user)
 		{
-			var current = await new OrderCloudClientWithContext(user).Addresses.GetAsync<Address>(buyerID, addressID);
+			var current = await _oc.Addresses.GetAsync<Address>(buyerID, addressID, user.AccessToken);
 			var patched = PatchHelper.PatchObject(patch, current);
 			await ValidateAddress(patched);
-			return await new OrderCloudClientWithContext(user).Addresses.PatchAsync(buyerID, addressID, patch as PartialAddress);
+			return await _oc.Addresses.PatchAsync(buyerID, addressID, patch as PartialAddress, user.AccessToken);
 		}
 
 		// SUPPLIER endpoints
 		public async Task<Address> CreateSupplierAddress(string supplierID, Address address, VerifiedUserContext user)
 		{
 			var validation = await ValidateAddress(address);
-			return await new OrderCloudClientWithContext(user).SupplierAddresses.CreateAsync(supplierID, validation.ValidAddress);
+			return await _oc.SupplierAddresses.CreateAsync(supplierID, validation.ValidAddress, user.AccessToken);
 		}
 
 		public async Task<Address> SaveSupplierAddress(string supplierID, string addressID, Address address, VerifiedUserContext user)
 		{
 			var validation = await ValidateAddress(address);
-			return await new OrderCloudClientWithContext(user).SupplierAddresses.SaveAsync(supplierID, addressID, validation.ValidAddress);
+			return await _oc.SupplierAddresses.SaveAsync(supplierID, addressID, validation.ValidAddress, user.AccessToken);
 		}
 
 		public async Task<Address> PatchSupplierAddress(string supplierID, string addressID, Address patch, VerifiedUserContext user)
 		{
-			var current = await new OrderCloudClientWithContext(user).SupplierAddresses.GetAsync<Address>(supplierID, addressID);
+			var current = await _oc.SupplierAddresses.GetAsync<Address>(supplierID, addressID, user.AccessToken);
 			var patched = PatchHelper.PatchObject(patch, current);
 			await ValidateAddress(patched);
-			return await new OrderCloudClientWithContext(user).SupplierAddresses.PatchAsync(supplierID, addressID, patch as PartialAddress);
+			return await _oc.SupplierAddresses.PatchAsync(supplierID, addressID, patch as PartialAddress, user.AccessToken);
 		}
 
 		// ADMIN endpoints
 		public async Task<Address> CreateAdminAddress(Address address, VerifiedUserContext user)
 		{
 			var validation = await ValidateAddress(address);
-			return await new OrderCloudClientWithContext(user).AdminAddresses.CreateAsync(address);
+			return await _oc.AdminAddresses.CreateAsync(address, user.AccessToken);
 		}
 
 		public async Task<Address> SaveAdminAddress(string addressID, Address address, VerifiedUserContext user)
 		{
 			var validation = await ValidateAddress(address);
-			return await new OrderCloudClientWithContext(user).AdminAddresses.SaveAsync(addressID, validation.ValidAddress);
+			return await _oc.AdminAddresses.SaveAsync(addressID, validation.ValidAddress, user.AccessToken);
 		}
 
 		public async Task<Address> PatchAdminAddress(string addressID, Address patch, VerifiedUserContext user)
 		{
-			var current = await new OrderCloudClientWithContext(user).AdminAddresses.GetAsync<Address>(addressID);
+			var current = await _oc.AdminAddresses.GetAsync<Address>(addressID, user.AccessToken);
 			var patched = PatchHelper.PatchObject(patch, current);
 			await ValidateAddress(patched);
-			return await new OrderCloudClientWithContext(user).AdminAddresses.PatchAsync(addressID, patch as PartialAddress);
+			return await _oc.AdminAddresses.PatchAsync(addressID, patch as PartialAddress, user.AccessToken);
 		}
 
 		// ORDER endpoints
 		public async Task<Order> SetBillingAddress(OrderDirection direction, string orderID, Address address, VerifiedUserContext user)
 		{
 			var validation = await ValidateAddress(address);
-			return await new OrderCloudClientWithContext(user).Orders.SetBillingAddressAsync(direction, orderID, validation.ValidAddress);
+			return await _oc.Orders.SetBillingAddressAsync(direction, orderID, validation.ValidAddress, user.AccessToken);
 		}
 
 		public async Task<Order> SetShippingAddress(OrderDirection direction, string orderID, Address address, VerifiedUserContext user)
 		{
 			var validation = await ValidateAddress(address);
-			return await new OrderCloudClientWithContext(user).Orders.SetShippingAddressAsync(direction, orderID, validation.ValidAddress);
+			return await _oc.Orders.SetShippingAddressAsync(direction, orderID, validation.ValidAddress, user.AccessToken);
 		}
 		#endregion
 	}

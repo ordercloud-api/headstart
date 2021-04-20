@@ -28,15 +28,13 @@ import {
 import { ProductService } from '@app-seller/products/product.service'
 import { ToastrService } from 'ngx-toastr'
 import {
-  HeadStartSDK,
   SuperHSProduct,
-  Asset,
   HSVariant,
+  ImageAsset,
 } from '@ordercloud/headstart-sdk'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { BehaviorSubject } from 'rxjs'
 import { Products } from 'ordercloud-javascript-sdk'
-import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { SupportedRates } from '@app-seller/shared'
 
 @Component({
@@ -110,7 +108,7 @@ export class ProductVariations implements OnChanges {
   assignVariantImages = false
   viewVariantDetails = false
   variantInSelection: Variant
-  imageInSelection: Asset
+  imageInSelection: ImageAsset
   addVariableTextSpecs = false
   customizationRequired = true
 
@@ -144,6 +142,19 @@ export class ProductVariations implements OnChanges {
   }
 
   toggleEditSpecs(): void {
+    if (this.editSpecs) {
+      const updateProductResourceCopy = this.productService.copyResource(
+        this.superProductEditable || this.productService.emptyResource
+      )
+      // Remove all specs that are *not* variable text specs
+      updateProductResourceCopy.Specs = updateProductResourceCopy.Specs.filter(
+        (s) => s.AllowOpenText
+      )
+      updateProductResourceCopy.Variants = []
+      this.superProductEditable = updateProductResourceCopy
+      this.checkForSpecChanges()
+      this.productVariationsChanged.emit(this.superProductEditable)
+    }
     this.editSpecs = !this.editSpecs
   }
 
@@ -175,6 +186,9 @@ export class ProductVariations implements OnChanges {
   }
 
   shouldDisableAddSpecOptBtn(spec: Spec): boolean {
+    if (this.readonly) {
+      return true
+    }
     if (!this.variantsValid) {
       return true
     } else {
@@ -231,6 +245,18 @@ export class ProductVariations implements OnChanges {
   }
 
   toggleAddVariableTextSpecs(event: any): void {
+    if (this.addVariableTextSpecs) {
+      const updateProductResourceCopy = this.productService.copyResource(
+        this.superProductEditable || this.productService.emptyResource
+      )
+      // Remove all specs that are variable text specs
+      updateProductResourceCopy.Specs = updateProductResourceCopy.Specs.filter(
+        (s) => !s.AllowOpenText
+      )
+      this.superProductEditable = updateProductResourceCopy
+      this.checkForSpecChanges()
+      this.productVariationsChanged.emit(this.superProductEditable)
+    }
     this.addVariableTextSpecs = event?.target?.checked
   }
 
@@ -287,7 +313,6 @@ export class ProductVariations implements OnChanges {
     this.superProductEditable = updateProductResourceCopy
     this.customizationRequired = true
     this.checkForSpecChanges()
-    console.log(this.superProductEditable)
     this.productVariationsChanged.emit(this.superProductEditable)
   }
 
@@ -490,12 +515,15 @@ export class ProductVariations implements OnChanges {
     )
   }
   disableSpecOption = (specID: string, option: SpecOption): boolean => {
+    if (this.readonly) {
+      return true
+    }
     const specIndex = this.getSpecIndex(specID)
     return this.isCreatingNew
       ? false
       : !JSON.stringify(
-          this.superProductStatic?.Specs[specIndex]?.Options
-        )?.includes(JSON.stringify(option))
+        this.superProductStatic?.Specs[specIndex]?.Options
+      )?.includes(JSON.stringify(option))
   }
 
   stageDefaultSpecOption(specID: string, optionID: string): void {
@@ -519,7 +547,7 @@ export class ProductVariations implements OnChanges {
       .toPromise()
   }
 
-  isImageSelected(img: Asset): boolean {
+  isImageSelected(img: ImageAsset): boolean {
     if (!img.Tags) img.Tags = []
     return img.Tags.includes(this.variantInSelection?.xp?.SpecCombo)
   }
@@ -531,7 +559,7 @@ export class ProductVariations implements OnChanges {
     if (variantBehaviorSubjectValue !== null) {
       this.variantInSelection =
         variantBehaviorSubjectValue[
-          variantBehaviorSubjectValue?.indexOf(variant)
+        variantBehaviorSubjectValue?.indexOf(variant)
         ]
     }
   }
@@ -541,41 +569,35 @@ export class ProductVariations implements OnChanges {
     this.variantInSelection = null
   }
 
-  toggleAssignImage(img: Asset, specCombo: string): void {
+  toggleAssignImage(img: ImageAsset, specCombo: string): void {
     this.imageInSelection = img
     if (!this.imageInSelection.Tags) this.imageInSelection.Tags = []
     this.imageInSelection.Tags.includes(specCombo)
-      ? this.imageInSelection.Tags.splice(
-          this.imageInSelection.Tags.indexOf(specCombo),
-          1
-        )
+      ? this.imageInSelection.Tags.splice(this.imageInSelection.Tags.indexOf(specCombo), 1)
       : this.imageInSelection.Tags.push(specCombo)
   }
 
   async updateProductImageTags(): Promise<void> {
-    this.assignVariantImages = false
-    // Queue up image/content requests, then send them all at aonce
-    // TODO: optimize this so we aren't having to update all images, just 'changed' ones
-    const accessToken = await this.appAuthService.fetchToken().toPromise()
-    const requests = this.superProductEditable.Images.map((i) =>
-      ContentManagementClient.Assets.Save(i.ID, i, accessToken)
-    )
-    await Promise.all(requests)
-    // Ensure there is no mistaken change detection
-    Object.assign(
-      this.superProductStatic.Images,
-      this.superProductEditable.Images
-    )
+    const images = this.superProductEditable.Product?.xp?.Images
+    const patchObj = {
+      xp: {
+        Images: images
+      }
+    }
+    await Products.Patch(this.superProductEditable.Product.ID, patchObj)
+    Object.assign(this.superProductStatic.Product, this.superProductEditable.Product)
     this.imageInSelection = {}
+    this.assignVariantImages = false
   }
 
-  getVariantImages(variant: Variant): Asset[] {
-    this.superProductEditable?.Images?.forEach((i) =>
+  getVariantImages(variant: Variant): ImageAsset[] {
+    this.superProductEditable?.Product?.xp?.Images?.forEach((i) =>
       !i.Tags ? (i.Tags = []) : null
     )
-    return this.superProductEditable?.Images?.filter((i) =>
+    const imgs = this.superProductEditable?.Product?.xp?.Images?.filter((i) =>
       i.Tags.includes(variant?.xp?.SpecCombo)
     )
+    return imgs
   }
 
   getVariantDetailColSpan(): number {
@@ -583,6 +605,21 @@ export class ProductVariations implements OnChanges {
     if (this.superProductEditable?.Product?.Inventory?.VariantLevelTracking)
       colSpan + 1
     return colSpan
+  }
+
+  async patchVariant(variantID: string, partial: Partial<Variant>) {
+    const patchedVariant = await Products.PatchVariant<HSVariant>(
+      this.superProductEditable.Product?.ID,
+      this.variantInSelection.ID,
+      partial
+    )
+    const variants = this.variants?.getValue();
+    if (variants !== null) {
+      const index = variants.findIndex(variant => variant.ID === variantID)
+      variants[index] = JSON.parse(JSON.stringify(patchedVariant))
+      this.variants.next(variants)
+      this.variantInSelection = this.variants?.getValue()[index]
+    }
   }
 
   async variantShippingDimensionUpdate(
@@ -610,17 +647,7 @@ export class ProductVariations implements OnChanges {
         break
     }
     try {
-      const patchedVariant = await Products.PatchVariant<HSVariant>(
-        this.superProductEditable.Product?.ID,
-        this.variantInSelection.ID,
-        partialVariant
-      )
-      const variants = this.variants?.getValue()
-      if (variants !== null) {
-        variants[index] = JSON.parse(JSON.stringify(patchedVariant))
-        this.variants.next(variants)
-        this.variantInSelection = this.variants?.getValue()[index]
-      }
+      await this.patchVariant(this.variantInSelection.ID, partialVariant)
       this.toasterService.success('Shipping dimensions updated', 'OK')
     } catch (err) {
       console.log(err)

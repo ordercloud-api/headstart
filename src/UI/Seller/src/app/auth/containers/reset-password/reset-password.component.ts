@@ -1,6 +1,6 @@
-import { OrderCloudService } from './../../../shared/services/ordercloud.service'
+import { ForgottenPassword } from 'ordercloud-javascript-sdk'
 // angular
-import { Component, OnInit, Inject } from '@angular/core'
+import { Component, Inject, OnInit } from '@angular/core'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 
@@ -8,13 +8,20 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { ToastrService } from 'ngx-toastr'
 
 // ordercloud
-import { AppFormErrorService } from '@app-seller/shared'
-import { TokenPasswordReset } from '@ordercloud/angular-sdk'
+import { AppConfig, AppFormErrorService } from '@app-seller/shared'
+
 import {
   ValidateFieldMatches,
   ValidateStrongPassword,
 } from '@app-seller/validators/validators'
-import { HttpHeaders } from '@angular/common/http'
+import { applicationConfiguration } from '@app-seller/config/app.config'
+import { TypedFormGroup } from 'ngx-forms-typed'
+
+interface ResetPasswordForm {
+  username: string
+  password: string
+  passwordConfirm: string
+}
 
 @Component({
   selector: 'auth-reset-password',
@@ -22,7 +29,7 @@ import { HttpHeaders } from '@angular/common/http'
   styleUrls: ['./reset-password.component.scss'],
 })
 export class ResetPasswordComponent implements OnInit {
-  resetPasswordForm: FormGroup
+  resetPasswordForm: TypedFormGroup<ResetPasswordForm>
   username: string
   token: string
 
@@ -31,11 +38,14 @@ export class ResetPasswordComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private toasterService: ToastrService,
     private formErrorService: AppFormErrorService,
-    private orderCloudService: OrderCloudService
+    @Inject(applicationConfiguration) protected appConfig: AppConfig
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.resetPasswordForm = new FormGroup({
+      username: new FormControl(
+        this.activatedRoute.snapshot.queryParams.username as string
+      ),
       password: new FormControl('', [
         Validators.required,
         ValidateStrongPassword,
@@ -44,51 +54,33 @@ export class ResetPasswordComponent implements OnInit {
         Validators.required,
         ValidateFieldMatches('password'),
       ]),
-    })
+    }) as TypedFormGroup<ResetPasswordForm>
   }
 
-  private buildHeaders(): HttpHeaders {
-    const urlParams = this.activatedRoute.snapshot.queryParams
-    return new HttpHeaders({
-      Authorization: `Bearer ${urlParams.token}`,
-    })
-  }
-
-  onSubmit() {
+  async onSubmit(): Promise<void> {
     if (this.resetPasswordForm.status === 'INVALID') {
       return
     }
-
-    const config: TokenPasswordReset = {
-      NewPassword: this.resetPasswordForm?.get('password')?.value,
-    }
-
-    const isResetSuccessful = this.orderCloudService.resetPassword(
-      config,
-      this.buildHeaders()
-    )
-
-    if (isResetSuccessful) {
+    try {
+      await ForgottenPassword.ResetPasswordByVerificationCode(
+        this.activatedRoute.snapshot.queryParams.code as string,
+        {
+          ClientID: this.appConfig.clientID,
+          Username: this.activatedRoute.snapshot.queryParams.username as string,
+          Password: this.resetPasswordForm?.get('password')?.value as string,
+        }
+      )
       this.toasterService.success('Password Reset Successfully')
       void this.router.navigateByUrl('/login')
-    } else {
+    } catch {
       this.toasterService.error('Unable to reset password')
     }
-    // TODO: We SHOULD be able to use this function from the SDK, but if you uncomment,
-    // ***  you'll see that you are unable to send along an accessToken ...
-
-    // this.ocMeService.ResetPasswordByToken(config, { accessToken: this.token }).subscribe(
-    //   () => {
-    //     this.toasterService.success('Password Reset Successfully');
-    //     this.router.navigateByUrl('/login');
-    //   },
-    //   error => {
-    //     throw error;
-    //   }
-    // );
   }
 
   // control visibility of password mismatch error
-  protected passwordMismatchError = (): boolean =>
-    this.formErrorService.hasPasswordMismatchError(this.resetPasswordForm)
+  protected passwordMismatchError(): boolean {
+    return this.formErrorService.hasPasswordMismatchError(
+      this.resetPasswordForm.controls.passwordConfirm
+    )
+  }
 }

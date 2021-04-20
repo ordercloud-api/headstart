@@ -115,12 +115,15 @@ export class AppModule {
     public translate: TranslateService
   ) {
     translate.setDefaultLang('en')
+    translate.use('en')
     HeadstartConfiguration.Set({
       baseApiUrl: this.appConfig.middlewareUrl,
     })
-    CMSConfiguration.Set({
-      baseApiUrl: this.appConfig.cmsUrl,
-    })
+    if(this.appConfig.cmsUrl && this.appConfig.cmsUrl !== '') {
+      CMSConfiguration.Set({
+        baseApiUrl: this.appConfig.cmsUrl,
+      })
+    }
     OcConfiguration.Set(this.getOrdercloudSDKConfig(appConfig))
   }
   private getOrdercloudSDKConfig(config: AppConfig): SdkConfiguration {

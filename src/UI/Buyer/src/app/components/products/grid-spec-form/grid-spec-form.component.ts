@@ -6,7 +6,7 @@ import {
   PriceSchedule,
   SuperHSProduct,
 } from '@ordercloud/headstart-sdk'
-import { PriceBreak, Spec } from 'ordercloud-javascript-sdk'
+import { BuyerProduct, PriceBreak, Spec } from 'ordercloud-javascript-sdk'
 import { ProductDetailService } from '../product-details/product-detail.service'
 import { SpecFormService } from '../spec-form/spec-form.service'
 import { minBy as _minBy } from 'lodash'
@@ -104,29 +104,53 @@ export class OCMGridSpecForm {
       Specs: this.specFormService.getGridLineItemSpecs(this._specs, specArray),
       xp: {
         ImageUrl: this.specFormService.getGridLineItemImageUrl(
-          this._superProduct.Images,
+          this._superProduct.Product?.xp?.Images,
           this._specs,
           specArray
         ),
       },
     }
     const i = this.lineItems.findIndex(
-      (li) => JSON.stringify(li.Specs) === JSON.stringify(item.Specs)
+      (li: HSLineItem) =>
+        JSON.stringify(li.Specs) === JSON.stringify(item.Specs)
     )
     if (i === -1) this.lineItems.push(item)
     else this.lineItems[i] = item
-    const liQuantities = []
-    this.lineItems.forEach((li) => liQuantities.push(li.Quantity))
+    const liQuantities: number[] = []
+    this.lineItems.forEach((li: HSLineItem) => liQuantities.push(li.Quantity))
     this.totalQtyToAdd = liQuantities.reduce((acc, curr) => {
       return acc + curr
     })
     this.qtyValid = this.validateQuantity(this.lineItems)
-    this.lineTotals[indexOfSpec] = this.getLineTotal(event.qty, item.Specs)
-    this.unitPrices[indexOfSpec] = this.getUnitPrice(event.qty, item.Specs)
+    if (this.priceSchedule?.UseCumulativeQuantity) {
+      // Update all line item totals, to check for price breaks.
+      this.lineItems.forEach((li: HSLineItem, i: number) => {
+        this.lineTotals[i] = this.getLineTotal(
+          li.Quantity,
+          li.Specs as GridSpecOption[],
+          this.totalQtyToAdd,
+          this.priceSchedule?.UseCumulativeQuantity
+        )
+        this.unitPrices[i] = this.getUnitPrice(
+          li.Quantity,
+          li.Specs as GridSpecOption[],
+          this.totalQtyToAdd,
+          this.priceSchedule?.UseCumulativeQuantity
+        )
+      })
+    } else {
+      this.lineTotals[indexOfSpec] = this.getLineTotal(
+        event.qty,
+        item.Specs,
+        this.totalQtyToAdd,
+        this.priceSchedule?.UseCumulativeQuantity
+      )
+      this.unitPrices[indexOfSpec] = this.getUnitPrice(event.qty, item.Specs)
+    }
     this.totalPrice = this.getTotalPrice()
   }
 
-  validateQuantity(lineItems: any[]): boolean {
+  validateQuantity(lineItems: HSLineItem[]): boolean {
     this.resetGridQtyFields = false
     this.errorMsg = ''
     const lineItemsOfCurrentProductInCart: HSLineItem[] = this.context.order.cart
@@ -148,20 +172,24 @@ export class OCMGridSpecForm {
       )
       if (
         this.totalQtyToAdd + qtyInCart <
-        lineItems[0].Product.PriceSchedule.MinQuantity
+        (lineItems[0].Product as BuyerProduct).PriceSchedule.MinQuantity
       ) {
         this.errorMsg = `Minimum quantity not reached.  ${qtyInCart} in cart, ${
-          lineItems[0].Product.PriceSchedule.MinQuantity - qtyInCart
+          (lineItems[0].Product as BuyerProduct).PriceSchedule.MinQuantity -
+          qtyInCart
         } of any product option are needed.`
         return false
       }
       // When users have exceeded the maximum quantity
       if (
-        lineItems[0].Product.PriceSchedule.MaxQuantity !== null &&
+        (lineItems[0].Product as BuyerProduct).PriceSchedule.MaxQuantity !==
+          null &&
         this.totalQtyToAdd + qtyInCart >
-          lineItems[0].Product.PriceSchedule.MaxQuantity
+          (lineItems[0].Product as BuyerProduct).PriceSchedule.MaxQuantity
       ) {
-        this.errorMsg = `Maximum quantity reached (${lineItems[0].Product.PriceSchedule.MaxQuantity}).  ${qtyInCart} currently in cart.`
+        this.errorMsg = `Maximum quantity reached (${
+          (lineItems[0].Product as BuyerProduct).PriceSchedule.MaxQuantity
+        }).  ${qtyInCart} currently in cart.`
         return false
       }
     } else {
@@ -184,20 +212,24 @@ export class OCMGridSpecForm {
         if (
           li.Quantity !== 0 &&
           li.Quantity !== null &&
-          li.Quantity + qtyInCart < li.Product.PriceSchedule.MinQuantity
+          li.Quantity + qtyInCart <
+            (li.Product as BuyerProduct).PriceSchedule.MinQuantity
         ) {
           this.errorMsg = `Minimum quantity not reached.  ${qtyInCart} in cart, ${
-            li.Product.PriceSchedule.MinQuantity - qtyInCart
+            (li.Product as BuyerProduct).PriceSchedule.MinQuantity - qtyInCart
           } of this product option are needed.`
           return false
         }
         if (
-          li.Product.PriceSchedule.MaxQuantity !== null &&
+          (li.Product as BuyerProduct).PriceSchedule.MaxQuantity !== null &&
           li.Quantity !== 0 &&
           li.Quantity !== null &&
-          li.Quantity + qtyInCart > li.Product.PriceSchedule.MaxQuantity
+          li.Quantity + qtyInCart >
+            (li.Product as BuyerProduct).PriceSchedule.MaxQuantity
         ) {
-          this.errorMsg = `Maximum quantity reached (${li.Product.PriceSchedule.MaxQuantity}).  ${qtyInCart} currently in cart.`
+          this.errorMsg = `Maximum quantity reached (${
+            (li.Product as BuyerProduct).PriceSchedule.MaxQuantity
+          }).  ${qtyInCart} currently in cart.`
           return false
         }
       }
@@ -294,11 +326,25 @@ export class OCMGridSpecForm {
     return true
   }
 
-  getUnitPrice(qty: number, specs: GridSpecOption[]): number {
+  getUnitPrice(
+    qty: number,
+    specs: GridSpecOption[],
+    totalQtyToAdd?: number,
+    useCumulativeQty?: boolean
+  ): number {
     if (!this.priceBreaks?.length) return
+    const lineItemsOfCurrentProductInCartQty: number = this.context.order.cart
+      .get()
+      ?.Items?.filter((i) => i.ProductID === this.product?.ID)
+      ?.map((li) => li.Quantity)
+      ?.reduce((acc, curr) => acc + curr, 0)
+    const quantityOrCumulativeQuantity = useCumulativeQty
+      ? totalQtyToAdd + lineItemsOfCurrentProductInCartQty
+      : qty
     const startingBreak = _minBy(this.priceBreaks, 'Quantity')
     const selectedBreak = this.priceBreaks.reduce((current, candidate) => {
-      return candidate.Quantity > current.Quantity && candidate.Quantity <= qty
+      return candidate.Quantity > current.Quantity &&
+        candidate.Quantity <= quantityOrCumulativeQuantity
         ? candidate
         : current
     }, startingBreak)
@@ -307,10 +353,17 @@ export class OCMGridSpecForm {
     return selectedBreak.Price + totalMarkup
   }
 
-  getLineTotal(qty: number, specs: GridSpecOption[]): number {
+  getLineTotal(
+    qty: number,
+    specs: GridSpecOption[],
+    totalQtyToAdd?: number,
+    useCumulativeQty?: boolean
+  ): number {
+    const quantityOrCumulativeQuantity = useCumulativeQty ? totalQtyToAdd : qty
     if (qty > 0) {
       if (this.priceBreaks?.length) {
-        const basePrice = qty * this.priceBreaks[0].Price
+        const basePrice =
+          quantityOrCumulativeQuantity * this.priceBreaks[0].Price
         this.percentSavings = this.productDetailService.getPercentSavings(
           this.price,
           basePrice
@@ -319,14 +372,15 @@ export class OCMGridSpecForm {
       return this.productDetailService.getGridLineItemPrice(
         this.priceBreaks,
         specs,
-        qty
+        qty,
+        totalQtyToAdd
       )
     }
     return 0
   }
 
   async addToCart(): Promise<void> {
-    const lineItems = this.lineItems.filter((li) => li.Quantity > 0)
+    const lineItems = this.lineItems.filter((li: HSLineItem) => li.Quantity > 0)
     try {
       this.isAddingToCart = true
       await this.context.order.cart.addMany(lineItems)

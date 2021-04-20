@@ -26,14 +26,14 @@ export interface PermissionType {
   DisplayText: string
 }
 
-export interface MPRole {
+export interface HSRole {
   RoleName: string
   OrderCloudRoles: string[]
 }
 
 export interface UserType {
   Name: string
-  MPRoles: MPRole[]
+  HSRoles: HSRole[]
 }
 
 export interface UserContext {

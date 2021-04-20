@@ -97,7 +97,7 @@
           <div class="container-fluid">
             <div class="row pt-3">
               <div class="col-md-8 form-group">
-                <div class="card py-2 px-3 mt-3 bg-white">
+                <div class="card bg-white shadow-sm p-4 mt-3">
                   <!-- Product Name -->
                   <div
                     class="d-flex justify-content-between align-items-center"
@@ -275,7 +275,7 @@
                   </div>
                 </div>
                 <!-- Unit Of Measure -->
-                <div class="card py-2 px-3 mt-3 bg-white">
+                <div class="card bg-white shadow-sm p-4 mt-3">
                   <div
                     class="d-flex justify-content-between align-items-center"
                   >
@@ -345,7 +345,7 @@
                 </div>
                 <!-- /Unit Of Measure -->
                 <!-- Order Limitations -->
-                <div class="card py-2 px-3 mt-3 bg-white">
+                <div class="card bg-white shadow-sm p-4 mt-3">
                   <h6 class="font-weight-medium" translate>
                     ADMIN.PRODUCT_EDIT.ORDER_LIMITATIONS
                   </h6>
@@ -406,7 +406,7 @@
                 </div>
                 <!-- /Order Limitations -->
                 <!-- Inventory Tracking -->
-                <div class="card py-2 px-3 mt-3 bg-white">
+                <div class="card bg-white shadow-sm p-4 mt-3">
                   <h6 class="font-weight-medium" translate>
                     ADMIN.PRODUCT_EDIT.INVENTORY_TRACKING
                   </h6>
@@ -589,7 +589,7 @@
                 </product-tax-code-select-component>
                 <!-- /Tax Categorization -->
                 <!-- Shipping Information -->
-                <div class="card py-2 px-3 mt-3 bg-white">
+                <div class="card bg-white shadow-sm p-4 mt-3">
                   <div class="form-group">
                     <div
                       class="d-flex justify-content-between align-items-center"
@@ -1163,8 +1163,8 @@
           translate
           >ADMIN.PRODUCT_EDIT.IMAGES_AND_DOCUMENTS
           <span class="badge badge-pill badge-info">{{
-            _superHSProductEditable?.Images?.length +
-              _superHSProductEditable?.Attachments?.length +
+            _superHSProductEditable?.Product?.xp?.Images?.length + 
+              _superHSProductEditable?.Product?.xp.Documents?.length +
               imageFiles?.length +
               staticContentFiles?.length
           }}</span></a
@@ -1190,7 +1190,7 @@
                     <div class="product-img">
                       <img
                         [id]="i"
-                        src="{{ image.Url }}-s"
+                        src="{{image.ThumbnailUrl}}"
                         width="auto"
                         height="100px"
                       />
@@ -1232,7 +1232,7 @@
                           <button
                             type="button"
                             class="btn brand-button--danger"
-                            (click)="removeFile(image)"
+                            (click)="removeFile(image, 'image')"
                             (click)="modal.dismiss()"
                             translate
                           >
@@ -1392,7 +1392,7 @@
                             <button
                               type="button"
                               class="btn brand-button--danger"
-                              (click)="removeFile(file)"
+                              (click)="removeFile(file, 'document')"
                               (click)="modal.dismiss()"
                               translate
                             >

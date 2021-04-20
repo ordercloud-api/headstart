@@ -9,9 +9,8 @@ using Headstart.Models;
 using Headstart.Models.Headstart;
 using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
-using Polly;
-using Polly.Retry;
 
 namespace ordercloud.integrations.cardconnect
 {
@@ -89,11 +88,7 @@ namespace ordercloud.integrations.cardconnect
 			var ocPayment = ocPayments.Any() ? ocPayments[0] : null;
 			if(ocPayment == null)
             {
-				throw new OrderCloudIntegrationException(new ApiError
-				{
-					ErrorCode = "Payment.MissingCreditCardPayment",
-					Message = "Order is missing credit card payment"
-				});
+				throw new CatalystBaseException("Payment.MissingCreditCardPayment", 400, "Order is missing credit card payment");
             }
             try
             {
@@ -108,19 +103,14 @@ namespace ordercloud.integrations.cardconnect
                     }
                 }
                 var call = await _cardConnect.AuthWithoutCapture(CardConnectMapper.Map(cc, order, payment, merchantID, ccAmount));
-                ocPayment = await WithRetry().ExecuteAsync(() => _oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, order.ID, ocPayment.ID, new PartialPayment { Accepted = true, Amount = ccAmount }));
-                return await WithRetry().ExecuteAsync(() => _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, ocPayment.ID, CardConnectMapper.Map(ocPayment, call)));
-            }
+				ocPayment = await _oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, order.ID, ocPayment.ID, new PartialPayment { Accepted = true, Amount = ccAmount });
+				return await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, ocPayment.ID, CardConnectMapper.Map(ocPayment, call));
+			}
             catch (CreditCardAuthorizationException ex)
             {
-                ocPayment = await WithRetry().ExecuteAsync(() => _oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, order.ID, ocPayment.ID, new PartialPayment { Accepted = false, Amount = ccAmount }));
-				await WithRetry().ExecuteAsync(() => _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, ocPayment.ID, CardConnectMapper.Map(ocPayment, ex.Response)));
-                throw new OrderCloudIntegrationException(new ApiError()
-                {
-                    Data = ex.Response,
-                    Message = ex.ApiError.Message,
-                    ErrorCode = $"CreditCardAuth.{ex.ApiError.ErrorCode}"
-                });
+                ocPayment = await _oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, order.ID, ocPayment.ID, new PartialPayment { Accepted = false, Amount = ccAmount });
+				await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, ocPayment.ID, CardConnectMapper.Map(ocPayment, ex.Response));
+				throw new CatalystBaseException($"CreditCardAuth.{ex.ApiError.ErrorCode}", 400, ex.ApiError.Message, ex.Response);
 			}
 		}
 
@@ -157,7 +147,7 @@ namespace ordercloud.integrations.cardconnect
 							merchid = GetMerchantID(userCurrency),
 							retref = transaction.xp.CardConnectResponse.retref
 						});
-						await WithRetry().ExecuteAsync(() => _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, response)));
+						await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, response));
 					}
 				}
 			}
@@ -165,12 +155,8 @@ namespace ordercloud.integrations.cardconnect
 			{
 
 				await _supportAlerts.VoidAuthorizationFailed(payment, transactionID, order, ex);
-				await WithRetry().ExecuteAsync(() => _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, ex.Response)));
-				throw new OrderCloudIntegrationException(new ApiError
-				{
-					ErrorCode = "Payment.FailedToVoidAuthorization",
-					Message = ex.ApiError.Message
-				});
+				await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, ex.Response));
+				throw new CatalystBaseException("Payment.FailedToVoidAuthorization", 400, ex.ApiError.Message);
 			}
 		}
 
@@ -205,19 +191,6 @@ namespace ordercloud.integrations.cardconnect
 			var userCurrency = await _hsExchangeRates.GetCurrencyForUser(userToken);
 			var auth = await _cardConnect.Tokenize(CardConnectMapper.Map(card, userCurrency.ToString()));
 			return CreditCardMapper.Map(card, auth);
-		}
-
-		private AsyncRetryPolicy WithRetry()
-		{
-			// retries three times on 500 errors or timeout
-			// waits two seconds in-between failures
-			return Policy
-				.Handle<OrderCloudException>(e => e.HttpStatus == HttpStatusCode.InternalServerError || e.HttpStatus == HttpStatusCode.RequestTimeout)
-				.WaitAndRetryAsync(new[] {
-					TimeSpan.FromSeconds(2),
-					TimeSpan.FromSeconds(2),
-					TimeSpan.FromSeconds(2),
-				});
 		}
 	}
 }

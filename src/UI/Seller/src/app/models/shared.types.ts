@@ -1,3 +1,5 @@
+import { FormGroup } from "@angular/forms";
+
 export interface Route {
   title: string
   route: string
@@ -8,7 +10,7 @@ export interface HeaderNav {
   routes: Route[]
 }
 
-export interface MPRoute {
+export interface HSRoute {
   rolesWithAccess: string[]
   // this allows the routes to be narrowed based upon OC user type
   orderCloudUserTypesWithAccess?: string[]
@@ -16,12 +18,16 @@ export interface MPRoute {
   route: string
   queryParams?: Record<string, any>
   // if subroutes are included, itesms will display in a dropdown
-  subRoutes?: MPRoute[]
+  subRoutes?: HSRoute[]
 }
 
 export interface ResourceUpdate {
   field: string
   value: any
+}
+
+export interface ResourceFormUpdate extends ResourceUpdate {
+  form?: FormGroup
 }
 
 export interface SwaggerSpecProperty {

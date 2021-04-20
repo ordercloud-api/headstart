@@ -1,0 +1,181 @@
+version: '2.4'
+
+services:
+  traefik:
+    isolation: default
+    image: traefik:v1.7.28-alpine
+    command:
+      - "--ping"
+      - "--api"
+      - "--docker"
+      - "--accesslog"
+    ports:
+      - "80:80"
+      - "8079:8080"
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - headstart
+
+  middleware:
+    image: ${REGISTRY}headstart-middleware:${VERSION}-linux
+    isolation: default
+    ports:
+      - 43005:80
+    build:
+      context: .
+      dockerfile: docker/build/middleware/Dockerfile
+      args:
+        BUILD_IMAGE: mcr.microsoft.com/dotnet/sdk:3.1-alpine
+        BASE_IMAGE: mcr.microsoft.com/dotnet/aspnet:3.1-alpine
+    environment:
+      ApplicationInsightsSettings_InstrumentationKey: "${ApplicationInsightsSettings_InstrumentationKey}"
+
+      AvalaraSettings_AccountID: "${AvalaraSettings_AccountID}"
+      AvalaraSettings_CompanyCode: "${AvalaraSettings_CompanyCode}"
+      AvalaraSettings_CompanyID: "${AvalaraSettings_CompanyID}"
+      AvalaraSettings_LicenseKey: "${AvalaraSettings_LicenseKey}"
+      AvalaraSettings_BaseApiUrl: "${AvalaraSettings_BaseApiUrl}"
+
+      BlobSettings_ConnectionString: "${BlobSettings_ConnectionString}"
+      BlobSettings_HostUrl: "${BlobSettings_HostUrl}"
+      BlobSettings_Key: "${BlobSettings_Key}"
+      BlobSettings_ContainerNameQueue: "${BlobSettings_ContainerNameQueue}"
+      BlobSettings_ContainerNameCache: "${BlobSettings_ContainerNameCache}"
+      BlobSettings_ContainerNameExchangeRates: "${BlobSettings_ContainerNameExchangeRates}"
+      BlobSettings_ContainerNameTranslations: "${BlobSettings_ContainerNameTranslations}"
+      CMSSettings_BaseUrl: "${CMSSettings_BaseUrl}"
+
+      CardConnectSettings_Authorization: "${CardConnectSettings_Authorization}"
+      CardConnectSettings_AuthorizationCad: "${CardConnectSettings_AuthorizationCad}"
+      CardConnectSettings_BaseUrl: "${CardConnectSettings_BaseUrl}"
+      CardConnectSettings_CadMerchantID: "${CardConnectSettings_CadMerchantID}"
+      CardConnectSettings_Site: "${CardConnectSettings_Site}"
+      CardConnectSettings_UsdMerchantID: "${CardConnectSettings_UsdMerchantID}"
+
+      CosmosSettings_DatabaseName: "${CosmosSettings_DatabaseName}"
+      CosmosSettings_EnableTcpConnectionEndpointRediscovery: "${CosmosSettings_EnableTcpConnectionEndpointRediscovery}"
+      CosmosSettings_EndpointUri: "${CosmosSettings_EndpointUri}"
+      CosmosSettings_PrimaryKey: "${CosmosSettings_PrimaryKey}"
+      CosmosSettings_RequestTimeoutInSeconds: "${CosmosSettings_RequestTimeoutInSeconds}"
+
+      EasyPostSettings_APIKey: "${EasyPostSettings_APIKey}"
+      EasyPostSettings_FreeShippingTransitDays: "${EasyPostSettings_FreeShippingTransitDays}"
+      EasyPostSettings_NoRatesFallbackCost: "${EasyPostSettings_NoRatesFallbackCost}"
+      EasyPostSettings_NoRatesFallbackTransitDays: "${EasyPostSettings_NoRatesFallbackTransitDays}"
+
+      EnvironmentSettings_AppTimeoutInSeconds: "${EnvironmentSettings_AppTimeoutInSeconds}"
+      EnvironmentSettings_MiddlewareBaseUrl: "${API_HOST}"
+      EnvironmentSettings_BuildNumber: "${EnvironmentSettings_BuildNumber}"
+      EnvironmentSettings_Commit: "${EnvironmentSettings_Commit}"
+      EnvironmentSettings_Environment: "${EnvironmentSettings_Environment}"
+
+      FlurlSettings_TimeoutInSeconds: "${FlurlSettings_TimeoutInSeconds}"
+
+      OrderCloudSettings_ApiUrl: "${OrderCloudSettings_ApiUrl}"
+      OrderCloudSettings_MiddlewareClientID: "${OrderCloudSettings_MiddlewareClientID}"
+      OrderCloudSettings_MiddlewareClientSecret: "${OrderCloudSettings_MiddlewareClientSecret}"
+      OrderCloudSettings_IncrementorPrefix: "${OrderCloudSettings_IncrementorPrefix}"
+      OrderCloudSettings_WebhookHashKey: "${OrderCloudSettings_WebhookHashKey}"
+
+      SendGridSettings_ApiKey: "${SendGridSettings_ApiKey}"
+      SendgridSettings_FromEmail: "${SendgridSettings_FromEmail}"
+      SendgridSettings_CriticalSupportEmails: "${SendgridSettings_CriticalSupportEmails}"
+      SendgridSettings_SupportCaseEmail: "${SendgridSettings_SupportCaseEmail}"
+      SendgridSettings_BillingEmail: "${SendgridSettings_BillingEmail}"
+      SendgridSettings_OrderSubmitTemplateID: "${SendgridSettings_OrderSubmitTemplateID}"
+      SendgridSettings_OrderApprovalTemplateID: "${SendgridSettings_OrderApprovalTemplateID}"
+      SendgridSettings_LineItemStatusChangeTemplateID: "${SendgridSettings_LineItemStatusChangeTemplateID}"
+      SendgridSettings_QuoteOrderSubmitTemplateID: "${SendgridSettings_QuoteOrderSubmitTemplateID}"
+      SendgridSettings_NewUserTemplateID: "${SendgridSettings_NewUserTemplateID}"
+      SendgridSettings_ProductInformationRequestTemplateID: "${SendgridSettings_ProductInformationRequestTemplateID}"
+      SendgridSettings_PasswordResetTemplateID: "${SendgridSettings_PasswordResetTemplateID}"
+      SendgridSettings_CriticalSupportTemplateID: "${SendgridSettings_CriticalSupportTemplateID}"
+
+      SmartyStreetSettings_AuthID: "${SmartyStreetSettings_AuthID}"
+      SmartyStreetSettings_AuthToken: "${SmartyStreetSettings_AuthToken}"
+      SmartyStreetSettings_RefererHost: "${SmartyStreetSettings_RefererHost}"
+      SmartyStreetSettings_WebsiteKey: "${SmartyStreetSettings_WebsiteKey}"
+
+      UI_BaseAdminUrl: "${SELLER_HOST}"
+
+      ZohoSettings_AccessToken: "${ZohoSettings_AccessToken}"
+      ZohoSettings_ClientId: "${ZohoSettings_ClientId}"
+      ZohoSettings_ClientSecret: "${ZohoSettings_ClientSecret}"
+      ZohoSettings_OrgID: "${ZohoSettings_OrgID}"
+      ZohoSettings_PerformOrderSubmitTasks: "${ZohoSettings_PerformOrderSubmitTasks}"
+    networks:
+      headstart:
+        aliases:
+          - "${API_HOST}"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.middleware.frontend.rule=Host:${API_HOST}"
+
+  seller:
+    image: ${REGISTRY}headstart-seller:${VERSION}-linux
+    isolation: default
+    environment:
+      SELLER_ID: ${SELLER_ID}
+      SELLER_CLIENT_ID: ${SELLER_CLIENT_ID}
+      MIDDLEWARE_URL: http://${API_HOST}
+      TRANSLATE_BLOB_URL: ${TRANSLATE_BLOB_URL}
+      BLOB_STORAGE_URL: ${BLOB_STORAGE_URL}
+      BUYER_CLIENT_ID: ${BUYER_CLIENT_ID}
+    ports:
+      - 43010:80
+    build:
+      context: .
+      dockerfile: docker/build/UI/Dockerfile
+      args:
+        BASE_IMAGE: node:12.16.3-alpine
+        ROLE: Seller
+    labels:
+      - "traefik.enable=true"
+      - "traefik.seller.frontend.rule=Host:${SELLER_HOST}"
+    networks:
+      headstart:
+        aliases:
+          - "${SELLER_HOST}"
+
+  buyer:
+    image: ${REGISTRY}headstart-buyer:${VERSION}-linux
+    isolation: default
+    environment:
+      BUYER_CLIENT_ID: ${BUYER_CLIENT_ID}
+      MIDDLEWARE_URL: http://${API_HOST}
+      SELLER_ID: ${SELLER_ID}
+      TRANSLATE_BLOB_URL: ${TRANSLATE_BLOB_URL}
+    ports:
+      - 43015:80
+    build:
+      context: .
+      dockerfile: docker/build/UI/Dockerfile
+      args:
+        BASE_IMAGE: node:12.16.3-alpine
+        ROLE: Buyer
+    labels:
+      - "traefik.enable=true"
+      - "traefik.buyer.frontend.rule=Host:${BUYER_HOST}"
+    networks:
+      headstart:
+        aliases:
+          - "${BUYER_HOST}"
+
+  storage:
+  # https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azurite#install-and-run-the-azurite-docker-image
+    image: mcr.microsoft.com/azure-storage/azurite
+    volumes:
+      - ./data/storage:/data
+    environment:
+      blobHost: 0.0.0.0
+      queueHost: 0.0.0.0
+      blobPort: 10000
+    ports:
+      - 10000:10000
+      - 10001:10001
+
+networks:
+  headstart:

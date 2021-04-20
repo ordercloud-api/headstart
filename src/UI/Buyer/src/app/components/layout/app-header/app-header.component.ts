@@ -13,11 +13,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap'
 import { Category } from 'ordercloud-javascript-sdk'
-import { takeWhile } from 'rxjs/operators'
-import {
-  HSOrder,
-  HSLineItem,
-} from '@ordercloud/headstart-sdk'
+import { bufferTime, filter, takeWhile } from 'rxjs/operators'
+import { HSOrder, HSLineItem } from '@ordercloud/headstart-sdk'
 import { getScreenSizeBreakPoint } from 'src/app/services/breakpoint.helper'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 import { StaticPageService } from 'src/app/services/static-page/static-page.service'
@@ -81,11 +78,13 @@ export class OCMAppHeader implements OnInit {
     this.screenSize = getScreenSizeBreakPoint()
     this.categories = this.context.categories.all
     this.appName = this.context.appSettings.appname
-    this.activePath = this.context.router.getActiveUrl();
+    this.activePath = this.context.router.getActiveUrl()
     this.isSSO = this.context.currentUser.isSSO()
-    this.isAnonymous = this.context.currentUser.isAnonymous()
     this.context.order.onChange((order) => (this.order = order))
-    this.context.currentUser.onChange((user) => (this.user = user))
+    this.context.currentUser.onChange((user) => {
+      this.user = user
+      this.isAnonymous = this.context.currentUser.isAnonymous()
+    })
     this.context.productFilters.activeFiltersSubject
       .pipe(takeWhile(() => this.alive))
       .subscribe(this.handleFiltersChange)
@@ -127,20 +126,29 @@ export class OCMAppHeader implements OnInit {
 
   buildAddToCartListener(): void {
     let closePopoverTimeout
-    this.context.order.cart.onAdd.subscribe((li: HSLineItem) => {
-      clearTimeout(closePopoverTimeout)
-      if (li) {
-        this.addToCartPopover.ngbPopover = `Added ${li.Quantity} items to Cart`
-        setTimeout(() => {
-          if (!this.addToCartPopover.isOpen()) {
-            this.addToCartPopover.open()
-          }
-          closePopoverTimeout = setTimeout(() => {
-            this.addToCartPopover.close()
-          }, 3000)
-        }, 300)
-      }
-    })
+    this.context.order.cart.onAdd
+      .pipe(
+        bufferTime(500),
+        filter((lines) => Boolean(lines.length))
+      )
+      .subscribe((lis: HSLineItem[]) => {
+        clearTimeout(closePopoverTimeout)
+        if (lis.length) {
+          let totalQuantity = lis
+            .map((li) => li.Quantity)
+            .reduce((accum, currentVal) => accum + currentVal, 0)
+          this.addToCartPopover.ngbPopover = `Added ${totalQuantity} items to Cart`
+          setTimeout(() => {
+            if (!this.addToCartPopover.isOpen()) {
+              this.addToCartPopover.open()
+            }
+            closePopoverTimeout = setTimeout(() => {
+              this.addToCartPopover.close()
+              totalQuantity = 0
+            }, 3000)
+          }, 300)
+        }
+      })
   }
 
   routeToOrdersToApprove(event: any): void {
@@ -186,7 +194,10 @@ export class OCMAppHeader implements OnInit {
   }
 
   isRouteActive(url: string): boolean {
-    return this.activePath === url || (this.activePath === '/profile' && url === '/profile/details');
+    return (
+      this.activePath === url ||
+      (this.activePath === '/profile' && url === '/profile/details')
+    )
   }
 
   logout(): void {

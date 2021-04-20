@@ -1,6 +1,7 @@
 using Flurl.Http;
 using Headstart.Common;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;

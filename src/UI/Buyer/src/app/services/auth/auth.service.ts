@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core'
 import { Observable, of, BehaviorSubject, from } from 'rxjs'
 import { tap, catchError, finalize } from 'rxjs/operators'
-import { Router } from '@angular/router'
+import { ActivatedRoute, Router } from '@angular/router'
 
 // 3rd party
 import {
@@ -10,11 +10,8 @@ import {
   Me,
   Auth,
   MeUser,
-  ForgottenPassword,
   AccessTokenBasic,
-  TokenPasswordReset,
 } from 'ordercloud-javascript-sdk'
-// import { CookieService } from '@gorniv/ngx-universal';
 import { CookieService } from 'ngx-cookie'
 import { CurrentUserService } from '../current-user/current-user.service'
 import { CurrentOrderService } from '../order/order.service'
@@ -24,6 +21,7 @@ import { ApplicationInsightsService } from '../application-insights/application-
 import { TokenHelperService } from '../token-helper/token-helper.service'
 import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { AppConfig } from 'src/app/models/environment.types'
+import { BaseResolveService } from '../base-resolve/base-resolve.service'
 
 @Injectable({
   providedIn: 'root',
@@ -47,7 +45,9 @@ export class AuthService {
     private ordersToApproveStateService: OrdersToApproveStateService,
     private appConfig: AppConfig,
     private tokenHelper: TokenHelperService,
-    private appInsightsService: ApplicationInsightsService
+    private appInsightsService: ApplicationInsightsService,
+    private activatedRoute: ActivatedRoute,
+    private baseResolveService: BaseResolveService
   ) {}
 
   // All this isLoggedIn stuff is only used in the header wrapper component
@@ -66,7 +66,7 @@ export class AuthService {
   }
 
   // change all this unreadable observable stuff
-  refresh(): Observable<void> {
+  refresh(): Observable<any> {
     this.fetchingRefreshToken = true
     return from(this.refreshTokenLogin()).pipe(
       tap((token) => {
@@ -79,7 +79,7 @@ export class AuthService {
         setTimeout(() => {
           this.failedRefreshAttempt = false
         }, 3000)
-        this.logout()
+        void this.logout()
         return of(null)
       }),
       finalize(() => {
@@ -94,17 +94,10 @@ export class AuthService {
     this.isLoggedIn = true
   }
 
-  async forgotPasssword(email: string): Promise<void> {
-    await ForgottenPassword.SendVerificationCode({
-      Email: email,
-      ClientID: this.appConfig.clientID,
-      URL: this.appConfig.baseUrl,
-    })
-    this.router.navigateByUrl('/login')
-  }
-
-  async register(me: MeUser<any>): Promise<AccessTokenBasic> {
-    const token = await Me.Register(me)
+  async register(me: MeUser): Promise<AccessTokenBasic> {
+    const anonToken = await this.getAnonymousToken()
+    const token = await Me.Register(me, {anonUserToken: anonToken.access_token})
+    this.loginWithTokens(token.access_token)
     return token
   }
 
@@ -126,7 +119,12 @@ export class AuthService {
       false,
       rememberMe
     )
-    this.router.navigateByUrl('/home')
+    const urlParams = this.activatedRoute.snapshot.queryParams
+    if(urlParams.redirect){
+      void this.router.navigate([`/${urlParams.redirect}`])
+    } else {
+      void this.router.navigate(['/home'])
+    }
     return creds
   }
 
@@ -137,7 +135,7 @@ export class AuthService {
     rememberMe = false
   ): void {
     this.tokenHelper.setIsSSO(isSSO)
-    ContentManagementClient.Tokens.SetAccessToken(token)
+    this.setCMSTokenIfNeeded(token)
     HeadStartSDK.Tokens.SetAccessToken(token)
     this.setToken(token)
     if (rememberMe && refreshToken) {
@@ -149,37 +147,54 @@ export class AuthService {
       Tokens.SetRefreshToken(refreshToken)
       this.setRememberMeStatus(true)
     }
-    this.ordersToApproveStateService.alertIfOrdersToApprove()
+    void this.ordersToApproveStateService.alertIfOrdersToApprove()
   }
 
   async anonymousLogin(): Promise<AccessToken> {
     try {
-      const creds = await Auth.Anonymous(
-        this.appConfig.clientID,
-        this.appConfig.scope
-      )
-      ContentManagementClient.Tokens.SetAccessToken(creds.access_token)
-      HeadStartSDK.Tokens.SetAccessToken(creds.access_token)
-      this.setToken(creds.access_token)
-      return creds
+      const anonToken = await this.getAnonymousToken()
+      this.setCMSTokenIfNeeded(anonToken.access_token)
+      HeadStartSDK.Tokens.SetAccessToken(anonToken.access_token)
+      this.setToken(anonToken.access_token)
+      return anonToken
     } catch (err) {
-      this.logout()
+      void this.logout()
       throw new Error(err)
+    }
+  }
+
+  async getAnonymousToken(): Promise<AccessToken> {
+    return await Auth.Anonymous(
+      this.appConfig.clientID,
+      this.appConfig.scope
+    )
+  }
+
+  setCMSTokenIfNeeded(token: string) {
+    if(this.appConfig.cmsUrl && this.appConfig.cmsUrl !== '') {
+      ContentManagementClient.Tokens.SetAccessToken(token)
+    }
+  }
+
+  removeCMSTokenIfNeeded() {
+    if(this.appConfig.cmsUrl && this.appConfig.cmsUrl !== '') {
+      ContentManagementClient.Tokens.RemoveAccessToken()
     }
   }
 
   async logout(): Promise<void> {
     Tokens.RemoveAccessToken()
-    ContentManagementClient.Tokens.RemoveAccessToken()
+    this.removeCMSTokenIfNeeded()
     HeadStartSDK.Tokens.RemoveAccessToken()
     this.isLoggedIn = false
     this.appInsightsService.clearUser()
     if (this.appConfig.anonymousShoppingEnabled) {
-      this.router.navigate(['/home'])
-      await this.currentUser.reset()
-      this.currentOrder.reset() // TODO - can we get rid of Auth's dependency on current Order and User?
+      await this.anonymousLogin()
+      void this.router.navigate(['home']).then(async () => {
+        await this.baseResolveService.resolve()
+      })
     } else {
-      this.router.navigate(['/login'])
+      void this.router.navigate(['/login'])
     }
   }
 
@@ -195,14 +210,6 @@ export class AuthService {
       this.appConfig.scope
     )
     await Me.ResetPasswordByToken({ NewPassword: newPassword })
-  }
-
-  async resetPassword(
-    token: string,
-    config: TokenPasswordReset
-  ): Promise<void> {
-    await Me.ResetPasswordByToken(config, { accessToken: token })
-    // await ForgottenPassword.ResetPasswordByVerificationCode(code, config);
   }
 
   setRememberMeStatus(status: boolean): void {

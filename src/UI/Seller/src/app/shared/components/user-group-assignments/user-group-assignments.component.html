@@ -91,12 +91,17 @@
               <span
                 *ngIf="!searchTermInput && viewAssignedUserGroups"
                 class="font-italic"
-                >This user has not been assigned to any locations.</span
+                >This user has not been assigned to any supplier
+                addresses.
+                </span
               >
               <span
                 *ngIf="!searchTermInput && !viewAssignedUserGroups"
                 class="font-italic"
-                >There are no locations for this user's Home Country.</span
+                translate
+                >BUYER.HELPERMESSAGES.BUYERGROUP.WARNING
+                <a href="{{'/buyers/' + buyerID + '/locations/new'}}" translate>BUYER.HELPERMESSAGES.BUYERGROUP.ACTION</a>
+                </span
               >
             </td>
           </tr>

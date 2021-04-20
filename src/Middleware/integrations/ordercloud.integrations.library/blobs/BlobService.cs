@@ -7,11 +7,13 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 
 namespace ordercloud.integrations.library
 {
     public interface IOrderCloudIntegrationsBlobService
     {
+        CloudBlobClient Client { get; }
         CloudBlobContainer Container { get; }
         Task<T> Get<T>(string id);
         Task<string> Get(string id);
@@ -19,6 +21,7 @@ namespace ordercloud.integrations.library
         Task Save(string reference, JObject blob, string fileType = null);
         Task Save(string reference, IFormFile blob, string fileType = null);
         Task Save(string reference, Stream file, string fileType = null);
+        Task Save(string reference, byte[] bytes, string fileType = null, string cacheControl = null);
         Task Save(BlobBase64Image base64Image);
         Task Delete(string id);
         Task DeleteContainer();
@@ -26,6 +29,7 @@ namespace ordercloud.integrations.library
     }
     public class OrderCloudIntegrationsBlobService : IOrderCloudIntegrationsBlobService
     {
+        public CloudBlobClient Client { get; }
         public CloudBlobContainer Container { get; }
         private readonly BlobServiceConfig _config;
 
@@ -46,9 +50,9 @@ namespace ordercloud.integrations.library
                     throw new Exception("Blob container not specified");
 
                 CloudStorageAccount.TryParse(config.ConnectionString, out var storage);
-                var client = storage.CreateCloudBlobClient();
+                Client = storage.CreateCloudBlobClient();
                 if (config.Container != null)
-                    Container = client.GetContainerReference(config.Container);
+                    Container = Client.GetContainerReference(config.Container);
             }
             catch (Exception ex)
             {
@@ -63,6 +67,24 @@ namespace ordercloud.integrations.library
                 var permissions = await Container.GetPermissionsAsync();
                 permissions.PublicAccess = _config.AccessType;
                 await Container.SetPermissionsAsync(permissions);
+
+                var properties = await Client.GetServicePropertiesAsync();
+                properties.Cors.CorsRules.Add(new CorsRule
+                {
+                    AllowedHeaders = { "*" },
+                    AllowedOrigins = { "*" },
+                    AllowedMethods =
+                        CorsHttpMethods.Options |
+                        CorsHttpMethods.Get |
+                        CorsHttpMethods.Put |
+                        CorsHttpMethods.Post |
+                        CorsHttpMethods.Head |
+                        CorsHttpMethods.Delete |
+                        CorsHttpMethods.Merge,
+                    ExposedHeaders = { "*" },
+                    MaxAgeInSeconds = (int)TimeSpan.FromHours(1).TotalSeconds
+                });
+                await Client.SetServicePropertiesAsync(properties);
             }
         }
 

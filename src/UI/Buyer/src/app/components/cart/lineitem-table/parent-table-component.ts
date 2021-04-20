@@ -1,15 +1,16 @@
-import { Component, Input, OnInit } from '@angular/core'
+import { Input, OnInit } from '@angular/core'
 import { faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
-import { groupBy as _groupBy } from 'lodash'
-import { HSKitProduct, HSLineItem } from '@ordercloud/headstart-sdk'
+import { groupBy as _groupBy, isEqual, uniqWith } from 'lodash'
+import { HSLineItem } from '@ordercloud/headstart-sdk'
 import { getPrimaryLineItemImage } from 'src/app/services/images.helpers'
 import { CancelReturnReason } from '../../orders/order-return/order-return-table/models/cancel-return-translations.enum'
 import { NgxSpinnerService } from 'ngx-spinner'
-import { ToastrService } from 'ngx-toastr'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 import { OrderType } from 'src/app/models/order.types'
 import { LineItemGroupSupplier } from 'src/app/models/line-item.types'
 import { QtyChangeEvent } from 'src/app/models/product.types'
+import { NgChanges } from 'src/app/models/ng-changes.types'
+import { CheckoutService } from 'src/app/services/order/checkout.service'
 
 export abstract class OCMParentTableComponent implements OnInit {
   @Input() set lineItems(lineItems: HSLineItem[]) {
@@ -20,28 +21,47 @@ export abstract class OCMParentTableComponent implements OnInit {
     this._groupByKits = bool
     this.initLineItems()
   }
+
+  @Input() supplierData: LineItemGroupSupplier[]
   @Input() readOnly: boolean
   @Input() orderType: OrderType
   @Input() hideStatus = false
   @Input() displayShippingInfo = false
+  @Input() invalidItem
   closeIcon = faTimes
   faTrashAlt = faTrashAlt
+  _supplierArray: any[]
   suppliers: LineItemGroupSupplier[]
+  selectedSupplier: LineItemGroupSupplier
   liGroupedByShipFrom: HSLineItem[][]
-  liGroupedByKit: HSLineItem[][]
-  productsInKit: HSKitProduct[] = []
   updatingLiIDs: string[] = []
   _groupByKits: boolean
   _lineItems: HSLineItem[] = []
   _orderCurrency: string
-  showKitDetails = true
+  _changedLineItemID: string
+  _supplierData: LineItemGroupSupplier[]
   showComments: Record<string, string> = {}
   constructor(
     public context: ShopperContextService,
     private spinner: NgxSpinnerService,
-    private toastrService: ToastrService
+    private checkoutService: CheckoutService,
   ) {
     this._orderCurrency = this.context.currentUser.get().Currency
+  }
+
+  ngOnInit(): void {
+    this.spinner.show() // visibility is handled by *ngIf
+  }
+
+  ngOnChanges(changes: NgChanges<OCMParentTableComponent>) {
+    // if not being used in checkout-shipment then we will get and set necessary supplier data
+    // in the checkout-shipment component we pass this information in from parent
+    if(changes?.displayShippingInfo?.currentValue !== true && 
+      changes?.lineItems?.currentValue) {
+        this.setSupplierData()
+      } else if(changes?.supplierData?.currentValue) {
+        this.buildSupplierArray(changes?.supplierData?.currentValue)
+      }
   }
 
   initLineItems(): void {
@@ -49,22 +69,37 @@ export abstract class OCMParentTableComponent implements OnInit {
       return
     }
     this.liGroupedByShipFrom = this.groupLineItemsByShipFrom(this._lineItems)
-    this.liGroupedByKit = this.groupLineItemsByKitID(this._lineItems)
-    void this.setSupplierInfo(this.liGroupedByShipFrom)
   }
 
-  ngOnInit(): void {
-    this.spinner.show() // visibility is handled by *ngIf
+  async setSupplierData(): Promise<void> {
+    const supplierArray = uniqWith(this._lineItems?.map(li => (
+      {
+        supplierID: li?.SupplierID,
+        ShipFromAddressID: li?.ShipFromAddressID
+      }
+    )), isEqual)
+    if(JSON.stringify(supplierArray) !== JSON.stringify(this._supplierArray) && 
+      !this.displayShippingInfo
+    ) {
+      this._supplierArray = supplierArray;
+      const supplierList = await this.checkoutService.buildSupplierData(this._lineItems);
+      this.buildSupplierArray(supplierList)
+    }
   }
 
-  groupLineItemsByKitID(lineItems: HSLineItem[]): HSLineItem[][] {
-    if (!this._groupByKits) return []
-    const kitLineItems = lineItems.filter((li) => li.xp.KitProductID)
-    const liKitGroups = _groupBy(kitLineItems, (li) => li.xp.KitProductID)
-    return Object.values(liKitGroups)
+  buildSupplierArray(supplierList: LineItemGroupSupplier[]) {
+    const suppliers: LineItemGroupSupplier[] = [];
+    if(this.liGroupedByShipFrom) {
+      this.liGroupedByShipFrom.forEach(group => {
+        suppliers.push(supplierList.find(s => s.shipFrom.ID === group[0].ShipFromAddressID))
+      })
+    }
+    this.suppliers = suppliers
   }
 
-  groupLineItemsByShipFrom(lineItems: HSLineItem[]): HSLineItem[][] {
+  groupLineItemsByShipFrom(
+    lineItems: HSLineItem[]
+  ): HSLineItem[][] {
     const supplierLineItems = this._groupByKits
       ? lineItems.filter((li) => !li.xp.KitProductID)
       : lineItems
@@ -76,11 +111,6 @@ export abstract class OCMParentTableComponent implements OnInit {
     })
   }
 
-  async setSupplierInfo(liGroups: HSLineItem[][]): Promise<void> {
-    this.suppliers = await this.context.orderHistory.getLineItemSuppliers(
-      liGroups
-    )
-  }
 
   async removeLineItem(lineItemID: string): Promise<void> {
     await this.context.order.cart.remove(lineItemID)
@@ -91,7 +121,9 @@ export abstract class OCMParentTableComponent implements OnInit {
     configurationID: string,
     documentID: string
   ): void {
-    this.context.router.toProductDetails(productID)
+    if(!this.invalidItem) {
+      this.context.router.toProductDetails(productID)
+    }
   }
 
   async changeQuantity(

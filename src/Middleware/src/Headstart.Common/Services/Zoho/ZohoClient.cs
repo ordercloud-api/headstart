@@ -6,6 +6,7 @@ using Headstart.Common.Services.Zoho.Resources;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Services.Zoho
@@ -62,16 +63,12 @@ namespace Headstart.Common.Services.Zoho
                     .SetQueryParam("refresh_token", Config.AccessToken)
                     .SetQueryParam("redirect_uri", "https://ordercloud.io")
                     .PostAsync(null);
-                this.TokenResponse = JObject.Parse(await response.Content.ReadAsStringAsync()).ToObject<ZohoTokenResponse>();
+                this.TokenResponse = JObject.Parse(await response.ResponseMessage.Content.ReadAsStringAsync()).ToObject<ZohoTokenResponse>();
                 return this.TokenResponse;
             }
             catch (FlurlHttpException ex)
             {
-                throw new OrderCloudIntegrationException(new ApiError()
-                {
-                    ErrorCode = ex.Call.Response.StatusCode.To<string>(),
-                    Message = ex.Message
-                });
+                throw new CatalystBaseException("ZohoAuthenticationError", (int)ex.Call.Response.StatusCode, ex.Message);
             }
 
         }

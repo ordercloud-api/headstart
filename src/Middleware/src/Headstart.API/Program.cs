@@ -1,7 +1,10 @@
 using System;
 using Headstart.Common;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using ordercloud.integrations.library;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace Headstart.API
 {
@@ -11,10 +14,24 @@ namespace Headstart.API
 		{
 			// Links to an Azure App Configuration resource that holds the app settings.
 			// Set this in your visual studio Env Variables.
-			var connectionString = Environment.GetEnvironmentVariable("APP_CONFIG_CONNECTION"); 
+			var appConfigConnectionString = Environment.GetEnvironmentVariable("APP_CONFIG_CONNECTION");
 
-			OrderCloudWebHostBuilder
-				.CreateWebHostBuilder<Startup, AppSettings>(args, connectionString)
+			WebHost.CreateDefaultBuilder(args)
+				.UseDefaultServiceProvider(options => options.ValidateScopes = false)
+				.ConfigureAppConfiguration((context, config) =>
+				{
+					if(appConfigConnectionString != null)
+                    {
+						config.AddAzureAppConfiguration(appConfigConnectionString);
+					}
+					config.AddJsonFile("appSettings.json", optional: true);
+				})
+				.UseStartup<Startup>()
+				.ConfigureServices((ctx, services) =>
+				{
+					services.Configure<AppSettings>(ctx.Configuration);
+					services.AddTransient(sp => sp.GetService<IOptionsSnapshot<AppSettings>>().Value);
+				})
 				.Build()
 				.Run();
 		}

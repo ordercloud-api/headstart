@@ -1,0 +1,30 @@
+resources:
+  - repo: self
+    clean: true
+
+stages:
+  - stage: Build_Headstart
+    displayName: "Build Headstart Images"
+    jobs:
+      - job: Build_Headstart_Job
+        pool:
+          name: docker-linux-agents
+        workspace:
+          clean: all
+        steps:
+          - template: version.yml
+          - task: PowerShell@2
+            displayName: "Build Headstart Containers"
+            inputs:
+              targetType: "inline"
+              script: |
+                $version = if ([string]::IsNullOrEmpty("$(Build.BuildNumber)")) {"latest"} else {"$(Build.BuildNumber)"}
+
+                az login -u "$(container.registry.username)" -p "$(container.registry.password)" -t "$(container.registry.tenant)"
+                az acr login -n $(container.registry.short)
+
+                $env:REGISTRY="$(container.registry)/headstart/"
+                $env:VERSION = $version
+
+                docker-compose build --parallel
+                docker-compose push

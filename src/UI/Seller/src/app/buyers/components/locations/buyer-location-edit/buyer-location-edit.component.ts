@@ -4,7 +4,6 @@ import { Address, BuyerAddress } from '@ordercloud/angular-sdk'
 import { BuyerLocationService } from '../buyer-location.service'
 import { ValidatePhone, ValidateEmail } from '@app-seller/validators/validators'
 import { Router } from '@angular/router'
-import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { getSuggestedAddresses } from '@app-seller/shared/services/address-suggestion.helper'
 import {
@@ -57,7 +56,6 @@ export class BuyerLocationEditComponent implements OnInit {
   constructor(
     private buyerLocationService: BuyerLocationService,
     private router: Router,
-    private middleware: MiddlewareAPIService,
     private currentUserService: CurrentUserService,
     private hsCatalogService: CatalogsTempService
   ) {
@@ -67,9 +65,8 @@ export class BuyerLocationEditComponent implements OnInit {
   refreshBuyerLocationData(buyerLocation: HSBuyerLocation): void {
     this.buyerLocationEditable = buyerLocation
     this.buyerLocationStatic = buyerLocation
-    this.catalogAssignments.CatalogIDs = this.buyerLocationEditable.UserGroup.xp.CatalogAssignments
-    this.createBuyerLocationForm(buyerLocation)
     this.isCreatingNew = this.buyerLocationService.checkIfCreatingNew()
+    this.createBuyerLocationForm(buyerLocation)
     this.areChanges = this.buyerLocationService.checkForChanges(
       this.buyerLocationEditable,
       this.buyerLocationStatic
@@ -77,10 +74,10 @@ export class BuyerLocationEditComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    this.isCreatingNew = this.buyerLocationService.checkIfCreatingNew()
     if (this.buyerID !== REDIRECT_TO_FIRST_PARENT) {
       await this.getCatalogs()
     }
-    this.isCreatingNew = this.buyerLocationService.checkIfCreatingNew()
   }
 
   createBuyerLocationForm(buyerLocation: HSBuyerLocation): void {
@@ -88,10 +85,6 @@ export class BuyerLocationEditComponent implements OnInit {
       ID: new FormControl(buyerLocation.Address.ID),
       LocationName: new FormControl(
         buyerLocation.UserGroup.Name,
-        Validators.required
-      ),
-      AddressName: new FormControl(
-        buyerLocation.Address.AddressName,
         Validators.required
       ),
       CompanyName: new FormControl(
@@ -121,6 +114,7 @@ export class BuyerLocationEditComponent implements OnInit {
       BillingNumber: new FormControl(
         (buyerLocation.Address.xp as any).BillingNumber
       ),
+      CatalogAssignments: new FormControl(undefined, this.isCreatingNew ? [Validators.required] : undefined)
     })
   }
 
@@ -161,9 +155,9 @@ export class BuyerLocationEditComponent implements OnInit {
     try {
       this.dataIsSaving = true
       this.buyerLocationEditable.UserGroup.xp.Type = 'BuyerLocation'
+      this.buyerLocationEditable.Address.AddressName = this.buyerLocationEditable?.Address?.CompanyName
       this.buyerLocationEditable.UserGroup.ID = this.buyerLocationEditable.Address.ID
-      ;(this.buyerLocationEditable.UserGroup
-        .xp as any).Country = this.buyerLocationEditable.Address.Country
+      this.buyerLocationEditable.UserGroup.xp.Country = this.buyerLocationEditable.Address.Country
       const newBuyerLocation = await HeadStartSDK.BuyerLocations.Create(
         this.buyerID,
         this.buyerLocationEditable
@@ -172,7 +166,7 @@ export class BuyerLocationEditComponent implements OnInit {
         await HeadStartSDK.Catalogs.SetAssignments(
           this.buyerID,
           newBuyerLocation.UserGroup.ID,
-          this.catalogAssignments
+          this.resourceForm.controls['CatalogAssignments'].value
         )
       this.refreshBuyerLocationData(newBuyerLocation)
       this.router.navigateByUrl(
@@ -188,9 +182,10 @@ export class BuyerLocationEditComponent implements OnInit {
   async updateBuyerLocation(): Promise<void> {
     try {
       this.dataIsSaving = true
-      ;(this.buyerLocationEditable.UserGroup
-        .xp as any).Country = this.buyerLocationEditable.Address.Country
-      this.buyerLocationEditable.UserGroup.xp.CatalogAssignments = this.catalogAssignments?.CatalogIDs
+      this.buyerLocationEditable.UserGroup
+        .xp.Country = this.buyerLocationEditable.Address.Country
+      var assignments = this.resourceForm.controls['CatalogAssignments']?.value
+      this.buyerLocationEditable.UserGroup.xp.CatalogAssignments = assignments?.CatalogIDs
       const updatedBuyerLocation = await HeadStartSDK.BuyerLocations.Save(
         this.buyerID,
         this.buyerLocationEditable.Address.ID,
@@ -260,7 +255,7 @@ export class BuyerLocationEditComponent implements OnInit {
   }
 
   addCatalogAssignments(event): void {
-    this.catalogAssignments = event
+    this.resourceForm.controls['CatalogAssignments']?.setValue(event);
   }
 
   private async handleSelectedAddressChange(address: Address): Promise<void> {

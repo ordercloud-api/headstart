@@ -9,6 +9,7 @@ import { ReportTemplate } from '@ordercloud/headstart-sdk'
 
 function createTemplateForm(template: ReportTemplate): FormGroup {
   const resourceForm = new FormGroup({
+    ReportType: new FormControl(template?.ReportType),
     Name: new FormControl(template?.Name, Validators.required),
     Description: new FormControl(
       template?.Description,

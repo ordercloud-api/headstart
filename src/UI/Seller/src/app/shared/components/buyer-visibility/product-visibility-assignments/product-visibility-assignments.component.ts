@@ -22,7 +22,6 @@ export class ProductVisibilityAssignments implements OnInit, OnChanges {
   del: ProductAssignment[]
   _productCatalogAssignmentsStatic: ProductCatalogAssignment[]
   _productCatalogAssignmentsEditable: ProductCatalogAssignment[]
-  kitProductCatalogAssignments: ProductCatalogAssignment[]
   areChanges = false
   requestedUserConfirmation = false
   faExclamationCircle = faExclamationCircle
@@ -74,9 +73,6 @@ export class ProductVisibilityAssignments implements OnInit, OnChanges {
     this.add = this._productCatalogAssignmentsEditable.filter(
       (assignment) =>
         !JSON.stringify(this._productCatalogAssignmentsStatic).includes(
-          assignment.CatalogID
-        ) ||
-        !JSON.stringify(this.kitProductCatalogAssignments).includes(
           assignment.CatalogID
         )
     )

@@ -6,15 +6,13 @@ import {
   OcTokenService,
   MeUser,
   OcSupplierService,
-  ListPage,
 } from '@ordercloud/angular-sdk'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { AppStateService } from '../app-state/app-state.service'
-import { HeadStartSDK, Asset } from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, ImageAsset } from '@ordercloud/headstart-sdk'
 import { Tokens } from 'ordercloud-javascript-sdk'
 import { BehaviorSubject } from 'rxjs'
-import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { UserContext } from '@app-seller/models/user.types'
 
@@ -27,7 +25,7 @@ export class CurrentUserService {
   public userSubject: BehaviorSubject<MeUser<any>> = new BehaviorSubject<
     MeUser<any>
   >({})
-  public profileImgSubject: BehaviorSubject<Asset> = new BehaviorSubject<Asset>(
+  public profileImgSubject: BehaviorSubject<ImageAsset> = new BehaviorSubject<ImageAsset>(
     {}
   )
   constructor(
@@ -38,7 +36,7 @@ export class CurrentUserService {
     private appAuthService: AppAuthService,
     private appStateService: AppStateService,
     private ocSupplierService: OcSupplierService
-  ) {}
+  ) { }
 
   async login(username: string, password: string, rememberMe: boolean) {
     const accessToken = await this.ocAuthService
@@ -55,34 +53,16 @@ export class CurrentUserService {
       this.appAuthService.setRememberStatus(true)
     }
     HeadStartSDK.Tokens.SetAccessToken(accessToken.access_token)
-    ContentManagementClient.Tokens.SetAccessToken(accessToken.access_token)
     Tokens.SetAccessToken(accessToken.access_token)
     this.ocTokenService.SetAccess(accessToken.access_token)
     this.appStateService.isLoggedIn.next(true)
     this.me = await this.ocMeService.Get().toPromise()
     this.userSubject.next(this.me)
-    let imgAssets: ListPage<Asset>
-    if (this.me.Supplier) {
-      imgAssets = await ContentManagementClient.Assets.ListAssetsOnChild(
-        'Suppliers',
-        this.me.Supplier.ID,
-        'SupplierUsers',
-        this.me?.ID,
-        { filters: { Tags: ['ProfileImg'] } }
-      )
-    } else {
-      imgAssets = await ContentManagementClient.Assets.ListAssets(
-        'AdminUsers',
-        this.me.ID,
-        { filters: { Tags: ['ProfileImg'] } }
-      )
-    }
-    if (imgAssets.Items.length > 0)
-      this.profileImgSubject.next(imgAssets.Items[0])
-    if (this.me?.Supplier)
+    if (this.me?.Supplier) {
       this.mySupplier = await HeadStartSDK.Suppliers.GetMySupplier(
         this.me?.Supplier?.ID
       )
+    }
   }
 
   async getUser(): Promise<MeUser> {

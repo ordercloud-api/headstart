@@ -5,7 +5,7 @@ import { FormControl, FormGroup, AbstractControl } from '@angular/forms'
   providedIn: 'root',
 })
 export class AppFormErrorService {
-  displayFormErrors(form: FormGroup) {
+  displayFormErrors(form: FormGroup): void {
     Object.keys(form.controls).forEach((key) => {
       form.get(key).markAsDirty()
     })
@@ -17,20 +17,20 @@ export class AppFormErrorService {
     )
   }
 
-  hasPasswordMismatchError(form: FormGroup) {
+  hasPasswordMismatchError(form: FormGroup | AbstractControl): boolean {
     return form.hasError('ocMatchFields')
   }
 
-  hasInvalidIdError(input: FormControl | AbstractControl) {
+  hasInvalidIdError(input: FormControl | AbstractControl): boolean {
     return input.hasError('invalidIdError') && input.dirty
   }
 
-  hasRequiredError(controlName: string, form: FormGroup) {
+  hasRequiredError(controlName: string, form: FormGroup): boolean {
     const control = form.get(controlName)
     return control && control.hasError('required') && control.dirty
   }
 
-  hasPatternError(controlName: string, form: FormGroup) {
+  hasPatternError(controlName: string, form: FormGroup): boolean {
     return (
       form.get(controlName).hasError('pattern') && form.get(controlName).dirty
     )

@@ -9,6 +9,7 @@ import {
   Order,
   LineItem,
   IntegrationEvents,
+  ListPage,
 } from 'ordercloud-javascript-sdk'
 import {
   HSOrder,
@@ -40,6 +41,10 @@ export class CurrentOrderService {
 
   get(): HSOrder {
     return this.state.order
+  }
+
+  getLineItems(): ListPage<HSLineItem> {
+    return this.state.lineItems
   }
 
   get cart(): CartService {

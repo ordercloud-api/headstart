@@ -1,5 +1,5 @@
 {
-  "name": "default-components",
+  "name": "headstart",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -8,6 +8,7 @@
     "start": "ng serve --configuration=dev --port=4300 --open",
     "build": "ng build --configuration=deploy && node scripts/hash-css-files && node scripts/move-release-scripts && node scripts/copy-main-js && node scripts/copy-index-html",
     "lint": "tsc --noEmit && eslint . --ext js,ts,json --quiet --fix",
+    "preinstall": "npm run --prefix ../SDK build",
     "lint-project": "prettier --write \"src/**/*.html\" && eslint src/**/*.{ts,js} --fix"
   },
   "private": true,
@@ -40,7 +41,7 @@
     "@ngx-translate/http-loader": "^4.0.0",
     "@ordercloud/angular-cms-components": "^2.0.0",
     "@ordercloud/cms-sdk": "^1.0.1",
-    "@ordercloud/headstart-sdk": "^1.21.6",
+    "@ordercloud/headstart-sdk": "file:../SDK",
     "@tinymce/tinymce-angular": "^4.1.0",
     "@types/lodash": "^4.14.149",
     "axios": "^0.19.2",

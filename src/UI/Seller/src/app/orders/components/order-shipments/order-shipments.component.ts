@@ -30,7 +30,7 @@ import {
   OrderDirection,
   ListPage,
 } from '@ordercloud/angular-sdk'
-import { getProductSmallImageUrl } from '@app-seller/products/product-image.helper'
+import { getProductSmallImageUrl } from '@app-seller/shared/services/assets/asset.helper'
 import { HttpHeaders } from '@angular/common/http'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
@@ -39,8 +39,7 @@ import {
   CanChangeLineItemsOnOrderTo,
   NumberCanChangeTo,
 } from '@app-seller/orders/line-item-status.helper'
-import { HSLineItem, SuperHSShipment } from '@ordercloud/headstart-sdk'
-import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
+import { HeadStartSDK, HSLineItem, SuperHSShipment } from '@ordercloud/headstart-sdk'
 import { flatten as _flatten } from 'lodash'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { LineItemStatus } from '@app-seller/models/order.types'
@@ -269,7 +268,7 @@ export class OrderShipmentsComponent implements OnChanges {
 
   getImageUrl(lineItem: LineItem): string {
     const product = lineItem.Product
-    return getProductSmallImageUrl(product, this.appConfig.sellerID)
+    return getProductSmallImageUrl(product)
   }
 
   getCreateButtonAction(): string {

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core'
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core'
 import {
   HSCatalog,
   HSCatalogAssignmentRequest,
@@ -11,15 +11,13 @@ import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/
   templateUrl: './buyer-location-catalogs.component.html',
   styleUrls: ['./buyer-location-catalogs.component.scss'],
 })
-export class BuyerLocationCatalogs {
-  buyerID = ''
+export class BuyerLocationCatalogs implements OnInit {
+  buyerID: string
   locationID = ''
 
   @Input()
   set locationUserGroup(locationUserGroup: any) {
     if (locationUserGroup && Object.keys(locationUserGroup)) {
-      const routeUrl = this.router.routerState.snapshot.url
-      this.buyerID = routeUrl.split('/')[2]
       this.locationID = locationUserGroup?.ID
       this.resetAssignments(locationUserGroup.xp.CatalogAssignments || [])
     }
@@ -44,6 +42,13 @@ export class BuyerLocationCatalogs {
     private hsCatalogService: CatalogsTempService
   ) {}
 
+  ngOnInit() {
+    var url = this.router?.routerState?.snapshot?.url
+    if(url && url.split('/').length) {
+      this.buyerID = url.split('/')[2]
+    }
+  }
+
   resetAssignments(assignments: string[]): void {
     this.locationCatalogAssignmentsEditable = assignments
     this.locationCatalogAssignmentsStatic = assignments
@@ -58,7 +63,9 @@ export class BuyerLocationCatalogs {
       (l) => !this.locationCatalogAssignmentsEditable.includes(l)
     )
     this.catalogAssignments.CatalogIDs = this.locationCatalogAssignmentsEditable
-    this.assignmentsToAdd.emit(this.catalogAssignments)
+    if(this.addLocationCatalogAssignments.length) {
+      this.assignmentsToAdd.emit(this.catalogAssignments)
+    }
     this.areChanges =
       !!this.delLocationCatalogAssignments.length ||
       !!this.addLocationCatalogAssignments.length

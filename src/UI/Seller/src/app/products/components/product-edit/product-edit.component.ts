@@ -13,9 +13,6 @@ import { CurrentUserService } from '@app-seller/shared/services/current-user/cur
 import {
   Address,
   OcSupplierAddressService,
-  OcAdminAddressService,
-  OcProductService,
-  OcTokenService,
 } from '@ordercloud/angular-sdk'
 import {
   FormGroup,
@@ -25,7 +22,6 @@ import {
 } from '@angular/forms'
 import { Router } from '@angular/router'
 import { Product } from '@ordercloud/angular-sdk'
-import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import {
@@ -49,6 +45,8 @@ import {
   TaxProperties,
   Asset,
   TaxCode,
+  AssetType,
+  ImageAsset,
 } from '@ordercloud/headstart-sdk'
 import { Location } from '@angular/common'
 import { TabIndexMapper, setProductEditTab } from './tab-mapper'
@@ -57,21 +55,17 @@ import {
   ValidateMinMax,
   ValidateNoSpecialCharactersAndSpaces,
 } from '../../../validators/validators'
-import { getProductMediumImageUrl } from '@app-seller/products/product-image.helper'
 import { takeWhile } from 'rxjs/operators'
 import { SizerTiersDescriptionMap } from './size-tier.constants'
-import { HttpClient, HttpHeaders } from '@angular/common/http'
-import {
-  MonitoredProductFieldModifiedNotificationDocument,
-  NotificationStatus,
-} from '@app-seller/models/notification.types'
-import { ContentManagementClient } from '@ordercloud/cms-sdk'
+
 import { ToastrService } from 'ngx-toastr'
 import { Subscription } from 'rxjs'
 import { SupportedRates } from '@app-seller/models/currency-geography.types'
 import { FileHandle } from '@app-seller/models/file-upload.types'
 import { UserContext } from '@app-seller/models/user.types'
 import { AppConfig } from '@app-seller/models/environment.types'
+import { AssetService } from '@app-seller/shared/services/assets/asset.service'
+import { getProductMediumImageUrl } from '@app-seller/shared/services/assets/asset.helper'
 
 @Component({
   selector: 'app-product-edit',
@@ -96,6 +90,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   filterConfig
   @Output()
   updateResource = new EventEmitter<any>()
+  @Output()
+  updateList = new EventEmitter<Product>()
   @Input()
   addresses: ListPage<Address>
   @Input()
@@ -104,7 +100,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   dataIsSaving = false
   userContext: any = {}
   hasVariations = false
-  images: Asset[] = []
+  images: ImageAsset[] = []
   files: FileHandle[] = []
   faTimes = faTimes
   faTrash = faTrash
@@ -142,7 +138,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   availableSizeTiers = SizerTiersDescriptionMap
   active: number
   alive = true
-  productInReviewNotifications: MonitoredProductFieldModifiedNotificationDocument[]
   sizeTierSubscription: Subscription
   inventoryValidatorSubscription: Subscription
 
@@ -152,17 +147,13 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     private location: Location,
     private currentUserService: CurrentUserService,
     private ocSupplierAddressService: OcSupplierAddressService,
-    private ocProductService: OcProductService,
-    private ocAdminAddressService: OcAdminAddressService,
     private productService: ProductService,
     private sanitizer: DomSanitizer,
     private modalService: NgbModal,
-    private middleware: MiddlewareAPIService,
     private appAuthService: AppAuthService,
     @Inject(applicationConfiguration) private appConfig: AppConfig,
     private toastrService: ToastrService,
-    private http: HttpClient,
-    private ocTokenService: OcTokenService
+    private assetService: AssetService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -222,12 +213,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   }
 
   async refreshProductData(superProduct: SuperHSProduct): Promise<void> {
-    void this.middleware
-      .getProductNotifications(superProduct)
-      .then((result) => {
-        this.productInReviewNotifications = result
-      })
-
     // If a seller, and not editing the product, grab the currency from the product xp.
     this.supplierCurrency = this._exchangeRates?.find(
       (r) => r.Currency === superProduct?.Product?.xp?.Currency
@@ -249,8 +234,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     } else {
       this.taxCodes = { Meta: {}, Items: [] }
     }
-    this.staticContent = this._superHSProductEditable.Attachments
-    this.images = this._superHSProductEditable.Images
+    this.staticContent = this._superHSProductEditable.Product?.xp?.Documents
+    this.images = this._superHSProductEditable.Product?.xp?.Images
     this.taxCodeCategorySelected =
       this._superHSProductEditable.Product?.xp?.Tax?.Category !== null
     this.productType = this._superHSProductEditable.Product?.xp?.ProductType
@@ -521,11 +506,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     } else {
       return true
     }
-
-    return (
-      this.productForm.controls.ShipFromAddressID.valid &&
-      this.productForm.controls.SizeTier.valid
-    )
   }
 
   unitOfMeasureValid(): boolean {
@@ -544,7 +524,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       'Standard',
       'Quote',
       'PurchaseOrder',
-      'Kit',
     ]
   }
 
@@ -578,16 +557,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       const superProduct = await this.createNewSuperHSProduct(
         this._superHSProductEditable
       )
-      if (this.imageFiles.length > 0)
-        await this.addImages(this.imageFiles, superProduct.Product.ID)
-      if (this.staticContentFiles.length > 0)
-        await this.addDocuments(
-          this.staticContentFiles,
-          superProduct.Product.ID
-        )
       this.refreshProductData(superProduct)
-      //TODO: Add back in once CMS is working
-      this.createMonitoredProductDocument(superProduct)
       this.router.navigateByUrl(`/products/${superProduct.Product.ID}`)
       this.dataIsSaving = false
     } catch (ex) {
@@ -599,70 +569,25 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       throw ex
     }
   }
-  async createMonitoredProductDocument(superProduct: SuperHSProduct) {
-    const mySupplier = await this.currentUserService.getMySupplier()
-    const myContext = await this.currentUserService.getUserContext()
-    const document = {
-      Supplier: {
-        ID: mySupplier?.ID,
-        Name: mySupplier?.Name,
-      },
-      Product: {
-        ID: superProduct?.Product?.ID,
-        Name: superProduct?.Product?.Name,
-        FieldModified: 'Product Created',
-        PreviousValue: null,
-        CurrentValue: superProduct.Product.Name,
-      },
-      Status: NotificationStatus.SUBMITTED,
-      History: {
-        ModifiedBy: {
-          ID: myContext?.Me?.ID,
-          Name: `${myContext?.Me?.FirstName} ${myContext?.Me?.LastName}`,
-        },
-        ReviewedBy: { ID: '', Name: '' },
-        DateModified: new Date().toISOString(),
-        // TODO: Figure out how to get the API to accept a null value...
-        DateReviewed: new Date().toISOString(),
-      },
-    }
-    const headers = {
-      headers: new HttpHeaders({
-        Authorization: `Bearer ${this.ocTokenService.GetAccess()}`,
-      }),
-    }
-    // TODO: Replace with the SDK
-    const updatedProduct = await this.http
-      .post<SuperHSProduct>(
-        `${this.appConfig.middlewareUrl}/notifications/monitored-product-field-modified`,
-        document,
-        headers
-      )
-      .toPromise()
+
+  productWasModified(): boolean {
+    return (
+      JSON.stringify(this._superHSProductEditable) !==
+      JSON.stringify(this._superHSProductStatic) ||
+      this.imageFiles.length > 0 || 
+      this.staticContentFiles.length > 0 
+    )
   }
 
   async updateProduct(): Promise<void> {
     try {
       this.dataIsSaving = true
       let superProduct = this._superHSProductStatic
-      if (
-        JSON.stringify(this._superHSProductEditable) !==
-        JSON.stringify(this._superHSProductStatic)
-      ) {
+      if (this.productWasModified()) {
         superProduct = await this.updateHSProduct(this._superHSProductEditable)
-      }
-      if (this.appConfig?.superProductFieldsToMonitor.length > 0) {
-        superProduct = await this.checkForFieldsToMonitor(superProduct)
+        this.updateList.emit(superProduct.Product as Product)
       }
       this.refreshProductData(superProduct)
-      if (this.imageFiles.length > 0)
-        await this.addImages(this.imageFiles, superProduct.Product.ID)
-      if (this.staticContentFiles.length > 0) {
-        await this.addDocuments(
-          this.staticContentFiles,
-          superProduct.Product.ID
-        )
-      }
       this.dataIsSaving = false
     } catch (ex) {
       this.dataIsSaving = false
@@ -672,81 +597,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       }
       throw ex
     }
-  }
-
-  async checkForFieldsToMonitor(
-    editedSuperProduct: SuperHSProduct
-  ): Promise<SuperHSProduct> {
-    const fieldsToMonitorForChanges = this.appConfig
-      ?.superProductFieldsToMonitor
-    const mySupplier = await this.currentUserService.getMySupplier()
-    const myContext = await this.currentUserService.getUserContext()
-    const headers = {
-      headers: new HttpHeaders({
-        Authorization: `Bearer ${this.ocTokenService.GetAccess()}`,
-      }),
-    }
-    let superProduct = editedSuperProduct
-    await Promise.all(
-      fieldsToMonitorForChanges.map(async (f) => {
-        const fieldChanged =
-          JSON.stringify(_get(editedSuperProduct, f)) !==
-          JSON.stringify(_get(this._superHSProductStatic, f))
-        if (fieldChanged) {
-          const document = {
-            Supplier: {
-              ID: mySupplier?.ID,
-              Name: mySupplier?.Name,
-            },
-            Product: {
-              ID: this._superHSProductStatic?.Product?.ID,
-              Name: this._superHSProductStatic?.Product?.Name,
-              FieldModified: f,
-              PreviousValue: _get(this._superHSProductStatic, f),
-              CurrentValue: _get(this._superHSProductEditable, f),
-            },
-            Status: NotificationStatus.SUBMITTED,
-            History: {
-              ModifiedBy: {
-                ID: myContext?.Me?.ID,
-                Name: `${myContext?.Me?.FirstName} ${myContext?.Me?.LastName}`,
-              },
-              ReviewedBy: { ID: '', Name: '' },
-              DateModified: new Date().toISOString(),
-              // TODO: Figure out how to get the API to accept a null value...
-              DateReviewed: new Date().toISOString(),
-            },
-          }
-          // TODO: Replace with the SDK
-          superProduct = await this.http
-            .post<SuperHSProduct>(
-              `${this.appConfig.middlewareUrl}/notifications/monitored-product-field-modified`,
-              document,
-              headers
-            )
-            .toPromise()
-        }
-      })
-    )
-    return superProduct
-  }
-
-  async reviewMonitoredFieldChange(
-    status: NotificationStatus,
-    notification: MonitoredProductFieldModifiedNotificationDocument
-  ): Promise<void> {
-    const myContext = await this.currentUserService.getUserContext()
-    notification.Doc.Status = status
-    notification.Doc.History.ReviewedBy = {
-      ID: myContext?.Me?.ID,
-      Name: `${myContext?.Me?.FirstName} ${myContext?.Me?.LastName}`,
-    }
-    notification.Doc.History.DateReviewed = new Date().toISOString()
-
-    const superProduct = await this.middleware.updateProductNotifications(
-      notification
-    )
-    void this.refreshProductData(superProduct)
   }
 
   updateProductResource(productUpdate: any): void {
@@ -847,79 +697,16 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     this.checkForChanges()
   }
 
-  async uploadAsset(
-    productID: string,
-    file: FileHandle,
-    isAttachment = false
-  ): Promise<SuperHSProduct> {
-    const accessToken = await this.appAuthService.fetchToken().toPromise()
-    const asset = {
-      Active: true,
-      Title: isAttachment ? 'Product_Attachment' : null,
-      File: file.File,
-      FileName: file.Filename,
-    } as Asset
-    const newAsset: Asset = await ContentManagementClient.Assets.Upload(
-      asset,
-      accessToken
+  async removeFile(file: any, assetType: AssetType): Promise<void> {
+    this._superHSProductStatic.Product = await this.assetService.deleteAssetUpdateProduct(
+      this._superHSProductEditable.Product,
+      file.Url,
+      assetType
     )
-    await ContentManagementClient.Assets.SaveAssetAssignment(
-      { ResourceType: 'Products', ResourceID: productID, AssetID: newAsset.ID },
-      accessToken
-    )
-    return await HeadStartSDK.Products.Get(productID, accessToken)
-  }
-
-  async addDocuments(files: FileHandle[], productID: string): Promise<void> {
-    let superProduct
-    for (const file of files) {
-      superProduct = await this.uploadAsset(productID, file, true)
-    }
-    this.staticContentFiles = []
-    // Only need the `|| {}` to account for creating new product where this._superHSProductStatic doesn't exist yet.
-    superProduct = Object.assign(this._superHSProductStatic || {}, superProduct)
-    this.refreshProductData(superProduct)
-  }
-
-  async addImages(files: FileHandle[], productID: string): Promise<void> {
-    let superProduct
-    for (const file of files) {
-      superProduct = await this.uploadAsset(productID, file)
-    }
-    this.imageFiles = []
-    //  need to copy the object so object.assign does not modify target
-    const copiedHSStatic = JSON.parse(
-      JSON.stringify(this._superHSProductStatic)
-    )
-
-    // Only need the `|| {}` to account for creating new product where this._superHSProductStatic doesn't exist yet.
-    superProduct = Object.assign(copiedHSStatic || {}, superProduct)
-    this.refreshProductData(superProduct)
-  }
-
-  async removeFile(file: Asset): Promise<void> {
-    const accessToken = await this.appAuthService.fetchToken().toPromise()
-    // Remove the image assignment, then remove the image
-    await ContentManagementClient.Assets.DeleteAssetAssignment(
-      file.ID,
-      this._superHSProductStatic.Product.ID,
-      'Products',
-      null,
-      null,
-      accessToken
-    )
-    await ContentManagementClient.Assets.Delete(file.ID, accessToken)
-    if (file.Type === 'Image') {
-      this._superHSProductStatic.Images = this._superHSProductStatic.Images.filter(
-        (i) => i.ID !== file.ID
-      )
-    } else {
-      this._superHSProductStatic.Attachments = this._superHSProductStatic.Attachments.filter(
-        (a) => a.ID !== file.ID
-      )
-    }
+    this.updateList.emit(this._superHSProductStatic.Product as Product) 
     this.refreshProductData(this._superHSProductStatic)
   }
+
 
   unstageFile(index: number, fileType: string): void {
     if (fileType === 'image') {
@@ -1029,7 +816,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   ): Promise<SuperHSProduct> {
     const supplier = await this.currentUserService.getMySupplier()
     superHSProduct.Product.xp.ProductType = this.productType
-    ;(superHSProduct.Product.xp as any).PromotionEligible =
+    superHSProduct.Product.xp.PromotionEligible =
       this.productType === 'PurchaseOrder' ? false : true
     superHSProduct.Product.xp.Status = 'Draft'
     superHSProduct.Product.xp.Currency = supplier?.xp?.Currency
@@ -1046,7 +833,20 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       superHSProduct.Product.xp.Tax = null
     if (superHSProduct.PriceSchedule.PriceBreaks[0].Price === null)
       superHSProduct.PriceSchedule.PriceBreaks[0].Price = 0
-    return await HeadStartSDK.Products.Post(superHSProduct)
+    if (this.imageFiles.length > 0) {
+      const imgAssets = await this.assetService.uploadImageFiles(this.imageFiles);
+      superHSProduct.Product.xp.Images = imgAssets
+    }
+    if (this.staticContentFiles.length > 0) {
+      const documentAssets = await this.assetService.uploadDocumentFiles(this.staticContentFiles);
+      superHSProduct.Product.xp.Documents = documentAssets
+    }
+    try {
+      return await HeadStartSDK.Products.Post(superHSProduct)
+    } finally {
+      this.imageFiles = []
+      this.staticContentFiles = []
+    }
   }
 
   async updateHSProduct(
@@ -1069,12 +869,31 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     }
     if (superHSProduct.PriceSchedule.PriceBreaks.length === 0)
       superHSProduct.PriceSchedule = null
-    // TODO: Temporary while Product set doesn't reflect the current strongly typed Xp
     superHSProduct.Product.xp.Status = 'Draft'
-    return await HeadStartSDK.Products.Put(
-      superHSProduct.Product.ID,
-      superHSProduct
-    )
+    if (this.imageFiles.length > 0) {
+      const imgAssets = await this.assetService.uploadImageFiles(this.imageFiles);
+      superHSProduct.Product.xp.Images = [
+        ...superHSProduct.Product.xp?.Images || [],
+        ...imgAssets
+      ]
+    } 
+    if (this.staticContentFiles.length > 0) {
+      const documentAssets = await this.assetService.uploadDocumentFiles(this.staticContentFiles);
+      superHSProduct.Product.xp.Documents = [
+        ...superHSProduct.Product.xp?.Documents || [],
+        ...documentAssets
+      ]
+    }
+    try {
+      return await HeadStartSDK.Products.Put(
+        superHSProduct.Product.ID,
+        superHSProduct
+      )
+    } finally {
+      this.imageFiles = []
+      this.staticContentFiles = []
+    }
+    
   }
 
   async handleSelectedProductChange(product: Product): Promise<void> {
@@ -1133,10 +952,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   getProductPreviewImage(): string | SafeUrl {
     return (
       this.imageFiles[0]?.URL ||
-      getProductMediumImageUrl(
-        this._superHSProductEditable?.Product,
-        this.appConfig.sellerID
-      )
+      getProductMediumImageUrl(this._superHSProductEditable?.Product)
     )
   }
 

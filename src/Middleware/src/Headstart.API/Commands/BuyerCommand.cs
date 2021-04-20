@@ -1,18 +1,19 @@
-﻿using Headstart.Models;
+using Headstart.Models;
 using OrderCloud.SDK;
 using System.Threading.Tasks;
 using Headstart.Models.Misc;
-using ordercloud.integrations.library;
 using System.Linq;
 using Headstart.Common;
+using System;
 
 namespace Headstart.API.Commands
 {
     public interface IHSBuyerCommand
     {
-        Task<SuperHSBuyer> Create(SuperHSBuyer buyer, VerifiedUserContext user, bool isSeedingEnvironment = false);
-        Task<SuperHSBuyer> Get(string buyerID, string token = null);
-        Task<SuperHSBuyer> Update(string buyerID, SuperHSBuyer buyer, string token);
+        Task<SuperHSBuyer> Create(SuperHSBuyer buyer);
+        Task<SuperHSBuyer> Create(SuperHSBuyer buyer, string accessToken, IOrderCloudClient oc);
+        Task<SuperHSBuyer> Get(string buyerID);
+        Task<SuperHSBuyer> Update(string buyerID, SuperHSBuyer buyer);
     }
     public class HSBuyerCommand : IHSBuyerCommand
     {
@@ -24,35 +25,53 @@ namespace Headstart.API.Commands
             _settings = settings;
             _oc = oc;
         }
-        public async Task<SuperHSBuyer> Create(SuperHSBuyer superBuyer, VerifiedUserContext user, bool isSeedingEnvironment = false)
+        public async Task<SuperHSBuyer> Create(SuperHSBuyer superBuyer)
         {
-            var createdBuyer = await CreateBuyerAndRelatedFunctionalResources(superBuyer.Buyer, user, isSeedingEnvironment);
-            var createdMarkup = await CreateMarkup(superBuyer.Markup, createdBuyer.ID, user.AccessToken);
+            return await Create(superBuyer, null, _oc);
+        }
+
+        public async Task<SuperHSBuyer> Create(SuperHSBuyer superBuyer, string accessToken, IOrderCloudClient oc)
+        {
+            var createdImpersonationConfig = new ImpersonationConfig();
+            var createdBuyer = await CreateBuyerAndRelatedFunctionalResources(superBuyer.Buyer, accessToken, oc);
+            var createdMarkup = await CreateMarkup(superBuyer.Markup, createdBuyer.ID, accessToken, oc);
+            if(superBuyer?.ImpersonationConfig != null)
+            {
+                createdImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, createdBuyer.ID, accessToken, oc);
+            }
             return new SuperHSBuyer()
             {
                 Buyer = createdBuyer,
-                Markup = createdMarkup
+                Markup = createdMarkup,
+                ImpersonationConfig = createdImpersonationConfig
             };
         }
 
-        public async Task<SuperHSBuyer> Update(string buyerID, SuperHSBuyer superBuyer, string token)
+        public async Task<SuperHSBuyer> Update(string buyerID, SuperHSBuyer superBuyer)
         {
             // to prevent changing buyerIDs
             superBuyer.Buyer.ID = buyerID;
+            var updatedImpersonationConfig = new ImpersonationConfig();
 
-            var updatedBuyer = await _oc.Buyers.SaveAsync<HSBuyer>(buyerID, superBuyer.Buyer, token);
-            var updatedMarkup = await UpdateMarkup(superBuyer.Markup, superBuyer.Buyer.ID, token);
+            var updatedBuyer = await _oc.Buyers.SaveAsync<HSBuyer>(buyerID, superBuyer.Buyer);
+            var updatedMarkup = await UpdateMarkup(superBuyer.Markup, superBuyer.Buyer.ID);
+            if(superBuyer.ImpersonationConfig != null)
+            {
+                updatedImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, buyerID);
+            }
             return new SuperHSBuyer()
             {
                 Buyer = updatedBuyer,
-                Markup = updatedMarkup
+                Markup = updatedMarkup,
+                ImpersonationConfig = updatedImpersonationConfig
             };
         }
 
-        public async Task<SuperHSBuyer> Get(string buyerID, string token = null)
+        public async Task<SuperHSBuyer> Get(string buyerID)
         {
-            var request = token != null ? _oc.Buyers.GetAsync<HSBuyer>(buyerID, token) : _oc.Buyers.GetAsync<HSBuyer>(buyerID);
-            var buyer = await request;
+            var configReq = GetImpersonationByBuyerID(buyerID);
+            var buyer = await _oc.Buyers.GetAsync<HSBuyer>(buyerID);
+            var config = await configReq;
 
             // to move into content docs logic
             var markupPercent = buyer.xp?.MarkupPercent ?? 0;
@@ -64,43 +83,51 @@ namespace Headstart.API.Commands
             return new SuperHSBuyer()
             {
                 Buyer = buyer,
-                Markup = markup
+                Markup = markup,
+                ImpersonationConfig = config
             };
         }
 
-        public async Task<HSBuyer> CreateBuyerAndRelatedFunctionalResources(HSBuyer buyer, VerifiedUserContext user, bool isSeedingEnvironment = false)
+        private async Task<ImpersonationConfig> GetImpersonationByBuyerID(string buyerID)
         {
-            var token = isSeedingEnvironment ? user.AccessToken : null;
+            var config = await _oc.ImpersonationConfigs.ListAsync(filters: $"BuyerID={buyerID}");
+            return config?.Items?.FirstOrDefault();
+        }
+
+        public async Task<HSBuyer> CreateBuyerAndRelatedFunctionalResources(HSBuyer buyer, string accessToken, IOrderCloudClient oc)
+        {
+            // if we're seeding then use the passed in oc client
+            // to support multiple environments and ease of setup for new orgs
+            // else used the configured client
+            var token = oc == null ? null : accessToken;
+            var ocClient = oc ?? _oc;
+
             buyer.ID = "{buyerIncrementor}";
             buyer.Active = true;
-            var ocBuyer = await _oc.Buyers.CreateAsync(buyer, user.AccessToken);
+            var ocBuyer = await ocClient.Buyers.CreateAsync(buyer, accessToken);
             buyer.ID = ocBuyer.ID;
             var ocBuyerID = ocBuyer.ID;
 
             // create base security profile assignment
-            await _oc.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment
+            await ocClient.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment
             {
                 BuyerID = ocBuyerID,
-                SecurityProfileID = CustomRole.MPBaseBuyer.ToString()
+                SecurityProfileID = CustomRole.HSBaseBuyer.ToString()
             }, token);
 
-            // list message senders
-            var msList = await _oc.MessageSenders.ListAsync(accessToken: token);
-            // create message sender assignment
-            var assignmentList = msList.Items.Select(ms =>
+            // assign message sender
+            await ocClient.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
             {
-                return new MessageSenderAssignment
-                {
-                    MessageSenderID = ms.ID,
-                    BuyerID = ocBuyerID
-                };
-            });
-            await Throttler.RunAsync(assignmentList, 100, 5, a => _oc.MessageSenders.SaveAssignmentAsync(a, token));
+                MessageSenderID = "BuyerEmails",
+                BuyerID = ocBuyer.ID
+            }, token);
 
-            await _oc.Incrementors.CreateAsync(new Incrementor { ID = $"{ocBuyerID}-UserIncrementor", LastNumber = 0, LeftPaddingCount = 5, Name = "User Incrementor" }, token);
-            await _oc.Incrementors.CreateAsync(new Incrementor { ID = $"{ocBuyerID}-LocationIncrementor", LastNumber = 0, LeftPaddingCount = 4, Name = "Location Incrementor" }, token);
+            await ocClient.Incrementors.SaveAsync($"{ocBuyerID}-UserIncrementor", 
+                new Incrementor { ID = $"{ocBuyerID}-UserIncrementor", LastNumber = 0, LeftPaddingCount = 5, Name = "User Incrementor" }, token);
+            await ocClient.Incrementors.SaveAsync($"{ocBuyerID}-LocationIncrementor",
+                new Incrementor { ID = $"{ocBuyerID}-LocationIncrementor", LastNumber = 0, LeftPaddingCount = 4, Name = "Location Incrementor" }, token);
 
-            await _oc.Catalogs.SaveAssignmentAsync(new CatalogAssignment()
+            await ocClient.Catalogs.SaveAssignmentAsync(new CatalogAssignment()
             {
                 BuyerID = ocBuyer.ID,
                 CatalogID = ocBuyer.ID,
@@ -110,17 +137,53 @@ namespace Headstart.API.Commands
             return buyer;
         }
 
-        private async Task<BuyerMarkup> CreateMarkup(BuyerMarkup markup, string buyerID, string token)
+        private async Task<BuyerMarkup> CreateMarkup(BuyerMarkup markup, string buyerID, string accessToken, IOrderCloudClient oc)
         {
+            // if we're seeding then use the passed in oc client
+            // to support multiple environments and ease of setup for new orgs
+            // else used the configured client
+            var token = oc == null ? null : accessToken;
+            var ocClient = oc ?? _oc;
+
             // to move from xp to contentdocs, that logic will go here instead of a patch
-            var updatedBuyer = await _oc.Buyers.PatchAsync(buyerID, new PartialBuyer() { xp = new { MarkupPercent = markup.Percent } }, token);
+            var updatedBuyer = await ocClient.Buyers.PatchAsync(buyerID, new PartialBuyer() { xp = new { MarkupPercent = markup.Percent } }, token);
             return new BuyerMarkup()
             {
                 Percent = (int)updatedBuyer.xp.MarkupPercent
             };
         }
 
-        private async Task<BuyerMarkup> UpdateMarkup(BuyerMarkup markup, string buyerID, string token)
+        private async Task<ImpersonationConfig> SaveImpersonationConfig(ImpersonationConfig impersonation, string buyerID)
+        {
+            return await SaveImpersonationConfig(impersonation, buyerID, null, _oc);
+        }
+
+        private async Task<ImpersonationConfig> SaveImpersonationConfig(ImpersonationConfig impersonation, string buyerID, string accessToken, IOrderCloudClient oc = null)
+        {
+            // if we're seeding then use the passed in oc client
+            // to support multiple environments and ease of setup for new orgs
+            // else used the configured client
+            var token = oc == null ? null : accessToken;
+            var ocClient = oc ?? _oc;
+
+            var currentConfig = await GetImpersonationByBuyerID(buyerID);
+            if(currentConfig != null && impersonation == null)
+            {
+                await ocClient.ImpersonationConfigs.DeleteAsync(currentConfig.ID);
+                return null;
+            }
+            else if(currentConfig != null)
+            {
+                return await ocClient.ImpersonationConfigs.SaveAsync(currentConfig.ID, impersonation, token);
+            } else
+            {
+                impersonation.BuyerID = buyerID;
+                impersonation.SecurityProfileID = Enum.GetName(typeof(CustomRole), CustomRole.HSBaseBuyer);
+                impersonation.ID = $"hs_admin_{buyerID}";
+                return await ocClient.ImpersonationConfigs.CreateAsync(impersonation);
+            }
+        }
+        private async Task<BuyerMarkup> UpdateMarkup(BuyerMarkup markup, string buyerID)
         {
             // to move from xp to contentdocs, that logic will go here instead of a patch
             // currently duplicate of the function above, this might need to be duplicated since there wont be a need to save the contentdocs assignment again

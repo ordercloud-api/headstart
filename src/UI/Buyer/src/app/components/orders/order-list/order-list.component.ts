@@ -35,8 +35,7 @@ export class OCMOrderList implements OnInit {
         sortBy = `!${selectedSortBy}`
         break
       case `!${selectedSortBy}`:
-        // setting to undefined so sdk ignores parameter
-        sortBy = undefined
+        sortBy = selectedSortBy
         break
       default:
         sortBy = selectedSortBy

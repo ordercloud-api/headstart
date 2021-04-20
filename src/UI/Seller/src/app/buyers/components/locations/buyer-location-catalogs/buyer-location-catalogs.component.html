@@ -33,6 +33,15 @@
           </td>
           <td>{{ catalog.Name }}</td>
         </tr>
+        <tr *ngIf="!catalogs || catalogs.length === 0">
+          <td>
+            <span class="font-italic" translate>
+              BUYER.HELPERMESSAGES.CATALOG.ACTION
+              <a href="{{'/buyers/' + buyerID + '/catalogs/new'}}" translate>BUYER.HELPERMESSAGES.CATALOG.ACTION</a>
+            </span>
+          </td>
+
+        </tr>
       </tbody>
     </table>
     <div *ngIf="!isCreatingNew" class="pb-3">

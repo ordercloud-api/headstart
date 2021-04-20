@@ -1,0 +1,125 @@
+resources:
+  repositories:
+    - repository: self
+      type: git
+      ref: development
+jobs:
+  - job: Build_MiddleWare
+    pool:
+      vmImage: windows-2019
+    displayName: Build Middleware
+    steps:
+      - checkout: self
+      - template: version.yml
+      - task: NuGetToolInstaller@1
+        displayName: "Use NuGet "
+      - task: NuGetCommand@2
+        displayName: NuGet restore
+      - task: CmdLine@2
+        displayName: Azure Storage for tests
+        inputs:
+          script: >-
+            sqllocaldb create MSSQLLocalDB
+
+            sqllocaldb start MSSQLLocalDB
+
+            sqllocaldb info MSSQLLocalDB
+
+
+            "C:\Program Files (x86)\Microsoft SDKs\Azure\Storage Emulator\AzureStorageEmulator.exe" start
+      - task: VSBuild@1
+        displayName: Build solution src/Middleware/Headstart.sln
+        inputs:
+          solution: src/Middleware/Headstart.sln
+      - task: VSTest@2
+        displayName: Run C# Unit tests
+        inputs:
+          testAssemblyVer2: >-
+            **\*.tests.dll
+
+            !**\obj\**
+      - task: DotNetCoreCLI@2
+        displayName: Build Middleware
+        inputs:
+          projects: "**/Headstart.API.csproj"
+          arguments: --configuration Release
+      - task: DotNetCoreCLI@2
+        displayName: Publish Middleware
+        inputs:
+          command: publish
+          publishWebProjects: false
+          projects: "**/Headstart.API.csproj"
+          arguments: --configuration Release --output middleware
+          zipAfterPublish: false
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Artifact: Middleware"
+        inputs:
+          PathtoPublish: middleware
+          ArtifactName: middleware
+  - job: Build_Buyer
+    displayName: Build Buyer
+    steps:
+      - task: NodeTool@0
+        displayName: Use Node 12.x
+        inputs:
+          versionSpec: 12.x
+      - task: Cache@2
+        displayName: Buyer Dependencies Cache
+        inputs:
+          key: npm | buyer | "$(Agent.OS)" | src/UI/Buyer/package-lock.json | src/UI/Buyer/package.json
+          path: src/UI/Buyer/node_modules
+          cacheHitVar: BuyerCacheRestored
+      - task: Npm@1
+        displayName: npm install - SDK
+        inputs:
+          workingDir: src/UI/SDK
+          verbose: false
+      - task: Npm@1
+        displayName: npm install - Buyer
+        inputs:
+          workingDir: src/UI/Buyer
+          verbose: false
+      - task: CmdLine@2
+        displayName: Build Buyer
+        inputs:
+          script: npm run build
+          workingDirectory: src/UI/Buyer
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Artifact: Buyer"
+        inputs:
+          PathtoPublish: src/UI/Buyer/dist
+          ArtifactName: buyer
+  - job: Build_Seller
+    displayName: Build Seller
+    steps:
+      - task: NodeTool@0
+        displayName: Use Node 12.x
+        inputs:
+          versionSpec: 12.x
+      - task: Cache@2
+        displayName: Seller Dependencies Cache
+        inputs:
+          key: npm | seller | v2 | "$(Agent.OS)" | src/UI/Seller/package-lock.json | src/UI/Seller/package.json
+          path: src/UI/Seller/node_modules
+          cacheHitVar: SellerCacheRestoredV2
+      - task: Npm@1
+        displayName: npm install - SDK
+        inputs:
+          workingDir: src/UI/SDK
+          verbose: false
+      - task: Npm@1
+        displayName: npm install - Seller
+        inputs:
+          workingDir: src/UI/Seller
+          verbose: false
+      - task: CmdLine@2
+        displayName: Build Seller
+        inputs:
+          script: npm run build
+          workingDirectory: src/UI/Seller
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Artifact: Seller"
+        inputs:
+          PathtoPublish: src/UI/Seller/dist
+          ArtifactName: seller
+

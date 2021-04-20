@@ -6,7 +6,5 @@ using System.Text;
 
 namespace Headstart.Models.Headstart
 {
-    public class HSProductUpdatePayload : WebhookPayloads.Products.Patch<dynamic, HSProduct> { }
-
     public class HSProductCreatePayload : WebhookPayloads.Products.Create<dynamic, HSProduct> { }
 }

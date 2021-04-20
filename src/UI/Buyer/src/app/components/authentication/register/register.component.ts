@@ -44,11 +44,14 @@ export class OCMRegister implements OnInit {
     })
   }
 
-  // TODO: requires anonymous token, but not checked for here
   async onSubmit(): Promise<void> {
-    const me: MeUser = this.form.value
-    me.Active = true
-    await this.context.authentication.register(me)
-    this.context.router.toLogin()
+    if(!this.context.appSettings.anonymousShoppingEnabled) {
+      throw new Error("User registration is not enabled")
+    } else {
+      const me: MeUser = this.form.value
+      me.Active = true
+      await this.context.authentication.register(me)
+      this.context.router.toHome()
+    }
   }
 }

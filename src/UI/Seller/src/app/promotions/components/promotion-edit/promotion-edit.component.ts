@@ -98,12 +98,12 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.isCreatingNew = this.promotionService.checkIfCreatingNew()
     this.listResources()
+    this.isSaveBtnDisabled()
   }
 
   ngOnChanges(): void {
     this.productsCollapsed =
-      this._promotionEditable?.xp?.AppliesTo !==
-      HSPromoEligibility.SpecificSKUs
+      this._promotionEditable?.xp?.AppliesTo !== HSPromoEligibility.SpecificSKUs
     this.currentDateTime = moment().format('YYYY-MM-DD[T]hh:mm')
   }
 
@@ -136,7 +136,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
 
   async setUpSuppliers(existingSupplierID?: string): Promise<void> {
     const supplierResponse = await this.ocSupplierService
-      .List({ pageSize: 100 })
+      .List({ pageSize: 100, sortBy: ['Name'] })
       .toPromise()
     this.suppliers = supplierResponse.Items
     await this.selectSupplier(existingSupplierID || this.suppliers[0].ID)
@@ -487,6 +487,16 @@ export class PromotionEditComponent implements OnInit, OnChanges {
       this.dataIsSaving,
       this.isCreatingNew
     )
+  }
+
+  isSaveBtnDisabled(): boolean {
+    if (!this.areChanges && this.isCreatingNew) {
+      return this.resourceForm?.status === 'INVALID' || this.dataIsSaving
+    } else if (!this.areChanges && !this.isCreatingNew) {
+      return true
+    } else {
+      return null
+    }
   }
 
   handleClearMinReq(): void {

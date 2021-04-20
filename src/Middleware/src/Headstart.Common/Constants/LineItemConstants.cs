@@ -151,7 +151,7 @@ namespace Headstart.Common.Constants
         {
             LineItemStatus.Returned,
             LineItemStatus.Backordered,
-            LineItemStatus.Canceled
+            LineItemStatus.Canceled,
         };
 
         // defining seller and supplier together as the current logic is the 

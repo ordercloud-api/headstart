@@ -209,9 +209,12 @@
                   *ngIf="!readOnly"
                   [existingQty]="li.Quantity"
                   [product]="li.Product"
+                  [li]="li"
+                  [groupedLineItems]="_lineItems"
                   [priceSchedule]="li.Product.PriceSchedule"
                   [isQtyChanging]="isQtyChanging(li.ID)"
                   [variantID]="li.Variant?.ID"
+                  [noChange]="li.ID !== _changedLineItemID"
                   (qtyChange)="changeQuantity(li.ID, $event.detail)"
                 >
                 </ocm-quantity-input>
@@ -305,12 +308,3 @@
     </div>
   </div>
 </div>
-
-<!--   KITS   -->
-<!-- <div *ngIf="liGroupedByKit?.length > 0">
-  <ocm-kit-lineitem-table
-    [lineItems]="_lineItems"
-    [groupByKits]="true"
-    [readOnly]="readOnly"
-  ></ocm-kit-lineitem-table>
-</div> -->
