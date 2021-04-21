@@ -25,7 +25,6 @@ import { ToastrService } from 'ngx-toastr'
 import {
   extractMiddlewareError,
   isInventoryError,
-  getPaymentError,
   ErrorCodes,
 } from 'src/app/services/error-constants'
 import { AxiosError } from 'axios'
@@ -35,8 +34,9 @@ import { CheckoutSection } from 'src/app/models/checkout.types'
 import { HSBuyerCreditCard, SelectedCreditCard } from 'src/app/models/credit-card.types'
 import { OrderSummaryMeta } from 'src/app/models/order.types'
 import { ModalState } from 'src/app/models/shared.types'
-import { MiddlewareError } from 'src/app/models/error.types'
+import { ErrorDisplayData, MiddlewareError } from 'src/app/models/error.types'
 import { Router } from '@angular/router'
+import { TranslateService } from '@ngx-translate/core'
 
 
 
@@ -59,7 +59,10 @@ export class OCMCheckout implements OnInit {
   shipEstimates: ShipEstimate[] = []
   currentPanel: string
   paymentError: string
-  orderError: string
+  orderErrorTitle: string
+  orderErrorMessage: string
+  orderErrorButtonText: string
+  checkoutError: MiddlewareError
   faCheck = faCheck
   orderErrorModal = ModalState.Closed
   checkout: CheckoutService = this.context.order.checkout
@@ -91,14 +94,15 @@ export class OCMCheckout implements OnInit {
     private context: ShopperContextService,
     private spinner: NgxSpinnerService,
     private toastrService: ToastrService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) {}
 
   async ngOnInit(): Promise<void> {
     this.context.order.onChange((order) => (this.order = order))
     this.order = this.context.order.get()
     if (this.order.IsSubmitted) {
-      await this.handleOrderError('This order has already been submitted')
+      await this.handleOrderError(ErrorCodes.AlreadySubmitted)
     }
 
     this.lineItems = this.context.order.cart.get()
@@ -150,7 +154,7 @@ export class OCMCheckout implements OnInit {
     await this.context.order.promos.applyAutomaticPromos()
     this.order = this.context.order.get()
     if (this.order.IsSubmitted) {
-      await this.handleOrderError('This order has already been submitted')
+      await this.handleOrderError(ErrorCodes.AlreadySubmitted)
     }
     this.lineItems = this.context.order.cart.get()
     this.destoryLoadingIndicator('payment')
@@ -282,77 +286,93 @@ export class OCMCheckout implements OnInit {
   async handleSubmitError(exception: AxiosError): Promise<void> {
     await this.context.order.reset() // orderID might've been incremented
     this.isLoading = false
-
-    const error = extractMiddlewareError(exception)
-    if (!error) {
-      throw new Error('An unknown error has occurred')
+    this.checkoutError = extractMiddlewareError(exception)
+    if (
+      this.checkoutError.ErrorCode === ErrorCodes.OrderCloudValidationError.code
+    ) {
+      this.handleOrderCloudValidationError(this.checkoutError)
+    } else if (!this.checkoutError || !this.checkoutError.ErrorCode) {
+      throw new Error(this.translate.instant('ERRORS.UNKNOWN'))
+    } else if (this.checkoutError.ErrorCode === ErrorCodes.InternalServerError.code) {
+      throw new Error(this.checkoutError.Message)
+    } else if (this.checkoutError.ErrorCode?.includes('CreditCardAuth.')) {
+      await this.handleCreditcardError(this.checkoutError)
+    } else {
+      const matchingError = this.getMatchingError(this.checkoutError);
+      if (matchingError) {
+        this.handleOrderError(matchingError)
+      } else {
+        throw new Error(this.checkoutError as any)
+      }
     }
-    if (error.ErrorCode === ErrorCodes.OrderSubmit.AlreadySubmitted) {
-      await this.handleOrderError('This order has already been submitted')
-    } else if (
-      error.ErrorCode === ErrorCodes.OrderSubmit.MissingShippingSelections
-    ) {
-      this.handleMissingShippingSelectionsError()
-    } else if (
-      error.ErrorCode === ErrorCodes.OrderSubmit.OrderCloudValidationError
-    ) {
-      this.handleOrderCloudValidationError(error)
-    } else if (
-      error.ErrorCode === ErrorCodes.Payment.FailedToVoidAuthorization
-    ) {
-      this.handleVoidAuthorizationError()
-    } else if (error.ErrorCode?.includes('CreditCardAuth.')) {
-      await this.handleCreditcardError(error)
-    } else if (error.ErrorCode == ErrorCodes.InternalServerError) {
-      throw new Error(error.Message)
+  }
+
+  getMatchingError(error: MiddlewareError): ErrorDisplayData {
+    const matchingError = Object.keys(ErrorCodes).find(key => {
+      return (ErrorCodes[key].code === error.ErrorCode)
+    })
+    if (matchingError) {
+      return ErrorCodes[matchingError]
+    }
+  }
+
+  handleOrderError(error: ErrorDisplayData, customMessage?: string): void {
+    this.orderErrorTitle = this.translate.instant(error.title)
+    // custom message would already be translated
+    this.orderErrorMessage = customMessage ? customMessage : this.translate.instant(error.message)
+    this.orderErrorButtonText = this.translate.instant(error.buttonText)
+    this.orderErrorModal = ModalState.Open
+  }
+
+
+  handleOrderCloudValidationError(error: MiddlewareError): void {
+    // TODO: blow this out into a modal that allows user to easily take action on line items in cart
+    const innerErrors = error.Data as MiddlewareError[]
+    const inventoryError = innerErrors.find(e => isInventoryError(e))
+    if (inventoryError) {
+      const part1 = this.translate.instant('ERRORS.INSUFFICIENT.MESSAGE_PART1')
+      const part2 = this.translate.instant('ERRORS.INSUFFICIENT.MESSAGE_PART2')
+      const customMessage = `${part1} ${inventoryError.Data.ProductID}. ${part2}`
+      this.handleOrderError(ErrorCodes.Insufficient, customMessage)
     } else {
       throw new Error(error as any)
     }
   }
 
-  async handleOrderError(message: string): Promise<void> {
-    this.orderError = message
-    await this.context.order.reset()
-    this.orderErrorModal = ModalState.Open
-  }
-
-  handleMissingShippingSelectionsError(): void {
-    this.currentPanel = 'shipping'
-    throw new Error(
-      'Order missing shipping selections - please select shipping selections'
-    )
-  }
-
-  handleOrderCloudValidationError(error: MiddlewareError): void {
-    // TODO: blow this out into a modal that allows user to easily take action on line items in cart
-    const innerErrors = error.Data as MiddlewareError[]
-    innerErrors.forEach((e) => {
-      if (isInventoryError(e)) {
-        if (e.ErrorCode === 'Inventory.Insufficient') {
-          throw new Error(
-            `Insufficient inventory for product ${e.Data.ProductID}. Quantity Available ${e.Data.QuantityAvailable}`
-          )
-        }
-      }
-    })
-  }
-
-  handleVoidAuthorizationError(): void {
-    // We tried to void an authorization on an order and it failed, will require manual intervention from support
-    // we email as well as log the error in application insights
-    this.currentPanel = 'payment'
-    this.paymentError =
-      'Critical error occurred. Please contact support and avoid submitting order again until you have been helped'
+  getPaymentError(errorReason: string): string {
+    const reason = errorReason.replace('AVS', 'Address Verification') // AVS isn't likely something to be understood by a layperson
+    const part1 = this.translate.instant('ERRORS.CREDIT_CARD_AUTH.MESSAGE_PART1')
+    const part2 = this.translate.instant('ERRORS.CREDIT_CARD_AUTH.MESSAGE_PART2')
+    return `${part1} "${reason}". ${part2}`
   }
 
   async handleCreditcardError(error: MiddlewareError): Promise<void> {
-    this.currentPanel = 'payment'
-    this.paymentError = getPaymentError(error.Message)
+    const matchingError = ErrorCodes.CreditCardAuth
+    this.paymentError = this.getPaymentError(error.Message)
+    this.handleOrderError(matchingError, this.paymentError)
     if (this.isNewCard) {
       await this.context.currentUser.cards.Delete(
         this.getCCPaymentData().CreditCardID
       )
     }
+  }
+
+  handleCheckoutError(): void {
+    this.orderErrorModal = ModalState.Closed
+    if (this.checkoutError.ErrorCode === ErrorCodes.MissingShippingSelections.code) {
+      this.currentPanel = 'shippingAddress'
+    } else if (this.checkoutError.ErrorCode === ErrorCodes.AlreadySubmitted.code) {
+      this.router.navigateByUrl('/home')
+    } else if (this.checkoutError.ErrorCode === ErrorCodes.FailedToVoidAuthorization.code ||
+      this.checkoutError.ErrorCode?.includes('CreditCardAuth.')) {
+      this.currentPanel = 'payment'
+    } else if (this.checkoutError.ErrorCode === ErrorCodes.OrderCloudValidationError.code) {
+      this.router.navigateByUrl('/cart')
+    }
+    this.checkoutError = null;
+    this.orderErrorTitle = null;
+    this.orderErrorMessage = null;
+    this.orderErrorButtonText = null;
   }
 
   getCCPaymentData(): OrderCloudIntegrationsCreditCardPayment {
