@@ -111,8 +111,8 @@ export abstract class OCMParentTableComponent implements OnInit {
       : lineItems
     const liGroups = _groupBy(supplierLineItems, (li) => li.ShipFromAddressID)
     return Object.values(liGroups).sort((a, b) => {
-      const nameA = a[0].ShipFromAddressID.toUpperCase() // ignore upper and lowercase
-      const nameB = b[0].ShipFromAddressID.toUpperCase() // ignore upper and lowercase
+      const nameA = a[0]?.ShipFromAddressID?.toUpperCase() // ignore upper and lowercase
+      const nameB = b[0]?.ShipFromAddressID?.toUpperCase() // ignore upper and lowercase
       return nameA.localeCompare(nameB)
     })
   }
