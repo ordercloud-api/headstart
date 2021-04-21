@@ -12,9 +12,9 @@ import { get as _get } from 'lodash'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import {
   Address,
-  OcSupplierAddressService,
-  OcAdminAddressService,
-} from '@ordercloud/angular-sdk'
+  SupplierAddresses,
+  AdminAddresses,
+} from 'ordercloud-javascript-sdk'
 import {
   FormGroup,
   FormControl,
@@ -148,8 +148,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     private router: Router,
     private location: Location,
     private currentUserService: CurrentUserService,
-    private ocSupplierAddressService: OcSupplierAddressService,
-    private ocAdminAddressService: OcAdminAddressService,
     private productService: ProductService,
     private sanitizer: DomSanitizer,
     private modalService: NgbModal,
@@ -205,11 +203,9 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   async getAddresses(product?): Promise<void> {
     const context: UserContext = await this.currentUserService.getUserContext()
     if (context.Me.Supplier) {
-      this.addresses = await this.ocSupplierAddressService
-        .List(context.Me.Supplier.ID)
-        .toPromise()
+      this.addresses = await SupplierAddresses.List(context.Me.Supplier.ID)
     } else if (context.Me.Seller) {
-      this.addresses = await this.ocAdminAddressService.List().toPromise()
+      this.addresses = await AdminAddresses.List()
     }
   }
 
@@ -250,25 +246,23 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       this.userContext?.UserType === 'SELLER' &&
       superProduct.Product.DefaultSupplierID
     ) {
-      this.addresses = await this.ocSupplierAddressService
-        .List(this._superHSProductEditable?.Product?.DefaultSupplierID)
-        .toPromise()
+      this.addresses = await SupplierAddresses.List(
+        this._superHSProductEditable?.Product?.DefaultSupplierID
+      )
       if (superProduct.Product?.ShipFromAddressID)
-        this.shippingAddress = await this.ocSupplierAddressService
-          .Get(
-            this._superHSProductEditable.Product.OwnerID,
-            this._superHSProductEditable.Product.ShipFromAddressID
-          )
-          .toPromise()
+        this.shippingAddress = await SupplierAddresses.Get(
+          this._superHSProductEditable.Product.OwnerID,
+          this._superHSProductEditable.Product.ShipFromAddressID
+        )
     } else if (
       this.userContext?.UserType === 'SELLER' &&
       !superProduct.Product.DefaultSupplierID
     ) {
-      this.addresses = await this.ocAdminAddressService.List().toPromise()
+      this.addresses = await AdminAddresses.List()
       if (superProduct.Product?.ShipFromAddressID)
-        this.shippingAddress = await this.ocAdminAddressService
-          .Get(this._superHSProductEditable.Product.ShipFromAddressID)
-          .toPromise()
+        this.shippingAddress = await AdminAddresses.Get(
+          this._superHSProductEditable.Product.ShipFromAddressID
+        )
     }
     this.isCreatingNew = this.productService.checkIfCreatingNew()
     this.checkForChanges()
