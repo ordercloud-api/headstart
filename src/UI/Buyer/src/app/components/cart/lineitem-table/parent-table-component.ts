@@ -44,7 +44,7 @@ export abstract class OCMParentTableComponent implements OnInit {
   constructor(
     public context: ShopperContextService,
     private spinner: NgxSpinnerService,
-    private checkoutService: CheckoutService,
+    private checkoutService: CheckoutService
   ) {
     this._orderCurrency = this.context.currentUser.get().Currency
   }
@@ -56,12 +56,14 @@ export abstract class OCMParentTableComponent implements OnInit {
   ngOnChanges(changes: NgChanges<OCMParentTableComponent>) {
     // if not being used in checkout-shipment then we will get and set necessary supplier data
     // in the checkout-shipment component we pass this information in from parent
-    if(changes?.displayShippingInfo?.currentValue !== true && 
-      changes?.lineItems?.currentValue) {
-        this.setSupplierData()
-      } else if(changes?.supplierData?.currentValue) {
-        this.buildSupplierArray(changes?.supplierData?.currentValue)
-      }
+    if (
+      changes?.displayShippingInfo?.currentValue !== true &&
+      changes?.lineItems?.currentValue
+    ) {
+      this.setSupplierData()
+    } else if (changes?.supplierData?.currentValue) {
+      this.buildSupplierArray(changes?.supplierData?.currentValue)
+    }
   }
 
   initLineItems(): void {
@@ -72,34 +74,38 @@ export abstract class OCMParentTableComponent implements OnInit {
   }
 
   async setSupplierData(): Promise<void> {
-    const supplierArray = uniqWith(this._lineItems?.map(li => (
-      {
+    const supplierArray = uniqWith(
+      this._lineItems?.map((li) => ({
         supplierID: li?.SupplierID,
-        ShipFromAddressID: li?.ShipFromAddressID
-      }
-    )), isEqual)
-    if(JSON.stringify(supplierArray) !== JSON.stringify(this._supplierArray) && 
+        ShipFromAddressID: li?.ShipFromAddressID,
+      })),
+      isEqual
+    )
+    if (
+      JSON.stringify(supplierArray) !== JSON.stringify(this._supplierArray) &&
       !this.displayShippingInfo
     ) {
-      this._supplierArray = supplierArray;
-      const supplierList = await this.checkoutService.buildSupplierData(this._lineItems);
+      this._supplierArray = supplierArray
+      const supplierList = await this.checkoutService.buildSupplierData(
+        this._lineItems
+      )
       this.buildSupplierArray(supplierList)
     }
   }
 
   buildSupplierArray(supplierList: LineItemGroupSupplier[]) {
-    const suppliers: LineItemGroupSupplier[] = [];
-    if(this.liGroupedByShipFrom) {
-      this.liGroupedByShipFrom.forEach(group => {
-        suppliers.push(supplierList.find(s => s.shipFrom.ID === group[0].ShipFromAddressID))
+    const suppliers: LineItemGroupSupplier[] = []
+    if (this.liGroupedByShipFrom) {
+      this.liGroupedByShipFrom.forEach((group) => {
+        suppliers.push(
+          supplierList.find((s) => s.shipFrom.ID === group[0].ShipFromAddressID)
+        )
       })
     }
     this.suppliers = suppliers
   }
 
-  groupLineItemsByShipFrom(
-    lineItems: HSLineItem[]
-  ): HSLineItem[][] {
+  groupLineItemsByShipFrom(lineItems: HSLineItem[]): HSLineItem[][] {
     const supplierLineItems = this._groupByKits
       ? lineItems.filter((li) => !li.xp.KitProductID)
       : lineItems
@@ -111,7 +117,6 @@ export abstract class OCMParentTableComponent implements OnInit {
     })
   }
 
-
   async removeLineItem(lineItemID: string): Promise<void> {
     await this.context.order.cart.remove(lineItemID)
   }
@@ -121,7 +126,7 @@ export abstract class OCMParentTableComponent implements OnInit {
     configurationID: string,
     documentID: string
   ): void {
-    if(!this.invalidItem) {
+    if (!this.invalidItem) {
       this.context.router.toProductDetails(productID)
     }
   }
