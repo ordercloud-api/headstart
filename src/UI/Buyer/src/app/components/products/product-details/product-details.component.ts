@@ -87,7 +87,9 @@ export class OCMProductDetails implements OnInit {
     this.isOrderable = !!superProduct.PriceSchedule
     this.supplierNote = this._product.xp && this._product.xp.Note
     this.specs = superProduct.Specs
-    this.setSupplier(this._product.DefaultSupplierID)
+    if (this._product.DefaultSupplierID !== null) {
+      this.setSupplier(this._product.DefaultSupplierID)
+    }
     this.setPageTitle()
     this.populateInactiveVariants(superProduct)
     this.showGrid = superProduct?.PriceSchedule?.UseCumulativeQuantity
