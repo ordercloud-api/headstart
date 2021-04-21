@@ -699,7 +699,7 @@
           class="btn btn-link mr-3"
           (click)="handleDiscardChanges()"
           *ngIf="!isCreatingNew"
-          [disabled]="!areChanges"
+          [disabled]="noChanges"
           translate
         >
           ADMIN.PROMOTIONS.DISCARD_CHANGES
@@ -707,7 +707,7 @@
         <button
           class="btn btn-primary"
           type="submit"
-          [disabled]="isSaveBtnDisabled()"
+          [disabled]="isSaveBtnDisabled"
           (click)="handleSave()"
         >
           {{ getSaveBtnText() }}
@@ -822,7 +822,7 @@
             class="btn btn-link mr-3"
             (click)="handleDiscardChanges()"
             *ngIf="!isCreatingNew"
-            [disabled]="!areChanges"
+            [disabled]="noChanges"
             translate
           >
             ADMIN.PROMOTIONS.DISCARD_CHANGES
@@ -831,7 +831,7 @@
             class="btn btn-primary"
             type="submit"
             (click)="handleSave()"
-            [disabled]="isSaveBtnDisabled()"
+            [disabled]="isSaveBtnDisabled"
           >
             {{ getSaveBtnText() }}
           </button>
