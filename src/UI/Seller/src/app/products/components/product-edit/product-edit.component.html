@@ -1400,9 +1400,6 @@
   </form>
   <!-- TODO: 2/2 Abstract into component to be used anywhere using inputs and outputs -->
   <div
-    *ngIf="
-      userContext?.UserType === 'SUPPLIER' || userContext?.UserType === 'SELLER'
-    "
     class="d-flex justify-content-between align-items-center py-2 product-edit-actions"
   >
     <delete-confirm-modal-component
