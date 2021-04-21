@@ -850,13 +850,13 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       const imgAssets = await this.assetService.uploadImageFiles(
         this.imageFiles
       )
-      ;(superHSProduct.Product.xp as any).Images = imgAssets
+      superHSProduct.Product.xp.Images = imgAssets
     }
     if (this.staticContentFiles.length > 0) {
       const documentAssets = await this.assetService.uploadDocumentFiles(
         this.staticContentFiles
       )
-      ;(superHSProduct.Product.xp as any).Documents = documentAssets
+      superHSProduct.Product.xp.Documents = documentAssets
     }
     try {
       return await HeadStartSDK.Products.Post(superHSProduct)
