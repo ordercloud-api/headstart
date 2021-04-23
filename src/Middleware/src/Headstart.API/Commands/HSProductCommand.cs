@@ -212,8 +212,11 @@ namespace Headstart.API.Commands.Crud
 			}
 			superProduct.Product.DefaultPriceScheduleID = _priceSchedule.ID;
 			// Create Product
-			var supplierName = await GetSupplierNameForXpFacet(user.Supplier.ID, user.AccessToken);
-			superProduct.Product.xp.Facets.Add("supplier", new List<string>() { supplierName });
+			if(user.Supplier != null)
+            {
+				var supplierName = await GetSupplierNameForXpFacet(user.Supplier.ID, user.AccessToken);
+				superProduct.Product.xp.Facets.Add("supplier", new List<string>() { supplierName });
+			}
 			var _product = await _oc.Products.CreateAsync<HSProduct>(superProduct.Product, user.AccessToken);
 			// Make Spec Product Assignments
 			await Throttler.RunAsync(superProduct.Specs, 100, 5, s => _oc.Specs.SaveProductAssignmentAsync(new SpecProductAssignment { ProductID = _product.ID, SpecID = s.ID }, accessToken: user.AccessToken));
@@ -531,7 +534,7 @@ namespace Headstart.API.Commands.Crud
 			{
 				tasks.Add(Throttler.RunAsync(product.xp.Images, 100, 5, i => _assetClient.DeleteAssetByUrl(i.Url)));
 			}
-			if (product?.xp?.Documents.Count() > 0)
+			if (product?.xp?.Documents != null && product?.xp?.Documents.Count() > 0)
 			{
 				tasks.Add(Throttler.RunAsync(product.xp.Documents, 100, 5, d => _assetClient.DeleteAssetByUrl(d.Url)));
 			}
