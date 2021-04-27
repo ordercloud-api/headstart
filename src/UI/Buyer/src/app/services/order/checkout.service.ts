@@ -26,6 +26,7 @@ import { isEqual, max, uniqWith } from 'lodash'
 import { TempSdk } from '../temp-sdk/temp-sdk.service'
 import { LineItemGroupSupplier } from 'src/app/models/line-item.types'
 import { AddressType } from 'src/app/models/checkout.types'
+import { AppConfig } from 'src/app/models/environment.types'
 
 @Injectable({
   providedIn: 'root',
@@ -34,7 +35,7 @@ export class CheckoutService {
   constructor(
     private paymentHelper: PaymentHelperService,
     private state: OrderStateService,
-    private TempSdk: TempSdk
+    private appConfig: AppConfig
   ) {}
 
   async appendPaymentMethodToOrderXp(
@@ -217,15 +218,31 @@ export class CheckoutService {
     const suppliers = await Suppliers.List({filters: {'ID': supplierIDs.join("|")}})
     const supplierItems: LineItemGroupSupplier[] = [];
     for(const combo of uniqueSuppliers) {
-      const supplier = suppliers.Items.find(s => s.ID === combo.supplierID)
-      if(combo.supplierID && combo.ShipFromAddressID) {
-        const shipFrom = await SupplierAddresses.Get(combo.supplierID, combo.ShipFromAddressID);
-        supplierItems.push({supplier,shipFrom})
+      if(combo.supplierID === null) { //This handles seller owned products
+        supplierItems.push(this.buildSellerShipmentData(combo.ShipFromAddressID))
       } else {
-        supplierItems.push({supplier, shipFrom: null})
+        const supplier = suppliers.Items.find(s => s.ID === combo.supplierID)
+        if(combo.supplierID && combo.ShipFromAddressID) {
+          const shipFrom = await SupplierAddresses.Get(combo.supplierID, combo.ShipFromAddressID);
+          supplierItems.push({supplier,shipFrom})
+        } else {
+          supplierItems.push({supplier, shipFrom: null})
+        }
       }
     }
     return supplierItems
+  }
+
+  buildSellerShipmentData(shipFromAddresID: string): LineItemGroupSupplier {
+    return {
+      supplier: {
+        ID: null,
+        Name: this.appConfig.sellerName || 'Purchasing from Seller'
+      }, 
+      shipFrom: {
+        ID: shipFromAddresID
+      }
+    }
   }
 
   async calculateOrder(): Promise<HSOrder> {
