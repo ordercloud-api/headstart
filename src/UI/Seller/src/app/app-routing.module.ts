@@ -58,11 +58,12 @@ const routes: Routes = [
         loadChildren: () =>
           import('./suppliers/suppliers.module').then((m) => m.SuppliersModule),
       },
-      {
-        path: 'reports',
-        loadChildren: () =>
-          import('./reports/reports.module').then((m) => m.ReportsModule),
-      },
+      /** https://four51.atlassian.net/browse/HDS-319  Reimplement once feature is stable*/
+      // {
+      //   path: 'reports',
+      //   loadChildren: () =>
+      //     import('./reports/reports.module').then((m) => m.ReportsModule),
+      // },
       {
         path: 'storefronts',
         loadChildren: () =>
