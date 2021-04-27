@@ -61,8 +61,9 @@ namespace Headstart.API.Commands
                 new ErrorCode("OrderSubmit.AlreadySubmitted", 400, "Order has already been submitted")
             );
 
-            var shipMethodsWithoutSelections = worksheet.ShipEstimateResponse.ShipEstimates.Where(estimate => estimate.SelectedShipMethodID == null);
+            var shipMethodsWithoutSelections = worksheet?.ShipEstimateResponse?.ShipEstimates?.Where(estimate => estimate.SelectedShipMethodID == null);
             Require.That(
+                worksheet?.ShipEstimateResponse != null &&
                 shipMethodsWithoutSelections.Count() == 0, 
                 new ErrorCode("OrderSubmit.MissingShippingSelections", 400, "All shipments on an order must have a selection"), shipMethodsWithoutSelections
                 );
