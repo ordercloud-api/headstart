@@ -1,4 +1,4 @@
-﻿using OrderCloud.SDK;
+using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -109,9 +109,9 @@ namespace ordercloud.integrations.easypost
 				// add customs info for international shipments
 				if (groupedLineItems.Key.ShipTo.Country != "US")
 				{
-					var line_item = groupedLineItems.First(g => g.SupplierID != null);
+					var line_item = groupedLineItems.FirstOrDefault(g => g.SupplierID != null);
 
-					var profile = profiles.FirstOrDefault(line_item.SupplierID);
+					var profile = profiles.FirstOrDefault(line_item?.SupplierID);
 					shipment.customs_info = new EasyPostCustomsInfo()
 					{
 						contents_type = "merchandise",

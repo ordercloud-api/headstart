@@ -73,7 +73,7 @@ namespace Headstart.Common.Extensions
                     if (method.ID == ShippingConstants.NoRatesID)
                     {
                         method.xp.FreeShippingApplied = true;
-                        method.xp.FreeShippingThreshold = supplier.xp.FreeShippingThreshold;
+                        method.xp.FreeShippingThreshold = supplier?.xp?.FreeShippingThreshold;
                         method.Cost = 0;
                     }
                     // TODO: Still waiting on decision makers to decide if we want

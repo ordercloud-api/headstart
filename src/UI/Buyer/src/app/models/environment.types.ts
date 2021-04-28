@@ -53,6 +53,7 @@ export interface EnvironmentConfig {
   cmsUrl?: string
   creditCardIframeUrl: string
   sellerID: string
+  sellerName?: string
   translateBlobUrl: string
   orderCloudApiUrl: string
   theme?: Theme
@@ -110,6 +111,10 @@ export class AppConfig {
    */
   sellerID: string
 
+  /**
+   * Name to use when displaying seller organization (i.e. seller owned products)
+   */
+  sellerName: string
   /**
    * An array of security roles that will be requested upon login.
    * These roles allow access to specific endpoints in the OrderCloud.io API.
