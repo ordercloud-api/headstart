@@ -233,14 +233,14 @@ export class CheckoutService {
     return supplierItems
   }
 
-  buildSellerShipmentData(shipFromAddresID: string): LineItemGroupSupplier {
+  buildSellerShipmentData(shipFromAddressID: string): LineItemGroupSupplier {
     return {
       supplier: {
         ID: null,
         Name: this.appConfig.sellerName || 'Purchasing from Seller'
       },
       shipFrom: {
-        ID: shipFromAddresID
+        ID: shipFromAddressID
       }
     }
   }
