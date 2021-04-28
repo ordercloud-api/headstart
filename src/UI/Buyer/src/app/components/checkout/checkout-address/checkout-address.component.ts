@@ -34,8 +34,6 @@ export class OCMCheckoutAddress implements OnInit {
   isAnon: boolean
 
   readonly NEW_ADDRESS_CODE = 'new'
-  existingBuyerLocations: ListPage<BuyerAddress>
-  selectedBuyerLocation: BuyerAddress
   existingShippingAddresses: ListPage<BuyerAddress>
   selectedShippingAddress: BuyerAddress
   showNewAddressForm = false
@@ -57,19 +55,6 @@ export class OCMCheckoutAddress implements OnInit {
     await this.ListAddressesForShipping()
   }
 
-
-  onBuyerLocationChange(buyerLocationID: string): void {
-    this.selectedBuyerLocation = this.existingBuyerLocations.Items.find(
-      (location) => buyerLocationID === location.ID
-    )
-    const shippingAddress = this.existingShippingAddresses.Items.find(
-      (location) => location.ID === this.selectedBuyerLocation.ID
-    )
-    if (shippingAddress) {
-      this.selectedShippingAddress = shippingAddress
-    }
-  }
-
   onShippingAddressChange(shippingAddressID: string): void {
     this.showNewAddressForm = shippingAddressID === this.NEW_ADDRESS_CODE
     this.selectedShippingAddress = this.existingShippingAddresses.Items.find(
@@ -86,9 +71,6 @@ export class OCMCheckoutAddress implements OnInit {
   async saveAddressesAndContinue(
     newShippingAddress: Address = null
   ): Promise<void> {
-    if (!this.selectedBuyerLocation && !this.isAnon) {
-      throw new Error('Please select a location for this order')
-    }
     try {
       this.spinner.show()
       if (this.isAnon) {
@@ -154,13 +136,12 @@ export class OCMCheckoutAddress implements OnInit {
     const shippingAddressesFilter = {
       filters: { Shipping: 'true' }
     }
-    this.existingBuyerLocations = await listAll(Me, Me.ListAddresses, buyerLocationsFilter)
-    this.homeCountry = this.existingBuyerLocations?.Items[0]?.Country || 'US'
-    if (this.existingBuyerLocations?.Items.length === 1) {
-      this.selectedBuyerLocation = this.selectedShippingAddress = this.existingBuyerLocations.Items[0]
-    }
-
-    this.existingShippingAddresses = await listAll(Me, Me.ListAddresses, shippingAddressesFilter)
+    const [buyerLocations, existingShippingAddresses] = await Promise.all([
+      Me.ListAddresses(buyerLocationsFilter),
+      listAll(Me, Me.ListAddresses, shippingAddressesFilter)
+    ])
+    this.homeCountry = buyerLocations?.Items[0]?.Country || 'US'
+    this.existingShippingAddresses = existingShippingAddresses
   }
 
   private async saveNewShippingAddress(
