@@ -70,6 +70,9 @@ export class SpecFormService {
     specs: Spec[],
     specForm?: FormGroup
   ): string {
+    if(!images || images === null) {
+      images = []
+    }
     if (!specs.length) {
       const firstImage = images[0]
       return firstImage?.Url
