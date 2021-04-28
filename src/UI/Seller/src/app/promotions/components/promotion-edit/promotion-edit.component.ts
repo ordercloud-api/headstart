@@ -85,7 +85,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   faCalendar = faCalendar
   productsCollapsed = true
   currentDateTime: string
-  isSaveBtnDisabled?: boolean = null
+  isSaveBtnDisabled?: boolean = true
   noChanges?: boolean = !this.areChanges
   constructor(
     public promotionService: PromotionService,
@@ -266,8 +266,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
 
     this.resourceForm.valueChanges.subscribe(() => {
       setTimeout(() => {
-        this.noChanges = !this.areChanges
-        if (!this.areChanges && this.isCreatingNew) {
+        if (this.areChanges && this.isCreatingNew) {
           this.isSaveBtnDisabled =
             this.resourceForm?.status === 'INVALID' || this.dataIsSaving
         } else if (!this.areChanges && !this.isCreatingNew) {
