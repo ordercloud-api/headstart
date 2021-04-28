@@ -10,6 +10,7 @@
   "creditCardIframeUrl": "https://fts-uat.cardconnect.com/itoke/ajax-tokenizer.html",
   "translateBlobUrl": "https://headstartdemo.blob.core.windows.net/ngx-translate/i18n/",
   "sellerID": "HEADSTARTDEMO_TEST",
+  "sellerName": "Headstart Demo Seller",
   "orderCloudApiUrl": "https://sandboxapi.ordercloud.io",
   "theme": { "logoSrc": "assets/generic-logo.png" },
   "instrumentationKey": null

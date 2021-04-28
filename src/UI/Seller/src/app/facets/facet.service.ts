@@ -8,6 +8,7 @@ import { ProductFacets } from 'ordercloud-javascript-sdk'
 @Injectable({
   providedIn: 'root',
 })
+
 export class FacetService extends ResourceCrudService<ProductFacet> {
   emptyResource = {
     ID: '',

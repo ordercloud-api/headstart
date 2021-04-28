@@ -6,7 +6,7 @@ Welcome! The purpose of this project is to give you and your business a "headsta
 2. [Buyer](./src/UI/Buyer/README.md) - The frontend buyer application written in Angular. This includes the entire shopping experience from the perspective of a buyer user.
 3. [Seller](./src/UI/Seller/README.md) - The frontend admin application written in Angular. This includes everything needed to manage the data in your buyer application(s).
 
-## Initial Setup
+## Initial Setup 
 
 There are some tasks that must be completed before you can get an instance of Headstart running. This section will walk you through each of them.
 
