@@ -8,7 +8,7 @@
   >
     <small>Loading Shipping Selections...</small>
   </ngx-spinner>
-  <div class="form-group" *ngIf="selectedBuyerLocation">
+  <div class="form-group">
     <label for="selectAddress" translate
       >CHECKOUT.CHECKOUT_ADDRESS.SHIPPING_ADDRESS</label
     >
@@ -42,7 +42,7 @@
     <button
       type="submit"
       *ngIf="!showNewAddressForm"
-      [disabled]="!selectedShippingAddress || (!selectedBuyerLocation && !isAnon)"
+      [disabled]="!selectedShippingAddress"
       (click)="saveAddressesAndContinue()"
       class="btn btn-secondary btn-sm mr-2 mt-3"
       translate
