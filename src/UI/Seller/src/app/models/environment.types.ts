@@ -11,7 +11,6 @@ export interface EnvironmentConfig {
   translateBlobUrl: string
   blobStorageUrl: string
   orderCloudApiUrl: string
-  buyerConfigs: Record<string, BuyerConfig>
   superProductFieldsToMonitor: string[]
 }
 
@@ -57,9 +56,6 @@ export interface AppConfig {
 
   // sellerName is being hard-coded until this is available to store in OrderCloud
   sellerName: string
-
-  //  buyer url and client ID are needed for impersonating buyers
-  buyerConfigs: any
 
   /**
    * An array of fields on a product that should be monitored for changes.

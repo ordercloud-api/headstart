@@ -12,5 +12,4 @@ You can have any number of configurations each representing a deployment. By def
 | translateBlobUrl              | The base url to the folder including your translations. See https://github.com/ngx-translate/core for more info                                  |
 | blobStorageUrl                | the base url to the blob storage account                                                                                                         |
 | orderCloudApiUrl              | The base url to the OrderCloud API. Can be one of: https://api.ordercloud.io, https://sandboxapi.ordercloud.io, https://stagingapi.ordercloud.io       |
-| buyerConfigs                  | A dictionary where each key represents a new buyer and details about that buyer such as clientID and buyerURl used for impersonation             |
 | superProductFieldsToMonitor   | Fields to monitor for changes. Until approved by seller product will not be purchasable                                                          |
