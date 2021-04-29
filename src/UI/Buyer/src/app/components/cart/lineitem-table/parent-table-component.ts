@@ -13,6 +13,10 @@ import { NgChanges } from 'src/app/models/ng-changes.types'
 import { CheckoutService } from 'src/app/services/order/checkout.service'
 import { Address } from 'ordercloud-javascript-sdk'
 
+interface IDeletingLineItem {
+  isDeleting: boolean
+  lineItemID: string
+}
 export abstract class OCMParentTableComponent implements OnInit {
   @Input() set lineItems(lineItems: HSLineItem[]) {
     this._lineItems = lineItems
@@ -42,6 +46,10 @@ export abstract class OCMParentTableComponent implements OnInit {
   _changedLineItemID: string
   _supplierData: LineItemGroupSupplier[]
   showComments: Record<string, string> = {}
+  deletingLineItem: IDeletingLineItem = {
+    isDeleting: false,
+    lineItemID: null,
+  }
   constructor(
     public context: ShopperContextService,
     private spinner: NgxSpinnerService,
@@ -68,7 +76,7 @@ export abstract class OCMParentTableComponent implements OnInit {
   }
 
   shouldDisplayAddress(shipFrom: Partial<Address>): boolean {
-    return shipFrom?.Street1 && shipFrom.Street1 !== null;
+    return shipFrom?.Street1 && shipFrom.Street1 !== null
   }
 
   initLineItems(): void {
@@ -123,7 +131,15 @@ export abstract class OCMParentTableComponent implements OnInit {
   }
 
   async removeLineItem(lineItemID: string): Promise<void> {
+    this.deletingLineItem = {
+      lineItemID: lineItemID,
+      isDeleting: true,
+    }
     await this.context.order.cart.remove(lineItemID)
+    this.deletingLineItem = {
+      lineItemID: null,
+      isDeleting: false,
+    }
   }
 
   toProductDetails(

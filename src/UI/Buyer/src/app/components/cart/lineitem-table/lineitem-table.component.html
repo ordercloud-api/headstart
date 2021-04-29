@@ -14,7 +14,10 @@
         <div
           class="col-md d-flex flex-column justify-content-end text-md-right"
         >
-          <address *ngIf="shouldDisplayAddress(suppliers[i]?.shipFrom)" class="small text-muted mb-0">
+          <address
+            *ngIf="shouldDisplayAddress(suppliers[i]?.shipFrom)"
+            class="small text-muted mb-0"
+          >
             {{ suppliers[i].shipFrom?.Street1 }}
             {{ suppliers[i].shipFrom?.Street2 }} |
             {{ suppliers[i].shipFrom?.City }},
@@ -294,6 +297,10 @@
           type="button"
           *ngIf="!readOnly"
           (click)="removeLineItem(li.ID)"
+          [disabled]="
+            deletingLineItem?.isDeleting &&
+            deletingLineItem?.lineItemID === li.ID
+          "
           translate
         >
           CART.LINEITEM_TABLE.REMOVE_ITEM
