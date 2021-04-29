@@ -297,10 +297,7 @@
           type="button"
           *ngIf="!readOnly"
           (click)="removeLineItem(li.ID)"
-          [disabled]="
-            deletingLineItem?.isDeleting &&
-            deletingLineItem?.lineItemID === li.ID
-          "
+          [disabled]="deletingLineItem[li.ID]"
           translate
         >
           CART.LINEITEM_TABLE.REMOVE_ITEM
