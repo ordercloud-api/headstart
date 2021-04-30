@@ -1,9 +1,6 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core'
 import { ListPage, OrderPromotion } from 'ordercloud-javascript-sdk'
-import {
-  HSLineItem,
-  HSOrder,
-} from '@ordercloud/headstart-sdk'
+import { HSLineItem, HSOrder } from '@ordercloud/headstart-sdk'
 import { getOrderSummaryMeta } from 'src/app/services/purchase-order.helper'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 import { OrderSummaryMeta } from 'src/app/models/order.types'
@@ -29,6 +26,7 @@ export class OCMCart implements OnInit, OnDestroy {
   orderError: string
   faShoppingCart = faShoppingCart
   _isCartValid = true
+  isEmptyingCart = false
   @Input() set invalidLineItems(value: HSLineItem[]) {
     this._invalidLineItems = value
     if (
@@ -60,12 +58,14 @@ export class OCMCart implements OnInit, OnDestroy {
     }
   }
 
-  constructor(private context: ShopperContextService,
-    private currentOrder: CurrentOrderService) {}
+  constructor(
+    private context: ShopperContextService,
+    private currentOrder: CurrentOrderService
+  ) {}
 
   ngOnInit(): void {
     this.currentOrder.cart.isCartValidSubject.subscribe((valid) => {
-      this._isCartValid = valid;
+      this._isCartValid = valid
     })
   }
 
@@ -89,7 +89,8 @@ export class OCMCart implements OnInit, OnDestroy {
   }
 
   emptyCart(): void {
-    this.context.order.cart.empty()
+    this.isEmptyingCart = true
+    this.context.order.cart.empty().finally(() => (this.isEmptyingCart = false))
   }
 
   async removeInvalidLineItems(): Promise<void> {
@@ -118,8 +119,8 @@ export class OCMCart implements OnInit, OnDestroy {
       this.context.currentUser.get()
     )
   }
-  
+
   ngOnDestroy(): void {
-    this.currentOrder.cart.isCartValidSubject.unsubscribe();
+    this.currentOrder.cart.isCartValidSubject.unsubscribe()
   }
 }
