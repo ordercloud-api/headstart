@@ -16,11 +16,6 @@ class VendorDetailsPage {
 	CACountryCheckbox: Selector
 	freightPOPToggle: Selector
 	createButton: Selector
-	mainCatgorySelector: Selector
-	mainCategoryOptionsSelector: Selector
-	subCategorySelector: Selector
-	subCategoryOptionsSelector: Selector
-	addCategoryButton: Selector
 
 	constructor() {
 		this.activeToggle = Selector('#Active').parent()
@@ -38,17 +33,6 @@ class VendorDetailsPage {
 		this.createButton = Selector('button')
 			.withText(createRegExp('create'))
 			.withAttribute('type', 'submit')
-		this.mainCatgorySelector = Selector('supplier-category-select-component')
-			.find('select')
-			.nth(0)
-		this.mainCategoryOptionsSelector = this.mainCatgorySelector.find('option')
-		this.subCategorySelector = Selector('supplier-category-select-component')
-			.find('select')
-			.nth(1)
-		this.subCategoryOptionsSelector = this.subCategorySelector.find('option')
-		this.addCategoryButton = Selector('button').withText(
-			createRegExp('add category')
-		)
 	}
 
 	async createDefaultVendor() {
@@ -61,16 +45,6 @@ class VendorDetailsPage {
 		)
 		await t.click(this.freightPOPToggle)
 		await t.click(this.standardProductTypeCheckbox)
-		await await scrollIntoView('supplier-category-select-component')
-		await t.click(this.addCategoryButton)
-		await t.click(this.mainCatgorySelector)
-		await t.click(
-			this.mainCategoryOptionsSelector.withText(createRegExp('fans'))
-		)
-		await t.click(this.subCategorySelector)
-		await t.click(
-			this.subCategoryOptionsSelector.withText(createRegExp('mandated'))
-		)
 		// await t.click(this.USCountryCheckbox)
 		await t.click(this.createButton)
 
@@ -104,16 +78,6 @@ class VendorDetailsPage {
 		if (productType.includes('Purchase Order')) {
 			await t.click(this.purchaseOrderProductTypeCheckbox)
 		}
-		await await scrollIntoView('supplier-category-select-component')
-		await t.click(this.addCategoryButton)
-		await t.click(this.mainCatgorySelector)
-		await t.click(
-			this.mainCategoryOptionsSelector.withText(createRegExp(mainCategory))
-		)
-		await t.click(this.subCategorySelector)
-		await t.click(
-			this.subCategoryOptionsSelector.withText(createRegExp(subCategory))
-		)
 
 		await t.click(this.createButton)
 
