@@ -1,237 +1,105 @@
-
-<nav class="category-nav"> 
+<nav class="category-nav">
   <!-- mobile menu items -->
-  <div class="d-block d-md-none bg-light mobile-sidebar-menu"
-  id="navbarSupportedContent"
+  <div
+    class="d-block d-md-none bg-light mobile-sidebar-menu"
+    id="navbarSupportedContent"
   >
-  <h2 class="heading__category text-medium border-bottom border-medium pb-2">ACCOUNT</h2>
+    <h2
+      class="sidebar__heading d-flex align-items-center text-medium border-bottom border-medium pb-2"
+    >
+      <span translate>LAYOUT.APP_HEADER.GREETING</span>, {{ user?.FirstName }}!
+      <img class="ml-3" [src]="flagIcon" alt="currency-flag" />
+    </h2>
 
-  <ul class="navbar-nav">
-    <!-- Mobile Profile Menu Items -->
-    <li>
-      <a
-        class="sidebar-action"
-        [ngClass]="{ active: activePath?.indexOf('/profile') === 0 }"
-        (click)="context.router.toMyProfile()"
-        translate
-        >LAYOUT.APP_HEADER.PROFILE
-        <fa-icon
-        [icon]="faCaretRight"></fa-icon>  
-      </a>
-    </li>
-  <!-- /Mobile Profile Menu Items -->
-  <li *ngIf="user.IsAnonymous">
-  <div class="sidebar-action form-inline">
-    <a
-      class="btn btn-sm btn-outline-dark"
-      (click)="isCollapsed = !isCollapsed; context.router.toLogin()"
-      translate
-      >COMMON.LOGIN</a
-    >
-    <a
-      class="btn btn-sm btn-primary d-none d-sm-block ml-2"
-      (click)="isCollapsed = !isCollapsed; context.router.toRegister()"
-      translate
-      >LAYOUT.APP_HEADER.REGISTER</a
-    >
-  </div>
-  </li>
-    <!-- Profile -->
-    <ul
-    class="navbar-nav"
-    *ngIf="!user.IsAnonymous"
-  >
-    <li
-      class="nav-item dropdown cursor-pointer"
-      ngbDropdown
-      placement="bottom-right"
-    >
-      <div
-        class="sidebar-action dropdown-toggle"
-        id="accountDropdown"
-        ngbDropdownToggle
-      >
-        <span translate>
-          LAYOUT.APP_HEADER.ACCOUNT
-        </span>
-        <fa-icon class="mr-auto ml-2 text-medium" [icon]="faUserCircle" aria-hidden="true"></fa-icon>
-      </div>
-      <div
-        class="dropdown__acount"
-        aria-labelledby="accountDropdown"
-        ngbDropdownMenu
-      >
-        <h4 class="dropdown-header">
-          <span translate>LAYOUT.APP_HEADER.GREETING</span>,
-          {{ user?.FirstName }}!
-            <img [src]="flagIcon" alt="currency-flag" />
-        </h4>
-        <ng-container *ngFor="let profileRoute of profileRoutes">
-          <span *ngIf="profileRoute.routerCall !== 'toOrdersToApprove'">
-            <a
-              *ngIf="profileRoute.showInDropdown"
-              class="nav-item dropdown-item cursor-pointer"
-              [ngClass]="{ active: isRouteActive(profileRoute.url) }"
-              (click)="context.router[profileRoute.routerCall]()"
-              >{{ profileRoute.displayText }}</a
-            >
-          </span>
-        </ng-container>
-        <div *ngIf="!isSSO" class="dropdown-divider"></div>
+    <ul class="navbar-nav">
+      <!-- Mobile Profile Menu Items -->
+      <li>
         <a
-          class="nav-item dropdown-item cursor-pointer"
-          *ngIf="!isSSO"
-          (click)="logout()"
-          href="/login"
+          class="sidebar__action"
+          [routerLink]="['/profile']"
+          routerLinkActive="sidebar__action--active"
           translate
-        >
-          <fa-icon [icon]="faSignOutAlt"></fa-icon> LAYOUT.APP_HEADER.LOGOUT
+          >LAYOUT.APP_HEADER.PROFILE
+          <fa-icon [icon]="faCaretRight" aria-hidden="true"></fa-icon>
         </a>
-      </div>
-    </li>
-  </ul>
-  <li>
-      <!-- Order -->
-<ng-container *ngIf="!user.IsAnonymous">
-  <ul
-    class="navbar-nav">
-    <li
-    class="cursor-pointer"
-      ngbDropdown
-      placement="bottom-right"
-    >
-      <div
-        class="sidebar-action dropdown-toggle text-nowrap"
-        id="account-dropdown"
-        ngbDropdownToggle
-      >
-        <span
-          class="fa-layers-envelope"
-          [ngbPopover]="OrdersToApproveContent"
-          #ordersToApprovePopover="ngbPopover"
-          placement="bottom-right"
-          popoverClass="orders-awaiting-approval-popover bg-info"
-          triggers="manual"
+      </li>
+      <!-- ORDER -->
+      <li>
+        <a
+          class="sidebar__action"
+          [routerLink]="['/orders']"
+          routerLinkActive="sidebar__action--active"
           translate
         >
           LAYOUT.APP_HEADER.ORDERS
-        </span>
-        <ng-template #OrdersToApproveContent>
-          <div (click)="routeToOrdersToApprove($event)" class="card">
-            <div class="card-body p-0">
-              <h5 class="card-header p-2 mb-3" translate>
-                <ocm-order-status-icon
-                  status="AwaitingApproval"
-                ></ocm-order-status-icon>
-                LAYOUT.APP_HEADER.NEEDS_ATTENTION
-              </h5>
-              <h4 class="card-subtitle mb-2 text-muted p-2">
-                <span translate>LAYOUT.APP_HEADER.AWAITING_ORDERS_1</span>
-                {{ numberOfOrdersToApprove }}
-                <span translate>LAYOUT.APP_HEADER.AWAITING_ORDERS_2</span>
-              </h4>
-            </div>
-          </div>
-        </ng-template>
-        <fa-layers class="fa-fw mr-auto ml-2 text-medium">
-          <fa-icon [icon]="faBoxOpen"></fa-icon>
-          <fa-layers-counter
-            *ngIf="numberOfOrdersToApprove"
-            class="badge__counter--large"
-            [content]="numberOfOrdersToApprove"
-          >
-          </fa-layers-counter>
-        </fa-layers>
-      </div>
-      <div
-        class="dropdown__acount"
-        aria-labelledby="account-dropdown"
-        ngbDropdownMenu
-      >
-        <ng-container *ngFor="let orderRoute of orderRoutes">
-          <span *ngIf="orderRoute.routerCall !== 'toOrdersToApprove'">
-            <a
-              *ngIf="orderRoute.showInDropdown"
-              class="nav-item dropdown-item cursor-pointer"
-              [ngClass]="{ active: activePath === orderRoute.url }"
-              (click)="context.router[orderRoute.routerCall]()"
-              >{{ orderRoute.displayText }}</a
-            >
-          </span>
-          <span *ngIf="orderRoute.routerCall === 'toOrdersToApprove'">
-            <a
-              *ngIf="orderRoute.showInDropdown"
-              class="nav-item dropdown-item cursor-pointer"
-              [ngClass]="{ active: activePath === orderRoute.url }"
-              (click)="context.router[orderRoute.routerCall]()"
-            >
-              <span>
-                {{ orderRoute.displayText }}
-              </span>
-              <fa-layers class="fa-fw ml-n3">
-                <fa-layers-counter
-                  *ngIf="numberOfOrdersToApprove"
-                  class="badge__counter--large"
-                  [content]="numberOfOrdersToApprove"
-                >
-                </fa-layers-counter>
-              </fa-layers>
-            </a>
-          </span>
-        </ng-container>
-      </div>
-    </li>
-  </ul>
-</ng-container>
-  <!-- Order -->
-  </li>
-</ul>
-
-<h2 class="heading__category text-medium border-bottom border-medium pb-2">EXPLORE</h2>
-  <ul class="navbar-nav">
-    <li
-      [ngClass]="{ active: activePath === '/products' }"
-    >
-      <a class="sidebar-action"
-        (click)="context.router.toProductList()"
-        translate
-      >
-        LAYOUT.APP_HEADER.PRODUCTS
-        <fa-icon
-        [icon]="faCaretRight"
-      ></fa-icon>
-      </a>
-    </li>
-    <li>
-      <a
-      class="sidebar-action"  
-      id="suppliers-link"
-        [ngClass]="{ active: activePath === '/suppliers' }"
-        (click)="
-          isCollapsed = !isCollapsed; context.router.toSupplierList()
-        "
-        translate>
-        ALIAS.SUPPLIERS
-        <fa-icon
-        [icon]="faCaretRight"
-      ></fa-icon>
+          <fa-icon [icon]="faCaretRight" aria-hidden="true"></fa-icon>
         </a>
-    </li>
-    <li
-      *ngFor="let page of staticPages"
-    >
-      <a class="sidebar-action"
-        [ngClass]="{ active: activePath === '/' + page.Doc.Url }"
-        routerLink="{{ '/' + page.Doc.Url }}"
-        >{{ page.Doc.NavigationTitle }}</a
-      >
-    </li>
-  </ul>
+      </li>
+      <!-- LOGOUT -->
+      <li>
+        <a
+          class="sidebar__action text-medium"
+          *ngIf="!isSSO"
+          (click)="logout()"
+          [routerLink]="['/login']"
+          routerLinkActive="sidebar__action--active"
+          translate
+        >
+          LAYOUT.APP_HEADER.LOGOUT
+          <fa-icon [icon]="faCaretRight" aria-hidden="true"></fa-icon>
+        </a>
+      </li>
+      <!-- Mobile Profile Menu Items -->
+    </ul>
+
+    <h2 class="sidebar__heading text-medium border-bottom border-medium pb-2">
+      EXPLORE
+    </h2>
+    <ul class="navbar-nav">
+      <li [ngClass]="{ active: activePath === '/products' }">
+        <a
+          class="sidebar__action"
+          [routerLink]="['/products']"
+          routerLinkActive="sidebar__action--active"
+          translate
+        >
+          LAYOUT.APP_HEADER.PRODUCTS
+          <fa-icon [icon]="faCaretRight" aria-hidden="true"></fa-icon>
+        </a>
+      </li>
+      <li>
+        <a
+          class="sidebar__action"
+          id="suppliers-link"
+          [routerLink]="['/suppliers']"
+          routerLinkActive="sidebar__action--active"
+          translate
+        >
+          ALIAS.SUPPLIERS
+          <fa-icon [icon]="faCaretRight" aria-hidden="true"></fa-icon>
+        </a>
+      </li>
+      <li *ngFor="let page of staticPages">
+        <a
+          class="sidebar__action"
+          [ngClass]="{ active: activePath === '/' + page.Doc.Url }"
+          routerLink="{{ '/' + page.Doc.Url }}"
+          routerLinkActive="sidebar__action--active"
+        >
+          {{ page.Doc.NavigationTitle }}
+          <fa-icon [icon]="faCaretRight" aria-hidden="true"></fa-icon>
+        </a>
+      </li>
+    </ul>
   </div>
-<!-- shop by category -->
-<ul class="category-nav__menu">
+  <!-- shop by category -->
+  <ul class="category-nav__menu">
     <li class="d-block d-md-none">
-      <h2 class="heading__category small text-medium border-bottom border-medium pb-2">CATEGORIES</h2>
+      <h2
+        class="sidebar__heading small text-medium border-bottom border-medium pb-2"
+      >
+        SHOP BY CATEGORY
+      </h2>
     </li>
     <li
       *ngFor="let parentCategory of parentCategories"
@@ -239,13 +107,14 @@
       (mouseover)="hoverSetActiveParentCat(parentCategory.ID)"
     >
       <a
-        class="sidebar-action"
+        class="sidebar__action"
         [ngClass]="{ 'menu-active': parentCategory.ID === activeCatID }"
         (click)="setActiveCategory(parentCategory.ID)"
         >{{ parentCategory.Name }}
         <fa-icon
           *ngIf="checkForChildren(parentCategory)"
           [icon]="faCaretRight"
+          aria-hidden="true"
         ></fa-icon>
       </a>
       <ul

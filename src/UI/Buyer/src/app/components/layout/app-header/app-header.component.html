@@ -316,13 +316,14 @@
     </ul>
   </div>
 </nav>
-<!-- (closeDropdown)="toggleCategoryDropdown($event.detail)" -->
-<!-- (window:mouseup)="clickOutsideCategoryDropdown($event)" -->
 
 <ocm-category-dropdown
+  (closeDropdown)="toggleCategoryDropdown($event.detail)"
+  (window:mouseup)="clickOutsideCategoryDropdown($event)"
   [@inOutAnimation]="toggleCategoryDropdown"
   class="dropdown-position"
   [categories]="categories"
-  *ngIf="showCategoryDropdown">
+  *ngIf="showCategoryDropdown"
+>
 </ocm-category-dropdown>
 <!-- /Search / Cart Nav -->

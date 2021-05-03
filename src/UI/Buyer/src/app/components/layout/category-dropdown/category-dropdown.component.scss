@@ -161,7 +161,7 @@
   }
 }
 
-.sidebar-action {
+.sidebar__action {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -177,6 +177,10 @@
     color: var(--gray-light);
     margin-left: 0.25rem;
   }
+  &--active {
+    color: var(--dark);
+    background: white;
+  }
 }
 
 // override inline styles on mobile sidebar dropdowns
@@ -190,7 +194,7 @@
   float: unset !important;
 }
 
-.heading__category {
+.sidebar__heading {
   font-size: .875rem;
   margin: 1.5rem;
   letter-spacing: .5px;

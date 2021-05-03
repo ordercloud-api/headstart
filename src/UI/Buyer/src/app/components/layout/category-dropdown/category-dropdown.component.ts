@@ -15,6 +15,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 import { CurrentUser } from 'src/app/models/profile.types'
+import { StaticPageService } from 'src/app/services/static-page/static-page.service'
 
 @Component({
   templateUrl: './category-dropdown.component.html',
@@ -50,7 +51,10 @@ export class OCMCategoryDropdown {
   faCaretRight = faCaretRight
   flagIcon: string
 
-  constructor(private context: ShopperContextService) {}
+  constructor(
+    private context: ShopperContextService,
+    public staticPageService: StaticPageService
+  ) {}
 
   ngOnInit(): void {
     // this.appName = this.context.appSettings.appname
@@ -64,6 +68,12 @@ export class OCMCategoryDropdown {
     const currentUser = this.context.currentUser.get()
     const myRate = rates.Items.find((r) => r.Currency === currentUser.Currency)
     return myRate.Icon
+  }
+
+  get staticPages(): any[] {
+    return this.staticPageService.pages.filter((page) => {
+      return page.Doc.Active && page.Doc.NavigationTitle
+    })
   }
 
   assignCategories(categories: Category[], level: string): any {
