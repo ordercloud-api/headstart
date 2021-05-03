@@ -99,7 +99,7 @@ namespace Headstart.API.Commands
 
             await PatchLineItemStatuses(supplierOrderID, superShipment, OrderDirection.Incoming, userContext);
 
-            if (String.IsNullOrEmpty(superShipment.Shipment.xp.BuyerID))
+            if (userContext.UserType != "admin")
             {
                 buyerID = await GetBuyerIDForSupplierOrder(firstShipmentItem.OrderID);
             }

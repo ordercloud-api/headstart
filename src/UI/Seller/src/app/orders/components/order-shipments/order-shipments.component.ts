@@ -339,11 +339,12 @@ export class OrderShipmentsComponent implements OnChanges {
     return (
       this.lineItems &&
       CanChangeLineItemsOnOrderTo(LineItemStatus.Complete, this.lineItems) &&
-      SellerOrderCanShip(
+      (SellerOrderCanShip(
         LineItemStatus.Complete,
         this.lineItems,
         this.isSellerUser
-      )
+      ) ||
+        !this.isSellerUser)
     )
   }
 
@@ -390,6 +391,7 @@ export class OrderShipmentsComponent implements OnChanges {
         xp: {
           Service: this.shipmentForm.value.Service,
           Comment: this.shipmentForm.value.Comment,
+          BuyerID: this.isSellerUser ? this._order.FromCompanyID : null,
         },
       },
       ShipmentItems: this.lineItems
