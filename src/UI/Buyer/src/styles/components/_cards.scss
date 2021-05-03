@@ -24,13 +24,15 @@
     flex-flow: column nowrap;
     justify-content: center;
     padding: 1.5rem;
-    margin-top: -2rem;
+    margin-top: -3rem;
+    width: 85vw;
     @include media-breakpoint-up(md) {
       margin-top: -120px;
-      width: 400px;
+      width: 420px;
     }
     img {
       align-self: center;
+      width: clamp(200px, 15vw, 300px);
     }
   }
 }
