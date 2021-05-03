@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core'
-import { animate, state, style, transition, trigger } from '@angular/animations'
+import { animate, style, transition, trigger } from '@angular/animations'
 import {
   faSearch,
   faShoppingCart,
