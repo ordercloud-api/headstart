@@ -119,6 +119,15 @@
         <label for="UseCumulativeQuantity" translate
           >ADMIN.PRODUCT_EDIT.PRICE_BREAK_APPLICATION</label
         >
+        <div
+          *ngIf="_specCount === 0 && _variantCount === 0"
+          class="d-flex align-items-center mb-2"
+        >
+          <fa-icon [icon]="faExclamationCircle"></fa-icon
+          ><small class="ml-2" translate=""
+            >ADMIN.PRODUCT_EDIT.APPLY_INFO_TEXT</small
+          >
+        </div>
         <select
           [attr.disabled]="readonly ? true : null"
           type="dropdown"
@@ -130,6 +139,7 @@
           <option
             [selected]="priceScheduleEditable.UseCumulativeQuantity == true"
             [value]="true"
+            [disabled]="_specCount === 0 && _variantCount === 0"
             translate
           >
             ADMIN.PRODUCT_EDIT.APPLY_ACROSS_VARIATIONS
