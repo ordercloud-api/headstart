@@ -332,6 +332,7 @@
   </div>
 </nav>
 <ocm-category-dropdown
+[@inOutAnimation]="toggleCategoryDropdown"
   class="dropdown-position"
   (window:mouseup)="clickOutsideCategoryDropdown($event)"
   (closeDropdown)="toggleCategoryDropdown($event.detail)"
