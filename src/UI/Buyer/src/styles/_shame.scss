@@ -124,8 +124,23 @@ ng-progress {
   }
 }
 
+// positioning the zendesk component
 #zsiqwidget {
   bottom: 120px;
+}
+
+// override zendesk chat bubble background color
+.zsiq_float {
+  .zsiq_flt_rel {
+    background-color: var(--secondary) !important;
+  }
+}
+
+// hide the zendesk popover message on mobile
+.zsiq_cnt {
+  @include media-breakpoint-down(sm) {
+    display: none !important;
+  }
 }
 
 // where should breadcrumb styles live?
