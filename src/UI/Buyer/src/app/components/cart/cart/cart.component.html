@@ -14,6 +14,7 @@
       class="btn btn-sm btn-outline-danger"
       *ngIf="_order?.LineItemCount"
       (click)="emptyCart()"
+      [disabled]="isEmptyingCart"
       translate
     >
       CART.CART.EMPTY_CART
