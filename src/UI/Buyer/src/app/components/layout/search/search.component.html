@@ -1,14 +1,6 @@
 <form [formGroup]="form" #searchform>
-  <label for="search-addon" class="sr-only">{{
-    placeholderText || 'Search...'
-  }}</label>
-  <div class="input-group">
-    <div class="input-group-prepend">
-      <div class="input-group-text">
-        <fa-icon [icon]="faSearch"></fa-icon>
-      </div>
-    </div>
-    <input
+  <div class="form-group mb-0 position-relative">
+      <input
       type="search"
       class="form-control"
       placeholder="{{
@@ -17,22 +9,28 @@
           (placeholderText | translate) +
           '...'
       }}"
-      aria-label="search"
+      aria-labelledby="search-addon"
       id="search-addon"
       formControlName="search"
       (keyup.enter)="search()"
       autocomplete="off"
     />
-    <div *ngIf="showClear()" class="input-group-append">
-      <button
-        (click)="clear()"
-        type="button"
-        class="btn btn-outline-danger border-rounded-right"
-      >
-        <fa-icon [icon]="faTimes">
-          <span class="sr-only">Button To Clear Current Search</span>
+     <label for="search-addon" class="sr-only">{{
+      placeholderText || 'Search...'
+    }}</label>
+      <button (click)="search()" title="Search"
+              class="btn btn-search btn-search--search">
+              <span class="sr-only">Search Button</span>
+              <fa-icon [icon]="faSearch" aria-hidden="true">
         </fa-icon>
       </button>
-    </div>
+    <ng-container *ngIf="showClear()">
+      <button (click)="clear()"
+              class="btn btn-search btn-search--clear">
+        <fa-icon [icon]="faTimes">
+          <span class="sr-only">Clear Your Search Term</span>
+        </fa-icon>
+      </button>
+    </ng-container>
   </div>
 </form>
