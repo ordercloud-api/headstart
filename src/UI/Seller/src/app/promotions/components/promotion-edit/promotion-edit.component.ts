@@ -132,6 +132,8 @@ export class PromotionEditComponent implements OnInit, OnChanges {
     this.capShipCost = promo.xp?.MaxShipCost ? true : false
     this._promotionEditable = JSON.parse(JSON.stringify(promo))
     this._promotionStatic = JSON.parse(JSON.stringify(promo))
+    this.isSaveBtnDisabled = true
+    this.noChanges = true
     this.createPromotionForm(promo)
   }
 
@@ -266,6 +268,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
 
     this.resourceForm.valueChanges.subscribe(() => {
       setTimeout(() => {
+        this.noChanges = !this.areChanges
         if (this.areChanges && this.isCreatingNew) {
           this.isSaveBtnDisabled =
             this.resourceForm?.status === 'INVALID' || this.dataIsSaving
