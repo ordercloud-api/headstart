@@ -123,8 +123,8 @@ export class OCMAppHeader implements OnInit {
   getCurrencyFlag(): string {
     const rates = this.context.exchangeRates.Get()
     const currentUser = this.context.currentUser.get()
-    const myRate = rates.Items.find((r) => r.Currency === currentUser.Currency)
-    return myRate.Icon
+    const myRate = rates?.Items.find((r) => r.Currency === currentUser.Currency)
+    return myRate?.Icon
   }
 
   toggleCategoryDropdown(bool: boolean): void {

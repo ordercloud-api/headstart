@@ -57,7 +57,6 @@ export class OCMCategoryDropdown {
   ) {}
 
   ngOnInit(): void {
-    // this.appName = this.context.appSettings.appname
     this.isAnonymous = this.context.currentUser.isAnonymous()
     this.context.currentUser.onChange((user) => (this.user = user))
     this.flagIcon = this.getCurrencyFlag()
@@ -66,8 +65,8 @@ export class OCMCategoryDropdown {
   getCurrencyFlag(): string {
     const rates = this.context.exchangeRates.Get()
     const currentUser = this.context.currentUser.get()
-    const myRate = rates.Items.find((r) => r.Currency === currentUser.Currency)
-    return myRate.Icon
+    const myRate = rates?.Items.find((r) => r.Currency === currentUser.Currency)
+    return myRate?.Icon
   }
 
   get staticPages(): any[] {
