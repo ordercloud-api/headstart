@@ -29,6 +29,7 @@ export class OCMOrderDetails implements OnInit {
   message = { string: null, classType: null }
   showRequestReturn = false
   showRequestCancel = false
+  isAnon: boolean
   isQuoteOrder = isQuoteOrder
   constructor(
     private context: ShopperContextService,
@@ -36,6 +37,7 @@ export class OCMOrderDetails implements OnInit {
   ) {}
 
   async ngOnInit(): Promise<void> {
+    this.isAnon = this.context.currentUser.isAnonymous()
     this.approvalVersion =
     this.context.orderHistory.filters.getOrderViewContext() === OrderViewContext.Approve
     this.orderDetails = await this.context.orderHistory.getOrderDetails()
