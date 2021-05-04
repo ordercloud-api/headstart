@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Headstart.Common.Constants;
 using System;
 using Headstart.Common;
+using OrderCloud.Catalyst;
+using Headstart.API.Commands.Crud;
 
 namespace Headstart.API.Commands
 {
@@ -17,16 +19,19 @@ namespace Headstart.API.Commands
         Task<HSBuyerLocation> Save(string buyerID, string buyerLocationID, HSBuyerLocation buyerLocation, string token, IOrderCloudClient oc = null);
         Task Delete(string buyerID, string buyerLocationID);
         Task CreateSinglePermissionGroup(string buyerLocationID, string permissionGroupID);
+        Task AssignNewUserAnonUserGroups(string buyerID, string newUserID, VerifiedUserContext userContext);
     }
 
     public class HSBuyerLocationCommand : IHSBuyerLocationCommand
     {
         private IOrderCloudClient _oc;
         private readonly AppSettings _settings;
-        public HSBuyerLocationCommand(AppSettings settings, IOrderCloudClient oc)
+        private readonly IHSCatalogCommand _catalogCommand;
+        public HSBuyerLocationCommand(AppSettings settings, IOrderCloudClient oc, IHSCatalogCommand catalogCommand)
         {
             _settings = settings;
             _oc = oc;
+            _catalogCommand = catalogCommand;
         }
 
         public async Task<HSBuyerLocation> Get(string buyerID, string buyerLocationID)
@@ -193,6 +198,25 @@ namespace Headstart.API.Commands
                     UserGroupID = userGroupID,
                     SecurityProfileID = customRole.ToString()
                 }, token);
+            }
+        }
+
+        public async Task AssignNewUserAnonUserGroups(string buyerID, string newUserID, VerifiedUserContext userContext)
+        {
+            var anonUser = await _oc.Me.GetAsync(accessToken: userContext.AccessToken);
+            var apiClients = await _oc.ApiClients.ListAllAsync(filters: "IsAnonBuyer=true");
+            if(apiClients.Find(client => client.DefaultContextUserName == anonUser.Username) != null) //ensure user is anonymous
+            {
+                //var anonUserGroupAssignments = await _oc.UserGroups.ListUserAssignmentsAsync(buyerID, userID: anonUser.ID);
+                var anonUserGroups = await _oc.Me.ListUserGroupsAsync(accessToken: userContext.AccessToken);
+                var anonBuyerLocations = anonUserGroups.Items.Where(item => item.xp.Type == "BuyerLocation");
+                await Throttler.RunAsync(anonBuyerLocations, 100, 5, userGroup =>
+                    _oc.UserGroups.SaveUserAssignmentAsync(buyerID, new UserGroupAssignment
+                    {
+                        UserGroupID = userGroup.ID,
+                        UserID = newUserID
+                }));
+                await _catalogCommand.SyncUserCatalogAssignments(buyerID, newUserID);
             }
         }
     }

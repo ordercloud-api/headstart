@@ -22,6 +22,7 @@ import { TokenHelperService } from '../token-helper/token-helper.service'
 import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { AppConfig } from 'src/app/models/environment.types'
 import { BaseResolveService } from '../base-resolve/base-resolve.service'
+import BuyerLocations from '@ordercloud/headstart-sdk/dist/api/BuyerLocations'
 
 @Injectable({
   providedIn: 'root',
@@ -97,6 +98,8 @@ export class AuthService {
   async register(me: MeUser): Promise<AccessTokenBasic> {
     const anonToken = await this.getAnonymousToken()
     const token = await Me.Register(me, {anonUserToken: anonToken.access_token})
+    const newUser = await Me.Get({accessToken: token.access_token})
+    await HeadStartSDK.BuyerLocations.TransferAnonUserGroups(newUser.Buyer.ID, newUser.ID, anonToken.access_token)
     this.loginWithTokens(token.access_token)
     return token
   }
