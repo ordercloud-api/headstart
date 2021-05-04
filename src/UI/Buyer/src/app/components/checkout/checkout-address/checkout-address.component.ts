@@ -68,6 +68,11 @@ export class OCMCheckoutAddress implements OnInit {
     }
   }
 
+  handleFormDismissed(): void {
+    this.showNewAddressForm = false
+    this.selectedShippingAddress = this.lineItems?.Items[0].ShippingAddress
+  }
+
   async saveAddressesAndContinue(
     newShippingAddress: Address = null
   ): Promise<void> {

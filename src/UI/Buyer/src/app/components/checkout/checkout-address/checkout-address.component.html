@@ -58,7 +58,7 @@
     [homeCountry]="homeCountry"
     [btnText]="'Save and Continue'"
     [addressError]="_addressError"
-    (formDismissed)="showNewAddressForm = false"
+    (formDismissed)="handleFormDismissed()" 
     (formChanged)="addressFormChanged($event.detail)"
     (formSubmitted)="saveAddressesAndContinue($event.detail.address)"
   >
