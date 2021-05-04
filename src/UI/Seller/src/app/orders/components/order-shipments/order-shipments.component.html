@@ -1,9 +1,7 @@
 <div class="mb-3">
   <div class="d-print-none mt-3">
     <button
-      *ngIf="
-        !this.isQuoteOrder(_order) && !this.isSellerUser && canShipLineItems()
-      "
+      *ngIf="!this.isQuoteOrder(_order) && canShipLineItems()"
       class="btn btn-outline-dark mr-2"
       (click)="toggleCreateShipment()"
     >

@@ -71,7 +71,7 @@ namespace Headstart.API.Commands
 
     public interface IShipmentCommand
     {
-        Task<SuperHSShipment> CreateShipment(SuperHSShipment superShipment, string supplierToken);
+        Task<SuperHSShipment> CreateShipment(SuperHSShipment superShipment, VerifiedUserContext userContext);
         Task<BatchProcessResult> UploadShipments(IFormFile file, VerifiedUserContext userContext);
     }
     public class ShipmentCommand : IShipmentCommand
@@ -85,23 +85,31 @@ namespace Headstart.API.Commands
             _oc = oc;
             _lineItemCommand = lineItemCommand;
         }
-        public async Task<SuperHSShipment> CreateShipment(SuperHSShipment superShipment, string supplierToken)
+        public async Task<SuperHSShipment> CreateShipment(SuperHSShipment superShipment, VerifiedUserContext userContext)
         {
             ShipmentItem firstShipmentItem = superShipment.ShipmentItems.First();
             string supplierOrderID = firstShipmentItem.OrderID;
             string buyerOrderID = supplierOrderID.Split("-").First();
+            string buyerID = "";
 
             // in the platform, in order to make sure the order has the proper Order.Status, you must 
             // create a shipment without a DateShipped and then patch the DateShipped after
             DateTimeOffset? dateShipped = superShipment.Shipment.DateShipped;
             superShipment.Shipment.DateShipped = null;
 
+            await PatchLineItemStatuses(supplierOrderID, superShipment, OrderDirection.Incoming, userContext);
 
-            await PatchLineItemStatuses(supplierOrderID, superShipment);
-            string buyerID = await GetBuyerIDForSupplierOrder(firstShipmentItem.OrderID);
+            if (userContext.UserType != "admin")
+            {
+                buyerID = await GetBuyerIDForSupplierOrder(firstShipmentItem.OrderID);
+            }
+            else
+            {
+                buyerID = superShipment.Shipment.xp.BuyerID;
+            }
             superShipment.Shipment.BuyerID = buyerID;
 
-            HSShipment ocShipment = await _oc.Shipments.CreateAsync<HSShipment>(superShipment.Shipment, accessToken: supplierToken);
+            HSShipment ocShipment = await _oc.Shipments.CreateAsync<HSShipment>(superShipment.Shipment, accessToken: userContext.AccessToken);
 
             //  platform issue. Cant save new xp values onto shipment line item. Update order line item to have this value.
             var shipmentItemsWithComment = superShipment.ShipmentItems.Where(s => s.xp?.Comment != null); 
@@ -124,8 +132,8 @@ namespace Headstart.API.Commands
                 superShipment.ShipmentItems,
                 100,
                 5,
-                (shipmentItem) => _oc.Shipments.SaveItemAsync(ocShipment.ID, shipmentItem, accessToken: supplierToken));
-            HSShipment ocShipmentWithDateShipped = await _oc.Shipments.PatchAsync<HSShipment>(ocShipment.ID, new PartialShipment() { DateShipped = dateShipped }, accessToken: supplierToken);
+                (shipmentItem) => _oc.Shipments.SaveItemAsync(ocShipment.ID, shipmentItem, accessToken: userContext.AccessToken));
+            HSShipment ocShipmentWithDateShipped = await _oc.Shipments.PatchAsync<HSShipment>(ocShipment.ID, new PartialShipment() { DateShipped = dateShipped }, accessToken: userContext.AccessToken);
             return new SuperHSShipment()
             {
                 Shipment = ocShipmentWithDateShipped,
@@ -133,7 +141,7 @@ namespace Headstart.API.Commands
             };
         }
 
-        private async Task PatchLineItemStatuses(string supplierOrderID, SuperHSShipment superShipment)
+        private async Task PatchLineItemStatuses(string supplierOrderID, SuperHSShipment superShipment, OrderDirection direction, VerifiedUserContext userContext)
         {
             List<LineItemStatusChange> lineItemStatusChanges = superShipment.ShipmentItems.Select(shipmentItem =>
             {
@@ -151,14 +159,19 @@ namespace Headstart.API.Commands
                 SuperShipment = superShipment
             };
 
-            await _lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Outgoing, supplierOrderID, lineItemStatusChange);
+            await _lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(direction, supplierOrderID, lineItemStatusChange, userContext);
         }
 
         private async Task<string> GetBuyerIDForSupplierOrder(string supplierOrderID)
         {
+            string buyerID = "";
             string buyerOrderID = supplierOrderID.Split("-").First();
             Order relatedBuyerOrder = await _oc.Orders.GetAsync(OrderDirection.Incoming, buyerOrderID);
-            return relatedBuyerOrder.FromCompanyID;
+            if(!String.IsNullOrEmpty(relatedBuyerOrder.FromCompanyID))
+            {
+                buyerID = relatedBuyerOrder.FromCompanyID;
+            }
+            return buyerID;
         }
 
         public async Task<BatchProcessResult> UploadShipments(IFormFile file, VerifiedUserContext userContext)

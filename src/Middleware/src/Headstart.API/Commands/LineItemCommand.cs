@@ -97,12 +97,12 @@ namespace Headstart.API.Commands
             var allLineItemsForOrder = await  _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Incoming, buyerOrderID);
             var lineItemsChanged = allLineItemsForOrder.Where(li => lineItemStatusChanges.Changes.Select(li => li.ID).Contains(li.ID)).ToList();
             var supplierIDsRelatingToChange = lineItemsChanged.Select(li => li.SupplierID).Distinct().ToList();
-            var relatedSupplierOrderIDs = supplierIDsRelatingToChange.Select(supplierID => $"{buyerOrderID}-{supplierID}").ToList();
 
+            var relatedSupplierOrderIDs = (userType == "admin") ? null : supplierIDsRelatingToChange.Select(supplierID => $"{buyerOrderID}-{supplierID}").ToList();
             var statusSync = SyncOrderStatuses(buyerOrder, relatedSupplierOrderIDs, allLineItemsForOrder.ToList());
-            var notifictionSender = HandleLineItemStatusChangeNotification(verifiedUserType, buyerOrder, supplierIDsRelatingToChange, lineItemsChanged, lineItemStatusChanges);
-            
             await statusSync;
+
+            var notifictionSender = HandleLineItemStatusChangeNotification(verifiedUserType, buyerOrder, supplierIDsRelatingToChange, lineItemsChanged, lineItemStatusChanges);
             await notifictionSender;
 
             return updatedLineItems.ToList();
@@ -112,11 +112,15 @@ namespace Headstart.API.Commands
         {
             await SyncOrderStatus(OrderDirection.Incoming, buyerOrder.ID, allOrderLineItems);
 
-            foreach(var supplierOrderID in relatedSupplierOrderIDs) {
-                var supplierID = supplierOrderID.Split('-')[1];
-                var allOrderLineItemsForSupplierOrder = allOrderLineItems.Where(li => li.SupplierID == supplierID).ToList();
-                await SyncOrderStatus(OrderDirection.Outgoing, supplierOrderID, allOrderLineItemsForSupplierOrder);
-            }
+            if(relatedSupplierOrderIDs != null)
+            {
+                foreach (var supplierOrderID in relatedSupplierOrderIDs)
+                {
+                    var supplierID = supplierOrderID.Split('-')[1];
+                    var allOrderLineItemsForSupplierOrder = allOrderLineItems.Where(li => li.SupplierID == supplierID).ToList();
+                    await SyncOrderStatus(OrderDirection.Outgoing, supplierOrderID, allOrderLineItemsForSupplierOrder);
+                }
+            }            
         }
 
         private async Task SyncOrderStatus(OrderDirection orderDirection, string orderID, List<HSLineItem> changedLineItems)
