@@ -105,15 +105,19 @@ export class CartService {
       return await this.upsertLineItem(lineItem)
     }
     if (!this.initializingOrder) {
-      this.initializingOrder = true
-      if(this.userService.isAnonymous()) {
-        await this.state.createAndSetOrder(this.order)
-      } else {
-        await this.state.reset()
-      }
-      this.initializingOrder = false
+      await this.initializeOrder()
       return await this.upsertLineItem(lineItem)
     }
+  }
+
+  async initializeOrder(): Promise<void> {
+    this.initializingOrder = true
+    if(this.userService.isAnonymous()) {
+      await this.state.createAndSetOrder(this.order)
+    } else {
+      await this.state.reset()
+    }
+    this.initializingOrder = false
   }
 
   async remove(lineItemID: string): Promise<void> {
@@ -183,6 +187,9 @@ export class CartService {
   async addMany(
     lineItem: HSLineItem[]
   ): Promise<HSLineItem[]> {
+    if(_isUndefined(this.order.DateCreated)) {
+      await this.initializeOrder()
+    }
     const req = lineItem.map((li) => this.add(li))
     return Promise.all(req)
   }
