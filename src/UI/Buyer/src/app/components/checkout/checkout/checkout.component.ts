@@ -404,11 +404,12 @@ export class OCMCheckout implements OnInit {
       id
     )
     const prevIdx = Math.max(this.sections.findIndex((x) => x.id === id) - 1, 0)
-
     // set validation to true on all previous sections
     for (let i = 0; i <= prevIdx; i++) {
       const prev = this.sections[i].id
-      this.setValidation(prev, true)
+      if (prev !== id) {
+        this.setValidation(prev, true)
+      }
     }
     this.accordian?.toggle(id)
   }
