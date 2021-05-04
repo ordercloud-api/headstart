@@ -1,0 +1,18 @@
+.btn-search {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    z-index: 10;
+    transform: translate(-50%, -50%);
+    color: var(--medium);
+    padding: 0;
+    line-height: 0;
+    border: none;
+    background-color: transparent;
+    &--clear {
+      right: 50px;
+      @media (max-width: 576px) {
+        right: 40px;
+      }
+    }
+  }

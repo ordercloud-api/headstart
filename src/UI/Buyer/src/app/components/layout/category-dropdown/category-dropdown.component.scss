@@ -1,11 +1,11 @@
 .category-nav {
-  padding-top: 122px;
   position: relative;
-	z-index: 12;
-	width: 100%;
-	height: 100vh;
-	overflow-y: auto;
+  z-index: 12;
+  width: 100%;
+  height: 100vh;
+  overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+
   &__menu {
     position: relative;
     height: calc(100vh - 122px); // DESIGN: Magic Number, Nav height
@@ -15,11 +15,15 @@
     list-style: none;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
-    width: 308px;
-    overflow-y: auto;
+
+    @media (min-width:768px) {
+      width: 308px;
+    }
+
     & li {
       text-overflow: ellipsis;
       position: relative;
+
       &.background-hover {
         &:hover::before {
           content: '';
@@ -29,16 +33,19 @@
           height: 100%;
           width: 100%;
         }
+
         &__parent {
           &:hover>a {
             border-left: 5px solid var(--primary);
           }
+
           &::before {
             height: 40.67px !important; // DESIGN: Magic number - height of a li
           }
         }
       }
     }
+
     & ul.second-level-category {
       margin: 0;
       padding-left: 0;
@@ -55,54 +62,60 @@
       height: calc(100vh - 122px);
       background: white;
       width: 375px;
-      overflow-y: auto;
+
       & .sub-category {
         border-left: 5px solid transparent;
+
         &:hover {
           text-decoration: none;
           border-left: 5px solid var(--primary);
         }
       }
-    
+
       &.menu-active.show {
         transform: translateX(100%);
         z-index: -1;
       }
     }
+
     & .third-level-category {
       list-style: none;
+
       & a {
         border-left: 5px solid transparent;
+
         &:hover {
           text-decoration: none;
           border-left: 5px solid var(--primary);
         }
       }
     }
+
     & a {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0rem .9375rem 0rem 3.75rem;
+      padding: .75rem 1.5rem;
       font-weight: 500;
       letter-spacing: .5px;
       text-transform: uppercase;
-      font-size: 17px;
-      font-size: 1.0625rem;
       position: relative;
-      line-height: 2.94118;
+      line-height: 1.5;
       color: #474747;
+
       &>fa-icon {
         color: var(--gray-light);
         margin-left: 0.25rem;
       }
     }
+
     & li.level-top {
       &>a {
         &.menu-active {
-          color: #000;
+          color: var(--dark);
           background: white;
         }
+
         padding-left: 1.875rem;
       }
     }
@@ -117,17 +130,72 @@
   width: 100%;
   height: calc(100vh - 122px);
   background-color: rgba(0, 0, 0, 0.35);
+  overflow: clip;
 
 }
+
 @media screen and (min-width: 1025px) {
   .category-nav {
     &__menu {
       & a {
         padding: 0rem 1.5rem 0rem 1.875rem;
-        font-size: 14px;
         font-size: .8rem;
-        line-height: 3.21429
+        line-height: 3.21429;
       }
     }
   }
+}
+
+.mobile-sidebar-menu {
+  position: relative;
+  background: var(--light);
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+
+  @media (min-width:768px) {
+    width: 308px;
+  }
+}
+
+.sidebar__action {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .75rem 1.5rem;
+  font-weight: 500;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  position: relative;
+  color: var(--gray-dark, #474747);
+
+  &>fa-icon,
+  &::after {
+    color: var(--gray-light);
+    margin-left: 0.25rem;
+  }
+  &--active {
+    color: var(--dark);
+    background: white;
+  }
+}
+
+// override inline styles on mobile sidebar dropdowns
+.dropdown__acount {
+  margin: .75rem 1.5rem;
+  position: relative !important;
+  transform: unset !important;
+  right: unset !important;
+  left: unset !important;
+  top: unset !important;
+  float: unset !important;
+}
+
+.sidebar__heading {
+  font-size: .875rem;
+  margin: 1.5rem;
+  letter-spacing: .5px;
+  font-weight: lighter;
 }

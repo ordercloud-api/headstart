@@ -1,4 +1,5 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core'
+import { animate, style, transition, trigger } from '@angular/animations'
 import {
   faSearch,
   faShoppingCart,
@@ -26,6 +27,24 @@ import { RouteConfig } from 'src/app/models/shared.types'
 @Component({
   templateUrl: './app-header.component.html',
   styleUrls: ['./app-header.component.scss'],
+  animations: [
+    trigger('inOutAnimation', [
+      transition(':enter', [
+        style({ transform: 'translateX(-100%)', opacity: 0 }),
+        animate(
+          '.4s cubic-bezier(0.7, 0, 0.3, 1)',
+          style({ transform: 'translateX(0)', opacity: 1 })
+        ),
+      ]),
+      transition(':leave', [
+        style({ transform: 'translateX(0)', opacity: 1 }),
+        animate(
+          '.2s cubic-bezier(0.7, 0, 0.3, 1)',
+          style({ transform: 'translateX(-100%)', opacity: 0 })
+        ),
+      ]),
+    ]),
+  ],
 })
 export class OCMAppHeader implements OnInit {
   isCollapsed = true
@@ -104,8 +123,8 @@ export class OCMAppHeader implements OnInit {
   getCurrencyFlag(): string {
     const rates = this.context.exchangeRates.Get()
     const currentUser = this.context.currentUser.get()
-    const myRate = rates.Items.find((r) => r.Currency === currentUser.Currency)
-    return myRate.Icon
+    const myRate = rates?.Items.find((r) => r.Currency === currentUser.Currency)
+    return myRate?.Icon
   }
 
   toggleCategoryDropdown(bool: boolean): void {

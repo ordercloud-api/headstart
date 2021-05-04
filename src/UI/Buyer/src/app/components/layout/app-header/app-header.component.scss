@@ -52,7 +52,13 @@
 }
 
 .dropdown-position {
-  position: fixed; 
-  height: 100vh; 
-  top: 0
+  position: sticky;
+  height: 100vh;
+  top: 0;
+  display: block;
+  z-index: -1;
+}
+
+.navbar-brand {
+  line-height: 0;
 }
