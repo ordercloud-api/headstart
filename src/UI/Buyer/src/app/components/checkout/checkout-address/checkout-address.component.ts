@@ -38,6 +38,8 @@ export class OCMCheckoutAddress implements OnInit {
   selectedShippingAddress: BuyerAddress
   showNewAddressForm = false
   suggestedAddresses: BuyerAddress[]
+  existingBuyerLocations: ListPage<BuyerAddress>
+  selectedBuyerLocation: BuyerAddress
   homeCountry: string
 
   constructor(
@@ -53,6 +55,7 @@ export class OCMCheckoutAddress implements OnInit {
     this.spinner.hide()
     this.selectedShippingAddress = this.lineItems?.Items[0].ShippingAddress
     await this.ListAddressesForShipping()
+    await this.listSavedBuyerLocations()
   }
 
   onShippingAddressChange(shippingAddressID: string): void {
@@ -71,6 +74,55 @@ export class OCMCheckoutAddress implements OnInit {
   handleFormDismissed(): void {
     this.showNewAddressForm = false
     this.selectedShippingAddress = this.lineItems?.Items[0].ShippingAddress
+  }
+
+  onBuyerLocationChange(buyerLocationID: string): void {
+    this.selectedBuyerLocation = this.existingBuyerLocations.Items.find(
+      (location) => buyerLocationID === location.ID
+    )
+    const shippingAddress = this.existingShippingAddresses.Items.find(
+      (location) => location.ID === this.selectedBuyerLocation.ID
+    )
+    if (shippingAddress) {
+      this.selectedShippingAddress = shippingAddress
+    }
+  }
+
+  private async listSavedBuyerLocations(): Promise<void> {
+    const listOptions = {
+      page: 1,
+      pageSize: 100,
+    }
+    this.existingBuyerLocations = await this.context.addresses.listBuyerLocations(
+      listOptions
+    )
+    this.homeCountry = this.existingBuyerLocations?.Items[0]?.Country || 'US'
+    if (this.existingBuyerLocations?.Meta.TotalPages <= 1) {
+      if (this.existingBuyerLocations?.Items.length === 1) {
+        this.selectedBuyerLocation = this.selectedShippingAddress = this.existingBuyerLocations.Items[0]
+      }
+    } else {
+      let requests = []
+      for (
+        let page = 2;
+        page <= this.existingBuyerLocations.Meta.TotalPages;
+        page++
+      ) {
+        listOptions.page = page
+        // Hack to avoid page being mutated after the request has been added to the queue
+        const copiedListOptions = JSON.parse(JSON.stringify(listOptions))
+        requests = [
+          ...requests,
+          this.context.addresses.listBuyerLocations(copiedListOptions),
+        ]
+      }
+      return await Promise.all(requests).then((response) => {
+        this.existingBuyerLocations.Items = [
+          ...this.existingBuyerLocations.Items,
+          ..._flatten(response.map((r) => r.Items)),
+        ]
+      })
+    }
   }
 
   async saveAddressesAndContinue(
@@ -108,6 +160,12 @@ export class OCMCheckoutAddress implements OnInit {
   }
 
   async handleLoggedInShippingAddress(newShippingAddress: Address<any>): Promise<void> {
+    if (!this.selectedBuyerLocation) {
+      throw new Error('Please select a location for this order')
+    }
+    this.order = await this.context.order.checkout.setBuyerLocationByID(
+      this.selectedBuyerLocation?.ID
+    )
     if (newShippingAddress != null) {
       this.selectedShippingAddress = await this.saveNewShippingAddress(
         newShippingAddress
