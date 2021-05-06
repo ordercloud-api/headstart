@@ -244,10 +244,7 @@ export abstract class ResourceCrudComponent<ResourceType>
         ...this.ocService.resourceSubject.value.Items,
         createdResource,
       ]
-      this.ocService.resourceSubject.next([
-        ...this.ocService.resourceSubject.value.Items,
-        createdResource,
-      ])
+      this.ocService.resourceSubject.next(this.ocService.resourceSubject.value)
 
       this.ocService.isUpdating = true
       //void this.selectResource(createdResource)
