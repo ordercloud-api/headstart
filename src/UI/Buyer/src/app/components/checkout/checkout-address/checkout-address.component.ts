@@ -1,5 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
 import {
+  faQuestionCircle,
+} from '@fortawesome/free-solid-svg-icons'
+import {
   Address,
   BuyerAddress,
   LineItem,
@@ -34,6 +37,7 @@ export class OCMCheckoutAddress implements OnInit {
   isAnon: boolean
 
   readonly NEW_ADDRESS_CODE = 'new'
+  faQuestionCircle = faQuestionCircle
   existingShippingAddresses: ListPage<BuyerAddress>
   selectedShippingAddress: BuyerAddress
   showNewAddressForm = false

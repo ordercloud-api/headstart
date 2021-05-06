@@ -12,6 +12,13 @@
     <label for="selectBuyerLocation" translate
       >CHECKOUT.CHECKOUT_ADDRESS.BUYER_LOCATION</label
     >
+    <fa-icon
+      class="ml-2"
+      placement="right"
+      ngbTooltip="Select the buyer location this order will be attributed to"
+      [openDelay]="500"
+      [icon]="faQuestionCircle"
+    ></fa-icon>
     <select
       [ngModel]="selectedBuyerLocation?.ID"
       (ngModelChange)="onBuyerLocationChange($event)"
