@@ -1,4 +1,4 @@
-﻿using Headstart.Models;
+using Headstart.Models;
 using Headstart.Models.Misc;
 using OrderCloud.SDK;
 using System.Linq;
@@ -205,7 +205,7 @@ namespace Headstart.API.Commands
         {
             var userGroupAssignments = await _oc.UserGroups.ListAllUserAssignmentsAsync(buyerID, userID: newUserID);
             await Throttler.RunAsync(userGroupAssignments, 100, 5, assignment =>
-                RemoveAndAddUserGroupAssignment(buyerID, newUserID, assignment.UserGroupID)
+                RemoveAndAddUserGroupAssignment(buyerID, newUserID, assignment?.UserGroupID)
                 ); 
         }
 
