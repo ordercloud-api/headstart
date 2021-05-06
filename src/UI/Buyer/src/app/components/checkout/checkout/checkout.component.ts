@@ -110,15 +110,8 @@ export class OCMCheckout implements OnInit {
     this.isAnon = this.context.currentUser.isAnonymous()
     this.currentPanel = this.isAnon ? 'login' : 'shippingAddressLoading'
     this.initLoadingIndicator();
-    this.orderSummaryMeta = getOrderSummaryMeta(
-      this.order,
-      this.orderPromotions,
-      this.lineItems.Items,
-      this.shipEstimates,
-      this.currentPanel
-    )
+    this.updateOrderMeta()
     this.setValidation('login', !this.isAnon)
-
     this.isNewCard = false
     this.invalidLineItems = await this.context.order.cart.getInvalidLineItems()
     if (this.invalidLineItems?.length) {
@@ -357,8 +350,9 @@ export class OCMCheckout implements OnInit {
     }
   }
 
-  handleCheckoutError(): void {
+  async handleCheckoutError(): Promise<void> {
     this.orderErrorModal = ModalState.Closed
+    await this.refreshOrderUpdateMeta()
     if (this.checkoutError.ErrorCode === ErrorCodes.MissingShippingSelections.code) {
       this.currentPanel = 'shippingAddress'
     } else if (this.checkoutError.ErrorCode === ErrorCodes.AlreadySubmitted.code) {
@@ -396,13 +390,7 @@ export class OCMCheckout implements OnInit {
 
   toSection(id: string): void {
     this.orderPromotions = this.context.order.promos.get()?.Items
-    this.orderSummaryMeta = getOrderSummaryMeta(
-      this.order,
-      this.orderPromotions,
-      this.lineItems.Items,
-      this.shipEstimates,
-      id
-    )
+    this.updateOrderMeta(id)
     const prevIdx = Math.max(this.sections.findIndex((x) => x.id === id) - 1, 0)
     // set validation to true on all previous sections
     for (let i = 0; i <= prevIdx; i++) {
@@ -432,15 +420,20 @@ export class OCMCheckout implements OnInit {
     this.currentPanel = $event.panelId
   }
 
-  updateOrderMeta(promos?: CustomEvent<OrderPromotion[]>): void {
-    this.orderPromotions = this.context.order.promos.get().Items
-    this.orderPromotions = promos.detail
+  async refreshOrderUpdateMeta(): Promise<void> {
+    await this.context.order.reset()
+    this.lineItems = this.context.order.cart.get()
+    this.orderPromotions = this.context.order.promos.get()?.Items
+    this.updateOrderMeta()
+  }
+
+  updateOrderMeta(panelID?: string): void {
     this.orderSummaryMeta = getOrderSummaryMeta(
       this.order,
       this.orderPromotions,
       this.lineItems.Items,
       this.shipEstimates,
-      this.currentPanel
+      panelID || this.currentPanel
     )
   }
 
