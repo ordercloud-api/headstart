@@ -32,11 +32,12 @@
         *ngFor="let location of existingBuyerLocations?.Items"
         [ngValue]="location.ID"
       >
-        <span class="font-weight-bold"
-          >{{ location.Street1
-          }}<span *ngIf="location.Street2"> {{ location.Street2 }}</span
-          >, {{ location.City }} {{ location.State }} {{ location.Zip }}</span
-        >
+        <span>
+          {{ location.Street1 }}
+          <span *ngIf="location.Street2"> {{ location.Street2 }}</span
+          >, {{ location.City }} {{ location.State }} {{ location.Zip }}
+          <span *ngIf="location.CompanyName">({{ location.CompanyName }})</span>
+        </span>
       </option>
     </select>
     <br />
