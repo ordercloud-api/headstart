@@ -30,15 +30,19 @@ export class OCMProductList implements OnInit, OnDestroy {
   closeIcon = faTimes
   numberOfItemsInPagination = 10
   searchTermForProducts = ''
+  isAnon: boolean
 
-  constructor(private context: ShopperContextService) {}
+  constructor(private context: ShopperContextService) { }
 
   ngOnInit(): void {
     this.context.productFilters.activeFiltersSubject
       .pipe(takeWhile(() => this.alive))
       .subscribe(this.handleFiltersChange)
     this.context.currentUser.onChange(
-      (user) => (this.favoriteProducts = user.FavoriteProductIDs)
+      (user) => {
+        this.isAnon = this.context.currentUser.isAnonymous()
+        this.favoriteProducts = user.FavoriteProductIDs
+      }
     )
     if (getScreenSizeBreakPoint() === 'xs') {
       this.numberOfItemsInPagination = 3

@@ -26,7 +26,7 @@
     </h2>
   </div>
   <!-- Mobile section for filtering on favorites -->
-  <div class="d-md-none mb-2">
+  <div *ngIf="!isAnon" class="d-md-none mb-2">
     <div class="col-xs-6">
       <div (click)="toggleFilterByFavorites()">
         <label translate>PRODUCTS.LIST.REFINE</label>
@@ -64,7 +64,7 @@
             [facetList]="products.Meta.Facets"
           >
           </ocm-product-facet-list>
-          <div (click)="toggleFilterByFavorites()">
+          <div *ngIf="!isAnon" (click)="toggleFilterByFavorites()">
             <span class="sr-only" translate>PRODUCTS.LIST.SORT_BY_FAV</span>
             <ocm-toggle-favorite
               [favorite]="showingFavoritesOnly"
