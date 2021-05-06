@@ -99,7 +99,9 @@ export class AuthService {
     const anonToken = await this.getAnonymousToken()
     const token = await Me.Register(me, {anonUserToken: anonToken.access_token})
     const newUser = await Me.Get({accessToken: token.access_token})
-    await HeadStartSDK.BuyerLocations.TransferAnonUserGroups(newUser.Buyer.ID, newUser.ID, anonToken.access_token)
+    // temporary workaround for platform issue
+    // need to remove and reset userGroups for newly registered user to see products
+    await HeadStartSDK.BuyerLocations.SetUserGroups(newUser.Buyer.ID, newUser.ID)
     this.loginWithTokens(token.access_token)
     return token
   }

@@ -136,7 +136,7 @@ namespace Headstart.Common.Controllers
         [HttpPut, Route("{buyerID}/transferanonymous/{newUserID}")]
         public async Task ApplyAnonUserGroupsToNewUser(string buyerID, string newUserID)
         {
-            await _buyerLocationCommand.AssignNewUserAnonUserGroups(buyerID, newUserID, UserContext);
+            await _buyerLocationCommand.AssignNewUserAnonUserGroups(buyerID, newUserID);
         }
     }
 }
