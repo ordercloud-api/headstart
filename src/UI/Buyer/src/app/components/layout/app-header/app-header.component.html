@@ -9,21 +9,6 @@
       <img class="logo" [src]="appConfig.theme.logoSrc" height="40" />
     </a>
     <!-- /Brand Logo -->
-    <!-- Mobile Toggle -->
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-toggle="collapse"
-      data-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-      (click)="toggleCollapsed()"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <!-- /Mobile Toggle -->
-
     <!-- Inline Nav Items -->
     <div
       [ngClass]="{ collapse: isCollapsed, 'navbar-collapse': true }"
@@ -252,7 +237,7 @@
 </nav>
 <!-- /Primary Nav -->
 <!-- Search / Cart Nav -->
-<nav class="navbar navbar-expand navbar-light bg-light">
+<nav class="navbar navbar-expand navbar-light bg-light shadow-sm">
   <div class="container">
     <button
       class="btn category-toggle cursor-pointer"
@@ -331,11 +316,14 @@
     </ul>
   </div>
 </nav>
+
 <ocm-category-dropdown
-  class="dropdown-position"
-  (window:mouseup)="clickOutsideCategoryDropdown($event)"
   (closeDropdown)="toggleCategoryDropdown($event.detail)"
+  (window:mouseup)="clickOutsideCategoryDropdown($event)"
+  [@inOutAnimation]="toggleCategoryDropdown"
+  class="dropdown-position"
   [categories]="categories"
   *ngIf="showCategoryDropdown"
-></ocm-category-dropdown>
+>
+</ocm-category-dropdown>
 <!-- /Search / Cart Nav -->

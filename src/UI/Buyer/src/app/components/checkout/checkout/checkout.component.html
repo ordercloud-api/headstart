@@ -45,7 +45,9 @@
         >
           <ngb-panel *ngIf="isAnon" id="login">
             <ng-template ngbPanelTitle>
-              <a class="link-text" translate> COMMON.LOGIN </a>
+              <h2 class="h5 mb-0 py-2 text-secondary" translate>
+               COMMON.LOGIN
+              </h2>
               <fa-icon
                 class="float-right text-success"
                 *ngIf="getValidation('login')"

@@ -111,13 +111,17 @@ export class CartService {
   }
 
   async initializeOrder(): Promise<void> {
-    this.initializingOrder = true
-    if(this.userService.isAnonymous()) {
-      await this.state.createAndSetOrder(this.order)
-    } else {
-      await this.state.reset()
+    try {
+      this.initializingOrder = true
+      if (this.userService.isAnonymous()) {
+        await this.state.createAndSetOrder(this.order)
+      } else {
+        await this.state.reset()
+      }
+    } finally {
+      this.initializingOrder = false
     }
-    this.initializingOrder = false
+
   }
 
   async remove(lineItemID: string): Promise<void> {
@@ -187,7 +191,7 @@ export class CartService {
   async addMany(
     lineItem: HSLineItem[]
   ): Promise<HSLineItem[]> {
-    if(_isUndefined(this.order.DateCreated)) {
+    if (_isUndefined(this.order.DateCreated)) {
       await this.initializeOrder()
     }
     const req = lineItem.map((li) => this.add(li))

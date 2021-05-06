@@ -4,6 +4,7 @@ import { FormGroup, FormControl } from '@angular/forms'
 import { ToastrService } from 'ngx-toastr'
 import { AppConfig } from 'src/app/models/environment.types'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
 
 @Component({
   templateUrl: './login.component.html',
@@ -12,6 +13,7 @@ import { ShopperContextService } from 'src/app/services/shopper-context/shopper-
 export class OCMLogin implements OnInit {
   form: FormGroup
   appName: string
+  faInfoCircle = faInfoCircle
 
   constructor(
     private context: ShopperContextService,
