@@ -94,6 +94,10 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   updateResource = new EventEmitter<any>()
   @Output()
   updateList = new EventEmitter<Product>()
+  @Output()
+  deleteResource = new EventEmitter<any>()
+  @Output()
+  createResource = new EventEmitter<any>()
   @Input()
   addresses: ListPage<Address>
   @Input()
@@ -550,12 +554,12 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   }
 
   async handleDelete(): Promise<void> {
-    const accessToken = await this.appAuthService.fetchToken().toPromise()
-    await HeadStartSDK.Products.Delete(
-      this._superHSProductStatic.Product.ID,
-      accessToken
+    console.log(
+      `ProductEditComponent - Handle Delete - ${this.productService.isUpdating.toString()}`
     )
-    this.router.navigateByUrl('/products')
+    this.productService.isUpdating = true
+
+    this.deleteResource.emit()
   }
 
   handleDiscardChanges(): void {
@@ -571,8 +575,9 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       const superProduct = await this.createNewSuperHSProduct(
         this._superHSProductEditable
       )
-      this.refreshProductData(superProduct)
+      await this.refreshProductData(superProduct)
       this.router.navigateByUrl(`/products/${superProduct.Product.ID}`)
+      this.createResource.emit(superProduct)
       this.dataIsSaving = false
     } catch (ex) {
       this.dataIsSaving = false

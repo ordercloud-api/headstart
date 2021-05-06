@@ -1,13 +1,17 @@
+import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { OnInit, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core'
 import { takeWhile } from 'rxjs/operators'
-import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
 import { FormGroup } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { REDIRECT_TO_FIRST_PARENT } from '@app-seller/layout/header/header.config'
 import { ListPage } from '@ordercloud/headstart-sdk'
 import { BehaviorSubject } from 'rxjs'
 import { assign as _assign } from 'lodash'
-import { ResourceFormUpdate, ResourceUpdate } from '@app-seller/models/shared.types'
+import {
+  ResourceFormUpdate,
+  ResourceUpdate,
+} from '@app-seller/models/shared.types'
 import OrderCloudError from 'ordercloud-javascript-sdk/dist/utils/OrderCloudError'
 
 export abstract class ResourceCrudComponent<ResourceType>
@@ -68,6 +72,10 @@ export abstract class ResourceCrudComponent<ResourceType>
     this.subscribeToResources()
     await this.subscribeToResourceSelection()
     this.setForm(this.updatedResource)
+    this.ocService.isUpdating = false
+    console.log(
+      `ResourceCrudComponent - ngOnInit - ${this.ocService.isUpdating.toString()}`
+    )
   }
 
   subscribeToResources(): void {
@@ -163,8 +171,11 @@ export abstract class ResourceCrudComponent<ResourceType>
   }
 
   updateResource(resourceUpdate: ResourceFormUpdate): void {
-    this.updatedResource = this.ocService.getUpdatedEditableResource(resourceUpdate as ResourceUpdate, this.updatedResource)
-    if(resourceUpdate.form) {
+    this.updatedResource = this.ocService.getUpdatedEditableResource(
+      resourceUpdate as ResourceUpdate,
+      this.updatedResource
+    )
+    if (resourceUpdate.form) {
       this.resourceForm = resourceUpdate.form
     }
     this.changeDetectorRef.detectChanges()
@@ -188,7 +199,16 @@ export abstract class ResourceCrudComponent<ResourceType>
 
   async deleteResource(): Promise<void> {
     await this.ocService.deleteResource(this.selectedResourceID)
-    this.selectResource({})
+    this.ocService.isUpdating = true
+
+    this.ocService.resourceSubject.value.Items = this.ocService.resourceSubject.value.Items.filter(
+      (i: any) => i.ID !== this.selectedResourceID
+    )
+    this.ocService.resourceSubject.next(this.ocService.resourceSubject.value)
+
+    if (this.ocService.resourceSubject?.value?.Items?.length > 0) {
+      void this.selectResource(this.ocService.resourceSubject.value.Items[0])
+    }
   }
 
   discardChanges(): void {
@@ -211,6 +231,28 @@ export abstract class ResourceCrudComponent<ResourceType>
       this.dataIsSaving = false
       this.submitError = ex
       throw ex
+    }
+  }
+
+  createResource(createdResource: any) {
+    if (
+      !this.resourceList.Items.find(
+        (element: any) => element.ID === createdResource.ID
+      )
+    ) {
+      this.ocService.resourceSubject.value.Items = [
+        ...this.ocService.resourceSubject.value.Items,
+        createdResource,
+      ]
+      this.ocService.resourceSubject.next([
+        ...this.ocService.resourceSubject.value.Items,
+        createdResource,
+      ])
+
+      this.ocService.isUpdating = true
+      //void this.selectResource(createdResource)
+      //this.updateResource(createdResource)
+      this.changeDetectorRef.detectChanges()
     }
   }
 

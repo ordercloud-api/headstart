@@ -27,6 +27,8 @@
     [addresses]="addresses"
     [orderCloudProduct]="resourceInSelection"
     (updateList)="updateResourceInList($event)"
+    (deleteResource)="deleteResource()"
+    (createResource)="createResource($event)"
   >
   </app-product-edit>
 </resource-table-component>
