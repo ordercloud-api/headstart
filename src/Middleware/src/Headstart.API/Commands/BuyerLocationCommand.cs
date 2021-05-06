@@ -26,12 +26,10 @@ namespace Headstart.API.Commands
     {
         private IOrderCloudClient _oc;
         private readonly AppSettings _settings;
-        private readonly IHSCatalogCommand _catalogCommand;
-        public HSBuyerLocationCommand(AppSettings settings, IOrderCloudClient oc, IHSCatalogCommand catalogCommand)
+        public HSBuyerLocationCommand(AppSettings settings, IOrderCloudClient oc)
         {
             _settings = settings;
             _oc = oc;
-            _catalogCommand = catalogCommand;
         }
 
         public async Task<HSBuyerLocation> Get(string buyerID, string buyerLocationID)
@@ -211,6 +209,7 @@ namespace Headstart.API.Commands
 
         // Temporary work around for a platform issue. When a new user is registered we need to 
         // delete and reassign usergroup assignments for that user to view products
+        // issue: https://four51.atlassian.net/browse/EX-2222
         private async Task RemoveAndAddUserGroupAssignment(string buyerID, string newUserID, string userGroupID)
         {
             await _oc.UserGroups.DeleteUserAssignmentAsync(buyerID, userGroupID, newUserID);
