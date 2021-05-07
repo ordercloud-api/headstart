@@ -51,7 +51,7 @@ namespace Headstart.Common.Controllers
         [HttpPut, Route("{buyerID}/{buyerLocationID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
         public async Task<HSBuyerLocation> Save(string buyerID, string buyerLocationID, [FromBody] HSBuyerLocation buyerLocation)
         {
-            return await _buyerLocationCommand.Save(buyerID, buyerLocationID, buyerLocation, UserContext.AccessToken);
+            return await _buyerLocationCommand.Save(buyerID, buyerLocationID, buyerLocation, UserContext.AccessToken, _oc);
         }
 
         [DocName("Delete a Buyer Location")]

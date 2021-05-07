@@ -114,7 +114,10 @@ export class BuyerLocationEditComponent implements OnInit {
       BillingNumber: new FormControl(
         (buyerLocation.Address.xp as any).BillingNumber
       ),
-      CatalogAssignments: new FormControl(undefined, this.isCreatingNew ? [Validators.required] : undefined)
+      CatalogAssignments: new FormControl(
+        undefined,
+        this.isCreatingNew ? [Validators.required] : undefined
+      ),
     })
   }
 
@@ -174,7 +177,7 @@ export class BuyerLocationEditComponent implements OnInit {
       )
       this.dataIsSaving = false
     } catch (ex) {
-      this.suggestedAddresses = getSuggestedAddresses(ex.response.data)
+      this.suggestedAddresses = getSuggestedAddresses(ex?.response?.data)
       this.dataIsSaving = false
     }
   }
@@ -182,10 +185,10 @@ export class BuyerLocationEditComponent implements OnInit {
   async updateBuyerLocation(): Promise<void> {
     try {
       this.dataIsSaving = true
-      this.buyerLocationEditable.UserGroup
-        .xp.Country = this.buyerLocationEditable.Address.Country
+      this.buyerLocationEditable.UserGroup.xp.Country = this.buyerLocationEditable.Address.Country
       var assignments = this.resourceForm.controls['CatalogAssignments']?.value
-      this.buyerLocationEditable.UserGroup.xp.CatalogAssignments = assignments?.CatalogIDs
+      this.buyerLocationEditable.UserGroup.xp.CatalogAssignments =
+        assignments?.CatalogIDs
       const updatedBuyerLocation = await HeadStartSDK.BuyerLocations.Save(
         this.buyerID,
         this.buyerLocationEditable.Address.ID,
@@ -255,7 +258,7 @@ export class BuyerLocationEditComponent implements OnInit {
   }
 
   addCatalogAssignments(event): void {
-    this.resourceForm.controls['CatalogAssignments']?.setValue(event);
+    this.resourceForm.controls['CatalogAssignments']?.setValue(event)
   }
 
   private async handleSelectedAddressChange(address: Address): Promise<void> {
