@@ -29,6 +29,7 @@ export default class BuyerLocations {
         this.ListUserGroupsForNewUser = this.ListUserGroupsForNewUser.bind(this);
         this.ListUserGroupsByCountry = this.ListUserGroupsByCountry.bind(this);
         this.ListUserUserGroupAssignments = this.ListUserUserGroupAssignments.bind(this);
+        this.ReassignUserGroups = this.ReassignUserGroups.bind(this);
     }
 
    /**
@@ -194,6 +195,12 @@ export default class BuyerLocations {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.get(`/buyerlocations/${userGroupType}/${parentID}/usergroupassignments/${userID}`, { params: {  accessToken, impersonating } } );
+    }
+
+    public async ReassignUserGroups(buyerID: string, newUserID: string, accessToken?: string): Promise<void> {
+        const impersonating = this.impersonating;
+        this.impersonating = false;
+        return await httpClient.put(`/buyerlocations/${buyerID}/reassignusergroups/${newUserID}`, undefined, { params: { accessToken, impersonating } } )
     }
 
     /**
