@@ -74,7 +74,10 @@ export class OrderTableComponent extends ResourceCrudComponent<Order> {
       {
         Display: 'ADMIN.FILTERS.SELLER_OWNED_PRODUCTS',
         Path: 'xp.HasSellerProducts',
-        Items: [{ Value: true }, { Value: false }],
+        Items: [
+          { Text: 'ADMIN.FILTER_OPTIONS.YES', Value: 'true' },
+          { Text: 'ADMIN.FILTER_OPTIONS.NO', Value: 'false|!*' },
+        ],
         Type: 'Dropdown',
         QueryRestriction: 'OrderDirection=Incoming',
       },

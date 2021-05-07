@@ -39,6 +39,7 @@ namespace Headstart.Models
         public HSAddressBuyer ShippingAddress { get; set; }
         public List<ShipMethodSupplierView> SelectedShipMethodsSupplierView { get; set; }
         public bool? IsResubmitting { get; set; }
+        public bool? HasSellerProducts { get; set; }
     }
 
     [SwaggerModel]
