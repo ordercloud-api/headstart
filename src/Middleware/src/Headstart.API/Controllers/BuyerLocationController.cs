@@ -133,10 +133,10 @@ namespace Headstart.Common.Controllers
         }
 
         [DocName("PUT usergroups from anonymous to new user"), OrderCloudUserAuth(ApiRole.Shopper)]
-        [HttpPut, Route("{buyerID}/transferanonymous/{newUserID}")]
-        public async Task ApplyAnonUserGroupsToNewUser(string buyerID, string newUserID)
+        [HttpPut, Route("{buyerID}/reassignusergroups/{newUserID}")]
+        public async Task ReassignUserGroups(string buyerID, string newUserID)
         {
-            await _buyerLocationCommand.AssignNewUserAnonUserGroups(buyerID, newUserID);
+            await _buyerLocationCommand.ReassignUserGroups(buyerID, newUserID);
         }
     }
 }

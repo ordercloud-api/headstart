@@ -19,7 +19,7 @@ namespace Headstart.API.Commands
         Task<HSBuyerLocation> Save(string buyerID, string buyerLocationID, HSBuyerLocation buyerLocation, string token, IOrderCloudClient oc = null);
         Task Delete(string buyerID, string buyerLocationID);
         Task CreateSinglePermissionGroup(string buyerLocationID, string permissionGroupID);
-        Task AssignNewUserAnonUserGroups(string buyerID, string newUserID);
+        Task ReassignUserGroups(string buyerID, string newUserID);
     }
 
     public class HSBuyerLocationCommand : IHSBuyerLocationCommand
@@ -199,7 +199,7 @@ namespace Headstart.API.Commands
             }
         }
 
-        public async Task AssignNewUserAnonUserGroups(string buyerID, string newUserID)
+        public async Task ReassignUserGroups(string buyerID, string newUserID)
         {
             var userGroupAssignments = await _oc.UserGroups.ListAllUserAssignmentsAsync(buyerID, userID: newUserID);
             await Throttler.RunAsync(userGroupAssignments, 100, 5, assignment =>
