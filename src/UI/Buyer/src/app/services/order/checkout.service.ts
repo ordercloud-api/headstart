@@ -51,8 +51,8 @@ export class CheckoutService {
   }
 
   async checkForSellerOwnedProducts(lineItems: HSLineItem[]): Promise<void> {
-    const someSellerProducts = lineItems.some((li) => li.SupplierID === null)
-    await this.patch({ xp: { HasSellerProducts: someSellerProducts } })
+    const hasSellerProducts = lineItems.some((li) => li.SupplierID === null)
+    await this.patch({ xp: { HasSellerProducts: hasSellerProducts } })
   }
 
   async addComment(comment: string): Promise<HSOrder> {
