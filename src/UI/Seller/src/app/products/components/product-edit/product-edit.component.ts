@@ -383,7 +383,10 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  isProductReadonly(superHSProduct: SuperHSProduct) {
+  isProductReadonly(superHSProduct: SuperHSProduct): boolean {
+    if (this.productService.checkIfCreatingNew()) {
+      return false
+    }
     if (superHSProduct.Product?.DefaultSupplierID) {
       if (
         this.userContext?.Me?.Supplier?.ID ===
