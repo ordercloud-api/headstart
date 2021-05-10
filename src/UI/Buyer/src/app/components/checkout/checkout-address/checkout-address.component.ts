@@ -98,34 +98,11 @@ export class OCMCheckoutAddress implements OnInit {
       pageSize: 100,
     }
     this.existingBuyerLocations = await this.context.addresses.listBuyerLocations(
-      listOptions
+      listOptions, true
     )
     this.homeCountry = this.existingBuyerLocations?.Items[0]?.Country || 'US'
-    if (this.existingBuyerLocations?.Meta.TotalPages <= 1) {
-      if (this.existingBuyerLocations?.Items.length === 1) {
-        this.selectedBuyerLocation = this.selectedShippingAddress = this.existingBuyerLocations.Items[0]
-      }
-    } else {
-      let requests = []
-      for (
-        let page = 2;
-        page <= this.existingBuyerLocations.Meta.TotalPages;
-        page++
-      ) {
-        listOptions.page = page
-        // Hack to avoid page being mutated after the request has been added to the queue
-        const copiedListOptions = JSON.parse(JSON.stringify(listOptions))
-        requests = [
-          ...requests,
-          this.context.addresses.listBuyerLocations(copiedListOptions),
-        ]
-      }
-      return await Promise.all(requests).then((response) => {
-        this.existingBuyerLocations.Items = [
-          ...this.existingBuyerLocations.Items,
-          ..._flatten(response.map((r) => r.Items)),
-        ]
-      })
+    if( this.existingBuyerLocations?.Items?.length === 1) {
+      this.selectedBuyerLocation = this.selectedShippingAddress = this.existingBuyerLocations.Items[0]
     }
   }
 
