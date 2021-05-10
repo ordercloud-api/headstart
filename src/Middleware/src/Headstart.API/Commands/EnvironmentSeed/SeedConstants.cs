@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Headstart.Common.Helpers;
 using Headstart.Models;
@@ -11,13 +11,14 @@ namespace Headstart.API.Commands
 {
     public class SeedConstants
     {
-        public static string BuyerApiClientName = "Default HeadStart Buyer UI";
+        public static string BuyerApiClientName = "Storefront - Default Buyer";
         public static string BuyerLocalApiClientName = "Default HeadStart Buyer UI LOCAL"; // used for pointing integration events to the ngrok url
         public static string SellerApiClientName = "Default HeadStart Admin UI";
         public static string IntegrationsApiClientName = "Middleware Integrations";
         public static string SellerUserName = "Default_Admin";
         public static string FullAccessSecurityProfile = "DefaultContext";
-        public static string DefaultBuyerName = "Default HeadStart Buyer";
+        public static string DefaultBuyerName = "Default Headstart Buyer";
+        public static string DefaultBuyerID = "0001";
         public static string DefaultLocationID = "default-buyerLocation";
         public static string AllowedSecretChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -39,7 +40,7 @@ namespace Headstart.API.Commands
             };
         }
 
-        public static User MIddlewareIntegrationsUser()
+        public static User MiddlewareIntegrationsUser()
         {
             return new User()
             {
@@ -56,6 +57,7 @@ namespace Headstart.API.Commands
         {
             return new HSBuyer
             {
+                ID = DefaultBuyerID,
                 Name = DefaultBuyerName,
                 Active = true,
                 xp = new BuyerXp
@@ -122,7 +124,7 @@ namespace Headstart.API.Commands
             };
         }
 
-        public static ApiClient BuyerClient()
+        public static ApiClient BuyerClient(EnvironmentSeed seed)
         {
             return new ApiClient()
             {
@@ -133,12 +135,12 @@ namespace Headstart.API.Commands
                 AllowSeller = false,
                 AccessTokenDuration = 600,
                 RefreshTokenDuration = 43200,
-                DefaultContextUserName = AnonymousBuyerUser().ID,
-                IsAnonBuyer = true
+                DefaultContextUserName = seed.EnableAnonymousShopping ? AnonymousBuyerUser().ID : null,
+                IsAnonBuyer = seed.EnableAnonymousShopping
             };
         }
 
-        public static ApiClient BuyerLocalClient()
+        public static ApiClient BuyerLocalClient(EnvironmentSeed seed)
         {
             return new ApiClient()
             {
@@ -149,8 +151,8 @@ namespace Headstart.API.Commands
                 AllowSeller = false,
                 AccessTokenDuration = 600,
                 RefreshTokenDuration = 43200,
-                DefaultContextUserName = AnonymousBuyerUser().ID,
-                IsAnonBuyer = true
+                DefaultContextUserName = seed.EnableAnonymousShopping ? AnonymousBuyerUser().ID : null,
+                IsAnonBuyer = seed.EnableAnonymousShopping
             };
         }
         #endregion
