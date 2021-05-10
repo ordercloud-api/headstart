@@ -67,6 +67,7 @@ import { UserContext } from '@app-seller/models/user.types'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { AssetService } from '@app-seller/shared/services/assets/asset.service'
 import { getProductMediumImageUrl } from '@app-seller/shared/services/assets/asset.helper'
+import { TranslateService } from '@ngx-translate/core'
 
 @Component({
   selector: 'app-product-edit',
@@ -154,7 +155,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     private appAuthService: AppAuthService,
     @Inject(applicationConfiguration) private appConfig: AppConfig,
     private toastrService: ToastrService,
-    private assetService: AssetService
+    private assetService: AssetService,
+    private translate: TranslateService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -599,6 +601,13 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     }
   }
 
+  showVariantToastr(): void {
+    this.toastrService.warning(
+      this.translate.instant('ADMIN.PRODUCT_EDIT.VARIANTS_WARNING'),
+      'Warning',
+      { onActivateTick: true }
+    )
+  }
   productWasModified(): boolean {
     return (
       JSON.stringify(this._superHSProductEditable) !==
