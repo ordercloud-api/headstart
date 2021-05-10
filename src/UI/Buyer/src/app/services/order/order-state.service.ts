@@ -191,7 +191,7 @@ export class OrderStateService {
 
   private async getOrdersForResubmit(): Promise<ListPage<HSOrder>> {
     const orders = await Me.ListOrders({
-      sortBy: '!DateCreated',
+      sortBy: ['!DateCreated'],
       filters: {
         DateDeclined: '*',
         status: 'Unsubmitted',
@@ -203,7 +203,7 @@ export class OrderStateService {
 
   private async getOrdersNeverSubmitted(): Promise<ListPage<HSOrder>> {
     const orders = await Me.ListOrders({
-      sortBy: '!DateCreated',
+      sortBy: ['!DateCreated'],
       filters: {
         DateDeclined: '!*',
         status: 'Unsubmitted',

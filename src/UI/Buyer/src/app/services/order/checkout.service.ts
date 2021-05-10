@@ -125,7 +125,7 @@ export class CheckoutService {
 
   async isApprovalNeeded(locationID: string): Promise<boolean> {
     const userGroups = await Me.ListUserGroups({
-      searchOn: 'ID',
+      searchOn: ['ID'],
       search: locationID,
     })
     return userGroups.Items.some((u) => u.ID === `${locationID}-NeedsApproval`)

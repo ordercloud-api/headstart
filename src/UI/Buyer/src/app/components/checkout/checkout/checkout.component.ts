@@ -95,7 +95,7 @@ export class OCMCheckout implements OnInit {
     private toastrService: ToastrService,
     private router: Router,
     private translate: TranslateService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     this.context.order.onChange((order) => (this.order = order))
@@ -156,18 +156,7 @@ export class OCMCheckout implements OnInit {
     this.toSection('shippingAddress')
   }
 
-  async handleSavedCard(card: HSBuyerCreditCard): Promise<Payment> {
-    // amount gets calculated in middleware
-    await this.context.order.checkout.setOneTimeAddress(
-      card.xp.CCBillingAddress,
-      'billing'
-    )
-    return this.buildCCPaymentFromSavedCard(card)
-  }
-
-  buildCCPaymentFromNewCard(
-    card: OrderCloudIntegrationsCreditCardToken
-  ): Payment {
+  buildCCPaymentFromNewCard(card: OrderCloudIntegrationsCreditCardToken): Payment {
     return {
       DateCreated: new Date().toDateString(),
       Accepted: false,
@@ -210,7 +199,7 @@ export class OCMCheckout implements OnInit {
     if (!output.SavedCard) {
       payments.push(await this.handleNewCard(output))
     } else {
-      payments.push(await this.handleSavedCard(output.SavedCard))
+      payments.push(this.buildCCPaymentFromSavedCard(output.SavedCard))
       delete this.selectedCard.NewCard
     }
     if (this.orderSummaryMeta.POLineItemCount) {
@@ -230,11 +219,8 @@ export class OCMCheckout implements OnInit {
 
   async handleNewCard(output: SelectedCreditCard): Promise<HSPayment> {
     this.isNewCard = true
-    await this.context.order.checkout.setOneTimeAddress(
-      output.NewCard.CCBillingAddress,
-      'billing'
-    )
     if (this.isAnon) {
+      await this.context.order.checkout.setOneTimeAddress(output.NewCard.CCBillingAddress, 'billing')
       return this.buildCCPaymentFromNewCard(output.NewCard)
     } else {
       this.selectedCard.SavedCard = await this.context.currentUser.cards.Save(
