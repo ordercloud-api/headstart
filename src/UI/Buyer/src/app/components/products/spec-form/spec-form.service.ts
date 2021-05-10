@@ -95,19 +95,12 @@ export class SpecFormService {
   }
 
   public AssetTagMatches(liSpecs: LineItemSpec[], image: ImageAsset): boolean {
-    return liSpecs.every((spec: string | LineItemSpec) =>
+    return liSpecs.every((spec: LineItemSpec) =>
       image?.Tags?.find((tag) =>
         tag?.split('-')?.includes(
-          // We need to differentiate here because in one instance
-          // this value is a LineItemSpec and the other, a string.
-          typeof spec === 'string'
-            ? spec
-                ?.split(' ')
-                .join('')
-                .replace(/[^a-zA-Z0-9 ]/g, '')
-            : spec?.Value?.split(' ')
-                .join('')
-                .replace(/[^a-zA-Z0-9 ]/g, '')
+          spec?.Value?.split(' ')
+            .join('')
+            .replace(/[^a-zA-Z0-9 ]/g, '')
         )
       )
     )

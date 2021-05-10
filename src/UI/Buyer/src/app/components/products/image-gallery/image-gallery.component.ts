@@ -9,6 +9,8 @@ import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { fromEvent } from 'rxjs'
 import { ImageAsset } from '@ordercloud/headstart-sdk'
 import { SpecFormService } from '../spec-form/spec-form.service'
+import { FormGroup } from '@angular/forms'
+import { LineItemSpec, Spec } from 'ordercloud-javascript-sdk'
 
 @Component({
   templateUrl: './image-gallery.component.html',
@@ -16,7 +18,8 @@ import { SpecFormService } from '../spec-form/spec-form.service'
 })
 export class OCMImageGallery implements OnInit, OnChanges {
   @Input() images: ImageAsset[] = []
-  @Input() specs: any[] = []
+  @Input() specs: Spec[] = []
+  @Input() specForm: FormGroup
   imgUrls: string[] = []
 
   // gallerySize can be changed and the component logic + behavior will all work. However, the UI may look wonky.
@@ -59,8 +62,9 @@ export class OCMImageGallery implements OnInit, OnChanges {
   isImageMatchingSpecs(image: ImageAsset): boolean {
     // Examine all non-variable text specs, and find the image tag that matches all specs,
     // removing spaces where needed on the spec to find that match.
-    const specs = this.specs.filter((s) => s !== null);
-    return this.specFormService.AssetTagMatches(specs, image);
+    const specs = this.specs.filter((s) => s !== null)
+    const liSpecs = this.specFormService.getLineItemSpecs(specs, this.specForm)
+    return this.specFormService.AssetTagMatches(liSpecs, image)
   }
 
   onSpecsChange(): void {
