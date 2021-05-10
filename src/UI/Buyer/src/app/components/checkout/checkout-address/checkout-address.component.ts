@@ -20,6 +20,7 @@ import { ErrorMessages } from '../../../services/error-constants'
 import { flatten as _flatten } from 'lodash'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 import { listAll } from 'src/app/services/listAll'
+import { TranslateService } from '@ngx-translate/core'
 // TODO - Make this component "Dumb" by removing the dependence on context service
 // and instead have it use inputs and outputs to interact with the CheckoutComponent.
 // Goal is to get all the checkout logic and state into one component.
@@ -45,14 +46,17 @@ export class OCMCheckoutAddress implements OnInit {
   existingBuyerLocations: ListPage<BuyerAddress>
   selectedBuyerLocation: BuyerAddress
   homeCountry: string
+  tooltip: string
 
   constructor(
     private context: ShopperContextService,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private translate: TranslateService
   ) { }
 
   async ngOnInit(): Promise<void> {
     this.isAnon = this.context.currentUser.isAnonymous();
+    this.tooltip = this.translate.instant('CHECKOUT.CHECKOUT_ADDRESS.BUYER_LOCATION_TOOLTIP')
     if(this.isAnon) {
       this.showNewAddress();
     }
