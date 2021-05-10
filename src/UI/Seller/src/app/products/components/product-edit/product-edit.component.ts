@@ -100,7 +100,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   isCreatingNew: boolean
   @Input()
   dataIsSaving = false
-  userContext: any = {}
+  userContext: UserContext = {} as any
   hasVariations = false
   images: ImageAsset[] = []
   files: FileHandle[] = []
@@ -270,7 +270,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
 
   createProductForm(superHSProduct: SuperHSProduct): void {
     if (superHSProduct.Product) {
-      this.readonly = superHSProduct.Product.DefaultSupplierID ? true : false
+      this.readonly = this.isProductReadonly(superHSProduct)
       this.sellerView = this.userContext?.UserType === 'SELLER'
       this.productForm = new FormGroup(
         {
@@ -381,6 +381,18 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       this.setNonRequiredFields()
       this.setResourceType()
     }
+  }
+
+  isProductReadonly(superHSProduct: SuperHSProduct) {
+    if (superHSProduct.Product?.DefaultSupplierID) {
+      if (
+        this.userContext?.Me?.Supplier?.ID ===
+        superHSProduct?.Product?.DefaultSupplierID
+      ) {
+        return false
+      }
+    }
+    return true
   }
 
   setInventoryValidator(): void {

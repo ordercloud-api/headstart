@@ -22,4 +22,5 @@ export interface OrderXp {
     ShippingAddress?: HSAddressBuyer
     SelectedShipMethodsSupplierView?: ShipMethodSupplierView[]
     IsResubmitting?: boolean
+	HasSellerProducts?: boolean
 }

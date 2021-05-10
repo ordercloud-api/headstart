@@ -990,5 +990,34 @@
       "USER_IS_ADMINISTRATOR": "You are an approval rule administrator but you are not currently a part of any locations. When you join a location you can assign approval permissions here.",
       "WARNING": "This is a potentially destructive action that affects order approvals."
     }
+  },
+  "ERRORS": {
+    "FAILED_TO_VOID_AUTHORIZATION": {
+      "TITLE": "An Error Occured",
+      "MESSAGE": "Critical error occurred. Please contact support and avoid submitting order again until you have been helped",
+      "BUTTONTEXT": "Go to Payment Selection"
+    },
+    "INSUFFICIENT": {
+      "TITLE": "Insufficient Inventory",
+      "MESSAGE_PART1": "Insufficient inventory for product",
+      "MESSAGE_PART2": "Quantity Available",
+      "BUTTONTEXT": "Back to Cart"
+    },
+    "ALREADY_SUBMITTED": {
+      "TITLE": "This order has already been submitted",
+      "BUTTONTEXT": "Back to Home"
+    },
+    "MISSING_SHIPPING_SELECTIONS": {
+      "TITLE": "This order has been changed",
+      "MESSAGE": "Please update your shipping selections",
+      "BUTTONTEXT": "Go to Shipping"
+    },
+    "CREDIT_CARD_AUTH": {
+      "TITLE": "There was an error processing your payment",
+      "MESSAGE_PART1": "The authorization for your payment was declined by the processor due to:",
+      "MESSAGE_PART2": "Please reenter your information or use a different card"
+    },
+    "ORDER_NOT_ACCESSABLE": "You no longer have access to this order",
+    "UNKNOWN": "An unknown error has occurred"
   }
 }

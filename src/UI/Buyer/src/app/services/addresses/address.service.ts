@@ -9,6 +9,7 @@ import {
 } from '@ordercloud/headstart-sdk'
 import Axios, { AxiosRequestConfig } from 'axios'
 import { AppConfig } from 'src/app/models/environment.types'
+import { listAll } from '../listAll'
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +26,10 @@ export class AddressService {
   async list(args: ListArgs): Promise<ListPage<HSAddressBuyer>> {
     return Me.ListAddresses(args as any)
   }
+
+  async listAll(args: ListArgs): Promise<ListPage<HSAddressBuyer>> {
+    return listAll(Me, Me.ListAddresses, args)
+  } 
 
   async create(
     address: HSAddressBuyer
@@ -44,10 +49,11 @@ export class AddressService {
   }
 
   async listBuyerLocations(
-    args: ListArgs = {}
+    args: ListArgs = {}, 
+    all = false
   ): Promise<ListPage<HSAddressBuyer>> {
     args.filters = { ...args.filters, Editable: 'false' };
-    return await this.list(args)
+    return all ? await this.listAll(args) : await this.listAll(args)
   }
 
   async listShippingAddresses(
