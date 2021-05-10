@@ -80,11 +80,6 @@ namespace Headstart.API
                 ConnectionString = _settings.BlobSettings.ConnectionString,
                 Container = _settings.BlobSettings.ContainerNameExchangeRates
             };
-            var middlewareErrorsConfig = new BlobServiceConfig()
-            {
-                ConnectionString = _settings.BlobSettings.ConnectionString,
-                Container = "unhandled-errors-log"
-            };
             var assetConfig = new BlobServiceConfig()
             {
                 ConnectionString = _settings.BlobSettings.ConnectionString,
