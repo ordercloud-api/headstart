@@ -70,7 +70,7 @@ export class SpecFormService {
     specs: Spec[],
     specForm?: FormGroup
   ): string {
-    if(!images || images === null) {
+    if (!images || images === null) {
       images = []
     }
     if (!specs.length) {
@@ -91,17 +91,24 @@ export class SpecFormService {
   ): boolean {
     // Examine all specs, and find the image tag that matches all specs, removing spaces where needed on the spec to find that match.
     const liSpecs = this.getLineItemSpecs(specs, specForm)
-    return this.AssetTagMatches(liSpecs, image);
+    return this.AssetTagMatches(liSpecs, image)
   }
 
   public AssetTagMatches(liSpecs: LineItemSpec[], image: ImageAsset): boolean {
-    return liSpecs.every((spec) =>
+    return liSpecs.every((spec: string | LineItemSpec) =>
       image?.Tags?.find((tag) =>
-        !spec.Value
-          ? tag
-              ?.split('-')
-              ?.includes((spec as string)?.replace(/[^a-zA-Z0-9 ]/g, ''))
-          : null
+        tag?.split('-')?.includes(
+          // We need to differentiate here because in one instance
+          // this value is a LineItemSpec and the other, a string.
+          typeof spec === 'string'
+            ? spec
+                ?.split(' ')
+                .join('')
+                .replace(/[^a-zA-Z0-9 ]/g, '')
+            : spec?.Value?.split(' ')
+                .join('')
+                .replace(/[^a-zA-Z0-9 ]/g, '')
+        )
       )
     )
   }
@@ -152,7 +159,7 @@ export class SpecFormService {
   ): boolean {
     // Examine all specs, and find the image tag that matches all specs, removing spaces where needed on the spec to find that match.
     const liSpecs = this.getGridLineItemSpecs(specs, specValues)
-    return this.AssetTagMatches(liSpecs, image);
+    return this.AssetTagMatches(liSpecs, image)
   }
 
   private singleSpecMarkup(
