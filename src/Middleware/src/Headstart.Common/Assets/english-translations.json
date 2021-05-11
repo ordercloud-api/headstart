@@ -489,6 +489,9 @@
       "DOWNLOADING": "Downloading...",
       "REPORT_PROCESSING": "Report Processing",
       "PREVIEW_THE_REPORT": "Preview the report data in a table, or download the file."
+    },
+    "PERMISSIONS": {
+      "LOCATION_APPROVAL_TOOLTIP": "No approval rules in this buyer group. Set an approval rule before granting OrderApprover permissions."
     }
   },
   "AUTHENTICATION": {
