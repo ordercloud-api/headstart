@@ -210,7 +210,7 @@ export class CartService {
     })) as HSOrder
 
     const currentUnsubmittedOrders = await Me.ListOrders({
-      sortBy: '!DateCreated',
+      sortBy: ['!DateCreated'],
       filters: {
         DateDeclined: '!*',
         status: 'Unsubmitted',

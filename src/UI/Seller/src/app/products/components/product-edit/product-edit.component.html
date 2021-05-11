@@ -1108,17 +1108,26 @@
       </li>
       <!-- /Filters -->
       <!-- Varitaions -->
-      <li
-        [ngbNavItem]="5"
-        [disabled]="!_superHSProductEditable?.Product?.ID"
-        id="5"
-      >
-        <a [fragment]="variants" class="text-muted" ngbNavLink translate
-          >ADMIN.PRODUCT_EDIT.VARIANTS
+      <li *ngIf="!_superHSProductEditable?.Product?.ID" [ngbNavItem]="5" id="5">
+        <a
+          [fragment]="variants"
+          class="text-muted nav-link"
+          (click)="showVariantToastr()"
+          translate
+        >
+          ADMIN.PRODUCT_EDIT.VARIANTS
           <span class="badge badge-pill badge-info">{{
             _superHSProductEditable?.Variants?.length || 0
-          }}</span></a
-        >
+          }}</span>
+        </a>
+      </li>
+      <li *ngIf="_superHSProductEditable?.Product?.ID" [ngbNavItem]="5" id="5">
+        <a [fragment]="variants" class="text-muted" ngbNavLink translate>
+          ADMIN.PRODUCT_EDIT.VARIANTS
+          <span class="badge badge-pill badge-info">{{
+            _superHSProductEditable?.Variants?.length || 0
+          }}</span>
+        </a>
         <ng-template ngbNavContent>
           <product-variations-component
             [readonly]="readonly"

@@ -1,4 +1,4 @@
-﻿using Headstart.Models;
+using Headstart.Models;
 using Headstart.Models.Misc;
 using OrderCloud.SDK;
 using System.Linq;
@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Headstart.Common.Constants;
 using System;
 using Headstart.Common;
+using OrderCloud.Catalyst;
+using Headstart.API.Commands.Crud;
 
 namespace Headstart.API.Commands
 {
@@ -17,6 +19,7 @@ namespace Headstart.API.Commands
         Task<HSBuyerLocation> Save(string buyerID, string buyerLocationID, HSBuyerLocation buyerLocation, string token, IOrderCloudClient oc = null);
         Task Delete(string buyerID, string buyerLocationID);
         Task CreateSinglePermissionGroup(string buyerLocationID, string permissionGroupID);
+        Task ReassignUserGroups(string buyerID, string newUserID);
     }
 
     public class HSBuyerLocationCommand : IHSBuyerLocationCommand
@@ -109,12 +112,12 @@ namespace Headstart.API.Commands
             {
                 existingLocation = await ocClient.UserGroups.GetAsync(buyerID, buyerLocationID, token);
             } catch (Exception e) { } // Do nothing if not found
-            var updatedBuyerAddress = ocClient.Addresses.SaveAsync<HSAddressBuyer>(buyerID, buyerLocationID, buyerLocation.Address, accessToken: token);
-            var updatedBuyerUserGroup = ocClient.UserGroups.SaveAsync<HSLocationUserGroup>(buyerID, buyerLocationID, buyerLocation.UserGroup, accessToken: token);
+            var updatedBuyerAddress = await ocClient.Addresses.SaveAsync<HSAddressBuyer>(buyerID, buyerLocationID, buyerLocation.Address, accessToken: token);
+            var updatedBuyerUserGroup = await ocClient.UserGroups.SaveAsync<HSLocationUserGroup>(buyerID, buyerLocationID, buyerLocation.UserGroup, accessToken: token);
             var location = new HSBuyerLocation
             {
-                Address = await updatedBuyerAddress,
-                UserGroup = await updatedBuyerUserGroup,
+                Address = updatedBuyerAddress,
+                UserGroup = updatedBuyerUserGroup,
             };
             if (existingLocation == null)
 			{
@@ -194,6 +197,27 @@ namespace Headstart.API.Commands
                     SecurityProfileID = customRole.ToString()
                 }, token);
             }
+        }
+
+        public async Task ReassignUserGroups(string buyerID, string newUserID)
+        {
+            var userGroupAssignments = await _oc.UserGroups.ListAllUserAssignmentsAsync(buyerID, userID: newUserID);
+            await Throttler.RunAsync(userGroupAssignments, 100, 5, assignment =>
+                RemoveAndAddUserGroupAssignment(buyerID, newUserID, assignment?.UserGroupID)
+                ); 
+        }
+
+        // Temporary work around for a platform issue. When a new user is registered we need to 
+        // delete and reassign usergroup assignments for that user to view products
+        // issue: https://four51.atlassian.net/browse/EX-2222
+        private async Task RemoveAndAddUserGroupAssignment(string buyerID, string newUserID, string userGroupID)
+        {
+            await _oc.UserGroups.DeleteUserAssignmentAsync(buyerID, userGroupID, newUserID);
+            await _oc.UserGroups.SaveUserAssignmentAsync(buyerID, new UserGroupAssignment
+            {
+                UserGroupID = userGroupID,
+                UserID = newUserID
+            });
         }
     }
 }

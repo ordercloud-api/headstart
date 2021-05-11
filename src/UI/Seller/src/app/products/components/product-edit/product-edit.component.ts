@@ -67,6 +67,7 @@ import { UserContext } from '@app-seller/models/user.types'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { AssetService } from '@app-seller/shared/services/assets/asset.service'
 import { getProductMediumImageUrl } from '@app-seller/shared/services/assets/asset.helper'
+import { TranslateService } from '@ngx-translate/core'
 
 @Component({
   selector: 'app-product-edit',
@@ -100,7 +101,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   isCreatingNew: boolean
   @Input()
   dataIsSaving = false
-  userContext: any = {}
+  userContext: UserContext = {} as any
   hasVariations = false
   images: ImageAsset[] = []
   files: FileHandle[] = []
@@ -154,7 +155,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     private appAuthService: AppAuthService,
     @Inject(applicationConfiguration) private appConfig: AppConfig,
     private toastrService: ToastrService,
-    private assetService: AssetService
+    private assetService: AssetService,
+    private translate: TranslateService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -270,7 +272,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
 
   createProductForm(superHSProduct: SuperHSProduct): void {
     if (superHSProduct.Product) {
-      this.readonly = superHSProduct.Product.DefaultSupplierID ? true : false
+      this.readonly = this.isProductReadonly(superHSProduct)
       this.sellerView = this.userContext?.UserType === 'SELLER'
       this.productForm = new FormGroup(
         {
@@ -381,6 +383,21 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       this.setNonRequiredFields()
       this.setResourceType()
     }
+  }
+
+  isProductReadonly(superHSProduct: SuperHSProduct): boolean {
+    if (this.productService.checkIfCreatingNew()) {
+      return false
+    }
+    if (superHSProduct.Product?.DefaultSupplierID) {
+      if (
+        this.userContext?.Me?.Supplier?.ID ===
+        superHSProduct?.Product?.DefaultSupplierID
+      ) {
+        return false
+      }
+    }
+    return true
   }
 
   setInventoryValidator(): void {
@@ -584,6 +601,13 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     }
   }
 
+  showVariantToastr(): void {
+    this.toastrService.warning(
+      this.translate.instant('ADMIN.PRODUCT_EDIT.VARIANTS_WARNING'),
+      'Warning',
+      { onActivateTick: true }
+    )
+  }
   productWasModified(): boolean {
     return (
       JSON.stringify(this._superHSProductEditable) !==

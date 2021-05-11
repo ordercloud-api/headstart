@@ -51,7 +51,7 @@ namespace Headstart.Common.Controllers
         [HttpPut, Route("{buyerID}/{buyerLocationID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
         public async Task<HSBuyerLocation> Save(string buyerID, string buyerLocationID, [FromBody] HSBuyerLocation buyerLocation)
         {
-            return await _buyerLocationCommand.Save(buyerID, buyerLocationID, buyerLocation, UserContext.AccessToken);
+            return await _buyerLocationCommand.Save(buyerID, buyerLocationID, buyerLocation);
         }
 
         [DocName("Delete a Buyer Location")]
@@ -130,6 +130,13 @@ namespace Headstart.Common.Controllers
         public async Task<ListPage<HSLocationUserGroup>> ListUserGroupsForNewUser(ListArgs<HSLocationUserGroup> args, string buyerID, string homeCountry)
         {
             return await _locationPermissionCommand.ListUserGroupsForNewUser(args, buyerID, homeCountry, UserContext);
+        }
+
+        [DocName("PUT usergroups from anonymous to new user"), OrderCloudUserAuth(ApiRole.Shopper)]
+        [HttpPut, Route("{buyerID}/reassignusergroups/{newUserID}")]
+        public async Task ReassignUserGroups(string buyerID, string newUserID)
+        {
+            await _buyerLocationCommand.ReassignUserGroups(buyerID, newUserID);
         }
     }
 }

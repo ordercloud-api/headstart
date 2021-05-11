@@ -1,10 +1,9 @@
-import { BuyerAddress } from '@ordercloud/angular-sdk'
-
-export const getSuggestedAddresses = (ex): Array<BuyerAddress> => {
-  for (const err of ex) {
-    if (err.ErrorCode === 'blocked by web hook') {
-      return err.Data?.Body?.SuggestedAddresses
-    }
+import { BuyerAddress } from 'ordercloud-javascript-sdk'
+export const getSuggestedAddresses = (ex): BuyerAddress[] => {
+  const suggestions = ex?.response?.data?.Data?.SuggestedAddresses
+  if (suggestions && Array.isArray(suggestions) && suggestions !== []) {
+    return suggestions
   }
+  // TODO - if suggestions === []
   throw ex
 }

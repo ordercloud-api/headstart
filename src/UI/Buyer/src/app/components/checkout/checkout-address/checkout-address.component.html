@@ -8,6 +8,40 @@
   >
     <small>Loading Shipping Selections...</small>
   </ngx-spinner>
+  <div *ngIf="!isAnon" class="form-group">
+    <label for="selectBuyerLocation" translate
+      >CHECKOUT.CHECKOUT_ADDRESS.BUYER_LOCATION</label
+    >
+    <fa-icon
+      class="ml-2"
+      placement="right"
+      [ngbTooltip]="tooltip"
+      [openDelay]="500"
+      [icon]="faQuestionCircle"
+    ></fa-icon>
+    <select
+      [ngModel]="selectedBuyerLocation?.ID"
+      (ngModelChange)="onBuyerLocationChange($event)"
+      class="custom-select"
+      id="selectBuyerLocation"
+    >
+      <option [ngValue]="null" default disabled translate>
+        CHECKOUT.CHECKOUT_ADDRESS.SELECT_BUYER_LOCATION
+      </option>
+      <option
+        *ngFor="let location of existingBuyerLocations?.Items"
+        [ngValue]="location.ID"
+      >
+        <span>
+          {{ location.Street1 }}
+          <span *ngIf="location.Street2"> {{ location.Street2 }}</span
+          >, {{ location.City }} {{ location.State }} {{ location.Zip }}
+          <span *ngIf="location.CompanyName">({{ location.CompanyName }})</span>
+        </span>
+      </option>
+    </select>
+    <br />
+  </div>
   <div class="form-group" *ngIf="!isAnon">
     <label for="selectAddress" translate
       >CHECKOUT.CHECKOUT_ADDRESS.SHIPPING_ADDRESS</label
