@@ -18,11 +18,12 @@ import {
 export class OCMRegister implements OnInit {
   form: FormGroup
   appName: string
+  loading = false
 
   constructor(
     private context: ShopperContextService,
     public appConfig: AppConfig
-  ) {}
+  ) { }
 
   // TODO: validation isn't working
   ngOnInit(): void {
@@ -45,13 +46,19 @@ export class OCMRegister implements OnInit {
   }
 
   async onSubmit(): Promise<void> {
-    if(!this.context.appSettings.anonymousShoppingEnabled) {
+    if (!this.context.appSettings.anonymousShoppingEnabled) {
       throw new Error("User registration is not enabled")
     } else {
-      const me: MeUser = this.form.value
-      me.Active = true
-      await this.context.authentication.register(me)
-      this.context.router.toHome()
+      try {
+        this.loading = true
+        const me: MeUser = this.form.value
+        me.Active = true
+        await this.context.authentication.register(me)
+        this.context.router.toHome()
+      } finally {
+        this.loading = false
+      }
+
     }
   }
 }

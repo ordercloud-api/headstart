@@ -97,8 +97,14 @@ export class AuthService {
 
   async register(me: MeUser): Promise<AccessTokenBasic> {
     const anonToken = await this.getAnonymousToken()
+    const anonUser = this.currentUser.get();
+    const countryPatchObj = {
+      xp: {
+        Country: anonUser?.xp?.Country || "US" 
+      }
+    }
     const token = await Me.Register(me, {anonUserToken: anonToken.access_token})
-    const newUser = await Me.Get({accessToken: token.access_token})
+    const newUser = await Me.Patch(countryPatchObj, {accessToken: token.access_token})
     // temporary workaround for platform issue
     // need to remove and reset userGroups for newly registered user to see products
     // issue: https://four51.atlassian.net/browse/EX-2222
