@@ -22,8 +22,11 @@
               {{ user.Username }}
             </td>
             <td *ngFor="let permissionType of permissionTypes" class="">
-              <label class="switch mb-0">
+              <label class="switch mb-0" 
+                [ngbTooltip]="isPermissionDisabled(permissionType.UserGroupSuffix, user.ID) ? locationApprovalsTooltip : '' " 
+                container="body">
                 <input
+                  [disabled]="isPermissionDisabled(permissionType.UserGroupSuffix, user.ID)"
                   class="form-check-input"
                   type="checkbox"
                   (click)="

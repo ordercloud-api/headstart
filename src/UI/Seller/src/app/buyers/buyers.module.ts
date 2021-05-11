@@ -14,9 +14,14 @@ import { BuyerEditComponent } from './components/buyers/buyer-edit/buyer-edit.co
 import { BuyerLocationPermissions } from './components/locations/buyer-location-permissions/buyer-location-permissions'
 import { BuyerCatalogTableComponent } from './components/catalogs/buyer-catalog-table/buyer-catalog-table.component'
 import { BuyerLocationCatalogs } from './components/locations/buyer-location-catalogs/buyer-location-catalogs.component'
+import { NgbModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
 
 @NgModule({
-  imports: [SharedModule, BuyersRoutingModule, PerfectScrollbarModule],
+  imports: [SharedModule, 
+    BuyersRoutingModule, 
+    PerfectScrollbarModule,
+    NgbModule,
+    NgbTooltipModule],
   declarations: [
     BuyerTableComponent,
     BuyerEditComponent,
