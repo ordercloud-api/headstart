@@ -49,4 +49,19 @@ export class BuyerApprovalTableComponent
         }
       })
   }
+
+  updateResource($event: any): void {
+    const allValues: any = $event.form.getRawValue()
+    const approval: ApprovalRule = {
+      ID: allValues?.ID?.replace('-OrderApprover', ''),
+      Name: allValues.Name,
+      Description: allValues.Description,
+      ApprovingGroupID: allValues.ApprovingGroupID,
+      RuleExpression: 'order.xp.ApprovalNeeded=' + 
+        allValues?.ID?.replace('-OrderApprover', '') + 
+        ' & order.Total > ' + allValues.OrderThreshold,
+    } 
+    this.resourceForm = $event.form
+    this.updatedResource = approval
+  }
 }

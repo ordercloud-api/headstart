@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter, ChangeDetectorRef } from "@angular/core";
+import { TestBed } from "@angular/core/testing";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { ResourceFormUpdate } from "@app-seller/models/shared.types";
 import { ValidateNoSpecialCharactersAndSpaces } from "@app-seller/validators/validators";
@@ -39,7 +40,8 @@ export class BuyerApprovalEditComponent {
     }
 
     handleLocationSelect(event: any) {
-        this.resourceForm.setValue({'ApprovingGroupID': event.target.value})
+        this.resourceForm.controls['ApprovingGroupID'].setValue(`${event.target.value}`)
+        this.resourceForm.controls['ID'].setValue(event.target.value)
         this.handleUpdateResource(event)
     }
 
@@ -49,7 +51,11 @@ export class BuyerApprovalEditComponent {
             Name: new FormControl(approval?.Name),
             Description: new FormControl(approval?.Description),
             ApprovingGroupID: new FormControl(approval?.ApprovingGroupID, Validators.required),
-            RuleExpression: new FormControl(approval?.RuleExpression, Validators.required)
+            OrderThreshold: new FormControl(this.getOrderThreshold(approval?.RuleExpression), Validators.required)
         })
+    }
+
+    getOrderThreshold(approvalRule?: string): number {
+        return approvalRule ? parseFloat(approvalRule.split('>')[1]) : 0
     }
 }
