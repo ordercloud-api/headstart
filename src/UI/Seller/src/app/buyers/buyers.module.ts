@@ -15,6 +15,7 @@ import { BuyerLocationPermissions } from './components/locations/buyer-location-
 import { BuyerCatalogTableComponent } from './components/catalogs/buyer-catalog-table/buyer-catalog-table.component'
 import { BuyerLocationCatalogs } from './components/locations/buyer-location-catalogs/buyer-location-catalogs.component'
 import { NgbModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
+import { BuyerApprovalEditComponent } from './components/approvals/buyer-approval-edit/buyer-approval-edit.component'
 
 @NgModule({
   imports: [SharedModule, 
@@ -30,6 +31,7 @@ import { NgbModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
     BuyerCatalogTableComponent,
     BuyerCategoryEditComponent,
     BuyerApprovalTableComponent,
+    BuyerApprovalEditComponent,
     BuyerLocationTableComponent,
     BuyerLocationPermissions,
     BuyerLocationCatalogs,

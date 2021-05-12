@@ -17,12 +17,12 @@
   [labelPlural]="'ADMIN.NAV.APPROVALS'"
   [submitError]="submitError"
 >
-  <!-- edit product -->
+  <!-- edit approval -->
   <div class="resource-edit">
-    <resource-edit-component
-      resourceType="ApprovalRule"
+    <app-approval-rule-edit
       (updateResource)="updateResource($event)"
       [resource]="updatedResource"
-    ></resource-edit-component>
+      [existingLocations]="existingLocations"
+    ></app-approval-rule-edit>
   </div>
 </resource-table-component>
