@@ -8,7 +8,6 @@ import {
   Payment,
   BuyerCreditCard,
   OrderPromotion,
-  Orders,
 } from 'ordercloud-javascript-sdk'
 import {
   HSOrder,
@@ -251,6 +250,8 @@ export class OCMCheckout implements OnInit {
       void this.router.navigate(['/cart'])
     } else {
       this.initLoadingIndicator('submitLoading')
+      await this.checkout.checkForSellerOwnedProducts(this.lineItems.Items)
+      await this.checkout.addComment(comment)
       try {
         const payment = this.orderSummaryMeta.StandardLineItemCount
           ? this.getCCPaymentData()
@@ -260,31 +261,15 @@ export class OCMCheckout implements OnInit {
           this.order.ID,
           payment
         )
-        //  Must only patch order AFTER order has been submitted
-        //  to prevent order worksheet data from being cleared.
-        await this.patchSubmittedOrder(order, comment, payment)
-        await this.context.order.reset() // get new current order
+        await this.checkout.appendPaymentMethodToOrderXp(order.ID, payment)
         this.isLoading = false
+        await this.context.order.reset() // get new current order
         this.toastrService.success('Order submitted successfully', 'Success')
-        this.context.router.toMyOrderDetails(this.order.ID)
+        this.context.router.toMyOrderDetails(order.ID)
       } catch (e) {
         await this.handleSubmitError(e)
       }
     }
-  }
-
-  async patchSubmittedOrder(
-    order: HSOrder, 
-    comment: string, 
-    payment: OrderCloudIntegrationsCreditCardPayment) {
-    const patchObj = {
-      Comments: comment,
-      xp: {
-        HasSellerProducts: this.lineItems?.Items?.some((li) => li.SupplierID === null),
-        PaymentMethod: payment?.CreditCardID ? 'Credit Card' : 'Purchase Order'
-      }
-    }
-    await Orders.Patch('Outgoing', order.ID, patchObj)
   }
 
   async handleSubmitError(exception: AxiosError): Promise<void> {

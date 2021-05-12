@@ -38,6 +38,26 @@ export class CheckoutService {
     private appConfig: AppConfig
   ) {}
 
+  async appendPaymentMethodToOrderXp(
+    orderID: string,
+    ccPayment?: OrderCloudIntegrationsCreditCardPayment
+  ): Promise<void> {
+    const paymentMethod = ccPayment?.CreditCardID
+      ? 'Credit Card'
+      : 'Purchase Order'
+    await Orders.Patch('Outgoing', orderID, {
+      xp: { PaymentMethod: paymentMethod },
+    })
+  }
+
+  async checkForSellerOwnedProducts(lineItems: HSLineItem[]): Promise<void> {
+    const hasSellerProducts = lineItems.some((li) => li.SupplierID === null)
+    await this.patch({ xp: { HasSellerProducts: hasSellerProducts } })
+  }
+
+  async addComment(comment: string): Promise<HSOrder> {
+    return await this.patch({ Comments: comment })
+  }
 
   async setShippingAddress(address: BuyerAddress): Promise<HSOrder> {
     // If a saved address (with an ID) is changed by the user it is attached to an order as a one time address.
@@ -246,10 +266,10 @@ export class CheckoutService {
     return this.order
   }
 
-  private async patch(order: HSOrder, orderID?: string): Promise<HSOrder> {
+  private async patch(order: HSOrder): Promise<HSOrder> {
     this.order = (await Orders.Patch(
       'Outgoing',
-      orderID || this.order.ID,
+      this.order.ID,
       order
     )) as HSOrder
     return this.order
