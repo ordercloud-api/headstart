@@ -33,7 +33,7 @@
         />
       </div>
     </div>
-    <div *ngIf="myBuyerLocations.length > 0" class="form-group">
+    <div *ngIf="myBuyerLocations.length > 0 && !isAnon" class="form-group">
       <label for="BuyerLocation" translate>For Location</label>
       <select
         #LocationDropdown
