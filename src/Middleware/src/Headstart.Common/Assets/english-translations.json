@@ -619,7 +619,16 @@
       "CREATED_BY": "Created by Four51, Inc.",
       "FAQ": "FAQ",
       "SUPPORT": "Support",
-      "TERMS_CONDITIONS": "Terms & Conditions"
+      "TERMS_CONDITIONS": "Terms & Conditions",
+      "QUESTIONS_COMMENTS" : "Questions or comments?",
+      "PHONE": {
+        "LABEL": "Ring:",
+        "AREACODE": "555",
+        "PREFIX": "555",
+        "SUFFIX": "5555"
+      },
+      "EMAIL": "support@my-company.com",
+      "EMAIL_LABEL" : "Write:"
     },
     "APP_HEADER": {
       "ACCOUNT": "Account",
