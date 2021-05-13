@@ -298,31 +298,11 @@
         </div>
       </div>
     </div>
-    <div class="row pt-3">
-      <div class="col-md-5">
-        <h5>Set Approval Rule</h5>
-        <p>
-          Enable approvals and set an order value threshold. Only buyers with "ApprovalNeeded" permission will be subject to this rule.
-        </p>
-      </div>
-      <div class="col-md-7 form-group">
-        <div class="form-row">
-          <div class="form-group col-md-5">
-            <div class="custom-control custom-checkbox">
-              <input 
-              id="RequireApproval"
-              type="checkbox" 
-              class="custom-control-input"
-              />
-            <label class="custom-control-label"
-              for="RequireApproval">
-              Enable Approvals
-            </label>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <buyer-location-approvals
+      [approvalRule]="approvalRule"
+      [buyerGroup]="buyerLocationStatic"
+      (approvalUpdated)="handleUpdateApproval($event)"
+    ></buyer-location-approvals>
     <buyer-location-permissions
       *ngIf="!isCreatingNew"
       [locationID]="buyerLocationEditable?.Address?.ID"

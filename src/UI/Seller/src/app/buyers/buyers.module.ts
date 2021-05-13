@@ -16,6 +16,7 @@ import { BuyerCatalogTableComponent } from './components/catalogs/buyer-catalog-
 import { BuyerLocationCatalogs } from './components/locations/buyer-location-catalogs/buyer-location-catalogs.component'
 import { NgbModule, NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap'
 import { BuyerApprovalEditComponent } from './components/approvals/buyer-approval-edit/buyer-approval-edit.component'
+import { BuyerLocationApprovals } from './components/locations/buyer-location-approvals/buyer-location-approvals.component'
 
 @NgModule({
   imports: [SharedModule, 
@@ -38,6 +39,7 @@ import { BuyerApprovalEditComponent } from './components/approvals/buyer-approva
     BuyerLocationEditComponent,
     BuyerUserTableComponent,
     BuyerUserEditComponent,
+    BuyerLocationApprovals
   ],
 })
 export class BuyersModule {}

@@ -1,0 +1,69 @@
+<div class="row pt-3 mt-3 bg-white shadow-sm card-highlight-border w-100 pl-3">
+    <div class="col-md-5">
+        <h5>Set Approval Rule</h5>
+        <p class="font-italic">
+        Enable approvals and set an order value threshold. Only buyers with "ApprovalNeeded" permission will be subject to this rule.
+        </p>
+    <div>
+    <div class="col-md-7">
+        <form [formGroup]="approvalForm">
+            <div class="form-group">
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <div class="custom-control custom-checkbox">
+                            <input 
+                            id="Enabled"
+                            type="checkbox"
+                            formControlName="Enabled"
+                            (click)="handleToggle($event)"
+                            class="custom-control-input"
+                            />
+                          <label class="custom-control-label"
+                            for="Enabled">
+                            Enable Approvals
+                          </label>
+                        </div>
+                    </div>
+                    <div *ngIf="approvalEnabled" class="form-group col-md-6">
+                        <label for="OrderThreshold">Order Threshold</label>
+                        <input 
+                        id="OrderThreshold"
+                        type="text"
+                        class="form-control"
+                        formControlName="OrderThreshold"
+                        (input)="handleFormChange($event)"
+                        placeholder="Enter Order Threshold"
+                        />
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="pb-3">
+            <button
+              [disabled]="!areChanges"
+              class="btn btn-link"
+              (click)="discardApprovalChanges()"
+            >
+              {{ areChanges ? 'Cancel' : 'No Changes' }}
+            </button>
+            <button
+              *ngIf="areChanges"
+              [disabled]="!areChanges || dataIsSaving"
+              class="btn brand-button"
+              (click)="saveChanges()"
+            >
+              {{
+                requestedUserConfirmation ? 'Pending Confirmation' : 'Save Changes'
+              }}
+            </button>
+            <button
+              *ngIf="requestedUserConfirmation && areChanges"
+              class="btn btn-primary"
+              (click)="executeUserUserGroupAssignmentRequests()"
+            >
+              Confirm
+            </button>
+          </div>
+    </div>
+</div>
+  
