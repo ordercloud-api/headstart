@@ -24,15 +24,18 @@
                           </label>
                         </div>
                     </div>
-                    <div *ngIf="approvalEnabled" class="form-group col-md-6">
+                    <div *ngIf="approvalEnabled" class="input-group col-md-6">
                         <label for="OrderThreshold">Order Threshold</label>
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">{{'$'}}</span>
+                        </div>
                         <input 
-                        id="OrderThreshold"
-                        type="text"
-                        class="form-control"
-                        formControlName="OrderThreshold"
-                        (input)="handleFormChange($event)"
-                        placeholder="Enter Order Threshold"
+                          id="OrderThreshold"
+                          type="text"
+                          class="form-control currency"
+                          formControlName="OrderThreshold"
+                          (input)="handleFormChange($event)"
+                          placeholder="Enter Order Threshold"
                         />
                     </div>
                 </div>
