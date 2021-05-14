@@ -265,8 +265,6 @@ export class BuyerLocationEditComponent implements OnInit {
   }
 
   handleUpdateApproval(event): void {
-    console.log(event)
-    debugger;
     this.approvalRule = event;
   }
 
