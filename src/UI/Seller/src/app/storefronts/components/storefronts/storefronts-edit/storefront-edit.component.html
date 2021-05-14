@@ -4,6 +4,14 @@
       <div class="col-md-7">
         <div class="card py-2 px-3 bg-white">
           <h6 class="font-weight-medium">Storefront Details</h6>
+          <a
+            *ngIf="selectedResource?.xp?.WebsiteUrl"
+            class="btn brand-button--orange"
+            [href]="selectedResource?.xp?.WebsiteUrl"
+            target="_blank"
+          >
+            Go to storefront
+          </a>
           <div class="form-group">
             <p class="mb-1">Active</p>
             <label class="switch mb-0" for="Active">
@@ -12,10 +20,9 @@
                 class="form-check-input"
                 id="Active"
                 showErrors
-                [resourceForm]="resourceForm"
                 aria-describedby="Active"
                 formControlName="Active"
-                (input)="updateResourceFromEvent($event, 'Active')"
+                (change)="updateResourceFromEvent($event, 'Active')"
               />
               <span class="slider round cursor-pointer"></span>
             </label>
@@ -33,34 +40,69 @@
               placeholder="Enter AppName"
             />
           </div>
+          <div class="form-group">
+            <label for="xp.WebsiteUrl">Website URL</label>
+            <input
+              type="text"
+              class="form-control"
+              id="xp.WebsiteUrl"
+              maxlength="100"
+              aria-describedby="xp.WebsiteUrl"
+              formControlName="xp.WebsiteUrl"
+              (change)="updateResourceFromEvent($event, 'xp.WebsiteUrl')"
+              placeholder="Enter URL to storefront website"
+            />
+          </div>
           <div class="form-row">
             <div class="form-group col-md-6">
-              <label for="AccessTokenDuration">Access Token Duration</label>
+              <label for="AccessTokenDuration"
+                >Access Token Duration
+                <small>
+                  <fa-icon
+                    [icon]="faQuestionCircle"
+                    ngbTooltip="{{
+                      'ADMIN.STOREFRONTS.ACCESS_TOKEN_TOOLTIP' | translate
+                    }}"
+                  ></fa-icon>
+                </small>
+              </label>
               <input
                 type="number"
                 class="form-control"
                 id="AccessTokenDuration"
-                min="0"
+                min="10"
+                max="600"
                 showErrors
-                [resourceForm]="resourceForm"
                 aria-describedby="AccessTokenDuration"
                 formControlName="AccessTokenDuration"
-                (input)="updateResourceFromEvent($event, 'AccessTokenDuration')"
+                (change)="
+                  updateResourceFromEvent($event, 'AccessTokenDuration')
+                "
                 placeholder="Enter AccessTokenDuration"
               />
             </div>
             <div class="form-group col-md-6">
-              <label for="RefreshTokenDuration">Refresh Token Duration</label>
+              <label for="RefreshTokenDuration"
+                >Refresh Token Duration
+                <small>
+                  <fa-icon
+                    [icon]="faQuestionCircle"
+                    ngbTooltip="{{
+                      'ADMIN.STOREFRONTS.REFRESH_TOKEN_TOOLTIP' | translate
+                    }}"
+                  ></fa-icon>
+                </small>
+              </label>
               <input
                 type="number"
                 class="form-control"
                 id="RefreshTokenDuration"
                 min="0"
+                max="43200"
                 showErrors
-                [resourceForm]="resourceForm"
                 aria-describedby="RefreshTokenDuration"
                 formControlName="RefreshTokenDuration"
-                (input)="
+                (change)="
                   updateResourceFromEvent($event, 'RefreshTokenDuration')
                 "
                 placeholder="Enter RefreshTokenDuration"
@@ -68,11 +110,94 @@
             </div>
           </div>
         </div>
+        <div class="card py-2 px-3 mt-3 bg-white">
+          <h6 class="font-weight-medium">Anonymous Shopping</h6>
+          <!-- TODO: this will require additional consideration (see notes in component ts file) -->
+          <!-- <div class="form-group">
+            <p class="mb-1">Enable Anonymous Shopping</p>
+            <label class="switch mb-0" for="IsAnonBuyer">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                id="IsAnonBuyer"
+                showErrors
+                aria-describedby="IsAnonBuyer"
+                formControlName="IsAnonBuyer"
+                (change)="updateResourceFromEvent($event, 'IsAnonBuyer')"
+              />
+              <span class="slider round cursor-pointer"></span>
+            </label>
+          </div> -->
+          <div class="form-group">
+            <label for="xp.AnonBuyerID"
+              >Anonymous Buyer
+              <small>
+                <fa-icon
+                  [icon]="faQuestionCircle"
+                  ngbTooltip="{{
+                    'ADMIN.STOREFRONTS.ANON_BUYER_TOOLTIP' | translate
+                  }}"
+                ></fa-icon>
+              </small>
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="xp.AnonBuyerID"
+              maxlength="100"
+              showErrors
+              aria-describedby="xp.AnonBuyerID"
+              formControlName="xp.AnonBuyerID"
+              [ngbTypeahead]="searchBuyers"
+              [inputFormatter]="buyerName"
+              [resultFormatter]="buyerName"
+              (change)="updateResourceFromEvent($event, 'xp.AnonBuyerID')"
+              (selectItem)="selectBuyer($event)"
+              placeholder="Search buyers..."
+              [editable]="false"
+            />
+            <small *ngIf="searching" class="form-text text-muted"
+              >searching...</small
+            >
+          </div>
+          <div class="form-group">
+            <label for="DefaultContextUserName"
+              >Anonymous Username
+              <small>
+                <fa-icon
+                  [icon]="faQuestionCircle"
+                  ngbTooltip="{{
+                    'ADMIN.STOREFRONTS.ANON_USERNAME_TOOLTIP' | translate
+                  }}"
+                ></fa-icon>
+              </small>
+            </label>
+            <input
+              type="text"
+              class="form-control"
+              id="DefaultContextUserName"
+              maxlength="100"
+              showErrors
+              aria-describedby="DefaultContextUserName"
+              formControlName="DefaultContextUserName"
+              (change)="
+                updateResourceFromEvent($event, 'DefaultContextUserName')
+              "
+              [ngbTypeahead]="searchUsers"
+              placeholder="Search users..."
+              [editable]="false"
+            />
+            <small *ngIf="searching" class="form-text text-muted"
+              >searching...</small
+            >
+          </div>
+        </div>
       </div>
+
       <div class="col-md-5">
         <div class="card py-2 px-3 bg-white">
           <h6 class="font-weight-medium">Summary</h6>
-          <p>This is the summary for Api Clients</p>
+          <p translate>ADMIN.STOREFRONTS.SUMMARY</p>
         </div>
       </div>
     </div>

@@ -7,7 +7,7 @@ import {
 } from '@angular/core'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router'
-import { ResourceFormUpdate } from '@app-seller/shared'
+import { ResourceUpdate } from '@app-seller/shared'
 import { ValidateNoSpecialCharactersAndSpaces } from '@app-seller/validators/validators'
 import { Category } from 'ordercloud-javascript-sdk'
 
@@ -20,7 +20,11 @@ export class BuyerCategoryEditComponent {
   _category: any
   _categoryFields: any[] = [
     { field: 'ParentID', type: 'string' },
-    { field: 'ID', type: 'string', validators: [ValidateNoSpecialCharactersAndSpaces]},
+    {
+      field: 'ID',
+      type: 'string',
+      validators: [ValidateNoSpecialCharactersAndSpaces],
+    },
     { field: 'Name', type: 'string', validators: [Validators.required] },
     { field: 'Description', type: 'string' },
     { field: 'Active', type: 'boolean' },
@@ -40,14 +44,14 @@ export class BuyerCategoryEditComponent {
     this.changeDetectorRef.detectChanges()
   }
   @Output()
-  updateCategory = new EventEmitter<ResourceFormUpdate>()
+  updateCategory = new EventEmitter<ResourceUpdate>()
 
   handleUpdateCategory(event: any, fieldType: string) {
     const categoryUpdate = {
       field: event.target.id,
       value:
         fieldType === 'boolean' ? event.target.checked : event.target.value,
-      form: this.resourceForm
+      form: this.resourceForm,
     }
     this.updateCategory.emit(categoryUpdate)
   }
@@ -64,9 +68,12 @@ export class BuyerCategoryEditComponent {
   }
 
   buildForm(resource: Category): FormGroup {
-    var formGroup = new FormGroup({})
+    const formGroup = new FormGroup({})
     this._categoryFields?.forEach((item) => {
-      var control = new FormControl((resource[item.field] || ''), item.validators)
+      const control = new FormControl(
+        resource[item.field] || '',
+        item.validators
+      )
       formGroup.addControl(item.field, control)
     })
 

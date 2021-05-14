@@ -71,16 +71,11 @@
     </div>
     <div
       class="col-lg-2 col-md-1 col-sm-7 d-flex justify-content-start align-items-center"
-      *ngIf="
-        shouldShowCreateNew && _currentResourceNamePlural !== 'storefronts'
-      "
+      *ngIf="shouldShowCreateNew"
     >
       <!-- route accidentally works for both subresoures and first level resources because the extra / are ignored by the router it appears-->
       <button
-        *ngIf="
-          _currentResourceNamePlural !== 'products' &&
-          _currentResourceNamePlural !== 'storefronts'
-        "
+        *ngIf="_currentResourceNamePlural !== 'products'"
         class="btn btn-block brand-button--orange"
         routerLink="/{{
           isMyResource ? _ocService.myRoute : _ocService.route
@@ -267,9 +262,7 @@
   <div class="row">
     <div class="col-md-12">
       <!-- full table view -->
-      <div
-        *ngIf="showFilterBar()"
-      >
+      <div *ngIf="showFilterBar()">
         <perfect-scrollbar
           id="perfectScroll"
           class="scrollbar-top w-100"

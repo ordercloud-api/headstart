@@ -6,12 +6,13 @@ using Headstart.Models.Misc;
 using OrderCloud.SDK;
 using Headstart.Common;
 using ordercloud.integrations.exchangerates;
+using Headstart.Common.Models;
 
 namespace Headstart.API.Commands
 {
     public class SeedConstants
     {
-        public static string BuyerApiClientName = "Storefront - Default Buyer";
+        public static string BuyerApiClientName = "Default Buyer Storefront";
         public static string BuyerLocalApiClientName = "Default HeadStart Buyer UI LOCAL"; // used for pointing integration events to the ngrok url
         public static string SellerApiClientName = "Default HeadStart Admin UI";
         public static string IntegrationsApiClientName = "Middleware Integrations";
@@ -124,9 +125,9 @@ namespace Headstart.API.Commands
             };
         }
 
-        public static ApiClient BuyerClient(EnvironmentSeed seed)
+        public static HSApiClient BuyerClient(EnvironmentSeed seed)
         {
-            return new ApiClient()
+            return new HSApiClient()
             {
                 AppName = BuyerApiClientName,
                 Active = true,
@@ -136,7 +137,11 @@ namespace Headstart.API.Commands
                 AccessTokenDuration = 600,
                 RefreshTokenDuration = 43200,
                 DefaultContextUserName = seed.EnableAnonymousShopping ? AnonymousBuyerUser().ID : null,
-                IsAnonBuyer = seed.EnableAnonymousShopping
+                IsAnonBuyer = seed.EnableAnonymousShopping,
+                xp = new ApiClientXP
+                {
+                    IsStorefront = true
+                }
             };
         }
 

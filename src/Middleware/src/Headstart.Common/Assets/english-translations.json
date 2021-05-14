@@ -365,15 +365,6 @@
       "WITHIN_THIS_BUYER": "Within this buyer, select the categories and catalogs in which the product will appear, and the price buyers will pay.",
       "YOU_MAY_ASSIGN": "You may assign the product at this level or get more specific with subcategories"
     },
-    "KITS": {
-      "OPTIONAL": "Optional",
-      "PRODUCTS_INCLUDED": "Products Included",
-      "MIN_QTY": "Min Qty",
-      "MAX_QTY": "Max Qty",
-      "STATIC": "Static",
-      "ADD_PRODUCTS": "Add Products to Kit",
-      "MUST_INCLUDE": "Kits must include at least one product"
-    },
     "PROMOTIONS": {
       "ACTIVE": "Active",
       "ACTIVE_DATES": "Active Dates",
@@ -492,6 +483,13 @@
     },
     "PERMISSIONS": {
       "LOCATION_APPROVAL_TOOLTIP": "No approval rules in this buyer group. Set an approval rule before granting OrderApprover permissions."
+    },
+    "STOREFRONTS": {
+      "SUMMARY": "A storefront represents a hosted buyer application. Simply creating a storefront in this admin interface will not create a buyer application - that process still needs to be performed manually by a developer but once that is done certain pieces about the storefront can be managed here",
+      "ACCESS_TOKEN_TOOLTIP": "Determines how long (in minutes) a user can stay logged in before they will need to re-enter their credentials and log back in. Minimum value is 10, Maximum value is 600.",
+      "REFRESH_TOKEN_TOOLTIP": "Determines how long (in minutes) a refresh token can be used to keep a user logged in. Minimum value is 0, Maximum value is 43,200.",
+      "ANON_BUYER_TOOLTIP": "The buyer organization that contains the user that should be used as the default context user for anonymous shopping. All pricing, permissions, and visibility will be based on this user",
+      "ANON_USERNAME_TOOLTIP": "The buyer user that will be used as the default context user for anonymous shopping. All pricing, permissions, and visibility will be based on this user"
     }
   },
   "AUTHENTICATION": {
