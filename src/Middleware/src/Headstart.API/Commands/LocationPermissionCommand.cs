@@ -25,6 +25,7 @@ namespace Headstart.API.Commands
         Task<ListPage<HSLocationUserGroup>> ListUserGroupsByCountry(ListArgs<HSLocationUserGroup> args, string buyerID, string userID, VerifiedUserContext verifiedUser);
         Task<ListPage<HSLocationUserGroup>> ListUserGroupsForNewUser(ListArgs<HSLocationUserGroup> args, string buyerID, string userID, VerifiedUserContext verifiedUser);
         Task<ApprovalRule> SaveApprovalRule(string buyerID, string locationID, ApprovalRule approval, VerifiedUserContext verifiedUser);
+        Task DeleteApprovalRule(string buyerID, string locationID, string approvalID, VerifiedUserContext verifiedUser);
     }
 
     public class LocationPermissionCommand : ILocationPermissionCommand
@@ -61,6 +62,12 @@ namespace Headstart.API.Commands
         {
             await EnsureUserIsLocationAdmin(locationID, verifiedUser);
             return await _oc.ApprovalRules.SaveAsync(buyerID, approval.ID, approval);
+        }
+
+        public async Task DeleteApprovalRule(string buyerID, string locationID, string approvalID, VerifiedUserContext verifiedUser)
+        {
+            await EnsureUserIsLocationAdmin(locationID, verifiedUser);
+            await _oc.ApprovalRules.DeleteAsync(buyerID, approvalID);
         }
 
         public async Task<List<UserGroupAssignment>> ListLocationApprovalPermissionAsssignments(string buyerID, string locationID, VerifiedUserContext verifiedUser)

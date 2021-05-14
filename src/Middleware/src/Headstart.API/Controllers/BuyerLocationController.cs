@@ -111,6 +111,15 @@ namespace Headstart.Common.Controllers
             return await _locationPermissionCommand.SaveApprovalRule(buyerID, buyerLocationID, approval, UserContext);
         }
 
+        [DocName("DELETE Location Approval Rule")]
+        [HttpPut]
+        [OrderCloudUserAuth(ApiRole.Shopper)]
+        [Route("{buyerID}/{buyerLocationID}/approval/{approvalID}")]
+        public async Task DeleteLocationApprovalThreshold(string buyerID, string buyerLocationID, string approvalID)
+        {
+            await _locationPermissionCommand.DeleteApprovalRule(buyerID, buyerLocationID, approvalID, UserContext);
+        }
+
         [DocName("LIST all of a user's user group assignments")]
         [HttpGet, Route("{userGroupType}/{parentID}/usergroupassignments/{userID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin)]
         public async Task<List<UserGroupAssignment>> ListUserUserGroupAssignments(string userGroupType, string parentID, string userID)

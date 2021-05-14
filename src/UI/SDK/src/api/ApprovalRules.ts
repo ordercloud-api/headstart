@@ -2,7 +2,7 @@ import httpClient from '../utils/HttpClient';
 import { ApprovalRule } from 'ordercloud-javascript-sdk';
 
 export default class ApprovalRules {
-    private impersonating:boolean = false;
+    private impersonating: boolean = false;
 
     /**
     * @ignore
@@ -12,21 +12,31 @@ export default class ApprovalRules {
         this.SaveApprovalRule = this.SaveApprovalRule.bind(this);
     }
 
-   /**
-    * @param buyerID ID of thebuyer
-    * @param locationID ID of the location this approval rule will apply to
-    * @param approval The approval to be created or updated
-    */
+    /**
+     * @param buyerID ID of thebuyer
+     * @param locationID ID of the location this approval rule will apply to
+     * @param approval The approval to be created or updated
+     */
 
-   public async SaveApprovalRule(
-       buyerID: string, 
-       locationID: string, 
-       approval: ApprovalRule, 
-       accessToken?: string): Promise<ApprovalRule> {
-       const impersonating = this.impersonating;
-       this.impersonating = false;
-       return await httpClient.put(`/buyerlocations/${buyerID}/${locationID}/approval`, approval, { params: {  accessToken, impersonating } })
-   }
+    public async SaveApprovalRule(
+        buyerID: string,
+        locationID: string,
+        approval: ApprovalRule,
+        accessToken?: string): Promise<ApprovalRule> {
+        const impersonating = this.impersonating;
+        this.impersonating = false;
+        return await httpClient.put(`/buyerlocations/${buyerID}/${locationID}/approval`, approval, { params: { accessToken, impersonating } })
+    }
+
+    public async DeleteApprovalRule(
+        buyerID: string,
+        locationID: string,
+        approvalID: string,
+        accessToken?: string): Promise<void> {
+        const impersonating = this.impersonating;
+        this.impersonating = false;
+        return await httpClient.put(`/buyerlocations/${buyerID}/${locationID}/approval/${approvalID}`, undefined, { params: { accessToken, impersonating } })
+    }
 
     /**
      * @description 
