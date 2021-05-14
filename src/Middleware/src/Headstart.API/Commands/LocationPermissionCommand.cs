@@ -18,13 +18,13 @@ namespace Headstart.API.Commands
         Task<List<UserGroupAssignment>> ListLocationPermissionAsssignments(string buyerID, string locationID, VerifiedUserContext verifiedUser);
         Task<List<UserGroupAssignment>> ListLocationApprovalPermissionAsssignments(string buyerID, string locationID, VerifiedUserContext verifiedUser);
         Task<decimal> GetApprovalThreshold(string buyerID, string locationID, VerifiedUserContext verifiedUser);
-        Task<decimal> SetLocationApprovalThreshold(string buyerID, string locationID, decimal newApprovalThreshold, VerifiedUserContext verifiedUser);
         Task<ListPage<HSUser>> ListLocationUsers(string buyerID, string locationID, VerifiedUserContext verifiedUser);
         Task<List<UserGroupAssignment>> UpdateLocationPermissions(string buyerID, string locationID, LocationPermissionUpdate locationPermissionUpdate, VerifiedUserContext verifiedUser);
         Task<bool> IsUserInAccessGroup(string locationID, string groupSuffix, VerifiedUserContext verifiedUser);
         Task<List<UserGroupAssignment>> ListUserUserGroupAssignments(string userGroupType, string parentID, string userID, VerifiedUserContext verifiedUser);
         Task<ListPage<HSLocationUserGroup>> ListUserGroupsByCountry(ListArgs<HSLocationUserGroup> args, string buyerID, string userID, VerifiedUserContext verifiedUser);
         Task<ListPage<HSLocationUserGroup>> ListUserGroupsForNewUser(ListArgs<HSLocationUserGroup> args, string buyerID, string userID, VerifiedUserContext verifiedUser);
+        Task<ApprovalRule> SaveApprovalRule(string buyerID, string locationID, ApprovalRule approval, VerifiedUserContext verifiedUser);
     }
 
     public class LocationPermissionCommand : ILocationPermissionCommand
@@ -57,15 +57,10 @@ namespace Headstart.API.Commands
             return threshold;
         }
 
-        public async Task<decimal> SetLocationApprovalThreshold(string buyerID, string locationID, decimal newApprovalThreshold, VerifiedUserContext verifiedUser)
+        public async Task<ApprovalRule> SaveApprovalRule(string buyerID, string locationID, ApprovalRule approval, VerifiedUserContext verifiedUser)
         {
             await EnsureUserIsLocationAdmin(locationID, verifiedUser);
-            var approvalRulePatch = new PartialApprovalRule()
-            { 
-                RuleExpression = $"order.xp.ApprovalNeeded = '{locationID}' & order.Total > {newApprovalThreshold}"
-            };
-            await _oc.ApprovalRules.PatchAsync(buyerID, locationID, approvalRulePatch);
-            return newApprovalThreshold;
+            return await _oc.ApprovalRules.SaveAsync(buyerID, approval.ID, approval);
         }
 
         public async Task<List<UserGroupAssignment>> ListLocationApprovalPermissionAsssignments(string buyerID, string locationID, VerifiedUserContext verifiedUser)

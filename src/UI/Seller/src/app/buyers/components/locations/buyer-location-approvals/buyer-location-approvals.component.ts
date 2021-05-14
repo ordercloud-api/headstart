@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
-import { HSBuyerLocation, OrderApproval } from "@ordercloud/headstart-sdk";
+import { HeadStartSDK, HSBuyerLocation, OrderApproval } from "@ordercloud/headstart-sdk";
 import { ApprovalRule, ApprovalRules } from "ordercloud-javascript-sdk";
 
 
@@ -75,16 +75,10 @@ export class BuyerLocationApprovals {
             const buyerID = this.buyerGroup?.UserGroup?.ID?.split("-")[0]
             if(this.approvalEnabled) {
                 const form = this.approvalForm.getRawValue()
-                const editedApproval: ApprovalRule = {
-                    ID: this._approvalRule?.ID || this.buyerGroup?.UserGroup?.ID,
-                    Name: this.buyerGroup?.UserGroup?.ID + ' General Location Approval Rule',
-                    Description: "General approval rule for location. " + 
-                        "Every order over a certain limit will require approval " + 
-                        "for the designated group of users.",
-                    ApprovingGroupID: `${this.buyerGroup?.UserGroup?.ID}-OrderApprover`,
-                    RuleExpression: 'order.xp.ApprovalNeeded = ' + this.buyerGroup?.UserGroup?.ID + 
-                        ' & order.Total > ' + (form.OrderThreshold || 0) 
-                }
+                const editedApproval = HeadStartSDK.Services.BuildApproval(
+                    this._approvalRule?.ID || this.buyerGroup?.UserGroup?.ID,
+                    form.OrderThreshold
+                )
                 const update = await ApprovalRules.Save(buyerID, editedApproval.ID, editedApproval)
                 this.approvalUpdated.emit(update)
             } else {

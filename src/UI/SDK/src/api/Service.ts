@@ -1,11 +1,13 @@
-import { ListPage } from "../models";
+import { ListPage, OrderApproval } from "../models";
 import { flatten, range } from 'lodash'
+import {ApprovalRule} from 'ordercloud-javascript-sdk'
 
 
 export default class Services {
 
     constructor() {
         this.ListAll = this.ListAll.bind(this)
+        this.BuildApproval = this.BuildApproval.bind(this)
     }
     
     /**
@@ -39,6 +41,23 @@ export default class Services {
         return {
             Items: flatten([result1, ...results].map((r) => r.Items)),
             Meta: result1.Meta,
+        }
+    }
+
+    /**
+    * @param locationID ID of the location that the approval rule applies to
+    * @param orderThreshold Order total threshold for orders to be subject to this rule
+    */
+    public BuildApproval(locationID: string, orderThreshold?: number): ApprovalRule {
+        return {
+            ID: locationID,
+            Name: locationID + ' General Location Approval Rule',
+            Description: "General approval rule for location. " + 
+                "Every order over a certain limit will require approval " + 
+                "for the designated group of users.",
+            ApprovingGroupID: `${locationID}-OrderApprover`,
+            RuleExpression: 'order.xp.ApprovalNeeded = ' + locationID + 
+                ' & order.Total > ' + (orderThreshold || 0) 
         }
     }
 }

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core'
 import { UserGroup, UserGroupAssignment } from 'ordercloud-javascript-sdk'
-import { HSUser } from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, HSUser } from '@ordercloud/headstart-sdk'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 
 @Component({
@@ -83,6 +83,8 @@ export class OCMOrderAccessManagement {
       if(ex.status === 404) {
         this.hasApprovalStatic = false
         this.hasApprovalEditable = false
+      } else {
+        throw ex
       }
     } 
   }
@@ -131,11 +133,12 @@ export class OCMOrderAccessManagement {
   }
 
   async saveNewThreshold(): Promise<void> {
+    const approval = HeadStartSDK.Services.BuildApproval(
+      this._locationID, 
+      this.currentLocationApprovalThresholdEditable)
     const buyerID = this._locationID.split('-')[0]
-    const newThreshold = await this.context.userManagementService.setLocationApprovalThreshold(
-      this._locationID,
-      this.currentLocationApprovalThresholdEditable
-    )
+    const newApproval = await HeadStartSDK.ApprovalRules.SaveApprovalRule(buyerID, this._locationID, approval)
+    const newThreshold = parseFloat(newApproval.RuleExpression.split(">")[1])
     this.setApprovalRuleValues(newThreshold)
   }
 
