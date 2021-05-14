@@ -12,6 +12,7 @@ import {
 import {
   HSOrder,
   HSAddressBuyer,
+  HeadStartSDK,
 } from '@ordercloud/headstart-sdk'
 
 import { getSuggestedAddresses } from '../../../services/address-suggestion.helper'
@@ -19,7 +20,6 @@ import { NgxSpinnerService } from 'ngx-spinner'
 import { ErrorMessages } from '../../../services/error-constants'
 import { flatten as _flatten } from 'lodash'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
-import { listAll } from 'src/app/services/listAll'
 import { TranslateService } from '@ngx-translate/core'
 // TODO - Make this component "Dumb" by removing the dependence on context service
 // and instead have it use inputs and outputs to interact with the CheckoutComponent.
@@ -186,7 +186,7 @@ export class OCMCheckoutAddress implements OnInit {
     }
     const [buyerLocations, existingShippingAddresses] = await Promise.all([
       Me.ListAddresses(buyerLocationsFilter),
-      listAll(Me, Me.ListAddresses, shippingAddressesFilter)
+      HeadStartSDK.Services.ListAll(Me, Me.ListAddresses, shippingAddressesFilter)
     ])
     this.homeCountry = buyerLocations?.Items[0]?.Country || 'US'
     this.existingShippingAddresses = existingShippingAddresses
