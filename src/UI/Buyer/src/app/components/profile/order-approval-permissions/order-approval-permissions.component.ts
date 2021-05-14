@@ -18,6 +18,8 @@ export class OCMOrderAccessManagement {
   currentLocation: UserGroup = null
   currentLocationApprovalThresholdStatic = 0
   currentLocationApprovalThresholdEditable = 0
+  hasApprovalStatic: boolean
+  hasApprovalEditable: boolean
   areAllUsersAssignedToNeedsApproval = false
   _locationID = ''
 
@@ -71,17 +73,45 @@ export class OCMOrderAccessManagement {
         this._locationID
       )
     ).Items
-    await this.updateAssignments()
-    const currentThreshold = await this.context.userManagementService.getLocationApprovalThreshold(
-      this._locationID
-    )
-    this.setApprovalRuleValues(currentThreshold)
+    try {
+      await this.updateAssignments()
+      const currentThreshold = await this.context.userManagementService.getLocationApprovalThreshold(
+        this._locationID
+      )
+      this.setApprovalRuleValues(currentThreshold)
+    } catch (ex) {
+      if(ex.status === 404) {
+        this.hasApprovalStatic = false
+        this.hasApprovalEditable = false
+      }
+    } 
+  }
+
+  toggleApproval() {
+    this.hasApprovalEditable = !this.hasApprovalEditable
+    if(!this.hasApprovalEditable) {
+      this.currentLocationApprovalThresholdEditable = this.currentLocationApprovalThresholdStatic
+    }
+  }
+
+  resetApprovals() {
+    this.hasApprovalEditable = this.hasApprovalStatic
+    this.currentLocationApprovalThresholdEditable = this.currentLocationApprovalThresholdStatic
   }
 
   setApprovalRuleValues(amount: number): void {
+    this.hasApprovalStatic = true
+    this.hasApprovalEditable = true
     this.currentLocationApprovalThresholdStatic = amount
     this.currentLocationApprovalThresholdEditable = this.currentLocationApprovalThresholdStatic
     this.checkIfAllUsersAreAssignedToNeedsApproval()
+  }
+
+  approvalChanged() {
+    return !(
+      this.hasApprovalEditable === this.hasApprovalStatic && 
+      this.currentLocationApprovalThresholdEditable === this.currentLocationApprovalThresholdStatic 
+    )
   }
 
   async updateAssignments(): Promise<void> {
