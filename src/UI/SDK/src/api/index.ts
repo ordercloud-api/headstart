@@ -34,7 +34,7 @@ import Auth from './Auth';
 import Tokens from './Tokens';
 import Upload from './Upload';
 import Assets from './Assets';
-import Services from './Services';
+import Services from './Service';
 
 export { HeadStartSDK }
 
