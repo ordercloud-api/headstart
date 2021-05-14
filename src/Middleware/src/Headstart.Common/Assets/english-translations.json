@@ -572,6 +572,7 @@
     },
     "CHECKOUT_ADDRESS": {
       "BUYER_LOCATION": "Select Location for this order",
+      "BUYER_LOCATION_TOOLTIP": "This address is used for order approvals",
       "NEW_ADDRESS": "Add a New Address",
       "SAVE_CONTINUE": "Save and Continue",
       "SELECT_ADDRESS": "Choose from your saved addresses, or choose to enter a new address",
@@ -1033,7 +1034,8 @@
     "CREDIT_CARD_AUTH": {
       "TITLE": "There was an error processing your payment",
       "MESSAGE_PART1": "The authorization for your payment was declined by the processor due to:",
-      "MESSAGE_PART2": "Please reenter your information or use a different card"
+      "MESSAGE_PART2": "Please reenter your information or use a different card",
+      "BUTTONTEXT": "Back to Payment Section"
     },
     "ORDER_NOT_ACCESSABLE": "You no longer have access to this order",
     "UNKNOWN": "An unknown error has occurred"
