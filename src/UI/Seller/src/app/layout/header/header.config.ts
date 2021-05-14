@@ -150,12 +150,6 @@ const BuyerPurchasingLocations: HSRoute = {
   route: `/buyers/${REDIRECT_TO_FIRST_PARENT}/locations`,
 }
 
-const BuyerApprovalRules: HSRoute = {
-  rolesWithAccess: [HSRoles.HSBuyerAdmin, HSRoles.HSBuyerReader],
-  title: 'ADMIN.NAV.APPROVAL_RULES',
-  route: `/buyers/${REDIRECT_TO_FIRST_PARENT}/approvals`,
-}
-
 const BuyerCatalogs: HSRoute = {
   rolesWithAccess: [HSRoles.HSBuyerAdmin, HSRoles.HSBuyerReader],
   title: 'ADMIN.NAV.CATALOGS',
@@ -176,7 +170,6 @@ const BuyerNavGrouping = {
     AllBuyers,
     BuyerUsers,
     BuyerPurchasingLocations,
-    BuyerApprovalRules,
     BuyerCatalogs,
     BuyerCategories,
   ],
