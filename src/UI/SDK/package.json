@@ -38,6 +38,9 @@
     "prettier": "^2.2.1",
     "typescript": "~3.7.5"
   },
+  "dependencies": {
+    "ordercloud-javascript-sdk": "4.2.0"
+  },
   "peerDependencies": {
     "axios": ">=0.19.2"
   }

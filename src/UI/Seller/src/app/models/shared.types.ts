@@ -21,13 +21,10 @@ export interface HSRoute {
   subRoutes?: HSRoute[]
 }
 
-export interface ResourceUpdate {
+export interface ResourceUpdate<T = any> {
   field: string
-  value: any
-}
-
-export interface ResourceFormUpdate extends ResourceUpdate {
-  form?: FormGroup
+  value: T
+  form: FormGroup
 }
 
 export interface SwaggerSpecProperty {

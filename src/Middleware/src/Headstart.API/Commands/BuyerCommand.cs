@@ -102,7 +102,7 @@ namespace Headstart.API.Commands
             var token = oc == null ? null : accessToken;
             var ocClient = oc ?? _oc;
 
-            buyer.ID = "{buyerIncrementor}";
+            buyer.ID = buyer.ID ?? "{buyerIncrementor}";
             buyer.Active = true;
             var ocBuyer = await ocClient.Buyers.CreateAsync(buyer, accessToken);
             buyer.ID = ocBuyer.ID;

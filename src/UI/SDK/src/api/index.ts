@@ -34,6 +34,7 @@ import Auth from './Auth';
 import Tokens from './Tokens';
 import Upload from './Upload';
 import Assets from './Assets';
+import Services from './Service';
 
 export { HeadStartSDK }
 
@@ -73,7 +74,8 @@ const HeadStartSDK: HeadStartSDK = {
     TecraPdFs : new TecraPdFs(),
     Auth: new Auth(),
     Tokens: new Tokens(),
-    Upload: new Upload()
+    Upload: new Upload(),
+    Services: new Services()
 }
 
 interface HeadStartSDK {
@@ -112,5 +114,6 @@ interface HeadStartSDK {
     TecraPdFs : TecraPdFs,
     Auth: Auth,
     Tokens: Tokens,
-    Upload: Upload
+    Upload: Upload,
+    Services: Services
 }

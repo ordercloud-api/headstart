@@ -64,7 +64,7 @@ export class OCMQuoteRequestForm implements OnInit {
       ]),
       BuyerLocation: new FormControl(
         this.myBuyerLocations[0]?.AddressName || '',
-        [Validators.required]
+        !this.isAnon ? [Validators.required] : null
       ),
       Phone: new FormControl(this.getAttribute('Phone') || '', [
         Validators.required,

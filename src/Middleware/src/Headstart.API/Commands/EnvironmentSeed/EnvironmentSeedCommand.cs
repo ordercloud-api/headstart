@@ -14,6 +14,7 @@ using OrderCloud.Catalyst;
 using Headstart.Common.Services.Portal.Models;
 using System.Net;
 using Microsoft.WindowsAzure.Storage.Blob;
+using Headstart.Common.Models;
 
 namespace Headstart.API.Commands
 {
@@ -49,6 +50,13 @@ namespace Headstart.API.Commands
             _settings = settings;
         }
 
+        /// <summary>
+        /// This seeding function can be used to initially seed an organization
+        /// it is also meant to be safe to call after an organization has been seeded (by including seed.SellerOrgID)
+        /// If a method starts with CreateOrUpdate it will update the resource every time its called based on what has been defined in SeedConstants.cs
+        /// If a method starts with CreateOnlyOnce it will only create the resource once and then ignore thereafter
+        /// The CreateOnlyOnce resources are likely to change after initial creation so we ignore to avoid overwriting desired changes that happen outside of seeding
+        /// </summary>
         public async Task<EnvironmentSeedResponse> Seed(EnvironmentSeed seed)
         {
             OcEnv requestedEnv = validateEnvironment(seed.OrderCloudSettings.Environment);
@@ -69,22 +77,20 @@ namespace Headstart.API.Commands
             var sellerOrg = await GetOrCreateOrg(portalUserToken, requestedEnv.environmentName, seed.SellerOrgName, seed.SellerOrgID);
             var orgToken = await _portal.GetOrgToken(sellerOrg.Id, portalUserToken);
 
-            await CreateDefaultSellerUsers(seed, orgToken);
+            await CreateOrUpdateDefaultSellerUser(seed, orgToken);
 
-            await CreateIncrementors(orgToken); // must be before CreateBuyers
-            await CreateMessageSenders(seed, orgToken); // must be before CreateBuyers and CreateSuppliers
+            await CreateOnlyOnceIncrementors(orgToken); // must be before CreateBuyers
+            await CreateOrUpdateMessageSendersAndAssignments(seed, orgToken); // must be before CreateBuyers and CreateSuppliers
 
-            await CreateSecurityProfiles(orgToken);
-            await CreateBuyers(seed, orgToken);
-            await CreateConfigureAnonBuyer(seed, orgToken);
+            await CreateOrUpdateSecurityProfiles(orgToken);
+            await CreateOnlyOnceBuyers(seed, orgToken);
 
-            await CreateApiClients(orgToken);
-            await AssignSecurityProfiles(seed, orgToken);
+            await CreateOnlyOnceApiClients(seed, orgToken);
+            await CreateOrUpdateSecurityProfileAssignments(seed, orgToken);
 
-            var apiClients = await GetApiClients(orgToken);
-            await CreateXPIndices(orgToken);
-            await CreateAndAssignIntegrationEvents(new string[] { apiClients.BuyerUiApiClient.ID }, apiClients.BuyerLocalUiApiClient.ID, orgToken, seed);
-            await CreateSuppliers(seed, orgToken);
+            await CreateOrUpdateXPIndices(orgToken);
+            await CreateOrUpdateAndAssignIntegrationEvents(orgToken, seed);
+            await CreateOrUpdateSuppliers(seed, orgToken);
 
             // populate default english translations into blob container name: settings.BlobSettings.ContainerNameTranslations or "ngx-translate" if setting is not defined
             // provide other language files to support multiple languages
@@ -102,6 +108,7 @@ namespace Headstart.API.Commands
                 await translationsBlob.Save("i18n/en.json", File.ReadAllText(englishTranslationsPath));
             }
 
+            var apiClients = await GetApiClients(orgToken);
             return new EnvironmentSeedResponse
             {
                 Comments = "Success! Your environment is now seeded. The following clientIDs & secrets should be used to finalize the configuration of your application. The initial admin username and password can be used to sign into your admin application",
@@ -188,20 +195,18 @@ namespace Headstart.API.Commands
         public async Task PostStagingRestore()
         {
             var token = (await _oc.AuthenticateAsync()).AccessToken;
-            var apiClients = await GetApiClients(token);
-            var storefrontClientIDs = await GetStoreFrontClientIDs(token);
 
             var deleteIE = DeleteAllIntegrationEvents(token);
             await Task.WhenAll(deleteIE);
 
             // recreate with environment specific data
-            var createIE = CreateAndAssignIntegrationEvents(storefrontClientIDs, apiClients.BuyerLocalUiApiClient.ID, token);
+            var createIE = CreateOrUpdateAndAssignIntegrationEvents(token);
             var shutOffSupplierEmails = ShutOffSupplierEmailsAsync(token); // shut off email notifications for all suppliers
 
             await Task.WhenAll(createIE, shutOffSupplierEmails);
         }
 
-        private async Task AssignSecurityProfiles(EnvironmentSeed seed, string orgToken)
+        private async Task CreateOrUpdateSecurityProfileAssignments(EnvironmentSeed seed, string orgToken)
         {
             // assign buyer security profiles
             var buyerSecurityProfileAssignmentRequests = seed.Buyers.Select(b =>
@@ -233,66 +238,84 @@ namespace Headstart.API.Commands
             }, orgToken);
         }
 
-        private async Task CreateBuyers(EnvironmentSeed seed, string token)
+        private async Task CreateOnlyOnceBuyers(EnvironmentSeed seed, string token)
         {
-            var defaultBuyer = SeedConstants.DefaultBuyer();
-            seed.Buyers.Add(defaultBuyer);
-            foreach (var buyer in seed.Buyers)
+            // create default buyer if it does not exist
+            // default buyer will have a well-known ID we can use to query with
+            var defaultBuyer = await GetBuyerByID(SeedConstants.DefaultBuyerID, token);
+            if (defaultBuyer == null)
             {
                 var superBuyer = new SuperHSBuyer()
                 {
-                    Buyer = buyer,
+                    Buyer = SeedConstants.DefaultBuyer(),
                     Markup = new BuyerMarkup() { Percent = 0 }
                 };
+                await _buyerCommand.Create(superBuyer, token, _oc);
+            }
 
-                var exists = await BuyerExistsAsync(buyer.Name, token);
-                if (exists == null || exists.Count == 0)
+            // create seed buyers if they don't exist
+            // seed buyers may not have ID defined, we are relying on Name instead
+            foreach (var buyer in seed.Buyers)
+            {
+                var seedBuyer = await GetBuyerByName(buyer.Name, token);
+                if (seedBuyer == null)
                 {
-                    var createdBuyer = await _buyerCommand.Create(superBuyer, token, _oc);
-                    if (createdBuyer.Buyer.Name == defaultBuyer.Name && seed.AnonymousShoppingBuyerID == null)
+                    var superBuyer = new SuperHSBuyer()
                     {
-                        seed.AnonymousShoppingBuyerID = createdBuyer.Buyer.ID;
-                    }
-                }
-                else
-                {
-                    seed.AnonymousShoppingBuyerID = exists.FirstOrDefault().ID;
+                        Buyer = buyer,
+                        Markup = new BuyerMarkup() { Percent = 0 }
+                    };
+                    await _buyerCommand.Create(superBuyer, token, _oc);
                 }
             }
         }
 
-        private async Task CreateConfigureAnonBuyer(EnvironmentSeed seed, string token)
+        private async Task CreateOnlyOnceAnonBuyerConfig(EnvironmentSeed seed, string token)
         {
-            var anonBuyer = SeedConstants.AnonymousBuyerUser();
-            var defaultBuyer = SeedConstants.DefaultBuyer();
-
-            //create anonymous buyer user
-            var createUser = _oc.Users.SaveAsync(seed.AnonymousShoppingBuyerID, anonBuyer.ID, anonBuyer, token);
+            // validate AnonymousShoppingBuyerID or provide fallback if none is defined
+            var allBuyers = await _oc.Buyers.ListAllAsync(accessToken: token);
+            if (seed.AnonymousShoppingBuyerID != null)
+            {
+                if (!allBuyers.Select(b => b.ID).Contains(seed.AnonymousShoppingBuyerID))
+                {
+                    throw new Exception("The buyer defined by AnonymousShoppingBuyerID does not exist");
+                }
+            }
+            else
+            {
+                seed.AnonymousShoppingBuyerID = SeedConstants.DefaultBuyerID;
+            }
 
             //create and assign initial buyer location
-            var createBuyerLocation = await _buyerLocationCommand.Save(seed.AnonymousShoppingBuyerID,
+            await _buyerLocationCommand.Save(seed.AnonymousShoppingBuyerID,
                 $"{seed.AnonymousShoppingBuyerID}-{SeedConstants.DefaultLocationID}",
                 SeedConstants.DefaultBuyerLocation(), token, _oc);
 
+            // create user
+            var anonBuyerUser = await _oc.Users.SaveAsync(seed.AnonymousShoppingBuyerID, SeedConstants.AnonymousBuyerUser().ID, SeedConstants.AnonymousBuyerUser(), token);
 
+            // save assignment between user and buyergroup (location)
             var assignment = new UserGroupAssignment()
             {
                 UserGroupID = $"{seed.AnonymousShoppingBuyerID}-{SeedConstants.DefaultLocationID}",
-                UserID = anonBuyer.ID
+                UserID = anonBuyerUser.ID
             };
-            var saveAssignment = _oc.UserGroups.SaveUserAssignmentAsync(seed.AnonymousShoppingBuyerID, assignment, accessToken: token);
-            await createUser;
-
-            await saveAssignment;
+            await _oc.UserGroups.SaveUserAssignmentAsync(seed.AnonymousShoppingBuyerID, assignment, accessToken: token);
         }
 
-        private async Task<List<Buyer>> BuyerExistsAsync(string buyerName, string token)
+        private async Task<HSBuyer> GetBuyerByName(string buyerName, string token)
         {
-            var list = await _oc.Buyers.ListAsync(filters: new { Name = buyerName }, accessToken: token);
-            return list.Items.ToList();
+            var list = await _oc.Buyers.ListAsync<HSBuyer>(filters: new { Name = buyerName }, accessToken: token);
+            return list.Items.ToList().FirstOrDefault();
         }
 
-        private async Task CreateSuppliers(EnvironmentSeed seed, string token)
+        private async Task<HSBuyer> GetBuyerByID(string buyerID, string token)
+        {
+            var list = await _oc.Buyers.ListAsync<HSBuyer>(filters: new { ID = buyerID }, accessToken: token);
+            return list.Items.ToList().FirstOrDefault();
+        }
+
+        private async Task CreateOrUpdateSuppliers(EnvironmentSeed seed, string token)
         {
             // Create Suppliers and necessary user groups and security profile assignments
             foreach (HSSupplier supplier in seed.Suppliers)
@@ -311,10 +334,10 @@ namespace Headstart.API.Commands
             return list.Items.Any();
         }
 
-        private async Task CreateDefaultSellerUsers(EnvironmentSeed seed, string token)
+        private async Task CreateOrUpdateDefaultSellerUser(EnvironmentSeed seed, string token)
         {
             // the middleware api client will use this user as the default context user
-            var middlewareIntegrationsUser = SeedConstants.MIddlewareIntegrationsUser();
+            var middlewareIntegrationsUser = SeedConstants.MiddlewareIntegrationsUser();
 
             await _oc.AdminUsers.SaveAsync(middlewareIntegrationsUser.ID, middlewareIntegrationsUser, token);
 
@@ -332,38 +355,50 @@ namespace Headstart.API.Commands
             await _oc.AdminUsers.SaveAsync(initialAdminUser.ID, initialAdminUser, token);
         }
 
-        public async Task CreateXPIndices(string token)
+        public async Task CreateOrUpdateXPIndices(string token)
         {
             foreach (var index in SeedConstants.DefaultIndices)
             {
-                //PutAsync is throwing id already exists error. Seems like it is trying to create.
-                //That is why we are using try catch here
-                //Bug in sdk?
                 try
                 {
                     await _oc.XpIndices.PutAsync(index, token);
                 }
-                catch (Exception ex) { }
+                catch (OrderCloudException ex)
+                {
+                    // this is a bug in the api PUTs should never return 409s so ignore those errors
+                    // https://four51.atlassian.net/browse/EX-2210
+                    if (ex.HttpStatus != HttpStatusCode.Conflict)
+                    {
+                        throw ex;
+                    }
+                }
             }
         }
 
-        public async Task CreateIncrementors(string token)
+        public async Task CreateOnlyOnceIncrementors(string token)
         {
             foreach (var incrementor in SeedConstants.DefaultIncrementors)
             {
-                await _oc.Incrementors.SaveAsync(incrementor.ID, incrementor, token);
+                var exists = await _oc.Incrementors.ListAsync(pageSize: 1, filters: new { ID = incrementor.ID }, accessToken: token);
+
+                // only create the incrementor if it doesn't already exist otherwise the count will be reset and it may cause 409 conflict errors
+                // when it tries to create an entity with an ID that has already been created
+                if (!exists.Items.Any())
+                {
+                    await _oc.Incrementors.CreateAsync(incrementor, token);
+                }
             }
         }
 
-        private async Task<ApiClientIDs> GetApiClients(string token)
+        private async Task<ApiClients> GetApiClients(string token)
         {
-            var list = await _oc.ApiClients.ListAllAsync(accessToken: token);
+            var list = await _oc.ApiClients.ListAllAsync<HSApiClient>(accessToken: token);
             var appNames = list.Select(x => x.AppName);
             var adminUIApiClient = list.First(a => a.AppName == SeedConstants.SellerApiClientName);
-            var buyerUIApiClient = list.First(a => a.AppName == SeedConstants.BuyerApiClientName);
+            var buyerUIApiClient = list.First(a => a.xp.IsStorefront);
             var buyerLocalUIApiClient = list.First(a => a.AppName == SeedConstants.BuyerLocalApiClientName);
             var middlewareApiClient = list.First(a => a.AppName == SeedConstants.IntegrationsApiClientName);
-            return new ApiClientIDs()
+            return new ApiClients()
             {
                 AdminUiApiClient = adminUIApiClient,
                 BuyerUiApiClient = buyerUIApiClient,
@@ -374,11 +409,13 @@ namespace Headstart.API.Commands
 
         private async Task<string[]> GetStoreFrontClientIDs(string token)
         {
-            var list = await _oc.ApiClients.ListAllAsync(filters: new { AppName = "Storefront - *" }, accessToken: token);
-            return list.Select(client => client.ID).ToArray();
+            var list = await _oc.ApiClients.ListAllAsync<HSApiClient>(accessToken: token);
+            return list
+                .Where(client => client.xp.IsStorefront = true) // can't index ApiClients so we need to filter client-side
+                .Select(client => client.ID).ToArray();
         }
 
-        public class ApiClientIDs
+        public class ApiClients
         {
             public ApiClient AdminUiApiClient { get; set; }
             public ApiClient BuyerUiApiClient { get; set; }
@@ -386,31 +423,42 @@ namespace Headstart.API.Commands
             public ApiClient MiddlewareApiClient { get; set; }
         }
 
-        private async Task CreateApiClients(string token)
+        private async Task CreateOnlyOnceApiClients(EnvironmentSeed seed, string token)
         {
             var existingClients = await _oc.ApiClients.ListAllAsync(accessToken: token);
 
-            var integrationsClientRequest = GetClientRequest(existingClients, SeedConstants.IntegrationsClient(), token);
-            var sellerClientRequest = GetClientRequest(existingClients, SeedConstants.SellerClient(), token);
-            var buyerClientRequest = GetClientRequest(existingClients, SeedConstants.BuyerClient(), token);
-            var buyerLocalClientRequest = GetClientRequest(existingClients, SeedConstants.BuyerLocalClient(), token);
+            var integrationsClientRequest = CreateOrGetApiClient(existingClients, SeedConstants.IntegrationsClient(), token);
+            var sellerClientRequest = CreateOrGetApiClient(existingClients, SeedConstants.SellerClient(), token);
+            var buyerClientRequest = CreateOrGetBuyerClient(existingClients, SeedConstants.BuyerClient(seed), seed, token);
+            var buyerLocalClientRequest = CreateOrGetApiClient(existingClients, SeedConstants.BuyerLocalClient(seed), token);
 
             await Task.WhenAll(integrationsClientRequest, sellerClientRequest, buyerClientRequest, buyerLocalClientRequest);
         }
 
-        private Task<ApiClient> GetClientRequest(List<ApiClient> existingClients, ApiClient client, string token)
+        private async Task<ApiClient> CreateOrGetBuyerClient(List<ApiClient> existingClients, ApiClient client, EnvironmentSeed seed, string token)
         {
-            var match = existingClients.Find(c => c.AppName == client.AppName);
+            var match = existingClients.FirstOrDefault(c => c.AppName == client.AppName);
             if (match == null)
             {
-                return _oc.ApiClients.CreateAsync(client, token);
-            }
 
-            client.ClientSecret = match.ClientSecret; // don't overwrite client secret
-            return _oc.ApiClients.SaveAsync(match.ID, client, token);
+                await CreateOnlyOnceAnonBuyerConfig(seed, token);
+                var apiClient = await _oc.ApiClients.CreateAsync(client, token);
+                return apiClient;
+            }
+            return match;
         }
 
-        private async Task CreateMessageSenders(EnvironmentSeed seed, string accessToken)
+        private async Task<ApiClient> CreateOrGetApiClient(List<ApiClient> existingClients, ApiClient client, string token)
+        {
+            var match = existingClients.FirstOrDefault(c => c.AppName == client.AppName);
+            if (match == null)
+            {
+                return await _oc.ApiClients.CreateAsync(client, token);
+            }
+            return match;
+        }
+
+        private async Task CreateOrUpdateMessageSendersAndAssignments(EnvironmentSeed seed, string accessToken)
         {
             var defaultMessageSenders = new List<MessageSender>()
             {
@@ -418,12 +466,14 @@ namespace Headstart.API.Commands
                 SeedConstants.SellerEmails(seed),
                 SeedConstants.SuplierEmails(seed)
             };
+            var existingMessageSenders = await _oc.MessageSenders.ListAllAsync(accessToken: accessToken);
             foreach (var sender in defaultMessageSenders)
             {
-                var messageSender = await _oc.MessageSenders.SaveAsync(sender.ID, sender, accessToken);
+                var messageSender = await GetOrCreateMessageSender(existingMessageSenders, sender, accessToken);
                 if (messageSender.ID == "BuyerEmails")
                 {
-                    foreach (var buyer in seed.Buyers)
+                    var allBuyers = await _oc.Buyers.ListAllAsync(accessToken: accessToken);
+                    foreach (var buyer in allBuyers)
                     {
                         try
                         {
@@ -435,7 +485,9 @@ namespace Headstart.API.Commands
                         }
                         catch (OrderCloudException ex)
                         {
-                            if (ex.HttpStatus != HttpStatusCode.Conflict) // this is a bug in the api https://four51.atlassian.net/browse/EX-2210
+                            // this is a bug in the api PUTs should never return 409s so ignore those errors
+                            // https://four51.atlassian.net/browse/EX-2210
+                            if (ex.HttpStatus != HttpStatusCode.Conflict)
                             {
                                 throw ex;
                             }
@@ -453,7 +505,9 @@ namespace Headstart.API.Commands
                     }
                     catch (OrderCloudException ex)
                     {
-                        if (ex.HttpStatus != HttpStatusCode.Conflict) // this is a bug in the api https://four51.atlassian.net/browse/EX-2210
+                        // this is a bug in the api PUTs should never return 409s so ignore those errors
+                        // https://four51.atlassian.net/browse/EX-2210
+                        if (ex.HttpStatus != HttpStatusCode.Conflict)
                         {
                             throw ex;
                         }
@@ -461,7 +515,8 @@ namespace Headstart.API.Commands
                 }
                 else if (messageSender.ID == "SupplierEmails")
                 {
-                    foreach (var supplier in seed.Suppliers)
+                    var allSuppliers = await _oc.Suppliers.ListAllAsync(accessToken: accessToken);
+                    foreach (var supplier in allSuppliers)
                     {
                         try
                         {
@@ -473,7 +528,9 @@ namespace Headstart.API.Commands
                         }
                         catch (OrderCloudException ex)
                         {
-                            if (ex.HttpStatus != HttpStatusCode.Conflict) // this is a bug in the api https://four51.atlassian.net/browse/EX-2210
+                            // this is a bug in the api PUTs should never return 409s so ignore those errors
+                            // https://four51.atlassian.net/browse/EX-2210
+                            if (ex.HttpStatus != HttpStatusCode.Conflict)
                             {
                                 throw ex;
                             }
@@ -483,8 +540,22 @@ namespace Headstart.API.Commands
             }
         }
 
-        private async Task CreateAndAssignIntegrationEvents(string[] buyerClientIDs, string localBuyerClientID, string token, EnvironmentSeed seed = null)
+        private async Task<MessageSender> GetOrCreateMessageSender(List<MessageSender> existingMessageSenders, MessageSender messageSender, string accessToken)
         {
+            var match = existingMessageSenders.Find(c => c.ID == messageSender.ID);
+            if (match == null)
+            {
+                return await _oc.MessageSenders.CreateAsync(messageSender, accessToken);
+            }
+            return match;
+        }
+
+        private async Task CreateOrUpdateAndAssignIntegrationEvents(string token, EnvironmentSeed seed = null)
+        {
+            var storefrontApiClientIDs = await GetStoreFrontClientIDs(token);
+            var apiClients = await GetApiClients(token);
+            var localBuyerClientID = apiClients.BuyerLocalUiApiClient.ID;
+
             // this gets called by both the /seed command and the post-staging restore so we need to handle getting settings from two sources
             var middlewareBaseUrl = seed != null ? seed.MiddlewareBaseUrl : _settings.EnvironmentSettings.MiddlewareBaseUrl;
             var webhookHashKey = seed != null ? seed.OrderCloudSettings.WebhookHashKey : _settings.OrderCloudSettings.WebhookHashKey;
@@ -494,7 +565,7 @@ namespace Headstart.API.Commands
             await _oc.IntegrationEvents.SaveAsync(localCheckoutEvent.ID, localCheckoutEvent, token);
 
             await _oc.ApiClients.PatchAsync(localBuyerClientID, new PartialApiClient { OrderCheckoutIntegrationEventID = "HeadStartCheckoutLOCAL" }, token);
-            await Throttler.RunAsync(buyerClientIDs, 500, 20, clientID =>
+            await Throttler.RunAsync(storefrontApiClientIDs, 500, 20, clientID =>
                 _oc.ApiClients.PatchAsync(clientID, new PartialApiClient { OrderCheckoutIntegrationEventID = "HeadStartCheckout" }, token));
         }
 
@@ -505,7 +576,7 @@ namespace Headstart.API.Commands
                 _oc.Suppliers.PatchAsync(supplier.ID, new PartialSupplier { xp = new { NotificationRcpts = new string[] { } } }, token));
         }
 
-        public async Task CreateSecurityProfiles(string accessToken)
+        public async Task CreateOrUpdateSecurityProfiles(string accessToken)
         {
             var profiles = SeedConstants.DefaultSecurityProfiles.Select(p =>
                 new SecurityProfile()

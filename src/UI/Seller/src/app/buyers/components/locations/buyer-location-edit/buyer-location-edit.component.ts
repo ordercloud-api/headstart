@@ -11,12 +11,14 @@ import {
   HSBuyerLocation,
   HSCatalog,
   HSCatalogAssignmentRequest,
+  OrderApproval,
 } from '@ordercloud/headstart-sdk'
 import { GeographyConfig } from '@app-seller/shared/models/supported-countries.constant'
 import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/catalogs-temp.service'
 import { REDIRECT_TO_FIRST_PARENT } from '@app-seller/layout/header/header.config'
 import { ResourceUpdate } from '@app-seller/models/shared.types'
 import { SupportedCountries } from '@app-seller/models/currency-geography.types'
+import { ApprovalRules } from 'ordercloud-javascript-sdk'
 @Component({
   selector: 'app-buyer-location-edit',
   templateUrl: './buyer-location-edit.component.html',
@@ -52,6 +54,7 @@ export class BuyerLocationEditComponent implements OnInit {
   dataIsSaving = false
   countryOptions: SupportedCountries[]
   catalogs: HSCatalog[] = []
+  approvalRule: OrderApproval
 
   constructor(
     private buyerLocationService: BuyerLocationService,
@@ -261,11 +264,22 @@ export class BuyerLocationEditComponent implements OnInit {
     this.resourceForm.controls['CatalogAssignments']?.setValue(event)
   }
 
+  handleUpdateApproval(event): void {
+    this.approvalRule = event;
+  }
+
   private async handleSelectedAddressChange(address: Address): Promise<void> {
-    const hsBuyerLocation = await HeadStartSDK.BuyerLocations.Get(
-      this.buyerID,
-      address.ID
-    )
+    const [hsBuyerLocation, approvalRules] = await Promise.all([
+      HeadStartSDK.BuyerLocations.Get(
+        this.buyerID,
+        address.ID
+      ),
+      ApprovalRules.List(
+        this.buyerID,
+        {filters: {'ApprovingGroupID': `${address.ID}-OrderApprover`}}
+        )
+    ])
+    this.approvalRule = approvalRules?.Items[0]
     this.refreshBuyerLocationData(hsBuyerLocation)
   }
 }

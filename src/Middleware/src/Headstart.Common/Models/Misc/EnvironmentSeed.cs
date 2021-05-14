@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using ordercloud.integrations.library;
 using Newtonsoft.Json;
@@ -75,6 +75,13 @@ namespace Headstart.Models.Misc
 		/// An optional array of buyers to create as part of the initial seeding
 		/// </summary>
 		public List<HSBuyer> Buyers { get; set; } = new List<HSBuyer> { };
+
+		/// <summary>
+		/// Defaults to true
+		/// Enables anonymous shopping whereby users do not have to be logged in to view products or submit an order
+		/// pricing and visibility will be determined by what the default user can see
+		/// </summary>
+		public bool EnableAnonymousShopping { get; set; } = true;
 
 		/// <summary>
 		/// An optional string to specify a buyer which the anonymous buyer user will be assigned to

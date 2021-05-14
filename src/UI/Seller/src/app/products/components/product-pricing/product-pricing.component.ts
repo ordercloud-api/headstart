@@ -42,7 +42,7 @@ export class ProductPricingComponent {
   }
 
   @Output()
-  updateProduct = new EventEmitter<ResourceUpdate>()
+  updateProduct = new EventEmitter<{ field: string; value: any }>()
   faExclamationCircle = faExclamationCircle
   supplierPriceSchedule: PriceSchedule
   buyerMarkedUpSupplierPrices: PriceSchedule

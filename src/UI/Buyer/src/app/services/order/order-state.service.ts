@@ -3,6 +3,7 @@ import {
   ListPage,
   HSLineItem,
   HSOrder,
+  HeadStartSDK,
 } from '@ordercloud/headstart-sdk'
 import {
   LineItems,
@@ -19,7 +20,6 @@ import { AppConfig } from 'src/app/models/environment.types'
 import { ClaimStatus } from 'src/app/models/order.types'
 import { ShippingStatus } from 'src/app/models/shipping.types'
 import { CurrentUserService } from '../current-user/current-user.service'
-import { listAll } from '../listAll'
 import { TokenHelperService } from '../token-helper/token-helper.service'
 
 @Injectable({
@@ -181,7 +181,7 @@ export class OrderStateService {
   }
 
   async resetLineItems(): Promise<void> {
-    this.lineItems = await listAll(
+    this.lineItems = await HeadStartSDK.Services.ListAll(
       LineItems,
       LineItems.List,
       'outgoing',
