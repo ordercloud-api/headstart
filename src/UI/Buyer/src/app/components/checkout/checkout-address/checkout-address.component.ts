@@ -13,7 +13,6 @@ import {
   HeadStartSDK,
   HSOrder,
   HSAddressBuyer,
-  HeadStartSDK,
 } from '@ordercloud/headstart-sdk'
 
 import { getSuggestedAddresses } from '../../../services/address-suggestion.helper'
