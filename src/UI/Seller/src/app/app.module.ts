@@ -119,7 +119,7 @@ export class AppModule {
     HeadstartConfiguration.Set({
       baseApiUrl: this.appConfig.middlewareUrl,
     })
-    if(this.appConfig.cmsUrl && this.appConfig.cmsUrl !== '') {
+    if (this.appConfig.cmsUrl && this.appConfig.cmsUrl !== '') {
       CMSConfiguration.Set({
         baseApiUrl: this.appConfig.cmsUrl,
       })
@@ -129,8 +129,7 @@ export class AppModule {
   private getOrdercloudSDKConfig(config: AppConfig): SdkConfiguration {
     const apiUrl = config.orderCloudApiUrl
     return {
-      baseApiUrl: `${apiUrl}/v1`,
-      baseAuthUrl: `${apiUrl}/oauth/token`,
+      baseApiUrl: apiUrl,
       clientID: config.clientID,
       cookieOptions: {
         prefix: config.appname.replace(/ /g, '_').toLowerCase(),

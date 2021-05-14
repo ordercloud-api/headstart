@@ -22,7 +22,6 @@ import { TokenHelperService } from '../token-helper/token-helper.service'
 import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { AppConfig } from 'src/app/models/environment.types'
 import { BaseResolveService } from '../base-resolve/base-resolve.service'
-import BuyerLocations from '@ordercloud/headstart-sdk/dist/api/BuyerLocations'
 
 @Injectable({
   providedIn: 'root',

@@ -29,6 +29,7 @@ export * from './History';
 export * from './HSAddressAssignment';
 export * from './HSAddressBuyer';
 export * from './HSAddressSupplier';
+export * from './HSApiClient';
 export * from './HSBuyer';
 export * from './HSBuyerLocation';
 export * from './HSCatalog';

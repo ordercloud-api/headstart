@@ -14,6 +14,7 @@ using OrderCloud.Catalyst;
 using Headstart.Common.Services.Portal.Models;
 using System.Net;
 using Microsoft.WindowsAzure.Storage.Blob;
+using Headstart.Common.Models;
 
 namespace Headstart.API.Commands
 {
@@ -83,14 +84,12 @@ namespace Headstart.API.Commands
 
             await CreateOrUpdateSecurityProfiles(orgToken);
             await CreateOnlyOnceBuyers(seed, orgToken);
-            await CreateOrUpdateAnonBuyerConfig(seed, orgToken);
 
             await CreateOnlyOnceApiClients(seed, orgToken);
             await CreateOrUpdateSecurityProfileAssignments(seed, orgToken);
 
-            var apiClients = await GetApiClients(orgToken);
             await CreateOrUpdateXPIndices(orgToken);
-            await CreateOrUpdateAndAssignIntegrationEvents(new string[] { apiClients.BuyerUiApiClient.ID }, apiClients.BuyerLocalUiApiClient.ID, orgToken, seed);
+            await CreateOrUpdateAndAssignIntegrationEvents(orgToken, seed);
             await CreateOrUpdateSuppliers(seed, orgToken);
 
             // populate default english translations into blob container name: settings.BlobSettings.ContainerNameTranslations or "ngx-translate" if setting is not defined
@@ -109,6 +108,7 @@ namespace Headstart.API.Commands
                 await translationsBlob.Save("i18n/en.json", File.ReadAllText(englishTranslationsPath));
             }
 
+            var apiClients = await GetApiClients(orgToken);
             return new EnvironmentSeedResponse
             {
                 Comments = "Success! Your environment is now seeded. The following clientIDs & secrets should be used to finalize the configuration of your application. The initial admin username and password can be used to sign into your admin application",
@@ -195,14 +195,12 @@ namespace Headstart.API.Commands
         public async Task PostStagingRestore()
         {
             var token = (await _oc.AuthenticateAsync()).AccessToken;
-            var apiClients = await GetApiClients(token);
-            var storefrontClientIDs = await GetStoreFrontClientIDs(token);
 
             var deleteIE = DeleteAllIntegrationEvents(token);
             await Task.WhenAll(deleteIE);
 
             // recreate with environment specific data
-            var createIE = CreateOrUpdateAndAssignIntegrationEvents(storefrontClientIDs, apiClients.BuyerLocalUiApiClient.ID, token);
+            var createIE = CreateOrUpdateAndAssignIntegrationEvents(token);
             var shutOffSupplierEmails = ShutOffSupplierEmailsAsync(token); // shut off email notifications for all suppliers
 
             await Task.WhenAll(createIE, shutOffSupplierEmails);
@@ -272,22 +270,10 @@ namespace Headstart.API.Commands
             }
         }
 
-        private async Task CreateOrUpdateAnonBuyerConfig(EnvironmentSeed seed, string token)
+        private async Task CreateOnlyOnceAnonBuyerConfig(EnvironmentSeed seed, string token)
         {
-            if(seed.EnableAnonymousShopping == false)
-            {
-                var clientsWithAnonShopping = await _oc.ApiClients.ListAllAsync(filters: "IsAnonBuyer=true", accessToken: token);
-                if(clientsWithAnonShopping.Any())
-                {
-                    var requests = clientsWithAnonShopping.Select(apiClient => _oc.ApiClients.PatchAsync(apiClient.ID, new PartialApiClient { IsAnonBuyer = false }, accessToken: token));
-                    await Task.WhenAll(requests);
-                }
-                return;
-            }
-
-            var allBuyers = await _oc.Buyers.ListAllAsync(accessToken: token);
-
             // validate AnonymousShoppingBuyerID or provide fallback if none is defined
+            var allBuyers = await _oc.Buyers.ListAllAsync(accessToken: token);
             if (seed.AnonymousShoppingBuyerID != null)
             {
                 if (!allBuyers.Select(b => b.ID).Contains(seed.AnonymousShoppingBuyerID))
@@ -300,32 +286,13 @@ namespace Headstart.API.Commands
                 seed.AnonymousShoppingBuyerID = SeedConstants.DefaultBuyerID;
             }
 
-            var anonBuyerUser = SeedConstants.AnonymousBuyerUser();
-
             //create and assign initial buyer location
             await _buyerLocationCommand.Save(seed.AnonymousShoppingBuyerID,
                 $"{seed.AnonymousShoppingBuyerID}-{SeedConstants.DefaultLocationID}",
                 SeedConstants.DefaultBuyerLocation(), token, _oc);
 
-            // create user, transfer to another buyer org if needed
-            try
-            {
-                await _oc.Users.SaveAsync(seed.AnonymousShoppingBuyerID, anonBuyerUser.ID, anonBuyerUser, token);
-            } catch(OrderCloudException ex)
-            {
-                if (ex.HttpStatus == HttpStatusCode.Conflict && ex.Errors.Length > 0 && ex.Errors.First()?.ErrorCode == "User.UsernameMustBeUnique")
-                {
-                    // user already exists in a different buyer org
-                    // we'll need to move them from previous buyer org into the new org
-                    // there isn't a way of determining which buyer they're in without scanning all buyers
-                    var fromBuyerID = await FindBuyerUserExistsIn(allBuyers, anonBuyerUser.Username, token);
-                    var toBuyerID = seed.AnonymousShoppingBuyerID;
-                    await _oc.Users.MoveAsync(fromBuyerID, anonBuyerUser.ID, toBuyerID, UserOrderMoveOption.None, token);
-                } else
-                {
-                    throw;
-                }
-            }
+            // create user
+            var anonBuyerUser = await _oc.Users.SaveAsync(seed.AnonymousShoppingBuyerID, SeedConstants.AnonymousBuyerUser().ID, SeedConstants.AnonymousBuyerUser(), token);
 
             // save assignment between user and buyergroup (location)
             var assignment = new UserGroupAssignment()
@@ -334,19 +301,6 @@ namespace Headstart.API.Commands
                 UserID = anonBuyerUser.ID
             };
             await _oc.UserGroups.SaveUserAssignmentAsync(seed.AnonymousShoppingBuyerID, assignment, accessToken: token);
-        }
-
-        private async Task<string> FindBuyerUserExistsIn(List<Buyer> allBuyers, string username, string token)
-        {
-            foreach(var buyer in allBuyers)
-            {
-                var list = await _oc.Users.ListAsync(buyer.ID, filters: $"Username={username}", accessToken: token);
-                if (list.Items.Any())
-                {
-                    return buyer.ID;
-                }
-            }
-            return null;
         }
 
         private async Task<HSBuyer> GetBuyerByName(string buyerName, string token)
@@ -436,15 +390,15 @@ namespace Headstart.API.Commands
             }
         }
 
-        private async Task<ApiClientIDs> GetApiClients(string token)
+        private async Task<ApiClients> GetApiClients(string token)
         {
-            var list = await _oc.ApiClients.ListAllAsync(accessToken: token);
+            var list = await _oc.ApiClients.ListAllAsync<HSApiClient>(accessToken: token);
             var appNames = list.Select(x => x.AppName);
             var adminUIApiClient = list.First(a => a.AppName == SeedConstants.SellerApiClientName);
-            var buyerUIApiClient = list.First(a => a.AppName == SeedConstants.BuyerApiClientName);
+            var buyerUIApiClient = list.First(a => a.xp.IsStorefront);
             var buyerLocalUIApiClient = list.First(a => a.AppName == SeedConstants.BuyerLocalApiClientName);
             var middlewareApiClient = list.First(a => a.AppName == SeedConstants.IntegrationsApiClientName);
-            return new ApiClientIDs()
+            return new ApiClients()
             {
                 AdminUiApiClient = adminUIApiClient,
                 BuyerUiApiClient = buyerUIApiClient,
@@ -455,13 +409,13 @@ namespace Headstart.API.Commands
 
         private async Task<string[]> GetStoreFrontClientIDs(string token)
         {
-            // API clients don't have an xp that we can conveniently use to differentiate other api clients from 
-            // storefront api clients so we're using a naming convention whereby all API clients that start with "Storefront - " are storefront api clients
-            var list = await _oc.ApiClients.ListAllAsync(filters: new { AppName = "Storefront - *" }, accessToken: token);
-            return list.Select(client => client.ID).ToArray();
+            var list = await _oc.ApiClients.ListAllAsync<HSApiClient>(accessToken: token);
+            return list
+                .Where(client => client.xp.IsStorefront = true) // can't index ApiClients so we need to filter client-side
+                .Select(client => client.ID).ToArray();
         }
 
-        public class ApiClientIDs
+        public class ApiClients
         {
             public ApiClient AdminUiApiClient { get; set; }
             public ApiClient BuyerUiApiClient { get; set; }
@@ -475,15 +429,28 @@ namespace Headstart.API.Commands
 
             var integrationsClientRequest = CreateOrGetApiClient(existingClients, SeedConstants.IntegrationsClient(), token);
             var sellerClientRequest = CreateOrGetApiClient(existingClients, SeedConstants.SellerClient(), token);
-            var buyerClientRequest = CreateOrGetApiClient(existingClients, SeedConstants.BuyerClient(seed), token);
+            var buyerClientRequest = CreateOrGetBuyerClient(existingClients, SeedConstants.BuyerClient(seed), seed, token);
             var buyerLocalClientRequest = CreateOrGetApiClient(existingClients, SeedConstants.BuyerLocalClient(seed), token);
 
             await Task.WhenAll(integrationsClientRequest, sellerClientRequest, buyerClientRequest, buyerLocalClientRequest);
         }
 
+        private async Task<ApiClient> CreateOrGetBuyerClient(List<ApiClient> existingClients, ApiClient client, EnvironmentSeed seed, string token)
+        {
+            var match = existingClients.FirstOrDefault(c => c.AppName == client.AppName);
+            if (match == null)
+            {
+
+                await CreateOnlyOnceAnonBuyerConfig(seed, token);
+                var apiClient = await _oc.ApiClients.CreateAsync(client, token);
+                return apiClient;
+            }
+            return match;
+        }
+
         private async Task<ApiClient> CreateOrGetApiClient(List<ApiClient> existingClients, ApiClient client, string token)
         {
-            var match = existingClients.Find(c => c.AppName == client.AppName);
+            var match = existingClients.FirstOrDefault(c => c.AppName == client.AppName);
             if (match == null)
             {
                 return await _oc.ApiClients.CreateAsync(client, token);
@@ -583,8 +550,12 @@ namespace Headstart.API.Commands
             return match;
         }
 
-        private async Task CreateOrUpdateAndAssignIntegrationEvents(string[] buyerClientIDs, string localBuyerClientID, string token, EnvironmentSeed seed = null)
+        private async Task CreateOrUpdateAndAssignIntegrationEvents(string token, EnvironmentSeed seed = null)
         {
+            var storefrontApiClientIDs = await GetStoreFrontClientIDs(token);
+            var apiClients = await GetApiClients(token);
+            var localBuyerClientID = apiClients.BuyerLocalUiApiClient.ID;
+
             // this gets called by both the /seed command and the post-staging restore so we need to handle getting settings from two sources
             var middlewareBaseUrl = seed != null ? seed.MiddlewareBaseUrl : _settings.EnvironmentSettings.MiddlewareBaseUrl;
             var webhookHashKey = seed != null ? seed.OrderCloudSettings.WebhookHashKey : _settings.OrderCloudSettings.WebhookHashKey;
@@ -594,7 +565,7 @@ namespace Headstart.API.Commands
             await _oc.IntegrationEvents.SaveAsync(localCheckoutEvent.ID, localCheckoutEvent, token);
 
             await _oc.ApiClients.PatchAsync(localBuyerClientID, new PartialApiClient { OrderCheckoutIntegrationEventID = "HeadStartCheckoutLOCAL" }, token);
-            await Throttler.RunAsync(buyerClientIDs, 500, 20, clientID =>
+            await Throttler.RunAsync(storefrontApiClientIDs, 500, 20, clientID =>
                 _oc.ApiClients.PatchAsync(clientID, new PartialApiClient { OrderCheckoutIntegrationEventID = "HeadStartCheckout" }, token));
         }
 

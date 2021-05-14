@@ -489,6 +489,9 @@
       "REPORT_PROCESSING": "Report Processing",
       "PREVIEW_THE_REPORT": "Preview the report data in a table, or download the file."
     },
+    "PERMISSIONS": {
+      "LOCATION_APPROVAL_TOOLTIP": "No approval rules in this buyer group. Set an approval rule before granting OrderApprover permissions."
+    },
     "STOREFRONTS": {
       "SUMMARY": "A storefront represents a hosted buyer application. Simply creating a storefront in this admin interface will not create a buyer application - that process still needs to be performed manually by a developer but once that is done certain pieces about the storefront can be managed here",
       "ACCESS_TOKEN_TOOLTIP": "Determines how long (in minutes) a user can stay logged in before they will need to re-enter their credentials and log back in. Minimum value is 10, Maximum value is 600.",
