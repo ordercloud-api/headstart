@@ -246,7 +246,7 @@ export class CheckoutService {
     return this.order
   }
 
-  private async patch(order: HSOrder, orderID?: string): Promise<HSOrder> {
+  public async patch(order: HSOrder, orderID?: string): Promise<HSOrder> {
     this.order = (await Orders.Patch(
       'Outgoing',
       orderID || this.order.ID,
