@@ -10,7 +10,6 @@ import {
   ListPage,
 } from '@ordercloud/headstart-sdk'
 import { CheckoutService } from './checkout.service'
-import { listAll } from '../listAll'
 import { CurrentUserService } from '../current-user/current-user.service'
 
 @Injectable({
@@ -225,7 +224,7 @@ export class CartService {
 
     // cannot use this.state.reset because the order index isn't ready immediately after the patch of IsResubmitting
     this.state.order = orderToUpdate
-    this.state.lineItems = await listAll(
+    this.state.lineItems = await HeadStartSDK.Services.ListAll(
       LineItems,
       LineItems.List,
       'Outgoing',
