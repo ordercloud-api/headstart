@@ -18,6 +18,14 @@
     "SUPPLIERS": "Suppliers"
   },
   "ADMIN": {
+    "BUYER_GROUPS": {
+      "APPROVALS": {
+        "HEADER": "Order Approval Rule",
+        "DESCRIPTION": "Enable order approvals and set an order value threshold. Only buyers with 'ApprovalNeeded' permission will be subject to this rule.",
+        "ENABLE_LABEL": "Enable Approvals",
+        "THRESHOLD_LABEL": "Order Total Threshold"
+      }
+    },
     "COMMON": {
       "ACCOUNT_LOGIN": "Account Login",
       "CONFIRM_PASSWORD": "Confirm Password",
@@ -36,20 +44,21 @@
       "SEARCH": "Search",
       "SUBMIT": "Submit",
       "USERNAME": "Username",
-      "NOTIFICATIONS": "Notifications"
+      "NOTIFICATIONS": "Notifications",
+      "SAVE_CHANGES": "Save Changes",
+      "SAVING": "Saving",
+      "DISCARD_CHANGES": "Discard Changes",
+      "NO_CHANGES": "No Changes",
+      "CONFIRM": "Confirm",
+      "CREATE": "Create",
+      "CANCEL": "Cancel"
     },
     "DELETE": {
       "ARE_YOU_SURE": "Are you sure you want to delete this?",
-      "CONFIRM": "Confirm",
-      "CREATE": "Create",
       "DELETE": "Delete",
-      "DISCARD_CHANGES": "Discard Changes",
-      "NO_CHANGES": "No Changes",
       "NO_DO_NOT": "No, Do Not Delete",
       "PENDING_CONFIRMATION": "Pending Confirmation",
       "POTENTIALLY_DESTRUCTIVE": "This is a potentially destructive action that affects ",
-      "SAVE_CHANGES": "Save Changes",
-      "SAVING": "Saving",
       "THIS_ACTION_CANNOT": "This action cannot be undone.",
       "YES_DELETE": "Yes, Delete"
     },
@@ -202,7 +211,6 @@
       "BUYER_PRICING": "Buyer Pricing",
       "BUYER_PRICING_INSTRUCTION": "You may use default pricing based on the buyer markup percentage set on the buyer edit page or you can create a new price schedule in your currency.",
       "BUYER_VISIBILITY": "Buyer Visibility",
-      "CANCEL": "Cancel",
       "CANCEL_OVERRIDE": "Cancel Override",
       "CATALOG": "Catalog",
       "CATALOG_ASSIGNMENT": "Catalog Assignment",

@@ -266,7 +266,7 @@ export class OCMCheckout implements OnInit {
         await this.context.order.reset() // get new current order
         this.isLoading = false
         this.toastrService.success('Order submitted successfully', 'Success')
-        this.context.router.toMyOrderDetails(this.order.ID)
+        this.context.router.toMyOrderDetails(order.ID)
       } catch (e) {
         await this.handleSubmitError(e)
       }
@@ -284,7 +284,7 @@ export class OCMCheckout implements OnInit {
         PaymentMethod: payment?.CreditCardID ? 'Credit Card' : 'Purchase Order'
       }
     }
-    await Orders.Patch('Outgoing', order.ID, patchObj)
+    await this.checkout.patch(patchObj, order.ID)
   }
 
   async handleSubmitError(exception: AxiosError): Promise<void> {

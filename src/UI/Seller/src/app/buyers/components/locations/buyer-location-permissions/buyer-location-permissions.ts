@@ -1,12 +1,10 @@
 import { Component, Input } from '@angular/core'
-import { UserGroupAssignment, User, ListPage, ApprovalRule } from '@ordercloud/angular-sdk'
+import { UserGroupAssignment, User, ListPage} from '@ordercloud/angular-sdk'
 import { BuyerLocationService } from '../buyer-location.service'
 import { REDIRECT_TO_FIRST_PARENT } from '@app-seller/layout/header/header.config'
 import { PermissionTypes } from '../buyer-location-permissions/buyer-location-permissions.constants'
 import { BuyerUserService } from '../../users/buyer-user.service'
 import { PermissionType } from '@app-seller/models/user.types'
-import { ApprovalRules } from 'ordercloud-javascript-sdk'
-import { TranslateService } from '@ngx-translate/core'
 
 @Component({
   selector: 'buyer-location-permissions',
@@ -23,8 +21,6 @@ export class BuyerLocationPermissions {
   _locationID: string
   permissionTypes: PermissionType[] = PermissionTypes
   requestedUserConfirmation = false
-  locationApprovals: ListPage<ApprovalRule>
-  locationApprovalsTooltip: string
 
   @Input()
   set locationID(value: string) {
@@ -37,8 +33,7 @@ export class BuyerLocationPermissions {
 
   constructor(
     private buyerLocationService: BuyerLocationService,
-    private buyerUserService: BuyerUserService,
-    private translate: TranslateService
+    private buyerUserService: BuyerUserService
   ) {}
 
   async changePage(page: number): Promise<void> {
@@ -51,25 +46,11 @@ export class BuyerLocationPermissions {
   }
 
   async updateUserPermissionAssignments(locationID: string): Promise<void> {
-    const buyerID = locationID.split("-")[0]
-    const [approvals, assignments] = await Promise.all([
-      ApprovalRules.List(buyerID, {filters: {"ApprovingGroupID": `${locationID}-OrderApprover`}}),
-      this.buyerLocationService.getLocationPermissions(locationID)
-    ])
-    this.locationApprovalsTooltip = approvals?.Items?.length < 1 ? 
-    this.translate.instant('ADMIN.PERMISSIONS.LOCATION_APPROVAL_TOOLTIP') : ''
-    this.locationApprovals = approvals
-    this.locationPermissionsAssigmentsEditable = assignments
+    this.locationPermissionsAssigmentsEditable = await  this.buyerLocationService.getLocationPermissions(locationID)
     this.locationPermissionsAssigmentsStatic = JSON.parse(
       JSON.stringify(this.locationPermissionsAssigmentsEditable)
     )
     this.checkForUserUserGroupAssignmentChanges()
-  }
-
-  isPermissionDisabled(userGroupSuffix: string, userID: string) {
-    return (userGroupSuffix === 'OrderApprover' && 
-      this.locationApprovals?.Items?.length < 1 && 
-      !this.isAssigned(userID, userGroupSuffix))
   }
 
   toggleUserUserGroupAssignment(userID: string, userGroupSuffix: string): void {

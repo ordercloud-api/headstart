@@ -17,8 +17,8 @@
     >
       {{
         areChanges
-          ? ('ADMIN.DELETE.DISCARD_CHANGES' | translate)
-          : ('ADMIN.DELETE.NO_CHANGES' | translate)
+          ? ('ADMIN.COMMON.DISCARD_CHANGES' | translate)
+          : ('ADMIN.COMMON.NO_CHANGES' | translate)
       }}
     </button>
     <button
@@ -35,7 +35,7 @@
       (click)="emitSave()"
       translate
     >
-      ADMIN.DELETE.CONFIRM
+      ADMIN.COMMON.CONFIRM
     </button>
   </div>
   <div *ngIf="areChanges && showConfirm" class="mt-3 pb-3 border-top">
