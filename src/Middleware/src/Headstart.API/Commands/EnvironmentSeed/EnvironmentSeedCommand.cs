@@ -84,7 +84,6 @@ namespace Headstart.API.Commands
 
             await CreateOrUpdateSecurityProfiles(orgToken);
             await CreateOnlyOnceBuyers(seed, orgToken);
-            await CreateOnlyOnceAnonBuyerConfig(seed, orgToken);
 
             await CreateOnlyOnceApiClients(seed, orgToken);
             await CreateOrUpdateSecurityProfileAssignments(seed, orgToken);
@@ -431,7 +430,7 @@ namespace Headstart.API.Commands
             var integrationsClientRequest = CreateOrGetApiClient(existingClients, SeedConstants.IntegrationsClient(), token);
             var sellerClientRequest = CreateOrGetApiClient(existingClients, SeedConstants.SellerClient(), token);
             var buyerClientRequest = CreateOrGetBuyerClient(existingClients, SeedConstants.BuyerClient(seed), seed, token);
-            var buyerLocalClientRequest = CreateOrGetBuyerClient(existingClients, SeedConstants.BuyerLocalClient(seed), seed, token);
+            var buyerLocalClientRequest = CreateOrGetApiClient(existingClients, SeedConstants.BuyerLocalClient(seed), token);
 
             await Task.WhenAll(integrationsClientRequest, sellerClientRequest, buyerClientRequest, buyerLocalClientRequest);
         }
@@ -442,8 +441,8 @@ namespace Headstart.API.Commands
             if (match == null)
             {
 
-                var apiClient = await _oc.ApiClients.CreateAsync(client, token);
                 await CreateOnlyOnceAnonBuyerConfig(seed, token);
+                var apiClient = await _oc.ApiClients.CreateAsync(client, token);
                 return apiClient;
             }
             return match;

@@ -506,7 +506,6 @@ export abstract class ResourceCrudService<ResourceType> {
     resourceUpdate: ResourceUpdate,
     resourceToUpdate: T
   ): T {
-    debugger
     const updatedResourceCopy: any = this.copyResource(resourceToUpdate)
     const update = _set(
       updatedResourceCopy,
