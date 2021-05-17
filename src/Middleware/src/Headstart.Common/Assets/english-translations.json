@@ -26,6 +26,9 @@
         "THRESHOLD_LABEL": "Order Total Threshold"
       }
     },
+    "BUYER_USERS": {
+      "NO_ADDRESS_ASSIGNMENT": "This user has not been assigned to any buyer addresses."
+    },
     "COMMON": {
       "ACCOUNT_LOGIN": "Account Login",
       "CONFIRM_PASSWORD": "Confirm Password",
@@ -203,6 +206,7 @@
       "ADD_ASSIGNMENT": "Add Assignment",
       "ADD_NEW_BREAK": "Add New Break",
       "ADD_VARIATION": "Add Variation",
+      "APPLY_INFO_TEXT": "In order to apply price breaks across variations, the product must have at least 1 variation.",
       "APPLY_ACROSS_VARIATIONS": "Apply Price Breaks Across Variations",
       "APPLY_INDIVIDUAL_VARIATIONS": "Apply Price Breaks to Individual Variations",
       "ARTWORK_REQUIRED": "This product uses a variable print template for fulfillment",
@@ -346,6 +350,7 @@
       "SIZE_TIER_INFO": "Choose approximately how many units of this product fit in a 22inch x 22inch x22inch box.",
       "SKU": "SKU",
       "SKUS_VARY": "SKUs vary based on this variation",
+      "SPEC_ISSUE": "Every variation must have at least one option.",
       "STANDARD": "Standard",
       "SUPPLIER_PRICING": "Supplier Pricing (In Supplier Currency)",
       "TAX_CATEGORY": "Category",
@@ -361,6 +366,7 @@
       "VARIANTS": "Variants",
       "VARIANTS_LIMIT_100": "variants. (Limit 100)",
       "VARIANTS_LOWERCASE": "variants",
+      "VARIANTS_WEARNING": "Set a product sku before creating product variants.",
       "VARIATION": "Variation",
       "VARIATION_ISSUES": "There are problems with the product variations.",
       "VISIBLE": "Visible",
