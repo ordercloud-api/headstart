@@ -11,6 +11,7 @@ namespace CardConnect.Tests
     {
         private HttpTest _http;
         private OrderCloudIntegrationsCardConnectService _service;
+        private OrderCloudIntegrationsCardConnectService _service_no_config;
 
         [SetUp]
         public void Setup()
@@ -18,10 +19,14 @@ namespace CardConnect.Tests
             _http = new HttpTest();
             _service = new OrderCloudIntegrationsCardConnectService(new OrderCloudIntegrationsCardConnectConfig()
             {
-                Authorization = "",
+                Authorization = "Authorization",
                 Site = "fts-uat",
                 BaseUrl = "cardconnect.com"
-            }, new PerBaseUrlFlurlClientFactory());
+            },
+            AppEnvironment.Test.ToString(),
+            new PerBaseUrlFlurlClientFactory());
+
+            _service_no_config = new OrderCloudIntegrationsCardConnectService(new OrderCloudIntegrationsCardConnectConfig() { }, AppEnvironment.Test.ToString(), new PerBaseUrlFlurlClientFactory());
         }
 
         [TearDown]
@@ -38,6 +43,20 @@ namespace CardConnect.Tests
 
             var amex = "373485467448025".ToCreditCardDisplay();
             Assert.AreEqual("8025", amex);
+        }
+
+        [Test]
+        public void verify_mock_responses_Auth()
+        {
+            var response = _service_no_config.AuthWithCapture(new CardConnectAuthorizationRequest() { amount= "10000" });
+            Assert.AreEqual("Mock Response", response.Result.commcard);
+        }
+
+        [Test]
+        public void verify_mock_responses_Tokenize()
+        {
+            var response = _service_no_config.Tokenize(new CardConnectAccountRequest() { account = "super_sweet_account" });
+            Assert.AreEqual("Mock CardConnect account response", response.Result.message);
         }
 
         [Test]
