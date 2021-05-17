@@ -1004,6 +1004,7 @@
       "SET_THRESHOLD": "You have the ability to set an order total above which orders will require approval for the users indicated above.",
       "SOME_ORDERS": "Only Orders Over Threshold",
       "THRESHOLD": "Order Approval Threshold",
+      "APPROVAL_ENABLED": "Approval Enabled",
       "USER": "User",
       "USER_IS_ADMINISTRATOR": "You are an approval rule administrator but you are not currently a part of any locations. When you join a location you can assign approval permissions here.",
       "WARNING": "This is a potentially destructive action that affects order approvals."

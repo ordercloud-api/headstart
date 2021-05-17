@@ -35,6 +35,7 @@ import Tokens from './Tokens';
 import Upload from './Upload';
 import Assets from './Assets';
 import Services from './Service';
+import ApprovalRules from './ApprovalRules';
 
 export { HeadStartSDK }
 
@@ -75,7 +76,8 @@ const HeadStartSDK: HeadStartSDK = {
     Auth: new Auth(),
     Tokens: new Tokens(),
     Upload: new Upload(),
-    Services: new Services()
+    Services: new Services(),
+    ApprovalRules: new ApprovalRules()
 }
 
 interface HeadStartSDK {
@@ -115,5 +117,6 @@ interface HeadStartSDK {
     Auth: Auth,
     Tokens: Tokens,
     Upload: Upload,
-    Services: Services
+    Services: Services,
+    ApprovalRules: ApprovalRules
 }
