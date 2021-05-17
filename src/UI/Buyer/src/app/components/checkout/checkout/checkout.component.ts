@@ -260,9 +260,7 @@ export class OCMCheckout implements OnInit {
           this.order.ID,
           payment
         )
-        //  Must only patch order AFTER order has been submitted
-        //  to prevent order worksheet data from being cleared.
-        await this.patchSubmittedOrder(order, comment, payment)
+        await this.checkout.patch({Comments: comment}, order.ID)
         await this.context.order.reset() // get new current order
         this.isLoading = false
         this.toastrService.success('Order submitted successfully', 'Success')
@@ -271,20 +269,6 @@ export class OCMCheckout implements OnInit {
         await this.handleSubmitError(e)
       }
     }
-  }
-
-  async patchSubmittedOrder(
-    order: HSOrder, 
-    comment: string, 
-    payment: OrderCloudIntegrationsCreditCardPayment) {
-    const patchObj = {
-      Comments: comment,
-      xp: {
-        HasSellerProducts: this.lineItems?.Items?.some((li) => li.SupplierID === null),
-        PaymentMethod: payment?.CreditCardID ? 'Credit Card' : 'Purchase Order'
-      }
-    }
-    await this.checkout.patch(patchObj, order.ID)
   }
 
   async handleSubmitError(exception: AxiosError): Promise<void> {

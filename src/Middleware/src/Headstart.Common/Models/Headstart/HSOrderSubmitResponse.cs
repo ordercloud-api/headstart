@@ -31,6 +31,7 @@ namespace Headstart.Models.Headstart
     [JsonConverter(typeof(StringEnumConverter))]
     public enum ProcessType
     {
+        Patching,
         Forwarding,
         Notification,
         Accounting,
