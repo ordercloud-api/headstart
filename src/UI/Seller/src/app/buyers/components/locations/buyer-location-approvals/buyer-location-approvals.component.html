@@ -10,7 +10,7 @@
             class="btn btn-link"
             (click)="discardApprovalChanges()"
           >
-            {{ areChanges ? 'ADMIN.COMMON.CANCEL' : 'ADMIN.COMMON.NO_CHANGES' | translate }}
+            {{ (areChanges ? 'ADMIN.COMMON.CANCEL' : 'ADMIN.COMMON.NO_CHANGES') | translate }}
           </button>
           <button
             *ngIf="areChanges"
@@ -19,8 +19,8 @@
             (click)="saveChanges()"
           >
             {{
-              requestedUserConfirmation ? 
-              'ADMIN.DELETE.PENDING_CONFIRMATION' : 'ADMIN.COMMON.SAVE_CHANGES' | translate
+              (requestedUserConfirmation ? 
+              'ADMIN.DELETE.PENDING_CONFIRMATION' : 'ADMIN.COMMON.SAVE_CHANGES') | translate
             }}
           </button>
           <button
