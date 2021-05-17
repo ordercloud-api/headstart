@@ -147,14 +147,18 @@ export class ProductVariations implements OnChanges {
         this.superProductEditable || this.productService.emptyResource
       )
       // Remove all specs that are *not* variable text specs
-      updateProductResourceCopy.Specs = updateProductResourceCopy.Specs.filter(
-        (s) => s.AllowOpenText
-      )
+      updateProductResourceCopy.Specs = updateProductResourceCopy.Specs.filter((s) => s.AllowOpenText)
       updateProductResourceCopy.Variants = []
       this.superProductEditable = updateProductResourceCopy
-      this.checkForSpecChanges()
       this.productVariationsChanged.emit(this.superProductEditable)
+    } else {
+      this.superProductEditable.Variants = this.superProductStatic.Variants
+      this.superProductEditable.Specs = [
+        ...(this.superProductStatic?.Specs || []),
+        ...(this.superProductEditable?.Specs?.filter((s) => s.AllowOpenText) || []),
+      ]
     }
+    this.checkForSpecChanges()
     this.editSpecs = !this.editSpecs
   }
 
