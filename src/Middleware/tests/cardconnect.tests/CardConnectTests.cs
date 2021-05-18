@@ -48,7 +48,7 @@ namespace CardConnect.Tests
         [Test]
         public void verify_mock_responses_Auth()
         {
-            var response = _service_no_config.AuthWithCapture(new CardConnectAuthorizationRequest() { amount= "10000" });
+            var response = _service_no_config.AuthWithCapture(new CardConnectAuthorizationRequest() { amount = "10000" });
             Assert.AreEqual("Mock Response", response.Result.commcard);
         }
 

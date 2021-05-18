@@ -15,7 +15,7 @@ namespace ordercloud.integrations.cardconnect
         Task<CardConnectVoidResponse> VoidAuthorization(CardConnectVoidRequest request);
     }
 
-    public class OrderCloudIntegrationsCardConnectConfig 
+    public class OrderCloudIntegrationsCardConnectConfig
     {
         public string Site { get; set; }
         public string BaseUrl { get; set; }
@@ -38,7 +38,7 @@ namespace ordercloud.integrations.cardconnect
         {
             Config = config;
             // if no credentials are provided in Test and UAT, responses will be mocked.
-            noAccountCredentials = config == null || (config?.Authorization == null && config.AuthorizationCad == null) || (config?.Authorization == "" && config?.AuthorizationCad == "");
+            noAccountCredentials = string.IsNullOrEmpty(config?.Authorization) && string.IsNullOrEmpty(config?.AuthorizationCad);
             appEnvironment = (AppEnvironment)Enum.Parse(typeof(AppEnvironment), environment);
             _flurl = flurlFactory.Get($"https://{Config?.Site}.{Config?.BaseUrl}/");
         }
@@ -88,7 +88,7 @@ namespace ordercloud.integrations.cardconnect
                                .ReceiveJson<CardConnectVoidResponse>();
 
             }
-            
+
             if (attempt.WasSuccessful())
             {
                 return attempt;
@@ -166,7 +166,7 @@ namespace ordercloud.integrations.cardconnect
                                .ReceiveJson<CardConnectAuthorizationResponse>();
 
             }
-           
+
             if (attempt.WasSuccessful())
             {
                 return attempt;
