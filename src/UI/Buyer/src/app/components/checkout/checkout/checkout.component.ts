@@ -260,6 +260,8 @@ export class OCMCheckout implements OnInit {
           this.order.ID,
           payment
         )
+        //  Do all patching of order XP values in the OrderSubmit integration event
+        //  Patching order XP before order is submitted will clear out order worksheet data
         await this.checkout.patch({Comments: comment}, order.ID)
         await this.context.order.reset() // get new current order
         this.isLoading = false
