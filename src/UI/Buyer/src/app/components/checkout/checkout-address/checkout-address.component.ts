@@ -1,7 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
-import {
-  faQuestionCircle,
-} from '@fortawesome/free-solid-svg-icons'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import {
   Address,
   BuyerAddress,
@@ -34,6 +32,7 @@ export class OCMCheckoutAddress implements OnInit {
   @Input() lineItems: ListPage<LineItem>
   @Output() continue = new EventEmitter()
   @Output() handleOrderError = new EventEmitter()
+  @Output() handleDismissal = new EventEmitter()
   _addressError: string
   isAnon: boolean
 
@@ -52,13 +51,15 @@ export class OCMCheckoutAddress implements OnInit {
     private context: ShopperContextService,
     private spinner: NgxSpinnerService,
     private translate: TranslateService
-  ) { }
+  ) {}
 
   async ngOnInit(): Promise<void> {
-    this.isAnon = this.context.currentUser.isAnonymous();
-    this.tooltip = this.translate.instant('CHECKOUT.CHECKOUT_ADDRESS.BUYER_LOCATION_TOOLTIP')
-    if(this.isAnon) {
-      this.showNewAddress();
+    this.isAnon = this.context.currentUser.isAnonymous()
+    this.tooltip = this.translate.instant(
+      'CHECKOUT.CHECKOUT_ADDRESS.BUYER_LOCATION_TOOLTIP'
+    )
+    if (this.isAnon) {
+      this.showNewAddress()
     }
     this.spinner.hide()
     this.selectedShippingAddress = this.lineItems?.Items[0].ShippingAddress
@@ -82,6 +83,7 @@ export class OCMCheckoutAddress implements OnInit {
   handleFormDismissed(): void {
     this.showNewAddressForm = false
     this.selectedShippingAddress = this.lineItems?.Items[0].ShippingAddress
+    this.handleDismissal.emit()
   }
 
   onBuyerLocationChange(buyerLocationID: string): void {
@@ -102,10 +104,11 @@ export class OCMCheckoutAddress implements OnInit {
       pageSize: 100,
     }
     this.existingBuyerLocations = await this.context.addresses.listBuyerLocations(
-      listOptions, true
+      listOptions,
+      true
     )
     this.homeCountry = this.existingBuyerLocations?.Items[0]?.Country || 'US'
-    if( this.existingBuyerLocations?.Items?.length === 1) {
+    if (this.existingBuyerLocations?.Items?.length === 1) {
       this.selectedBuyerLocation = this.selectedShippingAddress = this.existingBuyerLocations.Items[0]
     }
   }
@@ -132,11 +135,19 @@ export class OCMCheckoutAddress implements OnInit {
     }
   }
 
-  async handleAnonShippingAddress(newShippingAddress: Address<any>): Promise<void> {
+  async handleAnonShippingAddress(
+    newShippingAddress: Address<any>
+  ): Promise<void> {
     if (newShippingAddress != null) {
-      this.selectedShippingAddress = await this.validateNewShippingAddress(newShippingAddress)
-    } if(this.selectedShippingAddress) {
-      this.context.order.checkout.setOneTimeAddress((this.selectedShippingAddress as Address), 'shipping')
+      this.selectedShippingAddress = await this.validateNewShippingAddress(
+        newShippingAddress
+      )
+    }
+    if (this.selectedShippingAddress) {
+      this.context.order.checkout.setOneTimeAddress(
+        this.selectedShippingAddress as Address,
+        'shipping'
+      )
       this.continue.emit()
     } else {
       // not able to create address - display suggestions to user
@@ -144,7 +155,9 @@ export class OCMCheckoutAddress implements OnInit {
     }
   }
 
-  async handleLoggedInShippingAddress(newShippingAddress: Address<any>): Promise<void> {
+  async handleLoggedInShippingAddress(
+    newShippingAddress: Address<any>
+  ): Promise<void> {
     if (!this.selectedBuyerLocation) {
       throw new Error('Please select a location for this order')
     }
@@ -179,10 +192,10 @@ export class OCMCheckoutAddress implements OnInit {
 
   private async ListAddressesForShipping() {
     const buyerLocationsFilter = {
-      filters: { Editable: 'false' }
+      filters: { Editable: 'false' },
     }
     const shippingAddressesFilter = {
-      filters: { Shipping: 'true' }
+      filters: { Shipping: 'true' },
     }
     const [buyerLocations, existingShippingAddresses] = await Promise.all([
       Me.ListAddresses(buyerLocationsFilter),
@@ -201,13 +214,17 @@ export class OCMCheckoutAddress implements OnInit {
       const savedAddress = await this.context.addresses.create(address)
       return savedAddress
     } catch (ex) {
-      return this.handleAddressError(ex);
+      return this.handleAddressError(ex)
     }
   }
 
-  private async validateNewShippingAddress(address: BuyerAddress): Promise<HSAddressBuyer> {
+  private async validateNewShippingAddress(
+    address: BuyerAddress
+  ): Promise<HSAddressBuyer> {
     try {
-      const validatedAddress = await this.context.addresses.validateAddress(address)
+      const validatedAddress = await this.context.addresses.validateAddress(
+        address
+      )
       return validatedAddress
     } catch (ex) {
       return this.handleAddressError(ex)
