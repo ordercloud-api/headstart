@@ -1,5 +1,5 @@
 <h4 class="mt-3" *ngIf="checkForParent()">
-  Add a Sub-Category to {{ _params }}
+  Add a Sub-Category to {{ getParentID() }}
 </h4>
 <form *ngIf="resourceForm" [formGroup]="resourceForm">
   <ng-container *ngFor="let field of _categoryFields">
@@ -7,7 +7,7 @@
       *ngIf="field.type === 'string' && field.field === 'ParentID' && _params"
       class="form-group"
     >
-      <label for="{{ field.field }}">{{ field.field | uncamel}}</label>
+      <label for="{{ field.field }}">{{ field.field | uncamel }}</label>
       <input
         maxlength="100"
         type="text"
@@ -17,7 +17,7 @@
         [resourceForm]="resourceForm"
         formControlName="{{ field.field }}"
         (input)="handleUpdateCategory($event)"
-        placeholder="Enter {{ field.field }}"
+        [placeholder]="getParentID()"
         readonly
       />
     </div>
@@ -25,7 +25,7 @@
       *ngIf="field.type === 'string' && field.field === 'ParentID' && !_params"
       class="form-group"
     >
-      <label for="{{ field.field }}">{{ field.field | uncamel}}</label>
+      <label for="{{ field.field }}">{{ field.field | uncamel }}</label>
       <input
         maxlength="100"
         type="text"
@@ -42,7 +42,7 @@
       *ngIf="field.type === 'string' && field.field === 'Description'"
       class="form-group"
     >
-      <label for="{{ field.field }}">{{ field.field | uncamel}}</label>
+      <label for="{{ field.field }}">{{ field.field | uncamel }}</label>
       <input
         maxlength="200"
         type="text"

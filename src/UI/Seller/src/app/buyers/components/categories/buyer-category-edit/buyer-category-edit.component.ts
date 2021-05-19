@@ -67,6 +67,17 @@ export class BuyerCategoryEditComponent {
     return endUrl.includes('new?')
   }
 
+  getParentID() {
+    const routeUrl = this.router.routerState.snapshot.url
+    const splitUrl = routeUrl.split('/')
+    const endUrl = splitUrl[splitUrl.length - 1]
+    if (endUrl.includes('new?')) {
+      return endUrl.split('=')[1]
+    } else {
+      ;('')
+    }
+  }
+
   buildForm(resource: Category): FormGroup {
     const formGroup = new FormGroup({})
     this._categoryFields?.forEach((item) => {
