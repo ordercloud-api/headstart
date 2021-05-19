@@ -389,13 +389,16 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     if (this.productService.checkIfCreatingNew()) {
       return false
     }
-    if (superHSProduct.Product?.DefaultSupplierID) {
-      if (
-        this.userContext?.Me?.Supplier?.ID ===
-        superHSProduct?.Product?.DefaultSupplierID
-      ) {
-        return false
-      }
+
+    if (!superHSProduct.Product?.DefaultSupplierID) {
+      return false
+    }
+
+    if (
+      this.userContext?.Me?.Supplier?.ID ===
+      superHSProduct?.Product?.DefaultSupplierID
+    ) {
+      return false
     }
     return true
   }
