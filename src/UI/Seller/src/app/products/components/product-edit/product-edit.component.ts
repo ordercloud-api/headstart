@@ -14,6 +14,7 @@ import {
   Address,
   SupplierAddresses,
   AdminAddresses,
+  MeUser,
 } from 'ordercloud-javascript-sdk'
 import {
   FormGroup,
@@ -48,6 +49,7 @@ import {
   TaxCode,
   AssetType,
   ImageAsset,
+  HSProduct,
 } from '@ordercloud/headstart-sdk'
 import { Location } from '@angular/common'
 import { TabIndexMapper, setProductEditTab } from './tab-mapper'
@@ -390,14 +392,19 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       return false
     }
 
-    if (!superHSProduct.Product?.DefaultSupplierID) {
+    const currentUser: MeUser = this.userContext.Me
+    const product: HSProduct = superHSProduct?.Product
+    const isSellerUser: boolean = this.userContext.UserType === 'SELLER'
+
+    if (!product?.DefaultSupplierID && isSellerUser) {
       return false
     }
 
-    if (
-      this.userContext?.Me?.Supplier?.ID ===
-      superHSProduct?.Product?.DefaultSupplierID
-    ) {
+    if (currentUser?.Supplier?.ID === product?.DefaultSupplierID) {
+      return false
+    }
+
+    if (isSellerUser && product?.OwnerID === currentUser?.Seller?.ID) {
       return false
     }
     return true
