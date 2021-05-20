@@ -134,40 +134,43 @@
             >
             </search-component>
           </div>
-          <div class="col-md-1 d-flex align-items-center">
-            <div class="d-flex justify-content-start align-items-center">
-              <div
-                *ngIf="filterForm"
-                class="icon-button ripple"
-                placement="{{
-                  screenSize === 'xs' && 'sm' && 'md' ? 'left' : 'bottom'
-                }}"
-                [ngbPopover]="filters"
-                autoClose="outside"
-                triggers="manual"
-                #popover="ngbPopover"
-                (click)="openPopover()"
-                popoverTitle="Filter"
-              >
-                <fa-layers class="fa-layers fa-fw">
-                  <fa-icon [icon]="faFilter"> </fa-icon>
-                  <fa-layers-counter
-                    *ngIf="activeFilterCount && activeFilterCount > 0"
-                    class="badge__counter--large layers-background"
-                    [content]="activeFilterCount"
-                  >
-                  </fa-layers-counter>
-                </fa-layers>
-              </div>
-              <div
-                *ngIf="filterForm && activeFilterCount > 0"
-                class="icon-button ripple"
-                (click)="clearAllFilters()"
-              >
-                <fa-icon [icon]="faTimes"></fa-icon>
+          <!-- Facet Popover -->
+          <ng-container *ngIf="activeFilterCount">
+            <div class="col-md-1 d-flex align-items-center">
+              <div class="d-flex justify-content-start align-items-center">
+                <div
+                  *ngIf="filterForm"
+                  class="icon-button ripple"
+                  placement="{{
+                    screenSize === 'xs' && 'sm' && 'md' ? 'left' : 'bottom'
+                  }}"
+                  [ngbPopover]="filters"
+                  autoClose="outside"
+                  triggers="manual"
+                  #popover="ngbPopover"
+                  (click)="openPopover()"
+                  popoverTitle="Filter"
+                >
+                  <fa-layers class="fa-layers fa-fw">
+                    <fa-icon [icon]="faFilter"> </fa-icon>
+                    <fa-layers-counter
+                      *ngIf="activeFilterCount && activeFilterCount > 0"
+                      class="badge__counter--large layers-background"
+                      [content]="activeFilterCount"
+                    >
+                    </fa-layers-counter>
+                  </fa-layers>
+                </div>
+                <div
+                  *ngIf="filterForm && activeFilterCount > 0"
+                  class="icon-button ripple"
+                  (click)="clearAllFilters()"
+                >
+                  <fa-icon [icon]="faTimes"></fa-icon>
+                </div>
               </div>
             </div>
-          </div>
+          </ng-container>
           <div class="col-md-6 d-flex align-items-center">
             <ng-content select=".actionBar"></ng-content>
           </div>
@@ -259,7 +262,7 @@
     </div>
   </div>
   <!-- /Filter Bar -->
-  <div class="row">
+  <div class="row mt-4">
     <div class="col-md-12">
       <!-- full table view -->
       <div *ngIf="showFilterBar()">
