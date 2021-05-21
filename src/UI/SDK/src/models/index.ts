@@ -56,7 +56,6 @@ export * from './HSUserGroup';
 export * from './HSVariant';
 export * from './HSVariantXp';
 export * from './LineItemClaim';
-export * from './LineItemProduct';
 export * from './LineItemStatusChange';
 export * from './LineItemStatusChanges';
 export * from './LineItemXp';

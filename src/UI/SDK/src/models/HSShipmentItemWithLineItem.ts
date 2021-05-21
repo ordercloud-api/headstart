@@ -1,5 +1,4 @@
-import { LineItem, LineItemSpec, LineItemVariant } from 'ordercloud-javascript-sdk';
-import { LineItemProduct } from './LineItemProduct';
+import { LineItem, LineItemSpec, LineItemVariant, LineItemProduct } from 'ordercloud-javascript-sdk';
 
 export interface HSShipmentItemWithLineItem {
     LineItem?: LineItem
