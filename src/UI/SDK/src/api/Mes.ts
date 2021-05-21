@@ -1,4 +1,3 @@
-import { HSMeKitProduct } from '../models/HSMeKitProduct';
 import { ListPageFacet } from '../models/ListPageFacet';
 import { HSMeProduct } from '../models/HSMeProduct';
 import { SuperHSMeProduct } from '../models/SuperHSMeProduct';
@@ -14,20 +13,9 @@ export default class Mes {
     * not part of public api, don't include in generated docs
     */
     constructor() {
-        this.GetMeKit = this.GetMeKit.bind(this);
         this.ListMeProducts = this.ListMeProducts.bind(this);
         this.GetSuperProduct = this.GetSuperProduct.bind(this);
         this.RequestProductInfo = this.RequestProductInfo.bind(this);
-    }
-
-   /**
-    * @param kitProductID ID of the kit product.
-    * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
-    */
-    public async GetMeKit(kitProductID: string,  accessToken?: string ): Promise<RequiredDeep<HSMeKitProduct>> {
-        const impersonating = this.impersonating;
-        this.impersonating = false;
-        return await httpClient.get(`/me/kitproducts/${kitProductID}`, { params: {  accessToken, impersonating } } );
     }
 
    /**

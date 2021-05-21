@@ -3,11 +3,11 @@ import { HSOrder } from '../models/HSOrder';
 import { LineItemStatusChanges } from '../models/LineItemStatusChanges';
 import { OrderDetails } from '../models/OrderDetails';
 import { HSLineItem } from '../models/HSLineItem';
-import { Order } from '../models/Order';
 import { ListPage } from '../models/ListPage';
 import { RequiredDeep } from '../models/RequiredDeep';
 import { ListArgs } from '../models/ListArgs'
 import httpClient from '../utils/HttpClient';
+import { Order } from 'ordercloud-javascript-sdk';
 
 export default class Orders {
     private impersonating:boolean = false;

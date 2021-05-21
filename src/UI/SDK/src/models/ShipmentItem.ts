@@ -1,6 +1,5 @@
+import { LineItemVariant, LineItemSpec } from 'ordercloud-javascript-sdk';
 import { LineItemProduct } from './LineItemProduct';
-import { LineItemVariant } from './LineItemVariant';
-import { LineItemSpec } from './LineItemSpec';
 
 export interface ShipmentItem {
     OrderID?: string

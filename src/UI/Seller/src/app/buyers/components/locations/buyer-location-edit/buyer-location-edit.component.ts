@@ -11,14 +11,13 @@ import {
   HSBuyerLocation,
   HSCatalog,
   HSCatalogAssignmentRequest,
-  OrderApproval,
 } from '@ordercloud/headstart-sdk'
 import { GeographyConfig } from '@app-seller/shared/models/supported-countries.constant'
 import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/catalogs-temp.service'
 import { REDIRECT_TO_FIRST_PARENT } from '@app-seller/layout/header/header.config'
 import { ResourceUpdate } from '@app-seller/models/shared.types'
 import { SupportedCountries } from '@app-seller/models/currency-geography.types'
-import { ApprovalRules } from 'ordercloud-javascript-sdk'
+import { ApprovalRules, OrderApproval } from 'ordercloud-javascript-sdk'
 @Component({
   selector: 'app-buyer-location-edit',
   templateUrl: './buyer-location-edit.component.html',
@@ -189,7 +188,8 @@ export class BuyerLocationEditComponent implements OnInit {
     try {
       this.dataIsSaving = true
       this.buyerLocationEditable.UserGroup.xp.Country = this.buyerLocationEditable.Address.Country
-      var assignments = this.resourceForm.controls['CatalogAssignments']?.value
+      const assignments = this.resourceForm.controls['CatalogAssignments']
+        ?.value
       this.buyerLocationEditable.UserGroup.xp.CatalogAssignments =
         assignments?.CatalogIDs
       const updatedBuyerLocation = await HeadStartSDK.BuyerLocations.Save(
@@ -265,19 +265,15 @@ export class BuyerLocationEditComponent implements OnInit {
   }
 
   handleUpdateApproval(event): void {
-    this.approvalRule = event;
+    this.approvalRule = event
   }
 
   private async handleSelectedAddressChange(address: Address): Promise<void> {
     const [hsBuyerLocation, approvalRules] = await Promise.all([
-      HeadStartSDK.BuyerLocations.Get(
-        this.buyerID,
-        address.ID
-      ),
-      ApprovalRules.List(
-        this.buyerID,
-        {filters: {'ApprovingGroupID': `${address.ID}-OrderApprover`}}
-        )
+      HeadStartSDK.BuyerLocations.Get(this.buyerID, address.ID),
+      ApprovalRules.List(this.buyerID, {
+        filters: { ApprovingGroupID: `${address.ID}-OrderApprover` },
+      }),
     ])
     this.approvalRule = approvalRules?.Items[0]
     this.refreshBuyerLocationData(hsBuyerLocation)

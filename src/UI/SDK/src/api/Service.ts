@@ -1,4 +1,4 @@
-import { ListPage, OrderApproval } from "../models";
+import { ListPage } from "../models";
 import { flatten, range } from 'lodash'
 import {ApprovalRule} from 'ordercloud-javascript-sdk'
 

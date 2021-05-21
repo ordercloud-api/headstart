@@ -1,8 +1,7 @@
+import { PriceSchedule, Spec } from 'ordercloud-javascript-sdk';
+import { ImageAsset } from './Asset';
 import { HSMeProduct } from './HSMeProduct';
-import { PriceSchedule } from './PriceSchedule';
-import { Spec } from './Spec';
 import { HSVariant } from './HSVariant';
-import { Asset } from './Asset';
 
 export interface SuperHSMeProduct {
     ID?: string
@@ -10,6 +9,6 @@ export interface SuperHSMeProduct {
     PriceSchedule?: PriceSchedule
     Specs?: Spec[]
     Variants?: HSVariant[]
-    Images?: Asset[]
-    Attachments?: Asset[]
+    Images?: ImageAsset[]
+    Attachments?: ImageAsset[]
 }

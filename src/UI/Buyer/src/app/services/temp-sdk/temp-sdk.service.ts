@@ -4,9 +4,7 @@ import { ListPageWithFacets, Tokens } from 'ordercloud-javascript-sdk'
 import {
   ListArgs,
   HSOrder,
-  HSKitProduct,
   SuperHSMeProduct,
-  SupplierFilterConfigDocument,
   HSMeProduct,
 } from '@ordercloud/headstart-sdk'
 import { ListPage } from '@ordercloud/headstart-sdk'
@@ -52,13 +50,6 @@ export class TempSdk {
       .toPromise()
   }
 
-  async getMeKitProduct(id: string): Promise<HSKitProduct> {
-    const url = `${this.appConfig.middlewareUrl}/me/kitproducts/${id}`
-    return await this.http
-      .get<HSKitProduct>(url, { headers: this.buildHeaders() })
-      .toPromise()
-  }
-
   async getMeProduct(id: string): Promise<SuperHSMeProduct> {
     const url = `${this.appConfig.middlewareUrl}/me/products/${id}`
     return await this.http
@@ -66,12 +57,10 @@ export class TempSdk {
       .toPromise()
   }
 
-  async getSupplierFilterConfig(): Promise<
-    ListPage<SupplierFilterConfigDocument>
-  > {
+  async getSupplierFilterConfig(): Promise<ListPage<any>> {
     const url = `${this.appConfig.middlewareUrl}/supplierfilterconfig`
     return await this.http
-      .get<ListPage<SupplierFilterConfigDocument>>(url, {
+      .get<ListPage<any>>(url, {
         headers: this.buildHeaders(),
       })
       .toPromise()
@@ -84,9 +73,7 @@ export class TempSdk {
       .toPromise()
   }
 
-  async applyAutomaticPromotionsToOrder(
-    orderID: string
-  ): Promise<HSOrder> {
+  async applyAutomaticPromotionsToOrder(orderID: string): Promise<HSOrder> {
     const url = `${this.appConfig.middlewareUrl}/order/${orderID}/applypromotions`
     return await this.http
       .post<HSOrder>(url, { headers: this.buildHeaders() })

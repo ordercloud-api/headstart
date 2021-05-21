@@ -1,8 +1,5 @@
+import { LineItem, Payment, OrderApproval, OrderPromotion } from 'ordercloud-javascript-sdk';
 import { HSOrder } from './HSOrder';
-import { LineItem } from './LineItem';
-import { OrderPromotion } from './OrderPromotion';
-import { Payment } from './Payment';
-import { OrderApproval } from './OrderApproval';
 
 export interface OrderDetails {
     Order?: HSOrder
