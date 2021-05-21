@@ -230,7 +230,12 @@ namespace Headstart.API.Commands
             await Task.WhenAll(sellerSecurityProfileAssignmentRequests);
 
             // assign full access security profile to default admin user
-            var defaultAdminUser = (await _oc.AdminUsers.ListAsync(accessToken: orgToken)).Items.First(u => u.Username == SeedConstants.SellerUserName);
+            var adminUsersList = await _oc.AdminUsers.ListAsync(filters: new { Username = SeedConstants.SellerUserName }, accessToken: orgToken);
+            var defaultAdminUser = adminUsersList.Items.FirstOrDefault();
+            if(defaultAdminUser == null)
+            {
+                throw new Exception($"Unable to find default admin user (username: {SeedConstants.SellerUserName}");
+            }
             await _oc.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment()
             {
                 SecurityProfileID = SeedConstants.FullAccessSecurityProfile,
@@ -411,7 +416,7 @@ namespace Headstart.API.Commands
         {
             var list = await _oc.ApiClients.ListAllAsync<HSApiClient>(accessToken: token);
             return list
-                .Where(client => client.xp.IsStorefront = true) // can't index ApiClients so we need to filter client-side
+                .Where(client => client?.xp?.IsStorefront == true) // can't index ApiClients so we need to filter client-side
                 .Select(client => client.ID).ToArray();
         }
 

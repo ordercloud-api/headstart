@@ -85,9 +85,8 @@ namespace Headstart.API.Commands
                 // ordercloud validates the same stuff that would be checked on order submit
                 await _oc.Orders.ValidateAsync(OrderDirection.Incoming, worksheet.Order.ID);
             } catch(OrderCloudException ex) {
-                // this error is expected and will be resolved before oc order submit call happens
-                // in a non-seb flow this could be removed because we'd auth the payment which would mark it as accepted
-                // before it even hits the submit endpoint
+                // credit card payments aren't accepted yet, so ignore this error for now
+                // we'll accept the payment once the credit card auth goes through (before order submit)
                 var errors = ex.Errors.Where(ex => ex.ErrorCode != "Order.CannotSubmitWithUnaccceptedPayments");
                 if(errors.Any())
                 {
