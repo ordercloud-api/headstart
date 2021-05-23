@@ -103,7 +103,7 @@ jobs:
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Buyer Artifacts'
       inputs:
-        PathtoPublish: 'src/UI/Buyer/dist/default-components'
+        PathtoPublish: 'src/UI/Buyer/dist'
         ArtifactName: buyer
   - job: Build_Seller
     displayName: Build Seller
