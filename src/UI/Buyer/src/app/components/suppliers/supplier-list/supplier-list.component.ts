@@ -11,7 +11,6 @@ import { FormControl, FormGroup } from '@angular/forms'
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap'
 import { takeWhile } from 'rxjs/operators'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
-import { SupplierFilterConfig } from '@ordercloud/headstart-sdk/dist/models'
 import {
   BuyerAppFilterType,
   SupplierFilters,
@@ -23,7 +22,7 @@ import {
 })
 export class OCMSupplierList implements OnChanges, OnDestroy {
   @Input() suppliers: ListPage<Supplier>
-  _supplierFilterConfig: SupplierFilterConfig[]
+  _supplierFilterConfig: any[]
   @ViewChild('popover', { static: false }) public popover: NgbPopover
   alive = true
   searchTermForSuppliers: string = null
@@ -36,7 +35,7 @@ export class OCMSupplierList implements OnChanges, OnDestroy {
 
   constructor(private context: ShopperContextService) {}
 
-  @Input() set supplierFilterConfig(value: SupplierFilterConfig[]) {
+  @Input() set supplierFilterConfig(value: any[]) {
     this._supplierFilterConfig = value
     this.setForm()
     this.context.supplierFilters.activeFiltersSubject

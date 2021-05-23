@@ -1,9 +1,4 @@
+import { Supplier } from 'ordercloud-javascript-sdk';
 import { SupplierXp } from './SupplierXp';
 
-export interface HSSupplier {
-    xp?: SupplierXp
-    ID?: string
-    Name?: string
-    Active?: boolean
-    readonly DateCreated?: string
-}
+export type HSSupplier = Supplier<SupplierXp>

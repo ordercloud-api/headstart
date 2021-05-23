@@ -1,8 +1,8 @@
 import axios from 'axios'
 import { AccessToken } from '../models/AccessToken'
 import Configuration from '../configuration'
-import { SecurityProfile } from '../models/SecurityProfile'
 import serialize from '../utils/paramsSerializer'
+import { ApiRole } from 'ordercloud-javascript-sdk'
 
 export default class Auth {
   constructor() {
@@ -38,7 +38,7 @@ export default class Auth {
     username: string,
     password: string,
     clientID: string,
-    scope: Array<SecurityProfile['Roles']>
+    scope: ApiRole[]
   ): Promise<AccessToken> {
     const body = {
       grant_type: 'password',
@@ -77,7 +77,7 @@ export default class Auth {
     username: string,
     password: string,
     clientID: string,
-    scope: Array<SecurityProfile['Roles']>
+    scope: ApiRole[]
   ): Promise<AccessToken> {
     const body = {
       grant_type: 'password',
@@ -113,7 +113,7 @@ export default class Auth {
   public async ClientCredentials(
     clientSecret: string,
     clientID: string,
-    scope: Array<SecurityProfile['Roles']>
+    scope: ApiRole[]
   ): Promise<AccessToken> {
     const body = {
       grant_type: 'client_credentials',
@@ -176,7 +176,7 @@ export default class Auth {
    */
   public async Anonymous(
     clientID: string,
-    scope: Array<SecurityProfile['Roles']>
+    scope: ApiRole[]
   ): Promise<AccessToken> {
     const body = {
       grant_type: 'client_credentials',

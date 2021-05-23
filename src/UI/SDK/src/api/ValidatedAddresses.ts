@@ -1,8 +1,6 @@
-import { Address } from '../models/Address';
-import { BuyerAddress } from '../models/BuyerAddress';
-import { Order } from '../models/Order';
+import { Address } from 'node:cluster';
+import { BuyerAddress, Order } from 'ordercloud-javascript-sdk';
 import { RequiredDeep } from '../models/RequiredDeep';
-import { ListArgs } from '../models/ListArgs'
 import httpClient from '../utils/HttpClient';
 
 export default class ValidatedAddresses {

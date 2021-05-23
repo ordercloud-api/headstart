@@ -34,8 +34,8 @@ export class BuyerVisibilityConfiguration {
     this.fetchData()
   }
 
-  _product: HSProduct = {}
-  _buyer: HSBuyer = {}
+  _product: HSProduct = {} as HSProduct
+  _buyer: HSBuyer = {} as HSBuyer
 
   addCatalogAssignments: ProductAssignment[] = []
   delCatalogAssignments: ProductAssignment[] = []
@@ -105,7 +105,6 @@ export class BuyerVisibilityConfiguration {
       await cb(array[i], i, array)
     }
   }
-
 
   async toggleProductCatalogAssignment(catalog: UserGroup) {
     if (this.isAssigned(catalog.ID)) {

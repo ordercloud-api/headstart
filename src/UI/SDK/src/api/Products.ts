@@ -1,10 +1,10 @@
 import { ListPage } from '../models/ListPage';
 import { SuperHSProduct } from '../models/SuperHSProduct';
 import { HSPriceSchedule } from '../models/HSPriceSchedule';
-import { Product } from '../models/Product';
 import { RequiredDeep } from '../models/RequiredDeep';
 import { ListArgs } from '../models/ListArgs'
 import httpClient from '../utils/HttpClient';
+import { Product } from 'ordercloud-javascript-sdk';
 
 export default class Products {
     private impersonating:boolean = false;
