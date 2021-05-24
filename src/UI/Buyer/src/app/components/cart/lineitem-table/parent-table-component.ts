@@ -17,10 +17,6 @@ export abstract class OCMParentTableComponent implements OnInit {
     this._lineItems = lineItems
     this.initLineItems() // if line items change we need to regroup them
   }
-  @Input() set groupByKits(bool: boolean) {
-    this._groupByKits = bool
-    this.initLineItems()
-  }
 
   @Input() supplierData: LineItemGroupSupplier[]
   @Input() readOnly: boolean
@@ -35,7 +31,6 @@ export abstract class OCMParentTableComponent implements OnInit {
   selectedSupplier: LineItemGroupSupplier
   liGroupedByShipFrom: HSLineItem[][]
   updatingLiIDs: string[] = []
-  _groupByKits: boolean
   _lineItems: HSLineItem[] = []
   _orderCurrency: string
   _changedLineItemID: string
@@ -111,10 +106,7 @@ export abstract class OCMParentTableComponent implements OnInit {
   }
 
   groupLineItemsByShipFrom(lineItems: HSLineItem[]): HSLineItem[][] {
-    const supplierLineItems = this._groupByKits
-      ? lineItems.filter((li) => !li.xp.KitProductID)
-      : lineItems
-    const liGroups = _groupBy(supplierLineItems, (li) => li.ShipFromAddressID)
+    const liGroups = _groupBy(lineItems, (li) => li.ShipFromAddressID)
     return Object.values(liGroups).sort((a, b) => {
       const nameA = a[0]?.ShipFromAddressID?.toUpperCase() // ignore upper and lowercase
       const nameB = b[0]?.ShipFromAddressID?.toUpperCase() // ignore upper and lowercase
