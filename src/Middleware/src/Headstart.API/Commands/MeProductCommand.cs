@@ -70,7 +70,7 @@ namespace Headstart.API.Commands
 			var exchangeRates = await exchangeRatesRequest;
 
 			var markedupProduct = ApplyBuyerProductPricing(superHsProduct.Product, defaultMarkupMultiplier, exchangeRates);
-			var productCurrency = superHsProduct.Product.xp.Currency;
+			var productCurrency = superHsProduct.Product.xp.Currency ?? CurrencySymbol.USD;
 			var markedupSpecs = ApplySpecMarkups(superHsProduct.Specs.ToList(), productCurrency, exchangeRates);
 		
 			superHsProduct.Product = markedupProduct;
