@@ -1,20 +1,24 @@
 @charset 'UTF-8';
 
-// Theme Variables - must come before vendor
+// Required Bootstrap First
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+// Custom Theme Variable Overrides
 @import '_theme_variables';
 
 // Vendors
-@import '../../vendor/bootstrap', 
-        '../../vendor/normalize', 
+@import '../../vendor/bootstrap',
         '../../vendor/ngx-toastr';
 
-// Theme Styles
+// Custom Theme Styles
 @import '_theme_styles';
 
 // Abstracts
-@import '../../abstracts/custom-utilities', 
-        '../../abstracts/variables', 
-        '../../abstracts/functions', 
+@import '../../abstracts/custom-utilities',
+        '../../abstracts/variables',
+        '../../abstracts/functions',
         '../../abstracts/mixins';
 
 // Scaffolding
@@ -22,18 +26,18 @@
         '../../base/animations';
 
 // Layout
-@import '../../layout/header', 
+@import '../../layout/header',
         '../../layout/footer';
 
 // Components
-@import '../../components/buttons', 
+@import '../../components/buttons',
         '../../components/_cards',
-        '../../components/_card-ribbon', 
-        '../../components/chip', 
-        '../../components/_forms', 
-        '../../components/_product-list', 
-        '../../components/_list-items.scss', 
-        '../../components/_carousel-arrow.scss', 
+        '../../components/_card-ribbon',
+        '../../components/chip',
+        '../../components/_forms',
+        '../../components/_product-list',
+        '../../components/_list-items.scss',
+        '../../components/_carousel-arrow.scss',
         '../../components/_modal.scss';
 
 // Pages
@@ -43,6 +47,6 @@
 
 /*******************************************************************************************************************************
     Keep this file clear of styling declarations!
-    Drop them into _components, the actual component scss file, 
+    Drop them into _components, the actual component scss file,
     or _shame.scss if you need to just kick the can down the road!
 ******************************************************************************************************************************/
