@@ -59,8 +59,5 @@ export interface LineItemToAdd {
   Price: number // adding for display purposes
   xp: {
     ImageUrl: string
-    KitProductName: string
-    KitProductImageUrl: string
-    KitProductID: string
   }
 }

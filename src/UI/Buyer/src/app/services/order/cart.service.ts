@@ -1,5 +1,12 @@
 import { Injectable } from '@angular/core'
-import { Orders, LineItems, Me, LineItemSpec, Order, LineItem } from 'ordercloud-javascript-sdk'
+import {
+  Orders,
+  LineItems,
+  Me,
+  LineItemSpec,
+  Order,
+  LineItem,
+} from 'ordercloud-javascript-sdk'
 import { Subject } from 'rxjs'
 import { OrderStateService } from './order-state.service'
 import { isUndefined as _isUndefined } from 'lodash'
@@ -17,9 +24,7 @@ import { CurrentUserService } from '../current-user/current-user.service'
 })
 export class CartService {
   public onAdd = new Subject<HSLineItem>() // need to make available as observable
-  public onChange: (
-    callback: (lineItems: ListPage<HSLineItem>) => void
-  ) => void
+  public onChange: (callback: (lineItems: ListPage<HSLineItem>) => void) => void
   private initializingOrder = false
   public isCartValidSubject = new Subject<boolean>()
 
@@ -75,30 +80,13 @@ export class CartService {
       // Handle quantity changes for non-print products
       if (!isPrintProduct) {
         const lineItems = this.state.lineItems.Items
-        if (lineItem?.xp?.KitProductID) {
-          // Kit product line item quantity changes
-          const kitLiWithSameProduct = lineItems.find(
-            (li) =>
-              li.ProductID === lineItem.ProductID &&
-              li?.xp?.KitProductID === lineItem?.xp?.KitProductID
-          )
-          if (
-            kitLiWithSameProduct &&
-            this.hasSameSpecs(lineItem, kitLiWithSameProduct)
-          ) {
-            // combine any line items that have the same productID/specs into one line item
-            lineItem.Quantity += kitLiWithSameProduct.Quantity
-          }
-        } else {
-          // Non-kit product line item quantity changes
-          const lineItemWithMatchingSpecs = lineItems.find(
-            (li) =>
-              li.ProductID === lineItem.ProductID &&
-              this.hasSameSpecs(lineItem, li)
-          )
-          if (lineItemWithMatchingSpecs) {
-            lineItem.Quantity += lineItemWithMatchingSpecs.Quantity
-          }
+        const lineItemWithMatchingSpecs = lineItems.find(
+          (li) =>
+            li.ProductID === lineItem.ProductID &&
+            this.hasSameSpecs(lineItem, li)
+        )
+        if (lineItemWithMatchingSpecs) {
+          lineItem.Quantity += lineItemWithMatchingSpecs.Quantity
         }
       }
       return await this.upsertLineItem(lineItem)
@@ -120,7 +108,6 @@ export class CartService {
     } finally {
       this.initializingOrder = false
     }
-
   }
 
   async remove(lineItemID: string): Promise<void> {
@@ -140,9 +127,7 @@ export class CartService {
     return Promise.all(req)
   }
 
-  async setQuantity(
-    lineItem: HSLineItem
-  ): Promise<HSLineItem> {
+  async setQuantity(lineItem: HSLineItem): Promise<HSLineItem> {
     try {
       return await this.upsertLineItem(lineItem)
     } finally {
@@ -173,23 +158,21 @@ export class CartService {
     }
   }
 
-  async AddValidLineItemsToCart(validLi: Array<LineItem>): Promise<HSLineItem[]> {
-    const items = validLi.map((li) => (
-      {
-        ProductID: li.Product.ID,
-        Quantity: li.Quantity,
-        Specs: li.Specs,
-        xp: {
-          ImageUrl: li.xp?.ImageUrl,
-        },
-      }
-    ))
-    return await this.addMany(items);
+  async AddValidLineItemsToCart(
+    validLi: Array<LineItem>
+  ): Promise<HSLineItem[]> {
+    const items = validLi.map((li) => ({
+      ProductID: li.Product.ID,
+      Quantity: li.Quantity,
+      Specs: li.Specs,
+      xp: {
+        ImageUrl: li.xp?.ImageUrl,
+      },
+    }))
+    return await this.addMany(items)
   }
 
-  async addMany(
-    lineItem: HSLineItem[]
-  ): Promise<HSLineItem[]> {
+  async addMany(lineItem: HSLineItem[]): Promise<HSLineItem[]> {
     if (_isUndefined(this.order.DateCreated)) {
       await this.initializeOrder()
     }
@@ -245,10 +228,7 @@ export class CartService {
     }
   }
 
-  private hasSameSpecs(
-    line1: HSLineItem,
-    line2: HSLineItem
-  ): boolean {
+  private hasSameSpecs(line1: HSLineItem, line2: HSLineItem): boolean {
     if (!line1?.Specs?.length && !line2?.Specs?.length) {
       return true
     }
@@ -278,9 +258,7 @@ export class CartService {
     }
   }
 
-  private async upsertLineItem(
-    lineItem: HSLineItem
-  ): Promise<HSLineItem> {
+  private async upsertLineItem(lineItem: HSLineItem): Promise<HSLineItem> {
     this.isCartValidSubject.next(false)
     try {
       return await HeadStartSDK.Orders.UpsertLineItem(this.order?.ID, lineItem)

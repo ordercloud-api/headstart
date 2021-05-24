@@ -900,13 +900,6 @@
     "SORT": {
       "BY": "Sort By",
       "NONE": "None"
-    },
-    "KITS": {
-      "CLICK_TO_SELECT_VARIANT": "Click to select a variant",
-      "ADD_VARIANT_SELECTION": "Add Variant selection",
-      "YOU_MUST_MATCH_AT_LEAST_ONE_VARIANT": "You must select at least (1) variant from each variable product",
-      "EXPAND_AND_COLLAPSE": "Expand and collapse",
-      "DELETE_SELECTION": "Delete this selection?"
     }
   },
   "PROFILE": {
