@@ -18,33 +18,31 @@
             class="badge badge-pill badge-primary ml-2"
             >{{ order.xp.OrderType }}</span
           >
-          <div *ngIf="subView === 'details'" class="float-right">
-            <button
-              class="btn btn-outline-secondary d-print-none"
-              (click)="createAndSavePDF()"
-              translate
-            >
-              ORDERS.DETAIL.DOWNLOAD_AS_PDF
-            </button>
-          </div>
         </h2>
+        <div *ngIf="subView === 'details'">
+          <button
+            class="btn btn-sm btn-outline-secondary d-print-none"
+            (click)="createAndSavePDF()"
+            translate
+          >
+            ORDERS.DETAIL.DOWNLOAD_AS_PDF
+          </button>
+        </div>
       </div>
-      <div class="row">
+      <div class="row my-3">
         <div class="col-md-4">
-          <div>
-            <span translate>ORDERS.DETAIL.STATUS</span>:
-            <ocm-order-status-icon
-              [status]="getOrderStatus()"
-            ></ocm-order-status-icon>
-            {{ getOrderStatus() }}
-          </div>
-          <div>
-            <span translate>ORDERS.DETAIL.SHIPPING_STATUS</span>:
-            <ocm-order-status-icon
-              [status]="order.xp.ShippingStatus"
-            ></ocm-order-status-icon>
-            {{ order.xp.ShippingStatus | orderStatusDisplay }}
-          </div>
+          <span translate>ORDERS.DETAIL.STATUS</span>:
+          <ocm-order-status-icon
+            [status]="getOrderStatus()"
+          ></ocm-order-status-icon>
+          {{ getOrderStatus() }}
+
+          <span translate>ORDERS.DETAIL.SHIPPING_STATUS</span>:
+          <ocm-order-status-icon
+            [status]="order.xp.ShippingStatus"
+          ></ocm-order-status-icon>
+          {{ order.xp.ShippingStatus | orderStatusDisplay }}
+
           <div>
             <span translate>ORDERS.DETAIL.CLAIM_STATUS</span>:
             <ocm-order-status-icon
@@ -57,7 +55,9 @@
             {{ order.DateSubmitted | date: 'short' }}</small
           >
         </div>
-        <div class="col-md-8">
+        <div
+          class="col-md-8 mt-3 mt-md-0 d-flex flex-wrap gap-2 align-items-center justify-content-end"
+        >
           <ocm-order-approval
             *ngIf="approvalVersion"
             class="float-right"
@@ -83,7 +83,7 @@
               !isQuoteOrder(order) &&
               order.Status !== 'Unsubmitted'
             "
-            class="btn btn-secondary float-right mr-2 d-print-none"
+            class="btn btn-secondary d-print-none"
             (click)="open(reorderModal)"
             translate
           >
@@ -97,7 +97,7 @@
               !approvalVersion &&
               !isQuoteOrder(order)
             "
-            class="btn btn-secondary float-right mr-2 d-print-none"
+            class="btn btn-secondary d-print-none"
             (click)="toggleRequestReturn()"
             translate
           >
@@ -109,7 +109,7 @@
               !isQuoteOrder(order) &&
               order.Status !== 'Unsubmitted'
             "
-            class="btn btn-secondary float-right mr-2 d-print-none"
+            class="btn btn-secondary d-print-none"
             (click)="toggleRequestCancel()"
             translate
           >
@@ -123,7 +123,7 @@
               !approvalVersion &&
               !isQuoteOrder(order)
             "
-            class="btn btn-secondary float-right mr-2 d-print-none"
+            class="btn btn-secondary d-print-none"
             (click)="toggleRequestCancel()"
             translate
           >
@@ -135,7 +135,7 @@
               !isQuoteOrder(order) &&
               order.Status !== 'Unsubmitted'
             "
-            class="btn btn-secondary float-right mr-2 d-print-none"
+            class="btn btn-secondary d-print-none"
             (click)="toggleRequestReturn()"
             translate
           >
@@ -148,7 +148,7 @@
               !isQuoteOrder(order) &&
               order.Status === 'Unsubmitted'
             "
-            class="btn btn-secondary float-right mr-2 d-print-none"
+            class="btn btn-secondary d-print-none"
             (click)="open(updateOrderModal)"
             translate
           >
@@ -183,7 +183,7 @@
               >
                 <button
                   type="button"
-                  class="btn btn-secondary btn-md"
+                  class="btn btn-secondary"
                   (click)="modal.dismiss()"
                   translate
                 >
@@ -191,7 +191,7 @@
                 </button>
                 <button
                   type="button"
-                  class="btn btn-primary btn-md"
+                  class="btn btn-primary"
                   [disabled]="!reorderResponse?.ValidLi?.length"
                   (click)="addToCart(); modal.dismiss()"
                   translate
@@ -214,14 +214,14 @@
               >
                 <button
                   type="button"
-                  class="btn btn-secondary btn-md"
+                  class="btn btn-secondary"
                   (click)="modal.dismiss()"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                  class="btn btn-primary btn-md"
+                  class="btn btn-primary"
                   (click)="moveOrderToCart(); modal.dismiss()"
                   translate
                 >
