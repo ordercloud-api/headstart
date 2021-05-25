@@ -17,6 +17,7 @@ export class BuyerLocationApprovals {
   dataIsSaving = false
   @Input()
   set approvalRule(value: ApprovalRule) {
+    this.areChanges = false
     this._approvalRule = value
     this._initialThreshold = this.getOrderThreshold(value?.RuleExpression)
     this.buildApprovalForm(value)
