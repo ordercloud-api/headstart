@@ -4,22 +4,38 @@
     <!-- Checkbox Column -->
     <ng-container matColumnDef="select">
       <th mat-header-cell *matHeaderCellDef>
-        <mat-checkbox
-          (change)="$event ? masterToggle() : null"
-          [checked]="selection.hasValue() && isAllEnabledSelected()"
-          [indeterminate]="selection.hasValue() && !isAllEnabledSelected()"
-          [aria-label]="checkboxLabel(0)"
-        >
-        </mat-checkbox>
+        <div class="custom-control custom-checkbox">
+          <input
+            type="checkbox"
+            (change)="$event ? masterToggle() : null"
+            [checked]="selection.hasValue() && isAllEnabledSelected()"
+            [indeterminate]="selection.hasValue() && !isAllEnabledSelected()"
+            [aria-label]="checkboxLabel(0)"
+            class="custom-control-input"
+            id="selectAll"
+          />
+          <label
+            class="custom-control-label custom-control-label-sm"
+            for="selectAll"
+            >Select All</label
+          >
+        </div>
       </th>
       <td mat-cell *matCellDef="let row; let i = index" [formGroup]="row">
-        <mat-checkbox
-          (change)="$event ? toggle(row) : null"
-          [checked]="selection.isSelected(row)"
-          formControlName="selected"
-          [aria-label]="checkboxLabel(i, row)"
-        >
-        </mat-checkbox>
+        <div class="custom-control custom-checkbox">
+          <input
+            type="checkbox"
+            (change)="$event ? toggle(row) : null"
+            [checked]="selection.isSelected(row)"
+            formControlName="selected"
+            [aria-label]="checkboxLabel(i, row)"
+            class="custom-control-input"
+            id="productSelect"
+          />
+          <label for="productSelect" class="custom-control-label">
+            <span class="sr-only"> Select This Product</span>
+          </label>
+        </div>
       </td>
     </ng-container>
 
