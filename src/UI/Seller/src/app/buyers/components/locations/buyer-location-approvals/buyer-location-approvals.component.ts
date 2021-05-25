@@ -95,6 +95,7 @@ export class BuyerLocationApprovals {
       }
     } finally {
       this.dataIsSaving = false
+      this.areChanges = false
     }
   }
 }
