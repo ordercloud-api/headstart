@@ -72,6 +72,7 @@ namespace Headstart.API.Commands
             new XpIndex { ThingType = XpThingType.UserGroup, Key = "Type" },
             new XpIndex { ThingType = XpThingType.UserGroup, Key = "Role" },
             new XpIndex { ThingType = XpThingType.UserGroup, Key = "Country" },
+            new XpIndex { ThingType = XpThingType.UserGroup, Key = "CatalogAssignments" },
             new XpIndex { ThingType = XpThingType.Company, Key = "Data.ServiceCategory" },
             new XpIndex { ThingType = XpThingType.Company, Key = "Data.VendorLevel" },
             new XpIndex { ThingType = XpThingType.Company, Key = "SyncFreightPop" },

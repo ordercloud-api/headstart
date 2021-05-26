@@ -77,15 +77,22 @@ namespace Headstart.API.Commands.Crud
 		//	Then we add or remove usergroup assignments so the actual assignments allign with what is in the BuyerLocation usergroups
 		public async Task SyncUserCatalogAssignments(string buyerID, string userID)
         {
-			var currentAssignments = await _oc.UserGroups.ListAllUserAssignmentsAsync(buyerID: buyerID, userID: userID);
-			var currentAssignedCatalogIDs = currentAssignments?.Select(assignment => assignment?.UserGroupID)?.ToList();
-			var currentUserGroups = await _oc.UserGroups.ListAsync<HSLocationUserGroup>(buyerID: buyerID, filters: $"ID={string.Join("|", currentAssignedCatalogIDs)}");
-			var catalogsUserShouldSee = currentUserGroups?.Items?.Where(item => (item?.xp?.Type == "BuyerLocation"))?.SelectMany(c => c?.xp?.CatalogAssignments);
+			// retrieve the data we'll need for further analysis
+			var allUserAssignments = await _oc.UserGroups.ListAllUserAssignmentsAsync(buyerID: buyerID, userID: userID);
+			var assignedGroupIDs = allUserAssignments?.Select(assignment => assignment?.UserGroupID)?.ToList();
+			var assignedGroups = await _oc.UserGroups.ListAsync<HSLocationUserGroup>(buyerID: buyerID, filters: $"ID={string.Join("|", assignedGroupIDs)}", pageSize: 100);
+			var existingCatalogs = await _oc.UserGroups.ListAsync(buyerID, filters: "xp.Type=Catalog", pageSize: 100);
+			
+			// from the data extract the relevant catalogIDs
+			var expectedAssignedCatalogIDs = assignedGroups?.Items?.Where(item => (item?.xp?.Type == "BuyerLocation"))?.SelectMany(c => c?.xp?.CatalogAssignments);
+			var actualAssignedCatalogIDs = assignedGroups?.Items?.Where(item => item?.xp?.Type == "Catalog")?.Select(c => c.ID)?.ToList();
+			var existingCatalogIDs = existingCatalogs.Items.Select(x => x.ID);
 
-			var actualCatalogAssignments = currentUserGroups?.Items?.Where(item => item?.xp?.Type == "Catalog")?.Select(c => c.ID)?.ToList();
-			//now remove all actualCatalogAssignments that are not included in catalogsUserShouldSee
-			var assignmentsToRemove = actualCatalogAssignments?.Where(id => !catalogsUserShouldSee.Contains(id));
-			var assignmentsToAdd = catalogsUserShouldSee?.Where(id => !actualCatalogAssignments.Contains(id));
+			// analyze list to determine the catalogids to remove, and the list of catalogids to add
+			var assignmentsToRemove = actualAssignedCatalogIDs?.Where(id => !expectedAssignedCatalogIDs.Contains(id));
+			var assignmentsToAdd = expectedAssignedCatalogIDs?.Where(id => !actualAssignedCatalogIDs.Contains(id) && existingCatalogIDs.Contains(id));
+
+			// throttle the calls with a 100 millisecond wait in between so as not to overload the API
 			await Throttler.RunAsync(assignmentsToRemove, 100, 5, catalogAssignmentToRemove =>
 			{
 				return _oc.UserGroups.DeleteUserAssignmentAsync(buyerID, catalogAssignmentToRemove, userID);
