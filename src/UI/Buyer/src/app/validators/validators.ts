@@ -14,8 +14,8 @@ export const ErrorDictionary = {
   required: 'This field is required',
   email: 'Please enter a valid email',
   ocMatchFields: "Passwords don't match",
-  strongPassword: `Password must be at least eight characters long and include at least 
-    one letter and one number. Password can also include special characters.`,
+  strongPassword: `Password must be at least ten characters long and include at least 
+    one uppercase letter, one lowercase letter, one number, and one special character.`,
   creditCardNumber: 'Card number is invalid',
   creditCardLength: 'Card length is invalid',
   min: 'Please enter a higher value',
@@ -88,17 +88,19 @@ export function ValidateUSZip(
   return { zip: true }
 }
 
-// password must include one number, one letter and have min length of 8
+// password must include one number, one uppercase letter, one lowercase letter, one special character and have min length of 10
 export function ValidateStrongPassword(
   control: AbstractControl
 ): ValidationErrors | null {
-  const hasNumber = /[0-9]/.test(control.value) // TODO - boil these 3 checks into one regex
-  const hasLetter = /[a-zA-Z]/.test(control.value)
-  const hasMinLength = control.value && control.value.length >= 8
+  const hasMinLength = control.value && control.value.length >= 10
+  const pattern = new RegExp(
+    '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[-+_!@#$%^&*.,?]).+$'
+  )
+  const meetsPasswordRequirements = pattern.test(control.value) && hasMinLength
   if (!control.value) {
     return null
   }
-  if (hasNumber && hasLetter && hasMinLength) {
+  if (meetsPasswordRequirements) {
     return null
   }
   return { strongPassword: true }

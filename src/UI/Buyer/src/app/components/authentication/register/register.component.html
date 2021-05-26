@@ -111,7 +111,7 @@
         />
       </div>
       <button
-        [disabled]="loading" 
+        [disabled]="loading || form.status === 'INVALID'"
         type="submit"
         class="btn btn-primary btn-lg btn-block mt-4"
         translate
