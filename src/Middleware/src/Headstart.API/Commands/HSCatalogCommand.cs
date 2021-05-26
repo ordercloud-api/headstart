@@ -81,11 +81,11 @@ namespace Headstart.API.Commands.Crud
 			var allUserAssignments = await _oc.UserGroups.ListAllUserAssignmentsAsync(buyerID: buyerID, userID: userID);
 			var assignedGroupIDs = allUserAssignments?.Select(assignment => assignment?.UserGroupID)?.ToList();
 			var assignedGroups = await _oc.UserGroups.ListAsync<HSLocationUserGroup>(buyerID: buyerID, filters: $"ID={string.Join("|", assignedGroupIDs)}", pageSize: 100);
-			var existingCatalogs = await _oc.UserGroups.ListAsync(buyerID, filters: "xp.Type=Catalog", pageSize: 100);
+			var existingCatalogs = await _oc.UserGroups.ListAsync<HSLocationUserGroup>(buyerID, filters: "xp.Type=Catalog", pageSize: 100);
 			
 			// from the data extract the relevant catalogIDs
-			var expectedAssignedCatalogIDs = assignedGroups?.Items?.Where(item => (item?.xp?.Type == "BuyerLocation"))?.SelectMany(c => c?.xp?.CatalogAssignments);
-			var actualAssignedCatalogIDs = assignedGroups?.Items?.Where(item => item?.xp?.Type == "Catalog")?.Select(c => c.ID)?.ToList();
+			var expectedAssignedCatalogIDs = assignedGroups.Items?.Where(item => (item?.xp?.Type == "BuyerLocation"))?.SelectMany(c => c?.xp?.CatalogAssignments);
+			var actualAssignedCatalogIDs = assignedGroups.Items?.Where(item => item?.xp?.Type == "Catalog")?.Select(c => c.ID)?.ToList();
 			var existingCatalogIDs = existingCatalogs.Items.Select(x => x.ID);
 
 			// analyze list to determine the catalogids to remove, and the list of catalogids to add
