@@ -74,7 +74,8 @@ namespace Headstart.Common.Mappers
                 ShippingCost = order?.ShippingCost,
                 PromotionalDiscount = order?.PromotionDiscount,
                 Total = order?.Total,
-                Currency = currencyString
+                Currency = currencyString,
+                Comments = order.Comments
             };
         }
 
