@@ -15,12 +15,20 @@ table {
   max-width: 100px;
 }
 
-.mat-cell {
-  padding: 8px 10px 8px 10px;
+.mat-header-cell {
+  font-size: .8em;
+  font-weight: normal;
+  white-space: nowrap;
+  padding: .75rem;
+  border-color: var(--gray);
 }
 
-.custom-control-label.custom-control-label-sm {
-  font-size: .8em;
+.mat-cell {
+  padding: 1.25rem .75rem;
+  border-color: var(--gray);
+}
+
+.custom-control-label {
   &::before,
   &::after {
     top: .1rem;
