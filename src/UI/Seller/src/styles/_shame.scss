@@ -54,12 +54,13 @@ How to use _shame.scss:
     height: 100px;
     line-height: 6.75rem;
     text-align: center;
-    border-radius: 0.25rem;
-    background: $teal;
+    border-radius: 100px;
+    background: $medium;
     vertical-align: middle;
     margin-right: 1em;
-    color: darken($teal, 30%);
+    color: $dark;
     font-weight: 600;
+    box-shadow: $box-shadow-lg;
   }
   
   .avatar-sm[data-letters]:before {
