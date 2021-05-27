@@ -92,7 +92,7 @@ namespace Headstart.API.Commands
             await CreateOrUpdateAndAssignIntegrationEvents(orgToken, seed);
             await CreateOrUpdateSuppliers(seed, orgToken);
 
-            await CreateOrUpdateProductFacet(orgToken);
+            await CreateOrUpdateProductFacets(orgToken);
 ;
             // populate default english translations into blob container name: settings.BlobSettings.ContainerNameTranslations or "ngx-translate" if setting is not defined
             // provide other language files to support multiple languages
@@ -335,10 +335,10 @@ namespace Headstart.API.Commands
             }
         }
 
-        private async Task CreateOrUpdateProductFacet(string token)
+        private async Task CreateOrUpdateProductFacets(string token)
         {
-            var supplierFacet = SeedConstants.DefaultProductFacet();
-            await _oc.ProductFacets.SaveAsync<HSProductFacet>(supplierFacet.ID, supplierFacet, token);
+            var defaultFacet = SeedConstants.DefaultProductFacet();
+            await _oc.ProductFacets.SaveAsync<HSProductFacet>(defaultFacet.ID, defaultFacet, token);
         }
 
         private async Task<bool> SupplierExistsAsync(string supplierName, string token)
