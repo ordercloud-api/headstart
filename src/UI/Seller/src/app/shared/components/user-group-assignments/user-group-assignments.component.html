@@ -93,16 +93,18 @@
                 class="font-italic"
                 translate
                 >ADMIN.BUYER_USERS.NO_ADDRESS_ASSIGNMENTS
-                </span
-              >
+              </span>
               <span
                 *ngIf="!searchTermInput && !viewAssignedUserGroups"
                 class="font-italic"
                 translate
                 >BUYER.HELPERMESSAGES.BUYERGROUP.WARNING
-                <a href="{{'/buyers/' + buyerID + '/locations/new'}}" translate>BUYER.HELPERMESSAGES.BUYERGROUP.ACTION</a>
-                </span
-              >
+                <a
+                  href="{{ '/buyers/' + buyerID + '/locations/new' }}"
+                  translate
+                  >BUYER.HELPERMESSAGES.BUYERGROUP.ACTION</a
+                >
+              </span>
             </td>
           </tr>
         </tbody>
@@ -130,7 +132,7 @@
       <button
         *ngIf="areChanges && !requestedUserConfirmation"
         [disabled]="!areChanges || requestedUserConfirmation"
-        class="btn brand-button"
+        class="btn btn-primary"
         (click)="requestUserConfirmation()"
       >
         {{

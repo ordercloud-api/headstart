@@ -24,7 +24,7 @@
     <button
       *ngIf="areChanges && !showConfirm"
       [disabled]="!areChanges || showConfirm || dataIsSaving"
-      class="btn brand-button"
+      class="btn btn-primary"
       (click)="handleSavePressed()"
     >
       {{ getSaveText() | translate }}

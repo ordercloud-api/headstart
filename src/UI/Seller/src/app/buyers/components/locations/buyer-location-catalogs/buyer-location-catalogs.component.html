@@ -37,10 +37,11 @@
           <td>
             <span class="font-italic" translate>
               BUYER.HELPERMESSAGES.CATALOG.ACTION
-              <a href="{{'/buyers/' + buyerID + '/catalogs/new'}}" translate>BUYER.HELPERMESSAGES.CATALOG.ACTION</a>
+              <a href="{{ '/buyers/' + buyerID + '/catalogs/new' }}" translate
+                >BUYER.HELPERMESSAGES.CATALOG.ACTION</a
+              >
             </span>
           </td>
-
         </tr>
       </tbody>
     </table>
@@ -55,7 +56,7 @@
       <button
         *ngIf="areChanges"
         [disabled]="!areChanges"
-        class="btn brand-button"
+        class="btn btn-primary"
         (click)="saveChanges()"
       >
         Save Changes
