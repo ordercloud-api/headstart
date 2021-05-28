@@ -6,16 +6,13 @@
 // check out node_modules/bootstrap/variables.scss
 // --------------------------------------------------------------------------------------
 
-$blue:    #6AC0E2;
-$indigo:  #6610f2 !default;
-$purple:  #85607C;
-$pink:    #e83e8c !default;
-$red:     #DC291E;  // brand guideline color
-$orange:  #FB9851;
-$yellow:  #FBD951;
-$green:   #A2CA81 !default;
-$teal:    #1CA6A3;  // brand guideline color
-$cyan:    #17a2b8 !default;
+$blue:              #289BC8;  // @SC-Theme-Primary: Dark
+$purple:            #85607C;  // @SC-Theme-Eggplant: XX-Dark
+$red:               #DC291E;  // @SC-Theme-Main: Default
+$orange:            #FA8938;  // @SC-Theme-Carrot: Dark
+$yellow:            #FAD338;  // @SC-Theme-Banana: Dark
+$green:             #88BB5D;  // @SC-Theme-Grass: X-Dark
+$teal:              #1CA6A3;  // brand guideline color
 
 
 $gray-100:          #F0F0F0;  // brand guideline color
@@ -26,46 +23,28 @@ $gray-500:          #bbbcbf;
 $gray-600:          #999999;  // brand guideline color
 $gray-700:          #707070;  // brand guideline color
 $gray-800:          #333333;  // brand guideline color
-$gray-900:          #232323;  // Charcoal
+$gray-900:          #232323;  // brand guideline color
 
 $black:             #000000;
 $white:             #ffffff;
 
-$sherpablue-200:    #8195a1; 
-$sherpablue-500:    #032a43; 
-$sherpablue-700:    #021f34; 
-$flame-500:         #f16122;
-$seafoam-500:       #20abad;
-$sizzlingred-500:   #ff4c5b;
-$sunset-500:        #f8ac1a;
-$junglegreen-500:   #13AE87;
-
-// Bootstrap color palette: These variables are used to generate your theme. 
-// *** Only include variables you intend to override. ***
-
-// $blue:              $sherpablue-500;    // primary
-// $red:               $sizzlingred-500;   // contextual color
-// $yellow:            $sunset-500;        // contextual color
-// $orange:            $flame-500;         // accent
-// $green:             $junglegreen-500;   // contextual color
-// $teal:              $seafoam-500;       // accent
-
-$primary:           $red;
+$primary:           $teal;
 $secondary:         $gray-800;
 $gray-light:        $gray-300;
 $light:             $gray-100;
 $medium:            $gray-600;
 $dark:              $gray-900;
-$primary-dark:      #8B1913;
-$primary-light:     #ED827D;
+$primary-dark:      #118B88;
+$primary-light:     #BBE4E3;
+$danger:            #E7534B;  // @SC-Theme-Tomato: Dark
 
 $theme-colors: (
   'primary':        $primary,        
   'secondary':      $secondary,
   'medium':         $medium,
-  'teal':           $teal,
   'primary-dark':   $primary-dark,
-  'primary-light':  $primary-light
+  'primary-light':  $primary-light,
+  'red': $red
 );
 
 // Body

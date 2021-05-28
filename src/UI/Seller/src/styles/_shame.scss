@@ -93,3 +93,22 @@ How to use _shame.scss:
       color: lighten(#032a43, 55%);
     }
   }
+
+  // Create animations.scss in the future
+  // this is used in the login screen
+  .fade-in {
+    opacity: 0;
+    animation: fadeIn ease 1;
+    animation-fill-mode: forwards;
+    animation-duration: 0.5s;
+    animation-delay: 0.5s; //using a delay to allow the translations to load
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
