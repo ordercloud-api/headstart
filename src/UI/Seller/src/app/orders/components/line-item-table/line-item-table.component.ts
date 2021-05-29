@@ -76,8 +76,9 @@ export class LineItemTableComponent {
       (order) => order.ID === `${salesOrderID}-${lineItem.SupplierID}`
     )
     const shipFromID = lineItem.ShipFromAddressID
-    const shipMethod = (
-      supplierOrder?.xp?.SelectedShipMethodsSupplierView || []
+    const shipMethod = ( lineItem.SupplierID === null ?
+      (this._order?.xp?.SelectedShipMethodsSupplierView || []) :
+      (supplierOrder?.xp?.SelectedShipMethodsSupplierView || [])
     ).find((sm) => sm.ShipFromAddressID === shipFromID)
     if (shipMethod == null) return 'No Data'
     const name = shipMethod.Name.replace(/_/g, ' ')

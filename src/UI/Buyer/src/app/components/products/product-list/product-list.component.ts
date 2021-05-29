@@ -1,14 +1,9 @@
 import { Component, Input, OnInit, OnDestroy } from '@angular/core'
-import {
-  ListFacet,
-  Category,
-  ListPage,
-  Address,
-} from 'ordercloud-javascript-sdk'
+import { ListFacet, Category, ListPage } from 'ordercloud-javascript-sdk'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { getScreenSizeBreakPoint } from 'src/app/services/breakpoint.helper'
 import { takeWhile } from 'rxjs/operators'
-import { HSKitProduct, HSMeProduct } from '@ordercloud/headstart-sdk'
+import { HSMeProduct } from '@ordercloud/headstart-sdk'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 import { ShipFromSourcesDic } from 'src/app/models/shipping.types'
 import { ProductFilters } from 'src/app/models/filter-config.types'
@@ -32,18 +27,16 @@ export class OCMProductList implements OnInit, OnDestroy {
   searchTermForProducts = ''
   isAnon: boolean
 
-  constructor(private context: ShopperContextService) { }
+  constructor(private context: ShopperContextService) {}
 
   ngOnInit(): void {
     this.context.productFilters.activeFiltersSubject
       .pipe(takeWhile(() => this.alive))
       .subscribe(this.handleFiltersChange)
-    this.context.currentUser.onChange(
-      (user) => {
-        this.isAnon = this.context.currentUser.isAnonymous()
-        this.favoriteProducts = user.FavoriteProductIDs
-      }
-    )
+    this.context.currentUser.onChange((user) => {
+      this.isAnon = this.context.currentUser.isAnonymous()
+      this.favoriteProducts = user.FavoriteProductIDs
+    })
     if (getScreenSizeBreakPoint() === 'xs') {
       this.numberOfItemsInPagination = 3
     } else if (getScreenSizeBreakPoint() === 'sm') {

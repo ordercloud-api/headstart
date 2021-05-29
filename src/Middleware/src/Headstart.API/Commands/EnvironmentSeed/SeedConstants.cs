@@ -72,6 +72,7 @@ namespace Headstart.API.Commands
             new XpIndex { ThingType = XpThingType.UserGroup, Key = "Type" },
             new XpIndex { ThingType = XpThingType.UserGroup, Key = "Role" },
             new XpIndex { ThingType = XpThingType.UserGroup, Key = "Country" },
+            new XpIndex { ThingType = XpThingType.UserGroup, Key = "CatalogAssignments" },
             new XpIndex { ThingType = XpThingType.Company, Key = "Data.ServiceCategory" },
             new XpIndex { ThingType = XpThingType.Company, Key = "Data.VendorLevel" },
             new XpIndex { ThingType = XpThingType.Company, Key = "SyncFreightPop" },
@@ -338,6 +339,23 @@ namespace Headstart.API.Commands
                     State = "Minnesota",
                     Country = "US"
                 }
+            };
+        }
+
+        #endregion
+
+        #region Product Facets
+
+        public static HSProductFacet DefaultProductFacet()
+        {
+            return new HSProductFacet()
+            {
+                ID = "supplier",
+                Name = "Supplier",
+                XpPath = "Facets.supplier",
+                ListOrder = 1,
+                MinCount = 1,
+                xp = null
             };
         }
 

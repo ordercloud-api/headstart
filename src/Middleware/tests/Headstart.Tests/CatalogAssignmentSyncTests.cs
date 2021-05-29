@@ -9,117 +9,117 @@ using OrderCloud.SDK;
 using Headstart.Models;
 using Headstart.Common;
 using Headstart.API.Commands.Crud;
+using System.Linq;
+using AutoFixture.NUnit3;
 
 namespace Headstart.Tests
 {
     class CatalogAssignmentSyncTests
     {
-        private IOrderCloudClient _oc;
-        private AppSettings _settings;
-        private IHSCatalogCommand _sut;
 
-
-        [SetUp]
-        public void Setup()
+        [Test, AutoNSubstituteData]
+        public async Task SyncUserCatalogAssignments_ShouldHandleBasicScenario(
+            [Frozen] IOrderCloudClient oc,
+            HSCatalogCommand sut,
+            ListPage<UserGroupAssignment> groupAssignments,
+            ListPage<HSLocationUserGroup> assignedGroups,
+            ListPage<HSLocationUserGroup> existingCatalogs,
+            HSLocationUserGroup existingCatalog1,
+            HSLocationUserGroup existingCatalog2,
+            string catalogID1,
+            string catalogID2,
+            string buyerID,
+            string userID
+        )
         {
-            _oc = Substitute.For<IOrderCloudClient>();
-            _settings = Substitute.For<AppSettings>();
-            _sut = new HSCatalogCommand(_settings, _oc);
-        }
-
-        [Test]
-        public async Task TestCatalogAssignmentSync()
-        {
-            //arrange
-            var buyerId = "buyer1";
-            var useriD = "user1";
-            var currentLocationCatalogLists = new List<List<string>>()
+            // Arrange
+            assignedGroups.Items = new List<HSLocationUserGroup>()
             {
-                new List<string>()
+                // define an assigned group that is referencing a Catalog that should be assigned but isn't yet
+                new HSLocationUserGroup
                 {
-                    "123", "456"
+                    ID = "someid",
+                    xp = new HSLocationUserGroupXp
+                    {
+                        Type = "BuyerLocation",
+                        CatalogAssignments = new List<string>{ catalogID1 }
+                    }
                 },
-                new List<string>()
+                // define a Catalog assignment that is assigned but shouldn't be
+                new HSLocationUserGroup {
+                    ID = catalogID2,
+                    xp = new HSLocationUserGroupXp
+                    {
+                        Type = "Catalog"
+                    }
+                },
+            };
+
+            // make sure catalog exists (otherwise it won't try to assign)
+            existingCatalogs.Items = new List<HSLocationUserGroup>();
+            existingCatalog1.ID = catalogID1;
+            existingCatalogs.Items.Add(existingCatalog1);
+            existingCatalog2.ID = catalogID2;
+            existingCatalogs.Items.Add(existingCatalog2);
+
+            groupAssignments.Meta.Page = 1;
+            groupAssignments.Meta.TotalPages = 1;
+            oc.UserGroups.ListUserAssignmentsAsync(buyerID: buyerID, userID: userID)
+                .ReturnsForAnyArgs(groupAssignments.ToTask());
+            var assignedGroupIDs = groupAssignments.Items.Select(g => g.UserGroupID);
+            oc.UserGroups.ListAsync<HSLocationUserGroup>(buyerID: buyerID, filters: $"ID={string.Join("|", assignedGroupIDs)}", pageSize: 100)
+                .Returns(assignedGroups.ToTask());
+            oc.UserGroups.ListAsync<HSLocationUserGroup>(buyerID, filters: "xp.Type=Catalog", pageSize: 100)
+                .Returns(existingCatalogs.ToTask());
+
+            // Act
+            await sut.SyncUserCatalogAssignments(buyerID, userID);
+            await oc.UserGroups.Received().SaveUserAssignmentAsync(buyerID, Arg.Is<UserGroupAssignment>(ass => ass.UserGroupID == catalogID1 && ass.UserID == userID));
+            await oc.UserGroups.Received().DeleteUserAssignmentAsync(buyerID, catalogID2, userID);
+        }
+
+        [Test, AutoNSubstituteData]
+        public async Task SyncUserCatalogAssignments_ShouldNotTryToAssignIfCatalogDoesNotExist(
+            [Frozen] IOrderCloudClient oc,
+            HSCatalogCommand sut,
+            ListPage<UserGroupAssignment> groupAssignments,
+            ListPage<HSLocationUserGroup> assignedGroups,
+            ListPage<HSLocationUserGroup> existingCatalogs,
+            string catalogID1,
+            string catalogID2,
+            string buyerID,
+            string userID
+        )
+        {
+            // Arrange
+            assignedGroups.Items = new List<HSLocationUserGroup>()
+            {
+                // define an assigned group that is referencing a Catalog that should be assigned but isn't yet
+                new HSLocationUserGroup
                 {
-                    "456, 789", "910"
-                }
+                    ID = "someid",
+                    xp = new HSLocationUserGroupXp
+                    {
+                        Type = "BuyerLocation",
+                        CatalogAssignments = new List<string>{ catalogID1 }
+                    }
+                },
             };
-            var currentCatalogAssignments = new List<string>()
-            {
-                "123", "456", "789", "000"
-            };
 
-            var currentLocationPermissionAssignments = new List<string>()
-            {
-                "321"
-            };
-            _oc.UserGroups.ListUserAssignmentsAsync(buyerID: Arg.Any<string>(), userID: Arg.Any<string>(), page: Arg.Any<int>(), pageSize: Arg.Any<int>())
-                .ReturnsForAnyArgs(Task.FromResult(GetUserGroupAssignments()));
-            _oc.UserGroups.ListAsync<HSLocationUserGroup>(buyerID: Arg.Any<string>(), filters: Arg.Any<string>())
-                .ReturnsForAnyArgs(GetUserGroups(currentLocationCatalogLists, currentCatalogAssignments, currentLocationPermissionAssignments));
+            groupAssignments.Meta.Page = 1;
+            groupAssignments.Meta.TotalPages = 1;
+            oc.UserGroups.ListUserAssignmentsAsync(buyerID: buyerID, userID: userID)
+                .ReturnsForAnyArgs(groupAssignments.ToTask());
+            var assignedGroupIDs = groupAssignments.Items.Select(g => g.UserGroupID);
+            oc.UserGroups.ListAsync<HSLocationUserGroup>(buyerID: buyerID, filters: $"ID={string.Join("|", assignedGroupIDs)}", pageSize: 100)
+                .Returns(assignedGroups.ToTask());
+            existingCatalogs.Items = new List<HSLocationUserGroup>();
+            oc.UserGroups.ListAsync<HSLocationUserGroup>(buyerID, filters: "xp.Type=Catalog", pageSize: 100)
+                .Returns(existingCatalogs.ToTask());
 
-
-            //act
-            await _sut.SyncUserCatalogAssignments(buyerId, useriD);
-
-            //assert
-            await _oc.UserGroups.Received().SaveUserAssignmentAsync(buyerId, Arg.Is<UserGroupAssignment>(assignment => assignment.UserGroupID == "910"));
-            await _oc.UserGroups.Received().DeleteUserAssignmentAsync(buyerId, "000", useriD);
-            await _oc.UserGroups.DidNotReceive().DeleteUserAssignmentAsync(buyerId, "321", useriD);
-
-        }
-
-        private ListPage<UserGroupAssignment> GetUserGroupAssignments()
-        {
-            Fixture fixture = new Fixture();
-            return fixture.Create<ListPage<UserGroupAssignment>>();
-        }
-
-        private ListPage<HSLocationUserGroup> GetUserGroups(List<List<string>> catalogAssignmentList, List<string> catalogsAssigned, List<string> locationPermissionsAssigned)
-        {
-            var userGroupList = new List<HSLocationUserGroup>();
-            catalogAssignmentList.ForEach(catalogList =>
-            {
-                userGroupList.Add(GetBuyerLocationUserGroup(catalogList));
-            });
-            catalogsAssigned.ForEach(catalogID =>
-            {
-                userGroupList.Add(GetGenericUserGroup(catalogID, "Catalog"));
-            });
-            locationPermissionsAssigned.ForEach(catalogID =>
-            {
-                userGroupList.Add(GetGenericUserGroup(catalogID, "LocationPermissions"));
-            });
-            return new ListPage<HSLocationUserGroup>()
-            {
-                Items = userGroupList
-            };
-        }
-
-        private HSLocationUserGroup GetBuyerLocationUserGroup(List<string> catalogAssignments)
-        {
-            var userGroup = new HSLocationUserGroup()
-            {
-                xp = new HSLocationUserGroupXp()
-                {
-                    Type = "BuyerLocation",
-                    CatalogAssignments = catalogAssignments
-                }
-            };
-            return userGroup;
-        }
-
-        private HSLocationUserGroup GetGenericUserGroup(string id, string catalogType)
-        {
-            var userGroup = new HSLocationUserGroup()
-            {
-                ID = id,
-                xp = new HSLocationUserGroupXp()
-                {
-                    Type = catalogType
-                }
-            };
-            return userGroup;
+            // Act
+            await sut.SyncUserCatalogAssignments(buyerID, userID);
+            await oc.UserGroups.DidNotReceive().SaveUserAssignmentAsync(buyerID, Arg.Is<UserGroupAssignment>(ass => ass.UserGroupID == catalogID1 && ass.UserID == userID));
         }
     }
 }

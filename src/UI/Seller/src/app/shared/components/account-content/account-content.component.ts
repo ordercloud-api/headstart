@@ -138,31 +138,33 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
   }
 
   async manualFileUpload(event): Promise<void> {
-    this.profileImgLoading = true
     const file: File = event?.target?.files[0]
-    if(this.user?.xp?.Image?.Url) {
-      await HeadStartSDK.Assets.Delete(getAssetIDFromUrl(this.user.xp.Image.Url))
-    }
-    try {
-      const data = new FormData()
-      data.append('File', file)
-      const imgUrls = await HeadStartSDK.Assets.CreateImage({
-        File: file
-      })
-      const patchObj = {
-        xp: {
-          Image: imgUrls
-        }
+    if(file) {
+      this.profileImgLoading = true
+      if(this.user?.xp?.Image?.Url) {
+        await HeadStartSDK.Assets.Delete(getAssetIDFromUrl(this.user.xp.Image.Url))
       }
-      await this.currentUserService.patchUser(patchObj);
-    } catch (err) {
-      this.hasProfileImg = false
-      this.profileImgLoading = false
-      throw err
-    } finally {
-      this.hasProfileImg = true
-      this.profileImgLoading = false
-    }
+      try {
+        const data = new FormData()
+        data.append('File', file)
+        const imgUrls = await HeadStartSDK.Assets.CreateImage({
+          File: file
+        })
+        const patchObj = {
+          xp: {
+            Image: imgUrls
+          }
+        }
+        await this.currentUserService.patchUser(patchObj);
+      } catch (err) {
+        this.hasProfileImg = false
+        this.profileImgLoading = false
+        throw err
+      } finally {
+        this.hasProfileImg = true
+        this.profileImgLoading = false
+      }
+    } 
   }
 
   async removeProfileImg(): Promise<void> {

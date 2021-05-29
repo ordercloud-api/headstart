@@ -1,7 +1,6 @@
+import { Payment } from 'ordercloud-javascript-sdk';
 import { OrderCloudIntegrationsCreditCardPayment } from '../models/OrderCloudIntegrationsCreditCardPayment';
-import { Payment } from '../models/Payment';
 import { RequiredDeep } from '../models/RequiredDeep';
-import { ListArgs } from '../models/ListArgs'
 import httpClient from '../utils/HttpClient';
 
 export default class MePayments {

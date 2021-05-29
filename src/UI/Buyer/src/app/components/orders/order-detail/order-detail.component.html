@@ -72,7 +72,7 @@
           ></ocm-order-approval>
 
           <button
-            *ngIf="!approvalVersion"
+            *ngIf="!approvalVersion && !isAnon" 
             class="btn btn-outline-secondary float-right d-print-none"
             (click)="toggleFavorite(order)"
             translate
@@ -180,7 +180,6 @@
               <ocm-lineitem-table
                 *ngIf="reorderResponse.InvalidLi.length"
                 [lineItems]="reorderResponse.InvalidLi"
-                [groupByKits]="true"
                 [readOnly]="true"
                 [invalidItem]="true"
               >

@@ -1,8 +1,7 @@
 import { OrderCloudIntegrationsCreditCardToken } from '../models/OrderCloudIntegrationsCreditCardToken';
-import { BuyerCreditCard } from '../models/BuyerCreditCard';
 import { RequiredDeep } from '../models/RequiredDeep';
-import { ListArgs } from '../models/ListArgs'
 import httpClient from '../utils/HttpClient';
+import { BuyerCreditCard } from 'ordercloud-javascript-sdk';
 
 export default class MeCreditCardAuthorizations {
     private impersonating:boolean = false;

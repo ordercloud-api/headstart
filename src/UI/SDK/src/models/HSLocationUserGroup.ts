@@ -1,8 +1,4 @@
+import { UserGroup } from 'ordercloud-javascript-sdk';
 import { HSLocationUserGroupXp } from './HSLocationUserGroupXp';
 
-export interface HSLocationUserGroup {
-    xp?: HSLocationUserGroupXp
-    ID?: string
-    Name?: string
-    Description?: string
-}
+export type HSLocationUserGroup = UserGroup<HSLocationUserGroupXp>

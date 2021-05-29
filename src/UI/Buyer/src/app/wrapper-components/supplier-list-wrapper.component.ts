@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { takeWhile } from 'rxjs/operators'
-import { ListPage, SupplierFilterConfig } from '@ordercloud/headstart-sdk'
+import { ListPage } from '@ordercloud/headstart-sdk'
 import { Supplier } from 'ordercloud-javascript-sdk'
 import { ShopperContextService } from '../services/shopper-context/shopper-context.service'
 import { TempSdk } from '../services/temp-sdk/temp-sdk.service'
@@ -17,7 +17,7 @@ import { BuyerAppFilterType } from '../models/filter-config.types'
 })
 export class SupplierListWrapperComponent implements OnInit, OnDestroy {
   suppliers: ListPage<Supplier>
-  supplierFilterConfig: SupplierFilterConfig[]
+  supplierFilterConfig: any[]
   alive = true
 
   constructor(
