@@ -1,5 +1,5 @@
 <div class="container">
-  <div class="container order-detail-pdf-range">
+  <div class="order-detail-pdf-range">
     <div *ngIf="order">
       <nav *ngIf="!isAnon" class="breadcrumb" aria-label="breadcrumb">
         <a class="breadcrumb-item" (click)="toAllOrders()" translate
@@ -7,7 +7,9 @@
         >
         <a class="breadcrumb-item" aria-current="page">{{ order.ID }}</a>
       </nav>
-      <div class="pb-2 mt-4 mb-2">
+      <div
+        class="d-flex flex-wrap align-items-center justify-content-between pb-2 mt-4 mb-2"
+      >
         <h2>
           <span class="text-muted"
             ><span translate>ORDERS.DETAIL.ORDER</span> #:</span
@@ -18,46 +20,51 @@
             class="badge badge-pill badge-primary ml-2"
             >{{ order.xp.OrderType }}</span
           >
-          <div *ngIf="subView === 'details'" class="float-right">
-            <button
-              class="btn btn-outline-secondary d-print-none"
-              (click)="createAndSavePDF()"
-              translate
-            >
-              ORDERS.DETAIL.DOWNLOAD_AS_PDF
-            </button>
-          </div>
         </h2>
-      </div>
-      <div class="row">
-        <div class="col-md-4">
-          <div>
-            <span translate>ORDERS.DETAIL.STATUS</span>:
-            <ocm-order-status-icon
-              [status]="getOrderStatus()"
-            ></ocm-order-status-icon>
-            {{ getOrderStatus() }}
-          </div>
-          <div>
-            <span translate>ORDERS.DETAIL.SHIPPING_STATUS</span>:
-            <ocm-order-status-icon
-              [status]="order.xp.ShippingStatus"
-            ></ocm-order-status-icon>
-            {{ order.xp.ShippingStatus | orderStatusDisplay }}
-          </div>
-          <div>
-            <span translate>ORDERS.DETAIL.CLAIM_STATUS</span>:
-            <ocm-order-status-icon
-              [status]="order.xp.ClaimStatus"
-            ></ocm-order-status-icon>
-            {{ order.xp.ClaimStatus | orderStatusDisplay }}
-          </div>
-          <small class="float-left"
-            ><span translate>ORDERS.DETAIL.SUBMITTED</span>
-            {{ order.DateSubmitted | date: 'short' }}</small
+        <ng-container *ngIf="subView === 'details'">
+          <button
+            class="btn btn-sm btn-outline-primary d-print-none"
+            (click)="createAndSavePDF()"
+            type="button"
+            translate
           >
+            ORDERS.DETAIL.DOWNLOAD_AS_PDF
+          </button>
+        </ng-container>
+      </div>
+      <div class="row my-3">
+        <div class="col-md-4">
+          <span class="text-muted small">
+            <span translate> ORDERS.DETAIL.SUBMITTED</span>
+            {{ order.DateSubmitted | date: 'short' }}</span
+          >
+          <ul class="list-group mt-2">
+            <li class="list-group-item">
+              <span translate>ORDERS.DETAIL.STATUS</span>:
+              <ocm-order-status-icon
+                [status]="getOrderStatus()"
+              ></ocm-order-status-icon>
+              {{ getOrderStatus() }}
+            </li>
+            <li class="list-group-item">
+              <span translate>ORDERS.DETAIL.SHIPPING_STATUS</span>:
+              <ocm-order-status-icon
+                [status]="order.xp.ShippingStatus"
+              ></ocm-order-status-icon>
+              {{ order.xp.ShippingStatus | orderStatusDisplay }}
+            </li>
+            <li class="list-group-item">
+              <span translate>ORDERS.DETAIL.CLAIM_STATUS</span>:
+              <ocm-order-status-icon
+                [status]="order.xp.ClaimStatus"
+              ></ocm-order-status-icon>
+              {{ order.xp.ClaimStatus | orderStatusDisplay }}
+            </li>
+          </ul>
         </div>
-        <div class="col-md-8">
+        <div
+          class="col-md-8 mt-3 mt-md-0 d-flex flex-wrap gap-2 align-items-end justify-content-end"
+        >
           <ocm-order-approval
             *ngIf="approvalVersion"
             class="float-right"
@@ -83,7 +90,7 @@
               !isQuoteOrder(order) &&
               order.Status !== 'Unsubmitted'
             "
-            class="btn btn-secondary float-right mr-2 d-print-none"
+            class="btn btn-secondary d-print-none"
             (click)="open(reorderModal)"
             translate
           >
@@ -97,7 +104,7 @@
               !approvalVersion &&
               !isQuoteOrder(order)
             "
-            class="btn btn-secondary float-right mr-2 d-print-none"
+            class="btn btn-secondary d-print-none"
             (click)="toggleRequestReturn()"
             translate
           >
@@ -109,7 +116,7 @@
               !isQuoteOrder(order) &&
               order.Status !== 'Unsubmitted'
             "
-            class="btn btn-secondary float-right mr-2 d-print-none"
+            class="btn btn-secondary d-print-none"
             (click)="toggleRequestCancel()"
             translate
           >
@@ -123,7 +130,7 @@
               !approvalVersion &&
               !isQuoteOrder(order)
             "
-            class="btn btn-secondary float-right mr-2 d-print-none"
+            class="btn btn-secondary d-print-none"
             (click)="toggleRequestCancel()"
             translate
           >
@@ -135,7 +142,7 @@
               !isQuoteOrder(order) &&
               order.Status !== 'Unsubmitted'
             "
-            class="btn btn-secondary float-right mr-2 d-print-none"
+            class="btn btn-secondary d-print-none"
             (click)="toggleRequestReturn()"
             translate
           >
@@ -148,7 +155,7 @@
               !isQuoteOrder(order) &&
               order.Status === 'Unsubmitted'
             "
-            class="btn btn-secondary float-right mr-2 d-print-none"
+            class="btn btn-secondary d-print-none"
             (click)="open(updateOrderModal)"
             translate
           >
@@ -182,7 +189,7 @@
               >
                 <button
                   type="button"
-                  class="btn btn-secondary btn-md"
+                  class="btn btn-secondary"
                   (click)="modal.dismiss()"
                   translate
                 >
@@ -190,7 +197,7 @@
                 </button>
                 <button
                   type="button"
-                  class="btn btn-primary btn-md"
+                  class="btn btn-primary"
                   [disabled]="!reorderResponse?.ValidLi?.length"
                   (click)="addToCart(); modal.dismiss()"
                   translate
@@ -213,14 +220,14 @@
               >
                 <button
                   type="button"
-                  class="btn btn-secondary btn-md"
+                  class="btn btn-secondary"
                   (click)="modal.dismiss()"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
-                  class="btn btn-primary btn-md"
+                  class="btn btn-primary"
                   (click)="moveOrderToCart(); modal.dismiss()"
                   translate
                 >
@@ -232,42 +239,53 @@
         </div>
       </div>
     </div>
-    <ul *ngIf="!approvalVersion" class="nav nav-tabs mb-3 d-print-none">
+    <ul *ngIf="!approvalVersion" class="nav nav-tabs mb-2 mt-4 d-print-none">
       <li class="nav-item">
-        <button class="btn btn-link nav-link" (click)="toDetails()" translate>
+        <button
+          type="button"
+          class="btn btn-link nav-link"
+          [ngClass]="{ active: subView == 'details' }"
+          (click)="toDetails()"
+          translate
+        >
           <fa-icon [icon]="faCube"></fa-icon>
           ORDERS.DETAIL.DETAILS
         </button>
       </li>
       <li class="nav-item">
-        <button class="btn btn-link nav-link" (click)="toShipments()" translate>
+        <button
+          type="button"
+          class="btn btn-link nav-link"
+          [ngClass]="{ active: subView == 'shipments' }"
+          (click)="toShipments()"
+          translate
+        >
           <fa-icon [icon]="faTruck"></fa-icon>
           ORDERS.DETAIL.SHIPMENTS
         </button>
       </li>
     </ul>
-    <div>
-      <ocm-order-historical
-        class="col-md-6"
-        *ngIf="
-          orderDetails &&
-          showDetails() &&
-          !showRequestReturn &&
-          !showRequestCancel
-        "
-        [isOrderToApprove]="isOrderToApprove"
-        [orderDetails]="orderDetails"
-      >
-      </ocm-order-historical>
-    </div>
+    <ocm-order-historical
+      class="d-block p-3"
+      *ngIf="
+        orderDetails &&
+        showDetails() &&
+        !showRequestReturn &&
+        !showRequestCancel
+      "
+      [isOrderToApprove]="isOrderToApprove"
+      [orderDetails]="orderDetails"
+    >
+    </ocm-order-historical>
   </div>
   <ocm-order-shipments
+    class="d-block p-3"
     *ngIf="showShipments() && !showRequestReturn"
     [orderID]="order.ID"
   >
   </ocm-order-shipments>
   <ocm-order-return
-    class="col-md-6"
+    class="d-block p-3"
     *ngIf="showRequestReturn || showRequestCancel"
     (viewReturnFormEvent)="toggleShowRequestForm($event.detail)"
     [isOrderToApprove]="isOrderToApprove"

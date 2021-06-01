@@ -5,3 +5,23 @@
 .order-view-item {
   height: 32px !important;
 }
+
+.nav-tabs{
+  border-bottom: 1px solid #dee2e6;
+  margin-bottom: -1px;
+}
+
+.nav-link {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  background-color: unset;
+
+  &.active {
+    background-color: var(--light);
+    border-bottom: #dee2e6;
+  }
+
+  &:focus {
+    outline: 0;
+  }
+}
