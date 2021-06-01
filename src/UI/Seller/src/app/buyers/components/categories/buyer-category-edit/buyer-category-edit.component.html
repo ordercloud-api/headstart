@@ -8,6 +8,9 @@
       class="form-group"
     >
       <label for="{{ field.field }}">{{ field.field | uncamel }}</label>
+      <label for="{{ field.field }}"
+        >{{ field.field | uncamel }} {{ getOptionalText(field.field) }}</label
+      >
       <input
         maxlength="100"
         type="text"
@@ -26,6 +29,9 @@
       class="form-group"
     >
       <label for="{{ field.field }}">{{ field.field | uncamel }}</label>
+      <label for="{{ field.field }}"
+        >{{ field.field | uncamel }} {{ getOptionalText(field.field) }}</label
+      >
       <input
         maxlength="100"
         type="text"
@@ -63,7 +69,9 @@
       "
       class="form-group"
     >
-      <label for="field.field">{{ field.field | uncamel }}</label>
+      <label for="field.field"
+        >{{ field.field | uncamel }} {{ getOptionalText(field.field) }}</label
+      >
       <input
         maxlength="100"
         type="text"
@@ -75,6 +83,7 @@
         placeholder="Enter {{ field.field }}"
       />
     </div>
+
     <div *ngIf="field.type === 'boolean'" class="form-group">
       <p class="mb-1">{{ field.field | uncamel }}</p>
       <label class="switch mb-0" for="{{ field.field }}">
