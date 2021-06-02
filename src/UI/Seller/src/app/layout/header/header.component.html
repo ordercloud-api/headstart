@@ -1,11 +1,11 @@
-<nav class="navbar navbar-dark navbar-expand-lg bg-primary base-layout-item">
+<nav class="navbar navbar-dark navbar-expand-lg bg-dark base-layout-item">
   <!-- Brand Logo -->
   <a class="navbar-brand clickable cursor-pointer">
     <img
       class="nav-link navbar-brand"
       routerLink="/home"
-      width="150px"
-      src="https://four51.io/wp-content/uploads/2019/08/Four51_Logo_MPLS_White@2x@1x.png"
+      width="175px"
+      src="assets/svg/Sitecore_logo_RGB_dark.svg"
     />
   </a>
   <!-- /Brand Logo -->
@@ -110,7 +110,10 @@
           id="ProfileImgThumb"
         />
         <div
-          *ngIf="!user?.xp?.Image?.ThumbnailUrl && currentUserInitials !== 'undefinedundefined'"
+          *ngIf="
+            !user?.xp?.Image?.ThumbnailUrl &&
+            currentUserInitials !== 'undefinedundefined'
+          "
           [attr.data-letters]="currentUserInitials"
           class="avatar avatar-sm ml-2"
         ></div>

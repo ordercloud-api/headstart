@@ -70,13 +70,13 @@
       <!-- /sub resource dropdown -->
     </div>
     <div
-      class="col-lg-2 col-md-1 col-sm-7 d-flex justify-content-start align-items-center"
+      class="col-sm d-flex justify-content-start align-items-center"
       *ngIf="shouldShowCreateNew"
     >
       <!-- route accidentally works for both subresoures and first level resources because the extra / are ignored by the router it appears-->
       <button
         *ngIf="_currentResourceNamePlural !== 'products'"
-        class="btn btn-block brand-button--orange"
+        class="btn btn-block btn-primary"
         routerLink="/{{
           isMyResource ? _ocService.myRoute : _ocService.route
         }}/{{ selectedParentResourceID }}/{{
@@ -94,7 +94,7 @@
       >
         <button
           ngbDropdownToggle
-          class="btn btn-block brand-button--orange"
+          class="btn btn-block btn-outline-red text-left"
           [disabled]="isCreatingNew"
         >
           Create New {{ labelSingular | translate }}
@@ -117,7 +117,7 @@
     <div
       [ngClass]="{
         'col-lg-7 col-md-7': parentResourceService,
-        'col-lg-10 col-md-10': !parentResourceService && shouldShowCreateNew,
+        'col-lg-9': !parentResourceService && shouldShowCreateNew,
         'col-lg-12': !parentResourceService && !shouldShowCreateNew
       }"
     >
@@ -135,12 +135,12 @@
             </search-component>
           </div>
           <!-- Facet Popover -->
-          <ng-container *ngIf="activeFilterCount">
-            <div class="col-md-1 d-flex align-items-center">
+          <ng-container *ngIf="_filterConfig?.Filters?.length > 0">
+            <div class="col-md-1 d-flex align-items-center mr-md-auto">
               <div class="d-flex justify-content-start align-items-center">
                 <div
                   *ngIf="filterForm"
-                  class="icon-button ripple"
+                  class="icon-button ripple shadow-sm"
                   placement="{{
                     screenSize === 'xs' && 'sm' && 'md' ? 'left' : 'bottom'
                   }}"
@@ -151,7 +151,7 @@
                   (click)="openPopover()"
                   popoverTitle="Filter"
                 >
-                  <fa-layers class="fa-layers fa-fw">
+                  <fa-layers class="fa-layers icon-wrapper">
                     <fa-icon [icon]="faFilter"> </fa-icon>
                     <fa-layers-counter
                       *ngIf="activeFilterCount && activeFilterCount > 0"
@@ -166,96 +166,89 @@
                   class="icon-button ripple"
                   (click)="clearAllFilters()"
                 >
-                  <fa-icon [icon]="faTimes"></fa-icon>
-                </div>
-              </div>
-            </div>
-          </ng-container>
-          <div class="col-md-6 d-flex align-items-center">
-            <ng-content select=".actionBar"></ng-content>
-          </div>
-        </div>
-      </div>
-      <!-- ngContent for filters popover -->
-      <ng-template #filters>
-        <div>
-          <!-- filter component -->
-          <!-- <form *ngIf="filterForm" -->
-          <form class="d-flex flex-column filters" [formGroup]="filterForm">
-            <div
-              *ngFor="let filter of _filterConfig?.Filters"
-              class="group mt-2"
-            >
-              <div *ngIf="shouldFilterDisplay(filter)">
-                <label translate>{{ filter.Display }}</label>
-                <select
-                  class="form-control input-sm"
-                  *ngIf="
-                    filter?.Type === 'Dropdown' ||
-                    filter?.BuyerAppFilterType === 'SelectOption' ||
-                    filter?.BuyerAppFilterType === 'NonUI'
-                  "
-                  type="select"
-                  required
-                  [formControlName]="filter.Path"
-                >
-                  <ng-container *ngFor="let option of filter.Items">
-                    <option
-                      *ngIf="isBoolean(option.Value)"
-                      value="{{ option.Value }}"
-                      translate
-                    >
-                      {{ option.Value | yesNo }}
-                    </option>
-                    <option
-                      *ngIf="!isBoolean(option.Value)"
-                      value="{{ option.Value }}"
-                      translate
-                    >
-                      {{ option.Text }}
-                    </option>
-                  </ng-container>
-                </select>
-                <div class="input-group" *ngIf="filter?.Type === 'DateFilter'">
-                  <input
-                    class="form-control"
-                    placeholder="yyyy-mm-dd"
-                    value="{{ filter.Path === 'from' ? fromDate : toDate }}"
-                    name="datePicker"
-                    [formControlName]="filter.Path"
-                    ngbDatepicker
-                    #d="ngbDatepicker"
-                  />
-                  <div class="input-group-append">
-                    <button
-                      class="btn btn-outline-primary calendar"
-                      (click)="d.toggle()"
-                      type="button"
-                    >
-                      <fa-icon
-                        [icon]="faCalendar"
-                        id="calendar-addon-from"
-                      ></fa-icon>
-                    </button>
+                  <div class="icon-wrapper">
+                    <fa-icon [icon]="faTimes"></fa-icon>
                   </div>
                 </div>
               </div>
             </div>
-          </form>
-          <div class="d-flex justify-content-between align-items-center mt-3">
-            <button
-              (click)="closePopover()"
-              class="btn btn-sm btn-link text-dark"
-            >
-              Cancel
-            </button>
-            <button
-              (click)="handleApplyFilters()"
-              class="btn btn-sm btn-primary"
-            >
-              Apply
-            </button>
+            <div class="col-md d-flex align-items-center justify-content-end">
+              <ng-content select=".actionBar"></ng-content>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <!-- ngContent for filters popover -->
+      <ng-template #filters>
+        <!-- filter component -->
+        <form class="d-flex flex-column filters" [formGroup]="filterForm">
+          <div *ngFor="let filter of _filterConfig?.Filters" class="group mt-2">
+            <div *ngIf="shouldFilterDisplay(filter)">
+              <label translate>{{ filter.Display }}</label>
+              <select
+                class="form-control input-sm"
+                *ngIf="
+                  filter?.Type === 'Dropdown' ||
+                  filter?.BuyerAppFilterType === 'SelectOption' ||
+                  filter?.BuyerAppFilterType === 'NonUI'
+                "
+                type="select"
+                required
+                [formControlName]="filter.Path"
+              >
+                <ng-container *ngFor="let option of filter.Items">
+                  <option
+                    *ngIf="isBoolean(option.Value)"
+                    value="{{ option.Value }}"
+                    translate
+                  >
+                    {{ option.Value | yesNo }}
+                  </option>
+                  <option
+                    *ngIf="!isBoolean(option.Value)"
+                    value="{{ option.Value }}"
+                    translate
+                  >
+                    {{ option.Text }}
+                  </option>
+                </ng-container>
+              </select>
+              <div class="input-group" *ngIf="filter?.Type === 'DateFilter'">
+                <input
+                  class="form-control"
+                  placeholder="yyyy-mm-dd"
+                  value="{{ filter.Path === 'from' ? fromDate : toDate }}"
+                  name="datePicker"
+                  [formControlName]="filter.Path"
+                  ngbDatepicker
+                  #d="ngbDatepicker"
+                />
+                <div class="input-group-append">
+                  <button
+                    class="btn btn-outline-primary calendar"
+                    (click)="d.toggle()"
+                    type="button"
+                  >
+                    <fa-icon
+                      [icon]="faCalendar"
+                      id="calendar-addon-from"
+                    ></fa-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
+        </form>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+          <button
+            (click)="closePopover()"
+            class="btn btn-sm btn-link text-dark"
+          >
+            Cancel
+          </button>
+          <button (click)="handleApplyFilters()" class="btn btn-sm btn-primary">
+            Apply
+          </button>
         </div>
       </ng-template>
       <!-- /ngContent for filters popover -->
@@ -402,7 +395,7 @@
             <button
               *ngIf="canImpersonateResource && !isCreatingNew"
               (click)="impersonateUser()"
-              class="btn brand-button--orange"
+              class="btn btn-primary"
             >
               Impersonate
             </button>
@@ -483,7 +476,7 @@
                 {{ getSaveBtnText() }}
               </button>
               <button
-                class="btn brand-button ml-3"
+                class="btn btn-primary ml-3"
                 (click)="handleDiscardChanges()"
                 *ngIf="areChanges && !isCreatingNew"
               >

@@ -6,54 +6,45 @@
 // check out node_modules/bootstrap/variables.scss
 // --------------------------------------------------------------------------------------
 
-$gray-100:          #f7f9fa;
-$gray-200:          #eff2f4; // brand guideline color
-$gray-300:          #d9d9da;
+$blue:              #289BC8;  // @SC-Theme-Primary: Dark
+$purple:            #85607C;  // @SC-Theme-Eggplant: XX-Dark
+$red:               #DC291E;  // @SC-Theme-Main: Default
+$orange:            #FA8938;  // @SC-Theme-Carrot: Dark
+$yellow:            #FAD338;  // @SC-Theme-Banana: Dark
+$green:             #88BB5D;  // @SC-Theme-Grass: X-Dark
+$teal:              #1CA6A3;  // brand guideline color
+
+
+$gray-100:          #F0F0F0;  // brand guideline color
+$gray-200:          #eff2f4;
+$gray-300:          #CCCCCC;  // brand guideline color
 $gray-400:          #d1d1d3;
 $gray-500:          #bbbcbf;
-$gray-600:          #8e9094;
-$gray-700:          #616469;
-$gray-800:          #1d2129;
-$gray-900:          #15181f;
+$gray-600:          #999999;  // brand guideline color
+$gray-700:          #707070;  // brand guideline color
+$gray-800:          #333333;  // brand guideline color
+$gray-900:          #232323;  // brand guideline color
 
 $black:             #000000;
 $white:             #ffffff;
 
-$sherpablue-200:    #8195a1; 
-$sherpablue-500:    #032a43; 
-$sherpablue-700:    #021f34; 
-$flame-500:         #f16122;
-$seafoam-500:       #20abad;
-$sizzlingred-500:   #ff4c5b;
-$sunset-500:        #f8ac1a;
-$junglegreen-500:   #13AE87;
-
-// Bootstrap color palette: These variables are used to generate your theme. 
-// *** Only include variables you intend to override. ***
-
-$blue:              $sherpablue-500;    // primary
-$red:               $sizzlingred-500;   // contextual color
-$yellow:            $sunset-500;        // contextual color
-$orange:            $flame-500;         // accent
-$green:             $junglegreen-500;   // contextual color
-$teal:              $seafoam-500;       // accent
-
-$primary:           $blue;
-$secondary:         $orange;
-$gray-light:        $gray-400;
+$primary:           $teal;
+$secondary:         $gray-800;
+$gray-light:        $gray-300;
 $light:             $gray-100;
-$medium:            $gray-700;
-$dark:              $gray-800;
-$primary-dark:      $sherpablue-700;
-$primary-light:     $sherpablue-200;
+$medium:            $gray-600;
+$dark:              $gray-900;
+$primary-dark:      #118B88;
+$primary-light:     #BBE4E3;
+$danger:            #E7534B;  // @SC-Theme-Tomato: Dark
 
 $theme-colors: (
-  'primary':        $blue,        
-  'secondary':      $orange,
-  'medium':         $gray-500,
-  'teal':           $teal,
+  'primary':        $primary,        
+  'secondary':      $secondary,
+  'medium':         $medium,
   'primary-dark':   $primary-dark,
-  'primary-light':  $primary-light
+  'primary-light':  $primary-light,
+  'red': $red
 );
 
 // Body
@@ -62,3 +53,8 @@ $theme-colors: (
 
 $body-bg:           white;
 $body-color:          $gray-800;
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap');
+
+$font-family-sans-serif:      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+$font-family-base:            "Open Sans", $font-family-sans-serif;

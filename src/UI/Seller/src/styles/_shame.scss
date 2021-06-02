@@ -54,12 +54,13 @@ How to use _shame.scss:
     height: 100px;
     line-height: 6.75rem;
     text-align: center;
-    border-radius: 0.25rem;
-    background: $teal;
+    border-radius: 100px;
+    background: $medium;
     vertical-align: middle;
     margin-right: 1em;
-    color: darken($teal, 30%);
+    color: $dark;
     font-weight: 600;
+    box-shadow: $box-shadow-lg;
   }
   
   .avatar-sm[data-letters]:before {
@@ -90,5 +91,24 @@ How to use _shame.scss:
   
     &>fa-icon {
       color: lighten(#032a43, 55%);
+    }
+  }
+
+  // Create animations.scss in the future
+  // this is used in the login screen
+  .fade-in {
+    opacity: 0;
+    animation: fadeIn ease 1;
+    animation-fill-mode: forwards;
+    animation-duration: 0.5s;
+    animation-delay: 0.5s; //using a delay to allow the translations to load
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
     }
   }
