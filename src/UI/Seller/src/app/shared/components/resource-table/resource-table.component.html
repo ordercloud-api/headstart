@@ -181,7 +181,6 @@
       <!-- ngContent for filters popover -->
       <ng-template #filters>
         <!-- filter component -->
-        <!-- <form *ngIf="filterForm" -->
         <form class="d-flex flex-column filters" [formGroup]="filterForm">
           <div *ngFor="let filter of _filterConfig?.Filters" class="group mt-2">
             <div *ngIf="shouldFilterDisplay(filter)">
