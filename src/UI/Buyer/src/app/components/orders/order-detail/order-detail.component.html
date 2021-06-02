@@ -68,7 +68,7 @@
           <ocm-order-approval
             *ngIf="approvalVersion"
             class="float-right"
-            [orderID]="order.ID"
+            [orderID]="order?.ID"
           ></ocm-order-approval>
 
           <button
@@ -281,7 +281,7 @@
   <ocm-order-shipments
     class="d-block p-3"
     *ngIf="showShipments() && !showRequestReturn"
-    [orderID]="order.ID"
+    [orderID]="order?.ID"
   >
   </ocm-order-shipments>
   <ocm-order-return
