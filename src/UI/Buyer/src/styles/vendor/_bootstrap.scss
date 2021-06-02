@@ -1,13 +1,10 @@
 /*
-    Manually importing the modules like this allows us 
+    Manually importing the modules like this allows us
     very fine grained control over the bootstrap saas in our app
 
     ~ is a shortcut for accessing the node_modules folder
 */
 
-@import "~bootstrap/scss/functions";
-@import "~bootstrap/scss/variables";
-@import "~bootstrap/scss/mixins";
 @import "~bootstrap/scss/root";
 @import "~bootstrap/scss/print";
 @import "~bootstrap/scss/reboot";

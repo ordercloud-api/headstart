@@ -100,10 +100,16 @@ export class OCMOrderDetails implements OnInit {
 
   toShipments(): void {
     this.subView = 'shipments'
+    if(this.showRequestCancel || this.showRequestReturn) {
+      this.toggleShowRequestForm(false)
+    }
   }
 
   toDetails(): void {
     this.subView = 'details'
+    if(this.showRequestCancel || this.showRequestReturn) {
+      this.toggleShowRequestForm(false)
+    }
   }
 
   toAllOrders(): void {

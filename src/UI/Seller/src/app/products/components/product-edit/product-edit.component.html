@@ -178,41 +178,6 @@
                       </select>
                     </div>
                   </div>
-                  <hr />
-                  <h6 class="font-weight-medium">
-                    Personalization
-                    <small class="d-block">
-                      <fa-icon
-                        class="color-beige"
-                        [icon]="faExclamationCircle"
-                      ></fa-icon>
-                      <span translate>
-                        ADMIN.PRODUCT_EDIT.ARTWORK_REQUIRED_INFO</span
-                      >
-                    </small>
-                  </h6>
-                  <div class="form-group">
-                    <div class="custom-control custom-checkbox">
-                      <input
-                        type="checkbox"
-                        class="custom-control-input"
-                        formControlName="ArtworkRequired"
-                        (input)="
-                          handleUpdateProduct(
-                            $event,
-                            'Product.xp.ArtworkRequired'
-                          )
-                        "
-                        id="ArtworkRequired"
-                      />
-                      <label
-                        class="custom-control-label"
-                        for="ArtworkRequired"
-                        translate
-                        >ADMIN.PRODUCT_EDIT.ARTWORK_REQUIRED</label
-                      >
-                    </div>
-                  </div>
                   <!-- /Product Name -->
                   <hr />
                   <h6 class="font-weight-medium" translate>

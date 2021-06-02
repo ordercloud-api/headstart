@@ -1,9 +1,8 @@
 <div class="container mt-3">
-  <div class="row w-100 border-bottom mb-3">
+  <div class="row no-gutters w-100 border-bottom mb-4">
     <h1 class="page-heading col-3" translate>
-      <ng-container *ngIf="orderRoutes.length > 1; else myOrders" translate>
-        ORDERS.HISTORY.ORDERS
-      </ng-container>
+      <!-- <ng-container *ngIf="orderRoutes.length > 1; else myOrders" translate> -->
+      <ng-container translate> ORDERS.HISTORY.ORDERS </ng-container>
       <ng-template #myOrders translate>ORDERS.HISTORY.MY_ORDERS</ng-template>
     </h1>
   </div>
@@ -11,50 +10,44 @@
     placeholderText="Orders"
     [searchTermInput]="searchTerm"
     (searched)="filterBySearch($event.detail)"
-  ></ocm-search>
-  <div class="row">
-    <div class="col-3">
-      <mat-card class="p-1 m-1">
-        <mat-action-list dense>
-          <span *ngFor="let orderRoute of orderRoutes">
-            <button
-              (click)="context.router[orderRoute.routerCall]()"
-              class="order-view-item"
-              [ngClass]="{
-                'active-order-route': orderRoute.context === viewContext
-              }"
-              mat-list-item
-            >
-              {{ orderRoute.displayText }}
-            </button>
-          </span>
-        </mat-action-list>
-      </mat-card>
+  >
+  </ocm-search>
+  <div class="row mt-4">
+    <div *ngIf="viewContext === 'Location'" class="col-3">
+      <ocm-order-location-filter></ocm-order-location-filter>
     </div>
-    <div class="col-9 m-0 pl-0">
-      <mat-card class="p-1 m-1">
-        <div class="row mt-3">
-          <div class="col-md-1 col-sm-6" *ngIf="columns.includes('Favorite')">
-            <div translate>ORDERS.HISTORY.FAVORITES</div>
-            <div class="mt-3 ml-3">
-              <ocm-toggle-favorite
-                [favorite]="showOnlyFavorites"
-                (favoriteChanged)="filterByFavorite($event.detail)"
-              >
-              </ocm-toggle-favorite>
-            </div>
-          </div>
-          <div *ngIf="viewContext === 'Location'" class="col">
-            <ocm-order-location-filter></ocm-order-location-filter>
-          </div>
-          <div class="col-md-3 col-sm-6" *ngIf="viewContext !== 'Approve'">
-            <ocm-order-status-filter></ocm-order-status-filter>
-          </div>
-          <div class="col">
-            <ocm-order-date-filter></ocm-order-date-filter>
-          </div>
-        </div>
-      </mat-card>
+    <div class="col-sm-3" *ngIf="viewContext !== 'Approve'">
+      <ocm-order-status-filter></ocm-order-status-filter>
+    </div>
+    <div class="col-sm-6">
+      <ocm-order-date-filter></ocm-order-date-filter>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-12">
+      <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item" *ngFor="let orderRoute of orderRoutes">
+          <button
+            class="nav-link py-3"
+            [ngClass]="{ active: orderRoute.context === viewContext }"
+            (click)="context.router[orderRoute.routerCall]()"
+            type="button"
+          >
+            {{ orderRoute.displayText }}
+          </button>
+        </li>
+        <li
+          class="text-secondary align-self-center ml-auto"
+          *ngIf="columns.includes('Favorite')"
+        >
+          <ocm-toggle-favorite
+            [favorite]="showOnlyFavorites"
+            (favoriteChanged)="filterByFavorite($event.detail)"
+          >
+          </ocm-toggle-favorite>
+          <span class="pl-2" translate>ORDERS.HISTORY.FAVORITES</span>
+        </li>
+      </ul>
     </div>
   </div>
   <ocm-order-list

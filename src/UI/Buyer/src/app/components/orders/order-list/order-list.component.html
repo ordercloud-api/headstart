@@ -66,6 +66,7 @@
         (click)="toOrderDetails(order.ID)"
       >
         <td
+          class="text-center"
           *ngIf="columns.includes('Favorite')"
           (click)="$event.stopPropagation()"
         >
@@ -75,7 +76,7 @@
           >
           </ocm-toggle-favorite>
         </td>
-        <td *ngIf="columns.includes('ID')" class="text-primary">
+        <td *ngIf="columns.includes('ID')" class="text-dark">
           {{ order.ID }}
           <span
             *ngIf="order.xp.OrderType === 'Quote'"
@@ -107,7 +108,7 @@
   </table>
 </div>
 <div
-  class="card bg-light p-3 flex-row justify-content-center"
+  class="card bg-light p-3 flex-row justify-content-center rounded-0"
   *ngIf="!orders?.Items.length"
 >
   <p class="mb-0" translate>ORDERS.LIST.NO_ORDERS</p>

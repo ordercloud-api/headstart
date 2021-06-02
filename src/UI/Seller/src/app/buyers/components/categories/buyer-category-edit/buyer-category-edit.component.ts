@@ -56,6 +56,12 @@ export class BuyerCategoryEditComponent {
     this.updateCategory.emit(categoryUpdate)
   }
 
+  getOptionalText(field: string) {
+    if (field.toUpperCase() === 'ID' || field.toUpperCase() === 'PARENTID') {
+      return ' (Optional)'
+    }
+    return ''
+  }
   checkForParent() {
     const routeUrl = this.router.routerState.snapshot.url
     const splitUrl = routeUrl.split('/')

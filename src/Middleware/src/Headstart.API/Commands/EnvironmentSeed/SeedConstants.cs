@@ -344,5 +344,22 @@ namespace Headstart.API.Commands
 
         #endregion
 
+        #region Product Facets
+
+        public static HSProductFacet DefaultProductFacet()
+        {
+            return new HSProductFacet()
+            {
+                ID = "supplier",
+                Name = "Supplier",
+                XpPath = "Facets.supplier",
+                ListOrder = 1,
+                MinCount = 1,
+                xp = null
+            };
+        }
+
+        #endregion
+
     }
 }
