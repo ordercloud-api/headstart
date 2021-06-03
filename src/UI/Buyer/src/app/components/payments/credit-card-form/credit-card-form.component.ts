@@ -63,13 +63,17 @@ export class OCMCreditCardForm implements OnChanges {
   faCcMastercard = faCcMastercard
   faCcAmex = faCcAmex
   private readonly defaultCountry = 'US'
+  shouldShowShippingOption
 
   constructor(
     private creditCardFormatPipe: CreditCardFormatPipe,
     private context: ShopperContextService
-    ) {
+  ) {
     this.countryOptions = GeographyConfig.getCountries()
     this.stateOptions = this.getStateOptions(this.defaultCountry)
+    this.shouldShowShippingOption = this.context.router
+      .getActiveUrl()
+      .includes('/profile')
   }
 
   ngOnChanges(changes: ComponentChanges<OCMCreditCardForm>): void {
@@ -221,21 +225,25 @@ export class OCMCreditCardForm implements OnChanges {
       'country',
       new FormControl(form.country, Validators.required)
     )
-    this.cardForm.addControl('useShippingAddress',
-      new FormControl(false)
-    )
+    if (this.shouldShowShippingOption) {
+      this.cardForm.addControl('useShippingAddress', new FormControl(false))
+    }
   }
 
   mapShippingAddressToBilling(event: Event) {
     const value = (event.target as HTMLInputElement).checked
     const lineItems = this.context.order.getLineItems()
-    if(value && lineItems?.Items && lineItems.Items[0]) {
+    if (value && lineItems?.Items && lineItems.Items[0]) {
       const firstItem = lineItems.Items[0]
-      this.cardForm.controls['street'].setValue(firstItem.ShippingAddress?.Street1)
+      this.cardForm.controls['street'].setValue(
+        firstItem.ShippingAddress?.Street1
+      )
       this.cardForm.controls['city'].setValue(firstItem.ShippingAddress?.City)
       this.cardForm.controls['state'].setValue(firstItem.ShippingAddress?.State)
       this.cardForm.controls['zip'].setValue(firstItem.ShippingAddress?.Zip)
-      this.cardForm.controls['country'].setValue(firstItem.ShippingAddress?.Country)
+      this.cardForm.controls['country'].setValue(
+        firstItem.ShippingAddress?.Country
+      )
     } else {
       this.cardForm.controls['street'].setValue('')
       this.cardForm.controls['city'].setValue('')

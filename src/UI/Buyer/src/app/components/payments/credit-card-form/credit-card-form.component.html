@@ -95,21 +95,21 @@
       />
     </div>
   </div>
-  <div *ngIf="_showCardDetails">
+  <div *ngIf="_showCardDetails && shouldShowShippingOption">
     <div class="form-check d-flex justify-content-between mb-2">
-    <input
-      type="checkbox"
-      (click)="mapShippingAddressToBilling($event)"
-      formControlName="useShippingAddress"
-      class="form-check-input"
-      id="useShippingAddress"
-    />
-    <label
-      class="form-check-label text-muted"
-      for="useShippingAddress" 
-      translate
-      >Use shipping address as billing</label
-    >
+      <input
+        type="checkbox"
+        (click)="mapShippingAddressToBilling($event)"
+        formControlName="useShippingAddress"
+        class="form-check-input"
+        id="useShippingAddress"
+      />
+      <label
+        class="form-check-label text-muted"
+        for="useShippingAddress"
+        translate
+        >Use shipping address as billing</label
+      >
     </div>
     <div class="row align-items-center">
       <label class="small text-muted col-12" for="accepted-cards" translate
