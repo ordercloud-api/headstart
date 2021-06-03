@@ -127,6 +127,12 @@ export class OCMAppHeader implements OnInit {
     return myRate?.Icon
   }
 
+  async hasSuppliers(): Promise<boolean> {
+    const suppliers = await this.context.supplierFilters.listSuppliers()
+
+    return suppliers.Meta.TotalCount > 0
+  }
+
   toggleCategoryDropdown(bool: boolean): void {
     this.showCategoryDropdown = bool
   }

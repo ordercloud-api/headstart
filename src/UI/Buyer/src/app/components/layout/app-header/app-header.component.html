@@ -27,18 +27,22 @@
             LAYOUT.APP_HEADER.PRODUCTS
           </a>
         </li>
-        <li class="nav-item clickable cursor-pointer">
-          <a
-            class="nav-link"
-            id="suppliers-link"
-            [ngClass]="{ active: activePath === '/suppliers' }"
-            (click)="
-              isCollapsed = !isCollapsed; context.router.toSupplierList()
-            "
-            translate
-            >ALIAS.SUPPLIERS</a
-          >
-        </li>
+        <div *ngIf="hasSuppliers()">
+          <li class="nav-item clickable cursor-pointer">
+            <a
+              *ngIf="hasSuppliers()"
+              class="nav-link"
+              id="suppliers-link"
+              [ngClass]="{ active: activePath === '/suppliers' }"
+              (click)="
+                isCollapsed = !isCollapsed; context.router.toSupplierList()
+              "
+              translate
+              >ALIAS.SUPPLIERS</a
+            >
+          </li>
+        </div>
+
         <li
           class="nav-item clickable cursor-pointer"
           *ngFor="let page of staticPages"
