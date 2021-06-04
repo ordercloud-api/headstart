@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnInit,
 } from '@angular/core'
 import { FormGroup, Validators, FormControl } from '@angular/forms'
 import { CreditCardFormatPipe } from 'src/app/pipes/credit-card-format.pipe'
@@ -28,7 +29,7 @@ import { ShopperContextService } from 'src/app/services/shopper-context/shopper-
   templateUrl: './credit-card-form.component.html',
   styleUrls: ['./credit-card-form.component.scss'],
 })
-export class OCMCreditCardForm implements OnChanges {
+export class OCMCreditCardForm implements OnChanges, OnInit {
   @Output() formSubmitted = new EventEmitter<CreditCardFormOutput>()
   @Output() formDismissed = new EventEmitter()
   @Input() card: OrderCloudIntegrationsCreditCardToken
@@ -71,11 +72,13 @@ export class OCMCreditCardForm implements OnChanges {
   ) {
     this.countryOptions = GeographyConfig.getCountries()
     this.stateOptions = this.getStateOptions(this.defaultCountry)
-    this.shouldShowShippingOption = this.context.router
+  }
+
+  ngOnInit() {
+    this.shouldShowShippingOption = !this.context.router
       .getActiveUrl()
       .includes('/profile')
   }
-
   ngOnChanges(changes: ComponentChanges<OCMCreditCardForm>): void {
     // template can't reference input properties directly because they may change outside of angular's knowledge
     // instead reference controlled variables that are only updated when angular knows about them (in ngOnChanges)
