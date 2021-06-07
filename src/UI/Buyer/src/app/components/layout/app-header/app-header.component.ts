@@ -13,7 +13,7 @@ import {
   faTimes,
 } from '@fortawesome/free-solid-svg-icons'
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap'
-import { Category, ListPage, Supplier } from 'ordercloud-javascript-sdk'
+import { Category } from 'ordercloud-javascript-sdk'
 import { bufferTime, filter, takeWhile } from 'rxjs/operators'
 import { HSOrder, HSLineItem } from '@ordercloud/headstart-sdk'
 import { getScreenSizeBreakPoint } from 'src/app/services/breakpoint.helper'
@@ -82,7 +82,6 @@ export class OCMAppHeader implements OnInit {
   faTimes = faTimes
   faBoxOpen = faBoxOpen
   flagIcon: string
-  currentSupplierList: ListPage<Supplier<any>> = null
 
   constructor(
     public context: ShopperContextService,
@@ -126,13 +125,6 @@ export class OCMAppHeader implements OnInit {
     const currentUser = this.context.currentUser.get()
     const myRate = rates?.Items.find((r) => r.Currency === currentUser.Currency)
     return myRate?.Icon
-  }
-
-  async hasSuppliers(): Promise<boolean> {
-    if (this.currentSupplierList == null) {
-      this.currentSupplierList = await this.context.supplierFilters.listSuppliers()
-    }
-    return this.currentSupplierList?.Meta?.TotalCount > 0
   }
 
   toggleCategoryDropdown(bool: boolean): void {
@@ -232,9 +224,9 @@ export class OCMAppHeader implements OnInit {
   }
 
   closeMiniCart(event: MouseEvent, popover: NgbPopover): void {
-    const rect = this.cartIcon?.nativeElement?.getBoundingClientRect()
+    const rect = this.cartIcon.nativeElement.getBoundingClientRect()
     // do not close if leaving through the bottom. That is handled by minicart itself
-    if (event.y < rect?.top + rect?.height) {
+    if (event.y < rect.top + rect.height) {
       popover.close()
     }
   }
