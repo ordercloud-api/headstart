@@ -265,9 +265,10 @@ export class CartService {
     } finally {
       if (this.state.orderPromos?.Items?.length) {
         // if there are pre-existing promos need to recalculate order
-        await this.checkout.calculateOrder()
+        const updatedOrder = await this.checkout.calculateOrder()
+        await this.state.resetCurrentOrder(updatedOrder)
       }
-      await this.state.reset()
+      await this.state.resetCurrentOrder()
       this.isCartValidSubject.next(true)
     }
   }
