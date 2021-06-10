@@ -18,6 +18,17 @@
     "SUPPLIERS": "Suppliers"
   },
   "ADMIN": {
+    "BUYER_GROUPS": {
+      "APPROVALS": {
+        "HEADER": "Order Approval Rule",
+        "DESCRIPTION": "Enable order approvals and set an order value threshold. Only buyers with 'ApprovalNeeded' permission will be subject to this rule.",
+        "ENABLE_LABEL": "Enable Approvals",
+        "THRESHOLD_LABEL": "Order Total Threshold"
+      }
+    },
+    "BUYER_USERS": {
+      "NO_ADDRESS_ASSIGNMENT": "This user has not been assigned to any buyer addresses."
+    },
     "COMMON": {
       "ACCOUNT_LOGIN": "Account Login",
       "CONFIRM_PASSWORD": "Confirm Password",
@@ -36,20 +47,21 @@
       "SEARCH": "Search",
       "SUBMIT": "Submit",
       "USERNAME": "Username",
-      "NOTIFICATIONS": "Notifications"
+      "NOTIFICATIONS": "Notifications",
+      "SAVE_CHANGES": "Save Changes",
+      "SAVING": "Saving",
+      "DISCARD_CHANGES": "Discard Changes",
+      "NO_CHANGES": "No Changes",
+      "CONFIRM": "Confirm",
+      "CREATE": "Create",
+      "CANCEL": "Cancel"
     },
     "DELETE": {
       "ARE_YOU_SURE": "Are you sure you want to delete this?",
-      "CONFIRM": "Confirm",
-      "CREATE": "Create",
       "DELETE": "Delete",
-      "DISCARD_CHANGES": "Discard Changes",
-      "NO_CHANGES": "No Changes",
       "NO_DO_NOT": "No, Do Not Delete",
       "PENDING_CONFIRMATION": "Pending Confirmation",
       "POTENTIALLY_DESTRUCTIVE": "This is a potentially destructive action that affects ",
-      "SAVE_CHANGES": "Save Changes",
-      "SAVING": "Saving",
       "THIS_ACTION_CANNOT": "This action cannot be undone.",
       "YES_DELETE": "Yes, Delete"
     },
@@ -194,6 +206,7 @@
       "ADD_ASSIGNMENT": "Add Assignment",
       "ADD_NEW_BREAK": "Add New Break",
       "ADD_VARIATION": "Add Variation",
+      "APPLY_INFO_TEXT": "In order to apply price breaks across variations, the product must have at least 1 variation.",
       "APPLY_ACROSS_VARIATIONS": "Apply Price Breaks Across Variations",
       "APPLY_INDIVIDUAL_VARIATIONS": "Apply Price Breaks to Individual Variations",
       "ARTWORK_REQUIRED": "This product uses a variable print template for fulfillment",
@@ -202,7 +215,6 @@
       "BUYER_PRICING": "Buyer Pricing",
       "BUYER_PRICING_INSTRUCTION": "You may use default pricing based on the buyer markup percentage set on the buyer edit page or you can create a new price schedule in your currency.",
       "BUYER_VISIBILITY": "Buyer Visibility",
-      "CANCEL": "Cancel",
       "CANCEL_OVERRIDE": "Cancel Override",
       "CATALOG": "Catalog",
       "CATALOG_ASSIGNMENT": "Catalog Assignment",
@@ -338,6 +350,7 @@
       "SIZE_TIER_INFO": "Choose approximately how many units of this product fit in a 22inch x 22inch x22inch box.",
       "SKU": "SKU",
       "SKUS_VARY": "SKUs vary based on this variation",
+      "SPEC_ISSUE": "Every variation must have at least one option.",
       "STANDARD": "Standard",
       "SUPPLIER_PRICING": "Supplier Pricing (In Supplier Currency)",
       "TAX_CATEGORY": "Category",
@@ -353,6 +366,7 @@
       "VARIANTS": "Variants",
       "VARIANTS_LIMIT_100": "variants. (Limit 100)",
       "VARIANTS_LOWERCASE": "variants",
+      "VARIANTS_WEARNING": "Set a product sku before creating product variants.",
       "VARIATION": "Variation",
       "VARIATION_ISSUES": "There are problems with the product variations.",
       "VISIBLE": "Visible",
@@ -364,15 +378,6 @@
       "WIDTH": "Width",
       "WITHIN_THIS_BUYER": "Within this buyer, select the categories and catalogs in which the product will appear, and the price buyers will pay.",
       "YOU_MAY_ASSIGN": "You may assign the product at this level or get more specific with subcategories"
-    },
-    "KITS": {
-      "OPTIONAL": "Optional",
-      "PRODUCTS_INCLUDED": "Products Included",
-      "MIN_QTY": "Min Qty",
-      "MAX_QTY": "Max Qty",
-      "STATIC": "Static",
-      "ADD_PRODUCTS": "Add Products to Kit",
-      "MUST_INCLUDE": "Kits must include at least one product"
     },
     "PROMOTIONS": {
       "ACTIVE": "Active",
@@ -492,6 +497,13 @@
     },
     "PERMISSIONS": {
       "LOCATION_APPROVAL_TOOLTIP": "No approval rules in this buyer group. Set an approval rule before granting OrderApprover permissions."
+    },
+    "STOREFRONTS": {
+      "SUMMARY": "A storefront represents a hosted buyer application. Simply creating a storefront in this admin interface will not create a buyer application - that process still needs to be performed manually by a developer but once that is done certain pieces about the storefront can be managed here",
+      "ACCESS_TOKEN_TOOLTIP": "Determines how long (in minutes) a user can stay logged in before they will need to re-enter their credentials and log back in. Minimum value is 10, Maximum value is 600.",
+      "REFRESH_TOKEN_TOOLTIP": "Determines how long (in minutes) a refresh token can be used to keep a user logged in. Minimum value is 0, Maximum value is 43,200.",
+      "ANON_BUYER_TOOLTIP": "The buyer organization that contains the user that should be used as the default context user for anonymous shopping. All pricing, permissions, and visibility will be based on this user",
+      "ANON_USERNAME_TOOLTIP": "The buyer user that will be used as the default context user for anonymous shopping. All pricing, permissions, and visibility will be based on this user"
     }
   },
   "AUTHENTICATION": {
@@ -566,6 +578,7 @@
     },
     "CHECKOUT_ADDRESS": {
       "BUYER_LOCATION": "Select Location for this order",
+      "BUYER_LOCATION_TOOLTIP": "This address is used for order approvals",
       "NEW_ADDRESS": "Add a New Address",
       "SAVE_CONTINUE": "Save and Continue",
       "SELECT_ADDRESS": "Choose from your saved addresses, or choose to enter a new address",
@@ -887,13 +900,6 @@
     "SORT": {
       "BY": "Sort By",
       "NONE": "None"
-    },
-    "KITS": {
-      "CLICK_TO_SELECT_VARIANT": "Click to select a variant",
-      "ADD_VARIANT_SELECTION": "Add Variant selection",
-      "YOU_MUST_MATCH_AT_LEAST_ONE_VARIANT": "You must select at least (1) variant from each variable product",
-      "EXPAND_AND_COLLAPSE": "Expand and collapse",
-      "DELETE_SELECTION": "Delete this selection?"
     }
   },
   "PROFILE": {
@@ -998,6 +1004,7 @@
       "SET_THRESHOLD": "You have the ability to set an order total above which orders will require approval for the users indicated above.",
       "SOME_ORDERS": "Only Orders Over Threshold",
       "THRESHOLD": "Order Approval Threshold",
+      "APPROVAL_ENABLED": "Approval Enabled",
       "USER": "User",
       "USER_IS_ADMINISTRATOR": "You are an approval rule administrator but you are not currently a part of any locations. When you join a location you can assign approval permissions here.",
       "WARNING": "This is a potentially destructive action that affects order approvals."
@@ -1027,7 +1034,8 @@
     "CREDIT_CARD_AUTH": {
       "TITLE": "There was an error processing your payment",
       "MESSAGE_PART1": "The authorization for your payment was declined by the processor due to:",
-      "MESSAGE_PART2": "Please reenter your information or use a different card"
+      "MESSAGE_PART2": "Please reenter your information or use a different card",
+      "BUTTONTEXT": "Back to Payment Section"
     },
     "ORDER_NOT_ACCESSABLE": "You no longer have access to this order",
     "UNKNOWN": "An unknown error has occurred"

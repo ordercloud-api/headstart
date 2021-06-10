@@ -8,7 +8,7 @@ export interface ProductXp {
     Note?: string
     Tax?: TaxProperties
     UnitOfMeasure?: UnitOfMeasure
-    ProductType?: 'Standard' | 'Quote' | 'PurchaseOrder' | 'Kit'
+    ProductType?: 'Standard' | 'Quote' | 'PurchaseOrder'
     SizeTier?: 'G' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F'
     IsResale?: boolean
     Accessorials?: 'Freezable' | 'Hazmat' | 'KeepFromFreezing'

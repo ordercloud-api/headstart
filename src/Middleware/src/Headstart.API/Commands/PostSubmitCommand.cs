@@ -315,6 +315,7 @@ namespace Headstart.API.Commands
         private async Task<Tuple<List<HSOrder>, HSOrderWorksheet, List<ProcessResultAction>>> HandlingForwarding(HSOrderWorksheet orderWorksheet)
         {
             var activities = new List<ProcessResultAction>();
+
             // forwarding
             var (forwardAction, forwardedOrders) = await ProcessActivityCall(
                 ProcessType.Forwarding,
@@ -344,6 +345,7 @@ namespace Headstart.API.Commands
 
         public  async Task<List<HSOrder>> CreateOrderRelationshipsAndTransferXP(HSOrderWorksheet buyerOrder, List<Order> supplierOrders)
         {
+            var payment = (await _oc.Payments.ListAsync(OrderDirection.Incoming, buyerOrder.Order.ID))?.Items?.FirstOrDefault();
             var updatedSupplierOrders = new List<HSOrder>();
             var supplierIDs = new List<string>();
             var lineItems = await _oc.LineItems.ListAllAsync(OrderDirection.Incoming, buyerOrder.Order.ID);
@@ -391,14 +393,20 @@ namespace Headstart.API.Commands
             }
 
             await _lineItemCommand.SetInitialSubmittedLineItemStatuses(buyerOrder.Order.ID);
+            var sellerShipEstimates = buyerOrder.ShipEstimateResponse?.ShipEstimates?.Where(se => se.xp.SupplierID == null);
 
+            //Patch Buyer Order after it has been submitted
             var buyerOrderPatch = new PartialOrder() {
                 xp = new {
                     ShipFromAddressIDs = shipFromAddressIDs,
                     SupplierIDs = supplierIDs,
                     ClaimStatus = ClaimStatus.NoClaim,
                     ShippingStatus = ShippingStatus.Processing,
-                    SubmittedOrderStatus = SubmittedOrderStatus.Open
+                    SubmittedOrderStatus = SubmittedOrderStatus.Open,
+                    HasSellerProducts = buyerOrder.LineItems.Any(li => li.SupplierID == null),
+                    PaymentMethod = payment.Type == PaymentType.CreditCard ? "Credit Card" : "Purchase Order",
+                    //  If we have seller ship estimates for a seller owned product save selected method on buyer order.
+                    SelectedShipMethodsSupplierView = sellerShipEstimates != null ? MapSelectedShipMethod(sellerShipEstimates) : null,
                 }
             };
 

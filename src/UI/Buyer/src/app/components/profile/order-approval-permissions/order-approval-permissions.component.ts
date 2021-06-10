@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core'
 import { UserGroup, UserGroupAssignment } from 'ordercloud-javascript-sdk'
-import { HSUser } from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, HSUser } from '@ordercloud/headstart-sdk'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 
 @Component({
@@ -18,6 +18,8 @@ export class OCMOrderAccessManagement {
   currentLocation: UserGroup = null
   currentLocationApprovalThresholdStatic = 0
   currentLocationApprovalThresholdEditable = 0
+  hasApprovalStatic: boolean
+  hasApprovalEditable: boolean
   areAllUsersAssignedToNeedsApproval = false
   _locationID = ''
 
@@ -26,7 +28,7 @@ export class OCMOrderAccessManagement {
     this.fetchUserManagementInformation()
   }
 
-  constructor(private context: ShopperContextService) {}
+  constructor(private context: ShopperContextService) { }
 
   toggleAllNeedingApproval(): void {
     if (this.areAllUsersAssignedToNeedsApproval) {
@@ -71,17 +73,51 @@ export class OCMOrderAccessManagement {
         this._locationID
       )
     ).Items
-    await this.updateAssignments()
-    const currentThreshold = await this.context.userManagementService.getLocationApprovalThreshold(
-      this._locationID
-    )
-    this.setApprovalRuleValues(currentThreshold)
+    try {
+      await this.updateAssignments()
+      const currentThreshold = await this.context.userManagementService.getLocationApprovalThreshold(
+        this._locationID
+      )
+      this.setApprovalRuleValues(currentThreshold)
+    } catch (ex) {
+      if (ex.status === 404) {
+        this.setApprovalRuleValues()
+      } else {
+        throw ex
+      }
+    }
   }
 
-  setApprovalRuleValues(amount: number): void {
-    this.currentLocationApprovalThresholdStatic = amount
+  toggleApproval() {
+    this.hasApprovalEditable = !this.hasApprovalEditable
+    if (!this.hasApprovalEditable) {
+      this.currentLocationApprovalThresholdEditable = this.currentLocationApprovalThresholdStatic
+    }
+  }
+
+  resetApprovals() {
+    this.hasApprovalEditable = this.hasApprovalStatic
     this.currentLocationApprovalThresholdEditable = this.currentLocationApprovalThresholdStatic
-    this.checkIfAllUsersAreAssignedToNeedsApproval()
+  }
+
+  setApprovalRuleValues(amount?: number): void {
+    if (amount >=0) {
+      this.hasApprovalStatic = true
+      this.hasApprovalEditable = true
+      this.currentLocationApprovalThresholdStatic = amount
+      this.currentLocationApprovalThresholdEditable = this.currentLocationApprovalThresholdStatic
+      this.checkIfAllUsersAreAssignedToNeedsApproval()
+    } else {
+      this.hasApprovalStatic = false
+      this.hasApprovalEditable = false
+    }
+  }
+
+  approvalChanged() {
+    return !(
+      this.hasApprovalEditable === this.hasApprovalStatic &&
+      this.currentLocationApprovalThresholdEditable === this.currentLocationApprovalThresholdStatic
+    )
   }
 
   async updateAssignments(): Promise<void> {
@@ -101,12 +137,19 @@ export class OCMOrderAccessManagement {
   }
 
   async saveNewThreshold(): Promise<void> {
-    const buyerID = this._locationID.split('-')[0]
-    const newThreshold = await this.context.userManagementService.setLocationApprovalThreshold(
+    const approval = HeadStartSDK.Services.BuildApproval(
       this._locationID,
-      this.currentLocationApprovalThresholdEditable
-    )
-    this.setApprovalRuleValues(newThreshold)
+      this.currentLocationApprovalThresholdEditable)
+    const buyerID = this._locationID.split('-')[0]
+    if (this.hasApprovalEditable) {
+      const newApproval = await HeadStartSDK.ApprovalRules.SaveApprovalRule(buyerID, this._locationID, approval)
+      const newThreshold = parseFloat(newApproval.RuleExpression.split(">")[1])
+      this.setApprovalRuleValues(newThreshold)
+    } else {
+      await HeadStartSDK.ApprovalRules.DeleteApprovalRule(buyerID, this._locationID, this._locationID)
+      this.setApprovalRuleValues()
+    }
+
   }
 
   isAssigned(userID: string, assignmentType: string): boolean {

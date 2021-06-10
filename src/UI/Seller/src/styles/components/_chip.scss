@@ -12,7 +12,7 @@
   padding: .5rem .75rem;
   margin: .25rem;
   border-radius: $border-radius;
-  color: $primary;
+  color: $primary-dark;
   font-weight: 500;
   transition: all 100ms ease-in-out;
 
@@ -28,14 +28,13 @@
   &.readonly {
     &.active {
       background: $gray-light;
-      color: $primary-light;
+      color: $medium;
     }
   }
 
   &.editable {
     &:hover {
-      background: $primary-dark;
-      color: white;
+      background: $primary-light;
       box-shadow: $box-shadow-sm;
     }
 

@@ -20,15 +20,15 @@
         mask: url(../../../../assets/svg/angle-right.svg) no-repeat left center;
         -webkit-mask-size: contain;
         mask-size: contain;
-        background-color: $primary-light;
+        background-color: $light;
         margin: .15rem .65rem 0 .5rem;
       }
       .breadcrumb-link {
-        color: $primary-light;
+        color: $light;
       }
       &:last-child {
         .breadcrumb-link {
-          color: $light;
+          color: $primary-light;
         }
       }
     }

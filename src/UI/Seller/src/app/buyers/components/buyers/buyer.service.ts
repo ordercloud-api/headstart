@@ -9,8 +9,6 @@ import { ListArgs } from '@ordercloud/headstart-sdk'
 export const BUYER_SUB_RESOURCE_LIST = [
   { route: 'users', display: 'ADMIN.NAV.USERS' },
   { route: 'locations', display: 'ALIAS.BUYER_LOCATIONS' },
-  { route: 'payments', display: 'ADMIN.NAV.PAYMENTS' },
-  { route: 'approvals', display: 'ADMIN.NAV.APPROVALS' },
   { route: 'catalogs', display: 'ADMIN.NAV.CATALOGS' },
   { route: 'categories', display: 'ADMIN.NAV.CATEGORIES' },
 ]

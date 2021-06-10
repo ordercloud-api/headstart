@@ -1,6 +1,3 @@
-import OrchestrationProducts from './OrchestrationProducts';
-import OrchestrationUsers from './OrchestrationUsers';
-import OrchestrationLogs from './OrchestrationLogs';
 import AnytimeWebhooks from './AnytimeWebhooks';
 import Buyers from './Buyers';
 import SsoLogins from './SsoLogins';
@@ -9,9 +6,7 @@ import Orders from './Orders';
 import Payments from './Payments';
 import Shipments from './Shipments';
 import Suppliers from './Suppliers';
-import KitProducts from './KitProducts';
 import Products from './Products';
-import SupplierFilterConfigs from './SupplierFilterConfigs';
 import BuyerLocations from './BuyerLocations';
 import Mes from './Mes';
 import Reports from './Reports';
@@ -34,14 +29,13 @@ import Auth from './Auth';
 import Tokens from './Tokens';
 import Upload from './Upload';
 import Assets from './Assets';
+import Services from './Service';
+import ApprovalRules from './ApprovalRules';
 
 export { HeadStartSDK }
 
 const HeadStartSDK: HeadStartSDK = {
     Assets : new Assets(),
-    OrchestrationProducts : new OrchestrationProducts(),
-    OrchestrationUsers : new OrchestrationUsers(),
-    OrchestrationLogs : new OrchestrationLogs(),
     AnytimeWebhooks : new AnytimeWebhooks(),
     Buyers : new Buyers(),
     SsoLogins : new SsoLogins(),
@@ -50,9 +44,7 @@ const HeadStartSDK: HeadStartSDK = {
     Payments : new Payments(),
     Shipments : new Shipments(),
     Suppliers : new Suppliers(),
-    KitProducts : new KitProducts(),
     Products : new Products(),
-    SupplierFilterConfigs : new SupplierFilterConfigs(),
     BuyerLocations : new BuyerLocations(),
     Mes : new Mes(),
     Reports : new Reports(),
@@ -73,14 +65,13 @@ const HeadStartSDK: HeadStartSDK = {
     TecraPdFs : new TecraPdFs(),
     Auth: new Auth(),
     Tokens: new Tokens(),
-    Upload: new Upload()
+    Upload: new Upload(),
+    Services: new Services(),
+    ApprovalRules: new ApprovalRules()
 }
 
 interface HeadStartSDK {
     Assets : Assets,
-    OrchestrationProducts : OrchestrationProducts,
-    OrchestrationUsers : OrchestrationUsers,
-    OrchestrationLogs : OrchestrationLogs,
     AnytimeWebhooks : AnytimeWebhooks,
     Buyers : Buyers,
     SsoLogins : SsoLogins,
@@ -89,9 +80,7 @@ interface HeadStartSDK {
     Payments : Payments,
     Shipments : Shipments,
     Suppliers : Suppliers,
-    KitProducts : KitProducts,
     Products : Products,
-    SupplierFilterConfigs : SupplierFilterConfigs,
     BuyerLocations : BuyerLocations,
     Mes : Mes,
     Reports : Reports,
@@ -112,5 +101,7 @@ interface HeadStartSDK {
     TecraPdFs : TecraPdFs,
     Auth: Auth,
     Tokens: Tokens,
-    Upload: Upload
+    Upload: Upload,
+    Services: Services,
+    ApprovalRules: ApprovalRules
 }

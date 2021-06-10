@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
+import { HeadStartSDK } from '@ordercloud/headstart-sdk'
 import { Me, Category } from 'ordercloud-javascript-sdk'
-import { listAll } from '../listAll'
 
 // TODO - this service is only relevent if you're already on the product details page. How can we enforce/inidcate that?
 @Injectable({
@@ -16,7 +16,7 @@ export class ProductCategoriesService {
   async setCategories(): Promise<void> {
     // We will have to enforce a maximum depth of 3 in the Admin UI.
     this.allCategories = (
-      await listAll(Me, Me.ListCategories, { depth: '3', pageSize: 100 })
+      await HeadStartSDK.Services.ListAll(Me, Me.ListCategories, { depth: '3', pageSize: 100 })
     ).Items
   }
 

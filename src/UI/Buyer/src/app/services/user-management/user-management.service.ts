@@ -100,22 +100,4 @@ export class UserManagementService {
       .get<number>(url, { headers })
       .toPromise()
   }
-
-  async setLocationApprovalThreshold(
-    locationID: string,
-    amount: number
-  ): Promise<number> {
-    const buyerID = this.currentUserService.get().Buyer.ID
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
-    })
-    const body = {
-      Threshold: amount,
-    }
-    const url = `${this.appConfig.middlewareUrl}/buyerlocations/${buyerID}/${locationID}/approvalthreshold`
-    return this.httpClient
-      .post<number>(url, body, { headers })
-      .toPromise()
-  }
 }

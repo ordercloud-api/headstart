@@ -3,7 +3,6 @@ import {
   Input,
   Output,
   EventEmitter,
-  ChangeDetectorRef,
   OnChanges,
   SimpleChanges,
 } from '@angular/core'
@@ -12,7 +11,6 @@ import {
   SpecOption,
   Spec,
   OcSpecService,
-  OcProductService,
 } from '@ordercloud/angular-sdk'
 import {
   faExclamationCircle,
@@ -32,7 +30,6 @@ import {
   HSVariant,
   ImageAsset,
 } from '@ordercloud/headstart-sdk'
-import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { BehaviorSubject } from 'rxjs'
 import { Products } from 'ordercloud-javascript-sdk'
 import { SupportedRates } from '@app-seller/shared'
@@ -49,10 +46,10 @@ export class ProductVariations implements OnChanges {
     this.variants.next(superProductEditable?.Variants)
     this.variantInSelection = {}
     this.canConfigureVariations = !!superProductEditable?.Product?.ID
-    this.addVariableTextSpecs = superProductEditable?.Specs?.some(
+    this.addVariableTextSpecs = this.addVariableTextSpecs || superProductEditable?.Specs?.some(
       (s) => s.AllowOpenText
     )
-    this.editSpecs = superProductEditable?.Specs?.some((s) => !s.AllowOpenText)
+    this.editSpecs = this.editSpecs || superProductEditable?.Specs?.some((s) => !s.AllowOpenText)
   }
   @Input()
   set superHSProductStatic(superProductStatic: SuperHSProduct) {
@@ -116,9 +113,6 @@ export class ProductVariations implements OnChanges {
     private productService: ProductService,
     private toasterService: ToastrService,
     private ocSpecService: OcSpecService,
-    private changeDetectorRef: ChangeDetectorRef,
-    private ocProductService: OcProductService,
-    private appAuthService: AppAuthService
   ) {
     this.variants = new BehaviorSubject<HSVariant[]>([])
   }
@@ -147,14 +141,18 @@ export class ProductVariations implements OnChanges {
         this.superProductEditable || this.productService.emptyResource
       )
       // Remove all specs that are *not* variable text specs
-      updateProductResourceCopy.Specs = updateProductResourceCopy.Specs.filter(
-        (s) => s.AllowOpenText
-      )
+      updateProductResourceCopy.Specs = updateProductResourceCopy.Specs.filter((s) => s.AllowOpenText)
       updateProductResourceCopy.Variants = []
       this.superProductEditable = updateProductResourceCopy
-      this.checkForSpecChanges()
       this.productVariationsChanged.emit(this.superProductEditable)
+    } else {
+      this.superProductEditable.Variants = this.superProductStatic.Variants
+      this.superProductEditable.Specs = [
+        ...(this.superProductStatic?.Specs || []),
+        ...(this.superProductEditable?.Specs?.filter((s) => s.AllowOpenText) || []),
+      ]
     }
+    this.checkForSpecChanges()
     this.editSpecs = !this.editSpecs
   }
 

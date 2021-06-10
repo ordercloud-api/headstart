@@ -11,10 +11,13 @@
   <div *ngIf="order">
     <ocm-modal [state]="orderErrorModal">
       <div class="text-center">
-        <h4 class="font-weight-bold">{{orderErrorTitle}}</h4>
-        <p *ngIf="orderErrorMessage">{{orderErrorMessage}}</p>
-        <button class="btn btn-primary align-self-center" (click)="handleCheckoutError()">
-          {{orderErrorButtonText}} 
+        <h4 class="font-weight-bold">{{ orderErrorTitle }}</h4>
+        <p *ngIf="orderErrorMessage">{{ orderErrorMessage }}</p>
+        <button
+          class="btn btn-primary align-self-center"
+          (click)="handleCheckoutError()"
+        >
+          {{ orderErrorButtonText }}
         </button>
       </div>
     </ocm-modal>
@@ -27,15 +30,16 @@
         </div>
       </div>
       <div class="col-lg-9 my-md-0 my-3">
-          <ngx-spinner
-            *ngIf="isLoading && currentPanel === 'shippingAddressLoading'"
-            bdColor="null"
-            color="var(--primary)"
-            size="small"
-            bdColor="null"
-            [fullScreen]="false"
-            type="ball-spin-clockwise-fade">  
-          </ngx-spinner>
+        <ngx-spinner
+          *ngIf="isLoading && currentPanel === 'shippingAddressLoading'"
+          bdColor="null"
+          color="var(--primary)"
+          size="small"
+          bdColor="null"
+          [fullScreen]="false"
+          type="ball-spin-clockwise-fade"
+        >
+        </ngx-spinner>
         <ngb-accordion
           [closeOthers]="true"
           (panelChange)="beforeChange($event)"
@@ -46,7 +50,7 @@
           <ngb-panel *ngIf="isAnon" id="login">
             <ng-template ngbPanelTitle>
               <h2 class="h5 mb-0 py-2 text-secondary" translate>
-               COMMON.LOGIN
+                COMMON.LOGIN
               </h2>
               <fa-icon
                 class="float-right text-success"
@@ -60,7 +64,7 @@
                   <button
                     class="btn btn-block btn-primary"
                     [routerLink]="['/login']"
-                    [queryParams]="{redirect: 'checkout'}"
+                    [queryParams]="{ redirect: 'checkout' }"
                     translate
                   >
                     COMMON.LOGIN
@@ -112,6 +116,7 @@
                 [orderPromos]="orderPromotions"
                 (continue)="doneWithShipToAddress()"
                 (handleOrderError)="handleOrderError($event.detail)"
+                (handleDismissal)="handleAddressDismissal()"
               ></ocm-checkout-address>
             </ng-template>
           </ngb-panel>

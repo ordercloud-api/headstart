@@ -114,3 +114,11 @@ ocm-quantity-input {
   font-size: .8rem;
   text-transform: uppercase;
 }
+
+// if there is an appended button, round the right corners
+.input-group-append {
+  .btn:last-of-type {
+    border-top-right-radius: $border-radius !important;
+    border-bottom-right-radius: $border-radius !important;
+  }
+}

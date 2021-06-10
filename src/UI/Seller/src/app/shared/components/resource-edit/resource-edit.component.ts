@@ -6,7 +6,7 @@ import {
   EventEmitter,
 } from '@angular/core'
 import {
-  ResourceFormUpdate,
+  ResourceUpdate,
   SwaggerSpecProperty,
 } from '@app-seller/models/shared.types'
 import { schemas } from './swagger-spec'
@@ -23,7 +23,7 @@ export class ResourceEditComponent {
   _resourceType: string
   resourceForm: FormGroup
 
-  constructor(private changeDetectorRef: ChangeDetectorRef,) {}
+  constructor(private changeDetectorRef: ChangeDetectorRef) {}
 
   @Input()
   set resource(value: any) {
@@ -33,34 +33,35 @@ export class ResourceEditComponent {
   }
   @Input()
   set resourceType(value: string) {
-    this._resourceType = value;
+    this._resourceType = value
     this._resourceFields = this.buildResourceFields(value)
-    
   }
 
   @Output()
-  updateResource = new EventEmitter<ResourceFormUpdate>()
+  updateResource = new EventEmitter<ResourceUpdate>()
 
   handleUpdateResource(event: any, fieldType: string) {
     const resourceupdate = {
       field: event.target.id,
-      value: fieldType === 'boolean' ? event.target.checked : event.target.value,
-      form: this.resourceForm
-    };
-    this.updateResource.emit(resourceupdate);
+      value:
+        fieldType === 'boolean' ? event.target.checked : event.target.value,
+      form: this.resourceForm,
+    }
+    this.updateResource.emit(resourceupdate)
   }
 
- buildForm(resource: any): FormGroup {
-   var formGroup = new FormGroup({});
-   Object.entries(schemas[this._resourceType]?.properties)
-   .forEach(([key, value]) => {
-     if(key !== 'xp') {
-       var control = new FormControl(resource[key], value['validators'])
-       formGroup.addControl(key, control)
-     }
-   })
-   return formGroup
- }
+  buildForm(resource: any): FormGroup {
+    const formGroup = new FormGroup({})
+    Object.entries(schemas[this._resourceType]?.properties).forEach(
+      ([key, value]) => {
+        if (key !== 'xp') {
+          const control = new FormControl(resource[key], value['validators'])
+          formGroup.addControl(key, control)
+        }
+      }
+    )
+    return formGroup
+  }
 
   buildResourceFields(resourceType: string): SwaggerSpecProperty[] {
     return Object.entries(schemas[resourceType]?.properties)
@@ -68,7 +69,7 @@ export class ResourceEditComponent {
         return {
           field: key,
           type: value['type'],
-          maxLength: (value['maxLength'] || 1000 )
+          maxLength: value['maxLength'] || 1000,
         }
       })
       .filter((r) => r.field !== 'xp')

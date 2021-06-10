@@ -1,0 +1,81 @@
+<div class="row pt-3 mt-3 bg-white shadow-sm card-highlight-border w-100 pl-3">
+  <div class="col-md-5">
+    <h5 translate>ADMIN.BUYER_GROUPS.APPROVALS.HEADER</h5>
+    <p class="font-italic" translate>
+      ADMIN.BUYER_GROUPS.APPROVALS.DESCRIPTION
+    </p>
+    <div class="pb-3">
+      <button
+        [disabled]="!areChanges"
+        class="btn btn-link"
+        (click)="discardApprovalChanges()"
+      >
+        {{
+          (areChanges ? 'ADMIN.COMMON.CANCEL' : 'ADMIN.COMMON.NO_CHANGES')
+            | translate
+        }}
+      </button>
+      <button
+        *ngIf="areChanges"
+        [disabled]="!areChanges || dataIsSaving"
+        class="btn brand-primary"
+        (click)="saveChanges()"
+      >
+        {{
+          (requestedUserConfirmation
+            ? 'ADMIN.DELETE.PENDING_CONFIRMATION'
+            : 'ADMIN.COMMON.SAVE_CHANGES'
+          ) | translate
+        }}
+      </button>
+      <button
+        *ngIf="requestedUserConfirmation && areChanges"
+        class="btn btn-primary"
+        (click)="executeUserUserGroupAssignmentRequests()"
+        translate
+      >
+        ADMIN.COMMON.CONFIRM
+      </button>
+    </div>
+  </div>
+  <div class="col-md-7">
+    <form [formGroup]="approvalForm">
+      <div class="form-group">
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <div class="custom-control custom-checkbox">
+              <input
+                id="Enabled"
+                type="checkbox"
+                formControlName="Enabled"
+                (click)="handleToggle($event)"
+                class="custom-control-input"
+              />
+              <label class="custom-control-label" for="Enabled" translate>
+                ADMIN.BUYER_GROUPS.APPROVALS.ENABLE_LABEL
+              </label>
+            </div>
+          </div>
+          <div *ngIf="approvalEnabled" class="form-group col-md-8">
+            <label for="OrderThreshold" translate
+              >ADMIN.BUYER_GROUPS.APPROVALS.THRESHOLD_LABEL</label
+            >
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">{{ '$' }}</span>
+              </div>
+              <input
+                id="OrderThreshold"
+                type="text"
+                class="form-control currency"
+                formControlName="OrderThreshold"
+                (input)="handleFormChange($event)"
+                placeholder="Enter Order Threshold"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

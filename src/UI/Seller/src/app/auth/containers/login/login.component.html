@@ -1,5 +1,11 @@
-<section class="login large-paddding-top">
+<section class="login large-paddding-top fade-in">
   <div class="text-center">
+    <img
+      src="assets/svg/Sitecore_logo_RGB.svg"
+      width="150"
+      class="img-fluid py-4"
+      alt="Sitecore"
+    />
     <h1 class="display-4">{{ appConfig.appname }}</h1>
   </div>
   <div class="mx-auto mt-4 login-container">
@@ -12,9 +18,12 @@
       name="LoginForm"
       autocomplete="off"
       novalidate
+      class="mt-4"
     >
       <div class="form-group">
-        <label for="username" translate>ADMIN.COMMON.USERNAME</label>
+        <label class="small" for="username" translate
+          >ADMIN.COMMON.USERNAME</label
+        >
         <input
           formControlName="username"
           id="username"
@@ -26,7 +35,9 @@
         />
       </div>
       <div class="form-group">
-        <label for="password" translate>ADMIN.COMMON.PASSWORD</label>
+        <label class="small" for="password" translate
+          >ADMIN.COMMON.PASSWORD</label
+        >
         <input
           formControlName="password"
           type="password"

@@ -102,13 +102,22 @@ namespace Headstart.Common.Controllers
             return await _locationPermissionCommand.GetApprovalThreshold(buyerID, buyerLocationID, UserContext);
         }
 
-        [DocName("POST set location approval threshold")]
-        [HttpPost]
+        [DocName("PUT Location Approval Rule")]
+        [HttpPut]
         [OrderCloudUserAuth(ApiRole.Shopper)]
-        [Route("{buyerID}/{buyerLocationID}/approvalthreshold")]
-        public async Task<decimal> SetLocationApprovalThreshold(string buyerID, string buyerLocationID, [FromBody] LocationApprovalThresholdUpdate locationApprovalThresholdUpdate)
+        [Route("{buyerID}/{buyerLocationID}/approval")]
+        public async Task<ApprovalRule> SetLocationApprovalThreshold(string buyerID, string buyerLocationID, [FromBody] ApprovalRule approval)
         {
-            return await _locationPermissionCommand.SetLocationApprovalThreshold(buyerID, buyerLocationID, locationApprovalThresholdUpdate.Threshold, UserContext);
+            return await _locationPermissionCommand.SaveApprovalRule(buyerID, buyerLocationID, approval, UserContext);
+        }
+
+        [DocName("DELETE Location Approval Rule")]
+        [HttpPut]
+        [OrderCloudUserAuth(ApiRole.Shopper)]
+        [Route("{buyerID}/{buyerLocationID}/approval/{approvalID}")]
+        public async Task DeleteLocationApprovalThreshold(string buyerID, string buyerLocationID, string approvalID)
+        {
+            await _locationPermissionCommand.DeleteApprovalRule(buyerID, buyerLocationID, approvalID, UserContext);
         }
 
         [DocName("LIST all of a user's user group assignments")]

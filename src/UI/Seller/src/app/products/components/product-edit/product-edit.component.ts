@@ -14,6 +14,8 @@ import {
   Address,
   SupplierAddresses,
   AdminAddresses,
+  MeUser,
+  SpecOption,
 } from 'ordercloud-javascript-sdk'
 import {
   FormGroup,
@@ -41,13 +43,13 @@ import {
   SuperHSProduct,
   ListPage,
   HeadStartSDK,
-  SpecOption,
   ProductXp,
   TaxProperties,
-  Asset,
   TaxCode,
   AssetType,
   ImageAsset,
+  DocumentAsset,
+  HSProduct,
 } from '@ordercloud/headstart-sdk'
 import { Location } from '@angular/common'
 import { TabIndexMapper, setProductEditTab } from './tab-mapper'
@@ -80,7 +82,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   @Input()
   set orderCloudProduct(product: Product) {
     if (product.ID) {
-      this.handleSelectedProductChange(product)
+      void this.handleSelectedProductChange(product)
     } else {
       this.createProductForm(this.productService.emptyResource)
       this._superHSProductEditable = this.productService.emptyResource
@@ -130,7 +132,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   fileType: string
   imageFiles: FileHandle[] = []
   staticContentFiles: FileHandle[] = []
-  staticContent: Asset[] = []
+  staticContent: DocumentAsset[] = []
   documentName: string
   selectedTabIndex = 0
   editPriceBreaks = false
@@ -237,9 +239,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     } else {
       this.taxCodes = { Meta: {}, Items: [] }
     }
-    this.staticContent = (this._superHSProductEditable.Product
-      ?.xp as any).Documents
-    this.images = (this._superHSProductEditable.Product?.xp as any)?.Images
+    this.staticContent = this._superHSProductEditable.Product?.xp.Documents
+    this.images = this._superHSProductEditable.Product?.xp?.Images
     this.taxCodeCategorySelected =
       this._superHSProductEditable.Product?.xp?.Tax?.Category !== null
     this.productType = this._superHSProductEditable.Product?.xp?.ProductType
@@ -389,13 +390,21 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     if (this.productService.checkIfCreatingNew()) {
       return false
     }
-    if (superHSProduct.Product?.DefaultSupplierID) {
-      if (
-        this.userContext?.Me?.Supplier?.ID ===
-        superHSProduct?.Product?.DefaultSupplierID
-      ) {
-        return false
-      }
+
+    const currentUser: MeUser = this.userContext.Me
+    const product: HSProduct = superHSProduct?.Product
+    const isSellerUser: boolean = this.userContext.UserType === 'SELLER'
+
+    if (!product?.DefaultSupplierID && isSellerUser) {
+      return false
+    }
+
+    if (currentUser?.Supplier?.ID === product?.DefaultSupplierID) {
+      return false
+    }
+
+    if (isSellerUser && product?.OwnerID === currentUser?.Seller?.ID) {
+      return false
     }
     return true
   }
@@ -562,7 +571,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     if (this.isCreatingNew) {
       await this.createNewProduct()
     } else {
-      this.updateProduct()
+      void this.updateProduct()
     }
   }
 
@@ -572,14 +581,14 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       this._superHSProductStatic.Product.ID,
       accessToken
     )
-    this.router.navigateByUrl('/products')
+    void this.router.navigateByUrl('/products')
   }
 
   handleDiscardChanges(): void {
     this.imageFiles = []
     this.staticContentFiles = []
     this._superHSProductEditable = this._superHSProductStatic
-    this.refreshProductData(this._superHSProductStatic)
+    void this.refreshProductData(this._superHSProductStatic)
   }
 
   async createNewProduct(): Promise<void> {
@@ -588,12 +597,12 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       const superProduct = await this.createNewSuperHSProduct(
         this._superHSProductEditable
       )
-      this.refreshProductData(superProduct)
-      this.router.navigateByUrl(`/products/${superProduct.Product.ID}`)
+      void this.refreshProductData(superProduct)
+      void this.router.navigateByUrl(`/products/${superProduct.Product.ID}`)
       this.dataIsSaving = false
     } catch (ex) {
       this.dataIsSaving = false
-      const message = ex?.response?.data?.Data
+      const message = ex?.response?.data?.Data as string;
       if (message) {
         this.toastrService.error(message, 'Error', { onActivateTick: true })
       }
@@ -625,11 +634,11 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         superProduct = await this.updateHSProduct(this._superHSProductEditable)
         this.updateList.emit(superProduct.Product as Product)
       }
-      this.refreshProductData(superProduct)
+      void this.refreshProductData(superProduct)
       this.dataIsSaving = false
     } catch (ex) {
       this.dataIsSaving = false
-      const message = ex?.response?.data?.Data
+      const message = ex?.response?.data?.Data as string
       if (message) {
         this.toastrService.error(message, 'Error', { onActivateTick: true })
       }
@@ -705,7 +714,10 @@ export class ProductEditComponent implements OnInit, OnDestroy {
    *  **** PRODUCT IMAGE UPLOAD FUNCTIONS ****
    * ******************************************/
 
-  manualFileUpload(event, fileType: string): void {
+  manualFileUpload(
+    event: Event & { target: HTMLInputElement },
+    fileType: string
+  ): void {
     if (fileType === 'image') {
       const files: FileHandle[] = Array.from(event.target.files).map(
         (file: File) => {
@@ -735,14 +747,14 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     this.checkForChanges()
   }
 
-  async removeFile(file: any, assetType: AssetType): Promise<void> {
+  async removeFile(file: DocumentAsset, assetType: AssetType): Promise<void> {
     this._superHSProductStatic.Product = await this.assetService.deleteAssetUpdateProduct(
       this._superHSProductEditable.Product,
       file.Url,
       assetType
     )
     this.updateList.emit(this._superHSProductStatic.Product as Product)
-    this.refreshProductData(this._superHSProductStatic)
+    void this.refreshProductData(this._superHSProductStatic)
   }
 
   unstageFile(index: number, fileType: string): void {
@@ -908,6 +920,9 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         )
       }
     }
+    if (!superHSProduct.Product.xp) {
+      superHSProduct.Product.xp = {}
+    }
     if (superHSProduct.PriceSchedule.PriceBreaks.length === 0)
       superHSProduct.PriceSchedule = null
     superHSProduct.Product.xp.Status = 'Draft'
@@ -915,9 +930,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       const imgAssets = await this.assetService.uploadImageFiles(
         this.imageFiles
       )
-      //  temporarily using 'as any' until sdk updated with new xp values
-      ;(superHSProduct.Product.xp as any).Images = [
-        ...((superHSProduct.Product.xp as any)?.Images || []),
+      superHSProduct.Product.xp.Images = [
+        ...(superHSProduct.Product.xp?.Images || []),
         ...imgAssets,
       ]
     }
@@ -925,8 +939,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       const documentAssets = await this.assetService.uploadDocumentFiles(
         this.staticContentFiles
       )
-      ;(superHSProduct.Product.xp as any).Documents = [
-        ...((superHSProduct.Product.xp as any)?.Documents || []),
+      superHSProduct.Product.xp.Documents = [
+        ...(superHSProduct.Product.xp?.Documents || []),
         ...documentAssets,
       ]
     }
@@ -941,7 +955,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  async handleSelectedProductChange(product: Product): Promise<void> {
+  async handleSelectedProductChange(product: HSProduct): Promise<void> {
     this._exchangeRates = (await HeadStartSDK.ExchangeRates.GetRateList()).Items
     const currencyOnProduct = product.xp.Currency
     this.supplierCurrency = this._exchangeRates?.find(
@@ -950,10 +964,15 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     this.sellerCurrency = this._exchangeRates?.find((r) => r.Currency === 'USD')
     const accessToken = await this.appAuthService.fetchToken().toPromise()
     const hsProduct = await HeadStartSDK.Products.Get(product.ID, accessToken)
-    this.refreshProductData(hsProduct)
+    void this.refreshProductData(hsProduct)
   }
 
-  async listTaxCodes(taxCategory, search, page, pageSize): Promise<any> {
+  async listTaxCodes(
+    taxCategory: string,
+    search: string,
+    page: number,
+    pageSize: number
+  ): Promise<ListPage<TaxCode>> {
     return await HeadStartSDK.Avalaras.ListTaxCodes({
       filters: { Category: taxCategory },
       search,

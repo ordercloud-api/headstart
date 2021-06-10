@@ -3,9 +3,6 @@ using OrderCloud.SDK;
 using System.Threading.Tasks;
 using Headstart.Models.Attributes;
 using ordercloud.integrations.library;
-using Headstart.Models;
-using Headstart.Common.Services.CMS;
-using Headstart.Common.Services.CMS.Models;
 using System.Collections.Generic;
 using OrderCloud.Catalyst;
 
@@ -16,40 +13,40 @@ namespace Headstart.Common.Controllers
 	// this is no longer the goal and having these configurations stored in a database feels like overkill and adds complexity
 	// once we have more time we should aim to remove the whole notion of supplier filter configs and just have this live in code
 
-    [DocComments("\"Supplier Filter Config\" represents Supplier Category Configuration")]
-    [HSSection.Headstart(ListOrder = 5)]
-    public class SupplierFilterConfigController : BaseController
-    {
-        public SupplierFilterConfigController()
-        {
+	[DocComments("\"Supplier Filter Config\" represents Supplier Category Configuration")]
+	[HSSection.Headstart(ListOrder = 5)]
+	public class SupplierFilterConfigController : BaseController
+	{
+		public SupplierFilterConfigController()
+		{
 
-        }
+		}
 
-        [DocName("GET SupplierCategoryConfig")]
-        [HttpGet, Route("/supplierfilterconfig"), OrderCloudUserAuth(ApiRole.Shopper, ApiRole.SupplierReader)]
-        public async Task<ListPage<SupplierFilterConfigDocument>> Get()
-        {
-			return new ListPage<SupplierFilterConfigDocument>
+		[DocName("GET SupplierCategoryConfig")]
+		[HttpGet, Route("/supplierfilterconfig"), OrderCloudUserAuth(ApiRole.Shopper, ApiRole.SupplierReader)]
+		public async Task<ListPage<dynamic>> Get()
+		{
+			return new ListPage<dynamic>
 			{
-				Items = new List<SupplierFilterConfigDocument>
+				Items = new List<dynamic>
 				{
 					GetCountriesServicingDoc()
 				}
 			};
-        }
+		}
 
-		private SupplierFilterConfigDocument GetCountriesServicingDoc()
+		private dynamic GetCountriesServicingDoc()
 		{
-			return new SupplierFilterConfigDocument
+			return new
 			{
 				ID = "CountriesServicing",
-				Doc = new SupplierFilterConfig
+				Doc = new
 				{
 					Display = "Countries Servicing",
 					Path = "xp.CountriesServicing",
-					Items = new List<Filter>
+					Items = new List<dynamic>
 					{
-						new Filter
+						new
 						{
 							Text = "UnitedStates",
 							Value = "US"
@@ -61,13 +58,5 @@ namespace Headstart.Common.Controllers
 				}
 			};
 		}
-
 	}
-
-	[SwaggerModel]
-    // swagger generator can't handle composite models so alias into one
-    public class SupplierFilterConfigDocument: Document<SupplierFilterConfig>
-    {
-
-    }
 }

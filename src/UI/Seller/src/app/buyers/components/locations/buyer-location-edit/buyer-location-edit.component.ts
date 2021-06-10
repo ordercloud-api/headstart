@@ -17,6 +17,7 @@ import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/
 import { REDIRECT_TO_FIRST_PARENT } from '@app-seller/layout/header/header.config'
 import { ResourceUpdate } from '@app-seller/models/shared.types'
 import { SupportedCountries } from '@app-seller/models/currency-geography.types'
+import { ApprovalRules, OrderApproval } from 'ordercloud-javascript-sdk'
 @Component({
   selector: 'app-buyer-location-edit',
   templateUrl: './buyer-location-edit.component.html',
@@ -52,6 +53,7 @@ export class BuyerLocationEditComponent implements OnInit {
   dataIsSaving = false
   countryOptions: SupportedCountries[]
   catalogs: HSCatalog[] = []
+  approvalRule: OrderApproval
 
   constructor(
     private buyerLocationService: BuyerLocationService,
@@ -186,7 +188,8 @@ export class BuyerLocationEditComponent implements OnInit {
     try {
       this.dataIsSaving = true
       this.buyerLocationEditable.UserGroup.xp.Country = this.buyerLocationEditable.Address.Country
-      var assignments = this.resourceForm.controls['CatalogAssignments']?.value
+      const assignments = this.resourceForm.controls['CatalogAssignments']
+        ?.value
       this.buyerLocationEditable.UserGroup.xp.CatalogAssignments =
         assignments?.CatalogIDs
       const updatedBuyerLocation = await HeadStartSDK.BuyerLocations.Save(
@@ -261,11 +264,18 @@ export class BuyerLocationEditComponent implements OnInit {
     this.resourceForm.controls['CatalogAssignments']?.setValue(event)
   }
 
+  handleUpdateApproval(event): void {
+    this.approvalRule = event
+  }
+
   private async handleSelectedAddressChange(address: Address): Promise<void> {
-    const hsBuyerLocation = await HeadStartSDK.BuyerLocations.Get(
-      this.buyerID,
-      address.ID
-    )
+    const [hsBuyerLocation, approvalRules] = await Promise.all([
+      HeadStartSDK.BuyerLocations.Get(this.buyerID, address.ID),
+      ApprovalRules.List(this.buyerID, {
+        filters: { ApprovingGroupID: `${address.ID}-OrderApprover` },
+      }),
+    ])
+    this.approvalRule = approvalRules?.Items[0]
     this.refreshBuyerLocationData(hsBuyerLocation)
   }
 }

@@ -3,11 +3,11 @@
   [selectedResourceID]="selectedResourceID"
   [updatedResource]="updatedResource"
   [resourceInSelection]="resourceInSelection"
-  [shouldShowResourceActions]="false"
   [ocService]="ocService"
   [dataIsSaving]="dataIsSaving"
   [resourceForm]="resourceForm"
   (searched)="searchResources($event)"
+  [shouldShowCreateNew]="true"
   (hitScrollEnd)="handleScrollEnd()"
   (changesSaved)="saveUpdates()"
   (changesDiscarded)="discardChanges()"
@@ -19,7 +19,8 @@
   <app-storefront-edit
     class="resource-edit"
     [labelSingular]="'Storefront'"
-    [resourceInSelection]="resourceInSelection"
+    [resourceInSelection]="updatedResource"
+    (updateResource)="updateResource($event)"
   >
   </app-storefront-edit>
 </resource-table-component>

@@ -1,9 +1,4 @@
+import { ShipMethod } from 'ordercloud-javascript-sdk';
 import { ShipMethodXP } from './ShipMethodXP';
 
-export interface HSShipMethod {
-    xp?: ShipMethodXP
-    ID?: string
-    Name?: string
-    Cost?: number
-    EstimatedTransitDays?: number
-}
+export type HSShipMethod = ShipMethod<ShipMethodXP>

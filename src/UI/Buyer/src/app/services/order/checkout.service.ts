@@ -9,21 +9,19 @@ import {
   LineItems,
   Suppliers,
   SupplierAddresses,
+  Address,
 } from 'ordercloud-javascript-sdk'
 import { Injectable } from '@angular/core'
 import { PaymentHelperService } from '../payment-helper/payment-helper.service'
 import { OrderStateService } from './order-state.service'
 import {
   HeadStartSDK,
-  Address,
   HSOrder,
   ListPage,
   HSLineItem,
   HSAddressBuyer,
-  OrderCloudIntegrationsCreditCardPayment,
 } from '@ordercloud/headstart-sdk'
 import { isEqual, max, uniqWith } from 'lodash'
-import { TempSdk } from '../temp-sdk/temp-sdk.service'
 import { LineItemGroupSupplier } from 'src/app/models/line-item.types'
 import { AddressType } from 'src/app/models/checkout.types'
 import { AppConfig } from 'src/app/models/environment.types'
@@ -37,27 +35,6 @@ export class CheckoutService {
     private state: OrderStateService,
     private appConfig: AppConfig
   ) {}
-
-  async appendPaymentMethodToOrderXp(
-    orderID: string,
-    ccPayment?: OrderCloudIntegrationsCreditCardPayment
-  ): Promise<void> {
-    const paymentMethod = ccPayment?.CreditCardID
-      ? 'Credit Card'
-      : 'Purchase Order'
-    await Orders.Patch('Outgoing', orderID, {
-      xp: { PaymentMethod: paymentMethod },
-    })
-  }
-
-  async checkForSellerOwnedProducts(lineItems: HSLineItem[]): Promise<void> {
-    const hasSellerProducts = lineItems.some((li) => li.SupplierID === null)
-    await this.patch({ xp: { HasSellerProducts: hasSellerProducts } })
-  }
-
-  async addComment(comment: string): Promise<HSOrder> {
-    return await this.patch({ Comments: comment })
-  }
 
   async setShippingAddress(address: BuyerAddress): Promise<HSOrder> {
     // If a saved address (with an ID) is changed by the user it is attached to an order as a one time address.
@@ -266,10 +243,10 @@ export class CheckoutService {
     return this.order
   }
 
-  private async patch(order: HSOrder): Promise<HSOrder> {
+  public async patch(order: HSOrder, orderID?: string): Promise<HSOrder> {
     this.order = (await Orders.Patch(
       'Outgoing',
-      this.order.ID,
+      orderID || this.order.ID,
       order
     )) as HSOrder
     return this.order

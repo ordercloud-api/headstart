@@ -1,7 +1,4 @@
-import { HSSupplier } from '../models/HSSupplier';
-import { HSSupplierOrderData } from '../models/HSSupplierOrderData';
 import { RequiredDeep } from '../models/RequiredDeep';
-import { ListArgs } from '../models/ListArgs'
 import httpClient from '../utils/HttpClient';
 import { DocumentAsset, FileData, ImageAsset } from '../models';
 

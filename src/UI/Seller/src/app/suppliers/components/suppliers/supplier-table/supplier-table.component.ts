@@ -40,18 +40,18 @@ function createSupplierForm(supplier: HSSupplier) {
     SupportContactName: new FormControl(
       (_get(supplier, 'xp.SupportContact') &&
         _get(supplier, 'xp.SupportContact.Name')) ||
-        ''
+      ''
     ),
     SupportContactEmail: new FormControl(
       (_get(supplier, 'xp.SupportContact') &&
         _get(supplier, 'xp.SupportContact.Email')) ||
-        '',
+      '',
       ValidateEmail
     ),
     SupportContactPhone: new FormControl(
       (_get(supplier, 'xp.SupportContact') &&
         _get(supplier, 'xp.SupportContact.Phone')) ||
-        ''
+      ''
     ),
     Active: new FormControl({
       value: supplier.Active,
@@ -151,30 +151,25 @@ export class SupplierTableComponent extends ResourceCrudComponent<Supplier> {
       const supplier = await this.supplierService.createNewResource(
         this.updatedResource
       )
+      let patchObj: Partial<Supplier> = {
+        xp: {}
+      }
       if (this.file) {
         // Upload their logo, if there is one.  Then, patch supplier xp
-        const imgUrls = HeadStartSDK.Assets.CreateImage({
+        const imgUrls = await HeadStartSDK.Assets.CreateImage({
           File: this.file
         })
-        const patchObj = {
-          xp: {
-            Image: imgUrls
-          }
-        }
-        await Suppliers.Patch(supplier.ID, patchObj)
+        patchObj.xp.Image = imgUrls
       }
       // Default the NotificationRcpts to initial user
       const users = await this.ocSupplierUserService
         .List(supplier.ID)
         .toPromise()
-      const patch = {
-        xp: {
-          NotificationRcpts: [users.Items[0].Email],
-        },
-      }
+      patchObj.xp.NotificationRcpts = [users.Items[0].Email]
       const patchedSupplier: HSSupplier = await this.ocSupplierService
-        .Patch(supplier.ID, patch)
+        .Patch(supplier.ID, patchObj)
         .toPromise()
+      this.updateResourceInList(patchedSupplier)
       this.selectResource(patchedSupplier)
       this.dataIsSaving = false
     } catch (ex) {
@@ -184,8 +179,8 @@ export class SupplierTableComponent extends ResourceCrudComponent<Supplier> {
   }
 
   updateResourceInList(supplier: Supplier): void {
-    const index = this.resourceList?.Items?.findIndex(item => item.ID === supplier.ID) 
-    if(index !== -1) {
+    const index = this.resourceList?.Items?.findIndex(item => item.ID === supplier.ID)
+    if (index !== -1) {
       this.resourceList.Items[index] = supplier
     }
   }
