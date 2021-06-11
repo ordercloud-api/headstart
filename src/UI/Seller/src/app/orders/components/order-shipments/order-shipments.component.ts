@@ -40,11 +40,7 @@ import {
   NumberCanChangeTo,
   SellerOrderCanShip,
 } from '@app-seller/orders/line-item-status.helper'
-import {
-  HeadStartSDK,
-  HSLineItem,
-  SuperHSShipment,
-} from '@ordercloud/headstart-sdk'
+import { HSLineItem, SuperHSShipment } from '@ordercloud/headstart-sdk'
 import { flatten as _flatten } from 'lodash'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { LineItemStatus } from '@app-seller/models/order.types'
@@ -241,7 +237,7 @@ export class OrderShipmentsComponent implements OnChanges {
           const sellerItems = response['Items'].filter(
             (li) => li.SupplierID === null
           )
-          allOrderLineItems = [..._flatten(sellerItems)]
+          allOrderLineItems = [..._flatten(sellerItems)] as HSLineItem[]
         } else {
           allOrderLineItems = [
             ...allOrderLineItems,

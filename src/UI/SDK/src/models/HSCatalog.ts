@@ -1,8 +1,4 @@
+import { Catalog } from 'ordercloud-javascript-sdk';
 import { CatalogXp } from './CatalogXp';
 
-export interface HSCatalog {
-    xp?: CatalogXp
-    ID?: string
-    Name?: string
-    Description?: string
-}
+export type HSCatalog = Catalog<CatalogXp>

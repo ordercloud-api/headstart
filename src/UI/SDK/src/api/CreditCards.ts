@@ -1,7 +1,6 @@
+import { CreditCard } from 'ordercloud-javascript-sdk';
 import { OrderCloudIntegrationsCreditCardToken } from '../models/OrderCloudIntegrationsCreditCardToken';
-import { CreditCard } from '../models/CreditCard';
 import { RequiredDeep } from '../models/RequiredDeep';
-import { ListArgs } from '../models/ListArgs'
 import httpClient from '../utils/HttpClient';
 
 export default class CreditCards {

@@ -101,7 +101,7 @@ export class OCMOrderAccessManagement {
   }
 
   setApprovalRuleValues(amount?: number): void {
-    if (amount && amount >= 0) {
+    if (amount >=0) {
       this.hasApprovalStatic = true
       this.hasApprovalEditable = true
       this.currentLocationApprovalThresholdStatic = amount

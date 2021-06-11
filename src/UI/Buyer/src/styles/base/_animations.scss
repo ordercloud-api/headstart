@@ -125,3 +125,29 @@
     transform: translateX(0);
   }
 }
+
+/* Blip */
+
+.blip {
+  position: relative;
+
+  &::after {
+    content: '';
+    border-radius: 50%;
+    height: calc(1em - .5px);
+    width: calc(1em - .5px);
+    transform: scale(1);
+    animation: blip 2s infinite;
+    animation-timing-function: ease;
+    position: absolute;
+    top: 1px;
+    left: 0;
+  }
+}
+
+@keyframes blip {
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+}

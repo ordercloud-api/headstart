@@ -250,22 +250,27 @@ namespace Headstart.Common.Services
         public async Task SendOrderApprovedEmail(MessageNotification<OrderSubmitEventBody> messageNotification)
         {
             var order = messageNotification.EventBody.Order;
+            var approval = messageNotification.EventBody.Approvals.FirstOrDefault();
             var templateData = new EmailTemplate<OrderTemplateData>()
             {
                 Data = SendgridMappers.GetOrderTemplateData(order, messageNotification.EventBody.LineItems),
                 Message = OrderSubmitEmailConstants.GetOrderApprovedText()
             };
+            templateData.Data.Comments = approval.Comments;
             await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, messageNotification?.Recipient?.Email, _settings?.SendgridSettings?.OrderApprovalTemplateID, templateData);
         }
 
         public async Task SendOrderDeclinedEmail(MessageNotification<OrderSubmitEventBody> messageNotification)
         {
             var order = messageNotification.EventBody.Order;
+            var approval = messageNotification.EventBody.Approvals.FirstOrDefault();
             var templateData = new EmailTemplate<OrderTemplateData>()
             {
                 Data = SendgridMappers.GetOrderTemplateData(order, messageNotification.EventBody.LineItems),
                 Message = OrderSubmitEmailConstants.GetOrderDeclinedText()
             };
+
+            templateData.Data.Comments = approval.Comments;
             await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, messageNotification?.Recipient?.Email, _settings?.SendgridSettings?.OrderApprovalTemplateID, templateData);
         }
 

@@ -9,21 +9,19 @@ import {
   LineItems,
   Suppliers,
   SupplierAddresses,
+  Address,
 } from 'ordercloud-javascript-sdk'
 import { Injectable } from '@angular/core'
 import { PaymentHelperService } from '../payment-helper/payment-helper.service'
 import { OrderStateService } from './order-state.service'
 import {
   HeadStartSDK,
-  Address,
   HSOrder,
   ListPage,
   HSLineItem,
   HSAddressBuyer,
-  OrderCloudIntegrationsCreditCardPayment,
 } from '@ordercloud/headstart-sdk'
 import { isEqual, max, uniqWith } from 'lodash'
-import { TempSdk } from '../temp-sdk/temp-sdk.service'
 import { LineItemGroupSupplier } from 'src/app/models/line-item.types'
 import { AddressType } from 'src/app/models/checkout.types'
 import { AppConfig } from 'src/app/models/environment.types'
@@ -37,7 +35,6 @@ export class CheckoutService {
     private state: OrderStateService,
     private appConfig: AppConfig
   ) {}
-
 
   async setShippingAddress(address: BuyerAddress): Promise<HSOrder> {
     // If a saved address (with an ID) is changed by the user it is attached to an order as a one time address.

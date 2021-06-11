@@ -1,4 +1,4 @@
-import { ListPage, OrderApproval } from "../models";
+import { ListPage } from "../models";
 import { flatten, range } from 'lodash'
 import {ApprovalRule} from 'ordercloud-javascript-sdk'
 
@@ -56,8 +56,9 @@ export default class Services {
                 "Every order over a certain limit will require approval " + 
                 "for the designated group of users.",
             ApprovingGroupID: `${locationID}-OrderApprover`,
-            RuleExpression: 'order.xp.ApprovalNeeded = ' + locationID + 
-                ' & order.Total > ' + (orderThreshold || 0) 
+            RuleExpression: "order.xp.ApprovalNeeded = '" + locationID + 
+                "' & order.Total > " + (orderThreshold || 0),
+            xp: {}
         }
     }
 }

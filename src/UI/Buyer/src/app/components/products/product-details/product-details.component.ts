@@ -259,7 +259,7 @@ export class OCMProductDetails implements OnInit {
 
   async submitQuoteOrder(info: QuoteOrderInfo): Promise<void> {
     try {
-      const lineItem: HSLineItem = {}
+      const lineItem: HSLineItem = {} as HSLineItem
       lineItem.ProductID = this._product.ID
       lineItem.Specs = this.specFormService.getLineItemSpecs(
         this.specs,

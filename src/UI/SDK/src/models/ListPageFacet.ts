@@ -1,4 +1,4 @@
-import { MetaWithFacets } from './MetaWithFacets'
+import { MetaWithFacets } from "ordercloud-javascript-sdk";
 
 export interface ListPageFacet<TItem> {
   Items?: TItem[]

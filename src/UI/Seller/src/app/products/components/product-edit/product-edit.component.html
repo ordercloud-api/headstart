@@ -178,41 +178,6 @@
                       </select>
                     </div>
                   </div>
-                  <hr />
-                  <h6 class="font-weight-medium">
-                    Personalization
-                    <small class="d-block">
-                      <fa-icon
-                        class="color-beige"
-                        [icon]="faExclamationCircle"
-                      ></fa-icon>
-                      <span translate>
-                        ADMIN.PRODUCT_EDIT.ARTWORK_REQUIRED_INFO</span
-                      >
-                    </small>
-                  </h6>
-                  <div class="form-group">
-                    <div class="custom-control custom-checkbox">
-                      <input
-                        type="checkbox"
-                        class="custom-control-input"
-                        formControlName="ArtworkRequired"
-                        (input)="
-                          handleUpdateProduct(
-                            $event,
-                            'Product.xp.ArtworkRequired'
-                          )
-                        "
-                        id="ArtworkRequired"
-                      />
-                      <label
-                        class="custom-control-label"
-                        for="ArtworkRequired"
-                        translate
-                        >ADMIN.PRODUCT_EDIT.ARTWORK_REQUIRED</label
-                      >
-                    </div>
-                  </div>
                   <!-- /Product Name -->
                   <hr />
                   <h6 class="font-weight-medium" translate>
@@ -1116,7 +1081,7 @@
           translate
         >
           ADMIN.PRODUCT_EDIT.VARIANTS
-          <span class="badge badge-pill badge-info">{{
+          <span class="badge badge-pill badge-primary-light">{{
             _superHSProductEditable?.Variants?.length || 0
           }}</span>
         </a>
@@ -1124,7 +1089,7 @@
       <li *ngIf="_superHSProductEditable?.Product?.ID" [ngbNavItem]="5" id="5">
         <a [fragment]="variants" class="text-muted" ngbNavLink translate>
           ADMIN.PRODUCT_EDIT.VARIANTS
-          <span class="badge badge-pill badge-info">{{
+          <span class="badge badge-pill badge-primary-light">{{
             _superHSProductEditable?.Variants?.length || 0
           }}</span>
         </a>
@@ -1156,7 +1121,7 @@
           ngbNavLink
           translate
           >ADMIN.PRODUCT_EDIT.IMAGES_AND_DOCUMENTS
-          <span class="badge badge-pill badge-info">{{
+          <span class="badge badge-pill badge-primary-light">{{
             _superHSProductEditable?.Product?.xp?.Images?.length +
               _superHSProductEditable?.Product?.xp.Documents?.length +
               imageFiles?.length +
@@ -1225,7 +1190,7 @@
                           </button>
                           <button
                             type="button"
-                            class="btn brand-button--danger"
+                            class="btn btn-primary-dark"
                             (click)="removeFile(image, 'image')"
                             (click)="modal.dismiss()"
                             translate
@@ -1385,7 +1350,7 @@
                             </button>
                             <button
                               type="button"
-                              class="btn brand-button--danger"
+                              class="btn btn-primary-dark"
                               (click)="removeFile(file, 'document')"
                               (click)="modal.dismiss()"
                               translate
@@ -1440,7 +1405,7 @@
           {{ getSaveBtnText() }}
         </button>
         <button
-          class="btn brand-button ml-3"
+          class="btn btn-primary ml-3"
           (click)="handleDiscardChanges()"
           *ngIf="areChanges && !isCreatingNew"
           translate

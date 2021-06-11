@@ -14,7 +14,7 @@ There are some tasks that must be completed before you can get an instance of He
 
 This solution relies on various third-party services and credentials for those services. You should have a set of test credentials as well as production credentials. Start by creating an account for all of the services listed.
 
-1. [Avalara](https://www.avalara.com/us/en/get-started/get-started-b.html?adobe_mc_ref=https%3A%2F%2Fwww.avalara.com%2Fus%2Fen%2Findex.html) - Tax calculation
+1. [Avalara](https://www.avalara.com/us/en/get-started/get-started-b.html?adobe_mc_ref=https%3A%2F%2Fwww.avalara.com%2Fus%2Fen%2Findex.html) - Tax calculation - If a License Key isn't provided, responses will be mocked in Test and UAT. A key is still needed for Production
 2. [CardConnect](https://cardconnect.com/signup) - Credit card payment processor - If account isn't provided, responses will be mocked in Test and UAT. An account is still needed for Production
 3. [EasyPost](https://www.easypost.com/signup) - Shipping estimates
 4. [SmartyStreets](https://smartystreets.com/pricing) - Address validation

@@ -3,10 +3,9 @@ import { FormGroup } from '@angular/forms'
 import {
   HSLineItem,
   HSMeProduct,
-  PriceSchedule,
   SuperHSProduct,
 } from '@ordercloud/headstart-sdk'
-import { BuyerProduct, PriceBreak, Spec } from 'ordercloud-javascript-sdk'
+import { BuyerProduct, PriceBreak, PriceSchedule, Spec } from 'ordercloud-javascript-sdk'
 import { ProductDetailService } from '../product-details/product-detail.service'
 import { SpecFormService } from '../spec-form/spec-form.service'
 import { minBy as _minBy } from 'lodash'

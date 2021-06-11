@@ -4,7 +4,7 @@
     <select
       id="status"
       (change)="selectStatus()"
-      class="form-control"
+      class="custom-select"
       formControlName="status"
     >
       <option *ngFor="let status of statuses" [ngValue]="status || ''">

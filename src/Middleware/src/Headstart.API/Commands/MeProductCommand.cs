@@ -20,7 +20,6 @@ namespace Headstart.API.Commands
 		Task<ListPageWithFacets<HSMeProduct>> List(ListArgs<HSMeProduct> args, VerifiedUserContext user);
 		Task<SuperHSMeProduct> Get(string id, VerifiedUserContext user);
 		Task RequestProductInfo(ContactSupplierBody template);
-		Task<HSMeKitProduct> ApplyBuyerPricing(HSMeKitProduct kitProduct, VerifiedUserContext user);
 	}
 
 	public class MeProductCommand : IMeProductCommand
@@ -61,7 +60,6 @@ namespace Headstart.API.Commands
 			};
 			return await ApplyBuyerPricing(unconvertedSuperHsProduct, user);
 		}
-
 		private async Task<SuperHSMeProduct> ApplyBuyerPricing(SuperHSMeProduct superHsProduct, VerifiedUserContext user)
 		{
 			var defaultMarkupMultiplierRequest = GetDefaultMarkupMultiplier(user);
@@ -72,7 +70,7 @@ namespace Headstart.API.Commands
 			var exchangeRates = await exchangeRatesRequest;
 
 			var markedupProduct = ApplyBuyerProductPricing(superHsProduct.Product, defaultMarkupMultiplier, exchangeRates);
-			var productCurrency = superHsProduct.Product.xp.Currency;
+			var productCurrency = superHsProduct.Product.xp.Currency ?? CurrencySymbol.USD;
 			var markedupSpecs = ApplySpecMarkups(superHsProduct.Specs.ToList(), productCurrency, exchangeRates);
 		
 			superHsProduct.Product = markedupProduct;
@@ -80,26 +78,6 @@ namespace Headstart.API.Commands
 			return superHsProduct;
 		}
 
-		public async Task<HSMeKitProduct> ApplyBuyerPricing(HSMeKitProduct kitProduct, VerifiedUserContext user)
-		{
-			var defaultMarkupMultiplierRequest = GetDefaultMarkupMultiplier(user);
-			var exchangeRatesRequest = GetExchangeRatesForUser(user.AccessToken);
-			await Task.WhenAll(defaultMarkupMultiplierRequest, exchangeRatesRequest);
-
-			var defaultMarkupMultiplier = await defaultMarkupMultiplierRequest;
-			var exchangeRates = await exchangeRatesRequest;
-
-			foreach (var kit in kitProduct.ProductAssignments.ProductsInKit)
-            {
-				var markedupProduct = ApplyBuyerProductPricing(kit.Product, defaultMarkupMultiplier, exchangeRates);
-				var productCurrency = kit.Product.xp.Currency;
-				var markedupSpecs = ApplySpecMarkups(kit.Specs.ToList(), productCurrency, exchangeRates);
-				kit.Product = markedupProduct;
-				kit.Specs = markedupSpecs;
-			}
-
-			return kitProduct;
-		}
 
 		private List<Spec> ApplySpecMarkups(List<Spec> specs, CurrencySymbol? productCurrency, List<OrderCloudIntegrationsConversionRate> exchangeRates)
 		{

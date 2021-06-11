@@ -1,10 +1,4 @@
+import { ProductFacet } from 'ordercloud-javascript-sdk';
 import { ProductFacetXp } from './ProductFacetXp';
 
-export interface HSProductFacet {
-    xp?: ProductFacetXp
-    ID?: string
-    Name?: string
-    XpPath?: string
-    ListOrder?: number
-    MinCount?: number
-}
+export type HSProductFacet = ProductFacet<ProductFacetXp>

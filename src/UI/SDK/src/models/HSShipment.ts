@@ -1,19 +1,6 @@
 import { ShipmentXp } from './ShipmentXp';
-import { HSAddressSupplier } from './HSAddressSupplier';
-import { HSAddressBuyer } from './HSAddressBuyer';
+import { Shipment } from 'ordercloud-javascript-sdk';
+import { SupplierAddressXP } from './SupplierAddressXP';
+import { BuyerAddressXP } from './BuyerAddressXP';
 
-export interface HSShipment {
-    xp?: ShipmentXp
-    readonly FromAddress?: HSAddressSupplier
-    readonly ToAddress?: HSAddressBuyer
-    ID?: string
-    BuyerID?: string
-    Shipper?: string
-    DateShipped?: string
-    DateDelivered?: string
-    TrackingNumber?: string
-    Cost?: number
-    Account?: string
-    FromAddressID?: string
-    ToAddressID?: string
-}
+export type HSShipment = Shipment<ShipmentXp, SupplierAddressXP, BuyerAddressXP>

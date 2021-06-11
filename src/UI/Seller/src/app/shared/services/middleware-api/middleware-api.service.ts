@@ -10,7 +10,6 @@ import { OcTokenService, Order } from '@ordercloud/angular-sdk'
 import {
   ListPage,
   BatchProcessResult,
-  SupplierFilterConfigDocument,
   SuperHSShipment,
   HSSupplier,
 } from '@ordercloud/headstart-sdk'
@@ -42,16 +41,14 @@ export class MiddlewareAPIService {
     supplier: HSSupplier
   ): Promise<HSSupplier> {
     const url = `${this.appConfig.middlewareUrl}/supplier/${supplierID}`
-    return await this.http.patch(url, supplier, this.headers).toPromise()
+    return await this.http
+      .patch<HSSupplier>(url, supplier, this.headers)
+      .toPromise()
   }
 
-  async getSupplierFilterConfig(): Promise<
-    ListPage<SupplierFilterConfigDocument>
-  > {
+  async getSupplierFilterConfig(): Promise<ListPage<any>> {
     const url = `${this.appConfig.middlewareUrl}/supplierfilterconfig`
-    return await this.http
-      .get<ListPage<SupplierFilterConfigDocument>>(url, this.headers)
-      .toPromise()
+    return await this.http.get<ListPage<any>>(url, this.headers).toPromise()
   }
 
   async getSupplierData(supplierOrderID: string): Promise<any> {

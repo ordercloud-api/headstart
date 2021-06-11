@@ -1,22 +1,14 @@
-import {
-  HSOrder,
-  HSLineItem,
-  OrderPromotion,
-} from '@ordercloud/headstart-sdk'
-import { ShipEstimate } from 'ordercloud-javascript-sdk'
+import { HSOrder, HSLineItem } from '@ordercloud/headstart-sdk'
+import { OrderPromotion, ShipEstimate } from 'ordercloud-javascript-sdk'
 import { OrderSummaryMeta } from '../models/order.types'
 
-const getPurchaseOrderLineItems = (
-  lineItems: HSLineItem[]
-): HSLineItem[] => {
+const getPurchaseOrderLineItems = (lineItems: HSLineItem[]): HSLineItem[] => {
   return lineItems.filter(
     (li) => li.Product.xp?.ProductType === 'PurchaseOrder'
   )
 }
 
-const getStandardLineItems = (
-  lineItems: HSLineItem[]
-): HSLineItem[] => {
+const getStandardLineItems = (lineItems: HSLineItem[]): HSLineItem[] => {
   return lineItems.filter(
     (li) => !(li.Product.xp?.ProductType === 'PurchaseOrder')
   )

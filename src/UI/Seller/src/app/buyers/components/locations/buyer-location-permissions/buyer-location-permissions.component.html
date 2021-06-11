@@ -7,53 +7,56 @@
     </p>
     <div>
       <perfect-scrollbar>
-      <table class="table table-hover">
-        <thead>
-          <tr>
-            <th scope="col">User</th>
-            <th scope="col" *ngFor="let permissionType of permissionTypes">
-              {{ permissionType.DisplayText }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="cursor-pointer" *ngFor="let user of locationUsers?.Items">
-            <td class="d-flex justify-content-start align-items-center">
-              {{ user.Username }}
-            </td>
-            <td *ngFor="let permissionType of permissionTypes" class="">
-              <label class="switch mb-0" >
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  (click)="
-                    toggleUserUserGroupAssignment(
-                      user.ID,
-                      permissionType.UserGroupSuffix
-                    )
-                  "
-                  [checked]="
-                    isAssigned(user.ID, permissionType.UserGroupSuffix)
-                  "
-                />
-                <span class="slider round"></span>
-              </label>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </perfect-scrollbar>
-    <ngb-pagination
-      *ngIf="LocationUsers?.Meta?.TotalPages > 1"
-      maxSize="10"
-      class="d-flex justify-content-center mt-3"
-      [collectionSize]="LocationUsers?.Meta.TotalCount"
-      [pageSize]="LocationUsers?.Meta.PageSize"
-      [(page)]="LocationUsers?.Meta.Page"
-      (pageChange)="changePage($event)"
-      [rotate]="true"
-    >
-    </ngb-pagination>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th scope="col">User</th>
+              <th scope="col" *ngFor="let permissionType of permissionTypes">
+                {{ permissionType.DisplayText }}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              class="cursor-pointer"
+              *ngFor="let user of locationUsers?.Items"
+            >
+              <td class="d-flex justify-content-start align-items-center">
+                {{ user.Username }}
+              </td>
+              <td *ngFor="let permissionType of permissionTypes" class="">
+                <label class="switch mb-0">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    (click)="
+                      toggleUserUserGroupAssignment(
+                        user.ID,
+                        permissionType.UserGroupSuffix
+                      )
+                    "
+                    [checked]="
+                      isAssigned(user.ID, permissionType.UserGroupSuffix)
+                    "
+                  />
+                  <span class="slider round"></span>
+                </label>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </perfect-scrollbar>
+      <ngb-pagination
+        *ngIf="LocationUsers?.Meta?.TotalPages > 1"
+        maxSize="10"
+        class="d-flex justify-content-center mt-3"
+        [collectionSize]="LocationUsers?.Meta.TotalCount"
+        [pageSize]="LocationUsers?.Meta.PageSize"
+        [(page)]="LocationUsers?.Meta.Page"
+        (pageChange)="changePage($event)"
+        [rotate]="true"
+      >
+      </ngb-pagination>
       <div class="pb-3">
         <button
           [disabled]="!areChanges"
@@ -65,7 +68,7 @@
         <button
           *ngIf="areChanges && !requestedUserConfirmation"
           [disabled]="!areChanges || requestedUserConfirmation"
-          class="btn brand-button"
+          class="btn btn-primary"
           (click)="requestUserConfirmation()"
         >
           {{

@@ -56,6 +56,12 @@ export class BuyerCategoryEditComponent {
     this.updateCategory.emit(categoryUpdate)
   }
 
+  getOptionalText(field: string) {
+    if (field.toUpperCase() === 'ID' || field.toUpperCase() === 'PARENTID') {
+      return ' (Optional)'
+    }
+    return ''
+  }
   checkForParent() {
     const routeUrl = this.router.routerState.snapshot.url
     const splitUrl = routeUrl.split('/')
@@ -65,6 +71,17 @@ export class BuyerCategoryEditComponent {
     params = params[2] ? params[2] : ''
     this._params = params
     return endUrl.includes('new?')
+  }
+
+  getParentID() {
+    const routeUrl = this.router.routerState.snapshot.url
+    const splitUrl = routeUrl.split('/')
+    const endUrl = splitUrl[splitUrl.length - 1]
+    if (endUrl.includes('new?')) {
+      return endUrl.split('=')[1]
+    } else {
+      ;('')
+    }
   }
 
   buildForm(resource: Category): FormGroup {
