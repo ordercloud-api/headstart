@@ -1,4 +1,4 @@
-import { Input, OnInit } from '@angular/core'
+import { Input, OnInit, Directive } from '@angular/core'
 import { faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { groupBy as _groupBy, isEqual, uniqWith } from 'lodash'
 import { HSLineItem } from '@ordercloud/headstart-sdk'
@@ -12,6 +12,7 @@ import { QtyChangeEvent } from 'src/app/models/product.types'
 import { NgChanges } from 'src/app/models/ng-changes.types'
 import { CheckoutService } from 'src/app/services/order/checkout.service'
 import { Address } from 'ordercloud-javascript-sdk'
+@Directive()
 export abstract class OCMParentTableComponent implements OnInit {
   @Input() set lineItems(lineItems: HSLineItem[]) {
     this._lineItems = lineItems
