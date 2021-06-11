@@ -33,7 +33,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.10.1",
     "@gorniv/ngx-universal": "^2.0.1",
     "@microsoft/applicationinsights-web": "^2.5.9",
-    "@ng-bootstrap/ng-bootstrap": "^6.2.1",
+    "@ng-bootstrap/ng-bootstrap": "^6.2.0",
     "@nguniversal/express-engine": "^8.1.1",
     "@nguniversal/module-map-ngfactory-loader": "^8.1.1",
     "@ngx-progressbar/core": "^5.2.1",
