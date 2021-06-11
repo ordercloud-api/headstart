@@ -35,7 +35,7 @@
     "@microsoft/applicationinsights-web": "^2.5.9",
     "@ng-bootstrap/ng-bootstrap": "^6.2.0",
     "@nguniversal/express-engine": "^10.1.0",
-    "@nguniversal/module-map-ngfactory-loader": "^8.1.1",
+    "@nguniversal/module-map-ngfactory-loader": "^9.0.0-next.9",
     "@ngx-progressbar/core": "^5.2.1",
     "@ngx-progressbar/http": "^5.2.1",
     "@ngx-translate/core": "^12.1.2",
