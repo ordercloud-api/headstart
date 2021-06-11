@@ -1,4 +1,4 @@
-import { Address } from "node:cluster";
+import { Address } from "ordercloud-javascript-sdk";
 
 export interface OrderCloudIntegrationsCreditCardToken {
     AccountNumber?: string
