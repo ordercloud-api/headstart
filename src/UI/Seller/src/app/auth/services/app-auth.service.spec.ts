@@ -61,10 +61,10 @@ describe('AppAuthService', () => {
         { provide: AppStateService, useValue: appStateService },
       ],
     });
-    appConfig = TestBed.get(applicationConfiguration);
-    tokenService = TestBed.get(OcTokenService);
-    appAuthService = TestBed.get(AppAuthService);
-    authService = TestBed.get(OcAuthService);
+    appConfig = TestBed.inject(applicationConfiguration);
+    tokenService = TestBed.inject(OcTokenService);
+    appAuthService = TestBed.inject(AppAuthService);
+    authService = TestBed.inject(OcAuthService);
   });
 
   it('should be created', inject(

@@ -21,8 +21,8 @@ describe('CheckoutComponent', () => {
     navigateByUrl: jasmine.createSpy('navigateByUrl'),
   };
   let ocOrderService = {
-    Get: () => {},
-    Submit: () => {},
+    Get: () => { },
+    Submit: () => { },
   };
   const paymentService = {
     List: jasmine.createSpy('List').and.returnValue(of({ Items: [{ ID: 'paymentID' }] })),
@@ -46,7 +46,7 @@ describe('CheckoutComponent', () => {
       ],
       schemas: [NO_ERRORS_SCHEMA], // Ignore template errors: remove if tests are added to test template
     }).compileComponents();
-    ocOrderService = TestBed.get(OcOrderService);
+    ocOrderService = TestBed.inject(OcOrderService);
   }));
 
   beforeEach(() => {

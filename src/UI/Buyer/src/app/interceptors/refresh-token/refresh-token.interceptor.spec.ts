@@ -41,8 +41,8 @@ describe('RefreshTokenInterceptor', () => {
         },
       ],
     });
-    httpClient = TestBed.get(HttpClient);
-    httpMock = TestBed.get(HttpTestingController);
+    httpClient = TestBed.inject(HttpClient);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   it('should be created', inject([RefreshTokenInterceptor], (service: RefreshTokenInterceptor) => {

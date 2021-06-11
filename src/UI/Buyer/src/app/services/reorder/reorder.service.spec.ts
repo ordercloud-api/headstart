@@ -38,16 +38,16 @@ describe('ReOrder Service', () => {
 
   let service;
   let response;
-  let appLineItemService = { listAllItems: () => {} };
-  let meService = { ListProducts: () => {} };
+  let appLineItemService = { listAllItems: () => { } };
+  let meService = { ListProducts: () => { } };
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       providers: [{ provide: CartService, useValue: appLineItemService }, { provide: OcMeService, useValue: meService }],
     });
-    service = TestBed.get(AppReorderService);
-    appLineItemService = TestBed.get(CartService);
-    meService = TestBed.get(OcMeService);
+    service = TestBed.inject(AppReorderService);
+    appLineItemService = TestBed.inject(CartService);
+    meService = TestBed.inject(OcMeService);
   }));
 
   it('should be created', () => {
