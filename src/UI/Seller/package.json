@@ -59,7 +59,7 @@
     "ngx-perfect-scrollbar": "^8.0.0",
     "ngx-quill": "^9.2.0",
     "ngx-spinner": "^10.0.1",
-    "ngx-toastr": "^9.1.1",
+    "ngx-toastr": "^13.2.1",
     "node-sass": "^4.12.0",
     "ordercloud-javascript-sdk": "4.2.0",
     "pluralize": "^8.0.0",
