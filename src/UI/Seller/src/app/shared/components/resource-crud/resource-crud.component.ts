@@ -1,4 +1,4 @@
-import { OnInit, OnDestroy, ChangeDetectorRef, NgZone } from '@angular/core'
+import { OnInit, OnDestroy, ChangeDetectorRef, NgZone, Directive } from '@angular/core'
 import { takeWhile } from 'rxjs/operators'
 import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
 import { FormGroup } from '@angular/forms'
@@ -9,6 +9,7 @@ import { BehaviorSubject } from 'rxjs'
 import { ResourceUpdate } from '@app-seller/models/shared.types'
 import OrderCloudError from 'ordercloud-javascript-sdk/dist/utils/OrderCloudError'
 
+@Directive()
 export abstract class ResourceCrudComponent<ResourceType>
   implements OnInit, OnDestroy {
   alive = true

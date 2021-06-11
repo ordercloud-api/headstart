@@ -57,6 +57,7 @@ import { BuyerVisibilityConfiguration } from './components/buyer-visibility/buye
 import { ProductCategoryAssignment } from './components/buyer-visibility/product-category-assignment/product-category-assignment.component'
 import { ResourceListMeta } from './components/resource-list-meta/resource-list-meta.component'
 import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
+import { RouterModule } from '@angular/router'
 
 @NgModule({
   imports: [
@@ -65,6 +66,7 @@ import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
     CommonModule,
     HttpClientModule,
     ReactiveFormsModule,
+    RouterModule,
 
     // 3rd party UI
     FontAwesomeModule,
@@ -175,7 +177,7 @@ import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
   ],
 })
 export class SharedModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<SharedModule> {
     return {
       ngModule: SharedModule,
       providers: [],

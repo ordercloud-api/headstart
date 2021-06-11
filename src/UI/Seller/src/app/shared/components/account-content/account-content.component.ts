@@ -1,10 +1,5 @@
 import { Router, ActivatedRoute } from '@angular/router'
-import {
-  AfterViewChecked,
-  ChangeDetectorRef,
-  OnInit,
-  Inject,
-} from '@angular/core'
+import { AfterViewChecked, ChangeDetectorRef, OnInit, Inject, Directive } from '@angular/core'
 import { getPsHeight } from '@app-seller/shared/services/dom.helper'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
@@ -18,6 +13,7 @@ import { AppConfig } from '@app-seller/models/environment.types'
 import { getAssetIDFromUrl } from '@app-seller/shared/services/assets/asset.helper'
 import { HeadStartSDK } from '@ordercloud/headstart-sdk'
 
+@Directive()
 export abstract class AccountContent implements AfterViewChecked, OnInit {
   activePage: string
   currentUserInitials: string
