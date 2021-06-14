@@ -1,4 +1,4 @@
-import { async, TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject, waitForAsync } from '@angular/core/testing';
 
 import { AppPaymentService } from 'src/app/shared/services/payment-helper/payment-helper.service';
 import { of } from 'rxjs';
@@ -26,7 +26,7 @@ describe('AppPaymentService', () => {
     List: jasmine.createSpy('List').and.returnValue(of(paymentList)),
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [{ provide: OcMeService, useValue: meService }, { provide: OcPaymentService, useValue: paymentService }],
     });

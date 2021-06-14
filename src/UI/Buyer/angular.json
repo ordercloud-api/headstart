@@ -39,11 +39,11 @@
               "optimization": false,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": false,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
-              "budgets": [ {
+              "budgets": [
+                {
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "6mb"
@@ -56,25 +56,27 @@
               ]
             },
             "deploy": {
-              "fileReplacements": [ {
-                "replace": "src/environments/environment.local.ts",
-                "with": "src/environments/environment.deploy.ts"
-              } ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.local.ts",
+                  "with": "src/environments/environment.deploy.ts"
+                }
+              ],
               "styles": [
                 {
                   "input": "src/styles/themes/defaultbuyer/_main.scss",
                   "bundleName": "defaultbuyer",
-                  "inject": false
+                  "inject": true
                 }
               ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
-              "budgets": [ {
+              "budgets": [
+                {
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "6mb"

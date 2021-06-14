@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SpecFormSelectComponent } from './spec-form-select.component';
 
@@ -6,7 +6,7 @@ describe('SpecFormSelectComponent', () => {
   let component: SpecFormSelectComponent;
   let fixture: ComponentFixture<SpecFormSelectComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [SpecFormSelectComponent],
     }).compileComponents();

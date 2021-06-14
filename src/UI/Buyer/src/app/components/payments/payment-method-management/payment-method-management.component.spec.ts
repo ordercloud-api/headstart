@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PaymentListComponent } from 'src/app/profile/containers/payment-list/payment-list.component';
 import { OcMeService } from '@ordercloud/angular-sdk';
@@ -19,7 +19,7 @@ describe('PaymentListComponent', () => {
     DeleteCreditCard: jasmine.createSpy('DeleteCreditCard').and.returnValue(of({})),
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [PaymentListComponent],
       providers: [

@@ -1,4 +1,4 @@
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { AppReorderService } from 'src/app/shared/services/reorder/reorder.service';
 import { OcMeService } from '@ordercloud/angular-sdk';
 import { of } from 'rxjs';
@@ -41,7 +41,7 @@ describe('ReOrder Service', () => {
   let appLineItemService = { listAllItems: () => { } };
   let meService = { ListProducts: () => { } };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [{ provide: CartService, useValue: appLineItemService }, { provide: OcMeService, useValue: meService }],
     });

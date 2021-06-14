@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CheckoutComponent } from 'src/app/checkout/containers/checkout/checkout.component';
 import { NgbAccordion, NgbPanel, NgbAccordionConfig } from '@ng-bootstrap/ng-bootstrap';
@@ -33,7 +33,7 @@ describe('CheckoutComponent', () => {
 
   const appErrorHandler = { displayError: jasmine.createSpy('displayError') };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [CheckoutComponent, NgbAccordion, NgbPanel],
       imports: [FontAwesomeModule, ReactiveFormsModule],

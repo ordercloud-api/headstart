@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { OrderShipmentsComponent } from 'src/app/order/containers/order-shipments/order-shipments.component';
 import { of, Subject } from 'rxjs';
@@ -32,7 +32,7 @@ describe('OrderShipmentsComponent', () => {
   const meService = {
     ListShipmentItems: jasmine.createSpy('ListShipmentItems').and.returnValue(of(shipmentItems)),
   };
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ShipperTrackingPipe, ShipperTrackingSupportedPipe, OrderShipmentsComponent],
       providers: [{ provide: ActivatedRoute, useValue: activatedRoute }, { provide: OcMeService, useValue: meService }],
