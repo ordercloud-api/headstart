@@ -28,7 +28,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { NgxImageZoomModule } from 'ngx-image-zoom'
 import { NgxSpinnerModule } from 'ngx-spinner'
 import { OCMCategoryDropdown } from './components/layout/category-dropdown/category-dropdown.component'
-import { CmsBuyerModule } from '@ordercloud/angular-cms-components'
 
 import {
   NgbCarouselModule,
@@ -149,7 +148,6 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { OCMBuyerLocationPermissions } from './components/profile/buyer-location-permissions/buyer-location-permissions'
 import { OCMOrderAccessManagement } from './components/profile/order-approval-permissions/order-approval-permissions.component'
 import { SafeHTMLPipe } from './pipes/safe-html.pipe'
-import { OCMStaticPage } from './components/layout/static-page/static-page.component'
 import { OCMProductAttachments } from './components/products/product-attachments/product-attachments.component'
 import { CartWrapperComponent } from './wrapper-components/cart-wrapper.component'
 import { CheckoutWrapperComponent } from './wrapper-components/checkout-wrapper.component'
@@ -158,7 +156,6 @@ import { LocationListWrapperComponent } from './wrapper-components/location-list
 import { LocationManagementWrapperComponent } from './wrapper-components/location-management-wrapper.component'
 import { ForgotPasswordWrapperComponent } from './wrapper-components/forgot-password-wrapper.component'
 import { HomeWrapperComponent } from './wrapper-components/home-wrapper.component'
-import { StaticPageWrapperComponent } from './wrapper-components/static-page-wrapper.component'
 import { LoginWrapperComponent } from './wrapper-components/login-wrapper.component'
 import { MeChangePasswordWrapperComponent } from './wrapper-components/me-change-password-wrapper.component'
 import { PaymentListWrapperComponent } from './wrapper-components/payment-list-wrapper.component'
@@ -195,7 +192,6 @@ import { RouteService } from './services/route/route.service'
 import { ShopperContextService } from './services/shopper-context/shopper-context.service'
 import { TempSdk } from './services/temp-sdk/temp-sdk.service'
 import { TokenHelperService } from './services/token-helper/token-helper.service'
-import { CMSConfiguration } from '@ordercloud/cms-sdk'
 import { AppConfig } from './models/environment.types'
 import { BaseResolveService } from './services/base-resolve/base-resolve.service'
 import { ShipMethodNameMapperPipe } from './pipes/ship-method-name/ship-method-name.pipe'
@@ -216,7 +212,6 @@ const components = [
   LocationManagementWrapperComponent,
   ForgotPasswordWrapperComponent,
   HomeWrapperComponent,
-  StaticPageWrapperComponent,
   LoginWrapperComponent,
   MeChangePasswordWrapperComponent,
   PaymentListWrapperComponent,
@@ -242,7 +237,6 @@ const components = [
   OCMLineitemTable,
   OCMCart,
   OCMHomePage,
-  OCMStaticPage,
   OCMProductSort,
   OCMSupplierSort,
   OCMSupplierCard,
@@ -335,7 +329,6 @@ const components = [
     ...components,
   ],
   imports: [
-    CmsBuyerModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
@@ -414,11 +407,7 @@ export class AppModule {
     MktpConfiguration.Set({
       baseApiUrl: this.appConfig.middlewareUrl,
     })
-    if(this.appConfig.cmsUrl && this.appConfig.cmsUrl !== '') {
-      CMSConfiguration.Set({
-        baseApiUrl: this.appConfig?.cmsUrl,
-      })
-    }
+
     Configuration.Set(this.getOrdercloudSDKConfig(appConfig))
     translate.setDefaultLang('en')
     translate.use('en')
@@ -437,7 +426,6 @@ export class AppModule {
     this.buildWebComponent(OCMProductAttachments, 'ocm-product-attachments')
     this.buildWebComponent(OCMCart, 'ocm-cart')
     this.buildWebComponent(OCMHomePage, 'ocm-home-page')
-    this.buildWebComponent(OCMStaticPage, 'ocm-static-page')
     this.buildWebComponent(OCMProductSort, 'ocm-product-sort')
     this.buildWebComponent(OCMSupplierSort, 'ocm-supplier-sort')
     this.buildWebComponent(OCMSupplierCard, 'ocm-supplier-card')

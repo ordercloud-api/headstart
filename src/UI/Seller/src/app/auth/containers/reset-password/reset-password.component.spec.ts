@@ -10,8 +10,8 @@ import { ResetPasswordComponent } from '@app-seller/auth/containers/reset-passwo
 import { OcForgottenPasswordService } from '@ordercloud/angular-sdk';
 import { CookieModule } from 'ngx-cookie';
 import { ToastrService } from 'ngx-toastr';
-import { AppFormErrorService } from '@app-seller/shared';
-import { applicationConfiguration, AppConfig } from '@app-seller/config/app.config';
+import { AppConfig, AppFormErrorService } from '@app-seller/shared';
+import { applicationConfiguration } from '@app-seller/config/app.config';
 
 describe('ResetPasswordComponent', () => {
   let component: ResetPasswordComponent;

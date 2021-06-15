@@ -6,12 +6,13 @@
   "incrementorPrefix": "HS_TEST",
   "baseUrl": "https://my-middleware-test.azurewebsites.net/",
   "middlewareUrl": "https://my-middleware-test.azurewebsites.net",
-  "cmsUrl": "https://ordercloud-cms-test.azurewebsites.net",
   "creditCardIframeUrl": "https://fts-uat.cardconnect.com/itoke/ajax-tokenizer.html",
   "translateBlobUrl": "https://headstartdemo.blob.core.windows.net/ngx-translate/i18n/",
   "sellerID": "HEADSTARTDEMO_TEST",
   "sellerName": "Headstart Demo Seller",
   "orderCloudApiUrl": "https://sandboxapi.ordercloud.io",
-  "theme": { "logoSrc": "assets/generic-logo.png" },
+  "theme": {
+    "logoSrc": "assets/generic-logo.png"
+  },
   "instrumentationKey": null
 }

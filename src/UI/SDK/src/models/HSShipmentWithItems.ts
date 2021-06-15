@@ -1,4 +1,4 @@
-import { Address } from 'node:cluster';
+import { Address } from 'ordercloud-javascript-sdk';
 import { HSShipmentItemWithLineItem } from './HSShipmentItemWithLineItem';
 export interface HSShipmentWithItems {
     ShipmentItems?: HSShipmentItemWithLineItem[]

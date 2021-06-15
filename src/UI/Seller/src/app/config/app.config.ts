@@ -8,7 +8,6 @@ export const ocAppConfig: AppConfig = {
   clientID: environment.clientID,
   sellerID: environment.sellerID,
   middlewareUrl: environment.middlewareUrl,
-  cmsUrl: environment.cmsUrl,
   orderCloudApiUrl: environment.orderCloudApiUrl,
   translateBlobUrl: environment.translateBlobUrl,
   blobStorageUrl: environment.blobStorageUrl,

@@ -46,12 +46,11 @@ import { ConfirmModal } from './components/confirm-modal/confirm-modal.component
 import { PhoneFormatPipe } from './pipes/phone-format.pipe'
 import { YesNoFormatPipe } from './pipes/yes-no-format.pipe'
 import { SafeHTMLPipe } from './pipes/safe-html.pipe'
-import {UnCamelPipe} from './pipes/un-camel-case.pipe'
+import { UnCamelPipe } from './pipes/un-camel-case.pipe'
 import { UserGroupAssignments } from './components/user-group-assignments/user-group-assignments.component'
 import { LocationIDInputDirective } from './directives/location-id-input.directive'
 import { ActionMenuComponent } from './components/action-menu/action-menu.component'
 import { TranslateModule } from '@ngx-translate/core'
-import { CmsAdminModule } from '@ordercloud/angular-cms-components'
 import { ResourceBreadcrumbsComponent } from './components/resource-breadcrumbs/resource-breadcrumbs.component'
 import { ProductVisibilityAssignments } from './components/buyer-visibility/product-visibility-assignments/product-visibility-assignments.component'
 import { BuyerVisibilityConfiguration } from './components/buyer-visibility/buyer-visibility-configuration/buyer-visibility-configuration.component'
@@ -83,9 +82,6 @@ import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
 
     // Quill
     QuillModule.forRoot(),
-
-    // OrderCloud CMS Components
-    CmsAdminModule,
   ],
   exports: [
     // angular
@@ -100,9 +96,6 @@ import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
     NgbDropdownModule,
     NgbProgressbarModule,
     NgbCollapseModule,
-
-    // OrderCloud CMS Components
-    CmsAdminModule,
 
     // app components
     SearchComponent,

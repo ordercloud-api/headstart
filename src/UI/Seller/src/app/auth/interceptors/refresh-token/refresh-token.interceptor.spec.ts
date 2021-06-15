@@ -10,13 +10,13 @@ import {
 import { RefreshTokenInterceptor } from '@app-seller/auth/interceptors/refresh-token/refresh-token.interceptor';
 import {
   applicationConfiguration,
-  AppConfig,
 } from '@app-seller/config/app.config';
 import { OcTokenService } from '@ordercloud/angular-sdk';
 import { CookieModule } from 'ngx-cookie';
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service';
 import { of, BehaviorSubject } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { AppConfig } from '@app-seller/shared';
 
 describe('RefreshTokenInterceptor', () => {
   const mockRefreshToken = 'RefreshABC123';

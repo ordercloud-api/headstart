@@ -25,7 +25,6 @@ import { ProductListWrapperComponent } from './wrapper-components/product-list-w
 import { ProfileWrapperComponent } from './wrapper-components/profile-wrapper.component'
 import { RegisterWrapperComponent } from './wrapper-components/register-wrapper.component'
 import { ResetPasswordWrapperComponent } from './wrapper-components/reset-password-wrapper.component'
-import { StaticPageWrapperComponent } from './wrapper-components/static-page-wrapper.component'
 import { SupplierListWrapperComponent } from './wrapper-components/supplier-list-wrapper.component'
 
 const HeadstartRoutes: Routes = [
@@ -107,10 +106,9 @@ const HeadstartRoutes: Routes = [
           },
           { path: 'location', component: OrderHistoryWrapperComponent, canActivate: [IsProfiledUserGuard] },
           { path: ':orderID', component: OrderDetailWrapperComponent, canActivate: [HasTokenGuard] },
-          { path: '', component: OrderHistoryWrapperComponent, canActivate: [IsProfiledUserGuard]},
+          { path: '', component: OrderHistoryWrapperComponent, canActivate: [IsProfiledUserGuard] },
         ],
       },
-      { path: ':staticPageUrl', component: StaticPageWrapperComponent },
     ],
   },
 ]
@@ -119,4 +117,4 @@ const HeadstartRoutes: Routes = [
   imports: [RouterModule.forRoot(HeadstartRoutes)],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }
