@@ -1,6 +1,6 @@
 import { BuyerCatalogTableComponent } from './buyer-catalog-table.component'
 import { HttpClient } from '@angular/common/http'
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { ActivatedRoute, Router } from '@angular/router'
 import { of } from 'rxjs'
 import { BuyerCatalogService } from '../buyer-catalog.service'
@@ -34,7 +34,7 @@ describe('BuyerCatalogTableComponent', () => {
     resourceSubject: of({}),
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [BuyerCatalogTableComponent],
       providers: [

@@ -5,7 +5,6 @@ import { HttpClientModule } from '@angular/common/http'
 import { ReactiveFormsModule, FormsModule } from '@angular/forms'
 import {
   NgbPaginationModule,
-  NgbTabsetModule,
   NgbPopoverModule,
   NgbDropdownModule,
   NgbModalModule,
@@ -25,7 +24,6 @@ import { CarouselSlideDisplayComponent } from '@app-seller/shared/components/car
 import { UserFormComponent } from '@app-seller/shared/components/user-form/user-form.component'
 import { AddressFormComponent } from '@app-seller/shared/components/address-form/address-form.component'
 import { CategoryFormComponent } from './components/category-form/category-form.component'
-import { CategoryDetailsComponent } from './components/category-details/category-details.component'
 import { AddressSuggestionComponent } from './components/address-suggestion/address-suggestion.component'
 import { ProductImagesComponent } from './components/product-images/product-images.component'
 import { ProductFormComponent } from './components/products-form/product-form.component'
@@ -75,7 +73,6 @@ import { RouterModule } from '@angular/router'
     NgbPopoverModule,
     NgbDropdownModule,
     NgbPaginationModule,
-    NgbTabsetModule,
     NgbModalModule,
     NgbDatepickerModule,
     NgbTooltipModule,
@@ -94,7 +91,6 @@ import { RouterModule } from '@angular/router'
     // 3rd party UI
     FontAwesomeModule,
     NgbPaginationModule,
-    NgbTabsetModule,
     NgbDropdownModule,
     NgbProgressbarModule,
     NgbCollapseModule,
@@ -106,7 +102,6 @@ import { RouterModule } from '@angular/router'
     UserFormComponent,
     AddressFormComponent,
     CategoryFormComponent,
-    CategoryDetailsComponent,
     AddressSuggestionComponent,
     ResourceSelectDropdown,
     ProductImagesComponent,
@@ -144,7 +139,6 @@ import { RouterModule } from '@angular/router'
     UserFormComponent,
     AddressFormComponent,
     CategoryFormComponent,
-    CategoryDetailsComponent,
     AddressSuggestionComponent,
     ProductImagesComponent,
     ResourceSelectDropdown,

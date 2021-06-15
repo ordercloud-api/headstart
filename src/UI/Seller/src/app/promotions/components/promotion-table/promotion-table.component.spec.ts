@@ -1,5 +1,5 @@
 import { PromotionService } from '@app-seller/promotions/promotion.service'
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { Router, ActivatedRoute } from '@angular/router'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { of } from 'rxjs'
@@ -37,7 +37,7 @@ describe('PromotionTableComponent', () => {
   }
   const activatedRoute = { queryParams: of({}), params: of({}) }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [PromotionTableComponent],
       providers: [

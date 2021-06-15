@@ -1,5 +1,5 @@
 import { ProductTableComponent } from './product-table.component'
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { Router, ActivatedRoute } from '@angular/router'
 import { ProductService } from '@app-seller/products/product.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
@@ -43,7 +43,7 @@ describe('ProductTableComponent', () => {
   }
   const activatedRoute = { queryParams: of({}), params: of({}) }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ProductTableComponent],
       providers: [
