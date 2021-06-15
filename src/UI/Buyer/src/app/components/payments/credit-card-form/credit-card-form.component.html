@@ -96,7 +96,7 @@
     </div>
   </div>
   <div *ngIf="_showCardDetails">
-    <div class="form-check d-flex justify-content-between mb-2">
+    <div *ngIf="shouldShowShippingOption" class="form-check d-flex justify-content-between mb-2">
     <input
       type="checkbox"
       (click)="mapShippingAddressToBilling($event)"

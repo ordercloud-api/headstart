@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnInit
 } from '@angular/core'
 import { FormGroup, Validators, FormControl } from '@angular/forms'
 import { CreditCardFormatPipe } from 'src/app/pipes/credit-card-format.pipe'
@@ -28,7 +29,7 @@ import { ShopperContextService } from 'src/app/services/shopper-context/shopper-
   templateUrl: './credit-card-form.component.html',
   styleUrls: ['./credit-card-form.component.scss'],
 })
-export class OCMCreditCardForm implements OnChanges {
+export class OCMCreditCardForm implements OnChanges, OnInit {
   @Output() formSubmitted = new EventEmitter<CreditCardFormOutput>()
   @Output() formDismissed = new EventEmitter()
   @Input() card: OrderCloudIntegrationsCreditCardToken
@@ -63,13 +64,20 @@ export class OCMCreditCardForm implements OnChanges {
   faCcMastercard = faCcMastercard
   faCcAmex = faCcAmex
   private readonly defaultCountry = 'US'
+  shouldShowShippingOption
 
   constructor(
     private creditCardFormatPipe: CreditCardFormatPipe,
     private context: ShopperContextService
-    ) {
+  ) {
     this.countryOptions = GeographyConfig.getCountries()
     this.stateOptions = this.getStateOptions(this.defaultCountry)
+  }
+
+  ngOnInit() {
+    this.shouldShowShippingOption = !this.context.router
+      .getActiveUrl()
+      .includes('/profile')
   }
 
   ngOnChanges(changes: ComponentChanges<OCMCreditCardForm>): void {
@@ -221,15 +229,15 @@ export class OCMCreditCardForm implements OnChanges {
       'country',
       new FormControl(form.country, Validators.required)
     )
-    this.cardForm.addControl('useShippingAddress',
-      new FormControl(false)
-    )
+    if (this.shouldShowShippingOption) {
+      this.cardForm.addControl('useShippingAddress', new FormControl(false))
+    }
   }
 
   mapShippingAddressToBilling(event: Event) {
     const value = (event.target as HTMLInputElement).checked
     const lineItems = this.context.order.getLineItems()
-    if(value && lineItems?.Items && lineItems.Items[0]) {
+    if (value && lineItems?.Items && lineItems.Items[0]) {
       const firstItem = lineItems.Items[0]
       this.cardForm.controls['street'].setValue(firstItem.ShippingAddress?.Street1)
       this.cardForm.controls['city'].setValue(firstItem.ShippingAddress?.City)
