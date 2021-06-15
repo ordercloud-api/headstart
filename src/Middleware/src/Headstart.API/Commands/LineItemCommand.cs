@@ -389,12 +389,16 @@ namespace Headstart.API.Commands
             var productRequest = _meProductCommand.Get(liReq.ProductID, user);
             var existingLineItemsRequest = _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, orderID, filters: $"Product.ID={liReq.ProductID}", accessToken: user.AccessToken);
             var orderRequest = _oc.Orders.GetAsync(OrderDirection.Incoming, orderID);
+            await Task.WhenAll(productRequest, existingLineItemsRequest, orderRequest);
+
             var existingLineItems = await existingLineItemsRequest;
             var product = await productRequest;
+            var order = await orderRequest;
+
             var li = new HSLineItem();
             var markedUpPrice = ValidateLineItemUnitCost(orderID, product, existingLineItems, liReq);
             liReq.UnitPrice = await markedUpPrice;
-            var order = await orderRequest;
+            
             Require.That(!order.IsSubmitted, new ErrorCode("Invalid Order Status", 400, "Order has already been submitted"));
 
             liReq.xp.StatusByQuantity = LineItemStatusConstants.EmptyStatuses;
@@ -439,6 +443,7 @@ namespace Headstart.API.Commands
                     }
                 }
                 decimal priceBasedOnQuantity = product.PriceSchedule.PriceBreaks.Last(priceBreak => priceBreak.Quantity <= totalQuantity).Price;
+                var tasks = new List<Task>();
                 foreach (HSLineItem lineItem in existingLineItems)
                 {
                     // Determine markup for all specs for this existing line item
@@ -447,10 +452,10 @@ namespace Headstart.API.Commands
                    {
                        PartialLineItem lineItemToPatch = new PartialLineItem();
                        lineItemToPatch.UnitPrice = lineItemTotal;
-                       await _oc.LineItems.PatchAsync<HSLineItem>(OrderDirection.Incoming, orderID, lineItem.ID, lineItemToPatch);
+                       tasks.Add(_oc.LineItems.PatchAsync<HSLineItem>(OrderDirection.Incoming, orderID, lineItem.ID, lineItemToPatch));
                    }
                 }
-
+                await Task.WhenAll(tasks);
                 // Return the item total for the li being added or modified
                 return li == null ? 0 : priceBasedOnQuantity + GetSpecMarkup(li.Specs, product.Specs);
             } else

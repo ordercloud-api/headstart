@@ -5,7 +5,6 @@
   "appname": "Default Admin",
   "clientID": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
   "middlewareUrl": "https://my-default-admin.com",
-  "cmsUrl": "https://ordercloud-cms.azurewebsites.net",
   "translateBlobUrl": "https://my-translation-files/ngx-translate/i18n/",
   "blobStorageUrl": "https://myblobstoragecontainer.blob.core.windows.net",
   "orderCloudApiUrl": "https://api.ordercloud.io"

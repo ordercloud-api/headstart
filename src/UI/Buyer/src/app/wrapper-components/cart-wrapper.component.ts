@@ -52,7 +52,7 @@ export class CartWrapperComponent implements OnInit {
     // TODO - this requests all the products on navigation to the cart.
     // Fewer requests could be acomplished by moving this logic to the cart service so it runs only once.
     const availableLineItems = await this.checkForProductAvailability(items)
-    await this.updateProductCache(availableLineItems.map((li) => li.buyerProduct))
+    this.updateProductCache(availableLineItems.map((li) => li.buyerProduct))
     this.lineItems = this.mapToLineItemsWithProduct(
       availableLineItems.map(a => a.lineItem),
       items.Meta
@@ -89,7 +89,7 @@ export class CartWrapperComponent implements OnInit {
     this.orderPromos = promos
   }
 
-  async updateProductCache(products: BuyerProduct[]): Promise<void> {
+  updateProductCache(products: BuyerProduct[]): void {
     const cachedIDs = this.productCache.map((p) => p.ID)
     const toAdd = products.filter((p) => !cachedIDs.includes(p.ID))
     this.productCache = [

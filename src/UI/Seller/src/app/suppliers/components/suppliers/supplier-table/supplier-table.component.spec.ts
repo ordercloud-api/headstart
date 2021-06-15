@@ -9,7 +9,6 @@ import { SupplierService } from '../supplier.service';
 import { SupplierTableComponent } from './supplier-table.component';
 import { ResourceCrudComponent } from '@app-seller/shared/components/resource-crud/resource-crud.component';
 import { BehaviorSubject, from } from 'rxjs';
-import { ResourceType } from '@ordercloud/angular-cms-components/shared/models/resource-type.interface';
 
 describe('SupplierTableComponent', () => {
   let component: SupplierTableComponent;
@@ -17,14 +16,14 @@ describe('SupplierTableComponent', () => {
 
   const router = {
     navigateByUrl: jasmine.createSpy('navigateByUrl'),
-    url: { startsWith() {} },
+    url: { startsWith() { } },
     routerState: { snapshot: { url: 'url' } },
   };
   const activatedRoute = {
     snapshot: { queryParams: {} },
     params: from([{ id: 1 }]),
   };
-  const resourceSubjectMock = new BehaviorSubject<ListPage<ResourceType>>(undefined);
+  const resourceSubjectMock = new BehaviorSubject<ListPage<any>>(undefined);
   const supplierService = {
     isSupplierUser() {
       return true;

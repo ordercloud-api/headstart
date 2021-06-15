@@ -3,8 +3,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing'
 
 import { SellerUserTableComponent } from './seller-user-table.component'
 import { Router, ActivatedRoute } from '@angular/router'
-import { UserContext } from '@app-seller/config/user-context'
 import { of } from 'rxjs'
+import { UserContext } from '@app-seller/shared'
 
 describe('SellerUserTableComponent', () => {
   let component: SellerUserTableComponent
@@ -23,7 +23,7 @@ describe('SellerUserTableComponent', () => {
     getParentResourceID() {
       return 1
     },
-    getParentOrSecondaryIDParamName() {},
+    getParentOrSecondaryIDParamName() { },
   }
   const currentUserService = {
     getUserContext() {
@@ -32,7 +32,7 @@ describe('SellerUserTableComponent', () => {
   }
   const router = {
     navigateByUrl: jasmine.createSpy('navigateByUrl'),
-    url: { startsWith() {}, split() {} },
+    url: { startsWith() { }, split() { } },
     routerState: { snapshot: { url: 'url' } },
   }
   const activatedRoute = { queryParams: of({}), params: of({}) }

@@ -6,9 +6,7 @@ import { ApiClients, ListPage } from 'ordercloud-javascript-sdk'
 import { HSApiClient } from '@ordercloud/headstart-sdk'
 import { HeadStartSDK } from '@ordercloud/headstart-sdk'
 
-export const STOREFRONTS_SUB_RESOURCE_LIST = [
-  { route: 'pages', display: 'Pages' },
-]
+export const STOREFRONTS_SUB_RESOURCE_LIST = []
 
 @Injectable({
   providedIn: 'root',

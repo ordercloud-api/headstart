@@ -247,17 +247,11 @@ const AllStorefronts = {
   route: '/storefronts',
 }
 
-const Pages = {
-  rolesWithAccess: [HSRoles.HSStorefrontAdmin],
-  title: 'Pages',
-  route: `/storefronts/${REDIRECT_TO_FIRST_PARENT}/pages`,
-}
-
 const StorefrontNavGrouping = {
   rolesWithAccess: [HSRoles.HSStorefrontAdmin],
   title: 'Storefronts',
   route: '/storefronts',
-  subRoutes: [AllStorefronts, Pages],
+  subRoutes: [AllStorefronts],
 }
 
 const MySupplierProfile = {

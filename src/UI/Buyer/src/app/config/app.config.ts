@@ -9,7 +9,6 @@ export const ocAppConfig: AppConfig = {
   incrementorPrefix: environment.incrementorPrefix,
   baseUrl: environment.baseUrl,
   middlewareUrl: environment.middlewareUrl,
-  cmsUrl: environment.cmsUrl,
   creditCardIframeUrl: environment.creditCardIframeUrl,
   sellerID: environment.sellerID,
   sellerName: environment.sellerName,
