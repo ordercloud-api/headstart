@@ -119,7 +119,7 @@
                 {
                   "input": "src/styles/themes/defaultbuyer/_main.scss",
                   "bundleName": "defaultbuyer",
-                  "inject": true
+                  "inject": false
                 }
               ],
               "optimization": true,

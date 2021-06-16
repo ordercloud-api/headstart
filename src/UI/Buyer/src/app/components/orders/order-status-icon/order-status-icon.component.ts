@@ -9,7 +9,7 @@ import { ShippingStatus } from 'src/app/models/shipping.types'
   styleUrls: ['./order-status-icon.component.scss'],
 })
 export class OCMOrderStatusIcon {
-  @Input() status: HeadstartOrderStatus
+  @Input() status: HeadstartOrderStatus | ClaimStatus | ShippingStatus | LineItemStatus
   faCircle = faCircle
   faClock = faClock
   faBan = faBan
