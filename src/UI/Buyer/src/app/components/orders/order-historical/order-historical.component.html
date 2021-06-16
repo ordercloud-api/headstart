@@ -22,7 +22,7 @@
           <small class="mt-1 d-block">
             <a href="tel:{{ lineItems[0].ShippingAddress.Phone }}">{{
               lineItems[0].ShippingAddress.Phone | phoneFormat
-            }}</a>
+              }}</a>
           </small>
         </address>
       </div>
@@ -51,37 +51,28 @@
     <strong translate>ORDERS.HISTORICAL.SUBTOTAL</strong>
     <span class="float-right">{{
       order.Subtotal | currency: _userCurrency
-    }}</span
-    ><br />
+      }}</span><br />
     <strong translate>ORDERS.HISTORICAL.SHIPPING</strong>
     <span class="float-right">{{
       order.ShippingCost | currency: _userCurrency
-    }}</span
-    ><br />
+      }}</span><br />
     <strong translate>ORDERS.HISTORICAL.TAX</strong>
     <span class="float-right">{{
       order.TaxCost | currency: _userCurrency
-    }}</span
-    ><br />
+      }}</span><br />
     <div *ngIf="order.PromotionDiscount">
       <strong class="text-danger" translate>ORDERS.HISTORICAL.PROMO</strong>
-      <span class="float-right text-danger"
-        >-{{ order.PromotionDiscount | currency: _userCurrency }}</span
-      >
+      <span class="float-right text-danger">-{{ order.PromotionDiscount | currency: _userCurrency }}</span>
     </div>
     <hr />
     <div class="text-right lead" translate>
-      <b class="float-left"><span translate>ORDERS.HISTORICAL.TOTAL</span>:</b
-      ><span class="order-total">{{
+      <b class="float-left"><span translate>ORDERS.HISTORICAL.TOTAL</span>:</b><span class="order-total">{{
         order.Total | currency: _userCurrency
-      }}</span>
+        }}</span>
     </div>
     <hr *ngIf="isOrderToApprove" />
-    <ocm-payment-list
-      *ngIf="payments && !isOrderToApprove"
-      [payments]="payments"
-    ></ocm-payment-list>
-    <hr />
+    <ocm-payment-list *ngIf="payments && !isOrderToApprove" [payments]="payments"></ocm-payment-list>
+    <hr *ngIf="approvals?.length" />
     <ul>
       <li *ngFor="let approval of approvals" translate>
         {{ approval.Approver.FirstName }} {{ approval.Approver.LastName }}
@@ -109,19 +100,12 @@
     <p>
       {{ order.xp?.QuoteOrderInfo?.BuyerLocation }}
     </p>
-    <div
-      *ngIf="order?.xp?.QuoteOrderInfo?.Comments"
-      class="alert alert-secondary small"
-    >
+    <div *ngIf="order?.xp?.QuoteOrderInfo?.Comments" class="alert alert-secondary small">
       <strong translate>ORDERS.HISTORICAL.COMMENTS </strong>:
       {{ order.xp?.QuoteOrderInfo?.Comments }}
     </div>
   </div>
 </div>
-<ocm-lineitem-table
-  *ngIf="lineItems && lineItems.length"
-  [lineItems]="lineItems"
-  [orderType]="order?.xp?.OrderType"
-  [readOnly]="true"
->
+<ocm-lineitem-table *ngIf="lineItems && lineItems.length" [lineItems]="lineItems" [orderType]="order?.xp?.OrderType"
+  [readOnly]="true">
 </ocm-lineitem-table>

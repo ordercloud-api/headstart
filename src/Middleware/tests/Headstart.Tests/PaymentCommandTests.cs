@@ -185,43 +185,5 @@ namespace Headstart.Tests
             await _oc.Payments.DidNotReceive().CreateAsync<HSPayment>(Arg.Any<OrderDirection>(), mockOrderID, Arg.Any<HSPayment>(), mockUserToken);
             await _oc.Payments.DidNotReceive().PatchAsync<HSPayment>(Arg.Any<OrderDirection>(), mockOrderID, Arg.Any<string>(), Arg.Any<PartialPayment>());
         }
-
-        [Test]
-        public async Task should_handle_new_po_payment()
-        {
-            // Arrange
-            var mockedPOTotal = 50;
-            var existing = PaymentMocks.EmptyPaymentsList();
-            _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, mockOrderID)
-                .Returns(Task.FromResult(existing));
-            var requested = PaymentMocks.Payments(PaymentMocks.POPayment());
-            _orderCalc.GetPurchaseOrderTotal(Arg.Any<HSOrderWorksheet>())
-                .Returns(mockedPOTotal);
-
-            // Act
-            var result = await _sut.SavePayments(mockOrderID, requested, mockUserToken);
-
-            // Assert
-            await _oc.Payments.Received().CreateAsync<HSPayment>(OrderDirection.Incoming, mockOrderID, Arg.Is<HSPayment>(p => p.ID == mockPoPaymentID && p.Amount == mockedPOTotal));
-        }
-
-        [Test]
-        public async Task should_handle_existing_po_payment()
-        {
-            // Arrange
-            var mockedPOTotal = 30;
-            var existing = PaymentMocks.PaymentList(PaymentMocks.POPayment(40));
-            _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, mockOrderID)
-                .Returns(Task.FromResult(existing));
-            var requested = PaymentMocks.Payments(PaymentMocks.POPayment());
-            _orderCalc.GetPurchaseOrderTotal(Arg.Any<HSOrderWorksheet>())
-                .Returns(mockedPOTotal);
-
-            // Act
-            var result = await _sut.SavePayments(mockOrderID, requested, mockUserToken);
-
-            // Assert
-            await _oc.Payments.Received().PatchAsync<HSPayment>(OrderDirection.Incoming, mockOrderID, mockPoPaymentID, Arg.Is<PartialPayment>(p => p.Amount == mockedPOTotal));
-        }
     }
 }

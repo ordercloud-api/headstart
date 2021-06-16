@@ -96,7 +96,7 @@ export class OCMCheckout implements OnInit {
     private toastrService: ToastrService,
     private router: Router,
     private translate: TranslateService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     this.context.order.onChange((order) => (this.order = order))
@@ -187,14 +187,6 @@ export class OCMCheckout implements OnInit {
     }
   }
 
-  buildPOPayment(): Payment {
-    // amount gets calculated in middleware
-    return {
-      DateCreated: new Date().toDateString(),
-      Type: 'PurchaseOrder',
-    }
-  }
-
   async onCardSelected(output: SelectedCreditCard): Promise<void> {
     this.initLoadingIndicator('paymentLoading')
     const payments: HSPayment[] = []
@@ -204,9 +196,6 @@ export class OCMCheckout implements OnInit {
     } else {
       payments.push(this.buildCCPaymentFromSavedCard(output.SavedCard))
       delete this.selectedCard.NewCard
-    }
-    if (this.orderSummaryMeta.POLineItemCount) {
-      payments.push(this.buildPOPayment())
     }
     try {
       await HeadStartSDK.Payments.SavePayments(this.order.ID, {
@@ -236,16 +225,6 @@ export class OCMCheckout implements OnInit {
     }
   }
 
-  async onAcknowledgePurchaseOrder(): Promise<void> {
-    //  Function that is used when there are no credit cards. Just PO acknowledgement
-    const payments = [this.buildPOPayment()]
-    await HeadStartSDK.Payments.SavePayments(this.order.ID, {
-      Payments: payments,
-    })
-    this.payments = await this.checkout.listPayments()
-    this.toSection('confirm')
-  }
-
   async submitOrderWithComment(comment: string): Promise<void> {
     // Check that line items in cart are all from active products (none were made inactive during checkout).
     this.invalidLineItems = await this.context.order.cart.getInvalidLineItems()
@@ -257,9 +236,7 @@ export class OCMCheckout implements OnInit {
     } else {
       this.initLoadingIndicator('submitLoading')
       try {
-        const payment = this.orderSummaryMeta.StandardLineItemCount
-          ? this.getCCPaymentData()
-          : {}
+        const payment = this.getCCPaymentData()
         const order = await HeadStartSDK.Orders.Submit(
           'Outgoing',
           this.order.ID,
@@ -267,7 +244,7 @@ export class OCMCheckout implements OnInit {
         )
         //  Do all patching of order XP values in the OrderSubmit integration event
         //  Patching order XP before order is submitted will clear out order worksheet data
-        await this.checkout.patch({Comments: comment}, order.ID)
+        await this.checkout.patch({ Comments: comment }, order.ID)
         await this.context.order.reset() // get new current order
         this.isLoading = false
         this.toastrService.success('Order submitted successfully', 'Success')
@@ -376,7 +353,7 @@ export class OCMCheckout implements OnInit {
       this.router.navigateByUrl('/home')
     } else if (
       this.checkoutError.ErrorCode ===
-        ErrorCodes.FailedToVoidAuthorization.code ||
+      ErrorCodes.FailedToVoidAuthorization.code ||
       this.checkoutError.ErrorCode?.includes('CreditCardAuth.')
     ) {
       this.currentPanel = 'payment'
@@ -454,7 +431,6 @@ export class OCMCheckout implements OnInit {
       this.order,
       this.orderPromotions,
       this.lineItems.Items,
-      this.shipEstimates,
       panelID || this.currentPanel
     )
   }

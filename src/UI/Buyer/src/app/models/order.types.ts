@@ -2,10 +2,7 @@ import { HSLineItem } from '@ordercloud/headstart-sdk'
 import { LineItem, Sortable } from 'ordercloud-javascript-sdk'
 
 export interface OrderSummaryMeta {
-  StandardLineItems: HSLineItem[]
-  POLineItems: HSLineItem[]
-  StandardLineItemCount: number
-  POLineItemCount: number
+  LineItemCount: number
 
   ShouldHideShippingAndText: boolean
   ShippingAndTaxOverrideText: string
@@ -17,9 +14,6 @@ export interface OrderSummaryMeta {
   CreditCardTotal: number
   DiscountTotal: number
 
-  POSubtotal: number
-  POShippingCost: number
-  POTotal: number
   OrderTotal: number
 }
 

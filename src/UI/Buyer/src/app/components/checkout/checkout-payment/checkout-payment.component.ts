@@ -4,7 +4,6 @@ import {
   EventEmitter,
   OnInit,
   Input,
-  OnChanges,
 } from '@angular/core'
 import {
   BuyerCreditCard,
@@ -30,7 +29,7 @@ import { OrderSummaryMeta } from 'src/app/models/order.types'
   templateUrl: './checkout-payment.component.html',
   styleUrls: ['./checkout-payment.component.scss'],
 })
-export class OCMCheckoutPayment implements OnInit, OnChanges {
+export class OCMCheckoutPayment implements OnInit {
   @Input() cards: ListPage<BuyerCreditCard>
   @Input() isAnon: boolean
   @Input() order: HSOrder
@@ -47,25 +46,17 @@ export class OCMCheckoutPayment implements OnInit, OnChanges {
   promoForm: FormGroup
   promoCode = ''
   faCheckCircle = faCheckCircle
-  POTermsAccepted: boolean
 
   constructor(
     private context: ShopperContextService,
     private toastrService: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this._orderCurrency = this.context.currentUser.get().Currency
     this.setOrderPromos()
 
     this.createPromoForm(this.promoCode)
-  }
-
-  ngOnChanges(): void {
-    if (this.orderSummaryMeta)
-      this.POTermsAccepted = this.orderSummaryMeta?.POLineItemCount
-        ? false
-        : true
   }
 
   createPromoForm(promoCode: string): void {
@@ -114,10 +105,6 @@ export class OCMCheckoutPayment implements OnInit, OnChanges {
   setOrderPromos(): void {
     this._orderPromos = this.context.order.promos.get().Items
     this._uniqueOrderPromos = _uniqBy(this._orderPromos, 'Code')
-  }
-
-  acceptPOTerms(): void {
-    this.POTermsAccepted = true
   }
 
   // used when no selection of card is required

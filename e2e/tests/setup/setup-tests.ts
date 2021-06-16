@@ -34,7 +34,7 @@ test('Setup Create Vendor', async t => {
 		true,
 		"Speedwagon's Foundation",
 		'united states dollar',
-		['Standard', 'Quote', 'Purchase Order'],
+		['Standard', 'Quote'],
 		'Linens',
 		'mandated'
 	)

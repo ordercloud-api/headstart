@@ -26,7 +26,7 @@ describe('CheckoutPaymentComponent', () => {
     Patch: jasmine.createSpy('Patch').and.callFake((...myArgs) => of(myArgs[3]).pipe(delay(0))),
   };
   const appConfig = {
-    availablePaymentMethods: ['PurchaseOrder', 'CreditCard'],
+    availablePaymentMethods: ['CreditCard'],
   };
 
   beforeEach(waitForAsync(() => {
@@ -84,11 +84,6 @@ describe('CheckoutPaymentComponent', () => {
       component.initializePaymentMethod();
       expect(component.selectPaymentMethod).toHaveBeenCalledWith('CreditCard');
     });
-    it('should use first available payment method if no payment exists', () => {
-      mockPayments = [];
-      component.initializePaymentMethod();
-      expect(component.selectPaymentMethod).toHaveBeenCalledWith('PurchaseOrder');
-    });
   });
 
   describe('selectPaymentMethod', () => {
@@ -134,7 +129,7 @@ describe('CheckoutPaymentComponent', () => {
   describe('deleteExistingPayments', () => {
     beforeEach(() => {
       paymentService.Delete.calls.reset();
-      mockPayments = [{ ID: 'CCPayment', Type: 'CreditCard' }, { ID: 'POPayment', Type: 'PurchaseOrder' }];
+      mockPayments = [{ ID: 'CCPayment', Type: 'CreditCard' }];
       component['deleteExistingPayments']();
     });
     it('should list payments', () => {

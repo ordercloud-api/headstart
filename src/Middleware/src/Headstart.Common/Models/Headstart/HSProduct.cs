@@ -104,7 +104,6 @@ namespace Headstart.Models
 	{
 		Standard,
 		Quote,
-		PurchaseOrder
 	}
 
     [SwaggerModel]

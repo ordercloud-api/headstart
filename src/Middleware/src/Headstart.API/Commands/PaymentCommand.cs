@@ -43,7 +43,6 @@ namespace Headstart.API.Commands
             {
                 var existingPayment = existingPayments.FirstOrDefault(p => p.Type == requestedPayment.Type);
                 if(requestedPayment.Type == PaymentType.CreditCard) { await UpdateCCPaymentAsync(requestedPayment, existingPayment, worksheet, userToken); }
-                if(requestedPayment.Type == PaymentType.PurchaseOrder) { await UpdatePoPaymentAsync(requestedPayment, existingPayment, worksheet); }
             }
 
             return (await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID)).Items;
@@ -83,23 +82,6 @@ namespace Headstart.API.Commands
             }
         }
 
-        private async Task UpdatePoPaymentAsync(HSPayment requestedPayment, HSPayment existingPayment, HSOrderWorksheet worksheet)
-        {
-            var paymentAmount = _orderCalc.GetPurchaseOrderTotal(worksheet);
-            if (existingPayment == null)
-            {
-                requestedPayment.Amount = paymentAmount;
-                await _oc.Payments.CreateAsync<HSPayment>(OrderDirection.Incoming, worksheet.Order.ID, requestedPayment);
-            }
-            else
-            {
-                await _oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, worksheet.Order.ID, existingPayment.ID, new PartialPayment
-                {
-                    Amount = paymentAmount
-                });
-            }
-        }
-
         private async Task DeleteCreditCardPaymentAsync(HSPayment payment, HSOrder order, string userToken)
         {
             await _ccCommand.VoidTransactionAsync(payment, order, userToken);
@@ -115,11 +97,6 @@ namespace Headstart.API.Commands
             {
                 if (!requestedPayments.Any(p => p.Type == existingPayment.Type))
                 {
-                    if (existingPayment.Type == PaymentType.PurchaseOrder)
-                    {
-                        await _oc.Payments.DeleteAsync(OrderDirection.Incoming, order.ID, existingPayment.ID);
-                        existingPayments.Remove(existingPayment);
-                    }
                     if (existingPayment.Type == PaymentType.CreditCard)
                     {
                         await DeleteCreditCardPaymentAsync(existingPayment, order, userToken);

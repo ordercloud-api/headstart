@@ -20,6 +20,7 @@ import { isQuoteOrder } from '../../../services/orderType.helper'
 export class OCMOrderHistorical implements OnInit {
   @Input() isOrderToApprove = false
   @Input() set orderDetails(value: OrderDetails) {
+    console.log(value)
     this.order = value.Order
     this.lineItems = value.LineItems
     this.promotions = value.Promotions
@@ -36,7 +37,7 @@ export class OCMOrderHistorical implements OnInit {
   buyerLocation: HSAddressBuyer
   _userCurrency: string
 
-  constructor(private context: ShopperContextService) {}
+  constructor(private context: ShopperContextService) { }
 
   ngOnInit(): void {
     this._userCurrency = this.context.currentUser.get().Currency
