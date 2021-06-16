@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ModalComponent } from 'src/app/shared/components/modal/modal.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -14,7 +14,7 @@ describe('SharedModalComponent', () => {
     onCloseSubject: new Subject<string>(),
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ModalComponent],
       imports: [FontAwesomeModule],

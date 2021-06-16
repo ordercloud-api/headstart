@@ -1,17 +1,19 @@
 import { Component, Input, OnChanges } from '@angular/core'
+import { faCcDiscover, faCcMastercard, faCcVisa } from '@fortawesome/free-brands-svg-icons'
 import {
-  faCcVisa,
-  faCcMastercard,
-  faCcDiscover,
+  faCreditCard,
   IconDefinition,
-} from '@fortawesome/free-brands-svg-icons'
+} from '@fortawesome/free-solid-svg-icons'
 
 @Component({
   templateUrl: './credit-card-icon.component.html',
   styleUrls: ['./credit-card-icon.component.scss'],
 })
 export class OCMCreditCardIcon implements OnChanges {
-  cardIcon: IconDefinition
+  cardIcon: IconDefinition = faCreditCard
+  visaIcon = faCcVisa
+  mastercardIcon = faCcMastercard
+  discoverIcon = faCcDiscover
   @Input() cardType: string
   @Input() size: string
 
@@ -23,11 +25,11 @@ export class OCMCreditCardIcon implements OnChanges {
   setCardIcon(cardType: string): IconDefinition {
     switch (cardType.toLowerCase()) {
       case 'visa':
-        return faCcVisa
+        return this.visaIcon
       case 'mastercard':
-        return faCcMastercard
+        return this.mastercardIcon
       case 'discover':
-        return faCcDiscover
+        return this.discoverIcon
     }
   }
 }

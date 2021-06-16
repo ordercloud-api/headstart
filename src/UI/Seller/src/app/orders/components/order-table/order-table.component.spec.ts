@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, NgZone } from '@angular/core'
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { Router, ActivatedRoute } from '@angular/router'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { OrderService } from '@app-seller/orders/order.service'
@@ -18,7 +18,7 @@ describe('OrderTableComponent', () => {
   const ngZone = {}
   const appAuthService = {}
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [OrderTableComponent],
       providers: [

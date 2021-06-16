@@ -32,8 +32,8 @@ describe('AutoAppendTokenInterceptor', () => {
         { provide: applicationConfiguration, useValue: appConfig },
       ],
     });
-    httpClient = TestBed.get(HttpClient);
-    httpMock = TestBed.get(HttpTestingController);
+    httpClient = TestBed.inject(HttpClient);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   it('should be created', inject(

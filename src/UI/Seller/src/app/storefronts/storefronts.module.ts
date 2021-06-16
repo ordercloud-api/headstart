@@ -7,13 +7,14 @@ import {
   NgbTooltipModule,
   NgbTypeaheadModule,
 } from '@ng-bootstrap/ng-bootstrap'
+import { RouterModule } from '@angular/router'
 
 @NgModule({
   imports: [
     SharedModule,
     StorefrontsRoutingModule,
     NgbTooltipModule,
-    NgbTypeaheadModule,
+    NgbTypeaheadModule, RouterModule
   ],
   declarations: [
     StorefrontTableComponent,

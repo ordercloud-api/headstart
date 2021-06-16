@@ -1,5 +1,5 @@
 import { SellerUserService } from '@app-seller/sellers/seller-admin.service'
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { SellerUserTableComponent } from './seller-user-table.component'
 import { Router, ActivatedRoute } from '@angular/router'
@@ -37,7 +37,7 @@ describe('SellerUserTableComponent', () => {
   }
   const activatedRoute = { queryParams: of({}), params: of({}) }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [SellerUserTableComponent],
       providers: [

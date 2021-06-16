@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RegisterComponent } from 'src/app/ocm-default-components/components/register/register.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { OcMeService, OcTokenService, MeUser } from '@ordercloud/angular-sdk';
@@ -30,7 +30,7 @@ describe('RegisterComponent', () => {
     hasPatternError: jasmine.createSpy('hasPatternError'),
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [RegisterComponent],
       imports: [ReactiveFormsModule],

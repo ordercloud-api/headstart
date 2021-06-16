@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
 
 import { DateFilterComponent } from 'src/app/ocm-default-components/components/order-date-filter/order-date-filter.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -13,7 +13,7 @@ describe('DateFilterComponent', () => {
 
   const formErrorService = { hasDateError: jasmine.createSpy('hasDateError') };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [DateFilterComponent, FaIconComponent],
       imports: [NgbModule, ReactiveFormsModule],

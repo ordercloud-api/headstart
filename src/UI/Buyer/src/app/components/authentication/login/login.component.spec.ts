@@ -1,5 +1,5 @@
 import { CurrentUserService } from './../../../shared/services/current-user/current-user.service';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { InjectionToken, DebugElement } from '@angular/core';
@@ -34,7 +34,7 @@ describe('LoginComponent', () => {
   const currentUserService = { login: jasmine.createSpy('Login').and.returnValue(of(response)) };
   const toastrService = {};
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [LoginComponent],
       imports: [ReactiveFormsModule, CookieModule.forRoot(), HttpClientModule, TranslateModule.forRoot()],

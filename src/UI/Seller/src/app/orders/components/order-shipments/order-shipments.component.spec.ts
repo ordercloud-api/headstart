@@ -1,6 +1,6 @@
 import { CurrentUserService } from './../../../shared/services/current-user/current-user.service'
 import { HttpClient } from '@angular/common/http'
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { OrderService } from '@app-seller/orders/order.service'
 import {
@@ -27,7 +27,7 @@ describe('OrderShipmentsComponent', () => {
   const ocShipmentService = {}
   const currentUserService = {}
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [OrderShipmentsComponent],
       providers: [

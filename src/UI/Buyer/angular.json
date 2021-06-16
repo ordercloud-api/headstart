@@ -17,6 +17,59 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
+            "allowedCommonJsDependencies": [
+              "lodash",
+              "@babel/runtime-corejs3/core-js-stable/instance/starts-with",
+              "axios",
+              "@babel/runtime-corejs3/core-js-stable/map",
+              "@babel/runtime-corejs3/core-js-stable/instance/slice",
+              "@babel/runtime-corejs3/core-js-stable/symbol",
+              "@babel/runtime-corejs3/core-js-stable/parse-int",
+              "@babel/runtime-corejs3/core-js-stable/instance/values",
+              "@babel/runtime-corejs3/core-js-stable/instance/fill",
+              "@babel/runtime-corejs3/core-js-stable/instance/index-of",
+              "@babel/runtime-corejs3/core-js-stable/instance/reverse",
+              "@babel/runtime-corejs3/core-js-stable/instance/includes",
+              "@babel/runtime-corejs3/core-js-stable/instance/some",
+              "@babel/runtime-corejs3/core-js-stable/reflect/get-prototype-of",
+              "@babel/runtime-corejs3/core-js-stable/reflect/apply",
+              "@babel/runtime-corejs3/core-js-stable/reflect/delete-property",
+              "@babel/runtime-corejs3/core-js-stable/reflect/construct",
+              "@babel/runtime-corejs3/core-js/get-iterator-method",
+              "@babel/runtime-corejs3/core-js/get-iterator",
+              "@babel/runtime-corejs3/core-js-stable/array/is-array",
+              "@babel/runtime-corejs3/core-js-stable/array/from",
+              "@babel/runtime-corejs3/helpers/get",
+              "@babel/runtime-corejs3/helpers/toConsumableArray",
+              "@babel/runtime-corejs3/helpers/getPrototypeOf",
+              "@babel/runtime-corejs3/helpers/possibleConstructorReturn",
+              "@babel/runtime-corejs3/helpers/inherits",
+              "@babel/runtime-corejs3/core-js-stable/instance/trim",
+              "@babel/runtime-corejs3/core-js-stable/instance/bind",
+              "@babel/runtime-corejs3/core-js-stable/promise",
+              "@babel/runtime-corejs3/core-js-stable/instance/every",
+              "@babel/runtime-corejs3/core-js-stable/instance/reduce",
+              "@babel/runtime-corejs3/core-js-stable/instance/concat",
+              "@babel/runtime-corejs3/core-js-stable/date/now",
+              "@babel/runtime-corejs3/helpers/createClass",
+              "@babel/runtime-corejs3/helpers/defineProperty",
+              "@babel/runtime-corejs3/helpers/asyncToGenerator",
+              "raf",
+              "@babel/runtime-corejs3/regenerator",
+              "@babel/runtime-corejs3/core-js-stable/instance/filter",
+              "@babel/runtime-corejs3/core-js-stable/instance/for-each",
+              "@babel/runtime-corejs3/helpers/slicedToArray",
+              "@babel/runtime-corejs3/core-js-stable/object/keys",
+              "@babel/runtime-corejs3/core-js-stable/object/get-own-property-symbols",
+              "@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptor",
+              "@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptors",
+              "@babel/runtime-corejs3/core-js-stable/object/define-properties",
+              "@babel/runtime-corejs3/core-js-stable/object/define-property",
+              "@babel/runtime-corejs3/core-js-stable/instance/map",
+              "@babel/runtime-corejs3/core-js-stable/parse-float",
+              "zone.js/dist/zone-error",
+              "jwt-decode"
+            ],
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -39,11 +92,11 @@
               "optimization": false,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": false,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
-              "budgets": [ {
+              "budgets": [
+                {
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "6mb"
@@ -56,10 +109,12 @@
               ]
             },
             "deploy": {
-              "fileReplacements": [ {
-                "replace": "src/environments/environment.local.ts",
-                "with": "src/environments/environment.deploy.ts"
-              } ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.local.ts",
+                  "with": "src/environments/environment.deploy.ts"
+                }
+              ],
               "styles": [
                 {
                   "input": "src/styles/themes/defaultbuyer/_main.scss",
@@ -70,11 +125,11 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
-              "budgets": [ {
+              "budgets": [
+                {
                   "type": "initial",
                   "maximumWarning": "2mb",
                   "maximumError": "6mb"

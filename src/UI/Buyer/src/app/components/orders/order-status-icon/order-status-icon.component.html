@@ -1,5 +1,4 @@
-<fa-icon
-  [ngClass]="{
+<fa-icon *ngIf="statusIconMapping[status]" [ngClass]="{
     'text-success':
       status === 'Shipped' || status === 'Completed' || status === 'Complete',
     'text-warning':
@@ -14,6 +13,4 @@
       status === 'Open' || status === 'NoClaim' || status === 'Submitted',
     'text-danger':
       status === 'Declined' || status === 'Canceled' || status === 'Returned'
-  }"
-  [icon]="statusIconMapping[status]"
-></fa-icon>
+  }" [icon]="statusIconMapping[status]"></fa-icon>
