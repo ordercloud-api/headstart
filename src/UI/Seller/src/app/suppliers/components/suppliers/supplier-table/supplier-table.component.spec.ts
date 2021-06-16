@@ -1,7 +1,7 @@
 import { OcTokenService, OcSupplierUserService, OcSupplierService, ListPage } from '@ordercloud/angular-sdk';
 import { AppAuthService } from './../../../../auth/services/app-auth.service';
 import { HttpClientModule } from '@angular/common/http';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service';
 import { SupplierService } from '../supplier.service';
@@ -48,7 +48,7 @@ describe('SupplierTableComponent', () => {
   const ocSupplierUserService = {};
   const ocSupplierService = {};
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [SupplierTableComponent],
       imports: [HttpClientModule],

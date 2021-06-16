@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { CheckoutPaymentComponent } from 'src/app/checkout/containers/checkout-payment/checkout-payment.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -29,7 +29,7 @@ describe('CheckoutPaymentComponent', () => {
     availablePaymentMethods: ['PurchaseOrder', 'CreditCard'],
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [CheckoutPaymentComponent, PaymentMethodDisplayPipe],
       imports: [FontAwesomeModule, ReactiveFormsModule],

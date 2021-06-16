@@ -5,7 +5,6 @@ import { HttpClientModule } from '@angular/common/http'
 import { ReactiveFormsModule, FormsModule } from '@angular/forms'
 import {
   NgbPaginationModule,
-  NgbTabsetModule,
   NgbPopoverModule,
   NgbDropdownModule,
   NgbModalModule,
@@ -25,7 +24,6 @@ import { CarouselSlideDisplayComponent } from '@app-seller/shared/components/car
 import { UserFormComponent } from '@app-seller/shared/components/user-form/user-form.component'
 import { AddressFormComponent } from '@app-seller/shared/components/address-form/address-form.component'
 import { CategoryFormComponent } from './components/category-form/category-form.component'
-import { CategoryDetailsComponent } from './components/category-details/category-details.component'
 import { AddressSuggestionComponent } from './components/address-suggestion/address-suggestion.component'
 import { ProductImagesComponent } from './components/product-images/product-images.component'
 import { ProductFormComponent } from './components/products-form/product-form.component'
@@ -57,6 +55,7 @@ import { BuyerVisibilityConfiguration } from './components/buyer-visibility/buye
 import { ProductCategoryAssignment } from './components/buyer-visibility/product-category-assignment/product-category-assignment.component'
 import { ResourceListMeta } from './components/resource-list-meta/resource-list-meta.component'
 import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
+import { RouterModule } from '@angular/router'
 
 @NgModule({
   imports: [
@@ -65,6 +64,7 @@ import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
     CommonModule,
     HttpClientModule,
     ReactiveFormsModule,
+    RouterModule,
 
     // 3rd party UI
     FontAwesomeModule,
@@ -73,7 +73,6 @@ import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
     NgbPopoverModule,
     NgbDropdownModule,
     NgbPaginationModule,
-    NgbTabsetModule,
     NgbModalModule,
     NgbDatepickerModule,
     NgbTooltipModule,
@@ -92,7 +91,6 @@ import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
     // 3rd party UI
     FontAwesomeModule,
     NgbPaginationModule,
-    NgbTabsetModule,
     NgbDropdownModule,
     NgbProgressbarModule,
     NgbCollapseModule,
@@ -104,7 +102,6 @@ import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
     UserFormComponent,
     AddressFormComponent,
     CategoryFormComponent,
-    CategoryDetailsComponent,
     AddressSuggestionComponent,
     ResourceSelectDropdown,
     ProductImagesComponent,
@@ -142,7 +139,6 @@ import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
     UserFormComponent,
     AddressFormComponent,
     CategoryFormComponent,
-    CategoryDetailsComponent,
     AddressSuggestionComponent,
     ProductImagesComponent,
     ResourceSelectDropdown,
@@ -175,7 +171,7 @@ import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
   ],
 })
 export class SharedModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<SharedModule> {
     return {
       ngModule: SharedModule,
       providers: [],

@@ -48,7 +48,7 @@ describe('HasTokenGuard', () => {
         { provide: AppStateService, useValue: appStateService },
       ],
     });
-    guard = TestBed.get(HasTokenGuard);
+    guard = TestBed.inject(HasTokenGuard);
   });
 
   // set Date.now for consistent test results

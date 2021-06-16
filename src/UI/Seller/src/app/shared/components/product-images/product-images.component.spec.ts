@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ToastrService } from 'ngx-toastr';
@@ -10,7 +10,7 @@ describe('ProductImagesComponent', () => {
   const toastrService = { warning: jasmine.createSpy('warning') };
   const mockProduct = { Name: 'productName', xp: { imageURLs: ['A', 'B', 'C', 'D'] } };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ProductImagesComponent],
       imports: [FontAwesomeModule],

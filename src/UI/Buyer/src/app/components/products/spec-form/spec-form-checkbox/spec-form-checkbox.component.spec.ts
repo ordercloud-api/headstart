@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SpecFormCheckboxComponent } from './spec-form-checkbox.component';
 
@@ -6,7 +6,7 @@ describe('SpecFormSelectComponent', () => {
   let component: SpecFormCheckboxComponent;
   let fixture: ComponentFixture<SpecFormCheckboxComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [SpecFormCheckboxComponent],
     }).compileComponents();

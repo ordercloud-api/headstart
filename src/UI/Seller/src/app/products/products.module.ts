@@ -12,7 +12,6 @@ import { ProductFilters } from './components/product-filters/product-filters.com
 import { ProductPricingComponent } from './components/product-pricing/product-pricing.component'
 import { PriceBreakEditor } from './components/price-break-editor/price-break-editor.component'
 import {
-  NgbTabset,
   NgbModule,
   NgbTooltipModule,
 } from '@ng-bootstrap/ng-bootstrap'
@@ -36,4 +35,4 @@ import {
     ProductFilters,
   ],
 })
-export class ProductsModule {}
+export class ProductsModule { }

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CheckoutAddressComponent } from 'src/app/checkout/containers/checkout-address/checkout-address.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -49,7 +49,7 @@ describe('CheckoutAddressComponent', () => {
     onCloseSubject: onCloseSubject,
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [CheckoutSectionBaseComponent, CheckoutAddressComponent, AddressFormComponent],
       imports: [ReactiveFormsModule],

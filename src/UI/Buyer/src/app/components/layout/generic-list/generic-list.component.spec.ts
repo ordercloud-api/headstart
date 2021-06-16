@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { GenericBrowseComponent } from 'src/app/shared/components/generic-browse/generic-browse.component';
 import { Directive, Input, Output, EventEmitter, NO_ERRORS_SCHEMA } from '@angular/core';
@@ -28,7 +28,7 @@ describe('GenericBrowseComponent', () => {
   }
   /* tslint:enable: directive-selector */
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [GenericBrowseComponent, MockSearchDirective, MockPaginationDirective],
       schemas: [NO_ERRORS_SCHEMA], // Ignore template errors: remove if tests are added to test template

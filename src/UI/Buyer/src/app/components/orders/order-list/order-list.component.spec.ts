@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { OrderListComponent } from 'src/app/ocm-default-components/components/order-list/order-list.component'
 import { FaIconComponent } from '@fortawesome/angular-fontawesome'
@@ -17,7 +17,7 @@ describe('OrderListComponent', () => {
   let component: OrderListComponent
   let fixture: ComponentFixture<OrderListComponent>
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [FaIconComponent, OrderListComponent],
       imports: [NgbPaginationModule],

@@ -1,5 +1,5 @@
 import { ProductEditComponent } from './product-edit.component'
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { ChangeDetectorRef, NgZone } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
@@ -35,7 +35,7 @@ describe('ProductEditComponent', () => {
   const httpClient = {}
   const ocTokenService = {}
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ProductEditComponent],
       providers: [

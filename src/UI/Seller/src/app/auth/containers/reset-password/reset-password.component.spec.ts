@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { InjectionToken } from '@angular/core';
@@ -29,7 +29,7 @@ describe('ResetPasswordComponent', () => {
     hasPasswordMismatchError: jasmine.createSpy('hasPasswordMismatchError'),
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ResetPasswordComponent],
       imports: [ReactiveFormsModule, CookieModule.forRoot(), HttpClientModule],

@@ -43,6 +43,7 @@ import { AuthModule } from './auth/auth.module'
 import { AutoAppendTokenInterceptor } from './auth/interceptors/auto-append-token/auto-append-token.interceptor'
 import { RefreshTokenInterceptor } from './auth/interceptors/refresh-token/refresh-token.interceptor'
 import { AppRoutingModule } from './app-routing.module'
+import { RouterModule } from '@angular/router'
 
 export function HttpLoaderFactory(
   http: HttpClient,
@@ -61,7 +62,7 @@ export enum OrdercloudEnv {
     // angular core modules
     BrowserAnimationsModule,
     BrowserModule,
-
+    RouterModule,
     // app modules
     AppRoutingModule,
     AuthModule,

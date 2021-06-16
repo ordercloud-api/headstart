@@ -1,3 +1,4 @@
+import { faBan, faCircle, faClock } from '@fortawesome/free-solid-svg-icons';
 /* eslint-disable max-lines-per-function */
 import { BrowserModule } from '@angular/platform-browser'
 import {
@@ -195,6 +196,9 @@ import { TokenHelperService } from './services/token-helper/token-helper.service
 import { AppConfig } from './models/environment.types'
 import { BaseResolveService } from './services/base-resolve/base-resolve.service'
 import { ShipMethodNameMapperPipe } from './pipes/ship-method-name/ship-method-name.pipe'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faCcAmex, faCcDiscover, faCcMastercard, faCcVisa } from '@fortawesome/free-brands-svg-icons'
+import { faCreditCard } from '@fortawesome/free-solid-svg-icons'
 
 export function HttpLoaderFactory(
   http: HttpClient,
@@ -412,6 +416,7 @@ export class AppModule {
     translate.setDefaultLang('en')
     translate.use('en')
 
+    library.add(faCcDiscover, faCcMastercard, faCcVisa, faCreditCard, faCcAmex, faCircle, faClock, faBan)
     this.buildWebComponent(OCMProfileNav, 'ocm-profile-nav')
     this.buildWebComponent(OCMQuantityInput, 'ocm-quantity-input')
     this.buildWebComponent(OCMProductCard, 'ocm-product-card')

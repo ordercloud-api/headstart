@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { StatusFilterComponent } from 'src/app/order/components/status-filter/order-status-filter.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -9,7 +9,7 @@ describe('StatusFilterComponent', () => {
   let component: StatusFilterComponent;
   let fixture: ComponentFixture<StatusFilterComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [StatusFilterComponent, OrderStatusDisplayPipe],
       imports: [ReactiveFormsModule],

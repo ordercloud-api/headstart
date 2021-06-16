@@ -8,9 +8,10 @@ import { SupplierLocationEditComponent } from './components/locations/supplier-l
 import { SupplierEditComponent } from './components/suppliers/supplier-edit/supplier-edit.component'
 import { SupplierUserTableComponent } from './components/users/supplier-user-table/supplier-user-table.component'
 import { SupplierUserEditComponent } from './components/users/supplier-user-edit/supplier-user-edit.component'
+import { RouterModule } from '@angular/router'
 
 @NgModule({
-  imports: [SharedModule, SuppliersRoutingModule, PerfectScrollbarModule],
+  imports: [SharedModule, SuppliersRoutingModule, PerfectScrollbarModule, RouterModule],
   declarations: [
     SupplierLocationTableComponent,
     SupplierLocationEditComponent,
@@ -20,4 +21,4 @@ import { SupplierUserEditComponent } from './components/users/supplier-user-edit
     SupplierUserEditComponent,
   ],
 })
-export class SuppliersModule {}
+export class SuppliersModule { }
