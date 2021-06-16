@@ -23,7 +23,6 @@ namespace Headstart.Tests
     {
 		private IOrderCloudIntegrationsCardConnectService _cardConnect;
 		private IOrderCloudClient _oc;
-		private IOrderCalcService _orderCalc;
 		private IHSExchangeRatesService _hsExchangeRates;
 		private ISupportAlertService _supportAlerts;
 		private AppSettings _settings;
@@ -60,10 +59,6 @@ namespace Headstart.Tests
 			_oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, orderID, Arg.Any<string>(), Arg.Any<PartialPayment>())
 				.Returns(Task.FromResult(new HSPayment { }));
 
-			_orderCalc = Substitute.For<IOrderCalcService>();
-			_orderCalc.GetCreditCardTotal(Arg.Any< HSOrderWorksheet>())
-				.Returns(ccTotal);
-
 			_hsExchangeRates = Substitute.For<IHSExchangeRatesService>();
 			_hsExchangeRates.GetCurrencyForUser(userToken)
 				.Returns(Task.FromResult(currency));
@@ -72,7 +67,7 @@ namespace Headstart.Tests
 			_settings = Substitute.For<AppSettings>();
 			_settings.CardConnectSettings.CadMerchantID = merchantID;
 
-			_sut = new CreditCardCommand(_cardConnect, _oc, _orderCalc, _hsExchangeRates, _supportAlerts, _settings);
+			_sut = new CreditCardCommand(_cardConnect, _oc, _hsExchangeRates, _supportAlerts, _settings);
 		}
 
         #region AuthorizePayment

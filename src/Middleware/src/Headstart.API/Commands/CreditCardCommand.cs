@@ -27,7 +27,6 @@ namespace ordercloud.integrations.cardconnect
 	{
 		private readonly IOrderCloudIntegrationsCardConnectService _cardConnect;
 		private readonly IOrderCloudClient _oc;
-		private readonly IOrderCalcService _orderCalc;
 		private readonly IHSExchangeRatesService _hsExchangeRates;
 		private readonly ISupportAlertService _supportAlerts;
 		private readonly AppSettings _settings;
@@ -35,7 +34,6 @@ namespace ordercloud.integrations.cardconnect
 		public CreditCardCommand(
 			IOrderCloudIntegrationsCardConnectService card,
 			IOrderCloudClient oc,
-			IOrderCalcService orderCalc,
 			IHSExchangeRatesService hsExchangeRates,
 			ISupportAlertService supportAlerts,
 			AppSettings settings
@@ -43,7 +41,6 @@ namespace ordercloud.integrations.cardconnect
 		{
 			_cardConnect = card;
 			_oc = oc;
-			_orderCalc = orderCalc;
 			_hsExchangeRates = hsExchangeRates;
 			_supportAlerts = supportAlerts;
 			_settings = settings;
@@ -81,7 +78,7 @@ namespace ordercloud.integrations.cardconnect
 
 			Require.That(!order.IsSubmitted, new ErrorCode("CreditCardAuth.AlreadySubmitted", 400, "Order has already been submitted"));
 
-			var ccAmount = _orderCalc.GetCreditCardTotal(orderWorksheet);
+			var ccAmount = orderWorksheet.Order.Total;
 
 			var ocPaymentsList = (await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, payment.OrderID, filters: "Type=CreditCard" ));
 			var ocPayments = ocPaymentsList.Items;

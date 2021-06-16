@@ -20,16 +20,13 @@ namespace Headstart.API.Commands
     public class PaymentCommand : IPaymentCommand
     {
         private readonly IOrderCloudClient _oc;
-        private readonly IOrderCalcService _orderCalc;
         private readonly ICreditCardCommand _ccCommand;
         public PaymentCommand(
             IOrderCloudClient oc,
-            IOrderCalcService orderCalc,
             ICreditCardCommand ccCommand
         )
         {
             _oc = oc;
-            _orderCalc = orderCalc;
             _ccCommand = ccCommand;
         }
 
@@ -50,7 +47,7 @@ namespace Headstart.API.Commands
 
         private async Task UpdateCCPaymentAsync(HSPayment requestedPayment, HSPayment existingPayment, HSOrderWorksheet worksheet, string userToken)
         {
-            var paymentAmount = _orderCalc.GetCreditCardTotal(worksheet);
+            var paymentAmount = worksheet.Order.Total;
             if (existingPayment == null)
             {
                 requestedPayment.Amount = paymentAmount;

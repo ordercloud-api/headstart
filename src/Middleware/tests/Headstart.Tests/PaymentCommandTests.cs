@@ -18,7 +18,6 @@ namespace Headstart.Tests
     class PaymentCommandTests
     {
         private IOrderCloudClient _oc;
-        private IOrderCalcService _orderCalc;
         private ICreditCardCommand _ccCommand;
         private IPaymentCommand _sut;
         private string mockOrderID = "mockOrderID";
@@ -37,18 +36,13 @@ namespace Headstart.Tests
                     .Returns(Task.FromResult(new HSOrderWorksheet { Order = new Models.HSOrder { ID = mockOrderID } }));
             _oc.Payments.CreateAsync<HSPayment>(OrderDirection.Incoming, mockOrderID, Arg.Any<HSPayment>())
                 .Returns(Task.FromResult(PaymentMocks.CCPayment(creditcard1, 20)));
-            
-            // orderCalcc
-            _orderCalc = Substitute.For<IOrderCalcService>();
-            _orderCalc.GetCreditCardTotal(Arg.Any<HSOrderWorksheet>())
-                .Returns(20);
 
             // ccCommand
             _ccCommand = Substitute.For<ICreditCardCommand>();
             _ccCommand.VoidTransactionAsync(Arg.Any<HSPayment>(), Arg.Any<HSOrder>(), mockUserToken)
                 .Returns(Task.FromResult(0));
 
-            _sut = new PaymentCommand(_oc, _orderCalc, _ccCommand);
+            _sut = new PaymentCommand(_oc, _ccCommand);
         }
 
         [Test]
@@ -56,12 +50,10 @@ namespace Headstart.Tests
         {
             // Arrange
             var mockedCreditCardTotal = 20;
-            var existing = PaymentMocks.PaymentList(PaymentMocks.POPayment(20));
+            var existing = PaymentMocks.PaymentList(PaymentMocks.CCPayment(creditcard2));
             _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, mockOrderID)
                 .Returns(Task.FromResult(existing));
             var requested = PaymentMocks.Payments(PaymentMocks.CCPayment(creditcard1));
-            _orderCalc.GetCreditCardTotal(Arg.Any<HSOrderWorksheet>())
-                .Returns(mockedCreditCardTotal);
 
             // Act
             var result = await _sut.SavePayments(mockOrderID, requested, mockUserToken);
@@ -79,8 +71,6 @@ namespace Headstart.Tests
             _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, mockOrderID)
                 .Returns(Task.FromResult(existing));
             var requested = PaymentMocks.Payments(PaymentMocks.CCPayment(creditcard1));
-            _orderCalc.GetCreditCardTotal(Arg.Any<HSOrderWorksheet>())
-                .Returns(mockedCreditCardTotal);
 
             // Act
             var result = await _sut.SavePayments(mockOrderID, requested, mockUserToken);
@@ -102,8 +92,6 @@ namespace Headstart.Tests
             _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, mockOrderID)
                 .Returns(Task.FromResult(existing));
             var requested = PaymentMocks.Payments(PaymentMocks.CCPayment(creditcard1));
-            _orderCalc.GetCreditCardTotal(Arg.Any<HSOrderWorksheet>())
-                .Returns(mockedCreditCardTotal);
 
             // Act
             var result = await _sut.SavePayments(mockOrderID, requested, mockUserToken);
@@ -126,8 +114,6 @@ namespace Headstart.Tests
             _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, mockOrderID)
                 .Returns(Task.FromResult(existing));
             var requested = PaymentMocks.Payments(PaymentMocks.CCPayment(creditcard2));
-            _orderCalc.GetCreditCardTotal(Arg.Any<HSOrderWorksheet>())
-                .Returns(mockedCreditCardTotal);
 
             // Act
             var result = await _sut.SavePayments(mockOrderID, requested, mockUserToken);
@@ -150,8 +136,6 @@ namespace Headstart.Tests
             _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, mockOrderID)
                 .Returns(Task.FromResult(existing));
             var requested = PaymentMocks.Payments(PaymentMocks.CCPayment(creditcard2));
-            _orderCalc.GetCreditCardTotal(Arg.Any<HSOrderWorksheet>())
-                .Returns(mockedCreditCardTotal);
 
             // Act
             var result = await _sut.SavePayments(mockOrderID, requested, mockUserToken);
@@ -168,13 +152,10 @@ namespace Headstart.Tests
             // do nothing, payment doesn't need updating
 
             // Arrange
-            var mockedCreditCardTotal = 50;
             var existing = PaymentMocks.PaymentList(PaymentMocks.CCPayment(creditcard1, 50, mockCCPaymentID));
             _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, mockOrderID)
                 .Returns(Task.FromResult(existing));
             var requested = PaymentMocks.Payments(PaymentMocks.CCPayment(creditcard1));
-            _orderCalc.GetCreditCardTotal(Arg.Any<HSOrderWorksheet>())
-                .Returns(mockedCreditCardTotal);
 
             // Act
             var result = await _sut.SavePayments(mockOrderID, requested, mockUserToken);
