@@ -38,11 +38,8 @@ namespace Headstart.API.Commands
             await ValidateOrderAsync(worksheet, payment, userToken);
 
             var incrementedOrderID = await IncrementOrderAsync(worksheet);
-            if (worksheet.LineItems.Any(li => li.Product.xp.ProductType != ProductType.PurchaseOrder))
-            {
-                payment.OrderID = incrementedOrderID;
-                await _card.AuthorizePayment(payment, userToken, GetMerchantID(payment));
-            }
+            payment.OrderID = incrementedOrderID;
+            await _card.AuthorizePayment(payment, userToken, GetMerchantID(payment));
             try
             {
                 return await _oc.Orders.SubmitAsync<HSOrder>(direction, incrementedOrderID, userToken);
@@ -68,11 +65,10 @@ namespace Headstart.API.Commands
                 new ErrorCode("OrderSubmit.MissingShippingSelections", 400, "All shipments on an order must have a selection"), shipMethodsWithoutSelections
                 );
 
-            var standardLines = worksheet.LineItems.Where(li => li.Product.xp.ProductType != ProductType.PurchaseOrder);
             Require.That(
-                !standardLines.Any() || payment != null,
+                !worksheet.LineItems.Any() || payment != null,
                 new ErrorCode("OrderSubmit.MissingPayment", 400, "Order contains standard line items and must include credit card payment details"),
-                standardLines
+                worksheet.LineItems
             );
             var lineItemsInactive = await GetInactiveLineItems(worksheet, userToken);
             Require.That(

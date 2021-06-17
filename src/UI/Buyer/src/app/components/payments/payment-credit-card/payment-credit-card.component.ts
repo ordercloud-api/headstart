@@ -10,16 +10,15 @@ import { CreditCardFormOutput, SelectedCreditCard } from 'src/app/models/credit-
 export class OCMPaymentCreditCard implements OnInit {
   @Input() set cards(value: ListPage<BuyerCreditCard>) {
     this._cards = value
-    if(value?.Items === null || value?.Items?.length<1) {
+    if (value?.Items === null || value?.Items?.length < 1) {
       this._noSavedCards = true
       this._showNewCCForm = true
     } else {
       this._noSavedCards = false
       this._showNewCCForm = false
     }
-  } 
+  }
   @Input() isAnon: boolean
-  @Input() termsAccepted: boolean
   @Input() paymentError: string
   @Output() cardSelected = new EventEmitter<SelectedCreditCard>()
   _cards: ListPage<BuyerCreditCard>
@@ -31,9 +30,9 @@ export class OCMPaymentCreditCard implements OnInit {
     cvv: new FormControl('', Validators.required),
   })
 
-  constructor() {}
+  constructor() { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   submit(output: CreditCardFormOutput): void {
     const cardID = this.form.value.cardID

@@ -34,11 +34,9 @@ export class OCMCreditCardForm implements OnChanges, OnInit {
   @Output() formDismissed = new EventEmitter()
   @Input() card: OrderCloudIntegrationsCreditCardToken
   @Input() submitText: string
-  @Input() termsAccepted: boolean
   @Input() showCVV: boolean
   @Input() showCardDetails: boolean
   @Input() isAnon: boolean
-  _termsAccepted: boolean
   _showCardDetails: boolean
   _showCVV: boolean
   cardError?: string
@@ -85,9 +83,6 @@ export class OCMCreditCardForm implements OnChanges, OnInit {
     // instead reference controlled variables that are only updated when angular knows about them (in ngOnChanges)
     if (changes.showCardDetails) {
       this._showCardDetails = changes.showCardDetails.currentValue
-    }
-    if (changes.termsAccepted) {
-      this._termsAccepted = changes.termsAccepted.currentValue
     }
     if (changes.showCVV) {
       this._showCVV = changes.showCVV.currentValue

@@ -61,7 +61,7 @@ export class OCMCart implements OnInit, OnDestroy {
   constructor(
     private context: ShopperContextService,
     private currentOrder: CurrentOrderService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.currentOrder.cart.isCartValidSubject.subscribe((valid) => {
@@ -75,7 +75,6 @@ export class OCMCart implements OnInit, OnDestroy {
         this._order,
         this._orderPromos?.Items,
         this._lineItems.Items,
-        [],
         'cart'
       )
     }
@@ -107,7 +106,6 @@ export class OCMCart implements OnInit, OnDestroy {
       this._order,
       this._orderPromos?.Items,
       this._lineItems.Items,
-      [],
       'cart'
     )
   }

@@ -1,83 +1,52 @@
-<button
-  *ngIf="_tableStatus === 'Default' && canChangeTo('Backordered')"
-  (click)="changeTableStatus('Backordered')"
-  class="mr-3 mb-3 btn btn-outline-dark d-print-none"
->
+<button *ngIf="_tableStatus === 'Default' && canChangeTo('Backordered')" (click)="changeTableStatus('Backordered')"
+  class="mr-3 mb-3 btn btn-outline-dark d-print-none">
   Mark Items as Backordered
 </button>
-<button
-  *ngIf="_tableStatus === 'Default' && canChangeTo('Canceled')"
-  (click)="changeTableStatus('Canceled')"
-  class="mr-3 mb-3 btn btn-outline-dark d-print-none"
->
+<button *ngIf="_tableStatus === 'Default' && canChangeTo('Canceled')" (click)="changeTableStatus('Canceled')"
+  class="mr-3 mb-3 btn btn-outline-dark d-print-none">
   Mark Items as Canceled
 </button>
-<button
-  *ngIf="_tableStatus === 'Default' && canChangeTo('Returned')"
-  (click)="changeTableStatus('Returned')"
-  class="mr-3 mb-3 btn btn-outline-dark d-print-none"
->
+<button *ngIf="_tableStatus === 'Default' && canChangeTo('Returned')" (click)="changeTableStatus('Returned')"
+  class="mr-3 mb-3 btn btn-outline-dark d-print-none">
   Mark Items as Returned
 </button>
-<button
-  *ngIf="_tableStatus !== 'Default'"
-  (click)="changeTableStatus('Default')"
-  class="mr-3 mb-3 btn btn-outline-dark d-print-none"
->
+<button *ngIf="_tableStatus !== 'Default'" (click)="changeTableStatus('Default')"
+  class="mr-3 mb-3 btn btn-outline-dark d-print-none">
   Abandon Changes
 </button>
-<button
-  *ngIf="_tableStatus !== 'Default'"
-  [disabled]="!areChanges() || !_statusChangeForm.valid || isSaving"
-  (click)="saveChanges()"
-  class="mb-3 btn btn-dark"
->
+<button *ngIf="_tableStatus !== 'Default'" [disabled]="!areChanges() || !_statusChangeForm.valid || isSaving"
+  (click)="saveChanges()" class="mb-3 btn btn-dark">
   Save Changes
 </button>
 <div *ngIf="_liGroupedByShipFrom?.length > 0 && !createShipment">
-  <div
-    class="card border shadow-sm mb-4"
-    *ngFor="let liGroup of _liGroupedByShipFrom; let shipFromIndex = index"
-  >
+  <div class="card border shadow-sm mb-4" *ngFor="let liGroup of _liGroupedByShipFrom; let shipFromIndex = index">
     <div class="card-header py-2 px-3">
       <div class="row">
         <div class="col">
-          <small class="font-weight-bolder text-uppercase text-muted"
-            >Ship From</small
-          >
+          <small class="font-weight-bolder text-uppercase text-muted">Ship From</small>
           <h5 class="card-title mb-0">
             {{
-              liGroup[0]?.ShipFromAddress?.CompanyName ||
-                liGroup[0]?.Product?.xp?.Facets?.supplier[0]
+            liGroup[0]?.ShipFromAddress?.CompanyName ||
+            liGroup[0]?.Product?.xp?.Facets?.supplier[0]
             }}
-            <small
-              *ngIf="liGroup[0]?.ShipFromAddress"
-              class="text-muted d-block"
-            >
-              <span
-                >{{ liGroup[0].ShipFromAddress?.Street1
-                }}<span *ngIf="liGroup[0].ShipFromAddress?.Street2"
-                  >, {{ liGroup[0].ShipFromAddress.Street2 }}</span
-                >, {{ liGroup[0].ShipFromAddress?.City }},
+            <small *ngIf="liGroup[0]?.ShipFromAddress" class="text-muted d-block">
+              <span>{{ liGroup[0].ShipFromAddress?.Street1
+                }}<span *ngIf="liGroup[0].ShipFromAddress?.Street2">, {{ liGroup[0].ShipFromAddress.Street2 }}</span>,
+                {{ liGroup[0].ShipFromAddress?.City }},
                 {{ liGroup[0].ShipFromAddress?.State }}
-                {{ liGroup[0].ShipFromAddress?.Zip }}</span
-              >
+                {{ liGroup[0].ShipFromAddress?.Zip }}</span>
             </small>
           </h5>
         </div>
         <div class="col text-right">
-          <small class="font-weight-bolder text-uppercase text-muted"
-            >Ship Method</small
-          >
+          <small class="font-weight-bolder text-uppercase text-muted">Ship Method</small>
           <h5 class="card-title mb-0">{{ getShipMethodString(liGroup[0]) }}</h5>
         </div>
       </div>
       <ng-content></ng-content>
     </div>
     <div [formGroup]="_statusChangeForm" class="table-responsive">
-      <table
-        class="table table-sm table-bordered table-hover display-table mb-0"
-      >
+      <table class="table table-sm table-bordered table-hover display-table mb-0">
         <thead>
           <tr>
             <th>Product</th>
@@ -95,75 +64,38 @@
         </thead>
         <tbody>
           <tr *ngFor="let li of liGroup; let lineItemIndex = index">
-            <td
-              class="align-middle d-flex justify-content-start align-items-center"
-            >
-              <img
-                [id]="i"
-                [src]="li.xp?.ImageUrl || getImageUrl(li.ID)"
-                width="auto"
-                height="80px"
-                class="mr-2"
-              />
+            <td class="align-middle d-flex justify-content-start align-items-center">
+              <img [id]="i" [src]="li.xp?.ImageUrl || getImageUrl(li.ID)" width="auto" height="80px" class="mr-2" />
               <h6>{{ li.ID }}</h6>
             </td>
             <td class="align-middle">
               <div class="d-flex align-items-center">
                 <h6>
-                  <span
-                    >{{ li | productNameWithSpecs }}
+                  <span>{{ li | productNameWithSpecs }}
                   </span>
                   <small class="text-muted d-block">{{
                     li.Variant?.ID || li.Product.ID
-                  }}</small>
-                  <span
-                    *ngIf="li.Product.xp?.ProductType === 'PurchaseOrder'"
-                    class="badge badge-pill badge-primary"
-                    >Purchase Order</span
-                  >
-                  <a
-                    *ngIf="li.Product.xp.ArtworkRequired"
-                    href="{{ li.xp.PrintArtworkURL }}"
-                    target="_blank"
-                    >Download PDF</a
-                  >
-                  <p
-                    class="mb-0 mt-2"
-                    *ngFor="let spec of getVariableTextSpecs(li)"
-                  >
+                    }}</small>
+                  <a *ngIf="li.Product.xp.ArtworkRequired" href="{{ li.xp.PrintArtworkURL }}" target="_blank">Download
+                    PDF</a>
+                  <p class="mb-0 mt-2" *ngFor="let spec of getVariableTextSpecs(li)">
                     {{ spec?.Name }}: {{ spec.Value }}
                   </p>
                 </h6>
               </div>
             </td>
-            <td
-              *ngIf="_tableStatus === 'Default'"
-              class="align-middle text-center"
-            >
+            <td *ngIf="_tableStatus === 'Default'" class="align-middle text-center">
               {{ li.Quantity }}
             </td>
-            <td
-              *ngIf="_tableStatus !== 'Default'"
-              class="align-middle text-center"
-            >
+            <td *ngIf="_tableStatus !== 'Default'" class="align-middle text-center">
               {{ quantityCanChange(li) }}
             </td>
-            <td
-              *ngIf="_tableStatus !== 'Default' && _statusChangeForm.controls"
-              class="align-middle text-center"
-            >
-              <input
-                class="form-control form-control-sm"
-                type="number"
-                min="0"
-                showErrors
-                [formControl]="
+            <td *ngIf="_tableStatus !== 'Default' && _statusChangeForm.controls" class="align-middle text-center">
+              <input class="form-control form-control-sm" type="number" min="0" showErrors [formControl]="
                   _statusChangeForm.controls[shipFromIndex].controls[
                     lineItemIndex
                   ]
-                "
-                max="{{ quantityCanChange(li) }}"
-              />
+                " max="{{ quantityCanChange(li) }}" />
             </td>
             <td>{{ li.xp.SupplierComments }}</td>
             <td class="align-middle">
@@ -171,34 +103,21 @@
               <div *ngIf="li.xp.Returns?.length || li.xp.Cancelations?.length">
                 <!-- Possible TO-DO: If a line item would have multiple returns/cancellations on it, a UI to support a better return view may be needed. -->
                 <div class="d-flex flex-column">
-                  <small *ngIf="li.xp.Returns[0]?.Reason"
-                    >Return Reason:
+                  <small *ngIf="li.xp.Returns[0]?.Reason">Return Reason:
                     {{
-                      getReturnOrCancelReason(li.xp.Returns[0].Reason)
-                    }}</small
-                  >
-                  <small *ngIf="li.xp.Returns[0]?.Comment"
-                    >Comment: {{ li.xp.Returns[0].Comment }}</small
-                  >
-                  <small *ngIf="li.xp.Cancelations[0]?.Reason"
-                    >Cancel Reason:
+                    getReturnOrCancelReason(li.xp.Returns[0].Reason)
+                    }}</small>
+                  <small *ngIf="li.xp.Returns[0]?.Comment">Comment: {{ li.xp.Returns[0].Comment }}</small>
+                  <small *ngIf="li.xp.Cancelations[0]?.Reason">Cancel Reason:
                     {{
-                      getReturnOrCancelReason(li.xp.Cancelations[0].Reason)
-                    }}</small
-                  >
-                  <small *ngIf="li.xp.Cancelations[0]?.Comment"
-                    >Comment: {{ li.xp.Cancelations[0].Comment }}</small
-                  >
+                    getReturnOrCancelReason(li.xp.Cancelations[0].Reason)
+                    }}</small>
+                  <small *ngIf="li.xp.Cancelations[0]?.Comment">Comment: {{ li.xp.Cancelations[0].Comment }}</small>
                 </div>
               </div>
-              <return-form
-                *ngIf="
+              <return-form *ngIf="
                   li.xp.LineItemStatus === 'ReturnRequested' && isSellerUser
-                "
-                [order]="_order"
-                (lineItemUpdate)="handleLineItemUpdate()"
-                [lineItem]="li"
-              ></return-form>
+                " [order]="_order" (lineItemUpdate)="handleLineItemUpdate()" [lineItem]="li"></return-form>
             </td>
             <td class="align-middle">
               {{ li.LineTotal | currency: _order?.xp?.currency }}

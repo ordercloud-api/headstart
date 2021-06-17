@@ -43,12 +43,12 @@ namespace Headstart.Tests.Mocks
             };
         }
 
-        public static HSPayment POPayment(decimal? amount = null, string id = "mockPoPaymentID")
+        public static HSPayment SpendingAccountPayment(decimal? amount = null, string id = "mockSpendingAccountID")
         {
             return new HSPayment
             {
                 ID = id,
-                Type = PaymentType.PurchaseOrder,
+                Type = PaymentType.SpendingAccount,
                 Amount = amount
             };
         }

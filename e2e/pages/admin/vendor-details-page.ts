@@ -11,7 +11,6 @@ class VendorDetailsPage {
 	currencyOptions: Selector
 	standardProductTypeCheckbox: Selector
 	quoteProductTypeCheckbox: Selector
-	purchaseOrderProductTypeCheckbox: Selector
 	USCountryCheckbox: Selector
 	CACountryCheckbox: Selector
 	freightPOPToggle: Selector
@@ -24,9 +23,6 @@ class VendorDetailsPage {
 		this.currencyOptions = this.currencySelector.find('option')
 		this.standardProductTypeCheckbox = Selector('#Standard').parent()
 		this.quoteProductTypeCheckbox = Selector('#Quote').parent()
-		this.purchaseOrderProductTypeCheckbox = Selector(
-			'#PurchaseOrder'
-		).parent()
 		this.USCountryCheckbox = Selector('#US').parent()
 		this.CACountryCheckbox = Selector('#CA').parent()
 		this.freightPOPToggle = Selector('#SyncFreightPop').parent()
@@ -74,9 +70,6 @@ class VendorDetailsPage {
 		}
 		if (productType.includes('Quote')) {
 			await t.click(this.quoteProductTypeCheckbox)
-		}
-		if (productType.includes('Purchase Order')) {
-			await t.click(this.purchaseOrderProductTypeCheckbox)
 		}
 
 		await t.click(this.createButton)

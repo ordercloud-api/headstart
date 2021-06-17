@@ -15,11 +15,6 @@ describe('AppPaymentService', () => {
       { Type: 'CreditCard', CreditCardID: 'CreditCardTwo' },
       { Type: 'SpendingAccount', SpendingAccountID: 'SpendingAccountOne' },
       { Type: 'SpendingAccount', SpendingAccountID: 'SpendingAccountTwo' },
-      {
-        Type: 'PurchaseOrder',
-        ID: 'PurchaseOrderOne',
-        xp: { PONumber: '123456' },
-      },
     ],
   };
   const paymentService = {

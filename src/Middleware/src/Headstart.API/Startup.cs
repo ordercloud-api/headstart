@@ -122,7 +122,6 @@ namespace Headstart.API
                 .Inject<IHSSupplierCommand>()
                 .Inject<ICreditCardCommand>()
                 .Inject<ISupportAlertService>()
-                .Inject<IOrderCalcService>()
                 .Inject<IUserContextProvider>()
                 .Inject<ISupplierApiClientHelper>()
                 .AddSingleton<ISendGridClient>(x => new SendGridClient(_settings.SendgridSettings.ApiKey))
