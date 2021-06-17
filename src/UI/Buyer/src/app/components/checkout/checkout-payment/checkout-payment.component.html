@@ -32,7 +32,7 @@
   <div *ngFor="let method of _acceptedPaymentMethods; let i = index" class="form-check">
     <input (change)="selectPaymentMethod($event)" class="form-check-input" type="radio" name="{{i}}" id="{{i}}"
       value="{{method}}" [checked]="selectedPaymentMethod === method">
-    <label class="form-check-label" for="exampleRadios1">
+    <label class="form-check-label" for="{{i}}">
       {{getPaymentMethodName(method)}} </label>
   </div>
   <ocm-payment-credit-card *ngIf="orderSummaryMeta.LineItemCount && selectedPaymentMethod === 'CreditCard'"
