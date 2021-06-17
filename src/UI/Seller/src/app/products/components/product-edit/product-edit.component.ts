@@ -159,7 +159,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     private toastrService: ToastrService,
     private assetService: AssetService,
     private translate: TranslateService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     // TODO: Eventually move to a resolve so that they are there before the component instantiates.
@@ -373,7 +373,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
           ),
           FreeShippingMessage: new FormControl(
             _get(superHSProduct.Product, 'xp.FreeShippingMessage') ||
-              'Free Shipping'
+            'Free Shipping'
           ),
         },
         { validators: ValidateMinMax }
@@ -563,7 +563,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     this.availableProductTypes = supplier?.xp?.ProductTypes || [
       'Standard',
       'Quote',
-      'PurchaseOrder',
     ]
   }
 
@@ -620,7 +619,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   productWasModified(): boolean {
     return (
       JSON.stringify(this._superHSProductEditable) !==
-        JSON.stringify(this._superHSProductStatic) ||
+      JSON.stringify(this._superHSProductStatic) ||
       this.imageFiles.length > 0 ||
       this.staticContentFiles.length > 0
     )
@@ -670,8 +669,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       value: productFields.includes(field)
         ? event.target.checked
         : typeOfValue === 'number'
-        ? Number(event.target.value)
-        : event.target.value,
+          ? Number(event.target.value)
+          : event.target.value,
     }
 
     if (field === 'PriceSchedule.MaxQuantity' && productUpdate.value === 0) {
@@ -705,7 +704,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   checkForChanges(): void {
     this.areChanges =
       JSON.stringify(this._superHSProductEditable) !==
-        JSON.stringify(this._superHSProductStatic) ||
+      JSON.stringify(this._superHSProductStatic) ||
       this.imageFiles?.length > 0 ||
       this.staticContentFiles?.length > 0
   }
@@ -865,8 +864,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   ): Promise<SuperHSProduct> {
     const supplier = await this.currentUserService.getMySupplier()
     superHSProduct.Product.xp.ProductType = this.productType
-    superHSProduct.Product.xp.PromotionEligible =
-      this.productType === 'PurchaseOrder' ? false : true
+    superHSProduct.Product.xp.PromotionEligible = true
     superHSProduct.Product.xp.Status = 'Draft'
     superHSProduct.Product.xp.Currency = supplier?.xp?.Currency
     superHSProduct.PriceSchedule.ID = superHSProduct.Product.ID

@@ -9,7 +9,6 @@ export class PaymentMethodDisplayPipe implements PipeTransform {
       return null
     }
     const PaymentMethodMap = {
-      ['PurchaseOrder']: 'Purchase Order',
       ['SpendingAccount']: 'Spending Account',
       ['CreditCard']: 'Credit Card',
     }

@@ -20,16 +20,13 @@ namespace Headstart.API.Commands
     public class PaymentCommand : IPaymentCommand
     {
         private readonly IOrderCloudClient _oc;
-        private readonly IOrderCalcService _orderCalc;
         private readonly ICreditCardCommand _ccCommand;
         public PaymentCommand(
             IOrderCloudClient oc,
-            IOrderCalcService orderCalc,
             ICreditCardCommand ccCommand
         )
         {
             _oc = oc;
-            _orderCalc = orderCalc;
             _ccCommand = ccCommand;
         }
 
@@ -43,7 +40,6 @@ namespace Headstart.API.Commands
             {
                 var existingPayment = existingPayments.FirstOrDefault(p => p.Type == requestedPayment.Type);
                 if(requestedPayment.Type == PaymentType.CreditCard) { await UpdateCCPaymentAsync(requestedPayment, existingPayment, worksheet, userToken); }
-                if(requestedPayment.Type == PaymentType.PurchaseOrder) { await UpdatePoPaymentAsync(requestedPayment, existingPayment, worksheet); }
             }
 
             return (await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID)).Items;
@@ -51,11 +47,12 @@ namespace Headstart.API.Commands
 
         private async Task UpdateCCPaymentAsync(HSPayment requestedPayment, HSPayment existingPayment, HSOrderWorksheet worksheet, string userToken)
         {
-            var paymentAmount = _orderCalc.GetCreditCardTotal(worksheet);
+            var paymentAmount = worksheet.Order.Total;
             if (existingPayment == null)
             {
                 requestedPayment.Amount = paymentAmount;
                 requestedPayment.Accepted = false;
+                requestedPayment.Type = requestedPayment.Type;
                 await _oc.Payments.CreateAsync<HSPayment>(OrderDirection.Outgoing, worksheet.Order.ID, requestedPayment, userToken); // need user token because admins cant see personal credit cards
             }
             else if(existingPayment.CreditCardID == requestedPayment.CreditCardID && existingPayment.Amount == paymentAmount)
@@ -83,23 +80,6 @@ namespace Headstart.API.Commands
             }
         }
 
-        private async Task UpdatePoPaymentAsync(HSPayment requestedPayment, HSPayment existingPayment, HSOrderWorksheet worksheet)
-        {
-            var paymentAmount = _orderCalc.GetPurchaseOrderTotal(worksheet);
-            if (existingPayment == null)
-            {
-                requestedPayment.Amount = paymentAmount;
-                await _oc.Payments.CreateAsync<HSPayment>(OrderDirection.Incoming, worksheet.Order.ID, requestedPayment);
-            }
-            else
-            {
-                await _oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, worksheet.Order.ID, existingPayment.ID, new PartialPayment
-                {
-                    Amount = paymentAmount
-                });
-            }
-        }
-
         private async Task DeleteCreditCardPaymentAsync(HSPayment payment, HSOrder order, string userToken)
         {
             await _ccCommand.VoidTransactionAsync(payment, order, userToken);
@@ -115,14 +95,14 @@ namespace Headstart.API.Commands
             {
                 if (!requestedPayments.Any(p => p.Type == existingPayment.Type))
                 {
-                    if (existingPayment.Type == PaymentType.PurchaseOrder)
-                    {
-                        await _oc.Payments.DeleteAsync(OrderDirection.Incoming, order.ID, existingPayment.ID);
-                        existingPayments.Remove(existingPayment);
-                    }
                     if (existingPayment.Type == PaymentType.CreditCard)
                     {
                         await DeleteCreditCardPaymentAsync(existingPayment, order, userToken);
+                        existingPayments.Remove(existingPayment);
+                    }
+                    else
+                    {
+                        await _oc.Payments.DeleteAsync(OrderDirection.Incoming, order.ID, existingPayment.ID);
                         existingPayments.Remove(existingPayment);
                     }
                 }

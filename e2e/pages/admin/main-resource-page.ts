@@ -7,7 +7,6 @@ class MainResourcePage {
 	resourceList: Selector
 	standardProductButton: Selector
 	quoteProductButton: Selector
-	purchaseOrderProductButton: Selector
 	searchBar: Selector
 
 	constructor() {
@@ -18,9 +17,6 @@ class MainResourcePage {
 		)
 		this.quoteProductButton = Selector('button').withText(
 			createRegExp('quote product')
-		)
-		this.purchaseOrderProductButton = Selector('button').withText(
-			createRegExp('purchase order product')
 		)
 		this.searchBar = Selector('#product-search')
 	}
@@ -45,11 +41,6 @@ class MainResourcePage {
 	async clickCreateNewQuoteProduct() {
 		await t.click(this.createButton)
 		await t.click(this.quoteProductButton)
-	}
-
-	async clickCreateNewPurchaseOrderProduct() {
-		await t.click(this.createButton)
-		await t.click(this.purchaseOrderProductButton)
 	}
 
 	async searchForResource(resourceName: string) {

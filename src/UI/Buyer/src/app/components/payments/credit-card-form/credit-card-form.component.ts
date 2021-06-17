@@ -33,11 +33,9 @@ export class OCMCreditCardForm implements OnChanges {
   @Output() formDismissed = new EventEmitter()
   @Input() card: OrderCloudIntegrationsCreditCardToken
   @Input() submitText: string
-  @Input() termsAccepted: boolean
   @Input() showCVV: boolean
   @Input() showCardDetails: boolean
   @Input() isAnon: boolean
-  _termsAccepted: boolean
   _showCardDetails: boolean
   _showCVV: boolean
   cardError?: string
@@ -67,7 +65,7 @@ export class OCMCreditCardForm implements OnChanges {
   constructor(
     private creditCardFormatPipe: CreditCardFormatPipe,
     private context: ShopperContextService
-    ) {
+  ) {
     this.countryOptions = GeographyConfig.getCountries()
     this.stateOptions = this.getStateOptions(this.defaultCountry)
   }
@@ -77,9 +75,6 @@ export class OCMCreditCardForm implements OnChanges {
     // instead reference controlled variables that are only updated when angular knows about them (in ngOnChanges)
     if (changes.showCardDetails) {
       this._showCardDetails = changes.showCardDetails.currentValue
-    }
-    if (changes.termsAccepted) {
-      this._termsAccepted = changes.termsAccepted.currentValue
     }
     if (changes.showCVV) {
       this._showCVV = changes.showCVV.currentValue
@@ -229,7 +224,7 @@ export class OCMCreditCardForm implements OnChanges {
   mapShippingAddressToBilling(event: Event) {
     const value = (event.target as HTMLInputElement).checked
     const lineItems = this.context.order.getLineItems()
-    if(value && lineItems?.Items && lineItems.Items[0]) {
+    if (value && lineItems?.Items && lineItems.Items[0]) {
       const firstItem = lineItems.Items[0]
       this.cardForm.controls['street'].setValue(firstItem.ShippingAddress?.Street1)
       this.cardForm.controls['city'].setValue(firstItem.ShippingAddress?.City)

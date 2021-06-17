@@ -138,17 +138,17 @@ test
 			await deleteProduct(createdProductID, t.fixtureCtx.supplierUserAuth)
 		}
 	})('Create Standard Product | 19215', async t => {
-	await adminHeaderPage.selectAllProducts()
-	await mainResourcePage.clickCreateNewStandardProduct()
-	const createdProductName = await productDetailsPage.createDefaultStandardProduct()
-	t.ctx.createdProductName = createdProductName
-	await t.wait(5000)
-	await refreshPage() //refresh because of bug
-	await t.wait(3000)
-	await t
-		.expect(await mainResourcePage.resourceExists(createdProductName))
-		.ok()
-})
+		await adminHeaderPage.selectAllProducts()
+		await mainResourcePage.clickCreateNewStandardProduct()
+		const createdProductName = await productDetailsPage.createDefaultStandardProduct()
+		t.ctx.createdProductName = createdProductName
+		await t.wait(5000)
+		await refreshPage() //refresh because of bug
+		await t.wait(3000)
+		await t
+			.expect(await mainResourcePage.resourceExists(createdProductName))
+			.ok()
+	})
 
 test
 	.before(async t => {
@@ -169,48 +169,17 @@ test
 			await deleteProduct(createdProductID, t.ctx.userAuth)
 		}
 	})('Create Quote Product | 19690', async t => {
-	await adminHeaderPage.selectAllProducts()
-	await mainResourcePage.clickCreateNewQuoteProduct()
-	const createdProductName = await productDetailsPage.createDefaultQuoteProduct()
-	t.ctx.createdProductName = createdProductName
-	await t.wait(5000)
-	await refreshPage() //refresh because of bug
-	await t.wait(3000)
-	await t
-		.expect(await mainResourcePage.resourceExists(createdProductName))
-		.ok()
-})
-
-test
-	.before(async t => {
-		const vendorUser = await getSupplierUser(
-			t.fixtureCtx.supplierUserID,
-			t.fixtureCtx.supplierID,
-			t.fixtureCtx.clientAuth
-		)
-		await vendorTestSetup(vendorUser.Username, 'Test123!')
+		await adminHeaderPage.selectAllProducts()
+		await mainResourcePage.clickCreateNewQuoteProduct()
+		const createdProductName = await productDetailsPage.createDefaultQuoteProduct()
+		t.ctx.createdProductName = createdProductName
+		await t.wait(5000)
+		await refreshPage() //refresh because of bug
+		await t.wait(3000)
+		await t
+			.expect(await mainResourcePage.resourceExists(createdProductName))
+			.ok()
 	})
-	.after(async () => {
-		if (t.ctx.createdProductName != null) {
-			const createdProductID = await getProductID(
-				t.ctx.createdProductName,
-				t.fixtureCtx.clientAuth
-			)
-			await t.wait(3000)
-			await deleteProduct(createdProductID, t.ctx.userAuth)
-		}
-	})('Create Purchase Order Product | 19691', async t => {
-	await adminHeaderPage.selectAllProducts()
-	await mainResourcePage.clickCreateNewPurchaseOrderProduct()
-	const createdProductName = await productDetailsPage.createDefaultStandardProduct()
-	t.ctx.createdProductName = createdProductName
-	await t.wait(5000)
-	await refreshPage() //refresh because of bug
-	await t.wait(3000)
-	await t
-		.expect(await mainResourcePage.resourceExists(createdProductName))
-		.ok()
-})
 
 test.before(async () => {
 	await adminTestSetup()
@@ -247,48 +216,48 @@ test
 			)
 		}
 	})('Can product be Created and checked out with? | 20036', async t => {
-	await adminHeaderPage.selectAllProducts()
-	await mainResourcePage.clickCreateNewStandardProduct()
-	const createdProductName = await productDetailsPage.createDefaultActiveStandardProduct()
-	t.ctx.createdProductName = createdProductName
-	await t.wait(5000)
-	await refreshPage() //refresh because of bug
-	await t.wait(3000)
-	await t
-		.expect(await mainResourcePage.resourceExists(createdProductName))
-		.ok()
-	await adminHeaderPage.logout()
+		await adminHeaderPage.selectAllProducts()
+		await mainResourcePage.clickCreateNewStandardProduct()
+		const createdProductName = await productDetailsPage.createDefaultActiveStandardProduct()
+		t.ctx.createdProductName = createdProductName
+		await t.wait(5000)
+		await refreshPage() //refresh because of bug
+		await t.wait(3000)
+		await t
+			.expect(await mainResourcePage.resourceExists(createdProductName))
+			.ok()
+		await adminHeaderPage.logout()
 
-	//Below for Product visibility
-	await adminTestSetup()
+		//Below for Product visibility
+		await adminTestSetup()
 
-	await adminHeaderPage.selectAllProducts()
-	await mainResourcePage.searchForResource(createdProductName)
-	await mainResourcePage.selectResource(createdProductName)
-	await productDetailsPage.clickacceptChangesButton()
-	await productDetailsPage.clickBuyerVisibilityTab()
-	await productDetailsPage.editBuyerVisibilityForView(
-		'0005',
-		'All Location Products'
-	)
+		await adminHeaderPage.selectAllProducts()
+		await mainResourcePage.searchForResource(createdProductName)
+		await mainResourcePage.selectResource(createdProductName)
+		await productDetailsPage.clickacceptChangesButton()
+		await productDetailsPage.clickBuyerVisibilityTab()
+		await productDetailsPage.editBuyerVisibilityForView(
+			'0005',
+			'All Location Products'
+		)
 
-	// Below line for Buyer side of task
-	await t.navigateTo(testConfig.buyerAppUrl)
-	const buyerUser = await buyerTestSetup(t.fixtureCtx.clientAuth)
-	t.ctx.testUser = buyerUser
+		// Below line for Buyer side of task
+		await t.navigateTo(testConfig.buyerAppUrl)
+		const buyerUser = await buyerTestSetup(t.fixtureCtx.clientAuth)
+		t.ctx.testUser = buyerUser
 
-	await buyerHeaderPage.search(createdProductName)
-	await productListPage.clickProduct(createdProductName)
-	await productDetailPage.clickAddToCartButton()
-	await buyerHeaderPage.clickCartButton()
-	await shoppingCartPage.clickCheckoutButton()
-	await checkoutPage.clickSaveAndContinueButton()
-	await checkoutPage.selectShippingOption(createdProductName, 'day')
-	await checkoutPage.clickSaveAndContinueButton()
-	await checkoutPage.selectCreditCard(buyerUser.FirstName)
-	await checkoutPage.enterCVV('900')
-	await checkoutPage.clickSaveAndContinueButton()
-	await checkoutPage.clickSubmitOrderButton()
-	await loadingHelper.thisWait()
-	await t.expect(await orderDetailPage.productExists(createdProductName)).ok()
-})
+		await buyerHeaderPage.search(createdProductName)
+		await productListPage.clickProduct(createdProductName)
+		await productDetailPage.clickAddToCartButton()
+		await buyerHeaderPage.clickCartButton()
+		await shoppingCartPage.clickCheckoutButton()
+		await checkoutPage.clickSaveAndContinueButton()
+		await checkoutPage.selectShippingOption(createdProductName, 'day')
+		await checkoutPage.clickSaveAndContinueButton()
+		await checkoutPage.selectCreditCard(buyerUser.FirstName)
+		await checkoutPage.enterCVV('900')
+		await checkoutPage.clickSaveAndContinueButton()
+		await checkoutPage.clickSubmitOrderButton()
+		await loadingHelper.thisWait()
+		await t.expect(await orderDetailPage.productExists(createdProductName)).ok()
+	})

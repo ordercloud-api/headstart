@@ -90,7 +90,7 @@ export async function createSupplier(clientAuth: string) {
 			Currency: 'USD',
 			Description: '',
 			Images: [],
-			ProductTypes: ['Standard', 'Quote', 'PurchaseOrder'],
+			ProductTypes: ['Standard', 'Quote'],
 			SupportContact: {
 				Name: '',
 				Email: '',

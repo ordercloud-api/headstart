@@ -336,46 +336,6 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_not_capture_credit_card_payment_if_all_po_lineitems()
-        {
-            // Arrange
-            _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, "mockOrderID").Returns(Task.FromResult(new HSOrderWorksheet
-            {
-                Order = new HSOrder { ID = "mockOrderID", IsSubmitted = false, xp = new OrderXp { IsResubmitting = false } },
-                ShipEstimateResponse = new HSShipEstimateResponse
-                {
-                    ShipEstimates = new List<HSShipEstimate>()
-                    {
-                        new HSShipEstimate
-                        {
-                            SelectedShipMethodID = "FEDEX_GROUND"
-                        }
-                    }
-                },
-                LineItems = new List<HSLineItem>()
-                {
-                    new HSLineItem
-                    {
-                        Product = new HSLineItemProduct
-                        {
-                            xp = new ProductXp
-                            {
-                                ProductType = ProductType.PurchaseOrder
-                            }
-                        }
-                    }
-                }
-            }));
-
-            // Act
-            await _sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new OrderCloudIntegrationsCreditCardPayment(), "mockUserToken");
-
-            // Assert
-            await _card.DidNotReceive().AuthorizePayment(Arg.Any<OrderCloudIntegrationsCreditCardPayment>(), "mockUserToken", Arg.Any<string>());
-        }
-
-
-        [Test]
         public async Task should_use_usd_merchant_when_appropriate()
         {
             // Arrange

@@ -91,7 +91,7 @@ export class ResourceTableComponent
     private impersonationService: ImpersonationService,
     private currentUserService: CurrentUserService,
     ngZone: NgZone
-  ) {}
+  ) { }
 
   @Input()
   resourceList: ListPage<any> = { Meta: {}, Items: [] }
@@ -210,7 +210,7 @@ export class ResourceTableComponent
     this.availableProductTypes =
       formattedSupplierProductTypes.length > 0
         ? formattedSupplierProductTypes
-        : this.mapProductTypes(['Standard', 'Quote', 'PurchaseOrder'])
+        : this.mapProductTypes(['Standard', 'Quote'])
   }
 
   getTitle(
@@ -247,7 +247,7 @@ export class ResourceTableComponent
         this.searchTerm = (options && options.search) || ''
         this.activeFilterCount = options.filters
           ? Object.keys(options.filters).filter((k) => k !== 'searchType')
-              .length
+            .length
           : 0
         this.setFilterForm()
         this.changeDetectorRef.detectChanges()
@@ -500,11 +500,11 @@ export class ResourceTableComponent
   navigateToSubResource(subResource: string) {
     this.router.navigateByUrl(
       '/' +
-        this._ocService.primaryResourceLevel +
-        '/' +
-        this.selectedParentResourceID +
-        '/' +
-        subResource
+      this._ocService.primaryResourceLevel +
+      '/' +
+      this.selectedParentResourceID +
+      '/' +
+      subResource
     )
   }
   ngOnDestroy() {
