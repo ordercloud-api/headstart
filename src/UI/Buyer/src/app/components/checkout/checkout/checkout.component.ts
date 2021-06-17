@@ -106,7 +106,7 @@ export class OCMCheckout implements OnInit {
     }
 
     this.lineItems = this.context.order.cart.get()
-    this.orderPromotions = this.context.order.promos.get().Items
+    this.orderPromotions = this.context.order.promos.get()?.Items
     this.isAnon = this.context.currentUser.isAnonymous()
     this.currentPanel = this.isAnon ? 'login' : 'shippingAddressLoading'
     this.initLoadingIndicator()

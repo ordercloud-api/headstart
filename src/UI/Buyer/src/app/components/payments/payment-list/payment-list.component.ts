@@ -7,7 +7,7 @@ import { ShopperContextService } from 'src/app/services/shopper-context/shopper-
   styleUrls: ['./payment-list.component.scss'],
 })
 export class OCMPaymentList implements OnInit {
-  @Input() payments: ListPage<Payment>
+  @Input() payments: any
   _userCurrency: string
 
   constructor(private context: ShopperContextService) { }
