@@ -22,10 +22,10 @@ namespace Headstart.Tests
         private IPaymentCommand _sut;
         private string mockOrderID = "mockOrderID";
         private string mockUserToken = "mockUserToken";
-        private string mockPoPaymentID = "mockPoPaymentID";
         private string mockCCPaymentID = "mockCCPaymentID";
         private string creditcard1 = "creditcard1";
         private string creditcard2 = "creditcard2";
+        private string mockSpendingAccountID = "mockSpendingAccountID";
 
         [SetUp]
         public void Setup()
@@ -33,8 +33,8 @@ namespace Headstart.Tests
             // oc
             _oc = Substitute.For<IOrderCloudClient>();
             _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, mockOrderID)
-                    .Returns(Task.FromResult(new HSOrderWorksheet { Order = new Models.HSOrder { ID = mockOrderID } }));
-            _oc.Payments.CreateAsync<HSPayment>(OrderDirection.Incoming, mockOrderID, Arg.Any<HSPayment>())
+                    .Returns(Task.FromResult(new HSOrderWorksheet { Order = new Models.HSOrder { ID = mockOrderID, Total = 20 } }));
+            _oc.Payments.CreateAsync<HSPayment>(OrderDirection.Incoming, mockOrderID, Arg.Any<HSPayment>()) 
                 .Returns(Task.FromResult(PaymentMocks.CCPayment(creditcard1, 20)));
 
             // ccCommand
@@ -50,7 +50,7 @@ namespace Headstart.Tests
         {
             // Arrange
             var mockedCreditCardTotal = 20;
-            var existing = PaymentMocks.PaymentList(PaymentMocks.CCPayment(creditcard2));
+            var existing = PaymentMocks.PaymentList(PaymentMocks.SpendingAccountPayment(20));
             _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, mockOrderID)
                 .Returns(Task.FromResult(existing));
             var requested = PaymentMocks.Payments(PaymentMocks.CCPayment(creditcard1));
@@ -59,14 +59,14 @@ namespace Headstart.Tests
             var result = await _sut.SavePayments(mockOrderID, requested, mockUserToken);
 
             // Assert
-            await _oc.Payments.Received().DeleteAsync(OrderDirection.Incoming, mockOrderID, mockPoPaymentID);
+            await _oc.Payments.Received().DeleteAsync(OrderDirection.Incoming, mockOrderID, mockSpendingAccountID);
             await _oc.Payments.Received().CreateAsync<HSPayment>(OrderDirection.Outgoing, mockOrderID, Arg.Is<HSPayment>(p => p.ID == mockCCPaymentID && p.Type == PaymentType.CreditCard && p.Amount == mockedCreditCardTotal), mockUserToken);
         }
 
         [Test] public async Task should_handle_new_cc_payment()
         {
             // Arrange
-            var mockedCreditCardTotal = 30;
+            var mockedCreditCardTotal = 20;
             var existing = PaymentMocks.EmptyPaymentsList();
             _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, mockOrderID)
                 .Returns(Task.FromResult(existing));
@@ -87,8 +87,8 @@ namespace Headstart.Tests
             // then we should void any existing transactions if necessary and update the payment 
 
             // Arrange
-            var mockedCreditCardTotal = 30;
-            var existing = PaymentMocks.PaymentList(PaymentMocks.CCPayment(creditcard1, 20));
+            var mockedCreditCardTotal = 20;
+            var existing = PaymentMocks.PaymentList(PaymentMocks.CCPayment(creditcard1, 30));
             _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, mockOrderID)
                 .Returns(Task.FromResult(existing));
             var requested = PaymentMocks.Payments(PaymentMocks.CCPayment(creditcard1));
@@ -109,11 +109,11 @@ namespace Headstart.Tests
             // but should void the existing authorization before that
 
             // Arrange
-            var mockedCreditCardTotal = 50;
-            var existing = PaymentMocks.PaymentList(PaymentMocks.CCPayment(creditcard1, 50, mockCCPaymentID));
+            var mockedCreditCardTotal = 20;
+            var existing = PaymentMocks.PaymentList(PaymentMocks.CCPayment(creditcard1, 20, mockCCPaymentID));
             _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, mockOrderID)
                 .Returns(Task.FromResult(existing));
-            var requested = PaymentMocks.Payments(PaymentMocks.CCPayment(creditcard2));
+            var requested = PaymentMocks.Payments(PaymentMocks.CCPayment(creditcard2, 20));
 
             // Act
             var result = await _sut.SavePayments(mockOrderID, requested, mockUserToken);
@@ -131,7 +131,7 @@ namespace Headstart.Tests
             // but should void the existing authorization before that
 
             // Arrange
-            var mockedCreditCardTotal = 50;
+            var mockedCreditCardTotal = 20;
             var existing = PaymentMocks.PaymentList(PaymentMocks.CCPayment(creditcard1, 40, mockCCPaymentID));
             _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, mockOrderID)
                 .Returns(Task.FromResult(existing));
@@ -152,7 +152,7 @@ namespace Headstart.Tests
             // do nothing, payment doesn't need updating
 
             // Arrange
-            var existing = PaymentMocks.PaymentList(PaymentMocks.CCPayment(creditcard1, 50, mockCCPaymentID));
+            var existing = PaymentMocks.PaymentList(PaymentMocks.CCPayment(creditcard1, 20, mockCCPaymentID));
             _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, mockOrderID)
                 .Returns(Task.FromResult(existing));
             var requested = PaymentMocks.Payments(PaymentMocks.CCPayment(creditcard1));

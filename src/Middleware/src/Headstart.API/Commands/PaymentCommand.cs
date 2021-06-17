@@ -52,6 +52,7 @@ namespace Headstart.API.Commands
             {
                 requestedPayment.Amount = paymentAmount;
                 requestedPayment.Accepted = false;
+                requestedPayment.Type = requestedPayment.Type;
                 await _oc.Payments.CreateAsync<HSPayment>(OrderDirection.Outgoing, worksheet.Order.ID, requestedPayment, userToken); // need user token because admins cant see personal credit cards
             }
             else if(existingPayment.CreditCardID == requestedPayment.CreditCardID && existingPayment.Amount == paymentAmount)
@@ -97,6 +98,11 @@ namespace Headstart.API.Commands
                     if (existingPayment.Type == PaymentType.CreditCard)
                     {
                         await DeleteCreditCardPaymentAsync(existingPayment, order, userToken);
+                        existingPayments.Remove(existingPayment);
+                    }
+                    else
+                    {
+                        await _oc.Payments.DeleteAsync(OrderDirection.Incoming, order.ID, existingPayment.ID);
                         existingPayments.Remove(existingPayment);
                     }
                 }

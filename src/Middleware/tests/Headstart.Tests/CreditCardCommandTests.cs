@@ -53,7 +53,7 @@ namespace Headstart.Tests
 			_oc.Me.GetCreditCardAsync<CardConnectBuyerCreditCard>(creditCardID, userToken)
 				.Returns(MockCreditCard());
 			_oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID)
-				.Returns(Task.FromResult(new HSOrderWorksheet { Order = new HSOrder { ID = orderID } }));
+				.Returns(Task.FromResult(new HSOrderWorksheet { Order = new HSOrder { ID = orderID, Total = 38 } }));
 			_oc.Payments.CreateTransactionAsync<HSPayment>(OrderDirection.Incoming, orderID, Arg.Any<string>(), Arg.Any<PaymentTransaction>())
 				.Returns(Task.FromResult(new HSPayment { }));
 			_oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, orderID, Arg.Any<string>(), Arg.Any<PartialPayment>())
