@@ -17,10 +17,10 @@ export class OCMCheckoutConfirm implements OnInit {
   @Input() isAnon: boolean
   @Input() order: HSOrder
   @Input() lineItems: ListPage<HSLineItem>
-  @Input() payments: ListPage<Payment>
+  @Input() payments: Payment[]
   @Output() submitOrderWithComment = new EventEmitter<string>()
 
-  constructor() {}
+  constructor() { }
 
   ngOnInit(): void {
     this.form = new FormGroup({ comments: new FormControl('') })

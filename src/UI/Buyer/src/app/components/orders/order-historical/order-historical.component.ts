@@ -20,7 +20,6 @@ import { isQuoteOrder } from '../../../services/orderType.helper'
 export class OCMOrderHistorical implements OnInit {
   @Input() isOrderToApprove = false
   @Input() set orderDetails(value: OrderDetails) {
-    console.log(value)
     this.order = value.Order
     this.lineItems = value.LineItems
     this.promotions = value.Promotions

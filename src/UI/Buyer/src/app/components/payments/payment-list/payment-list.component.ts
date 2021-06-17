@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core'
-import { Payment } from 'ordercloud-javascript-sdk'
+import { ListPage, Payment } from 'ordercloud-javascript-sdk'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 
 @Component({
@@ -7,10 +7,10 @@ import { ShopperContextService } from 'src/app/services/shopper-context/shopper-
   styleUrls: ['./payment-list.component.scss'],
 })
 export class OCMPaymentList implements OnInit {
-  @Input() payments: Payment
+  @Input() payments: ListPage<Payment>
   _userCurrency: string
 
-  constructor(private context: ShopperContextService) {}
+  constructor(private context: ShopperContextService) { }
 
   ngOnInit(): void {
     this._userCurrency = this.context.currentUser.get().Currency
