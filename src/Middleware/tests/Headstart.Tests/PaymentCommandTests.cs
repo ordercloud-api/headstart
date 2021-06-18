@@ -172,7 +172,7 @@ namespace Headstart.Tests
         public async Task should_handle_new_po_payment()
         {
             // Arrange
-            var mockedPOTotal = 50;
+            var mockedPOTotal = 20;
             var existing = PaymentMocks.EmptyPaymentsList();
             _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, mockOrderID)
                 .Returns(Task.FromResult(existing));
@@ -189,7 +189,7 @@ namespace Headstart.Tests
         public async Task should_handle_existing_po_payment()
         {
             // Arrange
-            var mockedPOTotal = 30;
+            var mockedPOTotal = 20;
             var existing = PaymentMocks.PaymentList(PaymentMocks.POPayment(40));
             _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, mockOrderID)
                 .Returns(Task.FromResult(existing));

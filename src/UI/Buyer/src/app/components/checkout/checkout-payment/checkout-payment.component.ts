@@ -61,7 +61,6 @@ export class OCMCheckoutPayment implements OnInit {
     this._orderCurrency = this.context.currentUser.get().Currency
     this.setOrderPromos()
     this._acceptedPaymentMethods = this.appConfig.acceptedPaymentMethods
-    console.log(this._acceptedPaymentMethods)
     this.selectedPaymentMethod = this._acceptedPaymentMethods?.[0] as AcceptedPaymentTypes
     this.createPromoForm(this.promoCode)
   }
@@ -78,7 +77,6 @@ export class OCMCheckoutPayment implements OnInit {
 
   selectPaymentMethod(e: any): void {
     this.selectedPaymentMethod = e.target.value
-    console.log(this.selectedPaymentMethod)
   }
 
   getPaymentMethodName(method: string): string {
