@@ -113,7 +113,7 @@
               <ocm-checkout-payment [isAnon]="isAnon" [order]="order" [orderPromos]="orderPromotions" [cards]="cards"
                 [orderSummaryMeta]="orderSummaryMeta" [paymentError]="paymentError"
                 (promosChanged)="updateOrderMeta($event)" (cardSelected)="onCardSelected($event.detail)"
-                (continue)="toSection('confirm')">
+                (continue)="onAcknowledgePurchaseOrder()">
               </ocm-checkout-payment>
             </ng-template>
           </ngb-panel>

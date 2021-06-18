@@ -29,7 +29,7 @@ import {
 import { AxiosError } from 'axios'
 import { CheckoutService } from 'src/app/services/order/checkout.service'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
-import { CheckoutSection } from 'src/app/models/checkout.types'
+import { AcceptedPaymentTypes, CheckoutSection } from 'src/app/models/checkout.types'
 import {
   HSBuyerCreditCard,
   SelectedCreditCard,
@@ -187,6 +187,14 @@ export class OCMCheckout implements OnInit {
     }
   }
 
+  buildPOPayment(): Payment {
+    // amount gets calculated in middleware
+    return {
+      DateCreated: new Date().toDateString(),
+      Type: 'PurchaseOrder',
+    }
+  }
+
   async onCardSelected(output: SelectedCreditCard): Promise<void> {
     this.initLoadingIndicator('paymentLoading')
     const payments: HSPayment[] = []
@@ -225,6 +233,16 @@ export class OCMCheckout implements OnInit {
     }
   }
 
+  async onAcknowledgePurchaseOrder(): Promise<void> {
+    //  Function that is used when there are no credit cards. Just PO acknowledgement
+    const payments = [this.buildPOPayment()]
+    await HeadStartSDK.Payments.SavePayments(this.order.ID, {
+      Payments: payments,
+    })
+    this.payments = await this.checkout.listPayments()
+    this.toSection('confirm')
+  }
+
   async submitOrderWithComment(comment: string): Promise<void> {
     // Check that line items in cart are all from active products (none were made inactive during checkout).
     this.invalidLineItems = await this.context.order.cart.getInvalidLineItems()
@@ -236,7 +254,7 @@ export class OCMCheckout implements OnInit {
     } else {
       this.initLoadingIndicator('submitLoading')
       try {
-        const payment = this.getCCPaymentData()
+        const payment = this.payments?.Items?.[0]?.Type === AcceptedPaymentTypes.CreditCard ? this.getCCPaymentData() : {}
         const order = await HeadStartSDK.Orders.Submit(
           'Outgoing',
           this.order.ID,
@@ -373,9 +391,9 @@ export class OCMCheckout implements OnInit {
       OrderID: this.order.ID,
       PaymentID: this.payments.Items[0].ID, // There's always only one at this point
       CreditCardID: this.selectedCard?.SavedCard?.ID,
-      CreditCardDetails: this.selectedCard.NewCard,
+      CreditCardDetails: this.selectedCard?.NewCard,
       Currency: this.order.xp.Currency,
-      CVV: this.selectedCard.CVV,
+      CVV: this.selectedCard?.CVV,
     }
   }
 

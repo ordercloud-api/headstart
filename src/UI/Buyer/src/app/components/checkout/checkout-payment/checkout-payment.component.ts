@@ -21,8 +21,9 @@ import { uniqBy as _uniqBy } from 'lodash'
 import { CheckoutService } from 'src/app/services/order/checkout.service'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 import { SelectedCreditCard } from 'src/app/models/credit-card.types'
-import { IGroupedOrderPromo } from 'src/app/models/checkout.types'
+import { AcceptedPaymentTypes, IGroupedOrderPromo } from 'src/app/models/checkout.types'
 import { OrderSummaryMeta } from 'src/app/models/order.types'
+import { AppConfig } from 'src/app/models/environment.types'
 
 
 @Component({
@@ -43,19 +44,24 @@ export class OCMCheckoutPayment implements OnInit {
   _orderPromos: OrderPromotion[]
   _uniqueOrderPromos: OrderPromotion[]
   _groupedOrderPromos: IGroupedOrderPromo
+  _acceptedPaymentMethods: string[]
   promoForm: FormGroup
   promoCode = ''
+  selectedPaymentMethod: AcceptedPaymentTypes
+  POTermsAccepted: boolean
   faCheckCircle = faCheckCircle
 
   constructor(
     private context: ShopperContextService,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
+    private appConfig: AppConfig
   ) { }
 
   ngOnInit(): void {
     this._orderCurrency = this.context.currentUser.get().Currency
     this.setOrderPromos()
-
+    this._acceptedPaymentMethods = this.appConfig.acceptedPaymentMethods
+    this.selectedPaymentMethod = this._acceptedPaymentMethods?.[0] as AcceptedPaymentTypes
     this.createPromoForm(this.promoCode)
   }
 
@@ -67,6 +73,18 @@ export class OCMCheckoutPayment implements OnInit {
 
   updatePromoCodeValue(event: any): void {
     this.promoCode = event.target.value
+  }
+
+  selectPaymentMethod(e: any): void {
+    this.selectedPaymentMethod = e.target.value
+  }
+
+  getPaymentMethodName(method: string): string {
+    return method.split(/(?=[A-Z])/).join(' ')
+  }
+
+  acceptPOTerms(): void {
+    this.POTermsAccepted = true
   }
 
   async applyPromo(): Promise<void> {

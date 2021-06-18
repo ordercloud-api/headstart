@@ -29,11 +29,32 @@
     </div>
   </div>
   <hr class="mt-4 border-light" />
-  <ocm-payment-credit-card *ngIf="orderSummaryMeta.LineItemCount" [cards]="cards" [isAnon]="isAnon"
-    [paymentError]="paymentError" (cardSelected)="onCardSelected($event.detail)">
+  <div *ngFor="let method of _acceptedPaymentMethods; let i = index" class="form-check">
+    <input (change)="selectPaymentMethod($event)" class="form-check-input" type="radio" name="{{i}}" id="{{i}}"
+      value="{{method}}" [checked]="selectedPaymentMethod === method">
+    <label class="form-check-label" for="{{i}}">
+      {{getPaymentMethodName(method)}} </label>
+  </div>
+  <ocm-payment-credit-card *ngIf="orderSummaryMeta.LineItemCount && selectedPaymentMethod === 'CreditCard'"
+    [cards]="cards" [isAnon]="isAnon" [paymentError]="paymentError" (cardSelected)="onCardSelected($event.detail)">
   </ocm-payment-credit-card>
-  <button type="submit" (click)="onContinue()" *ngIf="!orderSummaryMeta.LineItemCount"
-    class="btn btn-primary btn-block-xs mt-4 mr-2">
+  <ng-container *ngIf="orderSummaryMeta.LineItemCount && selectedPaymentMethod === 'PurchaseOrder'">
+    <small class="d-block font-italic text-muted">
+      The price reflected on this order includes an estimate
+      for sales tax and shipping costs. Actual final cost may
+      vary slightly as a result. By submitting this order,
+      you accept these terms.
+    </small>
+    <div class="mt-3">
+      <button [disabled]="POTermsAccepted" type="submit" (click)="acceptPOTerms()"
+        class="btn btn-info btn-block-xs mr-2">
+        Accept
+      </button>
+      <fa-icon *ngIf="POTermsAccepted" [icon]="faCheckCircle" class="text-success"></fa-icon>
+    </div>
+  </ng-container>
+  <button type="submit" (click)="onContinue()" *ngIf="selectedPaymentMethod === 'PurchaseOrder'"
+    class="btn btn-primary btn-block-xs mt-4 mr-2" [disabled]="orderSummaryMeta.LineItemCount && !POTermsAccepted">
     Continue
   </button>
 </div>

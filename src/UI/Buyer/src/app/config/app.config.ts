@@ -17,6 +17,7 @@ export const ocAppConfig: AppConfig = {
   theme: environment.theme,
   anonymousShoppingEnabled: true,
   appInsightsInstrumentationKey: environment.appInsightsInstrumentationKey,
+  acceptedPaymentMethods: environment.acceptedPaymentMethods,
   scope: [
     'MeAddressAdmin',
     'AddressAdmin', // Only for location owners

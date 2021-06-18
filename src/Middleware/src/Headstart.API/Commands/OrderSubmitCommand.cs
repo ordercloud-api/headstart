@@ -38,8 +38,12 @@ namespace Headstart.API.Commands
             await ValidateOrderAsync(worksheet, payment, userToken);
 
             var incrementedOrderID = await IncrementOrderAsync(worksheet);
-            payment.OrderID = incrementedOrderID;
-            await _card.AuthorizePayment(payment, userToken, GetMerchantID(payment));
+            // If Credit Card info is null, payment is a Purchase Order, thus skip CC validation
+            if (payment.CreditCardDetails != null || payment.CreditCardID != null)
+            {
+                payment.OrderID = incrementedOrderID;
+                await _card.AuthorizePayment(payment, userToken, GetMerchantID(payment));
+            }
             try
             {
                 return await _oc.Orders.SubmitAsync<HSOrder>(direction, incrementedOrderID, userToken);

@@ -404,7 +404,7 @@ namespace Headstart.API.Commands
                     ShippingStatus = ShippingStatus.Processing,
                     SubmittedOrderStatus = SubmittedOrderStatus.Open,
                     HasSellerProducts = buyerOrder.LineItems.Any(li => li.SupplierID == null),
-                    PaymentMethod = "Credit Card",
+                    PaymentMethod = payment.Type == PaymentType.CreditCard ? "Credit Card" : "Purchase Order",
                     //  If we have seller ship estimates for a seller owned product save selected method on buyer order.
                     SelectedShipMethodsSupplierView = sellerShipEstimates != null ? MapSelectedShipMethod(sellerShipEstimates) : null,
                 }
