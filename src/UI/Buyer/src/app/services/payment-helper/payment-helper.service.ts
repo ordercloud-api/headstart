@@ -6,7 +6,7 @@ import { ListPage } from '@ordercloud/headstart-sdk'
   providedIn: 'root',
 })
 export class PaymentHelperService {
-  constructor() {}
+  constructor() { }
 
   async ListPaymentsOnOrder(
     orderID: string,
@@ -40,12 +40,10 @@ export class PaymentHelperService {
         return this.safeCall(Me.GetCreditCard(payment.CreditCardID))
       case 'SpendingAccount':
         return this.safeCall(Me.GetSpendingAccount(payment.SpendingAccountID))
-      case 'PurchaseOrder':
-        return Promise.resolve({ PONumber: payment.ID });
     }
   }
 
-  private async safeCall( funct: Promise<any> ): Promise<any> {
+  private async safeCall(funct: Promise<any>): Promise<any> {
     try {
       return await funct
     } catch {

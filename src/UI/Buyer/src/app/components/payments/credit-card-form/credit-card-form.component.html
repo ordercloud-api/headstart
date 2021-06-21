@@ -1,67 +1,31 @@
-<form
-  (ngSubmit)="onSubmit()"
-  novalidate
-  [formGroup]="cardForm"
-  name="CardForm"
-  class="add-card-form"
->
+<form (ngSubmit)="onSubmit()" novalidate [formGroup]="cardForm" name="CardForm" class="add-card-form">
   <div *ngIf="_showCardDetails">
     <div class="p-2 mb-3 bg-light">
-      <small
-        class="d-block font-weight-bold text-uppercase text-muted"
-        translate
-        >PAYMENTS.CC_FORM.PAYMENTS_ACCEPTED</small
-      >
-      <fa-icon
-        class="payment-icon text-dark"
-        [icon]="faCcVisa"
-        ngbTooltip="Visa"
-      ></fa-icon>
-      <fa-icon
-        class="payment-icon text-dark ml-2"
-        [icon]="faCcMastercard"
-        ngbTooltip="Mastercard"
-      ></fa-icon>
-      <fa-icon
-        class="payment-icon text-dark ml-2"
-        [icon]="faCcAmex"
-        ngbTooltip="American Express"
-      ></fa-icon>
+      <small class="d-block font-weight-bold text-uppercase text-muted"
+        translate>PAYMENTS.CC_FORM.PAYMENTS_ACCEPTED</small>
+      <fa-icon class="payment-icon text-dark" [icon]="faCcVisa" ngbTooltip="Visa"></fa-icon>
+      <fa-icon class="payment-icon text-dark ml-2" [icon]="faCcMastercard" ngbTooltip="Mastercard"></fa-icon>
+      <fa-icon class="payment-icon text-dark ml-2" [icon]="faCcAmex" ngbTooltip="American Express"></fa-icon>
     </div>
     <div class="row align-items-center">
-      <label class="small text-muted col-12" for="accepted-cards" translate
-        >PAYMENTS.CC_FORM.DETAILS</label
-      >
+      <label class="small text-muted col-12" for="accepted-cards" translate>PAYMENTS.CC_FORM.DETAILS</label>
     </div>
     <div class="form-group d-flex justify-content-between mb-0">
       <div class="form-group flex-fill">
-        <label class="sr-only" for="name" translate
-          >PAYMENTS.CC_FORM.NAME</label
-        >
-        <input
-          type="text"
-          formControlName="name"
-          class="form-control"
-          id="name"
-          showErrors
-          placeholder="Name on Card"
-          autocomplete="off"
-        />
+        <label class="sr-only" for="name" translate>PAYMENTS.CC_FORM.NAME</label>
+        <input type="text" formControlName="name" class="form-control" id="name" showErrors placeholder="Name on Card"
+          autocomplete="off" />
       </div>
     </div>
     <div class="form-group d-flex justify-content-between mb-0">
       <div class="form-group card-number mr-2 flex-fill">
         <label for="cardNumber" translate>PAYMENTS.CC_FORM.NUMBER</label>
         <input type="hidden" formControlName="token" />
-        <ocm-credit-card-iframe
-          (ccEntered)="ccEntered($event.detail)"
-        ></ocm-credit-card-iframe>
+        <ocm-credit-card-iframe (ccEntered)="ccEntered($event.detail)"></ocm-credit-card-iframe>
         <span *ngIf="cardError" class="error">{{ cardError }}</span>
       </div>
       <div class="form-group mr-2 flex-fill">
-        <label class="sr-only" for="month" translate
-          >PAYMENTS.CC_FORM.EXP_MONTH</label
-        >
+        <label class="sr-only" for="month" translate>PAYMENTS.CC_FORM.EXP_MONTH</label>
         <select formControlName="month" class="custom-select" id="state">
           <option *ngFor="let month of monthOptions" [value]="month">
             {{ month }}
@@ -69,9 +33,7 @@
         </select>
       </div>
       <div class="form-group flex-fill">
-        <label class="sr-only" for="year" translate
-          >PAYMENTS.CC_FORM.EXP_YEAR</label
-        >
+        <label class="sr-only" for="year" translate>PAYMENTS.CC_FORM.EXP_YEAR</label>
         <select formControlName="year" class="custom-select" id="state">
           <option *ngFor="let year of yearOptions" [value]="year.slice(-2)">
             {{ year }}
@@ -83,81 +45,36 @@
   <div *ngIf="_showCVV" class="form-group d-flex justify-content-between mb-0">
     <div class="form-group card-name flex-fill">
       <label class="sr-only" for="CVV" translate>PAYMENTS.CC_FORM.CVV</label>
-      <input
-        type="text"
-        formControlName="cvv"
-        class="form-control w-25"
-        id="CVV"
-        type="password"
-        placeholder="CVV"
-        autocomplete="off"
-        showErrors
-      />
+      <input type="text" formControlName="cvv" class="form-control w-25" id="CVV" type="password" placeholder="CVV"
+        autocomplete="off" showErrors />
     </div>
   </div>
   <div *ngIf="_showCardDetails">
-    <div class="form-check d-flex justify-content-between mb-2">
-    <input
-      type="checkbox"
-      (click)="mapShippingAddressToBilling($event)"
-      formControlName="useShippingAddress"
-      class="form-check-input"
-      id="useShippingAddress"
-    />
-    <label
-      class="form-check-label text-muted"
-      for="useShippingAddress" 
-      translate
-      >Use shipping address as billing</label
-    >
+    <div *ngIf="shouldShowShippingOption" class="form-check d-flex justify-content-between mb-2">
+      <input type="checkbox" (click)="mapShippingAddressToBilling($event)" formControlName="useShippingAddress"
+        class="form-check-input" id="useShippingAddress" />
+      <label class="form-check-label text-muted" for="useShippingAddress" translate>Use shipping address as
+        billing</label>
     </div>
     <div class="row align-items-center">
-      <label class="small text-muted col-12" for="accepted-cards" translate
-        >PAYMENTS.CC_FORM.BILLING_ADDRESS</label
-      >
+      <label class="small text-muted col-12" for="accepted-cards" translate>PAYMENTS.CC_FORM.BILLING_ADDRESS</label>
     </div>
     <div class="form-group d-flex justify-content-between mb-0">
       <div class="form-group w-100">
-        <label class="sr-only" for="Street1" translate
-          >PAYMENTS.CC_FORM.STREET</label
-        >
-        <input
-          type="text"
-          formControlName="street"
-          class="form-control"
-          id="Street1"
-          placeholder="Street"
-          autocomplete="off"
-          showErrors
-        />
+        <label class="sr-only" for="Street1" translate>PAYMENTS.CC_FORM.STREET</label>
+        <input type="text" formControlName="street" class="form-control" id="Street1" placeholder="Street"
+          autocomplete="off" showErrors />
       </div>
     </div>
     <div class="form-group d-flex justify-content-between mb-0">
       <div class="form-group mr-2 flex-fill">
-        <label class="sr-only" for="City" translate
-          >PAYMENTS.CC_FORM.CITY</label
-        >
-        <input
-          type="text"
-          formControlName="city"
-          class="form-control"
-          id="City"
-          placeholder="City"
-          autocomplete="off"
-          showErrors
-        />
+        <label class="sr-only" for="City" translate>PAYMENTS.CC_FORM.CITY</label>
+        <input type="text" formControlName="city" class="form-control" id="City" placeholder="City" autocomplete="off"
+          showErrors />
       </div>
       <div class="form-group w-25 mr-2 flex-fill">
-        <label class="sr-only" for="State" translate
-          >PAYMENTS.CC_FORM.STATE</label
-        >
-        <select
-          *ngIf="stateOptions.length !== 0"
-          formControlName="state"
-          class="custom-select"
-          id="State"
-          showErrors
-        >
+        <label class="sr-only" for="State" translate>PAYMENTS.CC_FORM.STATE</label>
+        <select *ngIf="stateOptions.length !== 0" formControlName="state" class="custom-select" id="State" showErrors>
           <option [ngValue]="null" disabled translate>
             PAYMENTS.CC_FORM.STATE
           </option>
@@ -165,76 +82,34 @@
             {{ State }}
           </option>
         </select>
-        <input
-          *ngIf="stateOptions.length === 0"
-          type="text"
-          formControlName="state"
-          class="form-control"
-          id="State"
-          autocomplete="off"
-          showErrors
-        />
+        <input *ngIf="stateOptions.length === 0" type="text" formControlName="state" class="form-control" id="State"
+          autocomplete="off" showErrors />
       </div>
       <div class="form-group flex-fill zip-input">
-        <label class="sr-only" for="zipCode" translate
-          >PAYMENTS.CC_FORM.ZIP</label
-        >
-        <input
-          type="text"
-          formControlName="zip"
-          class="form-control"
-          id="zipCode"
-          placeholder="Zip"
-          autocomplete="off"
-          showErrors
-        />
+        <label class="sr-only" for="zipCode" translate>PAYMENTS.CC_FORM.ZIP</label>
+        <input type="text" formControlName="zip" class="form-control" id="zipCode" placeholder="Zip" autocomplete="off"
+          showErrors />
       </div>
     </div>
     <div class="form-group d-flex justify-content-between mb-0">
-      <label class="sr-only" for="country" translate
-        >PAYMENTS.CC_FORM.COUNTRY</label
-      >
-      <select
-        formControlName="country"
-        class="custom-select"
-        id="Country"
-        showErrors
-        (change)="onCountryChange($event)"
-      >
+      <label class="sr-only" for="country" translate>PAYMENTS.CC_FORM.COUNTRY</label>
+      <select formControlName="country" class="custom-select" id="Country" showErrors
+        (change)="onCountryChange($event)">
         <option [ngValue]="null" disabled translate>
           PAYMENTS.CC_FORM.COUNTRY
         </option>
-        <option
-          *ngFor="let country of countryOptions"
-          [value]="country.abbreviation"
-        >
+        <option *ngFor="let country of countryOptions" [value]="country.abbreviation">
           {{ country.label }}
         </option>
       </select>
     </div>
   </div>
-  <span
-    placement="right"
-    [ngbTooltip]="
-      !_termsAccepted ? 'You must accept the PO terms before continuing' : ''
-    "
-    [openDelay]="200"
-  >
-    <button
-      type="submit"
-      class="btn btn-sm btn-secondary mt-2"
-      [disabled]="!cardForm.valid || !_termsAccepted"
-    >
+  <span placement="right" [openDelay]="200">
+    <button type="submit" class="btn btn-sm btn-secondary mt-2" [disabled]="!cardForm.valid">
       {{ submitText }}
     </button>
   </span>
-  <button
-    (click)="dismissForm()"
-    *ngIf="!_showCVV"
-    class="btn btn-link text-danger mt-2"
-    type="button"
-    translate
-  >
+  <button (click)="dismissForm()" *ngIf="!_showCVV" class="btn btn-link text-danger mt-2" type="button" translate>
     PAYMENTS.CC_FORM.CANCEL
   </button>
 </form>

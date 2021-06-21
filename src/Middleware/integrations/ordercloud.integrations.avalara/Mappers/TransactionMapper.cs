@@ -14,13 +14,8 @@ namespace ordercloud.integrations.avalara
 			var buyerLocationID = order.Order.BillingAddress.ID;
 
 			var standardLineItems = order.LineItems.Where(li => li.Product.xp.ProductType == "Standard")?.ToList();
-			var poLineItemIDs = order.LineItems.Where(li => li.Product.xp.ProductType == "PurchaseOrder")?.Select(li => li?.ID)?.ToList();
-			var standardShipEstimates = order.ShipEstimateResponse.ShipEstimates.Where(estimate =>
-			{
-				return !estimate.ShipEstimateItems.Any(item => poLineItemIDs.Contains(item.LineItemID));
-			});
 
-			var shipingLines = standardShipEstimates.Select(shipment =>
+			var shipingLines = order.ShipEstimateResponse.ShipEstimates.Select(shipment =>
 			{
 				var (shipFrom, shipTo) = shipment.GetAddresses(order.LineItems);
 				var method = shipment.GetSelectedShippingMethod();

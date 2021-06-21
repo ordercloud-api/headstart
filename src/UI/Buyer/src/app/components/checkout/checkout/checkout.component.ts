@@ -29,7 +29,7 @@ import {
 import { AxiosError } from 'axios'
 import { CheckoutService } from 'src/app/services/order/checkout.service'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
-import { CheckoutSection } from 'src/app/models/checkout.types'
+import { AcceptedPaymentTypes, CheckoutSection } from 'src/app/models/checkout.types'
 import {
   HSBuyerCreditCard,
   SelectedCreditCard,
@@ -96,7 +96,7 @@ export class OCMCheckout implements OnInit {
     private toastrService: ToastrService,
     private router: Router,
     private translate: TranslateService
-  ) {}
+  ) { }
 
   async ngOnInit(): Promise<void> {
     this.context.order.onChange((order) => (this.order = order))
@@ -106,7 +106,7 @@ export class OCMCheckout implements OnInit {
     }
 
     this.lineItems = this.context.order.cart.get()
-    this.orderPromotions = this.context.order.promos.get().Items
+    this.orderPromotions = this.context.order.promos.get()?.Items
     this.isAnon = this.context.currentUser.isAnonymous()
     this.currentPanel = this.isAnon ? 'login' : 'shippingAddressLoading'
     this.initLoadingIndicator()
@@ -205,9 +205,6 @@ export class OCMCheckout implements OnInit {
       payments.push(this.buildCCPaymentFromSavedCard(output.SavedCard))
       delete this.selectedCard.NewCard
     }
-    if (this.orderSummaryMeta.POLineItemCount) {
-      payments.push(this.buildPOPayment())
-    }
     try {
       await HeadStartSDK.Payments.SavePayments(this.order.ID, {
         Payments: payments,
@@ -257,9 +254,7 @@ export class OCMCheckout implements OnInit {
     } else {
       this.initLoadingIndicator('submitLoading')
       try {
-        const payment = this.orderSummaryMeta.StandardLineItemCount
-          ? this.getCCPaymentData()
-          : {}
+        const payment = this.payments?.Items?.[0]?.Type === AcceptedPaymentTypes.CreditCard ? this.getCCPaymentData() : {}
         const order = await HeadStartSDK.Orders.Submit(
           'Outgoing',
           this.order.ID,
@@ -267,7 +262,7 @@ export class OCMCheckout implements OnInit {
         )
         //  Do all patching of order XP values in the OrderSubmit integration event
         //  Patching order XP before order is submitted will clear out order worksheet data
-        await this.checkout.patch({Comments: comment}, order.ID)
+        await this.checkout.patch({ Comments: comment }, order.ID)
         await this.context.order.reset() // get new current order
         this.isLoading = false
         this.toastrService.success('Order submitted successfully', 'Success')
@@ -376,7 +371,7 @@ export class OCMCheckout implements OnInit {
       this.router.navigateByUrl('/home')
     } else if (
       this.checkoutError.ErrorCode ===
-        ErrorCodes.FailedToVoidAuthorization.code ||
+      ErrorCodes.FailedToVoidAuthorization.code ||
       this.checkoutError.ErrorCode?.includes('CreditCardAuth.')
     ) {
       this.currentPanel = 'payment'
@@ -396,9 +391,9 @@ export class OCMCheckout implements OnInit {
       OrderID: this.order.ID,
       PaymentID: this.payments.Items[0].ID, // There's always only one at this point
       CreditCardID: this.selectedCard?.SavedCard?.ID,
-      CreditCardDetails: this.selectedCard.NewCard,
+      CreditCardDetails: this.selectedCard?.NewCard,
       Currency: this.order.xp.Currency,
-      CVV: this.selectedCard.CVV,
+      CVV: this.selectedCard?.CVV,
     }
   }
 
@@ -454,7 +449,6 @@ export class OCMCheckout implements OnInit {
       this.order,
       this.orderPromotions,
       this.lineItems.Items,
-      this.shipEstimates,
       panelID || this.currentPanel
     )
   }

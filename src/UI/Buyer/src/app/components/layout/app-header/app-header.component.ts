@@ -13,7 +13,7 @@ import {
   faTimes,
 } from '@fortawesome/free-solid-svg-icons'
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap'
-import { Category } from 'ordercloud-javascript-sdk'
+import { Category, ListPage, Supplier } from 'ordercloud-javascript-sdk'
 import { bufferTime, filter, takeWhile } from 'rxjs/operators'
 import { HSOrder, HSLineItem } from '@ordercloud/headstart-sdk'
 import { getScreenSizeBreakPoint } from 'src/app/services/breakpoint.helper'
@@ -81,6 +81,8 @@ export class OCMAppHeader implements OnInit {
   faTimes = faTimes
   faBoxOpen = faBoxOpen
   flagIcon: string
+  hasSuppliers = false;
+  currentSupplierList: ListPage<Supplier>
 
   constructor(
     public context: ShopperContextService,
@@ -90,7 +92,7 @@ export class OCMAppHeader implements OnInit {
     this.orderRoutes = context.router.getOrderRoutes()
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.buildShowOrdersNeedingApprovalAlertListener()
     this.screenSize = getScreenSizeBreakPoint()
     this.categories = this.context.categories.all
@@ -108,6 +110,8 @@ export class OCMAppHeader implements OnInit {
     this.context.router.onUrlChange((path) => (this.activePath = path))
     this.buildAddToCartListener()
     this.flagIcon = this.getCurrencyFlag()
+    this.currentSupplierList = await this.getCurrentSupplierList()
+    this.hasSuppliers = this.currentSupplierList.Meta.TotalCount > 0
   }
 
   getCurrencyFlag(): string {
@@ -115,6 +119,20 @@ export class OCMAppHeader implements OnInit {
     const currentUser = this.context.currentUser.get()
     const myRate = rates?.Items.find((r) => r.Currency === currentUser.Currency)
     return myRate?.Icon
+  }
+
+  async getCurrentSupplierList() {
+    this.setBuyerFilterIfNeeded();
+    const supplierList: ListPage<Supplier> = await this.context.supplierFilters.listSuppliers()
+
+    return supplierList;
+  }
+
+  private setBuyerFilterIfNeeded(): void {
+    this.context.supplierFilters.setNonURLFilter(
+      'xp.BuyersServicing',
+      this.context.currentUser.get()?.Buyer?.ID
+    )
   }
 
   toggleCategoryDropdown(bool: boolean): void {

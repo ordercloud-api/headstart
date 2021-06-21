@@ -36,7 +36,7 @@ export class OCMOrderHistorical implements OnInit {
   buyerLocation: HSAddressBuyer
   _userCurrency: string
 
-  constructor(private context: ShopperContextService) {}
+  constructor(private context: ShopperContextService) { }
 
   ngOnInit(): void {
     this._userCurrency = this.context.currentUser.get().Currency

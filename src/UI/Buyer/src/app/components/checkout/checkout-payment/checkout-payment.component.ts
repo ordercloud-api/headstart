@@ -4,7 +4,6 @@ import {
   EventEmitter,
   OnInit,
   Input,
-  OnChanges,
 } from '@angular/core'
 import {
   BuyerCreditCard,
@@ -22,15 +21,16 @@ import { uniqBy as _uniqBy } from 'lodash'
 import { CheckoutService } from 'src/app/services/order/checkout.service'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 import { SelectedCreditCard } from 'src/app/models/credit-card.types'
-import { IGroupedOrderPromo } from 'src/app/models/checkout.types'
+import { AcceptedPaymentTypes, IGroupedOrderPromo } from 'src/app/models/checkout.types'
 import { OrderSummaryMeta } from 'src/app/models/order.types'
+import { AppConfig } from 'src/app/models/environment.types'
 
 
 @Component({
   templateUrl: './checkout-payment.component.html',
   styleUrls: ['./checkout-payment.component.scss'],
 })
-export class OCMCheckoutPayment implements OnInit, OnChanges {
+export class OCMCheckoutPayment implements OnInit {
   @Input() cards: ListPage<BuyerCreditCard>
   @Input() isAnon: boolean
   @Input() order: HSOrder
@@ -44,28 +44,25 @@ export class OCMCheckoutPayment implements OnInit, OnChanges {
   _orderPromos: OrderPromotion[]
   _uniqueOrderPromos: OrderPromotion[]
   _groupedOrderPromos: IGroupedOrderPromo
+  _acceptedPaymentMethods: string[]
   promoForm: FormGroup
   promoCode = ''
-  faCheckCircle = faCheckCircle
+  selectedPaymentMethod: AcceptedPaymentTypes
   POTermsAccepted: boolean
+  faCheckCircle = faCheckCircle
 
   constructor(
     private context: ShopperContextService,
-    private toastrService: ToastrService
-  ) {}
+    private toastrService: ToastrService,
+    private appConfig: AppConfig
+  ) { }
 
   ngOnInit(): void {
     this._orderCurrency = this.context.currentUser.get().Currency
     this.setOrderPromos()
-
+    this._acceptedPaymentMethods = this.appConfig.acceptedPaymentMethods
+    this.selectedPaymentMethod = this._acceptedPaymentMethods?.[0] as AcceptedPaymentTypes
     this.createPromoForm(this.promoCode)
-  }
-
-  ngOnChanges(): void {
-    if (this.orderSummaryMeta)
-      this.POTermsAccepted = this.orderSummaryMeta?.POLineItemCount
-        ? false
-        : true
   }
 
   createPromoForm(promoCode: string): void {
@@ -76,6 +73,18 @@ export class OCMCheckoutPayment implements OnInit, OnChanges {
 
   updatePromoCodeValue(event: any): void {
     this.promoCode = event.target.value
+  }
+
+  selectPaymentMethod(e: any): void {
+    this.selectedPaymentMethod = e.target.value
+  }
+
+  getPaymentMethodName(method: string): string {
+    return method.split(/(?=[A-Z])/).join(' ')
+  }
+
+  acceptPOTerms(): void {
+    this.POTermsAccepted = true
   }
 
   async applyPromo(): Promise<void> {
@@ -114,10 +123,6 @@ export class OCMCheckoutPayment implements OnInit, OnChanges {
   setOrderPromos(): void {
     this._orderPromos = this.context.order.promos.get().Items
     this._uniqueOrderPromos = _uniqBy(this._orderPromos, 'Code')
-  }
-
-  acceptPOTerms(): void {
-    this.POTermsAccepted = true
   }
 
   // used when no selection of card is required

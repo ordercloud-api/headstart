@@ -78,10 +78,6 @@ function createSupplierForm(supplier: HSSupplier) {
           value: supplier.xp?.ProductTypes?.includes('Quote') || false,
           disabled: this.isSupplierUser,
         }),
-        PurchaseOrder: new FormControl({
-          value: supplier.xp?.ProductTypes?.includes('PurchaseOrder') || false,
-          disabled: this.isSupplierUser,
-        }),
       },
       RequireCheckboxesToBeChecked()
     ),

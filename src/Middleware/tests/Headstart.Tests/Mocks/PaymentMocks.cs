@@ -52,5 +52,15 @@ namespace Headstart.Tests.Mocks
                 Amount = amount
             };
         }
+
+        public static HSPayment SpendingAccountPayment(decimal? amount = null, string id = "mockSpendingAccountID")
+        {
+            return new HSPayment
+            {
+                ID = id,
+                Type = PaymentType.SpendingAccount,
+                Amount = amount
+            };
+        }
     }
 }

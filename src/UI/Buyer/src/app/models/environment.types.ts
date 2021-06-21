@@ -57,6 +57,7 @@ export interface EnvironmentConfig {
   orderCloudApiUrl: string
   theme?: Theme
   appInsightsInstrumentationKey?: string
+  acceptedPaymentMethods: string[]
 }
 
 export class AppConfig {
@@ -123,4 +124,9 @@ export class AppConfig {
    * Microsoft Azure Application Insights instrumentation key
    */
   appInsightsInstrumentationKey: string
+
+  /**
+   * Payment methods that are accepted for the buyer/storefront
+   */
+  acceptedPaymentMethods: string[]
 }

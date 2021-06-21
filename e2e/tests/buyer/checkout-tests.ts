@@ -115,50 +115,6 @@ test('Can the User add an address during checkout? | 19689', async t => {
 	await checkoutPage.clickSaveAndContinueButton()
 })
 
-test('Can a User checkout with a PO product in the cart? | 19977', async t => {
-	const productName = 'accessfob'
-	await buyerHeaderPage.search(productName)
-	await productListPage.clickProduct(productName)
-	await productDetailPage.clickAddToCartButton()
-	await buyerHeaderPage.clickCartButton()
-	await shoppingCartPage.clickCheckoutButton()
-	await checkoutPage.clickSaveAndContinueButton()
-	await checkoutPage.selectShippingOption(productName, 'day')
-	await checkoutPage.clickSaveAndContinueButton()
-	await loadingHelper.thisWait()
-	await checkoutPage.clickAcceptButton()
-	await checkoutPage.clickContinueButton()
-	await checkoutPage.clickSubmitOrderButton()
-	await loadingHelper.thisWait()
-	await t.expect(await orderDetailPage.productExists(productName)).ok()
-})
-
-test('Can a user checkout with a PO product and standard product in their cart? | 19978', async t => {
-	const firstProductName = '100 CLASS T-SHIRT'
-	const secondProductName = 'accessfob'
-	await buyerHeaderPage.search(firstProductName)
-	await productListPage.clickProduct(firstProductName)
-	await productDetailPage.clickAddToCartButton()
-	await buyerHeaderPage.clearSearchText()
-	await buyerHeaderPage.search(secondProductName)
-	await productListPage.clickProduct(secondProductName)
-	await productDetailPage.clickAddToCartButton()
-	await buyerHeaderPage.clickCartButton()
-	await shoppingCartPage.clickCheckoutButton()
-	await checkoutPage.clickSaveAndContinueButton()
-	await checkoutPage.selectShippingOption(firstProductName, 'day')
-	await checkoutPage.selectShippingOption(secondProductName, 'day')
-	await checkoutPage.clickSaveAndContinueButton()
-	await checkoutPage.selectCreditCard(t.ctx.testUser.FirstName)
-	await checkoutPage.enterCVV('900')
-	await checkoutPage.clickAcceptButton()
-	await checkoutPage.clickSaveAndContinueButton()
-	await checkoutPage.clickSubmitOrderButton()
-	await loadingHelper.thisWait()
-	await t.expect(await orderDetailPage.productExists(firstProductName)).ok()
-	await t.expect(await orderDetailPage.productExists(secondProductName)).ok()
-})
-
 //This is no longer throwing errors, adding it back in to test suite
 test('Can I request a quote product? | 19979', async t => {
 	const productName = '4 X 4 Foot Siege Storage Rack - X1 Package'

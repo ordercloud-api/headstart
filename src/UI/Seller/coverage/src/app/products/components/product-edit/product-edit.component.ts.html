@@ -1,51 +1,55 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-    <title>Code coverage report for src/app/products/components/product-edit/product-edit.component.ts</title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="..\..\..\..\..\prettify.css" />
-    <link rel="stylesheet" href="..\..\..\..\..\base.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style type='text/css'>
-        .coverage-summary .sorter {
-            background-image: url(..\..\..\..\..\sort-arrow-sprite.png);
-        }
-    </style>
+  <title>Code coverage report for src/app/products/components/product-edit/product-edit.component.ts</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="..\..\..\..\..\prettify.css" />
+  <link rel="stylesheet" href="..\..\..\..\..\base.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style type='text/css'>
+    .coverage-summary .sorter {
+      background-image: url(..\..\..\..\..\sort-arrow-sprite.png);
+    }
+  </style>
 </head>
+
 <body>
-<div class='wrapper'>
-  <div class='pad1'>
-    <h1>
-      <a href="..\..\..\..\..\index.html">All files</a> / <a href="index.html">src/app/products/components/product-edit</a> product-edit.component.ts
-    </h1>
-    <div class='clearfix'>
-      <div class='fl pad1y space-right2'>
-        <span class="strong">2.87% </span>
-        <span class="quiet">Statements</span>
-        <span class='fraction'>10/349</span>
+  <div class='wrapper'>
+    <div class='pad1'>
+      <h1>
+        <a href="..\..\..\..\..\index.html">All files</a> / <a
+          href="index.html">src/app/products/components/product-edit</a> product-edit.component.ts
+      </h1>
+      <div class='clearfix'>
+        <div class='fl pad1y space-right2'>
+          <span class="strong">2.87% </span>
+          <span class="quiet">Statements</span>
+          <span class='fraction'>10/349</span>
+        </div>
+        <div class='fl pad1y space-right2'>
+          <span class="strong">0% </span>
+          <span class="quiet">Branches</span>
+          <span class='fraction'>0/415</span>
+        </div>
+        <div class='fl pad1y space-right2'>
+          <span class="strong">0% </span>
+          <span class="quiet">Functions</span>
+          <span class='fraction'>0/78</span>
+        </div>
+        <div class='fl pad1y space-right2'>
+          <span class="strong">2.63% </span>
+          <span class="quiet">Lines</span>
+          <span class='fraction'>9/342</span>
+        </div>
       </div>
-      <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
-        <span class="quiet">Branches</span>
-        <span class='fraction'>0/415</span>
-      </div>
-      <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
-        <span class="quiet">Functions</span>
-        <span class='fraction'>0/78</span>
-      </div>
-      <div class='fl pad1y space-right2'>
-        <span class="strong">2.63% </span>
-        <span class="quiet">Lines</span>
-        <span class='fraction'>9/342</span>
-      </div>
+      <p class="quiet">
+        Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the
+        previous block.
+      </p>
     </div>
-    <p class="quiet">
-      Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
-    </p>
-  </div>
-  <div class='status-line low'></div>
-<pre><table class="coverage">
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
 <a name='L3'></a><a href='#L3'>3</a>
@@ -2726,8 +2730,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
 <span class="cstat-no" title="statement not covered" >    this.availableProductTypes = supplier?.xp?.ProductTypes || [</span>
       'Standard',
       'Quote',
-      'PurchaseOrder',
-      'Kit',
     ]
   }
 &nbsp;
@@ -3170,7 +3172,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     const supplier = <span class="cstat-no" title="statement not covered" >await this.currentUserService.getMySupplier()</span>
 <span class="cstat-no" title="statement not covered" >    superHSProduct.Product.xp.ProductType = this.productType</span>
     ;(<span class="cstat-no" title="statement not covered" >superHSProduct.Product.xp as any).PromotionEligible =</span>
-      this.productType === 'PurchaseOrder' ? false : true
 <span class="cstat-no" title="statement not covered" >    superHSProduct.Product.xp.Status = 'Draft'</span>
 <span class="cstat-no" title="statement not covered" >    superHSProduct.Product.xp.Currency = supplier?.xp?.Currency</span>
 <span class="cstat-no" title="statement not covered" >    superHSProduct.PriceSchedule.ID =</span>
@@ -3271,24 +3272,29 @@ export class ProductEditComponent implements OnInit, OnDestroy {
 <span class="cstat-no" title="statement not covered" >    this.alive = false</span>
   }
 }
-&nbsp;</pre></td></tr>
-</table></pre>
-<div class='push'></div><!-- for sticky footer -->
-</div><!-- /wrapper -->
-<div class='footer quiet pad2 space-top1 center small'>
-  Code coverage
-  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Thu Dec 03 2020 13:44:27 GMT-0600 (Central Standard Time)
-</div>
-</div>
-<script src="..\..\..\..\..\prettify.js"></script>
-<script>
-window.onload = function () {
-        if (typeof prettyPrint === 'function') {
-            prettyPrint();
-        }
-};
-</script>
-<script src="..\..\..\..\..\sorter.js"></script>
-<script src="..\..\..\..\..\block-navigation.js"></script>
+&nbsp;</pre>
+    </td>
+    </tr>
+    </table>
+    </pre>
+    <div class='push'></div><!-- for sticky footer -->
+  </div><!-- /wrapper -->
+  <div class='footer quiet pad2 space-top1 center small'>
+    Code coverage
+    generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Thu Dec 03 2020 13:44:27 GMT-0600
+    (Central Standard Time)
+  </div>
+  </div>
+  <script src="..\..\..\..\..\prettify.js"></script>
+  <script>
+    window.onload = function () {
+      if (typeof prettyPrint === 'function') {
+        prettyPrint();
+      }
+    };
+  </script>
+  <script src="..\..\..\..\..\sorter.js"></script>
+  <script src="..\..\..\..\..\block-navigation.js"></script>
 </body>
+
 </html>
