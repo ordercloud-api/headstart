@@ -60,9 +60,16 @@ export class OCMCheckoutPayment implements OnInit {
   ngOnInit(): void {
     this._orderCurrency = this.context.currentUser.get().Currency
     this.setOrderPromos()
-    this._acceptedPaymentMethods = this.appConfig.acceptedPaymentMethods
+    this._acceptedPaymentMethods = this.getAcceptedPaymentMethods()
     this.selectedPaymentMethod = this._acceptedPaymentMethods?.[0] as AcceptedPaymentTypes
     this.createPromoForm(this.promoCode)
+  }
+
+  getAcceptedPaymentMethods(): string[] {
+    if (this.appConfig?.acceptedPaymentMethods?.length < 1) {
+      return [AcceptedPaymentTypes.CreditCard]
+    }
+    return this.appConfig.acceptedPaymentMethods;
   }
 
   createPromoForm(promoCode: string): void {
