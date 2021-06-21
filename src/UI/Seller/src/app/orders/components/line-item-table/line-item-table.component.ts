@@ -35,10 +35,11 @@ export class LineItemTableComponent {
   _liGroupedByShipFrom: HSLineItem[][]
   _supplierOrders: HSOrder[] = []
   _statusChangeForm = new FormArray([])
-  _tableStatus = LineItemTableStatus.Default
+  _tableStatus: string
   _user: MeUser
   @Input()
   set order(value: HSOrder) {
+    this._tableStatus = LineItemTableStatus.Default
     this._order = value
     this.setSupplierOrders(value)
   }
