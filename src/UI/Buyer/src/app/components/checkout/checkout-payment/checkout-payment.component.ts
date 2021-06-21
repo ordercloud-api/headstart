@@ -66,7 +66,7 @@ export class OCMCheckoutPayment implements OnInit {
   }
 
   getAcceptedPaymentMethods(): string[] {
-    if (this.appConfig.acceptedPaymentMethods.length < 1) {
+    if (this.appConfig?.acceptedPaymentMethods?.length < 1) {
       return [AcceptedPaymentTypes.CreditCard]
     }
     return this.appConfig.acceptedPaymentMethods;
