@@ -22,7 +22,7 @@ export default class Assets {
     }
 
     public async CreateDocument(assetData: FileData): Promise<RequiredDeep<DocumentAsset>> {
-        return await httpClient.post('/assets/image', this.mapFileToFormData(assetData), { params: {} })
+        return await httpClient.post('/assets/document', this.mapFileToFormData(assetData), { params: {} })
     }
 
     /**
