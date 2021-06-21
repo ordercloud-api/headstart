@@ -12,7 +12,7 @@ import {
   HeadStartSDK,
   HSOrder,
 } from '@ordercloud/headstart-sdk'
-import { LineItemTableStatus } from '../order-details/order-details.component'
+import { LineItemTableStatus, LineItemTableValue } from '../order-details/order-details.component'
 import {
   NumberCanChangeTo,
   CanChangeTo,
@@ -35,7 +35,7 @@ export class LineItemTableComponent {
   _liGroupedByShipFrom: HSLineItem[][]
   _supplierOrders: HSOrder[] = []
   _statusChangeForm = new FormArray([])
-  _tableStatus: string
+  _tableStatus: LineItemTableValue
   _user: MeUser
   @Input()
   set order(value: HSOrder) {
@@ -61,7 +61,7 @@ export class LineItemTableComponent {
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {}
 
-  changeTableStatus(newStatus: string): void {
+  changeTableStatus(newStatus: LineItemTableValue): void {
     this._tableStatus = newStatus
     if (this._tableStatus !== 'Default') {
       this.setupForm()
