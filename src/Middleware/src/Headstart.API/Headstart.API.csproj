@@ -18,7 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.9.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.16.0" />
+    <PackageReference Include="Microsoft.TeamFoundationServer.ExtendedClient" Version="16.170.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Services.Client" Version="16.170.0" />
     <PackageReference Include="SendGrid" Version="9.22.0" />
   </ItemGroup>
 

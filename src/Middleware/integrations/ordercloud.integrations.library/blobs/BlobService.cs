@@ -7,7 +7,9 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 using Microsoft.WindowsAzure.Storage.Shared.Protocol;
+using System.Collections.Generic;
 
 namespace ordercloud.integrations.library
 {
@@ -25,6 +27,9 @@ namespace ordercloud.integrations.library
         Task Save(BlobBase64Image base64Image);
         Task Delete(string id);
         Task DeleteContainer();
+        Task<List<CloudBlobContainer>> ListContainersWithPrefixAsync(string prefix, int? segmentSize);
+
+        Task<bool> CreateContainerAsync(string containerName, bool isPublic);
 
     }
     public class OrderCloudIntegrationsBlobService : IOrderCloudIntegrationsBlobService
@@ -93,6 +98,53 @@ namespace ordercloud.integrations.library
             await this.Init();
             var value = await Container.GetBlockBlobReference(id).DownloadTextAsync();
             return value;
+        }
+
+        public async Task<bool> CreateContainerAsync(string containerName, bool isPublic)
+        {
+            // Create the container if it doesn't exist.
+            var blobContainer = Client.GetContainerReference(containerName);
+            if (isPublic)
+            {
+                var returnData = await blobContainer.CreateIfNotExistsAsync();
+                if (returnData)
+                    await blobContainer.SetPermissionsAsync(new BlobContainerPermissions { PublicAccess = BlobContainerPublicAccessType.Blob });
+                return returnData;
+            }
+            return await blobContainer.CreateIfNotExistsAsync();
+        }
+
+        public async Task<List<CloudBlobContainer>> ListContainersWithPrefixAsync(string prefix, int? segmentSize)
+        {
+            BlobContinuationToken continuationToken = null;
+            ContainerResultSegment resultSegment;
+            await this.Init();
+            try
+            {
+                do
+                {
+                    // List containers beginning with the specified prefix,
+                    // returning segments of 5 results each.
+                    // Passing in null for the maxResults parameter returns the maximum number of results (up to 5000).
+                    // Requesting the container's metadata as part of the listing operation populates the metadata,
+                    // so it's not necessary to call FetchAttributes() to read the metadata.
+                    resultSegment = await Client.ListContainersSegmentedAsync(
+                        prefix, ContainerListingDetails.Metadata, segmentSize, continuationToken, null, null);
+
+                    await Container.CreateIfNotExistsAsync()
+
+                    // Get the continuation token.
+                    continuationToken = resultSegment.ContinuationToken;
+
+                } while (continuationToken != null);
+                return resultSegment.Results.ToList();
+            }
+            catch (StorageException e)
+            {
+                Console.WriteLine(e.Message);
+                Console.ReadLine();
+                throw;
+            }
         }
 
         public virtual async Task<T> Get<T>(string id)

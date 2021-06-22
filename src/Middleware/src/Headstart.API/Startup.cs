@@ -87,6 +87,13 @@ namespace Headstart.API
                 AccessType = BlobContainerPublicAccessType.Container 
             };
 
+            var staticSiteConfig = new BlobServiceConfig()
+            {
+                ConnectionString = _settings.BlobSettings.ConnectionString,
+                Container = "$web",
+                AccessType = BlobContainerPublicAccessType.Container
+            };
+
             var flurlClientFactory = new PerBaseUrlFlurlClientFactory();
             var smartyStreetsUsClient = new ClientBuilder(_settings.SmartyStreetSettings.AuthID, _settings.SmartyStreetSettings.AuthToken).BuildUsStreetApiClient();
 
@@ -149,6 +156,7 @@ namespace Headstart.API
                 .AddSingleton<IOrderCloudIntegrationsExchangeRatesClient, OrderCloudIntegrationsExchangeRatesClient>()
                 .AddSingleton<IAssetClient>(provider => new AssetClient( new OrderCloudIntegrationsBlobService(assetConfig), _settings))
                 .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand( new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
+                .AddSingleton<IStorefrontCommand>(provider => new StorefrontCommand( new OrderCloudIntegrationsBlobService(staticSiteConfig), _settings))
                 .AddSingleton<IAvalaraCommand>(x => new AvalaraCommand(
                     avalaraConfig,
                     new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(avalaraConfig.BaseApiUrl)
