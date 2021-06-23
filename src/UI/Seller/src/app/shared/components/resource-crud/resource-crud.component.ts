@@ -164,10 +164,6 @@ export abstract class ResourceCrudComponent<ResourceType>
 
   updateResource(resourceUpdate: ResourceUpdate): void {
     this.updatedResource = this.ocService.getUpdatedEditableResource(resourceUpdate as ResourceUpdate, this.updatedResource)
-    this.updatedResource = this.ocService.getUpdatedEditableResource(
-      resourceUpdate,
-      this.updatedResource
-    )
     if (resourceUpdate.form) {
       this.resourceForm = resourceUpdate.form
     }

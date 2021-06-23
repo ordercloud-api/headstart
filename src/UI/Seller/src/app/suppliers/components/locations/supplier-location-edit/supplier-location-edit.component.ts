@@ -147,7 +147,7 @@ export class SupplierLocationEditComponent implements OnChanges {
   }
 
   updateResourceFromEvent(event: any, field: string): void {
-    this.updateResource.emit({ value: event.target.value, field })
+    this.updateResource.emit({ value: event.target.value, field, form: this.resourceForm })
   }
 
   handleAddressSelect(address: Address): void {
