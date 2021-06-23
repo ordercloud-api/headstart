@@ -6,6 +6,7 @@ export const IMAGE_HOST_URL =
 export const PLACEHOLDER_URL = 'https://via.placeholder.com/300x300'
 export const PRODUCT_IMAGE_PATH_STRATEGY = 'PRODUCT_IMAGE_PATH_STRATEGY'
 export const SUPPLIER_LOGO_PATH_STRATEGY = 'SUPPLIER_LOGO_PATH_STRATEGY'
+export const PLACEHOLDER_PRODUCT_IMAGE = '../../../../assets/product.jpg'
 
 export function getProductSmallImageUrl(
   product: LineItemProduct<ProductXp>
@@ -18,7 +19,7 @@ export function getProductMediumImageUrl(
   product: LineItemProduct<ProductXp>
 ): string {
   const images = product?.xp?.Images
-  return images && images.length ? images[0].Url : ''
+  return images && images.length ? images[0].Url : PLACEHOLDER_PRODUCT_IMAGE
 }
 
 export function getSupplierLogoSmallUrl(supplier: HSSupplier): string {

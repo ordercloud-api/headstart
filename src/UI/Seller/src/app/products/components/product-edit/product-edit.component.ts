@@ -68,7 +68,7 @@ import { FileHandle } from '@app-seller/models/file-upload.types'
 import { UserContext } from '@app-seller/models/user.types'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { AssetService } from '@app-seller/shared/services/assets/asset.service'
-import { getProductMediumImageUrl } from '@app-seller/shared/services/assets/asset.helper'
+import { getPrimaryLineItemImage, getProductMediumImageUrl } from '@app-seller/shared/services/assets/asset.helper'
 import { TranslateService } from '@ngx-translate/core'
 
 @Component({
