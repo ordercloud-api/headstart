@@ -1,4 +1,4 @@
-﻿using Headstart.Common;
+using Headstart.Common;
 using ordercloud.integrations.library;
 using System;
 using System.Collections.Generic;
@@ -56,7 +56,7 @@ namespace Headstart.API.Commands
 
 
 
-            var configToUpdate = files.Find(file => file.Uri.ToString() == "https://headstartdemo.blob.core.windows.net/buyerweb/assets/appConfigs/defaultbuyer-test.json");
+            //var configToUpdate = files.Find(file => file.Uri.ToString() == "https://headstartdemo.blob.core.windows.net/buyerweb/assets/appConfigs/defaultbuyer-test.json");
 
             //await _blob.CopyBlobs();
             //await _blob.Save("test", configToUpdate.ToString());

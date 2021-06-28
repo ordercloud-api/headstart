@@ -143,9 +143,21 @@ namespace ordercloud.integrations.library
 
         private async Task DownloadBlob(string sourceContainer, string blobName)
         {
-            CloudBlobContainer sourceBlobContainer = Client.GetContainerReference(sourceContainer);
-            ICloudBlob sourceBlob = await sourceBlobContainer.GetBlobReferenceFromServerAsync(blobName);
-            await sourceBlob.DownloadToFileAsync(blobName.Replace("/", "_"), System.IO.FileMode.Create);
+            try
+            {
+                CloudBlobContainer sourceBlobContainer = Client.GetContainerReference(sourceContainer);
+                ICloudBlob sourceBlob = await sourceBlobContainer.GetBlobReferenceFromServerAsync(blobName);
+                await sourceBlob.DownloadToFileAsync(blobName.Replace("/", "_"), System.IO.FileMode.Create);
+
+                //modifying the app configs.
+                var configTest = "{'hostedApp': true, 'appname': 'headstartDemo' }";
+                //File.WriteAllText("assets_appConfigs_defaultbuyer-test.json", configTest);
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                throw ex;
+            } 
+            
         }
 
         private async Task UploadBlob(string destinationContainer, string blobName)
@@ -153,9 +165,29 @@ namespace ordercloud.integrations.library
             string filepath = "https://headstartdemo.blob.core.windows.net/buyerweb";
             CloudBlobContainer destBlobContainer = Client.GetContainerReference(destinationContainer);
             var path = blobName.Replace("_", "/");
-            var reference = destinationContainer + "/" + path;
-            CloudBlockBlob destBlob = destBlobContainer.GetBlockBlobReference(reference);
+            CloudBlockBlob destBlob = destBlobContainer.GetBlockBlobReference(path);
+            var contentType = GetContentType(blobName);
+            if(contentType != null)
+            {
+                destBlob.Properties.ContentType = contentType;
+            }
             await destBlob.UploadFromFileAsync(blobName.Replace("/", "_"));
+        }
+
+        private string GetContentType(string fileName)
+        {
+            if (fileName.EndsWith(".txt")) return "text/plain";
+            else if (fileName.EndsWith(".html")) return "text/html";
+            else if (fileName.EndsWith(".js")) return "application/x-javascript";
+            else if (fileName.EndsWith(".css")) return "application/css";
+            else if (fileName.EndsWith(".json")) return "application/json";
+            else if (fileName.EndsWith(".ico")) return "image/x-icon";
+            else if (fileName.EndsWith(".jpg")) return "image/jpeg";
+            else if (fileName.EndsWith(".png")) return "image/png";
+            else if (fileName.EndsWith(".svg")) return "image/svg+xml";
+            else if (fileName.EndsWith(".md")) return "application/octet-stream";
+            else if (fileName.EndsWith(".config")) return "application/xml";
+            else return null;
         }
 
         public async Task CopyBlobs()
