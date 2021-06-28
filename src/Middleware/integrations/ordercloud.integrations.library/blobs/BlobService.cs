@@ -136,10 +136,29 @@ namespace ordercloud.integrations.library
 
         public async Task TransferBlobs(string sourceContainer, string destinationContainer, string blobName)
         {
+            string directoryName = "webfolder";
             await this.Init();
+            CreateDirectory(directoryName);
             await DownloadBlob(sourceContainer, blobName);
             await UploadBlob(destinationContainer, blobName);
-        } 
+            DeleteDirectory(directoryName);
+        }
+        
+        private void CreateDirectory(string directoryName)
+        {
+            if (!Directory.Exists(directoryName))
+            {
+                Directory.CreateDirectory(directoryName);
+            }
+        }
+
+        private void DeleteDirectory(string directoryName)
+        {
+            if (!Directory.Exists(directoryName))
+            {
+                Directory.Delete(directoryName);
+            }
+        }
 
         private async Task DownloadBlob(string sourceContainer, string blobName)
         {
@@ -147,7 +166,12 @@ namespace ordercloud.integrations.library
             {
                 CloudBlobContainer sourceBlobContainer = Client.GetContainerReference(sourceContainer);
                 ICloudBlob sourceBlob = await sourceBlobContainer.GetBlobReferenceFromServerAsync(blobName);
-                await sourceBlob.DownloadToFileAsync(blobName.Replace("/", "_"), System.IO.FileMode.Create);
+                if(!Directory.Exists(_webfolder))
+                {
+                    Directory.CreateDirectory(_webfolder);
+                }
+
+                await sourceBlob.DownloadToFileAsync(_webfolder + "/" + blobName.Replace("/", "_"), System.IO.FileMode.Create);
 
                 //modifying the app configs.
                 var configTest = "{'hostedApp': true, 'appname': 'headstartDemo' }";
@@ -171,7 +195,7 @@ namespace ordercloud.integrations.library
             {
                 destBlob.Properties.ContentType = contentType;
             }
-            await destBlob.UploadFromFileAsync(blobName.Replace("/", "_"));
+            await destBlob.UploadFromFileAsync(_webfolder + "/" + blobName.Replace("/", "_"));
         }
 
         private string GetContentType(string fileName)
@@ -179,7 +203,7 @@ namespace ordercloud.integrations.library
             if (fileName.EndsWith(".txt")) return "text/plain";
             else if (fileName.EndsWith(".html")) return "text/html";
             else if (fileName.EndsWith(".js")) return "application/x-javascript";
-            else if (fileName.EndsWith(".css")) return "application/css";
+            else if (fileName.EndsWith(".css")) return "text/css";
             else if (fileName.EndsWith(".json")) return "application/json";
             else if (fileName.EndsWith(".ico")) return "image/x-icon";
             else if (fileName.EndsWith(".jpg")) return "image/jpeg";
