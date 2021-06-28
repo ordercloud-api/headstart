@@ -114,10 +114,12 @@ export class ProductPricingComponent {
       const usdExchangeRates = await HeadStartSDK.ExchangeRates.Get(
         this.sellerCurrency.Currency as any
       )
-      const supplierToSellerExchangeRate = usdExchangeRates.Items.find(
-        (r) => r.Currency === this.supplierCurrency.Currency
-      )
-      this.supplierToSellerCurrencyRate = supplierToSellerExchangeRate.Rate
+      if(this.supplierCurrency){
+        const supplierToSellerExchangeRate = usdExchangeRates.Items.find(
+          (r) => r.Currency === this.supplierCurrency.Currency
+        )
+        this.supplierToSellerCurrencyRate = supplierToSellerExchangeRate.Rate
+      }
     }
   }
 
