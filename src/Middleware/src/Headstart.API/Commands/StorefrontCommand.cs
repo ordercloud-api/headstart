@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using Microsoft.WindowsAzure.Storage.Blob;
 using OrderCloud.SDK;
+using System.IO;
 
 namespace Headstart.API.Commands
 {
@@ -52,7 +53,10 @@ namespace Headstart.API.Commands
                 var name = file.Uri.ToString().Split("buyerweb/")[1];
                 tasks.Add(_blob.TransferBlobs("buyerweb", "$web", name));
             }
+            var directoryName = "webfolder";
+            CreateDirectory(directoryName);
             await Task.WhenAll(tasks);
+            DeleteDirectory(directoryName);
 
 
 
@@ -71,6 +75,30 @@ namespace Headstart.API.Commands
             // How do we get CDN endpoints from the profile.
 
             //6. Create CDN Endpoint within the CDN Profile and set the path to reference what was uploaded in step 3.
+        }
+
+        private void CreateDirectory(string directoryName)
+        {
+            if (!Directory.Exists(directoryName))
+            {
+                Directory.CreateDirectory(directoryName);
+            }
+        }
+
+        private void DeleteDirectory(string directoryName)
+        {
+            if (!Directory.Exists(directoryName))
+            {
+                try
+                {
+                    Directory.Delete(directoryName);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+
+            }
         }
     }
 }
