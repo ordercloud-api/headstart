@@ -12,6 +12,8 @@ using System.Net.Http.Headers;
 using Microsoft.WindowsAzure.Storage.Blob;
 using OrderCloud.SDK;
 using System.IO;
+using static Headstart.Common.Models.Headstart.AppConfigurations;
+using Newtonsoft.Json;
 
 namespace Headstart.API.Commands
 {
@@ -37,7 +39,7 @@ namespace Headstart.API.Commands
         public async Task DeployBuyerSite(ApiClient apiClient = null)
         {
             //First create the api client
-            //var client = await _oc.ApiClients.CreateAsync(apiClient);
+            var client = await _oc.ApiClients.CreateAsync(apiClient);
 
             //await _blob.ListContainersWithPrefixAsync("$web", null);
             //1. Create the $web container
@@ -48,33 +50,31 @@ namespace Headstart.API.Commands
             // Implement in build process first
             var files = await _blob.GetBlobFiles("buyerweb");
             var tasks = new List<Task>();
-            foreach(var file in files)
+            var directoryName = "webfolder"; // this is the folder where we save the downloaded files from blob storage.
+
+            foreach (var file in files)
             {
                 var name = file.Uri.ToString().Split("buyerweb/")[1];
-                tasks.Add(_blob.TransferBlobs("buyerweb", "$web", name));
+                tasks.Add(_blob.TransferBlobs("buyerweb", "$web", name, directoryName));
             }
-            var directoryName = "webfolder";
             CreateDirectory(directoryName);
             await Task.WhenAll(tasks);
+            await UpdateAppConfig(apiClient);
             DeleteDirectory(directoryName);
+        }
 
+        private async Task UpdateAppConfig(ApiClient apiClient = null)
+        {
+            var config = await _blob.Get<BuyerAppConfiguration>("assets/appConfigs/headstartdemo-test.json");
+            config.clientID = apiClient.ID;
+            config.appname = apiClient?.xp?.appname;
+            config.appID = apiClient?.xp?.appID;
+            config.incrementorPrefix = apiClient?.xp?.incrementorPrefix;
+            config.sellerID = apiClient?.xp?.sellerID;
+            config.sellerName = "A whole new seller"; 
+            config.theme = apiClient?.xp?.theme;
+            await _blob.Save("assets/appConfigs/headstartdemo-test.json", JsonConvert.SerializeObject(config));
 
-
-            //var configToUpdate = files.Find(file => file.Uri.ToString() == "https://headstartdemo.blob.core.windows.net/buyerweb/assets/appConfigs/defaultbuyer-test.json");
-
-            //await _blob.CopyBlobs();
-            //await _blob.Save("test", configToUpdate.ToString());
-
-            //Console.WriteLine("it worked?");
-
-            //4. Upload folder with file contents for the site being deployed into this $web folder
-
-            //5. Check if a CDN profile exists. If not, create one.
-            // Dont necessarily need to do this. Can still access site without CDN.
-            // They will have to do this. Make it a step in getting started.
-            // How do we get CDN endpoints from the profile.
-
-            //6. Create CDN Endpoint within the CDN Profile and set the path to reference what was uploaded in step 3.
         }
 
         private void CreateDirectory(string directoryName)
@@ -87,7 +87,7 @@ namespace Headstart.API.Commands
 
         private void DeleteDirectory(string directoryName)
         {
-            if (!Directory.Exists(directoryName))
+            if (Directory.Exists(directoryName))
             {
                 try
                 {

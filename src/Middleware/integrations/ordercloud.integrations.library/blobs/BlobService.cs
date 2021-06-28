@@ -30,7 +30,6 @@ namespace ordercloud.integrations.library
         Task<List<IListBlobItem>> GetBlobFiles(string containerName);
         Task<bool> CreateContainerAsync(string containerName, bool isPublic);
         Task<List<CloudBlobContainer>> ListContainers();
-        Task CopyBlobs();
         Task TransferBlobs(string sourceContainer, string destinationContainer, string blobName, string directoryName = "");
 
     }
@@ -146,36 +145,24 @@ namespace ordercloud.integrations.library
 
         private async Task DownloadBlob(string sourceContainer, string blobName, string directory)
         {
-            try
-            {
-                CloudBlobContainer sourceBlobContainer = Client.GetContainerReference(sourceContainer);
-                ICloudBlob sourceBlob = await sourceBlobContainer.GetBlobReferenceFromServerAsync(blobName);
-
-                await sourceBlob.DownloadToFileAsync(directory + "/" + blobName.Replace("/", "_"), System.IO.FileMode.Create);
-
-                //modifying the app configs.
-                var configTest = "{'hostedApp': true, 'appname': 'headstartDemo' }";
-                //File.WriteAllText("assets_appConfigs_defaultbuyer-test.json", configTest);
-            } catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                throw ex;
-            } 
-            
+            CloudBlobContainer sourceBlobContainer = Client.GetContainerReference(sourceContainer);
+            ICloudBlob sourceBlob = await sourceBlobContainer.GetBlobReferenceFromServerAsync(blobName);
+            await sourceBlob.DownloadToFileAsync(directory + "/" + blobName.Replace("/", "_"), System.IO.FileMode.Create);
         }
 
         private async Task UploadBlob(string destinationContainer, string blobName, string directory)
         {
-            string filepath = "https://headstartdemo.blob.core.windows.net/buyerweb";
+            var currentLocation = directory + "/" + blobName.Replace("/", "_");
+            var blobLocation = blobName.Replace("_", "/");
+
             CloudBlobContainer destBlobContainer = Client.GetContainerReference(destinationContainer);
-            var path = blobName.Replace("_", "/");
-            CloudBlockBlob destBlob = destBlobContainer.GetBlockBlobReference(path);
+            CloudBlockBlob destBlob = destBlobContainer.GetBlockBlobReference(blobLocation);
             var contentType = GetContentType(blobName);
             if(contentType != null)
             {
                 destBlob.Properties.ContentType = contentType;
             }
-            await destBlob.UploadFromFileAsync(directory + "/" + blobName.Replace("/", "_"));
+            await destBlob.UploadFromFileAsync(currentLocation);
         }
 
         private string GetContentType(string fileName)
@@ -192,35 +179,6 @@ namespace ordercloud.integrations.library
             else if (fileName.EndsWith(".md")) return "application/octet-stream";
             else if (fileName.EndsWith(".config")) return "application/xml";
             else return null;
-        }
-
-        public async Task CopyBlobs()
-        {
-            var source = "buyerWeb";
-            var dest = "$web";
-            var sourceContainer = Client.GetContainerReference(source);
-            var destContainer = Client.GetContainerReference(dest);
-
-            CloudBlockBlob destBlob = destContainer.GetBlockBlobReference("index.html");
-            await destBlob.StartCopyAsync(new Uri(GetSharedAccessUri("index.html", sourceContainer)));
-        }
-
-        // Create a SAS token for the source blob, to enable it to be read by the StartCopyAsync method
-        private static string GetSharedAccessUri(string blobName, CloudBlobContainer container)
-        {
-            DateTime toDateTime = DateTime.Now.AddMinutes(60);
-
-            SharedAccessBlobPolicy policy = new SharedAccessBlobPolicy
-            {
-                Permissions = SharedAccessBlobPermissions.Read,
-                SharedAccessStartTime = null,
-                SharedAccessExpiryTime = new DateTimeOffset(toDateTime)
-            };
-
-            CloudBlockBlob blob = container.GetBlockBlobReference(blobName);
-            string sas = blob.GetSharedAccessSignature(policy);
-
-            return blob.Uri.AbsoluteUri + sas;
         }
 
         public async Task<List<CloudBlobContainer>> ListContainers()
