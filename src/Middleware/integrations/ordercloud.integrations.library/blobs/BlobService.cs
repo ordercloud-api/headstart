@@ -27,9 +27,11 @@ namespace ordercloud.integrations.library
         Task Save(BlobBase64Image base64Image);
         Task Delete(string id);
         Task DeleteContainer();
-        Task<List<CloudBlobContainer>> ListContainersWithPrefixAsync(string prefix, int? segmentSize);
-
+        Task<List<IListBlobItem>> GetBlobFiles(string containerName);
         Task<bool> CreateContainerAsync(string containerName, bool isPublic);
+        Task<List<CloudBlobContainer>> ListContainers();
+        Task CopyBlobs();
+        Task TransferBlobs(string sourceContainer, string destinationContainer, string blobName);
 
     }
     public class OrderCloudIntegrationsBlobService : IOrderCloudIntegrationsBlobService
@@ -103,6 +105,7 @@ namespace ordercloud.integrations.library
         public async Task<bool> CreateContainerAsync(string containerName, bool isPublic)
         {
             // Create the container if it doesn't exist.
+            await this.Init();
             var blobContainer = Client.GetContainerReference(containerName);
             if (isPublic)
             {
@@ -114,37 +117,88 @@ namespace ordercloud.integrations.library
             return await blobContainer.CreateIfNotExistsAsync();
         }
 
-        public async Task<List<CloudBlobContainer>> ListContainersWithPrefixAsync(string prefix, int? segmentSize)
+        public async Task<List<IListBlobItem>> GetBlobFiles(string containerName)
         {
-            BlobContinuationToken continuationToken = null;
-            ContainerResultSegment resultSegment;
             await this.Init();
-            try
+            var blobContainer = Client.GetContainerReference(containerName);
+            List<IListBlobItem> results = new List<IListBlobItem>();
+            BlobContinuationToken continuationToken = null;
+            do
             {
-                do
-                {
-                    // List containers beginning with the specified prefix,
-                    // returning segments of 5 results each.
-                    // Passing in null for the maxResults parameter returns the maximum number of results (up to 5000).
-                    // Requesting the container's metadata as part of the listing operation populates the metadata,
-                    // so it's not necessary to call FetchAttributes() to read the metadata.
-                    resultSegment = await Client.ListContainersSegmentedAsync(
-                        prefix, ContainerListingDetails.Metadata, segmentSize, continuationToken, null, null);
+                //ListBlobsSegmentedAsync(string prefix, bool useFlatBlobListing, BlobListingDetails blobListingDetails, int? maxResults, BlobContinuationToken currentToken, BlobRequestOptions options, OperationContext operationContext);
+                var response = await blobContainer.ListBlobsSegmentedAsync(string.Empty, true, BlobListingDetails.None, int.MaxValue, continuationToken, null, null);
+                continuationToken = response.ContinuationToken;
+                results.AddRange(response.Results);
+            } while (continuationToken != null);
 
-                    await Container.CreateIfNotExistsAsync()
+            return results;
+        }
 
-                    // Get the continuation token.
-                    continuationToken = resultSegment.ContinuationToken;
+        public async Task TransferBlobs(string sourceContainer, string destinationContainer, string blobName)
+        {
+            await this.Init();
+            await DownloadBlob(sourceContainer, blobName);
+            await UploadBlob(destinationContainer, blobName);
+        } 
 
-                } while (continuationToken != null);
-                return resultSegment.Results.ToList();
-            }
-            catch (StorageException e)
+        private async Task DownloadBlob(string sourceContainer, string blobName)
+        {
+            CloudBlobContainer sourceBlobContainer = Client.GetContainerReference(sourceContainer);
+            ICloudBlob sourceBlob = await sourceBlobContainer.GetBlobReferenceFromServerAsync(blobName);
+            await sourceBlob.DownloadToFileAsync(blobName.Replace("/", "_"), System.IO.FileMode.Create);
+        }
+
+        private async Task UploadBlob(string destinationContainer, string blobName)
+        {
+            string filepath = "https://headstartdemo.blob.core.windows.net/buyerweb";
+            CloudBlobContainer destBlobContainer = Client.GetContainerReference(destinationContainer);
+            var path = blobName.Replace("_", "/");
+            var reference = destinationContainer + "/" + path;
+            CloudBlockBlob destBlob = destBlobContainer.GetBlockBlobReference(reference);
+            await destBlob.UploadFromFileAsync(blobName.Replace("/", "_"));
+        }
+
+        public async Task CopyBlobs()
+        {
+            var source = "buyerWeb";
+            var dest = "$web";
+            var sourceContainer = Client.GetContainerReference(source);
+            var destContainer = Client.GetContainerReference(dest);
+
+            CloudBlockBlob destBlob = destContainer.GetBlockBlobReference("index.html");
+            await destBlob.StartCopyAsync(new Uri(GetSharedAccessUri("index.html", sourceContainer)));
+        }
+
+        // Create a SAS token for the source blob, to enable it to be read by the StartCopyAsync method
+        private static string GetSharedAccessUri(string blobName, CloudBlobContainer container)
+        {
+            DateTime toDateTime = DateTime.Now.AddMinutes(60);
+
+            SharedAccessBlobPolicy policy = new SharedAccessBlobPolicy
             {
-                Console.WriteLine(e.Message);
-                Console.ReadLine();
-                throw;
-            }
+                Permissions = SharedAccessBlobPermissions.Read,
+                SharedAccessStartTime = null,
+                SharedAccessExpiryTime = new DateTimeOffset(toDateTime)
+            };
+
+            CloudBlockBlob blob = container.GetBlockBlobReference(blobName);
+            string sas = blob.GetSharedAccessSignature(policy);
+
+            return blob.Uri.AbsoluteUri + sas;
+        }
+
+        public async Task<List<CloudBlobContainer>> ListContainers()
+        {
+            await this.Init();
+            BlobContinuationToken continuationToken = null;
+            List<CloudBlobContainer> results = new List<CloudBlobContainer>();
+            do
+            {
+                var response = await Client.ListContainersSegmentedAsync(continuationToken);
+                continuationToken = response.ContinuationToken;
+                results.AddRange(response.Results);
+            } while (continuationToken != null);
+            return results;
         }
 
         public virtual async Task<T> Get<T>(string id)

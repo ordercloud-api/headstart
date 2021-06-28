@@ -9,54 +9,59 @@ using Microsoft.VisualStudio.Services.WebApi;
 using Microsoft.VisualStudio.Services.Common;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using Microsoft.TeamFoundation.SourceControl.WebApi;
+using Microsoft.WindowsAzure.Storage.Blob;
+using OrderCloud.SDK;
+
 namespace Headstart.API.Commands
 {
     public interface IStorefrontCommand
     {
-        Task DeployBuyerSite(string storeFrontName);
+        Task DeployBuyerSite(ApiClient apiClient = null);
     }
 
     public class StorefrontCommand : IStorefrontCommand
     {
         private readonly AppSettings _settings;
         private readonly IOrderCloudIntegrationsBlobService _blob;
+        private readonly IOrderCloudClient _oc;
 
 
-        public StorefrontCommand(IOrderCloudIntegrationsBlobService blob, AppSettings settings)
+        public StorefrontCommand(IOrderCloudIntegrationsBlobService blob, AppSettings settings, IOrderCloudClient oc)
         {
             _settings = settings;
             _blob = blob;
+            _oc = oc;
         }
 
-        public async Task DeployBuyerSite(string storeFrontName)
+        public async Task DeployBuyerSite(ApiClient apiClient = null)
         {
+            //First create the api client
+            //var client = await _oc.ApiClients.CreateAsync(apiClient);
+
             //await _blob.ListContainersWithPrefixAsync("$web", null);
             //1. Create the $web container
             await _blob.CreateContainerAsync("$web", false);
 
-
-
             //2. Get files of deployed buyer app so we can upload them to our contianer (within a subfolder)
             // Store files in our storage container vs azure devops so we already have access.
             // Implement in build process first
+            var files = await _blob.GetBlobFiles("buyerweb");
+            var tasks = new List<Task>();
+            foreach(var file in files)
+            {
+                var name = file.Uri.ToString().Split("buyerweb/")[1];
+                tasks.Add(_blob.TransferBlobs("buyerweb", "$web", name));
+            }
+            await Task.WhenAll(tasks);
 
-            // Need to authenticate
-            var creds = new VssBasicCredential("username", "password");
-            VssConnection connection = new VssConnection(new Uri(collectionUri), creds);
 
-            using var client = connection.GetClient<GitHttpClient>();
-            // https://stackoverflow.com/questions/54391120/how-to-download-the-latest-build-artifacts-from-azure-devops-programmatically
-            var organization = "OrderCloud";
-            var project = "Headstart";
-            var definition = "172";
-            var branchName = "development";
 
-            var url = $"https://dev.azure.com/{organization}/{project}/_apis/build/latest/{definition}?branchName={branchName}&api-version=5.0-preview.1";
+            var configToUpdate = files.Find(file => file.Uri.ToString() == "https://headstartdemo.blob.core.windows.net/buyerweb/assets/appConfigs/defaultbuyer-test.json");
 
-            var files = await url.GetAsync();
+            //await _blob.CopyBlobs();
+            //await _blob.Save("test", configToUpdate.ToString());
 
-            Console.WriteLine(files);
+            //Console.WriteLine("it worked?");
 
             //4. Upload folder with file contents for the site being deployed into this $web folder
 
@@ -66,37 +71,6 @@ namespace Headstart.API.Commands
             // How do we get CDN endpoints from the profile.
 
             //6. Create CDN Endpoint within the CDN Profile and set the path to reference what was uploaded in step 3.
-        }
-
-        public static async void GetLatestBuild()
-        {
-            try
-            {
-                var personalaccesstoken = "PAT_FROM_WEBSITE";
-
-                using (HttpClient client = new HttpClient())
-                {
-                    client.DefaultRequestHeaders.Accept.Add(
-                        new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-
-                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic",
-                        Convert.ToBase64String(
-                            System.Text.ASCIIEncoding.ASCII.GetBytes(
-                                string.Format("{0}:{1}", "", personalaccesstoken))));
-
-                    using (HttpResponseMessage response = client.GetAsync(
-                                "https://dev.azure.com/{organization}/_apis/projects").Result)
-                    {
-                        response.EnsureSuccessStatusCode();
-                        string responseBody = await response.Content.ReadAsStringAsync();
-                        Console.WriteLine(responseBody);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
         }
     }
 }
