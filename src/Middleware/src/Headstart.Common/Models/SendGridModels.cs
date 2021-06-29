@@ -45,6 +45,7 @@ namespace Headstart.Common.Models
             public decimal? LineTotal { get; set; }
             public int? QuantityChanged { get; set; }
             public string SpecCombo { get; set; }
+            public string MessageToBuyer { get; set; }
         }
 
         public class NewUserData

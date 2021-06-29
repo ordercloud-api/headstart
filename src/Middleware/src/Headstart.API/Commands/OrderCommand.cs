@@ -7,6 +7,7 @@ using Headstart.Models;
 using Headstart.Models.Misc;
 using ordercloud.integrations.library;
 using Headstart.Models.Extended;
+using Headstart.Common.Models;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using OrderCloud.Catalyst;
 
@@ -18,6 +19,7 @@ namespace Headstart.API.Commands
         Task<ListPage<HSOrder>> ListOrdersForLocation(string locationID, ListArgs<HSOrder> listArgs, VerifiedUserContext verifiedUser);
         Task<OrderDetails> GetOrderDetails(string orderID, VerifiedUserContext verifiedUser);
         Task<List<HSShipmentWithItems>> ListHSShipmentWithItems(string orderID, VerifiedUserContext verifiedUser);
+        Task<CosmosListPage<RMA>> ListRMAsForOrder(string orderID, VerifiedUserContext verifiedUser);
         Task<HSOrder> AddPromotion(string orderID, string promoCode, VerifiedUserContext verifiedUser);
         Task<HSOrder> ApplyAutomaticPromotions(string orderID);
         Task PatchOrderRequiresApprovalStatus(string orderID);
@@ -28,16 +30,19 @@ namespace Headstart.API.Commands
         private readonly IOrderCloudClient _oc;
         private readonly ILocationPermissionCommand _locationPermissionCommand;
         private readonly IPromotionCommand _promotionCommand;
-        
+        private readonly IRMACommand _rmaCommand;
+
         public OrderCommand(
             ILocationPermissionCommand locationPermissionCommand,
             IOrderCloudClient oc,
-            IPromotionCommand promotionCommand
+            IPromotionCommand promotionCommand,
+            IRMACommand rmaCommand
             )
         {
 			_oc = oc;
             _locationPermissionCommand = locationPermissionCommand;
             _promotionCommand = promotionCommand;
+            _rmaCommand = rmaCommand;
 		}
 
         public async Task<Order> AcknowledgeQuoteOrder(string orderID)
@@ -116,6 +121,18 @@ namespace Headstart.API.Commands
             var shipments = await _oc.Orders.ListShipmentsAsync<HSShipmentWithItems>(OrderDirection.Incoming, orderID);
             var shipmentsWithItems = await Throttler.RunAsync(shipments.Items, 100, 5, (HSShipmentWithItems shipment) => GetShipmentWithItems(shipment, lineItems.ToList()));
             return shipmentsWithItems.ToList();
+        }
+
+        public async Task<CosmosListPage<RMA>> ListRMAsForOrder(string orderID, VerifiedUserContext verifiedUser)
+        {
+            HSOrder order = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
+            await EnsureUserCanAccessOrder(order, verifiedUser);
+
+            var listFilter = new ListFilter("SourceOrderID", orderID);
+            CosmosListOptions listOptions = new CosmosListOptions() { PageSize = 100, ContinuationToken = null, Filters = { listFilter } };
+
+            CosmosListPage<RMA> rmasOnOrder = await _rmaCommand.ListBuyerRMAs(listOptions, verifiedUser.Buyer.ID);
+            return rmasOnOrder;
         }
 
         private async Task<HSShipmentWithItems> GetShipmentWithItems(HSShipmentWithItems shipment, List<LineItem> lineItems)

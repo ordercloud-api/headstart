@@ -1,25 +1,28 @@
-﻿using Cosmonaut.Attributes;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using ordercloud.integrations.library;
 using System.Collections.Generic;
 using Newtonsoft.Json.Converters;
+using System;
+using Headstart.Models.Headstart;
 
 namespace Headstart.Common.Models
 {
-    
-    [CosmosCollection("rmas")]
+    [SwaggerModel]
     public class RMA : CosmosObject
     {
-        [CosmosPartitionKey]
         public string PartitionKey { get; set; }
+        public string SourceOrderID { get; set; }
+        public decimal TotalCredited { get; set; }
+        public decimal ShippingCredited { get; set; }
         public string RMANumber { get; set; }
         public string SupplierID { get; set; }
+        public string SupplierName { get; set; }
         public RMAType Type { get; set; }
-        public string DateCreated { get; set; }
+        public DateTime DateCreated { get; set; }
+        public DateTime? DateComplete { get; set; }
         public RMAStatus Status { get; set; }
         public List<RMALineItem> LineItems { get; set; }
         public List<RMALog> Logs { get; set; }
-        public List<RMACredit> CreditsApplied { get; set; }
         public string FromBuyerID { get; set; }
         public string FromBuyerUserID { get; set; }
     }
@@ -37,18 +40,24 @@ namespace Headstart.Common.Models
         Requested,
         Denied,
         Processing,
+        Approved,
         Complete,
-        Canceled
     }
 
     
     public class RMALineItem
     {
         public string ID { get; set; }
+        public int QuantityRequested { get; set; }
+        public int QuantityProcessed { get; set; }
         public RMALineItemStatus Status { get; set; }
         public string Reason { get; set; }
         public string Comment { get; set; }
+        public int? PercentToRefund { get; set; }
+        public bool RefundableViaCreditCard { get; set; }
         public bool IsResolved { get; set; }
+        public bool IsRefunded { get; set; }
+        public decimal LineTotalRefund { get; set; }
     }
 
 
@@ -57,28 +66,40 @@ namespace Headstart.Common.Models
     {
         Requested,
         Processing,
-        RequestCanceled,
         Approved,
+        Complete,
         Denied,
-        PartialQtyApproved
+        PartialQtyApproved,
+        PartialQtyComplete
     }
 
     
     public class RMALog
     {
         public RMAStatus Status { get; set; }
-        public string Date { get; set; }
-        public string Comment { get; set; }
+        public DateTime Date { get; set; }
+        public decimal? AmountRefunded { get; set; }
         public string FromUserID { get; set; }
     }
 
-    
-    public class RMACredit
+    [SwaggerModel]
+    public class RMARefundRequestBody
     {
-        public string PaymentID { get; set; }
-        public string TransactionID { get; set; }
-        public string TransactionDate { get; set; }
-        public decimal SupplierCredit { get; set; }
-        public decimal TotalRefunded { get; set; }
+        public List<RMALineItemRefundRequestBody> LineItemsToRefund { get; set; }
+    }
+
+    [SwaggerModel]
+    public class RMALineItemRefundRequestBody
+    {
+        public string LineItemID { get; set; }
+        public int? PercentToRefund { get; set; }
+    }
+
+    [SwaggerModel]
+    public class RMAWithLineItemStatusByQuantity
+    {
+        public string SupplierOrderID { get; set; }
+        public RMA RMA { get; set; }
+        public List<LineItemStatusChanges> LineItemStatusChangesList { get; set; }
     }
 }

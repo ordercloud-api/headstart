@@ -115,6 +115,24 @@ namespace ordercloud.integrations.cardconnect
             };
             return t;
         }
+
+        public static PaymentTransaction Map(Payment payment, CardConnectRefundResponse response)
+        {
+            var t = new PaymentTransaction()
+            {
+                Amount = payment.Amount,
+                DateExecuted = DateTime.Now,
+                ResultCode = response.respstat,
+                ResultMessage = response.resptext,
+                Succeeded = response.WasSuccessful(),
+                Type = "CreditCardRefund",
+                xp = new
+                {
+                    CardConnectResponse = response
+                }
+            };
+            return t;
+        }
     }
 
     public static class CreditCardAuthorizationExtensions

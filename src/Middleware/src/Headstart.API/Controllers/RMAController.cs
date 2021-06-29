@@ -17,11 +17,18 @@ namespace Headstart.Common.Controllers
     public class RMAController : BaseController
     {
 		private readonly IRMACommand _rmaCommand;
+        private readonly ILineItemCommand _lineItemCommand;
+        private readonly VerifiedUserContext _user;
         private const string HSLocationViewAllOrders = "HSLocationViewAllOrders";
+        private const string HSOrderAdmin = "HSOrderAdmin";
+        private const string HSOrderReader = "HSOrderReader";
+        private const string HSShipmentAdmin = "HSShipmentAdmin";
 
-        public RMAController(IRMACommand rmaCommand)
+        public RMAController(VerifiedUserContext user, IRMACommand rmaCommand, ILineItemCommand lineItemCommand, AppSettings settings)
         {
             _rmaCommand = rmaCommand;
+            _lineItemCommand = lineItemCommand;
+            _user = user;
         }
 
         // Buyer Routes
@@ -29,27 +36,56 @@ namespace Headstart.Common.Controllers
         /// POST Headstart RMA
         /// </summary>
         [HttpPost, OrderCloudUserAuth(ApiRole.Shopper)]
-        public async Task<RMA> GenerateRMA([FromBody] RMA rma)
+        public async Task<RMA> PostRMA([FromBody] RMA rma)
         {
-            return await _rmaCommand.GenerateRMA(rma, UserContext);
+            return await _rmaCommand.PostRMA(rma);
         }
-        /// <summary>
-        /// LIST Me Headstart RMAs
-        /// </summary>
-        [HttpPost, Route("list/me"), OrderCloudUserAuth(ApiRole.Shopper)]
-        public async Task<CosmosListPage<RMA>> ListMeRMAs([FromBody] CosmosListOptions listOptions)
-        {
-            return await _rmaCommand.ListMeRMAs(listOptions, UserContext);
-        }
-        /// <summary>
-        /// LIST Buyer Headstart RMAs
-        /// </summary>
+
+        [DocName("LIST Buyer Headstart RMAs")]
         [HttpPost, Route("list/buyer"), OrderCloudUserAuth(HSLocationViewAllOrders)]
         public async Task<CosmosListPage<RMA>> ListBuyerRMAs([FromBody] CosmosListOptions listOptions)
         {
-            return await _rmaCommand.ListBuyerRMAs(listOptions, UserContext);
+            return await _rmaCommand.ListBuyerRMAs(listOptions, UserContext.Buyer.ID);
         }
 
         // Seller/Supplier Routes (TO-DO)
+        [DocName("GET a single RMA")]
+        [HttpGet, OrderCloudUserAuth(HSOrderAdmin, HSOrderReader, HSShipmentAdmin)]
+        public async Task<RMA> Get(ListArgs<RMA> args)
+        {
+            return await _rmaCommand.Get(args, _user);
+        }
+
+        [DocName("LIST RMAs by Order ID")]
+        [HttpGet, Route("{orderID}"), OrderCloudUserAuth(HSOrderAdmin, HSOrderReader, HSShipmentAdmin)]
+        public async Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID)
+        {
+            return await _rmaCommand.ListRMAsByOrderID(orderID, _user);
+        }
+
+        [DocName("LIST Seller/Supplier Headstart RMAs")]
+        [HttpPost, Route("list"), OrderCloudUserAuth("MPOrderAdmin", "MPOrderReader", "MPShipmentAdmin")]
+        public async Task<CosmosListPage<RMA>> ListRMAs([FromBody] CosmosListOptions listOptions)
+        {
+            return await _rmaCommand.ListRMAs(listOptions, _user);
+        }
+
+        [DocName("PUT Supplier Headstart RMA")]
+        [HttpPut, Route("process-rma"), OrderCloudUserAuth(ApiRole.ShipmentAdmin)]
+        public async Task<RMA> ProcessRMA([FromBody] RMA rma)
+        {
+            RMAWithLineItemStatusByQuantity rmaWithLineItemStatusByQuantity = await _rmaCommand.ProcessRMA(rma, _user);
+            await _lineItemCommand.HandleRMALineItemStatusChanges(OrderDirection.Incoming, rmaWithLineItemStatusByQuantity, _user);
+            return rmaWithLineItemStatusByQuantity.RMA;
+        }
+
+        [DocName("POST RMA Refund")]
+        [HttpPost, Route("refund/{rmaNumber}"), OrderCloudUserAuth(ApiRole.ShipmentAdmin)]
+        public async Task<RMA> ProcessRefund(string rmaNumber)
+        {
+            RMAWithLineItemStatusByQuantity rmaWithLineItemStatusByQuantity = await _rmaCommand.ProcessRefund(rmaNumber, _user);
+            await _lineItemCommand.HandleRMALineItemStatusChanges(OrderDirection.Incoming, rmaWithLineItemStatusByQuantity, _user);
+            return rmaWithLineItemStatusByQuantity.RMA;
+        }
     }
 }

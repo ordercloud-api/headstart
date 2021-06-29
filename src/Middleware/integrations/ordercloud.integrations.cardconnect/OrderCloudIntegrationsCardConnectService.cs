@@ -1,8 +1,11 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Flurl.Http;
 using Flurl.Http.Configuration;
+using Newtonsoft.Json;
 using OrderCloud.SDK;
 
 namespace ordercloud.integrations.cardconnect
@@ -13,6 +16,8 @@ namespace ordercloud.integrations.cardconnect
         Task<CardConnectAuthorizationResponse> AuthWithoutCapture(CardConnectAuthorizationRequest request);
         Task<CardConnectAuthorizationResponse> AuthWithCapture(CardConnectAuthorizationRequest request);
         Task<CardConnectVoidResponse> VoidAuthorization(CardConnectVoidRequest request);
+        Task<CardConnectInquireResponse> Inquire(CardConnectInquireRequest request);
+        Task<CardConnectRefundResponse> Refund(CardConnectRefundRequest request);
     }
 
     public class OrderCloudIntegrationsCardConnectConfig
@@ -99,6 +104,60 @@ namespace ordercloud.integrations.cardconnect
                 Message = attempt.resptext, // response codes: https://developer.cardconnect.com/cardconnect-api?lang=json#void-service-url
                 ErrorCode = attempt.respcode
             }, attempt);
+        }
+
+        // https://developer.cardconnect.com/cardconnect-api#inquire-by-order-id
+        public async Task<CardConnectInquireResponse> Inquire(CardConnectInquireRequest request)
+        {
+            var rawAttempt = await this
+                .Request($"cardconnect/rest/inquireByOrderid/{request.orderid}/{request.merchid}/{request.set}", request.currency)
+                .GetStringAsync();
+
+            var attempt = ExtractResponse(rawAttempt, request.retref);
+            if (attempt != null && attempt.WasSuccessful())
+            {
+                return attempt;
+            }
+            throw new CardConnectInquireException(new ApiError()
+            {
+                Data = attempt,
+                Message = attempt.resptext,
+                ErrorCode = attempt.respcode
+            }, attempt);
+        }
+
+        public async Task<CardConnectRefundResponse> Refund(CardConnectRefundRequest request)
+        {
+            var attempt = await this
+                .Request("cardconnect/rest/refund", request.currency)
+                .PutJsonAsync(request)
+                .ReceiveJson<CardConnectRefundResponse>();
+            if (attempt.WasSuccessful())
+            {
+                return attempt;
+            }
+            throw new CreditCardRefundException(new ApiError()
+            {
+                Data = attempt,
+                Message = attempt.resptext,
+                ErrorCode = attempt.respcode
+            }, attempt);
+        }
+
+        private CardConnectInquireResponse ExtractResponse(string body, string retref)
+        {
+            // cardconnect inquire response may be either a single item or an array of items
+            // for consistency sake just return a single item, if its a list find the associated transaction by retref
+            try
+            {
+                return JsonConvert.DeserializeObject<CardConnectInquireResponse>(body);
+            }
+            catch (Exception e)
+            {
+                var list = JsonConvert.DeserializeObject<List<CardConnectInquireResponse>>(body);
+                return list.FirstOrDefault(t => t.retref == retref);
+            }
+
         }
 
         private bool ShouldMockCardConnectResponse()
