@@ -8,7 +8,15 @@
         <a class="breadcrumb-item" aria-current="page">{{ order.ID }}</a>
       </nav>
       <div
-        class="d-flex flex-wrap align-items-center justify-content-between pb-2 mt-4 mb-2"
+        class="
+          d-flex
+          flex-wrap
+          align-items-center
+          justify-content-between
+          pb-2
+          mt-4
+          mb-2
+        "
       >
         <h2>
           <span class="text-muted"
@@ -63,7 +71,15 @@
           </ul>
         </div>
         <div
-          class="col-md-8 mt-3 mt-md-0 d-flex flex-wrap gap-2 align-items-end justify-content-end"
+          class="
+            col-md-8
+            mt-3 mt-md-0
+            d-flex
+            flex-wrap
+            gap-2
+            align-items-end
+            justify-content-end
+          "
         >
           <ocm-order-approval
             *ngIf="approvalVersion"
@@ -72,7 +88,7 @@
           ></ocm-order-approval>
 
           <button
-            *ngIf="!approvalVersion && !isAnon" 
+            *ngIf="!approvalVersion && !isAnon"
             class="btn btn-outline-secondary float-right d-print-none"
             (click)="toggleFavorite(order)"
             translate
@@ -185,7 +201,13 @@
               >
               </ocm-lineitem-table>
               <div
-                class="row d-flex justify-content-space-between justify-content-between mr-2 ml-2"
+                class="
+                  row
+                  d-flex
+                  justify-content-space-between justify-content-between
+                  mr-2
+                  ml-2
+                "
               >
                 <button
                   type="button"
@@ -216,7 +238,13 @@
                 <p translate>ORDERS.DETAIL.WARNING</p>
               </div>
               <div
-                class="row d-flex justify-content-space-between justify-content-between mr-2 ml-2"
+                class="
+                  row
+                  d-flex
+                  justify-content-space-between justify-content-between
+                  mr-2
+                  ml-2
+                "
               >
                 <button
                   type="button"
@@ -264,6 +292,12 @@
           ORDERS.DETAIL.SHIPMENTS
         </button>
       </li>
+      <li class="nav-item">
+        <button class="btn btn-link nav-link" (click)="toRMAs()" translate>
+          <fa-icon [icon]="faExchangeAlt"></fa-icon>
+          ORDERS.DETAIL.RMAS
+        </button>
+      </li>
     </ul>
     <ocm-order-historical
       class="d-block p-3"
@@ -284,6 +318,11 @@
     [orderID]="order?.ID"
   >
   </ocm-order-shipments>
+  <ocm-order-rmas
+    *ngIf="showRMAs() && !showRequestReturn"
+    [orderDetails]="orderDetails"
+  >
+  </ocm-order-rmas>
   <ocm-order-return
     class="d-block p-3"
     *ngIf="showRequestReturn || showRequestCancel"

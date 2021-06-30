@@ -1,0 +1,54 @@
+<div class="container mt-4">
+  <div
+    class="card bg-light p-3 flex-row justify-content-center"
+    *ngIf="rmas?.length === 0"
+  >
+    <p class="mb-0" translate>
+      There are currently no returns/cancellations for this order.
+    </p>
+  </div>
+  <div *ngIf="rmas">
+    <div *ngFor="let rma of rmas; let i = index">
+      <div class="mb-4">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <h4>{{ rma?.Type }}</h4>
+            <span>
+              <ocm-order-status-icon
+                [status]="rma.Status"
+              ></ocm-order-status-icon>
+              {{ rma?.Status }}
+            </span>
+            <small class="d-block mt-1"
+              ><span translate>ORDERS.DETAIL.SUBMITTED</span>
+              {{ rma?.DateCreated | date: 'short' }}</small
+            >
+            <div *ngIf="rma?.ShippingCredited > 0" class="d-block">
+              <small class="font-weight-bold" translate
+                >CART.LINEITEM_TABLE.SHIPPING_REFUND</small
+              >
+              <small *ngIf="rma?.ShippingCredited > 0"
+                >: {{ rma.ShippingCredited | currency: _orderCurrency }}</small
+              >
+            </div>
+          </div>
+          <div class="col-md-6 text-right">
+            <span class="font-weight-bold" *ngIf="rmas?.length > 1"
+              >{{ i + 1 }} of {{ rmas?.length }}</span
+            >
+          </div>
+        </div>
+
+        <ocm-lineitem-table
+          *ngIf="rmaToOrderLineItemMap?.entries()"
+          [lineItems]="rmaToOrderLineItemMap?.get(rma?.RMANumber)"
+          [rma]="rma"
+          [groupByKits]="false"
+          [readOnly]="true"
+        >
+        </ocm-lineitem-table>
+        <hr />
+      </div>
+    </div>
+  </div>
+</div>

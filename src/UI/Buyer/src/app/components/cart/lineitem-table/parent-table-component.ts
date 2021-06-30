@@ -1,7 +1,7 @@
 import { Input, OnInit, Directive } from '@angular/core'
 import { faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { groupBy as _groupBy, isEqual, uniqWith } from 'lodash'
-import { HSLineItem } from '@ordercloud/headstart-sdk'
+import { HSLineItem, RMA, RMALineItem } from '@ordercloud/headstart-sdk'
 import { getPrimaryLineItemImage } from 'src/app/services/images.helpers'
 import { CancelReturnReason } from '../../orders/order-return/order-return-table/models/cancel-return-translations.enum'
 import { NgxSpinnerService } from 'ngx-spinner'
@@ -19,6 +19,7 @@ export abstract class OCMParentTableComponent implements OnInit {
     this.initLineItems() // if line items change we need to regroup them
   }
 
+  @Input() rma: RMA
   @Input() supplierData: LineItemGroupSupplier[]
   @Input() readOnly: boolean
   @Input() orderType: OrderType
@@ -194,5 +195,52 @@ export abstract class OCMParentTableComponent implements OnInit {
 
   getReturnReason(reasonCode: string): string {
     return CancelReturnReason[reasonCode] as string
+  }
+
+  getRMALineItemComment(li: HSLineItem): string {
+    const rmaLineItem = this.getRMALineItem(li)
+    return rmaLineItem?.Comment
+  }
+
+  getRMALineItemReason(li: HSLineItem): string {
+    const rmaLineItem = this.getRMALineItem(li)
+    return rmaLineItem?.Reason
+  }
+
+  getRMALineItemStatus(li: HSLineItem): string {
+    const rmaLineItem = this.getRMALineItem(li)
+    return rmaLineItem?.Status
+  }
+
+  getRMALineItemRefundTotal(li: HSLineItem): number {
+    const rmaLineItem = this.getRMALineItem(li)
+    return rmaLineItem?.LineTotalRefund
+  }
+
+  getQuantityProcessedByStatus(li: HSLineItem): string {
+    const rmaLineItem = this.getRMALineItem(li)
+    const status = rmaLineItem?.Status
+    let fullQuantityText = ''
+    if (status === 'PartialQtyApproved') {
+      fullQuantityText = `${rmaLineItem?.QuantityProcessed.toString()} Approved, ${
+        rmaLineItem?.QuantityRequested - rmaLineItem?.QuantityProcessed
+      } Denied`
+    } else if (status === 'PartialQtyComplete') {
+      fullQuantityText = `${rmaLineItem?.QuantityProcessed.toString()} Complete, ${
+        rmaLineItem?.QuantityRequested - rmaLineItem?.QuantityProcessed
+      } Denied`
+    } else if (status === 'Requested' || status === 'Processing') {
+      fullQuantityText = `${rmaLineItem?.QuantityRequested.toString()} ${status}`
+    } else {
+      fullQuantityText = `${rmaLineItem?.QuantityProcessed.toString()} ${status}`
+    }
+    return fullQuantityText
+  }
+
+  getRMALineItem(li: HSLineItem): RMALineItem {
+    const rmaLineItem = this.rma?.LineItems.find(
+      (liFromRMA) => liFromRMA?.ID === li?.ID
+    )
+    return rmaLineItem
   }
 }

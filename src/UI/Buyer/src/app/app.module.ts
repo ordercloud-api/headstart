@@ -1,4 +1,4 @@
-import { faBan, faCircle, faClock } from '@fortawesome/free-solid-svg-icons';
+import { faBan, faCircle, faClock } from '@fortawesome/free-solid-svg-icons'
 /* eslint-disable max-lines-per-function */
 import { BrowserModule } from '@angular/platform-browser'
 import {
@@ -46,6 +46,7 @@ import { FormControlErrorDirective } from './directives/form-control-errors.dire
 import { CreditCardInputDirective } from './directives/credit-card-input.directive'
 import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
 import { OrderStatusDisplayPipe } from './pipes/order-status-display.pipe'
+import { SplitByCapitalLetterPipe } from './pipes/split-by-capital-letter.pipe'
 import { PhoneFormatPipe } from './pipes/phone-format.pipe'
 import { ChildCategoryPipe } from './pipes/category-children.pipe'
 import { CreditCardFormatPipe } from './pipes/credit-card-format.pipe'
@@ -58,6 +59,7 @@ import { NgProgressModule } from '@ngx-progressbar/core'
 import { NgProgressHttpModule } from '@ngx-progressbar/http'
 import { OCMOrderApproval } from './components/orders/order-approval/order-approval.component'
 import { OCMOrderShipments } from './components/orders/order-shipments/order-shipments.component'
+import { OCMOrderRMAs } from './components/orders/order-rmas/order-rmas.component'
 import {
   ShipperTrackingPipe,
   ShipperTrackingSupportedPipe,
@@ -197,7 +199,12 @@ import { AppConfig } from './models/environment.types'
 import { BaseResolveService } from './services/base-resolve/base-resolve.service'
 import { ShipMethodNameMapperPipe } from './pipes/ship-method-name/ship-method-name.pipe'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faCcAmex, faCcDiscover, faCcMastercard, faCcVisa } from '@fortawesome/free-brands-svg-icons'
+import {
+  faCcAmex,
+  faCcDiscover,
+  faCcMastercard,
+  faCcVisa,
+} from '@fortawesome/free-brands-svg-icons'
 import { faCreditCard } from '@fortawesome/free-solid-svg-icons'
 
 export function HttpLoaderFactory(
@@ -286,6 +293,7 @@ const components = [
   OCMAppFooter,
   OCMOrderApproval,
   OCMOrderShipments,
+  OCMOrderRMAs,
   OCMOrderAccessManagement,
   OCMOrderHistorical,
   OCMOrderHistory,
@@ -322,6 +330,7 @@ const components = [
     ProductNameWithSpecsPipe,
     ShipMethodNameMapperPipe,
     OrderStatusDisplayPipe,
+    SplitByCapitalLetterPipe,
     PhoneFormatPipe,
     ChildCategoryPipe,
     CreditCardFormatPipe,
@@ -416,7 +425,16 @@ export class AppModule {
     translate.setDefaultLang('en')
     translate.use('en')
 
-    library.add(faCcDiscover, faCcMastercard, faCcVisa, faCreditCard, faCcAmex, faCircle, faClock, faBan)
+    library.add(
+      faCcDiscover,
+      faCcMastercard,
+      faCcVisa,
+      faCreditCard,
+      faCcAmex,
+      faCircle,
+      faClock,
+      faBan
+    )
     this.buildWebComponent(OCMProfileNav, 'ocm-profile-nav')
     this.buildWebComponent(OCMQuantityInput, 'ocm-quantity-input')
     this.buildWebComponent(OCMProductCard, 'ocm-product-card')
@@ -490,6 +508,7 @@ export class AppModule {
     this.buildWebComponent(OCMAppFooter, 'ocm-app-footer')
     this.buildWebComponent(OCMOrderApproval, 'ocm-order-approval')
     this.buildWebComponent(OCMOrderShipments, 'ocm-order-shipments')
+    this.buildWebComponent(OCMOrderRMAs, 'ocm-order-rmas')
     this.buildWebComponent(OCMOrderHistorical, 'ocm-order-historical')
     this.buildWebComponent(OCMOrderHistory, 'ocm-order-history')
     this.buildWebComponent(OCMOrderReturn, 'ocm-order-return')
