@@ -6,7 +6,7 @@ using Newtonsoft.Json.Converters;
 
 namespace Headstart.Common.Models
 {
-    [SwaggerModel]
+    
     [CosmosCollection("rmas")]
     public class RMA : CosmosObject
     {
@@ -41,7 +41,7 @@ namespace Headstart.Common.Models
         Canceled
     }
 
-    [SwaggerModel]
+    
     public class RMALineItem
     {
         public string ID { get; set; }
@@ -63,7 +63,7 @@ namespace Headstart.Common.Models
         PartialQtyApproved
     }
 
-    [SwaggerModel]
+    
     public class RMALog
     {
         public RMAStatus Status { get; set; }
@@ -72,7 +72,7 @@ namespace Headstart.Common.Models
         public string FromUserID { get; set; }
     }
 
-    [SwaggerModel]
+    
     public class RMACredit
     {
         public string PaymentID { get; set; }

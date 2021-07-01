@@ -12,12 +12,12 @@ using Headstart.Models.Headstart;
 
 namespace Headstart.Models
 {
-    [SwaggerModel]
+    
     public class HSOrder : Order<OrderXp, HSUser, HSAddressBuyer>
     {
     }
 
-    [SwaggerModel]
+    
     public class OrderXp
     {
         public string AvalaraTaxTransactionCode { get; set; }
@@ -41,7 +41,7 @@ namespace Headstart.Models
         public bool? IsResubmitting { get; set; }
     }
 
-    [SwaggerModel]
+    
     public class ShipMethodSupplierView 
     {
         public int EstimatedTransitDays { get; set; }
@@ -57,7 +57,7 @@ namespace Headstart.Models
         Quote
     }
 
-    [SwaggerModel]
+    
     public class OrderDetails
     {
         public HSOrder Order { get; set; }
@@ -67,7 +67,7 @@ namespace Headstart.Models
         public IList<OrderApproval> Approvals { get; set; }
     }
 
-    [SwaggerModel]
+    
     public class ClaimsSummary
     {
         public bool HasClaims { get; set; }
@@ -75,7 +75,7 @@ namespace Headstart.Models
         public List<ClaimResolutionStatuses> Resolutions { get; set; }
     }
 
-    [SwaggerModel]
+    
     public class ClaimResolutionStatuses
     {
         public string LineItemID { get; set; }
@@ -83,7 +83,7 @@ namespace Headstart.Models
         public bool IsResolved { get; set; }
     }
 
-    [SwaggerModel]
+    
     public class HSSupplierOrderData
     {
         public HSOrderLineItemData SupplierOrder { get; set; }
@@ -91,7 +91,7 @@ namespace Headstart.Models
         public HSShipEstimate ShipMethod { get; set; }
     }
 
-    [SwaggerModel]
+    
     public class HSOrderLineItemData
     {
         public HSOrder Order { get; set; }

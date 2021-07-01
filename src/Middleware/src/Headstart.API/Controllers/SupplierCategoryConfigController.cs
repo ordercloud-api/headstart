@@ -16,19 +16,21 @@ namespace Headstart.Common.Controllers
 	// this is no longer the goal and having these configurations stored in a database feels like overkill and adds complexity
 	// once we have more time we should aim to remove the whole notion of supplier filter configs and just have this live in code
 
-    [DocComments("\"Supplier Filter Config\" represents Supplier Category Configuration")]
-    [HSSection.Headstart(ListOrder = 5)]
-    public class SupplierFilterConfigController : BaseController
-    {
-        public SupplierFilterConfigController()
-        {
+	/// <summary>
+	/// Supplier Category Configuration
+	/// </summary>
+	public class SupplierFilterConfigController : BaseController
+	{
+		public SupplierFilterConfigController()
+		{
 
-        }
-
-        [DocName("GET SupplierCategoryConfig")]
-        [HttpGet, Route("/supplierfilterconfig"), OrderCloudUserAuth(ApiRole.Shopper, ApiRole.SupplierReader)]
-        public async Task<ListPage<SupplierFilterConfigDocument>> Get()
-        {
+		}
+		/// <summary>
+		/// GET SupplierCategoryConfig
+		/// </summary>
+		[HttpGet, Route("/supplierfilterconfig"), OrderCloudUserAuth(ApiRole.Shopper, ApiRole.SupplierReader)]
+		public async Task<ListPage<SupplierFilterConfigDocument>> Get()
+		{
 			return new ListPage<SupplierFilterConfigDocument>
 			{
 				Items = new List<SupplierFilterConfigDocument>
@@ -114,7 +116,6 @@ namespace Headstart.Common.Controllers
 
 	}
 
-	[SwaggerModel]
     // swagger generator can't handle composite models so alias into one
     public class SupplierFilterConfigDocument: Document<SupplierFilterConfig>
     {

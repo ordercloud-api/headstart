@@ -5,16 +5,13 @@ using ordercloud.integrations.library;
 
 namespace Headstart.Models
 {
-    [SwaggerModel]
     public class HSAddressBuyer : Address<BuyerAddressXP>, IHSObject
     {
     }
-    [SwaggerModel]
     public class HSAddressMeBuyer : BuyerAddress<BuyerAddressXP>, IHSObject
     {
     }
 
-	[SwaggerModel]
 	public class BuyerAddressXP
 	{
 		public List<DestinationAddressAccessorial> Accessorials { get; set; }
@@ -38,7 +35,6 @@ namespace Headstart.Models
         ResidentialDelivery = 15,
     }
 
-    [SwaggerModel]
 	public class Coordinates
 	{
 		public double Latitude { get; set; }

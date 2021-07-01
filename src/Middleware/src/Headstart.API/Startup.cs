@@ -33,6 +33,11 @@ using Microsoft.OpenApi.Models;
 using OrderCloud.Catalyst;
 using OrderCloud.Common.Services;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using ordercloud.integrations.library.helpers;
+using Polly;
+using Polly.Extensions.Http;
+using Microsoft.WindowsAzure.Storage.Blob;
+using ordercloud.integrations.library.helpers;
 
 namespace Headstart.API
 {
@@ -146,6 +151,7 @@ namespace Headstart.API
                     })))
                 .AddSingleton<IOrderCloudIntegrationsExchangeRatesClient, OrderCloudIntegrationsExchangeRatesClient>()
                 .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand( new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
+                .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand(new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
                 .AddSingleton<IAvalaraCommand>(x => new AvalaraCommand(
                     avalaraConfig,
                     new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(avalaraConfig.BaseApiUrl)
@@ -166,8 +172,8 @@ namespace Headstart.API
                 }))
                 .AddSwaggerGen(c =>
                 {
-                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Headstart API", Version = "v1" });
-                    c.CustomSchemaIds(x => x.FullName);
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "FastSigns-OrderCloud API", Version = "v1" });
+                    c.SchemaFilter<SwaggerExcludeFilter>();
                 });
             var serviceProvider = services.BuildServiceProvider();
             services
@@ -186,6 +192,7 @@ namespace Headstart.API
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             CatalystApplicationBuilder.CreateApplicationBuilder(app, env)
+                .UseSwagger()
                 .UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint($"/swagger", $"API v1");

@@ -10,8 +10,6 @@ using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
-    [DocComments("\"Kit Products\" represents Kit Products for Headstart")]
-    [HSSection.Headstart(ListOrder = 3)]
     [Route("kitproducts")]
     public class KitProductController : BaseController
     {

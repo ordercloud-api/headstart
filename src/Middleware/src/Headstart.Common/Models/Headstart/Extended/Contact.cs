@@ -2,7 +2,6 @@
 
 namespace Headstart.Models.Headstart.Extended
 {
-    [SwaggerModel]
     public class Contact
     {
         public string Name { get; set; }

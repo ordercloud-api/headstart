@@ -6,7 +6,6 @@ using System.Text;
 
 namespace ordercloud.integrations.avalara
 {
-	[SwaggerModel]
 	public class TaxCertificate
 	{
 		[ApiReadOnly]

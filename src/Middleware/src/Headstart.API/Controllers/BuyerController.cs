@@ -9,8 +9,9 @@ using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
-    [DocComments("\"Buyers\" represents Buyers for Headstart")]
-    [HSSection.Headstart(ListOrder = 1)]
+    /// <summary>
+    /// Buyers for Headstart
+    /// </summary>
     [Route("buyer")]
     public class BuyerController : BaseController
     {
@@ -23,21 +24,27 @@ namespace Headstart.Common.Controllers
             _oc = oc;
         }
 
-        [DocName("POST Headstart Buyer")]
+        /// <summary>
+        /// POST Headstart Buyer
+        /// </summary>
         [HttpPost, OrderCloudUserAuth(ApiRole.BuyerAdmin)]
         public async Task<SuperHSBuyer> Create([FromBody] SuperHSBuyer buyer)
         {
             return await _command.Create(buyer, UserContext.AccessToken);
         }
 
-        [DocName("PUT Headstart Buyer")]
+        /// <summary>
+        /// PUT Headstart Buyer
+        /// </summary>
         [HttpPut, Route("{buyerID}"), OrderCloudUserAuth(ApiRole.BuyerAdmin)]
         public async Task<SuperHSBuyer> Put([FromBody] SuperHSBuyer superBuyer, string buyerID)
         {
             return await _command.Update(buyerID, superBuyer, UserContext.AccessToken);
         }
 
-        [DocName("GET Headstart Buyer")]
+        /// <summary>
+        /// GET Headstart Buyer"
+        /// </summary>
         [HttpGet, Route("{buyerID}"), OrderCloudUserAuth(ApiRole.BuyerAdmin)]
         public async Task<SuperHSBuyer> Get(string buyerID)
         {

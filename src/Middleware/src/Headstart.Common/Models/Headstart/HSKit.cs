@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 namespace Headstart.Models.Headstart
 {
-    [SwaggerModel]
     public class HSMeKitProduct
     {
         public string ID { get; set; }
@@ -17,7 +16,6 @@ namespace Headstart.Models.Headstart
         public HSMeKitProductAssignment ProductAssignments { get; set; }
     }
 
-    [SwaggerModel]
     public class HSKitProduct
     {
         public string ID { get; set; }
@@ -28,19 +26,16 @@ namespace Headstart.Models.Headstart
         public HSKitProductAssignment ProductAssignments { get; set; }
     }
 
-    [SwaggerModel]
     public class HSKitProductAssignment
     {
         public IList<HSProductInKit> ProductsInKit { get; set; }
     }
 
-    [SwaggerModel]
     public class HSMeKitProductAssignment
     {
         public IList<HSMeProductInKit> ProductsInKit { get; set; }
     }
 
-    [SwaggerModel]
     public class HSProductInKit
     {
         public string ID { get; set; }
@@ -56,7 +51,6 @@ namespace Headstart.Models.Headstart
         public IList<Asset> Attachments { get; set; }
     }
 
-    [SwaggerModel]
     public class HSMeProductInKit
     {
         public string ID { get; set; }

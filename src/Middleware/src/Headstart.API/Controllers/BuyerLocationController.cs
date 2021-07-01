@@ -11,8 +11,6 @@ using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
-    [DocComments("\"Files\" represents files for Headstart content management control")]
-    [HSSection.Headstart(ListOrder = 6)]
     [Route("buyerlocations")]
     public class BuyerLocationController : BaseController
     {
@@ -26,14 +24,18 @@ namespace Headstart.Common.Controllers
             _oc = oc;
         }
 
-        [DocName("GET a Buyer Location")]
+        /// <summary>
+        /// GET a Buyer Location
+        /// </summary>
         [HttpGet, Route("{buyerID}/{buyerLocationID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
         public async Task<HSBuyerLocation> Get(string buyerID, string buyerLocationID)
         {
             return await _buyerLocationCommand.Get(buyerID, buyerLocationID, UserContext.AccessToken);
         }
 
-        [DocName("POST a Buyer Location")]
+        /// <summary>
+        /// POST a Buyer Location
+        /// </summary>
         [HttpPost, Route("{buyerID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
         public async Task<HSBuyerLocation> Create(string buyerID, [FromBody] HSBuyerLocation buyerLocation)
         {
@@ -41,8 +43,9 @@ namespace Headstart.Common.Controllers
             var ocAuth = await _oc.AuthenticateAsync();
             return await _buyerLocationCommand.Create(buyerID, buyerLocation, ocAuth.AccessToken);
         }
-
-        [DocName("POST a Buyer Location permission group")]
+        /// <summary>
+        /// POST a Buyer Location permission group
+        /// </summary>
         [HttpPost, Route("{buyerID}/{buyerLocationID}/permissions/{permissionGroupID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
         public async Task CreatePermissionGroup(string buyerID, string buyerLocationID, string permissionGroupID)
         {
@@ -50,21 +53,27 @@ namespace Headstart.Common.Controllers
             await _buyerLocationCommand.CreateSinglePermissionGroup(ocAuth.AccessToken, buyerLocationID, permissionGroupID);
         }
 
-        [DocName("PUT a Buyer Location")]
+        /// <summary>
+        /// PUT a Buyer Location
+        /// </summary>
         [HttpPut, Route("{buyerID}/{buyerLocationID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
         public async Task<HSBuyerLocation> Save(string buyerID, string buyerLocationID, [FromBody] HSBuyerLocation buyerLocation)
         {
             return await _buyerLocationCommand.Save(buyerID, buyerLocationID, buyerLocation, UserContext.AccessToken);
         }
 
-        [DocName("Delete a Buyer Location")]
+        /// <summary>
+        /// Delete a Buyer Location
+        /// </summary>
         [HttpDelete, Route("{buyerID}/{buyerLocationID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
         public async Task Delete(string buyerID, string buyerLocationID)
         {
             await _buyerLocationCommand.Delete(buyerID, buyerLocationID, UserContext.AccessToken);
         }
 
-        [DocName("GET List of location permission user groups")]
+        /// <summary>
+        /// GET List of location permission user groups
+        /// </summary>
         [HttpGet]
         [OrderCloudUserAuth(ApiRole.Shopper)]
         [Route("{buyerID}/{buyerLocationID}/permissions")]
@@ -73,21 +82,27 @@ namespace Headstart.Common.Controllers
             return await _locationPermissionCommand.ListLocationPermissionAsssignments(buyerID, buyerLocationID, UserContext);
         }
 
-        [DocName("LIST orders for a specific location as a buyer, ensures user has access to location orders")]
+        /// <summary>
+        /// LIST orders for a specific location as a buyer, ensures user has access to location orders
+        /// </summary>
         [HttpGet, Route("{buyerID}/{buyerLocationID}/users"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<ListPage<HSUser>> ListLocationUsers(string buyerID, string buyerLocationID, ListArgs<HSOrder> listArgs)
         {
             return await _locationPermissionCommand.ListLocationUsers(buyerID, buyerLocationID, UserContext);
         }
 
-        [DocName("POST location permissions, add or delete access")]
+        /// <summary>
+        /// POST location permissions, add or delete access
+        /// </summary>
         [HttpPost, Route("{buyerID}/{buyerLocationID}/permissions"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<List<UserGroupAssignment>> UpdateLocationPermissions(string buyerID, string buyerLocationID, [FromBody] LocationPermissionUpdate locationPermissionUpdate)
         {
             return await _locationPermissionCommand.UpdateLocationPermissions(buyerID, buyerLocationID, locationPermissionUpdate, UserContext);
         }
 
-        [DocName("GET List of location approval permission user groups")]
+        /// <summary>
+        /// GET List of location approval permission user groups
+        /// </summary>
         [HttpGet]
         [OrderCloudUserAuth(ApiRole.Shopper)]
         [Route("{buyerID}/{buyerLocationID}/approvalpermissions")]
@@ -96,7 +111,9 @@ namespace Headstart.Common.Controllers
             return await _locationPermissionCommand.ListLocationPermissionAsssignments(buyerID, buyerLocationID, UserContext);
         }
 
-        [DocName("GET general approval threshold for location")]
+        /// <summary>
+        /// GET general approval threshold for location
+        /// </summary>
         [HttpGet]
         [OrderCloudUserAuth(ApiRole.Shopper)]
         [Route("{buyerID}/{buyerLocationID}/approvalthreshold")]
@@ -105,30 +122,39 @@ namespace Headstart.Common.Controllers
             return await _locationPermissionCommand.GetApprovalThreshold(buyerID, buyerLocationID, UserContext);
         }
 
-        [DocName("POST set location approval threshold")]
+
+        /// <summary>
+        /// POST Location Approval Rule
+        /// </summary>
         [HttpPost]
         [OrderCloudUserAuth(ApiRole.Shopper)]
-        [Route("{buyerID}/{buyerLocationID}/approvalthreshold")]
+        [Route("{buyerID}/{buyerLocationID}/approval")]
         public async Task<decimal> SetLocationApprovalThreshold(string buyerID, string buyerLocationID, [FromBody] LocationApprovalThresholdUpdate locationApprovalThresholdUpdate)
         {
             return await _locationPermissionCommand.SetLocationApprovalThreshold(buyerID, buyerLocationID, locationApprovalThresholdUpdate.Threshold, UserContext);
         }
 
-        [DocName("LIST all of a user's user group assignments")]
+        /// <summary>
+        /// LIST all of a user's user group assignments
+        /// </summary>
         [HttpGet, Route("{userGroupType}/{parentID}/usergroupassignments/{userID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin)]
         public async Task<List<UserGroupAssignment>> ListUserUserGroupAssignments(string userGroupType, string parentID, string userID)
         {
             return await _locationPermissionCommand.ListUserUserGroupAssignments(userGroupType, parentID, userID, UserContext);
         }
 
-        [DocName("LIST user groups for home country")]
+        /// <summary>
+        /// LIST user groups for home country
+        /// </summary>
         [HttpGet, Route("{buyerID}/usergroups/{userID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin)]
         public async Task<ListPage<HSLocationUserGroup>> ListUserGroupsByCountry(ListArgs<HSLocationUserGroup> args, string buyerID, string userID)
         {
             return await _locationPermissionCommand.ListUserGroupsByCountry(args, buyerID, userID, UserContext);
         }
 
-        [DocName("LIST user groups for new user")]
+        /// <summary>
+        /// LIST user groups for new user
+        /// </summary>
         [HttpGet, Route("{buyerID}/{homeCountry}/usergroups"), OrderCloudUserAuth(ApiRole.UserGroupAdmin)]
         public async Task<ListPage<HSLocationUserGroup>> ListUserGroupsForNewUser(ListArgs<HSLocationUserGroup> args, string buyerID, string homeCountry)
         {

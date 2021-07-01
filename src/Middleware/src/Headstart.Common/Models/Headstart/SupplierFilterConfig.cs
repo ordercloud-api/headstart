@@ -4,7 +4,6 @@ using ordercloud.integrations.library;
 
 namespace Headstart.Models
 {
-    [SwaggerModel]
     public class SupplierFilterConfig
     {
         /// <summary>
@@ -38,7 +37,6 @@ namespace Headstart.Models
         public string BuyerAppFilterType { get; set; }
     }
 
-    [SwaggerModel]
     public class Filter
     {
         public string Text {get; set;}

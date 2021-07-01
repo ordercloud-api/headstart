@@ -12,12 +12,12 @@ using OrderCloud.SDK;
 
 namespace Headstart.Common.Controllers
 {
-	[DocComments("Me and my stuff")]
-	[HSSection.Headstart(ListOrder = 10)]
+	/// <summary>
+	/// Me and my stuff
+	/// </summary> 
 	[Route("me")]
 	public class MeController : BaseController
 	{
-
 		private readonly IMeProductCommand _meProductCommand;
 		private readonly IHSKitProductCommand _kitProductCommand;
 		public MeController(IMeProductCommand meProductCommand, IHSKitProductCommand kitProductCommand)
@@ -26,21 +26,27 @@ namespace Headstart.Common.Controllers
 			_kitProductCommand = kitProductCommand;
 		}
 
-		[DocName("GET Super Product")]
+		/// <summary>
+		/// GET Super Product
+		/// </summary> 
 		[HttpGet, Route("products/{productID}"), OrderCloudUserAuth(ApiRole.Shopper)]
 		public async Task<SuperHSMeProduct> GetSuperProduct(string productID)
 		{
 			return await _meProductCommand.Get(productID, UserContext);
 		}
 
-		[DocName("LIST products")]
+		/// <summary>
+		/// LIST products
+		/// </summary> 
 		[HttpGet, Route("products"), OrderCloudUserAuth(ApiRole.Shopper)]
 		public async Task<ListPageWithFacets<HSMeProduct>> ListMeProducts(ListArgs<HSMeProduct> args)
 		{
 			return await _meProductCommand.List(args, UserContext);
 		}
 
-		[DocName("POST request information about product")]
+		/// <summary>
+		/// POST request information about product
+		/// </summary> 
 		[HttpPost, Route("products/requestinfo"), OrderCloudUserAuth(ApiRole.Shopper)]
 		public async Task RequestProductInfo([FromBody] ContactSupplierBody template)
         {

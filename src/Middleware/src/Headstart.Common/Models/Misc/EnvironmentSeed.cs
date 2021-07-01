@@ -10,9 +10,8 @@ using System.Linq;
 
 namespace Headstart.Models.Misc
 {
-    [DocIgnore]
-    public class EnvironmentSeed
-    {
+	public class EnvironmentSeed
+	{
 		/// <summary>
 		/// The username for logging in to https://portal.ordercloud.io
 		/// </summary>
@@ -80,7 +79,6 @@ namespace Headstart.Models.Misc
 		public BlobSettings BlobSettings { get; set; }
     }
 
-	[DocIgnore]
 	public class EnvironmentSeedResponse
     {
 		public string Comments { get; set; }

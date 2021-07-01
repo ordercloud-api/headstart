@@ -10,8 +10,6 @@ using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
-	[DocComments("\"Products\" represents Products for Headstart")]
-	[HSSection.Headstart(ListOrder = 3)]
 	[Route("products")]
 	public class ProductController : BaseController
 	{
@@ -21,45 +19,52 @@ namespace Headstart.Common.Controllers
 		{
 			_command = command;
 		}
-
-		[DocName("GET Super Product")]
+		/// <summary>
+		/// GET Super Product
+		/// </summary>
 		[HttpGet, Route("{id}"), OrderCloudUserAuth(ApiRole.ProductAdmin, ApiRole.ProductReader)]
 		public async Task<SuperHSProduct> Get(string id)
 		{
 			return await _command.Get(id, UserContext.AccessToken);
 		}
-
-		[DocName("LIST Super Product")]
+		/// <summary>
+		/// LIST Super Product
+		/// </summary>
 		[HttpGet, OrderCloudUserAuth(ApiRole.ProductAdmin, ApiRole.ProductReader)]
 		public async Task<ListPage<SuperHSProduct>> List(ListArgs<HSProduct> args)
 		{
 			return await _command.List(args, UserContext.AccessToken);
 		}
-
-		[DocName("POST Super Product")]
+		/// <summary>
+		/// POST Super Product
+		/// </summary>
 		[HttpPost, OrderCloudUserAuth(ApiRole.ProductAdmin)]
 		public async Task<SuperHSProduct> Post([FromBody] SuperHSProduct obj)
 		{
 			return await _command.Post(obj, UserContext);
 		}
-
-		[DocName("PUT Super Product")]
+		/// <summary>
+		/// PUT Super Product
+		/// </summary>
 		[HttpPut, Route("{id}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
 		public async Task<SuperHSProduct> Put([FromBody] SuperHSProduct obj, string id)
 		{
 			return await _command.Put(id, obj, UserContext.AccessToken);
 		}
 
-		[DocName("DELETE Product")]
+		/// <summary>
+		/// DELETE Product
+		/// </summary>
 		[HttpDelete, Route("{id}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
 		public async Task Delete(string id)
 		{
 			await _command.Delete(id, UserContext.AccessToken);
 		}
 
-
 		// todo add auth for seller user
-		[DocName("GET Product pricing override")]
+		/// <summary>
+		/// GET Product pricing override
+		/// </summary>
 		[HttpGet, Route("{id}/pricingoverride/buyer/{buyerID}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
 		public async Task<HSPriceSchedule> GetPricingOverride(string id, string buyerID)
 		{
@@ -67,7 +72,9 @@ namespace Headstart.Common.Controllers
 		}
 
 		// todo add auth for seller user
-		[DocName("CREATE Product pricing override")]
+		/// <summary>
+		/// CREATE Product pricing override
+		/// </summary>
 		[HttpPost, Route("{id}/pricingoverride/buyer/{buyerID}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
 		public async Task<HSPriceSchedule> CreatePricingOverride(string id, string buyerID, [FromBody] HSPriceSchedule priceSchedule)
 		{
@@ -75,7 +82,9 @@ namespace Headstart.Common.Controllers
 		}
 
 		// todo add auth for seller user
-		[DocName("PUT Product pricing override")]
+		/// <summary>
+		/// PUT Product pricing override
+		/// </summary>
 		[HttpPut, Route("{id}/pricingoverride/buyer/{buyerID}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
 		public async Task<HSPriceSchedule> UpdatePricingOverride(string id, string buyerID, [FromBody] HSPriceSchedule priceSchedule)
 		{
@@ -83,14 +92,17 @@ namespace Headstart.Common.Controllers
 		}
 
 		// todo add auth for seller user
-		[DocName("DELETE Product pricing override")]
+		/// <summary>
+		/// DELETE Product pricing override
+		/// </summary>
 		[HttpDelete, Route("{id}/pricingoverride/buyer/{buyerID}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
 		public async Task DeletePricingOverride(string id, string buyerID)
 		{
 			await _command.DeletePricingOverride(id, buyerID, UserContext.AccessToken);
 		}
-
-		[DocName("PATCH Product filter option override")]
+		/// <summary>
+		/// PATCH Product filter option override
+		/// </summary>
 		[HttpPatch, Route("filteroptionoverride/{id}"), OrderCloudUserAuth(ApiRole.AdminUserAdmin)]
 		public async Task<Product> FilterOptionOverride(string id, [FromBody] Product product)
         {

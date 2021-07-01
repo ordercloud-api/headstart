@@ -7,7 +7,7 @@ namespace Headstart.Common.Services.CMS.Models
 {
 	public enum AssetType { Image, Text, Audio, Video, Presentation, SpreadSheet, PDF, Compressed, Code, JSON, Markup, Unknown }
 
-	[SwaggerModel]
+	
 	public class Asset
 	{
 		public string ID { get; set; }
@@ -21,7 +21,7 @@ namespace Headstart.Common.Services.CMS.Models
 		public History History { get; set; }
 	}
 
-	[SwaggerModel]
+	
 	public class AssetMetadata
 	{
 		public bool IsUrlOverridden { get; set; } = false;

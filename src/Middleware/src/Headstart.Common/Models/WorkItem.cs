@@ -9,7 +9,6 @@ using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Models
 {
-    [DocIgnore]
     public class WorkItem
     {
         public WorkItem() { }

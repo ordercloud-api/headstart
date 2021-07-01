@@ -13,8 +13,9 @@ using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
-    [DocComments("\"Headstart Reports\" for generating and downloading reports in the Admin application")]
-    [HSSection.Headstart(ListOrder = 11)]
+    /// <summary>
+    ///  For generating and downloading reports in the Admin application
+    /// </summary>
     [Route("reports")]
     public class ReportController : BaseController
     {

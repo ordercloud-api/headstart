@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 namespace Headstart.Models.Headstart
 {
-    [SwaggerModel]
+    
 	public class HSLineItem : LineItem<LineItemXp, HSLineItemProduct, LineItemVariant, HSAddressBuyer, HSAddressSupplier> { }
 
-    [SwaggerModel]
+    
 	public class LineItemXp
     {
         public Dictionary<LineItemStatus, int> StatusByQuantity { get; set; }
@@ -31,7 +31,7 @@ namespace Headstart.Models.Headstart
         public string SupplierComments { get; set; } // xp.Comments is already being used as ship comments for SEB
     }
 
-    [SwaggerModel]
+    
     public class LineItemClaim
     {
         public string RMANumber { get; set; }
