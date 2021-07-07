@@ -2,7 +2,7 @@
 
 namespace Headstart.Common.Models
 {
-    [SwaggerModel]
+    
     public class ReportTypeResource
     {
         public ReportTypeEnum ID { get; set; }

@@ -13,7 +13,7 @@ using OrderCloud.SDK;
 
 namespace Headstart.Models
 {
-    [SwaggerModel]
+    
     public class SuperHSProduct : IHSObject
     {
         public string ID { get; set; }
@@ -23,7 +23,7 @@ namespace Headstart.Models
         public IList<HSVariant> Variants { get; set; }
     }
 
-    [SwaggerModel]
+    
     public class SuperHSMeProduct : IHSObject
     {
         public string ID { get; set; }
@@ -34,27 +34,27 @@ namespace Headstart.Models
     }
 
 
-    [SwaggerModel]
+    
     public class PartialHSProduct : PartialProduct<ProductXp>
     {
     }
-    [SwaggerModel]
+    
     public class HSLineItemProduct : LineItemProduct<ProductXp> { }
-    [SwaggerModel]
+    
     public class HSProduct : Product<ProductXp>, IHSObject
     {
     }
 
-    [SwaggerModel]
+    
     public class HSMeProduct: BuyerProduct<ProductXp, HSPriceSchedule>
     {
 
     }
 
-    [SwaggerModel]
+    
 	public class HSVariant : Variant<HSVariantXp> { }
 
-    [SwaggerModel]
+    
 	public class ProductXp
     {
         #region DO NOT DELETE
@@ -84,7 +84,6 @@ namespace Headstart.Models
         public List<DocumentAsset> Documents { get; set; }
     }
 
-    [SwaggerModel]
     public class ImageAsset
     {
         public string Url { get; set; }
@@ -92,7 +91,6 @@ namespace Headstart.Models
         public List<string> Tags { get; set; }
     };
 
-    [SwaggerModel]
     public class DocumentAsset
     {
         public string Url { get; set; }
@@ -106,7 +104,7 @@ namespace Headstart.Models
 		Quote,
 	}
 
-    [SwaggerModel]
+    
     public class HSVariantXp
     {
         public string SpecCombo { get; set; }
@@ -115,7 +113,7 @@ namespace Headstart.Models
         public List<ImageAsset> Images { get; set; }
     }
 
-    [SwaggerModel]
+    
     public class HSSpecValue
     {
         public string SpecName { get; set; }

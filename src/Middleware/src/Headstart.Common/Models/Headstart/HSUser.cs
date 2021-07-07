@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 namespace Headstart.Models
 {
-    [SwaggerModel]
+    
     public class HSUser : User<UserXp>, IHSObject
     {
     }
 
-    [SwaggerModel]
+    
     public class UserXp
     {
     public string Country { get; set; }

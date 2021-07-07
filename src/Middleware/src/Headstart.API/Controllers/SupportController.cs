@@ -14,7 +14,6 @@ using OrderCloud.SDK;
 
 namespace Headstart.Common.Controllers
 {
-    [DocIgnore]
     [Route("support")]
     public class SupportController : BaseController
     {

@@ -31,6 +31,11 @@ using System.Net;
 using Microsoft.OpenApi.Models;
 using OrderCloud.Catalyst;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using ordercloud.integrations.library.helpers;
+using Polly;
+using Polly.Extensions.Http;
+using Microsoft.WindowsAzure.Storage.Blob;
+using ordercloud.integrations.library.helpers;
 using Polly;
 using Polly.Extensions.Http;
 using Polly.Contrib.WaitAndRetry;
@@ -149,6 +154,7 @@ namespace Headstart.API
                 .AddSingleton<IOrderCloudIntegrationsExchangeRatesClient, OrderCloudIntegrationsExchangeRatesClient>()
                 .AddSingleton<IAssetClient>(provider => new AssetClient( new OrderCloudIntegrationsBlobService(assetConfig), _settings))
                 .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand( new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
+                .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand(new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
                 .AddSingleton<IAvalaraCommand>(x => new AvalaraCommand(
                     avalaraConfig,
                     new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(avalaraConfig.BaseApiUrl)
@@ -169,8 +175,8 @@ namespace Headstart.API
                 }))
                 .AddSwaggerGen(c =>
                 {
-                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Headstart API", Version = "v1" });
-                    c.CustomSchemaIds(x => x.FullName);
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "FastSigns-OrderCloud API", Version = "v1" });
+                    c.SchemaFilter<SwaggerExcludeFilter>();
                 });
             var serviceProvider = services.BuildServiceProvider();
             services
@@ -199,9 +205,10 @@ namespace Headstart.API
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             CatalystApplicationBuilder.DefaultCatalystAppBuilder(app, env)
+                .UseSwagger()
                 .UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint($"/swagger", $"API v1");
+                    c.SwaggerEndpoint($"/swagger/v1/swagger.json", $"API v1");
                     c.RoutePrefix = string.Empty;
                 });
         }

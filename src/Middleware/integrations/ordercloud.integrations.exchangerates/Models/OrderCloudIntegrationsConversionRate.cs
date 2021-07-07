@@ -4,7 +4,6 @@ using ordercloud.integrations.library;
 
 namespace ordercloud.integrations.exchangerates
 {
-    [SwaggerModel]
     public class OrderCloudIntegrationsConversionRate
     {
 		[JsonConverter(typeof(StringEnumConverter))]

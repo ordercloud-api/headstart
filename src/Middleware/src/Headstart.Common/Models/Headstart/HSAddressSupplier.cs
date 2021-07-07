@@ -4,12 +4,12 @@ using ordercloud.integrations.library;
 
 namespace Headstart.Models
 {
-    [SwaggerModel]
+    
     public class HSAddressSupplier : Address<SupplierAddressXP>, IHSObject
     {
     }
 
-    [SwaggerModel]
+    
     public class SupplierAddressXP
 	{
 		public Coordinates Coordinates;

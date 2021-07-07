@@ -15,7 +15,7 @@ namespace ordercloud.integrations.easypost
 	// But, I'm saving it in case its useful at some point.
 
 	// measured in how many of the product fit in a 22x22x22 box
-	[JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+	[JsonConverter(typeof(JsonStringEnumConverter))]
 	public enum SizeTier
 	{
 		// ships alone

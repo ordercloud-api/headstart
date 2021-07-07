@@ -2,7 +2,7 @@
 
 namespace Headstart.Models.Headstart
 {
-    [SwaggerModel]
+    
     public class HSLineItemOrder
     {
         public HSOrder HSOrder { get; set; }

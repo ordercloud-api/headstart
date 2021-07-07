@@ -105,7 +105,6 @@ namespace Headstart.Common.Models
         public string refresh_token { get; set; }
     }
 
-    [SwaggerModel]
     public class Notification
     {
         public NotificationChannel Channel { get; set; } // the type of entity that changed

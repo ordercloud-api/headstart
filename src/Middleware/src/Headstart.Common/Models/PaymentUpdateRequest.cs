@@ -7,7 +7,6 @@ using System.Text;
 
 namespace Headstart.Common.Models
 {
-    [SwaggerModel]
     public class PaymentUpdateRequest
     {
         public List<HSPayment> Payments { get; set; }

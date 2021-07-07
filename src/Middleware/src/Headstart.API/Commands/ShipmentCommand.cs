@@ -40,7 +40,7 @@ namespace Headstart.API.Commands
         public List<DocumentRowError> Invalid = new List<DocumentRowError>();
     }
 
-    [SwaggerModel]
+    
     public class BatchProcessSummary
     {
         public int TotalCount { get; set; }
@@ -50,7 +50,7 @@ namespace Headstart.API.Commands
 
     }
 
-    [SwaggerModel]
+    
     public class BatchProcessFailure
     {
         public Misc.Shipment Shipment { get; set; }
@@ -58,7 +58,7 @@ namespace Headstart.API.Commands
 
     }
 
-    [SwaggerModel]
+    
     public class BatchProcessResult
     {
         public BatchProcessSummary Meta { get; set; }

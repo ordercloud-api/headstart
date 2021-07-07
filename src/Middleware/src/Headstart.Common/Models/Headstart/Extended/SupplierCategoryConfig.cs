@@ -5,7 +5,6 @@ using ordercloud.integrations.library;
 
 namespace Headstart.Models.Extended
 {
-    [SwaggerModel]
 	[CosmosCollection("suppliercategoryconfigs")]
 	public class SupplierCategoryConfig : ICosmosObject
     {
@@ -19,7 +18,6 @@ namespace Headstart.Models.Extended
         public IEnumerable<SupplierCategoriesFilter> Filters { get; set; }
     }
 
-    [SwaggerModel]
     public class SupplierCategoriesFilter
     {
         public string Display { get; set; }
@@ -27,7 +25,6 @@ namespace Headstart.Models.Extended
         public IEnumerable<SupplierCategoriesFilterItem> Items { get; set; }
     }
 
-	[SwaggerModel]
     public class SupplierCategoriesFilterItem
     {
         public string Text { get; set; }

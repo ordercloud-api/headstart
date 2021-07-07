@@ -10,8 +10,9 @@ using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
-    [DocComments("\"Headstart RMAs\" for managing RMAs in the Headstart application")]
-    [HSSection.Headstart(ListOrder = 12)]
+    /// <summary>
+    /// Returns
+    /// </summary>
     [Route("rma")]
     public class RMAController : BaseController
     {
@@ -24,21 +25,25 @@ namespace Headstart.Common.Controllers
         }
 
         // Buyer Routes
-        [DocName("POST Headstart RMA")]
+        /// <summary>
+        /// POST Headstart RMA
+        /// </summary>
         [HttpPost, OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<RMA> GenerateRMA([FromBody] RMA rma)
         {
             return await _rmaCommand.GenerateRMA(rma, UserContext);
         }
-
-        [DocName("LIST Me Headstart RMAs")]
+        /// <summary>
+        /// LIST Me Headstart RMAs
+        /// </summary>
         [HttpPost, Route("list/me"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<CosmosListPage<RMA>> ListMeRMAs([FromBody] CosmosListOptions listOptions)
         {
             return await _rmaCommand.ListMeRMAs(listOptions, UserContext);
         }
-
-        [DocName("LIST Buyer Headstart RMAs")]
+        /// <summary>
+        /// LIST Buyer Headstart RMAs
+        /// </summary>
         [HttpPost, Route("list/buyer"), OrderCloudUserAuth(HSLocationViewAllOrders)]
         public async Task<CosmosListPage<RMA>> ListBuyerRMAs([FromBody] CosmosListOptions listOptions)
         {
