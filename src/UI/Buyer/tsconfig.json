@@ -14,15 +14,21 @@
     "allowSyntheticDefaultImports": true,
     "importHelpers": true,
     "target": "es5",
-    "types": ["node"],
-    "typeRoots": ["node_modules/@types"],
-    "lib": ["es2018", "dom"]
+    "types": [
+      "node"
+    ],
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2018",
+      "dom"
+    ]
   },
   "angularCompilerOptions": {
     "skipTemplateCodegen": false,
     "strictMetadataEmit": true,
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true,
-    "enableIvy": false
   }
 }
