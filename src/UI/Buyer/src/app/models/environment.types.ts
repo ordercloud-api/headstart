@@ -57,7 +57,8 @@ export interface EnvironmentConfig {
   orderCloudApiUrl: string
   theme?: Theme
   appInsightsInstrumentationKey?: string
-  acceptedPaymentMethods: string[]
+  acceptedPaymentMethods?: string[]
+  storefrontName?: string
 }
 
 export class AppConfig {
@@ -128,5 +129,10 @@ export class AppConfig {
   /**
    * Payment methods that are accepted for the buyer/storefront
    */
-  acceptedPaymentMethods: string[]
+  acceptedPaymentMethods?: string[]
+
+  /**
+   * Name of the storefront (API Client) being implemented in this app. This is used in automatic deployments
+   */
+  storefrontName?: string
 }
