@@ -30,7 +30,7 @@ namespace ordercloud.integrations.library
         Task<List<IListBlobItem>> GetBlobFiles(string containerName);
         Task<bool> CreateContainerAsync(string containerName, bool isPublic);
         Task<List<CloudBlobContainer>> ListContainers();
-        Task TransferBlobs(string sourceContainer, string destinationContainer, string blobName, string directoryName = "");
+        Task TransferBlobs(string sourceContainer, string destinationContainer, string blobName, string storefrontName, string directoryName = "");
 
     }
     public class OrderCloudIntegrationsBlobService : IOrderCloudIntegrationsBlobService
@@ -133,13 +133,13 @@ namespace ordercloud.integrations.library
             return results;
         }
 
-        public async Task TransferBlobs(string sourceContainer, string destinationContainer, string blobName, string directoryName = "")
+        public async Task TransferBlobs(string sourceContainer, string destinationContainer, string blobName, string storefrontName, string directoryName = "")
         {
             // Download all files from blob storage to this folder
             // Upload all these files in this folder to $web in blob storage
             await this.Init();
             await DownloadBlob(sourceContainer, blobName, directoryName);
-            await UploadBlob(destinationContainer, blobName, directoryName);
+            await UploadBlob(destinationContainer, blobName, storefrontName, directoryName);
         }
         
 
@@ -150,10 +150,10 @@ namespace ordercloud.integrations.library
             await sourceBlob.DownloadToFileAsync(directory + "/" + blobName.Replace("/", "_"), System.IO.FileMode.Create);
         }
 
-        private async Task UploadBlob(string destinationContainer, string blobName, string directory)
+        private async Task UploadBlob(string destinationContainer, string blobName, string storefrontName, string directory)
         {
             var currentLocation = directory + "/" + blobName.Replace("/", "_");
-            var blobLocation = blobName.Replace("_", "/");
+            var blobLocation = storefrontName + "/" + blobName.Replace("_", "/");
 
             CloudBlobContainer destBlobContainer = Client.GetContainerReference(destinationContainer);
             CloudBlockBlob destBlob = destBlobContainer.GetBlockBlobReference(blobLocation);

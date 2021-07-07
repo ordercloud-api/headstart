@@ -39,7 +39,7 @@ namespace Headstart.API.Commands
         public async Task DeployBuyerSite(ApiClient apiClient = null)
         {
             //First create the api client
-            var client = await _oc.ApiClients.CreateAsync(apiClient);
+            //var client = await _oc.ApiClients.CreateAsync(apiClient);
 
             //await _blob.ListContainersWithPrefixAsync("$web", null);
             //1. Create the $web container
@@ -52,28 +52,50 @@ namespace Headstart.API.Commands
             var tasks = new List<Task>();
             var directoryName = "webfolder"; // this is the folder where we save the downloaded files from blob storage.
 
+            var storefrontName = "storefront1";
             foreach (var file in files)
             {
-                var name = file.Uri.ToString().Split("buyerweb/")[1];
-                tasks.Add(_blob.TransferBlobs("buyerweb", "$web", name, directoryName));
+                var fileName = file.Uri.ToString().Split("buyerweb/")[1];
+                tasks.Add(_blob.TransferBlobs("buyerweb", "$web", fileName, storefrontName, directoryName));
             }
             CreateDirectory(directoryName);
             await Task.WhenAll(tasks);
-            await UpdateAppConfig(apiClient);
+            await UpdateAppConfig(apiClient, storefrontName);
+            await UpdateIndex(storefrontName);
             DeleteDirectory(directoryName);
         }
 
-        private async Task UpdateAppConfig(ApiClient apiClient = null)
+        private async Task UpdateIndex(string storefrontName)
         {
-            var config = await _blob.Get<BuyerAppConfiguration>("assets/appConfigs/headstartdemo-test.json");
-            config.clientID = apiClient.ID;
-            config.appname = apiClient?.xp?.appname;
-            config.appID = apiClient?.xp?.appID;
-            config.incrementorPrefix = apiClient?.xp?.incrementorPrefix;
-            config.sellerID = apiClient?.xp?.sellerID;
-            config.sellerName = "A whole new seller"; 
-            config.theme = apiClient?.xp?.theme;
-            await _blob.Save("assets/appConfigs/headstartdemo-test.json", JsonConvert.SerializeObject(config));
+            var path = $"{storefrontName}/index.html";
+            var index = (await _blob.Get(path))
+                .Replace("<base href=\"/\"/>", $"<base href='/{storefrontName}'/>")
+                .Replace("<script src=\"runtime", $"<script src=\"{storefrontName}/runtime")
+                .Replace("<script src=\"polyfills", $"<script src=\"{storefrontName}/polyfills")
+                .Replace("<script src=\"main", $"<script src=\"{storefrontName}/main")
+                .Replace("<link href=\"defaultbuyer", $"<link href=\"{storefrontName}/defaultbuyer");
+
+            try
+            {
+                await _blob.Save(path, index, "text/html");
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            
+        }
+
+        private async Task UpdateAppConfig(ApiClient apiClient = null, string storefrontName = "")
+        {
+            var config = await _blob.Get<BuyerAppConfiguration>($"{storefrontName}/assets/appConfigs/headstartdemo-test.json");
+            //config.clientID = apiClient.ID;
+            config.appname = "this is an app";
+            //config.appID = apiClient?.xp?.appID;
+            //config.incrementorPrefix = apiClient?.xp?.incrementorPrefix;
+            //config.sellerID = apiClient?.xp?.sellerID;
+            config.sellerName = "Brand new seller"; 
+            //config.theme = apiClient?.xp?.theme;
+            await _blob.Save($"{storefrontName}/assets/appConfigs/headstartdemo-test.json", JsonConvert.SerializeObject(config));
 
         }
 
