@@ -61,29 +61,29 @@ namespace Headstart.API.Commands
             CreateDirectory(directoryName);
             await Task.WhenAll(tasks);
             await UpdateAppConfig(apiClient, storefrontName);
-            await UpdateIndex(storefrontName);
+            //await UpdateIndex(storefrontName);
             DeleteDirectory(directoryName);
         }
 
-        private async Task UpdateIndex(string storefrontName)
-        {
-            var path = $"{storefrontName}/index.html";
-            var index = (await _blob.Get(path))
-                .Replace("<base href=\"/\"/>", $"<base href='/{storefrontName}'/>")
-                .Replace("<script src=\"runtime", $"<script src=\"{storefrontName}/runtime")
-                .Replace("<script src=\"polyfills", $"<script src=\"{storefrontName}/polyfills")
-                .Replace("<script src=\"main", $"<script src=\"{storefrontName}/main")
-                .Replace("<link href=\"defaultbuyer", $"<link href=\"{storefrontName}/defaultbuyer");
+        //private async Task UpdateIndex(string storefrontName)
+        //{
+        //    var path = $"{storefrontName}/index.html";
+        //    var index = (await _blob.Get(path))
+        //        .Replace("<base href=\"/\"/>", $"<base href='/{storefrontName}'/>")
+        //        .Replace("<script src=\"runtime", $"<script src=\"{storefrontName}/runtime")
+        //        .Replace("<script src=\"polyfills", $"<script src=\"{storefrontName}/polyfills")
+        //        .Replace("<script src=\"main", $"<script src=\"{storefrontName}/main")
+        //        .Replace("<link href=\"defaultbuyer", $"<link href=\"{storefrontName}/defaultbuyer");
 
-            try
-            {
-                await _blob.Save(path, index, "text/html");
-            } catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+        //    try
+        //    {
+        //        await _blob.Save(path, index, "text/html");
+        //    } catch (Exception ex)
+        //    {
+        //        Console.WriteLine(ex);
+        //    }
             
-        }
+        //}
 
         private async Task UpdateAppConfig(ApiClient apiClient = null, string storefrontName = "")
         {
@@ -93,9 +93,10 @@ namespace Headstart.API.Commands
             //config.appID = apiClient?.xp?.appID;
             //config.incrementorPrefix = apiClient?.xp?.incrementorPrefix;
             //config.sellerID = apiClient?.xp?.sellerID;
-            config.sellerName = "Brand new seller"; 
+            config.sellerName = "Brand new seller";
             //config.theme = apiClient?.xp?.theme;
-            await _blob.Save($"{storefrontName}/assets/appConfigs/headstartdemo-test.json", JsonConvert.SerializeObject(config));
+            config.storefrontName = storefrontName;
+            await _blob.Save($"{storefrontName}/assets/appConfigs/headstartdemo-test.json", JsonConvert.SerializeObject(config), "application/json");
 
         }
 
