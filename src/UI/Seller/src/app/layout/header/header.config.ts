@@ -36,12 +36,6 @@ const Promotions: HSRoute = {
   route: '/promotions',
 }
 
-// const Kits: HSRoute = {
-//   rolesWithAccess: [HSRoles.HSStorefrontAdmin],
-//   title: 'Kits',
-//   route: '/kitproducts',
-// }
-
 const ProductFacets: HSRoute = {
   rolesWithAccess: [HSRoles.HSStorefrontAdmin],
   title: 'ADMIN.NAV.FACETS',
@@ -156,12 +150,6 @@ const BuyerPurchasingLocations: HSRoute = {
   route: `/buyers/${REDIRECT_TO_FIRST_PARENT}/locations`,
 }
 
-const BuyerApprovalRules: HSRoute = {
-  rolesWithAccess: [HSRoles.HSBuyerAdmin, HSRoles.HSBuyerReader],
-  title: 'ADMIN.NAV.APPROVAL_RULES',
-  route: `/buyers/${REDIRECT_TO_FIRST_PARENT}/approvals`,
-}
-
 const BuyerCatalogs: HSRoute = {
   rolesWithAccess: [HSRoles.HSBuyerAdmin, HSRoles.HSBuyerReader],
   title: 'ADMIN.NAV.CATALOGS',
@@ -182,7 +170,6 @@ const BuyerNavGrouping = {
     AllBuyers,
     BuyerUsers,
     BuyerPurchasingLocations,
-    BuyerApprovalRules,
     BuyerCatalogs,
     BuyerCategories,
   ],
@@ -214,29 +201,44 @@ const SupplierNavGrouping: HSRoute = {
   subRoutes: [AllSuppliers, SupplierUsers, SupplierLocations],
 }
 
-const ProcessReports = {
-  rolesWithAccess: [HSRoles.HSReportReader],
-  title: 'ADMIN.NAV.PROCESS_REPORTS',
-  route: 'reports/reports',
-}
+/** https://four51.atlassian.net/browse/HDS-319 Reimplement once feature is stable */
+// const ProcessReports = {
+//   rolesWithAccess: [HSRoles.HSReportReader],
+//   title: 'ADMIN.NAV.PROCESS_REPORTS',
+//   route: 'reports/reports',
+// }
 
-const ReportTemplates = {
-  rolesWithAccess: [HSRoles.HSReportAdmin],
-  title: 'ADMIN.NAV.REPORT_TEMPLATES',
-  route: `reports/${REDIRECT_TO_FIRST_PARENT}/templates`,
-}
+// const ReportTemplates = {
+//   rolesWithAccess: [HSRoles.HSReportAdmin],
+//   title: 'ADMIN.NAV.REPORT_TEMPLATES',
+//   route: `reports/${REDIRECT_TO_FIRST_PARENT}/templates`,
+// }
 
-const ReportsNavGrouping = {
-  rolesWithAccess: [HSRoles.HSReportAdmin, HSRoles.HSReportReader],
-  title: 'ADMIN.NAV.REPORTS',
-  route: '/reports',
-  subRoutes: [ProcessReports, ReportTemplates],
-}
+// const ReportsNavGrouping = {
+//   rolesWithAccess: [HSRoles.HSReportAdmin, HSRoles.HSReportReader],
+//   title: 'ADMIN.NAV.REPORTS',
+//   route: '/reports',
+//   subRoutes: [ProcessReports, ReportTemplates],
+// }
 
+//Seller Admin
 const SellerUsers = {
   rolesWithAccess: [HSRoles.HSSellerAdmin],
   title: 'ADMIN.NAV.SELLER_USERS',
-  route: '/seller-users',
+  route: '/seller-admin/users',
+}
+
+const SellerLocations = {
+  rolesWithAccess: [HSRoles.HSSellerAdmin],
+  title: 'ALIAS.SELLER_LOCATIONS',
+  route: '/seller-admin/locations',
+}
+
+const SellerNavGrouping: HSRoute = {
+  rolesWithAccess: [HSRoles.HSSellerAdmin],
+  title: 'ALIAS.SELLER_ADMIN',
+  route: '/seller',
+  subRoutes: [SellerUsers, SellerLocations],
 }
 
 const AllStorefronts = {
@@ -245,17 +247,11 @@ const AllStorefronts = {
   route: '/storefronts',
 }
 
-const Pages = {
-  rolesWithAccess: [HSRoles.HSStorefrontAdmin],
-  title: 'Pages',
-  route: `/storefronts/${REDIRECT_TO_FIRST_PARENT}/pages`,
-}
-
 const StorefrontNavGrouping = {
   rolesWithAccess: [HSRoles.HSStorefrontAdmin],
   title: 'Storefronts',
   route: '/storefronts',
-  subRoutes: [AllStorefronts, Pages],
+  subRoutes: [AllStorefronts],
 }
 
 const MySupplierProfile = {
@@ -289,8 +285,8 @@ const AllNavGroupings: HSRoute[] = [
   SellerOrderNavGrouping,
   BuyerNavGrouping,
   SupplierNavGrouping,
-  ReportsNavGrouping,
-  SellerUsers,
+  // ReportsNavGrouping,
+  SellerNavGrouping,
   StorefrontNavGrouping,
   MySupplierProfile,
   MySupplierLocations,

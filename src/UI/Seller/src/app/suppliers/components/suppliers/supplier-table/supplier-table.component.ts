@@ -12,20 +12,17 @@ import {
   ValidateRichTextDescription,
   ValidateEmail,
   RequireCheckboxesToBeChecked,
-  ValidateSupplierCategorySelection,
 } from '@app-seller/validators/validators'
 import { SupplierService } from '../supplier.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import {
-  HSSupplier,
   HeadStartSDK,
-  Asset,
-  AssetUpload,
+  HSSupplier,
 } from '@ordercloud/headstart-sdk'
 import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
-import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
+import { Suppliers } from 'ordercloud-javascript-sdk'
 
 function createSupplierForm(supplier: HSSupplier) {
   return new FormGroup({
@@ -43,18 +40,18 @@ function createSupplierForm(supplier: HSSupplier) {
     SupportContactName: new FormControl(
       (_get(supplier, 'xp.SupportContact') &&
         _get(supplier, 'xp.SupportContact.Name')) ||
-        ''
+      ''
     ),
     SupportContactEmail: new FormControl(
       (_get(supplier, 'xp.SupportContact') &&
         _get(supplier, 'xp.SupportContact.Email')) ||
-        '',
+      '',
       ValidateEmail
     ),
     SupportContactPhone: new FormControl(
       (_get(supplier, 'xp.SupportContact') &&
         _get(supplier, 'xp.SupportContact.Phone')) ||
-        ''
+      ''
     ),
     Active: new FormControl({
       value: supplier.Active,
@@ -81,10 +78,6 @@ function createSupplierForm(supplier: HSSupplier) {
           value: supplier.xp?.ProductTypes?.includes('Quote') || false,
           disabled: this.isSupplierUser,
         }),
-        PurchaseOrder: new FormControl({
-          value: supplier.xp?.ProductTypes?.includes('PurchaseOrder') || false,
-          disabled: this.isSupplierUser,
-        }),
       },
       RequireCheckboxesToBeChecked()
     ),
@@ -92,13 +85,10 @@ function createSupplierForm(supplier: HSSupplier) {
       supplier.xp?.FreeShippingThreshold != null
     ),
     FreeShippingThreshold: new FormControl(supplier.xp?.FreeShippingThreshold),
-    Categories: new FormControl(
-      {
-        value: _get(supplier, 'xp.Categories', []),
-        disabled: this.isSupplierUser,
-      },
-      ValidateSupplierCategorySelection
-    ),
+    Categories: new FormControl({
+      value: _get(supplier, 'xp.Categories', []),
+      disabled: this.isSupplierUser,
+    }),
   })
 }
 
@@ -157,45 +147,37 @@ export class SupplierTableComponent extends ResourceCrudComponent<Supplier> {
       const supplier = await this.supplierService.createNewResource(
         this.updatedResource
       )
+      let patchObj: Partial<Supplier> = {
+        xp: {}
+      }
       if (this.file) {
-        // Upload their logo, if there is one.  Then, make the assignment
-        const accessToken = await this.appAuthService.fetchToken().toPromise()
-        const asset: AssetUpload = {
-          Active: true,
-          File: this.file,
-          FileName: this.file.name,
-          Tags: ['Logo'],
-        }
-        const newAsset: Asset = await ContentManagementClient.Assets.Upload(
-          asset,
-          accessToken
-        )
-        await ContentManagementClient.Assets.SaveAssetAssignment(
-          {
-            ResourceType: 'Suppliers',
-            ResourceID: supplier.ID,
-            AssetID: newAsset.ID,
-          },
-          accessToken
-        )
+        // Upload their logo, if there is one.  Then, patch supplier xp
+        const imgUrls = await HeadStartSDK.Assets.CreateImage({
+          File: this.file
+        })
+        patchObj.xp.Image = imgUrls
       }
       // Default the NotificationRcpts to initial user
       const users = await this.ocSupplierUserService
         .List(supplier.ID)
         .toPromise()
-      const patch = {
-        xp: {
-          NotificationRcpts: [users.Items[0].Email],
-        },
-      }
+      patchObj.xp.NotificationRcpts = [users.Items[0].Email]
       const patchedSupplier: HSSupplier = await this.ocSupplierService
-        .Patch(supplier.ID, patch)
+        .Patch(supplier.ID, patchObj)
         .toPromise()
+      this.updateResourceInList(patchedSupplier)
       this.selectResource(patchedSupplier)
       this.dataIsSaving = false
     } catch (ex) {
       this.dataIsSaving = false
       throw ex
+    }
+  }
+
+  updateResourceInList(supplier: Supplier): void {
+    const index = this.resourceList?.Items?.findIndex(item => item.ID === supplier.ID)
+    if (index !== -1) {
+      this.resourceList.Items[index] = supplier
     }
   }
 }

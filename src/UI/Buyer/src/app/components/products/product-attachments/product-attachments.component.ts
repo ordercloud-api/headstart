@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core'
-import { Asset } from '@ordercloud/headstart-sdk'
+import { DocumentAsset } from '@ordercloud/headstart-sdk'
 
 @Component({
   // ocm-product-attachments
@@ -7,7 +7,7 @@ import { Asset } from '@ordercloud/headstart-sdk'
   styleUrls: ['./product-attachments.component.scss'],
 })
 export class OCMProductAttachments implements OnInit {
-  @Input() attachments: Asset[]
+  @Input() attachments: DocumentAsset[]
 
   constructor() {}
 

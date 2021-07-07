@@ -18,10 +18,7 @@ import {
   getScreenSizeBreakPoint,
 } from '@app-seller/shared/services/dom.helper'
 import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
-import {
-  Options,
-  RequestStatus,
-} from '@app-seller/models/resource-crud.types'
+import { Options, RequestStatus } from '@app-seller/models/resource-crud.types'
 import {
   faCalendar,
   faChevronLeft,
@@ -94,7 +91,7 @@ export class ResourceTableComponent
     private impersonationService: ImpersonationService,
     private currentUserService: CurrentUserService,
     ngZone: NgZone
-  ) {}
+  ) { }
 
   @Input()
   resourceList: ListPage<any> = { Meta: {}, Items: [] }
@@ -148,13 +145,12 @@ export class ResourceTableComponent
   }
   @Input()
   set submitError(value: any) {
-    const error = value?.errors?.Errors[0];
-    if(value?.status === 404) {
-      this._errorMessage = `${error?.Data?.ObjectType}: "${error?.Data?.ObjectID}". ${error.Message}` 
+    const error = value?.errors?.Errors[0]
+    if (value?.status === 404) {
+      this._errorMessage = `${error?.Data?.ObjectType}: "${error?.Data?.ObjectID}". ${error.Message}`
     } else {
       this._errorMessage = error?.Message
     }
-    
   }
   @Input()
   resourceForm: FormGroup
@@ -188,10 +184,9 @@ export class ResourceTableComponent
     this.screenSize = getScreenSizeBreakPoint()
   }
 
-  async getAvailableProductTypes(): Promise<void> {
-    const supplier = await this.currentUserService.getMySupplier()
-    const formattedSupplierProductTypes = supplier?.xp?.ProductTypes.map(
-      (pt) => {
+  mapProductTypes(types: string[]): Params[] {
+    if (types) {
+      const mappedTypes = types.map((pt) => {
         const link = pt
           .match(/[A-Z][a-z]+/g)
           .map((t) => t.toLowerCase())
@@ -200,9 +195,22 @@ export class ResourceTableComponent
           Display: `${pt.match(/[A-Z][a-z]+/g).join(' ')} Product`,
           Link: link,
         }
-      }
+      })
+      return mappedTypes
+    } else {
+      return []
+    }
+  }
+
+  async getAvailableProductTypes(): Promise<void> {
+    const supplier = await this.currentUserService.getMySupplier()
+    const formattedSupplierProductTypes = this.mapProductTypes(
+      supplier?.xp?.ProductTypes
     )
-    this.availableProductTypes = formattedSupplierProductTypes || []
+    this.availableProductTypes =
+      formattedSupplierProductTypes.length > 0
+        ? formattedSupplierProductTypes
+        : this.mapProductTypes(['Standard', 'Quote'])
   }
 
   getTitle(
@@ -238,7 +246,8 @@ export class ResourceTableComponent
         this.resourceOptions = options
         this.searchTerm = (options && options.search) || ''
         this.activeFilterCount = options.filters
-          ? Object.keys(options.filters).filter(k => k !== 'searchType').length
+          ? Object.keys(options.filters).filter((k) => k !== 'searchType')
+            .length
           : 0
         this.setFilterForm()
         this.changeDetectorRef.detectChanges()
@@ -263,6 +272,7 @@ export class ResourceTableComponent
       this.toDate = timeStamp + 'T23:59:59.999Z' // Since user selects a date, include all times in that day
       this.filterForm.value.timeStamp = '<=' + this.toDate
     }
+
     this._ocService.addFilters(
       this.removeFieldsWithNoValue(this.filterForm.value)
     )
@@ -479,11 +489,23 @@ export class ResourceTableComponent
       resourceInSelection.AppName
     )
   }
-
+  showFilterBar(): boolean {
+    const test =
+      !this.selectedResourceID &&
+      !this.isCreatingNew &&
+      (!this.isMyResource || this.shouldDisplayList) &&
+      !this.excludeFromFullTableView
+    return test
+  }
   navigateToSubResource(subResource: string) {
-    this.router.navigateByUrl('/' + this._ocService.primaryResourceLevel + 
-    '/' + this.selectedParentResourceID + 
-    '/' + subResource )
+    this.router.navigateByUrl(
+      '/' +
+      this._ocService.primaryResourceLevel +
+      '/' +
+      this.selectedParentResourceID +
+      '/' +
+      subResource
+    )
   }
   ngOnDestroy() {
     this.alive = false

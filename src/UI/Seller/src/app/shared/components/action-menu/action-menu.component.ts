@@ -62,7 +62,7 @@ export class ActionMenuComponent {
 
   getSaveText(): string {
     if (this.dataIsSaving) {
-      return 'ADMIN.DELETE.SAVING'
+      return 'ADMIN.COMMON.SAVING'
     }
     if (this.showConfirm) {
       return 'ADMIN.DELETE.PENDING_CONFIRMATION'
@@ -71,8 +71,8 @@ export class ActionMenuComponent {
       return this.saveTextOverride
     }
     return this.isCreatingNew
-      ? 'ADMIN.DELETE.CREATE'
-      : 'ADMIN.DELETE.SAVE_CHANGES'
+      ? 'ADMIN.COMMON.CREATE'
+      : 'ADMIN.COMMON.SAVE_CHANGES'
   }
 
   handleDelete(): void {

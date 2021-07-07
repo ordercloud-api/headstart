@@ -1,0 +1,49 @@
+{
+  "name": "@ordercloud/headstart-sdk",
+  "description": "Javasript SDK for the Ordercloud HeadStart API",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "homepage": "https://ordercloud.io/",
+  "keywords": [
+    "ordercloud",
+    "four51",
+    "b2b",
+    "b2c",
+    "javascript",
+    "typescript",
+    "ecommerce",
+    "api",
+    "headless",
+    "sdk"
+  ],
+  "license": "MIT",
+  "files": [
+    "dist/"
+  ],
+  "engines": {
+    "node": ">=0.10"
+  },
+  "scripts": {
+    "build": "tsc && node cli-scripts/hash-dist"
+  },
+  "devDependencies": {
+    "@types/node": "^12.19.8",
+    "@typescript-eslint/eslint-plugin": "^4.8.2",
+    "@typescript-eslint/parser": "^4.8.2",
+    "axios": "^0.19.2",
+    "eslint": "^7.14.0",
+    "eslint-config-prettier": "^6.15.0",
+    "folder-hash": "^4.0.1",
+    "prettier": "^2.2.1",
+    "typescript": "~3.7.5"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "ordercloud-javascript-sdk": "4.2.0"
+  },
+  "peerDependencies": {
+    "axios": ">=0.19.2"
+  }
+}

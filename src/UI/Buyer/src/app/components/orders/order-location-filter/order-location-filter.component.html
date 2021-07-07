@@ -4,7 +4,7 @@
     <select
       id="selectedLocationID"
       (change)="selectLocation()"
-      class="form-control"
+      class="custom-select"
       formControlName="selectedLocationID"
     >
       <option *ngFor="let location of locations" [ngValue]="location.ID || ''">

@@ -31,11 +31,17 @@ import { OrderProgress } from '@app-seller/models/order.types'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { SELLER } from '@app-seller/models/user.types'
 
-export const LineItemTableStatus = {
+export type LineItemTableValue = 'Default' | 'Canceled' | 'Returned' | 'Backordered'
+
+interface ILineItemTableStatus {
+  [key: string]: LineItemTableValue
+}
+
+export const LineItemTableStatus: ILineItemTableStatus = {
   Default: 'Default',
   Canceled: 'Canceled',
   Returned: 'Returned',
-  Backorered: 'Backorered',
+  Backordered: 'Backordered',
 }
 
 @Component({

@@ -96,13 +96,13 @@ namespace Headstart.API.Commands
             var buyerOrder = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, buyerOrderID);
             var allLineItemsForOrder = await  _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Incoming, buyerOrderID);
             var lineItemsChanged = allLineItemsForOrder.Where(li => lineItemStatusChanges.Changes.Select(li => li.ID).Contains(li.ID)).ToList();
-            var supplierIDsRelatingToChange = lineItemsChanged.Select(li => li.SupplierID).Distinct().ToList();
-            var relatedSupplierOrderIDs = supplierIDsRelatingToChange.Select(supplierID => $"{buyerOrderID}-{supplierID}").ToList();
+            var supplierIDsRelatingToChange = lineItemsChanged.Select(li => li.SupplierID).Distinct().Where(id => id != null).ToList();
 
+            var relatedSupplierOrderIDs = (userType == "admin") ? null : supplierIDsRelatingToChange.Select(supplierID => $"{buyerOrderID}-{supplierID}").ToList();
             var statusSync = SyncOrderStatuses(buyerOrder, relatedSupplierOrderIDs, allLineItemsForOrder.ToList());
-            var notifictionSender = HandleLineItemStatusChangeNotification(verifiedUserType, buyerOrder, supplierIDsRelatingToChange, lineItemsChanged, lineItemStatusChanges);
-            
             await statusSync;
+
+            var notifictionSender = HandleLineItemStatusChangeNotification(verifiedUserType, buyerOrder, supplierIDsRelatingToChange, lineItemsChanged, lineItemStatusChanges);
             await notifictionSender;
 
             return updatedLineItems.ToList();
@@ -112,11 +112,15 @@ namespace Headstart.API.Commands
         {
             await SyncOrderStatus(OrderDirection.Incoming, buyerOrder.ID, allOrderLineItems);
 
-            foreach(var supplierOrderID in relatedSupplierOrderIDs) {
-                var supplierID = supplierOrderID.Split('-')[1];
-                var allOrderLineItemsForSupplierOrder = allOrderLineItems.Where(li => li.SupplierID == supplierID).ToList();
-                await SyncOrderStatus(OrderDirection.Outgoing, supplierOrderID, allOrderLineItemsForSupplierOrder);
-            }
+            if(relatedSupplierOrderIDs != null)
+            {
+                foreach (var supplierOrderID in relatedSupplierOrderIDs)
+                {
+                    var supplierID = supplierOrderID.Split('-')[1];
+                    var allOrderLineItemsForSupplierOrder = allOrderLineItems.Where(li => li.SupplierID == supplierID).ToList();
+                    await SyncOrderStatus(OrderDirection.Outgoing, supplierOrderID, allOrderLineItemsForSupplierOrder);
+                }
+            }            
         }
 
         private async Task SyncOrderStatus(OrderDirection orderDirection, string orderID, List<HSLineItem> changedLineItems)
@@ -385,12 +389,16 @@ namespace Headstart.API.Commands
             var productRequest = _meProductCommand.Get(liReq.ProductID, user);
             var existingLineItemsRequest = _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, orderID, filters: $"Product.ID={liReq.ProductID}", accessToken: user.AccessToken);
             var orderRequest = _oc.Orders.GetAsync(OrderDirection.Incoming, orderID);
+            await Task.WhenAll(productRequest, existingLineItemsRequest, orderRequest);
+
             var existingLineItems = await existingLineItemsRequest;
             var product = await productRequest;
+            var order = await orderRequest;
+
             var li = new HSLineItem();
             var markedUpPrice = ValidateLineItemUnitCost(orderID, product, existingLineItems, liReq);
             liReq.UnitPrice = await markedUpPrice;
-            var order = await orderRequest;
+            
             Require.That(!order.IsSubmitted, new ErrorCode("Invalid Order Status", 400, "Order has already been submitted"));
 
             liReq.xp.StatusByQuantity = LineItemStatusConstants.EmptyStatuses;
@@ -435,6 +443,7 @@ namespace Headstart.API.Commands
                     }
                 }
                 decimal priceBasedOnQuantity = product.PriceSchedule.PriceBreaks.Last(priceBreak => priceBreak.Quantity <= totalQuantity).Price;
+                var tasks = new List<Task>();
                 foreach (HSLineItem lineItem in existingLineItems)
                 {
                     // Determine markup for all specs for this existing line item
@@ -443,10 +452,10 @@ namespace Headstart.API.Commands
                    {
                        PartialLineItem lineItemToPatch = new PartialLineItem();
                        lineItemToPatch.UnitPrice = lineItemTotal;
-                       await _oc.LineItems.PatchAsync<HSLineItem>(OrderDirection.Incoming, orderID, lineItem.ID, lineItemToPatch);
+                       tasks.Add(_oc.LineItems.PatchAsync<HSLineItem>(OrderDirection.Incoming, orderID, lineItem.ID, lineItemToPatch));
                    }
                 }
-
+                await Task.WhenAll(tasks);
                 // Return the item total for the li being added or modified
                 return li == null ? 0 : priceBasedOnQuantity + GetSpecMarkup(li.Specs, product.Specs);
             } else

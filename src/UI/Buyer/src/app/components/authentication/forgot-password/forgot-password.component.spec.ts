@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
@@ -21,7 +21,7 @@ describe('ForgotPasswordComponent', () => {
   };
   const toastrService = { success: jasmine.createSpy('success') };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ForgotPasswordComponent],
       imports: [ReactiveFormsModule, HttpClientModule],

@@ -36,6 +36,19 @@ export function CanChangeLineItemsOnOrderTo(
   lineItemStatus: LineItemStatus,
   lineItems: HSLineItem[]
 ): boolean {
-  return !lineItems.some((li) => lineItemStatus === LineItemStatus.Backordered && li.Product?.xp?.ProductType === "Quote")
-    && lineItems.some((li) => CanChangeTo(lineItemStatus, li))
+  return (
+    !lineItems.some(
+      (li) =>
+        lineItemStatus === LineItemStatus.Backordered &&
+        li.Product?.xp?.ProductType === 'Quote'
+    ) && lineItems.some((li) => CanChangeTo(lineItemStatus, li))
+  )
+}
+
+export function SellerOrderCanShip(
+  lineItemStatus: LineItemStatus,
+  lineItems: HSLineItem[],
+  sellerUser: boolean
+): boolean {
+  return lineItems.some((li) => li.SupplierID === null && sellerUser)
 }

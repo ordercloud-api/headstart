@@ -1,6 +1,6 @@
 import { BuyerCategoryService } from './../../../../shared/services/buyer/buyer-category-service'
 import { BuyerCategoryTableComponent } from './buyer-category-table.component'
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { ActivatedRoute, Router } from '@angular/router'
 import { HttpClient } from '@angular/common/http'
 import { BuyerService } from '../../buyers/buyer.service'
@@ -34,7 +34,7 @@ describe('BuyerCategoryTableComponent', () => {
     resourceSubject: of({}),
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [BuyerCategoryTableComponent],
       providers: [

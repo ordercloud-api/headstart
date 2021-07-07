@@ -1,7 +1,7 @@
 import { SupplierService } from './../../suppliers/supplier.service'
 import { SupplierAddressService } from './../supplier-address.service'
 import { SupplierLocationTableComponent } from './supplier-location-table.component'
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { HttpClient } from '@angular/common/http'
 import { Router, ActivatedRoute } from '@angular/router'
 import { of } from 'rxjs'
@@ -36,7 +36,7 @@ describe('SupplierLocationTableComponent', () => {
 
   const supplierService = {}
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [SupplierLocationTableComponent],
       providers: [

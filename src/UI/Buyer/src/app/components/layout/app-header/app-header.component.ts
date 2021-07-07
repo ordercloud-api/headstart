@@ -1,4 +1,5 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core'
+import { animate, style, transition, trigger } from '@angular/animations'
 import {
   faSearch,
   faShoppingCart,
@@ -12,12 +13,11 @@ import {
   faTimes,
 } from '@fortawesome/free-solid-svg-icons'
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap'
-import { Category } from 'ordercloud-javascript-sdk'
+import { Category, ListPage, Supplier } from 'ordercloud-javascript-sdk'
 import { bufferTime, filter, takeWhile } from 'rxjs/operators'
 import { HSOrder, HSLineItem } from '@ordercloud/headstart-sdk'
 import { getScreenSizeBreakPoint } from 'src/app/services/breakpoint.helper'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
-import { StaticPageService } from 'src/app/services/static-page/static-page.service'
 import { CurrentUser } from 'src/app/models/profile.types'
 import { AppConfig } from 'src/app/models/environment.types'
 import { ProductFilters } from 'src/app/models/filter-config.types'
@@ -26,6 +26,24 @@ import { RouteConfig } from 'src/app/models/shared.types'
 @Component({
   templateUrl: './app-header.component.html',
   styleUrls: ['./app-header.component.scss'],
+  animations: [
+    trigger('inOutAnimation', [
+      transition(':enter', [
+        style({ transform: 'translateX(-100%)', opacity: 0 }),
+        animate(
+          '.4s cubic-bezier(0.7, 0, 0.3, 1)',
+          style({ transform: 'translateX(0)', opacity: 1 })
+        ),
+      ]),
+      transition(':leave', [
+        style({ transform: 'translateX(0)', opacity: 1 }),
+        animate(
+          '.2s cubic-bezier(0.7, 0, 0.3, 1)',
+          style({ transform: 'translateX(-100%)', opacity: 0 })
+        ),
+      ]),
+    ]),
+  ],
 })
 export class OCMAppHeader implements OnInit {
   isCollapsed = true
@@ -63,17 +81,18 @@ export class OCMAppHeader implements OnInit {
   faTimes = faTimes
   faBoxOpen = faBoxOpen
   flagIcon: string
+  hasSuppliers = false;
+  currentSupplierList: ListPage<Supplier>
 
   constructor(
     public context: ShopperContextService,
     public appConfig: AppConfig,
-    public staticPageService: StaticPageService
   ) {
     this.profileRoutes = context.router.getProfileRoutes()
     this.orderRoutes = context.router.getOrderRoutes()
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.buildShowOrdersNeedingApprovalAlertListener()
     this.screenSize = getScreenSizeBreakPoint()
     this.categories = this.context.categories.all
@@ -91,21 +110,29 @@ export class OCMAppHeader implements OnInit {
     this.context.router.onUrlChange((path) => (this.activePath = path))
     this.buildAddToCartListener()
     this.flagIcon = this.getCurrencyFlag()
-  }
-
-  // TODO: add PageDocument type to cms library so this is strongly typed
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  get staticPages(): any[] {
-    return this.staticPageService.pages.filter((page) => {
-      return page.Doc.Active && page.Doc.NavigationTitle
-    })
+    this.currentSupplierList = await this.getCurrentSupplierList()
+    this.hasSuppliers = this.currentSupplierList.Meta.TotalCount > 0
   }
 
   getCurrencyFlag(): string {
     const rates = this.context.exchangeRates.Get()
     const currentUser = this.context.currentUser.get()
-    const myRate = rates.Items.find((r) => r.Currency === currentUser.Currency)
-    return myRate.Icon
+    const myRate = rates?.Items.find((r) => r.Currency === currentUser.Currency)
+    return myRate?.Icon
+  }
+
+  async getCurrentSupplierList() {
+    this.setBuyerFilterIfNeeded();
+    const supplierList: ListPage<Supplier> = await this.context.supplierFilters.listSuppliers()
+
+    return supplierList;
+  }
+
+  private setBuyerFilterIfNeeded(): void {
+    this.context.supplierFilters.setNonURLFilter(
+      'xp.BuyersServicing',
+      this.context.currentUser.get()?.Buyer?.ID
+    )
   }
 
   toggleCategoryDropdown(bool: boolean): void {

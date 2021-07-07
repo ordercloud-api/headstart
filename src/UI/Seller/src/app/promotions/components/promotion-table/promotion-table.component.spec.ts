@@ -1,11 +1,11 @@
 import { PromotionService } from '@app-seller/promotions/promotion.service'
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { Router, ActivatedRoute } from '@angular/router'
-import { UserContext } from '@app-seller/config/user-context'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { of } from 'rxjs'
 
 import { PromotionTableComponent } from './promotion-table.component'
+import { UserContext } from '@app-seller/shared'
 
 describe('PromotionTableComponent', () => {
   let component: PromotionTableComponent
@@ -23,7 +23,7 @@ describe('PromotionTableComponent', () => {
     getParentResourceID() {
       return 1
     },
-    getParentOrSecondaryIDParamName() {},
+    getParentOrSecondaryIDParamName() { },
   }
   const currentUserService = {
     getUserContext() {
@@ -32,12 +32,12 @@ describe('PromotionTableComponent', () => {
   }
   const router = {
     navigateByUrl: jasmine.createSpy('navigateByUrl'),
-    url: { startsWith() {}, split() {} },
+    url: { startsWith() { }, split() { } },
     routerState: { snapshot: { url: 'url' } },
   }
   const activatedRoute = { queryParams: of({}), params: of({}) }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [PromotionTableComponent],
       providers: [

@@ -41,7 +41,7 @@ describe('HasTokenGuard', () => {
         { provide: OcTokenService, useValue: tokenService },
       ],
     });
-    guard = TestBed.get(HasTokenGuard);
+    guard = TestBed.inject(HasTokenGuard);
   });
 
   // set Date.now for consistent test results

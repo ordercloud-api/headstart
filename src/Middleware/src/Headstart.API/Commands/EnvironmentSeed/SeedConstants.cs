@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Headstart.Common.Helpers;
 using Headstart.Models;
@@ -6,18 +6,20 @@ using Headstart.Models.Misc;
 using OrderCloud.SDK;
 using Headstart.Common;
 using ordercloud.integrations.exchangerates;
+using Headstart.Common.Models;
 
 namespace Headstart.API.Commands
 {
     public class SeedConstants
     {
-        public static string BuyerApiClientName = "Default HeadStart Buyer UI";
+        public static string BuyerApiClientName = "Default Buyer Storefront";
         public static string BuyerLocalApiClientName = "Default HeadStart Buyer UI LOCAL"; // used for pointing integration events to the ngrok url
         public static string SellerApiClientName = "Default HeadStart Admin UI";
         public static string IntegrationsApiClientName = "Middleware Integrations";
         public static string SellerUserName = "Default_Admin";
         public static string FullAccessSecurityProfile = "DefaultContext";
-        public static string DefaultBuyerName = "Default HeadStart Buyer";
+        public static string DefaultBuyerName = "Default Headstart Buyer";
+        public static string DefaultBuyerID = "0001";
         public static string DefaultLocationID = "default-buyerLocation";
         public static string AllowedSecretChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -39,7 +41,7 @@ namespace Headstart.API.Commands
             };
         }
 
-        public static User MIddlewareIntegrationsUser()
+        public static User MiddlewareIntegrationsUser()
         {
             return new User()
             {
@@ -56,6 +58,7 @@ namespace Headstart.API.Commands
         {
             return new HSBuyer
             {
+                ID = DefaultBuyerID,
                 Name = DefaultBuyerName,
                 Active = true,
                 xp = new BuyerXp
@@ -69,6 +72,7 @@ namespace Headstart.API.Commands
             new XpIndex { ThingType = XpThingType.UserGroup, Key = "Type" },
             new XpIndex { ThingType = XpThingType.UserGroup, Key = "Role" },
             new XpIndex { ThingType = XpThingType.UserGroup, Key = "Country" },
+            new XpIndex { ThingType = XpThingType.UserGroup, Key = "CatalogAssignments" },
             new XpIndex { ThingType = XpThingType.Company, Key = "Data.ServiceCategory" },
             new XpIndex { ThingType = XpThingType.Company, Key = "Data.VendorLevel" },
             new XpIndex { ThingType = XpThingType.Company, Key = "SyncFreightPop" },
@@ -88,7 +92,8 @@ namespace Headstart.API.Commands
         public static readonly List<Incrementor> DefaultIncrementors = new List<Incrementor>() {
             new Incrementor { ID = "orderIncrementor", Name = "Order Incrementor", LastNumber = 0, LeftPaddingCount = 6 },
             new Incrementor { ID = "supplierIncrementor", Name = "Supplier Incrementor", LastNumber = 0, LeftPaddingCount = 3 },
-            new Incrementor { ID = "buyerIncrementor", Name = "Buyer Incrementor", LastNumber = 0, LeftPaddingCount = 4 }
+            new Incrementor { ID = "buyerIncrementor", Name = "Buyer Incrementor", LastNumber = 0, LeftPaddingCount = 4 },
+            new Incrementor { ID = "sellerLocationIncrementor", Name = "Seller Location Incrementor", LastNumber = 0, LeftPaddingCount = 4 }
         };
 
         #region API CLIENTS
@@ -121,9 +126,9 @@ namespace Headstart.API.Commands
             };
         }
 
-        public static ApiClient BuyerClient()
+        public static HSApiClient BuyerClient(EnvironmentSeed seed)
         {
-            return new ApiClient()
+            return new HSApiClient()
             {
                 AppName = BuyerApiClientName,
                 Active = true,
@@ -132,12 +137,16 @@ namespace Headstart.API.Commands
                 AllowSeller = false,
                 AccessTokenDuration = 600,
                 RefreshTokenDuration = 43200,
-                DefaultContextUserName = AnonymousBuyerUser().ID,
-                IsAnonBuyer = true
+                DefaultContextUserName = seed.EnableAnonymousShopping ? AnonymousBuyerUser().ID : null,
+                IsAnonBuyer = seed.EnableAnonymousShopping,
+                xp = new ApiClientXP
+                {
+                    IsStorefront = true
+                }
             };
         }
 
-        public static ApiClient BuyerLocalClient()
+        public static ApiClient BuyerLocalClient(EnvironmentSeed seed)
         {
             return new ApiClient()
             {
@@ -148,8 +157,8 @@ namespace Headstart.API.Commands
                 AllowSeller = false,
                 AccessTokenDuration = 600,
                 RefreshTokenDuration = 43200,
-                DefaultContextUserName = AnonymousBuyerUser().ID,
-                IsAnonBuyer = true
+                DefaultContextUserName = seed.EnableAnonymousShopping ? AnonymousBuyerUser().ID : null,
+                IsAnonBuyer = seed.EnableAnonymousShopping
             };
         }
         #endregion
@@ -258,7 +267,7 @@ namespace Headstart.API.Commands
             new HSSecurityProfile() { ID = CustomRole.HSMeSupplierAdmin, CustomRoles = new CustomRole[] { CustomRole.AssetAdmin, CustomRole.HSMeSupplierAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAdmin, ApiRole.SupplierReader } },
             new HSSecurityProfile() { ID = CustomRole.HSMeSupplierUserAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeSupplierUserAdmin }, Roles = new ApiRole[] { ApiRole.SupplierReader, ApiRole.SupplierUserAdmin } },
             new HSSecurityProfile() { ID = CustomRole.HSOrderAdmin, CustomRoles = new CustomRole[] { CustomRole.HSOrderAdmin }, Roles = new ApiRole[] { ApiRole.AddressReader, ApiRole.OrderAdmin, ApiRole.ShipmentReader } },
-            new HSSecurityProfile() { ID = CustomRole.HSProductAdmin, CustomRoles = new CustomRole[] { CustomRole.HSProductAdmin }, Roles = new ApiRole[] { ApiRole.AdminAddressReader, ApiRole.CatalogAdmin, ApiRole.PriceScheduleAdmin, ApiRole.ProductAdmin, ApiRole.ProductAssignmentAdmin, ApiRole.ProductFacetAdmin, ApiRole.SupplierAddressReader } },
+            new HSSecurityProfile() { ID = CustomRole.HSProductAdmin, CustomRoles = new CustomRole[] { CustomRole.HSProductAdmin }, Roles = new ApiRole[] { ApiRole.AdminAddressAdmin, ApiRole.AdminAddressReader, ApiRole.CatalogAdmin, ApiRole.PriceScheduleAdmin, ApiRole.ProductAdmin, ApiRole.ProductAssignmentAdmin, ApiRole.ProductFacetAdmin, ApiRole.SupplierAddressReader } },
             new HSSecurityProfile() { ID = CustomRole.HSPromotionAdmin, CustomRoles = new CustomRole[] { CustomRole.HSPromotionAdmin }, Roles = new ApiRole[] { ApiRole.PromotionAdmin } },
             new HSSecurityProfile() { ID = CustomRole.HSReportAdmin, CustomRoles = new CustomRole[] { CustomRole.HSReportAdmin }, Roles = new ApiRole[] { } },
             new HSSecurityProfile() { ID = CustomRole.HSReportReader, CustomRoles = new CustomRole[] { CustomRole.HSReportReader }, Roles = new ApiRole[] { } },
@@ -330,6 +339,23 @@ namespace Headstart.API.Commands
                     State = "Minnesota",
                     Country = "US"
                 }
+            };
+        }
+
+        #endregion
+
+        #region Product Facets
+
+        public static HSProductFacet DefaultProductFacet()
+        {
+            return new HSProductFacet()
+            {
+                ID = "supplier",
+                Name = "Supplier",
+                XpPath = "Facets.supplier",
+                ListOrder = 1,
+                MinCount = 1,
+                xp = null
             };
         }
 

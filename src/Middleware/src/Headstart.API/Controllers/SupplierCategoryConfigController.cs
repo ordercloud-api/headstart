@@ -3,9 +3,6 @@ using OrderCloud.SDK;
 using System.Threading.Tasks;
 using Headstart.Models.Attributes;
 using ordercloud.integrations.library;
-using Headstart.Models;
-using Headstart.Common.Services.CMS;
-using Headstart.Common.Services.CMS.Models;
 using System.Collections.Generic;
 using OrderCloud.Catalyst;
 
@@ -19,41 +16,40 @@ namespace Headstart.Common.Controllers
 	/// <summary>
 	/// Supplier Category Configuration
 	/// </summary>
+
 	public class SupplierFilterConfigController : BaseController
 	{
 		public SupplierFilterConfigController()
 		{
 
 		}
+
 		/// <summary>
 		/// GET SupplierCategoryConfig
-		/// </summary>
 		[HttpGet, Route("/supplierfilterconfig"), OrderCloudUserAuth(ApiRole.Shopper, ApiRole.SupplierReader)]
-		public async Task<ListPage<SupplierFilterConfigDocument>> Get()
+		public async Task<ListPage<dynamic>> Get()
 		{
-			return new ListPage<SupplierFilterConfigDocument>
+			return new ListPage<dynamic>
 			{
-				Items = new List<SupplierFilterConfigDocument>
+				Items = new List<dynamic>
 				{
-					GetCountriesServicingDoc(),
-					GetServiceCategoryDoc(),
-					GetVendorLevelDoc()
+					GetCountriesServicingDoc()
 				}
 			};
-        }
+		}
 
-		private SupplierFilterConfigDocument GetCountriesServicingDoc()
+		private dynamic GetCountriesServicingDoc()
 		{
-			return new SupplierFilterConfigDocument
+			return new
 			{
 				ID = "CountriesServicing",
-				Doc = new SupplierFilterConfig
+				Doc = new
 				{
 					Display = "Countries Servicing",
 					Path = "xp.CountriesServicing",
-					Items = new List<Filter>
+					Items = new List<dynamic>
 					{
-						new Filter
+						new
 						{
 							Text = "UnitedStates",
 							Value = "US"
@@ -65,60 +61,5 @@ namespace Headstart.Common.Controllers
 				}
 			};
 		}
-
-		private SupplierFilterConfigDocument GetServiceCategoryDoc()
-		{
-			return new SupplierFilterConfigDocument
-			{
-				ID = "ServiceCategory",
-				Doc = new SupplierFilterConfig
-				{
-					Display = "Service Category",
-					Path = "xp.Categories.ServiceCategory",
-					AllowSupplierEdit = false,
-					AllowSellerEdit = true,
-					BuyerAppFilterType = "SelectOption",
-					Items = new List<Filter>
-					{
-						new Filter
-                        {
-							Text = "Default Service Category",
-							Value = "DefaultServiceCategory"
-						}
-					}
-				}
-			};
-		}
-
-		private SupplierFilterConfigDocument GetVendorLevelDoc()
-		{
-			return new SupplierFilterConfigDocument
-			{
-				ID = "VendorLevel",
-				Doc = new SupplierFilterConfig
-				{
-					Display = "Vendor Level",
-					Path = "xp.Categories.VendorLevel",
-					AllowSupplierEdit = true,
-					AllowSellerEdit = true,
-					BuyerAppFilterType = "SelectOption",
-					Items = new List<Filter>
-					{
-						new Filter
-                        {
-							Text = "Default Vendor Level",
-							Value = "DefaultVendorLevel"
-                        }
-					}
-				}
-			};
-		}
-
 	}
-
-    // swagger generator can't handle composite models so alias into one
-    public class SupplierFilterConfigDocument: Document<SupplierFilterConfig>
-    {
-
-    }
 }

@@ -8,12 +8,9 @@ export const ocAppConfig: AppConfig = {
   clientID: environment.clientID,
   sellerID: environment.sellerID,
   middlewareUrl: environment.middlewareUrl,
-  cmsUrl: environment.cmsUrl,
   orderCloudApiUrl: environment.orderCloudApiUrl,
   translateBlobUrl: environment.translateBlobUrl,
   blobStorageUrl: environment.blobStorageUrl,
-  buyerConfigs: environment.buyerConfigs,
-  superProductFieldsToMonitor: environment.superProductFieldsToMonitor,
   // sellerName is being hard-coded until this is available to store in OrderCloud
   sellerName: environment.sellerName,
   scope: [
@@ -21,6 +18,7 @@ export const ocAppConfig: AppConfig = {
     // Will need to be updated to 'AdminAddressAdmin' when seller address create is implemented
     'ApiClientAdmin',
     'ApiClientReader',
+    'AdminAddressAdmin',
     'AdminAddressReader',
     'MeAddressAdmin',
     'AddressReader',

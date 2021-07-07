@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core'
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import {
   Address,
   BuyerAddress,
@@ -7,6 +8,7 @@ import {
   Me,
 } from 'ordercloud-javascript-sdk'
 import {
+  HeadStartSDK,
   HSOrder,
   HSAddressBuyer,
 } from '@ordercloud/headstart-sdk'
@@ -16,7 +18,7 @@ import { NgxSpinnerService } from 'ngx-spinner'
 import { ErrorMessages } from '../../../services/error-constants'
 import { flatten as _flatten } from 'lodash'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
-import { listAll } from 'src/app/services/listAll'
+import { TranslateService } from '@ngx-translate/core'
 // TODO - Make this component "Dumb" by removing the dependence on context service
 // and instead have it use inputs and outputs to interact with the CheckoutComponent.
 // Goal is to get all the checkout logic and state into one component.
@@ -30,41 +32,39 @@ export class OCMCheckoutAddress implements OnInit {
   @Input() lineItems: ListPage<LineItem>
   @Output() continue = new EventEmitter()
   @Output() handleOrderError = new EventEmitter()
+  @Output() handleDismissal = new EventEmitter()
   _addressError: string
   isAnon: boolean
 
   readonly NEW_ADDRESS_CODE = 'new'
-  existingBuyerLocations: ListPage<BuyerAddress>
-  selectedBuyerLocation: BuyerAddress
+  faQuestionCircle = faQuestionCircle
   existingShippingAddresses: ListPage<BuyerAddress>
   selectedShippingAddress: BuyerAddress
   showNewAddressForm = false
   suggestedAddresses: BuyerAddress[]
+  existingBuyerLocations: ListPage<BuyerAddress>
+  selectedBuyerLocation: BuyerAddress
   homeCountry: string
+  tooltip: string
 
   constructor(
     private context: ShopperContextService,
-    private spinner: NgxSpinnerService
-  ) { }
+    private spinner: NgxSpinnerService,
+    private translate: TranslateService
+  ) {}
 
   async ngOnInit(): Promise<void> {
-    this.isAnon = this.context.currentUser.isAnonymous();
+    this.isAnon = this.context.currentUser.isAnonymous()
+    this.tooltip = this.translate.instant(
+      'CHECKOUT.CHECKOUT_ADDRESS.BUYER_LOCATION_TOOLTIP'
+    )
+    if (this.isAnon) {
+      this.showNewAddress()
+    }
     this.spinner.hide()
     this.selectedShippingAddress = this.lineItems?.Items[0].ShippingAddress
     await this.ListAddressesForShipping()
-  }
-
-
-  onBuyerLocationChange(buyerLocationID: string): void {
-    this.selectedBuyerLocation = this.existingBuyerLocations.Items.find(
-      (location) => buyerLocationID === location.ID
-    )
-    const shippingAddress = this.existingShippingAddresses.Items.find(
-      (location) => location.ID === this.selectedBuyerLocation.ID
-    )
-    if (shippingAddress) {
-      this.selectedShippingAddress = shippingAddress
-    }
+    await this.listSavedBuyerLocations()
   }
 
   onShippingAddressChange(shippingAddressID: string): void {
@@ -80,17 +80,44 @@ export class OCMCheckoutAddress implements OnInit {
     }
   }
 
+  handleFormDismissed(): void {
+    this.showNewAddressForm = false
+    this.selectedShippingAddress = this.lineItems?.Items[0].ShippingAddress
+    this.handleDismissal.emit()
+  }
+
+  onBuyerLocationChange(buyerLocationID: string): void {
+    this.selectedBuyerLocation = this.existingBuyerLocations.Items.find(
+      (location) => buyerLocationID === location.ID
+    )
+    const shippingAddress = this.existingShippingAddresses.Items.find(
+      (location) => location.ID === this.selectedBuyerLocation.ID
+    )
+    if (shippingAddress) {
+      this.selectedShippingAddress = shippingAddress
+    }
+  }
+
+  private async listSavedBuyerLocations(): Promise<void> {
+    const listOptions = {
+      page: 1,
+      pageSize: 100,
+    }
+    this.existingBuyerLocations = await this.context.addresses.listBuyerLocations(
+      listOptions,
+      true
+    )
+    this.homeCountry = this.existingBuyerLocations?.Items[0]?.Country || 'US'
+    if (this.existingBuyerLocations?.Items?.length === 1) {
+      this.selectedBuyerLocation = this.selectedShippingAddress = this.existingBuyerLocations.Items[0]
+    }
+  }
+
   async saveAddressesAndContinue(
     newShippingAddress: Address = null
   ): Promise<void> {
-    if (!this.selectedBuyerLocation) {
-      throw new Error('Please select a location for this order')
-    }
     try {
       this.spinner.show()
-      this.order = await this.context.order.checkout.setBuyerLocationByID(
-        this.selectedBuyerLocation?.ID
-      )
       if (this.isAnon) {
         await this.handleAnonShippingAddress(newShippingAddress)
       } else {
@@ -108,15 +135,35 @@ export class OCMCheckoutAddress implements OnInit {
     }
   }
 
-  async handleAnonShippingAddress(newShippingAddress: Address<any>): Promise<void> {
+  async handleAnonShippingAddress(
+    newShippingAddress: Address<any>
+  ): Promise<void> {
     if (newShippingAddress != null) {
-      this.selectedShippingAddress = newShippingAddress;
+      this.selectedShippingAddress = await this.validateNewShippingAddress(
+        newShippingAddress
+      )
     }
-    this.context.order.checkout.setOneTimeShippingAddress((this.selectedShippingAddress as Address))
-    this.continue.emit()
+    if (this.selectedShippingAddress) {
+      this.context.order.checkout.setOneTimeAddress(
+        this.selectedShippingAddress as Address,
+        'shipping'
+      )
+      this.continue.emit()
+    } else {
+      // not able to create address - display suggestions to user
+      this.spinner.hide()
+    }
   }
 
-  async handleLoggedInShippingAddress(newShippingAddress: Address<any>): Promise<void> {
+  async handleLoggedInShippingAddress(
+    newShippingAddress: Address<any>
+  ): Promise<void> {
+    if (!this.selectedBuyerLocation) {
+      throw new Error('Please select a location for this order')
+    }
+    this.order = await this.context.order.checkout.setBuyerLocationByID(
+      this.selectedBuyerLocation?.ID
+    )
     if (newShippingAddress != null) {
       this.selectedShippingAddress = await this.saveNewShippingAddress(
         newShippingAddress
@@ -145,18 +192,17 @@ export class OCMCheckoutAddress implements OnInit {
 
   private async ListAddressesForShipping() {
     const buyerLocationsFilter = {
-      filters: { Editable: 'false' }
+      filters: { Editable: 'false' },
     }
     const shippingAddressesFilter = {
-      filters: { Shipping: 'true' }
+      filters: { Shipping: 'true' },
     }
-    this.existingBuyerLocations = await listAll(Me, Me.ListAddresses, buyerLocationsFilter)
-    this.homeCountry = this.existingBuyerLocations?.Items[0]?.Country || 'US'
-    if (this.existingBuyerLocations?.Items.length === 1) {
-      this.selectedBuyerLocation = this.selectedShippingAddress = this.existingBuyerLocations.Items[0]
-    }
-
-    this.existingShippingAddresses = await listAll(Me, Me.ListAddresses, shippingAddressesFilter)
+    const [buyerLocations, existingShippingAddresses] = await Promise.all([
+      Me.ListAddresses(buyerLocationsFilter),
+      HeadStartSDK.Services.ListAll(Me, Me.ListAddresses, shippingAddressesFilter)
+    ])
+    this.homeCountry = buyerLocations?.Items[0]?.Country || 'US'
+    this.existingShippingAddresses = existingShippingAddresses
   }
 
   private async saveNewShippingAddress(
@@ -168,9 +214,26 @@ export class OCMCheckoutAddress implements OnInit {
       const savedAddress = await this.context.addresses.create(address)
       return savedAddress
     } catch (ex) {
-      this.suggestedAddresses = getSuggestedAddresses(ex)
-      if (!(this.suggestedAddresses?.length >= 1)) throw ex
-      return null // set this.selectedShippingAddress
+      return this.handleAddressError(ex)
     }
+  }
+
+  private async validateNewShippingAddress(
+    address: BuyerAddress
+  ): Promise<HSAddressBuyer> {
+    try {
+      const validatedAddress = await this.context.addresses.validateAddress(
+        address
+      )
+      return validatedAddress
+    } catch (ex) {
+      return this.handleAddressError(ex)
+    }
+  }
+
+  private handleAddressError(ex: any): null {
+    this.suggestedAddresses = getSuggestedAddresses(ex)
+    if (!(this.suggestedAddresses?.length >= 1)) throw ex
+    return null // set this.selectedShippingAddress
   }
 }

@@ -56,14 +56,7 @@ namespace ordercloud.integrations.library.Cosmos
                 return null;
             var param = Expression.Parameter(typeof(T), args?.SearchOn);
 
-            var expr = GetExpression<T>(param, new ListFilter()
-            {
-                PropertyName = args?.SearchOn,
-                FilterValues = new List<ListFilterValue>()
-                {
-                    new ListFilterValue() { Operator = ListFilterOperator.Equal, Term = args?.Search, WildcardPositions = new List<int>(){0,1} }
-                }
-            });
+            var expr = GetExpression<T>(param, new ListFilter(args?.SearchOn, $"*{args?.Search}*"));
             return Expression.Lambda<Func<T, bool>>(expr, param);
         }
 

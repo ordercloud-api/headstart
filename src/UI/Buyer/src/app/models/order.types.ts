@@ -1,27 +1,21 @@
-import { HSLineItem } from "@ordercloud/headstart-sdk";
-import { LineItem, Sortable } from "ordercloud-javascript-sdk";
+import { HSLineItem } from '@ordercloud/headstart-sdk'
+import { LineItem, Sortable } from 'ordercloud-javascript-sdk'
 
 export interface OrderSummaryMeta {
-    StandardLineItems: HSLineItem[]
-    POLineItems: HSLineItem[]
-    StandardLineItemCount: number
-    POLineItemCount: number
-  
-    ShouldHideShippingAndText: boolean
-    ShippingAndTaxOverrideText: string
-  
-    // with no purchase order these are displayed as the whole order
-    CreditCardDisplaySubtotal: number
-    ShippingCost: number
-    TaxCost: number
-    CreditCardTotal: number
-    DiscountTotal: number
-  
-    POSubtotal: number
-    POShippingCost: number
-    POTotal: number
-    OrderTotal: number
-  }
+  LineItemCount: number
+
+  ShouldHideShippingAndText: boolean
+  ShippingAndTaxOverrideText: string
+
+  // with no purchase order these are displayed as the whole order
+  CreditCardDisplaySubtotal: number
+  ShippingCost: number
+  TaxCost: number
+  CreditCardTotal: number
+  DiscountTotal: number
+
+  OrderTotal: number
+}
 
 // TODO - remove once SDK has enum types
 export enum OrderType {
@@ -59,7 +53,6 @@ export interface OrderFilters {
   toDate?: string
   location?: string
 }
-
 
 export enum OrderViewContext {
   MyOrders = 'MyOrders',

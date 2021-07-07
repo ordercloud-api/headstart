@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 
 import { HeaderComponent } from '@app-seller/layout/header/header.component'
 import { applicationConfiguration } from '@app-seller/config/app.config'
@@ -34,7 +34,7 @@ describe('HeaderComponent', () => {
     },
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [HeaderComponent],
       providers: [

@@ -6,7 +6,7 @@ import {
   PriceBreak,
 } from 'ordercloud-javascript-sdk'
 import { Injectable } from '@angular/core'
-import { Asset } from '@ordercloud/headstart-sdk'
+import { ImageAsset } from '@ordercloud/headstart-sdk'
 import { FormGroup } from '@angular/forms'
 import { GridSpecOption } from 'src/app/models/product.types'
 
@@ -66,10 +66,13 @@ export class SpecFormService {
   }
 
   public getLineItemImageUrl(
-    images: Asset[],
+    images: ImageAsset[],
     specs: Spec[],
     specForm?: FormGroup
   ): string {
+    if (!images || images === null) {
+      images = []
+    }
     if (!specs.length) {
       const firstImage = images[0]
       return firstImage?.Url
@@ -82,22 +85,22 @@ export class SpecFormService {
   }
 
   private isImageMatchingSpecs(
-    image: Asset,
+    image: ImageAsset,
     specs: Spec[],
     specForm: FormGroup
   ): boolean {
     // Examine all specs, and find the image tag that matches all specs, removing spaces where needed on the spec to find that match.
     const liSpecs = this.getLineItemSpecs(specs, specForm)
-    return this.AssetTagMatches(liSpecs, image);
+    return this.AssetTagMatches(liSpecs, image)
   }
 
-  public AssetTagMatches(liSpecs: LineItemSpec[], image: Asset): boolean {
-    return liSpecs.every((spec) =>
-    image?.Tags?.find((tag) =>
-      tag?.split('-')?.includes(
-        spec?.Value?.split(' ')
-          .join('')
-          .replace(/[^a-zA-Z0-9 ]/g, '')
+  public AssetTagMatches(liSpecs: LineItemSpec[], image: ImageAsset): boolean {
+    return liSpecs.every((spec: LineItemSpec) =>
+      image?.Tags?.find((tag) =>
+        tag?.split('-')?.includes(
+          spec?.Value?.split(' ')
+            .join('')
+            .replace(/[^a-zA-Z0-9 ]/g, '')
         )
       )
     )
@@ -127,7 +130,7 @@ export class SpecFormService {
   }
 
   public getGridLineItemImageUrl(
-    images: Asset[],
+    images: ImageAsset[],
     specs: Spec[],
     specValues: string[]
   ): string {
@@ -143,13 +146,13 @@ export class SpecFormService {
   }
 
   private isGridImageMatchingSpecs(
-    image: Asset,
+    image: ImageAsset,
     specs: Spec[],
     specValues: string[]
   ): boolean {
     // Examine all specs, and find the image tag that matches all specs, removing spaces where needed on the spec to find that match.
     const liSpecs = this.getGridLineItemSpecs(specs, specValues)
-    return this.AssetTagMatches(liSpecs, image);
+    return this.AssetTagMatches(liSpecs, image)
   }
 
   private singleSpecMarkup(

@@ -30,7 +30,7 @@ import {
   OrderDirection,
   ListPage,
 } from '@ordercloud/angular-sdk'
-import { getProductSmallImageUrl } from '@app-seller/products/product-image.helper'
+import { getProductSmallImageUrl } from '@app-seller/shared/services/assets/asset.helper'
 import { HttpHeaders } from '@angular/common/http'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
@@ -38,9 +38,9 @@ import { OrderService } from '@app-seller/orders/order.service'
 import {
   CanChangeLineItemsOnOrderTo,
   NumberCanChangeTo,
+  SellerOrderCanShip,
 } from '@app-seller/orders/line-item-status.helper'
 import { HSLineItem, SuperHSShipment } from '@ordercloud/headstart-sdk'
-import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { flatten as _flatten } from 'lodash'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { LineItemStatus } from '@app-seller/models/order.types'
@@ -214,6 +214,12 @@ export class OrderShipmentsComponent implements OnChanges {
       ...(lineItemsResponse.Items as HSLineItem[]),
     ]
     if (lineItemsResponse.Meta.TotalPages <= 1) {
+      if (this.isSellerUser) {
+        const sellerItems = lineItemsResponse.Items.filter(
+          (li) => li.SupplierID === null
+        )
+        allOrderLineItems = [...(sellerItems as HSLineItem[])]
+      }
       this.lineItems = allOrderLineItems
     } else {
       let lineItemRequests = []
@@ -227,10 +233,17 @@ export class OrderShipmentsComponent implements OnChanges {
         ]
       }
       return await Promise.all(lineItemRequests).then((response) => {
-        allOrderLineItems = [
-          ...allOrderLineItems,
-          ..._flatten(response.map((r) => r.Items)),
-        ]
+        if (this.isSellerUser) {
+          const sellerItems = response['Items'].filter(
+            (li) => li.SupplierID === null
+          )
+          allOrderLineItems = [..._flatten(sellerItems)] as HSLineItem[]
+        } else {
+          allOrderLineItems = [
+            ...allOrderLineItems,
+            ..._flatten(response.map((r) => r.Items as HSLineItem[])),
+          ]
+        }
         this.lineItems = allOrderLineItems
       })
     }
@@ -269,7 +282,7 @@ export class OrderShipmentsComponent implements OnChanges {
 
   getImageUrl(lineItem: LineItem): string {
     const product = lineItem.Product
-    return getProductSmallImageUrl(product, this.appConfig.sellerID)
+    return getProductSmallImageUrl(product)
   }
 
   getCreateButtonAction(): string {
@@ -299,7 +312,7 @@ export class OrderShipmentsComponent implements OnChanges {
   // }
 
   async getSupplierAddresses(): Promise<void> {
-    if (!this.supplierAddresses) {
+    if (!this.supplierAddresses && !this.isSellerUser) {
       this.supplierAddresses = await this.ocSupplierAddressService
         .List(this._order?.ToCompanyID)
         .toPromise()
@@ -321,7 +334,13 @@ export class OrderShipmentsComponent implements OnChanges {
   canShipLineItems(): boolean {
     return (
       this.lineItems &&
-      CanChangeLineItemsOnOrderTo(LineItemStatus.Complete, this.lineItems)
+      CanChangeLineItemsOnOrderTo(LineItemStatus.Complete, this.lineItems) &&
+      (SellerOrderCanShip(
+        LineItemStatus.Complete,
+        this.lineItems,
+        this.isSellerUser
+      ) ||
+        !this.isSellerUser)
     )
   }
 
@@ -368,6 +387,7 @@ export class OrderShipmentsComponent implements OnChanges {
         xp: {
           Service: this.shipmentForm.value.Service,
           Comment: this.shipmentForm.value.Comment,
+          BuyerID: this.isSellerUser ? this._order.FromCompanyID : null,
         },
       },
       ShipmentItems: this.lineItems

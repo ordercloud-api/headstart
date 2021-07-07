@@ -3,6 +3,7 @@ import {
   ListPage,
   HSLineItem,
   HSOrder,
+  HeadStartSDK,
 } from '@ordercloud/headstart-sdk'
 import {
   LineItems,
@@ -19,7 +20,6 @@ import { AppConfig } from 'src/app/models/environment.types'
 import { ClaimStatus } from 'src/app/models/order.types'
 import { ShippingStatus } from 'src/app/models/shipping.types'
 import { CurrentUserService } from '../current-user/current-user.service'
-import { listAll } from '../listAll'
 import { TokenHelperService } from '../token-helper/token-helper.service'
 
 @Injectable({
@@ -138,13 +138,30 @@ export class OrderStateService {
       } else {
         await this.initOrder()
       }
+      var tasks = [this.resetOrderPromos(), this.resetShipEstimates()]
       if (this.order.DateCreated) {
-        await this.resetLineItems()
+        await tasks.push(this.resetLineItems())
       }
-      this.orderPromos = await Orders.ListPromotions('Outgoing', this.order.ID)
-      await this.getShipEstimates()
+      await Promise.all(tasks);
     }
-    
+  }
+
+  async resetCurrentOrder(updatedOrder?: HSOrder): Promise<void> {
+    var tasks = [this.resetLineItems(), this.resetShipEstimates()]
+    if(updatedOrder) {
+      this.order = updatedOrder
+    } else {
+      tasks.push(this.resetOrder())
+    }
+    await Promise.all(tasks)
+  }
+
+  async resetOrder(): Promise<void> {
+    this.order = await Orders.Get('Outgoing', this.order.ID)
+  }
+
+  async resetOrderPromos(): Promise<void> {
+    this.orderPromos = await Orders.ListPromotions('Outgoing', this.order.ID)
   }
 
   async initOrder(): Promise<void> {
@@ -169,7 +186,7 @@ export class OrderStateService {
     this.order = await Orders.Create('Outgoing', order as Order) as HSOrder
   }
 
-  async getShipEstimates(): Promise<void> {
+  async resetShipEstimates(): Promise<void> {
     const orderWorksheet = await IntegrationEvents.GetWorksheet(
       'Outgoing',
       this.order.ID
@@ -181,7 +198,7 @@ export class OrderStateService {
   }
 
   async resetLineItems(): Promise<void> {
-    this.lineItems = await listAll(
+    this.lineItems = await HeadStartSDK.Services.ListAll(
       LineItems,
       LineItems.List,
       'outgoing',
@@ -191,7 +208,7 @@ export class OrderStateService {
 
   private async getOrdersForResubmit(): Promise<ListPage<HSOrder>> {
     const orders = await Me.ListOrders({
-      sortBy: '!DateCreated',
+      sortBy: ['!DateCreated'],
       filters: {
         DateDeclined: '*',
         status: 'Unsubmitted',
@@ -203,7 +220,7 @@ export class OrderStateService {
 
   private async getOrdersNeverSubmitted(): Promise<ListPage<HSOrder>> {
     const orders = await Me.ListOrders({
-      sortBy: '!DateCreated',
+      sortBy: ['!DateCreated'],
       filters: {
         DateDeclined: '!*',
         status: 'Unsubmitted',

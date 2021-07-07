@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "./dist",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "outDir": "./dist",
+    "lib": ["ES2015", "dom"],
+    "target": "es5",
+    "esModuleInterop": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "typedocOptions": {
+    "mode": "file",
+    "out": "docs",
+    "name": "ordercloud-javascript-sdk",
+    "excludeExternals": true,
+    "excludePrivate": true,
+    "excludeProtected": true,
+    "theme": "docs-templates"
+  }
+}

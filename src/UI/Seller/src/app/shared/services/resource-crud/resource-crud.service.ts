@@ -104,7 +104,7 @@ export abstract class ResourceCrudService<ResourceType> {
         sortBy,
         pageSize: this.itemsPerPage,
         filters,
-        searchType
+        searchType,
       }
       options = this.addIntrinsicListArgs(options)
       const resourceResponse = await this.listWithStatusIndicator(
@@ -240,9 +240,7 @@ export abstract class ResourceCrudService<ResourceType> {
   async getResourceById(resourceID: string): Promise<any> {
     const orderDirection = this.optionsSubject.value.OrderDirection
     const args = await this.createListArgs([resourceID], orderDirection)
-    if (this.primaryResourceLevel === 'kitproducts')
-      return this.ocService.Get(resourceID)
-    else return this.ocService.Get(...args)
+    return this.ocService.Get(...args)
   }
 
   async createListArgs(options: any[], orderDirection = ''): Promise<any[]> {
@@ -357,7 +355,10 @@ export abstract class ResourceCrudService<ResourceType> {
   }
 
   searchBy(searchTerm: string): void {
-    this.patchFilterState({ search: searchTerm || undefined, searchType: searchTerm ? 'ExactPhrasePrefix' : undefined})
+    this.patchFilterState({
+      search: searchTerm || undefined,
+      searchType: searchTerm ? 'ExactPhrasePrefix' : undefined,
+    })
   }
 
   addFilters(newFilters: ListArgs): void {
@@ -436,7 +437,13 @@ export abstract class ResourceCrudService<ResourceType> {
   // Handle URL updates
   private readFromUrlQueryParams(params: Params): void {
     const { sortBy, search, searchType, OrderDirection, ...filters } = params
-    this.optionsSubject.next({ sortBy, search, searchType, filters, OrderDirection })
+    this.optionsSubject.next({
+      sortBy,
+      search,
+      searchType,
+      filters,
+      OrderDirection,
+    })
   }
 
   private async listWithStatusIndicator(
@@ -447,25 +454,22 @@ export abstract class ResourceCrudService<ResourceType> {
     try {
       this.resourceRequestStatus.next(this.getFetchStatus(options))
       const args = await this.createListArgs([options], orderDirection)
-      let resourceResponse
-      if (this.primaryResourceLevel === 'kitproducts') {
-        resourceResponse = await this.ocService.List()
-      } else {
-        resourceResponse = await this.list(args)
-      }
-      const successStatus = this.getSucessStatus(options, resourceResponse);
-      if(!isRetry && this.primaryResourceLevel === 'products' && successStatus === 'SUCCESSFUL_NO_ITEMS_WITH_FILTERS') {
+      const resourceResponse = await this.list(args)
+      const successStatus = this.getSucessStatus(options, resourceResponse)
+      if (
+        !isRetry &&
+        this.primaryResourceLevel === 'products' &&
+        successStatus === 'SUCCESSFUL_NO_ITEMS_WITH_FILTERS'
+      ) {
         isRetry = true
-        const retryOptions: Options = {...options, searchType: 'AnyTerm'}
-        let retryResourceResponse = await this.list([retryOptions])
+        const retryOptions: Options = { ...options, searchType: 'AnyTerm' }
+        const retryResourceResponse = await this.list([retryOptions])
         this.resourceRequestStatus.next(
           this.getSucessStatus(retryOptions, retryResourceResponse)
         )
         return retryResourceResponse
       }
-      this.resourceRequestStatus.next(
-        successStatus
-      )
+      this.resourceRequestStatus.next(successStatus)
       return resourceResponse
     } catch (error) {
       this.resourceRequestStatus.next(ERROR)

@@ -120,7 +120,7 @@ services:
     environment:
       SELLER_ID: ${SELLER_ID}
       SELLER_CLIENT_ID: ${SELLER_CLIENT_ID}
-      MIDDLEWARE_URL: ${API_HOST}
+      MIDDLEWARE_URL: http://${API_HOST}
       TRANSLATE_BLOB_URL: ${TRANSLATE_BLOB_URL}
       BLOB_STORAGE_URL: ${BLOB_STORAGE_URL}
       BUYER_CLIENT_ID: ${BUYER_CLIENT_ID}
@@ -145,7 +145,7 @@ services:
     isolation: default
     environment:
       BUYER_CLIENT_ID: ${BUYER_CLIENT_ID}
-      MIDDLEWARE_URL: ${API_HOST}
+      MIDDLEWARE_URL: http://${API_HOST}
       SELLER_ID: ${SELLER_ID}
       TRANSLATE_BLOB_URL: ${TRANSLATE_BLOB_URL}
     ports:

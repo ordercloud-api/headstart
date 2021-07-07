@@ -72,6 +72,16 @@ export class OrderTableComponent extends ResourceCrudComponent<Order> {
         Type: 'DateFilter',
       },
       {
+        Display: 'ADMIN.FILTERS.SELLER_OWNED_PRODUCTS',
+        Path: 'xp.HasSellerProducts',
+        Items: [
+          { Text: 'ADMIN.FILTER_OPTIONS.YES', Value: 'true' },
+          { Text: 'ADMIN.FILTER_OPTIONS.NO', Value: 'false|!*' },
+        ],
+        Type: 'Dropdown',
+        QueryRestriction: 'OrderDirection=Incoming',
+      },
+      {
         Display: 'ADMIN.FILTERS.HAS_CLAIMS',
         Path: 'xp.OrderReturnInfo.HasReturn',
         Items: [{ Value: true }, { Value: false }],

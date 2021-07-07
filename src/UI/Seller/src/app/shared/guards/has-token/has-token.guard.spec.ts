@@ -2,10 +2,10 @@ import { TestBed } from '@angular/core/testing';
 import { HasTokenGuard } from '@app-seller/shared/guards/has-token/has-token.guard';
 import { OcTokenService } from '@ordercloud/angular-sdk';
 import { Router } from '@angular/router';
-import { AppAuthService } from '@app-seller/auth';
 import { of } from 'rxjs';
 import { applicationConfiguration } from '@app-seller/config/app.config';
 import { AppStateService } from '@app-seller/shared/services/app-state/app-state.service';
+import { AppAuthService } from '@app-seller/auth/services/app-auth.service';
 
 describe('HasTokenGuard', () => {
   let guard: HasTokenGuard;
@@ -48,7 +48,7 @@ describe('HasTokenGuard', () => {
         { provide: AppStateService, useValue: appStateService },
       ],
     });
-    guard = TestBed.get(HasTokenGuard);
+    guard = TestBed.inject(HasTokenGuard);
   });
 
   // set Date.now for consistent test results

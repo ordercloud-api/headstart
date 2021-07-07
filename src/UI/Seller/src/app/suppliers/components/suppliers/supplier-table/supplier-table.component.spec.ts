@@ -1,7 +1,7 @@
 import { OcTokenService, OcSupplierUserService, OcSupplierService, ListPage } from '@ordercloud/angular-sdk';
 import { AppAuthService } from './../../../../auth/services/app-auth.service';
 import { HttpClientModule } from '@angular/common/http';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service';
 import { SupplierService } from '../supplier.service';
@@ -9,7 +9,6 @@ import { SupplierService } from '../supplier.service';
 import { SupplierTableComponent } from './supplier-table.component';
 import { ResourceCrudComponent } from '@app-seller/shared/components/resource-crud/resource-crud.component';
 import { BehaviorSubject, from } from 'rxjs';
-import { ResourceType } from '@ordercloud/angular-cms-components/shared/models/resource-type.interface';
 
 describe('SupplierTableComponent', () => {
   let component: SupplierTableComponent;
@@ -17,14 +16,14 @@ describe('SupplierTableComponent', () => {
 
   const router = {
     navigateByUrl: jasmine.createSpy('navigateByUrl'),
-    url: { startsWith() {} },
+    url: { startsWith() { } },
     routerState: { snapshot: { url: 'url' } },
   };
   const activatedRoute = {
     snapshot: { queryParams: {} },
     params: from([{ id: 1 }]),
   };
-  const resourceSubjectMock = new BehaviorSubject<ListPage<ResourceType>>(undefined);
+  const resourceSubjectMock = new BehaviorSubject<ListPage<any>>(undefined);
   const supplierService = {
     isSupplierUser() {
       return true;
@@ -49,7 +48,7 @@ describe('SupplierTableComponent', () => {
   const ocSupplierUserService = {};
   const ocSupplierService = {};
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [SupplierTableComponent],
       imports: [HttpClientModule],

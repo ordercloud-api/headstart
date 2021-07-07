@@ -21,8 +21,6 @@ namespace Headstart.Models
         public PriceSchedule PriceSchedule { get; set; }
         public IList<Spec> Specs { get; set; }
         public IList<HSVariant> Variants { get; set; }
-        public IList<Asset> Images { get; set; }
-        public IList<Asset> Attachments { get; set; }
     }
 
     
@@ -33,8 +31,6 @@ namespace Headstart.Models
         public PriceSchedule PriceSchedule { get; set; }
         public IList<Spec> Specs { get; set; }
         public IList<HSVariant> Variants { get; set; }
-        public IList<Asset> Images { get; set; }
-        public IList<Asset> Attachments { get; set; }
     }
 
 
@@ -88,7 +84,6 @@ namespace Headstart.Models
         public List<DocumentAsset> Documents { get; set; }
     }
 
-    
     public class ImageAsset
     {
         public string Url { get; set; }
@@ -96,7 +91,6 @@ namespace Headstart.Models
         public List<string> Tags { get; set; }
     };
 
-    
     public class DocumentAsset
     {
         public string Url { get; set; }
@@ -108,8 +102,6 @@ namespace Headstart.Models
 	{
 		Standard,
 		Quote,
-		PurchaseOrder,
-        Kit
 	}
 
     
@@ -118,6 +110,7 @@ namespace Headstart.Models
         public string SpecCombo { get; set; }
         public List<HSSpecValue> SpecValues { get; set; }
         public string NewID { get; set; }
+        public List<ImageAsset> Images { get; set; }
     }
 
     

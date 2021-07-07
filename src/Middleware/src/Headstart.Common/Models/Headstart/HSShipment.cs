@@ -25,6 +25,7 @@ namespace Headstart.Common.Services.ShippingIntegration.Models
         //public ShipmentRate FreightPopShipmentRate { get; set; }
         public string Service { get; set; }
         public string Comment { get; set; }
+        public string BuyerID { get; set; }
     }
 
     

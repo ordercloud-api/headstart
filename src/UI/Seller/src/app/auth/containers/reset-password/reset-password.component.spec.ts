@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { InjectionToken } from '@angular/core';
@@ -10,8 +10,8 @@ import { ResetPasswordComponent } from '@app-seller/auth/containers/reset-passwo
 import { OcForgottenPasswordService } from '@ordercloud/angular-sdk';
 import { CookieModule } from 'ngx-cookie';
 import { ToastrService } from 'ngx-toastr';
-import { AppFormErrorService } from '@app-seller/shared';
-import { applicationConfiguration, AppConfig } from '@app-seller/config/app.config';
+import { AppConfig, AppFormErrorService } from '@app-seller/shared';
+import { applicationConfiguration } from '@app-seller/config/app.config';
 
 describe('ResetPasswordComponent', () => {
   let component: ResetPasswordComponent;
@@ -29,7 +29,7 @@ describe('ResetPasswordComponent', () => {
     hasPasswordMismatchError: jasmine.createSpy('hasPasswordMismatchError'),
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ResetPasswordComponent],
       imports: [ReactiveFormsModule, CookieModule.forRoot(), HttpClientModule],

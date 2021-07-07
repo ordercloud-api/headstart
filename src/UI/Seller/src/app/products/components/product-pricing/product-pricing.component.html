@@ -25,11 +25,12 @@
     [readonly]="readonly"
     [currency]="supplierCurrency"
     [priceSchedule]="supplierPriceSchedule"
+    [variantCount]="superProduct?.Variants?.length"
+    [specCount]="superProduct?.Specs?.length"
     (priceScheduleUpdated)="updateSupplierPriceSchedule($event)"
   >
   </price-break-editor>
   <div
-    *ngIf="readonly"
     class="row pt-3 mt-3 bg-white shadow-sm card-highlight-border w-100 pl-3"
   >
     <div class="w-100">
@@ -114,6 +115,8 @@
           [readonly]="true"
           [currency]="sellerCurrency"
           [priceSchedule]="buyerMarkedUpSupplierPrices"
+          [variantCount]="superProduct?.Variants?.length"
+          [specCount]="superProduct?.Specs?.length"
         >
         </price-break-editor>
       </ng-container>
@@ -124,6 +127,8 @@
           [currency]="sellerCurrency"
           [priceSchedule]="overridePriceScheduleEditable"
           (priceScheduleUpdated)="updateOverridePriceSchedule($event)"
+          [variantCount]="superProduct?.Variants?.length"
+          [specCount]="superProduct?.Specs?.length"
         >
         </price-break-editor>
       </ng-container>

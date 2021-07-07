@@ -9,7 +9,6 @@ You can have any number of configurations each representing a deployment. By def
 | incrementorPrefix             | This string is prefixed to any ID that has been incremented                                                                                      |
 | baseUrl                       | The base url for this hosted application                                                                                                         |
 | middlewareUrl                 | The base url to the hosted backend middleware API                                                                                                |
-| cmsUrl                        | The base url to the hosted CMS URL by OrderCloud (non-official)                                                                                  |
 | creditCardIframeUrl           | The base url to cardconnect's iframe url                                                                                                         |
 | sellerID                      | The ID of the seller organization that this buyer belongs to. This can be found in the portal https://portal.ordercloud.io                       |
 | translateBlobUrl              | The base url to the folder including your translations. See https://github.com/ngx-translate/core for more info                                  |

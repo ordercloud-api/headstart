@@ -4,7 +4,6 @@ import {
   Inject,
   Output,
   EventEmitter,
-  OnInit,
 } from '@angular/core'
 import { groupBy as _groupBy } from 'lodash'
 import { applicationConfiguration } from '@app-seller/config/app.config'
@@ -13,17 +12,17 @@ import {
   HeadStartSDK,
   HSOrder,
 } from '@ordercloud/headstart-sdk'
-import { LineItemTableStatus } from '../order-details/order-details.component'
+import { LineItemTableStatus, LineItemTableValue } from '../order-details/order-details.component'
 import {
   NumberCanChangeTo,
   CanChangeTo,
   CanChangeLineItemsOnOrderTo,
 } from '@app-seller/orders/line-item-status.helper'
 import { FormArray, Validators, FormControl } from '@angular/forms'
-import { getPrimaryLineItemImage } from '@app-seller/products/product-image.helper'
 import { MeUser, OcOrderService } from '@ordercloud/angular-sdk'
 import { LineItem, LineItemSpec } from 'ordercloud-javascript-sdk'
 import { AppConfig, LineItemStatus, RegexService } from '@app-seller/shared'
+import { getPrimaryLineItemImage } from '@app-seller/shared/services/assets/asset.helper'
 
 @Component({
   selector: 'app-line-item-table',
@@ -36,10 +35,11 @@ export class LineItemTableComponent {
   _liGroupedByShipFrom: HSLineItem[][]
   _supplierOrders: HSOrder[] = []
   _statusChangeForm = new FormArray([])
-  _tableStatus = LineItemTableStatus.Default
+  _tableStatus: LineItemTableValue
   _user: MeUser
   @Input()
   set order(value: HSOrder) {
+    this._tableStatus = LineItemTableStatus.Default
     this._order = value
     this.setSupplierOrders(value)
   }
@@ -61,7 +61,7 @@ export class LineItemTableComponent {
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {}
 
-  changeTableStatus(newStatus: string): void {
+  changeTableStatus(newStatus: LineItemTableValue): void {
     this._tableStatus = newStatus
     if (this._tableStatus !== 'Default') {
       this.setupForm()
@@ -77,8 +77,9 @@ export class LineItemTableComponent {
       (order) => order.ID === `${salesOrderID}-${lineItem.SupplierID}`
     )
     const shipFromID = lineItem.ShipFromAddressID
-    const shipMethod = (
-      supplierOrder?.xp?.SelectedShipMethodsSupplierView || []
+    const shipMethod = ( lineItem.SupplierID === null ?
+      (this._order?.xp?.SelectedShipMethodsSupplierView || []) :
+      (supplierOrder?.xp?.SelectedShipMethodsSupplierView || [])
     ).find((sm) => sm.ShipFromAddressID === shipFromID)
     if (shipMethod == null) return 'No Data'
     const name = shipMethod.Name.replace(/_/g, ' ')
@@ -218,7 +219,6 @@ export class LineItemTableComponent {
     return getPrimaryLineItemImage(
       lineItemID,
       this._lineItems,
-      this.appConfig.sellerID
     )
   }
 }

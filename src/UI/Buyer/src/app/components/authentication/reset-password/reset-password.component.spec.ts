@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
@@ -25,7 +25,7 @@ describe('OCMResetPassword', () => {
     hasStrongPasswordError: jasmine.createSpy('hasStrongPasswordError'),
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [OCMResetPassword],
       imports: [ReactiveFormsModule, HttpClientModule],

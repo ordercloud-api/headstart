@@ -19,7 +19,6 @@ import { HeadStartSDK } from '@ordercloud/headstart-sdk'
 import { OrdersToApproveStateService } from '../order-history/order-to-approve-state.service'
 import { ApplicationInsightsService } from '../application-insights/application-insights.service'
 import { TokenHelperService } from '../token-helper/token-helper.service'
-import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { AppConfig } from 'src/app/models/environment.types'
 import { BaseResolveService } from '../base-resolve/base-resolve.service'
 
@@ -48,7 +47,7 @@ export class AuthService {
     private appInsightsService: ApplicationInsightsService,
     private activatedRoute: ActivatedRoute,
     private baseResolveService: BaseResolveService
-  ) {}
+  ) { }
 
   // All this isLoggedIn stuff is only used in the header wrapper component
   // remove once its no longer needed.
@@ -96,7 +95,18 @@ export class AuthService {
 
   async register(me: MeUser): Promise<AccessTokenBasic> {
     const anonToken = await this.getAnonymousToken()
-    const token = await Me.Register(me, {anonUserToken: anonToken.access_token})
+    const anonUser = this.currentUser.get();
+    const countryPatchObj = {
+      xp: {
+        Country: anonUser?.xp?.Country || "US"
+      }
+    }
+    const token = await Me.Register(me, { anonUserToken: anonToken.access_token })
+    const newUser = await Me.Patch(countryPatchObj, { accessToken: token.access_token })
+    // temporary workaround for platform issue
+    // need to remove and reset userGroups for newly registered user to see products
+    // issue: https://four51.atlassian.net/browse/EX-2222
+    await HeadStartSDK.BuyerLocations.ReassignUserGroups(newUser.Buyer.ID, newUser.ID)
     this.loginWithTokens(token.access_token)
     return token
   }
@@ -120,7 +130,7 @@ export class AuthService {
       rememberMe
     )
     const urlParams = this.activatedRoute.snapshot.queryParams
-    if(urlParams.redirect){
+    if (urlParams.redirect) {
       void this.router.navigate([`/${urlParams.redirect}`])
     } else {
       void this.router.navigate(['/home'])
@@ -135,7 +145,6 @@ export class AuthService {
     rememberMe = false
   ): void {
     this.tokenHelper.setIsSSO(isSSO)
-    ContentManagementClient.Tokens.SetAccessToken(token)
     HeadStartSDK.Tokens.SetAccessToken(token)
     this.setToken(token)
     if (rememberMe && refreshToken) {
@@ -153,7 +162,6 @@ export class AuthService {
   async anonymousLogin(): Promise<AccessToken> {
     try {
       const anonToken = await this.getAnonymousToken()
-      ContentManagementClient.Tokens.SetAccessToken(anonToken.access_token)
       HeadStartSDK.Tokens.SetAccessToken(anonToken.access_token)
       this.setToken(anonToken.access_token)
       return anonToken
@@ -172,7 +180,6 @@ export class AuthService {
 
   async logout(): Promise<void> {
     Tokens.RemoveAccessToken()
-    ContentManagementClient.Tokens.RemoveAccessToken()
     HeadStartSDK.Tokens.RemoveAccessToken()
     this.isLoggedIn = false
     this.appInsightsService.clearUser()

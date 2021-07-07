@@ -12,7 +12,7 @@ describe('IsProfiledUserGuard', () => {
       imports: [],
       providers: [{ useValue: appStateService }],
     });
-    service = TestBed.get(IsProfiledUserGuard);
+    service = TestBed.inject(IsProfiledUserGuard);
   });
 
   it('should be created', () => {

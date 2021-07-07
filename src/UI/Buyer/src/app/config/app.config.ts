@@ -9,14 +9,15 @@ export const ocAppConfig: AppConfig = {
   incrementorPrefix: environment.incrementorPrefix,
   baseUrl: environment.baseUrl,
   middlewareUrl: environment.middlewareUrl,
-  cmsUrl: environment.cmsUrl,
   creditCardIframeUrl: environment.creditCardIframeUrl,
   sellerID: environment.sellerID,
+  sellerName: environment.sellerName,
   translateBlobUrl: environment.translateBlobUrl,
   orderCloudApiUrl: environment.orderCloudApiUrl,
   theme: environment.theme,
   anonymousShoppingEnabled: true,
   appInsightsInstrumentationKey: environment.appInsightsInstrumentationKey,
+  acceptedPaymentMethods: environment.acceptedPaymentMethods,
   scope: [
     'MeAddressAdmin',
     'AddressAdmin', // Only for location owners

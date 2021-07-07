@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnInit
 } from '@angular/core'
 import { FormGroup, Validators, FormControl } from '@angular/forms'
 import { CreditCardFormatPipe } from 'src/app/pipes/credit-card-format.pipe'
@@ -22,20 +23,20 @@ import {
   CreditCard,
   CreditCardFormOutput,
 } from 'src/app/models/credit-card.types'
+import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 
 @Component({
   templateUrl: './credit-card-form.component.html',
   styleUrls: ['./credit-card-form.component.scss'],
 })
-export class OCMCreditCardForm implements OnChanges {
+export class OCMCreditCardForm implements OnChanges, OnInit {
   @Output() formSubmitted = new EventEmitter<CreditCardFormOutput>()
   @Output() formDismissed = new EventEmitter()
   @Input() card: OrderCloudIntegrationsCreditCardToken
   @Input() submitText: string
-  @Input() termsAccepted: boolean
   @Input() showCVV: boolean
   @Input() showCardDetails: boolean
-  _termsAccepted: boolean
+  @Input() isAnon: boolean
   _showCardDetails: boolean
   _showCVV: boolean
   cardError?: string
@@ -61,10 +62,20 @@ export class OCMCreditCardForm implements OnChanges {
   faCcMastercard = faCcMastercard
   faCcAmex = faCcAmex
   private readonly defaultCountry = 'US'
+  shouldShowShippingOption
 
-  constructor(private creditCardFormatPipe: CreditCardFormatPipe) {
+  constructor(
+    private creditCardFormatPipe: CreditCardFormatPipe,
+    private context: ShopperContextService
+  ) {
     this.countryOptions = GeographyConfig.getCountries()
     this.stateOptions = this.getStateOptions(this.defaultCountry)
+  }
+
+  ngOnInit() {
+    this.shouldShowShippingOption = !this.context.router
+      .getActiveUrl()
+      .includes('/profile')
   }
 
   ngOnChanges(changes: ComponentChanges<OCMCreditCardForm>): void {
@@ -72,9 +83,6 @@ export class OCMCreditCardForm implements OnChanges {
     // instead reference controlled variables that are only updated when angular knows about them (in ngOnChanges)
     if (changes.showCardDetails) {
       this._showCardDetails = changes.showCardDetails.currentValue
-    }
-    if (changes.termsAccepted) {
-      this._termsAccepted = changes.termsAccepted.currentValue
     }
     if (changes.showCVV) {
       this._showCVV = changes.showCVV.currentValue
@@ -216,6 +224,28 @@ export class OCMCreditCardForm implements OnChanges {
       'country',
       new FormControl(form.country, Validators.required)
     )
+    if (this.shouldShowShippingOption) {
+      this.cardForm.addControl('useShippingAddress', new FormControl(false))
+    }
+  }
+
+  mapShippingAddressToBilling(event: Event) {
+    const value = (event.target as HTMLInputElement).checked
+    const lineItems = this.context.order.getLineItems()
+    if (value && lineItems?.Items && lineItems.Items[0]) {
+      const firstItem = lineItems.Items[0]
+      this.cardForm.controls['street'].setValue(firstItem.ShippingAddress?.Street1)
+      this.cardForm.controls['city'].setValue(firstItem.ShippingAddress?.City)
+      this.cardForm.controls['state'].setValue(firstItem.ShippingAddress?.State)
+      this.cardForm.controls['zip'].setValue(firstItem.ShippingAddress?.Zip)
+      this.cardForm.controls['country'].setValue(firstItem.ShippingAddress?.Country)
+    } else {
+      this.cardForm.controls['street'].setValue('')
+      this.cardForm.controls['city'].setValue('')
+      this.cardForm.controls['state'].setValue('')
+      this.cardForm.controls['zip'].setValue('')
+      this.cardForm.controls['country'].setValue('')
+    }
   }
 
   private removeCardDetailsForm(): void {

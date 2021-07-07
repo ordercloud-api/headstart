@@ -29,9 +29,11 @@
         align-items: flex-start;
         margin-bottom: 0.8rem;
         border-radius: 0.25rem;
+
         &:hover {
-            background-color: rgba($teal, 0.08);
+            background-color: rgba($primary, 0.05);
             cursor: pointer;
+            color: $primary-dark;
         }
     }
 
@@ -54,18 +56,23 @@
         padding: 0 0.8rem;
         min-width: 0;
         border-radius: 0.25rem;
-        color: $primary;
+        color: $secondary;
         text-decoration: none;
         font-weight: 500;
+
+        &:hover {
+            color: $primary-light;
+        }
+
         &__icon {
             margin-top: 0.6rem;
             margin-bottom: 0.6rem;
             padding: 0 0.8rem;
-        } 
+        }
     }
 
     &__active {
-        background: rgba($teal,0.12);
-        color: $teal !important;
+        background: rgba($primary, 0.12);
+        color: $primary !important;
     }
 }

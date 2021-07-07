@@ -1,26 +1,6 @@
-import {
-  HSOrder,
-  HSLineItem,
-  OrderPromotion,
-} from '@ordercloud/headstart-sdk'
-import { ShipEstimate } from 'ordercloud-javascript-sdk'
+import { HSOrder, HSLineItem } from '@ordercloud/headstart-sdk'
+import { OrderPromotion, ShipEstimate } from 'ordercloud-javascript-sdk'
 import { OrderSummaryMeta } from '../models/order.types'
-
-const getPurchaseOrderLineItems = (
-  lineItems: HSLineItem[]
-): HSLineItem[] => {
-  return lineItems.filter(
-    (li) => li.Product.xp?.ProductType === 'PurchaseOrder'
-  )
-}
-
-const getStandardLineItems = (
-  lineItems: HSLineItem[]
-): HSLineItem[] => {
-  return lineItems.filter(
-    (li) => !(li.Product.xp?.ProductType === 'PurchaseOrder')
-  )
-}
 
 const getOverrideText = (checkoutPanel: string): string => {
   /* if there is override text for shipping and tax
@@ -55,41 +35,27 @@ export const getOrderSummaryMeta = (
   order: HSOrder,
   orderPromos: OrderPromotion[],
   lineItems: HSLineItem[],
-  shipEstimates: ShipEstimate[],
   checkoutPanel: string,
 ): OrderSummaryMeta => {
-  const StandardLineItems = getStandardLineItems(lineItems);
-  const POLineItems = getPurchaseOrderLineItems(lineItems);
 
   const ShippingAndTaxOverrideText = getOverrideText(checkoutPanel);
   const shouldHideShippingAndText = !!ShippingAndTaxOverrideText;
 
-  const CreditCardDisplaySubtotal = StandardLineItems.reduce((accumulator, li) => (li.Quantity * li.UnitPrice) + accumulator, 0);
-  const DiscountTotal = orderPromos.reduce((accumulator, promo) => (promo.Amount) + accumulator, 0);
+  const CreditCardDisplaySubtotal = lineItems.reduce((accumulator, li) => (li.Quantity * li.UnitPrice) + accumulator, 0);
+  const DiscountTotal = orderPromos?.reduce((accumulator, promo) => (promo.Amount) + accumulator, 0);
 
-  const POSubtotal = POLineItems.reduce((accumulator, li) => (li.Quantity * li.UnitPrice) + accumulator, 0);
-
-  const POShippingCost = getPOShippingCost(shipEstimates, POLineItems);
-  const ShippingCost = order.ShippingCost - POShippingCost;
-
-  const POTotal = POSubtotal + POShippingCost;
+  const ShippingCost = order.ShippingCost;
 
   const CreditCardTotal = getCreditCardTotal(CreditCardDisplaySubtotal, ShippingCost, order.TaxCost, shouldHideShippingAndText, DiscountTotal);
-  const OrderTotal = POTotal + CreditCardTotal;
+  const OrderTotal = CreditCardTotal;
 
   return {
-    StandardLineItemCount: StandardLineItems.length,
-    StandardLineItems,
-    POLineItemCount: POLineItems.length,
-    POLineItems,
+    LineItemCount: lineItems.length,
     ShippingAndTaxOverrideText,
     ShouldHideShippingAndText: shouldHideShippingAndText,
     CreditCardDisplaySubtotal,
-    POShippingCost,
     ShippingCost: ShippingCost,
     TaxCost: order.TaxCost,
-    POSubtotal,
-    POTotal,
     CreditCardTotal,
     DiscountTotal,
     OrderTotal
@@ -97,25 +63,3 @@ export const getOrderSummaryMeta = (
 }
 
 /* eslint-enable */
-
-const getPOShippingCost = (
-  shipEstimates: ShipEstimate[],
-  POlineItems: HSLineItem[]
-): number => {
-  if (!shipEstimates) {
-    // the error is in orderworksheet.ShipEstimateResponse.UnhandledErrorBody
-    throw new Error('There was an error while retrieving shipping estimates')
-  }
-  const POShipEstimates = shipEstimates.filter((shipEstimate) => {
-    return shipEstimate.ShipEstimateItems.some((item) =>
-      POlineItems.some((li) => li.ID === item.LineItemID)
-    )
-  })
-
-  return POShipEstimates.reduce((acc, shipEstimate) => {
-    const selectedMethod = shipEstimate.ShipMethods.find(
-      (method) => method.ID === shipEstimate.SelectedShipMethodID
-    )
-    return (selectedMethod?.Cost || 0) + acc
-  }, 0)
-}

@@ -6,11 +6,12 @@
   "incrementorPrefix": "DB_UAT",
   "baseUrl": "https://my-default-buyer-uat-uat.com",
   "middlewareUrl": "https://my-middleware-api.com",
-  "cmsUrl": "https://ordercloud-cms-staging.azurewebsites.net",
   "creditCardIframeUrl": "https://fts-uat.cardconnect.com/itoke/ajax-tokenizer.html",
   "sellerID": "my-seller-id",
   "translateBlobUrl": "https://my-blob-root/ngx-translate/i18n/",
   "orderCloudApiUrl": "https://stagingapi.ordercloud.io",
-  "theme": { "logoSrc": "assets/generic-logo.png" },
+  "theme": {
+    "logoSrc": "assets/generic-logo.png"
+  },
   "appInsightsInstrumentationKey": null
 }

@@ -50,13 +50,14 @@ export interface EnvironmentConfig {
   incrementorPrefix: string
   baseUrl: string
   middlewareUrl: string
-  cmsUrl: string
   creditCardIframeUrl: string
   sellerID: string
+  sellerName?: string
   translateBlobUrl: string
   orderCloudApiUrl: string
   theme?: Theme
   appInsightsInstrumentationKey?: string
+  acceptedPaymentMethods: string[]
 }
 
 export class AppConfig {
@@ -97,7 +98,7 @@ export class AppConfig {
    */
   translateBlobUrl: string
   orderCloudApiUrl: string
-  cmsUrl: string
+
   middlewareUrl: string
   creditCardIframeUrl: string
 
@@ -106,6 +107,10 @@ export class AppConfig {
    */
   sellerID: string
 
+  /**
+   * Name to use when displaying seller organization (i.e. seller owned products)
+   */
+  sellerName: string
   /**
    * An array of security roles that will be requested upon login.
    * These roles allow access to specific endpoints in the OrderCloud.io API.
@@ -119,4 +124,9 @@ export class AppConfig {
    * Microsoft Azure Application Insights instrumentation key
    */
   appInsightsInstrumentationKey: string
+
+  /**
+   * Payment methods that are accepted for the buyer/storefront
+   */
+  acceptedPaymentMethods: string[]
 }

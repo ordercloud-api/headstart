@@ -60,11 +60,15 @@
   >
     <button
       ngbDropdownItem
-      class="category-buttons"
+      class="icon-button shadow-sm"
       title="Add Sub-Category"
+      type="button"
       (click)="addNestedResource(_secondaryHeader)"
     >
-      <fa-icon [icon]="faPlus"></fa-icon>
+      <div class="icon-wrapper text-primary">
+        <fa-icon [icon]="faPlus" aria-hidden="true"></fa-icon>
+      </div>
+      <span class="sr-only">button to add a subcategory</span>
     </button>
   </div>
 </div>

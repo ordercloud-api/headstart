@@ -21,9 +21,9 @@ describe('CacheInterceptor', () => {
         },
       ],
     });
-    interceptor = TestBed.get(CacheInterceptor);
-    httpClient = TestBed.get(HttpClient);
-    httpMock = TestBed.get(HttpTestingController);
+    interceptor = TestBed.inject(CacheInterceptor);
+    httpClient = TestBed.inject(HttpClient);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   it('should be created', () => {

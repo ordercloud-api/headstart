@@ -27,35 +27,67 @@ namespace ordercloud.integrations.avalara
 		Task<TaxCertificate> UpdateCertificateAsync(int certificateID, TaxCertificate cert, Address buyerLocation);
 	}
 
+	public enum AppEnvironment { Test, Staging, Production }
+
 	public class AvalaraCommand : IAvalaraCommand
 	{
 		private readonly AvalaraConfig _settings;
 		private readonly AvaTaxClient _avaTax;
 		private readonly string _companyCode;
 		private readonly string _baseUrl;
+		private bool noAccountCredentials;
+		private AppEnvironment appEnvironment;
 
-		public AvalaraCommand(AvalaraConfig settings, AvaTaxClient client)
+		public AvalaraCommand(AvalaraConfig settings, AvaTaxClient client, string environment)
 		{
 			_settings = settings;
+			appEnvironment = (AppEnvironment)Enum.Parse(typeof(AppEnvironment), environment);
+
+			noAccountCredentials = string.IsNullOrEmpty(_settings?.LicenseKey);
+
 			_companyCode = _settings.CompanyCode;
 			_baseUrl = _settings.BaseApiUrl;
             _avaTax = client;
         }
 
+		private bool ShouldMockAvalaraResponse()
+        {
+			// To give a larger "headstart" in Test and UAT, Responses can be mocked by simply
+			// not providing an Avalara License Key. (It is still needed for Production)
+			return noAccountCredentials && appEnvironment != AppEnvironment.Production;
+		}
+
 		public async Task<TransactionModel> GetEstimateAsync(OrderWorksheet orderWorksheet)
 		{
+			if (ShouldMockAvalaraResponse()) { return CreateMockTransactionModel(); }
 			var taxEstimate = await CreateTransactionAsync(DocumentType.SalesOrder, orderWorksheet);
 			return taxEstimate;
 		}
 
-		public async Task<TransactionModel> CreateTransactionAsync(OrderWorksheet orderWorksheet)
+        private TransactionModel CreateMockTransactionModel()
+        {
+			TransactionModel result = new TransactionModel()
+			{
+				totalTax = (decimal?)123.45,
+				description = "Mock Avalara Response for Headstart",
+				date = DateTime.Now
+			};
+
+			return result;
+        }
+
+        public async Task<TransactionModel> CreateTransactionAsync(OrderWorksheet orderWorksheet)
 		{
+			if (ShouldMockAvalaraResponse()) { return CreateMockTransactionModel(); }
+
 			var transaction = await CreateTransactionAsync(DocumentType.SalesInvoice, orderWorksheet);
 			return transaction;
 		}
 
 		public async Task<TransactionModel> CommitTransactionAsync(string transactionCode)
 		{
+			if (ShouldMockAvalaraResponse()) { return CreateMockTransactionModel(); }
+
 			var model = new CommitTransactionModel() { commit = true };
 			var transaction = await _avaTax.CommitTransactionAsync(_companyCode, transactionCode, DocumentType.SalesInvoice, "", model);
 			return transaction;
@@ -63,14 +95,27 @@ namespace ordercloud.integrations.avalara
 
 		public async Task<ListPage<TaxCode>> ListTaxCodesAsync(ListArgs<TaxCode> hsListArgs)
 		{
+			if (ShouldMockAvalaraResponse()) { return CreateMockTaxCodeList(); }
+
 			var args = TaxCodeMapper.Map(hsListArgs);
 			var avataxCodes = await _avaTax.ListTaxCodesAsync(args.Filter, args.Top, args.Skip, args.OrderBy);
 			var codeList = TaxCodeMapper.Map(avataxCodes, args);
 			return codeList;
 		}
 
-		public async Task<TaxCertificate> GetCertificateAsync(int certificateID)
+        private ListPage<TaxCode> CreateMockTaxCodeList()
+        {
+			return new ListPage<TaxCode>()
+			{
+				Items = new List<TaxCode>() { new TaxCode() {Description = "Mock Tax Code for Headstart", Code = "Headstart Tax Code" } },
+				Meta = new ListPageMeta() { }
+			};
+        }
+
+        public async Task<TaxCertificate> GetCertificateAsync(int certificateID)
 		{
+			if (ShouldMockAvalaraResponse()) { return CreateMockTaxCertificate(); }
+
 			var companyID = _settings.CompanyID;
 			var certificate = _avaTax.GetCertificateAsync(companyID, certificateID, "");
 			var pdf = GetCertificateBase64String(companyID, certificateID);
@@ -80,6 +125,8 @@ namespace ordercloud.integrations.avalara
 
 		public async Task<TaxCertificate> CreateCertificateAsync(TaxCertificate cert, Address buyerLocation)
 		{
+			if (ShouldMockAvalaraResponse()) { return CreateMockTaxCertificate(); }
+
 			var companyID = _settings.CompanyID;
 			var certificates = await _avaTax.CreateCertificatesAsync(companyID, false, new List<CertificateModel> { 
 				TaxCertificateMapper.Map(cert, buyerLocation, companyID) 
@@ -89,8 +136,20 @@ namespace ordercloud.integrations.avalara
 			return mappedCertificate;
 		}
 
-		public async Task<TaxCertificate> UpdateCertificateAsync(int certificateID, TaxCertificate cert, Address buyerLocation)
+        private TaxCertificate CreateMockTaxCertificate()
+        {
+			//bypass calling Avalara when no License Key is provided. 
+			return new TaxCertificate()
+			{
+				FileName = "Mock Tax Certificate",
+				SignedDate = DateTimeOffset.Now
+			};
+        }
+
+        public async Task<TaxCertificate> UpdateCertificateAsync(int certificateID, TaxCertificate cert, Address buyerLocation)
 		{
+			if (ShouldMockAvalaraResponse()) { return CreateMockTaxCertificate(); }
+
 			var companyID = _settings.CompanyID;
 			var certificate = _avaTax.UpdateCertificateAsync(companyID, certificateID, TaxCertificateMapper.Map(cert, buyerLocation, companyID));
 			var pdf = GetCertificateBase64String(companyID, certificateID);
@@ -101,6 +160,9 @@ namespace ordercloud.integrations.avalara
 		// The avalara SDK method for this was throwing an internal JSON parse exception.
 		private async Task<string> GetCertificateBase64String(int companyID, int certificateID)
 		{
+			//When no credentials are supplied, certificates can't be uploaded or downloaded, so return empty
+			if (ShouldMockAvalaraResponse()) { return ""; }
+
 			var pdfBtyes = await new Url($"{_baseUrl}/companies/{companyID}/certificates/{certificateID}/attachment")
 				.WithBasicAuth(_settings.AccountID.ToString(), _settings.LicenseKey)
 				.GetBytesAsync();
@@ -114,6 +176,8 @@ namespace ordercloud.integrations.avalara
             {
 				try
 				{
+					if (ShouldMockAvalaraResponse()) { return CreateMockTransactionModel(); }
+
 					var createTransactionModel = orderWorksheet.ToAvalaraTransationModel(_companyCode, docType);
 					var transaction = await _avaTax.CreateTransactionAsync("", createTransactionModel);
 					return transaction;

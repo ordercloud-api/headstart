@@ -1,15 +1,8 @@
 <ng-container>
-  <cms-page-renderer
-    *ngIf="homePageDoc"
-    [pageDoc]="homePageDoc"
-  ></cms-page-renderer>
   <div class="container">
     <!-- Featured products can be managed in the seller application -->
-    <ocm-product-carousel
-      *ngIf="featuredProducts?.length"
-      [displayTitle]="'Featured Products'"
-      [products]="featuredProducts"
-    >
+    <ocm-product-carousel *ngIf="featuredProducts?.length" [displayTitle]="'Featured Products'"
+      [products]="featuredProducts">
     </ocm-product-carousel>
   </div>
 </ng-container>

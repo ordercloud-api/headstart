@@ -12,7 +12,6 @@ using Headstart.Common.Repositories;
 using Headstart.Common.Services;
 using Headstart.Common.Services.CMS;
 using Headstart.Common.Services.Zoho;
-using LazyCache;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -31,13 +30,16 @@ using System.Collections.Generic;
 using System.Net;
 using Microsoft.OpenApi.Models;
 using OrderCloud.Catalyst;
-using OrderCloud.Common.Services;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using ordercloud.integrations.library.helpers;
 using Polly;
 using Polly.Extensions.Http;
 using Microsoft.WindowsAzure.Storage.Blob;
 using ordercloud.integrations.library.helpers;
+using Polly;
+using Polly.Extensions.Http;
+using Polly.Contrib.WaitAndRetry;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Headstart.API
 {
@@ -83,10 +85,11 @@ namespace Headstart.API
                 ConnectionString = _settings.BlobSettings.ConnectionString,
                 Container = _settings.BlobSettings.ContainerNameExchangeRates
             };
-            var middlewareErrorsConfig = new BlobServiceConfig()
+            var assetConfig = new BlobServiceConfig()
             {
                 ConnectionString = _settings.BlobSettings.ConnectionString,
-                Container = "unhandled-errors-log"
+                Container = "assets", 
+                AccessType = BlobContainerPublicAccessType.Container 
             };
 
             var flurlClientFactory = new PerBaseUrlFlurlClientFactory();
@@ -103,7 +106,7 @@ namespace Headstart.API
                 })
                 .AddSingleton<ISimpleCache, OrderCloud.Common.Services.LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
                 .ConfigureServices()
-                .AddOrderCloudUserAuth<AppSettings>()
+                .AddOrderCloudUserAuth()
                 .AddOrderCloudWebhookAuth(opts => opts.HashKey = _settings.OrderCloudSettings.WebhookHashKey)
                 .InjectCosmosStore<LogQuery, OrchestrationLog>(cosmosConfig)
                 .InjectCosmosStore<ReportTemplateQuery, ReportTemplate>(cosmosConfig)
@@ -124,9 +127,8 @@ namespace Headstart.API
                 .Inject<IHSSupplierCommand>()
                 .Inject<ICreditCardCommand>()
                 .Inject<ISupportAlertService>()
-                .Inject<IOrderCalcService>()
+                .Inject<IUserContextProvider>()
                 .Inject<ISupplierApiClientHelper>()
-                .AddSingleton<ICMSClient>(new CMSClient(new CMSClientConfig() { BaseUrl = _settings.CMSSettings.BaseUrl }))
                 .AddSingleton<ISendGridClient>(x => new SendGridClient(_settings.SendgridSettings.ApiKey))
                 .AddSingleton<IFlurlClientFactory>(x => flurlClientFactory)
                 .AddSingleton<DownloadReportCommand>()
@@ -150,15 +152,16 @@ namespace Headstart.API
                         Roles = new[] { ApiRole.FullAccess }
                     })))
                 .AddSingleton<IOrderCloudIntegrationsExchangeRatesClient, OrderCloudIntegrationsExchangeRatesClient>()
+                .AddSingleton<IAssetClient>(provider => new AssetClient( new OrderCloudIntegrationsBlobService(assetConfig), _settings))
                 .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand( new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
                 .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand(new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
                 .AddSingleton<IAvalaraCommand>(x => new AvalaraCommand(
                     avalaraConfig,
                     new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(avalaraConfig.BaseApiUrl)
-                   ).WithSecurity(_settings.AvalaraSettings.AccountID, _settings.AvalaraSettings.LicenseKey)))
+                   ).WithSecurity(_settings.AvalaraSettings.AccountID, _settings.AvalaraSettings.LicenseKey), _settings.EnvironmentSettings.Environment.ToString()))
                 .AddSingleton<IEasyPostShippingService>(x => new EasyPostShippingService(new EasyPostConfig() { APIKey = _settings.EasyPostSettings.APIKey }))
                 .AddSingleton<ISmartyStreetsService>(x => new SmartyStreetsService(_settings.SmartyStreetSettings, smartyStreetsUsClient))
-                .AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(_settings.CardConnectSettings, flurlClientFactory))
+                .AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(_settings.CardConnectSettings, _settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))
                 .AddSingleton<IOrderCloudClient>(provider => new OrderCloudClient(new OrderCloudClientConfig
                 {
                     ApiUrl = _settings.OrderCloudSettings.ApiUrl,
@@ -185,13 +188,23 @@ namespace Headstart.API
 
 
             ServicePointManager.DefaultConnectionLimit = int.MaxValue;
-            FlurlHttp.Configure(settings => settings.Timeout = TimeSpan.FromSeconds(_settings.FlurlSettings.TimeoutInSeconds));
+            FlurlHttp.Configure(settings => settings.Timeout = TimeSpan.FromSeconds(_settings.FlurlSettings.TimeoutInSeconds == 0 ? 30 : _settings.FlurlSettings.TimeoutInSeconds));
+
+            // This adds retry logic for any api call that fails with a transient error (server errors, timeouts, or rate limiting requests)
+            // Will retry up to 3 times using exponential backoff and jitter, a mean of 3 seconds wait time in between retries
+            // https://github.com/App-vNext/Polly/wiki/Retry-with-jitter#more-complex-jitter
+            var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(3), retryCount: 3);
+            var policy = HttpPolicyExtensions
+                            .HandleTransientHttpError()
+                            .OrResult(response => response.StatusCode == HttpStatusCode.TooManyRequests)
+                            .WaitAndRetryAsync(delay);
+            FlurlHttp.Configure(settings => settings.HttpClientFactory = new PollyFactory(policy));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            CatalystApplicationBuilder.CreateApplicationBuilder(app, env)
+            CatalystApplicationBuilder.DefaultCatalystAppBuilder(app, env)
                 .UseSwagger()
                 .UseSwaggerUI(c =>
                 {

@@ -1,4 +1,4 @@
-﻿using Headstart.Models.Attributes;
+using Headstart.Models.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.SDK;
 using System.Threading.Tasks;
@@ -20,7 +20,13 @@ namespace Headstart.Common.Controllers
 		[HttpPost, Route("me/addresses"), OrderCloudUserAuth(ApiRole.MeAddressAdmin)]
 		public async Task<BuyerAddress> CreateMeAddress([FromBody] BuyerAddress address) =>
 			await _command.CreateMeAddress(address, UserContext);
-	
+
+		[HttpPost, Route("me/addresses/validate")]
+		public async Task<BuyerAddress> ValidateAddress([FromBody] BuyerAddress address)
+        {
+			var validation = await _command.ValidateAddress(address);
+			return validation.ValidAddress;
+        }
 
 		[HttpPut, Route("me/addresses/{addressID}"), OrderCloudUserAuth(ApiRole.MeAddressAdmin)]
 		public async Task<BuyerAddress> SaveMeAddress(string addressID, [FromBody] BuyerAddress address) =>

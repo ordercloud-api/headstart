@@ -1,3 +1,4 @@
+import { faBan, faCircle, faClock } from '@fortawesome/free-solid-svg-icons';
 /* eslint-disable max-lines-per-function */
 import { BrowserModule } from '@angular/platform-browser'
 import {
@@ -28,7 +29,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { NgxImageZoomModule } from 'ngx-image-zoom'
 import { NgxSpinnerModule } from 'ngx-spinner'
 import { OCMCategoryDropdown } from './components/layout/category-dropdown/category-dropdown.component'
-import { CmsBuyerModule } from '@ordercloud/angular-cms-components'
 
 import {
   NgbCarouselModule,
@@ -149,13 +149,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { OCMBuyerLocationPermissions } from './components/profile/buyer-location-permissions/buyer-location-permissions'
 import { OCMOrderAccessManagement } from './components/profile/order-approval-permissions/order-approval-permissions.component'
 import { SafeHTMLPipe } from './pipes/safe-html.pipe'
-import { OCMStaticPage } from './components/layout/static-page/static-page.component'
-import { OCMKitProductDetails } from './components/products/kit-product-details/kit-product-details.component'
-import { KitProductNameWithSpecsPipe } from './pipes/kitproduct-name-with-specs.pipe'
 import { OCMProductAttachments } from './components/products/product-attachments/product-attachments.component'
-import { OCMKitStaticCard } from './components/products/kit-static-card/kit-static-card.component'
-import { OCMKitVariableCard } from './components/products/kit-variable-card/kit-variable-card.component'
-import { OCMKitVariantSelector } from './components/products/kit-variant-selector/kit-variant-selector.component'
 import { CartWrapperComponent } from './wrapper-components/cart-wrapper.component'
 import { CheckoutWrapperComponent } from './wrapper-components/checkout-wrapper.component'
 import { AddressListWrapperComponent } from './wrapper-components/address-list-wrapper.component'
@@ -163,7 +157,6 @@ import { LocationListWrapperComponent } from './wrapper-components/location-list
 import { LocationManagementWrapperComponent } from './wrapper-components/location-management-wrapper.component'
 import { ForgotPasswordWrapperComponent } from './wrapper-components/forgot-password-wrapper.component'
 import { HomeWrapperComponent } from './wrapper-components/home-wrapper.component'
-import { StaticPageWrapperComponent } from './wrapper-components/static-page-wrapper.component'
 import { LoginWrapperComponent } from './wrapper-components/login-wrapper.component'
 import { MeChangePasswordWrapperComponent } from './wrapper-components/me-change-password-wrapper.component'
 import { PaymentListWrapperComponent } from './wrapper-components/payment-list-wrapper.component'
@@ -200,11 +193,12 @@ import { RouteService } from './services/route/route.service'
 import { ShopperContextService } from './services/shopper-context/shopper-context.service'
 import { TempSdk } from './services/temp-sdk/temp-sdk.service'
 import { TokenHelperService } from './services/token-helper/token-helper.service'
-import { CMSConfiguration } from '@ordercloud/cms-sdk'
 import { AppConfig } from './models/environment.types'
-import { OCMKitLineitemTable } from './components/cart/lineitem-table/kit-lineitem-table/kit-lineitem-table.component'
 import { BaseResolveService } from './services/base-resolve/base-resolve.service'
 import { ShipMethodNameMapperPipe } from './pipes/ship-method-name/ship-method-name.pipe'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faCcAmex, faCcDiscover, faCcMastercard, faCcVisa } from '@fortawesome/free-brands-svg-icons'
+import { faCreditCard } from '@fortawesome/free-solid-svg-icons'
 
 export function HttpLoaderFactory(
   http: HttpClient,
@@ -222,7 +216,6 @@ const components = [
   LocationManagementWrapperComponent,
   ForgotPasswordWrapperComponent,
   HomeWrapperComponent,
-  StaticPageWrapperComponent,
   LoginWrapperComponent,
   MeChangePasswordWrapperComponent,
   PaymentListWrapperComponent,
@@ -234,9 +227,6 @@ const components = [
   OrderDetailWrapperComponent,
   OrderHistoryWrapperComponent,
   SupplierListWrapperComponent,
-  OCMKitStaticCard,
-  OCMKitVariableCard,
-  OCMKitVariantSelector,
   OCMCategoryDropdown,
   OCMQuoteRequestForm,
   OCMContactSupplierForm,
@@ -245,15 +235,12 @@ const components = [
   OCMQuantityInput,
   OCMProductCarousel,
   OCMProductDetails,
-  OCMKitProductDetails,
   OCMImageGallery,
   OCMSpecForm,
   OCMOrderSummary,
   OCMLineitemTable,
-  OCMKitLineitemTable,
   OCMCart,
   OCMHomePage,
-  OCMStaticPage,
   OCMProductSort,
   OCMSupplierSort,
   OCMSupplierCard,
@@ -334,7 +321,6 @@ const components = [
     SpecFieldDirective,
     ProductNameWithSpecsPipe,
     ShipMethodNameMapperPipe,
-    KitProductNameWithSpecsPipe,
     OrderStatusDisplayPipe,
     PhoneFormatPipe,
     ChildCategoryPipe,
@@ -347,7 +333,6 @@ const components = [
     ...components,
   ],
   imports: [
-    CmsBuyerModule,
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
@@ -426,12 +411,12 @@ export class AppModule {
     MktpConfiguration.Set({
       baseApiUrl: this.appConfig.middlewareUrl,
     })
-    CMSConfiguration.Set({
-      baseApiUrl: this.appConfig.cmsUrl,
-    })
+
     Configuration.Set(this.getOrdercloudSDKConfig(appConfig))
     translate.setDefaultLang('en')
+    translate.use('en')
 
+    library.add(faCcDiscover, faCcMastercard, faCcVisa, faCreditCard, faCcAmex, faCircle, faClock, faBan)
     this.buildWebComponent(OCMProfileNav, 'ocm-profile-nav')
     this.buildWebComponent(OCMQuantityInput, 'ocm-quantity-input')
     this.buildWebComponent(OCMProductCard, 'ocm-product-card')
@@ -441,17 +426,11 @@ export class AppModule {
     this.buildWebComponent(OCMSpecForm, 'ocm-spec-form')
     this.buildWebComponent(OCMOrderSummary, 'ocm-order-summary')
     this.buildWebComponent(OCMLineitemTable, 'ocm-lineitem-table')
-    this.buildWebComponent(OCMKitLineitemTable, 'ocm-kit-lineitem-table')
 
     this.buildWebComponent(OCMProductDetails, 'ocm-product-details')
     this.buildWebComponent(OCMProductAttachments, 'ocm-product-attachments')
-    this.buildWebComponent(OCMKitVariableCard, 'ocm-kit-variable-card')
-    this.buildWebComponent(OCMKitStaticCard, 'ocm-kit-static-card')
-    this.buildWebComponent(OCMKitVariantSelector, 'ocm-kit-variant-selector')
-    this.buildWebComponent(OCMKitProductDetails, 'ocm-kit-product-details')
     this.buildWebComponent(OCMCart, 'ocm-cart')
     this.buildWebComponent(OCMHomePage, 'ocm-home-page')
-    this.buildWebComponent(OCMStaticPage, 'ocm-static-page')
     this.buildWebComponent(OCMProductSort, 'ocm-product-sort')
     this.buildWebComponent(OCMSupplierSort, 'ocm-supplier-sort')
     this.buildWebComponent(OCMSupplierCard, 'ocm-supplier-card')

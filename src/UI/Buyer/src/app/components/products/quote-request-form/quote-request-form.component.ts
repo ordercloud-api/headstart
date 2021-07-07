@@ -24,6 +24,7 @@ export class OCMQuoteRequestForm implements OnInit {
     pageSize: 100,
   }
   myBuyerLocations: HSAddressBuyer[]
+  isAnon: boolean
   //todo revert type to QuoteOrderInfo
   @Output() formSubmitted = new EventEmitter<{ user: any }>()
   @Output() formDismissed = new EventEmitter()
@@ -32,6 +33,7 @@ export class OCMQuoteRequestForm implements OnInit {
   constructor(private context: ShopperContextService) {}
 
   async ngOnInit(): Promise<void> {
+    this.isAnon = this.context.currentUser.isAnonymous()
     await this.getMyBuyerLocations()
     this.setForms()
   }
@@ -52,29 +54,37 @@ export class OCMQuoteRequestForm implements OnInit {
 
   setForms(): void {
     this.quoteRequestForm = new FormGroup({
-      FirstName: new FormControl(this.currentUser?.FirstName || '', [
+      FirstName: new FormControl(this.getAttribute('FirstName'), [
         Validators.required,
         ValidateName,
       ]),
-      LastName: new FormControl(this.currentUser?.LastName || '', [
+      LastName: new FormControl(this.getAttribute('LastName'), [
         Validators.required,
         ValidateName,
       ]),
       BuyerLocation: new FormControl(
         this.myBuyerLocations[0]?.AddressName || '',
-        [Validators.required]
+        !this.isAnon ? [Validators.required] : null
       ),
-      Phone: new FormControl(this.currentUser?.Phone || '', [
+      Phone: new FormControl(this.getAttribute('Phone') || '', [
         Validators.required,
         ValidatePhone,
       ]),
-      Email: new FormControl(this.currentUser?.Email || '', [
+      Email: new FormControl(this.getAttribute('Email') || '', [
         Validators.required,
         ValidateEmail,
       ]),
       Comments: new FormControl(''),
       ShippingAddressId: new FormControl(this.myBuyerLocations[0]?.ID || '')
     })
+  }
+
+  getAttribute(key: string): string {
+    if(this.isAnon || !this.currentUser) {
+      return ''
+    } else {
+      return this.currentUser[key] || ''
+    }
   }
 
   onSubmit(): void {

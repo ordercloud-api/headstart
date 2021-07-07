@@ -85,6 +85,8 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   faCalendar = faCalendar
   productsCollapsed = true
   currentDateTime: string
+  isSaveBtnDisabled?: boolean = true
+  noChanges?: boolean = !this.areChanges
   constructor(
     public promotionService: PromotionService,
     private ocPromotionService: OcPromotionService,
@@ -130,6 +132,8 @@ export class PromotionEditComponent implements OnInit, OnChanges {
     this.capShipCost = promo.xp?.MaxShipCost ? true : false
     this._promotionEditable = JSON.parse(JSON.stringify(promo))
     this._promotionStatic = JSON.parse(JSON.stringify(promo))
+    this.isSaveBtnDisabled = true
+    this.noChanges = true
     this.createPromotionForm(promo)
   }
 
@@ -260,6 +264,20 @@ export class PromotionEditComponent implements OnInit, OnChanges {
         _get(promotion, 'xp.MaxShipCost'),
         Validators.min(0)
       ),
+    })
+
+    this.resourceForm.valueChanges.subscribe(() => {
+      setTimeout(() => {
+        this.noChanges = !this.areChanges
+        if (this.areChanges && this.isCreatingNew) {
+          this.isSaveBtnDisabled =
+            this.resourceForm?.status === 'INVALID' || this.dataIsSaving
+        } else if (!this.areChanges && !this.isCreatingNew) {
+          this.isSaveBtnDisabled = true
+        } else {
+          this.isSaveBtnDisabled = null
+        }
+      })
     })
   }
 

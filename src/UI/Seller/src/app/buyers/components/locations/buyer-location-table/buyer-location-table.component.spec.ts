@@ -1,6 +1,6 @@
 import { BuyerLocationService } from './../buyer-location.service'
 import { BuyerLocationTableComponent } from './buyer-location-table.component'
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { ActivatedRoute, Router } from '@angular/router'
 import { HttpClient } from '@angular/common/http'
 import { of } from 'rxjs'
@@ -33,7 +33,7 @@ describe('BuyerLocationTable', () => {
     resourceSubject: of({}),
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [BuyerLocationTableComponent],
       providers: [

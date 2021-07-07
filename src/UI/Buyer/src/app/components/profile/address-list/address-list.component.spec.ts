@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { OCMAddressList } from 'src/app/ocm-default-components/components/address-list/address-list.component';
 import { FaIconComponent, FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -22,7 +22,7 @@ describe('AddressListComponent', () => {
     close: jasmine.createSpy('close'),
   };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [OCMAddressList],
       imports: [ReactiveFormsModule, FontAwesomeModule],

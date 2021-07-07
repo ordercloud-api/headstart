@@ -1,0 +1,229 @@
+<div class="container-fluid resource-edit">
+    <form *ngIf="resourceForm" [formGroup]="resourceForm">
+      <div class="row pt-3">
+        <div class="col-md-7">
+          <div class="card py-2 px-3 bg-white">
+            <h6 class="font-weight-medium">
+              {{ 'ALIAS.SELLER_LOCATION' | translate | titlecase }} Details
+            </h6>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="AddressName"
+                  >{{
+                    'ALIAS.SELLER_LOCATION' | translate | titlecase
+                  }}
+                  Name</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="AddressName"
+                  showErrors
+                  aria-describedby="Address Name"
+                  maxlength="100"
+                  [resourceForm]="resourceForm"
+                  formControlName="AddressName"
+                  (input)="updateResourceFromEvent($event, 'AddressName')"
+                  placeholder="Enter {{
+                    'ALIAS.SELLER_LOCATION' | translate
+                  }} Name"
+                />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="Company Name">Company Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="Company Name"
+                  showErrors
+                  aria-describedby="Company Name"
+                  maxlength="100"
+                  [resourceForm]="resourceForm"
+                  formControlName="CompanyName"
+                  (input)="updateResourceFromEvent($event, 'CompanyName')"
+                  placeholder="Enter Company Name"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="Country">Country</label>
+              <select
+                *ngIf="countryOptions.length"
+                type="dropdown"
+                class="form-control"
+                formControlName="Country"
+                id="Country"
+                showErrors
+                aria-describedby="Country"
+                (change)="updateResourceFromEvent($event, 'Country')"
+              >
+                <option [ngValue]="''" disabled>Select a Country</option>
+                <option
+                  *ngFor="let country of countryOptions"
+                  [value]="country.abbreviation"
+                >
+                  {{ country.label }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="card bg-white shadow-sm p-4 mt-3">
+            <h6 class="font-weight-medium">
+              {{ 'ALIAS.SELLER_LOCATION' | translate | titlecase }}
+            </h6>
+            <p *ngIf="!countryHasBeenSelected" class="font-italic">
+              Pending Country selection ...
+            </p>
+            <ng-container *ngIf="countryHasBeenSelected">
+              <div class="form-group">
+                <label for="Street 1">{{
+                  getControlValue('Country') === 'CA'
+                    ? 'Civic Address'
+                    : 'Street 1'
+                }}</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="Street 1"
+                  showErrors
+                  aria-describedby="Street 1"
+                  maxlength="100"
+                  [resourceForm]="resourceForm"
+                  formControlName="Street1"
+                  (input)="updateResourceFromEvent($event, 'Street1')"
+                  placeholder="{{
+                    getControlValue('Country') === 'CA'
+                      ? 'Enter Address'
+                      : 'Enter Street 1'
+                  }}"
+                />
+              </div>
+              <div *ngIf="getControlValue('Country') !== 'CA'" class="form-group">
+                <label for="Street2">Street 2</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="Street2"
+                  showErrors
+                  aria-describedby="Street2"
+                  maxlength="100"
+                  [resourceForm]="resourceForm"
+                  formControlName="Street2"
+                  (input)="updateResourceFromEvent($event, 'Street2')"
+                  placeholder="Enter Street 2"
+                />
+              </div>
+              <div class="form-group">
+                <label for="City">{{
+                  getControlValue('Country') === 'CA' ? 'Municipality' : 'City'
+                }}</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="City"
+                  showErrors
+                  aria-describedby="City"
+                  maxlength="100"
+                  [resourceForm]="resourceForm"
+                  formControlName="City"
+                  (input)="updateResourceFromEvent($event, 'City')"
+                  placeholder="{{
+                    getControlValue('Country') === 'CA'
+                      ? 'Enter Municipality'
+                      : 'Enter City'
+                  }}"
+                />
+              </div>
+              <div class="form-group">
+                <label for="State">{{
+                  getControlValue('Country') === 'CA' ? 'Province' : 'State'
+                }}</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="State"
+                  showErrors
+                  maxlength="100"
+                  aria-describedby="State"
+                  [resourceForm]="resourceForm"
+                  formControlName="State"
+                  (input)="updateResourceFromEvent($event, 'State')"
+                  placeholder="{{
+                    getControlValue('Country') === 'CA'
+                      ? 'Enter Province'
+                      : 'Enter State'
+                  }}"
+                />
+              </div>
+              <div class="form-group">
+                <label for="Zip">{{
+                  getControlValue('Country') === 'CA' ? 'Postal Code' : 'Zip'
+                }}</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="Zip"
+                  showErrors
+                  maxlength="100"
+                  aria-describedby="Zip"
+                  [resourceForm]="resourceForm"
+                  formControlName="Zip"
+                  (input)="updateResourceFromEvent($event, 'Zip')"
+                  placeholder="{{
+                    getControlValue('Country') === 'CA'
+                      ? 'Enter Postal Code'
+                      : 'Enter Zip'
+                  }}"
+                />
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="card py-2 px-3 bg-white">
+            <h6 class="font-weight-medium">
+              {{ 'ALIAS.SELLER_LOCATION' | translate | titlecase }} Summary
+            </h6>
+            <img *ngIf="flag !== undefined" [src]="flag" alt="Country flag" />
+            <h5>{{ getControlValue('AddressName') }}</h5>
+            <p class="mt-4 mb-0">{{ getControlValue('CompanyName') }}</p>
+            <p class="mb-0" *ngIf="getControlValue('Street1') !== ''">
+              {{ getControlValue('Street1') }}
+            </p>
+            <p class="mb-0" *ngIf="getControlValue('Street2') !== ''">
+              {{ getControlValue('Street2') }}
+            </p>
+            <ng-container
+              *ngIf="
+                getControlValue('City') !== '' && getControlValue('State') !== ''
+              "
+            >
+              <p class="mb-0">
+                {{ getControlValue('City') }}, {{ getControlValue('State') }}
+                {{ getControlValue('Zip') }}
+              </p>
+              <p class="mb-0">
+                {{ getCountryFromCode(getControlValue('Country')) }}
+              </p>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="row pt-3">
+        <div *ngIf="suggestedAddresses?.length > 0" class="col-md-5">
+          <h5>Address Suggestions</h5>
+          <p>
+            The address you've entered was invalid. Please choose from these
+            suggested addresses or enter a valid address.
+          </p>
+        </div>
+        <div class="col-md-7 form-group">
+          <address-suggestion
+            (selectedAddress)="handleSellerAddressSelect($event)"
+            [suggestedAddresses]="suggestedAddresses"
+          ></address-suggestion>
+        </div>
+      </div>
+    </form>
+  </div>
+  

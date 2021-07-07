@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core'
-import { UserGroupAssignment, User, ListPage } from '@ordercloud/angular-sdk'
+import { UserGroupAssignment, User, ListPage} from '@ordercloud/angular-sdk'
 import { BuyerLocationService } from '../buyer-location.service'
 import { REDIRECT_TO_FIRST_PARENT } from '@app-seller/layout/header/header.config'
 import { PermissionTypes } from '../buyer-location-permissions/buyer-location-permissions.constants'
@@ -46,9 +46,7 @@ export class BuyerLocationPermissions {
   }
 
   async updateUserPermissionAssignments(locationID: string): Promise<void> {
-    this.locationPermissionsAssigmentsEditable = await this.buyerLocationService.getLocationPermissions(
-      locationID
-    )
+    this.locationPermissionsAssigmentsEditable = await  this.buyerLocationService.getLocationPermissions(locationID)
     this.locationPermissionsAssigmentsStatic = JSON.parse(
       JSON.stringify(this.locationPermissionsAssigmentsEditable)
     )

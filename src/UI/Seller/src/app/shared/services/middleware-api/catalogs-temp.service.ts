@@ -42,10 +42,7 @@ export class CatalogsTempService {
       .toPromise()
   }
 
-  async create(
-    buyerID: string,
-    catalog: HSCatalog
-  ): Promise<HSCatalog> {
+  async create(buyerID: string, catalog: HSCatalog): Promise<HSCatalog> {
     const url = `${this.appConfig.middlewareUrl}/buyers/${buyerID}/catalogs`
     return await this.http
       .post<HSCatalog>(url, catalog, { headers: this.buildHeaders() })
@@ -148,7 +145,7 @@ export class CatalogsTempService {
   ): Promise<HSPriceSchedule> {
     const url = `${this.appConfig.middlewareUrl}/products/${productID}/pricingoverride/buyer/${buyerID}`
     return await this.http
-      .get(url, { headers: this.buildHeaders() })
+      .get<HSPriceSchedule>(url, { headers: this.buildHeaders() })
       .toPromise()
   }
 
@@ -159,7 +156,9 @@ export class CatalogsTempService {
   ): Promise<HSPriceSchedule> {
     const url = `${this.appConfig.middlewareUrl}/products/${productID}/pricingoverride/buyer/${buyerID}`
     return await this.http
-      .post(url, priceSchedule, { headers: this.buildHeaders() })
+      .post<HSPriceSchedule>(url, priceSchedule, {
+        headers: this.buildHeaders(),
+      })
       .toPromise()
   }
 
@@ -170,7 +169,9 @@ export class CatalogsTempService {
   ): Promise<HSPriceSchedule> {
     const url = `${this.appConfig.middlewareUrl}/products/${productID}/pricingoverride/buyer/${buyerID}`
     return await this.http
-      .put(url, priceSchedule, { headers: this.buildHeaders() })
+      .put<HSPriceSchedule>(url, priceSchedule, {
+        headers: this.buildHeaders(),
+      })
       .toPromise()
   }
 

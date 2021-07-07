@@ -5,7 +5,6 @@ import { HttpClientModule } from '@angular/common/http'
 import { ReactiveFormsModule, FormsModule } from '@angular/forms'
 import {
   NgbPaginationModule,
-  NgbTabsetModule,
   NgbPopoverModule,
   NgbDropdownModule,
   NgbModalModule,
@@ -25,7 +24,6 @@ import { CarouselSlideDisplayComponent } from '@app-seller/shared/components/car
 import { UserFormComponent } from '@app-seller/shared/components/user-form/user-form.component'
 import { AddressFormComponent } from '@app-seller/shared/components/address-form/address-form.component'
 import { CategoryFormComponent } from './components/category-form/category-form.component'
-import { CategoryDetailsComponent } from './components/category-details/category-details.component'
 import { AddressSuggestionComponent } from './components/address-suggestion/address-suggestion.component'
 import { ProductImagesComponent } from './components/product-images/product-images.component'
 import { ProductFormComponent } from './components/products-form/product-form.component'
@@ -46,18 +44,18 @@ import { ConfirmModal } from './components/confirm-modal/confirm-modal.component
 import { PhoneFormatPipe } from './pipes/phone-format.pipe'
 import { YesNoFormatPipe } from './pipes/yes-no-format.pipe'
 import { SafeHTMLPipe } from './pipes/safe-html.pipe'
-import {UnCamelPipe} from './pipes/un-camel-case.pipe'
+import { UnCamelPipe } from './pipes/un-camel-case.pipe'
 import { UserGroupAssignments } from './components/user-group-assignments/user-group-assignments.component'
 import { LocationIDInputDirective } from './directives/location-id-input.directive'
 import { ActionMenuComponent } from './components/action-menu/action-menu.component'
 import { TranslateModule } from '@ngx-translate/core'
-import { CmsAdminModule } from '@ordercloud/angular-cms-components'
 import { ResourceBreadcrumbsComponent } from './components/resource-breadcrumbs/resource-breadcrumbs.component'
 import { ProductVisibilityAssignments } from './components/buyer-visibility/product-visibility-assignments/product-visibility-assignments.component'
 import { BuyerVisibilityConfiguration } from './components/buyer-visibility/buyer-visibility-configuration/buyer-visibility-configuration.component'
 import { ProductCategoryAssignment } from './components/buyer-visibility/product-category-assignment/product-category-assignment.component'
 import { ResourceListMeta } from './components/resource-list-meta/resource-list-meta.component'
 import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
+import { RouterModule } from '@angular/router'
 
 @NgModule({
   imports: [
@@ -66,6 +64,7 @@ import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
     CommonModule,
     HttpClientModule,
     ReactiveFormsModule,
+    RouterModule,
 
     // 3rd party UI
     FontAwesomeModule,
@@ -74,7 +73,6 @@ import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
     NgbPopoverModule,
     NgbDropdownModule,
     NgbPaginationModule,
-    NgbTabsetModule,
     NgbModalModule,
     NgbDatepickerModule,
     NgbTooltipModule,
@@ -83,9 +81,6 @@ import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
 
     // Quill
     QuillModule.forRoot(),
-
-    // OrderCloud CMS Components
-    CmsAdminModule,
   ],
   exports: [
     // angular
@@ -96,13 +91,9 @@ import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
     // 3rd party UI
     FontAwesomeModule,
     NgbPaginationModule,
-    NgbTabsetModule,
     NgbDropdownModule,
     NgbProgressbarModule,
     NgbCollapseModule,
-
-    // OrderCloud CMS Components
-    CmsAdminModule,
 
     // app components
     SearchComponent,
@@ -111,7 +102,6 @@ import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
     UserFormComponent,
     AddressFormComponent,
     CategoryFormComponent,
-    CategoryDetailsComponent,
     AddressSuggestionComponent,
     ResourceSelectDropdown,
     ProductImagesComponent,
@@ -149,7 +139,6 @@ import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
     UserFormComponent,
     AddressFormComponent,
     CategoryFormComponent,
-    CategoryDetailsComponent,
     AddressSuggestionComponent,
     ProductImagesComponent,
     ResourceSelectDropdown,
@@ -182,7 +171,7 @@ import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
   ],
 })
 export class SharedModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<SharedModule> {
     return {
       ngModule: SharedModule,
       providers: [],

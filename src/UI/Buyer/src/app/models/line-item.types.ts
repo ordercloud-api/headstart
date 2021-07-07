@@ -3,7 +3,7 @@ import { Address, BuyerProduct, LineItem, Supplier } from "ordercloud-javascript
 
 export interface LineItemGroupSupplier {
     supplier: Supplier
-    shipFrom: Address
+    shipFrom?: Partial<Address>
   }
 
   export enum LineItemStatus {

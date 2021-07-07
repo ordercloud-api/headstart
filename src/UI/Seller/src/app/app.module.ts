@@ -43,6 +43,7 @@ import { AuthModule } from './auth/auth.module'
 import { AutoAppendTokenInterceptor } from './auth/interceptors/auto-append-token/auto-append-token.interceptor'
 import { RefreshTokenInterceptor } from './auth/interceptors/refresh-token/refresh-token.interceptor'
 import { AppRoutingModule } from './app-routing.module'
+import { RouterModule } from '@angular/router'
 
 export function HttpLoaderFactory(
   http: HttpClient,
@@ -61,7 +62,7 @@ export enum OrdercloudEnv {
     // angular core modules
     BrowserAnimationsModule,
     BrowserModule,
-
+    RouterModule,
     // app modules
     AppRoutingModule,
     AuthModule,
@@ -115,19 +116,17 @@ export class AppModule {
     public translate: TranslateService
   ) {
     translate.setDefaultLang('en')
+    translate.use('en')
     HeadstartConfiguration.Set({
       baseApiUrl: this.appConfig.middlewareUrl,
     })
-    CMSConfiguration.Set({
-      baseApiUrl: this.appConfig.cmsUrl,
-    })
+
     OcConfiguration.Set(this.getOrdercloudSDKConfig(appConfig))
   }
   private getOrdercloudSDKConfig(config: AppConfig): SdkConfiguration {
     const apiUrl = config.orderCloudApiUrl
     return {
-      baseApiUrl: `${apiUrl}/v1`,
-      baseAuthUrl: `${apiUrl}/oauth/token`,
+      baseApiUrl: apiUrl,
       clientID: config.clientID,
       cookieOptions: {
         prefix: config.appname.replace(/ /g, '_').toLowerCase(),

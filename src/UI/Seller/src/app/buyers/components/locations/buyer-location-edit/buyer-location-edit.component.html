@@ -298,6 +298,11 @@
         </div>
       </div>
     </div>
+    <buyer-location-approvals
+      [approvalRule]="approvalRule"
+      [buyerGroup]="buyerLocationStatic"
+      (approvalUpdated)="handleUpdateApproval($event)"
+    ></buyer-location-approvals>
     <buyer-location-permissions
       *ngIf="!isCreatingNew"
       [locationID]="buyerLocationEditable?.Address?.ID"
@@ -332,7 +337,7 @@
           {{ getSaveBtnText() }}
         </button>
         <button
-          class="btn brand-button ml-3"
+          class="btn btn-primary ml-3"
           (click)="handleDiscardChanges()"
           *ngIf="areChanges && !isCreatingNew"
         >

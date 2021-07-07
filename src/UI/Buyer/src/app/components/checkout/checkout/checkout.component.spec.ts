@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { CheckoutComponent } from 'src/app/checkout/containers/checkout/checkout.component';
 import { NgbAccordion, NgbPanel, NgbAccordionConfig } from '@ng-bootstrap/ng-bootstrap';
@@ -21,8 +21,8 @@ describe('CheckoutComponent', () => {
     navigateByUrl: jasmine.createSpy('navigateByUrl'),
   };
   let ocOrderService = {
-    Get: () => {},
-    Submit: () => {},
+    Get: () => { },
+    Submit: () => { },
   };
   const paymentService = {
     List: jasmine.createSpy('List').and.returnValue(of({ Items: [{ ID: 'paymentID' }] })),
@@ -33,7 +33,7 @@ describe('CheckoutComponent', () => {
 
   const appErrorHandler = { displayError: jasmine.createSpy('displayError') };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [CheckoutComponent, NgbAccordion, NgbPanel],
       imports: [FontAwesomeModule, ReactiveFormsModule],
@@ -46,7 +46,7 @@ describe('CheckoutComponent', () => {
       ],
       schemas: [NO_ERRORS_SCHEMA], // Ignore template errors: remove if tests are added to test template
     }).compileComponents();
-    ocOrderService = TestBed.get(OcOrderService);
+    ocOrderService = TestBed.inject(OcOrderService);
   }));
 
   beforeEach(() => {

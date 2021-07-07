@@ -7,16 +7,19 @@ import {
 } from '@angular/core'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { fromEvent } from 'rxjs'
-import { Asset, Spec } from '@ordercloud/headstart-sdk'
+import { ImageAsset } from '@ordercloud/headstart-sdk'
 import { SpecFormService } from '../spec-form/spec-form.service'
+import { FormGroup } from '@angular/forms'
+import { LineItemSpec, Spec } from 'ordercloud-javascript-sdk'
 
 @Component({
   templateUrl: './image-gallery.component.html',
   styleUrls: ['./image-gallery.component.scss'],
 })
 export class OCMImageGallery implements OnInit, OnChanges {
-  @Input() images: Asset[] = []
-  @Input() specs: any[] = []
+  @Input() images: ImageAsset[] = []
+  @Input() specs: Spec[] = []
+  @Input() specForm: FormGroup
   imgUrls: string[] = []
 
   // gallerySize can be changed and the component logic + behavior will all work. However, the UI may look wonky.
@@ -52,15 +55,16 @@ export class OCMImageGallery implements OnInit, OnChanges {
     this.selectedIndex = this.imgUrls.indexOf(url)
   }
 
-  isSelected(image: Asset): boolean {
+  isSelected(image: ImageAsset): boolean {
     return this.imgUrls.indexOf(image.Url) === this.selectedIndex
   }
 
-  isImageMatchingSpecs(image: Asset): boolean {
+  isImageMatchingSpecs(image: ImageAsset): boolean {
     // Examine all non-variable text specs, and find the image tag that matches all specs,
     // removing spaces where needed on the spec to find that match.
-    const specs = this.specs.filter((s) => s !== null);
-    return this.specFormService.AssetTagMatches(specs, image);
+    const specs = this.specs.filter((s) => s !== null)
+    const liSpecs = this.specFormService.getLineItemSpecs(specs, this.specForm)
+    return this.specFormService.AssetTagMatches(liSpecs, image)
   }
 
   onSpecsChange(): void {
@@ -76,11 +80,11 @@ export class OCMImageGallery implements OnInit, OnChanges {
       // If no specs/tags match, grab primary image, or placeholder if no images exist
       this.images[0]
         ? this.select(this.images[0].Url)
-        : this.select('http://placehold.it/500x500')
+        : this.select('https://via.placeholder.com/500x500')
     }
   }
 
-  getGallery(): Asset[] {
+  getGallery(): ImageAsset[] {
     return this.images.slice(this.startIndex, this.endIndex + 1)
   }
 

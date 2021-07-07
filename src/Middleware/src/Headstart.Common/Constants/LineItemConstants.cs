@@ -158,7 +158,7 @@ namespace Headstart.Common.Constants
         // seller should be able to do about anything a supplier can do
         public static List<LineItemStatus> ValidSellerOrSupplierLineItemStatuses = new List<LineItemStatus>()
         {
-            LineItemStatus.Returned, LineItemStatus.Backordered, LineItemStatus.Canceled
+            LineItemStatus.Returned, LineItemStatus.Backordered, LineItemStatus.Canceled, LineItemStatus.Complete
         };
 
         // definitions of which user contexts can can set which lineItemStatuses

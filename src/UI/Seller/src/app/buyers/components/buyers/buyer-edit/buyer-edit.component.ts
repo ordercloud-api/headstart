@@ -1,15 +1,22 @@
-import { Component, Input, Output, EventEmitter, OnDestroy } from '@angular/core'
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnDestroy,
+} from '@angular/core'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { BuyerTempService } from '@app-seller/shared/services/middleware-api/buyer-temp.service'
 import { HSBuyer } from '@ordercloud/headstart-sdk'
 import { BuyerService } from '../buyer.service'
-import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { Router } from '@angular/router'
 import { isEqual as _isEqual } from 'lodash'
-import { HSBuyerPriceMarkup } from '@app-seller/models/buyer-markups.types'
-import { OcImpersonationConfigService } from '@ordercloud/angular-sdk'
+import { HSBuyerPriceMarkup } from '@app-seller/models/buyer.types'
 import { Subscription } from 'rxjs'
-import { ResourceFormUpdate } from '@app-seller/shared'
+import { ResourceUpdate } from '@app-seller/shared'
+import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/catalogs-temp.service'
+import { TranslateService } from '@ngx-translate/core'
+import { Addresses } from 'ordercloud-javascript-sdk'
 @Component({
   selector: 'app-buyer-edit',
   templateUrl: './buyer-edit.component.html',
@@ -22,6 +29,9 @@ export class BuyerEditComponent implements OnDestroy {
   areChanges = false
   dataIsSaving = false
   impersonationSubscription: Subscription
+  helperMessage: string
+  helperAction: string
+  helperLink: string
 
   _superBuyerStatic: HSBuyerPriceMarkup
   _superBuyerEditable: HSBuyerPriceMarkup
@@ -31,29 +41,57 @@ export class BuyerEditComponent implements OnDestroy {
   @Input()
   set orderCloudBuyer(buyer: HSBuyer) {
     if (buyer.ID) {
+      this.getBuyerData(buyer.ID)
       this.handleSelectedBuyerChange(buyer)
     } else {
       this.refreshBuyerData(this.buyerService.emptyResource)
     }
   }
+
   @Output()
   resourceDelete = new EventEmitter<any>()
 
   constructor(
     private buyerService: BuyerService,
-    private ocImpersonationService: OcImpersonationConfigService,
     private router: Router,
+    private translate: TranslateService,
     private buyerTempService: BuyerTempService,
-    private appAuthService: AppAuthService
-  ) { }
+    private hsCatalogService: CatalogsTempService
+  ) {}
+
+  async getBuyerData(buyerID: string): Promise<void> {
+    const [catalogs, addresses] = await Promise.all([
+      this.hsCatalogService.list(buyerID),
+      Addresses.List(buyerID),
+    ])
+    if (!catalogs?.Items || catalogs.Items?.length === 0) {
+      this.helperMessage = this.translate.instant(
+        'BUYER.HELPERMESSAGES.CATALOG.MESSAGE'
+      )
+      this.helperAction = this.translate.instant(
+        'BUYER.HELPERMESSAGES.CATALOG.ACTION'
+      )
+      this.helperLink = `/buyers/${buyerID}/catalogs/new`
+    } else if (!addresses || addresses.Items?.length === 0) {
+      this.helperMessage = this.translate.instant(
+        'BUYER.HELPERMESSAGES.BUYERGROUP.MESSAGE'
+      )
+      this.helperAction = this.translate.instant(
+        'BUYER.HELPERMESSAGES.BUYERGROUP.ACTION'
+      )
+      this.helperLink = `/buyers/${buyerID}/locations/new`
+    }
+  }
 
   updateResourceFromEvent(event: any, field: string): void {
-    let resourceUpdate: ResourceFormUpdate;
-    if (field === "ImpersonatingEnabled") {
+    let resourceUpdate: ResourceUpdate
+    if (field === 'ImpersonatingEnabled') {
       resourceUpdate = {
         field: 'ImpersonationConfig',
-        value: this.showImpersonation ? null : this._superBuyerStatic?.ImpersonationConfig,
-        form: this.resourceForm
+        value: this.showImpersonation
+          ? null
+          : this._superBuyerStatic?.ImpersonationConfig,
+        form: this.resourceForm,
       }
       this.showImpersonation = !this.showImpersonation
     } else {
@@ -62,7 +100,7 @@ export class BuyerEditComponent implements OnDestroy {
       resourceUpdate = {
         field,
         value,
-        form: this.resourceForm
+        form: this.resourceForm,
       }
     }
     this._superBuyerEditable = this.buyerService.getUpdatedEditableResource<HSBuyerPriceMarkup>(
@@ -73,7 +111,7 @@ export class BuyerEditComponent implements OnDestroy {
   }
 
   createBuyerForm(superBuyer: any): void {
-    const { Buyer, Markup, ImpersonationConfig } = superBuyer;
+    const { Buyer, Markup, ImpersonationConfig } = superBuyer
     this.showImpersonation = ImpersonationConfig && ImpersonationConfig !== null
 
     this.resourceForm = new FormGroup({
@@ -82,8 +120,8 @@ export class BuyerEditComponent implements OnDestroy {
       Markup: new FormControl(Markup.Percent),
       ChiliPublishFolder: new FormControl(Buyer.xp.ChiliPublishFolder),
       ImpersonatingEnabled: new FormControl(this.showImpersonation),
-      URL: new FormControl((Buyer.xp as any).URL),
-      ClientID: new FormControl(ImpersonationConfig?.ClientID)
+      URL: new FormControl(Buyer.xp.URL),
+      ClientID: new FormControl(ImpersonationConfig?.ClientID),
     })
     this.setImpersonationValidator()
   }
@@ -96,7 +134,10 @@ export class BuyerEditComponent implements OnDestroy {
       .valueChanges.subscribe((impersonation) => {
         if (impersonation) {
           url.setValidators([Validators.required])
-          ClientID.setValidators([Validators.required, Validators.minLength(36)])
+          ClientID.setValidators([
+            Validators.required,
+            Validators.minLength(36),
+          ])
         }
       })
   }

@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { SpecFormLabelComponent } from './spec-form-label.component';
 
@@ -6,7 +6,7 @@ describe('SpecFormLabelComponent', () => {
   let component: SpecFormLabelComponent;
   let fixture: ComponentFixture<SpecFormLabelComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [SpecFormLabelComponent],
     }).compileComponents();

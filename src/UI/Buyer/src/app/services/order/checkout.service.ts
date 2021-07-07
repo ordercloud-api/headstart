@@ -9,22 +9,22 @@ import {
   LineItems,
   Suppliers,
   SupplierAddresses,
+  Address,
 } from 'ordercloud-javascript-sdk'
 import { Injectable } from '@angular/core'
 import { PaymentHelperService } from '../payment-helper/payment-helper.service'
 import { OrderStateService } from './order-state.service'
 import {
   HeadStartSDK,
-  Address,
   HSOrder,
   ListPage,
   HSLineItem,
   HSAddressBuyer,
-  OrderCloudIntegrationsCreditCardPayment,
 } from '@ordercloud/headstart-sdk'
 import { isEqual, max, uniqWith } from 'lodash'
-import { TempSdk } from '../temp-sdk/temp-sdk.service'
 import { LineItemGroupSupplier } from 'src/app/models/line-item.types'
+import { AddressType } from 'src/app/models/checkout.types'
+import { AppConfig } from 'src/app/models/environment.types'
 
 @Injectable({
   providedIn: 'root',
@@ -33,24 +33,8 @@ export class CheckoutService {
   constructor(
     private paymentHelper: PaymentHelperService,
     private state: OrderStateService,
-    private TempSdk: TempSdk
+    private appConfig: AppConfig
   ) {}
-
-  async appendPaymentMethodToOrderXp(
-    orderID: string,
-    ccPayment?: OrderCloudIntegrationsCreditCardPayment
-  ): Promise<void> {
-    const paymentMethod = ccPayment?.CreditCardID
-      ? 'Credit Card'
-      : 'Purchase Order'
-    await Orders.Patch('Outgoing', orderID, {
-      xp: { PaymentMethod: paymentMethod },
-    })
-  }
-
-  async addComment(comment: string): Promise<HSOrder> {
-    return await this.patch({ Comments: comment })
-  }
 
   async setShippingAddress(address: BuyerAddress): Promise<HSOrder> {
     // If a saved address (with an ID) is changed by the user it is attached to an order as a one time address.
@@ -65,9 +49,7 @@ export class CheckoutService {
     return this.order
   }
 
-  async setShippingAddressByID(
-    address: HSAddressBuyer
-  ): Promise<HSOrder> {
+  async setShippingAddressByID(address: HSAddressBuyer): Promise<HSOrder> {
     try {
       await Orders.Patch('Outgoing', this.order.ID, {
         xp: { ShippingAddress: address },
@@ -86,14 +68,17 @@ export class CheckoutService {
     }
   }
 
-  async setOneTimeShippingAddress(address: Address) {
-    delete address.ID;
-    await Orders.SetShippingAddress('Outgoing', this.order.ID, address);
+  async setOneTimeAddress(
+    address: Address,
+    addressType: AddressType
+  ): Promise<void> {
+    delete address.ID
+    addressType === 'shipping'
+      ? await Orders.SetShippingAddress('Outgoing', this.order.ID, address)
+      : await Orders.SetBillingAddress('Outgoing', this.order.ID, address)
   }
 
-  async setBuyerLocationByID(
-    buyerLocationID: string
-  ): Promise<HSOrder> {
+  async setBuyerLocationByID(buyerLocationID: string): Promise<HSOrder> {
     const patch = {
       BillingAddressID: buyerLocationID,
       xp: { ApprovalNeeded: '' },
@@ -117,7 +102,7 @@ export class CheckoutService {
 
   async isApprovalNeeded(locationID: string): Promise<boolean> {
     const userGroups = await Me.ListUserGroups({
-      searchOn: 'ID',
+      searchOn: ['ID'],
       search: locationID,
     })
     return userGroups.Items.some((u) => u.ID === `${locationID}-NeedsApproval`)
@@ -202,27 +187,51 @@ export class CheckoutService {
     return orderWorksheet
   }
 
-  async buildSupplierData(lineItems: HSLineItem[]): Promise<LineItemGroupSupplier[]> {
-    const supplierData = lineItems?.map(li => (
-      {
-        supplierID: li?.SupplierID,
-        ShipFromAddressID: li?.ShipFromAddressID
-      }
-    ))
+  async buildSupplierData(
+    lineItems: HSLineItem[]
+  ): Promise<LineItemGroupSupplier[]> {
+    const supplierData = lineItems?.map((li) => ({
+      supplierID: li?.SupplierID,
+      ShipFromAddressID: li?.ShipFromAddressID,
+    }))
     const uniqueSuppliers = uniqWith(supplierData, isEqual)
-    const supplierIDs = uniqueSuppliers.map(s => s.supplierID)
-    const suppliers = await Suppliers.List({filters: {'ID': supplierIDs.join("|")}})
-    const supplierItems: LineItemGroupSupplier[] = [];
-    for(const combo of uniqueSuppliers) {
-      const supplier = suppliers.Items.find(s => s.ID === combo.supplierID)
-      if(combo.supplierID && combo.ShipFromAddressID) {
-        const shipFrom = await SupplierAddresses.Get(combo.supplierID, combo.ShipFromAddressID);
-        supplierItems.push({supplier,shipFrom})
+    const supplierIDs = uniqueSuppliers.map((s) => s.supplierID)
+    const suppliers = await Suppliers.List({
+      filters: { ID: supplierIDs.join('|') },
+    })
+    const supplierItems: LineItemGroupSupplier[] = []
+    for (const combo of uniqueSuppliers) {
+      if (combo.supplierID === null) {
+        //This handles seller owned products
+        supplierItems.push(
+          this.buildSellerShipmentData(combo.ShipFromAddressID)
+        )
       } else {
-        supplierItems.push({supplier, shipFrom: null})
+        const supplier = suppliers.Items.find((s) => s.ID === combo.supplierID)
+        if (combo.supplierID && combo.ShipFromAddressID) {
+          const shipFrom = await SupplierAddresses.Get(
+            combo.supplierID,
+            combo.ShipFromAddressID
+          )
+          supplierItems.push({ supplier, shipFrom })
+        } else {
+          supplierItems.push({ supplier, shipFrom: null })
+        }
       }
     }
     return supplierItems
+  }
+
+  buildSellerShipmentData(shipFromAddressID: string): LineItemGroupSupplier {
+    return {
+      supplier: {
+        ID: null,
+        Name: this.appConfig.sellerName || 'Purchasing from Seller',
+      },
+      shipFrom: {
+        ID: shipFromAddressID,
+      },
+    }
   }
 
   async calculateOrder(): Promise<HSOrder> {
@@ -234,10 +243,10 @@ export class CheckoutService {
     return this.order
   }
 
-  private async patch(order: HSOrder): Promise<HSOrder> {
+  public async patch(order: HSOrder, orderID?: string): Promise<HSOrder> {
     this.order = (await Orders.Patch(
       'Outgoing',
-      this.order.ID,
+      orderID || this.order.ID,
       order
     )) as HSOrder
     return this.order

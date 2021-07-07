@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { ActivatedRoute, Router } from '@angular/router'
 import { of } from 'rxjs/internal/observable/of'
 
@@ -15,7 +15,7 @@ describe('ResourceBreadcrumbsComponent', () => {
   }
   const activatedRoute = { queryParams: of({}), params: of({}) }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ResourceBreadcrumbsComponent],
       providers: [

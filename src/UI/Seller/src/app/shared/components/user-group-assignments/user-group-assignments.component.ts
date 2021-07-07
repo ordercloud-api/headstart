@@ -6,6 +6,7 @@ import {
   OnChanges,
   SimpleChanges,
   Inject,
+  OnInit,
 } from '@angular/core'
 import {
   User,
@@ -29,13 +30,14 @@ import {
   IUserPermissionsService,
 } from '@app-seller/models/user.types'
 import { AppConfig } from '@app-seller/shared'
+import { Router } from '@angular/router'
 
 @Component({
   selector: 'user-group-assignments',
   templateUrl: './user-group-assignments.component.html',
   styleUrls: ['./user-group-assignments.component.scss'],
 })
-export class UserGroupAssignments implements OnChanges {
+export class UserGroupAssignments implements OnInit, OnChanges {
   @Input() user: User
   @Input() userGroupType: string
   @Input() isCreatingNew: boolean
@@ -45,6 +47,7 @@ export class UserGroupAssignments implements OnChanges {
   @Output() hasAssignments = new EventEmitter<boolean>()
 
   userOrgID: string
+  buyerID: string
   userID: string
   userGroups: ListPage<HSLocationUserGroup> | UserGroup[]
   add: UserGroupAssignment[]
@@ -65,8 +68,16 @@ export class UserGroupAssignments implements OnChanges {
   constructor(
     private http: HttpClient,
     private ocTokenService: OcTokenService,
+    private router: Router,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {}
+
+  ngOnInit() {
+    var url = this.router?.routerState?.snapshot?.url
+    if(url && url.split('/').length) {
+      this.buyerID = url.split('/')[2]
+    }
+  }
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     this.updateForUserGroupAssignmentType()

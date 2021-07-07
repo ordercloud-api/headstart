@@ -12,11 +12,11 @@ import { get as _get } from 'lodash'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import {
   Address,
-  OcSupplierAddressService,
-  OcAdminAddressService,
-  OcProductService,
-  OcTokenService,
-} from '@ordercloud/angular-sdk'
+  SupplierAddresses,
+  AdminAddresses,
+  MeUser,
+  SpecOption,
+} from 'ordercloud-javascript-sdk'
 import {
   FormGroup,
   FormControl,
@@ -25,7 +25,6 @@ import {
 } from '@angular/forms'
 import { Router } from '@angular/router'
 import { Product } from '@ordercloud/angular-sdk'
-import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import {
@@ -44,11 +43,13 @@ import {
   SuperHSProduct,
   ListPage,
   HeadStartSDK,
-  SpecOption,
   ProductXp,
   TaxProperties,
-  Asset,
   TaxCode,
+  AssetType,
+  ImageAsset,
+  DocumentAsset,
+  HSProduct,
 } from '@ordercloud/headstart-sdk'
 import { Location } from '@angular/common'
 import { TabIndexMapper, setProductEditTab } from './tab-mapper'
@@ -57,18 +58,18 @@ import {
   ValidateMinMax,
   ValidateNoSpecialCharactersAndSpaces,
 } from '../../../validators/validators'
-import { getProductMediumImageUrl } from '@app-seller/products/product-image.helper'
 import { takeWhile } from 'rxjs/operators'
 import { SizerTiersDescriptionMap } from './size-tier.constants'
-import { HttpClient, HttpHeaders } from '@angular/common/http'
 
-import { ContentManagementClient } from '@ordercloud/cms-sdk'
 import { ToastrService } from 'ngx-toastr'
 import { Subscription } from 'rxjs'
 import { SupportedRates } from '@app-seller/models/currency-geography.types'
 import { FileHandle } from '@app-seller/models/file-upload.types'
 import { UserContext } from '@app-seller/models/user.types'
 import { AppConfig } from '@app-seller/models/environment.types'
+import { AssetService } from '@app-seller/shared/services/assets/asset.service'
+import { getProductMediumImageUrl } from '@app-seller/shared/services/assets/asset.helper'
+import { TranslateService } from '@ngx-translate/core'
 
 @Component({
   selector: 'app-product-edit',
@@ -81,27 +82,30 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   @Input()
   set orderCloudProduct(product: Product) {
     if (product.ID) {
-      this.handleSelectedProductChange(product)
+      void this.handleSelectedProductChange(product)
     } else {
       this.createProductForm(this.productService.emptyResource)
       this._superHSProductEditable = this.productService.emptyResource
       this._superHSProductStatic = this.productService.emptyResource
     }
   }
-  @Input() readonly: boolean
+  readonly: boolean
+  sellerView: boolean
   @Input()
   filterConfig
   @Output()
   updateResource = new EventEmitter<any>()
+  @Output()
+  updateList = new EventEmitter<Product>()
   @Input()
   addresses: ListPage<Address>
   @Input()
   isCreatingNew: boolean
   @Input()
   dataIsSaving = false
-  userContext: any = {}
+  userContext: UserContext = {} as any
   hasVariations = false
-  images: Asset[] = []
+  images: ImageAsset[] = []
   files: FileHandle[] = []
   faTimes = faTimes
   faTrash = faTrash
@@ -128,7 +132,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   fileType: string
   imageFiles: FileHandle[] = []
   staticContentFiles: FileHandle[] = []
-  staticContent: Asset[] = []
+  staticContent: DocumentAsset[] = []
   documentName: string
   selectedTabIndex = 0
   editPriceBreaks = false
@@ -147,19 +151,15 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     private router: Router,
     private location: Location,
     private currentUserService: CurrentUserService,
-    private ocSupplierAddressService: OcSupplierAddressService,
-    private ocProductService: OcProductService,
-    private ocAdminAddressService: OcAdminAddressService,
     private productService: ProductService,
     private sanitizer: DomSanitizer,
     private modalService: NgbModal,
-    private middleware: MiddlewareAPIService,
     private appAuthService: AppAuthService,
     @Inject(applicationConfiguration) private appConfig: AppConfig,
     private toastrService: ToastrService,
-    private http: HttpClient,
-    private ocTokenService: OcTokenService
-  ) {}
+    private assetService: AssetService,
+    private translate: TranslateService
+  ) { }
 
   async ngOnInit(): Promise<void> {
     // TODO: Eventually move to a resolve so that they are there before the component instantiates.
@@ -207,9 +207,9 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   async getAddresses(product?): Promise<void> {
     const context: UserContext = await this.currentUserService.getUserContext()
     if (context.Me.Supplier) {
-      this.addresses = await this.ocSupplierAddressService
-        .List(context.Me.Supplier.ID)
-        .toPromise()
+      this.addresses = await SupplierAddresses.List(context.Me.Supplier.ID)
+    } else if (context.Me.Seller) {
+      this.addresses = await AdminAddresses.List()
     }
   }
 
@@ -239,23 +239,33 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     } else {
       this.taxCodes = { Meta: {}, Items: [] }
     }
-    this.staticContent = this._superHSProductEditable.Attachments
-    this.images = this._superHSProductEditable.Images
+    this.staticContent = this._superHSProductEditable.Product?.xp.Documents
+    this.images = this._superHSProductEditable.Product?.xp?.Images
     this.taxCodeCategorySelected =
       this._superHSProductEditable.Product?.xp?.Tax?.Category !== null
     this.productType = this._superHSProductEditable.Product?.xp?.ProductType
     this.createProductForm(this._superHSProductEditable)
-    if (this.userContext?.UserType === 'SELLER') {
-      this.addresses = await this.ocSupplierAddressService
-        .List(this._superHSProductEditable?.Product?.DefaultSupplierID)
-        .toPromise()
+    if (
+      this.userContext?.UserType === 'SELLER' &&
+      superProduct.Product.DefaultSupplierID
+    ) {
+      this.addresses = await SupplierAddresses.List(
+        this._superHSProductEditable?.Product?.DefaultSupplierID
+      )
       if (superProduct.Product?.ShipFromAddressID)
-        this.shippingAddress = await this.ocSupplierAddressService
-          .Get(
-            this._superHSProductEditable.Product.OwnerID,
-            this._superHSProductEditable.Product.ShipFromAddressID
-          )
-          .toPromise()
+        this.shippingAddress = await SupplierAddresses.Get(
+          this._superHSProductEditable.Product.OwnerID,
+          this._superHSProductEditable.Product.ShipFromAddressID
+        )
+    } else if (
+      this.userContext?.UserType === 'SELLER' &&
+      !superProduct.Product.DefaultSupplierID
+    ) {
+      this.addresses = await AdminAddresses.List()
+      if (superProduct.Product?.ShipFromAddressID)
+        this.shippingAddress = await AdminAddresses.Get(
+          this._superHSProductEditable.Product.ShipFromAddressID
+        )
     }
     this.isCreatingNew = this.productService.checkIfCreatingNew()
     this.checkForChanges()
@@ -263,6 +273,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
 
   createProductForm(superHSProduct: SuperHSProduct): void {
     if (superHSProduct.Product) {
+      this.readonly = this.isProductReadonly(superHSProduct)
+      this.sellerView = this.userContext?.UserType === 'SELLER'
       this.productForm = new FormGroup(
         {
           Active: new FormControl(superHSProduct.Product.Active),
@@ -361,7 +373,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
           ),
           FreeShippingMessage: new FormControl(
             _get(superHSProduct.Product, 'xp.FreeShippingMessage') ||
-              'Free Shipping'
+            'Free Shipping'
           ),
         },
         { validators: ValidateMinMax }
@@ -372,6 +384,29 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       this.setNonRequiredFields()
       this.setResourceType()
     }
+  }
+
+  isProductReadonly(superHSProduct: SuperHSProduct): boolean {
+    if (this.productService.checkIfCreatingNew()) {
+      return false
+    }
+
+    const currentUser: MeUser = this.userContext.Me
+    const product: HSProduct = superHSProduct?.Product
+    const isSellerUser: boolean = this.userContext.UserType === 'SELLER'
+
+    if (!product?.DefaultSupplierID && isSellerUser) {
+      return false
+    }
+
+    if (currentUser?.Supplier?.ID === product?.DefaultSupplierID) {
+      return false
+    }
+
+    if (isSellerUser && product?.OwnerID === currentUser?.Seller?.ID) {
+      return false
+    }
+    return true
   }
 
   setInventoryValidator(): void {
@@ -511,11 +546,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     } else {
       return true
     }
-
-    return (
-      this.productForm.controls.ShipFromAddressID.valid &&
-      this.productForm.controls.SizeTier.valid
-    )
   }
 
   unitOfMeasureValid(): boolean {
@@ -533,8 +563,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     this.availableProductTypes = supplier?.xp?.ProductTypes || [
       'Standard',
       'Quote',
-      'PurchaseOrder',
-      'Kit',
     ]
   }
 
@@ -542,7 +570,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     if (this.isCreatingNew) {
       await this.createNewProduct()
     } else {
-      this.updateProduct()
+      void this.updateProduct()
     }
   }
 
@@ -552,14 +580,14 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       this._superHSProductStatic.Product.ID,
       accessToken
     )
-    this.router.navigateByUrl('/products')
+    void this.router.navigateByUrl('/products')
   }
 
   handleDiscardChanges(): void {
     this.imageFiles = []
     this.staticContentFiles = []
     this._superHSProductEditable = this._superHSProductStatic
-    this.refreshProductData(this._superHSProductStatic)
+    void this.refreshProductData(this._superHSProductStatic)
   }
 
   async createNewProduct(): Promise<void> {
@@ -568,19 +596,12 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       const superProduct = await this.createNewSuperHSProduct(
         this._superHSProductEditable
       )
-      if (this.imageFiles.length > 0)
-        await this.addImages(this.imageFiles, superProduct.Product.ID)
-      if (this.staticContentFiles.length > 0)
-        await this.addDocuments(
-          this.staticContentFiles,
-          superProduct.Product.ID
-        )
-      this.refreshProductData(superProduct)
-      this.router.navigateByUrl(`/products/${superProduct.Product.ID}`)
+      void this.refreshProductData(superProduct)
+      void this.router.navigateByUrl(`/products/${superProduct.Product.ID}`)
       this.dataIsSaving = false
     } catch (ex) {
       this.dataIsSaving = false
-      const message = ex?.response?.data?.Data
+      const message = ex?.response?.data?.Data as string;
       if (message) {
         this.toastrService.error(message, 'Error', { onActivateTick: true })
       }
@@ -588,29 +609,35 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     }
   }
 
+  showVariantToastr(): void {
+    this.toastrService.warning(
+      this.translate.instant('ADMIN.PRODUCT_EDIT.VARIANTS_WARNING'),
+      'Warning',
+      { onActivateTick: true }
+    )
+  }
+  productWasModified(): boolean {
+    return (
+      JSON.stringify(this._superHSProductEditable) !==
+      JSON.stringify(this._superHSProductStatic) ||
+      this.imageFiles.length > 0 ||
+      this.staticContentFiles.length > 0
+    )
+  }
+
   async updateProduct(): Promise<void> {
     try {
       this.dataIsSaving = true
       let superProduct = this._superHSProductStatic
-      if (
-        JSON.stringify(this._superHSProductEditable) !==
-        JSON.stringify(this._superHSProductStatic)
-      ) {
+      if (this.productWasModified()) {
         superProduct = await this.updateHSProduct(this._superHSProductEditable)
+        this.updateList.emit(superProduct.Product as Product)
       }
-      this.refreshProductData(superProduct)
-      if (this.imageFiles.length > 0)
-        await this.addImages(this.imageFiles, superProduct.Product.ID)
-      if (this.staticContentFiles.length > 0) {
-        await this.addDocuments(
-          this.staticContentFiles,
-          superProduct.Product.ID
-        )
-      }
+      void this.refreshProductData(superProduct)
       this.dataIsSaving = false
     } catch (ex) {
       this.dataIsSaving = false
-      const message = ex?.response?.data?.Data
+      const message = ex?.response?.data?.Data as string
       if (message) {
         this.toastrService.error(message, 'Error', { onActivateTick: true })
       }
@@ -642,8 +669,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       value: productFields.includes(field)
         ? event.target.checked
         : typeOfValue === 'number'
-        ? Number(event.target.value)
-        : event.target.value,
+          ? Number(event.target.value)
+          : event.target.value,
     }
 
     if (field === 'PriceSchedule.MaxQuantity' && productUpdate.value === 0) {
@@ -677,7 +704,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   checkForChanges(): void {
     this.areChanges =
       JSON.stringify(this._superHSProductEditable) !==
-        JSON.stringify(this._superHSProductStatic) ||
+      JSON.stringify(this._superHSProductStatic) ||
       this.imageFiles?.length > 0 ||
       this.staticContentFiles?.length > 0
   }
@@ -686,7 +713,10 @@ export class ProductEditComponent implements OnInit, OnDestroy {
    *  **** PRODUCT IMAGE UPLOAD FUNCTIONS ****
    * ******************************************/
 
-  manualFileUpload(event, fileType: string): void {
+  manualFileUpload(
+    event: Event & { target: HTMLInputElement },
+    fileType: string
+  ): void {
     if (fileType === 'image') {
       const files: FileHandle[] = Array.from(event.target.files).map(
         (file: File) => {
@@ -716,78 +746,14 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     this.checkForChanges()
   }
 
-  async uploadAsset(
-    productID: string,
-    file: FileHandle,
-    isAttachment = false
-  ): Promise<SuperHSProduct> {
-    const accessToken = await this.appAuthService.fetchToken().toPromise()
-    const asset = {
-      Active: true,
-      Title: isAttachment ? 'Product_Attachment' : null,
-      File: file.File,
-      FileName: file.Filename,
-    } as Asset
-    const newAsset: Asset = await ContentManagementClient.Assets.Upload(
-      asset,
-      accessToken
+  async removeFile(file: DocumentAsset, assetType: AssetType): Promise<void> {
+    this._superHSProductStatic.Product = await this.assetService.deleteAssetUpdateProduct(
+      this._superHSProductEditable.Product,
+      file.Url,
+      assetType
     )
-    await ContentManagementClient.Assets.SaveAssetAssignment(
-      { ResourceType: 'Products', ResourceID: productID, AssetID: newAsset.ID },
-      accessToken
-    )
-    return await HeadStartSDK.Products.Get(productID, accessToken)
-  }
-
-  async addDocuments(files: FileHandle[], productID: string): Promise<void> {
-    let superProduct
-    for (const file of files) {
-      superProduct = await this.uploadAsset(productID, file, true)
-    }
-    this.staticContentFiles = []
-    // Only need the `|| {}` to account for creating new product where this._superHSProductStatic doesn't exist yet.
-    superProduct = Object.assign(this._superHSProductStatic || {}, superProduct)
-    this.refreshProductData(superProduct)
-  }
-
-  async addImages(files: FileHandle[], productID: string): Promise<void> {
-    let superProduct
-    for (const file of files) {
-      superProduct = await this.uploadAsset(productID, file)
-    }
-    this.imageFiles = []
-    //  need to copy the object so object.assign does not modify target
-    const copiedHSStatic = JSON.parse(
-      JSON.stringify(this._superHSProductStatic)
-    )
-
-    // Only need the `|| {}` to account for creating new product where this._superHSProductStatic doesn't exist yet.
-    superProduct = Object.assign(copiedHSStatic || {}, superProduct)
-    this.refreshProductData(superProduct)
-  }
-
-  async removeFile(file: Asset): Promise<void> {
-    const accessToken = await this.appAuthService.fetchToken().toPromise()
-    // Remove the image assignment, then remove the image
-    await ContentManagementClient.Assets.DeleteAssetAssignment(
-      file.ID,
-      this._superHSProductStatic.Product.ID,
-      'Products',
-      null,
-      null,
-      accessToken
-    )
-    await ContentManagementClient.Assets.Delete(file.ID, accessToken)
-    if (file.Type === 'Image') {
-      this._superHSProductStatic.Images = this._superHSProductStatic.Images.filter(
-        (i) => i.ID !== file.ID
-      )
-    } else {
-      this._superHSProductStatic.Attachments = this._superHSProductStatic.Attachments.filter(
-        (a) => a.ID !== file.ID
-      )
-    }
-    this.refreshProductData(this._superHSProductStatic)
+    this.updateList.emit(this._superHSProductStatic.Product as Product)
+    void this.refreshProductData(this._superHSProductStatic)
   }
 
   unstageFile(index: number, fileType: string): void {
@@ -898,8 +864,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   ): Promise<SuperHSProduct> {
     const supplier = await this.currentUserService.getMySupplier()
     superHSProduct.Product.xp.ProductType = this.productType
-    ;(superHSProduct.Product.xp as any).PromotionEligible =
-      this.productType === 'PurchaseOrder' ? false : true
+    superHSProduct.Product.xp.PromotionEligible = true
     superHSProduct.Product.xp.Status = 'Draft'
     superHSProduct.Product.xp.Currency = supplier?.xp?.Currency
     superHSProduct.PriceSchedule.ID = superHSProduct.Product.ID
@@ -915,7 +880,24 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       superHSProduct.Product.xp.Tax = null
     if (superHSProduct.PriceSchedule.PriceBreaks[0].Price === null)
       superHSProduct.PriceSchedule.PriceBreaks[0].Price = 0
-    return await HeadStartSDK.Products.Post(superHSProduct)
+    if (this.imageFiles.length > 0) {
+      const imgAssets = await this.assetService.uploadImageFiles(
+        this.imageFiles
+      )
+      superHSProduct.Product.xp.Images = imgAssets
+    }
+    if (this.staticContentFiles.length > 0) {
+      const documentAssets = await this.assetService.uploadDocumentFiles(
+        this.staticContentFiles
+      )
+      superHSProduct.Product.xp.Documents = documentAssets
+    }
+    try {
+      return await HeadStartSDK.Products.Post(superHSProduct)
+    } finally {
+      this.imageFiles = []
+      this.staticContentFiles = []
+    }
   }
 
   async updateHSProduct(
@@ -936,17 +918,42 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         )
       }
     }
+    if (!superHSProduct.Product.xp) {
+      superHSProduct.Product.xp = {}
+    }
     if (superHSProduct.PriceSchedule.PriceBreaks.length === 0)
       superHSProduct.PriceSchedule = null
-    // TODO: Temporary while Product set doesn't reflect the current strongly typed Xp
     superHSProduct.Product.xp.Status = 'Draft'
-    return await HeadStartSDK.Products.Put(
-      superHSProduct.Product.ID,
-      superHSProduct
-    )
+    if (this.imageFiles.length > 0) {
+      const imgAssets = await this.assetService.uploadImageFiles(
+        this.imageFiles
+      )
+      superHSProduct.Product.xp.Images = [
+        ...(superHSProduct.Product.xp?.Images || []),
+        ...imgAssets,
+      ]
+    }
+    if (this.staticContentFiles.length > 0) {
+      const documentAssets = await this.assetService.uploadDocumentFiles(
+        this.staticContentFiles
+      )
+      superHSProduct.Product.xp.Documents = [
+        ...(superHSProduct.Product.xp?.Documents || []),
+        ...documentAssets,
+      ]
+    }
+    try {
+      return await HeadStartSDK.Products.Put(
+        superHSProduct.Product.ID,
+        superHSProduct
+      )
+    } finally {
+      this.imageFiles = []
+      this.staticContentFiles = []
+    }
   }
 
-  async handleSelectedProductChange(product: Product): Promise<void> {
+  async handleSelectedProductChange(product: HSProduct): Promise<void> {
     this._exchangeRates = (await HeadStartSDK.ExchangeRates.GetRateList()).Items
     const currencyOnProduct = product.xp.Currency
     this.supplierCurrency = this._exchangeRates?.find(
@@ -955,10 +962,15 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     this.sellerCurrency = this._exchangeRates?.find((r) => r.Currency === 'USD')
     const accessToken = await this.appAuthService.fetchToken().toPromise()
     const hsProduct = await HeadStartSDK.Products.Get(product.ID, accessToken)
-    this.refreshProductData(hsProduct)
+    void this.refreshProductData(hsProduct)
   }
 
-  async listTaxCodes(taxCategory, search, page, pageSize): Promise<any> {
+  async listTaxCodes(
+    taxCategory: string,
+    search: string,
+    page: number,
+    pageSize: number
+  ): Promise<ListPage<TaxCode>> {
     return await HeadStartSDK.Avalaras.ListTaxCodes({
       filters: { Category: taxCategory },
       search,
@@ -1002,10 +1014,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   getProductPreviewImage(): string | SafeUrl {
     return (
       this.imageFiles[0]?.URL ||
-      getProductMediumImageUrl(
-        this._superHSProductEditable?.Product,
-        this.appConfig.sellerID
-      )
+      getProductMediumImageUrl(this._superHSProductEditable?.Product)
     )
   }
 

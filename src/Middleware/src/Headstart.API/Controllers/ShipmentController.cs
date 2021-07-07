@@ -32,8 +32,8 @@ namespace Headstart.Common.Controllers
             // ocAuth is the token for the organization that is specified in the AppSettings
 
             // todo add auth to make sure suppliers are creating shipments for their own orders
-            return await _command.CreateShipment(superShipment, UserContext.AccessToken);
-        }
+            return await _command.CreateShipment(superShipment, UserContext);
+        } 
 
         /// <summary>
         /// POST Batch Shipment Update

@@ -1,15 +1,16 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { applicationConfiguration, AppConfig } from '@app-seller/config/app.config';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { applicationConfiguration } from '@app-seller/config/app.config';
 import { HomeComponent } from './home.component';
 import { InjectionToken } from '@angular/core';
+import { AppConfig } from '@app-seller/shared';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ HomeComponent ],
+      declarations: [HomeComponent],
       providers: [
         {
           provide: applicationConfiguration,
@@ -17,7 +18,7 @@ describe('HomeComponent', () => {
         },
       ],
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

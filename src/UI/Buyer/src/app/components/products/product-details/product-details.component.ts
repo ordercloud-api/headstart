@@ -1,16 +1,19 @@
 import { Component, Input, OnInit } from '@angular/core'
 import { faTimes, faListUl, faTh } from '@fortawesome/free-solid-svg-icons'
-import { Spec, PriceBreak, SpecOption, Suppliers } from 'ordercloud-javascript-sdk'
+import {
+  Spec,
+  PriceBreak,
+  SpecOption,
+  Suppliers,
+} from 'ordercloud-javascript-sdk'
 import { PriceSchedule } from 'ordercloud-javascript-sdk'
 import {
   HSLineItem,
-  Asset,
   QuoteOrderInfo,
-  HSProductInKit,
   HSVariant,
-  HeadStartSDK,
   HSMeProduct,
   HSSupplier,
+  DocumentAsset,
 } from '@ordercloud/headstart-sdk'
 import { Observable } from 'rxjs'
 import { SpecFormService } from '../spec-form/spec-form.service'
@@ -40,7 +43,7 @@ export class OCMProductDetails implements OnInit {
   priceSchedule: PriceSchedule
   priceBreaks: PriceBreak[]
   unitPrice: number
-  attachments: Asset[] = []
+  attachments: DocumentAsset[] = []
   isOrderable = false
   quantity: number
   price: number
@@ -58,10 +61,6 @@ export class OCMProductDetails implements OnInit {
   submittedQuoteOrder: any
   showGrid = false
   isAddingToCart = false
-  isKitProduct: boolean
-  productsIncludedInKit: HSProductInKit[]
-  ocProductsInKit: any[]
-  isKitStatic = false
   contactRequest: ContactSupplierBody
   specForm: FormGroup
   isInactiveVariant: boolean
@@ -73,13 +72,13 @@ export class OCMProductDetails implements OnInit {
     private specFormService: SpecFormService,
     private context: ShopperContextService,
     private productDetailService: ProductDetailService,
-    private toastrService: ToastrService,
+    private toastrService: ToastrService
   ) {}
 
   @Input() set product(superProduct: SuperHSProduct) {
     this._superProduct = superProduct
     this._product = superProduct.Product
-    this.attachments = superProduct?.Attachments
+    this.attachments = superProduct?.Product?.xp?.Documents
     this.priceBreaks = superProduct.PriceSchedule?.PriceBreaks
     this.unitPrice =
       this.priceBreaks && this.priceBreaks.length
@@ -88,9 +87,12 @@ export class OCMProductDetails implements OnInit {
     this.isOrderable = !!superProduct.PriceSchedule
     this.supplierNote = this._product.xp && this._product.xp.Note
     this.specs = superProduct.Specs
-    this.setSupplier(this._product.DefaultSupplierID)
+    if (this._product.DefaultSupplierID !== null) {
+      this.setSupplier(this._product.DefaultSupplierID)
+    }
     this.setPageTitle()
     this.populateInactiveVariants(superProduct)
+    this.showGrid = superProduct?.PriceSchedule?.UseCumulativeQuantity
   }
 
   ngOnInit(): void {
@@ -195,7 +197,7 @@ export class OCMProductDetails implements OnInit {
         Specs: this.specFormService.getLineItemSpecs(this.specs, this.specForm),
         xp: {
           ImageUrl: this.specFormService.getLineItemImageUrl(
-            this._superProduct.Images,
+            this._superProduct.Product?.xp?.Images,
             this._superProduct.Specs,
             this.specForm
           ),
@@ -257,7 +259,7 @@ export class OCMProductDetails implements OnInit {
 
   async submitQuoteOrder(info: QuoteOrderInfo): Promise<void> {
     try {
-      const lineItem: HSLineItem = {}
+      const lineItem: HSLineItem = {} as HSLineItem
       lineItem.ProductID = this._product.ID
       lineItem.Specs = this.specFormService.getLineItemSpecs(
         this.specs,
@@ -265,7 +267,7 @@ export class OCMProductDetails implements OnInit {
       )
       lineItem.xp = {
         ImageUrl: this.specFormService.getLineItemImageUrl(
-          this._superProduct.Images,
+          this._superProduct.Product?.xp?.Images,
           this._superProduct.Specs,
           this.specForm
         ),

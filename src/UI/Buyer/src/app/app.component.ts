@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core'
 import { ShopperContextService } from './services/shopper-context/shopper-context.service'
-import { StaticPageService } from './services/static-page/static-page.service'
 
 @Component({
   selector: 'app-root',
@@ -14,23 +13,21 @@ export class AppComponent implements OnInit {
 
   constructor(
     public context: ShopperContextService,
-    private staticPages: StaticPageService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.context.router.setPageTitle();
     this.context.router.onUrlChange((url) => {
       this.showHeader = !this.hiddenRoutes.some((el) => url.includes(el))
-      if(!url.includes('products/')) {
+      if (!url.includes('products/')) {
         this.context.router.setPageTitle(this.getPageTitle(url));
       }
     })
-    this.staticPages.initialize()
   }
 
   getPageTitle(url: string): string {
     //  handle case where there are query params. Don't need these in page title
-    if(url.includes('?')) {
+    if (url.includes('?')) {
       url = url.split("?")[0];
     }
     const routeArray = url.split("/")

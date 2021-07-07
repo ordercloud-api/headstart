@@ -9,13 +9,9 @@ using Headstart.Common.Helpers;
 using Headstart.Common.Services.CMS;
 using Headstart.Common.Services.CMS.Models;
 using Headstart.Models;
-using ordercloud.integrations.library;
 using ordercloud.integrations.library.Cosmos;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
-using Polly;
-using Polly.Retry;
-
 namespace Headstart.API.Commands.Crud
 {
 	public interface IHSProductCommand
@@ -29,8 +25,6 @@ namespace Headstart.API.Commands.Crud
 		Task DeletePricingOverride(string id, string buyerID, string token);
 		Task<HSPriceSchedule> UpdatePricingOverride(string id, string buyerID, HSPriceSchedule pricingOverride, string token);
 		Task<HSPriceSchedule> CreatePricingOverride(string id, string buyerID, HSPriceSchedule pricingOverride, string token);
-		Task<List<Asset>> GetProductImages(string productID, string token);
-		Task<List<Asset>> GetProductAttachments(string productID, string token);
 		Task<Product> FilterOptionOverride(string id, string supplierID, IDictionary<string, object> facets, VerifiedUserContext user);
 	}
 
@@ -42,15 +36,15 @@ namespace Headstart.API.Commands.Crud
 	public class HSProductCommand : IHSProductCommand
 	{
 		private readonly IOrderCloudClient _oc;
-		private readonly ICMSClient _cms;
 		private readonly AppSettings _settings;
 		private readonly ISupplierApiClientHelper _apiClientHelper;
-		public HSProductCommand(AppSettings settings, ICMSClient cms, IOrderCloudClient elevatedOc, ISupplierApiClientHelper apiClientHelper)
+		private readonly IAssetClient _assetClient;
+		public HSProductCommand(AppSettings settings, IOrderCloudClient elevatedOc, ISupplierApiClientHelper apiClientHelper, IAssetClient assetClient)
 		{
-			_cms = cms;
 			_oc = elevatedOc;
 			_settings = settings;
 			_apiClientHelper = apiClientHelper;
+			_assetClient = assetClient;
 		}
 
 		public async Task<HSPriceSchedule> GetPricingOverride(string id, string buyerID, string token)
@@ -118,23 +112,9 @@ namespace Headstart.API.Commands.Crud
 			});
 		}
 
-		public async Task<List<Asset>> GetProductImages(string productID, string token)
-		{
-			var assets = await _cms.Assets.ListAssets(ResourceType.Products, productID, new ListArgsPageOnly() { PageSize = 100 }, token);
-			var images = assets.Items.Where(a => a.Type == AssetType.Image).ToList();
-			return images;
-		}
-		public async Task<List<Asset>> GetProductAttachments(string productID, string token)
-		{
-			var assets = await _cms.Assets.ListAssets(ResourceType.Products, productID, new ListArgsPageOnly() { PageSize = 100 }, token);
-			var attachments = assets.Items.Where(a => a.Title == "Product_Attachment").ToList();
-			return attachments;
-		}
-
 		public async Task<SuperHSProduct> Get(string id, string token)
 		{
 			var _product = await _oc.Products.GetAsync<HSProduct>(id, token);
-			// Get the price schedule, if it exists, if not - send empty price schedule
 			var _priceSchedule = new PriceSchedule();
 			try
 			{
@@ -146,8 +126,6 @@ namespace Headstart.API.Commands.Crud
 			}
 			var _specs = _oc.Products.ListSpecsAsync(id, null, null, null, 1, 100, null, token);
 			var _variants = _oc.Products.ListVariantsAsync<HSVariant>(id, null, null, null, 1, 100, null, token);
-			var _images = GetProductImages(id, token);
-			var _attachments = GetProductAttachments(id, token);
 			try
 			{
 				return new SuperHSProduct
@@ -156,8 +134,6 @@ namespace Headstart.API.Commands.Crud
 					PriceSchedule = _priceSchedule,
 					Specs = (await _specs).Items,
 					Variants = (await _variants).Items,
-					Images = await _images,
-					Attachments = await _attachments
 				};
 			}
 			catch (Exception e)
@@ -182,16 +158,12 @@ namespace Headstart.API.Commands.Crud
 				var priceSchedule = _oc.PriceSchedules.GetAsync(product.DefaultPriceScheduleID, token);
 				var _specs = _oc.Products.ListSpecsAsync(product.ID, null, null, null, 1, 100, null, token);
 				var _variants = _oc.Products.ListVariantsAsync<HSVariant>(product.ID, null, null, null, 1, 100, null, token);
-				var _images = GetProductImages(product.ID, token);
-				var _attachments = GetProductAttachments(product.ID, token);
 				_superProductsList.Add(new SuperHSProduct
 				{
 					Product = product,
 					PriceSchedule = await priceSchedule,
 					Specs = (await _specs).Items,
 					Variants = (await _variants).Items,
-					Images = await _images,
-					Attachments = await _attachments
 				});
 			});
 			return new ListPage<SuperHSProduct>
@@ -240,13 +212,16 @@ namespace Headstart.API.Commands.Crud
 			}
 			superProduct.Product.DefaultPriceScheduleID = _priceSchedule.ID;
 			// Create Product
-			var supplierName = await GetSupplierNameForXpFacet(user.Supplier.ID, user.AccessToken);
-			superProduct.Product.xp.Facets.Add("supplier", new List<string>() { supplierName });
+			if(user.Supplier != null)
+            {
+				var supplierName = await GetSupplierNameForXpFacet(user.Supplier.ID, user.AccessToken);
+				superProduct.Product.xp.Facets.Add("supplier", new List<string>() { supplierName });
+			}
 			var _product = await _oc.Products.CreateAsync<HSProduct>(superProduct.Product, user.AccessToken);
 			// Make Spec Product Assignments
 			await Throttler.RunAsync(superProduct.Specs, 100, 5, s => _oc.Specs.SaveProductAssignmentAsync(new SpecProductAssignment { ProductID = _product.ID, SpecID = s.ID }, accessToken: user.AccessToken));
 			// Generate Variants
-			await WithRetry().ExecuteAsync(() => _oc.Products.GenerateVariantsAsync(_product.ID, accessToken: user.AccessToken));
+			await _oc.Products.GenerateVariantsAsync(_product.ID, accessToken: user.AccessToken);
 			// Patch Variants with the User Specified ID(SKU) AND necessary display xp values
 			await Throttler.RunAsync(superProduct.Variants, 100, 5, v =>
 			{
@@ -281,8 +256,6 @@ namespace Headstart.API.Commands.Crud
 				PriceSchedule = _priceSchedule,
 				Specs = _specs.Items,
 				Variants = _variants.Items,
-				Images = new List<Asset>(),
-				Attachments = new List<Asset>()
 			};
 		}
 
@@ -401,7 +374,7 @@ namespace Headstart.API.Commands.Crud
 				await ValidateVariantsAsync(superProduct, token);
 
 				// Re-generate Variants
-				await WithRetry().ExecuteAsync(() => _oc.Products.GenerateVariantsAsync(id, overwriteExisting: true, accessToken: token));
+				await _oc.Products.GenerateVariantsAsync(id, overwriteExisting: true, accessToken: token);
 				// Patch NEW variants with the User Specified ID (Name,ID), and correct xp values (SKU)
 				await Throttler.RunAsync(superProduct.Variants, 100, 5, v =>
 				{
@@ -436,12 +409,6 @@ namespace Headstart.API.Commands.Crud
 			// List Product Specs
 			var _specsReq = _oc.Products.ListSpecsAsync<Spec>(id, accessToken: token);
 			tasks.Add(_specsReq);
-			// List Product Images
-			var _imagesReq = GetProductImages(_updatedProduct.ID, token);
-			tasks.Add(_imagesReq);
-			// List Product Attachments
-			var _attachmentsReq = GetProductAttachments(_updatedProduct.ID, token);
-			tasks.Add(_attachmentsReq);
 
 			await Task.WhenAll(tasks);
 
@@ -451,8 +418,6 @@ namespace Headstart.API.Commands.Crud
 				PriceSchedule = _priceScheduleReq?.Result,
 				Specs = _specsReq?.Result?.Items,
 				Variants = _variantsReq?.Result?.Items,
-				Images = _imagesReq?.Result,
-				Attachments = _attachmentsReq?.Result
 			};
 		}
 
@@ -464,18 +429,6 @@ namespace Headstart.API.Commands.Crud
 				variant.xp.NewID = null;
             }
         }
-
-		private AsyncRetryPolicy WithRetry()
-		{
-			// retries three times, waits two seconds in-between failures
-			return Policy
-				.Handle<OrderCloudException>(e => e.HttpStatus == HttpStatusCode.InternalServerError || e.HttpStatus == HttpStatusCode.RequestTimeout)
-				.WaitAndRetryAsync(new[] {
-					TimeSpan.FromSeconds(2),
-					TimeSpan.FromSeconds(2),
-					TimeSpan.FromSeconds(2),
-				});
-		}
 
 		private async Task<PriceSchedule> UpdateRelatedPriceSchedules(PriceSchedule updated, string token)
 		{
@@ -569,18 +522,24 @@ namespace Headstart.API.Commands.Crud
 
 		public async Task Delete(string id, string token)
 		{
-			var product = await _oc.Products.GetAsync(id); // This is temporary to accommodate bad data where product.ID != product.DefaultPriceScheduleID
+			
+			var product = await _oc.Products.GetAsync<HSProduct>(id);
 			var _specs = await _oc.Products.ListSpecsAsync<Spec>(id, accessToken: token);
-			var _images = await GetProductImages(id, token);
-			var _attachments = await GetProductAttachments(id, token);
-			// Delete specs images and attachments associated with the requested product
-			await Task.WhenAll(
-				_oc.PriceSchedules.DeleteAsync(product.DefaultPriceScheduleID, token),
-				Throttler.RunAsync(_images, 100, 5, i => _cms.Assets.Delete(i.ID, token)),
-				Throttler.RunAsync(_attachments, 100, 5, i => _cms.Assets.Delete(i.ID, token)),
+			var tasks = new List<Task>()
+			{
 				Throttler.RunAsync(_specs.Items, 100, 5, s => _oc.Specs.DeleteAsync(s.ID, accessToken: token)),
 				_oc.Products.DeleteAsync(id, token)
-			);
+			};
+			if (product?.xp?.Images?.Count() > 0)
+			{
+				tasks.Add(Throttler.RunAsync(product.xp.Images, 100, 5, i => _assetClient.DeleteAssetByUrl(i.Url)));
+			}
+			if (product?.xp?.Documents != null && product?.xp?.Documents.Count() > 0)
+			{
+				tasks.Add(Throttler.RunAsync(product.xp.Documents, 100, 5, d => _assetClient.DeleteAssetByUrl(d.Url)));
+			}
+			// Delete images, attachments, and assignments associated with the requested product
+			await Task.WhenAll(tasks);
 		}
 
 		public async Task<Product> FilterOptionOverride(string id, string supplierID, IDictionary<string, object> facets, VerifiedUserContext user)
@@ -629,5 +588,5 @@ namespace Headstart.API.Commands.Crud
 			var supplier = await _oc.Suppliers.GetAsync(supplierID, accessToken);
 			return supplier.Name;
 		}
-	}
+    }
 }

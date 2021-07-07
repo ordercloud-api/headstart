@@ -15,7 +15,7 @@ namespace library.tests
         [Test, TestCaseSource(typeof(ParseFactory), nameof(ParseFactory.TestCases))]
         public void list_filter_parse_test(string expression, dynamic filter)
         {
-            var parse = ListFilter.Parse("", expression).FilterValues.First();
+            var parse = new ListFilter("", expression).FilterValues.First();
             Assert.IsTrue(parse.Operator == filter.Operator);
             Assert.IsTrue(parse.Term == filter.Term);
             Assert.IsTrue(parse.HasWildcard == filter.HasWildcard);

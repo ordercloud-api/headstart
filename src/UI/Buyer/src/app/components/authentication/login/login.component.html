@@ -1,23 +1,27 @@
 <div class="logged-out__container">
-  <div class="logged-out__card">
-    <p *ngIf="showRegisterLink()" translate>
+  <div
+    class="fixed-top bg-light d-flex align-items-center justify-content-center"
+  >
+    <small *ngIf="showRegisterLink()" translate>
       AUTHENTICATION.LOGIN.NO_ACCOUNT
-      <button
-        type="button"
-        class="btn btn-link"
-        routerLink="/register"
-        translate
-      >
-        AUTHENTICATION.LOGIN.SIGN_UP
-      </button>
-    </p>
+    </small>
+    <button
+      type="button"
+      class="btn btn-sm btn-link"
+      routerLink="/register"
+      translate
+    >
+      AUTHENTICATION.LOGIN.SIGN_UP
+    </button>
+  </div>
+  <div class="logged-out__card">
     <img
       class="img-fluid"
       width="300px"
       alt="{{ appName }}"
       [src]="appConfig.theme.logoSrc"
     />
-    <h3 class="text-center text-gradient headline-text" translate>
+    <h3 class="text-center text-gradient headline-text my-3" translate>
       AUTHENTICATION.LOGIN.ACCOUNT_LOGIN
     </h3>
     <form

@@ -36,14 +36,14 @@ export class OCMOrderHistorical implements OnInit {
   buyerLocation: HSAddressBuyer
   _userCurrency: string
 
-  constructor(private context: ShopperContextService) {}
+  constructor(private context: ShopperContextService) { }
 
   ngOnInit(): void {
     this._userCurrency = this.context.currentUser.get().Currency
   }
 
   async getBuyerLocation(addressID: string): Promise<void> {
-    if (!this.isQuoteOrder(this.order)) {
+    if (!this.isQuoteOrder(this.order) && addressID !== null) {
       const buyerLocation = await this.context.addresses.get(addressID)
       this.buyerLocation = buyerLocation
     } else this.buyerLocation = null

@@ -11,16 +11,10 @@ class VendorDetailsPage {
 	currencyOptions: Selector
 	standardProductTypeCheckbox: Selector
 	quoteProductTypeCheckbox: Selector
-	purchaseOrderProductTypeCheckbox: Selector
 	USCountryCheckbox: Selector
 	CACountryCheckbox: Selector
 	freightPOPToggle: Selector
 	createButton: Selector
-	mainCatgorySelector: Selector
-	mainCategoryOptionsSelector: Selector
-	subCategorySelector: Selector
-	subCategoryOptionsSelector: Selector
-	addCategoryButton: Selector
 
 	constructor() {
 		this.activeToggle = Selector('#Active').parent()
@@ -29,26 +23,12 @@ class VendorDetailsPage {
 		this.currencyOptions = this.currencySelector.find('option')
 		this.standardProductTypeCheckbox = Selector('#Standard').parent()
 		this.quoteProductTypeCheckbox = Selector('#Quote').parent()
-		this.purchaseOrderProductTypeCheckbox = Selector(
-			'#PurchaseOrder'
-		).parent()
 		this.USCountryCheckbox = Selector('#US').parent()
 		this.CACountryCheckbox = Selector('#CA').parent()
 		this.freightPOPToggle = Selector('#SyncFreightPop').parent()
 		this.createButton = Selector('button')
 			.withText(createRegExp('create'))
 			.withAttribute('type', 'submit')
-		this.mainCatgorySelector = Selector('supplier-category-select-component')
-			.find('select')
-			.nth(0)
-		this.mainCategoryOptionsSelector = this.mainCatgorySelector.find('option')
-		this.subCategorySelector = Selector('supplier-category-select-component')
-			.find('select')
-			.nth(1)
-		this.subCategoryOptionsSelector = this.subCategorySelector.find('option')
-		this.addCategoryButton = Selector('button').withText(
-			createRegExp('add category')
-		)
 	}
 
 	async createDefaultVendor() {
@@ -61,16 +41,6 @@ class VendorDetailsPage {
 		)
 		await t.click(this.freightPOPToggle)
 		await t.click(this.standardProductTypeCheckbox)
-		await await scrollIntoView('supplier-category-select-component')
-		await t.click(this.addCategoryButton)
-		await t.click(this.mainCatgorySelector)
-		await t.click(
-			this.mainCategoryOptionsSelector.withText(createRegExp('fans'))
-		)
-		await t.click(this.subCategorySelector)
-		await t.click(
-			this.subCategoryOptionsSelector.withText(createRegExp('mandated'))
-		)
 		// await t.click(this.USCountryCheckbox)
 		await t.click(this.createButton)
 
@@ -101,19 +71,6 @@ class VendorDetailsPage {
 		if (productType.includes('Quote')) {
 			await t.click(this.quoteProductTypeCheckbox)
 		}
-		if (productType.includes('Purchase Order')) {
-			await t.click(this.purchaseOrderProductTypeCheckbox)
-		}
-		await await scrollIntoView('supplier-category-select-component')
-		await t.click(this.addCategoryButton)
-		await t.click(this.mainCatgorySelector)
-		await t.click(
-			this.mainCategoryOptionsSelector.withText(createRegExp(mainCategory))
-		)
-		await t.click(this.subCategorySelector)
-		await t.click(
-			this.subCategoryOptionsSelector.withText(createRegExp(subCategory))
-		)
 
 		await t.click(this.createButton)
 

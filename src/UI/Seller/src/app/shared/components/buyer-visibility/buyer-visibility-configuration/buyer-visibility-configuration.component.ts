@@ -34,8 +34,8 @@ export class BuyerVisibilityConfiguration {
     this.fetchData()
   }
 
-  _product: HSProduct = {}
-  _buyer: HSBuyer = {}
+  _product: HSProduct = {} as HSProduct
+  _buyer: HSBuyer = {} as HSBuyer
 
   addCatalogAssignments: ProductAssignment[] = []
   delCatalogAssignments: ProductAssignment[] = []
@@ -45,7 +45,6 @@ export class BuyerVisibilityConfiguration {
 
   catalogAssignmentsEditable: ProductAssignment[] = []
   catalogAssignmentsStatic: ProductAssignment[] = []
-  kitProductCatalogAssignments: ProductAssignment[]
 
   assignedCategoriesStatic: Category[][] = []
   assignedCategoriesEditable: Category[][] = []
@@ -81,11 +80,6 @@ export class BuyerVisibilityConfiguration {
       await this.getCatalogs()
       await this.getCatalogAssignments()
       await this.getCategoryAssignments()
-      if (
-        !this._product.DefaultPriceScheduleID &&
-        this._product?.xp?.ProductType !== 'Quote'
-      )
-        await this.getKitProductCatalogAssignments(this._product)
       this.isFetching = false
     }
   }
@@ -106,36 +100,9 @@ export class BuyerVisibilityConfiguration {
     )
   }
 
-  async getKitProductCatalogAssignments(product: HSProduct) {
-    const productCatalogAssignments = []
-    const kitProduct = await HeadStartSDK.KitProducts.Get(product.ID)
-    kitProduct.ProductAssignments.ProductsInKit.forEach(async (prod) => {
-      const catalogs = await this.ocCatalogService
-        .ListProductAssignments({ productID: prod && prod.ID })
-        .toPromise()
-      productCatalogAssignments.push(catalogs.Items)
-    })
-    this.kitProductCatalogAssignments = productCatalogAssignments
-  }
-
   async asyncForEach(array, cb) {
     for (let i = 0; i < array.length; i++) {
       await cb(array[i], i, array)
-    }
-  }
-
-  async assignProductsInKitToCatalog() {
-    if (this.kitProductCatalogAssignments?.length) {
-      this.kitProductCatalogAssignments.forEach(async (product) => {
-        await this.asyncForEach(product, async (cat) => {
-          await this.ocCatalogService
-            .SaveProductAssignment({
-              CatalogID: this._buyer.ID,
-              ProductID: cat.ProductID,
-            })
-            .toPromise()
-        })
-      })
     }
   }
 
@@ -155,7 +122,6 @@ export class BuyerVisibilityConfiguration {
         newCatalogAssignment,
       ]
     }
-    await this.assignProductsInKitToCatalog()
     this.checkForProductCatalogAssignmentChanges()
   }
 

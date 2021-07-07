@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ProfileComponent } from 'src/app/profile/containers/profile/profile.component';
 import { SharedModule } from 'src/app/shared';
@@ -12,7 +12,7 @@ describe('ProfileComponent', () => {
   let fixture: ComponentFixture<ProfileComponent>;
   const appAuthService = { logout: jasmine.createSpy('logout') };
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ProfileComponent],
       imports: [SharedModule],

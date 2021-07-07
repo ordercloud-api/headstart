@@ -1,6 +1,5 @@
 import { SupplierUserTableComponent } from './supplier-user-table.component'
-import { async, ComponentFixture, TestBed } from '@angular/core/testing'
-import { ResourceType } from '@ordercloud/angular-cms-components/shared/models/resource-type.interface'
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing'
 import { BehaviorSubject, from } from 'rxjs'
 import { ActivatedRoute, Router } from '@angular/router'
 import { SupplierUserService } from '../supplier-user.service'
@@ -12,10 +11,10 @@ describe('SupplierUserTableComponent', () => {
   let fixture: ComponentFixture<SupplierUserTableComponent>
   const router = {
     navigateByUrl: jasmine.createSpy('navigateByUrl'),
-    url: { startsWith() {} },
+    url: { startsWith() { } },
     routerState: { snapshot: { url: 'url' } },
   }
-  const resourceSubjectMock = new BehaviorSubject<ListPage<ResourceType>>(
+  const resourceSubjectMock = new BehaviorSubject<ListPage<any>>(
     undefined
   )
 
@@ -42,7 +41,7 @@ describe('SupplierUserTableComponent', () => {
   }
   const ocSupplierService = {}
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [SupplierUserTableComponent],
       imports: [],

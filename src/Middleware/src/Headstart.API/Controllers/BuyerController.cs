@@ -30,7 +30,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, OrderCloudUserAuth(ApiRole.BuyerAdmin)]
         public async Task<SuperHSBuyer> Create([FromBody] SuperHSBuyer buyer)
         {
-            return await _command.Create(buyer, UserContext.AccessToken);
+            return await _command.Create(buyer);
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Headstart.Common.Controllers
         [HttpPut, Route("{buyerID}"), OrderCloudUserAuth(ApiRole.BuyerAdmin)]
         public async Task<SuperHSBuyer> Put([FromBody] SuperHSBuyer superBuyer, string buyerID)
         {
-            return await _command.Update(buyerID, superBuyer, UserContext.AccessToken);
+            return await _command.Update(buyerID, superBuyer);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Headstart.Common.Controllers
         [HttpGet, Route("{buyerID}"), OrderCloudUserAuth(ApiRole.BuyerAdmin)]
         public async Task<SuperHSBuyer> Get(string buyerID)
         {
-            return await _command.Get(buyerID, UserContext.AccessToken);
+            return await _command.Get(buyerID);
         }
     }
 }

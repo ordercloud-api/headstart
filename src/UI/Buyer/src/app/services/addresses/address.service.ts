@@ -26,6 +26,10 @@ export class AddressService {
     return Me.ListAddresses(args as any)
   }
 
+  async listAll(args: ListArgs): Promise<ListPage<HSAddressBuyer>> {
+    return HeadStartSDK.Services.ListAll(Me, Me.ListAddresses, args)
+  } 
+
   async create(
     address: HSAddressBuyer
   ): Promise<HSAddressBuyer> {
@@ -44,10 +48,11 @@ export class AddressService {
   }
 
   async listBuyerLocations(
-    args: ListArgs = {}
+    args: ListArgs = {}, 
+    all = false
   ): Promise<ListPage<HSAddressBuyer>> {
     args.filters = { ...args.filters, Editable: 'false' };
-    return await this.list(args)
+    return all ? await this.listAll(args) : await this.list(args)
   }
 
   async listShippingAddresses(
@@ -78,6 +83,13 @@ export class AddressService {
   async getCertificate(locationID: string): Promise<TaxCertificate> {
     var url = `${this.appConfig.middlewareUrl}/avalara/certificate/${locationID}`;
     var response = await Axios.get(url, this.BuildConfig());
+    return response.data;
+  }
+
+  // eventually replace with sdk
+  async validateAddress(address: HSAddressBuyer): Promise<HSAddressBuyer>  {
+    var url = `${this.appConfig.middlewareUrl}/me/addresses/validate`
+    var response = await Axios.post(url, address, this.BuildConfig());
     return response.data;
   }
 

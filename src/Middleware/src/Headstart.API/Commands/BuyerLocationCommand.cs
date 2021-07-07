@@ -1,4 +1,4 @@
-﻿using Headstart.Models;
+using Headstart.Models;
 using Headstart.Models.Misc;
 using OrderCloud.SDK;
 using System.Linq;
@@ -6,16 +6,20 @@ using System.Threading.Tasks;
 using Headstart.Common.Constants;
 using System;
 using Headstart.Common;
+using OrderCloud.Catalyst;
+using Headstart.API.Commands.Crud;
 
 namespace Headstart.API.Commands
 {
     public interface IHSBuyerLocationCommand
     {
-        Task<HSBuyerLocation> Create(string buyerID, HSBuyerLocation buyerLocation, string token);
-        Task<HSBuyerLocation> Get(string buyerID, string buyerLocationID, string token);
-        Task<HSBuyerLocation> Save(string buyerID, string buyerLocationID, HSBuyerLocation buyerLocation, string token, bool isSeedEnv = false);
-        Task Delete(string buyerID, string buyerLocationID, string token);
-        Task CreateSinglePermissionGroup(string token, string buyerLocationID, string permissionGroupID);
+        Task<HSBuyerLocation> Get(string buyerID, string buyerLocationID);
+        Task<HSBuyerLocation> Create(string buyerID, HSBuyerLocation buyerLocation);
+        Task<HSBuyerLocation> Save(string buyerID, string buyerLocationID, HSBuyerLocation buyerLocation);
+        Task<HSBuyerLocation> Save(string buyerID, string buyerLocationID, HSBuyerLocation buyerLocation, string token, IOrderCloudClient oc = null);
+        Task Delete(string buyerID, string buyerLocationID);
+        Task CreateSinglePermissionGroup(string buyerLocationID, string permissionGroupID);
+        Task ReassignUserGroups(string buyerID, string newUserID);
     }
 
     public class HSBuyerLocationCommand : IHSBuyerLocationCommand
@@ -27,10 +31,11 @@ namespace Headstart.API.Commands
             _settings = settings;
             _oc = oc;
         }
-        public async Task<HSBuyerLocation> Get(string buyerID, string buyerLocationID, string token)
+
+        public async Task<HSBuyerLocation> Get(string buyerID, string buyerLocationID)
         {
-            var buyerAddress = await _oc.Addresses.GetAsync<HSAddressBuyer>(buyerID, buyerLocationID, accessToken: token);
-            var buyerUserGroup = await _oc.UserGroups.GetAsync<HSLocationUserGroup>(buyerID, buyerLocationID, accessToken: token);
+            var buyerAddress = await _oc.Addresses.GetAsync<HSAddressBuyer>(buyerID, buyerLocationID);
+            var buyerUserGroup = await _oc.UserGroups.GetAsync<HSLocationUserGroup>(buyerID, buyerLocationID);
             return new HSBuyerLocation
             {
                 Address = buyerAddress,
@@ -38,16 +43,21 @@ namespace Headstart.API.Commands
             };
         }
 
-        public async Task<HSBuyerLocation> Create(string buyerID, HSBuyerLocation buyerLocation, string token)
+        public async Task<HSBuyerLocation> Create(string buyerID, HSBuyerLocation buyerLocation)
+        {
+            return await Create(buyerID, buyerLocation, null, _oc);
+        }
+
+        public async Task<HSBuyerLocation> Create(string buyerID, HSBuyerLocation buyerLocation, string token, IOrderCloudClient ocClient)
         {
             var buyerLocationID = CreateBuyerLocationID(buyerID, buyerLocation.Address.ID);
             buyerLocation.Address.ID = buyerLocationID;
-            var buyerAddress = await _oc.Addresses.CreateAsync<HSAddressBuyer>(buyerID, buyerLocation.Address, accessToken: token);
+            var buyerAddress = await ocClient.Addresses.CreateAsync<HSAddressBuyer>(buyerID, buyerLocation.Address, accessToken: token);
 
             buyerLocation.UserGroup.ID = buyerAddress.ID;
-            var buyerUserGroup = await _oc.UserGroups.CreateAsync<HSLocationUserGroup>(buyerID, buyerLocation.UserGroup, accessToken: token);
-            await CreateUserGroupAndAssignments(buyerID, buyerAddress.ID, token);
-            await CreateLocationUserGroupsAndApprovalRule(buyerAddress.ID, buyerAddress.AddressName, token);
+            var buyerUserGroup = await ocClient.UserGroups.CreateAsync<HSLocationUserGroup>(buyerID, buyerLocation.UserGroup, accessToken: token);
+            await CreateUserGroupAndAssignments(buyerID, buyerAddress.ID, token, ocClient);
+            await CreateLocationUserGroupsAndApprovalRule(buyerAddress.ID, buyerAddress.AddressName, token, ocClient);
 
             return new HSBuyerLocation
             {
@@ -75,7 +85,7 @@ namespace Headstart.API.Commands
             return buyerID + "-" + idInRequest.Replace("-", "_");
         }
 
-        public async Task CreateUserGroupAndAssignments(string buyerID, string buyerLocationID, string token)
+        public async Task CreateUserGroupAndAssignments(string buyerID, string buyerLocationID, string token, IOrderCloudClient ocClient)
         {
             var assignment = new AddressAssignment
             {
@@ -84,50 +94,57 @@ namespace Headstart.API.Commands
                 IsBilling = true,
                 IsShipping = true
             };
-            await _oc.Addresses.SaveAssignmentAsync(buyerID, assignment, accessToken: token);
+            await ocClient.Addresses.SaveAssignmentAsync(buyerID, assignment, accessToken: token);
         }
 
-        public async Task<HSBuyerLocation> Save(string buyerID, string buyerLocationID, HSBuyerLocation buyerLocation, string token, bool isSeedEnv = false)
+        public async Task<HSBuyerLocation> Save(string buyerID, string buyerLocationID, HSBuyerLocation buyerLocation)
+        {
+            // not being called by seed endpoint - use stored ordercloud client and stored admin token
+            return await Save(buyerID, buyerLocationID, buyerLocation, null, _oc);
+        }
+
+        public async Task<HSBuyerLocation> Save(string buyerID, string buyerLocationID, HSBuyerLocation buyerLocation, string token, IOrderCloudClient ocClient)
         {
             buyerLocation.Address.ID = buyerLocationID;
             buyerLocation.UserGroup.ID = buyerLocationID;
             UserGroup existingLocation = null;
             try
             {
-                existingLocation = await _oc.UserGroups.GetAsync(buyerID, buyerLocationID, token);
+                existingLocation = await ocClient.UserGroups.GetAsync(buyerID, buyerLocationID, token);
             } catch (Exception e) { } // Do nothing if not found
-            var updatedBuyerAddress = _oc.Addresses.SaveAsync<HSAddressBuyer>(buyerID, buyerLocationID, buyerLocation.Address, accessToken: token);
-            var updatedBuyerUserGroup = _oc.UserGroups.SaveAsync<HSLocationUserGroup>(buyerID, buyerLocationID, buyerLocation.UserGroup, accessToken: token);
+            var updatedBuyerAddress = await ocClient.Addresses.SaveAsync<HSAddressBuyer>(buyerID, buyerLocationID, buyerLocation.Address, accessToken: token);
+            var updatedBuyerUserGroup = await ocClient.UserGroups.SaveAsync<HSLocationUserGroup>(buyerID, buyerLocationID, buyerLocation.UserGroup, accessToken: token);
             var location = new HSBuyerLocation
             {
-                Address = await updatedBuyerAddress,
-                UserGroup = await updatedBuyerUserGroup,
+                Address = updatedBuyerAddress,
+                UserGroup = updatedBuyerUserGroup,
             };
             if (existingLocation == null)
 			{
-                var assignments = CreateUserGroupAndAssignments(buyerID, buyerLocationID, token);
-                var groups = CreateLocationUserGroupsAndApprovalRule(buyerLocationID, buyerLocation.Address.AddressName, token, isSeedEnv);
+                var assignments = CreateUserGroupAndAssignments(buyerID, buyerLocationID, token, ocClient);
+                var groups = CreateLocationUserGroupsAndApprovalRule(buyerLocationID, buyerLocation.Address.AddressName, token, ocClient);
                 await Task.WhenAll(assignments, groups);
             }
             return location;
         }
 
-        public async Task Delete(string buyerID, string buyerLocationID, string token)
+        public async Task Delete(string buyerID, string buyerLocationID)
         {
-            var deleteAddressReq = _oc.Addresses.DeleteAsync(buyerID, buyerLocationID, accessToken: token);
-            var deleteUserGroupReq = _oc.UserGroups.DeleteAsync(buyerID, buyerLocationID, accessToken: token);
+            var deleteAddressReq = _oc.Addresses.DeleteAsync(buyerID, buyerLocationID);
+            var deleteUserGroupReq = _oc.UserGroups.DeleteAsync(buyerID, buyerLocationID);
             await Task.WhenAll(deleteAddressReq, deleteUserGroupReq);
         }
 
-        public async Task CreateLocationUserGroupsAndApprovalRule(string buyerLocationID, string locationName, string token, bool isSeedEnv = false)
+        public async Task CreateLocationUserGroupsAndApprovalRule(string buyerLocationID, string locationName, string accessToken, IOrderCloudClient ocClient)
         {
             var buyerID = buyerLocationID.Split('-').First();
-            var AddUserTypeRequests = HSUserTypes.BuyerLocation().Select(userType => AddUserTypeToLocation(token, buyerLocationID, userType));
+            var AddUserTypeRequests = HSUserTypes.BuyerLocation().Select(userType => AddUserTypeToLocation(buyerLocationID, userType, accessToken, ocClient));
             await Task.WhenAll(AddUserTypeRequests);
-            if(!isSeedEnv)
+            var isSeedingEnvironment = ocClient != null;
+            if(!isSeedingEnvironment)
             {
-                var approvingGroupID = $"{buyerLocationID}-{UserGroupSuffix.OrderApprover.ToString()}";
-                await _oc.ApprovalRules.CreateAsync(buyerID, new ApprovalRule()
+                var approvingGroupID = $"{buyerLocationID}-{UserGroupSuffix.OrderApprover}";
+                await ocClient.ApprovalRules.CreateAsync(buyerID, new ApprovalRule()
                 {
                     ID = buyerLocationID,
                     ApprovingGroupID = approvingGroupID,
@@ -138,17 +155,29 @@ namespace Headstart.API.Commands
             }
         }
 
-        public async Task CreateSinglePermissionGroup(string token, string buyerLocationID, string permissionGroupID)
+        public async Task CreateSinglePermissionGroup(string buyerLocationID, string permissionGroupID)
         {
             var permissionGroup = HSUserTypes.BuyerLocation().Find(userType => permissionGroupID.Contains(userType.UserGroupIDSuffix));
-            await AddUserTypeToLocation(token, buyerLocationID, permissionGroup);
+            await AddUserTypeToLocation(buyerLocationID, permissionGroup);
         }
 
-        public async Task AddUserTypeToLocation(string token, string buyerLocationID, HSUserType hsUserType)
+        public async Task AddUserTypeToLocation(string buyerLocationID, HSUserType hsUserType)
         {
+            // not being called by seed endpoint - use stored ordercloud client and stored admin token
+            await AddUserTypeToLocation(buyerLocationID, hsUserType, null, _oc);
+        }
+
+        public async Task AddUserTypeToLocation(string buyerLocationID, HSUserType hsUserType, string accessToken, IOrderCloudClient oc)
+        {
+            // if we're seeding then use the passed in oc client
+            // to support multiple environments and ease of setup for new orgs
+            // else used the configured client
+            var token = oc == null ? null : accessToken;
+            var ocClient = oc ?? _oc;
+
             var buyerID = buyerLocationID.Split('-').First();
             var userGroupID = $"{buyerLocationID}-{hsUserType.UserGroupIDSuffix}";
-            await _oc.UserGroups.CreateAsync(buyerID, new PartialUserGroup()
+            await ocClient.UserGroups.CreateAsync(buyerID, new PartialUserGroup()
             {
                 ID = userGroupID,
                 Name = hsUserType.UserGroupName,
@@ -161,7 +190,7 @@ namespace Headstart.API.Commands
             }, token);
             foreach (var customRole in hsUserType.CustomRoles)
             {
-                await _oc.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment()
+                await ocClient.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment()
                 {
                     BuyerID = buyerID,
                     UserGroupID = userGroupID,
@@ -170,6 +199,25 @@ namespace Headstart.API.Commands
             }
         }
 
+        public async Task ReassignUserGroups(string buyerID, string newUserID)
+        {
+            var userGroupAssignments = await _oc.UserGroups.ListAllUserAssignmentsAsync(buyerID, userID: newUserID);
+            await Throttler.RunAsync(userGroupAssignments, 100, 5, assignment =>
+                RemoveAndAddUserGroupAssignment(buyerID, newUserID, assignment?.UserGroupID)
+                ); 
+        }
 
+        // Temporary work around for a platform issue. When a new user is registered we need to 
+        // delete and reassign usergroup assignments for that user to view products
+        // issue: https://four51.atlassian.net/browse/EX-2222
+        private async Task RemoveAndAddUserGroupAssignment(string buyerID, string newUserID, string userGroupID)
+        {
+            await _oc.UserGroups.DeleteUserAssignmentAsync(buyerID, userGroupID, newUserID);
+            await _oc.UserGroups.SaveUserAssignmentAsync(buyerID, new UserGroupAssignment
+            {
+                UserGroupID = userGroupID,
+                UserID = newUserID
+            });
+        }
     }
 }

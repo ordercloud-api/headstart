@@ -13,7 +13,7 @@ import {
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import { SupportedRates } from '@app-seller/models/currency-geography.types'
 import { ResourceUpdate } from '@app-seller/models/shared.types'
-import { HSBuyerPriceMarkup } from '@app-seller/models/buyer-markups.types'
+import { HSBuyerPriceMarkup } from '@app-seller/models/buyer.types'
 
 @Component({
   selector: 'product-pricing-component',
@@ -42,7 +42,7 @@ export class ProductPricingComponent {
   }
 
   @Output()
-  updateProduct = new EventEmitter<ResourceUpdate>()
+  updateProduct = new EventEmitter<{ field: string; value: any }>()
   faExclamationCircle = faExclamationCircle
   supplierPriceSchedule: PriceSchedule
   buyerMarkedUpSupplierPrices: PriceSchedule
@@ -114,10 +114,12 @@ export class ProductPricingComponent {
       const usdExchangeRates = await HeadStartSDK.ExchangeRates.Get(
         this.sellerCurrency.Currency as any
       )
-      const supplierToSellerExchangeRate = usdExchangeRates.Items.find(
-        (r) => r.Currency === this.supplierCurrency.Currency
-      )
-      this.supplierToSellerCurrencyRate = supplierToSellerExchangeRate.Rate
+      if(this.supplierCurrency){
+        const supplierToSellerExchangeRate = usdExchangeRates.Items.find(
+          (r) => r.Currency === this.supplierCurrency.Currency
+        )
+        this.supplierToSellerCurrencyRate = supplierToSellerExchangeRate.Rate
+      }
     }
   }
 

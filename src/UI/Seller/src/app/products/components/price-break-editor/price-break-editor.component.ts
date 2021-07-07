@@ -5,7 +5,11 @@ import {
   OcBuyerService,
 } from '@ordercloud/angular-sdk'
 import { ToastrService } from 'ngx-toastr'
-import { faCog, faTrash } from '@fortawesome/free-solid-svg-icons'
+import {
+  faCog,
+  faExclamationCircle,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons'
 import { BuyerTempService } from '@app-seller/shared/services/middleware-api/buyer-temp.service'
 import { SupportedRates } from '@app-seller/models/currency-geography.types'
 
@@ -28,6 +32,15 @@ export class PriceBreakEditor {
       this.newPriceBreak = this.getEmptyBreak()
     }
   }
+  @Input()
+  set variantCount(n: number) {
+    this._variantCount = n
+  }
+
+  @Input()
+  set specCount(n: number) {
+    this._specCount = n
+  }
 
   @Output()
   priceScheduleUpdated = new EventEmitter<PriceSchedule>()
@@ -35,6 +48,9 @@ export class PriceBreakEditor {
 
   faCog = faCog
   faTrash = faTrash
+  faExclamationCircle = faExclamationCircle
+  _specCount: number
+  _variantCount: number
 
   isAddingPriceBreak = false
   newPriceBreak
