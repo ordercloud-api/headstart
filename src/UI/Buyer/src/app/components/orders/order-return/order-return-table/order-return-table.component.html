@@ -1,174 +1,156 @@
-<div>
-  <h3>{{ supplier?.Name }}</h3>
-  <div class="table-responsive">
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-      <!-- Checkbox Column -->
-      <ng-container matColumnDef="select">
-        <th mat-header-cell *matHeaderCellDef>
-          <div class="custom-control custom-checkbox">
-            <input
-              type="checkbox"
-              (change)="$event ? masterToggle() : null"
-              [checked]="selection.hasValue() && isAllEnabledSelected()"
-              [indeterminate]="selection.hasValue() && !isAllEnabledSelected()"
-              [aria-label]="checkboxLabel(0)"
-              class="custom-control-input"
-              id="selectAll"
-            />
-            <label
-              class="custom-control-label white-space-nowrap"
-              for="selectAll"
-              >Select All</label
-            >
-          </div>
-        </th>
-        <td mat-cell *matCellDef="let row; let i = index" [formGroup]="row">
-          <div class="custom-control custom-checkbox">
-            <input
-              type="checkbox"
-              (change)="$event ? toggle(row) : null"
-              [checked]="selection.isSelected(row)"
-              formControlName="selected"
-              [aria-label]="checkboxLabel(i, row)"
-              class="custom-control-input"
-              id="productSelect"
-            />
-            <label for="productSelect" class="custom-control-label">
-              <span class="sr-only"> Select This Product</span>
-            </label>
-          </div>
-        </td>
-      </ng-container>
-
-      <!-- Product Image Column -->
-      <ng-container matColumnDef="product">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let element; let i = index">
-          <img
-            [id]="i"
-            [src]="
-              element.value.lineItem.xp.ImageUrl ||
-              getImageUrl(element.value.lineItem.ID)
-            "
-            width="auto"
-            height="100px"
-          />
-        </td>
-      </ng-container>
-
-      <!-- Item ID Column -->
-      <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef translate>
-          {{ translationData?.Headers?.ProductDetails }}
-        </th>
-        <td mat-cell *matCellDef="let element">
-          <!-- {{element.value.lineItem.ID}}  -->
-
-          <a
-            (click)="toProductDetails(element.value.lineItem.Product.ID)"
-            class="text-primary link"
-            >{{ element.value.lineItem | productNameWithSpecs }}</a
-          >
-          <small class="text-muted d-block">{{
-            element.value.lineItem.Product.ID
-          }}</small>
-        </td>
-      </ng-container>
-
-      <!-- Price Column -->
-      <ng-container matColumnDef="price">
-        <th mat-header-cell *matHeaderCellDef translate>
-          {{ translationData?.Headers?.price }}
-        </th>
-        <td mat-cell *matCellDef="let element">
-          {{ element.value.lineItem.UnitPrice | currency }}
-        </td>
-      </ng-container>
-
-      <!-- Quantity Ordered Column -->
-      <ng-container matColumnDef="quantityOrdered">
-        <th mat-header-cell *matHeaderCellDef translate>
-          {{ translationData?.Headers?.quantityOrdered }}
-        </th>
-        <td mat-cell *matCellDef="let element">
-          {{ element.value.lineItem.Quantity | number }}
-        </td>
-      </ng-container>
-
-      <!-- Quantity Returned Column -->
-      <ng-container matColumnDef="quantityReturned">
-        <th mat-header-cell *matHeaderCellDef translate>
-          {{ translationData?.Headers?.quantityReturnedCanceled }}
-        </th>
-        <td mat-cell *matCellDef="let element">
-          {{ getQuantityReturnedCanceled(element.value.lineItem) | number }}
-        </td>
-      </ng-container>
-
-      <!-- Quantity to Return Column -->
-      <ng-container matColumnDef="quantityToReturnOrCancel">
-        <th mat-header-cell *matHeaderCellDef translate>
-          {{ translationData?.Headers?.quantityToReturnCancel }}
-        </th>
-        <td
-          mat-cell
-          *matCellDef="let element; let i = index"
-          [formGroup]="element"
+<div *ngIf="supplier">
+  <h3>{{ supplier.Name }}</h3>
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <!-- Checkbox Column -->
+    <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+        <mat-checkbox
+          (change)="$event ? masterToggle() : null"
+          [checked]="selection.hasValue() && isAllEnabledSelected()"
+          [indeterminate]="selection.hasValue() && !isAllEnabledSelected()"
+          [aria-label]="checkboxLabel(0)"
         >
-          <input
-            type="number"
-            class="form-control form-control-sm mat-quantityToReturn"
-            id="quantityToReturnOrCancel"
-            formControlName="quantityToReturnOrCancel"
-            showErrors
-          />
-        </td>
-      </ng-container>
-
-      <!-- Return Reason Column -->
-      <ng-container matColumnDef="returnReason">
-        <th mat-header-cell *matHeaderCellDef translate>
-          {{ translationData?.Headers?.returnCancelReason }}
-        </th>
-        <td
-          mat-cell
-          *matCellDef="let element; let i = index"
-          [formGroup]="element"
+        </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row; let i = index" [formGroup]="row">
+        <mat-checkbox
+          (change)="$event ? toggle(row) : null"
+          [checked]="selection.isSelected(row)"
+          formControlName="selected"
+          [aria-label]="checkboxLabel(i, row)"
         >
-          <select
-            *ngIf="translationData.AvailableReasons.length !== 0"
-            formControlName="returnReason"
-            class="custom-select custom-select-sm"
-            id="ReturnReason"
-            showErrors
-          >
-            <option [ngValue]="null" disabled translate>
-              {{ translationData?.Headers?.selectReason }}
-            </option>
-            <option
-              *ngFor="let reason of translationData.AvailableReasons"
-              [value]="getReasonCode(reason)"
-              translate
-            >
-              {{ reason }}
-            </option>
-          </select>
-          <input
-            *ngIf="translationData.AvailableReasons.length === 0"
-            type="text"
-            formControlName="returnReason"
-            class="form-control"
-            id="ReturnReason"
-            showErrors
-          />
-        </td>
-      </ng-container>
+        </mat-checkbox>
+      </td>
+    </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; let index = index; columns: columnsToDisplay"
-      ></tr>
-    </table>
-  </div>
+    <!-- Product Image Column -->
+    <ng-container matColumnDef="product">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element; let i = index">
+        <img
+          [id]="i"
+          [src]="
+            element.value.lineItem.xp.ImageUrl ||
+            getImageUrl(element.value.lineItem.ID)
+          "
+          width="auto"
+          height="100px"
+        />
+      </td>
+    </ng-container>
+
+    <!-- Item ID Column -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef translate>
+        {{ translationData.Headers.ProductDetails }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <!-- {{element.value.lineItem.ID}}  -->
+
+        <a
+          (click)="toProductDetails(element.value.lineItem.Product.ID)"
+          class="text-primary link"
+          >{{ element.value.lineItem | productNameWithSpecs }}</a
+        >
+        <small class="text-muted d-block">{{
+          element.value.lineItem.Product.ID
+        }}</small>
+      </td>
+    </ng-container>
+
+    <!-- Price Column -->
+    <ng-container matColumnDef="price">
+      <th mat-header-cell *matHeaderCellDef translate>
+        {{ translationData.Headers.price }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.value.lineItem.UnitPrice | currency }}
+      </td>
+    </ng-container>
+
+    <!-- Quantity Ordered Column -->
+    <ng-container matColumnDef="quantityOrdered">
+      <th mat-header-cell *matHeaderCellDef translate>
+        {{ translationData.Headers.quantityOrdered }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ element.value.lineItem.Quantity | number }}
+      </td>
+    </ng-container>
+
+    <!-- Quantity Returned Column -->
+    <ng-container matColumnDef="quantityReturned">
+      <th mat-header-cell *matHeaderCellDef translate>
+        {{ translationData.Headers.quantityReturnedCanceled }}
+      </th>
+      <td mat-cell *matCellDef="let element">
+        {{ getQuantityReturnedCanceled(element.value.lineItem) | number }}
+      </td>
+    </ng-container>
+
+    <!-- Quantity to Return Column -->
+    <ng-container matColumnDef="quantityToReturnOrCancel">
+      <th mat-header-cell *matHeaderCellDef translate>
+        {{ translationData.Headers.quantityToReturnCancel }}
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element; let i = index"
+        [formGroup]="element"
+      >
+        <input
+          type="number"
+          class="form-control mat-quantityToReturn"
+          id="quantityToReturnOrCancel"
+          formControlName="quantityToReturnOrCancel"
+          showErrors
+        />
+      </td>
+    </ng-container>
+
+    <!-- Return Reason Column -->
+    <ng-container matColumnDef="returnReason">
+      <th mat-header-cell *matHeaderCellDef translate>
+        {{ translationData.Headers.returnCancelReason }}
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element; let i = index"
+        [formGroup]="element"
+      >
+        <select
+          *ngIf="translationData.AvailableReasons.length !== 0"
+          formControlName="returnReason"
+          class="form-control"
+          id="ReturnReason"
+          showErrors
+        >
+          <option [ngValue]="null" disabled translate>
+            {{ translationData.Headers.selectReason }}
+          </option>
+          <option
+            *ngFor="let reason of translationData.AvailableReasons"
+            [value]="getReasonCode(reason)"
+            translate
+          >
+            {{ reason }}
+          </option>
+        </select>
+        <input
+          *ngIf="translationData.AvailableReasons.length === 0"
+          type="text"
+          formControlName="returnReason"
+          class="form-control"
+          id="ReturnReason"
+          showErrors
+        />
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; let index = index; columns: columnsToDisplay"
+    ></tr>
+  </table>
 </div>

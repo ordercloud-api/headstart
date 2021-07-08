@@ -1,0 +1,292 @@
+<h5 class="mb-3 font-weight-bold">
+  {{ rma?.Type }} {{ ADMIN.RMAS.APPROVAL | translate }}
+</h5>
+<form [formGroup]="rmaLineItemForm" name="RMALineItemForm">
+  <div
+    *ngFor="let li of relatedLineItems; let i = index"
+    formGroupName="{{ li.ID }}"
+  >
+    <div class="mt-5 row align-items-center">
+      <div class="col-sm-12">
+        <div class="row align-top">
+          <div class="col-sm-3">
+            <div class="ml-3">
+              <h6>
+                {{ li | productNameWithSpecs }}
+              </h6>
+              <img
+                [id]="i"
+                [src]="li.xp?.ImageUrl || getImageUrl(li.ID)"
+                width="auto"
+                height="150px"
+              />
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div>
+              <h6 translate>ADMIN.RMAS.REQUESTED_QUANTITY</h6>
+              <span>{{ getRMALineItem(li)?.QuantityRequested }}</span>
+            </div>
+            <div class="mt-5">
+              <h6>{{ ADMIN.RMAS.REASON_FOR | translate }} {{ rma?.Type }}</h6>
+              <span>{{
+                getValueSplitByCapitalLetter(getRMALineItem(li)?.Reason)
+              }}</span>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div
+              class="container"
+              *ngIf="
+                !isApprovingLineItem(li) &&
+                !isDenyingLineItem(li) &&
+                lineItemNotComplete(li)
+              "
+            >
+              <div
+                class="row"
+                *ngIf="li?.Product?.xp?.ProductType === 'PurchaseOrder'"
+              >
+                <div class="col-sm-12">
+                  <div
+                    class="
+                      alert alert-info
+                      d-inline-block
+                      justify-content-start
+                      align-items-center
+                      set-to-top
+                    "
+                  >
+                    <p class="mb-0" translate>
+                      ADMIN.RMAS.PURCHASE_ORDER_EXPLANATION
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-6">
+                  <button
+                    class="btn btn-outline-dark mr-2 w-100"
+                    type="button"
+                    (click)="processLineItem(li)"
+                    translate
+                  >
+                    ADMIN.RMAS.PROCESS_REQUEST
+                  </button>
+                </div>
+                <div class="col-sm-6">
+                  <button
+                    class="btn btn-outline-danger mr-2 w-100"
+                    type="button"
+                    (click)="denyLineItem(li)"
+                    translate
+                  >
+                    ADMIN.RMAS.DENY_REQUEST
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div
+              class="row"
+              *ngIf="isApprovingLineItem(li) || isDenyingLineItem(li)"
+            >
+              <button
+                *ngIf="lineItemNotComplete(li)"
+                type="button"
+                class="btn btn-link text-dark ml-auto mr-3 pt-0 mb-3"
+                (click)="editProcessingType(li)"
+                translate
+              >
+                ADMIN.RMAS.EDIT_PROCESSING_TYPE
+              </button>
+            </div>
+            <div class="container">
+              <div
+                class="row"
+                *ngIf="isApprovingLineItem(li) && lineItemNotComplete(li)"
+              >
+                <div class="col-sm-6">
+                  <h6 translate>ADMIN.RMAS.QUANTITY_TO_PROCESS</h6>
+                  <select
+                    type="dropdown"
+                    class="form-control"
+                    formControlName="QuantityProcessed"
+                    id="{{ li.ID }} QuantityProcessed"
+                  >
+                    <option
+                      *ngFor="let j of getQuantityDropdown(li)"
+                      [ngValue]="j"
+                    >
+                      {{ j }}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-sm-6">
+                  <h6 translate>ADMIN.RMAS.PROCESS_OPTION</h6>
+                  <select
+                    type="dropdown"
+                    class="form-control"
+                    formControlName="Status"
+                    id="{{ li.ID }} Status"
+                  >
+                    <option value="null" disabled translate>
+                      ADMIN.RMAS.SELECT_STATUS
+                    </option>
+                    <option value="Processing" translate>
+                      ADMIN.RMAS.APPROVAL_PENDING
+                    </option>
+                    <option value="Approved" translate>
+                      ADMIN.RMAS.APPROVED
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="row" *ngIf="!lineItemNotComplete(li)">
+                <div class="col-sm-12 text-right">
+                  <h5 class="d-block">
+                    {{
+                      getValueSplitByCapitalLetter(getRMALineItem(li)?.Status)
+                    }}
+                  </h5>
+                </div>
+              </div>
+              <div
+                *ngIf="
+                  rmaLineItemForm?.get(li.ID)['controls'].Status?.value ===
+                    'Approved' && rma?.Type === 'Return'
+                "
+                class="row mt-3"
+              >
+                <div class="col-sm-12">
+                  <div class="custom-control custom-checkbox">
+                    <input
+                      type="checkbox"
+                      class="custom-control-input"
+                      formControlName="OverridePercentToRefund"
+                      (input)="setPercentToOverride($event.target.checked, li)"
+                      id="{{ li.ID }}"
+                    />
+                    <label
+                      class="custom-control-label"
+                      for="{{ li.ID }}"
+                      translate
+                      >ADMIN.RMAS.OVERRIDE_PERCENT</label
+                    >
+                  </div>
+                </div>
+                <div class="col-sm-12 mt-2">
+                  <div
+                    *ngIf="
+                      rmaLineItemForm?.get(li.ID)['controls']
+                        .OverridePercentToRefund?.value
+                    "
+                  >
+                    <div class="input-group w-25">
+                      <input
+                        type="number"
+                        min="0"
+                        max="100"
+                        class="form-control"
+                        id="{{ li.ID }} PercentToRefund"
+                        showErrors
+                        aria-describedby="Percent To Refund"
+                        formControlName="PercentToRefund"
+                      />
+                      <div class="input-group-append">
+                        <span class="input-group-text rounded-right">%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row" *ngIf="isDenyingLineItem(li)">
+                <div class="col-sm-12">
+                  <div
+                    *ngIf="lineItemNotComplete(li)"
+                    class="
+                      alert alert-info
+                      d-inline-block
+                      justify-content-start
+                      align-items-center
+                      set-to-top
+                    "
+                  >
+                    <p class="mb-0" translate>
+                      ADMIN.RMAS.ALL_REQUESTED_QUANTITIES
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="container mt-3"
+              [hidden]="statusNotAvailableToProcess(li)"
+            >
+              <div class="row">
+                <div class="col-sm-12">
+                  <h6 translate>ADMIN.RMAS.MESSAGE_TO_BUYER</h6>
+                  <textarea
+                    type="text"
+                    id="{{ li.ID }} Comment"
+                    class="form-control mb-3"
+                    formControlName="Comment"
+                    placeholder="{{
+                      'ADMIN.RMAS.ENTER_INFORMATION' | translate
+                    }}"
+                    rows="4"
+                    maxLength="300"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr *ngIf="i !== relatedLineItems.length - 1" />
+  </div>
+  <button
+    type="button"
+    id="submitBtn"
+    [disabled]="rmaLineItemForm?.status === 'INVALID' || dataIsSaving"
+    class="btn btn-primary mt-4 w-100"
+    (click)="checkForDeniedRMALineItems(content)"
+    translate
+  >
+    ADMIN.RMAS.PROCESS_RMA
+  </button>
+  <ng-template #content let-modal class="confirm-modal">
+    <confirm-modal
+      modalTitle="Denied Requests"
+      description="{{ 'ADMIN.RMAS.THE_FOLLOWING_REQUESTS' | translate }}"
+    >
+      <div class="table-responsive">
+        <rmas-modal-content-component
+          [lineItemsForModal]="lineItemsForModal"
+          [relatedLineItems]="relatedLineItems"
+          [rma]="rma"
+          [isDenial]="true"
+        >
+        </rmas-modal-content-component>
+      </div>
+      <button
+        [disabled]="dataIsSaving"
+        type="button"
+        class="btn btn-link text-dark"
+        (click)="modal.dismiss()"
+        translate
+      >
+        ADMIN.RMAS.CANCEL
+      </button>
+      <button
+        [disabled]="dataIsSaving"
+        type="button"
+        class="btn brand-button--danger"
+        (click)="handleProcessRMA()"
+        translate
+      >
+        ADMIN.RMAS.CONFIRM
+      </button>
+    </confirm-modal>
+  </ng-template>
+</form>

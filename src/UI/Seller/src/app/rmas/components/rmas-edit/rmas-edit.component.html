@@ -1,0 +1,17 @@
+<div *ngIf="_relatedLineItems.length" class="container float-left">
+  <rmas-summary-component
+    [selectedRMA]="_rma"
+    [buyerOrderData]="buyerOrderData"
+    [supplierOrderData]="supplierOrderData"
+    [relatedOrder]="_relatedOrder"
+    [relatedLineItems]="_relatedLineItems"
+    [isSellerUser]="isSellerUser"
+    (updateRMA)="updateRMA($event)"
+  >
+  </rmas-summary-component>
+  <rmas-logs-component
+    [selectedRMA]="_rma"
+    [relatedOrder]="_relatedOrder"
+    [currentUser]="currentUser"
+  ></rmas-logs-component>
+</div>

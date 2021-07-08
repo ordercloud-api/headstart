@@ -1,0 +1,97 @@
+<div>
+  <rmas-status-component
+    [rma]="_rma"
+    [isSellerUser]="isSellerUser"
+    [buyerOrderData]="buyerOrderData"
+    [supplierOrderData]="supplierOrderData"
+  >
+  </rmas-status-component>
+  <div class="card py-2 px-3 bg-white mb-2">
+    <rmas-overview-component
+      [rma]="_rma"
+      [buyerOrderData]="buyerOrderData"
+      [isSellerUser]="isSellerUser"
+    ></rmas-overview-component>
+    <div class="m-2" *ngIf="lineItemsReadyForRefund.length && !isSellerUser">
+      <fa-icon [icon]="faExclamationCircle"></fa-icon
+      ><span class="text-danger ml-2"
+        >{{ lineItemsReadyForRefund.length }}
+        {{ ADMIN.RMAS.ITEMS_READY_FOR | translate }}</span
+      >
+    </div>
+    <div class="mt-2">
+      <button
+        *ngIf="!isSellerUser"
+        class="btn btn-outline-dark mr-2"
+        (click)="toggleProcessRMALineItems()"
+      >
+        {{ getRMAProcessingAction() }} {{ ADMIN.RMAS.RMA_ITEMS | translate }}
+      </button>
+      <button
+        *ngIf="!isSellerUser && lineItemsReadyForRefund.length"
+        class="btn btn-outline-dark mr-2"
+        (click)="openRefundModal(content)"
+      >
+        {{ getRefundButtonVerbiage() }}
+      </button>
+      <ng-template #content let-modal class="confirm-modal">
+        <confirm-modal
+          modalTitle="{{ ADMIN.RMAS.PROCESS_REFUND | translate }}"
+          description="{{ ADMIN.RMAS.FOLLOWING_REQUESTS_REFUNDED | translate }}"
+        >
+          <div class="table-responsive">
+            <div class="table-responsive">
+              <rmas-modal-content-component
+                [lineItemsForModal]="lineItemsReadyForRefund"
+                [relatedLineItems]="relatedLineItems"
+                [rma]="_rma"
+                [isDenial]="false"
+              >
+              </rmas-modal-content-component>
+            </div>
+          </div>
+          <button
+            [disabled]="dataIsSaving"
+            type="button"
+            class="btn btn-link text-dark"
+            (click)="modal.dismiss()"
+            translate
+          >
+            ADMIN.RMAS.CANCEL
+          </button>
+          <button
+            [disabled]="dataIsSaving"
+            type="button"
+            class="btn brand-button--danger"
+            (click)="processRefund()"
+            translate
+          >
+            ADMIN.RMAS.PROCESS_REFUND
+          </button>
+        </confirm-modal>
+      </ng-template>
+    </div>
+    <div class="mt-3">
+      <div
+        *ngIf="processingLineItems"
+        class="p-3 mb-2 border bg-light text-dark"
+      >
+        <rmas-form-processing-component
+          [rma]="_rma"
+          [rmaLineItemForm]="rmaLineItemForm"
+          [relatedLineItems]="relatedLineItems"
+          [lineItemsBeingProcessed]="lineItemsBeingProcessed"
+          [lineItemsBeingDenied]="lineItemsBeingDenied"
+          (updateRMA)="updateRMAFromProcessingForm($event)"
+        >
+        </rmas-form-processing-component>
+      </div>
+    </div>
+    <rmas-line-item-detail-component
+      [processingLineItems]="processingLineItems"
+      [relatedLineItems]="relatedLineItems"
+      [rma]="_rma"
+    >
+    </rmas-line-item-detail-component>
+  </div>
+</div>

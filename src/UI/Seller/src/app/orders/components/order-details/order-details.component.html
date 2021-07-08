@@ -1,24 +1,39 @@
 <!-- TODO: Componentize into smaller chunks (Order Details, Address, Payment, Line Item) -->
 <div class="container float-left order-detail-pdf-range">
   <p>
-    <ngb-progressbar [animated]="orderProgress?.Animated" [striped]="orderProgress?.Striped"
-      [type]="orderProgress?.ProgressBarType" [value]="orderProgress?.Value" height="25px">{{
-      orderProgress?.StatusDisplay }}</ngb-progressbar>
+    <ngb-progressbar
+      [animated]="orderProgress?.Animated"
+      [striped]="orderProgress?.Striped"
+      [type]="orderProgress?.ProgressBarType"
+      [value]="orderProgress?.Value"
+      height="25px"
+      >{{ orderProgress?.StatusDisplay }}</ngb-progressbar
+    >
   </p>
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h3 class="d-flex justify-content-start align-items-center mb-0">
       <span class="d-print-none">Order&nbsp;</span>#{{ _order?.ID }}
-      <span *ngIf="_order?.xp?.OrderType === 'Quote'"
-        class="small badge badge-pill badge-warning ml-2 order-type-text">{{ _order?.xp?.OrderType }}</span>
+      <span
+        *ngIf="_order?.xp?.OrderType === 'Quote'"
+        class="small badge badge-pill badge-warning ml-2 order-type-text"
+        >{{ _order?.xp?.OrderType }}</span
+      >
     </h3>
-    <button *ngIf="
+    <button
+      *ngIf="
         _order?.xp?.OrderType === 'Quote' &&
         _order?.xp?.SubmittedOrderStatus !== 'Completed'
-      " class="btn btn-outline-primary d-print-none" (click)="setOrderStatus()">
+      "
+      class="btn btn-outline-primary d-print-none"
+      (click)="setOrderStatus()"
+    >
       Acknowledge Quote
     </button>
-    <button *ngIf="_order?.xp?.OrderType !== 'Quote' && orderDirection === 'Incoming'"
-      class="btn btn-outline-primary d-print-none" (click)="createAndSavePDF()">
+    <button
+      *ngIf="_order?.xp?.OrderType !== 'Quote' && orderDirection === 'Incoming'"
+      class="btn btn-outline-primary d-print-none"
+      (click)="createAndSavePDF()"
+    >
       <fa-icon [icon]="faDownload"></fa-icon> Download Order Invoice PDF
     </button>
   </div>
@@ -30,9 +45,15 @@
   <div class="card card--order-details py-2 px-3 bg-white mb-2">
     <div class="d-flex justify-content-between align-items-center mb-4">
       <div class="d-flex justify-content-start align-items-center">
-        <div *ngIf="orderAvatarInitials !== 'undefinedundefined'" [attr.data-letters]="orderAvatarInitials"
-          class="avatar"></div>
-        <div *ngIf="orderAvatarInitials === 'undefinedundefined'" class="avatar-default">
+        <div
+          *ngIf="orderAvatarInitials !== 'undefinedundefined'"
+          [attr.data-letters]="orderAvatarInitials"
+          class="avatar"
+        ></div>
+        <div
+          *ngIf="orderAvatarInitials === 'undefinedundefined'"
+          class="avatar-default"
+        >
           <fa-icon [icon]="faUser"></fa-icon>
         </div>
         <div class="ml-2" *ngIf="!isQuoteOrder(_order)">
@@ -48,7 +69,7 @@
           </p>
           <p class="mb-0" *ngIf="_buyerOrder?.BillingAddress?.xp?.LocationID">
             <span class="font-weight-bold">Location ID</span><span>: </span>
-            {{_buyerOrder?.BillingAddress?.xp?.LocationID}}
+            {{ _buyerOrder?.BillingAddress?.xp?.LocationID }}
           </p>
         </div>
         <div class="ml-2" *ngIf="isQuoteOrder(_order)">
@@ -67,92 +88,159 @@
           </p>
           <p class="mb-0" *ngIf="_buyerOrder?.BillingAddress?.xp?.LocationID">
             <span class="font-weight-bold">Location ID</span><span>: </span>
-            {{_buyerOrder?.BillingAddress?.xp?.LocationID}}
+            {{ _buyerOrder?.BillingAddress?.xp?.LocationID }}
           </p>
         </div>
       </div>
       <div class="d-flex justify-content-end align-items-start">
-        <div *ngIf="_supplierOrder?.FromUser && !isQuoteOrder(_order)" class="mr-3">
-          <small class="font-weight-bolder text-muted text-uppercase d-block">Bill To</small>
-          <small class="mb-0 text-capitalize d-block font-weight-bold">{{ _supplierOrder.FromUser?.FirstName }}
-            {{ _supplierOrder.FromUser?.LastName }}</small>
+        <div
+          *ngIf="_supplierOrder?.FromUser && !isQuoteOrder(_order)"
+          class="mr-3"
+        >
+          <small class="font-weight-bolder text-muted text-uppercase d-block"
+            >Bill To</small
+          >
+          <small class="mb-0 text-capitalize d-block font-weight-bold"
+            >{{ _supplierOrder.FromUser?.FirstName }}
+            {{ _supplierOrder.FromUser?.LastName }}</small
+          >
 
           <!-- SEB-Specific Address Information -->
-          <small class="mb-0 text-capitalize d-block">8646 Eagle Creek Circle, Suite 107</small>
+          <small class="mb-0 text-capitalize d-block"
+            >8646 Eagle Creek Circle, Suite 107</small
+          >
           <small class="mb-0 text-capitalize d-block">Savage, MN 55378</small>
 
           <small class="mb-0 d-block">{{
             _supplierOrder.FromUser?.Email
-            }}</small>
+          }}</small>
           <small class="mb-0 d-block">{{
             _supplierOrder.FromUser?.Phone | tel
-            }}</small>
+          }}</small>
         </div>
         <div *ngIf="_lineItems[0]?.ShippingAddress && !isQuoteOrder(_order)">
-          <small class="font-weight-bolder text-muted text-uppercase d-block">Ship To</small>
+          <small class="font-weight-bolder text-muted text-uppercase d-block"
+            >Ship To</small
+          >
           <small class="mb-0 text-capitalize d-block font-weight-bold">{{
             _lineItems[0]?.ShippingAddress?.CompanyName
-            }}</small>
-          <small class="mb-0 text-capitalize d-block">{{ _lineItems[0]?.ShippingAddress?.Street1
-            }}<span *ngIf="_lineItems[0]?.ShippingAddress?.Street2">, {{ _lineItems[0]?.ShippingAddress?.Street2
-              }}</span></small>
-          <small class="mb-0 text-capitalize d-block">{{ _lineItems[0]?.ShippingAddress?.City }},
+          }}</small>
+          <small class="mb-0 text-capitalize d-block"
+            >{{ _lineItems[0]?.ShippingAddress?.Street1
+            }}<span *ngIf="_lineItems[0]?.ShippingAddress?.Street2"
+              >, {{ _lineItems[0]?.ShippingAddress?.Street2 }}</span
+            ></small
+          >
+          <small class="mb-0 text-capitalize d-block"
+            >{{ _lineItems[0]?.ShippingAddress?.City }},
             {{ _lineItems[0]?.ShippingAddress?.State }}
-            {{ _lineItems[0]?.ShippingAddress?.Zip }}</small>
-          <small *ngIf="getFullName(_lineItems[0].ShippingAddress) !== ''" class="mb-0">{{
-            getFullName(_lineItems[0].ShippingAddress) }}
-            <span *ngIf="
+            {{ _lineItems[0]?.ShippingAddress?.Zip }}</small
+          >
+          <small
+            *ngIf="getFullName(_lineItems[0].ShippingAddress) !== ''"
+            class="mb-0"
+            >{{ getFullName(_lineItems[0].ShippingAddress) }}
+            <span
+              *ngIf="
                 _lineItems[0]?.ShippingAddress?.Phone &&
                 _lineItems[0]?.ShippingAddress?.Phone !== ''
-              ">
-              | {{ _lineItems[0]?.ShippingAddress?.Phone | tel }}</span>
+              "
+            >
+              | {{ _lineItems[0]?.ShippingAddress?.Phone | tel }}</span
+            >
           </small>
         </div>
-        <div *ngIf="_order?.BillingAddress && !isQuoteOrder(_order)" class="pl-4 ml-4 border-left">
-          <small class="font-weight-bolder text-muted text-uppercase d-block">Bill To</small>
+        <div
+          *ngIf="_order?.BillingAddress && !isQuoteOrder(_order)"
+          class="pl-4 ml-4 border-left"
+        >
+          <small class="font-weight-bolder text-muted text-uppercase d-block"
+            >Bill To</small
+          >
           <small class="mb-0 text-capitalize d-block font-weight-bold">{{
             _order?.BillingAddress?.CompanyName
-            }}</small>
-          <small class="mb-0 text-capitalize d-block">{{ _order?.BillingAddress?.Street1
-            }}<span *ngIf="_order?.BillingAddress?.Street2">, {{ _order?.BillingAddress?.Street2 }}</span></small>
-          <small class="mb-0 text-capitalize d-block">{{ _order?.BillingAddress?.City }},
+          }}</small>
+          <small class="mb-0 text-capitalize d-block"
+            >{{ _order?.BillingAddress?.Street1
+            }}<span *ngIf="_order?.BillingAddress?.Street2"
+              >, {{ _order?.BillingAddress?.Street2 }}</span
+            ></small
+          >
+          <small class="mb-0 text-capitalize d-block"
+            >{{ _order?.BillingAddress?.City }},
             {{ _order?.BillingAddress?.State }}
-            {{ _order?.BillingAddress?.Zip }}</small>
-          <small *ngIf="getFullName(_order.BillingAddress) !== ''" class="mb-0">{{ getFullName(_order.BillingAddress) }}
-            <span *ngIf="
+            {{ _order?.BillingAddress?.Zip }}</small
+          >
+          <small *ngIf="getFullName(_order.BillingAddress) !== ''" class="mb-0"
+            >{{ getFullName(_order.BillingAddress) }}
+            <span
+              *ngIf="
                 _lineItems[0]?.BillingAddress?.Phone &&
                 _lineItems[0]?.BillingAddress?.Phone !== ''
-              ">
-              | {{ _order?.BillingAddress?.Phone | tel }}</span>
+              "
+            >
+              | {{ _order?.BillingAddress?.Phone | tel }}</span
+            >
           </small>
         </div>
       </div>
       <div *ngIf="_buyerQuoteAddress" class="d-block text-right">
-        <small class="font-weight-bolder text-muted text-uppercase d-block">Ship To</small>
+        <small class="font-weight-bolder text-muted text-uppercase d-block"
+          >Ship To</small
+        >
         <small class="mb-0 text-capitalize d-block font-weight-bold">{{
           _buyerQuoteAddress.CompanyName
-          }}</small>
-        <small class="mb-0 text-capitalize d-block">{{ _buyerQuoteAddress.Street1
-          }}<span *ngIf="_buyerQuoteAddress.Street2">, {{ _buyerQuoteAddress.Street2 }}</span></small>
-        <small class="mb-0 text-capitalize d-block">{{ _buyerQuoteAddress.City }},
+        }}</small>
+        <small class="mb-0 text-capitalize d-block"
+          >{{ _buyerQuoteAddress.Street1
+          }}<span *ngIf="_buyerQuoteAddress.Street2"
+            >, {{ _buyerQuoteAddress.Street2 }}</span
+          ></small
+        >
+        <small class="mb-0 text-capitalize d-block"
+          >{{ _buyerQuoteAddress.City }},
           {{ _buyerQuoteAddress.State }}
-          {{ _buyerQuoteAddress.Zip }}</small>
+          {{ _buyerQuoteAddress.Zip }}</small
+        >
       </div>
     </div>
     <!-- Comments -->
-    <div *ngIf="isQuoteOrder(_order) && _order?.xp?.QuoteOrderInfo?.Comments" class="alert alert-secondary small mt-3">
+    <div
+      *ngIf="isQuoteOrder(_order) && _order?.xp?.QuoteOrderInfo?.Comments"
+      class="alert alert-secondary small mt-3"
+    >
       <strong>Comments: </strong> {{ _order.xp?.QuoteOrderInfo?.Comments }}
     </div>
-    <div *ngIf="!isQuoteOrder(_order) && _buyerOrder?.Comments" class="alert alert-secondary small mt-3">
+    <div
+      *ngIf="!isQuoteOrder(_order) && _buyerOrder?.Comments"
+      class="alert alert-secondary small mt-3"
+    >
       <strong>Comments: </strong> {{ _buyerOrder.Comments }}
     </div>
+
+    <h5 *ngIf="rmas?.length > 0">RMAs on Order</h5>
+    <div *ngFor="let rma of rmas">
+      <a [routerLink]="buildOrderDetailsRoute(rma)" class="nav-link p-1">
+        {{ rma?.RMANumber }} - {{ rma?.Type }}
+        {{ rma?.Status }}
+      </a>
+    </div>
+
     <!-- Shipment Info -->
-    <app-order-shipments (createOrViewShipmentEvent)="toggleCreateShipment($event)" (shipmentCreated)="refreshOrder()"
-      [order]="_order" [orderDirection]="orderDirection">
+    <app-order-shipments
+      (createOrViewShipmentEvent)="toggleCreateShipment($event)"
+      (shipmentCreated)="refreshOrder()"
+      [order]="_order"
+      [orderDirection]="orderDirection"
+    >
     </app-order-shipments>
     <!-- Line Items -->
-    <app-line-item-table [lineItems]="_lineItems" [orderDirection]="orderDirection" (orderChange)="refreshOrder()"
-      [order]="_order">
+    <app-line-item-table
+      [lineItems]="_lineItems"
+      [orderDirection]="orderDirection"
+      (orderChange)="refreshOrder()"
+      [order]="_order"
+    >
     </app-line-item-table>
     <div class="row">
       <div class="col-md-7">
@@ -180,11 +268,14 @@
                 {{ _order.TaxCost | currency: _order?.xp?.Currency }}
               </p>
             </div>
-            <div class="d-flex justify-content-between align-items-center mb-1" *ngIf="_order.PromotionDiscount">
+            <div
+              class="d-flex justify-content-between align-items-center mb-1"
+              *ngIf="_order.PromotionDiscount"
+            >
               <p class="font-weight-bolder mb-0 text-muted">Promo Discount</p>
               <p class="font-weight-bolder mb-0 text-success">
                 -{{
-                _order?.PromotionDiscount | currency: _order?.xp?.Currency
+                  _order?.PromotionDiscount | currency: _order?.xp?.Currency
                 }}
               </p>
             </div>
@@ -197,7 +288,10 @@
               }}{{ _order?.Total | currency: _order?.xp?.Currency }}
             </p>
           </div>
-          <div *ngFor="let payment of _payments" class="d-flex justify-content-between align-items-center">
+          <div
+            *ngFor="let payment of _payments"
+            class="d-flex justify-content-between align-items-center"
+          >
             <p *ngIf="payment.Type === 'CreditCard'" class="font-italic">
               {{ setCardType(payment) }} ending in
               {{ payment.xp.partialAccountNumber }}

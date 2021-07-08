@@ -1,0 +1,45 @@
+<div *ngIf="_rma?.Logs?.length">
+  <div class="d-block text-left mb-2 mt-5">
+    <h5 translate>ADMIN.RMAS.STATUS_LOGS</h5>
+  </div>
+  <div class="card py-2 px-3 bg-white mb-2">
+    <div class="table-responsive">
+      <table
+        class="table table-sm table-bordered table-hover display-table mb-0"
+      >
+        <thead>
+          <tr>
+            <th translate>ADMIN.RMAS.DATE</th>
+            <th translate>ADMIN.RMAS.RMA_STATUS</th>
+            <th *ngIf="!currentUser?.Supplier?.ID" translate>
+              ADMIN.RMAS.AMOUNT_REFUNDED
+            </th>
+            <th *ngIf="currentUser?.Supplier?.ID" translate>
+              ADMIN.RMAS.REFUND_ISSUED
+            </th>
+            <th translate>ADMIN.RMAS.PROCESSED_BY</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of _rma?.Logs">
+            <td class="align-middle">
+              {{ log?.Date | date: 'medium' }}
+            </td>
+            <td class="align-middle">
+              {{ log?.Status }}
+            </td>
+            <td *ngIf="!currentUser?.Supplier?.ID" class="align-middle">
+              {{ log?.AmountRefunded | currency: relatedOrder?.xp?.Currency }}
+            </td>
+            <td *ngIf="currentUser?.Supplier?.ID" class="align-middle">
+              {{ wasRefundIssued(log?.AmountRefunded) }}
+            </td>
+            <td class="align-middle">
+              {{ findUser(log?.FromUserID) }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

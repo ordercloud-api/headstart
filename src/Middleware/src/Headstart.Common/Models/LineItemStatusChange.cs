@@ -26,7 +26,7 @@ namespace Headstart.Models.Headstart
 	{
 		public string ID { get; set; }
 		public int Quantity { get; set; }
-		// reason and comment are optional, only apply to return and canelation request
+		// reason and comment are optional, only apply to return and cancellation request
 		public string Reason { get; set; }
 		public string Comment { get; set; }
 		// Refund/QuantityRequestedForRefund - Only if a credit was issued for a cancellation/return

@@ -1,0 +1,23 @@
+.avatar {
+    &::before {
+        height: 50px;
+        width: 50px;
+        line-height: 3.33rem;
+        font-size: 1.5rem;
+        margin-right: 0;
+        background: var(--primary);
+        color: white;
+    }
+}
+
+.avatar-default {
+    height: 50px;
+    width: 50px;
+    line-height: 3.33rem;
+    font-size: 1.5rem;
+    margin-right: 0;
+    background: var(--primary);
+    color: white;
+    border-radius: 0.25rem;
+    text-align: center;
+}

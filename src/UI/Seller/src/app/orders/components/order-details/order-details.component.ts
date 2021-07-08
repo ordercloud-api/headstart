@@ -25,13 +25,18 @@ import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { ReturnReason } from '@app-seller/shared/models/return-reason.interface'
-import { HSLineItem, HSOrder } from '@ordercloud/headstart-sdk'
+import { HSLineItem, HSOrder, RMA } from '@ordercloud/headstart-sdk'
 import { flatten as _flatten } from 'lodash'
 import { OrderProgress } from '@app-seller/models/order.types'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { SELLER } from '@app-seller/models/user.types'
+import { RMAService } from '@app-seller/rmas/rmas.service'
 
-export type LineItemTableValue = 'Default' | 'Canceled' | 'Returned' | 'Backordered'
+export type LineItemTableValue =
+  | 'Default'
+  | 'Canceled'
+  | 'Returned'
+  | 'Backordered'
 
 interface ILineItemTableStatus {
   [key: string]: LineItemTableValue
@@ -75,6 +80,7 @@ export class OrderDetailsComponent {
     Animated: false,
   }
   orderAvatarInitials: string
+  rmas: RMA[]
 
   @Input()
   set order(order: Order) {
@@ -92,6 +98,7 @@ export class OrderDetailsComponent {
     private middleware: MiddlewareAPIService,
     private appAuthService: AppAuthService,
     private ocAddressService: OcAddressService,
+    private rmaService: RMAService,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {
     this.isSellerUser = this.appAuthService.getOrdercloudUserType() === SELLER
@@ -201,6 +208,8 @@ export class OrderDetailsComponent {
   async setData(order: Order): Promise<void> {
     this._buyerQuoteAddress = null
     this._order = order
+    const rmaListPage = await this.rmaService.listRMAsByOrderID(order.ID)
+    this.rmas = rmaListPage.Items
     if (this.isSupplierOrder(order.ID)) {
       const orderData = await this.middleware.getSupplierData(order.ID)
       this._buyerOrder = orderData.BuyerOrder.Order
@@ -289,5 +298,9 @@ export class OrderDetailsComponent {
 
   protected createAndSavePDF(): void {
     this.pdfService.createAndSavePDF(this._order.ID)
+  }
+
+  buildOrderDetailsRoute(rma: RMA): string {
+    return `/rmas/${rma.RMANumber}`
   }
 }
