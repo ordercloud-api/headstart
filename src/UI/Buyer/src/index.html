@@ -30,17 +30,23 @@
   console.log('window.location: ' + window.location.href)
   if(document.location.pathname.split('/')[1] === prefix) {
     const scriptItemsToReplace = ['runtime', 'polyfills', 'styles', 'main']
+    const linksToReplace = ['defaultbuyer']
     var scripts = document.getElementsByTagName('script')
-    var test = true
+    var links = document.getElementsByTagName('link')
     for(item of scripts) {
-      console.log(item)
       var scriptSrc = item.getAttribute('src')
-      console.log(scriptSrc)
       if(scriptSrc && !scriptSrc.includes(prefix) && scriptItemsToReplace.find(i => scriptSrc.includes(i))) {
         var newScript = document.createElement('script')
-        newScript.setAttribute('src', test ? prefix+scriptSrc : scriptSrc)
-        console.log("appending new script")
+        newScript.setAttribute('src', prefix + '/' + scriptSrc)
         document.body.appendChild(newScript)
+      }
+    }
+    for(item of links) {
+      var linkHref = item.getAttribute('href')
+      if(linkHref && !linkHref.includes(prefix) && linkItemsToReplace.find(i => linkHref.includes(i))) {
+        var newLink = document.createElement('link')
+        newLink.setAttribute('href', prefix + '/' + linkHref)
+        document.head.appendChild(newLink)
       }
     }
   }
