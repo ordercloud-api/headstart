@@ -20,9 +20,28 @@
   </head>
 
   <body class="mat-typography">
-    <app-root></app-root>
+    <app-root id="app-root"></app-root>
   </body>
 </html>
+
+<script>
+  var prefix = '<PLACHOLDER>'
+  const scriptItemsToReplace = ['runtime', 'polyfills', 'styles', 'main']
+  var scripts = document.getElementsByTagName('script')
+  var test = true
+  for(item of scripts) {
+    console.log(item)
+    var scriptSrc = item.getAttribute('src')
+    console.log(scriptSrc)
+    if(scriptSrc && !scriptSrc.includes(prefix) && scriptItemsToReplace.find(i => scriptSrc.includes(i))) {
+      var newScript = document.createElement('script')
+      newScript.setAttribute('src', test ? prefix+scriptSrc : scriptSrc)
+      console.log("appending new script")
+      document.body.appendChild(newScript)
+    }
+  }
+</script>
+
 <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.0.3/custom-elements-es5-adapter.js"></script>
 <script type="text/javascript">
   var $zoho = $zoho || {}
