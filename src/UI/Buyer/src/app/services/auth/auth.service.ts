@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'
+import { Injectable, Injector } from '@angular/core'
 import { Observable, of, BehaviorSubject, from } from 'rxjs'
 import { tap, catchError, finalize } from 'rxjs/operators'
 import { ActivatedRoute, Router } from '@angular/router'
@@ -36,6 +36,8 @@ export class AuthService {
     false
   )
 
+  appInsightsService: ApplicationInsightsService;
+
   constructor(
     private cookieService: CookieService,
     private router: Router,
@@ -44,10 +46,11 @@ export class AuthService {
     private ordersToApproveStateService: OrdersToApproveStateService,
     private appConfig: AppConfig,
     private tokenHelper: TokenHelperService,
-    private appInsightsService: ApplicationInsightsService,
     private activatedRoute: ActivatedRoute,
-    private baseResolveService: BaseResolveService
-  ) { }
+    private baseResolveService: BaseResolveService,
+    private injector: Injector
+  ) {
+  }
 
   // All this isLoggedIn stuff is only used in the header wrapper component
   // remove once its no longer needed.
@@ -122,6 +125,8 @@ export class AuthService {
       this.appConfig.clientID,
       this.appConfig.scope
     )
+    this.appInsightsService = this.injector.get(ApplicationInsightsService);
+
     this.appInsightsService.setUserID(userName)
     this.loginWithTokens(
       creds.access_token,
@@ -182,6 +187,7 @@ export class AuthService {
     Tokens.RemoveAccessToken()
     HeadStartSDK.Tokens.RemoveAccessToken()
     this.isLoggedIn = false
+    this.appInsightsService = this.injector.get(ApplicationInsightsService);
     this.appInsightsService.clearUser()
     if (this.appConfig.anonymousShoppingEnabled) {
       await this.anonymousLogin()
