@@ -26,20 +26,25 @@
 
 <script>
   var prefix = '<PLACHOLDER>'
-  const scriptItemsToReplace = ['runtime', 'polyfills', 'styles', 'main']
-  var scripts = document.getElementsByTagName('script')
-  var test = true
-  for(item of scripts) {
-    console.log(item)
-    var scriptSrc = item.getAttribute('src')
-    console.log(scriptSrc)
-    if(scriptSrc && !scriptSrc.includes(prefix) && scriptItemsToReplace.find(i => scriptSrc.includes(i))) {
-      var newScript = document.createElement('script')
-      newScript.setAttribute('src', test ? prefix+scriptSrc : scriptSrc)
-      console.log("appending new script")
-      document.body.appendChild(newScript)
+  console.log('pathname: ' + document.location.pathname) // for debugging. Will remove later
+  console.log('window.location: ' + window.location.href)
+  if(document.location.pathname.split('/')[1] === prefix) {
+    const scriptItemsToReplace = ['runtime', 'polyfills', 'styles', 'main']
+    var scripts = document.getElementsByTagName('script')
+    var test = true
+    for(item of scripts) {
+      console.log(item)
+      var scriptSrc = item.getAttribute('src')
+      console.log(scriptSrc)
+      if(scriptSrc && !scriptSrc.includes(prefix) && scriptItemsToReplace.find(i => scriptSrc.includes(i))) {
+        var newScript = document.createElement('script')
+        newScript.setAttribute('src', test ? prefix+scriptSrc : scriptSrc)
+        console.log("appending new script")
+        document.body.appendChild(newScript)
+      }
     }
   }
+
 </script>
 
 <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.0.3/custom-elements-es5-adapter.js"></script>
