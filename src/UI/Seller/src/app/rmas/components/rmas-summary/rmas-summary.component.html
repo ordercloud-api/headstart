@@ -15,8 +15,7 @@
     <div class="m-2" *ngIf="lineItemsReadyForRefund.length && !isSellerUser">
       <fa-icon [icon]="faExclamationCircle"></fa-icon
       ><span class="text-danger ml-2"
-        >{{ lineItemsReadyForRefund.length }}
-        {{ ADMIN.RMAS.ITEMS_READY_FOR | translate }}</span
+        >{{ lineItemsReadyForRefund.length }} item(s) ready for refund.</span
       >
     </div>
     <div class="mt-2">
@@ -25,7 +24,7 @@
         class="btn btn-outline-dark mr-2"
         (click)="toggleProcessRMALineItems()"
       >
-        {{ getRMAProcessingAction() }} {{ ADMIN.RMAS.RMA_ITEMS | translate }}
+        {{ getRMAProcessingAction() }} RMA Items
       </button>
       <button
         *ngIf="!isSellerUser && lineItemsReadyForRefund.length"
@@ -36,8 +35,8 @@
       </button>
       <ng-template #content let-modal class="confirm-modal">
         <confirm-modal
-          modalTitle="{{ ADMIN.RMAS.PROCESS_REFUND | translate }}"
-          description="{{ ADMIN.RMAS.FOLLOWING_REQUESTS_REFUNDED | translate }}"
+          modalTitle="Process Refund"
+          description="The following requests will be refunded (if paid for with a credit card) and the buyer will be automatically notified."
         >
           <div class="table-responsive">
             <div class="table-responsive">

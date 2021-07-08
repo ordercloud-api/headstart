@@ -31,6 +31,7 @@ namespace ordercloud.integrations.avalara
 
 	public class AvalaraCommand : IAvalaraCommand
 	{
+		private readonly IOrderCloudClient _oc;
 		private readonly AvalaraConfig _settings;
 		private readonly AvaTaxClient _avaTax;
 		private readonly string _companyCode;
@@ -38,8 +39,9 @@ namespace ordercloud.integrations.avalara
 		private bool noAccountCredentials;
 		private AppEnvironment appEnvironment;
 
-		public AvalaraCommand(AvalaraConfig settings, AvaTaxClient client, string environment)
+		public AvalaraCommand(IOrderCloudClient oc, AvalaraConfig settings, AvaTaxClient client, string environment)
 		{
+			_oc = oc;
 			_settings = settings;
 			appEnvironment = (AppEnvironment)Enum.Parse(typeof(AppEnvironment), environment);
 
@@ -178,7 +180,8 @@ namespace ordercloud.integrations.avalara
 				{
 					if (ShouldMockAvalaraResponse()) { return CreateMockTransactionModel(); }
 
-					var createTransactionModel = orderWorksheet.ToAvalaraTransationModel(_companyCode, docType);
+					var promosOnOrder = await _oc.Orders.ListAllPromotionsAsync(OrderDirection.Incoming, orderWorksheet.Order.ID);
+					var createTransactionModel = orderWorksheet.ToAvalaraTransactionModel(_companyCode, docType, promosOnOrder);
 					var transaction = await _avaTax.CreateTransactionAsync("", createTransactionModel);
 					return transaction;
 

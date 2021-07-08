@@ -1,6 +1,4 @@
-<h5 class="mb-3 font-weight-bold">
-  {{ rma?.Type }} {{ ADMIN.RMAS.APPROVAL | translate }}
-</h5>
+<h5 class="mb-3 font-weight-bold">{{ rma?.Type }} Approval</h5>
 <form [formGroup]="rmaLineItemForm" name="RMALineItemForm">
   <div
     *ngFor="let li of relatedLineItems; let i = index"
@@ -28,7 +26,7 @@
               <span>{{ getRMALineItem(li)?.QuantityRequested }}</span>
             </div>
             <div class="mt-5">
-              <h6>{{ ADMIN.RMAS.REASON_FOR | translate }} {{ rma?.Type }}</h6>
+              <h6>Reason for {{ rma?.Type }}</h6>
               <span>{{
                 getValueSplitByCapitalLetter(getRMALineItem(li)?.Reason)
               }}</span>
@@ -258,7 +256,7 @@
   <ng-template #content let-modal class="confirm-modal">
     <confirm-modal
       modalTitle="Denied Requests"
-      description="{{ 'ADMIN.RMAS.THE_FOLLOWING_REQUESTS' | translate }}"
+      description="The following requests will be denied and the buyer will be automatically notified."
     >
       <div class="table-responsive">
         <rmas-modal-content-component

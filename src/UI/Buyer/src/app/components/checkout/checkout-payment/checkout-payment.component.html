@@ -1,60 +1,65 @@
 <div *ngIf="orderSummaryMeta">
-  <div class="row">
-    <div class="col-sm-6">
-      <div class="input-group input-group-sm">
-        <input type="text" class="form-control" placeholder="Promo Code" [value]="promoCode"
-          (input)="updatePromoCodeValue($event)" id="PromoCode" />
-        <div class="input-group-append">
-          <button translate class="btn btn-secondary" (click)="applyPromo()">
-            CHECKOUT.CHECKOUT_PAYMENT.APPLY
-          </button>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-6" *ngIf="_orderPromos?.length">
-      <p translate>CHECKOUT.CHECKOUT_PAYMENT.DISCOUNTS_APPLIED</p>
-      <div class="card p-2" *ngFor="let promo of _uniqueOrderPromos">
-        <p class="mb-0 lead">
-          <fa-icon class="text-success mr-2" [icon]="faCheckCircle"></fa-icon>
-          {{ promo.Code }}
-        </p>
-        <small>{{ promo.Description }}</small>
-        <p class="white-space-pre mt-1 mb-0 text-danger font-weight-bolder">
-          - {{ getPromoDiscountTotal(promo.ID) | currency: _orderCurrency }}
-        </p>
-        <button translate type="button" (click)="removePromo(promo.Code)" class="btn btn-remove wobble pr-2 pb-1">
-          CHECKOUT.CHECKOUT_PAYMENT.REMOVE
-        </button>
-      </div>
-    </div>
+  <div
+    *ngFor="let method of _acceptedPaymentMethods; let i = index"
+    class="form-check"
+  >
+    <input
+      (change)="selectPaymentMethod($event)"
+      class="form-check-input"
+      type="radio"
+      name="{{ i }}"
+      id="{{ i }}"
+      value="{{ method }}"
+      [checked]="selectedPaymentMethod === method"
+    />
+    <label class="form-check-label" for="{{ i }}">
+      {{ getPaymentMethodName(method) }}
+    </label>
   </div>
-  <hr class="mt-4 border-light" />
-  <div *ngFor="let method of _acceptedPaymentMethods; let i = index" class="form-check">
-    <input (change)="selectPaymentMethod($event)" class="form-check-input" type="radio" name="{{i}}" id="{{i}}"
-      value="{{method}}" [checked]="selectedPaymentMethod === method">
-    <label class="form-check-label" for="{{i}}">
-      {{getPaymentMethodName(method)}} </label>
-  </div>
-  <ocm-payment-credit-card *ngIf="orderSummaryMeta.LineItemCount && selectedPaymentMethod === 'CreditCard'"
-    [cards]="cards" [isAnon]="isAnon" [paymentError]="paymentError" (cardSelected)="onCardSelected($event.detail)">
+  <ocm-payment-credit-card
+    *ngIf="
+      orderSummaryMeta.LineItemCount && selectedPaymentMethod === 'CreditCard'
+    "
+    [cards]="cards"
+    [isAnon]="isAnon"
+    [paymentError]="paymentError"
+    (cardSelected)="onCardSelected($event.detail)"
+  >
   </ocm-payment-credit-card>
-  <ng-container *ngIf="orderSummaryMeta.LineItemCount && selectedPaymentMethod === 'PurchaseOrder'">
+  <ng-container
+    *ngIf="
+      orderSummaryMeta.LineItemCount &&
+      selectedPaymentMethod === 'PurchaseOrder'
+    "
+  >
     <small class="d-block font-italic text-muted">
-      The price reflected on this order includes an estimate
-      for sales tax and shipping costs. Actual final cost may
-      vary slightly as a result. By submitting this order,
-      you accept these terms.
+      The price reflected on this order includes an estimate for sales tax and
+      shipping costs. Actual final cost may vary slightly as a result. By
+      submitting this order, you accept these terms.
     </small>
     <div class="mt-3">
-      <button [disabled]="POTermsAccepted" type="submit" (click)="acceptPOTerms()"
-        class="btn btn-info btn-block-xs mr-2">
+      <button
+        [disabled]="POTermsAccepted"
+        type="submit"
+        (click)="acceptPOTerms()"
+        class="btn btn-info btn-block-xs mr-2"
+      >
         Accept
       </button>
-      <fa-icon *ngIf="POTermsAccepted" [icon]="faCheckCircle" class="text-success"></fa-icon>
+      <fa-icon
+        *ngIf="POTermsAccepted"
+        [icon]="faCheckCircle"
+        class="text-success"
+      ></fa-icon>
     </div>
   </ng-container>
-  <button type="submit" (click)="onContinue()" *ngIf="selectedPaymentMethod === 'PurchaseOrder'"
-    class="btn btn-primary btn-block-xs mt-4 mr-2" [disabled]="orderSummaryMeta.LineItemCount && !POTermsAccepted">
+  <button
+    type="submit"
+    (click)="onContinue()"
+    *ngIf="selectedPaymentMethod === 'PurchaseOrder'"
+    class="btn btn-primary btn-block-xs mt-4 mr-2"
+    [disabled]="orderSummaryMeta.LineItemCount && !POTermsAccepted"
+  >
     Continue
   </button>
 </div>
