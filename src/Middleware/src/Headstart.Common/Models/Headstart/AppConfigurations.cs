@@ -22,6 +22,7 @@ namespace Headstart.Common.Models.Headstart
             public string orderCloudApiUrl { get; set; }
             public BuyerAppTheme theme { get; set; }
             public string instrumentationKey { get; set; }
+            public string storefrontName { get; set; }
         }
 
         public class BuyerAppTheme

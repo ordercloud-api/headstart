@@ -61,29 +61,32 @@ namespace Headstart.API.Commands
             CreateDirectory(directoryName);
             await Task.WhenAll(tasks);
             await UpdateAppConfig(apiClient, storefrontName);
-            //await UpdateIndex(storefrontName);
+            await UpdateIndex(storefrontName);
             DeleteDirectory(directoryName);
         }
 
-        //private async Task UpdateIndex(string storefrontName)
-        //{
-        //    var path = $"{storefrontName}/index.html";
-        //    var index = (await _blob.Get(path))
-        //        .Replace("<base href=\"/\"/>", $"<base href='/{storefrontName}'/>")
-        //        .Replace("<script src=\"runtime", $"<script src=\"{storefrontName}/runtime")
-        //        .Replace("<script src=\"polyfills", $"<script src=\"{storefrontName}/polyfills")
-        //        .Replace("<script src=\"main", $"<script src=\"{storefrontName}/main")
-        //        .Replace("<link href=\"defaultbuyer", $"<link href=\"{storefrontName}/defaultbuyer");
+        private async Task UpdateIndex(string storefrontName)
+        {
+            var path = $"{storefrontName}/index.html";
+            var index = (await _blob.Get(path))
+                .Replace("<base href=\"/\">", $"<base href='/{storefrontName}'/>")
+                .Replace("<PLACHOLDER>", storefrontName);
+            Console.WriteLine(index);
+                //.Replace("<script src=\"runtime", $"<script src=\"{storefrontName}/runtime")
+                //.Replace("<script src=\"polyfills", $"<script src=\"{storefrontName}/polyfills")
+                //.Replace("<script src=\"main", $"<script src=\"{storefrontName}/main")
+                //.Replace("<link href=\"defaultbuyer", $"<link href=\"{storefrontName}/defaultbuyer");
 
-        //    try
-        //    {
-        //        await _blob.Save(path, index, "text/html");
-        //    } catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex);
-        //    }
-            
-        //}
+            try
+            {
+                await _blob.Save(path, index, "text/html");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+        }
 
         private async Task UpdateAppConfig(ApiClient apiClient = null, string storefrontName = "")
         {
