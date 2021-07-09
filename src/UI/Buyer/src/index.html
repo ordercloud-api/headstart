@@ -56,8 +56,6 @@
 
 <script>
   var prefix = '<PLACEHOLDER>'
-  console.log('pathname: ' + document.location.pathname) // for debugging. Will remove later
-  console.log('window.location: ' + window.location.href)
   if (document.location.pathname.split('/')[1] === prefix) {
     const scriptItemsToReplace = ['runtime', 'polyfills', 'styles', 'main']
     const linkItemsToReplace = ['defaultbuyer']
