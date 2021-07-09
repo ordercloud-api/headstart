@@ -19,14 +19,12 @@ namespace ordercloud.integrations.library
         IQueryable<T> GetQueryable();
     }
 
-    [SwaggerModel]
     public class CosmosListPage<T>
     {
         public CosmosMeta Meta { get; set; }
         public List<T> Items { get; set; }
     }
 
-    [SwaggerModel]
     public class CosmosMeta
     {
         public int PageSize { get; set; }
@@ -34,7 +32,6 @@ namespace ordercloud.integrations.library
         public string ContinuationToken { get; set; }
     }
 
-    [SwaggerModel]
     public class CosmosListOptions
     {
         public int PageSize { get; set; }

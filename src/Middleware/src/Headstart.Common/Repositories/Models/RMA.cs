@@ -7,7 +7,6 @@ using Headstart.Models.Headstart;
 
 namespace Headstart.Common.Models
 {
-    [SwaggerModel]
     public class RMA : CosmosObject
     {
         public string PartitionKey { get; set; }
@@ -82,20 +81,17 @@ namespace Headstart.Common.Models
         public string FromUserID { get; set; }
     }
 
-    [SwaggerModel]
     public class RMARefundRequestBody
     {
         public List<RMALineItemRefundRequestBody> LineItemsToRefund { get; set; }
     }
 
-    [SwaggerModel]
     public class RMALineItemRefundRequestBody
     {
         public string LineItemID { get; set; }
         public int? PercentToRefund { get; set; }
     }
 
-    [SwaggerModel]
     public class RMAWithLineItemStatusByQuantity
     {
         public string SupplierOrderID { get; set; }

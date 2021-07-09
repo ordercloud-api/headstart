@@ -264,7 +264,7 @@ namespace Headstart.Tests
                         }
                     }
                 },
-                OrderCalculateResponse = new OrderCalculateResponse()
+                OrderCalculateResponse = new HSOrderCalculateResponse()
                 {
                     xp = OrderCalculateXp
                 }

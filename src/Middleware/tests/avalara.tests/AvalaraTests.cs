@@ -1,15 +1,16 @@
 ﻿using Avalara.AvaTax.RestClient;
 using NUnit.Framework;
 using ordercloud.integrations.avalara;
+using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace avalara.tests
 {
     public class AvalaraTests
     {
+        private IOrderCloudClient _oc;
         private AvalaraCommand _command;
 
         [SetUp]
@@ -20,7 +21,7 @@ namespace avalara.tests
                 LicenseKey = null,
                 BaseApiUrl = "http://www.supersweeturi.com"
             };
-            _command = new AvalaraCommand(avalaraConfig, new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(avalaraConfig.BaseApiUrl)), AppEnvironment.Test.ToString());
+            _command = new AvalaraCommand(null, avalaraConfig, new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(avalaraConfig.BaseApiUrl)), AppEnvironment.Test.ToString());
         }
 
         [Test]

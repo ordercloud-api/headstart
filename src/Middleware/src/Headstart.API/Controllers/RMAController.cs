@@ -39,7 +39,6 @@ namespace Headstart.Common.Controllers
             return await _rmaCommand.PostRMA(rma);
         }
 
-        [DocName("LIST Buyer Headstart RMAs")]
         [HttpPost, Route("list/buyer"), OrderCloudUserAuth(HSLocationViewAllOrders)]
         public async Task<CosmosListPage<RMA>> ListBuyerRMAs([FromBody] CosmosListOptions listOptions)
         {
@@ -47,28 +46,24 @@ namespace Headstart.Common.Controllers
         }
 
         // Seller/Supplier Routes
-        [DocName("GET a single RMA")]
         [HttpGet, OrderCloudUserAuth(HSOrderAdmin, HSOrderReader, HSShipmentAdmin)]
         public async Task<RMA> Get(ListArgs<RMA> args)
         {
             return await _rmaCommand.Get(args, UserContext);
         }
 
-        [DocName("LIST RMAs by Order ID")]
         [HttpGet, Route("{orderID}"), OrderCloudUserAuth(HSOrderAdmin, HSOrderReader, HSShipmentAdmin)]
         public async Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID)
         {
             return await _rmaCommand.ListRMAsByOrderID(orderID, UserContext);
         }
 
-        [DocName("LIST Seller/Supplier Headstart RMAs")]
         [HttpPost, Route("list"), OrderCloudUserAuth(HSOrderAdmin, HSOrderReader, HSShipmentAdmin)]
         public async Task<CosmosListPage<RMA>> ListRMAs([FromBody] CosmosListOptions listOptions)
         {
             return await _rmaCommand.ListRMAs(listOptions, UserContext);
         }
 
-        [DocName("PUT Supplier Headstart RMA")]
         [HttpPut, Route("process-rma"), OrderCloudUserAuth(ApiRole.ShipmentAdmin)]
         public async Task<RMA> ProcessRMA([FromBody] RMA rma)
         {
@@ -77,7 +72,6 @@ namespace Headstart.Common.Controllers
             return rmaWithLineItemStatusByQuantity.RMA;
         }
 
-        [DocName("POST RMA Refund")]
         [HttpPost, Route("refund/{rmaNumber}"), OrderCloudUserAuth(ApiRole.ShipmentAdmin)]
         public async Task<RMA> ProcessRefund(string rmaNumber)
         {

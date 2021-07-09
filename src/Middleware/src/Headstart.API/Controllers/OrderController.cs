@@ -76,14 +76,12 @@ namespace Headstart.Common.Controllers
             return await _command.ListHSShipmentWithItems(orderID, UserContext);
         }
 
-        [DocName("LIST RMAs for Order, ensures user has access to location orders or created the order themselves")]
         [HttpGet, Route("rma/list/{orderID}"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<CosmosListPage<RMA>> ListRMAsForOrder(string orderID)
         {
             return await _command.ListRMAsForOrder(orderID, UserContext);
         }
 
-        [DocName("Add or update a line item to an order")]
         [HttpPut, Route("{orderID}/lineitems"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<HSLineItem> UpsertLineItem(string orderID, [FromBody] HSLineItem li)
         {
