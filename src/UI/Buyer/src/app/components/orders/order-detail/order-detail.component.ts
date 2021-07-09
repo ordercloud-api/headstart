@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core'
-import { faCube, faTruck } from '@fortawesome/free-solid-svg-icons'
 import {
-  HSOrder,
-  OrderDetails,
-  HSLineItem,
-} from '@ordercloud/headstart-sdk'
+  faCube,
+  faExchangeAlt,
+  faTruck,
+} from '@fortawesome/free-solid-svg-icons'
+import { HSOrder, OrderDetails, HSLineItem } from '@ordercloud/headstart-sdk'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import { isQuoteOrder } from '../../../services/orderType.helper'
 import {
@@ -12,7 +12,10 @@ import {
   CanCancelOrder,
 } from 'src/app/services/lineitem-status.helper'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
-import { OrderReorderResponse, OrderViewContext } from 'src/app/models/order.types'
+import {
+  OrderReorderResponse,
+  OrderViewContext,
+} from 'src/app/models/order.types'
 
 @Component({
   templateUrl: './order-detail.component.html',
@@ -24,7 +27,8 @@ export class OCMOrderDetails implements OnInit {
   approvalVersion = false
   faCube = faCube
   faTruck = faTruck
-  subView: 'details' | 'shipments' = 'details'
+  faExchangeAlt = faExchangeAlt
+  subView: 'details' | 'shipments' | 'rmas' = 'details'
   reorderResponse: OrderReorderResponse
   message = { string: null, classType: null }
   showRequestReturn = false
@@ -39,7 +43,8 @@ export class OCMOrderDetails implements OnInit {
   async ngOnInit(): Promise<void> {
     this.isAnon = this.context.currentUser.isAnonymous()
     this.approvalVersion =
-    this.context.orderHistory.filters.getOrderViewContext() === OrderViewContext.Approve
+      this.context.orderHistory.filters.getOrderViewContext() ===
+      OrderViewContext.Approve
     this.orderDetails = await this.context.orderHistory.getOrderDetails()
     this.order = this.orderDetails.Order
     this.validateReorder(this.order.ID, this.orderDetails.LineItems)
@@ -100,16 +105,20 @@ export class OCMOrderDetails implements OnInit {
 
   toShipments(): void {
     this.subView = 'shipments'
-    if(this.showRequestCancel || this.showRequestReturn) {
+    if (this.showRequestCancel || this.showRequestReturn) {
       this.toggleShowRequestForm(false)
     }
   }
 
   toDetails(): void {
     this.subView = 'details'
-    if(this.showRequestCancel || this.showRequestReturn) {
+    if (this.showRequestCancel || this.showRequestReturn) {
       this.toggleShowRequestForm(false)
     }
+  }
+
+  toRMAs(): void {
+    this.subView = 'rmas'
   }
 
   toAllOrders(): void {
@@ -122,6 +131,10 @@ export class OCMOrderDetails implements OnInit {
 
   showDetails(): boolean {
     return this.subView === 'details'
+  }
+
+  showRMAs(): boolean {
+    return this.subView === 'rmas'
   }
 
   updateMessage(response: OrderReorderResponse): void {
@@ -142,7 +155,9 @@ export class OCMOrderDetails implements OnInit {
   }
 
   async addToCart(): Promise<void> {
-    await this.context.order.cart.AddValidLineItemsToCart(this.reorderResponse.ValidLi)
+    await this.context.order.cart.AddValidLineItemsToCart(
+      this.reorderResponse.ValidLi
+    )
   }
 
   async moveOrderToCart(): Promise<void> {

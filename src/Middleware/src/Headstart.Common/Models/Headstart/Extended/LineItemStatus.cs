@@ -12,7 +12,9 @@ namespace Headstart.Models.Extended
         Backordered,
         Canceled,
         CancelRequested,
+        CancelDenied,
         Returned,
-        ReturnRequested
+        ReturnRequested,
+        ReturnDenied
     }
 }

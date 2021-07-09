@@ -1,0 +1,24 @@
+<resource-table-component
+  [resourceList]="resourceList"
+  [selectedResourceID]="selectedResourceID"
+  [updatedResource]="updatedResource"
+  [resourceInSelection]="resourceInSelection"
+  [ocService]="ocService"
+  [dataIsSaving]="dataIsSaving"
+  [resourceForm]="resourceForm"
+  [shouldShowResourceActions]="false"
+  [filterConfig]="filterConfig"
+  [shouldShowCreateNew]="userContext?.UserType !== 'SELLER'"
+  [shouldShowCreateNew]="false"
+  (searched)="searchResources($event)"
+  (hitScrollEnd)="handleScrollEnd()"
+  (changesSaved)="saveUpdates()"
+  (changesDiscarded)="discardChanges()"
+  (resourceDelete)="deleteResource()"
+  (resourceSelected)="selectResource($event)"
+  [labelSingular]="'ADMIN.NAV.RMA'"
+  [labelPlural]="'ADMIN.NAV.RMAS'"
+>
+  <app-rmas-edit class="resource-edit" [selectedRMA]="resourceInSelection">
+  </app-rmas-edit>
+</resource-table-component>

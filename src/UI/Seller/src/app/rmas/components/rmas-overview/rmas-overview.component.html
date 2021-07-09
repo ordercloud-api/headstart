@@ -1,0 +1,79 @@
+<div class="container mt-2 mb-3">
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="d-flex justify-content-start align-items-center">
+        <div
+          *ngIf="orderAvatarInitials !== 'undefinedundefined'"
+          [attr.data-letters]="orderAvatarInitials"
+          class="avatar"
+        ></div>
+        <div
+          *ngIf="orderAvatarInitials === 'undefinedundefined'"
+          class="avatar-default"
+        >
+          <fa-icon [icon]="faUser"></fa-icon>
+        </div>
+        <div class="ml-2">
+          <p class="h5 mb-0 text-capitalize font-weight-bold">
+            {{ _buyerOrderData?.FromUser?.FirstName }}
+            {{ _buyerOrderData?.FromUser?.LastName }}
+          </p>
+          <p class="mb-0" *ngIf="_buyerOrderData?.FromUser?.Phone">
+            {{ _buyerOrderData?.FromUser?.Phone | tel }}
+          </p>
+          <p class="mb-0" *ngIf="_buyerOrderData?.FromUser?.Email">
+            {{ _buyerOrderData?.FromUser?.Email }}
+          </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div
+        *ngIf="rma?.TotalCredited > 0 && isSellerUser"
+        class="d-block text-right mb-2"
+      >
+        <small
+          *ngIf="rma?.ShippingCredited > 0"
+          class="font-weight-bolder text-muted text-uppercase d-block"
+          translate
+          >ADMIN.RMAS.SHIPPING_REFUNDED</small
+        >
+        <small
+          *ngIf="rma?.ShippingCredited > 0"
+          class="mb-3 text-capitalize d-block font-weight-bold"
+        >
+          {{ rma.ShippingCredited | currency: relatedOrder?.xp?.Currency }}
+        </small>
+        <small
+          class="font-weight-bolder text-muted text-uppercase d-block"
+          translate
+          >ADMIN.RMAS.TOTAL_REFUNDED</small
+        >
+        <small class="text-capitalize d-block font-weight-bold">
+          {{ rma?.TotalCredited | currency: relatedOrder?.xp?.Currency }}
+        </small>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="d-block text-right mb-2">
+        <small
+          class="font-weight-bolder text-muted text-uppercase d-block"
+          translate
+          >ADMIN.RMAS.DATE_CREATED</small
+        >
+        <small class="mb-0 text-capitalize d-block font-weight-bold">
+          {{ rma?.DateCreated | date: 'medium' }}
+        </small>
+        <small
+          *ngIf="rma?.DateComplete"
+          class="mt-3 font-weight-bolder text-muted text-uppercase d-block"
+          translate
+          >ADMIN.RMAS.DATE_COMPLETED</small
+        >
+        <small class="mb-0 text-capitalize d-block font-weight-bold">
+          {{ rma?.DateComplete | date: 'medium' }}
+        </small>
+      </div>
+    </div>
+  </div>
+</div>

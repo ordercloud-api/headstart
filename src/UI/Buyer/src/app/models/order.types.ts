@@ -54,6 +54,17 @@ export interface OrderFilters {
   location?: string
 }
 
+export enum RMAStatus {
+  Requested = 'Requested',
+  Denied = 'Denied',
+  Processing = 'Processing',
+  Approved = 'Approved',
+  Complete = 'Complete',
+  Canceled = 'Canceled',
+  PartialQtyApproved = 'PartialQtyApproved',
+  PartialQtyComplete = 'PartialQtyComplete',
+}
+
 export enum OrderViewContext {
   MyOrders = 'MyOrders',
   Approve = 'Approve',

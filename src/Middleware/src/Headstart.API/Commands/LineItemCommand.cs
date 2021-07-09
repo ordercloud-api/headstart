@@ -1,6 +1,7 @@
 using Headstart.Common.Constants;
 using Headstart.Common.Extensions;
 using Headstart.Common.Services;
+using Headstart.Common.Models;
 using Headstart.Models;
 using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
@@ -24,6 +25,7 @@ namespace Headstart.API.Commands
         Task<List<HSLineItem>> SetInitialSubmittedLineItemStatuses(string buyerOrderID);
         Task DeleteLineItem(string orderID, string lineItemID, VerifiedUserContext verifiedUser);
         Task<decimal> ValidateLineItemUnitCost(string orderID, SuperHSMeProduct product, List<HSLineItem> existingLineItems, HSLineItem li);
+        Task HandleRMALineItemStatusChanges(OrderDirection orderDirection, RMAWithLineItemStatusByQuantity rmaWithLineItemStatusByQuantity, VerifiedUserContext verifiedUserContext);
     }
 
     public class LineItemCommand : ILineItemCommand
@@ -32,14 +34,17 @@ namespace Headstart.API.Commands
         private readonly ISendgridService _sendgridService;
         private readonly IMeProductCommand _meProductCommand;
         private readonly IPromotionCommand _promotionCommand;
+        private readonly IRMACommand _rmaCommand;
+
         private readonly TelemetryClient _telemetry;
 
-        public LineItemCommand(ISendgridService sendgridService, IOrderCloudClient oc, IMeProductCommand meProductCommand, IPromotionCommand promotionCommand, TelemetryClient telemetry)
+        public LineItemCommand(ISendgridService sendgridService, IOrderCloudClient oc, IMeProductCommand meProductCommand, IPromotionCommand promotionCommand, IRMACommand rmaCommand, TelemetryClient telemetry)
         {
 			_oc = oc;
             _sendgridService = sendgridService;
             _meProductCommand = meProductCommand;
             _promotionCommand = promotionCommand;
+            _rmaCommand = rmaCommand;
             _telemetry = telemetry;
         }
 
@@ -59,8 +64,10 @@ namespace Headstart.API.Commands
                             { LineItemStatus.Backordered, 0 },
                             { LineItemStatus.Canceled, 0 },
                             { LineItemStatus.CancelRequested, 0 },
+                            { LineItemStatus.CancelDenied, 0 },
                             { LineItemStatus.Returned, 0 },
                             { LineItemStatus.ReturnRequested, 0 },
+                            { LineItemStatus.ReturnDenied, 0 },
                             { LineItemStatus.Complete, 0 }
                         },
                         Returns = new List<LineItemClaim>(),
@@ -99,6 +106,12 @@ namespace Headstart.API.Commands
             var supplierIDsRelatingToChange = lineItemsChanged.Select(li => li.SupplierID).Distinct().Where(id => id != null).ToList();
 
             var relatedSupplierOrderIDs = (userType == "admin") ? null : supplierIDsRelatingToChange.Select(supplierID => $"{buyerOrderID}-{supplierID}").ToList();
+
+            if (lineItemStatusChanges.Status == LineItemStatus.CancelRequested || lineItemStatusChanges.Status == LineItemStatus.ReturnRequested)
+            {
+                await _rmaCommand.BuildRMA(buyerOrder, supplierIDsRelatingToChange, lineItemStatusChanges, lineItemsChanged, verifiedUser);
+            }
+
             var statusSync = SyncOrderStatuses(buyerOrder, relatedSupplierOrderIDs, allLineItemsForOrder.ToList());
             await statusSync;
 
@@ -469,6 +482,19 @@ namespace Headstart.API.Commands
                     lineItemTotal = priceBasedOnQuantity + GetSpecMarkup(li.Specs, product.Specs);
                 }
                 return lineItemTotal;
+            }
+        }
+
+        public async Task HandleRMALineItemStatusChanges(OrderDirection orderDirection, RMAWithLineItemStatusByQuantity rmaWithLineItemStatusByQuantity, VerifiedUserContext verifiedUserContext)
+        {
+            if (!rmaWithLineItemStatusByQuantity.LineItemStatusChangesList.Any())
+            {
+                return;
+            }
+            string supplierOrderID = $"{rmaWithLineItemStatusByQuantity.RMA.SourceOrderID}-{rmaWithLineItemStatusByQuantity.RMA.SupplierID}";
+            foreach (var statusChange in rmaWithLineItemStatusByQuantity.LineItemStatusChangesList)
+            {
+                await UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Incoming, supplierOrderID, statusChange, verifiedUserContext);
             }
         }
 

@@ -31,6 +31,7 @@ import Upload from './Upload';
 import Assets from './Assets';
 import Services from './Service';
 import ApprovalRules from './ApprovalRules';
+import RmAs from './RmAs';
 
 export { HeadStartSDK }
 
@@ -40,6 +41,7 @@ const HeadStartSDK: HeadStartSDK = {
     Buyers : new Buyers(),
     SsoLogins : new SsoLogins(),
     Catalogs : new Catalogs(),
+    RmAs: new RmAs(),
     Orders : new Orders(),
     Payments : new Payments(),
     Shipments : new Shipments(),
@@ -77,6 +79,7 @@ interface HeadStartSDK {
     SsoLogins : SsoLogins,
     Catalogs : Catalogs,
     Orders : Orders,
+    RmAs: RmAs,
     Payments : Payments,
     Shipments : Shipments,
     Suppliers : Suppliers,

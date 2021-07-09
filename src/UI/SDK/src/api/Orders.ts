@@ -8,6 +8,7 @@ import { RequiredDeep } from '../models/RequiredDeep';
 import { ListArgs } from '../models/ListArgs'
 import httpClient from '../utils/HttpClient';
 import { Order } from 'ordercloud-javascript-sdk';
+import { CosmosListPage, RMA } from '../models';
 
 export default class Orders {
     private impersonating:boolean = false;
@@ -28,6 +29,7 @@ export default class Orders {
         this.ListShipmentsWithItems = this.ListShipmentsWithItems.bind(this);
         this.AcknowledgeQuoteOrder = this.AcknowledgeQuoteOrder.bind(this);
         this.ListLocationOrders = this.ListLocationOrders.bind(this);
+        this.ListRMAsForOrder = this.ListRMAsForOrder.bind(this);
     }
 
    /**
@@ -127,6 +129,16 @@ export default class Orders {
         this.impersonating = false;
         return await httpClient.get(`/order/${orderID}/shipmentswithitems`, { params: {  accessToken, impersonating } } );
     }
+
+ /**
+    * @param orderID ID of the order.
+    * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
+    */
+  public async ListRMAsForOrder(orderID: string,  accessToken?: string ): Promise<RequiredDeep<CosmosListPage<RMA>>> {
+    const impersonating = this.impersonating;
+    this.impersonating = false;
+    return await httpClient.get(`/order/rma/list/${orderID}`, { params: {  accessToken, impersonating } } );
+}
 
    /**
     * @param orderID ID of the order.

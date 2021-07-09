@@ -29,7 +29,10 @@ import {
 import { AxiosError } from 'axios'
 import { CheckoutService } from 'src/app/services/order/checkout.service'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
-import { AcceptedPaymentTypes, CheckoutSection } from 'src/app/models/checkout.types'
+import {
+  AcceptedPaymentTypes,
+  CheckoutSection,
+} from 'src/app/models/checkout.types'
 import {
   HSBuyerCreditCard,
   SelectedCreditCard,
@@ -96,7 +99,7 @@ export class OCMCheckout implements OnInit {
     private toastrService: ToastrService,
     private router: Router,
     private translate: TranslateService
-  ) { }
+  ) {}
 
   async ngOnInit(): Promise<void> {
     this.context.order.onChange((order) => (this.order = order))
@@ -112,10 +115,11 @@ export class OCMCheckout implements OnInit {
     this.initLoadingIndicator()
     this.updateOrderMeta()
     this.setValidation('login', !this.isAnon)
+    await this.context.order.promos.applyAutomaticPromos()
     this.isNewCard = false
     this.invalidLineItems = await this.context.order.cart.getInvalidLineItems()
     if (this.invalidLineItems?.length) {
-      // Navigate to cart to review invalid itemss
+      // Navigate to cart to review invalid items
       void this.router.navigate(['/cart'])
     } else {
       await this.reIDLineItems()
@@ -144,7 +148,6 @@ export class OCMCheckout implements OnInit {
     this.initLoadingIndicator('shippingSelectionLoading')
     await this.checkout.calculateOrder()
     this.cards = await this.context.currentUser.cards.List(this.isAnon)
-    await this.context.order.promos.applyAutomaticPromos()
     this.order = this.context.order.get()
     if (this.order.IsSubmitted) {
       await this.handleOrderError(ErrorCodes.AlreadySubmitted)
@@ -247,14 +250,17 @@ export class OCMCheckout implements OnInit {
     // Check that line items in cart are all from active products (none were made inactive during checkout).
     this.invalidLineItems = await this.context.order.cart.getInvalidLineItems()
     if (this.invalidLineItems?.length) {
-      // Navigate to cart to review invalid itemss
+      // Navigate to cart to review invalid items
       await this.context.order.reset() // orderID might've been incremented
       this.isLoading = false
       void this.router.navigate(['/cart'])
     } else {
       this.initLoadingIndicator('submitLoading')
       try {
-        const payment = this.payments?.Items?.[0]?.Type === AcceptedPaymentTypes.CreditCard ? this.getCCPaymentData() : {}
+        const payment =
+          this.payments?.Items?.[0]?.Type === AcceptedPaymentTypes.CreditCard
+            ? this.getCCPaymentData()
+            : {}
         const order = await HeadStartSDK.Orders.Submit(
           'Outgoing',
           this.order.ID,
@@ -371,7 +377,7 @@ export class OCMCheckout implements OnInit {
       this.router.navigateByUrl('/home')
     } else if (
       this.checkoutError.ErrorCode ===
-      ErrorCodes.FailedToVoidAuthorization.code ||
+        ErrorCodes.FailedToVoidAuthorization.code ||
       this.checkoutError.ErrorCode?.includes('CreditCardAuth.')
     ) {
       this.currentPanel = 'payment'

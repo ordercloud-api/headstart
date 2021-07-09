@@ -6,6 +6,7 @@ import {
   LineItem,
   ListPage,
   Me,
+  OrderPromotion,
 } from 'ordercloud-javascript-sdk'
 import {
   HeadStartSDK,
@@ -16,12 +17,17 @@ import {
 import { getSuggestedAddresses } from '../../../services/address-suggestion.helper'
 import { NgxSpinnerService } from 'ngx-spinner'
 import { ErrorMessages } from '../../../services/error-constants'
-import { flatten as _flatten } from 'lodash'
+import { flatten as _flatten, uniqBy as _uniqBy } from 'lodash'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
+import { IGroupedOrderPromo } from 'src/app/models/checkout.types'
 import { TranslateService } from '@ngx-translate/core'
 // TODO - Make this component "Dumb" by removing the dependence on context service
 // and instead have it use inputs and outputs to interact with the CheckoutComponent.
 // Goal is to get all the checkout logic and state into one component.
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
+import { FormControl, FormGroup } from '@angular/forms'
+import { ToastrService } from 'ngx-toastr'
+import { CheckoutService } from 'src/app/services/order/checkout.service'
 
 @Component({
   templateUrl: './checkout-address.component.html',
@@ -31,6 +37,7 @@ export class OCMCheckoutAddress implements OnInit {
   @Input() order: HSOrder
   @Input() lineItems: ListPage<LineItem>
   @Output() continue = new EventEmitter()
+  @Output() promosChanged = new EventEmitter<OrderPromotion[]>()
   @Output() handleOrderError = new EventEmitter()
   @Output() handleDismissal = new EventEmitter()
   _addressError: string
@@ -45,11 +52,19 @@ export class OCMCheckoutAddress implements OnInit {
   existingBuyerLocations: ListPage<BuyerAddress>
   selectedBuyerLocation: BuyerAddress
   homeCountry: string
+  _orderPromos: OrderPromotion[]
+  _uniqueOrderPromos: OrderPromotion[]
+  _groupedOrderPromos: IGroupedOrderPromo
+  promoForm: FormGroup
+  promoCode = ''
+  faCheckCircle = faCheckCircle
+  checkout: CheckoutService = this.context.order.checkout
   tooltip: string
 
   constructor(
     private context: ShopperContextService,
     private spinner: NgxSpinnerService,
+    private toastrService: ToastrService,
     private translate: TranslateService
   ) {}
 
@@ -62,9 +77,56 @@ export class OCMCheckoutAddress implements OnInit {
       this.showNewAddress()
     }
     this.spinner.hide()
+    this.setOrderPromos()
+    this.createPromoForm(this.promoCode)
     this.selectedShippingAddress = this.lineItems?.Items[0].ShippingAddress
     await this.ListAddressesForShipping()
     await this.listSavedBuyerLocations()
+  }
+
+  createPromoForm(promoCode: string): void {
+    this.promoForm = new FormGroup({
+      PromoCode: new FormControl(promoCode),
+    })
+  }
+
+  updatePromoCodeValue(event: any): void {
+    this.promoCode = event.target.value
+  }
+
+  async applyPromo(): Promise<void> {
+    try {
+      await this.context.order.promos.applyPromo(this.promoCode)
+      this.setOrderPromos()
+      await this.checkout.calculateOrder()
+      this.promoCode = ''
+    } catch (ex) {
+      this.toastrService.error('Invalid or ineligible promotion.')
+    } finally {
+      this.promosChanged.emit(this._orderPromos)
+    }
+  }
+
+  async removePromo(promoCode: string): Promise<void> {
+    try {
+      await this.context.order.promos.removePromo(promoCode)
+      this.setOrderPromos()
+      await this.checkout.calculateOrder()
+    } finally {
+      this.promosChanged.emit(this._orderPromos)
+    }
+  }
+
+  getPromoDiscountTotal(promoID: string): number {
+    return this._orderPromos
+      .filter((promo) => promo.ID === promoID)
+      .reduce((accumulator, promo) => promo.Amount + accumulator, 0)
+  }
+
+  setOrderPromos(): void {
+    const orderPromos = this.context.order.promos.get()
+    this._orderPromos = orderPromos?.Items
+    this._uniqueOrderPromos = _uniqBy(this._orderPromos, 'Code')
   }
 
   onShippingAddressChange(shippingAddressID: string): void {
@@ -103,13 +165,12 @@ export class OCMCheckoutAddress implements OnInit {
       page: 1,
       pageSize: 100,
     }
-    this.existingBuyerLocations = await this.context.addresses.listBuyerLocations(
-      listOptions,
-      true
-    )
+    this.existingBuyerLocations =
+      await this.context.addresses.listBuyerLocations(listOptions, true)
     this.homeCountry = this.existingBuyerLocations?.Items[0]?.Country || 'US'
     if (this.existingBuyerLocations?.Items?.length === 1) {
-      this.selectedBuyerLocation = this.selectedShippingAddress = this.existingBuyerLocations.Items[0]
+      this.selectedBuyerLocation = this.selectedShippingAddress =
+        this.existingBuyerLocations.Items[0]
     }
   }
 
@@ -199,7 +260,11 @@ export class OCMCheckoutAddress implements OnInit {
     }
     const [buyerLocations, existingShippingAddresses] = await Promise.all([
       Me.ListAddresses(buyerLocationsFilter),
-      HeadStartSDK.Services.ListAll(Me, Me.ListAddresses, shippingAddressesFilter)
+      HeadStartSDK.Services.ListAll(
+        Me,
+        Me.ListAddresses,
+        shippingAddressesFilter
+      ),
     ])
     this.homeCountry = buyerLocations?.Items[0]?.Country || 'US'
     this.existingShippingAddresses = existingShippingAddresses

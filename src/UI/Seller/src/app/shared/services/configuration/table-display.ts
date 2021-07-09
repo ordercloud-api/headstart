@@ -1,105 +1,115 @@
 import { SummaryResourceInfoPathsDictionary } from '@app-seller/models/shared.types'
 import { ResourceConfigurationDictionary } from '@app-seller/models/table-display.types'
-import { PRODUCT_IMAGE_PATH_STRATEGY, SUPPLIER_LOGO_PATH_STRATEGY } from '@app-seller/shared/services/assets/asset.helper'
+import {
+  PRODUCT_IMAGE_PATH_STRATEGY,
+  SUPPLIER_LOGO_PATH_STRATEGY,
+} from '@app-seller/shared/services/assets/asset.helper'
 
-export const SUMMARY_RESOURCE_INFO_PATHS_DICTIONARY: SummaryResourceInfoPathsDictionary = {
-  suppliers: {
-    toPrimaryHeader: 'Name',
-    toSecondaryHeader: 'ID',
-    toImage: SUPPLIER_LOGO_PATH_STRATEGY,
-    toExpandable: false,
-  },
-  users: {
-    toPrimaryHeader: 'Username',
-    toSecondaryHeader: 'ID',
-    toImage: '',
-    toExpandable: false,
-  },
-  products: {
-    toPrimaryHeader: 'Name',
-    toSecondaryHeader: 'ID',
-    toImage: PRODUCT_IMAGE_PATH_STRATEGY,
-    toExpandable: false,
-  },
-  promotions: {
-    toPrimaryHeader: 'Code',
-    toSecondaryHeader: 'Description',
-    toImage: '',
-    toExpandable: false,
-  },
-  facets: {
-    toPrimaryHeader: 'Name',
-    toSecondaryHeader: 'ID',
-    toImage: '',
-    toExpandable: false,
-  },
-  buyers: {
-    toPrimaryHeader: 'Name',
-    toSecondaryHeader: 'ID',
-    toImage: '',
-    toExpandable: false,
-  },
-  locations: {
-    toPrimaryHeader: 'AddressName',
-    toSecondaryHeader: 'ID',
-    toImage: '',
-    toExpandable: false,
-  },
-  payments: {
-    toPrimaryHeader: 'CardholderName',
-    toSecondaryHeader: 'CardType',
-    toImage: '',
-    toExpandable: false,
-  },
-  approvals: {
-    toPrimaryHeader: 'Name',
-    toSecondaryHeader: 'ApprovalRuleID',
-    toImage: '',
-    toExpandable: false,
-  },
-  catalogs: {
-    toPrimaryHeader: 'Name',
-    toSecondaryHeader: 'ID',
-    toImage: '',
-    toExpandable: false,
-  },
-  categories: {
-    toPrimaryHeader: 'Name',
-    toSecondaryHeader: 'ID',
-    toImage: '',
-    toExpandable: true,
-  },
-  orders: {
-    toPrimaryHeader: 'ID',
-    toSecondaryHeader: 'xp.SubmittedOrderStatus',
-    toImage: '',
-    toExpandable: false,
-  },
-  storefronts: {
-    toPrimaryHeader: 'AppName',
-    toSecondaryHeader: 'ID',
-    toImage: '',
-    toExpandable: false,
-  },
-  pages: {
-    toPrimaryHeader: 'Doc.Title',
-    toSecondaryHeader: 'Doc.Author',
-    toImage: '',
-    toExpandable: false,
-  },
-  templates: {
-    toPrimaryHeader: 'Name',
-    toSecondaryHeader: 'ReportCategory',
-    toImage: '',
-    toExpandable: false,
-  },
-  reports: {
-    toPrimaryHeader: 'Name',
-    toSecondaryHeader: 'ReportCategory',
-    toImage: '',
-    toExpandable: false,
-  },
-}
+export const SUMMARY_RESOURCE_INFO_PATHS_DICTIONARY: SummaryResourceInfoPathsDictionary =
+  {
+    suppliers: {
+      toPrimaryHeader: 'Name',
+      toSecondaryHeader: 'ID',
+      toImage: SUPPLIER_LOGO_PATH_STRATEGY,
+      toExpandable: false,
+    },
+    users: {
+      toPrimaryHeader: 'Username',
+      toSecondaryHeader: 'ID',
+      toImage: '',
+      toExpandable: false,
+    },
+    products: {
+      toPrimaryHeader: 'Name',
+      toSecondaryHeader: 'ID',
+      toImage: PRODUCT_IMAGE_PATH_STRATEGY,
+      toExpandable: false,
+    },
+    promotions: {
+      toPrimaryHeader: 'Code',
+      toSecondaryHeader: 'Description',
+      toImage: '',
+      toExpandable: false,
+    },
+    facets: {
+      toPrimaryHeader: 'Name',
+      toSecondaryHeader: 'ID',
+      toImage: '',
+      toExpandable: false,
+    },
+    buyers: {
+      toPrimaryHeader: 'Name',
+      toSecondaryHeader: 'ID',
+      toImage: '',
+      toExpandable: false,
+    },
+    locations: {
+      toPrimaryHeader: 'AddressName',
+      toSecondaryHeader: 'ID',
+      toImage: '',
+      toExpandable: false,
+    },
+    payments: {
+      toPrimaryHeader: 'CardholderName',
+      toSecondaryHeader: 'CardType',
+      toImage: '',
+      toExpandable: false,
+    },
+    approvals: {
+      toPrimaryHeader: 'Name',
+      toSecondaryHeader: 'ApprovalRuleID',
+      toImage: '',
+      toExpandable: false,
+    },
+    catalogs: {
+      toPrimaryHeader: 'Name',
+      toSecondaryHeader: 'ID',
+      toImage: '',
+      toExpandable: false,
+    },
+    categories: {
+      toPrimaryHeader: 'Name',
+      toSecondaryHeader: 'ID',
+      toImage: '',
+      toExpandable: true,
+    },
+    orders: {
+      toPrimaryHeader: 'ID',
+      toSecondaryHeader: 'xp.SubmittedOrderStatus',
+      toImage: '',
+      toExpandable: false,
+    },
+    rmas: {
+      toPrimaryHeader: 'RMANumber',
+      toSecondaryHeader: 'Status',
+      toImage: '',
+      toExpandable: false,
+    },
+    storefronts: {
+      toPrimaryHeader: 'AppName',
+      toSecondaryHeader: 'ID',
+      toImage: '',
+      toExpandable: false,
+    },
+    pages: {
+      toPrimaryHeader: 'Doc.Title',
+      toSecondaryHeader: 'Doc.Author',
+      toImage: '',
+      toExpandable: false,
+    },
+    templates: {
+      toPrimaryHeader: 'Name',
+      toSecondaryHeader: 'ReportCategory',
+      toImage: '',
+      toExpandable: false,
+    },
+    reports: {
+      toPrimaryHeader: 'Name',
+      toSecondaryHeader: 'ReportCategory',
+      toImage: '',
+      toExpandable: false,
+    },
+  }
 
 export const STRING_WITH_IMAGE = 'STRING_WITH_IMAGE'
 export const BOOLEAN = 'BOOLEAN'
@@ -391,6 +401,35 @@ export const FULL_TABLE_RESOURCE_DICTIONARY: ResourceConfigurationDictionary = {
         type: BASIC_STRING,
         sortable: false,
         queryRestriction: 'OrderDirection=Incoming',
+      },
+    ],
+    imgPath: '',
+  },
+  rmas: {
+    fields: [
+      {
+        path: 'RMANumber',
+        header: 'RMA Number',
+        type: BASIC_STRING,
+        sortable: false,
+      },
+      {
+        path: 'DateCreated',
+        header: 'Date Created',
+        type: DATE_TIME,
+        sortable: false,
+      },
+      {
+        path: 'Type',
+        header: 'Type',
+        type: BASIC_STRING,
+        sortable: false,
+      },
+      {
+        path: 'Status',
+        header: 'Status',
+        type: BASIC_STRING,
+        sortable: false,
       },
     ],
     imgPath: '',

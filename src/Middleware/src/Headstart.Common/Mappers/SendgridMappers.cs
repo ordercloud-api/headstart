@@ -1,4 +1,5 @@
 ﻿using Headstart.Models;
+using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
 using OrderCloud.SDK;
 using System;
@@ -170,16 +171,28 @@ namespace Headstart.Common.Mappers
                 Zip = lineItems[0]?.ShippingAddress?.Zip
             };
   
-        public static LineItemProductData MapToTemplateProduct(HSLineItem lineItem, LineItemStatusChange lineItemStatusChange)
+        public static LineItemProductData MapToTemplateProduct(HSLineItem lineItem, LineItemStatusChange lineItemStatusChange, LineItemStatus status)
         {
+            decimal lineTotal = 0M;
+            if (status == LineItemStatus.ReturnDenied || status == LineItemStatus.CancelDenied && lineItemStatusChange.QuantityRequestedForRefund != lineItemStatusChange.Quantity)
+            {
+                int quantityApproved = lineItemStatusChange.QuantityRequestedForRefund - lineItemStatusChange.Quantity;
+                decimal costPerUnitAfterTaxes = (decimal)(lineItemStatusChange.Refund / quantityApproved);
+                lineTotal = Math.Round(costPerUnitAfterTaxes * lineItemStatusChange.Quantity, 2);
+            }
+            else
+            {
+                lineTotal = lineItemStatusChange.Refund ?? lineItem.LineTotal;
+            }
             return new LineItemProductData
             {
                 ProductName = lineItem?.Product?.Name,
                 ImageURL = lineItem?.xp?.ImageUrl,
                 ProductID = lineItem?.ProductID,
                 Quantity = lineItem?.Quantity,
-                LineTotal = lineItem?.LineTotal,
-                QuantityChanged = lineItemStatusChange?.Quantity
+                LineTotal = lineTotal,
+                QuantityChanged = lineItemStatusChange?.Quantity,
+                MessageToBuyer = lineItemStatusChange.Comment
             };
         }
 
