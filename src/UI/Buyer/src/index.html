@@ -55,12 +55,10 @@
 </html>
 
 <script>
-  var prefix = '<PLACHOLDER>'
-  console.log('pathname: ' + document.location.pathname) // for debugging. Will remove later
-  console.log('window.location: ' + window.location.href)
+  var prefix = '<PLACEHOLDER>'
   if (document.location.pathname.split('/')[1] === prefix) {
     const scriptItemsToReplace = ['runtime', 'polyfills', 'styles', 'main']
-    const linksToReplace = ['defaultbuyer']
+    const linkItemsToReplace = ['defaultbuyer']
     var scripts = document.getElementsByTagName('script')
     var links = document.getElementsByTagName('link')
     for (item of scripts) {
