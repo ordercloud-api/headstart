@@ -20,7 +20,7 @@ namespace Headstart.Tests
         public void Setup()
         {
             _oc = Substitute.For<IOrderCloudClient>();
-            _commandSub = Substitute.ForPartsOf<LineItemCommand>(default, _oc, default, default, default);
+            _commandSub = Substitute.ForPartsOf<LineItemCommand>(default, _oc, default, default, default, default);
             _existingLineItems = BuildMockExistingLineItemData(); // Mock data consists of two total line items for one product (with different specs)
             Substitute.For<ILineItemsResource>().PatchAsync<HSLineItem>(OrderDirection.Incoming, default, default, default).ReturnsForAnyArgs((Task)null);
         }
