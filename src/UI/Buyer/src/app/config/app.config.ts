@@ -18,7 +18,6 @@ export const ocAppConfig: AppConfig = {
   anonymousShoppingEnabled: true,
   appInsightsInstrumentationKey: environment.appInsightsInstrumentationKey,
   acceptedPaymentMethods: environment.acceptedPaymentMethods,
-  storefrontName: environment.storefrontName,
   scope: [
     'MeAddressAdmin',
     'AddressAdmin', // Only for location owners
