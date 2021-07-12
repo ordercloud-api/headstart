@@ -12,10 +12,19 @@ if (!appID) {
   throw new Error('APP ID NOT PROVIDED')
 }
 
+const buildID = '<PLACEHOLDER>' // replace this in file transfer
 const sourceDir = '.'
-const mainJs = fs
-  .readdirSync(sourceDir)
-  .find((filename) => filename.startsWith('main.') && filename.endsWith('.js'))
+const mainJs = fs.readdirSync(sourceDir).find((filename) => {
+  if (buildID !== '<PLACEHOLDER>') {
+    return (
+      filename.startsWith('main.') &&
+      filename.includes(buildID) &&
+      filename.endsWith('.js')
+    )
+  } else {
+    return filename.startsWith('main.') && filename.endsWith('.js')
+  }
+})
 
 const appConfig = fs.readFileSync(
   `${sourceDir}/assets/appConfigs/${appID}.json`,
