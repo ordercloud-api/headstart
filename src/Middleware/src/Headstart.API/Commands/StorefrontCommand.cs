@@ -117,7 +117,7 @@ namespace Headstart.API.Commands
             {
                 try
                 {
-                    Directory.Delete(directoryName);
+                    Directory.Delete(directoryName, true);
                 }
                 catch (Exception ex)
                 {
