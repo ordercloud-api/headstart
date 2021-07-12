@@ -82,6 +82,7 @@
       ) {
         var newLink = document.createElement('link')
         newLink.setAttribute('href', prefix + '/' + linkHref)
+        newLink.setAttribute('rel', 'stylesheet')
         document.head.appendChild(newLink)
       }
     }
