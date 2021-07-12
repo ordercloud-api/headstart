@@ -70,7 +70,7 @@ namespace Headstart.API.Commands
             var path = $"{storefrontName}/index.html";
             var index = (await _blob.Get(path))
                 .Replace("<base href=\"/\">", $"<base href='/{storefrontName}'/>")
-                .Replace("<PLACHOLDER>", storefrontName);
+                .Replace("<PLACEHOLDER>", storefrontName);
             Console.WriteLine(index);
                 //.Replace("<script src=\"runtime", $"<script src=\"{storefrontName}/runtime")
                 //.Replace("<script src=\"polyfills", $"<script src=\"{storefrontName}/polyfills")
