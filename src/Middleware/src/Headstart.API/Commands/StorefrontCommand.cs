@@ -36,6 +36,12 @@ namespace Headstart.API.Commands
             _oc = oc;
         }
 
+        private readonly string storefrontPlaceholder = "<PLACEHOLDER>";
+        private readonly string envPlaceholder = "\"#{environmentConfig}\"";
+        private readonly string originalMainFileName = "main-original.js";
+        private bool isMainFile(string fileName) => fileName.StartsWith("main.") && fileName.EndsWith(".js");
+        
+
         public async Task DeployBuyerSite(ApiClient apiClient = null)
         {
             //First create the api client
@@ -53,14 +59,19 @@ namespace Headstart.API.Commands
             var directoryName = "webfolder"; // this is the folder where we save the downloaded files from blob storage.
 
             var storefrontName = "storefront1";
+            var mainFileName = "";
             foreach (var file in files)
             {
                 var fileName = file.Uri.ToString().Split("buyerweb/")[1];
+                if(isMainFile(fileName))
+                {
+                    mainFileName = fileName;
+                }
                 tasks.Add(_blob.TransferBlobs("buyerweb", "$web", fileName, storefrontName, directoryName));
             }
             CreateDirectory(directoryName);
             await Task.WhenAll(tasks);
-            await UpdateAppConfig(apiClient, storefrontName);
+            await UpdateAppConfig(apiClient, mainFileName, storefrontName);
             await UpdateIndex(storefrontName);
             DeleteDirectory(directoryName);
         }
@@ -70,12 +81,7 @@ namespace Headstart.API.Commands
             var path = $"{storefrontName}/index.html";
             var index = (await _blob.Get(path))
                 .Replace("<base href=\"/\">", $"<base href='/{storefrontName}'/>")
-                .Replace("<PLACEHOLDER>", storefrontName);
-            Console.WriteLine(index);
-                //.Replace("<script src=\"runtime", $"<script src=\"{storefrontName}/runtime")
-                //.Replace("<script src=\"polyfills", $"<script src=\"{storefrontName}/polyfills")
-                //.Replace("<script src=\"main", $"<script src=\"{storefrontName}/main")
-                //.Replace("<link href=\"defaultbuyer", $"<link href=\"{storefrontName}/defaultbuyer");
+                .Replace(storefrontPlaceholder, storefrontName);
 
             try
             {
@@ -85,10 +91,9 @@ namespace Headstart.API.Commands
             {
                 Console.WriteLine(ex);
             }
-
         }
 
-        private async Task UpdateAppConfig(ApiClient apiClient = null, string storefrontName = "")
+        private async Task UpdateAppConfig(ApiClient apiClient, string mainFileName, string storefrontName = "")
         {
             var config = await _blob.Get<BuyerAppConfiguration>($"{storefrontName}/assets/appConfigs/headstartdemo-test.json");
             //config.clientID = apiClient.ID;
@@ -99,8 +104,22 @@ namespace Headstart.API.Commands
             config.sellerName = "Brand new seller";
             //config.theme = apiClient?.xp?.theme;
             config.storefrontName = storefrontName;
-            await _blob.Save($"{storefrontName}/assets/appConfigs/headstartdemo-test.json", JsonConvert.SerializeObject(config), "application/json");
-
+            var originalMain = (await _blob.Get($"{storefrontName}/{originalMainFileName}"));
+            var hasPlaceHolder = originalMain.Contains(envPlaceholder);
+            Console.WriteLine(hasPlaceHolder);
+            var updatedMain = originalMain
+                .Replace(envPlaceholder, JsonConvert.SerializeObject(config));
+            try
+            {
+                await Task.WhenAll(
+                _blob.Save($"{storefrontName}/assets/appConfigs/headstartdemo-test.json", JsonConvert.SerializeObject(config), "application/json"),
+                _blob.Save($"{storefrontName}/{mainFileName}", updatedMain, "application/x-javascript")
+            );
+            } catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            
         }
 
         private void CreateDirectory(string directoryName)
