@@ -18,7 +18,7 @@ console.log(environmentLocal)
 
 if (document.location.pathname.split('/')[1] === environment.storefrontName) {
   console.log("setting __webpack_public_path__")
-  __webpack_public_path__ = environment.storefrontName
+  __webpack_public_path__ = `${window.location.origin}/${environment.storefrontName}/
 }
 
 if (environment.hostedApp) {
