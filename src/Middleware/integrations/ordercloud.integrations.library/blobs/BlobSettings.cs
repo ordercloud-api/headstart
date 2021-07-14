@@ -10,6 +10,5 @@ namespace ordercloud.integrations.library
         public string ContainerNameExchangeRates { get; set; } = "currency";
         public string ContainerNameTranslations { get; set; } = "ngx-translate";
         public string HostUrl { get; set; }
-        public string EnvironmentString { get; set; }
     }
 }

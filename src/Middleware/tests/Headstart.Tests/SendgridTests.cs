@@ -19,6 +19,7 @@ using NSubstitute.Extensions;
 using AutoFixture;
 using SendGrid;
 using Headstart.Common.Services.ShippingIntegration.Models;
+using Avalara.AvaTax.RestClient;
 
 namespace Headstart.Tests
 {
@@ -152,13 +153,13 @@ namespace Headstart.Tests
             shipEstimatexp1.SupplierID = TestConstants.supplier1ID;
             shipEstimatexp2.SupplierID = TestConstants.supplier2ID;
 
-            dynamic OrderCalculateXp = new ExpandoObject();
-            dynamic TaxResponse = new ExpandoObject();
-            dynamic lines = new List<ExpandoObject>();
-            dynamic lineItem1Taxline = new ExpandoObject();
-            dynamic lineItem2Taxline = new ExpandoObject();
-            dynamic selectedShipMethod1Taxline = new ExpandoObject();
-            dynamic selectedShipMethod2Taxline = new ExpandoObject();
+            dynamic OrderCalculateXp = new OrderCalculateResponseXp();
+            dynamic TaxResponse = new TransactionModel();
+            dynamic lines = new List<TransactionLineModel>();
+            dynamic lineItem1Taxline = new TransactionLineModel();
+            dynamic lineItem2Taxline = new TransactionLineModel();
+            dynamic selectedShipMethod1Taxline = new TransactionLineModel();
+            dynamic selectedShipMethod2Taxline = new TransactionLineModel();
 
             lineItem1Taxline.lineNumber = TestConstants.lineItem1ID;
             lineItem1Taxline.tax = TestConstants.lineItem1Tax;
@@ -264,7 +265,7 @@ namespace Headstart.Tests
                         }
                     }
                 },
-                OrderCalculateResponse = new OrderCalculateResponse()
+                OrderCalculateResponse = new HSOrderCalculateResponse()
                 {
                     xp = OrderCalculateXp
                 }

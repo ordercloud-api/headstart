@@ -107,8 +107,10 @@ namespace Headstart.Common.Constants
             { LineItemStatus.Submitted, 0 },
             { LineItemStatus.Backordered, 0 },
             { LineItemStatus.CancelRequested, 0 },
+            { LineItemStatus.CancelDenied, 0 },
             { LineItemStatus.Complete, 0 },
             { LineItemStatus.ReturnRequested, 0 },
+            { LineItemStatus.ReturnDenied, 0 },
             { LineItemStatus.Returned, 0 },
             { LineItemStatus.Canceled, 0 },
         };
@@ -118,9 +120,11 @@ namespace Headstart.Common.Constants
             { LineItemStatus.Submitted, SubmittedOrderStatus.Open },
             { LineItemStatus.Backordered, SubmittedOrderStatus.Open },
             { LineItemStatus.CancelRequested, SubmittedOrderStatus.Open },
+            { LineItemStatus.CancelDenied, SubmittedOrderStatus.Open },
             { LineItemStatus.Complete, SubmittedOrderStatus.Completed },
             { LineItemStatus.ReturnRequested, SubmittedOrderStatus.Completed },
             { LineItemStatus.Returned, SubmittedOrderStatus.Completed },
+            { LineItemStatus.ReturnDenied, SubmittedOrderStatus.Completed },
             { LineItemStatus.Canceled, SubmittedOrderStatus.Canceled },
         };
         private static Dictionary<LineItemStatus, ShippingStatus> RelatedShippingStatus = new Dictionary<LineItemStatus, ShippingStatus>()
@@ -128,8 +132,10 @@ namespace Headstart.Common.Constants
             { LineItemStatus.Submitted, ShippingStatus.Processing },
             { LineItemStatus.Backordered, ShippingStatus.Processing },
             { LineItemStatus.CancelRequested, ShippingStatus.Processing },
+            { LineItemStatus.CancelDenied, ShippingStatus.Processing },
             { LineItemStatus.Complete, ShippingStatus.Shipped },
             { LineItemStatus.ReturnRequested, ShippingStatus.Shipped },
+            { LineItemStatus.ReturnDenied, ShippingStatus.Shipped },
             { LineItemStatus.Returned, ShippingStatus.Shipped },
             { LineItemStatus.Canceled, ShippingStatus.Canceled },
         };
@@ -138,9 +144,11 @@ namespace Headstart.Common.Constants
             { LineItemStatus.Submitted, ClaimStatus.NoClaim },
             { LineItemStatus.Backordered, ClaimStatus.Pending },
             { LineItemStatus.CancelRequested, ClaimStatus.Pending },
+            { LineItemStatus.CancelDenied, ClaimStatus.NoClaim },
             { LineItemStatus.Complete, ClaimStatus.NoClaim },
             { LineItemStatus.ReturnRequested, ClaimStatus.Pending },
             { LineItemStatus.Returned, ClaimStatus.Complete },
+            { LineItemStatus.ReturnDenied, ClaimStatus.NoClaim },
             { LineItemStatus.Canceled, ClaimStatus.Complete },
         };
 
@@ -152,13 +160,21 @@ namespace Headstart.Common.Constants
             LineItemStatus.Returned,
             LineItemStatus.Backordered,
             LineItemStatus.Canceled,
+            LineItemStatus.CancelDenied,
+            LineItemStatus.ReturnDenied
         };
 
         // defining seller and supplier together as the current logic is the 
         // seller should be able to do about anything a supplier can do
         public static List<LineItemStatus> ValidSellerOrSupplierLineItemStatuses = new List<LineItemStatus>()
         {
-            LineItemStatus.Returned, LineItemStatus.Backordered, LineItemStatus.Canceled, LineItemStatus.Complete
+            LineItemStatus.Returned,
+            LineItemStatus.Backordered,
+            LineItemStatus.Canceled,
+            LineItemStatus.CancelDenied,
+            LineItemStatus.ReturnDenied,
+            LineItemStatus.CancelRequested,
+            LineItemStatus.ReturnRequested
         };
 
         // definitions of which user contexts can can set which lineItemStatuses
@@ -174,7 +190,7 @@ namespace Headstart.Common.Constants
         };
 
         // definitions to control which line item status changes are allowed
-        // for example cannot change a completed line item to anything but returned or return requested
+        // for example cannot change a completed line item to anything but returned or return requested (or return denied)
         public static Dictionary<LineItemStatus, List<LineItemStatus>> ValidPreviousStateLineItemChangeMap = new Dictionary<LineItemStatus, List<LineItemStatus>>()
         {
             // no previous states for submitted
@@ -183,12 +199,14 @@ namespace Headstart.Common.Constants
             /* ordering of the items in the list is used for determining which line item statuses to change
             * for example when setting status to canceled, cancel requested will be the first quantity to decrement,
             * once this is depleted, the backordered quantity will be decremented */
-            { LineItemStatus.Complete, new List<LineItemStatus>() { LineItemStatus.Submitted, LineItemStatus.Backordered } },
-            { LineItemStatus.ReturnRequested, new List<LineItemStatus>() { LineItemStatus.Complete } },
+            { LineItemStatus.Complete, new List<LineItemStatus>() { LineItemStatus.Submitted, LineItemStatus.Backordered, LineItemStatus.CancelDenied } },
+            { LineItemStatus.ReturnRequested, new List<LineItemStatus>() { LineItemStatus.CancelDenied, LineItemStatus.Complete, LineItemStatus.ReturnDenied} },
             { LineItemStatus.Returned, new List<LineItemStatus>() { LineItemStatus.ReturnRequested, LineItemStatus.Complete } },
+            { LineItemStatus.ReturnDenied, new List<LineItemStatus>() { LineItemStatus.ReturnRequested } },
             { LineItemStatus.Backordered, new List<LineItemStatus>() { LineItemStatus.Submitted } },
-            { LineItemStatus.CancelRequested, new List<LineItemStatus>() { LineItemStatus.Backordered, LineItemStatus.Submitted } },
+            { LineItemStatus.CancelRequested, new List<LineItemStatus>() { LineItemStatus.Backordered, LineItemStatus.Submitted, LineItemStatus.CancelDenied } },
             { LineItemStatus.Canceled, new List<LineItemStatus>() { LineItemStatus.CancelRequested, LineItemStatus.Backordered, LineItemStatus.Submitted } },
+            { LineItemStatus.CancelDenied, new List<LineItemStatus>() { LineItemStatus.CancelRequested } },
         };
 
         public static Dictionary<LineItemStatus, Dictionary<VerifiedUserType, EmailDisplayText>> GetStatusChangeEmailText(string supplierName)
@@ -241,6 +259,26 @@ namespace Headstart.Common.Constants
                         EmailSubject = "The seller has processed a return",
                         DynamicText = "Ensure that the full return process is complete",
                         DynamicText2 = "The following items have been marked as returned"
+                    } }
+                } },
+                   { LineItemStatus.ReturnDenied, new Dictionary<VerifiedUserType, EmailDisplayText>() {
+                    { VerifiedUserType.buyer, new EmailDisplayText()
+                    {
+                        EmailSubject = "A return has been denied for your order",
+                        DynamicText = "A return could not be processed for this order.",
+                        DynamicText2 = "The following items will not be returned"
+                    } },
+                    { VerifiedUserType.admin, new EmailDisplayText()
+                    {
+                        EmailSubject = "The supplier has denied a return",
+                        DynamicText = "The customer will not be refunded for the following items.",
+                        DynamicText2 = "The following items have been marked as return denied"
+                    } },
+                    { VerifiedUserType.supplier , new EmailDisplayText()
+                    {
+                        EmailSubject = "The supplier has denied a return",
+                        DynamicText = "The customer will not be refunded for the following items.",
+                        DynamicText2 = "The following items have been marked as return denied"
                     } }
                 } },
                     { LineItemStatus.Backordered, new Dictionary<VerifiedUserType, EmailDisplayText>() {
@@ -304,7 +342,27 @@ namespace Headstart.Common.Constants
                         DynamicText2 = "The following items have been cancelled"
                     } },
 
-                } }
+                } },
+                   { LineItemStatus.CancelDenied, new Dictionary<VerifiedUserType, EmailDisplayText>() {
+                    { VerifiedUserType.buyer, new EmailDisplayText()
+                    {
+                        EmailSubject = "A cancellation has been denied for your order",
+                        DynamicText = "A cancellation could not be processed for this order",
+                        DynamicText2 = "The following items will not be canceled"
+                    } },
+                    { VerifiedUserType.admin, new EmailDisplayText()
+                    {
+                        EmailSubject = "The supplier has denied a cancellation",
+                        DynamicText = "The customer will not be refunded for the following items",
+                        DynamicText2 = "The following items have been marked as cancel denied"
+                    } },
+                    { VerifiedUserType.supplier , new EmailDisplayText()
+                    {
+                        EmailSubject = "The supplier has denied a cancellation",
+                        DynamicText = "The customer will not be refunded for the following items",
+                        DynamicText2 = "The following items have been marked as cancel denied"
+                    } }
+                } },
             };
         }
     }

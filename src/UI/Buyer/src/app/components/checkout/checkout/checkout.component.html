@@ -1,8 +1,10 @@
 <div class="container py-3">
   <h1 class="mb-0" translate>CHECKOUT.CHECKOUT.CHECKOUT</h1>
   <p *ngIf="order.ID">
-    <span class="font-weight-bold" translate>CHECKOUT.CHECKOUT.ORDERREFERENCE</span><span>{{ ': ' }}</span>{{ order.ID
-    }}
+    <span class="font-weight-bold" translate
+      >CHECKOUT.CHECKOUT.ORDERREFERENCE</span
+    ><span>{{ ': ' }}</span
+    >{{ order.ID }}
   </p>
 </div>
 <div class="container">
@@ -11,7 +13,10 @@
       <div class="text-center">
         <h4 class="font-weight-bold">{{ orderErrorTitle }}</h4>
         <p *ngIf="orderErrorMessage">{{ orderErrorMessage }}</p>
-        <button class="btn btn-primary align-self-center" (click)="handleCheckoutError()">
+        <button
+          class="btn btn-primary align-self-center"
+          (click)="handleCheckoutError()"
+        >
           {{ orderErrorButtonText }}
         </button>
       </div>
@@ -19,37 +24,67 @@
     <div class="row flex-lg-row-reverse my-3" *ngIf="order.LineItemCount">
       <div class="col-lg-3">
         <div class="position-sticky order-summary">
-          <ocm-order-summary [orderSummaryMeta]="orderSummaryMeta"></ocm-order-summary>
+          <ocm-order-summary
+            [orderSummaryMeta]="orderSummaryMeta"
+          ></ocm-order-summary>
         </div>
       </div>
       <div class="col-lg-9 my-md-0 my-3">
-        <ngx-spinner *ngIf="isLoading && currentPanel === 'shippingAddressLoading'" bdColor="null"
-          color="var(--primary)" size="small" bdColor="null" [fullScreen]="false" type="ball-spin-clockwise-fade">
+        <ngx-spinner
+          *ngIf="isLoading && currentPanel === 'shippingAddressLoading'"
+          bdColor="null"
+          color="var(--primary)"
+          size="small"
+          bdColor="null"
+          [fullScreen]="false"
+          type="ball-spin-clockwise-fade"
+        >
         </ngx-spinner>
-        <ngb-accordion [closeOthers]="true" (panelChange)="beforeChange($event)" #acc="ngbAccordion"
-          [activeIds]="currentPanel" class="d-block shadow rounded">
+        <ngb-accordion
+          [closeOthers]="true"
+          (panelChange)="beforeChange($event)"
+          #acc="ngbAccordion"
+          [activeIds]="currentPanel"
+          class="d-block shadow rounded"
+        >
           <ngb-panel *ngIf="isAnon" id="login">
             <ng-template ngbPanelTitle>
               <h2 class="h5 mb-0 py-2 text-secondary" translate>
                 COMMON.LOGIN
               </h2>
-              <fa-icon class="float-right text-success" *ngIf="getValidation('login')" [icon]="faCheck"></fa-icon>
+              <fa-icon
+                class="float-right text-success"
+                *ngIf="getValidation('login')"
+                [icon]="faCheck"
+              ></fa-icon>
             </ng-template>
             <ng-template ngbPanelContent>
               <div class="row">
                 <div class="col-4">
-                  <button class="btn btn-block btn-primary" [routerLink]="['/login']"
-                    [queryParams]="{ redirect: 'checkout' }" translate>
+                  <button
+                    class="btn btn-block btn-primary"
+                    [routerLink]="['/login']"
+                    [queryParams]="{ redirect: 'checkout' }"
+                    translate
+                  >
                     COMMON.LOGIN
                   </button>
                 </div>
                 <div class="col-4">
-                  <button class="btn btn-block btn-primary" routerLink="/register" translate>
+                  <button
+                    class="btn btn-block btn-primary"
+                    routerLink="/register"
+                    translate
+                  >
                     CHECKOUT.CHECKOUT.CREATE_ACCOUNT
                   </button>
                 </div>
                 <div class="col-4">
-                  <button class="btn btn-block btn-primary" (click)="toSection('shippingAddress')" translate>
+                  <button
+                    class="btn btn-block btn-primary"
+                    (click)="toSection('shippingAddress')"
+                    translate
+                  >
                     CHECKOUT.CHECKOUT.GUEST_CHECKOUT
                   </button>
                 </div>
@@ -61,15 +96,28 @@
               <h2 class="h5 mb-0 py-2 text-secondary" translate>
                 CHECKOUT.CHECKOUT.SHIPPING_ADDRESS
               </h2>
-              <fa-icon class="text-success" *ngIf="
+              <fa-icon
+                class="text-success"
+                *ngIf="
                   getValidation('shippingAddress') &&
                   (!isLoading || currentPanel !== 'shippingAddress')
-                " [icon]="faCheck"><span class="sr-only">Shipping Address Confirmed</span></fa-icon>
+                "
+                [icon]="faCheck"
+                ><span class="sr-only"
+                  >Shipping Address Confirmed</span
+                ></fa-icon
+              >
             </ng-template>
             <ng-template ngbPanelContent>
-              <ocm-checkout-address [isAnon]="isAnon" [order]="order" [lineItems]="lineItems"
-                [orderPromos]="orderPromotions" (continue)="doneWithShipToAddress()"
-                (handleOrderError)="handleOrderError($event.detail)" (handleDismissal)="handleAddressDismissal()">
+              <ocm-checkout-address
+                [isAnon]="isAnon"
+                [order]="order"
+                [lineItems]="lineItems"
+                (continue)="doneWithShipToAddress()"
+                (promosChanged)="updateOrderMeta($event)"
+                (handleOrderError)="handleOrderError($event.detail)"
+                (handleDismissal)="handleAddressDismissal()"
+              >
               </ocm-checkout-address>
             </ng-template>
           </ngb-panel>
@@ -78,19 +126,39 @@
               <h2 class="h5 mb-0 py-2 text-secondary" translate>
                 CHECKOUT.CHECKOUT.SHIPPING_SELECTION
               </h2>
-              <fa-icon class="text-success" *ngIf="
+              <fa-icon
+                class="text-success"
+                *ngIf="
                   getValidation('shippingSelection') &&
                   (!isLoading || currentPanel !== 'shippingSelection')
-                " [icon]="faCheck"><span class="sr-only">Shipping Address Confirmed</span></fa-icon>
-              <ngx-spinner *ngIf="isLoading && currentPanel === 'shippingSelectionLoading'" bdColor="null"
-                color="var(--primary)" size="small" bdColor="null" [fullScreen]="false" type="ball-spin-clockwise-fade">
+                "
+                [icon]="faCheck"
+                ><span class="sr-only"
+                  >Shipping Address Confirmed</span
+                ></fa-icon
+              >
+              <ngx-spinner
+                *ngIf="isLoading && currentPanel === 'shippingSelectionLoading'"
+                bdColor="null"
+                color="var(--primary)"
+                size="small"
+                bdColor="null"
+                [fullScreen]="false"
+                type="ball-spin-clockwise-fade"
+              >
                 <small class="sr-only">Confirming shipping selections</small>
               </ngx-spinner>
             </ng-template>
             <ng-template ngbPanelContent>
-              <ocm-checkout-shipping [order]="order" [lineItems]="lineItems" [orderPromos]="orderPromotions"
-                [shipEstimates]="shipEstimates" (selectShipRate)="selectShipMethod($event.detail)"
-                (continue)="doneWithShippingRates()" (backToAddress)="navigateBackToAddress()">
+              <ocm-checkout-shipping
+                [order]="order"
+                [lineItems]="lineItems"
+                [orderPromos]="orderPromotions"
+                [shipEstimates]="shipEstimates"
+                (selectShipRate)="selectShipMethod($event.detail)"
+                (continue)="doneWithShippingRates()"
+                (backToAddress)="navigateBackToAddress()"
+              >
               </ocm-checkout-shipping>
             </ng-template>
           </ngb-panel>
@@ -99,21 +167,37 @@
               <h2 class="h5 mb-0 py-2 text-secondary" translate>
                 CHECKOUT.CHECKOUT.PAYMENT
               </h2>
-              <fa-icon class="float-right text-success" *ngIf="
+              <fa-icon
+                class="float-right text-success"
+                *ngIf="
                   getValidation('payment') &&
                   (!isLoading || currentPanel !== 'payment')
-                " [icon]="faCheck">
+                "
+                [icon]="faCheck"
+              >
               </fa-icon>
-              <ngx-spinner *ngIf="isLoading && currentPanel === 'paymentLoading'" bdColor="null" color="var(--primary)"
-                size="small" bdColor="null" [fullScreen]="false" type="ball-spin-clockwise-fade">
+              <ngx-spinner
+                *ngIf="isLoading && currentPanel === 'paymentLoading'"
+                bdColor="null"
+                color="var(--primary)"
+                size="small"
+                bdColor="null"
+                [fullScreen]="false"
+                type="ball-spin-clockwise-fade"
+              >
                 <small class="sr-only">Capturing payment</small>
               </ngx-spinner>
             </ng-template>
             <ng-template ngbPanelContent>
-              <ocm-checkout-payment [isAnon]="isAnon" [order]="order" [orderPromos]="orderPromotions" [cards]="cards"
-                [orderSummaryMeta]="orderSummaryMeta" [paymentError]="paymentError"
-                (promosChanged)="updateOrderMeta($event)" (cardSelected)="onCardSelected($event.detail)"
-                (continue)="onAcknowledgePurchaseOrder()">
+              <ocm-checkout-payment
+                [isAnon]="isAnon"
+                [order]="order"
+                [cards]="cards"
+                [orderSummaryMeta]="orderSummaryMeta"
+                [paymentError]="paymentError"
+                (cardSelected)="onCardSelected($event.detail)"
+                (continue)="onAcknowledgePurchaseOrder()"
+              >
               </ocm-checkout-payment>
             </ng-template>
           </ngb-panel>
@@ -122,15 +206,27 @@
               <h2 class="h5 mb-0 py-2 text-secondary" translate>
                 CHECKOUT.CHECKOUT.CONFIRM
               </h2>
-              <ngx-spinner *ngIf="isLoading && currentPanel === 'submitLoading'" bdColor="null" color="var(--primary)"
-                size="small" bdColor="null" [fullScreen]="false" type="ball-spin-clockwise-fade">
+              <ngx-spinner
+                *ngIf="isLoading && currentPanel === 'submitLoading'"
+                bdColor="null"
+                color="var(--primary)"
+                size="small"
+                bdColor="null"
+                [fullScreen]="false"
+                type="ball-spin-clockwise-fade"
+              >
                 <small class="sr-only">Submitting order</small>
               </ngx-spinner>
             </ng-template>
             <ng-template ngbPanelContent>
-              <ocm-checkout-confirm [isAnon]="isAnon" [order]="order" [orderPromos]="orderPromotions"
-                [lineItems]="lineItems" [payments]="payments"
-                (submitOrderWithComment)="submitOrderWithComment($event.detail)">
+              <ocm-checkout-confirm
+                [isAnon]="isAnon"
+                [order]="order"
+                [orderPromos]="orderPromotions"
+                [lineItems]="lineItems"
+                [payments]="payments"
+                (submitOrderWithComment)="submitOrderWithComment($event.detail)"
+              >
               </ocm-checkout-confirm>
             </ng-template>
           </ngb-panel>

@@ -10,7 +10,7 @@ using OrderCloud.SDK;
 
 namespace Headstart.Common.Services.ShippingIntegration.Models
 {
-	public class HSOrderWorksheet : OrderWorksheet<HSOrder, HSLineItem, HSShipEstimateResponse, OrderCalculateResponse, OrderSubmitResponse, OrderSubmitForApprovalResponse, OrderApprovedResponse>
+	public class HSOrderWorksheet : OrderWorksheet<HSOrder, HSLineItem, HSShipEstimateResponse, HSOrderCalculateResponse, OrderSubmitResponse, OrderSubmitForApprovalResponse, OrderApprovedResponse>
 	{
 	}
 
@@ -18,12 +18,10 @@ namespace Headstart.Common.Services.ShippingIntegration.Models
 	{
 		public HSOrderWorksheet OrderWorksheet { get; set; }
 		public CheckoutIntegrationConfiguration ConfigData { get; set; }
-
 	}
 
 	public class ShipEstimateResponseXP { }
 
-	[SwaggerModel]
 	public class ShipEstimateXP
 	{
 		public List<HSShipMethod> AllShipMethods { get; set; }
@@ -31,7 +29,6 @@ namespace Headstart.Common.Services.ShippingIntegration.Models
 		public string ShipFromAddressID { get; set; }
 	}
 
-	[SwaggerModel]
 	public class ShipMethodXP
 	{
 		public string Carrier { get; set; } // e.g. "Fedex"
@@ -46,10 +43,8 @@ namespace Headstart.Common.Services.ShippingIntegration.Models
 		public double? ExchangeRate { get; set; }
 	}
 
-	[SwaggerModel]
 	public class HSShipMethod : ShipMethod<ShipMethodXP> { }
 
-	[SwaggerModel]
 	public class HSShipEstimate : ShipEstimate<ShipEstimateXP, HSShipMethod> { }
 
 	public class HSShipEstimateResponse : ShipEstimateResponse<ShipEstimateResponseXP, HSShipEstimate> { }

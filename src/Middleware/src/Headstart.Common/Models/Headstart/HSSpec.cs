@@ -5,13 +5,13 @@ using RequiredAttribute = System.ComponentModel.DataAnnotations.RequiredAttribut
 
 namespace Headstart.Models
 {
-    [SwaggerModel]
+    
     public class HSSpec : Spec, IHSObject
     {
        
     }
 
-    [SwaggerModel]
+    
     public class SpecXp
     {
         [Required]

@@ -4,7 +4,6 @@ using ordercloud.integrations.library;
 
 namespace Headstart.Models.Extended
 {
-    [SwaggerModel]
     public class SpecUI
     {
         public ControlType ControlType { get; set; } = ControlType.Text;

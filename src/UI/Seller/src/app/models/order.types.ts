@@ -25,6 +25,22 @@ export enum ClaimStatus {
   Complete = 'Complete',
 }
 
+export enum RMAType {
+  Cancellation = 'Cancellation',
+  Return = 'Return',
+}
+
+export enum RMAStatus {
+  Requested = 'Requested',
+  Processing = 'Processing',
+  Approved = 'Approved',
+  Complete = 'Complete',
+  PartialQtyComplete = 'PartialQtyComplete',
+  Denied = 'Denied',
+  Canceled = 'Canceled',
+  PartialQtyApproved = 'PartialQtyApproved',
+}
+
 export enum LineItemStatus {
   Complete = 'Complete',
   Submitted = 'Submitted',
@@ -34,4 +50,6 @@ export enum LineItemStatus {
   CancelRequested = 'CancelRequested',
   Returned = 'Returned',
   ReturnRequested = 'ReturnRequested',
+  CancelDenied = 'CancelDenied',
+  ReturnDenied = 'ReturnDenied',
 }

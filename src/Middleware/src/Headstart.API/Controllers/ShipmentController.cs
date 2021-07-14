@@ -10,8 +10,9 @@ using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
-    [DocComments("\"Headstart Shipments\" for making shipments in seller app")]
-    [HSSection.Headstart(ListOrder = 2)]
+    /// <summary>
+    /// Shipments
+    /// </summary>
     [Route("shipment")]
     public class ShipmentController : BaseController
     {
@@ -21,8 +22,9 @@ namespace Headstart.Common.Controllers
         {
             _command = command;
         }
-
-        [DocName("POST Headstart Shipment")]
+        /// <summary>
+        /// POST Headstart Shipment
+        /// </summary>
         // todo update auth
         [HttpPost, OrderCloudUserAuth(ApiRole.ShipmentAdmin)]
         public async Task<SuperHSShipment> Create([FromBody] SuperHSShipment superShipment)
@@ -33,9 +35,10 @@ namespace Headstart.Common.Controllers
             return await _command.CreateShipment(superShipment, UserContext);
         } 
 
-        [DocName("POST Batch Shipment Update")]
-        [Route("batch/uploadshipment")]
-        [HttpPost, OrderCloudUserAuth(ApiRole.ShipmentAdmin)]
+        /// <summary>
+        /// POST Batch Shipment Update
+        /// </summary>    
+        [HttpPost, Route("batch/uploadshipment"), OrderCloudUserAuth(ApiRole.ShipmentAdmin)]
         public async Task<BatchProcessResult> UploadShipments([FromForm] FileUpload fileRequest)
         {
             return  await _command.UploadShipments(fileRequest?.File, UserContext);

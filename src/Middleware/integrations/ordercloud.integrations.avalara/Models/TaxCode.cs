@@ -5,7 +5,6 @@ using System.Text;
 
 namespace ordercloud.integrations.avalara
 {
-	[SwaggerModel]
 	public class TaxCode
 	{
 		public string Category { get; set; }

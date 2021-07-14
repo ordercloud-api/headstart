@@ -8,11 +8,11 @@ using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
-	public class CheckoutIntegrationController: BaseController
+	public class CheckoutIntegrationController : BaseController
 	{
 		private readonly ICheckoutIntegrationCommand _checkoutIntegrationCommand;
 		private readonly IPostSubmitCommand _postSubmitCommand;
-		public CheckoutIntegrationController(ICheckoutIntegrationCommand checkoutIntegrationCommand, IPostSubmitCommand postSubmitCommand) 
+		public CheckoutIntegrationController(ICheckoutIntegrationCommand checkoutIntegrationCommand, IPostSubmitCommand postSubmitCommand)
 		{
 			_checkoutIntegrationCommand = checkoutIntegrationCommand;
 			_postSubmitCommand = postSubmitCommand;
@@ -26,7 +26,7 @@ namespace Headstart.Common.Controllers
 			return await _checkoutIntegrationCommand.GetRatesAsync(orderCalculatePayload);
 		}
 
-        [Route("ordercalculate")]
+		[Route("ordercalculate")]
 		[HttpPost]
 		[OrderCloudWebhookAuth]
 		public async Task<OrderCalculateResponse> CalculateOrder([FromBody] HSOrderCalculatePayload orderCalculatePayload)
@@ -35,13 +35,13 @@ namespace Headstart.Common.Controllers
 			return orderCalculationResponse;
 		}
 
-        [Route("taxcalculate/{orderID}")]
-        [HttpPost, OrderCloudUserAuth(ApiRole.IntegrationEventAdmin)]
-        public async Task<OrderCalculateResponse> CalculateOrder(string orderID)
-        {
-            var orderCalculationResponse = await _checkoutIntegrationCommand.CalculateOrder(orderID, UserContext);
-            return orderCalculationResponse;
-        }
+		[Route("taxcalculate/{orderID}")]
+		[HttpPost, OrderCloudUserAuth(ApiRole.IntegrationEventAdmin)]
+		public async Task<OrderCalculateResponse> CalculateOrder(string orderID)
+		{
+			var orderCalculationResponse = await _checkoutIntegrationCommand.CalculateOrder(orderID, UserContext);
+			return orderCalculationResponse;
+		}
 
 		[HttpPost, Route("ordersubmit")]
 		//[OrderCloudWebhookAuth]  TODO: Add this back in once platform fixes header issue
@@ -51,14 +51,14 @@ namespace Headstart.Common.Controllers
 			return response;
 		}
 
-        [HttpPost, Route("ordersubmit/retry/zoho/{orderID}"), OrderCloudUserAuth(ApiRole.IntegrationEventAdmin)]
-        public async Task<OrderSubmitResponse> RetryOrderSubmit(string orderID)
-        {
-            var retry = await _postSubmitCommand.HandleZohoRetry(orderID);
-            return retry;
-        }
+		[HttpPost, Route("ordersubmit/retry/zoho/{orderID}"), OrderCloudUserAuth(ApiRole.IntegrationEventAdmin)]
+		public async Task<OrderSubmitResponse> RetryOrderSubmit(string orderID)
+		{
+			var retry = await _postSubmitCommand.HandleZohoRetry(orderID);
+			return retry;
+		}
 
-        [HttpPost, Route("orderapproved")]
+		[HttpPost, Route("orderapproved")]
 		[OrderCloudWebhookAuth]
 		public async Task<OrderSubmitResponse> HandleOrderApproved([FromBody] HSOrderCalculatePayload payload)
 		{

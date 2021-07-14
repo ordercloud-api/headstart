@@ -8,7 +8,7 @@ using Headstart.Models;
 
 namespace Headstart.Common.Models
 {
-    [SwaggerModel]
+    
     [CosmosCollection("reporttemplates")]
     public class ReportTemplate : CosmosObject
     {
@@ -33,7 +33,7 @@ namespace Headstart.Common.Models
         LineItemDetail
     }
 
-    [SwaggerModel]
+    
     public class ReportFilters
     {
         public List<string> BuyerID { get; set; }
@@ -50,7 +50,7 @@ namespace Headstart.Common.Models
         };
     }
 
-    [SwaggerModel]
+    
     public class ReportAdHocFilters
     {
         public string LowDate { get; set; }

@@ -3,7 +3,12 @@ import { HSLineItem } from '@ordercloud/headstart-sdk'
 
 const validPreviousStates = {
   Submitted: [],
-  Complete: [LineItemStatus.Submitted, LineItemStatus.Backordered],
+  Complete: [
+    LineItemStatus.Submitted,
+    LineItemStatus.Backordered,
+    LineItemStatus.CancelRequested,
+    LineItemStatus.CancelDenied,
+  ],
   ReturnRequested: [LineItemStatus.Complete],
   Returned: [LineItemStatus.ReturnRequested, LineItemStatus.Complete],
   Backordered: [LineItemStatus.Submitted],

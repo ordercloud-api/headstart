@@ -7,7 +7,6 @@ using System.Linq;
 
 namespace Headstart.Models.Misc
 {
-	[DocIgnore]
 	public class EnvironmentSeed
 	{
 		#region Required settings
@@ -99,7 +98,6 @@ namespace Headstart.Models.Misc
         #endregion
     }
 
-    [DocIgnore]
 	public class EnvironmentSeedResponse
     {
 		public string Comments { get; set; }

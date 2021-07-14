@@ -13,8 +13,10 @@ namespace Headstart.Common.Controllers
 	// this is no longer the goal and having these configurations stored in a database feels like overkill and adds complexity
 	// once we have more time we should aim to remove the whole notion of supplier filter configs and just have this live in code
 
-	[DocComments("\"Supplier Filter Config\" represents Supplier Category Configuration")]
-	[HSSection.Headstart(ListOrder = 5)]
+	/// <summary>
+	/// Supplier Category Configuration
+	/// </summary>
+
 	public class SupplierFilterConfigController : BaseController
 	{
 		public SupplierFilterConfigController()
@@ -22,7 +24,8 @@ namespace Headstart.Common.Controllers
 
 		}
 
-		[DocName("GET SupplierCategoryConfig")]
+		/// <summary>
+		/// GET SupplierCategoryConfig
 		[HttpGet, Route("/supplierfilterconfig"), OrderCloudUserAuth(ApiRole.Shopper, ApiRole.SupplierReader)]
 		public async Task<ListPage<dynamic>> Get()
 		{
