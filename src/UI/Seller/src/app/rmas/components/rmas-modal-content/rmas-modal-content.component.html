@@ -1,0 +1,41 @@
+<table class="table table-sm table-bordered table-hover display-table mb-0">
+  <thead>
+    <tr>
+      <th translate>ADMIN.RMAS.PRODUCT</th>
+      <th translate>ADMIN.RMAS.DESCRIPTION</th>
+      <th translate>ADMIN.RMAS.QUANTITY</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr
+      *ngFor="let li of lineItemsForModal"
+      class="position-relative border-bottom border-light px-0"
+    >
+      <td class="align-middle d-flex justify-content-start align-items-center">
+        <img
+          [src]="li.xp?.ImageUrl || getImageUrl(li.ID)"
+          width="auto"
+          height="80px"
+          class="mr-2"
+        />
+        <h6>{{ li?.ID }}</h6>
+      </td>
+      <td class="align-middle">
+        <div class="d-flex align-items-center">
+          <h6>
+            <span>{{ li | productNameWithSpecs }} </span>
+            <small class="text-muted d-block">{{
+              li?.Variant?.ID || li?.Product?.ID
+            }}</small>
+            <p class="mb-0 mt-2" *ngFor="let spec of getVariableTextSpecs(li)">
+              {{ spec?.Name }}: {{ spec?.Value }}
+            </p>
+          </h6>
+        </div>
+      </td>
+      <td class="align-middle text-center">
+        {{ getQuantityToDisplay(li) }}
+      </td>
+    </tr>
+  </tbody>
+</table>

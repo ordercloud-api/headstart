@@ -20,55 +20,71 @@
   </head>
 
   <body class="mat-typography">
-    <app-root id="app-root"></app-root>
+    <app-root></app-root>
+    <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.0.3/custom-elements-es5-adapter.js"></script>
+    <script type="text/javascript">
+      var $zoho = $zoho || {}
+      $zoho.salesiq = $zoho.salesiq || {
+        widgetcode:
+          '5470571528817f5e4513521233375ca37e6a5be46e879507a11a4b90e5da4bd25ce03d78cc99c442b126c5fd53f6e8ce',
+        values: {},
+        ready: function () {},
+      }
+      var d = document
+      s = d.createElement('script')
+      s.type = 'text/javascript'
+      s.id = 'zsiqscript'
+      s.defer = true
+      s.src = 'https://salesiq.zoho.com/widget'
+      t = d.getElementsByTagName('script')[0]
+      t.parentNode.insertBefore(s, t)
+      d.write("<div id='zsiqwidget'></div>")
+
+      $zoho.salesiq.ready = function (embedinfo) {
+        $zoho.salesiq.customfield.add({
+          name: 'Location ID',
+          hint: 'Location ID',
+          type: 'text',
+          required: 'true',
+          visibility: 'both',
+          callback: function (value) {},
+        })
+      }
+    </script>
   </body>
 </html>
 
 <script>
-  var prefix = '<PLACHOLDER>'
-  const scriptItemsToReplace = ['runtime', 'polyfills', 'styles', 'main']
-  var scripts = document.getElementsByTagName('script')
-  var test = true
-  for(item of scripts) {
-    console.log(item)
-    var scriptSrc = item.getAttribute('src')
-    console.log(scriptSrc)
-    if(scriptSrc && !scriptSrc.includes(prefix) && scriptItemsToReplace.find(i => scriptSrc.includes(i))) {
-      var newScript = document.createElement('script')
-      newScript.setAttribute('src', test ? prefix+scriptSrc : scriptSrc)
-      console.log("appending new script")
-      document.body.appendChild(newScript)
+  var prefix = '<PLACEHOLDER>'
+  if (document.location.pathname.split('/')[1] === prefix) {
+    const scriptItemsToReplace = ['runtime', 'polyfills', 'styles', 'main']
+    const linkItemsToReplace = ['defaultbuyer']
+    var scripts = document.getElementsByTagName('script')
+    var links = document.getElementsByTagName('link')
+    for (item of scripts) {
+      var scriptSrc = item.getAttribute('src')
+      if (
+        scriptSrc &&
+        !scriptSrc.includes(prefix) &&
+        scriptItemsToReplace.find((i) => scriptSrc.includes(i))
+      ) {
+        var newScript = document.createElement('script')
+        newScript.setAttribute('src', prefix + '/' + scriptSrc)
+        document.body.appendChild(newScript)
+      }
     }
-  }
-</script>
-
-<script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.0.3/custom-elements-es5-adapter.js"></script>
-<script type="text/javascript">
-  var $zoho = $zoho || {}
-  $zoho.salesiq = $zoho.salesiq || {
-    widgetcode:
-      '5470571528817f5e4513521233375ca37e6a5be46e879507a11a4b90e5da4bd25ce03d78cc99c442b126c5fd53f6e8ce',
-    values: {},
-    ready: function () {},
-  }
-  var d = document
-  s = d.createElement('script')
-  s.type = 'text/javascript'
-  s.id = 'zsiqscript'
-  s.defer = true
-  s.src = 'https://salesiq.zoho.com/widget'
-  t = d.getElementsByTagName('script')[0]
-  t.parentNode.insertBefore(s, t)
-  d.write("<div id='zsiqwidget'></div>")
-
-  $zoho.salesiq.ready = function (embedinfo) {
-    $zoho.salesiq.customfield.add({
-      name: 'Location ID',
-      hint: 'Location ID',
-      type: 'text',
-      required: 'true',
-      visibility: 'both',
-      callback: function (value) {},
-    })
+    for (item of links) {
+      var linkHref = item.getAttribute('href')
+      if (
+        linkHref &&
+        !linkHref.includes(prefix) &&
+        linkItemsToReplace.find((i) => linkHref.includes(i))
+      ) {
+        var newLink = document.createElement('link')
+        newLink.setAttribute('href', prefix + '/' + linkHref)
+        newLink.setAttribute('rel', 'stylesheet')
+        document.head.appendChild(newLink)
+      }
+    }
   }
 </script>

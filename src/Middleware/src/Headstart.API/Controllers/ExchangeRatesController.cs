@@ -11,8 +11,9 @@ using OrderCloud.SDK;
 
 namespace Headstart.Common.Controllers
 {
-    [DocComments("\"Integration\" represents Currency Conversion Charts")]
-    [HSSection.Integration(ListOrder = 4)]
+    /// <summary>
+    ///  Currency Conversion Charts
+    /// </summary>
     [Route("exchangerates")]
     public class ExchangeRatesController : BaseController
     {

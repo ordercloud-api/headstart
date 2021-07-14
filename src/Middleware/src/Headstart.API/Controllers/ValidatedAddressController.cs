@@ -8,8 +8,6 @@ using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
-	[DocComments("\"Integration\" represents Validated Addresses with suggestions")]
-	[HSSection.Integration(ListOrder = 5)]
 	public class ValidatedAddressController: BaseController
 	{
 		private readonly ISmartyStreetsCommand _command;

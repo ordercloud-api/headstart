@@ -3,7 +3,7 @@ using ordercloud.integrations.library;
 
 namespace Headstart.Models.Extended
 {
-    [SwaggerModel]
+    
     public class TaxProperties
     {
         [Required]

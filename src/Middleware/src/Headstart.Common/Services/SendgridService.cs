@@ -156,7 +156,7 @@ namespace Headstart.Common.Services
             return changedLineItems.Select(lineItem =>
             {
                 var lineItemStatusChange = lineItemStatusChanges.Changes.First(li => li.ID == lineItem.ID);
-                return SendgridMappers.MapToTemplateProduct(lineItem, lineItemStatusChange);
+                return SendgridMappers.MapToTemplateProduct(lineItem, lineItemStatusChange, lineItemStatusChanges.Status);
             }).ToList();
         }
 

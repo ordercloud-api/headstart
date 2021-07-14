@@ -44,7 +44,8 @@ import { CurrentUserService } from '@app-seller/shared/services/current-user/cur
   },
 })
 export class ResourceTableComponent
-  implements OnInit, OnDestroy, AfterViewChecked {
+  implements OnInit, OnDestroy, AfterViewChecked
+{
   @ViewChild('popover', { static: false })
   public popover: NgbPopover
   faFilter = faFilter
@@ -91,7 +92,7 @@ export class ResourceTableComponent
     private impersonationService: ImpersonationService,
     private currentUserService: CurrentUserService,
     ngZone: NgZone
-  ) { }
+  ) {}
 
   @Input()
   resourceList: ListPage<any> = { Meta: {}, Items: [] }
@@ -247,7 +248,7 @@ export class ResourceTableComponent
         this.searchTerm = (options && options.search) || ''
         this.activeFilterCount = options.filters
           ? Object.keys(options.filters).filter((k) => k !== 'searchType')
-            .length
+              .length
           : 0
         this.setFilterForm()
         this.changeDetectorRef.detectChanges()
@@ -323,7 +324,8 @@ export class ResourceTableComponent
 
   private async redirectToFirstParentIfNeeded() {
     if (this.parentResourceService) {
-      const parentResourceID = await this.parentResourceService.getParentResourceID()
+      const parentResourceID =
+        await this.parentResourceService.getParentResourceID()
       if (parentResourceID === REDIRECT_TO_FIRST_PARENT) {
         await this.parentResourceService.listResources()
         this._ocService.selectParentResource(
@@ -355,9 +357,10 @@ export class ResourceTableComponent
             this.selectedParentResourceName = parentResource.Name
         }
         if (params && parentResourceID) {
-          const parentResource = await this.parentResourceService.findOrGetResourceByID(
-            parentResourceID
-          )
+          const parentResource =
+            await this.parentResourceService.findOrGetResourceByID(
+              parentResourceID
+            )
           if (parentResource)
             this.selectedParentResourceName = parentResource.Name
         }
@@ -486,7 +489,8 @@ export class ResourceTableComponent
       resourceInSelection.Name ||
       resourceInSelection.Username ||
       resourceInSelection.AddressName ||
-      resourceInSelection.AppName
+      resourceInSelection.AppName ||
+      resourceInSelection.RMANumber
     )
   }
   showFilterBar(): boolean {
@@ -500,11 +504,11 @@ export class ResourceTableComponent
   navigateToSubResource(subResource: string) {
     this.router.navigateByUrl(
       '/' +
-      this._ocService.primaryResourceLevel +
-      '/' +
-      this.selectedParentResourceID +
-      '/' +
-      subResource
+        this._ocService.primaryResourceLevel +
+        '/' +
+        this.selectedParentResourceID +
+        '/' +
+        subResource
     )
   }
   ngOnDestroy() {

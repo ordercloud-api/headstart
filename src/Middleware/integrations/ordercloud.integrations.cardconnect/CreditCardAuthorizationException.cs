@@ -28,6 +28,29 @@ namespace ordercloud.integrations.cardconnect
         }
     }
 
+    public class CardConnectInquireException : Exception
+    {
+        public ApiError ApiError { get; }
+        public CardConnectInquireResponse Response { get; }
+
+        public CardConnectInquireException(ApiError error, CardConnectInquireResponse response)
+        {
+            ApiError = error;
+            Response = response;
+        }
+
+        public CardConnectInquireException(string errorCode, string message, CardConnectInquireResponse data)
+        {
+            ApiError = new ApiError()
+            {
+                Data = data,
+                ErrorCode = errorCode,
+                Message = message
+            };
+            Response = data;
+        }
+    }
+
     public class CreditCardVoidException : Exception
     {
         public ApiError ApiError { get; }
@@ -40,6 +63,29 @@ namespace ordercloud.integrations.cardconnect
         }
 
         public CreditCardVoidException(string errorCode, string message, CardConnectVoidResponse data)
+        {
+            ApiError = new ApiError()
+            {
+                Data = data,
+                ErrorCode = errorCode,
+                Message = message
+            };
+            Response = data;
+        }
+    }
+
+    public class CreditCardRefundException : Exception
+    {
+        public ApiError ApiError { get; }
+        public CardConnectRefundResponse Response { get; }
+
+        public CreditCardRefundException(ApiError error, CardConnectRefundResponse response)
+        {
+            ApiError = error;
+            Response = response;
+        }
+
+        public CreditCardRefundException(string errorCode, string message, CardConnectRefundResponse data)
         {
             ApiError = new ApiError()
             {

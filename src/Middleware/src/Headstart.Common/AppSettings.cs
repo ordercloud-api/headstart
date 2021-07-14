@@ -5,7 +5,6 @@ using ordercloud.integrations.smartystreets;
 
 namespace Headstart.Common
 {
-    [DocIgnore]
     public class AppSettings
     {
         public UI UI { get; set; }
@@ -15,9 +14,13 @@ namespace Headstart.Common
         public BlobSettings BlobSettings { get; set; } = new BlobSettings();
         public CosmosSettings CosmosSettings { get; set; } = new CosmosSettings();
         public OrderCloudSettings OrderCloudSettings { get; set; } = new OrderCloudSettings();
+        // not needed for fastsigns
         public OrderCloudIntegrationsCardConnectConfig CardConnectSettings { get; set; } = new OrderCloudIntegrationsCardConnectConfig();
+        // not needed for fastsigns
         public ZohoSettings ZohoSettings { get; set; } = new ZohoSettings();
+        // not needed for fastsigns
         public SmartyStreetsConfig SmartyStreetSettings { get; set; } = new SmartyStreetsConfig();
+        // not needed for fastsigns
         public EasyPostSettings EasyPostSettings { get; set; } = new EasyPostSettings();
         public SendgridSettings SendgridSettings { get; set; } = new SendgridSettings();
         public FlurlSettings FlurlSettings { get; set; } = new FlurlSettings();

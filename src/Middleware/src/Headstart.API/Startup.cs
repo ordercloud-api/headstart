@@ -31,6 +31,11 @@ using System.Net;
 using Microsoft.OpenApi.Models;
 using OrderCloud.Catalyst;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using ordercloud.integrations.library.helpers;
+using Polly;
+using Polly.Extensions.Http;
+using Microsoft.WindowsAzure.Storage.Blob;
+using ordercloud.integrations.library.helpers;
 using Polly;
 using Polly.Extensions.Http;
 using Polly.Contrib.WaitAndRetry;
@@ -105,6 +110,14 @@ namespace Headstart.API
 
             var flurlClientFactory = new PerBaseUrlFlurlClientFactory();
             var smartyStreetsUsClient = new ClientBuilder(_settings.SmartyStreetSettings.AuthID, _settings.SmartyStreetSettings.AuthToken).BuildUsStreetApiClient();
+            var orderCloudClient = new OrderCloudClient(new OrderCloudClientConfig
+            {
+                ApiUrl = _settings.OrderCloudSettings.ApiUrl,
+                AuthUrl = _settings.OrderCloudSettings.ApiUrl,
+                ClientId = _settings.OrderCloudSettings.MiddlewareClientID,
+                ClientSecret = _settings.OrderCloudSettings.MiddlewareClientSecret,
+                Roles = new[] { ApiRole.FullAccess }
+            });
 
             services
                 .Configure<KestrelServerOptions>(options =>
@@ -160,27 +173,18 @@ namespace Headstart.API
                 .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand( new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
                 .AddSingleton<IStorefrontCommand>(provider => new StorefrontCommand( new OrderCloudIntegrationsBlobService(staticSiteConfig), _settings, new OrderCloudClient(orderCloudConfig)))
                 .AddSingleton<IAvalaraCommand>(x => new AvalaraCommand(
+                    orderCloudClient,
                     avalaraConfig,
                     new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(avalaraConfig.BaseApiUrl)
                    ).WithSecurity(_settings.AvalaraSettings.AccountID, _settings.AvalaraSettings.LicenseKey), _settings.EnvironmentSettings.Environment.ToString()))
                 .AddSingleton<IEasyPostShippingService>(x => new EasyPostShippingService(new EasyPostConfig() { APIKey = _settings.EasyPostSettings.APIKey }))
                 .AddSingleton<ISmartyStreetsService>(x => new SmartyStreetsService(_settings.SmartyStreetSettings, smartyStreetsUsClient))
                 .AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(_settings.CardConnectSettings, _settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))
-                .AddSingleton<IOrderCloudClient>(provider => new OrderCloudClient(new OrderCloudClientConfig
-                {
-                    ApiUrl = _settings.OrderCloudSettings.ApiUrl,
-                    AuthUrl = _settings.OrderCloudSettings.ApiUrl,
-                    ClientId = _settings.OrderCloudSettings.MiddlewareClientID,
-                    ClientSecret = _settings.OrderCloudSettings.MiddlewareClientSecret,
-                    Roles = new[]
-                    {
-                        ApiRole.FullAccess
-                    }
-                }))
+                .AddSingleton<IOrderCloudClient>(provider => orderCloudClient)
                 .AddSwaggerGen(c =>
                 {
-                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Headstart API", Version = "v1" });
-                    c.CustomSchemaIds(x => x.FullName);
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "FastSigns-OrderCloud API", Version = "v1" });
+                    c.SchemaFilter<SwaggerExcludeFilter>();
                 });
             var serviceProvider = services.BuildServiceProvider();
             services
@@ -209,9 +213,10 @@ namespace Headstart.API
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             CatalystApplicationBuilder.DefaultCatalystAppBuilder(app, env)
+                .UseSwagger()
                 .UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint($"/swagger", $"API v1");
+                    c.SwaggerEndpoint($"/swagger/v1/swagger.json", $"API v1");
                     c.RoutePrefix = string.Empty;
                 });
         }

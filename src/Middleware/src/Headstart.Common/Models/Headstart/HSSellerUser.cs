@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 namespace Headstart.Models
 {
-    [SwaggerModel]
+    
     public class HSSellerUser : User<SellerUserXp>, IHSObject
     {
     }
 
-    [SwaggerModel]
+    
     public class SellerUserXp
     {
         public bool OrderEmails { get; set; } = false;

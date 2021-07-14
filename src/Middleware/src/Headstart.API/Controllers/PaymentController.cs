@@ -11,8 +11,9 @@ using System.Threading.Tasks;
 
 namespace Headstart.Common.Controllers
 {
-    [DocComments("\"Headstart Orders\" for handling payment commands in Headstart")]
-    [HSSection.Headstart(ListOrder = 2)]
+    /// <summary>
+    /// Payment commands in Headstart
+    /// </summary>
     [Route("payments")]
     public class PaymentController : BaseController
     {
@@ -25,8 +26,9 @@ namespace Headstart.Common.Controllers
             _settings = settings;
         }
 
-        [DocName("Save payments")]
-        [DocComments("Creates or updates payments as needed for this order")]
+        /// <summary>
+        /// Save payments. Creates or updates payments as needed for this order.
+        /// </summary>
         [HttpPut, Route("{orderID}/update"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<IList<HSPayment>> SavePayments(string orderID, [FromBody] PaymentUpdateRequest request)
         {

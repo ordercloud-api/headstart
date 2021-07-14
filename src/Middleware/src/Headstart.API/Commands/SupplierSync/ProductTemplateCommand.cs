@@ -166,7 +166,7 @@ namespace Headstart.API.Commands
     }
 
 
-    [SwaggerModel]
+    
     public class TemplateProductFlat : IHSObject
     {
         [OrderCloud.SDK.Required]

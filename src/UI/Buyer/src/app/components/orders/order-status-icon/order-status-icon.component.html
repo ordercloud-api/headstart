@@ -1,4 +1,6 @@
-<fa-icon *ngIf="statusIconMapping[status]" [ngClass]="{
+<fa-icon
+  *ngIf="statusIconMapping[status]"
+  [ngClass]="{
     'text-success':
       status === 'Shipped' || status === 'Completed' || status === 'Complete',
     'text-warning':
@@ -8,9 +10,22 @@
       status === 'Pending' ||
       status === 'ReturnRequested' ||
       status === 'CancelRequested' ||
-      status === 'PartiallyShipped',
+      status === 'PartiallyShipped' ||
+      status === 'PartialQtyApproved' ||
+      status === 'PartialQtyComplete',
     'text-info':
-      status === 'Open' || status === 'NoClaim' || status === 'Submitted',
+      status === 'Open' ||
+      status === 'Requested' ||
+      status === 'NoClaim' ||
+      status === 'Submitted' ||
+      status === 'Approved',
     'text-danger':
-      status === 'Declined' || status === 'Canceled' || status === 'Returned'
-  }" [icon]="statusIconMapping[status]"></fa-icon>
+      status === 'Declined' ||
+      status === 'Denied' ||
+      status === 'Canceled' ||
+      status === 'CancelDenied' ||
+      status === 'ReturnDenied' ||
+      status === 'Returned'
+  }"
+  [icon]="statusIconMapping[status]"
+></fa-icon>

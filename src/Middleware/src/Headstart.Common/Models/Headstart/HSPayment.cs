@@ -7,33 +7,33 @@ using System.Text;
 
 namespace Headstart.Models.Headstart
 {
-    [SwaggerModel]
+    
     public class HSPayment : Payment<PaymentXP, HSPaymentTransaction>
     {
 
     }
 
-    [SwaggerModel]
+    
     public class HSPaymentTransaction: PaymentTransaction<TransactionXP>
     {
 
     }
 
-    [SwaggerModel]
+    
     public class PaymentXP
     {
         public string partialAccountNumber { get; set; }
         public string cardType { get; set; }
     }
 
-    [SwaggerModel]
+    
     public class TransactionXP
     {
         public CardConnectAuthorizationResponse CardConnectResponse { get; set; }
         public RMADetails RMADetails { get; set; }
     }
 
-    [SwaggerModel]
+    
     public class RMADetails
     {
         public string OrderRMANumber { get; set; }

@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ordercloud.integrations.cardconnect
 {
-	[SwaggerModel]
 	public class OrderCloudIntegrationsCreditCardPayment
     {
         [OrderCloud.SDK.Required]

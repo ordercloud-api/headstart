@@ -25,7 +25,6 @@ namespace ordercloud.integrations.cardconnect
         //public string bin { get; set; }
     }
 
-    [SwaggerModel]
     public class CardConnectAuthorizationResponse
     {
         public string token { get; set; }
@@ -49,7 +48,6 @@ namespace ordercloud.integrations.cardconnect
         public string resptext { get; set; }
     }
 
-    [SwaggerModel]
     public class BinInfo
     {
         public string country { get; set; }

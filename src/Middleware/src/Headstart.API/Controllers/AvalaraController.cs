@@ -9,8 +9,9 @@ using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers.Avalara
 {
-	[DocComments("\"Integration\" represents Avalara Tax Functionality")]
-	[HSSection.Integration(ListOrder = 1)]
+	/// <summary>
+	///  Avalara Tax Functionality
+	/// </summary>
 	[Route("avalara")]
 	public class AvalaraController : BaseController
 	{
@@ -45,28 +46,36 @@ namespace Headstart.Common.Controllers.Avalara
 		//	return await _avalara.CommitTransactionAsync(transactionCode);
 		//}
 
-		[DocName("List Tax Codes")]
+		/// <summary>
+		/// List Tax Codes
+		/// </summary>
 		[HttpGet, Route("code"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
 		public async Task<ListPage<TaxCode>> ListTaxCodes(ListArgs<TaxCode> hsListArgs)
 		{
 			return await _avalara.ListTaxCodesAsync(hsListArgs);
 		}
 
-		[DocName("Get tax exeption certificate details")]
+		/// <summary>
+		/// Get tax exeption certificate details
+		/// </summary>
 		[HttpGet, Route("certificate/{locationID}"), OrderCloudUserAuth(ApiRole.Shopper)]
 		public async Task<TaxCertificate> GetCertificate(string locationID)
 		{
 			return await _resaleCertCommand.GetAsync(locationID, UserContext);
 		}
 
-		[DocName("Create tax exeption certificate")]
+		/// <summary>
+		/// Create tax exeption certificate
+		/// </summary>
 		[HttpPost, Route("certificate/{locationID}"), OrderCloudUserAuth(ApiRole.Shopper)]
 		public async Task<TaxCertificate> CreateCertificate(string locationID, [FromBody] TaxCertificate cert)
 		{
 			return await _resaleCertCommand.CreateAsync(locationID, cert, UserContext);
 		}
 
-		[DocName("Update tax exeption certificate")]
+		/// <summary>
+		/// Update tax exeption certificate
+		/// </summary>
 		[HttpPut, Route("certificate/{locationID}"), OrderCloudUserAuth(ApiRole.Shopper)]
 		public async Task<TaxCertificate> UpdateCertificate(string locationID, [FromBody] TaxCertificate cert)
 		{
