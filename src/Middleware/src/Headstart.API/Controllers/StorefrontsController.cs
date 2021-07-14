@@ -10,7 +10,7 @@ using OrderCloud.Catalyst;
 
 namespace Headstart.API.Controllers
 {
-    [DocComments("\"Headstart Storefronts\" for handling deploying new sites automatically for storefronts")]
+    //[DocComments("\"Headstart Storefronts\" for handling deploying new sites automatically for storefronts")]
     [Route("storefronts")]
     public class StorefrontsController : BaseController
     {
@@ -22,8 +22,8 @@ namespace Headstart.API.Controllers
             _command = command;
         }
 
-        [DocName("Deploy a Storefront")]
-        [DocComments("Automatically deploys a a new storefront instance via users azure storage account")]
+        //[DocName("Deploy a Storefront")]
+        //[DocComments("Automatically deploys a a new storefront instance via users azure storage account")]
         [HttpPost, Route("deploy")]
         public async Task DeployStoreFront()
         {

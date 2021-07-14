@@ -47,33 +47,36 @@ namespace Headstart.API.Commands
             //First create the api client
             //var client = await _oc.ApiClients.CreateAsync(apiClient);
 
-            //await _blob.ListContainersWithPrefixAsync("$web", null);
-            //1. Create the $web container
+
+            //1. Create the $web container (not sure if this is necessary. If they enable static website hosting this should already be there)
             await _blob.CreateContainerAsync("$web", false);
 
             //2. Get files of deployed buyer app so we can upload them to our contianer (within a subfolder)
-            // Store files in our storage container vs azure devops so we already have access.
-            // Implement in build process first
             var files = await _blob.GetBlobFiles("buyerweb");
             var tasks = new List<Task>();
-            var directoryName = "webfolder"; // this is the folder where we save the downloaded files from blob storage.
+            var directoryName = "webfolder"; // this is the local directory where we will save the downloaded files from blob storage.
 
-            var storefrontName = "storefront1";
+            var storefrontName = "storefront1";   // this value should come from the apiClient.Name. I hardcoded a value here for testing locally
             var mainFileName = "";
             foreach (var file in files)
             {
                 var fileName = file.Uri.ToString().Split("buyerweb/")[1];
                 if(isMainFile(fileName))
                 {
-                    mainFileName = fileName;
+                    mainFileName = fileName; // need to save the mainFileName to a variable so we know which file to replace with the new app configs
                 }
                 tasks.Add(_blob.TransferBlobs("buyerweb", "$web", fileName, storefrontName, directoryName));
             }
-            CreateDirectory(directoryName);
-            await Task.WhenAll(tasks);
-            await UpdateAppConfig(apiClient, mainFileName, storefrontName);
-            await UpdateIndex(storefrontName);
-            DeleteDirectory(directoryName);
+            try
+            {
+                CreateDirectory(directoryName);
+                await Task.WhenAll(tasks);
+                await UpdateAppConfig(apiClient, mainFileName, storefrontName);
+                await UpdateIndex(storefrontName);
+            } finally
+            {
+                DeleteDirectory(directoryName);
+            }
         }
 
         private async Task UpdateIndex(string storefrontName)
@@ -83,43 +86,34 @@ namespace Headstart.API.Commands
                 .Replace("<base href=\"/\">", $"<base href='/{storefrontName}'/>")
                 .Replace(storefrontPlaceholder, storefrontName);
 
-            try
-            {
-                await _blob.Save(path, index, "text/html");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            await _blob.Save(path, index, "text/html");
         }
 
         private async Task UpdateAppConfig(ApiClient apiClient, string mainFileName, string storefrontName = "")
         {
             var config = await _blob.Get<BuyerAppConfiguration>($"{storefrontName}/assets/appConfigs/headstartdemo-test.json");
+
+            // Update our config file with values from the client ID
             //config.clientID = apiClient.ID;
-            config.appname = "this is an app";
             //config.appID = apiClient?.xp?.appID;
             //config.incrementorPrefix = apiClient?.xp?.incrementorPrefix;
             //config.sellerID = apiClient?.xp?.sellerID;
-            config.sellerName = "Brand new seller";
             //config.theme = apiClient?.xp?.theme;
+
+            // for now testing with just these values
+            config.appname = "this is an app";
+            config.sellerName = "Brand new seller";
             config.storefrontName = storefrontName;
+
+            //update our main file with new app configs
             var originalMain = (await _blob.Get($"{storefrontName}/{originalMainFileName}"));
-            var hasPlaceHolder = originalMain.Contains(envPlaceholder);
-            Console.WriteLine(hasPlaceHolder);
             var updatedMain = originalMain
                 .Replace(envPlaceholder, JsonConvert.SerializeObject(config));
-            try
-            {
-                await Task.WhenAll(
-                _blob.Save($"{storefrontName}/assets/appConfigs/headstartdemo-test.json", JsonConvert.SerializeObject(config), "application/json"),
-                _blob.Save($"{storefrontName}/{mainFileName}", updatedMain, "application/x-javascript")
+
+            await Task.WhenAll(
+            _blob.Save($"{storefrontName}/assets/appConfigs/headstartdemo-test.json", JsonConvert.SerializeObject(config), "application/json"),
+            _blob.Save($"{storefrontName}/{mainFileName}", updatedMain, "application/x-javascript")
             );
-            } catch(Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-            
         }
 
         private void CreateDirectory(string directoryName)
@@ -134,14 +128,7 @@ namespace Headstart.API.Commands
         {
             if (Directory.Exists(directoryName))
             {
-                try
-                {
-                    Directory.Delete(directoryName, true);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex);
-                }
+                Directory.Delete(directoryName, true);
 
             }
         }
