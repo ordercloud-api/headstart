@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using System.Linq;
 using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 using System.Collections.Generic;
+using Flurl.Http;
 
 namespace ordercloud.integrations.library
 {
@@ -30,7 +31,7 @@ namespace ordercloud.integrations.library
         Task<List<IListBlobItem>> GetBlobFiles(string containerName);
         Task<bool> CreateContainerAsync(string containerName, bool isPublic);
         Task<List<CloudBlobContainer>> ListContainers();
-        Task TransferBlobs(string sourceContainer, string destinationContainer, string blobName, string storefrontName, string directoryName = "");
+        Task TransferBlobs(string sourceContainer, string destinationContainer, string blobName, string storefrontName);
 
     }
     public class OrderCloudIntegrationsBlobService : IOrderCloudIntegrationsBlobService
@@ -133,26 +134,32 @@ namespace ordercloud.integrations.library
             return results;
         }
 
-        public async Task TransferBlobs(string sourceContainer, string destinationContainer, string blobName, string storefrontName, string directoryName = "")
+        public async Task TransferBlobs(string sourceContainer, string destinationContainer, string blobName, string storefrontName)
         {
             // Download all files from blob storage to this folder
             // Upload all these files in this folder to $web in blob storage
             await this.Init();
-            await DownloadBlob(sourceContainer, blobName, directoryName);
-            await UploadBlob(destinationContainer, blobName, storefrontName, directoryName);
+            byte[] file = await CopyBlob(sourceContainer, blobName);
+            await UploadBlob(destinationContainer, blobName, storefrontName, file);
         }
-        
 
-        private async Task DownloadBlob(string sourceContainer, string blobName, string directory)
+
+        private async Task<byte[]> CopyBlob(string sourceContainer, string blobName)
         {
             CloudBlobContainer sourceBlobContainer = Client.GetContainerReference(sourceContainer);
             ICloudBlob sourceBlob = await sourceBlobContainer.GetBlobReferenceFromServerAsync(blobName);
-            await sourceBlob.DownloadToFileAsync(directory + "/" + blobName.Replace("/", "_"), System.IO.FileMode.Create);
+            var sasToken = sourceBlob.GetSharedAccessSignature(new SharedAccessBlobPolicy()
+            {
+                Permissions = SharedAccessBlobPermissions.Read,
+                SharedAccessExpiryTime = DateTime.UtcNow.AddHours(1)//Assuming you want the link to expire after 1 hour
+            });
+            var blobUrl = string.Format("{0}{1}", sourceBlob.Uri.AbsoluteUri, sasToken);
+            var file = await blobUrl.GetBytesAsync();
+            return file;
         }
 
-        private async Task UploadBlob(string destinationContainer, string blobName, string storefrontName, string directory)
+        private async Task UploadBlob(string destinationContainer, string blobName, string storefrontName, byte[] file)
         {
-            var currentLocation = directory + "/" + blobName.Replace("/", "_");
             var blobLocation = storefrontName + "/" + blobName.Replace("_", "/");
 
             CloudBlobContainer destBlobContainer = Client.GetContainerReference(destinationContainer);
@@ -162,7 +169,7 @@ namespace ordercloud.integrations.library
             {
                 destBlob.Properties.ContentType = contentType;
             }
-            await destBlob.UploadFromFileAsync(currentLocation);
+            await destBlob.UploadFromByteArrayAsync(file, 0, file.Length);
         }
 
         private string GetContentType(string fileName)

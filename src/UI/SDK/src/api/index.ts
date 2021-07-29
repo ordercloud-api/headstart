@@ -30,6 +30,7 @@ import Tokens from './Tokens';
 import Upload from './Upload';
 import Assets from './Assets';
 import Services from './Service';
+import Storefronts from './Storefronts';
 import ApprovalRules from './ApprovalRules';
 import RmAs from './RmAs';
 
@@ -69,6 +70,7 @@ const HeadStartSDK: HeadStartSDK = {
     Tokens: new Tokens(),
     Upload: new Upload(),
     Services: new Services(),
+    Storefronts: new Storefronts(),
     ApprovalRules: new ApprovalRules()
 }
 
@@ -106,5 +108,6 @@ interface HeadStartSDK {
     Tokens: Tokens,
     Upload: Upload,
     Services: Services,
+    Storefronts: Storefronts,
     ApprovalRules: ApprovalRules
 }

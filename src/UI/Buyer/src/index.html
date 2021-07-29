@@ -61,8 +61,8 @@
     const linkItemsToReplace = ['defaultbuyer']
     var scripts = document.getElementsByTagName('script')
     var links = document.getElementsByTagName('link')
-    for (item of scripts) {
-      var scriptSrc = item.getAttribute('src')
+    for (let i = 0; i < scripts.length; i++) {
+      var scriptSrc = scripts[i].getAttribute('src')
       if (
         scriptSrc &&
         !scriptSrc.includes(prefix) &&
@@ -73,8 +73,8 @@
         document.body.appendChild(newScript)
       }
     }
-    for (item of links) {
-      var linkHref = item.getAttribute('href')
+    for (let i = 0; i < links.length; i++) {
+      var linkHref = links[i].getAttribute('href')
       if (
         linkHref &&
         !linkHref.includes(prefix) &&

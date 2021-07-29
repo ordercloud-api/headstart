@@ -54,10 +54,12 @@ namespace Headstart.API.Commands
             //2. Get files of deployed buyer app so we can upload them to our contianer (within a subfolder)
             var files = await _blob.GetBlobFiles("buyerweb");
             var tasks = new List<Task>();
-            var directoryName = "webfolder"; // this is the local directory where we will save the downloaded files from blob storage.
 
-            var storefrontName = "storefront1";   // this value should come from the apiClient.Name. I hardcoded a value here for testing locally
+            var storefrontName = apiClient?.xp?.StorefrontName;
+            var incrementorPrefix = apiClient?.xp?.IncrementorPrefix;
+            var appName = apiClient.AppName;
             var mainFileName = "";
+
             foreach (var file in files)
             {
                 var fileName = file.Uri.ToString().Split("buyerweb/")[1];
@@ -65,18 +67,12 @@ namespace Headstart.API.Commands
                 {
                     mainFileName = fileName; // need to save the mainFileName to a variable so we know which file to replace with the new app configs
                 }
-                tasks.Add(_blob.TransferBlobs("buyerweb", "$web", fileName, storefrontName, directoryName));
+                tasks.Add(_blob.TransferBlobs("buyerweb", "$web", fileName, storefrontName));
             }
-            try
-            {
-                CreateDirectory(directoryName);
-                await Task.WhenAll(tasks);
-                await UpdateAppConfig(apiClient, mainFileName, storefrontName);
-                await UpdateIndex(storefrontName);
-            } finally
-            {
-                DeleteDirectory(directoryName);
-            }
+
+            await Task.WhenAll(tasks);
+            await UpdateAppConfig(apiClient, mainFileName, storefrontName, incrementorPrefix, appName);
+            await UpdateIndex(storefrontName);
         }
 
         private async Task UpdateIndex(string storefrontName)
@@ -89,20 +85,13 @@ namespace Headstart.API.Commands
             await _blob.Save(path, index, "text/html");
         }
 
-        private async Task UpdateAppConfig(ApiClient apiClient, string mainFileName, string storefrontName = "")
+        private async Task UpdateAppConfig(ApiClient apiClient, string mainFileName, string storefrontName, string incrementorPrefix, string appName)
         {
             var config = await _blob.Get<BuyerAppConfiguration>($"{storefrontName}/assets/appConfigs/headstartdemo-test.json");
 
-            // Update our config file with values from the client ID
-            //config.clientID = apiClient.ID;
-            //config.appID = apiClient?.xp?.appID;
-            //config.incrementorPrefix = apiClient?.xp?.incrementorPrefix;
-            //config.sellerID = apiClient?.xp?.sellerID;
-            //config.theme = apiClient?.xp?.theme;
-
-            // for now testing with just these values
-            config.appname = "this is an app";
-            config.sellerName = "Brand new seller";
+            // Update our config file with values from the apiClient
+            config.incrementorPrefix = !String.IsNullOrEmpty(incrementorPrefix) ? incrementorPrefix : config.incrementorPrefix;
+            config.appname = !String.IsNullOrEmpty(appName) ? appName : config.appname;
             config.storefrontName = storefrontName;
 
             //update our main file with new app configs

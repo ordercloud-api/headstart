@@ -74,11 +74,10 @@ export class StorefrontEditComponent {
         storefront.RefreshTokenDuration,
         Validators.required,
       ],
-      AllowAnyBuyer: [storefront.AllowAnyBuyer, Validators.required],
+      AllowAnyBuyer: [storefront.AllowAnyBuyer],
       // IsAnonBuyer: [storefront.IsAnonBuyer, Validators.required],
       DefaultContextUserName: [
         storefront?.DefaultContextUserName,
-        Validators.required,
         // conditionalValidator(
         //   () => this.resourceForm.controls.IsAnonBuyer.value,
         //   Validators.required
@@ -86,13 +85,14 @@ export class StorefrontEditComponent {
       ],
       ['xp.AnonBuyerID']: [
         storefront?.xp?.AnonBuyerID,
-        Validators.required,
         // conditionalValidator(
         //   () => this.resourceForm.controls.IsAnonBuyer.value,
         //   Validators.required
         // ),
       ],
       ['xp.WebsiteUrl']: [storefront?.xp?.WebsiteUrl],
+      ['xp.StorefrontName']: [storefront?.xp?.StorefrontName],
+      ['xp.IncrementorPrefix']: [storefront?.xp?.IncrementorPrefix]
     }) as StoreFrontFormGroup
     // this.updateResource.emit({
     //   value: true,
@@ -115,7 +115,12 @@ export class StorefrontEditComponent {
           field,
           form: this.resourceForm,
         })
-      : this.updateResource.emit({
+      : field === 'xp.StorefrontName' ? 
+      this.updateResource.emit({
+        value: input.value.toLowerCase(),
+        field,
+        form: this.resourceForm,
+      }) : this.updateResource.emit({
           value: input.value,
           field,
           form: this.resourceForm,

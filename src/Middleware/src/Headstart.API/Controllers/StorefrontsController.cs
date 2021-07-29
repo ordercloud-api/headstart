@@ -14,7 +14,6 @@ namespace Headstart.API.Controllers
     [Route("storefronts")]
     public class StorefrontsController : BaseController
     {
-
         private readonly IStorefrontCommand _command;
 
         public StorefrontsController(IStorefrontCommand command)
@@ -25,9 +24,9 @@ namespace Headstart.API.Controllers
         //[DocName("Deploy a Storefront")]
         //[DocComments("Automatically deploys a a new storefront instance via users azure storage account")]
         [HttpPost, Route("deploy")]
-        public async Task DeployStoreFront()
+        public async Task DeployStoreFront([FromBody] ApiClient client)
         {
-            await _command.DeployBuyerSite();
+            await _command.DeployBuyerSite(client);
         }
     }
 }

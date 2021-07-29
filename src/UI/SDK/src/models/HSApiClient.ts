@@ -6,4 +6,6 @@ interface ApiClientXP {
     IsStorefront?: boolean;
     AnonBuyerID?: string;
     WebsiteUrl?: string;
+    StorefrontName?: string;
+    IncrementorPrefix?: string;
 }

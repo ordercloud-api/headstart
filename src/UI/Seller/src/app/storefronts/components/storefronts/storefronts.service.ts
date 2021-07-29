@@ -20,7 +20,11 @@ export class StorefrontsService extends ResourceCrudService<HSApiClient> {
     AppName: '',
     RefreshTokenDuration: 43200,
     DefaultContextUserName: null,
-    xp: null,
+    xp: 
+    {
+      IsStorefront: true,
+      IncrementorPrefix: null
+    },
     AllowAnyBuyer: false,
     AllowAnySupplier: false,
     AllowSeller: false,
@@ -59,6 +63,31 @@ export class StorefrontsService extends ResourceCrudService<HSApiClient> {
     listResponse.Items = listResponse.Items.filter(
       (apiClient) => apiClient?.xp?.IsStorefront == true
     )
+    if(listResponse.Items.length < listResponse.Meta.PageSize)
+    {
+      listResponse.Meta.TotalPages = 1
+      listResponse.Meta.TotalCount = listResponse.Items.length
+    }
     return listResponse
+  
+  }
+  async updateResource(originalID: string, resource: any): Promise<any> {
+    const args = await this.createListArgs([originalID, resource])
+    const newResource = await this.ocService.Save(...args)
+    await HeadStartSDK.Storefronts.DeployStoreFront(resource)
+    this.updateResourceSubject(newResource)
+    return newResource
+  }
+
+  async createNewResource(resource: any): Promise<any> {
+    const args = await this.createListArgs([resource])
+    const newResource = await this.ocService.Create(...args)
+    await HeadStartSDK.Storefronts.DeployStoreFront(resource)
+    this.resourceSubject.value.Items = [
+      ...this.resourceSubject.value.Items,
+      newResource,
+    ]
+    this.resourceSubject.next(this.resourceSubject.value)
+    return newResource
   }
 }
