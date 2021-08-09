@@ -6,6 +6,44 @@ Welcome! The purpose of this project is to give you and your business a "headsta
 2. [Buyer](./src/UI/Buyer/README.md) - The frontend buyer application written in Angular. This includes the entire shopping experience from the perspective of a buyer user.
 3. [Seller](./src/UI/Seller/README.md) - The frontend admin application written in Angular. This includes everything needed to manage the data in your buyer application(s).
 
+## Demo
+Want to check out the features included in headstart without having to build and deploy your own instance? We have two hosted instances that you are free to log in and check out. These sites auto-deploy anytime code changes are merged into the development branch.
+
+| Instance Name | Description                                                                                                                                                                                      |
+|---------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| QA            | Used internally for testing new features or bug fixes. Includes both buyer and admin credentials.                                                                                                |
+| Demo          | Used for demo purposes. Has "pretty" data that is set up for certain scenarios. Only includes buyer credentials so that data isn't accidentally changed in a way that may break those scenarios.
+
+### Credentials
+
+**QA Buyer**
+
+| URL      | https://headstartdemo-buyer-ui-test.azurewebsites.net |
+|----------|-------------------------------------------------------|
+| Username | testbuyer                                             |
+| Password | Summer2021!                                           |
+
+**QA Admin**
+
+| URL      | https://headstartdemo-admin-ui-test.azurewebsites.net |
+|----------|-------------------------------------------------------|
+| Username | testadmin                                             |
+| Password | Summer2021!                                           |
+
+**Demo Buyer**
+| URL      | https://headstartdemo-buyer-ui.azurewebsites.net      |
+|----------|-------------------------------------------------------|
+| Username | testbuyer                                             |
+| Password | Summer2021!                                           |
+
+### Credit Cards
+
+Our hosted instances are using a sandbox Cardconnect account and as such are operating in [Cardconnect's UAT environment](https://developer.cardpointe.com/guides/cardpointe-gateway#uat-test-card-data). You can use specific credit card numbers to test different types of responses or if you want to simply emulate a successfull credit card response you can use the following data:
+
+CardNumber: 4111 1111 1111 1111
+CVV: 112
+Zip Code: 55224
+
 ## Initial Setup
 
 There are some tasks that must be completed before you can get an instance of Headstart running. This section will walk you through each of them.
@@ -13,6 +51,8 @@ There are some tasks that must be completed before you can get an instance of He
 ### Accounts
 
 This solution relies on various third-party services and credentials for those services. You should have a set of test credentials as well as production credentials. Start by creating an account for all of the services listed.
+
+> Note: Many of the accounts listed have been built to use a mocked response in the test environment to help you get started developing quicker. They will still require a valid production account prior to your first release. See details on each account to determine how to use mocked rates. 
 
 1. [Avalara](https://www.avalara.com/us/en/get-started/get-started-b.html?adobe_mc_ref=https%3A%2F%2Fwww.avalara.com%2Fus%2Fen%2Findex.html) - Tax calculation - If a License Key isn't provided, responses will be mocked in Test and UAT. A key is still needed for Production
 2. [CardConnect](https://cardconnect.com/signup) - Credit card payment processor - If account isn't provided, responses will be mocked in Test and UAT. An account is still needed for Production
