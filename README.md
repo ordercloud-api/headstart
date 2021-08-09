@@ -41,7 +41,9 @@ Want to check out the features included in headstart without having to build and
 Our hosted instances are using a sandbox Cardconnect account and as such are operating in [Cardconnect's UAT environment](https://developer.cardpointe.com/guides/cardpointe-gateway#uat-test-card-data). You can use specific credit card numbers to test different types of responses or if you want to simply emulate a successfull credit card response you can use the following data:
 
 CardNumber: 4111 1111 1111 1111
+
 CVV: 112
+
 Zip Code: 55224
 
 ## Initial Setup
