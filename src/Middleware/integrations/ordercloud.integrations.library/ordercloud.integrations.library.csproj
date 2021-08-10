@@ -32,8 +32,4 @@
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="blobs\" />
-  </ItemGroup>
-
 </Project>

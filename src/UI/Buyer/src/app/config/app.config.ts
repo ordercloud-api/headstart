@@ -15,7 +15,7 @@ export const ocAppConfig: AppConfig = {
   translateBlobUrl: environment.translateBlobUrl,
   orderCloudApiUrl: environment.orderCloudApiUrl,
   theme: environment.theme,
-  anonymousShoppingEnabled: true,
+  anonymousShoppingEnabled: environment.anonymousShoppingEnabled,
   appInsightsInstrumentationKey: environment.appInsightsInstrumentationKey,
   acceptedPaymentMethods: environment.acceptedPaymentMethods,
   storefrontName: environment.storefrontName,

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Headstart.Common.Services.Portal.Models
 {
-    public class OrgTokenResponse
+    public class MarketplaceTokenResponse
     {
 		public string[] coreuser_roles { get; set; }
 		public string[] portaluser_roles { get; set; }

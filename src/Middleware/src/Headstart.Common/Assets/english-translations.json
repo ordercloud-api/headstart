@@ -598,10 +598,14 @@
       "QTY": "Qty",
       "QTY_RETURNED": "Returned",
       "QTY_CANCELED": "Canceled",
+      "REFUND_AMOUNT": "Refund Amount",
       "REMOVE_ITEM": "Remove Item",
       "RETURNED": "Returned:",
+      "RMA_COMMENT": "Comment",
       "SELLER_COMMENT": "Seller Comment",
+      "SHIPPING_REFUND":  "Shipping Refund",
       "TOTAL": "Total",
+      "TOTAL_REFUND":  "Total Refund",
       "UNIT_PRICE": "Unit Price"
     },
     "MINI_CART": {
@@ -645,7 +649,8 @@
       "DISCOUNTS_APPLIED": "Discounts Applied",
       "PAYMENT_METHOD": "Payment Method",
       "PROMOTIONS": "Promotions",
-      "REMOVE": "Remove"
+      "REMOVE": "Remove",
+      "USE_A_PROMO":  "Use a Promo Code"
     },
     "CHECKOUT_SHIPPING": {
       "SAVE_CONTINUE": "Save and Continue",
@@ -753,6 +758,7 @@
       "FAVORITE": "Favorite",
       "MOVE_TO_CART": "Move Order to Cart",
       "ORDER": "Order",
+      "REASON":  "Reason",
       "REORDER": "Reorder",
       "REQUEST_A_RETURN": "Request a Return",
       "REQUEST_A_CANCEL": "Request a Cancellation",

@@ -1,6 +1,6 @@
 ﻿namespace Headstart.Common.Services.Portal.Models
 {
-    public class Organization
+    public class Marketplace
     {
         public string Id { get; set; }
         public string Name { get; set; }

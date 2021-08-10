@@ -57,6 +57,7 @@ export interface EnvironmentConfig {
   orderCloudApiUrl: string
   theme?: Theme
   appInsightsInstrumentationKey?: string
+  anonymousShoppingEnabled?: boolean
   acceptedPaymentMethods?: string[]
   storefrontName?: string
 }
