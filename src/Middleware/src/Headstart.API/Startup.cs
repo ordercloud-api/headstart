@@ -35,11 +35,7 @@ using ordercloud.integrations.library.helpers;
 using Polly;
 using Polly.Extensions.Http;
 using Microsoft.WindowsAzure.Storage.Blob;
-using ordercloud.integrations.library.helpers;
-using Polly;
-using Polly.Extensions.Http;
 using Polly.Contrib.WaitAndRetry;
-using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace Headstart.API
 {
@@ -82,12 +78,12 @@ namespace Headstart.API
 
             var currencyConfig = new BlobServiceConfig()
             {
-                ConnectionString = _settings.BlobSettings.ConnectionString,
-                Container = _settings.BlobSettings.ContainerNameExchangeRates
+                ConnectionString = _settings.StorageAccountSettings.ConnectionString,
+                Container = _settings.StorageAccountSettings.BlobContainerNameExchangeRates
             };
             var assetConfig = new BlobServiceConfig()
             {
-                ConnectionString = _settings.BlobSettings.ConnectionString,
+                ConnectionString = _settings.StorageAccountSettings.ConnectionString,
                 Container = "assets", 
                 AccessType = BlobContainerPublicAccessType.Container 
             };
@@ -167,7 +163,7 @@ namespace Headstart.API
                 .AddSingleton<IOrderCloudClient>(provider => orderCloudClient)
                 .AddSwaggerGen(c =>
                 {
-                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "FastSigns-OrderCloud API", Version = "v1" });
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Headstart Middleware API Documentation", Version = "v1" });
                     c.SchemaFilter<SwaggerExcludeFilter>();
                 });
             var serviceProvider = services.BuildServiceProvider();

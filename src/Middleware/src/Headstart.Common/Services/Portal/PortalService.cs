@@ -12,10 +12,10 @@ namespace Headstart.Common.Services
     public interface IPortalService
     {
         Task<string> Login(string username, string password);
-        Task<string> GetOrgToken(string orgID, string token);
+        Task<string> GetMarketplaceToken(string marketplaceID, string token);
         Task<PortalUser> GetMe(string token);
-        Task CreateOrganization(Organization org, string token);
-        Task<Organization> GetOrganization(string orgID, string token);
+        Task CreateMarketplace(Marketplace marketplace, string token);
+        Task<Marketplace> GetMarketplace(string marketplaceID, string token);
     }
 
     public class PortalService : IPortalService
@@ -58,30 +58,30 @@ namespace Headstart.Common.Services
                         .GetJsonAsync<PortalUser>();
         }
 
-        public async Task<Organization> GetOrganization(string orgID, string token)
+        public async Task<Marketplace> GetMarketplace(string marketplaceID, string token)
         {
-            return await _client.Request("organizations", orgID)
+            return await _client.Request("organizations", marketplaceID)
                         .WithOAuthBearerToken(token)
-                        .GetJsonAsync<Organization>();
+                        .GetJsonAsync<Marketplace>();
         }
 
-        // The portal API allows you to get an admin token for that org that isn't related to any user
+        // The portal API allows you to get an admin token for that marketplace that isn't related to any user
         // and the roles granted are roles defined for the dev user. If you're the owner, that is full access
-        public async Task<string> GetOrgToken(string orgID, string token)
+        public async Task<string> GetMarketplaceToken(string marketplaceID, string token)
         {
-            var request = await _client.Request("organizations", orgID, "token")
+            var request = await _client.Request("organizations", marketplaceID, "token")
                             .WithOAuthBearerToken(token)
-                            .GetJsonAsync<OrgTokenResponse>();
+                            .GetJsonAsync<MarketplaceTokenResponse>();
 
             return request.access_token;
         }
 
-        public async Task CreateOrganization(Organization org, string token)
+        public async Task CreateMarketplace(Marketplace marketplace, string token)
         {
             //  doesn't return anything
-            await _client.Request($"organizations/{org.Id}")
+            await _client.Request($"organizations/{marketplace.Id}")
                 .WithOAuthBearerToken(token)
-                .PutJsonAsync(org);
+                .PutJsonAsync(marketplace);
         }
     }
 }

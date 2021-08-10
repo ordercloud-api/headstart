@@ -23,7 +23,7 @@ namespace Headstart.API.Commands
         {
             var blobService = new OrderCloudIntegrationsBlobService(new BlobServiceConfig()
             {
-                ConnectionString = settings.BlobSettings.ConnectionString,
+                ConnectionString = settings.StorageAccountSettings.ConnectionString,
                 Container = "downloads",
                 AccessType = BlobContainerPublicAccessType.Off
             });

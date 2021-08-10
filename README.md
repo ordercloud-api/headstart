@@ -67,7 +67,7 @@ This solution relies on various third-party services and credentials for those s
 
 [App Service](https://docs.microsoft.com/en-us/azure/app-service/overview) - you'll need at least one app service to host the middleware API. For simplicity, we also set up one for each Buyer & Seller application though since they are static sites you have a variety of options at your disposal for how to host those.
 
-[Azure Cosmos Database](https://docs.microsoft.com/en-us/azure/cosmos-db/introduction) - While we use the OrderCloud API to host all e-commerce data this is a complete solution that requires handling data that doesn't natively exist as part of OrderCloud API. Some examples are report templates and product history. To that end, we are using Cosmos as our DB of choice. You will need one database per environment (we recommend three environments: Test, UAT, and Production)
+[Azure Cosmos Database](https://docs.microsoft.com/en-us/azure/cosmos-db/introduction) - While we use the OrderCloud API to host all e-commerce data this is a complete solution that requires handling data that doesn't natively exist as part of OrderCloud API. Some examples are report templates and RMAs. To that end, we are using Cosmos as our DB of choice (Core SQL). You will need one database per environment (we recommend three environments: Test, UAT, and Production)
 
 [Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview) - This is an optional but highly recommended addition and will actually show up as an option when adding an app service. There is some additional configuration if you want to track the frontend. Look at the frontend app configs to provide your `appInsightsInstrumentationKey`
 
@@ -75,29 +75,34 @@ This solution relies on various third-party services and credentials for those s
 
 [Azure App Configuration](https://docs.microsoft.com/en-us/azure/azure-app-configuration/overview) - Used to store sensitive app settings that are consumed by the backend middleware application. We've defined [a template for you](./src/Middleware/src/Headstart.Common/AppSettingConfigTemplate.json) with the settings that are used in this application. You can fill out the template and then use Azure's import functionality to easily import it into your app configuration resource. For more detail on what each setting means check out [our readme](./src/Middleware/src/Headstart.Common/AppSettingsReadme.md).
 
+![application configuration import](./src/Middleware/src/Headstart.Common/Assets/Images/app-configuration-import.png)
+
 You will need an azure app configuration for each environment (we recommend three environments: Test, UAT, and Production)
 
 In order for you application to consume the settings, you'll need to define the environment variable `APP_CONFIG_CONNECTION` whose value should be the connection string (read-only) to your azure app configuration.
 
 - For **local** development - In Visual Studio right-click the Headstart.API project and go to Properties -> Debug -> Environment Variables.
+![local app settings](./src/Middleware/src/Headstart.Common/Assets/Images/local-app-settings.png)
+
 - For **hosted** apps - In Azure navigate to your app service. Go to the correct deployment slot, and go to Settings -> Configuration -> New application setting
+![hosted app settings](./src/Middleware/src/Headstart.Common/Assets/Images/remote-app-settings.png)
 
 It is also possible to consume app settings from a JSON file while developing locally. Simply add an `appSettings.json` file to the root of the Headstart.API project. Settings defined here are applied after and override any settings in the azure app configuration.
 
 ### Seeding OrderCloud Data
 
-This solution depends on a lot of data to be initialized in a particular way. To make it easy when starting a new project we've created an endpoint that does this for you. Just call it with some information, wait a few seconds, and presto: You'll have an organization that is seeded with all the right data to get you started immediately.
+This solution depends on a lot of data to be initialized in a particular way. To make it easy when starting a new project we've created an endpoint that does this for you. Just call it with some information, wait a few seconds, and presto: You'll have a marketplace that is seeded with all the right data to get you started immediately.
 
 > Note: Before starting this step make sure your azure app configuration is filled out almost completely. The only things that won't be filled out yet are: `OrderCloudSettings:MiddlewareClientID` and `OrderCloudSettings:MiddlewareClientSecret`. These will be returned on a successful seeding so that you can update your app settings.
 
 Detailed Steps:
 
 1. Sign in to the [ordercloud portal](https://portal.ordercloud.io/)
-2. Create a new organization in the portal if you don't already have one.
-3. Find your organization and save the unique identifier this is your SellerID in step 6.
+2. Create a new marketplace in the portal if you don't already have one.
+3. Find your marketplace and save the unique identifier this is your MarketplaceID in step 6.
 4. Follow the instructions [here](./src/Middleware/README.md) to start your server locally
 5. Download and open [Postman](https://www.postman.com/downloads/) so that you can make API calls to your local server
-6. Make a POST to `/seed` endpoint with the body as defined [here](./src/Middleware/src/Headstart.Common/Models/Misc/EnvironmentSeed.cs)
+6. Make a POST to `/seed` endpoint with [this template body](./src/Middleware/src/Headstart.Common/Assets/SeedTemplate.json). For a description of the properties please refer to [the definition](./src/Middleware/src/Headstart.Common/Models/Misc/EnvironmentSeed.cs).
 7. A successful response will include:
    1. The middleware clientID and secret. Save these two values in your app configuration under `OrderCloudSettings:MiddlewareClientID` and `OrderCloudSettings:MiddlewareClientSecret`
    2. The buyer clientID. Follow the instructions in [frontend configuration](#frontend-configuration) and set it in the buyer config `clientID`
@@ -130,7 +135,7 @@ Your backend middleware is configured and all your resources have been provision
 
 ### Validating Setup
 
-Once your organization has been seeded and your applications are configured you'll want to make sure everything is working well.
+Once your marketplace has been seeded and your applications are configured you'll want to make sure everything is working well.
 
 First, deploy the applications or run them locally:
 
