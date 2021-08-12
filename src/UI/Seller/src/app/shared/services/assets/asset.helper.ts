@@ -12,7 +12,11 @@ export function getProductSmallImageUrl(
   product: LineItemProduct<ProductXp>
 ): string {
   const images = product?.xp?.Images
-  return images && images.length ? images[0].ThumbnailUrl : PLACEHOLDER_URL
+  return images && images.length
+    ? images[0]?.ThumbnailUrl
+      ? images[0]?.ThumbnailUrl
+      : images[0].Url
+    : PLACEHOLDER_URL
 }
 
 export function getProductMediumImageUrl(
