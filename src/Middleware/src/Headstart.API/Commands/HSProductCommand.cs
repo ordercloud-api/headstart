@@ -144,8 +144,9 @@ namespace Headstart.API.Commands.Crud
 
 		public async Task<ListPage<SuperHSProduct>> List(ListArgs<HSProduct> args, string token)
 		{
+			var filterString = args.ToFilterString();
 			var _productsList = await _oc.Products.ListAsync<HSProduct>(
-				filters: args.ToFilterString(),
+				filters: string.IsNullOrEmpty(filterString) ? null : filterString,
 				search: args.Search,
 				searchType: SearchType.ExactPhrasePrefix,
 				sortBy: args.SortBy.FirstOrDefault(),

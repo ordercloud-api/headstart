@@ -13,7 +13,6 @@ import {
   OrderPromotion,
   ShipEstimate,
   IntegrationEvents,
-  LineItem,
 } from 'ordercloud-javascript-sdk'
 import { BehaviorSubject } from 'rxjs'
 import { AppConfig } from 'src/app/models/environment.types'
@@ -49,9 +48,7 @@ export class OrderStateService {
       ShippingStatus: ShippingStatus.Processing,
     },
   }
-  private orderSubject = new BehaviorSubject<HSOrder>(
-    this.DefaultOrder
-  )
+  private orderSubject = new BehaviorSubject<HSOrder>(this.DefaultOrder)
   private shipEstimatesSubject = new BehaviorSubject<ShipEstimate[]>([])
   private orderPromosSubject = new BehaviorSubject<ListPage<OrderPromotion>>(
     this.DefaultOrderPromos
@@ -63,7 +60,7 @@ export class OrderStateService {
   constructor(
     private tokenHelper: TokenHelperService,
     private currentUserService: CurrentUserService,
-    private appConfig: AppConfig,
+    private appConfig: AppConfig
   ) {}
 
   get order(): HSOrder {
@@ -102,9 +99,7 @@ export class OrderStateService {
     this.orderSubject.subscribe(callback)
   }
 
-  onLineItemsChange(
-    callback: (lineItems: ListPage<HSLineItem>) => void
-  ): void {
+  onLineItemsChange(callback: (lineItems: ListPage<HSLineItem>) => void): void {
     this.lineItemSubject.subscribe(callback)
   }
 
@@ -124,12 +119,14 @@ export class OrderStateService {
       this.getOrdersForResubmit(),
       this.getOrdersNeverSubmitted(),
     ])
-    if(!ordersForResubmit.Items.length && 
-      !ordersNeverSubmitted.Items.length && 
-      this.appConfig.anonymousShoppingEnabled) {
-        await this.initOrder()
-        this.setEmptyLineItems();
-        this.orderPromos = null;
+    if (
+      !ordersForResubmit.Items.length &&
+      !ordersNeverSubmitted.Items.length &&
+      this.appConfig.anonymousShoppingEnabled
+    ) {
+      await this.initOrder()
+      this.setEmptyLineItems()
+      this.orderPromos = null
     } else {
       if (ordersForResubmit.Items.length) {
         this.order = ordersForResubmit.Items[0]
@@ -138,17 +135,17 @@ export class OrderStateService {
       } else {
         await this.initOrder()
       }
-      var tasks = [this.resetOrderPromos(), this.resetShipEstimates()]
+      const tasks = [this.resetOrderPromos(), this.resetShipEstimates()]
       if (this.order.DateCreated) {
         await tasks.push(this.resetLineItems())
       }
-      await Promise.all(tasks);
+      await Promise.all(tasks)
     }
   }
 
   async resetCurrentOrder(updatedOrder?: HSOrder): Promise<void> {
-    var tasks = [this.resetLineItems(), this.resetShipEstimates()]
-    if(updatedOrder) {
+    const tasks = [this.resetLineItems(), this.resetShipEstimates()]
+    if (updatedOrder) {
       this.order = updatedOrder
     } else {
       tasks.push(this.resetOrder())
@@ -166,10 +163,12 @@ export class OrderStateService {
 
   async initOrder(): Promise<void> {
     this.DefaultOrder.xp.Currency = this.currentUserService.get().Currency
-    if(this.currentUserService.isAnonymous()) {
+    if (this.currentUserService.isAnonymous()) {
       //  for anonymous shopping dont create order until they add to cart
-      this.order = { ID: this.tokenHelper.getAnonymousOrderID(),
-        ...this.DefaultOrder as Order }
+      this.order = {
+        ID: this.tokenHelper.getAnonymousOrderID(),
+        ...(this.DefaultOrder as Order),
+      }
     } else {
       this.createAndSetOrder(this.DefaultOrder)
     }
@@ -178,12 +177,12 @@ export class OrderStateService {
   setEmptyLineItems() {
     this.lineItems = {
       Items: [],
-      Meta: {}
+      Meta: {},
     }
   }
 
   async createAndSetOrder(order: HSOrder): Promise<void> {
-    this.order = await Orders.Create('Outgoing', order as Order) as HSOrder
+    this.order = (await Orders.Create('Outgoing', order as Order)) as HSOrder
   }
 
   async resetShipEstimates(): Promise<void> {

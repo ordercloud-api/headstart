@@ -267,6 +267,8 @@ export class CartService {
         // if there are pre-existing promos need to recalculate order
         const updatedOrder = await this.checkout.calculateOrder()
         await this.state.resetCurrentOrder(updatedOrder)
+      } else {
+        await this.state.resetCurrentOrder()
       }
       await this.state.resetCurrentOrder()
       this.isCartValidSubject.next(true)

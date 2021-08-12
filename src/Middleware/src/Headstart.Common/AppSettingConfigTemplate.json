@@ -37,6 +37,7 @@
   "OrderCloudSettings:MiddlewareClientSecret": "",
   "OrderCloudSettings:IncrementorPrefix": "DB_TEST",
   "OrderCloudSettings:WebhookHashKey": "",
+  "OrderCloudSettings:MarketplaceID": "",
   "SendGridSettings:ApiKey": "",
   "SendgridSettings:FromEmail": "",
   "SendgridSettings:CriticalSupportEmails": "",

@@ -2,16 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using LazyCache;
 using Headstart.Common.Services;
 using Headstart.Models;
 using Headstart.Models.Misc;
 using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;
 using OrderCloud.SDK;
-using Headstart.API.Commands.Crud;
-using Headstart.Models.Headstart;
 using OrderCloud.Catalyst;
+using Headstart.Common;
 
 namespace Headstart.API.Commands
 {
@@ -26,29 +24,30 @@ namespace Headstart.API.Commands
 	{
 		private readonly IOrderCloudClient _oc;
 		private readonly IHSBuyerCommand _hsBuyerCommand;
-		private readonly IHSProductCommand _hsProductCommand;
 		private readonly ISendgridService _sendgridService;
 		private readonly ISimpleCache _cache;
 		private readonly IExchangeRatesCommand _exchangeRatesCommand;
+		private readonly AppSettings _settings;
+
 		public MeProductCommand(
 			IOrderCloudClient elevatedOc, 
 			IHSBuyerCommand hsBuyerCommand,
-			IHSProductCommand hsProductCommand,
 			ISendgridService sendgridService,
 			ISimpleCache cache,
-			IExchangeRatesCommand exchangeRatesCommand
+			IExchangeRatesCommand exchangeRatesCommand,
+			AppSettings settings
 		)
 		{
 			_oc = elevatedOc;
 			_hsBuyerCommand = hsBuyerCommand;
-			_hsProductCommand = hsProductCommand;
 			_sendgridService = sendgridService;
 			_cache = cache;
 			_exchangeRatesCommand = exchangeRatesCommand;
+			_settings = settings;
 		}
 		public async Task<SuperHSMeProduct> Get(string id, VerifiedUserContext user)
 		{
-			var _product = _oc.Me.GetProductAsync<HSMeProduct>(id, user.AccessToken);
+			var _product = _oc.Me.GetProductAsync<HSMeProduct>(id, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: user.AccessToken);
 			var _specs = _oc.Me.ListSpecsAsync(id, null, null, user.AccessToken);
 			var _variants = _oc.Products.ListVariantsAsync<HSVariant>(id, null, null, null, 1, 100, null);
 			var unconvertedSuperHsProduct = new SuperHSMeProduct 
@@ -101,10 +100,10 @@ namespace Headstart.API.Commands
 			var searchText = args.Search ?? "";
 			var searchFields = args.Search!=null ? "ID,Name,Description,xp.Facets.supplier" : "";
 			var sortBy = args.SortBy.FirstOrDefault();
-			var meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: args.ToFilterString(), page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.ExactPhrasePrefix, sortBy: sortBy,  accessToken: user.AccessToken);
+			var meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: args.ToFilterString(), page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.ExactPhrasePrefix, sortBy: sortBy, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: user.AccessToken);
 			if(!(bool)(meProducts?.Items?.Any()))
             {
-				meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: args.ToFilterString(), page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.AnyTerm, sortBy: sortBy, accessToken: user.AccessToken);
+				meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: args.ToFilterString(), page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.AnyTerm, sortBy: sortBy, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: user.AccessToken);
 				if (!(bool)(meProducts?.Items?.Any()))
                 {
 					//if no products after retry search, avoid making extra calls for pricing details
