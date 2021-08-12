@@ -158,8 +158,13 @@ namespace Headstart.API.Commands
                 Status = LineItemStatus.Complete,
                 SuperShipment = superShipment
             };
+            await _lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(IsSupplierUser(userContext) ? OrderDirection.Outgoing : direction, supplierOrderID, lineItemStatusChange);
+        }
 
-            await _lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(direction, supplierOrderID, lineItemStatusChange, userContext);
+        private bool IsSupplierUser(VerifiedUserContext userContext)
+        {
+            var verifiedUserType = userContext.UserType.Reserialize<VerifiedUserType>();
+            return verifiedUserType == VerifiedUserType.supplier;
         }
 
         private async Task<string> GetBuyerIDForSupplierOrder(string supplierOrderID)
