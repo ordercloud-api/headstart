@@ -100,10 +100,11 @@ namespace Headstart.API.Commands
 			var searchText = args.Search ?? "";
 			var searchFields = args.Search!=null ? "ID,Name,Description,xp.Facets.supplier" : "";
 			var sortBy = args.SortBy.FirstOrDefault();
-			var meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: args.ToFilterString(), page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.ExactPhrasePrefix, sortBy: sortBy, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: user.AccessToken);
+			var filters = string.IsNullOrEmpty(args.ToFilterString()) ? null : args.ToFilterString();
+			var meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters, page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.ExactPhrasePrefix, sortBy: sortBy, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: user.AccessToken);
 			if(!(bool)(meProducts?.Items?.Any()))
             {
-				meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: args.ToFilterString(), page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.AnyTerm, sortBy: sortBy, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: user.AccessToken);
+				meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters, page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.AnyTerm, sortBy: sortBy, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: user.AccessToken);
 				if (!(bool)(meProducts?.Items?.Any()))
                 {
 					//if no products after retry search, avoid making extra calls for pricing details
