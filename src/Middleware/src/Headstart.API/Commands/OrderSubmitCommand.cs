@@ -103,7 +103,7 @@ namespace Headstart.API.Commands
             {
                 try
                 {
-                    await _oc.Me.GetProductAsync(lineItem.ProductID, accessToken: userToken);
+                    await _oc.Me.GetProductAsync(lineItem.ProductID, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: userToken);
                 }
                 catch (OrderCloudException ex) when (ex.HttpStatus == HttpStatusCode.NotFound)
                 {

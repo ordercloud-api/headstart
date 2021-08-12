@@ -64,6 +64,7 @@ namespace Headstart.Common
         public string ApiUrl { get; set; }
         public string MiddlewareClientID { get; set; }
         public string MiddlewareClientSecret { get; set; }
+        public string MarketplaceID { get; set; }
         public string WebhookHashKey { get; set; }
         public string IncrementorPrefix { get; set; }
     }
