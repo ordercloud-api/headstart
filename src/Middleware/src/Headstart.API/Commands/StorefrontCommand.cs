@@ -14,6 +14,7 @@ using OrderCloud.SDK;
 using System.IO;
 using static Headstart.Common.Models.Headstart.AppConfigurations;
 using Newtonsoft.Json;
+using OrderCloud.Catalyst;
 
 namespace Headstart.API.Commands
 {
@@ -44,10 +45,6 @@ namespace Headstart.API.Commands
 
         public async Task DeployBuyerSite(ApiClient apiClient = null)
         {
-            //First create the api client
-            //var client = await _oc.ApiClients.CreateAsync(apiClient);
-
-
             //1. Create the $web container (not sure if this is necessary. If they enable static website hosting this should already be there)
             await _blob.CreateContainerAsync("$web", false);
 
@@ -69,7 +66,10 @@ namespace Headstart.API.Commands
                 }
                 tasks.Add(_blob.TransferBlobs("buyerweb", "$web", fileName, storefrontName));
             }
-
+            if (mainFileName == "")
+            {
+                throw new CatalystBaseException("Storefront.MissingMainFile", 400, "Buyer app is missing main js file.");
+            }
             await Task.WhenAll(tasks);
             await UpdateAppConfig(apiClient, mainFileName, storefrontName, incrementorPrefix, appName);
             await UpdateIndex(storefrontName);

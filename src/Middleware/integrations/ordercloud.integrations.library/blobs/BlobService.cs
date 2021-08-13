@@ -125,7 +125,6 @@ namespace ordercloud.integrations.library
             BlobContinuationToken continuationToken = null;
             do
             {
-                //ListBlobsSegmentedAsync(string prefix, bool useFlatBlobListing, BlobListingDetails blobListingDetails, int? maxResults, BlobContinuationToken currentToken, BlobRequestOptions options, OperationContext operationContext);
                 var response = await blobContainer.ListBlobsSegmentedAsync(string.Empty, true, BlobListingDetails.None, int.MaxValue, continuationToken, null, null);
                 continuationToken = response.ContinuationToken;
                 results.AddRange(response.Results);
