@@ -11,16 +11,12 @@ namespace Headstart.Common
         public EnvironmentSettings EnvironmentSettings { get; set; } = new EnvironmentSettings();
         public ApplicationInsightsSettings ApplicationInsightsSettings { get; set; } = new ApplicationInsightsSettings();
         public AvalaraSettings AvalaraSettings { get; set; } = new AvalaraSettings();
-        public BlobSettings BlobSettings { get; set; } = new BlobSettings();
+        public StorageAccountSettings StorageAccountSettings { get; set; } = new StorageAccountSettings();
         public CosmosSettings CosmosSettings { get; set; } = new CosmosSettings();
         public OrderCloudSettings OrderCloudSettings { get; set; } = new OrderCloudSettings();
-        // not needed for fastsigns
         public OrderCloudIntegrationsCardConnectConfig CardConnectSettings { get; set; } = new OrderCloudIntegrationsCardConnectConfig();
-        // not needed for fastsigns
         public ZohoSettings ZohoSettings { get; set; } = new ZohoSettings();
-        // not needed for fastsigns
         public SmartyStreetsConfig SmartyStreetSettings { get; set; } = new SmartyStreetsConfig();
-        // not needed for fastsigns
         public EasyPostSettings EasyPostSettings { get; set; } = new EasyPostSettings();
         public SendgridSettings SendgridSettings { get; set; } = new SendgridSettings();
         public FlurlSettings FlurlSettings { get; set; } = new FlurlSettings();
@@ -68,6 +64,7 @@ namespace Headstart.Common
         public string ApiUrl { get; set; }
         public string MiddlewareClientID { get; set; }
         public string MiddlewareClientSecret { get; set; }
+        public string MarketplaceID { get; set; }
         public string WebhookHashKey { get; set; }
         public string IncrementorPrefix { get; set; }
     }

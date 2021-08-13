@@ -51,8 +51,8 @@ namespace Headstart.API.Commands
         }
 
         /// <summary>
-        /// This seeding function can be used to initially seed an organization
-        /// it is also meant to be safe to call after an organization has been seeded (by including seed.SellerOrgID)
+        /// This seeding function can be used to initially seed an marketplace
+        /// it is also meant to be safe to call after an marketplace has been seeded (by including seed.MarketplaceID)
         /// If a method starts with CreateOrUpdate it will update the resource every time its called based on what has been defined in SeedConstants.cs
         /// If a method starts with CreateOnlyOnce it will only create the resource once and then ignore thereafter
         /// The CreateOnlyOnce resources are likely to change after initial creation so we ignore to avoid overwriting desired changes that happen outside of seeding
@@ -61,9 +61,9 @@ namespace Headstart.API.Commands
         {
             OcEnv requestedEnv = validateEnvironment(seed.OrderCloudSettings.Environment);
 
-            if (requestedEnv.environmentName == OrderCloudEnvironments.Production.environmentName && seed.SellerOrgID == null)
+            if (requestedEnv.environmentName == OrderCloudEnvironments.Production.environmentName && seed.MarketplaceID == null)
             {
-                throw new Exception("Cannot create a production environment via the environment seed endpoint. Please contact an OrderCloud Developer to create a production org.");
+                throw new Exception("Cannot create a production environment via the environment seed endpoint. Please contact an OrderCloud Developer to create a production marketplace.");
             }
 
             // lets us handle requests to multiple api environments
@@ -74,48 +74,48 @@ namespace Headstart.API.Commands
             });
 
             var portalUserToken = await _portal.Login(seed.PortalUsername, seed.PortalPassword);
-            var sellerOrg = await GetOrCreateOrg(portalUserToken, requestedEnv.environmentName, seed.SellerOrgName, seed.SellerOrgID);
-            var orgToken = await _portal.GetOrgToken(sellerOrg.Id, portalUserToken);
+            var marketplace = await GetOrCreateMarketplace(portalUserToken, requestedEnv.environmentName, seed.MarketplaceName, seed.MarketplaceID);
+            var marketplaceToken = await _portal.GetMarketplaceToken(marketplace.Id, portalUserToken);
 
-            await CreateOrUpdateDefaultSellerUser(seed, orgToken);
+            await CreateOrUpdateDefaultSellerUser(seed, marketplaceToken);
 
-            await CreateOnlyOnceIncrementors(orgToken); // must be before CreateBuyers
-            await CreateOrUpdateMessageSendersAndAssignments(seed, orgToken); // must be before CreateBuyers and CreateSuppliers
+            await CreateOnlyOnceIncrementors(marketplaceToken); // must be before CreateBuyers
+            await CreateOrUpdateMessageSendersAndAssignments(seed, marketplaceToken); // must be before CreateBuyers and CreateSuppliers
 
-            await CreateOrUpdateSecurityProfiles(orgToken);
-            await CreateOnlyOnceBuyers(seed, orgToken);
+            await CreateOrUpdateSecurityProfiles(marketplaceToken);
+            await CreateOnlyOnceBuyers(seed, marketplaceToken);
 
-            await CreateOnlyOnceApiClients(seed, orgToken);
-            await CreateOrUpdateSecurityProfileAssignments(seed, orgToken);
+            await CreateOnlyOnceApiClients(seed, marketplaceToken);
+            await CreateOrUpdateSecurityProfileAssignments(seed, marketplaceToken);
 
-            await CreateOrUpdateXPIndices(orgToken);
-            await CreateOrUpdateAndAssignIntegrationEvents(orgToken, seed);
-            await CreateOrUpdateSuppliers(seed, orgToken);
+            await CreateOrUpdateXPIndices(marketplaceToken);
+            await CreateOrUpdateAndAssignIntegrationEvents(marketplaceToken, seed);
+            await CreateOrUpdateSuppliers(seed, marketplaceToken);
 
-            await CreateOrUpdateProductFacets(orgToken);
+            await CreateOrUpdateProductFacets(marketplaceToken);
 ;
-            // populate default english translations into blob container name: settings.BlobSettings.ContainerNameTranslations or "ngx-translate" if setting is not defined
+            // populate default english translations into blob container name: settings.StorageAccountSettingsntSettings.ContainerNameTranslations or "ngx-translate" if setting is not defined
             // provide other language files to support multiple languages
 
             var englishTranslationsPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "Assets", "english-translations.json"));
-            if (seed?.BlobSettings?.ConnectionString != null && seed?.BlobSettings?.ContainerNameTranslations != null)
+            if (seed?.StorageAccountSettings?.ConnectionString != null && seed?.StorageAccountSettings?.ContainerNameTranslations != null)
             {
                 var translationsConfig = new BlobServiceConfig()
                 {
-                    ConnectionString = seed.BlobSettings.ConnectionString,
-                    Container = seed.BlobSettings.ContainerNameTranslations,
+                    ConnectionString = seed.StorageAccountSettings.ConnectionString,
+                    Container = seed.StorageAccountSettings.ContainerNameTranslations,
                     AccessType = BlobContainerPublicAccessType.Container
                 };
                 var translationsBlob = new OrderCloudIntegrationsBlobService(translationsConfig);
                 await translationsBlob.Save("i18n/en.json", File.ReadAllText(englishTranslationsPath));
             }
 
-            var apiClients = await GetApiClients(orgToken);
+            var apiClients = await GetApiClients(marketplaceToken);
             return new EnvironmentSeedResponse
             {
                 Comments = "Success! Your environment is now seeded. The following clientIDs & secrets should be used to finalize the configuration of your application. The initial admin username and password can be used to sign into your admin application",
-                OrganizationName = sellerOrg.Name,
-                OrganizationID = sellerOrg.Id,
+                MarketplaceName = marketplace.Name,
+                MarketplaceID = marketplace.Id,
                 OrderCloudEnvironment = requestedEnv.environmentName,
                 ApiClients = new Dictionary<string, dynamic>
                 {
@@ -148,44 +148,45 @@ namespace Headstart.API.Commands
             }
             else return null;
         }
-        public async Task<Organization> VerifyOrgExists(string orgID, string devToken)
+        public async Task<Marketplace> VerifyMarketplaceExists(string marketplaceID, string devToken)
         {
             try
             {
-                return await _portal.GetOrganization(orgID, devToken);
+                return await _portal.GetMarketplace(marketplaceID, devToken);
             }
-            catch
+            catch(Exception e)
             {
-                // the portal API no longer allows us to create a production organization outside of portal
+                // the portal API no longer allows us to create a production marketplace outside of portal
                 // though its possible to create on sandbox - for consistency sake we'll require its created before seeding
-                throw new Exception("Failed to retrieve seller organization with SellerOrgID. The organization must exist before it can be seeded");
+                Console.WriteLine(e.Message);
+                throw new Exception("Failed to retrieve marketplace with MarketplaceID. The marketplace must exist before it can be seeded");
             }
         }
 
-        public async Task<Organization> GetOrCreateOrg(string token, string env, string orgName, string orgID = null)
+        public async Task<Marketplace> GetOrCreateMarketplace(string token, string env, string marketplaceName, string marketplaceID = null)
         {
-            if (orgID != null)
+            if (marketplaceID != null)
             {
-                var org = await VerifyOrgExists(orgID, token);
-                return org;
+                var marketplace = await VerifyMarketplaceExists(marketplaceID, token);
+                return marketplace;
             }
             else
             {
-                var org = new Organization()
+                var marketplace = new Marketplace()
                 {
                     Id = Guid.NewGuid().ToString(),
                     Environment = env,
-                    Name = orgName == null ? "My Headstart Organization" : orgName
+                    Name = marketplaceName == null ? "My Headstart Marketplace" : marketplaceName
                 };
                 try
                 {
-                    await _portal.GetOrganization(org.Id, token);
-                    return await GetOrCreateOrg(token, env, orgName, orgID);
+                    await _portal.GetMarketplace(marketplace.Id, token);
+                    return await GetOrCreateMarketplace(token, env, marketplaceName, marketplaceID);
                 }
                 catch (Exception ex)
                 {
-                    await _portal.CreateOrganization(org, token);
-                    return await _portal.GetOrganization(org.Id, token);
+                    await _portal.CreateMarketplace(marketplace, token);
+                    return await _portal.GetMarketplace(marketplace.Id, token);
                 }
             }
         }
@@ -208,7 +209,7 @@ namespace Headstart.API.Commands
             await Task.WhenAll(createIE, shutOffSupplierEmails);
         }
 
-        private async Task CreateOrUpdateSecurityProfileAssignments(EnvironmentSeed seed, string orgToken)
+        private async Task CreateOrUpdateSecurityProfileAssignments(EnvironmentSeed seed, string marketplaceToken)
         {
             // assign buyer security profiles
             var buyerSecurityProfileAssignmentRequests = seed.Buyers.Select(b =>
@@ -217,22 +218,22 @@ namespace Headstart.API.Commands
                 {
                     BuyerID = b.ID,
                     SecurityProfileID = CustomRole.HSBaseBuyer.ToString()
-                }, orgToken);
+                }, marketplaceToken);
             });
             await Task.WhenAll(buyerSecurityProfileAssignmentRequests);
 
-            // assign seller security profiles to seller org
+            // assign seller security profiles to seller marketplace
             var sellerSecurityProfileAssignmentRequests = SeedConstants.SellerHsRoles.Select(role =>
             {
                 return _oc.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment()
                 {
                     SecurityProfileID = role.ToString()
-                }, orgToken);
+                }, marketplaceToken);
             });
             await Task.WhenAll(sellerSecurityProfileAssignmentRequests);
 
             // assign full access security profile to default admin user
-            var adminUsersList = await _oc.AdminUsers.ListAsync(filters: new { Username = SeedConstants.SellerUserName }, accessToken: orgToken);
+            var adminUsersList = await _oc.AdminUsers.ListAsync(filters: new { Username = SeedConstants.SellerUserName }, accessToken: marketplaceToken);
             var defaultAdminUser = adminUsersList.Items.FirstOrDefault();
             if(defaultAdminUser == null)
             {
@@ -242,7 +243,7 @@ namespace Headstart.API.Commands
             {
                 SecurityProfileID = SeedConstants.FullAccessSecurityProfile,
                 UserID = defaultAdminUser.ID
-            }, orgToken);
+            }, marketplaceToken);
         }
 
         private async Task CreateOnlyOnceBuyers(EnvironmentSeed seed, string token)
@@ -354,7 +355,7 @@ namespace Headstart.API.Commands
 
             await _oc.AdminUsers.SaveAsync(middlewareIntegrationsUser.ID, middlewareIntegrationsUser, token);
 
-            // used to log in immediately after seeding the organization
+            // used to log in immediately after seeding the marketplace
             var initialAdminUser = new User
             {
                 ID = "InitialAdminUser",
@@ -408,7 +409,7 @@ namespace Headstart.API.Commands
             var list = await _oc.ApiClients.ListAllAsync<HSApiClient>(accessToken: token);
             var appNames = list.Select(x => x.AppName);
             var adminUIApiClient = list.First(a => a.AppName == SeedConstants.SellerApiClientName);
-            var buyerUIApiClient = list.First(a => a.xp.IsStorefront);
+            var buyerUIApiClient = list.First(a => a?.xp?.IsStorefront == true);
             var buyerLocalUIApiClient = list.First(a => a.AppName == SeedConstants.BuyerLocalApiClientName);
             var middlewareApiClient = list.First(a => a.AppName == SeedConstants.IntegrationsApiClientName);
             return new ApiClients()
@@ -440,12 +441,10 @@ namespace Headstart.API.Commands
         {
             var existingClients = await _oc.ApiClients.ListAllAsync(accessToken: token);
 
-            var integrationsClientRequest = CreateOrGetApiClient(existingClients, SeedConstants.IntegrationsClient(), token);
-            var sellerClientRequest = CreateOrGetApiClient(existingClients, SeedConstants.SellerClient(), token);
-            var buyerClientRequest = CreateOrGetBuyerClient(existingClients, SeedConstants.BuyerClient(seed), seed, token);
-            var buyerLocalClientRequest = CreateOrGetApiClient(existingClients, SeedConstants.BuyerLocalClient(seed), token);
-
-            await Task.WhenAll(integrationsClientRequest, sellerClientRequest, buyerClientRequest, buyerLocalClientRequest);
+            await CreateOrGetBuyerClient(existingClients, SeedConstants.BuyerClient(seed), seed, token);
+            await CreateOrGetApiClient(existingClients, SeedConstants.IntegrationsClient(), token);
+            await CreateOrGetApiClient(existingClients, SeedConstants.SellerClient(), token);
+            await CreateOrGetApiClient(existingClients, SeedConstants.BuyerLocalClient(seed), token);
         }
 
         private async Task<ApiClient> CreateOrGetBuyerClient(List<ApiClient> existingClients, ApiClient client, EnvironmentSeed seed, string token)

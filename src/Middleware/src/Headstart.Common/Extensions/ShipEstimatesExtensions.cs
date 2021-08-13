@@ -64,42 +64,37 @@ namespace Headstart.Common.Extensions
                         method.ID = shipEstimate.ID;
                         method.Cost = 0;
                         method.EstimatedTransitDays = freeShippingTransitDays;
-                    }
-                }
-
-                foreach (var method in shipEstimate.ShipMethods)
-                {
-                    // Apply Free Shipping on orders where we weren't able to calculate a shipping rate
-                    if (method.ID == ShippingConstants.NoRatesID)
-                    {
                         method.xp.FreeShippingApplied = true;
-                        method.xp.FreeShippingThreshold = supplier?.xp?.FreeShippingThreshold;
-                        method.Cost = 0;
                     }
-                    // TODO: Still waiting on decision makers to decide if we want
-                    // Shipping Cost Schedules in HeadStart
-
-                    // If valid Cost Breaks exist, apply them
-                    //if (validCostBreaks != null)
-                    //{
-                    //    // Apply the Supplier Shipping Cost Schedule to Ground Rates only
-                    //    if (method.Name.Contains("GROUND"))
-                    //    {
-                    //        validCostBreaks = validCostBreaks.Where(cb => cb.ValidCountries.Contains(orderWorksheet?.Order?.FromUser?.xp?.Country));
-                    //        if (validCostBreaks != null && validCostBreaks.Count() > 0)
-                    //        {
-                    //            var sortedValidCostBreaks = validCostBreaks.OrderBy(costBreak => costBreak.OrderSubTotal);
-                    //            method.xp.ShippingCostScheduleOrderSubTotalThreshold = sortedValidCostBreaks.LastOrDefault().OrderSubTotal;
-                    //            method.xp.ShippingCostScheduleApplied = true;
-                    //            method.Cost = sortedValidCostBreaks.LastOrDefault().Cost;
-                    //            if (method.Cost == 0) // If cost = 0, then shipping is considered free
-                    //            {
-                    //                method.xp.FreeShippingApplied = true;
-                    //            }
-                    //        }
-                    //    }
-                    //}
                 }
+
+                // TODO: Still waiting on decision makers to decide if we want
+                // Shipping Cost Schedules in HeadStart
+
+                //foreach (var method in shipEstimate.ShipMethods)
+                //{
+
+                //    // If valid Cost Breaks exist, apply them
+                //    if (validCostBreaks != null)
+                //    {
+                //        // Apply the Supplier Shipping Cost Schedule to Ground Rates only
+                //        if (method.Name.Contains("GROUND"))
+                //        {
+                //            validCostBreaks = validCostBreaks.Where(cb => cb.ValidCountries.Contains(orderWorksheet?.Order?.FromUser?.xp?.Country));
+                //            if (validCostBreaks != null && validCostBreaks.Count() > 0)
+                //            {
+                //                var sortedValidCostBreaks = validCostBreaks.OrderBy(costBreak => costBreak.OrderSubTotal);
+                //                method.xp.ShippingCostScheduleOrderSubTotalThreshold = sortedValidCostBreaks.LastOrDefault().OrderSubTotal;
+                //                method.xp.ShippingCostScheduleApplied = true;
+                //                method.Cost = sortedValidCostBreaks.LastOrDefault().Cost;
+                //                if (method.Cost == 0) // If cost = 0, then shipping is considered free
+                //                {
+                //                    method.xp.FreeShippingApplied = true;
+                //                }
+                //            }
+                //        }
+                //    }
+                //}
                 updatedEstimates.Add(shipEstimate);
             }
 
