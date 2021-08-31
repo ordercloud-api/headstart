@@ -2,7 +2,7 @@ import { Configuration, SdkConfiguration } from '@ordercloud/headstart-sdk'
 
 export function setHeadstartSDKUrl() {
 	const config: SdkConfiguration = {
-		baseApiUrl: 'https://middleware-api-test.sebvendorportal.com',
+		baseApiUrl: 'https://headstartdemo-middleware-test.azurewebsites.net',
 	}
 
 	Configuration.Set(config)

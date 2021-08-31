@@ -4,17 +4,24 @@ import randomString from '../../helpers/random-string'
 import loadingHelper from '../../helpers/loading-helper'
 import { scrollIntoView } from '../../helpers/element-helper'
 
-class VendorDetailsPage {
+class SupplierDetailsPage {
 	activeToggle: Selector
 	nameField: Selector
 	currencySelector: Selector
 	currencyOptions: Selector
 	standardProductTypeCheckbox: Selector
 	quoteProductTypeCheckbox: Selector
+	purchaseOrderProductTypeCheckbox: Selector
+	testerProductTypeCheckbox: Selector
 	USCountryCheckbox: Selector
 	CACountryCheckbox: Selector
 	freightPOPToggle: Selector
 	createButton: Selector
+	mainCatgorySelector: Selector
+	mainCategoryOptionsSelector: Selector
+	subCategorySelector: Selector
+	subCategoryOptionsSelector: Selector
+	addCategoryButton: Selector
 
 	constructor() {
 		this.activeToggle = Selector('#Active').parent()
@@ -23,34 +30,48 @@ class VendorDetailsPage {
 		this.currencyOptions = this.currencySelector.find('option')
 		this.standardProductTypeCheckbox = Selector('#Standard').parent()
 		this.quoteProductTypeCheckbox = Selector('#Quote').parent()
+		this.purchaseOrderProductTypeCheckbox = Selector(
+			'#PurchaseOrder'
+		).parent()
+		this.testerProductTypeCheckbox = Selector('#Tester').parent()
 		this.USCountryCheckbox = Selector('#US').parent()
 		this.CACountryCheckbox = Selector('#CA').parent()
 		this.freightPOPToggle = Selector('#SyncFreightPop').parent()
 		this.createButton = Selector('button')
 			.withText(createRegExp('create'))
 			.withAttribute('type', 'submit')
+		this.mainCatgorySelector = Selector('supplier-category-select-component')
+			.find('select')
+			.nth(0)
+		this.mainCategoryOptionsSelector = this.mainCatgorySelector.find('option')
+		this.subCategorySelector = Selector('supplier-category-select-component')
+			.find('select')
+			.nth(1)
+		this.subCategoryOptionsSelector = this.subCategorySelector.find('option')
+		this.addCategoryButton = Selector('button').withText(
+			createRegExp('add category')
+		)
 	}
 
-	async createDefaultVendor() {
-		const vendorName = `AutomationVendor_${randomString(5)}`
-		await t.click(this.activeToggle)
-		await t.typeText(this.nameField, vendorName)
+	async createDefaultSupplier() {
+		const supplierName = `AutomationSupplier_${randomString(5)}`
+		await t.typeText(this.nameField, supplierName)
 		await t.click(this.currencySelector)
 		await t.click(
 			this.currencyOptions.withText(createRegExp('united states dollar'))
 		)
-		await t.click(this.freightPOPToggle)
 		await t.click(this.standardProductTypeCheckbox)
+		await await scrollIntoView('.form-control.ng-untouched.ng-pristine.ng-valid')
 		// await t.click(this.USCountryCheckbox)
 		await t.click(this.createButton)
 
 		await loadingHelper.thisWait()
 
-		return vendorName
+		return supplierName
 	}
 
 	//active, names, currency, product type, category
-	async createVendor(
+	async createSupplier(
 		active: boolean,
 		name: string,
 		currency: string,
@@ -71,6 +92,22 @@ class VendorDetailsPage {
 		if (productType.includes('Quote')) {
 			await t.click(this.quoteProductTypeCheckbox)
 		}
+		if (productType.includes('Purchase Order')) {
+			await t.click(this.purchaseOrderProductTypeCheckbox)
+		}
+		if (productType.includes('Tester')) {
+			await t.click(this.testerProductTypeCheckbox)
+		}
+		await await scrollIntoView('supplier-category-select-component')
+		await t.click(this.addCategoryButton)
+		await t.click(this.mainCatgorySelector)
+		await t.click(
+			this.mainCategoryOptionsSelector.withText(createRegExp(mainCategory))
+		)
+		await t.click(this.subCategorySelector)
+		await t.click(
+			this.subCategoryOptionsSelector.withText(createRegExp(subCategory))
+		)
 
 		await t.click(this.createButton)
 
@@ -78,4 +115,4 @@ class VendorDetailsPage {
 	}
 }
 
-export default new VendorDetailsPage()
+export default new SupplierDetailsPage()

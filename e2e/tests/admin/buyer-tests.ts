@@ -1,9 +1,9 @@
 import { t } from 'testcafe'
 import testConfig from '../../testConfig'
-import { adminTestSetup, adminClientSetup } from '../../helpers/test-setup'
+import { adminTestSetup, adminClientSetup, buyerTestSetup } from '../../helpers/test-setup'
 import adminHeaderPage from '../../pages/admin/admin-header-page'
 import mainResourcePage from '../../pages/admin/main-resource-page'
-import brandDetailsPage from '../../pages/admin/brand-details-page'
+import buyerDetailsPage from '../../pages/admin/buyer-details-page'
 import {
 	deleteBuyerWithName,
 	createDefaultBuyer,
@@ -23,13 +23,13 @@ import {
 	deleteBuyerLocation,
 } from '../../api-utils.ts/buyer-locations-util'
 import userDetailsPage from '../../pages/admin/user-details-page'
-import { getUserID, deleteUser } from '../../api-utils.ts/users-util'
+import { getUserID, deleteUser, createUser } from '../../api-utils.ts/users-util'
 import { refreshPage } from '../../helpers/page-helper'
 import { delay } from '../../helpers/wait-helper'
 import { createRegExp } from '../../helpers/regExp-helper'
 
-fixture`Brand Tests`
-	.meta('TestRun', '1')
+fixture`buyer Tests`
+	.meta('TestRun', 'HS')
 	.before(async ctx => {
 		ctx.clientAuth = await adminClientSetup()
 		ctx.buyerID = await createDefaultBuyer(ctx.clientAuth)
@@ -45,6 +45,7 @@ fixture`Brand Tests`
 		)
 		ctx.locationID = createdLocation.Address.ID
 		ctx.locationName = createdLocation.Address.AddressName
+
 	})
 	.beforeEach(async t => {
 		await adminTestSetup()
@@ -56,81 +57,91 @@ fixture`Brand Tests`
 	})
 	.page(testConfig.adminAppUrl)
 
-test.after(async () => {
-	await deleteBuyerWithName(t.ctx.brandName, t.fixtureCtx.clientAuth)
-})('Create Brand | 19971', async () => {
-	await adminHeaderPage.selectAllBrands()
-	await mainResourcePage.clickCreateButton()
-	const brandName = await brandDetailsPage.createDefaultBrand()
-	t.ctx.brandName = brandName
-	await t.expect(await mainResourcePage.resourceExists(brandName)).ok()
+test.before(async t => {
+	await adminTestSetup()
+
 })
+	.after(async t => {
+		await deleteBuyerWithName(t.ctx.buyerName, t.fixtureCtx.clientAuth)
+	})('Create buyer | 19971', async t => {
+		await adminHeaderPage.selectAllbuyers()
+		await mainResourcePage.clickCreateButton()
+		const buyerName = await buyerDetailsPage.createDefaultbuyer()
+		t.ctx.buyerName = buyerName
+		await t.expect(await mainResourcePage.resourceExists(buyerName)).ok()
+	})
 
 //Catalog not being shown in UI after create, new to reload page to see
 //https://four51.atlassian.net/browse/SEB-725
-//added work around to refresh page after creating product for all create product tests
-test.after(async () => {
+//adding in the manual wait command of t.wait(5000) circumvents intermittent failures on the product page
+test.after(async t => {
 	await deleteCatalogWithName(
 		t.ctx.createdCatalogName,
 		t.fixtureCtx.buyerID,
 		t.fixtureCtx.clientAuth
 	)
-})('Create Brand Catalog | 19972', async () => {
-	await adminHeaderPage.selectBrandCatalogs()
+})('Create buyer Catalog | 19972', async t => {
+	await adminHeaderPage.selectbuyerCatalogs()
 	await minorResourcePage.selectParentResourceDropdown(t.fixtureCtx.buyerID)
 	await minorResourcePage.clickCreateButton()
 	const createdCatalogName = await catalogDetailsPage.createDefaultCatalog()
 	t.ctx.createdCatalogName = createdCatalogName
 	await t.wait(5000)
-	await refreshPage() //refresh because of bug
+	await refreshPage() //refresh because of bug https://four51.atlassian.net/browse/SEB-725
 	await t.wait(3000)
 	await t
 		.expect(await minorResourcePage.resourceExists(createdCatalogName))
-		.ok('Brand Catalog not found in resource list')
+		.ok('buyer Catalog not found in resource list')
 })
 
-test.after(async () => {
-	await deleteBuyerLocationWithName(
-		t.ctx.createdLocationName,
-		t.fixtureCtx.buyerID,
-		t.fixtureCtx.clientAuth
-	)
-})('Create Brand Location | 19973', async () => {
-	await adminHeaderPage.selectBrandLocations()
-	await minorResourcePage.selectParentResourceDropdown(t.fixtureCtx.buyerID)
-	await minorResourcePage.clickCreateButton()
-	const createdLocationName = await locationDetailsPage.createDefaultLocation()
-	t.ctx.createdLocationName = createdLocationName
-	await t
-		.expect(await minorResourcePage.resourceExists(createdLocationName))
-		.ok('Brand Location not found in resource list')
-})
+test
+	.after(async t => {
+		await deleteBuyerLocationWithName(
+			t.ctx.createdLocationName,
+			t.fixtureCtx.buyerID,
+			t.fixtureCtx.clientAuth
+		)
+	})('Create buyer Location | 19973', async t => {
+		await adminHeaderPage.selectbuyerLocations()
+		await minorResourcePage.selectParentResourceDropdown(t.fixtureCtx.buyerID)
+		await t.wait(500)
+		await minorResourcePage.clickCreateButton()
+		const createdLocationName = await locationDetailsPage.createDefaultLocation()
+		t.ctx.createdLocationName = createdLocationName
+		await t
+			.expect(await minorResourcePage.resourceExists(createdLocationName))
+			.ok('buyer Location not found in resource list')
+	})
 
-test('Assign Brand Location to Brand Catalog | 19974', async t => {
-	await adminHeaderPage.selectBrandLocations()
+test('Assign buyer Location to buyer Catalog | 19974', async t => {
+	await adminHeaderPage.selectbuyerLocations()
 	await minorResourcePage.selectParentResourceDropdown(t.fixtureCtx.buyerID)
 	await minorResourcePage.clickResource(t.fixtureCtx.locationID)
 	await locationDetailsPage.assignCatalogToLocation(t.fixtureCtx.catalogName)
 })
 
-test.after(async t => {
-	const createdUserID = await getUserID(
-		t.ctx.createdUserEmail,
-		t.fixtureCtx.buyerID,
-		t.fixtureCtx.clientAuth
-	)
-	await deleteUser(
-		createdUserID,
-		t.fixtureCtx.buyerID,
-		t.fixtureCtx.clientAuth
-	)
-})('Create And Assign Brand User To Location | 19975', async t => {
-	await adminHeaderPage.selectBrandUsers()
-	await minorResourcePage.selectParentResourceDropdown(t.fixtureCtx.buyerID)
-	await minorResourcePage.clickCreateButton()
-	const createdUserEmail = await userDetailsPage.createDefaultBrandUserWithLocation(
-		t.fixtureCtx.locationName
-	)
-	t.ctx.createdUserEmail = createdUserEmail
-	await t.expect(await minorResourcePage.resourceExists(createdUserEmail)).ok()
+test.before(async t => {
+	await adminTestSetup()
 })
+	.after(async t => {
+		const createdUserID = await getUserID(
+			t.ctx.createdUserEmail,
+			t.fixtureCtx.buyerID,
+			t.fixtureCtx.clientAuth
+		)
+		await deleteUser(
+			createdUserID,
+			t.fixtureCtx.buyerID,
+			t.fixtureCtx.clientAuth
+		)
+	})('Create And Assign buyer User To Location | 19975', async t => {
+		await adminHeaderPage.selectbuyerUsers()
+		await minorResourcePage.selectParentResourceDropdown(t.fixtureCtx.buyerID)
+		await minorResourcePage.clickCreateButton()
+		const createdUserEmail = await userDetailsPage.createDefaultbuyerUserWithLocation(
+			t.fixtureCtx.locationName
+		)
+		t.ctx.createdUserEmail = createdUserEmail
+		await t.expect(await minorResourcePage.resourceExists(createdUserEmail)).ok()
+
+	})

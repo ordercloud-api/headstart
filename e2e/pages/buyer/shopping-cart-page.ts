@@ -5,23 +5,24 @@ import { createRegExp } from '../../helpers/regExp-helper'
 class ShoppingCartPage {
 	checkoutButton: Selector
 	products: Selector
+	removeItemButton: Selector
+	productsName: Selector
 
 	constructor() {
 		this.checkoutButton = Selector('button').withText(
 			createRegExp('checkout')
 		)
-		this.products = Selector('.position-relative')
+		this.products = Selector('.position-relative.border-bottom.border-light.px-0.lineitem.ng-star-inserted')
+		this.removeItemButton = Selector('button').withText(createRegExp('Remove Item'))
+		this.productsName = Selector('.text-dark.font-weight-medium.line-height-1')
 	}
 
 	async clickCheckoutButton() {
 		await t.click(this.checkoutButton)
 	}
 
-	async removeProduct(productName: string) {
-		const product = this.products.withText(createRegExp(productName))
-		const removeButton = product.find('button')
-		await t.expect(removeButton.exists).ok()
-		await t.click(removeButton)
+	async removeProduct() {
+		await t.click(this.removeItemButton)
 	}
 }
 

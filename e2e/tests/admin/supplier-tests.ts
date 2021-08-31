@@ -8,7 +8,7 @@ import {
 	deleteSupplierAddress,
 } from '../../api-utils.ts/warehouse-util'
 import mainResourcePage from '../../pages/admin/main-resource-page'
-import vendorDetailsPage from '../../pages/admin/vendor-details-page'
+import supplierDetailsPage from '../../pages/admin/supplier-details-page'
 import minorResourcePage from '../../pages/admin/minor-resource-page'
 import userDetailsPage from '../../pages/admin/user-details-page'
 import warehouseDetailsPage from '../../pages/admin/warehouse-details-page'
@@ -19,13 +19,13 @@ import {
 	createDefaultSupplierUserWithoutRoles,
 } from '../../api-utils.ts/supplier-users-util'
 import {
-	cleanupVendorWithName,
-	cleanupVendorWithID,
+	cleanupSupplierWithName,
+	cleanupSupplierWithID,
 } from '../../helpers/test-cleanup'
 import { delay } from '../../helpers/wait-helper'
 
-fixture`Vendor Tests`
-	.meta('TestRun', '1')
+fixture`Supplier Tests`
+	.meta('TestRun', 'HS')
 	.before(async ctx => {
 		ctx.clientAuth = await adminClientSetup()
 		ctx.supplierID = await createSupplier(ctx.clientAuth)
@@ -45,18 +45,18 @@ fixture`Vendor Tests`
 			ctx.supplierID,
 			ctx.clientAuth
 		)
-		await cleanupVendorWithID(ctx.supplierID, ctx.clientAuth)
+		await cleanupSupplierWithID(ctx.supplierID, ctx.clientAuth)
 	})
 	.page(testConfig.adminAppUrl)
 
 test.after(async t => {
-	await cleanupVendorWithName(t.ctx.vendorName, t.fixtureCtx.clientAuth)
-})('Create Vendor | 19967', async t => {
-	await adminHeaderPage.selectAllVendors()
+	await cleanupSupplierWithName(t.ctx.supplierName, t.fixtureCtx.clientAuth)
+})('Create Supplier | 19967', async t => {
+	await adminHeaderPage.selectAllSuppliers()
 	await mainResourcePage.clickCreateButton()
-	const vendorName = await vendorDetailsPage.createDefaultVendor()
-	t.ctx.vendorName = vendorName
-	await t.expect(await mainResourcePage.resourceExists(vendorName)).ok()
+	const supplierName = await supplierDetailsPage.createDefaultSupplier()
+	t.ctx.supplierName = supplierName
+	await t.expect(await mainResourcePage.resourceExists(supplierName)).ok()
 })
 
 test.after(async t => {
@@ -70,11 +70,11 @@ test.after(async t => {
 		t.fixtureCtx.supplierID,
 		t.fixtureCtx.clientAuth
 	)
-})('Create Vendor User | 19968', async t => {
-	await adminHeaderPage.selectVendorUsers()
+})('Create Supplier User | 19968', async t => {
+	await adminHeaderPage.selectSupplierUsers()
 	await minorResourcePage.selectParentResourceDropdown(t.fixtureCtx.supplierID)
 	await minorResourcePage.clickCreateButton()
-	const createdUserEmail = await userDetailsPage.createDefaultVendorUser()
+	const createdUserEmail = await userDetailsPage.createDefaultSupplierUser()
 	t.ctx.createdUserEmail = createdUserEmail
 	await t.expect(await minorResourcePage.resourceExists(createdUserEmail)).ok()
 })
@@ -90,8 +90,8 @@ test.after(async t => {
 		t.fixtureCtx.supplierID,
 		t.fixtureCtx.clientAuth
 	)
-})('Create Vendor Warehouse | 19969', async t => {
-	await adminHeaderPage.selectVendorWarehouses()
+})('Create Supplier Warehouse | 19969', async t => {
+	await adminHeaderPage.selectSupplierWarehouses()
 	await minorResourcePage.selectParentResourceDropdown(t.fixtureCtx.supplierID)
 	await minorResourcePage.clickCreateButton()
 	const warehouseName = await warehouseDetailsPage.createDefaultWarehouse()
@@ -100,8 +100,8 @@ test.after(async t => {
 })
 
 //failing because of: https://four51.atlassian.net/browse/SEB-1065
-test('Assign Roles to Vendor User | 19970', async t => {
-	await adminHeaderPage.selectVendorUsers()
+test('Assign Roles to Supplier User | 19970', async t => {
+	await adminHeaderPage.selectSupplierUsers()
 	await minorResourcePage.selectParentResourceDropdown(t.fixtureCtx.supplierID)
 	await minorResourcePage.clickResource(t.fixtureCtx.supplierUserID)
 	await userDetailsPage.updateUserPermissions()

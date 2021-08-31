@@ -34,7 +34,7 @@ class UserDetailsPage {
 		this.locationAssignments = Selector('user-group-assignments').find('tr')
 	}
 
-	async createDefaultVendorUser() {
+	async createDefaultSupplierUser() {
 		const firstName = faker.name.firstName()
 		const lastName = faker.name.lastName()
 		const firstNameReplaced = firstName.replace(/'/g, '')
@@ -54,9 +54,9 @@ class UserDetailsPage {
 		return email
 	}
 
-	async createVendorUser(
-		userName: string,
+	async createSupplierUser(
 		email: string,
+		userName: string,
 		firstName: string,
 		lastName: string
 	) {
@@ -72,7 +72,7 @@ class UserDetailsPage {
 		await loadingHelper.thisWait()
 	}
 
-	async createDefaultBrandUser() {
+	async createDefaultbuyerUser() {
 		const firstName = faker.name.firstName()
 		const lastName = faker.name.lastName()
 		const firstNameReplaced = firstName.replace(/'/g, '')
@@ -101,7 +101,7 @@ class UserDetailsPage {
 		return email
 	}
 
-	async createDefaultBrandUserWithLocation(location: string) {
+	async createDefaultbuyerUserWithLocation(location: string) {
 		const firstName = faker.name.firstName()
 		const lastName = faker.name.lastName()
 		const firstNameReplaced = firstName.replace(/'/g, '')
