@@ -1,19 +1,30 @@
 {
 	"name": "e2e",
 	"version": "1.0.0",
-	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"testCafe_CI_Execute_Tests": "node cli-scripts/execute-tests"
+		"single-test": "testcafe chrome --assertion-timeout 30000 --page-load-timeout 30000 --skip-js-errors --debug-on-fail --test",
+		"full-tests": "node cli-scripts/full-tests",
+		"testcafe": "testcafe",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"testCafe_chrome": "testcafe chrome tests/",
+		"testCafe_ie": "testcafe IE tests/",
+		"testCafe_firefox": "testcafe firefox tests/",
+		"testCafe_CI_Execute_Tests": "node cli-scripts/execute-tests",
+		"testCafe_CI_Execute_Smoke_Tests": "node cli-scripts/execute-smoke-tests",
+		"testcafe_smoke": "testcafe -c 6 chrome:headless tests/ --test-meta TestRun=Smoke -e --page-load-timeout 60000 --assertion-timeout 60000 --selector-timeout 60000",
+		"format": "eslint **/*.ts --fix && eslint **/*.js --fix"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "Four51",
 	"license": "ISC",
 	"devDependencies": {
+		"@applitools/eyes-testcafe": "^1.11.1",
+		"@ordercloud/headstart-sdk": "^1.23.6",
 		"@types/faker": "^4.1.5",
 		"@typescript-eslint/eslint-plugin": "^2.18.0",
 		"@typescript-eslint/parser": "^2.18.0",
-		"axios": "^0.18.0",
+		"axios": "^0.21.1",
 		"chalk": "^2.4.2",
 		"dotenv": "^8.2.0",
 		"eslint": "^6.8.0",
@@ -22,10 +33,9 @@
 		"faker": "^4.1.0",
 		"ordercloud-javascript-sdk": "^4.0.0",
 		"prettier": "^1.19.1",
-		"testcafe": "^1.8.6",
+		"testcafe": "^1.14.0",
 		"testcafe-reporter-html": "^1.4.4",
-		"testcafe-reporter-testcafe-to-testrail": "^1.0.0-alpha.0",
-		"@ordercloud/headstart-sdk": "^1.8.3",
-		"@applitools/eyes-testcafe": "^1.11.1"
-	}
+		"testcafe-reporter-testcafe-to-testrail": "^1.0.0-alpha.0"
+	},
+	"dependencies": {}
 }

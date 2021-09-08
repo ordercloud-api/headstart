@@ -53,6 +53,7 @@ class ProductDetailsPage {
 		this.createButton = Selector('button')
 			.withText(createRegExp('create'))
 			.withAttribute('type', 'submit')
+		this.acceptChangesButton = Selector('button').withText('Accept')
 		this.sizeTierDropdown = Selector('#SizeTier')
 		this.sizeTierOptions = this.sizeTierDropdown.find('option')
 		this.buyerList = Selector('.list-group-item')
@@ -64,6 +65,7 @@ class ProductDetailsPage {
 	async createDefaultStandardProduct() {
 		const productName = `AutomationProduct_${randomString(5)}`
 		await t.typeText(this.nameField, productName)
+		await t.click(this.activeToggle)
 		await t.typeText(this.quantityPerUnitField, '1')
 		await t.typeText(this.unitOfMeasureField, 'Unit')
 		await scrollIntoView('#TaxCodeCategory')
@@ -97,6 +99,8 @@ class ProductDetailsPage {
 		const productName = `AutomationProduct_${randomString(5)}`
 		await t.typeText(this.nameField, productName)
 		await t.click(this.activeToggle)
+		await scrollIntoView('.custom-control.custom-checkbox')
+		await t.wait(3000)
 		await t.typeText(this.quantityPerUnitField, '1')
 		await t.typeText(this.unitOfMeasureField, 'Unit')
 		await scrollIntoView('#TaxCodeCategory')
@@ -105,13 +109,14 @@ class ProductDetailsPage {
 		await t.click(this.taxCodeDropdown)
 		await t.click(
 			this.taxCodeOptions.withText(
-				createRegExp('delivery by company vehicle')
+				createRegExp('delivery by company vehicle after passage of title')
 			)
 		)
 		await t.click(this.shipAddressDropdown)
 		await t.click(
 			this.shipAddressOptions.withText(createRegExp('automation'))
 		)
+		await scrollIntoView('#SizeTier')
 		await t.typeText(this.productWeightField, '5')
 		await t.click(this.sizeTierDropdown)
 		await t.click(
@@ -171,7 +176,7 @@ class ProductDetailsPage {
 		await loadingHelper.waitForLoadingBar()
 	}
 
-	async clickacceptChangesButton() {
+	async clickAcceptChangesButton() {
 		await t.click(this.acceptChangesButton)
 		await loadingHelper.waitForLoadingBar()
 	}

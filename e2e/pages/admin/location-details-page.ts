@@ -26,10 +26,7 @@ class LocationDetailsPage {
 			.withText(createRegExp('create'))
 			.withAttribute('type', 'submit')
 		this.locationNameField = Selector('#LocationName')
-		this.companyNameField = Selector('input').withAttribute(
-			'formcontrolname',
-			'CompanyName'
-		)
+		this.companyNameField = Selector('input').withAttribute('formcontrolname', "CompanyName")
 		this.street1Field = Selector('input').withAttribute(
 			'formcontrolname',
 			'Street1'
@@ -67,6 +64,8 @@ class LocationDetailsPage {
 		await t.typeText(this.phoneField, '1231231234')
 		await t.typeText(this.emailField, `${locationName}.hpmqx9la@mailosaur.io`)
 		await t.typeText(this.locationIDField, locationName)
+		await scrollIntoView('.row.pt-3.mt-3.bg-white.shadow-sm.card-highlight-border')
+		await t.click(this.catalogAssignments)
 		await scrollIntoView(`button[type="submit"]`)
 		await t.click(this.createButton)
 

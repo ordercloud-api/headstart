@@ -4,25 +4,22 @@ import {
 	adminClientSetup,
 	buyerTestSetup,
 	baseTestCleanup,
+	existingBuyerTestSetup,
 } from '../../../helpers/test-setup'
 import buyerHeaderPage from '../../../pages/buyer/buyer-header-page'
 import addressBookPage from '../../../pages/buyer/address-book-page'
 import addressBookForm from '../../../pages/buyer/address-book-form'
+import { createDefaultBuyer } from '../../../api-utils.ts/buyer-util'
+import { createDefaultCatalog } from '../../../api-utils.ts/catalog-util'
+import { createDefaultBuyerLocation, createDefaultCanadianBuyerLocation } from '../../../api-utils.ts/buyer-locations-util'
 
 fixture`Address Tests (CA)`
-	.meta('TestRun', '1')
+	.meta('TestRun', 'HS')
 	.before(async ctx => {
 		ctx.adminClientAuth = await adminClientSetup()
 	})
 	.beforeEach(async t => {
-		t.ctx.testUser = await buyerTestSetup(t.fixtureCtx.adminClientAuth, 'CA')
-	})
-	.afterEach(async t => {
-		await baseTestCleanup(
-			t.ctx.testUser.ID,
-			'0005',
-			t.fixtureCtx.adminClientAuth
-		)
+		t.ctx.testUser = await existingBuyerTestSetup(`${testConfig.buyerUsername}11`, testConfig.BuyerPassword)
 	})
 	.page(testConfig.buyerAppUrl)
 
@@ -44,6 +41,8 @@ test('Can I add a Canadian address? | 20091', async t => {
 			)
 		)
 		.ok()
+	await addressBookPage.clickDeleteAddressButton()
+	await addressBookPage.clickConfirmDeleteAddressButton()
 })
 
 test('Can I edit a Canadian address? | 20092', async t => {
@@ -87,4 +86,6 @@ test('Can I edit a Canadian address? | 20092', async t => {
 			)
 		)
 		.ok()
+	await addressBookPage.clickDeleteAddressButton()
+	await addressBookPage.clickConfirmDeleteAddressButton()
 })

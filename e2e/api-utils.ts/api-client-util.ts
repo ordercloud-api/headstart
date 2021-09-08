@@ -6,12 +6,12 @@ export async function getApiClient(clientID: string, clientAuth: string) {
 		requestType: 'Cleanup',
 	})
 
-	if (client.AppName.includes('AutomationVendor_')) return client
+	if (client.AppName.includes('AutomationSupplier_')) return client
 }
 
 export async function deleteApiClient(clientID: string, clientAuth: string) {
 	const client = await getApiClient(clientID, clientAuth)
-	if (client.AppName.includes('AutomationVendor_')) {
+	if (client.AppName.includes('AutomationSupplier_')) {
 		await OrderCloudSDK.ApiClients.Delete(clientID, {
 			accessToken: clientAuth,
 			requestType: 'Cleanup',

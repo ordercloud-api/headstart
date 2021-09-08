@@ -25,12 +25,12 @@ class MinorResourcePage {
 	async selectParentResourceDropdown(resource: string) {
 		await t.click(this.parentResourceDropdown)
 		await t.typeText(this.parentResourceSearch, resource)
-		const vendorOption = this.parentResourceDropdown
+		const supplierOption = this.parentResourceDropdown
 			.parent()
 			.find('.ps-content')
 			.find('span')
 			.withText(createRegExp(resource))
-		await t.click(vendorOption)
+		await t.click(supplierOption)
 		await loadingHelper.waitForLoadingBar()
 	}
 
@@ -38,6 +38,7 @@ class MinorResourcePage {
 		//wait for element to exist, then return if it exists
 		//kinda silly, but want to do the assertion in the test, not here
 		const resourceElement = this.resourceList.withText(resource)
+		await t.wait(30)
 		await t.expect(resourceElement.exists).ok()
 		return await resourceElement.exists
 	}

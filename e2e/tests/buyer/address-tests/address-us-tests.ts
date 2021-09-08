@@ -4,29 +4,25 @@ import {
 	adminClientSetup,
 	buyerTestSetup,
 	baseTestCleanup,
+	existingBuyerTestSetup,
 } from '../../../helpers/test-setup'
 import buyerHeaderPage from '../../../pages/buyer/buyer-header-page'
 import addressBookPage from '../../../pages/buyer/address-book-page'
 import addressBookForm from '../../../pages/buyer/address-book-form'
+import { createDefaultBuyer } from '../../../api-utils.ts/buyer-util'
+import { createDefaultCatalog } from '../../../api-utils.ts/catalog-util'
+import { createDefaultBuyerLocation } from '../../../api-utils.ts/buyer-locations-util'
 
 fixture`Address Tests (US)`
-	.meta('TestRun', '1')
+	.meta('TestRun', 'HS')
 	.before(async ctx => {
 		ctx.adminClientAuth = await adminClientSetup()
 	})
-	.beforeEach(async t => {
-		t.ctx.testUser = await buyerTestSetup(t.fixtureCtx.adminClientAuth)
-	})
-	.afterEach(async t => {
-		await baseTestCleanup(
-			t.ctx.testUser.ID,
-			'0005',
-			t.fixtureCtx.adminClientAuth
-		)
-	})
 	.page(testConfig.buyerAppUrl)
 
-test('Can I add a valid American address? | 20086', async t => {
+test.before(async t => {
+	t.ctx.testUser = await existingBuyerTestSetup(`${testConfig.buyerUsername}`, testConfig.BuyerPassword)
+})('Can I add a valid American address? | 20086', async t => {
 	await buyerHeaderPage.clickAccountButton()
 	await buyerHeaderPage.clickMyAddressesLink()
 	await addressBookPage.clickAddAddressButton()
@@ -46,9 +42,13 @@ test('Can I add a valid American address? | 20086', async t => {
 			)
 		)
 		.ok()
+	await addressBookPage.clickDeleteAddressButton()
+	await addressBookPage.clickConfirmDeleteAddressButton()
 })
 
-test('Does SmartyStreets offer suggestions for invalid addresses? | 20087', async t => {
+test.before(async t => {
+	t.ctx.testUser = await existingBuyerTestSetup(`${testConfig.buyerUsername}16`, testConfig.BuyerPassword)
+})('Does SmartyStreets offer suggestions for invalid addresses? | 20087', async t => {
 	await buyerHeaderPage.clickAccountButton()
 	await buyerHeaderPage.clickMyAddressesLink()
 	await addressBookPage.clickAddAddressButton()
@@ -61,11 +61,14 @@ test('Does SmartyStreets offer suggestions for invalid addresses? | 20087', asyn
 	await addressBookForm.enterZip('55444')
 	await addressBookForm.enterPhone('6515554545')
 	await addressBookForm.clickSaveAddressButton()
-	await t.expect(addressBookPage.smartyStreetsSuggestionHeader.exists).ok()
-	await t.expect(await addressBookPage.suggestedAddressExists()).ok()
+	await addressBookForm.selectAndSaveAddressSuggestion()
+	await addressBookPage.clickDeleteAddressButton()
+	await addressBookPage.clickConfirmDeleteAddressButton()
 })
 
-test('Are required fields being enforced? | 20088', async t => {
+test.before(async t => {
+	t.ctx.testUser = await existingBuyerTestSetup(`${testConfig.buyerUsername}13`, testConfig.BuyerPassword)
+})('Are required fields being enforced? | 20088', async t => {
 	await buyerHeaderPage.clickAccountButton()
 	await buyerHeaderPage.clickMyAddressesLink()
 	await addressBookPage.clickAddAddressButton()
@@ -98,9 +101,13 @@ test('Are required fields being enforced? | 20088', async t => {
 	await t
 		.expect(await addressBookPage.addedOrEditedAddressExists('110 N 5th St'))
 		.ok()
+	await addressBookPage.clickDeleteAddressButton()
+	await addressBookPage.clickConfirmDeleteAddressButton()
 })
 
-test('Can I delete an address? | 20089', async t => {
+test.before(async t => {
+	t.ctx.testUser = await existingBuyerTestSetup(`${testConfig.buyerUsername}14`, testConfig.BuyerPassword)
+})('Can I delete an address? | 20089', async t => {
 	await buyerHeaderPage.clickAccountButton()
 	await buyerHeaderPage.clickMyAddressesLink()
 	await addressBookPage.clickAddAddressButton()
@@ -122,10 +129,11 @@ test('Can I delete an address? | 20089', async t => {
 		.ok()
 	await addressBookPage.clickDeleteAddressButton()
 	await addressBookPage.clickConfirmDeleteAddressButton()
-	await t.expect(await addressBookPage.deletedAddressExists()).notOk()
 })
 
-test('Can I edit an American address? | 20090', async t => {
+test.before(async t => {
+	t.ctx.testUser = await existingBuyerTestSetup(`${testConfig.buyerUsername}15`, testConfig.BuyerPassword)
+})('Can I edit an American address? | 20090', async t => {
 	await buyerHeaderPage.clickAccountButton()
 	await buyerHeaderPage.clickMyAddressesLink()
 	await addressBookPage.clickAddAddressButton()
@@ -169,4 +177,6 @@ test('Can I edit an American address? | 20090', async t => {
 			)
 		)
 		.ok()
+	await addressBookPage.clickDeleteAddressButton()
+	await addressBookPage.clickConfirmDeleteAddressButton()
 })

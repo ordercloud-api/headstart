@@ -5,6 +5,7 @@ import {
     adminClientSetup,
     buyerTestSetup,
     baseTestCleanup,
+    existingBuyerTestSetup,
 } from '../../helpers/test-setup'
 import buyerHeaderPage from '../../pages/buyer/buyer-header-page'
 import '../../helpers/loading-helper'
@@ -15,23 +16,66 @@ import myProfilePage from '../../pages/buyer/my-profile-page'
 import myAddressesPage from '../../pages/buyer/my-addresses-page'
 import myLocationsPage from '../../pages/buyer/my-locations-page'
 import myCreditCardsPage from '../../pages/buyer/my-credit-cards-page'
+import { createDefaultBuyer, deleteBuyer } from '../../api-utils.ts/buyer-util'
+import { createDefaultCatalog, deleteCatalog, saveCatalogProductAssignment } from '../../api-utils.ts/catalog-util'
+import { createDefaultBuyerLocation, deleteBuyerLocation } from '../../api-utils.ts/buyer-locations-util'
+import { userClientAuth, supplierUserRoles } from '../../api-utils.ts/auth-util'
+import { createDefaultProduct, deleteProduct, saveProductAssignment } from '../../api-utils.ts/product-util'
+import { createDefaultSupplierAddress } from '../../api-utils.ts/warehouse-util'
+import { delay } from '../../helpers/wait-helper'
 
 const getLocation = ClientFunction(() => document.location.href)
 
 fixture`Homepage Tests`
-    .meta('TestRun', '1')
+    .meta('TestRun', 'HS')
     .before(async ctx => {
-        ctx.adminClientAuth = await adminClientSetup()
+        ctx.clientAuth = await adminClientSetup()
+        ctx.supplierUserAuth = await userClientAuth(
+            testConfig.adminAppClientID,
+            testConfig.adminSupplierUsername,
+            testConfig.adminSupplierPassword,
+            supplierUserRoles
+        )
+        ctx.warehouseID = await createDefaultSupplierAddress(
+            testConfig.adminSupplierID,
+            ctx.clientAuth
+        )
+        ctx.productID = await createDefaultProduct(
+            ctx.warehouseID,
+            ctx.supplierUserAuth
+        )
+        ctx.buyerID = await createDefaultBuyer(ctx.clientAuth)
+        const catalog = await createDefaultCatalog(ctx.buyerID, ctx.clientAuth)
+        ctx.catalogID = catalog.ID
+        const location = await createDefaultBuyerLocation(
+            ctx.buyerID,
+            ctx.clientAuth,
+        )
+        ctx.locationID = location.Address.ID
+        //wait 30 seconds to let everything get setup
+        await delay(30000)
+        ctx.productID = await createDefaultProduct(
+            ctx.warehouseID,
+            ctx.supplierUserAuth
+        )
+        await saveCatalogProductAssignment(ctx.buyerID, ctx.productID, ctx.clientAuth)
+        await saveProductAssignment(
+            ctx.buyerID,
+            ctx.productID,
+            ctx.catalogID,
+            ctx.clientAuth
+        )
     })
     .beforeEach(async t => {
-        t.ctx.testUser = await buyerTestSetup(t.fixtureCtx.adminClientAuth)
+        t.ctx.testUser = await existingBuyerTestSetup(`${testConfig.buyerUsername}4`, testConfig.BuyerPassword)
+
     })
-    .afterEach(async t => {
-        await baseTestCleanup(
-            t.ctx.testUser.ID,
-            '0005',
-            t.fixtureCtx.adminClientAuth
-        )
+    .after(async ctx => {
+        await deleteProduct(ctx.productID, ctx.supplierUserAuth)
+        await deleteBuyerLocation(ctx.buyerID, ctx.locationID, ctx.clientAuth)
+        await deleteCatalog(ctx.catalogID, ctx.buyerID, ctx.clientAuth)
+        await deleteBuyer(ctx.buyerID, ctx.clientAuth)
+
     })
     .page(testConfig.buyerAppUrl)
 
@@ -41,7 +85,7 @@ test('Can I click brand hyperlink and be brought to homepage? | 2433', async t =
     await buyerHeaderPage.clickHomepageBrandLogo()
     // Assert that you're brought to home
     await t.expect(getLocation()).contains('home')
-    await t.expect(homepage.featuredProductsH3.exists).ok()
+
 })
 
 test('Can I navigate to products list page? | 2434', async t => {

@@ -1,3 +1,4 @@
+import { HeadStartSDK, HSCatalogAssignmentRequest } from '@ordercloud/headstart-sdk'
 import * as OrderCloudSDK from 'ordercloud-javascript-sdk'
 import randomString from '../helpers/random-string'
 import testConfig from '../testConfig'
@@ -51,7 +52,7 @@ export async function createDefaultCatalog(
 	buyerID: string,
 	clientAuth: string
 ) {
-	const catalog: OrderCloudSDK.Buyer = {
+	const catalog: OrderCloudSDK.Catalog = {
 		Name: `AutomationCatalog_${randomString(5)}`,
 		xp: {
 			Type: 'Catalog',
@@ -67,4 +68,26 @@ export async function createDefaultCatalog(
 	)
 
 	return createdCatalog
+}
+
+
+export async function setCatalogtoLocationAssignment(
+	buyerID: string, locationID: string, hSCatalogAssignmentRequest: HSCatalogAssignmentRequest, accessToken?: string
+) {
+	await HeadStartSDK.Catalogs.SetAssignments(
+		buyerID, locationID, hSCatalogAssignmentRequest, accessToken)
+}
+
+
+
+
+export async function saveCatalogProductAssignment(
+	catalogID: string,
+	productID: string,
+	clientAuth: string
+) {
+	await OrderCloudSDK.Catalogs.SaveProductAssignment(
+		{ CatalogID: catalogID, ProductID: productID },
+		{ accessToken: clientAuth }
+	)
 }

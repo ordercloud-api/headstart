@@ -3,10 +3,11 @@ import randomString from '../helpers/random-string'
 import testConfig from '../testConfig'
 import {
 	HeadStartSDK,
-	MarketplaceLocationUserGroup,
-	MarketplaceBuyerLocation,
+	HSLocationUserGroup,
+	HSBuyerLocation,
 } from '@ordercloud/headstart-sdk'
 import { t } from 'testcafe'
+import { CatalogAssignment } from 'ordercloud-javascript-sdk'
 
 export async function getBuyerLocationID(
 	locationName: string,
@@ -51,7 +52,7 @@ export async function deleteBuyerLocationWithName(
 
 export async function createDefaultBuyerLocation(
 	buyerID: string,
-	clientAuth: string
+	clientAuth: string,
 ) {
 	const addressName = `AutomationLocation_${randomString(5)}`
 
@@ -71,26 +72,33 @@ export async function createDefaultBuyerLocation(
 			Accessorials: null,
 			AvalaraCertificateExpiration: null,
 			AvalaraCertificateID: null,
+			BillingNumber: null,
 			Coordinates: null,
+			LegalEntity: null,
+			LocationID: null,
+			OpeningDate: null,
+			PrimaryContactName: null,
+			Status: null,
 			Email: `${addressName}.hpmqx9la@mailosaur.io`,
-			LocationID: addressName,
 		},
 	}
 
-	const locationUserGroup: MarketplaceLocationUserGroup = {
+	const locationUserGroup: HSLocationUserGroup = {
 		Name: addressName,
 		// ID: `${buyerID}-{${buyerID}-LocationIncrementor}`,
 		ID: '',
 		xp: {
-			Country: 'US',
-			Currency: 'USD',
-			Type: 'BuyerLocation',
+			Country: "US",
+			Currency: "USD",
+			Role: null,
+			Type: "BuyerLocation"
 		},
 	}
 
-	const marketplaceBuyerLocation: MarketplaceBuyerLocation = {
+	const marketplaceBuyerLocation: HSBuyerLocation = {
 		UserGroup: locationUserGroup,
 		Address: location,
+
 	}
 
 	const createdLocation = await HeadStartSDK.BuyerLocations.Create(
@@ -101,7 +109,66 @@ export async function createDefaultBuyerLocation(
 
 	return createdLocation
 }
+export async function createDefaultCanadianBuyerLocation(
+	buyerID: string,
+	clientAuth: string
+) {
+	const addressName = `AutomationLocation_${randomString(5)}`
 
+	const location: OrderCloudSDK.Address = {
+		// ID: `${buyerID}-{${buyerID}-LocationIncrementor}`,
+		ID: '',
+		AddressName: addressName,
+		City: 'Mississauga',
+		CompanyName: addressName,
+		Country: 'CA',
+		State: 'ON',
+		Street1: '1150 Lorne Park Rd',
+		Zip: 'L5H 3A7',
+		Phone: '1231231234',
+		//not sure if these xp values are needed, but this is returned from the API for a created location
+		xp: {
+			Accessorials: null,
+			AvalaraCertificateExpiration: null,
+			AvalaraCertificateID: null,
+			BillingNumber: null,
+			Coordinates: null,
+			LegalEntity: null,
+			LocationID: null,
+			OpeningDate: null,
+			PrimaryContactName: null,
+			Status: null,
+			Email: `${addressName}.hpmqx9la@mailosaur.io`,
+		},
+	}
+
+	const locationUserGroup: HSLocationUserGroup = {
+		Name: addressName,
+		// ID: `${buyerID}-{${buyerID}-LocationIncrementor}`,
+		ID: '',
+		xp: {
+			CatalogAssignments: null,
+			Country: "CA",
+			Currency: "CAD",
+			Role: null,
+			Type: "BuyerLocation"
+		},
+	}
+
+	const marketplaceBuyerLocation: HSBuyerLocation = {
+		UserGroup: locationUserGroup,
+		Address: location,
+
+	}
+
+	const createdLocation = await HeadStartSDK.BuyerLocations.Create(
+		buyerID,
+		marketplaceBuyerLocation,
+		clientAuth
+	)
+
+	return createdLocation
+}
 export async function deleteBuyerLocation(
 	buyerID: string,
 	locationID: string,

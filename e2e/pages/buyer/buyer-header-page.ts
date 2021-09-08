@@ -23,8 +23,8 @@ class BuyerHeaderPage {
 		this.accountDropdown = Selector('#accountDropdown').withText(
 			createRegExp('account')
 		)
-		this.homepageBrandLogo = Selector('img').withAttribute('class', 'logo')
-		this.logoutButton = Selector('a').withAttribute('href', '/login')
+		this.homepageBrandLogo = Selector('.navbar-brand.clickable.cursor-pointer.ng-tns-c247-0')
+		this.logoutButton = Selector('a').withText('Logout')
 		this.productsLink = Selector('a').withText(createRegExp('products'))
 		this.suppliersLink = Selector('#suppliers-link')
 		this.searchBar = Selector('#search-addon')
