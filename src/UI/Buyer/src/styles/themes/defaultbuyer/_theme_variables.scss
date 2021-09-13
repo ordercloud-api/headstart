@@ -5,3 +5,57 @@
 // to start you off. want to see the full list of bootstrap variables?
 // check out node_modules/bootstrap/variables.scss
 // --------------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------------
+// This file should include variable overrides as well as custom variables
+//
+// we've included a subset of common bootstrap variables you might want to override
+// to start you off. want to see the full list of bootstrap variables?
+// check out node_modules/bootstrap/variables.scss
+// --------------------------------------------------------------------------------------
+
+$blue:    #AFD2E9; // Uranian blue
+$indigo:  #6610f2;
+$purple:  #6f42c1;
+$pink:    #e83e8c;
+$red:     #e31519;  // aktion-mensch red
+$orange:  #fd7e14;
+$yellow:  #FFD166; // orange yellow crayola
+$green:   #17987d; // aktion-mensch green
+$teal:    #20c997;
+$cyan:    #17a2b8;
+
+$white:    #fff;
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #6c757d;
+$gray-700: #495057;
+$gray-800: #343a40;
+$gray-900: #212529;
+$black:    #000;
+
+$primary:       $red;
+$secondary:     $gray-600;
+$success:       $green;
+$info:          $cyan;
+$warning:       $yellow;
+$danger:        $red;
+$light:         $gray-100;
+$medium:        $gray-500;
+$dark:          $gray-800;
+
+
+// .img-thumbnail
+$thumbnail-border-color:      $light;
+$thumbnail-border-width:      .5px;
+$thumbnail-box-shadow:        0 .125rem .25rem rgba($black, .075); // this is $box-shadow-sm
+$thumbnail-border-radius:     unset;
+$thumbnail-padding:           unset;
+
+// Typography
+@import '_typography.scss';
+
+$font-family-sans-serif:      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+$font-family-base:            'Arial Rounded', $font-family-sans-serif;
