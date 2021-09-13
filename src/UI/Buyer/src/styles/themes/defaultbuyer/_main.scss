@@ -1,12 +1,12 @@
 @charset 'UTF-8';
 
-// Required Bootstrap First
+// Custom Theme Variable Overrides
+@import '_theme_variables';
+
+// Bootstrap
 @import "~bootstrap/scss/functions";
 @import "~bootstrap/scss/variables";
 @import "~bootstrap/scss/mixins";
-
-// Custom Theme Variable Overrides
-@import '_theme_variables';
 
 // Vendors
 @import '../../vendor/bootstrap',
