@@ -13,7 +13,7 @@ namespace Headstart.Common.Controllers.Avalara
 	///  Avalara Tax Functionality
 	/// </summary>
 	[Route("avalara")]
-	public class AvalaraController : BaseController
+	public class AvalaraController : CatalystController
 	{
 		private readonly IAvalaraCommand _avalara;
 		private readonly IResaleCertCommand _resaleCertCommand;

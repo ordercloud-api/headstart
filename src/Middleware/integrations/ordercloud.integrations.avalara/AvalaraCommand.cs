@@ -188,7 +188,7 @@ namespace ordercloud.integrations.avalara
 				}
 				catch (AvaTaxError e)
 				{
-					throw new CatalystBaseException("AvalaraTaxError", 400, e.error.error.message, e.error.error);
+					throw new CatalystBaseException("AvalaraTaxError", e.error.error.message, e.error.error, 400);
 				}
 			} else
             {

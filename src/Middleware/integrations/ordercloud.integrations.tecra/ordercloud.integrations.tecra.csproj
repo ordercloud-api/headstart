@@ -8,11 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Flurl" Version="3.0.1" />
-    <PackageReference Include="OrderCloud.SDK" Version="0.10.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ordercloud.integrations.library\ordercloud.integrations.library.csproj" />
   </ItemGroup>
 

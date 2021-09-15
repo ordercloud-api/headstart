@@ -13,7 +13,7 @@ namespace Headstart.Common.Controllers
 	/// Catalogs for product groupings and visibility in Headstart
 	/// </summary>
 	[Route("buyers")]
-	public class CatalogController : BaseController
+	public class CatalogController : CatalystController
 	{
 
 		private readonly IHSCatalogCommand _command;

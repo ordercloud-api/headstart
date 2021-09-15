@@ -22,7 +22,7 @@ namespace Headstart.API.Commands
     {
         Task<ShipEstimateResponse> GetRatesAsync(HSOrderCalculatePayload orderCalculatePayload);
         Task<HSOrderCalculateResponse> CalculateOrder(HSOrderCalculatePayload orderCalculatePayload);
-        Task<HSOrderCalculateResponse> CalculateOrder(string orderID, VerifiedUserContext user);
+        Task<HSOrderCalculateResponse> CalculateOrder(string orderID, DecodedToken decodedToken);
         Task<ShipEstimateResponse> GetRatesAsync(string orderID);
     }
 
@@ -265,9 +265,9 @@ namespace Headstart.API.Commands
             return estimates;
         }
 
-        public async Task<HSOrderCalculateResponse> CalculateOrder(string orderID, VerifiedUserContext user)
+        public async Task<HSOrderCalculateResponse> CalculateOrder(string orderID, DecodedToken decodedToken)
         {
-            var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID, user.AccessToken);
+            var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID, decodedToken.AccessToken);
             return await this.CalculateOrder(new HSOrderCalculatePayload()
             {
                 ConfigData = null,

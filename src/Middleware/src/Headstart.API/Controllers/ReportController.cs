@@ -17,7 +17,7 @@ namespace Headstart.Common.Controllers
     ///  For generating and downloading reports in the Admin application
     /// </summary>
     [Route("reports")]
-    public class ReportController : BaseController
+    public class ReportController : CatalystController
     {
         private readonly IHSReportCommand _reportDataCommand;
 		private readonly DownloadReportCommand _downloadReportCommand;

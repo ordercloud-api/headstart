@@ -15,7 +15,7 @@ namespace Headstart.Common.Controllers
     /// Payment commands in Headstart
     /// </summary>
     [Route("payments")]
-    public class PaymentController : BaseController
+    public class PaymentController : CatalystController
     {
 
         private readonly IPaymentCommand _command;

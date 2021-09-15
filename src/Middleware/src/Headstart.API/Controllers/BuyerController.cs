@@ -13,7 +13,7 @@ namespace Headstart.Common.Controllers
     /// Buyers for Headstart
     /// </summary>
     [Route("buyer")]
-    public class BuyerController : BaseController
+    public class BuyerController : CatalystController
     {
         
         private readonly IHSBuyerCommand _command;
