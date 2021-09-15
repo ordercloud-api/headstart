@@ -24,7 +24,7 @@ namespace Headstart.API.Commands
     {
         Task<OrderSubmitResponse> HandleBuyerOrderSubmit(HSOrderWorksheet order);
         Task<OrderSubmitResponse> HandleZohoRetry(string orderID);
-        Task<OrderSubmitResponse> HandleShippingValidate(string orderID, VerifiedUserContext user);
+        Task<OrderSubmitResponse> HandleShippingValidate(string orderID, DecodedToken decodedToken);
     }
 
     public class PostSubmitCommand : IPostSubmitCommand
@@ -53,7 +53,7 @@ namespace Headstart.API.Commands
             _settings = settings;
         }
 
-        public async Task<OrderSubmitResponse> HandleShippingValidate(string orderID, VerifiedUserContext user)
+        public async Task<OrderSubmitResponse> HandleShippingValidate(string orderID, DecodedToken decodedToken)
         {
             var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
             return await CreateOrderSubmitResponse(

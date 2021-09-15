@@ -9,7 +9,7 @@ using Headstart.Models;
 namespace Headstart.API.Controllers
 {
     [Route("assets")]
-    public class AssetController : BaseController
+    public class AssetController : CatalystController
     {
         private readonly IAssetClient _command;
         public AssetController(IAssetClient command)

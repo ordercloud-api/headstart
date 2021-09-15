@@ -5,14 +5,15 @@ using Headstart.Models.Misc;
 using Headstart.Models;
 using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
+using Require = ordercloud.integrations.library.Require;
 
 namespace Headstart.API.Commands
 {
     public interface IResaleCertCommand
     {
-        Task<TaxCertificate> GetAsync(string locationID, VerifiedUserContext verifiedUser);
-        Task<TaxCertificate> CreateAsync(string locationID, TaxCertificate cert, VerifiedUserContext verifiedUser);
-        Task<TaxCertificate> UpdateAsync(string locationID, TaxCertificate cert, VerifiedUserContext verifiedUser);
+        Task<TaxCertificate> GetAsync(string locationID, DecodedToken decodedToken);
+        Task<TaxCertificate> CreateAsync(string locationID, TaxCertificate cert, DecodedToken decodedToken);
+        Task<TaxCertificate> UpdateAsync(string locationID, TaxCertificate cert, DecodedToken decodedToken);
     }
 
     public class ResaleCertCommand : IResaleCertCommand
@@ -28,9 +29,9 @@ namespace Headstart.API.Commands
             _locationPermissionCommand = locationPermissionCommand;
         }
 
-        public async Task<TaxCertificate> GetAsync(string locationID, VerifiedUserContext verifiedUser)
+        public async Task<TaxCertificate> GetAsync(string locationID, DecodedToken decodedToken)
         {
-            await EnsureUserCanManageLocationResaleCert(locationID, verifiedUser);
+            await EnsureUserCanManageLocationResaleCert(locationID, decodedToken);
             var buyerID = locationID.Split('-')[0];
             var address = await _oc.Addresses.GetAsync<HSAddressBuyer>(buyerID, locationID);
             if(address.xp.AvalaraCertificateID != null)
@@ -42,9 +43,9 @@ namespace Headstart.API.Commands
             }
         }
 
-        public async Task<TaxCertificate> CreateAsync(string locationID, TaxCertificate cert, VerifiedUserContext verifiedUser)
+        public async Task<TaxCertificate> CreateAsync(string locationID, TaxCertificate cert, DecodedToken decodedToken)
         {
-            await EnsureUserCanManageLocationResaleCert(locationID, verifiedUser);
+            await EnsureUserCanManageLocationResaleCert(locationID, decodedToken);
             var buyerID = locationID.Split('-')[0];
             var address = await _oc.Addresses.GetAsync<HSAddressBuyer>(buyerID, locationID);
             var createdCert = await _avalara.CreateCertificateAsync(cert, address);
@@ -61,9 +62,9 @@ namespace Headstart.API.Commands
             return createdCert;
         }
 
-        public async Task<TaxCertificate> UpdateAsync(string locationID, TaxCertificate cert, VerifiedUserContext verifiedUser)
+        public async Task<TaxCertificate> UpdateAsync(string locationID, TaxCertificate cert, DecodedToken decodedToken)
         {
-            await EnsureUserCanManageLocationResaleCert(locationID, verifiedUser);
+            await EnsureUserCanManageLocationResaleCert(locationID, decodedToken);
             var buyerID = locationID.Split('-')[0];
             var address = await _oc.Addresses.GetAsync<HSAddressBuyer>(buyerID, locationID);
             Require.That(address.xp.AvalaraCertificateID == cert.ID, new ErrorCode("Insufficient Access", 403, $"User cannot modofiy this cert"));
@@ -72,9 +73,9 @@ namespace Headstart.API.Commands
         }
 
 
-        private async Task EnsureUserCanManageLocationResaleCert(string locationID, VerifiedUserContext verifiedUser)
+        private async Task EnsureUserCanManageLocationResaleCert(string locationID, DecodedToken decodedToken)
         {
-            var hasAccess = await _locationPermissionCommand.IsUserInAccessGroup(locationID, UserGroupSuffix.ResaleCertAdmin.ToString(), verifiedUser);
+            var hasAccess = await _locationPermissionCommand.IsUserInAccessGroup(locationID, UserGroupSuffix.ResaleCertAdmin.ToString(), decodedToken);
             Require.That(hasAccess, new ErrorCode("Insufficient Access", 403, $"User cannot manage resale certs for: {locationID}"));
         }
     };

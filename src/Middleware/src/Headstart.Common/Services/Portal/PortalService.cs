@@ -46,7 +46,6 @@ namespace Headstart.Common.Services
             {
                 throw new CatalystBaseException(
                     ex.Call.Response.StatusCode.ToString(),
-                    400,
                     "Error logging in to portal. Please make sure your username and password are correct");
             }
         }

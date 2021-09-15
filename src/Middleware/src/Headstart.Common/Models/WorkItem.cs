@@ -50,7 +50,7 @@ namespace Headstart.Common.Models
         public JObject Diff { get; set; }
         public string Token { get; set; }
         public string ClientId { get; set; }
-        public VerifiedUserContext User { get; set; }
+        public DecodedToken User { get; set; }
     }
 
     [JsonConverter(typeof(StringEnumConverter))]

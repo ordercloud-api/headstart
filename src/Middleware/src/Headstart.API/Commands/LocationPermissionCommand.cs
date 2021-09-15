@@ -10,22 +10,23 @@ using ordercloud.integrations.library;
 using Headstart.Common.Constants;
 using Azure.Core;
 using OrderCloud.Catalyst;
+using Require = ordercloud.integrations.library.Require;
 
 namespace Headstart.API.Commands
 {
     public interface ILocationPermissionCommand
     {
-        Task<List<UserGroupAssignment>> ListLocationPermissionAsssignments(string buyerID, string locationID, VerifiedUserContext verifiedUser);
-        Task<List<UserGroupAssignment>> ListLocationApprovalPermissionAsssignments(string buyerID, string locationID, VerifiedUserContext verifiedUser);
-        Task<decimal> GetApprovalThreshold(string buyerID, string locationID, VerifiedUserContext verifiedUser);
-        Task<ListPage<HSUser>> ListLocationUsers(string buyerID, string locationID, VerifiedUserContext verifiedUser);
-        Task<List<UserGroupAssignment>> UpdateLocationPermissions(string buyerID, string locationID, LocationPermissionUpdate locationPermissionUpdate, VerifiedUserContext verifiedUser);
-        Task<bool> IsUserInAccessGroup(string locationID, string groupSuffix, VerifiedUserContext verifiedUser);
-        Task<List<UserGroupAssignment>> ListUserUserGroupAssignments(string userGroupType, string parentID, string userID, VerifiedUserContext verifiedUser);
-        Task<ListPage<HSLocationUserGroup>> ListUserGroupsByCountry(ListArgs<HSLocationUserGroup> args, string buyerID, string userID, VerifiedUserContext verifiedUser);
-        Task<ListPage<HSLocationUserGroup>> ListUserGroupsForNewUser(ListArgs<HSLocationUserGroup> args, string buyerID, string userID, VerifiedUserContext verifiedUser);
-        Task<ApprovalRule> SaveApprovalRule(string buyerID, string locationID, ApprovalRule approval, VerifiedUserContext verifiedUser);
-        Task DeleteApprovalRule(string buyerID, string locationID, string approvalID, VerifiedUserContext verifiedUser);
+        Task<List<UserGroupAssignment>> ListLocationPermissionAsssignments(string buyerID, string locationID, DecodedToken decodedToken);
+        Task<List<UserGroupAssignment>> ListLocationApprovalPermissionAsssignments(string buyerID, string locationID, DecodedToken decodedToken);
+        Task<decimal> GetApprovalThreshold(string buyerID, string locationID, DecodedToken decodedToken);
+        Task<ListPage<HSUser>> ListLocationUsers(string buyerID, string locationID, DecodedToken decodedToken);
+        Task<List<UserGroupAssignment>> UpdateLocationPermissions(string buyerID, string locationID, LocationPermissionUpdate locationPermissionUpdate, DecodedToken decodedToken);
+        Task<bool> IsUserInAccessGroup(string locationID, string groupSuffix, DecodedToken decodedToken);
+        Task<List<UserGroupAssignment>> ListUserUserGroupAssignments(string userGroupType, string parentID, string userID, DecodedToken decodedToken);
+        Task<ListPage<HSLocationUserGroup>> ListUserGroupsByCountry(ListArgs<HSLocationUserGroup> args, string buyerID, string userID, DecodedToken decodedToken);
+        Task<ListPage<HSLocationUserGroup>> ListUserGroupsForNewUser(ListArgs<HSLocationUserGroup> args, string buyerID, string userID, DecodedToken decodedToken);
+        Task<ApprovalRule> SaveApprovalRule(string buyerID, string locationID, ApprovalRule approval, DecodedToken decodedToken);
+        Task DeleteApprovalRule(string buyerID, string locationID, string approvalID, DecodedToken decodedToken);
     }
 
     public class LocationPermissionCommand : ILocationPermissionCommand
@@ -37,9 +38,9 @@ namespace Headstart.API.Commands
 			_oc = oc;
         }
 
-        public async Task<List<UserGroupAssignment>> ListLocationPermissionAsssignments(string buyerID, string locationID, VerifiedUserContext verifiedUser)
+        public async Task<List<UserGroupAssignment>> ListLocationPermissionAsssignments(string buyerID, string locationID, DecodedToken decodedToken)
         {
-            await EnsureUserIsLocationAdmin(locationID, verifiedUser);
+            await EnsureUserIsLocationAdmin(locationID, decodedToken);
             var locationUserTypes = HSUserTypes.BuyerLocation().Where(s => s.UserGroupIDSuffix != UserGroupSuffix.NeedsApproval.ToString() || s.UserGroupIDSuffix != UserGroupSuffix.OrderApprover.ToString());
             var userGroupAssignmentResponses = await Throttler.RunAsync(locationUserTypes, 100, 5, locationUserType => {
                 return _oc.UserGroups.ListUserAssignmentsAsync(buyerID, userGroupID: $"{locationID}-{locationUserType.UserGroupIDSuffix}", pageSize: 100);
@@ -50,29 +51,29 @@ namespace Headstart.API.Commands
                 .ToList();
         }
 
-        public async Task<decimal> GetApprovalThreshold(string buyerID, string locationID, VerifiedUserContext verifiedUser)
+        public async Task<decimal> GetApprovalThreshold(string buyerID, string locationID, DecodedToken decodedToken)
         {
-            await EnsureUserIsLocationAdmin(locationID, verifiedUser);
+            await EnsureUserIsLocationAdmin(locationID, decodedToken);
             var approvalRule = await _oc.ApprovalRules.GetAsync(buyerID, locationID);
             var threshold = Convert.ToDecimal(approvalRule.RuleExpression.Split('>')[1]);
             return threshold;
         }
 
-        public async Task<ApprovalRule> SaveApprovalRule(string buyerID, string locationID, ApprovalRule approval, VerifiedUserContext verifiedUser)
+        public async Task<ApprovalRule> SaveApprovalRule(string buyerID, string locationID, ApprovalRule approval, DecodedToken decodedToken)
         {
-            await EnsureUserIsLocationAdmin(locationID, verifiedUser);
+            await EnsureUserIsLocationAdmin(locationID, decodedToken);
             return await _oc.ApprovalRules.SaveAsync(buyerID, approval.ID, approval);
         }
 
-        public async Task DeleteApprovalRule(string buyerID, string locationID, string approvalID, VerifiedUserContext verifiedUser)
+        public async Task DeleteApprovalRule(string buyerID, string locationID, string approvalID, DecodedToken decodedToken)
         {
-            await EnsureUserIsLocationAdmin(locationID, verifiedUser);
+            await EnsureUserIsLocationAdmin(locationID, decodedToken);
             await _oc.ApprovalRules.DeleteAsync(buyerID, approvalID);
         }
 
-        public async Task<List<UserGroupAssignment>> ListLocationApprovalPermissionAsssignments(string buyerID, string locationID, VerifiedUserContext verifiedUser)
+        public async Task<List<UserGroupAssignment>> ListLocationApprovalPermissionAsssignments(string buyerID, string locationID, DecodedToken decodedToken)
         {
-            await EnsureUserIsLocationAdmin(locationID, verifiedUser);
+            await EnsureUserIsLocationAdmin(locationID, decodedToken);
             var locationUserTypes = HSUserTypes.BuyerLocation().Where(s => s.UserGroupIDSuffix == UserGroupSuffix.NeedsApproval.ToString() || s.UserGroupIDSuffix == UserGroupSuffix.OrderApprover.ToString());
             var userGroupAssignmentResponses = await Throttler.RunAsync(locationUserTypes, 100, 5, locationUserType => {
                 return _oc.UserGroups.ListUserAssignmentsAsync(buyerID, userGroupID: $"{locationID}-{locationUserType.UserGroupIDSuffix}", pageSize: 100);
@@ -83,9 +84,9 @@ namespace Headstart.API.Commands
                 .ToList();
         }
 
-        public async Task<List<UserGroupAssignment>> UpdateLocationPermissions(string buyerID, string locationID, LocationPermissionUpdate locationPermissionUpdate, VerifiedUserContext verifiedUser)
+        public async Task<List<UserGroupAssignment>> UpdateLocationPermissions(string buyerID, string locationID, LocationPermissionUpdate locationPermissionUpdate, DecodedToken decodedToken)
         {
-            await EnsureUserIsLocationAdmin(locationID, verifiedUser);
+            await EnsureUserIsLocationAdmin(locationID, decodedToken);
 
             await Throttler.RunAsync(locationPermissionUpdate.AssignmentsToAdd, 100, 5, assignmentToAdd =>
             {
@@ -96,35 +97,36 @@ namespace Headstart.API.Commands
                 return _oc.UserGroups.DeleteUserAssignmentAsync(buyerID, assignmentToDelete.UserGroupID, assignmentToDelete.UserID);
             });
 
-            return await ListLocationPermissionAsssignments(buyerID, locationID, verifiedUser);
+            return await ListLocationPermissionAsssignments(buyerID, locationID, decodedToken);
         }
 
-        public async Task<ListPage<HSUser>> ListLocationUsers(string buyerID, string locationID, VerifiedUserContext verifiedUser)
+        public async Task<ListPage<HSUser>> ListLocationUsers(string buyerID, string locationID, DecodedToken decodedToken)
         {
-            await EnsureUserIsLocationAdmin(locationID, verifiedUser);
+            await EnsureUserIsLocationAdmin(locationID, decodedToken);
             return await _oc.Users.ListAsync<HSUser>(buyerID, userGroupID: locationID);
         }
 
-        public async Task EnsureUserIsLocationAdmin(string locationID, VerifiedUserContext verifiedUser)
+        public async Task EnsureUserIsLocationAdmin(string locationID, DecodedToken decodedToken)
         {
-            var hasAccess = await IsUserInAccessGroup(locationID, UserGroupSuffix.PermissionAdmin.ToString(), verifiedUser);
+            var hasAccess = await IsUserInAccessGroup(locationID, UserGroupSuffix.PermissionAdmin.ToString(), decodedToken);
             Require.That(hasAccess, new ErrorCode("Insufficient Access", 403, $"User cannot manage permissions for: {locationID}"));
         }
 
-        public async Task<bool> IsUserInAccessGroup(string locationID, string groupSuffix, VerifiedUserContext verifiedUser)
+        public async Task<bool> IsUserInAccessGroup(string locationID, string groupSuffix, DecodedToken decodedToken)
         {
-            var buyerID = verifiedUser.Buyer.ID;
+            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            var buyerID = me.Buyer.ID;
             var userGroupID = $"{locationID}-{groupSuffix}";
-            return await IsUserInUserGroup(buyerID, userGroupID, verifiedUser);
+            return await IsUserInUserGroup(buyerID, userGroupID, decodedToken);
         }
 
-        public async Task<List<UserGroupAssignment>> ListUserUserGroupAssignments(string userGroupType, string parentID, string userID, VerifiedUserContext verifiedUser)
+        public async Task<List<UserGroupAssignment>> ListUserUserGroupAssignments(string userGroupType, string parentID, string userID, DecodedToken decodedToken)
         {
-            var userUserGroupAssignments = await GetUserUserGroupAssignments(userGroupType, parentID, userID, verifiedUser);
+            var userUserGroupAssignments = await GetUserUserGroupAssignments(userGroupType, parentID, userID, decodedToken);
             return userUserGroupAssignments;
         }
 
-        public async Task<ListPage<HSLocationUserGroup>> ListUserGroupsByCountry(ListArgs<HSLocationUserGroup> args, string buyerID, string userID, VerifiedUserContext verifiedUser)
+        public async Task<ListPage<HSLocationUserGroup>> ListUserGroupsByCountry(ListArgs<HSLocationUserGroup> args, string buyerID, string userID, DecodedToken decodedToken)
         {
             var user = await _oc.Users.GetAsync(
                 buyerID,
@@ -144,7 +146,7 @@ namespace Headstart.API.Commands
                    );
             } else
             {
-                var userUserGroupAssignments = await GetUserUserGroupAssignments("BuyerLocation", buyerID, userID, verifiedUser);
+                var userUserGroupAssignments = await GetUserUserGroupAssignments("BuyerLocation", buyerID, userID, decodedToken);
                 var userBuyerLocationAssignments = new List<HSLocationUserGroup>();
                 foreach (var assignment in userUserGroupAssignments)
                 {
@@ -171,32 +173,32 @@ namespace Headstart.API.Commands
             return userGroups;
         }
 
-    private async Task<bool> IsUserInUserGroup(string buyerID, string userGroupID, VerifiedUserContext verifiedUser)
+    private async Task<bool> IsUserInUserGroup(string buyerID, string userGroupID, DecodedToken decodedToken)
         {
-            var userGroupAssignmentForAccess = await _oc.UserGroups.ListUserAssignmentsAsync(buyerID, userGroupID, verifiedUser.ID);
+            var userGroupAssignmentForAccess = await _oc.UserGroups.ListUserAssignmentsAsync(buyerID, userGroupID, decodedToken.UserDatabaseID);
             return userGroupAssignmentForAccess.Items.Count > 0;
         }
 
-    public async Task<List<UserGroupAssignment>> GetUserUserGroupAssignments(string userGroupType, string parentID, string userID, VerifiedUserContext verifiedUser)
+    public async Task<List<UserGroupAssignment>> GetUserUserGroupAssignments(string userGroupType, string parentID, string userID, DecodedToken decodedToken)
         {
             if (userGroupType == "UserPermissions")
             {
                 return await  _oc.SupplierUserGroups.ListAllUserAssignmentsAsync(
                    parentID,
                    userID: userID,
-                   accessToken: verifiedUser.AccessToken
+                   accessToken: decodedToken.AccessToken
                    );
             } else
             {
                 return await _oc.UserGroups.ListAllUserAssignmentsAsync(
                    parentID,
                    userID: userID,
-                   accessToken: verifiedUser.AccessToken
+                   accessToken: decodedToken.AccessToken
                    );
             }
         }
 
-        public async Task<ListPage<HSLocationUserGroup>> ListUserGroupsForNewUser(ListArgs<HSLocationUserGroup> args, string buyerID, string homeCountry, VerifiedUserContext verifiedUser)
+        public async Task<ListPage<HSLocationUserGroup>> ListUserGroupsForNewUser(ListArgs<HSLocationUserGroup> args, string buyerID, string homeCountry, DecodedToken decodedToken)
         {
             var userGroups = await _oc.UserGroups.ListAsync<HSLocationUserGroup>(
                    buyerID,

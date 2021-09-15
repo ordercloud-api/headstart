@@ -6,7 +6,7 @@ using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
-    public class EnvironmentSeedController : BaseController
+    public class EnvironmentSeedController : CatalystController
     {
         private readonly IEnvironmentSeedCommand _command;
         private readonly AppSettings _settings;

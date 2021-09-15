@@ -18,7 +18,7 @@ namespace ordercloud.integrations.library
         {
             if (!condition)
             {
-                throw new CatalystBaseException(errorCode.Code, errorCode.HttpStatus, errorCode.DefaultMessage, model);
+                throw new CatalystBaseException(errorCode.Code, errorCode.DefaultMessage, model, errorCode.HttpStatus);
             }
         }
 
@@ -31,7 +31,7 @@ namespace ordercloud.integrations.library
         {
             if (!condition)
             {
-               throw new CatalystBaseException(errorCode.Code, errorCode.HttpStatus, errorCode.DefaultMessage, buildModel());
+               throw new CatalystBaseException(errorCode.Code, errorCode.DefaultMessage, buildModel(), errorCode.HttpStatus);
             }
         }
         /// <summary>
@@ -41,7 +41,7 @@ namespace ordercloud.integrations.library
         {
             if (!condition)
             {
-                throw new CatalystBaseException(errorCode.Code, errorCode.HttpStatus, errorCode.DefaultMessage, data);
+                throw new CatalystBaseException(errorCode.Code, errorCode.DefaultMessage, data, errorCode.HttpStatus);
             }
         }
 
@@ -60,7 +60,7 @@ namespace ordercloud.integrations.library
         public static void Allowed(bool condition, ErrorCode errorCode)
         {
             if (!condition)
-                throw new CatalystBaseException(errorCode.Code, errorCode.HttpStatus, errorCode.DefaultMessage, null);
+                throw new CatalystBaseException(errorCode.Code, errorCode.DefaultMessage, null, errorCode.HttpStatus);
         }
 
         public static void DoesNotExist<TModel>(object thing, Func<TModel> op)
@@ -75,7 +75,7 @@ namespace ordercloud.integrations.library
         public static void Exists<TModel>(object thing, ErrorCode<TModel> errorCode, TModel model)
         {
             if (thing == null)
-                throw new CatalystBaseException(errorCode.Code, errorCode.HttpStatus, errorCode.DefaultMessage, model);
+                throw new CatalystBaseException(errorCode.Code, errorCode.DefaultMessage, model, errorCode.HttpStatus);
         }
         /// <summary>
         /// For when you don't need to pass back an object
@@ -83,7 +83,7 @@ namespace ordercloud.integrations.library
         public static void Exists(object thing, ErrorCode errorCode)
         {
             if (thing == null)
-                throw new CatalystBaseException(errorCode.Code, errorCode.HttpStatus, errorCode.DefaultMessage, null);
+                throw new CatalystBaseException(errorCode.Code, errorCode.DefaultMessage, null, errorCode.HttpStatus);
         }
 
         /// <summary>

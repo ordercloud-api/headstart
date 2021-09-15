@@ -15,7 +15,7 @@ using OrderCloud.SDK;
 namespace Headstart.Common.Controllers
 {
     [Route("support")]
-    public class SupportController : BaseController
+    public class SupportController : CatalystController
     {
         private static ICheckoutIntegrationCommand _checkoutIntegrationCommand;
         private static IPostSubmitCommand _postSubmitCommand;
