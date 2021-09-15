@@ -11,8 +11,8 @@
     <PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Marketplace.API\Headstart.API.csproj" />
-    <ProjectReference Include="..\Marketplace.Common\Headstart.Common.csproj" />
+    <ProjectReference Include="..\Headstart.API\Headstart.API.csproj" />
+    <ProjectReference Include="..\Headstart.Common\Headstart.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
