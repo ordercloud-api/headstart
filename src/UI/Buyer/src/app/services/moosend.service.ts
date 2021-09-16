@@ -7,15 +7,14 @@ declare var mootrack: any;
 
 // These requests should not be awaited, they are fire-and-forget.
 
-
 /** Track commerce events and forward to Moosend https://moosend.com/ */
 @Injectable({
     providedIn: 'root',
 })
 export class MooTrackService {
-    userIdentified = false; 
+    private userIdentified = false; 
     // This is defined in the seed process in the middleware
-    readonly anonymousUserEmail = "default-buyer-user@test.com"
+    private readonly anonymousUserEmail = "default-buyer-user@test.com"
 
     constructor(private appConfig: AppConfig) { 
         if (!appConfig.useMoosend) { return; }
@@ -23,7 +22,7 @@ export class MooTrackService {
         mootrack('init', appConfig.moosendWebsiteID);
     }
 
-    identify(email: string) {
+    identify(email: string): void {
         if (!this.appConfig.useMoosend) { return; }
         // this is not a real user
         if (email === this.anonymousUserEmail) { return; }
@@ -32,14 +31,14 @@ export class MooTrackService {
         this.userIdentified = true;
     }
 
-    viewProduct(product: HSProduct) {
+    viewProduct(product: HSProduct): void {
         if (!this.appConfig.useMoosend || !this.userIdentified) { return; }
 
         let p = this.MapProduct(product);
         mootrack('PAGE_VIEWED', [p]);
     }
 
-    addToCart(lineItem: HSLineItem) {
+    addToCart(lineItem: HSLineItem): void {
         if (!this.appConfig.useMoosend || !this.userIdentified) { return; }
 
         let product = this.MapProductFromLi(lineItem)
@@ -54,14 +53,14 @@ export class MooTrackService {
         );
     }
 
-    purchase(lineItems: HSLineItem[]) {
+    purchase(lineItems: HSLineItem[]): void {
         if (!this.appConfig.useMoosend || !this.userIdentified) { return; }
 
         let products = lineItems.map(this.MapProductFromLi);
         mootrack('trackOrderCompleted', products);
     }
 
-    customEvent(key: string, data: any) {
+    customEvent(key: string, data: any): void {
         if (!this.appConfig.useMoosend || !this.userIdentified) { return; }
 
         mootrack(key, data);
@@ -88,7 +87,7 @@ export class MooTrackService {
         }
     }
 
-    private GetUrl(productID: string) {
+    private GetUrl(productID: string): string {
         return `${this.appConfig.baseUrl}/products/${productID}`;
     }
 }
