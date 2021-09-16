@@ -11,6 +11,8 @@
   "sellerID": "HEADSTARTDEMO_TEST",
   "sellerName": "Headstart Demo Seller",
   "orderCloudApiUrl": "https://sandboxapi.ordercloud.io",
+  "useMoosend": false,
+  "moosendWebsiteID": "xxxxxxxxxxxxxxxxxxxxxxxx",
   "theme": {
     "logoSrc": "assets/generic-logo.png"
   },

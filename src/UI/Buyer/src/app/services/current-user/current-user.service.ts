@@ -7,6 +7,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { CurrentUser } from 'src/app/models/profile.types'
 import { AppConfig } from 'src/app/models/environment.types'
 import { ContactSupplierBody } from 'src/app/models/buyer.types'
+import { MooTrackService } from '../moosend.service'
 
 @Injectable({
   providedIn: 'root',
@@ -30,6 +31,7 @@ export class CurrentUserService {
     public cards: CreditCardService,
     public http: HttpClient,
     private appConfig: AppConfig,
+    private mootrack: MooTrackService
   ) {
     this.isAnonSubject = new BehaviorSubject(true);
   }
@@ -45,6 +47,7 @@ export class CurrentUserService {
     ]
     const [user, userGroups] = await Promise.all(requests)
     this.user = await this.MapToCurrentUser(user)
+    this.mootrack.identify(this.user.Email)
     this.userGroups.next(userGroups.Items)
   }
 

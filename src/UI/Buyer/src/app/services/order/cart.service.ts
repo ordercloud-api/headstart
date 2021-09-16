@@ -18,6 +18,7 @@ import {
 } from '@ordercloud/headstart-sdk'
 import { CheckoutService } from './checkout.service'
 import { CurrentUserService } from '../current-user/current-user.service'
+import { MooTrackService } from '../moosend.service'
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +32,8 @@ export class CartService {
   constructor(
     private state: OrderStateService,
     private checkout: CheckoutService,
-    private userService: CurrentUserService
+    private userService: CurrentUserService,
+    private mootrack: MooTrackService
   ) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.onChange = this.state.onLineItemsChange.bind(this.state)
@@ -89,12 +91,13 @@ export class CartService {
           lineItem.Quantity += lineItemWithMatchingSpecs.Quantity
         }
       }
-      return await this.upsertLineItem(lineItem)
-    }
-    if (!this.initializingOrder) {
+    } else if (!this.initializingOrder) {
       await this.initializeOrder()
-      return await this.upsertLineItem(lineItem)
     }
+
+    var createdLi = await this.upsertLineItem(lineItem)
+    this.mootrack.addToCart(createdLi);
+    return createdLi;
   }
 
   async initializeOrder(): Promise<void> {

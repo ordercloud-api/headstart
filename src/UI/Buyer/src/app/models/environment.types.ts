@@ -60,6 +60,8 @@ export interface EnvironmentConfig {
   anonymousShoppingEnabled?: boolean
   acceptedPaymentMethods?: string[]
   storefrontName?: string
+  useMoosend?: boolean
+  moosendWebsiteID?: string
 }
 
 export class AppConfig {
@@ -136,4 +138,12 @@ export class AppConfig {
    * Name of the storefront (API Client) being implemented in this app. This is used in automatic deployments
    */
   storefrontName?: string
+  /**
+   * https://moosend.com/
+   */
+  useMoosend?: boolean
+  /**
+   *  Get a website ID - https://help.moosend.com/hc/en-us/articles/115002945125-How-can-I-connect-my-website-to-Moosend-
+   */
+  moosendWebsiteID?: string
 }
