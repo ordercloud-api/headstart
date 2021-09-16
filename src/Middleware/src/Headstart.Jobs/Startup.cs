@@ -1,28 +1,22 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
-using System.Text;
 using Flurl.Http;
 using Headstart.Jobs;
 using Flurl.Http.Configuration;
 using Headstart.API.Commands;
 using Headstart.API.Commands.Crud;
 using Headstart.Common;
-using Headstart.Common.Models;
-using Headstart.Common.Queries;
 using Headstart.Common.Services;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using ordercloud.integrations.cardconnect;
 using ordercloud.integrations.library;
 using OrderCloud.SDK;
-using OrderCloud.Catalyst;
 using SendGrid;
 using Polly;
 using Polly.Extensions.Http;
 using Headstart.Common.Services.Zoho;
-using Microsoft.Azure.WebJobs.ServiceBus;
 using Headstart.API.Commands.Zoho;
 using Polly.Contrib.WaitAndRetry;
 using Newtonsoft.Json.Serialization;
@@ -40,26 +34,18 @@ namespace Headstart.Jobs
         public override void Configure(IFunctionsHostBuilder builder)
         {
             var connectionString = Environment.GetEnvironmentVariable("APP_CONFIG_CONNECTION");
-
-            var settings = builder
-                .BuildSettingsFromAzureAppConfig<AppSettings>(connectionString);
-
+            var settings = new AppSettings();
             var config = new ConfigurationBuilder()
                 .AddEnvironmentVariables()
-                .AddAzureAppConfiguration(connectionString ?? Environment.GetEnvironmentVariable("APP_CONFIG_CONNECTION"))
+                .AddAzureAppConfiguration(connectionString)
                 .Build();
+            config.Bind(settings);
 
             var cosmosConfig = new CosmosConfig(
                 settings.CosmosSettings.DatabaseName,
                 settings.CosmosSettings.EndpointUri,
                 settings.CosmosSettings.PrimaryKey,
-                settings.CosmosSettings.RequestTimeoutInSeconds,
-                settings.CosmosSettings.MaxConnectionLimit,
-                settings.CosmosSettings.IdleTcpConnectionTimeoutInMinutes,
-                settings.CosmosSettings.OpenTcpConnectionTimeoutInSeconds,
-                settings.CosmosSettings.MaxTcpConnectionsPerEndpoint,
-                settings.CosmosSettings.MaxRequestsPerTcpConnection,
-                settings.CosmosSettings.EnableTcpConnectionEndpointRediscovery
+                settings.CosmosSettings.RequestTimeoutInSeconds
             );
 
             var cosmosContainers = new List<ContainerInfo>()
@@ -108,30 +94,23 @@ namespace Headstart.Jobs
             FlurlHttp.Configure(settings => settings.HttpClientFactory = new PollyFactory(policy));
 
             builder.Services
-                .Inject<IAnytimeDashboardClient>()
-                .Inject<IWaxDashboardClient>()
                 .InjectOrderCloud<IOrderCloudClient>(new OrderCloudClientConfig()
                 {
                     ApiUrl = settings.OrderCloudSettings.ApiUrl,
                     AuthUrl = settings.OrderCloudSettings.ApiUrl,
-                    ClientId = settings.OrderCloudSettings.ClientID,
-                    ClientSecret = settings.OrderCloudSettings.ClientSecret,
+                    ClientId = settings.OrderCloudSettings.MiddlewareClientID,
+                    ClientSecret = settings.OrderCloudSettings.MiddlewareClientSecret,
                     Roles = new[]
                     {
                         ApiRole.FullAccess
                     }
                 })
-                .InjectCosmosStore<ResourceHistoryQuery<ProductHistory>, ProductHistory>(cosmosConfig)
-                .InjectCosmosStore<ResourceHistoryQuery<PriceScheduleHistory>, PriceScheduleHistory>(cosmosConfig)
                 .AddCosmosDb(settings.CosmosSettings.EndpointUri, settings.CosmosSettings.PrimaryKey, settings.CosmosSettings.DatabaseName, cosmosContainers)
                 .AddSingleton<IFlurlClientFactory, PerBaseUrlFlurlClientFactory>()
-                .AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(settings.CardConnectSettings, flurlClientFactory))
-                .Inject<IProductUpdateJob>()
-                .Inject<ISyncOrgCommand>()
+                .AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(settings.CardConnectSettings, settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))
                 .Inject<IHSCatalogCommand>()
                 .Inject<IHSBuyerLocationCommand>()
                 .AddSingleton<PaymentCaptureJob>()
-                .AddSingleton<ZohoJob>()
                 .AddSingleton<SendRecentOrdersJob>()
                 .AddSingleton<ReceiveRecentSalesOrdersJob>()
                 .AddSingleton<ReceiveProductDetailsJob>()

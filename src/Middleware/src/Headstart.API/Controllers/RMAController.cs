@@ -56,9 +56,9 @@ namespace Headstart.Common.Controllers
         }
 
         [HttpGet, Route("{orderID}"), OrderCloudUserAuth(HSOrderAdmin, HSOrderReader, HSShipmentAdmin)]
-        public async Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID)
+        public async Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, CommerceRole commerceRole, MeUser me, bool accessAllRMAsOnOrder = false)
         {
-            return await _rmaCommand.ListRMAsByOrderID(orderID, UserContext);
+            return await _rmaCommand.ListRMAsByOrderID(orderID, commerceRole, me, accessAllRMAsOnOrder);
         }
 
         [HttpPost, Route("list"), OrderCloudUserAuth(HSOrderAdmin, HSOrderReader, HSShipmentAdmin)]

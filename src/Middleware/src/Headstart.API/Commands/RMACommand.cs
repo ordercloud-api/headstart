@@ -24,7 +24,7 @@ namespace Headstart.API.Commands
         Task<RMA> PostRMA(RMA rma);
         Task<CosmosListPage<RMA>> ListBuyerRMAs(CosmosListOptions listOptions, string buyerID);
         Task<RMA> Get(ListArgs<RMA> args, DecodedToken decodedToken);
-        Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, DecodedToken decodedToken, bool accessAllRMAsOnOrder = false);
+        Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, CommerceRole commerceRole, MeUser me, bool accessAllRMAsOnOrder = false);
         Task<CosmosListPage<RMA>> ListRMAs(CosmosListOptions listOptions, DecodedToken decodedToken);
         Task<RMAWithLineItemStatusByQuantity> ProcessRMA(RMA rma, DecodedToken decodedToken);
         Task<RMAWithLineItemStatusByQuantity> ProcessRefund(string rmaNumber, DecodedToken decodedToken);
@@ -163,7 +163,7 @@ namespace Headstart.API.Commands
             return rmas;
         }
 
-        public virtual async Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, DecodedToken decodedToken, bool accessAllRMAsOnOrder = false)
+        public virtual async Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, CommerceRole commerceRole, MeUser me, bool accessAllRMAsOnOrder = false)
         {
             string sourceOrderID = orderID.Split("-")[0];
 
@@ -174,9 +174,8 @@ namespace Headstart.API.Commands
                     rma.PartitionKey == "PartitionValue"
                     && rma.SourceOrderID == sourceOrderID);
 
-            if (decodedToken.CommerceRole == CommerceRole.Supplier && !accessAllRMAsOnOrder)
+            if (commerceRole == CommerceRole.Supplier && !accessAllRMAsOnOrder)
             {
-                var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
                 queryable = QueryOnlySupplierRMAs(queryable, me.Supplier.ID);
             }
 
@@ -449,7 +448,7 @@ namespace Headstart.API.Commands
 
             HSOrderWorksheet worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, rma.SourceOrderID);
 
-            CosmosListPage<RMA> allRMAsOnThisOrder = await ListRMAsByOrderID(worksheet.Order.ID, decodedToken, true);
+            CosmosListPage<RMA> allRMAsOnThisOrder = await ListRMAsByOrderID(worksheet.Order.ID, decodedToken.CommerceRole, me, true);
 
             CalculateAndUpdateLineTotalRefund(rmaLineItemsToUpdate, worksheet, allRMAsOnThisOrder, rma.SupplierID);
 
