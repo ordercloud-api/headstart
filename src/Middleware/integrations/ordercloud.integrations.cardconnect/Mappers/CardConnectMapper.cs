@@ -9,17 +9,17 @@ namespace ordercloud.integrations.cardconnect
     {
         public static CardConnectCreditCard Map(OrderCloudIntegrationsCreditCardToken card, CardConnectAccountResponse response)
         {
-			var cc = new CardConnectCreditCard()
-			{
-				CardType = card.CardType,
-				CardholderName = card.CardholderName,
-				ExpirationDate = card.ExpirationDate.ToDateTime(),
-				PartialAccountNumber = card.AccountNumber.ToCreditCardDisplay(),
-				Token = response.token,
-				xp = new CreditCardXP
-				{
-					CCBillingAddress = card.CCBillingAddress
-				}
+            var cc = new CardConnectCreditCard()
+            {
+                CardType = card.CardType,
+                CardholderName = card.CardholderName,
+                ExpirationDate = card.ExpirationDate.ToDateTime(),
+                PartialAccountNumber = card.AccountNumber.ToCreditCardDisplay(),
+                Token = response.token,
+                xp = new CreditCardXP
+                {
+                    CCBillingAddress = card.CCBillingAddress
+                }
             };
             return cc;
         }
@@ -37,11 +37,11 @@ namespace ordercloud.integrations.cardconnect
                 PartialAccountNumber = card.AccountNumber.ToCreditCardDisplay(),
                 Token = response.token,
                 Editable = true,
-				xp = new CreditCardXP
-				{
-					CCBillingAddress = card.CCBillingAddress
-				}
-			};
+                xp = new CreditCardXP
+                {
+                    CCBillingAddress = card.CCBillingAddress
+                }
+            };
             return cc;
         }
     }
@@ -60,8 +60,8 @@ namespace ordercloud.integrations.cardconnect
 
         public static CardConnectAuthorizationRequest Map(BuyerCreditCard card, Order order, OrderCloudIntegrationsCreditCardPayment payment, string merchantID, decimal amount)
         {
-			var address = card.xp.CCBillingAddress;
-			var req = new CardConnectAuthorizationRequest()
+            var address = card.xp.CCBillingAddress;
+            var req = new CardConnectAuthorizationRequest()
             {
                 name = $"{card.CardholderName}",
                 account = card.Token,
@@ -80,7 +80,7 @@ namespace ordercloud.integrations.cardconnect
             return req;
         }
 
-        public static PaymentTransaction Map(Payment payment, CardConnectAuthorizationResponse response)
+        public static PaymentTransaction Map(Payment payment, CardConnectAuthorizationResponse response, Address ccBillingAddress = null)
         {
             var t = new PaymentTransaction()
             {
@@ -92,7 +92,9 @@ namespace ordercloud.integrations.cardconnect
                 Type = "CreditCard",
                 xp = new
                 {
-                    CardConnectResponse = response
+                    CardConnectResponse = response,
+                    CCBillingAddress = ccBillingAddress
+
                 }
             };
             return t;
@@ -133,6 +135,24 @@ namespace ordercloud.integrations.cardconnect
             };
             return t;
         }
+
+        public static PaymentTransaction Map(Payment payment, CardConnectCaptureResponse response)
+        {
+            var t = new PaymentTransaction()
+            {
+                Amount = payment.Amount,
+                DateExecuted = DateTime.Now,
+                ResultCode = response.respcode,
+                ResultMessage = response.resptext,
+                Succeeded = response.WasSuccessful(),
+                Type = "CreditCardCapture",
+                xp = new
+                {
+                    CardConnectResponse = response
+                }
+            };
+            return t;
+        }
     }
 
     public static class CreditCardAuthorizationExtensions
@@ -143,15 +163,15 @@ namespace ordercloud.integrations.cardconnect
             switch (value.Length)
             {
                 case 4:
-                {
-                    var year = $"20{value.Substring(2, 2)}".To<int>();
-                    return new DateTime(year, month, 1);
-                }
+                    {
+                        var year = $"20{value.Substring(2, 2)}".To<int>();
+                        return new DateTime(year, month, 1);
+                    }
                 case 6:
-                {
-                    var year = value.Substring(2, 4).To<int>();
-                    return new DateTime(year, month, 1);
-                }
+                    {
+                        var year = value.Substring(2, 4).To<int>();
+                        return new DateTime(year, month, 1);
+                    }
                 default:
                     throw new Exception("Invalid format: MMYY MMYYYY");
             }

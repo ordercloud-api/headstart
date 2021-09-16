@@ -20,14 +20,14 @@ namespace Headstart.API.Commands
 {
     public interface IRMACommand
     {
-        Task BuildRMA(HSOrder order, List<string> supplierIDs, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItemsChanged, VerifiedUserContext verifiedUser);
+        Task BuildRMA(HSOrder order, List<string> supplierIDs, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItemsChanged, DecodedToken decodedToken);
         Task<RMA> PostRMA(RMA rma);
         Task<CosmosListPage<RMA>> ListBuyerRMAs(CosmosListOptions listOptions, string buyerID);
-        Task<RMA> Get(ListArgs<RMA> args, VerifiedUserContext verifiedUser);
-        Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, VerifiedUserContext verifiedUser, bool accessAllRMAsOnOrder = false);
-        Task<CosmosListPage<RMA>> ListRMAs(CosmosListOptions listOptions, VerifiedUserContext verifiedUser);
-        Task<RMAWithLineItemStatusByQuantity> ProcessRMA(RMA rma, VerifiedUserContext verifiedUser);
-        Task<RMAWithLineItemStatusByQuantity> ProcessRefund(string rmaNumber, VerifiedUserContext verifiedUser);
+        Task<RMA> Get(ListArgs<RMA> args, DecodedToken decodedToken);
+        Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, CommerceRole commerceRole, MeUser me, bool accessAllRMAsOnOrder = false);
+        Task<CosmosListPage<RMA>> ListRMAs(CosmosListOptions listOptions, DecodedToken decodedToken);
+        Task<RMAWithLineItemStatusByQuantity> ProcessRMA(RMA rma, DecodedToken decodedToken);
+        Task<RMAWithLineItemStatusByQuantity> ProcessRefund(string rmaNumber, DecodedToken decodedToken);
     }
 
     public class RMACommand : IRMACommand
@@ -46,7 +46,7 @@ namespace Headstart.API.Commands
             _sendgridService = sendgridService;
         }
 
-        public async Task BuildRMA(HSOrder order, List<string> supplierIDs, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItemsChanged, VerifiedUserContext verifiedUser)
+        public async Task BuildRMA(HSOrder order, List<string> supplierIDs, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItemsChanged, DecodedToken decodedToken)
         {
             foreach (string supplierID in supplierIDs)
             {
@@ -131,7 +131,7 @@ namespace Headstart.API.Commands
             return rmas;
         }
 
-        public async Task<RMA> Get(ListArgs<RMA> args, VerifiedUserContext verifiedUser)
+        public async Task<RMA> Get(ListArgs<RMA> args, DecodedToken decodedToken)
         {
             CosmosListOptions listOptions = new CosmosListOptions()
             {
@@ -144,11 +144,10 @@ namespace Headstart.API.Commands
                 .Where(rma =>
                  rma.PartitionKey == "PartitionValue");
 
-            string verifiedUserType = verifiedUser.UserType;
-
-            if (verifiedUserType == "supplier")
+            if (decodedToken.CommerceRole == CommerceRole.Supplier)
             {
-                queryable = queryable.Where(rma => rma.SupplierID == verifiedUser.Supplier.ID);
+                var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+                queryable = queryable.Where(rma => rma.SupplierID == me.Supplier.ID);
             }
 
             CosmosListPage<RMA> rmas = await GenerateRMAList(queryable, listOptions);
@@ -164,7 +163,7 @@ namespace Headstart.API.Commands
             return rmas;
         }
 
-        public virtual async Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, VerifiedUserContext verifiedUser, bool accessAllRMAsOnOrder = false)
+        public virtual async Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, CommerceRole commerceRole, MeUser me, bool accessAllRMAsOnOrder = false)
         {
             string sourceOrderID = orderID.Split("-")[0];
 
@@ -175,42 +174,40 @@ namespace Headstart.API.Commands
                     rma.PartitionKey == "PartitionValue"
                     && rma.SourceOrderID == sourceOrderID);
 
-            string verifiedUserType = verifiedUser.UserType;
-
-            if (verifiedUserType == "supplier" && !accessAllRMAsOnOrder)
+            if (commerceRole == CommerceRole.Supplier && !accessAllRMAsOnOrder)
             {
-                queryable = QueryOnlySupplierRMAs(queryable, verifiedUser);
+                queryable = QueryOnlySupplierRMAs(queryable, me.Supplier.ID);
             }
 
             CosmosListPage<RMA> rmas = await GenerateRMAList(queryable, listOptions);
             return rmas;
         }
 
-        public virtual IQueryable<RMA> QueryOnlySupplierRMAs(IQueryable<RMA> queryable, VerifiedUserContext verifiedUser)
+        public virtual IQueryable<RMA> QueryOnlySupplierRMAs(IQueryable<RMA> queryable, string supplierID)
         {
-            return queryable.Where(rma => rma.SupplierID == verifiedUser.Supplier.ID);
+            return queryable.Where(rma => rma.SupplierID == supplierID);
         }
 
-        public async Task<CosmosListPage<RMA>> ListRMAs(CosmosListOptions listOptions, VerifiedUserContext verifiedUser)
+        public async Task<CosmosListPage<RMA>> ListRMAs(CosmosListOptions listOptions, DecodedToken decodedToken)
         {
             IQueryable<RMA> queryable = _rmaRepo.GetQueryable().Where(rma => rma.PartitionKey == "PartitionValue");
 
-            string verifiedUserType = verifiedUser.UserType;
-
-            if (verifiedUserType == "supplier")
+            if (decodedToken.CommerceRole == CommerceRole.Supplier)
             {
-                queryable = queryable.Where(rma => rma.SupplierID == verifiedUser.Supplier.ID);
+                var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+                queryable = queryable.Where(rma => rma.SupplierID == me.Supplier.ID);
             }
 
             CosmosListPage<RMA> rmas = await GenerateRMAList(queryable, listOptions);
             return rmas;
         }
 
-        public async Task<RMAWithLineItemStatusByQuantity> ProcessRMA(RMA rma, VerifiedUserContext verifiedUser)
+        public async Task<RMAWithLineItemStatusByQuantity> ProcessRMA(RMA rma, DecodedToken decodedToken)
         {
             // Get the RMA from the last time it was saved.
-            RMA currentRMA = await GetRMA(rma.RMANumber, verifiedUser);
-            if (currentRMA.SupplierID != verifiedUser.Supplier.ID)
+            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            RMA currentRMA = await GetRMA(rma.RMANumber, decodedToken);
+            if (currentRMA.SupplierID != me.Supplier.ID)
             {
                 throw new Exception($"You do not have permission to process this RMA.");
             }
@@ -224,7 +221,7 @@ namespace Headstart.API.Commands
             // If the status on the new RMA differs from the old RMA, create an RMALog
             if (rma.Status != currentRMA.Status)
             {
-                RMALog log = new RMALog() { Status = rma.Status, Date = DateTime.Now, FromUserID = verifiedUser.ID };
+                RMALog log = new RMALog() { Status = rma.Status, Date = DateTime.Now, FromUserID = decodedToken.UserDatabaseID };
                 rma.Logs.Insert(0, log);
             }
 
@@ -250,11 +247,11 @@ namespace Headstart.API.Commands
             return rmaWithStatusByQuantityChanges;
         }
 
-        private async Task<RMA> GetRMA(string rmaNumber, VerifiedUserContext verifiedUser)
+        private async Task<RMA> GetRMA(string rmaNumber, DecodedToken decodedToken)
         {
             var currentRMAFilter = new ListFilter("RMANumber", rmaNumber);
             CosmosListOptions currentRMAListOptions = new CosmosListOptions() { PageSize = 1, ContinuationToken = null, Filters = { currentRMAFilter } };
-            CosmosListPage<RMA> currentRMAListPage = await ListRMAs(currentRMAListOptions, verifiedUser);
+            CosmosListPage<RMA> currentRMAListPage = await ListRMAs(currentRMAListOptions, decodedToken);
             RMA currentRMA = currentRMAListPage.Items[0];
             return currentRMA;
         }
@@ -436,11 +433,12 @@ namespace Headstart.API.Commands
             await _sendgridService.SendLineItemStatusChangeEmail(worksheet.Order, lineItemStatusChanges, lineItemsChanged, worksheet.Order.FromUser.FirstName, worksheet.Order.FromUser.LastName, worksheet.Order.FromUser.Email, emailText);
         }
 
-        public async Task<RMAWithLineItemStatusByQuantity> ProcessRefund(string rmaNumber, VerifiedUserContext verifiedUser)
+        public async Task<RMAWithLineItemStatusByQuantity> ProcessRefund(string rmaNumber, DecodedToken decodedToken)
         {
-            RMA rma = await GetRMA(rmaNumber, verifiedUser);
+            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            RMA rma = await GetRMA(rmaNumber, decodedToken);
 
-            ValidateRMA(rma, verifiedUser);
+            ValidateRMA(rma, me.Supplier.ID);
 
             decimal initialAmountRefunded = rma.TotalCredited;
 
@@ -450,7 +448,7 @@ namespace Headstart.API.Commands
 
             HSOrderWorksheet worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, rma.SourceOrderID);
 
-            CosmosListPage<RMA> allRMAsOnThisOrder = await ListRMAsByOrderID(worksheet.Order.ID, verifiedUser, true);
+            CosmosListPage<RMA> allRMAsOnThisOrder = await ListRMAsByOrderID(worksheet.Order.ID, decodedToken.CommerceRole, me, true);
 
             CalculateAndUpdateLineTotalRefund(rmaLineItemsToUpdate, worksheet, allRMAsOnThisOrder, rma.SupplierID);
 
@@ -460,12 +458,12 @@ namespace Headstart.API.Commands
             // UPDATE RMA STATUS
             UpdateRMAStatus(rma);
 
-            await HandleRefund(rma, allRMAsOnThisOrder, worksheet, verifiedUser);
+            await HandleRefund(rma, allRMAsOnThisOrder, worksheet, decodedToken);
 
             MarkRMALineItemsAsRefunded(rmaLineItemsToUpdate);
 
             decimal totalRefundedForThisTransaction = rma.TotalCredited - initialAmountRefunded;
-            RMALog log = new RMALog() { Status = rma.Status, Date = DateTime.Now, AmountRefunded = totalRefundedForThisTransaction, FromUserID = verifiedUser.ID };
+            RMALog log = new RMALog() { Status = rma.Status, Date = DateTime.Now, AmountRefunded = totalRefundedForThisTransaction, FromUserID = decodedToken.UserDatabaseID };
             rma.Logs.Insert(0, log);
 
             List<LineItemStatusChanges> lineItemStatusChangesList = BuildLineItemStatusChanges(rmaLineItemsToUpdate, worksheet, rma.Type, false);
@@ -478,9 +476,9 @@ namespace Headstart.API.Commands
             return rmaWithStatusByQuantityChanges;
         }
 
-        private void ValidateRMA(RMA rma, VerifiedUserContext verifiedUser)
+        private void ValidateRMA(RMA rma, string supplierID)
         {
-            if (rma.SupplierID != verifiedUser.Supplier.ID)
+            if (rma.SupplierID != supplierID)
             {
                 throw new Exception("You do not have permission to process a refund for this RMA.");
             }
@@ -604,7 +602,7 @@ namespace Headstart.API.Commands
             }
         }
 
-        public virtual async Task HandleRefund(RMA rma, CosmosListPage<RMA> allRMAsOnThisOrder, HSOrderWorksheet worksheet, VerifiedUserContext verifiedUser)
+        public virtual async Task HandleRefund(RMA rma, CosmosListPage<RMA> allRMAsOnThisOrder, HSOrderWorksheet worksheet, DecodedToken decodedToken)
         {
 
             // Get payment info from the order

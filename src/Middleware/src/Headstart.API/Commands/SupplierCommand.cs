@@ -10,15 +10,16 @@ using System.Collections.Generic;
 using Headstart.Common.Helpers;
 using Headstart.Common;
 using OrderCloud.Catalyst;
+using Require = ordercloud.integrations.library.Require;
 
 namespace Headstart.API.Commands
 {
     public interface IHSSupplierCommand
     {
         Task<HSSupplier> Create(HSSupplier supplier, string accessToken, bool isSeedingEnvironment = false);
-        Task<HSSupplier> GetMySupplier(string supplierID, VerifiedUserContext user);
-        Task<HSSupplier> UpdateSupplier(string supplierID, PartialSupplier supplier, VerifiedUserContext user);
-        Task<HSSupplierOrderData> GetSupplierOrderData(string supplierOrderID, VerifiedUserContext user);
+        Task<HSSupplier> GetMySupplier(string supplierID, DecodedToken decodedToken);
+        Task<HSSupplier> UpdateSupplier(string supplierID, PartialSupplier supplier, DecodedToken decodedToken);
+        Task<HSSupplierOrderData> GetSupplierOrderData(string supplierOrderID, DecodedToken decodedToken);
     }
     public class HSSupplierCommand : IHSSupplierCommand
     {
@@ -34,16 +35,18 @@ namespace Headstart.API.Commands
             _apiClientHelper = apiClientHelper;
             _supplierSync = supplierSync;
         }
-        public async Task<HSSupplier> GetMySupplier(string supplierID, VerifiedUserContext user)
+        public async Task<HSSupplier> GetMySupplier(string supplierID, DecodedToken decodedToken)
         {
-            Require.That(supplierID == user.Supplier.ID,
-                new ErrorCode("Unauthorized", 401, $"You are only authorized to view {user.Supplier.ID}."));
+            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            Require.That(supplierID == me.Supplier.ID,
+                new ErrorCode("Unauthorized", 401, $"You are only authorized to view {me.Supplier.ID}."));
             return await _oc.Suppliers.GetAsync<HSSupplier>(supplierID);
         }
 
-        public async Task<HSSupplier> UpdateSupplier(string supplierID, PartialSupplier supplier, VerifiedUserContext user)
+        public async Task<HSSupplier> UpdateSupplier(string supplierID, PartialSupplier supplier, DecodedToken decodedToken)
         {
-            Require.That(user.UserType == "admin" || supplierID == user.Supplier.ID, new ErrorCode("Unauthorized", 401, $"You are not authorized to update supplier {supplierID}"));
+            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierID == me.Supplier.ID, new ErrorCode("Unauthorized", 401, $"You are not authorized to update supplier {supplierID}"));
             var currentSupplier = await _oc.Suppliers.GetAsync<HSSupplier>(supplierID);
             var updatedSupplier = await _oc.Suppliers.PatchAsync<HSSupplier>(supplierID, supplier);
             // Update supplier products only on a name change
@@ -51,14 +54,14 @@ namespace Headstart.API.Commands
             {
                 var productsToUpdate = await _oc.Products.ListAllAsync<HSProduct>(
                 supplierID: supplierID,
-                accessToken: user.AccessToken
+                accessToken: decodedToken.AccessToken
                 );
-                ApiClient supplierClient = await _apiClientHelper.GetSupplierApiClient(supplierID, user.AccessToken);
+                ApiClient supplierClient = await _apiClientHelper.GetSupplierApiClient(supplierID, decodedToken.AccessToken);
                 if (supplierClient == null) { throw new Exception($"Default supplier client not found. SupplierID: {supplierID}"); }
                 var configToUse = new OrderCloudClientConfig
                 {
-                    ApiUrl = user.TokenApiUrl,
-                    AuthUrl = user.TokenAuthUrl,
+                    ApiUrl = decodedToken.ApiUrl,
+                    AuthUrl = decodedToken.AuthUrl,
                     ClientId = supplierClient.ID,
                     ClientSecret = supplierClient.ClientSecret,
                     GrantType = GrantType.ClientCredentials,
@@ -190,9 +193,9 @@ namespace Headstart.API.Commands
             }
         }
 
-        public async Task<HSSupplierOrderData> GetSupplierOrderData(string supplierOrderID, VerifiedUserContext user)
+        public async Task<HSSupplierOrderData> GetSupplierOrderData(string supplierOrderID, DecodedToken decodedToken)
         {
-            var orderData = await _supplierSync.GetOrderAsync(supplierOrderID, user);
+            var orderData = await _supplierSync.GetOrderAsync(supplierOrderID, decodedToken);
             return (HSSupplierOrderData)orderData.ToObject(typeof(HSSupplierOrderData));
         }
     }

@@ -11,7 +11,7 @@ namespace Headstart.Common.Controllers.CardConnect
     /// <summary>
     /// ME Credit Card Payments for Headstart
     /// </summary>
-    public class MePaymentController : BaseController
+    public class MePaymentController : CatalystController
     {
         private readonly ICreditCardCommand _card;
         private readonly AppSettings _settings;
@@ -40,7 +40,7 @@ namespace Headstart.Common.Controllers.CardConnect
     /// <summary>
     ///  ME Credit Card Tokenization for Headstart
     /// </summary>
-    public class MeCreditCardAuthorizationController : BaseController
+    public class MeCreditCardAuthorizationController : CatalystController
     {
         private readonly ICreditCardCommand _card;
         public MeCreditCardAuthorizationController(ICreditCardCommand card)
@@ -59,7 +59,7 @@ namespace Headstart.Common.Controllers.CardConnect
     /// <summary>
     /// Credit Card Tokenization for Headstart
     /// </summary>
-    public class CreditCardController : BaseController
+    public class CreditCardController : CatalystController
     {
         private readonly ICreditCardCommand _card;
         public CreditCardController(ICreditCardCommand card)

@@ -30,12 +30,13 @@ using System.Collections.Generic;
 using System.Net;
 using Microsoft.OpenApi.Models;
 using OrderCloud.Catalyst;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using ordercloud.integrations.library.helpers;
 using Polly;
 using Polly.Extensions.Http;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Polly.Contrib.WaitAndRetry;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Converters;
 
 namespace Headstart.API
 {
@@ -99,17 +100,22 @@ namespace Headstart.API
                 Roles = new[] { ApiRole.FullAccess }
             });
 
+            services.AddMvc(o =>
+             {
+                 o.Filters.Add(new ordercloud.integrations.library.ValidateModelAttribute());
+                 o.EnableEndpointRouting = false;
+             })
+            .ConfigureApiBehaviorOptions(o => o.SuppressModelStateInvalidFilter = true)
+            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+                options.SerializerSettings.Converters.Add(new StringEnumConverter());
+            });
+
             services
-                .Configure<KestrelServerOptions>(options =>
-                {
-                    options.AllowSynchronousIO = true;
-                })
-                .Configure<IISServerOptions>(options =>
-                {
-                    options.AllowSynchronousIO = true;
-                })
-                .AddSingleton<ISimpleCache, OrderCloud.Common.Services.LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
-                .ConfigureServices()
+                .AddCors(o => o.AddPolicy("integrationcors", builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }))
+                .AddSingleton<ISimpleCache, LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
                 .AddOrderCloudUserAuth()
                 .AddOrderCloudWebhookAuth(opts => opts.HashKey = _settings.OrderCloudSettings.WebhookHashKey)
                 .InjectCosmosStore<LogQuery, OrchestrationLog>(cosmosConfig)
@@ -131,7 +137,6 @@ namespace Headstart.API
                 .Inject<IHSSupplierCommand>()
                 .Inject<ICreditCardCommand>()
                 .Inject<ISupportAlertService>()
-                .Inject<IUserContextProvider>()
                 .Inject<ISupplierApiClientHelper>()
                 .AddSingleton<ISendGridClient>(x => new SendGridClient(_settings.SendgridSettings.ApiKey))
                 .AddSingleton<IFlurlClientFactory>(x => flurlClientFactory)
@@ -192,13 +197,19 @@ namespace Headstart.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            CatalystApplicationBuilder.DefaultCatalystAppBuilder(app, env)
-                .UseSwagger()
-                .UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint($"/swagger/v1/swagger.json", $"API v1");
-                    c.RoutePrefix = string.Empty;
-                });
+            app.UseCatalystExceptionHandler();
+            app.UseHttpsRedirection();
+            app.UseRouting();
+            app.UseCors("integrationcors");
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint($"/swagger/v1/swagger.json", $"Headstart API v1");
+                c.RoutePrefix = string.Empty;
+            });
+
         }
     }
 }

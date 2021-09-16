@@ -32,7 +32,7 @@ namespace Headstart.API.Commands
             });
         }
 
-        public async Task<JObject> GetOrderAsync(string ID, VerifiedUserContext user)
+        public async Task<JObject> GetOrderAsync(string ID, DecodedToken decodedToken)
         {
             HSShipEstimate estimate;
             HSShipMethod ship_method = null;
@@ -73,7 +73,7 @@ namespace Headstart.API.Commands
             return JObject.FromObject(returnObject);
         }
 
-        public Task<List<TemplateHydratedProduct>> ParseProductTemplate(IFormFile file, VerifiedUserContext user)
+        public Task<List<TemplateHydratedProduct>> ParseProductTemplate(IFormFile file, DecodedToken decodedToken)
         {
             throw new System.NotImplementedException();
         }

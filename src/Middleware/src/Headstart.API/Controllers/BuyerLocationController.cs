@@ -12,7 +12,7 @@ using OrderCloud.Catalyst;
 namespace Headstart.Common.Controllers
 {
     [Route("buyerlocations")]
-    public class BuyerLocationController : BaseController
+    public class BuyerLocationController : CatalystController
     {
         private readonly IHSBuyerLocationCommand _buyerLocationCommand;
         private readonly IOrderCloudClient _oc;

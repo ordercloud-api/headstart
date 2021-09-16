@@ -11,7 +11,7 @@ using OrderCloud.Catalyst;
 namespace Headstart.Common.Controllers
 {
 	[Route("products")]
-	public class ProductController : BaseController
+	public class ProductController : CatalystController
 	{
 
 		private readonly IHSProductCommand _command;

@@ -15,15 +15,15 @@ namespace Headstart.API.Commands
 {
     public interface IHSReportCommand
     {
-        ListPage<ReportTypeResource> FetchAllReportTypes(VerifiedUserContext verifiedUser);
-        Task<List<HSAddressBuyer>> BuyerLocation(string templateID, VerifiedUserContext verifiedUser);
-        Task<List<HSOrder>> SalesOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args, VerifiedUserContext verifiedUser);
-        Task<List<HSOrder>> PurchaseOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args, VerifiedUserContext verifiedUser);
-        Task<List<HSLineItemOrder>> LineItemDetail(string templateID, ListArgs<ReportAdHocFilters> args, VerifiedUserContext verifiedUser);
-        Task<List<ReportTemplate>> ListReportTemplatesByReportType(ReportTypeEnum reportType, VerifiedUserContext verifiedUser);
-        Task<ReportTemplate> PostReportTemplate(ReportTemplate reportTemplate, VerifiedUserContext verifiedUser);
-        Task<ReportTemplate> GetReportTemplate(string id, VerifiedUserContext verifiedUser);
-        Task<ReportTemplate> UpdateReportTemplate(string id, ReportTemplate reportTemplate, VerifiedUserContext verifiedUser);
+        ListPage<ReportTypeResource> FetchAllReportTypes(DecodedToken decodedToken);
+        Task<List<HSAddressBuyer>> BuyerLocation(string templateID, DecodedToken decodedToken);
+        Task<List<HSOrder>> SalesOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
+        Task<List<HSOrder>> PurchaseOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
+        Task<List<HSLineItemOrder>> LineItemDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
+        Task<List<ReportTemplate>> ListReportTemplatesByReportType(ReportTypeEnum reportType, DecodedToken decodedToken);
+        Task<ReportTemplate> PostReportTemplate(ReportTemplate reportTemplate, DecodedToken decodedToken);
+        Task<ReportTemplate> GetReportTemplate(string id, DecodedToken decodedToken);
+        Task<ReportTemplate> UpdateReportTemplate(string id, ReportTemplate reportTemplate, DecodedToken decodedToken);
         Task DeleteReportTemplate(string id);
     }
     
@@ -38,10 +38,10 @@ namespace Headstart.API.Commands
             _template = template;
         }
 
-        public ListPage<ReportTypeResource> FetchAllReportTypes(VerifiedUserContext verifiedUser)
+        public ListPage<ReportTypeResource> FetchAllReportTypes(DecodedToken decodedToken)
         {
             var types = ReportTypeResource.ReportTypes.ToList();
-            if (verifiedUser.UserType == "supplier")
+            if (decodedToken.CommerceRole == CommerceRole.Supplier)
             {
                 types = types.Where(type => type.AvailableToSuppliers).ToList();
             }
@@ -59,10 +59,10 @@ namespace Headstart.API.Commands
             return listPage;
         }
 
-        public async Task<List<HSAddressBuyer>> BuyerLocation(string templateID, VerifiedUserContext verifiedUser)
+        public async Task<List<HSAddressBuyer>> BuyerLocation(string templateID, DecodedToken decodedToken)
         {
             //Get stored template from Cosmos DB container
-            var template = await _template.Get(templateID, verifiedUser);
+            var template = await _template.Get(templateID, decodedToken);
             var allBuyerLocations = new List<HSAddressBuyer>();
 
             //Logic if no Buyer ID is supplied
@@ -107,9 +107,9 @@ namespace Headstart.API.Commands
             return filteredBuyerLocations;
         }
 
-        public async Task<List<HSOrder>> SalesOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args, VerifiedUserContext verifiedUser)
+        public async Task<List<HSOrder>> SalesOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken)
         {
-            var template = await _template.Get(templateID, verifiedUser);
+            var template = await _template.Get(templateID, decodedToken);
             string dateLow = GetAdHocFilterValue(args, "DateLow");
             string timeLow = GetAdHocFilterValue(args, "TimeLow");
             string dateHigh = GetAdHocFilterValue(args, "DateHigh");
@@ -141,22 +141,22 @@ namespace Headstart.API.Commands
             return filteredOrders;
         }
 
-        public async Task<List<HSOrder>> PurchaseOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args, VerifiedUserContext verifiedUser)
+        public async Task<List<HSOrder>> PurchaseOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken)
         {
-            var template = await _template.Get(templateID, verifiedUser);
+            var template = await _template.Get(templateID, decodedToken);
             string dateLow = GetAdHocFilterValue(args, "DateLow");
             string timeLow = GetAdHocFilterValue(args, "TimeLow");
             string dateHigh = GetAdHocFilterValue(args, "DateHigh");
             string timeHigh = GetAdHocFilterValue(args, "TimeHigh");
-            var orderDirection = verifiedUser.UserType == "admin" ? OrderDirection.Outgoing : OrderDirection.Incoming;
+            var orderDirection = decodedToken.CommerceRole == CommerceRole.Seller ? OrderDirection.Outgoing : OrderDirection.Incoming;
             var orders = await _oc.Orders.ListAllAsync<HSOrder>(
                 orderDirection,
                 filters: $"from={dateLow}&to={dateHigh}",
-                accessToken: verifiedUser.AccessToken
+                accessToken: decodedToken.AccessToken
                 );
 
             // From User headers must pull from the Sales Order record
-            var salesOrders = await GetSalesOrdersIfNeeded(template, dateLow, dateHigh, verifiedUser);
+            var salesOrders = await GetSalesOrdersIfNeeded(template, dateLow, dateHigh, decodedToken);
             var filterClassProperties = template.Filters.GetType().GetProperties();
             var filtersToEvaluateMap = new Dictionary<PropertyInfo, List<string>>();
             foreach (var property in filterClassProperties)
@@ -196,7 +196,7 @@ namespace Headstart.API.Commands
                         orderDirection,
                         order.ID,
                         pageSize: 1,
-                        accessToken: verifiedUser.AccessToken
+                        accessToken: decodedToken.AccessToken
                         );
                         order.xp.ShippingAddress = new HSAddressBuyer()
                         {
@@ -215,9 +215,9 @@ namespace Headstart.API.Commands
             return filteredOrders;
         }
 
-        public async Task<List<HSLineItemOrder>> LineItemDetail(string templateID, ListArgs<ReportAdHocFilters> args, VerifiedUserContext verifiedUser)
+        public async Task<List<HSLineItemOrder>> LineItemDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken)
         {
-            var template = await _template.Get(templateID, verifiedUser);
+            var template = await _template.Get(templateID, decodedToken);
             string dateLow = GetAdHocFilterValue(args, "DateLow");
             string timeLow = GetAdHocFilterValue(args, "TimeLow");
             string dateHigh = GetAdHocFilterValue(args, "DateHigh");
@@ -225,11 +225,11 @@ namespace Headstart.API.Commands
             var orders = await _oc.Orders.ListAllAsync<HSOrder>(
                 OrderDirection.Incoming,
                 filters: $"from={dateLow}&to={dateHigh}",
-                accessToken: verifiedUser.AccessToken
+                accessToken: decodedToken.AccessToken
                 );
 
             // From User headers must pull from the Sales Order record
-            var salesOrders = await GetSalesOrdersIfNeeded(template, dateLow, dateHigh, verifiedUser);
+            var salesOrders = await GetSalesOrdersIfNeeded(template, dateLow, dateHigh, decodedToken);
             var filterClassProperties = template.Filters.GetType().GetProperties();
             var filtersToEvaluateMap = new Dictionary<PropertyInfo, List<string>>();
             foreach (var property in filterClassProperties)
@@ -253,7 +253,7 @@ namespace Headstart.API.Commands
             foreach (var order in filteredOrders)
             {
                 // If suppliers are reporting on From User information, this must come from the seller order instead.
-                if (template.Headers.Any(header => header.Contains("FromUser") && verifiedUser.UserType == "supplier"))
+                if (template.Headers.Any(header => header.Contains("FromUser") && decodedToken.CommerceRole == CommerceRole.Supplier))
                 {
                     var matchingSalesOrder = salesOrders.Find(salesOrder => order.ID.Split('-')[0] == salesOrder.ID);
                     order.FromUser = matchingSalesOrder?.FromUser;
@@ -262,7 +262,7 @@ namespace Headstart.API.Commands
                 lineItems.AddRange(await _oc.LineItems.ListAllAsync<HSLineItem>(
                     OrderDirection.Incoming,
                     order.ID,
-                    accessToken: verifiedUser.AccessToken
+                    accessToken: decodedToken.AccessToken
                     ));
                 foreach (var lineItem in lineItems)
                 {
@@ -277,25 +277,25 @@ namespace Headstart.API.Commands
             return lineItemOrders;
         }
 
-        public async Task<List<ReportTemplate>> ListReportTemplatesByReportType(ReportTypeEnum reportType, VerifiedUserContext verifiedUser)
+        public async Task<List<ReportTemplate>> ListReportTemplatesByReportType(ReportTypeEnum reportType, DecodedToken decodedToken)
         {
-            var template = await _template.List(reportType, verifiedUser);
+            var template = await _template.List(reportType, decodedToken);
             return template;
         }
 
-        public async Task<ReportTemplate> PostReportTemplate(ReportTemplate reportTemplate, VerifiedUserContext verifiedUser)
+        public async Task<ReportTemplate> PostReportTemplate(ReportTemplate reportTemplate, DecodedToken decodedToken)
         {
-            var template = await _template.Post(reportTemplate, verifiedUser);
+            var template = await _template.Post(reportTemplate, decodedToken);
             return template;
         }
-        public async Task<ReportTemplate> GetReportTemplate(string id, VerifiedUserContext verifiedUser)
+        public async Task<ReportTemplate> GetReportTemplate(string id, DecodedToken decodedToken)
         {
-            return await _template.Get(id, verifiedUser);
+            return await _template.Get(id, decodedToken);
         }
 
-        public async Task<ReportTemplate> UpdateReportTemplate(string id, ReportTemplate reportTemplate, VerifiedUserContext verifiedUser)
+        public async Task<ReportTemplate> UpdateReportTemplate(string id, ReportTemplate reportTemplate, DecodedToken decodedToken)
         {
-            var template = await _template.Put(id, reportTemplate, verifiedUser);
+            var template = await _template.Put(id, reportTemplate, decodedToken);
             return template;
         }
 
@@ -386,13 +386,14 @@ namespace Headstart.API.Commands
             return null;
         }
 
-        private async Task<List<HSOrder>> GetSalesOrdersIfNeeded(ReportTemplate template, string dateLow, string dateHigh, VerifiedUserContext verifiedUser)
+        private async Task<List<HSOrder>> GetSalesOrdersIfNeeded(ReportTemplate template, string dateLow, string dateHigh, DecodedToken decodedToken)
         {
             if (template.Headers.Any(header => header.Contains("FromUser")))
             {
+                var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
                 return await _oc.Orders.ListAllAsync<HSOrder>(
                 OrderDirection.Incoming,
-                filters: verifiedUser.UserType == "supplier" ? $"from={dateLow}&to={dateHigh}&xp.SupplierIDs={verifiedUser.Supplier.ID}" : $"from={dateLow}&to={dateHigh}"
+                filters: decodedToken.CommerceRole == CommerceRole.Supplier ? $"from={dateLow}&to={dateHigh}&xp.SupplierIDs={me.Supplier.ID}" : $"from={dateLow}&to={dateHigh}"
                 );
             }
             return null;
