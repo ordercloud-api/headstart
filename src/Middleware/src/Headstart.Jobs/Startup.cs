@@ -108,8 +108,6 @@ namespace Headstart.Jobs
             FlurlHttp.Configure(settings => settings.HttpClientFactory = new PollyFactory(policy));
 
             builder.Services
-                .Inject<IAnytimeDashboardClient>()
-                .Inject<IWaxDashboardClient>()
                 .InjectOrderCloud<IOrderCloudClient>(new OrderCloudClientConfig()
                 {
                     ApiUrl = settings.OrderCloudSettings.ApiUrl,
@@ -127,7 +125,6 @@ namespace Headstart.Jobs
                 .AddSingleton<IFlurlClientFactory, PerBaseUrlFlurlClientFactory>()
                 .AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(settings.CardConnectSettings, flurlClientFactory))
                 .Inject<IProductUpdateJob>()
-                .Inject<ISyncOrgCommand>()
                 .Inject<IHSCatalogCommand>()
                 .Inject<IHSBuyerLocationCommand>()
                 .AddSingleton<PaymentCaptureJob>()

@@ -53,13 +53,6 @@ namespace Headstart.Common.Controllers
             return orderCalculationResponse;
         }
 
-        [HttpGet, Route("zoho/{orderID}")]
-        public async Task<OrderSubmitResponse> RetryOrderSubmit(string orderID)
-        {
-            var retry = await _postSubmitCommand.HandleZohoRetry(orderID);
-            return retry;
-        }
-
         [HttpGet, Route("shipping/validate/{orderID}"), OrderCloudUserAuth(ApiRole.IntegrationEventAdmin)]
         public async Task<OrderSubmitResponse> RetryShippingValidate(string orderID)
         {

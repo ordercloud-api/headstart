@@ -24,7 +24,7 @@ namespace Headstart.API.Commands
         Task<RMA> PostRMA(RMA rma);
         Task<CosmosListPage<RMA>> ListBuyerRMAs(CosmosListOptions listOptions, string buyerID);
         Task<RMA> Get(ListArgs<RMA> args, VerifiedUserContext verifiedUser);
-        Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, VerifiedUserContext verifiedUser, bool accessAllRMAsOnOrder = false);
+        Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, CommerceRole commerceRole, MeUser me, bool accessAllRMAsOnOrder = false);
         Task<CosmosListPage<RMA>> ListRMAs(CosmosListOptions listOptions, VerifiedUserContext verifiedUser);
         Task<RMAWithLineItemStatusByQuantity> ProcessRMA(RMA rma, VerifiedUserContext verifiedUser);
         Task<RMAWithLineItemStatusByQuantity> ProcessRefund(string rmaNumber, VerifiedUserContext verifiedUser);
@@ -164,7 +164,7 @@ namespace Headstart.API.Commands
             return rmas;
         }
 
-        public virtual async Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, VerifiedUserContext verifiedUser, bool accessAllRMAsOnOrder = false)
+        public virtual async Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, CommerceRole commerceRole, MeUser me, bool accessAllRMAsOnOrder = false)
         {
             string sourceOrderID = orderID.Split("-")[0];
 
@@ -175,20 +175,20 @@ namespace Headstart.API.Commands
                     rma.PartitionKey == "PartitionValue"
                     && rma.SourceOrderID == sourceOrderID);
 
-            string verifiedUserType = verifiedUser.UserType;
+            string verifiedUserType = commerceRole.ToVerifiedUserType();
 
             if (verifiedUserType == "supplier" && !accessAllRMAsOnOrder)
             {
-                queryable = QueryOnlySupplierRMAs(queryable, verifiedUser);
+                queryable = QueryOnlySupplierRMAs(queryable, me);
             }
 
             CosmosListPage<RMA> rmas = await GenerateRMAList(queryable, listOptions);
             return rmas;
         }
 
-        public virtual IQueryable<RMA> QueryOnlySupplierRMAs(IQueryable<RMA> queryable, VerifiedUserContext verifiedUser)
+        public virtual IQueryable<RMA> QueryOnlySupplierRMAs(IQueryable<RMA> queryable, MeUser me)
         {
-            return queryable.Where(rma => rma.SupplierID == verifiedUser.Supplier.ID);
+            return queryable.Where(rma => rma.SupplierID == me.Supplier.ID);
         }
 
         public async Task<CosmosListPage<RMA>> ListRMAs(CosmosListOptions listOptions, VerifiedUserContext verifiedUser)
@@ -438,6 +438,8 @@ namespace Headstart.API.Commands
 
         public async Task<RMAWithLineItemStatusByQuantity> ProcessRefund(string rmaNumber, VerifiedUserContext verifiedUser)
         {
+            var me = await verifiedUser.RequestMeUserAsync();
+
             RMA rma = await GetRMA(rmaNumber, verifiedUser);
 
             ValidateRMA(rma, verifiedUser);
@@ -450,7 +452,7 @@ namespace Headstart.API.Commands
 
             HSOrderWorksheet worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, rma.SourceOrderID);
 
-            CosmosListPage<RMA> allRMAsOnThisOrder = await ListRMAsByOrderID(worksheet.Order.ID, verifiedUser, true);
+            CosmosListPage<RMA> allRMAsOnThisOrder = await ListRMAsByOrderID(worksheet.Order.ID, verifiedUser.CommerceRole, me, true);
 
             CalculateAndUpdateLineTotalRefund(rmaLineItemsToUpdate, worksheet, allRMAsOnThisOrder, rma.SupplierID);
 

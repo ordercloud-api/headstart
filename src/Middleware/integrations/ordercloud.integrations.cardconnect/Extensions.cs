@@ -27,6 +27,11 @@ namespace ordercloud.integrations.cardconnect
             return attempt.authcode == "REVERS";
         }
 
+        public static bool WasSuccessful(this CardConnectCaptureResponse attempt)
+        {
+            return attempt.respstat == "A";
+        }
+
         public static bool WasSuccessful(this CardConnectInquireResponse attempt)
         {
             return attempt.respstat == "A";

@@ -9,9 +9,9 @@ namespace Headstart.Common.Models
 {
     public class SendGridModels
     {
-        public class EmailTemplate<T>
+        public class EmailTemplate
         {
-            public T Data { get; set; }
+            public object Data { get; set; }
             public EmailDisplayText Message { get; set; }
         }
 

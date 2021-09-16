@@ -51,13 +51,6 @@ namespace Headstart.Common.Controllers
 			return response;
 		}
 
-		[HttpPost, Route("ordersubmit/retry/zoho/{orderID}"), OrderCloudUserAuth(ApiRole.IntegrationEventAdmin)]
-		public async Task<OrderSubmitResponse> RetryOrderSubmit(string orderID)
-		{
-			var retry = await _postSubmitCommand.HandleZohoRetry(orderID);
-			return retry;
-		}
-
 		[HttpPost, Route("orderapproved")]
 		[OrderCloudWebhookAuth]
 		public async Task<OrderSubmitResponse> HandleOrderApproved([FromBody] HSOrderCalculatePayload payload)

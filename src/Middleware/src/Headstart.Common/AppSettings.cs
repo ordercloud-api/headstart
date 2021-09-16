@@ -11,6 +11,7 @@ namespace Headstart.Common
         public EnvironmentSettings EnvironmentSettings { get; set; } = new EnvironmentSettings();
         public ApplicationInsightsSettings ApplicationInsightsSettings { get; set; } = new ApplicationInsightsSettings();
         public AvalaraSettings AvalaraSettings { get; set; } = new AvalaraSettings();
+        public BlobSettings BlobSettings { get; set; }
         public StorageAccountSettings StorageAccountSettings { get; set; } = new StorageAccountSettings();
         public CosmosSettings CosmosSettings { get; set; } = new CosmosSettings();
         public OrderCloudSettings OrderCloudSettings { get; set; } = new OrderCloudSettings();
@@ -19,7 +20,9 @@ namespace Headstart.Common
         public SmartyStreetsConfig SmartyStreetSettings { get; set; } = new SmartyStreetsConfig();
         public EasyPostSettings EasyPostSettings { get; set; } = new EasyPostSettings();
         public SendgridSettings SendgridSettings { get; set; } = new SendgridSettings();
+        public JobSettings JobSettings { get; set; } = new JobSettings();
         public FlurlSettings FlurlSettings { get; set; } = new FlurlSettings();
+        public ServiceBusSettings ServiceBusSettings { get; set; } = new ServiceBusSettings();
     }
 
     public class UI
@@ -67,6 +70,19 @@ namespace Headstart.Common
         public string MarketplaceID { get; set; }
         public string WebhookHashKey { get; set; }
         public string IncrementorPrefix { get; set; }
+        public OrdercloudDataConfig DataConfig { get; set; } = new OrdercloudDataConfig();
+    }
+
+    public class OrdercloudDataConfig
+    {
+        public string AfAllLocationsCatalogID { get; set; }
+        public string AfCAOnlyCatalogID { get; set; }
+        public string AfUSOnlyCatalogID { get; set; }
+        public string WtcAllLocationsCatalogID { get; set; }
+        public string WtcWestCatalogID { get; set; }
+        public string WtcEastCatalogID { get; set; }
+        public string AfBuyerID { get; set; }
+        public string WtcBuyerID { get; set; }
     }
 
     public class AvalaraSettings
@@ -104,6 +120,22 @@ namespace Headstart.Common
         public string ProductInformationRequestTemplateID { get; set; } // (Optional but required to send ProductInformationRequest emails) ID for template to be used for ProductInformationRequest emails
         public string PasswordResetTemplateID { get; set; } // (Optional but required to send PasswordReset emails) ID for template to be used for PasswordReset emails
         public string CriticalSupportTemplateID { get; set; } // (Optional but required to send CriticalSupport emails) ID for template to be used for CriticalSupport emails
+    }
+
+    public class JobSettings
+    {
+        public bool ShouldSyncAnytimeOrganization { get; set; }
+        public bool ShouldSyncWaxingOrganization { get; set; }
+        public bool ShouldEmailProductUpdates { get; set; }
+        public bool ShouldCaptureCreditCardPayments { get; set; }
+        public bool ShouldRunZoho { get; set; }
+        public string CaptureCreditCardsAfterDate { get; set; } // TODO: remove this once all orders have IsPaymentCaptured set
+    }
+
+    public class ServiceBusSettings
+    {
+        public string ConnectionString { get; set; }
+        public string ZohoQueueName { get; set; }
     }
 
     public class FlurlSettings

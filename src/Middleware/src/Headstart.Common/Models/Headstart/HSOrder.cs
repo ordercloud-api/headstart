@@ -97,6 +97,27 @@ namespace Headstart.Models
     {
         public HSOrder Order { get; set; }
         public List<HSLineItem> LineItems { get; set; }
+        public List<LineItemMiscReportFields> LineItemsWithMiscFields { get; set; }
+        public List<LineItemsWithPurchaseOrderFields> LineItemsWithPurchaseOrderFields { get; set; }
+    }
+
+    public class LineItemMiscReportFields
+    {
+        public string ID { get; set; }
+        public decimal? Tax { get; set; }
+        public bool LineTaxAvailable { get; set; }
+        public string BrandName { get; set; }
+        public string SupplierName { get; set; }
+    }
+
+    public class LineItemsWithPurchaseOrderFields
+    {
+        public string ID { get; set; }
+        public string OrderID { get; set; }
+        public decimal Total { get; set; }
+        public decimal Subtotal { get; set; }
+        public decimal? UnitPrice { get; set; }
+        public string SupplierID { get; set; }
     }
 
     public class HSOrderSubmitPayload

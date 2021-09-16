@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using ordercloud.integrations.library;
 using ordercloud.integrations.library.helpers;
 using OrderCloud.SDK;
+using DocIgnoreAttribute = ordercloud.integrations.library.helpers.DocIgnoreAttribute;
 
 namespace Headstart.Common.Models
 {

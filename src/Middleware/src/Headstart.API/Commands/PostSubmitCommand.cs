@@ -17,13 +17,13 @@ using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Common;
 using Headstart.API.Commands.Zoho;
 using OrderCloud.Catalyst;
+using Headstart.Common.Models;
 
 namespace Headstart.API.Commands
 {
     public interface IPostSubmitCommand
     {
         Task<OrderSubmitResponse> HandleBuyerOrderSubmit(HSOrderWorksheet order);
-        Task<OrderSubmitResponse> HandleZohoRetry(string orderID);
         Task<OrderSubmitResponse> HandleShippingValidate(string orderID, VerifiedUserContext user);
     }
 
@@ -34,6 +34,7 @@ namespace Headstart.API.Commands
         private readonly IAvalaraCommand _avalara;
         private readonly ISendgridService _sendgridService;
         private readonly ILineItemCommand _lineItemCommand;
+        private readonly IServiceBus _serviceBus;
         private readonly AppSettings _settings;
 
         public PostSubmitCommand(
@@ -42,6 +43,7 @@ namespace Headstart.API.Commands
             IOrderCloudClient oc,
             IZohoCommand zoho,
             ILineItemCommand lineItemCommand,
+            IServiceBus serviceBus,
             AppSettings settings
         )
         {
@@ -50,6 +52,7 @@ namespace Headstart.API.Commands
             _zoho = zoho;
             _sendgridService = sendgridService;
             _lineItemCommand = lineItemCommand;
+            _serviceBus = serviceBus;
             _settings = settings;
         }
 
@@ -68,38 +71,17 @@ namespace Headstart.API.Commands
                 new List<HSOrder> { worksheet.Order });
         }
 
-        public async Task<OrderSubmitResponse> HandleZohoRetry(string orderID)
+        private async Task PerformZohoTasks(string orderID)
         {
-            var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
-            var supplierOrders = await Throttler.RunAsync(worksheet.LineItems.GroupBy(g => g.SupplierID).Select(s => s.Key), 100, 10, item => _oc.Orders.GetAsync<HSOrder>(OrderDirection.Outgoing,
-                $"{worksheet.Order.ID}-{item}"));
-
-            return await CreateOrderSubmitResponse(
-                new List<ProcessResult>() { await this.PerformZohoTasks(worksheet, supplierOrders) }, 
-                new List<HSOrder> { worksheet.Order });
-        }
-
-        private async Task<ProcessResult> PerformZohoTasks(HSOrderWorksheet worksheet, IList<HSOrder> supplierOrders)
-        {
-            var (salesAction, zohoSalesOrder) = await ProcessActivityCall(
-                ProcessType.Accounting,
-                "Create Zoho Sales Order",
-                _zoho.CreateSalesOrder(worksheet));
-
-            var (poAction, zohoPurchaseOrder) = await ProcessActivityCall(
-                ProcessType.Accounting,
-                "Create Zoho Purchase Order",
-                _zoho.CreateOrUpdatePurchaseOrder(zohoSalesOrder, supplierOrders.ToList()));
-
-            var (shippingAction, zohoShippingOrder) = await ProcessActivityCall(
-                ProcessType.Accounting,
-                "Create Zoho Shipping Purchase Order",
-                _zoho.CreateShippingPurchaseOrder(zohoSalesOrder, worksheet));
-            return new ProcessResult()
+            if (!_settings.JobSettings.ShouldRunZoho)
             {
-                Type = ProcessType.Accounting,
-                Activity = new List<ProcessResultAction>() {salesAction, poAction, shippingAction}
+                return;
+            }
+            var message = new ZohoQueueMessage
+            {
+                OrderID = orderID
             };
+            await _serviceBus.SendMessage(_settings.ServiceBusSettings.ZohoQueueName, message, afterMinutes: 1);
         }
 
         public async Task<OrderSubmitResponse> HandleBuyerOrderSubmit(HSOrderWorksheet orderWorksheet)
@@ -154,10 +136,7 @@ namespace Headstart.API.Commands
                 Activity = new List<ProcessResultAction>() { tax }
             });
 
-            // STEP 3: Zoho orders
-            if(_settings.ZohoSettings.PerformOrderSubmitTasks) { results.Add(await this.PerformZohoTasks(orderWorksheet, supplierOrders)); }
-
-            // STEP 4: Validate shipping
+            // STEP 3: Validate shipping
             var shipping = await ProcessActivityCall(
                 ProcessType.Shipping,
                 "Validate Shipping",

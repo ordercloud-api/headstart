@@ -17,7 +17,7 @@ namespace Headstart.API.Commands.Zoho
 {
     public interface IZohoCommand
     {
-        Task<ZohoSalesOrder> CreateSalesOrder(HSOrderWorksheet orderWorksheet);
+        Task<ZohoSalesOrder> CreateSalesOrder(string orderID);
         Task<List<ZohoPurchaseOrder>> CreateOrUpdatePurchaseOrder(ZohoSalesOrder z_order, List<HSOrder> orders);
         Task<List<ZohoPurchaseOrder>> CreateShippingPurchaseOrder(ZohoSalesOrder z_order, HSOrderWorksheet order);
         Task<ZohoOrganizationList> ListOrganizations();
@@ -143,8 +143,10 @@ namespace Headstart.API.Commands.Zoho
             return await _zoho.PurchaseOrders.CreateAsync(ZohoPurchaseOrderMapper.Map(z_order, order, items, lineitems, delivery_address, contact));
         }
 
-        public async Task<ZohoSalesOrder> CreateSalesOrder(HSOrderWorksheet orderWorksheet)
+        public async Task<ZohoSalesOrder> CreateSalesOrder(string orderID)
         {
+            var orderWorksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
+
             await _zoho.AuthenticateAsync();
             // Step 1: Create contact (customer) in Zoho
             var contact = await CreateOrUpdateContact(orderWorksheet.Order);

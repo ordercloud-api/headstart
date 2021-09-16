@@ -13,7 +13,6 @@ namespace Headstart.Jobs
     // check out the README.md at the root of this project to get started
     public class Jobs
     {
-        private readonly ISyncOrgCommand _sync;
         private readonly IProductUpdateJob _productUpdates;
         private readonly PaymentCaptureJob _paymentCapture;
         private readonly ZohoJob _zoho;
@@ -26,7 +25,6 @@ namespace Headstart.Jobs
         private readonly AppSettings _settings;
 
         public Jobs(
-            ISyncOrgCommand sync,
             IProductUpdateJob productUpdates,
             PaymentCaptureJob paymentCapture,
             ZohoJob zoho,
@@ -39,7 +37,6 @@ namespace Headstart.Jobs
             AppSettings settings
         )
         {
-            _sync = sync;
             _productUpdates = productUpdates;
             _paymentCapture = paymentCapture;
             _zoho = zoho;
@@ -51,16 +48,6 @@ namespace Headstart.Jobs
             _receiveProductDetailsJob = receiveProductDetailsJob;
             _settings = settings;
         }
-
-        // Every day at 5AM CST(11AM UTC)
-        [FunctionName("SyncAnytimeOrganization")]
-        public async Task SyncAnytimeOrganization([TimerTrigger("0 11 * * *")] TimerInfo myTimer, ILogger logger) =>
-            await _sync.SyncAllLocations(logger, _settings.OrderCloudSettings.DataConfig.AfBuyerID);
-
-        // Every day at 5AM CST(11AM UTC)
-        [FunctionName("SyncWaxingOrganization")]
-        public async Task SyncWaxingOrganization([TimerTrigger("0 11 * * *")] TimerInfo myTimer, ILogger logger) =>
-            await _sync.SyncAllLocations(logger, _settings.OrderCloudSettings.DataConfig.WtcBuyerID);
 
         // Every day at 3:15AM CST (9:15AM UTC)
         [FunctionName("EmailProductUpdates")]
