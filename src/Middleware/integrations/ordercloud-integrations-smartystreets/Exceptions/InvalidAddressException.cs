@@ -8,7 +8,7 @@ namespace ordercloud.integrations.smartystreets
 {
 	public class InvalidAddressException : CatalystBaseException
 	{
-		public InvalidAddressException(AddressValidation validation) : base("InvalidAddress", 400, "Address not valid", validation) { }
+		public InvalidAddressException(AddressValidation validation) : base("InvalidAddress", "Address not valid", validation, 400) { }
 	}
 }
 

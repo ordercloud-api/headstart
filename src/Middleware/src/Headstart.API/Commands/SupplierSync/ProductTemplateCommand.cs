@@ -21,8 +21,8 @@ namespace Headstart.API.Commands
 {
     public interface IProductTemplateCommand
     {
-        Task<List<TemplateHydratedProduct>> ParseProductTemplate(IFormFile file, VerifiedUserContext user);
-        Task<TemplateProductResult> ParseProductTemplateFlat(IFormFile file, VerifiedUserContext user);
+        Task<List<TemplateHydratedProduct>> ParseProductTemplate(IFormFile file, DecodedToken decodedToken);
+        Task<TemplateProductResult> ParseProductTemplateFlat(IFormFile file, DecodedToken decodedToken);
     }
 
     public class ProductTemplateCommand : IProductTemplateCommand
@@ -33,7 +33,7 @@ namespace Headstart.API.Commands
             _settings = settings;
         }
 
-        public async Task<TemplateProductResult> ParseProductTemplateFlat(IFormFile file, VerifiedUserContext user)
+        public async Task<TemplateProductResult> ParseProductTemplateFlat(IFormFile file, DecodedToken decodedToken)
         {
             using var stream = file.OpenReadStream();
             var products = new Mapper(stream).Take<TemplateProductFlat>("TemplateFlat", 1000).ToList();
@@ -84,7 +84,7 @@ namespace Headstart.API.Commands
             return result;
         }
 
-        public async Task<List<TemplateHydratedProduct>> ParseProductTemplate(IFormFile file, VerifiedUserContext user)
+        public async Task<List<TemplateHydratedProduct>> ParseProductTemplate(IFormFile file, DecodedToken decodedToken)
         {
             using var stream = file.OpenReadStream();
             var mapper = new Mapper(stream);

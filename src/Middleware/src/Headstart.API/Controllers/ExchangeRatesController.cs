@@ -15,7 +15,7 @@ namespace Headstart.Common.Controllers
     ///  Currency Conversion Charts
     /// </summary>
     [Route("exchangerates")]
-    public class ExchangeRatesController : BaseController
+    public class ExchangeRatesController : CatalystController
     {
         private readonly IExchangeRatesCommand _command;
 

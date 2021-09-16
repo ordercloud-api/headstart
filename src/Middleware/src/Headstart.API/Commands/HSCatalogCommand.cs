@@ -12,13 +12,13 @@ namespace Headstart.API.Commands.Crud
 {
 	public interface IHSCatalogCommand
 	{
-		Task<ListPage<HSCatalog>> List(string buyerID, ListArgs<HSCatalog> args, VerifiedUserContext user);
-		Task<HSCatalog> Post(string buyerID, HSCatalog catalog, VerifiedUserContext user);
-		Task<ListPage<HSCatalogAssignment>> GetAssignments(string buyerID, string locationID, VerifiedUserContext user);
+		Task<ListPage<HSCatalog>> List(string buyerID, ListArgs<HSCatalog> args, DecodedToken decodedToken);
+		Task<HSCatalog> Post(string buyerID, HSCatalog catalog, DecodedToken decodedToken);
+		Task<ListPage<HSCatalogAssignment>> GetAssignments(string buyerID, string locationID, DecodedToken decodedToken);
 		Task SetAssignments(string buyerID, string locationID, List<string> assignments, string token);
-		Task<HSCatalog> Get(string buyerID, string catalogID, VerifiedUserContext user);
-		Task<HSCatalog> Put(string buyerID, string catalogID, HSCatalog catalog, VerifiedUserContext user);
-		Task Delete(string buyerID, string catalogID, VerifiedUserContext user);
+		Task<HSCatalog> Get(string buyerID, string catalogID, DecodedToken decodedToken);
+		Task<HSCatalog> Put(string buyerID, string catalogID, HSCatalog catalog, DecodedToken decodedToken);
+		Task Delete(string buyerID, string catalogID, DecodedToken decodedToken);
 		Task SyncUserCatalogAssignments(string buyerID, string userID);
 	}
 
@@ -30,28 +30,28 @@ namespace Headstart.API.Commands.Crud
 			_oc = oc;
 		}
 
-		public async Task<HSCatalog> Get(string buyerID, string catalogID, VerifiedUserContext user)
+		public async Task<HSCatalog> Get(string buyerID, string catalogID, DecodedToken decodedToken)
 		{
-			return await _oc.UserGroups.GetAsync<HSCatalog>(buyerID, catalogID, user.AccessToken);
+			return await _oc.UserGroups.GetAsync<HSCatalog>(buyerID, catalogID, decodedToken.AccessToken);
 		}
 
-		public async Task<ListPage<HSCatalog>> List(string buyerID, ListArgs<HSCatalog> args, VerifiedUserContext user)
+		public async Task<ListPage<HSCatalog>> List(string buyerID, ListArgs<HSCatalog> args, DecodedToken decodedToken)
 		{
 			return await _oc.UserGroups.ListAsync<HSCatalog>(buyerID, 
 				filters: "xp.Type=Catalog",
 				search: args.Search,
 				pageSize: args.PageSize,
 				page: args.Page,
-				accessToken: user.AccessToken);
+				accessToken: decodedToken.AccessToken);
 		}
 		
-		public async Task<ListPage<HSCatalogAssignment>> GetAssignments(string buyerID, string locationID, VerifiedUserContext user)
+		public async Task<ListPage<HSCatalogAssignment>> GetAssignments(string buyerID, string locationID, DecodedToken decodedToken)
 		{
 			// assignments are stored on location usergroup xp in a string array with the ids of the catalogs
 			// currently they can only be assessed by location ID
 			// limiting to 20 catalog assignments for now
 
-			var location = await _oc.UserGroups.GetAsync<HSLocationUserGroup>(buyerID, locationID, user.AccessToken);
+			var location = await _oc.UserGroups.GetAsync<HSLocationUserGroup>(buyerID, locationID, decodedToken.AccessToken);
 
 			var catalogAssignments = new List<HSCatalogAssignment>{};
 			
@@ -123,19 +123,19 @@ namespace Headstart.API.Commands.Crud
 
 		}
 
-		public async Task<HSCatalog> Post(string buyerID, HSCatalog catalog, VerifiedUserContext user)
+		public async Task<HSCatalog> Post(string buyerID, HSCatalog catalog, DecodedToken decodedToken)
 		{
-			return await _oc.UserGroups.CreateAsync<HSCatalog>(buyerID, catalog, user.AccessToken);
+			return await _oc.UserGroups.CreateAsync<HSCatalog>(buyerID, catalog, decodedToken.AccessToken);
 		}
 
-		public async Task<HSCatalog> Put(string buyerID, string catalogID, HSCatalog catalog, VerifiedUserContext user)
+		public async Task<HSCatalog> Put(string buyerID, string catalogID, HSCatalog catalog, DecodedToken decodedToken)
 		{
-			return await _oc.UserGroups.SaveAsync<HSCatalog>(buyerID, catalogID, catalog, user.AccessToken);
+			return await _oc.UserGroups.SaveAsync<HSCatalog>(buyerID, catalogID, catalog, decodedToken.AccessToken);
 		}
 
-		public async Task Delete(string buyerID, string catalogID, VerifiedUserContext user)
+		public async Task Delete(string buyerID, string catalogID, DecodedToken decodedToken)
 		{
-			await _oc.UserGroups.DeleteAsync(buyerID, catalogID, user.AccessToken);
+			await _oc.UserGroups.DeleteAsync(buyerID, catalogID, decodedToken.AccessToken);
 		}
 	}
 }

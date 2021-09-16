@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Require = ordercloud.integrations.library.Require;
 
 namespace Headstart.Common.Services
 {

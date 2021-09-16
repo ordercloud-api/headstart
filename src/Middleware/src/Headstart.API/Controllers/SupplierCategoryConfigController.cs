@@ -17,7 +17,7 @@ namespace Headstart.Common.Controllers
 	/// Supplier Category Configuration
 	/// </summary>
 
-	public class SupplierFilterConfigController : BaseController
+	public class SupplierFilterConfigController : CatalystController
 	{
 		public SupplierFilterConfigController()
 		{

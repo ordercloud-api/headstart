@@ -16,7 +16,7 @@ namespace Headstart.Common.Controllers
 	/// Me and my stuff
 	/// </summary> 
 	[Route("me")]
-	public class MeController : BaseController
+	public class MeController : CatalystController
 	{
 		private readonly IMeProductCommand _meProductCommand;
 		public MeController(IMeProductCommand meProductCommand)

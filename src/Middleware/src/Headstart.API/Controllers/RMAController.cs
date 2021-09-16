@@ -14,19 +14,21 @@ namespace Headstart.Common.Controllers
     /// Returns
     /// </summary>
     [Route("rma")]
-    public class RMAController : BaseController
+    public class RMAController : CatalystController
     {
 		private readonly IRMACommand _rmaCommand;
         private readonly ILineItemCommand _lineItemCommand;
+        private readonly IOrderCloudClient _oc;
         private const string HSLocationViewAllOrders = "HSLocationViewAllOrders";
         private const string HSOrderAdmin = "HSOrderAdmin";
         private const string HSOrderReader = "HSOrderReader";
         private const string HSShipmentAdmin = "HSShipmentAdmin";
 
-        public RMAController(IRMACommand rmaCommand, ILineItemCommand lineItemCommand, AppSettings settings)
+        public RMAController(IRMACommand rmaCommand, ILineItemCommand lineItemCommand, IOrderCloudClient oc)
         {
             _rmaCommand = rmaCommand;
             _lineItemCommand = lineItemCommand;
+            _oc = oc;
         }
 
         // Buyer Routes
@@ -42,7 +44,8 @@ namespace Headstart.Common.Controllers
         [HttpPost, Route("list/buyer"), OrderCloudUserAuth(HSLocationViewAllOrders)]
         public async Task<CosmosListPage<RMA>> ListBuyerRMAs([FromBody] CosmosListOptions listOptions)
         {
-            return await _rmaCommand.ListBuyerRMAs(listOptions, UserContext.Buyer.ID);
+            var me = await _oc.Me.GetAsync(accessToken: UserContext.AccessToken);
+            return await _rmaCommand.ListBuyerRMAs(listOptions, me?.Buyer?.ID);
         }
 
         // Seller/Supplier Routes
@@ -53,9 +56,9 @@ namespace Headstart.Common.Controllers
         }
 
         [HttpGet, Route("{orderID}"), OrderCloudUserAuth(HSOrderAdmin, HSOrderReader, HSShipmentAdmin)]
-        public async Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID)
+        public async Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, CommerceRole commerceRole, MeUser me, bool accessAllRMAsOnOrder = false)
         {
-            return await _rmaCommand.ListRMAsByOrderID(orderID, UserContext);
+            return await _rmaCommand.ListRMAsByOrderID(orderID, commerceRole, me, accessAllRMAsOnOrder);
         }
 
         [HttpPost, Route("list"), OrderCloudUserAuth(HSOrderAdmin, HSOrderReader, HSShipmentAdmin)]

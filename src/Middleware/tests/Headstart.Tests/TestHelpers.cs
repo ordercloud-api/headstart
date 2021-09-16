@@ -41,15 +41,5 @@ namespace Headstart.Tests
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
-        public static VerifiedUserContext MockUserContext()
-        {
-
-            var cid = new ClaimsIdentity("OrderCloudIntegrations");
-            cid.AddClaim(new Claim("accesstoken", MockOrderCloudToken()));
-            var principal = new ClaimsPrincipal(cid);
-            var context = new VerifiedUserContext(principal);
-            return context;
-        }
     }
 }

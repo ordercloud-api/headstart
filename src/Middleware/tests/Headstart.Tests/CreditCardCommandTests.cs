@@ -83,7 +83,7 @@ namespace Headstart.Tests
 			var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => await _sut.AuthorizePayment(payment, userToken, merchantID));
 
 			// Assert
-			Assert.AreEqual("Payment.MissingCreditCardPayment", ex.ApiError.ErrorCode);
+			Assert.AreEqual("Payment.MissingCreditCardPayment", ex.Errors[0].ErrorCode);
 		}
 
 		[Test]
@@ -317,7 +317,7 @@ namespace Headstart.Tests
 			var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => await _sut.AuthorizePayment(payment, userToken, merchantID));
 
 			// Assert
-			Assert.AreEqual("CreditCardAuth.", ex.ApiError.ErrorCode);
+			Assert.AreEqual("CreditCardAuth.", ex.Errors[0].ErrorCode);
 			await _cardConnect.Received().AuthWithoutCapture(Arg.Any<CardConnectAuthorizationRequest>());
 
 			// stuff that happens in catch block
@@ -362,7 +362,7 @@ namespace Headstart.Tests
 			var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => await _sut.AuthorizePayment(payment, userToken, merchantID));
 
 			// Assert
-			Assert.AreEqual("Payment.FailedToVoidAuthorization", ex.ApiError.ErrorCode);
+			Assert.AreEqual("Payment.FailedToVoidAuthorization", ex.Errors[0].ErrorCode);
 
 			// stuff that happens in catch block
 			await _supportAlerts

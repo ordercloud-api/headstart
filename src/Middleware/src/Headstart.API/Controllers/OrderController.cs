@@ -18,7 +18,7 @@ namespace Headstart.Common.Controllers
     /// Order commands in Headstart
     /// </summary>
     [Route("order")]
-    public class OrderController : BaseController
+    public class OrderController : CatalystController
     {
         
         private readonly IOrderCommand _command;
