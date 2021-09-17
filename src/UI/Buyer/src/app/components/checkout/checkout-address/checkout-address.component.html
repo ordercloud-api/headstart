@@ -39,8 +39,8 @@
             {{ promo.Code }}
           </p>
           <small>{{ promo.Description }}</small>
-          <p *ngIf="isShippingPromo(promo)" class="white-space-pre mt-1 mb-0 text-danger font-weight-bolder">
-            Discount calculated after shipping selection
+          <p translate *ngIf="isShippingPromo(promo)" class="white-space-pre mt-1 mb-0 text-danger font-weight-bolder">
+            CHECKOUT.CHECKOUT_ADDRESS.SHIPPING_DISCOUNT_TEXT
           </p>
           <p *ngIf="!isShippingPromo(promo)" class="white-space-pre mt-1 mb-0 text-danger font-weight-bolder">
             -
