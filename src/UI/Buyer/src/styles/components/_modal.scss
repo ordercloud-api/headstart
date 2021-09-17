@@ -18,6 +18,7 @@ ocm-modal {
     align-items: center;
     justify-content: center;
     .shared-modal-body {
+      max-width: 500px;
       background-color: $white;
       padding: 3rem;
       box-shadow: 0 1rem 3rem rgba(23, 17, 24, 0.75); // .shadow-lg with *significantly* more opacity
