@@ -8,7 +8,6 @@ import {
   Payment,
   BuyerCreditCard,
   OrderPromotion,
-  Orders,
 } from 'ordercloud-javascript-sdk'
 import {
   HSOrder,
@@ -149,6 +148,9 @@ export class OCMCheckout implements OnInit {
     await this.checkout.calculateOrder()
     this.cards = await this.context.currentUser.cards.List(this.isAnon)
     this.order = this.context.order.get()
+    if (this.orderPromotions?.length) {
+      await this.context.order.promos.refresh()
+    }
     if (this.order.IsSubmitted) {
       await this.handleOrderError(ErrorCodes.AlreadySubmitted)
     }

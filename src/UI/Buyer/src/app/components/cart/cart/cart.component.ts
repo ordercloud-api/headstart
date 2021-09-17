@@ -61,7 +61,7 @@ export class OCMCart implements OnInit, OnDestroy {
   constructor(
     private context: ShopperContextService,
     private currentOrder: CurrentOrderService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.currentOrder.cart.isCartValidSubject.subscribe((valid) => {
@@ -89,7 +89,10 @@ export class OCMCart implements OnInit, OnDestroy {
 
   emptyCart(): void {
     this.isEmptyingCart = true
-    this.context.order.cart.empty().finally(() => (this.isEmptyingCart = false))
+    Promise.all([
+      this.context.order.cart.empty(),
+      this.context.order.promos.removeAllPromos(),
+    ]).finally(() => (this.isEmptyingCart = false))
   }
 
   async removeInvalidLineItems(): Promise<void> {

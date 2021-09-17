@@ -7,6 +7,7 @@ import {
   ListPage,
   Me,
   OrderPromotion,
+  Promotion,
 } from 'ordercloud-javascript-sdk'
 import {
   HeadStartSDK,
@@ -158,6 +159,10 @@ export class OCMCheckoutAddress implements OnInit {
     if (shippingAddress) {
       this.selectedShippingAddress = shippingAddress
     }
+  }
+
+  isShippingPromo(promo: Promotion): boolean {
+    return promo.ValueExpression.includes('ShipppingCost')
   }
 
   private async listSavedBuyerLocations(): Promise<void> {
