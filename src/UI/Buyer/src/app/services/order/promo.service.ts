@@ -1,19 +1,8 @@
 import { Injectable } from '@angular/core'
-import {
-  Orders,
-  LineItems,
-  Me,
-  OrderPromotion,
-} from 'ordercloud-javascript-sdk'
+import { Orders, OrderPromotion } from 'ordercloud-javascript-sdk'
 import { Subject } from 'rxjs'
 import { OrderStateService } from './order-state.service'
-import { isUndefined as _isUndefined } from 'lodash'
-import {
-  HSLineItem,
-  HSOrder,
-  HeadStartSDK,
-  ListPage,
-} from '@ordercloud/headstart-sdk'
+import { HSOrder, ListPage } from '@ordercloud/headstart-sdk'
 import { TempSdk } from '../temp-sdk/temp-sdk.service'
 
 @Injectable({
@@ -33,6 +22,10 @@ export class PromoService {
 
   get(): ListPage<OrderPromotion> {
     return this.promos
+  }
+
+  async refresh(): Promise<void> {
+    this.promos = await Orders.ListPromotions('Outgoing', this.order.ID)
   }
 
   public async removePromo(promoCode: string): Promise<void> {
@@ -63,6 +56,17 @@ export class PromoService {
       await this.tempsdk.applyAutomaticPromotionsToOrder(this.order.ID)
     } finally {
       await this.state.reset()
+    }
+  }
+
+  public async removeAllPromos(): Promise<void> {
+    const reqs = this.promos?.Items?.map((promo) =>
+      Orders.RemovePromotion('Outgoing', this.order.ID, promo.Code)
+    )
+    try {
+      await Promise.all(reqs)
+    } finally {
+      void this.state.reset()
     }
   }
 
