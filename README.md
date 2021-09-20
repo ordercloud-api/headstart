@@ -61,7 +61,8 @@ This solution relies on various third-party services and credentials for those s
 3. [EasyPost](https://www.easypost.com/signup) - Shipping estimates
 4. [SmartyStreets](https://smartystreets.com/pricing) - Address validation
 5. [Sendgrid](https://signup.sendgrid.com/) - Transactional emails **(Optional but emails won't work until set up)**
-6. [Zoho](https://www.zoho.com/signup.html) - ERP **(Optional)**
+6. [Moosend](https://moosend.com/) - Automated email campaigns  **(Optional. AKA Sitecore Send)**
+7. [Zoho](https://www.zoho.com/signup.html) - ERP **(Optional)**
 
 ### Provisioning Azure Resources
 
@@ -125,6 +126,15 @@ Detailed Steps:
 | ProductInformationRequest | sent to the supplier (supplier.xp.SupportContact.Email) when a buyer user requests more information about one of their products |
 |     QuoteOrderSubmit      | sent to the buyer user when their quote is submitted                                                                            |
 |                           |                                                                                                                                 |
+
+### Moosend 
+
+Moosend is a platform for sending automated email campains. It is integrated into the storefront in order to capture events like view product, add to cart and purchase. This data can provide intelligence for abandonded cart emails, user segmentation for peronsonalized marketing and user-history-based product recomendations. 
+
+Usage is optional and controlled with the buyer setting `useMoosend`. To connect moosend [get a website ID](https://help.moosend.com/hc/en-us/articles/115002945125-How-can-I-connect-my-website-to-Moosend-) and add it to buyer settings. 
+
+Moosend and Ordercloud are both owned by Sitecore. You can expect the two products to be more integrated over time. Sendgrid will be replaced by Moosend once transactional email feature are ready. 
+
 
 ### Frontend Configuration
 

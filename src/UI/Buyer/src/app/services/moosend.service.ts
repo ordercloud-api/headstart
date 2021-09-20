@@ -18,6 +18,8 @@ export class MooTrackService {
 
     constructor(private appConfig: AppConfig) { 
         if (!appConfig.useMoosend) { return; }
+
+        this.loadMoosendTracker();
             
         mootrack('init', appConfig.moosendWebsiteID);
     }
@@ -89,6 +91,15 @@ export class MooTrackService {
 
     private GetUrl(productID: string): string {
         return `${this.appConfig.baseUrl}/products/${productID}`;
+    }
+
+    private loadMoosendTracker():void  {
+        var node = document.createElement("script");
+        node.type = "text/javascript";
+        node.async = true;
+        // Mootracker installation https://help.moosend.com/hc/en-us/articles/115002454009-How-can-I-install-website-tracking-by-using-the-JS-tracking-library-
+        node.innerHTML = "!function(t,n,e,o,a){function d(t){var n=~~(Date.now()/3e5),o=document.createElement(e);o.async=!0,o.src=t+\"?ts=\"+n;var a=document.getElementsByTagName(e)[0];a.parentNode.insertBefore(o,a)}t.MooTrackerObject=a,t[a]=t[a]||function( ){return t[a].q?void t[a].q.push(arguments):void(t[a].q=[arguments])},window .attachEvent?window.attachEvent(\"onload\",d.bind(this,o) ):window.addEventListener(\"load\",d.bind(this,o),!1)}(window,document,\"script\",\"//cdn.stat-track.com/statics/moosend-tracking.min.js\",\"mootrack\");";
+        document.getElementsByTagName('head')[0].appendChild(node);
     }
 }
 
