@@ -129,7 +129,7 @@ Detailed Steps:
 
 ### Moosend 
 
-Moosend is a platform for sending automated email campains. It is integrated into the storefront in order to capture events like view product, add to cart and purchase. This data can provide intelligence for abandonded cart emails, user segmentation for peronsonalized marketing and user-history-based product recomendations. 
+Moosend is a platform for sending automated email campaigns. It is integrated into the storefront in order to capture events like view product, add to cart and purchase. This data can provide intelligence for abandonded cart emails, user segmentation for peronsonalized marketing and user-history-based product recomendations. 
 
 Usage is optional and controlled with the buyer setting `useMoosend`. To connect moosend [get a website ID](https://help.moosend.com/hc/en-us/articles/115002945125-How-can-I-connect-my-website-to-Moosend-) and add it to buyer settings. 
 
