@@ -18,10 +18,10 @@ namespace Headstart.Common.Exceptions
 
         public ProcessResultException(CatalystBaseException ex)
         {
-            this.Message = ex.ApiError.Message;
+            this.Message = ex.Errors[0].Message;
             try
             {
-                this.ResponseBody = JsonConvert.SerializeObject(ex.ApiError);
+                this.ResponseBody = JsonConvert.SerializeObject(ex.Errors);
             } catch(Exception)
             {
                 this.ResponseBody = "Error while trying to parse response body";

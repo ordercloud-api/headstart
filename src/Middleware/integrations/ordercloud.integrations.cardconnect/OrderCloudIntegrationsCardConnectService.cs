@@ -16,6 +16,7 @@ namespace ordercloud.integrations.cardconnect
         Task<CardConnectAuthorizationResponse> AuthWithoutCapture(CardConnectAuthorizationRequest request);
         Task<CardConnectAuthorizationResponse> AuthWithCapture(CardConnectAuthorizationRequest request);
         Task<CardConnectVoidResponse> VoidAuthorization(CardConnectVoidRequest request);
+        Task<CardConnectCaptureResponse> Capture(CardConnectCaptureRequest request);
         Task<CardConnectInquireResponse> Inquire(CardConnectInquireRequest request);
         Task<CardConnectRefundResponse> Refund(CardConnectRefundRequest request);
     }
@@ -75,6 +76,25 @@ namespace ordercloud.integrations.cardconnect
         {
             request.capture = "Y";
             return await PostAuthorizationAsync(request);
+        }
+
+        public async Task<CardConnectCaptureResponse> Capture(CardConnectCaptureRequest request)
+        {
+            var attempt = await this
+                .Request("cardconnect/rest/capture", request.currency)
+                .PostJsonAsync(request)
+                .ReceiveJson<CardConnectCaptureResponse>();
+
+            if (attempt.WasSuccessful())
+            {
+                return attempt;
+            }
+            throw new CardConnectCaptureException(new ApiError
+            {
+                Data = attempt,
+                Message = attempt.resptext,
+                ErrorCode = attempt.respcode
+            }, attempt);
         }
 
         public async Task<CardConnectVoidResponse> VoidAuthorization(CardConnectVoidRequest request)

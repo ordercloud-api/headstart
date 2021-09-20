@@ -8,7 +8,7 @@ using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
-	public class CheckoutIntegrationController : BaseController
+	public class CheckoutIntegrationController : CatalystController
 	{
 		private readonly ICheckoutIntegrationCommand _checkoutIntegrationCommand;
 		private readonly IPostSubmitCommand _postSubmitCommand;

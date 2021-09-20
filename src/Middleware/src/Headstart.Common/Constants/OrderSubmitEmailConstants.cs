@@ -22,7 +22,7 @@ namespace Headstart.Common.Constants
         }
 
 
-        public static EmailDisplayText GetOrderSubmitText(string orderID, string firstName, string lastName, VerifiedUserType verifiedUser)
+        public static EmailDisplayText GetOrderSubmitText(string orderID, string firstName, string lastName, VerifiedUserType decodedToken)
         {
             var dictionary = new Dictionary<VerifiedUserType, EmailDisplayText>()
             {
@@ -45,9 +45,9 @@ namespace Headstart.Common.Constants
                     DynamicText2 = "The order contains the following items:"
                 } },
             };
-            return dictionary[verifiedUser];
+            return dictionary[decodedToken];
         }
-        public static EmailDisplayText GetQuoteOrderSubmitText(VerifiedUserType verifiedUser)
+        public static EmailDisplayText GetQuoteOrderSubmitText(VerifiedUserType decodedToken)
         {
             var dictionary = new Dictionary<VerifiedUserType, EmailDisplayText>()
             {
@@ -64,7 +64,7 @@ namespace Headstart.Common.Constants
                     DynamicText2 = "Please reach out to the customer directly to give them more information about their quote."
                 } },
             };
-            return dictionary[verifiedUser];
+            return dictionary[decodedToken];
         }
         public static EmailDisplayText GetOrderRequiresApprovalText()
         {

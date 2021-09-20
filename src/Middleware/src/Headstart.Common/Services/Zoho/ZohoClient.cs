@@ -68,7 +68,7 @@ namespace Headstart.Common.Services.Zoho
             }
             catch (FlurlHttpException ex)
             {
-                throw new CatalystBaseException("ZohoAuthenticationError", (int)ex.Call.Response.StatusCode, ex.Message);
+                throw new CatalystBaseException("ZohoAuthenticationError", ex.Message, null, (int)ex.Call.Response.StatusCode);
             }
 
         }
