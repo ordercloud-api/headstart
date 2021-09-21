@@ -41,6 +41,7 @@ import { ModalState } from 'src/app/models/shared.types'
 import { ErrorDisplayData, MiddlewareError } from 'src/app/models/error.types'
 import { Router } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
+import { MooTrackService } from 'src/app/services/moosend.service'
 
 @Component({
   templateUrl: './checkout.component.html',
@@ -97,7 +98,8 @@ export class OCMCheckout implements OnInit {
     private spinner: NgxSpinnerService,
     private toastrService: ToastrService,
     private router: Router,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private mootrack: MooTrackService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -267,7 +269,8 @@ export class OCMCheckout implements OnInit {
           'Outgoing',
           this.order.ID,
           payment
-        )
+        );
+        this.mootrack.purchase(this.context.order.getLineItems().Items)
         //  Do all patching of order XP values in the OrderSubmit integration event
         //  Patching order XP before order is submitted will clear out order worksheet data
         await this.checkout.patch({ Comments: comment }, order.ID)

@@ -19,6 +19,8 @@ export const ocAppConfig: AppConfig = {
   appInsightsInstrumentationKey: environment.appInsightsInstrumentationKey,
   acceptedPaymentMethods: environment.acceptedPaymentMethods,
   storefrontName: environment.storefrontName,
+  useMoosend: environment.useMoosend,
+  moosendWebsiteID: environment.moosendWebsiteID,
   scope: [
     'MeAddressAdmin',
     'AddressAdmin', // Only for location owners
