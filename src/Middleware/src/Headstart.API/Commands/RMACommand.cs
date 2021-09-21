@@ -221,7 +221,7 @@ namespace Headstart.API.Commands
             // If the status on the new RMA differs from the old RMA, create an RMALog
             if (rma.Status != currentRMA.Status)
             {
-                RMALog log = new RMALog() { Status = rma.Status, Date = DateTime.Now, FromUserID = decodedToken.UserDatabaseID };
+                RMALog log = new RMALog() { Status = rma.Status, Date = DateTime.Now, FromUserID = me.ID };
                 rma.Logs.Insert(0, log);
             }
 
@@ -463,7 +463,7 @@ namespace Headstart.API.Commands
             MarkRMALineItemsAsRefunded(rmaLineItemsToUpdate);
 
             decimal totalRefundedForThisTransaction = rma.TotalCredited - initialAmountRefunded;
-            RMALog log = new RMALog() { Status = rma.Status, Date = DateTime.Now, AmountRefunded = totalRefundedForThisTransaction, FromUserID = decodedToken.UserDatabaseID };
+            RMALog log = new RMALog() { Status = rma.Status, Date = DateTime.Now, AmountRefunded = totalRefundedForThisTransaction, FromUserID = me.ID };
             rma.Logs.Insert(0, log);
 
             List<LineItemStatusChanges> lineItemStatusChangesList = BuildLineItemStatusChanges(rmaLineItemsToUpdate, worksheet, rma.Type, false);

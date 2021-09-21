@@ -67,9 +67,6 @@ namespace Headstart.Common
 
     public class JobSettings
     {
-        public bool ShouldSyncAnytimeOrganization { get; set; }
-        public bool ShouldSyncWaxingOrganization { get; set; }
-        public bool ShouldEmailProductUpdates { get; set; }
         public bool ShouldCaptureCreditCardPayments { get; set; }
         public bool ShouldRunZoho { get; set; }
         public string CaptureCreditCardsAfterDate { get; set; } // TODO: remove this once all orders have IsPaymentCaptured set

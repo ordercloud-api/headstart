@@ -90,7 +90,7 @@ namespace Headstart.Models.Misc
 
 		/// <summary>
 		/// An optional object of storage settings for your translations container. 
-		/// If none are provided the seeding funciton will not create a translation file.
+		/// If none are provided the seeding funciton will not create a translation file or downloads file
 		/// Provide a valid ConnectionString to have the seeding function generate your translation file
 		/// </summary>
 		public StorageAccountSeedSettings StorageAccountSettings { get; set; }
@@ -129,7 +129,7 @@ namespace Headstart.Models.Misc
 		[Required]
 		public string ConnectionString { get; set; }
 		public string ContainerNameTranslations { get; set; } = "ngx-translate";
-
+		public string ContainerNameDownloads { get; set; } = "downloads";
 	}
 
 	public class OrderCloudEnvironments

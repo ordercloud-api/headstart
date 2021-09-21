@@ -1,12 +1,5 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnChanges,
-  SimpleChanges,
-} from '@angular/core'
-import { ReportTemplate } from '@ordercloud/headstart-sdk'
+import { Component, Input, Output, EventEmitter } from '@angular/core'
+import { HSBuyer, HSSupplier, ReportTemplate } from '@ordercloud/headstart-sdk'
 import { FormGroup } from '@angular/forms'
 
 @Component({
@@ -25,6 +18,10 @@ export class ReportsSelectionComponent {
   displayHeaders: string[]
   @Input()
   adHocFilters: string[]
+  @Input()
+  suppliers: HSSupplier[]
+  @Input()
+  buyers: HSBuyer[]
   @Output()
   handleReportTypeSelection = new EventEmitter<string>()
   @Output()
@@ -70,7 +67,7 @@ export class ReportsSelectionComponent {
   getFilterNameDisplay(filter: string): string {
     return (
       filter.match(/[A-Z][a-z]+|[0-9]+/g).join(' ') +
-      (filter.includes('Time') ? ' (Optional)' : '')
+      (filter.includes('Time') ? ' (Optional)' : ' (Required)')
     )
   }
 }

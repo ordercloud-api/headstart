@@ -37,6 +37,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Polly.Contrib.WaitAndRetry;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Converters;
+using ordercloud.integrations.library.cosmos_repo;
 
 namespace Headstart.API
 {
@@ -63,8 +64,33 @@ namespace Headstart.API
             {
                 new ContainerInfo()
                 {
+                    Name = "salesorderdetail",
+                    PartitionKey = "/PartitionKey"
+                },
+                new ContainerInfo()
+                {
+                    Name = "purchaseorderdetail",
+                    PartitionKey = "/PartitionKey"
+                },
+                new ContainerInfo()
+                {
+                    Name = "lineitemdetail",
+                    PartitionKey = "/PartitionKey"
+                },
+                new ContainerInfo()
+                {
                     Name = "rmas",
-                    PartitionKey = "PartitionKey"
+                    PartitionKey = "/PartitionKey"
+                },
+                new ContainerInfo()
+                {
+                    Name = "shipmentdetail",
+                    PartitionKey = "/PartitionKey"
+                },
+                new ContainerInfo()
+                {
+                    Name = "productdetail",
+                    PartitionKey = "/PartitionKey"
                 }
             };
 
@@ -197,6 +223,7 @@ namespace Headstart.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.EnsureCosmosDbIsCreated();
             app.UseCatalystExceptionHandler();
             app.UseHttpsRedirection();
             app.UseRouting();

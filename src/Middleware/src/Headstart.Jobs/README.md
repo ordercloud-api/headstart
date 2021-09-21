@@ -1,5 +1,5 @@
 ﻿# Getting Started
-1. Open the SelfEsteemBrands.sln in Visual Studio
+1. Open the Headstart.sln in Visual Studio
 2. Add a "local.settings.json" file at the room of Headstart.Jobs with the following content:
 {
   "IsEncrypted": false,
@@ -26,10 +26,18 @@
 9. Save your profiles now you should be able to select them and run the project locally
 
 # Debugging locally
-1. Run the Headstart.Jobs project locally selecting a profile created in #getting-started
-2. [Open Postman](https://www.postman.com/)
-3. POST to http://localhost:7071/admin/functions/{function_name} with a JSON body {"input": ""}
-4. Click Send
+1. Comment out any jobs you don't want to run. There seems to be a bug where they will run locally even if they shouldn't
+2. Run the Headstart.Jobs project locally selecting a profile created in #getting-started
+3. [Open Postman](https://www.postman.com/)
+4. POST to http://localhost:7071/admin/functions/{function_name} with a JSON body {"input": ""}
+5. Click Send
+
+# Deploying
+1. Create azure functions service
+2. Because of how the settings in Jobs.cs are retrieved you'll need to add those settings specifically to the functions app service itself under "Configuration"
+3. Add also the setting APP_CONFIG_CONNECTION so that it can retrieve all settings not in Jobs.cs
+4. Build & Deploy your functions app
+5. Naviate to "Functions" on your functions app, you should see the names of all the functions defined in Jobs.cs as well as inspect logs to ensure everything is running specifically.
 
 # Accessing logs
 1. Navigate within Azure > Function App to the [seb-jobs](https://portal.azure.com/#@four51.com/resource/subscriptions/736cd8bd-0185-4184-b3dd-8c372c076f3f/resourceGroups/Marketplace-winOS/providers/Microsoft.Web/sites/seb-jobs/appServices) azure function

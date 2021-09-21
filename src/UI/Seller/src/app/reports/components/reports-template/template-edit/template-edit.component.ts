@@ -1,7 +1,5 @@
 import {
   Component,
-  ChangeDetectorRef,
-  NgZone,
   Input,
   Output,
   EventEmitter,
@@ -9,28 +7,34 @@ import {
   SimpleChanges,
 } from '@angular/core'
 import { ReportsTemplateService } from '@app-seller/shared/services/middleware-api/reports-template.service'
-import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup } from '@angular/forms'
 import {
   buyerLocation as buyerLocationHeaders,
   salesOrderDetail as salesOrderDetailHeaders,
   purchaseOrderDetail as purchaseOrderDetailHeaders,
   lineItemDetail as lineItemDetailHeaders,
+  rmaDetail as rmaDetailHeaders,
+  productDetail as productDetailHeaders,
+  shipmentDetail as shipmentDetailHeaders,
 } from '../models/headers'
 import {
   buyerLocation as buyerLocationFilters,
   salesOrderDetail as salesOrderDetailFilters,
   purchaseOrderDetail as purchaseOrderDetailFilters,
   lineItemDetail as lineItemDetailFilters,
+  rmaDetail as rmaDetailFilters,
+  productDetail as productDetailFilters,
+  shipmentDetail as shipmentDetailFilters,
 } from '../models/filters'
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
-import { OcBuyerService } from '@ordercloud/angular-sdk'
+import { OcBuyerService, OcSupplierService } from '@ordercloud/angular-sdk'
 import { cloneDeep } from 'lodash'
 import { GeographyConfig } from '@app-seller/shared/models/supported-countries.constant'
 import {
   AppGeographyService,
   FilterObject,
   OrderType,
+  RMAType,
 } from '@app-seller/shared'
 import { ReportTemplate } from '@ordercloud/headstart-sdk'
 
@@ -74,11 +78,8 @@ export class TemplateEditComponent implements OnChanges {
   constructor(
     private reportsTemplateService: ReportsTemplateService,
     private geographyService: AppGeographyService,
-    private ocBuyerService: OcBuyerService,
-    changeDetectorRef: ChangeDetectorRef,
-    router: Router,
-    activatedRoute: ActivatedRoute,
-    ngZone: NgZone
+    private supplierService: OcSupplierService,
+    private ocBuyerService: OcBuyerService // DO NOT REMOVE THIS, its dynamically called at runtime
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
@@ -127,6 +128,18 @@ export class TemplateEditComponent implements OnChanges {
       case 'LineItemDetail':
         this.headers = lineItemDetailHeaders
         this.filters = lineItemDetailFilters
+        break
+      case 'ProductDetail':
+        this.headers = productDetailHeaders
+        this.filters = productDetailFilters
+        break
+      case 'RMADetail':
+        this.headers = rmaDetailHeaders
+        this.filters = rmaDetailFilters
+        break
+      case 'ShipmentDetail':
+        this.headers = shipmentDetailHeaders
+        this.filters = shipmentDetailFilters
     }
     if (this.filters?.length) {
       this.populateFilters()
@@ -153,6 +166,37 @@ export class TemplateEditComponent implements OnChanges {
           }
           if (filter.name === 'Submitted Order Status') {
             filter.filterValues = ['Open', 'Completed', 'Canceled']
+          }
+          if (filter.name === 'RMA Type') {
+            filter.filterValues = Object.values(RMAType)
+          }
+          if (filter.name === 'RMA Status') {
+            filter.filterValues = [
+              'Requested',
+              'Processing',
+              'Approved',
+              'Complete',
+              'Denied',
+            ]
+          }
+          if (filter.name === 'Shipping Status') {
+            filter.filterValues = [
+              'Shipped',
+              'PartiallyShipped',
+              'Canceled',
+              'Processing',
+              'Backordered',
+            ]
+          }
+          if (filter.name === 'Product Status') {
+            filter.filterValues = ['Draft', 'Published']
+          }
+          if (filter.name === 'Product Vendor') {
+            const supplierList = await this.supplierService
+              .List()
+              .subscribe((result) => {
+                filter.filterValues = result.Items
+              })
           }
       }
     }
