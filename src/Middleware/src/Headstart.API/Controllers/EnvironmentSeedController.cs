@@ -20,13 +20,31 @@ namespace Headstart.Common.Controllers
             _settings = settings;
         }
 
+        /// <summary>
+        /// Call this endpoint when initially seeding a brand new organization
+        /// Check out the readme for more info https://github.com/ordercloud-api/headstart#seeding-ordercloud-data
+        /// </summary>
         [HttpPost, Route("seed")]
         public async Task<EnvironmentSeedResponse> Seed([FromBody] EnvironmentSeed seed)
         {
             return await _command.Seed(seed);
         }
 
-		[HttpPost, Route("post-staging-restore"), OrderCloudWebhookAuth]
+        /// <summary>
+        /// Call this endpoint to update translation files from source
+        /// useful if pulling in updates from repo and only want to update translation files
+        /// assumes storage account connection string is in settings
+        /// </summary>
+        [HttpPut, Route("updatetranslations")]
+        public async Task UpdateTranslations()
+        {
+            await _command.UpdateTranslations(
+                _settings.StorageAccountSettings.ConnectionString,
+                _settings.StorageAccountSettings.BlobContainerNameTranslations
+            );
+        }
+
+        [HttpPost, Route("post-staging-restore"), OrderCloudWebhookAuth]
 		public async Task PostStagingRestore()
 		{
             if(_settings.EnvironmentSettings.Environment == AppEnvironment.Production)

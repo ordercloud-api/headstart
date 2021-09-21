@@ -102,14 +102,17 @@ namespace Headstart.API.Commands
             var lineItems = _oc.LineItems.ListAllAsync(OrderDirection.Incoming, orderID);
             var promotions = _oc.Orders.ListAllPromotionsAsync(OrderDirection.Incoming, orderID);
             var payments = _oc.Payments.ListAllAsync(OrderDirection.Incoming, order.ID);
-            var approvals = _oc.Orders.ListAllApprovalsAsync(OrderDirection.Incoming, orderID);
+            // bug in catalyst tries to list all by ID but ID doesn't exist on approval rules
+            // https://github.com/ordercloud-api/ordercloud-dotnet-catalyst/issues/33
+            // var approvals = _oc.Orders.ListAllApprovalsAsync(OrderDirection.Incoming, orderID);
+            var approvals = await _oc.Orders.ListApprovalsAsync(OrderDirection.Incoming, orderID, pageSize: 100);
             return new OrderDetails
             {
                 Order = order,
                 LineItems = await lineItems,
                 Promotions = await promotions,
                 Payments = await payments,
-                Approvals = await approvals
+                Approvals = approvals.Items
             };
         }
 
@@ -174,7 +177,7 @@ namespace Headstart.API.Commands
              * 3) the order is awaiting approval and the user is in the approving group 
              */ 
 
-            var isOrderSubmitter = order.FromUserID == decodedToken.UserDatabaseID;
+            var isOrderSubmitter = order.FromUser.Username == decodedToken.Username;
             if (isOrderSubmitter)
             {
                 return;

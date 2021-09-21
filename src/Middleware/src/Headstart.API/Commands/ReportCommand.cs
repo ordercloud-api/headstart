@@ -10,31 +10,52 @@ using System.Linq;
 using System.Reflection;
 using Headstart.Models.Headstart;
 using OrderCloud.Catalyst;
+using Headstart.Common.Repositories;
+using Microsoft.Azure.Cosmos;
+using Headstart.Models.Misc;
+using Headstart.Common.Repositories.Models;
 
 namespace Headstart.API.Commands
 {
     public interface IHSReportCommand
     {
         ListPage<ReportTypeResource> FetchAllReportTypes(DecodedToken decodedToken);
-        Task<List<HSAddressBuyer>> BuyerLocation(string templateID, DecodedToken decodedToken);
-        Task<List<HSOrder>> SalesOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
-        Task<List<HSOrder>> PurchaseOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
+        Task<List<Address>> BuyerLocation(string templateID, DecodedToken decodedToken);
+        Task<List<OrderDetailData>> SalesOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
+        Task<List<OrderDetailData>> PurchaseOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
+        Task<List<HSLineItemOrder>> BuyerLineItemDetail(ListArgs<HSOrder> args, BuyerReportViewContext viewContext, string userID, string locationID, DecodedToken decodedToken);
         Task<List<HSLineItemOrder>> LineItemDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
+        Task<List<RMAWithRMALineItem>> RMADetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
+        Task<List<OrderWithShipments>> ShipmentDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
         Task<List<ReportTemplate>> ListReportTemplatesByReportType(ReportTypeEnum reportType, DecodedToken decodedToken);
         Task<ReportTemplate> PostReportTemplate(ReportTemplate reportTemplate, DecodedToken decodedToken);
         Task<ReportTemplate> GetReportTemplate(string id, DecodedToken decodedToken);
         Task<ReportTemplate> UpdateReportTemplate(string id, ReportTemplate reportTemplate, DecodedToken decodedToken);
         Task DeleteReportTemplate(string id);
+        Task<List<HSBuyer>> GetBuyerFilterValues(DecodedToken decodedToken);
+        Task<List<ProductDetailData>> ProductDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
     }
-    
+
     public class HSReportCommand : IHSReportCommand
     {
         private readonly IOrderCloudClient _oc;
+        private readonly ISalesOrderDetailDataRepo _salesOrderDetail;
+        private readonly IPurchaseOrderDetailDataRepo _purchaseOrderDetail;
+        private readonly ILineItemDetailDataRepo _lineItemDetail;
+        private readonly IRMARepo _rmaDetail;
+        private readonly IOrdersAndShipmentsDataRepo _ordersAndShipments;
+        private readonly IProductDetailDataRepo _productDetailRepository;
         private readonly ReportTemplateQuery _template;
 
-        public HSReportCommand(IOrderCloudClient oc, ReportTemplateQuery template)
+        public HSReportCommand(IOrderCloudClient oc, ISalesOrderDetailDataRepo salesOrderDetail, IPurchaseOrderDetailDataRepo purchaseOrderDetail, ILineItemDetailDataRepo lineItemDetail, IRMARepo rmaDetail, IOrdersAndShipmentsDataRepo ordersAndShipments, IProductDetailDataRepo productDetailRepository, ReportTemplateQuery template)
         {
             _oc = oc;
+            _salesOrderDetail = salesOrderDetail;
+            _purchaseOrderDetail = purchaseOrderDetail;
+            _lineItemDetail = lineItemDetail;
+            _rmaDetail = rmaDetail;
+            _ordersAndShipments = ordersAndShipments;
+            _productDetailRepository = productDetailRepository;
             _template = template;
         }
 
@@ -59,11 +80,11 @@ namespace Headstart.API.Commands
             return listPage;
         }
 
-        public async Task<List<HSAddressBuyer>> BuyerLocation(string templateID, DecodedToken decodedToken)
+        public async Task<List<Address>> BuyerLocation(string templateID, DecodedToken decodedToken)
         {
             //Get stored template from Cosmos DB container
             var template = await _template.Get(templateID, decodedToken);
-            var allBuyerLocations = new List<HSAddressBuyer>();
+            var allBuyerLocations = new List<Address>();
 
             //Logic if no Buyer ID is supplied
             if (template.Filters.BuyerID.Count == 0)
@@ -78,7 +99,9 @@ namespace Headstart.API.Commands
             foreach (var buyerID in template.Filters.BuyerID)
             {
                 //For every buyer included in the template filters, grab all buyer locations (exceeding 100 maximum)
-                var buyerLocations = await _oc.Addresses.ListAllAsync<HSAddressBuyer>(buyerID);
+                var buyerLocations = await _oc.Addresses.ListAllAsync<Address>(
+                    buyerID
+                );
                 allBuyerLocations.AddRange(buyerLocations);
             }
             //Use reflection to determine available filters from model
@@ -91,11 +114,11 @@ namespace Headstart.API.Commands
                 List<string> propertyFilters = (List<string>)property.GetValue(template.Filters);
                 if (propertyFilters != null && propertyFilters.Count > 0 && property.Name != "BuyerID")
                 {
-                    filtersToEvaluateMap.Add(property, (List<string>) property.GetValue(template.Filters));
+                    filtersToEvaluateMap.Add(property, (List<string>)property.GetValue(template.Filters));
                 }
             }
             //Filter through collected records, adding only those that pass the PassesFilters check.
-            var filteredBuyerLocations = new List<HSAddressBuyer>();
+            var filteredBuyerLocations = new List<Address>();
             foreach (var location in allBuyerLocations)
             {
 
@@ -107,174 +130,570 @@ namespace Headstart.API.Commands
             return filteredBuyerLocations;
         }
 
-        public async Task<List<HSOrder>> SalesOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken)
+        public async Task<List<OrderDetailData>> SalesOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken)
         {
-            var template = await _template.Get(templateID, decodedToken);
-            string dateLow = GetAdHocFilterValue(args, "DateLow");
-            string timeLow = GetAdHocFilterValue(args, "TimeLow");
-            string dateHigh = GetAdHocFilterValue(args, "DateHigh");
-            string timeHigh = GetAdHocFilterValue(args, "TimeHigh");
-            var orders = await _oc.Orders.ListAllAsync<HSOrder>(
-                OrderDirection.Incoming,
-                filters: $"from={dateLow}&to={dateHigh}"           
-                 );
-            var filterClassProperties = template.Filters.GetType().GetProperties();
-            var filtersToEvaluateMap = new Dictionary<PropertyInfo, List<string>>();
-            foreach (var property in filterClassProperties)
-            {
-                List<string> propertyFilters = (List<string>)property.GetValue(template.Filters);
-                if (propertyFilters != null && propertyFilters.Count > 0)
-                {
-                    filtersToEvaluateMap.Add(property, (List<string>)property.GetValue(template.Filters));
-                }
-            }
-            var filteredOrders = new List<HSOrder>();
-            foreach (var order in orders)
-            {
+            IList<ListFilter> filters = await BuildFilters(templateID, args, decodedToken, "DateSubmitted", "xp.SupplierIDs", "FromCompanyID");
 
-                if (PassesFilters(order, filtersToEvaluateMap) && PassesOrderTimeFilter(order, dateLow, timeLow, dateHigh, timeHigh))
-                {
-                    filteredOrders.Add(order);
-                }
+            CosmosListOptions listOptions = new CosmosListOptions()
+            {
+                PageSize = -1,
+                Sort = "OrderID",
+                SortDirection = SortDirection.ASC,
+                Filters = filters,
+            };
+
+            IQueryable<OrderDetailData> queryable = _salesOrderDetail.GetQueryable()
+                .Where(order =>
+                order.PartitionKey == "PartitionValue");
+
+            QueryRequestOptions requestOptions = new QueryRequestOptions
+            {
+                MaxItemCount = listOptions.PageSize,
+                MaxConcurrency = -1
+            };
+
+            CosmosListPage<OrderDetailData> salesOrderDataResponse = await _salesOrderDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+
+            List<OrderDetailData> salesOrderData = salesOrderDataResponse.Items;
+
+            listOptions.ContinuationToken = salesOrderDataResponse.Meta.ContinuationToken;
+
+            while (listOptions.ContinuationToken != null)
+            {
+                CosmosListPage<OrderDetailData> responseWithToken = await _salesOrderDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+                salesOrderData.AddRange(responseWithToken.Items);
+                listOptions.ContinuationToken = responseWithToken.Meta.ContinuationToken;
             }
 
-            return filteredOrders;
+            var salesOrders = new List<OrderDetailData>();
+
+            foreach (OrderDetailData salesOrder in salesOrderData)
+            {
+                salesOrders.Add(salesOrder);
+            }
+
+            return salesOrders;
         }
 
-        public async Task<List<HSOrder>> PurchaseOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken)
+        public async Task<List<OrderDetailData>> PurchaseOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken)
         {
-            var template = await _template.Get(templateID, decodedToken);
-            string dateLow = GetAdHocFilterValue(args, "DateLow");
-            string timeLow = GetAdHocFilterValue(args, "TimeLow");
-            string dateHigh = GetAdHocFilterValue(args, "DateHigh");
-            string timeHigh = GetAdHocFilterValue(args, "TimeHigh");
-            var orderDirection = decodedToken.CommerceRole == CommerceRole.Seller ? OrderDirection.Outgoing : OrderDirection.Incoming;
-            var orders = await _oc.Orders.ListAllAsync<HSOrder>(
-                orderDirection,
-                filters: $"from={dateLow}&to={dateHigh}",
-                accessToken: decodedToken.AccessToken
-                );
+            IList<ListFilter> filters = await BuildFilters(templateID, args, decodedToken, "DateSubmitted", "xp.SupplierIDs", "ShippingAddressID");
 
-            // From User headers must pull from the Sales Order record
-            var salesOrders = await GetSalesOrdersIfNeeded(template, dateLow, dateHigh, decodedToken);
-            var filterClassProperties = template.Filters.GetType().GetProperties();
-            var filtersToEvaluateMap = new Dictionary<PropertyInfo, List<string>>();
-            foreach (var property in filterClassProperties)
+            CosmosListOptions listOptions = new CosmosListOptions()
             {
-                List<string> propertyFilters = (List<string>)property.GetValue(template.Filters);
-                if (propertyFilters != null && propertyFilters.Count > 0)
-                {
-                    filtersToEvaluateMap.Add(property, (List<string>)property.GetValue(template.Filters));
-                }
-            }
-            var filteredOrders = new List<HSOrder>();
-            foreach (var order in orders)
-            {
+                PageSize = -1,
+                Sort = "OrderID",
+                SortDirection = SortDirection.ASC,
+                Filters = filters,
+            };
 
-                if (PassesFilters(order, filtersToEvaluateMap) && PassesOrderTimeFilter(order, dateLow, timeLow, dateHigh, timeHigh))
-                {
-                    filteredOrders.Add(order);
-                }
-            }
-            // If headers include shipping address info, run check that they have Shipping Address data
-            // Orders before 01/2021 may not have this on Order XP.
-            if (template.Headers.Any(header => header.Contains("xp.ShippingAddress") || header.Contains("FromUser")))
+            IQueryable<OrderDetailData> queryable = _purchaseOrderDetail.GetQueryable()
+                .Where(order =>
+                order.PartitionKey == "PartitionValue");
+
+            QueryRequestOptions requestOptions = new QueryRequestOptions
             {
-                foreach (var order in filteredOrders)
-                {
-                    // If users are reporting on From User information, this must come from the sales order instead of the purchase order.
-                    if (template.Headers.Any(header => header.Contains("FromUser")))
-                    {
-                        var matchingSalesOrder = salesOrders.Find(salesOrder => order.ID.Split('-')[0] == salesOrder.ID);
-                        order.FromUser = matchingSalesOrder?.FromUser;
-                    }
-                    // If orders do not have shipping address data, pull that from the first line item.
-                    // Orders after 01/2021 should have this information on Order XP already.
-                    if (template.Headers.Any(header => header.Contains("xp.ShippingAddress") && order.xp.ShippingAddress == null))
-                    {
-                        var lineItems = await _oc.LineItems.ListAsync(
-                        orderDirection,
-                        order.ID,
-                        pageSize: 1,
-                        accessToken: decodedToken.AccessToken
-                        );
-                        order.xp.ShippingAddress = new HSAddressBuyer()
-                        {
-                            FirstName = lineItems.Items[0].ShippingAddress?.FirstName,
-                            LastName = lineItems.Items[0].ShippingAddress?.LastName,
-                            Street1 = lineItems.Items[0].ShippingAddress?.Street1,
-                            Street2 = lineItems.Items[0].ShippingAddress?.Street2,
-                            City = lineItems.Items[0].ShippingAddress?.City,
-                            State = lineItems.Items[0].ShippingAddress?.State,
-                            Zip = lineItems.Items[0].ShippingAddress?.Zip,
-                            Country = lineItems.Items[0].ShippingAddress?.Country,
-                        };
-                    }
-                }
+                MaxItemCount = listOptions.PageSize,
+                MaxConcurrency = -1
+            };
+
+            CosmosListPage<OrderDetailData> purchaseOrderDataResponse = await _purchaseOrderDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+
+            List<OrderDetailData> purchaseOrderData = purchaseOrderDataResponse.Items;
+
+            listOptions.ContinuationToken = purchaseOrderDataResponse.Meta.ContinuationToken;
+
+            while (listOptions.ContinuationToken != null)
+            {
+                CosmosListPage<OrderDetailData> responseWithToken = await _purchaseOrderDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+                purchaseOrderData.AddRange(responseWithToken.Items);
+                listOptions.ContinuationToken = responseWithToken.Meta.ContinuationToken;
             }
-            return filteredOrders;
+
+            var purchaseOrders = new List<OrderDetailData>();
+
+            foreach (OrderDetailData purchaseOrder in purchaseOrderData)
+            {
+                purchaseOrder.ShipFromAddressID = purchaseOrder.Data.xp.SelectedShipMethodsSupplierView != null ? purchaseOrder.Data.xp.SelectedShipMethodsSupplierView[0].ShipFromAddressID : null;
+                purchaseOrder.ShipMethod = purchaseOrder.Data.xp.SelectedShipMethodsSupplierView != null ? purchaseOrder.Data.xp.SelectedShipMethodsSupplierView[0].Name : null;
+                purchaseOrders.Add(purchaseOrder);
+            }
+
+            return purchaseOrders;
         }
 
-        public async Task<List<HSLineItemOrder>> LineItemDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken)
+        public async Task<List<HSLineItemOrder>> BuyerLineItemDetail(ListArgs<HSOrder> args, BuyerReportViewContext viewContext, string userID, string locationID, DecodedToken decodedToken)
         {
-            var template = await _template.Get(templateID, decodedToken);
-            string dateLow = GetAdHocFilterValue(args, "DateLow");
-            string timeLow = GetAdHocFilterValue(args, "TimeLow");
-            string dateHigh = GetAdHocFilterValue(args, "DateHigh");
-            string timeHigh = GetAdHocFilterValue(args, "TimeHigh");
-            var orders = await _oc.Orders.ListAllAsync<HSOrder>(
-                OrderDirection.Incoming,
-                filters: $"from={dateLow}&to={dateHigh}",
-                accessToken: decodedToken.AccessToken
-                );
+            IList<ListFilter> filters = new List<ListFilter>();
 
-            // From User headers must pull from the Sales Order record
-            var salesOrders = await GetSalesOrdersIfNeeded(template, dateLow, dateHigh, decodedToken);
-            var filterClassProperties = template.Filters.GetType().GetProperties();
-            var filtersToEvaluateMap = new Dictionary<PropertyInfo, List<string>>();
-            foreach (var property in filterClassProperties)
-            {
-                List<string> propertyFilters = (List<string>)property.GetValue(template.Filters);
-                if (propertyFilters != null && propertyFilters.Count > 0)
-                {
-                    filtersToEvaluateMap.Add(property, (List<string>)property.GetValue(template.Filters));
-                }
-            }
-            var filteredOrders = new List<HSOrder>();
-            foreach (var order in orders)
-            {
+            filters.Add(ApplyBuyerLineContext(viewContext, userID, locationID, decodedToken));
 
-                if (PassesFilters(order, filtersToEvaluateMap) && PassesOrderTimeFilter(order, dateLow, timeLow, dateHigh, timeHigh))
-                {
-                    filteredOrders.Add(order);
-                }
-            }
-            var lineItemOrders = new List<HSLineItemOrder>();
-            foreach (var order in filteredOrders)
+            foreach (var filter in args.Filters)
             {
-                // If suppliers are reporting on From User information, this must come from the seller order instead.
-                if (template.Headers.Any(header => header.Contains("FromUser") && decodedToken.CommerceRole == CommerceRole.Supplier))
+                filters.Add(ApplyBuyerLineFilter(filter));
+            }
+
+            CosmosListOptions listOptions = new CosmosListOptions()
+            {
+                PageSize = -1,
+                Sort = "OrderID",
+                SortDirection = SortDirection.ASC,
+                Filters = filters,
+            };
+
+            IQueryable<LineItemDetailData> queryable = _lineItemDetail.GetQueryable()
+                .Where(order =>
+                order.PartitionKey == "PartitionValue");
+
+            QueryRequestOptions requestOptions = new QueryRequestOptions
+            {
+                MaxItemCount = listOptions.PageSize,
+                MaxConcurrency = -1
+            };
+
+            CosmosListPage<LineItemDetailData> lineItemDataResponse = await _lineItemDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+
+            List<LineItemDetailData> lineItemData = lineItemDataResponse.Items;
+
+            listOptions.ContinuationToken = lineItemDataResponse.Meta.ContinuationToken;
+
+            while (listOptions.ContinuationToken != null)
+            {
+                CosmosListPage<LineItemDetailData> responseWithToken = await _lineItemDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+                lineItemData.AddRange(responseWithToken.Items);
+                listOptions.ContinuationToken = responseWithToken.Meta.ContinuationToken;
+            }
+
+            var lineItems = new List<HSLineItemOrder>();
+
+            foreach (LineItemDetailData detailData in lineItemData)
+            {
+                foreach (HSLineItem lineDetail in detailData.Data.LineItems)
                 {
-                    var matchingSalesOrder = salesOrders.Find(salesOrder => order.ID.Split('-')[0] == salesOrder.ID);
-                    order.FromUser = matchingSalesOrder?.FromUser;
-                }
-                var lineItems = new List<HSLineItem>();
-                lineItems.AddRange(await _oc.LineItems.ListAllAsync<HSLineItem>(
-                    OrderDirection.Incoming,
-                    order.ID,
-                    accessToken: decodedToken.AccessToken
-                    ));
-                foreach (var lineItem in lineItems)
-                {
-                    lineItemOrders.Add(new HSLineItemOrder()
+
+                    lineItems.Add(new HSLineItemOrder
                     {
-                        HSOrder = order,
-                        HSLineItem = lineItem
+                        HSOrder = detailData.Data.Order,
+                        HSLineItem = lineDetail
                     });
                 }
             }
 
-            return lineItemOrders;
+            return lineItems;
+        }
+
+        public async Task<List<HSLineItemOrder>> LineItemDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken)
+        {
+            IList<ListFilter> filters = await BuildFilters(templateID, args, decodedToken, "DateSubmitted", "xp.SupplierIDs", "FromCompanyID");
+
+            CosmosListOptions listOptions = new CosmosListOptions()
+            {
+                PageSize = -1,
+                Sort = "OrderID",
+                SortDirection = SortDirection.ASC,
+                Filters = filters,
+            };
+
+            IQueryable<LineItemDetailData> queryable = _lineItemDetail.GetQueryable()
+                .Where(order =>
+                order.PartitionKey == "PartitionValue");
+
+            QueryRequestOptions requestOptions = new QueryRequestOptions
+            {
+                MaxItemCount = listOptions.PageSize,
+                MaxConcurrency = -1
+            };
+
+            CosmosListPage<LineItemDetailData> lineItemDataResponse = await _lineItemDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+
+            List<LineItemDetailData> lineItemData = lineItemDataResponse.Items;
+
+            listOptions.ContinuationToken = lineItemDataResponse.Meta.ContinuationToken;
+
+            while (listOptions.ContinuationToken != null)
+            {
+                CosmosListPage<LineItemDetailData> responseWithToken = await _lineItemDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+                lineItemData.AddRange(responseWithToken.Items);
+                listOptions.ContinuationToken = responseWithToken.Meta.ContinuationToken;
+            }
+
+            var lineItems = new List<HSLineItemOrder>();
+
+            var supplierFilter = args.Filters.FirstOrDefault(filter => filter.PropertyName == "SupplierID");
+
+            var me = await _oc.Me.GetAsync(decodedToken.AccessToken);
+
+            foreach (LineItemDetailData detailData in lineItemData)
+            {
+                foreach (HSLineItem lineDetail in detailData.Data.LineItems)
+                {
+                    if (supplierFilter == null || supplierFilter.FilterExpression == lineDetail.SupplierID)
+                    {
+                        if (decodedToken.CommerceRole == CommerceRole.Supplier)
+                        {
+                            //filter down to only current supplierID
+                            var lineWithPOOrderFields = detailData.Data.LineItemsWithPurchaseOrderFields != null ? detailData.Data.LineItemsWithPurchaseOrderFields.FirstOrDefault(line => line.SupplierID == me.Supplier.ID && line.ID == lineDetail.ID) : null;
+
+                            if (lineWithPOOrderFields != null)
+                            {
+                                lineDetail.ID = lineWithPOOrderFields.ID;
+                                detailData.Data.Order.Subtotal = lineWithPOOrderFields.Subtotal;
+                                detailData.Data.Order.ID = lineWithPOOrderFields.OrderID;
+                                detailData.Data.Order.Total = lineWithPOOrderFields.Total;
+                                lineDetail.UnitPrice = lineWithPOOrderFields.UnitPrice;
+                            }
+                        }
+
+                        if (decodedToken.CommerceRole == CommerceRole.Seller || me.Supplier.ID == lineDetail.SupplierID)
+                        {
+                            var lineWithMiscFields = detailData.Data.LineItemsWithMiscFields != null ? detailData.Data.LineItemsWithMiscFields.FirstOrDefault(line => line.ID == lineDetail.ID) : null;
+                            lineItems.Add(new HSLineItemOrder
+                            {
+                                HSOrder = detailData.Data.Order,
+                                HSLineItem = lineDetail
+                            });
+                        }
+                    }
+                }
+            }
+
+            return lineItems;
+        }
+
+        public async Task<List<RMAWithRMALineItem>> RMADetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken)
+        {
+            IList<ListFilter> filters = await BuildFilters(templateID, args, decodedToken, "DateCreated", "SupplierID");
+
+            CosmosListOptions listOptions = new CosmosListOptions()
+            {
+                PageSize = -1,
+                Sort = "RMANumber",
+                SortDirection = SortDirection.ASC,
+                Filters = filters,
+            };
+
+            IQueryable<RMA> queryable = _rmaDetail.GetQueryable()
+                .Where(order =>
+                order.PartitionKey == "PartitionValue");
+
+            QueryRequestOptions requestOptions = new QueryRequestOptions
+            {
+                MaxItemCount = listOptions.PageSize,
+                MaxConcurrency = -1
+            };
+
+            CosmosListPage<RMA> rmaDataResponse = await _rmaDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+
+            List<RMA> rmaData = rmaDataResponse.Items;
+
+            listOptions.ContinuationToken = rmaDataResponse.Meta.ContinuationToken;
+
+            while (listOptions.ContinuationToken != null)
+            {
+                CosmosListPage<RMA> responseWithToken = await _rmaDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+                rmaData.AddRange(responseWithToken.Items);
+                listOptions.ContinuationToken = responseWithToken.Meta.ContinuationToken;
+            }
+
+            var rmas = new List<RMAWithRMALineItem>();
+
+            var supplierFilter = args.Filters.FirstOrDefault(filter => filter.PropertyName == "SupplierID");
+
+            var me = await _oc.Me.GetAsync(decodedToken.AccessToken);
+
+            foreach (RMA detailData in rmaData)
+            {
+                if (supplierFilter == null || supplierFilter.FilterExpression == detailData.SupplierID)
+                {
+                    if (decodedToken.CommerceRole == CommerceRole.Seller || me.Supplier.ID == detailData.SupplierID)
+                    {
+                        foreach (RMALineItem rmaLineItem in detailData.LineItems)
+                        {
+                            rmas.Add(new RMAWithRMALineItem
+                            {
+                                RMA = detailData,
+                                RMALineItem = rmaLineItem
+                            });
+                        }
+                    }
+                }
+            }
+
+            return rmas;
+        }
+
+
+        public async Task<List<ProductDetailData>> ProductDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken)
+        {
+            IList<ListFilter> filters = await BuildFilters(templateID, args, decodedToken, "DateSubmitted", "SupplierID", statusPath: "Status");
+
+            CosmosListOptions listOptions = new CosmosListOptions()
+            {
+                PageSize = -1,
+                Sort = "ProductID",
+                SortDirection = SortDirection.ASC,
+                Filters = filters,
+            };
+
+            IQueryable<ProductDetailData> queryable = _productDetailRepository.GetQueryable()
+               .Where(order =>
+               order.PartitionKey == "PartitionValue");
+
+            QueryRequestOptions requestOptions = new QueryRequestOptions
+            {
+                MaxItemCount = listOptions.PageSize,
+                MaxConcurrency = -1
+            };
+
+            CosmosListPage<ProductDetailData> productDetailDataResponse = await _productDetailRepository.GetItemsAsync(queryable, requestOptions, listOptions);
+
+            List<ProductDetailData> productDetailDataList = productDetailDataResponse.Items;
+
+            listOptions.ContinuationToken = productDetailDataResponse.Meta.ContinuationToken;
+
+            while (listOptions.ContinuationToken != null)
+            {
+                CosmosListPage<ProductDetailData> responseWithToken = await _productDetailRepository.GetItemsAsync(queryable, requestOptions, listOptions);
+                productDetailDataList.AddRange(responseWithToken.Items);
+                listOptions.ContinuationToken = responseWithToken.Meta.ContinuationToken;
+            }
+
+            var productDetailList = new List<ProductDetailData>();
+
+            var supplierFilter = args.Filters.FirstOrDefault(filter => filter.PropertyName == "SupplierID");
+
+            var me = await _oc.Me.GetAsync(decodedToken.AccessToken);
+
+            foreach (ProductDetailData detailData in productDetailDataList)
+            {
+                if (supplierFilter == null || supplierFilter.FilterExpression == detailData.Data.SupplierID)
+                {
+                    if (decodedToken.CommerceRole == CommerceRole.Seller || me.Supplier.ID == detailData.Data.SupplierID)
+                    {
+                        productDetailList.Add(detailData);
+                    }
+                }
+            }
+
+            return productDetailList;
+        }
+
+        public async Task<List<OrderWithShipments>> ShipmentDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken)
+        {
+            IList<ListFilter> filters = await BuildFilters(templateID, args, decodedToken, "DateSubmitted", "SupplierID");
+
+            CosmosListOptions listOptions = new CosmosListOptions()
+            {
+                PageSize = -1,
+                Sort = "OrderID",
+                SortDirection = SortDirection.ASC,
+                Filters = filters,
+            };
+
+            IQueryable<OrderWithShipments> queryable = _ordersAndShipments.GetQueryable()
+                .Where(order =>
+                order.PartitionKey == "PartitionValue");
+
+            QueryRequestOptions requestOptions = new QueryRequestOptions
+            {
+                MaxItemCount = listOptions.PageSize,
+                MaxConcurrency = -1
+            };
+
+            CosmosListPage<OrderWithShipments> ordersWithShipmentsDataResponse = await _ordersAndShipments.GetItemsAsync(queryable, requestOptions, listOptions);
+
+            List<OrderWithShipments> orderWithShipmentsData = ordersWithShipmentsDataResponse.Items;
+
+            listOptions.ContinuationToken = ordersWithShipmentsDataResponse.Meta.ContinuationToken;
+
+            while (listOptions.ContinuationToken != null)
+            {
+                CosmosListPage<OrderWithShipments> responseWithToken = await _ordersAndShipments.GetItemsAsync(queryable, requestOptions, listOptions);
+                orderWithShipmentsData.AddRange(responseWithToken.Items);
+                listOptions.ContinuationToken = responseWithToken.Meta.ContinuationToken;
+            }
+
+            var ordersWithShipments = new List<OrderWithShipments>();
+
+            var supplierFilter = args.Filters.FirstOrDefault(filter => filter.PropertyName == "SupplierID");
+
+            var me = await _oc.Me.GetAsync(decodedToken.AccessToken);
+
+            foreach (OrderWithShipments detailData in orderWithShipmentsData)
+            {
+                if (supplierFilter == null || supplierFilter.FilterExpression == detailData.SupplierID)
+                {
+                    if (decodedToken.CommerceRole == CommerceRole.Seller || me.Supplier.ID == detailData.SupplierID)
+                    {
+                        ordersWithShipments.Add(detailData);
+                    }
+                }
+            }
+
+            return ordersWithShipments;
+        }
+
+        private async Task<IList<ListFilter>> BuildFilters(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken, string datePath, string supplierIDPath, string brandIDPath = null, string statusPath = null)
+        {
+            IList<ListFilter> filters = new List<ListFilter>();
+
+            ReportTemplate template = await _template.Get(templateID, decodedToken);
+
+            string timeLow = GetAdHocFilterValue(args, "TimeLow");
+            string timeHigh = GetAdHocFilterValue(args, "TimeHigh");
+
+            string dataPathPrefix = GetDataPathPrefix(template.ReportType);
+
+            var templateFilterProperties = template.Filters.GetType().GetProperties();
+
+            foreach (var filterProperty in templateFilterProperties)
+            {
+                var propertyName = filterProperty.Name;
+                var values = filterProperty.GetValue(template.Filters);
+                if (values != null)
+                {
+                    var valuesList = (List<string>)values;
+                    var filterExpression = "=";
+                    var propertyLocation = ReportFilters.NestedLocations.ContainsKey(propertyName)
+                        ? $"{dataPathPrefix}{ReportFilters.NestedLocations[propertyName]}"
+                        : $"{dataPathPrefix}{propertyName}";
+                    foreach (var value in valuesList)
+                    {
+                        filterExpression = filterExpression == "=" ? filterExpression + value : filterExpression + $"|{value}";
+                    }
+                    if (filterExpression != "=")
+                    {
+                        filters.Add(new ListFilter(propertyLocation, filterExpression));
+                    }
+                }
+            }
+
+            foreach (var filter in args.Filters)
+            {
+                var propertyName = filter.PropertyName;
+                var filterExpression = filter.FilterExpression;
+
+                if (propertyName == "TimeLow" || propertyName == "TimeHigh")
+                {
+                    continue;
+                }
+                if (propertyName == "DateLow")
+                {
+                    propertyName = $"{dataPathPrefix}{datePath}";
+                    var timeLowExpression = timeLow != null ? $"T{timeLow}" : null;
+                    filterExpression = $">={filterExpression}{timeLowExpression}";
+                }
+                else if (propertyName == "DateHigh")
+                {
+                    propertyName = $"{dataPathPrefix}{datePath}";
+                    var timeHighExpression = timeHigh != null ? $"T{timeHigh}" : "T23:59:59.999+00:00";
+                    filterExpression = $"<={filterExpression}{timeHighExpression}";
+                }
+                else if (propertyName == "SupplierID")
+                {
+                    propertyName = $"{dataPathPrefix}{supplierIDPath}";
+                    filterExpression = $"={filterExpression}";
+                }
+                else if (propertyName == "BrandID" && template.ReportType == ReportTypeEnum.PurchaseOrderDetail)
+                {
+                    propertyName = $"{dataPathPrefix}{brandIDPath}";
+                    filterExpression = $"={filterExpression}-*";
+                }
+                else if (propertyName == "BrandID")
+                {
+                    propertyName = $"{dataPathPrefix}{brandIDPath}";
+                    filterExpression = $"={filterExpression}";
+                }
+                else if (propertyName == "Status")
+                {
+                    propertyName = $"{dataPathPrefix}{statusPath}";
+                    filterExpression = $"={filterExpression}";
+                }
+                else
+                {
+                    filterExpression = $"={filterExpression}";
+                }
+                filters.Add(new ListFilter(propertyName, filterExpression));
+            }
+
+            if (decodedToken.CommerceRole == CommerceRole.Supplier)
+            {
+                var me = await _oc.Me.GetAsync(decodedToken.AccessToken);
+                filters.Add(new ListFilter($"{dataPathPrefix}{supplierIDPath}", me.Supplier.ID));
+            }
+
+            return filters;
+        }
+
+        private ListFilter ApplyBuyerLineContext(BuyerReportViewContext viewContext, string userID, string locationID, DecodedToken decodedToken)
+        {
+            if (viewContext == BuyerReportViewContext.MyOrders)
+            {
+                return new ListFilter("Data.Order.FromUserID", $"={userID}");
+            }
+            else if (viewContext == BuyerReportViewContext.Location)
+            {
+                if (decodedToken.Roles.Contains(CustomRole.HSLocationViewAllOrders.ToString()))
+                {
+                    return new ListFilter("Data.Order.BillingAddress.ID", $"={locationID}");
+                }
+                else
+                {
+                    throw new Exception("You are not permitted to view all orders for this location.");
+                }
+            }
+            else
+            {
+                throw new Exception("Please select a valid view context.");
+            }
+        }
+
+        private ListFilter ApplyBuyerLineFilter(ListFilter filter)
+        {
+            var dataPathPrefix = "Data.Order";
+            var propertyName = filter.PropertyName;
+            var filterExpression = filter.FilterExpression;
+
+            if (propertyName == "from")
+            {
+                DateTime dt = new DateTime();
+                dt = Convert.ToDateTime(filterExpression);
+                var expression = dt.ToString("yyyy-MM-dd");
+                propertyName = $"{dataPathPrefix}.DateSubmitted";
+                filterExpression = $">={expression}";
+            }
+            else if (propertyName == "to")
+            {
+                DateTime dt = new DateTime();
+                dt = Convert.ToDateTime(filterExpression);
+                var expression = dt.ToString("yyyy-MM-dd");
+                propertyName = $"{dataPathPrefix}.DateSubmitted";
+                var timeHighExpression = "T23:59:59.999+00:00";
+                filterExpression = $"<={expression}{timeHighExpression}";
+            }
+            else
+            {
+                propertyName = $"{dataPathPrefix}.{filter.PropertyName}";
+                filterExpression = $"={filterExpression}";
+            }
+            return new ListFilter(propertyName, filterExpression);
+        }
+
+        private string GetDataPathPrefix(ReportTypeEnum reportType)
+        {
+            switch (reportType)
+            {
+                case ReportTypeEnum.SalesOrderDetail:
+                    return "Data.";
+                case ReportTypeEnum.PurchaseOrderDetail:
+                    return "Data.";
+                case ReportTypeEnum.LineItemDetail:
+                    return "Data.Order.";
+                case ReportTypeEnum.ProductDetail:
+                    return "Data.";
+                default:
+                    return null;
+            }
         }
 
         public async Task<List<ReportTemplate>> ListReportTemplatesByReportType(ReportTypeEnum reportType, DecodedToken decodedToken)
@@ -303,6 +722,24 @@ namespace Headstart.API.Commands
         {
             await _template.Delete(id);
         }
+
+        public async Task<List<HSBuyer>> GetBuyerFilterValues(DecodedToken decodedToken)
+        {
+            if (decodedToken.CommerceRole == CommerceRole.Seller)
+            {
+                return await _oc.Buyers.ListAllAsync<HSBuyer>();
+            }
+
+            var adminOcToken = _oc.TokenResponse?.AccessToken;
+            if (adminOcToken == null || DateTime.UtcNow > _oc.TokenResponse.ExpiresUtc)
+            {
+                await _oc.AuthenticateAsync();
+                adminOcToken = _oc.TokenResponse.AccessToken;
+            }
+
+            return await _oc.Buyers.ListAllAsync<HSBuyer>(adminOcToken);
+        }
+
         private string GetAdHocFilterValue(ListArgs<ReportAdHocFilters> args, string propertyName)
         {
             return args.Filters.FirstOrDefault(Filter => Filter.PropertyName == propertyName)?.FilterExpression;
@@ -330,32 +767,6 @@ namespace Headstart.API.Commands
             return true;
         }
 
-        private bool PassesOrderTimeFilter(HSOrder order, string dateLow, string timeLow, string dateHigh, string timeHigh)
-        {
-            DateTime dt = DateTime.Parse(order.DateSubmitted.ToString());
-            string date = dt.ToString("yyyy-MM-dd");
-            string time = dt.ToString("HH:mm:ss");
-            if (date == dateLow || date == dateHigh)
-            {
-                TimeSpan spanSubmittedTime = TimeSpan.Parse(time);
-                TimeSpan spanTimeLow = (timeLow != null) ? TimeSpan.Parse(timeLow) : TimeSpan.MinValue;
-                TimeSpan spanTimeHigh = (timeHigh != null) ? TimeSpan.Parse(timeHigh) : TimeSpan.MaxValue;
-                if (date == dateLow && date == dateHigh && spanSubmittedTime < spanTimeLow || spanSubmittedTime > spanTimeHigh)
-                {
-                    return false;
-                }
-                if (
-                    (date == dateLow && spanSubmittedTime > spanTimeLow)
-                    || (date == dateHigh && spanSubmittedTime < spanTimeHigh)
-                    )
-                {
-                    return true;
-                }
-                return false;
-            }
-            return true;
-        }
-
         private object GetDataValue(string filterKey, object data)
         {
             if (data == null)
@@ -371,30 +782,17 @@ namespace Headstart.API.Commands
                     var property = properties[j].Name;
                     if (property == filterKeys[i])
                     {
-                       data = properties[j].GetValue(data);
-                       if (i < filterKeys.Length - 1)
+                        data = properties[j].GetValue(data);
+                        if (i < filterKeys.Length - 1)
                         {
                             string[] remainingLevels = new string[filterKeys.Length - i - 1];
                             Array.Copy(filterKeys, i + 1, remainingLevels, 0, filterKeys.Length - i - 1);
                             string remainingKeys = string.Join(".", remainingLevels);
                             return GetDataValue(remainingKeys, data);
                         }
-                       return data;
+                        return data;
                     }
                 }
-            }
-            return null;
-        }
-
-        private async Task<List<HSOrder>> GetSalesOrdersIfNeeded(ReportTemplate template, string dateLow, string dateHigh, DecodedToken decodedToken)
-        {
-            if (template.Headers.Any(header => header.Contains("FromUser")))
-            {
-                var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-                return await _oc.Orders.ListAllAsync<HSOrder>(
-                OrderDirection.Incoming,
-                filters: decodedToken.CommerceRole == CommerceRole.Supplier ? $"from={dateLow}&to={dateHigh}&xp.SupplierIDs={me.Supplier.ID}" : $"from={dateLow}&to={dateHigh}"
-                );
             }
             return null;
         }

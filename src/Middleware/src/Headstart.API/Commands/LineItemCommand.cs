@@ -87,7 +87,8 @@ namespace Headstart.API.Commands
         // all line item status changes should go through here
         public async Task<List<HSLineItem>> UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection orderDirection, string orderID, LineItemStatusChanges lineItemStatusChanges, DecodedToken decodedToken = null)
         {
-            var userType = decodedToken.CommerceRole.ToString().ToLower() ?? "noUser";
+            var userType = decodedToken?.CommerceRole.ToString().ToLower() ?? "noUser";
+            userType = userType == "seller" ? "admin" : userType;
             var verifiedUserType = userType.Reserialize<VerifiedUserType>();
             
             var buyerOrderID = orderID.Split('-')[0];
@@ -350,7 +351,7 @@ namespace Headstart.API.Commands
 
         private void ValidateLineItemStatusChange(List<HSLineItem> previousLineItemStates, LineItemStatusChanges lineItemStatusChanges, VerifiedUserType userType)
         {
-            /* need to validate 3 things on a lineitem status change
+            /* need to validate 2 things on a lineitem status change
              * 
              * 1) user making the request has the ability to make that line item change based on usertype
              * 2) there are sufficient amount of the previous quantities for each lineitem

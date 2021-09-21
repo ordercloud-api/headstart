@@ -21,6 +21,7 @@ namespace Headstart.API.Commands
     public interface IEnvironmentSeedCommand
     {
         Task<EnvironmentSeedResponse> Seed(EnvironmentSeed seed);
+        Task UpdateTranslations(string connectionString, string containerName);
         Task PostStagingRestore();
     }
 
@@ -93,21 +94,10 @@ namespace Headstart.API.Commands
             await CreateOrUpdateSuppliers(seed, marketplaceToken);
 
             await CreateOrUpdateProductFacets(marketplaceToken);
-;
-            // populate default english translations into blob container name: settings.StorageAccountSettingsntSettings.ContainerNameTranslations or "ngx-translate" if setting is not defined
-            // provide other language files to support multiple languages
 
-            var englishTranslationsPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "Assets", "english-translations.json"));
             if (seed?.StorageAccountSettings?.ConnectionString != null && seed?.StorageAccountSettings?.ContainerNameTranslations != null)
             {
-                var translationsConfig = new BlobServiceConfig()
-                {
-                    ConnectionString = seed.StorageAccountSettings.ConnectionString,
-                    Container = seed.StorageAccountSettings.ContainerNameTranslations,
-                    AccessType = BlobContainerPublicAccessType.Container
-                };
-                var translationsBlob = new OrderCloudIntegrationsBlobService(translationsConfig);
-                await translationsBlob.Save("i18n/en.json", File.ReadAllText(englishTranslationsPath));
+                await UpdateTranslations(seed.StorageAccountSettings.ConnectionString, seed.StorageAccountSettings.ContainerNameTranslations);
             }
 
             var apiClients = await GetApiClients(marketplaceToken);
@@ -134,6 +124,19 @@ namespace Headstart.API.Commands
                     }
                 }
             };
+        }
+
+        public async Task UpdateTranslations(string connectionString, string containerName)
+        {
+            var englishTranslationsPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "Assets", "english-translations.json"));
+            var translationsConfig = new BlobServiceConfig()
+            {
+                ConnectionString = connectionString,
+                Container = containerName,
+                AccessType = BlobContainerPublicAccessType.Container
+            };
+            var translationsBlob = new OrderCloudIntegrationsBlobService(translationsConfig);
+            await translationsBlob.Save("i18n/en.json", File.ReadAllText(englishTranslationsPath));
         }
 
         private OcEnv validateEnvironment(string environment)

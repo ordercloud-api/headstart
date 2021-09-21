@@ -28,7 +28,8 @@ namespace ordercloud.integrations.library
 
         public CosmosDbContainer GetContainer(string containerName)
         {
-            if (_containers.Where(x => x.Name != containerName).Any())
+            var exists = _containers.Any(c => c.Name == containerName);
+            if (!exists)
             {
                 throw new ArgumentException($"Unable to find container: {containerName}");
             }

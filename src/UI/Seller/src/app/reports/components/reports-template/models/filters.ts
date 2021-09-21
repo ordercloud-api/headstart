@@ -93,3 +93,46 @@ export const lineItemDetail: FilterObject[] = [
     filterValues: [],
   },
 ]
+
+export const productDetail: FilterObject[] = [
+  {
+    name: 'Product Status',
+    path: 'Status',
+    sourceType: 'model',
+    source: 'Status',
+    filterValues: [],
+  },
+  {
+    name: 'Product Supplier',
+    path: 'SupplierName',
+    sourceType: 'model',
+    source: 'Supplier',
+    filterValues: [],
+  },
+]
+export const rmaDetail: FilterObject[] = [
+  {
+    name: 'RMA Type',
+    path: 'RMAType',
+    sourceType: 'model',
+    source: 'RMAType',
+    filterValues: [],
+  },
+  {
+    name: 'RMA Status',
+    path: 'RMAStatus',
+    sourceType: 'model',
+    source: 'RMAStatus',
+    filterValues: [],
+  },
+]
+
+export const shipmentDetail: FilterObject[] = [
+  {
+    name: 'Shipping Status',
+    path: 'ShippingStatus',
+    sourceType: 'model',
+    source: 'ShippingStatus',
+    filterValues: [],
+  },
+]

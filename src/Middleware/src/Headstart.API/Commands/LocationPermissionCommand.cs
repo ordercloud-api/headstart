@@ -175,7 +175,8 @@ namespace Headstart.API.Commands
 
     private async Task<bool> IsUserInUserGroup(string buyerID, string userGroupID, DecodedToken decodedToken)
         {
-            var userGroupAssignmentForAccess = await _oc.UserGroups.ListUserAssignmentsAsync(buyerID, userGroupID, decodedToken.UserDatabaseID);
+            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            var userGroupAssignmentForAccess = await _oc.UserGroups.ListUserAssignmentsAsync(buyerID, userGroupID, me.ID);
             return userGroupAssignmentForAccess.Items.Count > 0;
         }
 

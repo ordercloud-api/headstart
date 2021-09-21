@@ -1,11 +1,19 @@
 {
   "hostedApp": true,
-  "sellerID": "my-seller-id",
-  "sellerName": "Default Admin",
-  "appname": "Default Admin",
-  "clientID": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-  "middlewareUrl": "https://my-hosted-middleware.com",
-  "translateBlobUrl": "https://MYSTORAGEACCOUNTNAME.blob.core.windows.net/ngx-translate/i18n/",
-  "blobStorageUrl": "https://MYSTORAGEACCOUNTNAME.blob.core.windows.net",
-  "orderCloudApiUrl": "https://sandboxapi.ordercloud.io"
+  "sellerID": "T93pnzlE80Q23Fot",
+  "sellerName": "Aktion Mensch",
+  "clientID": "174A0E3A-C765-4CF5-97D6-41019C832041",
+  "middlewareUrl": "https://headstartdemo-middleware-aktion-mensch.azurewebsites.net",
+  "appname": "Aktion Mensch Admin",
+  "translateBlobUrl": "https://headstartdemo.blob.core.windows.net/ngx-translate/i18n/",
+  "blobStorageUrl": "https://headstartdemo.blob.core.windows.net",
+  "orderCloudApiUrl": "https://sandboxapi.ordercloud.io",
+  "orderCloudApiVersion": "v1",
+  "buyerConfigs": {
+      "Default Buyer": {
+          "clientID": "4E288BF1-5B2B-4558-83AD-0C5EAD429935",
+          "buyerUrl": "https://headstartdemo-buyer-ui-aktion-mensch.azurewebsites.net/"
+      }
+  },
+  "superProductFieldsToMonitor": []
 }

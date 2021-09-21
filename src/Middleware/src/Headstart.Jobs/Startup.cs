@@ -53,32 +53,32 @@ namespace Headstart.Jobs
                 new ContainerInfo()
                 {
                     Name = "salesorderdetail",
-                    PartitionKey = "PartitionKey"
+                    PartitionKey = "/PartitionKey"
                 },
                 new ContainerInfo()
                 {
                     Name = "purchaseorderdetail",
-                    PartitionKey = "PartitionKey"
+                    PartitionKey = "/PartitionKey"
                 },
                 new ContainerInfo()
                 {
                     Name = "lineitemdetail",
-                    PartitionKey = "PartitionKey"
+                    PartitionKey = "/PartitionKey"
                 },
                 new ContainerInfo()
                 {
                     Name = "rmas",
-                    PartitionKey = "PartitionKey"
+                    PartitionKey = "/PartitionKey"
                 },
                 new ContainerInfo()
                 {
                     Name = "shipmentdetail",
-                    PartitionKey = "PartitionKey"
+                    PartitionKey = "/PartitionKey"
                 },
                 new ContainerInfo()
                 {
                     Name = "productdetail",
-                    PartitionKey = "PartitionKey"
+                    PartitionKey = "/PartitionKey"
                 }
             };
 
