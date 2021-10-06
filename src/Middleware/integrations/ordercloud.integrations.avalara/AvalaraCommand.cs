@@ -14,13 +14,17 @@ namespace ordercloud.integrations.avalara
 {
 	public interface IAvalaraCommand
 	{
-		// Use this before checkout. No records will be saved in avalara.
-		Task<TransactionModel> GetEstimateAsync(OrderWorksheet orderWorksheet);
-		// Use this during submit.
-		Task<TransactionModel> CreateTransactionAsync(OrderWorksheet orderWorksheet);
+		/// <summary>
+		/// Calculates tax for an order without creating any records. Use this to display tax amount to user prior to order submit.
+		/// </summary>
+		Task<OrderTaxCalculation> CalculateEstimateAsync(OrderWorksheet orderWorksheet);
+		/// <summary>
+		/// Creates a tax transaction record in the calculating system. Use this once on purchase, payment capture, or fulfillment.
+		/// </summary>
+		Task<OrderTaxCalculation> CalculateTransactionAsync(OrderWorksheet orderWorksheet);
 		// Committing the transaction makes it eligible to be filed as part of a tax return. 
 		// When should we do this? 
-		Task<TransactionModel> CommitTransactionAsync(string transactionCode);
+		Task<OrderTaxCalculation> CommitTransactionAsync(string transactionCode);
 		Task<ListPage<TaxCode>> ListTaxCodesAsync(ListArgs<TaxCode> hsListArgs);
 		Task<TaxCertificate> GetCertificateAsync(int certificateID);
 		Task<TaxCertificate> CreateCertificateAsync(TaxCertificate cert, Address buyerLocation);
@@ -29,7 +33,7 @@ namespace ordercloud.integrations.avalara
 
 	public enum AppEnvironment { Test, Staging, Production }
 
-	public class AvalaraCommand : IAvalaraCommand
+	public class AvalaraCommand : IAvalaraCommand, ITaxCalculator
 	{
 		private readonly IOrderCloudClient _oc;
 		private readonly AvalaraConfig _settings;
@@ -59,14 +63,14 @@ namespace ordercloud.integrations.avalara
 			return noAccountCredentials && appEnvironment != AppEnvironment.Production;
 		}
 
-		public async Task<TransactionModel> GetEstimateAsync(OrderWorksheet orderWorksheet)
+		public async Task<OrderTaxCalculation> CalculateEstimateAsync(OrderWorksheet orderWorksheet)
 		{
 			if (ShouldMockAvalaraResponse()) { return CreateMockTransactionModel(); }
 			var taxEstimate = await CreateTransactionAsync(DocumentType.SalesOrder, orderWorksheet);
 			return taxEstimate;
 		}
 
-        private TransactionModel CreateMockTransactionModel()
+        private OrderTaxCalculation CreateMockTransactionModel()
         {
 			TransactionModel result = new TransactionModel()
 			{
@@ -78,7 +82,7 @@ namespace ordercloud.integrations.avalara
 			return result;
         }
 
-        public async Task<TransactionModel> CreateTransactionAsync(OrderWorksheet orderWorksheet)
+        public async Task<OrderTaxCalculation> CalculateTransactionAsync(OrderWorksheet orderWorksheet)
 		{
 			if (ShouldMockAvalaraResponse()) { return CreateMockTransactionModel(); }
 
@@ -86,7 +90,7 @@ namespace ordercloud.integrations.avalara
 			return transaction;
 		}
 
-		public async Task<TransactionModel> CommitTransactionAsync(string transactionCode)
+		public async Task<OrderTaxCalculation> CommitTransactionAsync(string transactionCode)
 		{
 			if (ShouldMockAvalaraResponse()) { return CreateMockTransactionModel(); }
 
@@ -171,7 +175,7 @@ namespace ordercloud.integrations.avalara
 			return Convert.ToBase64String(pdfBtyes);
 		}
 
-		private async Task<TransactionModel> CreateTransactionAsync(DocumentType docType, OrderWorksheet orderWorksheet)
+		private async Task<OrderTaxCalculation> CreateTransactionAsync(DocumentType docType, OrderWorksheet orderWorksheet)
 		{
 			var standardLineItems = orderWorksheet.LineItems.Where(li => li.Product.xp.ProductType == "Standard")?.ToList();
             if (standardLineItems.Any())
