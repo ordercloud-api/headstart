@@ -1,21 +1,19 @@
 {
   "hostedApp": true,
-  "appname": "Aktion Mensch",
-  "appID": "headstartdemo-test",
-  "clientID": "4E288BF1-5B2B-4558-83AD-0C5EAD429935",
-  "incrementorPrefix": "HS_TEST",
-  "baseUrl": "https://headstartdemo-buyer-ui-aktion-mensch.azurewebsites.net/",
-  "middlewareUrl": "https://headstartdemo-middleware-aktion-mensch.azurewebsites.net",
+  "appname": "Default Buyer Test",
+  "appID": "defaultbuyer-test",
+  "clientID": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "incrementorPrefix": "DB_TEST",
+  "baseUrl": "https://my-default-buyer-test.com",
+  "middlewareUrl": "https://my-hosted-middleware.com",
   "creditCardIframeUrl": "https://fts-uat.cardconnect.com/itoke/ajax-tokenizer.html",
-  "translateBlobUrl": "https://headstartdemo.blob.core.windows.net/ngx-translate/i18n/",
-  "sellerID": "HEADSTARTDEMO_TEST",
-  "sellerName": "Aktion Mensch Marketplace",
+  "sellerID": "my-seller-id",
+  "translateBlobUrl": "https://MYSTORAGEACCOUNTNAME.blob.core.windows.net/ngx-translate/i18n/",
   "orderCloudApiUrl": "https://sandboxapi.ordercloud.io",
   "useMoosend": false,
   "moosendWebsiteID": "xxxxxxxxxxxxxxxxxxxxxxxx",
-  "acceptedPaymentMethods": ["CreditCard"],
   "theme": {
-    "logoSrc": "https://www.aktion-mensch.de/lotterie/service/-/media/images/logo/am_logo_rgb.svg"
+    "logoSrc": "assets/generic-logo.png"
   },
   "instrumentationKey": null
 }
