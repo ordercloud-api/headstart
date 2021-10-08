@@ -151,7 +151,7 @@ First, deploy the applications or run them locally:
 
 - [Middleware](./src/Middleware/README.md)
 - [Seller](./src/UI/Seller/README.md)
-- [Buyer](./src/Buyer/README.md)
+- [Buyer](./src/UI/Buyer/README.md)
 
 The goal of this section is to show what steps are required to create a buyer experience on the buyer application. IE allowing a buyer user to browse and shop products and add them to their cart.
 
