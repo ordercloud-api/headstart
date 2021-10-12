@@ -7,7 +7,7 @@ using System.Text;
 
 namespace ordercloud.integrations.avalara
 {
-	public static class CreateTransactionMapper
+	public static class TransactionMapper
 	{
 		public static CreateTransactionModel ToAvalaraTransactionModel(this OrderWorksheet order, string companyCode, DocumentType docType, List<OrderPromotion> promosOnOrder)
 		{
