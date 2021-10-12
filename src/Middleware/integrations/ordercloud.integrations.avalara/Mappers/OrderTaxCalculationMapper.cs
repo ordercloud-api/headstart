@@ -35,6 +35,7 @@ namespace ordercloud.integrations.avalara
 			return new LineItemTaxCalculation()
 			{
 				LineItemID = transactionLineModel.lineNumber,
+				LineItemTotalTax = transactionLineModel.taxCalculated,
 				LineItemLevelTaxes = transactionLineModel.details?.Select(detail => detail.ToTaxDetails(null)).ToList() ?? new List<TaxDetails>()
 			};
 		}
