@@ -10,7 +10,6 @@ using Headstart.Common.Services;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
 using Headstart.Models.Headstart;
-using ordercloud.integrations.avalara;
 using ordercloud.integrations.easypost;
 using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;

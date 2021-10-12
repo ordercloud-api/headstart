@@ -11,8 +11,8 @@ namespace ordercloud.integrations.avalara
 	{
 		public static OrderTaxCalculation ToOrderTaxCalculation(this TransactionModel avalaraTransaction)
 		{
-			var shippingLines = avalaraTransaction.lines.Where(line => line.taxCode == "FR");
-			var itemLines = avalaraTransaction.lines.Where(line => line.taxCode != "FR");
+			var shippingLines = avalaraTransaction.lines?.Where(line => line.taxCode == "FR") ?? new List<TransactionLineModel>();
+			var itemLines = avalaraTransaction.lines?.Where(line => line.taxCode != "FR") ?? new List<TransactionLineModel>();
 			return new OrderTaxCalculation()
 			{
 				OrderID = avalaraTransaction.purchaseOrderNo,
@@ -27,7 +27,7 @@ namespace ordercloud.integrations.avalara
 
 		public static IEnumerable<TaxDetails> ToShippingTaxDetails(this TransactionLineModel transactionLineModel)
 		{
-			return transactionLineModel.details.Select(detail => detail.ToTaxDetails(transactionLineModel.lineNumber));
+			return transactionLineModel.details?.Select(detail => detail.ToTaxDetails(transactionLineModel.lineNumber)) ?? new List<TaxDetails>();
 		}
 
 		public static LineItemTaxCalculation ToItemTaxDetails(this TransactionLineModel transactionLineModel)
@@ -35,7 +35,7 @@ namespace ordercloud.integrations.avalara
 			return new LineItemTaxCalculation()
 			{
 				LineItemID = transactionLineModel.lineNumber,
-				LineItemLevelTaxes = transactionLineModel.details.Select(detail => detail.ToTaxDetails(null)).ToList()
+				LineItemLevelTaxes = transactionLineModel.details?.Select(detail => detail.ToTaxDetails(null)).ToList() ?? new List<TaxDetails>()
 			};
 		}
 
