@@ -125,6 +125,11 @@ namespace Headstart.API
                 ClientSecret = _settings.OrderCloudSettings.MiddlewareClientSecret,
                 Roles = new[] { ApiRole.FullAccess }
             });
+            var avalaraCommand = new AvalaraCommand(
+                    orderCloudClient,
+                    avalaraConfig,
+                    new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(avalaraConfig.BaseApiUrl)
+                   ).WithSecurity(_settings.AvalaraSettings.AccountID, _settings.AvalaraSettings.LicenseKey), _settings.EnvironmentSettings.Environment.ToString());
 
             services.AddMvc(o =>
              {
@@ -158,6 +163,7 @@ namespace Headstart.API
                 .Inject<IHSProductCommand>()
                 .Inject<ILineItemCommand>()
                 .Inject<IMeProductCommand>()
+                .Inject<IDiscountDistributionService>()
                 .Inject<IHSCatalogCommand>()
                 .Inject<ISendgridService>()
                 .Inject<IHSSupplierCommand>()
@@ -183,11 +189,8 @@ namespace Headstart.API
                 .AddSingleton<IAssetClient>(provider => new AssetClient( new OrderCloudIntegrationsBlobService(assetConfig), _settings))
                 .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand( new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
                 .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand(new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
-                .AddSingleton<IAvalaraCommand>(x => new AvalaraCommand(
-                    orderCloudClient,
-                    avalaraConfig,
-                    new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(avalaraConfig.BaseApiUrl)
-                   ).WithSecurity(_settings.AvalaraSettings.AccountID, _settings.AvalaraSettings.LicenseKey), _settings.EnvironmentSettings.Environment.ToString()))
+                .AddSingleton<ITaxCalculator>(avalaraCommand)
+                .AddSingleton<IAvalaraCommand>(avalaraCommand)
                 .AddSingleton<IEasyPostShippingService>(x => new EasyPostShippingService(new EasyPostConfig() { APIKey = _settings.EasyPostSettings.APIKey }))
                 .AddSingleton<ISmartyStreetsService>(x => new SmartyStreetsService(_settings.SmartyStreetSettings, smartyStreetsUsClient))
                 .AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(_settings.CardConnectSettings, _settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))

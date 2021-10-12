@@ -11,17 +11,48 @@ namespace ordercloud.integrations.avalara
 	{
 		public static OrderTaxCalculation ToOrderTaxCalculation(this TransactionModel avalaraTransaction)
 		{
-			var shippingLines = avalaraTransaction.lines.GroupBy(line => line.taxCode == "FR");
+			var shippingLines = avalaraTransaction.lines.Where(line => line.taxCode == "FR");
+			var itemLines = avalaraTransaction.lines.Where(line => line.taxCode != "FR");
 			return new OrderTaxCalculation()
 			{
-				OrderCloudOrderID = avalaraTransaction.purchaseOrderNo,
-				ExternalSystemTransactionID = avalaraTransaction.code,
+				OrderID = avalaraTransaction.purchaseOrderNo,
+				ExternalTransactionID = avalaraTransaction.code,
 				TotalTax = avalaraTransaction.totalTax ?? 0,
 				TotalTaxable = avalaraTransaction.totalTaxable ?? 0,
-				LineItems = null,
-				OrderLevelTaxes = null
+				TotalExempt = avalaraTransaction.totalExempt ?? 0,
+				LineItems = itemLines.Select(ToItemTaxDetails).ToList(),
+				OrderLevelTaxes = shippingLines.SelectMany(ToShippingTaxDetails).ToList()
 			};
 		}
+
+		public static IEnumerable<TaxDetails> ToShippingTaxDetails(this TransactionLineModel transactionLineModel)
+		{
+			return transactionLineModel.details.Select(detail => detail.ToTaxDetails(transactionLineModel.lineNumber));
+		}
+
+		public static LineItemTaxCalculation ToItemTaxDetails(this TransactionLineModel transactionLineModel)
+		{
+			return new LineItemTaxCalculation()
+			{
+				LineItemID = transactionLineModel.lineNumber,
+				LineItemLevelTaxes = transactionLineModel.details.Select(detail => detail.ToTaxDetails(null)).ToList()
+			};
+		}
+
+		public static TaxDetails ToTaxDetails(this TransactionLineDetailModel detail, string shipEstimateID)
+		{
+			return new TaxDetails()
+			{
+				Tax = detail.tax ?? 0,
+				Taxable = detail.taxableAmount ?? 0,
+				Exempt = detail.exemptAmount ?? 0,
+				TaxDescription = detail.taxName,
+				JurisdictionLevel = detail.jurisdictionType.ToString(),
+				JurisdictionValue = detail.jurisName,
+				ShipEstimateID = shipEstimateID
+			};
+		}
+
 
 	}
 }

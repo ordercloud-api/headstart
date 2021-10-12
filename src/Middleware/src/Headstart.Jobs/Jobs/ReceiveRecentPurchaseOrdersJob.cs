@@ -82,7 +82,7 @@ namespace Headstart.Jobs
                 order.ShippingCost = GetPurchaseOrderShippingCost(salesOrderWorksheet, order.ToCompanyID);
                 if (salesOrderWorksheet.Order.PromotionDiscount > 0)
                 {
-                    order.PromotionDiscount = GetPurchaseOrderPromotionDiscount(salesOrderWorksheet, order.ToCompanyID);
+                    order.PromotionDiscount = GetPurchaseOrderPromotionDiscount(salesOrderWorksheet, promos.Items, order.ToCompanyID);
                 }
 
                 var cosmosPurchaseOrder = new OrderDetailData()
@@ -121,33 +121,32 @@ namespace Headstart.Jobs
                 return 0M;
             }
 
-            if (orderWorksheet?.OrderCalculateResponse?.xp?.TaxResponse?.lines?.FirstOrDefault(line => line?.lineNumber == supplierShipEstimate?.SelectedShipMethodID) != null)
+            if (orderWorksheet?.OrderCalculateResponse?.xp?.TaxCalculation?.OrderLevelTaxes?.FirstOrDefault(line => line?.ShipEstimateID == supplierShipEstimate?.ID) != null)
             {
-                var shippingCost = orderWorksheet?.OrderCalculateResponse?.xp?.TaxResponse?.lines?.FirstOrDefault(line => line?.lineNumber == supplierShipEstimate?.SelectedShipMethodID)?.lineAmount;
+                var shippingCost = orderWorksheet?.OrderCalculateResponse?.xp?.TaxCalculation?.OrderLevelTaxes?.FirstOrDefault(line => line?.ShipEstimateID == supplierShipEstimate?.ID)?.Tax;
                 return shippingCost != null ? Math.Round((decimal)shippingCost, 2) : 0M;
             }
 
             return 0M;
         }
 
-        private decimal GetPurchaseOrderPromotionDiscount(HSOrderWorksheet orderWorksheet, string supplierID)
-        {
-            var supplierLineItems = orderWorksheet?.LineItems?.Where(li => li?.SupplierID == supplierID);
-            // Line-level discounts
-            var lineItemDiscounts = supplierLineItems?.Sum(line => line?.PromotionDiscount);
+        private decimal GetPurchaseOrderPromotionDiscount(HSOrderWorksheet orderWorksheet, IEnumerable<OrderPromotion> promosOnOrder, string supplierID)
+		{
 
-            var supplierLineItemIDs = supplierLineItems?.Select(li => li?.ID);
-            if (supplierLineItemIDs != null)
-            {
-                var orderCalculateResponseLines = orderWorksheet?.OrderCalculateResponse?.xp?.TaxResponse?.lines?.Where(avalaraLine => supplierLineItemIDs.Contains(avalaraLine?.lineNumber));
-                // Order-level discounts, as it applies to the line item and adjusted for line item pricing
-                var orderCalculateLineDiscounts = orderCalculateResponseLines?.Sum(line => line?.discountAmount);
-                
-                var totalDiscount = lineItemDiscounts += orderCalculateLineDiscounts;
-                return totalDiscount != null ? (decimal)totalDiscount : 0M;
-            }
+			var supplierLineItems = orderWorksheet?.LineItems?.Where(line => line?.SupplierID == supplierID);
 
-            return 0M;
+            if (supplierLineItems == null || supplierLineItems.Count() == 0) { return 0M; }
+
+			var lineItemDiscount = supplierLineItems.Sum(line => line.PromotionDiscount);
+
+			var totalOrderLevelDiscount = promosOnOrder
+				.Where(promo => promo.LineItemID == null && !promo.LineItemLevel)
+				.Select(promo => promo.Amount).Sum();
+
+            var fractionOfOrderSubtotal = supplierLineItems.Select(l => l.LineSubtotal).Sum() / orderWorksheet.Order.Subtotal;
+            var proportionalOrderDiscount = totalOrderLevelDiscount * fractionOfOrderSubtotal;
+
+            return lineItemDiscount + proportionalOrderDiscount;
         }
     }
 }

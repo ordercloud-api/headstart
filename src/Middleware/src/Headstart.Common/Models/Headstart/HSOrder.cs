@@ -20,7 +20,7 @@ namespace Headstart.Models
     
     public class OrderXp
     {
-        public string AvalaraTaxTransactionCode { get; set; }
+        public string ExternalTaxTransactionID { get; set; }
         public List<string> ShipFromAddressIDs { get; set; }
         public List<string> SupplierIDs { get; set; }
         public bool NeedsAttention { get; set; }

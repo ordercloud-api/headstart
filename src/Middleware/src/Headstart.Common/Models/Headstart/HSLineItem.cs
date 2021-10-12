@@ -8,9 +8,15 @@ namespace Headstart.Models.Headstart
     
 	public class HSLineItem : LineItem<LineItemXp, HSLineItemProduct, LineItemVariant, HSAddressBuyer, HSAddressSupplier> { }
 
-    
-	public class LineItemXp
+    public class HSPartialLineItem : PartialLineItem<LineItemXp, HSLineItemProduct, LineItemVariant, HSAddressBuyer, HSAddressSupplier> { }
+
+
+    public class LineItemXp
     {
+        /// <summary>
+        /// Promotion discounts are distributed evenly accross line items. Proportional distribution is required for accurate partial returns. 
+        /// </summary>
+        public decimal LineTotalWithProportionalDiscounts { get; set; }
         public Dictionary<LineItemStatus, int> StatusByQuantity { get; set; }
         public List<LineItemClaim> Returns { get; set; }
         public List<LineItemClaim> Cancelations { get; set; }
