@@ -124,7 +124,7 @@ namespace ordercloud.integrations.vertex
 	public class VertexMeasure
 	{
 		public string unitOfMeasure { get; set; }
-		public double vlaue { get; set; }
+		public double value { get; set; }
 	}
 
 	public class VertexComodityCode

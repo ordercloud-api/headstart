@@ -126,7 +126,6 @@ namespace Headstart.API
                 Roles = new[] { ApiRole.FullAccess }
             });
             var avalaraCommand = new AvalaraCommand(
-                    orderCloudClient,
                     avalaraConfig,
                     new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(avalaraConfig.BaseApiUrl)
                    ).WithSecurity(_settings.AvalaraSettings.AccountID, _settings.AvalaraSettings.LicenseKey), _settings.EnvironmentSettings.Environment.ToString());

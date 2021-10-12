@@ -53,7 +53,5 @@ namespace ordercloud.integrations.avalara
 				ShipEstimateID = shipEstimateID
 			};
 		}
-
-
 	}
 }
