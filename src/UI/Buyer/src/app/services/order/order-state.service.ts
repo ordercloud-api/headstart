@@ -35,7 +35,7 @@ export class OrderStateService {
   }
   private readonly DefaultOrder: HSOrder = {
     xp: {
-      AvalaraTaxTransactionCode: '',
+      ExternalTaxTransactionID: '',
       OrderType: 'Standard',
       QuoteOrderInfo: null,
       Currency: 'USD', // Default value, overriden in reset() when app loads
