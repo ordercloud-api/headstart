@@ -140,7 +140,7 @@ namespace Headstart.Jobs
 
                 if (orderWorksheet.OrderCalculateResponse != null && orderWorksheet.OrderCalculateResponse.xp != null && orderWorksheet.OrderCalculateResponse.xp.TaxCalculation.ExternalTransactionID != "NotTaxable")
                 {
-                    var lineTax = orderWorksheet.OrderCalculateResponse.xp.TaxCalculation.LineItems.First(line => line.LineItemID == lineItem.ID);
+                    var lineTax = orderWorksheet.OrderCalculateResponse.xp.TaxCalculation.LineItems.FirstOrDefault(line => line.LineItemID == lineItem.ID);
                     lineItemWithMiscFields.Tax = lineTax?.LineItemTotalTax;
                     lineItemWithMiscFields.LineTaxAvailable = lineTax != null;
                 }
