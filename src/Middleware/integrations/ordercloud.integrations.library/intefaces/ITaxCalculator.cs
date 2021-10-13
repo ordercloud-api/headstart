@@ -107,6 +107,6 @@ namespace ordercloud.integrations.library
 		/// <summary>
 		/// ID of the ship estimate this tax applies to. Null if not a shipping tax.
 		/// </summary>
-		public string? ShipEstimateID { get; set; }
+		public string ShipEstimateID { get; set; }
 	}
 }
