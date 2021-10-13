@@ -138,11 +138,11 @@ namespace Headstart.Jobs
                     BrandName = buyerName
                 };
 
-                if (orderWorksheet.OrderCalculateResponse != null && orderWorksheet.OrderCalculateResponse.xp != null && orderWorksheet.OrderCalculateResponse.xp.TaxResponse.code != "NotTaxable")
+                if (orderWorksheet.OrderCalculateResponse != null && orderWorksheet.OrderCalculateResponse.xp != null && orderWorksheet.OrderCalculateResponse.xp.TaxCalculation.ExternalTransactionID != "NotTaxable")
                 {
-                    var orderWorksheetLine = orderWorksheet.OrderCalculateResponse.xp.TaxResponse.lines.FirstOrDefault(line => line.lineNumber == lineItem.ID);
-                    lineItemWithMiscFields.Tax = orderWorksheetLine?.tax;
-                    lineItemWithMiscFields.LineTaxAvailable = orderWorksheetLine != null;
+                    var lineTax = orderWorksheet.OrderCalculateResponse.xp.TaxCalculation.LineItems.FirstOrDefault(line => line.LineItemID == lineItem.ID);
+                    lineItemWithMiscFields.Tax = lineTax?.LineItemTotalTax;
+                    lineItemWithMiscFields.LineTaxAvailable = lineTax != null;
                 }
                 else
                 {

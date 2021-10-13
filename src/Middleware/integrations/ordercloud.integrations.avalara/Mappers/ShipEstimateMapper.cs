@@ -8,9 +8,9 @@ namespace ordercloud.integrations.avalara
 {
 	public static class ShipEstimateMapper
 	{
-		public static ShipMethod GetSelectedShippingMethod(this ShipEstimate estimates)
+		public static ShipMethod GetSelectedShippingMethod(this ShipEstimate shipEstimate)
 		{
-			return estimates.ShipMethods.First(method => method.ID == estimates.SelectedShipMethodID);
+			return shipEstimate.ShipMethods.First(method => method.ID == shipEstimate.SelectedShipMethodID);
 		}
 
 		public static (Address, Address) GetAddresses(this ShipEstimate estimates, IList<LineItem> allLines)

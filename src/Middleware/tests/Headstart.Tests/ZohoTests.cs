@@ -76,7 +76,7 @@
 //                'Total': 75.38,
 //                'IsSubmitted': true,
 //                'xp': {
-//                    'AvalaraTaxTransactionCode': '',
+//                    'ExternalTaxTransactionID': '',
 //                    'OrderType': 'Standard',
 //                    'QuoteOrderInfo': null,
 //                    'Currency': 'USD',
@@ -487,7 +487,7 @@
 //			'Total': 13.84,
 //			'IsSubmitted': true,
 //			'xp': {
-//				'AvalaraTaxTransactionCode': '',
+//				'ExternalTaxTransactionID': '',
 //				'OrderType': 'Standard',
 //				'QuoteOrderInfo': null,
 //				'Currency': 'USD',
@@ -728,7 +728,7 @@
 //		'Total': 760.69,
 //		'IsSubmitted': true,
 //		'xp': {
-//			'AvalaraTaxTransactionCode': '41a74fb6-6364-42d8-82d6-63f6e968ba16',
+//			'ExternalTaxTransactionID': '41a74fb6-6364-42d8-82d6-63f6e968ba16',
 //			'OrderType': 'Standard',
 //			'QuoteOrderInfo': null,
 //			'Currency': 'USD',

@@ -19,8 +19,8 @@ namespace Headstart.Jobs.Helpers
 
             var shipMethod = shipEstimate != null ? shipEstimate.ShipMethods.FirstOrDefault(method => method.ID == shipEstimate.SelectedShipMethodID) : null;
 
-            var shippingTax = orderWorksheet.OrderCalculateResponse != null && orderWorksheet.OrderCalculateResponse.xp != null && orderWorksheet.OrderCalculateResponse.xp.TaxResponse.lines != null && shipEstimate != null && orderWorksheet.OrderCalculateResponse.xp.TaxResponse.lines.FirstOrDefault(line => line.lineNumber == shipEstimate.SelectedShipMethodID) != null
-                ? orderWorksheet.OrderCalculateResponse.xp.TaxResponse.lines.FirstOrDefault(line => line.lineNumber == shipEstimate.SelectedShipMethodID).tax 
+            var shippingTax = shipEstimate != null && orderWorksheet?.OrderCalculateResponse?.xp?.TaxCalculation?.OrderLevelTaxes?.FirstOrDefault(line => line.ShipEstimateID == shipEstimate.ID) != null
+                ? orderWorksheet.OrderCalculateResponse.xp.TaxCalculation.OrderLevelTaxes.FirstOrDefault(line => line.ShipEstimateID == shipEstimate.ID).Tax 
                 : null;
 
             var supplierName = ((IDictionary<string, object>)shipmentItem.Product.xp.Facets).ContainsKey("supplier") ? shipmentItem.Product.xp.Facets?.supplier[0] : null;

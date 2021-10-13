@@ -87,7 +87,7 @@ export class CurrentOrderService {
       ID: `${this.appConfig.incrementorPrefix}{orderIncrementor}`,
       ShippingAddressID: info.ShippingAddressId,
       xp: {
-        AvalaraTaxTransactionCode: '',
+        ExternalTaxTransactionID: '',
         OrderType: OrderType.Quote,
         QuoteOrderInfo: {
           FirstName: info.FirstName,

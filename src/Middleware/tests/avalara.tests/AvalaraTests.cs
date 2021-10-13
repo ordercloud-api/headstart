@@ -27,19 +27,19 @@ namespace avalara.tests
         [Test]
         public async Task avalara_mock_estimate_no_license_key()
         {
-            var response = await _command.GetEstimateAsync(new OrderCloud.SDK.OrderWorksheet());
+            var response = await _command.CalculateEstimateAsync(new OrderWorksheet(), new List<OrderPromotion>());
 
-            Assert.AreEqual(123.45, response.totalTax);
-            Assert.AreEqual("Mock Avalara Response for Headstart", response.description);
+            Assert.AreEqual(123.45, response.TotalTax);
+            Assert.AreEqual("Mock Avalara Response for Headstart", response.ExternalTransactionID);
         }
 
         [Test]
         public async Task avalara_mock_transaction_no_license_key()
         {
-            var response = await _command.CreateTransactionAsync(new OrderCloud.SDK.OrderWorksheet());
+            var response = await _command.CommitTransactionAsync(new OrderWorksheet(), new List<OrderPromotion>());
 
-            Assert.AreEqual(123.45, response.totalTax);
-            Assert.AreEqual("Mock Avalara Response for Headstart", response.description);
+            Assert.AreEqual(123.45, response.TotalTax);
+            Assert.AreEqual("Mock Avalara Response for Headstart", response.ExternalTransactionID);
         }
 
         [Test]

@@ -491,7 +491,7 @@ namespace Headstart.API.Commands
 
         public void CalculateAndUpdateLineTotalRefund(IEnumerable<RMALineItem> lineItemsToUpdate, HSOrderWorksheet orderWorksheet, CosmosListPage<RMA> allRMAsOnThisOrder, string supplierID)
         {
-            IEnumerable<dynamic> orderWorksheetLines = orderWorksheet.OrderCalculateResponse.xp.TaxResponse.lines;
+            var taxLines = orderWorksheet.OrderCalculateResponse.xp.TaxCalculation.LineItems;
 
             foreach (RMALineItem rmaLineItem in lineItemsToUpdate)
             {
@@ -500,16 +500,17 @@ namespace Headstart.API.Commands
                     HSLineItem lineItemFromOrder = orderWorksheet.LineItems.FirstOrDefault(li => li.ID == rmaLineItem.ID);
                     rmaLineItem.LineTotalRefund = lineItemFromOrder.LineTotal / lineItemFromOrder.Quantity * rmaLineItem.QuantityProcessed;
                 }
-                else
-                {
-                    int quantityToRefund = rmaLineItem.QuantityProcessed;
-                    dynamic orderWorksheetLineItem = orderWorksheetLines.FirstOrDefault(li => li.lineNumber == rmaLineItem.ID);
+				else
+				{
+					int quantityToRefund = rmaLineItem.QuantityProcessed;
+                    var lineItem = orderWorksheet.LineItems.First(li => li.ID == rmaLineItem.ID);
+                    var taxLine = taxLines.FirstOrDefault(taxLine => taxLine.LineItemID == rmaLineItem.ID);
 
                     // Exempt products will have an exempt amount instead of a taxable amount.
-                    decimal lineItemBaseCost = orderWorksheetLineItem.exemptAmount > 0 ? orderWorksheetLineItem.exemptAmount : orderWorksheetLineItem.taxableAmount;
-                    decimal totalRefundIfReturningAllLineItems = (decimal)(lineItemBaseCost + orderWorksheetLineItem.tax);
-                    double taxableAmountPerSingleLineItem = (double)(lineItemBaseCost / orderWorksheetLineItem.quantity);
-                    double taxPerSingleLineItem = (double)(orderWorksheetLineItem.tax / orderWorksheetLineItem.quantity);
+                    decimal lineItemBaseCost = lineItem.LineTotal;
+                    decimal totalRefundIfReturningAllLineItems = lineItemBaseCost + taxLine.LineItemTotalTax ?? 0;
+                    double taxableAmountPerSingleLineItem = (double)(lineItemBaseCost / lineItem.Quantity);
+                    double taxPerSingleLineItem = (double)(taxLine.LineItemTotalTax / lineItem.Quantity);
                     double singleQuantityLineItemRefund = Math.Round(taxableAmountPerSingleLineItem + taxPerSingleLineItem, 2);
                     decimal expectedLineTotalRefund = (decimal)singleQuantityLineItemRefund * quantityToRefund;
 
@@ -560,10 +561,10 @@ namespace Headstart.API.Commands
 
         private bool ShouldIssueFullLineItemRefund(RMALineItem rmaLineItem, CosmosListPage<RMA> allRMAsOnThisOrder, HSOrderWorksheet orderWorksheet, string supplierID)
         {
-            TransactionLineModel orderWorksheetLineItem = orderWorksheet.OrderCalculateResponse.xp.TaxResponse.lines.FirstOrDefault(li => li.lineNumber == rmaLineItem.ID);
+            var lineItem = orderWorksheet.LineItems.First(li => li.ID == rmaLineItem.ID);
             var rmasFromThisSupplier = allRMAsOnThisOrder.Items.Where(r => r.SupplierID == supplierID);
             // If this is the only RMA for this line item and all requested RMA quantity are approved, and the quantity equals the original order quantity, issue a full refund (line item cost + tax).
-            if (rmaLineItem.Status == RMALineItemStatus.Approved && rmaLineItem.QuantityProcessed == orderWorksheetLineItem.quantity && rmasFromThisSupplier.Count() == 1)
+            if (rmaLineItem.Status == RMALineItemStatus.Approved && rmaLineItem.QuantityProcessed == lineItem.Quantity && rmasFromThisSupplier.Count() == 1)
             {
                 return true;
             }
@@ -709,10 +710,10 @@ namespace Headstart.API.Commands
             // Figure out what the buyer paid for shipping for this supplier on this order.
             if (shouldShippingBeCanceled)
             {
-                string selectedShipMethodID = worksheet.ShipEstimateResponse.ShipEstimates
-                    .FirstOrDefault(estimate => estimate.xp.SupplierID == rma.SupplierID)?.SelectedShipMethodID;
-                TransactionLineModel shippingLine = worksheet.OrderCalculateResponse.xp.TaxResponse.lines.FirstOrDefault(line => line.lineNumber == selectedShipMethodID);
-                decimal shippingCostToRefund = (decimal)(shippingLine.taxableAmount + shippingLine.tax + shippingLine.exemptAmount);
+                string shipEstimateID = worksheet.ShipEstimateResponse.ShipEstimates
+                    .FirstOrDefault(estimate => estimate.xp.SupplierID == rma.SupplierID)?.ID;
+                var shippingLine = worksheet.OrderCalculateResponse.xp.TaxCalculation.OrderLevelTaxes.First(tax => tax.ShipEstimateID == shipEstimateID);
+                decimal shippingCostToRefund = (decimal)(shippingLine.Taxable + shippingLine.Tax + shippingLine.Exempt);
                 rma.ShippingCredited += shippingCostToRefund;
                 return shippingCostToRefund;
             }
