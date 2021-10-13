@@ -2,6 +2,7 @@ using ordercloud.integrations.cardconnect;
 using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;
 using ordercloud.integrations.smartystreets;
+using ordercloud.integrations.vertex;
 
 namespace Headstart.Common
 {
@@ -19,6 +20,7 @@ namespace Headstart.Common
         public SendgridSettings SendgridSettings { get; set; } = new SendgridSettings();
         public ServiceBusSettings ServiceBusSettings { get; set; } = new ServiceBusSettings();
         public SmartyStreetsConfig SmartyStreetSettings { get; set; } = new SmartyStreetsConfig();
+        public VertexConfig VertexSettings { get; set; } = new VertexConfig();
         public StorageAccountSettings StorageAccountSettings { get; set; } = new StorageAccountSettings();
         public UI UI { get; set; }
         public ZohoSettings ZohoSettings { get; set; } = new ZohoSettings();
@@ -50,15 +52,19 @@ namespace Headstart.Common
         public int NoRatesFallbackTransitDays { get; set; }
         public int FreeShippingTransitDays { get; set; }
         public string USPSAccountId { get; set; }
-    }
+	}
 
-    public class EnvironmentSettings
-    {
-        public AppEnvironment Environment { get; set; }
-        public string BuildNumber { get; set; } // set during deploy
-        public string Commit { get; set; } // set during deploy
-        public string MiddlewareBaseUrl { get; set; }
-    }
+	public class EnvironmentSettings
+	{
+		public AppEnvironment Environment { get; set; }
+		public string BuildNumber { get; set; } // set during deploy
+		public string Commit { get; set; } // set during deploy
+		public string MiddlewareBaseUrl { get; set; }
+		public TaxProvider TaxProvider { get; set; }
+	}
+
+    public enum TaxProvider { Avalara, Vertex }
+
 
     public class FlurlSettings
     {

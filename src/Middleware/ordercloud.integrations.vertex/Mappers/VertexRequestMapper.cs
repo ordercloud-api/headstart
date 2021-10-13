@@ -1,6 +1,7 @@
 ﻿using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -11,10 +12,15 @@ namespace ordercloud.integrations.vertex
 		public static VertexCalculateTaxRequest ToVertexCalculateTaxRequest(this OrderWorksheet order, List<OrderPromotion> promosOnOrder, string companyCode, VertexSaleMessageType type)
 		{
 			var itemLines = order.LineItems.Select(ToVertexLineItem);
-			var shippingLines = order.ShipEstimateResponse.ShipEstimates.Select(ToVertexLineItem);
+			var shippingLines = order.ShipEstimateResponse.ShipEstimates.Select(se =>
+			{
+				var firstLi = order.LineItems.First(li => li.ID == se.ShipEstimateItems.First().LineItemID);
+				return ToVertexLineItem(se, firstLi.ShippingAddress);
+			});
 
 			return new VertexCalculateTaxRequest() 
 			{
+				postingDate = DateTime.Now.ToString("yyyy-MM-dd"),
 				saleMessageType = type,
 				transactionType = VertexTransactionType.SALE,
 				transactionId = order.Order.ID,
@@ -58,11 +64,15 @@ namespace ordercloud.integrations.vertex
 			};
 		}
 
-		public static VertexLineItem ToVertexLineItem(ShipEstimate shipEstimate)
+		public static VertexLineItem ToVertexLineItem(ShipEstimate shipEstimate, Address shipTo)
 		{
 			var selectedMethod = shipEstimate.ShipMethods.First(m => m.ID == shipEstimate.SelectedShipMethodID);
 			return new VertexLineItem()
 			{
+				customer = new VertexCustomer()
+				{
+					destination = shipTo.ToVertexLocation(),
+				},
 				product = new VertexProduct()
 				{
 					productClass = "shipping_code",
@@ -90,6 +100,29 @@ namespace ordercloud.integrations.vertex
 				postalCode = address.Zip,
 				country = address.Country
 			};
+		}
+
+		// OrderCloud stores 2-letter country codes and Vertex needs 3-letter codes.
+		public static string ToCountryCode3Letters(this string countryCode2Letters)
+		{
+			if (countryCode2Letters.Length != 2)
+			{
+				throw new ArgumentException("country must be two letters.");
+			}
+
+			countryCode2Letters = countryCode2Letters.ToUpper();
+
+			CultureInfo[] cultures = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
+			foreach (CultureInfo culture in cultures)
+			{
+				RegionInfo region = new RegionInfo(culture.LCID);
+				if (region.TwoLetterISORegionName.ToUpper() == countryCode2Letters)
+				{
+					return region.ThreeLetterISORegionName;
+				}
+			}
+
+			return null;
 		}
 
 	}

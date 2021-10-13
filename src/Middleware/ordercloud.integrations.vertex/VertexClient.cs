@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using OrderCloud.Catalyst;
 
 namespace ordercloud.integrations.vertex
 {
@@ -22,18 +23,34 @@ namespace ordercloud.integrations.vertex
 
 		public async Task<VertexCalculateTaxResponse> CalculateTax(VertexCalculateTaxRequest request)
 		{
+			return await MakeRequest<VertexCalculateTaxResponse>(() => 
+				$"{ApiUrl}/vertex-restapi/v1/sale"
+					.WithOAuthBearerToken(_token.access_token)
+					.AllowAnyHttpStatus()
+					.PostJsonAsync(request)
+			);
+		}
+
+		private async Task<T> MakeRequest<T>(Func<Task<IFlurlResponse>> request)
+		{
 			if (_token?.access_token == null)
 			{
 				_token = await GetToken(_config);
 			}
+			var response = await (await request()).GetJsonAsync<VertexResponse<T>>();
+			if (response.errors.Exists(e => e.detail == "invalid access token"))
+			{
+				// refresh the token
+				_token = await GetToken(_config);
+				// try the request again
+				response = await (await request()).GetJsonAsync<VertexResponse<T>>();
+			}
 
-			var response = await $"{ApiUrl}/vertex-restapi/v1/sale"
-				.WithOAuthBearerToken(_token.access_token)
-				.PostJsonAsync(request);
+			// Catch and throw any api errors 
+			Require.That(response.errors.Count == 0, new VertexException(response.errors));
 
-			var taxCalculation = await response.GetJsonAsync<VertexCalculateTaxResponse>();
-			return taxCalculation;
-		} 
+			return response.data;
+		}
 
 		private async Task<VertexTokenResponse> GetToken(VertexConfig config)
 		{
