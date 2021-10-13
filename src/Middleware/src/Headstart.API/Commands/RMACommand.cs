@@ -507,8 +507,8 @@ namespace Headstart.API.Commands
                     var taxLine = taxLines.FirstOrDefault(taxLine => taxLine.LineItemID == rmaLineItem.ID);
 
                     // Exempt products will have an exempt amount instead of a taxable amount.
-                    decimal lineItemBaseCost = lineItem.LineTotal;
-                    decimal totalRefundIfReturningAllLineItems = lineItemBaseCost + taxLine.LineItemTotalTax ?? 0;
+                    decimal lineItemBaseCost = lineItem.xp.LineTotalWithProportionalDiscounts;
+                    decimal totalRefundIfReturningAllLineItems = lineItemBaseCost + taxLine.LineItemTotalTax;
                     double taxableAmountPerSingleLineItem = (double)(lineItemBaseCost / lineItem.Quantity);
                     double taxPerSingleLineItem = (double)(taxLine.LineItemTotalTax / lineItem.Quantity);
                     double singleQuantityLineItemRefund = Math.Round(taxableAmountPerSingleLineItem + taxPerSingleLineItem, 2);

@@ -21,7 +21,7 @@ namespace Headstart.Jobs.Helpers
 
             var shippingTax = shipEstimate != null && orderWorksheet?.OrderCalculateResponse?.xp?.TaxCalculation?.OrderLevelTaxes?.FirstOrDefault(line => line.ShipEstimateID == shipEstimate.ID) != null
                 ? orderWorksheet.OrderCalculateResponse.xp.TaxCalculation.OrderLevelTaxes.FirstOrDefault(line => line.ShipEstimateID == shipEstimate.ID).Tax 
-                : null;
+                : 0;
 
             var supplierName = ((IDictionary<string, object>)shipmentItem.Product.xp.Facets).ContainsKey("supplier") ? shipmentItem.Product.xp.Facets?.supplier[0] : null;
 
@@ -38,8 +38,8 @@ namespace Headstart.Jobs.Helpers
                 ShipRateID = shipEstimate != null ? shipEstimate.SelectedShipMethodID : null,
                 SupplierShippingCost = shipment.Cost,
                 BuyerShippingCost = shipMethod != null ? Math.Round(shipMethod.Cost, 2): (decimal?)null,
-                BuyerShippingTax = shippingTax != null ? shippingTax : null,
-                BuyerShippingTotal = shipMethod != null ? Math.Round(shipMethod.Cost, 2) + (shippingTax ?? 0M) : (decimal?)null,
+                BuyerShippingTax = shippingTax,
+                BuyerShippingTotal = shipMethod != null ? Math.Round(shipMethod.Cost, 2) + shippingTax : (decimal?)null,
                 ShippingCostDifference = shipMethod != null ? Math.Round(shipMethod.Cost, 2) - (shipment.Cost ?? 0M) : (decimal?)null,
                 ProductID = lineItem.ProductID,
                 ProductName = lineItem.Product.Name,

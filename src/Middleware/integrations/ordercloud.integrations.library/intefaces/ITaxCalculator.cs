@@ -39,14 +39,6 @@ namespace ordercloud.integrations.library
 		/// </summary>
 		public decimal TotalTax { get; set; }
 		/// <summary>
-		/// The amount of the total sale on which tax applies
-		/// </summary>
-		public decimal? TotalTaxable { get; set; }
-		/// <summary>
-		/// The amount of the total sale on which tax does not apply
-		/// </summary>
-		public decimal? TotalExempt { get; set; }
-		/// <summary>
 		/// Tax details broken down by line item
 		/// </summary>
 		public List<LineItemTaxCalculation> LineItems { get; set; } = new List<LineItemTaxCalculation>();
@@ -68,7 +60,7 @@ namespace ordercloud.integrations.library
 		/// <summary>
 		/// The sum of taxes that apply to this line item
 		/// </summary>
-		public decimal? LineItemTotalTax { get; set; }
+		public decimal LineItemTotalTax { get; set; }
 		/// <summary>
 		/// Taxes that apply specifically to this line item
 		/// </summary>
@@ -83,15 +75,15 @@ namespace ordercloud.integrations.library
 		/// <summary>
 		/// The tax to be paid by the purchaser
 		/// </summary>
-		public decimal? Tax { get; set; }
+		public decimal Tax { get; set; }
 		/// <summary>
 		/// The amount of the line item cost on which tax applies
 		/// </summary>
-		public decimal? Taxable { get; set; }
+		public decimal Taxable { get; set; }
 		/// <summary>
 		/// The amount of the line item cost on which tax does not apply
 		/// </summary>
-		public decimal? Exempt { get; set; }
+		public decimal Exempt { get; set; }
 		/// <summary>
 		/// A description of the tax.
 		/// </summary>

@@ -6,9 +6,6 @@ namespace ordercloud.integrations.vertex
 {
 	public class VertexLocation
 	{
-		public string locationCode { get; set; }
-		public int taxAreaId { get; set; }
-		public VertexLocationCustomsStatus locationCustomsStatus { get; set; }
 		public string streetAddress1 { get; set; }
 		public string streetAddress2 { get; set; }
 		public string city { get; set; }
