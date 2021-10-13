@@ -15,12 +15,16 @@ A transaction is commited to vertex asynchronously directly following order subm
 - Set up the headstart application. This is process is throughly documented [here](https://github.com/ordercloud-api/headstart#initial-setup).
 - Sign up for vertex and login to the [Vertex Portal](https://portal.vertexsmb.com/Home) to get the credentials required in the next step.  
 - Set environment variables required for Vertex authentication. See the vertex [authentication guide](https://developer.vertexcloud.com/access-token/). If you follow the headstart set up process env vars are stored in an Azure Config.   
-	VertexSettings:CompanyName
-	VertexSettings:ClientID
-	VertexSettings:ClientSecret
-	VertexSettings:Username    
-	VertexSettings:Password
+```
+VertexSettings:CompanyName
+VertexSettings:ClientID
+VertexSettings:ClientSecret
+VertexSettings:Username    
+VertexSettings:Password
+```
 - Set an environment variable to indicate you want to use Vertex for tax calculation.
-	EnvironmentSettings:TaxProvider=Vertex
+```
+EnvironmentSettings:TaxProvider=Vertex
+```
 - Redeploy your middleware and on the storefront, go through checkout pausing before entering payment. You will see tax calculated by Vertex!
 
