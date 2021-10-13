@@ -45,7 +45,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "easypost.tests", "easypost.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Headstart.Jobs", "src\Headstart.Jobs\Headstart.Jobs.csproj", "{93F86722-0DA4-40E6-88F8-FB6C6EE5A27A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ordercloud.integrations.vertex", "ordercloud.integrations.vertex\ordercloud.integrations.vertex.csproj", "{FF77C6FA-058A-45E4-9D3D-A6D185892AEC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ordercloud.integrations.vertex", "integrations\ordercloud.integrations.vertex\ordercloud.integrations.vertex.csproj", "{FF77C6FA-058A-45E4-9D3D-A6D185892AEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

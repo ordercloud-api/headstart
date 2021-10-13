@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\integrations\ordercloud.integrations.library\ordercloud.integrations.library.csproj" />
+    <ProjectReference Include="..\ordercloud.integrations.library\ordercloud.integrations.library.csproj" />
   </ItemGroup>
 
 </Project>

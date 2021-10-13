@@ -62,6 +62,7 @@ This solution relies on various third-party services and credentials for those s
 4. [SmartyStreets](https://smartystreets.com/pricing) - Address validation
 5. [Sendgrid](https://signup.sendgrid.com/) - Transactional emails **(Optional but emails won't work until set up)**
 6. [Moosend](https://moosend.com/) - Automated email campaigns  **(Optional. AKA Sitecore Send)**
+7. [Vertex](./src/Middleware/integrations/ordercloud.integrations.vertex) - Tax calculation **(Optional alternative to Avalara. Switch with EnvironmentSettings:TaxProvider)**
 7. [Zoho](https://www.zoho.com/signup.html) - ERP **(Optional)**
 
 ### Provisioning Azure Resources
