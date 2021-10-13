@@ -17,8 +17,8 @@ Both the buyer and the seller application rely on a shared SDK that lives in thi
 3. Fill out the [test app configuration](src/assets/appConfigs/defaultbuyer-test.json)
 4. Run `npm run start` for a dev server. The app will automatically reload if you change any of the source files.
 
-You can modify your local deployment by changing values in the [local.environment.ts](./src/environments/environment.local.ts) file to target a different buyer or use the locally hosted middleware API
+You can modify your local deployment by changing values in the [environment.local.ts](./src/environments/environment.local.ts) file to target a different buyer or use the locally hosted middleware API
 
 ## Considerations
 
-If your middleware API isn't yet hosted you will need to update the [local.environment.ts](./src/environments/environment.local.ts) to target the locally hosted middleware API. Set `useLocalMiddleware` to true and ensure `localMiddlewareURL` is the path your server is listening on.
+If your middleware API isn't yet hosted you will need to update the [environment.local.ts](./src/environments/environment.local.ts) to target the locally hosted middleware API. Set `useLocalMiddleware` to true and ensure `localMiddlewareURL` is the path your server is listening on.
