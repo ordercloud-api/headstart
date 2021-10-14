@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ordercloud.integrations.library\ordercloud.integrations.library.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="TaxJar" Version="3.3.1" />
+  </ItemGroup>
+
+</Project>
