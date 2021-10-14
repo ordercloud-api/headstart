@@ -2,6 +2,7 @@ using ordercloud.integrations.cardconnect;
 using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;
 using ordercloud.integrations.smartystreets;
+using ordercloud.integrations.taxjar;
 using ordercloud.integrations.vertex;
 
 namespace Headstart.Common
@@ -21,6 +22,7 @@ namespace Headstart.Common
         public ServiceBusSettings ServiceBusSettings { get; set; } = new ServiceBusSettings();
         public SmartyStreetsConfig SmartyStreetSettings { get; set; } = new SmartyStreetsConfig();
         public VertexConfig VertexSettings { get; set; } = new VertexConfig();
+        public TaxJarConfig TaxJarSettings { get; set; } = new TaxJarConfig();
         public StorageAccountSettings StorageAccountSettings { get; set; } = new StorageAccountSettings();
         public UI UI { get; set; }
         public ZohoSettings ZohoSettings { get; set; } = new ZohoSettings();
@@ -63,7 +65,7 @@ namespace Headstart.Common
 		public TaxProvider TaxProvider { get; set; }
 	}
 
-    public enum TaxProvider { Avalara, Vertex }
+    public enum TaxProvider { Avalara, Vertex, Taxjar }
 
 
     public class FlurlSettings

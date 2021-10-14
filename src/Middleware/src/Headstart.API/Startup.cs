@@ -40,6 +40,7 @@ using Newtonsoft.Json.Converters;
 using ordercloud.integrations.library.cosmos_repo;
 using ordercloud.integrations.vertex;
 using Newtonsoft.Json;
+using ordercloud.integrations.taxjar;
 
 namespace Headstart.API
 {
@@ -195,6 +196,7 @@ namespace Headstart.API
 					return _settings.EnvironmentSettings.TaxProvider switch
 					{
 						TaxProvider.Vertex => new VertexCommand(_settings.VertexSettings),
+                        TaxProvider.Taxjar => new TaxJarCommand(_settings.TaxJarSettings),
                         _ => avalaraCommand, // avalara is default
 					};
 				})
