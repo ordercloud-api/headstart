@@ -36,7 +36,7 @@ namespace Headstart.Common.Controllers
 		}
 
 		[Route("taxcalculate/{orderID}")]
-		[HttpPost, OrderCloudUserAuth()]
+		[HttpPost, OrderCloudUserAuth(ApiRole.IntegrationEventAdmin)]
 		public async Task<OrderCalculateResponse> CalculateOrder(string orderID)
 		{
 			var orderCalculationResponse = await _checkoutIntegrationCommand.CalculateOrder(orderID, UserContext);
