@@ -11,4 +11,6 @@ We hope to make these supported Ordercloud integrations. Meaning, they can be us
 - SendGrid ([Docs](https://sendgrid.com/docs/api-reference/)) (Todo - separate project)
 - SmartyStreets ([Docs](https://smartystreets.com/products/apis/us-street-api))
 - Vertex ([Docs](https://developer.vertexcloud.com/api/docs/#section/Authentication)) (Todo - separate project)
+- TaxJar ([Docs](https://developer.vertexcloud.com/api/docs/#section/Authentication)) (Todo - separate project)
+
 - Zoho ([Docs](https://www.zoho.com/crm/developer/docs/api/modules-api.html)) (Todo - separate project)
