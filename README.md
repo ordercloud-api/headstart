@@ -169,74 +169,87 @@ Overview of what we will accomplish
 
 #### Step 1: Create Supplier(s)
 
-On the OrderCloud platform, Suppliers are an organization type used in indirect supply chain scenarios.
+On the OrderCloud platform, suppliers are an organization type used in indirect supply chain scenarios.
 
-In the HeadStart application, Suppliers are responsible for creating products so we will first need to create suppliers.
+In the HeadStart application, suppliers are responsible for creating products so we will first need to create suppliers.
 
-1. Open your admin application and sign in with your initial admin user credentials
-2. Navigate to the "Suppliers" tab
-3. Click "Create New supplier"
-4. Fill in the required details and create a new Supplier
-5. Within that supplier click "Supplier Addresses"
-6. Click "Create New Supplier Address"
-   1. Fill in the details, and create a new address. **Use an actual address or it will fail address validation**
-7. Go back to the supplier detail page by using the breadcrumbs
-8. Click "Users"
-   1. Note that there is already a user here with an ID that starts with `dev_` this user exists so that the middleware can act on behalf of it if needed to act as that supplier. **Do not delete this user**
-9. Click "Create New User"
-   1. and fill out the details
-   2. Make sure to set "Active" true
+In the admin (seller) application:
+1. Log in with your initial admin user credentials
+2. From the navigation bar, click "Suppliers" > "All Suppliers"
+3. Click "Create New Supplier"
+   1. Fill in the required details and create the supplier
+4. From the supplier details page, click "Supplier Addresses"
+5. Click "Create New Supplier Address"
+   1. Fill in the details and create a new address. **Use an actual address or it will fail address validation**
+6. Navigate back to the supplier detail page via the breadcrumbs (i.e. Suppliers > _\<supplier id>_)
+7. Click "Users" (*Note: There is already a user here with an ID that starts with `dev_` this user exists so that the middleware can act on behalf of it if needed to act as that supplier.* **Do not delete this user**)
+8. Click "Create New User"
+   1. Fill in the details
+   2. Make sure "Active" is set to true
    3. Assign all permissions to the user
-   4. If you have [emails set up](#sendgrid-email-configuration) you can use the "forgot password" feature to set a password for the supplier user otherwise set the password for that user in the portal
+   4. If you have [emails set up](#sendgrid-email-configuration) you can use the "forgot password" feature to set a password for the supplier user, otherwise set the password for that user in the portal
 
 #### Step 2: Create Catalog(s)
 
-10. Next click on "Buyers"
-11. Click "Default HeadStart Buyer"
-12. Click "Catalogs"
-13. Click "Create New Catalog"
-    1.  this will be the container that holds our products
-14. Go back to the buyer detail page by using the breadcrumbs
-15. Click "Buyer Groups"
-16. Click "Create New Buyer Group"
-    1.  Fill in the details and use a real address so it passes valiation
-    2.  At the bottom assign our previously created Catalog to that buyer group
-17. Go back to the buyer detail page by using the breadcrumbs
-18. Click "Users"
-19. Click "Create a New User"
-    1.  Make sure Active is set to true
-    2.  If you have [emails set up](#sendgrid-email-configuration) you can use the "forgot password" feature to set a password for the buyer user on your buyer application
-20. At this point we've done all we can as a seller user. We now need to log in to the admin application as a supplier user to create our product
-21. Log out of the seller application
-22. Log in as your previously created supplier user
+In the admin (seller) application:
+1.  From the navigation bar, click on "Buyers" > "All Buyers"
+2.  Click the "Default HeadStart Buyer" buyer
+3.  Click "Catalogs"
+4.  Click "Create New Catalog" (_this will be the container that holds our products_)
+    1. Enter a catalog name and click "Create"
+5.  Navigate back to the buyer detail page via the breadcrumbs (i.e. Buyers > _\<buyer id>_)
+6.  Click "Buyer Groups"
+7.  Click "Create New Buyer Group"
+    1. Fill in the details. **Use an actual address or it will fail address validation**
+    2. Under "Catalogs", set "assigned"to true for the catalog
+8.  Navigate back to the buyer detail page via the breadcrumbs (i.e. Buyers > _\<buyer id>_)
+9.  Click "Users"
+10. Click "Create New User"
+    1. Make sure "Active" is set to true
+    2. Set the "Home Country" as the country defined for the buyer group address
+    3. Under "Locations", set "assigned" to true for the buyer group
+    4. If you have [emails set up](#sendgrid-email-configuration) you can use the "forgot password" feature to set a password for the buyer user on your buyer application, otherwise set the password for that user in the portal
 
 #### Step 3: Create Product(s)
 
-23. Click on "Products"
-24. Click "Create New Product" - select "Standard Product"
-    1.  Enter the required fields - Required fields are marked with a red asterisk
-    2.  Make sure you set your product to Active
-    3.  Click Create to save the product
-25. Now that the product is created our seller needs to define the visibility
-26. Log out of seller application
-27. Log in as your initial admin user
-28. Click on "Products"
-29. Click on the previously created product
-30. Click the "Buyer Visibility" tab
-31. Click "Edit" on "Default Headstart Buyer"
-32. Click the toggle to make the product visible to our previously created catalog
-33. Click "Save"
+At this point we've done all we can as a seller user. We now need to log in to the admin application as a supplier user to create our product.
 
-#### Step 4: Review Your Buyer App Experience
+In the admin (seller) application:
+1.  Log out of the initial admin user, if applicable
+2.  Log in as the supplier user from [Step 1: Create Supplier(s)](#step-1-create-suppliers)
+3.  Click on "Products" > "All Products"
+4.  Click "Create New Product" > "Standard Product"
+    1. Enter the required fields (*required fields are marked with a red asterisk*)
+    2. Make sure "Active" is set to true
+    3. Click "Create" to save the product
 
-34. Go to your buyer application
-35. Sign in as your buyer user
-36. Click on "Products" or shop and navigate through the category hierarchy
-37. You should see your product in the list!
-38. You can then add your product to your cart in 2 ways:
-    1.  Click into the product and then click "Add to Cart" on the product detail page
-    2.  Click the add to cart button on the product grid page for any product you want added to your cart
-39. Navigate to your cart and you should see the product display, VOILA!
+Now that the product is created, our seller needs to define the visibility.
+
+5.  Log out of the supplier user
+6.  Log in as the initial admin user
+7.  Click on "Products" > "All Products"
+8.  Click on the previously created product
+9.  Click the "Buyer Visibility" tab
+10. Click "Edit" on "Default Headstart Buyer"
+    1. Set "visible" to true for the previously created catalog
+    2. Click "Save"
+
+#### Step 4: Review The Buyer App Experience
+
+In the buyer application:
+
+1.  Log in as the buyer user from [Step 2: Create Catalog(s)](#step-2-create-catalogs)
+2.  Products can be viewed in the following ways:
+    1.  From the navigation bar, click "Products" (*returns all products*)
+    2.  From the search bar, type in a valid search term that will return products (*returns all products, filtered by search term*)
+    3.  Click the "SHOP" (category) navigation, then click a category from the category hierarchy. (*returns all products under the selected category*) (*Note: In [Step 2: Create Catalog(s)](#step-2-create-catalogs), no categories were created, therefore the category navigation menu may appear empty at this time*)
+3.  Add the product to the cart in the following ways:
+    1.  From the product details page: Click the product tile to navigate to the product details page, then click the "Add to Cart" button
+    2.  From the product results page: Click the "Add to Cart" button in the product tile of the product results page (*only applicable for products without variations*)
+4.  Products in the cart can be viewed in the following ways:
+    1.  Highlight the cart icon from the top menu, which will display the mini cart
+    2.  Click the "Edit Cart" link from the mini cart
+    3.  Click the cart icon from the top menu, which will display the cart page with additional functionality for managing the cart
 
 Congrats! Hopefully you didn't get any errors and understand a little bit more about how everything is connected. If you did encounter errors please capture the details and submit an issue on Github.
 
