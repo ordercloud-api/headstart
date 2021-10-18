@@ -19,7 +19,7 @@ namespace ordercloud.integrations.taxjar
 			return new OrderTaxCalculation()
 			{
 				OrderID = responses.First().request.TransactionId.Split('|')[1],
-				ExternalTransactionID = null, // TODO - Cant find a way for Vertex to calculate an ID
+				ExternalTransactionID = null, // There are multiple external transactionIDs 
 				TotalTax = responses.Select(r => r.response.AmountToCollect).Sum(),
 				LineItems = itemLines.Select(ToItemTaxDetails).ToList(),
 				OrderLevelTaxes = shippingLines.SelectMany(ToShippingTaxDetails).ToList()
@@ -57,7 +57,7 @@ namespace ordercloud.integrations.taxjar
 				{
 					Tax = breakdown.CountyAmount,
 					Taxable = breakdown.CountyTaxableAmount,
-					Exempt = 0, // TODO
+					Exempt = 0,
 					JurisdictionLevel = "County",
 					JurisdictionValue = taxResponse.Jurisdictions.County,
 					TaxDescription = $"{taxResponse.Jurisdictions.County} County tax",
@@ -70,7 +70,7 @@ namespace ordercloud.integrations.taxjar
 				{
 					Tax = breakdown.CityAmount,
 					Taxable = breakdown.CityTaxableAmount,
-					Exempt = 0, // TODO
+					Exempt = 0,
 					JurisdictionLevel = "City",
 					JurisdictionValue = taxResponse.Jurisdictions.City,
 					TaxDescription = $"{taxResponse.Jurisdictions.City} City tax",
@@ -83,7 +83,7 @@ namespace ordercloud.integrations.taxjar
 				{
 					Tax = breakdown.StateAmount,
 					Taxable = breakdown.StateTaxableAmount,
-					Exempt = 0, // TODO
+					Exempt = 0,
 					JurisdictionLevel = "State",
 					JurisdictionValue = taxResponse.Jurisdictions.State,
 					TaxDescription = $"{taxResponse.Jurisdictions.State} State tax",
@@ -96,7 +96,7 @@ namespace ordercloud.integrations.taxjar
 				{
 					Tax = breakdown.SpecialDistrictAmount,
 					Taxable = breakdown.SpecialDistrictTaxableAmount,
-					Exempt = 0, // TODO
+					Exempt = 0,
 					JurisdictionLevel = "Special District",
 					JurisdictionValue = "Special District",
 					TaxDescription = "Special District tax",
