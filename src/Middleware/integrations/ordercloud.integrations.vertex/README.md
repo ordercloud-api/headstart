@@ -1,7 +1,7 @@
 ﻿# Vertex Integration For OrderCloud Headstart
 
 ## Vertex Basics 
-Vertex Cloud is a cloud-based sales and use tax solution that is built on industry-leading Vertex software. Vertex Cloud integrates with leading e-commerce platforms and mid-market ERP systems. Customers can use Vertex Cloud to manage complex sales and use tax across multiple jurisdictions. Vertex Cloud provides tax calculations and signature-ready PDF returns in one comprehensive solution.
+Vertex Cloud is a cloud-based **sales and use tax solution** that is built on industry-leading Vertex software. Vertex Cloud integrates with leading e-commerce platforms and mid-market ERP systems. Customers can use Vertex Cloud to manage complex sales and use tax across multiple jurisdictions. Vertex Cloud provides tax calculations and signature-ready PDF returns in one comprehensive solution.
 
 ## Scope of this integration
 This integration calculates tax on an OrderCloud Order using the Vertex Cloud [Tax Calculate for Sellers API endpoint](https://developer.vertexcloud.com/api/docs/#operation/Sale_Post). It is part of the open source Headstart project, which provides a complete, opinionated OrderCloud solution. It conforms to the [ITaxCalculator](../ordercloud.integrations.library/interfaces/ITaxCalculator.cs) interface, which exposes two functionalites: a tax estimate and a commited transaction. 

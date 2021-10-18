@@ -75,7 +75,7 @@ namespace ordercloud.integrations.vertex
 				product = new VertexProduct()
 				{
 					productClass = "shipping_code",
-					value = "LineItem for the cost of shipping"
+					value = selectedMethod.Name
 				},
 				quantity = new VertexMeasure()
 				{
@@ -83,8 +83,6 @@ namespace ordercloud.integrations.vertex
 				},
 				unitPrice = (double) selectedMethod.Cost,
 				lineItemId = shipEstimate.ID,
-				// TODO
-				// deliveryTerm = VertexDelveryTerm.FOB 
 			};
 		}
 

@@ -14,7 +14,6 @@ namespace ordercloud.integrations.vertex
 		/// <summary>
 		/// A standardized, unique code for the product or service.
 		/// </summary>
-		//public VertexComodityCode commodityCode { get; set; }
 		public VertexMeasure quantity { get; set; }
 		public double unitPrice { get; set; }
 		public double extendedPrice { get; set; }
