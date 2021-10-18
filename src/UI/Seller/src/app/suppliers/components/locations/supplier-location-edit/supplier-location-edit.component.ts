@@ -10,8 +10,7 @@ import { Address, ListPage } from '@ordercloud/angular-sdk'
 import { ActivatedRoute } from '@angular/router'
 import { GeographyConfig } from '@app-seller/shared/models/supported-countries.constant'
 import {
-  ValidateCAZip,
-  ValidateUSZip,
+  ValidateZip,
   ValidatePhone,
 } from '@app-seller/validators/validators'
 import { takeWhile } from 'rxjs/operators'
@@ -98,7 +97,7 @@ export class SupplierLocationEditComponent implements OnChanges {
       State: new FormControl(supplierLocation.State, Validators.required),
       Zip: new FormControl({ value: supplierLocation.Zip, disabled: true }, [
         Validators.required,
-        ValidateUSZip || ValidateCAZip,
+        ValidateZip(supplierLocation.Zip),
       ]),
       Country: new FormControl(supplierLocation.Country, Validators.required),
       Phone: new FormControl(supplierLocation.Phone, ValidatePhone),
@@ -123,11 +122,7 @@ export class SupplierLocationEditComponent implements OnChanges {
         this.flag = this.getFlagForCountry(currency)
         this.countryHasBeenSelected = code !== ''
         if (code !== null) zipControl.enable()
-        if (code === 'CA') {
-          zipControl.setValidators(ValidateCAZip)
-        } else {
-          zipControl.setValidators(ValidateUSZip)
-        }
+        zipControl.setValidators(ValidateZip(code));
       })
   }
 
