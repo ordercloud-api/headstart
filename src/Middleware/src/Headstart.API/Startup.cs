@@ -38,6 +38,8 @@ using Polly.Contrib.WaitAndRetry;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Converters;
 using ordercloud.integrations.library.cosmos_repo;
+using ordercloud.integrations.vertex;
+using Newtonsoft.Json;
 
 namespace Headstart.API
 {
@@ -126,10 +128,9 @@ namespace Headstart.API
                 Roles = new[] { ApiRole.FullAccess }
             });
             var avalaraCommand = new AvalaraCommand(
-                    orderCloudClient,
-                    avalaraConfig,
-                    new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(avalaraConfig.BaseApiUrl)
-                   ).WithSecurity(_settings.AvalaraSettings.AccountID, _settings.AvalaraSettings.LicenseKey), _settings.EnvironmentSettings.Environment.ToString());
+                                avalaraConfig,
+                                new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(avalaraConfig.BaseApiUrl)
+                            ).WithSecurity(_settings.AvalaraSettings.AccountID, _settings.AvalaraSettings.LicenseKey), _settings.EnvironmentSettings.Environment.ToString());
 
             services.AddMvc(o =>
              {
@@ -189,7 +190,14 @@ namespace Headstart.API
                 .AddSingleton<IAssetClient>(provider => new AssetClient( new OrderCloudIntegrationsBlobService(assetConfig), _settings))
                 .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand( new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
                 .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand(new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
-                .AddSingleton<ITaxCalculator>(avalaraCommand)
+                .AddSingleton<ITaxCalculator>(provider =>
+                {
+					return _settings.EnvironmentSettings.TaxProvider switch
+					{
+						TaxProvider.Vertex => new VertexCommand(_settings.VertexSettings),
+                        _ => avalaraCommand, // avalara is default
+					};
+				})
                 .AddSingleton<IAvalaraCommand>(avalaraCommand)
                 .AddSingleton<IEasyPostShippingService>(x => new EasyPostShippingService(new EasyPostConfig() { APIKey = _settings.EasyPostSettings.APIKey }))
                 .AddSingleton<ISmartyStreetsService>(x => new SmartyStreetsService(_settings.SmartyStreetSettings, smartyStreetsUsClient))
@@ -208,19 +216,9 @@ namespace Headstart.API
                     InstrumentationKey = _settings.ApplicationInsightsSettings.InstrumentationKey
                 });
 
-
             ServicePointManager.DefaultConnectionLimit = int.MaxValue;
-            FlurlHttp.Configure(settings => settings.Timeout = TimeSpan.FromSeconds(_settings.FlurlSettings.TimeoutInSeconds == 0 ? 30 : _settings.FlurlSettings.TimeoutInSeconds));
 
-            // This adds retry logic for any api call that fails with a transient error (server errors, timeouts, or rate limiting requests)
-            // Will retry up to 3 times using exponential backoff and jitter, a mean of 3 seconds wait time in between retries
-            // https://github.com/App-vNext/Polly/wiki/Retry-with-jitter#more-complex-jitter
-            var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(3), retryCount: 3);
-            var policy = HttpPolicyExtensions
-                            .HandleTransientHttpError()
-                            .OrResult(response => response.StatusCode == HttpStatusCode.TooManyRequests)
-                            .WaitAndRetryAsync(delay);
-            FlurlHttp.Configure(settings => settings.HttpClientFactory = new PollyFactory(policy));
+            ConfigureFlurl();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -240,6 +238,30 @@ namespace Headstart.API
                 c.RoutePrefix = string.Empty;
             });
 
+        }
+
+        public void ConfigureFlurl()
+        {
+            // This adds retry logic for any api call that fails with a transient error (server errors, timeouts, or rate limiting requests)
+            // Will retry up to 3 times using exponential backoff and jitter, a mean of 3 seconds wait time in between retries
+            // https://github.com/App-vNext/Polly/wiki/Retry-with-jitter#more-complex-jitter
+            var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(3), retryCount: 3);
+            var policy = HttpPolicyExtensions
+                            .HandleTransientHttpError()
+                            .OrResult(response => response.StatusCode == HttpStatusCode.TooManyRequests)
+                            .WaitAndRetryAsync(delay);
+            // Flurl setting for JSON serialization
+            var jsonSettings = new JsonSerializerSettings();
+            jsonSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+            // Flurl setting for request timeout
+            var timeout = TimeSpan.FromSeconds(_settings.FlurlSettings.TimeoutInSeconds == 0 ? 30 : _settings.FlurlSettings.TimeoutInSeconds);
+
+            FlurlHttp.Configure(settings =>
+            {
+                settings.HttpClientFactory = new PollyFactory(policy);
+                settings.JsonSerializer = new NewtonsoftJsonSerializer(jsonSettings);
+                settings.Timeout = timeout;
+            });
         }
     }
 }

@@ -21,7 +21,7 @@ namespace avalara.tests
                 LicenseKey = null,
                 BaseApiUrl = "http://www.supersweeturi.com"
             };
-            _command = new AvalaraCommand(default, avalaraConfig, new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(avalaraConfig.BaseApiUrl)), AppEnvironment.Test.ToString());
+            _command = new AvalaraCommand(avalaraConfig, new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(avalaraConfig.BaseApiUrl)), AppEnvironment.Test.ToString());
         }
 
         [Test]

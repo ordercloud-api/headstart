@@ -18,8 +18,6 @@ namespace ordercloud.integrations.avalara
 				OrderID = avalaraTransaction.purchaseOrderNo,
 				ExternalTransactionID = avalaraTransaction.code,
 				TotalTax = avalaraTransaction.totalTax ?? 0,
-				TotalTaxable = avalaraTransaction.totalTaxable ?? 0,
-				TotalExempt = avalaraTransaction.totalExempt ?? 0,
 				LineItems = itemLines.Select(ToItemTaxDetails).ToList(),
 				OrderLevelTaxes = shippingLines.SelectMany(ToShippingTaxDetails).ToList()
 			};
@@ -35,7 +33,7 @@ namespace ordercloud.integrations.avalara
 			return new LineItemTaxCalculation()
 			{
 				LineItemID = transactionLineModel.lineNumber,
-				LineItemTotalTax = transactionLineModel.taxCalculated,
+				LineItemTotalTax = transactionLineModel.taxCalculated ?? 0,
 				LineItemLevelTaxes = transactionLineModel.details?.Select(detail => detail.ToTaxDetails(null)).ToList() ?? new List<TaxDetails>()
 			};
 		}
@@ -53,7 +51,5 @@ namespace ordercloud.integrations.avalara
 				ShipEstimateID = shipEstimateID
 			};
 		}
-
-
 	}
 }

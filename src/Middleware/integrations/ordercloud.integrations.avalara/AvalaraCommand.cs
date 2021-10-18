@@ -32,7 +32,6 @@ namespace ordercloud.integrations.avalara
 
 	public class AvalaraCommand : IAvalaraCommand, ITaxCalculator
 	{
-		private readonly IOrderCloudClient _oc;
 		private readonly AvalaraConfig _settings;
 		private readonly AvaTaxClient _avaTax;
 		private readonly string _companyCode;
@@ -40,9 +39,8 @@ namespace ordercloud.integrations.avalara
 		private bool noAccountCredentials;
 		private AppEnvironment appEnvironment;
 
-		public AvalaraCommand(IOrderCloudClient oc, AvalaraConfig settings, AvaTaxClient client, string environment)
+		public AvalaraCommand(AvalaraConfig settings, AvaTaxClient client, string environment)
 		{
-			_oc = oc;
 			_settings = settings;
 			appEnvironment = (AppEnvironment)Enum.Parse(typeof(AppEnvironment), environment);
 

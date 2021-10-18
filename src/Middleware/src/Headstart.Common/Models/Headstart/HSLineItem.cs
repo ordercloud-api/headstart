@@ -14,7 +14,7 @@ namespace Headstart.Models.Headstart
     public class LineItemXp
     {
         /// <summary>
-        /// Promotion discounts are distributed evenly accross line items. Proportional distribution is required for accurate partial returns. 
+        /// LineItem.LineTotal value if it was calculated by applying order-level promotions proportionally instead of evenly.
         /// </summary>
         public decimal LineTotalWithProportionalDiscounts { get; set; }
         public Dictionary<LineItemStatus, int> StatusByQuantity { get; set; }
