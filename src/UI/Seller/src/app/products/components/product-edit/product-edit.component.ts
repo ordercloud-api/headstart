@@ -159,7 +159,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     private toastrService: ToastrService,
     private assetService: AssetService,
     private translate: TranslateService
-  ) { }
+  ) {}
 
   async ngOnInit(): Promise<void> {
     // TODO: Eventually move to a resolve so that they are there before the component instantiates.
@@ -373,7 +373,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
           ),
           FreeShippingMessage: new FormControl(
             _get(superHSProduct.Product, 'xp.FreeShippingMessage') ||
-            'Free Shipping'
+              'Free Shipping'
           ),
         },
         { validators: ValidateMinMax }
@@ -422,6 +422,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
             Validators.required,
             Validators.min(1),
           ])
+        } else if (!inventory && variantLevelTrackingControl.value === false) {
+          variantLevelTrackingControl.setValue(false)
         } else {
           quantityControl.setValidators(null)
         }
@@ -601,7 +603,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       this.dataIsSaving = false
     } catch (ex) {
       this.dataIsSaving = false
-      const message = ex?.response?.data?.Data as string;
+      const message = ex?.response?.data?.Data as string
       if (message) {
         this.toastrService.error(message, 'Error', { onActivateTick: true })
       }
@@ -619,7 +621,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   productWasModified(): boolean {
     return (
       JSON.stringify(this._superHSProductEditable) !==
-      JSON.stringify(this._superHSProductStatic) ||
+        JSON.stringify(this._superHSProductStatic) ||
       this.imageFiles.length > 0 ||
       this.staticContentFiles.length > 0
     )
@@ -648,10 +650,11 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   updateProductResource(productUpdate: any): void {
     const resourceToUpdate =
       this._superHSProductEditable || this.productService.emptyResource
-    this._superHSProductEditable = this.productService.getUpdatedEditableResource(
-      productUpdate,
-      resourceToUpdate
-    )
+    this._superHSProductEditable =
+      this.productService.getUpdatedEditableResource(
+        productUpdate,
+        resourceToUpdate
+      )
     this.checkForChanges()
   }
 
@@ -669,8 +672,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       value: productFields.includes(field)
         ? event.target.checked
         : typeOfValue === 'number'
-          ? Number(event.target.value)
-          : event.target.value,
+        ? Number(event.target.value)
+        : event.target.value,
     }
 
     if (field === 'PriceSchedule.MaxQuantity' && productUpdate.value === 0) {
@@ -704,7 +707,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   checkForChanges(): void {
     this.areChanges =
       JSON.stringify(this._superHSProductEditable) !==
-      JSON.stringify(this._superHSProductStatic) ||
+        JSON.stringify(this._superHSProductStatic) ||
       this.imageFiles?.length > 0 ||
       this.staticContentFiles?.length > 0
   }
@@ -747,11 +750,12 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   }
 
   async removeFile(file: DocumentAsset, assetType: AssetType): Promise<void> {
-    this._superHSProductStatic.Product = await this.assetService.deleteAssetUpdateProduct(
-      this._superHSProductEditable.Product,
-      file.Url,
-      assetType
-    )
+    this._superHSProductStatic.Product =
+      await this.assetService.deleteAssetUpdateProduct(
+        this._superHSProductEditable.Product,
+        file.Url,
+        assetType
+      )
     this.updateList.emit(this._superHSProductStatic.Product as Product)
     void this.refreshProductData(this._superHSProductStatic)
   }
@@ -836,8 +840,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     const totalPages = this.taxCodes.Meta.TotalPages
     const nextPageNumber = this.taxCodes.Meta.Page + 1
     if (totalPages > nextPageNumber) {
-      const taxCodeCategory = this._superHSProductEditable.Product.xp.Tax
-        .Category
+      const taxCodeCategory =
+        this._superHSProductEditable.Product.xp.Tax.Category
       const avalaraTaxCodes = await this.listTaxCodes(
         taxCodeCategory,
         searchTerm,
@@ -871,10 +875,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     superHSProduct.PriceSchedule.Name = `Default_HS_Buyer${superHSProduct.Product.Name}`
     // Slice Price Schedule if more than 100 characters after the pre-pended 'Default_HS_Buyer'.
     if (superHSProduct.PriceSchedule.Name.length > 100) {
-      superHSProduct.PriceSchedule.Name = superHSProduct.PriceSchedule.Name.slice(
-        0,
-        100
-      )
+      superHSProduct.PriceSchedule.Name =
+        superHSProduct.PriceSchedule.Name.slice(0, 100)
     }
     if (superHSProduct.Product.xp.Tax.Category === null)
       superHSProduct.Product.xp.Tax = null
@@ -912,10 +914,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       superHSProduct.PriceSchedule.Name = `Default_HS_Buyer${superHSProduct.Product.Name}`
       // Slice Price Schedule if more than 100 characters after the pre-pended 'Default_HS_Buyer'.
       if (superHSProduct.PriceSchedule.Name.length > 100) {
-        superHSProduct.PriceSchedule.Name = superHSProduct.PriceSchedule.Name.slice(
-          0,
-          100
-        )
+        superHSProduct.PriceSchedule.Name =
+          superHSProduct.PriceSchedule.Name.slice(0, 100)
       }
     }
     if (!superHSProduct.Product.xp) {
