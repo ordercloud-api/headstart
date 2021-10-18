@@ -79,7 +79,11 @@ namespace ordercloud.integrations.taxjar
 			}
 			catch (TaxjarException ex)
 			{
-				throw new CatalystBaseException("TaxJarAPIError", ex.Message, null, 400);
+				throw new CatalystBaseException("TaxJarTaxCalculationError",
+					"The taxjar api returned an error", 
+					ex.TaxjarError, 
+					int.Parse(ex.TaxjarError.StatusCode)
+				);
 			}
 		}
 	}
