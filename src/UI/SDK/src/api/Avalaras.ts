@@ -1,9 +1,7 @@
 import { TaxCertificate } from '../models/TaxCertificate';
-import { ListPage } from '../models/ListPage';
-import { TaxCode } from '../models/TaxCode';
 import { RequiredDeep } from '../models/RequiredDeep';
-import { ListArgs } from '../models/ListArgs'
 import httpClient from '../utils/HttpClient';
+import { TaxCategorization } from '..';
 
 export default class Avalaras {
     private impersonating:boolean = false;
@@ -60,10 +58,10 @@ export default class Avalaras {
     * @param options.filters An object whose keys match the model, and the values are the values to filter by
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async ListTaxCodes( options: ListArgs<TaxCode> = {}, accessToken?: string ): Promise<RequiredDeep<ListPage<TaxCode>>> {
+    public async ListTaxCodes(search: string = "", accessToken?: string ): Promise<RequiredDeep<TaxCategorization[]>> {
         const impersonating = this.impersonating;
         this.impersonating = false;
-        return await httpClient.get(`/avalara/code`, { params: { ...options,  filters: options.filters, accessToken, impersonating } } );
+        return await httpClient.get(`/avalara/code`, { params: { search, accessToken, impersonating } } );
     }
 
     /**

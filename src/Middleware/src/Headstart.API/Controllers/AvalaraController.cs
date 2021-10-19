@@ -6,6 +6,8 @@ using ordercloud.integrations.avalara;
 using ordercloud.integrations.library;
 using Headstart.API.Commands;
 using OrderCloud.Catalyst;
+using ordercloud.integrations.library.intefaces;
+using System.Collections.Generic;
 
 namespace Headstart.Common.Controllers.Avalara
 {
@@ -23,36 +25,13 @@ namespace Headstart.Common.Controllers.Avalara
 			_resaleCertCommand = resaleCertCommand;
 		}
 
-		// Commented out until swagger can reference the TransactionModel
-
-		//[DocName("Get Tax Estimate")]
-		//[HttpPost, Route("estimate"), OrderCloudIntegrationsAuth(ApiRole.Shopper)]
-		//public async Task<decimal> GetTaxEstimate([FromBody] OrderWorksheet orderWorksheet)
-		//{
-		//	return await _avalara.GetEstimateAsync(orderWorksheet);
-		//}
-
-		//[DocName("Create Tax Transaction")]
-		//[HttpPost, Route("transaction"), OrderCloudIntegrationsAuth(ApiRole.OrderAdmin)]
-		//public async Task<TransactionModel> CreateTransaction([FromBody] OrderWorksheet orderWorksheet)
-		//{
-		//	return await _avalara.CreateTransactionAsync(orderWorksheet);
-		//}
-
-		//[DocName("Commit Tax Transaction")]
-		//[HttpPost, Route("transaction/{transactionCode}/commit"), OrderCloudIntegrationsAuth(ApiRole.OrderAdmin)]
-		//public async Task<TransactionModel> CommitTransaction(string transactionCode)
-		//{
-		//	return await _avalara.CommitTransactionAsync(transactionCode);
-		//}
-
 		/// <summary>
 		/// List Tax Codes
 		/// </summary>
 		[HttpGet, Route("code"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
-		public async Task<ListPage<TaxCode>> ListTaxCodes(ListArgs<TaxCode> hsListArgs)
+		public async Task<List<TaxCategorization>> ListTaxCodes([FromQuery] string search)
 		{
-			return await _avalara.ListTaxCodesAsync(hsListArgs);
+			return await _avalara.ListTaxCodesAsync(search);
 		}
 
 		/// <summary>

@@ -4,8 +4,7 @@ import { FormGroup } from '@angular/forms'
 import {
   SuperHSProduct,
   ListPage,
-  TaxProperties,
-  TaxCode,
+  TaxCategorization,
 } from '@ordercloud/headstart-sdk'
 import {
   faTimesCircle,
@@ -24,17 +23,13 @@ export class ProductTaxCodeSelect {
   @Input()
   superHSProductEditable: SuperHSProduct
   @Input()
-  taxCodes: ListPage<TaxCode>
-  @Output()
-  handleTaxCodeCategorySelection = new EventEmitter<any>()
+  taxCodes: TaxCategorization[]
   @Output()
   handleTaxCodeSelection = new EventEmitter<any>()
   @Output()
   handleTaxCodesSearched = new EventEmitter<string>()
   @Output()
   handleIsResale = new EventEmitter<boolean>()
-  @Output()
-  onScrollEnd = new EventEmitter<string>()
   @Input()
   readonly = false
   @Input()
@@ -45,15 +40,11 @@ export class ProductTaxCodeSelect {
   faCheckCircle = faCheckCircle
   faAsterisk = faAsterisk
 
-  onTaxCodeCategorySelection(event): void {
-    this.handleTaxCodeCategorySelection.emit(event)
-  }
-
   handleIsResaleInput(event: boolean): void {
     return this.handleIsResale.emit(event)
   }
 
-  handleSelectTaxCode(taxCodeSelection: TaxProperties): void {
+  handleSelectTaxCode(taxCodeSelection: TaxCategorization): void {
     const event = {
       target: {
         value: taxCodeSelection,
@@ -66,15 +57,10 @@ export class ProductTaxCodeSelect {
     this.handleTaxCodesSearched.emit(searchTerm)
   }
 
-  handleScrollEnd(searchTerm: string) {
-    this.onScrollEnd.emit(searchTerm)
-  }
-
   taxSelectionsValid(): boolean {
     return (
       this.isCreatingNew &&
       this.isRequired &&
-      this.productForm.controls['TaxCodeCategory'].valid &&
       this.productForm.controls['TaxCode'].valid
     )
   }

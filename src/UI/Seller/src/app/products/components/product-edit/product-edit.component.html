@@ -524,9 +524,6 @@
                   [taxCodes]="taxCodes"
                   [isRequired]="isRequired('TaxCodeCategory')"
                   [isCreatingNew]="isCreatingNew"
-                  (handleTaxCodeCategorySelection)="
-                    handleTaxCodeCategorySelection($event)
-                  "
                   (handleTaxCodeSelection)="
                     handleTaxCodeSelection($event.target.value)
                   "
@@ -536,9 +533,7 @@
                       { target: { value: $event } },
                       'Product.xp.IsResale'
                     )
-                  "
-                  (onScrollEnd)="handleScrollEnd($event)"
-                >
+                  "                >
                 </product-tax-code-select-component>
                 <!-- /Tax Categorization -->
                 <!-- Shipping Information -->

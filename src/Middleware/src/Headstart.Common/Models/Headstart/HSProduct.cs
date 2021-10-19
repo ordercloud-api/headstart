@@ -9,6 +9,7 @@ using Newtonsoft.Json.Converters;
 using ordercloud.integrations.easypost;
 using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;
+using ordercloud.integrations.library.intefaces;
 using OrderCloud.SDK;
 
 namespace Headstart.Models
@@ -68,7 +69,7 @@ namespace Headstart.Models
         public bool HasVariants { get; set; }
         [MaxLength(500), OrchestrationIgnore]
         public string Note { get; set; }
-        public TaxProperties Tax { get; set; }
+        public TaxCategorization Tax { get; set; }
         public UnitOfMeasure UnitOfMeasure { get; set; } = new UnitOfMeasure();
         public ProductType ProductType { get; set; }
         public SizeTier SizeTier { get; set; }

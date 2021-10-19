@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using ordercloud.integrations.library;
 using System.Linq;
 using OrderCloud.Catalyst;
+using ordercloud.integrations.library.intefaces;
 
 namespace ordercloud.integrations.avalara
 {
@@ -22,7 +23,7 @@ namespace ordercloud.integrations.avalara
 		/// Creates a tax transaction record in the calculating system. Use this once on purchase, payment capture, or fulfillment.
 		/// </summary>
 		Task<OrderTaxCalculation> CommitTransactionAsync(OrderWorksheet orderWorksheet, List<OrderPromotion> promotions);
-		Task<ListPage<TaxCode>> ListTaxCodesAsync(ListArgs<TaxCode> hsListArgs);
+		Task<List<TaxCategorization>> ListTaxCodesAsync(string searchTerm);
 		Task<TaxCertificate> GetCertificateAsync(int certificateID);
 		Task<TaxCertificate> CreateCertificateAsync(TaxCertificate cert, Address buyerLocation);
 		Task<TaxCertificate> UpdateCertificateAsync(int certificateID, TaxCertificate cert, Address buyerLocation);
@@ -30,7 +31,7 @@ namespace ordercloud.integrations.avalara
 
 	public enum AppEnvironment { Test, Staging, Production }
 
-	public class AvalaraCommand : IAvalaraCommand, ITaxCalculator
+	public class AvalaraCommand : IAvalaraCommand, ITaxCalculator, ITaxCodesProvider
 	{
 		private readonly AvalaraConfig _settings;
 		private readonly AvaTaxClient _avaTax;
@@ -94,22 +95,20 @@ namespace ordercloud.integrations.avalara
 			return transaction.ToOrderTaxCalculation();
 		}
 
-		public async Task<ListPage<TaxCode>> ListTaxCodesAsync(ListArgs<TaxCode> hsListArgs)
+		public async Task<List<TaxCategorization>> ListTaxCodesAsync(string searchTerm)
 		{
 			if (ShouldMockAvalaraResponse()) { return CreateMockTaxCodeList(); }
 
-			var args = TaxCodeMapper.Map(hsListArgs);
-			var avataxCodes = await _avaTax.ListTaxCodesAsync(args.Filter, args.Top, args.Skip, args.OrderBy);
-			var codeList = TaxCodeMapper.Map(avataxCodes, args);
+			var search = TaxCodeMapper.MapSearchString(searchTerm);
+			var avataxCodes = await _avaTax.ListTaxCodesAsync(search, null, null, null);
+			var codeList = TaxCodeMapper.MapTaxCodes(avataxCodes);
 			return codeList;
 		}
 
-        private ListPage<TaxCode> CreateMockTaxCodeList()
+        private List<TaxCategorization> CreateMockTaxCodeList()
         {
-			return new ListPage<TaxCode>()
-			{
-				Items = new List<TaxCode>() { new TaxCode() {Description = "Mock Tax Code for Headstart", Code = "Headstart Tax Code" } },
-				Meta = new ListPageMeta() { }
+			return new List<TaxCategorization>() { 
+				new TaxCategorization() {Description = "Mock Tax Code for Headstart", Code = "Headstart Tax Code" },
 			};
         }
 

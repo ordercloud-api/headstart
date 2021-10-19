@@ -1,21 +1,10 @@
 <!-- product tax code select dropdown -->
-<label for="productTaxCodeDropdown" translate
-  >ADMIN.PRODUCT_EDIT.TAX_CODE
-</label>
 <div ngbDropdown class="product-tax-code-dropdown btn-block w-100">
   <button
     class="product-tax-code-dropdown-toggle w-100 d-flex justify-content-between align-items-center resource-btn btn btn-outline-dark"
     id="productTaxCodeDropdown"
     ngbDropdownToggle
-    [disabled]="
-      !superHSProductEditable?.Product?.xp?.Tax?.Category || readonly
-    "
   >
-    <span
-      *ngIf="!superHSProductEditable?.Product?.xp?.Tax?.Category"
-      translate
-      >ADMIN.PRODUCT_EDIT.FIRST_SELECT_CATEGORY</span
-    >
     <span
       class="product-tax-code-dropdown-toggle-text"
       *ngIf="superHSProductEditable?.Product?.xp?.Tax?.Description"
@@ -65,7 +54,7 @@
       </button>
       <button
         ngbDropdownItem
-        *ngFor="let taxCode of taxCodes?.Items"
+        *ngFor="let taxCode of taxCodes"
         (click)="selectTaxCode(taxCode)"
       >
         <div class="d-flex text-wrap">
