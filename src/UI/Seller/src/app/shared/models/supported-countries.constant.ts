@@ -5,6 +5,7 @@ import { SupportedCountries } from '@app-seller/models/currency-geography.types'
 export class GeographyConfig {
   static getCountries(): SupportedCountries[] {
     return [
+      { label: 'Australia', abbreviation: 'AU', currency: 'AUD' },
       { label: 'Austria', abbreviation: 'AT', currency: 'EUR' },
       { label: 'Belgium', abbreviation: 'BE', currency: 'EUR' },
       { label: 'Canada', abbreviation: 'CA', currency: 'CAD' },
