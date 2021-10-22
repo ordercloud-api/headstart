@@ -102,7 +102,7 @@ export * from './SuperHSShipment';
 export * from './SupplierAddressXP';
 export * from './SupplierCategory';
 export * from './SupplierXp';
-export * from './TaxCertificate';
+export * from './TaxCategorizationResponse';
 export * from './TaxCategorization';
 export * from './TecraDocument';
 export * from './TecraSpec';

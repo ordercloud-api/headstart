@@ -13,7 +13,13 @@ namespace ordercloud.integrations.library.intefaces
 		/// <summary>
 		/// List the various tax categories a product could fall under
 		/// </summary>
-		Task<List<TaxCategorization>> ListTaxCodesAsync(string searchTerm);
+		Task<TaxCategorizationResponse> ListTaxCodesAsync(string searchTerm);
+	}
+
+	public class TaxCategorizationResponse
+	{
+		public bool IsImplemented { get; set; } = true;
+		public List<TaxCategorization> Categories { get; set; }
 	}
 
 	/// <summary>

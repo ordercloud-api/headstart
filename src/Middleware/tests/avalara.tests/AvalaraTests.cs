@@ -41,14 +41,5 @@ namespace avalara.tests
             Assert.AreEqual(123.45, response.TotalTax);
             Assert.AreEqual("Mock Avalara Response for Headstart", response.ExternalTransactionID);
         }
-
-        [Test]
-        public async Task avalara_mock_certificate_no_license_key()
-        {
-            var response = await _command.CreateCertificateAsync(new TaxCertificate(), new OrderCloud.SDK.Address());
-
-            Assert.AreEqual("Mock Tax Certificate", response.FileName);
-
-        }
     }
 }

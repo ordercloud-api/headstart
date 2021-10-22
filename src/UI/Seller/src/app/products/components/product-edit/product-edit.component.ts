@@ -49,6 +49,7 @@ import {
   DocumentAsset,
   HSProduct,
   TaxCategorization,
+  TaxCategorizationResponse,
 } from '@ordercloud/headstart-sdk'
 import { Location } from '@angular/common'
 import { TabIndexMapper, setProductEditTab } from './tab-mapper'
@@ -121,7 +122,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   _exchangeRates: SupportedRates[]
   areChanges = false
   taxCodeCategorySelected = false
-  taxCodes: TaxCategorization[]
+  taxCodes: TaxCategorizationResponse
   productType: ProductXp['ProductType']
   shippingAddress: any
   productVariations: any
@@ -228,11 +229,9 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         Qty: null,
       }
     }
-    if (this._superHSProductEditable.Product?.xp?.Tax?.Code) {
-      this.taxCodes = await HeadStartSDK.Avalaras.ListTaxCodes();
-    } else {
-      this.taxCodes = [];
-    }
+   
+    this.taxCodes = await HeadStartSDK.TaxCategories.ListTaxCategories();
+   
     this.staticContent = this._superHSProductEditable.Product?.xp.Documents
     this.images = this._superHSProductEditable.Product?.xp?.Images
     this.taxCodeCategorySelected =
@@ -796,7 +795,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         LongDescription: ''
       }
     }
-    this.taxCodes = await HeadStartSDK.Avalaras.ListTaxCodes();
+    this.taxCodes = await HeadStartSDK.TaxCategories.ListTaxCategories();
   }
 
   handleTaxCodeSelection(event: TaxCategorization): void {
@@ -808,7 +807,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   }
 
   async searchTaxCodes(searchTerm: string): Promise<void> {
-    this.taxCodes = await HeadStartSDK.Avalaras.ListTaxCodes(searchTerm ?? "");
+    this.taxCodes = await HeadStartSDK.TaxCategories.ListTaxCategories(searchTerm ?? "");
   }
 
   getSaveBtnText(): string {

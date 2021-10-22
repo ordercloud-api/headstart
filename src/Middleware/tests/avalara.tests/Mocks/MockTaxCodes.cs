@@ -1,5 +1,6 @@
 ﻿using Avalara.AvaTax.RestClient;
 using ordercloud.integrations.avalara;
+using ordercloud.integrations.library.intefaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -106,46 +107,42 @@ namespace avalara.tests.Mocks
 				}
 			};
 		}
-		public static List<TaxCode> headstartTaxCodeListPageFirstRecord()
+		public static List<TaxCategorization> headstartTaxCodeListPageFirstRecord()
 		{
-			return new List<TaxCode>
+			return new List<TaxCategorization>
 
 			{
-				new TaxCode()
+				new TaxCategorization()
 				{
-					Category = "Test-Category",
 					Code = "Test-Tax-Code",
 					Description = "Test Tax Code Description"
 				}
 			};
 		}
-		public static List<TaxCode> headstartTaxCodeListPageSecondRecord()
+		public static List<TaxCategorization> headstartTaxCodeListPageSecondRecord()
 		{
-			return new List<TaxCode>
+			return new List<TaxCategorization>
 
 			{
-				new TaxCode()
+				new TaxCategorization()
 				{
-					Category = "Second-Test-Category",
 					Code = "Second-Test-Tax-Code",
 					Description = "Second Test Tax Code Description"
 				}
 			};
 		}
-		public static List<TaxCode> headstartTaxCodeListPageAllRecords()
+		public static List<TaxCategorization> headstartTaxCodeListPageAllRecords()
 		{
-			return new List<TaxCode>
+			return new List<TaxCategorization>
 
 			{
-				new TaxCode()
+				new TaxCategorization()
 				{
-					Category = "Test-Category",
 					Code = "Test-Tax-Code",
 					Description = "Test Tax Code Description"
 				},
-				new TaxCode()
+				new TaxCategorization()
 				{
-					Category = "Second-Test-Category",
 					Code = "Second-Test-Tax-Code",
 					Description = "Second Test Tax Code Description"
 				}

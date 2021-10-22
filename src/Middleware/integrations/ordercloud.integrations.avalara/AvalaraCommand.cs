@@ -23,10 +23,7 @@ namespace ordercloud.integrations.avalara
 		/// Creates a tax transaction record in the calculating system. Use this once on purchase, payment capture, or fulfillment.
 		/// </summary>
 		Task<OrderTaxCalculation> CommitTransactionAsync(OrderWorksheet orderWorksheet, List<OrderPromotion> promotions);
-		Task<List<TaxCategorization>> ListTaxCodesAsync(string searchTerm);
-		Task<TaxCertificate> GetCertificateAsync(int certificateID);
-		Task<TaxCertificate> CreateCertificateAsync(TaxCertificate cert, Address buyerLocation);
-		Task<TaxCertificate> UpdateCertificateAsync(int certificateID, TaxCertificate cert, Address buyerLocation);
+		Task<TaxCategorizationResponse> ListTaxCodesAsync(string searchTerm);
 	}
 
 	public enum AppEnvironment { Test, Staging, Production }
@@ -95,78 +92,12 @@ namespace ordercloud.integrations.avalara
 			return transaction.ToOrderTaxCalculation();
 		}
 
-		public async Task<List<TaxCategorization>> ListTaxCodesAsync(string searchTerm)
+		public async Task<TaxCategorizationResponse> ListTaxCodesAsync(string searchTerm)
 		{
-			if (ShouldMockAvalaraResponse()) { return CreateMockTaxCodeList(); }
-
 			var search = TaxCodeMapper.MapSearchString(searchTerm);
 			var avataxCodes = await _avaTax.ListTaxCodesAsync(search, null, null, null);
 			var codeList = TaxCodeMapper.MapTaxCodes(avataxCodes);
-			return codeList;
-		}
-
-        private List<TaxCategorization> CreateMockTaxCodeList()
-        {
-			return new List<TaxCategorization>() { 
-				new TaxCategorization() {Description = "Mock Tax Code for Headstart", Code = "Headstart Tax Code" },
-			};
-        }
-
-        public async Task<TaxCertificate> GetCertificateAsync(int certificateID)
-		{
-			if (ShouldMockAvalaraResponse()) { return CreateMockTaxCertificate(); }
-
-			var companyID = _settings.CompanyID;
-			var certificate = _avaTax.GetCertificateAsync(companyID, certificateID, "");
-			var pdf = GetCertificateBase64String(companyID, certificateID);
-			var mappedCertificate = TaxCertificateMapper.Map(await certificate, await pdf);
-			return mappedCertificate;
-		}
-
-		public async Task<TaxCertificate> CreateCertificateAsync(TaxCertificate cert, Address buyerLocation)
-		{
-			if (ShouldMockAvalaraResponse()) { return CreateMockTaxCertificate(); }
-
-			var companyID = _settings.CompanyID;
-			var certificates = await _avaTax.CreateCertificatesAsync(companyID, false, new List<CertificateModel> { 
-				TaxCertificateMapper.Map(cert, buyerLocation, companyID) 
-			});
-			var pdf = await GetCertificateBase64String(companyID, certificates[0].id ?? 0);
-			var mappedCertificate = TaxCertificateMapper.Map(certificates[0], pdf);
-			return mappedCertificate;
-		}
-
-        private TaxCertificate CreateMockTaxCertificate()
-        {
-			//bypass calling Avalara when no License Key is provided. 
-			return new TaxCertificate()
-			{
-				FileName = "Mock Tax Certificate",
-				SignedDate = DateTimeOffset.Now
-			};
-        }
-
-        public async Task<TaxCertificate> UpdateCertificateAsync(int certificateID, TaxCertificate cert, Address buyerLocation)
-		{
-			if (ShouldMockAvalaraResponse()) { return CreateMockTaxCertificate(); }
-
-			var companyID = _settings.CompanyID;
-			var certificate = _avaTax.UpdateCertificateAsync(companyID, certificateID, TaxCertificateMapper.Map(cert, buyerLocation, companyID));
-			var pdf = GetCertificateBase64String(companyID, certificateID);
-			var mappedCertificate = TaxCertificateMapper.Map(await certificate, await pdf);
-			return mappedCertificate;
-		}
-
-		// The avalara SDK method for this was throwing an internal JSON parse exception.
-		private async Task<string> GetCertificateBase64String(int companyID, int certificateID)
-		{
-			//When no credentials are supplied, certificates can't be uploaded or downloaded, so return empty
-			if (ShouldMockAvalaraResponse()) { return ""; }
-
-			var pdfBtyes = await new Url($"{_baseUrl}/companies/{companyID}/certificates/{certificateID}/attachment")
-				.WithBasicAuth(_settings.AccountID.ToString(), _settings.LicenseKey)
-				.GetBytesAsync();
-			return Convert.ToBase64String(pdfBtyes);
+			return new TaxCategorizationResponse() { Categories = codeList, IsImplemented = true };
 		}
 
 		private async Task<OrderTaxCalculation> CreateTransactionAsync(DocumentType docType, OrderWorksheet orderWorksheet, List<OrderPromotion> promotions)
