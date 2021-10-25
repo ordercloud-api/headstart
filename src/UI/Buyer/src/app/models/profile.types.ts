@@ -2,11 +2,6 @@ import { HSLocationUserGroup } from "@ordercloud/headstart-sdk";
 import { MeUser } from "ordercloud-javascript-sdk";
 import { CurrenySymbol } from "./currency.types";
 
-export interface CertificateFormOutput {
-    ExpirationDate: string
-    SignedDate: string
-    Base64UrlEncodedPDF: string
-  }
 
   export interface DecodedOCToken {
     /**

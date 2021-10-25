@@ -5,7 +5,6 @@ using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;
 using OrderCloud.SDK;
 using System.Collections.Generic;
-using Avalara.AvaTax.RestClient;
 using Headstart.Common.Exceptions;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models.Headstart;

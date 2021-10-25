@@ -30,7 +30,6 @@ namespace Headstart.Models.Misc
 		NeedsApproval,
 		ViewAllOrders,
 		CreditCardAdmin,
-		AddressAdmin,
-		ResaleCertAdmin
+		AddressAdmin
 	}
 }

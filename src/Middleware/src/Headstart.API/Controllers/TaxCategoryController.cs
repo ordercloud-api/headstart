@@ -2,17 +2,16 @@
 using OrderCloud.SDK;
 using System.Threading.Tasks;
 using Headstart.Models.Attributes;
-using ordercloud.integrations.avalara;
 using ordercloud.integrations.library;
 using Headstart.API.Commands;
 using OrderCloud.Catalyst;
 using ordercloud.integrations.library.intefaces;
 using System.Collections.Generic;
 
-namespace Headstart.Common.Controllers.Avalara
+namespace Headstart.Common.Controllers
 {
 	/// <summary>
-	///  Avalara Tax Functionality
+	/// Tax Functionality
 	/// </summary>
 	public class TaxCategoryController : CatalystController
 	{

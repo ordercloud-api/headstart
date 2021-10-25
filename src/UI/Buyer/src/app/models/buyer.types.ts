@@ -1,8 +1,7 @@
-import { HSAddressBuyer, HSMeProduct, TaxCertificate } from "@ordercloud/headstart-sdk";
+import { HSAddressBuyer, HSMeProduct } from "@ordercloud/headstart-sdk";
 
-export interface BuyerLocationWithCert {
+export interface BuyerLocation {
     location?: HSAddressBuyer
-    certificate?: TaxCertificate
   }
 
   //    these can be replaced with sdk

@@ -983,13 +983,6 @@
       "CANCEL": "Cancel",
       "DELETE": "Delete"
     },
-    "CERT_FORM": {
-      "CANCEL": "Cancel",
-      "EXP_DATE": "Expiration Date",
-      "PDF": "PDF File",
-      "SAVE": "Save",
-      "SIGNED": "Signed Date"
-    },
     "CHANGE_PASSWORD": {
       "CONFIRM": "Confirm New Password",
       "CURRENT": "Current Password",

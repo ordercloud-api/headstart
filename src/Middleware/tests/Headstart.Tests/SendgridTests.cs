@@ -1,5 +1,4 @@
 using Headstart.Common.Services;
-using ordercloud.integrations.avalara;
 using OrderCloud.SDK;
 using NSubstitute;
 using NUnit.Framework;
