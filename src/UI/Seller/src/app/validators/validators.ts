@@ -83,26 +83,26 @@ export function ValidateDate(
   return { date: true }
 }
 
-export function ValidateCAZip(
-  control: AbstractControl
-): ValidationErrors | null {
-  const isValid = /^(\d{5}(-\d{4})?|[A-Z]\d[A-Z] ?\d[A-Z]\d)$/g.test(
-    control.value
-  )
-  if (!control.value || isValid) {
-    return null
+export function ValidateZip(countryCode: String): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    let isValid;
+    switch (countryCode) {
+      case 'AU':
+        isValid = /^((0[289][0-9]{2})|([1345689][0-9]{3})|(2[0-8][0-9]{2})|(290[0-9])|(291[0-4])|(7[0-4][0-9]{2})|(7[8-9][0-9]{2}))$/.test(control.value)
+        break
+      case 'CA':
+        isValid = /^[A-Za-z]\\d[A-Za-z][ -]?\\d[A-Za-z]\\d$/.test(control.value)
+        break
+      case 'US':
+      default:
+        isValid = /^[0-9]{5}(?:-[0-9]{4})?$/.test(control.value)
+        break
+    }
+    if (!control.value || isValid) {
+      return null
+    }
+    return { zip: true }
   }
-  return { zip: true }
-}
-
-export function ValidateUSZip(
-  control: AbstractControl
-): ValidationErrors | null {
-  const isValid = /^[0-9]{5}(?:-[0-9]{4})?$/.test(control.value)
-  if (!control.value || isValid) {
-    return null
-  }
-  return { zip: true }
 }
 
 // password must include one number, one letter and have min length of 8
