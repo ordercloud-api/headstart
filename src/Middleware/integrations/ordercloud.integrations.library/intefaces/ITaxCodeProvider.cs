@@ -18,7 +18,7 @@ namespace ordercloud.integrations.library.intefaces
 
 	public class TaxCategorizationResponse
 	{
-		public bool IsImplemented { get; set; } = true;
+		public bool ProductsShouldHaveTaxCodes { get; set; } = true;
 		public List<TaxCategorization> Categories { get; set; }
 	}
 

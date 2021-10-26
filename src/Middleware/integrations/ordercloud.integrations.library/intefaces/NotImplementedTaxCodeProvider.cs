@@ -10,8 +10,8 @@ namespace ordercloud.integrations.library.intefaces
 		public Task<TaxCategorizationResponse> ListTaxCodesAsync(string searchTerm)
 		{
 			return Task.FromResult(new TaxCategorizationResponse() 
-			{ 
-				IsImplemented = false, 
+			{
+				ProductsShouldHaveTaxCodes = false, 
 				Categories = new List<TaxCategorization>() 
 			});
 		}

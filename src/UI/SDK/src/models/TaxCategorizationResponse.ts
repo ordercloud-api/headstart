@@ -1,6 +1,6 @@
 import { TaxCategorization } from ".";
 
 export interface TaxCategorizationResponse {
-    IsImplemented?: boolean;
+    ProductsShouldHaveTaxCodes?: boolean;
     Categories?: TaxCategorization[];
 }

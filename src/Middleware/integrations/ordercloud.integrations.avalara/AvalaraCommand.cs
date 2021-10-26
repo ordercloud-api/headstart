@@ -97,7 +97,7 @@ namespace ordercloud.integrations.avalara
 			var search = TaxCodeMapper.MapSearchString(searchTerm);
 			var avataxCodes = await _avaTax.ListTaxCodesAsync(search, null, null, null);
 			var codeList = TaxCodeMapper.MapTaxCodes(avataxCodes);
-			return new TaxCategorizationResponse() { Categories = codeList, IsImplemented = true };
+			return new TaxCategorizationResponse() { Categories = codeList, ProductsShouldHaveTaxCodes = true };
 		}
 
 		private async Task<OrderTaxCalculation> CreateTransactionAsync(DocumentType docType, OrderWorksheet orderWorksheet, List<OrderPromotion> promotions)

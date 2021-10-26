@@ -518,7 +518,7 @@
                 <!-- /Inventory Tracking -->
                 <!-- Tax Categorization -->
                 <product-tax-code-select-component
-                  *ngIf="taxCodes?.IsImplemented"
+                  *ngIf="taxCodes?.ProductsShouldHaveTaxCodes"
                   [readonly]="readonly"
                   [productForm]="productForm"
                   [superHSProductEditable]="_superHSProductEditable"
