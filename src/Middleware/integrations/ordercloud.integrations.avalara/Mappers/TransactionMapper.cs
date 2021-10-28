@@ -23,8 +23,7 @@ namespace ordercloud.integrations.avalara
 				return shipment.ToLineItemModel(shipFrom, shipTo);
 			});
 
-			var hasResaleCert = ((int?) order.Order.BillingAddress.xp?.AvalaraCertificateID != null);
-			var exemptionNo = hasResaleCert ? buyerLocationID : null;
+			string exemptionNo = null; // can set to a resale cert id
 
 			var productLines = standardLineItems.Select(lineItem =>
 				 lineItem.ToLineItemModel(lineItem.ShipFromAddress, lineItem.ShippingAddress, exemptionNo));

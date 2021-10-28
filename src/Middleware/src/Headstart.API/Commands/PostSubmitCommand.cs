@@ -142,7 +142,7 @@ namespace Headstart.API.Commands
             if (!orderWorksheet.IsStandardOrder())
                 return results;
 
-            // STEP 2: Avalara tax transaction
+            // STEP 2: Tax transaction
             var tax = await ProcessActivityCall(
                 ProcessType.Tax,
                 "Creating Tax Transaction",

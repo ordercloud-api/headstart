@@ -14,7 +14,6 @@ using Headstart.Common.Services;
 using System;
 using Headstart.Models.Extended;
 using Headstart.Common.Services.ShippingIntegration.Models;
-using Avalara.AvaTax.RestClient;
 
 namespace Headstart.API.Commands
 {

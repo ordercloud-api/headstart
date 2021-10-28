@@ -9,7 +9,6 @@ using Headstart.Common.Models;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using NSubstitute;
 using NUnit.Framework;
-using ordercloud.integrations.avalara;
 using ordercloud.integrations.easypost;
 using ordercloud.integrations.exchangerates;
 using OrderCloud.SDK;

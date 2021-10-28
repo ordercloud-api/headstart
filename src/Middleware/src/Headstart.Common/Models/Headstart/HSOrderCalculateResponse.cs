@@ -1,5 +1,4 @@
-﻿using Avalara.AvaTax.RestClient;
-using ordercloud.integrations.library;
+﻿using ordercloud.integrations.library;
 using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;

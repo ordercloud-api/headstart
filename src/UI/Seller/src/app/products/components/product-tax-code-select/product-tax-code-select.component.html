@@ -19,38 +19,6 @@
   <form [formGroup]="productForm">
     <div class="form-row">
       <div class="form-group col-6">
-        <label for="TaxCodeCategory" translate
-          >ADMIN.PRODUCT_EDIT.TAX_CATEGORY
-        </label>
-        <select
-          [attr.disabled]="readonly ? true : null"
-          type="dropdown"
-          class="form-control"
-          id="TaxCodeCategory"
-          aria-describedby="Tax code category"
-          (change)="onTaxCodeCategorySelection($event)"
-          formControlName="TaxCodeCategory"
-        >
-          <option default disabled [ngValue]="null">
-            Which category best describes this product?
-          </option>
-          <!-- These are the 5 'parent' tax categories.  They are always consistent. -->
-          <option value="D0000000" translate>
-            ADMIN.PRODUCT_EDIT.DIGITAL_GOODS
-          </option>
-          <option value="FR000000" translate>ADMIN.PRODUCT_EDIT.FREIGHT</option>
-          <option value="P0000000" translate>ADMIN.PRODUCT_EDIT.TPP</option>
-          <option value="S0000000" translate>
-            ADMIN.PRODUCT_EDIT.SERVICES
-          </option>
-          <option value="O0000000" translate>ADMIN.PRODUCT_EDIT.OTHER</option>
-        </select>
-        <small>Which broad category does this product fit best?</small>
-      </div>
-      <div
-        [hidden]="!productForm.controls['TaxCodeCategory'].value"
-        class="form-group col-6"
-      >
         <product-tax-code-select-dropdown
           [readonly]="readonly"
           class="btn-block resource-btn mr-1 mb-1"
@@ -60,7 +28,6 @@
           [isRequired]="isRequired"
           [isCreatingNew]="isCreatingNew"
           (taxCodesSearched)="onTaxCodesSearched($event)"
-          (onScrollEnd)="handleScrollEnd($event)"
           (onSelectTaxCode)="handleSelectTaxCode($event)"
         >
         </product-tax-code-select-dropdown>

@@ -41,6 +41,7 @@ using ordercloud.integrations.library.cosmos_repo;
 using ordercloud.integrations.vertex;
 using Newtonsoft.Json;
 using ordercloud.integrations.taxjar;
+using ordercloud.integrations.library.intefaces;
 
 namespace Headstart.API
 {
@@ -128,6 +129,9 @@ namespace Headstart.API
                 ClientSecret = _settings.OrderCloudSettings.MiddlewareClientSecret,
                 Roles = new[] { ApiRole.FullAccess }
             });
+
+            var vertexCommand = new VertexCommand(_settings.VertexSettings);
+            var taxJarCommand = new TaxJarCommand(_settings.TaxJarSettings);
             var avalaraCommand = new AvalaraCommand(
                                 avalaraConfig,
                                 new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(avalaraConfig.BaseApiUrl)
@@ -190,14 +194,24 @@ namespace Headstart.API
                 .AddSingleton<IOrderCloudIntegrationsExchangeRatesClient, OrderCloudIntegrationsExchangeRatesClient>()
                 .AddSingleton<IAssetClient>(provider => new AssetClient( new OrderCloudIntegrationsBlobService(assetConfig), _settings))
                 .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand( new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
-                .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand(new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
+                .AddSingleton<ITaxCodesProvider>(provider =>
+                {
+                    return _settings.EnvironmentSettings.TaxProvider switch
+                    {
+                        TaxProvider.Avalara => avalaraCommand,
+                        TaxProvider.Taxjar => taxJarCommand,
+                        TaxProvider.Vertex => new NotImplementedTaxCodesProvider(),
+                        _ => avalaraCommand // Avalara is default
+                    };
+                })
                 .AddSingleton<ITaxCalculator>(provider =>
                 {
 					return _settings.EnvironmentSettings.TaxProvider switch
 					{
-						TaxProvider.Vertex => new VertexCommand(_settings.VertexSettings),
-                        TaxProvider.Taxjar => new TaxJarCommand(_settings.TaxJarSettings),
-                        _ => avalaraCommand, // avalara is default
+                        TaxProvider.Avalara => avalaraCommand,
+						TaxProvider.Vertex => vertexCommand,
+                        TaxProvider.Taxjar => taxJarCommand,
+                        _ => avalaraCommand // Avalara is default
 					};
 				})
                 .AddSingleton<IAvalaraCommand>(avalaraCommand)

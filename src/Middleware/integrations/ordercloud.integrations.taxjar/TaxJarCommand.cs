@@ -1,8 +1,10 @@
 ﻿using ordercloud.integrations.library;
+using ordercloud.integrations.library.intefaces;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Taxjar;
@@ -22,7 +24,7 @@ namespace ordercloud.integrations.taxjar
 		Task<OrderTaxCalculation> CommitTransactionAsync(OrderWorksheet orderWorksheet, List<OrderPromotion> promotions);
 	}
 
-	public class TaxJarCommand : ITaxJarCommand, ITaxCalculator
+	public class TaxJarCommand : ITaxJarCommand, ITaxCalculator, ITaxCodesProvider
 	{
 		private readonly TaxjarApi _client;
 
@@ -58,6 +60,13 @@ namespace ordercloud.integrations.taxjar
 
 			var orderTaxCalculation = orders.ToOrderTaxCalculation();
 			return orderTaxCalculation;
+		}
+
+		public async Task<TaxCategorizationResponse> ListTaxCodesAsync(string searchTerm)
+		{
+			var categories = await MakeRequest(() => _client.CategoriesAsync());
+			var taxCategorizations = categories.ToTaxCategorization(searchTerm);
+			return taxCategorizations;
 		}
 
 		private async Task<IEnumerable<(TaxJarOrder request, TaxResponseAttributes response)>> CalculateTax(OrderWorksheet orderWorksheet)

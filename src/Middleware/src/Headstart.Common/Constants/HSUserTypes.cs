@@ -113,15 +113,6 @@ namespace Headstart.Common.Constants
                         CustomRole.HSLocationAddressAdmin,
                     }
                 },
-                   new HSUserType {
-                    UserGroupName = "Resale Cert Admin",
-                    UserGroupType = UserGroupType.LocationPermissions,
-                    UserGroupIDSuffix = UserGroupSuffix.ResaleCertAdmin.ToString(),
-                    CustomRoles = new List<CustomRole>
-                    {
-                        CustomRole.HSLocationResaleCertAdmin,
-                    }
-                },
             };
         }
     }

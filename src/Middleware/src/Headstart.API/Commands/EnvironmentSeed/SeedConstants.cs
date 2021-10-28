@@ -291,8 +291,6 @@ namespace Headstart.API.Commands
             new HSSecurityProfile() { ID = CustomRole.HSLocationPermissionAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationPermissionAdmin }, Roles = new ApiRole[] { } },
             new HSSecurityProfile() { ID = CustomRole.HSLocationNeedsApproval, CustomRoles = new CustomRole[] { CustomRole.HSLocationNeedsApproval }, Roles = new ApiRole[] { } },
             new HSSecurityProfile() { ID = CustomRole.HSLocationCreditCardAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationCreditCardAdmin }, Roles = new ApiRole[] { } },
-            new HSSecurityProfile() { ID = CustomRole.HSLocationResaleCertAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationResaleCertAdmin }, Roles = new ApiRole[] { } },
-
 
         };
 
