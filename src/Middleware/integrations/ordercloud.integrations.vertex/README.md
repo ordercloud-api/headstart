@@ -18,7 +18,7 @@ The sales tax cost on an Order is first calculated in checkout after shipping se
 **OrderCloud Side -** This integration should be triggered by the **`OrderCalculate`** Checkout Integration Event. Learn more about [checkout integration events](https://ordercloud.io/knowledge-base/order-checkout-integration); 
 
 ## Order Forwarding
-A taxable transaction is commited to vertex asynchronously shortly following order submit. This enables businesses to easily file sales tax returns. OrderCloud guareentees the submitted order details provided will be unchanged since the most recent tax estimate displayed to the user.
+A taxable transaction is committed to vertex asynchronously shortly following order submit. This enables businesses to easily file sales tax returns. OrderCloud guarantees the submitted order details provided will be unchanged since the most recent tax estimate displayed to the user.
 
 **Vertex Side -** Commit a transaction in Vertex Cloud by calling the [Tax Calculate for Sellers API endpoint](https://developer.vertexcloud.com/api/docs/#operation/Sale_Post) with `saleMessageType` set to `INVOICE`.
 

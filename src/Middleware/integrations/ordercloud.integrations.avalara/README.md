@@ -5,7 +5,7 @@ This integration calculates sales tax for an Order using the Avalara AvaTax API.
 
 Use Cases:
 - Sales Tax Estimate
-- Commited Transactions
+- Committed Transactions
 
 ## Avalara Basics 
 [Avalara](https://www.avalara.com/us/en/index.html) tax automation software works together to create a holistic compliance platform. Products are available as a suite or as stand-alone options to help you customize based on your business needs. Our innovative, cloud-based sales tax calculation program, AvaTax, determines and calculates the latest rates based on location, item, legislative changes, regulations, and more. Customize your tax calculation solution to pay for what’s right for your business.
@@ -17,8 +17,8 @@ The sales tax cost on an Order is first calculated in checkout after shipping se
 
 **OrderCloud Side -** This integration should be triggered by the **`OrderCalculate`** Checkout Integration Event. Learn more about [checkout integration events](https://ordercloud.io/knowledge-base/order-checkout-integration); 
 
-## Commited Transactions
-A taxable transaction is commited to avalara asynchronously shortly following order submit. This enables businesses to easily file sales tax returns. OrderCloud guareentees the submitted order details provided will be unchanged since the most recent tax estimate displayed to the user.
+## Committed Transactions
+A taxable transaction is committed to avalara asynchronously shortly following order submit. This enables businesses to easily file sales tax returns. OrderCloud guarantees the submitted order details provided will be unchanged since the most recent tax estimate displayed to the user.
 
 **Avalara Side -** Commit a transaction in Avalara by calling the  [create transaction endpoint](https://developer.avalara.com/api-reference/avatax/rest/v2/methods/Transactions/CreateTransaction) with `type` set to `SalesInvoice`.
 
