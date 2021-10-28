@@ -201,7 +201,7 @@ namespace Headstart.API
                         TaxProvider.Avalara => avalaraCommand,
                         TaxProvider.Taxjar => taxJarCommand,
                         TaxProvider.Vertex => new NotImplementedTaxCodesProvider(),
-                        _ => new NotImplementedTaxCodesProvider(), // null is default
+                        _ => avalaraCommand // Avalara is default
                     };
                 })
                 .AddSingleton<ITaxCalculator>(provider =>
