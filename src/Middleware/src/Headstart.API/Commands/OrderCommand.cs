@@ -10,7 +10,6 @@ using Headstart.Models.Extended;
 using Headstart.Common.Models;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using OrderCloud.Catalyst;
-using Require = ordercloud.integrations.library.Require;
 
 namespace Headstart.API.Commands
 {
@@ -166,7 +165,7 @@ namespace Headstart.API.Commands
         private async Task EnsureUserCanAccessLocationOrders(string locationID, DecodedToken decodedToken, string overrideErrorMessage = "")
         {
             var hasAccess = await _locationPermissionCommand.IsUserInAccessGroup(locationID, UserGroupSuffix.ViewAllOrders.ToString(), decodedToken);
-            Require.That(hasAccess, new ErrorCode("Insufficient Access", 403, $"User cannot access orders from this location: {locationID}"));
+            Require.That(hasAccess, new ErrorCode("Insufficient Access", $"User cannot access orders from this location: {locationID}", 403));
         }
 
         private async Task EnsureUserCanAccessOrder(HSOrder order, DecodedToken decodedToken)
@@ -200,7 +199,7 @@ namespace Headstart.API.Commands
             }
 
             // if function has not been exited yet we throw an insufficient access error
-            Require.That(false, new ErrorCode("Insufficient Access", 403, $"User cannot access order {order.ID}"));
+            Require.That(false, new ErrorCode("Insufficient Access", $"User cannot access order {order.ID}", 403));
         }
     };
 }
