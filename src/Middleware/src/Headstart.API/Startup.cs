@@ -132,10 +132,7 @@ namespace Headstart.API
 
             var vertexCommand = new VertexCommand(_settings.VertexSettings);
             var taxJarCommand = new TaxJarCommand(_settings.TaxJarSettings);
-            var avalaraCommand = new AvalaraCommand(
-                                avalaraConfig,
-                                new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(avalaraConfig.BaseApiUrl)
-                            ).WithSecurity(_settings.AvalaraSettings.AccountID, _settings.AvalaraSettings.LicenseKey), _settings.EnvironmentSettings.Environment.ToString());
+            var avalaraCommand = new AvalaraCommand(avalaraConfig, _settings.EnvironmentSettings.Environment.ToString());
 
             services.AddMvc(o =>
              {

@@ -34,26 +34,28 @@ namespace ordercloud.integrations.avalara
 		private readonly AvaTaxClient _avaTax;
 		private readonly string _companyCode;
 		private readonly string _baseUrl;
-		private bool noAccountCredentials;
+		private bool hasAccountCredentials;
 		private AppEnvironment appEnvironment;
 
-		public AvalaraCommand(AvalaraConfig settings, AvaTaxClient client, string environment)
+		public AvalaraCommand(AvalaraConfig settings,  string environment)
 		{
 			_settings = settings;
 			appEnvironment = (AppEnvironment)Enum.Parse(typeof(AppEnvironment), environment);
 
-			noAccountCredentials = string.IsNullOrEmpty(_settings?.LicenseKey);
+			hasAccountCredentials = !string.IsNullOrEmpty(_settings?.LicenseKey);
 
 			_companyCode = _settings.CompanyCode;
 			_baseUrl = _settings.BaseApiUrl;
-            _avaTax = client;
+			if(hasAccountCredentials) {
+				_avaTax = new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(settings.BaseApiUrl)).WithSecurity(settings.AccountID, settings.LicenseKey);
+			}
         }
 
 		private bool ShouldMockAvalaraResponse()
         {
 			// To give a larger "headstart" in Test and UAT, Responses can be mocked by simply
 			// not providing an Avalara License Key. (It is still needed for Production)
-			return noAccountCredentials && appEnvironment != AppEnvironment.Production;
+			return !hasAccountCredentials && appEnvironment != AppEnvironment.Production;
 		}
 
 		public async Task<OrderTaxCalculation> CalculateEstimateAsync(OrderWorksheet orderWorksheet, List<OrderPromotion> promotions)
