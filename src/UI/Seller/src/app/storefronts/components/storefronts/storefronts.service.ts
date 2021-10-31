@@ -20,7 +20,9 @@ export class StorefrontsService extends ResourceCrudService<HSApiClient> {
     AppName: '',
     RefreshTokenDuration: 43200,
     DefaultContextUserName: null,
-    xp: null,
+    xp: {
+      IsStorefront: true
+    },
     AllowAnyBuyer: false,
     AllowAnySupplier: false,
     AllowSeller: false,
