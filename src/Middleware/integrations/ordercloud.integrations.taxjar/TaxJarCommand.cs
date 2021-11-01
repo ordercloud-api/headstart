@@ -30,6 +30,11 @@ namespace ordercloud.integrations.taxjar
 
 		public TaxJarCommand(TaxJarConfig config)
 		{
+			if (string.IsNullOrWhiteSpace(config.ApiKey))
+			{
+				return;
+			}
+
 			var apiUrl = config.Environment == TaxJarEnvironment.Production ? TaxjarConstants.DefaultApiUrl : TaxjarConstants.SandboxApiUrl;
 			_client = new TaxjarApi(config.ApiKey, new { apiUrl });
 		}
