@@ -10,7 +10,6 @@ using ordercloud.integrations.library;
 using Headstart.Common.Constants;
 using Azure.Core;
 using OrderCloud.Catalyst;
-using Require = ordercloud.integrations.library.Require;
 
 namespace Headstart.API.Commands
 {
@@ -109,7 +108,7 @@ namespace Headstart.API.Commands
         public async Task EnsureUserIsLocationAdmin(string locationID, DecodedToken decodedToken)
         {
             var hasAccess = await IsUserInAccessGroup(locationID, UserGroupSuffix.PermissionAdmin.ToString(), decodedToken);
-            Require.That(hasAccess, new ErrorCode("Insufficient Access", 403, $"User cannot manage permissions for: {locationID}"));
+            Require.That(hasAccess, new ErrorCode("Insufficient Access", $"User cannot manage permissions for: {locationID}", 403));
         }
 
         public async Task<bool> IsUserInAccessGroup(string locationID, string groupSuffix, DecodedToken decodedToken)

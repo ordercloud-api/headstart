@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Require = ordercloud.integrations.library.Require;
 
 namespace Headstart.Common.Services
 {
@@ -32,7 +31,7 @@ namespace Headstart.Common.Services
         {
             var buyerUserGroups = await _oc.Me.ListUserGroupsAsync<HSLocationUserGroup>(opts => opts.AddFilter(u => u.xp.Type == "BuyerLocation"), userToken);
             var currency = buyerUserGroups.Items.FirstOrDefault(u => u.xp.Currency != null)?.xp?.Currency;
-            Require.That(currency != null, new ErrorCode("Exchange Rate Error", 400, "Exchange Rate Not Defined For User"));
+            Require.That(currency != null, new ErrorCode("Exchange Rate Error", "Exchange Rate Not Defined For User"));
             return (CurrencySymbol)currency;
         }
 

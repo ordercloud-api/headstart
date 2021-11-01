@@ -15,7 +15,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Require = ordercloud.integrations.library.Require;
 
 namespace Headstart.API.Commands
 {
@@ -359,14 +358,14 @@ namespace Headstart.API.Commands
 
             // 1) 
             var allowedLineItemStatuses = LineItemStatusConstants.ValidLineItemStatusSetByUserType[userType];
-            Require.That(allowedLineItemStatuses.Contains(lineItemStatusChanges.Status), new ErrorCode("Not authorized to set this status on a lineItem", 400, $"Not authorized to set line items to {lineItemStatusChanges.Status}"));
+            Require.That(allowedLineItemStatuses.Contains(lineItemStatusChanges.Status), new ErrorCode("Not authorized to set this status on a lineItem", $"Not authorized to set line items to {lineItemStatusChanges.Status}"));
 
             // 2)
             var areCurrentQuantitiesToSupportChange = lineItemStatusChanges.Changes.All(lineItemChange =>
             {
                 return ValidateCurrentQuantities(previousLineItemStates, lineItemChange, lineItemStatusChanges.Status);
             });
-            Require.That(areCurrentQuantitiesToSupportChange, new ErrorCode("Invalid lineItem status change", 400, $"Current lineitem quantity statuses on the order are not sufficient to support the requested change"));
+            Require.That(areCurrentQuantitiesToSupportChange, new ErrorCode("Invalid lineItem status change", $"Current lineitem quantity statuses on the order are not sufficient to support the requested change"));
         }
 
         public bool ValidateCurrentQuantities(List<HSLineItem> previousLineItemStates, LineItemStatusChange lineItemStatusChange, LineItemStatus lineItemStatusChangingTo)
@@ -414,7 +413,7 @@ namespace Headstart.API.Commands
             var markedUpPrice = ValidateLineItemUnitCost(orderID, product, existingLineItems, liReq);
             liReq.UnitPrice = await markedUpPrice;
             
-            Require.That(!order.IsSubmitted, new ErrorCode("Invalid Order Status", 400, "Order has already been submitted"));
+            Require.That(!order.IsSubmitted, new ErrorCode("Invalid Order Status", "Order has already been submitted"));
 
             liReq.xp.StatusByQuantity = LineItemStatusConstants.EmptyStatuses;
             liReq.xp.StatusByQuantity[LineItemStatus.Open] = liReq.Quantity;

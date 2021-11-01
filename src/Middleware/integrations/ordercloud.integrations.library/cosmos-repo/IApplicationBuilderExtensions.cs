@@ -20,8 +20,10 @@ namespace ordercloud.integrations.library.cosmos_repo
             using (IServiceScope serviceScope = builder.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 ICosmosDbContainerFactory factory = serviceScope.ServiceProvider.GetService<ICosmosDbContainerFactory>();
-
-                factory.EnsureDbSetupAsync().Wait();
+                if(factory != null)
+                {
+                    factory.EnsureDbSetupAsync().Wait();
+                }
             }
         }
     }

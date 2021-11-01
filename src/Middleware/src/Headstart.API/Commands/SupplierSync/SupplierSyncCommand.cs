@@ -7,7 +7,6 @@ using Newtonsoft.Json.Linq;
 using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
-using Require = ordercloud.integrations.library.Require;
 
 namespace Headstart.API.Commands
 {
@@ -31,7 +30,7 @@ namespace Headstart.API.Commands
         {
             var supplierID = ID.Split("-")[1];
             var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-            Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierID == me.Supplier.ID, new ErrorCode("Unauthorized", 401, $"You are not authorized view this order"));
+            Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierID == me.Supplier.ID, new ErrorCode("Unauthorized", $"You are not authorized view this order", 401));
             try
             {
                 var type = 
