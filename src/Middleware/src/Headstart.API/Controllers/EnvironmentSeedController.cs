@@ -21,9 +21,11 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// Call this endpoint when initially seeding a brand new organization
-        /// Check out the readme for more info https://github.com/ordercloud-api/headstart#seeding-ordercloud-data
+        /// Seeds a brand new organization
         /// </summary>
+        /// <remarks>
+        /// Check out the readme for more info https://github.com/ordercloud-api/headstart#seeding-ordercloud-data
+        /// </remarks>
         [HttpPost, Route("seed")]
         public async Task<EnvironmentSeedResponse> Seed([FromBody] EnvironmentSeed seed)
         {
