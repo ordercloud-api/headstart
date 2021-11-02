@@ -42,6 +42,8 @@ using ordercloud.integrations.vertex;
 using Newtonsoft.Json;
 using ordercloud.integrations.taxjar;
 using ordercloud.integrations.library.intefaces;
+using System.IO;
+using System.Linq;
 
 namespace Headstart.API
 {
@@ -220,6 +222,9 @@ namespace Headstart.API
                 {
                     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Headstart Middleware API Documentation", Version = "v1" });
                     c.SchemaFilter<SwaggerExcludeFilter>();
+
+                    List<string> xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml", SearchOption.TopDirectoryOnly).ToList();
+                    xmlFiles.ForEach(xmlFile => c.IncludeXmlComments(xmlFile));
                 });
             var serviceProvider = services.BuildServiceProvider();
             services
