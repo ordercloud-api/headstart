@@ -39,6 +39,7 @@ namespace Headstart.Common.Controllers
         /// POST Batch Shipment Update
         /// </summary>    
         [HttpPost, Route("batch/uploadshipment"), OrderCloudUserAuth(ApiRole.ShipmentAdmin)]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<BatchProcessResult> UploadShipments([FromForm] FileUpload fileRequest)
         {
             return  await _command.UploadShipments(fileRequest?.File, UserContext);
