@@ -225,7 +225,9 @@ namespace Headstart.API
 
                     List<string> xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml", SearchOption.TopDirectoryOnly).ToList();
                     xmlFiles.ForEach(xmlFile => c.IncludeXmlComments(xmlFile));
-                });
+                })
+                .AddSwaggerGenNewtonsoftSupport();
+
             var serviceProvider = services.BuildServiceProvider();
             services
                 .AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions
