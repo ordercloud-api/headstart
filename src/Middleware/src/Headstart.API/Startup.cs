@@ -132,10 +132,24 @@ namespace Headstart.API
                 Roles = new[] { ApiRole.FullAccess }
             });
 
-            var vertexCommand = new VertexCommand(_settings.VertexSettings);
-            var taxJarCommand = new TaxJarCommand(_settings.TaxJarSettings);
-            var avalaraCommand = new AvalaraCommand(avalaraConfig, _settings.EnvironmentSettings.Environment.ToString());
-
+            AvalaraCommand avalaraCommand = null;
+            VertexCommand vertexCommand = null;
+            TaxJarCommand taxJarCommand = null;
+            switch (_settings.EnvironmentSettings.TaxProvider)
+            {
+                case TaxProvider.Avalara:
+                    avalaraCommand = new AvalaraCommand(avalaraConfig, _settings.EnvironmentSettings.Environment.ToString());
+                    break;
+                case TaxProvider.Taxjar:
+                    taxJarCommand = new TaxJarCommand(_settings.TaxJarSettings);
+                    break;
+                case TaxProvider.Vertex:
+                    vertexCommand = new VertexCommand(_settings.VertexSettings);
+                    break;
+                default:
+                    break;
+            }
+            
             services.AddMvc(o =>
              {
                  o.Filters.Add(new ordercloud.integrations.library.ValidateModelAttribute());
@@ -213,7 +227,6 @@ namespace Headstart.API
                         _ => avalaraCommand // Avalara is default
 					};
 				})
-                .AddSingleton<IAvalaraCommand>(avalaraCommand)
                 .AddSingleton<IEasyPostShippingService>(x => new EasyPostShippingService(new EasyPostConfig() { APIKey = _settings.EasyPostSettings.APIKey }))
                 .AddSingleton<ISmartyStreetsService>(x => new SmartyStreetsService(_settings.SmartyStreetSettings, smartyStreetsUsClient))
                 .AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(_settings.CardConnectSettings, _settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))
