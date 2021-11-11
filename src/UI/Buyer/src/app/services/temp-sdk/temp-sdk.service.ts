@@ -50,6 +50,63 @@ export class TempSdk {
       .toPromise()
   }
 
+  async listReflektionProducts(userID: string, page: number, searchTerm: string) : Promise<ListPageWithFacets<HSMeProduct>> {
+    var body = {
+      "n_item": 20,
+      "page_number": page,
+      "data": {
+          "query": {
+              "keyphrase": {
+                  "value": [
+                    searchTerm
+                  ]
+              }
+          },
+          "context": {
+              "user": {
+                  "uuid": userID
+              }
+          },
+          "content": {
+              "product": {}
+          },
+          "force_v2_specs": true
+      }
+    };
+    var resp = await this.http.post<any>("https://api-staging.rfksrv.com/search-rec/12353-150015332/3?", body, { headers: { Authorization: "01-14c9627a-35d9c17fa8dd9b1b627d4890fcab45dcec5df4ab"} }).toPromise();
+
+    var products = resp.content.product.value.map(p => {
+      return {
+        ID: p.id,
+        Name: p.name,
+        QuantityMultiplier: 1,
+        PriceSchedule: {
+          MinQuantity: 1,
+          PriceBreaks: [{
+            Quantity: 1,
+            Price: p.price
+          }]
+        },
+        xp: {
+          Currency: "USD",
+          Images: [{
+            Url: p.image_url
+          }]
+        }
+      }
+    })
+    return { 
+      Meta: {
+        TotalPages: resp.total_page,
+        PageSize: resp.content.product.n_item,
+        TotalCount: resp.content.product.total_item,
+        Page: page,
+        Facets: []
+      },
+      Items: products
+    };
+  }
+
   async getMeProduct(id: string): Promise<SuperHSMeProduct> {
     const url = `${this.appConfig.middlewareUrl}/me/products/${id}`
     return await this.http

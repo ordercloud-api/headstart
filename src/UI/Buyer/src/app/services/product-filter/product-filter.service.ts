@@ -69,16 +69,20 @@ export class ProductFilterService {
     )
     const favorites =
       this.currentUser.get().FavoriteProductIDs.join('|') || undefined
-    return await this.tempSdk.listMeProducts({
-      page,
-      search,
-      sortBy,
-      filters: {
-        categoryID,
-        ...facets,
-        ID: showOnlyFavorites ? favorites : undefined,
-      },
-    })
+    if (search === undefined) { 
+      return await this.tempSdk.listMeProducts({
+        page,
+        search,
+        sortBy,
+        filters: {
+          categoryID,
+          ...facets,
+          ID: showOnlyFavorites ? favorites : undefined,
+        },
+      })
+    } else {
+      return await this.tempSdk.listReflektionProducts(this.currentUser.get().ID, page, search);
+    }
   }
 
   toPage(pageNumber: number): void {
