@@ -24,7 +24,7 @@
       (!isMyResource || _currentResourceNamePlural !== 'suppliers') &&
       !excludeFromFilterBar
     "
-    class="row additional-item-edit-resource additional-item-table"
+    class="row additional-item-edit-resource additional-item-table pb-4"
   >
     <div
       *ngIf="parentResourceService && !isMyResource"
@@ -255,7 +255,7 @@
     </div>
   </div>
   <!-- /Filter Bar -->
-  <div class="row mt-4">
+  <div class="row">
     <div class="col-md-12">
       <!-- full table view -->
       <div *ngIf="showFilterBar()">
