@@ -367,7 +367,7 @@
       "VARIANTS": "Variants",
       "VARIANTS_LIMIT_100": "variants. (Limit 100)",
       "VARIANTS_LOWERCASE": "variants",
-      "VARIANTS_WEARNING": "Set a product sku before creating product variants.",
+      "VARIANTS_WARNING": "Set a product sku before creating product variants.",
       "VARIATION": "Variation",
       "VARIATION_ISSUES": "There are problems with the product variations.",
       "VISIBLE": "Visible",
