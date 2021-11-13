@@ -339,10 +339,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
           OrderCanExceed: new FormControl(
             _get(superHSProduct.Product, 'Inventory.OrderCanExceed')
           ),
-          TaxCodeCategory: new FormControl(
-            _get(superHSProduct.Product, 'xp.Tax.Category', null),
-            Validators.required
-          ),
           TaxCode: new FormControl(
             _get(superHSProduct.Product, 'xp.Tax.Code', null),
             Validators.required
@@ -468,7 +464,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
 
   setNonRequiredFields(): void {
     const optionalFieldsArray = [
-      'TaxCodeCategory',
       'TaxCode',
       'ShipWeight',
       'ShipFromAddressID',
@@ -509,7 +504,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       this.isShippingValid() &&
       this.unitOfMeasureValid() &&
       this.productForm.controls.Name.valid &&
-      this.productForm.controls.TaxCodeCategory.valid &&
       this.productForm.controls.TaxCode.valid
     )
   }
