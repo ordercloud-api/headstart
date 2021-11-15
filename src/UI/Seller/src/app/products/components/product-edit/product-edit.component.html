@@ -95,6 +95,7 @@
           <div class="container-fluid">
             <div class="row pt-3">
               <div class="col-md-8 form-group">
+                <span class="required-field">* required fields</span>
                 <div class="card bg-white shadow-sm p-4 mt-3">
                   <!-- Product Name -->
                   <div
@@ -127,7 +128,7 @@
                   <div class="form-row">
                     <div class="form-group col-md-6">
                       <label for="Name" translate
-                        >ADMIN.PRODUCT_EDIT.NAME</label
+                        >ADMIN.PRODUCT_EDIT.NAME <span class="required-field">*</span></label
                       >
                       <input
                         [attr.disabled]="readonly ? true : null"
@@ -152,7 +153,7 @@
                     </div>
                     <div [hidden]="isCreatingNew" class="form-group col-md-6">
                       <label for="ProductType" translate
-                        >ADMIN.PRODUCT_EDIT.PRODUCT_TYPE</label
+                        >ADMIN.PRODUCT_EDIT.PRODUCT_TYPE <span class="required-field">*</span></label
                       >
                       <select
                         [attr.disabled]="readonly ? true : null"
@@ -261,7 +262,7 @@
                   <div class="form-row">
                     <div class="form-group col-md-6">
                       <label for="UnitOfMeasureQty" translate
-                        >ADMIN.PRODUCT_EDIT.QUANTITY_PER_UNIT
+                        >ADMIN.PRODUCT_EDIT.QUANTITY_PER_UNIT <span class="required-field">*</span>
                       </label>
                       <input
                         [attr.disabled]="readonly ? true : null"
@@ -284,7 +285,7 @@
                     </div>
                     <div class="form-group col-md-6">
                       <label for="UnitOfMeasureUnit" translate
-                        >ADMIN.PRODUCT_EDIT.UNIT_OF_MEASURE
+                        >ADMIN.PRODUCT_EDIT.UNIT_OF_MEASURE <span class="required-field">*</span>
                       </label>
                       <input
                         [attr.disabled]="readonly ? true : null"
@@ -616,7 +617,7 @@
                       </small>
                     </div>
                     <label for="ShipFromAddressID" translate
-                      >ADMIN.PRODUCT_EDIT.WHICH_LOCATION_SHIP
+                      >ADMIN.PRODUCT_EDIT.WHICH_LOCATION_SHIP <span class="required-field">*</span>
                     </label>
                     <select
                       [attr.disabled]="readonly ? true : null"
@@ -645,7 +646,7 @@
                     class="d-flex justify-content-between align-items-center"
                   >
                     <label for="ShipWeight" translate>
-                      ADMIN.PRODUCT_EDIT.WEIGHT_PER_QTY
+                      ADMIN.PRODUCT_EDIT.WEIGHT_PER_QTY <span class="required-field">*</span>
                     </label>
                   </div>
                   <div class="form-row">
@@ -681,7 +682,7 @@
                   <hr />
                   <div class="form-group">
                     <label class="d-block" for="SizeTier" translate
-                      >ADMIN.PRODUCT_EDIT.SIZE_TIER_LABEL</label
+                      >ADMIN.PRODUCT_EDIT.SIZE_TIER_LABEL <span class="required-field">*</span></label
                     >
                     <select
                       [attr.disabled]="readonly ? true : null"

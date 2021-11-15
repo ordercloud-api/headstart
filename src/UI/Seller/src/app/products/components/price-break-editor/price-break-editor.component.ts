@@ -24,6 +24,8 @@ export class PriceBreakEditor {
   @Input()
   currency: SupportedRates
   @Input()
+  isRequired: boolean
+  @Input()
   set priceSchedule(value: PriceSchedule) {
     if (value) {
       this.isAddingPriceBreak = false
