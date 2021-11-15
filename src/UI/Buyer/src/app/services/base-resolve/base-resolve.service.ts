@@ -4,6 +4,7 @@ import { HSLineItem } from "@ordercloud/headstart-sdk";
 import { isEqual } from "lodash";
 import { ToastrService } from "ngx-toastr";
 import { ListPage } from "ordercloud-javascript-sdk";
+import { AppConfig } from "src/app/models/environment.types";
 import { OrderReorderResponse } from "src/app/models/order.types";
 import { CurrentUserService } from "../current-user/current-user.service";
 import { ExchangeRatesService } from "../exchange-rates/exchange-rates.service";
@@ -13,6 +14,7 @@ import { CartService } from "../order/cart.service";
 import { OrderStateService } from "../order/order-state.service";
 import { CurrentOrderService } from "../order/order.service";
 import { ProductCategoriesService } from "../product-categories/product-categories.service";
+import { ReflektionService } from "../reflektion/reflektion.service";
 
 
 @Injectable()
@@ -27,10 +29,15 @@ export class BaseResolveService {
     private toastrService: ToastrService,
     private orderHistory: OrderHistoryService,
     private cartService: CartService,
-    private router: Router
+    private router: Router,
+    private appConfig: AppConfig,
+    private reflektion: ReflektionService
   ) { }
 
   async resolve(): Promise<void> {
+    if (this.appConfig.useReflektion) {
+      this.reflektion.init(); // Get reflektion token. Don't await so it runs concurent with other requests
+    }
     await this.currentUser.reset()
     var reorderResponse: OrderReorderResponse
     const anonLineItems = this.orderService.lineItems

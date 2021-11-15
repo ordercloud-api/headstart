@@ -64,7 +64,6 @@ export interface EnvironmentConfig {
   moosendWebsiteID?: string
   useReflektion: boolean
   reflektionUrl: string
-  reflektionAPIKey: string
 }
 
 export class AppConfig {
@@ -157,8 +156,4 @@ export class AppConfig {
    * Base Url for Reflektion search requests. Should be Null if useReflektion is false.
    */
   reflektionUrl: string
-  /**
-   * API Key for Reflektion search requests. Should be Null if useReflektion is false.
-   */
-  reflektionAPIKey: string
 }

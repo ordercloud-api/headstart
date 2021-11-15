@@ -32,6 +32,7 @@ import Assets from './Assets';
 import Services from './Service';
 import ApprovalRules from './ApprovalRules';
 import RmAs from './RmAs';
+import Reflektion from './Reflektion';
 
 export { HeadStartSDK }
 
@@ -42,6 +43,7 @@ const HeadStartSDK: HeadStartSDK = {
     SsoLogins : new SsoLogins(),
     Catalogs : new Catalogs(),
     RmAs: new RmAs(),
+    Reflektion: new Reflektion(),
     Orders : new Orders(),
     Payments : new Payments(),
     Shipments : new Shipments(),
@@ -80,6 +82,7 @@ interface HeadStartSDK {
     Catalogs : Catalogs,
     Orders : Orders,
     RmAs: RmAs,
+    Reflektion: Reflektion,
     Payments : Payments,
     Shipments : Shipments,
     Suppliers : Suppliers,

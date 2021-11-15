@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { HSMeProduct } from "@ordercloud/headstart-sdk";
+import { HSMeProduct, ReflektionAccessToken, HeadStartSDK } from "@ordercloud/headstart-sdk";
+import { intersection } from "lodash";
 import { ListPageWithFacets, MetaWithFacets } from "ordercloud-javascript-sdk";
 import { ProductSortOption } from "src/app/components/products/sort-products/sort-products.component";
 import { AppConfig } from "src/app/models/environment.types";
@@ -11,6 +12,7 @@ import { ProductFilters } from "src/app/models/filter-config.types";
   })
   export class ReflektionService {
     constructor(private http: HttpClient, private appConfig: AppConfig) {}
+        private reflektionToken: ReflektionAccessToken = null;
         reflektionSortOptions: ProductSortOption[] = [
             { label: "Name: A-Z", value: "name-asc" },
             { label: "Name: Z-A", value: "name-desc" },
@@ -21,12 +23,18 @@ import { ProductFilters } from "src/app/models/filter-config.types";
             { label: "Reviews: High to Low", value: "review-desc" },
             { label: "Reviews: Low to High", value: "review-asc" },
             { label: "Featured", value: "featured-desc" },
-            
         ];
 
+        async init() {
+            if (this.reflektionToken == null) {
+                this.reflektionToken = await HeadStartSDK.Reflektion.GetToken();
+            }
+        }
+
         async listReflektionProducts(userID: string, filters: ProductFilters) : Promise<ListPageWithFacets<HSMeProduct>> {
+            await this.init();
             var body = this.buildRequest(userID, filters);
-            var resp = await this.http.post<any>(this.appConfig.reflektionUrl + "/api/search-rec/3", body, { headers: { Authorization: this.appConfig.reflektionAPIKey} }).toPromise();
+            var resp = await this.http.post<any>(this.appConfig.reflektionUrl + "/api/search-rec/3", body, { headers: { Authorization: this.reflektionToken.accessToken } }).toPromise();
             var meProducts = { 
               Meta: this.mapMeta(resp),
               Items:  resp.content.product.value.map(this.mapProduct)

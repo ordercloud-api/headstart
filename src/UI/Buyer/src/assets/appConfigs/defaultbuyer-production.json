@@ -15,7 +15,6 @@
   "moosendWebsiteID": "xxxxxxxxxxxxxxxxxxxxxxxx",
   "useReflektion": false,
   "reflektionUrl": null,
-  "reflektionAPIKey": null,
   "theme": {
     "logoSrc": "assets/generic-logo.png"
   },

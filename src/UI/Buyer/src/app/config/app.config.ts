@@ -23,7 +23,6 @@ export const ocAppConfig: AppConfig = {
   moosendWebsiteID: environment.moosendWebsiteID,
   useReflektion: environment.useReflektion,
   reflektionUrl: environment.reflektionUrl,
-  reflektionAPIKey: environment.reflektionAPIKey,
   scope: [
     'MeAddressAdmin',
     'AddressAdmin', // Only for location owners

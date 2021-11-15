@@ -37,7 +37,7 @@ export class ProductFilterService {
     private activatedRoute: ActivatedRoute,
     private categories: ProductCategoriesService,
     private tempSdk: TempSdk,
-    private reflecktion: ReflektionService,
+    private reflektion: ReflektionService,
     private appConfig: AppConfig
   ) {
     this.activatedRoute.queryParams.subscribe((params) => {
@@ -84,7 +84,7 @@ export class ProductFilterService {
         },
       }
     if (this.appConfig.useReflektion) { 
-      return await this.reflecktion.listReflektionProducts(this.currentUser.get().ID, filters);
+      return await this.reflektion.listReflektionProducts(this.currentUser.get().ID, filters);
     } else {
       return await this.tempSdk.listMeProducts(filters);
     }
