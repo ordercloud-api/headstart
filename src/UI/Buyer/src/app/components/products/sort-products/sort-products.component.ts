@@ -1,7 +1,13 @@
-import { Component, OnInit, OnDestroy } from '@angular/core'
+import { Component, OnInit, OnDestroy, Input } from '@angular/core'
 import { FormGroup, FormControl } from '@angular/forms'
 import { takeWhile } from 'rxjs/operators'
+import { ReflektionService } from 'src/app/services/reflektion/reflektion.service'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
+
+export interface ProductSortOption {
+  value: string;
+  label: string;
+}
 
 @Component({
   templateUrl: './sort-products.component.html',
@@ -10,16 +16,20 @@ import { ShopperContextService } from 'src/app/services/shopper-context/shopper-
 export class OCMProductSort implements OnInit, OnDestroy {
   alive = true
   form: FormGroup
-  options = [
+  options: ProductSortOption[] = [];
+  orderCloudSortOptions = [
     { value: 'ID', label: 'ID: A to Z' },
     { value: '!ID', label: 'ID: Z to A' },
     { value: 'Name', label: 'Name: A to Z' },
     { value: '!Name', label: 'Name: Z to A' },
-  ]
+  ];
 
-  constructor(private context: ShopperContextService) {}
+
+  constructor(private context: ShopperContextService, private reflektion: ReflektionService) {}
 
   ngOnInit(): void {
+    this.options = this.context.appSettings.useReflektion ? this.reflektion.reflektionSortOptions : this.orderCloudSortOptions;
+
     this.form = new FormGroup({ sortBy: new FormControl(null) })
     this.context.productFilters.activeFiltersSubject
       .pipe(takeWhile(() => this.alive))

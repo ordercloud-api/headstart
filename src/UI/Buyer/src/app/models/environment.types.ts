@@ -62,6 +62,9 @@ export interface EnvironmentConfig {
   storefrontName?: string
   useMoosend?: boolean
   moosendWebsiteID?: string
+  useReflektion: boolean
+  reflektionUrl: string
+  reflektionAPIKey: string
 }
 
 export class AppConfig {
@@ -146,4 +149,16 @@ export class AppConfig {
    *  Get a website ID - https://help.moosend.com/hc/en-us/articles/115002945125-How-can-I-connect-my-website-to-Moosend-
    */
   moosendWebsiteID?: string
+  /**
+   * https://reflektion.com/
+   */
+  useReflektion: boolean
+  /**
+   * Base Url for Reflektion search requests. Should be Null if useReflektion is false.
+   */
+  reflektionUrl: string
+  /**
+   * API Key for Reflektion search requests. Should be Null if useReflektion is false.
+   */
+  reflektionAPIKey: string
 }

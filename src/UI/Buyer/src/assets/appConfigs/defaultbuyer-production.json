@@ -13,6 +13,9 @@
   "orderCloudApiUrl": "https://api.ordercloud.io",
   "useMoosend": false,
   "moosendWebsiteID": "xxxxxxxxxxxxxxxxxxxxxxxx",
+  "useReflektion": false,
+  "reflektionUrl": null,
+  "reflektionAPIKey": null,
   "theme": {
     "logoSrc": "assets/generic-logo.png"
   },

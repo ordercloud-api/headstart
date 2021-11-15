@@ -101,7 +101,7 @@
           </button>
         </div>
         <div class="col-12 col-md-auto">
-          <ocm-product-sort></ocm-product-sort>
+          <ocm-product-sort [sortOptions]="sortOptions"></ocm-product-sort>
         </div>
       </div>
       <div class="card" *ngIf="products && products.Items.length === 0">

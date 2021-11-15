@@ -205,6 +205,7 @@ import {
   faCcVisa,
 } from '@fortawesome/free-brands-svg-icons'
 import { faCreditCard } from '@fortawesome/free-solid-svg-icons'
+import { ReflektionService } from './services/reflektion/reflektion.service'
 
 export function HttpLoaderFactory(
   http: HttpClient,
@@ -388,6 +389,7 @@ const components = [
     OrderHistoryService,
     OrdersToApproveStateService,
     TempSdk,
+    ReflektionService,
     PaymentHelperService,
     PDFService,
     ProductFilterService,

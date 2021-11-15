@@ -21,6 +21,9 @@ export const ocAppConfig: AppConfig = {
   storefrontName: environment.storefrontName,
   useMoosend: environment.useMoosend,
   moosendWebsiteID: environment.moosendWebsiteID,
+  useReflektion: environment.useReflektion,
+  reflektionUrl: environment.reflektionUrl,
+  reflektionAPIKey: environment.reflektionAPIKey,
   scope: [
     'MeAddressAdmin',
     'AddressAdmin', // Only for location owners
