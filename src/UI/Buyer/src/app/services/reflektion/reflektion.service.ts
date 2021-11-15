@@ -82,7 +82,7 @@ import { ProductFilters } from "src/app/models/filter-config.types";
         }
 
         private buildRequest(userID: string, filters: ProductFilters) {
-            var sortArray = (filters.sortBy || []).map(value => {
+            var sortArray = (filters?.sortBy || []).map(value => {
                 var [name, order] = value.split("-");
                 return { name, order };
             })
