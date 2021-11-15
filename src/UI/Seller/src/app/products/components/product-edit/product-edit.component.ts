@@ -348,7 +348,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
             Validators.required
           ),
           SizeTier: new FormControl(
-            _get(superHSProduct.Product, 'xp.SizeTier')
+            _get(superHSProduct.Product, 'xp.SizeTier'),
+            Validators.required
           ),
           UnitOfMeasureQty: new FormControl(
             _get(superHSProduct.Product, 'xp.UnitOfMeasure.Qty'),
