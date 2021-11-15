@@ -25,7 +25,7 @@ export class OCMProductList implements OnInit, OnDestroy {
   closeIcon = faTimes
   numberOfItemsInPagination = 10
   searchTermForProducts = ''
-  isAnon: boolean;
+  isAnon: boolean
 
   constructor(private context: ShopperContextService) {}
 

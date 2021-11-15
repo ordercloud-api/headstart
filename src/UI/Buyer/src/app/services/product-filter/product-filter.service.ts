@@ -58,7 +58,6 @@ export class ProductFilterService {
   }
 
   async listProducts(): Promise<ListPageWithFacets<HSMeProduct>> {
-    console.log("appConfig", this.appConfig);
     const {
       page,
       sortBy,
