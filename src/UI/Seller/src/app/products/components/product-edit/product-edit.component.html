@@ -500,7 +500,6 @@
                       ADMIN.PRODUCT_EDIT.QUANTITY_AVAILABLE
                     </p>
                     <a
-                      [fragment]="variants"
                       class="text-muted cursor-pointer"
                       translate
                       (click)="active = 5"
@@ -894,7 +893,6 @@
       <!-- Buyer Visibility -->
       <li [ngbNavItem]="1" *ngIf="sellerView" id="1">
         <a
-          [fragment]="catalog - assignments"
           class="text-muted"
           ngbNavLink
           translate
@@ -911,7 +909,7 @@
       <!-- /Buyer Visibility -->
       <!-- Description -->
       <li [ngbNavItem]="2" id="2">
-        <a [fragment]="description" class="text-muted" ngbNavLink translate
+        <a class="text-muted" ngbNavLink translate
           >ADMIN.PRODUCT_EDIT.DESCRIPTION</a
         >
         <ng-template ngbNavContent>
@@ -1002,7 +1000,6 @@
         [disabled]="readonly && !_superHSProductEditable?.PriceSchedule?.ID"
       >
         <a
-          [fragment]="price"
           class="text-muted d-flex justify-content-center align-items-center"
           ngbNavLink
           translate
@@ -1047,7 +1044,7 @@
       <!-- /Pricing -->
       <!-- Filters -->
       <li [ngbNavItem]="4" id="4">
-        <a [fragment]="filters" class="text-muted" ngbNavLink translate
+        <a class="text-muted" ngbNavLink translate
           >ADMIN.PRODUCT_EDIT.FILTERS</a
         >
         <ng-template ngbNavContent>
@@ -1071,7 +1068,6 @@
       <!-- Varitaions -->
       <li *ngIf="!_superHSProductEditable?.Product?.ID" [ngbNavItem]="5" id="5">
         <a
-          [fragment]="variants"
           class="text-muted nav-link"
           (click)="showVariantToastr()"
           translate
@@ -1083,7 +1079,7 @@
         </a>
       </li>
       <li *ngIf="_superHSProductEditable?.Product?.ID" [ngbNavItem]="5" id="5">
-        <a [fragment]="variants" class="text-muted" ngbNavLink translate>
+        <a class="text-muted" ngbNavLink translate>
           ADMIN.PRODUCT_EDIT.VARIANTS
           <span class="badge badge-pill badge-primary-light">{{
             _superHSProductEditable?.Variants?.length || 0
@@ -1112,7 +1108,6 @@
       <!-- Images & Documents -->
       <li [ngbNavItem]="6" id="6">
         <a
-          [fragment]="images - and - documents"
           class="text-muted"
           ngbNavLink
           translate
