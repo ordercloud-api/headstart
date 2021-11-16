@@ -10,6 +10,8 @@ import { ProductCategoriesService } from '../product-categories/product-categori
 import { TempSdk } from '../temp-sdk/temp-sdk.service'
 import { ProductFilters } from 'src/app/models/filter-config.types'
 import { HSMeProduct } from '@ordercloud/headstart-sdk'
+import { ReflektionService } from '../reflektion/reflektion.service'
+import { AppConfig } from 'src/app/models/environment.types'
 
 // TODO - this service is only relevent if you're already on the product details page. How can we enforce/inidcate that?
 @Injectable({
@@ -34,7 +36,9 @@ export class ProductFilterService {
     private currentUser: CurrentUserService,
     private activatedRoute: ActivatedRoute,
     private categories: ProductCategoriesService,
-    private tempSdk: TempSdk
+    private tempSdk: TempSdk,
+    private reflektion: ReflektionService,
+    private appConfig: AppConfig
   ) {
     this.activatedRoute.queryParams.subscribe((params) => {
       if (this.router.url.startsWith('/products')) {
@@ -69,16 +73,21 @@ export class ProductFilterService {
     )
     const favorites =
       this.currentUser.get().FavoriteProductIDs.join('|') || undefined
-    return await this.tempSdk.listMeProducts({
-      page,
-      search,
-      sortBy,
-      filters: {
-        categoryID,
-        ...facets,
-        ID: showOnlyFavorites ? favorites : undefined,
-      },
-    })
+    const filters = {
+        page,
+        search,
+        sortBy,
+        filters: {
+          categoryID,
+          ...facets,
+          ID: showOnlyFavorites ? favorites : undefined,
+        },
+      }
+    if (this.appConfig.useReflektion) { 
+      return await this.reflektion.listReflektionProducts(this.currentUser.get().ID, filters);
+    } else {
+      return await this.tempSdk.listMeProducts(filters);
+    }
   }
 
   toPage(pageNumber: number): void {

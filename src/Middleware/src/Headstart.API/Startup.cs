@@ -185,6 +185,7 @@ namespace Headstart.API
                 .Inject<IDiscountDistributionService>()
                 .Inject<IHSCatalogCommand>()
                 .Inject<ISendgridService>()
+                .Inject<IReflektionService>()
                 .Inject<IHSSupplierCommand>()
                 .Inject<ICreditCardCommand>()
                 .Inject<ISupportAlertService>()

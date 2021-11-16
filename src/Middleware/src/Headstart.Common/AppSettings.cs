@@ -21,6 +21,7 @@ namespace Headstart.Common
         public SendgridSettings SendgridSettings { get; set; } = new SendgridSettings();
         public ServiceBusSettings ServiceBusSettings { get; set; } = new ServiceBusSettings();
         public SmartyStreetsConfig SmartyStreetSettings { get; set; } = new SmartyStreetsConfig();
+        public ReflektionSettings ReflektionSettings { get; set; } = new ReflektionSettings();
         public VertexConfig VertexSettings { get; set; } = new VertexConfig();
         public TaxJarConfig TaxJarSettings { get; set; } = new TaxJarConfig();
         public StorageAccountSettings StorageAccountSettings { get; set; } = new StorageAccountSettings();
@@ -31,6 +32,13 @@ namespace Headstart.Common
     public class ApplicationInsightsSettings
     {
         public string InstrumentationKey { get; set; }
+    }
+
+    public class ReflektionSettings
+	{
+        public string APIKey { get; set; }
+        public string AuthUrl { get; set; }
+
     }
 
     public enum AppEnvironment { Test, Staging, Production }

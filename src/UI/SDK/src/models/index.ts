@@ -122,3 +122,4 @@ export * from './Filters';
 export * from './AccessToken';
 export * from './AssetUpload';
 export * from './ListArgs';
+export * from './ReflektionAccessToken';
