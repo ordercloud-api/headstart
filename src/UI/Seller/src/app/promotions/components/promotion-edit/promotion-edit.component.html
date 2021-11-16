@@ -784,8 +784,8 @@
               >
                 {{ getDateRangeDisplay() }}
               </li>
-              <li *ngIf="_promotionEditable?.xp?.MaxShipCost" translate>
-                ADMIN.PROMOTIONS.APPLIES_TO_RATES
+              <li *ngIf="_promotionEditable?.xp?.MaxShipCost">
+                {{ 'ADMIN.PROMOTIONS.APPLIES_TO_RATES' | translate }}
                 {{ _promotionEditable?.xp?.MaxShipCost | currency }}
               </li>
               <li>{{ getEligibilityDisplay() }}</li>
