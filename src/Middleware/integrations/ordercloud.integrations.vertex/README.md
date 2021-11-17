@@ -5,7 +5,7 @@ This integration calculates sales tax for an Order using the vertex cloud API. I
 
 Use Cases:
 - Sales Tax Estimate
-- Finialized Order Forwarding 
+- Finalized Order Forwarding 
 
 ## Vertex Basics 
 [Vertex](https://www.vertexinc.com/) is a cloud or on premise **sales and use tax solution**. Vertex Cloud integrates with leading e-commerce platforms and mid-market ERP systems. Customers can use Vertex Cloud to manage complex sales and use tax across multiple jurisdictions. Vertex Cloud provides tax calculations and signature-ready PDF returns in one comprehensive solution.
