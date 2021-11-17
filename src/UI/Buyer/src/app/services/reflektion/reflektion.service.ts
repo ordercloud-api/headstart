@@ -183,34 +183,4 @@ export class ReflektionService {
     }
     return meta
   }
-
-  private buildRequest(userID: string, filters: ProductFilters) {
-    const sortArray = (filters?.sortBy || []).map((value) => {
-      const [name, order] = value.split('-')
-      return { name, order }
-    })
-    return {
-      data: {
-        n_item: 20,
-        page_number: Number(filters.page),
-        query: {
-          keyphrase: {
-            value: [filters.search ?? ''],
-          },
-        },
-        context: {
-          user: {
-            uuid: userID,
-          },
-        },
-        sort: {
-          value: sortArray,
-        },
-        content: {
-          product: {},
-        },
-        force_v2_specs: true,
-      },
-    }
-  }
 }
