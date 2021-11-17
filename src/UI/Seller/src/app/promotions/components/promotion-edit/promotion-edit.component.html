@@ -2,10 +2,11 @@
   <div class="row">
     <div class="col-md-7 mb-4">
       <form [formGroup]="resourceForm">
-        <div class="card bg-white shadow-sm p-4">
+        <span class="required-field">* required fields</span>
+        <div class="card bg-white shadow-sm p-4 mt-3">
           <div class="d-flex justify-content-between align-items-center">
             <label for="discountCode" class="h6 mb-0" translate>
-              ADMIN.PROMOTIONS.DISCOUNT_CODE
+              ADMIN.PROMOTIONS.DISCOUNT_CODE <span class="required-field">*</span>
             </label>
             <button
               type="button"
@@ -627,7 +628,7 @@
           >
           <div class="form-group mt-3">
             <label for="StartDate" translate
-              >ADMIN.PROMOTIONS.START_DATE_TIME
+              >ADMIN.PROMOTIONS.START_DATE_TIME <span class="required-field">*</span>&nbsp;
               <fa-icon
                 [icon]="faQuestionCircle"
                 autoClose="outside"
