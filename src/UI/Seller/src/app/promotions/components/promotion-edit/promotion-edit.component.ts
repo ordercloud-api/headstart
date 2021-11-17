@@ -292,6 +292,11 @@ export class PromotionEditComponent implements OnInit, OnChanges {
     this.resourceForm.controls.Code.setValue(randomCode)
   }
 
+  handleUpdatePromoType(event: any, field: string, typeOfValue?: string): void {
+    this.handleUpdatePromo(event, field, typeOfValue);
+    this.updateDescription();
+  }
+
   handleUpdatePromo(event: any, field: string, typeOfValue?: string): void {
     if (
       field === 'xp.AppliesTo' &&
@@ -345,7 +350,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
     return eligibility === this._promotionEditable?.xp?.AppliesTo
   }
 
-  getValueDisplay(): string {
+  updateDescription(): void {
     const safeXp = this._promotionEditable?.xp
     let valueString = ''
     switch (safeXp?.AppliesTo) {
@@ -372,7 +377,6 @@ export class PromotionEditComponent implements OnInit, OnChanges {
       { target: { value: valueString.trim() } },
       'Description'
     )
-    return valueString.trim()
   }
 
   arrangeValueString(safeXp: PromotionXp, valueString: string): string {
