@@ -83,7 +83,7 @@
                     id="Percentage"
                     value="Percentage"
                     formControlName="Type"
-                    (change)="handleUpdatePromo($event, 'xp.Type')"
+                    (change)="handleUpdatePromoType($event, 'xp.Type')"
                     [checked]="promoTypeCheck('Percentage')"
                   />
                   <label class="form-check-label" for="Percentage" translate>
@@ -98,7 +98,7 @@
                     id="FixedAmount"
                     value="FixedAmount"
                     formControlName="Type"
-                    (change)="handleUpdatePromo($event, 'xp.Type')"
+                    (change)="handleUpdatePromoType($event, 'xp.Type')"
                     [checked]="promoTypeCheck('FixedAmount')"
                   />
                   <label class="form-check-label" for="FixedAmount" translate>
@@ -113,7 +113,7 @@
                     id="FreeShipping"
                     value="FreeShipping"
                     formControlName="Type"
-                    (change)="handleUpdatePromo($event, 'xp.Type')"
+                    (change)="handleUpdatePromoType($event, 'xp.Type')"
                     [checked]="promoTypeCheck('FreeShipping')"
                   />
                   <label class="form-check-label" for="FreeShipping" translate>
@@ -150,7 +150,7 @@
                   class="form-control"
                   formControlName="Value"
                   min="0"
-                  (input)="handleUpdatePromo($event, 'xp.Value', 'number')"
+                  (input)="handleUpdatePromoType($event, 'xp.Value', 'number')"
                   id="{{ _promotionEditable?.xp?.Type }}"
                 />
                 <div
@@ -775,7 +775,7 @@
             "
           >
             <ul>
-              <li>{{ getValueDisplay() }}</li>
+              <li>{{ _promotionEditable?.Description }}</li>
               <li
                 *ngIf="
                   _promotionEditable?.StartDate &&
