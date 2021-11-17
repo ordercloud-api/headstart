@@ -67,8 +67,7 @@
               "@babel/runtime-corejs3/core-js-stable/object/define-property",
               "@babel/runtime-corejs3/core-js-stable/instance/map",
               "@babel/runtime-corejs3/core-js-stable/parse-float",
-              "zone.js/dist/zone-error",
-              "jwt-decode"
+              "zone.js/dist/zone-error"
             ],
             "outputPath": "dist",
             "index": "src/index.html",

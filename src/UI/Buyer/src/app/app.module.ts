@@ -206,6 +206,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 import { faCreditCard } from '@fortawesome/free-solid-svg-icons'
 import { ReflektionService } from './services/reflektion/reflektion.service'
+import { JwtModule } from '@auth0/angular-jwt'
 
 export function HttpLoaderFactory(
   http: HttpClient,
