@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core'
-import * as jwtDecode_ from 'jwt-decode'
-const jwtDecode = jwtDecode_
+import { JwtHelperService } from '@auth0/angular-jwt'
 import { isUndefined as _isUndefined } from 'lodash'
 import { Tokens } from 'ordercloud-javascript-sdk'
 import { CookieService } from 'ngx-cookie'
@@ -11,6 +10,7 @@ import { DecodedOCToken } from 'src/app/models/profile.types'
   providedIn: 'root',
 })
 export class TokenHelperService {
+  private jwtHelper = new JwtHelperService()
   private isSSOCookieName = `${this.appConfig.appname
     .replace(/ /g, '_')
     .toLowerCase()}_isSSO`
@@ -22,7 +22,7 @@ export class TokenHelperService {
 
   getDecodedOCToken(): DecodedOCToken {
     try {
-      return jwtDecode(Tokens.GetAccessToken())
+      return this.jwtHelper.decodeToken(Tokens.GetAccessToken())
     } catch (e) {
       return null
     }

@@ -3,9 +3,7 @@ import { BehaviorSubject } from 'rxjs'
 import { Router, Params, ActivatedRoute } from '@angular/router'
 import { transform as _transform, pickBy as _pickBy } from 'lodash'
 import { CurrentUserService } from '../current-user/current-user.service'
-import {
-  ListPageWithFacets,
-} from 'ordercloud-javascript-sdk'
+import { ListPageWithFacets } from 'ordercloud-javascript-sdk'
 import { ProductCategoriesService } from '../product-categories/product-categories.service'
 import { TempSdk } from '../temp-sdk/temp-sdk.service'
 import { ProductFilters } from 'src/app/models/filter-config.types'
@@ -18,9 +16,8 @@ import { AppConfig } from 'src/app/models/environment.types'
   providedIn: 'root',
 })
 export class ProductFilterService {
-  public activeFiltersSubject: BehaviorSubject<ProductFilters> = new BehaviorSubject<ProductFilters>(
-    this.getDefaultParms()
-  )
+  public activeFiltersSubject: BehaviorSubject<ProductFilters> =
+    new BehaviorSubject<ProductFilters>(this.getDefaultParms())
 
   // TODO - allow app devs to filter by custom xp that is not a facet. Create functions for this.
   private readonly nonFacetQueryParams = [
@@ -74,19 +71,22 @@ export class ProductFilterService {
     const favorites =
       this.currentUser.get().FavoriteProductIDs.join('|') || undefined
     const filters = {
-        page,
-        search,
-        sortBy,
-        filters: {
-          categoryID,
-          ...facets,
-          ID: showOnlyFavorites ? favorites : undefined,
-        },
-      }
-    if (this.appConfig.useReflektion) { 
-      return await this.reflektion.listReflektionProducts(this.currentUser.get().ID, filters);
+      page,
+      search,
+      sortBy,
+      filters: {
+        categoryID,
+        ...facets,
+        ID: showOnlyFavorites ? favorites : undefined,
+      },
+    }
+    if (this.appConfig.useReflektion) {
+      return await this.reflektion.listReflektionProducts(
+        filters,
+        this.currentUser.isAnonymous() ? null : this.currentUser.get().ID
+      )
     } else {
-      return await this.tempSdk.listMeProducts(filters);
+      return await this.tempSdk.listMeProducts(filters)
     }
   }
 
