@@ -377,9 +377,6 @@ export class ReflektionService {
         sort: {
           value: sortArray,
         },
-        facet: {
-          all: true,
-        },
         filter: {
           all_category_ids: {
             value: categoryFilter,
