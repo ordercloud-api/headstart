@@ -111,13 +111,7 @@ export class AuthService {
     const newUser = await Me.Patch(countryPatchObj, {
       accessToken: token.access_token,
     })
-    // temporary workaround for platform issue
-    // need to remove and reset userGroups for newly registered user to see products
-    // issue: https://four51.atlassian.net/browse/EX-2222
-    await HeadStartSDK.BuyerLocations.ReassignUserGroups(
-      newUser.Buyer.ID,
-      newUser.ID
-    )
+    this.reflektionService.trackUserInfo(newUser)
     this.loginWithTokens(token.access_token)
     return token
   }

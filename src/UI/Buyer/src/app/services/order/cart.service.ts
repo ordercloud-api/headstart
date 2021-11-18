@@ -4,7 +4,6 @@ import {
   LineItems,
   Me,
   LineItemSpec,
-  Order,
   LineItem,
 } from 'ordercloud-javascript-sdk'
 import { Subject } from 'rxjs'
@@ -19,6 +18,7 @@ import {
 import { CheckoutService } from './checkout.service'
 import { CurrentUserService } from '../current-user/current-user.service'
 import { MooTrackService } from '../moosend.service'
+import { ReflektionService } from '../reflektion/reflektion.service'
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +33,8 @@ export class CartService {
     private state: OrderStateService,
     private checkout: CheckoutService,
     private userService: CurrentUserService,
-    private mootrack: MooTrackService
+    private mootrack: MooTrackService,
+    private reflektionService: ReflektionService
   ) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.onChange = this.state.onLineItemsChange.bind(this.state)
@@ -95,9 +96,10 @@ export class CartService {
       await this.initializeOrder()
     }
 
-    var createdLi = await this.upsertLineItem(lineItem)
-    this.mootrack.addToCart(createdLi);
-    return createdLi;
+    const createdLi = await this.upsertLineItem(lineItem)
+    this.mootrack.addToCart(createdLi)
+    this.reflektionService.trackAddToCart('pdp', createdLi)
+    return createdLi
   }
 
   async initializeOrder(): Promise<void> {

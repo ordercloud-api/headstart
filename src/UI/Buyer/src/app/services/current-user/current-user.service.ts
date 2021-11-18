@@ -8,6 +8,7 @@ import { CurrentUser } from 'src/app/models/profile.types'
 import { AppConfig } from 'src/app/models/environment.types'
 import { ContactSupplierBody } from 'src/app/models/buyer.types'
 import { MooTrackService } from '../moosend.service'
+import { ReflektionService } from '../reflektion/reflektion.service'
 
 @Injectable({
   providedIn: 'root',
@@ -16,10 +17,9 @@ export class CurrentUserService {
   private readonly MaxFavorites: number = 40
   private readonly favOrdersXP = 'FavoriteOrders'
   private readonly favProductsXP = 'FavoriteProducts'
-  public isAnonSubject: BehaviorSubject<boolean>;
-  private userSubject: BehaviorSubject<CurrentUser> = new BehaviorSubject<CurrentUser>(
-    null
-  )
+  public isAnonSubject: BehaviorSubject<boolean>
+  private userSubject: BehaviorSubject<CurrentUser> =
+    new BehaviorSubject<CurrentUser>(null)
 
   // users for determining location management permissions for a user
   private userGroups: BehaviorSubject<UserGroup[]> = new BehaviorSubject<
@@ -31,9 +31,10 @@ export class CurrentUserService {
     public cards: CreditCardService,
     public http: HttpClient,
     private appConfig: AppConfig,
-    private mootrack: MooTrackService
+    private mootrack: MooTrackService,
+    private reflektionService: ReflektionService
   ) {
-    this.isAnonSubject = new BehaviorSubject(true);
+    this.isAnonSubject = new BehaviorSubject(true)
   }
 
   get(): CurrentUser {
@@ -48,11 +49,13 @@ export class CurrentUserService {
     const [user, userGroups] = await Promise.all(requests)
     this.user = await this.MapToCurrentUser(user)
     this.mootrack.identify(this.user.Email)
+    this.reflektionService.trackUserLogin(user)
     this.userGroups.next(userGroups.Items)
   }
 
   async patch(user: MeUser): Promise<CurrentUser> {
     const patched = await Me.Patch(user)
+    this.reflektionService.trackUserInfo(patched)
     this.user = await this.MapToCurrentUser(patched)
     return this.user
   }
@@ -93,9 +96,7 @@ export class CurrentUserService {
       Authorization: `Bearer ${Tokens.GetAccessToken()}`,
     })
     const url = `${this.appConfig.middlewareUrl}/me/products/requestinfo`
-    await this.http
-      .post<void>(url, contactRequest, { headers })
-      .toPromise()
+    await this.http.post<void>(url, contactRequest, { headers }).toPromise()
   }
 
   private async MapToCurrentUser(user: MeUser): Promise<CurrentUser> {
