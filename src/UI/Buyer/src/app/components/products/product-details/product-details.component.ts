@@ -27,6 +27,7 @@ import { CurrentUser } from 'src/app/models/profile.types'
 import { ContactSupplierBody } from 'src/app/models/buyer.types'
 import { ModalState } from 'src/app/models/shared.types'
 import { MooTrackService } from 'src/app/services/moosend.service'
+import { ReflektionService } from 'src/app/services/reflektion/reflektion.service'
 
 @Component({
   templateUrl: './product-details.component.html',
@@ -74,7 +75,8 @@ export class OCMProductDetails implements OnInit {
     private context: ShopperContextService,
     private productDetailService: ProductDetailService,
     private toastrService: ToastrService,
-    private mootrack: MooTrackService
+    private mootrack: MooTrackService,
+    private reflektionService: ReflektionService
   ) {}
 
   @Input() set product(superProduct: SuperHSProduct) {
@@ -95,7 +97,8 @@ export class OCMProductDetails implements OnInit {
     this.setPageTitle()
     this.populateInactiveVariants(superProduct)
     this.showGrid = superProduct?.PriceSchedule?.UseCumulativeQuantity
-    this.mootrack.viewProduct(superProduct.Product);
+    this.mootrack.viewProduct(superProduct.Product)
+    this.reflektionService.trackProductView('pdp', [superProduct.Product])
   }
 
   ngOnInit(): void {

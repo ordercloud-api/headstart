@@ -1,7 +1,17 @@
 import { HttpClient } from '@angular/common/http'
 import { Injectable } from '@angular/core'
-import { HSMeProduct, HeadStartSDK } from '@ordercloud/headstart-sdk'
-import { ListPageWithFacets, MetaWithFacets } from 'ordercloud-javascript-sdk'
+import {
+  HSMeProduct,
+  HeadStartSDK,
+  HSLineItem,
+} from '@ordercloud/headstart-sdk'
+import {
+  ListPageWithFacets,
+  MetaWithFacets,
+  OrderWorksheet,
+  Product,
+  User,
+} from 'ordercloud-javascript-sdk'
 import { ProductSortOption } from 'src/app/components/products/sort-products/sort-products.component'
 import { AppConfig } from 'src/app/models/environment.types'
 import { ProductFilters } from 'src/app/models/filter-config.types'
@@ -68,6 +78,103 @@ export class ReflektionService {
       ),
     }
     return meProducts
+  }
+
+  /**
+   *
+   * @param view where the add to cart happened
+   * @param productID the ID of the product that was added to cart
+   */
+  trackAddToCart(view: 'pdp' | 'qview' | 'cart', lineItem: HSLineItem): void {
+    this.trackReflectionEvent('a2c', view, {
+      products: {
+        sku: lineItem.ProductID,
+        price: lineItem.UnitPrice,
+        quantity: lineItem.Quantity,
+      },
+    })
+  }
+
+  /**
+   *
+   * @param view where the product or products were seen
+   * @param products the list of products that were seen
+   */
+  trackProductView(
+    view: 'home' | 'pdp' | 'confirm' | 'cart' | 'category' | 'search' | 'other',
+    products: Product[]
+  ): void {
+    this.trackReflectionEvent('view', view, {
+      products: products.map((p) => ({ sku: p.ID })),
+    })
+  }
+
+  // used to track a widget, this should only be called
+  // if the widget is in the user's view port
+  trackWidgetView(rfkid: string): void {
+    this.trackReflectionEvent('widget', 'appear', { rfkid })
+  }
+
+  trackUserLogin(user: User): void {
+    this.trackReflectionEvent('user', 'login', {
+      context: {
+        user: {
+          id: user.ID,
+          email: user.Email,
+        },
+      },
+    })
+  }
+
+  // use this to track anytime user information is updated
+  trackUserInfo(user: User): void {
+    this.trackReflectionEvent('user', 'info', {
+      context: {
+        user: {
+          id: user.ID,
+          email: user.Email,
+        },
+      },
+    })
+  }
+
+  trackOrderSubmit(worksheet: OrderWorksheet, isAnonymous: boolean): void {
+    const user = worksheet.Order.FromUser
+    const lineItems = worksheet.LineItems
+    this.trackReflectionEvent('order', 'confirm', {
+      context: {
+        user: isAnonymous
+          ? undefined
+          : {
+              id: user.ID,
+              email: user.Email,
+              address: worksheet.Order.BillingAddress,
+            },
+      },
+      products: lineItems.map((li) => ({
+        sku: li.ProductID,
+        quantity: li.Quantity,
+        price: li.LineTotal,
+        price_original: li.LineSubtotal,
+      })),
+      checkout: {
+        order_id: worksheet.Order.ID,
+        subtotal: worksheet.Order.Subtotal,
+        total: worksheet.Order.Total,
+      },
+    })
+  }
+
+  private trackReflectionEvent(type: string, name: string, value: any = {}) {
+    window.rfk.push([
+      'trackEvent',
+      {
+        type,
+        name,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        value,
+      },
+    ])
   }
 
   private mapProduct(reflektionProduct: ReflektionProduct): HSMeProduct {
