@@ -3,6 +3,7 @@ import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { HSMeProduct } from '@ordercloud/headstart-sdk'
 
 @Component({
+  selector: 'ocm-product-carousel',
   templateUrl: './product-carousel.component.html',
   styleUrls: ['./product-carousel.component.scss'],
 })

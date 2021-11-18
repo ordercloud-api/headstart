@@ -366,12 +366,16 @@
       </ocm-modal>
     </div>
   </div>
-  <ng-container *ngIf="relatedProducts$ | async; let relatedProducts">
-    <ocm-product-carousel
-      *ngIf="relatedProducts?.length > 0"
-      displayTitle="Related Products"
-      [products]="relatedProducts"
-    >
-    </ocm-product-carousel>
-  </ng-container>
+  <ocm-product-carousel
+    *ngIf="similarProducts?.length > 0"
+    displayTitle="Similar Products"
+    [products]="similarProducts"
+  >
+  </ocm-product-carousel>
+  <ocm-product-carousel
+    *ngIf="frequentlyBoughtTogetherProducts?.length > 0"
+    displayTitle="Frequently Bought Together Products"
+    [products]="frequentlyBoughtTogetherProducts"
+  >
+  </ocm-product-carousel>
 </div>

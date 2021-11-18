@@ -81,7 +81,7 @@ export class ProductFilterService {
       },
     }
     if (this.appConfig.useReflektion) {
-      return await this.reflektion.listReflektionProducts(
+      return await this.reflektion.listProducts(
         filters,
         this.currentUser.isAnonymous() ? null : this.currentUser.get().ID
       )

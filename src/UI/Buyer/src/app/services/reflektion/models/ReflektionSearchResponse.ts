@@ -1,22 +1,58 @@
 export interface ReflektionSearchResponse {
-  content: {
-    product: {
-      total_item: number
-      n_item: number
-      value: ReflektionProduct[]
-    }
-  }
+  widget: ReflektionWidgetDetail
   total_item: number
-  page_number: number
-  total_page: number
-  url: string
   rid: string
   dt: number
+  errors: ReflektionError[]
+  url: string
+  ts: number
+  content: {
+    product: ReflektionContentProductDetail
+  }
+  page_number: number
+  total_page: number
+  n_item: number
   query2id: {
     keyphrase: string
   }
-  n_item: number
+}
+
+export interface ReflektionBatchSearchResponse {
+  errors: ReflektionError[]
+  batch: {
+    widget: ReflektionWidgetDetail
+    total_item: number
+    content: {
+      product: ReflektionContentProductDetail
+    }
+    page_number: number
+    total_page: number
+    n_item: number
+  }[]
+  url: string
   ts: number
+  rid: string
+  dt: string
+}
+
+export interface ReflektionContentProductDetail {
+  total_item: number
+  n_item: number
+  value: ReflektionProduct[]
+}
+export interface ReflektionWidgetDetail {
+  rfkid: string
+  used_in: string
+  variation_id: string
+  type: string
+}
+
+export interface ReflektionError {
+  message: string
+  code: number
+  type: string
+  severity: string
+  details: any
 }
 
 export interface ReflektionProduct {

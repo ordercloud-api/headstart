@@ -17,10 +17,14 @@ import { AppConfig } from 'src/app/models/environment.types'
 import { ProductFilters } from 'src/app/models/filter-config.types'
 import { CookieService } from 'ngx-cookie'
 import {
+  ReflektionBatchSearchResponse,
   ReflektionProduct,
   ReflektionSearchResponse,
 } from './models/ReflektionSearchResponse'
 import { JwtHelperService } from '@auth0/angular-jwt'
+
+export const hsFrequentlyBoughtTogetherWidget = 'hs-frequently-bought-together'
+export const hsSimilarProductsWidget = 'hs-similar-products'
 
 @Injectable({
   providedIn: 'root',
@@ -60,7 +64,7 @@ export class ReflektionService {
     }
   }
 
-  async listReflektionProducts(
+  async listProducts(
     filters: ProductFilters,
     userID?: string
   ): Promise<ListPageWithFacets<HSMeProduct>> {
@@ -78,6 +82,97 @@ export class ReflektionService {
       ),
     }
     return meProducts
+  }
+
+  async listAlsoViewedProducts(
+    productID: string,
+    userID?: string
+  ): Promise<ListPageWithFacets<HSMeProduct>> {
+    const body = {
+      widget: {
+        rfkid: 'hs-also-viewed-products',
+      },
+      context: {
+        user: {
+          user_id: userID || undefined, // error if null
+          uuid: this.getUuid(),
+        },
+        page: {
+          sku: [productID],
+        },
+      },
+      content: {
+        product: {},
+      },
+    }
+    const response = await this.http
+      .post<ReflektionSearchResponse>(
+        `${this.appConfig.reflektionUrl}/api/search-rec/3`,
+        body,
+        {
+          headers: { Authorization: this.getToken() },
+        }
+      )
+      .toPromise()
+    const meProducts = {
+      Meta: this.mapMeta(response),
+      Items: response.content.product.value.map(this.mapProduct.bind(this)),
+    }
+    return meProducts
+  }
+
+  async getProductDetailWidgetData(
+    productID: string,
+    userID?: string
+  ): Promise<{
+    [hsFrequentlyBoughtTogetherWidget]: HSMeProduct[]
+    [hsSimilarProductsWidget]: HSMeProduct[]
+  }> {
+    const body = {
+      data: {
+        batch: [
+          {
+            widget: {
+              rfkid: hsFrequentlyBoughtTogetherWidget,
+            },
+          },
+          {
+            widget: {
+              rfkid: hsSimilarProductsWidget,
+            },
+          },
+        ],
+        context: {
+          page: {
+            sku: [productID],
+          },
+          user: {
+            uuid: this.getUuid(),
+            userID: userID || undefined,
+          },
+        },
+        content: {
+          product: {},
+        },
+      },
+    }
+    const response = await this.http
+      .post<ReflektionBatchSearchResponse>(
+        `${this.appConfig.reflektionUrl}/api/search-rec/3`,
+        body,
+        {
+          headers: { Authorization: this.getToken() },
+        }
+      )
+      .toPromise()
+    return {
+      [hsFrequentlyBoughtTogetherWidget]: response.batch
+        .find((b) => b.widget.rfkid === hsFrequentlyBoughtTogetherWidget)
+        .content.product.value.map(this.mapProduct.bind(this)),
+      [hsSimilarProductsWidget]: response.batch
+        .find((b) => b.widget.rfkid === hsSimilarProductsWidget)
+        .content.product.value.map(this.mapProduct.bind(this)),
+    }
   }
 
   /**
@@ -229,7 +324,7 @@ export class ReflektionService {
     const body = this.buildReflektionSearchRequest(search, sortBy, page, userID)
     return await this.http
       .post<ReflektionSearchResponse>(
-        this.appConfig.reflektionUrl + '/api/search-rec/3',
+        `${this.appConfig.reflektionUrl}/api/search-rec/3`,
         body,
         {
           headers: { Authorization: this.getToken() },
