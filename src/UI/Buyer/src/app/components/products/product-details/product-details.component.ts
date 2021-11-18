@@ -5,6 +5,7 @@ import {
   PriceBreak,
   SpecOption,
   Suppliers,
+  Product,
 } from 'ordercloud-javascript-sdk'
 import { PriceSchedule } from 'ordercloud-javascript-sdk'
 import {
@@ -27,7 +28,11 @@ import { CurrentUser } from 'src/app/models/profile.types'
 import { ContactSupplierBody } from 'src/app/models/buyer.types'
 import { ModalState } from 'src/app/models/shared.types'
 import { MooTrackService } from 'src/app/services/moosend.service'
-import { ReflektionService } from 'src/app/services/reflektion/reflektion.service'
+import {
+  hsFrequentlyBoughtTogetherWidget,
+  hsSimilarProductsWidget,
+  ReflektionService,
+} from 'src/app/services/reflektion/reflektion.service'
 
 @Component({
   templateUrl: './product-details.component.html',
@@ -70,6 +75,8 @@ export class OCMProductDetails implements OnInit {
   variant: HSVariant
   variantInventory: number
   _productSupplier: HSSupplier
+  similarProducts: HSMeProduct[]
+  frequentlyBoughtTogetherProducts: HSMeProduct[]
   constructor(
     private specFormService: SpecFormService,
     private context: ShopperContextService,
@@ -99,6 +106,7 @@ export class OCMProductDetails implements OnInit {
     this.showGrid = superProduct?.PriceSchedule?.UseCumulativeQuantity
     this.mootrack.viewProduct(superProduct.Product)
     this.reflektionService.trackProductView('pdp', [superProduct.Product])
+    void this.getReflektionWidgetData(this._product.ID)
   }
 
   ngOnInit(): void {
@@ -108,6 +116,19 @@ export class OCMProductDetails implements OnInit {
     this.context.currentUser.onChange(
       (user) => (this.favoriteProducts = user.FavoriteProductIDs)
     )
+  }
+
+  async getReflektionWidgetData(productID: string): Promise<void> {
+    const userID = this.context.currentUser.isAnonymous
+      ? null
+      : this.context.currentUser.get().ID
+    const result = await this.reflektionService.getProductDetailWidgetData(
+      productID,
+      userID
+    )
+    this.similarProducts = result[hsSimilarProductsWidget]
+    this.frequentlyBoughtTogetherProducts =
+      result[hsFrequentlyBoughtTogetherWidget]
   }
 
   async setSupplier(supplierID: string): Promise<void> {

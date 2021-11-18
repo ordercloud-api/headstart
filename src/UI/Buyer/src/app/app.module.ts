@@ -439,7 +439,6 @@ export class AppModule {
     this.buildWebComponent(OCMQuantityInput, 'ocm-quantity-input')
     this.buildWebComponent(OCMProductCard, 'ocm-product-card')
     this.buildWebComponent(OCMToggleFavorite, 'ocm-toggle-favorite')
-    this.buildWebComponent(OCMProductCarousel, 'ocm-product-carousel')
     this.buildWebComponent(OCMImageGallery, 'ocm-image-gallery')
     this.buildWebComponent(OCMSpecForm, 'ocm-spec-form')
     this.buildWebComponent(OCMOrderSummary, 'ocm-order-summary')
