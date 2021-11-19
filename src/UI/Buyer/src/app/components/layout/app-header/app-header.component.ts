@@ -22,6 +22,8 @@ import { CurrentUser } from 'src/app/models/profile.types'
 import { AppConfig } from 'src/app/models/environment.types'
 import { ProductFilters } from 'src/app/models/filter-config.types'
 import { RouteConfig } from 'src/app/models/shared.types'
+import { ReflektionSearchResponse } from 'src/app/services/reflektion/models/ReflektionSearchResponse'
+import { ReflektionService } from 'src/app/services/reflektion/reflektion.service'
 
 @Component({
   templateUrl: './app-header.component.html',
@@ -63,6 +65,7 @@ export class OCMAppHeader implements OnInit {
   profileRoutes: RouteConfig[] = []
   orderRoutes: RouteConfig[] = []
   numberOfOrdersToApprove = 0
+  previewSearch: ReflektionSearchResponse = null
 
   @ViewChild('addToCartPopover', { static: false })
   public addToCartPopover: NgbPopover
@@ -87,6 +90,7 @@ export class OCMAppHeader implements OnInit {
   constructor(
     public context: ShopperContextService,
     public appConfig: AppConfig,
+    private reflektion: ReflektionService
   ) {
     this.profileRoutes = context.router.getProfileRoutes()
     this.orderRoutes = context.router.getOrderRoutes()
@@ -143,6 +147,13 @@ export class OCMAppHeader implements OnInit {
     const clickIsOutside = !event.target.closest('.category-nav__menu')
     if (clickIsOutside) {
       this.showCategoryDropdown = false
+    }
+  }
+
+  clickOutsidePreviewSearch(event: any): void {
+    const clickIsOutside = !event.target.closest('.preview-search__menu')
+    if (clickIsOutside) {
+      this.previewSearch = null;
     }
   }
 
@@ -215,9 +226,12 @@ export class OCMAppHeader implements OnInit {
       }, 1500)
     })
   }
-  searchProducts(searchStr: string): void {
+
+  async searchProducts(searchStr: string): Promise<void> {
     this.searchTermForProducts = searchStr
-    this.context.router.toProductList({ search: searchStr })
+    var userID = this.context.currentUser.isAnonymous() ? null : this.context.currentUser.get().ID;
+    this.previewSearch = await this.reflektion.searchPreviewProducts(searchStr, userID);  
+    //this.context.router.toProductList({ search: searchStr })
   }
 
   isRouteActive(url: string): boolean {

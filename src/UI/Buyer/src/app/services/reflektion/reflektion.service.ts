@@ -64,6 +64,21 @@ export class ReflektionService {
     }
   }
 
+  async searchPreviewProducts(searchTerm: string, userID?: string): Promise<ReflektionSearchResponse> {
+    await this.init() // should be initialized already (base resolve service) but just making sure
+    const reflektionResponse = await this.searchReflektion(
+      searchTerm,
+      null,
+      null,
+      null,
+      userID,
+      6,
+      6,
+      6
+    );
+    return reflektionResponse;
+  }
+
   async listProducts(
     filters: any,
     userID?: string
@@ -318,17 +333,23 @@ export class ReflektionService {
 
   private async searchReflektion(
     search: string,
-    sortBy: string[],
-    page: number,
+    sortBy?: string[],
+    page?: number,
     categoryID?: string,
-    userID?: string
+    userID?: string,
+    keypraseSuggestionCount?: number,
+    categorySuggestionCount?: number,
+    productCountToReturn?: number
   ): Promise<ReflektionSearchResponse> {
     const body = this.buildReflektionSearchRequest(
       search,
       sortBy,
       page,
       categoryID,
-      userID
+      userID,
+      keypraseSuggestionCount,
+      categorySuggestionCount,
+      productCountToReturn,
     )
     return await this.http
       .post<ReflektionSearchResponse>(
@@ -343,10 +364,13 @@ export class ReflektionService {
 
   private buildReflektionSearchRequest(
     search: string,
-    sortBy: string[],
-    page: number,
+    sortBy?: string[],
+    page?: number,
     categoryID?: string,
-    userID?: string
+    userID?: string,
+    keypraseSuggestionCount?: number,
+    categorySuggestionCount?: number,
+    productCountToReturn?: number
   ) {
     const sortArray = (sortBy || []).map((value) => {
       const [name, order] = value.split('-')
@@ -355,8 +379,8 @@ export class ReflektionService {
     const categoryFilter = categoryID ? [categoryID] : []
     return {
       data: {
-        n_item: 20,
-        page_number: Number(page),
+        n_item: productCountToReturn ?? 20,
+        page_number: page ? Number(page) : 1,
         query: {
           keyphrase: {
             value: [search ?? ''],
@@ -364,8 +388,11 @@ export class ReflektionService {
         },
         suggestion: {
           keyphrase: {
-            max: 1,
+            max: keypraseSuggestionCount ?? 1,
           },
+          category: {
+            max: categorySuggestionCount ?? 0
+          }
         },
         request_for: ['query'],
         context: {

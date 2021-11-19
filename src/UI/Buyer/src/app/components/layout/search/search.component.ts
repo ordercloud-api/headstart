@@ -17,6 +17,7 @@ import { debounceTime, takeWhile, filter } from 'rxjs/operators'
 })
 export class OCMSearch implements OnInit, OnChanges, OnDestroy {
   @Input() placeholderText?: string
+  @Input() debounceTimeMS?: number = 800;
   @Input() searchTermInput?: string
   @Output() searched = new EventEmitter<string>()
 
@@ -71,7 +72,7 @@ export class OCMSearch implements OnInit, OnChanges, OnDestroy {
           const userTriggered = this.form.dirty
           return searchTerm !== this.previousSearchTerm && userTriggered
         }),
-        debounceTime(800),
+        debounceTime(this.debounceTimeMS),
         takeWhile(() => this.alive)
       )
       .subscribe((searchTerm) => {
