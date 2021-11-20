@@ -349,7 +349,7 @@ export class ReflektionService {
     page: number,
     categoryID?: string,
     userID?: string
-  ): Promise<ReflektionSearchResponse> {
+  ): Promise<ReflektionProductSearchResponse> {
     const body = this.buildReflektionSearchRequest(
       search,
       sortBy,
