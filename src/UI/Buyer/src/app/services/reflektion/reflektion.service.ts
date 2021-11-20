@@ -70,7 +70,7 @@ export class ReflektionService {
   }
 
   async listProducts(
-    filters: ProductFilters,
+    filters: any,
     userID?: string
   ): Promise<ListPageWithFacets<HSMeProduct>> {
     await this.init() // should be initialized already (base resolve service) but just making sure
@@ -78,6 +78,7 @@ export class ReflektionService {
       filters.search,
       filters.sortBy,
       filters.page,
+      filters?.filters?.categoryID,
       userID
     )
     const meProducts = {
@@ -346,9 +347,16 @@ export class ReflektionService {
     search: string,
     sortBy: string[],
     page: number,
+    categoryID?: string,
     userID?: string
-  ): Promise<ReflektionProductSearchResponse> {
-    const body = this.buildReflektionSearchRequest(search, sortBy, page, userID)
+  ): Promise<ReflektionSearchResponse> {
+    const body = this.buildReflektionSearchRequest(
+      search,
+      sortBy,
+      page,
+      categoryID,
+      userID
+    )
     return await this.http
       .post<ReflektionProductSearchResponse>(
         `${this.appConfig.reflektionUrl}/api/search-rec/3`,
@@ -364,12 +372,14 @@ export class ReflektionService {
     search: string,
     sortBy: string[],
     page: number,
+    categoryID?: string,
     userID?: string
   ) {
     const sortArray = (sortBy || []).map((value) => {
       const [name, order] = value.split('-')
       return { name, order }
     })
+    const categoryFilter = categoryID ? [categoryID] : []
     return {
       data: {
         n_item: 20,
@@ -379,6 +389,12 @@ export class ReflektionService {
             value: [search ?? ''],
           },
         },
+        suggestion: {
+          keyphrase: {
+            max: 1,
+          },
+        },
+        request_for: ['query'],
         context: {
           user: {
             user_id: userID || undefined, // error if null
@@ -387,6 +403,11 @@ export class ReflektionService {
         },
         sort: {
           value: sortArray,
+        },
+        filter: {
+          all_category_ids: {
+            value: categoryFilter,
+          },
         },
         content: {
           product: {},
