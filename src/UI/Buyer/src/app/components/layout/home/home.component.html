@@ -1,8 +1,11 @@
 <ng-container>
   <div class="container">
-    <!-- Featured products can be managed in the seller application -->
-    <ocm-product-carousel *ngIf="featuredProducts?.length" [displayTitle]="'Featured Products'"
-      [products]="featuredProducts">
+    <span *ngIf="heroBannerHtml" [innerHTML]="heroBannerHtml"></span>
+    <ocm-product-carousel
+      *ngIf="topProducts?.length"
+      displayTitle="Top Products"
+      [products]="topProducts"
+    >
     </ocm-product-carousel>
   </div>
 </ng-container>
