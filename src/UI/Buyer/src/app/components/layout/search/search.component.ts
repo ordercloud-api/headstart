@@ -33,7 +33,8 @@ export class OCMSearch implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(): void {
     if (this.searchTermInput !== null && this.searchTermInput !== undefined) {
-      this.previousSearchTerm = this.searchTermInput
+      this.previousSearchTerm = this.searchTermInput // prevents triggering a searched event
+      this.form.controls['search'].setValue(this.searchTermInput);
     }
   }
 

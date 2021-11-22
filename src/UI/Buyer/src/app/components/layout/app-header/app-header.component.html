@@ -147,7 +147,7 @@
     </button>
     <small class="ml-1 font-weight-bold text-uppercase">Shop</small>
     <ocm-search class="ml-3 mr-3 w-100" [placeholderText]="'Products'" [debounceTimeMS]="100" [searchTermInput]="searchTermForProducts"
-      (searched)="searchProducts($event.detail)">
+      (searched)="previewSearchProducts($event.detail)">
     </ocm-search>
     <ul class="navbar-nav" #cartIcon (mouseleave)="closeMiniCart($event, popover)">
       <li class="nav-item cursor-pointer" [ngbPopover]="CartHoverContent" #popover="ngbPopover"
@@ -173,7 +173,7 @@
   </div>
 </nav>
 <div *ngIf="previewSearch !== null" class="container shadow p-2" style="position:relative;max-width: 1000px;background-color:white">
-  <ocm-preview-search [searchTerm]="searchTermForProducts" [results]="previewSearch" (window:mouseup)="clickOutsidePreviewSearch($event)"></ocm-preview-search>
+  <ocm-preview-search [searchTerm]="searchTermForProducts" [results]="previewSearch" (window:mouseup)="clickOutsidePreviewSearch($event)" (close)="closePreviewSearch()"></ocm-preview-search>
 </div>
 <ocm-category-dropdown (closeDropdown)="toggleCategoryDropdown($event.detail)"
   (window:mouseup)="clickOutsideCategoryDropdown($event)" [@inOutAnimation]="toggleCategoryDropdown"

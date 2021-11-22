@@ -153,7 +153,7 @@ export class OCMAppHeader implements OnInit {
   clickOutsidePreviewSearch(event: any): void {
     const clickIsOutside = !event.target.closest('.preview-search__menu')
     if (clickIsOutside) {
-      this.previewSearch = null;
+      this.closePreviewSearch()
     }
   }
 
@@ -227,11 +227,11 @@ export class OCMAppHeader implements OnInit {
     })
   }
 
-  async searchProducts(searchStr: string): Promise<void> {
+  async previewSearchProducts(searchStr: string): Promise<void> {
     this.searchTermForProducts = searchStr
     var userID = this.context.currentUser.isAnonymous() ? null : this.context.currentUser.get().ID;
-    this.previewSearch = await this.reflektion.searchPreviewProducts(searchStr, userID);  
-    //this.context.router.toProductList({ search: searchStr })
+    var searchData = await this.reflektion.searchPreviewProducts(searchStr, userID); 
+    this.openPreviewSearch(searchData); 
   }
 
   isRouteActive(url: string): boolean {
@@ -259,5 +259,14 @@ export class OCMAppHeader implements OnInit {
 
   toggleCollapsed(): void {
     this.isCollapsed = !this.isCollapsed
+  }
+
+  openPreviewSearch(data: ReflektionSearchResponse): void {
+    console.log("openning preview search");
+    this.previewSearch = data;
+  }
+
+  closePreviewSearch(): void {
+    this.previewSearch = null;
   }
 }
