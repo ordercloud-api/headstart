@@ -1,4 +1,10 @@
-<ocm-app-header class="fixed-top" *ngIf="showHeader"></ocm-app-header>
+<ocm-app-header
+  class="fixed-top"
+  (previewSearchShown)="showOverlay = true"
+  (previewSearchHidden)="showOverlay = false"
+  *ngIf="showHeader"
+></ocm-app-header>
+<div *ngIf="showOverlay" class="overlay"></div>
 <router-outlet class="outlet"></router-outlet>
 <ocm-app-footer [showFooter]="showHeader" *ngIf="showHeader"></ocm-app-footer>
 <ng-progress></ng-progress>
