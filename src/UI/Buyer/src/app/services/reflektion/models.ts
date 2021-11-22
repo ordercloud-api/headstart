@@ -16,6 +16,7 @@ export interface ReflektionProductSearchResponse {
   query2id: {
     keyphrase: string
   }
+  facet: any
 }
 
 export type ReflektionProductDetailWidgetResponse =
