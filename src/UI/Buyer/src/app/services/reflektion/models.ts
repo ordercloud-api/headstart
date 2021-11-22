@@ -1,4 +1,4 @@
-export interface ReflektionSearchResponse {
+export interface ReflektionProductSearchResponse {
   widget: ReflektionWidgetDetail
   total_item: number
   rid: string
@@ -18,22 +18,55 @@ export interface ReflektionSearchResponse {
   }
 }
 
-export interface ReflektionBatchSearchResponse {
-  errors: ReflektionError[]
-  batch: {
-    widget: ReflektionWidgetDetail
-    total_item: number
-    content: {
-      product: ReflektionContentProductDetail
-    }
-    page_number: number
-    total_page: number
-    n_item: number
-  }[]
+export type ReflektionProductDetailWidgetResponse =
+  ReflektionBatchResponse<ReflektionBatchProduct>
+
+export type ReflektionHomeWidgetResponse = ReflektionBatchResponse<
+  ReflektionBatchAppearance | ReflektionBatchProduct
+>
+
+export interface ReflektionBatchResponse<T> {
+  errors?: ReflektionError[]
   url: string
   ts: number
   rid: string
   dt: string
+  batch: T[]
+}
+
+export interface ReflektionBatchAppearance {
+  widget: ReflektionWidgetDetail
+  appearance: {
+    templates: {
+      html: {
+        devices: {
+          pc: {
+            content: string
+          }
+        }
+      }
+      css: {
+        devices: {
+          pc: {
+            content: string
+          }
+        }
+      }
+    }
+    css_names: string[]
+    html_names: string[]
+  }
+}
+
+export interface ReflektionBatchProduct {
+  widget: ReflektionWidgetDetail
+  total_item: number
+  content: {
+    product: ReflektionContentProductDetail
+  }
+  page_number: number
+  total_page: number
+  n_item: number
 }
 
 export interface ReflektionContentProductDetail {
@@ -41,6 +74,7 @@ export interface ReflektionContentProductDetail {
   n_item: number
   value: ReflektionProduct[]
 }
+
 export interface ReflektionWidgetDetail {
   rfkid: string
   used_in: string

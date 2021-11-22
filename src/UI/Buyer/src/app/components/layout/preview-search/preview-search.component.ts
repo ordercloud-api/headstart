@@ -5,7 +5,7 @@ import {
   Output,
   EventEmitter
 } from '@angular/core'
-import { ReflektionSearchResponse } from 'src/app/services/reflektion/models/ReflektionSearchResponse'
+import { ReflektionProductSearchResponse } from 'src/app/services/reflektion/models';
 import { ReflektionService } from 'src/app/services/reflektion/reflektion.service';
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service';
 
@@ -15,7 +15,7 @@ import { ShopperContextService } from 'src/app/services/shopper-context/shopper-
 })
 export class OCMPreviewSearch implements OnInit {
   @Input() searchTerm?: string;
-  @Input() results?: ReflektionSearchResponse;
+  @Input() results?: ReflektionProductSearchResponse;
   @Output() close = new EventEmitter();
 
   constructor(

@@ -17,14 +17,19 @@ import { AppConfig } from 'src/app/models/environment.types'
 import { ProductFilters } from 'src/app/models/filter-config.types'
 import { CookieService } from 'ngx-cookie'
 import {
-  ReflektionBatchSearchResponse,
+  ReflektionProductDetailWidgetResponse,
   ReflektionProduct,
-  ReflektionSearchResponse,
-} from './models/ReflektionSearchResponse'
+  ReflektionProductSearchResponse,
+  ReflektionBatchProduct,
+  ReflektionHomeWidgetResponse,
+  ReflektionBatchAppearance,
+} from './models'
 import { JwtHelperService } from '@auth0/angular-jwt'
 
 export const hsFrequentlyBoughtTogetherWidget = 'hs-frequently-bought-together'
 export const hsSimilarProductsWidget = 'hs-similar-products'
+export const hsHomePageHeroBannerWidget = 'hs-homepage-herobanner'
+export const hsHomePageTopProducts = 'hs-homepage-top-products'
 
 @Injectable({
   providedIn: 'root',
@@ -64,7 +69,7 @@ export class ReflektionService {
     }
   }
 
-  async searchPreviewProducts(searchTerm: string, userID?: string): Promise<ReflektionSearchResponse> {
+  async searchPreviewProducts(searchTerm: string, userID?: string): Promise<ReflektionProductSearchResponse> {
     await this.init() // should be initialized already (base resolve service) but just making sure
     const reflektionResponse = await this.searchReflektion(
       searchTerm,
@@ -100,29 +105,44 @@ export class ReflektionService {
     return meProducts
   }
 
-  async listAlsoViewedProducts(
-    productID: string,
-    userID?: string
-  ): Promise<ListPageWithFacets<HSMeProduct>> {
+  async getHomePageWidgetData(userID?: string): Promise<{
+    [hsHomePageTopProducts]: HSMeProduct[]
+    [hsHomePageHeroBannerWidget]: ReflektionBatchAppearance['appearance']['templates']
+  }> {
     const body = {
-      widget: {
-        rfkid: 'hs-also-viewed-products',
-      },
-      context: {
-        user: {
-          user_id: userID || undefined, // error if null
-          uuid: this.getUuid(),
+      data: {
+        context: {
+          user: {
+            uuid: this.getUuid(),
+            userID: userID || undefined,
+          },
         },
-        page: {
-          sku: [productID],
+        batch: [
+          {
+            widget: {
+              rfkid: hsHomePageTopProducts,
+            },
+          },
+          {
+            widget: {
+              rfkid: hsHomePageHeroBannerWidget,
+            },
+          },
+        ],
+        content: {
+          product: {},
         },
-      },
-      content: {
-        product: {},
+        appearance: {
+          templates: {
+            sections: ['html', 'css', 'js'],
+            devices: ['pc'],
+          },
+        },
       },
     }
+
     const response = await this.http
-      .post<ReflektionSearchResponse>(
+      .post<ReflektionHomeWidgetResponse>(
         `${this.appConfig.reflektionUrl}/api/search-rec/3`,
         body,
         {
@@ -130,11 +150,18 @@ export class ReflektionService {
         }
       )
       .toPromise()
-    const meProducts = {
-      Meta: this.mapMeta(response),
-      Items: response.content.product.value.map(this.mapProduct.bind(this)),
+    return {
+      [hsHomePageTopProducts]: (
+        response.batch.find(
+          (b) => b.widget.rfkid === hsHomePageTopProducts
+        ) as ReflektionBatchProduct
+      ).content.product.value.map(this.mapProduct.bind(this)),
+      [hsHomePageHeroBannerWidget]: (
+        response.batch.find(
+          (b) => b.widget.rfkid === hsHomePageHeroBannerWidget
+        ) as ReflektionBatchAppearance
+      ).appearance.templates,
     }
-    return meProducts
   }
 
   async getProductDetailWidgetData(
@@ -173,7 +200,7 @@ export class ReflektionService {
       },
     }
     const response = await this.http
-      .post<ReflektionBatchSearchResponse>(
+      .post<ReflektionProductDetailWidgetResponse>(
         `${this.appConfig.reflektionUrl}/api/search-rec/3`,
         body,
         {
@@ -340,7 +367,7 @@ export class ReflektionService {
     keypraseSuggestionCount?: number,
     categorySuggestionCount?: number,
     productCountToReturn?: number
-  ): Promise<ReflektionSearchResponse> {
+  ): Promise<ReflektionProductSearchResponse> {
     const body = this.buildReflektionSearchRequest(
       search,
       sortBy,
@@ -352,7 +379,7 @@ export class ReflektionService {
       productCountToReturn,
     )
     return await this.http
-      .post<ReflektionSearchResponse>(
+      .post<ReflektionProductSearchResponse>(
         `${this.appConfig.reflektionUrl}/api/search-rec/3`,
         body,
         {
@@ -417,7 +444,7 @@ export class ReflektionService {
     }
   }
 
-  private mapMeta(response: ReflektionSearchResponse): MetaWithFacets {
+  private mapMeta(response: ReflektionProductSearchResponse): MetaWithFacets {
     const Page = response.page_number
     const PageSize = response.content.product.n_item
     const TotalCount = response.content.product.total_item

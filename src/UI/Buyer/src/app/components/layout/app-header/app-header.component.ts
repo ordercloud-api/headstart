@@ -22,7 +22,7 @@ import { CurrentUser } from 'src/app/models/profile.types'
 import { AppConfig } from 'src/app/models/environment.types'
 import { ProductFilters } from 'src/app/models/filter-config.types'
 import { RouteConfig } from 'src/app/models/shared.types'
-import { ReflektionSearchResponse } from 'src/app/services/reflektion/models/ReflektionSearchResponse'
+import { ReflektionProductSearchResponse } from 'src/app/services/reflektion/models'
 import { ReflektionService } from 'src/app/services/reflektion/reflektion.service'
 
 @Component({
@@ -65,7 +65,7 @@ export class OCMAppHeader implements OnInit {
   profileRoutes: RouteConfig[] = []
   orderRoutes: RouteConfig[] = []
   numberOfOrdersToApprove = 0
-  previewSearch: ReflektionSearchResponse = null
+  previewSearch: ReflektionProductSearchResponse = null
 
   @ViewChild('addToCartPopover', { static: false })
   public addToCartPopover: NgbPopover
@@ -261,7 +261,7 @@ export class OCMAppHeader implements OnInit {
     this.isCollapsed = !this.isCollapsed
   }
 
-  openPreviewSearch(data: ReflektionSearchResponse): void {
+  openPreviewSearch(data: ReflektionProductSearchResponse): void {
     console.log("openning preview search");
     this.previewSearch = data;
   }
