@@ -1,4 +1,11 @@
-import { Component, ViewChild, ElementRef, OnInit } from '@angular/core'
+import {
+  Component,
+  ViewChild,
+  ElementRef,
+  OnInit,
+  Output,
+  EventEmitter,
+} from '@angular/core'
 import { animate, style, transition, trigger } from '@angular/animations'
 import {
   faSearch,
@@ -67,6 +74,9 @@ export class OCMAppHeader implements OnInit {
   numberOfOrdersToApprove = 0
   previewSearch: ReflektionProductSearchResponse = null
 
+  @Output() previewSearchShown = new EventEmitter()
+  @Output() previewSearchHidden = new EventEmitter()
+
   @ViewChild('addToCartPopover', { static: false })
   public addToCartPopover: NgbPopover
   @ViewChild('ordersToApprovePopover', { static: false })
@@ -84,7 +94,7 @@ export class OCMAppHeader implements OnInit {
   faTimes = faTimes
   faBoxOpen = faBoxOpen
   flagIcon: string
-  hasSuppliers = false;
+  hasSuppliers = false
   currentSupplierList: ListPage<Supplier>
 
   constructor(
@@ -126,10 +136,11 @@ export class OCMAppHeader implements OnInit {
   }
 
   async getCurrentSupplierList() {
-    this.setBuyerFilterIfNeeded();
-    const supplierList: ListPage<Supplier> = await this.context.supplierFilters.listSuppliers()
+    this.setBuyerFilterIfNeeded()
+    const supplierList: ListPage<Supplier> =
+      await this.context.supplierFilters.listSuppliers()
 
-    return supplierList;
+    return supplierList
   }
 
   private setBuyerFilterIfNeeded(): void {
@@ -229,9 +240,14 @@ export class OCMAppHeader implements OnInit {
 
   async previewSearchProducts(searchStr: string): Promise<void> {
     this.searchTermForProducts = searchStr
-    var userID = this.context.currentUser.isAnonymous() ? null : this.context.currentUser.get().ID;
-    var searchData = await this.reflektion.searchPreviewProducts(searchStr, userID); 
-    this.openPreviewSearch(searchData); 
+    const userID = this.context.currentUser.isAnonymous()
+      ? null
+      : this.context.currentUser.get().ID
+    const searchData = await this.reflektion.searchPreviewProducts(
+      searchStr,
+      userID
+    )
+    this.openPreviewSearch(searchData)
   }
 
   isRouteActive(url: string): boolean {
@@ -262,11 +278,12 @@ export class OCMAppHeader implements OnInit {
   }
 
   openPreviewSearch(data: ReflektionProductSearchResponse): void {
-    console.log("openning preview search");
-    this.previewSearch = data;
+    this.previewSearchShown.emit()
+    this.previewSearch = data
   }
 
   closePreviewSearch(): void {
-    this.previewSearch = null;
+    this.previewSearchHidden.emit()
+    this.previewSearch = null
   }
 }

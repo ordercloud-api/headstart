@@ -1,31 +1,53 @@
 <div class="container preview-search__menu" *ngIf="results">
-    <div class="row">
-        <div class="col-sm-3">
-            <div *ngIf="results?.suggestion?.keyphrase?.length > 0" class="pb-2">
-                <div class="font-weight-bold section-header p-1">Did you mean?</div>
-                <div *ngFor="let keyphrase of results.suggestion.keyphrase" class="link p-1">
-                    <a href="javascript:;" (mouseover)="hoverOnSearchPrase(keyphrase.text)" (click)="toFullSearch(keyphrase.text)">{{keyphrase.text | titlecase}}</a>
-                </div>
-            </div>
-            <div *ngIf="results?.suggestion?.category?.length > 0" class="pb-2">
-                <div class="font-weight-bold section-header p-1">Top Categories</div>
-                <div *ngFor="let cat of results.suggestion.category" class="link p-1">
-                    <a href="javascript:;">{{cat.text | titlecase}}</a>
-                </div>
-            </div>
+  <div class="row">
+    <div class="col-sm-3">
+      <div *ngIf="results?.suggestion?.keyphrase?.length > 0" class="pb-2">
+        <div class="font-weight-bold section-header p-1">Did you mean?</div>
+        <div
+          *ngFor="let keyphrase of results.suggestion.keyphrase"
+          class="link p-1"
+        >
+          <a
+            href="javascript:;"
+            (mouseover)="hoverOnSearchPrase(keyphrase.text)"
+            (click)="toFullSearch(keyphrase.text)"
+            >{{ keyphrase.text | titlecase }}</a
+          >
         </div>
-        <div class="col-sm-9">
-            <div class="font-weight-bold section-header pb-2">Top Results for "{{searchTerm}}"</div>
-            <a href="javascript:;" class="font-weight-bold" (click)="toFullSearch(searchTerm)">View All -></a>
-            <div class="row align-items-stretch">
-                <div *ngFor="let product of results.content.product.value" class="col-sm-6 col-md-4 pt-4" (click)="toProductDetails(product.sku)">
-                    <div class="cursor-pointer shadow-sm">
-                        <img [src]="product.image_url" class="product-image" alt="{{ product.name }}"/>
-                        <div style="text-align: center;">{{ product.name | titlecase}}</div>
-                    </div>
-                </div>
-            </div>
+      </div>
+      <div *ngIf="results?.suggestion?.category?.length > 0" class="pb-2">
+        <div class="font-weight-bold section-header p-1">Top Categories</div>
+        <div *ngFor="let cat of results.suggestion.category" class="link p-1">
+          <a href="javascript:;">{{ cat.text | titlecase }}</a>
         </div>
+      </div>
     </div>
+    <div class="col-sm-9">
+      <div *ngIf="searchTerm" class="font-weight-bold section-header pb-2">
+        Top Results for "{{ searchTerm }}"
+      </div>
+      <a
+        href="javascript:;"
+        class="font-weight-bold"
+        (click)="toFullSearch(searchTerm)"
+        >View All ></a
+      >
+      <div class="row align-items-stretch">
+        <div
+          *ngFor="let product of results.content.product.value"
+          class="col-sm-6 col-md-4 pt-4"
+          (click)="toProductDetails(product.sku)"
+        >
+          <div class="cursor-pointer shadow-sm">
+            <img
+              [src]="product.image_url"
+              class="product-image"
+              alt="{{ product.name }}"
+            />
+            <div style="text-align: center">{{ product.name | titlecase }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-

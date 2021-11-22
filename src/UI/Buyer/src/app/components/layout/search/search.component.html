@@ -12,6 +12,7 @@
       aria-labelledby="search-addon"
       id="search-addon"
       formControlName="search"
+      (focus)="search()"
       (keyup.enter)="search()"
       autocomplete="off"
     />
