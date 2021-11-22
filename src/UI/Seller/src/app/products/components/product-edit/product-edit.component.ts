@@ -121,7 +121,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   sellerCurrency: SupportedRates
   _exchangeRates: SupportedRates[]
   areChanges = false
-  taxCodeCategorySelected = false
   taxCodes: TaxCategorizationResponse
   productType: ProductXp['ProductType']
   shippingAddress: any
@@ -159,16 +158,16 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     private toastrService: ToastrService,
     private assetService: AssetService,
     private translate: TranslateService
-  ) { }
+  ) {}
 
   async ngOnInit(): Promise<void> {
     // TODO: Eventually move to a resolve so that they are there before the component instantiates.
     this.isCreatingNew = this.productService.checkIfCreatingNew()
     this.getAddresses()
-    var getTaxCategoriesPromise = this.initTaxCategorization();
+    const getTaxCategoriesPromise = this.initTaxCategorization()
     this.userContext = await this.currentUserService.getUserContext()
-    await this.getAvailableProductTypes();
-    await getTaxCategoriesPromise;
+    await this.getAvailableProductTypes()
+    await getTaxCategoriesPromise
     this.setProductEditTab()
   }
 
@@ -229,13 +228,11 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         Qty: null,
       }
     }
-   
-    this.taxCodes = await HeadStartSDK.TaxCategories.ListTaxCategories();
-   
+
+    this.taxCodes = await HeadStartSDK.TaxCategories.ListTaxCategories()
+
     this.staticContent = this._superHSProductEditable.Product?.xp.Documents
     this.images = this._superHSProductEditable.Product?.xp?.Images
-    this.taxCodeCategorySelected =
-      this._superHSProductEditable.Product?.xp?.Tax?.Code !== null
     this.productType = this._superHSProductEditable.Product?.xp?.ProductType
     this.createProductForm(this._superHSProductEditable)
     if (
@@ -363,7 +360,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
           ),
           FreeShippingMessage: new FormControl(
             _get(superHSProduct.Product, 'xp.FreeShippingMessage') ||
-            'Free Shipping'
+              'Free Shipping'
           ),
         },
         { validators: ValidateMinMax }
@@ -589,7 +586,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       this.dataIsSaving = false
     } catch (ex) {
       this.dataIsSaving = false
-      const message = ex?.response?.data?.Data as string;
+      const message = ex?.response?.data?.Data as string
       if (message) {
         this.toastrService.error(message, 'Error', { onActivateTick: true })
       }
@@ -607,7 +604,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   productWasModified(): boolean {
     return (
       JSON.stringify(this._superHSProductEditable) !==
-      JSON.stringify(this._superHSProductStatic) ||
+        JSON.stringify(this._superHSProductStatic) ||
       this.imageFiles.length > 0 ||
       this.staticContentFiles.length > 0
     )
@@ -636,10 +633,11 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   updateProductResource(productUpdate: any): void {
     const resourceToUpdate =
       this._superHSProductEditable || this.productService.emptyResource
-    this._superHSProductEditable = this.productService.getUpdatedEditableResource(
-      productUpdate,
-      resourceToUpdate
-    )
+    this._superHSProductEditable =
+      this.productService.getUpdatedEditableResource(
+        productUpdate,
+        resourceToUpdate
+      )
     this.checkForChanges()
   }
 
@@ -657,8 +655,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       value: productFields.includes(field)
         ? event.target.checked
         : typeOfValue === 'number'
-          ? Number(event.target.value)
-          : event.target.value,
+        ? Number(event.target.value)
+        : event.target.value,
     }
 
     if (field === 'PriceSchedule.MaxQuantity' && productUpdate.value === 0) {
@@ -692,7 +690,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   checkForChanges(): void {
     this.areChanges =
       JSON.stringify(this._superHSProductEditable) !==
-      JSON.stringify(this._superHSProductStatic) ||
+        JSON.stringify(this._superHSProductStatic) ||
       this.imageFiles?.length > 0 ||
       this.staticContentFiles?.length > 0
   }
@@ -735,11 +733,12 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   }
 
   async removeFile(file: DocumentAsset, assetType: AssetType): Promise<void> {
-    this._superHSProductStatic.Product = await this.assetService.deleteAssetUpdateProduct(
-      this._superHSProductEditable.Product,
-      file.Url,
-      assetType
-    )
+    this._superHSProductStatic.Product =
+      await this.assetService.deleteAssetUpdateProduct(
+        this._superHSProductEditable.Product,
+        file.Url,
+        assetType
+      )
     this.updateList.emit(this._superHSProductStatic.Product as Product)
     void this.refreshProductData(this._superHSProductStatic)
   }
@@ -787,13 +786,14 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       this._superHSProductEditable.Product.xp.Tax = {
         Code: '',
         Description: '',
-        LongDescription: ''
+        LongDescription: '',
       }
     }
-    this.taxCodes = await HeadStartSDK.TaxCategories.ListTaxCategories();
+    this.taxCodes = await HeadStartSDK.TaxCategories.ListTaxCategories()
   }
 
   handleTaxCodeSelection(event: TaxCategorization): void {
+    debugger
     const codeUpdate = { target: { value: event.Code } }
     const descriptionUpdate = { target: { value: event.Description } }
     this.productForm.controls.TaxCode.setValue(event.Code)
@@ -802,7 +802,9 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   }
 
   async searchTaxCodes(searchTerm: string): Promise<void> {
-    this.taxCodes = await HeadStartSDK.TaxCategories.ListTaxCategories(searchTerm ?? "");
+    this.taxCodes = await HeadStartSDK.TaxCategories.ListTaxCategories(
+      searchTerm ?? ''
+    )
   }
 
   getSaveBtnText(): string {
@@ -824,10 +826,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     superHSProduct.PriceSchedule.Name = `Default_HS_Buyer${superHSProduct.Product.Name}`
     // Slice Price Schedule if more than 100 characters after the pre-pended 'Default_HS_Buyer'.
     if (superHSProduct.PriceSchedule.Name.length > 100) {
-      superHSProduct.PriceSchedule.Name = superHSProduct.PriceSchedule.Name.slice(
-        0,
-        100
-      )
+      superHSProduct.PriceSchedule.Name =
+        superHSProduct.PriceSchedule.Name.slice(0, 100)
     }
     if (superHSProduct.Product.xp.Tax.Code === null)
       superHSProduct.Product.xp.Tax = null
@@ -865,10 +865,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       superHSProduct.PriceSchedule.Name = `Default_HS_Buyer${superHSProduct.Product.Name}`
       // Slice Price Schedule if more than 100 characters after the pre-pended 'Default_HS_Buyer'.
       if (superHSProduct.PriceSchedule.Name.length > 100) {
-        superHSProduct.PriceSchedule.Name = superHSProduct.PriceSchedule.Name.slice(
-          0,
-          100
-        )
+        superHSProduct.PriceSchedule.Name =
+          superHSProduct.PriceSchedule.Name.slice(0, 100)
       }
     }
     if (!superHSProduct.Product.xp) {
