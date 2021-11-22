@@ -1,4 +1,4 @@
-<div class="container preview-search__menu">
+<div class="container preview-search__menu" *ngIf="results">
     <div class="row">
         <div class="col-sm-3">
             <div *ngIf="results?.suggestion?.keyphrase?.length > 0" class="pb-2">
