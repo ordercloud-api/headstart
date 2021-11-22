@@ -10,6 +10,7 @@ import {
   MetaWithFacets,
   OrderWorksheet,
   Product,
+  ProductFacet,
   User,
 } from 'ordercloud-javascript-sdk'
 import { ProductSortOption } from 'src/app/components/products/sort-products/sort-products.component'
@@ -73,7 +74,7 @@ export class ReflektionService {
       filters.search,
       filters.sortBy,
       filters.page,
-      filters?.filters?.categoryID,
+      filters?.filters,
       userID
     )
     const meProducts = {
@@ -284,7 +285,7 @@ export class ReflektionService {
         PriceBreaks: [
           {
             Quantity: 1,
-            Price: Number(reflektionProduct.price),
+            Price: Number(reflektionProduct.final_price),
           },
         ],
       },
@@ -320,14 +321,14 @@ export class ReflektionService {
     search: string,
     sortBy: string[],
     page: number,
-    categoryID?: string,
+    filters?: any,
     userID?: string
   ): Promise<ReflektionSearchResponse> {
     const body = this.buildReflektionSearchRequest(
       search,
       sortBy,
       page,
-      categoryID,
+      filters,
       userID
     )
     return await this.http
@@ -345,15 +346,17 @@ export class ReflektionService {
     search: string,
     sortBy: string[],
     page: number,
-    categoryID?: string,
+    filters?: any,
     userID?: string
   ) {
     const sortArray = (sortBy || []).map((value) => {
       const [name, order] = value.split('-')
       return { name, order }
     })
-    const categoryFilter = categoryID ? [categoryID] : []
-    return {
+    const categoryFilter = filters?.categoryID ? [filters.categoryID] : []
+    const allFilters = this.buildFilters(categoryFilter, filters)
+
+    let searchRequest = {
       data: {
         n_item: 20,
         page_number: Number(page),
@@ -361,6 +364,9 @@ export class ReflektionService {
           keyphrase: {
             value: [search ?? ''],
           },
+        },
+        widget: {
+          rfkid: 'rfkid_7',
         },
         suggestion: {
           keyphrase: {
@@ -377,17 +383,28 @@ export class ReflektionService {
         sort: {
           value: sortArray,
         },
-        filter: {
-          all_category_ids: {
-            value: categoryFilter,
-          },
+        facet: {
+          all: true,
         },
+        filter: allFilters,
         content: {
           product: {},
         },
         force_v2_specs: true,
       },
     }
+    searchRequest = this.mapFacetFilter(filters, searchRequest)
+    return searchRequest
+  }
+
+  private mapFacetFilter(filter: any, searchRequest: any): any {
+    if (filter['xp.Facets.gender']) {
+      const genderSplit = filter['xp.Facets.gender'].split('|')
+      searchRequest.data.filter.genders = {
+        value: genderSplit,
+      }
+    }
+    return searchRequest
   }
 
   private mapMeta(response: ReflektionSearchResponse): MetaWithFacets {
@@ -397,7 +414,7 @@ export class ReflektionService {
     const itemRangeStart = (Page - 1) * PageSize + 1
     const itemRangeEnd = Math.max(itemRangeStart + PageSize, TotalCount)
     const meta = {
-      Facets: [],
+      Facets: response?.facet ? this.mapFacets(response.facet) : [],
       Page,
       PageSize,
       TotalCount,
@@ -405,5 +422,60 @@ export class ReflektionService {
       ItemRange: [itemRangeStart, itemRangeEnd],
     }
     return meta
+  }
+
+  private mapFacets(facets: any): any {
+    // Hard-coding which facets from this Reflektion environment to display for a demo
+    const facetsToDisplay = ['genders', 'price', 'size']
+    const facetMap = Object.entries(facets)
+    const result = []
+    for (const [facetName, facet] of facetMap) {
+      if (facetsToDisplay.includes(facetName)) {
+        const values = []
+        for (const value of facet['value']) {
+          values.push({
+            Value: value.text,
+            Count: value.count,
+          })
+        }
+        result.push({
+          Name: facet['display_name'],
+          XpPath: 'Facets.' + facetName,
+          Values: values,
+        })
+      }
+    }
+    return result
+  }
+
+  private buildFilters(categoryFilter: any[], filters: any) {
+    const allFilters = {
+      all_category_ids: {
+        value: categoryFilter,
+      },
+    }
+
+    const filterProperties = Object.entries(filters)
+    for (const [key, value] of filterProperties) {
+      if (key.startsWith('xp.Facets.price')) {
+        const keySplit = key.split('.')
+        const priceValues = { value: [] }
+        const valueSplit = (value as string).split('|')
+        for (const value of valueSplit) {
+          const priceSplit = value.split(' - ')
+          priceValues.value.push({
+            min: parseInt(priceSplit[0]),
+            max: parseInt(priceSplit[1]),
+          })
+        }
+        allFilters[keySplit[keySplit.length - 1]] = priceValues
+      } else if (key.startsWith('xp.Facets')) {
+        const keySplit = key.split('.')
+        const valueSplit = { value: (value as string).split('|') }
+        allFilters[keySplit[keySplit.length - 1]] = valueSplit
+      }
+    }
+
+    return allFilters
   }
 }

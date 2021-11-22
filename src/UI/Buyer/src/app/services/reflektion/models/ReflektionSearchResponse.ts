@@ -15,6 +15,7 @@ export interface ReflektionSearchResponse {
   query2id: {
     keyphrase: string
   }
+  facet: any
 }
 
 export interface ReflektionBatchSearchResponse {
