@@ -4,7 +4,7 @@
             <div *ngIf="results?.suggestion?.keyphrase?.length > 0" class="pb-2">
                 <div class="font-weight-bold section-header p-1">Did you mean?</div>
                 <div *ngFor="let keyphrase of results.suggestion.keyphrase" class="link p-1">
-                    <a href="javascript:;" (click)="toFullSearch(keyphrase.text)">{{keyphrase.text | titlecase}}</a>
+                    <a href="javascript:;" (mouseover)="hoverOnSearchPrase(keyphrase.text)" (click)="toFullSearch(keyphrase.text)">{{keyphrase.text | titlecase}}</a>
                 </div>
             </div>
             <div *ngIf="results?.suggestion?.category?.length > 0" class="pb-2">
