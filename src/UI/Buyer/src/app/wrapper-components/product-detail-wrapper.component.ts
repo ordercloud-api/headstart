@@ -19,7 +19,6 @@ export class ProductDetailWrapperComponent implements OnInit {
   ngOnInit(): void {
     this.product = this.activatedRoute.snapshot.data.product
     this.router.events.subscribe(event => {
-      window.scroll(0,0);
       this.product = this.activatedRoute.snapshot.data.product
     })
   }
