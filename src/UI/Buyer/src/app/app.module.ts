@@ -206,6 +206,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 import { faCreditCard } from '@fortawesome/free-solid-svg-icons'
 import { ReflektionService } from './services/reflektion/reflektion.service'
+import { OCMPreviewSearch } from './components/layout/preview-search/preview-search.component'
 
 export function HttpLoaderFactory(
   http: HttpClient,
@@ -255,6 +256,7 @@ const components = [
   OCMProductFacetList,
   OCMProductList,
   OCMSearch,
+  OCMPreviewSearch,
   OCMMiniCart,
   OCMAppHeader,
   OCMPaymentList,
@@ -448,6 +450,9 @@ export class AppModule {
     this.buildWebComponent(OCMProductAttachments, 'ocm-product-attachments')
     this.buildWebComponent(OCMCart, 'ocm-cart')
     this.buildWebComponent(OCMHomePage, 'ocm-home-page')
+    this.buildWebComponent(OCMPreviewSearch, 'ocm-preview-search')
+
+    
     this.buildWebComponent(OCMProductSort, 'ocm-product-sort')
     this.buildWebComponent(OCMSupplierSort, 'ocm-supplier-sort')
     this.buildWebComponent(OCMSupplierCard, 'ocm-supplier-card')

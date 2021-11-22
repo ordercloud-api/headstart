@@ -107,6 +107,7 @@ export class OCMProductDetails implements OnInit {
     this.mootrack.viewProduct(superProduct.Product)
     this.reflektionService.trackProductView('pdp', [superProduct.Product])
     void this.getReflektionWidgetData(this._product.ID)
+    window.scroll(0,0);
   }
 
   ngOnInit(): void {

@@ -11,7 +11,8 @@ export interface ReflektionProductSearchResponse {
   }
   page_number: number
   total_page: number
-  n_item: number
+  n_item: number,
+  suggestion: ReflektionSearchSuggestions
   query2id: {
     keyphrase: string
   }
@@ -107,4 +108,17 @@ export interface ReflektionProduct {
   product_group: number
   id: number
   size: string
+}
+
+export interface ReflektionSearchSuggestions {
+  category?: ReflektionSearchSuggestion[]
+  keyphrase?: ReflektionSearchSuggestion[]
+  trending_category?: ReflektionSearchSuggestion[]
+}
+
+export interface ReflektionSearchSuggestion {
+  id: string
+  in_content: "product" | void
+  text: string
+  url?: string
 }
