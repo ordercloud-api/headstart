@@ -40,6 +40,14 @@ export class CurrentUserService {
     return this.user
   }
 
+  getUniqueReportingID(): string {
+    if (this.isAnonymous()) {
+      return `anon-${this.tokenHelper.getDecodedOCToken().orderid}`;
+    } else {
+      return `${this.user.Buyer.ID}-${this.user.ID}`;
+    }
+  }
+
   async reset(): Promise<void> {
     const requests: Promise<any>[] = [
       Me.Get(),

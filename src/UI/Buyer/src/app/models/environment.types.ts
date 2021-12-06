@@ -62,6 +62,9 @@ export interface EnvironmentConfig {
   storefrontName?: string
   useMoosend?: boolean
   moosendWebsiteID?: string
+  useSitecoreCDP?: boolean,
+  sitecoreCDPTargetEndpoint: string
+  sitecoreCDPApiClient: string
 }
 
 export class AppConfig {
@@ -139,11 +142,23 @@ export class AppConfig {
    */
   storefrontName?: string
   /**
-   * https://moosend.com/
+   *  See https://moosend.com/
    */
   useMoosend?: boolean
   /**
    *  Get a website ID - https://help.moosend.com/hc/en-us/articles/115002945125-How-can-I-connect-my-website-to-Moosend-
    */
   moosendWebsiteID?: string
+  /**
+   * See https://www.sitecore.com/products/customer-data-platform
+   */
+  useSitecoreCDP: boolean
+  /**
+   * See https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/javascript-tagging-examples-for-web-pages.html
+   */
+  sitecoreCDPTargetEndpoint: string
+  /**
+   * See https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/javascript-tagging-examples-for-web-pages.html
+   */
+  sitecoreCDPApiClient: string
 }

@@ -13,6 +13,9 @@
   "orderCloudApiUrl": "https://api.ordercloud.io",
   "useMoosend": false,
   "moosendWebsiteID": "xxxxxxxxxxxxxxxxxxxxxxxx",
+  "useSitecoreCDP": false,
+  "sitecoreCDPTargetEndpoint": "https://api-us.boxever.com/v1.2",
+  "sitecoreCDPApiClient": "xxxxxxxxxxxxxxxxxxxxxx",
   "theme": {
     "logoSrc": "assets/generic-logo.png"
   },

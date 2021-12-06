@@ -19,6 +19,7 @@ import {
 import { CheckoutService } from './checkout.service'
 import { CurrentUserService } from '../current-user/current-user.service'
 import { MooTrackService } from '../moosend.service'
+import { SitecoreCDPService } from '../sitecore-cdp.service'
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +34,8 @@ export class CartService {
     private state: OrderStateService,
     private checkout: CheckoutService,
     private userService: CurrentUserService,
-    private mootrack: MooTrackService
+    private mootrack: MooTrackService,
+    private cdp: SitecoreCDPService,
   ) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.onChange = this.state.onLineItemsChange.bind(this.state)
@@ -97,6 +99,7 @@ export class CartService {
 
     var createdLi = await this.upsertLineItem(lineItem)
     this.mootrack.addToCart(createdLi);
+    this.cdp.addToCart(createdLi);
     return createdLi;
   }
 

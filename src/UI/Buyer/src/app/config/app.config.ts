@@ -21,6 +21,9 @@ export const ocAppConfig: AppConfig = {
   storefrontName: environment.storefrontName,
   useMoosend: environment.useMoosend,
   moosendWebsiteID: environment.moosendWebsiteID,
+  useSitecoreCDP: environment.useSitecoreCDP,
+  sitecoreCDPTargetEndpoint: environment.sitecoreCDPTargetEndpoint,
+  sitecoreCDPApiClient: environment.sitecoreCDPApiClient,
   scope: [
     'MeAddressAdmin',
     'AddressAdmin', // Only for location owners
