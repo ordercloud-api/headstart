@@ -3,6 +3,7 @@ import { HSLineItem, HSOrder, HSProduct } from "@ordercloud/headstart-sdk";
 import { AppConfig } from 'src/app/models/environment.types';
 import { CurrentUserService } from '../current-user/current-user.service';
 import { RouteService } from '../route/route.service';
+import { SitecoreCDPEvent, CDPEventType, SitecoreCDPSearchEvent, SitecoreCDPIdentifyEvent, SitecoreCDPAddEvent, SitecoreCDPPurchaseEvent } from './sitecore-cdp.types';
 
 
 declare var _boxeverq: any;
@@ -30,7 +31,7 @@ export class SitecoreCDPTrackingService {
      * */
     identify(): void {
         if (!this.appConfig.useSitecoreCDP) { return; }
-        var event = this.buildBaseEvent("IDENTITY") as IdentifyCDPEvent;
+        var event = this.buildBaseEvent("IDENTITY") as SitecoreCDPIdentifyEvent;
 
         var user = this.userService.get();
         event.email = user.Email;
@@ -50,7 +51,7 @@ export class SitecoreCDPTrackingService {
      */
     addToCart(lineItem: HSLineItem): void {
         if (!this.appConfig.useSitecoreCDP) { return; }
-        var event = this.buildBaseEvent("ADD") as AddCDPEvent;
+        var event = this.buildBaseEvent("ADD") as SitecoreCDPAddEvent;
 
         event.product = {
             type: "",
@@ -83,7 +84,7 @@ export class SitecoreCDPTrackingService {
      */
     productSearched(searchTerm: string): void {
         if (!this.appConfig.useSitecoreCDP) { return; }
-        var event = this.buildBaseEvent("SEARCH") as ProductSearchCDPEvent;
+        var event = this.buildBaseEvent("SEARCH") as SitecoreCDPSearchEvent;
 
         event.product_name = searchTerm;
         event.product_type = "";
@@ -93,7 +94,7 @@ export class SitecoreCDPTrackingService {
 
     orderPlaced(order: HSOrder, lineItems: HSLineItem[]): void {
         if (!this.appConfig.useSitecoreCDP) { return; }
-        var event = this.buildBaseEvent("ORDER_CHECKOUT") as OrderCheckoutCDPEvent;
+        var event = this.buildBaseEvent("ORDER_CHECKOUT") as SitecoreCDPPurchaseEvent;
 
         event.order = {
             referenceId: order.ID,
@@ -126,7 +127,7 @@ export class SitecoreCDPTrackingService {
         this.sendEventToCDP(event);
     }
 
-    private buildBaseEvent(type: CDPEventType): BaseCDPEvent {
+    private buildBaseEvent(type: CDPEventType): SitecoreCDPEvent {
         var currentUser = this.userService.get();
         return {
             channel: this.isBrowserMobile() ? "MOBILE_WEB" : "WEB",
@@ -145,7 +146,7 @@ export class SitecoreCDPTrackingService {
         return check;
     }
 
-    private sendEventToCDP(event: BaseCDPEvent): void {
+    private sendEventToCDP(event: SitecoreCDPEvent): void {
         console.log("sending event:", event);
         console.log("queue:", _boxeverq);
         _boxeverq.push(function() { 
@@ -180,95 +181,5 @@ export class SitecoreCDPTrackingService {
             })();
         `
         document.getElementsByTagName('head')[0].appendChild(node);
-    }
-}
-
-export type CDPEventType = "ADD" | "IDENTITY" | "ORDER_CHECKOUT" | "SEARCH" | "VIEW" | "CLEAR_CART" | string;
-
-export interface BaseCDPEvent {
-    channel: "WEB" | "MOBILE_WEB" | "MOBILE_APP";
-    // see for reserved type options https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/send-a-custom-event-to-sitecore-cdp.html
-    type: CDPEventType;
-    language: string;
-    currency: string;
-    page: string;
-    pos: string;
-    browser_id: string
-}
-
-/**
- * The SEARCH event captures the user's action of searching for a product.
- * https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/send-a-search-event-to-sitecore-cdp.html
- */
-export interface ProductSearchCDPEvent extends BaseCDPEvent {
-    product_name: string;
-    product_type: string;
-}
-
-/** 
- * Capture IDENTITY events wherever in the site that the guest provides data that might help identify them. It is common for a single browser session to have multiple IDENTITY events. 
- * https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/send-an-identity-event-to-sitecore-cdp.html
- * */
-export interface IdentifyCDPEvent extends BaseCDPEvent {
-    identifiers: { provider: string, id: string};
-    email?: string;
-    title?: string;
-    firstname?: string;
-    lastname?: string; 
-    gender?: string;
-    dob?: string;
-    mobile?: string;
-    phone?: string;
-    street?: string;
-    city?: string;
-    state?: string;
-    country?: string;
-    postal_code?: string;
-}
-
-/**
- * The ADD event captures the product details when a user adds the product(s) to their online cart.
- * https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/send-an-add-event-to-sitecore-cdp.html
- */
-export interface AddCDPEvent extends BaseCDPEvent {
-    product: {
-        type: string;
-        item_id: string;
-        name: string;
-        orderedAt: string;
-        quantity: number;
-        price: number;
-        productId: string;
-        currency: string;
-        originalPrice: number;
-        referenceId: string;
-    }
-}
-
-
-/**
- * Before you can send an ORDER_CHECKOUT event, the guest must be identified by sending an IDENTITY event. 
- * https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/send-an-order-checkout-event-to-sitecore-cdp.html
- */
-export interface OrderCheckoutCDPEvent extends BaseCDPEvent {
-    order: {
-        referenceId: string;
-        orderedAt: string;
-        status: "PURCHASED";
-        currencyCode: string;
-        price: number;
-        paymentType: "Card";
-        cardType?: string;
-        orderItems: {
-            type?: string,
-            referenceId?: string;
-            orderedAt?: string;
-            status?:"PURCHASED";
-            currencyCode?: string;
-            price?: number;
-            name?: string;
-            productId?: string;
-            quantity?: number;
-        }[]
     }
 }
