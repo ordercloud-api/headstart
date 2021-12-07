@@ -60,8 +60,8 @@ export interface EnvironmentConfig {
   anonymousShoppingEnabled?: boolean
   acceptedPaymentMethods?: string[]
   storefrontName?: string
-  useMoosend?: boolean
-  moosendWebsiteID?: string
+  useSitecoreSend?: boolean
+  sitecoreSendWebsiteID?: string
   useSitecoreCDP?: boolean,
   sitecoreCDPTargetEndpoint: string
   sitecoreCDPApiClient: string
@@ -144,11 +144,11 @@ export class AppConfig {
   /**
    *  See https://moosend.com/
    */
-  useMoosend?: boolean
+   useSitecoreSend?: boolean
   /**
    *  Get a website ID - https://help.moosend.com/hc/en-us/articles/115002945125-How-can-I-connect-my-website-to-Moosend-
    */
-  moosendWebsiteID?: string
+   sitecoreSendWebsiteID?: string
   /**
    * See https://www.sitecore.com/products/customer-data-platform
    */

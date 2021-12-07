@@ -17,15 +17,15 @@ export class SitecoreSendTrackingService {
     private readonly anonymousUserEmail = "default-buyer-user@test.com"
 
     constructor(private appConfig: AppConfig) { 
-        if (!appConfig.useMoosend) { return; }
+        if (!appConfig.useSitecoreSend) { return; }
 
         this.loadMoosendTracker();
             
-        mootrack('init', appConfig.moosendWebsiteID);
+        mootrack('init', appConfig.sitecoreSendWebsiteID);
     }
 
     identify(email: string): void {
-        if (!this.appConfig.useMoosend) { return; }
+        if (!this.appConfig.useSitecoreSend) { return; }
         // this is not a real user
         if (email === this.anonymousUserEmail) { return; }
 
@@ -34,14 +34,14 @@ export class SitecoreSendTrackingService {
     }
 
     viewProduct(product: HSProduct): void {
-        if (!this.appConfig.useMoosend || !this.userIdentified) { return; }
+        if (!this.appConfig.useSitecoreSend || !this.userIdentified) { return; }
 
         let p = this.MapProduct(product);
         mootrack('PAGE_VIEWED', [p]);
     }
 
     addToCart(lineItem: HSLineItem): void {
-        if (!this.appConfig.useMoosend || !this.userIdentified) { return; }
+        if (!this.appConfig.useSitecoreSend || !this.userIdentified) { return; }
 
         let product = this.MapProductFromLi(lineItem)
         mootrack('trackAddToOrder', 
@@ -56,14 +56,14 @@ export class SitecoreSendTrackingService {
     }
 
     purchase(lineItems: HSLineItem[]): void {
-        if (!this.appConfig.useMoosend || !this.userIdentified) { return; }
+        if (!this.appConfig.useSitecoreSend || !this.userIdentified) { return; }
 
         let products = lineItems.map(this.MapProductFromLi);
         mootrack('trackOrderCompleted', products);
     }
 
     customEvent(key: string, data: any): void {
-        if (!this.appConfig.useMoosend || !this.userIdentified) { return; }
+        if (!this.appConfig.useSitecoreSend || !this.userIdentified) { return; }
 
         mootrack(key, data);
     }
