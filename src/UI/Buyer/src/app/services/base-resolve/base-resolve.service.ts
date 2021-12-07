@@ -13,7 +13,7 @@ import { CartService } from "../order/cart.service";
 import { OrderStateService } from "../order/order-state.service";
 import { CurrentOrderService } from "../order/order.service";
 import { ProductCategoriesService } from "../product-categories/product-categories.service";
-import { SitecoreCDPService } from "../sitecore-cdp.service";
+import { SitecoreCDPTrackingService } from "../sitecore-cdp/sitecore-cdp-tracking.service";
 
 
 @Injectable()
@@ -29,7 +29,7 @@ export class BaseResolveService {
     private orderHistory: OrderHistoryService,
     private cartService: CartService,
     private router: Router,
-    private cdp: SitecoreCDPService
+    private cdp: SitecoreCDPTrackingService
   ) { }
 
   async resolve(): Promise<void> {

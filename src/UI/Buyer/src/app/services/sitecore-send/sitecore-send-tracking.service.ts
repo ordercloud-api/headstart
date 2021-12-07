@@ -1,4 +1,4 @@
-import { AppConfig } from "../models/environment.types";
+import { AppConfig } from "../../models/environment.types";
 import { Injectable } from '@angular/core'
 import { HSLineItem, HSProduct } from "@ordercloud/headstart-sdk";
 
@@ -11,7 +11,7 @@ declare var mootrack: any;
 @Injectable({
     providedIn: 'root',
 })
-export class MooTrackService {
+export class SitecoreSendTrackingService {
     private userIdentified = false; 
     // This is defined in the seed process in the middleware
     private readonly anonymousUserEmail = "default-buyer-user@test.com"

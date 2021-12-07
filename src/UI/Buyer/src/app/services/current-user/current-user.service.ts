@@ -7,7 +7,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { CurrentUser } from 'src/app/models/profile.types'
 import { AppConfig } from 'src/app/models/environment.types'
 import { ContactSupplierBody } from 'src/app/models/buyer.types'
-import { MooTrackService } from '../moosend.service'
+import { SitecoreSendTrackingService } from '../sitecore-send/sitecore-send-tracking.service'
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +31,7 @@ export class CurrentUserService {
     public cards: CreditCardService,
     public http: HttpClient,
     private appConfig: AppConfig,
-    private mootrack: MooTrackService
+    private mootrack: SitecoreSendTrackingService
   ) {
     this.isAnonSubject = new BehaviorSubject(true);
   }

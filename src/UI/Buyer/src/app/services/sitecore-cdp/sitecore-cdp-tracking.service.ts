@@ -1,9 +1,8 @@
-import { AppConfig } from "../models/environment.types";
 import { Injectable } from '@angular/core'
 import { HSLineItem, HSOrder, HSProduct } from "@ordercloud/headstart-sdk";
-import { CurrentUser } from "../models/profile.types";
-import { CurrentUserService } from "./current-user/current-user.service";
-import { RouteService } from "./route/route.service";
+import { AppConfig } from 'src/app/models/environment.types';
+import { CurrentUserService } from '../current-user/current-user.service';
+import { RouteService } from '../route/route.service';
 
 
 declare var _boxeverq: any;
@@ -13,7 +12,7 @@ declare var Boxever: any;
 @Injectable({
     providedIn: 'root',
 })
-export class SitecoreCDPService {
+export class SitecoreCDPTrackingService {
     constructor(
         private appConfig: AppConfig,
         private userService: CurrentUserService,

@@ -61,7 +61,8 @@ This solution relies on various third-party services and credentials for those s
 3. [EasyPost](https://www.easypost.com/signup) - Shipping estimates
 4. [SmartyStreets](https://smartystreets.com/pricing) - Address validation
 5. [Sendgrid](https://signup.sendgrid.com/) - Transactional emails **(Optional but emails won't work until set up)**
-6. [Moosend](https://moosend.com/) - Automated email campaigns  **(Optional. AKA Sitecore Send)**
+6. [Sitecore Send](https://www.sitecore.com/products/send) - Automated email campaigns  **(Optional. AKA Sitecore Send)**
+7. [Sitecore CDP](https://www.sitecore.com/products/customer-data-platform) - Customer Tracking and Data Platform **(Optional. AKA Sitecore Send)**
 7. [Vertex](./src/Middleware/integrations/ordercloud.integrations.vertex) - Tax calculation **(Optional tax alternative. Switch with EnvironmentSettings:TaxProvider)**
 8. [TaxJar](./src/Middleware/integrations/ordercloud.integrations.taxjar) - Tax calculation **(Optional tax alternative. Switch with EnvironmentSettings:TaxProvider)**
 9. [Zoho](https://www.zoho.com/signup.html) - ERP **(Optional)**

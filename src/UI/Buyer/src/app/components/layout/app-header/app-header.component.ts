@@ -22,7 +22,7 @@ import { CurrentUser } from 'src/app/models/profile.types'
 import { AppConfig } from 'src/app/models/environment.types'
 import { ProductFilters } from 'src/app/models/filter-config.types'
 import { RouteConfig } from 'src/app/models/shared.types'
-import { SitecoreCDPService } from 'src/app/services/sitecore-cdp.service'
+import { SitecoreCDPTrackingService } from 'src/app/services/sitecore-cdp/sitecore-cdp-tracking.service'
 
 @Component({
   templateUrl: './app-header.component.html',
@@ -88,7 +88,7 @@ export class OCMAppHeader implements OnInit {
   constructor(
     public context: ShopperContextService,
     public appConfig: AppConfig,
-    private cdp: SitecoreCDPService
+    private cdp: SitecoreCDPTrackingService
   ) {
     this.profileRoutes = context.router.getProfileRoutes()
     this.orderRoutes = context.router.getOrderRoutes()

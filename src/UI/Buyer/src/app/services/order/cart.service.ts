@@ -18,8 +18,8 @@ import {
 } from '@ordercloud/headstart-sdk'
 import { CheckoutService } from './checkout.service'
 import { CurrentUserService } from '../current-user/current-user.service'
-import { MooTrackService } from '../moosend.service'
-import { SitecoreCDPService } from '../sitecore-cdp.service'
+import { SitecoreSendTrackingService } from '../sitecore-send/sitecore-send-tracking.service'
+import { SitecoreCDPTrackingService } from '../sitecore-cdp/sitecore-cdp-tracking.service'
 
 @Injectable({
   providedIn: 'root',
@@ -34,8 +34,8 @@ export class CartService {
     private state: OrderStateService,
     private checkout: CheckoutService,
     private userService: CurrentUserService,
-    private mootrack: MooTrackService,
-    private cdp: SitecoreCDPService,
+    private mootrack: SitecoreSendTrackingService,
+    private cdp: SitecoreCDPTrackingService,
   ) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.onChange = this.state.onLineItemsChange.bind(this.state)

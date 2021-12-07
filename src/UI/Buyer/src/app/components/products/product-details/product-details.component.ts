@@ -26,7 +26,7 @@ import { QtyChangeEvent, SpecFormEvent } from 'src/app/models/product.types'
 import { CurrentUser } from 'src/app/models/profile.types'
 import { ContactSupplierBody } from 'src/app/models/buyer.types'
 import { ModalState } from 'src/app/models/shared.types'
-import { MooTrackService } from 'src/app/services/moosend.service'
+import { SitecoreSendTrackingService } from 'src/app/services/sitecore-send/sitecore-send-tracking.service'
 
 @Component({
   templateUrl: './product-details.component.html',
@@ -74,7 +74,7 @@ export class OCMProductDetails implements OnInit {
     private context: ShopperContextService,
     private productDetailService: ProductDetailService,
     private toastrService: ToastrService,
-    private mootrack: MooTrackService
+    private mootrack: SitecoreSendTrackingService
   ) {}
 
   @Input() set product(superProduct: SuperHSProduct) {
