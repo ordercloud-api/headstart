@@ -228,6 +228,7 @@ export class CartService {
       const requests = this.lineItems.Items.map((li) =>
         LineItems.Delete('Outgoing', this.order.ID, li.ID)
       )
+      this.cdp.clearCart();
       await Promise.all(requests)
     } finally {
       await this.state.reset()

@@ -13,6 +13,7 @@ import { CartService } from "../order/cart.service";
 import { OrderStateService } from "../order/order-state.service";
 import { CurrentOrderService } from "../order/order.service";
 import { ProductCategoriesService } from "../product-categories/product-categories.service";
+import { SitecoreCDPService } from "../sitecore-cdp.service";
 
 
 @Injectable()
@@ -27,11 +28,13 @@ export class BaseResolveService {
     private toastrService: ToastrService,
     private orderHistory: OrderHistoryService,
     private cartService: CartService,
-    private router: Router
+    private router: Router,
+    private cdp: SitecoreCDPService
   ) { }
 
   async resolve(): Promise<void> {
     await this.currentUser.reset()
+    this.cdp.identify();
     var reorderResponse: OrderReorderResponse
     const anonLineItems = this.orderService.lineItems
     const anonOrder = this.orderService.order
