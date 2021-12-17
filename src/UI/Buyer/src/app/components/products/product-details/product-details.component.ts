@@ -74,7 +74,7 @@ export class OCMProductDetails implements OnInit {
     private context: ShopperContextService,
     private productDetailService: ProductDetailService,
     private toastrService: ToastrService,
-    private mootrack: SitecoreSendTrackingService
+    private send: SitecoreSendTrackingService
   ) {}
 
   @Input() set product(superProduct: SuperHSProduct) {
@@ -95,7 +95,7 @@ export class OCMProductDetails implements OnInit {
     this.setPageTitle()
     this.populateInactiveVariants(superProduct)
     this.showGrid = superProduct?.PriceSchedule?.UseCumulativeQuantity
-    this.mootrack.viewProduct(superProduct.Product);
+    this.send.viewProduct(superProduct.Product);
   }
 
   ngOnInit(): void {

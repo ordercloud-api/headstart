@@ -31,7 +31,7 @@ export class CurrentUserService {
     public cards: CreditCardService,
     public http: HttpClient,
     private appConfig: AppConfig,
-    private mootrack: SitecoreSendTrackingService
+    private send: SitecoreSendTrackingService
   ) {
     this.isAnonSubject = new BehaviorSubject(true);
   }
@@ -55,7 +55,7 @@ export class CurrentUserService {
     ]
     const [user, userGroups] = await Promise.all(requests)
     this.user = await this.MapToCurrentUser(user)
-    this.mootrack.identify(this.user.Email)
+    this.send.identify(this.user.Email)
     this.userGroups.next(userGroups.Items)
   }
 

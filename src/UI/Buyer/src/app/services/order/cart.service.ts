@@ -34,7 +34,7 @@ export class CartService {
     private state: OrderStateService,
     private checkout: CheckoutService,
     private userService: CurrentUserService,
-    private mootrack: SitecoreSendTrackingService,
+    private send: SitecoreSendTrackingService,
     private cdp: SitecoreCDPTrackingService,
   ) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -98,7 +98,7 @@ export class CartService {
     }
 
     var createdLi = await this.upsertLineItem(lineItem)
-    this.mootrack.addToCart(createdLi);
+    this.send.addToCart(createdLi);
     this.cdp.addToCart(createdLi);
     return createdLi;
   }

@@ -2,12 +2,12 @@ import { AppConfig } from "../../models/environment.types";
 import { Injectable } from '@angular/core'
 import { HSLineItem, HSProduct } from "@ordercloud/headstart-sdk";
 
-// mootrack() is defined in a script tag in index.html
+// mootrack() is defined in a script loaded in loadMoosendTracker()
 declare var mootrack: any;
 
 // These requests should not be awaited, they are fire-and-forget.
 
-/** Track commerce events and forward to Moosend https://moosend.com/ */
+/** Track commerce events and forward to SiteCore Send https://www.sitecore.com/products/send */
 @Injectable({
     providedIn: 'root',
 })

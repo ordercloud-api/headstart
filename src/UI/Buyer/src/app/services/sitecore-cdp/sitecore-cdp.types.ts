@@ -1,8 +1,10 @@
+/**
+ * See for reserved type options https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/send-a-custom-event-to-sitecore-cdp.html 
+ * */ 
 export type CDPEventType = "ADD" | "IDENTITY" | "ORDER_CHECKOUT" | "SEARCH" | "VIEW" | "CLEAR_CART" | string;
 
 export interface SitecoreCDPEvent {
     channel: "WEB" | "MOBILE_WEB" | "MOBILE_APP";
-    // see for reserved type options https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/send-a-custom-event-to-sitecore-cdp.html
     type: CDPEventType;
     language: string;
     currency: string;
