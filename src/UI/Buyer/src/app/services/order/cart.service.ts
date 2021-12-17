@@ -18,7 +18,8 @@ import {
 } from '@ordercloud/headstart-sdk'
 import { CheckoutService } from './checkout.service'
 import { CurrentUserService } from '../current-user/current-user.service'
-import { MooTrackService } from '../moosend.service'
+import { SitecoreSendTrackingService } from '../sitecore-send/sitecore-send-tracking.service'
+import { SitecoreCDPTrackingService } from '../sitecore-cdp/sitecore-cdp-tracking.service'
 
 @Injectable({
   providedIn: 'root',
@@ -33,7 +34,8 @@ export class CartService {
     private state: OrderStateService,
     private checkout: CheckoutService,
     private userService: CurrentUserService,
-    private mootrack: MooTrackService
+    private send: SitecoreSendTrackingService,
+    private cdp: SitecoreCDPTrackingService,
   ) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.onChange = this.state.onLineItemsChange.bind(this.state)
@@ -96,7 +98,8 @@ export class CartService {
     }
 
     var createdLi = await this.upsertLineItem(lineItem)
-    this.mootrack.addToCart(createdLi);
+    this.send.addToCart(createdLi);
+    this.cdp.addToCart(createdLi);
     return createdLi;
   }
 
@@ -225,6 +228,7 @@ export class CartService {
       const requests = this.lineItems.Items.map((li) =>
         LineItems.Delete('Outgoing', this.order.ID, li.ID)
       )
+      this.cdp.clearCart();
       await Promise.all(requests)
     } finally {
       await this.state.reset()

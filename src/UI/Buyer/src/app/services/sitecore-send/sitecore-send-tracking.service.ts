@@ -1,31 +1,31 @@
-import { AppConfig } from "../models/environment.types";
+import { AppConfig } from "../../models/environment.types";
 import { Injectable } from '@angular/core'
 import { HSLineItem, HSProduct } from "@ordercloud/headstart-sdk";
 
-// mootrack() is defined in a script tag in index.html
+// mootrack() is defined in a script loaded in loadMoosendTracker()
 declare var mootrack: any;
 
 // These requests should not be awaited, they are fire-and-forget.
 
-/** Track commerce events and forward to Moosend https://moosend.com/ */
+/** Track commerce events and forward to SiteCore Send https://www.sitecore.com/products/send */
 @Injectable({
     providedIn: 'root',
 })
-export class MooTrackService {
+export class SitecoreSendTrackingService {
     private userIdentified = false; 
     // This is defined in the seed process in the middleware
     private readonly anonymousUserEmail = "default-buyer-user@test.com"
 
     constructor(private appConfig: AppConfig) { 
-        if (!appConfig.useMoosend) { return; }
+        if (!appConfig.useSitecoreSend) { return; }
 
         this.loadMoosendTracker();
             
-        mootrack('init', appConfig.moosendWebsiteID);
+        mootrack('init', appConfig.sitecoreSendWebsiteID);
     }
 
     identify(email: string): void {
-        if (!this.appConfig.useMoosend) { return; }
+        if (!this.appConfig.useSitecoreSend) { return; }
         // this is not a real user
         if (email === this.anonymousUserEmail) { return; }
 
@@ -34,14 +34,14 @@ export class MooTrackService {
     }
 
     viewProduct(product: HSProduct): void {
-        if (!this.appConfig.useMoosend || !this.userIdentified) { return; }
+        if (!this.appConfig.useSitecoreSend || !this.userIdentified) { return; }
 
         let p = this.MapProduct(product);
         mootrack('PAGE_VIEWED', [p]);
     }
 
     addToCart(lineItem: HSLineItem): void {
-        if (!this.appConfig.useMoosend || !this.userIdentified) { return; }
+        if (!this.appConfig.useSitecoreSend || !this.userIdentified) { return; }
 
         let product = this.MapProductFromLi(lineItem)
         mootrack('trackAddToOrder', 
@@ -56,14 +56,14 @@ export class MooTrackService {
     }
 
     purchase(lineItems: HSLineItem[]): void {
-        if (!this.appConfig.useMoosend || !this.userIdentified) { return; }
+        if (!this.appConfig.useSitecoreSend || !this.userIdentified) { return; }
 
         let products = lineItems.map(this.MapProductFromLi);
         mootrack('trackOrderCompleted', products);
     }
 
     customEvent(key: string, data: any): void {
-        if (!this.appConfig.useMoosend || !this.userIdentified) { return; }
+        if (!this.appConfig.useSitecoreSend || !this.userIdentified) { return; }
 
         mootrack(key, data);
     }

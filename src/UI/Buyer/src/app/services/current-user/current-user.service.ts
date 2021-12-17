@@ -7,7 +7,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { CurrentUser } from 'src/app/models/profile.types'
 import { AppConfig } from 'src/app/models/environment.types'
 import { ContactSupplierBody } from 'src/app/models/buyer.types'
-import { MooTrackService } from '../moosend.service'
+import { SitecoreSendTrackingService } from '../sitecore-send/sitecore-send-tracking.service'
 
 @Injectable({
   providedIn: 'root',
@@ -31,13 +31,21 @@ export class CurrentUserService {
     public cards: CreditCardService,
     public http: HttpClient,
     private appConfig: AppConfig,
-    private mootrack: MooTrackService
+    private send: SitecoreSendTrackingService
   ) {
     this.isAnonSubject = new BehaviorSubject(true);
   }
 
   get(): CurrentUser {
     return this.user
+  }
+
+  getUniqueReportingID(): string {
+    if (this.isAnonymous()) {
+      return `anon-${this.tokenHelper.getDecodedOCToken().orderid}`;
+    } else {
+      return `${this.user.Buyer.ID}-${this.user.ID}`;
+    }
   }
 
   async reset(): Promise<void> {
@@ -47,7 +55,7 @@ export class CurrentUserService {
     ]
     const [user, userGroups] = await Promise.all(requests)
     this.user = await this.MapToCurrentUser(user)
-    this.mootrack.identify(this.user.Email)
+    this.send.identify(this.user.Email)
     this.userGroups.next(userGroups.Items)
   }
 
