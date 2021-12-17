@@ -16,10 +16,9 @@ export class CurrentUserService {
   private readonly MaxFavorites: number = 40
   private readonly favOrdersXP = 'FavoriteOrders'
   private readonly favProductsXP = 'FavoriteProducts'
-  public isAnonSubject: BehaviorSubject<boolean>;
-  private userSubject: BehaviorSubject<CurrentUser> = new BehaviorSubject<CurrentUser>(
-    null
-  )
+  public isAnonSubject: BehaviorSubject<boolean>
+  private userSubject: BehaviorSubject<CurrentUser> =
+    new BehaviorSubject<CurrentUser>(null)
 
   // users for determining location management permissions for a user
   private userGroups: BehaviorSubject<UserGroup[]> = new BehaviorSubject<
@@ -33,7 +32,7 @@ export class CurrentUserService {
     private appConfig: AppConfig,
     private send: SitecoreSendTrackingService
   ) {
-    this.isAnonSubject = new BehaviorSubject(true);
+    this.isAnonSubject = new BehaviorSubject(true)
   }
 
   get(): CurrentUser {
@@ -42,9 +41,9 @@ export class CurrentUserService {
 
   getUniqueReportingID(): string {
     if (this.isAnonymous()) {
-      return `anon-${this.tokenHelper.getDecodedOCToken().orderid}`;
+      return `anon-${this.tokenHelper.getDecodedOCToken().orderid}`
     } else {
-      return `${this.user.Buyer.ID}-${this.user.ID}`;
+      return `${this.user.Buyer.ID}-${this.user.ID}`
     }
   }
 
@@ -101,9 +100,7 @@ export class CurrentUserService {
       Authorization: `Bearer ${Tokens.GetAccessToken()}`,
     })
     const url = `${this.appConfig.middlewareUrl}/me/products/requestinfo`
-    await this.http
-      .post<void>(url, contactRequest, { headers })
-      .toPromise()
+    await this.http.post<void>(url, contactRequest, { headers }).toPromise()
   }
 
   private async MapToCurrentUser(user: MeUser): Promise<CurrentUser> {
