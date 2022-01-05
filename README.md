@@ -282,7 +282,7 @@ This project follows the [build once, deploy many](https://earlyandoften.wordpre
 
 ## Docker
 
-You can run the project using Docker, sample docker-compose.yml file includes Buyer/Seller/Middleware as well as storage dependency.
+You can run the project using Docker, sample docker-compose.yml file includes Buyer/Seller/Middleware as well as emulated Azure Storage via [Azurite](https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=visual-studio).
 
 1. Make sure to [switch daemon to Linux containers](https://docs.docker.com/docker-for-windows/#switch-between-windows-and-linux-containers)
 2. Copy .env.template file to .env
