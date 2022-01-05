@@ -287,16 +287,20 @@ You can run the project using Docker, sample docker-compose.yml file includes Bu
 
 1. Create a Cosmos DB instance in Azure & make a note of your chosen `databasename`, and the generated `endpointUri` and `PrimaryKey`.
 2. Make sure to [switch daemon to Linux containers](https://docs.docker.com/docker-for-windows/#switch-between-windows-and-linux-containers)
-2. Copy `.env.template` file to `.env`
-3. Open `.env` file and populate the following variables in the `REQUIRED ENVIRONMENT VARIABLES` section:
+3. Copy `.env.template` file to `.env`
+4. Open `.env` file and populate the following variables in the `REQUIRED ENVIRONMENT VARIABLES` section:
     - CosmosSettings_DatabaseName
     - CosmosSettings_EndpointUri
     - CosmosSettings_PrimaryKey
-4. From the project directory, start up your application by running `docker-compose up -d`
-5. Follow the steps to seed the initial data values listed in the [Seeding OrderCloud Data](https://github.com/ordercloud-api/headstart#seeding-ordercloud-data) section above.
-7.  Open `.env` file and populate the rest of the variables in the `REQUIRED ENVIRONMENT VARIABLES` section, using the output values from the `/seed` command response.
-8. Restart your docker containers to make use of the new env vars by running `docker-compose restart`
-9. Follow the steps in the [Validating Setup](https://github.com/ordercloud-api/headstart#validating-setup) section above to walk through generating some sample data and testing each of the application instances.
+5. Add the following records to your Hosts file
+    - 127.0.0.1 buyer.headstart.localhost
+    - 127.0.0.1 seller.headstart.localhost
+    - 127.0.0.1 api.headstart.localhost
+6. From the project directory, start up your application by running `docker-compose up -d`
+7. Follow the steps to seed the initial data values listed in the [Seeding OrderCloud Data](https://github.com/ordercloud-api/headstart#seeding-ordercloud-data) section above.
+8.  Open `.env` file and populate the rest of the variables in the `REQUIRED ENVIRONMENT VARIABLES` section, using the output values from the `/seed` command response.
+9. Restart your docker containers to make use of the new env vars by running `docker-compose restart`
+10. Follow the steps in the [Validating Setup](https://github.com/ordercloud-api/headstart#validating-setup) section above to walk through generating some sample data and testing each of the application instances.
 
 ## Git Flow
 
