@@ -167,18 +167,20 @@ services:
         aliases:
           - "${BUYER_HOST}"
 
-  # storage:
-  # # https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azurite#install-and-run-the-azurite-docker-image
-  #   image: mcr.microsoft.com/azure-storage/azurite
-  #   volumes:
-  #     - ./data/storage:/data
-  #   environment:
-  #     blobHost: 0.0.0.0
-  #     queueHost: 0.0.0.0
-  #     blobPort: 10000
-  #   ports:
-  #     - 10000:10000
-  #     - 10001:10001
+  storage:
+  # https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azurite#install-and-run-the-azurite-docker-image
+    image: mcr.microsoft.com/azure-storage/azurite
+    volumes:
+      - ./docker/data/storage:/data
+    environment:
+      blobHost: 0.0.0.0
+      queueHost: 0.0.0.0
+      blobPort: 10000
+    ports:
+      - 10000:10000
+      - 10001:10001
+    networks:
+      headstart:
 
 networks:
   headstart:
