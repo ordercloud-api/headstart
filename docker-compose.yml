@@ -30,7 +30,9 @@ services:
       args:
         BUILD_IMAGE: mcr.microsoft.com/dotnet/sdk:3.1-alpine
         BASE_IMAGE: mcr.microsoft.com/dotnet/aspnet:3.1-alpine
+        BUILD_CONFIGURATION: ${BUILD_CONFIGURATION}
     environment:
+      ASPNETCORE_ENVIRONMENT: ${BUILD_CONFIGURATION}
       ApplicationInsightsSettings_InstrumentationKey: "${ApplicationInsightsSettings_InstrumentationKey}"
 
       AvalaraSettings_AccountID: "${AvalaraSettings_AccountID}"
@@ -39,13 +41,13 @@ services:
       AvalaraSettings_LicenseKey: "${AvalaraSettings_LicenseKey}"
       AvalaraSettings_BaseApiUrl: "${AvalaraSettings_BaseApiUrl}"
 
-      BlobSettings_ConnectionString: "${BlobSettings_ConnectionString}"
-      BlobSettings_HostUrl: "${BlobSettings_HostUrl}"
-      BlobSettings_Key: "${BlobSettings_Key}"
-      BlobSettings_ContainerNameQueue: "${BlobSettings_ContainerNameQueue}"
-      BlobSettings_ContainerNameCache: "${BlobSettings_ContainerNameCache}"
-      BlobSettings_ContainerNameExchangeRates: "${BlobSettings_ContainerNameExchangeRates}"
-      BlobSettings_ContainerNameTranslations: "${BlobSettings_ContainerNameTranslations}"
+      StorageAccountSettings_ConnectionString: "${StorageAccountSettings_ConnectionString}"
+      StorageAccountSettings_HostUrl: "${StorageAccountSettings_HostUrl}"
+      StorageAccountSettings_Key: "${StorageAccountSettings_Key}"
+      StorageAccountSettings_ContainerNameQueue: "${StorageAccountSettings_ContainerNameQueue}"
+      StorageAccountSettings_ContainerNameCache: "${StorageAccountSettings_ContainerNameCache}"
+      StorageAccountSettings_BlobContainerNameExchangeRates: "${StorageAccountSettings_ContainerNameExchangeRates}"
+      StorageAccountSettings_ContainerNameTranslations: "${StorageAccountSettings_ContainerNameTranslations}"
       CMSSettings_BaseUrl: "${CMSSettings_BaseUrl}"
 
       CardConnectSettings_Authorization: "${CardConnectSettings_Authorization}"
@@ -146,6 +148,7 @@ services:
     environment:
       BUYER_CLIENT_ID: ${BUYER_CLIENT_ID}
       MIDDLEWARE_URL: http://${API_HOST}
+      BUYER_URL: http://${BUYER_HOST}
       SELLER_ID: ${SELLER_ID}
       TRANSLATE_BLOB_URL: ${TRANSLATE_BLOB_URL}
     ports:
@@ -168,7 +171,7 @@ services:
   # https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azurite#install-and-run-the-azurite-docker-image
     image: mcr.microsoft.com/azure-storage/azurite
     volumes:
-      - ./data/storage:/data
+      - ./docker/data/storage:/data
     environment:
       blobHost: 0.0.0.0
       queueHost: 0.0.0.0
@@ -176,6 +179,8 @@ services:
     ports:
       - 10000:10000
       - 10001:10001
+    networks:
+      headstart:
 
 networks:
   headstart:
