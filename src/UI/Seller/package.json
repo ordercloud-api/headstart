@@ -61,7 +61,7 @@
     "ngx-quill": "^13.4.0",
     "ngx-spinner": "^12.0.0",
     "ngx-toastr": "^13.2.1",
-    "ordercloud-javascript-sdk": "4.2.0",
+    "ordercloud-javascript-sdk": "4.2.2",
     "pluralize": "^8.0.0",
     "popper.js": "^1.14.3",
     "quill": "^1.3.7",

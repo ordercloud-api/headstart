@@ -19,8 +19,11 @@ export const ocAppConfig: AppConfig = {
   appInsightsInstrumentationKey: environment.appInsightsInstrumentationKey,
   acceptedPaymentMethods: environment.acceptedPaymentMethods,
   storefrontName: environment.storefrontName,
-  useMoosend: environment.useMoosend,
-  moosendWebsiteID: environment.moosendWebsiteID,
+  useSitecoreSend: environment.useSitecoreSend,
+  sitecoreSendWebsiteID: environment.sitecoreSendWebsiteID,
+  useSitecoreCDP: environment.useSitecoreCDP,
+  sitecoreCDPTargetEndpoint: environment.sitecoreCDPTargetEndpoint,
+  sitecoreCDPApiClient: environment.sitecoreCDPApiClient,
   scope: [
     'MeAddressAdmin',
     'AddressAdmin', // Only for location owners
