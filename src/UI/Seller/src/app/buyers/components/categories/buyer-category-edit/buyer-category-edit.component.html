@@ -7,7 +7,6 @@
       *ngIf="field.type === 'string' && field.field === 'ParentID' && _params"
       class="form-group"
     >
-      <label for="{{ field.field }}">{{ field.field | uncamel }}</label>
       <label for="{{ field.field }}"
         >{{ field.field | uncamel }} {{ getOptionalText(field.field) }}</label
       >
@@ -28,7 +27,6 @@
       *ngIf="field.type === 'string' && field.field === 'ParentID' && !_params"
       class="form-group"
     >
-      <label for="{{ field.field }}">{{ field.field | uncamel }}</label>
       <label for="{{ field.field }}"
         >{{ field.field | uncamel }} {{ getOptionalText(field.field) }}</label
       >

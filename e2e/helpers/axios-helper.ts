@@ -8,10 +8,10 @@ export async function axiosSetup() {
 	}
 
 	axios.interceptors.response.use(
-		function(response) {
+		function (response) {
 			return response
 		},
-		function(error) {
+		function (error) {
 			if (error.config) {
 				if (error.config.requestType === 'Cleanup') {
 					logApiErrorInfo(error)

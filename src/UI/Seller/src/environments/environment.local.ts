@@ -2,7 +2,7 @@
 // ====================================================================
 const brand = Brand.DEFAULT_ADMIN
 const sebEnvironment = Environment.TEST
-const useLocalMiddleware = false
+const useLocalMiddleware = true
 const localMiddlewareURL = 'https://localhost:5001'
 // ====================================================================
 // ======= UNLESS YOU ARE DOING SOMETHING WEIRD =======================

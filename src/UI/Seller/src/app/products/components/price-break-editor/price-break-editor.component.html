@@ -34,7 +34,7 @@
                   placeholder="{{ 'ADMIN.PRODUCT_EDIT.PRICE' | translate }} ({{
                     currency?.Name
                   }})"
-                />
+                /><span class="required-field" *ngIf="isRequired">&nbsp;*</span>
               </div>
             </td>
             <td>{{ getPriceBreakRange(i) }}</td>

@@ -26,6 +26,7 @@ import { QtyChangeEvent, SpecFormEvent } from 'src/app/models/product.types'
 import { CurrentUser } from 'src/app/models/profile.types'
 import { ContactSupplierBody } from 'src/app/models/buyer.types'
 import { ModalState } from 'src/app/models/shared.types'
+import { SitecoreSendTrackingService } from 'src/app/services/sitecore-send/sitecore-send-tracking.service'
 
 @Component({
   templateUrl: './product-details.component.html',
@@ -72,7 +73,8 @@ export class OCMProductDetails implements OnInit {
     private specFormService: SpecFormService,
     private context: ShopperContextService,
     private productDetailService: ProductDetailService,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
+    private send: SitecoreSendTrackingService
   ) {}
 
   @Input() set product(superProduct: SuperHSProduct) {
@@ -93,6 +95,7 @@ export class OCMProductDetails implements OnInit {
     this.setPageTitle()
     this.populateInactiveVariants(superProduct)
     this.showGrid = superProduct?.PriceSchedule?.UseCumulativeQuantity
+    this.send.viewProduct(superProduct.Product);
   }
 
   ngOnInit(): void {

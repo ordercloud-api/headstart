@@ -17,28 +17,27 @@ namespace Headstart.API.Commands
 {
     public class DownloadReportCommand
     {
-        private readonly CloudBlobContainer _container;
+        private readonly OrderCloudIntegrationsBlobService _blob;
 
         public DownloadReportCommand(AppSettings settings)
         {
-            var blobService = new OrderCloudIntegrationsBlobService(new BlobServiceConfig()
+            _blob = new OrderCloudIntegrationsBlobService(new BlobServiceConfig()
             {
-                ConnectionString = settings.BlobSettings.ConnectionString,
+                ConnectionString = settings.StorageAccountSettings.ConnectionString,
                 Container = "downloads",
                 AccessType = BlobContainerPublicAccessType.Off
             });
-            _container = blobService.Container;
         }
 
-        public async Task<string> ExportToExcel(ReportTypeEnum reportType, ReportTemplate reportTemplate, IEnumerable<object> data)
+        public async Task<string> ExportToExcel(ReportTypeEnum reportType, List<string> reportHeaders, IEnumerable<object> data)
         {
-            var headers = reportTemplate.Headers.ToArray();
+            var headers = reportHeaders.ToArray();
             var excel = new XSSFWorkbook();
             var worksheet = excel.CreateSheet(reportType.ToString());
             var date = DateTime.UtcNow.ToString("MMddyyyy");
             var time = DateTime.Now.ToString("hmmss.ffff");
             var fileName = $"{reportType}-{date}-{time}.xlsx";
-            var fileReference = _container.GetAppendBlobReference(fileName);
+            var fileReference = await _blob.GetAppendBlobReference(fileName);
             SetHeaders(headers, worksheet);
             SetValues(data, headers, worksheet);
             using (Stream stream = await fileReference.OpenWriteAsync(true))
@@ -100,8 +99,26 @@ namespace Headstart.API.Commands
                                 }
                                 dataValue = JObject.Parse(dataValue[prop].ToString());
                             }
-                            cell.SetCellValue((hasProp && dataValue.ContainsKey(split[split.Length - 1])) ? dataValue.GetValue(split[split.Length - 1]).ToString() : null);
-                        } else
+                            if (hasProp && dataValue.ContainsKey(split[split.Length - 1]))
+                            {
+                                var value = dataValue.GetValue(split[split.Length - 1]);
+                                if (value.GetType() == typeof(JArray))
+                                {
+                                    // Pulls first item from array if data is JArray type.
+                                    // Supplier Name on Buyer Line Item Report uses this, always only one value in the array.
+                                    cell.SetCellValue(((JArray)value).Count() > 0 ? value[0].ToString() : null);
+                                }
+                                else
+                                {
+                                    cell.SetCellValue(value.ToString());
+                                }
+                            }
+                            else
+                            {
+                                cell.SetCellValue((string)null);
+                            }
+                        }
+                        else
                         {
                             cell.SetCellValue("");
                         }
@@ -111,7 +128,8 @@ namespace Headstart.API.Commands
                         if (header == "Status")
                         {
                             cell.SetCellValue(Enum.GetName(typeof(OrderStatus), Convert.ToInt32(dataJSON[header])));
-                        } else
+                        }
+                        else
                         {
                             cell.SetCellValue(dataJSON[header].ToString());
                         }
@@ -120,9 +138,9 @@ namespace Headstart.API.Commands
             }
         }
 
-        public string GetSharedAccessSignature(string fileName)
+        public async Task<string> GetSharedAccessSignature(string fileName)
         {
-            var fileReference = _container.GetBlobReference(fileName);
+            var fileReference = await _blob.GetBlobReference(fileName);
             var sharedAccessPolicy = new SharedAccessBlobPolicy()
             {
                 SharedAccessStartTime = DateTimeOffset.UtcNow.AddMinutes(-5),

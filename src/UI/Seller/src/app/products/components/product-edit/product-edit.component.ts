@@ -44,12 +44,12 @@ import {
   ListPage,
   HeadStartSDK,
   ProductXp,
-  TaxProperties,
-  TaxCode,
   AssetType,
   ImageAsset,
   DocumentAsset,
   HSProduct,
+  TaxCategorization,
+  TaxCategorizationResponse,
 } from '@ordercloud/headstart-sdk'
 import { Location } from '@angular/common'
 import { TabIndexMapper, setProductEditTab } from './tab-mapper'
@@ -121,8 +121,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   sellerCurrency: SupportedRates
   _exchangeRates: SupportedRates[]
   areChanges = false
-  taxCodeCategorySelected = false
-  taxCodes: ListPage<TaxCode>
+  taxCodes: TaxCategorizationResponse
   productType: ProductXp['ProductType']
   shippingAddress: any
   productVariations: any
@@ -159,14 +158,16 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     private toastrService: ToastrService,
     private assetService: AssetService,
     private translate: TranslateService
-  ) { }
+  ) {}
 
   async ngOnInit(): Promise<void> {
     // TODO: Eventually move to a resolve so that they are there before the component instantiates.
     this.isCreatingNew = this.productService.checkIfCreatingNew()
     this.getAddresses()
+    const getTaxCategoriesPromise = this.initTaxCategorization()
     this.userContext = await this.currentUserService.getUserContext()
     await this.getAvailableProductTypes()
+    await getTaxCategoriesPromise
     this.setProductEditTab()
   }
 
@@ -213,10 +214,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  async setTaxCodes(taxCategory: string, searchTerm: string): Promise<any> {
-    this.taxCodes = await this.listTaxCodes(taxCategory, searchTerm, 1, 100)
-  }
-
   async refreshProductData(superProduct: SuperHSProduct): Promise<void> {
     // If a seller, and not editing the product, grab the currency from the product xp.
     this.supplierCurrency = this._exchangeRates?.find(
@@ -231,18 +228,11 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         Qty: null,
       }
     }
-    if (this._superHSProductEditable.Product?.xp?.Tax?.Category) {
-      await this.setTaxCodes(
-        this._superHSProductEditable.Product.xp.Tax.Category,
-        ''
-      )
-    } else {
-      this.taxCodes = { Meta: {}, Items: [] }
-    }
+
+    this.taxCodes = await HeadStartSDK.TaxCategories.ListTaxCategories()
+
     this.staticContent = this._superHSProductEditable.Product?.xp.Documents
     this.images = this._superHSProductEditable.Product?.xp?.Images
-    this.taxCodeCategorySelected =
-      this._superHSProductEditable.Product?.xp?.Tax?.Category !== null
     this.productType = this._superHSProductEditable.Product?.xp?.ProductType
     this.createProductForm(this._superHSProductEditable)
     if (
@@ -346,10 +336,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
           OrderCanExceed: new FormControl(
             _get(superHSProduct.Product, 'Inventory.OrderCanExceed')
           ),
-          TaxCodeCategory: new FormControl(
-            _get(superHSProduct.Product, 'xp.Tax.Category', null),
-            Validators.required
-          ),
           TaxCode: new FormControl(
             _get(superHSProduct.Product, 'xp.Tax.Code', null),
             Validators.required
@@ -359,7 +345,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
             Validators.required
           ),
           SizeTier: new FormControl(
-            _get(superHSProduct.Product, 'xp.SizeTier')
+            _get(superHSProduct.Product, 'xp.SizeTier'),
+            Validators.required
           ),
           UnitOfMeasureQty: new FormControl(
             _get(superHSProduct.Product, 'xp.UnitOfMeasure.Qty'),
@@ -373,7 +360,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
           ),
           FreeShippingMessage: new FormControl(
             _get(superHSProduct.Product, 'xp.FreeShippingMessage') ||
-            'Free Shipping'
+              'Free Shipping'
           ),
         },
         { validators: ValidateMinMax }
@@ -475,7 +462,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
 
   setNonRequiredFields(): void {
     const optionalFieldsArray = [
-      'TaxCodeCategory',
       'TaxCode',
       'ShipWeight',
       'ShipFromAddressID',
@@ -516,7 +502,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       this.isShippingValid() &&
       this.unitOfMeasureValid() &&
       this.productForm.controls.Name.valid &&
-      this.productForm.controls.TaxCodeCategory.valid &&
       this.productForm.controls.TaxCode.valid
     )
   }
@@ -601,7 +586,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       this.dataIsSaving = false
     } catch (ex) {
       this.dataIsSaving = false
-      const message = ex?.response?.data?.Data as string;
+      const message = ex?.response?.data?.Data as string
       if (message) {
         this.toastrService.error(message, 'Error', { onActivateTick: true })
       }
@@ -619,7 +604,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   productWasModified(): boolean {
     return (
       JSON.stringify(this._superHSProductEditable) !==
-      JSON.stringify(this._superHSProductStatic) ||
+        JSON.stringify(this._superHSProductStatic) ||
       this.imageFiles.length > 0 ||
       this.staticContentFiles.length > 0
     )
@@ -648,10 +633,11 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   updateProductResource(productUpdate: any): void {
     const resourceToUpdate =
       this._superHSProductEditable || this.productService.emptyResource
-    this._superHSProductEditable = this.productService.getUpdatedEditableResource(
-      productUpdate,
-      resourceToUpdate
-    )
+    this._superHSProductEditable =
+      this.productService.getUpdatedEditableResource(
+        productUpdate,
+        resourceToUpdate
+      )
     this.checkForChanges()
   }
 
@@ -669,8 +655,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       value: productFields.includes(field)
         ? event.target.checked
         : typeOfValue === 'number'
-          ? Number(event.target.value)
-          : event.target.value,
+        ? Number(event.target.value)
+        : event.target.value,
     }
 
     if (field === 'PriceSchedule.MaxQuantity' && productUpdate.value === 0) {
@@ -704,7 +690,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   checkForChanges(): void {
     this.areChanges =
       JSON.stringify(this._superHSProductEditable) !==
-      JSON.stringify(this._superHSProductStatic) ||
+        JSON.stringify(this._superHSProductStatic) ||
       this.imageFiles?.length > 0 ||
       this.staticContentFiles?.length > 0
   }
@@ -747,11 +733,12 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   }
 
   async removeFile(file: DocumentAsset, assetType: AssetType): Promise<void> {
-    this._superHSProductStatic.Product = await this.assetService.deleteAssetUpdateProduct(
-      this._superHSProductEditable.Product,
-      file.Url,
-      assetType
-    )
+    this._superHSProductStatic.Product =
+      await this.assetService.deleteAssetUpdateProduct(
+        this._superHSProductEditable.Product,
+        file.Url,
+        assetType
+      )
     this.updateList.emit(this._superHSProductStatic.Product as Product)
     void this.refreshProductData(this._superHSProductStatic)
   }
@@ -790,25 +777,23 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     this.modalService.open(content, { ariaLabelledBy: 'confirm-modal' })
   }
 
-  async handleTaxCodeCategorySelection(event): Promise<void> {
+  async initTaxCategorization(): Promise<void> {
     // TODO: This is a temporary fix to accomodate for data not having xp.TaxCode yet
     if (
       this._superHSProductEditable?.Product?.xp &&
       !this._superHSProductEditable.Product.xp.Tax
     ) {
       this._superHSProductEditable.Product.xp.Tax = {
-        Category: '',
         Code: '',
         Description: '',
+        LongDescription: '',
       }
     }
-    this.resetTaxCodeAndDescription()
-    this.handleUpdateProduct(event, 'Product.xp.Tax.Category')
-    this._superHSProductEditable.Product.xp.Tax.Code = ''
-    await this.setTaxCodes(event.target.value, '')
+    this.taxCodes = await HeadStartSDK.TaxCategories.ListTaxCategories()
   }
 
-  handleTaxCodeSelection(event: TaxProperties): void {
+  handleTaxCodeSelection(event: TaxCategorization): void {
+    debugger
     const codeUpdate = { target: { value: event.Code } }
     const descriptionUpdate = { target: { value: event.Description } }
     this.productForm.controls.TaxCode.setValue(event.Code)
@@ -816,40 +801,10 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     this.handleUpdateProduct(descriptionUpdate, 'Product.xp.Tax.Description')
   }
 
-  // Reset TaxCode Code and Description if a new TaxCode Category is selected
-  resetTaxCodeAndDescription(): void {
-    this.handleUpdateProduct({ target: { value: null } }, 'Product.xp.Tax.Code')
-    this.handleUpdateProduct(
-      { target: { value: null } },
-      'Product.xp.Tax.Description'
-    )
-  }
-
   async searchTaxCodes(searchTerm: string): Promise<void> {
-    if (searchTerm === undefined) searchTerm = ''
-    const taxCodeCategory = this._superHSProductEditable.Product.xp.Tax.Category
-    await this.setTaxCodes(taxCodeCategory, searchTerm)
-  }
-
-  async handleScrollEnd(searchTerm: string): Promise<void> {
-    if (searchTerm === undefined) searchTerm = ''
-    const totalPages = this.taxCodes.Meta.TotalPages
-    const nextPageNumber = this.taxCodes.Meta.Page + 1
-    if (totalPages > nextPageNumber) {
-      const taxCodeCategory = this._superHSProductEditable.Product.xp.Tax
-        .Category
-      const avalaraTaxCodes = await this.listTaxCodes(
-        taxCodeCategory,
-        searchTerm,
-        nextPageNumber,
-        100
-      )
-      this.taxCodes = {
-        Meta: avalaraTaxCodes.Meta,
-        Items: [...this.taxCodes.Items, ...avalaraTaxCodes.Items],
-      }
-      this.changeDetectorRef.detectChanges()
-    }
+    this.taxCodes = await HeadStartSDK.TaxCategories.ListTaxCategories(
+      searchTerm ?? ''
+    )
   }
 
   getSaveBtnText(): string {
@@ -871,12 +826,10 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     superHSProduct.PriceSchedule.Name = `Default_HS_Buyer${superHSProduct.Product.Name}`
     // Slice Price Schedule if more than 100 characters after the pre-pended 'Default_HS_Buyer'.
     if (superHSProduct.PriceSchedule.Name.length > 100) {
-      superHSProduct.PriceSchedule.Name = superHSProduct.PriceSchedule.Name.slice(
-        0,
-        100
-      )
+      superHSProduct.PriceSchedule.Name =
+        superHSProduct.PriceSchedule.Name.slice(0, 100)
     }
-    if (superHSProduct.Product.xp.Tax.Category === null)
+    if (superHSProduct.Product.xp.Tax.Code === null)
       superHSProduct.Product.xp.Tax = null
     if (superHSProduct.PriceSchedule.PriceBreaks[0].Price === null)
       superHSProduct.PriceSchedule.PriceBreaks[0].Price = 0
@@ -912,10 +865,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       superHSProduct.PriceSchedule.Name = `Default_HS_Buyer${superHSProduct.Product.Name}`
       // Slice Price Schedule if more than 100 characters after the pre-pended 'Default_HS_Buyer'.
       if (superHSProduct.PriceSchedule.Name.length > 100) {
-        superHSProduct.PriceSchedule.Name = superHSProduct.PriceSchedule.Name.slice(
-          0,
-          100
-        )
+        superHSProduct.PriceSchedule.Name =
+          superHSProduct.PriceSchedule.Name.slice(0, 100)
       }
     }
     if (!superHSProduct.Product.xp) {
@@ -963,20 +914,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     const accessToken = await this.appAuthService.fetchToken().toPromise()
     const hsProduct = await HeadStartSDK.Products.Get(product.ID, accessToken)
     void this.refreshProductData(hsProduct)
-  }
-
-  async listTaxCodes(
-    taxCategory: string,
-    search: string,
-    page: number,
-    pageSize: number
-  ): Promise<ListPage<TaxCode>> {
-    return await HeadStartSDK.Avalaras.ListTaxCodes({
-      filters: { Category: taxCategory },
-      search,
-      page,
-      pageSize,
-    })
   }
 
   getTotalMarkup = (specOptions: SpecOption[]): number => {

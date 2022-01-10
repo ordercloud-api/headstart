@@ -18,6 +18,8 @@ import {
 } from '@ordercloud/headstart-sdk'
 import { CheckoutService } from './checkout.service'
 import { CurrentUserService } from '../current-user/current-user.service'
+import { SitecoreSendTrackingService } from '../sitecore-send/sitecore-send-tracking.service'
+import { SitecoreCDPTrackingService } from '../sitecore-cdp/sitecore-cdp-tracking.service'
 
 @Injectable({
   providedIn: 'root',
@@ -31,7 +33,9 @@ export class CartService {
   constructor(
     private state: OrderStateService,
     private checkout: CheckoutService,
-    private userService: CurrentUserService
+    private userService: CurrentUserService,
+    private send: SitecoreSendTrackingService,
+    private cdp: SitecoreCDPTrackingService,
   ) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.onChange = this.state.onLineItemsChange.bind(this.state)
@@ -89,12 +93,14 @@ export class CartService {
           lineItem.Quantity += lineItemWithMatchingSpecs.Quantity
         }
       }
-      return await this.upsertLineItem(lineItem)
-    }
-    if (!this.initializingOrder) {
+    } else if (!this.initializingOrder) {
       await this.initializeOrder()
-      return await this.upsertLineItem(lineItem)
     }
+
+    var createdLi = await this.upsertLineItem(lineItem)
+    this.send.addToCart(createdLi);
+    this.cdp.addToCart(createdLi);
+    return createdLi;
   }
 
   async initializeOrder(): Promise<void> {
@@ -222,6 +228,7 @@ export class CartService {
       const requests = this.lineItems.Items.map((li) =>
         LineItems.Delete('Outgoing', this.order.ID, li.ID)
       )
+      this.cdp.clearCart();
       await Promise.all(requests)
     } finally {
       await this.state.reset()
@@ -267,6 +274,8 @@ export class CartService {
         // if there are pre-existing promos need to recalculate order
         const updatedOrder = await this.checkout.calculateOrder()
         await this.state.resetCurrentOrder(updatedOrder)
+      } else {
+        await this.state.resetCurrentOrder()
       }
       await this.state.resetCurrentOrder()
       this.isCartValidSubject.next(true)

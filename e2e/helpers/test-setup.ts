@@ -3,7 +3,7 @@ import {
 	adminClientAuth,
 	authAdminBrowser,
 	authBuyerBrowser,
-	authVendorBrowser,
+	authSupplierBrowser,
 } from '../api-utils.ts/auth-util'
 import testConfig from '../testConfig'
 import {
@@ -33,60 +33,90 @@ export async function adminClientSetup() {
 		adminRoles
 	)
 
+
 	return adminClientToken
 }
 
 const adminRoles: ApiRole[] = [
-	'SupplierAdmin',
-	'BuyerUserAdmin',
-	'UserGroupAdmin',
-	'SupplierUserReader',
-	'SupplierUserAdmin',
-	'SupplierAddressReader',
-	'SupplierAddressAdmin',
-	'BuyerReader',
-	'BuyerAdmin',
-	'AddressReader',
-	'AddressAdmin',
-	'ApiClientAdmin',
-	'ApiClientReader',
-	'SupplierUserGroupAdmin',
-	'ProductReader',
-	'ProductAdmin',
-	'FullAccess',
-	//@ts-ignore
-	'MPProductAdmin',
-	//@ts-ignore
-	'MPPromotionAdmin',
-	//@ts-ignore
-	'MPCategoryAdmin',
-	//@ts-ignore
-	'MPOrderAdmin',
-	//@ts-ignore
-	'MPShipmentAdmin',
-	//@ts-ignore
-	'MPBuyerAdmin',
-	//@ts-ignore
-	'MPSellerAdmin',
-	//@ts-ignore
-	'MPReportReader',
-	//@ts-ignore
-	'MPSupplierAdmin',
-	//@ts-ignore
-	'MPSupplierUserGroupAdmin',
+	"AddressAdmin",
+	"AddressReader",
+	"AdminAddressAdmin",
+	"AdminAddressReader",
+	"AdminUserAdmin",
+	"ApiClientAdmin",
+	"ApprovalRuleAdmin",
+	// @ts-ignore
+	"AssetAdmin",
+	"BuyerAdmin",
+	"BuyerImpersonation",
+	"BuyerUserAdmin",
+	"CatalogAdmin",
+	"CategoryAdmin",
+	"CreditCardAdmin",
+	// @ts-ignore
+	"DocumentAdmin",
+	// @ts-ignore
+	"HSBuyerAdmin",
+	// @ts-ignore
+	"HSBuyerImpersonator",
+	// @ts-ignore
+	"HSCategoryAdmin",
+	// @ts-ignore
+	"HSMeAdmin",
+	// @ts-ignore
+	"HSOrderAdmin",
+	// @ts-ignore
+	"HSProductAdmin",
+	// @ts-ignore
+	"HSPromotionAdmin",
+	// @ts-ignore
+	"HSReportAdmin",
+	// @ts-ignore
+	"HSReportReader",
+	// @ts-ignore
+	"HSSellerAdmin",
+	// @ts-ignore
+	"HSShipmentAdmin",
+	// @ts-ignore
+	"HSStorefrontAdmin",
+	// @ts-ignore
+	"HSSupplierAdmin",
+	// @ts-ignore
+	"HSSupplierUserGroupAdmin",
+	"MeAdmin",
+	"MeXpAdmin",
+	"OrderAdmin",
+	"OrderReader",
+	"PriceScheduleAdmin",
+	"ProductAdmin",
+	"ProductAssignmentAdmin",
+	"ProductFacetAdmin",
+	"ProductFacetReader",
+	"PromotionAdmin",
+	// @ts-ignore
+	"SchemaAdmin",
+	"ShipmentAdmin",
+	"ShipmentReader",
+	"SupplierAddressAdmin",
+	"SupplierAddressReader",
+	"SupplierAdmin",
+	"SupplierReader",
+	"SupplierUserAdmin",
+	"SupplierUserGroupAdmin",
+	"UserGroupAdmin"
 ]
 
 export function setStagingUrl() {
 	const config: SdkConfiguration = {
-		baseApiUrl: 'https://stagingapi.ordercloud.io',
+		baseApiUrl: 'https://sandboxapi.ordercloud.io',
 	}
 	Configuration.Set(config)
 }
 
-export async function loginTestSetup(authToken: string) {
+export async function loginTestSetup(authToken: string, buyerID: string) {
 	await t.maximizeWindow()
-	const user: OrderCloudSDK.User = await createUser(authToken, '0005')
-	await saveUserAssignment(user.ID, '0005-0001', '0005', authToken)
+	const user: OrderCloudSDK.User = await createUser(authToken, buyerID)
+	await saveUserAssignment(user.ID, `${buyerID}-0001`, buyerID, authToken)
 	return user
 }
 
@@ -108,13 +138,13 @@ export async function baseTestCleanup(
 	await deleteUser(userID, buyerID, authToken)
 }
 
-export async function buyerTestSetup(authToken: string, country?: string) {
+export async function buyerTestSetup(authToken: string, buyerID?: string, country?: string) {
 	await t.maximizeWindow()
-	const user: OrderCloudSDK.User = await createUser(authToken, '0005', country)
+	const user: OrderCloudSDK.User = await createUser(authToken, buyerID, country)
 
 	await authBuyerBrowser(user)
 
-	await createCreditCard(t.ctx.userAuth, user.FirstName, user.LastName)
+	await createCreditCard(t.ctx.userAuth)
 
 	await t.navigateTo(`${testConfig.buyerAppUrl}home`)
 
@@ -136,15 +166,29 @@ export async function adminTestSetup() {
 	await t.navigateTo(`${testConfig.adminAppUrl}home`)
 }
 
-export async function vendorTestSetup(username: string, password: string) {
+
+
+export async function supplierTestSetup(username: string, password: string) {
 	await t.maximizeWindow()
 
 	const user: Partial<OrderCloudSDK.User> = {
 		Username: username,
 		Password: password,
 	}
-
-	await authVendorBrowser(user)
+	await authSupplierBrowser(user)
 
 	await t.navigateTo(`${testConfig.adminAppUrl}home`)
+}
+
+export async function existingBuyerTestSetup(username, password) {
+	await t.maximizeWindow()
+
+	const user: Partial<OrderCloudSDK.User> = {
+		Username: username,
+		Password: password
+	}
+
+	await authBuyerBrowser(user)
+
+	await t.navigateTo(`${testConfig.buyerAppUrl}home`)
 }

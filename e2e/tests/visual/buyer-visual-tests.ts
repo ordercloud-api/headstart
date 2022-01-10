@@ -46,7 +46,7 @@ test('Buyer Login Page', async t => {
 })
 
 test.before(async t => {
-	await buyerTestSetup(t.fixtureCtx.adminClientAuth)
+	await buyerTestSetup(t.fixtureCtx.adminClientAuth, t.fixtureCtx.buyerID)
 })('Buyer Homepage', async t => {
 	await eyes.open({
 		appName: appName,
@@ -62,7 +62,7 @@ test.before(async t => {
 })
 
 test.before(async t => {
-	t.ctx.testUser = await buyerTestSetup(t.fixtureCtx.adminClientAuth)
+	t.ctx.testUser = await buyerTestSetup(t.fixtureCtx.adminClientAuth, t.fixtureCtx.buyerID)
 })('Buyer Checkout Workflow', async t => {
 	await eyes.open({
 		appName: appName,
@@ -73,7 +73,7 @@ test.before(async t => {
 		t,
 		accessibilityValidation: { level: 'AA', guidelinesVersion: 'WCAG_2_0' },
 	})
-	const productName = '100 CLASS T-SHIRT'
+	const productName = 'Earrings'
 	await buyerHeaderPage.search(productName)
 	await t
 		.expect(
@@ -98,7 +98,7 @@ test.before(async t => {
 	await checkoutPage.clickSaveAndContinueButton()
 	await t.expect(checkoutPage.creditCardDropdown.exists).ok()
 	await checkWindow(eyes, 'Payment Page')
-	await checkoutPage.selectCreditCard(t.ctx.testUser.FirstName)
+	await checkoutPage.selectCreditCard("PA")
 	await checkoutPage.enterCVV('900')
 	await checkoutPage.clickSaveAndContinueButton()
 	await t.expect(checkoutPage.submitOrderButton.exists).ok()
@@ -110,7 +110,7 @@ test.before(async t => {
 })
 
 test.before(async t => {
-	t.ctx.testUser = await buyerTestSetup(t.fixtureCtx.adminClientAuth)
+	t.ctx.testUser = await buyerTestSetup(t.fixtureCtx.adminClientAuth, t.fixtureCtx.buyerID)
 })('Buyer Account Pages', async t => {
 	await eyes.open({
 		appName: appName,
@@ -140,7 +140,7 @@ test.before(async t => {
 })
 
 test.before(async t => {
-	t.ctx.testUser = await buyerTestSetup(t.fixtureCtx.adminClientAuth)
+	t.ctx.testUser = await buyerTestSetup(t.fixtureCtx.adminClientAuth, t.fixtureCtx.buyerID)
 })('Buyer Orders Pages', async t => {
 	await eyes.open({
 		appName: appName,

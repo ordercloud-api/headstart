@@ -1,8 +1,9 @@
+import { supplierUserRoles, userClientAuth } from '../../api-utils.ts/auth-util'
 import {
 	deleteBuyerLocation,
 	getBuyerLocations,
 } from '../../api-utils.ts/buyer-locations-util'
-import { deleteBuyer, getAutomationBuyers } from '../../api-utils.ts/buyer-util'
+import { deleteBuyer, getAutomationbuyers } from '../../api-utils.ts/buyer-util'
 import { deleteCatalog, getCatalogs } from '../../api-utils.ts/catalog-util'
 import {
 	deleteAutomationProducts,
@@ -21,19 +22,26 @@ import {
 	deleteSupplierAddress,
 	getSupplierAddresses,
 } from '../../api-utils.ts/warehouse-util'
-import { cleanupVendorWithID } from '../../helpers/test-cleanup'
-//brand = buyer
-//vendor = supplier
+import { cleanupSupplierWithID } from '../../helpers/test-cleanup'
+//buyer = buyer
+//supplier = supplier
 
 import { adminClientSetup } from '../../helpers/test-setup'
+import testConfig from '../../testConfig'
 
 fixture`Cleanup Tests`.meta('TestRun', 'Cleanup').before(async ctx => {
 	ctx.clientAuth = await adminClientSetup()
+	ctx.supplierUserAuth = await userClientAuth(
+		testConfig.adminAppClientID,
+		testConfig.adminSupplierUsername,
+		testConfig.adminSupplierPassword,
+		supplierUserRoles
+	)
 })
 
 test('Delete Automation Products', async t => {
 	const automationProducts = await getAutomationProducts(
-		t.fixtureCtx.clientAuth
+		t.fixtureCtx.supplierUserAuth
 	)
 	console.log(
 		`Number of automation products found: ${automationProducts.length}`
@@ -41,7 +49,7 @@ test('Delete Automation Products', async t => {
 	if (automationProducts.length > 0) {
 		await deleteAutomationProducts(
 			automationProducts,
-			t.fixtureCtx.clientAuth
+			t.fixtureCtx.supplierUserAuth
 		)
 	}
 })
@@ -50,7 +58,7 @@ test('Delete Automation Products', async t => {
 //supplier
 //supplier address (warehouse)
 test('Delete Automation Suppliers', async t => {
-	//get suppliers, starting with AutomationVendor_
+	//get suppliers, starting with AutomationSupplier_
 	const automationSuppliers = await getAutomationSuppliers(
 		t.fixtureCtx.clientAuth
 	)
@@ -102,7 +110,7 @@ test('Delete Automation Suppliers', async t => {
 	//delete suppliers
 	if (automationSuppliers.length > 0) {
 		for await (const supplier of automationSuppliers) {
-			await cleanupVendorWithID(supplier.ID, t.fixtureCtx.clientAuth)
+			await cleanupSupplierWithID(supplier.ID, t.fixtureCtx.clientAuth)
 		}
 	}
 })
@@ -112,12 +120,12 @@ test('Delete Automation Suppliers', async t => {
 //buyer
 //buyer user
 test('Delete Automation Buyers', async t => {
-	//get buyers, starting with AutomationBrand_
-	const automationBuyers = await getAutomationBuyers(t.fixtureCtx.clientAuth)
-	console.log(`Number of automation buyers found: ${automationBuyers.length}`)
+	//get buyers, starting with automationbuyer_
+	const automationbuyers = await getAutomationbuyers(t.fixtureCtx.clientAuth)
+	console.log(`Number of automation buyers found: ${automationbuyers.length}`)
 	//delete buyer locations
-	if (automationBuyers.length > 0) {
-		for await (const buyer of automationBuyers) {
+	if (automationbuyers.length > 0) {
+		for await (const buyer of automationbuyers) {
 			const buyerLocations = await getBuyerLocations(
 				buyer.ID,
 				t.fixtureCtx.clientAuth
@@ -137,8 +145,8 @@ test('Delete Automation Buyers', async t => {
 		}
 	}
 	//delete buyer catalogs
-	if (automationBuyers.length > 0) {
-		for await (const buyer of automationBuyers) {
+	if (automationbuyers.length > 0) {
+		for await (const buyer of automationbuyers) {
 			const buyerCatalogs = await getCatalogs(
 				buyer.ID,
 				t.fixtureCtx.clientAuth
@@ -158,8 +166,8 @@ test('Delete Automation Buyers', async t => {
 		}
 	}
 	//delete buyer users
-	if (automationBuyers.length > 0) {
-		for await (const buyer of automationBuyers) {
+	if (automationbuyers.length > 0) {
+		for await (const buyer of automationbuyers) {
 			const buyerUsers = await getUsers(buyer.ID, t.fixtureCtx.clientAuth)
 			console.log(
 				`Number of users found for ${buyer.Name}: ${buyerUsers.length}`
@@ -172,8 +180,8 @@ test('Delete Automation Buyers', async t => {
 		}
 	}
 	//delete buyers
-	if (automationBuyers.length > 0) {
-		for await (const buyer of automationBuyers) {
+	if (automationbuyers.length > 0) {
+		for await (const buyer of automationbuyers) {
 			await deleteBuyer(buyer.ID, t.fixtureCtx.clientAuth)
 		}
 	}

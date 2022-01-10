@@ -116,7 +116,6 @@
       "STATUS": "Status",
       "SUPPLIER": "Supplier",
       "SELLER_OWNED_PRODUCTS": "Has Seller Owned Products",
-
       "TO_DATE": "To Date"
     },
     "HEADERS": {
@@ -368,7 +367,7 @@
       "VARIANTS": "Variants",
       "VARIANTS_LIMIT_100": "variants. (Limit 100)",
       "VARIANTS_LOWERCASE": "variants",
-      "VARIANTS_WEARNING": "Set a product sku before creating product variants.",
+      "VARIANTS_WARNING": "Set a product sku before creating product variants.",
       "VARIATION": "Variation",
       "VARIATION_ISSUES": "There are problems with the product variations.",
       "VISIBLE": "Visible",
@@ -489,6 +488,9 @@
       "DESCRIPTION": "Description",
       "NAME": "Name",
       "VALUES": "Values",
+      "INCLUDE_ALL": "Include All",
+      "SUPPLIER_OPTIONAL": "Supplier (Optional)",
+      "BUYER_OPTIONAL": "Buyer (Optional)",
       "ALL_VALUES": "All Values",
       "PREVIEW_REPORT": "Preview Report",
       "FETCHING_PREVIEW": "Fetching Preview...",
@@ -598,10 +600,14 @@
       "QTY": "Qty",
       "QTY_RETURNED": "Returned",
       "QTY_CANCELED": "Canceled",
+      "REFUND_AMOUNT": "Refund Amount",
       "REMOVE_ITEM": "Remove Item",
       "RETURNED": "Returned:",
+      "RMA_COMMENT": "Comment",
       "SELLER_COMMENT": "Seller Comment",
+      "SHIPPING_REFUND": "Shipping Refund",
       "TOTAL": "Total",
+      "TOTAL_REFUND": "Total Refund",
       "UNIT_PRICE": "Unit Price"
     },
     "MINI_CART": {
@@ -633,7 +639,8 @@
       "SAVE_CONTINUE": "Save and Continue",
       "SELECT_ADDRESS": "Choose from your saved addresses, or choose to enter a new address",
       "SELECT_BUYER_LOCATION": "Select your buyer location to determine tax",
-      "SHIPPING_ADDRESS": "Shipping Address"
+      "SHIPPING_ADDRESS": "Shipping Address",
+      "SHIPPING_DISCOUNT_TEXT": "Discount calculated after shipping"
     },
     "CHECKOUT_CONFIRM": {
       "BILL_TO": "Bill to",
@@ -645,7 +652,8 @@
       "DISCOUNTS_APPLIED": "Discounts Applied",
       "PAYMENT_METHOD": "Payment Method",
       "PROMOTIONS": "Promotions",
-      "REMOVE": "Remove"
+      "REMOVE": "Remove",
+      "USE_A_PROMO": "Use a Promo Code"
     },
     "CHECKOUT_SHIPPING": {
       "SAVE_CONTINUE": "Save and Continue",
@@ -683,7 +691,7 @@
       "FAQ": "FAQ",
       "SUPPORT": "Support",
       "TERMS_CONDITIONS": "Terms & Conditions",
-      "QUESTIONS_COMMENTS" : "Questions or comments?",
+      "QUESTIONS_COMMENTS": "Questions or comments?",
       "PHONE": {
         "LABEL": "Ring:",
         "AREACODE": "555",
@@ -691,7 +699,7 @@
         "SUFFIX": "5555"
       },
       "EMAIL": "support@my-company.com",
-      "EMAIL_LABEL" : "Write:"
+      "EMAIL_LABEL": "Write:"
     },
     "APP_HEADER": {
       "ACCOUNT": "Account",
@@ -753,6 +761,7 @@
       "FAVORITE": "Favorite",
       "MOVE_TO_CART": "Move Order to Cart",
       "ORDER": "Order",
+      "REASON": "Reason",
       "REORDER": "Reorder",
       "REQUEST_A_RETURN": "Request a Return",
       "REQUEST_A_CANCEL": "Request a Cancellation",
@@ -974,13 +983,6 @@
       "ADDRESS_BOOK": "Address Book",
       "CANCEL": "Cancel",
       "DELETE": "Delete"
-    },
-    "CERT_FORM": {
-      "CANCEL": "Cancel",
-      "EXP_DATE": "Expiration Date",
-      "PDF": "PDF File",
-      "SAVE": "Save",
-      "SIGNED": "Signed Date"
     },
     "CHANGE_PASSWORD": {
       "CONFIRM": "Confirm New Password",

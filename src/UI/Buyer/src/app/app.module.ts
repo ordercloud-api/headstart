@@ -140,7 +140,6 @@ import { OCMQuoteRequestForm } from './components/products/quote-request-form/qu
 import { OCMContactSupplierForm } from './components/products/contact-supplier-form/contact-supplier-form.component'
 import { UnitOfMeasurePipe } from './pipes/unit-of-measure.pipe'
 import { OCMLocationListItem } from './components/profile/location-list-item/location-list-item.component'
-import { OCMCertificateForm } from './components/profile/certificate-form/certificate-form.component'
 import { OCMLocationManagement } from './components/profile/location-management/location-management.component'
 import { MatListModule } from '@angular/material/list'
 import { MatButtonModule } from '@angular/material/button'
@@ -315,7 +314,6 @@ const components = [
   OCMPaymentCreditCard,
   OCMLocationListItem,
   OCMLocationManagement,
-  OCMCertificateForm,
   OCMProductAttachments,
 ]
 
@@ -526,7 +524,6 @@ export class AppModule {
     this.buildWebComponent(ConfirmModal, 'confirm-modal')
     this.buildWebComponent(OCMLocationListItem, 'ocm-location-list-item')
     this.buildWebComponent(OCMLocationManagement, 'ocm-location-management')
-    this.buildWebComponent(OCMCertificateForm, 'ocm-certificate-form')
   }
 
   private getOrdercloudSDKConfig(config: AppConfig): SdkConfiguration {

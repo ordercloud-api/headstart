@@ -8,9 +8,15 @@ namespace Headstart.Models.Headstart
     
 	public class HSLineItem : LineItem<LineItemXp, HSLineItemProduct, LineItemVariant, HSAddressBuyer, HSAddressSupplier> { }
 
-    
-	public class LineItemXp
+    public class HSPartialLineItem : PartialLineItem<LineItemXp, HSLineItemProduct, LineItemVariant, HSAddressBuyer, HSAddressSupplier> { }
+
+
+    public class LineItemXp
     {
+        /// <summary>
+        /// LineItem.LineTotal value if it was calculated by applying order-level promotions proportionally instead of evenly.
+        /// </summary>
+        public decimal LineTotalWithProportionalDiscounts { get; set; }
         public Dictionary<LineItemStatus, int> StatusByQuantity { get; set; }
         public List<LineItemClaim> Returns { get; set; }
         public List<LineItemClaim> Cancelations { get; set; }

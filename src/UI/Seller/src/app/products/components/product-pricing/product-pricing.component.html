@@ -7,6 +7,7 @@
     }}
   </h4>
   <span *ngIf="!isRequired">- Optional</span>
+  <span class="required-field" *ngIf="isRequired">* required fields</span>
   <div class="d-block">
     <div
       *ngIf="
@@ -27,6 +28,7 @@
     [priceSchedule]="supplierPriceSchedule"
     [variantCount]="superProduct?.Variants?.length"
     [specCount]="superProduct?.Specs?.length"
+    [isRequired]="isRequired"
     (priceScheduleUpdated)="updateSupplierPriceSchedule($event)"
   >
   </price-break-editor>

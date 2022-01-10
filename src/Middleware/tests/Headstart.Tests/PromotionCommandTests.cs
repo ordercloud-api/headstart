@@ -120,10 +120,10 @@ namespace Headstart.Tests
             var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => await sut.AutoApplyPromotions(orderID));
 
             // Assert
-            Assert.AreEqual("One or more promotions could not be removed", ex.ApiError.Message);
-            Assert.AreEqual("Promotion.ErrorRemovingAll", ex.ApiError.ErrorCode);
+            Assert.AreEqual("One or more promotions could not be removed", ex.Errors[0].Message);
+            Assert.AreEqual("Promotion.ErrorRemovingAll", ex.Errors[0].ErrorCode);
 
-            var innerExceptions = ex.ApiError.Data.To<IReadOnlyCollection<Exception>>();
+            var innerExceptions = ex.Errors[0].Data.To<IReadOnlyCollection<Exception>>();
             Assert.AreEqual(2, innerExceptions.Count);
 
             foreach (var e in innerExceptions)

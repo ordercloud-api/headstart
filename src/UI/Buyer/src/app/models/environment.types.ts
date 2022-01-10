@@ -57,8 +57,14 @@ export interface EnvironmentConfig {
   orderCloudApiUrl: string
   theme?: Theme
   appInsightsInstrumentationKey?: string
+  anonymousShoppingEnabled?: boolean
   acceptedPaymentMethods?: string[]
   storefrontName?: string
+  useSitecoreSend?: boolean
+  sitecoreSendWebsiteID?: string
+  useSitecoreCDP?: boolean,
+  sitecoreCDPTargetEndpoint: string
+  sitecoreCDPApiClient: string
 }
 
 export class AppConfig {
@@ -135,4 +141,24 @@ export class AppConfig {
    * Name of the storefront (API Client) being implemented in this app. This is used in automatic deployments
    */
   storefrontName?: string
+  /**
+   *  See https://moosend.com/
+   */
+   useSitecoreSend?: boolean
+  /**
+   *  Get a website ID - https://help.moosend.com/hc/en-us/articles/115002945125-How-can-I-connect-my-website-to-Moosend-
+   */
+   sitecoreSendWebsiteID?: string
+  /**
+   * See https://www.sitecore.com/products/customer-data-platform
+   */
+  useSitecoreCDP: boolean
+  /**
+   * See https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/javascript-tagging-examples-for-web-pages.html
+   */
+  sitecoreCDPTargetEndpoint: string
+  /**
+   * See https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/javascript-tagging-examples-for-web-pages.html
+   */
+  sitecoreCDPApiClient: string
 }

@@ -106,15 +106,14 @@ export class BuyerLocationEditComponent implements OnInit {
         Validators.required
       ),
       Phone: new FormControl(buyerLocation.Address.Phone, ValidatePhone),
-      Email: new FormControl(buyerLocation.Address.xp.Email, ValidateEmail),
-      LocationID: new FormControl(buyerLocation.Address.xp.LocationID),
+      Email: new FormControl(buyerLocation.Address.xp?.Email, ValidateEmail),
+      LocationID: new FormControl(buyerLocation.Address.xp?.LocationID),
       Currency: new FormControl(
         buyerLocation.UserGroup.xp.Currency,
         Validators.required
       ),
-      // TODO: remove this workaround when headstart sdk has been updated to include correct type
       BillingNumber: new FormControl(
-        (buyerLocation.Address.xp as any).BillingNumber
+        buyerLocation.Address.xp?.BillingNumber
       ),
       CatalogAssignments: new FormControl(
         undefined,

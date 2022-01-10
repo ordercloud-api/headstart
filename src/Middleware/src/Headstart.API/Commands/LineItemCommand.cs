@@ -20,12 +20,12 @@ namespace Headstart.API.Commands
 {
     public interface ILineItemCommand
     {
-        Task<HSLineItem> UpsertLineItem(string orderID, HSLineItem li, VerifiedUserContext verifiedUser);
-        Task<List<HSLineItem>> UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection orderDirection, string orderID, LineItemStatusChanges lineItemStatusChanges, VerifiedUserContext verifiedUser = null);
+        Task<HSLineItem> UpsertLineItem(string orderID, HSLineItem li, DecodedToken decodedToken);
+        Task<List<HSLineItem>> UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection orderDirection, string orderID, LineItemStatusChanges lineItemStatusChanges, DecodedToken decodedToken = null);
         Task<List<HSLineItem>> SetInitialSubmittedLineItemStatuses(string buyerOrderID);
-        Task DeleteLineItem(string orderID, string lineItemID, VerifiedUserContext verifiedUser);
+        Task DeleteLineItem(string orderID, string lineItemID, DecodedToken decodedToken);
         Task<decimal> ValidateLineItemUnitCost(string orderID, SuperHSMeProduct product, List<HSLineItem> existingLineItems, HSLineItem li);
-        Task HandleRMALineItemStatusChanges(OrderDirection orderDirection, RMAWithLineItemStatusByQuantity rmaWithLineItemStatusByQuantity, VerifiedUserContext verifiedUserContext);
+        Task HandleRMALineItemStatusChanges(OrderDirection orderDirection, RMAWithLineItemStatusByQuantity rmaWithLineItemStatusByQuantity, DecodedToken decodedToken);
     }
 
     public class LineItemCommand : ILineItemCommand
@@ -84,9 +84,10 @@ namespace Headstart.API.Commands
         /// </summary>
 
         // all line item status changes should go through here
-        public async Task<List<HSLineItem>> UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection orderDirection, string orderID, LineItemStatusChanges lineItemStatusChanges, VerifiedUserContext verifiedUser = null)
+        public async Task<List<HSLineItem>> UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection orderDirection, string orderID, LineItemStatusChanges lineItemStatusChanges, DecodedToken decodedToken = null)
         {
-            var userType = verifiedUser?.UserType ?? "noUser";
+            var userType = decodedToken?.CommerceRole.ToString().ToLower() ?? "noUser";
+            userType = userType == "seller" ? "admin" : userType;
             var verifiedUserType = userType.Reserialize<VerifiedUserType>();
             
             var buyerOrderID = orderID.Split('-')[0];
@@ -97,7 +98,7 @@ namespace Headstart.API.Commands
             {
                 var newPartialLineItem = BuildNewPartialLineItem(lineItemStatusChange, previousLineItemsStates.ToList(), lineItemStatusChanges.Status);
                // if there is no verified user passed in it has been called from somewhere else in the code base and will be done with the client grant access
-               return verifiedUser != null ? _oc.LineItems.PatchAsync<HSLineItem>(orderDirection, orderID, lineItemStatusChange.ID, newPartialLineItem, verifiedUser.AccessToken) : _oc.LineItems.PatchAsync<HSLineItem>(orderDirection, orderID, lineItemStatusChange.ID, newPartialLineItem);
+               return decodedToken != null ? _oc.LineItems.PatchAsync<HSLineItem>(orderDirection, orderID, lineItemStatusChange.ID, newPartialLineItem, decodedToken.AccessToken) : _oc.LineItems.PatchAsync<HSLineItem>(orderDirection, orderID, lineItemStatusChange.ID, newPartialLineItem);
             });
 
             var buyerOrder = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, buyerOrderID);
@@ -109,7 +110,7 @@ namespace Headstart.API.Commands
 
             if (lineItemStatusChanges.Status == LineItemStatus.CancelRequested || lineItemStatusChanges.Status == LineItemStatus.ReturnRequested)
             {
-                await _rmaCommand.BuildRMA(buyerOrder, supplierIDsRelatingToChange, lineItemStatusChanges, lineItemsChanged, verifiedUser);
+                await _rmaCommand.BuildRMA(buyerOrder, supplierIDsRelatingToChange, lineItemStatusChanges, lineItemsChanged, decodedToken);
             }
 
             var statusSync = SyncOrderStatuses(buyerOrder, relatedSupplierOrderIDs, allLineItemsForOrder.ToList());
@@ -349,7 +350,7 @@ namespace Headstart.API.Commands
 
         private void ValidateLineItemStatusChange(List<HSLineItem> previousLineItemStates, LineItemStatusChanges lineItemStatusChanges, VerifiedUserType userType)
         {
-            /* need to validate 3 things on a lineitem status change
+            /* need to validate 2 things on a lineitem status change
              * 
              * 1) user making the request has the ability to make that line item change based on usertype
              * 2) there are sufficient amount of the previous quantities for each lineitem
@@ -357,14 +358,14 @@ namespace Headstart.API.Commands
 
             // 1) 
             var allowedLineItemStatuses = LineItemStatusConstants.ValidLineItemStatusSetByUserType[userType];
-            Require.That(allowedLineItemStatuses.Contains(lineItemStatusChanges.Status), new ErrorCode("Not authorized to set this status on a lineItem", 400, $"Not authorized to set line items to {lineItemStatusChanges.Status}"));
+            Require.That(allowedLineItemStatuses.Contains(lineItemStatusChanges.Status), new ErrorCode("Not authorized to set this status on a lineItem", $"Not authorized to set line items to {lineItemStatusChanges.Status}"));
 
             // 2)
             var areCurrentQuantitiesToSupportChange = lineItemStatusChanges.Changes.All(lineItemChange =>
             {
                 return ValidateCurrentQuantities(previousLineItemStates, lineItemChange, lineItemStatusChanges.Status);
             });
-            Require.That(areCurrentQuantitiesToSupportChange, new ErrorCode("Invalid lineItem status change", 400, $"Current lineitem quantity statuses on the order are not sufficient to support the requested change"));
+            Require.That(areCurrentQuantitiesToSupportChange, new ErrorCode("Invalid lineItem status change", $"Current lineitem quantity statuses on the order are not sufficient to support the requested change"));
         }
 
         public bool ValidateCurrentQuantities(List<HSLineItem> previousLineItemStates, LineItemStatusChange lineItemStatusChange, LineItemStatus lineItemStatusChangingTo)
@@ -396,11 +397,11 @@ namespace Headstart.API.Commands
             return countCanBeChanged >= lineItemStatusChange.Quantity;
         }
 
-        public async Task<HSLineItem> UpsertLineItem(string orderID, HSLineItem liReq, VerifiedUserContext user)
+        public async Task<HSLineItem> UpsertLineItem(string orderID, HSLineItem liReq, DecodedToken decodedToken)
         {
             // get me product with markedup prices correct currency and the existing line items in parellel
-            var productRequest = _meProductCommand.Get(liReq.ProductID, user);
-            var existingLineItemsRequest = _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, orderID, filters: $"Product.ID={liReq.ProductID}", accessToken: user.AccessToken);
+            var productRequest = _meProductCommand.Get(liReq.ProductID, decodedToken);
+            var existingLineItemsRequest = _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, orderID, filters: $"Product.ID={liReq.ProductID}", accessToken: decodedToken.AccessToken);
             var orderRequest = _oc.Orders.GetAsync(OrderDirection.Incoming, orderID);
             await Task.WhenAll(productRequest, existingLineItemsRequest, orderRequest);
 
@@ -412,7 +413,7 @@ namespace Headstart.API.Commands
             var markedUpPrice = ValidateLineItemUnitCost(orderID, product, existingLineItems, liReq);
             liReq.UnitPrice = await markedUpPrice;
             
-            Require.That(!order.IsSubmitted, new ErrorCode("Invalid Order Status", 400, "Order has already been submitted"));
+            Require.That(!order.IsSubmitted, new ErrorCode("Invalid Order Status", "Order has already been submitted"));
 
             liReq.xp.StatusByQuantity = LineItemStatusConstants.EmptyStatuses;
             liReq.xp.StatusByQuantity[LineItemStatus.Open] = liReq.Quantity;
@@ -430,14 +431,14 @@ namespace Headstart.API.Commands
             return li;
         }
 
-        public async Task DeleteLineItem(string orderID, string lineItemID, VerifiedUserContext verifiedUser)
+        public async Task DeleteLineItem(string orderID, string lineItemID, DecodedToken decodedToken)
         {
             LineItem lineItem = await _oc.LineItems.GetAsync(OrderDirection.Incoming, orderID, lineItemID);
             await _oc.LineItems.DeleteAsync(OrderDirection.Incoming, orderID, lineItemID);
-            List<HSLineItem> existingLineItems = await _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, orderID, filters: $"Product.ID={lineItem.ProductID}", accessToken: verifiedUser.AccessToken);
+            List<HSLineItem> existingLineItems = await _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, orderID, filters: $"Product.ID={lineItem.ProductID}", accessToken: decodedToken.AccessToken);
             if (existingLineItems != null && existingLineItems.Count > 0)
             {
-                var product = await _meProductCommand.Get(lineItem.ProductID, verifiedUser);
+                var product = await _meProductCommand.Get(lineItem.ProductID, decodedToken);
                 await ValidateLineItemUnitCost(orderID, product, existingLineItems, null);
             }
             await _promotionCommand.AutoApplyPromotions(orderID);
@@ -485,7 +486,7 @@ namespace Headstart.API.Commands
             }
         }
 
-        public async Task HandleRMALineItemStatusChanges(OrderDirection orderDirection, RMAWithLineItemStatusByQuantity rmaWithLineItemStatusByQuantity, VerifiedUserContext verifiedUserContext)
+        public async Task HandleRMALineItemStatusChanges(OrderDirection orderDirection, RMAWithLineItemStatusByQuantity rmaWithLineItemStatusByQuantity, DecodedToken decodedToken)
         {
             if (!rmaWithLineItemStatusByQuantity.LineItemStatusChangesList.Any())
             {
@@ -494,7 +495,7 @@ namespace Headstart.API.Commands
             string supplierOrderID = $"{rmaWithLineItemStatusByQuantity.RMA.SourceOrderID}-{rmaWithLineItemStatusByQuantity.RMA.SupplierID}";
             foreach (var statusChange in rmaWithLineItemStatusByQuantity.LineItemStatusChangesList)
             {
-                await UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Incoming, supplierOrderID, statusChange, verifiedUserContext);
+                await UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Incoming, supplierOrderID, statusChange, decodedToken);
             }
         }
 

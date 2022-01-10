@@ -29,8 +29,29 @@ namespace Headstart.Tests
         public const int FREE_SHIPPING_DAYS = 3;
 
         #region CheckoutIntegrationTests
+        public async Task default_shipping_for_no_rates()
+        {
+            var shipItem1 = new ShipEstimateItem
+            {
+                LineItemID = "Line1"
+            };
+            var line1 = new HSLineItem
+            {
+                ID = "Line1",
+                LineSubtotal = 370,
+                SupplierID = "010"
+            };
+            var worksheet = BuildOrderWorksheet(new HSLineItem[] { line1 });
+            var estimates = BuildEstimates(new HSShipMethod[] { }, new[] { shipItem1 });
+            var result = await estimates.CheckForEmptyRates(20, 5).ApplyShippingLogic(worksheet, _oc, FREE_SHIPPING_DAYS);
+            var methods = result[0].ShipMethods;
+
+            Assert.AreEqual(1, methods.Count());
+            Assert.AreEqual(20, methods[0].Cost);
+        }
+
         [Test]
-        public async Task free_shipping_for_no_rates()
+        public async Task free_shipping_for_free_shiping_line_items()
         {
             var shipItem1 = new ShipEstimateItem
             {
@@ -49,13 +70,12 @@ namespace Headstart.Tests
             };
             var worksheet = BuildOrderWorksheet(new HSLineItem[] { line1 });
             var estimates = BuildEstimates(new[] { method1 }, new[] { shipItem1 });
-            var result = await estimates.ApplyShippingLogic(worksheet, _oc, FREE_SHIPPING_DAYS);
+            var result = await estimates.CheckForEmptyRates(20, 5).ApplyShippingLogic(worksheet, _oc, FREE_SHIPPING_DAYS);
             var methods = result[0].ShipMethods;
 
             Assert.AreEqual(1, methods.Count());
             Assert.AreEqual(0, methods[0].Cost);
             Assert.AreEqual(method1.Name, methods[0].Name);
-            Assert.IsTrue(methods[0].xp.FreeShippingApplied);
         }
 
         [Test]

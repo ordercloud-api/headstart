@@ -1,4 +1,4 @@
-﻿using Avalara.AvaTax.RestClient;
+﻿using ordercloud.integrations.library;
 using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,6 @@ namespace Headstart.Models.Headstart
 
     public class OrderCalculateResponseXp
     {
-        public TransactionModel TaxResponse { get; set; }
+        public OrderTaxCalculation TaxCalculation { get; set; }
     }
 }

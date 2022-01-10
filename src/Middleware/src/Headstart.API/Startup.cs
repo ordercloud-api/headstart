@@ -30,16 +30,20 @@ using System.Collections.Generic;
 using System.Net;
 using Microsoft.OpenApi.Models;
 using OrderCloud.Catalyst;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using ordercloud.integrations.library.helpers;
 using Polly;
 using Polly.Extensions.Http;
 using Microsoft.WindowsAzure.Storage.Blob;
-using ordercloud.integrations.library.helpers;
-using Polly;
-using Polly.Extensions.Http;
 using Polly.Contrib.WaitAndRetry;
-using Microsoft.WindowsAzure.Storage.Blob;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Converters;
+using ordercloud.integrations.library.cosmos_repo;
+using ordercloud.integrations.vertex;
+using Newtonsoft.Json;
+using ordercloud.integrations.taxjar;
+using ordercloud.integrations.library.intefaces;
+using System.IO;
+using System.Linq;
 
 namespace Headstart.API
 {
@@ -66,8 +70,33 @@ namespace Headstart.API
             {
                 new ContainerInfo()
                 {
+                    Name = "salesorderdetail",
+                    PartitionKey = "/PartitionKey"
+                },
+                new ContainerInfo()
+                {
+                    Name = "purchaseorderdetail",
+                    PartitionKey = "/PartitionKey"
+                },
+                new ContainerInfo()
+                {
+                    Name = "lineitemdetail",
+                    PartitionKey = "/PartitionKey"
+                },
+                new ContainerInfo()
+                {
                     Name = "rmas",
-                    PartitionKey = "PartitionKey"
+                    PartitionKey = "/PartitionKey"
+                },
+                new ContainerInfo()
+                {
+                    Name = "shipmentdetail",
+                    PartitionKey = "/PartitionKey"
+                },
+                new ContainerInfo()
+                {
+                    Name = "productdetail",
+                    PartitionKey = "/PartitionKey"
                 }
             };
 
@@ -82,12 +111,12 @@ namespace Headstart.API
 
             var currencyConfig = new BlobServiceConfig()
             {
-                ConnectionString = _settings.BlobSettings.ConnectionString,
-                Container = _settings.BlobSettings.ContainerNameExchangeRates
+                ConnectionString = _settings.StorageAccountSettings.ConnectionString,
+                Container = _settings.StorageAccountSettings.BlobContainerNameExchangeRates
             };
             var assetConfig = new BlobServiceConfig()
             {
-                ConnectionString = _settings.BlobSettings.ConnectionString,
+                ConnectionString = _settings.StorageAccountSettings.ConnectionString,
                 Container = "assets", 
                 AccessType = BlobContainerPublicAccessType.Container 
             };
@@ -103,17 +132,40 @@ namespace Headstart.API
                 Roles = new[] { ApiRole.FullAccess }
             });
 
+            AvalaraCommand avalaraCommand = null;
+            VertexCommand vertexCommand = null;
+            TaxJarCommand taxJarCommand = null;
+            switch (_settings.EnvironmentSettings.TaxProvider)
+            {
+                case TaxProvider.Avalara:
+                    avalaraCommand = new AvalaraCommand(avalaraConfig, _settings.EnvironmentSettings.Environment.ToString());
+                    break;
+                case TaxProvider.Taxjar:
+                    taxJarCommand = new TaxJarCommand(_settings.TaxJarSettings);
+                    break;
+                case TaxProvider.Vertex:
+                    vertexCommand = new VertexCommand(_settings.VertexSettings);
+                    break;
+                default:
+                    break;
+            }
+            
+            services.AddMvc(o =>
+             {
+                 o.Filters.Add(new ordercloud.integrations.library.ValidateModelAttribute());
+                 o.EnableEndpointRouting = false;
+             })
+            .ConfigureApiBehaviorOptions(o => o.SuppressModelStateInvalidFilter = true)
+            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+            .AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+                options.SerializerSettings.Converters.Add(new StringEnumConverter());
+            });
+
             services
-                .Configure<KestrelServerOptions>(options =>
-                {
-                    options.AllowSynchronousIO = true;
-                })
-                .Configure<IISServerOptions>(options =>
-                {
-                    options.AllowSynchronousIO = true;
-                })
-                .AddSingleton<ISimpleCache, OrderCloud.Common.Services.LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
-                .ConfigureServices()
+                .AddCors(o => o.AddPolicy("integrationcors", builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }))
+                .AddSingleton<ISimpleCache, LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
                 .AddOrderCloudUserAuth()
                 .AddOrderCloudWebhookAuth(opts => opts.HashKey = _settings.OrderCloudSettings.WebhookHashKey)
                 .InjectCosmosStore<LogQuery, OrchestrationLog>(cosmosConfig)
@@ -130,12 +182,12 @@ namespace Headstart.API
                 .Inject<IHSProductCommand>()
                 .Inject<ILineItemCommand>()
                 .Inject<IMeProductCommand>()
+                .Inject<IDiscountDistributionService>()
                 .Inject<IHSCatalogCommand>()
                 .Inject<ISendgridService>()
                 .Inject<IHSSupplierCommand>()
                 .Inject<ICreditCardCommand>()
                 .Inject<ISupportAlertService>()
-                .Inject<IUserContextProvider>()
                 .Inject<ISupplierApiClientHelper>()
                 .AddSingleton<ISendGridClient>(x => new SendGridClient(_settings.SendgridSettings.ApiKey))
                 .AddSingleton<IFlurlClientFactory>(x => flurlClientFactory)
@@ -155,21 +207,40 @@ namespace Headstart.API
                 .AddSingleton<IOrderCloudIntegrationsExchangeRatesClient, OrderCloudIntegrationsExchangeRatesClient>()
                 .AddSingleton<IAssetClient>(provider => new AssetClient( new OrderCloudIntegrationsBlobService(assetConfig), _settings))
                 .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand( new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
-                .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand(new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
-                .AddSingleton<IAvalaraCommand>(x => new AvalaraCommand(
-                    orderCloudClient,
-                    avalaraConfig,
-                    new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(avalaraConfig.BaseApiUrl)
-                   ).WithSecurity(_settings.AvalaraSettings.AccountID, _settings.AvalaraSettings.LicenseKey), _settings.EnvironmentSettings.Environment.ToString()))
+                .AddSingleton<ITaxCodesProvider>(provider =>
+                {
+                    return _settings.EnvironmentSettings.TaxProvider switch
+                    {
+                        TaxProvider.Avalara => avalaraCommand,
+                        TaxProvider.Taxjar => taxJarCommand,
+                        TaxProvider.Vertex => new NotImplementedTaxCodesProvider(),
+                        _ => avalaraCommand // Avalara is default
+                    };
+                })
+                .AddSingleton<ITaxCalculator>(provider =>
+                {
+					return _settings.EnvironmentSettings.TaxProvider switch
+					{
+                        TaxProvider.Avalara => avalaraCommand,
+						TaxProvider.Vertex => vertexCommand,
+                        TaxProvider.Taxjar => taxJarCommand,
+                        _ => avalaraCommand // Avalara is default
+					};
+				})
                 .AddSingleton<IEasyPostShippingService>(x => new EasyPostShippingService(new EasyPostConfig() { APIKey = _settings.EasyPostSettings.APIKey }))
                 .AddSingleton<ISmartyStreetsService>(x => new SmartyStreetsService(_settings.SmartyStreetSettings, smartyStreetsUsClient))
                 .AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(_settings.CardConnectSettings, _settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))
                 .AddSingleton<IOrderCloudClient>(provider => orderCloudClient)
                 .AddSwaggerGen(c =>
                 {
-                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "FastSigns-OrderCloud API", Version = "v1" });
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Headstart Middleware API Documentation", Version = "v1" });
                     c.SchemaFilter<SwaggerExcludeFilter>();
-                });
+
+                    List<string> xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml", SearchOption.TopDirectoryOnly).ToList();
+                    xmlFiles.ForEach(xmlFile => c.IncludeXmlComments(xmlFile));
+                })
+                .AddSwaggerGenNewtonsoftSupport();
+
             var serviceProvider = services.BuildServiceProvider();
             services
                 .AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions
@@ -178,10 +249,32 @@ namespace Headstart.API
                     InstrumentationKey = _settings.ApplicationInsightsSettings.InstrumentationKey
                 });
 
-
             ServicePointManager.DefaultConnectionLimit = int.MaxValue;
-            FlurlHttp.Configure(settings => settings.Timeout = TimeSpan.FromSeconds(_settings.FlurlSettings.TimeoutInSeconds == 0 ? 30 : _settings.FlurlSettings.TimeoutInSeconds));
 
+            ConfigureFlurl();
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            app.EnsureCosmosDbIsCreated();
+            app.UseCatalystExceptionHandler();
+            app.UseHttpsRedirection();
+            app.UseRouting();
+            app.UseCors("integrationcors");
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint($"/swagger/v1/swagger.json", $"Headstart API v1");
+                c.RoutePrefix = string.Empty;
+            });
+
+        }
+
+        public void ConfigureFlurl()
+        {
             // This adds retry logic for any api call that fails with a transient error (server errors, timeouts, or rate limiting requests)
             // Will retry up to 3 times using exponential backoff and jitter, a mean of 3 seconds wait time in between retries
             // https://github.com/App-vNext/Polly/wiki/Retry-with-jitter#more-complex-jitter
@@ -190,19 +283,18 @@ namespace Headstart.API
                             .HandleTransientHttpError()
                             .OrResult(response => response.StatusCode == HttpStatusCode.TooManyRequests)
                             .WaitAndRetryAsync(delay);
-            FlurlHttp.Configure(settings => settings.HttpClientFactory = new PollyFactory(policy));
-        }
+            // Flurl setting for JSON serialization
+            var jsonSettings = new JsonSerializerSettings();
+            jsonSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+            // Flurl setting for request timeout
+            var timeout = TimeSpan.FromSeconds(_settings.FlurlSettings.TimeoutInSeconds == 0 ? 30 : _settings.FlurlSettings.TimeoutInSeconds);
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            CatalystApplicationBuilder.DefaultCatalystAppBuilder(app, env)
-                .UseSwagger()
-                .UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint($"/swagger/v1/swagger.json", $"API v1");
-                    c.RoutePrefix = string.Empty;
-                });
+            FlurlHttp.Configure(settings =>
+            {
+                settings.HttpClientFactory = new PollyFactory(policy);
+                settings.JsonSerializer = new NewtonsoftJsonSerializer(jsonSettings);
+                settings.Timeout = timeout;
+            });
         }
     }
 }

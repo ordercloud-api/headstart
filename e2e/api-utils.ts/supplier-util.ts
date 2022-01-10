@@ -1,7 +1,8 @@
 import * as OrderCloudSDK from 'ordercloud-javascript-sdk'
 import randomString from '../helpers/random-string'
 import testConfig from '../testConfig'
-import { HeadStartSDK, MarketplaceSupplier } from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, HSSupplier } from '@ordercloud/headstart-sdk'
+import { t } from 'testcafe'
 
 export async function getSupplierID(supplierName: string, clientAuth: string) {
 	const searchResponse = await OrderCloudSDK.Suppliers.List(
@@ -11,7 +12,7 @@ export async function getSupplierID(supplierName: string, clientAuth: string) {
 
 	const supplier = searchResponse.Items.find(x => x.Name === supplierName)
 
-	if (supplier.Name.includes('AutomationVendor_')) return supplier.ID
+	if (supplier.Name.includes('AutomationSupplier_')) return supplier.ID
 }
 
 export async function setupGetSupplierID(
@@ -35,13 +36,13 @@ export async function getSupplier(supplierName: string, clientAuth: string) {
 
 	const supplier = searchResponse.Items.find(x => x.Name === supplierName)
 
-	if (supplier.Name.includes('AutomationVendor_')) return supplier
+	if (supplier.Name.includes('AutomationSupplier_')) return supplier
 }
 
 export async function getAutomationSuppliers(clientAuth: string) {
 	const searchResponse = await OrderCloudSDK.Suppliers.List(
 		{
-			search: 'AutomationVendor_',
+			search: 'AutomationSupplier_',
 			searchOn: 'Name',
 		},
 		{ accessToken: clientAuth }
@@ -55,7 +56,7 @@ export async function deleteAutomationSuppliers(
 	clientAuth: string
 ) {
 	for await (const supplier of suppliers) {
-		if (supplier.Name.includes('AutomationVendor_')) {
+		if (supplier.Name.includes('AutomationSupplier_')) {
 			await deleteSupplier(supplier.ID, clientAuth)
 		}
 	}
@@ -69,7 +70,7 @@ export async function getSupplierWithID(
 		accessToken: clientAuth,
 	})
 
-	if (supplier.Name.includes('AutomationVendor_')) return supplier
+	if (supplier.Name.includes('AutomationSupplier_')) return supplier
 }
 
 export async function deleteSupplier(supplierID: string, clientAuth: string) {
@@ -80,33 +81,27 @@ export async function deleteSupplier(supplierID: string, clientAuth: string) {
 }
 
 export async function createSupplier(clientAuth: string) {
-	const vendorName = `AutomationVendor_${randomString(5)}`
-	const vendor: OrderCloudSDK.Supplier = {
-		Name: vendorName,
-		ID: vendorName,
+	const supplierName = `AutomationSupplier_${randomString(5)}`
+	const supplier: OrderCloudSDK.Supplier = {
+		Name: supplierName,
+		ID: supplierName,
 		Active: true,
 		xp: {
 			// CountriesServicing: ['US'], this was removed from the UI
 			Currency: 'USD',
+			ID: "{supplierIncrementor}",
 			Description: '',
 			Images: [],
+			CountriesServicing: [],
 			ProductTypes: ['Standard', 'Quote'],
 			SupportContact: {
 				Name: '',
 				Email: '',
 				Phone: '',
 			},
-			SyncFreightPop: true,
-			Categories: [
-				{
-					ServiceCategory: 'Accounting Services and Software',
-					VendorLevel: 'PREFERRED',
-				},
-			],
 		},
 	}
+	const createdSupplier = await HeadStartSDK.Suppliers.Create(supplier, clientAuth)
 
-	const createdVendor = await HeadStartSDK.Suppliers.Create(vendor, clientAuth)
-
-	return createdVendor.ID
+	return createdSupplier.ID
 }

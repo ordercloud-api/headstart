@@ -10,7 +10,7 @@ import Products from './Products';
 import BuyerLocations from './BuyerLocations';
 import Mes from './Mes';
 import Reports from './Reports';
-import Avalaras from './Avalaras';
+import TaxCategories from './TaxCategories';
 import MePayments from './MePayments';
 import MeCreditCardAuthorizations from './MeCreditCardAuthorizations';
 import CreditCards from './CreditCards';
@@ -50,7 +50,7 @@ const HeadStartSDK: HeadStartSDK = {
     BuyerLocations : new BuyerLocations(),
     Mes : new Mes(),
     Reports : new Reports(),
-    Avalaras : new Avalaras(),
+    TaxCategories : new TaxCategories(),
     MePayments : new MePayments(),
     MeCreditCardAuthorizations : new MeCreditCardAuthorizations(),
     CreditCards : new CreditCards(),
@@ -87,7 +87,7 @@ interface HeadStartSDK {
     BuyerLocations : BuyerLocations,
     Mes : Mes,
     Reports : Reports,
-    Avalaras : Avalaras,
+    TaxCategories : TaxCategories,
     MePayments : MePayments,
     MeCreditCardAuthorizations : MeCreditCardAuthorizations,
     CreditCards : CreditCards,

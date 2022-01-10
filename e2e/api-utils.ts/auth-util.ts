@@ -45,24 +45,24 @@ export async function authAdminBrowser(user: Partial<OrderCloudSDK.User>) {
 		adminUserRoles
 	)
 
-	await setBrowserAuthCookie(userToken, 'headstart_admin_test.token')
-	await setBrowserAuthCookie(userToken, 'headstart_admin_test.access-token')
+	await setBrowserAuthCookie(userToken, 'headstart_demo_admin.token')
+	await setBrowserAuthCookie(userToken, 'headstart_demo_admin.access-token')
 	//Below cookie is set on the browser when logging in, but does not seem to be needed
 	await setBrowserAuthCookie(userToken, 'ordercloud.access-token')
 
 	t.ctx.userAuth = userToken
 }
 
-export async function authVendorBrowser(user: Partial<OrderCloudSDK.User>) {
+export async function authSupplierBrowser(user: Partial<OrderCloudSDK.User>) {
 	const userToken = await userClientAuth(
 		testConfig.adminAppClientID,
 		user.Username,
 		user.Password,
-		vendorUserRoles
+		supplierUserRoles
 	)
 
-	await setBrowserAuthCookie(userToken, 'headstart_admin_test.token')
-	await setBrowserAuthCookie(userToken, 'headstart_admin_test.access-token')
+	await setBrowserAuthCookie(userToken, 'headstart_demo_admin.token')
+	await setBrowserAuthCookie(userToken, 'headstart_demo_admin.access-token')
 	//Below cookie is set on the browser when logging in, but does not seem to be needed
 	await setBrowserAuthCookie(userToken, 'ordercloud.access-token')
 
@@ -79,7 +79,7 @@ export async function authBuyerBrowser(user: Partial<OrderCloudSDK.User>) {
 
 	await setBrowserAuthCookie(
 		userToken,
-		'headstarttestbuyer-staging.access-token'
+		'headstartdemo-testbuyer.access-token'
 	)
 	await setBrowserAuthCookie(userToken, 'ordercloud.access-token')
 
@@ -95,132 +95,115 @@ export async function setBrowserAuthCookie(token: string, tokenName: string) {
 }
 
 export const adminUserRoles: ApiRole[] = [
-	'ApiClientAdmin',
-	'ApiClientReader',
-	'AdminAddressReader',
-	'MeAddressAdmin',
-	'MeAdmin',
-	'BuyerUserAdmin',
-	'UserGroupAdmin',
-	'MeCreditCardAdmin',
-	'MeXpAdmin',
-	'Shopper',
-	'CategoryReader',
-	'ProductAdmin',
-	'PriceScheduleAdmin',
-	'SupplierReader',
-	'SupplierAddressReader',
-	'BuyerAdmin',
-	'OverrideUnitPrice',
-	'OrderAdmin',
-	'OverrideTax',
-	'OverrideShipping',
-	'BuyerImpersonation',
-	'AddressAdmin',
-	'CategoryAdmin',
-	'CatalogAdmin',
-	'PromotionAdmin',
-	'ApprovalRuleAdmin',
-	'CreditCardAdmin',
-	'SupplierAdmin',
-	'SupplierUserAdmin',
-	'SupplierUserGroupAdmin',
-	'SupplierAddressAdmin',
-	'AdminUserAdmin',
-	'ProductFacetAdmin',
-	'ProductFacetReader',
-	'ShipmentAdmin',
+	"AddressAdmin",
+	"AddressReader",
+	"AdminAddressAdmin",
+	"AdminAddressReader",
+	"AdminUserAdmin",
+	"ApiClientAdmin",
+	"ApprovalRuleAdmin",
 	// @ts-ignore
-	'AssetAdmin',
+	"AssetAdmin",
+	"BuyerAdmin",
+	"BuyerImpersonation",
+	"BuyerUserAdmin",
+	"CatalogAdmin",
+	"CategoryAdmin",
+	"CreditCardAdmin",
 	// @ts-ignore
-	'DocumentAdmin',
+	"DocumentAdmin",
 	// @ts-ignore
-	'SchemaAdmin',
+	"HSBuyerAdmin",
 	// @ts-ignore
-	'MPMeProductAdmin',
+	"HSBuyerImpersonator",
 	// @ts-ignore
-	'MPMeProductReader',
+	"HSCategoryAdmin",
 	// @ts-ignore
-	'MPProductAdmin',
+	"HSMeAdmin",
 	// @ts-ignore
-	'MPProductReader',
+	"HSOrderAdmin",
 	// @ts-ignore
-	'MPPromotionAdmin',
+	"HSProductAdmin",
 	// @ts-ignore
-	'MPPromotionReader',
+	"HSPromotionAdmin",
 	// @ts-ignore
-	'MPCategoryAdmin',
+	"HSReportAdmin",
 	// @ts-ignore
-	'MPCategoryReader',
+	"HSReportReader",
 	// @ts-ignore
-	'MPOrderAdmin',
+	"HSSellerAdmin",
 	// @ts-ignore
-	'MPOrderReader',
+	"HSShipmentAdmin",
 	// @ts-ignore
-	'MPShipmentAdmin',
+	"HSStorefrontAdmin",
 	// @ts-ignore
-	'MPBuyerAdmin',
+	"HSSupplierAdmin",
 	// @ts-ignore
-	'MPBuyerReader',
+	"HSSupplierUserGroupAdmin",
+	"MeAdmin",
+	"MeXpAdmin",
+	"OrderAdmin",
+	"OrderReader",
+	"PriceScheduleAdmin",
+	"ProductAdmin",
+	"ProductAssignmentAdmin",
+	"ProductFacetAdmin",
+	"ProductFacetReader",
+	"PromotionAdmin",
 	// @ts-ignore
-	'MPSellerAdmin',
-	// @ts-ignore
-	'MPReportReader',
-	// @ts-ignore
-	'MPReportAdmin',
-	// @ts-ignore
-	'MPSupplierAdmin',
-	// @ts-ignore
-	'MPMeSupplierAdmin',
-	// @ts-ignore
-	'MPMeSupplierAddressAdmin',
-	// @ts-ignore
-	'MPMeSupplierUserAdmin',
-	// @ts-ignore
-	'MPSupplierUserGroupAdmin',
-	// @ts-ignore
-	'MPStorefrontAdmin',
+	"SchemaAdmin",
+	"ShipmentAdmin",
+	"ShipmentReader",
+	"SupplierAddressAdmin",
+	"SupplierAddressReader",
+	"SupplierAdmin",
+	"SupplierReader",
+	"SupplierUserAdmin",
+	"SupplierUserGroupAdmin",
+	"UserGroupAdmin"
 ]
 
-export const vendorUserRoles: ApiRole[] = [
-	'MeAdmin',
-	'MeXpAdmin',
-	'ProductAdmin',
-	'PriceScheduleAdmin',
-	'SupplierReader',
-	'OrderAdmin',
-	'SupplierAdmin',
-	'SupplierUserAdmin',
-	'SupplierUserGroupAdmin',
-	'SupplierAddressAdmin',
-	'ProductFacetReader',
-	'ShipmentAdmin',
-	// @ts-ignore
-	'AssetAdmin',
-	// @ts-ignore
-	'MPMeProductAdmin',
-	// @ts-ignore
-	'MPOrderAdmin',
-	// @ts-ignore
-	'MPShipmentAdmin',
-	// @ts-ignore
-	'MPReportAdmin',
-	// @ts-ignore
-	'MPMeSupplierAdmin',
-	// @ts-ignore
-	'MPMeSupplierAddressAdmin',
-	// @ts-ignore
-	'MPMeSupplierUserAdmin',
-	// @ts-ignore
-	'MPSupplierUserGroupAdmin',
+export const supplierUserRoles: ApiRole[] = [
+	"AddressReader",
+	"MeAdmin",
+	"MeXpAdmin",
+	"ProductAdmin",
+	"PriceScheduleAdmin",
+	"SupplierReader",
+	"SupplierAddressReader",
+	"OrderAdmin",
+	"SupplierAdmin",
+	"SupplierUserAdmin",
+	"SupplierUserGroupAdmin",
+	"SupplierAddressAdmin",
+	"ProductFacetReader",
+	"ShipmentAdmin",
+	//@ts-ignore
+	"AssetAdmin",
+	//@ts-ignore
+	"HSMeProductAdmin",
+	//@ts-ignore
+	"HSOrderAdmin",
+	//@ts-ignore
+	"HSShipmentAdmin",
+	//@ts-ignore
+	"HSReportReader",
+	//@ts-ignore
+	"HSMeSupplierAdmin",
+	//@ts-ignore
+	"HSMeSupplierAddressAdmin",
+	//@ts-ignore
+	"HSMeSupplierUserAdmin",
+	//@ts-ignore
+	"HSSupplierUserGroupAdmin"
 ]
 
 export const buyerUserRoles: ApiRole[] = [
-	'MeAddressAdmin',
-	'MeAdmin',
-	'MeCreditCardAdmin',
-	'MeXpAdmin',
-	'Shopper',
-	'SupplierReader',
-	'SupplierAddressReader',
+	"MeAddressAdmin",
+	"MeAdmin",
+	"MeCreditCardAdmin",
+	"MeXpAdmin",
+	"Shopper",
+	"SupplierReader",
+	"SupplierAddressReader"
 ]

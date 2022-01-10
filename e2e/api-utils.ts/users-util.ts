@@ -1,6 +1,7 @@
 import OrderCloudSDK = require('ordercloud-javascript-sdk')
 import faker = require('faker')
 import { saveUserAssignment, getLocationID } from './usergroups-helper'
+import { TEST_PASSWORD } from '../test-constants'
 
 export async function createUser(
 	clientAuth: string,
@@ -22,8 +23,11 @@ export async function createUser(
 		ID: `${buyerID}-{${buyerID}-UserIncrementor}`,
 		xp: {
 			AutomationUser: true,
+			Country: 'US'
 		},
-		Password: 'Test123!',
+		Password: TEST_PASSWORD,
+
+
 	}
 
 	const createdTestUser = await OrderCloudSDK.Users.Create(buyerID, testUser, {
@@ -33,22 +37,17 @@ export async function createUser(
 	testUser.ID = createdTestUser.ID
 
 	//make user assignments so user is able to see products
-	//Dxd1cuubXU2BJkdnLf3v1A is All Location Products
+	//JSYILMZLsU-q-meiGTsIBg is All Location Products
 	//iJhQ4uM-1UaFruXemXNZaw is Canada Only Products
 	const locationID = getLocationID(country)
-	await saveUserAssignment(testUser.ID, locationID, '0005', clientAuth)
+	// await saveUserAssignment(testUser.ID, locationID, '0001', clientAuth)
 	await saveUserAssignment(
 		testUser.ID,
-		'Dxd1cuubXU2BJkdnLf3v1A',
-		'0005',
+		`${buyerID}-0001`,
+		buyerID,
 		clientAuth
 	)
-	await saveUserAssignment(
-		testUser.ID,
-		'iJhQ4uM-1UaFruXemXNZaw',
-		'0005',
-		clientAuth
-	)
+
 
 	return testUser
 }

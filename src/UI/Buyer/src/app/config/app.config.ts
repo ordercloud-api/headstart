@@ -15,10 +15,15 @@ export const ocAppConfig: AppConfig = {
   translateBlobUrl: environment.translateBlobUrl,
   orderCloudApiUrl: environment.orderCloudApiUrl,
   theme: environment.theme,
-  anonymousShoppingEnabled: true,
+  anonymousShoppingEnabled: environment.anonymousShoppingEnabled,
   appInsightsInstrumentationKey: environment.appInsightsInstrumentationKey,
   acceptedPaymentMethods: environment.acceptedPaymentMethods,
   storefrontName: environment.storefrontName,
+  useSitecoreSend: environment.useSitecoreSend,
+  sitecoreSendWebsiteID: environment.sitecoreSendWebsiteID,
+  useSitecoreCDP: environment.useSitecoreCDP,
+  sitecoreCDPTargetEndpoint: environment.sitecoreCDPTargetEndpoint,
+  sitecoreCDPApiClient: environment.sitecoreCDPApiClient,
   scope: [
     'MeAddressAdmin',
     'AddressAdmin', // Only for location owners

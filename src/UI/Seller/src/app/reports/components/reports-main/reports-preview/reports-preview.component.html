@@ -1,4 +1,4 @@
-<div *ngIf="reportData.length" class="col-md-12">
+<div *ngIf="reportData?.length" class="col-md-12">
   <table class="table table-bordered table-hover display-table">
     <thead>
       <tr>
@@ -17,6 +17,15 @@
           </span>
           <span *ngIf="requiresPipe(header) && pipeName === 'currency'">
             {{ formatData(item, header) | currency }}
+          </span>
+          <span
+            *ngIf="
+              requiresPipe(header) &&
+              pipeName === 'percent' &&
+              formatData(item, header) != null
+            "
+          >
+            {{ formatData(item, header) / 100 | percent }}
           </span>
         </td>
       </tr>

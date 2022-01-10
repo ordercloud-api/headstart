@@ -4,7 +4,7 @@ import { HSAddressBuyer } from './HSAddressBuyer';
 import { ShipMethodSupplierView } from './ShipMethodSupplierView';
 
 export interface OrderXp {
-    AvalaraTaxTransactionCode?: string
+    ExternalTaxTransactionID?: string
     ShipFromAddressIDs?: string[]
     SupplierIDs?: string[]
     NeedsAttention?: boolean

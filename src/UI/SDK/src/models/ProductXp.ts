@@ -1,12 +1,12 @@
 import { DocumentAsset, ImageAsset } from './Asset';
-import { TaxProperties } from './TaxProperties';
+import { TaxCategorization } from './TaxCategorization';
 import { UnitOfMeasure } from './UnitOfMeasure';
 
 export interface ProductXp {
     Status?: 'Draft' | 'Published'
     HasVariants?: boolean
     Note?: string
-    Tax?: TaxProperties
+    Tax?: TaxCategorization
     UnitOfMeasure?: UnitOfMeasure
     ProductType?: 'Standard' | 'Quote'
     SizeTier?: 'G' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F'

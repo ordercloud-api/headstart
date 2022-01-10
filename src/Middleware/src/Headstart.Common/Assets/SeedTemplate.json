@@ -1,0 +1,15 @@
+{
+  "PortalUsername": "",
+  "PortalPassword": "",
+  "InitialAdminUsername": "",
+  "InitialAdminPassword": "",
+  "MiddlewareBaseUrl": "",
+  "MarketplaceID": "",
+  "OrderCloudSettings": {
+    "Environment": "sandbox",
+    "WebhookHashKey": ""
+  },
+  "StorageAccountSettings": {
+    "ConnectionString": ""
+  }
+}

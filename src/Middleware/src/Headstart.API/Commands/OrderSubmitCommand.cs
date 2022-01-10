@@ -59,25 +59,25 @@ namespace Headstart.API.Commands
         {
             Require.That(
                 !worksheet.Order.IsSubmitted, 
-                new ErrorCode("OrderSubmit.AlreadySubmitted", 400, "Order has already been submitted")
+                new ErrorCode("OrderSubmit.AlreadySubmitted", "Order has already been submitted")
             );
 
             var shipMethodsWithoutSelections = worksheet?.ShipEstimateResponse?.ShipEstimates?.Where(estimate => estimate.SelectedShipMethodID == null);
             Require.That(
                 worksheet?.ShipEstimateResponse != null &&
                 shipMethodsWithoutSelections.Count() == 0, 
-                new ErrorCode("OrderSubmit.MissingShippingSelections", 400, "All shipments on an order must have a selection"), shipMethodsWithoutSelections
+                new ErrorCode("OrderSubmit.MissingShippingSelections", "All shipments on an order must have a selection"), shipMethodsWithoutSelections
                 );
 
             Require.That(
                 !worksheet.LineItems.Any() || payment != null,
-                new ErrorCode("OrderSubmit.MissingPayment", 400, "Order contains standard line items and must include credit card payment details"),
+                new ErrorCode("OrderSubmit.MissingPayment", "Order contains standard line items and must include credit card payment details"),
                 worksheet.LineItems
             );
             var lineItemsInactive = await GetInactiveLineItems(worksheet, userToken);
             Require.That(
                 !lineItemsInactive.Any(),
-                new ErrorCode("OrderSubmit.InvalidProducts", 400, "Order contains line items for products that are inactive"), lineItemsInactive
+                new ErrorCode("OrderSubmit.InvalidProducts", "Order contains line items for products that are inactive"), lineItemsInactive
             );
 
             try
@@ -90,7 +90,7 @@ namespace Headstart.API.Commands
                 var errors = ex.Errors.Where(ex => ex.ErrorCode != "Order.CannotSubmitWithUnaccceptedPayments");
                 if(errors.Any())
                 {
-                    throw new CatalystBaseException("OrderSubmit.OrderCloudValidationError", 400, "Failed ordercloud validation, see Data for details", errors);
+                    throw new CatalystBaseException("OrderSubmit.OrderCloudValidationError", "Failed ordercloud validation, see Data for details", errors);
                 }
             }
             
@@ -103,7 +103,7 @@ namespace Headstart.API.Commands
             {
                 try
                 {
-                    await _oc.Me.GetProductAsync(lineItem.ProductID, accessToken: userToken);
+                    await _oc.Me.GetProductAsync(lineItem.ProductID, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: userToken);
                 }
                 catch (OrderCloudException ex) when (ex.HttpStatus == HttpStatusCode.NotFound)
                 {

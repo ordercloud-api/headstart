@@ -44,6 +44,9 @@ export class ReportsPreviewComponent implements OnChanges {
     ) {
       this.pipeName = 'currency'
       return true
+    } else if (header.toLowerCase().includes('percent')) {
+      this.pipeName = 'percent'
+      return true
     } else {
       return false
     }

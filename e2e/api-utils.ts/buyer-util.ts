@@ -1,6 +1,7 @@
 import * as OrderCloudSDK from 'ordercloud-javascript-sdk'
 import randomString from '../helpers/random-string'
-import { HeadStartSDK, SuperMarketplaceBuyer } from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, SuperHSBuyer } from '@ordercloud/headstart-sdk'
+import testConfig from '../testConfig'
 
 export async function getBuyerID(buyerName: string, clientAuth: string) {
 	const searchResponse = await OrderCloudSDK.Buyers.List(
@@ -10,13 +11,13 @@ export async function getBuyerID(buyerName: string, clientAuth: string) {
 
 	const buyer = searchResponse.Items.find(x => x.Name === buyerName)
 
-	if (buyer.Name.includes('AutomationBrand_')) return buyer.ID
+	if (buyer.Name.includes('Automationbuyer_')) return buyer.ID
 }
 
-export async function getAutomationBuyers(clientAuth: string) {
+export async function getAutomationbuyers(clientAuth: string) {
 	const searchResponse = await OrderCloudSDK.Buyers.List(
 		{
-			search: 'AutomationBuyer_',
+			search: 'Automationbuyer_',
 			searchOn: 'Name',
 		},
 		{ accessToken: clientAuth }
@@ -38,13 +39,21 @@ export async function deleteBuyerWithName(
 }
 
 export async function createDefaultBuyer(clientAuth: string) {
-	const buyer: SuperMarketplaceBuyer = {
+	const buyer: SuperHSBuyer = {
 		Buyer: {
-			Name: `AutomationBrand_${randomString(5)}`,
+			Name: `Automationbuyer_${randomString(5)}`,
 			Active: true,
+			xp: {
+				ChiliPublishFolder: '',
+				URL: testConfig.buyerAppUrl,
+			}
+		},
+		ImpersonationConfig: {
+			ClientID: testConfig.buyerAppClientID,
+			SecurityProfileID: "HSBaseBuyer"
 		},
 		Markup: {
-			Percent: 0,
+			Percent: 10,
 		},
 	}
 

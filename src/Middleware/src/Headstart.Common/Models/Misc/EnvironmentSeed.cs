@@ -55,15 +55,15 @@ namespace Headstart.Models.Misc
 		#region Optional settings
 
 		/// <summary>
-		/// Optionally pass in a value if you have an existing organization you would like to seed. If no value is present a new org will be created
-		/// Creating an org via seeding is only possible in the sandbox api environment
+		/// Optionally pass in a value if you have an existing marketplace you would like to seed. If no value is present a new marketplace will be created
+		/// Creating a marketplace via seeding is only possible in the sandbox api environment
 		/// </summary>
-		public string SellerOrgID { get; set; }
+		public string MarketplaceID { get; set; }
 
 		/// <summary>
-		/// Optionally pass in a seller org name when first creating an organization
+		/// Optionally pass in a marketplace name when first creating a marketplace
 		/// </summary>
-		public string SellerOrgName { get; set; }
+		public string MarketplaceName { get; set; }
 
 		/// <summary>
 		/// An optional array of suppliers to create as part of the initial seeding
@@ -90,10 +90,10 @@ namespace Headstart.Models.Misc
 
 		/// <summary>
 		/// An optional object of storage settings for your translations container. 
-		/// If none are provided the seeding funciton will not create a translation file.
+		/// If none are provided the seeding funciton will not create a translation file or downloads file
 		/// Provide a valid ConnectionString to have the seeding function generate your translation file
 		/// </summary>
-		public BlobSeedSettings BlobSettings { get; set; }
+		public StorageAccountSeedSettings StorageAccountSettings { get; set; }
 
         #endregion
     }
@@ -101,8 +101,8 @@ namespace Headstart.Models.Misc
 	public class EnvironmentSeedResponse
     {
 		public string Comments { get; set; }
-		public string OrganizationName { get; set; }
-		public string OrganizationID { get; set; }
+		public string MarketplaceName { get; set; }
+		public string MarketplaceID { get; set; }
 		public string OrderCloudEnvironment { get; set; }
 		public Dictionary<string, dynamic> ApiClients { get; set; }
     }
@@ -124,12 +124,12 @@ namespace Headstart.Models.Misc
 		public string WebhookHashKey { get; set; }
 	}
 
-	public class BlobSeedSettings
+	public class StorageAccountSeedSettings
     {
 		[Required]
 		public string ConnectionString { get; set; }
 		public string ContainerNameTranslations { get; set; } = "ngx-translate";
-
+		public string ContainerNameDownloads { get; set; } = "downloads";
 	}
 
 	public class OrderCloudEnvironments

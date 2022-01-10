@@ -91,7 +91,7 @@ namespace Headstart.Common.Services.CMS
 
         private string GetBaseUrl()
         {
-            return _settings.BlobSettings.HostUrl.EndsWith("/") ? _settings.BlobSettings.HostUrl : _settings.BlobSettings.HostUrl + "/";
+            return _settings.StorageAccountSettings.BlobPrimaryEndpoint.EndsWith("/") ? _settings.StorageAccountSettings.BlobPrimaryEndpoint : _settings.StorageAccountSettings.BlobPrimaryEndpoint + "/";
         } 
     }
 }

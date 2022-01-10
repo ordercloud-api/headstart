@@ -2,75 +2,38 @@ using ordercloud.integrations.cardconnect;
 using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;
 using ordercloud.integrations.smartystreets;
+using ordercloud.integrations.taxjar;
+using ordercloud.integrations.vertex;
 
 namespace Headstart.Common
 {
     public class AppSettings
     {
-        public UI UI { get; set; }
-        public EnvironmentSettings EnvironmentSettings { get; set; } = new EnvironmentSettings();
         public ApplicationInsightsSettings ApplicationInsightsSettings { get; set; } = new ApplicationInsightsSettings();
         public AvalaraSettings AvalaraSettings { get; set; } = new AvalaraSettings();
-        public BlobSettings BlobSettings { get; set; } = new BlobSettings();
         public CosmosSettings CosmosSettings { get; set; } = new CosmosSettings();
-        public OrderCloudSettings OrderCloudSettings { get; set; } = new OrderCloudSettings();
-        // not needed for fastsigns
-        public OrderCloudIntegrationsCardConnectConfig CardConnectSettings { get; set; } = new OrderCloudIntegrationsCardConnectConfig();
-        // not needed for fastsigns
-        public ZohoSettings ZohoSettings { get; set; } = new ZohoSettings();
-        // not needed for fastsigns
-        public SmartyStreetsConfig SmartyStreetSettings { get; set; } = new SmartyStreetsConfig();
-        // not needed for fastsigns
         public EasyPostSettings EasyPostSettings { get; set; } = new EasyPostSettings();
-        public SendgridSettings SendgridSettings { get; set; } = new SendgridSettings();
+        public EnvironmentSettings EnvironmentSettings { get; set; } = new EnvironmentSettings();
         public FlurlSettings FlurlSettings { get; set; } = new FlurlSettings();
+        public JobSettings JobSettings { get; set; } = new JobSettings();
+        public OrderCloudSettings OrderCloudSettings { get; set; } = new OrderCloudSettings();
+        public OrderCloudIntegrationsCardConnectConfig CardConnectSettings { get; set; } = new OrderCloudIntegrationsCardConnectConfig();
+        public SendgridSettings SendgridSettings { get; set; } = new SendgridSettings();
+        public ServiceBusSettings ServiceBusSettings { get; set; } = new ServiceBusSettings();
+        public SmartyStreetsConfig SmartyStreetSettings { get; set; } = new SmartyStreetsConfig();
+        public VertexConfig VertexSettings { get; set; } = new VertexConfig();
+        public TaxJarConfig TaxJarSettings { get; set; } = new TaxJarConfig();
+        public StorageAccountSettings StorageAccountSettings { get; set; } = new StorageAccountSettings();
+        public UI UI { get; set; }
+        public ZohoSettings ZohoSettings { get; set; } = new ZohoSettings();
     }
-
-    public class UI
-    {
-        public string BaseAdminUrl { get; set; }
-    }
-
-    public class EnvironmentSettings
-    {
-        public AppEnvironment Environment { get; set; }
-        public string BuildNumber { get; set; } // set during deploy
-        public string Commit { get; set; } // set during deploy
-        public string MiddlewareBaseUrl { get; set; }
-    }
-
-    public enum AppEnvironment { Test, Staging, Production }
 
     public class ApplicationInsightsSettings
     {
         public string InstrumentationKey { get; set; }
     }
 
-    public class SmartyStreetSettings
-    {
-        public string AuthID { get; set; }
-        public string AuthToken { get; set; }
-        public string RefererHost { get; set; } // The autocomplete pro endpoint requires the Referer header to be a pre-set value 
-        public string WebsiteKey { get; set; }
-    }
-
-    public class ZohoSettings
-    {
-        public string AccessToken { get; set; }
-        public string ClientId { get; set; }
-        public string ClientSecret { get; set; }
-        public string OrgID { get; set; }
-        public bool PerformOrderSubmitTasks { get; set; }
-    }
-
-    public class OrderCloudSettings
-    {
-        public string ApiUrl { get; set; }
-        public string MiddlewareClientID { get; set; }
-        public string MiddlewareClientSecret { get; set; }
-        public string WebhookHashKey { get; set; }
-        public string IncrementorPrefix { get; set; }
-    }
+    public enum AppEnvironment { Test, Staging, Production }
 
     public class AvalaraSettings
     {
@@ -80,6 +43,7 @@ namespace Headstart.Common
         public string CompanyCode { get; set; }
         public int CompanyID { get; set; }
     }
+
     public class EasyPostSettings
     {
         public string APIKey { get; set; }
@@ -90,6 +54,40 @@ namespace Headstart.Common
         public int NoRatesFallbackTransitDays { get; set; }
         public int FreeShippingTransitDays { get; set; }
         public string USPSAccountId { get; set; }
+	}
+
+	public class EnvironmentSettings
+	{
+		public AppEnvironment Environment { get; set; }
+		public string BuildNumber { get; set; } // set during deploy
+		public string Commit { get; set; } // set during deploy
+		public string MiddlewareBaseUrl { get; set; }
+		public TaxProvider TaxProvider { get; set; }
+	}
+
+    public enum TaxProvider { Avalara, Vertex, Taxjar }
+
+
+    public class FlurlSettings
+    {
+        public int TimeoutInSeconds { get; set; }
+    }
+
+    public class JobSettings
+    {
+        public bool ShouldCaptureCreditCardPayments { get; set; }
+        public bool ShouldRunZoho { get; set; }
+        public string CaptureCreditCardsAfterDate { get; set; } // TODO: remove this once all orders have IsPaymentCaptured set
+    }
+
+    public class OrderCloudSettings
+    {
+        public string ApiUrl { get; set; }
+        public string MiddlewareClientID { get; set; }
+        public string MiddlewareClientSecret { get; set; }
+        public string MarketplaceID { get; set; }
+        public string WebhookHashKey { get; set; }
+        public string IncrementorPrefix { get; set; }
     }
 
     public class SendgridSettings
@@ -109,8 +107,31 @@ namespace Headstart.Common
         public string CriticalSupportTemplateID { get; set; } // (Optional but required to send CriticalSupport emails) ID for template to be used for CriticalSupport emails
     }
 
-    public class FlurlSettings
+    public class ServiceBusSettings
     {
-        public int TimeoutInSeconds { get; set; }
+        public string ConnectionString { get; set; }
+        public string ZohoQueueName { get; set; }
+    }
+
+    public class SmartyStreetSettings
+    {
+        public string AuthID { get; set; }
+        public string AuthToken { get; set; }
+        public string RefererHost { get; set; } // The autocomplete pro endpoint requires the Referer header to be a pre-set value 
+        public string WebsiteKey { get; set; }
+    }
+
+    public class UI
+    {
+        public string BaseAdminUrl { get; set; }
+    }
+
+    public class ZohoSettings
+    {
+        public string AccessToken { get; set; }
+        public string ClientId { get; set; }
+        public string ClientSecret { get; set; }
+        public string OrgID { get; set; }
+        public bool PerformOrderSubmitTasks { get; set; }
     }
 }

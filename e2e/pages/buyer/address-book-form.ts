@@ -13,6 +13,7 @@ class AddressBookForm {
 	zipField: Selector
 	phoneField: Selector
 	saveAddressButton: Selector
+	selectAddressSuggestion: Selector
 
 	constructor() {
 		this.firstNameField = Selector('#FirstName').nth(1)
@@ -25,9 +26,10 @@ class AddressBookForm {
 		this.zipField = Selector('#zipCode').nth(1)
 		this.phoneField = Selector('#Phone').nth(1)
 		this.saveAddressButton = Selector('#address-save-button').nth(1)
+		this.selectAddressSuggestion = Selector('.svg-inline--fa.fa-square.fa-w-14').nth(1)
 	}
 
-    // Default addresses whenever adding
+	// Default addresses whenever adding
 	async enterDefaultUSAddress() {
 		await this.enterFirstName('Jane')
 		await this.enterLastName('Doe')
@@ -49,7 +51,7 @@ class AddressBookForm {
 		await this.enterPhone('2265554545')
 	}
 
-    // First Name
+	// First Name
 	async enterFirstName(firstName: string) {
 		await t.typeText(this.firstNameField, firstName)
 	}
@@ -63,7 +65,7 @@ class AddressBookForm {
 		await t.pressKey('ctrl+a delete')
 	}
 
-    // Last Name
+	// Last Name
 	async enterLastName(lastName: string) {
 		await t.typeText(this.lastNameField, lastName)
 	}
@@ -77,7 +79,7 @@ class AddressBookForm {
 		await t.pressKey('ctrl+a delete')
 	}
 
-    // Street 1
+	// Street 1
 	async enterStreet1(street1: string) {
 		await t.typeText(this.street1Field, street1)
 	}
@@ -91,7 +93,7 @@ class AddressBookForm {
 		await t.pressKey('ctrl+a delete')
 	}
 
-    // Street 2
+	// Street 2
 	async enterStreet2(street2: string) {
 		await t.typeText(this.street2Field, street2)
 	}
@@ -100,7 +102,7 @@ class AddressBookForm {
 		await t.typeText(this.street2Field, street2, { replace: true })
 	}
 
-    // City
+	// City
 	async enterCity(city: string) {
 		await t.typeText(this.cityField, city)
 	}
@@ -109,13 +111,13 @@ class AddressBookForm {
 		await t.typeText(this.cityField, city, { replace: true })
 	}
 
-    // State
+	// State
 	async selectState(state: string) {
 		await t.click(this.stateDropdown)
 		await t.click(this.stateOptions.withText(createRegExp(state)))
 	}
 
-    // Zip
+	// Zip
 	async enterZip(zip: string) {
 		await t.typeText(this.zipField, zip)
 	}
@@ -129,7 +131,7 @@ class AddressBookForm {
 		await t.pressKey('ctrl+a delete')
 	}
 
-    // Phone
+	// Phone
 	async enterPhone(phone: string) {
 		await t.typeText(this.phoneField, phone)
 	}
@@ -138,13 +140,18 @@ class AddressBookForm {
 		await t.typeText(this.phoneField, phone, { replace: true })
 	}
 
-    // Save
+	// Save
 	async clickSaveAddressButton() {
 		await t.click(this.saveAddressButton)
 	}
 
 	async isButtonDisabled() {
 		await t.expect(this.saveAddressButton.hasAttribute('disabled')).ok()
+	}
+
+	async selectAndSaveAddressSuggestion() {
+		await t.click(this.selectAddressSuggestion)
+		await t.click(this.saveAddressButton)
 	}
 }
 

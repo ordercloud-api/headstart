@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core'
 import { Me, Tokens } from 'ordercloud-javascript-sdk'
 import { ListArgs } from '@ordercloud/headstart-sdk'
 import {
-  TaxCertificate,
   HSAddressBuyer,
   HeadStartSDK,
   ListPage,
@@ -60,30 +59,6 @@ export class AddressService {
   ): Promise<ListPage<HSAddressBuyer>> {
     args.filters = { ...args.filters, Shipping: 'true' };
     return await this.list(args)
-  }
-
-  async createCertificate(
-    locationID: string,
-    certificate: TaxCertificate
-  ): Promise<TaxCertificate> {
-    var url = `${this.appConfig.middlewareUrl}/avalara/certificate/${locationID}`;
-    var response = await Axios.post(url, certificate, this.BuildConfig());
-    return response.data;
-  }
-
-  async updateCertificate(
-    locationID: string,
-    certificate: TaxCertificate
-  ): Promise<TaxCertificate> {
-    var url = `${this.appConfig.middlewareUrl}/avalara/certificate/${locationID}`;
-    var response = await Axios.put(url, certificate, this.BuildConfig());
-    return response.data;
-  }
-
-  async getCertificate(locationID: string): Promise<TaxCertificate> {
-    var url = `${this.appConfig.middlewareUrl}/avalara/certificate/${locationID}`;
-    var response = await Axios.get(url, this.BuildConfig());
-    return response.data;
   }
 
   // eventually replace with sdk

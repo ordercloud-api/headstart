@@ -11,7 +11,7 @@ import { NgbPopover } from '@ng-bootstrap/ng-bootstrap'
 import {
   SuperHSProduct,
   ListPage,
-  TaxProperties,
+  TaxCategorization,
 } from '@ordercloud/headstart-sdk'
 import { faTimesCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import { FormGroup } from '@angular/forms'
@@ -25,7 +25,7 @@ export class ProductTaxCodeSelectDropdown implements OnChanges {
   @Input()
   productForm: FormGroup
   @Input()
-  taxCodes: ListPage<TaxProperties>
+  taxCodes: TaxCategorization[]
   @Input()
   superHSProductEditable: SuperHSProduct
   @Input()
@@ -38,9 +38,7 @@ export class ProductTaxCodeSelectDropdown implements OnChanges {
   @Output()
   taxCodesSearched = new EventEmitter<any>()
   @Output()
-  onScrollEnd = new EventEmitter<string>()
-  @Output()
-  onSelectTaxCode = new EventEmitter<TaxProperties>()
+  onSelectTaxCode = new EventEmitter<TaxCategorization>()
 
   faTimesCircle = faTimesCircle
   faCheckCircle = faCheckCircle
@@ -64,23 +62,18 @@ export class ProductTaxCodeSelectDropdown implements OnChanges {
     this.taxCodesSearched.emit(this.searchTerm)
   }
 
-  selectTaxCode(taxCode: TaxProperties) {
+  selectTaxCode(taxCode: TaxCategorization) {
     // To clear the tax code search term when a selection is made - to refresh the list back to the starting state.
     if (this.searchTerm !== '') {
       this.searchTerm = ''
       this.taxCodesSearched.emit(this.searchTerm)
     }
-    const { Category, ...rest } = taxCode
-    const Tax = {
-      ...rest,
-      Category: this.superHSProductEditable.Product.xp?.Tax.Category,
-    }
-    this.onSelectTaxCode.emit(Tax)
+    this.onSelectTaxCode.emit(taxCode)
   }
 
   handleScrollEnd(event) {
     if (event.target.classList.value.includes('active')) {
-      this.onScrollEnd.emit(this.searchTerm)
+    
     }
   }
 }

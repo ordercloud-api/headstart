@@ -19,7 +19,7 @@ export async function saveUserAssignment(
 export function getLocationID(country?: string) {
 	switch (country) {
 		case 'CA':
-			return '0005-0003' //Mississauga, ON (Canada)
+			return '0001-0003' //Mississauga, ON (Canada)
 	}
-	return '0005-0002' //Denver, CO (United States)
+	return '0001-0001' //Denver, CO (United States)
 }

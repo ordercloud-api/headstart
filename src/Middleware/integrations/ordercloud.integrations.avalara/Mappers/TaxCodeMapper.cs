@@ -4,48 +4,31 @@ using System;
 using System.Linq;
 using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
+using ordercloud.integrations.library.intefaces;
+using System.Collections.Generic;
 
 namespace ordercloud.integrations.avalara
 {
 	public static class TaxCodeMapper
 	{
 		// Tax Codes for lines on Transactions
-
-		public static ListPage<TaxCode> Map(FetchResult<TaxCodeModel> codes, TaxCodesListArgs args)
+		public static List<TaxCategorization> MapTaxCodes(FetchResult<TaxCodeModel> codes)
 		{
-			var items = codes.value.Select(code => new TaxCode
+			return codes.value.Select(code => new TaxCategorization
 			{
-				Category = args.CodeCategory,
 				Code = code.taxCode,
 				Description = code.description
 			}).ToList();
-			var listPage = new ListPage<TaxCode>
-			{
-				Items = items,
-				Meta = new ListPageMeta
-				{
-					Page = (int)Math.Ceiling((double)args.Skip / args.Top) + 1,
-					PageSize = 100,
-					TotalCount = codes.count,
-				}
-			};
-			return listPage;
 		}
 
-		public static TaxCodesListArgs Map(ListArgs<TaxCode> source)
+		public static string MapSearchString(string searchTerm)
 		{
-			var taxCategory = source?.Filters?[0]?.FilterValues?[0]?.Term ?? ""; // TODO - error if no term provided
-			var taxCategorySearch = taxCategory.Trim('0');
-			var search = source.Search;
-			var filter = search != "" ? $"isActive eq true and taxCode startsWith '{taxCategorySearch}' and (taxCode contains '{search}' OR description contains '{search}')" : $"isActive eq true and taxCode startsWith '{taxCategorySearch}'";
-			return new TaxCodesListArgs()
+			var searchString = $"isActive eq true";
+			if (searchTerm != "")
 			{
-				Filter = filter,
-				Top = source.PageSize,
-				Skip = (source.Page - 1) * source.PageSize,
-				CodeCategory = taxCategory,
-				OrderBy = null
-			};
+				searchString = $"{searchString} and (taxCode contains '{searchTerm}' OR description contains '{searchTerm}')";
+			}
+			return searchString;
 		}
 	}
 }

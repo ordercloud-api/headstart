@@ -1,18 +1,25 @@
 {
   "hostedApp": true,
-  "appname": "HeadstartDemo",
-  "appID": "my-seller-id",
+  "appname": "Default Buyer Test",
+  "appID": "defaultbuyer-test",
   "clientID": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-  "incrementorPrefix": "HS_TEST",
-  "baseUrl": "https://my-middleware-test.azurewebsites.net/",
-  "middlewareUrl": "https://my-middleware-test.azurewebsites.net",
+  "incrementorPrefix": "DB_TEST",
+  "baseUrl": "https://my-default-buyer-test.com",
+  "middlewareUrl": "https://my-hosted-middleware.com",
   "creditCardIframeUrl": "https://fts-uat.cardconnect.com/itoke/ajax-tokenizer.html",
-  "translateBlobUrl": "https://headstartdemo.blob.core.windows.net/ngx-translate/i18n/",
-  "sellerID": "HEADSTARTDEMO_TEST",
-  "sellerName": "Headstart Demo Seller",
+  "sellerID": "my-seller-id",
+  "sellerName": "My seller name",
+  "translateBlobUrl": "https://MYSTORAGEACCOUNTNAME.blob.core.windows.net/ngx-translate/i18n/",
   "orderCloudApiUrl": "https://sandboxapi.ordercloud.io",
+  "useSitcoreSend": false,
+  "sitcoreSendWebsiteID": "xxxxxxxxxxxxxxxxxxxxxxxx",
+  "useSitecoreCDP": false,
+  "sitecoreCDPTargetEndpoint": "https://api-us.boxever.com/v1.2",
+  "sitecoreCDPApiClient": "xxxxxxxxxxxxxxxxxxx",
   "theme": {
     "logoSrc": "assets/generic-logo.png"
   },
-  "instrumentationKey": null
+  "instrumentationKey": null,
+  "anonymousShoppingEnabled": true,
+  "acceptedPaymentMethods": ["CreditCard", "PurchaseOrder"]
 }

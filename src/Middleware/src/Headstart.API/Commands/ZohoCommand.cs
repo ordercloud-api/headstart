@@ -10,6 +10,7 @@ using Headstart.Models;
 using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
 using ordercloud.integrations.library;
+using ordercloud.integrations.library.intefaces;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
@@ -73,7 +74,7 @@ namespace Headstart.API.Commands.Zoho
                                     QuantityMultiplier = 1,
                                     xp = new ProductXp()
                                     {
-                                        Tax = new TaxProperties()
+                                        Tax = new TaxCategorization()
                                         {
                                             Code = "FR",
                                             Description = "Shipping Charge"

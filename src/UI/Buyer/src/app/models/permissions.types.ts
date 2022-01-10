@@ -5,7 +5,6 @@ export interface PermissionType {
   
   export const PermissionTypes: PermissionType[] = [
     { UserGroupSuffix: 'PermissionAdmin', DisplayText: 'Permission Admin' },
-    { UserGroupSuffix: 'ResaleCertAdmin', DisplayText: 'Resale Cert Admin' },
     { UserGroupSuffix: 'OrderApprover', DisplayText: 'Order Approver' },
     { UserGroupSuffix: 'NeedsApproval', DisplayText: 'Needs Approval' },
     { UserGroupSuffix: 'ViewAllOrders', DisplayText: 'View All Orders' },

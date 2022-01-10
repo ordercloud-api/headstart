@@ -1,6 +1,11 @@
 import { AxiosError } from 'axios'
 import { Promotion } from 'ordercloud-javascript-sdk'
-import { MiddlewareError, InventoryErrorData, ErrorTypes, ErrorDisplayData } from '../models/error.types'
+import {
+  MiddlewareError,
+  InventoryErrorData,
+  ErrorTypes,
+  ErrorDisplayData,
+} from '../models/error.types'
 
 export class ErrorMessages {
   public static get orderNotAccessibleError(): string {
@@ -13,7 +18,7 @@ export const ErrorCodes: ErrorTypes = {
     code: 'Payment.FailedToVoidAuthorization',
     title: 'ERRORS.FAILED_TO_VOID_AUTHORIZATION.TITLE',
     message: 'ERRORS.FAILED_TO_VOID_AUTHORIZATION.MESSAGE',
-    buttonText: 'ERRORS.FAILED_TO_VOID_AUTHORIZATION.BUTTONTEXT'
+    buttonText: 'ERRORS.FAILED_TO_VOID_AUTHORIZATION.BUTTONTEXT',
   },
   Insufficient: {
     code: 'Inventory.Insufficient',
@@ -23,40 +28,42 @@ export const ErrorCodes: ErrorTypes = {
   AlreadySubmitted: {
     code: 'OrderSubmit.AlreadySubmitted',
     title: 'ERRORS.ALREADY_SUBMITTED.TITLE',
-    buttonText: 'ERRORS.ALREADY_SUBMITTED.BUTTONTEXT'
+    buttonText: 'ERRORS.ALREADY_SUBMITTED.BUTTONTEXT',
   },
   MissingShippingSelections: {
     code: 'OrderSubmit.MissingShippingSelections',
     title: 'ERRORS.MISSING_SHIPPING_SELECTIONS.TITLE',
     message: 'ERRORS.MISSING_SHIPPING_SELECTIONS.MESSAGE',
-    buttonText: 'ERRORS.MISSING_SHIPPING_SELECTIONS.BUTTONTEXT'
+    buttonText: 'ERRORS.MISSING_SHIPPING_SELECTIONS.BUTTONTEXT',
   },
   OrderCloudValidationError: {
-    code: 'OrderSubmit.OrderCloudValidationError'
+    code: 'OrderSubmit.OrderCloudValidationError',
   },
   CannotSubmitBadStatus: {
-    code: 'OrderSubmit.CannotSubmitBadStatus'
+    code: 'OrderSubmit.CannotSubmitBadStatus',
   },
-  CannotSubmitUncalculatedOrder: { 
-    code: 'OrderSubmit.CannotSubmitUncalculatedOrder'
+  CannotSubmitUncalculatedOrder: {
+    code: 'OrderSubmit.CannotSubmitUncalculatedOrder',
   },
   CannotSubmitWithUnaccceptedPayments: {
-    code: 'Order.CannotSubmitWithUnaccceptedPayments'
+    code: 'Order.CannotSubmitWithUnaccceptedPayments',
   },
   InternalServerError: {
-    code: 'InternalServerError'
+    code: 'InternalServerError',
   },
   CreditCardAuth: {
     title: 'ERRORS.CREDIT_CARD_AUTH.TITLE',
-    buttonText: 'ERRORS.CREDIT_CARD_AUTH.BUTTONTEXT'
-  }
+    buttonText: 'ERRORS.CREDIT_CARD_AUTH.BUTTONTEXT',
+  },
 }
 
 export function extractMiddlewareError(
   exception: AxiosError
 ): MiddlewareError | null {
-  if (exception?.response?.data) {
-    return exception.response.data as MiddlewareError
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+  if (exception?.response?.data?.Errors?.length) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    return exception.response.data.Errors[0] as MiddlewareError
   }
   return null
 }

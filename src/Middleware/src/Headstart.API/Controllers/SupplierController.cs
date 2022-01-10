@@ -14,7 +14,7 @@ namespace Headstart.Common.Controllers
 	/// Suppliers
 	/// </summary>
     [Route("supplier")]
-    public class SupplierController: BaseController
+    public class SupplierController: CatalystController
     {
 
 		private readonly IHSSupplierCommand _command;

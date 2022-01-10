@@ -74,6 +74,29 @@ namespace ordercloud.integrations.cardconnect
         }
     }
 
+    public class CardConnectCaptureException : Exception
+    {
+        public ApiError ApiError { get; }
+        public CardConnectCaptureResponse Response { get; }
+
+        public CardConnectCaptureException(ApiError error, CardConnectCaptureResponse response)
+        {
+            ApiError = error;
+            Response = response;
+        }
+
+        public CardConnectCaptureException(string errorCode, string message, CardConnectCaptureResponse data)
+        {
+            ApiError = new ApiError()
+            {
+                Data = data,
+                ErrorCode = errorCode,
+                Message = message
+            };
+            Response = data;
+        }
+    }
+
     public class CreditCardRefundException : Exception
     {
         public ApiError ApiError { get; }

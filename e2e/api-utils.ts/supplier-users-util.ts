@@ -2,13 +2,14 @@ import * as OrderCloudSDK from 'ordercloud-javascript-sdk'
 import faker = require('faker')
 import { saveUserAssignment } from './usergroups-helper'
 import { t } from 'testcafe'
+import { TEST_PASSWORD } from '../test-constants'
 
 export async function deleteSupplierUser(
 	userID: string,
-	vendorID: string,
+	supplierID: string,
 	clientAuth: string
 ) {
-	await OrderCloudSDK.SupplierUsers.Delete(vendorID, userID, {
+	await OrderCloudSDK.SupplierUsers.Delete(supplierID, userID, {
 		accessToken: clientAuth,
 		requestType: 'Cleanup',
 	})
@@ -25,12 +26,12 @@ export async function createDefaultSupplierUser(
 	const email = `${firstNameReplaced}${lastNameReplaced}.hpmqx9la@mailosaur.io`
 
 	const user: OrderCloudSDK.User = {
+		Active: true,
 		Email: email,
-		Username: email,
 		FirstName: firstNameReplaced,
 		LastName: lastNameReplaced,
-		Active: true,
-		Password: 'Test123!',
+		Username: email,
+		Password: TEST_PASSWORD
 	}
 
 	const createdUser = await OrderCloudSDK.SupplierUsers.Create(
@@ -44,10 +45,11 @@ export async function createDefaultSupplierUser(
 	//assign roles
 	await saveSupplierUserAssignment(
 		createdUser.ID,
-		`${supplierID}ProductAdmin`,
+		`${supplierID}AccountAdmin`,
 		supplierID,
 		clientAuth
 	)
+
 	await saveSupplierUserAssignment(
 		createdUser.ID,
 		`${supplierID}OrderAdmin`,
@@ -56,7 +58,13 @@ export async function createDefaultSupplierUser(
 	)
 	await saveSupplierUserAssignment(
 		createdUser.ID,
-		`${supplierID}AccountAdmin`,
+		`${supplierID}ProductAdmin`,
+		supplierID,
+		clientAuth
+	)
+	await saveSupplierUserAssignment(
+		createdUser.ID,
+		`${supplierID}ReportReader`,
 		supplierID,
 		clientAuth
 	)
@@ -80,7 +88,7 @@ export async function createDefaultSupplierUserWithoutRoles(
 		FirstName: firstNameReplaced,
 		LastName: lastNameReplaced,
 		Active: true,
-		Password: 'Test123!',
+		Password: TEST_PASSWORD,
 	}
 
 	const createdUser = await OrderCloudSDK.SupplierUsers.Create(
@@ -96,11 +104,11 @@ export async function createDefaultSupplierUserWithoutRoles(
 
 export async function getSupplierUserID(
 	username: string,
-	vendorID: string,
+	supplierID: string,
 	clientAuth: string
 ) {
 	const searchResponse = await OrderCloudSDK.SupplierUsers.List(
-		vendorID,
+		supplierID,
 		{
 			search: username,
 			searchOn: 'Username',
@@ -115,11 +123,11 @@ export async function getSupplierUserID(
 
 export async function setupGetSupplierUserID(
 	username: string,
-	vendorID: string,
+	supplierID: string,
 	clientAuth: string
 ) {
 	const searchResponse = await OrderCloudSDK.SupplierUsers.List(
-		vendorID,
+		supplierID,
 		{
 			search: username,
 			searchOn: 'Username',
@@ -145,10 +153,10 @@ export async function updateSupplierUser(
 
 export async function getSupplierUser(
 	userID: string,
-	vendorID: string,
+	supplierID: string,
 	clientAuth: string
 ) {
-	const getUser = await OrderCloudSDK.SupplierUsers.Get(vendorID, userID, {
+	const getUser = await OrderCloudSDK.SupplierUsers.Get(supplierID, userID, {
 		accessToken: clientAuth,
 	})
 

@@ -1,10 +1,9 @@
-import {
-	HeadStartSDK,
-	SuperMarketplaceProduct,
-} from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, SuperHSProduct } from '@ordercloud/headstart-sdk'
 import * as OrderCloudSDK from 'ordercloud-javascript-sdk'
 import { t } from 'testcafe'
 import randomString from '../helpers/random-string'
+import { delay } from '../helpers/wait-helper'
+import { OC_PRODUCT_CACHE_TIMEOUT } from '../test-constants'
 
 export async function deleteProduct(productID: string, clientAuth: string) {
 	//put in try/catch because seeing some random 500 errors when deleting product
@@ -30,7 +29,7 @@ export async function deleteAutomationProducts(
 export async function getAutomationProducts(clientAuth: string) {
 	const searchResponse = await OrderCloudSDK.Products.List(
 		{
-			search: 'AutomationProduct_',
+			search: '',
 			searchOn: ['Name'],
 		},
 		{ accessToken: clientAuth }
@@ -41,7 +40,7 @@ export async function getAutomationProducts(clientAuth: string) {
 
 export async function getProductID(productName: string, clientAuth: string) {
 	let searchResponse
-	for (let i = 0; i < 5; i++) {
+	for (let i = 0; i < 50; i++) {
 		searchResponse = await OrderCloudSDK.Products.List(
 			{
 				search: productName,
@@ -67,12 +66,12 @@ export async function createDefaultProduct(
 ) {
 	const productName = `AutomationProduct_${randomString(5)}`
 	//commented out values were sent from the UI, but do not exist on the product object
-	const product: SuperMarketplaceProduct = {
+	const product: SuperHSProduct = {
 		Product: {
 			OwnerID: '',
 			DefaultPriceScheduleID: '',
 			AutoForward: false,
-			Active: false,
+			Active: true,
 			ID: null,
 			Name: productName,
 			Description: null,
@@ -85,6 +84,7 @@ export async function createDefaultProduct(
 			Inventory: null,
 			DefaultSupplierID: null,
 			xp: {
+				ArtworkRequired: false,
 				//@ts-ignore
 				IntegrationData: null,
 				IsResale: false,
@@ -111,11 +111,15 @@ export async function createDefaultProduct(
 				Currency: 'USD',
 				//@ts-ignore
 				SizeTier: 'A',
+				PromotionEligible: true,
+				FreeShipping: false,
+				FreeShippingMessage: "Free Shipping",
+
 			},
 		},
 		PriceSchedule: {
 			ID: null,
-			Name: `Default_Marketplace_Buyer${productName}`,
+			Name: `Default_HS_Buyer${productName}`,
 			ApplyTax: false,
 			ApplyShipping: false,
 			MinQuantity: 1,
@@ -135,6 +139,17 @@ export async function createDefaultProduct(
 		Variants: [],
 	}
 	const createdProduct = await HeadStartSDK.Products.Post(product, clientAuth)
-
+	await delay(OC_PRODUCT_CACHE_TIMEOUT)
 	return createdProduct.Product.ID
+}
+export async function saveProductAssignment(
+	buyerID: string,
+	productID: string,
+	userGroupID: string,
+	clientAuth: string
+) {
+	await OrderCloudSDK.Products.SaveAssignment(
+		{ BuyerID: buyerID, ProductID: productID, UserGroupID: userGroupID },
+		{ accessToken: clientAuth }
+	)
 }

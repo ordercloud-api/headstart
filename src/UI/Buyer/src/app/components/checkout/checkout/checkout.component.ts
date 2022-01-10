@@ -8,7 +8,6 @@ import {
   Payment,
   BuyerCreditCard,
   OrderPromotion,
-  Orders,
 } from 'ordercloud-javascript-sdk'
 import {
   HSOrder,
@@ -42,6 +41,8 @@ import { ModalState } from 'src/app/models/shared.types'
 import { ErrorDisplayData, MiddlewareError } from 'src/app/models/error.types'
 import { Router } from '@angular/router'
 import { TranslateService } from '@ngx-translate/core'
+import { SitecoreSendTrackingService } from 'src/app/services/sitecore-send/sitecore-send-tracking.service'
+import { SitecoreCDPTrackingService } from 'src/app/services/sitecore-cdp/sitecore-cdp-tracking.service'
 
 @Component({
   templateUrl: './checkout.component.html',
@@ -98,7 +99,9 @@ export class OCMCheckout implements OnInit {
     private spinner: NgxSpinnerService,
     private toastrService: ToastrService,
     private router: Router,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private send: SitecoreSendTrackingService,
+    private cdp: SitecoreCDPTrackingService,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -149,6 +152,9 @@ export class OCMCheckout implements OnInit {
     await this.checkout.calculateOrder()
     this.cards = await this.context.currentUser.cards.List(this.isAnon)
     this.order = this.context.order.get()
+    if (this.orderPromotions?.length) {
+      await this.context.order.promos.refresh()
+    }
     if (this.order.IsSubmitted) {
       await this.handleOrderError(ErrorCodes.AlreadySubmitted)
     }
@@ -265,7 +271,9 @@ export class OCMCheckout implements OnInit {
           'Outgoing',
           this.order.ID,
           payment
-        )
+        );
+        this.send.purchase(this.context.order.getLineItems().Items);
+        this.cdp.orderPlaced(this.context.order.get(), this.context.order.getLineItems().Items);
         //  Do all patching of order XP values in the OrderSubmit integration event
         //  Patching order XP before order is submitted will clear out order worksheet data
         await this.checkout.patch({ Comments: comment }, order.ID)

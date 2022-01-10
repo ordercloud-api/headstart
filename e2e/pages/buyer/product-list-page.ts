@@ -6,12 +6,14 @@ class ProductListPage {
 	facets: Selector
 	productSortBy: Selector
 	sortByOptions: Selector
+	productName: Selector
 
 	constructor() {
 		this.products = Selector('ocm-product-card')
 		this.facets = Selector('ocm-facet-multiselect')
 		this.productSortBy = Selector('ocm-product-sort')
 		this.sortByOptions = this.productSortBy.find('option')
+		this.productName = Selector('h5')
 	}
 
 	async clickProduct(product: string) {

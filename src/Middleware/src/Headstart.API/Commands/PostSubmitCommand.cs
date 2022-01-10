@@ -9,7 +9,6 @@ using Headstart.Common.Exceptions;
 using Headstart.Models;
 using Headstart.Common.Services;
 using Headstart.Models.Headstart;
-using ordercloud.integrations.avalara;
 using ordercloud.integrations.library;
 using Headstart.Models.Extended;
 using Headstart.Common.Constants;
@@ -24,21 +23,21 @@ namespace Headstart.API.Commands
     {
         Task<OrderSubmitResponse> HandleBuyerOrderSubmit(HSOrderWorksheet order);
         Task<OrderSubmitResponse> HandleZohoRetry(string orderID);
-        Task<OrderSubmitResponse> HandleShippingValidate(string orderID, VerifiedUserContext user);
+        Task<OrderSubmitResponse> HandleShippingValidate(string orderID, DecodedToken decodedToken);
     }
 
     public class PostSubmitCommand : IPostSubmitCommand
     {
         private readonly IOrderCloudClient _oc;
         private readonly IZohoCommand _zoho;
-        private readonly IAvalaraCommand _avalara;
+        private readonly ITaxCalculator _taxCalculator;
         private readonly ISendgridService _sendgridService;
         private readonly ILineItemCommand _lineItemCommand;
         private readonly AppSettings _settings;
 
         public PostSubmitCommand(
             ISendgridService sendgridService,
-            IAvalaraCommand avatax,
+            ITaxCalculator taxCalculator,
             IOrderCloudClient oc,
             IZohoCommand zoho,
             ILineItemCommand lineItemCommand,
@@ -46,14 +45,14 @@ namespace Headstart.API.Commands
         )
         {
             _oc = oc;
-            _avalara = avatax;
+            _taxCalculator = taxCalculator;
             _zoho = zoho;
             _sendgridService = sendgridService;
             _lineItemCommand = lineItemCommand;
             _settings = settings;
         }
 
-        public async Task<OrderSubmitResponse> HandleShippingValidate(string orderID, VerifiedUserContext user)
+        public async Task<OrderSubmitResponse> HandleShippingValidate(string orderID, DecodedToken decodedToken)
         {
             var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
             return await CreateOrderSubmitResponse(
@@ -143,7 +142,7 @@ namespace Headstart.API.Commands
             if (!orderWorksheet.IsStandardOrder())
                 return results;
 
-            // STEP 2: Avalara tax transaction
+            // STEP 2: Tax transaction
             var tax = await ProcessActivityCall(
                 ProcessType.Tax,
                 "Creating Tax Transaction",
@@ -431,11 +430,13 @@ namespace Headstart.API.Commands
 
         private async Task HandleTaxTransactionCreationAsync(OrderWorksheet orderWorksheet)
         {
-            var transaction = await _avalara.CreateTransactionAsync(orderWorksheet);
+            var promotions = await _oc.Orders.ListAllPromotionsAsync(OrderDirection.All, orderWorksheet.Order.ID);
+
+            var taxCalculation = await _taxCalculator.CommitTransactionAsync(orderWorksheet, promotions);
             await _oc.Orders.PatchAsync<HSOrder>(OrderDirection.Incoming, orderWorksheet.Order.ID, new PartialOrder()
             {
-                TaxCost = transaction.totalTax ?? 0,  // Set this again just to make sure we have the most up to date info
-                xp = new { AvalaraTaxTransactionCode = transaction.code }
+                TaxCost = taxCalculation.TotalTax,  // Set this again just to make sure we have the most up to date info
+                xp = new { ExternalTaxTransactionID = taxCalculation.ExternalTransactionID }
             });
         }
 

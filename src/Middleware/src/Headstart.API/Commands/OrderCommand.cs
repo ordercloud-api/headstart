@@ -16,11 +16,11 @@ namespace Headstart.API.Commands
     public interface IOrderCommand
     {
         Task<Order> AcknowledgeQuoteOrder(string orderID);
-        Task<ListPage<HSOrder>> ListOrdersForLocation(string locationID, ListArgs<HSOrder> listArgs, VerifiedUserContext verifiedUser);
-        Task<OrderDetails> GetOrderDetails(string orderID, VerifiedUserContext verifiedUser);
-        Task<List<HSShipmentWithItems>> ListHSShipmentWithItems(string orderID, VerifiedUserContext verifiedUser);
-        Task<CosmosListPage<RMA>> ListRMAsForOrder(string orderID, VerifiedUserContext verifiedUser);
-        Task<HSOrder> AddPromotion(string orderID, string promoCode, VerifiedUserContext verifiedUser);
+        Task<ListPage<HSOrder>> ListOrdersForLocation(string locationID, ListArgs<HSOrder> listArgs, DecodedToken decodedToken);
+        Task<OrderDetails> GetOrderDetails(string orderID, DecodedToken decodedToken);
+        Task<List<HSShipmentWithItems>> ListHSShipmentWithItems(string orderID, DecodedToken decodedToken);
+        Task<CosmosListPage<RMA>> ListRMAsForOrder(string orderID, DecodedToken decodedToken);
+        Task<HSOrder> AddPromotion(string orderID, string promoCode, DecodedToken decodedToken);
         Task<HSOrder> ApplyAutomaticPromotions(string orderID);
         Task PatchOrderRequiresApprovalStatus(string orderID);
     }
@@ -81,10 +81,10 @@ namespace Headstart.API.Commands
             await _oc.Orders.PatchAsync(OrderDirection.Incoming, orderID, partialOrder);
         }
 
-        public async Task<ListPage<HSOrder>> ListOrdersForLocation(string locationID, ListArgs<HSOrder> listArgs, VerifiedUserContext verifiedUser)
+        public async Task<ListPage<HSOrder>> ListOrdersForLocation(string locationID, ListArgs<HSOrder> listArgs, DecodedToken decodedToken)
         {
             listArgs.Filters.Add(new ListFilter("BillingAddress.ID", locationID));
-            await EnsureUserCanAccessLocationOrders(locationID, verifiedUser);
+            await EnsureUserCanAccessLocationOrders(locationID, decodedToken);
             return await _oc.Orders.ListAsync<HSOrder>(OrderDirection.Incoming,
                 page: listArgs.Page,
                 pageSize: listArgs.PageSize,
@@ -93,29 +93,32 @@ namespace Headstart.API.Commands
                 filters: listArgs.ToFilterString());
         }
 
-        public async Task<OrderDetails> GetOrderDetails(string orderID, VerifiedUserContext verifiedUser)
+        public async Task<OrderDetails> GetOrderDetails(string orderID, DecodedToken decodedToken)
         {
             var order = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
-            await EnsureUserCanAccessOrder(order, verifiedUser);
+            await EnsureUserCanAccessOrder(order, decodedToken);
 
             var lineItems = _oc.LineItems.ListAllAsync(OrderDirection.Incoming, orderID);
             var promotions = _oc.Orders.ListAllPromotionsAsync(OrderDirection.Incoming, orderID);
             var payments = _oc.Payments.ListAllAsync(OrderDirection.Incoming, order.ID);
-            var approvals = _oc.Orders.ListAllApprovalsAsync(OrderDirection.Incoming, orderID);
+            // bug in catalyst tries to list all by ID but ID doesn't exist on approval rules
+            // https://github.com/ordercloud-api/ordercloud-dotnet-catalyst/issues/33
+            // var approvals = _oc.Orders.ListAllApprovalsAsync(OrderDirection.Incoming, orderID);
+            var approvals = await _oc.Orders.ListApprovalsAsync(OrderDirection.Incoming, orderID, pageSize: 100);
             return new OrderDetails
             {
                 Order = order,
                 LineItems = await lineItems,
                 Promotions = await promotions,
                 Payments = await payments,
-                Approvals = await approvals
+                Approvals = approvals.Items
             };
         }
 
-        public async Task<List<HSShipmentWithItems>> ListHSShipmentWithItems(string orderID, VerifiedUserContext verifiedUser)
+        public async Task<List<HSShipmentWithItems>> ListHSShipmentWithItems(string orderID, DecodedToken decodedToken)
         {
             var order = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
-            await EnsureUserCanAccessOrder(order, verifiedUser);
+            await EnsureUserCanAccessOrder(order, decodedToken);
 
             var lineItems = await _oc.LineItems.ListAllAsync(OrderDirection.Incoming, orderID);
             var shipments = await _oc.Orders.ListShipmentsAsync<HSShipmentWithItems>(OrderDirection.Incoming, orderID);
@@ -123,15 +126,16 @@ namespace Headstart.API.Commands
             return shipmentsWithItems.ToList();
         }
 
-        public async Task<CosmosListPage<RMA>> ListRMAsForOrder(string orderID, VerifiedUserContext verifiedUser)
+        public async Task<CosmosListPage<RMA>> ListRMAsForOrder(string orderID, DecodedToken decodedToken)
         {
+            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
             HSOrder order = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
-            await EnsureUserCanAccessOrder(order, verifiedUser);
+            await EnsureUserCanAccessOrder(order, decodedToken);
 
             var listFilter = new ListFilter("SourceOrderID", orderID);
             CosmosListOptions listOptions = new CosmosListOptions() { PageSize = 100, ContinuationToken = null, Filters = { listFilter } };
 
-            CosmosListPage<RMA> rmasOnOrder = await _rmaCommand.ListBuyerRMAs(listOptions, verifiedUser.Buyer.ID);
+            CosmosListPage<RMA> rmasOnOrder = await _rmaCommand.ListBuyerRMAs(listOptions, me.Buyer.ID);
             return rmasOnOrder;
         }
 
@@ -146,7 +150,7 @@ namespace Headstart.API.Commands
             return shipment;
         }
 
-        public async Task<HSOrder> AddPromotion(string orderID, string promoCode, VerifiedUserContext verifiedUser)
+        public async Task<HSOrder> AddPromotion(string orderID, string promoCode, DecodedToken decodedToken)
         {
             var orderPromo = await _oc.Orders.AddPromotionAsync(OrderDirection.Incoming, orderID, promoCode);
             return await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
@@ -158,13 +162,13 @@ namespace Headstart.API.Commands
             return await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
         }
 
-        private async Task EnsureUserCanAccessLocationOrders(string locationID, VerifiedUserContext verifiedUser, string overrideErrorMessage = "")
+        private async Task EnsureUserCanAccessLocationOrders(string locationID, DecodedToken decodedToken, string overrideErrorMessage = "")
         {
-            var hasAccess = await _locationPermissionCommand.IsUserInAccessGroup(locationID, UserGroupSuffix.ViewAllOrders.ToString(), verifiedUser);
-            Require.That(hasAccess, new ErrorCode("Insufficient Access", 403, $"User cannot access orders from this location: {locationID}"));
+            var hasAccess = await _locationPermissionCommand.IsUserInAccessGroup(locationID, UserGroupSuffix.ViewAllOrders.ToString(), decodedToken);
+            Require.That(hasAccess, new ErrorCode("Insufficient Access", $"User cannot access orders from this location: {locationID}", 403));
         }
 
-        private async Task EnsureUserCanAccessOrder(HSOrder order, VerifiedUserContext verifiedUser)
+        private async Task EnsureUserCanAccessOrder(HSOrder order, DecodedToken decodedToken)
         {
             /* ensures user has access to order through at least 1 of 3 methods
              * 1) user submitted the order
@@ -172,13 +176,13 @@ namespace Headstart.API.Commands
              * 3) the order is awaiting approval and the user is in the approving group 
              */ 
 
-            var isOrderSubmitter = order.FromUserID == verifiedUser.ID;
+            var isOrderSubmitter = order.FromUser.Username == decodedToken.Username;
             if (isOrderSubmitter)
             {
                 return;
             }
             
-            var isUserInLocationOrderAccessGroup = await _locationPermissionCommand.IsUserInAccessGroup(order.BillingAddressID, UserGroupSuffix.ViewAllOrders.ToString(), verifiedUser);
+            var isUserInLocationOrderAccessGroup = await _locationPermissionCommand.IsUserInAccessGroup(order.BillingAddressID, UserGroupSuffix.ViewAllOrders.ToString(), decodedToken);
             if (isUserInLocationOrderAccessGroup)
             {
                 return;
@@ -187,7 +191,7 @@ namespace Headstart.API.Commands
             if(order.Status == OrderStatus.AwaitingApproval)
             {
                 // logic assumes there is only one approving group per location
-                var isUserInApprovalGroup = await _locationPermissionCommand.IsUserInAccessGroup(order.BillingAddressID, UserGroupSuffix.OrderApprover.ToString(), verifiedUser);
+                var isUserInApprovalGroup = await _locationPermissionCommand.IsUserInAccessGroup(order.BillingAddressID, UserGroupSuffix.OrderApprover.ToString(), decodedToken);
                 if(isUserInApprovalGroup)
                 {
                     return;
@@ -195,7 +199,7 @@ namespace Headstart.API.Commands
             }
 
             // if function has not been exited yet we throw an insufficient access error
-            Require.That(false, new ErrorCode("Insufficient Access", 403, $"User cannot access order {order.ID}"));
+            Require.That(false, new ErrorCode("Insufficient Access", $"User cannot access order {order.ID}", 403));
         }
     };
 }

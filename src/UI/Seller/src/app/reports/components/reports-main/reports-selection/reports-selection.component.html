@@ -56,8 +56,11 @@
     <ng-container *ngIf="selectedTemplate?.TemplateID && adHocFilters?.length">
       <div *ngFor="let filter of adHocFilters" class="form-group col-md-6">
         <form [formGroup]="reportSelectionForm">
-          <label for="{{ filter }}">{{ getFilterNameDisplay(filter) }}</label>
           <div *ngIf="getFilterType(filter) === 'date'">
+            <label for="{{ filter }}"
+              >{{ getFilterNameDisplay(filter) }}
+              <small class="text-danger font-weight-bolder">*</small></label
+            >
             <input
               class="form-control"
               type="date"
@@ -68,6 +71,7 @@
             />
           </div>
           <div *ngIf="getFilterType(filter) === 'time'">
+            <label for="{{ filter }}">{{ getFilterNameDisplay(filter) }}</label>
             <input
               class="form-control"
               type="time"
@@ -75,6 +79,44 @@
               formControlName="{{ filter }}"
               (change)="updateReportAdHocFilters($event.target.value, filter)"
             />
+          </div>
+          <div *ngIf="filter === 'SupplierID' && suppliers?.length">
+            <label for="{{ filter }}" translate
+              >ADMIN.REPORTS.SUPPLIER_OPTIONAL</label
+            >
+            <select
+              type="dropdown"
+              class="form-control"
+              formControlName="SupplierID"
+              id="SupplierID"
+              (change)="updateReportAdHocFilters($event.target.value, filter)"
+            >
+              <option [value]="null" translate>
+                ADMIN.REPORTS.INCLUDE_ALL
+              </option>
+              <option *ngFor="let supplier of suppliers" [value]="supplier.ID">
+                {{ supplier.Name }} - {{ supplier.ID }}
+              </option>
+            </select>
+          </div>
+          <div *ngIf="filter === 'BrandID' && buyers?.length">
+            <label for="{{ filter }}" translate
+              >ADMIN.REPORTS.BUYER_OPTIONAL</label
+            >
+            <select
+              type="dropdown"
+              class="form-control"
+              formControlName="BrandID"
+              id="BrandID"
+              (change)="updateReportAdHocFilters($event.target.value, filter)"
+            >
+              <option [value]="null" translate>
+                ADMIN.REPORTS.INCLUDE_ALL
+              </option>
+              <option *ngFor="let buyer of buyers" [value]="buyer.ID">
+                {{ buyer.Name }} - {{ buyer.ID }}
+              </option>
+            </select>
           </div>
         </form>
       </div>

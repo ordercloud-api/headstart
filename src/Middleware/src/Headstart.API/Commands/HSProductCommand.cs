@@ -18,14 +18,14 @@ namespace Headstart.API.Commands.Crud
 	{
 		Task<SuperHSProduct> Get(string id, string token);
 		Task<ListPage<SuperHSProduct>> List(ListArgs<HSProduct> args, string token);
-		Task<SuperHSProduct> Post(SuperHSProduct product, VerifiedUserContext user);
+		Task<SuperHSProduct> Post(SuperHSProduct product, DecodedToken decodedToken);
 		Task<SuperHSProduct> Put(string id, SuperHSProduct product, string token);
 		Task Delete(string id, string token);
 		Task<HSPriceSchedule> GetPricingOverride(string id, string buyerID, string token);
 		Task DeletePricingOverride(string id, string buyerID, string token);
 		Task<HSPriceSchedule> UpdatePricingOverride(string id, string buyerID, HSPriceSchedule pricingOverride, string token);
 		Task<HSPriceSchedule> CreatePricingOverride(string id, string buyerID, HSPriceSchedule pricingOverride, string token);
-		Task<Product> FilterOptionOverride(string id, string supplierID, IDictionary<string, object> facets, VerifiedUserContext user);
+		Task<Product> FilterOptionOverride(string id, string supplierID, IDictionary<string, object> facets, DecodedToken decodedToken);
 	}
 
 	public class DefaultOptionSpecAssignment
@@ -144,8 +144,9 @@ namespace Headstart.API.Commands.Crud
 
 		public async Task<ListPage<SuperHSProduct>> List(ListArgs<HSProduct> args, string token)
 		{
+			var filterString = args.ToFilterString();
 			var _productsList = await _oc.Products.ListAsync<HSProduct>(
-				filters: args.ToFilterString(),
+				filters: string.IsNullOrEmpty(filterString) ? null : filterString,
 				search: args.Search,
 				searchType: SearchType.ExactPhrasePrefix,
 				sortBy: args.SortBy.FirstOrDefault(),
@@ -173,12 +174,12 @@ namespace Headstart.API.Commands.Crud
 			};
 		}
 
-		public async Task<SuperHSProduct> Post(SuperHSProduct superProduct, VerifiedUserContext user)
+		public async Task<SuperHSProduct> Post(SuperHSProduct superProduct, DecodedToken decodedToken)
 		{
 			// Determine ID up front so price schedule ID can match
 			superProduct.Product.ID = superProduct.Product.ID ?? CosmosInteropID.New();
 
-			await ValidateVariantsAsync(superProduct, user.AccessToken);
+			await ValidateVariantsAsync(superProduct, decodedToken.AccessToken);
 
 			// Create Specs
 			var defaultSpecOptions = new List<DefaultOptionSpecAssignment>();
@@ -186,22 +187,22 @@ namespace Headstart.API.Commands.Crud
 			{
 				defaultSpecOptions.Add(new DefaultOptionSpecAssignment { SpecID = s.ID, OptionID = s.DefaultOptionID });
 				s.DefaultOptionID = null;
-				return _oc.Specs.SaveAsync<Spec>(s.ID, s, accessToken: user.AccessToken);
+				return _oc.Specs.SaveAsync<Spec>(s.ID, s, accessToken: decodedToken.AccessToken);
 			});
 			// Create Spec Options
 			foreach (Spec spec in superProduct.Specs)
 			{
-				await Throttler.RunAsync(spec.Options, 100, 5, o => _oc.Specs.SaveOptionAsync(spec.ID, o.ID, o, accessToken: user.AccessToken));
+				await Throttler.RunAsync(spec.Options, 100, 5, o => _oc.Specs.SaveOptionAsync(spec.ID, o.ID, o, accessToken: decodedToken.AccessToken));
 			}
 			// Patch Specs with requested DefaultOptionID
-			await Throttler.RunAsync(defaultSpecOptions, 100, 10, a => _oc.Specs.PatchAsync(a.SpecID, new PartialSpec { DefaultOptionID = a.OptionID }, accessToken: user.AccessToken));
+			await Throttler.RunAsync(defaultSpecOptions, 100, 10, a => _oc.Specs.PatchAsync(a.SpecID, new PartialSpec { DefaultOptionID = a.OptionID }, accessToken: decodedToken.AccessToken));
 			// Create Price Schedule
 			PriceSchedule _priceSchedule = null;
 			//All products must have a price schedule for orders to be submitted.  The front end provides a default Price of $0 for quote products that don't have one.
 			superProduct.PriceSchedule.ID = superProduct.Product.ID;
 			try
 			{
-				_priceSchedule = await _oc.PriceSchedules.CreateAsync<PriceSchedule>(superProduct.PriceSchedule, user.AccessToken);
+				_priceSchedule = await _oc.PriceSchedules.CreateAsync<PriceSchedule>(superProduct.PriceSchedule, decodedToken.AccessToken);
 			}
 			catch (OrderCloudException ex)
 			{
@@ -212,16 +213,17 @@ namespace Headstart.API.Commands.Crud
 			}
 			superProduct.Product.DefaultPriceScheduleID = _priceSchedule.ID;
 			// Create Product
-			if(user.Supplier != null)
+			if(decodedToken.CommerceRole == CommerceRole.Supplier)
             {
-				var supplierName = await GetSupplierNameForXpFacet(user.Supplier.ID, user.AccessToken);
+				var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+				var supplierName = await GetSupplierNameForXpFacet(me.Supplier.ID, decodedToken.AccessToken);
 				superProduct.Product.xp.Facets.Add("supplier", new List<string>() { supplierName });
 			}
-			var _product = await _oc.Products.CreateAsync<HSProduct>(superProduct.Product, user.AccessToken);
+			var _product = await _oc.Products.CreateAsync<HSProduct>(superProduct.Product, decodedToken.AccessToken);
 			// Make Spec Product Assignments
-			await Throttler.RunAsync(superProduct.Specs, 100, 5, s => _oc.Specs.SaveProductAssignmentAsync(new SpecProductAssignment { ProductID = _product.ID, SpecID = s.ID }, accessToken: user.AccessToken));
+			await Throttler.RunAsync(superProduct.Specs, 100, 5, s => _oc.Specs.SaveProductAssignmentAsync(new SpecProductAssignment { ProductID = _product.ID, SpecID = s.ID }, accessToken: decodedToken.AccessToken));
 			// Generate Variants
-			await _oc.Products.GenerateVariantsAsync(_product.ID, accessToken: user.AccessToken);
+			await _oc.Products.GenerateVariantsAsync(_product.ID, accessToken: decodedToken.AccessToken);
 			// Patch Variants with the User Specified ID(SKU) AND necessary display xp values
 			await Throttler.RunAsync(superProduct.Variants, 100, 5, v =>
 			{
@@ -236,19 +238,19 @@ namespace Headstart.API.Commands.Crud
 				if (superProduct.Product?.Inventory == null)
 				{
 					//If Inventory doesn't exist on the product, don't patch variants with inventory either.
-					return _oc.Products.PatchVariantAsync(_product.ID, oldVariantID, new PartialVariant { ID = v.ID, Name = v.Name, xp = v.xp}, accessToken: user.AccessToken);
+					return _oc.Products.PatchVariantAsync(_product.ID, oldVariantID, new PartialVariant { ID = v.ID, Name = v.Name, xp = v.xp}, accessToken: decodedToken.AccessToken);
 				}
 				else
 				{
-					return _oc.Products.PatchVariantAsync(_product.ID, oldVariantID, new PartialVariant { ID = v.ID, Name = v.Name, xp = v.xp, Inventory = v.Inventory }, accessToken: user.AccessToken);
+					return _oc.Products.PatchVariantAsync(_product.ID, oldVariantID, new PartialVariant { ID = v.ID, Name = v.Name, xp = v.xp, Inventory = v.Inventory }, accessToken: decodedToken.AccessToken);
 				}
 			});
 
 
 			// List Variants
-			var _variants = await _oc.Products.ListVariantsAsync<HSVariant>(_product.ID, accessToken: user.AccessToken);
+			var _variants = await _oc.Products.ListVariantsAsync<HSVariant>(_product.ID, accessToken: decodedToken.AccessToken);
 			// List Product Specs
-			var _specs = await _oc.Products.ListSpecsAsync<Spec>(_product.ID, accessToken: user.AccessToken);
+			var _specs = await _oc.Products.ListSpecsAsync<Spec>(_product.ID, accessToken: decodedToken.AccessToken);
 			// Return the SuperProduct
 			return new SuperHSProduct
 			{
@@ -542,15 +544,15 @@ namespace Headstart.API.Commands.Crud
 			await Task.WhenAll(tasks);
 		}
 
-		public async Task<Product> FilterOptionOverride(string id, string supplierID, IDictionary<string, object> facets, VerifiedUserContext user)
+		public async Task<Product> FilterOptionOverride(string id, string supplierID, IDictionary<string, object> facets, DecodedToken decodedToken)
 		{
 
-			ApiClient supplierClient = await _apiClientHelper.GetSupplierApiClient(supplierID, user.AccessToken);
+			ApiClient supplierClient = await _apiClientHelper.GetSupplierApiClient(supplierID, decodedToken.AccessToken);
 			if (supplierClient == null) { throw new Exception($"Default supplier client not found. SupplierID: {supplierID}"); }
 			var configToUse = new OrderCloudClientConfig
 			{
-				ApiUrl = user.TokenApiUrl,
-				AuthUrl = user.TokenAuthUrl,
+				ApiUrl = decodedToken.ApiUrl,
+				AuthUrl = decodedToken.AuthUrl,
 				ClientId = supplierClient.ID,
 				ClientSecret = supplierClient.ClientSecret,
 				GrantType = GrantType.ClientCredentials,

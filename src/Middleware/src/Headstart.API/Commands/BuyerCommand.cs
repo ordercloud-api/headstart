@@ -103,10 +103,9 @@ namespace Headstart.API.Commands
             var ocClient = oc ?? _oc;
 
             buyer.ID = buyer.ID ?? "{buyerIncrementor}";
-            buyer.Active = true;
             var ocBuyer = await ocClient.Buyers.CreateAsync(buyer, accessToken);
-            buyer.ID = ocBuyer.ID;
             var ocBuyerID = ocBuyer.ID;
+            buyer.ID = ocBuyerID;
 
             // create base security profile assignment
             await ocClient.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment
@@ -119,7 +118,7 @@ namespace Headstart.API.Commands
             await ocClient.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
             {
                 MessageSenderID = "BuyerEmails",
-                BuyerID = ocBuyer.ID
+                BuyerID = ocBuyerID
             }, token);
 
             await ocClient.Incrementors.SaveAsync($"{ocBuyerID}-UserIncrementor", 
@@ -129,8 +128,8 @@ namespace Headstart.API.Commands
 
             await ocClient.Catalogs.SaveAssignmentAsync(new CatalogAssignment()
             {
-                BuyerID = ocBuyer.ID,
-                CatalogID = ocBuyer.ID,
+                BuyerID = ocBuyerID,
+                CatalogID = ocBuyerID,
                 ViewAllCategories = true,
                 ViewAllProducts = false
             }, token);

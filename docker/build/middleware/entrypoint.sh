@@ -12,13 +12,13 @@ json -I -f appSettings.json \
       -e "this['AvalaraSettings:BaseApiUrl']='$AvalaraSettings_BaseApiUrl'" 
 
 json -I -f appSettings.json \
-      -e "this['BlobSettings:ConnectionString']='$BlobSettings_ConnectionString'" \
-      -e "this['BlobSettings:HostUrl']='$BlobSettings_HostUrl'" \
-      -e "this['BlobSettings:Key']='$BlobSettings_Key'" \
-      -e "this['BlobSettings:ContainerNameQueue']='$BlobSettings_ContainerNameQueue'" \
-      -e "this['BlobSettings:ContainerNameCache']='$BlobSettings_ContainerNameCache'" \
-      -e "this['BlobSettings:ContainerNameExchangeRates']='$BlobSettings_ContainerNameExchangeRates'" \
-      -e "this['BlobSettings:ContainerNameTranslations']='$BlobSettings_ContainerNameTranslations'" \
+      -e "this['StorageAccountSettings:ConnectionString']='$StorageAccountSettings_ConnectionString'" \
+      -e "this['StorageAccountSettings:HostUrl']='$StorageAccountSettings_HostUrl'" \
+      -e "this['StorageAccountSettings:Key']='$StorageAccountSettings_Key'" \
+      -e "this['StorageAccountSettings:ContainerNameQueue']='$StorageAccountSettings_ContainerNameQueue'" \
+      -e "this['StorageAccountSettings:ContainerNameCache']='$StorageAccountSettings_ContainerNameCache'" \
+      -e "this['StorageAccountSettings:ContainerNameExchangeRates']='$StorageAccountSettings_ContainerNameExchangeRates'" \
+      -e "this['StorageAccountSettings:ContainerNameTranslations']='$StorageAccountSettings_ContainerNameTranslations'" \
       -e "this['CMSSettings:BaseUrl']='$CMSSettings_BaseUrl'" 
 
 json -I -f appSettings.json \

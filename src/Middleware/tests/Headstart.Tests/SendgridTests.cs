@@ -1,5 +1,4 @@
 using Headstart.Common.Services;
-using ordercloud.integrations.avalara;
 using OrderCloud.SDK;
 using NSubstitute;
 using NUnit.Framework;
@@ -20,6 +19,7 @@ using AutoFixture;
 using SendGrid;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Avalara.AvaTax.RestClient;
+using ordercloud.integrations.library;
 
 namespace Headstart.Tests
 {
@@ -63,10 +63,10 @@ namespace Headstart.Tests
             public static readonly string[] supplier1NotificationRcpts = { "001user@test.com", "001user2@test.com" };
             public static readonly string[] supplier2NotificationRcpts = { "002user@test.com" };
             public const string supplier2ID = "002";
-            public const string selectedShipMethod1ID = "selectedmethod001";
-            public const string selectedShipMethod2ID = "selectedmethod002";
-            public const decimal selectedShipMethod1Cost = 10;
-            public const decimal selectedShipMethod2Cost = 15;
+            public const string selectedShipEstimate1ID = "shipEstimate001";
+            public const string selectedShipEstimate2ID = "shipEstimate002";
+            public const decimal selectedShipEstimate1Cost = 10;
+            public const decimal selectedShipEstimate2Cost = 15;
             public const string sellerUser1email = "selleruser1@test.com";
             public static readonly string[] sellerUser1AdditionalRcpts = { "additionalrecipient1@test.com" };
             public const string selleruser2email = "selleruser2@test.com";
@@ -153,30 +153,6 @@ namespace Headstart.Tests
             shipEstimatexp1.SupplierID = TestConstants.supplier1ID;
             shipEstimatexp2.SupplierID = TestConstants.supplier2ID;
 
-            dynamic OrderCalculateXp = new OrderCalculateResponseXp();
-            dynamic TaxResponse = new TransactionModel();
-            dynamic lines = new List<TransactionLineModel>();
-            dynamic lineItem1Taxline = new TransactionLineModel();
-            dynamic lineItem2Taxline = new TransactionLineModel();
-            dynamic selectedShipMethod1Taxline = new TransactionLineModel();
-            dynamic selectedShipMethod2Taxline = new TransactionLineModel();
-
-            lineItem1Taxline.lineNumber = TestConstants.lineItem1ID;
-            lineItem1Taxline.tax = TestConstants.lineItem1Tax;
-            lineItem2Taxline.lineNumber = TestConstants.lineItem2ID;
-            lineItem2Taxline.tax = TestConstants.lineItem2Tax;
-            selectedShipMethod1Taxline.lineNumber = TestConstants.selectedShipMethod1ID;
-            selectedShipMethod1Taxline.tax = TestConstants.lineItem1ShipmentTax;
-            selectedShipMethod2Taxline.lineNumber = TestConstants.selectedShipMethod2ID;
-            selectedShipMethod2Taxline.tax = TestConstants.lineItem2ShipmentTax;
-
-            lines.Add(lineItem1Taxline);
-            lines.Add(lineItem2Taxline);
-            lines.Add(selectedShipMethod1Taxline);
-            lines.Add(selectedShipMethod2Taxline);
-            TaxResponse.lines = lines;
-            OrderCalculateXp.TaxResponse = TaxResponse;
-
             return new HSOrderWorksheet()
             {
                 Order = new HSOrder()
@@ -237,28 +213,28 @@ namespace Headstart.Tests
                     {
                         new HSShipEstimate()
                         {
-                            SelectedShipMethodID=TestConstants.selectedShipMethod1ID,
+                            SelectedShipMethodID=TestConstants.selectedShipEstimate1ID,
                             xp = shipEstimatexp1,
                             ShipMethods = new List<HSShipMethod>()
                             {
                                 new HSShipMethod()
                                 {
-                                    ID=TestConstants.selectedShipMethod1ID,
-                                    Cost=TestConstants.selectedShipMethod1Cost
+                                    ID=TestConstants.selectedShipEstimate1ID,
+                                    Cost=TestConstants.selectedShipEstimate1Cost
                                 },
                                 fixture.Create<HSShipMethod>()
                             }
                         },
                         new HSShipEstimate()
                         {
-                            SelectedShipMethodID=TestConstants.selectedShipMethod2ID,
+                            SelectedShipMethodID=TestConstants.selectedShipEstimate2ID,
                             xp = shipEstimatexp2,
                             ShipMethods = new List<HSShipMethod>()
                             {
                                 new HSShipMethod()
                                 {
-                                    ID=TestConstants.selectedShipMethod2ID,
-                                    Cost=TestConstants.selectedShipMethod2Cost
+                                    ID=TestConstants.selectedShipEstimate2ID,
+                                    Cost=TestConstants.selectedShipEstimate2Cost
                                 },
                                 fixture.Create<HSShipMethod>()
                             }
@@ -267,7 +243,35 @@ namespace Headstart.Tests
                 },
                 OrderCalculateResponse = new HSOrderCalculateResponse()
                 {
-                    xp = OrderCalculateXp
+                    xp = new OrderCalculateResponseXp()
+                    {
+                        TaxCalculation = new OrderTaxCalculation()
+                        {
+                            OrderLevelTaxes = new List<TaxDetails> {
+                                new TaxDetails() {
+                                    Tax = TestConstants.lineItem1ShipmentTax,
+                                    ShipEstimateID = TestConstants.selectedShipEstimate1ID
+                                },
+                                new TaxDetails() {
+                                    Tax = TestConstants.lineItem2ShipmentTax,
+                                    ShipEstimateID = TestConstants.selectedShipEstimate2ID
+                                }
+                            },
+                            LineItems = new List<LineItemTaxCalculation>()
+                            {
+                                new LineItemTaxCalculation()
+                                {
+                                    LineItemID = TestConstants.lineItem1ID,
+                                    LineItemTotalTax = TestConstants.lineItem1Tax
+                                },
+                                new LineItemTaxCalculation()
+                                {
+                                    LineItemID = TestConstants.lineItem2ID,
+                                    LineItemTotalTax = TestConstants.lineItem2Tax
+                                },
+                            }
+                        }
+                    }
                 }
             };
         }

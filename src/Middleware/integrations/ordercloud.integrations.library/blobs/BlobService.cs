@@ -32,12 +32,7 @@ namespace ordercloud.integrations.library
         public CloudBlobClient Client { get; }
         public CloudBlobContainer Container { get; }
         private readonly BlobServiceConfig _config;
-
-        // BlobServiceConfig must be required for this service to function properly
-        public OrderCloudIntegrationsBlobService() : this(new BlobServiceConfig())
-        {
-
-        }
+        private bool IsInitialized = false;
 
         public OrderCloudIntegrationsBlobService(BlobServiceConfig config)
         {
@@ -61,6 +56,10 @@ namespace ordercloud.integrations.library
         }
         private async Task Init()
         {
+            if(IsInitialized)
+            {
+                return;
+            }
             var created = await Container.CreateIfNotExistsAsync();
             if (created)
             {
@@ -86,6 +85,7 @@ namespace ordercloud.integrations.library
                 });
                 await Client.SetServicePropertiesAsync(properties);
             }
+            IsInitialized = true;
         }
 
         public async Task<string> Get(string id)
@@ -100,6 +100,18 @@ namespace ordercloud.integrations.library
             await this.Init();
             var obj = await Container.GetBlockBlobReference(id).DownloadTextAsync();
             return JsonConvert.DeserializeObject<T>(obj);
+        }
+
+        public async Task<CloudAppendBlob> GetAppendBlobReference(string fileName)
+        {
+            await this.Init();
+            return Container.GetAppendBlobReference(fileName);
+        }
+
+        public async Task<CloudBlob> GetBlobReference(string fileName)
+        {
+            await this.Init();
+            return Container.GetBlobReference(fileName);
         }
 
         public async Task Save(string reference, JObject blob, string fileType = null)

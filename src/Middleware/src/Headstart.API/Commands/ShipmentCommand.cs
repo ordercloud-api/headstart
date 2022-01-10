@@ -71,8 +71,8 @@ namespace Headstart.API.Commands
 
     public interface IShipmentCommand
     {
-        Task<SuperHSShipment> CreateShipment(SuperHSShipment superShipment, VerifiedUserContext userContext);
-        Task<BatchProcessResult> UploadShipments(IFormFile file, VerifiedUserContext userContext);
+        Task<SuperHSShipment> CreateShipment(SuperHSShipment superShipment, DecodedToken decodedToken);
+        Task<BatchProcessResult> UploadShipments(IFormFile file, DecodedToken decodedToken);
     }
     public class ShipmentCommand : IShipmentCommand
     {
@@ -85,7 +85,7 @@ namespace Headstart.API.Commands
             _oc = oc;
             _lineItemCommand = lineItemCommand;
         }
-        public async Task<SuperHSShipment> CreateShipment(SuperHSShipment superShipment, VerifiedUserContext userContext)
+        public async Task<SuperHSShipment> CreateShipment(SuperHSShipment superShipment, DecodedToken decodedToken)
         {
             ShipmentItem firstShipmentItem = superShipment.ShipmentItems.First();
             string supplierOrderID = firstShipmentItem.OrderID;
@@ -97,9 +97,9 @@ namespace Headstart.API.Commands
             DateTimeOffset? dateShipped = superShipment.Shipment.DateShipped;
             superShipment.Shipment.DateShipped = null;
 
-            await PatchLineItemStatuses(supplierOrderID, superShipment, OrderDirection.Incoming, userContext);
+            await PatchLineItemStatuses(supplierOrderID, superShipment, OrderDirection.Incoming, decodedToken);
 
-            if (userContext.UserType != "admin")
+            if (decodedToken.CommerceRole != CommerceRole.Seller)
             {
                 buyerID = await GetBuyerIDForSupplierOrder(firstShipmentItem.OrderID);
             }
@@ -109,7 +109,7 @@ namespace Headstart.API.Commands
             }
             superShipment.Shipment.BuyerID = buyerID;
 
-            HSShipment ocShipment = await _oc.Shipments.CreateAsync<HSShipment>(superShipment.Shipment, accessToken: userContext.AccessToken);
+            HSShipment ocShipment = await _oc.Shipments.CreateAsync<HSShipment>(superShipment.Shipment, accessToken: decodedToken.AccessToken);
 
             //  platform issue. Cant save new xp values onto shipment line item. Update order line item to have this value.
             var shipmentItemsWithComment = superShipment.ShipmentItems.Where(s => s.xp?.Comment != null); 
@@ -132,8 +132,8 @@ namespace Headstart.API.Commands
                 superShipment.ShipmentItems,
                 100,
                 5,
-                (shipmentItem) => _oc.Shipments.SaveItemAsync(ocShipment.ID, shipmentItem, accessToken: userContext.AccessToken));
-            HSShipment ocShipmentWithDateShipped = await _oc.Shipments.PatchAsync<HSShipment>(ocShipment.ID, new PartialShipment() { DateShipped = dateShipped }, accessToken: userContext.AccessToken);
+                (shipmentItem) => _oc.Shipments.SaveItemAsync(ocShipment.ID, shipmentItem, accessToken: decodedToken.AccessToken));
+            HSShipment ocShipmentWithDateShipped = await _oc.Shipments.PatchAsync<HSShipment>(ocShipment.ID, new PartialShipment() { DateShipped = dateShipped }, accessToken: decodedToken.AccessToken);
             return new SuperHSShipment()
             {
                 Shipment = ocShipmentWithDateShipped,
@@ -141,7 +141,7 @@ namespace Headstart.API.Commands
             };
         }
 
-        private async Task PatchLineItemStatuses(string supplierOrderID, SuperHSShipment superShipment, OrderDirection direction, VerifiedUserContext userContext)
+        private async Task PatchLineItemStatuses(string supplierOrderID, SuperHSShipment superShipment, OrderDirection direction, DecodedToken decodedToken)
         {
             List<LineItemStatusChange> lineItemStatusChanges = superShipment.ShipmentItems.Select(shipmentItem =>
             {
@@ -158,8 +158,12 @@ namespace Headstart.API.Commands
                 Status = LineItemStatus.Complete,
                 SuperShipment = superShipment
             };
+            await _lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(IsSupplierUser(decodedToken) ? OrderDirection.Outgoing : direction, supplierOrderID, lineItemStatusChange);
+        }
 
-            await _lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(direction, supplierOrderID, lineItemStatusChange, userContext);
+        private bool IsSupplierUser(DecodedToken decodedToken)
+        {
+            return decodedToken.CommerceRole == CommerceRole.Supplier;
         }
 
         private async Task<string> GetBuyerIDForSupplierOrder(string supplierOrderID)
@@ -174,16 +178,16 @@ namespace Headstart.API.Commands
             return buyerID;
         }
 
-        public async Task<BatchProcessResult> UploadShipments(IFormFile file, VerifiedUserContext userContext)
+        public async Task<BatchProcessResult> UploadShipments(IFormFile file, DecodedToken decodedToken)
         {
             BatchProcessResult documentImportResult;
 
-            documentImportResult = await GetShipmentListFromFile(file, userContext);
+            documentImportResult = await GetShipmentListFromFile(file, decodedToken);
 
             return documentImportResult;
         }
 
-        private async Task<BatchProcessResult> GetShipmentListFromFile(IFormFile file, VerifiedUserContext userContext)
+        private async Task<BatchProcessResult> GetShipmentListFromFile(IFormFile file, DecodedToken decodedToken)
         {
             BatchProcessResult processResults;
 
@@ -196,12 +200,12 @@ namespace Headstart.API.Commands
             shipments.RemoveRange(0, 2);
             DocumentImportResult result = Validate(shipments);
 
-            processResults = await ProcessShipments(result, userContext);
+            processResults = await ProcessShipments(result, decodedToken);
 
             return await Task.FromResult(processResults);
         }
 
-        private async Task<BatchProcessResult> ProcessShipments(DocumentImportResult importResult, VerifiedUserContext userContext)
+        private async Task<BatchProcessResult> ProcessShipments(DocumentImportResult importResult, DecodedToken decodedToken)
         {
             BatchProcessResult processResult = new BatchProcessResult();
 
@@ -212,7 +216,7 @@ namespace Headstart.API.Commands
             {
                 try
                 {
-                    bool isSuccessful = await ProcessShipment(shipment, processResult, userContext);
+                    bool isSuccessful = await ProcessShipment(shipment, processResult, decodedToken);
                 }
                 catch (Exception ex)
                 {
@@ -303,7 +307,7 @@ namespace Headstart.API.Commands
 
             return failure;
         }
-        private async Task PatchLineItemStatus(string supplierOrderID, ShipmentItem lineItem, VerifiedUserContext userContext)
+        private async Task PatchLineItemStatus(string supplierOrderID, ShipmentItem lineItem, DecodedToken decodedToken)
         {
             var lineItemStatusChangeList = new List<LineItemStatusChange>();
             lineItemStatusChangeList.Add(new LineItemStatusChange()
@@ -321,7 +325,7 @@ namespace Headstart.API.Commands
             await _lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Outgoing, supplierOrderID, lineItemStatusChange, null);
         }
 
-        private async Task<bool> ProcessShipment(Misc.Shipment shipment, BatchProcessResult result, VerifiedUserContext userContext)
+        private async Task<bool> ProcessShipment(Misc.Shipment shipment, BatchProcessResult result, DecodedToken decodedToken)
         {
             PartialShipment newShipment = null;
             Shipment ocShipment;
@@ -344,7 +348,7 @@ namespace Headstart.API.Commands
                     
                 };
 
-                ocShipment = await GetShipmentByTrackingNumber(shipment, userContext?.AccessToken);
+                ocShipment = await GetShipmentByTrackingNumber(shipment, decodedToken?.AccessToken);
 
                 //If a user included a ShipmentID in the spreadsheet, find that shipment and patch it with the information on that row
                 if (ocShipment != null)
@@ -354,14 +358,14 @@ namespace Headstart.API.Commands
 
                 if (newShipment != null)
                 {
-                    Shipment processedShipment = await _oc.Shipments.PatchAsync(newShipment.ID, newShipment, userContext?.AccessToken);
+                    Shipment processedShipment = await _oc.Shipments.PatchAsync(newShipment.ID, newShipment, decodedToken?.AccessToken);
 
                     //Before updating shipment item, must post the shipment line item comment to the order line item due to OC bug.
                     await PatchPartialLineItemComment(shipment, newShipment.ID);
 
-                    await PatchLineItemStatus(shipment.OrderID, newShipmentItem, userContext);
+                    await PatchLineItemStatus(shipment.OrderID, newShipmentItem, decodedToken);
                     //POST a shipment item, passing it a Shipment ID parameter, and a request body of Order ID, Line Item ID, and Quantity Shipped
-                    await _oc.Shipments.SaveItemAsync(newShipment.ID, newShipmentItem, accessToken: userContext?.AccessToken);
+                    await _oc.Shipments.SaveItemAsync(newShipment.ID, newShipmentItem, accessToken: decodedToken?.AccessToken);
 
                     //Re-patch the shipment adding the date shipped now due to oc bug
                     var repatchedShipment = PatchShipment(ocShipment, shipment);

@@ -6,11 +6,11 @@
       [reportSelectionForm]="reportSelectionForm"
       [displayHeaders]="displayHeaders"
       [adHocFilters]="adHocFilters"
+      [suppliers]="suppliers"
+      [buyers]="buyers"
       (handleReportTypeSelection)="handleReportTypeSelection($event)"
       (handleReportTemplateSelection)="handleReportTemplateSelection($event)"
-      (handleReportAdHocFiltersSelection)="
-        handleReportAdHocFiltersSelection($event)
-      "
+      (handleReportAdHocFiltersSelection)="handleReportAdHocFiltersSelection($event)"
     >
     </reports-selection-component>
     <reports-processing-component

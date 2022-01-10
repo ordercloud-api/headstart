@@ -6,10 +6,10 @@ using Headstart.Common;
 using Headstart.Common.Constants;
 using Headstart.Common.Extensions;
 using Headstart.Common.Models;
+using Headstart.Common.Services;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
 using Headstart.Models.Headstart;
-using ordercloud.integrations.avalara;
 using ordercloud.integrations.easypost;
 using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;
@@ -22,26 +22,28 @@ namespace Headstart.API.Commands
     {
         Task<ShipEstimateResponse> GetRatesAsync(HSOrderCalculatePayload orderCalculatePayload);
         Task<HSOrderCalculateResponse> CalculateOrder(HSOrderCalculatePayload orderCalculatePayload);
-        Task<HSOrderCalculateResponse> CalculateOrder(string orderID, VerifiedUserContext user);
+        Task<HSOrderCalculateResponse> CalculateOrder(string orderID, DecodedToken decodedToken);
         Task<ShipEstimateResponse> GetRatesAsync(string orderID);
     }
 
     public class CheckoutIntegrationCommand : ICheckoutIntegrationCommand
     {
-        private readonly IAvalaraCommand _avalara;
+        private readonly ITaxCalculator _taxCalculator;
         private readonly IEasyPostShippingService _shippingService;
         private readonly IExchangeRatesCommand _exchangeRates;
         private readonly IOrderCloudClient _oc;
+        private readonly IDiscountDistributionService _discountDistribution;
         private readonly HSShippingProfiles _profiles;
         private readonly AppSettings _settings;
   
-        public CheckoutIntegrationCommand(IAvalaraCommand avalara, IExchangeRatesCommand exchangeRates, IOrderCloudClient orderCloud, IEasyPostShippingService shippingService, AppSettings settings)
+        public CheckoutIntegrationCommand(IDiscountDistributionService discountDistribution, ITaxCalculator taxCalculator, IExchangeRatesCommand exchangeRates, IOrderCloudClient orderCloud, IEasyPostShippingService shippingService, AppSettings settings)
         {
-			_avalara = avalara;
+            _taxCalculator = taxCalculator;
             _exchangeRates = exchangeRates;
             _oc = orderCloud;
             _shippingService = shippingService;
             _settings = settings;
+            _discountDistribution = discountDistribution;
             _profiles = new HSShippingProfiles(_settings);
         }
 
@@ -265,9 +267,9 @@ namespace Headstart.API.Commands
             return estimates;
         }
 
-        public async Task<HSOrderCalculateResponse> CalculateOrder(string orderID, VerifiedUserContext user)
+        public async Task<HSOrderCalculateResponse> CalculateOrder(string orderID, DecodedToken decodedToken)
         {
-            var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID, user.AccessToken);
+            var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID, decodedToken.AccessToken);
             return await this.CalculateOrder(new HSOrderCalculatePayload()
             {
                 ConfigData = null,
@@ -283,14 +285,18 @@ namespace Headstart.API.Commands
                 return new HSOrderCalculateResponse();
             } else
             {
-                var totalTax = await _avalara.GetEstimateAsync(orderCalculatePayload.OrderWorksheet.Reserialize<OrderWorksheet>());
-
+                var promotions = await _oc.Orders.ListAllPromotionsAsync(OrderDirection.All, orderCalculatePayload.OrderWorksheet.Order.ID);
+                var promoCalculationTask = _discountDistribution.SetLineItemProportionalDiscount(orderCalculatePayload.OrderWorksheet, promotions);
+                var taxCalculationTask = _taxCalculator.CalculateEstimateAsync(orderCalculatePayload.OrderWorksheet.Reserialize<OrderWorksheet>(), promotions);
+                var taxCalculation = await taxCalculationTask;
+                await promoCalculationTask;
+          
                 return new HSOrderCalculateResponse
                 {
-                    TaxTotal = totalTax.totalTax ?? 0,
+                    TaxTotal = taxCalculation.TotalTax,
                     xp = new OrderCalculateResponseXp()
                     {
-                        TaxResponse = totalTax
+                        TaxCalculation = taxCalculation
                     }
                 };
             }

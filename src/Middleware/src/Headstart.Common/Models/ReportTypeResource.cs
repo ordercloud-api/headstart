@@ -1,8 +1,8 @@
 ﻿using ordercloud.integrations.library;
+using System.Text.Json.Serialization;
 
 namespace Headstart.Common.Models
 {
-    
     public class ReportTypeResource
     {
         public ReportTypeEnum ID { get; set; }
@@ -17,7 +17,7 @@ namespace Headstart.Common.Models
             new ReportTypeResource
             {
                 ID = ReportTypeEnum.BuyerLocation,
-                Name = "Buyer Location Report",
+                Name = "Buyer Group Report",
                 ReportCategory = "Buyer",
                 AvailableToSuppliers = true,
                 Value = "BuyerLocation",
@@ -29,7 +29,7 @@ namespace Headstart.Common.Models
                 ReportCategory = "Order",
                 AvailableToSuppliers = false,
                 Value = "SalesOrderDetail",
-                AdHocFilters = new string[] {"DateLow", "TimeLow", "DateHigh", "TimeHigh"}
+                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow",  "TimeHigh", "SupplierID", "BrandID" }
             },
             new ReportTypeResource
             {
@@ -38,7 +38,7 @@ namespace Headstart.Common.Models
                 ReportCategory = "Order",
                 AvailableToSuppliers = true,
                 Value = "PurchaseOrderDetail",
-                AdHocFilters = new string[] {"DateLow", "TimeLow", "DateHigh", "TimeHigh"}
+                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID", "BrandID" }
             },
             new ReportTypeResource
             {
@@ -47,8 +47,43 @@ namespace Headstart.Common.Models
                 ReportCategory = "Order",
                 AvailableToSuppliers = true,
                 Value = "LineItemDetail",
-                AdHocFilters = new string[] {"DateLow", "TimeLow", "DateHigh", "TimeHigh"}
+                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID", "BrandID" }
+            },
+             new ReportTypeResource
+            {
+                ID = ReportTypeEnum.ProductDetail,
+                Name = "Product Detail Report",
+                ReportCategory = "Product",
+                AvailableToSuppliers = true,
+                Value = "ProductDetail",
+                AdHocFilters = new string[] { "SupplierID" }
+            },
+            new ReportTypeResource
+            {
+                ID = ReportTypeEnum.RMADetail,
+                Name = "RMA Detail Report",
+                ReportCategory = "RMA",
+                AvailableToSuppliers = true,
+                Value = "RMADetail",
+                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID" }
+            },
+            new ReportTypeResource
+            {
+                ID = ReportTypeEnum.ShipmentDetail,
+                Name = "Shipment Detail Report",
+                ReportCategory = "Order",
+                AvailableToSuppliers = true,
+                Value = "ShipmentDetail",
+                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID" }
             }
         };
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum BuyerReportViewContext
+    {
+        MyOrders,
+        Approve,
+        Location
     }
 }

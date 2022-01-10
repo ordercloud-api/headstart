@@ -209,7 +209,7 @@ export class ProductPricingComponent {
       this.isSavedOverride = true
       this.isUsingPriceOverride = true
     } catch (ex) {
-      if (ex?.error?.[0].ErrorCode === 'NotFound') {
+      if (ex?.error?.Errors[0].ErrorCode === 'NotFound') {
         this.isSavedOverride = false
         this.isUsingPriceOverride = false
         this.resetOverridePriceSchedules(this.emptyPriceSchedule)

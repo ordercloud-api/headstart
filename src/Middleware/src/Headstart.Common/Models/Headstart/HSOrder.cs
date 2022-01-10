@@ -5,7 +5,6 @@ using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;
 using OrderCloud.SDK;
 using System.Collections.Generic;
-using Avalara.AvaTax.RestClient;
 using Headstart.Common.Exceptions;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models.Headstart;
@@ -20,7 +19,7 @@ namespace Headstart.Models
     
     public class OrderXp
     {
-        public string AvalaraTaxTransactionCode { get; set; }
+        public string ExternalTaxTransactionID { get; set; }
         public List<string> ShipFromAddressIDs { get; set; }
         public List<string> SupplierIDs { get; set; }
         public bool NeedsAttention { get; set; }
@@ -89,14 +88,35 @@ namespace Headstart.Models
     {
         public HSOrderLineItemData SupplierOrder { get; set; }
         public HSOrderLineItemData BuyerOrder { get; set; }
+        public IList<OrderPromotion> OrderPromotions { get; set; }
         public HSShipEstimate ShipMethod { get; set; }
     }
 
-    
     public class HSOrderLineItemData
     {
         public HSOrder Order { get; set; }
         public List<HSLineItem> LineItems { get; set; }
+        public List<LineItemMiscReportFields> LineItemsWithMiscFields { get; set; }
+        public List<LineItemsWithPurchaseOrderFields> LineItemsWithPurchaseOrderFields { get; set; }
+    }
+
+    public class LineItemMiscReportFields
+    {
+        public string ID { get; set; }
+        public decimal? Tax { get; set; }
+        public bool LineTaxAvailable { get; set; }
+        public string BrandName { get; set; }
+        public string SupplierName { get; set; }
+    }
+
+    public class LineItemsWithPurchaseOrderFields
+    {
+        public string ID { get; set; }
+        public string OrderID { get; set; }
+        public decimal Total { get; set; }
+        public decimal Subtotal { get; set; }
+        public decimal? UnitPrice { get; set; }
+        public string SupplierID { get; set; }
     }
 
     public class HSOrderSubmitPayload
