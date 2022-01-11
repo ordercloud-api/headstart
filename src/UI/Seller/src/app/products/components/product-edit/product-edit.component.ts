@@ -317,18 +317,16 @@ export class ProductEditComponent implements OnInit, OnDestroy {
             _get(superHSProduct.Product, 'xp.ProductType'),
             Validators.required
           ),
-          IsResale: new FormControl({
-            value: _get(superHSProduct.Product, 'xp.IsResale'),
-            disabled: this.readonly,
-          }),
+          IsResale: new FormControl(
+            _get(superHSProduct.Product, 'xp.IsResale')
+          ),
           QuantityAvailable: new FormControl(
             superHSProduct.Product?.Inventory?.QuantityAvailable,
             null
           ),
-          InventoryEnabled: new FormControl({
-            value: _get(superHSProduct.Product, 'Inventory.Enabled'),
-            disabled: this.readonly,
-          }),
+          InventoryEnabled: new FormControl(
+            _get(superHSProduct.Product, 'Inventory.Enabled')
+          ),
           VariantLevelTracking: new FormControl(
             _get(superHSProduct.Product, 'Inventory.VariantLevelTracking'),
             null
