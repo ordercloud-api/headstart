@@ -90,6 +90,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   hasNotBegun = false
   dataIsSaving = false
   isCreatingNew: boolean
+  isCloning = false
   searchTerm = ''
   faTimesCircle = faTimesCircle
   faExclamationCircle = faExclamationCircle
@@ -111,7 +112,13 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit(): void {
-    this.isCreatingNew = this.promotionService.checkIfCreatingNew()
+    const splitUrl = this.router.routerState.snapshot.url.split('/')
+    if (splitUrl[splitUrl.length - 2] === 'clone') {
+      this.isCreatingNew = true
+      this.isCloning = true
+    } else {
+      this.isCreatingNew = this.promotionService.checkIfCreatingNew()
+    }
     void this.listResources().then(() => this.cdr.detectChanges())
   }
 
@@ -668,6 +675,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
 
   async handleSave(): Promise<void> {
     if (this.isCreatingNew) {
+      this._promotionEditable.ID = null
       await this.createPromotion(this._promotionEditable)
     } else {
       await this.updatePromotion(this._promotionEditable)

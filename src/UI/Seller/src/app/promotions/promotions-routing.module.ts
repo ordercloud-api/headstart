@@ -7,6 +7,7 @@ const routes: Routes = [
   { path: '', component: PromotionTableComponent },
   { path: 'new', component: PromotionTableComponent },
   { path: ':promotionID', component: PromotionTableComponent },
+  { path: 'clone/:promotionID', component: PromotionTableComponent },
 ]
 @NgModule({
   imports: [RouterModule.forChild(routes)],
