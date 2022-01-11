@@ -368,6 +368,10 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   }
 
   createPromotionForm(promotion: Promotion): void {
+    if (this.isCloning) {
+      this._promotionEditable.Code = promotion.Code = null
+      promotion.Name = 'Cloned Promotion'
+    }
     this.resourceForm = new FormGroup({
       Code: new FormControl(promotion.Code, Validators.required),
       Type: new FormControl(_get(promotion, 'xp.Type')),
