@@ -5,6 +5,7 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar'
 import { PromotionsRoutingModule } from './promotions-routing.module'
 import { PromotionTableComponent } from './components/promotion-table/promotion-table.component'
 import { PromotionEditComponent } from './components/promotion-edit/promotion-edit.component'
+import { BogoEditComponent } from './components/bogo-edit/bogo-edit.component'
 import {
   NgbDatepickerModule,
   NgbPopoverModule,
@@ -18,6 +19,10 @@ import {
     NgbDatepickerModule,
     NgbPopoverModule,
   ],
-  declarations: [PromotionTableComponent, PromotionEditComponent],
+  declarations: [
+    PromotionTableComponent,
+    PromotionEditComponent,
+    BogoEditComponent,
+  ],
 })
 export class PromotionsModule {}

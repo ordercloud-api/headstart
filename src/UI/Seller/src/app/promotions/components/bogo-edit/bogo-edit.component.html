@@ -1,0 +1,222 @@
+<div class="card bg-white shadow-sm p-4 mt-3">
+  <form [formGroup]="formGroup">
+    <h6 translate>BOGO Setup</h6>
+    <h5 class="text-uppercase font-weight-bold text-muted">Buy</h5>
+    <div class="d-flex justify-content-between align-items-center">
+      <input
+        class="form-control w-25 mr-2"
+        type="number"
+        step="1"
+        formControlName="BOGOBuyQty"
+        (input)="handleUpdatePromo($event, 'xp.BOGO.BuySKU.Qty', 'number')"
+      />
+      <p
+        class="mb-0 w-75"
+        *ngIf="selectedBuySKU && _promotionEditable?.xp?.BOGO?.BuySKU?.SKU"
+      >
+        {{ selectedBuySKU?.Name }}
+      </p>
+      <button
+        *ngIf="selectedBuySKU"
+        class="btn btn-sm btn-outline-primary"
+        (click)="toggleBOGOProductsCollapse('buy')"
+      >
+        {{ buyProductsCollapsed ? 'Change Product' : 'Cancel' }}
+      </button>
+    </div>
+    <!-- BUYONE PRODUCT SELECT AND SEARCH -->
+    <ng-container *ngIf="_promotionEditable?.xp?.Type === 'BOGO'">
+      <div
+        id="bogoGetCollapse"
+        [ngbCollapse]="buyProductsCollapsed || !getProductsCollapsed"
+        aria-label="parent resource dropdown"
+      >
+        <search-component
+          class="mr-3 w-100"
+          id="resource-search"
+          [placeholderText]="''"
+          [searchTermInput]="searchTerm"
+          (searched)="searchedResources($event)"
+        >
+        </search-component>
+        <perfect-scrollbar
+          class="dropdown-ps product-search-area border border-light shadow-sm"
+          (psYReachEnd)="handleScrollEnd($event)"
+        >
+          <button
+            type="button"
+            ngbDropdownItem
+            *ngFor="let resource of _products | async"
+            (click)="selectBuySKU(resource?.ID)"
+            [disabled]="
+              _promotionEditable?.xp?.BOGO?.BuySKU?.SKU === resource?.ID
+            "
+            aria-label="select your SKU"
+          >
+            <div class="overflow-hidden">
+              <summary-resource-display-component
+                [resource]="resource"
+                [resourceType]="'products'"
+              >
+              </summary-resource-display-component>
+            </div>
+          </button>
+          <p
+            class="mb-0"
+            *ngIf="!_products?.value?.length && searchTerm"
+            ngbDropdownItem
+            disabled
+          >
+            No results. Broaden your search and try again.
+          </p>
+        </perfect-scrollbar>
+      </div>
+    </ng-container>
+    <!-- END BUYONE PRODUCT SELECT AND SEARCH -->
+
+    <h5 class="text-uppercase font-weight-bold text-muted mt-3">Get</h5>
+    <div class="d-flex justify-content-between align-items-center">
+      <input
+        class="form-control w-25 mr-2"
+        type="number"
+        step="1"
+        formControlName="BOGOGetQty"
+        (input)="handleUpdatePromo($event, 'xp.BOGO.GetSKU.Qty', 'number')"
+      />
+      <p
+        class="mb-0 w-75"
+        *ngIf="selectedGetSKU && _promotionEditable?.xp?.BOGO?.GetSKU?.SKU"
+      >
+        {{ selectedGetSKU?.Name }}
+      </p>
+      <button
+        *ngIf="selectedGetSKU"
+        class="btn btn-sm btn-outline-primary"
+        (click)="toggleBOGOProductsCollapse('get')"
+      >
+        {{ getProductsCollapsed ? 'Change Product' : 'Cancel' }}
+      </button>
+    </div>
+    <!-- GETONE PRODUCT SELECT AND SEARCH -->
+    <ng-container *ngIf="_promotionEditable?.xp?.Type === 'BOGO'">
+      <div
+        id="bogoGetCollapse"
+        [ngbCollapse]="getProductsCollapsed || !buyProductsCollapsed"
+        aria-label="parent resource dropdown"
+      >
+        <search-component
+          class="mr-3 w-100"
+          id="resource-search"
+          [placeholderText]="''"
+          [searchTermInput]="searchTerm"
+          (searched)="searchedResources($event)"
+        >
+        </search-component>
+        <perfect-scrollbar
+          class="dropdown-ps product-search-area border border-light shadow-sm"
+          (psYReachEnd)="handleScrollEnd($event)"
+        >
+          <button
+            type="button"
+            ngbDropdownItem
+            *ngFor="let resource of _products | async"
+            (click)="selectGetSKU(resource?.ID)"
+            [disabled]="
+              _promotionEditable?.xp?.BOGO?.GetSKU?.SKU === resource?.ID
+            "
+            aria-label="select your SKU"
+          >
+            <div class="overflow-hidden">
+              <summary-resource-display-component
+                [resource]="resource"
+                [resourceType]="'products'"
+              >
+              </summary-resource-display-component>
+            </div>
+          </button>
+          <p
+            class="mb-0"
+            *ngIf="!_products?.value?.length && searchTerm"
+            ngbDropdownItem
+            disabled
+          >
+            No results. Broaden your search and try again.
+          </p>
+        </perfect-scrollbar>
+      </div>
+    </ng-container>
+    <!-- END GETONE PRODUCT SELECT AND SEARCH -->
+    <div class="d-flex flex-column mt-3">
+      <label
+        class="h5 text-uppercase font-weight-bold text-muted"
+        for="Value"
+        translate
+        >For</label
+      >
+      <div class="form-group mb-0">
+        <div class="form-check">
+          <input
+            id="BOGOType"
+            class="form-check-input"
+            type="radio"
+            name="BOGOType"
+            id="BOGOTypePercentage"
+            value="Percentage"
+            formControlName="BOGOType"
+            (change)="handleUpdatePromo($event, 'xp.BOGO.Type')"
+            [checked]="BOGOPromoTypeCheck('Percentage')"
+          />
+          <label class="form-check-label" for="BOGOTypePercentage" translate>
+            ADMIN.PROMOTIONS.PERCENTAGE
+          </label>
+        </div>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="BOGOType"
+            id="BOGOTypeFixedAmount"
+            value="FixedAmount"
+            formControlName="BOGOType"
+            (change)="handleUpdatePromo($event, 'xp.BOGO.Type')"
+            [checked]="BOGOPromoTypeCheck('FixedAmount')"
+          />
+          <label class="form-check-label" for="BOGOTypeFixedAmount" translate>
+            ADMIN.PROMOTIONS.FIXED_AMOUNT
+          </label>
+        </div>
+      </div>
+      <div class="input-group w-25">
+        <div
+          *ngIf="_promotionEditable?.xp?.BOGO?.Type === 'FixedAmount'"
+          class="input-group-prepend"
+        >
+          <span class="input-group-text">$</span>
+        </div>
+        <input
+          type="number"
+          class="form-control"
+          formControlName="BOGOValue"
+          min="0"
+          (input)="handleUpdatePromo($event, 'xp.BOGO.Value', 'number')"
+          id="Value"
+        />
+        <div
+          *ngIf="_promotionEditable?.xp?.BOGO?.Type === 'Percentage'"
+          class="input-group-append"
+        >
+          <span class="input-group-text">%</span>
+        </div>
+      </div>
+      <h5 class="text-uppercase font-weight-bold text-muted mb-0 mt-2">
+        Off
+        {{
+          _promotionEditable?.xp?.BOGO?.Type === 'Percentage' &&
+          _promotionEditable?.xp?.BOGO?.Value === 100
+            ? '(FREE)'
+            : null
+        }}
+      </h5>
+    </div>
+  </form>
+</div>
