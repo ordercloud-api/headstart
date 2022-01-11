@@ -7,6 +7,7 @@ import {
   HSPromoEligibility,
   PromotionXp,
   MinRequirementType,
+  HSBogoType,
 } from '@app-seller/models/promo-types'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { Promotions } from 'ordercloud-javascript-sdk'
@@ -43,6 +44,18 @@ export class PromotionService extends ResourceCrudService<Promotion> {
       MinReq: {
         Type: null,
         Int: null,
+      },
+      BOGO: {
+        Type: HSBogoType.Percentage,
+        Value: null,
+        BuySKU: {
+          SKU: null,
+          Qty: null,
+        },
+        GetSKU: {
+          SKU: null,
+          Qty: null,
+        },
       },
       MaxShipCost: null,
     },
@@ -88,29 +101,26 @@ export class PromotionService extends ResourceCrudService<Promotion> {
         eligibleExpression = 'true'
         break
     }
+    if (safeXp?.Type === 'BOGO') {
+      eligibleExpression = this.buildBogoEligibleExpression(safeXp)
+    }
     switch (safeXp?.MinReq?.Type) {
       case MinRequirementType.MinPurchase:
-        if (
-          safeXp?.AppliesTo === HSPromoEligibility.SpecificSupplier
-        ) {
+        if (safeXp?.AppliesTo === HSPromoEligibility.SpecificSupplier) {
           eligibleExpression = `${eligibleExpression} and items.total(SupplierID = '${selectedSupplier?.ID}') >= ${safeXp?.MinReq?.Int}`
-        } else if (
-          safeXp?.AppliesTo === HSPromoEligibility.SpecificSKUs
-        ) {
+        } else if (safeXp?.AppliesTo === HSPromoEligibility.SpecificSKUs) {
           eligibleExpression = `${eligibleExpression} and Order.Subtotal >= ${safeXp?.MinReq?.Int}`
         } else {
-          ;`Order.Subtotal >= ${safeXp?.MinReq?.Int}`
+          eligibleExpression = `${eligibleExpression} and Order.Subtotal >= ${safeXp?.MinReq?.Int}`
         }
         break
       case MinRequirementType.MinItemQty:
         if (safeXp.AppliesTo === HSPromoEligibility.SpecificSupplier) {
           eligibleExpression = `${eligibleExpression} and items.Quantity(SupplierID = '${selectedSupplier?.ID}') >= ${safeXp?.MinReq?.Int}`
-        } else if (
-          safeXp?.AppliesTo === HSPromoEligibility.SpecificSKUs
-        ) {
+        } else if (safeXp?.AppliesTo === HSPromoEligibility.SpecificSKUs) {
           eligibleExpression = `${eligibleExpression} and Order.LineItemCount >= ${safeXp?.MinReq?.Int}`
         } else {
-          eligibleExpression = `Order.LineItemCount >= ${safeXp?.MinReq?.Int}`
+          eligibleExpression = `${eligibleExpression} and Order.LineItemCount >= ${safeXp?.MinReq?.Int}`
         }
         break
     }
@@ -159,6 +169,50 @@ export class PromotionService extends ResourceCrudService<Promotion> {
     if (safeXp?.Type === 'FreeShipping') {
       valueExpression = 'Order.ShippingCost'
     }
+    if (safeXp?.Type === 'BOGO') {
+      valueExpression = this.buildBogoValueExpression(safeXp).trim()
+    }
     return valueExpression.trim()
+  }
+
+  buildBogoValueExpression(safeXp: PromotionXp): string {
+    const buySKU = safeXp?.BOGO?.BuySKU?.SKU
+    const buyQty = safeXp?.BOGO?.BuySKU?.Qty
+    const getSKU = safeXp?.BOGO?.GetSKU?.SKU
+    const getQty = safeXp?.BOGO?.GetSKU?.Qty
+    const percentOff = safeXp?.BOGO?.Value / 100
+    const buyAndGetQty = Number(buyQty) + Number(getQty)
+    let valueExpression: string
+    if (buySKU === getSKU) {
+      if (safeXp?.BOGO?.Type === HSBogoType.Percentage) {
+        valueExpression = `((items.quantity(ProductID='${buySKU}')-(items.quantity(ProductID='${buySKU}')%${buyAndGetQty}))/${buyAndGetQty})*${getQty}*((items.total(ProductID='${getSKU}')/items.quantity(ProductID='${getSKU}')))*${percentOff}`
+      } else if (safeXp?.BOGO?.Type === HSBogoType.FixedAmount) {
+        valueExpression = `((items.quantity(ProductID='${buySKU}')-items.quantity(ProductID='${buySKU}')%${buyAndGetQty})/${buyAndGetQty})*${safeXp?.BOGO?.Value}`
+      }
+    } else {
+      if (safeXp?.BOGO?.Type === HSBogoType.Percentage) {
+        valueExpression = `min(((items.quantity(ProductID='${buySKU}')-((items.quantity(ProductID='${buySKU}')%${buyQty})))/${buyQty})*${getQty},items.quantity(ProductID='${getSKU}')-(items.quantity(ProductID='${getSKU}')%${getQty}))*((items.total(ProductID='${getSKU}'))/items.quantity(ProductID='${getSKU}'))*${percentOff}`
+      } else if (safeXp?.BOGO?.Type === HSBogoType.FixedAmount) {
+        valueExpression = `min(((items.quantity(ProductID='${buySKU}')-((items.quantity(ProductID='${buySKU}')%${buyQty})))/${buyQty})*${getQty},items.quantity(ProductID='${getSKU}')-(items.quantity(ProductID='${getSKU}')%${getQty}))/${getQty}*${safeXp?.BOGO?.Value}`
+      }
+    }
+
+    return valueExpression?.trim()
+  }
+
+  buildBogoEligibleExpression(safeXp: PromotionXp): string {
+    const buySKU = safeXp?.BOGO?.BuySKU?.SKU
+    const buySKUQty = safeXp?.BOGO?.BuySKU?.Qty
+    const getSKU = safeXp?.BOGO?.GetSKU?.SKU
+    const getSKUQty = safeXp?.BOGO?.GetSKU?.Qty
+    let eligibleExpression: string
+    if (buySKU === getSKU) {
+      eligibleExpression = `items.quantity(ProductID='${buySKU}')>=${
+        buySKUQty + getSKUQty
+      }`
+    } else {
+      eligibleExpression = `items.quantity(ProductID='${buySKU}')>= ${buySKUQty} and items.quantity(ProductID='${getSKU}')>=${getSKUQty}`
+    }
+    return eligibleExpression.trim()
   }
 }

@@ -22,6 +22,7 @@ import {
   OcSupplierService,
   Product,
   ListPage,
+  OcProductService,
 } from '@ordercloud/angular-sdk'
 import { PromotionService } from '@app-seller/promotions/promotion.service'
 import {
@@ -29,13 +30,14 @@ import {
   HSPromoType,
   HSPromoEligibility,
   MinRequirementType,
+  HSBogoType,
 } from '@app-seller/models/promo-types'
 import * as moment from 'moment'
 import { Router } from '@angular/router'
-import { ListArgs, HSSupplier } from '@ordercloud/headstart-sdk'
+import { ListArgs, HSSupplier, HSProduct } from '@ordercloud/headstart-sdk'
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap'
 import { TranslateService } from '@ngx-translate/core'
-import { Products, Meta } from 'ordercloud-javascript-sdk'
+import { Products, Meta, Suppliers, Supplier } from 'ordercloud-javascript-sdk'
 import { ToastrService } from 'ngx-toastr'
 import { BehaviorSubject } from 'rxjs'
 @Component({
@@ -50,6 +52,13 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   filterConfig
   @Input()
   set resourceInSelection(promotion: Promotion<PromotionXp>) {
+    if (promotion?.xp?.Type === HSPromoType.BOGO) {
+      this.setUpBOGO(
+        promotion?.xp?.BOGO?.BuySKU?.SKU,
+        promotion?.xp?.BOGO?.GetSKU?.SKU
+      )
+      this.refreshPromoData(promotion)
+    }
     if (promotion.ID) {
       this.setUpSuppliers(promotion.xp?.Supplier)
       this.refreshPromoData(promotion)
@@ -62,10 +71,13 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   updatedResource
   @Output()
   updateResource = new EventEmitter<any>()
-  suppliers: HSSupplier[]
+  suppliers = new BehaviorSubject<HSSupplier[]>([])
+  supplierMeta: Meta
   products = new BehaviorSubject<Product[]>([])
   productMeta: Meta
   selectedSupplier: HSSupplier
+  selectedBuySKU: HSProduct
+  selectedGetSKU: HSProduct
   resourceForm: FormGroup
   _promotionEditable: Promotion<PromotionXp>
   _promotionStatic: Promotion<PromotionXp>
@@ -84,13 +96,14 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   faQuestionCircle = faQuestionCircle
   faCalendar = faCalendar
   productsCollapsed = true
+  buyProductsCollapsed = false
+  getProductsCollapsed = true
   currentDateTime: string
-  isSaveBtnDisabled?: boolean = true
-  noChanges?: boolean = !this.areChanges
   constructor(
     public promotionService: PromotionService,
     private ocPromotionService: OcPromotionService,
     private ocSupplierService: OcSupplierService,
+    private ocProductService: OcProductService,
     private router: Router,
     private translate: TranslateService,
     private toastrService: ToastrService,
@@ -99,7 +112,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.isCreatingNew = this.promotionService.checkIfCreatingNew()
-    this.listResources()
+    void this.listResources().then(() => this.cdr.detectChanges())
   }
 
   ngOnChanges(): void {
@@ -130,19 +143,24 @@ export class PromotionEditComponent implements OnInit, OnChanges {
     this.hasRedemptionLimit = promo.RedemptionLimit ? true : false
     this.limitPerUser = promo.RedemptionLimitPerUser ? true : false
     this.capShipCost = promo.xp?.MaxShipCost ? true : false
-    this._promotionEditable = JSON.parse(JSON.stringify(promo))
-    this._promotionStatic = JSON.parse(JSON.stringify(promo))
-    this.isSaveBtnDisabled = true
-    this.noChanges = true
+    this._promotionEditable = JSON.parse(
+      JSON.stringify(promo)
+    ) as Promotion<PromotionXp>
+    this._promotionStatic = JSON.parse(
+      JSON.stringify(promo)
+    ) as Promotion<PromotionXp>
+    this.buyProductsCollapsed = this.selectedBuySKU ? true : false
+    this.getProductsCollapsed = this.selectedGetSKU ? true : false
     this.createPromotionForm(promo)
   }
 
   async setUpSuppliers(existingSupplierID?: string): Promise<void> {
     const supplierResponse = await this.ocSupplierService
-      .List({ pageSize: 100, sortBy: ['Name'] })
+      .List({ pageSize: 25, sortBy: ['Name'] })
       .toPromise()
-    this.suppliers = supplierResponse.Items
-    await this.selectSupplier(existingSupplierID || this.suppliers[0].ID)
+    this.suppliers.next(supplierResponse.Items)
+    this.supplierMeta = supplierResponse.Meta
+    await this.selectSupplier(existingSupplierID || this.suppliers.value[0].ID)
   }
 
   async selectSupplier(supplierID: string): Promise<void> {
@@ -156,20 +174,102 @@ export class PromotionEditComponent implements OnInit, OnChanges {
     }
   }
 
-  searchedResources(searchText: any): void {
-    this.listResources(1, searchText)
+  async setUpBOGO(
+    existingBuyProductID: string,
+    existingGetProductID: string
+  ): Promise<void> {
+    const productResponse = await this.ocProductService
+      .List({ pageSize: 25, sortBy: ['Name'] })
+      .toPromise()
+    this.products.next(productResponse.Items)
+    this.productMeta = productResponse.Meta
+    await this.selectBuySKU(existingBuyProductID)
+    await this.selectGetSKU(existingGetProductID)
+  }
+
+  toggleBOGOProductsCollapse(buyOrGet: string) {
+    if (buyOrGet === 'buy') {
+      this.getProductsCollapsed = true
+      this.buyProductsCollapsed = !this.buyProductsCollapsed
+    } else {
+      this.buyProductsCollapsed = true
+      this.getProductsCollapsed = !this.getProductsCollapsed
+    }
+    this.cdr.detectChanges()
+  }
+
+  selectBOGOPromoType(event: any): void {
+    this.buyProductsCollapsed = false
+    this.getProductsCollapsed = true
+    if (this.selectedBuySKU && !this.selectedGetSKU) {
+      this.getProductsCollapsed = false
+    }
+    if (this.selectedBuySKU && this.selectedGetSKU) {
+      this.buyProductsCollapsed = true
+    }
+    this.handleUpdatePromo(event, 'xp.Type')
+    this.cdr.detectChanges()
+  }
+
+  async selectBuySKU(productID: string): Promise<void> {
+    this.buyProductsCollapsed = true
+    if (!this.selectedGetSKU) {
+      this.getProductsCollapsed = false
+    }
+    const productInObservable = this.products?.value?.find(
+      (p) => p.ID === productID
+    )
+    let p
+    if (productInObservable) {
+      p = productInObservable
+      this.selectedBuySKU = productInObservable
+    } else {
+      p = await this.ocProductService.Get(productID).toPromise()
+      this.selectedBuySKU = p
+    }
+    this.handleUpdatePromo({ target: { value: p?.ID } }, 'xp.BOGO.BuySKU.SKU')
+    this.cdr.detectChanges()
+  }
+
+  async selectGetSKU(productID: string): Promise<void> {
+    this.getProductsCollapsed = true
+    const productInObservable = this.products?.value?.find(
+      (p) => p.ID === productID
+    )
+    let p
+    if (productInObservable) {
+      p = productInObservable
+      this.selectedGetSKU = productInObservable
+    } else {
+      p = await this.ocProductService.Get(productID).toPromise()
+      this.selectedGetSKU = p
+    }
+    this.handleUpdatePromo({ target: { value: p?.ID } }, 'xp.BOGO.GetSKU.SKU')
+    this.cdr.detectChanges()
+  }
+
+  searchedResources(searchText: string): void {
+    void this.listResources(1, searchText).then(() => this.cdr.detectChanges())
     this.searchTerm = searchText
   }
 
   async listResources(pageNumber = 1, searchText = ''): Promise<void> {
-    const options: ListArgs = {
+    const options: ListArgs<Supplier> = {
       page: pageNumber,
       search: searchText,
       sortBy: ['Name'],
       pageSize: 25,
       filters: {},
     }
-    const resourceResponse = await Products.List(options)
+    let resourceResponse
+    if (
+      this._promotionEditable?.xp?.AppliesTo ===
+      HSPromoEligibility.SpecificSupplier
+    ) {
+      resourceResponse = await Suppliers.List(options as any) // Issue with the SDK
+    } else {
+      resourceResponse = await Products.List(options)
+    }
     if (pageNumber === 1) {
       this.setNewResources(resourceResponse)
     } else {
@@ -178,27 +278,53 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   }
 
   setNewResources(resourceResponse: ListPage<Product>): void {
-    this.productMeta = resourceResponse?.Meta
-    this.products.next(resourceResponse?.Items)
+    if (
+      this._promotionEditable?.xp?.AppliesTo ===
+      HSPromoEligibility.SpecificSupplier
+    ) {
+      this.supplierMeta = resourceResponse?.Meta
+      this.suppliers.next(resourceResponse?.Items)
+    } else {
+      this.productMeta = resourceResponse?.Meta
+      this.products.next(resourceResponse?.Items)
+    }
   }
 
   addResources(resourceResponse: ListPage<Product>): void {
-    this.products.next([...this.products.value, ...resourceResponse?.Items])
-    this.productMeta = resourceResponse?.Meta
+    if (
+      this._promotionEditable?.xp?.AppliesTo ===
+      HSPromoEligibility.SpecificSupplier
+    ) {
+      this.suppliers.next([...this.suppliers.value, ...resourceResponse?.Items])
+      this.supplierMeta = resourceResponse?.Meta
+    } else {
+      this.products.next([...this.products.value, ...resourceResponse?.Items])
+      this.productMeta = resourceResponse?.Meta
+    }
   }
 
   handleScrollEnd(event: any): void {
     // This event check prevents the scroll-end event from firing when dropdown is closed
     // It limits the action within the if block to only fire when you truly hit the scroll-end
     if (event.target.classList.value.includes('active')) {
-      const totalPages = this.productMeta?.TotalPages
-      const nextPageNumber = this.productMeta?.Page + 1
+      let totalPages, nextPageNumber
+      if (
+        this._promotionEditable?.xp?.AppliesTo ===
+        HSPromoEligibility.SpecificSupplier
+      ) {
+        totalPages = this.supplierMeta?.TotalPages
+        nextPageNumber = this.supplierMeta?.Page + 1
+      } else {
+        totalPages = this.productMeta?.TotalPages
+        nextPageNumber = this.productMeta?.Page + 1
+      }
       if (totalPages >= nextPageNumber) {
-        this.listResources(nextPageNumber, this.searchTerm).then(() =>
+        void this.listResources(nextPageNumber, this.searchTerm).then(() =>
           this.cdr.detectChanges()
         )
       }
     }
+    this.cdr.detectChanges()
   }
 
   addSKU(sku: string): void {
@@ -238,6 +364,10 @@ export class PromotionEditComponent implements OnInit, OnChanges {
     this.resourceForm = new FormGroup({
       Code: new FormControl(promotion.Code, Validators.required),
       Type: new FormControl(_get(promotion, 'xp.Type')),
+      BOGOType: new FormControl(_get(promotion, 'xp.BOGO.Type')),
+      BOGOValue: new FormControl(_get(promotion, 'xp.BOGO.Value')),
+      BOGOBuyQty: new FormControl(_get(promotion, 'xp.BOGO.BuySKU.Qty')),
+      BOGOGetQty: new FormControl(_get(promotion, 'xp.BOGO.GetSKU.Qty')),
       Value: new FormControl(_get(promotion, 'xp.Value'), Validators.min(0)),
       AppliesTo: new FormControl(_get(promotion, 'xp.AppliesTo')),
       Supplier: new FormControl(_get(promotion, 'xp.Supplier')),
@@ -265,20 +395,6 @@ export class PromotionEditComponent implements OnInit, OnChanges {
         Validators.min(0)
       ),
     })
-
-    this.resourceForm.valueChanges.subscribe(() => {
-      setTimeout(() => {
-        this.noChanges = !this.areChanges
-        if (this.areChanges && this.isCreatingNew) {
-          this.isSaveBtnDisabled =
-            this.resourceForm?.status === 'INVALID' || this.dataIsSaving
-        } else if (!this.areChanges && !this.isCreatingNew) {
-          this.isSaveBtnDisabled = true
-        } else {
-          this.isSaveBtnDisabled = null
-        }
-      })
-    })
   }
 
   generateRandomCode(): void {
@@ -290,11 +406,6 @@ export class PromotionEditComponent implements OnInit, OnChanges {
     this.handleUpdatePromo({ target: { value: randomCode } }, 'Code')
     this._promotionEditable.Code = randomCode
     this.resourceForm.controls.Code.setValue(randomCode)
-  }
-
-  handleUpdatePromoType(event: any, field: string, typeOfValue?: string): void {
-    this.handleUpdatePromo(event, field, typeOfValue);
-    this.updateDescription();
   }
 
   handleUpdatePromo(event: any, field: string, typeOfValue?: string): void {
@@ -332,14 +443,16 @@ export class PromotionEditComponent implements OnInit, OnChanges {
       this._promotionEditable,
       this._promotionStatic
     )
-    this._promotionEditable.ValueExpression = this.promotionService.buildValueExpression(
-      this._promotionEditable?.xp,
-      this.selectedSupplier
-    )
-    this._promotionEditable.EligibleExpression = this.promotionService.buildEligibleExpression(
-      this._promotionEditable?.xp,
-      this.selectedSupplier
-    )
+    this._promotionEditable.ValueExpression =
+      this.promotionService.buildValueExpression(
+        this._promotionEditable?.xp,
+        this.selectedSupplier
+      )
+    this._promotionEditable.EligibleExpression =
+      this.promotionService.buildEligibleExpression(
+        this._promotionEditable?.xp,
+        this.selectedSupplier
+      )
   }
 
   promoTypeCheck(type: HSPromoType): boolean {
@@ -350,8 +463,38 @@ export class PromotionEditComponent implements OnInit, OnChanges {
     return eligibility === this._promotionEditable?.xp?.AppliesTo
   }
 
-  updateDescription(): void {
+  getValueDisplay(): string {
     const safeXp = this._promotionEditable?.xp
+    if (safeXp?.Type === HSPromoType.BOGO) {
+      let bogoValueString
+      if (
+        this.selectedBuySKU &&
+        this.selectedGetSKU &&
+        safeXp?.BOGO?.BuySKU?.Qty &&
+        safeXp?.BOGO?.GetSKU &&
+        safeXp?.BOGO?.Value &&
+        safeXp?.BOGO?.Type
+      ) {
+        let valueStr =
+          safeXp?.BOGO?.Type === HSBogoType.FixedAmount
+            ? `$${safeXp?.BOGO?.Value} off`
+            : `${safeXp?.BOGO?.Value}% off`
+        if (
+          safeXp?.BOGO?.Type === HSBogoType.Percentage &&
+          safeXp?.BOGO?.Value === 100
+        ) {
+          valueStr = `Free`
+        }
+        bogoValueString = `Buy ${safeXp?.BOGO?.BuySKU?.Qty} ${this.selectedBuySKU?.Name}, Get ${safeXp?.BOGO?.GetSKU?.Qty} ${this.selectedGetSKU?.Name} ${valueStr}`
+      } else {
+        bogoValueString = `Choosing options ...`
+      }
+      this.handleUpdatePromo(
+        { target: { value: bogoValueString.trim() } },
+        'Description'
+      )
+      return bogoValueString
+    }
     let valueString = ''
     switch (safeXp?.AppliesTo) {
       case HSPromoEligibility.SpecificSupplier:
@@ -377,6 +520,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
       { target: { value: valueString.trim() } },
       'Description'
     )
+    return valueString.trim()
   }
 
   arrangeValueString(safeXp: PromotionXp, valueString: string): string {
@@ -563,5 +707,21 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   async handleDelete(): Promise<void> {
     await this.ocPromotionService.Delete(this._promotionStatic.ID).toPromise()
     this.router.navigateByUrl('/promotions')
+  }
+
+  isSaveDisabled(): boolean {
+    const promoXpBogo = this._promotionEditable?.xp?.BOGO
+    if (this._promotionEditable?.xp?.Type === HSPromoType.BOGO) {
+      return (
+        !promoXpBogo?.Value ||
+        !promoXpBogo?.BuySKU?.SKU ||
+        !promoXpBogo?.BuySKU?.Qty ||
+        !promoXpBogo?.GetSKU?.SKU ||
+        !promoXpBogo?.GetSKU?.Qty ||
+        this.resourceForm?.status === 'INVALID' ||
+        this.dataIsSaving
+      )
+    }
+    return this.resourceForm?.status === 'INVALID' || this.dataIsSaving
   }
 }

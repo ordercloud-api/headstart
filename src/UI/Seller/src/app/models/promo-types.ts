@@ -7,6 +7,7 @@ export interface PromotionXp {
   Automatic?: boolean
   MinReq?: HSPromoMinRequirement
   MaxShipCost?: number
+  BOGO?: BOGOPromotion
 }
 
 export interface HSPromoMinRequirement {
@@ -18,6 +19,12 @@ export enum HSPromoType {
   Percentage = 'Percentage',
   FixedAmount = 'FixedAmount',
   FreeShipping = 'FreeShipping',
+  BOGO = 'BOGO',
+}
+
+export enum HSBogoType {
+  Percentage = 'Percentage',
+  FixedAmount = 'FixedAmount',
 }
 
 export enum HSPromoEligibility {
@@ -29,4 +36,16 @@ export enum HSPromoEligibility {
 export enum MinRequirementType {
   MinPurchase = 'MinPurchase',
   MinItemQty = 'MinItemQty',
+}
+
+export interface BOGOPromotion {
+  Type: HSBogoType
+  Value: number
+  BuySKU: BOGOSKU
+  GetSKU: BOGOSKU
+}
+
+export interface BOGOSKU {
+  SKU: string
+  Qty: number
 }
