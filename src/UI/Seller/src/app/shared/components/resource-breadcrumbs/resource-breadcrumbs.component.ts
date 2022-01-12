@@ -61,6 +61,9 @@ export class ResourceBreadcrumbsComponent implements OnInit, OnDestroy {
         route,
       }
     })
+    this.breadCrumbs = this.breadCrumbs.filter(
+      (breadCrumb) => breadCrumb.displayText !== 'clone'
+    )
     this.changeDetectorRef.detectChanges()
   }
 
