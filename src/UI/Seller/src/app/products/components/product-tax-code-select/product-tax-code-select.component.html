@@ -38,6 +38,7 @@
     <div class="form-group">
       <div class="custom-control custom-checkbox">
         <input
+          [attr.disabled]="readonly ? true : null"
           type="checkbox"
           class="custom-control-input"
           formControlName="IsResale"
