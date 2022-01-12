@@ -25,6 +25,9 @@ namespace Headstart.Models
         public bool NeedsAttention { get; set; }
         public bool StopShipSync { get; set; }
         public OrderType? OrderType { get; set; }
+        public QuoteStatus? QuoteStatus { get; set; }
+        public string QuoteSellerContactEmail { get; set; }
+        public string QuoteBuyerContactEmail { get; set; }
         public QuoteOrderInfo QuoteOrderInfo { get; set; }
         public ClaimsSummary Returns { get; set; }
         public ClaimsSummary Cancelations { get; set; }
@@ -55,6 +58,13 @@ namespace Headstart.Models
     {
         Standard,
         Quote
+    }
+    
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum QuoteStatus
+    {
+        NeedsSellerReview,
+        NeedsBuyerReview
     }
 
     
