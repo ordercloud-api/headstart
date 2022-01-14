@@ -18,7 +18,7 @@ namespace Headstart.API.Commands
         Task<HSSupplier> Create(HSSupplier supplier, string accessToken, bool isSeedingEnvironment = false);
         Task<HSSupplier> GetMySupplier(string supplierID, DecodedToken decodedToken);
         Task<HSSupplier> UpdateSupplier(string supplierID, PartialSupplier supplier, DecodedToken decodedToken);
-        Task<HSSupplierOrderData> GetSupplierOrderData(string supplierOrderID, DecodedToken decodedToken);
+        Task<HSSupplierOrderData> GetSupplierOrderData(string supplierOrderID, OrderType orderType, DecodedToken decodedToken);
     }
     public class HSSupplierCommand : IHSSupplierCommand
     {
@@ -192,9 +192,9 @@ namespace Headstart.API.Commands
             }
         }
 
-        public async Task<HSSupplierOrderData> GetSupplierOrderData(string supplierOrderID, DecodedToken decodedToken)
+        public async Task<HSSupplierOrderData> GetSupplierOrderData(string supplierOrderID, OrderType orderType, DecodedToken decodedToken)
         {
-            var orderData = await _supplierSync.GetOrderAsync(supplierOrderID, decodedToken);
+            var orderData = await _supplierSync.GetOrderAsync(supplierOrderID, orderType, decodedToken);
             return (HSSupplierOrderData)orderData.ToObject(typeof(HSSupplierOrderData));
         }
     }

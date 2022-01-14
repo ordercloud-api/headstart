@@ -15,6 +15,7 @@ export class OrderTableComponent extends ResourceCrudComponent<Order> {
   isListPage: boolean
   shouldShowOrderToggle = false
   activeOrderDirectionButton: string
+  isQuoteOrderList = false
   constructor(
     private orderService: OrderService,
     changeDetectorRef: ChangeDetectorRef,
@@ -47,7 +48,23 @@ export class OrderTableComponent extends ResourceCrudComponent<Order> {
 
   private readFromUrlQueryParams(params: Params): void {
     const { OrderDirection } = params
+    this.isQuoteOrderList = params['xp.OrderType'] === 'Quote'
     this.activeOrderDirectionButton = OrderDirection
+    if (this.isQuoteOrderList) {
+      this.filterConfig = {
+        Filters: [
+          {
+            Display: 'Quote Status',
+            Path: 'xp.QuoteStatus',
+            Items: [
+              { Text: 'Needs Your Review', Value: 'NeedsSellerReview' },
+              { Text: 'Needs Buyer Review', Value: 'NeedsBuyerReview' },
+            ],
+            Type: 'Dropdown',
+          },
+        ],
+      }
+    }
   }
   filterConfig = {
     Filters: [

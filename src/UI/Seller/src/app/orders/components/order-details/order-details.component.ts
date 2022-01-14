@@ -25,12 +25,19 @@ import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { ReturnReason } from '@app-seller/shared/models/return-reason.interface'
-import { HSLineItem, HSOrder, RMA } from '@ordercloud/headstart-sdk'
+import {
+  HSLineItem,
+  HSOrder,
+  RMA,
+  HeadStartSDK,
+} from '@ordercloud/headstart-sdk'
 import { flatten as _flatten } from 'lodash'
-import { OrderProgress } from '@app-seller/models/order.types'
+import { OrderProgress, OrderType } from '@app-seller/models/order.types'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { SELLER } from '@app-seller/models/user.types'
 import { RMAService } from '@app-seller/rmas/rmas.service'
+import { SupportedRates } from '@app-seller/shared'
+import { FormControl, FormGroup } from '@angular/forms'
 
 export type LineItemTableValue =
   | 'Default'
@@ -70,8 +77,13 @@ export class OrderDetailsComponent {
   orderDirection: OrderDirection
   cardType: string
   createShipment: boolean
+  exchangeRates: SupportedRates[]
+  supplierCurrency: SupportedRates
+  quotePricingForm: FormGroup
   isSellerUser = false
   isSaving = false
+  isSettingQuotePrice = false
+  quotedPrice = 0
   orderProgress: OrderProgress = {
     StatusDisplay: 'Processing',
     Value: 25,
@@ -205,13 +217,52 @@ export class OrderDetailsComponent {
     return this.orderService.isSupplierOrder(orderID)
   }
 
+  setQuotePricingForm(): void {
+    this.quotePricingForm = new FormGroup({
+      QuotePrice: new FormControl(this._lineItems[0]?.UnitPrice),
+    })
+  }
+
+  async overrideQuoteUnitPrice(): Promise<void> {
+    const updatedLineItem = await this.middleware.overrideQuoteUnitPrice(
+      this._order.ID,
+      this._lineItems[0].ID,
+      this.quotePricingForm.value.QuotePrice
+    )
+    this.quotedPrice = 0 // Initialize, will be set during refreshOrder()
+    await this.refreshOrder()
+    this.isSettingQuotePrice = false
+  }
+
+  getOrderDate(): string {
+    return this.isQuoteOrder(this._order)
+      ? this._order.xp?.QuoteSubmittedDate
+      : this._order.DateSubmitted
+  }
+
+  getQuotePriceButtonText() {
+    return this.isSettingQuotePrice ? 'Cancel Pricing' : 'Set Quote Price'
+  }
+
+  toggleSetQuotePrice() {
+    this.isSettingQuotePrice = !this.isSettingQuotePrice
+    this.setQuotePricingForm()
+  }
+
   async setData(order: Order): Promise<void> {
     this._buyerQuoteAddress = null
     this._order = order
+    this.exchangeRates = (await HeadStartSDK.ExchangeRates.GetRateList()).Items
+    this.supplierCurrency = this.exchangeRates?.find(
+      (r) => r.Currency === order.xp?.Currency
+    )
     const rmaListPage = await this.rmaService.listRMAsByOrderID(order.ID)
     this.rmas = rmaListPage.Items
-    if (this.isSupplierOrder(order.ID)) {
-      const orderData = await this.middleware.getSupplierData(order.ID)
+    if (this.isSupplierOrder(order.ID) || this.isQuoteOrder(order)) {
+      const orderData = await this.middleware.getSupplierData(
+        order.ID,
+        this._order.xp?.OrderType
+      )
       this._buyerOrder = orderData.BuyerOrder.Order
       this._supplierOrder = orderData.SupplierOrder.Order
       this._lineItems = orderData.SupplierOrder.LineItems
@@ -220,6 +271,9 @@ export class OrderDetailsComponent {
       this._lineItems = await this.getAllLineItems(order)
     }
     if (this.isQuoteOrder(order)) {
+      if (order?.xp?.QuoteStatus === 'NeedsBuyerReview') {
+        this.quotedPrice = this._lineItems[0]?.UnitPrice
+      }
       const buyerId = this._buyerOrder.FromCompanyID
       if (this._buyerOrder.ShippingAddressID) {
         const address = await this.ocAddressService
@@ -249,10 +303,12 @@ export class OrderDetailsComponent {
           1
         ).toUpperCase()}`
     this.setOrderProgress(order)
-    const paymentsResponse = await this.ocPaymentService
-      .List(this.orderDirection, order.ID)
-      .toPromise()
-    this._payments = paymentsResponse.Items
+    if (this._order?.xp?.OrderType != OrderType.Quote) {
+      const paymentsResponse = await this.ocPaymentService
+        .List(this.orderDirection, order.ID)
+        .toPromise()
+      this._payments = paymentsResponse.Items
+    }
   }
 
   private async getAllLineItems(order) {
@@ -286,9 +342,14 @@ export class OrderDetailsComponent {
   }
 
   async refreshOrder(): Promise<void> {
-    const order = await this.ocOrderService
-      .Get(this.orderDirection, this._order.ID)
-      .toPromise()
+    let order: HSOrder
+    if (this._order?.xp?.OrderType === OrderType.Quote) {
+      order = await this.middleware.getQuoteOrder(this._order.ID)
+    } else {
+      order = await this.ocOrderService
+        .Get(this.orderDirection, this._order.ID)
+        .toPromise()
+    }
     this.handleSelectedOrderChange(order)
   }
 

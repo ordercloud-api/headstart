@@ -76,6 +76,22 @@ const SupplierPurchaseOrders: HSRoute = {
   queryParams: { OrderDirection: 'Outgoing' },
 }
 
+const QuoteOrders: HSRoute = {
+  rolesWithAccess: [
+    HSRoles.HSOrderAdmin,
+    HSRoles.HSOrderReader,
+    HSRoles.HSShipmentAdmin,
+  ],
+  title: 'ADMIN.NAV.QUOTE_ORDERS',
+  route: '/orders',
+  queryParams: {
+    OrderDirection: 'Incoming',
+    IsSubmitted: 'false',
+    'xp.OrderType': 'Quote',
+    'xp.QuoteStatus': 'NeedsSellerReview',
+  },
+}
+
 const RequiringAttentionOrders: HSRoute = {
   rolesWithAccess: [
     HSRoles.HSOrderAdmin,
@@ -106,7 +122,12 @@ const SellerOrderNavGrouping: HSRoute = {
   title: 'ADMIN.NAV.ORDERS',
   route: '/orders',
   orderCloudUserTypesWithAccess: [SELLER],
-  subRoutes: [BuyerOrders, SupplierPurchaseOrders, RequiringAttentionOrders],
+  subRoutes: [
+    BuyerOrders,
+    SupplierPurchaseOrders,
+    QuoteOrders,
+    RequiringAttentionOrders,
+  ],
 }
 
 const SupplierOrderBatchUpload: HSRoute = {
@@ -128,7 +149,7 @@ const SupplierOrderNavGrouping: HSRoute = {
   title: 'ADMIN.NAV.ORDERS',
   route: '/orders',
   orderCloudUserTypesWithAccess: [SUPPLIER],
-  subRoutes: [Orders, SupplierOrderBatchUpload],
+  subRoutes: [Orders, QuoteOrders, SupplierOrderBatchUpload],
 }
 
 const RMAs: HSRoute = {

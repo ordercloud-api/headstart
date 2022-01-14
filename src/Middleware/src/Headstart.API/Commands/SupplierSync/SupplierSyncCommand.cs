@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using System.Threading.Tasks;
 using Headstart.Common;
+using Headstart.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ordercloud.integrations.library;
@@ -12,7 +13,7 @@ namespace Headstart.API.Commands
 {
     public interface ISupplierSyncCommand
     {
-        Task<JObject> GetOrderAsync(string ID, DecodedToken decodedToken);
+        Task<JObject> GetOrderAsync(string ID, OrderType orderType, DecodedToken decodedToken);
     }
 
     public class SupplierSyncCommand : ISupplierSyncCommand
@@ -26,11 +27,14 @@ namespace Headstart.API.Commands
             _oc = oc;
         }
 
-        public async Task<JObject> GetOrderAsync(string ID, DecodedToken decodedToken)
+        public async Task<JObject> GetOrderAsync(string ID, OrderType orderType, DecodedToken decodedToken)
         {
-            var supplierID = ID.Split("-")[1];
             var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-            Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierID == me.Supplier.ID, new ErrorCode("Unauthorized", $"You are not authorized view this order", 401));
+            var supplierID = ID.Split("-").Length > 1 ? ID.Split("-")[1] : ID;
+            if (orderType != OrderType.Quote)
+            {
+                Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierID == me.Supplier.ID, new ErrorCode("Unauthorized", $"You are not authorized view this order", 401));
+            }
             try
             {
                 var type = 
@@ -43,13 +47,13 @@ namespace Headstart.API.Commands
                 if (method == null)
                     throw new MissingMethodException($"Get Order Method for {supplierID} is unavailable");
 
-                return await (Task<JObject>) method.Invoke(command, new object[] {ID, decodedToken });
+                return await (Task<JObject>) method.Invoke(command, new object[] {ID, orderType, decodedToken });
             }
             catch (MissingMethodException mex)
             {
                 throw new Exception(JsonConvert.SerializeObject(new ApiError()
                 {
-                    Data = new { decodedToken, OrderID = ID},
+                    Data = new { decodedToken, OrderID = ID, OrderType = orderType},
                     ErrorCode = mex.Message,
                     Message = $"Missing Method for: {supplierID ?? "Invalid Supplier"}"
                 }));

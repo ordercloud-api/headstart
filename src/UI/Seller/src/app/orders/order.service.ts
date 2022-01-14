@@ -5,6 +5,8 @@ import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/r
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { Orders } from 'ordercloud-javascript-sdk'
 import { OrderType } from '@app-seller/models/order.types'
+import { HSOrder } from '@ordercloud/headstart-sdk'
+import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +15,8 @@ export class OrderService extends ResourceCrudService<Order> {
   constructor(
     router: Router,
     activatedRoute: ActivatedRoute,
-    currentUserService: CurrentUserService
+    currentUserService: CurrentUserService,
+    private middleware: MiddlewareAPIService
   ) {
     super(
       router,
@@ -32,6 +35,25 @@ export class OrderService extends ResourceCrudService<Order> {
   }
 
   isSupplierOrder(orderID: string) {
-    return orderID.split("-").length > 1; 
+    return orderID.split('-').length > 1
+  }
+
+  async list(args: any[]): Promise<any> {
+    const filters = args.find((arg) => arg?.filters != null)
+    if (this.router.url.includes('xp.OrderType=Quote')) {
+      return await this.middleware.listQuoteOrders(
+        filters?.filters['xp.QuoteStatus']
+      )
+    }
+    return await super.list(args)
+  }
+
+  async getResourceById(resourceID: string): Promise<any> {
+    try {
+      const resource = await super.getResourceById(resourceID)
+      return resource
+    } catch (ex) {
+      return await this.middleware.getQuoteOrder(resourceID)
+    }
   }
 }
