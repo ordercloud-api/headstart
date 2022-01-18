@@ -5,6 +5,7 @@
   [resourceInSelection]="resourceInSelection"
   [shouldShowResourceActions]="false"
   [ocService]="ocService"
+  [filterConfig]="filterConfig"
   [dataIsSaving]="dataIsSaving"
   [resourceForm]="resourceForm"
   (searched)="searchResources($event)"
@@ -18,7 +19,6 @@
 >
   <div class="resource-edit">
     <app-promotion-edit
-      [filterConfig]="filterConfig"
       [resourceInSelection]="resourceInSelection"
     ></app-promotion-edit>
   </div>

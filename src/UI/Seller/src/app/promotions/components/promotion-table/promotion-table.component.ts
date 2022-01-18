@@ -19,4 +19,31 @@ export class PromotionTableComponent extends ResourceCrudComponent<Promotion> {
   ) {
     super(changeDetectorRef, promotionService, router, activatedRoute, ngZone)
   }
+
+  filterConfig = {
+    Filters: [
+      {
+        Display: 'ADMIN.FILTERS.APPLICATION',
+        Path: 'xp.Automatic',
+        Type: 'Dropdown',
+        Items: [
+          { Text: 'ADMIN.FILTER_OPTIONS.AUTOMATIC', Value: 'true' },
+          { Text: 'ADMIN.FILTER_OPTIONS.CODE', Value: 'false' },
+        ],
+      },
+      {
+        Display: 'ADMIN.FILTERS.APPLIES_TO',
+        Path: 'xp.AppliesTo',
+        Type: 'Dropdown',
+        Items: [
+          { Text: 'ADMIN.FILTER_OPTIONS.ENTIRE_ORDER', Value: 'EntireOrder' },
+          {
+            Text: 'ADMIN.FILTER_OPTIONS.SPECIFIC_SUPPLIER',
+            Value: 'SpecificSupplier',
+          },
+          { Text: 'ADMIN.FILTER_OPTIONS.SPECIFIC_SKUS', Value: 'SpecificSKUs' },
+        ],
+      },
+    ],
+  }
 }

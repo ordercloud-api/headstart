@@ -87,6 +87,8 @@ namespace Headstart.API.Commands
             new XpIndex { ThingType = XpThingType.Order, Key = "SupplierIDs" },
             new XpIndex { ThingType = XpThingType.User, Key = "UserGroupID" },
             new XpIndex { ThingType = XpThingType.User, Key = "RequestInfoEmails" },
+            new XpIndex { ThingType = XpThingType.Promotion, Key = "Automatic" },
+            new XpIndex { ThingType = XpThingType.Promotion, Key = "AppliesTo" },
         };
 
         public static readonly List<Incrementor> DefaultIncrementors = new List<Incrementor>() {
