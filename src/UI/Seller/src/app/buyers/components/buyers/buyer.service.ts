@@ -13,7 +13,7 @@ export const BUYER_SUB_RESOURCE_LIST = [
   { route: 'categories', display: 'ADMIN.NAV.CATEGORIES' },
 ]
 
-// TODO - this service is only relevent if you're already on the product details page. How can we enforce/inidcate that?
+
 @Injectable({
   providedIn: 'root',
 })

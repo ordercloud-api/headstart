@@ -201,6 +201,18 @@ export const FULL_TABLE_RESOURCE_DICTIONARY: ResourceConfigurationDictionary = {
         path: 'Description',
         header: 'ADMIN.HEADERS.DESCRIPTION',
         type: BASIC_STRING,
+        sortable: false,
+      },
+      {
+        path: 'StartDate',
+        header: 'ADMIN.HEADERS.START_DATE',
+        type: DATE_TIME,
+        sortable: true,
+      },
+      {
+        path: 'ExpirationDate',
+        header: 'ADMIN.HEADERS.EXPIRATION_DATE',
+        type: DATE_TIME,
         sortable: true,
       },
     ],
