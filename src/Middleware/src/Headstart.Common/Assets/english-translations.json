@@ -104,7 +104,12 @@
       "UPDATE": "Update",
       "USER": "User",
       "WARN": "Warn",
-      "YES": "Yes"
+      "YES": "Yes",
+      "AUTOMATIC": "Automatic",
+      "CODE": "Code",
+      "ENTIRE_ORDER": "Entire Order",
+      "SPECIFIC_SUPPLIER": "Specific Supplier",
+      "SPECIFIC_SKUS": "Specific SKUs"
     },
     "FILTERS": {
       "ACTION": "Action",
@@ -116,7 +121,10 @@
       "STATUS": "Status",
       "SUPPLIER": "Supplier",
       "SELLER_OWNED_PRODUCTS": "Has Seller Owned Products",
-      "TO_DATE": "To Date"
+      "TO_DATE": "To Date",
+      "APPLIES_TO": "Applies To",
+      "APPLICATION": "Application",
+      "ACTIVE": "Active"
     },
     "HEADERS": {
       "ACTION": "Action",
@@ -144,7 +152,9 @@
       "TIME_STAMP": "Time Stamp",
       "TIME_SUBMITTED": "Time Submitted",
       "TOTAL_AMOUNT": "Total Amount",
-      "USERNAME": "Username"
+      "USERNAME": "Username",
+      "START_DATE": "Start Date",
+      "EXPIRATION_DATE": "Expiration Date"
     },
     "NAV": {
       "ALL_BUYERS": "All Buyers",

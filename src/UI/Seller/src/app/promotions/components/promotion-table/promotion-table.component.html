@@ -5,6 +5,7 @@
   [resourceInSelection]="resourceInSelection"
   [shouldShowResourceActions]="false"
   [ocService]="ocService"
+  [filterConfig]="filterConfig"
   [dataIsSaving]="dataIsSaving"
   [resourceForm]="resourceForm"
   (searched)="searchResources($event)"
@@ -16,37 +17,9 @@
   [labelSingular]="'ADMIN.NAV.PROMOTION'"
   [labelPlural]="'ADMIN.NAV.PROMOTIONS'"
 >
-  <table class="table table-hover resource-table">
-    <thead>
-      <tr>
-        <th scope="col" translate>ADMIN.PROMOTIONS.NAME</th>
-        <th scope="col" translate>ADMIN.PROMOTIONS.ID</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr
-        *ngFor="let promotion of resourceList.Items; index as index"
-        (click)="selectResource(promotion)"
-        class="selectable-row"
-        [ngClass]="{ 'selected-resource': selectedIndex === index }"
-        select="table-body-row"
-      >
-        <td>{{ promotion?.Name }}</td>
-        <td>{{ promotion?.ID }}</td>
-      </tr>
-      <tr *ngIf="resourceList?.Meta?.Page < resourceList?.Meta?.TotalPages">
-        <td translate>ADMIN.PROMOTIONS.MORE_PROMOTIONS</td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
   <div class="resource-edit">
     <app-promotion-edit
-      [filterConfig]="filterConfig"
       [resourceInSelection]="resourceInSelection"
     ></app-promotion-edit>
-    <!-- <resource-edit-component resourceType="Promotion"
-                             (updateResource)="updateResource($event)"
-                             [resource]="updatedResource"></resource-edit-component> -->
   </div>
 </resource-table-component>

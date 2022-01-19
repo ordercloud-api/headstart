@@ -12,7 +12,7 @@ import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/r
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { Products } from 'ordercloud-javascript-sdk'
 
-// TODO - this service is only relevent if you're already on the product details page. How can we enforce/inidcate that?
+
 @Injectable({
   providedIn: 'root',
 })

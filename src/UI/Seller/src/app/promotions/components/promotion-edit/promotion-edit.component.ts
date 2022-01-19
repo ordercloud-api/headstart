@@ -49,8 +49,6 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   @ViewChild('popover', { static: false })
   public popover: NgbPopover
   @Input()
-  filterConfig
-  @Input()
   set resourceInSelection(promotion: Promotion<PromotionXp>) {
     if (promotion?.xp?.Type === HSPromoType.BOGO) {
       this.setUpBOGO(

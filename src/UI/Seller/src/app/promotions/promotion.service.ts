@@ -13,7 +13,6 @@ import { CurrentUserService } from '@app-seller/shared/services/current-user/cur
 import { Promotions } from 'ordercloud-javascript-sdk'
 import { HSSupplier } from '@ordercloud/headstart-sdk'
 
-// TODO - this service is only relevent if you're already on the product details page. How can we enforce/inidcate that?
 @Injectable({
   providedIn: 'root',
 })
@@ -80,12 +79,12 @@ export class PromotionService extends ResourceCrudService<Promotion> {
     selectedSupplier?: HSSupplier
   ): string {
     let eligibleExpression = ''
+    const skuArr = safeXp?.SKUs?.map((sku) => `item.ProductID = '${sku}'`)
     switch (safeXp?.AppliesTo) {
       case HSPromoEligibility.SpecificSupplier:
         eligibleExpression = `item.SupplierID = '${selectedSupplier?.ID}'`
         break
       case HSPromoEligibility.SpecificSKUs:
-        const skuArr = safeXp?.SKUs?.map((sku) => `item.ProductID = '${sku}'`)
         skuArr.forEach(
           (exp, i) =>
             (eligibleExpression =
