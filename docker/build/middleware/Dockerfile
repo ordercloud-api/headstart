@@ -23,7 +23,7 @@ RUN apk add --update nodejs npm
 
 RUN npm install -g json
 
-RUN apk add --no-cache --upgrade bash
+RUN apk add --no-cache --upgrade bash curl dos2unix
 
 WORKDIR /app
 
@@ -33,7 +33,7 @@ COPY docs/Reference.md ./reference.md
 
 COPY docker/build/middleware/* ./
 
-RUN apk add dos2unix && dos2unix /app/entrypoint.sh
+RUN dos2unix /app/entrypoint.sh
 
 EXPOSE 80
 

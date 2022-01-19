@@ -108,6 +108,9 @@ services:
       ZohoSettings_ClientSecret: "${ZohoSettings_ClientSecret}"
       ZohoSettings_OrgID: "${ZohoSettings_OrgID}"
       ZohoSettings_PerformOrderSubmitTasks: "${ZohoSettings_PerformOrderSubmitTasks}"
+    depends_on:
+      cosmos:
+        condition: service_healthy
     networks:
       headstart:
         aliases:
@@ -169,7 +172,7 @@ services:
 
   storage:
   # https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azurite#install-and-run-the-azurite-docker-image
-    image: mcr.microsoft.com/azure-storage/azurite
+    image: mcr.microsoft.com/azure-storage/azurite:${AZUREITE_TAG}
     volumes:
       - ./docker/data/storage:/data
     environment:
@@ -179,6 +182,29 @@ services:
     ports:
       - 10000:10000
       - 10001:10001
+    networks:
+      headstart:
+
+  cosmos:
+    image: ${REGISTRY}headstart-cosmos:${VERSION}-linux
+    mem_limit: 3g
+    cpu_count: 2
+    build:
+      context: .
+      dockerfile: docker/build/cosmos/Dockerfile
+      args:
+        BASE_IMAGE: mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:${COSMOS_TAG}
+    environment:
+      AZURE_COSMOS_EMULATOR_PARTITION_COUNT: 10
+      AZURE_COSMOS_EMULATOR_ENABLE_DATA_PERSISTENCE: "true"
+    ports:
+      - 8081:8081
+      - 10251:10251
+      - 10252:10252
+      - 10253:10253
+      - 10254:10254
+    healthcheck:
+       test: ["CMD-SHELL", "curl -f -k https://localhost:8081/_explorer/emulator.pem || exit 1"]
     networks:
       headstart:
 
