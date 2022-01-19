@@ -58,6 +58,7 @@ export class PromotionService extends ResourceCrudService<Promotion> {
         },
       },
       MaxShipCost: null,
+      Buyers: [],
     },
   }
 

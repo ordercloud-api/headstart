@@ -270,8 +270,8 @@
                     class="mr-3 w-100"
                     id="resource-search"
                     [placeholderText]="''"
-                    [searchTermInput]="searchTerm"
-                    (searched)="searchedResources($event)"
+                    [searchTermInput]="buyerSearchTerm"
+                    (searched)="searchedBuyerResources($event)"
                   >
                   </search-component>
                   <perfect-scrollbar
@@ -304,8 +304,9 @@
                       *ngIf="!products?.value?.length && searchTerm"
                       ngbDropdownItem
                       disabled
+                      translate
                     >
-                      No results. Broaden your search and try again.
+                      ADMIN.PROMOTIONS.NO_RESULTS
                     </p>
                   </perfect-scrollbar>
                 </div>
@@ -516,54 +517,115 @@
         </div>
         <div class="card bg-white shadow-sm p-4 mt-3">
           <h6 class="mb-0" translate>ADMIN.PROMOTIONS.BUYER_ELIGIBILITY</h6>
-          <small class="text-primary-light font-italic my-2">
-            <fa-icon class="mr-2" [icon]="faExclamationCircle"></fa-icon>
-            <span translate>ADMIN.PROMOTIONS.ALL_PROMOTIONS_ELIGIBLE</span>
-          </small>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="AllowAllBuyers"
-              id="AllowAllBuyers"
-              [value]="_promotionEditable?.AllowAllBuyers"
-              formControlName="AllowAllBuyers"
-              (input)="handleUpdatePromo($event, 'AllowAllBuyers')"
-              [checked]="_promotionEditable?.AllowAllBuyers"
-            />
-            <label class="form-check-label" for="AllowAllBuyers" translate>
-              ADMIN.PROMOTIONS.ALL_BUYERS
-            </label>
+          <div class="row mt-3">
+            <div class="col-md-4">
+              <div class="form-group mb-0">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="AllowAllBuyers"
+                    id="AllowAllBuyersTrue"
+                    [value]="true"
+                    formControlName="AllowAllBuyers"
+                    (change)="handleUpdatePromo(true, 'AllowAllBuyers')"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="AllowAllBuyers"
+                    translate
+                  >
+                    ADMIN.PROMOTIONS.ALL_BUYERS
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="AllowAllBuyers"
+                    id="AllowAllBuyersFalse"
+                    [value]="false"
+                    formControlName="AllowAllBuyers"
+                    (change)="handleUpdatePromo(false, 'AllowAllBuyers')"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="SpecificBuyers"
+                    translate
+                  >
+                    ADMIN.PROMOTIONS.SPECIFIC_BUYERS
+                  </label>
+                </div>
+              </div>
+            </div>
+            <!-- START SPECIFIC BUYERS -->
+            <div class="col-md-8">
+              <ng-container *ngIf="!_promotionEditable?.AllowAllBuyers">
+                <div
+                  id="buyersCollapsed"
+                  [ngbCollapse]="buyersCollapsed"
+                  aria-label="parent resource dropdown"
+                >
+                  <search-component
+                    class="mr-3 w-100"
+                    id="buyer-search"
+                    [placeholderText]="''"
+                    [searchTermInput]="searchTerm"
+                    (searched)="searchedResources($event)"
+                  >
+                  </search-component>
+                  <perfect-scrollbar
+                    class="
+                      dropdown-ps
+                      product-search-area
+                      border border-light
+                      shadow-sm
+                    "
+                    (psYReachEnd)="handleScrollEnd($event)"
+                  >
+                    <button
+                      type="button"
+                      ngbDropdownItem
+                      *ngFor="let resource of buyers | async"
+                      (click)="addBuyer(resource.ID)"
+                      [disabled]="buyerAlreadySelected(resource.ID)"
+                      aria-label="select your Buyer"
+                    >
+                      <div class="overflow-hidden">
+                        <summary-resource-display-component
+                          [resource]="resource"
+                          [resourceType]="'buyers'"
+                        >
+                        </summary-resource-display-component>
+                      </div>
+                    </button>
+                    <p
+                      class="mb-0"
+                      *ngIf="!buyers?.value?.length && searchTerm"
+                      ngbDropdownItem
+                      disabled
+                      translate
+                    >
+                      ADMIN.PROMOTIONS.NO_RESULTS
+                    </p>
+                  </perfect-scrollbar>
+                </div>
+                <div class="chip-bag">
+                  <div
+                    class="chip chip-sm"
+                    *ngFor="let buyerID of _promotionEditable?.xp?.Buyers"
+                  >
+                    {{ buyerID }}
+                    <fa-icon
+                      (click)="removeBuyer(buyerID)"
+                      [icon]="faTimesCircle"
+                    ></fa-icon>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
           </div>
-          <!-- Placeholder for future functionality  -->
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="SpecificBuyers"
-              id="SpecificBuyers"
-              value="SpecificBuyers"
-              disabled
-              [checked]="false"
-            />
-            <label class="form-check-label" for="SpecificBuyers" translate>
-              ADMIN.PROMOTIONS.SPECIFIC_BUYERS
-            </label>
-          </div>
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="SpecificBuyerGroups"
-              id="SpecificBuyerGroups"
-              value="SpecificBuyerGroups"
-              disabled
-              [checked]="false"
-            />
-            <label class="form-check-label" for="SpecificBuyerGroups" translate>
-              ADMIN.PROMOTIONS.SPECIFIC_BUYER_GROUPS
-            </label>
-          </div>
+          <!-- END SPECIFIC BUYERS -->
         </div>
         <div class="card bg-white shadow-sm p-4 mt-3">
           <h6 class="font-weight-medium" translate>
