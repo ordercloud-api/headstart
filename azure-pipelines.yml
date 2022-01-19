@@ -75,6 +75,8 @@ jobs:
           PathtoPublish: jobs
           ArtifactName: jobs
   - job: Build_Buyer
+    pool:
+        vmImage: windows-2019
     displayName: Build Buyer
     steps:
     - task: NodeTool@0
@@ -124,6 +126,8 @@ jobs:
         PathtoPublish: 'src/UI/Buyer/dist'
         ArtifactName: buyer
   - job: Build_Seller
+    pool:
+          vmImage: windows-2019
     displayName: Build Seller
     steps:
     - task: NodeTool@0
