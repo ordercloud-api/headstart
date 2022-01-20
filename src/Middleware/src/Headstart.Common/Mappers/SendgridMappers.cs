@@ -1,6 +1,7 @@
 ﻿using Headstart.Models;
 using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
+using ordercloud.integrations.exchangerates;
 using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,8 @@ namespace Headstart.Common.Mappers
                 Location = order.xp?.QuoteOrderInfo?.BuyerLocation,
                 ProductID = lineItems.FirstOrDefault().Product.ID,
                 ProductName = lineItems.FirstOrDefault().Product.Name,
+                UnitPrice = lineItems.FirstOrDefault().UnitPrice,
+                Currency = order.xp?.Currency.ToString(),
                 Order = order,
             };
         }

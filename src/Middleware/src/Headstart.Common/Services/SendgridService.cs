@@ -45,6 +45,7 @@ namespace Headstart.Common.Services
         Task SendContactSupplierAboutProductEmail(ContactSupplierBody template);
         Task EmailVoidAuthorizationFailedAsync(HSPayment payment, string transactionID, HSOrder order, CreditCardVoidException ex);
         Task EmailGeneralSupportQueue(SupportCase supportCase);
+        Task SendQuotePriceConfirmationEmail(HSOrder order, HSLineItem LineItem, string buyerEmail);
     }
 
 
@@ -59,6 +60,16 @@ namespace Headstart.Common.Services
             _oc = ocClient;
             _client = client;
             _settings = settings;
+        }
+
+        public async Task SendQuotePriceConfirmationEmail(HSOrder order, HSLineItem lineItem, string buyerEmail)
+        {
+            var buyerTemplateData = new EmailTemplate<QuoteOrderTemplateData>()
+            {
+                Data = SendgridMappers.GetQuoteOrderTemplateData(order, new List<HSLineItem> { lineItem }),
+                Message = OrderSubmitEmailConstants.GetQuotePriceConfirmationText()
+            };
+            await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, buyerEmail, _settings?.SendgridSettings?.QuoteOrderSubmitTemplateID, buyerTemplateData);
         }
 
         public virtual async Task SendSingleTemplateEmail(string from, string to, string templateID, object templateData)
