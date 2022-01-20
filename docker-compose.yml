@@ -59,7 +59,6 @@ services:
 
       CosmosSettings_DatabaseName: "${CosmosSettings_DatabaseName}"
       CosmosSettings_EnableTcpConnectionEndpointRediscovery: "${CosmosSettings_EnableTcpConnectionEndpointRediscovery}"
-      CosmosSettings_EndpointUri: "${CosmosSettings_EndpointUri}"
       CosmosSettings_PrimaryKey: "${CosmosSettings_PrimaryKey}"
       CosmosSettings_RequestTimeoutInSeconds: "${CosmosSettings_RequestTimeoutInSeconds}"
 
@@ -171,7 +170,6 @@ services:
           - "${BUYER_HOST}"
 
   storage:
-  # https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azurite#install-and-run-the-azurite-docker-image
     image: mcr.microsoft.com/azure-storage/azurite:${AZUREITE_TAG}
     volumes:
       - ./docker/data/storage:/data
