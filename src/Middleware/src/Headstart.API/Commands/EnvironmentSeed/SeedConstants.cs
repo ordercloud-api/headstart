@@ -85,6 +85,7 @@ namespace Headstart.API.Commands
             new XpIndex { ThingType = XpThingType.Order, Key = "SubmittedOrderStatus" },
             new XpIndex { ThingType = XpThingType.Order, Key = "IsResubmitting" },
             new XpIndex { ThingType = XpThingType.Order, Key = "SupplierIDs" },
+            new XpIndex { ThingType = XpThingType.Order, Key = "QuoteStatus" },
             new XpIndex { ThingType = XpThingType.User, Key = "UserGroupID" },
             new XpIndex { ThingType = XpThingType.User, Key = "RequestInfoEmails" },
         };

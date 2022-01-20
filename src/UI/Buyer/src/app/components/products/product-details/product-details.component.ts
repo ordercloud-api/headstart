@@ -8,6 +8,7 @@ import {
 } from 'ordercloud-javascript-sdk'
 import { PriceSchedule } from 'ordercloud-javascript-sdk'
 import {
+  HSOrder,
   HSLineItem,
   QuoteOrderInfo,
   HSVariant,
@@ -27,6 +28,8 @@ import { CurrentUser } from 'src/app/models/profile.types'
 import { ContactSupplierBody } from 'src/app/models/buyer.types'
 import { ModalState } from 'src/app/models/shared.types'
 import { SitecoreSendTrackingService } from 'src/app/services/sitecore-send/sitecore-send-tracking.service'
+import { Quote } from '@angular/compiler'
+import { OrderType } from 'src/app/models/order.types'
 
 @Component({
   templateUrl: './product-details.component.html',
@@ -69,6 +72,7 @@ export class OCMProductDetails implements OnInit {
   variant: HSVariant
   variantInventory: number
   _productSupplier: HSSupplier
+  isQuoteAnonUser = false
   constructor(
     private specFormService: SpecFormService,
     private context: ShopperContextService,
@@ -96,6 +100,7 @@ export class OCMProductDetails implements OnInit {
     this.populateInactiveVariants(superProduct)
     this.showGrid = superProduct?.PriceSchedule?.UseCumulativeQuantity
     this.send.viewProduct(superProduct.Product);
+    this.isQuoteAnonUser = this.isQuoteProduct() && this.context.currentUser.isAnonymous()
   }
 
   ngOnInit(): void {
@@ -194,6 +199,28 @@ export class OCMProductDetails implements OnInit {
   async addToCart(): Promise<void> {
     this.isAddingToCart = true
     try {
+      var currentOrder = this.context.order.get()
+      if(this._product.xp.ProductType === 'Quote'){
+        if(currentOrder?.xp?.OrderType == 'Standard' && currentOrder?.LineItemCount > 0){
+          this.toastrService.error('Cannot add Quote Request to existing cart.')
+          this.isAddingToCart = false
+          return
+        }
+        else{
+          currentOrder.xp.OrderType = OrderType.Quote
+          currentOrder.xp.QuoteBuyerContactEmail = this.currentUser.Email
+          currentOrder.xp.QuoteSellerContactEmail = this._productSupplier.xp.NotificationRcpts[0]
+          currentOrder.xp.QuoteSupplierID = this._productSupplier.ID
+          await this.context.order.patch(currentOrder)
+        }
+      }
+      else{
+        if(currentOrder?.xp?.OrderType == 'Quote' && currentOrder?.LineItemCount > 0){
+          this.toastrService.error('Cannot add Standard items to existing cart.')
+          this.isAddingToCart = false
+          return
+        }
+      }
       await this.context.order.cart.add({
         ProductID: this._product.ID,
         Quantity: this.quantity,
@@ -258,34 +285,6 @@ export class OCMProductDetails implements OnInit {
 
   dismissContactSupplierForm(): void {
     this.contactSupplierFormModal = ModalState.Closed
-  }
-
-  async submitQuoteOrder(info: QuoteOrderInfo): Promise<void> {
-    try {
-      const lineItem: HSLineItem = {} as HSLineItem
-      lineItem.ProductID = this._product.ID
-      lineItem.Specs = this.specFormService.getLineItemSpecs(
-        this.specs,
-        this.specForm
-      )
-      lineItem.xp = {
-        ImageUrl: this.specFormService.getLineItemImageUrl(
-          this._superProduct.Product?.xp?.Images,
-          this._superProduct.Specs,
-          this.specForm
-        ),
-      }
-      this.submittedQuoteOrder = await this.context.order.submitQuoteOrder(
-        info,
-        lineItem
-      )
-      this.quoteFormModal = ModalState.Closed
-      this.showRequestSubmittedMessage = true
-    } catch (ex) {
-      this.showRequestSubmittedMessage = false
-      this.quoteFormModal = ModalState.Closed
-      throw ex
-    }
   }
 
   async submitContactSupplierForm(formData: any): Promise<void> {

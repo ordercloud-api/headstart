@@ -40,4 +40,8 @@ export class OCMMiniCart implements OnInit {
     this.context.router.toCheckout()
     this.navigate.emit()
   }
+
+  isQuoteOrder(): boolean {
+    return this.order?.xp?.OrderType === 'Quote'
+  }
 }

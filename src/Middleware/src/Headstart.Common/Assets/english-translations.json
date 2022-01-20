@@ -593,7 +593,8 @@
       "CONTINUE_SHOPPING": "Continue Shopping",
       "EMPTY_CART": "Empty Cart",
       "SHOPPING_CART": "Shopping Cart",
-      "VIEW_CART": "View Cart"
+      "VIEW_CART": "View Cart",
+      "SUBMIT_QUOTE": "Submit Quote"
     },
     "LINEITEM_TABLE": {
       "PRICE": "Price",
@@ -785,7 +786,10 @@
       "SUBMITTED_BY": "Submitted By",
       "SUBTOTAL": "Subtotal",
       "TAX": "Tax",
-      "TOTAL": "Total"
+      "TOTAL": "Total",
+      "ACCEPT_QUOTE": "Accept Quote",
+      "ORDERS.HISTORICAL.CONTACT_SUPPLIER": "Contact Supplier",
+      "ORDERS.HISTORICAL.QUOTE_ACTIONS": "Quote Actions"
     },
     "HISTORY": {
       "FAVORITES": "Favorites",

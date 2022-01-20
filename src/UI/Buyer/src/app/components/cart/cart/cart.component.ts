@@ -87,6 +87,17 @@ export class OCMCart implements OnInit, OnDestroy {
     this.context.router.toCheckout()
   }
 
+  async submitQuote(): Promise<void> {
+    var currentOrder = this.context.order.get()
+    currentOrder.xp.QuoteStatus = 'NeedsSellerReview'
+    currentOrder.xp.QuoteSubmittedDate = new Date().toLocaleString()
+    await this.context.order.patch(currentOrder)
+    setTimeout(async () => {
+      await this.context.order.cart.reset()
+      this.context.router.toMyQuotes()
+    }, 1000)
+  }
+
   emptyCart(): void {
     this.isEmptyingCart = true
     Promise.all([

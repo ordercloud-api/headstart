@@ -99,6 +99,7 @@ const HeadstartRoutes: Routes = [
         children: [
           { path: 'approve/:orderID', component: OrderDetailWrapperComponent, canActivate: [IsProfiledUserGuard] },
           { path: 'approve', component: OrderHistoryWrapperComponent, canActivate: [IsProfiledUserGuard] },
+          { path: 'quotes', component: OrderHistoryWrapperComponent, canActivate: [IsProfiledUserGuard] },
           {
             path: 'location/:locationFilter',
             component: OrderDetailWrapperComponent,

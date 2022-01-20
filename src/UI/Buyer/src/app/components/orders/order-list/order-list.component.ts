@@ -51,7 +51,10 @@ export class OCMOrderList implements OnInit {
     // AwaitingApproval is the one status order xp doesn't account for. If order.status is AwaitingApproval, take that.
     if (order?.Status === 'AwaitingApproval') {
       return 'AwaitingApproval'
-    } else {
+    } else if(order?.xp?.OrderType === 'Quote'){
+      return order?.xp?.QuoteStatus
+    } 
+    else {
       return order?.xp?.SubmittedOrderStatus
     }
   }

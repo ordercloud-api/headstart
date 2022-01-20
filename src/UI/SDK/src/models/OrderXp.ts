@@ -13,6 +13,8 @@ export interface OrderXp {
     QuoteStatus?: 'NeedsSellerReview' | 'NeedsBuyerReview'
     QuoteSellerContactEmail?: string
     QuoteBuyerContactEmail?: string
+    QuoteSubmittedDate?: string
+    QuoteSupplierID?: string
     QuoteOrderInfo?: QuoteOrderInfo
     Returns?: ClaimsSummary
     Cancelations?: ClaimsSummary

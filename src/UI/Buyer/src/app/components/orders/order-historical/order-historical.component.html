@@ -109,3 +109,57 @@
 <ocm-lineitem-table *ngIf="lineItems && lineItems.length" [lineItems]="lineItems" [orderType]="order?.xp?.OrderType"
   [readOnly]="true">
 </ocm-lineitem-table>
+<div class="card shadow mb-4" *ngIf="isQuoteOrder(order) && order?.xp?.QuoteStatus == 'NeedsBuyerReview'">
+  <div class="card">
+    <div class="card-header" translate>
+      ORDERS.HISTORICAL.QUOTE_ACTIONS
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md">
+          <button class="btn btn-sm btn-danger" (click)="open(acceptQuoteModal)" translate>
+            ORDERS.HISTORICAL.ACCEPT_QUOTE
+          </button>
+        </div>
+        <div class="col-md d-flex flex-column justify-content-end text-md-right">
+          <a [href]="supplierMail" target="_blank" translate>ORDERS.HISTORICAL.CONTACT_SUPPLIER</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #acceptQuoteModal let-modal class="confirm-modal">
+  <confirm-modal
+    [modalTitle]="'Accept Quote'"
+    aria-labelledby="confirm-modal"
+  >
+    <div class="alert alert-warning">
+      <p>Once the order is accepted the quote request will be deleted and the items will be added to your cart so that you may checkout.</p>
+    </div>
+    <div
+      class="
+        row
+        d-flex
+        justify-content-space-between justify-content-between
+        mr-2
+        ml-2
+      "
+    >
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="modal.dismiss()"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="acceptQuote(); modal.dismiss()"
+        translate
+      >
+        ORDERS.HISTORICAL.ACCEPT_QUOTE
+      </button>
+    </div>
+  </confirm-modal>
+</ng-template>

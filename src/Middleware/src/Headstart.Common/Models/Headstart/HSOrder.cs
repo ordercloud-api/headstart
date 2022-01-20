@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Headstart.Common.Exceptions;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models.Headstart;
+using System;
 
 namespace Headstart.Models
 {
@@ -24,10 +25,12 @@ namespace Headstart.Models
         public List<string> SupplierIDs { get; set; }
         public bool NeedsAttention { get; set; }
         public bool StopShipSync { get; set; }
-        public OrderType? OrderType { get; set; }
-        public QuoteStatus? QuoteStatus { get; set; }
-        public string QuoteSellerContactEmail { get; set; }
-        public string QuoteBuyerContactEmail { get; set; }
+        public OrderType? OrderType { get; set; } // "Quote" or "Standard"
+        public QuoteStatus? QuoteStatus { get; set; } //  "NeedsSellerReview" or "NeedsBuyerReview"
+        public string QuoteSellerContactEmail { get; set; } // email of the seller user that should be contacted for quote purposes
+        public string QuoteBuyerContactEmail { get; set; } // email of the buyer user that should be contacted for quote purposes
+        public string QuoteSupplierID { get; set; } // the id of the supplier selling the product
+        public DateTimeOffset? QuoteSubmittedDate { get; set; } // the date that the quote order was created
         public QuoteOrderInfo QuoteOrderInfo { get; set; }
         public ClaimsSummary Returns { get; set; }
         public ClaimsSummary Cancelations { get; set; }

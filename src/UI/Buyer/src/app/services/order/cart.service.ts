@@ -49,6 +49,12 @@ export class CartService {
     this.isCartValidSubject.next(isCartValid)
   }
 
+  async reset(): Promise<void> {
+    this.initializingOrder = true
+    await this.state.reset()
+    this.initializingOrder = false
+  }
+
   async getInvalidLineItems(): Promise<HSLineItem[]> {
     const unavailableLineItems = await this.getInactiveProducts(this.lineItems)
     if (unavailableLineItems.length) {
