@@ -43,7 +43,7 @@ import {
 import { HSLineItem, SuperHSShipment } from '@ordercloud/headstart-sdk'
 import { flatten as _flatten } from 'lodash'
 import { AppConfig } from '@app-seller/models/environment.types'
-import { LineItemStatus } from '@app-seller/models/order.types'
+import { LineItemStatus, OrderType } from '@app-seller/models/order.types'
 import { SELLER } from '@app-seller/models/user.types'
 
 @Component({
@@ -100,8 +100,10 @@ export class OrderShipmentsComponent implements OnChanges {
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (this.orderDirection && this._order.ID) {
       this.superShipments = []
-      await this.getShipments(this._order.ID)
-      await this.getLineItems(this._order.ID)
+      if (this._order?.xp?.OrderType != OrderType.Quote) {
+        await this.getShipments(this._order.ID)
+        await this.getLineItems(this._order.ID)
+      }
     }
   }
 

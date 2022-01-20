@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Headstart.Common;
 using Headstart.Common.Extensions;
 using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using ordercloud.integrations.library;
@@ -32,16 +34,28 @@ namespace Headstart.API.Commands
             });
         }
 
-        public async Task<JObject> GetOrderAsync(string ID, DecodedToken decodedToken)
+        public async Task<JObject> GetOrderAsync(string ID, OrderType orderType, DecodedToken decodedToken)
         {
             //TODO: BaseUrl cannot be found here
             var ocAuth = await _ocSeller.AuthenticateAsync();
             HSShipEstimate estimate;
             HSShipMethod ship_method = null;
-            var supplierWorksheet = await _ocSeller.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, ID, ocAuth.AccessToken);
-            
-            var buyerWorksheet = await _ocSeller.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, ID.Split('-')[0], ocAuth.AccessToken);
-            var buyerLineItems = buyerWorksheet.GetBuyerLineItemsBySupplierID(supplierWorksheet.Order.ToCompanyID);
+            HSOrderWorksheet supplierWorksheet = null;
+
+            // Supplier worksheet will not exist on quote orders.
+            try
+            {
+                supplierWorksheet = await _ocSeller.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, ID, ocAuth.AccessToken);
+            }
+            catch (OrderCloudException) {}
+            var salesOrderID = orderType == OrderType.Standard ? ID.Split('-')[0] : ID;
+            var buyerWorksheet = await _ocSeller.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, salesOrderID, ocAuth.AccessToken);
+            var supplierID = supplierWorksheet?.Order?.ToCompanyID;
+            if (buyerWorksheet.Order.xp?.OrderType == OrderType.Quote)
+            {
+                supplierID = buyerWorksheet.LineItems[0].SupplierID;
+            }
+            var buyerLineItems = buyerWorksheet.GetBuyerLineItemsBySupplierID(supplierID);
             if (buyerWorksheet?.ShipEstimateResponse != null && buyerWorksheet?.ShipEstimateResponse?.ShipEstimates.Count > 0)
             {
                 estimate = buyerWorksheet.GetMatchingShipEstimate(supplierWorksheet?.LineItems?.FirstOrDefault()?.ShipFromAddressID);
@@ -50,7 +64,7 @@ namespace Headstart.API.Commands
 
             var returnObject = new JObject { };
 
-            if (supplierWorksheet.Order != null)
+            if (supplierWorksheet?.Order != null)
             {
                 returnObject.Add(new JProperty("SupplierOrder", new JObject {
                     {"Order", JToken.FromObject(supplierWorksheet?.Order)},
@@ -64,6 +78,15 @@ namespace Headstart.API.Commands
                     {"Order", JToken.FromObject(buyerWorksheet?.Order)},
                     new JProperty("LineItems", JToken.FromObject(buyerLineItems))
                 }));
+
+                // No supplier worksheet exists in these scenarios, just treat buyer order as supplier order.
+                if (buyerWorksheet.Order.xp?.OrderType == OrderType.Quote)
+                {
+                    returnObject.Add(new JProperty("SupplierOrder", new JObject {
+                    {"Order", JToken.FromObject(buyerWorksheet?.Order)},
+                    new JProperty("LineItems", JToken.FromObject(buyerWorksheet?.LineItems))
+                }));
+                }
             }
 
             if (ship_method != null)

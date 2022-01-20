@@ -28,4 +28,9 @@ export interface OrderXp {
     SelectedShipMethodsSupplierView?: ShipMethodSupplierView[]
     IsResubmitting?: boolean
 	HasSellerProducts?: boolean
+    QuoteStatus?: 'NeedsBuyerReview' | 'NeedsSellerReview'
+    QuoteSellerContactEmail?: string
+    QuoteBuyerContactEmail?: string
+    QuoteSubmittedDate?: string
+    QuoteSupplierID?: string
 }

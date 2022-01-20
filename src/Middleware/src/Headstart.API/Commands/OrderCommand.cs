@@ -10,6 +10,9 @@ using Headstart.Models.Extended;
 using Headstart.Common.Models;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using OrderCloud.Catalyst;
+using Headstart.Common;
+using Headstart.Models.Headstart;
+using Headstart.Common.Services;
 
 namespace Headstart.API.Commands
 {
@@ -23,6 +26,9 @@ namespace Headstart.API.Commands
         Task<HSOrder> AddPromotion(string orderID, string promoCode, DecodedToken decodedToken);
         Task<HSOrder> ApplyAutomaticPromotions(string orderID);
         Task PatchOrderRequiresApprovalStatus(string orderID);
+        Task<HSLineItem> OverrideQuotePrice(string orderID, string lineItemID, decimal quotePrice);
+        Task<ListPage<HSOrder>> ListQuoteOrders(MeUser me, QuoteStatus quoteStatus);
+        Task<HSOrder> GetQuoteOrder(MeUser me, string orderID);
     }
 
     public class OrderCommand : IOrderCommand
@@ -31,19 +37,73 @@ namespace Headstart.API.Commands
         private readonly ILocationPermissionCommand _locationPermissionCommand;
         private readonly IPromotionCommand _promotionCommand;
         private readonly IRMACommand _rmaCommand;
+        private readonly AppSettings _settings;
+        private readonly ISendgridService _sendgridService;
 
         public OrderCommand(
             ILocationPermissionCommand locationPermissionCommand,
             IOrderCloudClient oc,
             IPromotionCommand promotionCommand,
-            IRMACommand rmaCommand
+            IRMACommand rmaCommand,
+            AppSettings settings,
+            ISendgridService sendgridService
             )
         {
 			_oc = oc;
             _locationPermissionCommand = locationPermissionCommand;
             _promotionCommand = promotionCommand;
             _rmaCommand = rmaCommand;
+            _settings = settings;
+            _sendgridService = sendgridService;
 		}
+
+        public async Task<HSLineItem> OverrideQuotePrice(string orderID, string lineItemID, decimal quotePrice)
+        {
+            var linePatch = new PartialLineItem { UnitPrice = quotePrice };
+            var updatedLineItem = await _oc.LineItems.PatchAsync<HSLineItem>(OrderDirection.All, orderID, lineItemID, linePatch);
+            var orderPatch = new PartialOrder { xp = new { QuoteStatus = QuoteStatus.NeedsBuyerReview } };
+            var updatedOrder = await _oc.Orders.PatchAsync<HSOrder>(OrderDirection.All, orderID, orderPatch);
+            // SEND EMAIL NOTIFICATION TO BUYER
+            await _sendgridService.SendQuotePriceConfirmationEmail(updatedOrder, updatedLineItem, updatedOrder.xp?.QuoteBuyerContactEmail);
+            return updatedLineItem;
+        }
+
+        public async Task<ListPage<HSOrder>> ListQuoteOrders(MeUser me, QuoteStatus quoteStatus)
+        {
+            var supplierID = me.Supplier?.ID;
+            var filters = new Dictionary<string, object>
+            {
+                ["xp.QuoteSupplierID"] = supplierID != null ? supplierID : "*",
+                ["IsSubmitted"] = false,
+                ["xp.OrderType"] = OrderType.Quote,
+                ["xp.QuoteStatus"] = quoteStatus
+            };
+            var quoteOrders = await _oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Incoming, filters: filters);
+            var quoteOrdersList = new ListPage<HSOrder>()
+            {
+                Meta = new ListPageMeta()
+                {
+                    Page = 1,
+                    PageSize = 1,
+                    TotalCount = quoteOrders.Count,
+                    TotalPages = 1,
+                    ItemRange = new[] { 1, quoteOrders.Count }
+                },
+                Items = quoteOrders
+            };
+            return quoteOrdersList;
+        }
+
+        public async Task<HSOrder> GetQuoteOrder(MeUser me, string orderID)
+        {
+            var supplierID = me.Supplier?.ID;
+            var order = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
+            if (supplierID != null && order.xp?.QuoteSupplierID != supplierID)
+            {
+                throw new Exception("You are not authorized to view this order.");
+            }
+            return order;
+        }
 
         public async Task<Order> AcknowledgeQuoteOrder(string orderID)
         {

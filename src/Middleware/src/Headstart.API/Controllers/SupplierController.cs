@@ -60,10 +60,10 @@ namespace Headstart.Common.Controllers
 		/// <summary>
 		/// GET Supplier Order Details
 		/// </summary>
-		[HttpGet, Route("orderdetails/{supplierOrderID}"), OrderCloudUserAuth(ApiRole.OrderAdmin, ApiRole.OrderReader)]
-		public async Task<HSSupplierOrderData> GetSupplierOrder(string supplierOrderID)
+		[HttpGet, Route("orderdetails/{supplierOrderID}/{orderType}"), OrderCloudUserAuth(ApiRole.OrderAdmin, ApiRole.OrderReader)]
+		public async Task<HSSupplierOrderData> GetSupplierOrder(string supplierOrderID, OrderType orderType)
         {
-			return await _command.GetSupplierOrderData(supplierOrderID, UserContext);
+			return await _command.GetSupplierOrderData(supplierOrderID, orderType, UserContext);
         }
 
 	}

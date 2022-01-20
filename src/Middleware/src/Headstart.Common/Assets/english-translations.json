@@ -182,6 +182,7 @@
       "PROMOTION": "Promotion",
       "PROMOTIONS": "Promotions",
       "PURCHASE_ORDERS": "Purchase Orders",
+      "QUOTE_ORDERS": "Quote Orders",
       "REPORT_TEMPLATES": "Report Templates",
       "REPORTS": "Reports",
       "RMA": "RMA",
@@ -199,6 +200,15 @@
     "PIPES": {
       "NO": "No",
       "YES": "Yes"
+    },
+    "ORDERS": {
+      "CANCEL_PRICING": "Cancel Pricing",
+      "QUOTE_PRICE_EXPLANATION": {
+        "A_QUOTED_PRICE": "A quoted price of",
+        "IS_PENDING_BUYER": "is pending buyer review."
+      },
+      "SAVE_AND_NOTIFY": "Save and Notify Buyer",
+      "SET_QUOTE_PRICE": "Set Quote Price"
     },
     "BILLING_NUMBER": "Billing Number",
     "PRODUCT_EDIT": {
