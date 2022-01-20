@@ -59,11 +59,10 @@ namespace Headstart.API.Commands
 
         public async Task<HSLineItem> OverrideQuotePrice(string orderID, string lineItemID, decimal quotePrice)
         {
-            var token = await GetTokenForQuoteOrders();
             var linePatch = new PartialLineItem { UnitPrice = quotePrice };
-            var updatedLineItem = await _oc.LineItems.PatchAsync<HSLineItem>(OrderDirection.All, orderID, lineItemID, linePatch, accessToken: token);
+            var updatedLineItem = await _oc.LineItems.PatchAsync<HSLineItem>(OrderDirection.All, orderID, lineItemID, linePatch);
             var orderPatch = new PartialOrder { xp = new { QuoteStatus = QuoteStatus.NeedsBuyerReview } };
-            var updatedOrder = await _oc.Orders.PatchAsync<HSOrder>(OrderDirection.All, orderID, orderPatch, accessToken: token);
+            var updatedOrder = await _oc.Orders.PatchAsync<HSOrder>(OrderDirection.All, orderID, orderPatch);
             // SEND EMAIL NOTIFICATION TO BUYER
             await _sendgridService.SendQuotePriceConfirmationEmail(updatedOrder, updatedLineItem, updatedOrder.xp?.QuoteBuyerContactEmail);
             return updatedLineItem;
@@ -72,7 +71,6 @@ namespace Headstart.API.Commands
         public async Task<ListPage<HSOrder>> ListQuoteOrders(MeUser me, QuoteStatus quoteStatus)
         {
             var supplierID = me.Supplier?.ID;
-            var token = await GetTokenForQuoteOrders();
             var filters = new Dictionary<string, object>
             {
                 ["xp.QuoteSupplierID"] = supplierID != null ? supplierID : "*",
@@ -80,29 +78,31 @@ namespace Headstart.API.Commands
                 ["xp.OrderType"] = OrderType.Quote,
                 ["xp.QuoteStatus"] = quoteStatus
             };
-            // For now, assuming no more than 100 quote orders. TO-DO - allow for scrolling to retrieve additional pages.
-            var quoteOrders = await _oc.Orders.ListAsync<HSOrder>(OrderDirection.Incoming, pageSize: 100, filters: filters, accessToken: token);
-            return quoteOrders;
+            var quoteOrders = await _oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Incoming, filters: filters);
+            var quoteOrdersList = new ListPage<HSOrder>()
+            {
+                Meta = new ListPageMeta()
+                {
+                    Page = 1,
+                    PageSize = 1,
+                    TotalCount = quoteOrders.Count,
+                    TotalPages = 1,
+                    ItemRange = new[] { 1, quoteOrders.Count }
+                },
+                Items = quoteOrders
+            };
+            return quoteOrdersList;
         }
 
         public async Task<HSOrder> GetQuoteOrder(MeUser me, string orderID)
         {
             var supplierID = me.Supplier?.ID;
-            var token = await GetTokenForQuoteOrders();
-            var order = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID, accessToken: token);
+            var order = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
             if (supplierID != null && order.xp?.QuoteSupplierID != supplierID)
             {
                 throw new Exception("You are not authorized to view this order.");
             }
             return order;
-        }
-
-        private async Task<string> GetTokenForQuoteOrders()
-        {
-            var apiClient = await _oc.ApiClients.GetAsync(_settings.OrderCloudSettings.MiddlewareClientID);
-            var clientSecret = _settings.OrderCloudSettings.MiddlewareClientSecret;
-            var tokenResponse = await _oc.AuthenticateAsync(apiClient.ID, clientSecret, new ApiRole[] { ApiRole.OverrideUnitPrice, ApiRole.Shopper, ApiRole.OrderAdmin, ApiRole.UnsubmittedOrderReader });
-            return tokenResponse.AccessToken;
         }
 
         public async Task<Order> AcknowledgeQuoteOrder(string orderID)

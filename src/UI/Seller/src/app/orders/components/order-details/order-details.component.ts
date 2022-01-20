@@ -224,7 +224,7 @@ export class OrderDetailsComponent {
   }
 
   async overrideQuoteUnitPrice(): Promise<void> {
-    const updatedLineItem = await this.middleware.overrideQuoteUnitPrice(
+    const updatedLineItem = await HeadStartSDK.Orders.OverrideQuoteUnitPrice(
       this._order.ID,
       this._lineItems[0].ID,
       this.quotePricingForm.value.QuotePrice
@@ -344,7 +344,7 @@ export class OrderDetailsComponent {
   async refreshOrder(): Promise<void> {
     let order: HSOrder
     if (this._order?.xp?.OrderType === OrderType.Quote) {
-      order = await this.middleware.getQuoteOrder(this._order.ID)
+      order = await HeadStartSDK.Orders.GetQuoteOrder(this._order.ID)
     } else {
       order = await this.ocOrderService
         .Get(this.orderDirection, this._order.ID)

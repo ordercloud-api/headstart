@@ -30,6 +30,7 @@ namespace Headstart.API.Commands
         public async Task<JObject> GetOrderAsync(string ID, OrderType orderType, DecodedToken decodedToken)
         {
             var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            // Quote orders often won't have a hyphen in their order IDs, so allowing ID to be a fallback. This value is determined subsequently for quotes.
             var supplierID = ID.Split("-").Length > 1 ? ID.Split("-")[1] : ID;
             if (orderType != OrderType.Quote)
             {

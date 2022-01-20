@@ -221,9 +221,13 @@
           set-to-top
         "
       >
-        A quoted price of
-        {{ _lineItems[0]?.UnitPrice | currency: _order?.xp?.Currency }} of is
-        pending buyer review.
+        <span translate>
+          ADMIN.ORDERS.QUOTE_PRICE_EXPLANATION.A_QUOTED_PRICE</span
+        >
+        {{ _lineItems[0]?.UnitPrice | currency: _order?.xp?.Currency }}
+        <span translate
+          >ADMIN.ORDERS.QUOTE_PRICE_EXPLANATION.IS_PENDING_BUYER</span
+        >
       </small>
     </div>
 
@@ -261,8 +265,9 @@
               <button
                 class="btn btn-primary d-print-none ml-3"
                 (click)="overrideQuoteUnitPrice()"
+                translate
               >
-                Save and Notify Buyer
+                ADMIN.ORDERS.SAVE_AND_NOTIFY
               </button>
             </div>
           </form>

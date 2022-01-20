@@ -39,27 +39,6 @@ export class MiddlewareAPIService {
     return await this.http.post<Order>(url, this.headers).toPromise()
   }
 
-  async listQuoteOrders(quoteStatus: string): Promise<ListPage<HSOrder>> {
-    const url = `${this.appConfig.middlewareUrl}/order/listquoteorders/${quoteStatus}`
-    return await this.http.get<ListPage<HSOrder>>(url, this.headers).toPromise()
-  }
-
-  async getQuoteOrder(orderID: string): Promise<HSOrder> {
-    const url = `${this.appConfig.middlewareUrl}/order/getquoteorder/${orderID}`
-    return await this.http.get<HSOrder>(url, this.headers).toPromise()
-  }
-
-  async overrideQuoteUnitPrice(
-    orderID: string,
-    lineItemID: string,
-    quotePrice: number
-  ): Promise<Order> {
-    const url = `${this.appConfig.middlewareUrl}/order/overridequote/${orderID}/${lineItemID}`
-    return await this.http
-      .post<HSLineItem>(url, quotePrice, this.headers)
-      .toPromise()
-  }
-
   async updateSupplier(
     supplierID: string,
     supplier: HSSupplier

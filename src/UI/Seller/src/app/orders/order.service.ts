@@ -5,7 +5,7 @@ import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/r
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { Orders } from 'ordercloud-javascript-sdk'
 import { OrderType } from '@app-seller/models/order.types'
-import { HSOrder } from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, HSOrder } from '@ordercloud/headstart-sdk'
 import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 
 @Injectable({
@@ -41,7 +41,7 @@ export class OrderService extends ResourceCrudService<Order> {
   async list(args: any[]): Promise<any> {
     const filters = args.find((arg) => arg?.filters != null)
     if (this.router.url.includes('xp.OrderType=Quote')) {
-      return await this.middleware.listQuoteOrders(
+      return await HeadStartSDK.Orders.ListQuoteOrders(
         filters?.filters['xp.QuoteStatus']
       )
     }
@@ -53,7 +53,7 @@ export class OrderService extends ResourceCrudService<Order> {
       const resource = await super.getResourceById(resourceID)
       return resource
     } catch (ex) {
-      return await this.middleware.getQuoteOrder(resourceID)
+      return await HeadStartSDK.Orders.GetQuoteOrder(resourceID)
     }
   }
 }
