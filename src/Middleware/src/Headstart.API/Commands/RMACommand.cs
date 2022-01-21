@@ -14,6 +14,7 @@ using Headstart.Common.Services;
 using System;
 using Headstart.Models.Extended;
 using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Common;
 
 namespace Headstart.API.Commands
 {
@@ -36,20 +37,23 @@ namespace Headstart.API.Commands
         private readonly IRMARepo _rmaRepo;
         private readonly IOrderCloudIntegrationsCardConnectService _cardConnect;
         private readonly ISendgridService _sendgridService;
+        private readonly AppSettings _settings;
 
-        public RMACommand(IOrderCloudClient oc, IRMARepo rmaRepo, IOrderCloudIntegrationsCardConnectService cardConnect, ISendgridService sendgridService)
+        public RMACommand(IOrderCloudClient oc, IRMARepo rmaRepo, IOrderCloudIntegrationsCardConnectService cardConnect, ISendgridService sendgridService, AppSettings settings)
         {
             _oc = oc;
             _rmaRepo = rmaRepo;
             _cardConnect = cardConnect;
             _sendgridService = sendgridService;
+            _settings = settings;
         }
 
         public async Task BuildRMA(HSOrder order, List<string> supplierIDs, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItemsChanged, DecodedToken decodedToken)
         {
             foreach (string supplierID in supplierIDs)
             {
-                HSSupplier supplier = await _oc.Suppliers.GetAsync<HSSupplier>(supplierID);
+                var sellerID = supplierID;
+                var sellerName = supplierID == null ? _settings.OrderCloudSettings.MarketplaceName : (await _oc.Suppliers.GetAsync<HSSupplier>(supplierID)).Name;
 
                 RMA rma = new RMA()
                 {
@@ -58,8 +62,8 @@ namespace Headstart.API.Commands
                     TotalCredited = 0M,
                     ShippingCredited = 0M,
                     RMANumber = await BuildRMANumber(order),
-                    SupplierID = supplierID,
-                    SupplierName = supplier.Name,
+                    SupplierID = sellerID,
+                    SupplierName = sellerName,
                     Type = lineItemStatusChanges.Status == LineItemStatus.CancelRequested ? RMAType.Cancellation : RMAType.Return,
                     DateCreated = DateTime.Now,
                     DateComplete = null,
@@ -206,7 +210,7 @@ namespace Headstart.API.Commands
             // Get the RMA from the last time it was saved.
             var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
             RMA currentRMA = await GetRMA(rma.RMANumber, decodedToken);
-            if (currentRMA.SupplierID != me.Supplier.ID)
+            if (decodedToken.CommerceRole == CommerceRole.Supplier && currentRMA.SupplierID != me.Supplier.ID)
             {
                 throw new Exception($"You do not have permission to process this RMA.");
             }
@@ -437,7 +441,7 @@ namespace Headstart.API.Commands
             var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
             RMA rma = await GetRMA(rmaNumber, decodedToken);
 
-            ValidateRMA(rma, me.Supplier.ID);
+            ValidateRMA(rma, me, decodedToken);
 
             decimal initialAmountRefunded = rma.TotalCredited;
 
@@ -475,9 +479,9 @@ namespace Headstart.API.Commands
             return rmaWithStatusByQuantityChanges;
         }
 
-        private void ValidateRMA(RMA rma, string supplierID)
+        private void ValidateRMA(RMA rma, MeUser me, DecodedToken decodedToken)
         {
-            if (rma.SupplierID != supplierID)
+            if (decodedToken.CommerceRole == CommerceRole.Supplier && rma.SupplierID != me.Supplier.ID)
             {
                 throw new Exception("You do not have permission to process a refund for this RMA.");
             }
@@ -490,7 +494,7 @@ namespace Headstart.API.Commands
 
         public void CalculateAndUpdateLineTotalRefund(IEnumerable<RMALineItem> lineItemsToUpdate, HSOrderWorksheet orderWorksheet, CosmosListPage<RMA> allRMAsOnThisOrder, string supplierID)
         {
-            var taxLines = orderWorksheet.OrderCalculateResponse.xp.TaxCalculation.LineItems;
+            var taxLines = orderWorksheet?.OrderCalculateResponse?.xp?.TaxCalculation?.LineItems;
 
             foreach (RMALineItem rmaLineItem in lineItemsToUpdate)
             {
@@ -503,13 +507,14 @@ namespace Headstart.API.Commands
 				{
 					int quantityToRefund = rmaLineItem.QuantityProcessed;
                     var lineItem = orderWorksheet.LineItems.First(li => li.ID == rmaLineItem.ID);
-                    var taxLine = taxLines.FirstOrDefault(taxLine => taxLine.LineItemID == rmaLineItem.ID);
+                    var taxLine = taxLines == null ? null : taxLines.FirstOrDefault(taxLine => taxLine.LineItemID == rmaLineItem.ID);
+                    var lineItemTotalTax = taxLine?.LineItemTotalTax ?? 0;
 
                     // Exempt products will have an exempt amount instead of a taxable amount.
                     decimal lineItemBaseCost = lineItem.xp.LineTotalWithProportionalDiscounts;
-                    decimal totalRefundIfReturningAllLineItems = lineItemBaseCost + taxLine.LineItemTotalTax;
+                    decimal totalRefundIfReturningAllLineItems = lineItemBaseCost + lineItemTotalTax;
                     double taxableAmountPerSingleLineItem = (double)(lineItemBaseCost / lineItem.Quantity);
-                    double taxPerSingleLineItem = (double)(taxLine.LineItemTotalTax / lineItem.Quantity);
+                    double taxPerSingleLineItem = (double)(lineItemTotalTax / lineItem.Quantity);
                     double singleQuantityLineItemRefund = Math.Round(taxableAmountPerSingleLineItem + taxPerSingleLineItem, 2);
                     decimal expectedLineTotalRefund = (decimal)singleQuantityLineItemRefund * quantityToRefund;
 

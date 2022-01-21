@@ -1,27 +1,10 @@
-import {
-  Component,
-  Input,
-  Inject,
-  Output,
-  EventEmitter,
-} from '@angular/core'
+import { Component, Input, Inject, Output, EventEmitter } from '@angular/core'
 import { groupBy as _groupBy } from 'lodash'
 import { applicationConfiguration } from '@app-seller/config/app.config'
-import {
-  HSLineItem,
-  HeadStartSDK,
-  HSOrder,
-} from '@ordercloud/headstart-sdk'
-import { LineItemTableStatus, LineItemTableValue } from '../order-details/order-details.component'
-import {
-  NumberCanChangeTo,
-  CanChangeTo,
-  CanChangeLineItemsOnOrderTo,
-} from '@app-seller/orders/line-item-status.helper'
-import { FormArray, Validators, FormControl } from '@angular/forms'
+import { HSLineItem, HSOrder } from '@ordercloud/headstart-sdk'
 import { MeUser, OcOrderService } from '@ordercloud/angular-sdk'
 import { LineItem, LineItemSpec } from 'ordercloud-javascript-sdk'
-import { AppConfig, LineItemStatus, RegexService } from '@app-seller/shared'
+import { AppConfig, RegexService } from '@app-seller/shared'
 import { getPrimaryLineItemImage } from '@app-seller/shared/services/assets/asset.helper'
 
 @Component({
@@ -34,14 +17,11 @@ export class LineItemTableComponent {
   _order: HSOrder
   _liGroupedByShipFrom: HSLineItem[][]
   _supplierOrders: HSOrder[] = []
-  _statusChangeForm = new FormArray([])
-  _tableStatus: LineItemTableValue
   _user: MeUser
   @Input()
   set order(value: HSOrder) {
-    this._tableStatus = LineItemTableStatus.Default
     this._order = value
-    this.setSupplierOrders(value)
+    void this.setSupplierOrders(value)
   }
   @Input() orderDirection: 'Incoming' | 'Outgoing'
   @Output() orderChange = new EventEmitter()
@@ -61,15 +41,6 @@ export class LineItemTableComponent {
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {}
 
-  changeTableStatus(newStatus: LineItemTableValue): void {
-    this._tableStatus = newStatus
-    if (this._tableStatus !== 'Default') {
-      this.setupForm()
-    } else {
-      this.setLineItemGroups(this._lineItems)
-    }
-  }
-
   getShipMethodString(lineItem: HSLineItem): string {
     const salesOrderID = this._order.ID.split('-')[0]
     const isPurchaseOrder = salesOrderID !== this._order.ID
@@ -77,41 +48,19 @@ export class LineItemTableComponent {
       (order) => order.ID === `${salesOrderID}-${lineItem.SupplierID}`
     )
     const shipFromID = lineItem.ShipFromAddressID
-    const shipMethod = ( lineItem.SupplierID === null ?
-      (this._order?.xp?.SelectedShipMethodsSupplierView || []) :
-      (supplierOrder?.xp?.SelectedShipMethodsSupplierView || [])
+    const shipMethod = (
+      lineItem.SupplierID === null
+        ? this._order?.xp?.SelectedShipMethodsSupplierView || []
+        : supplierOrder?.xp?.SelectedShipMethodsSupplierView || []
     ).find((sm) => sm.ShipFromAddressID === shipFromID)
     if (shipMethod == null) return 'No Data'
     const name = shipMethod.Name.replace(/_/g, ' ')
-    if(isPurchaseOrder) {
+    if (isPurchaseOrder) {
       return `${name}, Estimated ${shipMethod.EstimatedTransitDays} Day Delivery`
-    } 
+    }
     const delivery = new Date(this._order.DateSubmitted)
     delivery.setDate(delivery.getDate() + shipMethod.EstimatedTransitDays)
     return `${name},  ${delivery.toLocaleDateString('en-US')} Delivery`
-  }
-
-  setupForm(): void {
-    this.filterOutNonChangeables()
-    const shipFromFormArrays = this._liGroupedByShipFrom.map((shipFrom) => {
-      const controls = shipFrom.map((li) => {
-        return new FormControl(0, [
-          Validators.min(0),
-          Validators.max(
-            NumberCanChangeTo(this._tableStatus as LineItemStatus, li)
-          ),
-        ])
-      })
-      return new FormArray(controls)
-    })
-    this._statusChangeForm = new FormArray(shipFromFormArrays)
-  }
-
-  filterOutNonChangeables(): void {
-    const filteredLineItems = this._lineItems.filter((li) =>
-      CanChangeTo(this._tableStatus as LineItemStatus, li)
-    )
-    this.setLineItemGroups(filteredLineItems)
   }
 
   setLineItemGroups(lineItems: HSLineItem[]): void {
@@ -136,20 +85,15 @@ export class LineItemTableComponent {
     }
   }
 
-  canChangeTo(lineItemStatus: LineItemStatus): boolean {
-    return CanChangeLineItemsOnOrderTo(lineItemStatus, this._lineItems)
-  }
-
   getVariableTextSpecs = (li: LineItem): LineItemSpec[] =>
     li?.Specs?.filter((s) => s.OptionID === null)
 
   getLineItemStatusDisplay(lineItem: HSLineItem): string {
     return Object.entries(lineItem.xp.StatusByQuantity)
-      .filter(([status, quantity]) => quantity)
+      .filter(([, quantity]) => quantity)
       .map(([status, quantity]) => {
-        const readableStatus = this.regexService.getStatusSplitByCapitalLetter(
-          status
-        )
+        const readableStatus =
+          this.regexService.getStatusSplitByCapitalLetter(status)
         return `${quantity} ${readableStatus}`
       })
       .join(', ')
@@ -159,66 +103,7 @@ export class LineItemTableComponent {
     return this.regexService.getStatusSplitByCapitalLetter(reason)
   }
 
-  quantityCanChange(lineItem: HSLineItem): number {
-    return NumberCanChangeTo(this._tableStatus as LineItemStatus, lineItem)
-  }
-
-  areChanges(): boolean {
-    return this._statusChangeForm.controls.some((control) => {
-      return (control as any).controls.some(
-        (subControl) => subControl.value > 0
-      )
-    })
-  }
-
-  async saveChanges(): Promise<void> {
-    this.isSaving = true
-    try {
-      const lineItemChanges = this.buildLineItemChanges()
-      await HeadStartSDK.Orders.SellerSupplierUpdateLineItemStatusesWithNotification(
-        this._order.ID,
-        this.orderDirection,
-        lineItemChanges
-      )
-      this.orderChange.emit()
-      this.changeTableStatus('Default')
-      this.isSaving = false
-    } catch (ex) {
-      this.isSaving = false
-      throw ex
-    }
-  }
-
-  // temporarily qny
-  // buildLineItemChanges(): LineItemStatusChanges {
-  buildLineItemChanges(): any {
-    // const lineItemChanges: LineItemStatusChanges = {
-    const lineItemChanges: any = {
-      Status: this._tableStatus as LineItemStatus,
-      Changes: [],
-    }
-
-    this._statusChangeForm.controls.forEach((control, shipFromIndex) => {
-      ;(control as any).controls.forEach((subControl, lineItemIndex) => {
-        if (control.value) {
-          const lineItem = this._liGroupedByShipFrom[shipFromIndex][
-            lineItemIndex
-          ]
-          lineItemChanges.Changes.push({
-            ID: lineItem.ID,
-            Quantity: subControl.value,
-          })
-        }
-      })
-    })
-
-    return lineItemChanges
-  }
-
   getImageUrl(lineItemID: string): string {
-    return getPrimaryLineItemImage(
-      lineItemID,
-      this._lineItems,
-    )
+    return getPrimaryLineItemImage(lineItemID, this._lineItems)
   }
 }

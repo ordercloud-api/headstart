@@ -87,7 +87,7 @@ jobs:
     - task: Cache@2
       displayName: 'SDK Dependencies Cache'
       inputs:
-        key: 'npm | sdk | "$(Agent.OS)" | src/UI/SDK/package.json'
+        key: 'npm | sdk | "$(Agent.OS)" | src/UI/SDK/package.json | v1'
         path: 'src/UI/SDK/node_modules'
         cacheHitVar: SDKCacheRestored
 
@@ -105,7 +105,7 @@ jobs:
     - task: Cache@2
       displayName: 'Buyer Dependencies Cache'
       inputs:
-        key: 'npm | buyer | "$(Agent.OS)" | src/UI/Buyer/package-lock.json | src/UI/Buyer/package.json | src/UI/SDK/files-changed-hash'
+        key: 'npm | buyer | "$(Agent.OS)" | src/UI/Buyer/package-lock.json | src/UI/Buyer/package.json | src/UI/SDK/files-changed-hash | v1'
         path: 'src/UI/Buyer/node_modules'
         cacheHitVar: BuyerCacheRestored
 
@@ -138,7 +138,7 @@ jobs:
     - task: Cache@2
       displayName: 'SDK Dependencies Cache'
       inputs:
-        key: 'npm | sdk | "$(Agent.OS)" | src/UI/SDK/package.json'
+        key: 'npm | sdk | "$(Agent.OS)" | src/UI/SDK/package.json | v1'
         path: 'src/UI/SDK/node_modules'
         cacheHitVar: SDKCacheRestored
 
@@ -156,7 +156,7 @@ jobs:
     - task: Cache@2
       displayName: 'Seller Dependencies Cache'
       inputs:
-        key: 'npm | seller | v2 | "$(Agent.OS)" | src/UI/Seller/package-lock.json | src/UI/Seller/package.json | src/UI/SDK/files-changed-hash'
+        key: 'npm | seller | v2 | "$(Agent.OS)" | src/UI/Seller/package-lock.json | src/UI/Seller/package.json | src/UI/SDK/files-changed-hash | v1'
         path: 'src/UI/Seller/node_modules'
         cacheHitVar: SellerCacheRestoredV2
 

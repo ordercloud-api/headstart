@@ -1,9 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core'
-import {
-  HSOrder,
-  HSLineItem,
-  OrderDetails,
-} from '@ordercloud/headstart-sdk'
+import { HSOrder, HSLineItem, OrderDetails } from '@ordercloud/headstart-sdk'
 import { groupBy as _groupBy, flatten as _flatten } from 'lodash'
 import { FormGroup, FormArray, FormBuilder } from '@angular/forms'
 import { ReturnRequestForm } from './order-return-table/models/return-request-form.model'
