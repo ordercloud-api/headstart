@@ -92,6 +92,7 @@ export class OCMCart implements OnInit, OnDestroy {
     currentOrder.xp.QuoteStatus = 'NeedsSellerReview'
     currentOrder.xp.QuoteSubmittedDate = new Date().toLocaleString()
     await this.context.order.patch(currentOrder)
+    await this.context.order.sendQuoteNotification(currentOrder.ID, this._lineItems.Items[0].ID)
     setTimeout(async () => {
       await this.context.order.cart.reset()
       this.context.router.toMyQuotes()

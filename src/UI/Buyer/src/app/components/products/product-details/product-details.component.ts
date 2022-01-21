@@ -211,6 +211,13 @@ export class OCMProductDetails implements OnInit {
           currentOrder.xp.QuoteBuyerContactEmail = this.currentUser.Email
           currentOrder.xp.QuoteSellerContactEmail = this._productSupplier.xp.NotificationRcpts[0]
           currentOrder.xp.QuoteSupplierID = this._productSupplier.ID
+          currentOrder.xp.QuoteOrderInfo = {
+            FirstName: this.currentUser.FirstName,
+            LastName: this.currentUser.LastName,
+            Phone: this.currentUser.Phone,
+            Email: this.currentUser.Email,
+            BuyerLocation: ""
+          }
           await this.context.order.patch(currentOrder)
         }
       }

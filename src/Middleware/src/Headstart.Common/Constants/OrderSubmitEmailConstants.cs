@@ -103,6 +103,16 @@ namespace Headstart.Common.Constants
             };
         }
 
+        public static EmailDisplayText GetQuoteRequestConfirmationText()
+        {
+            return new EmailDisplayText()
+            {
+                EmailSubject = "Your quote request has been submitted",
+                DynamicText = "A quote request has been submitted.",
+                DynamicText2 = "You will recieve a notification once your quote request has been quoted."
+            };
+        }
+
         public static EmailDisplayText GetQuotePriceConfirmationText()
         {
             return new EmailDisplayText()

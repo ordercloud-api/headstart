@@ -30,6 +30,7 @@ export default class Orders {
         this.AcknowledgeQuoteOrder = this.AcknowledgeQuoteOrder.bind(this);
         this.ListLocationOrders = this.ListLocationOrders.bind(this);
         this.ListRMAsForOrder = this.ListRMAsForOrder.bind(this);
+        this.SendQuoteRequestToSupplier = this.SendQuoteRequestToSupplier.bind(this);
     }
 
    /**
@@ -196,6 +197,17 @@ export default class Orders {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.get(`/order/location/${locationID}`, { params: { ...options,  filters: options.filters, accessToken, impersonating } } );
+    }
+
+    /**
+     * @param orderID ID of the order.
+     * @param lineItemID ID of the line item.
+     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
+     */
+     public async SendQuoteRequestToSupplier(orderID: string, lineItemID: string, accessToken?: string ): Promise<RequiredDeep<Order>> {
+        const impersonating = this.impersonating;
+        this.impersonating = false;
+        return await httpClient.post(`/order/submitquoterequest/${orderID}/${lineItemID}`, {}, { params: { accessToken, impersonating } } );
     }
 
     /**

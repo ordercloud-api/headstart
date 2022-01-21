@@ -26,11 +26,6 @@ namespace Headstart.Models
         public bool NeedsAttention { get; set; }
         public bool StopShipSync { get; set; }
         public OrderType? OrderType { get; set; } // "Quote" or "Standard"
-        public QuoteStatus? QuoteStatus { get; set; } //  "NeedsSellerReview" or "NeedsBuyerReview"
-        public string QuoteSellerContactEmail { get; set; } // email of the seller user that should be contacted for quote purposes
-        public string QuoteBuyerContactEmail { get; set; } // email of the buyer user that should be contacted for quote purposes
-        public string QuoteSupplierID { get; set; } // the id of the supplier selling the product
-        public DateTimeOffset? QuoteSubmittedDate { get; set; } // the date that the quote order was created
         public QuoteOrderInfo QuoteOrderInfo { get; set; }
         public ClaimsSummary Returns { get; set; }
         public ClaimsSummary Cancelations { get; set; }
@@ -67,13 +62,6 @@ namespace Headstart.Models
     {
         Standard,
         Quote
-    }
-    
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum QuoteStatus
-    {
-        NeedsSellerReview,
-        NeedsBuyerReview
     }
 
     

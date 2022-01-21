@@ -10,11 +10,6 @@ export interface OrderXp {
     NeedsAttention?: boolean
     StopShipSync?: boolean
     OrderType?: 'Standard' | 'Quote'
-    QuoteStatus?: 'NeedsSellerReview' | 'NeedsBuyerReview'
-    QuoteSellerContactEmail?: string
-    QuoteBuyerContactEmail?: string
-    QuoteSubmittedDate?: string
-    QuoteSupplierID?: string
     QuoteOrderInfo?: QuoteOrderInfo
     Returns?: ClaimsSummary
     Cancelations?: ClaimsSummary

@@ -15,6 +15,7 @@ import {
   HSOrder,
   HSLineItem,
   QuoteOrderInfo,
+  HeadStartSDK,
 } from '@ordercloud/headstart-sdk'
 import { PromoService } from './promo.service'
 import { AppConfig } from 'src/app/models/environment.types'
@@ -57,6 +58,10 @@ export class CurrentOrderService {
 
   public async delete(orderID: string): Promise<void> {
     await Orders.Delete('All', orderID)
+  }
+
+  public async sendQuoteNotification(orderID: string, lineItemID: string): Promise<void> {
+    await HeadStartSDK.Orders.SendQuoteRequestToSupplier(orderID, lineItemID)
   }
 
   get cart(): CartService {
