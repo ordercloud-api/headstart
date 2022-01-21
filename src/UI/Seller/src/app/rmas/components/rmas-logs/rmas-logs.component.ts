@@ -1,6 +1,11 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core'
-import { MeUser, OcSupplierUserService, User } from '@ordercloud/angular-sdk'
 import { HSOrder, RMA } from '@ordercloud/headstart-sdk'
+import {
+  AdminUsers,
+  MeUser,
+  SupplierUsers,
+  User,
+} from 'ordercloud-javascript-sdk'
 
 @Component({
   selector: 'rmas-logs-component',
@@ -17,7 +22,7 @@ export class RMALogsComponent implements OnChanges {
   @Input() currentUser: MeUser
   _rma: RMA
   usersFromLogs: User[] = []
-  constructor(private ocSupplierUserService: OcSupplierUserService) {}
+  constructor() {}
 
   async ngOnChanges(changes: SimpleChanges): Promise<void> {
     if (
@@ -31,9 +36,15 @@ export class RMALogsComponent implements OnChanges {
     if (this._rma?.Logs?.length) {
       for (const log of this._rma?.Logs) {
         if (!this.usersFromLogs?.some((user) => user?.ID === log?.FromUserID)) {
-          const user = await this.ocSupplierUserService
-            .Get(this._rma?.SupplierID, log?.FromUserID)
-            .toPromise()
+          let user: User
+          if (this._rma.SupplierID) {
+            user = await SupplierUsers.Get(
+              this._rma?.SupplierID,
+              log?.FromUserID
+            )
+          } else {
+            user = await AdminUsers.Get(log?.FromUserID)
+          }
           this.usersFromLogs.push(user)
         }
       }

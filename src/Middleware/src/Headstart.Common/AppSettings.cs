@@ -62,7 +62,7 @@ namespace Headstart.Common
 		public string BuildNumber { get; set; } // set during deploy
 		public string Commit { get; set; } // set during deploy
 		public string MiddlewareBaseUrl { get; set; }
-		public TaxProvider TaxProvider { get; set; }
+        public TaxProvider TaxProvider { get; set; } = TaxProvider.Avalara;
 	}
 
     public enum TaxProvider { Avalara, Vertex, Taxjar }
@@ -86,6 +86,7 @@ namespace Headstart.Common
         public string MiddlewareClientID { get; set; }
         public string MiddlewareClientSecret { get; set; }
         public string MarketplaceID { get; set; }
+        public string MarketplaceName { get; set; } // used for display purposes
         public string WebhookHashKey { get; set; }
         public string IncrementorPrefix { get; set; }
     }

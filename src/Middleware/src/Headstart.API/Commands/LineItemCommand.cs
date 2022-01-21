@@ -104,15 +104,15 @@ namespace Headstart.API.Commands
             var buyerOrder = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, buyerOrderID);
             var allLineItemsForOrder = await  _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Incoming, buyerOrderID);
             var lineItemsChanged = allLineItemsForOrder.Where(li => lineItemStatusChanges.Changes.Select(li => li.ID).Contains(li.ID)).ToList();
-            var supplierIDsRelatingToChange = lineItemsChanged.Select(li => li.SupplierID).Distinct().Where(id => id != null).ToList();
-
-            var relatedSupplierOrderIDs = (userType == "admin") ? null : supplierIDsRelatingToChange.Select(supplierID => $"{buyerOrderID}-{supplierID}").ToList();
+            var sellerIDsRelatingToChange = lineItemsChanged.Select(li => li.SupplierID).Distinct().ToList();
 
             if (lineItemStatusChanges.Status == LineItemStatus.CancelRequested || lineItemStatusChanges.Status == LineItemStatus.ReturnRequested)
             {
-                await _rmaCommand.BuildRMA(buyerOrder, supplierIDsRelatingToChange, lineItemStatusChanges, lineItemsChanged, decodedToken);
+                await _rmaCommand.BuildRMA(buyerOrder, sellerIDsRelatingToChange, lineItemStatusChanges, lineItemsChanged, decodedToken);
             }
 
+            var supplierIDsRelatingToChange = sellerIDsRelatingToChange.Where(s => s != null).ToList(); // filter out MPO
+            var relatedSupplierOrderIDs = (userType == "admin") ? null : supplierIDsRelatingToChange.Select(supplierID => supplierID == null ? supplierID : $"{buyerOrderID}-{supplierID}").ToList();
             var statusSync = SyncOrderStatuses(buyerOrder, relatedSupplierOrderIDs, allLineItemsForOrder.ToList());
             await statusSync;
 
@@ -492,10 +492,19 @@ namespace Headstart.API.Commands
             {
                 return;
             }
-            string supplierOrderID = $"{rmaWithLineItemStatusByQuantity.RMA.SourceOrderID}-{rmaWithLineItemStatusByQuantity.RMA.SupplierID}";
+            string orderID;
+            if(rmaWithLineItemStatusByQuantity.RMA.SupplierID == null)
+            {
+                // this is an MPO owned RMA
+                orderID = rmaWithLineItemStatusByQuantity.RMA.SourceOrderID;
+            } else
+            {
+                // this is a suplier owned RMA and by convention orders are in the format {orderID}-{supplierID}
+                orderID = $"{rmaWithLineItemStatusByQuantity.RMA.SourceOrderID}-{rmaWithLineItemStatusByQuantity.RMA.SupplierID}";
+            }
             foreach (var statusChange in rmaWithLineItemStatusByQuantity.LineItemStatusChangesList)
             {
-                await UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Incoming, supplierOrderID, statusChange, decodedToken);
+                await UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Incoming, orderID, statusChange, decodedToken);
             }
         }
 

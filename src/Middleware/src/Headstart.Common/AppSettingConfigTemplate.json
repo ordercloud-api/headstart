@@ -1,4 +1,4 @@
-﻿﻿{
+﻿{
   "ApplicationInsightsSettings:InstrumentationKey": "",
   "AvalaraSettings:AccountID": 0,
   "AvalaraSettings:CompanyCode": "",
@@ -31,6 +31,7 @@
   "EnvironmentSettings:BuildNumber": "",
   "EnvironmentSettings:Commit": "",
   "EnvironmentSettings:Environment": "Test",
+  "EnvironmentSettings:TaxProvider": "Avalara",
   "FlurlSettings:TimeoutInSeconds": "40",
   "OrderCloudSettings:ApiUrl": "https://sandboxapi.ordercloud.io",
   "OrderCloudSettings:MiddlewareClientID": "",
@@ -38,6 +39,7 @@
   "OrderCloudSettings:IncrementorPrefix": "DB_TEST",
   "OrderCloudSettings:WebhookHashKey": "",
   "OrderCloudSettings:MarketplaceID": "",
+  "OrderCloudSettings:MarketplaceName": "",
   "SendGridSettings:ApiKey": "",
   "SendgridSettings:FromEmail": "",
   "SendgridSettings:CriticalSupportEmails": "",
