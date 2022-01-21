@@ -814,27 +814,40 @@ export class PromotionEditComponent implements OnInit, OnChanges {
         }
       }
     }
+
+    const assignmentsToAddRequests: Promise<void>[] = []
+    const assignmentsToDeleteRequests: Promise<void>[] = []
+
     // Add assignments
     if (assignmentsToAdd.length > 0) {
       for (const assignment of assignmentsToAdd) {
-        await this.ocPromotionService
-          .SaveAssignment({
-            PromotionID: promo.ID,
-            BuyerID: assignment,
-          })
-          .toPromise()
+        assignmentsToAddRequests.push(
+          this.ocPromotionService
+            .SaveAssignment({
+              PromotionID: promo.ID,
+              BuyerID: assignment,
+            })
+            .toPromise()
+        )
       }
     }
     // Delete assignments
     if (assignmentsToDelete.length > 0) {
       for (const assignment of assignmentsToDelete) {
-        await this.ocPromotionService
-          .DeleteAssignment(promo.ID, {
-            buyerID: assignment,
-          })
-          .toPromise()
+        assignmentsToDeleteRequests.push(
+          this.ocPromotionService
+            .DeleteAssignment(promo.ID, {
+              buyerID: assignment,
+            })
+            .toPromise()
+        )
       }
     }
+
+    await Promise.all([
+      ...assignmentsToAddRequests,
+      ...assignmentsToDeleteRequests,
+    ])
   }
 
   // TODO: Find diff'd object and only 'PATCH' what changed?
