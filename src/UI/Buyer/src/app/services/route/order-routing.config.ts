@@ -11,6 +11,13 @@ export const OrderRoutes: RouteConfig[] = [
     context: OrderViewContext.MyOrders,
   },
   {
+    routerCall: 'toMyQuotes',
+    displayText: 'Quotes',
+    url: '/orders/quotes',
+    showInDropdown: true,
+    context: OrderViewContext.Quote,
+  },
+  {
     routerCall: 'toOrdersByLocation',
     displayText: 'Placed in My Locations',
     url: '/orders/location',

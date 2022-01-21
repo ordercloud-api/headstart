@@ -136,6 +136,15 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
+        /// Send quote request details to supplier
+        /// </summary>
+        [HttpPost, Route("submitquoterequest/{orderID}/{lineItemID}"), OrderCloudUserAuth(ApiRole.Shopper)]
+        public async Task<HSLineItem> SendQuoteRequestToSupplier(string orderID, string lineItemID)
+        {
+            return await _command.SendQuoteRequestToSupplier(orderID, lineItemID);
+        }
+
+        /// <summary>
         /// Override unit price on order for quote order process
         /// </summary>
         [HttpPost, Route("overridequote/{orderID}/{lineItemID}"), OrderCloudUserAuth(ApiRole.OrderAdmin)]

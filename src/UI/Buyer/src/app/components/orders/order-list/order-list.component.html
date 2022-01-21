@@ -90,8 +90,11 @@
           ></ocm-order-status-icon>
           {{ getOrderStatus(order) }}
         </td>
-        <td *ngIf="columns.includes('DateSubmitted')">
+        <td *ngIf="columns.includes('DateSubmitted') && order.xp.OrderType !== 'Quote'">
           {{ order.DateSubmitted | date: 'short' || 'N/A' }}
+        </td>
+        <td *ngIf="columns.includes('DateSubmitted') && order.xp.OrderType === 'Quote'">
+          {{ order.xp.QuoteSubmittedDate | date: 'short' || 'N/A' }}
         </td>
         <td *ngIf="columns.includes('SubmittedBy')">
           {{ order.FromUser.FirstName }} {{ order.FromUser.LastName }}

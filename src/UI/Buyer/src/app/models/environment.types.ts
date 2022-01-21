@@ -65,6 +65,7 @@ export interface EnvironmentConfig {
   useSitecoreCDP?: boolean,
   sitecoreCDPTargetEndpoint: string
   sitecoreCDPApiClient: string
+  sellerQuoteContactEmail: string
 }
 
 export class AppConfig {
@@ -118,6 +119,12 @@ export class AppConfig {
    * Name to use when displaying seller organization (i.e. seller owned products)
    */
   sellerName: string
+
+  /**
+   * Email for sending quote requests to seller (i.e. seller owned products)
+   */
+   sellerQuoteContactEmail: string
+
   /**
    * An array of security roles that will be requested upon login.
    * These roles allow access to specific endpoints in the OrderCloud.io API.

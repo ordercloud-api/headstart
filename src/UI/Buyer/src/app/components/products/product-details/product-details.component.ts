@@ -8,6 +8,7 @@ import {
 } from 'ordercloud-javascript-sdk'
 import { PriceSchedule } from 'ordercloud-javascript-sdk'
 import {
+  HSOrder,
   HSLineItem,
   QuoteOrderInfo,
   HSVariant,
@@ -27,6 +28,10 @@ import { CurrentUser } from 'src/app/models/profile.types'
 import { ContactSupplierBody } from 'src/app/models/buyer.types'
 import { ModalState } from 'src/app/models/shared.types'
 import { SitecoreSendTrackingService } from 'src/app/services/sitecore-send/sitecore-send-tracking.service'
+import { Quote } from '@angular/compiler'
+import { OrderType } from 'src/app/models/order.types'
+import { TranslateService } from '@ngx-translate/core'
+import { AppConfig } from 'src/app/models/environment.types'
 
 @Component({
   templateUrl: './product-details.component.html',
@@ -69,12 +74,16 @@ export class OCMProductDetails implements OnInit {
   variant: HSVariant
   variantInventory: number
   _productSupplier: HSSupplier
+  isQuoteAnonUser = false
+  quoteContactEmail: string = ""
   constructor(
     private specFormService: SpecFormService,
     private context: ShopperContextService,
     private productDetailService: ProductDetailService,
     private toastrService: ToastrService,
-    private send: SitecoreSendTrackingService
+    private send: SitecoreSendTrackingService,
+    private translate: TranslateService,
+    private appConfig: AppConfig,
   ) {}
 
   @Input() set product(superProduct: SuperHSProduct) {
@@ -92,10 +101,14 @@ export class OCMProductDetails implements OnInit {
     if (this._product.DefaultSupplierID !== null) {
       this.setSupplier(this._product.DefaultSupplierID)
     }
+    else{
+      this.setQuoteContactEmail()
+    }
     this.setPageTitle()
     this.populateInactiveVariants(superProduct)
     this.showGrid = superProduct?.PriceSchedule?.UseCumulativeQuantity
     this.send.viewProduct(superProduct.Product);
+    this.isQuoteAnonUser = this.isQuoteProduct() && this.context.currentUser.isAnonymous()
   }
 
   ngOnInit(): void {
@@ -109,6 +122,11 @@ export class OCMProductDetails implements OnInit {
 
   async setSupplier(supplierID: string): Promise<void> {
     this._productSupplier = await Suppliers.Get(supplierID)
+    this.quoteContactEmail = this._productSupplier?.xp?.NotificationRcpts[0]
+  }
+
+  async setQuoteContactEmail(): Promise<void> {
+    this.quoteContactEmail = this.appConfig.sellerQuoteContactEmail
   }
 
   setPageTitle() {
@@ -194,6 +212,37 @@ export class OCMProductDetails implements OnInit {
   async addToCart(): Promise<void> {
     this.isAddingToCart = true
     try {
+      var currentOrder = this.context.order.get()
+      if(this._product.xp.ProductType === 'Quote'){
+        if(currentOrder?.xp?.OrderType == 'Standard' && currentOrder?.LineItemCount > 0){
+          const existingCartQuoteError = this.translate.instant('PRODUCTS.DETAILS.QUOTE_EXISTING_CART_ERROR')
+          this.toastrService.error(existingCartQuoteError)
+          this.isAddingToCart = false
+          return
+        }
+        else{
+          currentOrder.xp.OrderType = OrderType.Quote
+          currentOrder.xp.QuoteBuyerContactEmail = this.currentUser?.Email
+          currentOrder.xp.QuoteSellerContactEmail = this.quoteContactEmail
+          currentOrder.xp.QuoteSupplierID = this._productSupplier?.ID
+          currentOrder.xp.QuoteOrderInfo = {
+            FirstName: this.currentUser?.FirstName,
+            LastName: this.currentUser?.LastName,
+            Phone: this.currentUser?.Phone,
+            Email: this.currentUser?.Email,
+            BuyerLocation: ""
+          }
+          await this.context.order.patch(currentOrder)
+        }
+      }
+      else{
+        if(currentOrder?.xp?.OrderType == 'Quote' && currentOrder?.LineItemCount > 0){
+          const existingCartStandardError = this.translate.instant('PRODUCTS.DETAILS.QUOTE_STANDARD_EXISTING_CART_ERROR')
+          this.toastrService.error(existingCartStandardError)
+          this.isAddingToCart = false
+          return
+        }
+      }
       await this.context.order.cart.add({
         ProductID: this._product.ID,
         Quantity: this.quantity,
@@ -258,34 +307,6 @@ export class OCMProductDetails implements OnInit {
 
   dismissContactSupplierForm(): void {
     this.contactSupplierFormModal = ModalState.Closed
-  }
-
-  async submitQuoteOrder(info: QuoteOrderInfo): Promise<void> {
-    try {
-      const lineItem: HSLineItem = {} as HSLineItem
-      lineItem.ProductID = this._product.ID
-      lineItem.Specs = this.specFormService.getLineItemSpecs(
-        this.specs,
-        this.specForm
-      )
-      lineItem.xp = {
-        ImageUrl: this.specFormService.getLineItemImageUrl(
-          this._superProduct.Product?.xp?.Images,
-          this._superProduct.Specs,
-          this.specForm
-        ),
-      }
-      this.submittedQuoteOrder = await this.context.order.submitQuoteOrder(
-        info,
-        lineItem
-      )
-      this.quoteFormModal = ModalState.Closed
-      this.showRequestSubmittedMessage = true
-    } catch (ex) {
-      this.showRequestSubmittedMessage = false
-      this.quoteFormModal = ModalState.Closed
-      throw ex
-    }
   }
 
   async submitContactSupplierForm(formData: any): Promise<void> {

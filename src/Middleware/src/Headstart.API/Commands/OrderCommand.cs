@@ -26,6 +26,7 @@ namespace Headstart.API.Commands
         Task<HSOrder> AddPromotion(string orderID, string promoCode, DecodedToken decodedToken);
         Task<HSOrder> ApplyAutomaticPromotions(string orderID);
         Task PatchOrderRequiresApprovalStatus(string orderID);
+        Task<HSLineItem> SendQuoteRequestToSupplier(string orderID, string lineItemID);
         Task<HSLineItem> OverrideQuotePrice(string orderID, string lineItemID, decimal quotePrice);
         Task<ListPage<HSOrder>> ListQuoteOrders(MeUser me, QuoteStatus quoteStatus);
         Task<HSOrder> GetQuoteOrder(MeUser me, string orderID);
@@ -56,6 +57,15 @@ namespace Headstart.API.Commands
             _settings = settings;
             _sendgridService = sendgridService;
 		}
+
+        public async Task<HSLineItem> SendQuoteRequestToSupplier(string orderID, string lineItemID)
+        {
+            var lineItem = await _oc.LineItems.GetAsync<HSLineItem>(OrderDirection.All, orderID, lineItemID);
+            var orderObject = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.All, orderID);
+            // SEND EMAIL NOTIFICATION TO BUYER
+            await _sendgridService.SendQuoteRequestConfirmationEmail(orderObject, lineItem, orderObject.xp?.QuoteBuyerContactEmail);
+            return lineItem;
+        }
 
         public async Task<HSLineItem> OverrideQuotePrice(string orderID, string lineItemID, decimal quotePrice)
         {

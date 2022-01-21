@@ -25,7 +25,7 @@ namespace Headstart.Models
         public List<string> SupplierIDs { get; set; }
         public bool NeedsAttention { get; set; }
         public bool StopShipSync { get; set; }
-        public OrderType? OrderType { get; set; }
+        public OrderType? OrderType { get; set; } // "Quote" or "Standard"
         public QuoteOrderInfo QuoteOrderInfo { get; set; }
         public ClaimsSummary Returns { get; set; }
         public ClaimsSummary Cancelations { get; set; }

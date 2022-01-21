@@ -39,7 +39,6 @@
       <!-- Line Item Labels: Start -->
       <div
         class="d-none d-sm-block border-bottom border-light pb-2"
-        *ngIf="orderType !== 'Quote'"
       >
         <div class="row">
           <div class="col-md-6"></div>
@@ -207,10 +206,7 @@
             </div>
           </div>
           <div class="col-md-6">
-            <div
-              class="row align-items-center pt-3 pt-sm-0"
-              *ngIf="orderType !== 'Quote'"
-            >
+            <div class="row align-items-center pt-3 pt-sm-0">
               <div
                 *ngIf="!hasReturnInfo() && activePath === '/orders'"
                 class="col-2 text-center"

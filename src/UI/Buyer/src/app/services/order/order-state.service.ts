@@ -223,7 +223,7 @@ export class OrderStateService {
       filters: {
         DateDeclined: '!*',
         status: 'Unsubmitted',
-        'xp.OrderType': 'Standard',
+        'xp.QuoteStatus': '!*'
       },
     })
     return orders

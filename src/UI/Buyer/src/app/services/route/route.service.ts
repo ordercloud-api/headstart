@@ -138,6 +138,10 @@ export class RouteService {
     this.router.navigate(['/orders'], { queryParams })
   }
 
+  toMyQuotes(): void {
+    this.toRoute('/orders/quotes')
+  }
+
   toOrdersByLocation(options: OrderFilters = {}): void {
     // routing directly to unsubmitted orders
     if (!options.status) {

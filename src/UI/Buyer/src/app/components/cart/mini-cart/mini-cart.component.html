@@ -41,7 +41,7 @@
     <button class="btn btn-sm btn-link" (click)="toFullCart()" translate>
       CART.MINI_CART.EDIT_CART
     </button>
-    <button class="btn btn-sm btn-primary" (click)="toCheckout()" translate>
+    <button class="btn btn-sm btn-primary" (click)="toCheckout()" *ngIf="!isQuoteOrder()" translate>
       CART.MINI_CART.CHECKOUT
     </button>
   </div>

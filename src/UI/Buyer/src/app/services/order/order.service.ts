@@ -15,6 +15,7 @@ import {
   HSOrder,
   HSLineItem,
   QuoteOrderInfo,
+  HeadStartSDK,
 } from '@ordercloud/headstart-sdk'
 import { PromoService } from './promo.service'
 import { AppConfig } from 'src/app/models/environment.types'
@@ -47,6 +48,22 @@ export class CurrentOrderService {
     return this.state.lineItems
   }
 
+  public async patch(order: HSOrder, orderID?: string): Promise<void> {
+    await Orders.Patch(
+      'Outgoing',
+      orderID || order.ID,
+      order
+    )
+  }
+
+  public async delete(orderID: string): Promise<void> {
+    await Orders.Delete('All', orderID)
+  }
+
+  public async sendQuoteNotification(orderID: string, lineItemID: string): Promise<void> {
+    await HeadStartSDK.Orders.SendQuoteRequestToSupplier(orderID, lineItemID)
+  }
+
   get cart(): CartService {
     return this.cartService
   }
@@ -58,46 +75,5 @@ export class CurrentOrderService {
   get checkout(): CheckoutService {
     return this.checkoutService
   }
-
-  async submitQuoteOrder(
-    info: QuoteOrderInfo,
-    lineItem: HSLineItem
-  ): Promise<Order> {
-    const order = this.buildQuoteOrder(info)
-    lineItem.xp.StatusByQuantity = {
-      Submitted: 0,
-      Open: 1,
-      Backordered: 0,
-      Canceled: 0,
-      CancelRequested: 0,
-      Returned: 0,
-      ReturnRequested: 0,
-      Complete: 0,
-    } as any
-    const quoteOrder = await Orders.Create('Outgoing', order)
-    await LineItems.Create('Outgoing', quoteOrder.ID, lineItem as LineItem)
-    await IntegrationEvents.Calculate('Outgoing', quoteOrder.ID)
-    const submittedQuoteOrder = await Orders.Submit('Outgoing', quoteOrder.ID)
-    return submittedQuoteOrder
-  }
-
-  //todo revert type to QuoteOrderInfo
-  buildQuoteOrder(info: any): Order {
-    return {
-      ID: `${this.appConfig.incrementorPrefix}{orderIncrementor}`,
-      ShippingAddressID: info.ShippingAddressId,
-      xp: {
-        ExternalTaxTransactionID: '',
-        OrderType: OrderType.Quote,
-        QuoteOrderInfo: {
-          FirstName: info.FirstName,
-          LastName: info.LastName,
-          BuyerLocation: (info as any).BuyerLocation,
-          Phone: info.Phone,
-          Email: info.Email,
-          Comments: info.Comments,
-        },
-      },
-    }
-  }
+  
 }
