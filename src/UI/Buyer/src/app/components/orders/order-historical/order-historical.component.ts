@@ -12,6 +12,7 @@ import {
 } from 'ordercloud-javascript-sdk'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 import { isQuoteOrder } from '../../../services/orderType.helper'
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
 
 @Component({
   templateUrl: './order-historical.component.html',
@@ -26,6 +27,7 @@ export class OCMOrderHistorical implements OnInit {
     this.payments = value.Payments as any
     this.approvals = value.Approvals.filter((a) => a.Approver) as any
     this.getBuyerLocation(this.order.BillingAddressID)
+    this.supplierMail = "mailto:" + this.order.xp.QuoteSellerContactEmail
   }
   order: HSOrder
   lineItems: HSLineItem[] = []
@@ -35,11 +37,18 @@ export class OCMOrderHistorical implements OnInit {
   isQuoteOrder = isQuoteOrder
   buyerLocation: HSAddressBuyer
   _userCurrency: string
+  supplierMail: string
 
-  constructor(private context: ShopperContextService) { }
+  constructor(
+    private context: ShopperContextService,
+    private modalService: NgbModal) { }
 
   ngOnInit(): void {
     this._userCurrency = this.context.currentUser.get().Currency
+  }
+
+  open(content: HTMLTemplateElement): void {
+    this.modalService.open(content, { ariaLabelledBy: 'confirm-modal' })
   }
 
   async getBuyerLocation(addressID: string): Promise<void> {
@@ -47,5 +56,22 @@ export class OCMOrderHistorical implements OnInit {
       const buyerLocation = await this.context.addresses.get(addressID)
       this.buyerLocation = buyerLocation
     } else this.buyerLocation = null
+  }
+
+  async acceptQuote() :Promise<void>{
+    const lineItems = this.lineItems.map(async (li) => {
+      await this.context.order.cart.add({
+        ProductID: li.ProductID,
+        UnitPrice: li.UnitPrice,
+        Product: li.Product,
+        Quantity: li.Quantity,
+        Specs: li.Specs,
+        xp: li.xp,
+      })
+    })
+    Promise.all(lineItems).finally(() => (
+      this.context.order.delete(this.order.ID)
+    ))
+    this.context.router.toCart()
   }
 }

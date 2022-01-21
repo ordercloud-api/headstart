@@ -30,6 +30,7 @@ export enum OrderAddressType {
 
 export enum HeadstartOrderStatus {
   AllSubmitted = '!Unsubmitted',
+  AllQuotes = 'NeedsSellerReview',
   AwaitingApproval = 'AwaitingApproval',
   ChangesRequested = 'ChangesRequested',
   Open = 'Open',
@@ -69,6 +70,7 @@ export enum OrderViewContext {
   MyOrders = 'MyOrders',
   Approve = 'Approve',
   Location = 'Location',
+  Quote = 'Quote',
 }
 
 export interface OrderReorderResponse {

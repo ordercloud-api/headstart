@@ -90,8 +90,12 @@
       <div class="sticky-top order-summary">
         <ocm-order-summary [orderSummaryMeta]="orderSummaryMeta"></ocm-order-summary>
         <button [disabled]="!_isCartValid" class="btn btn-lg btn-primary btn-block my-4 font-weight-bold"
-          (click)="toCheckout()" translate>
+          (click)="toCheckout()" *ngIf="_order?.xp?.OrderType == 'Standard'" translate>
           CART.CART.CHECKOUT
+        </button>
+        <button [disabled]="!_isCartValid" class="btn btn-lg btn-primary btn-block my-4 font-weight-bold"
+          (click)="submitQuote()" *ngIf="_order?.xp?.OrderType == 'Quote'" translate>
+          CART.CART.SUBMIT_QUOTE
         </button>
       </div>
     </div>

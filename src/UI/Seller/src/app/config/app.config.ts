@@ -57,6 +57,7 @@ export const ocAppConfig: AppConfig = {
     'ProductFacetAdmin',
     'ProductFacetReader',
     'ShipmentAdmin',
+    'UnsubmittedOrderReader',
 
     // custom cms roles
     'AssetAdmin',

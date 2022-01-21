@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Headstart.Common;
 using Headstart.Common.Extensions;
 using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using ordercloud.integrations.library;
@@ -32,7 +33,7 @@ namespace Headstart.API.Commands
             });
         }
 
-        public async Task<JObject> GetOrderAsync(string ID, DecodedToken decodedToken)
+        public async Task<JObject> GetOrderAsync(string ID, OrderType orderType, DecodedToken decodedToken)
         {
             HSShipEstimate estimate;
             HSShipMethod ship_method = null;

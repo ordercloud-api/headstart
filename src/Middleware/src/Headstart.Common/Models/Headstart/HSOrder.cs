@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using Headstart.Common.Exceptions;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models.Headstart;
+using System;
 
 namespace Headstart.Models
 {
@@ -24,7 +25,7 @@ namespace Headstart.Models
         public List<string> SupplierIDs { get; set; }
         public bool NeedsAttention { get; set; }
         public bool StopShipSync { get; set; }
-        public OrderType? OrderType { get; set; }
+        public OrderType? OrderType { get; set; } // "Quote" or "Standard"
         public QuoteOrderInfo QuoteOrderInfo { get; set; }
         public ClaimsSummary Returns { get; set; }
         public ClaimsSummary Cancelations { get; set; }
@@ -39,6 +40,12 @@ namespace Headstart.Models
         public List<ShipMethodSupplierView> SelectedShipMethodsSupplierView { get; set; }
         public bool? IsResubmitting { get; set; }
         public bool? HasSellerProducts { get; set; }
+        public QuoteStatus QuoteStatus { get; set; }
+        public string QuoteSellerContactEmail { get; set; }
+        public string QuoteBuyerContactEmail { get; set; }
+        public DateTimeOffset? QuoteSubmittedDate { get; set; }
+        public string QuoteSupplierID { get; set; }
+
     }
 
     
@@ -135,5 +142,12 @@ namespace Headstart.Models
         Open,
         Completed,
         Canceled
+    }
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum QuoteStatus
+    {
+        NeedsBuyerReview,
+        NeedsSellerReview
     }
 }

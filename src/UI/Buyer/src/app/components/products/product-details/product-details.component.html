@@ -93,7 +93,10 @@
             make another selection.</strong
           >
         </ng-container>
-        <div class="d-flex flex-column mb-3" *ngIf="isOrderable">
+        <ng-container *ngIf="isQuoteAnonUser">
+          <strong class="text-danger" translate>PRODUCTS.DETAILS.LOGIN_FOR_QUOTE</strong>
+        </ng-container>
+        <div class="d-flex flex-column mb-3" *ngIf="isOrderable && !isQuoteAnonUser">
           <small
             class="text-uppercase font-weight-bolder text-muted mb-2"
             translate
@@ -112,16 +115,6 @@
             >
             </ocm-quantity-input>
             <button
-              *ngIf="isQuoteProduct()"
-              class="btn btn-block btn-primary mb-3"
-              [disabled]="(specForm && !specForm?.valid) || !qtyValid"
-              (click)="openQuoteForm()"
-              translate
-            >
-              PRODUCTS.DETAILS.REQ_QUOTE
-            </button>
-            <button
-              *ngIf="!isQuoteProduct()"
               class="btn btn-block btn-primary mb-3"
               type="submit"
               [disabled]="
@@ -142,13 +135,6 @@
           PRODUCTS.DETAILS.VIEW_ONLY
         </div>
       </ng-container>
-      <ocm-modal [state]="quoteFormModal" [modalTitle]="'Request Quote'">
-        <ocm-quote-request-form
-          (formSubmitted)="submitQuoteOrder($event.detail.user)"
-          [CurrentUser]="currentUser"
-          (formDismissed)="dismissQuoteForm()"
-        ></ocm-quote-request-form>
-      </ocm-modal>
       <ocm-modal
         [state]="contactSupplierFormModal"
         [modalTitle]="'Product Inquiry'"
@@ -310,7 +296,7 @@
         <div *ngIf="!isOrderable" class="alert alert-info" translate>
           PRODUCTS.DETAILS.VIEW_ONLY
         </div>
-        <div class="d-flex flex-column" *ngIf="isOrderable">
+        <div class="d-flex flex-column" *ngIf="isOrderable && !isQuoteAnonUser">
           <span translate>PRODUCTS.DETAILS.QUANTITY</span>:
           <ocm-quantity-input
             class="d-inline-block mb-3 product-qty-input"

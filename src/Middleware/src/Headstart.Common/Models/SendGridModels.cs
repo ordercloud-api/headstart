@@ -1,4 +1,5 @@
 ﻿using Headstart.Models;
+using ordercloud.integrations.exchangerates;
 using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
@@ -114,6 +115,8 @@ namespace Headstart.Common.Models
             public string Location { get; set; }
             public string ProductID { get; set; }
             public string ProductName { get; set; }
+            public decimal? UnitPrice { get; set; }
+            public string Currency { get; set; }
             public HSOrder Order { get; set; }
         }
 

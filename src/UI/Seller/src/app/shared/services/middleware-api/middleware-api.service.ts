@@ -6,12 +6,15 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Inject, Injectable } from '@angular/core'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppConfig } from '@app-seller/models/environment.types'
+import { OrderType } from '@app-seller/shared'
 import { OcTokenService, Order } from '@ordercloud/angular-sdk'
 import {
   ListPage,
   BatchProcessResult,
   SuperHSShipment,
   HSSupplier,
+  HSLineItem,
+  HSOrder,
 } from '@ordercloud/headstart-sdk'
 import { Observable } from 'rxjs'
 
@@ -51,8 +54,11 @@ export class MiddlewareAPIService {
     return await this.http.get<ListPage<any>>(url, this.headers).toPromise()
   }
 
-  async getSupplierData(supplierOrderID: string): Promise<any> {
-    const url = `${this.appConfig.middlewareUrl}/supplier/orderdetails/${supplierOrderID}`
+  async getSupplierData(
+    supplierOrderID: string,
+    orderType: OrderType
+  ): Promise<any> {
+    const url = `${this.appConfig.middlewareUrl}/supplier/orderdetails/${supplierOrderID}/${orderType}`
     return await this.http.get<any>(url, this.headers).toPromise()
   }
 

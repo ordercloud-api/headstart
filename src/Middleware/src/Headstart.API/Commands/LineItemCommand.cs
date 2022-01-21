@@ -411,7 +411,7 @@ namespace Headstart.API.Commands
 
             var li = new HSLineItem();
             var markedUpPrice = ValidateLineItemUnitCost(orderID, product, existingLineItems, liReq);
-            liReq.UnitPrice = await markedUpPrice;
+            liReq.UnitPrice = liReq.Product != null ? liReq.UnitPrice : await markedUpPrice;
             
             Require.That(!order.IsSubmitted, new ErrorCode("Invalid Order Status", "Order has already been submitted"));
 

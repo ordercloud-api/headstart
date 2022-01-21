@@ -192,6 +192,7 @@
       "PROMOTION": "Promotion",
       "PROMOTIONS": "Promotions",
       "PURCHASE_ORDERS": "Purchase Orders",
+      "QUOTE_ORDERS": "Quote Orders",
       "REPORT_TEMPLATES": "Report Templates",
       "REPORTS": "Reports",
       "RMA": "RMA",
@@ -209,6 +210,15 @@
     "PIPES": {
       "NO": "No",
       "YES": "Yes"
+    },
+    "ORDERS": {
+      "CANCEL_PRICING": "Cancel Pricing",
+      "QUOTE_PRICE_EXPLANATION": {
+        "A_QUOTED_PRICE": "A quoted price of",
+        "IS_PENDING_BUYER": "is pending buyer review."
+      },
+      "SAVE_AND_NOTIFY": "Save and Notify Buyer",
+      "SET_QUOTE_PRICE": "Set Quote Price"
     },
     "BILLING_NUMBER": "Billing Number",
     "PRODUCT_EDIT": {
@@ -607,7 +617,8 @@
       "CONTINUE_SHOPPING": "Continue Shopping",
       "EMPTY_CART": "Empty Cart",
       "SHOPPING_CART": "Shopping Cart",
-      "VIEW_CART": "View Cart"
+      "VIEW_CART": "View Cart",
+      "SUBMIT_QUOTE": "Submit Quote"
     },
     "LINEITEM_TABLE": {
       "PRICE": "Price",
@@ -799,7 +810,11 @@
       "SUBMITTED_BY": "Submitted By",
       "SUBTOTAL": "Subtotal",
       "TAX": "Tax",
-      "TOTAL": "Total"
+      "TOTAL": "Total",
+      "ACCEPT_QUOTE": "Accept Quote",
+      "CONTACT_SUPPLIER": "Contact Supplier",
+      "QUOTE_ACTIONS": "Quote Actions",
+      "QUOTE_ACCEPTED_MESSAGE": "Once the order is accepted the quote request will be deleted and the items will be added to your cart so that you may checkout."
     },
     "HISTORY": {
       "FAVORITES": "Favorites",
@@ -937,7 +952,10 @@
       "TIERED_PRICE_DESC": "For select items, the more you order - the more you save! Details listed below. Pricing excludes additional charges for sizes and modifications.",
       "TIERED_PRICE_HEAD": "Tiered Pricing",
       "VIEW_ONLY": "This is a view-only product and cannot be ordered",
-      "VIEW_QUOTE": "View quote request"
+      "VIEW_QUOTE": "View quote request",
+      "LOGIN_FOR_QUOTE": "You must login before you can place a request for Quote.",
+      "QUOTE_EXISTING_CART_ERROR": "Cannot add Quote Request to existing cart.",
+      "QUOTE_STANDARD_EXISTING_CART_ERROR": "Cannot add Standard items to existing cart."
     },
     "FACETS": "Show All",
     "GRID": {

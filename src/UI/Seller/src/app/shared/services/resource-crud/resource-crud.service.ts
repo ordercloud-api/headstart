@@ -20,18 +20,15 @@ import { ResourceUpdate } from '@app-seller/models/shared.types'
 import { ListArgs } from '@ordercloud/headstart-sdk'
 
 export abstract class ResourceCrudService<ResourceType> {
-  public resourceSubject: BehaviorSubject<
-    ListPage<ResourceType>
-  > = new BehaviorSubject<ListPage<ResourceType>>({
-    Meta: {},
-    Items: [],
-  })
-  public resourceRequestStatus: BehaviorSubject<RequestStatus> = new BehaviorSubject<RequestStatus>(
-    GETTING_NEW_ITEMS
-  )
-  public optionsSubject: BehaviorSubject<Options> = new BehaviorSubject<Options>(
-    {}
-  )
+  public resourceSubject: BehaviorSubject<ListPage<ResourceType>> =
+    new BehaviorSubject<ListPage<ResourceType>>({
+      Meta: {},
+      Items: [],
+    })
+  public resourceRequestStatus: BehaviorSubject<RequestStatus> =
+    new BehaviorSubject<RequestStatus>(GETTING_NEW_ITEMS)
+  public optionsSubject: BehaviorSubject<Options> =
+    new BehaviorSubject<Options>({})
 
   route = ''
   myRoute = ''
@@ -90,13 +87,8 @@ export abstract class ResourceCrudService<ResourceType> {
   async listResources(pageNumber = 1, searchText = ''): Promise<void> {
     const shouldList = await this.shouldListResources()
     if (shouldList) {
-      const {
-        sortBy,
-        search,
-        searchType,
-        filters,
-        OrderDirection,
-      } = this.optionsSubject.value
+      const { sortBy, search, searchType, filters, OrderDirection } =
+        this.optionsSubject.value
       let options: Options = {
         page: pageNumber,
         // allows a list call to pass in a search term that will not appear in the query params

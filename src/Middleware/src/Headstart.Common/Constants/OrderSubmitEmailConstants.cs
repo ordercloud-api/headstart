@@ -102,5 +102,25 @@ namespace Headstart.Common.Constants
                 DynamicText2 = "Your declined order contains the following items"
             };
         }
+
+        public static EmailDisplayText GetQuoteRequestConfirmationText()
+        {
+            return new EmailDisplayText()
+            {
+                EmailSubject = "Your quote request has been submitted",
+                DynamicText = "A quote request has been submitted.",
+                DynamicText2 = "You will recieve a notification once your quote request has been quoted."
+            };
+        }
+
+        public static EmailDisplayText GetQuotePriceConfirmationText()
+        {
+            return new EmailDisplayText()
+            {
+                EmailSubject = "Your order has been quoted",
+                DynamicText = "A quote has been offered on your order. Please review the order to see this quote.",
+                DynamicText2 = "You will have an opportunity to purchase the product at the quoted price, or to reopen the quote request."
+            };
+        }
     }
 }

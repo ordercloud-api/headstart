@@ -20,15 +20,17 @@ namespace Headstart.Common.Controllers
     [Route("order")]
     public class OrderController : CatalystController
     {
-        
+
         private readonly IOrderCommand _command;
         private readonly IOrderSubmitCommand _orderSubmitCommand;
         private readonly ILineItemCommand _lineItemCommand;
-        public OrderController(IOrderCommand command, ILineItemCommand lineItemCommand, IOrderSubmitCommand orderSubmitCommand)
+        private readonly IOrderCloudClient _oc;
+        public OrderController(IOrderCommand command, ILineItemCommand lineItemCommand, IOrderSubmitCommand orderSubmitCommand, IOrderCloudClient oc)
         {
             _command = command;
             _lineItemCommand = lineItemCommand;
             _orderSubmitCommand = orderSubmitCommand;
+            _oc = oc;
         }
 
         /// <summary>
@@ -131,6 +133,44 @@ namespace Headstart.Common.Controllers
         public async Task<HSOrder> ApplyAutomaticPromotions(string orderID)
         {
             return await _command.ApplyAutomaticPromotions(orderID);
+        }
+
+        /// <summary>
+        /// Send quote request details to supplier
+        /// </summary>
+        [HttpPost, Route("submitquoterequest/{orderID}/{lineItemID}"), OrderCloudUserAuth(ApiRole.Shopper)]
+        public async Task<HSLineItem> SendQuoteRequestToSupplier(string orderID, string lineItemID)
+        {
+            return await _command.SendQuoteRequestToSupplier(orderID, lineItemID);
+        }
+
+        /// <summary>
+        /// Override unit price on order for quote order process
+        /// </summary>
+        [HttpPost, Route("overridequote/{orderID}/{lineItemID}"), OrderCloudUserAuth(ApiRole.OrderAdmin)]
+        public async Task<HSLineItem> OverrideQuotePrice(string orderID, string lineItemID, [FromBody] decimal quotePrice)
+        {
+            return await _command.OverrideQuotePrice(orderID, lineItemID, quotePrice);
+        }
+
+        /// <summary>
+        /// Lists quote orders, which are in an unsubmitted status
+        /// </summary>
+        [HttpGet, Route("listquoteorders/{quoteStatus}"), OrderCloudUserAuth(ApiRole.OrderReader, ApiRole.OrderAdmin)]
+        public async Task<ListPage<HSOrder>> ListQuoteOrders(QuoteStatus quoteStatus)
+        {
+            var me = await _oc.Me.GetAsync(accessToken: UserContext.AccessToken);
+            return await _command.ListQuoteOrders(me, quoteStatus);
+        }
+
+        /// <summary>
+        /// Gets a single quote order
+        /// </summary>
+        [HttpGet, Route("getquoteorder/{orderID}"), OrderCloudUserAuth(ApiRole.OrderReader, ApiRole.OrderAdmin)]
+        public async Task<HSOrder> GetQuoteOrder(string orderID)
+        {
+            var me = await _oc.Me.GetAsync(accessToken: UserContext.AccessToken);
+            return await _command.GetQuoteOrder(me, orderID);
         }
     }
 }
