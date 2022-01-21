@@ -24,7 +24,8 @@ export class OrderHistoryWrapperComponent implements OnInit, OnDestroy {
   }
 
   setOrders = async (): Promise<void> => {
-    this.orders = await this.orderFilters.listOrders(window.location.pathname.toLowerCase().indexOf("quotes") != -1)
+    const shouldListQuoteOrders = window.location.pathname.toLowerCase().indexOf("quotes") != -1;
+    this.orders = await this.orderFilters.listOrders(shouldListQuoteOrders)
   }
 
   ngOnDestroy(): void {

@@ -24,6 +24,7 @@ export const ocAppConfig: AppConfig = {
   useSitecoreCDP: environment.useSitecoreCDP,
   sitecoreCDPTargetEndpoint: environment.sitecoreCDPTargetEndpoint,
   sitecoreCDPApiClient: environment.sitecoreCDPApiClient,
+  sellerQuoteContactEmail: environment.sellerQuoteContactEmail,
   scope: [
     'MeAddressAdmin',
     'AddressAdmin', // Only for location owners

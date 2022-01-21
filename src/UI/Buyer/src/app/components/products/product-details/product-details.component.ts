@@ -30,6 +30,8 @@ import { ModalState } from 'src/app/models/shared.types'
 import { SitecoreSendTrackingService } from 'src/app/services/sitecore-send/sitecore-send-tracking.service'
 import { Quote } from '@angular/compiler'
 import { OrderType } from 'src/app/models/order.types'
+import { TranslateService } from '@ngx-translate/core'
+import { AppConfig } from 'src/app/models/environment.types'
 
 @Component({
   templateUrl: './product-details.component.html',
@@ -73,12 +75,15 @@ export class OCMProductDetails implements OnInit {
   variantInventory: number
   _productSupplier: HSSupplier
   isQuoteAnonUser = false
+  quoteContactEmail: string = ""
   constructor(
     private specFormService: SpecFormService,
     private context: ShopperContextService,
     private productDetailService: ProductDetailService,
     private toastrService: ToastrService,
-    private send: SitecoreSendTrackingService
+    private send: SitecoreSendTrackingService,
+    private translate: TranslateService,
+    private appConfig: AppConfig,
   ) {}
 
   @Input() set product(superProduct: SuperHSProduct) {
@@ -95,6 +100,9 @@ export class OCMProductDetails implements OnInit {
     this.specs = superProduct.Specs
     if (this._product.DefaultSupplierID !== null) {
       this.setSupplier(this._product.DefaultSupplierID)
+    }
+    else{
+      this.setQuoteContactEmail()
     }
     this.setPageTitle()
     this.populateInactiveVariants(superProduct)
@@ -114,6 +122,11 @@ export class OCMProductDetails implements OnInit {
 
   async setSupplier(supplierID: string): Promise<void> {
     this._productSupplier = await Suppliers.Get(supplierID)
+    this.quoteContactEmail = this._productSupplier?.xp?.NotificationRcpts[0]
+  }
+
+  async setQuoteContactEmail(): Promise<void> {
+    this.quoteContactEmail = this.appConfig.sellerQuoteContactEmail
   }
 
   setPageTitle() {
@@ -202,20 +215,21 @@ export class OCMProductDetails implements OnInit {
       var currentOrder = this.context.order.get()
       if(this._product.xp.ProductType === 'Quote'){
         if(currentOrder?.xp?.OrderType == 'Standard' && currentOrder?.LineItemCount > 0){
-          this.toastrService.error('Cannot add Quote Request to existing cart.')
+          const existingCartQuoteError = this.translate.instant('PRODUCTS.DETAILS.QUOTE_EXISTING_CART_ERROR')
+          this.toastrService.error(existingCartQuoteError)
           this.isAddingToCart = false
           return
         }
         else{
           currentOrder.xp.OrderType = OrderType.Quote
-          currentOrder.xp.QuoteBuyerContactEmail = this.currentUser.Email
-          currentOrder.xp.QuoteSellerContactEmail = this._productSupplier.xp.NotificationRcpts[0]
-          currentOrder.xp.QuoteSupplierID = this._productSupplier.ID
+          currentOrder.xp.QuoteBuyerContactEmail = this.currentUser?.Email
+          currentOrder.xp.QuoteSellerContactEmail = this.quoteContactEmail
+          currentOrder.xp.QuoteSupplierID = this._productSupplier?.ID
           currentOrder.xp.QuoteOrderInfo = {
-            FirstName: this.currentUser.FirstName,
-            LastName: this.currentUser.LastName,
-            Phone: this.currentUser.Phone,
-            Email: this.currentUser.Email,
+            FirstName: this.currentUser?.FirstName,
+            LastName: this.currentUser?.LastName,
+            Phone: this.currentUser?.Phone,
+            Email: this.currentUser?.Email,
             BuyerLocation: ""
           }
           await this.context.order.patch(currentOrder)
@@ -223,7 +237,8 @@ export class OCMProductDetails implements OnInit {
       }
       else{
         if(currentOrder?.xp?.OrderType == 'Quote' && currentOrder?.LineItemCount > 0){
-          this.toastrService.error('Cannot add Standard items to existing cart.')
+          const existingCartStandardError = this.translate.instant('PRODUCTS.DETAILS.QUOTE_STANDARD_EXISTING_CART_ERROR')
+          this.toastrService.error(existingCartStandardError)
           this.isAddingToCart = false
           return
         }
