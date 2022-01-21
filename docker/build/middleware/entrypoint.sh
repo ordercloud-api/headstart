@@ -1,3 +1,13 @@
+echo "Getting Cosmos IP Address"
+CosmosContainerIpAddress=`ping cosmos -c1 | head -1 | grep -Eo '[0-9.]{4,}'`
+CosmosEndpointURI=`echo "https://$CosmosContainerIpAddress:8081"`
+
+echo "Installing the cosmos emulator cert locally"
+curl -k $CosmosEndpointURI/_explorer/emulator.pem > ~/emulatorcert.crt
+cp ~/emulatorcert.crt /usr/local/share/ca-certificates/
+update-ca-certificates
+
+echo "Persisting settings to appSettings.json"
 touch appSettings.json
 echo '{}' > appSettings.json
 
@@ -32,7 +42,7 @@ json -I -f appSettings.json \
 json -I -f appSettings.json \
       -e "this['CosmosSettings:DatabaseName']='$CosmosSettings_DatabaseName'" \
       -e "this['CosmosSettings:EnableTcpConnectionEndpointRediscovery']='$CosmosSettings_EnableTcpConnectionEndpointRediscovery'" \
-      -e "this['CosmosSettings:EndpointUri']='$CosmosSettings_EndpointUri'" \
+      -e "this['CosmosSettings:EndpointUri']='$CosmosEndpointURI'" \
       -e "this['CosmosSettings:PrimaryKey']='$CosmosSettings_PrimaryKey'" \
       -e "this['CosmosSettings:RequestTimeoutInSeconds']='$CosmosSettings_RequestTimeoutInSeconds'"
 
@@ -90,4 +100,5 @@ json -I -f appSettings.json \
       -e "this['ZohoSettings:OrgID']='$ZohoSettings_OrgID'" \
       -e "this['ZohoSettings:PerformOrderSubmitTasks']='$ZohoSettings_PerformOrderSubmitTasks'"
 
+echo "Run Middleware"
 dotnet Headstart.API.dll

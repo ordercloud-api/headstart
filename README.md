@@ -283,24 +283,32 @@ This project follows the [build once, deploy many](https://earlyandoften.wordpre
 
 ## Docker
 
-You can run the project using Docker, sample docker-compose.yml file includes Buyer/Seller/Middleware as well as emulated Azure Storage via [Azurite](https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=visual-studio). Note you will currently still need a Cosmos DB instance hosted in Azure.
+You can run the project using Docker, sample docker-compose.yml file includes Buyer/Seller/Middleware as well as emulated Azure Storage via [Azurite](https://docs.microsoft.com/en-us/azure/storage/common/storage-use-azurite?tabs=visual-studio), and Cosmos DB via the [Cosmos DB Emulator](https://docs.microsoft.com/en-us/azure/cosmos-db/linux-emulator).
 
-1. Create a Cosmos DB instance in Azure & make a note of your chosen `databasename`, and the generated `endpointUri` and `PrimaryKey`.
-2. Make sure to [switch daemon to Linux containers](https://docs.docker.com/docker-for-windows/#switch-between-windows-and-linux-containers)
-3. Copy `.env.template` file to `.env`
-4. Open `.env` file and populate the following variables in the `REQUIRED ENVIRONMENT VARIABLES` section:
-    - CosmosSettings_DatabaseName
-    - CosmosSettings_EndpointUri
-    - CosmosSettings_PrimaryKey
-5. Add the following records to your Hosts file
+1. Make sure to [switch daemon to Linux containers](https://docs.docker.com/docker-for-windows/#switch-between-windows-and-linux-containers)
+2. Copy `.env.template` file to `.env`
+3. Add the following records to your Hosts file
     - 127.0.0.1 buyer.headstart.localhost
     - 127.0.0.1 seller.headstart.localhost
     - 127.0.0.1 api.headstart.localhost
-6. From the project directory, start up your application by running `docker-compose up -d`
-7. Follow the steps to seed the initial data values listed in the [Seeding OrderCloud Data](https://github.com/ordercloud-api/headstart#seeding-ordercloud-data) section above.
-8.  Open `.env` file and populate the rest of the variables in the `REQUIRED ENVIRONMENT VARIABLES` section, using the output values from the `/seed` command response.
-9. Restart your docker containers to make use of the new env vars by running `docker-compose restart`
-10. Follow the steps in the [Validating Setup](https://github.com/ordercloud-api/headstart#validating-setup) section above to walk through generating some sample data and testing each of the application instances.
+4. From the project directory, start up your application by running `docker-compose up -d`
+    - Note the `Middleware` container may take longer to start as it depends on the Cosmos emulator being healthy.
+5. Follow the steps to seed the initial data values listed in the [Seeding OrderCloud Data](https://github.com/ordercloud-api/headstart#seeding-ordercloud-data) section above.
+6. Open `.env` file and populate the rest of the variables in the `REQUIRED ENVIRONMENT VARIABLES` section:
+    - The following values comes from from the `/seed` command response executed in previous step
+        - SELLER_CLIENT_ID
+        - BUYER_CLIENT_ID
+        - OrderCloudSettings_MiddlewareClientID
+        - OrderCloudSettings_MiddlewareClientSecret
+        - SELLER_ID (This should be set to the `MarketplaceID`)
+    - The following values need to be obtained by create accounts with EasyPost & SmartyStreets
+        - EasyPostSettings_APIKey 
+        - SmartyStreetSettings_AuthID
+        - SmartyStreetSettings_AuthToken
+    
+7. Restart your docker containers to make use of the new env vars by running `docker-compose down` followed by `docker-compose up -d`.
+    - Note you can't run a `docker-compose restart` here as if the containers are already running then the Middleware app will restart before Cosmos is healthy.
+8. Follow the steps in the [Validating Setup](https://github.com/ordercloud-api/headstart#validating-setup) section above to walk through generating some sample data and testing each of the application instances.
 
 ## Git Flow
 
