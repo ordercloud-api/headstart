@@ -7,6 +7,7 @@ import {
   ViewChild,
   ChangeDetectorRef,
   OnChanges,
+  ComponentFactoryResolver,
 } from '@angular/core'
 import { get as _get } from 'lodash'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
@@ -23,6 +24,7 @@ import {
   Product,
   ListPage,
   OcProductService,
+  OcBuyerService,
 } from '@ordercloud/angular-sdk'
 import { PromotionService } from '@app-seller/promotions/promotion.service'
 import {
@@ -34,10 +36,21 @@ import {
 } from '@app-seller/models/promo-types'
 import * as moment from 'moment'
 import { Router } from '@angular/router'
-import { ListArgs, HSSupplier, HSProduct } from '@ordercloud/headstart-sdk'
+import {
+  ListArgs,
+  HSSupplier,
+  HSProduct,
+  HSBuyer,
+} from '@ordercloud/headstart-sdk'
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap'
 import { TranslateService } from '@ngx-translate/core'
-import { Products, Meta, Suppliers, Supplier } from 'ordercloud-javascript-sdk'
+import {
+  Products,
+  Meta,
+  Suppliers,
+  Supplier,
+  Buyers,
+} from 'ordercloud-javascript-sdk'
 import { ToastrService } from 'ngx-toastr'
 import { BehaviorSubject } from 'rxjs'
 @Component({
@@ -73,9 +86,12 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   supplierMeta: Meta
   products = new BehaviorSubject<Product[]>([])
   productMeta: Meta
+  buyers = new BehaviorSubject<HSBuyer[]>([])
+  buyerMeta: Meta
   selectedSupplier: HSSupplier
   selectedBuySKU: HSProduct
   selectedGetSKU: HSProduct
+  selectedBuyer: HSBuyer
   resourceForm: FormGroup
   _promotionEditable: Promotion<PromotionXp>
   _promotionStatic: Promotion<PromotionXp>
@@ -90,6 +106,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   isCreatingNew: boolean
   isCloning = false
   searchTerm = ''
+  buyerSearchTerm = ''
   faTimesCircle = faTimesCircle
   faExclamationCircle = faExclamationCircle
   faQuestionCircle = faQuestionCircle
@@ -103,6 +120,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
     private ocPromotionService: OcPromotionService,
     private ocSupplierService: OcSupplierService,
     private ocProductService: OcProductService,
+    private ocBuyerService: OcBuyerService,
     private router: Router,
     private translate: TranslateService,
     private toastrService: ToastrService,
@@ -258,8 +276,15 @@ export class PromotionEditComponent implements OnInit, OnChanges {
     this.searchTerm = searchText
   }
 
+  buyerSearchedResources(buyerSearchText: string): void {
+    void this.listResources(1, buyerSearchText).then(() =>
+      this.cdr.detectChanges()
+    )
+    this.buyerSearchTerm = buyerSearchText
+  }
+
   async listResources(pageNumber = 1, searchText = ''): Promise<void> {
-    const options: ListArgs<Supplier> = {
+    const options: ListArgs<any> = {
       page: pageNumber,
       search: searchText,
       sortBy: ['Name'],
@@ -275,14 +300,18 @@ export class PromotionEditComponent implements OnInit, OnChanges {
     } else {
       resourceResponse = await Products.List(options)
     }
+    const buyerResourceResponse = await Buyers.List(options as any)
     if (pageNumber === 1) {
-      this.setNewResources(resourceResponse)
+      this.setNewResources(resourceResponse, buyerResourceResponse)
     } else {
-      this.addResources(resourceResponse)
+      this.addResources(resourceResponse, buyerResourceResponse)
     }
   }
 
-  setNewResources(resourceResponse: ListPage<Product>): void {
+  setNewResources(
+    resourceResponse: ListPage<any>,
+    buyerResourceResponse: ListPage<HSBuyer>
+  ): void {
     if (
       this._promotionEditable?.xp?.AppliesTo ===
       HSPromoEligibility.SpecificSupplier
@@ -293,9 +322,14 @@ export class PromotionEditComponent implements OnInit, OnChanges {
       this.productMeta = resourceResponse?.Meta
       this.products.next(resourceResponse?.Items)
     }
+    this.buyerMeta = buyerResourceResponse?.Meta
+    this.buyers.next(buyerResourceResponse?.Items)
   }
 
-  addResources(resourceResponse: ListPage<Product>): void {
+  addResources(
+    resourceResponse: ListPage<Product>,
+    buyerResourceResponse: ListPage<HSBuyer>
+  ): void {
     if (
       this._promotionEditable?.xp?.AppliesTo ===
       HSPromoEligibility.SpecificSupplier
@@ -306,6 +340,8 @@ export class PromotionEditComponent implements OnInit, OnChanges {
       this.products.next([...this.products.value, ...resourceResponse?.Items])
       this.productMeta = resourceResponse?.Meta
     }
+    this.buyers.next([...this.buyers.value, ...buyerResourceResponse?.Items])
+    this.buyerMeta = buyerResourceResponse?.Meta
   }
 
   handleScrollEnd(event: any): void {
@@ -348,8 +384,28 @@ export class PromotionEditComponent implements OnInit, OnChanges {
     this.handleUpdatePromo({ target: { value: modifiedSkus } }, 'xp.SKUs')
   }
 
+  addBuyer(buyerID: string): void {
+    if (this._promotionEditable?.xp?.Buyers?.includes(buyerID)) {
+      this.toastrService.warning('You have already selected this buyer')
+    } else {
+      const newBuyerIDs = [...this._promotionEditable?.xp?.Buyers, buyerID]
+      this.handleUpdatePromo({ target: { value: newBuyerIDs } }, 'xp.Buyers')
+    }
+  }
+
+  removeBuyer(buyerID: string): void {
+    const modifiedBuyerIDs = this._promotionEditable?.xp?.Buyers?.filter(
+      (b) => b !== buyerID
+    )
+    this.handleUpdatePromo({ target: { value: modifiedBuyerIDs } }, 'xp.Buyers')
+  }
+
   alreadySelected(sku: string): boolean {
     return this._promotionEditable?.xp?.SKUs?.includes(sku)
+  }
+
+  buyerAlreadySelected(buyerID: string): boolean {
+    return this._promotionEditable?.xp?.Buyers?.includes(buyerID)
   }
 
   getSKUsBtnPlaceholderValue(): string {
@@ -430,15 +486,25 @@ export class PromotionEditComponent implements OnInit, OnChanges {
       this.updatePromoResource({ field: 'LineItemLevel', value: true })
       this.productsCollapsed = false
     }
-    const promoUpdate = {
-      field,
-      value: ['Type', 'CanCombine', 'xp.Automatic'].includes(field)
-        ? event.target.checked
-        : typeOfValue === 'number'
-        ? Number(event.target.value)
-        : event.target.value,
+    if (field === 'AllowAllBuyers') {
+      this.updatePromoResource({
+        field: 'AllowAllBuyers',
+        value: event,
+      })
+      if (event) {
+        this._promotionEditable.xp.Buyers = []
+      }
+    } else {
+      const promoUpdate = {
+        field,
+        value: ['Type', 'CanCombine', 'xp.Automatic'].includes(field)
+          ? event.target.checked
+          : typeOfValue === 'number'
+          ? Number(event.target.value)
+          : event.target.value,
+      }
+      this.updatePromoResource(promoUpdate)
     }
-    this.updatePromoResource(promoUpdate)
   }
 
   updatePromoResource(promoUpdate: any): void {
@@ -593,10 +659,15 @@ export class PromotionEditComponent implements OnInit, OnChanges {
     let eligibilityString = this.translate.instant(
       'ADMIN.PROMOTIONS.DISPLAY.ELIGIBILITY.FOR'
     )
-    if (this._promotionEditable.AllowAllBuyers)
+    if (this._promotionEditable.AllowAllBuyers) {
       eligibilityString = `${eligibilityString} ${this.translate.instant(
         'ADMIN.PROMOTIONS.DISPLAY.ELIGIBILITY.ALL_BUYERS'
       )}`
+    } else {
+      eligibilityString = `${eligibilityString} ${this.translate.instant(
+        'ADMIN.PROMOTIONS.DISPLAY.ELIGIBILITY.SELECTED_BUYERS'
+      )}`
+    }
     // In the future, there will be other considerations for finer grained eligibility
     return eligibilityString
   }
@@ -690,6 +761,9 @@ export class PromotionEditComponent implements OnInit, OnChanges {
       // Set promotion.Name to promotion.Code automatically
       promo.Name = promo.Code
       const newPromo = await this.ocPromotionService.Create(promo).toPromise()
+      if (!promo.AllowAllBuyers) {
+        await this.handlePromotionAssignments(newPromo)
+      }
       this.refreshPromoData(newPromo)
       this.router.navigateByUrl(`/promotions/${newPromo.ID}`)
       this.dataIsSaving = false
@@ -699,6 +773,81 @@ export class PromotionEditComponent implements OnInit, OnChanges {
     }
   }
 
+  async handlePromotionAssignments(
+    promo: Promotion<PromotionXp>
+  ): Promise<void> {
+    // Assemble assignment data
+    const promoBuyers = promo.xp?.Buyers
+    const listOptions = {
+      page: 1,
+      pageSize: 100,
+      promotionID: promo.ID,
+    }
+    const currentPromotionAssignments = await this.ocPromotionService
+      .ListAssignments(listOptions)
+      .toPromise()
+    const assignmentsToDelete: string[] = []
+    const assignmentsToAdd: string[] = []
+
+    // Identify assignments to add
+    if (promoBuyers.length > 0) {
+      for (const buyerIDToAssign of promoBuyers) {
+        const matchingAssignment = currentPromotionAssignments.Items.find(
+          (assignment) => assignment?.BuyerID == buyerIDToAssign
+        )
+        if (!matchingAssignment) {
+          assignmentsToAdd.push(buyerIDToAssign)
+        }
+      }
+    }
+
+    // Identify assignments to delete
+    if (currentPromotionAssignments.Items.length > 0) {
+      for (const currentAssignment of currentPromotionAssignments.Items) {
+        const matchingAssignment = promoBuyers.find(
+          (assignment) => assignment == currentAssignment.BuyerID
+        )
+        if (!matchingAssignment) {
+          assignmentsToDelete.push(currentAssignment.BuyerID)
+        }
+      }
+    }
+
+    const assignmentsToAddRequests: Promise<void>[] = []
+    const assignmentsToDeleteRequests: Promise<void>[] = []
+
+    // Add assignments
+    if (assignmentsToAdd.length > 0) {
+      for (const assignment of assignmentsToAdd) {
+        assignmentsToAddRequests.push(
+          this.ocPromotionService
+            .SaveAssignment({
+              PromotionID: promo.ID,
+              BuyerID: assignment,
+            })
+            .toPromise()
+        )
+      }
+    }
+    // Delete assignments
+    if (assignmentsToDelete.length > 0) {
+      for (const assignment of assignmentsToDelete) {
+        assignmentsToDeleteRequests.push(
+          this.ocPromotionService
+            .DeleteAssignment(promo.ID, {
+              buyerID: assignment,
+            })
+            .toPromise()
+        )
+      }
+    }
+
+    await Promise.all([
+      ...assignmentsToAddRequests,
+      ...assignmentsToDeleteRequests,
+    ])
+  }
+
   // TODO: Find diff'd object and only 'PATCH' what changed?
   async updatePromotion(promo: Promotion<PromotionXp>): Promise<void> {
     try {
@@ -706,6 +855,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
       const updatedPromo = await this.ocPromotionService
         .Save(promo.ID, promo)
         .toPromise()
+      await this.handlePromotionAssignments(updatedPromo)
       this.refreshPromoData(updatedPromo)
       this.dataIsSaving = false
     } catch (ex) {

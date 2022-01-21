@@ -8,6 +8,7 @@ export interface PromotionXp {
   MinReq?: HSPromoMinRequirement
   MaxShipCost?: number
   BOGO?: BOGOPromotion
+  Buyers?: string[]
 }
 
 export interface HSPromoMinRequirement {

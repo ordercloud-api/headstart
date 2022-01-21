@@ -393,6 +393,7 @@
     "PROMOTIONS": {
       "ACTIVE": "Active",
       "ACTIVE_DATES": "Active Dates",
+      "ADJUST_FORM_DETAILS": "Enter a new discount code and adjust any existing details to clone this promotion.",
       "ALL_BUYERS": "All buyers",
       "ALL_PROMOS_ORDERWIDE": "All promotions are order-wide at this point.",
       "ALL_PROMOTIONS_ELIGIBLE": "All promotions are eligible to all buyers at this time.",
@@ -400,6 +401,7 @@
       "APPLIES_TO_RATES": "Applies to shipping rates under",
       "BUYER_ELIGIBILITY": "Buyer Eligibility",
       "CAN_BE_COMBINED": "Can be combined with other promotions",
+      "CLONE": "Clone",
       "AUTOMATIC": "Automatic",
       "AUTO_APPLY": "Automatically apply promotion",
       "DISCARD_CHANGES": "Discard Changes",
@@ -412,7 +414,8 @@
         },
         "ELIGIBILITY": {
           "FOR": "For",
-          "ALL_BUYERS": "all buyers"
+          "ALL_BUYERS": "all buyers",
+          "SELECTED_BUYERS": "selected buyers"
         },
         "USAGE": {
           "LIMIT_OF": "Limit of",
@@ -452,6 +455,7 @@
       "MORE_PROMOTIONS": "More Promotions",
       "NAME": "Name",
       "NO_INFO_ENTERED": "No information entered yet.",
+      "NO_RESULTS": "No results. Broaden your search and try again.",
       "NONE": "None",
       "PERCENTAGE": "Percentage",
       "PERFORMANCE": "Performance",
