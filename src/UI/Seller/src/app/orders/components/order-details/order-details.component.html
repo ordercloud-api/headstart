@@ -298,8 +298,6 @@
       [orderDirection]="orderDirection"
       (orderChange)="refreshOrder()"
       [order]="_order"
-      [buyerLineItems]="_buyerLineItems"
-      [isSellerUser]="isSellerUser"
     >
     </app-line-item-table>
     <div class="row">
@@ -313,7 +311,7 @@
             <div class="d-flex justify-content-between align-items-center mb-1">
               <p class="font-weight-bolder mb-0 text-muted">Subtotal</p>
               <p class="mb-0">
-                {{ getOrderSubtotal(_order) | currency: _order?.xp?.Currency }}
+                {{ _order?.Subtotal | currency: _order?.xp?.Currency }}
               </p>
             </div>
             <div class="d-flex justify-content-between align-items-center mb-1">
@@ -345,7 +343,7 @@
             <p class="font-weight-bolder mb-0">Total</p>
             <p class="font-weight-bolder mb-0">
               {{ _order?.xp?.Currency
-              }}{{ getOrderTotal(_order) | currency: _order?.xp?.Currency }}
+              }}{{ _order?.Total | currency: _order?.xp?.Currency }}
             </p>
           </div>
           <div
