@@ -71,6 +71,7 @@ export class OrderDetailsComponent {
   _buyerOrder: Order = {}
   _buyerQuoteAddress: Address = null
   _supplierOrder: Order = {}
+  _buyerLineItems: HSLineItem[] = []
   _lineItems: HSLineItem[] = []
   _payments: Payment[] = []
   images: any[] = []
@@ -264,6 +265,7 @@ export class OrderDetailsComponent {
         this._order.xp?.OrderType
       )
       this._buyerOrder = orderData.BuyerOrder.Order
+      this._buyerLineItems = orderData.BuyerOrder.LineItems
       this._supplierOrder = orderData.SupplierOrder.Order
       this._lineItems = orderData.SupplierOrder.LineItems
     } else {
@@ -363,5 +365,24 @@ export class OrderDetailsComponent {
 
   buildOrderDetailsRoute(rma: RMA): string {
     return `/rmas/${rma.RMANumber}`
+  }
+
+  getOrderSubtotal(order: HSOrder): number {
+    return this._buyerLineItems.some(
+      (li) => li.Product?.xp?.ProductType === 'Quote'
+    )
+      ? this._buyerOrder?.Subtotal
+      : order?.Subtotal
+  }
+
+  getOrderTotal(order: HSOrder): number {
+    if (
+      !this.isSellerUser &&
+      this._buyerLineItems.some((li) => li.Product?.xp?.ProductType === 'Quote')
+    ) {
+      return this._buyerOrder?.Subtotal
+    } else {
+      return order?.Total
+    }
   }
 }
