@@ -179,8 +179,6 @@ export class SitecoreCDPTrackingService {
   }
 
   private sendEventToCDP(event: SitecoreCDPEvent): void {
-    console.log('sending event:', event)
-    console.log('queue:', _boxeverq)
     _boxeverq.push(function () {
       Boxever.eventCreate(event, function (data) {}, 'json')
     })
