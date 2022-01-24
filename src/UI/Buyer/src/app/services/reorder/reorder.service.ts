@@ -38,11 +38,10 @@ export class ReorderHelperService {
     ).Items
   }
 
-  private isLineItemValid(
-    item: HSLineItem,
-    products: HSMeProduct[]
-  ): boolean {
-    const product = products.find((prod) => prod.ID === item.ProductID)
+  private isLineItemValid(item: HSLineItem, products: HSMeProduct[]): boolean {
+    const product = products.find(
+      (prod) => prod.ID === item.ProductID && prod?.xp?.ProductType !== 'Quote'
+    )
     return product && !this.quantityInvalid(item.Quantity, product)
   }
 

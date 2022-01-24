@@ -138,7 +138,11 @@
                   "
                   class="text-dark font-weight-medium line-height-1"
                 >
-                  {{ li | productNameWithSpecs }}
+                  {{ li | productNameWithSpecs }} 
+                  <span *ngIf="li?.Product?.xp?.ProductType === 'Quote'" 
+                        class="small badge badge-pill badge-warning ml-2 order-type-text">
+                        {{ li?.Product?.xp?.ProductType }}
+                  </span>
                 </a>
                 <small class="text-muted d-block">{{ li.Product.ID }}</small>
                 <small
