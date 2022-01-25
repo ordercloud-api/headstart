@@ -24,8 +24,6 @@ export class LineItemTableComponent {
     void this.setSupplierOrders(value)
   }
   @Input() orderDirection: 'Incoming' | 'Outgoing'
-  @Input() buyerLineItems: HSLineItem[]
-  @Input() isSellerUser = false
   @Output() orderChange = new EventEmitter()
   isSaving = false
 
@@ -107,16 +105,5 @@ export class LineItemTableComponent {
 
   getImageUrl(lineItemID: string): string {
     return getPrimaryLineItemImage(lineItemID, this._lineItems)
-  }
-
-  getLineTotal(lineItem: HSLineItem): number {
-    return lineItem?.Product?.xp?.ProductType === 'Quote' && !this.isSellerUser
-      ? this.getQuotePricing(lineItem)
-      : lineItem?.LineTotal
-  }
-
-  getQuotePricing(lineItem: HSLineItem): number {
-    return this.buyerLineItems?.find((line) => line.ID === lineItem.ID)
-      ?.LineTotal
   }
 }

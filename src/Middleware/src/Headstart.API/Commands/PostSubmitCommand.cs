@@ -388,6 +388,7 @@ namespace Headstart.API.Commands
                 var updatedSupplierOrder = await _oc.Orders.PatchAsync<HSOrder>(OrderDirection.Outgoing, supplierOrder.ID, supplierOrderPatch);
                 var supplierLineItems = lineItems.Where(li => li.SupplierID == supplier.ID).ToList();
                 await SaveShipMethodByLineItem(supplierLineItems, supplierOrderPatch.xp.SelectedShipMethodsSupplierView, buyerOrder.Order.ID);
+                await OverrideOutgoingLineQuoteUnitPrice(updatedSupplierOrder.ID, supplierLineItems);
                 updatedSupplierOrders.Add(updatedSupplierOrder);
             }
 
@@ -465,6 +466,18 @@ namespace Headstart.API.Commands
                         PartialLineItem lineItemToPatch = new PartialLineItem { xp = new { ShipMethod = readableShipMethod } };
                         LineItem patchedLineItem = await _oc.LineItems.PatchAsync(OrderDirection.Incoming, buyerOrderID, lineItem.ID, lineItemToPatch);
                     }
+                }
+            }
+        }
+
+        private async Task OverrideOutgoingLineQuoteUnitPrice(string supplierOrderID, List<LineItem> supplierLineItems)
+        {
+            foreach (LineItem lineItem in supplierLineItems)
+            {
+                if (lineItem?.Product?.xp?.ProductType == ProductType.Quote)
+                {
+                    var patch = new PartialLineItem { UnitPrice = lineItem.UnitPrice };
+                    await _oc.LineItems.PatchAsync(OrderDirection.Outgoing, supplierOrderID, lineItem.ID, patch);
                 }
             }
         }
