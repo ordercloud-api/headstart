@@ -13,7 +13,7 @@ import {
 } from '@ordercloud/angular-sdk'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
-import { SELLER } from '@app-seller/shared'
+import { OrderType, SELLER } from '@app-seller/shared'
 
 @Component({
   selector: 'app-rmas-edit',
@@ -72,7 +72,8 @@ export class RMAEditComponent implements OnInit {
 
     if (!this.isSellerUser) {
       const fullOrderData = await HeadStartSDK.Suppliers.GetSupplierOrder(
-        relatedOrderID
+        relatedOrderID,
+        OrderType.Standard
       )
       this.buyerOrderData = fullOrderData.BuyerOrder.Order
       this.supplierOrderData = fullOrderData.SupplierOrder.Order

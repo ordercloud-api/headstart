@@ -259,7 +259,7 @@ export class OrderDetailsComponent {
     const rmaListPage = await this.rmaService.listRMAsByOrderID(order.ID)
     this.rmas = rmaListPage.Items
     if (this.isSupplierOrder(order.ID) || this.isQuoteOrder(order)) {
-      const orderData = await this.middleware.getSupplierData(
+      const orderData = await HeadStartSDK.Suppliers.GetSupplierOrder(
         order.ID,
         this._order.xp?.OrderType
       )
