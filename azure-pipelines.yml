@@ -87,7 +87,7 @@ jobs:
     - task: Cache@2
       displayName: 'SDK Dependencies Cache'
       inputs:
-        key: 'npm | sdk | "$(Agent.OS)" | src/UI/SDK/package.json | v1'
+        key: 'npm | sdk | "$(Agent.OS)" | src/UI/SDK/package.json | v2'
         path: 'src/UI/SDK/node_modules'
         cacheHitVar: SDKCacheRestored
 
@@ -105,7 +105,7 @@ jobs:
     - task: Cache@2
       displayName: 'Buyer Dependencies Cache'
       inputs:
-        key: 'npm | buyer | "$(Agent.OS)" | src/UI/Buyer/package-lock.json | src/UI/Buyer/package.json | src/UI/SDK/files-changed-hash | v1'
+        key: 'npm | buyer | "$(Agent.OS)" | src/UI/Buyer/package-lock.json | src/UI/Buyer/package.json | src/UI/SDK/files-changed-hash | v2'
         path: 'src/UI/Buyer/node_modules'
         cacheHitVar: BuyerCacheRestored
 
