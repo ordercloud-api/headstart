@@ -474,7 +474,7 @@ namespace Headstart.API.Commands
         {
             foreach (LineItem lineItem in supplierLineItems)
             {
-                if (lineItem?.Product?.xp?.ProductType == ProductType.Quote)
+                if (lineItem?.Product?.xp?.ProductType == ProductType.Quote.ToString())
                 {
                     var patch = new PartialLineItem { UnitPrice = lineItem.UnitPrice };
                     await _oc.LineItems.PatchAsync(OrderDirection.Outgoing, supplierOrderID, lineItem.ID, patch);
