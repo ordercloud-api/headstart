@@ -132,7 +132,7 @@
               ></return-form>
             </td>
             <td class="align-middle">
-              {{ getLineTotal(li) | currency: _order?.xp?.currency }}
+              {{ li.LineTotal | currency: _order?.xp?.currency }}
             </td>
           </tr>
         </tbody>
