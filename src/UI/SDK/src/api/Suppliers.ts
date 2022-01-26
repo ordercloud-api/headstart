@@ -52,10 +52,10 @@ export default class Suppliers {
     * @param supplierOrderID ID of the supplier order.
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async GetSupplierOrder(supplierOrderID: string,  accessToken?: string ): Promise<RequiredDeep<HSSupplierOrderData>> {
+    public async GetSupplierOrder(supplierOrderID: string, orderType: string, accessToken?: string ): Promise<RequiredDeep<HSSupplierOrderData>> {
         const impersonating = this.impersonating;
         this.impersonating = false;
-        return await httpClient.get(`/supplier/orderdetails/${supplierOrderID}`, { params: {  accessToken, impersonating } } );
+        return await httpClient.get(`/supplier/orderdetails/${supplierOrderID}/${orderType}`, { params: {  accessToken, impersonating } } );
     }
 
     /**
