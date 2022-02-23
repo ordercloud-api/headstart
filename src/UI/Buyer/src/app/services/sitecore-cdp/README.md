@@ -37,5 +37,8 @@ United States: https://api-us.boxever.com/v1.2
   "useSitecoreCDP": true,
   "sitecoreCDPTargetEndpoint": "https://api-us.boxever.com/v1.2",
   "sitecoreCDPApiClient": "xxxxxxxxxxxxxx",
+  "sitecoreCDPCookieDomain": "your websute url without www",
+  "sitecoreCDPWebFlowTarget": "https://d35vb5cccm4xzp.cloudfront.net", //the value will remain the same unless advised otherwise by the product team 
+  "sitecoreCDPPointOfSale": "pos name setup in CDP"
 ```
 

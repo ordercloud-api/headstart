@@ -157,7 +157,7 @@ export class SitecoreCDPTrackingService {
       language: currentUser?.Locale?.Language || 'en-US',
       currency: currentUser?.Locale?.Currency || 'USD',
       page: this.routeService.getActiveUrl(),
-      pos: this.appConfig.baseUrl,
+      pos: this.appConfig.sitecoreCDPPointOfSale,
       browser_id: Boxever.getID(),
     }
   }
@@ -187,7 +187,9 @@ export class SitecoreCDPTrackingService {
   private loadCDPTracker(): void {
     const clientKey = this.appConfig.sitecoreCDPApiClient
     const target = this.appConfig.sitecoreCDPTargetEndpoint
-    const domain = this.appConfig.baseUrl
+    const domain = this.appConfig.sitecoreCDPCookieDomain
+    const webFlowTarget = this.appConfig.sitecoreCDPWebFlowTarget
+    const pointOfSale = this.appConfig.sitecoreCDPPointOfSale
     const clientVersion = '1.4.8'
     const node = document.createElement('script')
     node.type = 'text/javascript'
@@ -201,7 +203,9 @@ export class SitecoreCDPTrackingService {
             var _boxever_settings = {
                 client_key: '${clientKey}', // Replace with your client key
                 target: '${target}', // Replace with your API target endpoint specific to your data center region
-                cookie_domain: '${domain}' // Replace with the top level cookie domain of the website that is being integrated e.g ".example.com" and not "www.example.com"
+                cookie_domain: '${domain}', // Replace with the top level cookie domain of the website that is being integrated e.g ".example.com" and not "www.example.com"
+                web_flow_target: '${webFlowTarget}', //Set the web flow target to be able to run flows e.g. experiences
+                pointOfSale: '${pointOfSale}', //Point of sale that will be used for every interaction
             };
             // Import the Boxever library asynchronously
             (function() {

@@ -17,6 +17,9 @@
   "useSitecoreCDP": false,
   "sitecoreCDPTargetEndpoint": "https://api-us.boxever.com/v1.2",
   "sitecoreCDPApiClient": "xxxxxxxxxxxxxxxxxxxxxx",
+  "sitecoreCDPCookieDomain": "xxxxxxxxxxxxxxxxxxxxxxxx",
+  "sitecoreCDPWebFlowTarget": "xxxxxxxxxxxxxxxxxxxxxxxx",
+  "sitecoreCDPPointOfSale": "xxxxxxxxxxxxxxxxxxxxxxxx",
   "theme": {
     "logoSrc": "assets/generic-logo.png"
   },
