@@ -63,8 +63,11 @@ export interface EnvironmentConfig {
   useSitecoreSend?: boolean
   sitecoreSendWebsiteID?: string
   useSitecoreCDP?: boolean,
-  sitecoreCDPTargetEndpoint: string
-  sitecoreCDPApiClient: string
+  sitecoreCDPTargetEndpoint: string,
+  sitecoreCDPApiClient: string,
+  sitecoreCDPCookieDomain: string,
+  sitecoreCDPWebFlowTarget: string,
+  sitecoreCDPPointOfSale: string,
   sellerQuoteContactEmail: string
 }
 
@@ -168,4 +171,16 @@ export class AppConfig {
    * See https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/javascript-tagging-examples-for-web-pages.html
    */
   sitecoreCDPApiClient: string
+  /**
+   * See https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/javascript-tagging-examples-for-web-pages.html
+   */
+  sitecoreCDPCookieDomain: string
+    /**
+   * See https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/javascript-tagging-examples-for-web-pages.html
+   */
+  sitecoreCDPWebFlowTarget: string
+    /**
+   * See https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/javascript-tagging-examples-for-web-pages.html
+   */
+  sitecoreCDPPointOfSale: string
 }

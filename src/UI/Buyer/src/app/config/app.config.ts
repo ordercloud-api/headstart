@@ -23,7 +23,10 @@ export const ocAppConfig: AppConfig = {
   sitecoreSendWebsiteID: environment.sitecoreSendWebsiteID,
   useSitecoreCDP: environment.useSitecoreCDP,
   sitecoreCDPTargetEndpoint: environment.sitecoreCDPTargetEndpoint,
-  sitecoreCDPApiClient: environment.sitecoreCDPApiClient,
+  sitecoreCDPApiClient: environment.sitecoreCDPApiClient, 
+  sitecoreCDPCookieDomain: environment.sitecoreCDPCookieDomain,
+  sitecoreCDPWebFlowTarget: environment.sitecoreCDPWebFlowTarget,
+  sitecoreCDPPointOfSale: environment.sitecoreCDPPointOfSale,
   sellerQuoteContactEmail: environment.sellerQuoteContactEmail,
   scope: [
     'MeAddressAdmin',
