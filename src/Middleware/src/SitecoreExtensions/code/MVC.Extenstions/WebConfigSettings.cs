@@ -9,7 +9,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions
     {
         private static WebConfigSettings _instance = null;
         private static readonly object _padlock = new object();
-        public string AlexionTemplatesBasePath { get; set; } = string.Empty;
+        public bool IsNonProdEnv { get; set; }
 
         /// <summary>
         /// Default WebConfigSettings object contructor method
@@ -53,11 +53,11 @@ namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions
         {
             try
             {
-                AlexionTemplatesBasePath = WebConfigurationManager.AppSettings[@"AlexionTemplatesBasePath"];
+                IsNonProdEnv = DataTypeExtensions.GetBoolean(WebConfigurationManager.AppSettings[@"IsNonProdEnv"].ToString().Trim());
             }
             catch (Exception ex)
             {
-                LogExt.LogException("CustomSitecore", Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this);
+                LogExt.LogException("CustomSitecore", Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
             }
         }
     }

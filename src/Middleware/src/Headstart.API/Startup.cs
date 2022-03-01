@@ -284,7 +284,7 @@ namespace Headstart.API
                             .WaitAndRetryAsync(delay);
             // Flurl setting for JSON serialization
             var jsonSettings = new JsonSerializerSettings();
-            jsonSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+            jsonSettings.Converters.Add(new StringEnumConverter());
             // Flurl setting for request timeout
             var timeout = TimeSpan.FromSeconds(_settings.FlurlSettings.TimeoutInSeconds == 0 ? 30 : _settings.FlurlSettings.TimeoutInSeconds);
 
