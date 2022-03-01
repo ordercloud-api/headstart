@@ -1,10 +1,10 @@
 using System;
 using Headstart.Common;
 using Microsoft.AspNetCore;
+using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace Headstart.API
 {
@@ -31,9 +31,7 @@ namespace Headstart.API
 				{
 					services.Configure<AppSettings>(ctx.Configuration);
 					services.AddTransient(sp => sp.GetService<IOptionsSnapshot<AppSettings>>().Value);
-				})
-				.Build()
-				.Run();
+				}).Build().Run();
 		}
 	}
 }

@@ -1,0 +1,64 @@
+﻿using System;
+using Sitecore.Diagnostics;
+using System.Web.Configuration;
+using Sitecore.Foundation.SitecoreExtensions.Extensions;
+
+namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions
+{
+    public sealed class WebConfigSettings
+    {
+        private static WebConfigSettings _instance = null;
+        private static readonly object _padlock = new object();
+        public string AlexionTemplatesBasePath { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Default WebConfigSettings object contructor method
+        /// </summary>
+        WebConfigSettings()
+        {
+            //Do nothing as this is a Singleton Class which means class can only be instantiated with-in the class itself and create only one instance of itself,
+            //allowing to have thread safe object instance with thread-safe locking on use of the object (i.e. using double-check locking) 
+            //See: http://csharpindepth.com/articles/general/singleton.aspx for details
+        }
+
+
+        /// <summary>
+        /// Singleton Class which means class can only be instantiated with-in the class itself and create only one instance of itself, 
+        /// allowing to have thread safe object instance with thread-safe locking on use of the object (i.e. using double-check locking)
+        /// See: http://csharpindepth.com/articles/general/singleton.aspx for details
+        /// </summary>
+        public static WebConfigSettings Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    lock (_padlock)
+                    {
+                        if (_instance == null)
+                        {
+                            _instance = new WebConfigSettings();
+                        }
+                    }
+                }
+                return _instance;
+            }
+        }
+
+        /// <summary>
+        /// GetConfigSettings to get the latest WebConfiguration AppSettings into the WebConfigSettings intanace for re-usability throughout the entire application provides
+        /// property intellecence, reducing typos and better more centralized management of AppSettings keys.
+        /// </summary>
+        public void GetConfigSettings()
+        {
+            try
+            {
+                AlexionTemplatesBasePath = WebConfigurationManager.AppSettings[@"AlexionTemplatesBasePath"];
+            }
+            catch (Exception ex)
+            {
+                LogExt.LogException("CustomSitecore", Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this);
+            }
+        }
+    }
+}

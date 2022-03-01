@@ -7,11 +7,19 @@ namespace Headstart.Common.Controllers
     {
         private readonly AppSettings _settings;
 
+        /// <summary>
+        /// The IOC based constructor method for the EnvController with Dependency Injection
+        /// </summary>
+        /// <param name="settings"></param>
         public EnvController(AppSettings settings) 
         {
             _settings = settings;
         }
 
+        /// <summary>
+        /// Gets a new object with environment settings
+        /// </summary>
+        /// <returns>An object with environment settings</returns>
         [HttpGet]
         public object Get()
         {
