@@ -13,6 +13,7 @@ import { SelectedCreditCard } from 'src/app/models/credit-card.types'
 import { AcceptedPaymentTypes } from 'src/app/models/checkout.types'
 import { OrderSummaryMeta } from 'src/app/models/order.types'
 import { AppConfig } from 'src/app/models/environment.types'
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 
 @Component({
   templateUrl: './checkout-payment.component.html',
@@ -32,11 +33,11 @@ export class OCMCheckoutPayment implements OnInit {
   _acceptedPaymentMethods: string[]
   selectedPaymentMethod: AcceptedPaymentTypes
   POTermsAccepted: boolean
-
+  faCheckCircle = faCheckCircle
   constructor(
     private context: ShopperContextService,
     private appConfig: AppConfig
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this._orderCurrency = this.context.currentUser.get().Currency
