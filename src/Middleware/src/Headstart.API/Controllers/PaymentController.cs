@@ -17,7 +17,7 @@ namespace Headstart.Common.Controllers
         private readonly AppSettings _settings;
 
         /// <summary>
-        /// The IOC based constructor method for the PaymentController with Dependency Injection
+        /// The IOC based constructor method for the PaymentController class object with Dependency Injection
         /// </summary>
         /// <param name="command"></param>
         /// <param name="settings"></param>

@@ -15,7 +15,7 @@ namespace Headstart.Common.Controllers
         private readonly IShipmentCommand _command;
 
         /// <summary>
-        /// The IOC based constructor method for the ShipmentController with Dependency Injection
+        /// The IOC based constructor method for the ShipmentController class object with Dependency Injection
         /// </summary>
         /// <param name="command"></param>
         public ShipmentController(IShipmentCommand command)

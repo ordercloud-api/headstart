@@ -12,7 +12,7 @@ namespace Headstart.Common.Controllers
         private readonly IExchangeRatesCommand _command;
 
         /// <summary>
-        /// The IOC based constructor method for the ExchangeRatesController with Dependency Injection
+        /// The IOC based constructor method for the ExchangeRatesController class object with Dependency Injection
         /// </summary>
         /// <param name="command"></param>
         public ExchangeRatesController(IExchangeRatesCommand command) 

@@ -16,7 +16,7 @@ namespace Headstart.Common.Controllers
         private readonly IOrderCloudClient _oc;
 
 		/// <summary>
-		/// The IOC based constructor method for the SupplierController with Dependency Injection
+		/// The IOC based constructor method for the SupplierController class object with Dependency Injection
 		/// </summary>
 		/// <param name="command"></param>
 		/// <param name="oc"></param>

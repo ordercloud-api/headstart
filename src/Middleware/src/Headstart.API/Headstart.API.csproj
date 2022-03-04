@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Headstart.Common\Headstart.Common.csproj" />
+    <ProjectReference Include="..\SitecoreExtensions\code\Sitecore.Foundation.SitecoreExtensions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

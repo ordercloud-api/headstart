@@ -17,7 +17,7 @@ namespace Headstart.Common.Controllers
         private readonly ILocationPermissionCommand _locationPermissionCommand;
 
         /// <summary>
-        /// The IOC based constructor method for the BuyerLocationController with Dependency Injection
+        /// The IOC based constructor method for the BuyerLocationController class object with Dependency Injection
         /// </summary>
         /// <param name="locationPermissionCommand"></param>
         /// <param name="buyerLocationCommand"></param>

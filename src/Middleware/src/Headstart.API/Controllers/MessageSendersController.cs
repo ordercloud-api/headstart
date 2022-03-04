@@ -28,7 +28,7 @@ namespace Headstart.Common.Controllers
         private readonly IOrderCommand _orderCommand;
 
         /// <summary>
-        /// The IOC based constructor method for the MessageSendersController with Dependency Injection
+        /// The IOC based constructor method for the MessageSendersController class object with Dependency Injection
         /// </summary>
         /// <param name="sendgridService"></param>
         /// <param name="orderCommand"></param>

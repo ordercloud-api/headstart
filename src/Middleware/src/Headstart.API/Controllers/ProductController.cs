@@ -14,7 +14,7 @@ namespace Headstart.Common.Controllers
 		private readonly IHSProductCommand _command;
 
 		/// <summary>
-		/// The IOC based constructor method for the ProductController with Dependency Injection
+		/// The IOC based constructor method for the ProductController class object with Dependency Injection
 		/// </summary>
 		/// <param name="settings"></param>
 		/// <param name="command"></param>

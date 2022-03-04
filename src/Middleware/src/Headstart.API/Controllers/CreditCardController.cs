@@ -12,7 +12,7 @@ namespace Headstart.Common.Controllers.CardConnect
         private readonly AppSettings _settings;
 
         /// <summary>
-        /// The IOC based constructor method for the MePaymentController with Dependency Injection
+        /// The IOC based constructor method for the MePaymentController class object with Dependency Injection
         /// </summary>
         /// <param name="settings"></param>
         /// <param name="card"></param>
@@ -53,7 +53,7 @@ namespace Headstart.Common.Controllers.CardConnect
         private readonly ICreditCardCommand _card;
 
         /// <summary>
-        /// The IOC based constructor method for the MeCreditCardAuthorizationController with Dependency Injection
+        /// The IOC based constructor method for the MeCreditCardAuthorizationController class object with Dependency Injection
         /// </summary>
         /// <param name="card"></param>
         public MeCreditCardAuthorizationController(ICreditCardCommand card)
@@ -79,7 +79,7 @@ namespace Headstart.Common.Controllers.CardConnect
         private readonly ICreditCardCommand _card;
 
         /// <summary>
-        /// The IOC based constructor method for the CreditCardController with Dependency Injection
+        /// The IOC based constructor method for the CreditCardController class object with Dependency Injection
         /// </summary>
         /// <param name="card"></param>
         public CreditCardController(ICreditCardCommand card)

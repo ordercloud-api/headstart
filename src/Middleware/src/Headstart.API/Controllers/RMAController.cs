@@ -20,7 +20,7 @@ namespace Headstart.Common.Controllers
         private const string HSShipmentAdmin = "HSShipmentAdmin";
 
         /// <summary>
-        /// The IOC based constructor method for the RMAController with Dependency Injection
+        /// The IOC based constructor method for the RMAController class object with Dependency Injection
         /// </summary>
         /// <param name="rmaCommand"></param>
         /// <param name="lineItemCommand"></param>

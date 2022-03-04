@@ -1,12 +1,11 @@
 using System;
-using System.Collections.Generic;
-using Headstart.Common.Helpers;
+using OrderCloud.SDK;
 using Headstart.Models;
 using Headstart.Models.Misc;
-using OrderCloud.SDK;
-using Headstart.Common;
-using ordercloud.integrations.exchangerates;
 using Headstart.Common.Models;
+using Headstart.Common.Helpers;
+using System.Collections.Generic;
+using ordercloud.integrations.exchangerates;
 
 namespace Headstart.API.Commands
 {
@@ -23,6 +22,10 @@ namespace Headstart.API.Commands
         public static string DefaultLocationID = "default-buyerLocation";
         public static string AllowedSecretChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
+        /// <summary>
+        /// Public re-usable AnonymousBuyerUser method
+        /// </summary>
+        /// <returns>The HSUser response object for an Anonymous Buyer User</returns>
         public static HSUser AnonymousBuyerUser()
         {
             return new HSUser()
@@ -41,6 +44,10 @@ namespace Headstart.API.Commands
             };
         }
 
+        /// <summary>
+        /// Public re-usable MiddlewareIntegrationsUser method
+        /// </summary>
+        /// <returns>The User response object for a Middleware Integrations User</returns>
         public static User MiddlewareIntegrationsUser()
         {
             return new User()
@@ -54,6 +61,10 @@ namespace Headstart.API.Commands
             };
         }
 
+        /// <summary>
+        /// Public re-usable MiddlewareIntegrationsUser method
+        /// </summary>
+        /// <returns>The HSBuyer response object for an Default Buyer</returns>
         public static HSBuyer DefaultBuyer()
         {
             return new HSBuyer
@@ -68,6 +79,9 @@ namespace Headstart.API.Commands
             };
         }
 
+        /// <summary>
+        /// Public read-only DefaultIndices object
+        /// </summary>
         public static readonly List<XpIndex> DefaultIndices = new List<XpIndex>() {
             new XpIndex { ThingType = XpThingType.UserGroup, Key = "Type" },
             new XpIndex { ThingType = XpThingType.UserGroup, Key = "Role" },
@@ -93,6 +107,9 @@ namespace Headstart.API.Commands
             new XpIndex { ThingType = XpThingType.Promotion, Key = "AppliesTo" },
         };
 
+        /// <summary>
+        /// Public read-only DefaultIncrementors object
+        /// </summary>
         public static readonly List<Incrementor> DefaultIncrementors = new List<Incrementor>() {
             new Incrementor { ID = "orderIncrementor", Name = "Order Incrementor", LastNumber = 0, LeftPaddingCount = 6 },
             new Incrementor { ID = "supplierIncrementor", Name = "Supplier Incrementor", LastNumber = 0, LeftPaddingCount = 3 },
@@ -101,6 +118,10 @@ namespace Headstart.API.Commands
         };
 
         #region API CLIENTS
+        /// <summary>
+        /// Public re-usable IntegrationsClient method
+        /// </summary>
+        /// <returns>The ApiClient response object for an Integrations Client</returns>
         public static ApiClient IntegrationsClient()
         {
             return new ApiClient()
@@ -116,6 +137,11 @@ namespace Headstart.API.Commands
                 ClientSecret = RandomGen.GetString(AllowedSecretChars, 60)
             };
         }
+
+        /// <summary>
+        /// Public re-usable SellerClient method
+        /// </summary>
+        /// <returns>The ApiClient response object for a Seller Client</returns>
         public static ApiClient SellerClient()
         {
             return new ApiClient()
@@ -130,6 +156,11 @@ namespace Headstart.API.Commands
             };
         }
 
+        /// <summary>
+        /// Public re-usable BuyerClient method
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <returns>The HSApiClient response object for a Buyer Client</returns>
         public static HSApiClient BuyerClient(EnvironmentSeed seed)
         {
             return new HSApiClient()
@@ -150,6 +181,11 @@ namespace Headstart.API.Commands
             };
         }
 
+        /// <summary>
+        /// Public re-usable BuyerLocalClient method
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <returns>The ApiClient response object for a Buyer Local Client</returns>
         public static ApiClient BuyerLocalClient(EnvironmentSeed seed)
         {
             return new ApiClient()
@@ -168,6 +204,12 @@ namespace Headstart.API.Commands
         #endregion
 
         #region IntegrationEvents
+        /// <summary>
+        /// Public re-usable CheckoutEvent method
+        /// </summary>
+        /// <param name="middlewareBaseUrl"></param>
+        /// <param name="webhookHashKey"></param>
+        /// <returns>The IntegrationEvent response object for the Checkout Event process</returns>
         public static IntegrationEvent CheckoutEvent(string middlewareBaseUrl, string webhookHashKey)
         {
             return new IntegrationEvent()
@@ -186,6 +228,11 @@ namespace Headstart.API.Commands
             };
         }
 
+        /// <summary>
+        /// Public re-usable LocalCheckoutEvent method
+        /// </summary>
+        /// <param name="webhookHashKey"></param>
+        /// <returns>The IntegrationEvent response object for the Local Checkout Event process</returns>
         public static IntegrationEvent LocalCheckoutEvent(string webhookHashKey)
         {
             return new IntegrationEvent()
@@ -206,6 +253,11 @@ namespace Headstart.API.Commands
         #endregion
 
         #region MessageSenders
+        /// <summary>
+        /// Public re-usable BuyerEmails method
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <returns>The MessageSender response object for the BuyerEmails process</returns>
         public static MessageSender BuyerEmails(EnvironmentSeed seed)
         {
             return new MessageSender()
@@ -228,6 +280,11 @@ namespace Headstart.API.Commands
             };
         }
 
+        /// <summary>
+        /// Public re-usable SellerEmails method
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <returns>The MessageSender response object for the SellerEmails process</returns>
         public static MessageSender SellerEmails(EnvironmentSeed seed)
         {
             return new MessageSender()
@@ -242,6 +299,11 @@ namespace Headstart.API.Commands
             };
         }
 
+        /// <summary>
+        /// Public re-usable SuplierEmails method
+        /// </summary>
+        /// <param name="seed"></param>
+        /// <returns>The MessageSender response object for the SuplierEmails process</returns>
         public static MessageSender SuplierEmails(EnvironmentSeed seed)
         {
             return new MessageSender()
@@ -258,6 +320,9 @@ namespace Headstart.API.Commands
         #endregion
 
         #region Permissions
+        /// <summary>
+        /// Public read-only DefaultSecurityProfiles object
+        /// </summary>
         public static readonly List<HSSecurityProfile> DefaultSecurityProfiles = new List<HSSecurityProfile>() {
 			
 			// seller/supplier
@@ -295,9 +360,11 @@ namespace Headstart.API.Commands
             new HSSecurityProfile() { ID = CustomRole.HSLocationPermissionAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationPermissionAdmin }, Roles = new ApiRole[] { } },
             new HSSecurityProfile() { ID = CustomRole.HSLocationNeedsApproval, CustomRoles = new CustomRole[] { CustomRole.HSLocationNeedsApproval }, Roles = new ApiRole[] { } },
             new HSSecurityProfile() { ID = CustomRole.HSLocationCreditCardAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationCreditCardAdmin }, Roles = new ApiRole[] { } },
-
         };
 
+        /// <summary>
+        /// Public read-only SellerHsRoles object
+        /// </summary>
         public static readonly List<CustomRole> SellerHsRoles = new List<CustomRole>() {
             CustomRole.HSBuyerAdmin,
             CustomRole.HSBuyerImpersonator,
@@ -317,7 +384,11 @@ namespace Headstart.API.Commands
         };
         #endregion
 
-        #region Buyer Location 
+        #region Buyer Location
+        /// <summary>
+        /// Public re-usable DefaultBuyerLocation method
+        /// </summary>
+        /// <returns>The HSBuyerLocation response object for the Default Buyer Location</returns>
         public static HSBuyerLocation DefaultBuyerLocation()
         {
             return new HSBuyerLocation()
@@ -343,11 +414,13 @@ namespace Headstart.API.Commands
                 }
             };
         }
-
         #endregion
 
         #region Product Facets
-
+        /// <summary>
+        /// Public re-usable DefaultProductFacet method
+        /// </summary>
+        /// <returns>The HSProductFacet response object for the Default Product Facet</returns>
         public static HSProductFacet DefaultProductFacet()
         {
             return new HSProductFacet()
@@ -360,8 +433,6 @@ namespace Headstart.API.Commands
                 xp = null
             };
         }
-
         #endregion
-
     }
 }

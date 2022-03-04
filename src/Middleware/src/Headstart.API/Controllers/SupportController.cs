@@ -22,7 +22,7 @@ namespace Headstart.Common.Controllers
         private readonly ISendgridService _sendgrid;
 
         /// <summary>
-        /// The IOC based constructor method for the SupportController with Dependency Injection
+        /// The IOC based constructor method for the SupportController class object with Dependency Injection
         /// </summary>
         /// <param name="checkoutIntegrationCommand"></param>
         /// <param name="postSubmitCommand"></param>

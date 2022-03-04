@@ -14,7 +14,7 @@ namespace Headstart.Common.Controllers
 		private readonly IMeProductCommand _meProductCommand;
 
 		/// <summary>
-		/// The IOC based constructor method for the MeController with Dependency Injection
+		/// The IOC based constructor method for the MeController class object with Dependency Injection
 		/// </summary>
 		/// <param name="meProductCommand"></param>
 		public MeController(IMeProductCommand meProductCommand)

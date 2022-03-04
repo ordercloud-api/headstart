@@ -10,6 +10,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions
         private static WebConfigSettings _instance = null;
         private static readonly object _padlock = new object();
         public bool IsNonProdEnv { get; set; }
+        public string AppLogFileKey { get; set; } = "CustomApiLogs";
 
         /// <summary>
         /// Default WebConfigSettings object contructor method
@@ -39,6 +40,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions
                         {
                             _instance = new WebConfigSettings();
                         }
+                        _instance.GetConfigSettings();
                     }
                 }
                 return _instance;
@@ -49,15 +51,17 @@ namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions
         /// GetConfigSettings to get the latest WebConfiguration AppSettings into the WebConfigSettings intanace for re-usability throughout the entire application provides
         /// property intellecence, reducing typos and better more centralized management of AppSettings keys.
         /// </summary>
-        public void GetConfigSettings()
+        private void GetConfigSettings()
         {
             try
             {
                 IsNonProdEnv = DataTypeExtensions.GetBoolean(WebConfigurationManager.AppSettings[@"IsNonProdEnv"].ToString().Trim());
+                AppLogFileKey = string.IsNullOrEmpty(WebConfigurationManager.AppSettings[@"AppLogFileKey"].ToString().Trim())
+                    ? AppLogFileKey : WebConfigurationManager.AppSettings[@"AppLogFileKey"].ToString().Trim();
             }
             catch (Exception ex)
             {
-                LogExt.LogException("CustomSitecore", Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+                LogExt.LogException(AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
             }
         }
     }

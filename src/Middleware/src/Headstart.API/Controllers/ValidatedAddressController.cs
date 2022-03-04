@@ -11,7 +11,7 @@ namespace Headstart.Common.Controllers
 		private readonly ISmartyStreetsCommand _command;
 
 		/// <summary>
-		/// The IOC based constructor method for the ValidatedAddressController with Dependency Injection
+		/// The IOC based constructor method for the ValidatedAddressController class object with Dependency Injection
 		/// </summary>
 		/// <param name="command"></param>
 		public ValidatedAddressController(ISmartyStreetsCommand command)

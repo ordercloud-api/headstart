@@ -50,13 +50,21 @@ namespace Headstart.API
     {
         private readonly AppSettings _settings;
 
+        /// <summary>
+        /// The Default constructor method for the Startup class object
+        /// </summary>
+        /// <param name="settings"></param>
         public Startup(AppSettings settings)
         {
             _settings = settings;
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        /// <summary>
+        /// The IOC based Startup.ConfigureServices void method with with Dependency Injection
+        /// This method gets called by the runtime. Use this method to add services to the container.
+        /// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             var cosmosConfig = new CosmosConfig(
@@ -69,33 +77,33 @@ namespace Headstart.API
             {
                 new ContainerInfo()
                 {
-                    Name = "salesorderdetail",
-                    PartitionKey = "/PartitionKey"
+                    Name = $@"salesorderdetail",
+                    PartitionKey = $@"/PartitionKey"
                 },
                 new ContainerInfo()
                 {
-                    Name = "purchaseorderdetail",
-                    PartitionKey = "/PartitionKey"
+                    Name = $@"purchaseorderdetail",
+                    PartitionKey = $@"/PartitionKey"
                 },
                 new ContainerInfo()
                 {
-                    Name = "lineitemdetail",
-                    PartitionKey = "/PartitionKey"
+                    Name = $@"lineitemdetail",
+                    PartitionKey = $@"/PartitionKey"
                 },
                 new ContainerInfo()
                 {
-                    Name = "rmas",
-                    PartitionKey = "/PartitionKey"
+                    Name = $@"rmas",
+                    PartitionKey = $@"/PartitionKey"
                 },
                 new ContainerInfo()
                 {
-                    Name = "shipmentdetail",
-                    PartitionKey = "/PartitionKey"
+                    Name = $@"shipmentdetail",
+                    PartitionKey = $@"/PartitionKey"
                 },
                 new ContainerInfo()
                 {
-                    Name = "productdetail",
-                    PartitionKey = "/PartitionKey"
+                    Name = $@"productdetail",
+                    PartitionKey = $@"/PartitionKey"
                 }
             };
 
@@ -116,7 +124,7 @@ namespace Headstart.API
             var assetConfig = new BlobServiceConfig()
             {
                 ConnectionString = _settings.StorageAccountSettings.ConnectionString,
-                Container = "assets", 
+                Container = $@"assets", 
                 AccessType = BlobContainerPublicAccessType.Container 
             };
 
@@ -150,20 +158,17 @@ namespace Headstart.API
             }
             
             services.AddMvc(o =>
-             {
+            {
                  o.Filters.Add(new ordercloud.integrations.library.ValidateModelAttribute());
                  o.EnableEndpointRouting = false;
-             })
-            .ConfigureApiBehaviorOptions(o => o.SuppressModelStateInvalidFilter = true)
-            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
-            .AddNewtonsoftJson(options =>
+            }).ConfigureApiBehaviorOptions(o => o.SuppressModelStateInvalidFilter = true).SetCompatibilityVersion(CompatibilityVersion.Version_3_0).AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
                 options.SerializerSettings.Converters.Add(new StringEnumConverter());
             });
 
             services
-                .AddCors(o => o.AddPolicy("integrationcors", builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }))
+                .AddCors(o => o.AddPolicy($@"integrationcors", builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }))
                 .AddSingleton<ISimpleCache, LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
                 .AddOrderCloudUserAuth()
                 .AddOrderCloudWebhookAuth(opts => opts.HashKey = _settings.OrderCloudSettings.WebhookHashKey)
@@ -196,7 +201,7 @@ namespace Headstart.API
                 .AddSingleton<IZohoCommand>(z => new ZohoCommand(new ZohoClient(
                     new ZohoClientConfig()
                     {
-                        ApiUrl = "https://books.zoho.com/api/v3",
+                        ApiUrl = $@"https://books.zoho.com/api/v3",
                         AccessToken = _settings.ZohoSettings.AccessToken,
                         ClientId = _settings.ZohoSettings.ClientId,
                         ClientSecret = _settings.ZohoSettings.ClientSecret,
@@ -232,7 +237,7 @@ namespace Headstart.API
                 .AddSingleton<IOrderCloudClient>(provider => orderCloudClient)
                 .AddSwaggerGen(c =>
                 {
-                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Headstart Middleware API Documentation", Version = "v1" });
+                    c.SwaggerDoc($@"v1", new OpenApiInfo { Title = $@"Headstart Middleware API Documentation", Version = $@"v1" });
                     c.SchemaFilter<SwaggerExcludeFilter>();
 
                     List<string> xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml", SearchOption.TopDirectoryOnly).ToList();
@@ -241,53 +246,55 @@ namespace Headstart.API
                 .AddSwaggerGenNewtonsoftSupport();
 
             var serviceProvider = services.BuildServiceProvider();
-            services
-                .AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions
-                {
-                    EnableAdaptiveSampling = false, // retain all data
-                    InstrumentationKey = _settings.ApplicationInsightsSettings.InstrumentationKey
-                });
-
+            services.AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions
+            {
+                EnableAdaptiveSampling = false, // retain all data
+                InstrumentationKey = _settings.ApplicationInsightsSettings.InstrumentationKey
+            });
             ServicePointManager.DefaultConnectionLimit = int.MaxValue;
-
             ConfigureFlurl();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// The IOC based Startup.Configure void method with with Dependency Injection
+        /// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// </summary>
+        /// <param name="app"></param>
+        /// <param name="env"></param>
         public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.EnsureCosmosDbIsCreated();
             app.UseCatalystExceptionHandler();
             app.UseHttpsRedirection();
             app.UseRouting();
-            app.UseCors("integrationcors");
+            app.UseCors($@"integrationcors");
             app.UseAuthorization();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint($"/swagger/v1/swagger.json", $"Headstart API v1");
+                c.SwaggerEndpoint($@"/swagger/v1/swagger.json", $@"Headstart API v1");
                 c.RoutePrefix = string.Empty;
             });
 
         }
 
+        /// <summary>
+        /// The Startup.ConfigureFlurl void method
+        /// </summary>
         public void ConfigureFlurl()
         {
             // This adds retry logic for any api call that fails with a transient error (server errors, timeouts, or rate limiting requests)
             // Will retry up to 3 times using exponential backoff and jitter, a mean of 3 seconds wait time in between retries
             // https://github.com/App-vNext/Polly/wiki/Retry-with-jitter#more-complex-jitter
             var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(3), retryCount: 3);
-            var policy = HttpPolicyExtensions
-                            .HandleTransientHttpError()
-                            .OrResult(response => response.StatusCode == HttpStatusCode.TooManyRequests)
-                            .WaitAndRetryAsync(delay);
+            var policy = HttpPolicyExtensions.HandleTransientHttpError().OrResult(response => response.StatusCode == HttpStatusCode.TooManyRequests).WaitAndRetryAsync(delay);
             // Flurl setting for JSON serialization
             var jsonSettings = new JsonSerializerSettings();
             jsonSettings.Converters.Add(new StringEnumConverter());
+
             // Flurl setting for request timeout
             var timeout = TimeSpan.FromSeconds(_settings.FlurlSettings.TimeoutInSeconds == 0 ? 30 : _settings.FlurlSettings.TimeoutInSeconds);
-
             FlurlHttp.Configure(settings =>
             {
                 settings.HttpClientFactory = new PollyFactory(policy);

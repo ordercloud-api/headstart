@@ -23,7 +23,7 @@ namespace Headstart.Common.Controllers
         private readonly IOrderCloudClient _oc;
 
         /// <summary>
-        /// The IOC based constructor method for the OrderController with Dependency Injection
+        /// The IOC based constructor method for the OrderController class object with Dependency Injection
         /// </summary>
         /// <param name="command"></param>
         /// <param name="lineItemCommand"></param>

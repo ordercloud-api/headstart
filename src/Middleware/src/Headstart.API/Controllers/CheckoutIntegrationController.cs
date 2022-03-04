@@ -13,7 +13,7 @@ namespace Headstart.Common.Controllers
 		private readonly IPostSubmitCommand _postSubmitCommand;
 
 		/// <summary>
-		/// The IOC based constructor method for the CheckoutIntegrationController with Dependency Injection
+		/// The IOC based constructor method for the CheckoutIntegrationController class object with Dependency Injection
 		/// </summary>
 		/// <param name="checkoutIntegrationCommand"></param>
 		/// <param name="postSubmitCommand"></param>

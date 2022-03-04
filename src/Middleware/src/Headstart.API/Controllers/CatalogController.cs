@@ -11,15 +11,15 @@ namespace Headstart.Common.Controllers
 	public class CatalogController : CatalystController
 	{
 
-		private readonly IHSCatalogCommand _command;
+		private readonly IHSCatalogCommand _hsCatalogCommand;
 
 		/// <summary>
-		/// The IOC based constructor method for the CatalogController with Dependency Injection
+		/// The IOC based constructor method for the CatalogController class object with Dependency Injection
 		/// </summary>
 		/// <param name="command"></param>
 		public CatalogController(IHSCatalogCommand command)
 		{
-			_command = command;
+			_hsCatalogCommand = command;
 		}
 
 		/// <summary>
@@ -31,7 +31,7 @@ namespace Headstart.Common.Controllers
 		[HttpGet, Route("{buyerID}/catalogs"), OrderCloudUserAuth(ApiRole.ProductAdmin, ApiRole.ProductReader)]
 		public async Task<ListPage<HSCatalog>> List(ListArgs<HSCatalog> args, string buyerID)
 		{
-			return await _command.List(buyerID, args, UserContext);
+			return await _hsCatalogCommand.List(buyerID, args, UserContext);
 		}
 
 		/// <summary>
@@ -43,7 +43,7 @@ namespace Headstart.Common.Controllers
 		[HttpGet, Route("{buyerID}/catalogs/{catalogID}"), OrderCloudUserAuth(ApiRole.ProductAdmin, ApiRole.ProductReader)]
 		public async Task<HSCatalog> Get(string buyerID, string catalogID)
 		{
-			return await _command.Get(buyerID, catalogID, UserContext);
+			return await _hsCatalogCommand.Get(buyerID, catalogID, UserContext);
 		}
 
 		/// <summary>
@@ -55,7 +55,7 @@ namespace Headstart.Common.Controllers
 		[HttpPost, Route("{buyerID}/catalogs"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
 		public async Task<HSCatalog> Post([FromBody] HSCatalog obj, string buyerID)
 		{
-			return await _command.Post(buyerID, obj, UserContext);
+			return await _hsCatalogCommand.Post(buyerID, obj, UserContext);
 		}
 
 		/// <summary>
@@ -68,7 +68,7 @@ namespace Headstart.Common.Controllers
 		[HttpGet, Route("{buyerID}/catalogs/assignments"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
 		public async Task<ListPage<HSCatalogAssignment>> GetAssignments(string buyerID, [FromQuery(Name = "catalogID")] string catalogID = "", [FromQuery(Name = "locationID")] string locationID = "")
 		{
-			return await _command.GetAssignments(buyerID, locationID, UserContext);
+			return await _hsCatalogCommand.GetAssignments(buyerID, locationID, UserContext);
 		}
 
 		/// <summary>
@@ -81,7 +81,7 @@ namespace Headstart.Common.Controllers
 		[HttpPost, Route("{buyerID}/{locationID}/catalogs/assignments"), OrderCloudUserAuth(ApiRole.UserGroupAdmin)]
 		public async Task SetAssignments(string buyerID, string locationID, [FromBody] HSCatalogAssignmentRequest assignmentRequest)
 		{
-			await _command.SetAssignments(buyerID, locationID, assignmentRequest.CatalogIDs, UserContext.AccessToken);
+			await _hsCatalogCommand.SetAssignments(buyerID, locationID, assignmentRequest.CatalogIDs, UserContext.AccessToken);
 		}
 
 		/// <summary>
@@ -94,7 +94,7 @@ namespace Headstart.Common.Controllers
 		[HttpPut, Route("{buyerID}/catalogs/{catalogID}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
 		public async Task<HSCatalog> Put([FromBody] HSCatalog obj, string buyerID, string catalogID)
 		{
-			return await _command.Put(buyerID, catalogID, obj, UserContext);
+			return await _hsCatalogCommand.Put(buyerID, catalogID, obj, UserContext);
 		}
 
 
@@ -107,7 +107,7 @@ namespace Headstart.Common.Controllers
 		[HttpDelete, Route("{buyerID}/catalogs/{catalogID}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
 		public async Task Delete(string buyerID, string catalogID)
 		{
-			await _command.Delete(buyerID, catalogID, UserContext);
+			await _hsCatalogCommand.Delete(buyerID, catalogID, UserContext);
 		}
 
 		/// <summary>
@@ -119,7 +119,7 @@ namespace Headstart.Common.Controllers
 		[HttpPost, Route("{buyerID}/catalogs/user/{userID}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
         public async Task SyncOnRemoveFromLocation(string buyerID, string userID)
         {
-			await _command.SyncUserCatalogAssignments(buyerID, userID);
+			await _hsCatalogCommand.SyncUserCatalogAssignments(buyerID, userID);
         }
     }
 }

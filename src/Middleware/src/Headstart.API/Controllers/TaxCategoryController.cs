@@ -11,7 +11,7 @@ namespace Headstart.Common.Controllers
 		private readonly ITaxCodesProvider _taxCodesProvider;
 
 		/// <summary>
-		/// The IOC based constructor method for the TaxCategoryController with Dependency Injection
+		/// The IOC based constructor method for the TaxCategoryController class object with Dependency Injection
 		/// </summary>
 		/// <param name="taxCodesProvider"></param>
 		public TaxCategoryController(ITaxCodesProvider taxCodesProvider)

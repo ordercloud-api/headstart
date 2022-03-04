@@ -21,7 +21,7 @@ namespace Headstart.Common.Controllers
         private readonly DownloadReportCommand _downloadReportCommand;
 
         /// <summary>
-        /// The IOC based constructor method for the ReportController with Dependency Injection
+        /// The IOC based constructor method for the ReportController class object with Dependency Injection
         /// </summary>
         /// <param name="reportDataCommand"></param>
         /// <param name="settings"></param>

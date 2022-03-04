@@ -13,7 +13,7 @@ namespace Headstart.Common.Controllers
 	public class SupplierFilterConfigController : CatalystController
 	{
 		/// <summary>
-		/// The Default constructor method for the SupplierFilterConfigController
+		/// The Default constructor method for the SupplierFilterConfigController class object
 		/// </summary>
 		public SupplierFilterConfigController() { }
 
