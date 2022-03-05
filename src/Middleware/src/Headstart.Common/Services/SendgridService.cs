@@ -1,29 +1,24 @@
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
+using SendGrid;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using Dynamitey;
-using Flurl.Http;
-using Flurl.Http.Configuration;
-using Microsoft.AspNetCore.Http;
-using Headstart.Common.Constants;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Models;
-using Headstart.Models.Misc;
-using Microsoft.WindowsAzure.Storage.Blob;
 using OrderCloud.SDK;
-using SendGrid;
-using SendGrid.Helpers.Mail;
-using static Headstart.Common.Models.SendGridModels;
-using Headstart.Common.Mappers;
 using Newtonsoft.Json;
-using ordercloud.integrations.cardconnect;
-using Headstart.Common.Models.Misc;
-using ordercloud.integrations.library;
-using Headstart.Models.Headstart;
+using Headstart.Models;
 using OrderCloud.Catalyst;
+using SendGrid.Helpers.Mail;
+using Headstart.Models.Misc;
+using System.Threading.Tasks;
+using Headstart.Common.Mappers;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using Headstart.Common.Constants;
+using Headstart.Models.Headstart;
+using Headstart.Common.Models.Misc;
+using Microsoft.WindowsAzure.Storage.Blob;
+using ordercloud.integrations.cardconnect;
+using static Headstart.Common.Models.SendGridModels;
+using Headstart.Common.Services.ShippingIntegration.Models;
 
 namespace Headstart.Common.Services
 {
@@ -52,7 +47,7 @@ namespace Headstart.Common.Services
 
     public class SendgridService : ISendgridService
     {
-        private readonly AppSettings _settings; 
+        private readonly AppSettings _settings;
         private readonly IOrderCloudClient _oc;
         private readonly ISendGridClient _client;
 
@@ -65,7 +60,7 @@ namespace Headstart.Common.Services
 
         public async Task SendQuoteRequestConfirmationEmail(HSOrder order, HSLineItem lineItem, string buyerEmail)
         {
-            var buyerTemplateData = new EmailTemplate<QuoteOrderTemplateData>()
+            EmailTemplate<QuoteOrderTemplateData> buyerTemplateData = new EmailTemplate<QuoteOrderTemplateData>()
             {
                 Data = SendgridMappers.GetQuoteOrderTemplateData(order, new List<HSLineItem> { lineItem }),
                 Message = OrderSubmitEmailConstants.GetQuoteRequestConfirmationText()
@@ -75,7 +70,7 @@ namespace Headstart.Common.Services
 
         public async Task SendQuotePriceConfirmationEmail(HSOrder order, HSLineItem lineItem, string buyerEmail)
         {
-            var buyerTemplateData = new EmailTemplate<QuoteOrderTemplateData>()
+            EmailTemplate<QuoteOrderTemplateData> buyerTemplateData = new EmailTemplate<QuoteOrderTemplateData>()
             {
                 Data = SendgridMappers.GetQuoteOrderTemplateData(order, new List<HSLineItem> { lineItem }),
                 Message = OrderSubmitEmailConstants.GetQuotePriceConfirmationText()
@@ -85,76 +80,76 @@ namespace Headstart.Common.Services
 
         public virtual async Task SendSingleTemplateEmail(string from, string to, string templateID, object templateData)
         {
-            Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sengrid template ID not configured in app settings", 501));
+            Require.That(templateID != null, new ErrorCode($@"SendgridError", $@"The required Sengrid template ID not configured in app settings.", 501));
             {
-                var fromEmail = new EmailAddress(from);
-                var toEmail = new EmailAddress(to);
-                var msg = MailHelper.CreateSingleTemplateEmail(fromEmail, toEmail, templateID, templateData);
-                var response = await _client.SendEmailAsync(msg);
-                if(!response.IsSuccessStatusCode)
+                EmailAddress fromEmail = new EmailAddress(from);
+                EmailAddress toEmail = new EmailAddress(to);
+                SendGridMessage msg = MailHelper.CreateSingleTemplateEmail(fromEmail, toEmail, templateID, templateData);
+                Response response = await _client.SendEmailAsync(msg);
+                if (!response.IsSuccessStatusCode)
                 {
-                    throw new Exception("Error sending sendgrid email");
+                    throw new Exception($@"Error sending sendgrid email");
                 }
             }
         }
 
         public virtual async Task SendSingleTemplateEmailMultipleRcpts(string from, List<EmailAddress> tos, string templateID, object templateData)
         {
-            Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sengrid template ID not configured in app settings", 501));
+            Require.That(templateID != null, new ErrorCode($@"SendgridError", $@"The required Sengrid template ID not configured in app settings.", 501));
             {
-                var fromEmail = new EmailAddress(from);
-                var msg = MailHelper.CreateSingleTemplateEmailToMultipleRecipients(fromEmail, tos, templateID, templateData);
-                var response = await _client.SendEmailAsync(msg);
+                EmailAddress fromEmail = new EmailAddress(from);
+                SendGridMessage msg = MailHelper.CreateSingleTemplateEmailToMultipleRecipients(fromEmail, tos, templateID, templateData);
+                Response response = await _client.SendEmailAsync(msg);
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new Exception("Error sending sendgrid email");
+                    throw new Exception($@"Error sending sendgrid email");
                 }
             }
         }
 
         public async Task SendSingleTemplateEmailMultipleRcptsAttachment(string from, List<EmailAddress> tos, string templateID, object templateData, CloudAppendBlob fileReference, string fileName)
         {
-            Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sengrid template ID not configured in app settings", 501));
+            Require.That(templateID != null, new ErrorCode($@"SendgridError", $@"The required Sengrid template ID not configured in app settings.", 501));
             {
-                var fromEmail = new EmailAddress(from);
-                var msg = MailHelper.CreateSingleTemplateEmailToMultipleRecipients(fromEmail, tos, templateID, templateData);
-                using (var stream = await fileReference.OpenReadAsync())
+                EmailAddress fromEmail = new EmailAddress(from);
+                SendGridMessage msg = MailHelper.CreateSingleTemplateEmailToMultipleRecipients(fromEmail, tos, templateID, templateData);
+                using (Stream stream = await fileReference.OpenReadAsync())
                 {
                     await msg.AddAttachmentAsync(fileName, stream);
                 }
-                var response = await _client.SendEmailAsync(msg);
+                Response response = await _client.SendEmailAsync(msg);
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new Exception("Error sending sendgrid email");
+                    throw new Exception($@"Error sending sendgrid email");
                 }
             }
         }
 
         public async Task SendSingleTemplateEmailSingleRcptAttachment(string from, string to, string templateID, object templateData, IFormFile fileReference)
         {
-            Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sengrid template ID not configured in app settings", 501));
+            Require.That(templateID != null, new ErrorCode($@"SendgridError", $@"The required Sengrid template ID not configured in app settings.", 501));
             {
-                var fromEmail = new EmailAddress(from);
-                var toEmail = new EmailAddress(to);
-                var msg = MailHelper.CreateSingleTemplateEmail(fromEmail, toEmail, templateID, templateData);
+                EmailAddress fromEmail = new EmailAddress(from);
+                EmailAddress toEmail = new EmailAddress(to);
+                SendGridMessage msg = MailHelper.CreateSingleTemplateEmail(fromEmail, toEmail, templateID, templateData);
                 if (fileReference != null)
                 {
-                    using (var stream = fileReference.OpenReadStream())
+                    using (Stream stream = fileReference.OpenReadStream())
                     {
                         await msg.AddAttachmentAsync(fileReference.FileName, stream);
                     }
                 }
-                var response = await _client.SendEmailAsync(msg);
+                Response response = await _client.SendEmailAsync(msg);
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new Exception("Error sending sendgrid email");
+                    throw new Exception($@"Error sending sendgrid email");
                 }
             }
         }
 
         public async Task SendPasswordResetEmail(MessageNotification<PasswordResetEventBody> messageNotification)
         {
-            var templateData = new EmailTemplate<PasswordResetData>()
+            EmailTemplate<PasswordResetData> templateData = new EmailTemplate<PasswordResetData>()
             {
                 Data = new PasswordResetData
                 {
@@ -172,19 +167,19 @@ namespace Headstart.Common.Services
         private List<LineItemProductData> CreateTemplateProductList(List<HSLineItem> lineItems, LineItemStatusChanges lineItemStatusChanges)
         {
             //  first get line items that actually had a change
-            var changedLiIds = lineItemStatusChanges.Changes.Where(change => change.Quantity > 0).Select(change => change.ID);
-            var changedLineItems = changedLiIds.Select(i => lineItems.Single(l => l.ID == i));
+            IEnumerable<string> changedLiIds = lineItemStatusChanges.Changes.Where(change => change.Quantity > 0).Select(change => change.ID);
+            IEnumerable<HSLineItem> changedLineItems = changedLiIds.Select(i => lineItems.Single(l => l.ID == i));
             //  now map to template data
             return changedLineItems.Select(lineItem =>
             {
-                var lineItemStatusChange = lineItemStatusChanges.Changes.First(li => li.ID == lineItem.ID);
+                LineItemStatusChange lineItemStatusChange = lineItemStatusChanges.Changes.First(li => li.ID == lineItem.ID);
                 return SendgridMappers.MapToTemplateProduct(lineItem, lineItemStatusChange, lineItemStatusChanges.Status);
             }).ToList();
         }
 
         public async Task SendLineItemStatusChangeEmail(HSOrder order, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItems, string firstName, string lastName, string email, EmailDisplayText lineItemEmailDisplayText)
         {
-            var productsList = CreateTemplateProductList(lineItems, lineItemStatusChanges);
+            List<LineItemProductData> productsList = CreateTemplateProductList(lineItems, lineItemStatusChanges);
             EmailTemplate<LineItemStatusChangeData> templateData = new EmailTemplate<LineItemStatusChangeData>()
             {
                 Data = new LineItemStatusChangeData
@@ -209,8 +204,8 @@ namespace Headstart.Common.Services
 
         public async Task SendLineItemStatusChangeEmailMultipleRcpts(HSOrder order, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItems, List<EmailAddress> tos, EmailDisplayText lineItemEmailDisplayText)
         {
-            var productsList = CreateTemplateProductList(lineItems, lineItemStatusChanges);
-            var templateData = new EmailTemplate<LineItemStatusChangeData>()
+            List<LineItemProductData> productsList = CreateTemplateProductList(lineItems, lineItemStatusChanges);
+            EmailTemplate<LineItemStatusChangeData> templateData = new EmailTemplate<LineItemStatusChangeData>()
             {
                 Data = new LineItemStatusChangeData
                 {
@@ -233,8 +228,8 @@ namespace Headstart.Common.Services
 
         public async Task SendOrderSubmittedForApprovalEmail(MessageNotification<OrderSubmitEventBody> messageNotification)
         {
-            var order = messageNotification.EventBody.Order;
-            var templateData = new EmailTemplate<OrderTemplateData>()
+            HSOrder order = messageNotification.EventBody.Order;
+            EmailTemplate<OrderTemplateData> templateData = new EmailTemplate<OrderTemplateData>()
             {
                 Data = SendgridMappers.GetOrderTemplateData(order, messageNotification.EventBody.LineItems),
                 Message = OrderSubmitEmailConstants.GetRequestedApprovalText()
@@ -244,8 +239,8 @@ namespace Headstart.Common.Services
 
         public async Task SendOrderRequiresApprovalEmail(MessageNotification<OrderSubmitEventBody> messageNotification)
         {
-            var order = messageNotification.EventBody.Order;
-            var templateData = new EmailTemplate<OrderTemplateData>()
+            HSOrder order = messageNotification.EventBody.Order;
+            EmailTemplate<OrderTemplateData> templateData = new EmailTemplate<OrderTemplateData>()
             {
                 Data = SendgridMappers.GetOrderTemplateData(order, messageNotification.EventBody.LineItems),
                 Message = OrderSubmitEmailConstants.GetOrderRequiresApprovalText()
@@ -255,7 +250,7 @@ namespace Headstart.Common.Services
 
         public async Task SendNewUserEmail(MessageNotification<PasswordResetEventBody> messageNotification)
         {
-            var templateData = new EmailTemplate<NewUserData>()
+            EmailTemplate<NewUserData> templateData = new EmailTemplate<NewUserData>()
             {
                 Data = new NewUserData
                 {
@@ -271,9 +266,9 @@ namespace Headstart.Common.Services
 
         public async Task SendOrderApprovedEmail(MessageNotification<OrderSubmitEventBody> messageNotification)
         {
-            var order = messageNotification.EventBody.Order;
-            var approval = messageNotification.EventBody.Approvals.FirstOrDefault();
-            var templateData = new EmailTemplate<OrderTemplateData>()
+            HSOrder order = messageNotification.EventBody.Order;
+            OrderApproval approval = messageNotification.EventBody.Approvals.FirstOrDefault();
+            EmailTemplate<OrderTemplateData> templateData = new EmailTemplate<OrderTemplateData>()
             {
                 Data = SendgridMappers.GetOrderTemplateData(order, messageNotification.EventBody.LineItems),
                 Message = OrderSubmitEmailConstants.GetOrderApprovedText()
@@ -284,9 +279,9 @@ namespace Headstart.Common.Services
 
         public async Task SendOrderDeclinedEmail(MessageNotification<OrderSubmitEventBody> messageNotification)
         {
-            var order = messageNotification.EventBody.Order;
-            var approval = messageNotification.EventBody.Approvals.FirstOrDefault();
-            var templateData = new EmailTemplate<OrderTemplateData>()
+            HSOrder order = messageNotification.EventBody.Order;
+            OrderApproval approval = messageNotification.EventBody.Approvals.FirstOrDefault();
+            EmailTemplate<OrderTemplateData> templateData = new EmailTemplate<OrderTemplateData>()
             {
                 Data = SendgridMappers.GetOrderTemplateData(order, messageNotification.EventBody.LineItems),
                 Message = OrderSubmitEmailConstants.GetOrderDeclinedText()
@@ -298,41 +293,41 @@ namespace Headstart.Common.Services
 
         public async Task SendOrderSubmitEmail(HSOrderWorksheet orderWorksheet)
         {
-            var supplierEmailList = await GetSupplierEmails(orderWorksheet);
-            var firstName = orderWorksheet.Order.FromUser.FirstName;
-            var lastName = orderWorksheet.Order.FromUser.LastName;
+            List<EmailAddress> supplierEmailList = await GetSupplierEmails(orderWorksheet);
+            string firstName = orderWorksheet.Order.FromUser.FirstName;
+            string lastName = orderWorksheet.Order.FromUser.LastName;
             if (orderWorksheet.Order.xp.OrderType == OrderType.Standard)
             {
-                var orderData = SendgridMappers.GetOrderTemplateData(orderWorksheet.Order, orderWorksheet.LineItems);
-                var sellerTemplateData = new EmailTemplate<OrderTemplateData>()
+                OrderTemplateData orderData = SendgridMappers.GetOrderTemplateData(orderWorksheet.Order, orderWorksheet.LineItems);
+                EmailTemplate<OrderTemplateData> sellerTemplateData = new EmailTemplate<OrderTemplateData>()
                 {
                     Data = orderData,
                     Message = OrderSubmitEmailConstants.GetOrderSubmitText(orderWorksheet.Order.ID, firstName, lastName, VerifiedUserType.admin)
                 };
-                var buyerTemplateData = new EmailTemplate<OrderTemplateData>()
+                EmailTemplate<OrderTemplateData> buyerTemplateData = new EmailTemplate<OrderTemplateData>()
                 {
                     Data = orderData,
                     Message = OrderSubmitEmailConstants.GetOrderSubmitText(orderWorksheet.Order.ID, firstName, lastName, VerifiedUserType.buyer)
                 };
 
-                var sellerEmailList = await GetSellerEmails();
+                List<EmailAddress> sellerEmailList = await GetSellerEmails();
 
                 //  send emails
-                
+
                 await SendSingleTemplateEmailMultipleRcpts(_settings?.SendgridSettings?.FromEmail, sellerEmailList, _settings?.SendgridSettings?.OrderSubmitTemplateID, sellerTemplateData);
                 await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, orderWorksheet.Order.FromUser.Email, _settings?.SendgridSettings?.OrderSubmitTemplateID, buyerTemplateData);
                 await SendSupplierOrderSubmitEmails(orderWorksheet);
             }
             else if (orderWorksheet.Order.xp.OrderType == OrderType.Quote)
             {
-                var orderData = SendgridMappers.GetQuoteOrderTemplateData(orderWorksheet.Order, orderWorksheet.LineItems);
+                QuoteOrderTemplateData orderData = SendgridMappers.GetQuoteOrderTemplateData(orderWorksheet.Order, orderWorksheet.LineItems);
 
-                var buyerTemplateData = new EmailTemplate<QuoteOrderTemplateData>()
+                EmailTemplate<QuoteOrderTemplateData> buyerTemplateData = new EmailTemplate<QuoteOrderTemplateData>()
                 {
                     Data = orderData,
                     Message = OrderSubmitEmailConstants.GetQuoteOrderSubmitText(VerifiedUserType.buyer)
                 };
-                var supplierTemplateData = new EmailTemplate<QuoteOrderTemplateData>()
+                EmailTemplate<QuoteOrderTemplateData> supplierTemplateData = new EmailTemplate<QuoteOrderTemplateData>()
                 {
                     Data = orderData,
                     Message = OrderSubmitEmailConstants.GetQuoteOrderSubmitText(VerifiedUserType.supplier)
@@ -349,50 +344,50 @@ namespace Headstart.Common.Services
             ListPage<HSSupplier> suppliers = null;
             if (orderWorksheet.Order.xp.SupplierIDs != null)
             {
-                var filterString = String.Join("|", orderWorksheet.Order.xp.SupplierIDs);
-                suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={filterString}");
+                string filterString = string.Join($@"|", orderWorksheet.Order.xp.SupplierIDs);
+                suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $@"ID={filterString}");
             }
-            foreach(var supplier in suppliers.Items)
+            foreach (HSSupplier supplier in suppliers.Items)
             {
-                if(supplier?.xp?.NotificationRcpts?.Count() >0)
+                if (supplier?.xp?.NotificationRcpts?.Count() > 0)
                 {
                     // get orderworksheet for supplier order and fill in some information from buyer order worksheet
-                    var supplierOrderWorksheet = await BuildSupplierOrderWorksheet(orderWorksheet, supplier.ID);
-                    var supplierTemplateData = new EmailTemplate<OrderTemplateData>()
+                    HSOrderWorksheet supplierOrderWorksheet = await BuildSupplierOrderWorksheet(orderWorksheet, supplier.ID);
+                    EmailTemplate<OrderTemplateData> supplierTemplateData = new EmailTemplate<OrderTemplateData>()
                     {
                         Data = SendgridMappers.GetOrderTemplateData(supplierOrderWorksheet.Order, supplierOrderWorksheet.LineItems),
                         Message = OrderSubmitEmailConstants.GetOrderSubmitText(orderWorksheet.Order.ID, supplierOrderWorksheet.Order.FromUser.FirstName, supplierOrderWorksheet.Order.FromUser.LastName, VerifiedUserType.supplier)
                     };
 
                     // SEB-Specific Data
-                    ((OrderTemplateData)supplierTemplateData.Data).BillTo = new Address()
+                    supplierTemplateData.Data.BillTo = new Address()
                     {
-                        CompanyName = "SEB Vendor Portal - BES",
-                        Street1 = "8646 Eagle Creek Circle",
-                        Street2 = "Suite 107",
-                        City = "Savage",
-                        State = "MN",
-                        Zip = "55378",
-                        Phone = "877-771-9123",
+                        CompanyName = $@"SEB Vendor Portal - BES",
+                        Street1 = $@"8646 Eagle Creek Circle",
+                        Street2 = $@"Suite 107",
+                        City = $@"Savage",
+                        State = $@"MN",
+                        Zip = $@"55378",
+                        Phone = $@"877-771-9123",
                         xp =
                         {
-                            Email = "accounting@sebvendorportal.com"
+                            Email = $@"accounting@sebvendorportal.com"
                         }
                     };
 
-                    var supplierTos = new List<EmailAddress>();
-                    foreach (var rcpt in supplier.xp.NotificationRcpts)
+                    List<EmailAddress> supplierTos = new List<EmailAddress>();
+                    foreach (string rcpt in supplier.xp.NotificationRcpts)
                     {
                         supplierTos.Add(new EmailAddress(rcpt));
-                    };
+                    }
                     await SendSingleTemplateEmailMultipleRcpts(_settings?.SendgridSettings?.FromEmail, supplierTos, _settings?.SendgridSettings?.OrderSubmitTemplateID, supplierTemplateData);
-                }   
+                }
             }
         }
 
         private async Task<HSOrderWorksheet> BuildSupplierOrderWorksheet(HSOrderWorksheet orderWorksheet, string supplierID)
         {
-            var supplierOrderWorksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, $"{orderWorksheet.Order.ID}-{supplierID}");
+            HSOrderWorksheet supplierOrderWorksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, $"{orderWorksheet.Order.ID}-{supplierID}");
             supplierOrderWorksheet.Order.BillingAddress = orderWorksheet.Order.BillingAddress;
             supplierOrderWorksheet.Order.FromUser = orderWorksheet.Order.FromUser;
             return supplierOrderWorksheet;
@@ -403,18 +398,18 @@ namespace Headstart.Common.Services
             ListPage<HSSupplier> suppliers = null;
             if (orderWorksheet.Order.xp.SupplierIDs != null)
             {
-                var filterString = String.Join("|", orderWorksheet.Order.xp.SupplierIDs);
-                suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={filterString}");
+                string filterString = string.Join($@"|", orderWorksheet.Order.xp.SupplierIDs);
+                suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $@"ID={filterString}");
             }
-            var supplierTos = new List<EmailAddress>();
-            foreach (var supplier in suppliers.Items)
+            List<EmailAddress> supplierTos = new List<EmailAddress>();
+            foreach (HSSupplier supplier in suppliers.Items)
             {
                 if (supplier?.xp?.NotificationRcpts?.Count() > 0)
                 {
-                    foreach (var rcpt in supplier.xp.NotificationRcpts)
+                    foreach (string rcpt in supplier.xp.NotificationRcpts)
                     {
                         supplierTos.Add(new EmailAddress(rcpt));
-                    };
+                    }
                 }
             }
             return supplierTos;
@@ -422,30 +417,30 @@ namespace Headstart.Common.Services
 
         private async Task<List<EmailAddress>> GetSellerEmails()
         {
-            var sellerUsers = await _oc.AdminUsers.ListAsync<HSSellerUser>();
-            var sellerTos = new List<EmailAddress>();
-            foreach (var seller in sellerUsers.Items)
+            ListPage<HSSellerUser> sellerUsers = await _oc.AdminUsers.ListAsync<HSSellerUser>();
+            List<EmailAddress> sellerTos = new List<EmailAddress>();
+            foreach (HSSellerUser seller in sellerUsers.Items)
             {
                 if (seller?.xp?.OrderEmails ?? false)
                 {
                     sellerTos.Add(new EmailAddress(seller.Email));
-                };
+                }
                 if (seller?.xp?.AddtlRcpts?.Any() ?? false)
                 {
-                    foreach (var rcpt in seller.xp.AddtlRcpts)
+                    foreach (string rcpt in seller.xp.AddtlRcpts)
                     {
                         sellerTos.Add(new EmailAddress(rcpt));
-                    };
-                };
-            };
+                    }
+                }
+            }
             return sellerTos;
         }
 
         public async Task SendLineItemStatusChangeEmail(LineItemStatusChange lineItemStatusChange, List<HSLineItem> lineItems, string firstName, string lastName, string email, EmailDisplayText lineItemEmailDisplayText)
         {
-            var productsList = lineItems.Select(SendgridMappers.MapLineItemToProduct).ToList();
+            List<LineItemProductData> productsList = lineItems.Select(SendgridMappers.MapLineItemToProduct).ToList();
 
-            var templateData = new EmailTemplate<LineItemStatusChangeData>()
+            EmailTemplate<LineItemStatusChangeData> templateData = new EmailTemplate<LineItemStatusChangeData>()
             {
                 Data = new LineItemStatusChangeData
                 {
@@ -465,9 +460,9 @@ namespace Headstart.Common.Services
 
         public async Task SendContactSupplierAboutProductEmail(ContactSupplierBody template)
         {
-            var supplier = await _oc.Suppliers.GetAsync<HSSupplier>(template.Product.DefaultSupplierID);
-            var supplierEmail = supplier.xp.SupportContact.Email;
-            var templateData = new EmailTemplate<ProductInformationRequestData>()
+            HSSupplier supplier = await _oc.Suppliers.GetAsync<HSSupplier>(template.Product.DefaultSupplierID);
+            string supplierEmail = supplier.xp.SupportContact.Email;
+            EmailTemplate<ProductInformationRequestData> templateData = new EmailTemplate<ProductInformationRequestData>()
             {
                 Data = new ProductInformationRequestData
                 {
@@ -482,13 +477,13 @@ namespace Headstart.Common.Services
                 }
             };
             await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, supplierEmail, _settings?.SendgridSettings?.ProductInformationRequestTemplateID, templateData);
-            var sellerUsers = await _oc.AdminUsers.ListAllAsync<HSUser>(filters: $"xp.RequestInfoEmails=true");
-            foreach (var sellerUser in sellerUsers)
+            List<HSUser> sellerUsers = await _oc.AdminUsers.ListAllAsync<HSUser>(filters: $@"xp.RequestInfoEmails=true");
+            foreach (HSUser sellerUser in sellerUsers)
             {
                 await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, sellerUser.Email, _settings?.SendgridSettings?.ProductInformationRequestTemplateID, templateData);
                 if (sellerUser.xp.AddtlRcpts.Any())
                 {
-                    foreach (var rcpt in sellerUser.xp.AddtlRcpts)
+                    foreach (string rcpt in sellerUser.xp.AddtlRcpts)
                     {
                         await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, rcpt, _settings?.SendgridSettings?.ProductInformationRequestTemplateID, templateData);
                     }
@@ -498,30 +493,30 @@ namespace Headstart.Common.Services
 
         public async Task EmailVoidAuthorizationFailedAsync(HSPayment payment, string transactionID, HSOrder order, CreditCardVoidException ex)
         {
-            var templateData = new EmailTemplate<SupportTemplateData>()
+            EmailTemplate<SupportTemplateData> templateData = new EmailTemplate<SupportTemplateData>()
             {
                 Data = new SupportTemplateData
                 {
                     OrderID = order.ID,
-                    DynamicPropertyName1 = "BuyerID",
+                    DynamicPropertyName1 = $@"BuyerID",
                     DynamicPropertyValue1 = order.FromCompanyID,
-                    DynamicPropertyName2 = "Username",
+                    DynamicPropertyName2 = $@"Username",
                     DynamicPropertyValue2 = order.FromUser.Username,
-                    DynamicPropertyName3 = "PaymentID",
+                    DynamicPropertyName3 = $@"PaymentID",
                     DynamicPropertyValue3 = payment.ID,
-                    DynamicPropertyName4 = "TransactionID",
+                    DynamicPropertyName4 = $@"TransactionID",
                     DynamicPropertyValue4 = transactionID,
                     ErrorJsonString = JsonConvert.SerializeObject(ex.ApiError)
                 },
                 Message = new EmailDisplayText()
                 {
-                    EmailSubject = "Manual intervention required for this order",
-                    DynamicText = "Error encountered while trying to void authorization on this order. Please contact customer and help them manually void authorization"
+                    EmailSubject = $@"Manual intervention required for this order.",
+                    DynamicText = $@"An Error was encountered while trying to void authorization on this order. Please contact customer and help them manually void authorization."
                 }
             };
-            var toList = new List<EmailAddress>();
-            var supportEmails = _settings?.SendgridSettings?.CriticalSupportEmails.Split(",");
-            foreach (var email in supportEmails)
+            List<EmailAddress> toList = new List<EmailAddress>();
+            string[] supportEmails = _settings?.SendgridSettings?.CriticalSupportEmails.Split(",");
+            foreach (string email in supportEmails)
             {
                 toList.Add(new EmailAddress { Email = email });
             }
@@ -530,18 +525,18 @@ namespace Headstart.Common.Services
 
         public async Task EmailGeneralSupportQueue(SupportCase supportCase)
         {
-            var templateData = new EmailTemplate<SupportTemplateData>()
+            EmailTemplate<SupportTemplateData> templateData = new EmailTemplate<SupportTemplateData>()
             {
                 Data = new SupportTemplateData
                 {
-                    DynamicPropertyName1 = "FirstName",
+                    DynamicPropertyName1 = $@"FirstName",
                     DynamicPropertyValue1 = supportCase.FirstName,
-                    DynamicPropertyName2 = "LastName",
+                    DynamicPropertyName2 = $@"LastName",
                     DynamicPropertyValue2 = supportCase.LastName,
-                    DynamicPropertyName3 = "Email",
+                    DynamicPropertyName3 = $@"Email",
                     DynamicPropertyValue3 = supportCase.Email,
-                    DynamicPropertyName4 = "Vendor",
-                    DynamicPropertyValue4 = supportCase.Vendor ?? "N/A",
+                    DynamicPropertyName4 = $@"Vendor",
+                    DynamicPropertyValue4 = supportCase.Vendor ?? $@"N/A",
                 },
                 Message = new EmailDisplayText()
                 {
@@ -549,7 +544,7 @@ namespace Headstart.Common.Services
                     DynamicText = supportCase.Message
                 }
             };
-            var recipient = SendgridMappers.DetermineRecipient(_settings, supportCase.Subject);
+            string recipient = SendgridMappers.DetermineRecipient(_settings, supportCase.Subject);
             await SendSingleTemplateEmailSingleRcptAttachment(_settings?.SendgridSettings?.FromEmail, recipient, _settings?.SendgridSettings?.CriticalSupportTemplateID, templateData, supportCase.File);
         }
     }

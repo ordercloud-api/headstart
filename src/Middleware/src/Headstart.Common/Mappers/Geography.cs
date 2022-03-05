@@ -1,12 +1,10 @@
-﻿using ordercloud.integrations.exchangerates;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using ordercloud.integrations.exchangerates;
 
 namespace Headstart.Common.Mappers
 {
-	public static class Geography
-	{
+    public static class Geography
+    {
         public static CurrencySymbol GetCurrency(string country)
         {
             switch (country?.Trim(' ')?.ToLower())
@@ -18,7 +16,7 @@ namespace Headstart.Common.Mappers
                 case "usa":
                     return CurrencySymbol.USD;
                 default:
-                    throw new Exception($"A currency for country with value <{country}> cannot be found");
+                    throw new Exception($@"A currency for country with value <{country}> cannot be found");
 
             }
         }
@@ -34,7 +32,7 @@ namespace Headstart.Common.Mappers
                 case "usa":
                     return "US";
                 default:
-                    throw new Exception($"A country code cannot be detmined for <{country}>");
+                    throw new Exception($@"A country code cannot be detmined for <{country}>");
             }
         }
 
@@ -115,8 +113,8 @@ namespace Headstart.Common.Mappers
                 case "QUEBEC": return "QC";
                 case "SASKATCHEWAN": return "SK";
                 case "YUKON": return "YT";
-                default: 
-                    throw new Exception($"A State code cannot be detmined for <{state}>");
+                default:
+                    throw new Exception($@"A State code cannot be detmined for <{state}>");
             }
         }
     }

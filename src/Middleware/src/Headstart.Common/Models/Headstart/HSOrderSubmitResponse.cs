@@ -1,30 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Headstart.Common.Exceptions;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using OrderCloud.SDK;
+using System.Collections.Generic;
+using Headstart.Common.Exceptions;
 
 namespace Headstart.Models.Headstart
 {
 
     public class OrderSubmitResponseXp
     {
-        public List<ProcessResult> ProcessResults { get; set; }
+        public List<ProcessResult> ProcessResults { get; set; } = new List<ProcessResult>();
     }
 
     public class ProcessResult
     {
         public ProcessType Type { get; set; }
+
         public List<ProcessResultAction> Activity { get; set; } = new List<ProcessResultAction>();
     }
 
     public class ProcessResultAction
     {
         public ProcessType ProcessType { get; set; }
-        public string Description { get; set; }
+
+        public string Description { get; set; } = string.Empty;
+
         public bool Success { get; set; }
+
         public ProcessResultException Exception { get; set; }
     }
 
@@ -38,5 +39,4 @@ namespace Headstart.Models.Headstart
         Tax,
         Shipping
     }
-
 }

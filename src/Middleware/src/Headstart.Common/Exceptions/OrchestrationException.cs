@@ -1,14 +1,14 @@
 ﻿using System;
-using Headstart.Common.Models;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
+using Headstart.Common.Models;
+using Newtonsoft.Json.Converters;
 
 namespace Headstart.Common.Exceptions
 {
     public class OrchestrationException : Exception
     {
-        public OrchestrationError Error { get; set; }
+        public OrchestrationError Error { get; set; } = new OrchestrationError();
 
         public OrchestrationException(OrchestrationErrorType type, object data)
         {
@@ -47,10 +47,7 @@ namespace Headstart.Common.Exceptions
 
     public class OrchestrationError
     {
-        public OrchestrationError()
-        {
-           
-        }
+        public OrchestrationError() { }
         [JsonConverter(typeof(StringEnumConverter))]
         public OrchestrationErrorType Type { get; set; }
         public string RecordId { get; set; }

@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Cosmonaut;
 using System.Linq;
-using System.Threading.Tasks;
-using Cosmonaut;
+using OrderCloud.SDK;
+using OrderCloud.Catalyst;
 using Cosmonaut.Extensions;
+using System.Threading.Tasks;
 using Headstart.Common.Models;
 using Microsoft.Azure.Documents;
+using System.Collections.Generic;
 using Microsoft.Azure.Documents.Client;
-using OrderCloud.Catalyst;
-using OrderCloud.SDK;
 
 namespace Headstart.Common.Queries
 {
@@ -24,7 +23,9 @@ namespace Headstart.Common.Queries
     public class ReportTemplateQuery : IReportTemplateQuery<ReportTemplate>
     {
         private readonly ICosmosStore<ReportTemplate> _store;
+
         private readonly IOrderCloudClient _oc;
+
         public ReportTemplateQuery(ICosmosStore<ReportTemplate> store, IOrderCloudClient oc)
         {
             _store = store;
@@ -33,13 +34,14 @@ namespace Headstart.Common.Queries
 
         public async Task<List<ReportTemplate>> List(ReportTypeEnum reportType, DecodedToken decodedToken)
         {
-            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-            var feedOptions = new FeedOptions() { PartitionKey = new PartitionKey($"{me?.Seller?.ID}") };
-            var templates = new List<ReportTemplate>();
+            MeUser me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            FeedOptions feedOptions = new FeedOptions() { PartitionKey = new PartitionKey($"{me?.Seller?.ID}") };
+            List<ReportTemplate> templates = new List<ReportTemplate>();
             if (decodedToken.CommerceRole == CommerceRole.Seller)
             {
                 templates = await _store.Query(feedOptions).Where(x => x.ReportType == reportType).ToListAsync();
-            } else if (decodedToken.CommerceRole == CommerceRole.Supplier)
+            }
+            else if (decodedToken.CommerceRole == CommerceRole.Supplier)
             {
                 templates = await _store.Query(feedOptions).Where(x => x.ReportType == reportType && x.AvailableToSuppliers == true).ToListAsync();
             }
@@ -48,19 +50,17 @@ namespace Headstart.Common.Queries
 
         public async Task<ReportTemplate> Post(ReportTemplate reportTemplate, DecodedToken decodedToken)
         {
-            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-            var template = reportTemplate;
+            MeUser me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            ReportTemplate template = reportTemplate;
             template.SellerID = me?.Seller?.ID;
-            var newTemplate = await _store.AddAsync(template);
-            return newTemplate;
+            return await _store.AddAsync(template);
         }
 
         public async Task<ReportTemplate> Put(string id, ReportTemplate reportTemplate, DecodedToken decodedToken)
         {
-            var templateToPut = await _store.Query().FirstOrDefaultAsync(template => template.TemplateID == id);
+            ReportTemplate templateToPut = await _store.Query().FirstOrDefaultAsync(template => template.TemplateID == id);
             reportTemplate.id = templateToPut.id;
-            var updatedTemplate = await _store.UpdateAsync(reportTemplate);
-            return updatedTemplate;
+            return await _store.UpdateAsync(reportTemplate);
         }
 
         public async Task Delete(string id)
@@ -70,8 +70,7 @@ namespace Headstart.Common.Queries
 
         public async Task<ReportTemplate> Get(string id, DecodedToken decodedToken)
         {
-            var template = await _store.Query().FirstOrDefaultAsync(template => template.TemplateID == id);
-            return template;
+            return await _store.Query().FirstOrDefaultAsync(template => template.TemplateID == id);
         }
     }
 }

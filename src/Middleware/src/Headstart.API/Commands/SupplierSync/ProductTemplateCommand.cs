@@ -299,7 +299,6 @@ namespace Headstart.API.Commands
         public bool AllowOpenText { get; set; }
         public string DefaultOptionID { get; set; }
         public bool DefinesVariant { get; set; }
-        //public IList<TemplateSpecOption> SpecOptions { get; set; } = new List<TemplateSpecOption>();
     }
 
     public class TemplateSpecOption

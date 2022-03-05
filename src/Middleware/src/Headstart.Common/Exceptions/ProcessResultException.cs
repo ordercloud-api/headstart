@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Flurl.Http;
-using ordercloud.integrations.library;
 using Newtonsoft.Json;
 using OrderCloud.Catalyst;
 
@@ -10,38 +7,39 @@ namespace Headstart.Common.Exceptions
 {
     public class ProcessResultException
     {
+        public string Message { get; set; } = string.Empty;
+        public dynamic ResponseBody { get; set; }
+
         public ProcessResultException(Exception ex)
         {
-            this.Message = ex.Message;
-            this.ResponseBody = "";
+            Message = ex.Message;
+            ResponseBody = string.Empty;
         }
 
         public ProcessResultException(CatalystBaseException ex)
         {
-            this.Message = ex.Errors[0].Message;
+            Message = ex.Errors[0].Message;
             try
             {
-                this.ResponseBody = JsonConvert.SerializeObject(ex.Errors);
-            } catch(Exception)
+                ResponseBody = JsonConvert.SerializeObject(ex.Errors);
+            }
+            catch (Exception)
             {
-                this.ResponseBody = "Error while trying to parse response body";
+                ResponseBody = $@"Error while trying to parse response body.";
             }
         }
 
         public ProcessResultException(FlurlHttpException ex)
         {
-            this.Message = ex.Message;
+            Message = ex.Message;
             try
             {
-                this.ResponseBody = ex.GetResponseJsonAsync().Result;
-            } catch(Exception)
-            {
-                this.ResponseBody = "Error while trying to parse response body";
+                ResponseBody = ex.GetResponseJsonAsync().Result;
             }
-            
+            catch (Exception)
+            {
+                ResponseBody = $@"Error while trying to parse response body.";
+            }
         }
-
-        public string Message { get; set; }
-        public dynamic ResponseBody { get; set; }
     }
 }

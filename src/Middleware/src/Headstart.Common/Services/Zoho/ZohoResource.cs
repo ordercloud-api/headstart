@@ -1,14 +1,14 @@
+using Flurl;
 using System;
+using Flurl.Http;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Flurl;
-using Flurl.Http;
-using Flurl.Http.Content;
 using Newtonsoft.Json;
+using System.Threading;
+using Flurl.Http.Content;
 using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 using NullValueHandling = Newtonsoft.Json.NullValueHandling;
 
 namespace Headstart.Common.Services.Zoho
@@ -28,51 +28,65 @@ namespace Headstart.Common.Services.Zoho
 
         private object[] AppendSegments(params object[] segments)
         {
-            if (segments.Length <= 0) return _segments;
-            var appended = _segments.ToList();
+            if (segments.Length <= 0)
+            {
+                return _segments;
+            }
+            List<object> appended = _segments.ToList();
             appended.AddRange(segments);
             return appended.ToArray();
         }
 
-        protected internal IFlurlRequest Get(params object[] segments) =>
-            _client.Request(this.AppendSegments(segments));
+        protected internal IFlurlRequest Get(params object[] segments)
+        {
+            return _client.Request(AppendSegments(segments));
+        }
 
-        protected internal IFlurlRequest Delete(params object[] segments) =>
-            _client.Request(this.AppendSegments(segments));
+        protected internal IFlurlRequest Delete(params object[] segments)
+        {
+            return _client.Request(AppendSegments(segments));
+        }
 
-        protected internal IFlurlRequest Post(params object[] segments) =>
-            _client.Request(this.AppendSegments(segments));
+        protected internal IFlurlRequest Post(params object[] segments)
+        {
+            return _client.Request(AppendSegments(segments));
+        }
 
-        protected internal async Task<T> Post<T>(object obj) =>
-            await Parse<T>(await _client.Post(obj, _segments).PostMultipartAsync(f =>
+        protected internal async Task<T> Post<T>(object obj)
+        {
+            return await Parse<T>(await _client.Post(obj, _segments).PostMultipartAsync(f =>
             {
-                f.AddString("JSONString", JsonConvert.SerializeObject(obj, new JsonSerializerSettings()
+                f.AddString($@"JSONString", JsonConvert.SerializeObject(obj, new JsonSerializerSettings()
                 {
                     NullValueHandling = NullValueHandling.Ignore,
                     Formatting = Formatting.None
                 }));
             }));
+        }
 
-        protected internal async Task<T> Put<T>(object obj, params object[] segments) =>
-            await Parse<T>(await _client.Put(obj, this.AppendSegments(segments)).PutMultipartAsync(f =>
+        protected internal async Task<T> Put<T>(object obj, params object[] segments)
+        {
+            return await Parse<T>(await _client.Put(obj, AppendSegments(segments)).PutMultipartAsync(f =>
             {
-                f.AddString("JSONString", JsonConvert.SerializeObject(obj, new JsonSerializerSettings()
+                f.AddString($@"JSONString", JsonConvert.SerializeObject(obj, new JsonSerializerSettings()
                 {
                     NullValueHandling = NullValueHandling.Ignore,
                     Formatting = Formatting.None
                 }));
             }));
+        }
 
-        private async Task<T> Parse<T>(IFlurlResponse res) =>
-            JObject.Parse(await res.ResponseMessage.Content.ReadAsStringAsync()).SelectToken(_resource).ToObject<T>();
+        private async Task<T> Parse<T>(IFlurlResponse res)
+        {
+            return JObject.Parse(await res.ResponseMessage.Content.ReadAsStringAsync()).SelectToken(_resource).ToObject<T>();
+        }
     }
 
-    //https://stackoverflow.com/questions/52541918/flurl-extension-for-multi-part-put
     public static class MultipartPutExtensions
     {
         public static Task<IFlurlResponse> PutMultipartAsync(this IFlurlRequest request, Action<CapturedMultipartContent> buildContent, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var cmc = new CapturedMultipartContent(request.Settings);
+            CapturedMultipartContent cmc = new CapturedMultipartContent(request.Settings);
             buildContent(cmc);
             return request.SendAsync(HttpMethod.Put, cmc, cancellationToken);
         }

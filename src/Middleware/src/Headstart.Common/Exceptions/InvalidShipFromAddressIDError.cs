@@ -2,11 +2,11 @@
 {
 	public class InvalidShipFromAddressIDError
 	{
+		public string ShipFromAddressID { get; set; } = string.Empty;
+
 		public InvalidShipFromAddressIDError(string id)
 		{
 			ShipFromAddressID = id;
 		}
-
-		public string ShipFromAddressID { get; set; } 
 	}
 }

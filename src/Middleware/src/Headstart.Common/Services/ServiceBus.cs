@@ -1,10 +1,10 @@
-﻿using Azure.Messaging.ServiceBus;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+﻿using System;
 using System.Text;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
+using Azure.Messaging.ServiceBus;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 namespace Headstart.Common.Services
 {
@@ -14,12 +14,11 @@ namespace Headstart.Common.Services
         Task SendMessageBatchToTopicAsync(string queueName, Queue<ServiceBusMessage> messages);
     }
 
-    // azure service bus
-    // https://github.com/Azure/azure-sdk-for-net/tree/Microsoft.Azure.ServiceBus_5.1.2/sdk/servicebus/Azure.Messaging.ServiceBus
     public class ServiceBus : IServiceBus
     {
         private readonly ConcurrentDictionary<string, ServiceBusSender> senders = new ConcurrentDictionary<string, ServiceBusSender>();
         private readonly ServiceBusClient _client;
+
         public ServiceBus(AppSettings settings)
         {
             _client = new ServiceBusClient(settings.ServiceBusSettings.ConnectionString);
@@ -27,9 +26,9 @@ namespace Headstart.Common.Services
 
         public async Task SendMessage<T>(string queueName, T message, double? afterMinutes = null)
         {
-            var sender = senders.GetOrAdd(queueName, _client.CreateSender(queueName));
-            var messageString = JsonConvert.SerializeObject(message);
-            var messageBytes = Encoding.UTF8.GetBytes(messageString);
+            ServiceBusSender sender = senders.GetOrAdd(queueName, _client.CreateSender(queueName));
+            string messageString = JsonConvert.SerializeObject(message);
+            byte[] messageBytes = Encoding.UTF8.GetBytes(messageString);
             if (afterMinutes == null)
             {
                 // send message immediately
@@ -38,7 +37,7 @@ namespace Headstart.Common.Services
             else
             {
                 // send message after x minutes
-                var afterMinutesUtc = DateTime.UtcNow.AddMinutes((double)afterMinutes);
+                DateTime afterMinutesUtc = DateTime.UtcNow.AddMinutes((double)afterMinutes);
                 await sender.SendMessageAsync(new ServiceBusMessage(messageBytes) { ScheduledEnqueueTime = afterMinutesUtc });
             }
 
@@ -60,7 +59,7 @@ namespace Headstart.Common.Services
                 }
                 else
                 {
-                    throw new Exception($"Message {messageCount - messages.Count} is too large and cannot be sent.");
+                    throw new Exception($@"Message {messageCount - messages.Count} is too large and cannot be sent.");
                 }
 
                 while (messages.Count > 0 && messageBatch.TryAddMessage(messages.Peek()))
@@ -69,7 +68,7 @@ namespace Headstart.Common.Services
                 }
                 await sender.SendMessagesAsync(messageBatch);
             }
-            Console.WriteLine($"Sent a batch of {messageCount} messages to the topic: {topicName}");
+            Console.WriteLine($@"Sent a batch of {messageCount} messages to the topic: {topicName}.");
         }
     }
 }

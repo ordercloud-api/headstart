@@ -1,44 +1,38 @@
-﻿using ordercloud.integrations.cardconnect;
-using ordercloud.integrations.library;
-using OrderCloud.SDK;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using OrderCloud.SDK;
+using ordercloud.integrations.cardconnect;
 
 namespace Headstart.Models.Headstart
 {
-    
-    public class HSPayment : Payment<PaymentXP, HSPaymentTransaction>
-    {
 
-    }
+    public class HSPayment : Payment<PaymentXP, HSPaymentTransaction> { }
 
-    
-    public class HSPaymentTransaction: PaymentTransaction<TransactionXP>
-    {
 
-    }
+    public class HSPaymentTransaction : PaymentTransaction<TransactionXP> { }
 
-    
     public class PaymentXP
     {
-        public string partialAccountNumber { get; set; }
-        public string cardType { get; set; }
+        public string partialAccountNumber { get; set; } = string.Empty;
+
+        public string cardType { get; set; } = string.Empty;
     }
 
-    
+
     public class TransactionXP
     {
-        public CardConnectAuthorizationResponse CardConnectResponse { get; set; }
-        public RMADetails RMADetails { get; set; }
+        public CardConnectAuthorizationResponse CardConnectResponse { get; set; } = new CardConnectAuthorizationResponse();
+
+        public RMADetails RMADetails { get; set; } = new RMADetails();
     }
 
-    
+
     public class RMADetails
     {
-        public string OrderRMANumber { get; set; }
-        public string RefundComment { get; set; }
-        public string FromSupplierID { get; set; }
-        public string FromUserID { get; set; }
+        public string OrderRMANumber { get; set; } = string.Empty;
+
+        public string RefundComment { get; set; } = string.Empty;
+
+        public string FromSupplierID { get; set; } = string.Empty;
+
+        public string FromUserID { get; set; } = string.Empty;
     }
 }

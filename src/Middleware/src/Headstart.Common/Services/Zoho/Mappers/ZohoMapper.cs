@@ -1,25 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Common.Services.Zoho.Models;
+using OrderCloud.SDK;
 using Headstart.Models;
+using System.Collections.Generic;
 using Headstart.Models.Headstart;
 using ordercloud.integrations.library;
-using OrderCloud.SDK;
+using Headstart.Common.Services.Zoho.Models;
+using Headstart.Common.Services.ShippingIntegration.Models;
 
 namespace Headstart.Common.Services.Zoho.Mappers
 {
     public static class ZohoContactMapper
     {
-        public static ZohoContact Map(HSSupplier supplier, HSAddressSupplier address, User user,
-            ZohoCurrency currency)
+        public static ZohoContact Map(HSSupplier supplier, HSAddressSupplier address, User user, ZohoCurrency currency)
         {
             return new ZohoContact()
             {
                 company_name = supplier.ID,
                 contact_name = supplier.Name,
-                contact_type = "vendor",
+                contact_type = $@"vendor",
                 billing_address = ZohoAddressMapper.Map(address),
                 shipping_address = ZohoAddressMapper.Map(address),
                 contact_persons = new List<ZohoContactPerson>()
@@ -44,7 +43,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
                 contact_id = contact.contact_id,
                 company_name = supplier.ID,
                 contact_name = supplier.Name,
-                contact_type = "vendor",
+                contact_type = $@"vendor",
                 billing_address = ZohoAddressMapper.Map(address),
                 shipping_address = ZohoAddressMapper.Map(address),
                 contact_persons = contact.contact_persons = (contact.contact_persons != null &&
@@ -69,23 +68,23 @@ namespace Headstart.Common.Services.Zoho.Mappers
         {
             return new ZohoContact()
             {
-                company_name = $"{buyer.Name} - {location.Address?.xp.LocationID}",
-                contact_name = $"{location.Address?.AddressName} - {location.Address?.xp.LocationID}",
-                contact_type = "customer",
+                company_name = $@"{buyer.Name} - {location.Address?.xp.LocationID}",
+                contact_name = $@"{location.Address?.AddressName} - {location.Address?.xp.LocationID}",
+                contact_type = $@"customer",
                 billing_address = ZohoAddressMapper.Map(location.Address),
                 shipping_address = ZohoAddressMapper.Map(location.Address),
                 contact_persons = ZohoContactMapper.Map(users),
                 currency_id = currency.currency_id,
-                notes = $"Franchise ID: {buyer.ID} ~ Location ID: {location.Address?.xp.LocationID}"
+                notes = $@"Franchise ID: {buyer.ID} ~ Location ID: {location.Address?.xp.LocationID}"
             };
         }
 
         public static ZohoContact Map(ZohoContact contact, HSBuyer buyer, IList<HSUser> users,
             ZohoCurrency currency, HSBuyerLocation location)
         {
-            contact.company_name = $"{buyer.Name} - {location.Address?.xp.LocationID}";
-            contact.contact_name = $"{location.Address?.AddressName} - {location.Address?.xp.LocationID}";
-            contact.contact_type = "customer";
+            contact.company_name = $@"{buyer.Name} - {location.Address?.xp.LocationID}";
+            contact.contact_name = $@"{location.Address?.AddressName} - {location.Address?.xp.LocationID}";
+            contact.contact_type = $@"customer";
             contact.billing_address = ZohoAddressMapper.Map(location.Address);
             contact.shipping_address = ZohoAddressMapper.Map(location.Address);
             contact.contact_persons = ZohoContactMapper.Map(users, contact);
@@ -97,12 +96,12 @@ namespace Headstart.Common.Services.Zoho.Mappers
         public static List<ZohoContactPerson> Map(IList<HSUser> users, ZohoContact contact = null)
         {
             // there is no property at this time for primary contact in OC, so we'll go with the first in the list
-            var list = new List<ZohoContactPerson>();
-            foreach (var user in users)
+            List<ZohoContactPerson> list = new List<ZohoContactPerson>();
+            foreach (HSUser user in users)
             {
                 if (contact?.contact_persons != null && contact.contact_persons.Any(p => p.email == user.Email))
                 {
-                    var c = contact.contact_persons.FirstOrDefault(p => p.email == user.Email);
+                    ZohoContactPerson c = contact.contact_persons.FirstOrDefault(p => p.email == user.Email);
                     c.contact_person_id = c.contact_person_id;
                     c.email = user.Email;
                     c.first_name = user.FirstName;
@@ -121,7 +120,6 @@ namespace Headstart.Common.Services.Zoho.Mappers
                     });
                 }
             }
-
             return list.DistinctBy(u => u.email).ToList();
         }
     }
@@ -131,31 +129,31 @@ namespace Headstart.Common.Services.Zoho.Mappers
         public static ZohoLineItem Map(ZohoLineItem item, HSShipMethod method)
         {
             item.item_id = item.item_id;
-            item.item_type = "sales_and_purchases";
-            item.name = $"Shipping: {method.Name}";
+            item.item_type = $@"sales_and_purchases";
+            item.name = $@"Shipping: {method.Name}";
             item.rate = Math.Round(decimal.ToDouble(method.Cost), 2);
-            item.description = $"{method.Name} - {method.EstimatedTransitDays} days transit";
+            item.description = $@"{method.Name} - {method.EstimatedTransitDays} days transit";
             item.sku = item.sku;
             item.quantity = 1;
-            item.unit = "each";
-            item.purchase_description = $"{method.Name} - {method.EstimatedTransitDays} days transit";
-            item.avatax_tax_code = "FR";
+            item.unit = $@"each";
+            item.purchase_description = $@"{method.Name} - {method.EstimatedTransitDays} days transit";
+            item.avatax_tax_code = $@"FR";
             return item;
         }
 
         public static ZohoLineItem Map(HSShipMethod method)
         {
-            var item = new ZohoLineItem()
+            ZohoLineItem item = new ZohoLineItem()
             {
-                item_type = "sales_and_purchases",
+                item_type = $@"sales_and_purchases",
                 sku = method.ShippingSku(),
                 rate = Math.Round(decimal.ToDouble(method.Cost), 2),
-                description = $"{method.Name} - {method.EstimatedTransitDays} days transit",
-                name = $"Shipping: {method.Name}",
+                description = $@"{method.Name} - {method.EstimatedTransitDays} days transit",
+                name = $@"Shipping: {method.Name}",
                 quantity = 1,
-                unit = "each",
-                purchase_description = $"{method.Name} - {method.EstimatedTransitDays} days transit",
-                avatax_tax_code = "FR"
+                unit = $@"each",
+                purchase_description = $@"{method.Name} - {method.EstimatedTransitDays} days transit",
+                avatax_tax_code = $@"FR"
             };
             return item;
         }
@@ -167,7 +165,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
         {
             return new ZohoLineItem()
             {
-                purchase_description = $"{item.Product.Name ?? item.Variant?.Name} {item.Variant?.xp?.SpecCombo ?? item.SKU()}".Trim(),
+                purchase_description = $@"{item.Product.Name ?? item.Variant?.Name} {item.Variant?.xp?.SpecCombo ?? item.SKU()}".Trim(),
                 purchase_rate = item.UnitPrice.HasValue ? Math.Round(decimal.ToDouble(item.UnitPrice.Value), 2) : 0,
                 manufacturer = supplier.Name,
             };
@@ -175,7 +173,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
 
         public static ZohoLineItem Map(ZohoLineItem zItem, HSLineItem item, Supplier supplier)
         {
-            zItem.purchase_description = $"{item.Product.Name ?? item.Variant?.Name} {item.Variant?.xp?.SpecCombo ?? item.SKU()}".Trim();
+            zItem.purchase_description = $@"{item.Product.Name ?? item.Variant?.Name} {item.Variant?.xp?.SpecCombo ?? item.SKU()}".Trim();
             zItem.purchase_rate = item.UnitPrice.HasValue ? Math.Round(decimal.ToDouble(item.UnitPrice.Value), 2) : 0;
             zItem.manufacturer = supplier.Name;
             return zItem;
@@ -184,15 +182,15 @@ namespace Headstart.Common.Services.Zoho.Mappers
 
     public static class ZohoExtensions
     {
-        public static string ShippingSuffix = "Shipping (41000)";
+        public static string ShippingSuffix = $@"Shipping (41000)";
         public static string SKU(this HSLineItem item)
         {
-            return item.Product == null ? "" : $"{item.Product.ID}-{item.Variant?.ID}".TrimEnd("-");
+            return item.Product == null ? string.Empty : $@"{item.Product.ID}-{item.Variant?.ID}".TrimEnd("-");
         }
 
         public static string ShippingSku(this HSShipMethod method)
         {
-            return $"{method?.Name} {ShippingSuffix}";
+            return $@"{method?.Name} {ShippingSuffix}";
         }
     }
 
@@ -202,11 +200,11 @@ namespace Headstart.Common.Services.Zoho.Mappers
         {
             return new ZohoLineItem()
             {
-                item_type = "sales_and_purchases",
-                name = $"{item.Variant?.Name ?? item.Product.Name} {item.Variant?.xp?.SpecCombo ?? item.SKU()}".Trim(),
+                item_type = $@"sales_and_purchases",
+                name = $@"{item.Variant?.Name ?? item.Product.Name} {item.Variant?.xp?.SpecCombo ?? item.SKU()}".Trim(),
                 rate = item.UnitPrice.HasValue ? Math.Round(decimal.ToDouble(item.UnitPrice.Value), 2) : 0,
                 quantity = 1,
-                description = $"{item.Variant?.Name ?? item.Product.Name} {item.Variant?.xp?.SpecCombo ?? item.SKU()}".Trim(),
+                description = $@"{item.Variant?.Name ?? item.Product.Name} {item.Variant?.xp?.SpecCombo ?? item.SKU()}".Trim(),
                 sku = item.SKU(),
                 unit = item.Product.xp?.UnitOfMeasure?.Unit,
                 avatax_tax_code = item.Product.xp?.Tax.Code
@@ -215,10 +213,10 @@ namespace Headstart.Common.Services.Zoho.Mappers
 
         public static ZohoLineItem Map(ZohoLineItem zItem, HSLineItem item)
         {
-            zItem.item_type = "sales_and_purchases";
-            zItem.name = $"{item.Variant?.Name ?? item.Product.Name} {item.Variant?.xp?.SpecCombo ?? item.SKU()}".Trim();
-            zItem.description = $"{item.Variant?.Name ?? item.Product.Name} {item.Variant?.xp?.SpecCombo ?? item.SKU()}".Trim();
-            zItem.purchase_description = $"{item.Variant?.Name ?? item.Product.Name} {item.Variant?.xp?.SpecCombo ?? item.SKU()}".Trim();
+            zItem.item_type = $@"sales_and_purchases";
+            zItem.name = $@"{item.Variant?.Name ?? item.Product.Name} {item.Variant?.xp?.SpecCombo ?? item.SKU()}".Trim();
+            zItem.description = $@"{item.Variant?.Name ?? item.Product.Name} {item.Variant?.xp?.SpecCombo ?? item.SKU()}".Trim();
+            zItem.purchase_description = $@"{item.Variant?.Name ?? item.Product.Name} {item.Variant?.xp?.SpecCombo ?? item.SKU()}".Trim();
             zItem.rate = item.UnitPrice.HasValue ? Math.Round(decimal.ToDouble(item.UnitPrice.Value), 2) : 0;
             zItem.unit = item.Product.xp?.UnitOfMeasure?.Unit;
             zItem.avatax_tax_code = item.Product.xp?.Tax.Code;
@@ -250,10 +248,9 @@ namespace Headstart.Common.Services.Zoho.Mappers
             return po;
         }
 
-        public static ZohoPurchaseOrder Map(ZohoSalesOrder salesorder, Order order, List<ZohoLineItem> items,
-            List<HSLineItem> lineitems, ZohoAddress delivery_address, ZohoContact vendor)
+        public static ZohoPurchaseOrder Map(ZohoSalesOrder salesorder, Order order, List<ZohoLineItem> items, List<HSLineItem> lineitems, ZohoAddress delivery_address, ZohoContact vendor)
         {
-            var po = new ZohoPurchaseOrder()
+            ZohoPurchaseOrder po = new ZohoPurchaseOrder()
             {
                 line_items = items.Select(p => new ZohoLineItem()
                 {
@@ -272,7 +269,6 @@ namespace Headstart.Common.Services.Zoho.Mappers
                 vendor_id = vendor.contact_id,
                 delivery_customer_id = salesorder.customer_id
             };
-
             return po;
         }
     }
@@ -283,10 +279,10 @@ namespace Headstart.Common.Services.Zoho.Mappers
         {
             zOrder.reference_number = worksheet.Order.ID;
             zOrder.salesorder_number = worksheet.Order.ID;
-            zOrder.date = worksheet.Order.DateSubmitted?.ToString("yyyy-MM-dd");
+            zOrder.date = worksheet.Order.DateSubmitted?.ToString($@"yyyy-MM-dd");
             zOrder.is_discount_before_tax = true;
             zOrder.discount = decimal.ToDouble(promotions.Sum(p => p.Amount));
-            zOrder.discount_type = "entity_level";
+            zOrder.discount_type = $@"entity_level";
             zOrder.line_items = worksheet.LineItems.Select(item => new ZohoLineItem
             {
                 item_id = items.First(i => i.sku == item.SKU()).item_id,
@@ -303,18 +299,17 @@ namespace Headstart.Common.Services.Zoho.Mappers
             zOrder.currency_code = contact.currency_code;
             zOrder.currency_symbol = contact.currency_symbol;
             zOrder.notes = promotions.Any()
-                ? $"Promotions applied: {promotions.DistinctBy(p => p.Code).Select(p => p.Code).JoinString(" - ", p => p)}"
-                : null;
+                ? $@"Promotions applied: {promotions.DistinctBy(p => p.Code).Select(p => p.Code).JoinString(" - ", p => p)}" : null;
             // adding shipping as a line item
-            foreach (var shipment in worksheet.ShipEstimateResponse.ShipEstimates)
+            foreach (HSShipEstimate shipment in worksheet.ShipEstimateResponse.ShipEstimates)
             {
-                var method = shipment.ShipMethods.FirstOrDefault(s => s.ID == shipment.SelectedShipMethodID);
+                HSShipMethod method = shipment.ShipMethods.FirstOrDefault(s => s.ID == shipment.SelectedShipMethodID);
                 zOrder.line_items.Add(new ZohoLineItem
                 {
                     item_id = items.First(i => i.sku == method?.ShippingSku()).item_id,
                     quantity = 1,
                     rate = Math.Round((double)(method?.Cost ?? 0), 2),
-                    avatax_tax_code = "FR"
+                    avatax_tax_code = $@"FR"
                 });
             }
             return zOrder;
@@ -322,14 +317,14 @@ namespace Headstart.Common.Services.Zoho.Mappers
 
         public static ZohoSalesOrder Map(HSOrderWorksheet worksheet, List<ZohoLineItem> items, ZohoContact contact, IList<OrderPromotion> promotions)
         {
-            var o = new ZohoSalesOrder()
+            ZohoSalesOrder o = new ZohoSalesOrder()
             {
                 reference_number = worksheet.Order.ID,
                 salesorder_number = worksheet.Order.ID,
-                date = worksheet.Order.DateSubmitted?.ToString("yyyy-MM-dd"),
+                date = worksheet.Order.DateSubmitted?.ToString($@"yyyy-MM-dd"),
                 is_discount_before_tax = true,
                 discount = decimal.ToDouble(promotions.Sum(p => p.Amount)),
-                discount_type = "entity_level",
+                discount_type = $@"entity_level",
                 line_items = worksheet.LineItems.Select(item => new ZohoLineItem
                 {
                     item_id = items.First(i => i.sku == item.SKU()).item_id,
@@ -346,20 +341,19 @@ namespace Headstart.Common.Services.Zoho.Mappers
                 currency_code = contact.currency_code,
                 currency_symbol = contact.currency_symbol,
                 notes = promotions.Any()
-                    ? $"Promotions applied: {promotions.DistinctBy(p => p.Code).Select(p => p.Code).JoinString(" - ", p => p)}"
-                    : null
+                    ? $@"Promotions applied: {promotions.DistinctBy(p => p.Code).Select(p => p.Code).JoinString(" - ", p => p)}" : null
                 //shipping_charge = decimal.ToDouble(order.ShippingCost), //TODO: Please mention any Shipping/miscellaneous charges as additional line items.
             };
             // adding shipping as a line item
-            foreach (var shipment in worksheet.ShipEstimateResponse.ShipEstimates)
+            foreach (HSShipEstimate shipment in worksheet.ShipEstimateResponse.ShipEstimates)
             {
-                var method = shipment.ShipMethods.FirstOrDefault(s => s.ID == shipment.SelectedShipMethodID);
+                HSShipMethod method = shipment.ShipMethods.FirstOrDefault(s => s.ID == shipment.SelectedShipMethodID);
                 o.line_items.Add(new ZohoLineItem
                 {
                     item_id = items.First(i => i.sku == method?.ShippingSku()).item_id,
                     quantity = 1,
                     rate = Math.Round((double)(method?.Cost ?? 0), 2),
-                    avatax_tax_code = "FR"
+                    avatax_tax_code = $@"FR"
                 });
             }
             return o;

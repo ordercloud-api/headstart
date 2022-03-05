@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-using Headstart.Models.Extended;
 using Headstart.Models;
-using System.Linq;
+using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Headstart.Common.Constants
 {
@@ -10,47 +10,45 @@ namespace Headstart.Common.Constants
     {
         public static (SubmittedOrderStatus, ShippingStatus, ClaimStatus) GetOrderStatuses(List<HSLineItem> lineItems)
         {
-            var orderStatusOccurances = new HashSet<SubmittedOrderStatus>();
-            var shippingStatusOccurances = new HashSet<ShippingStatus>();
-            var claimStatusOccurances = new HashSet<ClaimStatus>();
+            HashSet<SubmittedOrderStatus> orderStatusOccurances = new HashSet<SubmittedOrderStatus>();
+            HashSet<ShippingStatus> shippingStatusOccurances = new HashSet<ShippingStatus>();
+            HashSet<ClaimStatus> claimStatusOccurances = new HashSet<ClaimStatus>();
 
-            foreach(var lineItem in lineItems)
+            foreach (HSLineItem lineItem in lineItems)
             {
-                foreach(var status in lineItem.xp.StatusByQuantity)
+                foreach (KeyValuePair<LineItemStatus, int> status in lineItem.xp.StatusByQuantity)
                 {
-                    if(status.Value > 0)
+                    if (status.Value <= 0)
                     {
-                        orderStatusOccurances.Add(RelatedOrderStatus[status.Key]);
-                        shippingStatusOccurances.Add(RelatedShippingStatus[status.Key]);
-                        claimStatusOccurances.Add(RelatedClaimStatus[status.Key]);
+                        continue;
                     }
+                    orderStatusOccurances.Add(RelatedOrderStatus[status.Key]);
+                    shippingStatusOccurances.Add(RelatedShippingStatus[status.Key]);
+                    claimStatusOccurances.Add(RelatedClaimStatus[status.Key]);
                 }
             }
 
-            var orderStatus = GetOrderStatus(orderStatusOccurances);
-            var shippingStatus = GetOrderShippingStatus(shippingStatusOccurances);
-            var claimStatus = GetOrderClaimStatus(claimStatusOccurances);
+            SubmittedOrderStatus orderStatus = GetOrderStatus(orderStatusOccurances);
+            ShippingStatus shippingStatus = GetOrderShippingStatus(shippingStatusOccurances);
+            ClaimStatus claimStatus = GetOrderClaimStatus(claimStatusOccurances);
 
             return (orderStatus, shippingStatus, claimStatus);
         }
 
         private static SubmittedOrderStatus GetOrderStatus(HashSet<SubmittedOrderStatus> orderStatusOccurances)
         {
-            if(orderStatusOccurances.Count == 1)
+            if (orderStatusOccurances.Count == 1)
             {
                 return orderStatusOccurances.First();
             }
-
-            if(orderStatusOccurances.Contains(SubmittedOrderStatus.Open))
+            if (orderStatusOccurances.Contains(SubmittedOrderStatus.Open))
             {
                 return SubmittedOrderStatus.Open;
             }
-
-            if(orderStatusOccurances.Contains(SubmittedOrderStatus.Completed))
+            if (orderStatusOccurances.Contains(SubmittedOrderStatus.Completed))
             {
                 return SubmittedOrderStatus.Completed;
             }
-
             // otherwise all lineitem statuses are canceled
             return SubmittedOrderStatus.Canceled;
         }
@@ -61,22 +59,18 @@ namespace Headstart.Common.Constants
             {
                 return shippingStatusOccurances.First();
             }
-
             if (shippingStatusOccurances.Contains(ShippingStatus.Processing) && shippingStatusOccurances.Contains(ShippingStatus.Shipped))
             {
                 return ShippingStatus.PartiallyShipped;
             }
-
             if (shippingStatusOccurances.Contains(ShippingStatus.Shipped))
             {
                 return ShippingStatus.Shipped;
             }
-
             if (shippingStatusOccurances.Contains(ShippingStatus.Processing))
             {
                 return ShippingStatus.Processing;
             }
-
             // otherwise all lineitem statuses are canceled
             return ShippingStatus.Canceled;
         }
@@ -87,17 +81,14 @@ namespace Headstart.Common.Constants
             {
                 return claimStatusOccurances.First();
             }
-
             if (claimStatusOccurances.Contains(ClaimStatus.Pending))
             {
                 return ClaimStatus.Pending;
             }
-
             if (claimStatusOccurances.Contains(ClaimStatus.Complete))
             {
                 return ClaimStatus.Complete;
             }
-
             // otherwise there are no claims
             return ClaimStatus.NoClaim;
         }
@@ -115,7 +106,7 @@ namespace Headstart.Common.Constants
             { LineItemStatus.Canceled, 0 },
         };
 
-        private static Dictionary<LineItemStatus, SubmittedOrderStatus> RelatedOrderStatus = new Dictionary<LineItemStatus, SubmittedOrderStatus>()
+        private static readonly Dictionary<LineItemStatus, SubmittedOrderStatus> RelatedOrderStatus = new Dictionary<LineItemStatus, SubmittedOrderStatus>()
         {
             { LineItemStatus.Submitted, SubmittedOrderStatus.Open },
             { LineItemStatus.Backordered, SubmittedOrderStatus.Open },
@@ -127,7 +118,7 @@ namespace Headstart.Common.Constants
             { LineItemStatus.ReturnDenied, SubmittedOrderStatus.Completed },
             { LineItemStatus.Canceled, SubmittedOrderStatus.Canceled },
         };
-        private static Dictionary<LineItemStatus, ShippingStatus> RelatedShippingStatus = new Dictionary<LineItemStatus, ShippingStatus>()
+        private static readonly Dictionary<LineItemStatus, ShippingStatus> RelatedShippingStatus = new Dictionary<LineItemStatus, ShippingStatus>()
         {
             { LineItemStatus.Submitted, ShippingStatus.Processing },
             { LineItemStatus.Backordered, ShippingStatus.Processing },
@@ -139,7 +130,7 @@ namespace Headstart.Common.Constants
             { LineItemStatus.Returned, ShippingStatus.Shipped },
             { LineItemStatus.Canceled, ShippingStatus.Canceled },
         };
-        private static Dictionary<LineItemStatus, ClaimStatus> RelatedClaimStatus = new Dictionary<LineItemStatus, ClaimStatus>()
+        private static readonly Dictionary<LineItemStatus, ClaimStatus> RelatedClaimStatus = new Dictionary<LineItemStatus, ClaimStatus>()
         {
             { LineItemStatus.Submitted, ClaimStatus.NoClaim },
             { LineItemStatus.Backordered, ClaimStatus.Pending },
@@ -216,151 +207,151 @@ namespace Headstart.Common.Constants
                 { LineItemStatus.Complete, new Dictionary<VerifiedUserType, EmailDisplayText>() {
                     { VerifiedUserType.buyer, new EmailDisplayText()
                     {
-                        EmailSubject = "Items on your order have shipped",
-                        DynamicText = $"{supplierName} has shipped items from your order",
-                        DynamicText2 = "The following items are on their way"
+                        EmailSubject = $@"Items on your order have shipped.",
+                        DynamicText = $@"{supplierName} has shipped items from your order.",
+                        DynamicText2 = $@"The following items are on their way."
                     } }
                 } },
                 { LineItemStatus.ReturnRequested, new Dictionary<VerifiedUserType, EmailDisplayText>() {
                     { VerifiedUserType.buyer, new EmailDisplayText()
                     {
-                        EmailSubject = "A return request has been submitted on your order",
-                        DynamicText = "You will be updated when this return is processed",
-                        DynamicText2 = "The following items have been requested for return"
+                        EmailSubject = $@"A return request has been submitted on your order.",
+                        DynamicText = $@"You will be updated when this return is processed.",
+                        DynamicText2 = $@"The following items have been requested for return."
                     } },
                     { VerifiedUserType.admin, new EmailDisplayText()
                     {
-                        EmailSubject = "A buyer has submitted a return on their order",
-                        DynamicText = "Contact the Supplier to process the return request.",
-                        DynamicText2 = "The following items have been requested for return"
+                        EmailSubject = $@"A buyer has submitted a return on their order.",
+                        DynamicText = $@"Contact the Supplier to process the return request.",
+                        DynamicText2 = $@"The following items have been requested for return."
                     } },
                     { VerifiedUserType.supplier, new EmailDisplayText()
                     {
-                        EmailSubject = "A buyer has submitted a return on their order",
-                        DynamicText = "The seller will contact you to process the return request",
-                        DynamicText2 = "The following items have been requested for return"
+                        EmailSubject = $@"A buyer has submitted a return on their order.",
+                        DynamicText = $@"The seller will contact you to process the return request.",
+                        DynamicText2 = $@"The following items have been requested for return."
                     } }
                 } },
                   { LineItemStatus.Returned, new Dictionary<VerifiedUserType, EmailDisplayText>() {
                     { VerifiedUserType.buyer, new EmailDisplayText()
                     {
-                        EmailSubject = "A return has been processed for your order",
-                        DynamicText = "You will be refunded for the proper amount",
-                        DynamicText2 = "The following items have had returns processed"
+                        EmailSubject = $@"A return has been processed for your order.",
+                        DynamicText = $@"You will be refunded for the proper amount.",
+                        DynamicText2 = $@"The following items have had returns processed."
                     } },
                     { VerifiedUserType.admin, new EmailDisplayText()
                     {
-                        EmailSubject = "The supplier has processed a return",
-                        DynamicText = "Ensure that the full return process is complete, and the customer was refunded",
-                        DynamicText2 = "The following items have been marked as returned"
+                        EmailSubject = $@"The supplier has processed a return.",
+                        DynamicText = $@"Ensure that the full return process is complete, and the customer was refunded.",
+                        DynamicText2 = $@"The following items have been marked as returned."
                     } },
                     { VerifiedUserType.supplier , new EmailDisplayText()
                     {
-                        EmailSubject = "The seller has processed a return",
-                        DynamicText = "Ensure that the full return process is complete",
-                        DynamicText2 = "The following items have been marked as returned"
+                        EmailSubject = $@"The seller has processed a return.",
+                        DynamicText = $@"Ensure that the full return process is complete.",
+                        DynamicText2 = $@"The following items have been marked as returned."
                     } }
                 } },
                    { LineItemStatus.ReturnDenied, new Dictionary<VerifiedUserType, EmailDisplayText>() {
                     { VerifiedUserType.buyer, new EmailDisplayText()
                     {
-                        EmailSubject = "A return has been denied for your order",
-                        DynamicText = "A return could not be processed for this order.",
-                        DynamicText2 = "The following items will not be returned"
+                        EmailSubject = $@"A return has been denied for your order.",
+                        DynamicText = $@"A return could not be processed for this order.",
+                        DynamicText2 = $@"The following items will not be returned."
                     } },
                     { VerifiedUserType.admin, new EmailDisplayText()
                     {
-                        EmailSubject = "The supplier has denied a return",
-                        DynamicText = "The customer will not be refunded for the following items.",
-                        DynamicText2 = "The following items have been marked as return denied"
+                        EmailSubject = $@"The supplier has denied a return.",
+                        DynamicText = $@"The customer will not be refunded for the following items.",
+                        DynamicText2 = $@"The following items have been marked as return denied."
                     } },
                     { VerifiedUserType.supplier , new EmailDisplayText()
                     {
-                        EmailSubject = "The supplier has denied a return",
-                        DynamicText = "The customer will not be refunded for the following items.",
-                        DynamicText2 = "The following items have been marked as return denied"
+                        EmailSubject = $@"The supplier has denied a return.",
+                        DynamicText = $@"The customer will not be refunded for the following items.",
+                        DynamicText2 = $@"The following items have been marked as return denied."
                     } }
                 } },
                     { LineItemStatus.Backordered, new Dictionary<VerifiedUserType, EmailDisplayText>() {
                     { VerifiedUserType.buyer, new EmailDisplayText()
                     {
-                        EmailSubject = "Item(s) on your order have been backordered by supplier",
-                        DynamicText = "You will be updated on the status of the order when more information is known",
-                        DynamicText2 = "The following items have been marked as backordered"
+                        EmailSubject = $@"Item(s) on your order have been backordered by supplier.",
+                        DynamicText = $@"You will be updated on the status of the order when more information is known.",
+                        DynamicText2 = $@"The following items have been marked as backordered."
                     } },
                     { VerifiedUserType.admin, new EmailDisplayText()
                     {
-                        EmailSubject = $"{supplierName} has marked items on an order as backordered",
-                        DynamicText = "You will be updated on the status of the order when more information is known",
-                        DynamicText2 = "The following items have been marked as backordered"
+                        EmailSubject = $"{supplierName} has marked items on an order as backordered.",
+                        DynamicText = $@"You will be updated on the status of the order when more information is known.",
+                        DynamicText2 = $@"The following items have been marked as backordered."
                     } },
                     { VerifiedUserType.supplier, new EmailDisplayText()
                     {
-                        EmailSubject = "Item(s) on order have been marked as backordered",
-                        DynamicText = "Keep the buyer updated on the status of these items when you know more information",
-                        DynamicText2 = "The following items have been marked as backordered"
+                        EmailSubject = $@"Item(s) on order have been marked as backordered.",
+                        DynamicText = $@"Keep the buyer updated on the status of these items when you know more information.",
+                        DynamicText2 = $@"The following items have been marked as backordered."
                     } },
                    } },
                    { LineItemStatus.CancelRequested, new Dictionary<VerifiedUserType, EmailDisplayText>() {
                     { VerifiedUserType.buyer, new EmailDisplayText()
                     {
-                        EmailSubject = "Your request for cancellation has been submitted",
-                        DynamicText = "You will be updated on the status of the cancellation when more information is known",
-                        DynamicText2 = "The following items have had cancellation requested"
+                        EmailSubject = $@"Your request for cancellation has been submitted.",
+                        DynamicText = $@"You will be updated on the status of the cancellation when more information is known.",
+                        DynamicText2 = $@"The following items have had cancellation requested."
                     } },
                     { VerifiedUserType.admin, new EmailDisplayText()
                     {
-                        EmailSubject = "A buyer has requested cancellation of line items on an order",
-                        DynamicText = "The supplier will look into the feasibility of this cancellation",
-                        DynamicText2 = "The following items have been requested for cancellation"
+                        EmailSubject = $@"A buyer has requested cancellation of line items on an order.",
+                        DynamicText = $@"The supplier will look into the feasibility of this cancellation.",
+                        DynamicText2 = $@"The following items have been requested for cancellation."
                     } },
                     { VerifiedUserType.supplier, new EmailDisplayText()
                     {
-                        EmailSubject = "A buyer has requested cancelation of line items on an order",
-                        DynamicText = "Review the items below to see if any can be cancelled before they ship",
-                        DynamicText2 = "The following items have have been requested for cancellation"
+                        EmailSubject = $@"A buyer has requested cancelation of line items on an order.",
+                        DynamicText = $@"Review the items below to see if any can be cancelled before they ship.",
+                        DynamicText2 = $@"The following items have have been requested for cancellation."
                     } },
 
                 } },
                  { LineItemStatus.Canceled, new Dictionary<VerifiedUserType, EmailDisplayText>() {
                     { VerifiedUserType.buyer, new EmailDisplayText()
                     {
-                        EmailSubject = "Items on your order have been cancelled",
-                        DynamicText = "You will be refunded for the cost of these items",
-                        DynamicText2 = "The following items have been cancelled"
+                        EmailSubject = $@"Items on your order have been cancelled.",
+                        DynamicText = $@"You will be refunded for the cost of these items.",
+                        DynamicText2 = $@"The following items have been cancelled."
                     } },
                     { VerifiedUserType.admin, new EmailDisplayText()
                     {
-                        EmailSubject = "Item(s) on an order have been cancelled",
-                        DynamicText = "Ensure the buyer is refunded for the proper amount",
-                        DynamicText2 = "The following items have been cancelled"
+                        EmailSubject = $@"Item(s) on an order have been cancelled.",
+                        DynamicText = $@"Ensure the buyer is refunded for the proper amount.",
+                        DynamicText2 = $@"The following items have been cancelled."
                     } },
                     { VerifiedUserType.supplier, new EmailDisplayText()
                     {
-                        EmailSubject = "Item(s) on an order have been cancelled",
-                        DynamicText = "The seller will refund the buyer for the proper amount",
-                        DynamicText2 = "The following items have been cancelled"
+                        EmailSubject = $@"Item(s) on an order have been cancelled.",
+                        DynamicText = $@"The seller will refund the buyer for the proper amount.",
+                        DynamicText2 = $@"The following items have been cancelled."
                     } },
 
                 } },
                    { LineItemStatus.CancelDenied, new Dictionary<VerifiedUserType, EmailDisplayText>() {
                     { VerifiedUserType.buyer, new EmailDisplayText()
                     {
-                        EmailSubject = "A cancellation has been denied for your order",
-                        DynamicText = "A cancellation could not be processed for this order",
-                        DynamicText2 = "The following items will not be canceled"
+                        EmailSubject = $@"A cancellation has been denied for your order.",
+                        DynamicText = $@"A cancellation could not be processed for this order.",
+                        DynamicText2 = $@"The following items will not be canceled."
                     } },
                     { VerifiedUserType.admin, new EmailDisplayText()
                     {
-                        EmailSubject = "The supplier has denied a cancellation",
-                        DynamicText = "The customer will not be refunded for the following items",
-                        DynamicText2 = "The following items have been marked as cancel denied"
+                        EmailSubject = $@"The supplier has denied a cancellation.",
+                        DynamicText = $@"The customer will not be refunded for the following items.",
+                        DynamicText2 = $@"The following items have been marked as cancel denied."
                     } },
                     { VerifiedUserType.supplier , new EmailDisplayText()
                     {
-                        EmailSubject = "The supplier has denied a cancellation",
-                        DynamicText = "The customer will not be refunded for the following items",
-                        DynamicText2 = "The following items have been marked as cancel denied"
+                        EmailSubject = $@"The supplier has denied a cancellation.",
+                        DynamicText = $@"The customer will not be refunded for the following items.",
+                        DynamicText2 = $@"The following items have been marked as cancel denied."
                     } }
                 } },
             };

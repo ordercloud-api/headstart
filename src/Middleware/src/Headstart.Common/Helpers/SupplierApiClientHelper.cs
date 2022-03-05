@@ -1,9 +1,4 @@
-﻿using Headstart.Common.Extensions;
-using ordercloud.integrations.library;
-using OrderCloud.SDK;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using OrderCloud.SDK;
 using System.Threading.Tasks;
 
 namespace Headstart.Common.Helpers
@@ -21,6 +16,7 @@ namespace Headstart.Common.Helpers
             _settings = settings;
             _oc = oc;
         }
+
         public async Task<ApiClient> GetSupplierApiClient(string supplierID, string token)
         {
             Supplier supplierDetails = await _oc.Suppliers.GetAsync(supplierID);
@@ -43,13 +39,14 @@ namespace Headstart.Common.Helpers
             }
 
         }
+
         public async Task<ApiClient> HandleError(Supplier supplierDetails, string token)
         {
-            var supplierClient = await _oc.ApiClients.CreateAsync(new ApiClient()
+            ApiClient supplierClient = await _oc.ApiClients.CreateAsync(new ApiClient()
             {
-                AppName = $"Integration Client {supplierDetails.Name}",
+                AppName = $@"Integration Client {supplierDetails.Name}",
                 Active = true,
-                DefaultContextUserName = $"dev_{supplierDetails.ID}",
+                DefaultContextUserName = $@"dev_{supplierDetails.ID}",
                 ClientSecret = _settings.OrderCloudSettings.MiddlewareClientSecret,
                 AccessTokenDuration = 600,
                 RefreshTokenDuration = 43200,
@@ -58,6 +55,7 @@ namespace Headstart.Common.Helpers
                 AllowSeller = false,
                 IsAnonBuyer = false,
             }, token);
+
             // Assign Supplier API Client to new supplier
             await _oc.ApiClients.SaveAssignmentAsync(new ApiClientAssignment()
             {

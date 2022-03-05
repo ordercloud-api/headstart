@@ -2,9 +2,12 @@
 {
     public class Marketplace
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public PortalUser Owner { get; set; }
-        public string Environment { get; set; }
+        public string Id { get; set; } = string.Empty;
+
+        public string Name { get; set; } = string.Empty;
+
+        public PortalUser Owner { get; set; } = new PortalUser();
+
+        public string Environment { get; set; } = string.Empty;
     }
 }

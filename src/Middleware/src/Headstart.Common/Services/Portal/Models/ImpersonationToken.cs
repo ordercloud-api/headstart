@@ -2,6 +2,6 @@
 {
     public class ImpersonationToken
     {
-        public string access_token { get; set; }
+        public string access_token { get; set; } = string.Empty;
     }
 }

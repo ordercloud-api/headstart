@@ -1,12 +1,10 @@
-﻿using Headstart.Models;
+﻿using System;
+using System.Linq;
+using OrderCloud.SDK;
+using Headstart.Models;
 using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
-using ordercloud.integrations.exchangerates;
-using OrderCloud.SDK;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using static Headstart.Common.Models.SendGridModels;
 
 namespace Headstart.Common.Mappers
@@ -32,15 +30,13 @@ namespace Headstart.Common.Mappers
 
         public static List<string> GetSupplierInfo(ListPage<HSLineItem> lineItems)
         {
-            var supplierList = lineItems?.Items?.Select(item => item.SupplierID)
-                .Distinct()
-                .ToList();
+            var supplierList = lineItems?.Items?.Select(item => item.SupplierID).Distinct().ToList();
             return supplierList;
         }
 
         public static OrderTemplateData GetOrderTemplateData(HSOrder order, IList<HSLineItem> lineItems)
         {
-            var productsList = lineItems?.Select(lineItem =>
+            IEnumerable<LineItemProductData> productsList = lineItems?.Select(lineItem =>
             {
                 return new LineItemProductData()
                 {
@@ -52,8 +48,8 @@ namespace Headstart.Common.Mappers
                     SpecCombo = GetSpecCombo(lineItem?.Specs)
                 };
             });
-            var shippingAddress = GetShippingAddress(lineItems);
-            var currencyString = order.xp?.Currency?.ToString();
+            Address shippingAddress = GetShippingAddress(lineItems);
+            string currencyString = order.xp?.Currency?.ToString();
             return new OrderTemplateData()
             {
                 FirstName = order?.FromUser?.FirstName,
@@ -89,7 +85,7 @@ namespace Headstart.Common.Mappers
             {
                 return null;
             }
-            string specCombo = "(" + string.Join(", ", specs.Select(spec => spec.Value).ToArray()) + ")";
+            string specCombo = $@"(" + string.Join(", ", specs.Select(spec => spec.Value).ToArray()) + ")";
             return specCombo;
         }
 
@@ -112,13 +108,13 @@ namespace Headstart.Common.Mappers
         {
             List<object> products = new List<object>();
 
-            foreach (var lineItem in lineItems.Items)
+            foreach (HSLineItem lineItem in lineItems.Items)
             {
-                if (lineItem.xp.Returns != null && actionType == "return")
+                if (lineItem.xp.Returns != null && actionType.Equals($@"return", StringComparison.OrdinalIgnoreCase))
                 {
                     products.Add(MapReturnedLineItemToProduct(lineItem));
                 }
-                else if (lineItem.xp.Cancelations != null && actionType == "cancel")
+                else if (lineItem.xp.Cancelations != null && actionType.Equals($@"cancel", StringComparison.OrdinalIgnoreCase))
                 {
                     products.Add(MapCanceledLineItemToProduct(lineItem));
                 }
@@ -130,9 +126,9 @@ namespace Headstart.Common.Mappers
             return products;
         }
 
-        public static LineItemProductData MapReturnedLineItemToProduct(HSLineItem lineItem) =>
-        lineItem == null ? null :
-            new LineItemProductData()
+        public static LineItemProductData MapReturnedLineItemToProduct(HSLineItem lineItem)
+        {
+            return (lineItem == null) ? null : new LineItemProductData()
             {
                 ProductName = lineItem?.Product?.Name,
                 ImageURL = lineItem?.xp?.ImageUrl,
@@ -140,10 +136,11 @@ namespace Headstart.Common.Mappers
                 Quantity = lineItem?.Quantity,
                 LineTotal = lineItem?.LineTotal,
             };
+        }
 
-        public static LineItemProductData MapCanceledLineItemToProduct(HSLineItem lineItem) =>
-        lineItem == null ? null :
-            new LineItemProductData()
+        public static LineItemProductData MapCanceledLineItemToProduct(HSLineItem lineItem)
+        {
+            return (lineItem == null) ? null : new LineItemProductData()
             {
                 ProductName = lineItem?.Product?.Name,
                 ImageURL = lineItem?.xp?.ImageUrl,
@@ -151,21 +148,23 @@ namespace Headstart.Common.Mappers
                 Quantity = lineItem?.Quantity,
                 LineTotal = lineItem?.LineTotal,
             };
+        }
 
-        public static LineItemProductData MapLineItemToProduct(HSLineItem lineItem) =>
-        lineItem == null ? null :
-          new LineItemProductData()
-          {
-              ProductName = lineItem?.Product?.Name,
-              ImageURL = lineItem?.xp?.ImageUrl,
-              ProductID = lineItem?.ProductID,
-              Quantity = lineItem?.Quantity,
-              LineTotal = lineItem?.LineTotal,
-          };
+        public static LineItemProductData MapLineItemToProduct(HSLineItem lineItem)
+        {
+            return (lineItem == null) ? null : new LineItemProductData()
+            {
+                ProductName = lineItem?.Product?.Name,
+                ImageURL = lineItem?.xp?.ImageUrl,
+                ProductID = lineItem?.ProductID,
+                Quantity = lineItem?.Quantity,
+                LineTotal = lineItem?.LineTotal,
+            };
+        }
 
-        public static Address GetShippingAddress(IList<HSLineItem> lineItems) =>
-        lineItems == null ? null : 
-            new Address()
+        public static Address GetShippingAddress(IList<HSLineItem> lineItems)
+        {
+            return (lineItems == null) ? null : new Address()
             {
                 Street1 = lineItems[0]?.ShippingAddress?.Street1,
                 Street2 = lineItems[0]?.ShippingAddress?.Street2,
@@ -173,7 +172,8 @@ namespace Headstart.Common.Mappers
                 State = lineItems[0]?.ShippingAddress?.State,
                 Zip = lineItems[0]?.ShippingAddress?.Zip
             };
-  
+        }
+
         public static LineItemProductData MapToTemplateProduct(HSLineItem lineItem, LineItemStatusChange lineItemStatusChange, LineItemStatus status)
         {
             decimal lineTotal = 0M;
@@ -198,7 +198,5 @@ namespace Headstart.Common.Mappers
                 MessageToBuyer = lineItemStatusChange.Comment
             };
         }
-
-
     }
 }

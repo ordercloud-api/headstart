@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Flurl.Http;
 using System.Linq;
 using System.Threading.Tasks;
-using Flurl.Http;
+using System.Collections.Generic;
 using Headstart.Common.Services.Zoho.Models;
 
 namespace Headstart.Common.Services.Zoho.Resources
@@ -21,30 +21,51 @@ namespace Headstart.Common.Services.Zoho.Resources
 
     public class ZohoPurchaseOrderResource : ZohoResource, IZohoPurchaseOrderResource
     {
-        internal ZohoPurchaseOrderResource(ZohoClient client) : base(client, "purchaseorder", "purchaseorders") { }
+        internal ZohoPurchaseOrderResource(ZohoClient client) : base(client, $@"purchaseorder", $@"purchaseorders") { }
 
-        public Task<ZohoPurchaseOrderList> ListAsync(params ZohoFilter[] filters) => ListAsync<ZohoPurchaseOrderList>(filters);
-        public Task<TZohoPurchaseOrderList> ListAsync<TZohoPurchaseOrderList>(params ZohoFilter[] filters) where TZohoPurchaseOrderList : ZohoPurchaseOrderList => Get()
-                .SetQueryParams(filters?.Select(f => new KeyValuePair<string, object>(f.Key, f.Value)))
-                .GetJsonAsync<TZohoPurchaseOrderList>();
+        public Task<ZohoPurchaseOrderList> ListAsync(params ZohoFilter[] filters)
+        {
+            return ListAsync<ZohoPurchaseOrderList>(filters);
+        }
 
-        public Task<ZohoPurchaseOrder> GetAsync(string id) => GetAsync<ZohoPurchaseOrder>(id);
-        
-        public Task<TZohoPurchaseOrder> GetAsync<TZohoPurchaseOrder>(string id) where TZohoPurchaseOrder : ZohoPurchaseOrder =>
-            Get(id).GetJsonAsync<TZohoPurchaseOrder>();
-        
-        public Task<ZohoPurchaseOrder> SaveAsync(ZohoPurchaseOrder purchaseOrder) => SaveAsync<ZohoPurchaseOrder>(purchaseOrder);
+        public Task<TZohoPurchaseOrderList> ListAsync<TZohoPurchaseOrderList>(params ZohoFilter[] filters) where TZohoPurchaseOrderList : ZohoPurchaseOrderList
+        {
+            return Get().SetQueryParams(filters?.Select(f => new KeyValuePair<string, object>(f.Key, f.Value))).GetJsonAsync<TZohoPurchaseOrderList>();
+        }
 
-        public async Task<TZohoPurchaseOrder> SaveAsync<TZohoPurchaseOrder>(TZohoPurchaseOrder purchaseOrder)
-            where TZohoPurchaseOrder : ZohoPurchaseOrder => 
-            await Put<TZohoPurchaseOrder>(purchaseOrder, purchaseOrder.purchaseorder_id);
-            
-        public Task<ZohoPurchaseOrder> CreateAsync(ZohoPurchaseOrder purchaseOrder) => CreateAsync<ZohoPurchaseOrder>(purchaseOrder);
+        public Task<ZohoPurchaseOrder> GetAsync(string id)
+        {
+            return GetAsync<ZohoPurchaseOrder>(id);
+        }
 
-        public async Task<TZohoPurchaseOrder> CreateAsync<TZohoPurchaseOrder>(TZohoPurchaseOrder purchaseOrder)
-            where TZohoPurchaseOrder : ZohoPurchaseOrder =>
-            await Post<TZohoPurchaseOrder>(purchaseOrder);
+        public Task<TZohoPurchaseOrder> GetAsync<TZohoPurchaseOrder>(string id) where TZohoPurchaseOrder : ZohoPurchaseOrder
+        {
+            return Get(id).GetJsonAsync<TZohoPurchaseOrder>();
+        }
 
-        public Task DeleteAsync(string id) => Delete(id).DeleteAsync();
+        public Task<ZohoPurchaseOrder> SaveAsync(ZohoPurchaseOrder purchaseOrder)
+        {
+            return SaveAsync<ZohoPurchaseOrder>(purchaseOrder);
+        }
+
+        public async Task<TZohoPurchaseOrder> SaveAsync<TZohoPurchaseOrder>(TZohoPurchaseOrder purchaseOrder) where TZohoPurchaseOrder : ZohoPurchaseOrder
+        {
+            return await Put<TZohoPurchaseOrder>(purchaseOrder, purchaseOrder.purchaseorder_id);
+        }
+
+        public Task<ZohoPurchaseOrder> CreateAsync(ZohoPurchaseOrder purchaseOrder)
+        {
+            return CreateAsync<ZohoPurchaseOrder>(purchaseOrder);
+        }
+
+        public async Task<TZohoPurchaseOrder> CreateAsync<TZohoPurchaseOrder>(TZohoPurchaseOrder purchaseOrder) where TZohoPurchaseOrder : ZohoPurchaseOrder
+        {
+            return await Post<TZohoPurchaseOrder>(purchaseOrder);
+        }
+
+        public Task DeleteAsync(string id)
+        {
+            return Delete(id).DeleteAsync();
+        }
     }
 }

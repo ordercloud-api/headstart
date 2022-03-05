@@ -1,13 +1,11 @@
-﻿using Headstart.Models;
-using ordercloud.integrations.exchangerates;
-using ordercloud.integrations.library;
-using OrderCloud.Catalyst;
-using OrderCloud.SDK;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
+using OrderCloud.SDK;
+using Headstart.Models;
+using OrderCloud.Catalyst;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using ordercloud.integrations.exchangerates;
 
 namespace Headstart.Common.Services
 {
@@ -21,6 +19,7 @@ namespace Headstart.Common.Services
     {
         private readonly IOrderCloudClient _oc;
         private readonly IExchangeRatesCommand _exchangeRatesCommand;
+
         public HSExchangeRatesService(IOrderCloudClient oc, IExchangeRatesCommand exchangeRatesCommand)
         {
             _oc = oc;
@@ -29,16 +28,16 @@ namespace Headstart.Common.Services
 
         public async Task<CurrencySymbol> GetCurrencyForUser(string userToken)
         {
-            var buyerUserGroups = await _oc.Me.ListUserGroupsAsync<HSLocationUserGroup>(opts => opts.AddFilter(u => u.xp.Type == "BuyerLocation"), userToken);
-            var currency = buyerUserGroups.Items.FirstOrDefault(u => u.xp.Currency != null)?.xp?.Currency;
-            Require.That(currency != null, new ErrorCode("Exchange Rate Error", "Exchange Rate Not Defined For User"));
+            ListPage<HSLocationUserGroup> buyerUserGroups = await _oc.Me.ListUserGroupsAsync<HSLocationUserGroup>(opts => opts.AddFilter(u => u.xp.Type.Equals("BuyerLocation", StringComparison.OrdinalIgnoreCase)), userToken);
+            CurrencySymbol? currency = buyerUserGroups.Items.FirstOrDefault(u => u.xp.Currency != null)?.xp?.Currency;
+            Require.That(currency != null, new ErrorCode($@"Exchange Rate Error", $@"The Exchange Rate was not defined for this User."));
             return (CurrencySymbol)currency;
         }
 
         public async Task<List<OrderCloudIntegrationsConversionRate>> GetExchangeRatesForUser(string userToken)
         {
-            var currency = await GetCurrencyForUser(userToken);
-            var exchangeRates = await _exchangeRatesCommand.Get(new ListArgs<OrderCloudIntegrationsConversionRate>() { }, currency);
+            CurrencySymbol currency = await GetCurrencyForUser(userToken);
+            ListPage<OrderCloudIntegrationsConversionRate> exchangeRates = await _exchangeRatesCommand.Get(new ListArgs<OrderCloudIntegrationsConversionRate>() { }, currency);
             return exchangeRates.Items.ToList();
         }
     }

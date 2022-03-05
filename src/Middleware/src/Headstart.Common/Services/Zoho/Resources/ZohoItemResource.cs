@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Flurl.Http;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Flurl.Http;
+using System.Collections.Generic;
 using Headstart.Common.Services.Zoho.Models;
 
 namespace Headstart.Common.Services.Zoho.Resources
@@ -11,8 +11,6 @@ namespace Headstart.Common.Services.Zoho.Resources
     {
         Task<ZohoItemList> ListAsync(params ZohoFilter[] filters);
         Task<TZohoItemList> ListAsync<TZohoItemList>(params ZohoFilter[] filters) where TZohoItemList : ZohoItemList;
-        //Task<ZohoLineItem> GetAsync(string id);
-        //Task<TZohoItem> GetAsync<TZohoItem>(string id) where TZohoItem : ZohoLineItem;
         Task<ZohoLineItem> SaveAsync(ZohoLineItem item);
         Task<TZohoItem> SaveAsync<TZohoItem>(TZohoItem item) where TZohoItem : ZohoLineItem;
         Task<ZohoLineItem> CreateAsync(ZohoLineItem item);
@@ -23,35 +21,46 @@ namespace Headstart.Common.Services.Zoho.Resources
 
     public class ZohoItemResource : ZohoResource, IZohoItemResource
     {
-        internal ZohoItemResource(ZohoClient client) : base(client, "item", "items") { }
+        internal ZohoItemResource(ZohoClient client) : base(client, $@"item", $@"items") { }
 
-        public Task<ZohoItemList> ListAsync(params ZohoFilter[] filters) => ListAsync<ZohoItemList>(filters);
-        public Task<TZohoItemList> ListAsync<TZohoItemList>(params ZohoFilter[] filters) where TZohoItemList : ZohoItemList => Get()
-                .SetQueryParams(filters?.Select(f => new KeyValuePair<string, object>(f.Key, f.Value)))
-                .GetJsonAsync<TZohoItemList>();
+        public Task<ZohoItemList> ListAsync(params ZohoFilter[] filters)
+        {
+            return ListAsync<ZohoItemList>(filters);
+        }
 
-        //public Task<ZohoLineItem> GetAsync(string id) => GetAsync<ZohoLineItem>(id);
-        
-        //public Task<TZohoItem> GetAsync<TZohoItem>(string id) where TZohoItem : ZohoLineItem =>
-        //    Get(id).GetJsonAsync<TZohoItem>();
-        
-        public Task<ZohoLineItem> SaveAsync(ZohoLineItem item) => SaveAsync<ZohoLineItem>(item);
+        public Task<TZohoItemList> ListAsync<TZohoItemList>(params ZohoFilter[] filters) where TZohoItemList : ZohoItemList
+        {
+            return Get().SetQueryParams(filters?.Select(f => new KeyValuePair<string, object>(f.Key, f.Value))).GetJsonAsync<TZohoItemList>();
+        }
 
-        public async Task<TZohoItem> SaveAsync<TZohoItem>(TZohoItem item)
-            where TZohoItem : ZohoLineItem => 
-            await Put<TZohoItem>(item, item.item_id);
-            
-        public Task<ZohoLineItem> CreateAsync(ZohoLineItem item) => CreateAsync<ZohoLineItem>(item);
+        public Task<ZohoLineItem> SaveAsync(ZohoLineItem item)
+        {
+            return SaveAsync<ZohoLineItem>(item);
+        }
 
-        public async Task<TZohoItem> CreateAsync<TZohoItem>(TZohoItem item)
-            where TZohoItem : ZohoLineItem =>
-            await Post<TZohoItem>(item);
+        public async Task<TZohoItem> SaveAsync<TZohoItem>(TZohoItem item) where TZohoItem : ZohoLineItem
+        {
+            return await Put<TZohoItem>(item, item.item_id);
+        }
 
-        public Task DeleteAsync(string id) => Delete(id).DeleteAsync();
+        public Task<ZohoLineItem> CreateAsync(ZohoLineItem item)
+        {
+            return CreateAsync<ZohoLineItem>(item);
+        }
+
+        public async Task<TZohoItem> CreateAsync<TZohoItem>(TZohoItem item) where TZohoItem : ZohoLineItem
+        {
+            return await Post<TZohoItem>(item);
+        }
+
+        public Task DeleteAsync(string id)
+        {
+            return Delete(id).DeleteAsync();
+        }
 
         public async Task MarkActiveAsync(string id)
         {
-            await Post(id, "active").SendAsync(HttpMethod.Post);
+            await Post(id, $@"active").SendAsync(HttpMethod.Post);
         }
     }
 }

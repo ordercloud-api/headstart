@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Cosmonaut;
-using Cosmonaut.Extensions;
-using Headstart.Common.Models;
-using Microsoft.Azure.Documents.Client;
-using ordercloud.integrations.library;
-using OrderCloud.Catalyst;
+using System.Linq;
 using OrderCloud.SDK;
+using OrderCloud.Catalyst;
+using Cosmonaut.Extensions;
+using System.Threading.Tasks;
+using Headstart.Common.Models;
+using System.Collections.Generic;
+using ordercloud.integrations.library;
+using Microsoft.Azure.Documents.Client;
 
 namespace Headstart.Common.Queries
 {
@@ -23,10 +23,7 @@ namespace Headstart.Common.Queries
 
         public async Task<ListPage<OrchestrationLog>> List(IListArgs args)
         {
-            var query = _store.Query(new FeedOptions() { EnableCrossPartitionQuery = true })
-                .Search(args)
-                .Filter(args)
-                .Sort(args);
+            var query = _store.Query(new FeedOptions() { EnableCrossPartitionQuery = true }).Search(args).Filter(args).Sort(args);
             var list = await query.WithPagination(args.Page, args.PageSize).ToPagedListAsync();
             var count = await query.CountAsync();
             return list.ToListPage(args.Page, args.PageSize, count);

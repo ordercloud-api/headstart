@@ -1,78 +1,75 @@
-﻿using ordercloud.integrations.library;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using ordercloud.integrations.library;
 
 namespace Headstart.Common.Services.CMS.Models
 {
-	public enum ParentResourceType
-	{
-		Catalogs,
-		Buyers,
-		Suppliers,
-	}
+    public enum ParentResourceType
+    {
+        Catalogs,
+        Buyers,
+        Suppliers,
+    }
 
-	public enum ResourceType
-	{
-		Catalogs,
-		[Parent(ParentResourceType.Catalogs)] Categories,
-		Products,
-		PriceSchedules,
-		ProductFacets,
-		Specs,
+    public enum ResourceType
+    {
+        Catalogs,
+        [Parent(ParentResourceType.Catalogs)] Categories,
+        Products,
+        PriceSchedules,
+        ProductFacets,
+        Specs,
+        SecurityProfiles,
+        PasswordResets,
+        OpenIdConnects,
+        ImpersonationConfigs,
 
-		SecurityProfiles,
-		PasswordResets,
-		OpenIdConnects,
-		ImpersonationConfigs,
+        Buyers,
+        [Parent(ParentResourceType.Buyers)] Users,
+        [Parent(ParentResourceType.Buyers)] UserGroups,
+        [Parent(ParentResourceType.Buyers)] Addresses,
+        [Parent(ParentResourceType.Buyers)] CostCenters,
+        [Parent(ParentResourceType.Buyers)] CreditCards,
+        [Parent(ParentResourceType.Buyers)] SpendingAccounts,
+        [Parent(ParentResourceType.Buyers)] ApprovalRules,
 
-		Buyers,
-		[Parent(ParentResourceType.Buyers)] Users,
-		[Parent(ParentResourceType.Buyers)] UserGroups,
-		[Parent(ParentResourceType.Buyers)] Addresses,
-		[Parent(ParentResourceType.Buyers)] CostCenters,
-		[Parent(ParentResourceType.Buyers)] CreditCards,
-		[Parent(ParentResourceType.Buyers)] SpendingAccounts,
-		[Parent(ParentResourceType.Buyers)] ApprovalRules,
+        Suppliers,
+        [Parent(ParentResourceType.Suppliers)] SupplierUsers,
+        [Parent(ParentResourceType.Suppliers)] SupplierUserGroups,
+        [Parent(ParentResourceType.Suppliers)] SupplierAddresses,
 
-		Suppliers,
-		[Parent(ParentResourceType.Suppliers)] SupplierUsers,
-		[Parent(ParentResourceType.Suppliers)] SupplierUserGroups,
-		[Parent(ParentResourceType.Suppliers)] SupplierAddresses,
+        // Param "Direction" breaks these for now.
+        // Orders,
+        // [ParentResource(Orders)] LineItems,
+        // [ParentResource(Orders)] Payments,
+        // [ParentResource(Orders)]Shipments,
+        Promotions,
+        AdminUsers,
+        AdminAddresses,
+        AdminUserGroups,
+        MessageSenders,
+        Webhooks,
+        ApiClients,
+        Incrementors,
+        IntegrationEvents,
+        XpIndices
+    }
 
-		// Param "Direction" breaks these for now.
-		//Orders,
-		// [ParentResource(Orders)] LineItems,
-		// [ParentResource(Orders)] Payments,
-		// [ParentResource(Orders)]Shipments,
-		Promotions,
+    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+    public class ParentAttribute : Attribute
+    {
+        public ParentResourceType ParentType { get; set; }
 
-		AdminUsers,
-		AdminAddresses,
-		AdminUserGroups,
-		MessageSenders,
-		Webhooks,
-		ApiClients,
-		Incrementors,
-		IntegrationEvents,
-		XpIndices
-	}
+        public ParentAttribute(ParentResourceType type)
+        {
+            ParentType = type;
+        }
+    }
 
-	[AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-	public class ParentAttribute : Attribute
-	{
-		public ParentResourceType ParentType { get; set; }
-		public ParentAttribute(ParentResourceType type)
-		{
-			ParentType = type;
-		}
-	}
-
-	public static class ResourceTypeExtesions
-	{
-		public static ParentResourceType? GetParentType(this ResourceType type)
-		{
-			return typeof(ResourceType).GetField(type.ToString()).GetAttribute<ParentAttribute>()?.ParentType;
-		}
-	}
+    public static class ResourceTypeExtesions
+    {
+        public static ParentResourceType? GetParentType(this ResourceType type)
+        {
+            return typeof(ResourceType).GetField(type.ToString()).GetAttribute<ParentAttribute>()?.ParentType;
+        }
+    }
 }

@@ -1,8 +1,8 @@
-using Headstart.Common.Services.ShippingIntegration.Models;
+using System.Linq;
 using Headstart.Models;
 using Headstart.Models.Headstart;
 using System.Collections.Generic;
-using System.Linq;
+using Headstart.Common.Services.ShippingIntegration.Models;
 
 namespace Headstart.Common.Extensions
 {
@@ -11,22 +11,27 @@ namespace Headstart.Common.Extensions
         public static bool HasItem<t>(this IList<t> itemList)
         {
             if (itemList == null || itemList.Count == 0)
-            { return false; }
-
+            { 
+                return false; 
+            }
             return true;
         }
+
         public static bool HasItem<t>(this IReadOnlyList<t> itemList)
         {
             if (itemList == null || itemList.Count == 0)
-            { return false; }
-
+            { 
+                return false; 
+            }
             return true;
         }
+
         public static bool HasItem<t>(this List<t> itemList)
         {
             if (itemList == null || itemList.Count == 0)
-            { return false; }
-
+            { 
+                return false; 
+            }
             return true;
         }
 
