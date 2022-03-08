@@ -1,4 +1,5 @@
 using OrderCloud.SDK;
+using Headstart.Common;
 using Headstart.Models;
 using OrderCloud.Catalyst;
 using System.Threading.Tasks;
@@ -6,12 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using Headstart.API.Commands.Crud;
 
-namespace Headstart.Common.Controllers
+namespace Headstart.API.Controllers
 {
 	[Route("products")]
 	public class ProductController : CatalystController
 	{
 		private readonly IHSProductCommand _command;
+		private readonly AppSettings _settings;
 
 		/// <summary>
 		/// The IOC based constructor method for the ProductController class object with Dependency Injection
@@ -20,6 +22,7 @@ namespace Headstart.Common.Controllers
 		/// <param name="command"></param>
 		public ProductController(AppSettings settings, IHSProductCommand command)
 		{
+			_settings = settings;
 			_command = command;
 		}
 
@@ -83,50 +86,50 @@ namespace Headstart.Common.Controllers
 		/// Gets the Product pricing override (GET method)
 		/// </summary>
 		/// <param name="id"></param>
-		/// <param name="buyerID"></param>
+		/// <param name="buyerId"></param>
 		/// <returns>The Product pricing override object</returns>
-		[HttpGet, Route("{id}/pricingoverride/buyer/{buyerID}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
-		public async Task<HSPriceSchedule> GetPricingOverride(string id, string buyerID)
+		[HttpGet, Route("{id}/pricingoverride/buyer/{buyerId}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
+		public async Task<HSPriceSchedule> GetPricingOverride(string id, string buyerId)
 		{
-			return await _command.GetPricingOverride(id, buyerID, UserContext.AccessToken);
+			return await _command.GetPricingOverride(id, buyerId, UserContext.AccessToken);
 		}
 
 		/// <summary>
 		/// Creates a Product pricing override (POST method)
 		/// </summary>
 		/// <param name="id"></param>
-		/// <param name="buyerID"></param>
+		/// <param name="buyerId"></param>
 		/// <param name="priceSchedule"></param>
 		/// <returns>The newly created Product pricing override object</returns>
-		[HttpPost, Route("{id}/pricingoverride/buyer/{buyerID}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
-		public async Task<HSPriceSchedule> CreatePricingOverride(string id, string buyerID, [FromBody] HSPriceSchedule priceSchedule)
+		[HttpPost, Route("{id}/pricingoverride/buyer/{buyerId}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
+		public async Task<HSPriceSchedule> CreatePricingOverride(string id, string buyerId, [FromBody] HSPriceSchedule priceSchedule)
 		{
-			return await _command.CreatePricingOverride(id, buyerID, priceSchedule, UserContext.AccessToken);
+			return await _command.CreatePricingOverride(id, buyerId, priceSchedule, UserContext.AccessToken);
 		}
 
 		/// <summary>
 		/// Updates the Product pricing override (POST method)
 		/// </summary>
 		/// <param name="id"></param>
-		/// <param name="buyerID"></param>
+		/// <param name="buyerId"></param>
 		/// <param name="priceSchedule"></param>
 		/// <returns>The newly updated Product pricing override object</returns>
-		[HttpPut, Route("{id}/pricingoverride/buyer/{buyerID}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
-		public async Task<HSPriceSchedule> UpdatePricingOverride(string id, string buyerID, [FromBody] HSPriceSchedule priceSchedule)
+		[HttpPut, Route("{id}/pricingoverride/buyer/{buyerId}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
+		public async Task<HSPriceSchedule> UpdatePricingOverride(string id, string buyerId, [FromBody] HSPriceSchedule priceSchedule)
 		{
-			return await _command.UpdatePricingOverride(id, buyerID, priceSchedule, UserContext.AccessToken);
+			return await _command.UpdatePricingOverride(id, buyerId, priceSchedule, UserContext.AccessToken);
 		}
 
 		/// <summary>
 		/// Removes/Deletes an existing Product override object (DELETE method)
 		/// </summary>
 		/// <param name="id"></param>
-		/// <param name="buyerID"></param>
+		/// <param name="buyerId"></param>
 		/// <returns></returns>
-		[HttpDelete, Route("{id}/pricingoverride/buyer/{buyerID}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
-		public async Task DeletePricingOverride(string id, string buyerID)
+		[HttpDelete, Route("{id}/pricingoverride/buyer/{buyerId}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
+		public async Task DeletePricingOverride(string id, string buyerId)
 		{
-			await _command.DeletePricingOverride(id, buyerID, UserContext.AccessToken);
+			await _command.DeletePricingOverride(id, buyerId, UserContext.AccessToken);
 		}
 
 
@@ -138,10 +141,9 @@ namespace Headstart.Common.Controllers
 		/// <returns>The patched Product filter option override object</returns>
 		[HttpPatch, Route("filteroptionoverride/{id}"), OrderCloudUserAuth(ApiRole.AdminUserAdmin)]
 		public async Task<Product> FilterOptionOverride(string id, [FromBody] Product product)
-        {
+		{
 			IDictionary<string, object> facets = product.xp.Facets;
-			var supplierID = product.DefaultSupplierID;
-			return await _command.FilterOptionOverride(id, supplierID, facets, UserContext);
-        }
+			return await _command.FilterOptionOverride(id, product.DefaultSupplierID, facets, UserContext);
+		}
 	}
 }

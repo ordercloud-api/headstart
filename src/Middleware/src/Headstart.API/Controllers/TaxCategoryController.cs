@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ordercloud.integrations.library.intefaces;
 
-namespace Headstart.Common.Controllers
+namespace Headstart.API.Controllers
 {
 	public class TaxCategoryController : CatalystController
 	{

@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 using Headstart.API.Commands;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Headstart.Common.Controllers
+namespace Headstart.API.Controllers
 {
 	[Route("me")]
 	public class MeController : CatalystController
 	{
 		private readonly IMeProductCommand _meProductCommand;
-
+        
 		/// <summary>
 		/// The IOC based constructor method for the MeController class object with Dependency Injection
 		/// </summary>
@@ -25,12 +25,12 @@ namespace Headstart.Common.Controllers
 		/// <summary>
 		/// Gets the list of Super Products (GET method)
 		/// </summary>
-		/// <param name="productID"></param>
+		/// <param name="productId"></param>
 		/// <returns>The list of Super Products</returns>
-		[HttpGet, Route("products/{productID}"), OrderCloudUserAuth(ApiRole.Shopper)]
-		public async Task<SuperHSMeProduct> GetSuperProduct(string productID)
+		[HttpGet, Route("products/{productId}"), OrderCloudUserAuth(ApiRole.Shopper)]
+		public async Task<SuperHSMeProduct> GetSuperProduct(string productId)
 		{
-			return await _meProductCommand.Get(productID, UserContext);
+			return await _meProductCommand.Get(productId, UserContext);
 		}
 
 		/// <summary>
@@ -51,8 +51,8 @@ namespace Headstart.Common.Controllers
 		/// <returns></returns>
 		[HttpPost, Route("products/requestinfo"), OrderCloudUserAuth(ApiRole.Shopper)]
 		public async Task RequestProductInfo([FromBody] ContactSupplierBody template)
-        {
+		{
 			await _meProductCommand.RequestProductInfo(template);
-        }
+		}
 	}
 }

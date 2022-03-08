@@ -4,19 +4,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
-namespace Headstart.Common.Controllers
+namespace Headstart.API.Controllers
 {
-	// At one point we were trying to support a multi-tenant solution and configuration
-	// could not live in the code so we stored these configurations in cosmos
-	// this is no longer the goal and having these configurations stored in a database feels like overkill and adds complexity
-	// once we have more time we should aim to remove the whole notion of supplier filter configs and just have this live in code
+	/// At one point we were trying to support a multi-tenant solution and configuration
+	/// could not live in the code so we stored these configurations in cosmos
+	/// this is no longer the goal and having these configurations stored in a database feels like overkill and adds complexity
+	/// once we have more time we should aim to remove the whole notion of supplier filter configs and just have this live in code
 	public class SupplierFilterConfigController : CatalystController
 	{
-		/// <summary>
-		/// The Default constructor method for the SupplierFilterConfigController class object
-		/// </summary>
-		public SupplierFilterConfigController() { }
-
 		/// <summary>
 		/// Gets the ListPage of Dynamic objects request (GET method)
 		/// </summary>
@@ -41,22 +36,22 @@ namespace Headstart.Common.Controllers
 		{
 			return new
 			{
-				ID = "CountriesServicing",
+				ID = @"CountriesServicing",
 				Doc = new
 				{
-					Display = "Countries Servicing",
-					Path = "xp.CountriesServicing",
+					Display = @"Countries Servicing",
+					Path = @"xp.CountriesServicing",
 					Items = new List<dynamic>
 					{
 						new
 						{
-							Text = "UnitedStates",
-							Value = "US"
+							Text = @"UnitedStates",
+							Value = @"US"
 						}
 					},
 					AllowSellerEdit = true,
 					AllowSupplierEdit = true,
-					BuyerAppFilterType = "NonUI"
+					BuyerAppFilterType = @"NonUI"
 				}
 			};
 		}

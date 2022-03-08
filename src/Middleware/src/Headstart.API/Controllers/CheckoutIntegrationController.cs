@@ -5,7 +5,7 @@ using Headstart.API.Commands;
 using Microsoft.AspNetCore.Mvc;
 using Headstart.Common.Services.ShippingIntegration.Models;
 
-namespace Headstart.Common.Controllers
+namespace Headstart.API.Controllers
 {
 	public class CheckoutIntegrationController : CatalystController
 	{
@@ -22,7 +22,7 @@ namespace Headstart.Common.Controllers
 			_checkoutIntegrationCommand = checkoutIntegrationCommand;
 			_postSubmitCommand = postSubmitCommand;
 		}
-
+        
 		/// <summary>
 		/// Submits the Shipping Rate Estimates, after posting the orderCalculatePayload object (POST method)
 		/// </summary>
@@ -38,7 +38,7 @@ namespace Headstart.Common.Controllers
 		/// Submits the Calculated Order, after posting the orderCalculatePayload object (POST method)
 		/// </summary>
 		/// <param name="orderCalculatePayload"></param>
-		/// <returns>The calculated order repsonse object</returns>
+		/// <returns>The calculated order response object</returns>
 		[HttpPost, Route("ordercalculate"), OrderCloudWebhookAuth]
 		public async Task<OrderCalculateResponse> CalculateOrder([FromBody] HSOrderCalculatePayload orderCalculatePayload)
 		{
@@ -49,22 +49,22 @@ namespace Headstart.Common.Controllers
 		/// <summary>
 		/// Submits the Calculated Order, after posting the orderID string param (POST method)
 		/// </summary>
-		/// <param name="orderID"></param>
-		/// <returns>The calculated order repsonse object</returns>
-		[HttpPost, Route("taxcalculate/{orderID}"), OrderCloudUserAuth(ApiRole.IntegrationEventAdmin)]
-		public async Task<OrderCalculateResponse> CalculateOrder(string orderID)
+		/// <param name="orderId"></param>
+		/// <returns>The calculated order response object</returns>
+		[HttpPost, Route("taxcalculate/{orderId}"), OrderCloudUserAuth(ApiRole.IntegrationEventAdmin)]
+		public async Task<OrderCalculateResponse> CalculateOrder(string orderId)
 		{
-			var orderCalculationResponse = await _checkoutIntegrationCommand.CalculateOrder(orderID, UserContext);
+			var orderCalculationResponse = await _checkoutIntegrationCommand.CalculateOrder(orderId, UserContext); 
 			return orderCalculationResponse;
 		}
 
 		/// <summary>
 		/// Submits the Order Submission, after posting the payload object (POST method)
+		/// [OrderCloudWebhookAuth]  TODO: Add this back in once platform fixes header issue
 		/// </summary>
 		/// <param name="payload"></param>
-		/// <returns>The submitted order repsonse object</returns>
+		/// <returns>The submitted order response object</returns>
 		[HttpPost, Route("ordersubmit")]
-		//[OrderCloudWebhookAuth]  TODO: Add this back in once platform fixes header issue
 		public async Task<OrderSubmitResponse> HandleOrderSubmit([FromBody] HSOrderCalculatePayload payload)
 		{
 			var response = await _postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
@@ -74,12 +74,12 @@ namespace Headstart.Common.Controllers
 		/// <summary>
 		/// Retries the Order Submission, after posting the orderID string param (POST method)
 		/// </summary>
-		/// <param name="orderID"></param>
-		/// <returns>The submitted order repsonse object</returns>
-		[HttpPost, Route("ordersubmit/retry/zoho/{orderID}"), OrderCloudUserAuth(ApiRole.IntegrationEventAdmin)]
-		public async Task<OrderSubmitResponse> RetryOrderSubmit(string orderID)
+		/// <param name="orderId"></param>
+		/// <returns>The submitted order response object</returns>
+		[HttpPost, Route("ordersubmit/retry/zoho/{orderId}"), OrderCloudUserAuth(ApiRole.IntegrationEventAdmin)]
+		public async Task<OrderSubmitResponse> RetryOrderSubmit(string orderId)
 		{
-			var retry = await _postSubmitCommand.HandleZohoRetry(orderID);
+			var retry = await _postSubmitCommand.HandleZohoRetry(orderId);
 			return retry;
 		}
 
@@ -87,7 +87,7 @@ namespace Headstart.Common.Controllers
 		/// Submits the Approved Order, after posting the payload object (POST method)
 		/// </summary>
 		/// <param name="payload"></param>
-		/// <returns>The submitted order repsonse object</returns>
+		/// <returns>The submitted order response object</returns>
 		[HttpPost, Route("orderapproved"), OrderCloudWebhookAuth]
 		public async Task<OrderSubmitResponse> HandleOrderApproved([FromBody] HSOrderCalculatePayload payload)
 		{
