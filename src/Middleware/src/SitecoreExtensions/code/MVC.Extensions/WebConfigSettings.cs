@@ -3,7 +3,7 @@ using Sitecore.Diagnostics;
 using System.Web.Configuration;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
 
-namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions
+namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extensions
 {
     public sealed class WebConfigSettings
     {
@@ -13,9 +13,9 @@ namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions
         public string AppLogFileKey { get; set; } = "CustomApiLogs";
 
         /// <summary>
-        /// Default WebConfigSettings object contructor method
+        /// Default WebConfigSettings object constructor method
         /// </summary>
-        WebConfigSettings()
+        private WebConfigSettings()
         {
             //Do nothing as this is a Singleton Class which means class can only be instantiated with-in the class itself and create only one instance of itself,
             //allowing to have thread safe object instance with thread-safe locking on use of the object (i.e. using double-check locking) 
@@ -32,16 +32,18 @@ namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions
         {
             get
             {
-                if (_instance == null)
+                if (_instance != null)
                 {
-                    lock (_padlock)
+                    _instance.GetConfigSettings();
+                    return _instance;
+                }
+                lock (_padlock)
+                {
+                    if (_instance == null)
                     {
-                        if (_instance == null)
-                        {
-                            _instance = new WebConfigSettings();
-                        }
-                        _instance.GetConfigSettings();
+                        _instance = new WebConfigSettings();
                     }
+                    _instance.GetConfigSettings();
                 }
                 return _instance;
             }
@@ -49,7 +51,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions
 
         /// <summary>
         /// GetConfigSettings to get the latest WebConfiguration AppSettings into the WebConfigSettings intanace for re-usability throughout the entire application provides
-        /// property intellecence, reducing typos and better more centralized management of AppSettings keys.
+        /// property intellisense, reducing typos and better more centralized management of AppSettings keys.
         /// </summary>
         private void GetConfigSettings()
         {

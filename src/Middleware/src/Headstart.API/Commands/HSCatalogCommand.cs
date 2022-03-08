@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using ordercloud.integrations.library;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands.Crud
 {
@@ -28,7 +28,7 @@ namespace Headstart.API.Commands.Crud
 	public class HSCatalogCommand : IHSCatalogCommand
 	{
 		private readonly IOrderCloudClient _oc;
-		private WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+		private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
 		/// <summary>
 		/// The IOC based constructor method for the HSCatalogCommand class object with Dependency Injection

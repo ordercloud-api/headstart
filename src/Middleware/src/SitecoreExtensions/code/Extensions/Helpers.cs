@@ -1,10 +1,10 @@
-﻿namespace Sitecore.Foundation.SitecoreExtensions.Extensions
-{
-    using System;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Serialization;
-    using System.Runtime.CompilerServices;
+﻿using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using System.Runtime.CompilerServices;
 
+namespace Sitecore.Foundation.SitecoreExtensions.Extensions
+{
     /// <summary>
     /// ApiAuthKey model class object
     /// </summary>
@@ -91,10 +91,10 @@
         /// Common re-usable FileDateStamp() method - used to return Current File Date Stamp as string
         /// </summary>
         /// <param name="dateTime"></param>
-        /// <returns>The File Datestamp string value</returns>
+        /// <returns>The File DateStamp string value</returns>
         public static string FileDateStamp(DateTime dateTime)
         {
-            return $@"{dateTime.ToString($@"MM/dd/yyyy")}";
+            return $@"{dateTime:MM/dd/yyyy}";
         }
     }
 }

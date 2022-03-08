@@ -10,7 +10,7 @@ using Headstart.Models.Headstart;
 using Headstart.Common.Constants;
 using System.Collections.Generic;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands
 {
@@ -28,7 +28,7 @@ namespace Headstart.API.Commands
         private readonly ISupplierSyncCommand _supplierSync;
         private readonly AppSettings _settings;
         private readonly ISupplierApiClientHelper _apiClientHelper;
-        private WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+        private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
         /// <summary>
         /// The IOC based constructor method for the HSSupplierCommand class object with Dependency Injection

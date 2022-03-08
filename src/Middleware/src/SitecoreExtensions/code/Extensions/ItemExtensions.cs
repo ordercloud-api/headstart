@@ -1,35 +1,30 @@
-﻿namespace Sitecore.Foundation.SitecoreExtensions.Extensions
-{
-    using System;
-    using System.Linq;
-    using Sitecore.Data;
-    using Sitecore.Links;
-    using Sitecore.Data.Items;
-    using Sitecore.Publishing;
-    using Sitecore.Data.Fields;
-    using Sitecore.Diagnostics;
-    using Sitecore.Data.Managers;
-    using Sitecore.Resources.Media;
-    using System.Collections.Generic;
+﻿using System;
+using System.Linq;
+using Sitecore.Data;
+using Sitecore.Links;
+using Sitecore.Data.Items;
+using Sitecore.Publishing;
+using Sitecore.Data.Fields;
+using Sitecore.Diagnostics;
+using Sitecore.Data.Managers;
+using Sitecore.Resources.Media;
+using System.Collections.Generic;
 
+namespace Sitecore.Foundation.SitecoreExtensions.Extensions
+{
     public static class ItemExtensions
     {
         /// <summary>
         /// Common re-usable GetMediaItemImage() extension method
         /// </summary>
         /// <param name="mediaItem"></param>
-        /// <param name="imageCSS"></param>
+        /// <param name="imageCss"></param>
         /// <returns>The Image Html string from the mediaItem Item object</returns>
-        public static string GetMediaItemImage(this MediaItem mediaItem, string imageCSS = "")
+        public static string GetMediaItemImage(this MediaItem mediaItem, string imageCss = "")
         {
-            string imgSrcUrl = string.Empty;
-            string imgAlt = string.Empty;
-            if (mediaItem != null)
-            {
-                imgSrcUrl = StringUtil.EnsurePrefix('/', MediaManager.GetMediaUrl(mediaItem));
-                imgAlt = mediaItem.Alt;
-            }
-            return $@"<img class'{imageCSS}' src='{imgSrcUrl}' alt='{imgAlt}' />";
+            var imgSrcUrl = mediaItem == null ? string.Empty : StringUtil.EnsurePrefix('/', MediaManager.GetMediaUrl(mediaItem));
+            var imgAlt = mediaItem == null ? string.Empty : mediaItem.Alt.Trim();
+            return $@"<img class'{imageCss}' src='{imgSrcUrl}' alt='{imgAlt}' />";
         }
 
         /// <summary>
@@ -37,6 +32,7 @@
         /// </summary>
         /// <param name="imageField"></param>
         /// <returns>The Image Url string value from the imageField Item object</returns>
+        [Obsolete]
         public static string ImageUrl(this ImageField imageField)
         {
             if (imageField?.MediaItem == null)
@@ -45,16 +41,13 @@
             }
 
             var options = MediaUrlOptions.Empty;
-            int width, height;
-
-            if (int.TryParse(imageField.Width, out width))
+            if (int.TryParse(imageField.Width, out var width))
             {
                 options.Width = width;
             }
 
-            if (int.TryParse(imageField.Height, out height))
+            if (int.TryParse(imageField.Height, out var height))
             {
-                options.Height = height;
                 options.Height = height;
             }
             return imageField.ImageUrl(options);
@@ -63,15 +56,16 @@
         /// <summary>
         /// Common re-usable ImageUrl() extension method with options
         /// </summary>
-        /// <param name="imageField"></param>
+        /// <param name="imageField"></param> 
+        /// <param name="options"></param>
         /// <returns>The Image Url string value from the imageField Item object</returns>
+        [Obsolete]
         public static string ImageUrl(this ImageField imageField, MediaUrlOptions options)
         {
             if (imageField?.MediaItem == null)
             {
                 throw new ArgumentNullException(nameof(imageField));
             }
-
             return options == null ? imageField.ImageUrl() : HashingUtils.ProtectAssetUrl(MediaManager.GetMediaUrl(imageField.MediaItem, options));
         }
 
@@ -92,9 +86,10 @@
         /// <summary>
         /// Common re-usable Url() extension method
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="contextItem"></param>
         /// <param name="options"></param>
         /// <returns>The Url string value from the contextItem Item object</returns>
+        [Obsolete]
         public static string Url(this Item contextItem, UrlOptions options = null)
         {
             if (contextItem == null) 
@@ -116,13 +111,14 @@
         /// <param name="imageFieldId"></param>
         /// <param name="options"></param>
         /// <returns>The ImageUrl string value from the contextItem Item object</returns>
+        [Obsolete]
         public static string ImageUrl(this Item contextItem, ID imageFieldId, MediaUrlOptions options = null)
         {
             if (contextItem == null)
             {
                 throw new ArgumentNullException(nameof(contextItem));
             }
-            var imageField = (ImageField)contextItem.Fields[imageFieldId];
+            var imageField = FieldExtensions.GetImageField(contextItem, imageFieldId);
             return imageField?.MediaItem == null ? string.Empty : imageField.ImageUrl(options);
         }
 
@@ -133,18 +129,17 @@
         /// <param name="width"></param>
         /// <param name="height"></param>
         /// <returns>The ImageUrl string value from the mediaItem Item object</returns>
+        [Obsolete]
         public static string ImageUrl(this MediaItem mediaItem, int width, int height)
         {
             if (mediaItem == null)
             {
                 throw new ArgumentNullException(nameof(mediaItem));
             }
-
             var options = new MediaUrlOptions { Height = height, Width = width };
             var url = MediaManager.GetMediaUrl(mediaItem, options);
             var cleanUrl = StringUtil.EnsurePrefix('/', url);
             var hashedUrl = HashingUtils.ProtectAssetUrl(cleanUrl);
-
             return hashedUrl;
         }
 
@@ -165,7 +160,10 @@
             {
                 return null;
             }
-            return ((LinkField)contextItem.Fields[linkFieldId]).TargetItem ?? ((ReferenceField)contextItem.Fields[linkFieldId]).TargetItem;
+
+            var linkField = (LinkField)contextItem.Fields[linkFieldId];
+            var referenceField = (ReferenceField)contextItem.Fields[linkFieldId];
+            return linkField.TargetItem ?? referenceField.TargetItem;
         }
 
         /// <summary>
@@ -175,6 +173,7 @@
         /// <param name="mediaFieldId"></param>
         /// <param name="options"></param>
         /// <returns>The MediaUrl string value from the contextItem Item object</returns>
+        [Obsolete]
         public static string MediaUrl(this Item contextItem, ID mediaFieldId, MediaUrlOptions options = null)
         {
             var targetItem = contextItem.TargetItem(mediaFieldId);
@@ -205,24 +204,24 @@
         /// Common re-usable GetAncestorOrSelfOfTemplate() extension method
         /// </summary>
         /// <param name="contextItem"></param>
-        /// <param name="templateID"></param>
+        /// <param name="templateId"></param>
         /// <returns>The AncestorOrSelfOfTemplate Item object from the contextItem Item object</returns>
-        public static Item GetAncestorOrSelfOfTemplate(this Item contextItem, ID templateID)
+        public static Item GetAncestorOrSelfOfTemplate(this Item contextItem, ID templateId)
         {
             if (contextItem == null)
             {
                 throw new ArgumentNullException(nameof(contextItem));
             }
-            return contextItem.IsDerived(templateID) ? contextItem : contextItem.Axes.GetAncestors().LastOrDefault(i => i.IsDerived(templateID));
+            return contextItem.IsDerived(templateId) ? contextItem : contextItem.Axes.GetAncestors().LastOrDefault(i => i.IsDerived(templateId));
         }
 
         /// <summary>
         /// Common re-usable GetAncestorsAndSelfOfTemplate() extension method
         /// </summary>
         /// <param name="contextItem"></param>
-        /// <param name="templateID"></param>
+        /// <param name="templateId"></param>
         /// <returns>The List of AncestorOrSelfOfTemplate Items from the contextItem Item object</returns>
-        public static IList<Item> GetAncestorsAndSelfOfTemplate(this Item contextItem, ID templateID)
+        public static IList<Item> GetAncestorsAndSelfOfTemplate(this Item contextItem, ID templateId)
         {
             if (contextItem == null)
             {
@@ -230,11 +229,11 @@
             }
 
             var returnValue = new List<Item>();
-            if (contextItem.IsDerived(templateID))
+            if (contextItem.IsDerived(templateId))
             {
                 returnValue.Add(contextItem);
             }
-            returnValue.AddRange(contextItem.Axes.GetAncestors().Reverse().Where(i => i.IsDerived(templateID)));
+            returnValue.AddRange(contextItem.Axes.GetAncestors().Reverse().Where(i => i.IsDerived(templateId)));
             return returnValue;
         }
 
@@ -242,53 +241,48 @@
         /// Common re-usable LinkFieldUrl() extension method
         /// </summary>
         /// <param name="contextItem"></param>
-        /// <param name="fieldID"></param>
+        /// <param name="fieldId"></param>
         /// <returns>The LinkFieldUrl string value from the contextItem Item object</returns>
-        public static string LinkFieldUrl(this Item contextItem, ID fieldID)
+        public static string LinkFieldUrl(this Item contextItem, ID fieldId)
         {
             if (contextItem == null)
             {
                 throw new ArgumentNullException(nameof(contextItem));
             }
-
-            if (ID.IsNullOrEmpty(fieldID))
+            if (ID.IsNullOrEmpty(fieldId))
             {
-                throw new ArgumentNullException(nameof(fieldID));
+                throw new ArgumentNullException(nameof(fieldId));
             }
 
-            var field = contextItem.Fields[fieldID];
-            if (field == null || !(FieldTypeManager.GetField(field) is LinkField))
+            var linkField = FieldExtensions.GetLinkField(contextItem, fieldId);
+            if (linkField == null)
             {
                 return string.Empty;
             }
-            else
+            switch (linkField.LinkType.ToLower())
             {
-                LinkField linkField = (LinkField)field;
-                switch (linkField.LinkType.ToLower())
-                {
-                    case "internal":
-                        // Use LinkMananger for internal links, if link is not empty
-                        return linkField.TargetItem != null ? LinkManager.GetItemUrl(linkField.TargetItem) : string.Empty;
-                    case "media":
-                        // Use MediaManager for media links, if link is not empty
-                        return linkField.TargetItem != null ? MediaManager.GetMediaUrl(linkField.TargetItem) : string.Empty;
-                    case "external":
-                        // Just return external links
-                        return linkField.Url;
-                    case "anchor":
-                        // Prefix anchor link with # if link if not empty
-                        return !string.IsNullOrEmpty(linkField.Anchor) ? "#" + linkField.Anchor : string.Empty;
-                    case "mailto":
-                        // Just return mailto link
-                        return linkField.Url;
-                    case "javascript":
-                        // Just return javascript
-                        return linkField.Url;
-                    default:
-                        // Just please the compiler, this
-                        // condition will never be met
-                        return linkField.Url;
-                }
+                case "internal":
+                    // Use LinkMananger for internal links, if link is not empty
+                    return linkField.TargetItem != null ? LinkManager.GetItemUrl(linkField.TargetItem) : string.Empty;
+                case "media":
+                    // Use MediaManager for media links, if link is not empty
+                    return linkField.TargetItem != null ? MediaManager.GetMediaUrl(linkField.TargetItem) : string.Empty;
+                case "external":
+                    // Just return external links
+                    return linkField.Url;
+                case "anchor":
+                    // Prefix anchor link with # if link if not empty
+                    return !string.IsNullOrEmpty(linkField.Anchor) ? "#" + linkField.Anchor : string.Empty;
+                case "mailto":
+                    // Just return mailto link
+                    return linkField.Url;
+                case "javascript":
+                    // Just return javascript
+                    return linkField.Url;
+                default:
+                    // Just please the compiler, this
+                    // condition will never be met
+                    return linkField.Url;
             }
         }
 
@@ -296,23 +290,23 @@
         /// Common re-usable LinkFieldTarget() extension method
         /// </summary>
         /// <param name="contextItem"></param>
-        /// <param name="fieldID"></param>
+        /// <param name="fieldId"></param>
         /// <returns>The LinkFieldTarget string value from the contextItem Item object</returns>
-        public static string LinkFieldTarget(this Item contextItem, ID fieldID)
+        public static string LinkFieldTarget(this Item contextItem, ID fieldId)
         {
-            return contextItem.LinkFieldOptions(fieldID, LinkFieldOption.Target);
+            return contextItem.LinkFieldOptions(fieldId, LinkFieldOption.Target);
         }
 
         /// <summary>
         /// Common re-usable LinkFieldOptions() extension method
         /// </summary>
         /// <param name="contextItem"></param>
-        /// <param name="fieldID"></param>
+        /// <param name="fieldId"></param>
         /// <param name="option"></param>
         /// <returns>The LinkFieldOptions string value from the contextItem Item object</returns>
-        public static string LinkFieldOptions(this Item contextItem, ID fieldID, LinkFieldOption option)
+        public static string LinkFieldOptions(this Item contextItem, ID fieldId, LinkFieldOption option)
         {
-            XmlField field = contextItem.Fields[fieldID];
+            XmlField field = contextItem.Fields[fieldId];
             switch (option)
             {
                 case LinkFieldOption.Text:
@@ -382,11 +376,22 @@
         /// Common re-usable FieldHasValue() extension method
         /// </summary>
         /// <param name="contextItem"></param>
-        /// <param name="fieldID"></param>
+        /// <param name="fieldKey"></param>
         /// <returns>The FieldHasValue boolean status from the contextItem Item object</returns>
-        public static bool FieldHasValue(this Item contextItem, ID fieldID)
+        public static bool FieldHasValue(this Item contextItem, string fieldKey)
         {
-            return contextItem.Fields[fieldID] != null && !string.IsNullOrWhiteSpace(contextItem.Fields[fieldID].Value);
+            return FieldExtensions.IsValidFieldValueByKeyHasValue(contextItem, fieldKey);
+        }
+
+        /// <summary>
+        /// Common re-usable FieldHasValue() extension method
+        /// </summary>
+        /// <param name="contextItem"></param>
+        /// <param name="fieldId"></param>
+        /// <returns>The FieldHasValue boolean status from the contextItem Item object</returns>
+        public static bool FieldHasValue(this Item contextItem, ID fieldId)
+        {
+            return FieldExtensions.IsValidFieldValueByKeyHasValue(contextItem, fieldId);
         }
 
         /// <summary>
@@ -397,8 +402,33 @@
         /// <returns>The Field Item's Integer value from the contextItem Item object</returns>
         public static int GetInteger(this Item contextItem, string fieldKey)
         {
-            int.TryParse(FieldExtensions.GetFieldValueByKey(contextItem, fieldKey), out int result);
+            int.TryParse(FieldExtensions.GetFieldValueByKey(contextItem, fieldKey), out var result);
             return result;
+        }
+
+        /// <summary>
+        /// Common re-usable GetInteger() extension method
+        /// </summary>
+        /// <param name="contextItem"></param>
+        /// <param name="fieldId"></param>
+        /// <returns>The Field Item's Integer value from the contextItem Item object</returns>
+        public static int GetInteger(this Item contextItem, ID fieldId)
+        {
+            int.TryParse(FieldExtensions.GetFieldValueByKey(contextItem, fieldId), out var result);
+            return result;
+        }
+
+        /// <summary>
+        /// Common re-usable GetMultiListValueItems() extension method
+        /// </summary>
+        /// <param name="contextItem"></param>
+        /// <param name="fieldKey"></param>
+        /// <returns>The List of MultiListValueItems from the contextItem Item object</returns>
+        public static IEnumerable<Item> GetMultiListValueItems(this Item contextItem, string fieldKey)
+        {
+            return FieldExtensions.IsValidFieldValueByKeyHasValue(contextItem, fieldKey) 
+                ? FieldExtensions.GetMultiListField(contextItem, fieldKey).GetItems().ToList()
+                : new List<Item>();
         }
 
         /// <summary>
@@ -409,7 +439,32 @@
         /// <returns>The List of MultiListValueItems from the contextItem Item object</returns>
         public static IEnumerable<Item> GetMultiListValueItems(this Item contextItem, ID fieldId)
         {
-            return new MultilistField(contextItem.Fields[fieldId]).GetItems();
+            return FieldExtensions.IsValidFieldValueByKeyHasValue(contextItem, fieldId)
+                ? FieldExtensions.GetMultiListField(contextItem, fieldId).GetItems().ToList() 
+                : new List<Item>();
+        }
+
+
+        /// <summary>
+        /// Common re-usable GetImageFieldItem() extension method
+        /// </summary>
+        /// <param name="contextItem"></param>
+        /// <param name="fieldKey"></param>
+        /// <returns>The List of GetImageFieldItem from the contextItem Item object</returns>
+        public static ImageField GetImageFieldItem(this Item contextItem, string fieldKey)
+        {
+            return FieldExtensions.GetImageField(contextItem, fieldKey);
+        }
+
+        /// <summary>
+        /// Common re-usable GetImageFieldItem() extension method
+        /// </summary>
+        /// <param name="contextItem"></param>
+        /// <param name="fieldId"></param>
+        /// <returns>The List of GetImageFieldItem from the contextItem Item object</returns>
+        public static ImageField GetImageFieldItem(this Item contextItem, ID fieldId)
+        {
+            return FieldExtensions.GetImageField(contextItem, fieldId);
         }
 
         /// <summary>
@@ -432,8 +487,8 @@
         public static Item ReferencedFieldItem(this Item contextItem, string fieldKey)
         {
             Item targetItem = null;
-            ReferenceField referenceField = contextItem.Fields[fieldKey];
-            if ((referenceField != null) && (referenceField.TargetItem != null))
+            var referenceField = FieldExtensions.GetReferenceField(contextItem, fieldKey);
+            if (referenceField?.TargetItem != null)
             {
                 targetItem = referenceField.TargetItem;
             }
@@ -449,38 +504,12 @@
         public static Item ReferencedFieldItem(this Item contextItem, ID fieldId)
         {
             Item targetItem = null;
-            ReferenceField referenceField = contextItem.Fields[fieldId];
-            if ((referenceField != null) && (referenceField.TargetItem != null))
+            var referenceField = FieldExtensions.GetReferenceField(contextItem, fieldId);
+            if (referenceField?.TargetItem != null)
             {
                 targetItem = referenceField.TargetItem;
             }
             return targetItem;
-        }
-
-        /// <summary>
-        /// Common re-usable MultiListFieldItems() extension method
-        /// </summary>
-        /// <param name="contextItem"></param>
-        /// <param name="fieldKey"></param>
-        /// <returns>The List of MultiListFieldItems object from the contextItem Item object</returns>
-        public static List<Item> MultiListFieldItems(this Item contextItem, string fieldKey)
-        {
-            MultilistField multiListField = FieldExtensions.GetMultiListField(contextItem, fieldKey);
-            List<Item> items = (multiListField != null) ? multiListField.GetItems()?.ToList() : new List<Item>();
-            return items;
-        }
-
-        /// <summary>
-        /// Common re-usable MultiListFieldItems() extension method
-        /// </summary>
-        /// <param name="contextItem"></param>
-        /// <param name="fieldId"></param>
-        /// <returns>The List of MultiListFieldItems object from the contextItem Item object</returns>
-        public static List<Item> MultiListFieldItems(this Item contextItem, ID fieldId)
-        {
-            MultilistField multiListField = FieldExtensions.GetMultiListField(contextItem, fieldId);
-            List<Item> items = (multiListField != null) ? multiListField.GetItems()?.ToList() : new List<Item>();
-            return items;
         }
 
         /// <summary>
@@ -491,14 +520,15 @@
         /// <returns>The FirstChildDerivedFromTemplate Item or null object from the contextItem Item object</returns>
         public static Item FirstChildDerivedFromTemplate(this Item contextItem, ID templateId)
         {
-            if ((contextItem != null) && (contextItem.HasChildren == true))
+            if (contextItem == null || contextItem.HasChildren != true)
             {
-                foreach (Item child in contextItem.Children)
+                return null;
+            }
+            foreach (Item child in contextItem.Children)
+            {
+                if (child.IsDerived(templateId) == true)
                 {
-                    if (child.IsDerived(templateId) == true)
-                    {
-                        return child;
-                    }
+                    return child;
                 }
             }
             return null;
@@ -518,13 +548,14 @@
         {
             try
             {
-                PublishOptions publishOptions = new PublishOptions(item.Database, Database.GetDatabase(dbTarget), publishMode, item.Language, DateTime.Now);
-                publishOptions.RootItem = item;
-                publishOptions.Deep = deepPublish;
-                publishOptions.PublishRelatedItems = publishRelatedItems;
-                publishOptions.CompareRevisions = compareRevisions;
-
-                Publisher publisher = new Publisher(publishOptions);
+                var publishOptions = new PublishOptions(item.Database, Database.GetDatabase(dbTarget), publishMode, item.Language, DateTime.Now)
+                {
+                    RootItem = item,
+                    Deep = deepPublish,
+                    PublishRelatedItems = publishRelatedItems,
+                    CompareRevisions = compareRevisions
+                };
+                var publisher = new Publisher(publishOptions);
                 if (publishAsync)
                 {
                     publisher.PublishAsync();
@@ -536,7 +567,7 @@
             }
             catch (Exception ex)
             {
-                LogExt.LogException("CustomSitecore", Helpers.GetMethodName(), @"Exception Error:", ex.Message, ex.StackTrace, new LoggingOwnerObject());
+                LogExt.LogException("CustomSitecore", Helpers.GetMethodName(), @"Exception Error:", ex.Message, ex.StackTrace, new object());
             }
         }
     }

@@ -17,7 +17,7 @@ using ordercloud.integrations.library;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Headstart.Common.Services.Portal.Models;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands
 {
@@ -36,7 +36,7 @@ namespace Headstart.API.Commands
         private readonly IHSSupplierCommand _supplierCommand;
         private readonly IHSBuyerCommand _buyerCommand;
         private readonly IHSBuyerLocationCommand _buyerLocationCommand;
-        private WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+        private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
         /// <summary>
         /// The IOC based constructor method for the EnvironmentSeedCommand class object with Dependency Injection

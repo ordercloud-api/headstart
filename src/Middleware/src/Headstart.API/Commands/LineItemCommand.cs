@@ -17,7 +17,7 @@ using Headstart.Common.Extensions;
 using Microsoft.ApplicationInsights;
 using ordercloud.integrations.library;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands
 {
@@ -39,7 +39,7 @@ namespace Headstart.API.Commands
         private readonly IPromotionCommand _promotionCommand;
         private readonly IRMACommand _rmaCommand;
         private readonly TelemetryClient _telemetry;
-        private WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+        private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
         /// <summary>
         /// The IOC based constructor method for the LineItemCommand class object with Dependency Injection

@@ -2109,7 +2109,7 @@
     <Compile Include="Extensions\SitecoreLoggingExtensions.cs" />
     <Compile Include="Extensions\SiteExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="MVC.Extenstions\WebConfigSettings.cs" />
+    <Compile Include="MVC.Extensions\WebConfigSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

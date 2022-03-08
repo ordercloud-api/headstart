@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using Headstart.Common.Services.CMS;
 using ordercloud.integrations.library.Cosmos;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands.Crud
 {
@@ -43,7 +43,7 @@ namespace Headstart.API.Commands.Crud
 		private readonly AppSettings _settings;
 		private readonly ISupplierApiClientHelper _apiClientHelper;
 		private readonly IAssetClient _assetClient;
-		private WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+		private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
 		/// <summary>
 		/// The IOC based constructor method for the HSProductCommand class object with Dependency Injection

@@ -14,7 +14,7 @@ using Headstart.Common.Services.Zoho.Mappers;
 using ordercloud.integrations.library.intefaces;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
 using Headstart.Common.Services.ShippingIntegration.Models;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands.Zoho
 {
@@ -32,7 +32,7 @@ namespace Headstart.API.Commands.Zoho
         private readonly IOrderCloudClient _oc;
         private const int delay = 250;
         private const int concurrent = 1;
-        private WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+        private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
         /// <summary>
         /// The IOC based constructor method for the ZohoCommand class object with Dependency Injection

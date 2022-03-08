@@ -1,7 +1,7 @@
-﻿namespace System
-{
-    using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
+namespace System
+{
     public static class DataTypeExtensions
     {
         /// <summary>
@@ -9,7 +9,7 @@
         /// </summary>
         /// <param name="value"></param>
         /// <returns>The clean text content from a Ritch-Text Html content, as a string with all Html stripped out</returns>
-        public static String GetCleanRitchTextContent(this string value)
+        public static string GetCleanRitchTextContent(this string value)
         {
             return Regex.Replace(value.Trim(), @"\r\n?|\n", string.Empty).Replace("&nbsp;", string.Empty).Replace(@"<br/>", string.Empty).Replace(@"<br />", string.Empty).Trim();
         }
@@ -21,7 +21,7 @@
         /// <returns>The Guid value or Guid.Empty value from a string object, as a Guid object value</returns>
         public static Guid GetStringGuid(this string value)
         {
-            Guid guidId = Guid.Empty;
+            var guidId = Guid.Empty;
             Guid.TryParse(value, out guidId);
             return guidId;
         }
@@ -33,7 +33,7 @@
         /// <returns>The Guid value or Guid.Empty value from a string object, as a string value</returns>
         public static string GetGuidString(this string value)
         {
-            Guid guidId = Guid.Empty;
+            var guidId = Guid.Empty;
             Guid.TryParse(value, out guidId);
             return guidId.ToString().Trim();
         }
@@ -45,8 +45,7 @@
         /// <returns>The Integer value from a string object (defauts to empty int value), as an int value</returns>
         public static int GetStringToInt(this string value)
         {
-            int intId = 0;
-            int.TryParse(value, out intId);
+            int.TryParse(value, out var intId);
             return intId;
         }
 
@@ -58,7 +57,7 @@
         /// <returns>The DateTime value from a string object, as a DateTime value (default value returns as DateTime.Now value)</returns>
         public static DateTime GetOperationalStartDatetime(this string value)
         {
-            DateTime now = DateTime.Now;
+            var now = DateTime.Now;
             DateTime dateTime = new DateTime(now.Year, now.Month, now.Day, 8, 0, 0);
             DateTime.TryParse(value, out dateTime);
             return dateTime;
@@ -86,7 +85,7 @@
         public static DateTime GetDateTime(string value)
         {
             value = (string.IsNullOrEmpty(value)) ? string.Empty : value;
-            DateTime dtVal = DateTime.Now;
+            var dtVal = DateTime.Now;
             DateTime.TryParse(value, out dtVal);
             return dtVal;
         }
@@ -99,8 +98,7 @@
         public static int GetInt(string value)
         {
             value = (string.IsNullOrEmpty(value)) ? string.Empty : value;
-            int intVal = 0;
-            int.TryParse(value, out intVal);
+            int.TryParse(value, out var intVal);
             return intVal;
         }
 
@@ -112,8 +110,7 @@
         public static double GetDouble(string value)
         {
             value = (string.IsNullOrEmpty(value)) ? string.Empty : value;
-            double dblVal = 0.00;
-            double.TryParse(value, out dblVal);
+            double.TryParse(value, out var dblVal);
             return dblVal;
         }
 
@@ -125,8 +122,7 @@
         public static bool GetBoolean(string value)
         {
             value = (string.IsNullOrEmpty(value)) ? string.Empty : value;
-            bool blVal = false;
-            bool.TryParse(value, out blVal);
+            bool.TryParse(value, out var blVal);
             return blVal;
         }
 
@@ -142,9 +138,8 @@
             dateTime = dateTime.ToUniversalTime();
             baseDate = baseDate.ToUniversalTime();
 
-            DateTime startDate = baseDate.AddSeconds(-rangeSeconds);
-            DateTime endDate = baseDate.AddSeconds(rangeSeconds);
-
+            var startDate = baseDate.AddSeconds(-rangeSeconds);
+            var endDate = baseDate.AddSeconds(rangeSeconds);
             return ((startDate <= dateTime) && (dateTime <= endDate));
         }
 
@@ -160,15 +155,14 @@
             dateTime = dateTime.ToUniversalTime();
             startDate = startDate.ToUniversalTime();
             endDate = endDate.ToUniversalTime();
-
-            if (endDate < startDate) // swap start/end if they're out of order
+            if (endDate >= startDate) // swap start/end if they're out of order
             {
-                DateTime tempStart = startDate;
-
-                startDate = endDate;
-                endDate = tempStart;
+                return ((startDate <= dateTime) && (dateTime <= endDate));
             }
 
+            var tempStart = startDate;
+            startDate = endDate;
+            endDate = tempStart;
             return ((startDate <= dateTime) && (dateTime <= endDate));
         }
     }

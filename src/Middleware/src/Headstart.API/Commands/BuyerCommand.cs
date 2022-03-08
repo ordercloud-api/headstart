@@ -7,7 +7,7 @@ using Sitecore.Diagnostics;
 using Headstart.Models.Misc;
 using System.Threading.Tasks;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands
 {
@@ -23,7 +23,7 @@ namespace Headstart.API.Commands
     {
         private readonly IOrderCloudClient _oc;
         private readonly AppSettings _settings; 
-        private WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+        private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
         /// <summary>
         /// The IOC based constructor method for the HSBuyerCommand class object with Dependency Injection

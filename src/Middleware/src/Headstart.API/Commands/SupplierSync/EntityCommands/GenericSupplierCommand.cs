@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using Headstart.Common.Extensions;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
 using Headstart.Common.Services.ShippingIntegration.Models;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands
 {
@@ -20,7 +20,7 @@ namespace Headstart.API.Commands
     public class GenericSupplierCommand : ISupplierSyncCommand
     {
         private readonly IOrderCloudClient _ocSeller; 
-        private WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+        private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
         /// <summary>
         /// The IOC based constructor method for the GenericSupplierCommand class object with Dependency Injection

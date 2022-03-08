@@ -1,30 +1,30 @@
-﻿namespace Sitecore.Foundation.SitecoreExtensions.Extensions
-{
-    using System;
-    using System.Web;
-    using Sitecore.Data;
-    using System.Web.Mvc;
-    using Sitecore.Data.Items;
-    using Sitecore.Diagnostics;
-    using Sitecore.Mvc.Helpers;
-    using System.Linq.Expressions;
-    using DynamicPlaceholders.Mvc.Extensions;
+﻿using System;
+using System.Web;
+using Sitecore.Data;
+using System.Web.Mvc;
+using Sitecore.Data.Items;
+using Sitecore.Diagnostics;
+using Sitecore.Mvc.Helpers;
+using System.Linq.Expressions;
+using DynamicPlaceholders.Mvc.Extensions;
 
+namespace Sitecore.Foundation.SitecoreExtensions.Extensions
+{
     public static class HtmlHelperExtensions
     {
         /// <summary>
         /// Common re-usable ImageField() extension method
         /// </summary>
         /// <param name="helper"></param>
-        /// <param name="fieldID"></param>
+        /// <param name="fieldId"></param>
         /// <param name="mh"></param>
         /// <param name="mw"></param>
         /// <param name="cssClass"></param>
         /// <param name="disableWebEditing"></param>
         /// <returns>The ImageField HtmlString value</returns>
-        public static HtmlString ImageField(this SitecoreHelper helper, ID fieldID, int mh = 0, int mw = 0, string cssClass = null, bool disableWebEditing = false)
+        public static HtmlString ImageField(this SitecoreHelper helper, ID fieldId, int mh = 0, int mw = 0, string cssClass = null, bool disableWebEditing = false)
         {
-            return helper.Field(fieldID.ToString(), new
+            return helper.Field(fieldId.ToString(), new
             {
                 mh,
                 mw,
@@ -37,16 +37,16 @@
         /// Common re-usable ImageField() extension method
         /// </summary>
         /// <param name="helper"></param>
-        /// <param name="fieldID"></param>
+        /// <param name="fieldId"></param>
         /// <param name="item"></param>
         /// <param name="mh"></param>
         /// <param name="mw"></param>
         /// <param name="cssClass"></param>
         /// <param name="disableWebEditing"></param>
         /// <returns>The ImageField HtmlString value</returns>
-        public static HtmlString ImageField(this SitecoreHelper helper, ID fieldID, Item item, int mh = 0, int mw = 0, string cssClass = null, bool disableWebEditing = false)
+        public static HtmlString ImageField(this SitecoreHelper helper, ID fieldId, Item item, int mh = 0, int mw = 0, string cssClass = null, bool disableWebEditing = false)
         {
-            return helper.Field(fieldID.ToString(), item, new
+            return helper.Field(fieldId.ToString(), item, new
             {
                 mh,
                 mw,
@@ -93,56 +93,56 @@
         /// Common re-usable Field() extension method
         /// </summary>
         /// <param name="helper"></param>
-        /// <param name="fieldID"></param>
+        /// <param name="fieldId"></param>
         /// <returns>The Field HtmlString value</returns>
-        public static HtmlString Field(this SitecoreHelper helper, ID fieldID)
+        public static HtmlString Field(this SitecoreHelper helper, ID fieldId)
         {
-            Assert.ArgumentNotNullOrEmpty(fieldID, nameof(fieldID));
-            return helper.Field(fieldID.ToString());
+            Assert.ArgumentNotNullOrEmpty(fieldId, nameof(fieldId));
+            return helper.Field(fieldId.ToString());
         }
 
         /// <summary>
         /// Common re-usable Field() extension method
         /// </summary>
         /// <param name="helper"></param>
-        /// <param name="fieldID"></param>
+        /// <param name="fieldId"></param>
         /// <param name="parameters"></param>
         /// <returns>The Field HtmlString value</returns>
-        public static HtmlString Field(this SitecoreHelper helper, ID fieldID, object parameters)
+        public static HtmlString Field(this SitecoreHelper helper, ID fieldId, object parameters)
         {
-            Assert.ArgumentNotNullOrEmpty(fieldID, nameof(fieldID));
+            Assert.ArgumentNotNullOrEmpty(fieldId, nameof(fieldId));
             Assert.IsNotNull(parameters, nameof(parameters));
-            return helper.Field(fieldID.ToString(), parameters);
+            return helper.Field(fieldId.ToString(), parameters);
         }
 
         /// <summary>
         /// Common re-usable Field() extension method
         /// </summary>
         /// <param name="helper"></param>
-        /// <param name="fieldID"></param>
+        /// <param name="fieldId"></param>
         /// <param name="item"></param>
         /// <param name="parameters"></param>
         /// <returns>The Field HtmlString value</returns>
-        public static HtmlString Field(this SitecoreHelper helper, ID fieldID, Item item, object parameters)
+        public static HtmlString Field(this SitecoreHelper helper, ID fieldId, Item item, object parameters)
         {
-            Assert.ArgumentNotNullOrEmpty(fieldID, nameof(fieldID));
+            Assert.ArgumentNotNullOrEmpty(fieldId, nameof(fieldId));
             Assert.IsNotNull(item, nameof(item));
             Assert.IsNotNull(parameters, nameof(parameters));
-            return helper.Field(fieldID.ToString(), item, parameters);
+            return helper.Field(fieldId.ToString(), item, parameters);
         }
 
         /// <summary>
         /// Common re-usable Field() extension method
         /// </summary>
         /// <param name="helper"></param>
-        /// <param name="fieldID"></param>
+        /// <param name="fieldId"></param>
         /// <param name="item"></param>
         /// <returns>The Field HtmlString value</returns>
-        public static HtmlString Field(this SitecoreHelper helper, ID fieldID, Item item)
+        public static HtmlString Field(this SitecoreHelper helper, ID fieldId, Item item)
         {
-            Assert.ArgumentNotNullOrEmpty(fieldID, nameof(fieldID));
+            Assert.ArgumentNotNullOrEmpty(fieldId, nameof(fieldId));
             Assert.IsNotNull(item, nameof(item));
-            return helper.Field(fieldID.ToString(), item);
+            return helper.Field(fieldId.ToString(), item);
         }
 
         /// <summary>

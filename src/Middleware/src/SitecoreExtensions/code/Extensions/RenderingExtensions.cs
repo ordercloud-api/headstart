@@ -1,8 +1,8 @@
-﻿namespace Sitecore.Foundation.SitecoreExtensions.Extensions
-{
-    using System;
-    using Sitecore.Mvc.Presentation;
+﻿using System;
+using Sitecore.Mvc.Presentation;
 
+namespace Sitecore.Foundation.SitecoreExtensions.Extensions
+{
     public static class RenderingExtensions
     {
         /// <summary>
@@ -11,7 +11,7 @@
         /// <param name="rendering"></param>
         /// <param name="parameterName"></param>
         /// <param name="defaultValue"></param>
-        /// <returns>The Rendering objects's Integer value</returns>
+        /// <returns>The Rendering object's Integer value</returns>
         public static int GetIntegerParameter(this Rendering rendering, string parameterName, int defaultValue = 0)
         {
             if (rendering == null)
@@ -25,7 +25,7 @@
                 return defaultValue;
             }
             int returnValue;
-            return !int.TryParse(parameter, out returnValue) ? defaultValue : returnValue;
+            return int.TryParse(parameter, result: out returnValue) ? returnValue : defaultValue;
         }
     }
 }

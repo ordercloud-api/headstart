@@ -14,14 +14,14 @@ using System.Text.RegularExpressions;
 using ordercloud.integrations.library;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands
 {
     public class DownloadReportCommand
     {
         private readonly OrderCloudIntegrationsBlobService _blob;
-        private WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+        private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
         /// <summary>
         /// The IOC based constructor method for the DownloadReportCommand class object with Dependency Injection

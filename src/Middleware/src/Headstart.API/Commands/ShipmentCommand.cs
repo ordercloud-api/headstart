@@ -17,7 +17,7 @@ using Misc = Headstart.Common.Models.Misc;
 using System.ComponentModel.DataAnnotations;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
 using Headstart.Common.Services.ShippingIntegration.Models;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands
 {
@@ -75,7 +75,7 @@ namespace Headstart.API.Commands
         private readonly IOrderCloudClient _oc;
         private readonly ILineItemCommand _lineItemCommand;
         private Dictionary<string, Shipment> _shipmentByTrackingNumber = new Dictionary<string, Shipment>();
-        private WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+        private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
         /// <summary>
         /// The IOC based constructor method for the ShipmentCommand class object with Dependency Injection

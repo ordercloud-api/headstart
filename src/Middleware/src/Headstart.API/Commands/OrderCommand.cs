@@ -15,7 +15,7 @@ using Headstart.Models.Headstart;
 using ordercloud.integrations.library;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
 using Headstart.Common.Services.ShippingIntegration.Models;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands
 {
@@ -43,7 +43,7 @@ namespace Headstart.API.Commands
         private readonly IRMACommand _rmaCommand;
         private readonly AppSettings _settings;
         private readonly ISendgridService _sendgridService;
-        private WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+        private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
         /// <summary>
         /// The IOC based constructor method for the OrderCommand class object with Dependency Injection

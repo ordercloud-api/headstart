@@ -46,7 +46,7 @@ namespace Headstart.Common.Services.CMS.Models
 
         public bool Active { get; set; }
 
-        public IFormFile File { get; set; 
+        public IFormFile File { get; set; }
 
         public string Url { get; set; } = string.Empty;
 

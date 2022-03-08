@@ -1,27 +1,27 @@
-﻿namespace Sitecore.Foundation.SitecoreExtensions.Extensions
-{
-    using System;
-    using System.IO;
-    using Sitecore.Data;
-    using Sitecore.Sites;
-    using Sitecore.Data.Items;
+﻿using System;
+using System.IO;
+using Sitecore.Data;
+using Sitecore.Sites;
+using Sitecore.Data.Items;
 
+namespace Sitecore.Foundation.SitecoreExtensions.Extensions
+{
     public static class SiteExtensions
     {
         /// <summary>
         /// Common re-usable GetContextItem() extension method
         /// </summary>
         /// <param name="site"></param>
-        /// <param name="derivedFromTemplateID"></param>
+        /// <param name="derivedFromTemplateId"></param>
         /// <returns>The Sitecore site's CurrentContextItem from the SiteContext object</returns>
-        public static Item GetContextItem(this SiteContext site, ID derivedFromTemplateID)
+        public static Item GetContextItem(this SiteContext site, ID derivedFromTemplateId)
         {
             if (site == null)
             {
                 throw new ArgumentNullException(nameof(site));
             }
             var startItem = site.GetStartItem();
-            return startItem?.GetAncestorOrSelfOfTemplate(derivedFromTemplateID);
+            return startItem?.GetAncestorOrSelfOfTemplate(derivedFromTemplateId);
         }
 
         /// <summary>
@@ -43,7 +43,7 @@
         /// </summary>
         /// <param name="site"></param>
         /// <returns>The Sitecore site's StartContextItem from the SiteContext object</returns>
-        public static Item GetStartItem(this SiteContext site)
+        private static Item GetStartItem(this SiteContext site)
         {
             if (site == null)
             {
@@ -75,7 +75,7 @@
         public static void CreateOrUpdateRobotsTxtSettings(string webrootPath, Item siteItem)
         {
             var robotsFilePath = $@"{webrootPath}\{siteItem.Name.Replace(" ", "-").ToLower().Trim()}_robots.txt";
-            FileInfo fileItem = new FileInfo(robotsFilePath);
+            var fileItem = new FileInfo(robotsFilePath);
 
             // Check if file already exists. If yes, delete it.     
             if (fileItem.Exists)
@@ -83,10 +83,10 @@
                 fileItem.Delete();
             }
 
-            string robotsFileSettings = string.Empty;
-            if (siteItem != null && FieldExtensions.IsValidFieldValueByKey(siteItem, "RobotsFileSettings"))
+            var robotsFileSettings = string.Empty;
+            if (FieldExtensions.IsValidFieldValueByKeyHasValue(siteItem, @"RobotsFileSettings"))
             {
-                robotsFileSettings = FieldExtensions.GetFieldValueByKey(siteItem, "RobotsFileSettings").GetCleanRitchTextContent();
+                robotsFileSettings = FieldExtensions.GetFieldValueByKey(siteItem, @"RobotsFileSettings").GetCleanRitchTextContent();
             }
 
             // Create a new file     

@@ -5,23 +5,25 @@
     public static class LogExt
     {
         /// <summary>
-        /// Common re-usable LogException method used for logging exception sepertated log errors throughout the entire application into Sitecore Log files
+        /// Common re-usable LogException method used for logging exception separated log errors throughout the entire application into Sitecore Log files
         /// </summary>
+        /// <param name="appLogFileKey"></param>
         /// <param name="methodName"></param>
         /// <param name="message"></param>
         /// <param name="tryCatchMessage"></param>
         /// <param name="errorTraceCert"></param>
         /// <param name="obj"></param>
+        /// <param name="createCustomLogFile"></param>
         public static void LogException(string appLogFileKey, string methodName, string message, string tryCatchMessage, string errorTraceCert, object obj, bool createCustomLogFile = false)
         {
             message = (message.Contains("[methodName]")) ? message.Replace("[methodName]", methodName) : message;
             if (createCustomLogFile)
             {
-                LoggingNotifications.WriteToCustomLogFile(appLogFileKey, methodName, message, true, tryCatchMessage, errorTraceCert);
+                LoggingNotifications.LogExceptionNotification(appLogFileKey, methodName, message, tryCatchMessage, errorTraceCert);
             }
             else
             {
-                string exception = LoggingNotifications.GenerateLogExeptionMessage(methodName, string.Empty, tryCatchMessage, errorTraceCert);
+                var exception = LoggingNotifications.GetLogExceptionMessage(methodName, message, tryCatchMessage, errorTraceCert, LoggingNotifications.GetApiResponseMessagePrefixKey());
                 Log.Error($@"{message} - {LoggingNotifications.GetExceptionMessagePrefixKey()}: {exception}.", obj);
             }            
         }
@@ -32,20 +34,23 @@
         /// <param name="methodName"></param>
         /// <param name="message"></param>
         /// <param name="messageKeyValue"></param>
+        /// <param name="isError"></param>
         public static void LogApiResponseMessages(string methodName, string message, string messageKeyValue, bool isError = false)
         {
-            if (!string.IsNullOrEmpty(message))
+            if (string.IsNullOrEmpty(message))
             {
-                messageKeyValue = (!string.IsNullOrEmpty(messageKeyValue)) ? messageKeyValue : LoggingNotifications.GetGeneralLogMessagePrefixKey();
-                message = LoggingNotifications.GetLogExeptionMessage(methodName, $@"{messageKeyValue}: {message}", string.Empty, string.Empty, LoggingNotifications.GetApiResponseMessagePrefixKey());
-                if (isError)
-                {
-                    Log.Error(message, new LoggingOwnerObject());
-                }
-                else
-                {
-                    Log.Info(message, new LoggingOwnerObject());
-                }
+                return;
+            }
+
+            messageKeyValue = (!string.IsNullOrEmpty(messageKeyValue)) ? messageKeyValue : LoggingNotifications.GetGeneralLogMessagePrefixKey();
+            message = LoggingNotifications.GetLogExceptionMessage(methodName, $@"{messageKeyValue}: {message}", string.Empty, string.Empty, LoggingNotifications.GetApiResponseMessagePrefixKey());
+            if (isError)
+            {
+                Log.Error(message, new object());
+            }
+            else
+            {
+                Log.Info(message, new object());
             }
         }
     }
@@ -59,14 +64,9 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
     using System.Threading;
     using System.Collections.Generic;
 
-    public class LoggingOwnerObject
-    {
-        public LoggingOwnerObject() { }
-    }
-
     public static class LoggingNotifications
     {
-        private static ReaderWriterLockSlim _readWriteLock = new ReaderWriterLockSlim();
+        private static readonly ReaderWriterLockSlim _readWriteLock = new ReaderWriterLockSlim();
 
         /// <summary>
         /// Common re-usable GetGeneralLogMessagePrefixKey method used for returning the GeneralLogMessagePrefixKey value
@@ -111,14 +111,14 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
         /// <param name="message"></param>
         /// <param name="tryCatchMessage"></param>
         /// <param name="errorTraceCert"></param>
-        /// <returns>The generated and formatted LogExeptionMessage string value</returns>
-        public static string GenerateLogExeptionMessage(string methodName, string message, string tryCatchMessage, string errorTraceCert)
+        /// <returns>The generated and formatted LogExceptionMessage string value</returns>
+        public static string GenerateLogExceptionMessage(string methodName, string message, string tryCatchMessage, string errorTraceCert)
         {
-            return GetLogExeptionMessage(methodName, message, tryCatchMessage, errorTraceCert, string.Empty);
+            return GetLogExceptionMessage(methodName, message, tryCatchMessage, errorTraceCert, string.Empty);
         }
 
         /// <summary>
-        /// Common re-usable LogExeptionNotification method used for exception logging throughout the entire application
+        /// Common re-usable LogExceptionNotification method used for exception logging throughout the entire application
         /// </summary>
         /// <param name="appLogFileKey"></param>
         /// <param name="methodName"></param>
@@ -126,24 +126,9 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
         /// <param name="tryCatchMessage"></param>
         /// <param name="errorTraceCert"></param>
         /// <param name="notificationTypePrefix"></param>
-        public static void LogExeptionNotification(string appLogFileKey, string methodName, string message, string tryCatchMessage, string errorTraceCert, string notificationTypePrefix)
+        public static void LogExceptionNotification(string appLogFileKey, string methodName, string message, string tryCatchMessage, string errorTraceCert, string notificationTypePrefix = "")
         {
-            LogNotificationMessages(appLogFileKey, methodName, message, true, tryCatchMessage, errorTraceCert, notificationTypePrefix);
-        }
-
-        /// <summary>
-        /// Common re-usable LogNotificationMessages method used for notification message logging throughout the entire application
-        /// </summary>
-        /// <param name="appLogFileKey"></param>
-        /// <param name="methodName"></param>
-        /// <param name="message"></param>
-        /// <param name="isExeptionMessage"></param>
-        /// <param name="tryCatchMessage"></param>
-        /// <param name="errorTraceCert"></param>
-        /// <param name="notificationTypePrefix"></param>
-        public static void LogNotificationMessages(string appLogFileKey, string methodName, string message, bool isExeptionMessage, string tryCatchMessage, string errorTraceCert, string notificationTypePrefix)
-        {
-            WriteToCustomLogFile(appLogFileKey, methodName, message, false);
+            LogApiResponseMessages(appLogFileKey, methodName, message, GetApiResponseMessagePrefixKey(), true, tryCatchMessage, errorTraceCert);
         }
 
         /// <summary>
@@ -153,20 +138,25 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
         /// <param name="methodName"></param>
         /// <param name="message"></param>
         /// <param name="messageKeyValue"></param>
+        /// <param name="isError"></param>
+        /// <param name="tryCatchMessage"></param>
+        /// <param name="errorTraceCert"></param>
         public static void LogApiResponseMessages(string appLogFileKey, string methodName, string message, string messageKeyValue, bool isError = false, string tryCatchMessage = "", string errorTraceCert = "")
         {
-            if (!string.IsNullOrEmpty(message))
+            if (string.IsNullOrEmpty(message))
             {
-                messageKeyValue = (!string.IsNullOrEmpty(messageKeyValue)) ? messageKeyValue : GetGeneralLogMessagePrefixKey();
-                message = GetLogExeptionMessage(methodName, $@"{messageKeyValue}: {message}", string.Empty, string.Empty, GetApiResponseMessagePrefixKey());
-                if (isError)
-                {
-                    WriteToCustomLogFile(appLogFileKey, methodName, message, true, tryCatchMessage, errorTraceCert);
-                }
-                else
-                {
-                    WriteToCustomLogFile(appLogFileKey, methodName, message, false);
-                }
+                return;
+            }
+
+            messageKeyValue = (!string.IsNullOrEmpty(messageKeyValue)) ? messageKeyValue : GetGeneralLogMessagePrefixKey();
+            message = GetLogExceptionMessage(methodName, $@"{messageKeyValue}: {message}", string.Empty, string.Empty, GetApiResponseMessagePrefixKey());
+            if (isError)
+            {
+                WriteToCustomLogFile(appLogFileKey, methodName, message, true, tryCatchMessage, errorTraceCert);
+            }
+            else
+            {
+                WriteToCustomLogFile(appLogFileKey, methodName, message, false);
             }
         }
 
@@ -179,17 +169,17 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
         /// <param name="tryCatchMessage"></param>
         /// <param name="errorTraceCert"></param>
         /// <param name="notificationTypePrefix"></param>
-        /// <returns>The generated and formatted LogExeptionMessage string value</returns>
-        public static string GetLogExeptionMessage(string methodName, string message, string tryCatchMessage, string errorTraceCert, string notificationTypePrefix)
+        /// <returns>The generated and formatted GetLogExceptionMessage string value</returns>
+        public static string GetLogExceptionMessage(string methodName, string message, string tryCatchMessage, string errorTraceCert, string notificationTypePrefix)
         {
-            string _Notification = string.Empty;
+            var _Notification = string.Empty;
             notificationTypePrefix = (string.IsNullOrEmpty(notificationTypePrefix)) ? GetGeneralLogMessagePrefixKey() : notificationTypePrefix;
             methodName = (string.IsNullOrEmpty(methodName)) ? GetNoMethodIdPassedInPrefixKey() : methodName;
 
-            StringBuilder sb = new StringBuilder();
-            string dateStamp = DateTime.Now.ToString();
+            var sb = new StringBuilder();
+            var dateStamp = DateTime.Now.ToString().Trim();
             sb.Append($@"------------------------------{methodName}:{dateStamp}------------------------------" + Environment.NewLine);
-            string logMessage = string.Empty;
+            var logMessage = string.Empty;
 
             if (!string.IsNullOrEmpty(message))
             {
@@ -222,24 +212,30 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
         /// Common re-usable WriteToCustomLogFile method to create log file/s (1 per day) and logging message/s daily:
         /// Thread-safe code that Locks the file while it is being written to and Ques other thread requests until file is released
         /// </summary>
+        /// <param name="appLogFileKey"></param>
+        /// <param name="methodName"></param>
         /// <param name="logMessage"></param>
-        public static void WriteToCustomLogFile(string AppLogFileKey, string methodName, string logMessage, bool isExeptionMessage, string tryCatchMessage = "", string errorTraceCert = "", bool isInfoMessage = false)
+        /// <param name="isExceptionMessage"></param>
+        /// <param name="tryCatchMessage"></param>
+        /// <param name="errorTraceCert"></param>
+        /// <param name="isInfoMessage"></param>
+        public static void WriteToCustomLogFile(string appLogFileKey, string methodName, string logMessage, bool isExceptionMessage, string tryCatchMessage = "", string errorTraceCert = "", bool isInfoMessage = false)
         {
             _readWriteLock.EnterWriteLock();
             try
             {
-                StringBuilder sb = new StringBuilder();
-                string dateTimeStamp = DateTime.Now.ToString("MM_dd_yyyy-HH_mm_ss");
-                string dateStamp = DateTime.Now.ToString("MM_dd_yyyy");
-                string logsDirectory = System.Web.HttpContext.Current.Server.MapPath(@"~/App_Data/logs");
+                var sb = new StringBuilder();
+                var dateTimeStamp = DateTime.Now.ToString("MM_dd_yyyy-HH_mm_ss");
+                var dateStamp = DateTime.Now.ToString("MM_dd_yyyy");
+                var logsDirectory = System.Web.HttpContext.Current.Server.MapPath(@"~/App_Data/logs");
 
-                sb.Append($@"------------------------------{methodName}:{dateTimeStamp}:{GetMessageTypeKey(isExeptionMessage, isInfoMessage)}------------------------------" + Environment.NewLine);
+                sb.Append($@"------------------------------{methodName}:{dateTimeStamp}:{GetMessageTypeKey(isExceptionMessage, isInfoMessage)}------------------------------" + Environment.NewLine);
                 sb.Append($@"{logMessage} {tryCatchMessage}. {errorTraceCert}." + Environment.NewLine);
-                sb.Append($@"------------------------------{methodName}:{dateTimeStamp}:{GetMessageTypeKey(isExeptionMessage, isInfoMessage)}------------------------------" + Environment.NewLine);
+                sb.Append($@"------------------------------{methodName}:{dateTimeStamp}:{GetMessageTypeKey(isExceptionMessage, isInfoMessage)}------------------------------" + Environment.NewLine);
 
                 if (Directory.Exists(logsDirectory))
                 {
-                    string filePath = $@"{logsDirectory}\{AppLogFileKey}ApiApplictionNotifictions_{dateStamp}.txt";
+                    string filePath = $@"{logsDirectory}\{appLogFileKey}ApiApplicationNotifications_{dateStamp}.txt";
 
                     // This text is always added, making the file longer over time
                     // if it is not deleted.
@@ -259,21 +255,12 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
         /// <summary>
         /// Common re-usable GetMessageTypeKey() method
         /// </summary>
-        /// <param name="isExeptionMessage"></param>
+        /// <param name="isExceptionMessage"></param>
         /// <param name="isInfoMessage"></param>
         /// <returns>The MessageTypeKey string value</returns>
-        private static string GetMessageTypeKey(bool isExeptionMessage, bool isInfoMessage = false)
+        private static string GetMessageTypeKey(bool isExceptionMessage, bool isInfoMessage = false)
         {
-            string messageType = string.Empty;
-            if (isExeptionMessage)
-            {
-                messageType = "ExeptionMessage";
-            }
-            else
-            {
-                messageType = "InfoMessage";
-            }
-            return messageType;
+            return !isExceptionMessage ? @"InfoMessage" : @"ExceptionMessage";
         }
     }
 
@@ -288,8 +275,8 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
         /// <returns>The NotificationAlerts message as a HtmlString wrapped value</returns>
         public static string NotificationAlerts(string notificationMessage, string alertType)
         {
-            string wrapperNotify = GetAlertType(notificationMessage, alertType);
-            string notificationWrapperId = $@"<div id='notify-message-wrapper'>{wrapperNotify}<div>";
+            var wrapperNotify = GetAlertType(notificationMessage, alertType);
+            var notificationWrapperId = $@"<div id='notify-message-wrapper'>{wrapperNotify}<div>";
             return notificationWrapperId;
         }
 
@@ -301,12 +288,12 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
         /// <returns>The GetAlertType string as a HtmlString wrapped value</returns>
         private static string GetAlertType(string notificationMessage, string alertType)
         {
-            string notificationWrapperInfo = "<div id='notify-message' class='validation-summary-info alert-message alert-message alert-message-info'><i class='fas fa-info-circle'></i><span>{0}</span></div>";
-            string notificationWrapperSuccess = "<div id='notify-message' class='validation-summary-success alert-message alert-message-success'><i class='fas fa-check'></i><span>{0}</span></div>";
-            string notificationWrapperWarning = "<div id='notify-message' class='validation-summary-warning alert-message alert-message-warning'><i class='fas fa-exclamation-triangle'></i><span>{0}</span></div>";
-            string notificationWrapperDanger = "<div id='notify-message' class='validation-summary-errors alert-message alert-message-danger'><i class='fas fa-exclamation-triangle'></i><span>{0}</span></div>";
-            string notificationWrapperCertificate = "<div id='notify-message' class='validation-summary-certificate alert-message alert-message-certificate'><i class='fas fa-certificate'></i><span>{0}</span></div>";
-            string notificationWrapperQuestion = "<div id='notify-message' class='validation-summary-question alert-message alert-message-question'><i class='fas fa-question-circle'></i><span>{0}</span></div>";
+            var notificationWrapperInfo = "<div id='notify-message' class='validation-summary-info alert-message alert-message alert-message-info'><i class='fas fa-info-circle'></i><span>{0}</span></div>";
+            var notificationWrapperSuccess = "<div id='notify-message' class='validation-summary-success alert-message alert-message-success'><i class='fas fa-check'></i><span>{0}</span></div>";
+            var notificationWrapperWarning = "<div id='notify-message' class='validation-summary-warning alert-message alert-message-warning'><i class='fas fa-exclamation-triangle'></i><span>{0}</span></div>";
+            var notificationWrapperDanger = "<div id='notify-message' class='validation-summary-errors alert-message alert-message-danger'><i class='fas fa-exclamation-triangle'></i><span>{0}</span></div>";
+            var notificationWrapperCertificate = "<div id='notify-message' class='validation-summary-certificate alert-message alert-message-certificate'><i class='fas fa-certificate'></i><span>{0}</span></div>";
+            var notificationWrapperQuestion = "<div id='notify-message' class='validation-summary-question alert-message alert-message-question'><i class='fas fa-question-circle'></i><span>{0}</span></div>";
 
             var wrapperNotify = "";
             switch (alertType)
@@ -323,7 +310,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
                 case "danger":
                     wrapperNotify = string.Format(notificationWrapperDanger, notificationMessage);
                     break;
-                case "certifcate":
+                case "certificate":
                     wrapperNotify = string.Format(notificationWrapperCertificate, notificationMessage);
                     break;
                 case "question":
@@ -339,25 +326,22 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
         /// <summary>
         /// Common re-usable ModelWrappedErrors method for applying wrapping a list of model errors as bulleted text summary
         /// </summary>
-        /// <param name="ModelErrors"></param>
-        /// <returns>The ModelWrappedULErrorsSummary message as a HtmlString wrapped value</returns>
-        public static string ModelWrappedULErrorsSummary(List<string> ModelErrors)
+        /// <param name="modelErrors"></param>
+        /// <returns>The ModelWrappedUlErrorsSummary message as a HtmlString wrapped value</returns>
+        public static string ModelWrappedUlErrorsSummary(List<string> modelErrors)
         {
-            List<string> jsonModelErrors = new List<string>();
-
-            if (ModelErrors.Count > 0)
+            var jsonModelErrors = new List<string>();
+            if (modelErrors.Count <= 0)
             {
-                string jsonModelError = string.Empty;
-                foreach (var err in ModelErrors)
-                {
-                    jsonModelError = $@"<li>{err}</li>";
-                    jsonModelErrors.Add(jsonModelError);
-                }
-
-                string notificationWrapperUL = $@"<ul id='notify-ul'>{string.Join(@"<br/>", jsonModelErrors)}<ul>";
-                return notificationWrapperUL;
+                return string.Empty;
             }
-            return string.Empty;
+
+            foreach (var err in modelErrors)
+            {
+                var jsonModelError = $@"<li>{err}</li>";
+                jsonModelErrors.Add(jsonModelError);
+            }
+            return $@"<ul id='notify-ul'>{string.Join(@"<br/>", jsonModelErrors)}<ul>";
         }
     }
 }

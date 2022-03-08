@@ -12,7 +12,7 @@ using Headstart.Models.Headstart;
 using ordercloud.integrations.cardconnect;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
 using Headstart.Common.Services.ShippingIntegration.Models;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands
 {
@@ -26,7 +26,7 @@ namespace Headstart.API.Commands
         private readonly IOrderCloudClient _oc;
         private readonly AppSettings _settings;
         private readonly ICreditCardCommand _card;
-        private WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+        private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
         /// <summary>
         /// The IOC based constructor method for the OrderSubmitCommand class object with Dependency Injection

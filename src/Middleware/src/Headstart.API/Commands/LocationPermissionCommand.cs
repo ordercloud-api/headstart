@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Headstart.Common.Constants;
 using System.Collections.Generic;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands
 {
@@ -31,7 +31,7 @@ namespace Headstart.API.Commands
     public class LocationPermissionCommand : ILocationPermissionCommand
     {
         private readonly IOrderCloudClient _oc;
-        private WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+        private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
         /// <summary>
         /// The IOC based constructor method for the LocationPermissionCommand class object with Dependency Injection

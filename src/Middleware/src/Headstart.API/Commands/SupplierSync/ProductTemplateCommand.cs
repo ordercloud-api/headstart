@@ -17,7 +17,7 @@ using System.ComponentModel.DataAnnotations;
 using ordercloud.integrations.exchangerates;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
 using IPartial = ordercloud.integrations.library.IPartial;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands
 {
@@ -30,7 +30,7 @@ namespace Headstart.API.Commands
     public class ProductTemplateCommand : IProductTemplateCommand
     {
         private readonly AppSettings _settings;
-        private WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+        private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
         /// <summary>
         /// The Default constructor method for the ProductTemplateCommand class object

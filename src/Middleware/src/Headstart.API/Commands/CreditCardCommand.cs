@@ -11,7 +11,7 @@ using Headstart.Models.Headstart;
 using ordercloud.integrations.exchangerates;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
 using Headstart.Common.Services.ShippingIntegration.Models;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace ordercloud.integrations.cardconnect
 {
@@ -31,7 +31,7 @@ namespace ordercloud.integrations.cardconnect
 		private readonly IHSExchangeRatesService _hsExchangeRates;
 		private readonly ISupportAlertService _supportAlerts;
 		private readonly AppSettings _settings;
-		private WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+		private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
 		/// <summary>
 		/// The IOC based constructor method for the CreditCardCommand class object with Dependency Injection

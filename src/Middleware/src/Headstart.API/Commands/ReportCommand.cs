@@ -16,7 +16,7 @@ using Headstart.Common.Repositories;
 using ordercloud.integrations.library;
 using Headstart.Common.Repositories.Models;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands
 {
@@ -49,7 +49,7 @@ namespace Headstart.API.Commands
         private readonly IOrdersAndShipmentsDataRepo _ordersAndShipments;
         private readonly IProductDetailDataRepo _productDetailRepository;
         private readonly ReportTemplateQuery _template;
-        private WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+        private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
         /// <summary>
         /// The IOC based constructor method for the HSReportCommand class object with Dependency Injection

@@ -1,11 +1,12 @@
-﻿namespace Sitecore.Foundation.SitecoreExtensions.Extensions
-{
-    using System;
-    using Sitecore.Data;
-    using Sitecore.Data.Items;
-    using Sitecore.Data.Fields;
-    using Sitecore.Resources.Media;
+﻿using System;
+using System.Globalization;
+using Sitecore.Data;
+using Sitecore.Data.Fields;
+using Sitecore.Data.Items;
+using Sitecore.Resources.Media;
 
+namespace Sitecore.Foundation.SitecoreExtensions.Extensions
+{
     public static class FieldExtensions
     {
         /// <summary>
@@ -19,7 +20,23 @@
             ImageField field = null;
             if (IsValidFieldValueByKeyHasValue(contextItem, fieldKey))
             {
-                field = (ImageField)contextItem.Fields[fieldKey];
+                field = !(FieldTypeManager.GetField(contextItem.Fields[fieldKey]) is ImageField) ? contextItem.Fields[fieldKey] : null;
+            }
+            return field;
+        }
+
+        /// <summary>
+        /// Common re-usable GetImageField() extension method - used to return Sitecore item's ImageField field value or null, based on passed in fieldKey value
+        /// </summary>
+        /// <param name="contextItem"></param>
+        /// <param name="fieldId"></param>
+        /// <returns>The ImageField Item object from the contextItem Item object</returns>
+        public static ImageField GetImageField(Item contextItem, ID fieldId)
+        {
+            ImageField field = null;
+            if (IsValidFieldValueByKeyHasValue(contextItem, fieldId))
+            {
+                field = !(FieldTypeManager.GetField(contextItem.Fields[fieldId]) is ImageField) ? contextItem.Fields[fieldId] : null;
             }
             return field;
         }
@@ -31,32 +48,30 @@
         /// <returns>The MediaItem Item object from the contextItem Item object</returns>
         public static MediaItem GetMediaItem(ImageField imageField)
         {
-            MediaItem mediaItem = null;
-            if (imageField != null && imageField.MediaItem != null)
+            if (imageField?.MediaItem == null)
             {
-                mediaItem = new MediaItem(imageField.MediaItem);
+                return null;
             }
+            var mediaItem = new MediaItem(imageField.MediaItem);
             return mediaItem;
         }
 
         /// <summary>
         /// Common re-usable GetImageUrlFromItem() extension method
         /// </summary>
-        /// <param name="item"></param>
+        /// <param name="contextItem"></param>
         /// <param name="fieldKey"></param>
         /// <returns>The Image Url string value or empty string from the contextItem Item object</returns>
         public static string GetImageUrlFromItem(Item contextItem, string fieldKey)
         {
-            string imageUrl = string.Empty;
-            if (IsValidFieldValueByKeyHasValue(contextItem, fieldKey))
+            var imageItem = GetImageField(contextItem, fieldKey);
+            if (imageItem?.MediaItem == null)
             {
-                var imageItem = GetImageField(contextItem, fieldKey);
-                if (imageItem != null && imageItem.MediaItem != null)
-                {
-                    MediaItem imageMedia = new MediaItem(imageItem.MediaItem);
-                    imageUrl = StringUtil.EnsurePrefix('/', MediaManager.GetMediaUrl(imageMedia));
-                }
-            }            
+                return string.Empty;
+            }
+
+            var imageMedia = new MediaItem(imageItem.MediaItem);
+            var imageUrl = StringUtil.EnsurePrefix('/', MediaManager.GetMediaUrl(imageMedia));
             return imageUrl;
         }
 
@@ -68,7 +83,18 @@
         /// <returns>The contextItem's field value</returns>
         public static string GetFieldValueByKey(Item contextItem, string fieldKey)
         {
-            return (IsValidFieldValueByKey(contextItem, fieldKey)) ? contextItem.Fields[fieldKey].Value : string.Empty;
+            return IsValidFieldValueByKeyHasValue(contextItem, fieldKey) ? contextItem.Fields[fieldKey].Value : string.Empty;
+        }
+
+        /// <summary>
+        /// Common re-usable GetFieldValueByKey() extension method - used to return Sitecore item's field value or empty string, based on passed in fieldKey value
+        /// </summary>
+        /// <param name="contextItem"></param>
+        /// <param name="fieldId"></param>
+        /// <returns>The contextItem's field value</returns>
+        public static string GetFieldValueByKey(Item contextItem, ID fieldId)
+        {
+            return IsValidFieldValueByKeyHasValue(contextItem, fieldId) ? contextItem.Fields[fieldId].Value : string.Empty;
         }
 
         /// <summary>
@@ -88,6 +114,22 @@
         }
 
         /// <summary>
+        /// Common re-usable GetCheckboxField() extension method - used to return Sitecore item's CheckboxField field item or null, based on passed in fieldKey value
+        /// </summary>
+        /// <param name="contextItem"></param>
+        /// <param name="fieldId"></param>
+        /// <returns>The CheckboxField Item object from the contextItem Item object</returns>
+        public static CheckboxField GetCheckboxField(Item contextItem, ID fieldId)
+        {
+            CheckboxField checkbox = null;
+            if (IsValidFieldValueByKey(contextItem, fieldId))
+            {
+                checkbox = !(FieldTypeManager.GetField(contextItem.Fields[fieldId]) is CheckboxField) ? contextItem.Fields[fieldId] : null;
+            }
+            return checkbox;
+        }
+
+        /// <summary>
         /// Common re-usable GetDateField() extension method - used to return Sitecore item's DateField field value or null, based on passed in fieldKey value
         /// </summary>
         /// <param name="contextItem"></param>
@@ -96,9 +138,26 @@
         public static DateField GetDateField(Item contextItem, string fieldKey)
         {
             DateField date = null;
-            if (IsValidFieldValueByKeyHasValue(contextItem, fieldKey))
+            if (IsValidFieldValueByKey(contextItem, fieldKey))
             {
-                date = contextItem.Fields[fieldKey];
+                date = !(FieldTypeManager.GetField(contextItem.Fields[fieldKey]) is DateField) ? contextItem.Fields[fieldKey] : null;
+            }
+            return date;
+        }
+
+
+        /// <summary>
+        /// Common re-usable GetDateField() extension method - used to return Sitecore item's DateField field value or null, based on passed in fieldKey value
+        /// </summary>
+        /// <param name="contextItem"></param>
+        /// <param name="fieldId"></param>
+        /// <returns>The DateField Item object from the contextItem Item object</returns>
+        public static DateField GetDateField(Item contextItem, ID fieldId)
+        {
+            DateField date = null;
+            if (IsValidFieldValueByKey(contextItem, fieldId))
+            {
+                date = !(FieldTypeManager.GetField(contextItem.Fields[fieldId]) is DateField) ? contextItem.Fields[fieldId] : null;
             }
             return date;
         }
@@ -108,13 +167,13 @@
         /// </summary>
         /// <param name="contextItem"></param>
         /// <param name="fieldKey"></param>
-        /// <returns>The MultilistField Item object from the contextItem Item object</returns>
+        /// <returns>The Multi-listField Item object from the contextItem Item object</returns>
         public static MultilistField GetMultiListField(Item contextItem, string fieldKey)
         {
             MultilistField field = null;
             if (IsValidFieldValueByKey(contextItem, fieldKey))
             {
-                field = (MultilistField)contextItem.Fields[fieldKey];
+                field = !(FieldTypeManager.GetField(contextItem.Fields[fieldKey]) is MultilistField) ? contextItem.Fields[fieldKey] : null;
             }
             return field;
         }
@@ -124,13 +183,13 @@
         /// </summary>
         /// <param name="contextItem"></param>
         /// <param name="fieldId"></param>
-        /// <returns>The MultilistField Item object from the contextItem Item object</returns>
+        /// <returns>The Multi-listField Item object from the contextItem Item object</returns>
         public static MultilistField GetMultiListField(Item contextItem, ID fieldId)
         {
             MultilistField field = null;
             if (IsValidFieldValueByKey(contextItem, fieldId))
             {
-                field = (MultilistField)contextItem.Fields[fieldId];
+                field = !(FieldTypeManager.GetField(contextItem.Fields[fieldId]) is MultilistField) ? contextItem.Fields[fieldId] : null;
             }
             return field;
         }
@@ -143,8 +202,60 @@
         /// <returns>The LinkField Item object from the contextItem Item object</returns>
         public static LinkField GetLinkField(Item contextItem, string fieldKey)
         {
-            LinkField field = (IsValidFieldValueByKey(contextItem, fieldKey))
-                ? ((LinkField)contextItem.Fields[fieldKey]) : null;
+            LinkField field = null;
+            if (IsValidFieldValueByKey(contextItem, fieldKey))
+            {
+                field = !(FieldTypeManager.GetField(contextItem.Fields[fieldKey]) is LinkField) ? contextItem.Fields[fieldKey] : null;
+            }
+            return field;
+        }
+
+        /// <summary>
+        /// Common re-usable GetLinkField() extension method - used to return Sitecore item's LinkField field value or null, based on passed in fieldKey value
+        /// </summary>
+        /// <param name="contextItem"></param>
+        /// <param name="fieldId"></param>
+        /// <returns>The LinkField Item object from the contextItem Item object</returns>
+        public static LinkField GetLinkField(Item contextItem, ID fieldId)
+        {
+            LinkField field = null;
+            if (IsValidFieldValueByKey(contextItem, fieldId))
+            {
+                field = !(FieldTypeManager.GetField(contextItem.Fields[fieldId]) is LinkField) ? contextItem.Fields[fieldId] : null;
+            }
+            return field;
+        }
+
+
+        /// <summary>
+        /// Common re-usable GetReferenceField() extension method - used to return Sitecore item's LinkField field value or null, based on passed in fieldKey value
+        /// </summary>
+        /// <param name="contextItem"></param>
+        /// <param name="fieldKey"></param>
+        /// <returns>The ReferenceField Item object from the contextItem Item object</returns>
+        public static ReferenceField GetReferenceField(Item contextItem, string fieldKey)
+        {
+            ReferenceField field = null;
+            if (IsValidFieldValueByKey(contextItem, fieldKey))
+            {
+                field = !(FieldTypeManager.GetField(contextItem.Fields[fieldKey]) is ReferenceField) ? contextItem.Fields[fieldKey] : null;
+            }
+            return field;
+        }
+
+        /// <summary>
+        /// Common re-usable GetReferenceField() extension method - used to return Sitecore item's LinkField field value or null, based on passed in fieldKey value
+        /// </summary>
+        /// <param name="contextItem"></param>
+        /// <param name="fieldId"></param>
+        /// <returns>The ReferenceField Item object from the contextItem Item object</returns>
+        public static ReferenceField GetReferenceField(Item contextItem, ID fieldId)
+        {
+            ReferenceField field = null;
+            if (IsValidFieldValueByKey(contextItem, fieldId))
+            {
+                field = !(FieldTypeManager.GetField(contextItem.Fields[fieldId]) is ReferenceField) ? contextItem.Fields[fieldId] : null;
+            }
             return field;
         }
 
@@ -160,13 +271,13 @@
         {
             linkText = string.Empty;
             linkUrl = string.Empty;
-
-            LinkField field = GetLinkField(contextItem, fieldKey);
-            if (field != null)
+            var field = GetLinkField(contextItem, fieldKey);
+            if (field == null)
             {
-                linkText = field.Text;
-                linkUrl = field.GetFriendlyUrl();
+                return;
             }
+            linkText = field.Text;
+            linkUrl = field.GetFriendlyUrl();
         }
 
         /// <summary>
@@ -177,8 +288,8 @@
         /// <returns>The Link Field Url value from the contextItem Item object</returns>
         public static string GetLinkFieldUrl(Item contextItem, string fieldKey)
         {
-            string linkUrl = string.Empty;
-            LinkField field = GetLinkField(contextItem, fieldKey);
+            var linkUrl = string.Empty;
+            var field = GetLinkField(contextItem, fieldKey);
             if (field != null)
             {
                 linkUrl = field.GetFriendlyUrl();
@@ -188,50 +299,50 @@
 
         /// <summary>
         /// Common re-usable IsValidFieldValueByKey() extension method - used to return true if a Sitecore item has a field based on passed in fieldKey value
-        /// or false if it doee not have a field based on passed in fieldKey value
+        /// or false if it doe not have a field based on passed in fieldKey value
         /// </summary>
         /// <param name="contextItem"></param>
         /// <param name="fieldKey"></param>
         /// <returns>The IsValidFieldValueByKey boolean status from the contextItem Item object</returns>
         public static bool IsValidFieldValueByKey(Item contextItem, string fieldKey)
         {
-            return ((contextItem != null) && (contextItem.Fields[fieldKey] != null)) ? true : false;
+            return contextItem?.Fields[fieldKey] != null;
         }
 
         /// <summary>
         /// Common re-usable IsValidFieldValueByKey() extension method - used to return true if a Sitecore item has a field based on passed in fieldKey value
-        /// or false if it doee not have a field based on passed in fieldKey value
+        /// or false if it does not have a field based on passed in fieldKey value
         /// </summary>
         /// <param name="contextItem"></param>
         /// <param name="fieldKey"></param>
         /// <returns>The IsValidFieldValueByKeyHasValue boolean status from the contextItem Item object</returns>
         public static bool IsValidFieldValueByKeyHasValue(Item contextItem, string fieldKey)
         {
-            return ((contextItem != null) && (contextItem.Fields[fieldKey] != null) && (contextItem.Fields[fieldKey].HasValue)) ? true : false;
+            return IsValidFieldValueByKey(contextItem, fieldKey) && contextItem.Fields[fieldKey].HasValue;
         }
 
         /// <summary>
         /// Common re-usable IsValidFieldValueByKey() extension method - used to return true if a Sitecore item has a field based on passed in fieldKey value
-        /// or false if it doee not have a field based on passed in fieldKey value
+        /// or false if it does not have a field based on passed in fieldKey value
         /// </summary>
         /// <param name="contextItem"></param>
         /// <param name="fieldId"></param>
         /// <returns>The IsValidFieldValueByKey boolean status from the contextItem Item object</returns>
         public static bool IsValidFieldValueByKey(Item contextItem, ID fieldId)
         {
-            return ((contextItem != null) && (contextItem.Fields[fieldId] != null)) ? true : false;
+            return contextItem?.Fields[fieldId] != null;
         }
 
         /// <summary>
         /// Common re-usable IsValidFieldValueByKey() extension method - used to return true if a Sitecore item has a field based on passed in fieldKey value
-        /// or false if it doee not have a field based on passed in fieldKey value
+        /// or false if it does not have a field based on passed in fieldKey value
         /// </summary>
         /// <param name="contextItem"></param>
         /// <param name="fieldId"></param>
         /// <returns>The IsValidFieldValueByKeyHasValue boolean status from the contextItem Item object</returns>
         public static bool IsValidFieldValueByKeyHasValue(Item contextItem, ID fieldId)
         {
-            return ((contextItem != null) && (contextItem.Fields[fieldId] != null) && (contextItem.Fields[fieldId].HasValue)) ? true : false;
+            return contextItem?.Fields[fieldId] != null && contextItem.Fields[fieldId].HasValue;
         }
 
         /// <summary>
@@ -261,12 +372,14 @@
         /// <returns>The contextItem after setting the contextItem's field value</returns>
         public static Item SetFieldValueByKey(Item contextItem, string fieldKey, DateTime fieldValue)
         {
-            DateField date = GetDateField(contextItem, fieldKey);
-            if ((date != null) && (IsValidDateTimeValue(fieldValue)))
+            var date = GetDateField(contextItem, fieldKey);
+            if (date == null || !IsValidDateTimeValue(fieldValue))
             {
-                var dateChanged = (date.Value.ToString() == fieldValue.ToString($@"MM/dd/yyyy")) ? true : false;
-                date.Value = (dateChanged) ? fieldValue.ToString($@"MM/dd/yyyy") : date.Value;
+                return contextItem;
             }
+
+            var dateChanged = date.Value == fieldValue.ToString(@"MM/dd/yyyy");
+            date.Value = dateChanged ? fieldValue.ToString(@"MM/dd/yyyy") : date.Value;
             return contextItem;
         }
 
@@ -280,7 +393,7 @@
         /// <returns>The contextItem after setting the contextItem's field value</returns>
         public static Item SetFieldValueByKey(Item contextItem, string fieldKey, bool fieldValue)
         {
-            CheckboxField checkbox = GetCheckboxField(contextItem, fieldKey);
+            var checkbox = GetCheckboxField(contextItem, fieldKey);
             if (checkbox != null)
             {
                 checkbox.Checked = (checkbox.Checked != fieldValue) ? fieldValue : checkbox.Checked;
@@ -296,11 +409,7 @@
         /// <returns>The IsValidDateTimeValue boolean status</returns>
         private static bool IsValidDateTimeValue(DateTime fieldValue)
         {
-            if ((fieldValue != null) && (fieldValue != DateTime.MinValue) && (!string.IsNullOrEmpty(fieldValue.ToString())))
-            {
-                return true;
-            }
-            return false;
+            return fieldValue != DateTime.MinValue && !string.IsNullOrEmpty(fieldValue.ToString(CultureInfo.InvariantCulture));
         }
 
         /// <summary>
@@ -311,40 +420,37 @@
         /// <returns>The rel="nofollow" attribute or empty string</returns>
         public static string InsertNoFollowStatus(string anchorUrl, string qsKey)
         {
-            string nofollowAttribute = string.Empty;
-            bool attrExists = ((!string.IsNullOrEmpty(anchorUrl)) && (!string.IsNullOrEmpty(qsKey)));
-            if (attrExists)
+            var nofollowAttribute = string.Empty;
+            var attrExists = ((!string.IsNullOrEmpty(anchorUrl)) && (!string.IsNullOrEmpty(qsKey)));
+            if (!attrExists)
             {
-                bool hasNoFollow = (anchorUrl.ToLower().Trim().IndexOf(qsKey.ToLower().Trim()) > -1);
-                if (hasNoFollow)
-                {
-                    nofollowAttribute = qsKey.ToLower().Trim();
-                }
+                return nofollowAttribute;
+            }
+
+            var hasNoFollow = anchorUrl.ToLower().Trim().IndexOf(qsKey.ToLower().Trim(), StringComparison.Ordinal) > -1;
+            if (hasNoFollow)
+            {
+                nofollowAttribute = qsKey.ToLower().Trim();
             }
             return nofollowAttribute;
         }
 
         /// <summary>
-        /// Common re-usable HyperLinkFor() extension method - returns achorElement or empty string
+        /// Common re-usable HyperLinkFor() extension method - returns anchorElement or empty string
         /// </summary>
-        /// <param name="achorText"></param>
+        /// <param name="anchorText"></param>
         /// <param name="anchorUrl"></param>
         /// <param name="anchorId"></param>
-        /// <param name="achorCSS"></param>
-        /// <param name="achorAttributes"></param>
+        /// <param name="anchorCss"></param>
+        /// <param name="anchorAttributes"></param>
         /// <returns>The Hyperlink Html string or empty string</returns>
-        public static string HyperLinkFor(string achorText, string anchorUrl, string anchorId, string achorCSS, string achorAttributes)
+        public static string HyperLinkFor(string anchorText, string anchorUrl, string anchorId, string anchorCss = "", string anchorAttributes = "")
         {
-            string achorElement = "<a href='{0}' pageid='{1}' class='{2}' {3}>{4}</a>";
-            if (string.IsNullOrEmpty(achorText) || string.IsNullOrEmpty(anchorUrl) || string.IsNullOrEmpty(anchorId))
+            if (string.IsNullOrEmpty(anchorText) || string.IsNullOrEmpty(anchorUrl) || string.IsNullOrEmpty(anchorId))
             {
                 return string.Empty;
             }
-            else
-            {
-                achorElement = string.Format(achorElement, anchorUrl, anchorId, achorCSS, achorAttributes, achorText);
-            }
-            return  achorElement;
+            return $@"<a href='{anchorUrl}' pageId='{anchorId}' class='{anchorCss}' {anchorAttributes}>{anchorText}</a>";
         }
 
         /// <summary>
@@ -355,12 +461,8 @@
         /// <returns>The Html string from the contextItem Item object</returns>
         public static string GetRitchTextContent(Item contextItem, string fieldKey)
         {
-            string ritchTextContent = GetFieldValueByKey(contextItem, fieldKey);
-            if (string.IsNullOrEmpty(ritchTextContent.GetCleanRitchTextContent()))
-            {
-                return string.Empty;
-            }
-            return ritchTextContent;
+            var ritchTextContent = GetFieldValueByKey(contextItem, fieldKey);
+            return string.IsNullOrEmpty(ritchTextContent.GetCleanRitchTextContent()) ? string.Empty : ritchTextContent;
         }
 
         /// <summary>
@@ -368,23 +470,20 @@
         /// </summary>
         /// <param name="contextItem"></param>
         /// <param name="fieldKey"></param>
-        /// <param name="imageCSS"></param>
+        /// <param name="imageCss"></param>
         /// <returns>The Image Html string from the contextItem Item object</returns>
-        public static string ImageFor(Item contextItem, string fieldKey, string imageCSS)
+        public static string ImageFor(Item contextItem, string fieldKey, string imageCss)
         {
-            string imageElement = "<img src='{0}' pageid='{1}' class='{2}' alt='{3}'></>";
             if (contextItem == null || string.IsNullOrEmpty(fieldKey) || !IsValidFieldValueByKey(contextItem, fieldKey))
             {
                 return string.Empty;
             }
-            else
-            {
-                var imageItem = GetImageField(contextItem, fieldKey);
-                string menuLogoUrl = (imageItem != null) ? imageItem.ImageUrl() : string.Empty;
-                string menuLogoAltText = (imageItem != null) ? imageItem.Alt : string.Empty;
-                imageElement = string.Format(imageElement, menuLogoUrl, imageItem.MediaID, imageCSS, menuLogoAltText);
-            }
-            return imageElement;
+
+            var imageItem = GetImageField(contextItem, fieldKey);
+            var menuLogoUrl = imageItem == null ? string.Empty : imageItem.ImageUrl();
+            var menuLogoAltText = imageItem == null ? string.Empty : imageItem.Alt.Trim();
+            var pageId = imageItem == null ? string.Empty : imageItem.MediaID.Guid.ToString().RemoveSpecifiedChars("[{}]", true);
+            return $@"<img src='{menuLogoUrl}' pageId='{pageId}' class='{imageCss}' alt='{menuLogoAltText}' />";
         }
 
         /// <summary>
@@ -392,52 +491,51 @@
         /// </summary>
         /// <param name="contextItem"></param>
         /// <param name="fieldKey"></param>
-        /// <param name="imageCSS"></param>
+        /// <param name="imageCss"></param>
         /// <param name="anchorUrl"></param>
         /// <param name="anchorId"></param>
-        /// <param name="achorCSS"></param>
+        /// <param name="achorCss"></param>
         /// <returns>The Image Link Html string from the contextItem Item object</returns>
-        public static string ImageLinkFor(Item contextItem, string fieldKey, string imageCSS, string anchorUrl, string anchorId, string achorCSS = "")
+        public static string ImageLinkFor(Item contextItem, string fieldKey, string imageCss, string anchorUrl, string anchorId, string achorCss = "")
         {
-            string imageElement = ImageFor(contextItem, fieldKey, imageCSS);
-            string imageLinkedElement = string.Empty;
-            
-            if (!string.IsNullOrEmpty(imageElement))
+            var imageLinkedElement = string.Empty;
+            var imageElement = ImageFor(contextItem, fieldKey, imageCss);
+            if (string.IsNullOrEmpty(imageElement))
             {
-                var imageItem = GetImageField(contextItem, fieldKey);
-                string menuLogoAltText = (imageItem != null) ? imageItem.Alt : string.Empty;
-                imageLinkedElement = HyperLinkFor(imageElement, anchorUrl, anchorId, achorCSS, string.Format(@"aria-label='{0}'", menuLogoAltText));
+                return imageLinkedElement;
             }
+
+            var imageItem = GetImageField(contextItem, fieldKey);
+            var menuLogoAltText = (imageItem != null) ? imageItem.Alt : string.Empty;
+            imageLinkedElement = HyperLinkFor(imageElement, anchorUrl, anchorId, achorCss, $@"aria-label='{menuLogoAltText}'");
             return imageLinkedElement;
         }
 
         /// <summary>
         /// Common re-usable IsItemForScheduledDisplay() extension method
         /// </summary>
-        /// <param name="Id"></param>
+        /// <param name="id"></param>
         /// <returns>The IsItemForScheduledDisplay boolean status</returns>
-        public static bool IsItemForScheduledDisplay(ID Id)
+        public static bool IsItemForScheduledDisplay(ID id)
         {
             DateTime? startDateTime = null, endDateTime = null;
-            bool retValue = false;
-            if (!Id.IsNull)
+            if (id.IsNull)
             {
-                var item = Context.Database.GetItem(Id);
-
-                if (IsValidFieldValueByKeyHasValue(item, "Display Start DateTime") && IsValidFieldValueByKeyHasValue(item, "Display End DateTime"))
-                {
-                    startDateTime = new DateTime(GetDateField(item, "Display Start DateTime").DateTime.Year, GetDateField(item, "Display Start DateTime").DateTime.Month,
-                        GetDateField(item, "Display Start DateTime").DateTime.Day, GetDateField(item, "Display Start DateTime").DateTime.ToLocalTime().Hour,
-                        GetDateField(item, "Display Start DateTime").DateTime.ToLocalTime().Minute, 0);
-                    endDateTime = new DateTime(GetDateField(item, "Display End DateTime").DateTime.Year, GetDateField(item, "Display End DateTime").DateTime.Month,
-                        GetDateField(item, "Display End DateTime").DateTime.Day, GetDateField(item, "Display End DateTime").DateTime.ToLocalTime().Hour,
-                        GetDateField(item, "Display End DateTime").DateTime.ToLocalTime().Minute, 0);
-                }
-
-                var currentDateTime = DateTime.Now;
-                retValue = (currentDateTime >= startDateTime && currentDateTime <= endDateTime);
+                return false;
             }
-            return retValue;
+
+            var item = Context.Database.GetItem(id);
+            if (IsValidFieldValueByKeyHasValue(item, @"Display Start DateTime") && IsValidFieldValueByKeyHasValue(item, @"Display End DateTime"))
+            {
+                startDateTime = new DateTime(GetDateField(item, @"Display Start DateTime").DateTime.Year, GetDateField(item, @"Display Start DateTime").DateTime.Month,
+                    GetDateField(item, @"Display Start DateTime").DateTime.Day, GetDateField(item, @"Display Start DateTime").DateTime.ToLocalTime().Hour,
+                    GetDateField(item, @"Display Start DateTime").DateTime.ToLocalTime().Minute, 0);
+                endDateTime = new DateTime(GetDateField(item, @"Display End DateTime").DateTime.Year, GetDateField(item, "Display End DateTime").DateTime.Month,
+                    GetDateField(item, @"Display End DateTime").DateTime.Day, GetDateField(item, @"Display End DateTime").DateTime.ToLocalTime().Hour,
+                    GetDateField(item, @"Display End DateTime").DateTime.ToLocalTime().Minute, 0);
+            }
+            var currentDateTime = DateTime.Now;
+            return currentDateTime >= startDateTime && currentDateTime <= endDateTime;
         }
 
         /// <summary>
@@ -448,13 +546,14 @@
         /// <returns>The Item object in a DroplistField Item object</returns>
         public static Item GetSelectedItemFromDroplistField(Item contextItem, string fieldKey)
         {
-            Field field = contextItem.Fields[fieldKey];
+            var field = contextItem.Fields[fieldKey];
             if (field == null || string.IsNullOrEmpty(field.Value))
             {
                 return null;
             }
+
             var fieldSource = field.Source ?? string.Empty;
-            var selectedItemPath = fieldSource.TrimEnd('/') + "/" + field.Value;
+            var selectedItemPath = $@"{fieldSource.TrimEnd('/')}/{field.Value}";
             return contextItem.Database.GetItem(selectedItemPath);
         }
 
@@ -467,17 +566,19 @@
         /// <returns>The DropListItemVal string value or empty</returns>
         public static string GetDroplistDictionaryValue(Item contextItem, string fieldKey, bool isGuidValue = false)
         {
+            var dropListItemVal = string.Empty;
             var dropListItem = GetSelectedItemFromDroplistField(contextItem, fieldKey);
-            string dropListItemVal = string.Empty;
-            if (dropListItem != null)
+            if (dropListItem == null)
             {
-                dropListItemVal = GetFieldValueByKey(dropListItem, "Phrase");
-                if (isGuidValue)
-                {
-                    ID.TryParse(dropListItemVal, out ID templateId);
-                    dropListItemVal = (!templateId.IsNull) ? templateId.ToString().Trim() : string.Empty;
-                }
+                return dropListItemVal;
             }
+            dropListItemVal = GetFieldValueByKey(dropListItem, @"Phrase");
+            if (!isGuidValue)
+            {
+                return dropListItemVal;
+            }
+            ID.TryParse(dropListItemVal, out var templateId);
+            dropListItemVal = (!templateId.IsNull) ? templateId.ToString().Trim() : string.Empty;
             return dropListItemVal;
         }
     }

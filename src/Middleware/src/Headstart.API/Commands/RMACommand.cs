@@ -17,7 +17,7 @@ using ordercloud.integrations.library;
 using ordercloud.integrations.cardconnect;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
 using Headstart.Common.Services.ShippingIntegration.Models;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands
 {
@@ -41,7 +41,7 @@ namespace Headstart.API.Commands
         private readonly IOrderCloudIntegrationsCardConnectService _cardConnect;
         private readonly ISendgridService _sendgridService;
         private readonly AppSettings _settings;
-        private WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+        private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
         /// <summary>
         /// The IOC based constructor method for the RMACommand class object with Dependency Injection

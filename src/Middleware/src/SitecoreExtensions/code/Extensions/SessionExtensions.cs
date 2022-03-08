@@ -1,8 +1,8 @@
-﻿namespace Sitecore.Foundation.SitecoreExtensions.Extensions
-{
-    using System.Web;
-    using Sitecore.Diagnostics;
+﻿using System.Web;
+using Sitecore.Diagnostics;
 
+namespace Sitecore.Foundation.SitecoreExtensions.Extensions
+{
     public static class SessionExtensions
     {
         /// <summary>

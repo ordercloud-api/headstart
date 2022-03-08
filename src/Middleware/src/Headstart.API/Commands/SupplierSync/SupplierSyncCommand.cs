@@ -10,7 +10,7 @@ using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 using ordercloud.integrations.library;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands
 {
@@ -23,7 +23,7 @@ namespace Headstart.API.Commands
     {
         private readonly AppSettings _settings;
         private readonly IOrderCloudClient _oc;
-        private WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+        private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
         /// <summary>
         /// The IOC based constructor method for the SupplierSyncCommand class object with Dependency Injection

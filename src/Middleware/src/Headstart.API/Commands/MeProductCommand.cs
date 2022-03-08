@@ -11,7 +11,7 @@ using Headstart.Common.Services;
 using System.Collections.Generic;
 using ordercloud.integrations.exchangerates;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extenstions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands
 {
@@ -30,7 +30,7 @@ namespace Headstart.API.Commands
 		private readonly ISimpleCache _cache;
 		private readonly IExchangeRatesCommand _exchangeRatesCommand;
 		private readonly AppSettings _settings;
-		private WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+		private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
 		/// <summary>
 		/// The IOC based constructor method for the MeProductCommand class object with Dependency Injection
