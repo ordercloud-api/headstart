@@ -280,8 +280,8 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 		}
 
 		/// <summary>
-		/// Common re-usable GetAlertType method to apply inner HTML repsonse styled wrappers for notifications styled message arround server message needed to be returned to the user
-		/// (i.e. info; success; danger/error; warning; certificate; question styled messages) - All this types and HTML div wrapper are as per Bootstrap resposive-design standards
+		/// Common re-usable GetAlertType method to apply inner HTML responsive styled wrappers for notifications styled message around server message needed to be returned to the user
+		/// (i.e. info; success; danger/error; warning; certificate; question styled messages) - All this types and HTML div wrapper are as per Bootstrap responsive-design standards
 		/// </summary>
 		/// <param name="alertType"></param>
 		/// <returns>The GetAlertType string as a HtmlString wrapped value</returns>
