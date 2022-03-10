@@ -1,10 +1,9 @@
 ﻿using OrderCloud.SDK;
 
-namespace Headstart.Models
+namespace Headstart.Common.Models.Headstart
 {
-
-    public class HSProductAssignment : ProductAssignment, IHSObject
-    {
-        public string ID { get; set; } = string.Empty;
-    }
+	public class HsProductAssignment : ProductAssignment
+	{
+		public string Id { get; set; } = string.Empty;
+	}
 }

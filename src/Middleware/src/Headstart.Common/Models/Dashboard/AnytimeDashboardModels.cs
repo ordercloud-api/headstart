@@ -1,179 +1,188 @@
 ﻿using System;
 using Newtonsoft.Json;
-using Headstart.Models;
 using System.Collections.Generic;
+using Headstart.Common.Models.Base;
+using Headstart.Common.Models.Headstart;
 
-namespace Headstart.Common.Models
+namespace Headstart.Common.Models.Dashboard
 {
-    public class AFClub
-    {
-        public string id { get; set; } = string.Empty;
+	public class AfClub : HsBaseObject
+	{
+		public string ClubGuid { get; set; } = string.Empty;
 
-        public string clubGuid { get; set; } = string.Empty;
+		public string AfNumber { get; set; } = string.Empty;
 
-        public string afNumber { get; set; } = string.Empty;
+		public string BillingNumber { get; set; } = string.Empty;
 
-        public string billingNumber { get; set; } = string.Empty;
+		public string Name { get; set; } = string.Empty;
 
-        public string name { get; set; } = string.Empty;
+		public string PhoneNumber { get; set; } = string.Empty;
 
-        public string phoneNumber { get; set; } = string.Empty;
+		public string Email { get; set; } = string.Empty;
 
-        public string email { get; set; } = string.Empty;
+		public string LegalEntity { get; set; } = string.Empty;
 
-        public string legalEntity { get; set; } = string.Empty;
+		public string PrimaryContactName { get; set; } = string.Empty;
 
-        public string primaryContactName { get; set; } = string.Empty;
+		public AfAddress Address { get; set; } = new AfAddress();
 
-        public AFAddress address { get; set; } = new AFAddress();
+		public Coordinates Coordinates { get; set; } = new Coordinates();
 
-        public Coordinates coordinates { get; set; } = new Coordinates();
+		public AfLocationStatus Status { get; set; } = new AfLocationStatus();
 
-        public AFLocationStatus status { get; set; } = new AFLocationStatus();
+		public DateTime? OpeningDate { get; set; }
 
-        public DateTime? openingDate { get; set; }
+		public bool IsDeleted { get; set; } // Not sure how/if to use this yet.
+	}
+	public class AfAddress
+	{
+		public string City { get; set; } = string.Empty;
 
-        public bool isDeleted { get; set; } // Not sure how/if to use this yet.
-    }
-    public class AFAddress
-    {
-        public string city { get; set; } = string.Empty;
+		public string StateProvince { get; set; } = string.Empty;
 
-        public string stateProvince { get; set; } = string.Empty;
+		public string PostCode { get; set; } = string.Empty;
 
-        public string postCode { get; set; } = string.Empty;
+		public string Address { get; set; } = string.Empty;
 
-        public string address { get; set; } = string.Empty;
+		public string Address2 { get; set; } = string.Empty;
 
-        public string address2 { get; set; } = string.Empty;
+		public string Country { get; set; } = string.Empty;
+	}
 
-        public string country { get; set; } = string.Empty;
-    }
+	public class AfLocationStatus
+	{
+		public string Id { get; set; } = string.Empty;
 
-    public class AFLocationStatus
-    {
-        public string id { get; set; } = string.Empty;
+		public string Description { get; set; } = string.Empty;
+	}
 
-        public string description { get; set; } = string.Empty;
-    }
-    public class AFCredentials
-    {
-        public string username { get; set; } = string.Empty;
+	public class AfCredentials
+	{
+		public string Username { get; set; } = string.Empty;
 
-        public int authId { get; set; }
+		public int AuthId { get; set; }
 
-        public string authGuid { get; set; } = string.Empty;
+		public string AuthGuid { get; set; } = string.Empty;
 
-        public CredentialsUserType userType { get; set; } = new CredentialsUserType();
+		public CredentialsUserType UserType { get; set; } = new CredentialsUserType();
 
-        public IEnumerable<CredentialsRole> roles { get; set; } = new List<CredentialsRole>();
+		public IEnumerable<CredentialsRole> Roles { get; set; } = new List<CredentialsRole>();
 
-        public IEnumerable<CredentialsClub> clubs { get; set; } = new List<CredentialsClub>();   
-    }
+		public IEnumerable<CredentialsClub> Clubs { get; set; } = new List<CredentialsClub>();   
+	}
 
-    public class CredentialsUserType
-    {
-        public int userTypeId { get; set; }
+	public class CredentialsUserType
+	{
+		public int UserTypeId { get; set; }
 
-        public string name { get; set; } = string.Empty;
+		public string Name { get; set; } = string.Empty;
+	}
 
-    }
+	public class CredentialsRole
+	{
+		public string Id { get; set; } = string.Empty;
 
-    public class CredentialsRole
-    {
-        public string id { get; set; } = string.Empty;
+		public string Name { get; set; } = string.Empty;
 
-        public string name { get; set; } = string.Empty;
+		public int ApplicationId { get; set; }
 
-        public int applicationId { get; set; }
+		public string Category { get; set; } = string.Empty;
+	}
 
-        public string category { get; set; } = string.Empty;
-    }
+	public class CredentialsClub
+	{
+		public string Quid { get; set; } = string.Empty;
 
-    public class CredentialsClub
-    {
-        public string guid { get; set; } = string.Empty;
+		public string Name { get; set; } = string.Empty;
 
-        public string name { get; set; } = string.Empty;
+		public string AfNumber { get; set; } = string.Empty;
 
-        public string afNumber { get; set; } = string.Empty;
+		public string BillingNumber { get; set; } = string.Empty;
 
-        public string billingNumber { get; set; } = string.Empty;
+		public int FranchiseDbId { get; set; }
+	}
+	public class AfGetStaffResponse
+	{
+		public string Id { get; set; } = string.Empty; // auto-incremented I think, e.g. 9381355
 
-        public int franchiseDbId { get; set; }
-    }
-    public class AFGetStaffResponse
-    {
-        public string id { get; set; } = string.Empty; // auto-incremented I think, e.g. 9381355
+		public string FirstName { get; set; } = string.Empty;
 
-        public string firstName { get; set; } = string.Empty;
+		public string LastName { get; set; } = string.Empty;
 
-        public string lastName { get; set; } = string.Empty;
+		public string Type { get; set; } = string.Empty; // "Owner", "Staff", "Manager", "Trainer", "Regional Manager"
 
-        public string type { get; set; } = string.Empty; // "Owner", "Staff", "Manager", "Trainer", "Regional Manager"
+		public string Language { get; set; } = string.Empty; // "en-US", 
 
-        public string language { get; set; } = string.Empty;// "en-US", 
+		public string Email { get; set; } = string.Empty;
 
-        public string email { get; set; } = string.Empty;
+		public string Username { get; set; } = string.Empty; // Seems to match email
 
-        public string username { get; set; } = string.Empty;// seems to match email
+		public bool IsDeleted { get; set; }
 
-        public bool isDeleted { get; set; }
+		public DateTime? Updated { get; set; } // Not sure if how to use this yet, but seems like it might be helpful
 
-        public DateTime? updated { get; set; } // Not sure if how to use this yet, but seems like it might be helpful
+		public List<AfClub> Clubs { get; set; } = new List<AfClub>();
 
-        public List<AFClub> clubs { get; set; } = new List<AFClub>();
+		public AfClub HomeClub { get; set; } = new AfClub();
+	}
+	public class AfStaff
+	{
+		public string Id { get; set; } = string.Empty; // auto-incremented I think, e.g. 9381355
 
-        public AFClub homeClub { get; set; } = new AFClub();
-    }
-    public class AFStaff
-    {
-        public string id { get; set; } = string.Empty; // auto-incremented I think, e.g. 9381355
+		public string FirstName { get; set; } = string.Empty;
 
-        public string firstName { get; set; } = string.Empty;
+		public string LastName { get; set; } = string.Empty;
 
-        public string lastName { get; set; } = string.Empty;
+		public string Type { get; set; } = string.Empty; // "Owner", "Staff", "Manager", "Trainer", "Regional Manager"
 
-        public string type { get; set; } = string.Empty; // "Owner", "Staff", "Manager", "Trainer", "Regional Manager"
+		public string Language { get; set; } = string.Empty; // "en-US", 
 
-        public string language { get; set; } = string.Empty; // "en-US", 
+		public string Email { get; set; } = string.Empty;
 
-        public string email { get; set; } = string.Empty;
+		public string Username { get; set; } = string.Empty; // seems to match email
 
-        public string username { get; set; } = string.Empty; // seems to match email
+		public bool IsDeleted { get; set; }
 
-        public bool isDeleted { get; set; }
+		public DateTime? Updated { get; set; } // Not sure if how to use this yet, but seems like it might be helpful
+	}
 
-        public DateTime? updated { get; set; } // Not sure if how to use this yet, but seems like it might be helpful
-    }
-    public class AFToken
-    {
-        public string access_token { get; set; } = string.Empty;
+	public class AfToken
+	{
+		public string AccessToken { get; set; } = string.Empty;
 
-        public string token_type { get; set; } = string.Empty;
+		public string TokenType { get; set; } = string.Empty;
 
-        public int expires_in { get; set; }
+		public int ExpiresIn { get; set; }
 
-        public string refresh_token { get; set; } = string.Empty;
-    }
+		public string RefreshToken { get; set; } = string.Empty;
+	}
 
-    public class Notification
-    {
-        public NotificationChannel Channel { get; set; } // the type of entity that changed
+	public class Notification
+	{
+		public NotificationChannel Channel { get; set; } // the type of entity that changed
 
-        public NotificationAction Action { get; set; } // the CRUD action that was performed
+		public NotificationAction Action { get; set; } // the CRUD action that was performed
 
-        public string TimestampUtc { get; set; } = string.Empty; // the time the action was performed
+		public string TimestampUtc { get; set; } = string.Empty; // the time the action was performed
 
-        public string JsonData { get; set; } = string.Empty; // json formatted string
+		private string JsonData { get; set; } = string.Empty; // json formatted string
 
-        public T GetData<T>()
-        {
-            return JsonConvert.DeserializeObject<T>(JsonData);
-        }
-    }
+		public T GetData<T>()
+		{
+			return JsonConvert.DeserializeObject<T>(JsonData);
+		}
+	}
 
-    public enum NotificationChannel { Club, Staff }
+	public enum NotificationChannel
+	{
+		Club, 
+		Staff
+	}
 
-    public enum NotificationAction { Update, Delete, Create }
+	public enum NotificationAction
+	{
+		Update, 
+		Delete, 
+		Create
+	}
 }

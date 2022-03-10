@@ -1,13 +1,12 @@
 ﻿using OrderCloud.SDK;
 using Headstart.Common;
-using Headstart.Models;
 using OrderCloud.Catalyst;
 using Headstart.API.Commands;
 using System.Threading.Tasks;
 using Headstart.Common.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using Headstart.Models.Headstart;
+using Headstart.Common.Models.Headstart;
 using Headstart.Common.Repositories.Models;
 
 namespace Headstart.API.Controllers
@@ -18,7 +17,7 @@ namespace Headstart.API.Controllers
 	[Route("reports")]
 	public class ReportController : CatalystController
 	{
-		private readonly IHSReportCommand _reportDataCommand;
+		private readonly IHsReportCommand _reportDataCommand;
 		private readonly DownloadReportCommand _downloadReportCommand;
 		private readonly AppSettings _settings;
 
@@ -28,7 +27,7 @@ namespace Headstart.API.Controllers
 		/// <param name="reportDataCommand"></param>
 		/// <param name="settings"></param>
 		/// <param name="downloadReportCommand"></param>
-		public ReportController(IHSReportCommand reportDataCommand, AppSettings settings, DownloadReportCommand downloadReportCommand)
+		public ReportController(IHsReportCommand reportDataCommand, AppSettings settings, DownloadReportCommand downloadReportCommand)
 		{
 			_reportDataCommand = reportDataCommand; 
 			_settings = settings;
@@ -161,7 +160,7 @@ namespace Headstart.API.Controllers
 		/// <param name="args"></param>
 		/// <returns>The response from the post action for the download of the BuyerLineItemDetail request</returns>
 		[HttpGet, Route("buyer/lineitemdetail/{viewContext}/{userId}/{locationId}"), OrderCloudUserAuth(ApiRole.MeAdmin)]
-		public async Task<string> DownloadBuyerLineItemDetail(BuyerReportViewContext viewContext, string userId, string locationId, ListArgs<HSOrder> args)
+		public async Task<string> DownloadBuyerLineItemDetail(BuyerReportViewContext viewContext, string userId, string locationId, ListArgs<HsOrder> args)
 		{
 			var reportData = await _reportDataCommand.BuyerLineItemDetail(args, viewContext, userId, locationId, UserContext);
 			var reportHeaders = ReportHeaderPaths.BuyerLineDetailReport;
@@ -169,13 +168,13 @@ namespace Headstart.API.Controllers
 		}
 
 		/// <summary>
-		/// Gets the list of HSLineItemOrder objects (GET method)
+		/// Gets the list of HsLineItemOrder objects (GET method)
 		/// </summary>
 		/// <param name="templateId"></param>
 		/// <param name="args"></param>
-		/// <returns>The list of HSLineItemOrder objects</returns>
+		/// <returns>The list of HsLineItemOrder objects</returns>
 		[HttpGet, Route("LineItemDetail/preview/{templateId}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
-		public async Task<List<HSLineItemOrder>> LineItemDetail(string templateId, ListArgs<ReportAdHocFilters> args)
+		public async Task<List<HsLineItemOrder>> LineItemDetail(string templateId, ListArgs<ReportAdHocFilters> args)
 		{
 			return await _reportDataCommand.LineItemDetail(templateId, args, UserContext);
 		}
@@ -315,11 +314,11 @@ namespace Headstart.API.Controllers
 		}
 
 		/// <summary>
-		/// Gets the list of HSBuyer objects (GET method)
+		/// Gets the list of HsBuyer objects (GET method)
 		/// </summary>
-		/// <returns>The list of HSBuyer objects</returns>
+		/// <returns>The list of HsBuyer objects</returns>
 		[HttpGet, Route("filters/buyers"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
-		public async Task<List<HSBuyer>> GetBuyerFilterValues()
+		public async Task<List<HsBuyer>> GetBuyerFilterValues()
 		{
 			return await _reportDataCommand.GetBuyerFilterValues(UserContext);
 		}

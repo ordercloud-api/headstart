@@ -1,18 +1,18 @@
 using OrderCloud.SDK;
 using Headstart.Common;
-using Headstart.Models;
 using OrderCloud.Catalyst;
 using System.Threading.Tasks;
+using Headstart.API.Commands;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using Headstart.API.Commands.Crud;
+using Headstart.Common.Models.Headstart;
 
 namespace Headstart.API.Controllers
 {
 	[Route("products")]
 	public class ProductController : CatalystController
 	{
-		private readonly IHSProductCommand _command;
+		private readonly IHsProductCommand _command;
 		private readonly AppSettings _settings;
 
 		/// <summary>
@@ -20,7 +20,7 @@ namespace Headstart.API.Controllers
 		/// </summary>
 		/// <param name="settings"></param>
 		/// <param name="command"></param>
-		public ProductController(AppSettings settings, IHSProductCommand command)
+		public ProductController(AppSettings settings, IHsProductCommand command)
 		{
 			_settings = settings;
 			_command = command;
@@ -32,18 +32,18 @@ namespace Headstart.API.Controllers
 		/// <param name="id"></param>
 		/// <returns>The Super Product object</returns>
 		[HttpGet, Route("{id}"), OrderCloudUserAuth(ApiRole.ProductAdmin, ApiRole.ProductReader)]
-		public async Task<SuperHSProduct> Get(string id)
+		public async Task<SuperHsProduct> Get(string id)
 		{
 			return await _command.Get(id, UserContext.AccessToken);
 		}
 
 		/// <summary>
-		/// Gets the ListPage of SuperHSProduct objects (GET method)
+		/// Gets the ListPage of SuperHsProduct objects (GET method)
 		/// </summary>
 		/// <param name="args"></param>
-		/// <returns>The ListPage of SuperHSProduct objects</returns>
+		/// <returns>The ListPage of SuperHsProduct objects</returns>
 		[HttpGet, OrderCloudUserAuth(ApiRole.ProductAdmin, ApiRole.ProductReader)]
-		public async Task<ListPage<SuperHSProduct>> List(ListArgs<HSProduct> args)
+		public async Task<ListPage<SuperHsProduct>> List(ListArgs<HsProduct> args)
 		{
 			return await _command.List(args, UserContext.AccessToken);
 		}
@@ -54,7 +54,7 @@ namespace Headstart.API.Controllers
 		/// <param name="obj"></param>
 		/// <returns>The newly created Super Product object</returns>
 		[HttpPost, OrderCloudUserAuth(ApiRole.ProductAdmin)]
-		public async Task<SuperHSProduct> Post([FromBody] SuperHSProduct obj)
+		public async Task<SuperHsProduct> Post([FromBody] SuperHsProduct obj)
 		{
 			return await _command.Post(obj, UserContext);
 		}
@@ -66,7 +66,7 @@ namespace Headstart.API.Controllers
 		/// <param name="id"></param>
 		/// <returns></returns>
 		[HttpPut, Route("{id}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
-		public async Task<SuperHSProduct> Put([FromBody] SuperHSProduct obj, string id)
+		public async Task<SuperHsProduct> Put([FromBody] SuperHsProduct obj, string id)
 		{
 			return await _command.Put(id, obj, UserContext.AccessToken);
 		}
@@ -89,7 +89,7 @@ namespace Headstart.API.Controllers
 		/// <param name="buyerId"></param>
 		/// <returns>The Product pricing override object</returns>
 		[HttpGet, Route("{id}/pricingoverride/buyer/{buyerId}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
-		public async Task<HSPriceSchedule> GetPricingOverride(string id, string buyerId)
+		public async Task<HsPriceSchedule> GetPricingOverride(string id, string buyerId)
 		{
 			return await _command.GetPricingOverride(id, buyerId, UserContext.AccessToken);
 		}
@@ -102,7 +102,7 @@ namespace Headstart.API.Controllers
 		/// <param name="priceSchedule"></param>
 		/// <returns>The newly created Product pricing override object</returns>
 		[HttpPost, Route("{id}/pricingoverride/buyer/{buyerId}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
-		public async Task<HSPriceSchedule> CreatePricingOverride(string id, string buyerId, [FromBody] HSPriceSchedule priceSchedule)
+		public async Task<HsPriceSchedule> CreatePricingOverride(string id, string buyerId, [FromBody] HsPriceSchedule priceSchedule)
 		{
 			return await _command.CreatePricingOverride(id, buyerId, priceSchedule, UserContext.AccessToken);
 		}
@@ -115,7 +115,7 @@ namespace Headstart.API.Controllers
 		/// <param name="priceSchedule"></param>
 		/// <returns>The newly updated Product pricing override object</returns>
 		[HttpPut, Route("{id}/pricingoverride/buyer/{buyerId}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
-		public async Task<HSPriceSchedule> UpdatePricingOverride(string id, string buyerId, [FromBody] HSPriceSchedule priceSchedule)
+		public async Task<HsPriceSchedule> UpdatePricingOverride(string id, string buyerId, [FromBody] HsPriceSchedule priceSchedule)
 		{
 			return await _command.UpdatePricingOverride(id, buyerId, priceSchedule, UserContext.AccessToken);
 		}

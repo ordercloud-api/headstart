@@ -1,7 +1,7 @@
 ﻿namespace Headstart.Common.Models
 {
-    public class SSOState
-    {
-        public string Path { get; set; } = string.Empty;
-    }
+	public class SsOState
+	{
+		public string Path { get; set; } = string.Empty;
+	}
 }

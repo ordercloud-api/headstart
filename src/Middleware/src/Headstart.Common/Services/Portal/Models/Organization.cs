@@ -1,13 +1,13 @@
-﻿namespace Headstart.Common.Services.Portal.Models
+﻿using Headstart.Common.Models.Base;
+
+namespace Headstart.Common.Services.Portal.Models
 {
-    public class Marketplace
-    {
-        public string Id { get; set; } = string.Empty;
+	public class Marketplace : HsBaseObject
+	{
+		public string Name { get; set; } = string.Empty;
 
-        public string Name { get; set; } = string.Empty;
+		public PortalUser Owner { get; set; } = new PortalUser();
 
-        public PortalUser Owner { get; set; } = new PortalUser();
-
-        public string Environment { get; set; } = string.Empty;
-    }
+		public string Environment { get; set; } = string.Empty;
+	}
 }

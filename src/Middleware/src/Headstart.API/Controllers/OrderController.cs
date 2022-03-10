@@ -1,15 +1,14 @@
 using OrderCloud.SDK;
-using Headstart.Models;
 using OrderCloud.Catalyst;
 using System.Threading.Tasks;
 using Headstart.API.Commands;
 using Headstart.Common.Models;
 using Microsoft.AspNetCore.Mvc;
-using Headstart.Models.Headstart;
 using System.Collections.Generic;
 using ordercloud.integrations.library;
+using Headstart.Common.Models.Headstart;
+using Headstart.Common.Repositories.Models;
 using ordercloud.integrations.cardconnect;
-using Headstart.Common.Services.ShippingIntegration.Models;
 
 namespace Headstart.API.Controllers
 {
@@ -44,7 +43,7 @@ namespace Headstart.API.Controllers
 		/// <param name="payment"></param>
 		/// <returns>The response from the order submission</returns>
 		[HttpPost, Route("{direction}/{orderId}/submit"), OrderCloudUserAuth(ApiRole.Shopper)]
-		public async Task<HSOrder> Submit(OrderDirection direction, string orderId, [FromBody] OrderCloudIntegrationsCreditCardPayment payment)
+		public async Task<HsOrder> Submit(OrderDirection direction, string orderId, [FromBody] OrderCloudIntegrationsCreditCardPayment payment)
 		{
 			return await _orderSubmitCommand.SubmitOrderAsync(orderId, direction, payment, UserContext.AccessToken);
 		}
@@ -67,7 +66,7 @@ namespace Headstart.API.Controllers
 		/// <param name="listArgs"></param>
 		/// <returns>The ListPage of orders for a specific location as a buyer, ensureing user has access to location orders</returns>
 		[HttpGet, Route("location/{locationId}"), OrderCloudUserAuth(ApiRole.Shopper)]
-		public async Task<ListPage<HSOrder>> ListLocationOrders(string locationId, ListArgs<HSOrder> listArgs)
+		public async Task<ListPage<HsOrder>> ListLocationOrders(string locationId, ListArgs<HsOrder> listArgs)
 		{
 			return await _command.ListOrdersForLocation(locationId, listArgs, UserContext);
 		}
@@ -89,9 +88,9 @@ namespace Headstart.API.Controllers
 		/// <param name="orderId"></param>
 		/// <returns>The order shipments as buyer, ensuring user has access to location orders or created the order themselves</returns>
 		[HttpGet, Route("{orderID}/shipmentswithitems"), OrderCloudUserAuth(ApiRole.Shopper)]
-		public async Task<List<HSShipmentWithItems>> ListShipmentsWithItems(string orderId)
+		public async Task<List<HsShipmentWithItems>> ListShipmentsWithItems(string orderId)
 		{
-			return await _command.ListHSShipmentWithItems(orderId, UserContext);
+			return await _command.ListHsShipmentWithItems(orderId, UserContext);
 		}
 
 		/// <summary>
@@ -110,9 +109,9 @@ namespace Headstart.API.Controllers
 		/// </summary>
 		/// <param name="orderId"></param>
 		/// <param name="li"></param>
-		/// <returns>The HSLineItem response from the UpsertLineItem action</returns>
+		/// <returns>The HsLineItem response from the UpsertLineItem action</returns>
 		[HttpPut, Route("{orderId}/lineitems"), OrderCloudUserAuth(ApiRole.Shopper)]
-		public async Task<HSLineItem> UpsertLineItem(string orderId, [FromBody] HSLineItem li)
+		public async Task<HsLineItem> UpsertLineItem(string orderId, [FromBody] HsLineItem li)
 		{
 			return await _lineItemCommand.UpsertLineItem(orderId, li, UserContext);
 		}
@@ -136,7 +135,7 @@ namespace Headstart.API.Controllers
 		/// <param name="promoCode"></param>
 		/// <returns>The response from the AddPromotion action</returns>
 		[HttpPost, Route("{orderId}/promotions/{promoCode}")]
-		public async Task<HSOrder> AddPromotion(string orderId, string promoCode)
+		public async Task<HsOrder> AddPromotion(string orderId, string promoCode)
 		{
 			return await _command.AddPromotion(orderId, promoCode, UserContext);
 		}
@@ -149,7 +148,7 @@ namespace Headstart.API.Controllers
 		/// <param name="lineItemStatusChanges"></param>
 		/// <returns>The response from the SellerSupplierUpdateLineItemStatusesWithNotification action</returns>
 		[HttpPost, Route("{orderID}/{orderDirection}/lineitem/status"), OrderCloudUserAuth(ApiRole.OrderAdmin)]
-		public async Task<List<HSLineItem>> SellerSupplierUpdateLineItemStatusesWithNotification(string orderId, OrderDirection orderDirection, [FromBody] LineItemStatusChanges lineItemStatusChanges)
+		public async Task<List<HsLineItem>> SellerSupplierUpdateLineItemStatusesWithNotification(string orderId, OrderDirection orderDirection, [FromBody] LineItemStatusChanges lineItemStatusChanges)
 		{
 			return await _lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(orderDirection, orderId, lineItemStatusChanges, UserContext);
 		}
@@ -161,7 +160,7 @@ namespace Headstart.API.Controllers
 		/// <param name="lineItemStatusChanges"></param>
 		/// <returns>The response from the BuyerUpdateLineItemStatusesWithNotification action</returns>
 		[HttpPost, Route("{orderId}/lineitem/status"), OrderCloudUserAuth(ApiRole.Shopper)]
-		public async Task<List<HSLineItem>> BuyerUpdateLineItemStatusesWithNotification(string orderId, [FromBody] LineItemStatusChanges lineItemStatusChanges)
+		public async Task<List<HsLineItem>> BuyerUpdateLineItemStatusesWithNotification(string orderId, [FromBody] LineItemStatusChanges lineItemStatusChanges)
 		{
 			return await _lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Outgoing, orderId, lineItemStatusChanges, UserContext);
 		}
@@ -170,9 +169,9 @@ namespace Headstart.API.Controllers
 		/// Apply Automatic Promtions to order and remove promotions no longer valid on order (POST method)
 		/// </summary>
 		/// <param name="orderId"></param>
-		/// <returns>The HSOrder response from the ApplyAutomaticPromotions action</returns>
+		/// <returns>The HsOrder response from the ApplyAutomaticPromotions action</returns>
 		[HttpPost, Route("{orderId}/applypromotions")]
-		public async Task<HSOrder> ApplyAutomaticPromotions(string orderId)
+		public async Task<HsOrder> ApplyAutomaticPromotions(string orderId)
 		{
 			return await _command.ApplyAutomaticPromotions(orderId);
 		}
@@ -182,9 +181,9 @@ namespace Headstart.API.Controllers
 		/// </summary>
 		/// <param name="orderId"></param>
 		/// <param name="lineItemId"></param>
-		/// <returns>The HSLineItem response from the SendQuoteRequestToSupplier action</returns>
+		/// <returns>The HsLineItem response from the SendQuoteRequestToSupplier action</returns>
 		[HttpPost, Route("submitquoterequest/{orderId}/{lineItemId}"), OrderCloudUserAuth(ApiRole.Shopper)]
-		public async Task<HSLineItem> SendQuoteRequestToSupplier(string orderId, string lineItemId)
+		public async Task<HsLineItem> SendQuoteRequestToSupplier(string orderId, string lineItemId)
 		{
 			return await _command.SendQuoteRequestToSupplier(orderId, lineItemId);
 		}
@@ -195,9 +194,9 @@ namespace Headstart.API.Controllers
 		/// <param name="orderId"></param>
 		/// <param name="lineItemId"></param>
 		/// <param name="quotePrice"></param>
-		/// <returns>The HSLineItem response from the OverrideQuotePrice action</returns>
+		/// <returns>The HsLineItem response from the OverrideQuotePrice action</returns>
 		[HttpPost, Route("overridequote/{orderId}/{lineItemId}"), OrderCloudUserAuth(ApiRole.OrderAdmin)]
-		public async Task<HSLineItem> OverrideQuotePrice(string orderId, string lineItemId, [FromBody] decimal quotePrice)
+		public async Task<HsLineItem> OverrideQuotePrice(string orderId, string lineItemId, [FromBody] decimal quotePrice)
 		{
 			return await _command.OverrideQuotePrice(orderId, lineItemId, quotePrice);
 		}
@@ -208,7 +207,7 @@ namespace Headstart.API.Controllers
 		/// <param name="quoteStatus"></param>
 		/// <returns>The ListPage of quote orders, which are in an unsubmitted status</returns>
 		[HttpGet, Route("listquoteorders/{quoteStatus}"), OrderCloudUserAuth(ApiRole.OrderReader, ApiRole.OrderAdmin)]
-		public async Task<ListPage<HSOrder>> ListQuoteOrders(QuoteStatus quoteStatus)
+		public async Task<ListPage<HsOrder>> ListQuoteOrders(QuoteStatus quoteStatus)
 		{
 			var me = await _oc.Me.GetAsync(accessToken: UserContext.AccessToken);
 			return await _command.ListQuoteOrders(me, quoteStatus);
@@ -218,9 +217,9 @@ namespace Headstart.API.Controllers
 		/// Gets the single quote order
 		/// </summary>
 		/// <param name="orderId"></param>
-		/// <returns>The HSOrder response from the GetQuoteOrder action</returns>
+		/// <returns>The HsOrder response from the GetQuoteOrder action</returns>
 		[HttpGet, Route("getquoteorder/{orderId}"), OrderCloudUserAuth(ApiRole.OrderReader, ApiRole.OrderAdmin)]
-		public async Task<HSOrder> GetQuoteOrder(string orderId)
+		public async Task<HsOrder> GetQuoteOrder(string orderId)
 		{
 			var me = await _oc.Me.GetAsync(accessToken: UserContext.AccessToken);
 			return await _command.GetQuoteOrder(me, orderId);

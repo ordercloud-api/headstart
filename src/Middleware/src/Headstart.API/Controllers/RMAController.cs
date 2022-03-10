@@ -2,9 +2,9 @@
 using OrderCloud.Catalyst;
 using Headstart.API.Commands;
 using System.Threading.Tasks;
-using Headstart.Common.Models;
 using Microsoft.AspNetCore.Mvc;
 using ordercloud.integrations.library;
+using Headstart.Common.Repositories.Models;
 
 namespace Headstart.API.Controllers
 {
@@ -69,15 +69,15 @@ namespace Headstart.API.Controllers
 		/// <summary>
 		/// Gets the CosmosListPage of RMAsByOrderID objects (GET method)
 		/// </summary>
-		/// <param name="orderID"></param>
+		/// <param name="orderId"></param>
 		/// <param name="commerceRole"></param>
 		/// <param name="me"></param>
 		/// <param name="accessAllRMAsOnOrder"></param>
 		/// <returns>The CosmosListPage of RMAsByOrderID objects</returns>
 		[HttpGet, Route("{orderID}"), OrderCloudUserAuth(HSOrderAdmin, HSOrderReader, HSShipmentAdmin)]
-		public async Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, CommerceRole commerceRole, MeUser me, bool accessAllRMAsOnOrder = false)
+		public async Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderId, CommerceRole commerceRole, MeUser me, bool accessAllRMAsOnOrder = false)
 		{
-			return await _rmaCommand.ListRMAsByOrderID(orderID, commerceRole, me, accessAllRMAsOnOrder);
+			return await _rmaCommand.ListRMAsByOrderId(orderId, commerceRole, me, accessAllRMAsOnOrder);
 		}
 
 		/// <summary>

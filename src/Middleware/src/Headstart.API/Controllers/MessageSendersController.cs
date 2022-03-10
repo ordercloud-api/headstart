@@ -1,8 +1,8 @@
 using OrderCloud.Catalyst;
-using Headstart.Models.Misc;
 using Headstart.API.Commands;
 using Microsoft.AspNetCore.Mvc;
 using Headstart.Common.Services;
+using Headstart.Common.Models.Misc;
 
 namespace Headstart.API.Controllers
 {

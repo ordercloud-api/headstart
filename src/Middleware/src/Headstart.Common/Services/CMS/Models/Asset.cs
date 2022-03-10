@@ -1,57 +1,73 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
+using Headstart.Common.Models.Base;
 
 namespace Headstart.Common.Services.CMS.Models
 {
-    public enum AssetType { Image, Text, Audio, Video, Presentation, SpreadSheet, PDF, Compressed, Code, JSON, Markup, Unknown }
+	public enum AssetType
+	{
+		Image, 
+		Text, 
+		Audio, 
+		Video, 
+		Presentation, 
+		SpreadSheet, 
+		PDF, 
+		Compressed, 
+		Code, 
+		JSON, 
+		Markup, 
+		Unknown
+	}
 
-    public class Asset
-    {
-        public string ID { get; set; } = string.Empty;
+	public class Asset : HsBaseObject
+	{
+		public string Title { get; set; } = string.Empty;
 
-        public string Title { get; set; } = string.Empty;
+		public bool Active { get; set; }
 
-        public bool Active { get; set; }
+		public string Url { get; set; } = string.Empty; // Generated if not set.
 
-        public string Url { get; set; } = string.Empty; // Generated if not set.
+		public AssetType Type { get; set; }
 
-        public AssetType Type { get; set; }
+		public List<string> Tags { get; set; } = new List<string>();
 
-        public List<string> Tags { get; set; } = new List<string>();
+		public string FileName { get; set; } = string.Empty; // Defaults to the file name in the upload. Or should be required?
 
-        public string FileName { get; set; } = string.Empty; // Defaults to the file name in the upload. Or should be required?
+		public AssetMetadata Metadata { get; set; } = new AssetMetadata();
 
-        public AssetMetadata Metadata { get; set; } = new AssetMetadata();
+		public History History { get; set; } = new History();
+	}
 
-        public History History { get; set; } = new History();
-    }
+	public class AssetMetadata
+	{
+		public bool IsUrlOverridden { get; set; }
 
-    public class AssetMetadata
-    {
-        public bool IsUrlOverridden { get; set; }
+		public string ContentType { get; set; } = string.Empty;
 
-        public string ContentType { get; set; } = string.Empty;
-        public int? SizeBytes { get; set; }
-        public int? ImageHeight { get; set; } = null; // null if asset not image
-        public int? ImageWidth { get; set; } = null; // null if asset not image
-        public decimal? ImageVerticalResolution { get; set; } // pixels per inch
-        public decimal? ImageHorizontalResolution { get; set; } // pixels per inch
-    }
+		public int? SizeBytes { get; set; }
 
-    public class AssetUpload
-    {
-        public string ID { get; set; } = string.Empty;
+		public int? ImageHeight { get; set; } = null; // Null if asset not image
 
-        public string Title { get; set; } = string.Empty;
+		public int? ImageWidth { get; set; } = null; // Null if asset not image
 
-        public bool Active { get; set; }
+		public decimal? ImageVerticalResolution { get; set; } // Pixels per inch
 
-        public IFormFile File { get; set; }
+		public decimal? ImageHorizontalResolution { get; set; } // Pixels per inch
+	}
 
-        public string Url { get; set; } = string.Empty;
+	public class AssetUpload : HsBaseObject
+	{
+		public string Title { get; set; } = string.Empty;
 
-        public string Tags { get; set; } = string.Empty;
+		public bool Active { get; set; }
 
-        public string Filename { get; set; } = string.Empty;
-    }
+		public IFormFile File { get; set; }
+
+		public string Url { get; set; } = string.Empty;
+
+		public string Tags { get; set; } = string.Empty;
+
+		public string Filename { get; set; } = string.Empty;
+	}
 }

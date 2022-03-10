@@ -22,12 +22,12 @@ using Headstart.Common.Services;
 using System.Collections.Generic;
 using Newtonsoft.Json.Converters;
 using Polly.Contrib.WaitAndRetry;
-using Headstart.API.Commands.Crud;
 using Headstart.API.Commands.Zoho;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Headstart.Common.Repositories;
 using Headstart.Common.Services.CMS;
+using Headstart.Common.Services.Portal;
 using ordercloud.integrations.taxjar;
 using ordercloud.integrations.vertex;
 using Headstart.Common.Services.Zoho;
@@ -38,6 +38,7 @@ using ordercloud.integrations.cardconnect;
 using Microsoft.WindowsAzure.Storage.Blob;
 using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.smartystreets;
+using Headstart.API.Commands.EnvironmentSeed;
 using ordercloud.integrations.library.helpers;
 using Microsoft.Extensions.DependencyInjection;
 using ordercloud.integrations.library.intefaces;
@@ -110,10 +111,10 @@ namespace Headstart.API
 			var avalaraConfig = new AvalaraConfig()
 			{
 				BaseApiUrl = _settings.AvalaraSettings.BaseApiUrl,
-				AccountID = _settings.AvalaraSettings.AccountID,
+				AccountID = _settings.AvalaraSettings.AccountId,
 				LicenseKey = _settings.AvalaraSettings.LicenseKey,
 				CompanyCode = _settings.AvalaraSettings.CompanyCode,
-				CompanyID = _settings.AvalaraSettings.CompanyID
+				CompanyID = _settings.AvalaraSettings.CompanyId
 			};
 
 			var currencyConfig = new BlobServiceConfig()
@@ -134,7 +135,7 @@ namespace Headstart.API
 			{
 				ApiUrl = _settings.OrderCloudSettings.ApiUrl,
 				AuthUrl = _settings.OrderCloudSettings.ApiUrl,
-				ClientId = _settings.OrderCloudSettings.MiddlewareClientID,
+				ClientId = _settings.OrderCloudSettings.MiddlewareClientId,
 				ClientSecret = _settings.OrderCloudSettings.MiddlewareClientSecret,
 				Roles = new[] {ApiRole.FullAccess}
 			});
@@ -183,13 +184,13 @@ namespace Headstart.API
 				.Inject<IPaymentCommand>()
 				.Inject<IOrderSubmitCommand>()
 				.Inject<IEnvironmentSeedCommand>()
-				.Inject<IHSProductCommand>()
+				.Inject<IHsProductCommand>()
 				.Inject<ILineItemCommand>()
 				.Inject<IMeProductCommand>()
 				.Inject<IDiscountDistributionService>()
-				.Inject<IHSCatalogCommand>()
+				.Inject<IHsCatalogCommand>()
 				.Inject<ISendgridService>()
-				.Inject<IHSSupplierCommand>()
+				.Inject<IHsSupplierCommand>()
 				.Inject<ICreditCardCommand>()
 				.Inject<ISupportAlertService>()
 				.Inject<ISupplierApiClientHelper>()
@@ -201,11 +202,11 @@ namespace Headstart.API
 				.AddSingleton<IZohoCommand>(z => new ZohoCommand(new ZohoClient(
 						new ZohoClientConfig()
 						{
-							ApiUrl = $@"https://books.zoho.com/api/v3",
+							ApiUrl = @"https://books.zoho.com/api/v3",
 							AccessToken = _settings.ZohoSettings.AccessToken,
 							ClientId = _settings.ZohoSettings.ClientId,
 							ClientSecret = _settings.ZohoSettings.ClientSecret,
-							OrganizationID = _settings.ZohoSettings.OrgID
+							OrganizationId = _settings.ZohoSettings.OrgId
 						}, flurlClientFactory),
 					orderCloudClient))
 				.AddSingleton<IOrderCloudIntegrationsExchangeRatesClient, OrderCloudIntegrationsExchangeRatesClient>()
@@ -231,7 +232,7 @@ namespace Headstart.API
 						_ => avalaraCommand // Avalara is default
 					};
 				})
-				.AddSingleton<IEasyPostShippingService>(x => new EasyPostShippingService(new EasyPostConfig() {APIKey = _settings.EasyPostSettings.APIKey}))
+				.AddSingleton<IEasyPostShippingService>(x => new EasyPostShippingService(new EasyPostConfig() {APIKey = _settings.EasyPostSettings.ApiKey}))
 				.AddSingleton<ISmartyStreetsService>(x => new SmartyStreetsService(_settings.SmartyStreetSettings, smartyStreetsUsClient))
 				.AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(_settings.CardConnectSettings, _settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))
 				.AddSingleton<IOrderCloudClient>(provider => orderCloudClient)

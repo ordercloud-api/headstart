@@ -1,18 +1,18 @@
 ﻿using OrderCloud.SDK;
-using Headstart.Models;
 using OrderCloud.Catalyst;
-using Headstart.Models.Misc;
 using Headstart.API.Commands;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using Headstart.Common.Models.Misc;
+using Headstart.Common.Models.Headstart;
 
 namespace Headstart.API.Controllers
 {
 	[Route("buyerlocations")]
 	public class BuyerLocationController : CatalystController
 	{
-		private readonly IHSBuyerLocationCommand _buyerLocationCommand;
+		private readonly IHsBuyerLocationCommand _buyerLocationCommand;
 		private readonly IOrderCloudClient _oc;
 		private readonly ILocationPermissionCommand _locationPermissionCommand;
 
@@ -22,7 +22,7 @@ namespace Headstart.API.Controllers
 		/// <param name="locationPermissionCommand"></param>
 		/// <param name="buyerLocationCommand"></param>
 		/// <param name="oc"></param>
-		public BuyerLocationController(ILocationPermissionCommand locationPermissionCommand, IHSBuyerLocationCommand buyerLocationCommand, IOrderCloudClient oc) 
+		public BuyerLocationController(ILocationPermissionCommand locationPermissionCommand, IHsBuyerLocationCommand buyerLocationCommand, IOrderCloudClient oc) 
 		{
 			_buyerLocationCommand = buyerLocationCommand;
 			_locationPermissionCommand = locationPermissionCommand;
@@ -34,9 +34,9 @@ namespace Headstart.API.Controllers
 		/// </summary>
 		/// <param name="buyerId"></param>
 		/// <param name="buyerLocationId"></param>
-		/// <returns>The HSBuyerLocation object by buyerId and buyerLocationId</returns>
+		/// <returns>The HsBuyerLocation object by buyerId and buyerLocationId</returns>
 		[HttpGet, Route("{buyerId}/{buyerLocationId}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
-		public async Task<HSBuyerLocation> Get(string buyerId, string buyerLocationId)
+		public async Task<HsBuyerLocation> Get(string buyerId, string buyerLocationId)
 		{
 			return await _buyerLocationCommand.Get(buyerId, buyerLocationId);
 		}
@@ -46,9 +46,9 @@ namespace Headstart.API.Controllers
 		/// </summary>
 		/// <param name="buyerId"></param>
 		/// <param name="buyerLocation"></param>
-		/// <returns>The newly created HSBuyerLocation object</returns>
+		/// <returns>The newly created HsBuyerLocation object</returns>
 		[HttpPost, Route("{buyerId}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
-		public async Task<HSBuyerLocation> Create(string buyerId, [FromBody] HSBuyerLocation buyerLocation)
+		public async Task<HsBuyerLocation> Create(string buyerId, [FromBody] HsBuyerLocation buyerLocation)
 		{
 			return await _buyerLocationCommand.Create(buyerId, buyerLocation);
 		}
@@ -60,7 +60,7 @@ namespace Headstart.API.Controllers
 		/// <param name="buyerLocationId"></param>
 		/// <param name="permissionGroupId"></param>
 		/// <returns></returns>
-		[HttpPost, Route("{buyerId}/{buyerLocationId}/permissions/{permissionGroupID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
+		[HttpPost, Route("{buyerId}/{buyerLocationId}/permissions/{permissionGroupId}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
 		public async Task CreatePermissionGroup(string buyerId, string buyerLocationId, string permissionGroupId)
 		{
 			await _buyerLocationCommand.CreateSinglePermissionGroup(buyerLocationId, permissionGroupId);
@@ -72,9 +72,9 @@ namespace Headstart.API.Controllers
 		/// <param name="buyerId"></param>
 		/// <param name="buyerLocationId"></param>
 		/// <param name="buyerLocation"></param>
-		/// <returns>The newly updated HSBuyerLocation object</returns>
+		/// <returns>The newly updated HsBuyerLocation object</returns>
 		[HttpPut, Route("{buyerId}/{buyerLocationId}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
-		public async Task<HSBuyerLocation> Save(string buyerId, string buyerLocationId, [FromBody] HSBuyerLocation buyerLocation)
+		public async Task<HsBuyerLocation> Save(string buyerId, string buyerLocationId, [FromBody] HsBuyerLocation buyerLocation)
 		{
 			return await _buyerLocationCommand.Save(buyerId, buyerLocationId, buyerLocation);
 		}
@@ -100,7 +100,7 @@ namespace Headstart.API.Controllers
 		[HttpGet, Route("{buyerId}/{buyerLocationId}/permissions"), OrderCloudUserAuth(ApiRole.Shopper)]
 		public async Task<List<UserGroupAssignment>> ListLocationPermissionUserGroups(string buyerId, string buyerLocationId)
 		{
-			return await _locationPermissionCommand.ListLocationPermissionAsssignments(buyerId, buyerLocationId, UserContext);
+			return await _locationPermissionCommand.ListLocationPermissionAssignments(buyerId, buyerLocationId, UserContext);
 		}
 
 		/// <summary>
@@ -111,7 +111,7 @@ namespace Headstart.API.Controllers
 		/// <param name="listArgs"></param>
 		/// <returns>The ListPage of orders for a specific location as a buyer, ensures user has access to location orders, by buyerId and buyerLocationId</returns>
 		[HttpGet, Route("{buyerId}/{buyerLocationId}/users"), OrderCloudUserAuth(ApiRole.Shopper)]
-		public async Task<ListPage<HSUser>> ListLocationUsers(string buyerId, string buyerLocationId, ListArgs<HSOrder> listArgs)
+		public async Task<ListPage<HsUser>> ListLocationUsers(string buyerId, string buyerLocationId, ListArgs<HsOrder> listArgs)
 		{
 			return await _locationPermissionCommand.ListLocationUsers(buyerId, buyerLocationId, UserContext);
 		}
@@ -138,7 +138,7 @@ namespace Headstart.API.Controllers
 		[HttpGet, Route("{buyerId}/{buyerLocationId}/approvalpermissions"), OrderCloudUserAuth(ApiRole.Shopper)]
 		public async Task<List<UserGroupAssignment>> ListLocationApprovalPermissionAsssignments(string buyerId, string buyerLocationId)
 		{
-			return await _locationPermissionCommand.ListLocationPermissionAsssignments(buyerId, buyerLocationId, UserContext);
+			return await _locationPermissionCommand.ListLocationPermissionAssignments(buyerId, buyerLocationId, UserContext);
 		}
 
 		/// <summary>
@@ -200,7 +200,7 @@ namespace Headstart.API.Controllers
 		/// <param name="userId"></param>
 		/// <returns>The ListPage of user groups for home country</returns>
 		[HttpGet, Route("{buyerId}/usergroups/{userId}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin)]
-		public async Task<ListPage<HSLocationUserGroup>> ListUserGroupsByCountry(ListArgs<HSLocationUserGroup> args, string buyerId, string userId)
+		public async Task<ListPage<HsLocationUserGroup>> ListUserGroupsByCountry(ListArgs<HsLocationUserGroup> args, string buyerId, string userId)
 		{
 			return await _locationPermissionCommand.ListUserGroupsByCountry(args, buyerId, userId, UserContext);
 		}
@@ -213,7 +213,7 @@ namespace Headstart.API.Controllers
 		/// <param name="homeCountry"></param>
 		/// <returns>The ListPage of user groups for new user</returns>
 		[HttpGet, Route("{buyerId}/{homeCountry}/usergroups"), OrderCloudUserAuth(ApiRole.UserGroupAdmin)]
-		public async Task<ListPage<HSLocationUserGroup>> ListUserGroupsForNewUser(ListArgs<HSLocationUserGroup> args, string buyerId, string homeCountry)
+		public async Task<ListPage<HsLocationUserGroup>> ListUserGroupsForNewUser(ListArgs<HsLocationUserGroup> args, string buyerId, string homeCountry)
 		{
 			return await _locationPermissionCommand.ListUserGroupsForNewUser(args, buyerId, homeCountry, UserContext);
 		}

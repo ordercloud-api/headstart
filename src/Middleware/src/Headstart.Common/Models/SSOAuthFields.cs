@@ -1,9 +1,9 @@
-﻿namespace Headstart.Common.Models
-{
-    public class SSOAuthFields
-    {
-        public string ID { get; set; } = string.Empty;
+﻿using Headstart.Common.Models.Base;
 
-        public string Username { get; set; } = string.Empty;
-    }
+namespace Headstart.Common.Models
+{
+	public class SsoAuthFields : HsBaseObject
+	{
+		public string Username { get; set; } = string.Empty;
+	}
 }

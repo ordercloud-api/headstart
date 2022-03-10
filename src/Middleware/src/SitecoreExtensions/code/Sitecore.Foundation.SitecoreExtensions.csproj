@@ -2086,6 +2086,9 @@
     <Content Include="Core\Compression\Zstandard\lib\linux\libzstd.so" />
     <Content Include="Core\Compression\Snappy\lib\osx\libsnappy64.dylib" />
     <Content Include="Core\Compression\Snappy\lib\linux\libsnappy64.so" />
+    <Content Include="..\..\..\.editorconfig">
+      <Link>.editorconfig</Link>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

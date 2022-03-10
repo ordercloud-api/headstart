@@ -4,37 +4,43 @@ using Newtonsoft.Json.Converters;
 using System.Collections.Generic;
 using ordercloud.integrations.exchangerates;
 
-namespace Headstart.Models
+namespace Headstart.Common.Models.Headstart
 {
-    public class HSBuyerLocation
-    {
-        public HSLocationUserGroup UserGroup { get; set; } = new HSLocationUserGroup();
+	public class HsBuyerLocation
+	{
+		public HsLocationUserGroup UserGroup { get; set; } = new HsLocationUserGroup();
 
-        public HSAddressBuyer Address { get; set; } = new HSAddressBuyer();
-    }
+		public HsAddressBuyer Address { get; set; } = new HsAddressBuyer();
+	}
 
-    public class HSUserGroup : UserGroup<UserGroupXp>, IHSObject { }
+	public class HsUserGroup : UserGroup<UserGroupXp>
+	{
+		public string Id { get; set; } = string.Empty;
+	}
 
-    public class UserGroupXp
-    {
-        public string Type { get; set; } = string.Empty;
+	public class UserGroupXp
+	{
+		public string Type { get; set; } = string.Empty;
 
-        public string Role { get; set; } = string.Empty;
-    }
+		public string Role { get; set; } = string.Empty;
+	}
 
-    public class HSLocationUserGroup : UserGroup<HSLocationUserGroupXp>, IHSObject { }
+	public class HsLocationUserGroup : UserGroup<HsLocationUserGroupXp>
+	{
+		public string Id { get; set; } = string.Empty;
+	}
 
-    public class HSLocationUserGroupXp
-    {
-        public string Type { get; set; } = string.Empty;
+	public class HsLocationUserGroupXp
+	{
+		public string Type { get; set; } = string.Empty;
 
-        public string Role { get; set; } = string.Empty;
+		public string Role { get; set; } = string.Empty;
 
-        [JsonConverter(typeof(StringEnumConverter))]
-        public CurrencySymbol? Currency { get; set; }
+		[JsonConverter(typeof(StringEnumConverter))]
+		public CurrencySymbol? Currency { get; set; }
 
-        public string Country { get; set; } = string.Empty;
+		public string Country { get; set; } = string.Empty;
 
-        public List<string> CatalogAssignments { get; set; } = new List<string>();
-    }
+		public List<string> CatalogAssignments { get; set; } = new List<string>();
+	}
 }

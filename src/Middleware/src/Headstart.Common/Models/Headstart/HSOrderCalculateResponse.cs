@@ -1,12 +1,14 @@
 ﻿using OrderCloud.SDK;
 using ordercloud.integrations.library;
 
-namespace Headstart.Models.Headstart
+namespace Headstart.Common.Models.Headstart
 {
-    public class HSOrderCalculateResponse : OrderCalculateResponse<OrderCalculateResponseXp> { }
+	public class HsOrderCalculateResponse : OrderCalculateResponse<OrderCalculateResponseXp>
+	{
+	}
 
-    public class OrderCalculateResponseXp
-    {
-        public OrderTaxCalculation TaxCalculation { get; set; } = new OrderTaxCalculation();
-    }
+	public class OrderCalculateResponseXp
+	{
+		public OrderTaxCalculation TaxCalculation { get; set; } = new OrderTaxCalculation();
+	}
 }

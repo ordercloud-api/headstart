@@ -1,71 +1,98 @@
-﻿using Cosmonaut.Attributes;
-using Headstart.Common.Exceptions;
-using Microsoft.Azure.WebJobs;
-using System;
+﻿using System;
 using OrderCloud.SDK;
+using Cosmonaut.Attributes;
 using Newtonsoft.Json.Linq;
+using Microsoft.Azure.WebJobs;
+using Headstart.Common.Exceptions;
 using ordercloud.integrations.library;
 using ordercloud.integrations.library.helpers;
+using Sitecore.Foundation.SitecoreExtensions.Extensions;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
+using SitecoreExtensions = Sitecore.Foundation.SitecoreExtensions.Extensions;
+using Newtonsoft.Json;
 
 namespace Headstart.Common.Models
 {
-    [CosmosCollection("orchestrationlogs")]
-    public class OrchestrationLog : CosmosObject
-    {
-        public OrchestrationLog() { }
+	[CosmosCollection("orchestrationlogs")]
+	public class OrchestrationLog : CosmosObject
+	{
+		private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
 
-        public OrchestrationLog(WorkItem wi)
-        {
-            Action = wi.Action;
-            Current = wi.Current;
-            Cache = wi.Cache;
-            RecordId = wi.RecordId;
-            ResourceId = wi.ResourceId;
-            RecordType = wi.RecordType;
-            Level = LogLevel.Warn;
-        }
+		[Sortable]
+		public OrchestrationErrorType? ErrorType { get; set; }
 
-        public OrchestrationLog(OrderCloudException ex)
-        {
-            Level = LogLevel.Error;
-            OrderCloudErrors = ex.Errors;
-        }
+		public string Message { get; set; } = string.Empty;
 
-        public OrchestrationLog(OrchestrationException ex) { }
+		[Sortable]
+		public LogLevel Level { get; set; }
 
-        public OrchestrationLog(FunctionFailedException ex) { }
+		[Sortable]
+		public string ResourceId { get; set; } = string.Empty;
 
-        public OrchestrationLog(Exception ex) { }
+		[Sortable]
+		public string RecordId { get; set; } = string.Empty;
 
-        [Sortable]
-        public OrchestrationErrorType? ErrorType { get; set; }
+		[Sortable]
+		public RecordType? RecordType { get; set; }
 
-        public string Message { get; set; } = string.Empty;
+		[Sortable]
+		public Action? Action { get; set; }
 
-        [Sortable]
-        public LogLevel Level { get; set; }
+		[DocIgnore]
+		public JObject Current { get; set; } = new JObject();
 
-        [Sortable]
-        public string ResourceId { get; set; } = string.Empty;
+		[DocIgnore]
+		public JObject Cache { get; set; } = new JObject();
 
-        [Sortable]
-        public string RecordId { get; set; } = string.Empty;
+		[DocIgnore]
+		public JObject Diff { get; set; } = new JObject();
 
-        [Sortable]
-        public RecordType? RecordType { get; set; }
+		public ApiError[] OrderCloudErrors { get; set; }
 
-        [Sortable]
-        public Action? Action { get; set; }
+		public OrchestrationLog()
+		{
+		}
 
-        [DocIgnore]
-        public JObject Current { get; set; } = new JObject();
+		public OrchestrationLog(WorkItem wi)
+		{
+			Action = wi.Action;
+			Current = wi.Current;
+			Cache = wi.Cache;
+			RecordId = wi.RecordId;
+			ResourceId = wi.ResourceId;
+			RecordType = wi.RecordType;
+			Level = LogLevel.Warn;
 
-        [DocIgnore]
-        public JObject Cache { get; set; } = new JObject();
+			var ResponseBody = JsonConvert.SerializeObject(this.ToJsonObject());
+			LoggingNotifications.LogApiResponseMessages(_webConfigSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), ResponseBody,
+				LoggingNotifications.GetApiResponseMessagePrefixKey(), false);
+		}
 
-        [DocIgnore]
-        public JObject Diff { get; set; } = new JObject();
+		public OrchestrationLog(OrderCloudException ex)
+		{
+			Level = LogLevel.Error;
+			OrderCloudErrors = ex.Errors;
+			var ResponseBody = JsonConvert.SerializeObject(this.ToJsonObject());
+			LoggingNotifications.LogApiResponseMessages(_webConfigSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), ResponseBody,
+				LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
+		}
 
-        public ApiError[] OrderCloudErrors { get; set; }
-    }
+		public OrchestrationLog(OrchestrationException ex)
+		{
+			LoggingNotifications.LogApiResponseMessages(_webConfigSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
+		}
+
+		public OrchestrationLog(FunctionFailedException ex)
+		{
+			LoggingNotifications.LogApiResponseMessages(_webConfigSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
+		}
+
+		public OrchestrationLog(Exception ex)
+		{
+			LoggingNotifications.LogApiResponseMessages(_webConfigSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
+		}
+	}
 }

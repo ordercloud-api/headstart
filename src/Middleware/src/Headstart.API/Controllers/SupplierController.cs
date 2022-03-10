@@ -1,17 +1,16 @@
 using OrderCloud.SDK;
-using Headstart.Models;
 using OrderCloud.Catalyst;
 using System.Threading.Tasks;
 using Headstart.API.Commands;
 using Microsoft.AspNetCore.Mvc;
-using Headstart.Models.Headstart;
+using Headstart.Common.Models.Headstart;
 
 namespace Headstart.API.Controllers
 {
 	[Route("supplier")]
     public class SupplierController : CatalystController
 	{
-		private readonly IHSSupplierCommand _command;
+		private readonly IHsSupplierCommand _command;
 		private readonly IOrderCloudClient _oc;
 
 		/// <summary>
@@ -19,7 +18,7 @@ namespace Headstart.API.Controllers
 		/// </summary>
 		/// <param name="command"></param>
 		/// <param name="oc"></param>
-		public SupplierController(IHSSupplierCommand command, IOrderCloudClient oc)
+		public SupplierController(IHsSupplierCommand command, IOrderCloudClient oc)
 		{
 			_command = command;
 			_oc = oc;
@@ -31,7 +30,7 @@ namespace Headstart.API.Controllers
 		/// <param name="supplierId"></param>
 		/// <returns>The HSSupplier object by supplierID</returns>
 		[HttpGet, Route("me/{supplierId}"), OrderCloudUserAuth]
-		public async Task<HSSupplier> GetMySupplier(string supplierId)
+		public async Task<HsSupplier> GetMySupplier(string supplierId)
 		{
 			return await _command.GetMySupplier(supplierId, UserContext);
 		}
@@ -42,7 +41,7 @@ namespace Headstart.API.Controllers
 		/// <param name="supplier"></param>
 		/// <returns>The response from the post action for Creating a new HSSupplier object</returns>
 		[HttpPost, OrderCloudUserAuth(ApiRole.SupplierAdmin)]
-		public async Task<HSSupplier> Create([FromBody] HSSupplier supplier)
+		public async Task<HsSupplier> Create([FromBody] HsSupplier supplier)
 		{
 			return await _command.Create(supplier, UserContext.AccessToken);
 		}
@@ -66,7 +65,7 @@ namespace Headstart.API.Controllers
 		/// <param name="supplier"></param>
 		/// <returns>The response from the update action to patch updated details for the HSSupplier data</returns>
 		[HttpPatch, Route("{supplierId}"), OrderCloudUserAuth]
-		public async Task<HSSupplier> UpdateSupplier(string supplierId, [FromBody] PartialSupplier supplier)
+		public async Task<HsSupplier> UpdateSupplier(string supplierId, [FromBody] PartialSupplier supplier)
 		{
 			return await _command.UpdateSupplier(supplierId, supplier, UserContext);
 		}
@@ -78,7 +77,7 @@ namespace Headstart.API.Controllers
 		/// <param name="orderType"></param>
 		/// <returns>The HSSupplierOrderData by supplierOrderID and orderType</returns>
 		[HttpGet, Route("orderdetails/{supplierOrderId}/{orderType}"), OrderCloudUserAuth(ApiRole.OrderAdmin, ApiRole.OrderReader)]
-		public async Task<HSSupplierOrderData> GetSupplierOrder(string supplierOrderId, OrderType orderType)
+		public async Task<HsSupplierOrderData> GetSupplierOrder(string supplierOrderId, OrderType orderType)
 		{
 			return await _command.GetSupplierOrderData(supplierOrderId, orderType, UserContext);
 		}

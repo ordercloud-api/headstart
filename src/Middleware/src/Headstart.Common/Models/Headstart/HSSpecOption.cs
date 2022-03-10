@@ -1,12 +1,15 @@
 ﻿using OrderCloud.SDK;
 
-namespace Headstart.Models
+namespace Headstart.Common.Models.Headstart
 {
-    public class HSSpecOption : SpecOption<SpecOptionXp>, IHSObject { }
+	public class HsSpecOption : SpecOption<SpecOptionXp>
+	{
+		public string Id { get; set; } = string.Empty;
+	}
 
-    public class SpecOptionXp
-    {
-        public string Description { get; set; } = string.Empty;
-        public string SpecID { get; set; } = string.Empty;
-    }
+	public class SpecOptionXp
+	{
+		public string Description { get; set; } = string.Empty;
+		public string SpecId { get; set; } = string.Empty;
+	}
 }

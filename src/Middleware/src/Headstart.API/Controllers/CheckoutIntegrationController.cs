@@ -3,7 +3,7 @@ using OrderCloud.Catalyst;
 using System.Threading.Tasks;
 using Headstart.API.Commands;
 using Microsoft.AspNetCore.Mvc;
-using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Common.Models.Headstart;
 
 namespace Headstart.API.Controllers
 {
@@ -29,7 +29,7 @@ namespace Headstart.API.Controllers
 		/// <param name="orderCalculatePayload"></param>
 		/// <returns>The shipping rate estimates response object</returns>
 		[HttpPost, Route("shippingrates"), OrderCloudWebhookAuth]
-		public async Task<ShipEstimateResponse> GetShippingRates([FromBody] HSOrderCalculatePayload orderCalculatePayload)
+		public async Task<ShipEstimateResponse> GetShippingRates([FromBody] HsOrderCalculatePayload orderCalculatePayload)
 		{
 			return await _checkoutIntegrationCommand.GetRatesAsync(orderCalculatePayload);
 		}
@@ -40,7 +40,7 @@ namespace Headstart.API.Controllers
 		/// <param name="orderCalculatePayload"></param>
 		/// <returns>The calculated order response object</returns>
 		[HttpPost, Route("ordercalculate"), OrderCloudWebhookAuth]
-		public async Task<OrderCalculateResponse> CalculateOrder([FromBody] HSOrderCalculatePayload orderCalculatePayload)
+		public async Task<OrderCalculateResponse> CalculateOrder([FromBody] HsOrderCalculatePayload orderCalculatePayload)
 		{
 			var orderCalculationResponse = await _checkoutIntegrationCommand.CalculateOrder(orderCalculatePayload);
 			return orderCalculationResponse;
@@ -65,7 +65,7 @@ namespace Headstart.API.Controllers
 		/// <param name="payload"></param>
 		/// <returns>The submitted order response object</returns>
 		[HttpPost, Route("ordersubmit")]
-		public async Task<OrderSubmitResponse> HandleOrderSubmit([FromBody] HSOrderCalculatePayload payload)
+		public async Task<OrderSubmitResponse> HandleOrderSubmit([FromBody] HsOrderCalculatePayload payload)
 		{
 			var response = await _postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
 			return response;
@@ -89,7 +89,7 @@ namespace Headstart.API.Controllers
 		/// <param name="payload"></param>
 		/// <returns>The submitted order response object</returns>
 		[HttpPost, Route("orderapproved"), OrderCloudWebhookAuth]
-		public async Task<OrderSubmitResponse> HandleOrderApproved([FromBody] HSOrderCalculatePayload payload)
+		public async Task<OrderSubmitResponse> HandleOrderApproved([FromBody] HsOrderCalculatePayload payload)
 		{
 			var response = await _postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
 			return response;

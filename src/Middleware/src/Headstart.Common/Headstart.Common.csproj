@@ -51,6 +51,7 @@
     <ProjectReference Include="..\..\integrations\ordercloud.integrations.tecra\ordercloud.integrations.tecra.csproj" />
     <ProjectReference Include="..\..\integrations\ordercloud.integrations.easypost\ordercloud.integrations.easypost.csproj" />
     <ProjectReference Include="..\..\integrations\ordercloud.integrations.vertex\ordercloud.integrations.vertex.csproj" />
+    <ProjectReference Include="..\SitecoreExtensions\code\Sitecore.Foundation.SitecoreExtensions.csproj" />
   </ItemGroup>
 
   <ItemGroup>

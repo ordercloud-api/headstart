@@ -1,34 +1,31 @@
-﻿using Headstart.Models.Headstart;
-using ordercloud.integrations.cardconnect;
-using OrderCloud.SDK;
-using System;
+﻿using OrderCloud.SDK;
 using System.Collections.Generic;
-using System.Text;
+using Headstart.Common.Models.Headstart;
 
 namespace Headstart.Tests.Mocks
 {
-    public static class SupplierMocks
-    {
-        public static List<HSSupplier> Suppliers(params HSSupplier[] suppliers)
-        {
-            return new List<HSSupplier>(suppliers);
-        }
+	public static class SupplierMocks
+	{
+		public static List<HsSupplier> Suppliers(params HsSupplier[] suppliers)
+		{
+			return new List<HsSupplier>(suppliers);
+		}
 
-        public static ListPage<HSSupplier> EmptySuppliersList()
-        {
-            var items = new List<HSSupplier>();
-            return new ListPage<HSSupplier>
-            {
-                Items = items
-            };
-        }
+		public static ListPage<HsSupplier> EmptySuppliersList()
+		{
+			var items = new List<HsSupplier>();
+			return new ListPage<HsSupplier>
+			{
+				Items = items
+			};
+		}
 
-        public static ListPage<HSSupplier> SupplierList(params HSSupplier[] suppliers)
-        {
-            return new ListPage<HSSupplier>
-            {
-                Items = new List<HSSupplier>(suppliers)
-            };
-        }
-    }
+		public static ListPage<HsSupplier> SupplierList(params HsSupplier[] suppliers)
+		{
+			return new ListPage<HsSupplier>
+			{
+				Items = new List<HsSupplier>(suppliers)
+			};
+		}
+	}
 }

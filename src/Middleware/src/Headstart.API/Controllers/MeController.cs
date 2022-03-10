@@ -1,10 +1,10 @@
 ﻿using OrderCloud.SDK;
-using Headstart.Models;
 using OrderCloud.Catalyst;
-using Headstart.Models.Misc;
 using System.Threading.Tasks;
 using Headstart.API.Commands;
 using Microsoft.AspNetCore.Mvc;
+using Headstart.Common.Models.Misc;
+using Headstart.Common.Models.Headstart;
 
 namespace Headstart.API.Controllers
 {
@@ -28,7 +28,7 @@ namespace Headstart.API.Controllers
 		/// <param name="productId"></param>
 		/// <returns>The list of Super Products</returns>
 		[HttpGet, Route("products/{productId}"), OrderCloudUserAuth(ApiRole.Shopper)]
-		public async Task<SuperHSMeProduct> GetSuperProduct(string productId)
+		public async Task<SuperHsMeProduct> GetSuperProduct(string productId)
 		{
 			return await _meProductCommand.Get(productId, UserContext);
 		}
@@ -39,7 +39,7 @@ namespace Headstart.API.Controllers
 		/// <param name="args"></param>
 		/// <returns>The ListPage of Product objects</returns>
 		[HttpGet, Route("products"), OrderCloudUserAuth(ApiRole.Shopper)]
-		public async Task<ListPageWithFacets<HSMeProduct>> ListMeProducts(ListArgs<HSMeProduct> args)
+		public async Task<ListPageWithFacets<HsMeProduct>> ListMeProducts(ListArgs<HsMeProduct> args)
 		{
 			return await _meProductCommand.List(args, UserContext);
 		}

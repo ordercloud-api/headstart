@@ -1,29 +1,25 @@
 ﻿using Headstart.Common;
+using Headstart.Common.Models.Headstart;
 using Headstart.Common.Services;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Models;
-using Headstart.Models.Headstart;
 using Headstart.Tests.Mocks;
 using NSubstitute;
 using NUnit.Framework;
 using ordercloud.integrations.cardconnect;
 using ordercloud.integrations.exchangerates;
-using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Headstart.Tests
 {
-    class CreditCardCommandTests
-    {
+	public class CreditCardCommandTests
+	{
 		private IOrderCloudIntegrationsCardConnectService _cardConnect;
 		private IOrderCloudClient _oc;
-		private IHSExchangeRatesService _hsExchangeRates;
+		private IHsExchangeRatesService _hsExchangeRates;
 		private ISupportAlertService _supportAlerts;
 		private AppSettings _settings;
 		private ICreditCardCommand _sut;
@@ -46,20 +42,20 @@ namespace Headstart.Tests
 			_cardConnect = Substitute.For<IOrderCloudIntegrationsCardConnectService>();
 			_cardConnect.VoidAuthorization(Arg.Is<CardConnectVoidRequest>(r => r.merchid == merchantID))
 				.Returns(Task.FromResult(new CardConnectVoidResponse { }));
-            _cardConnect.AuthWithoutCapture(Arg.Any<CardConnectAuthorizationRequest>())
-                .Returns(Task.FromResult(new CardConnectAuthorizationResponse { authcode = "REVERS" }));
+			_cardConnect.AuthWithoutCapture(Arg.Any<CardConnectAuthorizationRequest>())
+				.Returns(Task.FromResult(new CardConnectAuthorizationResponse { authcode = "REVERS" }));
 
-            _oc = Substitute.For<IOrderCloudClient>();
+			_oc = Substitute.For<IOrderCloudClient>();
 			_oc.Me.GetCreditCardAsync<CardConnectBuyerCreditCard>(creditCardID, userToken)
 				.Returns(MockCreditCard());
-			_oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID)
-				.Returns(Task.FromResult(new HSOrderWorksheet { Order = new HSOrder { ID = orderID, Total = 38 } }));
-			_oc.Payments.CreateTransactionAsync<HSPayment>(OrderDirection.Incoming, orderID, Arg.Any<string>(), Arg.Any<PaymentTransaction>())
-				.Returns(Task.FromResult(new HSPayment { }));
-			_oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, orderID, Arg.Any<string>(), Arg.Any<PartialPayment>())
-				.Returns(Task.FromResult(new HSPayment { }));
+			_oc.IntegrationEvents.GetWorksheetAsync<HsOrderWorksheet>(OrderDirection.Incoming, orderID)
+				.Returns(Task.FromResult(new HsOrderWorksheet { Order = new HsOrder { ID = orderID, Total = 38 } }));
+			_oc.Payments.CreateTransactionAsync<HsPayment>(OrderDirection.Incoming, orderID, Arg.Any<string>(), Arg.Any<PaymentTransaction>())
+				.Returns(Task.FromResult(new HsPayment { }));
+			_oc.Payments.PatchAsync<HsPayment>(OrderDirection.Incoming, orderID, Arg.Any<string>(), Arg.Any<PartialPayment>())
+				.Returns(Task.FromResult(new HsPayment { }));
 
-			_hsExchangeRates = Substitute.For<IHSExchangeRatesService>();
+			_hsExchangeRates = Substitute.For<IHsExchangeRatesService>();
 			_hsExchangeRates.GetCurrencyForUser(userToken)
 				.Returns(Task.FromResult(currency));
 
@@ -70,12 +66,12 @@ namespace Headstart.Tests
 			_sut = new CreditCardCommand(_cardConnect, _oc, _hsExchangeRates, _supportAlerts, _settings);
 		}
 
-        #region AuthorizePayment
-        [Test]
+		#region AuthorizePayment
+		[Test]
 		public void should_throw_if_no_payments()
 		{
 			// Arrange
-			_oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
+			_oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
 				.Returns(Task.FromResult(PaymentMocks.EmptyPaymentsList()));
 			var payment = ValidIntegrationsPayment();
 
@@ -88,12 +84,12 @@ namespace Headstart.Tests
 
 		[Test]
 		public async Task should_skip_auth_if_payment_valid()
-        {
+		{
 			// If a payment has already been accepted and is equal to the
 			// order total then don't auth again
 
 			// Arrange
-			_oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
+			_oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
 				.Returns(Task.FromResult(PaymentMocks.PaymentList(PaymentMocks.CCPayment("creditcardid1", 38))));
 			var payment = ValidIntegrationsPayment();
 
@@ -107,29 +103,29 @@ namespace Headstart.Tests
 
 		[Test]
 		public async Task should_void_if_accepted_but_not_valid()
-        {
+		{
 			// if a payment is accepted but doesn't match order total than we need to void before authorizing again for new amount
 
 			var paymentTotal = 30; // credit card total is 38
 
 			// Arrange
-			var payment1transactions = new List<HSPaymentTransaction>()
+			var payment1transactions = new List<HsPaymentTransaction>()
 			{
-				new HSPaymentTransaction
+				new HsPaymentTransaction
 				{
 					ID = transactionID,
 					Succeeded = true,
 					Type = "CreditCard",
 					xp = new TransactionXP
-                    {
+					{
 						CardConnectResponse = new CardConnectAuthorizationResponse
-                        {
+						{
 							retref = validretref
 						}
-                    }
+					}
 				}
 			};
-			_oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
+			_oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
 				.Returns(PaymentMocks.PaymentList(MockCCPayment(paymentTotal, true, payment1transactions)));
 			var payment = ValidIntegrationsPayment();
 
@@ -140,7 +136,7 @@ namespace Headstart.Tests
 			await _cardConnect.Received().VoidAuthorization(Arg.Is<CardConnectVoidRequest>(x => x.retref == validretref && x.merchid == merchantID && x.currency == "CAD"));
 			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, orderID, paymentID, Arg.Is<PaymentTransaction>(x => x.Amount == paymentTotal));
 			await _cardConnect.Received().AuthWithoutCapture(Arg.Any<CardConnectAuthorizationRequest>());
-			await _oc.Payments.Received().PatchAsync<HSPayment>(OrderDirection.Incoming, orderID, paymentID, Arg.Is<PartialPayment>(p => p.Accepted == true && p.Amount == ccTotal));
+			await _oc.Payments.Received().PatchAsync<HsPayment>(OrderDirection.Incoming, orderID, paymentID, Arg.Is<PartialPayment>(p => p.Accepted == true && p.Amount == ccTotal));
 			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, orderID,paymentID, Arg.Any<PaymentTransaction>());
 		}
 
@@ -153,9 +149,9 @@ namespace Headstart.Tests
 			var paymentTotal = 30; // credit card total is 38
 
 			// Arrange
-			var payment1transactions = new List<HSPaymentTransaction>()
+			var payment1transactions = new List<HsPaymentTransaction>()
 			{
-				new HSPaymentTransaction
+				new HsPaymentTransaction
 				{
 					ID = "authattempt1",
 					Succeeded = true,
@@ -168,7 +164,7 @@ namespace Headstart.Tests
 						}
 					}
 				},
-				new HSPaymentTransaction
+				new HsPaymentTransaction
 				{
 					ID = "voidattempt1",
 					Succeeded = true,
@@ -181,7 +177,7 @@ namespace Headstart.Tests
 						}
 					}
 				},
-				new HSPaymentTransaction
+				new HsPaymentTransaction
 				{
 					ID = "authattempt2",
 					Type = "CreditCard",
@@ -195,7 +191,7 @@ namespace Headstart.Tests
 					}
 				}
 			};
-			_oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
+			_oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
 				.Returns(PaymentMocks.PaymentList(MockCCPayment(paymentTotal, true, payment1transactions)));
 			var payment = ValidIntegrationsPayment();
 
@@ -206,7 +202,7 @@ namespace Headstart.Tests
 			await _cardConnect.Received().VoidAuthorization(Arg.Is<CardConnectVoidRequest>(x => x.retref == "retref3" && x.merchid == merchantID && x.currency == "CAD"));
 			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, orderID, paymentID, Arg.Is<PaymentTransaction>(x => x.Amount == paymentTotal));
 			await _cardConnect.Received().AuthWithoutCapture(Arg.Any<CardConnectAuthorizationRequest>());
-			await _oc.Payments.Received().PatchAsync<HSPayment>(OrderDirection.Incoming, orderID, paymentID, Arg.Is<PartialPayment>(p => p.Accepted == true && p.Amount == ccTotal));
+			await _oc.Payments.Received().PatchAsync<HsPayment>(OrderDirection.Incoming, orderID, paymentID, Arg.Is<PartialPayment>(p => p.Accepted == true && p.Amount == ccTotal));
 			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, orderID, paymentID, Arg.Any<PaymentTransaction>());
 		}
 
@@ -218,9 +214,9 @@ namespace Headstart.Tests
 			var paymentTotal = 30; // credit card total is 38
 
 			// Arrange
-			var payment1transactions = new List<HSPaymentTransaction>()
+			var payment1transactions = new List<HsPaymentTransaction>()
 			{
-				new HSPaymentTransaction
+				new HsPaymentTransaction
 				{
 					ID = "authattempt1",
 					Succeeded = true,
@@ -233,7 +229,7 @@ namespace Headstart.Tests
 						}
 					}
 				},
-				new HSPaymentTransaction
+				new HsPaymentTransaction
 				{
 					ID = "voidattempt1",
 					Succeeded = true,
@@ -246,7 +242,7 @@ namespace Headstart.Tests
 						}
 					}
 				},
-				new HSPaymentTransaction
+				new HsPaymentTransaction
 				{
 					ID = "authattempt2",
 					Type = "CreditCard",
@@ -264,7 +260,7 @@ namespace Headstart.Tests
 			_settings.CardConnectSettings.CadMerchantID = "somethingelse";
 			_hsExchangeRates.GetCurrencyForUser(userToken)
 				.Returns(Task.FromResult(CurrencySymbol.USD));
-			_oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
+			_oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
 				.Returns(PaymentMocks.PaymentList(MockCCPayment(paymentTotal, true, payment1transactions)));
 			var payment = ValidIntegrationsPayment();
 
@@ -275,7 +271,7 @@ namespace Headstart.Tests
 			await _cardConnect.Received().VoidAuthorization(Arg.Is<CardConnectVoidRequest>(x => x.retref == "retref3" && x.merchid == merchantID && x.currency == "USD"));
 			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, orderID, paymentID, Arg.Is<PaymentTransaction>(x => x.Amount == paymentTotal));
 			await _cardConnect.Received().AuthWithoutCapture(Arg.Any<CardConnectAuthorizationRequest>());
-			await _oc.Payments.Received().PatchAsync<HSPayment>(OrderDirection.Incoming, orderID, paymentID, Arg.Is<PartialPayment>(p => p.Accepted == true && p.Amount == ccTotal));
+			await _oc.Payments.Received().PatchAsync<HsPayment>(OrderDirection.Incoming, orderID, paymentID, Arg.Is<PartialPayment>(p => p.Accepted == true && p.Amount == ccTotal));
 			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, orderID, paymentID, Arg.Any<PaymentTransaction>());
 		}
 
@@ -288,9 +284,9 @@ namespace Headstart.Tests
 			var paymentTotal = 38; // credit card total is 38
 
 			// Arrange
-			var payment1transactions = new List<HSPaymentTransaction>()
+			var payment1transactions = new List<HsPaymentTransaction>()
 			{
-				new HSPaymentTransaction
+				new HsPaymentTransaction
 				{
 					ID = transactionID,
 					Succeeded = true,
@@ -304,9 +300,9 @@ namespace Headstart.Tests
 				}
 			};
 			var mockedCCPayment = MockCCPayment(paymentTotal, false, payment1transactions);
-			_oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
+			_oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
 				.Returns(PaymentMocks.PaymentList(mockedCCPayment));
-			_oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, orderID, Arg.Any<string>(), Arg.Any<PartialPayment>())
+			_oc.Payments.PatchAsync<HsPayment>(OrderDirection.Incoming, orderID, Arg.Any<string>(), Arg.Any<PartialPayment>())
 				.Returns(Task.FromResult(mockedCCPayment));
 			var payment = ValidIntegrationsPayment();
 			_cardConnect
@@ -321,7 +317,7 @@ namespace Headstart.Tests
 			await _cardConnect.Received().AuthWithoutCapture(Arg.Any<CardConnectAuthorizationRequest>());
 
 			// stuff that happens in catch block
-			await _oc.Payments.Received().PatchAsync<HSPayment>(OrderDirection.Incoming, orderID, paymentID, Arg.Is<PartialPayment>(p => p.Accepted == false && p.Amount == ccTotal));
+			await _oc.Payments.Received().PatchAsync<HsPayment>(OrderDirection.Incoming, orderID, paymentID, Arg.Is<PartialPayment>(p => p.Accepted == false && p.Amount == ccTotal));
 			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, orderID, paymentID, Arg.Any<PaymentTransaction>());
 		}
 
@@ -334,9 +330,9 @@ namespace Headstart.Tests
 			var paymentTotal = 30; // credit card total is 38
 
 			// Arrange
-			var payment1transactions = new List<HSPaymentTransaction>()
+			var payment1transactions = new List<HsPaymentTransaction>()
 			{
-				new HSPaymentTransaction
+				new HsPaymentTransaction
 				{
 					ID = transactionID,
 					Succeeded = true,
@@ -351,7 +347,7 @@ namespace Headstart.Tests
 				}
 			};
 			var mockedCCPayment = MockCCPayment(paymentTotal, true, payment1transactions);
-			_oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
+			_oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
 				.Returns(PaymentMocks.PaymentList(mockedCCPayment));
 			var payment = ValidIntegrationsPayment();
 			_cardConnect
@@ -367,37 +363,37 @@ namespace Headstart.Tests
 			// stuff that happens in catch block
 			await _supportAlerts
 				.Received()
-				.VoidAuthorizationFailed(Arg.Any<HSPayment>(), transactionID, Arg.Any<HSOrder>(), Arg.Any<CreditCardVoidException>());
+				.VoidAuthorizationFailed(Arg.Any<HsPayment>(), transactionID, Arg.Any<HsOrder>(), Arg.Any<CreditCardVoidException>());
 				
 			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, orderID, paymentID, Arg.Any<PaymentTransaction>());
 		}
 		#endregion AuthorizePayment
 
-		private HSPayment MockCCPayment(decimal amount, bool accepted = false, List<HSPaymentTransaction> transactions = null)
-        {
-			return new HSPayment
+		private HsPayment MockCCPayment(decimal amount, bool accepted = false, List<HsPaymentTransaction> transactions = null)
+		{
+			return new HsPayment
 			{
 				ID = paymentID,
 				Type = PaymentType.CreditCard,
 				Amount = amount,
 				Accepted = accepted,
-				xp = new PaymentXP { },
-				Transactions = new ReadOnlyCollection<HSPaymentTransaction>(transactions ?? new List<HSPaymentTransaction>())
+				xp = new PaymentXp(),
+				Transactions = new ReadOnlyCollection<HsPaymentTransaction>(transactions ?? new List<HsPaymentTransaction>())
 			};
-        }
+		}
 
 		private Task<CardConnectBuyerCreditCard> MockCreditCard()
-        {
-            return Task.FromResult(new CardConnectBuyerCreditCard
+		{
+			return Task.FromResult(new CardConnectBuyerCreditCard
 			{
 				Token = ccToken,
 				ExpirationDate = new DateTimeOffset(),
 				xp = new CreditCardXP
-                {
+				{
 					CCBillingAddress = new Address {}
 				}
 			});
-        }
+		}
 
 		private OrderCloudIntegrationsCreditCardPayment ValidIntegrationsPayment()
 		{

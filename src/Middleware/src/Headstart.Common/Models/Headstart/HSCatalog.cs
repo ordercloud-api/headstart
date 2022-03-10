@@ -1,33 +1,32 @@
 ﻿using OrderCloud.SDK;
 using System.Collections.Generic;
+using Headstart.Common.Models.Base;
 
-namespace Headstart.Models
+namespace Headstart.Common.Models.Headstart
 {
+	public class HsCatalog : UserGroup<CatalogXp>
+	{
+		public string Id { get; set; } = string.Empty;
+	}
 
-    public class HSCatalog : UserGroup<CatalogXp>, IHSObject { }
+	public class PartialHSCatalog : PartialUserGroup<CatalogXp>
+	{
+	}
 
-    public class PartialHSCatalog : PartialUserGroup<CatalogXp> { }
+	public class HsCatalogAssignment : HsBaseObject
+	{
+		public string LocationId { get; set; } = string.Empty;
 
-    // potentially use this for the api later
+		public string CatalogId { get; set; } = string.Empty;
+	}
 
-    public class HSCatalogAssignment : IHSObject
-    {
-        // ID not used but to get marketplaceobject extension working for now
-        public string ID { get; set; }
+	public class HsCatalogAssignmentRequest
+	{
+		public List<string> CatalogIDs { get; set; } = new List<string>();
+	}
 
-        public string LocationID { get; set; } = string.Empty;
-
-        public string CatalogID { get; set; } = string.Empty;
-    }
-
-
-    public class HSCatalogAssignmentRequest
-    {
-        public List<string> CatalogIDs { get; set; } = new List<string>();
-    }
-
-    public class CatalogXp
-    {
-        public string Type { get; set; } = $@"Catalog";
-    }
+	public class CatalogXp
+	{
+		public string Type { get; set; } = @"Catalog";
+	}
 }

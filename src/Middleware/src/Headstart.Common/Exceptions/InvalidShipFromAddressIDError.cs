@@ -1,12 +1,12 @@
-﻿namespace Headstart.Models.Exceptions
+﻿namespace Headstart.Common.Exceptions
 {
-	public class InvalidShipFromAddressIDError
+	public class InvalidShipFromAddressIdError
 	{
-		public string ShipFromAddressID { get; set; } = string.Empty;
+		public string ShipFromAddressId { get; set; } = string.Empty;
 
-		public InvalidShipFromAddressIDError(string id)
+		public InvalidShipFromAddressIdError(string id)
 		{
-			ShipFromAddressID = id;
+			ShipFromAddressId = id;
 		}
 	}
 }

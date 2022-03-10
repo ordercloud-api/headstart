@@ -1,12 +1,11 @@
-﻿using OrderCloud.SDK;
+﻿using Headstart.API.Commands;
 using NSubstitute;
 using NUnit.Framework;
+using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Headstart.Models.Headstart;
-using Headstart.Models;
-using Headstart.API.Commands;
+using Headstart.Common.Models.Headstart;
 
 namespace Headstart.Tests
 {
@@ -14,7 +13,7 @@ namespace Headstart.Tests
     {
         private IOrderCloudClient _oc;
         private LineItemCommand _commandSub;
-        private List<HSLineItem> _existingLineItems;
+        private List<HsLineItem> _existingLineItems;
 
         [SetUp]
         public void Setup()
@@ -22,15 +21,15 @@ namespace Headstart.Tests
             _oc = Substitute.For<IOrderCloudClient>();
             _commandSub = Substitute.ForPartsOf<LineItemCommand>(default, _oc, default, default, default, default);
             _existingLineItems = BuildMockExistingLineItemData(); // Mock data consists of two total line items for one product (with different specs)
-            Substitute.For<ILineItemsResource>().PatchAsync<HSLineItem>(OrderDirection.Incoming, default, default, default).ReturnsForAnyArgs((Task)null);
+            Substitute.For<ILineItemsResource>().PatchAsync<HsLineItem>(OrderDirection.Incoming, default, default, default).ReturnsForAnyArgs((Task)null);
         }
 
         [Test]
         public async Task GetUnitPrice_FirstPriceBreak_NoMarkups_CumulativeQtyFalse()
         {
-            SuperHSMeProduct product = BuildMockProductData(false);
+            SuperHsMeProduct product = BuildMockProductData(false);
 
-            HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(4, 0); // Existing line items with different specs (quantity 2) cannot combine with this quantity (4).  Does not hit discount price break (minimum quantity 5).
+            HsLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(4, 0); // Existing line items with different specs (quantity 2) cannot combine with this quantity (4).  Does not hit discount price break (minimum quantity 5).
 
             decimal lineItemTotal = await _commandSub.ValidateLineItemUnitCost(default, product, _existingLineItems, lineItem);
 
@@ -40,9 +39,9 @@ namespace Headstart.Tests
         [Test]
         public async Task GetUnitPrice_SecondPriceBreak_NoMarkups_CumulativeQtyFalse()
         {
-            SuperHSMeProduct product = BuildMockProductData(false);
+            SuperHsMeProduct product = BuildMockProductData(false);
 
-            HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(5, 0);
+            HsLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(5, 0);
 
             decimal lineItemTotal = await _commandSub.ValidateLineItemUnitCost(default, product, _existingLineItems, lineItem);
 
@@ -52,9 +51,9 @@ namespace Headstart.Tests
         [Test]
         public async Task GetUnitPrice_FirstPriceBreak_OneMarkup_CumulativeQtyFalse()
         {
-            SuperHSMeProduct product = BuildMockProductData(false);
+            SuperHsMeProduct product = BuildMockProductData(false);
 
-            HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(4, 1); // Existing line items with different specs (quantity 2) cannot combine with this quantity (4).  Does not hit discount price break (minimum quantity 5).
+            HsLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(4, 1); // Existing line items with different specs (quantity 2) cannot combine with this quantity (4).  Does not hit discount price break (minimum quantity 5).
 
             decimal lineItemTotal = await _commandSub.ValidateLineItemUnitCost(default, product, _existingLineItems, lineItem);
 
@@ -64,9 +63,9 @@ namespace Headstart.Tests
         [Test]
         public async Task GetUnitPrice_SecondPriceBreak_OneMarkup_CumulativeQtyFalse()
         {
-            SuperHSMeProduct product = BuildMockProductData(false);
+            SuperHsMeProduct product = BuildMockProductData(false);
 
-            HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(5, 1);
+            HsLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(5, 1);
 
             decimal lineItemTotal = await _commandSub.ValidateLineItemUnitCost(default, product, _existingLineItems, lineItem);
 
@@ -76,9 +75,9 @@ namespace Headstart.Tests
         [Test]
         public async Task GetUnitPrice_FirstPriceBreak_TwoMarkups_CumulativeQtyFalse()
         {
-            SuperHSMeProduct product = BuildMockProductData(false);
+            SuperHsMeProduct product = BuildMockProductData(false);
 
-            HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(4, 2); // Existing line items with different specs (quantity 2) cannot combine with this quantity (4).  Does not hit discount price break (minimum quantity 5).
+            HsLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(4, 2); // Existing line items with different specs (quantity 2) cannot combine with this quantity (4).  Does not hit discount price break (minimum quantity 5).
 
             decimal lineItemTotal = await _commandSub.ValidateLineItemUnitCost(default, product, _existingLineItems, lineItem);
 
@@ -88,9 +87,9 @@ namespace Headstart.Tests
         [Test]
         public async Task GetUnitPrice_SecondPriceBreak_TwoMarkups_CumulativeQtyFalse()
         {
-            SuperHSMeProduct product = BuildMockProductData(false);
+            SuperHsMeProduct product = BuildMockProductData(false);
 
-            HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(5, 2);
+            HsLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(5, 2);
 
             decimal lineItemTotal = await _commandSub.ValidateLineItemUnitCost(default, product, _existingLineItems, lineItem);
 
@@ -100,9 +99,9 @@ namespace Headstart.Tests
         [Test]
         public async Task GetUnitPrice_FirstPriceBreak_NoMarkups_CumulativeQtyTrue()
         {
-            SuperHSMeProduct product = BuildMockProductData(true);
+            SuperHsMeProduct product = BuildMockProductData(true);
 
-            HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(2, 0); // Does not hit discount price break (minimum quantity 5) when adding existing line item quantity (2)
+            HsLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(2, 0); // Does not hit discount price break (minimum quantity 5) when adding existing line item quantity (2)
 
             decimal lineItemTotal = await _commandSub.ValidateLineItemUnitCost(default, product, _existingLineItems, lineItem);
 
@@ -112,9 +111,9 @@ namespace Headstart.Tests
         [Test]
         public async Task GetUnitPrice_SecondPriceBreak_NoMarkups_CumulativeQtyTrue()
         {
-            SuperHSMeProduct product = BuildMockProductData(true);
+            SuperHsMeProduct product = BuildMockProductData(true);
 
-            HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(3, 0); // Hits discount price break (minimum quantity 5) when adding existing line item quantity (2)
+            HsLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(3, 0); // Hits discount price break (minimum quantity 5) when adding existing line item quantity (2)
 
             decimal lineItemTotal = await _commandSub.ValidateLineItemUnitCost(default, product, _existingLineItems, lineItem);
 
@@ -124,9 +123,9 @@ namespace Headstart.Tests
         [Test]
         public async Task GetUnitPrice_FirstPriceBreak_OneMarkup_CumulativeQtyTrue()
         {
-            SuperHSMeProduct product = BuildMockProductData(true);
+            SuperHsMeProduct product = BuildMockProductData(true);
 
-            HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(2, 1); // Does not hit discount price break (minimum quantity 5) when adding existing line item quantity (2)
+            HsLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(2, 1); // Does not hit discount price break (minimum quantity 5) when adding existing line item quantity (2)
 
             decimal lineItemTotal = await _commandSub.ValidateLineItemUnitCost(default, product, _existingLineItems, lineItem);
 
@@ -136,9 +135,9 @@ namespace Headstart.Tests
         [Test]
         public async Task GetUnitPrice_SecondPriceBreak_OneMarkup_CumulativeQtyTrue()
         {
-            SuperHSMeProduct product = BuildMockProductData(true);
+            SuperHsMeProduct product = BuildMockProductData(true);
 
-            HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(3, 1);  // Hits discount price break (minimum quantity 5) when adding existing line item quantity (2)
+            HsLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(3, 1);  // Hits discount price break (minimum quantity 5) when adding existing line item quantity (2)
 
             decimal lineItemTotal = await _commandSub.ValidateLineItemUnitCost(default, product, _existingLineItems, lineItem);
 
@@ -148,9 +147,9 @@ namespace Headstart.Tests
         [Test]
         public async Task GetUnitPrice_FirstPriceBreak_TwoMarkups_CumulativeQtyTrue()
         {
-            SuperHSMeProduct product = BuildMockProductData(true);
+            SuperHsMeProduct product = BuildMockProductData(true);
 
-            HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(2, 2); // Does not hit discount price break (minimum quantity 5) when adding existing line item quantity (2)
+            HsLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(2, 2); // Does not hit discount price break (minimum quantity 5) when adding existing line item quantity (2)
 
             decimal lineItemTotal = await _commandSub.ValidateLineItemUnitCost(default, product, _existingLineItems, lineItem);
 
@@ -160,18 +159,18 @@ namespace Headstart.Tests
         [Test]
         public async Task GetUnitPrice_SecondPriceBreak_TwoMarkups_CumulativeQtyTrue()
         {
-            SuperHSMeProduct product = BuildMockProductData(true);
+            SuperHsMeProduct product = BuildMockProductData(true);
 
-            HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(3, 2);  // Hits discount price break (minimum quantity 5) when adding existing line item quantity (2)
+            HsLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(3, 2);  // Hits discount price break (minimum quantity 5) when adding existing line item quantity (2)
 
             decimal lineItemTotal = await _commandSub.ValidateLineItemUnitCost(default, product, _existingLineItems, lineItem);
 
             Assert.AreEqual(lineItemTotal, 9.75);
         }
 
-        private SuperHSMeProduct BuildMockProductData(bool UseCumulativeQty)
+        private SuperHsMeProduct BuildMockProductData(bool UseCumulativeQty)
         {
-            SuperHSMeProduct product = Substitute.For<SuperHSMeProduct>();
+            SuperHsMeProduct product = Substitute.For<SuperHsMeProduct>();
             product.PriceSchedule = Substitute.For<PriceSchedule>();
             product.PriceSchedule.UseCumulativeQuantity = UseCumulativeQty;
 
@@ -198,15 +197,21 @@ namespace Headstart.Tests
             return product;
         }
 
-        private List<HSLineItem> BuildMockExistingLineItemData()
+        private List<HsLineItem> BuildMockExistingLineItemData()
         {
-            HSLineItem existingLineItem1 = Substitute.For<HSLineItem>();
+            HsLineItem existingLineItem1 = Substitute.For<HsLineItem>();
             existingLineItem1.Quantity = 1;
-            existingLineItem1.xp = new LineItemXp() { PrintArtworkURL = null };
+            existingLineItem1.xp = new LineItemXp()
+            {
+	            PrintArtworkUrl = null
+            };
 
-            HSLineItem existingLineItem2 = Substitute.For<HSLineItem>();
+            HsLineItem existingLineItem2 = Substitute.For<HsLineItem>();
             existingLineItem2.Quantity = 1;
-            existingLineItem2.xp = new LineItemXp() { PrintArtworkURL = null };
+            existingLineItem2.xp = new LineItemXp()
+            {
+	            PrintArtworkUrl = null
+            };
 
             LineItemSpec liSpecSizeSmall = Substitute.For<LineItemSpec>();
             liSpecSizeSmall.SpecID = "Size";
@@ -226,14 +231,14 @@ namespace Headstart.Tests
             existingLineItem1.Specs = new List<LineItemSpec> { liSpecSizeSmall, liSpecColorRed };
             existingLineItem2.Specs = new List<LineItemSpec> { liSpecSizeMedium, liSpecColorRed };
 
-            List<HSLineItem> existingLineItems = new List<HSLineItem> { existingLineItem1, existingLineItem2 };
+            List<HsLineItem> existingLineItems = new List<HsLineItem> { existingLineItem1, existingLineItem2 };
 
             return existingLineItems;
         }
 
-        private HSLineItem SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(int quantity, int numberOfMarkedUpSpecs)
+        private HsLineItem SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(int quantity, int numberOfMarkedUpSpecs)
         {
-            HSLineItem lineItem = Substitute.For<HSLineItem>();
+            HsLineItem lineItem = Substitute.For<HsLineItem>();
 
             lineItem.Quantity = quantity;
 

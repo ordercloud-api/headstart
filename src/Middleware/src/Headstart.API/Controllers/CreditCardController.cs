@@ -44,7 +44,6 @@ namespace Headstart.API.Controllers
 		}
 	}
 
-
 	public class MeCreditCardAuthorizationController : CatalystController
 	{
 		private readonly ICreditCardCommand _card;

@@ -1,4 +1,6 @@
-﻿namespace Headstart.Models.Exceptions
+﻿namespace Headstart.Common.Exceptions
 {
-    public class ZohoIntegrationError { }
+	public class ZohoIntegrationError
+	{
+	}
 }

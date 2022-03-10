@@ -1,9 +1,13 @@
 ﻿using OrderCloud.SDK;
 
-namespace Headstart.Models
+namespace Headstart.Common.Models.Headstart
 {
+	public class HsPriceSchedule : PriceSchedule<PriceScheduleXp>
+	{
+		public string Id { get; set; } = string.Empty;
+	}
 
-    public class HSPriceSchedule : PriceSchedule<PriceScheduleXp>, IHSObject { }
-
-    public class PriceScheduleXp { }
+	public class PriceScheduleXp
+	{
+	}
 }

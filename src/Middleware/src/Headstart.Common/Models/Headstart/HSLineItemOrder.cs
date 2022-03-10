@@ -1,9 +1,9 @@
-﻿namespace Headstart.Models.Headstart
+﻿namespace Headstart.Common.Models.Headstart
 {
-    public class HSLineItemOrder
-    {
-        public HSOrder HSOrder { get; set; } = new HSOrder();
-
-        public HSLineItem HSLineItem { get; set; } = new HSLineItem();
-    }
+	public class HsLineItemOrder
+	{
+		public HsOrder HsOrder { get; set; } = new HsOrder();
+		
+		public HsLineItem HsLineItem { get; set; } = new HsLineItem();
+	}
 }

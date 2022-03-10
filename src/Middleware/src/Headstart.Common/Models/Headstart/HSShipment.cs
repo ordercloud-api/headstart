@@ -1,37 +1,35 @@
 using OrderCloud.SDK;
-using Headstart.Models;
 using System.Collections.Generic;
 
-namespace Headstart.Common.Services.ShippingIntegration.Models
+namespace Headstart.Common.Models.Headstart
 {
+	public class SuperHsShipment
+	{
+		public HsShipment Shipment { get; set; } = new HsShipment();
+		public List<ShipmentItem> ShipmentItems { get; set; } = new List<ShipmentItem>();
+	}
 
-    public class SuperHSShipment
-    {
-        public HSShipment Shipment { get; set; }
-        public List<ShipmentItem> ShipmentItems { get; set; }
-    }
-
-    // These are in the common namespace so that we can reference the FreightPop model
-    public class HSShipment : Shipment<ShipmentXp, HSAddressSupplier, HSAddressBuyer> { }
+	// These are in the common namespace so that we can reference the FreightPop model
+	public class HsShipment : Shipment<ShipmentXp, HsAddressSupplier, HsAddressBuyer>
+	{
+	}
     
-    public class ShipmentXp
-    {        
-        public string Service { get; set; } = string.Empty;
+	public class ShipmentXp
+	{        
+		public string Service { get; set; } = string.Empty;
 
-        public string Comment { get; set; } = string.Empty;
+		public string Comment { get; set; } = string.Empty;
 
-        public string BuyerID { get; set; } = string.Empty;
-    }
+		public string BuyerId { get; set; } = string.Empty;
+	}
 
+	public class HsShipmentWithItems : Shipment
+	{
+		public List<HsShipmentItemWithLineItem> ShipmentItems { get; set; } = new List<HsShipmentItemWithLineItem>();
+	}
 
-    public class HSShipmentWithItems : Shipment
-    {
-        public List<HSShipmentItemWithLineItem> ShipmentItems { get; set; } = new List<HSShipmentItemWithLineItem>();
-    }
-
-
-    public class HSShipmentItemWithLineItem : ShipmentItem
-    {
-        public LineItem LineItem { get; set; } = new LineItem();
-    }
+	public class HsShipmentItemWithLineItem : ShipmentItem
+	{
+		public LineItem LineItem { get; set; } = new LineItem();
+	}
 }

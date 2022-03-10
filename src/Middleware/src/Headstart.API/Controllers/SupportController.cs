@@ -1,15 +1,13 @@
 using OrderCloud.SDK;
-using Headstart.Models;
 using OrderCloud.Catalyst;
 using System.Threading.Tasks;
 using Headstart.API.Commands;
 using Microsoft.AspNetCore.Mvc;
 using Headstart.Common.Services;
 using System.Collections.Generic;
-using Headstart.Models.Headstart;
 using Headstart.API.Commands.Zoho;
 using Headstart.Common.Models.Misc;
-using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Common.Models.Headstart;
 
 namespace Headstart.API.Controllers
 {
@@ -48,10 +46,10 @@ namespace Headstart.API.Controllers
 		[HttpGet, Route("shipping")]
 		public async Task<ShipEstimateResponse> GetShippingRates([FromBody] ShipmentTestModel model)
 		{
-			var payload = new HSOrderCalculatePayload()
+			var payload = new HsOrderCalculatePayload()
 			{
 				ConfigData = null,
-				OrderWorksheet = new HSOrderWorksheet()
+				OrderWorksheet = new HsOrderWorksheet()
 				{
 					Order = model.Order,
 					LineItems = model.LineItems
@@ -115,7 +113,7 @@ namespace Headstart.API.Controllers
 		[HttpPost, Route("postordersubmit/{orderId}"), OrderCloudUserAuth]
 		public async Task<OrderSubmitResponse> ManuallyRunPostOrderSubmit(string orderId)
 		{
-			var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderId);
+			var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HsOrderWorksheet>(OrderDirection.Incoming, orderId);
 			return await _postSubmitCommand.HandleBuyerOrderSubmit(worksheet);
 		}
 
@@ -133,7 +131,7 @@ namespace Headstart.API.Controllers
 
 	public class ShipmentTestModel
 	{
-		public HSOrder Order { get; set; } = new HSOrder();
-		public List<HSLineItem> LineItems { get; set; } = new List<HSLineItem>();
+		public HsOrder Order { get; set; } = new HsOrder();
+		public List<HsLineItem> LineItems { get; set; } = new List<HsLineItem>();
 	}
 }

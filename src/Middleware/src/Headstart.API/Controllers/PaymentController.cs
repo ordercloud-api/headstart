@@ -6,7 +6,7 @@ using Headstart.API.Commands;
 using Headstart.Common.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using Headstart.Models.Headstart;
+using Headstart.Common.Models.Headstart;
 
 namespace Headstart.API.Controllers
 {
@@ -34,7 +34,7 @@ namespace Headstart.API.Controllers
 		/// <param name="request"></param>
 		/// <returns>The list of HSPayment response from the SavePayments action</returns>
 		[HttpPut, Route("{orderId}/update"), OrderCloudUserAuth(ApiRole.Shopper)]
-		public async Task<IList<HSPayment>> SavePayments(string orderId, [FromBody] PaymentUpdateRequest request)
+		public async Task<IList<HsPayment>> SavePayments(string orderId, [FromBody] PaymentUpdateRequest request)
 		{
 			return await _command.SavePayments(orderId, request.Payments, UserContext.AccessToken);
 		}
