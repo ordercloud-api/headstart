@@ -171,7 +171,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 		/// <returns>The generated and formatted GetLogExceptionMessage string value</returns>
 		public static string GetLogExceptionMessage(string methodName, string message, string tryCatchMessage, string errorTraceCert, string notificationTypePrefix)
 		{
-			var _Notification = string.Empty;
+			var notification = string.Empty;
 			notificationTypePrefix = (string.IsNullOrEmpty(notificationTypePrefix)) ? GetGeneralLogMessagePrefixKey() : notificationTypePrefix;
 			methodName = (string.IsNullOrEmpty(methodName)) ? GetNoMethodIdPassedInPrefixKey() : methodName;
 
@@ -191,9 +191,9 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 
 			sb.Append($@"{logMessage}" + Environment.NewLine);
 			sb.Append($@"------------------------------{methodName}:{dateStamp}------------------------------" + Environment.NewLine);
-			_Notification = sb.ToString().Trim();
+			notification = sb.ToString().Trim();
 
-			return _Notification;
+			return notification;
 		}
 
 		/// <summary>
@@ -232,17 +232,17 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 				sb.Append($@"{logMessage} {tryCatchMessage}. {errorTraceCert}." + Environment.NewLine);
 				sb.Append($@"------------------------------{methodName}:{dateTimeStamp}:{GetMessageTypeKey(isExceptionMessage, isInfoMessage)}------------------------------" + Environment.NewLine);
 
-				if (Directory.Exists(logsDirectory))
+				if (!Directory.Exists(logsDirectory))
 				{
-					string filePath = $@"{logsDirectory}\{appLogFileKey}ApiApplicationNotifications_{dateStamp}.txt";
-
-					// This text is always added, making the file longer over time
-					// if it is not deleted.
-					using (var sw = File.AppendText(filePath))
-					{
-						sw.WriteLine(sb.ToString().Trim());
-						sw.Close();
-					}
+					Directory.CreateDirectory(logsDirectory);
+				}
+				var filePath = $@"{logsDirectory}\{appLogFileKey}ApiApplicationNotifications_{dateStamp}.txt";
+				// This text is always added, making the file longer over time
+				// if it is not deleted.
+				using (var sw = File.AppendText(filePath))
+				{
+					sw.WriteLine(sb.ToString().Trim());
+					sw.Close();
 				}
 			}
 			finally
