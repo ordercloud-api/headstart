@@ -266,8 +266,8 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 	public static class ServerSideNotificationWrappers
 	{
 		/// <summary>
-		/// Common re-usable NotificationAlerts method used for dynamically create an HTML div wrapper for notifications styled message arround server message 
-		/// needed to be returned to the user - All this types and HTML div wrapper are as per Bootstrap resposive-design standards
+		/// Common re-usable NotificationAlerts method used for dynamically create an HTML div wrapper for notifications styled message around server message 
+		/// needed to be returned to the user - All this types and HTML div wrapper are as per Bootstrap responsive-design standards
 		/// </summary>
 		/// <param name="notificationMessage"></param>
 		/// <param name="alertType"></param>
