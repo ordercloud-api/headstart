@@ -151,7 +151,7 @@ namespace Headstart.API.Commands
 		/// <param name="userId"></param>
 		/// <returns></returns>
 		public async Task SyncUserCatalogAssignments(string buyerId, string userId)
-        {
+		{
 			try
 			{
 				// retrieve the data we'll need for further analysis

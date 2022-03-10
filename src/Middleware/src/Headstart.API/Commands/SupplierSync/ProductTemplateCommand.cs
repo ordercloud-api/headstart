@@ -20,7 +20,7 @@ using Sitecore.Foundation.SitecoreExtensions.Extensions;
 using IPartial = ordercloud.integrations.library.IPartial;
 using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
-namespace Headstart.API.Commands
+namespace Headstart.API.Commands.SupplierSync
 {
 	public interface IProductTemplateCommand
 	{

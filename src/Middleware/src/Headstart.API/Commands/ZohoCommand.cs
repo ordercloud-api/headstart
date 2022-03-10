@@ -19,8 +19,8 @@ namespace Headstart.API.Commands.Zoho
 	public interface IZohoCommand
 	{
 		Task<ZohoSalesOrder> CreateSalesOrder(HsOrderWorksheet orderWorksheet);
-		Task<List<ZohoPurchaseOrder>> CreateOrUpdatePurchaseOrder(ZohoSalesOrder z_order, List<HsOrder> orders);
-		Task<List<ZohoPurchaseOrder>> CreateShippingPurchaseOrder(ZohoSalesOrder z_order, HsOrderWorksheet order);
+		Task<List<ZohoPurchaseOrder>> CreateOrUpdatePurchaseOrder(ZohoSalesOrder zOrder, List<HsOrder> orders);
+		Task<List<ZohoPurchaseOrder>> CreateShippingPurchaseOrder(ZohoSalesOrder zOrder, HsOrderWorksheet order);
 		Task<ZohoOrganizationList> ListOrganizations();
 	}
 
@@ -75,18 +75,18 @@ namespace Headstart.API.Commands.Zoho
 		/// Special request by SMG for creating PO of shipments
 		/// we definitely don't want this stopping orders from flowing into Zoho so I'm going to handle exceptions and allow to proceed
 		/// </summary>
-		/// <param name="z_order"></param>
+		/// <param name="zOrder"></param>
 		/// <param name="order"></param>
 		/// <returns>The list of ZohoPurchaseOrder response objects from the CreateShippingPurchaseOrder process</returns>
-		public async Task<List<ZohoPurchaseOrder>> CreateShippingPurchaseOrder(ZohoSalesOrder z_order, HsOrderWorksheet order)
+		public async Task<List<ZohoPurchaseOrder>> CreateShippingPurchaseOrder(ZohoSalesOrder zOrder, HsOrderWorksheet order)
 		{
 			var list = new List<ZohoPurchaseOrder>();
 			try
 			{
 				foreach (var item in order.ShipEstimateResponse.ShipEstimates)
 				{
-					var shipping_method = item.ShipMethods.FirstOrDefault(s => s.ID == item.SelectedShipMethodID);
-					if ((!shipping_method.xp.CarrierAccountId.Equals("ca_8bdb711131894ab4b42abcd1645d988c", StringComparison.OrdinalIgnoreCase))) 
+					var shippingMethod = item.ShipMethods.FirstOrDefault(s => s.ID == item.SelectedShipMethodID);
+					if ((!shippingMethod.xp.CarrierAccountId.Equals("ca_8bdb711131894ab4b42abcd1645d988c", StringComparison.OrdinalIgnoreCase))) 
 					{ 
 						continue; 
 					}
@@ -96,20 +96,20 @@ namespace Headstart.API.Commands.Zoho
 						Key = @"contact_name", 
 						Value = @"SMG Shipping"
 					});
-					var oc_lineitems = new ListPage<HsLineItem>()
+					var ocLineItems = new ListPage<HsLineItem>()
 					{
 						Items = new List<HsLineItem>()
 						{
 							new HsLineItem() {
-								ID = $@"{z_order.reference_number} - {ZohoExtensions.ShippingSuffix}",
-								UnitPrice = shipping_method?.Cost,
-								ProductID = shipping_method.ShippingSku(),
+								ID = $@"{zOrder.reference_number} - {ZohoExtensions.ShippingSuffix}",
+								UnitPrice = shippingMethod?.Cost,
+								ProductID = shippingMethod.ShippingSku(),
 								SupplierID = @"SMG Shipping",
 								Product = new HsLineItemProduct()
 								{
-									Description = $@"{shipping_method?.xp?.Carrier} Shipping Charge",
-									Name = shipping_method.ShippingSku(),
-									ID = shipping_method.ShippingSku(),
+									Description = $@"{shippingMethod?.xp?.Carrier} Shipping Charge",
+									Name = shippingMethod.ShippingSku(),
+									ID = shippingMethod.ShippingSku(),
 									QuantityMultiplier = 1,
 									xp = new ProductXp()
 									{
@@ -124,29 +124,29 @@ namespace Headstart.API.Commands.Zoho
 						}
 					};
 
-					var z_item = await CreateOrUpdateShippingLineItem(oc_lineitems.Items);
-					var oc_order = new Order()
+					var zItem = await CreateOrUpdateShippingLineItem(ocLineItems.Items);
+					var ocOrder = new Order()
 					{
 						ID = $@"{order.Order.ID}-{order.LineItems.FirstOrDefault()?.SupplierID} - 41000",
-						Subtotal = shipping_method.Cost,
-						Total = shipping_method.Cost,
+						Subtotal = shippingMethod.Cost,
+						Total = shippingMethod.Cost,
 						TaxCost = 0M
 					};
-					var oc_lineitem = new ListPage<HsLineItem>() { Items = new List<HsLineItem>() { new HsLineItem() { Quantity = 1 } } };
-					var z_po = ZohoPurchaseOrderMapper.Map(z_order, oc_order, z_item, oc_lineitem.Items.ToList(), null, vendor.Items.FirstOrDefault());
-					var shipping_po = await _zoho.PurchaseOrders.ListAsync(new ZohoFilter()
+					var ocLineItem = new ListPage<HsLineItem>() { Items = new List<HsLineItem>() { new HsLineItem() { Quantity = 1 } } };
+					var zPo = ZohoPurchaseOrderMapper.Map(zOrder, ocOrder, zItem, ocLineItem.Items.ToList(), null, vendor.Items.FirstOrDefault());
+					var shippingPo = await _zoho.PurchaseOrders.ListAsync(new ZohoFilter()
 					{
 						Key = @"purchaseorder_number", 
 						Value = $@"{order.Order.ID}-{order.LineItems.FirstOrDefault()?.SupplierID} - 41000"
 					});
-					if (shipping_po.Items.Any())
+					if (shippingPo.Items.Any())
 					{
-						z_po.purchaseorder_id = shipping_po.Items.FirstOrDefault()?.purchaseorder_id;
-						list.Add(await _zoho.PurchaseOrders.SaveAsync(z_po));
+						zPo.purchaseorder_id = shippingPo.Items.FirstOrDefault()?.purchaseorder_id;
+						list.Add(await _zoho.PurchaseOrders.SaveAsync(zPo));
 					}
 					else
 					{
-						list.Add(await _zoho.PurchaseOrders.CreateAsync(z_po));
+						list.Add(await _zoho.PurchaseOrders.CreateAsync(zPo));
 					}
 				}
 			}
@@ -160,17 +160,17 @@ namespace Headstart.API.Commands.Zoho
 		/// <summary>
 		/// Public re-usable CreateOrUpdatePurchaseOrder task method
 		/// </summary>
-		/// <param name="z_order"></param>
+		/// <param name="zOrder"></param>
 		/// <param name="orders"></param>
 		/// <returns>The list of ZohoPurchaseOrder response objects from the CreateOrUpdatePurchaseOrder process</returns>
-		public async Task<List<ZohoPurchaseOrder>> CreateOrUpdatePurchaseOrder(ZohoSalesOrder z_order, List<HsOrder> orders)
+		public async Task<List<ZohoPurchaseOrder>> CreateOrUpdatePurchaseOrder(ZohoSalesOrder zOrder, List<HsOrder> orders)
 		{
 			var results = new List<ZohoPurchaseOrder>();
 			try
 			{
 				foreach (var order in orders)
 				{
-					var delivery_address = z_order.shipping_address; //TODO: this is not good enough. Might even need to go back to SaleOrder and split out by delivery address
+					var delivery_address = zOrder.shipping_address; //TODO: this is not good enough. Might even need to go back to SaleOrder and split out by delivery address
 					var supplier = await _oc.Suppliers.GetAsync(order.ToCompanyID);
 					// TODO: accomodate possibility of more than 100 line items
 					var lineitems = await _oc.LineItems.ListAllAsync<HsLineItem>(OrderDirection.Outgoing, order.ID);
@@ -179,7 +179,7 @@ namespace Headstart.API.Commands.Zoho
 					// Step 2: Create or update Items from LineItems/Products on Order
 					var items = await CreateOrUpdatePurchaseLineItem(lineitems, supplier);
 					// Step 3: Create purchase order
-					var po = await CreatePurchaseOrder(z_order, order, items, lineitems, delivery_address, contact);
+					var po = await CreatePurchaseOrder(zOrder, order, items, lineitems, delivery_address, contact);
 					results.Add(po);
 				}
 			}
@@ -193,14 +193,14 @@ namespace Headstart.API.Commands.Zoho
 		/// <summary>
 		/// Public re-usable CreatePurchaseOrder task method
 		/// </summary>
-		/// <param name="z_order"></param>
+		/// <param name="zOrder"></param>
 		/// <param name="order"></param>
 		/// <param name="items"></param>
 		/// <param name="lineitems"></param>
 		/// <param name="delivery_address"></param>
 		/// <param name="contact"></param>
 		/// <returns>The ZohoPurchaseOrder response object from the CreatePurchaseOrder process</returns>
-		private async Task<ZohoPurchaseOrder> CreatePurchaseOrder(ZohoSalesOrder z_order, HsOrder order, List<ZohoLineItem> items, List<HsLineItem> lineitems, ZohoAddress delivery_address, ZohoContact contact)
+		private async Task<ZohoPurchaseOrder> CreatePurchaseOrder(ZohoSalesOrder zOrder, HsOrder order, List<ZohoLineItem> items, List<HsLineItem> lineitems, ZohoAddress delivery_address, ZohoContact contact)
 		{
 			var resp = new ZohoPurchaseOrder();
 			try
@@ -211,11 +211,11 @@ namespace Headstart.API.Commands.Zoho
 				});
 				if (po.Items.Any())
 				{
-					resp = await _zoho.PurchaseOrders.SaveAsync(ZohoPurchaseOrderMapper.Map(z_order, order, items, lineitems, delivery_address, contact, po.Items.FirstOrDefault()));
+					resp = await _zoho.PurchaseOrders.SaveAsync(ZohoPurchaseOrderMapper.Map(zOrder, order, items, lineitems, delivery_address, contact, po.Items.FirstOrDefault()));
 				}
 				else
 				{
-					resp = await _zoho.PurchaseOrders.CreateAsync(ZohoPurchaseOrderMapper.Map(z_order, order, items, lineitems, delivery_address, contact));
+					resp = await _zoho.PurchaseOrders.CreateAsync(ZohoPurchaseOrderMapper.Map(zOrder, order, items, lineitems, delivery_address, contact));
 				}
 			}
 			catch (Exception ex)
@@ -309,16 +309,16 @@ namespace Headstart.API.Commands.Zoho
 				}));
 				// the search api returns a list always. if no item was found the list will be empty
 				// so we want to get found items into a pared down list
-				var z_items = new Dictionary<string, ZohoLineItem>();
+				var zDictionaryItems = new Dictionary<string, ZohoLineItem>();
 				foreach (var list in zItems)
 				{
 					list.Items.ForEach(item =>
 					{
-						if (z_items.Any(z => z.Key == item.sku)) return;
-						z_items.Add(item.sku, item);
+						if (zDictionaryItems.Any(z => z.Key == item.sku)) return;
+						zDictionaryItems.Add(item.sku, item);
 					});
 				}
-				resp = new Tuple<Dictionary<string, ZohoLineItem>, List<HsLineItem>>(z_items, uniqueLineItems);
+				resp = new Tuple<Dictionary<string, ZohoLineItem>, List<HsLineItem>>(zDictionaryItems, uniqueLineItems);
 			}
 			catch (Exception ex)
 			{
@@ -337,13 +337,13 @@ namespace Headstart.API.Commands.Zoho
 			var resp = new List<ZohoLineItem>();
 			try
 			{
-				var (z_items, oc_items) = await this.PrepareLineItems(lineitems);
+				var (zItems, oc_items) = await this.PrepareLineItems(lineitems);
 				var items = await Throttler.RunAsync(oc_items, delay, concurrent, async lineItem =>
 				{
-					var (sku, z_item) = z_items.FirstOrDefault(z => z.Key == lineItem.SKU());
-					if (z_item != null)
+					var (sku, zItem) = zItems.FirstOrDefault(z => z.Key == lineItem.SKU());
+					if (zItem != null)
 					{
-						return await _zoho.Items.SaveAsync(ZohoSalesLineItemMapper.Map(z_item, lineItem));
+						return await _zoho.Items.SaveAsync(ZohoSalesLineItemMapper.Map(zItem, lineItem));
 					}
 					return await _zoho.Items.CreateAsync(ZohoSalesLineItemMapper.Map(lineItem));
 				});
@@ -367,13 +367,13 @@ namespace Headstart.API.Commands.Zoho
 			var resp = new List<ZohoLineItem>();
 			try
 			{
-				var (z_items, oc_items) = await this.PrepareLineItems(lineitems);
+				var (zItems, oc_items) = await this.PrepareLineItems(lineitems);
 				var items = await Throttler.RunAsync(oc_items, delay, concurrent, async lineItem =>
 				{
-					var (sku, z_item) = z_items.FirstOrDefault(z => z.Key == lineItem.SKU());
-					if (z_item != null)
+					var (sku, zItem) = zItems.FirstOrDefault(z => z.Key == lineItem.SKU());
+					if (zItem != null)
 					{
-						return await _zoho.Items.SaveAsync(ZohoPurchaseLineItemMapper.Map(z_item, lineItem, supplier));
+						return await _zoho.Items.SaveAsync(ZohoPurchaseLineItemMapper.Map(zItem, lineItem, supplier));
 					}
 					return await _zoho.Items.CreateAsync(ZohoPurchaseLineItemMapper.Map(lineItem, supplier));
 				});
@@ -396,13 +396,13 @@ namespace Headstart.API.Commands.Zoho
 			var resp = new List<ZohoLineItem>();
 			try
 			{
-				var (z_items, oc_items) = await this.PrepareLineItems(lineitems);
+				var (zItems, oc_items) = await this.PrepareLineItems(lineitems);
 				var items = await Throttler.RunAsync(oc_items, delay, concurrent, async lineItem =>
 				{
-					var (sku, z_item) = z_items.FirstOrDefault(z => z.Key == lineItem.SKU());
-					if (z_item != null)
+					var (sku, zItem) = zItems.FirstOrDefault(z => z.Key == lineItem.SKU());
+					if (zItem != null)
 					{
-						return await _zoho.Items.SaveAsync(ZohoSalesLineItemMapper.Map(z_item, lineItem));
+						return await _zoho.Items.SaveAsync(ZohoSalesLineItemMapper.Map(zItem, lineItem));
 					}
 					return await _zoho.Items.CreateAsync(ZohoSalesLineItemMapper.Map(lineItem));
 				});

@@ -23,11 +23,11 @@ namespace Headstart.API.Commands
 		Task<SuperHsProduct> Post(SuperHsProduct product, DecodedToken decodedToken);
 		Task<SuperHsProduct> Put(string id, SuperHsProduct product, string token);
 		Task Delete(string id, string token);
-		Task<HsPriceSchedule> GetPricingOverride(string id, string buyerID, string token);
-		Task DeletePricingOverride(string id, string buyerID, string token);
-		Task<HsPriceSchedule> UpdatePricingOverride(string id, string buyerID, HsPriceSchedule pricingOverride, string token);
-		Task<HsPriceSchedule> CreatePricingOverride(string id, string buyerID, HsPriceSchedule pricingOverride, string token);
-		Task<Product> FilterOptionOverride(string id, string supplierID, IDictionary<string, object> facets, DecodedToken decodedToken);
+		Task<HsPriceSchedule> GetPricingOverride(string id, string buyerId, string token);
+		Task DeletePricingOverride(string id, string buyerId, string token);
+		Task<HsPriceSchedule> UpdatePricingOverride(string id, string buyerId, HsPriceSchedule pricingOverride, string token);
+		Task<HsPriceSchedule> CreatePricingOverride(string id, string buyerId, HsPriceSchedule pricingOverride, string token);
+		Task<Product> FilterOptionOverride(string id, string supplierId, IDictionary<string, object> facets, DecodedToken decodedToken);
 	}
 
 	public class DefaultOptionSpecAssignment

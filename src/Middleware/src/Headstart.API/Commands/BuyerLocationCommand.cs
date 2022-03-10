@@ -19,8 +19,8 @@ namespace Headstart.API.Commands
 		Task<HsBuyerLocation> Save(string buyerId, string buyerLocationId, HsBuyerLocation buyerLocation);
 		Task<HsBuyerLocation> Save(string buyerId, string buyerLocationId, HsBuyerLocation buyerLocation, string token, IOrderCloudClient oc = null);
 		Task Delete(string buyerId, string buyerLocationId);
-		Task CreateSinglePermissionGroup(string buyerLocationId, string permissionGroupID);
-		Task ReassignUserGroups(string buyerId, string newUserID);
+		Task CreateSinglePermissionGroup(string buyerLocationId, string permissionGroupId);
+		Task ReassignUserGroups(string buyerId, string newUserId);
 	}
 
 	public class HsBuyerLocationCommand : IHsBuyerLocationCommand
@@ -315,13 +315,13 @@ namespace Headstart.API.Commands
 		/// Public re-usable CreateSinglePermissionGroup task method
 		/// </summary>
 		/// <param name="buyerLocationId"></param>
-		/// <param name="permissionGroupID"></param>
+		/// <param name="permissionGroupId"></param>
 		/// <returns></returns>
-		public async Task CreateSinglePermissionGroup(string buyerLocationId, string permissionGroupID)
+		public async Task CreateSinglePermissionGroup(string buyerLocationId, string permissionGroupId)
 		{
 			try
 			{
-				var permissionGroup = HsUserTypes.BuyerLocation().Find(userType => permissionGroupID.Contains(userType.UserGroupIdSuffix));
+				var permissionGroup = HsUserTypes.BuyerLocation().Find(userType => permissionGroupId.Contains(userType.UserGroupIdSuffix));
 				await AddUserTypeToLocation(buyerLocationId, permissionGroup);
 			}
 			catch (Exception ex)

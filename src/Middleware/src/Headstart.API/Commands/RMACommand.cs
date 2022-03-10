@@ -80,10 +80,10 @@ namespace Headstart.API.Commands
 		{
 			try
 			{
-				foreach (var supplierID in supplierIds)
+				foreach (var supplierId in supplierIds)
 				{
-					var sellerId = supplierID;
-					var sellerName = supplierID == null ? _settings.OrderCloudSettings.MarketplaceName : (await _oc.Suppliers.GetAsync<HsSupplier>(supplierID)).Name;
+					var sellerId = supplierId;
+					var sellerName = string.IsNullOrEmpty(supplierId) ? _settings.OrderCloudSettings.MarketplaceName : (await _oc.Suppliers.GetAsync<HsSupplier>(supplierId)).Name;
 
 					var rma = new RMA()
 					{
@@ -98,7 +98,7 @@ namespace Headstart.API.Commands
 						DateCreated = DateTime.Now,
 						DateComplete = null,
 						Status = RMAStatus.Requested,
-						LineItems = BuildLineItemRMA(supplierID, lineItemStatusChanges, lineItemsChanged, order),
+						LineItems = BuildLineItemRMA(supplierId, lineItemStatusChanges, lineItemsChanged, order),
 						Logs = new List<RMALog>(),
 						FromBuyerId = order.FromCompanyID,
 						FromBuyerUserId = order.FromUser.ID
@@ -128,9 +128,9 @@ namespace Headstart.API.Commands
 					Filters = new List<ListFilter>() { new ListFilter(@"SourceOrderID", order.ID) }
 				};
 
-				CosmosListPage<RMA> existingRMAsOnOrder = await ListBuyerRMAs(args, order.FromCompanyID);
-				int lastRMANumber = existingRMAsOnOrder.Items.OrderBy(rma => rma.RMANumber).Select(rma => int.Parse(rma.RMANumber.Substring(rma.RMANumber.LastIndexOf(@"-") + 1))).LastOrDefault();
-				string rmaSuffix = $@"{lastRMANumber + 1}".PadLeft(2, '0');
+				var existingRMAsOnOrder = await ListBuyerRMAs(args, order.FromCompanyID);
+				var lastRMANumber = existingRMAsOnOrder.Items.OrderBy(rma => rma.RMANumber).Select(rma => int.Parse(rma.RMANumber.Substring(rma.RMANumber.LastIndexOf(@"-") + 1))).LastOrDefault();
+				var rmaSuffix = $@"{lastRMANumber + 1}".PadLeft(2, '0');
 				rmaNumber = $@"{order.ID}-RMA-{rmaSuffix}";
 			}
 			catch (Exception ex)
@@ -532,7 +532,7 @@ namespace Headstart.API.Commands
 				var orderWorksheetLineItems = worksheet.LineItems.Where(li => rmaLineItemsToUpdate.Any(itemToUpdate => itemToUpdate.Id == li.ID));
 				var actionCompleteType = rmaType == RMAType.Cancellation ? LineItemStatus.Canceled : LineItemStatus.Returned;
 				var actionDeniedType = rmaType == RMAType.Cancellation ? LineItemStatus.CancelDenied : LineItemStatus.ReturnDenied;
-				foreach (HsLineItem lineItem in orderWorksheetLineItems)
+				foreach (var lineItem in orderWorksheetLineItems)
 				{
 					var correspondingRMALineItem = rmaLineItemsToUpdate.FirstOrDefault(li => li.Id == lineItem.ID);
 					if (correspondingRMALineItem.QuantityProcessed == correspondingRMALineItem.QuantityRequested)
@@ -587,7 +587,7 @@ namespace Headstart.API.Commands
 
 				if (statusChangeToAdjust == null)
 				{
-					LineItemStatusChanges newStatusChange = new LineItemStatusChanges() { Status = lineItemStatus, Changes = new List<LineItemStatusChange>() };
+					var newStatusChange = new LineItemStatusChanges() { Status = lineItemStatus, Changes = new List<LineItemStatusChange>() };
 					lineItemStatusChangesList.Add(newStatusChange);
 					statusChangeToAdjust = lineItemStatusChangesList.FirstOrDefault(change => change.Status == lineItemStatus);
 				}
@@ -752,11 +752,11 @@ namespace Headstart.API.Commands
 			try
 			{
 				var taxLines = orderWorksheet?.OrderCalculateResponse?.xp?.TaxCalculation?.LineItems;
-				foreach (RMALineItem rmaLineItem in lineItemsToUpdate)
+				foreach (var rmaLineItem in lineItemsToUpdate)
 				{
 					if (!rmaLineItem.RefundableViaCreditCard)
 					{
-						HsLineItem lineItemFromOrder = orderWorksheet.LineItems.FirstOrDefault(li => li.ID == rmaLineItem.Id);
+						var lineItemFromOrder = orderWorksheet.LineItems.FirstOrDefault(li => li.ID == rmaLineItem.Id);
 						rmaLineItem.LineTotalRefund = lineItemFromOrder.LineTotal / lineItemFromOrder.Quantity * rmaLineItem.QuantityProcessed;
 					}
 					else

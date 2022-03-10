@@ -88,6 +88,7 @@ namespace Headstart.API.Commands
 		private readonly ILineItemCommand _lineItemCommand;
 		private Dictionary<string, Shipment> _shipmentByTrackingNumber = new Dictionary<string, Shipment>();
 		private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+		private  const string exampleSignifier = "//EXAMPLE//";
 
 		/// <summary>
 		/// The IOC based constructor method for the ShipmentCommand class object with Dependency Injection
@@ -121,14 +122,14 @@ namespace Headstart.API.Commands
 			{
 				var buyerId = string.Empty;
 				var firstShipmentItem = superShipment.ShipmentItems.First();
-				var supplierOrderID = firstShipmentItem.OrderID;
-				var buyerOrderID = supplierOrderID.Split("-").First();
+				var supplierOrderId = firstShipmentItem.OrderID;
+				var buyerOrderId = supplierOrderId.Split("-").First();
 
 				// in the platform, in order to make sure the order has the proper Order.Status, you must 
 				// create a shipment without a DateShipped and then patch the DateShipped after
 				DateTimeOffset? dateShipped = superShipment.Shipment.DateShipped;
 				superShipment.Shipment.DateShipped = null;
-				await PatchLineItemStatuses(supplierOrderID, superShipment, OrderDirection.Incoming, decodedToken);
+				await PatchLineItemStatuses(supplierOrderId, superShipment, OrderDirection.Incoming, decodedToken);
 				if (decodedToken.CommerceRole != CommerceRole.Seller)
 				{
 					buyerId = await GetBuyerIDForSupplierOrder(firstShipmentItem.OrderID);
@@ -147,7 +148,7 @@ namespace Headstart.API.Commands
 					dynamic comments = new ExpandoObject();
 					var commentsByShipment = comments as IDictionary<string, object>;
 					commentsByShipment[ocShipment.ID] = shipmentItem.xp?.Comment;
-					return _oc.LineItems.PatchAsync(OrderDirection.Incoming, buyerOrderID, shipmentItem.LineItemID, new PartialLineItem()
+					return _oc.LineItems.PatchAsync(OrderDirection.Incoming, buyerOrderId, shipmentItem.LineItemID, new PartialLineItem()
 					{
 						xp = new
 						{
@@ -235,8 +236,8 @@ namespace Headstart.API.Commands
 			var buyerId = string.Empty;
 			try
 			{
-				var buyerOrderID = supplierOrderId.Split(@"-").First();
-				var relatedBuyerOrder = await _oc.Orders.GetAsync(OrderDirection.Incoming, buyerOrderID);
+				var buyerOrderId = supplierOrderId.Split(@"-").First();
+				var relatedBuyerOrder = await _oc.Orders.GetAsync(OrderDirection.Incoming, buyerOrderId);
 				if (!string.IsNullOrEmpty(relatedBuyerOrder.FromCompanyID))
 				{
 					buyerId = relatedBuyerOrder.FromCompanyID;
@@ -335,9 +336,11 @@ namespace Headstart.API.Commands
 					}
 					catch (Exception ex)
 					{
-						var failureDto = new BatchProcessFailure();
-						failureDto.Error = ex.Message;
-						failureDto.Shipment = shipment;
+						var failureDto = new BatchProcessFailure
+						{
+							Error = ex.Message,
+							Shipment = shipment
+						};
 						processResult.ProcessFailureList.Add(failureDto);
 						LogExt.LogException(_webConfigSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 					}
@@ -369,7 +372,14 @@ namespace Headstart.API.Commands
 		{
 			try
 			{
-				var partialOrder = new PartialOrder { xp = new { ShippingStatus = shippingStatus, SubmittedOrderStatus = orderStatus } };
+				var partialOrder = new PartialOrder 
+				{ 
+					xp = new
+					{
+						ShippingStatus = shippingStatus, 
+						SubmittedOrderStatus = orderStatus
+					}
+				};
 				await _oc.Orders.PatchAsync(OrderDirection.Outgoing, ocOrder.ID, partialOrder);
 			}
 			catch (Exception ex)
@@ -393,15 +403,18 @@ namespace Headstart.API.Commands
 					return false;
 				}
 
-				foreach (var lineItem in lineItemList.Items)
+				if (lineItemList?.Items != null)
 				{
-					if (lineItem.Quantity > lineItem.QuantityShipped)
+					foreach (var lineItem in lineItemList.Items)
 					{
-						return false;
-					}
-					else
-					{
-						continue;
+						if (lineItem.Quantity > lineItem.QuantityShipped)
+						{
+							return false;
+						}
+						else
+						{
+							continue;
+						}
 					}
 				}
 			}
@@ -577,7 +590,7 @@ namespace Headstart.API.Commands
 					return;
 				}
 
-				int newAmountShipped = (Convert.ToInt32(shipment.QuantityShipped) + lineItem.QuantityShipped);
+				var newAmountShipped = (Convert.ToInt32(shipment.QuantityShipped) + lineItem.QuantityShipped);
 				if (newAmountShipped > lineItem.Quantity)
 				{
 					var ex = new Exception($"Unable to ship {shipment.QuantityShipped} item(s). {lineItem.QuantityShipped} out of {lineItem.Quantity} items are already shipped. LineItemID: {lineItem.ID}.");
@@ -659,7 +672,6 @@ namespace Headstart.API.Commands
 			var resp = new LineItem();
 			try
 			{
-				var partialLineItem = new PartialLineItem();
 				var commentDictionary = new Dictionary<string, object>();
 				//Add new comment
 				if (string.IsNullOrEmpty(shipment?.ShipmentLineItemComment) || string.IsNullOrEmpty(shipment?.ShipmentLineItemComment))
@@ -668,7 +680,7 @@ namespace Headstart.API.Commands
 				}
 
 				commentDictionary.Add(newShipmentId, shipment?.ShipmentLineItemComment);
-				partialLineItem = new PartialLineItem()
+				var partialLineItem = new PartialLineItem()
 				{
 					xp = new
 					{
@@ -717,7 +729,7 @@ namespace Headstart.API.Commands
 					}
 					if (shipmentResponse != null)
 					{
-						//add shipment to dictionary if it's found
+						//Add shipment to dictionary if it's found
 						_shipmentByTrackingNumber.Add(shipmentResponse.TrackingNumber, shipmentResponse);
 					}
 				}
@@ -854,7 +866,6 @@ namespace Headstart.API.Commands
 			var resp = false;
 			try
 			{
-				var exampleSignifier = "//EXAMPLE//";
 				//Ignore if the row is empty, or if it's the example row.
 				if (value == null)
 				{

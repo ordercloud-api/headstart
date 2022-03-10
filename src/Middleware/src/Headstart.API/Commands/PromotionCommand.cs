@@ -102,7 +102,7 @@ namespace Headstart.API.Commands
 			}
 			catch (Exception ex)
 			{
-				// this can leave us in a bad state if the promotion can't be deleted but no longer valid
+				// This can leave us in a bad state if the promotion can't be deleted but no longer valid
 				var exception = new CatalystBaseException(new ApiError
 				{
 					ErrorCode = @"Promotion.ErrorRemoving",

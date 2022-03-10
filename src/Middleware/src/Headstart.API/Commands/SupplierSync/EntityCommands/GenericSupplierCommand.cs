@@ -15,7 +15,7 @@ using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands.SupplierSync.EntityCommands
 {
-    [SupplierSync("Generic")]
+	[SupplierSync("Generic")]
 	public class GenericSupplierCommand : ISupplierSyncCommand
 	{
 		private readonly IOrderCloudClient _ocSeller; 
@@ -62,7 +62,7 @@ namespace Headstart.API.Commands.SupplierSync.EntityCommands
 				//TODO: BaseUrl cannot be found here
 				var ocAuth = await _ocSeller.AuthenticateAsync();
 				HsShipEstimate estimate;
-				HsShipMethod ship_method = null;
+				HsShipMethod shipMethod = null;
 				HsOrderWorksheet supplierWorksheet = null;
 
 				// Supplier worksheet will not exist on quote orders.
@@ -87,7 +87,7 @@ namespace Headstart.API.Commands.SupplierSync.EntityCommands
 				if (buyerWorksheet?.ShipEstimateResponse != null && buyerWorksheet?.ShipEstimateResponse?.ShipEstimates.Count > 0)
 				{
 					estimate = buyerWorksheet.GetMatchingShipEstimate(supplierWorksheet?.LineItems?.FirstOrDefault()?.ShipFromAddressID);
-					ship_method = estimate?.ShipMethods?.FirstOrDefault(m => m.ID == estimate.SelectedShipMethodID);
+					shipMethod = estimate?.ShipMethods?.FirstOrDefault(m => m.ID == estimate.SelectedShipMethodID);
 				}
 
 				returnObject = new JObject { };
@@ -127,9 +127,9 @@ namespace Headstart.API.Commands.SupplierSync.EntityCommands
 					}
 				}
 
-				if (ship_method != null)
+				if (shipMethod != null)
 				{
-					returnObject.Add(new JProperty("ShipMethod", JToken.FromObject(ship_method)));
+					returnObject.Add(new JProperty("ShipMethod", JToken.FromObject(shipMethod)));
 				}
 			}
 			catch (Exception ex)

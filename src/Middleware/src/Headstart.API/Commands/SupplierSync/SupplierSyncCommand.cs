@@ -16,7 +16,7 @@ namespace Headstart.API.Commands.SupplierSync
 {
 	public interface ISupplierSyncCommand
 	{
-		Task<JObject> GetOrderAsync(string Id, OrderType orderType, DecodedToken decodedToken);
+		Task<JObject> GetOrderAsync(string id, OrderType orderType, DecodedToken decodedToken);
 	}
 
 	public class SupplierSyncCommand : ISupplierSyncCommand
@@ -46,25 +46,25 @@ namespace Headstart.API.Commands.SupplierSync
 		/// <summary>
 		/// Public re-usable GetOrderAsync task method
 		/// </summary>
-		/// <param name="Id"></param>
+		/// <param name="id"></param>
 		/// <param name="orderType"></param>
 		/// <param name="decodedToken"></param>
 		/// <returns>The JObject response object for the Get Order process</returns>
-		public async Task<JObject> GetOrderAsync(string Id, OrderType orderType, DecodedToken decodedToken)
+		public async Task<JObject> GetOrderAsync(string id, OrderType orderType, DecodedToken decodedToken)
 		{
 			var resp = new JObject();
 			try
 			{
 				var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-				// quote orders often won't have a hyphen in their order IDs, so allowing ID to be a fallback. This value is determined subsequently for quotes.
-				var supplierID = Id.Split("-").Length > 1 ? Id.Split("-")[1] : Id;
+				// quote orders often won't have a hyphen in their order ids, so allowing ID to be a fallback. This value is determined subsequently for quotes.
+				var supplieId = id.Split("-").Length > 1 ? id.Split("-")[1] : id;
 				if (orderType != OrderType.Quote)
 				{
-					Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierID == me.Supplier.ID, new ErrorCode(@"Unauthorized", @"You are not authorized view this order.", 401));
+					Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplieId == me.Supplier.ID, new ErrorCode(@"Unauthorized", @"You are not authorized view this order.", 401));
 				}
 				try
 				{
-					var type = Assembly.GetExecutingAssembly().GetTypeByAttribute<SupplierSyncAttribute>(attribute => attribute.SupplierId == supplierID) ??
+					var type = Assembly.GetExecutingAssembly().GetTypeByAttribute<SupplierSyncAttribute>(attribute => attribute.SupplierId == supplieId) ??
 					           Assembly.GetExecutingAssembly().GetTypeByAttribute<SupplierSyncAttribute>(attribute => attribute.SupplierId.Trim().Equals(@"Generic", StringComparison.OrdinalIgnoreCase));
 					if (type == null) 
 					{
@@ -78,13 +78,13 @@ namespace Headstart.API.Commands.SupplierSync
 					var method = command.GetType().GetMethod(@"GetOrderAsync", BindingFlags.Public | BindingFlags.Instance);
 					if (method == null)
 					{
-						var ex = new MissingMethodException($@"Get Order Method for {supplierID} is unavailable.");
+						var ex = new MissingMethodException($@"Get Order Method for {supplieId} is unavailable.");
 						LogExt.LogException(_webConfigSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 						throw ex;
 					}
 					resp = await (Task<JObject>)method.Invoke(command, new object[]
 					{
-						Id, 
+						id, 
 						orderType, 
 						decodedToken
 					});
@@ -93,9 +93,13 @@ namespace Headstart.API.Commands.SupplierSync
 				{
 					var ex = new Exception(JsonConvert.SerializeObject(new ApiError()
 					{
-						Data = new { decodedToken, OrderID = Id, OrderType = orderType },
+						Data = new
+						{
+							decodedToken, OrderID = id, 
+							OrderType = orderType
+						},
 						ErrorCode = mex.Message,
-						Message = $@"Missing Method for: {supplierID ?? "Invalid Supplier"}. OrderID: {Id}, OrderType : {orderType}."
+						Message = $@"Missing Method for: {supplieId ?? "Invalid Supplier"}. OrderID: {id}, OrderType : {orderType}."
 					}));
 					LogExt.LogException(_webConfigSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{mex.Message}. {ex.Message}", mex.StackTrace, this, true);
 					throw ex;

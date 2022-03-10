@@ -100,7 +100,7 @@ namespace Headstart.API.Commands
 				}
 				else if (existingPayment.CreditCardID == requestedPayment.CreditCardID && existingPayment.Amount == paymentAmount)
 				{
-					// Do nothing, payment doesnt need updating
+					// Do nothing, payment doesn't need updating
 					return;
 				}
 				else if (existingPayment.CreditCardID == requestedPayment.CreditCardID)
@@ -191,7 +191,7 @@ namespace Headstart.API.Commands
 		{
 			try
 			{
-				// requestedPayments represents the payments that should be on the order
+				// The requestedPayments represents the payments that should be on the order
 				// if there are any existing payments not reflected in requestedPayments then they should be deleted
 				foreach (var existingPayment in existingPayments.ToList())
 				{

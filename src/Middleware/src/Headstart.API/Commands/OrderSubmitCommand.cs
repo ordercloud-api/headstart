@@ -101,11 +101,11 @@ namespace Headstart.API.Commands
 				var lineItemsInactive = await GetInactiveLineItems(worksheet, userToken);
 				Require.That(!lineItemsInactive.Any(), new ErrorCode(@"OrderSubmit.InvalidProducts", @"This Order contains line items for products that are inactive."), lineItemsInactive);
 
-				// ordercloud validates the same stuff that would be checked on order submit
+				// Ordercloud validates the same stuff that would be checked on order submit
 				await _oc.Orders.ValidateAsync(OrderDirection.Incoming, worksheet.Order.ID);
 			} 
 			catch (OrderCloudException ex) {
-				// credit card payments aren't accepted yet, so ignore this error for now
+				// Credit card payments aren't accepted yet, so ignore this error for now
 				// we'll accept the payment once the credit card auth goes through (before order submit)
 				var errors = ex.Errors.Where(ex => (!ex.ErrorCode.Equals(@"Order.CannotSubmitWithUnacceptedPayments", StringComparison.OrdinalIgnoreCase)));
 				if(errors.Any())
@@ -127,7 +127,7 @@ namespace Headstart.API.Commands
 			var inactiveLineItems = new List<HsLineItem>();
 			try
 			{
-				foreach (HsLineItem lineItem in worksheet.LineItems)
+				foreach (var lineItem in worksheet.LineItems)
 				{
 					try
 					{

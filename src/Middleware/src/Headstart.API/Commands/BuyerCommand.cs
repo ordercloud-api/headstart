@@ -15,8 +15,8 @@ namespace Headstart.API.Commands
 	{
 		Task<SuperHsBuyer> Create(SuperHsBuyer buyer);
 		Task<SuperHsBuyer> Create(SuperHsBuyer buyer, string accessToken, IOrderCloudClient oc);
-		Task<SuperHsBuyer> Get(string buyerID);
-		Task<SuperHsBuyer> Update(string buyerID, SuperHsBuyer buyer);
+		Task<SuperHsBuyer> Get(string buyerId);
+		Task<SuperHsBuyer> Update(string buyerId, SuperHsBuyer buyer);
 	}
 
 	public class HsBuyerCommand : IHsBuyerCommand
@@ -106,7 +106,7 @@ namespace Headstart.API.Commands
 			var resp = new SuperHsBuyer();
 			try
 			{
-				// to prevent changing buyerIDs
+				// to prevent changing buyerIds
 				superBuyer.Buyer.Id = buyerId;
 				var updatedImpersonationConfig = new ImpersonationConfig();
 
@@ -134,7 +134,7 @@ namespace Headstart.API.Commands
 		/// Public re-usable task method to get the SuperHsBuyer object by the buyerID
 		/// </summary>
 		/// <param name="buyerId"></param>
-		/// <returns>The SuperHsBuyer response object by the buyerID</returns>
+		/// <returns>The SuperHsBuyer response object by the buyerId</returns>
 		public async Task<SuperHsBuyer> Get(string buyerId)
 		{
 			var resp = new SuperHsBuyer();
@@ -168,7 +168,7 @@ namespace Headstart.API.Commands
 		/// Private re-usable GetImpersonationByBuyerID task method to get the ImpersonationConfig object by the buyerID
 		/// </summary>
 		/// <param name="buyerId"></param>
-		/// <returns>The ImpersonationConfig response object by the buyerID</returns>
+		/// <returns>The ImpersonationConfig response object by the buyerId</returns>
 		private async Task<ImpersonationConfig> GetImpersonationByBuyerId(string buyerId)
 		{
 			var resp = new ImpersonationConfig();
@@ -203,13 +203,13 @@ namespace Headstart.API.Commands
 
 				buyer.ID = buyer.ID ?? "{buyerIncrementor}";
 				var ocBuyer = await ocClient.Buyers.CreateAsync(buyer, accessToken);
-				var ocBuyerID = ocBuyer.ID;
-				buyer.ID = ocBuyerID;
+				var ocBuyerId = ocBuyer.ID;
+				buyer.ID = ocBuyerId;
 
 				// create base security profile assignment
 				await ocClient.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment
 				{
-					BuyerID = ocBuyerID,
+					BuyerID = ocBuyerId,
 					SecurityProfileID = CustomRole.HsBaseBuyer.ToString()
 				}, token);
 
@@ -217,18 +217,18 @@ namespace Headstart.API.Commands
 				await ocClient.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
 				{
 					MessageSenderID = "BuyerEmails",
-					BuyerID = ocBuyerID
+					BuyerID = ocBuyerId
 				}, token);
 
-				await ocClient.Incrementors.SaveAsync($"{ocBuyerID}-UserIncrementor",
-					new Incrementor { ID = $"{ocBuyerID}-UserIncrementor", LastNumber = 0, LeftPaddingCount = 5, Name = "User Incrementor" }, token);
-				await ocClient.Incrementors.SaveAsync($"{ocBuyerID}-LocationIncrementor",
-					new Incrementor { ID = $"{ocBuyerID}-LocationIncrementor", LastNumber = 0, LeftPaddingCount = 4, Name = "Location Incrementor" }, token);
+				await ocClient.Incrementors.SaveAsync($"{ocBuyerId}-UserIncrementor",
+					new Incrementor { ID = $"{ocBuyerId}-UserIncrementor", LastNumber = 0, LeftPaddingCount = 5, Name = "User Incrementor" }, token);
+				await ocClient.Incrementors.SaveAsync($"{ocBuyerId}-LocationIncrementor",
+					new Incrementor { ID = $"{ocBuyerId}-LocationIncrementor", LastNumber = 0, LeftPaddingCount = 4, Name = "Location Incrementor" }, token);
 
 				await ocClient.Catalogs.SaveAssignmentAsync(new CatalogAssignment()
 				{
-					BuyerID = ocBuyerID,
-					CatalogID = ocBuyerID,
+					BuyerID = ocBuyerId,
+					CatalogID = ocBuyerId,
 					ViewAllCategories = true,
 					ViewAllProducts = false
 				}, token);
@@ -259,7 +259,7 @@ namespace Headstart.API.Commands
 				var token = oc == null ? null : accessToken;
 				var ocClient = oc ?? _oc;
 
-				// to move from xp to contentdocs, that logic will go here instead of a patch
+				// to move from xp to content docs, that logic will go here instead of a patch
 				var updatedBuyer = await ocClient.Buyers.PatchAsync(buyerId, new PartialBuyer() { xp = new { MarkupPercent = markup.Percent } }, token);
 				resp.Percent = (int)updatedBuyer.xp.MarkupPercent;
 			}

@@ -222,9 +222,9 @@ namespace Headstart.API.Commands
 			{
 				if (product.PriceSchedule != null)
 				{
-					/* if the price schedule Id matches the product ID we 
+					/* If the price schedule Id matches the product ID we 
 					 * we mark up the produc
-					 * if they dont match we just convert for currecny as the 
+					 * if they don't match we just convert for currecny as the 
 					 * seller has set custom pricing */
 					var shouldMarkupProduct = product.PriceSchedule.ID == product.ID;
 					if (shouldMarkupProduct)
@@ -242,7 +242,7 @@ namespace Headstart.API.Commands
 					{
 						product.PriceSchedule.PriceBreaks = product.PriceSchedule.PriceBreaks.Select(priceBreak =>
 						{
-							// price on price schedule will be in USD as it is set by the seller
+							// Price on price schedule will be in USD as it is set by the seller
 							// may be different rates in the future
 							// refactor to save price on the price schedule not product xp?
 							var currency = (Nullable<CurrencySymbol>)CurrencySymbol.USD;
@@ -292,10 +292,10 @@ namespace Headstart.API.Commands
 			try
 			{
 				var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-				var buyerID = me.Buyer.ID;
-				var buyer = await _cache.GetOrAddAsync($@"buyer_{buyerID}", TimeSpan.FromHours(1), () => _HsBuyerCommand.Get(buyerID));
+				var buyerId = me.Buyer.ID;
+				var buyer = await _cache.GetOrAddAsync($@"buyer_{buyerId}", TimeSpan.FromHours(1), () => _HsBuyerCommand.Get(buyerId));
 
-				// must convert markup to decimal before division to prevent rouding error
+				// Must convert markup to decimal before division to prevent rounding error
 				var markupPercent = ((decimal)buyer.Markup.Percent / 100);
 				markupMultiplier = (markupPercent + 1);
 			}

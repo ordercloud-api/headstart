@@ -18,9 +18,9 @@ namespace Headstart.API.Commands
 	public interface IHsSupplierCommand
 	{
 		Task<HsSupplier> Create(HsSupplier supplier, string accessToken, bool isSeedingEnvironment = false);
-		Task<HsSupplier> GetMySupplier(string supplierID, DecodedToken decodedToken);
-		Task<HsSupplier> UpdateSupplier(string supplierID, PartialSupplier supplier, DecodedToken decodedToken);
-		Task<HsSupplierOrderData> GetSupplierOrderData(string supplierOrderID, OrderType orderType, DecodedToken decodedToken);
+		Task<HsSupplier> GetMySupplier(string supplierId, DecodedToken decodedToken);
+		Task<HsSupplier> UpdateSupplier(string supplierId, PartialSupplier supplier, DecodedToken decodedToken);
+		Task<HsSupplierOrderData> GetSupplierOrderData(string supplierOrderId, OrderType orderType, DecodedToken decodedToken);
 	}
 
 	public class HsSupplierCommand : IHsSupplierCommand
@@ -148,24 +148,24 @@ namespace Headstart.API.Commands
 			{
 				var token = isSeedingEnvironment ? accessToken : null;
 				// Create Supplier
-				supplier.ID = "{supplierIncrementor}";
+				supplier.ID = @"{supplierIncrementor}";
 				var ocSupplier = await _oc.Suppliers.CreateAsync(supplier, token);
 				supplier.ID = ocSupplier.ID;
-				var ocSupplierID = ocSupplier.ID;
+				var ocSupplierId = ocSupplier.ID;
 
 				// This supplier user is created so that we can define an api client with it as the default context user
 				// this allows us to perform elevated supplier actions on behalf of that supplier company
 				// It is not an actual user that will login so there is no password or valid email
-				var supplierUser = await _oc.SupplierUsers.CreateAsync(ocSupplierID, new User()
+				var supplierUser = await _oc.SupplierUsers.CreateAsync(ocSupplierId, new User()
 				{
 					Active = true,
-					FirstName = $@"Integration",
-					LastName = $@"Developer",
-					Username = $@"dev_{ocSupplierID}",
-					Email = $@"test@test.com"
+					FirstName = @"Integration",
+					LastName = @"Developer",
+					Username = $@"dev_{ocSupplierId}",
+					Email = @"test@test.com"
 				}, token);
 
-				await CreateUserTypeUserGroupsAndSecurityProfileAssignments(supplierUser, token, ocSupplierID);
+				await CreateUserTypeUserGroupsAndSecurityProfileAssignments(supplierUser, token, ocSupplierId);
 				// Create API Client for new supplier
 				var apiClient = await _oc.ApiClients.CreateAsync(new ApiClient()
 				{
@@ -194,13 +194,13 @@ namespace Headstart.API.Commands
 				await _oc.ApiClients.SaveAssignmentAsync(new ApiClientAssignment()
 				{
 					ApiClientID = apiClient.ID,
-					SupplierID = ocSupplierID
+					SupplierID = ocSupplierId
 				}, token);
 				// assign to message sender
 				await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
 				{
-					MessageSenderID = $@"SupplierEmails",
-					SupplierID = ocSupplierID
+					MessageSenderID = @"SupplierEmails",
+					SupplierID = ocSupplierId
 				});
 			}
 			catch (Exception ex)
@@ -238,7 +238,7 @@ namespace Headstart.API.Commands
 						Name = userType.UserGroupName,
 						xp =
 						{
-							Type = $@"UserPermissions",
+							Type = @"UserPermissions",
 						}
 					}, token);
 

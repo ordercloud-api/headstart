@@ -128,13 +128,13 @@ namespace Headstart.API.Commands
 			var quoteOrdersList = new ListPage<HsOrder>();
 			try
 			{
-				var supplierID = me.Supplier?.ID;
+				var supplierId = me.Supplier?.ID;
 				var filters = new Dictionary<string, object>
 				{
-					[$@"xp.QuoteSupplierID"] = supplierID != null ? supplierID : $@"*",
-					[$@"IsSubmitted"] = false,
-					[$@"xp.OrderType"] = OrderType.Quote,
-					[$@"xp.QuoteStatus"] = quoteStatus
+					[@"xp.QuoteSupplierID"] = !string.IsNullOrEmpty(supplierId) ? supplierId : @"*",
+					[@"IsSubmitted"] = false,
+					[@"xp.OrderType"] = OrderType.Quote,
+					[@"xp.QuoteStatus"] = quoteStatus
 				};
 				var quoteOrders = await _oc.Orders.ListAllAsync<HsOrder>(OrderDirection.Incoming, filters: filters);
 				quoteOrdersList = new ListPage<HsOrder>()
@@ -168,9 +168,9 @@ namespace Headstart.API.Commands
 			var order = new HsOrder();
 			try
 			{
-				var supplierID = me.Supplier?.ID;
+				var supplierId = me.Supplier?.ID;
 				order = await _oc.Orders.GetAsync<HsOrder>(OrderDirection.Incoming, orderId);
-				if (supplierID != null && order.xp?.QuoteSupplierId != supplierID)
+				if (!string.IsNullOrEmpty(supplierId) && order.xp?.QuoteSupplierId != supplierId)
 				{
 					throw new Exception("You are not authorized to view this order.");
 				}

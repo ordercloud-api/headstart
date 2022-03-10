@@ -23,8 +23,8 @@ namespace Headstart.API.Commands
 	{
 		Task<ShipEstimateResponse> GetRatesAsync(HsOrderCalculatePayload orderCalculatePayload);
 		Task<HsOrderCalculateResponse> CalculateOrder(HsOrderCalculatePayload orderCalculatePayload);
-		Task<HsOrderCalculateResponse> CalculateOrder(string orderID, DecodedToken decodedToken);
-		Task<ShipEstimateResponse> GetRatesAsync(string orderID);
+		Task<HsOrderCalculateResponse> CalculateOrder(string orderId, DecodedToken decodedToken);
+		Task<ShipEstimateResponse> GetRatesAsync(string orderId);
 	}
 
 	public class CheckoutIntegrationCommand : ICheckoutIntegrationCommand
@@ -87,14 +87,14 @@ namespace Headstart.API.Commands
 		/// <summary>
 		/// Public re-usable GetRatesAsync task method
 		/// </summary>
-		/// <param name="orderID"></param>
+		/// <param name="orderId"></param>
 		/// <returns>The ShipEstimateResponse response object from the GetRates process</returns>
-		public async Task<ShipEstimateResponse> GetRatesAsync(string orderID)
+		public async Task<ShipEstimateResponse> GetRatesAsync(string orderId)
 		{
 			var resp = new ShipEstimateResponse();
 			try
 			{
-				var order = await _oc.IntegrationEvents.GetWorksheetAsync<HsOrderWorksheet>(OrderDirection.Incoming, orderID);
+				var order = await _oc.IntegrationEvents.GetWorksheetAsync<HsOrderWorksheet>(OrderDirection.Incoming, orderId);
 				resp = await this.GetRatesAsync(order);
 			}
 			catch (Exception ex)

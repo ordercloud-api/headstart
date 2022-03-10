@@ -25,11 +25,11 @@ namespace Headstart.API.Commands
 {
 	public interface ILineItemCommand
 	{
-		Task<HsLineItem> UpsertLineItem(string orderID, HsLineItem li, DecodedToken decodedToken);
-		Task<List<HsLineItem>> UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection orderDirection, string orderID, LineItemStatusChanges lineItemStatusChanges, DecodedToken decodedToken = null);
-		Task<List<HsLineItem>> SetInitialSubmittedLineItemStatuses(string buyerOrderID);
-		Task DeleteLineItem(string orderID, string lineItemID, DecodedToken decodedToken);
-		Task<decimal> ValidateLineItemUnitCost(string orderID, SuperHsMeProduct product, List<HsLineItem> existingLineItems, HsLineItem li);
+		Task<HsLineItem> UpsertLineItem(string orderId, HsLineItem li, DecodedToken decodedToken);
+		Task<List<HsLineItem>> UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection orderDirection, string orderId, LineItemStatusChanges lineItemStatusChanges, DecodedToken decodedToken = null);
+		Task<List<HsLineItem>> SetInitialSubmittedLineItemStatuses(string buyerOrderId);
+		Task DeleteLineItem(string orderId, string lineItemId, DecodedToken decodedToken);
+		Task<decimal> ValidateLineItemUnitCost(string orderId, SuperHsMeProduct product, List<HsLineItem> existingLineItems, HsLineItem li);
 		Task HandleRMALineItemStatusChanges(OrderDirection orderDirection, RMAWithLineItemStatusByQuantity rmaWithLineItemStatusByQuantity, DecodedToken decodedToken);
 	}
 
@@ -160,8 +160,8 @@ namespace Headstart.API.Commands
 				var userType = decodedToken?.CommerceRole.ToString().ToLower() ?? "noUser";
 				userType = userType == "seller" ? "admin" : userType;
 				var verifiedUserType = userType.Reserialize<VerifiedUserType>();
-				var buyerOrderID = orderId.Split('-')[0];
-				var previousLineItemsStates = await _oc.LineItems.ListAllAsync<HsLineItem>(OrderDirection.Incoming, buyerOrderID);
+				var buyerOrderId = orderId.Split('-')[0];
+				var previousLineItemsStates = await _oc.LineItems.ListAllAsync<HsLineItem>(OrderDirection.Incoming, buyerOrderId);
 
 				ValidateLineItemStatusChange(previousLineItemsStates.ToList(), lineItemStatusChanges, verifiedUserType);
 				var updatedLineItems = await Throttler.RunAsync(lineItemStatusChanges.Changes, 100, 5, (lineItemStatusChange) =>
@@ -171,8 +171,8 @@ namespace Headstart.API.Commands
 					return decodedToken != null ? _oc.LineItems.PatchAsync<HsLineItem>(orderDirection, orderId, lineItemStatusChange.Id, newPartialLineItem, decodedToken.AccessToken) : _oc.LineItems.PatchAsync<HsLineItem>(orderDirection, orderId, lineItemStatusChange.Id, newPartialLineItem);
 				});
 
-				var buyerOrder = await _oc.Orders.GetAsync<HsOrder>(OrderDirection.Incoming, buyerOrderID);
-				var allLineItemsForOrder = await _oc.LineItems.ListAllAsync<HsLineItem>(OrderDirection.Incoming, buyerOrderID);
+				var buyerOrder = await _oc.Orders.GetAsync<HsOrder>(OrderDirection.Incoming, buyerOrderId);
+				var allLineItemsForOrder = await _oc.LineItems.ListAllAsync<HsLineItem>(OrderDirection.Incoming, buyerOrderId);
 				var lineItemsChanged = allLineItemsForOrder.Where(li => lineItemStatusChanges.Changes.Select(li => li.Id).Contains(li.ID)).ToList();
 				var sellerIDsRelatingToChange = lineItemsChanged.Select(li => li.SupplierID).Distinct().ToList();
 				if (lineItemStatusChanges.Status == LineItemStatus.CancelRequested || lineItemStatusChanges.Status == LineItemStatus.ReturnRequested)
@@ -181,12 +181,12 @@ namespace Headstart.API.Commands
 				}
 
 				var supplierIDsRelatingToChange = sellerIDsRelatingToChange.Where(s => s != null).ToList(); // filter out MPO
-				var relatedSupplierOrderIDs = (userType == "admin") ? null : supplierIDsRelatingToChange.Select(supplierID => supplierID == null ? supplierID : $@"{buyerOrderID}-{supplierID}").ToList();
-				var statusSync = SyncOrderStatuses(buyerOrder, relatedSupplierOrderIDs, allLineItemsForOrder.ToList());
+				var relatedSupplierOrderIds = (userType == "admin") ? null : supplierIDsRelatingToChange.Select(supplierID => supplierID == null ? supplierID : $@"{buyerOrderId}-{supplierID}").ToList();
+				var statusSync = SyncOrderStatuses(buyerOrder, relatedSupplierOrderIds, allLineItemsForOrder.ToList());
 				await statusSync;
 
-				var notifictionSender = HandleLineItemStatusChangeNotification(verifiedUserType, buyerOrder, supplierIDsRelatingToChange, lineItemsChanged, lineItemStatusChanges);
-				await notifictionSender;
+				var notificationSender = HandleLineItemStatusChangeNotification(verifiedUserType, buyerOrder, supplierIDsRelatingToChange, lineItemsChanged, lineItemStatusChanges);
+				await notificationSender;
 				resp = updatedLineItems.ToList();
 			}
 			catch (Exception ex)
@@ -200,21 +200,21 @@ namespace Headstart.API.Commands
 		/// Private re-usable SyncOrderStatuses task method
 		/// </summary>
 		/// <param name="buyerOrder"></param>
-		/// <param name="relatedSupplierOrderIDs"></param>
+		/// <param name="relatedSupplierOrderIds"></param>
 		/// <param name="allOrderLineItems"></param>
 		/// <returns></returns>
-		private async Task SyncOrderStatuses(HsOrder buyerOrder, List<string> relatedSupplierOrderIDs, List<HsLineItem> allOrderLineItems)
+		private async Task SyncOrderStatuses(HsOrder buyerOrder, List<string> relatedSupplierOrderIds, List<HsLineItem> allOrderLineItems)
 		{
 			try
 			{
 				await SyncOrderStatus(OrderDirection.Incoming, buyerOrder.ID, allOrderLineItems);
-				if (relatedSupplierOrderIDs != null)
+				if (relatedSupplierOrderIds != null)
 				{
-					foreach (var supplierOrderID in relatedSupplierOrderIDs)
+					foreach (var supplierOrderId in relatedSupplierOrderIds)
 					{
-						var supplierID = supplierOrderID.Split('-')[1];
-						var allOrderLineItemsForSupplierOrder = allOrderLineItems.Where(li => li.SupplierID == supplierID).ToList();
-						await SyncOrderStatus(OrderDirection.Outgoing, supplierOrderID, allOrderLineItemsForSupplierOrder);
+						var supplierId = supplierOrderId.Split('-')[1];
+						var allOrderLineItemsForSupplierOrder = allOrderLineItems.Where(li => li.SupplierID == supplierId).ToList();
+						await SyncOrderStatus(OrderDirection.Outgoing, supplierOrderId, allOrderLineItemsForSupplierOrder);
 					}
 				}
 			}
@@ -413,11 +413,11 @@ namespace Headstart.API.Commands
 		/// <param name="lineItemsChanged"></param>
 		/// <param name="lineItemStatusChanges"></param>
 		/// <returns></returns>
-		private async Task HandleLineItemStatusChangeNotification(VerifiedUserType setterUserType, HsOrder buyerOrder, List<string> supplierIDsRelatedToChange, List<HsLineItem> lineItemsChanged, LineItemStatusChanges lineItemStatusChanges)
+		private async Task HandleLineItemStatusChangeNotification(VerifiedUserType setterUserType, HsOrder buyerOrder, List<string> supplierIdsRelatedToChange, List<HsLineItem> lineItemsChanged, LineItemStatusChanges lineItemStatusChanges)
 		{
 			try
 			{
-				var suppliers = await Throttler.RunAsync(supplierIDsRelatedToChange, 100, 5, supplierID => _oc.Suppliers.GetAsync<HsSupplier>(supplierID));
+				var suppliers = await Throttler.RunAsync(supplierIdsRelatedToChange, 100, 5, supplierID => _oc.Suppliers.GetAsync<HsSupplier>(supplierID));
 
 				// currently the only place supplier name is used is when there should be lineitems from only one supplier included on the change, so we can just take the first supplier
 				var statusChangeTextDictionary = LineItemStatusConstants.GetStatusChangeEmailText(suppliers.First().Name);
@@ -628,15 +628,15 @@ namespace Headstart.API.Commands
 		/// Public re-usable DeleteLineItem task method
 		/// </summary>
 		/// <param name="orderID"></param>
-		/// <param name="lineItemID"></param>
+		/// <param name="lineItemId"></param>
 		/// <param name="decodedToken"></param>
 		/// <returns></returns>
-		public async Task DeleteLineItem(string orderID, string lineItemID, DecodedToken decodedToken)
+		public async Task DeleteLineItem(string orderID, string lineItemId, DecodedToken decodedToken)
 		{
 			try
 			{
-				LineItem lineItem = await _oc.LineItems.GetAsync(OrderDirection.Incoming, orderID, lineItemID);
-				await _oc.LineItems.DeleteAsync(OrderDirection.Incoming, orderID, lineItemID);
+				LineItem lineItem = await _oc.LineItems.GetAsync(OrderDirection.Incoming, orderID, lineItemId);
+				await _oc.LineItems.DeleteAsync(OrderDirection.Incoming, orderID, lineItemId);
 				List<HsLineItem> existingLineItems = await _oc.LineItems.ListAllAsync<HsLineItem>(OrderDirection.Outgoing, orderID, filters: $@"Product.ID={lineItem.ProductID}", accessToken: decodedToken.AccessToken);
 				if (existingLineItems != null && existingLineItems.Count > 0)
 				{
@@ -666,8 +666,8 @@ namespace Headstart.API.Commands
 			{
 				if (product.PriceSchedule.UseCumulativeQuantity)
 				{
-					int totalQuantity = li?.Quantity ?? 0;
-					foreach (HsLineItem lineItem in existingLineItems)
+					var totalQuantity = li?.Quantity ?? 0;
+					foreach (var lineItem in existingLineItems)
 					{
 						if (li == null || !LineItemsMatch(li, lineItem))
 						{
@@ -675,12 +675,12 @@ namespace Headstart.API.Commands
 						}
 					}
 
-					decimal priceBasedOnQuantity = product.PriceSchedule.PriceBreaks.Last(priceBreak => priceBreak.Quantity <= totalQuantity).Price;
+					var priceBasedOnQuantity = product.PriceSchedule.PriceBreaks.Last(priceBreak => priceBreak.Quantity <= totalQuantity).Price;
 					var tasks = new List<Task>();
-					foreach (HsLineItem lineItem in existingLineItems)
+					foreach (var lineItem in existingLineItems)
 					{
 						// Determine markup for all specs for this existing line item
-						decimal lineItemTotal = priceBasedOnQuantity + GetSpecMarkup(lineItem.Specs, product.Specs);
+						var lineItemTotal = priceBasedOnQuantity + GetSpecMarkup(lineItem.Specs, product.Specs);
 						if (lineItem.UnitPrice != lineItemTotal)
 						{
 							PartialLineItem lineItemToPatch = new PartialLineItem();
@@ -697,7 +697,7 @@ namespace Headstart.API.Commands
 					if (li != null)
 					{
 						// Determine price including quantity price break discount
-						decimal priceBasedOnQuantity = product.PriceSchedule.PriceBreaks.Last(priceBreak => priceBreak.Quantity <= li.Quantity).Price;
+						var priceBasedOnQuantity = product.PriceSchedule.PriceBreaks.Last(priceBreak => priceBreak.Quantity <= li.Quantity).Price;
 						// Determine markup for the 1 line item
 						resp = (priceBasedOnQuantity + GetSpecMarkup(li.Specs, product.Specs));
 					}
@@ -721,25 +721,25 @@ namespace Headstart.API.Commands
 		{
 			try
 			{
-				string orderID = string.Empty;
+				var orderId = string.Empty;
 				if (!rmaWithLineItemStatusByQuantity.LineItemStatusChangesList.Any())
 				{
 					return;
 				}                
 				if (rmaWithLineItemStatusByQuantity.RMA.SupplierId == null)
 				{
-					// this is an MPO owned RMA
-					orderID = rmaWithLineItemStatusByQuantity.RMA.SourceOrderId;
+					// This is an MPO owned RMA
+					orderId = rmaWithLineItemStatusByQuantity.RMA.SourceOrderId;
 				}
 				else
 				{
-					// this is a suplier owned RMA and by convention orders are in the format {orderID}-{supplierID}
-					orderID = $"{rmaWithLineItemStatusByQuantity.RMA.SourceOrderId}-{rmaWithLineItemStatusByQuantity.RMA.SupplierId}";
+					// This is a suplier owned RMA and by convention orders are in the format {orderID}-{supplierID}
+					orderId = $"{rmaWithLineItemStatusByQuantity.RMA.SourceOrderId}-{rmaWithLineItemStatusByQuantity.RMA.SupplierId}";
 				}
 
 				foreach (var statusChange in rmaWithLineItemStatusByQuantity.LineItemStatusChangesList)
 				{
-					await UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Incoming, orderID, statusChange, decodedToken);
+					await UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Incoming, orderId, statusChange, decodedToken);
 				}
 			}
 			catch (Exception ex)
@@ -761,7 +761,7 @@ namespace Headstart.API.Commands
 			{
 				lineItemTotal = lineItemSpecs.Aggregate(0M, (accumulator, spec) =>
 				{
-					Spec relatedProductSpec = productSpecs.FirstOrDefault(productSpec => productSpec.ID == spec.SpecID);
+					var relatedProductSpec = productSpecs.FirstOrDefault(productSpec => productSpec.ID == spec.SpecID);
 					decimal? relatedSpecMarkup = 0;
 					if (relatedProductSpec != null && relatedProductSpec.Options.HasItem())
 					{

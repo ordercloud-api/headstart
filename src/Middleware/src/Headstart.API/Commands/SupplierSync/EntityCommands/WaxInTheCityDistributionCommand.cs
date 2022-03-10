@@ -60,7 +60,7 @@ namespace Headstart.API.Commands.SupplierSync.EntityCommands
 			try
 			{
 				HsShipEstimate estimate;
-				HsShipMethod ship_method = null;
+				HsShipMethod shipMethod = null;
 				var supplierWorksheet = await _ocSeller.IntegrationEvents.GetWorksheetAsync<HsOrderWorksheet>(OrderDirection.Outgoing, ID);
 
 				var buyerWorksheet = await _ocSeller.IntegrationEvents.GetWorksheetAsync<HsOrderWorksheet>(OrderDirection.Incoming, ID.Split('-')[0]);
@@ -68,7 +68,7 @@ namespace Headstart.API.Commands.SupplierSync.EntityCommands
 				if (buyerWorksheet?.ShipEstimateResponse != null && buyerWorksheet?.ShipEstimateResponse?.ShipEstimates.Count > 0)
 				{
 					estimate = buyerWorksheet.GetMatchingShipEstimate(supplierWorksheet?.LineItems?.FirstOrDefault()?.ShipFromAddressID);
-					ship_method = estimate?.ShipMethods?.FirstOrDefault(m => m.ID == estimate.SelectedShipMethodID);
+					shipMethod = estimate?.ShipMethods?.FirstOrDefault(m => m.ID == estimate.SelectedShipMethodID);
 				}
 
 				returnObject = new JObject { };
@@ -90,9 +90,9 @@ namespace Headstart.API.Commands.SupplierSync.EntityCommands
 					}));
 				}
 
-				if (ship_method != null)
+				if (shipMethod != null)
 				{
-					returnObject.Add(new JProperty("ShipMethod", JToken.FromObject(ship_method)));
+					returnObject.Add(new JProperty("ShipMethod", JToken.FromObject(shipMethod)));
 				}
 			}
 			catch (Exception ex)
