@@ -48,7 +48,7 @@ namespace Headstart.Models.Misc
 		/// Container for OrderCloud Settings
 		/// </summary>
 		[Required]
-		public OrderCloudSeedSettings OrderCloudSettings { get; set; }
+		public OrderCloudSeedSettings OrderCloudSeedSettings { get; set; }
 
 		#endregion
 

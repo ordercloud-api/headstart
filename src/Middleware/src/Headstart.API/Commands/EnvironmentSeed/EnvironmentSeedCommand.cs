@@ -60,7 +60,7 @@ namespace Headstart.API.Commands
         /// </summary>
         public async Task<EnvironmentSeedResponse> Seed(EnvironmentSeed seed)
         {
-            OcEnv requestedEnv = validateEnvironment(seed.OrderCloudSettings.Environment);
+            OcEnv requestedEnv = validateEnvironment(seed.OrderCloudSeedSettings.Environment);
 
             if (requestedEnv.environmentName == OrderCloudEnvironments.Production.environmentName && seed.MarketplaceID == null)
             {
@@ -573,7 +573,7 @@ namespace Headstart.API.Commands
 
             // this gets called by both the /seed command and the post-staging restore so we need to handle getting settings from two sources
             var middlewareBaseUrl = seed != null ? seed.MiddlewareBaseUrl : _settings.EnvironmentSettings.MiddlewareBaseUrl;
-            var webhookHashKey = seed != null ? seed.OrderCloudSettings.WebhookHashKey : _settings.OrderCloudSettings.WebhookHashKey;
+            var webhookHashKey = seed != null ? seed.OrderCloudSeedSettings.WebhookHashKey : _settings.OrderCloudSettings.WebhookHashKey;
             var checkoutEvent = SeedConstants.CheckoutEvent(middlewareBaseUrl, webhookHashKey);
             await _oc.IntegrationEvents.SaveAsync(checkoutEvent.ID, checkoutEvent, token);
             var localCheckoutEvent = SeedConstants.LocalCheckoutEvent(webhookHashKey);

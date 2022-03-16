@@ -224,7 +224,7 @@ namespace Headstart.API.Commands
                         // MessageType.ShipmentCreated this is currently being triggered in-app possibly move to message senders
                     },
                 URL = seed.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
-                SharedKey = seed.OrderCloudSettings.WebhookHashKey
+                SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey
             };
         }
 
@@ -238,7 +238,7 @@ namespace Headstart.API.Commands
                         MessageType.ForgottenPassword,
                     },
                 URL = seed.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
-                SharedKey = seed.OrderCloudSettings.WebhookHashKey
+                SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey
             };
         }
 
@@ -252,7 +252,7 @@ namespace Headstart.API.Commands
                         MessageType.ForgottenPassword,
                     },
                 URL = seed.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
-                SharedKey = seed.OrderCloudSettings.WebhookHashKey
+                SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey
             };
         }
         #endregion
