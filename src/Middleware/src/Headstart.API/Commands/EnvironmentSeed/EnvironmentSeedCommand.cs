@@ -75,8 +75,7 @@ namespace Headstart.API.Commands
             });
 
             var portalUserToken = await _portal.Login(seed.PortalUsername, seed.PortalPassword);
-            var marketPlaceToBuild = ConstructMarketplaceFromSeed(seed, requestedEnv);
-            var marketplace = await GetOrCreateMarketplace(portalUserToken, marketPlaceToBuild);
+            var marketplace = await GetOrCreateMarketplace(portalUserToken, seed, requestedEnv); 
             var marketplaceToken = await _portal.GetMarketplaceToken(marketplace.Id, portalUserToken);
 
             await CreateOrUpdateDefaultSellerUser(seed, marketplaceToken);
@@ -181,24 +180,25 @@ namespace Headstart.API.Commands
             }
         }
 
-        public async Task<Marketplace> GetOrCreateMarketplace(string token, Marketplace marketplace)
+        public async Task<Marketplace> GetOrCreateMarketplace(string token, EnvironmentSeed seed, OcEnv env)
         {
-            if (marketplace.Id != null)
+            if (seed.MarketplaceID != null)
             {
-                var existingMarketplace = await VerifyMarketplaceExists(marketplace.Id, token);
+                var existingMarketplace = await VerifyMarketplaceExists(seed.MarketplaceID, token);
                 return existingMarketplace;
             }
             else
             {
+	            var marketPlaceToCreate = ConstructMarketplaceFromSeed(seed, env);
 	            try
                 {
-                    await _portal.GetMarketplace(marketplace.Id, token);
-                    return await GetOrCreateMarketplace(token, marketplace);
+                    await _portal.GetMarketplace(marketPlaceToCreate.Id, token);
+                    return await GetOrCreateMarketplace(token, seed, env);
                 }
                 catch (Exception ex)
                 {
-                    await _portal.CreateMarketplace(marketplace, token);
-                    return await _portal.GetMarketplace(marketplace.Id, token);
+                    await _portal.CreateMarketplace(marketPlaceToCreate, token);
+                    return await _portal.GetMarketplace(marketPlaceToCreate.Id, token);
                 }
             }
         }

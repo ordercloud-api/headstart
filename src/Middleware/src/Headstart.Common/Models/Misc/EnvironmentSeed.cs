@@ -100,7 +100,7 @@ namespace Headstart.Models.Misc
 		/// Options are US-West, US-East, Australia-East, Europe-West, Japan-East.
 		/// If no value is provided US-West will be used by default.
 		/// </summary>
-		[ValueRange(AllowableValues = new[] { "US-East", "Australia-East", "Europe-West", "Japan-East", "US-West"})]
+		[ValueRange(AllowableValues = new[] {null, "US-East", "Australia-East", "Europe-West", "Japan-East", "US-West"})]
 		public string AsureRegion { get; set; }
 
         #endregion
