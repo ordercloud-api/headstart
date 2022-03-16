@@ -397,7 +397,7 @@ namespace Headstart.API.Commands
         {
 	        AzureRegion = "westus",
 	        Id = "usw",
-	        Name = "Us-West"
+	        Name = "US-West"
         };
 
         public static readonly List<Region> Regions = new List<Region>()

@@ -95,6 +95,14 @@ namespace Headstart.Models.Misc
 		/// </summary>
 		public StorageAccountSeedSettings StorageAccountSettings { get; set; }
 
+		/// <summary>
+		/// Optionally provide an region for your new marketplace to be stored.
+		/// Options are US-West, US-East, Australia-East, Europe-West, Japan-East.
+		/// If no value is provided US-West will be used by default.
+		/// </summary>
+		[ValueRange(AllowableValues = new[] { "US-East", "Australia-East", "Europe-West", "Japan-East", "US-West"})]
+		public string AsureRegion { get; set; }
+
         #endregion
     }
 

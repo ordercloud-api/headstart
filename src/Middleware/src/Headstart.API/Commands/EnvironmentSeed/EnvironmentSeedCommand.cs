@@ -75,7 +75,8 @@ namespace Headstart.API.Commands
             });
 
             var portalUserToken = await _portal.Login(seed.PortalUsername, seed.PortalPassword);
-            var marketplace = await GetOrCreateMarketplace(portalUserToken, requestedEnv.environmentName, seed.MarketplaceName, seed.MarketplaceID);
+            var marketPlaceToBuild = ConstructMarketplaceFromSeed(seed, requestedEnv);
+            var marketplace = await GetOrCreateMarketplace(portalUserToken, marketPlaceToBuild);
             var marketplaceToken = await _portal.GetMarketplaceToken(marketplace.Id, portalUserToken);
 
             await CreateOrUpdateDefaultSellerUser(seed, marketplaceToken);
@@ -126,6 +127,20 @@ namespace Headstart.API.Commands
             };
         }
 
+        private static Marketplace ConstructMarketplaceFromSeed(EnvironmentSeed seed, OcEnv requestedEnv)
+        {
+	        var region = seed.AsureRegion != null
+		        ? SeedConstants.Regions.Find(r => r.Name == seed.AsureRegion)
+		        : SeedConstants.UsWest;
+	        return new Marketplace()
+	        {
+		        Id = Guid.NewGuid().ToString(),
+		        Environment = requestedEnv.environmentName,
+		        Name = seed.MarketplaceName == null ? "My Headstart Marketplace" : seed.MarketplaceName,
+		        Region = region
+	        };
+        }
+
         public async Task UpdateTranslations(string connectionString, string containerName)
         {
             var englishTranslationsPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "Assets", "english-translations.json"));
@@ -166,25 +181,19 @@ namespace Headstart.API.Commands
             }
         }
 
-        public async Task<Marketplace> GetOrCreateMarketplace(string token, string env, string marketplaceName, string marketplaceID = null)
+        public async Task<Marketplace> GetOrCreateMarketplace(string token, Marketplace marketplace)
         {
-            if (marketplaceID != null)
+            if (marketplace.Id != null)
             {
-                var marketplace = await VerifyMarketplaceExists(marketplaceID, token);
-                return marketplace;
+                var existingMarketplace = await VerifyMarketplaceExists(marketplace.Id, token);
+                return existingMarketplace;
             }
             else
             {
-                var marketplace = new Marketplace()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Environment = env,
-                    Name = marketplaceName == null ? "My Headstart Marketplace" : marketplaceName
-                };
-                try
+	            try
                 {
                     await _portal.GetMarketplace(marketplace.Id, token);
-                    return await GetOrCreateMarketplace(token, env, marketplaceName, marketplaceID);
+                    return await GetOrCreateMarketplace(token, marketplace);
                 }
                 catch (Exception ex)
                 {
