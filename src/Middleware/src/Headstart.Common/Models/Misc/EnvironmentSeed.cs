@@ -166,4 +166,12 @@ namespace Headstart.Models.Misc
         public string environmentName { get; set; }
 		public string apiUrl { get; set; }
     }
+
+	public class Region
+	{
+		public string AzureRegion { get; set; }
+		public string Id { get; set; }
+		public string Name { get; set; }
+		
+	}
 }
