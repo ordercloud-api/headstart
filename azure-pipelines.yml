@@ -18,7 +18,7 @@ jobs:
           command: 'restore'
           restoreSolution: '**/*.sln'
           feedsToUse: 'config'
-          nugetConfigPath: 'https://github.com/ppatel-sitecore/headstart/blob/development/nuget.config'
+          nugetConfigPath: 'nuget.config'
         displayName: NuGet restore
       - task: CmdLine@2
         displayName: Azure Storage for tests

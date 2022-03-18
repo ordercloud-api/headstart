@@ -1,13 +1,11 @@
-﻿using System;
-using System.Linq;
-using OrderCloud.SDK;
-using OrderCloud.Catalyst;
-using System.Threading.Tasks;
-using Headstart.Jobs.Helpers;
+﻿using Headstart.Common.Models.Headstart;
 using Headstart.Common.Repositories;
-using ordercloud.integrations.library;
-using Headstart.Common.Models.Headstart;
-using Headstart.Common.Repositories.Models;
+using Headstart.Jobs.Helpers;
+using OrderCloud.Catalyst;
+using OrderCloud.SDK;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Headstart.Jobs
 {
@@ -31,7 +29,7 @@ namespace Headstart.Jobs
 			}
 			catch (Exception ex)
 			{
-				LogFailure($"{ex.Message} {ex?.InnerException?.Message} {ex.StackTrace}");
+				LogFailure($@"{ex.Message}. {ex?.InnerException?.Message} {ex.StackTrace}.");
 				return ResultCode.PermanentFailure;
 			}
 		}
@@ -57,12 +55,12 @@ namespace Headstart.Jobs
 						var listOptions = BuildOrderWithShipmentsListOptions(orderID, shipmentItem.LineItemID, shipment.ID);
 						var currentOrderWithShipmentsListPage = await _ordersAndShipmentsDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
 
-						var cosmosID = string.Empty;
+						var cosmosId = string.Empty;
 						if (currentOrderWithShipmentsListPage.Items.Count() == 1)
 						{
-							cosmosID = cosmosOrderWithShipments.id = currentOrderWithShipmentsListPage.Items[0].id;
+							cosmosId = cosmosOrderWithShipments.id = currentOrderWithShipmentsListPage.Items[0].id;
 						}
-						await _ordersAndShipmentsDataRepo.UpsertItemAsync(cosmosID, cosmosOrderWithShipments);
+						await _ordersAndShipmentsDataRepo.UpsertItemAsync(cosmosId, cosmosOrderWithShipments);
 					}
 				}
 			}

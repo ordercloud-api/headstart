@@ -1,13 +1,13 @@
-﻿using System;
-using OrderCloud.SDK;
+﻿using Azure.Messaging.ServiceBus;
+using Headstart.Common.Models.Headstart;
+using Headstart.Common.Services;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using OrderCloud.Catalyst;
-using System.Threading.Tasks;
-using Headstart.Common.Services;
-using Azure.Messaging.ServiceBus;
+using OrderCloud.SDK;
+using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Logging;
-using Headstart.Common.Models.Headstart;
+using System.Threading.Tasks;
 
 namespace Headstart.Jobs
 {
@@ -26,28 +26,25 @@ namespace Headstart.Jobs
 
 		protected override async Task ProcessJob()
 		{
-			_logger.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
-
+			_logger.LogInformation($@"C# Timer trigger function executed at: {DateTime.Now}.");
 			var now = DateTime.UtcNow;
 			var dateEnd = now.AddMinutes(-15).ToString("s");
-			var dateFilter = $">{dateEnd}";
+			var dateFilter = $@">{dateEnd}";
 
 			var filters = new Dictionary<string, object>
 			{
-				["LastUpdated"] = $"{dateFilter}",
-				["IsSubmitted"] = true
+				[@"LastUpdated"] = $@"{dateFilter}",
+				[@"IsSubmitted"] = true
 			};
-
 			var orders = await _oc.Orders.ListAllAsync<HsOrder>(OrderDirection.Incoming, filters: filters);
-			_logger.LogInformation($"Found {orders.Count} orders with recent changes");
-
-			Queue<ServiceBusMessage> messages = new Queue<ServiceBusMessage>();
+			_logger.LogInformation($@"Found {orders.Count} orders with recent changes.");
+			var messages = new Queue<ServiceBusMessage>();
 			foreach (var order in orders)
 			{
 				var serializedOrderID = JsonConvert.SerializeObject(order.ID);
 				messages.Enqueue(new ServiceBusMessage(serializedOrderID));
 			}
-			await _serviceBus.SendMessageBatchToTopicAsync("orderreports", messages);
+			await _serviceBus.SendMessageBatchToTopicAsync(@"orderreports", messages);
 		}
 	}
 }

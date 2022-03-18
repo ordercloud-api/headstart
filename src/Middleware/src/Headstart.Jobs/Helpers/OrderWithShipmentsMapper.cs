@@ -23,11 +23,11 @@ namespace Headstart.Jobs.Helpers
 				? orderWorksheet.OrderCalculateResponse.xp.TaxCalculation.OrderLevelTaxes.FirstOrDefault(line => line.ShipEstimateID == shipEstimate.ID).Tax 
 				: 0;
 
-			var supplierName = ((IDictionary<string, object>)shipmentItem.Product.xp.Facets).ContainsKey("supplier") ? shipmentItem.Product.xp.Facets?.supplier[0] : null;
+			var supplierName = ((IDictionary<string, object>)shipmentItem.Product.xp.Facets).ContainsKey(@"supplier") ? shipmentItem.Product.xp.Facets?.supplier[0] : null;
 
 			var orderWithShipments = new OrderWithShipments()
 			{
-				PartitionKey = "PartitionValue",
+				PartitionKey = @"PartitionValue",
 				OrderId = orderWorksheet.Order.ID,
 				DateSubmitted = orderWorksheet.Order.DateSubmitted,
 				SubmittedOrderStatus = orderWorksheet.Order.xp.SubmittedOrderStatus,
@@ -70,7 +70,7 @@ namespace Headstart.Jobs.Helpers
 				ShipmentId = shipment.ID,
 				DateShipped = shipment.DateShipped,
 				TrackingNumber = shipment.TrackingNumber,
-				Service = ((IDictionary<string, object>)shipmentItem.xp).ContainsKey("ShipMethod") ? shipmentItem.xp.ShipMethod : null
+				Service = ((IDictionary<string, object>)shipmentItem.xp).ContainsKey(@"ShipMethod") ? shipmentItem.xp.ShipMethod : null
 			};
 
 			return orderWithShipments;

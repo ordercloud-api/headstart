@@ -1,29 +1,29 @@
-using Polly;
-using System;
-using SendGrid;
 using Flurl.Http;
-using System.Net;
-using Headstart.Jobs;
-using OrderCloud.SDK;
-using Newtonsoft.Json;
-using Headstart.Common;
-using Polly.Extensions.Http;
-using Headstart.API.Commands;
 using Flurl.Http.Configuration;
-using Headstart.Common.Services;
-using System.Collections.Generic;
-using Newtonsoft.Json.Converters;
-using Polly.Contrib.WaitAndRetry;
+using Headstart.API.Commands;
 using Headstart.API.Commands.Zoho;
+using Headstart.Common;
 using Headstart.Common.Repositories;
-using Newtonsoft.Json.Serialization;
+using Headstart.Common.Services;
 using Headstart.Common.Services.Zoho;
-using ordercloud.integrations.library;
+using Headstart.Jobs;
+using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using ordercloud.integrations.cardconnect;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
+using ordercloud.integrations.cardconnect;
+using ordercloud.integrations.library;
+using OrderCloud.SDK;
+using Polly;
+using Polly.Contrib.WaitAndRetry;
+using Polly.Extensions.Http;
+using SendGrid;
+using System;
+using System.Collections.Generic;
+using System.Net;
 
 [assembly: FunctionsStartup(typeof(Startup))]
 namespace Headstart.Jobs
@@ -32,7 +32,7 @@ namespace Headstart.Jobs
 	{
 		public override void Configure(IFunctionsHostBuilder builder)
 		{
-			var connectionString = Environment.GetEnvironmentVariable("APP_CONFIG_CONNECTION");
+			var connectionString = Environment.GetEnvironmentVariable(@"APP_CONFIG_CONNECTION");
 			var settings = new AppSettings();
 			var config = new ConfigurationBuilder()
 				.AddEnvironmentVariables()
@@ -51,33 +51,33 @@ namespace Headstart.Jobs
 			{
 				new ContainerInfo()
 				{
-					Name = "salesorderdetail",
-					PartitionKey = "/PartitionKey"
+					Name = @"salesorderdetail",
+					PartitionKey = @"/PartitionKey"
 				},
 				new ContainerInfo()
 				{
-					Name = "purchaseorderdetail",
-					PartitionKey = "/PartitionKey"
+					Name = @"purchaseorderdetail",
+					PartitionKey = @"/PartitionKey"
 				},
 				new ContainerInfo()
 				{
-					Name = "lineitemdetail",
-					PartitionKey = "/PartitionKey"
+					Name = @"lineitemdetail",
+					PartitionKey = @"/PartitionKey"
 				},
 				new ContainerInfo()
 				{
-					Name = "rmas",
-					PartitionKey = "/PartitionKey"
+					Name = @"rmas",
+					PartitionKey = @"/PartitionKey"
 				},
 				new ContainerInfo()
 				{
-					Name = "shipmentdetail",
-					PartitionKey = "/PartitionKey"
+					Name = @"shipmentdetail",
+					PartitionKey = @"/PartitionKey"
 				},
 				new ContainerInfo()
 				{
-					Name = "productdetail",
-					PartitionKey = "/PartitionKey"
+					Name = @"productdetail",
+					PartitionKey = @"/PartitionKey"
 				}
 			};
 

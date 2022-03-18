@@ -1,13 +1,12 @@
+using Headstart.Common.Models;
+using Headstart.Common.Models.Headstart;
+using Headstart.Common.Repositories;
+using Headstart.Common.Repositories.Models;
+using Headstart.Jobs.Helpers;
+using OrderCloud.SDK;
 using System;
 using System.Linq;
-using OrderCloud.SDK;
 using System.Threading.Tasks;
-using Headstart.Jobs.Helpers;
-using Headstart.Common.Models;
-using Headstart.Common.Repositories;
-using ordercloud.integrations.library;
-using Headstart.Common.Models.Headstart;
-using Headstart.Common.Repositories.Models;
 
 namespace Headstart.Jobs
 {
@@ -31,23 +30,20 @@ namespace Headstart.Jobs
 			}
 			catch (Exception ex)
 			{
-				LogFailure($"{ex.Message} {ex?.InnerException?.Message} {ex.StackTrace}");
+				LogFailure($@"{ex.Message}. {ex?.InnerException?.Message}. {ex.StackTrace}.");
 				return ResultCode.PermanentFailure;
 			}
 		}
 
-		private async Task UpsertSalesOrderDetail(string orderID)
+		private async Task UpsertSalesOrderDetail(string orderId)
 		{
-			var order = await _oc.Orders.GetAsync<HsOrder>(OrderDirection.Incoming, orderID);
-
+			var order = await _oc.Orders.GetAsync<HsOrder>(OrderDirection.Incoming, orderId);
 			var brand = await _oc.Buyers.GetAsync<HsBuyer>(order.FromCompanyID);
-
-			var promos = await _oc.Orders.ListPromotionsAsync(OrderDirection.Incoming, orderID);
-
+			var promos = await _oc.Orders.ListPromotionsAsync(OrderDirection.Incoming, orderId);
 			var cosmosSalesOrder = new OrderDetailData()
 			{
-				PartitionKey = "PartitionValue",
-				OrderId = orderID,
+				PartitionKey = @"PartitionValue",
+				OrderId = orderId,
 				Data = order,
 				BrandName = brand.Name
 			};
@@ -56,22 +52,16 @@ namespace Headstart.Jobs
 			{
 				cosmosSalesOrder.Promos = ReportPromoBuilder.BuildPromoFields(promos, ReportTypeEnum.SalesOrderDetail);
 			}
-
-			var queryable = _salesOrderDetailDataRepo.GetQueryable().Where(order => order.PartitionKey == "PartitionValue");
-
+			var queryable = _salesOrderDetailDataRepo.GetQueryable().Where(order => order.PartitionKey == @"PartitionValue");
 			var requestOptions = BuildQueryRequestOptions();
-
-			var listOptions = BuildListOptions(orderID);
-
-			CosmosListPage<OrderDetailData> currentOrderListPage = await _salesOrderDetailDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
-
-			var cosmosID = "";
+			var listOptions = BuildListOptions(orderId);
+			var currentOrderListPage = await _salesOrderDetailDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
+			var cosmosId = string.Empty;
 			if (currentOrderListPage.Items.Count() == 1)
 			{
-				cosmosID = cosmosSalesOrder.id = currentOrderListPage.Items[0].id;
+				cosmosId = cosmosSalesOrder.id = currentOrderListPage.Items[0].id;
 			}
-
-			await _salesOrderDetailDataRepo.UpsertItemAsync(cosmosID, cosmosSalesOrder);
+			await _salesOrderDetailDataRepo.UpsertItemAsync(cosmosId, cosmosSalesOrder);
 		}
 	}
 }

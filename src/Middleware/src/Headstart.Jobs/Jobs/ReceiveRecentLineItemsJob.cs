@@ -1,13 +1,12 @@
-﻿using System;
-using System.Linq;
-using OrderCloud.SDK;
-using OrderCloud.Catalyst;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+﻿using Headstart.Common.Models.Headstart;
 using Headstart.Common.Repositories;
-using ordercloud.integrations.library;
-using Headstart.Common.Models.Headstart;
 using Headstart.Common.Repositories.Models;
+using OrderCloud.Catalyst;
+using OrderCloud.SDK;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Headstart.Jobs
 {
@@ -31,7 +30,7 @@ namespace Headstart.Jobs
 			}
 			catch (Exception ex)
 			{
-				LogFailure($"{ex.Message} {ex?.InnerException?.Message} {ex.StackTrace}");
+				LogFailure($@"{ex.Message} {ex?.InnerException?.Message} {ex.StackTrace}");
 				return ResultCode.PermanentFailure;
 			}
 		}
@@ -56,55 +55,52 @@ namespace Headstart.Jobs
 				LineItemsWithPurchaseOrderFields = lineItemsWithPurchaseOrders
 			};
 
-			var queryable = _lineItemDetailDataRepo.GetQueryable().Where(order => order.PartitionKey == "PartitionValue");
+			var queryable = _lineItemDetailDataRepo.GetQueryable().Where(order => order.PartitionKey == @"PartitionValue");
 
 			var requestOptions = BuildQueryRequestOptions();
 
 			var cosmosLineItemOrder = new LineItemDetailData()
 			{ 
-				PartitionKey = "PartitionValue",
+				PartitionKey = @"PartitionValue",
 				OrderId = orderID,
 				Data = orderLineItemData
 			};
 
 			var listOptions = BuildListOptions(orderID);
 
-			CosmosListPage<LineItemDetailData> currentLineItemListPage = await _lineItemDetailDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
-
-			var cosmosID = "";
+			var currentLineItemListPage = await _lineItemDetailDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
+			var cosmosId = string.Empty;
 			if (currentLineItemListPage.Items.Count() == 1)
 			{
-				cosmosID = cosmosLineItemOrder.id = currentLineItemListPage.Items[0].id;
+				cosmosId = cosmosLineItemOrder.id = currentLineItemListPage.Items[0].id;
 			}
 
-			await _lineItemDetailDataRepo.UpsertItemAsync(cosmosID, cosmosLineItemOrder);
+			await _lineItemDetailDataRepo.UpsertItemAsync(cosmosId, cosmosLineItemOrder);
 		}
 
 		private async Task<List<LineItemsWithPurchaseOrderFields>> BuildLineItemsWithPurchaseOrders(string orderID)
 		{
 			//returns POs
-			var orders = await _oc.Orders.ListAllAsync<HsOrder>(OrderDirection.Outgoing, filters: $"ID={orderID}-*");
+			var orders = await _oc.Orders.ListAllAsync<HsOrder>(OrderDirection.Outgoing, filters: $@"ID={orderID}-*");
 
 			//loop through orders, get line items, pass those.
-			List<LineItemsWithPurchaseOrderFields> orderLineItemBySupplierID = await GetLineItemsFromPurchaseOrdersAsync(orders);
-
-			return orderLineItemBySupplierID;
-
+			var orderLineItemBySupplierId = await GetLineItemsFromPurchaseOrdersAsync(orders);
+			return orderLineItemBySupplierId;
 		}
 
 		private async Task<List<LineItemsWithPurchaseOrderFields>> GetLineItemsFromPurchaseOrdersAsync(List<HsOrder> orders)
 		{
 			var result = new List<LineItemsWithPurchaseOrderFields>() { };
 
-			foreach (HsOrder order in orders)
+			foreach (var order in orders)
 			{
-				List<HsLineItem> lineItemsBySupplier = await _oc.LineItems.ListAllAsync<HsLineItem>(OrderDirection.Outgoing, order.ID);
-
+				var lineItemsBySupplier = await _oc.LineItems.ListAllAsync<HsLineItem>(OrderDirection.Outgoing, order.ID);
 				if (lineItemsBySupplier.Count() <= 0)
 				{
 					continue;
 				}
-				foreach (HsLineItem lineItem in lineItemsBySupplier)
+
+				foreach (var lineItem in lineItemsBySupplier)
 				{
 					var lineItemWithPurchaseOrder = new LineItemsWithPurchaseOrderFields
 					{
@@ -148,7 +144,6 @@ namespace Headstart.Jobs
 				}
 				lineItemsWithMiscFields.Add(lineItemWithMiscFields);
 			}
-
 			return lineItemsWithMiscFields;
 		}
 	}
