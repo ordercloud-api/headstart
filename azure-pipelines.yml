@@ -20,6 +20,10 @@ jobs:
           feedsToUse: 'config'
           nugetConfigPath: 'nuget.config'
         displayName: NuGet restore
+      - task: PowerShell@2
+        inputs:
+          filePath: 'headstart-sitecore-foundation-automation-deploy.ps1'
+        displayName: "Sitecore NuGet restore"
       - task: CmdLine@2
         displayName: Azure Storage for tests
         inputs:
