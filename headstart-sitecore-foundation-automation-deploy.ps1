@@ -1,5 +1,5 @@
 $RootScriptPath = Get-Location;
-$SitecoreFoundationSitecoreExtensions = ($RootScriptPath + "\src\Middleware\src\SitecoreExtensions\code");
+$SitecoreFoundationSitecoreExtensions = ("{0}\\src\Middleware\src\SitecoreExtensions\code\" -f $RootScriptPath);
 $MachineName = $env:computername;
 $MSBuildExe = "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\msbuild.exe"
 
