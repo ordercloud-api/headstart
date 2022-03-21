@@ -36,10 +36,10 @@ jobs:
         displayName: Build solution src/Middleware/Headstart.sln
         inputs:
           solution: src/Middleware/Headstart.sln
-      - task: VSBuild@2
+      - task: VSBuild@1
         displayName: Build solution src/Middleware/src/SitecoreExtensions/code/Sitecore.Foundation.SitecoreExtensions.sln
         inputs:
-          solution: src/Middleware/Headstart.sln
+          solution: src/Middleware/src/SitecoreExtensions/code/Sitecore.Foundation.SitecoreExtensions.sln
       - task: VSTest@2
         displayName: Run C# Unit tests
         inputs:
