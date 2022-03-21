@@ -69,6 +69,10 @@ function Upgrade-Current-Python-Version {
 function SitecoreFoundation-Initialization-Autotmation {
 	try 
 	{
+		if ((Test-Path $RootScriptPath))
+		{
+			Install-Package Microsoft.CodeDom.Providers.DotNetCompilerPlatform -Version 3.6.0
+		}
 		if ((Test-Path $SitecoreFoundationSitecoreExtensions))
 		{
 			Write-Host "Building Headstart Repo Solution with Dependencies - Started";
