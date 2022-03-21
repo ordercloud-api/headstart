@@ -78,7 +78,7 @@ function SitecoreFoundation-Initialization-Autotmation {
 			}
 			
 			cd $SitecoreFoundationSitecoreExtensions;
-			buildVS Sitecore.Foundation.SitecoreExtensions.sln true true;
+			buildVS Sitecore.Foundation.SitecoreExtensions.sln $true $true;
 			Write-Host "Building Headstart Repo Solution with Dependencies - Completed";
 		}
 		else
