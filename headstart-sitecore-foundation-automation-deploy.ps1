@@ -1,7 +1,7 @@
 $RootScriptPath = Get-Location;
 $SitecoreFoundationSitecoreExtensions = ("{0}\\src\Middleware\src\SitecoreExtensions\code\" -f $RootScriptPath);
 $MachineName = $env:computername;
-$MSBuildExe = "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\msbuild.exe"
+$MSBuildExe = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\msbuild.exe"
 
 function buildVS
 {
@@ -10,10 +10,10 @@ function buildVS
         [parameter(Mandatory=$true)]
         [String] $path,
 
-        [parameter(Mandatory=$false)]
+        [parameter(Mandatory=$true)]
         [bool] $nuget = $true,
         
-        [parameter(Mandatory=$false)]
+        [parameter(Mandatory=$true)]
         [bool] $clean = $true
     )
 	
@@ -72,20 +72,13 @@ function SitecoreFoundation-Initialization-Autotmation {
 		if ((Test-Path $SitecoreFoundationSitecoreExtensions))
 		{
 			Write-Host "Building Headstart Repo Solution with Dependencies - Started";
-			if (-not(Test-Path $MSBuildExe))
+			if ((Test-Path $MSBuildExe))
 			{
-				Write-Host "Installing and Configuring Visual Studio Build Tools 2022 - Started";
-				choco upgrade -y visualstudio2022-workload-vctools
-				npm config set msvs_version 2022;
-				Write-Host "Installing and Configuring Visual Studio Build Tools 2022 - Completed";
-			}
-			else
-			{
-				Write-Host "Visual Studio Build Tools 2022 already installed and configured ('$MSBuildExe')";
+				Write-Host "Visual Studio Build Tools 2019 already installed and configured ('$MSBuildExe')";
 			}
 			
 			cd $SitecoreFoundationSitecoreExtensions;
-			buildVS Sitecore.Foundation.SitecoreExtensions.sln;
+			buildVS Sitecore.Foundation.SitecoreExtensions.sln true true;
 			Write-Host "Building Headstart Repo Solution with Dependencies - Completed";
 		}
 		else
@@ -116,7 +109,7 @@ function Quit($Text) {
 
 Write-Host "SitecoreFoundation-Initialization-Autotmation - Started";
 Set-ItemProperty 'HKLM:\System\CurrentControlSet\Control\FileSystem' -Name 'LongPathsEnabled' -value 1 -Force;
-Upgrade-Current-Python-Version;
+#Upgrade-Current-Python-Version;
 SitecoreFoundation-Initialization-Autotmation;
 Write-Host "SitecoreFoundation-Initialization-Autotmation - Completed";
 cd $RootScriptPath;
