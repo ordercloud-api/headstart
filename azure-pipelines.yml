@@ -20,10 +20,6 @@ jobs:
           feedsToUse: 'config'
           nugetConfigPath: 'nuget.config'
         displayName: NuGet restore
-      - task: PowerShell@2
-        inputs:
-          filePath: 'headstart-sitecore-foundation-automation-deploy.ps1'
-        displayName: "Sitecore NuGet restore"
       - task: CmdLine@2
         displayName: Azure Storage for tests
         inputs:
@@ -38,6 +34,10 @@ jobs:
             "C:\Program Files (x86)\Microsoft SDKs\Azure\Storage Emulator\AzureStorageEmulator.exe" start
       - task: VSBuild@1
         displayName: Build solution src/Middleware/Headstart.sln
+        inputs:
+          solution: src/Middleware/Headstart.sln
+      - task: VSBuild@2
+        displayName: Build solution src/Middleware/src/SitecoreExtensions/code/Sitecore.Foundation.SitecoreExtensions.sln
         inputs:
           solution: src/Middleware/Headstart.sln
       - task: VSTest@2
