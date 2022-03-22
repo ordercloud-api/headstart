@@ -11,13 +11,13 @@ function SitecoreFoundation-PackagesSynchronization-Autotmation {
 		if (-not(Test-Path $RootPackagesPath))
 		{
 			Write-Host "Creating the folder '$RootPackagesPath' - Started";
-			New-Item -ItemType "directory" -Path $RootPackagesPath
+			New-Item -ItemType "directory" -Path $RootPackagesPath;
 			Write-Host "Creating the folder '$RootPackagesPath' - Completed";
 		}
 		if ((Test-Path $RootPackagesPath) -and (Test-Path $SitecoreFoundationSitecoreExtensionsPackages))
 		{
 			Write-Host "Synchronization of 'SitecoreFoundationSitecoreExtensionsPackages' to 'RootPackagesPath' - Started";
-			Copy-Item -Path ("{0}\*" -f $SitecoreFoundationSitecoreExtensionsPackages) -Destination $RootPackagesPath -PassThru;
+			Copy-Item -Path ("{0}\*" -f $SitecoreFoundationSitecoreExtensionsPackages) -Destination $RootPackagesPath -Force;
 			Write-Host "Synchronization of 'SitecoreFoundationSitecoreExtensionsPackages' to 'RootPackagesPath' - Completed";
 		}
 		else
