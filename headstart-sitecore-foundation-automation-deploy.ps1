@@ -1,4 +1,5 @@
 $RootScriptPath = Get-Location;
+$RootPackagesPath = ("{0}\\packages\" -f $RootScriptPath);;
 $SitecoreFoundationSitecoreExtensions = ("{0}\\src\Middleware\src\SitecoreExtensions\code\" -f $RootScriptPath);
 $MachineName = $env:computername;
 $MSBuildExe = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\msbuild.exe"
@@ -69,8 +70,9 @@ function Upgrade-Current-Python-Version {
 function SitecoreFoundation-Initialization-Autotmation {
 	try 
 	{
-		if ((Test-Path $RootScriptPath))
+		if ((Test-Path $RootPackagesPath))
 		{
+			cd $RootPackagesPath
 			Install-Package Microsoft.CodeDom.Providers.DotNetCompilerPlatform -Version 3.6.0
 		}
 		if ((Test-Path $SitecoreFoundationSitecoreExtensions))
@@ -114,6 +116,6 @@ function Quit($Text) {
 Write-Host "SitecoreFoundation-Initialization-Autotmation - Started";
 Set-ItemProperty 'HKLM:\System\CurrentControlSet\Control\FileSystem' -Name 'LongPathsEnabled' -value 1 -Force;
 #Upgrade-Current-Python-Version;
-SitecoreFoundation-Initialization-Autotmation;
+#SitecoreFoundation-Initialization-Autotmation;
 Write-Host "SitecoreFoundation-Initialization-Autotmation - Completed";
 cd $RootScriptPath;
