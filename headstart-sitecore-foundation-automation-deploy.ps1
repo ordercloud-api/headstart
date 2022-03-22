@@ -1,5 +1,5 @@
 $RootScriptPath = Get-Location;
-$RootPackagesPath = ("{0}\src\Middleware" -f $RootScriptPath);;
+$RootPackagesPath = ("{0}\src\Middleware\packages" -f $RootScriptPath);;
 $SitecoreFoundationSitecoreExtensions = ("{0}\src\Middleware\src\SitecoreExtensions\code" -f $RootScriptPath);
 $SitecoreFoundationSitecoreExtensionsPackages = ("{0}\packages" -f $SitecoreFoundationSitecoreExtensions);
 $MachineName = $env:computername;
