@@ -17,8 +17,17 @@ function SitecoreFoundation-PackagesSynchronization-Autotmation {
 		if ((Test-Path $RootPackagesPath) -and (Test-Path $SitecoreFoundationSitecoreExtensionsPackages))
 		{
 			Write-Host "Synchronization of 'SitecoreFoundationSitecoreExtensionsPackages' to 'RootPackagesPath' - Started";
-			Get-ChildItem $SitecoreFoundationSitecoreExtensionsPackages | Copy-Item -Destination $RootPackagesPath -Force -Recurse -Filter *.*
+			Get-ChildItem $SitecoreFoundationSitecoreExtensionsPackages | Copy-Item -Destination $RootPackagesPath -Force -Recurse;
 			Write-Host "Synchronization of 'SitecoreFoundationSitecoreExtensionsPackages' to 'RootPackagesPath' - Completed";
+			
+			Write-Host "Validation for the Synchronization of 'SitecoreFoundationSitecoreExtensionsPackages' to 'RootPackagesPath' - Started";
+			
+			Get-ChildItem -Path $RootPackagesPath –Recurse  -Filter *.dll | 
+			Foreach-Object 
+			{
+				Write-Host "File path: '$_.FullName'.";
+			}
+			Write-Host "Validation for the Synchronization of 'SitecoreFoundationSitecoreExtensionsPackages' to 'RootPackagesPath' - Completed";
 		}
 		else
 		{
