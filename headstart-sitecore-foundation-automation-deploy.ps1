@@ -1,5 +1,5 @@
 $RootScriptPath = Get-Location;
-$RootPackagesPath = ("{0}\\packages\" -f $RootScriptPath);;
+$RootPackagesPath = ("{0}\\packages" -f $RootScriptPath);;
 $SitecoreFoundationSitecoreExtensions = ("{0}\\src\Middleware\src\SitecoreExtensions\code\" -f $RootScriptPath);
 $SitecoreFoundationSitecoreExtensionsPackages = ("{0}\\packages\" -f $SitecoreFoundationSitecoreExtensions);
 $MachineName = $env:computername;
@@ -11,7 +11,7 @@ function SitecoreFoundation-PackagesSynchronization-Autotmation {
 		if ((Test-Path $RootPackagesPath) -and (Test-Path $SitecoreFoundationSitecoreExtensions))
 		{
 			Write-Host "Synchronization of 'SitecoreFoundationSitecoreExtensionsPackages' to 'RootPackagesPath' - Started";
-			Copy-Item -Path $SitecoreFoundationSitecoreExtensionsPackages -Force -Recurse -Destination $RootPackagesPath -Force -Recurse
+			Copy-Item -Path ("{0}\\*" -f $SitecoreFoundationSitecoreExtensions) -Destination $RootPackagesPath -PassThru;
 			Write-Host "Synchronization of 'SitecoreFoundationSitecoreExtensionsPackages' to 'RootPackagesPath'  - Completed";
 		}
 		else
