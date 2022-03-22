@@ -8,10 +8,10 @@ $MSBuildExe = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MS
 function SitecoreFoundation-PackagesSynchronization-Autotmation {
 	try 
 	{
-		if ((Test-Path $RootPackagesPath) -and (Test-Path $SitecoreFoundationSitecoreExtensions))
+		if ((Test-Path $RootPackagesPath) -and (Test-Path $SitecoreFoundationSitecoreExtensionsPackages))
 		{
 			Write-Host "Synchronization of 'SitecoreFoundationSitecoreExtensionsPackages' to 'RootPackagesPath' - Started";
-			Copy-Item -Path ("{0}\*" -f $SitecoreFoundationSitecoreExtensions) -Destination $RootPackagesPath -PassThru;
+			Copy-Item -Path ("{0}\*" -f $SitecoreFoundationSitecoreExtensionsPackages) -Destination $RootPackagesPath -PassThru;
 			Write-Host "Synchronization of 'SitecoreFoundationSitecoreExtensionsPackages' to 'RootPackagesPath'  - Completed";
 		}
 		else
