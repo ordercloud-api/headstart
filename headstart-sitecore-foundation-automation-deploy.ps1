@@ -1,26 +1,22 @@
 $RootScriptPath = Get-Location;
-$RootPackagesPath = ("{0}\packages" -f $RootScriptPath);;
+$RootPackagesPath = ("{0}\src\Middleware" -f $RootScriptPath);;
+$SitecoreFoundationSitecoreExtensions = ("{0}\src\Middleware\src\SitecoreExtensions\code" -f $RootScriptPath);
+$SitecoreFoundationSitecoreExtensionsPackages = ("{0}\packages" -f $SitecoreFoundationSitecoreExtensions);
 $MachineName = $env:computername;
 $MSBuildExe = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\msbuild.exe"
 
 function SitecoreFoundation-PackagesSynchronization-Autotmation {
 	try 
 	{
-		if (-not(Test-Path $RootPackagesPath))
+		if ((Test-Path $RootPackagesPath) -and (Test-Path $SitecoreFoundationSitecoreExtensions))
 		{
-			New-Item -ItemType "directory" -Path $RootPackagesPath;
-		}
-		
-		if ((Test-Path $RootPackagesPath))
-		{
-			Write-Host "Synchronization of 'RootPackagesPath' for missing packages - Started";
-			cd $RootPackagesPath;
-			Install-Package Microsoft.CodeDom.Providers.DotNetCompilerPlatform -Version 3.6.0 
-			Write-Host "Synchronization of 'RootPackagesPath' for missing packages  - Completed";
+			Write-Host "Synchronization of 'SitecoreFoundationSitecoreExtensionsPackages' to 'RootPackagesPath' - Started";
+			Copy-Item -Path ("{0}\*" -f $SitecoreFoundationSitecoreExtensions) -Destination $RootPackagesPath -PassThru;
+			Write-Host "Synchronization of 'SitecoreFoundationSitecoreExtensionsPackages' to 'RootPackagesPath'  - Completed";
 		}
 		else
 		{
-			Write-Host "One of the following folders: '$RootPackagesPath' does not exist.";	
+			Write-Host "One of the following folders: '$SitecoreFoundationSitecoreExtensionsPackages'; '$RootPackagesPath' does not exist.";	
 		}
 	}
 	catch 
