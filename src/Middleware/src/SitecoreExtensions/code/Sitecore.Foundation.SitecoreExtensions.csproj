@@ -92,7 +92,8 @@
       <HintPath>packages\DynamicPlaceholders.1.2.0.2\lib\net452\DynamicPlaceholders.dll</HintPath>
     </Reference>
     <Reference Include="DynamicPlaceholders.Mvc, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\DynamicPlaceholders.Mvc.1.2.0.0\lib\net452\DynamicPlaceholders.Mvc.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\DynamicPlaceholders.Mvc.1.2.0.0\lib\net452\DynamicPlaceholders.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="EcmaScript.NET, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\EcmaScript.NET.2.0.0\lib\net45\EcmaScript.NET.dll</HintPath>
@@ -1033,8 +1034,8 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Sitecore.Kernel, Version=14.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\packages\Sitecore.Kernel.10.1.0\lib\net48\Sitecore.Kernel.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Sitecore.LaunchPad, Version=5.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\..\packages\Sitecore.LaunchPad.10.1.0\lib\net48\Sitecore.LaunchPad.dll</HintPath>
