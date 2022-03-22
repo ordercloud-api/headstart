@@ -6,16 +6,21 @@ $MSBuildExe = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MS
 function SitecoreFoundation-PackagesSynchronization-Autotmation {
 	try 
 	{
+		if (-not(Test-Path $RootPackagesPath))
+		{
+			New-Item -ItemType "directory" -Path $RootPackagesPath;
+		}
+		
 		if ((Test-Path $RootPackagesPath))
 		{
 			Write-Host "Synchronization of 'RootPackagesPath' for missing packages - Started";
-			cd $SitecoreFoundationSitecoreExtensionsPackages
+			cd $RootPackagesPath;
 			Install-Package Microsoft.CodeDom.Providers.DotNetCompilerPlatform -Version 3.6.0 
 			Write-Host "Synchronization of 'RootPackagesPath' for missing packages  - Completed";
 		}
 		else
 		{
-			Write-Host "One of the following folders: '$SitecoreFoundationSitecoreExtensionsPackages'; '$RootPackagesPath' does not exist.";	
+			Write-Host "One of the following folders: '$RootPackagesPath' does not exist.";	
 		}
 	}
 	catch 
