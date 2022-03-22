@@ -12,18 +12,25 @@ jobs:
       - checkout: self
       - template: version.yml
       - task: NuGetToolInstaller@1
-        displayName: "Use NuGet "
+        displayName: "Use NuGet"
       - task: NuGetCommand@2
         inputs:
           command: 'restore'
           restoreSolution: '**/*.sln'
           feedsToUse: 'config'
           nugetConfigPath: 'nuget.config'
-        displayName: NuGet restore
+        displayName: "NuGet Restore"
+      - task: NuGetCommand@2
+        inputs:
+          command: 'restore'
+          restoreSolution: 'src/Middleware/src/SitecoreExtensions/code/Sitecore.Foundation.SitecoreExtensions.sln'
+          feedsToUse: 'config'
+          nugetConfigPath: 'nuget.config'
+        displayName: "Sitecore NuGet Restore"
       - task: PowerShell@2
         inputs:
           filePath: 'headstart-sitecore-foundation-automation-deploy.ps1'
-        displayName: "Sitecore NuGet restore"
+        displayName: "Sitecore NuGet Packages Sync"
       - task: CmdLine@2
         displayName: Azure Storage for tests
         inputs:
