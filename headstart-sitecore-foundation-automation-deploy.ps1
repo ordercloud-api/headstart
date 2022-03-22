@@ -17,7 +17,7 @@ function SitecoreFoundation-PackagesSynchronization-Autotmation {
 		if ((Test-Path $RootPackagesPath) -and (Test-Path $SitecoreFoundationSitecoreExtensionsPackages))
 		{
 			Write-Host "Synchronization of 'SitecoreFoundationSitecoreExtensionsPackages' to 'RootPackagesPath' - Started";
-			Copy-Item -Path ("{0}\*" -f $SitecoreFoundationSitecoreExtensionsPackages) -Destination $RootPackagesPath -Force;
+			Get-ChildItem $SitecoreFoundationSitecoreExtensionsPackages | Copy-Item -Destination $RootPackagesPath -Force -Recurse -Filter *.*
 			Write-Host "Synchronization of 'SitecoreFoundationSitecoreExtensionsPackages' to 'RootPackagesPath' - Completed";
 		}
 		else
