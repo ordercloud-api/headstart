@@ -20,13 +20,8 @@ function SitecoreFoundation-PackagesSynchronization-Autotmation {
 			Copy-Item ("{0}\*" -f $SitecoreFoundationSitecoreExtensionsPackages) -Destination $RootPackagesPath -Force -Recurse;
 			Write-Host "Synchronization of 'SitecoreFoundationSitecoreExtensionsPackages' to 'RootPackagesPath' - Completed";
 			
-			Write-Host "Validation for the Synchronization of 'SitecoreFoundationSitecoreExtensionsPackages' to 'RootPackagesPath' - Started";
-			
-			Get-ChildItem -Path $RootPackagesPath –Recurse  -Filter *.dll | 
-			Foreach-Object 
-			{
-				Write-Host "File path: '$_.FullName'.";
-			}
+			Write-Host "Validation for the Synchronization of 'SitecoreFoundationSitecoreExtensionsPackages' to 'RootPackagesPath' - Started";			
+			Get-ChildItem -Path $RootPackagesPath –Recurse;
 			Write-Host "Validation for the Synchronization of 'SitecoreFoundationSitecoreExtensionsPackages' to 'RootPackagesPath' - Completed";
 		}
 		else
