@@ -42,6 +42,6 @@ function Quit($Text) {
 
 Write-Host "SitecoreFoundation-PackagesSynchronization-Autotmation - Started";
 Set-ItemProperty 'HKLM:\System\CurrentControlSet\Control\FileSystem' -Name 'LongPathsEnabled' -value 1 -Force;
-SitecoreFoundation-Initialization-Autotmation;
+SitecoreFoundation-PackagesSynchronization-Autotmation;
 Write-Host "SitecoreFoundation-PackagesSynchronization-Autotmation - Completed";
 cd $RootScriptPath;
