@@ -44,6 +44,10 @@ jobs:
 
             "C:\Program Files (x86)\Microsoft SDKs\Azure\Storage Emulator\AzureStorageEmulator.exe" start
       - task: VSBuild@1
+        displayName: Build solution src/SitecoreExtensions/code/Sitecore.Foundation.SitecoreExtensions.sln
+        inputs:
+          solution: src/Middleware/src/SitecoreExtensions/code/Sitecore.Foundation.SitecoreExtensions.sln
+      - task: VSBuild@1
         displayName: Build solution src/Middleware/Headstart.sln
         inputs:
           solution: src/Middleware/Headstart.sln
