@@ -1,7 +1,7 @@
 $RootScriptPath = Get-Location;
-$RootPackagesPath = ("{0}\\packages" -f $RootScriptPath);;
-$SitecoreFoundationSitecoreExtensions = ("{0}\\src\Middleware\src\SitecoreExtensions\code\" -f $RootScriptPath);
-$SitecoreFoundationSitecoreExtensionsPackages = ("{0}\\packages\" -f $SitecoreFoundationSitecoreExtensions);
+$RootPackagesPath = ("{0}\packages" -f $RootScriptPath);;
+$SitecoreFoundationSitecoreExtensions = ("{0}\src\Middleware\src\SitecoreExtensions\code\" -f $RootScriptPath);
+$SitecoreFoundationSitecoreExtensionsPackages = ("{0}\packages" -f $SitecoreFoundationSitecoreExtensions);
 $MachineName = $env:computername;
 $MSBuildExe = "C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin\msbuild.exe"
 
