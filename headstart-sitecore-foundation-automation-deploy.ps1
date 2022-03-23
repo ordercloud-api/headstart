@@ -48,6 +48,8 @@ function Quit($Text) {
 
 Write-Host "SitecoreFoundation-PackagesSynchronization-Autotmation - Started";
 Set-ItemProperty 'HKLM:\System\CurrentControlSet\Control\FileSystem' -Name 'LongPathsEnabled' -value 1 -Force;
+choco install dotnetfx;
+choco install netfx-4.8-devpack;
 SitecoreFoundation-PackagesSynchronization-Autotmation;
 Write-Host "SitecoreFoundation-PackagesSynchronization-Autotmation - Completed";
 cd $RootScriptPath;
