@@ -35,43 +35,43 @@ function GetDotNet4FrameworkVersion($releaseKey)
 {
 	$releaseVersion = "";
 	
-	if ($releaseKey -eq "528040") 
+	if ($releaseKey -eq 528040) 
 	{
 		$releaseVersion = "4.8";
 	}
-    if ($releaseKey -eq "461808")
+    if ($releaseKey -eq 461808)
 	{
 		$releaseVersion = "4.7.2";
 	}
-    if ($releaseKey -eq "461308")
+    if ($releaseKey -eq 461308)
 	{
 		$releaseVersion = "4.7.1";
 	}
-    if ($releaseKey -eq "460798")
+    if ($releaseKey -eq 460798)
 	{
 		$releaseVersion = "4.7";
 	}
-    if ($releaseKey -eq "394802")
+    if ($releaseKey -eq 394802)
 	{
 		$releaseVersion = "4.6.2";
 	}
-    if ($releaseKey -eq "394254")
+    if ($releaseKey -eq 394254)
 	{
 		$releaseVersion = "4.6.1";
 	}
-    if ($releaseKey -eq "393295")
+    if ($releaseKey -eq 393295)
 	{
 		$releaseVersion = "4.6";
 	}
-    if ($releaseKey -eq "379893")
+    if ($releaseKey -eq 379893)
 	{
 		$releaseVersion = "4.5.2";
 	}
-    if ($releaseKey -eq "378675")
+    if ($releaseKey -eq 378675)
 	{
 		$releaseVersion = "4.5.1";
 	}
-    if ($releaseKey -eq "378389")
+    if ($releaseKey -eq 378389)
 	{
 		$releaseVersion = "4.5";
 	}
