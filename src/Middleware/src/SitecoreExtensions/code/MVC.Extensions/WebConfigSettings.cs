@@ -59,7 +59,8 @@ namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extensions
 			{
 				IsNonProdEnv = DataTypeExtensions.GetBoolean(WebConfigurationManager.AppSettings[@"IsNonProdEnv"].ToString().Trim());
 				AppLogFileKey = string.IsNullOrEmpty(WebConfigurationManager.AppSettings[@"AppLogFileKey"].ToString().Trim())
-					? AppLogFileKey : WebConfigurationManager.AppSettings[@"AppLogFileKey"].ToString().Trim();
+					? AppLogFileKey 
+					: WebConfigurationManager.AppSettings[@"AppLogFileKey"].ToString().Trim();
 			}
 			catch (Exception ex)
 			{
