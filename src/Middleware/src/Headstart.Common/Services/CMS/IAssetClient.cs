@@ -23,8 +23,8 @@ namespace Headstart.Common.Services.CMS
 	public class AssetClient : IAssetClient
 	{
 		private readonly IOrderCloudIntegrationsBlobService _blob;
-		private readonly AppSettings _settings; 
-		private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+		private readonly AppSettings _settings;
+		private readonly ConfigSettings _configSettings = ConfigSettings.Instance;
 
 		public AssetClient(IOrderCloudIntegrationsBlobService blob, AppSettings settings)
 		{
@@ -35,7 +35,7 @@ namespace Headstart.Common.Services.CMS
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_webConfigSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
 			}
 		}
@@ -58,7 +58,7 @@ namespace Headstart.Common.Services.CMS
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_webConfigSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
 			}
 			return new ImageAsset
@@ -78,7 +78,7 @@ namespace Headstart.Common.Services.CMS
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_webConfigSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
 			}
 			return new DocumentAsset()
@@ -108,7 +108,7 @@ namespace Headstart.Common.Services.CMS
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_webConfigSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
 			}
 		}

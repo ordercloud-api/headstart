@@ -18,8 +18,8 @@ namespace Headstart.API.Commands.SupplierSync.EntityCommands
 	[SupplierSync("Generic")]
 	public class GenericSupplierCommand : ISupplierSyncCommand
 	{
-		private readonly IOrderCloudClient _ocSeller; 
-		private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+		private readonly IOrderCloudClient _ocSeller;
+		private readonly ConfigSettings _configSettings = ConfigSettings.Instance;
 
 		/// <summary>
 		/// The IOC based constructor method for the GenericSupplierCommand class object with Dependency Injection
@@ -43,7 +43,7 @@ namespace Headstart.API.Commands.SupplierSync.EntityCommands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_webConfigSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 		}
 
@@ -72,7 +72,7 @@ namespace Headstart.API.Commands.SupplierSync.EntityCommands
 				}
 				catch (OrderCloudException ex) 
 				{
-					LogExt.LogException(_webConfigSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+					LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 				}
 
 				var salesOrderID = orderType == OrderType.Standard ? Id.Split('-')[0] : Id;
@@ -134,7 +134,7 @@ namespace Headstart.API.Commands.SupplierSync.EntityCommands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_webConfigSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return JObject.FromObject(returnObject);
 		}

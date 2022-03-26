@@ -17,8 +17,8 @@ using Headstart.Common.Services.CMS.Models;
 using System.ComponentModel.DataAnnotations;
 using ordercloud.integrations.exchangerates;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
-using IPartial = ordercloud.integrations.library.IPartial;
 using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
+using IPartial = ordercloud.integrations.library.IPartial;
 
 namespace Headstart.API.Commands.SupplierSync
 {
@@ -31,7 +31,7 @@ namespace Headstart.API.Commands.SupplierSync
 	public class ProductTemplateCommand : IProductTemplateCommand
 	{
 		private readonly AppSettings _settings;
-		private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+		private readonly ConfigSettings _configSettings = ConfigSettings.Instance;
 
 		/// <summary>
 		/// The Default constructor method for the ProductTemplateCommand class object
@@ -45,7 +45,7 @@ namespace Headstart.API.Commands.SupplierSync
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_webConfigSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 		}
 
@@ -67,7 +67,7 @@ namespace Headstart.API.Commands.SupplierSync
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_webConfigSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return resp;
 		}
@@ -123,7 +123,7 @@ namespace Headstart.API.Commands.SupplierSync
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_webConfigSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}            
 			return result;
 		}
@@ -169,7 +169,7 @@ namespace Headstart.API.Commands.SupplierSync
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_webConfigSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return await Task.FromResult(list.ToList());
 		}

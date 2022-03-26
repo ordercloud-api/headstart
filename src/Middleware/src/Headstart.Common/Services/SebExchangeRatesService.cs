@@ -22,7 +22,7 @@ namespace Headstart.Common.Services
 	{
 		private readonly IOrderCloudClient _oc;
 		private readonly IExchangeRatesCommand _exchangeRatesCommand;
-		private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+		private readonly ConfigSettings _configSettings = ConfigSettings.Instance;
 
 		public HsExchangeRatesService(IOrderCloudClient oc, IExchangeRatesCommand exchangeRatesCommand)
 		{
@@ -33,7 +33,7 @@ namespace Headstart.Common.Services
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_webConfigSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
 			}
 		}

@@ -19,7 +19,7 @@ namespace Headstart.API.Commands.SupplierSync.EntityCommands
 	public class WaxInTheCityDistributionCommand : ISupplierSyncCommand
 	{
 		private readonly IOrderCloudClient _ocSeller;
-		private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+		private readonly ConfigSettings _configSettings = ConfigSettings.Instance;
 
 		/// <summary>
 		/// The IOC based constructor method for the WaxInTheCityDistributionCommand class object with Dependency Injection
@@ -43,7 +43,7 @@ namespace Headstart.API.Commands.SupplierSync.EntityCommands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_webConfigSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 		}
 
@@ -97,7 +97,7 @@ namespace Headstart.API.Commands.SupplierSync.EntityCommands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_webConfigSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return JObject.FromObject(returnObject);
 		}

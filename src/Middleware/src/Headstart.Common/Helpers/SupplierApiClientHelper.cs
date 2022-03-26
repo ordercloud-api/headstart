@@ -16,7 +16,7 @@ namespace Headstart.Common.Helpers
 	{
 		private readonly IOrderCloudClient _oc;
 		private readonly AppSettings _settings;
-		private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+		private readonly ConfigSettings _configSettings = ConfigSettings.Instance;
 
 		public SupplierApiClientHelper(AppSettings settings, IOrderCloudClient oc)
 		{
@@ -27,7 +27,7 @@ namespace Headstart.Common.Helpers
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_webConfigSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex?.StackTrace);
 			}
 		}
@@ -54,7 +54,7 @@ namespace Headstart.Common.Helpers
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_webConfigSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), 
+				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), 
 					$@"Error occurred with the params supplierId: {supplierId} and token: {token}.",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
 				// else create and return the new api client

@@ -23,7 +23,7 @@ namespace Headstart.Common.Services.Portal
 	{
 		private readonly IFlurlClient _client;
 		private readonly AppSettings _settings;
-		private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+		private readonly ConfigSettings _configSettings = ConfigSettings.Instance;
 
 		public PortalService(AppSettings settings, IFlurlClientFactory flurlFactory)
 		{
@@ -34,7 +34,7 @@ namespace Headstart.Common.Services.Portal
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_webConfigSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
 			}
 		}
@@ -55,7 +55,7 @@ namespace Headstart.Common.Services.Portal
 			}
 			catch (FlurlHttpException ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_webConfigSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
 				throw new CatalystBaseException(ex.Call.Response.StatusCode.ToString(), @"Error logging in to portal. Please make sure your username and password are correct.");
 			}
@@ -87,7 +87,7 @@ namespace Headstart.Common.Services.Portal
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_webConfigSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
 			}
 		}

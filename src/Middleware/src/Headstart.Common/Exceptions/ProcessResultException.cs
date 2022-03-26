@@ -12,7 +12,7 @@ namespace Headstart.Common.Exceptions
 	{
 		private string Message { get; set; } = string.Empty;
 		private dynamic ResponseBody { get; set; }
-		private readonly WebConfigSettings _webConfigSettings = WebConfigSettings.Instance;
+		private readonly ConfigSettings _configSettings = ConfigSettings.Instance;
 
 		public ProcessResultException(Exception ex)
 		{
@@ -26,13 +26,13 @@ namespace Headstart.Common.Exceptions
 			try
 			{
 				ResponseBody = JsonConvert.SerializeObject(ex?.Errors);
-				LoggingNotifications.LogApiResponseMessages(_webConfigSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), Message,
+				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), Message,
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ResponseBody, ex.StackTrace);
 			}
 			catch (Exception ex1)
 			{
 				ResponseBody = @"Error while trying to parse response body.";
-				LoggingNotifications.LogApiResponseMessages(_webConfigSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), ResponseBody,
+				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), ResponseBody,
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex1.Message, ex1.StackTrace);
 			}
 		}
@@ -43,13 +43,13 @@ namespace Headstart.Common.Exceptions
 			try
 			{
 				ResponseBody = ex.GetResponseJsonAsync().Result;
-				LoggingNotifications.LogApiResponseMessages(_webConfigSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), Message,
+				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), Message,
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ResponseBody, ex?.StackTrace);
 			}
 			catch (Exception ex1)
 			{
 				ResponseBody = @"Error while trying to parse response body.";
-				LoggingNotifications.LogApiResponseMessages(_webConfigSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), ResponseBody,
+				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), ResponseBody,
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex1.Message, ex1.StackTrace);
 			}
 		}
