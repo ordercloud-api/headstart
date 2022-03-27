@@ -1,6 +1,7 @@
 ﻿using System;
+using System.IO;
+using Newtonsoft.Json;
 using Sitecore.Diagnostics;
-using System.Web.Configuration;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
 
 namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extensions
@@ -57,10 +58,22 @@ namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extensions
 		{
 			try
 			{
-				IsNonProdEnv = DataTypeExtensions.GetBoolean(WebConfigurationManager.AppSettings[@"IsNonProdEnv"].ToString().Trim());
-				AppLogFileKey = string.IsNullOrEmpty(WebConfigurationManager.AppSettings[@"AppLogFileKey"].ToString().Trim())
-					? AppLogFileKey 
-					: WebConfigurationManager.AppSettings[@"AppLogFileKey"].ToString().Trim();
+				var filePath = System.Web.HttpContext.Current.Server.MapPath(@"~/appsettings.json");
+				var jsonDataString = string.Empty;
+				using (var reader = new StreamReader(filePath))
+				{
+					jsonDataString = reader.ReadToEnd();
+				}
+
+				if (string.IsNullOrEmpty(jsonDataString))
+				{
+					return;
+				}
+				var jsonData = JsonConvert.DeserializeObject<AppEnvSettingsModel>(jsonDataString);
+				IsNonProdEnv = DataTypeExtensions.GetBoolean(jsonData.IsNonProdEnv.ToString().Trim());
+				AppLogFileKey = string.IsNullOrEmpty(jsonData.AppLogFileKey)
+					? AppLogFileKey
+					: jsonData.AppLogFileKey.Trim();
 			}
 			catch (Exception ex)
 			{
