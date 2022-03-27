@@ -58,9 +58,8 @@ namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extensions
 		{
 			try
 			{
-				var filePath = System.Web.HttpContext.Current.Server.MapPath(@"~/ApiAppSettings.json");
 				var jsonDataString = string.Empty;
-				using (var reader = new StreamReader(filePath))
+				using (var reader = new StreamReader(@".\ApiAppSettings.json"))
 				{
 					jsonDataString = reader.ReadToEnd();
 				}
