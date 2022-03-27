@@ -40,29 +40,55 @@ namespace Headstart.Tests
 		public void Setup()
 		{
 			_cardConnect = Substitute.For<IOrderCloudIntegrationsCardConnectService>();
-			_cardConnect.VoidAuthorization(Arg.Is<CardConnectVoidRequest>(r => r.merchid == _merchantId))
-				.Returns(Task.FromResult(new CardConnectVoidResponse { }));
-			_cardConnect.AuthWithoutCapture(Arg.Any<CardConnectAuthorizationRequest>())
-				.Returns(Task.FromResult(new CardConnectAuthorizationResponse { authcode = "REVERS" }));
+			var cardConnectVoidRequest = Arg.Is<CardConnectVoidRequest>(r => r.merchid == _merchantId);
+			if (cardConnectVoidRequest != null)
+			{
+				_cardConnect.VoidAuthorization(cardConnectVoidRequest).Returns(Task.FromResult(new CardConnectVoidResponse { }));
+			}
+			var cardConnectAuthorizationRequest = Arg.Any<CardConnectAuthorizationRequest>();
+			if (cardConnectAuthorizationRequest != null)
+			{
+				_cardConnect.AuthWithoutCapture(cardConnectAuthorizationRequest)
+					.Returns(Task.FromResult(new CardConnectAuthorizationResponse
+					{
+						authcode = "REVERS"
+					}));
+			}
 
 			_oc = Substitute.For<IOrderCloudClient>();
 			_oc.Me.GetCreditCardAsync<CardConnectBuyerCreditCard>(_creditCardId, _userToken)
 				.Returns(MockCreditCard());
 			_oc.IntegrationEvents.GetWorksheetAsync<HsOrderWorksheet>(OrderDirection.Incoming, _orderId)
-				.Returns(Task.FromResult(new HsOrderWorksheet { Order = new HsOrder { ID = _orderId, Total = 38 } }));
-			_oc.Payments.CreateTransactionAsync<HsPayment>(OrderDirection.Incoming, _orderId, Arg.Any<string>(), Arg.Any<PaymentTransaction>())
-				.Returns(Task.FromResult(new HsPayment { }));
-			_oc.Payments.PatchAsync<HsPayment>(OrderDirection.Incoming, _orderId, Arg.Any<string>(), Arg.Any<PartialPayment>())
-				.Returns(Task.FromResult(new HsPayment { }));
+				.Returns(Task.FromResult(new HsOrderWorksheet
+				{
+					Order = new HsOrder
+					{
+						ID = _orderId, 
+						Total = 38
+					}
+				}));
+			
+			var paymentTransaction = Arg.Any<PaymentTransaction>();
+			var paymentId = Arg.Any<string>();
+			if (!string.IsNullOrEmpty(paymentId) && paymentTransaction != null)
+			{
+				_oc.Payments.CreateTransactionAsync<HsPayment>(OrderDirection.Incoming, _orderId, paymentId, paymentTransaction)
+					.Returns(Task.FromResult(new HsPayment { }));
+			}
+			var partialPayment = Arg.Any<PartialPayment>();
+			if (!string.IsNullOrEmpty(paymentId) && partialPayment != null)
+			{
+				_oc.Payments.PatchAsync<HsPayment>(OrderDirection.Incoming, _orderId, paymentId, partialPayment)
+					.Returns(Task.FromResult(new HsPayment { }));
+			}
+			
 
 			_hsExchangeRates = Substitute.For<IHsExchangeRatesService>();
 			_hsExchangeRates.GetCurrencyForUser(_userToken)
 				.Returns(Task.FromResult(_currency));
-
 			_supportAlerts = Substitute.For<ISupportAlertService>();
 			_settings = Substitute.For<AppSettings>();
 			_settings.CardConnectSettings.CadMerchantID = _merchantId;
-
 			_sut = new CreditCardCommand(_cardConnect, _oc, _hsExchangeRates, _supportAlerts, _settings);
 		}
 
