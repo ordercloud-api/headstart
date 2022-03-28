@@ -101,7 +101,9 @@ export class OCMProductDetails implements OnInit {
     }
     this.setPageTitle()
     this.populateInactiveVariants(superProduct)
-    this.showGrid = superProduct?.PriceSchedule?.UseCumulativeQuantity
+    this.showGrid =
+      superProduct?.PriceSchedule?.UseCumulativeQuantity &&
+      superProduct?.Product?.xp?.ProductType !== 'Quote'
     this.send.viewProduct(superProduct.Product)
     this.isQuoteAnonUser =
       this.isQuoteProduct() && this.context.currentUser.isAnonymous()

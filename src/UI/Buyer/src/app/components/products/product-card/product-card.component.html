@@ -54,7 +54,14 @@
         }}
       </p>
       <div
-        class="d-flex flex-wrap justify-content-between align-items-center card-price"
+        *ngIf="_product?.xp?.ProductType !== 'Quote'"
+        class="
+          d-flex
+          flex-wrap
+          justify-content-between
+          align-items-center
+          card-price
+        "
       >
         <p class="card-text mb-0" *ngIf="_product.PriceSchedule?.PriceBreaks">
           {{ _price | currency: _userCurrency }}
@@ -62,6 +69,14 @@
         <small class="card-text text-muted">{{ _product | UofM }}</small>
         <label for="quantity" class="sr-only" translate
           >PRODUCTS.CARD.QUANTITY</label
+        >
+      </div>
+      <div>
+        <span
+          *ngIf="_product?.xp?.ProductType === 'Quote'"
+          class="small badge badge-pill badge-warning ml-2"
+        >
+          Quote Product</span
         >
       </div>
     </div>
