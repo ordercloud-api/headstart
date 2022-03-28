@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { HSLineItem, HSOrder, HSProduct } from '@ordercloud/headstart-sdk'
+import { HSLineItem, HSOrder } from '@ordercloud/headstart-sdk'
 import { AppConfig } from 'src/app/models/environment.types'
 import { CurrentUserService } from '../current-user/current-user.service'
 import { RouteService } from '../route/route.service'
@@ -12,6 +12,7 @@ import {
   SitecoreCDPPurchaseEvent,
 } from './sitecore-cdp.types'
 
+// Boxever (Sitecore CDP) is loaded in a release step if appConfig.useSitecoreCDP is true see scripts/inject-css.js
 declare let _boxeverq: any
 declare let Boxever: any
 
@@ -28,7 +29,6 @@ export class SitecoreCDPTrackingService {
     if (!appConfig.useSitecoreCDP) {
       return
     }
-    this.loadCDPTracker()
     this.routeService.onUrlChange((_) => {
       this.newPageViewed()
     })
@@ -182,38 +182,5 @@ export class SitecoreCDPTrackingService {
     _boxeverq.push(function () {
       Boxever.eventCreate(event, function (data) {}, 'json')
     })
-  }
-
-  private loadCDPTracker(): void {
-    const clientKey = this.appConfig.sitecoreCDPApiClient
-    const target = this.appConfig.sitecoreCDPTargetEndpoint
-    const domain = this.appConfig.sitecoreCDPCookieDomain
-    const webFlowTarget = this.appConfig.sitecoreCDPWebFlowTarget
-    const pointOfSale = this.appConfig.sitecoreCDPPointOfSale
-    const clientVersion = '1.4.8'
-    const node = document.createElement('script')
-    node.type = 'text/javascript'
-    node.async = true
-    // Tracker installation https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/javascript-tagging-examples-for-web-pages.html
-    node.innerHTML = `
-            // Define the Boxever queue
-            var _boxeverq = _boxeverq || [];
-
-            // Define the Boxever settings
-            var _boxever_settings = {
-                client_key: '${clientKey}', // Replace with your client key
-                target: '${target}', // Replace with your API target endpoint specific to your data center region
-                cookie_domain: '${domain}', // Replace with the top level cookie domain of the website that is being integrated e.g ".example.com" and not "www.example.com"
-                web_flow_target: '${webFlowTarget}', //Set the web flow target to be able to run flows e.g. experiences
-                pointOfSale: '${pointOfSale}', //Point of sale that will be used for every interaction
-            };
-            // Import the Boxever library asynchronously
-            (function() {
-                var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true;
-                s.src = 'https://d1mj578wat5n4o.cloudfront.net/boxever-${clientVersion}.min.js';
-                var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
-            })();
-        `
-    document.getElementsByTagName('head')[0].appendChild(node)
   }
 }

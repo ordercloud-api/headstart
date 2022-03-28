@@ -15,11 +15,12 @@
   "useSitecoreSend": false,
   "sitecoreSendWebsiteID": "xxxxxxxxxxxxxxxxxxxxxxxx",
   "useSitecoreCDP": false,
-  "sitecoreCDPTargetEndpoint": "https://api-us.boxever.com/v1.2",
   "sitecoreCDPApiClient": "xxxxxxxxxxxxxxxxxxxxxx",
+  "sitecoreCDPTargetEndpoint": "https://api-us.boxever.com/v1.2",
   "sitecoreCDPCookieDomain": "xxxxxxxxxxxxxxxxxxxxxxxx",
-  "sitecoreCDPWebFlowTarget": "xxxxxxxxxxxxxxxxxxxxxxxx",
+  "sitecoreCDPJavascriptLibraryVersion": "1.4.8",
   "sitecoreCDPPointOfSale": "xxxxxxxxxxxxxxxxxxxxxxxx",
+  "sitecoreCDPWebFlowTarget": "xxxxxxxxxxxxxxxxxxxxxxxx",
   "theme": {
     "logoSrc": "assets/generic-logo.png"
   },

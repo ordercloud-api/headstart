@@ -26,7 +26,7 @@ See [this guide](https://doc.sitecore.com/cdp/en/developers/sitecore-customer-da
 ## Steps to use
 - Set up the headstart application. This is process is throughly documented [here](https://github.com/ordercloud-api/headstart#initial-setup).
 - Sign up for Sitecore CDP and copy an ApiClient value.  
-- Set up FE buyer environment variables (in Buyer/src/assets/appConfigs) required for CDP. 
+- Set up FE buyer environment variables (in Buyer/src/assets/appConfigs) required for CDP. Please see [Sitecore CDP documentation](https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/javascript-tagging-examples-for-webpages.html) for additional details.
 - Use the correct endpoint for your region 
 Europe: https://api.boxever.com/v1.2
 
@@ -37,7 +37,8 @@ United States: https://api-us.boxever.com/v1.2
   "useSitecoreCDP": true,
   "sitecoreCDPTargetEndpoint": "https://api-us.boxever.com/v1.2",
   "sitecoreCDPApiClient": "xxxxxxxxxxxxxx",
-  "sitecoreCDPCookieDomain": "your websute url without www",
+  "sitecoreCDPCookieDomain": "your website url without www",
+  "sitecoreCDPJavascriptLibraryVersion": "1.4.8",
   "sitecoreCDPWebFlowTarget": "https://d35vb5cccm4xzp.cloudfront.net", //the value will remain the same unless advised otherwise by the product team 
   "sitecoreCDPPointOfSale": "pos name setup in CDP"
 ```
