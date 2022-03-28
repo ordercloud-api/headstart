@@ -127,6 +127,7 @@ namespace ordercloud.integrations.cardconnect
 				{
 					var ex = new CatalystBaseException(@"Payment.MissingCreditCardPayment", @"The Order is missing credit card payment.");
 					LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+					throw ex;
 				}
 				try
 				{
@@ -136,10 +137,7 @@ namespace ordercloud.integrations.cardconnect
 						{
 							return ocPayment;
 						}
-						else
-						{
-							await VoidTransactionAsync(ocPayment, order, userToken);
-						}
+						await VoidTransactionAsync(ocPayment, order, userToken);
 					}
 					var call = await _cardConnect.AuthWithoutCapture(CardConnectMapper.Map(cc, order, payment, merchantId, ccAmount));
 					ocPayment = await _oc.Payments.PatchAsync<HsPayment>(OrderDirection.Incoming, order.ID, ocPayment.ID, new PartialPayment { Accepted = true, Amount = ccAmount });
@@ -156,6 +154,17 @@ namespace ordercloud.integrations.cardconnect
 			}
 			catch (Exception ex)
 			{
+				var ex1 = new CatalystBaseException(new ApiError
+				{
+					ErrorCode = @"Order.ErrorAuthorizePayment",
+					Message = $@"Unable to process the AuthorizePayment for the Merchant: {merchantId}.",
+					Data = new
+					{
+						PaymentData = payment,
+						UserToken = userToken,
+						MerchantId = merchantId
+					}
+				});
 				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return resp;
@@ -168,7 +177,7 @@ namespace ordercloud.integrations.cardconnect
 		/// <param name="userToken"></param>
 		/// <returns></returns>
 		public async Task VoidPaymentAsync(string orderId, string userToken)
-        {
+		{
 			try
 			{
 				var order = await _oc.Orders.GetAsync<HsOrder>(OrderDirection.Incoming, orderId);
@@ -186,7 +195,7 @@ namespace ordercloud.integrations.cardconnect
 			{
 				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
-        }
+		}
 
 		/// <summary>
 		/// Public re-usable VoidTransactionAsync task method

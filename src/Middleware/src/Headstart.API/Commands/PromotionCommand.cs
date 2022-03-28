@@ -52,13 +52,13 @@ namespace Headstart.API.Commands
 			}
 			catch (Exception ex)
 			{
-				var exception = new CatalystBaseException(new ApiError
+				var ex1 = new CatalystBaseException(new ApiError
 				{
 					ErrorCode = @"Order.ErrorAutoApplyPromotions",
 					Message = $@"Unable to auto apply the promotion with for the Order: {orderId}."
 				});
-				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-				throw exception;
+				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
+				throw ex1;
 			}
 		}
 
@@ -81,14 +81,14 @@ namespace Headstart.API.Commands
 			}
 			catch (Exception ex)
 			{
-				var exception = new CatalystBaseException(new ApiError
+				var ex1 = new CatalystBaseException(new ApiError
 				{
 					ErrorCode = @"Promotion.ErrorRemovingAll",
 					Message = @"One or more promotions could not be removed.",
 					Data = allTasks?.Exception?.InnerExceptions
 				});
-				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {exception.Message}", ex.StackTrace, this, true);
-				throw exception;
+				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
+				throw ex1;
 			}
 		}
 
@@ -109,7 +109,7 @@ namespace Headstart.API.Commands
 			catch (Exception ex)
 			{
 				// This can leave us in a bad state if the promotion can't be deleted but no longer valid
-				var exception = new CatalystBaseException(new ApiError
+				var ex1 = new CatalystBaseException(new ApiError
 				{
 					ErrorCode = @"Promotion.ErrorRemoving",
 					Message = $@"Unable to remove the promotion with the PromoCode: {promo.Code}.",
@@ -118,8 +118,8 @@ namespace Headstart.API.Commands
 						Promotion = promo
 					}
 				});
-				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {exception.Message}", ex.StackTrace, this, true);
-				throw exception;
+				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
+				throw ex1;
 			}
 			return resp;
 		}

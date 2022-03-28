@@ -74,6 +74,10 @@ namespace Headstart.Tests
 			_oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, _orderId, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
 				.Returns(Task.FromResult(PaymentMocks.EmptyPaymentsList()));
 			var payment = ValidIntegrationsPayment();
+			if (payment == null)
+			{
+				return;
+			}
 
 			// Act
 			var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => await _sut.AuthorizePayment(payment, _userToken, _merchantId));
@@ -85,20 +89,31 @@ namespace Headstart.Tests
 		[Test]
 		public async Task should_skip_auth_if_payment_valid()
 		{
-			// If a payment has already been accepted and is equal to the
-			// order total then don't auth again
-
+			// If a payment has already been accepted and is equal to the order total then don't auth again
 			// Arrange
 			_oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, _orderId, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
 				.Returns(Task.FromResult(PaymentMocks.PaymentList(PaymentMocks.CCPayment("creditcardid1", 38))));
 			var payment = ValidIntegrationsPayment();
+			if (payment == null)
+			{
+				return;
+			}
 
 			// Act
 			await _sut.AuthorizePayment(payment, _userToken, _merchantId);
 
 			// Assert
-			await _cardConnect.DidNotReceive().AuthWithCapture(Arg.Any<CardConnectAuthorizationRequest>());
-			await _oc.Payments.DidNotReceive().CreateTransactionAsync(OrderDirection.Incoming, _orderId, Arg.Any<string>(), Arg.Any<PaymentTransaction>());
+			var cardConnectAuthorizationRequest = Arg.Any<CardConnectAuthorizationRequest>();
+			if (cardConnectAuthorizationRequest != null)
+			{
+				await _cardConnect.DidNotReceive().AuthWithCapture(cardConnectAuthorizationRequest);
+			}
+			var paymentId = Arg.Any<string>();
+			var paymentTransaction = Arg.Any<PaymentTransaction>();
+			if (!string.IsNullOrEmpty(paymentId) && paymentTransaction != null)
+			{
+				await _oc.Payments.DidNotReceive().CreateTransactionAsync(OrderDirection.Incoming, _orderId, paymentId, paymentTransaction);
+			}
 		}
 
 		[Test]
@@ -128,6 +143,10 @@ namespace Headstart.Tests
 			_oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, _orderId, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
 				.Returns(PaymentMocks.PaymentList(MockCCPayment(paymentTotal, true, payment1transactions)));
 			var payment = ValidIntegrationsPayment();
+			if (payment == null)
+			{
+				return;
+			}
 
 			// Act
 			await _sut.AuthorizePayment(payment, _userToken, _merchantId);
@@ -214,6 +233,10 @@ namespace Headstart.Tests
 			_oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, _orderId, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
 				.Returns(PaymentMocks.PaymentList(MockCCPayment(paymentTotal, true, payment1transactions)));
 			var payment = ValidIntegrationsPayment();
+			if (payment == null)
+			{
+				return;
+			}
 
 			// Act
 			await _sut.AuthorizePayment(payment, _userToken, _merchantId);
@@ -303,6 +326,10 @@ namespace Headstart.Tests
 			_oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, _orderId, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
 				.Returns(PaymentMocks.PaymentList(MockCCPayment(paymentTotal, true, payment1transactions)));
 			var payment = ValidIntegrationsPayment();
+			if (payment == null)
+			{
+				return;
+			}
 
 			// Act
 			await _sut.AuthorizePayment(payment, _userToken, _merchantId);
@@ -419,6 +446,10 @@ namespace Headstart.Tests
 			_oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, _orderId, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
 				.Returns(PaymentMocks.PaymentList(mockedCCPayment));
 			var payment = ValidIntegrationsPayment();
+			if (payment == null)
+			{
+				return;
+			}
 
 			// Act
 			var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => await _sut.AuthorizePayment(payment, _userToken, _merchantId));
