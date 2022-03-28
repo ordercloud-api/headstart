@@ -45,7 +45,7 @@ namespace Headstart.Common.Models.Misc
 		/// Container for OrderCloud Settings
 		/// </summary>
 		[Required]
-		public OrderCloudSeedSettings OrderCloudSettings { get; set; } = new OrderCloudSeedSettings();
+		public OrderCloudSeedSettings OrderCloudSeedSettings { get; set; } = new OrderCloudSeedSettings();
 		#endregion
 
 		#region Optional settings
@@ -89,6 +89,15 @@ namespace Headstart.Common.Models.Misc
 		/// Provide a valid ConnectionString to have the seeding function generate your translation file
 		/// </summary>
 		public StorageAccountSeedSettings StorageAccountSettings { get; set; } = new StorageAccountSeedSettings();
+
+		/// <summary>
+		/// Optionally provide an region for your new marketplace to be hosted in.
+		/// Options are US-West, US-East, Australia-East, Europe-West, Japan-East.
+		/// If no value is provided US-West will be used by default.
+		/// https://ordercloud.io/knowledge-base/ordercloud-regions
+		/// </summary>
+		[ValueRange(AllowableValues = new[] { null, "US-East", "Australia-East", "Europe-West", "Japan-East", "US-West" })]
+		public string Region { get; set; } = string.Empty;
 		#endregion
 	}
 
@@ -162,10 +171,17 @@ namespace Headstart.Common.Models.Misc
 
 	public class OcEnv
 	{
-        public string environmentName;
-
-        public string EnvironmentName { get; set; } = string.Empty;
+		public string EnvironmentName { get; set; } = string.Empty;
 
 		public string ApiUrl { get; set; } = string.Empty;
+	}
+
+	public class Region
+	{
+		public string AzureRegion { get; set; } = string.Empty;
+
+		public string Id { get; set; } = string.Empty;
+
+		public string Name { get; set; } = string.Empty;
 	}
 }

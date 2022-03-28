@@ -76,7 +76,7 @@ namespace Headstart.API.Commands.EnvironmentSeed
 			var resp = new EnvironmentSeedResponse();
 			try 
 			{
-				OcEnv requestedEnv = ValidateEnvironment(seed.OrderCloudSettings.Environment);
+				var requestedEnv = ValidateEnvironment(seed.OrderCloudSeedSettings.Environment);
 				if (requestedEnv.EnvironmentName == OrderCloudEnvironments.Production.EnvironmentName && seed.MarketplaceId == null)
 				{
 					var exception = $@"Cannot create a production environment via the environment seed endpoint. Please contact an OrderCloud Developer to create a production marketplace.";
@@ -91,7 +91,7 @@ namespace Headstart.API.Commands.EnvironmentSeed
 				});
 
 				var portalUserToken = await _portal.Login(seed.PortalUsername, seed.PortalPassword);
-				var marketplace = await GetOrCreateMarketplace(portalUserToken, requestedEnv.EnvironmentName, seed.MarketplaceName, seed.MarketplaceId);
+				var marketplace = await GetOrCreateMarketplace(portalUserToken, seed, requestedEnv);
 				var marketplaceToken = await _portal.GetMarketplaceToken(marketplace.Id, portalUserToken);
 				await CreateOrUpdateDefaultSellerUser(seed, marketplaceToken);
 				await CreateOnlyOnceIncrementors(marketplaceToken); // must be before CreateBuyers
@@ -139,6 +139,28 @@ namespace Headstart.API.Commands.EnvironmentSeed
 				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return resp;
+		}
+
+		/// <summary>
+		/// Public re-usable ConstructMarketplaceFromSeed task method
+		/// </summary>
+		/// <param name="seed"></param>
+		/// <param name="requestedEnv"></param>
+		/// <returns>The Marketplace response object</returns>
+		private static Marketplace ConstructMarketplaceFromSeed(Common.Models.Misc.EnvironmentSeed seed, OcEnv requestedEnv)
+		{
+			var region = seed.Region != null
+				? SeedConstants.Regions.Find(r => r.Name == seed.Region)
+				: SeedConstants.UsWest;
+			return new Marketplace()
+			{
+				Id = Guid.NewGuid().ToString(),
+				Environment = requestedEnv.EnvironmentName,
+				Name = string.IsNullOrEmpty(seed.MarketplaceName) 
+					? @"My Headstart Marketplace" 
+					: seed.MarketplaceName,
+				Region = region
+			};
 		}
 
 		/// <summary>
@@ -221,45 +243,31 @@ namespace Headstart.API.Commands.EnvironmentSeed
 		/// Public re-usable GetOrCreateMarketplace task method
 		/// </summary>
 		/// <param name="token"></param>
+		/// <param name="seed"></param>
 		/// <param name="env"></param>
-		/// <param name="marketplaceName"></param>
-		/// <param name="marketplaceId"></param>
 		/// <returns>The Marketplace response object</returns>
-		public async Task<Marketplace> GetOrCreateMarketplace(string token, string env, string marketplaceName, string marketplaceId = null)
+		public async Task<Marketplace> GetOrCreateMarketplace(string token, Common.Models.Misc.EnvironmentSeed seed, OcEnv env)
 		{
-			var marketplace = new Marketplace();
-			try
+			if (!string.IsNullOrEmpty(seed.MarketplaceId))
 			{
-				if (!string.IsNullOrEmpty(marketplaceId))
+				var existingMarketplace = await VerifyMarketplaceExists(seed.MarketplaceId, token);
+				return existingMarketplace;
+			}
+			else
+			{
+				var marketPlaceToCreate = ConstructMarketplaceFromSeed(seed, env);
+				try
 				{
-					marketplace = await VerifyMarketplaceExists(marketplaceId, token);
+					await _portal.GetMarketplace(marketPlaceToCreate.Id, token);
+					return await GetOrCreateMarketplace(token, seed, env);
 				}
-				else
+				catch (Exception ex)
 				{
-					marketplace = new Marketplace()
-					{
-						Id = Guid.NewGuid().ToString(),
-						Environment = env,
-						Name = string.IsNullOrEmpty(marketplaceName) ? "My Headstart Marketplace" : marketplaceName
-					};
-					try
-					{
-						await _portal.GetMarketplace(marketplace.Id, token);
-						marketplace = await GetOrCreateMarketplace(token, env, marketplaceName, marketplaceId);
-					}
-					catch (Exception ex)
-					{
-						await _portal.CreateMarketplace(marketplace, token);
-						marketplace = await _portal.GetMarketplace(marketplace.Id, token);
-						LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-					}
+					LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+					await _portal.CreateMarketplace(marketPlaceToCreate, token);
+					return await _portal.GetMarketplace(marketPlaceToCreate.Id, token);
 				}
 			}
-			catch (Exception ex)
-			{
-				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
-			return marketplace;
 		}
 
 		/// <summary>
@@ -891,7 +899,7 @@ namespace Headstart.API.Commands.EnvironmentSeed
 
 				// this gets called by both the /seed command and the post-staging restore so we need to handle getting settings from two sources
 				var middlewareBaseUrl = seed != null ? seed.MiddlewareBaseUrl : _settings.EnvironmentSettings.MiddlewareBaseUrl;
-				var webhookHashKey = seed != null ? seed.OrderCloudSettings.WebhookHashKey : _settings.OrderCloudSettings.WebhookHashKey;
+				var webhookHashKey = seed != null ? seed.OrderCloudSeedSettings.WebhookHashKey : _settings.OrderCloudSettings.WebhookHashKey;
 				var checkoutEvent = SeedConstants.CheckoutEvent(middlewareBaseUrl, webhookHashKey);
 				await _oc.IntegrationEvents.SaveAsync(checkoutEvent.ID, checkoutEvent, token);
 				var localCheckoutEvent = SeedConstants.LocalCheckoutEvent(webhookHashKey);

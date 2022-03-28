@@ -381,7 +381,7 @@ namespace Headstart.API.Commands.EnvironmentSeed
 					// MessageType.ShipmentCreated this is currently being triggered in-app possibly move to message senders
 				},
 				URL = seed.MiddlewareBaseUrl + @"/messagesenders/{messagetype}",
-				SharedKey = seed.OrderCloudSettings.WebhookHashKey
+				SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey
 			};
 		}
 
@@ -400,7 +400,7 @@ namespace Headstart.API.Commands.EnvironmentSeed
 					MessageType.ForgottenPassword,
 				},
 				URL = seed.MiddlewareBaseUrl + @"/messagesenders/{messagetype}",
-				SharedKey = seed.OrderCloudSettings.WebhookHashKey
+				SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey
 			};
 		}
 
@@ -419,7 +419,7 @@ namespace Headstart.API.Commands.EnvironmentSeed
 					MessageType.ForgottenPassword,
 				},
 				URL = seed.MiddlewareBaseUrl + @"/messagesenders/{messagetype}",
-				SharedKey = seed.OrderCloudSettings.WebhookHashKey
+				SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey
 			};
 		}
 		#endregion
@@ -538,6 +538,52 @@ namespace Headstart.API.Commands.EnvironmentSeed
 				xp = null
 			};
 		}
+		#endregion
+
+		#region Azure Regions
+		public static Region UsEast = new Region()
+		{
+			AzureRegion = "eastus",
+			Id = "est",
+			Name = "US-East"
+		};
+
+		public static Region AustraliaEast = new Region()
+		{
+			AzureRegion = "australiaeast",
+			Id = "aus",
+			Name = "Australia-East"
+		};
+
+		public static Region EuropeWest = new Region()
+		{
+			AzureRegion = "westeurope",
+			Id = "eur",
+			Name = "Europe-West"
+		};
+
+		public static Region JapanEast = new Region()
+		{
+			AzureRegion = "japaneast",
+			Id = "jpn",
+			Name = "Japan-East"
+		};
+
+		public static Region UsWest = new Region()
+		{
+			AzureRegion = "westus",
+			Id = "usw",
+			Name = "US-West"
+		};
+
+		public static readonly List<Region> Regions = new List<Region>()
+		{
+			UsEast,
+			AustraliaEast,
+			EuropeWest,
+			JapanEast,
+			UsWest
+		};
 		#endregion
 	}
 }

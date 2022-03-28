@@ -1,4 +1,5 @@
 ﻿using Headstart.Common.Models.Base;
+using Headstart.Common.Models.Misc;
 
 namespace Headstart.Common.Services.Portal.Models
 {
@@ -9,5 +10,7 @@ namespace Headstart.Common.Services.Portal.Models
 		public PortalUser Owner { get; set; } = new PortalUser();
 
 		public string Environment { get; set; } = string.Empty;
+
+		public Region Region { get; set; } = new Region();
 	}
 }
