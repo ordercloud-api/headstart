@@ -106,47 +106,69 @@ namespace ordercloud.integrations.cardconnect
 		/// <exception cref="CatalystBaseException"></exception>
 		public async Task<Payment> AuthorizePayment(OrderCloudIntegrationsCreditCardPayment payment, string userToken, string merchantId)
 		{
-			Require.That((payment.CreditCardID != null) || (payment.CreditCardDetails != null), new ErrorCode(@"CreditCard.CreditCardAuth", @"The Request must include either CreditCardDetails or CreditCardID."));
-			var cc = await GetMeCardDetails(payment, userToken);
-			Require.That(payment.IsValidCvv(cc), new ErrorCode(@"CreditCardAuth.InvalidCvv", @"The CVV is required for Credit Card Payment."));
-			Require.That(cc.Token != null, new ErrorCode(@"CreditCardAuth.InvalidToken", @"The Credit card must have valid authorization token."));
-			Require.That(cc.xp.CCBillingAddress != null, new ErrorCode(@"Invalid Bill Address", @"The Credit card must have a billing address."));
-
-			var orderWorksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HsOrderWorksheet>(OrderDirection.Incoming, payment.OrderID);
-			var order = orderWorksheet.Order;
-			Require.That(!order.IsSubmitted, new ErrorCode(@"CreditCardAuth.AlreadySubmitted", @"The Order has already been submitted."));
-
-			var ccAmount = orderWorksheet.Order.Total;
-			var ocPaymentsList = (await _oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, payment.OrderID, filters: @"Type=CreditCard"));
-			var ocPayments = ocPaymentsList.Items;
-			var ocPayment = ocPayments.Any() ? ocPayments[0] : null;
-			if (ocPayment == null)
-			{
-				var ex = new CatalystBaseException(@"Payment.MissingCreditCardPayment", @"The Order is missing credit card payment.");
-				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-				throw ex;
-			}
+			var resp = new Payment();
 			try
 			{
-				if (ocPayment?.Accepted == true)
+				Require.That((payment.CreditCardID != null) || (payment.CreditCardDetails != null), new ErrorCode(@"CreditCard.CreditCardAuth", @"The Request must include either CreditCardDetails or CreditCardID."));
+				var cc = await GetMeCardDetails(payment, userToken);
+				Require.That(payment.IsValidCvv(cc), new ErrorCode(@"CreditCardAuth.InvalidCvv", @"The CVV is required for Credit Card Payment."));
+				Require.That(cc.Token != null, new ErrorCode(@"CreditCardAuth.InvalidToken", @"The Credit card must have valid authorization token."));
+				Require.That(cc.xp.CCBillingAddress != null, new ErrorCode(@"Invalid Bill Address", @"The Credit card must have a billing address."));
+
+				var orderWorksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HsOrderWorksheet>(OrderDirection.Incoming, payment.OrderID);
+				var order = orderWorksheet.Order;
+				Require.That(!order.IsSubmitted, new ErrorCode(@"CreditCardAuth.AlreadySubmitted", @"The Order has already been submitted."));
+
+				var ccAmount = orderWorksheet.Order.Total;
+				var ocPaymentsList = (await _oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, payment.OrderID, filters: @"Type=CreditCard"));
+				var ocPayments = ocPaymentsList.Items;
+				var ocPayment = ocPayments.Any() ? ocPayments[0] : null;
+				if (ocPayment == null)
 				{
-					if (ocPayment.Amount == ccAmount)
-					{
-						return ocPayment;
-					}
-					await VoidTransactionAsync(ocPayment, order, userToken);
+					var ex = new CatalystBaseException(@"Payment.MissingCreditCardPayment", @"The Order is missing credit card payment.");
+					LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+					throw ex;
 				}
-				var call = await _cardConnect.AuthWithoutCapture(CardConnectMapper.Map(cc, order, payment, merchantId, ccAmount));
-				ocPayment = await _oc.Payments.PatchAsync<HsPayment>(OrderDirection.Incoming, order.ID, ocPayment.ID, new PartialPayment { Accepted = true, Amount = ccAmount });
-				return await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, ocPayment.ID, CardConnectMapper.Map(ocPayment, call));
+				try
+				{
+					if (ocPayment?.Accepted == true)
+					{
+						if (ocPayment.Amount == ccAmount)
+						{
+							return ocPayment;
+						}
+						await VoidTransactionAsync(ocPayment, order, userToken);
+					}
+					var call = await _cardConnect.AuthWithoutCapture(CardConnectMapper.Map(cc, order, payment, merchantId, ccAmount));
+					ocPayment = await _oc.Payments.PatchAsync<HsPayment>(OrderDirection.Incoming, order.ID, ocPayment.ID, new PartialPayment { Accepted = true, Amount = ccAmount });
+					resp = await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, ocPayment.ID, CardConnectMapper.Map(ocPayment, call));
+				}
+				catch (CreditCardAuthorizationException ex)
+				{
+					var ex1 = new CatalystBaseException($@"CreditCardAuth.{ex.ApiError.ErrorCode}", $@"{ex.ApiError.Message}.", ex.Response);
+					ocPayment = await _oc.Payments.PatchAsync<HsPayment>(OrderDirection.Incoming, order.ID, ocPayment.ID, new PartialPayment { Accepted = false, Amount = ccAmount });
+					resp = await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, ocPayment.ID, CardConnectMapper.Map(ocPayment, ex.Response));
+					LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
+					throw ex1;
+				}
 			}
-			catch (CreditCardAuthorizationException ex)
+			catch (Exception ex)
 			{
-				var ex1 = new CatalystBaseException($@"CreditCardAuth.{ex.ApiError.ErrorCode}", $@"{ex.ApiError.Message}.", ex.Response);
-				ocPayment = await _oc.Payments.PatchAsync<HsPayment>(OrderDirection.Incoming, order.ID, ocPayment.ID, new PartialPayment { Accepted = false, Amount = ccAmount });
-				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
-				return await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, ocPayment.ID, CardConnectMapper.Map(ocPayment, ex.Response));
+				var ex1 = new CatalystBaseException(new ApiError
+				{
+					ErrorCode = @"Order.ErrorAuthorizePayment",
+					Message = $@"Unable to process the AuthorizePayment for the Merchant: {merchantId}.",
+					Data = new
+					{
+						PaymentData = payment,
+						UserToken = userToken,
+						MerchantId = merchantId
+					}
+				});
+				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				throw ex1;
 			}
+			return resp;
 		}
 
 		/// <summary>
