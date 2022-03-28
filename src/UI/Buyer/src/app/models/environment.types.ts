@@ -183,5 +183,9 @@ export class AppConfig {
   /**
    * See https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/javascript-tagging-examples-for-web-pages.html
    */
+  sitecoreCDPJavascriptLibraryVersion: string
+  /**
+   * See https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/javascript-tagging-examples-for-web-pages.html
+   */
   sitecoreCDPPointOfSale: string
 }

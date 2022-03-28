@@ -37,21 +37,21 @@ let updatedIndexHtml = indexHtml.replace(
  * Inject conditional script (Sitecore CDP) into html
  */
 
-const appConfig = fs.readFileSync(
-  `${sourceDir}/assets/appConfigs/${appID}.json`,
-  'utf-8'
+const appConfig = JSON.parse(
+  fs.readFileSync(`./assets/appConfigs/${appID}.json`, 'utf-8') || '{}'
 )
-const clientKey = appConfig.sitecoreCDPApiClient
-const target = appConfig.sitecoreCDPTargetEndpoint
-const cookieDomain = appConfig.sitecoreCDPCookieDomain
-const javascriptLibraryVersion = appConfig.sitecoreCDPJavascriptLibraryVersion
-const pointOfSale = appConfig.sitecoreCDPPointOfSale
-const webFlowTarget = appConfig.sitecoreCDPWebFlowTarget
+if (appConfig.useSitecoreCDP) {
+  const clientKey = appConfig.sitecoreCDPApiClient
+  const target = appConfig.sitecoreCDPTargetEndpoint
+  const cookieDomain = appConfig.sitecoreCDPCookieDomain
+  const javascriptLibraryVersion = appConfig.sitecoreCDPJavascriptLibraryVersion
+  const pointOfSale = appConfig.sitecoreCDPPointOfSale
+  const webFlowTarget = appConfig.sitecoreCDPWebFlowTarget
 
-// Tracker installation https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/javascript-tagging-examples-for-web-pages.html
-updatedIndexHtml = indexHtml.replace(
-  '<!-- sitecore-cdp-placeholder -->',
-  `<script type="text/javascript">
+  // Tracker installation https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/javascript-tagging-examples-for-web-pages.html
+  updatedIndexHtml = indexHtml.replace(
+    '<!-- sitecore-cdp-placeholder -->',
+    `<script type="text/javascript">
 // Define the Boxever queue 
 var _boxeverq = _boxeverq || [];
 
@@ -72,6 +72,7 @@ var _boxever_settings = {
       var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
 })();
 </script>`
-)
+  )
+}
 
 fs.writeFileSync('./index.html', updatedIndexHtml)
