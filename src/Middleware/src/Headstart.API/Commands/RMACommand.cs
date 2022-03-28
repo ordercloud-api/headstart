@@ -1043,8 +1043,8 @@ namespace Headstart.API.Commands
 				// Figure out what the buyer paid for shipping for this supplier on this order.
 				if (shouldShippingBeCanceled)
 				{
-					var shipEstimateID = worksheet.ShipEstimateResponse.ShipEstimates.FirstOrDefault(estimate => estimate.xp.SupplierId == rma.SupplierId)?.ID;
-					var shippingLine = worksheet.OrderCalculateResponse.xp.TaxCalculation.OrderLevelTaxes.First(tax => tax.ShipEstimateID == shipEstimateID);
+					var shipEstimateId = worksheet.ShipEstimateResponse.ShipEstimates.FirstOrDefault(estimate => estimate.xp.SupplierID == rma.SupplierId)?.ID;
+					var shippingLine = worksheet.OrderCalculateResponse.xp.TaxCalculation.OrderLevelTaxes.First(tax => tax.ShipEstimateID == shipEstimateId);
 					var shippingCostToRefund = (decimal)(shippingLine.Taxable + shippingLine.Tax + shippingLine.Exempt);
 					rma.ShippingCredited += shippingCostToRefund;
 					return shippingCostToRefund;

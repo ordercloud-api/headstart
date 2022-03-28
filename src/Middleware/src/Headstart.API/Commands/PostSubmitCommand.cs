@@ -480,7 +480,7 @@ namespace Headstart.API.Commands
 					supplierIDs.Add(supplierOrder.ToCompanyID);
 					var shipFromAddressIDsForSupplierOrder = shipFromAddressIDs.Where(addressID => addressID != null && addressID.Contains(supplierOrder.ToCompanyID)).ToList();
 					var supplier = await _oc.Suppliers.GetAsync<HsSupplier>(supplierOrder.ToCompanyID);
-					var suppliersShipEstimates = buyerOrder.ShipEstimateResponse?.ShipEstimates?.Where(se => se.xp.SupplierId == supplier.ID);
+					var suppliersShipEstimates = buyerOrder.ShipEstimateResponse?.ShipEstimates?.Where(se => se.xp.SupplierID == supplier.ID);
 					var supplierOrderPatch = new PartialOrder()
 					{
 						ID = $@"{buyerOrder.Order.ID}-{supplierOrder.ToCompanyID}",
@@ -520,7 +520,7 @@ namespace Headstart.API.Commands
 				}
 
 				await _lineItemCommand.SetInitialSubmittedLineItemStatuses(buyerOrder.Order.ID);
-				var sellerShipEstimates = buyerOrder.ShipEstimateResponse?.ShipEstimates?.Where(se => se.xp.SupplierId == null);
+				var sellerShipEstimates = buyerOrder.ShipEstimateResponse?.ShipEstimates?.Where(se => se.xp.SupplierID == null);
 				//Patch Buyer Order after it has been submitted
 				var buyerOrderPatch = new PartialOrder()
 				{
@@ -563,7 +563,7 @@ namespace Headstart.API.Commands
 					{
 						EstimatedTransitDays = selected.EstimatedTransitDays,
 						Name = selected.Name,
-						ShipFromAddressId = shipEstimate.xp.ShipFromAddressId
+						ShipFromAddressId = shipEstimate.xp.ShipFromAddressID
 					};
 				}).ToList();
 			}

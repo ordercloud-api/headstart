@@ -35,7 +35,7 @@ namespace Headstart.Common.Extensions
 
 		public static HsShipEstimate GetMatchingShipEstimate(this HsOrderWorksheet buyerWorksheet, string shipFromAddressID)
 		{
-			return buyerWorksheet?.ShipEstimateResponse?.ShipEstimates?.FirstOrDefault(e => e.xp.ShipFromAddressId == shipFromAddressID);
+			return buyerWorksheet?.ShipEstimateResponse?.ShipEstimates?.FirstOrDefault(e => e.xp.ShipFromAddressID == shipFromAddressID);
 		}
 
 		public static IEnumerable<HsLineItem> GetBuyerLineItemsBySupplierId(this HsOrderWorksheet buyerWorksheet, string supplierId)

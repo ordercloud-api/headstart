@@ -23,9 +23,9 @@ namespace Headstart.Common.Models.Headstart
 	{
 		public List<HsShipMethod> AllShipMethods { get; set; } = new List<HsShipMethod>();
 
-		public string SupplierId { get; set; } = string.Empty;
+		public string SupplierID { get; set; } = string.Empty;
 
-		public string ShipFromAddressId { get; set; } = string.Empty;
+		public string ShipFromAddressID { get; set; } = string.Empty;
 	}
 
 	public class ShipMethodXp
