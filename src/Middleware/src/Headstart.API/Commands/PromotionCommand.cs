@@ -46,13 +46,19 @@ namespace Headstart.API.Commands
 			try
 			{
 				await RemoveAllPromotionsAsync(orderId);
-				var autoEligiblePromos = await _oc.Promotions.ListAsync(filters: @"xp.Automatic=true");
+				var autoEligiblePromos = await _oc.Promotions.ListAsync(filters: "xp.Automatic=true");
 				var requests = autoEligiblePromos.Items.Select(p => TryApplyPromoAsync(orderId, p.Code));
 				await Task.WhenAll(requests);
 			}
 			catch (Exception ex)
 			{
+				var exception = new CatalystBaseException(new ApiError
+				{
+					ErrorCode = @"Order.ErrorAutoApplyPromotions",
+					Message = $@"Unable to auto apply the promotion with for the Order: {orderId}."
+				});
 				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				throw exception;
 			}
 		}
 
