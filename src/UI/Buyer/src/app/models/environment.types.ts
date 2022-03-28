@@ -62,12 +62,13 @@ export interface EnvironmentConfig {
   storefrontName?: string
   useSitecoreSend?: boolean
   sitecoreSendWebsiteID?: string
-  useSitecoreCDP?: boolean,
-  sitecoreCDPTargetEndpoint: string,
-  sitecoreCDPApiClient: string,
-  sitecoreCDPCookieDomain: string,
-  sitecoreCDPWebFlowTarget: string,
-  sitecoreCDPPointOfSale: string,
+  useSitecoreCDP?: boolean
+  sitecoreCDPTargetEndpoint: string
+  sitecoreCDPApiClient: string
+  sitecoreCDPCookieDomain: string
+  sitecoreCDPJavascriptLibraryVersion: string
+  sitecoreCDPWebFlowTarget: string
+  sitecoreCDPPointOfSale: string
   sellerQuoteContactEmail: string
 }
 
@@ -126,7 +127,7 @@ export class AppConfig {
   /**
    * Email for sending quote requests to seller (i.e. seller owned products)
    */
-   sellerQuoteContactEmail: string
+  sellerQuoteContactEmail: string
 
   /**
    * An array of security roles that will be requested upon login.
@@ -154,11 +155,11 @@ export class AppConfig {
   /**
    *  See https://moosend.com/
    */
-   useSitecoreSend?: boolean
+  useSitecoreSend?: boolean
   /**
    *  Get a website ID - https://help.moosend.com/hc/en-us/articles/115002945125-How-can-I-connect-my-website-to-Moosend-
    */
-   sitecoreSendWebsiteID?: string
+  sitecoreSendWebsiteID?: string
   /**
    * See https://www.sitecore.com/products/customer-data-platform
    */
@@ -175,11 +176,15 @@ export class AppConfig {
    * See https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/javascript-tagging-examples-for-web-pages.html
    */
   sitecoreCDPCookieDomain: string
-    /**
+  /**
    * See https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/javascript-tagging-examples-for-web-pages.html
    */
   sitecoreCDPWebFlowTarget: string
-    /**
+  /**
+   * See https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/javascript-tagging-examples-for-web-pages.html
+   */
+  sitecoreCDPJavascriptLibraryVersion: string
+  /**
    * See https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/javascript-tagging-examples-for-web-pages.html
    */
   sitecoreCDPPointOfSale: string

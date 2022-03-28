@@ -13,11 +13,15 @@
   "sellerName": "Headstart Demo Seller",
   "sellerQuoteContactEmail": "quotes@seller.com",
   "orderCloudApiUrl": "https://sandboxapi.ordercloud.io",
-  "useSitcoreSend": false,
   "sitcoreSendWebsiteID": "xxxxxxxxxxxxxxxxxxxxxxxx",
+  "useSitcoreSend": false,
   "useSitecoreCDP": false,
+  "sitecoreCDPApiClient": "xxxxxxxxxxxxxxxxxxxxxx",
   "sitecoreCDPTargetEndpoint": "https://api-us.boxever.com/v1.2",
-  "sitecoreCDPApiClient": "xxxxxxxxxxxxxxxxxxx",
+  "sitecoreCDPCookieDomain": "xxxxxxxxxxxxxxxxxxxxxxxx",
+  "sitecoreCDPJavascriptLibraryVersion": "1.4.8",
+  "sitecoreCDPPointOfSale": "xxxxxxxxxxxxxxxxxxxxxxxx",
+  "sitecoreCDPWebFlowTarget": "xxxxxxxxxxxxxxxxxxxxxxxx",
   "theme": {
       "logoSrc": "assets/generic-logo.png"
   },
