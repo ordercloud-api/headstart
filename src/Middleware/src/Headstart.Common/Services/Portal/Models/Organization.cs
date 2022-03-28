@@ -1,4 +1,4 @@
-﻿using Headstart.Common.Models.Base;
+using Headstart.Common.Models.Base;
 using Headstart.Common.Models.Misc;
 
 namespace Headstart.Common.Services.Portal.Models

@@ -5,7 +5,7 @@
   "InitialAdminPassword": "",
   "MiddlewareBaseUrl": "",
   "MarketplaceID": "",
-  "OrderCloudSettings": {
+  "OrderCloudSeedSettings": {
     "Environment": "sandbox",
     "Region": "Us-West",
     "WebhookHashKey": ""
