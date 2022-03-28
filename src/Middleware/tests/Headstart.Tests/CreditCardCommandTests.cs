@@ -119,8 +119,7 @@ namespace Headstart.Tests
 		[Test]
 		public async Task should_void_if_accepted_but_not_valid()
 		{
-			// if a payment is accepted but doesn't match order total than we need to void before authorizing again for new amount
-
+			// If a payment is accepted but doesn't match order total than we need to void before authorizing again for new amount
 			var paymentTotal = 30; // credit card total is 38
 
 			// Arrange
