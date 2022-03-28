@@ -102,7 +102,7 @@ namespace Headstart.Jobs
 
 		private decimal GetPurchaseOrderShippingCost(HsOrderWorksheet orderWorksheet, string supplierId)
 		{
-			var supplierShipEstimate = orderWorksheet?.ShipEstimateResponse?.ShipEstimates?.FirstOrDefault(estimate => estimate?.xp?.SupplierId == supplierId);
+			var supplierShipEstimate = orderWorksheet?.ShipEstimateResponse?.ShipEstimates?.FirstOrDefault(estimate => estimate?.xp?.SupplierID == supplierId);
 			if (supplierShipEstimate == null)
 			{
 				return 0M;

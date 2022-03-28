@@ -10,7 +10,7 @@ using Headstart.Common.Models.Headstart;
 
 namespace Headstart.Tests
 {
-	class CatalogAssignmentSyncTests
+	public class CatalogAssignmentSyncTests
 	{
 		[Test, AutoNSubstituteData]
 		public async Task SyncUserCatalogAssignments_ShouldHandleBasicScenario(
