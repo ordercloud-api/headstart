@@ -60,7 +60,7 @@ namespace Headstart.API.Commands
         /// </summary>
         public async Task<EnvironmentSeedResponse> Seed(EnvironmentSeed seed)
         {
-            OcEnv requestedEnv = validateEnvironment(seed.OrderCloudSettings.Environment);
+            OcEnv requestedEnv = validateEnvironment(seed.OrderCloudSeedSettings.Environment);
 
             if (requestedEnv.environmentName == OrderCloudEnvironments.Production.environmentName && seed.MarketplaceID == null)
             {
@@ -75,7 +75,7 @@ namespace Headstart.API.Commands
             });
 
             var portalUserToken = await _portal.Login(seed.PortalUsername, seed.PortalPassword);
-            var marketplace = await GetOrCreateMarketplace(portalUserToken, requestedEnv.environmentName, seed.MarketplaceName, seed.MarketplaceID);
+            var marketplace = await GetOrCreateMarketplace(portalUserToken, seed, requestedEnv); 
             var marketplaceToken = await _portal.GetMarketplaceToken(marketplace.Id, portalUserToken);
 
             await CreateOrUpdateDefaultSellerUser(seed, marketplaceToken);
@@ -126,6 +126,20 @@ namespace Headstart.API.Commands
             };
         }
 
+        private static Marketplace ConstructMarketplaceFromSeed(EnvironmentSeed seed, OcEnv requestedEnv)
+        {
+	        var region = seed.Region != null
+		        ? SeedConstants.Regions.Find(r => r.Name == seed.Region)
+		        : SeedConstants.UsWest;
+	        return new Marketplace()
+	        {
+		        Id = Guid.NewGuid().ToString(),
+		        Environment = requestedEnv.environmentName,
+		        Name = seed.MarketplaceName == null ? "My Headstart Marketplace" : seed.MarketplaceName,
+		        Region = region
+	        };
+        }
+
         public async Task UpdateTranslations(string connectionString, string containerName)
         {
             var englishTranslationsPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "Assets", "english-translations.json"));
@@ -166,30 +180,25 @@ namespace Headstart.API.Commands
             }
         }
 
-        public async Task<Marketplace> GetOrCreateMarketplace(string token, string env, string marketplaceName, string marketplaceID = null)
+        public async Task<Marketplace> GetOrCreateMarketplace(string token, EnvironmentSeed seed, OcEnv env)
         {
-            if (marketplaceID != null)
+            if (seed.MarketplaceID != null)
             {
-                var marketplace = await VerifyMarketplaceExists(marketplaceID, token);
-                return marketplace;
+                var existingMarketplace = await VerifyMarketplaceExists(seed.MarketplaceID, token);
+                return existingMarketplace;
             }
             else
             {
-                var marketplace = new Marketplace()
+	            var marketPlaceToCreate = ConstructMarketplaceFromSeed(seed, env);
+	            try
                 {
-                    Id = Guid.NewGuid().ToString(),
-                    Environment = env,
-                    Name = marketplaceName == null ? "My Headstart Marketplace" : marketplaceName
-                };
-                try
-                {
-                    await _portal.GetMarketplace(marketplace.Id, token);
-                    return await GetOrCreateMarketplace(token, env, marketplaceName, marketplaceID);
+                    await _portal.GetMarketplace(marketPlaceToCreate.Id, token);
+                    return await GetOrCreateMarketplace(token, seed, env);
                 }
-                catch (Exception ex)
+                catch
                 {
-                    await _portal.CreateMarketplace(marketplace, token);
-                    return await _portal.GetMarketplace(marketplace.Id, token);
+                    await _portal.CreateMarketplace(marketPlaceToCreate, token);
+                    return await _portal.GetMarketplace(marketPlaceToCreate.Id, token);
                 }
             }
         }
@@ -573,7 +582,7 @@ namespace Headstart.API.Commands
 
             // this gets called by both the /seed command and the post-staging restore so we need to handle getting settings from two sources
             var middlewareBaseUrl = seed != null ? seed.MiddlewareBaseUrl : _settings.EnvironmentSettings.MiddlewareBaseUrl;
-            var webhookHashKey = seed != null ? seed.OrderCloudSettings.WebhookHashKey : _settings.OrderCloudSettings.WebhookHashKey;
+            var webhookHashKey = seed != null ? seed.OrderCloudSeedSettings.WebhookHashKey : _settings.OrderCloudSettings.WebhookHashKey;
             var checkoutEvent = SeedConstants.CheckoutEvent(middlewareBaseUrl, webhookHashKey);
             await _oc.IntegrationEvents.SaveAsync(checkoutEvent.ID, checkoutEvent, token);
             var localCheckoutEvent = SeedConstants.LocalCheckoutEvent(webhookHashKey);
