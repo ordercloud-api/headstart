@@ -288,10 +288,19 @@ namespace Headstart.Tests
 			}));
 
 			// Act
-			await _sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new OrderCloudIntegrationsCreditCardPayment() { CreditCardID = "mockCreditCardID" }, "mockUserToken");
+			await _sut.SubmitOrderAsync("mockOrderID", OrderDirection.Outgoing, 
+				new OrderCloudIntegrationsCreditCardPayment()
+				{
+					CreditCardID = "mockCreditCardID"
+				}, "mockUserToken");
 
 			// Assert
-			await _card.Received().AuthorizePayment(Arg.Any<OrderCloudIntegrationsCreditCardPayment>(), "mockUserToken", Arg.Any<string>());
+			var orderCloudIntegrationsCreditCardPayment = Arg.Any<OrderCloudIntegrationsCreditCardPayment>();
+			var merchantId = Arg.Any<string>();
+			if (orderCloudIntegrationsCreditCardPayment != null && !string.IsNullOrEmpty(merchantId))
+			{
+				await _card.Received().AuthorizePayment(orderCloudIntegrationsCreditCardPayment, "mockUserToken", merchantId);
+			}
 		}
 
 		[Test]

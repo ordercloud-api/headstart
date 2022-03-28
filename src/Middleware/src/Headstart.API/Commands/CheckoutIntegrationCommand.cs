@@ -121,19 +121,17 @@ namespace Headstart.API.Commands
 				// Certain suppliers use certain shipping accounts. This filters available rates based on those accounts.  
 				for (var i = 0; i < groupedLineItems.Count; i++)
 				{
-					var supplierID = groupedLineItems[i].First().SupplierID;
-					var profile = _profiles.FirstOrDefault(supplierID);
+					var supplierId = groupedLineItems[i].First().SupplierID;
+					var profile = _profiles.FirstOrDefault(supplierId);
 					var methods = FilterMethodsBySupplierConfig(shipResponse.ShipEstimates[i].ShipMethods.Where(s => profile.CarrierAccountIDs.Contains(s.xp.CarrierAccountId)).ToList(), profile);
 					shipResponse.ShipEstimates[i].ShipMethods = methods.Select(s =>
 					{
-
-						// there is logic here to support not marking up shipping over list rate. But USPS is always list rate
+						// There is logic here to support not marking up shipping over list rate. But USPS is always list rate
 						// so adding an override to the suppliers that use USPS
 						var carrier = _profiles.ShippingProfiles.First(p => p.CarrierAccountIDs.Contains(s.xp?.CarrierAccountId));
-						s.Cost = carrier.MarkupOverride ?
-							s.xp.OriginalCost * carrier.Markup :
-							Math.Min((s.xp.OriginalCost * carrier.Markup), s.xp.ListRate);
-
+						s.Cost = carrier.MarkupOverride 
+							? s.xp.OriginalCost * carrier.Markup 
+							: Math.Min((s.xp.OriginalCost * carrier.Markup), s.xp.ListRate);
 						return s;
 					}).ToList();
 				}
@@ -238,14 +236,14 @@ namespace Headstart.API.Commands
 			var updatedEstimates = new List<HsShipEstimate>();
 			try
 			{
-				var supplierIDs = orderWorksheet.LineItems.Select(li => li.SupplierID);
-				var suppliers = await _oc.Suppliers.ListAsync<HsSupplier>(filters: $@"ID={string.Join("|", supplierIDs)}");
+				var supplierIds = orderWorksheet.LineItems.Select(li => li.SupplierID);
+				var suppliers = await _oc.Suppliers.ListAsync<HsSupplier>(filters: $@"ID={string.Join("|", supplierIds)}");
 
 				foreach (var estimate in shipEstimates)
 				{
 					//  get supplier and supplier subtotal
-					var supplierID = orderWorksheet.LineItems.First(li => li.ID == estimate.ShipEstimateItems.FirstOrDefault()?.LineItemID).SupplierID;
-					var supplier = suppliers.Items.FirstOrDefault(s => s.ID == supplierID);
+					var supplierId = orderWorksheet.LineItems.First(li => li.ID == estimate.ShipEstimateItems.FirstOrDefault()?.LineItemID).SupplierID;
+					var supplier = suppliers.Items.FirstOrDefault(s => s.ID == supplierId);
 					var supplierLineItems = orderWorksheet.LineItems.Where(li => li.SupplierID == supplier?.ID);
 					var supplierSubTotal = supplierLineItems.Select(li => li.LineSubtotal).Sum();
 					if (supplier?.xp?.FreeShippingThreshold != null && supplier.xp?.FreeShippingThreshold < supplierSubTotal) // free shipping for this supplier
@@ -340,8 +338,8 @@ namespace Headstart.API.Commands
 		{
 			try
 			{
-				var supplierID = orderWorksheet.LineItems.First(li => li.ID == estimate.ShipEstimateItems.FirstOrDefault()?.LineItemID).SupplierID;
-				var supplierLineItems = orderWorksheet.LineItems.Where(li => li.SupplierID == supplierID);
+				var supplierId = orderWorksheet.LineItems.First(li => li.ID == estimate.ShipEstimateItems.FirstOrDefault()?.LineItemID).SupplierID;
+				var supplierLineItems = orderWorksheet.LineItems.Where(li => li.SupplierID == supplierId);
 				var supplierSubTotal = supplierLineItems.Select(li => li.LineSubtotal).Sum();
 				var qualifiesForFlatRateShipping = supplierSubTotal > .01M && estimate.ShipMethods.Any(method => method.Name.Contains("GROUND"));
 				if (qualifiesForFlatRateShipping)
