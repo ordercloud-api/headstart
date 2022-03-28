@@ -96,12 +96,13 @@ namespace Headstart.Models.Misc
 		public StorageAccountSeedSettings StorageAccountSettings { get; set; }
 
 		/// <summary>
-		/// Optionally provide an region for your new marketplace to be stored.
+		/// Optionally provide an region for your new marketplace to be hosted in.
 		/// Options are US-West, US-East, Australia-East, Europe-West, Japan-East.
 		/// If no value is provided US-West will be used by default.
+		/// https://ordercloud.io/knowledge-base/ordercloud-regions
 		/// </summary>
 		[ValueRange(AllowableValues = new[] {null, "US-East", "Australia-East", "Europe-West", "Japan-East", "US-West"})]
-		public string AsureRegion { get; set; }
+		public string Region { get; set; }
 
         #endregion
     }

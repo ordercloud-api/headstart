@@ -128,8 +128,8 @@ namespace Headstart.API.Commands
 
         private static Marketplace ConstructMarketplaceFromSeed(EnvironmentSeed seed, OcEnv requestedEnv)
         {
-	        var region = seed.AsureRegion != null
-		        ? SeedConstants.Regions.Find(r => r.Name == seed.AsureRegion)
+	        var region = seed.Region != null
+		        ? SeedConstants.Regions.Find(r => r.Name == seed.Region)
 		        : SeedConstants.UsWest;
 	        return new Marketplace()
 	        {
@@ -195,7 +195,7 @@ namespace Headstart.API.Commands
                     await _portal.GetMarketplace(marketPlaceToCreate.Id, token);
                     return await GetOrCreateMarketplace(token, seed, env);
                 }
-                catch (Exception ex)
+                catch
                 {
                     await _portal.CreateMarketplace(marketPlaceToCreate, token);
                     return await _portal.GetMarketplace(marketPlaceToCreate.Id, token);
