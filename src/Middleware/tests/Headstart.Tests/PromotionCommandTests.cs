@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Headstart.Tests
 {
-	class PromotionCommandTests
+	public class PromotionCommandTests
 	{
 		[Test, AutoNSubstituteData]
 		public async Task should_add_all_promos(
