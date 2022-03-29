@@ -35,43 +35,43 @@ function GetDotNet4FrameworkVersion($releaseKey)
 {
 	$releaseVersion = "";
 	
-	if ($releaseKey -eq 528040) 
+	if ($releaseKey -ge 528040) 
 	{
 		$releaseVersion = "4.8";
 	}
-    if ($releaseKey -eq 461808)
+    if ($releaseKey -ge 461808)
 	{
 		$releaseVersion = "4.7.2";
 	}
-    if ($releaseKey -eq 461308)
+    if ($releaseKey -ge 461308)
 	{
 		$releaseVersion = "4.7.1";
 	}
-    if ($releaseKey -eq 460798)
+    if ($releaseKey -ge 460798)
 	{
 		$releaseVersion = "4.7";
 	}
-    if ($releaseKey -eq 394802)
+    if ($releaseKey -ge 394802)
 	{
 		$releaseVersion = "4.6.2";
 	}
-    if ($releaseKey -eq 394254)
+    if ($releaseKey -ge 394254)
 	{
 		$releaseVersion = "4.6.1";
 	}
-    if ($releaseKey -eq 393295)
+    if ($releaseKey -ge 393295)
 	{
 		$releaseVersion = "4.6";
 	}
-    if ($releaseKey -eq 379893)
+    if ($releaseKey -ge 379893)
 	{
 		$releaseVersion = "4.5.2";
 	}
-    if ($releaseKey -eq 378675)
+    if ($releaseKey -ge 378675)
 	{
 		$releaseVersion = "4.5.1";
 	}
-    if ($releaseKey -eq 378389)
+    if ($releaseKey -ge 378389)
 	{
 		$releaseVersion = "4.5";
 	}
@@ -92,6 +92,14 @@ if (GetDotNet4FrameworkVersion($releaseKey) -ne "4.8")
 {
 	choco install dotnetfx;
 	choco install netfx-4.8-devpack;
+	choco install visualstudio2019buildtools -y \
+    && choco install visualstudio2019-workload-azurebuildtools -y \
+    && choco install visualstudio2019-workload-databuildtools -y \
+    && choco install visualstudio2019-workload-manageddesktopbuildtools -y \
+    && choco install visualstudio2019-workload-netcorebuildtools -y \
+    && choco install visualstudio2019-workload-nodebuildtools -y \
+    && choco install visualstudio2019-workload-webbuildtools -y \
+    && choco install visualstudio2019-workload-xamarinbuildtools -y
 }
 SitecoreFoundation-PackagesSynchronization-Autotmation;
 Write-Host "SitecoreFoundation-PackagesSynchronization-Autotmation - Completed";
