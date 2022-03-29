@@ -1,13 +1,19 @@
 import cookies from '../utils/CookieService'
 import parseJwt from '../utils/ParseJwt'
+import Auth from './Auth'
+import Configuration from '../Configuration'
 
+/**
+ * @ignore
+ * not part of public api, don't include in generated docs
+ */
 const isNode = new Function(
   'try {return this===global;}catch(e){return false;}'
 )
-export default class Tokens {
-  private accessTokenCookieName = `ordercloud.access-token`
-  private impersonationTokenCookieName = 'ordercloud.impersonation-token'
-  private refreshTokenCookieName = 'ordercloud.refresh-token'
+class Tokens {
+  private accessTokenCookieName = `.access-token`
+  private impersonationTokenCookieName = '.impersonation-token'
+  private refreshTokenCookieName = '.refresh-token'
 
   private accessToken?: string = null
   private impersonationToken?: string = null
@@ -27,13 +33,15 @@ export default class Tokens {
     this.RemoveRefreshToken = this.RemoveRefreshToken.bind(this)
     this.SetImpersonationToken = this.SetImpersonationToken.bind(this)
     this.SetRefreshToken = this.SetRefreshToken.bind(this)
+    this._isTokenExpired = this._isTokenExpired.bind(this)
+    this._tryRefreshToken = this._tryRefreshToken.bind(this)
   }
 
   /**
    * Manage Access Tokens
    */
 
-  public GetAccessToken(): string {
+  public GetAccessToken(): string | undefined {
     return isNode() ? this.accessToken : cookies.get(this.accessTokenCookieName)
   }
 
@@ -54,7 +62,7 @@ export default class Tokens {
    * Manage Impersonation Tokens
    */
 
-  public GetImpersonationToken(): string {
+  public GetImpersonationToken(): string | undefined {
     return isNode()
       ? this.impersonationToken
       : cookies.get(this.impersonationTokenCookieName)
@@ -77,7 +85,7 @@ export default class Tokens {
    * Manage Refresh Tokens
    */
 
-  public GetRefreshToken(): string {
+  public GetRefreshToken(): string | undefined {
     return isNode()
       ? this.refreshToken
       : cookies.get(this.refreshTokenCookieName)
@@ -94,4 +102,64 @@ export default class Tokens {
       ? (this.refreshToken = null)
       : cookies.remove(this.refreshTokenCookieName)
   }
+
+  /**
+   * If no token is provided will attempt to get and validate token
+   * stored in sdk. If token is invalid or missing it will also attempt
+   * to refresh the token if possible
+   */
+  public async GetValidToken(tokenToValidate?: string): Promise<string> {
+    let token = tokenToValidate || this.GetAccessToken()
+    if (this._isTokenExpired(token)) {
+      token = await this._tryRefreshToken(token)
+    }
+    return Promise.resolve(token || '')
+  }
+
+  private _isTokenExpired(token: string): boolean {
+    if (!token) {
+      return true
+    }
+    const decodedToken = parseJwt(token)
+    const currentSeconds = Date.now() / 1000
+    const currentSecondsWithBuffer = currentSeconds - 10
+    return decodedToken.exp < currentSecondsWithBuffer
+  }
+
+  private async _tryRefreshToken(accessToken: string): Promise<string> {
+    const refreshToken = this.GetRefreshToken()
+    if (!refreshToken) {
+      return accessToken || ''
+    }
+    const sdkConfig = Configuration.Get()
+    if (!accessToken && !sdkConfig.clientID) {
+      return accessToken || ''
+    }
+
+    // try to get clientid so we can make refresh request
+    let clientID
+    if (accessToken) {
+      const decodedToken = parseJwt(accessToken)
+      clientID = decodedToken.cid
+    }
+    if (sdkConfig.clientID) {
+      clientID = sdkConfig.clientID
+    }
+
+    if (!clientID) {
+      return ''
+    }
+
+    if (clientID) {
+      try {
+        const refreshRequest = await Auth.RefreshToken(refreshToken, clientID)
+        const accessToken = refreshRequest.access_token
+        this.SetAccessToken(accessToken)
+        return accessToken
+      } catch (e) {
+        return ''
+      }
+    }
+  }
 }
+export default new Tokens()

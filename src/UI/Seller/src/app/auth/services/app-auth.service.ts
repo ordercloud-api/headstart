@@ -128,7 +128,6 @@ export class AppAuthService {
 
   logout(): Observable<any> {
     const cookiePrefix = this.appConfig.appname.replace(/ /g, '_').toLowerCase()
-    HeadStartSDK.Tokens.RemoveAccessToken()
     const appCookieNames = _keys(this.cookieService.getAll())
     appCookieNames.forEach((cookieName) => {
       if (cookieName.includes(cookiePrefix)) {
