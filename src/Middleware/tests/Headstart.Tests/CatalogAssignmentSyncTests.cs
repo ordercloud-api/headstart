@@ -71,16 +71,16 @@ namespace Headstart.Tests
 			if (!string.IsNullOrEmpty(buyerId) && !string.IsNullOrEmpty(userId))
 			{
 				await sut.SyncUserCatalogAssignments(buyerId, userId);
-			}
-			var userGroupAssignment = Arg.Is<UserGroupAssignment>(ass => 
-				ass.UserGroupID == catalogId1 && ass.UserID == userId);
-			if (!string.IsNullOrEmpty(buyerId) && userGroupAssignment != null)
-			{
-				await oc.UserGroups.Received().SaveUserAssignmentAsync(buyerId, userGroupAssignment);
-			}
-			if (!string.IsNullOrEmpty(buyerId) && !string.IsNullOrEmpty(catalogId2) && !string.IsNullOrEmpty(userId))
-			{
-				await oc.UserGroups.Received().DeleteUserAssignmentAsync(buyerId, catalogId2, userId);
+				var userGroupAssignment = Arg.Is<UserGroupAssignment>(ass =>
+					ass.UserGroupID == catalogId1 && ass.UserID == userId);
+				if (userGroupAssignment != null)
+				{
+					await oc.UserGroups.Received().SaveUserAssignmentAsync(buyerId, userGroupAssignment);
+				}
+				if (!string.IsNullOrEmpty(catalogId2))
+				{
+					await oc.UserGroups.Received().DeleteUserAssignmentAsync(buyerId, catalogId2, userId);
+				}
 			}
 		}
 
@@ -127,12 +127,12 @@ namespace Headstart.Tests
 			if (!string.IsNullOrEmpty(buyerId) && !string.IsNullOrEmpty(userId))
 			{
 				await sut.SyncUserCatalogAssignments(buyerId, userId);
-			}
-			var userGroupAssignment = Arg.Is<UserGroupAssignment>(ass => 
-				ass.UserGroupID == catalogId1 && ass.UserID == userId);
-			if (!string.IsNullOrEmpty(buyerId) && userGroupAssignment != null)
-			{
-				await oc.UserGroups.DidNotReceive().SaveUserAssignmentAsync(buyerId, userGroupAssignment);
+				var userGroupAssignment = Arg.Is<UserGroupAssignment>(ass =>
+					ass.UserGroupID == catalogId1 && ass.UserID == userId);
+				if (userGroupAssignment != null)
+				{
+					await oc.UserGroups.DidNotReceive().SaveUserAssignmentAsync(buyerId, userGroupAssignment);
+				}
 			}
 		}
 	}

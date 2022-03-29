@@ -215,7 +215,7 @@ namespace ordercloud.integrations.cardconnect
 				var ex1 = new CatalystBaseException(@"Payment.FailedToVoidAuthorization", $@"{ex.ApiError.Message}.");
 				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
 			}
-		}
+        }
 
 		/// <summary>
 		/// Private re-usable GetMerchantID task method
@@ -242,7 +242,6 @@ namespace ordercloud.integrations.cardconnect
 			}
 			catch (CreditCardVoidException ex)
 			{
-
 				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return resp;
@@ -256,19 +255,11 @@ namespace ordercloud.integrations.cardconnect
 		/// <returns>The CardConnectBuyerCreditCard response object from the GetMeCardDetails process</returns>
 		private async Task<CardConnectBuyerCreditCard> GetMeCardDetails(OrderCloudIntegrationsCreditCardPayment payment, string userToken)
 		{
-			var resp = await MeTokenize(payment.CreditCardDetails, userToken);
-			try
+			if (payment.CreditCardID != null)
 			{
-				if (payment.CreditCardID != null)
-				{
-					resp = await _oc.Me.GetCreditCardAsync<CardConnectBuyerCreditCard>(payment.CreditCardID, userToken);
-				}
+				return await _oc.Me.GetCreditCardAsync<CardConnectBuyerCreditCard>(payment.CreditCardID, userToken);	
 			}
-			catch (CreditCardVoidException ex)
-			{
-				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
-			return resp;
+			return await MeTokenize(payment.CreditCardDetails, userToken);
 		}
 
 		/// <summary>
@@ -279,18 +270,9 @@ namespace ordercloud.integrations.cardconnect
 		/// <returns>The CardConnectBuyerCreditCard response object from the MeTokenize process</returns>
 		private async Task<CardConnectBuyerCreditCard> MeTokenize(OrderCloudIntegrationsCreditCardToken card, string userToken)
 		{
-			var resp = new CardConnectBuyerCreditCard();
-			try
-			{
-				var userCurrency = await _hsExchangeRates.GetCurrencyForUser(userToken);
-				var auth = await _cardConnect.Tokenize(CardConnectMapper.Map(card, userCurrency.ToString()));
-				resp = BuyerCreditCardMapper.Map(card, auth);
-			}
-			catch (CreditCardVoidException ex)
-			{
-				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
-			return resp;
+			var userCurrency = await _hsExchangeRates.GetCurrencyForUser(userToken);
+			var auth = await _cardConnect.Tokenize(CardConnectMapper.Map(card, userCurrency.ToString()));
+			return BuyerCreditCardMapper.Map(card, auth);
 		}
 
 		/// <summary>
@@ -301,18 +283,9 @@ namespace ordercloud.integrations.cardconnect
 		/// <returns>The CreditCard response object from the Tokenize process</returns>
 		private async Task<CreditCard> Tokenize(OrderCloudIntegrationsCreditCardToken card, string userToken)
 		{
-			var resp = new CreditCard();
-			try
-			{
-				var userCurrency = await _hsExchangeRates.GetCurrencyForUser(userToken);
-				var auth = await _cardConnect.Tokenize(CardConnectMapper.Map(card, userCurrency.ToString()));
-				resp = CreditCardMapper.Map(card, auth);
-			}
-			catch (Exception ex)
-			{
-				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
-			return resp;
+			var userCurrency = await _hsExchangeRates.GetCurrencyForUser(userToken);
+			var auth = await _cardConnect.Tokenize(CardConnectMapper.Map(card, userCurrency.ToString()));
+			return CreditCardMapper.Map(card, auth);
 		}
 	}
 }
