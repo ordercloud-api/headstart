@@ -74,13 +74,12 @@ namespace Headstart.Tests
 			_oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, _orderId, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
 				.Returns(Task.FromResult(PaymentMocks.EmptyPaymentsList()));
 			var payment = ValidIntegrationsPayment();
-			if (payment == null)
-			{
-				return;
-			}
 
 			// Act
-			await _sut.AuthorizePayment(payment, _userToken, _merchantId);
+			var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => await _sut.AuthorizePayment(payment, _userToken, _merchantId));
+
+			// Assert
+			Assert.AreEqual("Payment.MissingCreditCardPayment", ex.Errors[0].ErrorCode);
 		}
 
 		[Test]
@@ -91,24 +90,11 @@ namespace Headstart.Tests
 			_oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, _orderId, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
 				.Returns(Task.FromResult(PaymentMocks.PaymentList(PaymentMocks.CCPayment("creditcardid1", 38))));
 			var payment = ValidIntegrationsPayment();
-			if (payment == null)
-			{
-				return;
-			}
 
 			// Act
 			await _sut.AuthorizePayment(payment, _userToken, _merchantId);
-			var cardConnectAuthorizationRequest = Arg.Any<CardConnectAuthorizationRequest>();
-			if (cardConnectAuthorizationRequest != null)
-			{
-				await _cardConnect.DidNotReceive().AuthWithCapture(cardConnectAuthorizationRequest);
-			}
-			var paymentId = Arg.Any<string>();
-			var paymentTransaction = Arg.Any<PaymentTransaction>();
-			if (!string.IsNullOrEmpty(paymentId) && paymentTransaction != null)
-			{
-				await _oc.Payments.DidNotReceive().CreateTransactionAsync(OrderDirection.Incoming, _orderId, paymentId, paymentTransaction);
-			}
+			await _cardConnect.DidNotReceive().AuthWithCapture(Arg.Any<CardConnectAuthorizationRequest>());
+			await _oc.Payments.DidNotReceive().CreateTransactionAsync(OrderDirection.Incoming, _orderId, Arg.Any<string>(), Arg.Any<PaymentTransaction>());
 		}
 
 		[Test]
@@ -137,39 +123,19 @@ namespace Headstart.Tests
 			_oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, _orderId, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
 				.Returns(PaymentMocks.PaymentList(MockCCPayment(paymentTotal, true, payment1transactions)));
 			var payment = ValidIntegrationsPayment();
-			if (payment == null)
-			{
-				return;
-			}
 
 			// Act
 			await _sut.AuthorizePayment(payment, _userToken, _merchantId);
-			var cardConnectVoidRequest = Arg.Is<CardConnectVoidRequest>(x =>
-				x.retref == _validRetRef && x.merchid == _merchantId && x.currency == "CAD");
-			if (cardConnectVoidRequest != null)
-			{
-				await _cardConnect.Received().VoidAuthorization(cardConnectVoidRequest);
-			}
-			var paymentTransaction = Arg.Is<PaymentTransaction>(x => x.Amount == paymentTotal);
-			if (paymentTransaction != null)
-			{
-				await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, _orderId, _paymentId, paymentTransaction);
-			}
-			var cardConnectAuthorizationRequest = Arg.Any<CardConnectAuthorizationRequest>();
-			if (cardConnectAuthorizationRequest != null)
-			{
-				await _cardConnect.Received().AuthWithoutCapture(cardConnectAuthorizationRequest);
-			}
-			var partialPayment = Arg.Is<PartialPayment>(p => p.Accepted == true && p.Amount == _ccTotal);
-			if (partialPayment != null)
-			{
-				await _oc.Payments.Received().PatchAsync<HsPayment>(OrderDirection.Incoming, _orderId, _paymentId, partialPayment);
-			}
-			paymentTransaction = Arg.Any<PaymentTransaction>();
-			if (paymentTransaction != null)
-			{
-				await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, _orderId, _paymentId, paymentTransaction);
-			}
+			await _cardConnect.Received().VoidAuthorization(Arg.Is<CardConnectVoidRequest>(x =>
+				x.retref == _validRetRef && x.merchid == _merchantId && x.currency == "CAD"));
+			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, _orderId, 
+				_paymentId, Arg.Is<PaymentTransaction>(x => 
+					x.Amount == paymentTotal));
+			await _cardConnect.Received().AuthWithoutCapture(Arg.Any<CardConnectAuthorizationRequest>());
+			await _oc.Payments.Received().PatchAsync<HsPayment>(OrderDirection.Incoming, _orderId, _paymentId, 
+				Arg.Is<PartialPayment>(p => p.Accepted == true && p.Amount == _ccTotal));
+			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, _orderId, _paymentId, 
+				Arg.Any<PaymentTransaction>());
 		}
 
 		[Test]
@@ -225,39 +191,18 @@ namespace Headstart.Tests
 			_oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, _orderId, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
 				.Returns(PaymentMocks.PaymentList(MockCCPayment(paymentTotal, true, payment1transactions)));
 			var payment = ValidIntegrationsPayment();
-			if (payment == null)
-			{
-				return;
-			}
 
 			// Act
 			await _sut.AuthorizePayment(payment, _userToken, _merchantId);
-			var cardConnectVoidRequest = Arg.Is<CardConnectVoidRequest>(x => 
-				x.retref == "retref3" && x.merchid == _merchantId && x.currency == "CAD");
-			if (cardConnectVoidRequest != null)
-			{
-				await _cardConnect.Received().VoidAuthorization(cardConnectVoidRequest);
-			}
-			var paymentTransaction = Arg.Is<PaymentTransaction>(x => x.Amount == paymentTotal);
-			if (paymentTransaction != null)
-			{
-				await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, _orderId, _paymentId, paymentTransaction);
-			}
-			var cardConnectAuthorizationRequest = Arg.Any<CardConnectAuthorizationRequest>();
-			if (cardConnectAuthorizationRequest != null)
-			{
-				await _cardConnect.Received().AuthWithoutCapture(cardConnectAuthorizationRequest);
-			}
-			var partialPayment = Arg.Is<PartialPayment>(p => p.Accepted == true && p.Amount == _ccTotal);
-			if (partialPayment != null)
-			{
-				await _oc.Payments.Received().PatchAsync<HsPayment>(OrderDirection.Incoming, _orderId, _paymentId, partialPayment);
-			}
-			paymentTransaction = Arg.Any<PaymentTransaction>();
-			if (paymentTransaction != null)
-			{
-				await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, _orderId, _paymentId, paymentTransaction);
-			}
+			await _cardConnect.Received().VoidAuthorization(Arg.Is<CardConnectVoidRequest>(x =>
+				x.retref == "retref3" && x.merchid == _merchantId && x.currency == "CAD"));
+			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, _orderId,_paymentId, 
+				Arg.Is<PaymentTransaction>(x => x.Amount == paymentTotal));
+			await _cardConnect.Received().AuthWithoutCapture(Arg.Any<CardConnectAuthorizationRequest>());
+			await _oc.Payments.Received().PatchAsync<HsPayment>(OrderDirection.Incoming, _orderId, _paymentId, 
+				Arg.Is<PartialPayment>(p => p.Accepted == true && p.Amount == _ccTotal));
+			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, _orderId, _paymentId, 
+				Arg.Any<PaymentTransaction>());
 		}
 
 		[Test]
@@ -316,39 +261,18 @@ namespace Headstart.Tests
 			_oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, _orderId, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
 				.Returns(PaymentMocks.PaymentList(MockCCPayment(paymentTotal, true, payment1transactions)));
 			var payment = ValidIntegrationsPayment();
-			if (payment == null)
-			{
-				return;
-			}
 
 			// Act
 			await _sut.AuthorizePayment(payment, _userToken, _merchantId);
-			var cardConnectVoidRequest = Arg.Is<CardConnectVoidRequest>(x => 
-				x.retref == "retref3" && x.merchid == _merchantId && x.currency == "USD");
-			if (cardConnectVoidRequest != null)
-			{
-				await _cardConnect.Received().VoidAuthorization(cardConnectVoidRequest);
-			}
-			var paymentTransaction = Arg.Is<PaymentTransaction>(x => x.Amount == paymentTotal);
-			if (paymentTransaction != null)
-			{
-				await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, _orderId, _paymentId, paymentTransaction);
-			}
-			var cardConnectAuthorizationRequest = Arg.Any<CardConnectAuthorizationRequest>();
-			if (cardConnectAuthorizationRequest != null)
-			{
-				await _cardConnect.Received().AuthWithoutCapture(cardConnectAuthorizationRequest);
-			}
-			var partialPayment = Arg.Is<PartialPayment>(p => p.Accepted == true && p.Amount == _ccTotal);
-			if (partialPayment != null)
-			{
-				await _oc.Payments.Received().PatchAsync<HsPayment>(OrderDirection.Incoming, _orderId, _paymentId, partialPayment);
-			}
-			paymentTransaction = Arg.Any<PaymentTransaction>();
-			if (paymentTransaction != null)
-			{
-				await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, _orderId, _paymentId, paymentTransaction);
-			}
+			await _cardConnect.Received().VoidAuthorization(Arg.Is<CardConnectVoidRequest>(x =>
+				x.retref == "retref3" && x.merchid == _merchantId && x.currency == "USD"));
+			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, _orderId, _paymentId, 
+				Arg.Is<PaymentTransaction>(x => x.Amount == paymentTotal));
+			await _cardConnect.Received().AuthWithoutCapture(Arg.Any<CardConnectAuthorizationRequest>());
+			await _oc.Payments.Received().PatchAsync<HsPayment>(OrderDirection.Incoming, _orderId, _paymentId, 
+				Arg.Is<PartialPayment>(p => p.Accepted == true && p.Amount == _ccTotal));
+			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, _orderId, _paymentId, 
+				Arg.Any<PaymentTransaction>());
 		}
 
 		[Test]
@@ -379,32 +303,22 @@ namespace Headstart.Tests
 			_oc.Payments.PatchAsync<HsPayment>(OrderDirection.Incoming, _orderId, Arg.Any<string>(), Arg.Any<PartialPayment>())
 				.Returns(Task.FromResult(mockedCCPayment));
 			var payment = ValidIntegrationsPayment();
-			if (payment == null)
-			{
-				return;
-			}
+			_cardConnect
+				.When(x => x.AuthWithoutCapture(Arg.Any<CardConnectAuthorizationRequest>()))
+				.Do(x => throw new CreditCardAuthorizationException(new ApiError(), new CardConnectAuthorizationResponse()));
 
 			// Act
-			await _sut.AuthorizePayment(payment, _userToken, _merchantId);
-			var cardConnectAuthorizationRequest = Arg.Any<CardConnectAuthorizationRequest>();
-			if (cardConnectAuthorizationRequest != null)
-			{
-				_cardConnect.When(x => x.AuthWithoutCapture(cardConnectAuthorizationRequest))
-					.Do(x => throw new CreditCardAuthorizationException(new ApiError { }, new CardConnectAuthorizationResponse { }));
-				await _cardConnect.Received().AuthWithoutCapture(cardConnectAuthorizationRequest);
-			}
-			var partialPayment = Arg.Is<PartialPayment>(p => p.Accepted == false && p.Amount == _ccTotal);
-			if (partialPayment != null)
-			{
-				// Stuff that happens in catch block
-				await _oc.Payments.Received().PatchAsync<HsPayment>(OrderDirection.Incoming, _orderId, _paymentId, partialPayment);
-			}
-			var paymentTransaction = Arg.Any<PaymentTransaction>();
-			if (paymentTransaction != null)
-			{
-				// Stuff that happens in catch block
-				await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, _orderId, _paymentId, paymentTransaction);
-			}
+			var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => await _sut.AuthorizePayment(payment, _userToken, _merchantId));
+
+			// Assert
+			Assert.AreEqual("CreditCardAuth.", ex.Errors[0].ErrorCode);
+			await _cardConnect.Received().AuthWithoutCapture(Arg.Any<CardConnectAuthorizationRequest>());
+			
+			// Stuff that happens in catch block
+			await _oc.Payments.Received().PatchAsync<HsPayment>(OrderDirection.Incoming, _orderId, _paymentId,
+				Arg.Is<PartialPayment>(p => p.Accepted == false && p.Amount == _ccTotal));
+			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, _orderId, _paymentId, 
+				Arg.Any<PaymentTransaction>());
 		}
 
 		[Test]
@@ -415,7 +329,7 @@ namespace Headstart.Tests
 			var paymentTotal = 30;
 
 			// Arrange
-			var payment1transactions = new List<HsPaymentTransaction>()
+			var payment1Transactions = new List<HsPaymentTransaction>()
 			{
 				new HsPaymentTransaction
 				{
@@ -431,37 +345,26 @@ namespace Headstart.Tests
 					}
 				}
 			};
-			var mockedCCPayment = MockCCPayment(paymentTotal, true, payment1transactions);
+			var mockedCCPayment = MockCCPayment(paymentTotal, true, payment1Transactions);
 			_oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, _orderId, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
 				.Returns(PaymentMocks.PaymentList(mockedCCPayment));
 			var payment = ValidIntegrationsPayment();
-			if (payment == null)
-			{
-				return;
-			}
+			_cardConnect
+				.When(x => x.VoidAuthorization(Arg.Any<CardConnectVoidRequest>()))
+				.Do(x => throw new CreditCardVoidException(new ApiError(), new CardConnectVoidResponse()));
 
 			// Act
-			await _sut.AuthorizePayment(payment, _userToken, _merchantId);
-			var cardConnectVoidRequest = Arg.Any<CardConnectVoidRequest>();
-			if (cardConnectVoidRequest != null)
-			{
-				_cardConnect.When(x => x.VoidAuthorization(cardConnectVoidRequest))
-					.Do(x => throw new CreditCardVoidException(new ApiError { }, new CardConnectVoidResponse { }));
-			}
+			var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => await _sut.AuthorizePayment(payment, _userToken, _merchantId));
 
-			var creditCardVoidException = Arg.Any<CreditCardVoidException>();
-			var hsOrder = Arg.Any<HsOrder>();
-			if (hsOrder != null && creditCardVoidException != null)
-			{
-				// Stuff that happens in catch block
-				await _supportAlerts.Received().VoidAuthorizationFailed(Arg.Any<HsPayment>(), _transactionId, hsOrder, creditCardVoidException);
-			}
-			var paymentTransaction = Arg.Any<PaymentTransaction>();
-			if (paymentTransaction != null)
-			{
-				// Stuff that happens in catch block
-				await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, _orderId, _paymentId, paymentTransaction);
-			}
+			// Assert
+			Assert.AreEqual("Payment.FailedToVoidAuthorization", ex.Errors[0].ErrorCode);
+
+			// Stuff that happens in catch block
+			await _supportAlerts
+				.Received().VoidAuthorizationFailed(Arg.Any<HsPayment>(), _transactionId, 
+					Arg.Any<HsOrder>(), Arg.Any<CreditCardVoidException>());
+			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, _orderId, _paymentId,
+				Arg.Any<PaymentTransaction>());
 		}
 		#endregion AuthorizePayment
 

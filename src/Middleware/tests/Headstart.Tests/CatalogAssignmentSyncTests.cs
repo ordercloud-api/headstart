@@ -30,7 +30,7 @@ namespace Headstart.Tests
 			// Arrange
 			assignedGroups.Items = new List<HsLocationUserGroup>()
 			{
-				// define an assigned group that is referencing a Catalog that should be assigned but isn't yet
+				// Define an assigned group that is referencing a Catalog that should be assigned but isn't yet
 				new HsLocationUserGroup
 				{
 					Id = "someid",
@@ -40,7 +40,7 @@ namespace Headstart.Tests
 						CatalogAssignments = new List<string>{ catalogId1 }
 					}
 				},
-				// define a Catalog assignment that is assigned but shouldn't be
+				// Define a Catalog assignment that is assigned but shouldn't be
 				new HsLocationUserGroup {
 					Id = catalogId2,
 					xp = new HsLocationUserGroupXp
@@ -68,20 +68,11 @@ namespace Headstart.Tests
 				.Returns(existingCatalogs.ToTask());
 
 			// Act
-			if (!string.IsNullOrEmpty(buyerId) && !string.IsNullOrEmpty(userId))
-			{
-				await sut.SyncUserCatalogAssignments(buyerId, userId);
-				var userGroupAssignment = Arg.Is<UserGroupAssignment>(ass =>
-					ass.UserGroupID == catalogId1 && ass.UserID == userId);
-				if (userGroupAssignment != null)
-				{
-					await oc.UserGroups.Received().SaveUserAssignmentAsync(buyerId, userGroupAssignment);
-				}
-				if (!string.IsNullOrEmpty(catalogId2))
-				{
-					await oc.UserGroups.Received().DeleteUserAssignmentAsync(buyerId, catalogId2, userId);
-				}
-			}
+			await sut.SyncUserCatalogAssignments(buyerId, userId);
+			await oc.UserGroups.Received().SaveUserAssignmentAsync(buyerId, 
+				Arg.Is<UserGroupAssignment>(ass => ass.UserGroupID == catalogId1 
+				                                   && ass.UserID == userId));
+			await oc.UserGroups.DeleteUserAssignmentAsync(buyerId, catalogId2, userId);
 		}
 
 		[Test, AutoNSubstituteData]
@@ -109,7 +100,7 @@ namespace Headstart.Tests
 						Type = "BuyerLocation",
 						CatalogAssignments = new List<string>{ catalogId1 }
 					}
-				},
+				}
 			};
 
 			groupAssignments.Meta.Page = 1;
@@ -124,16 +115,10 @@ namespace Headstart.Tests
 				.Returns(existingCatalogs.ToTask());
 
 			// Act
-			if (!string.IsNullOrEmpty(buyerId) && !string.IsNullOrEmpty(userId))
-			{
-				await sut.SyncUserCatalogAssignments(buyerId, userId);
-				var userGroupAssignment = Arg.Is<UserGroupAssignment>(ass =>
-					ass.UserGroupID == catalogId1 && ass.UserID == userId);
-				if (userGroupAssignment != null)
-				{
-					await oc.UserGroups.DidNotReceive().SaveUserAssignmentAsync(buyerId, userGroupAssignment);
-				}
-			}
+			await sut.SyncUserCatalogAssignments(buyerId, userId);
+			await oc.UserGroups.DidNotReceive().SaveUserAssignmentAsync(buyerId, 
+				Arg.Is<UserGroupAssignment>(ass => ass.UserGroupID == catalogId1 
+				                                   && ass.UserID == userId));
 		}
 	}
 }
