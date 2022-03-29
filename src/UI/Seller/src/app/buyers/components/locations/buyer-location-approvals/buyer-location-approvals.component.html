@@ -4,39 +4,6 @@
     <p class="font-italic" translate>
       ADMIN.BUYER_GROUPS.APPROVALS.DESCRIPTION
     </p>
-    <div class="pb-3">
-      <button
-        [disabled]="!areChanges"
-        class="btn btn-link"
-        (click)="discardApprovalChanges()"
-      >
-        {{
-          (areChanges ? 'ADMIN.COMMON.CANCEL' : 'ADMIN.COMMON.NO_CHANGES')
-            | translate
-        }}
-      </button>
-      <button
-        *ngIf="areChanges"
-        [disabled]="!areChanges || dataIsSaving"
-        class="btn brand-primary"
-        (click)="saveChanges()"
-      >
-        {{
-          (requestedUserConfirmation
-            ? 'ADMIN.DELETE.PENDING_CONFIRMATION'
-            : 'ADMIN.COMMON.SAVE_CHANGES'
-          ) | translate
-        }}
-      </button>
-      <button
-        *ngIf="requestedUserConfirmation && areChanges"
-        class="btn btn-primary"
-        (click)="executeUserUserGroupAssignmentRequests()"
-        translate
-      >
-        ADMIN.COMMON.CONFIRM
-      </button>
-    </div>
   </div>
   <div class="col-md-7">
     <form [formGroup]="approvalForm">
@@ -77,5 +44,38 @@
         </div>
       </div>
     </form>
+    <div class="pb-3 float-right">
+      <button
+        [disabled]="!areChanges"
+        class="btn btn-link"
+        (click)="discardApprovalChanges()"
+      >
+        {{
+          (areChanges ? 'ADMIN.COMMON.CANCEL' : 'ADMIN.COMMON.NO_CHANGES')
+            | translate
+        }}
+      </button>
+      <button
+        *ngIf="areChanges"
+        [disabled]="!areChanges || dataIsSaving"
+        class="btn brand-primary"
+        (click)="saveChanges()"
+      >
+        {{
+          (requestedUserConfirmation
+            ? 'ADMIN.DELETE.PENDING_CONFIRMATION'
+            : 'ADMIN.COMMON.SAVE_CHANGES'
+          ) | translate
+        }}
+      </button>
+      <button
+        *ngIf="requestedUserConfirmation && areChanges"
+        class="btn btn-primary"
+        (click)="executeUserUserGroupAssignmentRequests()"
+        translate
+      >
+        ADMIN.COMMON.CONFIRM
+      </button>
+    </div>
   </div>
 </div>
