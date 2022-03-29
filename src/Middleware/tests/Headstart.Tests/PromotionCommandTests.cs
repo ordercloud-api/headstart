@@ -32,8 +32,6 @@ namespace Headstart.Tests
 
 			// Act
 			await sut.AutoApplyPromotions(orderId);
-
-			// Assert
 			foreach (var promo in promoList.Result.Items)
 			{
 				await oc.Orders.Received().AddPromotionAsync(OrderDirection.Incoming, orderId, promo.Code);
@@ -57,8 +55,6 @@ namespace Headstart.Tests
 
 			// Act
 			await sut.AutoApplyPromotions(orderId);
-
-			// Assert
 			foreach (var promo in orderPromoList.Result.Items)
 			{
 				await oc.Orders.Received().RemovePromotionAsync(OrderDirection.Incoming, orderId, promo.Code);
@@ -87,8 +83,6 @@ namespace Headstart.Tests
 
 			// Act
 			await sut.AutoApplyPromotions(orderId);
-
-			// Assert
 			await oc.Orders.Received(1).RemovePromotionAsync(OrderDirection.Incoming, orderId, "PROMOCODE1");
 		}
 
@@ -167,8 +161,6 @@ namespace Headstart.Tests
 
 			// Act
 			await sut.AutoApplyPromotions(orderId);
-
-			// Assert
 			foreach (var promo in promoList.Result.Items)
 			{
 				await oc.Orders.Received().AddPromotionAsync(OrderDirection.Incoming, orderId, promo.Code);
