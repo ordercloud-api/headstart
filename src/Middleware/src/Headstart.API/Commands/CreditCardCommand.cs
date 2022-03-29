@@ -169,7 +169,10 @@ namespace ordercloud.integrations.cardconnect
 				}
 
 				await VoidTransactionAsync(payment, order, userToken);
-				await _oc.Payments.PatchAsync(OrderDirection.Incoming, orderId, payment.ID, new PartialPayment { Accepted = false });
+				await _oc.Payments.PatchAsync(OrderDirection.Incoming, orderId, payment.ID, new PartialPayment
+				{
+					Accepted = false
+				});
 			}
 			catch (Exception ex)
 			{
@@ -186,17 +189,20 @@ namespace ordercloud.integrations.cardconnect
 		/// <returns></returns>
 		/// <exception cref="CatalystBaseException"></exception>
 		public async Task VoidTransactionAsync(HsPayment payment, HsOrder order, string userToken)
-        {
-			var transactionID = string.Empty;
+		{
+			var transactionId = string.Empty;
 			try
 			{
 				if (payment.Accepted == true)
 				{
-					var transaction = payment.Transactions.Where(x => x.Type.Equals(@"CreditCard", StringComparison.OrdinalIgnoreCase)).OrderBy(x => x.DateExecuted).LastOrDefault(t => t.Succeeded);
+					var transaction = payment.Transactions
+						.Where(x => x.Type == @"CreditCard")
+						.OrderBy(x => x.DateExecuted)
+						.LastOrDefault(t => t.Succeeded);
 					var retref = transaction?.xp?.CardConnectResponse?.retref;
 					if (retref != null)
 					{
-						transactionID = transaction.ID;
+						transactionId = transaction.ID;
 						var userCurrency = await _hsExchangeRates.GetCurrencyForUser(userToken);
 						var response = await _cardConnect.VoidAuthorization(new CardConnectVoidRequest
 						{
@@ -210,12 +216,13 @@ namespace ordercloud.integrations.cardconnect
 			}
 			catch (CreditCardVoidException ex)
 			{
-				await _supportAlerts.VoidAuthorizationFailed(payment, transactionID, order, ex);
+				await _supportAlerts.VoidAuthorizationFailed(payment, transactionId, order, ex);
 				await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, ex.Response));
 				var ex1 = new CatalystBaseException(@"Payment.FailedToVoidAuthorization", $@"{ex.ApiError.Message}.");
 				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
+				throw ex1;
 			}
-        }
+		}
 
 		/// <summary>
 		/// Private re-usable GetMerchantID task method
