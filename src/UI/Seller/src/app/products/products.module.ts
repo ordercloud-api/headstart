@@ -12,9 +12,13 @@ import { ProductFilters } from './components/product-filters/product-filters.com
 import { ProductPricingComponent } from './components/product-pricing/product-pricing.component'
 import { PriceBreakEditor } from './components/price-break-editor/price-break-editor.component'
 import {
+  NgbDateAdapter,
+  NgbDateNativeAdapter,
+  NgbDateNativeUTCAdapter,
   NgbModule,
   NgbTooltipModule,
-} from '@ng-bootstrap/ng-bootstrap'
+} from '@ng-bootstrap/ng-bootstrap';
+import { PriceDisplayComponent } from './components/price-display/price-display.component'
 
 @NgModule({
   imports: [
@@ -24,6 +28,7 @@ import {
     NgbModule,
     NgbTooltipModule,
   ],
+  providers: [{ provide: NgbDateAdapter, useClass: NgbDateNativeAdapter }],
   declarations: [
     ProductTableComponent,
     ProductEditComponent,
@@ -33,6 +38,7 @@ import {
     ProductTaxCodeSelectDropdown,
     ProductVariations,
     ProductFilters,
+    PriceDisplayComponent,
   ],
 })
-export class ProductsModule { }
+export class ProductsModule {}

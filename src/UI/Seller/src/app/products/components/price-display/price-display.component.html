@@ -1,0 +1,6 @@
+<div *ngIf="priceSchedule">
+  <p *ngIf="isOnSale && salePrice">
+    <s>{{ salePrice }}</s> {{ price }}
+  </p>
+  <p *ngIf="!isOnSale || !salePrice">{{ price }}</p>
+</div>

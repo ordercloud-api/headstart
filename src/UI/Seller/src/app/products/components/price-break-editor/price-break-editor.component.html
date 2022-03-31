@@ -1,11 +1,24 @@
 <div *ngIf="priceScheduleEditable" class="container-fluid mb-5">
   <div class="row pt-3">
-    <div class="col-md-5" *ngIf="priceScheduleEditable?.PriceBreaks.length > 0">
+    <div class="col-md-7" *ngIf="priceScheduleEditable?.PriceBreaks.length > 0">
       <table class="table">
         <thead class="bg-light">
           <tr>
-            <th translate>ADMIN.PRODUCT_EDIT.PRICE</th>
             <th translate>ADMIN.PRODUCT_EDIT.QUANTITY</th>
+            <th translate>ADMIN.PRODUCT_EDIT.PRICE</th>
+            <th translate>
+              ADMIN.PRODUCT_EDIT.SALE_PRICE
+              <fa-icon
+                [icon]="faQuestionCircle"
+                autoClose="outside"
+                ngbPopover="{{
+                  'ADMIN.PRODUCT_EDIT.SALE_PRICE_POPOVER' | translate
+                }}"
+                triggers="hover"
+                #popover="ngbPopover"
+              >
+              </fa-icon>
+            </th>
             <th></th>
           </tr>
         </thead>
@@ -16,6 +29,7 @@
               let i = index
             "
           >
+            <td>{{ getPriceBreakRange(i) }}</td>
             <td>
               <div class="input-group">
                 <div class="input-group-prepend">
@@ -25,19 +39,35 @@
                   [attr.disabled]="readonly ? true : null"
                   type="number"
                   class="form-control currency"
-                  id="Price"
-                  aria-describedby="Price"
                   [value]="priceBreak?.Price"
                   min="1"
                   step="0.01"
-                  (change)="updateExistingBreakPrice($event, i)"
+                  (change)="updateExistingBreak($event, i, 'Price')"
                   placeholder="{{ 'ADMIN.PRODUCT_EDIT.PRICE' | translate }} ({{
                     currency?.Name
                   }})"
                 /><span class="required-field" *ngIf="isRequired">&nbsp;*</span>
               </div>
             </td>
-            <td>{{ getPriceBreakRange(i) }}</td>
+            <td>
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">{{ currency?.Symbol }}</span>
+                </div>
+                <input
+                  [attr.disabled]="readonly ? true : null"
+                  type="number"
+                  class="form-control currency"
+                  [value]="priceBreak?.SalePrice"
+                  min="1"
+                  step="0.01"
+                  (change)="updateExistingBreak($event, i, 'SalePrice')"
+                  placeholder="{{
+                    'ADMIN.PRODUCT_EDIT.SALE_PRICE' | translate
+                  }} ({{ currency?.Name }})"
+                />
+              </div>
+            </td>
             <td>
               <fa-icon
                 *ngIf="i !== 0 && !readonly"
@@ -51,6 +81,23 @@
             <td>
               <div class="form-group">
                 <div class="input-group">
+                  <input
+                    [attr.disabled]="readonly ? true : null"
+                    type="number"
+                    class="form-control currency"
+                    min="2"
+                    [value]="newPriceBreak.Quantity"
+                    (change)="updateNewBreak($event, 'Quantity')"
+                    placeholder="{{
+                      'ADMIN.PRODUCT_EDIT.QUANTITY' | translate
+                    }}"
+                  />
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="form-group">
+                <div class="input-group">
                   <div class="input-group-prepend">
                     <span class="input-group-text">{{ currency?.Symbol }}</span>
                   </div>
@@ -58,8 +105,6 @@
                     [attr.disabled]="readonly ? true : null"
                     type="number"
                     class="form-control currency"
-                    id="Price"
-                    aria-describedby="Price"
                     min="1"
                     step="0.01"
                     [value]="newPriceBreak.Price"
@@ -74,18 +119,20 @@
             <td>
               <div class="form-group">
                 <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">{{ currency?.Symbol }}</span>
+                  </div>
                   <input
                     [attr.disabled]="readonly ? true : null"
                     type="number"
                     class="form-control currency"
-                    id="Quantity"
-                    aria-describedby="Quantity"
-                    min="2"
-                    [value]="newPriceBreak.Quantity"
-                    (change)="updateNewBreak($event, 'Quantity')"
+                    min="1"
+                    step="0.01"
+                    [value]="newPriceBreak.Price"
+                    (change)="updateNewBreak($event, 'SalePrice')"
                     placeholder="{{
-                      'ADMIN.PRODUCT_EDIT.QUANTITY' | translate
-                    }}"
+                      'ADMIN.PRODUCT_EDIT.PRICE' | translate
+                    }} ({{ currency?.Name }})"
                   />
                 </div>
               </div>
@@ -153,6 +200,112 @@
           </option>
         </select>
       </div>
+      <form [formGroup]="salePriceForm" *ngIf="salePriceForm">
+        <div class="form-group mt-3">
+          <label for="SaleStart" translate
+            >ADMIN.PRODUCT_EDIT.SALE_START
+            <fa-icon
+              [icon]="faQuestionCircle"
+              autoClose="outside"
+              ngbPopover="{{
+                'ADMIN.PRODUCT_EDIT.SALE_START_POPOVER' | translate
+              }}"
+              placement="right"
+              triggers="hover"
+              #popover="ngbPopover"
+            >
+            </fa-icon>
+          </label>
+          <div class="form-row">
+            <div class="input-group col-md-6">
+              <input
+                type="text"
+                [disabled]="readonly"
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                formControlName="saleStartDate"
+                (ngModelChange)="saleStartChanged()"
+                name="datePicker"
+                ngbDatepicker
+                #saleStartDatePicker="ngbDatepicker"
+              />
+              <div class="input-group-append">
+                <button
+                  [disabled]="readonly"
+                  class="btn btn-outline-primary calendar"
+                  (click)="saleStartDatePicker.toggle()"
+                  type="button"
+                >
+                  <fa-icon [icon]="faCalendar"></fa-icon>
+                </button>
+              </div>
+            </div>
+            <div class="input-group col-md-6">
+              <ngb-timepicker
+                [disabled]="readonly"
+                [readonlyInputs]="readonly"
+                [spinners]="false"
+                formControlName="saleStartTime"
+                (ngModelChange)="saleStartChanged()"
+                [meridian]="true"
+              >
+              </ngb-timepicker>
+            </div>
+          </div>
+        </div>
+        <div class="form-group mt-3">
+          <label for="SaleEnd" translate
+            >ADMIN.PRODUCT_EDIT.SALE_END
+            <fa-icon
+              [icon]="faQuestionCircle"
+              autoClose="outside"
+              ngbPopover="{{
+                'ADMIN.PRODUCT_EDIT.SALE_END_POPOVER' | translate
+              }}"
+              placement="right"
+              triggers="hover"
+              #popover="ngbPopover"
+            >
+            </fa-icon>
+          </label>
+          <div class="form-row">
+            <div class="input-group col-md-6">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="yyyy-mm-dd"
+                [disabled]="readonly"
+                formControlName="saleEndDate"
+                (ngModelChange)="saleEndChanged()"
+                name="datePicker"
+                ngbDatepicker
+                #saleEndDatePicker="ngbDatepicker"
+              />
+              <div class="input-group-append">
+                <button
+                  class="btn btn-outline-primary calendar"
+                  [disabled]="readonly"
+                  (click)="saleEndDatePicker.toggle()"
+                  type="button"
+                >
+                  <fa-icon [icon]="faCalendar"></fa-icon>
+                </button>
+              </div>
+            </div>
+            <div class="input-group col-md-6">
+              <ngb-timepicker
+                formControlName="saleEndTime"
+                (ngModelChange)="saleEndChanged()"
+                [disabled]="readonly"
+                [readonlyInputs]="readonly"
+                [spinners]="false"
+                [meridian]="true"
+              >
+              </ngb-timepicker>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
   </div>
 </div>
