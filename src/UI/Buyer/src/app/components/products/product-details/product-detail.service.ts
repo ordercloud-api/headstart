@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { FormGroup } from '@angular/forms'
-import { PriceBreak, Spec } from 'ordercloud-javascript-sdk'
+import { PriceBreak, PriceSchedule, Spec } from 'ordercloud-javascript-sdk'
 import { minBy as _minBy } from 'lodash'
 import { SpecFormService } from '../spec-form/spec-form.service'
 import { GridSpecOption, LineItemToAdd } from 'src/app/models/product.types'
@@ -12,15 +12,34 @@ export class ProductDetailService {
   constructor(private specFormService: SpecFormService) {}
 
   getProductPrice(
-    priceBreaks: PriceBreak[],
+    priceSchedule: PriceSchedule,
+    quantity: number,
+    specs: Spec[],
+    specForm: FormGroup,
+    isOnSale: boolean
+  ): number {
+    const unitPrice = this.getProductUnitPrice(
+      priceSchedule,
+      specs,
+      quantity,
+      specForm,
+      isOnSale
+    )
+    return quantity * unitPrice
+  }
+
+  getProductUnitPrice(
+    priceSchedule: PriceSchedule,
     specs: Spec[],
     quantity: number,
-    specForm: FormGroup
+    specForm: FormGroup,
+    isOnSale: boolean
   ): number {
     // In OC, the price per item can depend on the quantity ordered. This info is stored on the PriceSchedule as a list of PriceBreaks.
     // Find the PriceBreak with the highest Quantity less than the quantity ordered. The price on that price break
     // is the cost per item.
-    if (!priceBreaks?.length) return
+    const priceBreaks = priceSchedule?.PriceBreaks
+    if (!priceSchedule?.PriceBreaks?.length) return 0
     const startingBreak = _minBy(priceBreaks, 'Quantity')
     const selectedBreak = priceBreaks.reduce((current, candidate) => {
       return candidate.Quantity > current.Quantity &&
@@ -29,15 +48,21 @@ export class ProductDetailService {
         : current
     }, startingBreak)
 
-    // Take into account markups if they are applied which can increase price
-    return specForm?.valid
-      ? this.specFormService.getSpecMarkup(
+    // Take into account spec markups if they are applied which can increase price
+    const markupUnitPrice = specForm?.valid
+      ? this.specFormService.getSpecMarkupUnit(
           specs,
           selectedBreak,
-          quantity || startingBreak.Quantity,
+          quantity,
           specForm
         )
-      : selectedBreak.Price * (quantity || startingBreak.Quantity)
+      : 0
+
+    if (isOnSale) {
+      return selectedBreak.SalePrice + markupUnitPrice
+    } else {
+      return selectedBreak.Price + markupUnitPrice
+    }
   }
 
   getGridLineItemPrice(

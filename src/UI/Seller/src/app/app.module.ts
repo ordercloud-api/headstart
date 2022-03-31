@@ -119,18 +119,19 @@ export class AppModule {
     translate.use('en')
     HeadstartConfiguration.Set({
       baseApiUrl: this.appConfig.middlewareUrl,
+      orderCloudApiUrl: this.appConfig.orderCloudApiUrl,
+      clientID: this.appConfig.clientID,
+      cookieOptions: {
+        prefix: this.appConfig.appname.replace(/ /g, '_').toLowerCase(),
+      },
     })
 
-    OcConfiguration.Set(this.getOrdercloudSDKConfig(appConfig))
-  }
-  private getOrdercloudSDKConfig(config: AppConfig): SdkConfiguration {
-    const apiUrl = config.orderCloudApiUrl
-    return {
-      baseApiUrl: apiUrl,
-      clientID: config.clientID,
+    OcConfiguration.Set({
+      baseApiUrl: this.appConfig.orderCloudApiUrl,
+      clientID: this.appConfig.clientID,
       cookieOptions: {
-        prefix: config.appname.replace(/ /g, '_').toLowerCase(),
+        prefix: this.appConfig.appname.replace(/ /g, '_').toLowerCase(),
       },
-    }
+    })
   }
 }

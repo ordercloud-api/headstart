@@ -1,25 +1,23 @@
 import axios, { AxiosRequestConfig } from 'axios'
 import tokenService from '../api/Tokens'
-import Configuration from '../configuration'
-import Auth from '../api/Auth'
-import paramsSerializer from './paramsSerializer'
-import parseJwt from './ParseJwt'
+import Configuration from '../Configuration'
+import paramsSerializer from './ParamsSerializer'
+import OrderCloudError from './OrderCloudError'
 
 /**
  * @ignore
  * not part of public api, don't include in generated docs
  */
-class HttpClient {
-  private _auth = new Auth()
-  private _token = new tokenService()
 
+interface OcRequestConfig extends AxiosRequestConfig {
+  impersonating?: boolean
+  accessToken?: string
+}
+class HttpClient {
   constructor() {
-    // create a new instance so we avoid clashes with any
-    // configurations done on default axios instance that
-    // a consumer of this SDK might use
     if (typeof axios === 'undefined') {
       throw new Error(
-        'Ordercloud is missing required peer dependency axios. This must be installed and loaded before the OrderCloud SDK'
+        'Missing required peer dependency axios. This must be installed and loaded before the Headstart SDK'
       )
     }
 
@@ -28,139 +26,129 @@ class HttpClient {
     this.post = this.post.bind(this)
     this.patch = this.patch.bind(this)
     this.delete = this.delete.bind(this)
+    this._resolveToken = this._resolveToken.bind(this)
     this._buildRequestConfig = this._buildRequestConfig.bind(this)
-    this._getToken = this._getToken.bind(this)
-    this._isTokenExpired = this._isTokenExpired.bind(this)
-    this._tokenInterceptor = this._tokenInterceptor.bind(this)
-    this._tryRefreshToken = this._tryRefreshToken.bind(this)
+    this._addTokenToConfig = this._addTokenToConfig.bind(this)
   }
 
   public get = async (
     path: string,
-    config?: AxiosRequestConfig
+    config?: OcRequestConfig
   ): Promise<any> => {
-    const requestConfig = await this._buildRequestConfig(config)
-    const response = await axios.get(
-      `${Configuration.Get().baseApiUrl}${path}`,
-      requestConfig
-    )
-    return response.data
+    return await this.makeApiCall('get', path, config).catch(ex => {
+      if (ex.response) {
+        throw new OrderCloudError(ex)
+      }
+      throw ex
+    })
   }
 
   public post = async (
     path: string,
-    data?: any,
-    config?: AxiosRequestConfig
+    requestBody?: any,
+    config?: OcRequestConfig
   ): Promise<any> => {
-    const requestConfig = await this._buildRequestConfig(config)
-    const response = await axios.post(
-      `${Configuration.Get().baseApiUrl}${path}`,
-      data,
-      requestConfig
-    )
-    return response.data
+    config.data = requestBody
+    return await this.makeApiCall('post', path, config).catch(ex => {
+      if (ex.response) {
+        throw new OrderCloudError(ex)
+      }
+      throw ex
+    })
   }
 
   public put = async (
     path: string,
-    data?: any,
-    config?: AxiosRequestConfig
+    requestBody?: any,
+    config?: OcRequestConfig
   ): Promise<any> => {
-    const requestConfig = await this._buildRequestConfig(config)
-    const response = await axios.put(
-      `${Configuration.Get().baseApiUrl}${path}`,
-      data,
-      requestConfig
-    )
-    return response.data
+    config.data = requestBody
+    return await this.makeApiCall('put', path, config).catch(ex => {
+      if (ex.response) {
+        throw new OrderCloudError(ex)
+      }
+      throw ex
+    })
   }
 
   public patch = async (
     path: string,
-    data?: any,
-    config?: AxiosRequestConfig
+    requestBody?: any,
+    config?: OcRequestConfig
   ): Promise<any> => {
-    const requestConfig = await this._buildRequestConfig(config)
-    const response = await axios.patch(
-      `${Configuration.Get().baseApiUrl}${path}`,
-      data,
-      requestConfig
-    )
-    return response.data
+    config.data = requestBody
+    return await this.makeApiCall('patch', path, config).catch(ex => {
+      if (ex.response) {
+        throw new OrderCloudError(ex)
+      }
+      throw ex
+    })
   }
 
-  public delete = async (path: string, config: AxiosRequestConfig) => {
+  public delete = async (path: string, config: OcRequestConfig) => {
+    return await this.makeApiCall('delete', path, config).catch(ex => {
+      if (ex.response) {
+        throw new OrderCloudError(ex)
+      }
+      throw ex
+    })
+  }
+
+  private async makeApiCall(
+    verb: 'get' | 'put' | 'post' | 'patch' | 'delete',
+    path,
+    config
+  ) {
     const requestConfig = await this._buildRequestConfig(config)
-    const response = await axios.delete(
-      `${Configuration.Get().baseApiUrl}${path}`,
-      requestConfig
-    )
-    return response.data
+    if (verb === 'put' || verb === 'post' || verb === 'patch') {
+      const requestBody = requestConfig.data
+      delete requestConfig.data
+      const response = await axios[verb as string](
+        `${Configuration.Get().baseApiUrl}${path}`,
+        requestBody,
+        requestConfig
+      )
+      return response.data
+    } else {
+      const response = await axios[verb as string](
+        `${Configuration.Get().baseApiUrl}${path}`,
+        requestConfig
+      )
+      return response.data
+    }
   }
 
   // sets the token on every outgoing request, will attempt to
   // refresh the token if the token is expired and there is a refresh token set
-  private async _tokenInterceptor(
-    config: AxiosRequestConfig
-  ): Promise<AxiosRequestConfig> {
-    let token = this._getToken(config)
-    if (this._isTokenExpired(token)) {
-      token = await this._tryRefreshToken(token)
-    }
-    config.headers.Authorization = `Bearer ${token}`
+  private async _addTokenToConfig(
+    config: OcRequestConfig
+  ): Promise<OcRequestConfig> {
+    const token = this._resolveToken(config)
+    const validToken = await tokenService.GetValidToken(token)
+    config.headers.Authorization = `Bearer ${validToken}`
     return config
   }
 
-  private _getToken(config: AxiosRequestConfig): string {
+  private _resolveToken(config: OcRequestConfig): string {
     let token
-    if (config.params.accessToken) {
-      token = config.params.accessToken
-    } else if (config.params.impersonating) {
-      token = this._token.GetImpersonationToken()
+    if (config['accessToken']) {
+      token = config['accessToken']
+    } else if (config['impersonating']) {
+      token = tokenService.GetImpersonationToken()
     } else {
-      token = this._token.GetAccessToken()
+      token = tokenService.GetAccessToken()
     }
 
-    // strip out axios params that we'vee hijacked for our own nefarious purposes
-    delete config.params.accessToken
-    delete config.params.impersonating
+    // remove these custom parameters that axios doesn't understand
+    // we were storing on the axios config for simplicity
+    delete config['accessToken']
+    delete config['impersonating']
     return token
   }
 
-  private _isTokenExpired(token: string): boolean {
-    if (!token) {
-      return true
-    }
-    const decodedToken = parseJwt(token)
-    const currentSeconds = Date.now() / 1000
-    const currentSecondsWithBuffer = currentSeconds - 10
-    return decodedToken.exp < currentSecondsWithBuffer
-  }
-
-  private async _tryRefreshToken(accessToken: string): Promise<string> {
-    const refreshToken = this._token.GetRefreshToken()
-    if (!refreshToken) {
-      return accessToken || ''
-    }
-    const sdkConfig = Configuration.Get()
-    if (!accessToken && !sdkConfig.clientID) {
-      return accessToken || ''
-    }
-    let clientID
-    if (accessToken) {
-      const decodedToken = parseJwt(accessToken)
-      clientID = decodedToken.cid
-    }
-    if (sdkConfig.clientID) {
-      clientID = sdkConfig.clientID
-    }
-    const refreshRequest = await this._auth.RefreshToken(refreshToken, clientID)
-    return refreshRequest.access_token
-  }
-
   private _buildRequestConfig(
-    config?: AxiosRequestConfig
-  ): Promise<AxiosRequestConfig> {
+    config?: OcRequestConfig
+  ): Promise<OcRequestConfig> {
     const sdkConfig = Configuration.Get()
     const requestConfig = {
       ...config,
@@ -170,7 +158,7 @@ class HttpClient {
         'Content-Type': 'application/json',
       },
     }
-    return this._tokenInterceptor(requestConfig)
+    return this._addTokenToConfig(requestConfig)
   }
 }
 

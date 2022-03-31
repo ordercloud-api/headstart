@@ -42,7 +42,11 @@
         <!-- TODO: Uncomment when grid bugs are fixed -->
         <div
           class="btn-group float-right"
-          *ngIf="specs?.length > 0 && hasNoOpenTextSpecs()"
+          *ngIf="
+            specs?.length > 0 &&
+            hasNoOpenTextSpecs() &&
+            _product?.xp?.ProductType !== 'Quote'
+          "
         >
           <button
             class="btn btn-sm btn-outline-secondary"
@@ -65,8 +69,24 @@
       </div>
       <ng-container *ngIf="!showGrid">
         <h4 class="font-weight-bold">
-          {{ unitPrice | currency: userCurrency }}
+          <app-product-price-display
+            class="card-text mb-0"
+            *ngIf="
+              _product?.xp?.ProductType !== 'Quote' &&
+              _product?.PriceSchedule?.PriceBreaks?.length
+            "
+            [priceSchedule]="_product.PriceSchedule"
+            [quantity]="quantity"
+            [specs]="specs"
+            [specForm]="specForm"
+          ></app-product-price-display>
         </h4>
+        <span
+          *ngIf="_product?.xp?.ProductType === 'Quote'"
+          class="small badge badge-pill badge-warning"
+        >
+          Quote Product</span
+        >
         <!-- TODO: Plug in unit of measure when data is in OC. -->
         <p class="text-muted">{{ _product | UofM }}</p>
         <span class="badge badge-pill badge-warning" *ngIf="percentSavings > 0">
@@ -94,9 +114,14 @@
           >
         </ng-container>
         <ng-container *ngIf="isQuoteAnonUser">
-          <strong class="text-danger" translate>PRODUCTS.DETAILS.LOGIN_FOR_QUOTE</strong>
+          <strong class="text-danger" translate
+            >PRODUCTS.DETAILS.LOGIN_FOR_QUOTE</strong
+          >
         </ng-container>
-        <div class="d-flex flex-column mb-3" *ngIf="isOrderable && !isQuoteAnonUser">
+        <div
+          class="d-flex flex-column mb-3"
+          *ngIf="isOrderable && !isQuoteAnonUser"
+        >
           <small
             class="text-uppercase font-weight-bolder text-muted mb-2"
             translate
@@ -125,9 +150,14 @@
               "
               (click)="addToCart()"
             >
-              <span translate>PRODUCTS.DETAILS.ADD_TO_CART</span>
-              &nbsp;&nbsp;|&nbsp;&nbsp;
-              {{ price | currency: userCurrency }}
+              <div *ngIf="_product?.xp?.ProductType !== 'Quote'">
+                <span translate>PRODUCTS.DETAILS.ADD_TO_CART</span>
+                &nbsp;&nbsp;|&nbsp;&nbsp;
+                {{ price | currency: userCurrency }}
+              </div>
+              <span *ngIf="_product?.xp?.ProductType === 'Quote'">
+                Request Quote
+              </span>
             </button>
           </div>
         </div>

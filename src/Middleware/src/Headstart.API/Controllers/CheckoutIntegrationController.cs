@@ -51,19 +51,28 @@ namespace Headstart.Common.Controllers
 			return response;
 		}
 
+		[HttpPost, Route("ordersubmitforapproval")]
+		//[OrderCloudWebhookAuth]  TODO: Add this back in once platform fixes header issue
+		public async Task<OrderSubmitResponse> HandleOrderSubmitForApproval([FromBody] HSOrderCalculatePayload payload)
+		{
+			var response = await _postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
+			return response;
+		}
+
+
+		[HttpPost, Route("orderapproved")]
+		//[OrderCloudWebhookAuth]  TODO: Add this back in once platform fixes header issue
+		public async Task<OrderSubmitResponse> HandleOrderApproved([FromBody] HSOrderCalculatePayload payload)
+		{
+			var response = await _postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
+			return response;
+		}
+
 		[HttpPost, Route("ordersubmit/retry/zoho/{orderID}"), OrderCloudUserAuth(ApiRole.IntegrationEventAdmin)]
 		public async Task<OrderSubmitResponse> RetryOrderSubmit(string orderID)
 		{
 			var retry = await _postSubmitCommand.HandleZohoRetry(orderID);
 			return retry;
-		}
-
-		[HttpPost, Route("orderapproved")]
-		[OrderCloudWebhookAuth]
-		public async Task<OrderSubmitResponse> HandleOrderApproved([FromBody] HSOrderCalculatePayload payload)
-		{
-			var response = await _postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
-			return response;
 		}
 	}
 }

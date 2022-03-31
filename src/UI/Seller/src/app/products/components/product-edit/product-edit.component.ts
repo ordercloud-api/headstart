@@ -103,7 +103,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   isCreatingNew: boolean
   @Input()
   dataIsSaving = false
-  userContext: UserContext = {} as any
+  userContext: UserContext = {} as UserContext
+  isSellerUser = false
   hasVariations = false
   images: ImageAsset[] = []
   files: FileHandle[] = []
@@ -166,6 +167,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     this.getAddresses()
     const getTaxCategoriesPromise = this.initTaxCategorization()
     this.userContext = await this.currentUserService.getUserContext()
+    this.isSellerUser = this.userContext.UserType === 'SELLER'
     await this.getAvailableProductTypes()
     await getTaxCategoriesPromise
     this.setProductEditTab()
@@ -378,9 +380,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
 
     const currentUser: MeUser = this.userContext.Me
     const product: HSProduct = superHSProduct?.Product
-    const isSellerUser: boolean = this.userContext.UserType === 'SELLER'
 
-    if (!product?.DefaultSupplierID && isSellerUser) {
+    if (!product?.DefaultSupplierID && this.isSellerUser) {
       return false
     }
 
@@ -388,7 +389,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       return false
     }
 
-    if (isSellerUser && product?.OwnerID === currentUser?.Seller?.ID) {
+    if (this.isSellerUser && product?.OwnerID === currentUser?.Seller?.ID) {
       return false
     }
     return true
@@ -791,7 +792,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   }
 
   handleTaxCodeSelection(event: TaxCategorization): void {
-    debugger
     const codeUpdate = { target: { value: event.Code } }
     const descriptionUpdate = { target: { value: event.Description } }
     this.productForm.controls.TaxCode.setValue(event.Code)
