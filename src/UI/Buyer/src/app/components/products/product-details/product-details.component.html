@@ -68,11 +68,18 @@
         <span translate>PRODUCTS.DETAILS.NOTE</span>: {{ supplierNote }}
       </div>
       <ng-container *ngIf="!showGrid">
-        <h4
-          class="font-weight-bold"
-          *ngIf="_product?.xp?.ProductType !== 'Quote'"
-        >
-          {{ unitPrice | currency: userCurrency }}
+        <h4 class="font-weight-bold">
+          <app-product-price-display
+            class="card-text mb-0"
+            *ngIf="
+              _product?.xp?.ProductType !== 'Quote' &&
+              _product?.PriceSchedule?.PriceBreaks?.length
+            "
+            [priceSchedule]="_product.PriceSchedule"
+            [quantity]="quantity"
+            [specs]="specs"
+            [specForm]="specForm"
+          ></app-product-price-display>
         </h4>
         <span
           *ngIf="_product?.xp?.ProductType === 'Quote'"

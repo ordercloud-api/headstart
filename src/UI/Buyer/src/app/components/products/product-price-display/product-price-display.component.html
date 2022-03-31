@@ -1,0 +1,5 @@
+<p *ngIf="isOnSale && salePrice">
+  <s class="strikethrough-price">{{ price | currency }}</s>
+  {{ salePrice | currency }}
+</p>
+<p *ngIf="!isOnSale || !salePrice">{{ price | currency }}</p>

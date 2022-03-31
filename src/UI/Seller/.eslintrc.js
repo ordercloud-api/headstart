@@ -23,6 +23,7 @@ module.exports = {
       {
         "ignoreStatic": true
       }
-    ]
+    ],
+    "@typescript-eslint/no-floating-promises": "off"
   },
 }

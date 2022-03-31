@@ -44,7 +44,6 @@ export class OCMProductDetails implements OnInit {
   _product: HSMeProduct
   priceSchedule: PriceSchedule
   priceBreaks: PriceBreak[]
-  unitPrice: number
   attachments: DocumentAsset[] = []
   isOrderable = false
   quantity: number
@@ -87,10 +86,6 @@ export class OCMProductDetails implements OnInit {
     this._product = superProduct.Product
     this.attachments = superProduct?.Product?.xp?.Documents
     this.priceBreaks = superProduct.PriceSchedule?.PriceBreaks
-    this.unitPrice =
-      this.priceBreaks && this.priceBreaks.length
-        ? this.priceBreaks[0].Price
-        : null
     this.isOrderable = !!superProduct.PriceSchedule
     this.supplierNote = this._product.xp && this._product.xp.Note
     this.specs = superProduct.Specs
@@ -199,10 +194,11 @@ export class OCMProductDetails implements OnInit {
 
   calculatePrice(): void {
     this.price = this.productDetailService.getProductPrice(
-      this.priceBreaks,
-      this.specs,
+      this._product?.PriceSchedule,
       this.quantity,
-      this.specForm
+      this.specs,
+      this.specForm,
+      this._product?.PriceSchedule?.IsOnSale
     )
     if (this.priceBreaks?.length) {
       const basePrice = this.quantity * this.priceBreaks[0].Price
