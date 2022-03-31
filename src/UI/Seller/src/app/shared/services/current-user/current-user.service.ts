@@ -25,9 +25,8 @@ export class CurrentUserService {
   public userSubject: BehaviorSubject<MeUser<any>> = new BehaviorSubject<
     MeUser<any>
   >({})
-  public profileImgSubject: BehaviorSubject<ImageAsset> = new BehaviorSubject<ImageAsset>(
-    {}
-  )
+  public profileImgSubject: BehaviorSubject<ImageAsset> =
+    new BehaviorSubject<ImageAsset>({})
   constructor(
     private ocMeService: OcMeService,
     private ocAuthService: OcAuthService,
@@ -36,7 +35,7 @@ export class CurrentUserService {
     private appAuthService: AppAuthService,
     private appStateService: AppStateService,
     private ocSupplierService: OcSupplierService
-  ) { }
+  ) {}
 
   async login(username: string, password: string, rememberMe: boolean) {
     const accessToken = await this.ocAuthService
@@ -52,7 +51,6 @@ export class CurrentUserService {
       this.ocTokenService.SetRefresh(accessToken.refresh_token)
       this.appAuthService.setRememberStatus(true)
     }
-    HeadStartSDK.Tokens.SetAccessToken(accessToken.access_token)
     Tokens.SetAccessToken(accessToken.access_token)
     this.ocTokenService.SetAccess(accessToken.access_token)
     this.appStateService.isLoggedIn.next(true)

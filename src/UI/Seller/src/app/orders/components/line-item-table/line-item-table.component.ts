@@ -89,6 +89,10 @@ export class LineItemTableComponent {
     li?.Specs?.filter((s) => s.OptionID === null)
 
   getLineItemStatusDisplay(lineItem: HSLineItem): string {
+    if(!lineItem?.xp?.StatusByQuantity) {
+      // If StatusByQuantity is missing this generally means that something failed during post submit (that's where those values are initialized)
+      return 'N/A'
+    }
     return Object.entries(lineItem.xp.StatusByQuantity)
       .filter(([, quantity]) => quantity)
       .map(([status, quantity]) => {

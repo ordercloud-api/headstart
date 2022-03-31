@@ -8,13 +8,21 @@
   </h4>
   <span *ngIf="!isRequired">- Optional</span>
   <span class="required-field" *ngIf="isRequired">* required fields</span>
+
   <div class="d-block">
     <div
       *ngIf="
         superProduct?.Product?.xp?.ProductType === 'Quote' &&
         superProduct?.PriceSchedule?.PriceBreaks.length === 1
       "
-      class="alert alert-info d-inline-block justify-content-start align-items-center mt-3 set-to-top"
+      class="
+        alert alert-info
+        d-inline-block
+        justify-content-start
+        align-items-center
+        mt-3
+        set-to-top
+      "
     >
       <p class="mb-0" translate>
         <fa-icon [icon]="faExclamationCircle" class="mr-3"> </fa-icon>
@@ -33,6 +41,7 @@
   >
   </price-break-editor>
   <div
+    *ngIf="isSellerUser"
     class="row pt-3 mt-3 bg-white shadow-sm card-highlight-border w-100 pl-3"
   >
     <div class="w-100">

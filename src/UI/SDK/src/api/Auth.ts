@@ -1,17 +1,16 @@
-import axios from 'axios'
+import axios, { CancelToken } from 'axios'
 import { AccessToken } from '../models/AccessToken'
-import Configuration from '../configuration'
-import serialize from '../utils/paramsSerializer'
+import Configuration from '../Configuration'
 import { ApiRole } from 'ordercloud-javascript-sdk'
+import serialize from '../utils/ParamsSerializer'
+import { RequiredDeep } from '../models/RequiredDeep'
+import OrderCloudError from '../utils/OrderCloudError'
 
-export default class Auth {
+class Auth {
   constructor() {
-    // create a new instance so we avoid clashes with any
-    // configurations done on default axios instance that
-    // a consumer of this SDK might use
     if (typeof axios === 'undefined') {
       throw new Error(
-        'Ordercloud is missing required peer dependency axios. This must be installed and loaded before the OrderCloud SDK'
+        'HeadstartSDK is missing required peer dependency axios. This must be installed and loaded before the Headstart SDK'
       )
     }
 
@@ -33,13 +32,22 @@ export default class Auth {
    * @param password of the user logging in
    * @param client_id of the application the user is logging into
    * @param scope roles being requested - space delimited string or array
+   * @param requestOptions.cancelToken Provide an [axios cancelToken](https://github.com/axios/axios#cancellation) that can be used to cancel the request.
+   * @param requestOptions.requestType Provide a value that can be used to identify the type of request. Useful for error logs.
    */
   public async Login(
     username: string,
     password: string,
     clientID: string,
-    scope: ApiRole[]
-  ): Promise<AccessToken> {
+    scope: ApiRole[],
+    requestOptions: {
+      cancelToken?: CancelToken
+      requestType?: string
+    } = {}
+  ): Promise<RequiredDeep<AccessToken>> {
+    if (!Array.isArray(scope)) {
+      throw new Error('scope must be a string array')
+    }
     const body = {
       grant_type: 'password',
       username,
@@ -48,16 +56,20 @@ export default class Auth {
       scope: scope.join(' '),
     }
     const configuration = Configuration.Get()
-    const response = await axios.post(
-      configuration.baseAuthUrl,
-      serialize(body),
-      {
+    const response = await axios
+      .post(`${configuration.orderCloudApiUrl}/oauth/token`, serialize(body), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           Accept: 'application/json',
         },
-      }
-    )
+        ...requestOptions,
+      })
+      .catch(e => {
+        if (e.response) {
+          throw new OrderCloudError(e)
+        }
+        throw e
+      })
     return response.data
   }
 
@@ -71,14 +83,23 @@ export default class Auth {
    * @param scope roles being requested - space delimited string or array
    * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
    * @param reportProgress flag to report request and response progress.
+   * @param requestOptions.cancelToken Provide an [axios cancelToken](https://github.com/axios/axios#cancellation) that can be used to cancel the request.
+   * @param requestOptions.requestType Provide a value that can be used to identify the type of request. Useful for error logs.
    */
   public async ElevatedLogin(
     clientSecret: string,
     username: string,
     password: string,
     clientID: string,
-    scope: ApiRole[]
-  ): Promise<AccessToken> {
+    scope: ApiRole[],
+    requestOptions: {
+      cancelToken?: CancelToken
+      requestType?: string
+    } = {}
+  ): Promise<RequiredDeep<AccessToken>> {
+    if (!Array.isArray(scope)) {
+      throw new Error('scope must be a string array')
+    }
     const body = {
       grant_type: 'password',
       scope: scope.join(' '),
@@ -88,16 +109,20 @@ export default class Auth {
       client_secret: clientSecret,
     }
     const configuration = Configuration.Get()
-    const response = await axios.post(
-      configuration.baseAuthUrl,
-      serialize(body),
-      {
+    const response = await axios
+      .post(`${configuration.orderCloudApiUrl}/oauth/token`, serialize(body), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           Accept: 'application/json',
         },
-      }
-    )
+        ...requestOptions,
+      })
+      .catch(e => {
+        if (e.response) {
+          throw new OrderCloudError(e)
+        }
+        throw e
+      })
     return response.data
   }
 
@@ -109,12 +134,21 @@ export default class Auth {
    * @param scope roles being requested - space delimited string or array
    * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
    * @param reportProgress flag to report request and response progress.
+   * @param requestOptions.cancelToken Provide an [axios cancelToken](https://github.com/axios/axios#cancellation) that can be used to cancel the request.
+   * @param requestOptions.requestType Provide a value that can be used to identify the type of request. Useful for error logs.
    */
   public async ClientCredentials(
     clientSecret: string,
     clientID: string,
-    scope: ApiRole[]
-  ): Promise<AccessToken> {
+    scope: ApiRole[],
+    requestOptions: {
+      cancelToken?: CancelToken
+      requestType?: string
+    } = {}
+  ): Promise<RequiredDeep<AccessToken>> {
+    if (!Array.isArray(scope)) {
+      throw new Error('scope must be a string array')
+    }
     const body = {
       grant_type: 'client_credentials',
       scope: scope.join(' '),
@@ -122,16 +156,20 @@ export default class Auth {
       client_secret: clientSecret,
     }
     const configuration = Configuration.Get()
-    const response = await axios.post(
-      configuration.baseAuthUrl,
-      serialize(body),
-      {
+    const response = await axios
+      .post(`${configuration.orderCloudApiUrl}/oauth/token`, serialize(body), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           Accept: 'application/json',
         },
-      }
-    )
+        ...requestOptions,
+      })
+      .catch(e => {
+        if (e.response) {
+          throw new OrderCloudError(e)
+        }
+        throw e
+      })
     return response.data
   }
 
@@ -140,29 +178,37 @@ export default class Auth {
    *
    * @param refreshToken of the application
    * @param clientID of the application the user is logging into
-   * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-   * @param reportProgress flag to report request and response progress.
+   * @param requestOptions.cancelToken Provide an [axios cancelToken](https://github.com/axios/axios#cancellation) that can be used to cancel the request.
+   * @param requestOptions.requestType Provide a value that can be used to identify the type of request. Useful for error logs.
    */
   public async RefreshToken(
     refreshToken: string,
-    clientID: string
-  ): Promise<AccessToken> {
+    clientID: string,
+    requestOptions: {
+      cancelToken?: CancelToken
+      requestType?: string
+    } = {}
+  ): Promise<RequiredDeep<AccessToken>> {
     const body = {
       grant_type: 'refresh_token',
       client_id: clientID,
       refresh_token: refreshToken,
     }
     const configuration = Configuration.Get()
-    const response = await axios.post(
-      configuration.baseAuthUrl,
-      serialize(body),
-      {
+    const response = await axios
+      .post(`${configuration.orderCloudApiUrl}/oauth/token`, serialize(body), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           Accept: 'application/json',
         },
-      }
-    )
+        ...requestOptions,
+      })
+      .catch(e => {
+        if (e.response) {
+          throw new OrderCloudError(e)
+        }
+        throw e
+      })
     return response.data
   }
 
@@ -171,29 +217,42 @@ export default class Auth {
    *
    * @param clientID of the application the user is logging into
    * @param scope roles being requested - space delimited string or array
-   * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
-   * @param reportProgress flag to report request and response progress.
+   * @param requestOptions.cancelToken Provide an [axios cancelToken](https://github.com/axios/axios#cancellation) that can be used to cancel the request.
+   * @param requestOptions.requestType Provide a value that can be used to identify the type of request. Useful for error logs.
    */
   public async Anonymous(
     clientID: string,
-    scope: ApiRole[]
-  ): Promise<AccessToken> {
+    scope: ApiRole[],
+    requestOptions: {
+      cancelToken?: CancelToken
+      requestType?: string
+    } = {}
+  ): Promise<RequiredDeep<AccessToken>> {
+    if (!Array.isArray(scope)) {
+      throw new Error('scope must be a string array')
+    }
     const body = {
       grant_type: 'client_credentials',
       client_id: clientID,
       scope: scope.join(' '),
     }
     const configuration = Configuration.Get()
-    const response = await axios.post(
-      configuration.baseAuthUrl,
-      serialize(body),
-      {
+    const response = await axios
+      .post(`${configuration.orderCloudApiUrl}/oauth/token`, serialize(body), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           Accept: 'application/json',
         },
-      }
-    )
+        ...requestOptions,
+      })
+      .catch(e => {
+        if (e.response) {
+          throw new OrderCloudError(e)
+        }
+        throw e
+      })
     return response.data
   }
 }
+
+export default new Auth()

@@ -20,9 +20,8 @@ import {
 export class OrderFilterService {
   activeOrderID: string // TODO - make this read-only in components
 
-  public activeFiltersSubject: BehaviorSubject<OrderFilters> = new BehaviorSubject<OrderFilters>(
-    this.getDefaultParms()
-  )
+  public activeFiltersSubject: BehaviorSubject<OrderFilters> =
+    new BehaviorSubject<OrderFilters>(this.getDefaultParms())
 
   constructor(
     private currentUser: CurrentUserService,
@@ -201,7 +200,7 @@ export class OrderFilterService {
     }
   }
 
-  private createListOptions(quote: boolean = false): ListArgs<HSOrder> {
+  private createListOptions(quote = false): ListArgs<any> {
     const {
       page,
       sortBy,
@@ -215,7 +214,7 @@ export class OrderFilterService {
     const to = toDate ? `${toDate}` : undefined
     const favorites =
       this.currentUser.get().FavoriteOrderIDs.join('|') || undefined
-    const quoteStatus = quote ? "NeedsSellerReview|NeedsBuyerReview" : undefined
+    const quoteStatus = quote ? 'NeedsSellerReview|NeedsBuyerReview' : undefined
     const listOptions = {
       page,
       search,
@@ -226,9 +225,9 @@ export class OrderFilterService {
         to,
         xp: {
           SubmittedOrderStatus: undefined,
-          QuoteStatus: quoteStatus
+          QuoteStatus: quoteStatus,
         },
-        Status: undefined,
+        Status: quote ? 'Unsubmitted' : undefined,
       },
     }
     return this.addStatusFilters(status, listOptions as any)

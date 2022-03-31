@@ -140,7 +140,8 @@
                   <div class="form-row">
                     <div class="form-group col-md-6">
                       <label for="Name" translate
-                        >ADMIN.PRODUCT_EDIT.NAME <span class="required-field">*</span></label
+                        >ADMIN.PRODUCT_EDIT.NAME
+                        <span class="required-field">*</span></label
                       >
                       <input
                         [attr.disabled]="readonly ? true : null"
@@ -165,7 +166,8 @@
                     </div>
                     <div [hidden]="isCreatingNew" class="form-group col-md-6">
                       <label for="ProductType" translate
-                        >ADMIN.PRODUCT_EDIT.PRODUCT_TYPE <span class="required-field">*</span></label
+                        >ADMIN.PRODUCT_EDIT.PRODUCT_TYPE
+                        <span class="required-field">*</span></label
                       >
                       <select
                         [attr.disabled]="readonly ? true : null"
@@ -274,7 +276,8 @@
                   <div class="form-row">
                     <div class="form-group col-md-6">
                       <label for="UnitOfMeasureQty" translate
-                        >ADMIN.PRODUCT_EDIT.QUANTITY_PER_UNIT <span class="required-field">*</span>
+                        >ADMIN.PRODUCT_EDIT.QUANTITY_PER_UNIT
+                        <span class="required-field">*</span>
                       </label>
                       <input
                         [attr.disabled]="readonly ? true : null"
@@ -297,7 +300,8 @@
                     </div>
                     <div class="form-group col-md-6">
                       <label for="UnitOfMeasureUnit" translate
-                        >ADMIN.PRODUCT_EDIT.UNIT_OF_MEASURE <span class="required-field">*</span>
+                        >ADMIN.PRODUCT_EDIT.UNIT_OF_MEASURE
+                        <span class="required-field">*</span>
                       </label>
                       <input
                         [attr.disabled]="readonly ? true : null"
@@ -629,7 +633,8 @@
                       </small>
                     </div>
                     <label for="ShipFromAddressID" translate
-                      >ADMIN.PRODUCT_EDIT.WHICH_LOCATION_SHIP <span class="required-field">*</span>
+                      >ADMIN.PRODUCT_EDIT.WHICH_LOCATION_SHIP
+                      <span class="required-field">*</span>
                     </label>
                     <select
                       [attr.disabled]="readonly ? true : null"
@@ -658,7 +663,8 @@
                     class="d-flex justify-content-between align-items-center"
                   >
                     <label for="ShipWeight" translate>
-                      ADMIN.PRODUCT_EDIT.WEIGHT_PER_QTY <span class="required-field">*</span>
+                      ADMIN.PRODUCT_EDIT.WEIGHT_PER_QTY
+                      <span class="required-field">*</span>
                     </label>
                   </div>
                   <div class="form-row">
@@ -694,7 +700,8 @@
                   <hr />
                   <div class="form-group">
                     <label class="d-block" for="SizeTier" translate
-                      >ADMIN.PRODUCT_EDIT.SIZE_TIER_LABEL <span class="required-field">*</span></label
+                      >ADMIN.PRODUCT_EDIT.SIZE_TIER_LABEL
+                      <span class="required-field">*</span></label
                     >
                     <select
                       [attr.disabled]="readonly ? true : null"
@@ -896,13 +903,12 @@
                             align-items-center
                           "
                         >
-                          <p class="card-text mb-0">
-                            {{
+                          <app-price-display
+                            class="card-text mb-0"
+                            [priceSchedule]="
                               _superHSProductEditable?.PriceSchedule
-                                ?.PriceBreaks[0]?.Price
-                                | currency: supplierCurrency?.Currency
-                            }}
-                          </p>
+                            "
+                          ></app-price-display>
                           <small class="card-text text-muted"
                             >{{
                               _superHSProductEditable?.Product?.xp
@@ -930,10 +936,7 @@
       <!-- /Product Details -->
       <!-- Buyer Visibility -->
       <li [ngbNavItem]="1" *ngIf="sellerView" id="1">
-        <a
-          class="text-muted"
-          ngbNavLink
-          translate
+        <a class="text-muted" ngbNavLink translate
           >ADMIN.PRODUCT_EDIT.BUYER_VISIBILITY</a
         >
         <ng-template ngbNavContent>
@@ -1071,6 +1074,7 @@
             [readonly]="readonly"
             [productForm]="productForm"
             [supplierCurrency]="supplierCurrency"
+            [isSellerUser]="isSellerUser"
             [sellerCurrency]="sellerCurrency"
             [superHSProductEditable]="_superHSProductEditable"
             [isRequired]="isRequired('Price')"
@@ -1105,11 +1109,7 @@
       <!-- /Filters -->
       <!-- Varitaions -->
       <li *ngIf="!_superHSProductEditable?.Product?.ID" [ngbNavItem]="5" id="5">
-        <a
-          class="text-muted nav-link"
-          (click)="showVariantToastr()"
-          translate
-        >
+        <a class="text-muted nav-link" (click)="showVariantToastr()" translate>
           ADMIN.PRODUCT_EDIT.VARIANTS
           <span class="badge badge-pill badge-primary-light">{{
             _superHSProductEditable?.Variants?.length || 0
@@ -1145,10 +1145,7 @@
       <!-- /Variations -->
       <!-- Images & Documents -->
       <li [ngbNavItem]="6" id="6">
-        <a
-          class="text-muted"
-          ngbNavLink
-          translate
+        <a class="text-muted" ngbNavLink translate
           >ADMIN.PRODUCT_EDIT.IMAGES_AND_DOCUMENTS
           <span class="badge badge-pill badge-primary-light">{{
             _superHSProductEditable?.Product?.xp?.Images?.length +

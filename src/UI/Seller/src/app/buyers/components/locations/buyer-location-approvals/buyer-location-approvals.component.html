@@ -4,7 +4,47 @@
     <p class="font-italic" translate>
       ADMIN.BUYER_GROUPS.APPROVALS.DESCRIPTION
     </p>
-    <div class="pb-3">
+  </div>
+  <div class="col-md-7">
+    <form [formGroup]="approvalForm">
+      <div class="form-group">
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <div class="custom-control custom-checkbox">
+              <input
+                id="Enabled"
+                type="checkbox"
+                formControlName="Enabled"
+                (click)="handleToggle($event)"
+                class="custom-control-input"
+              />
+              <label class="custom-control-label" for="Enabled" translate>
+                ADMIN.BUYER_GROUPS.APPROVALS.ENABLE_LABEL
+              </label>
+            </div>
+          </div>
+          <div *ngIf="approvalEnabled" class="form-group col-md-8">
+            <label for="OrderThreshold" translate
+              >ADMIN.BUYER_GROUPS.APPROVALS.THRESHOLD_LABEL</label
+            >
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">{{ '$' }}</span>
+              </div>
+              <input
+                id="OrderThreshold"
+                type="number"
+                class="form-control currency"
+                formControlName="OrderThreshold"
+                (input)="handleFormChange($event)"
+                placeholder="Enter Order Threshold"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="pb-3 float-right">
       <button
         [disabled]="!areChanges"
         class="btn btn-link"
@@ -37,45 +77,5 @@
         ADMIN.COMMON.CONFIRM
       </button>
     </div>
-  </div>
-  <div class="col-md-7">
-    <form [formGroup]="approvalForm">
-      <div class="form-group">
-        <div class="form-row">
-          <div class="form-group col-md-4">
-            <div class="custom-control custom-checkbox">
-              <input
-                id="Enabled"
-                type="checkbox"
-                formControlName="Enabled"
-                (click)="handleToggle($event)"
-                class="custom-control-input"
-              />
-              <label class="custom-control-label" for="Enabled" translate>
-                ADMIN.BUYER_GROUPS.APPROVALS.ENABLE_LABEL
-              </label>
-            </div>
-          </div>
-          <div *ngIf="approvalEnabled" class="form-group col-md-8">
-            <label for="OrderThreshold" translate
-              >ADMIN.BUYER_GROUPS.APPROVALS.THRESHOLD_LABEL</label
-            >
-            <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">{{ '$' }}</span>
-              </div>
-              <input
-                id="OrderThreshold"
-                type="text"
-                class="form-control currency"
-                formControlName="OrderThreshold"
-                (input)="handleFormChange($event)"
-                placeholder="Enter Order Threshold"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </form>
   </div>
 </div>

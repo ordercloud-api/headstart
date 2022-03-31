@@ -49,7 +49,7 @@ if (appConfig.useSitecoreCDP) {
   const webFlowTarget = appConfig.sitecoreCDPWebFlowTarget
 
   // Tracker installation https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/javascript-tagging-examples-for-web-pages.html
-  updatedIndexHtml = indexHtml.replace(
+  updatedIndexHtml = updatedIndexHtml.replace(
     '<!-- sitecore-cdp-placeholder -->',
     `<script type="text/javascript">
 // Define the Boxever queue 

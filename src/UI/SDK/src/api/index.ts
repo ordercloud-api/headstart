@@ -65,8 +65,8 @@ const HeadStartSDK: HeadStartSDK = {
     TecraFrames : new TecraFrames(),
     TecraProofs : new TecraProofs(),
     TecraPdFs : new TecraPdFs(),
-    Auth: new Auth(),
-    Tokens: new Tokens(),
+    Auth: Auth,
+    Tokens: Tokens,
     Upload: new Upload(),
     Services: new Services(),
     ApprovalRules: new ApprovalRules()
@@ -102,8 +102,8 @@ interface HeadStartSDK {
     TecraFrames : TecraFrames,
     TecraProofs : TecraProofs,
     TecraPdFs : TecraPdFs,
-    Auth: Auth,
-    Tokens: Tokens,
+    Auth: typeof Auth,
+    Tokens: typeof Tokens,
     Upload: Upload,
     Services: Services,
     ApprovalRules: ApprovalRules
