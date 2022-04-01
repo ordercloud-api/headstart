@@ -14,7 +14,7 @@ import { ProductDetailService } from '../product-details/product-detail.service'
   templateUrl: './product-price-display.component.html',
   styleUrls: ['./product-price-display.component.scss'],
 })
-export class ProductPriceDisplayComponent implements OnChanges {
+export class ProductPriceDisplayComponent implements OnChanges, OnInit {
   @Input() priceSchedule: PriceSchedule
   @Input() quantity = 1
   @Input() specs?: Spec[] = []
@@ -25,22 +25,30 @@ export class ProductPriceDisplayComponent implements OnChanges {
   constructor(private productDetailService: ProductDetailService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.quantity) {
-      this.isOnSale = this.priceSchedule?.IsOnSale
-      this.price = this.productDetailService.getProductUnitPrice(
-        this.priceSchedule,
-        this.specs,
-        this.quantity,
-        this.specForm,
-        false
-      )
-      this.salePrice = this.productDetailService.getProductUnitPrice(
-        this.priceSchedule,
-        this.specs,
-        this.quantity,
-        this.specForm,
-        true
-      )
+    if (changes.quantity && !changes.quantity.isFirstChange()) {
+      this.updatePrices()
     }
+  }
+
+  ngOnInit(): void {
+    this.updatePrices()
+  }
+
+  updatePrices(): void {
+    this.isOnSale = this.priceSchedule?.IsOnSale
+    this.price = this.productDetailService.getProductUnitPrice(
+      this.priceSchedule,
+      this.specs,
+      this.quantity,
+      this.specForm,
+      false
+    )
+    this.salePrice = this.productDetailService.getProductUnitPrice(
+      this.priceSchedule,
+      this.specs,
+      this.quantity,
+      this.specForm,
+      true
+    )
   }
 }

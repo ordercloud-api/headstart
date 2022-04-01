@@ -6,6 +6,7 @@ using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
 using ordercloud.integrations.library.intefaces;
 using System.Collections.Generic;
+using TaxCategorization = ordercloud.integrations.library.intefaces.TaxCategorization;
 
 namespace ordercloud.integrations.avalara
 {

@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using Headstart.Common;
@@ -34,7 +35,7 @@ namespace Headstart.API.Commands
             var supplierID = ID.Split("-").Length > 1 ? ID.Split("-")[1] : ID;
             if (orderType != OrderType.Quote)
             {
-                Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierID == me.Supplier.ID, new ErrorCode("Unauthorized", $"You are not authorized view this order", 401));
+                Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierID == me.Supplier.ID, new ErrorCode("Unauthorized", $"You are not authorized view this order", HttpStatusCode.Unauthorized));
             }
             try
             {

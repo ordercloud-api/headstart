@@ -28,7 +28,7 @@ namespace Headstart.API.Commands
 
     public class CheckoutIntegrationCommand : ICheckoutIntegrationCommand
     {
-        private readonly ITaxCalculator _taxCalculator;
+        private readonly ordercloud.integrations.library.ITaxCalculator _taxCalculator;
         private readonly IEasyPostShippingService _shippingService;
         private readonly IExchangeRatesCommand _exchangeRates;
         private readonly IOrderCloudClient _oc;
@@ -36,7 +36,7 @@ namespace Headstart.API.Commands
         private readonly HSShippingProfiles _profiles;
         private readonly AppSettings _settings;
   
-        public CheckoutIntegrationCommand(IDiscountDistributionService discountDistribution, ITaxCalculator taxCalculator, IExchangeRatesCommand exchangeRates, IOrderCloudClient orderCloud, IEasyPostShippingService shippingService, AppSettings settings)
+        public CheckoutIntegrationCommand(IDiscountDistributionService discountDistribution, ordercloud.integrations.library.ITaxCalculator taxCalculator, IExchangeRatesCommand exchangeRates, IOrderCloudClient orderCloud, IEasyPostShippingService shippingService, AppSettings settings)
         {
             _taxCalculator = taxCalculator;
             _exchangeRates = exchangeRates;

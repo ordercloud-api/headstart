@@ -1,6 +1,7 @@
 ﻿using OrderCloud.Catalyst;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Text;
 
 namespace ordercloud.integrations.library
@@ -9,13 +10,13 @@ namespace ordercloud.integrations.library
     {
         public static IDictionary<string, ErrorCode> All { get; } = new Dictionary<string, ErrorCode>
         {
-            { "NotFound", new ErrorCode("Not Found", "Resource requested was not found", 404) },
+            { "NotFound", new ErrorCode("Not Found", "Resource requested was not found", HttpStatusCode.NotFound) },
             { "Required", new ErrorCode("Required", "Field is required") },
             { "WriteFailure", new ErrorCode("Write Failure", "Failed to create record") },
             { "UnrecognizedType", new ErrorCode("UnrecognizedType", "Unrecognized type") },
-            { "Blob.ConnectionString", new ErrorCode("InvalidConnectionString", "Invalid Connection String", 404)},
-            { "Blob.Container", new ErrorCode("InvalidContainerString", "Invalid Container", 404)},
-            { "Webhook.MissingHeader", new ErrorCode("MissingWebhookHeader", "Invalid Header", 401)},
+            { "Blob.ConnectionString", new ErrorCode("InvalidConnectionString", "Invalid Connection String", HttpStatusCode.NotFound)},
+            { "Blob.Container", new ErrorCode("InvalidContainerString", "Invalid Container", HttpStatusCode.NotFound)},
+            { "Webhook.MissingHeader", new ErrorCode("MissingWebhookHeader", "Invalid Header", HttpStatusCode.Unauthorized)},
         };
 
         public static partial class Auth
