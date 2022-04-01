@@ -30,14 +30,14 @@ namespace Headstart.API.Commands
     {
         private readonly IOrderCloudClient _oc;
         private readonly IZohoCommand _zoho;
-        private readonly ITaxCalculator _taxCalculator;
+        private readonly ordercloud.integrations.library.ITaxCalculator _taxCalculator;
         private readonly ISendgridService _sendgridService;
         private readonly ILineItemCommand _lineItemCommand;
         private readonly AppSettings _settings;
 
         public PostSubmitCommand(
             ISendgridService sendgridService,
-            ITaxCalculator taxCalculator,
+            ordercloud.integrations.library.ITaxCalculator taxCalculator,
             IOrderCloudClient oc,
             IZohoCommand zoho,
             ILineItemCommand lineItemCommand,

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using Headstart.Common.Helpers;
 using Headstart.Common;
 using OrderCloud.Catalyst;
+using System.Net;
 
 namespace Headstart.API.Commands
 {
@@ -38,14 +39,14 @@ namespace Headstart.API.Commands
         {
             var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
             Require.That(supplierID == me.Supplier.ID,
-                new ErrorCode("Unauthorized", $"You are only authorized to view {me.Supplier.ID}.", 401));
+                new ErrorCode("Unauthorized", $"You are only authorized to view {me.Supplier.ID}.", HttpStatusCode.Unauthorized));
             return await _oc.Suppliers.GetAsync<HSSupplier>(supplierID);
         }
 
         public async Task<HSSupplier> UpdateSupplier(string supplierID, PartialSupplier supplier, DecodedToken decodedToken)
         {
             var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-            Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierID == me.Supplier.ID, new ErrorCode("Unauthorized", $"You are not authorized to update supplier {supplierID}", 401));
+            Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierID == me.Supplier.ID, new ErrorCode("Unauthorized", $"You are not authorized to update supplier {supplierID}", HttpStatusCode.Unauthorized));
             var currentSupplier = await _oc.Suppliers.GetAsync<HSSupplier>(supplierID);
             var updatedSupplier = await _oc.Suppliers.PatchAsync<HSSupplier>(supplierID, supplier);
             // Update supplier products only on a name change
