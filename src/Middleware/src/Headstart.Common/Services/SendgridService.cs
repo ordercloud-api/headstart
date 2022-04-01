@@ -1,5 +1,6 @@
 using System;
 using SendGrid;
+using System.Net;
 using System.Linq;
 using OrderCloud.SDK;
 using Newtonsoft.Json;
@@ -106,7 +107,7 @@ namespace Headstart.Common.Services
 
 		public virtual async Task SendSingleTemplateEmail(string from, string to, string templateID, object templateData)
 		{
-			Require.That(templateID != null, new ErrorCode(@"SendgridError", @"The required Sengrid template ID not configured in app settings.", 501));
+			Require.That(templateID != null, new ErrorCode(@"SendgridError", @"The required Sengrid template ID not configured in app settings.", (int)HttpStatusCode.NotImplemented));
 			{
 				var fromEmail = new EmailAddress(from);
 				var toEmail = new EmailAddress(to);
@@ -121,7 +122,7 @@ namespace Headstart.Common.Services
 
 		public virtual async Task SendSingleTemplateEmailMultipleRcpts(string from, List<EmailAddress> tos, string templateID, object templateData)
 		{
-			Require.That(templateID != null, new ErrorCode(@"SendgridError", @"The required Sengrid template ID not configured in app settings.", 501));
+			Require.That(templateID != null, new ErrorCode(@"SendgridError", @"The required Sengrid template ID not configured in app settings.", (int)HttpStatusCode.NotImplemented));
 			{
 				var fromEmail = new EmailAddress(from);
 				var msg = MailHelper.CreateSingleTemplateEmailToMultipleRecipients(fromEmail, tos, templateID, templateData);
@@ -135,7 +136,7 @@ namespace Headstart.Common.Services
 
 		public async Task SendSingleTemplateEmailMultipleRcptsAttachment(string from, List<EmailAddress> tos, string templateID, object templateData, CloudAppendBlob fileReference, string fileName)
 		{
-			Require.That(templateID != null, new ErrorCode(@"SendgridError", @"The required Sengrid template ID not configured in app settings.", 501));
+			Require.That(templateID != null, new ErrorCode(@"SendgridError", @"The required Sengrid template ID not configured in app settings.", (int)HttpStatusCode.NotImplemented));
 			{
 				var fromEmail = new EmailAddress(from);
 				var msg = MailHelper.CreateSingleTemplateEmailToMultipleRecipients(fromEmail, tos, templateID, templateData);
@@ -154,7 +155,7 @@ namespace Headstart.Common.Services
 
 		public async Task SendSingleTemplateEmailSingleRcptAttachment(string from, string to, string templateID, object templateData, IFormFile fileReference)
 		{
-			Require.That(templateID != null, new ErrorCode(@"SendgridError", @"The required Sengrid template ID not configured in app settings.", 501));
+			Require.That(templateID != null, new ErrorCode(@"SendgridError", @"The required Sengrid template ID not configured in app settings.", (int)HttpStatusCode.NotImplemented));
 			{
 				var fromEmail = new EmailAddress(from);
 				var toEmail = new EmailAddress(to);

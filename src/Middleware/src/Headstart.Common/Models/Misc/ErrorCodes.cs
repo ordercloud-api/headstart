@@ -1,4 +1,5 @@
-﻿using OrderCloud.Catalyst;
+﻿using System.Net;
+using OrderCloud.Catalyst;
 using System.Collections.Generic;
 using Headstart.Common.Exceptions;
 
@@ -9,16 +10,16 @@ namespace Headstart.Common.Models.Misc
 		public static IDictionary<string, ErrorCode> All { get; } = new Dictionary<string, ErrorCode>
 		{
 			{
-				@"Checkout.MissingShippingSelection", new  ErrorCode<MissingShippingSelectionError>(@"MissingShippingSelection", 404, @"Cannot proceed until all shipping selections have been made.")
+				@"Checkout.MissingShippingSelection", new ErrorCode<MissingShippingSelectionError>(@"MissingShippingSelection", (int)HttpStatusCode.BadRequest, @"Cannot proceed until all shipping selections have been made.")
 			},
 			{
-				@"Checkout.InvalidShipFromAddress", new ErrorCode<InvalidShipFromAddressIdError>(@"InvalidShipFromAddress", 400, @"This ShipFromAddressID does not match any products in the order.")
+				@"Checkout.InvalidShipFromAddress", new ErrorCode<InvalidShipFromAddressIdError>(@"InvalidShipFromAddress", (int)HttpStatusCode.BadRequest, @"This ShipFromAddressID does not match any products in the order.")
 			},
 			{
-				@"Checkout.MissingProductDimensions", new ErrorCode<MissingProductDimensionsError>(@"MissingProductDimensions", 400, @"Product dimensions are missing for a product.")
+				@"Checkout.MissingProductDimensions", new ErrorCode<MissingProductDimensionsError>(@"MissingProductDimensions", (int)HttpStatusCode.BadRequest, @"Product dimensions are missing for a product.")
 			},
 			{
-				@"ZohoIntegrationError", new ErrorCode<ZohoIntegrationError>(@"ZohoIntegrationError", 400, @"An error occurred in the Zoho Integration process.")
+				@"ZohoIntegrationError", new ErrorCode<ZohoIntegrationError>(@"ZohoIntegrationError", (int)HttpStatusCode.BadRequest, @"An error occurred in the Zoho Integration process.")
 			}
 		};
 

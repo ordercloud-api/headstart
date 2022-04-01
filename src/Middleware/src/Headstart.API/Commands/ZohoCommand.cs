@@ -10,9 +10,9 @@ using ordercloud.integrations.library;
 using Headstart.Common.Models.Headstart;
 using Headstart.Common.Services.Zoho.Models;
 using Headstart.Common.Services.Zoho.Mappers;
-using ordercloud.integrations.library.intefaces;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
 using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
+using TaxCategorization = ordercloud.integrations.library.intefaces.TaxCategorization;
 
 namespace Headstart.API.Commands.Zoho
 {

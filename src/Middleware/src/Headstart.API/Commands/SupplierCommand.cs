@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Linq;
 using OrderCloud.SDK;
 using Headstart.Common;
@@ -65,7 +66,8 @@ namespace Headstart.API.Commands
 			try
 			{
 				var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-				Require.That(supplierId == me.Supplier.ID, new ErrorCode($@"Unauthorized", $@"You are only authorized to view the {me.Supplier.ID}.", 401));
+				Require.That(supplierId == me.Supplier.ID, 
+					new ErrorCode(@"Unauthorized", $@"You are only authorized to view the {me.Supplier.ID}.", (int)HttpStatusCode.Unauthorized));
 				resp = await _oc.Suppliers.GetAsync<HsSupplier>(supplierId);
 			}
 			catch (Exception ex)
@@ -88,7 +90,7 @@ namespace Headstart.API.Commands
 			try
 			{
 				var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-				Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierId == me.Supplier.ID, new ErrorCode("Unauthorized", $@"You are not authorized to update supplier {supplierId}.", 401));
+				Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierId == me.Supplier.ID, new ErrorCode("Unauthorized", $@"You are not authorized to update supplier {supplierId}.", (int)HttpStatusCode.Unauthorized));
 				var currentSupplier = await _oc.Suppliers.GetAsync<HsSupplier>(supplierId);
 				updatedSupplier = await _oc.Suppliers.PatchAsync<HsSupplier>(supplierId, supplier);
 				// Update supplier products only on a name change
@@ -122,7 +124,7 @@ namespace Headstart.API.Commands
 					var token = ocClient.TokenResponse.AccessToken;
 					foreach (var product in productsToUpdate)
 					{
-						product.xp.Facets[$@"supplier"] = new List<string>() { supplier.Name };
+						product.xp.Facets[@"supplier"] = new List<string>() { supplier.Name };
 						product.xp.Currency = supplier.xp.Currency;
 					}
 					await Throttler.RunAsync(productsToUpdate, 100, 5, product => ocClient.Products.SaveAsync(product.ID, product, accessToken: token));

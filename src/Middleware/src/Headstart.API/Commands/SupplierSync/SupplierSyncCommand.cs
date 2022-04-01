@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using OrderCloud.SDK;
 using Newtonsoft.Json;
 using Headstart.Common;
@@ -60,7 +61,7 @@ namespace Headstart.API.Commands.SupplierSync
 				var supplieId = id.Split("-").Length > 1 ? id.Split("-")[1] : id;
 				if (orderType != OrderType.Quote)
 				{
-					Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplieId == me.Supplier.ID, new ErrorCode(@"Unauthorized", @"You are not authorized view this order.", 401));
+					Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplieId == me.Supplier.ID, new ErrorCode(@"Unauthorized", @"You are not authorized view this order.", (int)HttpStatusCode.Unauthorized));
 				}
 				try
 				{

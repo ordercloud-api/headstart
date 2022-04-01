@@ -44,6 +44,8 @@ using Microsoft.Extensions.DependencyInjection;
 using ordercloud.integrations.library.intefaces;
 using ordercloud.integrations.library.cosmos_repo;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
+using ITaxCalculator = ordercloud.integrations.library.ITaxCalculator;
+using ITaxCodesProvider = ordercloud.integrations.library.intefaces.ITaxCodesProvider;
 
 namespace Headstart.API
 {
