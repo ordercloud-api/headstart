@@ -449,7 +449,7 @@ namespace Headstart.API.Commands
 			try
 			{
 				var hasAccess = await _locationPermissionCommand.IsUserInAccessGroup(locationId, UserGroupSuffix.ViewAllOrders.ToString(), decodedToken);
-				Require.That(hasAccess, new ErrorCode(@"Insufficient Access", $@"This User cannot access orders from this location: {locationId}.", (int)HttpStatusCode.Forbidden));
+				Require.That(hasAccess, new ErrorCode(@"Insufficient Access", $@"This User cannot access orders from this location: {locationId}.", HttpStatusCode.Forbidden));
 			}
 			catch (Exception ex)
 			{
@@ -494,7 +494,7 @@ namespace Headstart.API.Commands
 					}
 				}
 				// if function has not been exited yet we throw an insufficient access error
-				Require.That(false, new ErrorCode(@"Insufficient Access", $@"This User cannot access this order {order.ID}.", (int)HttpStatusCode.Forbidden));
+				Require.That(false, new ErrorCode(@"Insufficient Access", $@"This User cannot access this order {order.ID}.", HttpStatusCode.Forbidden));
 			}
 			catch (Exception ex)
 			{

@@ -233,7 +233,7 @@ namespace Headstart.API.Commands
 			try
 			{
 				var hasAccess = await IsUserInAccessGroup(locationId, UserGroupSuffix.PermissionAdmin.ToString(), decodedToken);
-				Require.That(hasAccess, new ErrorCode(@"Insufficient Access", $@"The User cannot manage permissions for: {locationId}.", (int)HttpStatusCode.Forbidden));
+				Require.That(hasAccess, new ErrorCode(@"Insufficient Access", $@"The User cannot manage permissions for: {locationId}.", HttpStatusCode.Forbidden));
 			}
 			catch (Exception ex)
 			{

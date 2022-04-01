@@ -675,11 +675,15 @@ namespace Headstart.API.Commands
 						}
 					}
 
-					var priceBasedOnQuantity = product.PriceSchedule.PriceBreaks.Last(priceBreak => priceBreak.Quantity <= totalQuantity).Price;
+					var selectedPriceBreak = product.PriceSchedule.PriceBreaks.Last(priceBreak => priceBreak.Quantity <= totalQuantity);
+					decimal priceBasedOnQuantity = product.PriceSchedule.IsOnSale ? (decimal)selectedPriceBreak.SalePrice : selectedPriceBreak.Price;
 					var tasks = new List<Task>();
 					foreach (var lineItem in existingLineItems)
 					{
 						// Determine markup for all specs for this existing line item
+						selectedPriceBreak = product.PriceSchedule.PriceBreaks.Last(priceBreak => priceBreak.Quantity <= li.Quantity);
+						priceBasedOnQuantity = product.PriceSchedule.IsOnSale ? (decimal)selectedPriceBreak.SalePrice : selectedPriceBreak.Price;
+						// Determine markup for the 1 line item
 						var lineItemTotal = priceBasedOnQuantity + GetSpecMarkup(lineItem.Specs, product.Specs);
 						if (lineItem.UnitPrice != lineItemTotal)
 						{

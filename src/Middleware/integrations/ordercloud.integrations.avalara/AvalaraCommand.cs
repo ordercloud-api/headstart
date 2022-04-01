@@ -1,15 +1,15 @@
 ﻿using Avalara.AvaTax.RestClient;
-using Flurl;
-using Flurl.Http;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using ordercloud.integrations.library;
 using System.Linq;
-using OrderCloud.Catalyst;
-using ordercloud.integrations.library.intefaces;
+using System.Threading.Tasks;
+using ITaxCalculator = ordercloud.integrations.library.ITaxCalculator;
+using ITaxCodesProvider = ordercloud.integrations.library.intefaces.ITaxCodesProvider;
+using OrderTaxCalculation = ordercloud.integrations.library.OrderTaxCalculation;
+using TaxCategorization = ordercloud.integrations.library.intefaces.TaxCategorization;
+using TaxCategorizationResponse = ordercloud.integrations.library.intefaces.TaxCategorizationResponse;
 
 namespace ordercloud.integrations.avalara
 {
@@ -49,10 +49,10 @@ namespace ordercloud.integrations.avalara
 			if(hasAccountCredentials) {
 				_avaTax = new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(settings.BaseApiUrl)).WithSecurity(settings.AccountID, settings.LicenseKey);
 			}
-        }
+		}
 
 		private bool ShouldMockAvalaraResponse()
-        {
+		{
 			// To give a larger "headstart" in Test and UAT, Responses can be mocked by simply
 			// not providing an Avalara License Key. (It is still needed for Production)
 			return !hasAccountCredentials && appEnvironment != AppEnvironment.Production;
@@ -65,8 +65,8 @@ namespace ordercloud.integrations.avalara
 			return taxEstimate;
 		}
 
-        private OrderTaxCalculation CreateMockTransactionModel()
-        {
+		private OrderTaxCalculation CreateMockTransactionModel()
+		{
 			TransactionModel result = new TransactionModel()
 			{
 				totalTax = (decimal?)123.45,
@@ -74,27 +74,27 @@ namespace ordercloud.integrations.avalara
 				date = DateTime.Now
 			};
 
-			 return result.ToOrderTaxCalculation();
+			return result.ToOrderTaxCalculation();
 		}
 
-        private TaxCategorizationResponse CreateMockTaxCategorizationResponseModel()
-        {
-            return new TaxCategorizationResponse()
-            {
-                ProductsShouldHaveTaxCodes = true,
-                Categories = new List<TaxCategorization>()
-                {
-                    new TaxCategorization()
-                    {
-                        Code = "Headstart Tax Code",
-                        Description = "Mock Tax Code for Headstart",
-                        LongDescription = "This is a mock tax categorization"
-                    }
-                }
-            };
-        }
+		private TaxCategorizationResponse CreateMockTaxCategorizationResponseModel()
+		{
+			return new TaxCategorizationResponse()
+			{
+				ProductsShouldHaveTaxCodes = true,
+				Categories = new List<TaxCategorization>()
+				{
+					new TaxCategorization()
+					{
+						Code = "Headstart Tax Code",
+						Description = "Mock Tax Code for Headstart",
+						LongDescription = "This is a mock tax categorization"
+					}
+				}
+			};
+		}
 
-        public async Task<OrderTaxCalculation> CommitTransactionAsync(OrderWorksheet orderWorksheet, List<OrderPromotion> promotions)
+		public async Task<OrderTaxCalculation> CommitTransactionAsync(OrderWorksheet orderWorksheet, List<OrderPromotion> promotions)
 		{
 			if (ShouldMockAvalaraResponse()) { return CreateMockTransactionModel(); }
 
@@ -113,9 +113,9 @@ namespace ordercloud.integrations.avalara
 
 		public async Task<TaxCategorizationResponse> ListTaxCodesAsync(string searchTerm)
 		{
-            if (ShouldMockAvalaraResponse()) { return CreateMockTaxCategorizationResponseModel(); }
+			if (ShouldMockAvalaraResponse()) { return CreateMockTaxCategorizationResponseModel(); }
 
-            var search = TaxCodeMapper.MapSearchString(searchTerm);
+			var search = TaxCodeMapper.MapSearchString(searchTerm);
 			var avataxCodes = await _avaTax.ListTaxCodesAsync(search, null, null, null);
 			var codeList = TaxCodeMapper.MapTaxCodes(avataxCodes);
 			return new TaxCategorizationResponse() { Categories = codeList, ProductsShouldHaveTaxCodes = true };
@@ -124,8 +124,8 @@ namespace ordercloud.integrations.avalara
 		private async Task<OrderTaxCalculation> CreateTransactionAsync(DocumentType docType, OrderWorksheet orderWorksheet, List<OrderPromotion> promotions)
 		{
 			var standardLineItems = orderWorksheet.LineItems.Where(li => li.Product.xp.ProductType == "Standard")?.ToList();
-            if (standardLineItems.Any())
-            {
+			if (standardLineItems.Any())
+			{
 				try
 				{
 					if (ShouldMockAvalaraResponse()) { return CreateMockTransactionModel(); }
@@ -138,15 +138,14 @@ namespace ordercloud.integrations.avalara
 					throw new CatalystBaseException("AvalaraTaxError", e.error.error.message, e.error.error, 400);
 				}
 			} else
-            {
+			{
 				return new OrderTaxCalculation
 				{
 					OrderID = orderWorksheet.Order.ID,
 					ExternalTransactionID = "NotTaxable",
 					TotalTax = 0
 				};
-            }
-			
+			}
 		}
 	}
 }

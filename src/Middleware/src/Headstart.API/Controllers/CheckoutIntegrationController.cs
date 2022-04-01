@@ -60,12 +60,38 @@ namespace Headstart.API.Controllers
 
 		/// <summary>
 		/// Submits the Order Submission, after posting the payload object (POST method)
-		/// [OrderCloudWebhookAuth]  TODO: Add this back in once platform fixes header issue
 		/// </summary>
 		/// <param name="payload"></param>
 		/// <returns>The submitted order response object</returns>
 		[HttpPost, Route("ordersubmit")]
+		//[OrderCloudWebhookAuth]  TODO: Add this back in once platform fixes header issue
 		public async Task<OrderSubmitResponse> HandleOrderSubmit([FromBody] HsOrderCalculatePayload payload)
+		{
+			var response = await _postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
+			return response;
+		}
+
+		/// <summary>
+		/// Submits the Order Submission, after posting the payload object (POST method)
+		/// </summary>
+		/// <param name="payload"></param>
+		/// <returns>The submitted order response object</returns>
+		[HttpPost, Route("ordersubmitforapproval")]
+		//[OrderCloudWebhookAuth]  TODO: Add this back in once platform fixes header issue
+		public async Task<OrderSubmitResponse> HandleOrderSubmitForApproval([FromBody] HsOrderCalculatePayload payload)
+		{
+			var response = await _postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
+			return response;
+		}
+
+		/// <summary>
+		/// Submits the Approved Order, after posting the payload object (POST method)
+		/// </summary>
+		/// <param name="payload"></param>
+		/// <returns>The submitted order response object</returns>
+		[HttpPost, Route("orderapproved")]
+		//[OrderCloudWebhookAuth]  TODO: Add this back in once platform fixes header issue
+		public async Task<OrderSubmitResponse> HandleOrderApproved([FromBody] HsOrderCalculatePayload payload)
 		{
 			var response = await _postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
 			return response;
@@ -81,18 +107,6 @@ namespace Headstart.API.Controllers
 		{
 			var retry = await _postSubmitCommand.HandleZohoRetry(orderId);
 			return retry;
-		}
-
-		/// <summary>
-		/// Submits the Approved Order, after posting the payload object (POST method)
-		/// </summary>
-		/// <param name="payload"></param>
-		/// <returns>The submitted order response object</returns>
-		[HttpPost, Route("orderapproved"), OrderCloudWebhookAuth]
-		public async Task<OrderSubmitResponse> HandleOrderApproved([FromBody] HsOrderCalculatePayload payload)
-		{
-			var response = await _postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
-			return response;
 		}
 	}
 }

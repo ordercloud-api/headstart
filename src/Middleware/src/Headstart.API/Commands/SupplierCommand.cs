@@ -67,7 +67,7 @@ namespace Headstart.API.Commands
 			{
 				var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
 				Require.That(supplierId == me.Supplier.ID, 
-					new ErrorCode(@"Unauthorized", $@"You are only authorized to view the {me.Supplier.ID}.", (int)HttpStatusCode.Unauthorized));
+					new ErrorCode(@"Unauthorized", $@"You are only authorized to view the {me.Supplier.ID}.", HttpStatusCode.Unauthorized));
 				resp = await _oc.Suppliers.GetAsync<HsSupplier>(supplierId);
 			}
 			catch (Exception ex)
@@ -90,7 +90,7 @@ namespace Headstart.API.Commands
 			try
 			{
 				var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-				Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierId == me.Supplier.ID, new ErrorCode("Unauthorized", $@"You are not authorized to update supplier {supplierId}.", (int)HttpStatusCode.Unauthorized));
+				Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierId == me.Supplier.ID, new ErrorCode("Unauthorized", $@"You are not authorized to update supplier {supplierId}.", HttpStatusCode.Unauthorized));
 				var currentSupplier = await _oc.Suppliers.GetAsync<HsSupplier>(supplierId);
 				updatedSupplier = await _oc.Suppliers.PatchAsync<HsSupplier>(supplierId, supplier);
 				// Update supplier products only on a name change

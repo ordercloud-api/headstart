@@ -1,13 +1,13 @@
-﻿using ordercloud.integrations.library;
-using ordercloud.integrations.library.intefaces;
-using OrderCloud.Catalyst;
+﻿using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Taxjar;
+using ITaxCalculator = ordercloud.integrations.library.ITaxCalculator;
+using ITaxCodesProvider = ordercloud.integrations.library.intefaces.ITaxCodesProvider;
+using OrderTaxCalculation = ordercloud.integrations.library.OrderTaxCalculation;
+using TaxCategorizationResponse = ordercloud.integrations.library.intefaces.TaxCategorizationResponse;
 using TaxJarOrder = Taxjar.Order;
 
 namespace ordercloud.integrations.taxjar
