@@ -13,6 +13,7 @@ using ordercloud.integrations.library;
 using ordercloud.integrations.library.intefaces;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
+using TaxCategorization = ordercloud.integrations.library.intefaces.TaxCategorization;
 
 namespace Headstart.API.Commands.Zoho
 {
