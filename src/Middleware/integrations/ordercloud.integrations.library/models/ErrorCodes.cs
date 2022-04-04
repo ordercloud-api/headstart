@@ -1,4 +1,4 @@
-﻿using OrderCloud.Catalyst;
+using OrderCloud.Catalyst;
 using System.Collections.Generic;
 using System.Net;
 

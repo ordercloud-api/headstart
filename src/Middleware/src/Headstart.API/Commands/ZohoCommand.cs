@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using OrderCloud.SDK;
 using OrderCloud.Catalyst;

@@ -170,7 +170,7 @@ import { OrderDetailWrapperComponent } from './wrapper-components/order-detail-w
 import { OrderHistoryWrapperComponent } from './wrapper-components/order-history-wrapper-component'
 import { SupplierListWrapperComponent } from './wrapper-components/supplier-list-wrapper.component'
 import { Configuration, SdkConfiguration } from 'ordercloud-javascript-sdk'
-import { Configuration as MktpConfiguration } from '@ordercloud/headstart-sdk'
+import { Configuration as HeadstartConfiguration } from '@ordercloud/headstart-sdk'
 import {
   MeListAddressResolver,
   MeListBuyerLocationResolver,
@@ -205,6 +205,7 @@ import {
   faCcVisa,
 } from '@fortawesome/free-brands-svg-icons'
 import { faCreditCard } from '@fortawesome/free-solid-svg-icons'
+import { ProductPriceDisplayComponent } from './components/products/product-price-display/product-price-display.component'
 
 export function HttpLoaderFactory(
   http: HttpClient,
@@ -315,6 +316,7 @@ const components = [
   OCMLocationListItem,
   OCMLocationManagement,
   OCMProductAttachments,
+  ProductPriceDisplayComponent,
 ]
 
 // @dynamic
@@ -415,11 +417,22 @@ export class AppModule {
     public translate: TranslateService,
     private appConfig: AppConfig
   ) {
-    MktpConfiguration.Set({
+    HeadstartConfiguration.Set({
       baseApiUrl: this.appConfig.middlewareUrl,
+      orderCloudApiUrl: this.appConfig.orderCloudApiUrl,
+      clientID: this.appConfig.clientID,
+      cookieOptions: {
+        prefix: `${this.appConfig.appID}buyer`.toLowerCase(),
+      },
     })
 
-    Configuration.Set(this.getOrdercloudSDKConfig(appConfig))
+    Configuration.Set({
+      baseApiUrl: this.appConfig.orderCloudApiUrl,
+      clientID: this.appConfig.clientID,
+      cookieOptions: {
+        prefix: `${this.appConfig.appID}buyer`.toLowerCase(),
+      },
+    })
     translate.setDefaultLang('en')
     translate.use('en')
 
@@ -524,16 +537,6 @@ export class AppModule {
     this.buildWebComponent(ConfirmModal, 'confirm-modal')
     this.buildWebComponent(OCMLocationListItem, 'ocm-location-list-item')
     this.buildWebComponent(OCMLocationManagement, 'ocm-location-management')
-  }
-
-  private getOrdercloudSDKConfig(config: AppConfig): SdkConfiguration {
-    return {
-      baseApiUrl: config.orderCloudApiUrl,
-      clientID: config.clientID,
-      cookieOptions: {
-        prefix: `${config.appID}buyer`.toLowerCase(),
-      },
-    }
   }
 
   buildWebComponent(angularComponent: any, htmlTagName: string): void {

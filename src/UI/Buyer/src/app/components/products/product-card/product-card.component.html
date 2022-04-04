@@ -1,11 +1,17 @@
 <div class="card card-hover mb-5 w-100 cursor-pointer">
-  <div class="ribbon ribbon-top-right bg-light">
+  <div class="ribbon ribbon-top-right bg-light" *ngIf="!isAnonymous">
     <ocm-toggle-favorite
       title="Favorite"
       (click)="$event.stopPropagation()"
       [favorite]="_isFavorite"
       (favoriteChanged)="setIsFavorite($event.detail)"
     ></ocm-toggle-favorite>
+  </div>
+  <div
+    class="ribbon ribbon-top-left bg-danger text-white"
+    *ngIf="_product?.PriceSchedule?.IsOnSale"
+  >
+    On Sale
   </div>
   <a
     class="clickable-card d-flex flex-fill flex-column position-relative"
@@ -54,14 +60,34 @@
         }}
       </p>
       <div
-        class="d-flex flex-wrap justify-content-between align-items-center card-price"
+        *ngIf="_product?.xp?.ProductType !== 'Quote'"
+        class="
+          d-flex
+          flex-wrap
+          justify-content-between
+          align-items-center
+          card-price
+        "
       >
-        <p class="card-text mb-0" *ngIf="_product.PriceSchedule?.PriceBreaks">
-          {{ _price | currency: _userCurrency }}
-        </p>
+        <app-product-price-display
+          class="card-text mb-0"
+          *ngIf="
+            _product?.PriceSchedule?.PriceBreaks?.length &&
+            _product?.xp?.ProductType !== 'Quote'
+          "
+          [priceSchedule]="_product.PriceSchedule"
+        ></app-product-price-display>
         <small class="card-text text-muted">{{ _product | UofM }}</small>
         <label for="quantity" class="sr-only" translate
           >PRODUCTS.CARD.QUANTITY</label
+        >
+      </div>
+      <div>
+        <span
+          *ngIf="_product?.xp?.ProductType === 'Quote'"
+          class="small badge badge-pill badge-warning ml-2"
+        >
+          Quote Product</span
         >
       </div>
     </div>

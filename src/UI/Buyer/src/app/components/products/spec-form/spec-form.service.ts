@@ -16,7 +16,7 @@ import { GridSpecOption } from 'src/app/models/product.types'
 export class SpecFormService {
   constructor() {}
 
-  public getSpecMarkup(
+  public getSpecMarkupUnit(
     specs: Spec[],
     selectedBreak: PriceBreak,
     qty: number,
@@ -34,7 +34,7 @@ export class SpecFormService {
         }
       }
     }
-    return (selectedBreak.Price + markups.reduce((x, acc) => x + acc, 0)) * qty
+    return markups.reduce((x, acc) => x + acc, 0)
   }
 
   public getLineItemSpecs(

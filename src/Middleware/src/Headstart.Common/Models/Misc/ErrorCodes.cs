@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using OrderCloud.Catalyst;
 using System.Collections.Generic;
 using Headstart.Common.Exceptions;

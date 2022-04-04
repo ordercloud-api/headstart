@@ -20,11 +20,11 @@ export class OCMProductCard {
     PriceSchedule: {} as PriceSchedule,
   }
   _shipFromSources: ShipFromSourcesDic = {}
-  _price: number
   _userCurrency: string
   quantity: number
   qtyValid = true
   shouldDisplayAddToCart = false
+  isAnonymous = true
   isViewOnlyProduct = true
   hasSpecs = false
   isAddingToCart = false
@@ -37,7 +37,6 @@ export class OCMProductCard {
 
   @Input() set product(value: HSMeProduct) {
     this._product = value
-    this._price = value.PriceSchedule?.PriceBreaks[0]?.Price
     this.isViewOnlyProduct = !value.PriceSchedule
     this.hasSpecs = value.SpecCount > 0
     this._userCurrency = this.context.currentUser.get().Currency
@@ -73,6 +72,7 @@ export class OCMProductCard {
   }
 
   ngOnInit(): void {
+    this.isAnonymous = this.context.currentUser.isAnonymous()
     setTimeout(() => {
       this.applyAspectRatioChange()
     }, 0)

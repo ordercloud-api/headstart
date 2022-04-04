@@ -1,4 +1,4 @@
-﻿using OrderCloud.SDK;
+using OrderCloud.SDK;
 using OrderCloud.Catalyst;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;

@@ -1,4 +1,4 @@
-import { Component, Input, Inject } from '@angular/core'
+import { Component, Input, Inject, OnInit } from '@angular/core'
 import { OrderService } from '@app-seller/orders/order.service'
 import {
   Address,
@@ -9,6 +9,7 @@ import {
   OcOrderService,
   OrderDirection,
   OcAddressService,
+  MeUser,
 } from '@ordercloud/angular-sdk'
 
 // temporarily any with sdk update
@@ -38,6 +39,7 @@ import { SELLER } from '@app-seller/models/user.types'
 import { RMAService } from '@app-seller/rmas/rmas.service'
 import { SupportedRates } from '@app-seller/shared'
 import { FormControl, FormGroup } from '@angular/forms'
+import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 
 export type LineItemTableValue =
   | 'Default'
@@ -111,6 +113,7 @@ export class OrderDetailsComponent {
     private appAuthService: AppAuthService,
     private ocAddressService: OcAddressService,
     private rmaService: RMAService,
+    private currentUserService: CurrentUserService,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {
     this.isSellerUser = this.appAuthService.getOrdercloudUserType() === SELLER
@@ -256,8 +259,13 @@ export class OrderDetailsComponent {
     this.supplierCurrency = this.exchangeRates?.find(
       (r) => r.Currency === order.xp?.Currency
     )
+    const currentUser = await this.currentUserService.getUser()
     const rmaListPage = await this.rmaService.listRMAsByOrderID(order.ID)
-    this.rmas = rmaListPage.Items
+    this.rmas = currentUser.Supplier
+      ? rmaListPage.Items.filter(
+          (rma) => rma.SupplierID === currentUser.Supplier.ID
+        )
+      : rmaListPage.Items
     if (this.isSupplierOrder(order.ID) || this.isQuoteOrder(order)) {
       const orderData = await HeadStartSDK.Suppliers.GetSupplierOrder(
         order.ID,

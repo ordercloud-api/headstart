@@ -150,7 +150,6 @@ export class AuthService {
     rememberMe = false
   ): void {
     this.tokenHelper.setIsSSO(isSSO)
-    HeadStartSDK.Tokens.SetAccessToken(token)
     this.setToken(token)
     if (rememberMe && refreshToken) {
       /**
@@ -167,7 +166,6 @@ export class AuthService {
   async anonymousLogin(): Promise<AccessToken> {
     try {
       const anonToken = await this.getAnonymousToken()
-      HeadStartSDK.Tokens.SetAccessToken(anonToken.access_token)
       this.setToken(anonToken.access_token)
       return anonToken
     } catch (err) {
@@ -185,7 +183,6 @@ export class AuthService {
 
   async logout(): Promise<void> {
     Tokens.RemoveAccessToken()
-    HeadStartSDK.Tokens.RemoveAccessToken()
     this.isLoggedIn = false
     this.appInsightsService = this.injector.get(ApplicationInsightsService);
     this.appInsightsService.clearUser()

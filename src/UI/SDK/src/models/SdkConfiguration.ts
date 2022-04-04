@@ -1,9 +1,8 @@
 export interface SdkConfiguration {
   /**
-   * the path that will be used to talk to the ordercloud api.
+   * the path that will be used to talk to the middleware api.
    * It may be useful to change this to interact with different
-   * environments or different versions of the api. At the time of writing
-   * there is only one version of the api.
+   * environments or different versions of the api
    */
   baseApiUrl?: string
 
@@ -13,7 +12,7 @@ export interface SdkConfiguration {
    * environments or different versions of the api. At the time of writing
    * there is only one version of the api.
    */
-  baseAuthUrl?: string
+  orderCloudApiUrl?: string
 
   /**
    * when set is used to call the refresh token endpoint to obtain a new access
@@ -50,4 +49,15 @@ export interface CookieOptions {
    * in first or third party contexts https://adzerk.com/blog/chrome-samesite/
    */
   samesite?: 'none' | 'lax' | 'strict'
+
+  /**
+   * prefix for all cookies set by ordercloud
+   */
+  prefix?: string
+
+  /**
+   * defines which paths on the domain the cookie will be accessible on
+   * defaults to '/' which means it is available on all paths in the domain
+   */
+  path?: string
 }

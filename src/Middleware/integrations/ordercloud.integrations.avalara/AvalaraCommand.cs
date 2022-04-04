@@ -1,4 +1,4 @@
-﻿using Avalara.AvaTax.RestClient;
+using Avalara.AvaTax.RestClient;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 using System;
