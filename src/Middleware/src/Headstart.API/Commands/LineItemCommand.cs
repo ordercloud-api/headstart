@@ -661,7 +661,7 @@ namespace Headstart.API.Commands
 		/// <returns>The lineItemTotal decimal value from the ValidateLineItemUnitCost process</returns>
 		public async Task<decimal> ValidateLineItemUnitCost(string orderID, SuperHsMeProduct product, List<HsLineItem> existingLineItems, HsLineItem li)
 		{
-			decimal resp = 0;
+			decimal respLineItemTotal = 0;
 			try
 			{
 				if (product.PriceSchedule.UseCumulativeQuantity)
@@ -694,24 +694,22 @@ namespace Headstart.API.Commands
 					}
 					await Task.WhenAll(tasks);
 					// Return the item total for the li being added or modified
-					resp = (li == null) ? 0 : (priceBasedOnQuantity + GetSpecMarkup(li.Specs, product.Specs));
+					return (li == null) ? 0 : priceBasedOnQuantity + GetSpecMarkup(li.Specs, product.Specs);
 				}
-				else
+
+				if (li != null)
 				{
-					if (li != null)
-					{
-						// Determine price including quantity price break discount
-						var priceBasedOnQuantity = product.PriceSchedule.PriceBreaks.Last(priceBreak => priceBreak.Quantity <= li.Quantity).Price;
-						// Determine markup for the 1 line item
-						resp = (priceBasedOnQuantity + GetSpecMarkup(li.Specs, product.Specs));
-					}
+					// Determine price including quantity price break discount
+					var priceBasedOnQuantity = product.PriceSchedule.PriceBreaks.Last(priceBreak => priceBreak.Quantity <= li.Quantity).Price;
+					// Determine markup for the 1 line item
+					respLineItemTotal = (priceBasedOnQuantity + GetSpecMarkup(li.Specs, product.Specs));
 				}
 			}
 			catch (Exception ex)
 			{
 				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
-			return resp;
+			return respLineItemTotal;
 		}
 
 		/// <summary>
