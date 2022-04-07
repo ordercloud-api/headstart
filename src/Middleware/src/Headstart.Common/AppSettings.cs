@@ -88,10 +88,12 @@ namespace Headstart.Common
         public string MarketplaceID { get; set; }
         public string MarketplaceName { get; set; } // used for display purposes
         public string WebhookHashKey { get; set; }
-        public string IncrementorPrefix { get; set; }
-    }
+		public string IncrementorPrefix { get; set; }
+        // Comma-separated list
+        public string ClientIDsWithAPIAccess { get; set; }
+	}
 
-    public class SendgridSettings
+	public class SendgridSettings
     {
         public string ApiKey { get; set; }
         public string FromEmail { get; set; }
