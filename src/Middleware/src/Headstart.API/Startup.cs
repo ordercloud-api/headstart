@@ -62,6 +62,8 @@ namespace Headstart.API
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            var clientIDs = _settings.OrderCloudSettings.ClientIDsWithAPIAccess.Split(",");
+
             var cosmosConfig = new CosmosConfig(
                 _settings.CosmosSettings.DatabaseName,
                 _settings.CosmosSettings.EndpointUri,
@@ -168,7 +170,7 @@ namespace Headstart.API
             services
                 .AddCors(o => o.AddPolicy("integrationcors", builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }))
                 .AddSingleton<ISimpleCache, LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
-                .AddOrderCloudUserAuth()
+                .AddOrderCloudUserAuth(opts => opts.AddValidClientIDs(clientIDs))
                 .AddOrderCloudWebhookAuth(opts => opts.HashKey = _settings.OrderCloudSettings.WebhookHashKey)
                 .InjectCosmosStore<LogQuery, OrchestrationLog>(cosmosConfig)
                 .InjectCosmosStore<ReportTemplateQuery, ReportTemplate>(cosmosConfig)
