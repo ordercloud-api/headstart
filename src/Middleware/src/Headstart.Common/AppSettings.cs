@@ -127,11 +127,15 @@ namespace Headstart.Common
 
 		public string MarketplaceId { get; set; } = string.Empty;
 
-		public string MarketplaceName { get; set; } = string.Empty; // Used for display purposes
+		// Used for display purposes
+		public string MarketplaceName { get; set; } = string.Empty;
 
 		public string WebhookHashKey { get; set; } = string.Empty;
 
 		public string IncrementorPrefix { get; set; } = string.Empty;
+
+		// Comma-separated list
+		public string ClientIDsWithAPIAccess { get; set; } = string.Empty;
 	}
 
 	public class SendgridSettings
