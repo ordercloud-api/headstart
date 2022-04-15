@@ -334,7 +334,7 @@ You can run the project using Docker, sample docker-compose.yml file includes Bu
                     - Note: if the appLogFileKey is empty the fallback file prefix key will be applied as 'CustomApiLogs'
                     - Note: 1 log file gets create per day per application (i.e. if you have more than 1 site/application under the webroot).
                     - Note: a Sitecore XM/XP instance can handle as many sites/application under the same webroot (each with there own Domain Url and branding and layout)
-            ## Note the LogApiResponseMessages() and LogExceptionNotification() methods content the following configrable params
+            - Note the LogApiResponseMessages() and LogExceptionNotification() methods content the following configrable params
                 - These methods can be used with or without a Sitecore XM/XP instance, i.e. will always create custom log files
                 - appLogFileKey (string param) => Which applies a application prefix key to the name of the custom file being created. 
                     - Note: if the appLogFileKey is empty the fallback file prefix key will be applied as 'CustomApiLogs'
