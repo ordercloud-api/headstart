@@ -30,6 +30,7 @@ namespace Sitecore.Diagnostics
 			{
 				var exception = LoggingNotifications.GetLogExceptionMessage(methodName, message, tryCatchMessage, errorTraceCert, LoggingNotifications.GetApiResponseMessagePrefixKey());
 				Log.Error($@"{message} - {LoggingNotifications.GetExceptionMessagePrefixKey()}: {exception}.", obj);
+				throw new Exception(exception);
 			}            
 		}
 
@@ -52,11 +53,9 @@ namespace Sitecore.Diagnostics
 			if (isError)
 			{
 				Log.Error(message, new object());
+				throw new Exception(message);
 			}
-			else
-			{
-				Log.Info(message, new object());
-			}
+			Log.Info(message, new object());
 		}
 	}
 }
@@ -152,11 +151,9 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 			if (isError)
 			{
 				WriteToCustomLogFile(appLogFileKey, methodName, message, true, tryCatchMessage, errorTraceCert);
+				throw new Exception(message);
 			}
-			else
-			{
-				WriteToCustomLogFile(appLogFileKey, methodName, message, false);
-			}
+			WriteToCustomLogFile(appLogFileKey, methodName, message, false);
 		}
 
 		/// <summary>
