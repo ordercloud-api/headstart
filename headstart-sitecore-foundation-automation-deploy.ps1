@@ -92,7 +92,8 @@ if (GetDotNet4FrameworkVersion($releaseKey) -ne "4.8")
 {
 	choco install dotnetfx;
 	choco install netfx-4.8-devpack;
-	choco upgrade visualstudio2019buildtools;
+	choco unintsall visualstudio2019buildtools;
+	choco install visualstudio2019buildtools --version=16.11.10.0;	
 }
 SitecoreFoundation-PackagesSynchronization-Autotmation;
 Write-Host "SitecoreFoundation-PackagesSynchronization-Autotmation - Completed";
