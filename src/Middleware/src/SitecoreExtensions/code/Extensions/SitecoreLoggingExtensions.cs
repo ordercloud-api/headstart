@@ -139,7 +139,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 		/// <param name="isError"></param>
 		/// <param name="tryCatchMessage"></param>
 		/// <param name="errorTraceCert"></param>
-		public static void LogApiResponseMessages(string appLogFileKey, string methodName, string message, string messageKeyValue, bool isError = false, string tryCatchMessage = "", string errorTraceCert = "")
+		public static void LogApiResponseMessages(string appLogFileKey, string methodName, string message, string messageKeyValue, bool isError = false, string tryCatchMessage = "", string errorTraceCert = "", Exception origExc = null)
 		{
 			if (string.IsNullOrEmpty(message))
 			{
@@ -151,7 +151,10 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 			if (isError)
 			{
 				WriteToCustomLogFile(appLogFileKey, methodName, message, true, tryCatchMessage, errorTraceCert);
-				throw new Exception(message);
+				if (origExc != null)
+				{
+					throw origExc;
+				}
 			}
 			WriteToCustomLogFile(appLogFileKey, methodName, message, false);
 		}

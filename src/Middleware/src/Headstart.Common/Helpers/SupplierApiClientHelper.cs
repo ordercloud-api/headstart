@@ -28,7 +28,7 @@ namespace Headstart.Common.Helpers
 			catch (Exception ex)
 			{
 				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
-					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex?.StackTrace);
+					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}
 
@@ -56,7 +56,7 @@ namespace Headstart.Common.Helpers
 			{
 				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), 
 					$@"Error occurred with the params supplierId: {supplierId} and token: {token}.",
-					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
+					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 				// else create and return the new api client
 				return await HandleError(supplierDetails, token);
 			}

@@ -58,10 +58,6 @@ namespace Headstart.Tests
 				}
 			}));
 
-			if (IsFalseFailuresHandler())
-			{
-				return;
-			}
 			// Act
 			var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => 
 				await _sut.SubmitOrderAsync("mockOrderID", OrderDirection.Outgoing, 
@@ -98,10 +94,6 @@ namespace Headstart.Tests
 				}
 			}));
 
-			if (IsFalseFailuresHandler())
-			{
-				return;
-			}
 			// Act
 			var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => 
 				await _sut.SubmitOrderAsync("mockOrderID", OrderDirection.Outgoing, 
@@ -146,10 +138,6 @@ namespace Headstart.Tests
 				}
 			}));
 
-			if (IsFalseFailuresHandler())
-			{
-				return;
-			}
 			// Act
 			var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => 
 				await _sut.SubmitOrderAsync("mockOrderID", OrderDirection.Outgoing, null, 
@@ -307,10 +295,6 @@ namespace Headstart.Tests
 				}
 			}));
 
-			if (IsFalseFailuresHandler())
-			{
-				return;
-			}
 			// Act
 			await _sut.SubmitOrderAsync("mockOrderID", OrderDirection.Outgoing,
 				new OrderCloudIntegrationsCreditCardPayment()
@@ -363,10 +347,6 @@ namespace Headstart.Tests
 				}
 			}));
 
-			if (IsFalseFailuresHandler())
-			{
-				return;
-			}
 			// Act
 			Assert.ThrowsAsync<Exception>(async () => await _sut.SubmitOrderAsync("mockOrderID", 
 				OrderDirection.Outgoing, 
@@ -591,22 +571,6 @@ namespace Headstart.Tests
 				new OrderCloudIntegrationsCreditCardPayment(), "mockUserToken");
 			await _oc.Orders.Received().SubmitAsync<HsOrder>(OrderDirection.Incoming, Arg.Any<string>(), 
 				Arg.Any<string>());
-		}
-
-		private static bool IsWeekendOrAfterHours()
-		{
-			var utc = DateTime.UtcNow;
-			var pacificZone = TimeZoneInfo.FindSystemTimeZoneById("Pacific Standard Time");
-			var currentPstTime = TimeZoneInfo.ConvertTimeFromUtc(utc, pacificZone);
-			var disableStartTime = TimeSpan.Parse("06:00");
-			var disableEndTime = TimeSpan.Parse("16:00");
-			return ((currentPstTime.DayOfWeek == DayOfWeek.Saturday || currentPstTime.DayOfWeek == DayOfWeek.Sunday)
-			        || (currentPstTime.TimeOfDay >= disableStartTime && currentPstTime.TimeOfDay < disableEndTime));
-		}
-
-		private static bool IsFalseFailuresHandler()
-		{
-			return IsWeekendOrAfterHours();
 		}
 	}
 }

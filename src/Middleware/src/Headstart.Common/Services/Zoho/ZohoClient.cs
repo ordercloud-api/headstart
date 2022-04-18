@@ -45,7 +45,7 @@ namespace Headstart.Common.Services.Zoho
 			catch (Exception ex)
 			{
 				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
-					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
+					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}
 
@@ -60,7 +60,7 @@ namespace Headstart.Common.Services.Zoho
 			catch (Exception ex)
 			{
 				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
-					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
+					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}
 
@@ -73,7 +73,7 @@ namespace Headstart.Common.Services.Zoho
 			catch (Exception ex)
 			{
 				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
-					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
+					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}
 
@@ -101,7 +101,7 @@ namespace Headstart.Common.Services.Zoho
 
 		internal IFlurlRequest Request(object[] segments, string access_token = null)
 		{
-			return ApiClient.Request(segments).WithHeader($@"Authorization", $@"Zoho-oauthtoken {access_token ?? TokenResponse.access_token}")
+			return ApiClient.Request(segments).WithHeader(@"Authorization", $@"Zoho-oauthtoken {access_token ?? TokenResponse.access_token}")
 				.ConfigureRequest(settings =>
 				{
 					settings.JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
@@ -126,7 +126,7 @@ namespace Headstart.Common.Services.Zoho
 
 		private IFlurlRequest WriteRequest(object obj, object[] segments, string access_token = null)
 		{
-			return ApiClient.Request(segments).WithHeader($@"Authorization", $@"Zoho-oauthtoken {access_token ?? TokenResponse.access_token}")
+			return ApiClient.Request(segments).WithHeader(@"Authorization", $@"Zoho-oauthtoken {access_token ?? TokenResponse.access_token}")
 				.ConfigureRequest(settings =>
 				{
 					settings.JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings

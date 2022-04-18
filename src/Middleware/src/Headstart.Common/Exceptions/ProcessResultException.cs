@@ -26,14 +26,15 @@ namespace Headstart.Common.Exceptions
 			try
 			{
 				ResponseBody = JsonConvert.SerializeObject(ex?.Errors);
+				var origEx = new Exception(ex.Message, ex);
 				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), Message,
-					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ResponseBody, ex.StackTrace);
+					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ResponseBody, ex.StackTrace, origEx);
 			}
 			catch (Exception ex1)
 			{
 				ResponseBody = @"Error while trying to parse response body.";
 				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), ResponseBody,
-					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex1.Message, ex1.StackTrace);
+					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex1.Message, ex1.StackTrace, ex1);
 			}
 		}
 
@@ -43,14 +44,15 @@ namespace Headstart.Common.Exceptions
 			try
 			{
 				ResponseBody = ex.GetResponseJsonAsync().Result;
+				var origEx = new Exception(ex.Message, ex);
 				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), Message,
-					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ResponseBody, ex?.StackTrace);
+					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ResponseBody, ex?.StackTrace, origEx);
 			}
 			catch (Exception ex1)
 			{
 				ResponseBody = @"Error while trying to parse response body.";
 				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), ResponseBody,
-					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex1.Message, ex1.StackTrace);
+					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex1.Message, ex1.StackTrace, ex1);
 			}
 		}
 	}

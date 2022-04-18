@@ -35,7 +35,7 @@ namespace Headstart.Common.Services.Portal
 			catch (Exception ex)
 			{
 				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
-					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
+					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace Headstart.Common.Services.Portal
 		{
 			try
 			{
-				PortalAuthResponse response = await _client.Request(@"oauth", $@"token")
+				var response = await _client.Request(@"oauth", $@"token")
 					.PostUrlEncodedAsync(new
 					{
 						grant_type = $@"password",
@@ -88,7 +88,7 @@ namespace Headstart.Common.Services.Portal
 			catch (Exception ex)
 			{
 				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
-					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
+					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}
 	}

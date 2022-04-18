@@ -63,8 +63,8 @@ namespace Headstart.Common.Models
 			RecordType = wi.RecordType;
 			Level = LogLevel.Warn;
 
-			var ResponseBody = JsonConvert.SerializeObject(this.ToJsonObject());
-			LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), ResponseBody,
+			var responseBody = JsonConvert.SerializeObject(this.ToJsonObject());
+			LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), responseBody,
 				LoggingNotifications.GetApiResponseMessagePrefixKey(), false);
 		}
 
@@ -72,25 +72,29 @@ namespace Headstart.Common.Models
 		{
 			Level = LogLevel.Error;
 			OrderCloudErrors = ex.Errors;
-			var ResponseBody = JsonConvert.SerializeObject(this.ToJsonObject());
-			LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), ResponseBody,
-				LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
+			var origEx = new Exception(ex.Message, ex);
+			var responseBody = JsonConvert.SerializeObject(this.ToJsonObject());
+			LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), responseBody,
+				LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, origEx);
 		}
 
 		public OrchestrationLog(OrchestrationException ex)
 		{
+			var origEx = new Exception(ex.Message, ex);
 			LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
-				LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
+				LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, origEx);
 		}
 
 		public OrchestrationLog(FunctionFailedException ex)
 		{
+			var origEx = new Exception(ex.Message, ex);
 			LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
-				LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
+				LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, origEx);
 		}
 
 		public OrchestrationLog(Exception ex)
 		{
+			var origEx = new Exception(ex.Message, ex);
 			LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
 				LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
 		}
