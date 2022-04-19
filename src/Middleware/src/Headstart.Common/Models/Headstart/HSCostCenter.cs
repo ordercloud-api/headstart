@@ -1,16 +1,13 @@
-﻿using ordercloud.integrations.library;
-using OrderCloud.SDK;
+﻿using OrderCloud.SDK;
 
-namespace Headstart.Models
+namespace Headstart.Common.Models.Headstart
 {
-    
-    public class HSCostCenter : CostCenter<CostCenterXp>, IHSObject
-    {
-        
-    }
+	public class HSCostCenter : CostCenter<CostCenterXp>
+	{
+		public string Id { get; set; } = string.Empty;
+	}
 
-    
-    public class CostCenterXp
-    {
-    }
+	public class CostCenterXp
+	{
+	}
 }

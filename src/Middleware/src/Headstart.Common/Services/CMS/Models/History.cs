@@ -1,16 +1,15 @@
-﻿using ordercloud.integrations.library;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace Headstart.Common.Services.CMS.Models
 {
-	
 	public class History
 	{
 		public DateTimeOffset DateCreated { get; set; }
-		public string CreatedByUserID { get; set; }
+
+		public string CreatedByUserIs { get; set; } = string.Empty;
+
 		public DateTimeOffset DateUpdated { get; set; }
-		public string UpdatedByUserID { get; set; }
+
+		public string UpdatedByUserIs { get; set; } = string.Empty;
 	}
 }

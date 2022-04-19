@@ -1,17 +1,19 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using ordercloud.integrations.library;
 
-namespace Headstart.Models.Extended
+namespace Headstart.Common.Models.Headstart.Extended
 {
-    public class SpecUI
-    {
-        public ControlType ControlType { get; set; } = ControlType.Text;
-    }
+	public class SpecUI
+	{
+		public ControlType ControlType { get; set; } = ControlType.Text;
+	}
 
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum ControlType
-    {
-        Text, DropDown, Checkbox, Range
-    }
+	[JsonConverter(typeof(StringEnumConverter))]
+	public enum ControlType
+	{
+		Text, 
+		DropDown, 
+		Checkbox, 
+		Range
+	}
 }

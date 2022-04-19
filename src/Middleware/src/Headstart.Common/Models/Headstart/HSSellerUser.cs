@@ -1,18 +1,16 @@
-﻿using ordercloud.integrations.library;
-using OrderCloud.SDK;
+﻿using OrderCloud.SDK;
 using System.Collections.Generic;
 
-namespace Headstart.Models
+namespace Headstart.Common.Models.Headstart
 {
-    
-    public class HSSellerUser : User<SellerUserXp>, IHSObject
-    {
-    }
+	public class HsSellerUser : User<SellerUserXp>
+	{
+		public string Id { get; set; } = string.Empty;
+	}
 
-    
-    public class SellerUserXp
-    {
-        public bool OrderEmails { get; set; } = false;
-        public List<string> AddtlRcpts { get; set; } = new List<string>();
-    }
+	public class SellerUserXp
+	{
+		public bool OrderEmails { get; set; }
+		public List<string> AddtlRcpts { get; set; } = new List<string>();
+	}
 }

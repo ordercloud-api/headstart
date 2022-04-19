@@ -1,11 +1,9 @@
-﻿using ordercloud.integrations.library;
-
-namespace Headstart.Models.Headstart
+﻿namespace Headstart.Common.Models.Headstart
 {
-    
-    public class HSLineItemOrder
-    {
-        public HSOrder HSOrder { get; set; }
-        public HSLineItem HSLineItem { get; set; }
-    }
+	public class HsLineItemOrder
+	{
+		public HsOrder HsOrder { get; set; } = new HsOrder();
+		
+		public HsLineItem HsLineItem { get; set; } = new HsLineItem();
+	}
 }

@@ -1,11 +1,6 @@
-﻿using Avalara.AvaTax.RestClient;
-using OrderCloud.SDK;
-using System;
-using System.Linq;
-using ordercloud.integrations.library;
-using OrderCloud.Catalyst;
-using ordercloud.integrations.library.intefaces;
+using Avalara.AvaTax.RestClient;
 using System.Collections.Generic;
+using System.Linq;
 using TaxCategorization = ordercloud.integrations.library.intefaces.TaxCategorization;
 
 namespace ordercloud.integrations.avalara

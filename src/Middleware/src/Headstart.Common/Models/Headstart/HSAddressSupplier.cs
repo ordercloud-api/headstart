@@ -1,27 +1,26 @@
 ﻿using OrderCloud.SDK;
 using System.Collections.Generic;
-using ordercloud.integrations.library;
 
-namespace Headstart.Models
+namespace Headstart.Common.Models.Headstart
 {
-    
-    public class HSAddressSupplier : Address<SupplierAddressXP>, IHSObject
-    {
-    }
-
-    
-    public class SupplierAddressXP
+	public class HsAddressSupplier : Address<SupplierAddressXP>
 	{
-		public Coordinates Coordinates;
-		public List<OriginAddressAccessorial> Accessorials { get; set; }
-    }
+		public string Id { get; set; } = string.Empty;
+	}
 
-    public enum OriginAddressAccessorial
-    {
-        LimitedAccessPickup = 10,
-        OriginExhibition = 11,
-        OriginInsidePickup = 12,
-        OriginLiftGate = 13,
-        ResidentialPickup = 16
-    }
+	public class SupplierAddressXP
+	{
+		public Coordinates Coordinates { get; set; } = new Coordinates();
+
+		public List<OriginAddressAccessorial> Accessorials { get; set; } = new List<OriginAddressAccessorial>();
+	}
+
+	public enum OriginAddressAccessorial
+	{
+		LimitedAccessPickup = 10,
+		OriginExhibition = 11,
+		OriginInsidePickup = 12,
+		OriginLiftGate = 13,
+		ResidentialPickup = 16
+	}
 }

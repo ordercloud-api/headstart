@@ -1,48 +1,51 @@
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Models;
-using Headstart.Models.Headstart;
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
+using Headstart.Common.Models.Headstart;
 
 namespace Headstart.Common.Extensions
 {
-    public static class Extensions
-    {
-        public static bool HasItem<t>(this IList<t> itemList)
-        {
-            if (itemList == null || itemList.Count == 0)
-            { return false; }
+	public static class Extensions
+	{
+		public static bool HasItem<t>(this IList<t> itemList)
+		{
+			if (itemList == null || itemList.Count == 0)
+			{ 
+				return false; 
+			}
+			return true;
+		}
 
-            return true;
-        }
-        public static bool HasItem<t>(this IReadOnlyList<t> itemList)
-        {
-            if (itemList == null || itemList.Count == 0)
-            { return false; }
+		public static bool HasItem<t>(this IReadOnlyList<t> itemList)
+		{
+			if (itemList == null || itemList.Count == 0)
+			{ 
+				return false; 
+			}
+			return true;
+		}
 
-            return true;
-        }
-        public static bool HasItem<t>(this List<t> itemList)
-        {
-            if (itemList == null || itemList.Count == 0)
-            { return false; }
+		public static bool HasItem<t>(this List<t> itemList)
+		{
+			if (itemList == null || itemList.Count == 0)
+			{ 
+				return false; 
+			}
+			return true;
+		}
 
-            return true;
-        }
+		public static HsShipEstimate GetMatchingShipEstimate(this HsOrderWorksheet buyerWorksheet, string shipFromAddressID)
+		{
+			return buyerWorksheet?.ShipEstimateResponse?.ShipEstimates?.FirstOrDefault(e => e.xp.ShipFromAddressID == shipFromAddressID);
+		}
 
-        public static HSShipEstimate GetMatchingShipEstimate(this HSOrderWorksheet buyerWorksheet, string shipFromAddressID)
-        {
-            return buyerWorksheet?.ShipEstimateResponse?.ShipEstimates?.FirstOrDefault(e => e.xp.ShipFromAddressID == shipFromAddressID);
-        }
+		public static IEnumerable<HsLineItem> GetBuyerLineItemsBySupplierId(this HsOrderWorksheet buyerWorksheet, string supplierId)
+		{
+			return (IEnumerable<HsLineItem>) buyerWorksheet?.LineItems?.Where(li => li.SupplierID == supplierId);
+		}
 
-        public static IEnumerable<HSLineItem> GetBuyerLineItemsBySupplierID(this HSOrderWorksheet buyerWorksheet, string supplierID)
-        {
-            return buyerWorksheet?.LineItems?.Where(li => li.SupplierID == supplierID).Select(li => li);
-        }
-
-        public static IEnumerable<HSLineItem> GetLineItemsByProductType(this HSOrderWorksheet buyerWorksheet, ProductType type)
-        {
-            return buyerWorksheet?.LineItems.Where(li => li.Product.xp.ProductType == type);
-        }
-    }
+		public static IEnumerable<HsLineItem> GetLineItemsByProductType(this HsOrderWorksheet buyerWorksheet, ProductType type)
+		{
+			return (IEnumerable<HsLineItem>) buyerWorksheet?.LineItems.Where(li => li.Product.xp.ProductType == type);
+		}
+	}
 }

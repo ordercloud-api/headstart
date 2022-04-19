@@ -1,65 +1,89 @@
 ﻿using OrderCloud.SDK;
 using System.Collections.Generic;
-using ordercloud.integrations.library;
-using Headstart.Models.Headstart;
+using Headstart.Common.Models.Headstart;
 
-namespace Headstart.Models.Misc
+namespace Headstart.Common.Models.Misc
 {
-    
 	public class MessageNotification<EventBodyType>
 	{
-		public string BuyerID { get; set; }
-		public string UserToken { get; set; }
-		public User Recipient { get; set; }
+		public string BuyerId { get; set; } = string.Empty;
+
+		public string UserToken { get; set; } = string.Empty;
+
+		public User Recipient { get; set; } = new User();
+
 		public MessageType MessageType { get; set; }
+
 		public string[] CCRecipient { get; set; }
-		public MessageConfigData ConfigData { get; set; }
+
+		public MessageConfigData ConfigData { get; set; } = new MessageConfigData();
+
 		public EventBodyType EventBody { get; set; }
 	}
 
-    public class OrderSubmitEventBody
-    {
-        public HSOrder Order { get; set; }
-        public List<OrderApproval> Approvals { get; set; }
-        public List<HSLineItem> LineItems { get; set; }
-        public List<HSProduct> Products { get; set; }
-    }
-    public class PasswordResetEventBody
-    {
-        public string Username { get; set; }
-        public string PasswordRenewalAccessToken { get; set; }
-        public string PasswordRenewalVerificationCode { get; set; }
-        public string PasswordRenewalUrl { get; set; }
-    }
-    public class MessageConfigData
-    {
-        public MessageTypeConfig[] MessageTypeConfig { get; set; }
-        public string ApiKey;
-    }
-    public class MessageTypeConfig
-    {
-        public string FromEmail { get; set; }
-        public string MainContent { get; set; }
-        public string MessageType { get; set; }
-        public string Subject { get; set; }
-        public string TemplateName { get; set; }
-        public string Name { get; set; }
-    }
+	public class OrderSubmitEventBody
+	{
+		public HsOrder Order { get; set; } = new HsOrder();
 
-    public class ContactSupplierBody
-    {
-        public HSProduct Product { get; set; }
-        public BuyerRequestForInfo BuyerRequest { get; set; }
+		public List<OrderApproval> Approvals { get; set; } = new List<OrderApproval>();
 
-    }
+		public List<HsLineItem> LineItems { get; set; } = new List<HsLineItem>();
 
-    public class BuyerRequestForInfo
-    {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string BuyerLocation { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
-        public string Comments { get; set; }
-    }
+		public List<HsProduct> Products { get; set; } = new List<HsProduct>();
+	}
+
+	public class PasswordResetEventBody
+	{
+		public string Username { get; set; } = string.Empty;
+
+		public string PasswordRenewalAccessToken { get; set; } = string.Empty;
+
+		public string PasswordRenewalVerificationCode { get; set; } = string.Empty;
+
+		public string PasswordRenewalUrl { get; set; } = string.Empty;
+	}
+
+	public class MessageConfigData
+	{
+		public MessageTypeConfig[] MessageTypeConfig { get; set; }
+
+		public string ApiKey { get; set; } = string.Empty;
+	}
+
+	public class MessageTypeConfig
+	{
+		public string FromEmail { get; set; } = string.Empty;
+
+		public string MainContent { get; set; } = string.Empty;
+
+		public string MessageType { get; set; } = string.Empty;
+
+		public string Subject { get; set; } = string.Empty;
+
+		public string TemplateName { get; set; } = string.Empty;
+
+		public string Name { get; set; } = string.Empty;
+	}
+
+	public class ContactSupplierBody
+	{
+		public HsProduct Product { get; set; } = new HsProduct();
+
+		public BuyerRequestForInfo BuyerRequest { get; set; } = new BuyerRequestForInfo();
+	}
+
+	public class BuyerRequestForInfo
+	{
+		public string FirstName { get; set; } = string.Empty;
+
+		public string LastName { get; set; } = string.Empty;
+
+		public string BuyerLocation { get; set; } = string.Empty;
+
+		public string Email { get; set; } = string.Empty;
+
+		public string Phone { get; set; } = string.Empty;
+
+		public string Comments { get; set; } = string.Empty;
+	}
 }

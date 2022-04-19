@@ -1,10 +1,9 @@
-﻿using ordercloud.integrations.library;
-
-namespace Headstart.Models.Extended
+﻿namespace Headstart.Common.Models.Headstart.Extended
 {
-    public class UnitOfMeasure
-    {
-        public int Qty { get; set; }
-        public string Unit { get; set; }
-    }
+	public class UnitOfMeasure
+	{
+		public int Qty { get; set; }
+
+		public string Unit { get; set; } = string.Empty;
+	}
 }

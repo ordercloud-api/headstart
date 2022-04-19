@@ -1,38 +1,42 @@
+using OrderCloud.SDK;
+using Headstart.Common;
+using OrderCloud.Catalyst;
+using System.Threading.Tasks;
 using Headstart.API.Commands;
 using Headstart.Common.Models;
-using Headstart.Models.Attributes;
-using Headstart.Models.Headstart;
 using Microsoft.AspNetCore.Mvc;
-using ordercloud.integrations.library;
-using OrderCloud.Catalyst;
-using OrderCloud.SDK;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using Headstart.Common.Models.Headstart;
 
-namespace Headstart.Common.Controllers
+namespace Headstart.API.Controllers
 {
-    /// <summary>
-    /// Payment commands in Headstart
-    /// </summary>
-    [Route("payments")]
-    public class PaymentController : CatalystController
-    {
+	[Route("payments")]
+	public class PaymentController : CatalystController
+	{
+		private readonly IPaymentCommand _command;
+		private readonly AppSettings _settings;
 
-        private readonly IPaymentCommand _command;
-        private readonly AppSettings _settings;
-        public PaymentController(IPaymentCommand command, AppSettings settings)
-        {
-            _command = command;
-            _settings = settings;
-        }
+		/// <summary>
+		/// The IOC based constructor method for the PaymentController class object with Dependency Injection
+		/// </summary>
+		/// <param name="command"></param>
+		/// <param name="settings"></param>
+		public PaymentController(IPaymentCommand command, AppSettings settings)
+		{
+			_command = command;
+			_settings = settings;
+		}
 
-        /// <summary>
-        /// Save payments. Creates or updates payments as needed for this order.
-        /// </summary>
-        [HttpPut, Route("{orderID}/update"), OrderCloudUserAuth(ApiRole.Shopper)]
-        public async Task<IList<HSPayment>> SavePayments(string orderID, [FromBody] PaymentUpdateRequest request)
-        {
-            return await _command.SavePayments(orderID, request.Payments, UserContext.AccessToken);
-        }
-    }
+		/// <summary>
+		/// Save payments. Creates or updates payments as needed for this order  (PUT method)
+		/// </summary>
+		/// <param name="orderId"></param>
+		/// <param name="request"></param>
+		/// <returns>The list of HSPayment response from the SavePayments action</returns>
+		[HttpPut, Route("{orderId}/update"), OrderCloudUserAuth(ApiRole.Shopper)]
+		public async Task<IList<HsPayment>> SavePayments(string orderId, [FromBody] PaymentUpdateRequest request)
+		{
+			return await _command.SavePayments(orderId, request.Payments, UserContext.AccessToken);
+		}
+	}
 }

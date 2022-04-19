@@ -1,8 +1,8 @@
-﻿using Flurl.Http.Configuration;
-using Polly;
+﻿using Polly;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Flurl.Http.Configuration;
 
 namespace Headstart.Common
 {
@@ -10,7 +10,6 @@ namespace Headstart.Common
     // This PollyFactory lets us express a default resilience policy
     // for our app on any flurl http call
     // https://stackoverflow.com/a/52284010/6147893
-
     public class PollyFactory : DefaultHttpClientFactory
     {
         private readonly IAsyncPolicy<HttpResponseMessage> _policy;

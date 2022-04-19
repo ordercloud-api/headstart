@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Headstart.Models.Exceptions
+﻿namespace Headstart.Common.Exceptions
 {
-    public class ZohoIntegrationError
-    {
-
-    }
+	public class ZohoIntegrationError
+	{
+	}
 }

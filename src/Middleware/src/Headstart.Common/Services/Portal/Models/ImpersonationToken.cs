@@ -1,7 +1,7 @@
 ﻿namespace Headstart.Common.Services.Portal.Models
 {
-    public class ImpersonationToken
-    {
-        public string access_token { get; set; }
-    }
+	public class ImpersonationToken
+	{
+		public string access_token { get; set; } = string.Empty;
+	}
 }

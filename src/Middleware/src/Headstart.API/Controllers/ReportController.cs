@@ -1,186 +1,326 @@
-﻿using Headstart.Models;
-using Microsoft.AspNetCore.Mvc;
-using OrderCloud.SDK;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using ordercloud.integrations.library;
-using Headstart.Models.Attributes;
-using Headstart.Common.Models;
-using Headstart.Models.Misc;
-using Headstart.API.Controllers;
-using Headstart.API.Commands;
-using Headstart.Models.Headstart;
+﻿using OrderCloud.SDK;
+using Headstart.Common;
 using OrderCloud.Catalyst;
+using Headstart.API.Commands;
+using System.Threading.Tasks;
+using Headstart.Common.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using Headstart.Common.Models.Headstart;
 using Headstart.Common.Repositories.Models;
 
-namespace Headstart.Common.Controllers
+namespace Headstart.API.Controllers
 {
-    /// <summary>
-    ///  For generating and downloading reports in the Admin application
-    /// </summary>
-    [Route("reports")]
-    public class ReportController : CatalystController
-    {
-        private readonly IHSReportCommand _reportDataCommand;
-        private readonly DownloadReportCommand _downloadReportCommand;
+	/// <summary>
+	///  For generating and downloading reports in the Admin application
+	/// </summary>
+	[Route("reports")]
+	public class ReportController : CatalystController
+	{
+		private readonly IHsReportCommand _reportDataCommand;
+		private readonly DownloadReportCommand _downloadReportCommand;
+		private readonly AppSettings _settings;
 
-        public ReportController(IHSReportCommand reportDataCommand, AppSettings settings, DownloadReportCommand downloadReportCommand)
-        {
-            _reportDataCommand = reportDataCommand;
-            _downloadReportCommand = downloadReportCommand;
-        }
+		/// <summary>
+		/// The IOC based constructor method for the ReportController class object with Dependency Injection
+		/// </summary>
+		/// <param name="reportDataCommand"></param>
+		/// <param name="settings"></param>
+		/// <param name="downloadReportCommand"></param>
+		public ReportController(IHsReportCommand reportDataCommand, AppSettings settings, DownloadReportCommand downloadReportCommand)
+		{
+			_reportDataCommand = reportDataCommand; 
+			_settings = settings;
+			_downloadReportCommand = downloadReportCommand;
+		}
 
-        public class ReportRequestBody
-        {
-            public string[] Headers { get; set; }
-        }
+		public class ReportRequestBody
+		{
+			public string[] Headers { get; set; }
+		}
 
-        [HttpGet, Route("fetchAllReportTypes"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
-        public ListPage<ReportTypeResource> FetchAllReportTypes()
-        {
-            return _reportDataCommand.FetchAllReportTypes(UserContext);
-        }
+		/// <summary>
+		/// Gets the ListPage of ReportTypeResource objects (GET method)
+		/// </summary>
+		/// <returns>The ListPage of ReportTypeResource objects</returns>
+		[HttpGet, Route("fetchAllReportTypes"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
+		public ListPage<ReportTypeResource> FetchAllReportTypes()
+		{
+			return _reportDataCommand.FetchAllReportTypes(UserContext);
+		}
 
-        [HttpGet, Route("BuyerLocation/preview/{templateID}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
-        public async Task<List<Address>> BuyerLocation(string templateID)
-        {
-            return await _reportDataCommand.BuyerLocation(templateID, UserContext);
-        }
+		/// <summary>
+		/// Gets the list of Addresses for a Buyer Location (GET method)
+		/// </summary>
+		/// <param name="templateId"></param>
+		/// <returns>The list of addresses for a Buyer Location (GET method)</returns>
+		[HttpGet, Route("BuyerLocation/preview/{templateId}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
+		public async Task<List<Address>> BuyerLocation(string templateId)
+		{
+			return await _reportDataCommand.BuyerLocation(templateId, UserContext);
+		}
 
-        [HttpPost, Route("BuyerLocation/download/{templateID}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
-        public async Task<string> DownloadBuyerLocation([FromBody] ReportTemplate reportTemplate, string templateID)
-        {
-            var reportData = await _reportDataCommand.BuyerLocation(templateID, UserContext);
-            return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.BuyerLocation, reportTemplate.Headers, reportData);
+		/// <summary>
+		/// Post action for the download of the BuyerLocation request (POST method)
+		/// </summary>
+		/// <param name="reportTemplate"></param>
+		/// <param name="templateId"></param>
+		/// <returns>The response from the post action for the download of the BuyerLocation request</returns>
+		[HttpPost, Route("BuyerLocation/download/{templateId}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
+		public async Task<string> DownloadBuyerLocation([FromBody] ReportTemplate reportTemplate, string templateId)
+		{
+			var reportData = await _reportDataCommand.BuyerLocation(templateId, UserContext);
+			return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.BuyerLocation, reportTemplate.Headers, reportData);
+		}
 
-        }
+		/// <summary>
+		/// Gets the list of ProductDetailData objects (GET method)
+		/// </summary>
+		/// <param name="templateId"></param>
+		/// <param name="args"></param>
+		/// <returns>The list of ProductDetailData objects</returns>
+		[HttpGet, Route("ProductDetail/preview/{templateId}"), OrderCloudUserAuth("HSReportAdmin", "HSReportReader")]
+		public async Task<List<ProductDetailData>> ProductDetail(string templateId, ListArgs<ReportAdHocFilters> args)
+		{
+			return await _reportDataCommand.ProductDetail(templateId, args, UserContext);
+		}
 
-        [HttpGet, Route("ProductDetail/preview/{templateID}"), OrderCloudUserAuth("HSReportAdmin", "HSReportReader")]
-        public async Task<List<ProductDetailData>> ProductDetail(string templateID, ListArgs<ReportAdHocFilters> args)
-        {
-            return await _reportDataCommand.ProductDetail(templateID, args, UserContext);
-        }
+		/// <summary>
+		/// Post action for the download of the ProductDetail request (POST method)
+		/// </summary>
+		/// <param name="reportTemplate"></param>
+		/// <param name="templateId"></param>
+		/// <param name="args"></param>
+		/// <returns>The response from the post action for the download of the ProductDetail request</returns>
+		[HttpPost, Route("ProductDetail/download/{templateId}"), OrderCloudUserAuth("HSReportAdmin", "HSReportReader")]
+		public async Task<string> ProductDetail([FromBody] ReportTemplate reportTemplate, string templateId, ListArgs<ReportAdHocFilters> args)
+		{
+			var reportData = await _reportDataCommand.ProductDetail(templateId, args, UserContext);
+			return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.ProductDetail, reportTemplate.Headers, reportData);
+		}
 
-        [HttpPost, Route("ProductDetail/download/{templateID}"), OrderCloudUserAuth("HSReportAdmin", "HSReportReader")]
-        public async Task<string> ProductDetail([FromBody] ReportTemplate reportTemplate, string templateID, ListArgs<ReportAdHocFilters> args)
-        {
-            var reportData = await _reportDataCommand.ProductDetail(templateID, args, UserContext);
-            return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.ProductDetail, reportTemplate.Headers, reportData);
-        }
+		/// <summary>
+		/// Gets the list of OrderDetailData objects (GET method)
+		/// </summary>
+		/// <param name="templateId"></param>
+		/// <param name="args"></param>
+		/// <returns>The list of OrderDetailData objects</returns>
+		[HttpGet, Route("SalesOrderDetail/preview/{templateId}"), OrderCloudUserAuth("HSReportAdmin")]
+		public async Task<List<OrderDetailData>> SalesOrderDetail(string templateId, ListArgs<ReportAdHocFilters> args)
+		{
+			return await _reportDataCommand.SalesOrderDetail(templateId, args, UserContext);
+		}
 
-        [HttpGet, Route("SalesOrderDetail/preview/{templateID}"), OrderCloudUserAuth("HSReportAdmin")]
-        public async Task<List<OrderDetailData>> SalesOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args)
-        {
-            return await _reportDataCommand.SalesOrderDetail(templateID, args, UserContext);
-        }
+		/// <summary>
+		/// Post action for the download of the SalesOrderDetail request (POST method)
+		/// </summary>
+		/// <param name="reportTemplate"></param>
+		/// <param name="templateId"></param>
+		/// <param name="args"></param>
+		/// <returns>The response from the post action for the download of the SalesOrderDetail request</returns>
+		[HttpPost, Route("SalesOrderDetail/download/{templateId}"), OrderCloudUserAuth("HSReportAdmin")]
+		public async Task<string> DownloadSalesOrderDetail([FromBody] ReportTemplate reportTemplate, string templateId, ListArgs<ReportAdHocFilters> args)
+		{
+			var reportData = await _reportDataCommand.SalesOrderDetail(templateId, args, UserContext);
+			return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.SalesOrderDetail, reportTemplate.Headers, reportData);
+		}
 
-        [HttpPost, Route("SalesOrderDetail/download/{templateID}"), OrderCloudUserAuth("HSReportAdmin")]
-        public async Task<string> DownloadSalesOrderDetail([FromBody] ReportTemplate reportTemplate, string templateID, ListArgs<ReportAdHocFilters> args)
-        {
-            var reportData = await _reportDataCommand.SalesOrderDetail(templateID, args, UserContext);
-            return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.SalesOrderDetail, reportTemplate.Headers, reportData);
-        }
+		/// <summary>
+		/// Gets the list of OrderDetailData objects (GET method)
+		/// </summary>
+		/// <param name="templateId"></param>
+		/// <param name="args"></param>
+		/// <returns>The list of OrderDetailData objects</returns>
+		[HttpGet, Route("PurchaseOrderDetail/preview/{templateId}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
+		public async Task<List<OrderDetailData>> PurchaseOrderDetail(string templateId, ListArgs<ReportAdHocFilters> args)
+		{
+			return await _reportDataCommand.PurchaseOrderDetail(templateId, args, UserContext);
+		}
 
-        [HttpGet, Route("PurchaseOrderDetail/preview/{templateID}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
-        public async Task<List<OrderDetailData>> PurchaseOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args)
-        {
-            return await _reportDataCommand.PurchaseOrderDetail(templateID, args, UserContext);
-        }
+		/// <summary>
+		/// Post action for the download of the PurchaseOrderDetail request (POST method)
+		/// </summary>
+		/// <param name="reportTemplate"></param>
+		/// <param name="templateId"></param>
+		/// <param name="args"></param>
+		/// <returns>The response from the post action for the download of the PurchaseOrderDetail request</returns>
+		[HttpPost, Route("PurchaseOrderDetail/download/{templateId}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
+		public async Task<string> DownloadPurchaseOrderDetail([FromBody] ReportTemplate reportTemplate, string templateId, ListArgs<ReportAdHocFilters> args)
+		{
+			var reportData = await _reportDataCommand.PurchaseOrderDetail(templateId, args, UserContext);
+			return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.PurchaseOrderDetail, reportTemplate.Headers, reportData);
+		}
 
-        [HttpPost, Route("PurchaseOrderDetail/download/{templateID}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
-        public async Task<string> DownloadPurchaseOrderDetail([FromBody] ReportTemplate reportTemplate, string templateID, ListArgs<ReportAdHocFilters> args)
-        {
-            var reportData = await _reportDataCommand.PurchaseOrderDetail(templateID, args, UserContext);
-            return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.PurchaseOrderDetail, reportTemplate.Headers, reportData);
-        }
+		/// <summary>
+		/// Post action for the download of the BuyerLineItemDetail request (POST method)
+		/// </summary>
+		/// <param name="viewContext"></param>
+		/// <param name="userId"></param>
+		/// <param name="locationId"></param>
+		/// <param name="args"></param>
+		/// <returns>The response from the post action for the download of the BuyerLineItemDetail request</returns>
+		[HttpGet, Route("buyer/lineitemdetail/{viewContext}/{userId}/{locationId}"), OrderCloudUserAuth(ApiRole.MeAdmin)]
+		public async Task<string> DownloadBuyerLineItemDetail(BuyerReportViewContext viewContext, string userId, string locationId, ListArgs<HsOrder> args)
+		{
+			var reportData = await _reportDataCommand.BuyerLineItemDetail(args, viewContext, userId, locationId, UserContext);
+			var reportHeaders = ReportHeaderPaths.BuyerLineDetailReport;
+			return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.LineItemDetail, reportHeaders, reportData);
+		}
 
-        [HttpGet, Route("buyer/lineitemdetail/{viewContext}/{userID}/{locationID}"), OrderCloudUserAuth(ApiRole.MeAdmin)]
-        public async Task<string> DownloadBuyerLineItemDetail(BuyerReportViewContext viewContext, string userID, string locationID, ListArgs<HSOrder> args)
-        {
-            var reportData = await _reportDataCommand.BuyerLineItemDetail(args, viewContext, userID, locationID, UserContext);
-            var reportHeaders = ReportHeaderPaths.BuyerLineDetailReport;
-            return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.LineItemDetail, reportHeaders, reportData);
-        }
+		/// <summary>
+		/// Gets the list of HsLineItemOrder objects (GET method)
+		/// </summary>
+		/// <param name="templateId"></param>
+		/// <param name="args"></param>
+		/// <returns>The list of HsLineItemOrder objects</returns>
+		[HttpGet, Route("LineItemDetail/preview/{templateId}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
+		public async Task<List<HsLineItemOrder>> LineItemDetail(string templateId, ListArgs<ReportAdHocFilters> args)
+		{
+			return await _reportDataCommand.LineItemDetail(templateId, args, UserContext);
+		}
 
-        [HttpGet, Route("LineItemDetail/preview/{templateID}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
-        public async Task<List<HSLineItemOrder>> LineItemDetail(string templateID, ListArgs<ReportAdHocFilters> args)
-        {
-            return await _reportDataCommand.LineItemDetail(templateID, args, UserContext);
-        }
+		/// <summary>
+		/// Post action for the download of the LineItemDetail request (POST method)
+		/// </summary>
+		/// <param name="reportTemplate"></param>
+		/// <param name="templateId"></param>
+		/// <param name="args"></param>
+		/// <returns>The response from the post action for the download of the LineItemDetail request</returns>
+		[HttpPost, Route("LineItemDetail/download/{templateId}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
+		public async Task<string> DownloadLineItemDetail([FromBody] ReportTemplate reportTemplate, string templateId, ListArgs<ReportAdHocFilters> args)
+		{
+			var reportData = await _reportDataCommand.LineItemDetail(templateId, args, UserContext);
+			return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.LineItemDetail, reportTemplate.Headers, reportData);
+		}
 
-        [HttpPost, Route("LineItemDetail/download/{templateID}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
-        public async Task<string> DownloadLineItemDetail([FromBody] ReportTemplate reportTemplate, string templateID, ListArgs<ReportAdHocFilters> args)
-        {
-            var reportData = await _reportDataCommand.LineItemDetail(templateID, args, UserContext);
-            return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.LineItemDetail, reportTemplate.Headers, reportData);
-        }
+		/// <summary>
+		/// Gets the list of RMAWithRMALineItem objects (GET method)
+		/// </summary>
+		/// <param name="templateId"></param>
+		/// <param name="args"></param>
+		/// <returns>The list of RMAWithRMALineItem objects</returns>
+		[HttpGet, Route("RMADetail/preview/{templateId}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
+		public async Task<List<RMAWithRMALineItem>> RMADetail(string templateId, ListArgs<ReportAdHocFilters> args)
+		{
+			return await _reportDataCommand.RMADetail(templateId, args, UserContext);
+		}
 
-        [HttpGet, Route("RMADetail/preview/{templateID}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
-        public async Task<List<RMAWithRMALineItem>> RMADetail(string templateID, ListArgs<ReportAdHocFilters> args)
-        {
-            return await _reportDataCommand.RMADetail(templateID, args, UserContext);
-        }
+		/// <summary>
+		/// Post action for the download of the RMADetail request (POST method)
+		/// </summary>
+		/// <param name="reportTemplate"></param>
+		/// <param name="templateId"></param>
+		/// <param name="args"></param>
+		/// <returns>The response from the post action for the download of the RMADetail request</returns>
+		[HttpPost, Route("RMADetail/download/{templateId}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
+		public async Task<string> DownloadRMADetail([FromBody] ReportTemplate reportTemplate, string templateId, ListArgs<ReportAdHocFilters> args)
+		{
+			var reportData = await _reportDataCommand.RMADetail(templateId, args, UserContext);
+			return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.RMADetail, reportTemplate.Headers, reportData);
+		}
 
-        [HttpPost, Route("RMADetail/download/{templateID}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
-        public async Task<string> DownloadRMADetail([FromBody] ReportTemplate reportTemplate, string templateID, ListArgs<ReportAdHocFilters> args)
-        {
-            var reportData = await _reportDataCommand.RMADetail(templateID, args, UserContext);
-            return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.RMADetail, reportTemplate.Headers, reportData);
-        }
+		/// <summary>
+		/// Gets the list of ShipmentDetail objects (GET method)
+		/// </summary>
+		/// <param name="templateId"></param>
+		/// <param name="args"></param>
+		/// <returns>The list of ShipmentDetail objects</returns>
+		[HttpGet, Route("ShipmentDetail/preview/{templateId}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
+		public async Task<List<OrderWithShipments>> ShipmentDetail(string templateId, ListArgs<ReportAdHocFilters> args)
+		{
+			return await _reportDataCommand.ShipmentDetail(templateId, args, UserContext);
+		}
 
-        [HttpGet, Route("ShipmentDetail/preview/{templateID}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
-        public async Task<List<OrderWithShipments>> ShipmentDetail(string templateID, ListArgs<ReportAdHocFilters> args)
-        {
-            return await _reportDataCommand.ShipmentDetail(templateID, args, UserContext);
-        }
+		/// <summary>
+		/// Post action for the download of the ShipmentDetail request (POST method)
+		/// </summary>
+		/// <param name="reportTemplate"></param>
+		/// <param name="templateId"></param>
+		/// <param name="args"></param>
+		/// <returns>The response from the post action for the download of the ShipmentDetail request</returns>
+		[HttpPost, Route("ShipmentDetail/download/{templateId}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
+		public async Task<string> DownloadShipmentDetail([FromBody] ReportTemplate reportTemplate, string templateId, ListArgs<ReportAdHocFilters> args)
+		{
+			var reportData = await _reportDataCommand.ShipmentDetail(templateId, args, UserContext);
+			return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.ShipmentDetail, reportTemplate.Headers, reportData);
+		}
 
-        [HttpPost, Route("ShipmentDetail/download/{templateID}"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
-        public async Task<string> DownloadShipmentDetail([FromBody] ReportTemplate reportTemplate, string templateID, ListArgs<ReportAdHocFilters> args)
-        {
-            var reportData = await _reportDataCommand.ShipmentDetail(templateID, args, UserContext);
-            return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.ShipmentDetail, reportTemplate.Headers, reportData);
-        }
+		/// <summary>
+		/// Get action for the download of the SharedAccessSignature request (GET method)
+		/// </summary>
+		/// <param name="fileName"></param>
+		/// <returns>The response from the get action for the download of the SharedAccessSignature request</returns>
+		[HttpGet, Route("download-shared-access/{fileName}"), OrderCloudUserAuth(ApiRole.MeAdmin)]
+		public async Task<string> GetSharedAccessSignature(string fileName)
+		{
+			return await _downloadReportCommand.GetSharedAccessSignature(fileName);
+		}
 
-        [HttpGet, Route("download-shared-access/{fileName}"), OrderCloudUserAuth(ApiRole.MeAdmin)]
-        public async Task<string> GetSharedAccessSignature(string fileName)
-        {
-            return await _downloadReportCommand.GetSharedAccessSignature(fileName);
-        }
+		/// <summary>
+		/// Gets the list of ReportTemplatesByReportType objects (GET method)
+		/// </summary>
+		/// <param name="reportType"></param>
+		/// <returns>The list of ReportTemplatesByReportType objects</returns>
+		[HttpGet, Route("{reportType}/listtemplates"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
+		public async Task<List<ReportTemplate>> ListReportTemplatesByReportType(ReportTypeEnum reportType)
+		{
+			return await _reportDataCommand.ListReportTemplatesByReportType(reportType, UserContext);
+		}
 
-        [HttpGet, Route("{reportType}/listtemplates"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
-        public async Task<List<ReportTemplate>> ListReportTemplatesByReportType(ReportTypeEnum reportType)
-        {
-            return await _reportDataCommand.ListReportTemplatesByReportType(reportType, UserContext);
-        }
+		/// <summary>
+		/// Post action for the ReportTemplate request (POST method)
+		/// </summary>
+		/// <param name="reportType"></param>
+		/// <param name="reportTemplate"></param>
+		/// <returns>The response from the post action for the ReportTemplate request</returns>
+		[HttpPost, Route("{reportType}"), OrderCloudUserAuth("AdminUserAdmin", "HSReportAdmin")]
+		public async Task<ReportTemplate> PostReportTemplate(ReportTypeEnum reportType, [FromBody] ReportTemplate reportTemplate)
+		{
+			return await _reportDataCommand.PostReportTemplate(reportTemplate, UserContext);
+		}
 
-        [HttpPost, Route("{reportType}"), OrderCloudUserAuth("AdminUserAdmin", "HSReportAdmin")]
-        public async Task<ReportTemplate> PostReportTemplate(ReportTypeEnum reportType, [FromBody] ReportTemplate reportTemplate)
-        {
-            return await _reportDataCommand.PostReportTemplate(reportTemplate, UserContext);
-        }
+		/// <summary>
+		/// Gets the ReportTemplate object (GET method)
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns>The ReportTemplate object</returns>
+		[HttpGet, Route("{id}"), OrderCloudUserAuth("AdminUserAdmin", "HSReportAdmin")]
+		public async Task<ReportTemplate> GetReportTemplate(string id)
+		{
+			return await _reportDataCommand.GetReportTemplate(id, UserContext);
+		}
 
-        [HttpGet, Route("{id}"), OrderCloudUserAuth("AdminUserAdmin", "HSReportAdmin")]
-        public async Task<ReportTemplate> GetReportTemplate(string id)
-        {
-            return await _reportDataCommand.GetReportTemplate(id, UserContext);
-        }
+		/// <summary>
+		/// Update action for the ReportTemplate request (PUT method)
+		/// </summary>
+		/// <param name="id"></param>
+		/// <param name="reportTemplate"></param>
+		/// <returns>The response from the update action for the ReportTemplate request</returns>
+		[HttpPut, Route("{id}"), OrderCloudUserAuth("AdminUserAdmin", "HSReportAdmin")]
+		public async Task<ReportTemplate> UpdateReportTemplate(string id, [FromBody] ReportTemplate reportTemplate)
+		{
+			return await _reportDataCommand.UpdateReportTemplate(id, reportTemplate, UserContext);
+		}
 
-        [HttpPut, Route("{id}"), OrderCloudUserAuth("AdminUserAdmin", "HSReportAdmin")]
-        public async Task<ReportTemplate> UpdateReportTemplate(string id, [FromBody] ReportTemplate reportTemplate)
-        {
-            return await _reportDataCommand.UpdateReportTemplate(id, reportTemplate, UserContext);
-        }
+		/// <summary>
+		/// Removes/Deletes the ReportTemplate action (DELETE method)
+		/// </summary>
+		/// <param name="id"></param>
+		/// <returns></returns>
+		[HttpDelete, Route("{id}"), OrderCloudUserAuth("AdminUserAdmin", "HSReportAdmin")]
+		public async Task DeleteReportTemplate(string id)
+		{
+			await _reportDataCommand.DeleteReportTemplate(id);
+		}
 
-        [HttpDelete, Route("{id}"), OrderCloudUserAuth("AdminUserAdmin", "HSReportAdmin")]
-        public async Task DeleteReportTemplate(string id)
-        {
-            await _reportDataCommand.DeleteReportTemplate(id);
-        }
-
-        [HttpGet, Route("filters/buyers"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
-        public async Task<List<HSBuyer>> GetBuyerFilterValues()
-        {
-            return await _reportDataCommand.GetBuyerFilterValues(UserContext);
-        }
-    }
+		/// <summary>
+		/// Gets the list of HsBuyer objects (GET method)
+		/// </summary>
+		/// <returns>The list of HsBuyer objects</returns>
+		[HttpGet, Route("filters/buyers"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
+		public async Task<List<HsBuyer>> GetBuyerFilterValues()
+		{
+			return await _reportDataCommand.GetBuyerFilterValues(UserContext);
+		}
+	}
 }
