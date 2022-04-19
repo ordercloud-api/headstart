@@ -226,7 +226,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 				var sb = new StringBuilder();
 				var dateTimeStamp = DateTime.Now.ToString("MM_dd_yyyy-HH_mm_ss");
 				var dateStamp = DateTime.Now.ToString("MM_dd_yyyy");
-				var logsDirectory = (@".\App_Data\logs");
+				var logsDirectory = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, @"App_Data", "logs"));
 
 				sb.Append($@"------------------------------{methodName}:{dateTimeStamp}:{GetMessageTypeKey(isExceptionMessage, isInfoMessage)}------------------------------" + Environment.NewLine);
 				sb.Append($@"{logMessage} {tryCatchMessage}. {errorTraceCert}." + Environment.NewLine);
@@ -236,7 +236,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 				{
 					Directory.CreateDirectory(logsDirectory);
 				}
-				var filePath = $@"{logsDirectory}\{appLogFileKey}ApiApplicationNotifications_{dateStamp}.txt";
+				var filePath = Path.Combine(logsDirectory, $@"{appLogFileKey}ApiApplicationNotifications_{dateStamp}.txt");
 				// This text is always added, making the file longer over time
 				// if it is not deleted.
 				using (var sw = File.AppendText(filePath))
