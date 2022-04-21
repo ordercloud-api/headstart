@@ -314,7 +314,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 		/// <param name="tryCatchMessage"></param>
 		/// <param name="errorTraceCert"></param>
 		/// <param name="isInfoMessage"></param>
-		public static void WriteToCustomLogFile(string appLogFileKey, string methodName, string logMessage, bool isExceptionMessage, string tryCatchMessage = "", string errorTraceCert = "", bool isInfoMessage = false)
+		private static void WriteToCustomLogFile(string appLogFileKey, string methodName, string logMessage, bool isExceptionMessage, string tryCatchMessage = "", string errorTraceCert = "", bool isInfoMessage = false)
 		{
 			_readWriteLock.EnterWriteLock();
 			try
