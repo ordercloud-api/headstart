@@ -1,5 +1,4 @@
-﻿using System.Configuration;
-using Headstart.API.Commands;
+﻿using Headstart.API.Commands;
 using Headstart.Tests.Mocks;
 using NSubstitute;
 using NUnit.Framework;
@@ -42,7 +41,7 @@ namespace Headstart.Tests
 			_ccCommand.VoidTransactionAsync(Arg.Any<HsPayment>(), Arg.Any<HsOrder>(), mockUserToken)
 				.Returns(Task.FromResult(0));
 
-			var settings = new AppSettings();
+			var settings = Substitute.For<AppSettings>();
 			_sut = new PaymentCommand(_oc, _ccCommand, settings);
 		}
 

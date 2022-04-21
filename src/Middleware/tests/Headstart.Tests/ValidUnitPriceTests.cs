@@ -19,7 +19,7 @@ namespace Headstart.Tests
 		[SetUp]
 		public void Setup()
 		{
-			var settings = new AppSettings();
+			var settings = Substitute.For<AppSettings>();
 			_oc = Substitute.For<IOrderCloudClient>();
 			_commandSub = Substitute.ForPartsOf<LineItemCommand>(default, _oc, default, default, default, default, settings);
 			_existingLineItems = BuildMockExistingLineItemData(); // Mock data consists of two total line items for one product (with different specs)
