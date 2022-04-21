@@ -150,14 +150,14 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 			message = GetLogExceptionMessage(methodName, $@"{messageKeyValue}: {message}", string.Empty, string.Empty, GetApiResponseMessagePrefixKey());
 			if (isError)
 			{
-				//Todo: Need to renable on permission issue is resolved for creacting log files
+				//Todo: Need to re-enable on permission issue is resolved for creating log files
 				//WriteToCustomLogFile(appLogFileKey, methodName, message, true, tryCatchMessage, errorTraceCert);
 				if (origExc != null)
 				{
 					throw origExc;
 				}
 			}
-			//Todo: Need to renable on permission issue is resolved for creacting log files
+			//Todo: Need to re-enable on permission issue is resolved for creating log files
 			//WriteToCustomLogFile(appLogFileKey, methodName, message, false);
 		}
 
