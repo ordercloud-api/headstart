@@ -52,7 +52,7 @@ namespace Headstart.API.Commands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 		}
 
@@ -81,7 +81,7 @@ namespace Headstart.API.Commands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return resp;
 		}
@@ -112,7 +112,7 @@ namespace Headstart.API.Commands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return superHsProduct;
 		}
@@ -145,7 +145,7 @@ namespace Headstart.API.Commands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return resp;
 		}
@@ -185,7 +185,7 @@ namespace Headstart.API.Commands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return meProducts;
 		}
@@ -203,7 +203,7 @@ namespace Headstart.API.Commands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
         }
 
@@ -252,7 +252,7 @@ namespace Headstart.API.Commands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return product;
 		}
@@ -274,7 +274,7 @@ namespace Headstart.API.Commands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return price;
 		}
@@ -299,7 +299,7 @@ namespace Headstart.API.Commands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return markupMultiplier;
 		}
@@ -320,7 +320,7 @@ namespace Headstart.API.Commands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return (CurrencySymbol)currency;
 		}
@@ -340,7 +340,7 @@ namespace Headstart.API.Commands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return exchangeRates.Items.ToList();
 		}

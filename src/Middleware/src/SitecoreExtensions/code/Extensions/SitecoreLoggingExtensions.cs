@@ -20,7 +20,7 @@ namespace Sitecore.Diagnostics
 		/// <param name="errorTraceCert"></param>
 		/// <param name="obj"></param>
 		/// <param name="createCustomLogFile"></param>
-		public static void LogException(dynamic configSettings, string methodName, string message, string tryCatchMessage, string errorTraceCert, object obj, bool createCustomLogFile = false)
+		public static void LogException(LogSettings configSettings, string methodName, string message, string tryCatchMessage, string errorTraceCert, object obj, bool createCustomLogFile = false)
 		{
 			message = (message.Contains("[methodName]")) ? message.Replace("[methodName]", methodName) : message;
 			if (createCustomLogFile)
@@ -58,31 +58,6 @@ namespace Sitecore.Diagnostics
 				Log.Error($@"{message} - {LoggingNotifications.GetExceptionMessagePrefixKey()}: {exception}.", obj);
 				throw new Exception(exception);
 			}            
-		}
-
-		/// <summary>
-		/// Common re-usable LogException method used for logging exception separated log errors throughout the entire application into Sitecore Log files
-		/// </summary>
-		/// <param name="configSettings"></param>
-		/// <param name="methodName"></param>
-		/// <param name="message"></param>
-		/// <param name="tryCatchMessage"></param>
-		/// <param name="errorTraceCert"></param>
-		/// <param name="obj"></param>
-		/// <param name="createCustomLogFile"></param>
-		public static void LogException(WebConfigSettings configSettings, string methodName, string message, string tryCatchMessage, string errorTraceCert, object obj, bool createCustomLogFile = false)
-		{
-			message = (message.Contains("[methodName]")) ? message.Replace("[methodName]", methodName) : message;
-			if (createCustomLogFile)
-			{
-				LoggingNotifications.LogExceptionNotification(configSettings, methodName, message, tryCatchMessage, errorTraceCert);
-			}
-			else
-			{
-				var exception = LoggingNotifications.GetLogExceptionMessage(methodName, message, tryCatchMessage, errorTraceCert, LoggingNotifications.GetApiResponseMessagePrefixKey());
-				Log.Error($@"{message} - {LoggingNotifications.GetExceptionMessagePrefixKey()}: {exception}.", obj);
-				throw new Exception(exception);
-			}
 		}
 
 		/// <summary>
@@ -175,7 +150,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 		/// <param name="tryCatchMessage"></param>
 		/// <param name="errorTraceCert"></param>
 		/// <param name="notificationTypePrefix"></param>
-		public static void LogExceptionNotification(ConfigSettings configSettings, string methodName, string message, string tryCatchMessage, string errorTraceCert, string notificationTypePrefix = "")
+		public static void LogExceptionNotification(LogSettings configSettings, string methodName, string message, string tryCatchMessage, string errorTraceCert, string notificationTypePrefix = "")
 		{
 			if (configSettings.EnableCustomFileLogging)
 			{
@@ -192,7 +167,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 		/// <param name="tryCatchMessage"></param>
 		/// <param name="errorTraceCert"></param>
 		/// <param name="notificationTypePrefix"></param>
-		public static void LogExceptionNotification(WebConfigSettings configSettings, string methodName, string message, string tryCatchMessage, string errorTraceCert, string notificationTypePrefix = "")
+		public static void LogExceptionNotification(ConfigSettings configSettings, string methodName, string message, string tryCatchMessage, string errorTraceCert, string notificationTypePrefix = "")
 		{
 			if (configSettings.EnableCustomFileLogging)
 			{
@@ -224,7 +199,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 		/// <param name="isError"></param>
 		/// <param name="tryCatchMessage"></param>
 		/// <param name="errorTraceCert"></param>
-		public static void LogApiResponseMessages(dynamic configSettings, string methodName, string message, string messageKeyValue, bool isError = false, string tryCatchMessage = "", string errorTraceCert = "", Exception origExc = null)
+		public static void LogApiResponseMessages(LogSettings configSettings, string methodName, string message, string messageKeyValue, bool isError = false, string tryCatchMessage = "", string errorTraceCert = "", Exception origExc = null)
 		{
 			if (configSettings.EnableCustomFileLogging)
 			{
@@ -243,24 +218,6 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 		/// <param name="tryCatchMessage"></param>
 		/// <param name="errorTraceCert"></param>
 		public static void LogApiResponseMessages(ConfigSettings configSettings, string methodName, string message, string messageKeyValue, bool isError = false, string tryCatchMessage = "", string errorTraceCert = "", Exception origExc = null)
-		{
-			if (configSettings.EnableCustomFileLogging)
-			{
-				LogApiResponseMessages(configSettings.AppLogFileKey, methodName, message, GetApiResponseMessagePrefixKey(), true, tryCatchMessage, errorTraceCert, origExc);
-			}
-		}
-
-		/// <summary>
-		/// Common re-usable LogApiResponseMessages method used for api response message logging throughout the entire application
-		/// </summary>
-		/// <param name="configSettings"></param>
-		/// <param name="methodName"></param>
-		/// <param name="message"></param>
-		/// <param name="messageKeyValue"></param>
-		/// <param name="isError"></param>
-		/// <param name="tryCatchMessage"></param>
-		/// <param name="errorTraceCert"></param>
-		public static void LogApiResponseMessages(WebConfigSettings configSettings, string methodName, string message, string messageKeyValue, bool isError = false, string tryCatchMessage = "", string errorTraceCert = "", Exception origExc = null)
 		{
 			if (configSettings.EnableCustomFileLogging)
 			{

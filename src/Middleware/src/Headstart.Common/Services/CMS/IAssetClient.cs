@@ -33,7 +33,7 @@ namespace Headstart.Common.Services.CMS
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_settings, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}
@@ -56,7 +56,7 @@ namespace Headstart.Common.Services.CMS
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_settings, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 			return new ImageAsset
@@ -76,7 +76,7 @@ namespace Headstart.Common.Services.CMS
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_settings, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 			return new DocumentAsset()
@@ -106,7 +106,7 @@ namespace Headstart.Common.Services.CMS
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_settings, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}

@@ -34,7 +34,7 @@ namespace Headstart.API.Commands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 		}
 
@@ -59,7 +59,7 @@ namespace Headstart.API.Commands
 					ErrorCode = @"Order.ErrorAutoApplyPromotions",
 					Message = $@"Unable to auto apply the promotion with for the Order: {orderId}."
 				});
-				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
 				throw ex1;
 			}
 		}
@@ -89,7 +89,7 @@ namespace Headstart.API.Commands
 					Message = @"One or more promotions could not be removed.",
 					Data = allTasks?.Exception?.InnerExceptions
 				});
-				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
 				throw ex1;
 			}
 		}
@@ -120,7 +120,7 @@ namespace Headstart.API.Commands
 						Promotion = promo
 					}
 				});
-				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
 				throw ex1;
 			}
 			return resp;
@@ -140,7 +140,7 @@ namespace Headstart.API.Commands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 		}
 	}

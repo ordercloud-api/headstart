@@ -31,7 +31,7 @@ namespace Headstart.Common.Services
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_settings, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}
@@ -46,7 +46,7 @@ namespace Headstart.Common.Services
 			catch (Exception ex1)
 			{
 				var responseBody = ex != null ? JsonConvert.SerializeObject(ex) : string.Empty;
-				LoggingNotifications.LogApiResponseMessages(_settings, SitecoreExtensions.Helpers.GetMethodName(), responseBody,
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), responseBody,
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex1.Message, ex1.StackTrace, ex1);
 			}
 		}
@@ -86,7 +86,7 @@ namespace Headstart.Common.Services
 			catch (Exception ex1)
 			{
 				var responseBody = ex != null ? JsonConvert.SerializeObject(ex) : string.Empty;
-				LoggingNotifications.LogApiResponseMessages(_settings, SitecoreExtensions.Helpers.GetMethodName(), responseBody,
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), responseBody,
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex1.Message, ex1.StackTrace, ex1);
 			}
 		}

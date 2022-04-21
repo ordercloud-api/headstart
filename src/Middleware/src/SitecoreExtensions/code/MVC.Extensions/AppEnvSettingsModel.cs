@@ -6,4 +6,10 @@
 		public bool EnableCustomFileLogging { get; set; }
 		public string AppLogFileKey { get; set; } = string.Empty;
 	}
+
+	public class LogSettings
+	{
+		public bool EnableCustomFileLogging { get; set; } = false;
+		public string AppLogFileKey { get; set; } = "CustomApiLogs";
+	}
 }

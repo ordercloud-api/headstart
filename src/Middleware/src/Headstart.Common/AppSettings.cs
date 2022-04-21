@@ -3,6 +3,7 @@ using ordercloud.integrations.vertex;
 using ordercloud.integrations.library;
 using ordercloud.integrations.cardconnect;
 using ordercloud.integrations.smartystreets;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.Common
 {
@@ -43,12 +44,6 @@ namespace Headstart.Common
 		public ZohoSettings ZohoSettings { get; set; } = new ZohoSettings();
 
 		public LogSettings LogSettings { get; set; } = new LogSettings();
-	}
-
-	public class LogSettings
-	{
-		public bool EnableCustomFileLogging { get; set; } = false;
-		public string AppLogFileKey { get; set; } = "CustomApiLogs";
 	}
 
 	public class ApplicationInsightsSettings

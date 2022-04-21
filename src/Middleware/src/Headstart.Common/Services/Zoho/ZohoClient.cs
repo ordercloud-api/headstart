@@ -50,7 +50,7 @@ namespace Headstart.Common.Services.Zoho
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_settings, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}
@@ -72,7 +72,7 @@ namespace Headstart.Common.Services.Zoho
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_settings, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}
@@ -91,7 +91,7 @@ namespace Headstart.Common.Services.Zoho
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_settings, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}
@@ -117,7 +117,7 @@ namespace Headstart.Common.Services.Zoho
 			}
 			catch (FlurlHttpException ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_settings, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
 				throw new CatalystBaseException($@"ZohoAuthenticationError", ex.Message, null, ex.Call.Response.StatusCode);
 			}
