@@ -7,7 +7,6 @@ using Headstart.Common.Exceptions;
 using ordercloud.integrations.library;
 using ordercloud.integrations.library.helpers;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 using SitecoreExtensions = Sitecore.Foundation.SitecoreExtensions.Extensions;
 using Newtonsoft.Json;
 
@@ -16,8 +15,6 @@ namespace Headstart.Common.Models
 	[CosmosCollection("orchestrationlogs")]
 	public class OrchestrationLog : CosmosObject
 	{
-		private readonly ConfigSettings _configSettings = ConfigSettings.Instance;
-
 		[Sortable]
 		public OrchestrationErrorType? ErrorType { get; set; }
 

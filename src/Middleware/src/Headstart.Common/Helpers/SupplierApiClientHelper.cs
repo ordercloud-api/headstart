@@ -2,7 +2,6 @@
 using OrderCloud.SDK;
 using System.Threading.Tasks;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 using SitecoreExtensions = Sitecore.Foundation.SitecoreExtensions.Extensions;
 
 namespace Headstart.Common.Helpers
@@ -16,7 +15,6 @@ namespace Headstart.Common.Helpers
 	{
 		private readonly IOrderCloudClient _oc;
 		private readonly AppSettings _settings;
-		private readonly ConfigSettings _configSettings = ConfigSettings.Instance;
 
 		public SupplierApiClientHelper(AppSettings settings, IOrderCloudClient oc)
 		{
