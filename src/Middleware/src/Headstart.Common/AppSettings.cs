@@ -56,7 +56,12 @@ namespace Headstart.Common
 		public string InstrumentationKey { get; set; } = string.Empty;
 	}
 
-	public enum AppEnvironment { Test, Staging, Production }
+	public enum AppEnvironment
+	{
+		Test, 
+		Staging, 
+		Production
+	}
 
 	public class AvalaraSettings
 	{
