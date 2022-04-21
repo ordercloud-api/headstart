@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using Headstart.Common.Extensions;
 using Headstart.Common.Models.Headstart;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands.SupplierSync.EntityCommands
 {
@@ -19,7 +18,7 @@ namespace Headstart.API.Commands.SupplierSync.EntityCommands
 	public class WaxInTheCityDistributionCommand : ISupplierSyncCommand
 	{
 		private readonly IOrderCloudClient _ocSeller;
-		private readonly ConfigSettings _configSettings = ConfigSettings.Instance;
+		private readonly AppSettings _settings;
 
 		/// <summary>
 		/// The IOC based constructor method for the WaxInTheCityDistributionCommand class object with Dependency Injection
@@ -29,6 +28,7 @@ namespace Headstart.API.Commands.SupplierSync.EntityCommands
 		{
 			try
 			{
+				_settings = settings;
 				_ocSeller = new OrderCloudClient(new OrderCloudClientConfig
 				{
 					ApiUrl = settings.OrderCloudSettings.ApiUrl,
@@ -43,7 +43,7 @@ namespace Headstart.API.Commands.SupplierSync.EntityCommands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 		}
 
@@ -97,7 +97,7 @@ namespace Headstart.API.Commands.SupplierSync.EntityCommands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return JObject.FromObject(returnObject);
 		}

@@ -1,12 +1,12 @@
 using System;
 using System.Linq;
 using OrderCloud.SDK;
+using Headstart.Common;
 using OrderCloud.Catalyst;
 using Sitecore.Diagnostics;
 using System.Threading.Tasks;
 using ordercloud.integrations.library;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.API.Commands
 {
@@ -17,22 +17,24 @@ namespace Headstart.API.Commands
 
 	public class PromotionCommand : IPromotionCommand
 	{
-		private readonly IOrderCloudClient _oc;
-		private readonly ConfigSettings _configSettings = ConfigSettings.Instance;
+		private readonly IOrderCloudClient _oc; 
+		private readonly AppSettings _settings;
 
 		/// <summary>
 		/// The IOC based constructor method for the PromotionCommand class object with Dependency Injection
 		/// </summary>
 		/// <param name="oc"></param>
-		public PromotionCommand(IOrderCloudClient oc)
+		/// <param name="settings"></param>
+		public PromotionCommand(IOrderCloudClient oc, AppSettings settings)
 		{
 			try
 			{
+				_settings = settings;
 				_oc = oc;
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 		}
 
@@ -57,7 +59,7 @@ namespace Headstart.API.Commands
 					ErrorCode = @"Order.ErrorAutoApplyPromotions",
 					Message = $@"Unable to auto apply the promotion with for the Order: {orderId}."
 				});
-				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
 				throw ex1;
 			}
 		}
@@ -87,7 +89,7 @@ namespace Headstart.API.Commands
 					Message = @"One or more promotions could not be removed.",
 					Data = allTasks?.Exception?.InnerExceptions
 				});
-				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
 				throw ex1;
 			}
 		}
@@ -118,7 +120,7 @@ namespace Headstart.API.Commands
 						Promotion = promo
 					}
 				});
-				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
 				throw ex1;
 			}
 			return resp;
@@ -138,7 +140,7 @@ namespace Headstart.API.Commands
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 		}
 	}

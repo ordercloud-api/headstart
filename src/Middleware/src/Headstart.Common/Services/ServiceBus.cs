@@ -6,7 +6,6 @@ using Azure.Messaging.ServiceBus;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 using SitecoreExtensions = Sitecore.Foundation.SitecoreExtensions.Extensions;
 
 namespace Headstart.Common.Services
@@ -21,21 +20,34 @@ namespace Headstart.Common.Services
 	{
 		private readonly ConcurrentDictionary<string, ServiceBusSender> senders = new ConcurrentDictionary<string, ServiceBusSender>();
 		private readonly ServiceBusClient _client;
-		private readonly ConfigSettings _configSettings = ConfigSettings.Instance;
+		private readonly AppSettings _settings;
 
+		/// <summary>
+		/// The IOC based constructor method for the ServiceBus class object with Dependency Injection
+		/// </summary>
+		/// <param name="settings"></param>
 		public ServiceBus(AppSettings settings)
 		{
 			try
 			{
+				_settings = settings;
 				_client = new ServiceBusClient(settings.ServiceBusSettings.ConnectionString);
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}
 
+		/// <summary>
+		/// Public re-usable SendMessage task method
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="queueName"></param>
+		/// <param name="message"></param>
+		/// <param name="afterMinutes"></param>
+		/// <returns></returns>
 		public async Task SendMessage<T>(string queueName, T message, double? afterMinutes = null)
 		{
 			try
@@ -57,11 +69,17 @@ namespace Headstart.Common.Services
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}
 
+		/// <summary>
+		/// Public re-usable SendMessageBatchToTopicAsync task method
+		/// </summary>
+		/// <param name="topicName"></param>
+		/// <param name="messages"></param>
+		/// <returns></returns>
 		public async Task SendMessageBatchToTopicAsync(string topicName, Queue<ServiceBusMessage> messages)
 		{
 			try
@@ -88,12 +106,12 @@ namespace Headstart.Common.Services
 					await sender.SendMessagesAsync(messageBatch);
 				}
 				var message = $@"Sent a batch of {messageCount} messages to the topic: {topicName}.";
-				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), message,
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), message,
 					LoggingNotifications.GetExceptionMessagePrefixKey(), false);
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}

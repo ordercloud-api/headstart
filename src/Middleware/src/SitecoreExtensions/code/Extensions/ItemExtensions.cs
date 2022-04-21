@@ -567,7 +567,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException("CustomSitecore", Helpers.GetMethodName(), @"Exception Error:", ex.Message, ex.StackTrace, new object());
+				LogExt.LogApiResponseMessages(Helpers.GetMethodName(), $@"Exception Error: {ex.Message}. {ex.StackTrace}.", "", true);
 			}
 		}
 	}

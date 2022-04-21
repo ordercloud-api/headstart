@@ -29,54 +29,78 @@ namespace Headstart.Common.Services.Zoho
 		private readonly IFlurlClientFactory _flurlFactory;
 		private IFlurlClient ApiClient => _flurlFactory.Get(Config.ApiUrl);
 		private IFlurlClient AuthClient => _flurlFactory.Get("https://accounts.zoho.com/oauth/v2/");
-		private readonly ConfigSettings _configSettings = ConfigSettings.Instance;
+		private readonly AppSettings _settings;
 
 		public ZohoTokenResponse TokenResponse { get; set; } = new ZohoTokenResponse();
 		public bool IsAuthenticated => (TokenResponse?.access_token != null);
 		public ZohoClientConfig Config { get; } = new ZohoClientConfig();
-		public ZohoClient() : this(new ZohoClientConfig()) { }
+		public ZohoClient() : this(new ZohoClientConfig(), new AppSettings()) { }
 
-		public ZohoClient(IFlurlClientFactory flurlFactory)
+		/// <summary>
+		/// The IOC based constructor method for the ZohoClient class object with Dependency Injection
+		/// </summary>
+		/// <param name="flurlFactory"></param>
+		/// <param name="settings"></param>
+		public ZohoClient(IFlurlClientFactory flurlFactory, AppSettings settings)
 		{
 			try
 			{
+				_settings = settings;
 				_flurlFactory = flurlFactory;
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}
 
-		public ZohoClient(ZohoClientConfig config, IFlurlClientFactory flurlFactory)
+		/// <summary>
+		/// The IOC based constructor method for the ZohoClient class object with Dependency Injection
+		/// </summary>
+		/// <param name="config"></param>
+		/// <param name="flurlFactory"></param>
+		/// <param name="settings"></param>
+		public ZohoClient(ZohoClientConfig config, IFlurlClientFactory flurlFactory, AppSettings settings)
 		{
 			try
 			{
+				_settings = settings;
 				_flurlFactory = flurlFactory;
 				Config = config;
 				InitResources();
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}
 
-		public ZohoClient(ZohoClientConfig config)
+		/// <summary>
+		/// The IOC based constructor method for the ZohoClient class object with Dependency Injection
+		/// </summary>
+		/// <param name="config"></param>
+		/// <param name="settings"></param>
+		public ZohoClient(ZohoClientConfig config, AppSettings settings)
 		{
 			try
 			{
+				_settings = settings;
 				Config = config;
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}
 
+		/// <summary>
+		/// Public re-usable AuthenticateAsync task method
+		/// </summary>
+		/// <returns>The ZohoTokenResponse object value from the AuthenticateAsync process</returns>
+		/// <exception cref="CatalystBaseException"></exception>
 		public async Task<ZohoTokenResponse> AuthenticateAsync()
 		{
 			try
@@ -93,12 +117,18 @@ namespace Headstart.Common.Services.Zoho
 			}
 			catch (FlurlHttpException ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
 				throw new CatalystBaseException($@"ZohoAuthenticationError", ex.Message, null, ex.Call.Response.StatusCode);
 			}
 		}
 
+		/// <summary>
+		/// Internal re-usable Request method
+		/// </summary>
+		/// <param name="segments"></param>
+		/// <param name="access_token"></param>
+		/// <returns>The WriteRequest response value</returns>
 		internal IFlurlRequest Request(object[] segments, string access_token = null)
 		{
 			return ApiClient.Request(segments).WithHeader(@"Authorization", $@"Zoho-oauthtoken {access_token ?? TokenResponse.access_token}")
@@ -114,16 +144,35 @@ namespace Headstart.Common.Services.Zoho
 				});
 		}
 
+		/// <summary>
+		/// Internal re-usable Put method
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <param name="segments"></param>
+		/// <returns>The WriteRequest response value</returns>
 		internal IFlurlRequest Put(object obj, object[] segments)
 		{
 			return WriteRequest(obj, segments);
 		}
 
+		/// <summary>
+		/// Internal re-usable Post method
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <param name="segments"></param>
+		/// <returns>The WriteRequest response value</returns>
 		internal IFlurlRequest Post(object obj, object[] segments)
 		{
 			return WriteRequest(obj, segments);
 		}
 
+		/// <summary>
+		/// Internal re-usable Request method
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <param name="segments"></param>
+		/// <param name="access_token"></param>
+		/// <returns>The WriteRequest response value</returns>
 		private IFlurlRequest WriteRequest(object obj, object[] segments, string access_token = null)
 		{
 			return ApiClient.Request(segments).WithHeader(@"Authorization", $@"Zoho-oauthtoken {access_token ?? TokenResponse.access_token}")

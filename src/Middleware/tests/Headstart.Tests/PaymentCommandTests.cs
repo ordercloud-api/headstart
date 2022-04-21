@@ -5,6 +5,7 @@ using NUnit.Framework;
 using ordercloud.integrations.cardconnect;
 using OrderCloud.SDK;
 using System.Threading.Tasks;
+using Headstart.Common;
 using Headstart.Common.Models.Headstart;
 
 namespace Headstart.Tests
@@ -40,7 +41,8 @@ namespace Headstart.Tests
 			_ccCommand.VoidTransactionAsync(Arg.Any<HsPayment>(), Arg.Any<HsOrder>(), mockUserToken)
 				.Returns(Task.FromResult(0));
 
-			_sut = new PaymentCommand(_oc, _ccCommand);
+			var settings = Substitute.For<AppSettings>();
+			_sut = new PaymentCommand(_oc, _ccCommand, settings);
 		}
 
 		[Test]

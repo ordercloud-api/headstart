@@ -210,8 +210,8 @@ namespace Headstart.API
 							ClientId = _settings.ZohoSettings.ClientId,
 							ClientSecret = _settings.ZohoSettings.ClientSecret,
 							OrganizationId = _settings.ZohoSettings.OrgId
-						}, flurlClientFactory),
-					orderCloudClient))
+						}, flurlClientFactory, _settings),
+					orderCloudClient, _settings))
 				.AddSingleton<IOrderCloudIntegrationsExchangeRatesClient, OrderCloudIntegrationsExchangeRatesClient>()
 				.AddSingleton<IAssetClient>(provider => new AssetClient(new OrderCloudIntegrationsBlobService(assetConfig), _settings))
 				.AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand(new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))

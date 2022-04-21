@@ -3,6 +3,7 @@ using ordercloud.integrations.vertex;
 using ordercloud.integrations.library;
 using ordercloud.integrations.cardconnect;
 using ordercloud.integrations.smartystreets;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.Common
 {
@@ -41,6 +42,8 @@ namespace Headstart.Common
 		public UI UI { get; set; } = new UI();
 
 		public ZohoSettings ZohoSettings { get; set; } = new ZohoSettings();
+
+		public LogSettings LogSettings { get; set; } = new LogSettings();
 	}
 
 	public class ApplicationInsightsSettings
@@ -48,7 +51,12 @@ namespace Headstart.Common
 		public string InstrumentationKey { get; set; } = string.Empty;
 	}
 
-	public enum AppEnvironment { Test, Staging, Production }
+	public enum AppEnvironment
+	{
+		Test, 
+		Staging, 
+		Production
+	}
 
 	public class AvalaraSettings
 	{
@@ -110,9 +118,9 @@ namespace Headstart.Common
 
 	public class JobSettings
 	{
-		public bool ShouldCaptureCreditCardPayments { get; set; }
+		public bool ShouldCaptureCreditCardPayments { get; set; } = false;
 
-		public bool ShouldRunZoho { get; set; }
+		public bool ShouldRunZoho { get; set; } = false;
 
 		public string CaptureCreditCardsAfterDate { get; set; } = string.Empty; // TODO: remove this once all orders have IsPaymentCaptured set
 	}
@@ -200,6 +208,6 @@ namespace Headstart.Common
 
 		public string OrgId { get; set; } = string.Empty;
 
-		public bool PerformOrderSubmitTasks { get; set; }
+		public bool PerformOrderSubmitTasks { get; set; } = false;
 	}
 }

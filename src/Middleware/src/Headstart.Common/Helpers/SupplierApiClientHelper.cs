@@ -2,7 +2,6 @@
 using OrderCloud.SDK;
 using System.Threading.Tasks;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 using SitecoreExtensions = Sitecore.Foundation.SitecoreExtensions.Extensions;
 
 namespace Headstart.Common.Helpers
@@ -16,7 +15,6 @@ namespace Headstart.Common.Helpers
 	{
 		private readonly IOrderCloudClient _oc;
 		private readonly AppSettings _settings;
-		private readonly ConfigSettings _configSettings = ConfigSettings.Instance;
 
 		public SupplierApiClientHelper(AppSettings settings, IOrderCloudClient oc)
 		{
@@ -27,7 +25,7 @@ namespace Headstart.Common.Helpers
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), "",
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}
@@ -54,7 +52,7 @@ namespace Headstart.Common.Helpers
 			}
 			catch (Exception ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_configSettings.AppLogFileKey, SitecoreExtensions.Helpers.GetMethodName(), 
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), 
 					$@"Error occurred with the params supplierId: {supplierId} and token: {token}.",
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 				// else create and return the new api client

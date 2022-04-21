@@ -2081,7 +2081,6 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="MVC.Extensions\AppEnvSettingsModel.cs" />
     <Compile Include="MVC.Extensions\ConfigSettings.cs" />
-    <Compile Include="MVC.Extensions\WebConfigSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
