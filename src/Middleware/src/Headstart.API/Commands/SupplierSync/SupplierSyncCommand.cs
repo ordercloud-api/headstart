@@ -40,7 +40,7 @@ namespace Headstart.API.Commands.SupplierSync
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_configSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 		}
 
@@ -70,7 +70,7 @@ namespace Headstart.API.Commands.SupplierSync
 					if (type == null) 
 					{
 						var ex = new MissingMethodException(@"Command for {supplierID} is unavailable.");
-						LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+						LogExt.LogException(_configSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 						throw ex;
 					}
 
@@ -80,7 +80,7 @@ namespace Headstart.API.Commands.SupplierSync
 					if (method == null)
 					{
 						var ex = new MissingMethodException($@"Get Order Method for {supplieId} is unavailable.");
-						LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+						LogExt.LogException(_configSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 						throw ex;
 					}
 					resp = await (Task<JObject>)method.Invoke(command, new object[]
@@ -102,13 +102,13 @@ namespace Headstart.API.Commands.SupplierSync
 						ErrorCode = mex.Message,
 						Message = $@"Missing Method for: {supplieId ?? "Invalid Supplier"}. OrderID: {id}, OrderType : {orderType}."
 					}));
-					LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{mex.Message}. {ex.Message}", mex.StackTrace, this, true);
+					LogExt.LogException(_configSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{mex.Message}. {ex.Message}", mex.StackTrace, this, true);
 					throw ex;
 				}
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings.AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_configSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return resp;
 		}

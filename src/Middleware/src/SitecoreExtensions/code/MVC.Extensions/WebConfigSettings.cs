@@ -11,6 +11,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extensions
 		private static WebConfigSettings _instance = null;
 		private static readonly object _padlock = new object();
 		public bool IsNonProdEnv { get; set; }
+		public bool EnableCustomFileLogging { get; set; }
 		public string AppLogFileKey { get; set; } = "CustomApiLogs";
 
 		/// <summary>
@@ -70,13 +71,14 @@ namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extensions
 				}
 				var jsonData = JsonConvert.DeserializeObject<AppEnvSettingsModel>(jsonDataString);
 				IsNonProdEnv = DataTypeExtensions.GetBoolean(jsonData.IsNonProdEnv.ToString().Trim());
+				EnableCustomFileLogging = DataTypeExtensions.GetBoolean(jsonData.EnableCustomFileLogging.ToString().Trim());
 				AppLogFileKey = string.IsNullOrEmpty(jsonData.AppLogFileKey)
 					? AppLogFileKey
 					: jsonData.AppLogFileKey.Trim();
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(AppLogFileKey, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(this, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 		}
 	}
