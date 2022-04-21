@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using OrderCloud.SDK;
+using Headstart.Common;
 using OrderCloud.Catalyst;
 using Sitecore.Diagnostics;
 using System.Threading.Tasks;
@@ -11,7 +12,6 @@ using Headstart.Common.Models.Headstart;
 using Headstart.Common.Services.Zoho.Models;
 using Headstart.Common.Services.Zoho.Mappers;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
-using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 using TaxCategorization = ordercloud.integrations.library.intefaces.TaxCategorization;
 
 namespace Headstart.API.Commands.Zoho
@@ -30,24 +30,26 @@ namespace Headstart.API.Commands.Zoho
 		private readonly IOrderCloudClient _oc;
 		private const int delay = 250;
 		private const int concurrent = 1;
-		private readonly ConfigSettings _configSettings = ConfigSettings.Instance;
+		private readonly AppSettings _settings;
 
 		/// <summary>
 		/// The IOC based constructor method for the ZohoCommand class object with Dependency Injection
 		/// </summary>
 		/// <param name="zoho"></param>
 		/// <param name="oc"></param>
-		public ZohoCommand(IZohoClient zoho, IOrderCloudClient oc)
+		/// <param name="settings"></param>
+		public ZohoCommand(IZohoClient zoho, IOrderCloudClient oc, AppSettings settings)
 		{
 			try
 			{
+				_settings = settings;
 				_zoho = zoho;
 				_oc = oc;
 				_zoho.AuthenticateAsync();
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 		}
 
@@ -65,7 +67,7 @@ namespace Headstart.API.Commands.Zoho
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return results;
 		}
@@ -152,7 +154,7 @@ namespace Headstart.API.Commands.Zoho
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return list;
 		}
@@ -185,7 +187,7 @@ namespace Headstart.API.Commands.Zoho
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return results;
 		}
@@ -220,7 +222,7 @@ namespace Headstart.API.Commands.Zoho
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return resp;
 		}
@@ -247,7 +249,7 @@ namespace Headstart.API.Commands.Zoho
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return salesOrder;
 		}
@@ -282,7 +284,7 @@ namespace Headstart.API.Commands.Zoho
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return resp;
 		}
@@ -322,7 +324,7 @@ namespace Headstart.API.Commands.Zoho
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return resp;
 		}
@@ -351,7 +353,7 @@ namespace Headstart.API.Commands.Zoho
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return resp;
 		}
@@ -381,7 +383,7 @@ namespace Headstart.API.Commands.Zoho
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return resp;
 		}
@@ -410,7 +412,7 @@ namespace Headstart.API.Commands.Zoho
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return resp;
 		}
@@ -449,7 +451,7 @@ namespace Headstart.API.Commands.Zoho
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return list;
 		}
@@ -482,7 +484,7 @@ namespace Headstart.API.Commands.Zoho
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return resp;
 		}
@@ -535,7 +537,7 @@ namespace Headstart.API.Commands.Zoho
 			}
 			catch (Exception ex)
 			{
-				LogExt.LogException(_configSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				LogExt.LogException(_settings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 			return resp;
 		}

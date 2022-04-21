@@ -41,6 +41,14 @@ namespace Headstart.Common
 		public UI UI { get; set; } = new UI();
 
 		public ZohoSettings ZohoSettings { get; set; } = new ZohoSettings();
+
+		public LogSettings LogSettings { get; set; } = new LogSettings();
+	}
+
+	public class LogSettings
+	{
+		public bool EnableCustomFileLogging { get; set; } = false;
+		public string AppLogFileKey { get; set; } = "CustomApiLogs";
 	}
 
 	public class ApplicationInsightsSettings
@@ -110,9 +118,9 @@ namespace Headstart.Common
 
 	public class JobSettings
 	{
-		public bool ShouldCaptureCreditCardPayments { get; set; }
+		public bool ShouldCaptureCreditCardPayments { get; set; } = false;
 
-		public bool ShouldRunZoho { get; set; }
+		public bool ShouldRunZoho { get; set; } = false;
 
 		public string CaptureCreditCardsAfterDate { get; set; } = string.Empty; // TODO: remove this once all orders have IsPaymentCaptured set
 	}
@@ -200,6 +208,6 @@ namespace Headstart.Common
 
 		public string OrgId { get; set; } = string.Empty;
 
-		public bool PerformOrderSubmitTasks { get; set; }
+		public bool PerformOrderSubmitTasks { get; set; } = false;
 	}
 }

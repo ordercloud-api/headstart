@@ -1,5 +1,0 @@
-{
-  "IsNonProdEnv": true,
-  "EnableCustomFileLogging": false,
-  "AppLogFileKey": "HeadstartApiLogs"
-}
