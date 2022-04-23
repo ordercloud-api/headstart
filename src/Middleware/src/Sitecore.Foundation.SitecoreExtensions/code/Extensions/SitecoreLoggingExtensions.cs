@@ -1,13 +1,11 @@
 ﻿using System;
-using System.IO;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
 using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
-using System.Threading.Tasks;
 
 namespace Sitecore.Diagnostics
 {
@@ -312,10 +310,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 				var sb = new StringBuilder();
 				var dateTimeStamp = DateTime.Now.ToString("MM_dd_yyyy-HH_mm_ss");
 				var dateStamp = DateTime.Now.ToString("MM_dd_yyyy");
-				var logsBlobDirectory = Path.GetFullPath(@"App_Data", $@"{configSettings.AppLogFileKey}_Logs");
-				var fileRefPath = Path.Combine(logsBlobDirectory,
-					$@"{configSettings.AppLogFileKey}ApiApplicationNotifications_{dateStamp}.txt");
-
+				var fileRefPath = $@"{configSettings.AppLogFileKey}_Logs/{configSettings.AppLogFileKey}ApiApplicationNotifications_{dateStamp}.txt";
 
 				sb.Append(
 					$@"------------------------------{methodName}:{dateTimeStamp}:{GetMessageTypeKey(isExceptionMessage, isInfoMessage)}------------------------------" +
