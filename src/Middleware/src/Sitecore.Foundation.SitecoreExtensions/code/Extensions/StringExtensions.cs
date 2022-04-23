@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Web;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Html;
 
 namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 {
@@ -47,7 +48,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns>The clean Html content, as a Html string value</returns>
-		public static IHtmlString RenderValue(this string value)
+		public static HtmlString RenderValue(this string value)
 		{
 			var renderValue = (!string.IsNullOrEmpty(value.GetCleanRitchTextContent())) ? Regex.Replace(value.Trim(), @"\r\n?|\n", string.Empty) : string.Empty;
 			return new HtmlString(renderValue);
