@@ -21,18 +21,22 @@ namespace Sitecore.Diagnostics
 		/// <param name="errorTraceCert"></param>
 		/// <param name="obj"></param>
 		/// <param name="createCustomLogFile"></param>
-		public static void LogException(LogSettings configSettings, string methodName, string message, string tryCatchMessage, string errorTraceCert, object obj, bool createCustomLogFile = false)
+		/// <param name="origExc"></param>
+		public static void LogException(LogSettings configSettings, string methodName, string message, string tryCatchMessage, string errorTraceCert, object obj, bool createCustomLogFile = false, Exception origExc = null)
 		{
 			message = (message.Contains("[methodName]")) ? message.Replace("[methodName]", methodName) : message;
 			if (createCustomLogFile)
 			{
-				LoggingNotifications.LogExceptionNotification(configSettings, methodName, message, tryCatchMessage, errorTraceCert);
+				LoggingNotifications.LogExceptionNotification(configSettings, methodName, message, tryCatchMessage, errorTraceCert, origExc);
 			}
 			else
 			{
 				var exception = LoggingNotifications.GetLogExceptionMessage(methodName, message, tryCatchMessage, errorTraceCert, LoggingNotifications.GetApiResponseMessagePrefixKey());
 				Log.Error($@"{message} - {LoggingNotifications.GetExceptionMessagePrefixKey()}: {exception}.", obj);
-				throw new Exception(exception);
+				if (origExc != null)
+				{
+					throw origExc;
+				}
 			}
 		}
 
@@ -46,7 +50,8 @@ namespace Sitecore.Diagnostics
 		/// <param name="errorTraceCert"></param>
 		/// <param name="obj"></param>
 		/// <param name="createCustomLogFile"></param>
-		public static void LogException(ConfigSettings configSettings, string methodName, string message, string tryCatchMessage, string errorTraceCert, object obj, bool createCustomLogFile = false)
+		/// <param name="origExc"></param>
+		public static void LogException(ConfigSettings configSettings, string methodName, string message, string tryCatchMessage, string errorTraceCert, object obj, bool createCustomLogFile = false, Exception origExc = null)
 		{
 			message = (message.Contains("[methodName]")) ? message.Replace("[methodName]", methodName) : message;
 			if (createCustomLogFile)
@@ -57,10 +62,13 @@ namespace Sitecore.Diagnostics
 			{
 				var exception = LoggingNotifications.GetLogExceptionMessage(methodName, message, tryCatchMessage, errorTraceCert, LoggingNotifications.GetApiResponseMessagePrefixKey());
 				Log.Error($@"{message} - {LoggingNotifications.GetExceptionMessagePrefixKey()}: {exception}.", obj);
-				throw new Exception(exception);
+				if (origExc != null)
+				{
+					throw origExc;
+				}
 			}            
 		}
-
+        
 		/// <summary>
 		/// Common re-usable LogApiResponseMessages method used for api response message logging throughout the entire application
 		/// </summary>
@@ -68,7 +76,8 @@ namespace Sitecore.Diagnostics
 		/// <param name="message"></param>
 		/// <param name="messageKeyValue"></param>
 		/// <param name="isError"></param>
-		public static void LogApiResponseMessages(string methodName, string message, string messageKeyValue, bool isError = false)
+		/// <param name="origExc"></param>
+		public static void LogApiResponseMessages(string methodName, string message, string messageKeyValue, bool isError = false, Exception origExc = null)
 		{
 			if (string.IsNullOrEmpty(message))
 			{
@@ -80,7 +89,10 @@ namespace Sitecore.Diagnostics
 			if (isError)
 			{
 				Log.Error(message, new object());
-				throw new Exception(message);
+				if (origExc != null)
+				{
+					throw origExc;
+				}
 			}
 			Log.Info(message, new object());
 		}
@@ -150,12 +162,16 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 		/// <param name="message"></param>
 		/// <param name="tryCatchMessage"></param>
 		/// <param name="errorTraceCert"></param>
-		/// <param name="notificationTypePrefix"></param>
-		public static async void LogExceptionNotification(LogSettings configSettings, string methodName, string message, string tryCatchMessage, string errorTraceCert, string notificationTypePrefix = "")
+		/// <param name="origExc"></param>
+		public static async void LogExceptionNotification(LogSettings configSettings, string methodName, string message, string tryCatchMessage, string errorTraceCert, Exception origExc = null)
 		{
 			if (configSettings.EnableCustomFileLogging && !string.IsNullOrEmpty(configSettings.ConnectionString))
 			{
 				await WriteApiResponseMessagesAsync(configSettings, methodName, message, GetApiResponseMessagePrefixKey(), true, tryCatchMessage, errorTraceCert);
+			}
+			if (origExc != null)
+			{
+				throw origExc;
 			}
 		}
 
@@ -167,31 +183,17 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 		/// <param name="message"></param>
 		/// <param name="tryCatchMessage"></param>
 		/// <param name="errorTraceCert"></param>
-		/// <param name="notificationTypePrefix"></param>
-		public static async void LogExceptionNotification(ConfigSettings configSettings, string methodName, string message, string tryCatchMessage, string errorTraceCert, string notificationTypePrefix = "")
+		/// <param name="origExc"></param>
+		public static async void LogExceptionNotification(ConfigSettings configSettings, string methodName, string message, string tryCatchMessage, string errorTraceCert, Exception origExc = null)
 		{
 			var logSettings = configSettings.LogSettings;
 			if (logSettings.EnableCustomFileLogging && !string.IsNullOrEmpty(logSettings.ConnectionString))
 			{
 				await WriteApiResponseMessagesAsync(logSettings, methodName, message, GetApiResponseMessagePrefixKey(), true, tryCatchMessage, errorTraceCert);
 			}
-		}
-
-		/// <summary>
-		/// Common re-usable LogApiResponseMessages method used for api response message logging throughout the entire application
-		/// </summary>
-		/// <param name="configSettings"></param>
-		/// <param name="methodName"></param>
-		/// <param name="message"></param>
-		/// <param name="messageKeyValue"></param>
-		/// <param name="isError"></param>
-		/// <param name="tryCatchMessage"></param>
-		/// <param name="errorTraceCert"></param>
-		public static async void LogApiResponseMessages(LogSettings configSettings, string methodName, string message, string messageKeyValue, bool isError = false, string tryCatchMessage = "", string errorTraceCert = "", Exception origExc = null)
-		{
-			if (configSettings.EnableCustomFileLogging && !string.IsNullOrEmpty(configSettings.ConnectionString))
+			if (origExc != null)
 			{
-				await WriteApiResponseMessagesAsync(configSettings, methodName, message, GetApiResponseMessagePrefixKey(), true, tryCatchMessage, errorTraceCert, origExc);
+				throw origExc;
 			}
 		}
 
@@ -205,12 +207,40 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 		/// <param name="isError"></param>
 		/// <param name="tryCatchMessage"></param>
 		/// <param name="errorTraceCert"></param>
+		/// <param name="origExc"></param>
+		public static async void LogApiResponseMessages(LogSettings configSettings, string methodName, string message, string messageKeyValue, bool isError = false, string tryCatchMessage = "", string errorTraceCert = "", Exception origExc = null)
+		{
+			if (configSettings.EnableCustomFileLogging && !string.IsNullOrEmpty(configSettings.ConnectionString))
+			{
+				await WriteApiResponseMessagesAsync(configSettings, methodName, message, messageKeyValue, isError, tryCatchMessage, errorTraceCert);
+			}
+			if (origExc != null)
+			{
+				throw origExc;
+			}
+		}
+
+		/// <summary>
+		/// Common re-usable LogApiResponseMessages method used for api response message logging throughout the entire application
+		/// </summary>
+		/// <param name="configSettings"></param>
+		/// <param name="methodName"></param>
+		/// <param name="message"></param>
+		/// <param name="messageKeyValue"></param>
+		/// <param name="isError"></param>
+		/// <param name="tryCatchMessage"></param>
+		/// <param name="errorTraceCert"></param>
+		/// <param name="origExc"></param>
 		public static async void LogApiResponseMessages(ConfigSettings configSettings, string methodName, string message, string messageKeyValue, bool isError = false, string tryCatchMessage = "", string errorTraceCert = "", Exception origExc = null)
 		{
 			var logSettings = configSettings.LogSettings;
 			if (logSettings.EnableCustomFileLogging && !string.IsNullOrEmpty(logSettings.ConnectionString))
 			{
-				await WriteApiResponseMessagesAsync(logSettings, methodName, message, GetApiResponseMessagePrefixKey(), true, tryCatchMessage, errorTraceCert, origExc);
+				await WriteApiResponseMessagesAsync(logSettings, methodName, message, messageKeyValue, isError, tryCatchMessage, errorTraceCert);
+			}
+			if (origExc != null)
+			{
+				throw origExc;
 			}
 		}
 
@@ -224,7 +254,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 		/// <param name="isError"></param>
 		/// <param name="tryCatchMessage"></param>
 		/// <param name="errorTraceCert"></param>
-		private static async Task WriteApiResponseMessagesAsync(LogSettings configSettings, string methodName, string message, string messageKeyValue, bool isError = false, string tryCatchMessage = "", string errorTraceCert = "", Exception origExc = null)
+		private static async Task WriteApiResponseMessagesAsync(LogSettings configSettings, string methodName, string message, string messageKeyValue, bool isError = false, string tryCatchMessage = "", string errorTraceCert = "")
 		{
 			if (string.IsNullOrEmpty(message))
 			{
@@ -236,10 +266,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 			if (isError)
 			{
 				await WriteToCustomLogFileAsync(configSettings, methodName, message, true, tryCatchMessage, errorTraceCert);
-				if (origExc != null)
-				{
-					throw origExc;
-				}
+				return;
 			}
 			await WriteToCustomLogFileAsync(configSettings, methodName, message, false);
 		}
