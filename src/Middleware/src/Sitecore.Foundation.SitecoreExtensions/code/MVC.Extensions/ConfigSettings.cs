@@ -10,9 +10,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extensions
 	{
 		private static ConfigSettings _instance = null;
 		private static readonly object _padlock = new object();
-		public bool IsNonProdEnv { get; set; }
-		public bool EnableCustomFileLogging { get; set; }
-		public string AppLogFileKey { get; set; } = "CustomApiLogs";
+		public LogSettings LogSettings { get; set; }
 
 		/// <summary>
 		/// Default ConfigSettings object constructor method
@@ -64,17 +62,19 @@ namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extensions
 				{
 					jsonDataString = reader.ReadToEnd();
 				}
-
 				if (string.IsNullOrEmpty(jsonDataString))
 				{
 					return;
 				}
 				var jsonData = JsonConvert.DeserializeObject<AppEnvSettingsModel>(jsonDataString);
-				IsNonProdEnv = DataTypeExtensions.GetBoolean(jsonData.IsNonProdEnv.ToString().Trim());
-				EnableCustomFileLogging = DataTypeExtensions.GetBoolean(jsonData.EnableCustomFileLogging.ToString().Trim());
-				AppLogFileKey = string.IsNullOrEmpty(jsonData.AppLogFileKey)
-					? AppLogFileKey 
-					: jsonData.AppLogFileKey.Trim();
+				LogSettings = jsonData != null 
+					? new LogSettings()
+					{
+						EnableCustomFileLogging = jsonData.EnableCustomFileLogging,
+						AppLogFileKey = jsonData.AppLogFileKey.Trim(),
+						ConnectionString = jsonData.ConnectionString.Trim()
+					}
+					: new LogSettings();
 			}
 			catch (Exception ex)
 			{

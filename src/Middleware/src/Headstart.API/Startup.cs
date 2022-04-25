@@ -60,6 +60,7 @@ namespace Headstart.API
 		public Startup(AppSettings settings)
 		{
 			_settings = settings;
+			_settings.LogSettings.ConnectionString = _settings.StorageAccountSettings.ConnectionString;
 		}
 
 		/// <summary>
