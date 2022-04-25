@@ -272,7 +272,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 		}
 
 		/// <summary>
-		/// Common re-usable for building formatting wrappers message logging for the 'LogExeptionNotification'; 'LogNotificationMessages' and 'LogApiResponseMessages' methods above
+		/// Common re-usable for building formatting wrappers message logging for the 'LogExceptionNotification'; 'LogNotificationMessages' and 'LogApiResponseMessages' methods above
 		/// to make the logging chucks easily readable in the log file/s
 		/// </summary>
 		/// <param name="methodName"></param>
