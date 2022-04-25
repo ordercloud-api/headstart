@@ -337,7 +337,7 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 				var sb = new StringBuilder();
 				var dateTimeStamp = DateTime.Now.ToString("MM_dd_yyyy-HH_mm_ss");
 				var dateStamp = DateTime.Now.ToString("MM_dd_yyyy");
-				var fileRefPath = $@"{configSettings.AppLogFileKey}_Logs/{configSettings.AppLogFileKey}ApiApplicationNotifications_{dateStamp}.txt";
+				var fileRefPath = $@"{configSettings.AppLogFileKey}ApiApplicationNotifications_{dateStamp}.txt";
 
 				sb.Append(
 					$@"------------------------------{methodName}:{dateTimeStamp}:{GetMessageTypeKey(isExceptionMessage, isInfoMessage)}------------------------------" +
@@ -350,11 +350,11 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 				var translationsConfig = new BlobServiceConfig()
 				{
 					ConnectionString = configSettings.ConnectionString,
-					Container = configSettings.Container,
+					ContainerName = configSettings.ContainerName,
 					AccessType = BlobContainerPublicAccessType.Container
 				};
-				var translationsBlob = new SitecoreIntegrationsBlobService(translationsConfig);
-				await translationsBlob.Save(fileRefPath, sb.ToString().Trim());
+				var logsBlob = new SitecoreIntegrationsBlobService(translationsConfig);
+				await logsBlob.Save(fileRefPath, sb.ToString().Trim());
 			}
 			catch (Exception ex)
 			{

@@ -48,16 +48,16 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 				{
 					throw new Exception(@"The Connection string not supplied.");
 				}
-				if (config.Container == null)
+				if (config.ContainerName == null)
 				{
 					throw new Exception(@"The Blob container not specified.");
 				}
 
 				CloudStorageAccount.TryParse(config.ConnectionString, out var storage);
 				Client = storage.CreateCloudBlobClient();
-				if (config.Container != null)
+				if (config.ContainerName != null)
 				{
-					Container = Client.GetContainerReference(config.Container);
+					Container = Client.GetContainerReference(config.ContainerName);
 				}
 			}
 			catch (Exception ex)

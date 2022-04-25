@@ -18,12 +18,12 @@ namespace Sitecore.Foundation.SitecoreExtensions.MVC.Extensions
 
 	public class LogSettings : BaseCommonSettingsModel
 	{
-		public string Container { get; set; } = string.Empty;
+		public string ContainerName { get; set; } = "ApiLogs";
 	}
 
 	public class BlobServiceConfig : BaseCommonSettingsModel
 	{
-		public string Container { get; set; } = string.Empty;
+		public string ContainerName { get; set; } = string.Empty;
 
 		public BlobContainerPublicAccessType AccessType { get; set; }
 	}
