@@ -347,13 +347,13 @@ namespace Sitecore.Foundation.SitecoreExtensions.Extensions
 					$@"------------------------------{methodName}:{dateTimeStamp}:{GetMessageTypeKey(isExceptionMessage, isInfoMessage)}------------------------------" +
 					Environment.NewLine);
 
-				var translationsConfig = new BlobServiceConfig()
+				var logsBlobConfig = new BlobServiceConfig()
 				{
 					ConnectionString = configSettings.ConnectionString,
 					ContainerName = configSettings.ContainerName,
 					AccessType = BlobContainerPublicAccessType.Container
 				};
-				var logsBlob = new SitecoreIntegrationsBlobService(translationsConfig);
+				var logsBlob = new SitecoreIntegrationsBlobService(logsBlobConfig);
 				await logsBlob.Save(fileRefPath, sb.ToString().Trim());
 			}
 			catch (Exception ex)
