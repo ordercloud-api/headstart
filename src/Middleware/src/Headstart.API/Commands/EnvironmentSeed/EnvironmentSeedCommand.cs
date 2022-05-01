@@ -147,8 +147,8 @@ namespace Headstart.API.Commands.EnvironmentSeed
 		/// <returns>The Marketplace response object</returns>
 		private static Marketplace ConstructMarketplaceFromSeed(Common.Models.Misc.EnvironmentSeed seed, OcEnv requestedEnv)
 		{
-			var region = seed.Region != null
-				? SeedConstants.Regions.Find(r => r.Name == seed.Region)
+			var region = !string.IsNullOrWhiteSpace(seed.Region)
+				? SeedConstants.Regions.Find(r => r.Name.Equals(seed.Region, StringComparison.OrdinalIgnoreCase))
 				: SeedConstants.UsWest;
 			return new Marketplace()
 			{

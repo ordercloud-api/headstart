@@ -81,7 +81,7 @@ namespace Headstart.Common.Services.Portal
 		{
 			try
 			{
-				await _client.Request(@"organizations/{marketplace.Id}").WithOAuthBearerToken(token).PutJsonAsync(marketplace);
+				await _client.Request($@"organizations/{marketplace.Id}").WithOAuthBearerToken(token).PutJsonAsync(marketplace);
 			}
 			catch (Exception ex)
 			{
