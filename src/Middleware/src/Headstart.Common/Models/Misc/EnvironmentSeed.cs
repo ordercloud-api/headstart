@@ -30,7 +30,7 @@ namespace Headstart.Common.Models.Misc
 		/// The password for the admin user you will log in with after seeding
 		/// </summary>
 		[Required]
-		[StringLength(100, ErrorMessage = @"Password must be at least 8 characters long and maximum 100 characters long.", MinimumLength = 8)]
+		[StringLength(100, ErrorMessage = @"Password must be at least 10 characters long and maximum 100 characters long.", MinimumLength = 10)]
 		[RegularExpression(@"^(?=.{10,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).*$", ErrorMessage = @"Password must contain one number, one uppercase letter, one lowercase letter, one special character and have a minimum of 10 characters total.")]
 		public string InitialAdminPassword { get; set; } = string.Empty;
 
