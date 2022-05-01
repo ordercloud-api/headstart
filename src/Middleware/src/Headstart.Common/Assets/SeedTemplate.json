@@ -7,10 +7,10 @@
   "MarketplaceID": "",
   "OrderCloudSeedSettings": {
     "Environment": "sandbox",
-    "Region": "Us-West",
     "WebhookHashKey": ""
   },
   "StorageAccountSettings": {
     "ConnectionString": ""
-  }
+  },
+  "Region": "Us-West"
 }
