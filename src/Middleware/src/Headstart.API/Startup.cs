@@ -46,6 +46,7 @@ using ordercloud.integrations.library.cosmos_repo;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using ITaxCalculator = ordercloud.integrations.library.ITaxCalculator;
 using ITaxCodesProvider = ordercloud.integrations.library.intefaces.ITaxCodesProvider;
+using Headstart.API.Commands.SupplierSync;
 
 namespace Headstart.API
 {
@@ -198,6 +199,7 @@ namespace Headstart.API
 				.Inject<ICreditCardCommand>()
 				.Inject<ISupportAlertService>()
 				.Inject<ISupplierApiClientHelper>()
+				.Inject<ISupplierSyncCommand>()
 				.AddSingleton<ISendGridClient>(x => new SendGridClient(_settings.SendgridSettings.ApiKey))
 				.AddSingleton<IFlurlClientFactory>(x => flurlClientFactory)
 				.AddSingleton<DownloadReportCommand>()
