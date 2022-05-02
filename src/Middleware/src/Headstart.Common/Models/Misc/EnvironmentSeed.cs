@@ -140,21 +140,6 @@ namespace Headstart.Common.Models.Misc
 		public string ContainerNameDownloads { get; set; } = @"downloads";
 	}
 
-	public static class OrderCloudEnvironments
-	{
-		public static readonly OcEnv Production = new OcEnv()
-		{
-			EnvironmentName = @"Production",
-			ApiUrl = @"https://api.ordercloud.io"
-		};
-
-		public static readonly OcEnv Sandbox = new OcEnv()
-		{
-			EnvironmentName = @"Sandbox",
-			ApiUrl = @"https://sandboxapi.ordercloud.io"
-		};
-	}
-
 	public class ValueRange : ValidationAttribute
 	{
 		public string[] AllowableValues { get; set; }
@@ -175,6 +160,8 @@ namespace Headstart.Common.Models.Misc
 		public string EnvironmentName { get; set; } = string.Empty;
 
 		public string ApiUrl { get; set; } = string.Empty;
+
+		public Region Region { get; set; } = null;
 	}
 
 	public class Region
