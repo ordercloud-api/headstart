@@ -208,7 +208,7 @@ namespace Headstart.API.Commands
 				await ocClient.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment
 				{
 					BuyerID = ocBuyerId,
-					SecurityProfileID = CustomRole.HsBaseBuyer.ToString()
+					SecurityProfileID = CustomRole.HSBaseBuyer.ToString()
 				}, token);
 
 				// assign message sender
@@ -320,7 +320,7 @@ namespace Headstart.API.Commands
 				else
 				{
 					impersonation.BuyerID = buyerId;
-					impersonation.SecurityProfileID = Enum.GetName(typeof(CustomRole), CustomRole.HsBaseBuyer);
+					impersonation.SecurityProfileID = Enum.GetName(typeof(CustomRole), CustomRole.HSBaseBuyer);
 					impersonation.ID = $"hs_admin_{buyerId}";
 					return await ocClient.ImpersonationConfigs.CreateAsync(impersonation);
 				}

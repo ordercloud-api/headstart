@@ -728,7 +728,7 @@ namespace Headstart.API.Commands
 				}
 				else if (viewContext == BuyerReportViewContext.Location)
 				{
-					if (decodedToken.Roles.Contains(CustomRole.HsLocationViewAllOrders.ToString()))
+					if (decodedToken.Roles.Contains(CustomRole.HSLocationViewAllOrders.ToString()))
 					{
 						resp = new ListFilter(@"Data.Order.BillingAddress.ID", $@"={locationId}");
 					}
