@@ -585,5 +585,87 @@ namespace Headstart.API.Commands.EnvironmentSeed
 			UsWest
 		};
 		#endregion
+
+		public static class Environments
+		{
+			public const string Production = "Production";
+			public const string Sandbox = "Sandbox";
+		};
+
+		/// <summary>
+		/// Constructs the OrderCloud environment.
+		/// </summary>
+		/// <param name="environment"></param>
+		/// <param name="region"></param>
+		/// <returns>The OcEnv response object</returns>
+		public static OcEnv OrderCloudEnvironment(string environment, string region)
+		{
+			OcEnv marketplace = null;
+
+			var envRegion = !string.IsNullOrWhiteSpace(region.Trim())
+					? Regions.Find(r => r.Name.Equals(region.Trim(), StringComparison.OrdinalIgnoreCase))
+					: UsWest;
+
+			if (environment.Trim().Equals(Environments.Production, StringComparison.OrdinalIgnoreCase))
+			{
+				marketplace = new OcEnv()
+				{
+					EnvironmentName = Environments.Production,
+                    Region = envRegion
+                };
+
+				if (envRegion == UsEast)
+				{
+					marketplace.ApiUrl = @"https://useast-production.ordercloud.io";
+				}
+				else if (envRegion == AustraliaEast)
+				{
+					marketplace.ApiUrl = @"https://australiaeast-production.ordercloud.io";
+				}
+				else if (envRegion == EuropeWest)
+				{
+					marketplace.ApiUrl = @"https://westeurope-production.ordercloud.io";
+				}
+				else if (envRegion == JapanEast)
+				{
+					marketplace.ApiUrl = @"https://japaneast-production.ordercloud.io";
+				}
+				else if (envRegion == UsWest)
+				{
+					marketplace.ApiUrl = @"https://api.ordercloud.io";
+				}
+			}
+			else if (environment.Trim().Equals(Environments.Sandbox, StringComparison.OrdinalIgnoreCase))
+			{
+				marketplace = new OcEnv()
+				{
+					EnvironmentName = Environments.Sandbox,
+                    Region = envRegion
+                };
+
+				if (envRegion == UsEast)
+				{
+					marketplace.ApiUrl = @"https://useast-sandbox.ordercloud.io";
+				}
+				else if (envRegion == AustraliaEast)
+				{
+					marketplace.ApiUrl = @"https://australiaeast-sandbox.ordercloud.io";
+				}
+				else if (envRegion == EuropeWest)
+				{
+					marketplace.ApiUrl = @"https://westeurope-sandbox.ordercloud.io";
+				}
+				else if (envRegion == JapanEast)
+				{
+					marketplace.ApiUrl = @"https://japaneast-sandbox.ordercloud.io";
+				}
+				else if (envRegion == UsWest)
+				{
+					marketplace.ApiUrl = @"https://sandboxapi.ordercloud.io";
+				}
+			}
+
+			return marketplace;
+		}
 	}
 }

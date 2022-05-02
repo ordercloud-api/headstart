@@ -74,8 +74,8 @@ namespace Headstart.API.Commands.EnvironmentSeed
 			var resp = new EnvironmentSeedResponse();
 			try 
 			{
-				var requestedEnv = ValidateEnvironment(seed.OrderCloudSeedSettings.Environment);
-				if (requestedEnv.EnvironmentName == OrderCloudEnvironments.Production.EnvironmentName && seed.MarketplaceId == null)
+				var requestedEnv = SeedConstants.OrderCloudEnvironment(seed.OrderCloudSeedSettings.Environment, seed.Region);
+				if (requestedEnv.EnvironmentName.Equals(SeedConstants.Environments.Production, StringComparison.OrdinalIgnoreCase) && seed.MarketplaceId == null)
 				{
 					var exception = $@"Cannot create a production environment via the environment seed endpoint. Please contact an OrderCloud Developer to create a production marketplace.";
 					LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", exception, "", this, true);
@@ -147,17 +147,14 @@ namespace Headstart.API.Commands.EnvironmentSeed
 		/// <returns>The Marketplace response object</returns>
 		private static Marketplace ConstructMarketplaceFromSeed(Common.Models.Misc.EnvironmentSeed seed, OcEnv requestedEnv)
 		{
-			var region = seed.Region != null
-				? SeedConstants.Regions.Find(r => r.Name == seed.Region)
-				: SeedConstants.UsWest;
 			return new Marketplace()
 			{
 				Id = Guid.NewGuid().ToString(),
 				Environment = requestedEnv.EnvironmentName,
-				Name = string.IsNullOrEmpty(seed.MarketplaceName) 
-					? @"My Headstart Marketplace" 
+				Name = string.IsNullOrEmpty(seed.MarketplaceName)
+					? @"My Headstart Marketplace"
 					: seed.MarketplaceName,
-				Region = region
+				Region = requestedEnv.Region
 			};
 		}
 
@@ -185,32 +182,6 @@ namespace Headstart.API.Commands.EnvironmentSeed
 			{
 				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
-		}
-
-		/// <summary>
-		/// Private re-usable ValidateEnvironment method
-		/// </summary>
-		/// <param name="environment"></param>
-		/// <returns>The OcEnv response object</returns>
-		private OcEnv ValidateEnvironment(string environment)
-		{
-			OcEnv resp = null;
-			try
-			{
-				if (environment.Trim().Equals(@"production", StringComparison.OrdinalIgnoreCase))
-				{
-					return OrderCloudEnvironments.Production;
-				}
-				else if (environment.Trim().Equals(@"sandbox", StringComparison.OrdinalIgnoreCase))
-				{
-					return OrderCloudEnvironments.Sandbox;
-				}
-			}
-			catch (Exception ex)
-			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
-			return resp;
 		}
 
 		/// <summary>

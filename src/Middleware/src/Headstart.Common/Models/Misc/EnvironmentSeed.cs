@@ -2,6 +2,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Headstart.Common.Models.Headstart;
 using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace Headstart.Common.Models.Misc
 {
@@ -30,8 +31,8 @@ namespace Headstart.Common.Models.Misc
 		/// The password for the admin user you will log in with after seeding
 		/// </summary>
 		[Required]
-		[StringLength(100, ErrorMessage = @"Password must be at least 8 characters long and maximum 100 characters long.", MinimumLength = 8)]
-		[RegularExpression(@"^(?=.{10,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\\W).*$", ErrorMessage = @"Password must contain one number, one uppercase letter, one lowercase letter, one special character and have a minimum of 10 characters total.")]
+		[StringLength(100, ErrorMessage = @"Password must be at least 10 characters long and maximum 100 characters long.", MinimumLength = 10)]
+		[RegularExpression(@"^(?=.{10,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\W).*$", ErrorMessage = @"Password must contain one number, one uppercase letter, one lowercase letter, one special character and have a minimum of 10 characters total.")]
 		public string InitialAdminPassword { get; set; } = string.Empty;
 
 		/// <summary>
@@ -96,7 +97,7 @@ namespace Headstart.Common.Models.Misc
 		/// If no value is provided US-West will be used by default.
 		/// https://ordercloud.io/knowledge-base/ordercloud-regions
 		/// </summary>
-		[ValueRange(AllowableValues = new[] { null, "US-East", "Australia-East", "Europe-West", "Japan-East", "US-West" })]
+		[ValueRange(AllowableValues = new[] { "", null, "US-East", "Australia-East", "Europe-West", "Japan-East", "US-West" })]
 		public string Region { get; set; } = string.Empty;
 		#endregion
 	}
@@ -139,28 +140,13 @@ namespace Headstart.Common.Models.Misc
 		public string ContainerNameDownloads { get; set; } = @"downloads";
 	}
 
-	public static class OrderCloudEnvironments
-	{
-		public static readonly OcEnv Production = new OcEnv()
-		{
-			EnvironmentName = @"Production",
-			ApiUrl = @"https://api.ordercloud.io"
-		};
-
-		public static readonly OcEnv Sandbox = new OcEnv()
-		{
-			EnvironmentName = @"Sandbox",
-			ApiUrl = @"https://sandboxapi.ordercloud.io"
-		};
-	}
-
 	public class ValueRange : ValidationAttribute
 	{
 		public string[] AllowableValues { get; set; }
 
 		protected override ValidationResult IsValid(object value, ValidationContext validationContext)
 		{
-			if (AllowableValues?.Contains(value?.ToString().ToLower()) == true)
+			if (AllowableValues?.Contains(value?.ToString(), StringComparer.OrdinalIgnoreCase) == true)
 			{
 				return ValidationResult.Success;
 			}
@@ -174,6 +160,8 @@ namespace Headstart.Common.Models.Misc
 		public string EnvironmentName { get; set; } = string.Empty;
 
 		public string ApiUrl { get; set; } = string.Empty;
+
+		public Region Region { get; set; } = null;
 	}
 
 	public class Region
