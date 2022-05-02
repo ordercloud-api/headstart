@@ -1,7 +1,7 @@
 import cookies from '../utils/CookieService'
 import parseJwt from '../utils/ParseJwt'
 import Auth from './Auth'
-import Configuration from '../Configuration'
+import Configuration from '../configuration'
 
 /**
  * @ignore

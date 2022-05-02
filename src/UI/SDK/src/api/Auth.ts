@@ -1,8 +1,8 @@
 import axios, { CancelToken } from 'axios'
 import { AccessToken } from '../models/AccessToken'
-import Configuration from '../Configuration'
+import Configuration from '../configuration'
 import { ApiRole } from 'ordercloud-javascript-sdk'
-import serialize from '../utils/ParamsSerializer'
+import serialize from '../utils/paramsSerializer'
 import { RequiredDeep } from '../models/RequiredDeep'
 import OrderCloudError from '../utils/OrderCloudError'
 

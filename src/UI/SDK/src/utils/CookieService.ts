@@ -1,4 +1,4 @@
-import Configuration from '../Configuration'
+import Configuration from '../configuration'
 import cookie from './CookieApi'
 
 /**
