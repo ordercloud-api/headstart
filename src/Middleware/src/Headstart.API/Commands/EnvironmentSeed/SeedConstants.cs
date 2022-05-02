@@ -431,61 +431,61 @@ namespace Headstart.API.Commands.EnvironmentSeed
 		public static readonly List<HsSecurityProfile> DefaultSecurityProfiles = new List<HsSecurityProfile>() 
 		{
 			// Seller/supplier
-			new HsSecurityProfile() {Id = CustomRole.HsBuyerAdmin, CustomRoles = new CustomRole[] { CustomRole.HsBuyerAdmin }, Roles = new ApiRole[] { ApiRole.AddressAdmin, ApiRole.ApprovalRuleAdmin, ApiRole.BuyerAdmin, ApiRole.BuyerUserAdmin, ApiRole.CreditCardAdmin, ApiRole.UserGroupAdmin } },
-			new HsSecurityProfile() {Id = CustomRole.HsBuyerImpersonator, CustomRoles = new CustomRole[] { CustomRole.HsBuyerImpersonator }, Roles = new ApiRole[] { ApiRole.BuyerImpersonation } },
-			new HsSecurityProfile() {Id = CustomRole.HsCategoryAdmin, CustomRoles = new CustomRole[] { CustomRole.HsCategoryAdmin }, Roles = new ApiRole[] { ApiRole.CategoryAdmin } },
-			new HsSecurityProfile() {Id = CustomRole.HsContentAdmin, CustomRoles = new CustomRole[] { CustomRole.AssetAdmin, CustomRole.DocumentAdmin, CustomRole.SchemaAdmin }, Roles = new ApiRole[] { ApiRole.ApiClientAdmin } },
-			new HsSecurityProfile() {Id = CustomRole.HsMeAdmin, CustomRoles = new CustomRole[] { CustomRole.HsMeAdmin }, Roles = new ApiRole[] { ApiRole.MeAdmin, ApiRole.MeXpAdmin } },
-			new HsSecurityProfile() {Id = CustomRole.HsMeProductAdmin, CustomRoles = new CustomRole[] { CustomRole.HsMeProductAdmin }, Roles = new ApiRole[] { ApiRole.InventoryAdmin, ApiRole.PriceScheduleAdmin, ApiRole.ProductAdmin, ApiRole.ProductFacetReader, ApiRole.SupplierAddressReader } },
-			new HsSecurityProfile() {Id = CustomRole.HsMeSupplierAddressAdmin, CustomRoles = new CustomRole[] { CustomRole.HsMeSupplierAddressAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAddressAdmin, ApiRole.SupplierReader } },
-			new HsSecurityProfile() {Id = CustomRole.HsMeSupplierAdmin, CustomRoles = new CustomRole[] { CustomRole.AssetAdmin, CustomRole.HsMeSupplierAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAdmin, ApiRole.SupplierReader } },
-			new HsSecurityProfile() {Id = CustomRole.HsMeSupplierUserAdmin, CustomRoles = new CustomRole[] { CustomRole.HsMeSupplierUserAdmin }, Roles = new ApiRole[] { ApiRole.SupplierReader, ApiRole.SupplierUserAdmin } },
-			new HsSecurityProfile() {Id = CustomRole.HsOrderAdmin, CustomRoles = new CustomRole[] { CustomRole.HsOrderAdmin }, Roles = new ApiRole[] { ApiRole.AddressReader, ApiRole.OrderAdmin, ApiRole.ShipmentReader } },
-			new HsSecurityProfile() {Id = CustomRole.HsProductAdmin, CustomRoles = new CustomRole[] { CustomRole.HsProductAdmin }, Roles = new ApiRole[] { ApiRole.AdminAddressAdmin, ApiRole.AdminAddressReader, ApiRole.CatalogAdmin, ApiRole.PriceScheduleAdmin, ApiRole.ProductAdmin, ApiRole.ProductAssignmentAdmin, ApiRole.ProductFacetAdmin, ApiRole.SupplierAddressReader } },
-			new HsSecurityProfile() {Id = CustomRole.HsPromotionAdmin, CustomRoles = new CustomRole[] { CustomRole.HsPromotionAdmin }, Roles = new ApiRole[] { ApiRole.PromotionAdmin } },
-			new HsSecurityProfile() {Id = CustomRole.HsReportAdmin, CustomRoles = new CustomRole[] { CustomRole.HsReportAdmin }, Roles = new ApiRole[] { } },
-			new HsSecurityProfile() {Id = CustomRole.HsReportReader, CustomRoles = new CustomRole[] { CustomRole.HsReportReader }, Roles = new ApiRole[] { } },
-			new HsSecurityProfile() {Id = CustomRole.HsSellerAdmin, CustomRoles = new CustomRole[] { CustomRole.HsSellerAdmin }, Roles = new ApiRole[] { ApiRole.AdminUserAdmin } },
-			new HsSecurityProfile() {Id = CustomRole.HsShipmentAdmin, CustomRoles = new CustomRole[] { CustomRole.HsShipmentAdmin }, Roles = new ApiRole[] { ApiRole.AddressReader, ApiRole.OrderReader, ApiRole.ShipmentAdmin } },
-			new HsSecurityProfile() {Id = CustomRole.HsStorefrontAdmin, CustomRoles = new CustomRole[] { CustomRole.HsStorefrontAdmin }, Roles = new ApiRole[] { ApiRole.ProductFacetAdmin, ApiRole.ProductFacetReader } },
-			new HsSecurityProfile() {Id = CustomRole.HsSupplierAdmin, CustomRoles = new CustomRole[] { CustomRole.HsSupplierAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAddressAdmin, ApiRole.SupplierAdmin, ApiRole.SupplierUserAdmin } },
-			new HsSecurityProfile() {Id = CustomRole.HsSupplierUserGroupAdmin, CustomRoles = new CustomRole[] { CustomRole.HsSupplierUserGroupAdmin }, Roles = new ApiRole[] { ApiRole.SupplierReader, ApiRole.SupplierUserGroupAdmin } },
+			new HsSecurityProfile() {Id = CustomRole.HSBuyerAdmin, CustomRoles = new CustomRole[] { CustomRole.HSBuyerAdmin }, Roles = new ApiRole[] { ApiRole.AddressAdmin, ApiRole.ApprovalRuleAdmin, ApiRole.BuyerAdmin, ApiRole.BuyerUserAdmin, ApiRole.CreditCardAdmin, ApiRole.UserGroupAdmin } },
+			new HsSecurityProfile() {Id = CustomRole.HSBuyerImpersonator, CustomRoles = new CustomRole[] { CustomRole.HSBuyerImpersonator }, Roles = new ApiRole[] { ApiRole.BuyerImpersonation } },
+			new HsSecurityProfile() {Id = CustomRole.HSCategoryAdmin, CustomRoles = new CustomRole[] { CustomRole.HSCategoryAdmin }, Roles = new ApiRole[] { ApiRole.CategoryAdmin } },
+			new HsSecurityProfile() {Id = CustomRole.HSContentAdmin, CustomRoles = new CustomRole[] { CustomRole.AssetAdmin, CustomRole.DocumentAdmin, CustomRole.SchemaAdmin }, Roles = new ApiRole[] { ApiRole.ApiClientAdmin } },
+			new HsSecurityProfile() {Id = CustomRole.HSMeAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeAdmin }, Roles = new ApiRole[] { ApiRole.MeAdmin, ApiRole.MeXpAdmin } },
+			new HsSecurityProfile() {Id = CustomRole.HSMeProductAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeProductAdmin }, Roles = new ApiRole[] { ApiRole.InventoryAdmin, ApiRole.PriceScheduleAdmin, ApiRole.ProductAdmin, ApiRole.ProductFacetReader, ApiRole.SupplierAddressReader } },
+			new HsSecurityProfile() {Id = CustomRole.HSMeSupplierAddressAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeSupplierAddressAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAddressAdmin, ApiRole.SupplierReader } },
+			new HsSecurityProfile() {Id = CustomRole.HSMeSupplierAdmin, CustomRoles = new CustomRole[] { CustomRole.AssetAdmin, CustomRole.HSMeSupplierAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAdmin, ApiRole.SupplierReader } },
+			new HsSecurityProfile() {Id = CustomRole.HSMeSupplierUserAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeSupplierUserAdmin }, Roles = new ApiRole[] { ApiRole.SupplierReader, ApiRole.SupplierUserAdmin } },
+			new HsSecurityProfile() {Id = CustomRole.HSOrderAdmin, CustomRoles = new CustomRole[] { CustomRole.HSOrderAdmin }, Roles = new ApiRole[] { ApiRole.AddressReader, ApiRole.OrderAdmin, ApiRole.ShipmentReader } },
+			new HsSecurityProfile() {Id = CustomRole.HSProductAdmin, CustomRoles = new CustomRole[] { CustomRole.HSProductAdmin }, Roles = new ApiRole[] { ApiRole.AdminAddressAdmin, ApiRole.AdminAddressReader, ApiRole.CatalogAdmin, ApiRole.PriceScheduleAdmin, ApiRole.ProductAdmin, ApiRole.ProductAssignmentAdmin, ApiRole.ProductFacetAdmin, ApiRole.SupplierAddressReader } },
+			new HsSecurityProfile() {Id = CustomRole.HSPromotionAdmin, CustomRoles = new CustomRole[] { CustomRole.HSPromotionAdmin }, Roles = new ApiRole[] { ApiRole.PromotionAdmin } },
+			new HsSecurityProfile() {Id = CustomRole.HSReportAdmin, CustomRoles = new CustomRole[] { CustomRole.HSReportAdmin }, Roles = new ApiRole[] { } },
+			new HsSecurityProfile() {Id = CustomRole.HSReportReader, CustomRoles = new CustomRole[] { CustomRole.HSReportReader }, Roles = new ApiRole[] { } },
+			new HsSecurityProfile() {Id = CustomRole.HSSellerAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSellerAdmin }, Roles = new ApiRole[] { ApiRole.AdminUserAdmin } },
+			new HsSecurityProfile() {Id = CustomRole.HSShipmentAdmin, CustomRoles = new CustomRole[] { CustomRole.HSShipmentAdmin }, Roles = new ApiRole[] { ApiRole.AddressReader, ApiRole.OrderReader, ApiRole.ShipmentAdmin } },
+			new HsSecurityProfile() {Id = CustomRole.HSStorefrontAdmin, CustomRoles = new CustomRole[] { CustomRole.HSStorefrontAdmin }, Roles = new ApiRole[] { ApiRole.ProductFacetAdmin, ApiRole.ProductFacetReader } },
+			new HsSecurityProfile() {Id = CustomRole.HSSupplierAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSupplierAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAddressAdmin, ApiRole.SupplierAdmin, ApiRole.SupplierUserAdmin } },
+			new HsSecurityProfile() {Id = CustomRole.HSSupplierUserGroupAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSupplierUserGroupAdmin }, Roles = new ApiRole[] { ApiRole.SupplierReader, ApiRole.SupplierUserGroupAdmin } },
 			
 			// Buyer - this is the only role needed for a buyer user to successfully check out
-			new HsSecurityProfile() {Id = CustomRole.HsBaseBuyer, CustomRoles = new CustomRole[] { CustomRole.HsBaseBuyer }, Roles = new ApiRole[] { ApiRole.MeAddressAdmin, ApiRole.MeAdmin, ApiRole.MeCreditCardAdmin, ApiRole.MeXpAdmin, ApiRole.ProductFacetReader, ApiRole.Shopper, ApiRole.SupplierAddressReader, ApiRole.SupplierReader } },
+			new HsSecurityProfile() {Id = CustomRole.HSBaseBuyer, CustomRoles = new CustomRole[] { CustomRole.HSBaseBuyer }, Roles = new ApiRole[] { ApiRole.MeAddressAdmin, ApiRole.MeAdmin, ApiRole.MeCreditCardAdmin, ApiRole.MeXpAdmin, ApiRole.ProductFacetReader, ApiRole.Shopper, ApiRole.SupplierAddressReader, ApiRole.SupplierReader } },
 
 			/* These roles don't do much, access to changing location information will be done through middleware calls that
 			*  confirm the user is in the location specific access user group. These roles will be assigned to the location 
 			*  specific user group and allow us to determine if a user has an admin role for at least one location through 
 			*  the users JWT
 			*/
-			new HsSecurityProfile() {Id = CustomRole.HsLocationOrderApprover, CustomRoles = new CustomRole[] { CustomRole.HsLocationOrderApprover }, Roles = new ApiRole[] { } },
-			new HsSecurityProfile() {Id = CustomRole.HsLocationViewAllOrders, CustomRoles = new CustomRole[] { CustomRole.HsLocationViewAllOrders }, Roles = new ApiRole[] { } },
-			new HsSecurityProfile() {Id = CustomRole.HsLocationAddressAdmin, CustomRoles = new CustomRole[] { CustomRole.HsLocationAddressAdmin }, Roles = new ApiRole[] { } },
-			new HsSecurityProfile() {Id = CustomRole.HsLocationPermissionAdmin, CustomRoles = new CustomRole[] { CustomRole.HsLocationPermissionAdmin }, Roles = new ApiRole[] { } },
-			new HsSecurityProfile() {Id = CustomRole.HsLocationNeedsApproval, CustomRoles = new CustomRole[] { CustomRole.HsLocationNeedsApproval }, Roles = new ApiRole[] { } },
-			new HsSecurityProfile() {Id = CustomRole.HsLocationCreditCardAdmin, CustomRoles = new CustomRole[] { CustomRole.HsLocationCreditCardAdmin }, Roles = new ApiRole[] { } },
+			new HsSecurityProfile() {Id = CustomRole.HSLocationOrderApprover, CustomRoles = new CustomRole[] { CustomRole.HSLocationOrderApprover }, Roles = new ApiRole[] { } },
+			new HsSecurityProfile() {Id = CustomRole.HSLocationViewAllOrders, CustomRoles = new CustomRole[] { CustomRole.HSLocationViewAllOrders }, Roles = new ApiRole[] { } },
+			new HsSecurityProfile() {Id = CustomRole.HSLocationAddressAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationAddressAdmin }, Roles = new ApiRole[] { } },
+			new HsSecurityProfile() {Id = CustomRole.HSLocationPermissionAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationPermissionAdmin }, Roles = new ApiRole[] { } },
+			new HsSecurityProfile() {Id = CustomRole.HSLocationNeedsApproval, CustomRoles = new CustomRole[] { CustomRole.HSLocationNeedsApproval }, Roles = new ApiRole[] { } },
+			new HsSecurityProfile() {Id = CustomRole.HSLocationCreditCardAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationCreditCardAdmin }, Roles = new ApiRole[] { } },
 		};
 
 		/// <summary>
 		/// Public read-only SellerHsRoles object
 		/// </summary>
 		public static readonly List<CustomRole> SellerHsRoles = new List<CustomRole>() {
-			CustomRole.HsBuyerAdmin,
-			CustomRole.HsBuyerImpersonator,
-			CustomRole.HsCategoryAdmin,
-			CustomRole.HsContentAdmin,
-			CustomRole.HsMeAdmin,
-			CustomRole.HsOrderAdmin,
-			CustomRole.HsProductAdmin,
-			CustomRole.HsPromotionAdmin,
-			CustomRole.HsReportAdmin,
-			CustomRole.HsReportReader,
-			CustomRole.HsSellerAdmin,
-			CustomRole.HsShipmentAdmin,
-			CustomRole.HsStorefrontAdmin,
-			CustomRole.HsSupplierAdmin,
-			CustomRole.HsSupplierUserGroupAdmin
+			CustomRole.HSBuyerAdmin,
+			CustomRole.HSBuyerImpersonator,
+			CustomRole.HSCategoryAdmin,
+			CustomRole.HSContentAdmin,
+			CustomRole.HSMeAdmin,
+			CustomRole.HSOrderAdmin,
+			CustomRole.HSProductAdmin,
+			CustomRole.HSPromotionAdmin,
+			CustomRole.HSReportAdmin,
+			CustomRole.HSReportReader,
+			CustomRole.HSSellerAdmin,
+			CustomRole.HSShipmentAdmin,
+			CustomRole.HSStorefrontAdmin,
+			CustomRole.HSSupplierAdmin,
+			CustomRole.HSSupplierUserGroupAdmin
 		};
 		#endregion
 

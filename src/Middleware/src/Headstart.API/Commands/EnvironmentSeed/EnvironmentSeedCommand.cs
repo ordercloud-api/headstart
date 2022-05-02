@@ -280,7 +280,7 @@ namespace Headstart.API.Commands.EnvironmentSeed
 					return _oc.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment
 					{
 						BuyerID = b.ID,
-						SecurityProfileID = CustomRole.HsBaseBuyer.ToString()
+						SecurityProfileID = CustomRole.HSBaseBuyer.ToString()
 					}, marketplaceToken);
 				});
 				await Task.WhenAll(buyerSecurityProfileAssignmentRequests);

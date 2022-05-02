@@ -17,8 +17,8 @@ namespace Headstart.Common.Constants
 					UserGroupIdSuffix = @"OrderAdmin",
 					CustomRoles = new List<CustomRole>
 					{
-						CustomRole.HsOrderAdmin,
-						CustomRole.HsShipmentAdmin,
+						CustomRole.HSOrderAdmin,
+						CustomRole.HSShipmentAdmin,
 					}
 				},
 				new HsUserType 
@@ -28,10 +28,10 @@ namespace Headstart.Common.Constants
 					UserGroupIdSuffix = @"AccountAdmin",
 					CustomRoles = new List<CustomRole>
 					{
-						CustomRole.HsMeSupplierAddressAdmin,
-						CustomRole.HsMeSupplierUserAdmin,
-						CustomRole.HsSupplierUserGroupAdmin,
-						CustomRole.HsMeSupplierAdmin
+						CustomRole.HSMeSupplierAddressAdmin,
+						CustomRole.HSMeSupplierUserAdmin,
+						CustomRole.HSSupplierUserGroupAdmin,
+						CustomRole.HSMeSupplierAdmin
 					}
 				},
 				new HsUserType 
@@ -41,7 +41,7 @@ namespace Headstart.Common.Constants
 					UserGroupIdSuffix = @"ProductAdmin",
 					CustomRoles = new List<CustomRole>
 					{
-						CustomRole.HsMeProductAdmin,
+						CustomRole.HSMeProductAdmin,
 					}
 				},
 				new HsUserType 
@@ -51,7 +51,7 @@ namespace Headstart.Common.Constants
 					UserGroupIdSuffix = @"ReportReader",
 					CustomRoles = new List<CustomRole>
 					{
-						CustomRole.HsReportReader,
+						CustomRole.HSReportReader,
 					}
 				},
 			};
@@ -68,7 +68,7 @@ namespace Headstart.Common.Constants
 					UserGroupIdSuffix = UserGroupSuffix.PermissionAdmin.ToString(),
 					CustomRoles = new List<CustomRole>
 					{
-						CustomRole.HsLocationPermissionAdmin,
+						CustomRole.HSLocationPermissionAdmin,
 					}
 				},
 				new HsUserType 
@@ -78,7 +78,7 @@ namespace Headstart.Common.Constants
 					UserGroupIdSuffix = UserGroupSuffix.OrderApprover.ToString(),
 					CustomRoles = new List<CustomRole>
 					{
-						CustomRole.HsLocationOrderApprover,
+						CustomRole.HSLocationOrderApprover,
 					}
 				},
 				new HsUserType 
@@ -88,7 +88,7 @@ namespace Headstart.Common.Constants
 					UserGroupIdSuffix = UserGroupSuffix.NeedsApproval.ToString(),
 					CustomRoles = new List<CustomRole>
 					{
-						CustomRole.HsLocationNeedsApproval,
+						CustomRole.HSLocationNeedsApproval,
 					}
 				},
 				new HsUserType 
@@ -98,7 +98,7 @@ namespace Headstart.Common.Constants
 					UserGroupIdSuffix = UserGroupSuffix.ViewAllOrders.ToString(),
 					CustomRoles = new List<CustomRole>
 					{
-						CustomRole.HsLocationViewAllOrders,
+						CustomRole.HSLocationViewAllOrders,
 					}
 				},
 				new HsUserType 
@@ -108,7 +108,7 @@ namespace Headstart.Common.Constants
 					UserGroupIdSuffix = UserGroupSuffix.CreditCardAdmin.ToString(),
 					CustomRoles = new List<CustomRole>
 					{
-						CustomRole.HsLocationCreditCardAdmin,
+						CustomRole.HSLocationCreditCardAdmin,
 					}
 				},
 				new HsUserType 
@@ -118,7 +118,7 @@ namespace Headstart.Common.Constants
 					UserGroupIdSuffix = UserGroupSuffix.AddressAdmin.ToString(),
 					CustomRoles = new List<CustomRole>
 					{
-						CustomRole.HsLocationAddressAdmin,
+						CustomRole.HSLocationAddressAdmin,
 					}
 				}
 			};
