@@ -610,8 +610,9 @@ namespace Headstart.API.Commands.EnvironmentSeed
 			{
 				marketplace = new OcEnv()
 				{
-					EnvironmentName = Environments.Production
-				};
+					EnvironmentName = Environments.Production,
+                    Region = envRegion
+                };
 
 				if (envRegion == UsEast)
 				{
@@ -638,8 +639,9 @@ namespace Headstart.API.Commands.EnvironmentSeed
 			{
 				marketplace = new OcEnv()
 				{
-					EnvironmentName = Environments.Sandbox
-				};
+					EnvironmentName = Environments.Sandbox,
+                    Region = envRegion
+                };
 
 				if (envRegion == UsEast)
 				{
