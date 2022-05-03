@@ -29,7 +29,7 @@ namespace Headstart.API.Commands.EnvironmentSeed
 		{
 			return new HsUser()
 			{
-				Id = "default-buyer-user",
+				ID = "default-buyer-user",
 				Username = "default-buyer-user",
 				FirstName = "Default",
 				LastName = "Buyer",

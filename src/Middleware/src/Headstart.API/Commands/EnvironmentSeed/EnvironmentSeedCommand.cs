@@ -373,7 +373,7 @@ namespace Headstart.API.Commands.EnvironmentSeed
 			{
 				// validate AnonymousShoppingBuyerID or provide fallback if none is defined
 				var allBuyers = await _oc.Buyers.ListAllAsync(accessToken: token);
-				if (seed.AnonymousShoppingBuyerId != null)
+				if (!string.IsNullOrWhiteSpace(seed.AnonymousShoppingBuyerId))
 				{
 					if (!allBuyers.Select(b => b.ID).Contains(seed.AnonymousShoppingBuyerId))
 					{

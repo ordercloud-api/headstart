@@ -5,7 +5,6 @@ namespace Headstart.Common.Models.Headstart
 {
 	public class HsUser : User<UserXp>
 	{
-		public string Id { get; set; } = string.Empty;
 	}
 
 	public class UserXp
