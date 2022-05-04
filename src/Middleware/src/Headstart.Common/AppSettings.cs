@@ -75,11 +75,7 @@ namespace Headstart.Common
 	{
 		public string ApiKey { get; set; } = string.Empty;
 
-		public string SMGFedexAccountId { get; set; } = string.Empty;
-
-		public string ProvisionFedexAccountId { get; set; } = string.Empty;
-
-		public string SEBDistributionFedexAccountId { get; set; } = string.Empty;
+		public string FedexAccountId { get; set; } = string.Empty;
 
 		public decimal NoRatesFallbackCost { get; set; }
 
