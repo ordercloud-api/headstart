@@ -60,9 +60,8 @@ namespace Headstart.API.Commands
         /// </summary>
         public async Task<EnvironmentSeedResponse> Seed(EnvironmentSeed seed)
         {
-            OcEnv requestedEnv = validateEnvironment(seed.OrderCloudSeedSettings.Environment);
-
-            if (requestedEnv.environmentName == OrderCloudEnvironments.Production.environmentName && seed.MarketplaceID == null)
+            var requestedEnv = SeedConstants.OrderCloudEnvironment(seed.OrderCloudSeedSettings.Environment, seed.Region);
+            if (requestedEnv.EnvironmentName.Equals(SeedConstants.Environments.Production, StringComparison.OrdinalIgnoreCase) && seed.MarketplaceID == null)
             {
                 throw new Exception("Cannot create a production environment via the environment seed endpoint. Please contact an OrderCloud Developer to create a production marketplace.");
             }
@@ -70,8 +69,8 @@ namespace Headstart.API.Commands
             // lets us handle requests to multiple api environments
             _oc = new OrderCloudClient(new OrderCloudClientConfig
             {
-                ApiUrl = requestedEnv.apiUrl,
-                AuthUrl = requestedEnv.apiUrl
+                ApiUrl = requestedEnv.ApiUrl,
+                AuthUrl = requestedEnv.ApiUrl
             });
 
             var portalUserToken = await _portal.Login(seed.PortalUsername, seed.PortalPassword);
@@ -106,7 +105,7 @@ namespace Headstart.API.Commands
                 Comments = "Success! Your environment is now seeded. The following clientIDs & secrets should be used to finalize the configuration of your application. The initial admin username and password can be used to sign into your admin application",
                 MarketplaceName = marketplace.Name,
                 MarketplaceID = marketplace.Id,
-                OrderCloudEnvironment = requestedEnv.environmentName,
+                OrderCloudEnvironment = requestedEnv.EnvironmentName,
                 ApiClients = new Dictionary<string, dynamic>
                 {
                     ["Middleware"] = new
@@ -128,16 +127,13 @@ namespace Headstart.API.Commands
 
         private static Marketplace ConstructMarketplaceFromSeed(EnvironmentSeed seed, OcEnv requestedEnv)
         {
-	        var region = seed.Region != null
-		        ? SeedConstants.Regions.Find(r => r.Name == seed.Region)
-		        : SeedConstants.UsWest;
-	        return new Marketplace()
-	        {
-		        Id = Guid.NewGuid().ToString(),
-		        Environment = requestedEnv.environmentName,
-		        Name = seed.MarketplaceName == null ? "My Headstart Marketplace" : seed.MarketplaceName,
-		        Region = region
-	        };
+            return new Marketplace()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Environment = requestedEnv.EnvironmentName,
+                Name = seed.MarketplaceName == null ? "My Headstart Marketplace" : seed.MarketplaceName,
+                Region = requestedEnv.Region
+            };
         }
 
         public async Task UpdateTranslations(string connectionString, string containerName)
@@ -153,18 +149,6 @@ namespace Headstart.API.Commands
             await translationsBlob.Save("i18n/en.json", File.ReadAllText(englishTranslationsPath));
         }
 
-        private OcEnv validateEnvironment(string environment)
-        {
-            if (environment.ToLower() == "production")
-            {
-                return OrderCloudEnvironments.Production;
-            }
-            else if (environment.ToLower() == "sandbox")
-            {
-                return OrderCloudEnvironments.Sandbox;
-            }
-            else return null;
-        }
         public async Task<Marketplace> VerifyMarketplaceExists(string marketplaceID, string devToken)
         {
             try

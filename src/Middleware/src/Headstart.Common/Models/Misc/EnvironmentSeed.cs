@@ -4,6 +4,7 @@ using ordercloud.integrations.library;
 using Newtonsoft.Json;
 using Headstart.Models.Headstart;
 using System.Linq;
+using System;
 
 namespace Headstart.Models.Misc
 {
@@ -33,8 +34,7 @@ namespace Headstart.Models.Misc
 		/// The password for the admin user you will log in with after seeding
 		/// </summary>
 		[Required]
-		[StringLength(100, ErrorMessage = "Password must be at least 8 characters long and maximum 100 characters long", MinimumLength = 8)]
-		[RegularExpression("^(?=.{10,}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\\W).*$", ErrorMessage = "Password must contain one number, one uppercase letter, one lowercase letter, one special character and have a minimum of 10 characters total")]
+		[RegularExpression("^(?=.{10,100}$)(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*\\W).*$", ErrorMessage = "Password must contain one number, one uppercase letter, one lowercase letter, one special character and have a minimum of 10 characters total")]
 		public string InitialAdminPassword { get; set; }
 
 		/// <summary>
@@ -101,7 +101,7 @@ namespace Headstart.Models.Misc
 		/// If no value is provided US-West will be used by default.
 		/// https://ordercloud.io/knowledge-base/ordercloud-regions
 		/// </summary>
-		[ValueRange(AllowableValues = new[] {null, "US-East", "Australia-East", "Europe-West", "Japan-East", "US-West"})]
+		[ValueRange(AllowableValues = new[] { "", null, "US-East", "Australia-East", "Europe-West", "Japan-East", "US-West" })]
 		public string Region { get; set; }
 
         #endregion
@@ -141,27 +141,13 @@ namespace Headstart.Models.Misc
 		public string ContainerNameDownloads { get; set; } = "downloads";
 	}
 
-	public class OrderCloudEnvironments
-    {
-		public static OcEnv Production = new OcEnv()
-		{
-			environmentName = "Production",
-			apiUrl = "https://api.ordercloud.io"
-		};
-		public static OcEnv Sandbox = new OcEnv()
-		{
-			environmentName = "Sandbox",
-			apiUrl = "https://sandboxapi.ordercloud.io"
-		};
-    }
-
 	public class ValueRange : ValidationAttribute
     {
 		public string[] AllowableValues { get; set; }
 
 		protected override ValidationResult IsValid(object value, ValidationContext validationContext)
 		{
-			if (AllowableValues?.Contains(value?.ToString().ToLower()) == true)
+			if (AllowableValues?.Contains(value?.ToString(), StringComparer.OrdinalIgnoreCase) == true)
 			{
 				return ValidationResult.Success;
 			}
@@ -172,8 +158,9 @@ namespace Headstart.Models.Misc
 
 	public class OcEnv
     {
-        public string environmentName { get; set; }
-		public string apiUrl { get; set; }
+        public string EnvironmentName { get; set; }
+		public string ApiUrl { get; set; }
+        public Region Region { get; set; }
     }
 
 	public class Region

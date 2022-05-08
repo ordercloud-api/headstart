@@ -266,7 +266,7 @@ namespace Headstart.API.Commands
             new HSSecurityProfile() { ID = CustomRole.HSCategoryAdmin, CustomRoles = new CustomRole[] { CustomRole.HSCategoryAdmin }, Roles = new ApiRole[] { ApiRole.CategoryAdmin } },
             new HSSecurityProfile() { ID = CustomRole.HSContentAdmin, CustomRoles = new CustomRole[] { CustomRole.AssetAdmin, CustomRole.DocumentAdmin, CustomRole.SchemaAdmin }, Roles = new ApiRole[] { ApiRole.ApiClientAdmin } },
             new HSSecurityProfile() { ID = CustomRole.HSMeAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeAdmin }, Roles = new ApiRole[] { ApiRole.MeAdmin, ApiRole.MeXpAdmin } },
-            new HSSecurityProfile() { ID = CustomRole.HSMeProductAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeProductAdmin }, Roles = new ApiRole[] { ApiRole.InventoryAdmin, ApiRole.PriceScheduleAdmin, ApiRole.ProductAdmin, ApiRole.ProductFacetReader, ApiRole.SupplierAddressReader } },
+            new HSSecurityProfile() { ID = CustomRole.HSMeProductAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeProductAdmin }, Roles = new ApiRole[] { ApiRole.PriceScheduleAdmin, ApiRole.ProductAdmin, ApiRole.ProductFacetReader, ApiRole.SupplierAddressReader } },
             new HSSecurityProfile() { ID = CustomRole.HSMeSupplierAddressAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeSupplierAddressAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAddressAdmin, ApiRole.SupplierReader } },
             new HSSecurityProfile() { ID = CustomRole.HSMeSupplierAdmin, CustomRoles = new CustomRole[] { CustomRole.AssetAdmin, CustomRole.HSMeSupplierAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAdmin, ApiRole.SupplierReader } },
             new HSSecurityProfile() { ID = CustomRole.HSMeSupplierUserAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeSupplierUserAdmin }, Roles = new ApiRole[] { ApiRole.SupplierReader, ApiRole.SupplierUserAdmin } },
@@ -409,9 +409,88 @@ namespace Headstart.API.Commands
             UsWest
         };
 
-
-
         #endregion
 
+        public static class Environments
+        {
+            public const string Production = "Production";
+            public const string Sandbox = "Sandbox";
+        };
+
+        /// <summary>
+        /// Constructs the OrderCloud environment.
+        /// </summary>
+        /// <param name="environment"></param>
+        /// <param name="region"></param>
+        /// <returns>The OcEnv response object</returns>
+        public static OcEnv OrderCloudEnvironment(string environment, string region)
+        {
+            OcEnv marketplace = null;
+
+            var envRegion = !string.IsNullOrWhiteSpace(region.Trim())
+                    ? Regions.Find(r => r.Name.Equals(region.Trim(), StringComparison.OrdinalIgnoreCase))
+                    : UsWest;
+
+            if (environment.Trim().Equals(Environments.Production, StringComparison.OrdinalIgnoreCase))
+            {
+                marketplace = new OcEnv()
+                {
+                    EnvironmentName = Environments.Production,
+                    Region = envRegion
+                };
+
+                if (envRegion == UsEast)
+                {
+                    marketplace.ApiUrl = @"https://useast-production.ordercloud.io";
+                }
+                else if (envRegion == AustraliaEast)
+                {
+                    marketplace.ApiUrl = @"https://australiaeast-production.ordercloud.io";
+                }
+                else if (envRegion == EuropeWest)
+                {
+                    marketplace.ApiUrl = @"https://westeurope-production.ordercloud.io";
+                }
+                else if (envRegion == JapanEast)
+                {
+                    marketplace.ApiUrl = @"https://japaneast-production.ordercloud.io";
+                }
+                else if (envRegion == UsWest)
+                {
+                    marketplace.ApiUrl = @"https://api.ordercloud.io";
+                }
+            }
+            else if (environment.Trim().Equals(Environments.Sandbox, StringComparison.OrdinalIgnoreCase))
+            {
+                marketplace = new OcEnv()
+                {
+                    EnvironmentName = Environments.Sandbox,
+                    Region = envRegion
+                };
+
+                if (envRegion == UsEast)
+                {
+                    marketplace.ApiUrl = @"https://useast-sandbox.ordercloud.io";
+                }
+                else if (envRegion == AustraliaEast)
+                {
+                    marketplace.ApiUrl = @"https://australiaeast-sandbox.ordercloud.io";
+                }
+                else if (envRegion == EuropeWest)
+                {
+                    marketplace.ApiUrl = @"https://westeurope-sandbox.ordercloud.io";
+                }
+                else if (envRegion == JapanEast)
+                {
+                    marketplace.ApiUrl = @"https://japaneast-sandbox.ordercloud.io";
+                }
+                else if (envRegion == UsWest)
+                {
+                    marketplace.ApiUrl = @"https://sandboxapi.ordercloud.io";
+                }
+            }
+
+            return marketplace;
+        }
     }
 }
