@@ -62,16 +62,16 @@ namespace Headstart.Tests
             // Arrange
             var seed = new EnvironmentSeed()
             {
-                Region = region
+                OrderCloudSeedSettings = new OrderCloudSeedSettings() { Region = region }
             };
 
-            var ctx = new ValidationContext(seed)
+            var ctx = new ValidationContext(seed.OrderCloudSeedSettings)
             {
-                MemberName = nameof(seed.Region)
+                MemberName = nameof(seed.OrderCloudSeedSettings.Region)
             };
 
             // Act
-            var result = Validator.TryValidateProperty(seed.Region, ctx, null);
+            var result = Validator.TryValidateProperty(seed.OrderCloudSeedSettings.Region, ctx, null);
 
             // Assert
             Assert.IsFalse(result);
@@ -90,16 +90,16 @@ namespace Headstart.Tests
             // Arrange
             var seed = new EnvironmentSeed()
             {
-                Region = region
+                OrderCloudSeedSettings = new OrderCloudSeedSettings() { Region = region }
             };
 
-            var ctx = new ValidationContext(seed)
+            var ctx = new ValidationContext(seed.OrderCloudSeedSettings)
             {
-                MemberName = nameof(seed.Region)
+                MemberName = nameof(seed.OrderCloudSeedSettings.Region)
             };
 
             // Act
-            var result = Validator.TryValidateProperty(seed.Region, ctx, null);
+            var result = Validator.TryValidateProperty(seed.OrderCloudSeedSettings.Region, ctx, null);
 
             // Assert
             Assert.IsTrue(result);

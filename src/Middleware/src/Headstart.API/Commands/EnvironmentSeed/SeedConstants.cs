@@ -420,18 +420,17 @@ namespace Headstart.API.Commands
         /// <summary>
         /// Constructs the OrderCloud environment.
         /// </summary>
-        /// <param name="environment"></param>
-        /// <param name="region"></param>
+        /// <param name="orderCloudSettings"></param>
         /// <returns>The OcEnv response object</returns>
-        public static OcEnv OrderCloudEnvironment(string environment, string region)
+        public static OcEnv OrderCloudEnvironment(OrderCloudSeedSettings orderCloudSettings)
         {
             OcEnv marketplace = null;
 
-            var envRegion = !string.IsNullOrWhiteSpace(region.Trim())
-                    ? Regions.Find(r => r.Name.Equals(region.Trim(), StringComparison.OrdinalIgnoreCase))
+            var envRegion = !string.IsNullOrWhiteSpace(orderCloudSettings.Region.Trim())
+                    ? Regions.Find(r => r.Name.Equals(orderCloudSettings.Region.Trim(), StringComparison.OrdinalIgnoreCase))
                     : UsWest;
 
-            if (environment.Trim().Equals(Environments.Production, StringComparison.OrdinalIgnoreCase))
+            if (orderCloudSettings.Environment.Trim().Equals(Environments.Production, StringComparison.OrdinalIgnoreCase))
             {
                 marketplace = new OcEnv()
                 {
@@ -460,7 +459,7 @@ namespace Headstart.API.Commands
                     marketplace.ApiUrl = @"https://api.ordercloud.io";
                 }
             }
-            else if (environment.Trim().Equals(Environments.Sandbox, StringComparison.OrdinalIgnoreCase))
+            else if (orderCloudSettings.Environment.Trim().Equals(Environments.Sandbox, StringComparison.OrdinalIgnoreCase))
             {
                 marketplace = new OcEnv()
                 {

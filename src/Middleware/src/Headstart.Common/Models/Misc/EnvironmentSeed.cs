@@ -95,15 +95,6 @@ namespace Headstart.Models.Misc
 		/// </summary>
 		public StorageAccountSeedSettings StorageAccountSettings { get; set; }
 
-		/// <summary>
-		/// Optionally provide an region for your new marketplace to be hosted in.
-		/// Options are US-West, US-East, Australia-East, Europe-West, Japan-East.
-		/// If no value is provided US-West will be used by default.
-		/// https://ordercloud.io/knowledge-base/ordercloud-regions
-		/// </summary>
-		[ValueRange(AllowableValues = new[] { "", null, "US-East", "Australia-East", "Europe-West", "Japan-East", "US-West" })]
-		public string Region { get; set; }
-
         #endregion
     }
 
@@ -124,6 +115,15 @@ namespace Headstart.Models.Misc
 		[Required]
 		[ValueRange(AllowableValues = new[] { "production", "sandbox" })]
 		public string Environment { get; set; }
+
+		/// <summary>
+		/// Optionally provide an region for your new marketplace to be hosted in.
+		/// Options are US-West, US-East, Australia-East, Europe-West, Japan-East.
+		/// If no value is provided US-West will be used by default.
+		/// https://ordercloud.io/knowledge-base/ordercloud-regions
+		/// </summary>
+		[ValueRange(AllowableValues = new[] { "", null, "US-East", "Australia-East", "Europe-West", "Japan-East", "US-West" })]
+		public string Region { get; set; }
 
 		/// <summary>
 		/// Used to secure your webhook endpoints
