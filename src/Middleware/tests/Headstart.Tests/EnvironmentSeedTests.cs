@@ -54,5 +54,55 @@ namespace Headstart.Tests
             // Assert
             Assert.IsTrue(result);
         }
+
+        [Test]
+        [TestCase("other")]
+        public void region_not_in_value_range_fails_validation(string region)
+        {
+            // Arrange
+            var seed = new EnvironmentSeed()
+            {
+                Region = region
+            };
+
+            var ctx = new ValidationContext(seed)
+            {
+                MemberName = nameof(seed.Region)
+            };
+
+            // Act
+            var result = Validator.TryValidateProperty(seed.Region, ctx, null);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        [TestCase("")]
+        [TestCase(null)]
+        [TestCase("US-East")]
+        [TestCase("Australia-East")]
+        [TestCase("Europe-West")]
+        [TestCase("Japan-East")]
+        [TestCase("US-West")]
+        public void region_in_value_range_passes_validation(string region)
+        {
+            // Arrange
+            var seed = new EnvironmentSeed()
+            {
+                Region = region
+            };
+
+            var ctx = new ValidationContext(seed)
+            {
+                MemberName = nameof(seed.Region)
+            };
+
+            // Act
+            var result = Validator.TryValidateProperty(seed.Region, ctx, null);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
     }
 }

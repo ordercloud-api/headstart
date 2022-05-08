@@ -128,9 +128,9 @@ namespace Headstart.API.Commands
 
         private static Marketplace ConstructMarketplaceFromSeed(EnvironmentSeed seed, OcEnv requestedEnv)
         {
-	        var region = seed.Region != null
-		        ? SeedConstants.Regions.Find(r => r.Name == seed.Region)
-		        : SeedConstants.UsWest;
+            var region = !string.IsNullOrWhiteSpace(seed.Region)
+                ? SeedConstants.Regions.Find(r => r.Name.Equals(seed.Region, StringComparison.OrdinalIgnoreCase))
+                : SeedConstants.UsWest;
 	        return new Marketplace()
 	        {
 		        Id = Guid.NewGuid().ToString(),

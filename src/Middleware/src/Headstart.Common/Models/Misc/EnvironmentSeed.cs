@@ -4,6 +4,7 @@ using ordercloud.integrations.library;
 using Newtonsoft.Json;
 using Headstart.Models.Headstart;
 using System.Linq;
+using System;
 
 namespace Headstart.Models.Misc
 {
@@ -100,7 +101,7 @@ namespace Headstart.Models.Misc
 		/// If no value is provided US-West will be used by default.
 		/// https://ordercloud.io/knowledge-base/ordercloud-regions
 		/// </summary>
-		[ValueRange(AllowableValues = new[] {null, "US-East", "Australia-East", "Europe-West", "Japan-East", "US-West"})]
+		[ValueRange(AllowableValues = new[] { "", null, "US-East", "Australia-East", "Europe-West", "Japan-East", "US-West" })]
 		public string Region { get; set; }
 
         #endregion
@@ -160,7 +161,7 @@ namespace Headstart.Models.Misc
 
 		protected override ValidationResult IsValid(object value, ValidationContext validationContext)
 		{
-			if (AllowableValues?.Contains(value?.ToString().ToLower()) == true)
+			if (AllowableValues?.Contains(value?.ToString(), StringComparer.OrdinalIgnoreCase) == true)
 			{
 				return ValidationResult.Success;
 			}
