@@ -60,7 +60,7 @@ namespace Headstart.API.Commands
         /// </summary>
         public async Task<EnvironmentSeedResponse> Seed(EnvironmentSeed seed)
         {
-            var requestedEnv = SeedConstants.OrderCloudEnvironment(seed.OrderCloudSeedSettings.Environment, seed.Region);
+            var requestedEnv = SeedConstants.OrderCloudEnvironment(seed.OrderCloudSeedSettings);
             if (requestedEnv.EnvironmentName.Equals(SeedConstants.Environments.Production, StringComparison.OrdinalIgnoreCase) && seed.MarketplaceID == null)
             {
                 throw new Exception("Cannot create a production environment via the environment seed endpoint. Please contact an OrderCloud Developer to create a production marketplace.");
