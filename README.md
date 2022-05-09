@@ -97,20 +97,21 @@ It is also possible to consume app settings from a JSON file while developing lo
 
 This solution depends on a lot of data to be initialized in a particular way. To make it easy when starting a new project we've created an endpoint that does this for you. Just call it with some information, wait a few seconds, and presto: You'll have a marketplace that is seeded with all the right data to get you started immediately.
 
-> Note: Before starting this step make sure your azure app configuration is filled out almost completely. The only things that won't be filled out yet are: `OrderCloudSettings:MiddlewareClientID` and `OrderCloudSettings:MiddlewareClientSecret`. These will be returned on a successful seeding so that you can update your app settings.
+> Note: Before starting this step make sure your azure app configuration is filled out almost completely. The only things that won't be filled out yet are: `OrderCloudSettings:MiddlewareClientID`, `OrderCloudSettings:MiddlewareClientSecret`, and `OrderCloudSettings:ClientIDsWithAPIAccess`. These will be returned on a successful seeding so that you can update your app settings.
 
 Detailed Steps:
 
-1. Sign in to the [ordercloud portal](https://portal.ordercloud.io/)
+1. Sign in to the [OrderCloud portal](https://portal.ordercloud.io/).
 2. Create a new marketplace in the portal if you don't already have one.
 3. Find your marketplace and save the unique identifier this is your MarketplaceID in step 6.
-4. Follow the instructions [here](./src/Middleware/README.md) to start your server locally
-5. Download and open [Postman](https://www.postman.com/downloads/) so that you can make API calls to your local server
+4. Follow the instructions [here](./src/Middleware/README.md) to start your server locally.
+5. Download and open [Postman](https://www.postman.com/downloads/) so that you can make API calls to your local server.
 6. Make a POST to `/seed` endpoint with [this template body](./src/Middleware/src/Headstart.Common/Assets/SeedTemplate.json). For a description of the properties please refer to [the definition](./src/Middleware/src/Headstart.Common/Models/Misc/EnvironmentSeed.cs).
 7. A successful response will include:
-   1. The middleware clientID and secret. Save these two values in your app configuration under `OrderCloudSettings:MiddlewareClientID` and `OrderCloudSettings:MiddlewareClientSecret`
-   2. The buyer clientID. Follow the instructions in [frontend configuration](#frontend-configuration) and set it in the buyer config `clientID`
-   3. The seller clientID. Follow the instructions in [frontend-configuration](#frontend-configuration) and set it in the seller config `clientID`
+   1. The middleware clientID and secret. Save these two values in your app configuration under `OrderCloudSettings:MiddlewareClientID` and `OrderCloudSettings:MiddlewareClientSecret`.
+   2. The buyer clientID. Follow the instructions in [frontend configuration](#frontend-configuration) and set it in the buyer config `clientID`. 
+   3. The seller clientID. Follow the instructions in [frontend-configuration](#frontend-configuration) and set it in the seller config `clientID`.
+8. Add the `clientID`s for both the buyer and seller from the `/seed` response to the `OrderCloudSettings:ClientIDsWithAPIAccess`, along with the `clientID` of a secondary buyer API Client ("*Default HeadStart Buyer UI LOCAL*"), which can be found using the OrderCloud portal.
 
 ### Sendgrid (Email) Configuration
 

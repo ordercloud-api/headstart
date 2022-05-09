@@ -15,7 +15,7 @@ namespace Headstart.Common.Models
             {
                 ID = "SMG",
                 SupplierID = null,
-                CarrierAccountIDs = new List<string>() { settings.EasyPostSettings.SMGFedexAccountId },
+                CarrierAccountIDs = new List<string>() { settings.EasyPostSettings.FedexAccountId },
                 Customs_Signer = "Bob Bernier",
                 Restriction_Type = "none",
                 EEL_PFC = "NOEEI30.37(a)",
