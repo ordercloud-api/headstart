@@ -153,6 +153,7 @@ namespace Headstart.API
                 default:
                     break;
             }
+            var smartyService = new SmartyStreetsService(_settings.SmartyStreetSettings, smartyStreetsUsClient);
             
             services.AddMvc(o =>
              {
@@ -176,7 +177,7 @@ namespace Headstart.API
                 .InjectCosmosStore<ReportTemplateQuery, ReportTemplate>(cosmosConfig)
                 .AddCosmosDb(_settings.CosmosSettings.EndpointUri, _settings.CosmosSettings.PrimaryKey, _settings.CosmosSettings.DatabaseName, cosmosContainers)
                 .Inject<IPortalService>()
-                .Inject<ISmartyStreetsCommand>()
+                .AddSingleton<ISmartyStreetsCommand>(x => new SmartyStreetsCommand(_settings.SmartyStreetSettings, orderCloudClient, smartyService))
                 .Inject<ICheckoutIntegrationCommand>()
                 .Inject<IShipmentCommand>()
                 .Inject<IOrderCommand>()
@@ -232,7 +233,7 @@ namespace Headstart.API
 					};
 				})
                 .AddSingleton<IEasyPostShippingService>(x => new EasyPostShippingService(new EasyPostConfig() { APIKey = _settings.EasyPostSettings.APIKey }))
-                .AddSingleton<ISmartyStreetsService>(x => new SmartyStreetsService(_settings.SmartyStreetSettings, smartyStreetsUsClient))
+                .AddSingleton<ISmartyStreetsService>(x => smartyService)
                 .AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(_settings.CardConnectSettings, _settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))
                 .AddSingleton<IOrderCloudClient>(provider => orderCloudClient)
                 .AddSwaggerGen(c =>

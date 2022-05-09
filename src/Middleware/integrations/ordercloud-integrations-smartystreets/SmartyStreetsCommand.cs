@@ -37,9 +37,11 @@ namespace ordercloud.integrations.smartystreets
 	{
 		private readonly ISmartyStreetsService _service;
 		private readonly IOrderCloudClient _oc;
+		private readonly SmartyStreetsConfig _settings;
 
-		public SmartyStreetsCommand(IOrderCloudClient oc, ISmartyStreetsService service)
+		public SmartyStreetsCommand(SmartyStreetsConfig settings, IOrderCloudClient oc, ISmartyStreetsService service)
 		{
+			_settings = settings;
 			_service = service;
 			_oc = oc;
 		}
@@ -47,6 +49,12 @@ namespace ordercloud.integrations.smartystreets
 		public async Task<AddressValidation> ValidateAddress(Address address)
 		{
 			var response = new AddressValidation(address);
+			if (!_settings.SmartyEnabled)
+			{
+				response.ValidAddress = address;
+				return response;
+			}
+
 			if (address.Country == "US")
 			{
 				var lookup = AddressMapper.MapToUSStreetLookup(address);

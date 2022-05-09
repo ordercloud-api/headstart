@@ -61,6 +61,7 @@
 |      SendgridSettings:CriticalSupportTemplateID       | (Optional) but required to send CriticalSupport emails) ID for template to be used for CriticalSupport emails                                                                                                               |
 |          ServiceBusSettings:ConnectionString          | Service bus client connection string |
 |            ServiceBusSettings:ZohoQueueName           | Intended for Zoho integration (Not used at this time) |
+|          SmartyStreetSettings:SmartyEnabled           | If disabled, the Smarty address validation will not be triggered for US addresses. |
 |              SmartyStreetSettings:AuthID              | Authentication ID used to connect with SmartyStreet |
 |            SmartyStreetSettings:AuthToken             | Authorization token used to connect with SmartyStreet |
 |           SmartyStreetSettings:RefererHost            | HTTP Header to a hostname/IP address listed with the Website Key [SmartyStreet Docs](https://smartystreets.com/docs/cloud/authentication) |
