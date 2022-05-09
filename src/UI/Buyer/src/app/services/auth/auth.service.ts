@@ -169,7 +169,9 @@ export class AuthService {
       this.setToken(anonToken.access_token)
       return anonToken
     } catch (err) {
-      void this.logout()
+      let retryLogin = !(err?.errors?.error === 'invalid_grant' &&
+          err?.errors?.error_description === 'Default context user required for client credentials grant')
+      void this.logout(retryLogin)
       throw new Error(err)
     }
   }
@@ -181,12 +183,12 @@ export class AuthService {
     )
   }
 
-  async logout(): Promise<void> {
+  async logout(loginAnon : boolean = true): Promise<void> {
     Tokens.RemoveAccessToken()
     this.isLoggedIn = false
     this.appInsightsService = this.injector.get(ApplicationInsightsService);
     this.appInsightsService.clearUser()
-    if (this.appConfig.anonymousShoppingEnabled) {
+    if (this.appConfig.anonymousShoppingEnabled && loginAnon) {
       await this.anonymousLogin()
       void this.router.navigate(['home']).then(async () => {
         await this.baseResolveService.resolve()
