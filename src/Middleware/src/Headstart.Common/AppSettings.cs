@@ -47,9 +47,7 @@ namespace Headstart.Common
     public class EasyPostSettings
     {
         public string APIKey { get; set; }
-        public string SMGFedexAccountId { get; set; }
-        public string ProvisionFedexAccountId { get; set; }
-        public string SEBDistributionFedexAccountId { get; set; }
+        public string FedexAccountId { get; set; }
         public decimal NoRatesFallbackCost { get; set; }
         public int NoRatesFallbackTransitDays { get; set; }
         public int FreeShippingTransitDays { get; set; }
