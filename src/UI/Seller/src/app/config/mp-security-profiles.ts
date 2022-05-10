@@ -62,7 +62,6 @@ const OrderCloudRoles = {
   IncrementorReader: 'IncrementorReader',
   IntegrationEventAdmin: 'IntegrationEventAdmin',
   IntegrationEventReader: 'IntegrationEventReader',
-  InventoryAdmin: 'InventoryAdmin',
   MeAddressAdmin: 'MeAddressAdmin',
   MeAdmin: 'MeAdmin',
   MeCreditCardAdmin: 'MeCreditCardAdmin',
@@ -114,8 +113,7 @@ const HSMeProductAdmin: HSRole = {
   RoleName: HSRoles.HSMeProductAdmin,
   OrderCloudRoles: [
     OrderCloudRoles.ProductAdmin,
-    OrderCloudRoles.PriceScheduleAdmin,
-    OrderCloudRoles.InventoryAdmin,
+    OrderCloudRoles.PriceScheduleAdmin
   ],
 }
 const HSMeProductReader: HSRole = {

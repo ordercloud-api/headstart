@@ -1,5 +1,5 @@
-import { Validators } from "@angular/forms";
-import { ValidateNoSpecialCharactersAndSpaces } from "@app-seller/validators/validators";
+import { Validators } from '@angular/forms'
+import { ValidateNoSpecialCharactersAndSpaces } from '@app-seller/validators/validators'
 
 export const schemas = {
   AccessToken: {
@@ -242,7 +242,7 @@ export const schemas = {
     properties: {
       ID: {
         type: 'string',
-        validators: [ValidateNoSpecialCharactersAndSpaces]
+        validators: [ValidateNoSpecialCharactersAndSpaces],
       },
       Name: {
         type: 'string',
@@ -254,12 +254,12 @@ export const schemas = {
       },
       ApprovingGroupID: {
         type: 'string',
-        validators: [Validators.required]
+        validators: [Validators.required],
       },
       RuleExpression: {
         type: 'string',
         maxLength: 400,
-        validators: [Validators.required]
+        validators: [Validators.required],
       },
       xp: {
         type: 'object',
@@ -826,7 +826,7 @@ export const schemas = {
     properties: {
       ID: {
         type: 'string',
-        validators: [ValidateNoSpecialCharactersAndSpaces]
+        validators: [ValidateNoSpecialCharactersAndSpaces],
       },
       Token: {
         type: 'string',
@@ -919,7 +919,6 @@ export const schemas = {
           'FullAccess',
           'IncrementorAdmin',
           'IncrementorReader',
-          'InventoryAdmin',
           'MeAddressAdmin',
           'MeAdmin',
           'MeCreditCardAdmin',
@@ -2301,7 +2300,6 @@ export const schemas = {
           'FullAccess',
           'IncrementorAdmin',
           'IncrementorReader',
-          'InventoryAdmin',
           'MeAddressAdmin',
           'MeAdmin',
           'MeCreditCardAdmin',
@@ -3543,7 +3541,6 @@ export const schemas = {
           'FullAccess',
           'IncrementorAdmin',
           'IncrementorReader',
-          'InventoryAdmin',
           'MeAddressAdmin',
           'MeAdmin',
           'MeCreditCardAdmin',
@@ -4144,12 +4141,12 @@ export const schemas = {
     properties: {
       ID: {
         type: 'string',
-        validators: [ValidateNoSpecialCharactersAndSpaces]
+        validators: [ValidateNoSpecialCharactersAndSpaces],
       },
       Name: {
         type: 'string',
         maxLength: 100,
-        validators: [Validators.required]
+        validators: [Validators.required],
       },
       Description: {
         type: 'string',
@@ -4323,7 +4320,6 @@ export const schemas = {
           'FullAccess',
           'IncrementorAdmin',
           'IncrementorReader',
-          'InventoryAdmin',
           'MeAddressAdmin',
           'MeAdmin',
           'MeCreditCardAdmin',
