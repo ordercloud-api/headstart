@@ -7,10 +7,10 @@
   "baseUrl": "https://my-default-buyer-uat.com",
   "middlewareUrl": "https://my-hosted-middleware.com",
   "creditCardIframeUrl": "https://fts-uat.cardconnect.com/itoke/ajax-tokenizer.html",
+  "translateBlobUrl": "https://MYSTORAGEACCOUNTNAME.blob.core.windows.net/ngx-translate/i18n/",
   "sellerID": "my-seller-id",
   "sellerName": "My seller name",
   "sellerQuoteContactEmail": "quotes@seller.com",
-  "translateBlobUrl": "https://MYSTORAGEACCOUNTNAME.blob.core.windows.net/ngx-translate/i18n/",
   "orderCloudApiUrl": "https://stagingapi.ordercloud.io",
   "useSitecoreSend": false,
   "sitecoreSendWebsiteID": "xxxxxxxxxxxxxxxxxxxxxxxx",
@@ -26,5 +26,8 @@
   },
   "appInsightsInstrumentationKey": null,
   "anonymousShoppingEnabled": true,
-  "acceptedPaymentMethods": ["CreditCard", "PurchaseOrder"]
+  "acceptedPaymentMethods": [
+    "CreditCard",
+    "PurchaseOrder"
+  ]
 }
