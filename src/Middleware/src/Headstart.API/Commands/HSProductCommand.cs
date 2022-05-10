@@ -179,30 +179,14 @@ namespace Headstart.API.Commands.Crud
 			// Determine ID up front so price schedule ID can match
 			superProduct.Product.ID = superProduct.Product.ID ?? CosmosInteropID.New();
 
-			await ValidateVariantsAsync(superProduct, decodedToken.AccessToken);
-
-			// Create Specs
-			var defaultSpecOptions = new List<DefaultOptionSpecAssignment>();
-			var specRequests = await Throttler.RunAsync(superProduct.Specs, 100, 5, s =>
-			{
-				defaultSpecOptions.Add(new DefaultOptionSpecAssignment { SpecID = s.ID, OptionID = s.DefaultOptionID });
-				s.DefaultOptionID = null;
-				return _oc.Specs.SaveAsync<Spec>(s.ID, s, accessToken: decodedToken.AccessToken);
-			});
-			// Create Spec Options
-			foreach (Spec spec in superProduct.Specs)
-			{
-				await Throttler.RunAsync(spec.Options, 100, 5, o => _oc.Specs.SaveOptionAsync(spec.ID, o.ID, o, accessToken: decodedToken.AccessToken));
-			}
-			// Patch Specs with requested DefaultOptionID
-			await Throttler.RunAsync(defaultSpecOptions, 100, 10, a => _oc.Specs.PatchAsync(a.SpecID, new PartialSpec { DefaultOptionID = a.OptionID }, accessToken: decodedToken.AccessToken));
 			// Create Price Schedule
-			PriceSchedule _priceSchedule = null;
-			//All products must have a price schedule for orders to be submitted.  The front end provides a default Price of $0 for quote products that don't have one.
+			PriceSchedule priceSchedule = null;
+
+			// All products must have a price schedule for orders to be submitted. The front end provides a default Price of $0 for quote products that don't have one.
 			superProduct.PriceSchedule.ID = superProduct.Product.ID;
 			try
 			{
-				_priceSchedule = await _oc.PriceSchedules.CreateAsync<PriceSchedule>(superProduct.PriceSchedule, decodedToken.AccessToken);
+				priceSchedule = await _oc.PriceSchedules.CreateAsync<PriceSchedule>(superProduct.PriceSchedule, decodedToken.AccessToken);
 			}
 			catch (OrderCloudException ex)
 			{
@@ -211,53 +195,26 @@ namespace Headstart.API.Commands.Crud
 					throw new Exception($"Product SKU {superProduct.PriceSchedule.ID} already exists.  Please try a different SKU.");
 				}
 			}
-			superProduct.Product.DefaultPriceScheduleID = _priceSchedule.ID;
-			// Create Product
+
+			superProduct.Product.DefaultPriceScheduleID = priceSchedule.ID;
+
 			if(decodedToken.CommerceRole == CommerceRole.Supplier)
             {
 				var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
 				var supplierName = await GetSupplierNameForXpFacet(me.Supplier.ID, decodedToken.AccessToken);
 				superProduct.Product.xp.Facets.Add("supplier", new List<string>() { supplierName });
 			}
-			var _product = await _oc.Products.CreateAsync<HSProduct>(superProduct.Product, decodedToken.AccessToken);
-			// Make Spec Product Assignments
-			await Throttler.RunAsync(superProduct.Specs, 100, 5, s => _oc.Specs.SaveProductAssignmentAsync(new SpecProductAssignment { ProductID = _product.ID, SpecID = s.ID }, accessToken: decodedToken.AccessToken));
-			// Generate Variants
-			await _oc.Products.GenerateVariantsAsync(_product.ID, accessToken: decodedToken.AccessToken);
-			// Patch Variants with the User Specified ID(SKU) AND necessary display xp values
-			await Throttler.RunAsync(superProduct.Variants, 100, 5, v =>
-			{
-				var oldVariantID = v.ID;
-				v.ID = v.xp.NewID ?? v.ID;
-                v.Name = v.xp.NewID ?? v.ID;
 
-				if ((superProduct?.Product?.Inventory?.VariantLevelTracking) == true && v.Inventory == null)
-				{
-					v.Inventory = new PartialVariantInventory { QuantityAvailable = 0 };
-				}
-				if (superProduct.Product?.Inventory == null)
-				{
-					//If Inventory doesn't exist on the product, don't patch variants with inventory either.
-					return _oc.Products.PatchVariantAsync(_product.ID, oldVariantID, new PartialVariant { ID = v.ID, Name = v.Name, xp = v.xp}, accessToken: decodedToken.AccessToken);
-				}
-				else
-				{
-					return _oc.Products.PatchVariantAsync(_product.ID, oldVariantID, new PartialVariant { ID = v.ID, Name = v.Name, xp = v.xp, Inventory = v.Inventory }, accessToken: decodedToken.AccessToken);
-				}
-			});
-
-
-			// List Variants
-			var _variants = await _oc.Products.ListVariantsAsync<HSVariant>(_product.ID, accessToken: decodedToken.AccessToken);
-			// List Product Specs
-			var _specs = await _oc.Products.ListSpecsAsync<Spec>(_product.ID, accessToken: decodedToken.AccessToken);
+			// Create Product
+			var product = await _oc.Products.CreateAsync<HSProduct>(superProduct.Product, decodedToken.AccessToken);
+			
 			// Return the SuperProduct
 			return new SuperHSProduct
 			{
-				Product = _product,
-				PriceSchedule = _priceSchedule,
-				Specs = _specs.Items,
-				Variants = _variants.Items,
+				Product = product,
+				PriceSchedule = priceSchedule,
+				Specs = new List<Spec>(),
+				Variants = new List<HSVariant>(),
 			};
 		}
 
