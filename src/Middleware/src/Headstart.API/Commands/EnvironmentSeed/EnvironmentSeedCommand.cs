@@ -27,12 +27,12 @@ namespace Headstart.API.Commands
 
     public class EnvironmentSeedCommand : IEnvironmentSeedCommand
     {
-        private IOrderCloudClient _oc;
         private readonly AppSettings _settings;
         private readonly IPortalService _portal;
         private readonly IHSSupplierCommand _supplierCommand;
         private readonly IHSBuyerCommand _buyerCommand;
         private readonly IHSBuyerLocationCommand _buyerLocationCommand;
+        private IOrderCloudClient _oc;
 
         public EnvironmentSeedCommand(
             AppSettings settings,

@@ -25,10 +25,6 @@ namespace Headstart.Tests
 {
     class SendgridTests
     {
-        private IOrderCloudClient _oc;
-        private AppSettings _settings;
-        private ISendGridClient _sendGridClient;
-        private ISendgridService _command;
         private const string ORDER_SUBMIT_TEMPLATE_ID = "order_submit_template_id";
         private const string LINE_ITEM_STATUS_CHANGE = "line_item_status_change";
         private const string QUOTE_ORDER_SUBMIT_TEMPLATE_ID = "quote_order_submit_template_id";
@@ -36,6 +32,10 @@ namespace Headstart.Tests
         private const string BUYER_PASSWORD_RESET_TEMPLATE_ID = "buyer_password_reset_template_id";
         private const string INFORMATION_REQUEST = "information_request";
         private const string PRODUCT_UPDATE_TEMPLATE_ID = "product_update_template_id";
+        private IOrderCloudClient _oc;
+        private AppSettings _settings;
+        private ISendGridClient _sendGridClient;
+        private ISendgridService _command;
 
         [SetUp]
         public void Setup()
@@ -60,20 +60,20 @@ namespace Headstart.Tests
             public const string product2ID = "testproduct2";
             public const string product2Name = "pants";
             public const string supplier1ID = "001";
-            public static readonly string[] supplier1NotificationRcpts = { "001user@test.com", "001user2@test.com" };
-            public static readonly string[] supplier2NotificationRcpts = { "002user@test.com" };
             public const string supplier2ID = "002";
             public const string selectedShipEstimate1ID = "shipEstimate001";
             public const string selectedShipEstimate2ID = "shipEstimate002";
             public const decimal selectedShipEstimate1Cost = 10;
             public const decimal selectedShipEstimate2Cost = 15;
             public const string sellerUser1email = "selleruser1@test.com";
-            public static readonly string[] sellerUser1AdditionalRcpts = { "additionalrecipient1@test.com" };
             public const string selleruser2email = "selleruser2@test.com";
             public const decimal lineItem1Tax = 5;
             public const decimal lineItem2Tax = 7;
             public const decimal lineItem1ShipmentTax = 2;
             public const decimal lineItem2ShipmentTax = 2;
+            public static readonly string[] supplier1NotificationRcpts = { "001user@test.com", "001user2@test.com" };
+            public static readonly string[] supplier2NotificationRcpts = { "002user@test.com" };
+            public static readonly string[] sellerUser1AdditionalRcpts = { "additionalrecipient1@test.com" };
         }
 
         [Test]

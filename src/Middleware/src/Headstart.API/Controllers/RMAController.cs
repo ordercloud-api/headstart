@@ -16,13 +16,13 @@ namespace Headstart.Common.Controllers
     [Route("rma")]
     public class RMAController : CatalystController
     {
-		private readonly IRMACommand _rmaCommand;
-        private readonly ILineItemCommand _lineItemCommand;
-        private readonly IOrderCloudClient _oc;
         private const string HSLocationViewAllOrders = "HSLocationViewAllOrders";
         private const string HSOrderAdmin = "HSOrderAdmin";
         private const string HSOrderReader = "HSOrderReader";
         private const string HSShipmentAdmin = "HSShipmentAdmin";
+        private readonly IRMACommand _rmaCommand;
+        private readonly ILineItemCommand _lineItemCommand;
+        private readonly IOrderCloudClient _oc;
 
         public RMAController(IRMACommand rmaCommand, ILineItemCommand lineItemCommand, IOrderCloudClient oc)
         {

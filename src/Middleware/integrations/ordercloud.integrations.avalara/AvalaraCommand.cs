@@ -10,11 +10,11 @@ using ordercloud.integrations.library;
 using System.Linq;
 using OrderCloud.Catalyst;
 using ordercloud.integrations.library.intefaces;
-using OrderTaxCalculation = ordercloud.integrations.library.OrderTaxCalculation;
-using TaxCategorizationResponse = ordercloud.integrations.library.intefaces.TaxCategorizationResponse;
 using ITaxCalculator = ordercloud.integrations.library.ITaxCalculator;
 using ITaxCodesProvider = ordercloud.integrations.library.intefaces.ITaxCodesProvider;
+using OrderTaxCalculation = ordercloud.integrations.library.OrderTaxCalculation;
 using TaxCategorization = ordercloud.integrations.library.intefaces.TaxCategorization;
+using TaxCategorizationResponse = ordercloud.integrations.library.intefaces.TaxCategorizationResponse;
 
 namespace ordercloud.integrations.avalara
 {

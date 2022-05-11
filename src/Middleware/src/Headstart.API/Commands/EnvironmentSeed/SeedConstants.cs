@@ -383,7 +383,7 @@ namespace Headstart.API.Commands
 	        Name = "US-West"
         };
 
-        public static readonly List<Region> Regions = new List<Region>()
+        public static List<Region> Regions = new List<Region>()
         {
             UsEast,
             AustraliaEast,

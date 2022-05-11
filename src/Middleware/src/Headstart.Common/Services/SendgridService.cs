@@ -16,7 +16,6 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using OrderCloud.SDK;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using static Headstart.Common.Models.SendGridModels;
 using Headstart.Common.Mappers;
 using Newtonsoft.Json;
 using ordercloud.integrations.cardconnect;
@@ -25,6 +24,7 @@ using ordercloud.integrations.library;
 using Headstart.Models.Headstart;
 using OrderCloud.Catalyst;
 using System.Net;
+using static Headstart.Common.Models.SendGridModels;
 
 namespace Headstart.Common.Services
 {

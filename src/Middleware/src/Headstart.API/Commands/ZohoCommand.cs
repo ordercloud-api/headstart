@@ -27,10 +27,10 @@ namespace Headstart.API.Commands.Zoho
 
     public class ZohoCommand : IZohoCommand
     {
-        private readonly IZohoClient _zoho;
-        private readonly IOrderCloudClient _oc;
         private const int delay = 250;
         private const int concurrent = 1;
+        private readonly IZohoClient _zoho;
+        private readonly IOrderCloudClient _oc;
 
         public ZohoCommand(IZohoClient zoho, IOrderCloudClient oc)
         {

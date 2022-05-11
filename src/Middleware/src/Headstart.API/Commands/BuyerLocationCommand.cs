@@ -24,8 +24,8 @@ namespace Headstart.API.Commands
 
     public class HSBuyerLocationCommand : IHSBuyerLocationCommand
     {
-        private IOrderCloudClient _oc;
         private readonly AppSettings _settings;
+        private IOrderCloudClient _oc;
         public HSBuyerLocationCommand(AppSettings settings, IOrderCloudClient oc)
         {
             _settings = settings;
