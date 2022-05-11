@@ -24,8 +24,8 @@ namespace Headstart.API.Commands
 
     public class HSBuyerLocationCommand : IHSBuyerLocationCommand
     {
-        private IOrderCloudClient _oc;
         private readonly AppSettings _settings;
+        private IOrderCloudClient _oc;
         public HSBuyerLocationCommand(AppSettings settings, IOrderCloudClient oc)
         {
             _settings = settings;
@@ -141,7 +141,7 @@ namespace Headstart.API.Commands
             var AddUserTypeRequests = HSUserTypes.BuyerLocation().Select(userType => AddUserTypeToLocation(buyerLocationID, userType, accessToken, ocClient));
             await Task.WhenAll(AddUserTypeRequests);
             var isSeedingEnvironment = ocClient != null;
-            if(!isSeedingEnvironment)
+            if (!isSeedingEnvironment)
             {
                 var approvingGroupID = $"{buyerLocationID}-{UserGroupSuffix.OrderApprover}";
                 await ocClient.ApprovalRules.CreateAsync(buyerID, new ApprovalRule()
@@ -177,25 +177,30 @@ namespace Headstart.API.Commands
 
             var buyerID = buyerLocationID.Split('-').First();
             var userGroupID = $"{buyerLocationID}-{hsUserType.UserGroupIDSuffix}";
-            await ocClient.UserGroups.CreateAsync(buyerID, new PartialUserGroup()
-            {
-                ID = userGroupID,
-                Name = hsUserType.UserGroupName,
-                xp = new
+            await ocClient.UserGroups.CreateAsync(
+                buyerID,
+                new PartialUserGroup()
                 {
-                    Role = hsUserType.UserGroupIDSuffix.ToString(),
-                    Type = hsUserType.UserGroupType,
-                    Location = buyerLocationID
-                }
-            }, token);
+                    ID = userGroupID,
+                    Name = hsUserType.UserGroupName,
+                    xp = new
+                    {
+                        Role = hsUserType.UserGroupIDSuffix.ToString(),
+                        Type = hsUserType.UserGroupType,
+                        Location = buyerLocationID
+                    }
+                },
+                token);
             foreach (var customRole in hsUserType.CustomRoles)
             {
-                await ocClient.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment()
-                {
-                    BuyerID = buyerID,
-                    UserGroupID = userGroupID,
-                    SecurityProfileID = customRole.ToString()
-                }, token);
+                await ocClient.SecurityProfiles.SaveAssignmentAsync(
+                    new SecurityProfileAssignment()
+                    {
+                        BuyerID = buyerID,
+                        UserGroupID = userGroupID,
+                        SecurityProfileID = customRole.ToString()
+                    },
+                    token);
             }
         }
 
@@ -203,11 +208,10 @@ namespace Headstart.API.Commands
         {
             var userGroupAssignments = await _oc.UserGroups.ListAllUserAssignmentsAsync(buyerID, userID: newUserID);
             await Throttler.RunAsync(userGroupAssignments, 100, 5, assignment =>
-                RemoveAndAddUserGroupAssignment(buyerID, newUserID, assignment?.UserGroupID)
-                ); 
+                RemoveAndAddUserGroupAssignment(buyerID, newUserID, assignment?.UserGroupID));
         }
 
-        // Temporary work around for a platform issue. When a new user is registered we need to 
+        // Temporary work around for a platform issue. When a new user is registered we need to
         // delete and reassign usergroup assignments for that user to view products
         // issue: https://four51.atlassian.net/browse/EX-2222
         private async Task RemoveAndAddUserGroupAssignment(string buyerID, string newUserID, string userGroupID)

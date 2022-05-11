@@ -40,7 +40,7 @@ namespace Headstart.API.Commands
         public List<DocumentRowError> Invalid = new List<DocumentRowError>();
     }
 
-    
+
     public class BatchProcessSummary
     {
         public int TotalCount { get; set; }
@@ -50,7 +50,7 @@ namespace Headstart.API.Commands
 
     }
 
-    
+
     public class BatchProcessFailure
     {
         public Misc.Shipment Shipment { get; set; }
@@ -58,7 +58,7 @@ namespace Headstart.API.Commands
 
     }
 
-    
+
     public class BatchProcessResult
     {
         public BatchProcessSummary Meta { get; set; }
@@ -90,9 +90,9 @@ namespace Headstart.API.Commands
             ShipmentItem firstShipmentItem = superShipment.ShipmentItems.First();
             string supplierOrderID = firstShipmentItem.OrderID;
             string buyerOrderID = supplierOrderID.Split("-").First();
-            string buyerID = "";
+            string buyerID = string.Empty;
 
-            // in the platform, in order to make sure the order has the proper Order.Status, you must 
+            // in the platform, in order to make sure the order has the proper Order.Status, you must
             // create a shipment without a DateShipped and then patch the DateShipped after
             DateTimeOffset? dateShipped = superShipment.Shipment.DateShipped;
             superShipment.Shipment.DateShipped = null;
@@ -111,14 +111,17 @@ namespace Headstart.API.Commands
 
             HSShipment ocShipment = await _oc.Shipments.CreateAsync<HSShipment>(superShipment.Shipment, accessToken: decodedToken.AccessToken);
 
-            //  platform issue. Cant save new xp values onto shipment line item. Update order line item to have this value.
-            var shipmentItemsWithComment = superShipment.ShipmentItems.Where(s => s.xp?.Comment != null); 
+            // platform issue. Cant save new xp values onto shipment line item. Update order line item to have this value.
+            var shipmentItemsWithComment = superShipment.ShipmentItems.Where(s => s.xp?.Comment != null);
             await Throttler.RunAsync(shipmentItemsWithComment, 100, 5, (shipmentItem) =>
             {
                 dynamic comments = new ExpandoObject();
                 var commentsByShipment = comments as IDictionary<string, object>;
                 commentsByShipment[ocShipment.ID] = shipmentItem.xp?.Comment;
-                return _oc.LineItems.PatchAsync(OrderDirection.Incoming, buyerOrderID, shipmentItem.LineItemID,
+                return _oc.LineItems.PatchAsync(
+                    OrderDirection.Incoming,
+                    buyerOrderID,
+                    shipmentItem.LineItemID,
                     new PartialLineItem()
                     {
                         xp = new
@@ -168,10 +171,10 @@ namespace Headstart.API.Commands
 
         private async Task<string> GetBuyerIDForSupplierOrder(string supplierOrderID)
         {
-            string buyerID = "";
+            string buyerID = string.Empty;
             string buyerOrderID = supplierOrderID.Split("-").First();
             Order relatedBuyerOrder = await _oc.Orders.GetAsync(OrderDirection.Incoming, buyerOrderID);
-            if(!String.IsNullOrEmpty(relatedBuyerOrder.FromCompanyID))
+            if (!string.IsNullOrEmpty(relatedBuyerOrder.FromCompanyID))
             {
                 buyerID = relatedBuyerOrder.FromCompanyID;
             }
@@ -267,7 +270,7 @@ namespace Headstart.API.Commands
 
 
 
-            foreach(LineItem lineItem in lineItemList.Items)
+            foreach (LineItem lineItem in lineItemList.Items)
 
             {
 
@@ -336,7 +339,7 @@ namespace Headstart.API.Commands
                 Order ocOrder = await GetOutgoingOrder(shipment);
                 LineItem lineItem = await GetOutgoingLineItem(shipment);
 
-                //Don't continue if attempting to ship more items than what's in the order.
+                // Don't continue if attempting to ship more items than what's in the order.
                 ValidateShipmentAmount(shipment, lineItem, ocOrder);
 
                 ShipmentItem newShipmentItem = new ShipmentItem()
@@ -345,12 +348,12 @@ namespace Headstart.API.Commands
                     LineItemID = lineItem.ID,
                     QuantityShipped = Convert.ToInt32(shipment.QuantityShipped),
                     UnitPrice = Convert.ToDecimal(shipment.Cost)
-                    
+
                 };
 
                 ocShipment = await GetShipmentByTrackingNumber(shipment, decodedToken?.AccessToken);
 
-                //If a user included a ShipmentID in the spreadsheet, find that shipment and patch it with the information on that row
+                // If a user included a ShipmentID in the spreadsheet, find that shipment and patch it with the information on that row
                 if (ocShipment != null)
                 {
                     newShipment = PatchShipment(ocShipment, shipment);
@@ -360,14 +363,14 @@ namespace Headstart.API.Commands
                 {
                     Shipment processedShipment = await _oc.Shipments.PatchAsync(newShipment.ID, newShipment, decodedToken?.AccessToken);
 
-                    //Before updating shipment item, must post the shipment line item comment to the order line item due to OC bug.
+                    // Before updating shipment item, must post the shipment line item comment to the order line item due to OC bug.
                     await PatchPartialLineItemComment(shipment, newShipment.ID);
 
                     await PatchLineItemStatus(shipment.OrderID, newShipmentItem, decodedToken);
-                    //POST a shipment item, passing it a Shipment ID parameter, and a request body of Order ID, Line Item ID, and Quantity Shipped
+                    // POST a shipment item, passing it a Shipment ID parameter, and a request body of Order ID, Line Item ID, and Quantity Shipped
                     await _oc.Shipments.SaveItemAsync(newShipment.ID, newShipmentItem, accessToken: decodedToken?.AccessToken);
 
-                    //Re-patch the shipment adding the date shipped now due to oc bug
+                    // Re-patch the shipment adding the date shipped now due to oc bug
                     var repatchedShipment = PatchShipment(ocShipment, shipment);
                     await _oc.Shipments.PatchAsync(newShipment.ID, repatchedShipment);
 
@@ -376,10 +379,10 @@ namespace Headstart.API.Commands
                 }
                 if (lineItem?.ID == null)
                 {
-                    //Before updating shipment item, must post the shipment line item comment to the order line item due to OC bug.
+                    // Before updating shipment item, must post the shipment line item comment to the order line item due to OC bug.
                     await PatchPartialLineItemComment(shipment, newShipment.ID);
 
-                    //Create new lineItem
+                    // Create new lineItem
                     await _oc.Shipments.SaveItemAsync(shipment.ShipmentID, newShipmentItem);
                 }
 
@@ -448,8 +451,8 @@ namespace Headstart.API.Commands
             PartialLineItem partialLineItem;
             Dictionary<string, object> commentDictonary = new Dictionary<string, object>();
 
-            //Add new comment
-            if (shipment?.ShipmentLineItemComment == null || shipment?.ShipmentLineItemComment == "")
+            // Add new comment
+            if (shipment?.ShipmentLineItemComment == null || shipment?.ShipmentLineItemComment == string.Empty)
             {
                 return null;
             }
@@ -471,7 +474,7 @@ namespace Headstart.API.Commands
         {
             Shipment shipmentResponse = null;
 
-            //if dictionary already contains shipment, return that shipment
+            // if dictionary already contains shipment, return that shipment
             if (shipment != null && _shipmentByTrackingNumber.ContainsKey(shipment.TrackingNumber))
             {
                 return _shipmentByTrackingNumber[shipment.TrackingNumber];
@@ -479,7 +482,7 @@ namespace Headstart.API.Commands
 
             if (shipment?.ShipmentID != null)
             {
-                //get shipment if shipmentId is provided
+                // get shipment if shipmentId is provided
                 try
                 {
                     shipmentResponse = await _oc.Shipments.GetAsync(shipment.ShipmentID, accessToken);
@@ -490,14 +493,14 @@ namespace Headstart.API.Commands
                 }
                 if (shipmentResponse != null)
                 {
-                    //add shipment to dictionary if it's found
+                    // add shipment to dictionary if it's found
                     _shipmentByTrackingNumber.Add(shipmentResponse.TrackingNumber, shipmentResponse);
                 }
             }
             else if (shipment?.ShipmentID == null)
             {
                 PartialShipment newShipment = PatchShipment(null, shipment);
-                //Create shipment for tracking number provided if shipmentId wasn't included
+                // Create shipment for tracking number provided if shipmentId wasn't included
                 shipmentResponse = await _oc.Shipments.CreateAsync(newShipment, accessToken);
                 if (shipmentResponse != null)
                 {
@@ -531,7 +534,7 @@ namespace Headstart.API.Commands
 
             newShipment.BuyerID = shipment.BuyerID;
             newShipment.Shipper = shipment.Shipper;
-            newShipment.DateShipped = isCreatingNew ? null : shipment.DateShipped; //Must patch to null on new creation due to OC bug
+            newShipment.DateShipped = isCreatingNew ? null : shipment.DateShipped; // Must patch to null on new creation due to OC bug
             newShipment.DateDelivered = shipment.DateDelivered;
             newShipment.TrackingNumber = shipment.TrackingNumber;
             newShipment.Cost = Convert.ToDecimal(shipment.Cost);
@@ -594,7 +597,7 @@ namespace Headstart.API.Commands
         private static bool ShouldIgnoreRow(Misc.Shipment value)
         {
             string exampleSignifier = "//EXAMPLE//";
-            //Ignore if the row is empty, or if it's the example row.
+            // Ignore if the row is empty, or if it's the example row.
             if (value == null) { return false; }
             if (value.OrderID?.ToUpper() == exampleSignifier) { return true; }
 

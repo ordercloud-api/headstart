@@ -29,8 +29,7 @@ namespace Headstart.Tests
             string catalogID1,
             string catalogID2,
             string buyerID,
-            string userID
-        )
+            string userID)
         {
             // Arrange
             assignedGroups.Items = new List<HSLocationUserGroup>()
@@ -42,7 +41,7 @@ namespace Headstart.Tests
                     xp = new HSLocationUserGroupXp
                     {
                         Type = "BuyerLocation",
-                        CatalogAssignments = new List<string>{ catalogID1 }
+                        CatalogAssignments = new List<string> { catalogID1 }
                     }
                 },
                 // define a Catalog assignment that is assigned but shouldn't be
@@ -88,8 +87,7 @@ namespace Headstart.Tests
             string catalogID1,
             string catalogID2,
             string buyerID,
-            string userID
-        )
+            string userID)
         {
             // Arrange
             assignedGroups.Items = new List<HSLocationUserGroup>()
@@ -101,7 +99,7 @@ namespace Headstart.Tests
                     xp = new HSLocationUserGroupXp
                     {
                         Type = "BuyerLocation",
-                        CatalogAssignments = new List<string>{ catalogID1 }
+                        CatalogAssignments = new List<string> { catalogID1 }
                     }
                 },
             };

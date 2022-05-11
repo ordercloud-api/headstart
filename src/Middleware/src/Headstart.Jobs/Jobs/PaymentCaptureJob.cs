@@ -45,7 +45,7 @@ namespace Headstart.Jobs
                 ["xp.SubmittedOrderStatus"] = "!Canceled"
             };
 
-            var orders = await  _oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Incoming, filters: filters);
+            var orders = await _oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Incoming, filters: filters);
             _logger.LogInformation($"Found {orders.Count} orders to process");
 
             await Throttler.RunAsync(orders, 100, 5, ProcessSingleOrder);
@@ -56,7 +56,7 @@ namespace Headstart.Jobs
             try
             {
                 var rmaList = await _rmaCommand.ListRMAsByOrderID(order.ID, CommerceRole.Seller, new MeUser { });
-                if(rmaList.Items.Any(x => x.Status == RMAStatus.Complete))
+                if (rmaList.Items.Any(x => x.Status == RMAStatus.Complete))
                 {
                     LogSkip($"{order.ID} has been refunded - RMA process handles authorizing new partial amount if necessary");
                     await _oc.Orders.PatchAsync(OrderDirection.Incoming, order.ID, new PartialOrder { xp = new { IsPaymentCaptured = true } });
@@ -78,7 +78,7 @@ namespace Headstart.Jobs
             }
             catch (OrderCloudException ex)
             {
-                LogFailure($"{ ex.InnerException.Message} { JsonConvert.SerializeObject(ex.Errors)}. OrderID: {order.ID}");
+                LogFailure($"{ex.InnerException.Message} {JsonConvert.SerializeObject(ex.Errors)}. OrderID: {order.ID}");
             }
             catch (PaymentCaptureJobException ex)
             {
@@ -121,8 +121,7 @@ namespace Headstart.Jobs
             var authHasBeenVoided = payment.Transactions.Any(t =>
                                             t.Type == "CreditCardVoidAuthorization" &&
                                             t.Succeeded &&
-                                            t.xp?.CardConnectResponse?.retref == transaction.xp?.CardConnectResponse?.retref
-                                         );
+                                            t.xp?.CardConnectResponse?.retref == transaction.xp?.CardConnectResponse?.retref);
             if (authHasBeenVoided)
             {
                 throw new PaymentCaptureJobException("Payment authorization has been voided", orderID, payment.ID, transaction.ID);

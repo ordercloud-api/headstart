@@ -32,7 +32,7 @@ namespace Headstart.API.Commands
     public class LocationPermissionCommand : ILocationPermissionCommand
     {
         private readonly IOrderCloudClient _oc;
-        
+
         public LocationPermissionCommand(IOrderCloudClient oc)
         {
 			_oc = oc;
@@ -130,8 +130,7 @@ namespace Headstart.API.Commands
         {
             var user = await _oc.Users.GetAsync(
                 buyerID,
-                userID
-                );
+                userID);
             var userGroups = new ListPage<HSLocationUserGroup>();
             var assigned = args.Filters.FirstOrDefault(f => f.PropertyName == "assigned").FilterExpression;
 
@@ -142,21 +141,19 @@ namespace Headstart.API.Commands
                    search: args.Search,
                    filters: $"xp.Country={user.xp.Country}&xp.Type=BuyerLocation",
                    page: args.Page,
-                   pageSize: 100
-                   );
+                   pageSize: 100);
             } else
             {
                 var userUserGroupAssignments = await GetUserUserGroupAssignments("BuyerLocation", buyerID, userID, decodedToken);
                 var userBuyerLocationAssignments = new List<HSLocationUserGroup>();
                 foreach (var assignment in userUserGroupAssignments)
                 {
-                    //Buyer Location user groups are formatted as {buyerID}-{userID}.  This eliminates the unnecessary groups that end in "-{OrderApproval}", for example, helping performance.
+                    // Buyer Location user groups are formatted as {buyerID}-{userID}.  This eliminates the unnecessary groups that end in "-{OrderApproval}", for example, helping performance.
                     if (assignment.UserGroupID.Split('-').Length == 2)
                     {
                         var userGroupLocation = await _oc.UserGroups.GetAsync<HSLocationUserGroup>(
                             buyerID,
-                            assignment.UserGroupID
-                            );
+                            assignment.UserGroupID);
                             if (args.Search == null || userGroupLocation.Name.ToLower().Contains(args.Search))
                             {
                                 userBuyerLocationAssignments.Add(userGroupLocation);
@@ -184,18 +181,16 @@ namespace Headstart.API.Commands
         {
             if (userGroupType == "UserPermissions")
             {
-                return await  _oc.SupplierUserGroups.ListAllUserAssignmentsAsync(
+                return await _oc.SupplierUserGroups.ListAllUserAssignmentsAsync(
                    parentID,
                    userID: userID,
-                   accessToken: decodedToken.AccessToken
-                   );
+                   accessToken: decodedToken.AccessToken);
             } else
             {
                 return await _oc.UserGroups.ListAllUserAssignmentsAsync(
                    parentID,
                    userID: userID,
-                   accessToken: decodedToken.AccessToken
-                   );
+                   accessToken: decodedToken.AccessToken);
             }
         }
 
@@ -206,9 +201,8 @@ namespace Headstart.API.Commands
                    search: args.Search,
                    filters: $"xp.Country={homeCountry}&xp.Type=BuyerLocation",
                    page: args.Page,
-                   pageSize: 100
-                   );
+                   pageSize: 100);
             return userGroups;
         }
-    };
+    }
 }

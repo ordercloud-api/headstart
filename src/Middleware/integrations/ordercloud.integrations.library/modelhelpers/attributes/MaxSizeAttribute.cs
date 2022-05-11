@@ -7,7 +7,8 @@ namespace ordercloud.integrations.library
 {
     public class MaxSizeAttribute : StringLengthAttribute
     {
-        public MaxSizeAttribute(int length) : base(length) { }
+        public MaxSizeAttribute(int length)
+            : base(length) { }
 
         public override bool IsValid(object value)
         {

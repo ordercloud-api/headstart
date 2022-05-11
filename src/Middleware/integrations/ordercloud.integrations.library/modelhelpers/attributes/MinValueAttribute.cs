@@ -7,8 +7,10 @@ namespace ordercloud.integrations.library
 {
     public class MinValueAttribute : RangeAttribute
     {
-        public MinValueAttribute(int value) : base(value, int.MaxValue) { }
-        public MinValueAttribute(double value) : base(value, double.MaxValue) { }
+        public MinValueAttribute(int value)
+            : base(value, int.MaxValue) { }
+        public MinValueAttribute(double value)
+            : base(value, double.MaxValue) { }
 
         public override string FormatErrorMessage(string name)
         {

@@ -82,11 +82,11 @@ namespace Headstart.API.Commands
 
         public async Task<List<Address>> BuyerLocation(string templateID, DecodedToken decodedToken)
         {
-            //Get stored template from Cosmos DB container
+            // Get stored template from Cosmos DB container
             var template = await _template.Get(templateID, decodedToken);
             var allBuyerLocations = new List<Address>();
 
-            //Logic if no Buyer ID is supplied
+            // Logic if no Buyer ID is supplied
             if (template.Filters.BuyerID.Count == 0)
             {
                 var buyers = await _oc.Buyers.ListAllAsync<HSBuyer>();
@@ -98,26 +98,25 @@ namespace Headstart.API.Commands
 
             foreach (var buyerID in template.Filters.BuyerID)
             {
-                //For every buyer included in the template filters, grab all buyer locations (exceeding 100 maximum)
+                // For every buyer included in the template filters, grab all buyer locations (exceeding 100 maximum)
                 var buyerLocations = await _oc.Addresses.ListAllAsync<Address>(
-                    buyerID
-                );
+                    buyerID);
                 allBuyerLocations.AddRange(buyerLocations);
             }
-            //Use reflection to determine available filters from model
+            // Use reflection to determine available filters from model
             var filterClassProperties = template.Filters.GetType().GetProperties();
-            //Create dictionary of key/value pairings of filters, where provided in the template
+            // Create dictionary of key/value pairings of filters, where provided in the template
             var filtersToEvaluateMap = new Dictionary<PropertyInfo, List<string>>();
             foreach (var property in filterClassProperties)
             {
-                //See if there are filters provided on the property.  If no values supplied, do not evaluate the filter.
+                // See if there are filters provided on the property.  If no values supplied, do not evaluate the filter.
                 List<string> propertyFilters = (List<string>)property.GetValue(template.Filters);
                 if (propertyFilters != null && propertyFilters.Count > 0 && property.Name != "BuyerID")
                 {
                     filtersToEvaluateMap.Add(property, (List<string>)property.GetValue(template.Filters));
                 }
             }
-            //Filter through collected records, adding only those that pass the PassesFilters check.
+            // Filter through collected records, adding only those that pass the PassesFilters check.
             var filteredBuyerLocations = new List<Address>();
             foreach (var location in allBuyerLocations)
             {
@@ -331,7 +330,7 @@ namespace Headstart.API.Commands
                     {
                         if (decodedToken.CommerceRole == CommerceRole.Supplier)
                         {
-                            //filter down to only current supplierID
+                            // filter down to only current supplierID
                             var lineWithPOOrderFields = detailData.Data.LineItemsWithPurchaseOrderFields != null ? detailData.Data.LineItemsWithPurchaseOrderFields.FirstOrDefault(line => line.SupplierID == me.Supplier.ID && line.ID == lineDetail.ID) : null;
 
                             if (lineWithPOOrderFields != null)

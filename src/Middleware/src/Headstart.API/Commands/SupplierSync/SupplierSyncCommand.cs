@@ -39,23 +39,23 @@ namespace Headstart.API.Commands
             }
             try
             {
-                var type = 
+                var type =
                     Assembly.GetExecutingAssembly().GetTypeByAttribute<SupplierSyncAttribute>(attribute => attribute.SupplierID == supplierID) ??
                     Assembly.GetExecutingAssembly().GetTypeByAttribute<SupplierSyncAttribute>(attribute => attribute.SupplierID == "Generic");
                 if (type == null) throw new MissingMethodException($"Command for {supplierID} is unavailable");
 
-                var command = (ISupplierSyncCommand) Activator.CreateInstance(type, _settings);
+                var command = (ISupplierSyncCommand)Activator.CreateInstance(type, _settings);
                 var method = command.GetType().GetMethod($"GetOrderAsync", BindingFlags.Public | BindingFlags.Instance);
                 if (method == null)
                     throw new MissingMethodException($"Get Order Method for {supplierID} is unavailable");
 
-                return await (Task<JObject>) method.Invoke(command, new object[] {ID, orderType, decodedToken });
+                return await (Task<JObject>)method.Invoke(command, new object[] { ID, orderType, decodedToken });
             }
             catch (MissingMethodException mex)
             {
                 throw new Exception(JsonConvert.SerializeObject(new ApiError()
                 {
-                    Data = new { decodedToken, OrderID = ID, OrderType = orderType},
+                    Data = new { decodedToken, OrderID = ID, OrderType = orderType },
                     ErrorCode = mex.Message,
                     Message = $"Missing Method for: {supplierID ?? "Invalid Supplier"}"
                 }));

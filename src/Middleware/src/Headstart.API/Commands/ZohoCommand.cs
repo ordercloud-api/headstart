@@ -27,10 +27,10 @@ namespace Headstart.API.Commands.Zoho
 
     public class ZohoCommand : IZohoCommand
     {
-        private readonly IZohoClient _zoho;
-        private readonly IOrderCloudClient _oc;
         private const int delay = 250;
         private const int concurrent = 1;
+        private readonly IZohoClient _zoho;
+        private readonly IOrderCloudClient _oc;
 
         public ZohoCommand(IZohoClient zoho, IOrderCloudClient oc)
         {
@@ -38,7 +38,7 @@ namespace Headstart.API.Commands.Zoho
             _oc = oc;
             _zoho.AuthenticateAsync();
         }
-        
+
         public async Task<ZohoOrganizationList> ListOrganizations()
         {
             await _zoho.AuthenticateAsync();
@@ -118,7 +118,7 @@ namespace Headstart.API.Commands.Zoho
             var results = new List<ZohoPurchaseOrder>();
             foreach (var order in orders)
             {
-                var delivery_address = z_order.shipping_address; //TODO: this is not good enough. Might even need to go back to SaleOrder and split out by delivery address
+                var delivery_address = z_order.shipping_address; // TODO: this is not good enough. Might even need to go back to SaleOrder and split out by delivery address
                 var supplier = await _oc.Suppliers.GetAsync(order.ToCompanyID);
                 // TODO: accomodate possibility of more than 100 line items
                 var lineitems = await _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, order.ID);
@@ -178,7 +178,7 @@ namespace Headstart.API.Commands.Zoho
             // TODO: accomodate possibility of more than 100 line items
             // Overview: variants will be saved in Zoho as the Item. If the variant is null save the Product as the Item
 
-            // gather IDs either at the product or variant level to search Zoho for existing Items 
+            // gather IDs either at the product or variant level to search Zoho for existing Items
             var uniqueLineItems = lineitems.DistinctBy(item => item.SKU()).ToList();
 
             var zItems = await Throttler.RunAsync(uniqueLineItems, delay, concurrent, id => _zoho.Items.ListAsync(new ZohoFilter()

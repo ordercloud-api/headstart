@@ -102,7 +102,7 @@ namespace Headstart.Common.Models
             public decimal? ShippingCost { get; set; }
             public decimal? PromotionalDiscount { get; set; }
             public decimal? Total { get; set; }
-            public  string Currency { get; set; }
+            public string Currency { get; set; }
             public string Comments { get; set; }
         }
 

@@ -35,14 +35,14 @@ namespace Headstart.Common.Services.CMS
             var container = _blob.Container.Name;
             var assetGuid = Guid.NewGuid().ToString();
 
-            using(var image = Image.FromStream(asset.File.OpenReadStream()))
+            using (var image = Image.FromStream(asset.File.OpenReadStream()))
             {
                 var small = image.ResizeSmallerDimensionToTarget(100);
                 var medium = image.ResizeSmallerDimensionToTarget(300);
                 await Task.WhenAll(new[] {
                     _blob.Save(assetGuid, medium.ToBytes(ImageFormat.Png), "image/png"),
                     _blob.Save($"{assetGuid}-s", small.ToBytes(ImageFormat.Png), "image/png")
-                }); 
+                });
             }
             return new ImageAsset
             {
@@ -92,6 +92,6 @@ namespace Headstart.Common.Services.CMS
         private string GetBaseUrl()
         {
             return _settings.StorageAccountSettings.BlobPrimaryEndpoint.EndsWith("/") ? _settings.StorageAccountSettings.BlobPrimaryEndpoint : _settings.StorageAccountSettings.BlobPrimaryEndpoint + "/";
-        } 
+        }
     }
 }

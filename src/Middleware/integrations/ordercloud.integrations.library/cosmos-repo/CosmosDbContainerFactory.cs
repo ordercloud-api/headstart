@@ -17,9 +17,10 @@ namespace ordercloud.integrations.library
         private readonly string _databaseName;
         private readonly List<ContainerInfo> _containers;
 
-        public CosmosDbContainerFactory(CosmosClient cosmosClient,
-                                   string databaseName,
-                                   List<ContainerInfo> containers)
+        public CosmosDbContainerFactory(
+            CosmosClient cosmosClient,
+            string databaseName,
+            List<ContainerInfo> containers)
         {
             _databaseName = databaseName ?? throw new ArgumentNullException(nameof(databaseName));
             _containers = containers ?? throw new ArgumentNullException(nameof(containers));

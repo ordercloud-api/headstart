@@ -5,18 +5,18 @@ using RequiredAttribute = System.ComponentModel.DataAnnotations.RequiredAttribut
 
 namespace Headstart.Models
 {
-    
+
     public class HSSpec : Spec, IHSObject
     {
-       
+
     }
 
-    
+
     public class SpecXp
     {
         [Required]
         public SpecUI UI { get; set; } = new SpecUI();
     }
 
-    
+
 }

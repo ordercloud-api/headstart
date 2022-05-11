@@ -10,11 +10,11 @@ using ordercloud.integrations.library;
 using System.Linq;
 using OrderCloud.Catalyst;
 using ordercloud.integrations.library.intefaces;
-using OrderTaxCalculation = ordercloud.integrations.library.OrderTaxCalculation;
-using TaxCategorizationResponse = ordercloud.integrations.library.intefaces.TaxCategorizationResponse;
 using ITaxCalculator = ordercloud.integrations.library.ITaxCalculator;
 using ITaxCodesProvider = ordercloud.integrations.library.intefaces.ITaxCodesProvider;
+using OrderTaxCalculation = ordercloud.integrations.library.OrderTaxCalculation;
 using TaxCategorization = ordercloud.integrations.library.intefaces.TaxCategorization;
+using TaxCategorizationResponse = ordercloud.integrations.library.intefaces.TaxCategorizationResponse;
 
 namespace ordercloud.integrations.avalara
 {
@@ -31,7 +31,12 @@ namespace ordercloud.integrations.avalara
 		Task<TaxCategorizationResponse> ListTaxCodesAsync(string searchTerm);
 	}
 
-	public enum AppEnvironment { Test, Staging, Production }
+	public enum AppEnvironment
+    {
+        Test,
+        Staging,
+        Production
+    }
 
 	public class AvalaraCommand : IAvalaraCommand, ITaxCalculator, ITaxCodesProvider
 	{
@@ -51,7 +56,7 @@ namespace ordercloud.integrations.avalara
 
 			_companyCode = _settings.CompanyCode;
 			_baseUrl = _settings.BaseApiUrl;
-			if(hasAccountCredentials) {
+			if (hasAccountCredentials) {
 				_avaTax = new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(settings.BaseApiUrl)).WithSecurity(settings.AccountID, settings.LicenseKey);
 			}
         }
@@ -112,7 +117,7 @@ namespace ordercloud.integrations.avalara
 			if (ShouldMockAvalaraResponse()) { return CreateMockTransactionModel(); }
 
 			var model = new CommitTransactionModel() { commit = true };
-			var transaction = await _avaTax.CommitTransactionAsync(_companyCode, transactionCode, DocumentType.SalesInvoice, "", model);
+			var transaction = await _avaTax.CommitTransactionAsync(_companyCode, transactionCode, DocumentType.SalesInvoice, string.Empty, model);
 			return transaction.ToOrderTaxCalculation();
 		}
 
@@ -135,7 +140,7 @@ namespace ordercloud.integrations.avalara
 				{
 					if (ShouldMockAvalaraResponse()) { return CreateMockTransactionModel(); }
 					var createTransactionModel = orderWorksheet.ToAvalaraTransactionModel(_companyCode, docType, promotions);
-					var transaction = await _avaTax.CreateTransactionAsync("", createTransactionModel);
+					var transaction = await _avaTax.CreateTransactionAsync(string.Empty, createTransactionModel);
 					return transaction.ToOrderTaxCalculation();
 				}
 				catch (AvaTaxError e)
@@ -151,7 +156,7 @@ namespace ordercloud.integrations.avalara
 					TotalTax = 0
 				};
             }
-			
+
 		}
 	}
 }

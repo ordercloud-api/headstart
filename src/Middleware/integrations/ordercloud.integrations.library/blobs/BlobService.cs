@@ -56,7 +56,7 @@ namespace ordercloud.integrations.library
         }
         private async Task Init()
         {
-            if(IsInitialized)
+            if (IsInitialized)
             {
                 return;
             }
@@ -120,8 +120,12 @@ namespace ordercloud.integrations.library
             var block = Container.GetBlockBlobReference(reference);
             if (fileType != null)
                 block.Properties.ContentType = fileType;
-            await block.UploadTextAsync(JsonConvert.SerializeObject(blob), Encoding.UTF8, AccessCondition.GenerateEmptyCondition(),
-                new BlobRequestOptions() { SingleBlobUploadThresholdInBytes = 4 * 1024 * 1024 }, new OperationContext());
+            await block.UploadTextAsync(
+                JsonConvert.SerializeObject(blob),
+                Encoding.UTF8,
+                AccessCondition.GenerateEmptyCondition(),
+                new BlobRequestOptions() { SingleBlobUploadThresholdInBytes = 4 * 1024 * 1024 },
+                new OperationContext());
         }
         public async Task Save(string reference, byte[] bytes, string fileType = null, string cacheControl = null)
         {

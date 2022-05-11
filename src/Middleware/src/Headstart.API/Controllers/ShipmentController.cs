@@ -16,7 +16,7 @@ namespace Headstart.Common.Controllers
     [Route("shipment")]
     public class ShipmentController : CatalystController
     {
-        
+
         private readonly IShipmentCommand _command;
         public ShipmentController(IShipmentCommand command)
         {
@@ -33,16 +33,16 @@ namespace Headstart.Common.Controllers
 
             // todo add auth to make sure suppliers are creating shipments for their own orders
             return await _command.CreateShipment(superShipment, UserContext);
-        } 
+        }
 
         /// <summary>
         /// POST Batch Shipment Update
-        /// </summary>    
+        /// </summary>
         [HttpPost, Route("batch/uploadshipment"), OrderCloudUserAuth(ApiRole.ShipmentAdmin)]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<BatchProcessResult> UploadShipments([FromForm] FileUpload fileRequest)
         {
-            return  await _command.UploadShipments(fileRequest?.File, UserContext);
+            return await _command.UploadShipments(fileRequest?.File, UserContext);
         }
     }
 

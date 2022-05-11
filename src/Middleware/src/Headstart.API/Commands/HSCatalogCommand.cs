@@ -37,14 +37,15 @@ namespace Headstart.API.Commands.Crud
 
 		public async Task<ListPage<HSCatalog>> List(string buyerID, ListArgs<HSCatalog> args, DecodedToken decodedToken)
 		{
-			return await _oc.UserGroups.ListAsync<HSCatalog>(buyerID, 
+			return await _oc.UserGroups.ListAsync<HSCatalog>(
+                buyerID,
 				filters: "xp.Type=Catalog",
 				search: args.Search,
 				pageSize: args.PageSize,
 				page: args.Page,
 				accessToken: decodedToken.AccessToken);
 		}
-		
+
 		public async Task<ListPage<HSCatalogAssignment>> GetAssignments(string buyerID, string locationID, DecodedToken decodedToken)
 		{
 			// assignments are stored on location usergroup xp in a string array with the ids of the catalogs
@@ -53,9 +54,9 @@ namespace Headstart.API.Commands.Crud
 
 			var location = await _oc.UserGroups.GetAsync<HSLocationUserGroup>(buyerID, locationID, decodedToken.AccessToken);
 
-			var catalogAssignments = new List<HSCatalogAssignment>{};
-			
-			if(location.xp.CatalogAssignments != null)
+			var catalogAssignments = new List<HSCatalogAssignment> { };
+
+			if (location.xp.CatalogAssignments != null)
 			{
 				catalogAssignments = location.xp.CatalogAssignments.Select(catalogIDOnXp => new HSCatalogAssignment()
 					{
@@ -73,8 +74,8 @@ namespace Headstart.API.Commands.Crud
 			await UpdateUserCatalogAssignmentsForLocation(buyerID, locationID);
 		}
 
-		//	This function looks at all catalog-user-group ids on the xp.CatalogAssignments array of all assigned BuyerLocation usergroups
-		//	Then we add or remove usergroup assignments so the actual assignments allign with what is in the BuyerLocation usergroups
+		// This function looks at all catalog-user-group ids on the xp.CatalogAssignments array of all assigned BuyerLocation usergroups
+		// Then we add or remove usergroup assignments so the actual assignments allign with what is in the BuyerLocation usergroups
 		public async Task SyncUserCatalogAssignments(string buyerID, string userID)
         {
 			// retrieve the data we'll need for further analysis
@@ -82,7 +83,7 @@ namespace Headstart.API.Commands.Crud
 			var assignedGroupIDs = allUserAssignments?.Select(assignment => assignment?.UserGroupID)?.ToList();
 			var assignedGroups = await _oc.UserGroups.ListAsync<HSLocationUserGroup>(buyerID: buyerID, filters: $"ID={string.Join("|", assignedGroupIDs)}", pageSize: 100);
 			var existingCatalogs = await _oc.UserGroups.ListAsync<HSLocationUserGroup>(buyerID, filters: "xp.Type=Catalog", pageSize: 100);
-			
+
 			// from the data extract the relevant catalogIDs
 			var expectedAssignedCatalogIDs = assignedGroups.Items?.Where(item => (item?.xp?.Type == "BuyerLocation"))?.SelectMany(c => c?.xp?.CatalogAssignments);
 			var actualAssignedCatalogIDs = assignedGroups.Items?.Where(item => item?.xp?.Type == "Catalog")?.Select(c => c.ID)?.ToList();
@@ -118,7 +119,7 @@ namespace Headstart.API.Commands.Crud
 				});
 			} catch (Exception ex)
 			{
-				Console.WriteLine(ex.Message);	
+				Console.WriteLine(ex.Message);
 			}
 
 		}

@@ -7,6 +7,11 @@
     <Authors>Four51, Inc.</Authors>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\ordercloud.integrations.library\ordercloud.integrations.library.csproj" />
   </ItemGroup>
@@ -14,6 +19,13 @@
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Storage\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

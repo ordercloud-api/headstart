@@ -57,9 +57,9 @@ namespace ordercloud.integrations.vertex
 				{
 					value = lineItem.Quantity
 				},
-				unitPrice = (double) lineItem.UnitPrice,
+				unitPrice = (double)lineItem.UnitPrice,
 				lineItemId = lineItem.ID,
-				extendedPrice = (double) lineItem.LineTotal // this takes precedence over quanitity and unit price in determining tax cost
+				extendedPrice = (double)lineItem.LineTotal // this takes precedence over quanitity and unit price in determining tax cost
 			};
 		}
 
@@ -81,7 +81,7 @@ namespace ordercloud.integrations.vertex
 				{
 					value = 1
 				},
-				unitPrice = (double) selectedMethod.Cost,
+				unitPrice = (double)selectedMethod.Cost,
 				lineItemId = shipEstimate.ID,
 			};
 		}

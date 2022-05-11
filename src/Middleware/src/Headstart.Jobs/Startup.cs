@@ -45,8 +45,7 @@ namespace Headstart.Jobs
                 settings.CosmosSettings.DatabaseName,
                 settings.CosmosSettings.EndpointUri,
                 settings.CosmosSettings.PrimaryKey,
-                settings.CosmosSettings.RequestTimeoutInSeconds
-            );
+                settings.CosmosSettings.RequestTimeoutInSeconds);
 
             var cosmosContainers = new List<ContainerInfo>()
             {

@@ -58,42 +58,40 @@ namespace Headstart.API.Commands
         private async Task ValidateOrderAsync(HSOrderWorksheet worksheet, OrderCloudIntegrationsCreditCardPayment payment, string userToken)
         {
             Require.That(
-                !worksheet.Order.IsSubmitted, 
-                new ErrorCode("OrderSubmit.AlreadySubmitted", "Order has already been submitted")
-            );
+                !worksheet.Order.IsSubmitted,
+                new ErrorCode("OrderSubmit.AlreadySubmitted", "Order has already been submitted"));
 
             var shipMethodsWithoutSelections = worksheet?.ShipEstimateResponse?.ShipEstimates?.Where(estimate => estimate.SelectedShipMethodID == null);
             Require.That(
                 worksheet?.ShipEstimateResponse != null &&
-                shipMethodsWithoutSelections.Count() == 0, 
-                new ErrorCode("OrderSubmit.MissingShippingSelections", "All shipments on an order must have a selection"), shipMethodsWithoutSelections
-                );
+                shipMethodsWithoutSelections.Count() == 0,
+                new ErrorCode("OrderSubmit.MissingShippingSelections", "All shipments on an order must have a selection"),
+                shipMethodsWithoutSelections);
 
             Require.That(
                 !worksheet.LineItems.Any() || payment != null,
                 new ErrorCode("OrderSubmit.MissingPayment", "Order contains standard line items and must include credit card payment details"),
-                worksheet.LineItems
-            );
+                worksheet.LineItems);
             var lineItemsInactive = await GetInactiveLineItems(worksheet, userToken);
             Require.That(
                 !lineItemsInactive.Any(),
-                new ErrorCode("OrderSubmit.InvalidProducts", "Order contains line items for products that are inactive"), lineItemsInactive
-            );
+                new ErrorCode("OrderSubmit.InvalidProducts", "Order contains line items for products that are inactive"),
+                lineItemsInactive);
 
             try
             {
                 // ordercloud validates the same stuff that would be checked on order submit
                 await _oc.Orders.ValidateAsync(OrderDirection.Incoming, worksheet.Order.ID);
-            } catch(OrderCloudException ex) {
+            } catch (OrderCloudException ex) {
                 // credit card payments aren't accepted yet, so ignore this error for now
                 // we'll accept the payment once the credit card auth goes through (before order submit)
                 var errors = ex.Errors.Where(ex => ex.ErrorCode != "Order.CannotSubmitWithUnaccceptedPayments");
-                if(errors.Any())
+                if (errors.Any())
                 {
                     throw new CatalystBaseException("OrderSubmit.OrderCloudValidationError", "Failed ordercloud validation, see Data for details", errors);
                 }
             }
-            
+
         }
 
         private async Task<List<HSLineItem>> GetInactiveLineItems(HSOrderWorksheet worksheet, string userToken)
@@ -117,11 +115,11 @@ namespace Headstart.API.Commands
         {
             if (worksheet.Order.xp.IsResubmitting == true)
             {
-                // orders marked with IsResubmitting true are orders that were on hold and then declined 
+                // orders marked with IsResubmitting true are orders that were on hold and then declined
                 // so buyer needs to resubmit but we don't want to increment order again
                 return worksheet.Order.ID;
             }
-            if(worksheet.Order.ID.StartsWith(_settings.OrderCloudSettings.IncrementorPrefix))
+            if (worksheet.Order.ID.StartsWith(_settings.OrderCloudSettings.IncrementorPrefix))
             {
                 // order has already been incremented, no need to increment again
                 return worksheet.Order.ID;

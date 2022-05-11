@@ -77,7 +77,7 @@ namespace Headstart.API.Commands
                     ICell cell = sheetRow.CreateCell(j++);
                     if (header.Contains("."))
                     {
-                        if (dataJSON[header.Split(".")[0]].ToString() != "")
+                        if (dataJSON[header.Split(".")[0]].ToString() != string.Empty)
                         {
                             var split = header.Split(".");
                             var dataValue = dataJSON;
@@ -120,7 +120,7 @@ namespace Headstart.API.Commands
                         }
                         else
                         {
-                            cell.SetCellValue("");
+                            cell.SetCellValue(string.Empty);
                         }
                     }
                     else

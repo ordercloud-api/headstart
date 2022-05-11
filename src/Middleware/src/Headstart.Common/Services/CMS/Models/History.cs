@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Headstart.Common.Services.CMS.Models
 {
-	
+
 	public class History
 	{
 		public DateTimeOffset DateCreated { get; set; }

@@ -11,7 +11,7 @@ namespace ordercloud.integrations.library
             // http://stackoverflow.com/a/672212/62600
 
             var member = (property.Body.NodeType == ExpressionType.Convert)
-                ? ((UnaryExpression) property.Body).Operand as MemberExpression
+                ? ((UnaryExpression)property.Body).Operand as MemberExpression
                 : property.Body as MemberExpression;
 
             if (member == null)

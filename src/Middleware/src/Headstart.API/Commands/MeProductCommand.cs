@@ -30,13 +30,12 @@ namespace Headstart.API.Commands
 		private readonly AppSettings _settings;
 
 		public MeProductCommand(
-			IOrderCloudClient elevatedOc, 
+			IOrderCloudClient elevatedOc,
 			IHSBuyerCommand hsBuyerCommand,
 			ISendgridService sendgridService,
 			ISimpleCache cache,
 			IExchangeRatesCommand exchangeRatesCommand,
-			AppSettings settings
-		)
+			AppSettings settings)
 		{
 			_oc = elevatedOc;
 			_hsBuyerCommand = hsBuyerCommand;
@@ -50,7 +49,7 @@ namespace Headstart.API.Commands
 			var _product = _oc.Me.GetProductAsync<HSMeProduct>(id, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: decodedToken.AccessToken);
 			var _specs = _oc.Me.ListSpecsAsync(id, null, null, decodedToken.AccessToken);
 			var _variants = _oc.Products.ListVariantsAsync<HSVariant>(id, null, null, null, 1, 100, null);
-			var unconvertedSuperHsProduct = new SuperHSMeProduct 
+			var unconvertedSuperHsProduct = new SuperHSMeProduct
 			{
 				Product = await _product,
 				PriceSchedule = (await _product).PriceSchedule,
@@ -71,7 +70,7 @@ namespace Headstart.API.Commands
 			var markedupProduct = ApplyBuyerProductPricing(superHsProduct.Product, defaultMarkupMultiplier, exchangeRates);
 			var productCurrency = superHsProduct.Product.xp.Currency ?? CurrencySymbol.USD;
 			var markedupSpecs = ApplySpecMarkups(superHsProduct.Specs.ToList(), productCurrency, exchangeRates);
-		
+
 			superHsProduct.Product = markedupProduct;
 			superHsProduct.Specs = markedupSpecs;
 			return superHsProduct;
@@ -97,17 +96,17 @@ namespace Headstart.API.Commands
 
 		public async Task<ListPageWithFacets<HSMeProduct>> List(ListArgs<HSMeProduct> args, DecodedToken decodedToken)
 		{
-			var searchText = args.Search ?? "";
-			var searchFields = args.Search!=null ? "ID,Name,Description,xp.Facets.supplier" : "";
+			var searchText = args.Search ?? string.Empty;
+			var searchFields = args.Search != null ? "ID,Name,Description,xp.Facets.supplier" : string.Empty;
 			var sortBy = args.SortBy.FirstOrDefault();
 			var filters = string.IsNullOrEmpty(args.ToFilterString()) ? null : args.ToFilterString();
 			var meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: filters, page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.ExactPhrasePrefix, sortBy: sortBy, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: decodedToken.AccessToken);
-			if(!(bool)(meProducts?.Items?.Any()))
+			if (!(bool)(meProducts?.Items?.Any()))
             {
 				meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: filters, page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.AnyTerm, sortBy: sortBy, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: decodedToken.AccessToken);
 				if (!(bool)(meProducts?.Items?.Any()))
                 {
-					//if no products after retry search, avoid making extra calls for pricing details
+					// if no products after retry search, avoid making extra calls for pricing details
 					return meProducts;
                 }
 			}
@@ -129,12 +128,12 @@ namespace Headstart.API.Commands
 
 		private HSMeProduct ApplyBuyerProductPricing(HSMeProduct product, decimal defaultMarkupMultiplier, List<OrderCloudIntegrationsConversionRate> exchangeRates)
 		{
-			
-			if(product.PriceSchedule != null)
+
+			if (product.PriceSchedule != null)
             {
-				/* if the price schedule Id matches the product ID we 
+				/* if the price schedule Id matches the product ID we
 				 * we mark up the produc
-				 * if they dont match we just convert for currecny as the 
+				 * if they dont match we just convert for currecny as the
 				 * seller has set custom pricing */
 				var shouldMarkupProduct = product.PriceSchedule.ID == product.ID;
 				if (shouldMarkupProduct)
@@ -155,7 +154,7 @@ namespace Headstart.API.Commands
 						// price on price schedule will be in USD as it is set by the seller
 						// may be different rates in the future
 						// refactor to save price on the price schedule not product xp?
-						var currency = (Nullable<CurrencySymbol>)CurrencySymbol.USD;
+						var currency = (CurrencySymbol?)CurrencySymbol.USD;
 						priceBreak.Price = ConvertPrice(priceBreak.Price, currency, exchangeRates);
 						return priceBreak;
 					}).ToList();

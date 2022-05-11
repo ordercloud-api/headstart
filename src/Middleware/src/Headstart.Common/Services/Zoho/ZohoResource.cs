@@ -67,7 +67,7 @@ namespace Headstart.Common.Services.Zoho
             JObject.Parse(await res.ResponseMessage.Content.ReadAsStringAsync()).SelectToken(_resource).ToObject<T>();
     }
 
-    //https://stackoverflow.com/questions/52541918/flurl-extension-for-multi-part-put
+    // https://stackoverflow.com/questions/52541918/flurl-extension-for-multi-part-put
     public static class MultipartPutExtensions
     {
         public static Task<IFlurlResponse> PutMultipartAsync(this IFlurlRequest request, Action<CapturedMultipartContent> buildContent, CancellationToken cancellationToken = default(CancellationToken))

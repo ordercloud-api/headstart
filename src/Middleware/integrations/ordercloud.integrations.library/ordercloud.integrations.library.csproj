@@ -5,6 +5,11 @@
     <LangVersion>8</LangVersion>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Flurl" Version="3.0.2" />
     <PackageReference Include="LazyCache.AspNetCore" Version="2.1.2" />
@@ -13,6 +18,10 @@
     <PackageReference Include="Microsoft.Azure.CosmosDB.BulkExecutor" Version="2.4.1-preview" />
     <PackageReference Include="ordercloud-dotnet-catalyst" Version="2.0.1" />
     <PackageReference Include="OrderCloud.SDK" Version="0.11.0" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
     <PackageReference Include="Cosmonaut" Version="2.11.3" />
     <PackageReference Include="Cosmonaut.Extensions.Microsoft.DependencyInjection" Version="2.3.0" />

@@ -16,7 +16,7 @@ namespace Headstart.Common.Controllers
     /// 3. Query the API for all of the possible approving users (which can be complex)
     /// 4. Look up approving users' contact info
     /// 5. Send each message
-    /// 
+    ///
     /// Message senders take the hard work out of all that and will send one web request for each message that should be sent.
     /// </summary>
     // TODO: explore moving ordersubmit and shipmentcreated to message senders

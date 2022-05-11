@@ -19,7 +19,7 @@ namespace Headstart.Common.Controllers
     {
         private readonly IExchangeRatesCommand _command;
 
-        public ExchangeRatesController(IExchangeRatesCommand command) 
+        public ExchangeRatesController(IExchangeRatesCommand command)
         {
             _command = command;
         }

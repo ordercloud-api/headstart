@@ -23,7 +23,8 @@ namespace ordercloud.integrations.library
 
     public class ValidationFailedResult : ObjectResult
     {
-        public ValidationFailedResult(ModelStateDictionary state) : base(new ApiValidationError(state))
+        public ValidationFailedResult(ModelStateDictionary state)
+            : base(new ApiValidationError(state))
         {
             StatusCode = HttpStatusCode.BadRequest.To<int>();
         }

@@ -23,12 +23,11 @@ namespace ordercloud.integrations.vertex
 
 		public async Task<VertexCalculateTaxResponse> CalculateTax(VertexCalculateTaxRequest request)
 		{
-			return await MakeRequest<VertexCalculateTaxResponse>(() => 
+			return await MakeRequest<VertexCalculateTaxResponse>(() =>
 				$"{ApiUrl}/vertex-restapi/v1/sale"
 					.WithOAuthBearerToken(_token.access_token)
 					.AllowAnyHttpStatus()
-					.PostJsonAsync(request)
-			);
+					.PostJsonAsync(request));
 		}
 
 		private async Task<T> MakeRequest<T>(Func<Task<IFlurlResponse>> request)
@@ -46,7 +45,7 @@ namespace ordercloud.integrations.vertex
 				response = await (await request()).GetJsonAsync<VertexResponse<T>>();
 			}
 
-			// Catch and throw any api errors 
+			// Catch and throw any api errors
 			Require.That(response.errors.Count == 0, new VertexException(response.errors));
 
 			return response.data;

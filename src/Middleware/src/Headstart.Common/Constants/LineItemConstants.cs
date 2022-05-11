@@ -14,11 +14,11 @@ namespace Headstart.Common.Constants
             var shippingStatusOccurances = new HashSet<ShippingStatus>();
             var claimStatusOccurances = new HashSet<ClaimStatus>();
 
-            foreach(var lineItem in lineItems)
+            foreach (var lineItem in lineItems)
             {
-                foreach(var status in lineItem.xp.StatusByQuantity)
+                foreach (var status in lineItem.xp.StatusByQuantity)
                 {
-                    if(status.Value > 0)
+                    if (status.Value > 0)
                     {
                         orderStatusOccurances.Add(RelatedOrderStatus[status.Key]);
                         shippingStatusOccurances.Add(RelatedShippingStatus[status.Key]);
@@ -36,17 +36,17 @@ namespace Headstart.Common.Constants
 
         private static SubmittedOrderStatus GetOrderStatus(HashSet<SubmittedOrderStatus> orderStatusOccurances)
         {
-            if(orderStatusOccurances.Count == 1)
+            if (orderStatusOccurances.Count == 1)
             {
                 return orderStatusOccurances.First();
             }
 
-            if(orderStatusOccurances.Contains(SubmittedOrderStatus.Open))
+            if (orderStatusOccurances.Contains(SubmittedOrderStatus.Open))
             {
                 return SubmittedOrderStatus.Open;
             }
 
-            if(orderStatusOccurances.Contains(SubmittedOrderStatus.Completed))
+            if (orderStatusOccurances.Contains(SubmittedOrderStatus.Completed))
             {
                 return SubmittedOrderStatus.Completed;
             }
@@ -153,7 +153,7 @@ namespace Headstart.Common.Constants
         };
 
 
-        // these statuses can be set by either the supplier or the seller, but when this user modifies the 
+        // these statuses can be set by either the supplier or the seller, but when this user modifies the
         // line item status we do not want to notify themselves
         public static List<LineItemStatus> LineItemStatusChangesDontNotifySetter = new List<LineItemStatus>()
         {
@@ -164,7 +164,7 @@ namespace Headstart.Common.Constants
             LineItemStatus.ReturnDenied
         };
 
-        // defining seller and supplier together as the current logic is the 
+        // defining seller and supplier together as the current logic is the
         // seller should be able to do about anything a supplier can do
         public static List<LineItemStatus> ValidSellerOrSupplierLineItemStatuses = new List<LineItemStatus>()
         {
@@ -182,11 +182,11 @@ namespace Headstart.Common.Constants
         {
             { VerifiedUserType.admin, ValidSellerOrSupplierLineItemStatuses },
             { VerifiedUserType.supplier, ValidSellerOrSupplierLineItemStatuses },
-            { VerifiedUserType.buyer, new List<LineItemStatus>{ LineItemStatus.ReturnRequested, LineItemStatus.CancelRequested} },
+            { VerifiedUserType.buyer, new List<LineItemStatus> { LineItemStatus.ReturnRequested, LineItemStatus.CancelRequested } },
 
             // requests that are not directly made to modify lineItem status, derivatives of order submit or shipping,
             // these should not be set without those trigger actions (order submit or shipping)
-            { VerifiedUserType.noUser, new List<LineItemStatus>{ LineItemStatus.Submitted, LineItemStatus.Complete } }
+            { VerifiedUserType.noUser, new List<LineItemStatus> { LineItemStatus.Submitted, LineItemStatus.Complete } }
         };
 
         // definitions to control which line item status changes are allowed
@@ -200,7 +200,7 @@ namespace Headstart.Common.Constants
             * for example when setting status to canceled, cancel requested will be the first quantity to decrement,
             * once this is depleted, the backordered quantity will be decremented */
             { LineItemStatus.Complete, new List<LineItemStatus>() { LineItemStatus.Submitted, LineItemStatus.Backordered, LineItemStatus.CancelDenied } },
-            { LineItemStatus.ReturnRequested, new List<LineItemStatus>() { LineItemStatus.CancelDenied, LineItemStatus.Complete, LineItemStatus.ReturnDenied} },
+            { LineItemStatus.ReturnRequested, new List<LineItemStatus>() { LineItemStatus.CancelDenied, LineItemStatus.Complete, LineItemStatus.ReturnDenied } },
             { LineItemStatus.Returned, new List<LineItemStatus>() { LineItemStatus.ReturnRequested, LineItemStatus.Complete } },
             { LineItemStatus.ReturnDenied, new List<LineItemStatus>() { LineItemStatus.ReturnRequested } },
             { LineItemStatus.Backordered, new List<LineItemStatus>() { LineItemStatus.Submitted } },
@@ -254,7 +254,7 @@ namespace Headstart.Common.Constants
                         DynamicText = "Ensure that the full return process is complete, and the customer was refunded",
                         DynamicText2 = "The following items have been marked as returned"
                     } },
-                    { VerifiedUserType.supplier , new EmailDisplayText()
+                    { VerifiedUserType.supplier, new EmailDisplayText()
                     {
                         EmailSubject = "The seller has processed a return",
                         DynamicText = "Ensure that the full return process is complete",
@@ -274,7 +274,7 @@ namespace Headstart.Common.Constants
                         DynamicText = "The customer will not be refunded for the following items.",
                         DynamicText2 = "The following items have been marked as return denied"
                     } },
-                    { VerifiedUserType.supplier , new EmailDisplayText()
+                    { VerifiedUserType.supplier, new EmailDisplayText()
                     {
                         EmailSubject = "The supplier has denied a return",
                         DynamicText = "The customer will not be refunded for the following items.",
@@ -356,7 +356,7 @@ namespace Headstart.Common.Constants
                         DynamicText = "The customer will not be refunded for the following items",
                         DynamicText2 = "The following items have been marked as cancel denied"
                     } },
-                    { VerifiedUserType.supplier , new EmailDisplayText()
+                    { VerifiedUserType.supplier, new EmailDisplayText()
                     {
                         EmailSubject = "The supplier has denied a cancellation",
                         DynamicText = "The customer will not be refunded for the following items",

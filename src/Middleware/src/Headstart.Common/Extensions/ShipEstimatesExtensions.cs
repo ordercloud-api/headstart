@@ -44,7 +44,7 @@ namespace Headstart.Common.Extensions
             var updatedEstimates = new List<HSShipEstimate>();
             var supplierIDs = orderWorksheet.LineItems.Select(li => li.SupplierID);
             var suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={string.Join("|", supplierIDs)}");
-            
+
             foreach (var shipEstimate in shipEstimates)
             {
                 var supplierID = orderWorksheet.LineItems.FirstOrDefault(li => li.ID == shipEstimate.ShipEstimateItems.FirstOrDefault()?.LineItemID)?.SupplierID;
@@ -54,7 +54,7 @@ namespace Headstart.Common.Extensions
                 // TODO: Still waiting on decision makers to decide if we want
                 // Shipping Cost Schedules in HeadStart
 
-                //var validCostBreaks = supplier?.xp?.ShippingCostSchedule?.CostBreaks?.Where(costBreak => costBreak.OrderSubTotal < supplierSubTotal);
+                // var validCostBreaks = supplier?.xp?.ShippingCostSchedule?.CostBreaks?.Where(costBreak => costBreak.OrderSubTotal < supplierSubTotal);
 
                 // Update Free Shipping Rates
                 if (shipEstimate.ID.StartsWith(ShippingConstants.FreeShippingID))
@@ -71,10 +71,10 @@ namespace Headstart.Common.Extensions
                 // TODO: Still waiting on decision makers to decide if we want
                 // Shipping Cost Schedules in HeadStart
 
-                //foreach (var method in shipEstimate.ShipMethods)
-                //{
+                // foreach (var method in shipEstimate.ShipMethods)
+                // {
 
-                //    // If valid Cost Breaks exist, apply them
+                // // If valid Cost Breaks exist, apply them
                 //    if (validCostBreaks != null)
                 //    {
                 //        // Apply the Supplier Shipping Cost Schedule to Ground Rates only
@@ -94,7 +94,7 @@ namespace Headstart.Common.Extensions
                 //            }
                 //        }
                 //    }
-                //}
+                // }
                 updatedEstimates.Add(shipEstimate);
             }
 
@@ -105,7 +105,7 @@ namespace Headstart.Common.Extensions
         public static async Task<IList<HSShipEstimate>> ConvertCurrency(this IList<HSShipEstimate> shipEstimates, CurrencySymbol shipperCurrency, CurrencySymbol buyerCurrency, IExchangeRatesCommand _exchangeRates)
         {
             // If the Buyer's currency is USD, do not convert rates.
-            if (buyerCurrency == CurrencySymbol.USD) { return shipEstimates; };
+            if (buyerCurrency == CurrencySymbol.USD) { return shipEstimates; }
 
             var rates = (await _exchangeRates.Get(buyerCurrency)).Rates;
             var conversionRate = rates.Find(r => r.Currency == shipperCurrency).Rate;
@@ -123,12 +123,10 @@ namespace Headstart.Common.Extensions
             }).ToList();
         }
 
-        #region Helper Methods
         public static HSShipEstimate FilterDownFedexShippingRates(HSShipEstimate estimate)
         {
             estimate.ShipMethods = estimate.ShipMethods.Where(method => (method.ID != null && method.ID.Contains("FREE_SHIPPING")) || method?.ID == ShippingConstants.NoRatesID || method?.xp?.Carrier == "USPS" || method.Name == "FEDEX_GROUND" || method.Name == "FEDEX_2_DAY" || method.Name == "STANDARD_OVERNIGHT").ToList();
             return estimate;
         }
-        #endregion
     }
 }

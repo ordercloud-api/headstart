@@ -164,7 +164,7 @@ namespace Headstart.Common.Mappers
           };
 
         public static Address GetShippingAddress(IList<HSLineItem> lineItems) =>
-        lineItems == null ? null : 
+        lineItems == null ? null :
             new Address()
             {
                 Street1 = lineItems[0]?.ShippingAddress?.Street1,
@@ -173,7 +173,7 @@ namespace Headstart.Common.Mappers
                 State = lineItems[0]?.ShippingAddress?.State,
                 Zip = lineItems[0]?.ShippingAddress?.Zip
             };
-  
+
         public static LineItemProductData MapToTemplateProduct(HSLineItem lineItem, LineItemStatusChange lineItemStatusChange, LineItemStatus status)
         {
             decimal lineTotal = 0M;

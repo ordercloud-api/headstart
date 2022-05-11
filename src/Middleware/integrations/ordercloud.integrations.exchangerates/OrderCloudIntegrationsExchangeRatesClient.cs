@@ -12,7 +12,7 @@ namespace ordercloud.integrations.exchangerates
         Task<ExchangeRatesBase> Get(CurrencySymbol symbol);
     }
 
-    public class OrderCloudIntegrationsExchangeRatesClient: IOrderCloudIntegrationsExchangeRatesClient
+    public class OrderCloudIntegrationsExchangeRatesClient : IOrderCloudIntegrationsExchangeRatesClient
     {
         private readonly IFlurlClient _flurl;
 
@@ -25,7 +25,7 @@ namespace ordercloud.integrations.exchangerates
         {
             return _flurl.Request(resource);
         }
-       
+
         public async Task<ExchangeRatesBase> Get(CurrencySymbol symbol)
         {
             return await this.Request("latest")

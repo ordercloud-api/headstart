@@ -100,7 +100,6 @@ namespace Headstart.API.Commands
             new Incrementor { ID = "sellerLocationIncrementor", Name = "Seller Location Incrementor", LastNumber = 0, LeftPaddingCount = 4 }
         };
 
-        #region API CLIENTS
         public static ApiClient IntegrationsClient()
         {
             return new ApiClient()
@@ -165,9 +164,7 @@ namespace Headstart.API.Commands
                 IsAnonBuyer = seed.EnableAnonymousShopping
             };
         }
-        #endregion
 
-        #region IntegrationEvents
         public static IntegrationEvent CheckoutEvent(string middlewareBaseUrl, string webhookHashKey)
         {
             return new IntegrationEvent()
@@ -203,9 +200,7 @@ namespace Headstart.API.Commands
                 }
             };
         }
-        #endregion
 
-        #region MessageSenders
         public static MessageSender BuyerEmails(EnvironmentSeed seed)
         {
             return new MessageSender()
@@ -255,11 +250,9 @@ namespace Headstart.API.Commands
                 SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey
             };
         }
-        #endregion
 
-        #region Permissions
         public static readonly List<HSSecurityProfile> DefaultSecurityProfiles = new List<HSSecurityProfile>() {
-			
+
 			// seller/supplier
 			new HSSecurityProfile() { ID = CustomRole.HSBuyerAdmin, CustomRoles = new CustomRole[] { CustomRole.HSBuyerAdmin }, Roles = new ApiRole[] { ApiRole.AddressAdmin, ApiRole.ApprovalRuleAdmin, ApiRole.BuyerAdmin, ApiRole.BuyerUserAdmin, ApiRole.CreditCardAdmin, ApiRole.UserGroupAdmin } },
             new HSSecurityProfile() { ID = CustomRole.HSBuyerImpersonator, CustomRoles = new CustomRole[] { CustomRole.HSBuyerImpersonator }, Roles = new ApiRole[] { ApiRole.BuyerImpersonation } },
@@ -280,13 +273,13 @@ namespace Headstart.API.Commands
             new HSSecurityProfile() { ID = CustomRole.HSStorefrontAdmin, CustomRoles = new CustomRole[] { CustomRole.HSStorefrontAdmin }, Roles = new ApiRole[] { ApiRole.ProductFacetAdmin, ApiRole.ProductFacetReader } },
             new HSSecurityProfile() { ID = CustomRole.HSSupplierAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSupplierAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAddressAdmin, ApiRole.SupplierAdmin, ApiRole.SupplierUserAdmin } },
             new HSSecurityProfile() { ID = CustomRole.HSSupplierUserGroupAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSupplierUserGroupAdmin }, Roles = new ApiRole[] { ApiRole.SupplierReader, ApiRole.SupplierUserGroupAdmin } },
-			
+
 			// buyer - this is the only role needed for a buyer user to successfully check out
 			new HSSecurityProfile() { ID = CustomRole.HSBaseBuyer, CustomRoles = new CustomRole[] { CustomRole.HSBaseBuyer }, Roles = new ApiRole[] { ApiRole.MeAddressAdmin, ApiRole.MeAdmin, ApiRole.MeCreditCardAdmin, ApiRole.MeXpAdmin, ApiRole.ProductFacetReader, ApiRole.Shopper, ApiRole.SupplierAddressReader, ApiRole.SupplierReader } },
 
 			/* these roles don't do much, access to changing location information will be done through middleware calls that
-			*  confirm the user is in the location specific access user group. These roles will be assigned to the location 
-			*  specific user group and allow us to determine if a user has an admin role for at least one location through 
+			*  confirm the user is in the location specific access user group. These roles will be assigned to the location
+			*  specific user group and allow us to determine if a user has an admin role for at least one location through
 			*  the users JWT
 			*/
 			new HSSecurityProfile() { ID = CustomRole.HSLocationOrderApprover, CustomRoles = new CustomRole[] { CustomRole.HSLocationOrderApprover }, Roles = new ApiRole[] { } },
@@ -315,9 +308,7 @@ namespace Headstart.API.Commands
             CustomRole.HSSupplierAdmin,
             CustomRole.HSSupplierUserGroupAdmin
         };
-        #endregion
 
-        #region Buyer Location 
         public static HSBuyerLocation DefaultBuyerLocation()
         {
             return new HSBuyerLocation()
@@ -344,10 +335,6 @@ namespace Headstart.API.Commands
             };
         }
 
-        #endregion
-
-        #region Product Facets
-
         public static HSProductFacet DefaultProductFacet()
         {
             return new HSProductFacet()
@@ -360,10 +347,6 @@ namespace Headstart.API.Commands
                 xp = null
             };
         }
-
-        #endregion
-
-        #region Azure Regions
 
         public static Region UsEast = new Region()
         {
@@ -400,7 +383,7 @@ namespace Headstart.API.Commands
 	        Name = "US-West"
         };
 
-        public static readonly List<Region> Regions = new List<Region>()
+        public static List<Region> Regions = new List<Region>()
         {
             UsEast,
             AustraliaEast,
@@ -409,13 +392,11 @@ namespace Headstart.API.Commands
             UsWest
         };
 
-        #endregion
-
         public static class Environments
         {
             public const string Production = "Production";
             public const string Sandbox = "Sandbox";
-        };
+        }
 
         /// <summary>
         /// Constructs the OrderCloud environment.

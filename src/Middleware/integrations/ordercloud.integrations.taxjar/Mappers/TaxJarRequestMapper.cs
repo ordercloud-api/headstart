@@ -13,7 +13,7 @@ namespace ordercloud.integrations.taxjar
 	public static class TaxJarRequestMapper
 	{
 		/// <summary>
-		///	Returns a list of TaxJarOrders because each order has a single to and from address. They therefor coorespond to OrderCloud LineItems. 
+		/// Returns a list of TaxJarOrders because each order has a single to and from address. They therefor coorespond to OrderCloud LineItems.
 		/// </summary>
 		public static List<TaxJarOrder> ToTaxJarOrders(this OrderWorksheet order)
 		{

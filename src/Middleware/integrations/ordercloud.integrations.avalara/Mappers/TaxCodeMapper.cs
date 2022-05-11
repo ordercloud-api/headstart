@@ -25,7 +25,7 @@ namespace ordercloud.integrations.avalara
 		public static string MapSearchString(string searchTerm)
 		{
 			var searchString = $"isActive eq true";
-			if (searchTerm != "")
+			if (searchTerm != string.Empty)
 			{
 				searchString = $"{searchString} and (taxCode contains '{searchTerm}' OR description contains '{searchTerm}')";
 			}

@@ -36,8 +36,7 @@ namespace ordercloud.integrations.cardconnect
 			IOrderCloudClient oc,
 			IHSExchangeRatesService hsExchangeRates,
 			ISupportAlertService supportAlerts,
-			AppSettings settings
-		)
+			AppSettings settings)
 		{
 			_cardConnect = card;
 			_oc = oc;
@@ -61,10 +60,10 @@ namespace ordercloud.integrations.cardconnect
 		public async Task<Payment> AuthorizePayment(
 			OrderCloudIntegrationsCreditCardPayment payment,
             string userToken,
-			string merchantID
-		)
+			string merchantID)
 		{
-			Require.That((payment.CreditCardID != null) || (payment.CreditCardDetails != null),
+			Require.That(
+			    (payment.CreditCardID != null) || (payment.CreditCardDetails != null),
 				new ErrorCode("CreditCard.CreditCardAuth", "Request must include either CreditCardDetails or CreditCardID"));
 
 			var cc = await GetMeCardDetails(payment, userToken);
@@ -80,18 +79,18 @@ namespace ordercloud.integrations.cardconnect
 
 			var ccAmount = orderWorksheet.Order.Total;
 
-			var ocPaymentsList = (await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, payment.OrderID, filters: "Type=CreditCard" ));
+			var ocPaymentsList = (await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, payment.OrderID, filters: "Type=CreditCard"));
 			var ocPayments = ocPaymentsList.Items;
 			var ocPayment = ocPayments.Any() ? ocPayments[0] : null;
-			if(ocPayment == null)
+			if (ocPayment == null)
             {
 				throw new CatalystBaseException("Payment.MissingCreditCardPayment", "Order is missing credit card payment");
             }
             try
             {
-				if(ocPayment?.Accepted == true)
+				if (ocPayment?.Accepted == true)
                 {
-					if(ocPayment.Amount == ccAmount)
+					if (ocPayment.Amount == ccAmount)
                     {
 						return ocPayment;
                     } else
@@ -116,7 +115,7 @@ namespace ordercloud.integrations.cardconnect
 			var order = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
 			var paymentList = await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, order.ID);
 			var payment = paymentList.Items.Any() ? paymentList.Items[0] : null;
-			if(payment == null) { return; }
+			if (payment == null) { return; }
 
 			await VoidTransactionAsync(payment, order, userToken);
 			await _oc.Payments.PatchAsync(OrderDirection.Incoming, orderID, payment.ID, new PartialPayment { Accepted = false });
@@ -124,7 +123,7 @@ namespace ordercloud.integrations.cardconnect
 
 		public async Task VoidTransactionAsync(HSPayment payment, HSOrder order, string userToken)
         {
-			var transactionID = "";
+			var transactionID = string.Empty;
 			try
 			{
 				if (payment.Accepted == true)

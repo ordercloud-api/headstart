@@ -33,10 +33,12 @@ namespace ordercloud.integrations.vertex
 	{
 		public string productClass { get; set; }
 		public string value { get; set; }
-	} 
+	}
 
 	public enum VertexTransactionType
 	{
-		SALE, RENTAL, LEASE
+		SALE,
+        RENTAL,
+        LEASE
 	}
 }

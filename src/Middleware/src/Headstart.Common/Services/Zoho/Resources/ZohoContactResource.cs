@@ -21,7 +21,8 @@ namespace Headstart.Common.Services.Zoho.Resources
 
     public class ZohoContactResource : ZohoResource, IZohoContactResource
     {
-        internal ZohoContactResource(ZohoClient client) : base(client, "contact", "contacts") { }
+        internal ZohoContactResource(ZohoClient client)
+            : base(client, "contact", "contacts") { }
 
         public Task<ZohoContactList> ListAsync(params ZohoFilter[] filters) => ListAsync<ZohoContactList>(filters);
         public Task<TZohoContactList> ListAsync<TZohoContactList>(params ZohoFilter[] filters) where TZohoContactList : ZohoContactList => Get()
@@ -29,16 +30,16 @@ namespace Headstart.Common.Services.Zoho.Resources
                 .GetJsonAsync<TZohoContactList>();
 
         public Task<ZohoSingleContact> GetAsync(string id) => GetAsync<ZohoSingleContact>(id);
-        
+
         public Task<TZohoContact> GetAsync<TZohoContact>(string id) where TZohoContact : ZohoSingleContact =>
             Get(id).GetJsonAsync<TZohoContact>();
-        
+
         public Task<ZohoContact> SaveAsync(ZohoContact contact) => SaveAsync<ZohoContact>(contact);
 
         public async Task<TZohoContact> SaveAsync<TZohoContact>(TZohoContact contact)
-            where TZohoContact : ZohoContact => 
+            where TZohoContact : ZohoContact =>
             await Put<TZohoContact>(contact, contact.contact_id);
-            
+
         public Task<ZohoContact> CreateAsync(ZohoContact contact) => CreateAsync<ZohoContact>(contact);
 
         public async Task<TZohoContact> CreateAsync<TZohoContact>(TZohoContact contact)

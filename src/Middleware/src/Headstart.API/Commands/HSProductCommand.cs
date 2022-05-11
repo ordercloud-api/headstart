@@ -198,7 +198,7 @@ namespace Headstart.API.Commands.Crud
 
 			superProduct.Product.DefaultPriceScheduleID = priceSchedule.ID;
 
-			if(decodedToken.CommerceRole == CommerceRole.Supplier)
+			if (decodedToken.CommerceRole == CommerceRole.Supplier)
             {
 				var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
 				var supplierName = await GetSupplierNameForXpFacet(me.Supplier.ID, decodedToken.AccessToken);
@@ -207,7 +207,7 @@ namespace Headstart.API.Commands.Crud
 
 			// Create Product
 			var product = await _oc.Products.CreateAsync<HSProduct>(superProduct.Product, decodedToken.AccessToken);
-			
+
 			// Return the SuperProduct
 			return new SuperHSProduct
 			{
@@ -236,19 +236,19 @@ namespace Headstart.API.Commands.Crud
 						allVariants.AddRange((await _oc.Products.ListVariantsAsync(productID: product.ID, pageSize: 100, accessToken: token)).Items);
 					}
 				}
-			} 
+			}
 			catch (Exception ex)
             {
 				return;
             }
-			
+
 			foreach (Variant variant in superProduct.Variants)
             {
 				if (!allVariants.Any()) { return; }
 
 				List<Variant> duplicateSpecNames = allVariants.Where(currVariant => IsDifferentVariantWithSameName(variant, currVariant)).ToList();
 				if (duplicateSpecNames.Any())
-                {	
+                {
 					throw new Exception($"{duplicateSpecNames.First().ID} already exists on a variant. Please use unique names for SKUS and try again.");
                 }
             }
@@ -256,12 +256,12 @@ namespace Headstart.API.Commands.Crud
 
         private bool IsDifferentVariantWithSameName(Variant variant, Variant currVariant)
         {
-			//Do they have the same SKU
+			// Do they have the same SKU
             if (variant.xp.NewID == currVariant.ID)
             {
 				if (variant.xp.SpecCombo == currVariant.xp.SpecCombo)
                 {
-					//It's most likely the same variant
+					// It's most likely the same variant
 					return false;
                 }
 				return true;
@@ -292,8 +292,8 @@ namespace Headstart.API.Commands.Crud
 						await Throttler.RunAsync(rSpec.Options.Where(rso => !eSpec.Options.Any(eso => eso.ID == rso.ID)), 100, 5, o => _oc.Specs.CreateOptionAsync(rSpec.ID, o, accessToken: token));
 						await Throttler.RunAsync(eSpec.Options.Where(eso => !rSpec.Options.Any(rso => rso.ID == eso.ID)), 100, 5, o => _oc.Specs.DeleteOptionAsync(rSpec.ID, o.ID, accessToken: token));
 					}
-				};
-			};
+				}
+			}
 			// Create new specs and Delete removed specs
 			var defaultSpecOptions = new List<DefaultOptionSpecAssignment>();
 			await Throttler.RunAsync(specsToAdd, 100, 5, s =>
@@ -329,7 +329,7 @@ namespace Headstart.API.Commands.Crud
 			// IF variants differ, then re-generate variants and re-patch IDs to match the user input.
 			if (variantsAdded || variantsRemoved || hasVariantChange || requestVariants.Any(v => v.xp.NewID != null))
 			{
-				//validate variant names before continuing saving.
+				// validate variant names before continuing saving.
 				await ValidateVariantsAsync(superProduct, token);
 
 				// Re-generate Variants
@@ -345,7 +345,7 @@ namespace Headstart.API.Commands.Crud
 					}
 					if (superProduct.Product?.Inventory == null)
 					{
-						//If Inventory doesn't exist on the product, don't patch variants with inventory either.
+						// If Inventory doesn't exist on the product, don't patch variants with inventory either.
 						return _oc.Products.PatchVariantAsync(id, $"{superProduct.Product.ID}-{v.xp.SpecCombo}", new PartialVariant { ID = v.ID, Name = v.Name, xp = v.xp, Active = v.Active }, accessToken: token);
 					}
 					else
@@ -353,7 +353,7 @@ namespace Headstart.API.Commands.Crud
 						return _oc.Products.PatchVariantAsync(id, $"{superProduct.Product.ID}-{v.xp.SpecCombo}", new PartialVariant { ID = v.ID, Name = v.Name, xp = v.xp, Active = v.Active, Inventory = v.Inventory }, accessToken: token);
 					}
 				});
-			};
+			}
 			// If applicable, update OR create the Product PriceSchedule
 			var tasks = new List<Task>();
 			Task<PriceSchedule> _priceScheduleReq = null;
@@ -384,7 +384,7 @@ namespace Headstart.API.Commands.Crud
         {
             if (variant.xp.NewID == variant.ID)
             {
-				//If NewID is same as ID, no changes have happened so NewID shouldn't be populated.
+				// If NewID is same as ID, no changes have happened so NewID shouldn't be populated.
 				variant.xp.NewID = null;
             }
         }
@@ -470,18 +470,18 @@ namespace Headstart.API.Commands.Crud
 		private bool OptionHasChanges(SpecOption requestOption, List<SpecOption> currentOptions)
 		{
 			var matchingOption = currentOptions.Find(currentOption => currentOption.ID == requestOption.ID);
-			if (matchingOption == null) { return false; };
-			if (matchingOption.PriceMarkup != requestOption.PriceMarkup) { return true; };
-			if (matchingOption.IsOpenText != requestOption.IsOpenText) { return true; };
-			if (matchingOption.ListOrder != requestOption.ListOrder) { return true; };
-			if (matchingOption.PriceMarkupType != requestOption.PriceMarkupType) { return true; };
+			if (matchingOption == null) { return false; }
+			if (matchingOption.PriceMarkup != requestOption.PriceMarkup) { return true; }
+			if (matchingOption.IsOpenText != requestOption.IsOpenText) { return true; }
+			if (matchingOption.ListOrder != requestOption.ListOrder) { return true; }
+			if (matchingOption.PriceMarkupType != requestOption.PriceMarkupType) { return true; }
 
 			return false;
 		}
 
 		public async Task Delete(string id, string token)
 		{
-			
+
 			var product = await _oc.Products.GetAsync<HSProduct>(id);
 			var _specs = await _oc.Products.ListSpecsAsync<Spec>(id, accessToken: token);
 			var tasks = new List<Task>()
@@ -524,7 +524,7 @@ namespace Headstart.API.Commands.Crud
 			await ocClient.AuthenticateAsync();
 			var token = ocClient.TokenResponse.AccessToken;
 
-			//Format the facet data to change for request body
+			// Format the facet data to change for request body
 			var facetDataFormatted = new ExpandoObject();
 			var facetDataFormattedCollection = (ICollection<KeyValuePair<string, object>>)facetDataFormatted;
 			foreach (var kvp in facets)
@@ -533,12 +533,11 @@ namespace Headstart.API.Commands.Crud
 			}
 			dynamic facetDataFormattedDynamic = facetDataFormatted;
 
-			//Update the product with a supplier token
+			// Update the product with a supplier token
 			var updatedProduct = await ocClient.Products.PatchAsync(
 				id,
 				new PartialProduct() { xp = new { Facets = facetDataFormattedDynamic } },
-				accessToken: token
-				);
+				accessToken: token);
 			return updatedProduct;
 		}
 

@@ -22,8 +22,7 @@ namespace Headstart.Tests
             PromotionCommand sut,
             string orderID,
             Task<ListPage<Promotion>> promoList,
-            Task<ListPage<OrderPromotion>> orderpromolist
-        )
+            Task<ListPage<OrderPromotion>> orderpromolist)
         {
             // Arrange
             oc.Promotions.ListAsync()
@@ -47,8 +46,7 @@ namespace Headstart.Tests
             PromotionCommand sut,
             string orderID,
             Task<ListPage<Promotion>> promoList,
-            Task<ListPage<OrderPromotion>> orderpromolist
-        )
+            Task<ListPage<OrderPromotion>> orderpromolist)
         {
             // Arrange
             oc.Promotions.ListAsync()
@@ -72,15 +70,16 @@ namespace Headstart.Tests
             PromotionCommand sut,
             string orderID,
             Task<ListPage<Promotion>> promoList,
-            ListPage<OrderPromotion> orderpromolist
-        )
+            ListPage<OrderPromotion> orderpromolist)
         {
             // a line item promo may be applied multiple times on an order (once for each line item)
             // we only want to remove that promo once else we'll get 404's
             // https://four51.atlassian.net/browse/SEB-1825
 
             // Arrange
-            orderpromolist.Items = orderpromolist.Items.Select(p => { p.ID = "PROMO1"; p.Code = "PROMOCODE1"; return p; }).ToList();
+            orderpromolist.Items = orderpromolist.Items.Select(p => { p.ID = "PROMO1";
+                p.Code = "PROMOCODE1";
+                return p; }).ToList();
             oc.Promotions.ListAsync()
                 .ReturnsForAnyArgs(promoList);
             oc.Orders.ListPromotionsAsync(OrderDirection.Incoming, orderID, pageSize: 100)
@@ -100,8 +99,7 @@ namespace Headstart.Tests
             string orderID,
             Task<ListPage<Promotion>> promoList,
             Task<Order> promo1result,
-            Task<ListPage<OrderPromotion>> orderpromolist
-        )
+            Task<ListPage<OrderPromotion>> orderpromolist)
         {
             // Arrange
             var fixture = new Fixture();
@@ -140,8 +138,7 @@ namespace Headstart.Tests
             Task<ListPage<Promotion>> promoList,
             Task<ListPage<OrderPromotion>> orderpromolist,
             Task<Order> removePromoResult,
-            Task<Order> addPromoResult
-        )
+            Task<Order> addPromoResult)
         {
             // Arrange
             var fixture = new Fixture();
@@ -156,8 +153,7 @@ namespace Headstart.Tests
                 .Returns(
                     addPromoResult,
                     Task.FromException<Order>(new Exception("mockerror1")),
-                    Task.FromException<Order>(new Exception("mockerror2"))
-                );
+                    Task.FromException<Order>(new Exception("mockerror2")));
 
             // Act
             await sut.AutoApplyPromotions(orderID);

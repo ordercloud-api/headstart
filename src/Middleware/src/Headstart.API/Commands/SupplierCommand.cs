@@ -38,7 +38,8 @@ namespace Headstart.API.Commands
         public async Task<HSSupplier> GetMySupplier(string supplierID, DecodedToken decodedToken)
         {
             var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-            Require.That(supplierID == me.Supplier.ID,
+            Require.That(
+                supplierID == me.Supplier.ID,
                 new ErrorCode("Unauthorized", $"You are only authorized to view {me.Supplier.ID}.", HttpStatusCode.Unauthorized));
             return await _oc.Suppliers.GetAsync<HSSupplier>(supplierID);
         }
@@ -54,8 +55,7 @@ namespace Headstart.API.Commands
             {
                 var productsToUpdate = await _oc.Products.ListAllAsync<HSProduct>(
                 supplierID: supplierID,
-                accessToken: decodedToken.AccessToken
-                );
+                accessToken: decodedToken.AccessToken);
                 ApiClient supplierClient = await _apiClientHelper.GetSupplierApiClient(supplierID, decodedToken.AccessToken);
                 if (supplierClient == null) { throw new Exception($"Default supplier client not found. SupplierID: {supplierID}"); }
                 var configToUse = new OrderCloudClientConfig
@@ -95,53 +95,63 @@ namespace Headstart.API.Commands
             var ocSupplier = await _oc.Suppliers.CreateAsync(supplier, token);
             supplier.ID = ocSupplier.ID;
             var ocSupplierID = ocSupplier.ID;
-     
+
             // This supplier user is created so that we can define an api client with it as the default context user
             // this allows us to perform elevated supplier actions on behalf of that supplier company
             // It is not an actual user that will login so there is no password or valid email
-            var supplierUser = await _oc.SupplierUsers.CreateAsync(ocSupplierID, new User()
-            {
-                Active = true,
-                FirstName = "Integration",
-                LastName = "Developer",
-                Username = $"dev_{ocSupplierID}",
-                Email = "test@test.com"
-            }, token);
+            var supplierUser = await _oc.SupplierUsers.CreateAsync(
+                ocSupplierID,
+                new User()
+                {
+                    Active = true,
+                    FirstName = "Integration",
+                    LastName = "Developer",
+                    Username = $"dev_{ocSupplierID}",
+                    Email = "test@test.com"
+                },
+                token);
 
             await CreateUserTypeUserGroupsAndSecurityProfileAssignments(supplierUser, token, ocSupplierID);
 
             // Create API Client for new supplier
-            var apiClient = await _oc.ApiClients.CreateAsync(new ApiClient()
-            {
-                AppName = $"Integration Client {ocSupplier.Name}",
-                Active = true,
-                DefaultContextUserName = supplierUser.Username,
-                ClientSecret = _settings.OrderCloudSettings.MiddlewareClientSecret,
-                AccessTokenDuration = 600,
-                RefreshTokenDuration = 43200,
-                AllowAnyBuyer = false,
-                AllowAnySupplier = false,
-                AllowSeller = false,
-                IsAnonBuyer = false,
-            }, token);
+            var apiClient = await _oc.ApiClients.CreateAsync(
+                new ApiClient()
+                {
+                    AppName = $"Integration Client {ocSupplier.Name}",
+                    Active = true,
+                    DefaultContextUserName = supplierUser.Username,
+                    ClientSecret = _settings.OrderCloudSettings.MiddlewareClientSecret,
+                    AccessTokenDuration = 600,
+                    RefreshTokenDuration = 43200,
+                    AllowAnyBuyer = false,
+                    AllowAnySupplier = false,
+                    AllowSeller = false,
+                    IsAnonBuyer = false,
+                },
+                token);
 
 
             // not adding api client ID on supplier Create because that approach would require creating the API client first
             // but creating supplier first is preferable in case there are error in the request
-            ocSupplier = await _oc.Suppliers.PatchAsync(ocSupplier.ID, new PartialSupplier()
-            {
-                xp = new
+            ocSupplier = await _oc.Suppliers.PatchAsync(
+                ocSupplier.ID,
+                new PartialSupplier()
                 {
-                    ApiClientID = apiClient.ID
-                }
-            }, token);
+                    xp = new
+                    {
+                        ApiClientID = apiClient.ID
+                    }
+                },
+                token);
 
             // Assign Supplier API Client to new supplier
-            await _oc.ApiClients.SaveAssignmentAsync(new ApiClientAssignment()
-            {
-                ApiClientID = apiClient.ID,
-                SupplierID = ocSupplierID
-            }, token);
+            await _oc.ApiClients.SaveAssignmentAsync(
+                new ApiClientAssignment()
+                {
+                    ApiClientID = apiClient.ID,
+                    SupplierID = ocSupplierID
+                },
+                token);
 
             // assign to message sender
             await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
@@ -151,44 +161,54 @@ namespace Headstart.API.Commands
             });
             return supplier;
         }
-    
+
         public async Task CreateUserTypeUserGroupsAndSecurityProfileAssignments(User user, string token, string supplierID)
         {
             // Assign supplier to HSMeAdmin security profile
-            await _oc.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment()
-            {
-                SupplierID = supplierID,
-                SecurityProfileID = "HSMeAdmin"
-            }, token);
+            await _oc.SecurityProfiles.SaveAssignmentAsync(
+                new SecurityProfileAssignment()
+                {
+                    SupplierID = supplierID,
+                    SecurityProfileID = "HSMeAdmin"
+                },
+                token);
 
-            foreach(var userType in HSUserTypes.Supplier())
+            foreach (var userType in HSUserTypes.Supplier())
             {
                 var userGroupID = $"{supplierID}{userType.UserGroupIDSuffix}";
 
-                await _oc.SupplierUserGroups.CreateAsync(supplierID, new UserGroup()
-                {
-                    ID = userGroupID,
-                    Name = userType.UserGroupName,
-                    xp =
-                        {
-                            Type = "UserPermissions",
-                        }
-                }, token);
- 
-                await _oc.SupplierUserGroups.SaveUserAssignmentAsync(supplierID, new UserGroupAssignment()
-                {
-                    UserID = user.ID,
-                    UserGroupID = userGroupID
-                }, token);
+                await _oc.SupplierUserGroups.CreateAsync(
+                    supplierID,
+                    new UserGroup()
+                    {
+                        ID = userGroupID,
+                        Name = userType.UserGroupName,
+                        xp =
+                            {
+                                Type = "UserPermissions",
+                            }
+                    },
+                    token);
+
+                await _oc.SupplierUserGroups.SaveUserAssignmentAsync(
+                    supplierID,
+                    new UserGroupAssignment()
+                    {
+                        UserID = user.ID,
+                        UserGroupID = userGroupID
+                    },
+                    token);
 
                 foreach (var customRole in userType.CustomRoles)
                 {
-                    await _oc.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment()
-                    {
-                        SupplierID = supplierID,
-                        UserGroupID = userGroupID,
-                        SecurityProfileID = customRole.ToString()
-                    }, token);
+                    await _oc.SecurityProfiles.SaveAssignmentAsync(
+                        new SecurityProfileAssignment()
+                        {
+                            SupplierID = supplierID,
+                            UserGroupID = userGroupID,
+                            SecurityProfileID = customRole.ToString()
+                        },
+                        token);
                 }
             }
         }

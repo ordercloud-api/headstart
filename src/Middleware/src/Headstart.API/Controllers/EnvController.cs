@@ -7,7 +7,7 @@ namespace Headstart.Common.Controllers
     {
         private readonly AppSettings _settings;
 
-        public EnvController(AppSettings settings) 
+        public EnvController(AppSettings settings)
         {
             _settings = settings;
         }
@@ -15,7 +15,7 @@ namespace Headstart.Common.Controllers
         [HttpGet]
         public object Get()
         {
-            return new { 
+            return new {
                 Environment = _settings.EnvironmentSettings.Environment.ToString(),
                 BuildNumber = _settings.EnvironmentSettings.BuildNumber, // set during deploy
                 Commit = _settings.EnvironmentSettings.Commit, // set during deploy

@@ -60,7 +60,7 @@ namespace Headstart.Jobs
 
                         CosmosListPage<OrderWithShipments> currentOrderWithShipmentsListPage = await _ordersAndShipmentsDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
 
-                        var cosmosID = "";
+                        var cosmosID = string.Empty;
                         if (currentOrderWithShipmentsListPage.Items.Count() == 1)
                         {
                             cosmosID = cosmosOrderWithShipments.id = currentOrderWithShipmentsListPage.Items[0].id;

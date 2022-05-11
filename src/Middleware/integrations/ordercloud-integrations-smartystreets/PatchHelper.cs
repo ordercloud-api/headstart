@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ordercloud.integrations.smartystreets
 {
-	// todo: add test for this function 
+	// todo: add test for this function
 	// todo: should this live in the extensions project?
 	public static class PatchHelper
 	{

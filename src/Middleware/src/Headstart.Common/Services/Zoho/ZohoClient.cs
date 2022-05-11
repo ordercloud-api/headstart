@@ -38,7 +38,8 @@ namespace Headstart.Common.Services.Zoho
 
         public ZohoClientConfig Config { get; }
 
-        public ZohoClient() : this(new ZohoClientConfig()) { }
+        public ZohoClient()
+            : this(new ZohoClientConfig()) { }
 
         public ZohoClient(ZohoClientConfig config, IFlurlClientFactory flurlFactory)
         {

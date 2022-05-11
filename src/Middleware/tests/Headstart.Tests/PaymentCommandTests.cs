@@ -35,7 +35,7 @@ namespace Headstart.Tests
             _oc = Substitute.For<IOrderCloudClient>();
             _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, mockOrderID)
                     .Returns(Task.FromResult(new HSOrderWorksheet { Order = new Models.HSOrder { ID = mockOrderID, Total = 20 } }));
-            _oc.Payments.CreateAsync<HSPayment>(OrderDirection.Incoming, mockOrderID, Arg.Any<HSPayment>()) 
+            _oc.Payments.CreateAsync<HSPayment>(OrderDirection.Incoming, mockOrderID, Arg.Any<HSPayment>())
                 .Returns(Task.FromResult(PaymentMocks.CCPayment(creditcard1, 20)));
 
             // ccCommand
@@ -64,7 +64,8 @@ namespace Headstart.Tests
             await _oc.Payments.Received().CreateAsync<HSPayment>(OrderDirection.Outgoing, mockOrderID, Arg.Is<HSPayment>(p => p.ID == mockCCPaymentID && p.Type == PaymentType.CreditCard && p.Amount == mockedCreditCardTotal), mockUserToken);
         }
 
-        [Test] public async Task should_handle_new_cc_payment()
+        [Test]
+        public async Task should_handle_new_cc_payment()
         {
             // Arrange
             var mockedCreditCardTotal = 20;
@@ -85,7 +86,7 @@ namespace Headstart.Tests
         public async Task should_handle_same_cc_different_amount()
         {
             // if the credit card hasn't changed but the amount has
-            // then we should void any existing transactions if necessary and update the payment 
+            // then we should void any existing transactions if necessary and update the payment
 
             // Arrange
             var mockedCreditCardTotal = 20;

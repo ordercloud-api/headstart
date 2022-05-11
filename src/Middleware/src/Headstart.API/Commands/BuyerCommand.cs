@@ -35,7 +35,7 @@ namespace Headstart.API.Commands
             var createdImpersonationConfig = new ImpersonationConfig();
             var createdBuyer = await CreateBuyerAndRelatedFunctionalResources(superBuyer.Buyer, accessToken, oc);
             var createdMarkup = await CreateMarkup(superBuyer.Markup, createdBuyer.ID, accessToken, oc);
-            if(superBuyer?.ImpersonationConfig != null)
+            if (superBuyer?.ImpersonationConfig != null)
             {
                 createdImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, createdBuyer.ID, accessToken, oc);
             }
@@ -55,7 +55,7 @@ namespace Headstart.API.Commands
 
             var updatedBuyer = await _oc.Buyers.SaveAsync<HSBuyer>(buyerID, superBuyer.Buyer);
             var updatedMarkup = await UpdateMarkup(superBuyer.Markup, superBuyer.Buyer.ID);
-            if(superBuyer.ImpersonationConfig != null)
+            if (superBuyer.ImpersonationConfig != null)
             {
                 updatedImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, buyerID);
             }
@@ -108,31 +108,38 @@ namespace Headstart.API.Commands
             buyer.ID = ocBuyerID;
 
             // create base security profile assignment
-            await ocClient.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment
-            {
-                BuyerID = ocBuyerID,
-                SecurityProfileID = CustomRole.HSBaseBuyer.ToString()
-            }, token);
+            await ocClient.SecurityProfiles.SaveAssignmentAsync(
+                new SecurityProfileAssignment
+                {
+                    BuyerID = ocBuyerID,
+                    SecurityProfileID = CustomRole.HSBaseBuyer.ToString()
+                }, token);
 
             // assign message sender
-            await ocClient.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
-            {
-                MessageSenderID = "BuyerEmails",
-                BuyerID = ocBuyerID
-            }, token);
+            await ocClient.MessageSenders.SaveAssignmentAsync(
+                new MessageSenderAssignment
+                {
+                    MessageSenderID = "BuyerEmails",
+                    BuyerID = ocBuyerID
+                }, token);
 
-            await ocClient.Incrementors.SaveAsync($"{ocBuyerID}-UserIncrementor", 
-                new Incrementor { ID = $"{ocBuyerID}-UserIncrementor", LastNumber = 0, LeftPaddingCount = 5, Name = "User Incrementor" }, token);
-            await ocClient.Incrementors.SaveAsync($"{ocBuyerID}-LocationIncrementor",
-                new Incrementor { ID = $"{ocBuyerID}-LocationIncrementor", LastNumber = 0, LeftPaddingCount = 4, Name = "Location Incrementor" }, token);
+            await ocClient.Incrementors.SaveAsync(
+                $"{ocBuyerID}-UserIncrementor",
+                new Incrementor { ID = $"{ocBuyerID}-UserIncrementor", LastNumber = 0, LeftPaddingCount = 5, Name = "User Incrementor" },
+                token);
+            await ocClient.Incrementors.SaveAsync(
+                $"{ocBuyerID}-LocationIncrementor",
+                new Incrementor { ID = $"{ocBuyerID}-LocationIncrementor", LastNumber = 0, LeftPaddingCount = 4, Name = "Location Incrementor" },
+                token);
 
-            await ocClient.Catalogs.SaveAssignmentAsync(new CatalogAssignment()
-            {
-                BuyerID = ocBuyerID,
-                CatalogID = ocBuyerID,
-                ViewAllCategories = true,
-                ViewAllProducts = false
-            }, token);
+            await ocClient.Catalogs.SaveAssignmentAsync(
+                new CatalogAssignment()
+                {
+                    BuyerID = ocBuyerID,
+                    CatalogID = ocBuyerID,
+                    ViewAllCategories = true,
+                    ViewAllProducts = false
+                }, token);
             return buyer;
         }
 
@@ -166,12 +173,12 @@ namespace Headstart.API.Commands
             var ocClient = oc ?? _oc;
 
             var currentConfig = await GetImpersonationByBuyerID(buyerID);
-            if(currentConfig != null && impersonation == null)
+            if (currentConfig != null && impersonation == null)
             {
                 await ocClient.ImpersonationConfigs.DeleteAsync(currentConfig.ID);
                 return null;
             }
-            else if(currentConfig != null)
+            else if (currentConfig != null)
             {
                 return await ocClient.ImpersonationConfigs.SaveAsync(currentConfig.ID, impersonation, token);
             } else

@@ -41,8 +41,7 @@ namespace Headstart.API.Commands
             IOrderCloudClient oc,
             IZohoCommand zoho,
             ILineItemCommand lineItemCommand,
-            AppSettings settings
-        )
+            AppSettings settings)
         {
             _oc = oc;
             _taxCalculator = taxCalculator;
@@ -63,18 +62,19 @@ namespace Headstart.API.Commands
                         ProcessType.Shipping,
                         "Validate Shipping",
                         ValidateShipping(worksheet)) }
-                }},
+                } },
                 new List<HSOrder> { worksheet.Order });
         }
 
         public async Task<OrderSubmitResponse> HandleZohoRetry(string orderID)
         {
             var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
-            var supplierOrders = await Throttler.RunAsync(worksheet.LineItems.GroupBy(g => g.SupplierID).Select(s => s.Key), 100, 10, item => _oc.Orders.GetAsync<HSOrder>(OrderDirection.Outgoing,
+            var supplierOrders = await Throttler.RunAsync(worksheet.LineItems.GroupBy(g => g.SupplierID).Select(s => s.Key), 100, 10, item => _oc.Orders.GetAsync<HSOrder>(
+                OrderDirection.Outgoing,
                 $"{worksheet.Order.ID}-{item}"));
 
             return await CreateOrderSubmitResponse(
-                new List<ProcessResult>() { await this.PerformZohoTasks(worksheet, supplierOrders) }, 
+                new List<ProcessResult>() { await this.PerformZohoTasks(worksheet, supplierOrders) },
                 new List<HSOrder> { worksheet.Order });
         }
 
@@ -97,7 +97,7 @@ namespace Headstart.API.Commands
             return new ProcessResult()
             {
                 Type = ProcessType.Accounting,
-                Activity = new List<ProcessResultAction>() {salesAction, poAction, shippingAction}
+                Activity = new List<ProcessResultAction>() { salesAction, poAction, shippingAction }
             };
         }
 
@@ -115,7 +115,7 @@ namespace Headstart.API.Commands
             // step 1 failed. we don't want to attempt the integrations. return error for further action
             if (activities.Any(a => !a.Success))
                 return await CreateOrderSubmitResponse(results, new List<HSOrder> { orderWorksheet.Order });
-            
+
             // STEP 2 (integrations)
             var integrations = await HandleIntegrations(supplierOrders, buyerOrder);
             results.AddRange(integrations);
@@ -154,7 +154,7 @@ namespace Headstart.API.Commands
             });
 
             // STEP 3: Zoho orders
-            if(_settings.ZohoSettings.PerformOrderSubmitTasks) { results.Add(await this.PerformZohoTasks(orderWorksheet, supplierOrders)); }
+            if (_settings.ZohoSettings.PerformOrderSubmitTasks) { results.Add(await this.PerformZohoTasks(orderWorksheet, supplierOrders)); }
 
             // STEP 4: Validate shipping
             var shipping = await ProcessActivityCall(
@@ -169,7 +169,7 @@ namespace Headstart.API.Commands
 
             return results;
         }
-        
+
         private async Task<OrderSubmitResponse> CreateOrderSubmitResponse(List<ProcessResult> processResults, List<HSOrder> ordersRelatingToProcess)
         {
             try
@@ -186,8 +186,8 @@ namespace Headstart.API.Commands
                         }
                     };
                 }
-                    
-                await UpdateOrderNeedingAttention(ordersRelatingToProcess, true); 
+
+                await UpdateOrderNeedingAttention(ordersRelatingToProcess, true);
                 return new OrderSubmitResponse()
                 {
                     HttpStatusCode = 500,
@@ -206,7 +206,7 @@ namespace Headstart.API.Commands
                 };
             }
         }
-        
+
         private async Task UpdateOrderNeedingAttention(IList<HSOrder> orders, bool isError)
         {
             var partialOrder = new PartialOrder() { xp = new { NeedsAttention = isError } };
@@ -276,38 +276,40 @@ namespace Headstart.API.Commands
                         Description = description,
                         Success = true
                     },
-                    await func
-                );
+                    await func);
             }
             catch (CatalystBaseException integrationEx)
             {
-                return new Tuple<ProcessResultAction, T>(new ProcessResultAction()
-                {
-                    Description = description,
-                    ProcessType = type,
-                    Success = false,
-                    Exception = new ProcessResultException(integrationEx)
-                }, new T());
+                return new Tuple<ProcessResultAction, T>(
+                    new ProcessResultAction()
+                    {
+                        Description = description,
+                        ProcessType = type,
+                        Success = false,
+                        Exception = new ProcessResultException(integrationEx)
+                    }, new T());
             }
             catch (FlurlHttpException flurlEx)
             {
-                return new Tuple<ProcessResultAction, T>(new ProcessResultAction()
-                {
-                    Description = description,
-                    ProcessType = type,
-                    Success = false,
-                    Exception = new ProcessResultException(flurlEx)
-                }, new T());
+                return new Tuple<ProcessResultAction, T>(
+                    new ProcessResultAction()
+                    {
+                        Description = description,
+                        ProcessType = type,
+                        Success = false,
+                        Exception = new ProcessResultException(flurlEx)
+                    }, new T());
             }
             catch (Exception ex)
             {
-                return new Tuple<ProcessResultAction, T>(new ProcessResultAction()
-                {
-                    Description = description,
-                    ProcessType = type,
-                    Success = false,
-                    Exception = new ProcessResultException(ex)
-                }, new T());
+                return new Tuple<ProcessResultAction, T>(
+                    new ProcessResultAction()
+                    {
+                        Description = description,
+                        ProcessType = type,
+                        Success = false,
+                        Exception = new ProcessResultException(ex)
+                    }, new T());
             }
         }
 
@@ -319,8 +321,7 @@ namespace Headstart.API.Commands
             var (forwardAction, forwardedOrders) = await ProcessActivityCall(
                 ProcessType.Forwarding,
                 "OrderCloud API Order.ForwardAsync",
-                _oc.Orders.ForwardAsync(OrderDirection.Incoming, orderWorksheet.Order.ID)
-            );
+                _oc.Orders.ForwardAsync(OrderDirection.Incoming, orderWorksheet.Order.ID));
             activities.Add(forwardAction);
 
             var supplierOrders = forwardedOrders.OutgoingOrders.ToList();
@@ -328,13 +329,14 @@ namespace Headstart.API.Commands
             // creating relationship between the buyer order and the supplier order
             // no relationship exists currently in the platform
             var (updateAction, hsOrders) = await ProcessActivityCall(
-                ProcessType.Forwarding, "Create Order Relationships And Transfer XP",
+                ProcessType.Forwarding,
+                "Create Order Relationships And Transfer XP",
                 CreateOrderRelationshipsAndTransferXP(orderWorksheet, supplierOrders));
             activities.Add(updateAction);
 
             // need to get fresh order worksheet because this process has changed things about the worksheet
             var (getAction, hsOrderWorksheet) = await ProcessActivityCall(
-                ProcessType.Forwarding, 
+                ProcessType.Forwarding,
                 "Get Updated Order Worksheet",
                 _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderWorksheet.Order.ID));
             activities.Add(getAction);
@@ -342,7 +344,7 @@ namespace Headstart.API.Commands
             return await Task.FromResult(new Tuple<List<HSOrder>, HSOrderWorksheet, List<ProcessResultAction>>(hsOrders, hsOrderWorksheet, activities));
         }
 
-        public  async Task<List<HSOrder>> CreateOrderRelationshipsAndTransferXP(HSOrderWorksheet buyerOrder, List<Order> supplierOrders)
+        public async Task<List<HSOrder>> CreateOrderRelationshipsAndTransferXP(HSOrderWorksheet buyerOrder, List<Order> supplierOrders)
         {
             var payment = (await _oc.Payments.ListAsync(OrderDirection.Incoming, buyerOrder.Order.ID))?.Items?.FirstOrDefault();
             var updatedSupplierOrders = new List<HSOrder>();
@@ -395,7 +397,7 @@ namespace Headstart.API.Commands
             await _lineItemCommand.SetInitialSubmittedLineItemStatuses(buyerOrder.Order.ID);
             var sellerShipEstimates = buyerOrder.ShipEstimateResponse?.ShipEstimates?.Where(se => se.xp.SupplierID == null);
 
-            //Patch Buyer Order after it has been submitted
+            // Patch Buyer Order after it has been submitted
             var buyerOrderPatch = new PartialOrder() {
                 xp = new {
                     ShipFromAddressIDs = shipFromAddressIDs,
@@ -405,7 +407,7 @@ namespace Headstart.API.Commands
                     SubmittedOrderStatus = SubmittedOrderStatus.Open,
                     HasSellerProducts = buyerOrder.LineItems.Any(li => li.SupplierID == null),
                     PaymentMethod = payment.Type == PaymentType.CreditCard ? "Credit Card" : "Purchase Order",
-                    //  If we have seller ship estimates for a seller owned product save selected method on buyer order.
+                    // If we have seller ship estimates for a seller owned product save selected method on buyer order.
                     SelectedShipMethodsSupplierView = sellerShipEstimates != null ? MapSelectedShipMethod(sellerShipEstimates) : null,
                 }
             };
@@ -443,10 +445,10 @@ namespace Headstart.API.Commands
 
         private static async Task ValidateShipping(HSOrderWorksheet orderWorksheet)
         {
-            if(orderWorksheet.ShipEstimateResponse.HttpStatusCode != 200)
+            if (orderWorksheet.ShipEstimateResponse.HttpStatusCode != 200)
                 throw new Exception(orderWorksheet.ShipEstimateResponse.UnhandledErrorBody);
 
-            if(orderWorksheet.ShipEstimateResponse.ShipEstimates.Any(s => s.SelectedShipMethodID == ShippingConstants.NoRatesID))
+            if (orderWorksheet.ShipEstimateResponse.ShipEstimates.Any(s => s.SelectedShipMethodID == ShippingConstants.NoRatesID))
                 throw new Exception("No shipping rates could be determined - fallback shipping rate of $20 3-day was used");
 
             await Task.CompletedTask;
@@ -481,5 +483,5 @@ namespace Headstart.API.Commands
                 }
             }
         }
-    };
+    }
 }

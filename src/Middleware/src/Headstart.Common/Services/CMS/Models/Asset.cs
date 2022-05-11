@@ -6,15 +6,29 @@ using System.Text;
 
 namespace Headstart.Common.Services.CMS.Models
 {
-	public enum AssetType { Image, Text, Audio, Video, Presentation, SpreadSheet, PDF, Compressed, Code, JSON, Markup, Unknown }
+	public enum AssetType
+    {
+        Image,
+        Text,
+        Audio,
+        Video,
+        Presentation,
+        SpreadSheet,
+        PDF,
+        Compressed,
+        Code,
+        JSON,
+        Markup,
+        Unknown
+    }
 
-	
+
 	public class Asset
 	{
 		public string ID { get; set; }
 		public string Title { get; set; }
 		public bool Active { get; set; } = false;
-		public string Url { get; set; } // Generated if not set. 
+		public string Url { get; set; } // Generated if not set.
 		public AssetType Type { get; set; }
 		public List<string> Tags { get; set; }
 		public string FileName { get; set; } // Defaults to the file name in the upload. Or should be required?
@@ -22,7 +36,7 @@ namespace Headstart.Common.Services.CMS.Models
 		public History History { get; set; }
 	}
 
-	
+
 	public class AssetMetadata
 	{
 		public bool IsUrlOverridden { get; set; } = false;
@@ -40,7 +54,7 @@ namespace Headstart.Common.Services.CMS.Models
         public string Title { get; set; }
         public bool Active { get; set; }
         public IFormFile File { get; set; }
-		//public FormFile File { get; set; }
+		// public FormFile File { get; set; }
         public string Url { get; set; }
         public string Tags { get; set; }
         public string Filename { get; set; }

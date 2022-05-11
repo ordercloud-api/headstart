@@ -7,7 +7,7 @@ using System.Text;
 namespace ordercloud.integrations.library.cosmos_repo
 {
     /// <summary>
-    /// Extension methods for IApplicationBuilder 
+    /// Extension methods for IApplicationBuilder
     /// </summary>
     public static class IApplicationBuilderExtensions
     {
@@ -20,7 +20,7 @@ namespace ordercloud.integrations.library.cosmos_repo
             using (IServiceScope serviceScope = builder.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 ICosmosDbContainerFactory factory = serviceScope.ServiceProvider.GetService<ICosmosDbContainerFactory>();
-                if(factory != null)
+                if (factory != null)
                 {
                     factory.EnsureDbSetupAsync().Wait();
                 }

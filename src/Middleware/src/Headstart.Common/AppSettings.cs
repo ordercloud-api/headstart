@@ -33,7 +33,12 @@ namespace Headstart.Common
         public string InstrumentationKey { get; set; }
     }
 
-    public enum AppEnvironment { Test, Staging, Production }
+    public enum AppEnvironment
+    {
+        Test,
+        Staging,
+        Production
+    }
 
     public class AvalaraSettings
     {
@@ -63,7 +68,12 @@ namespace Headstart.Common
         public TaxProvider TaxProvider { get; set; } = TaxProvider.Avalara;
 	}
 
-    public enum TaxProvider { Avalara, Vertex, Taxjar }
+    public enum TaxProvider
+    {
+        Avalara,
+        Vertex,
+        Taxjar
+    }
 
 
     public class FlurlSettings
@@ -118,7 +128,7 @@ namespace Headstart.Common
     {
         public string AuthID { get; set; }
         public string AuthToken { get; set; }
-        public string RefererHost { get; set; } // The autocomplete pro endpoint requires the Referer header to be a pre-set value 
+        public string RefererHost { get; set; } // The autocomplete pro endpoint requires the Referer header to be a pre-set value
         public string WebsiteKey { get; set; }
     }
 

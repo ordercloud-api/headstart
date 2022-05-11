@@ -25,7 +25,7 @@ namespace Headstart.Common.Mappers
 		{
 			using (SHA256 sha256Hash = SHA256.Create())
 			{
-				//From String to byte array
+				// From String to byte array
 				byte[] sourceBytes = Encoding.UTF8.GetBytes(codeVerifier);
 				byte[] hashBytes = sha256Hash.ComputeHash(sourceBytes);
 				return Base64UrlEncoder.Encode(hashBytes);

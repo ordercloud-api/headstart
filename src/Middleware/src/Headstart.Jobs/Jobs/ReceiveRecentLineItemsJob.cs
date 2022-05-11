@@ -51,7 +51,7 @@ namespace Headstart.Jobs
             var lineItemsWithPurchaseOrders = await BuildLineItemsWithPurchaseOrders(orderID);
 
             var orderLineItemData = new HSOrderLineItemData()
-            { 
+            {
                 Order = orderWorksheet.Order,
                 LineItems = lineItems,
                 LineItemsWithMiscFields = lineItemsWithMiscFields,
@@ -63,7 +63,7 @@ namespace Headstart.Jobs
             var requestOptions = BuildQueryRequestOptions();
 
             var cosmosLineItemOrder = new LineItemDetailData()
-            { 
+            {
                 PartitionKey = "PartitionValue",
                 OrderID = orderID,
                 Data = orderLineItemData
@@ -73,7 +73,7 @@ namespace Headstart.Jobs
 
             CosmosListPage<LineItemDetailData> currentLineItemListPage = await _lineItemDetailDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
 
-            var cosmosID = "";
+            var cosmosID = string.Empty;
             if (currentLineItemListPage.Items.Count() == 1)
             {
                 cosmosID = cosmosLineItemOrder.id = currentLineItemListPage.Items[0].id;
@@ -84,10 +84,10 @@ namespace Headstart.Jobs
 
         private async Task<List<LineItemsWithPurchaseOrderFields>> BuildLineItemsWithPurchaseOrders(string orderID)
         {
-            //returns POs
+            // returns POs
             var orders = await _oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Outgoing, filters: $"ID={orderID}-*");
 
-            //loop through orders, get line items, pass those.
+            // loop through orders, get line items, pass those.
             List<LineItemsWithPurchaseOrderFields> orderLineItemBySupplierID = await GetLineItemsFromPurchaseOrdersAsync(orders);
 
             return orderLineItemBySupplierID;

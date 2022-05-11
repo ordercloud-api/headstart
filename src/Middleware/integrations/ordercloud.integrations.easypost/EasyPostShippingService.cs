@@ -39,8 +39,10 @@ namespace ordercloud.integrations.easypost
 
 	public class Grouping<TKey, TElement> : List<TElement>, IGrouping<TKey, TElement>
 	{
-		public Grouping(TKey key) : base() => Key = key;
-		public Grouping(TKey key, int capacity) : base(capacity) => Key = key;
+		public Grouping(TKey key)
+            : base() => Key = key;
+		public Grouping(TKey key, int capacity)
+            : base(capacity) => Key = key;
 		public Grouping(TKey key, IEnumerable<TElement> collection)
 			: base(collection) => Key = key;
 		public TKey Key { get; private set; }
@@ -48,11 +50,11 @@ namespace ordercloud.integrations.easypost
 
 	public class EasyPostShippingService : IEasyPostShippingService
 	{
-		private readonly EasyPostConfig _config;
 		private const string BaseUrl = "https://api.easypost.com/v2";
 		public const string FreeShipping = "FREE_SHIPPING";
+        private readonly EasyPostConfig _config;
 
-		public EasyPostShippingService(EasyPostConfig config)
+        public EasyPostShippingService(EasyPostConfig config)
 		{
 			_config = config;
 		}
@@ -75,7 +77,7 @@ namespace ordercloud.integrations.easypost
                 var response = await Throttler.RunAsync(shipment, 200, 10, PostShipment);
 				easyPostResponses.Add(response.ToArray());
             }
-            
+
 			var shipEstimateResponse = new ShipEstimateResponse
 			{
 				ShipEstimates = groupedLineItems.Select((lineItems, index) =>
@@ -92,10 +94,10 @@ namespace ordercloud.integrations.easypost
 						ID = easyPostResponses[index][0].id,
 						ShipMethods = shipMethods, // This will get filtered down based on carrierAccounts
 						ShipEstimateItems = lineItems.Select(li => new ShipEstimateItem() { LineItemID = li.ID, Quantity = li.Quantity }).ToList(),
-						xp = { 
+						xp = {
 							AllShipMethods = shipMethods, // This is being saved so we have all data to compare rates across carrierAccounts
 							SupplierID = firstLi.SupplierID, // This will help with forwarding the supplier order
-							ShipFromAddressID = firstLi.ShipFromAddressID  // This will help with forwarding the supplier order
+							ShipFromAddressID = firstLi.ShipFromAddressID // This will help with forwarding the supplier order
 						}
 					};
 				}).ToList(),
@@ -121,7 +123,7 @@ namespace ordercloud.integrations.easypost
 				xp =
                 {
 					SupplierID = firstLi.SupplierID, // This will help with forwarding the supplier order
-					ShipFromAddressID = firstLi.ShipFromAddressID  // This will help with forwarding the supplier order
+					ShipFromAddressID = firstLi.ShipFromAddressID // This will help with forwarding the supplier order
                 }
 			};
         }
@@ -131,11 +133,11 @@ namespace ordercloud.integrations.easypost
 			try
             {
 				return await BaseUrl
-					.WithBasicAuth(_config.APIKey, "")
+					.WithBasicAuth(_config.APIKey, string.Empty)
 					.AppendPathSegment("shipments")
 					.PostJsonAsync(new { shipment })
 					.ReceiveJson<EasyPostShipment>();
-			} catch(FlurlHttpException ex)
+			} catch (FlurlHttpException ex)
             {
 				var error = await ex.GetResponseJsonAsync<EasyPostApiError>();
 				throw new EasyPostException(error);

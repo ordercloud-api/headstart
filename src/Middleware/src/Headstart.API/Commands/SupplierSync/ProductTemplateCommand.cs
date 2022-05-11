@@ -95,8 +95,8 @@ namespace Headstart.API.Commands
             var images = mapper.Take<TemplateAsset>("Images").Select(s => s.Value).ToList().AsReadOnly();
             var attachments = mapper.Take<TemplateAsset>("Attachments").Select(s => s.Value).ToList().AsReadOnly();
 
-            //var list = products.Select(info => new TemplateHydratedProduct()
-            //{
+            // var list = products.Select(info => new TemplateHydratedProduct()
+            // {
             //    Product = info.Value,
             //    PriceSchedule = prices.FirstOrDefault(row => row.Value.ProductID == info.Value.ID)?.Value,
             //    Specs = specs.Where(s => s.Value.ProductID == info.Value.ID).Select(s => s.Value).ToList(),
@@ -104,7 +104,7 @@ namespace Headstart.API.Commands
             //        .SelectMany(s => specoptions.Where(o => o.Value.SpecID == s.Value.ID).Select(o => o.Value)).ToList(),
             //    Images = images.Where(s => s.Value.ProductID == info.Value.ID).Select(o => o.Value).ToList(),
             //    Attachments = attachments.Where(s => s.Value.ProductID == info.Value.ID).Select(o => o.Value).ToList()
-            //});
+            // });
 
             var list = new List<TemplateHydratedProduct>();
             foreach (var product in products)
@@ -116,7 +116,7 @@ namespace Headstart.API.Commands
                 p.Attachments = attachments.Where(s => s.ProductID == product.ID).Select(o => o).ToList();
                 p.Specs = specs.Where(s => s.ProductID == product.ID).Select(s => s).ToList();
                 // 1:38
-                //var o = from options in specoptions
+                // var o = from options in specoptions
                 //    join sp in specs on options.SpecID equals sp.ID
                 //    join pp in products on sp.ProductID equals pp.ID
                 //        select options;
@@ -166,7 +166,7 @@ namespace Headstart.API.Commands
     }
 
 
-    
+
     public class TemplateProductFlat : IHSObject
     {
         [OrderCloud.SDK.Required]
@@ -257,7 +257,7 @@ namespace Headstart.API.Commands
         public bool AllowOpenText { get; set; }
         public string DefaultOptionID { get; set; }
         public bool DefinesVariant { get; set; }
-        //public IList<TemplateSpecOption> SpecOptions { get; set; } = new List<TemplateSpecOption>();
+        // public IList<TemplateSpecOption> SpecOptions { get; set; } = new List<TemplateSpecOption>();
     }
 
     public class TemplateSpecOption

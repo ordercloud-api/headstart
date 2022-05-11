@@ -9,7 +9,7 @@ using OrderCloud.SDK;
 
 namespace Headstart.Common.Models
 {
-    
+
 	[CosmosCollection("orchestrationlogs")]
 	public class OrchestrationLog : CosmosObject
     {

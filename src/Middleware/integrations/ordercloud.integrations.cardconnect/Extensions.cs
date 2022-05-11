@@ -21,7 +21,7 @@ namespace ordercloud.integrations.cardconnect
         public static bool WasSuccessful(this CardConnectVoidResponse attempt)
         {
             // If the void is successful, the authcode will contain REVERS. If transaction is not found or an error occurs:
-            // Identifies if the void was successful.Can one of the following values: 
+            // Identifies if the void was successful.Can one of the following values:
             // REVERS - Successful
             // Null - Unsuccessful.Refer to the respcode and resptext.
             return attempt.authcode == "REVERS";

@@ -89,7 +89,7 @@ namespace Headstart.API.Commands
             var userType = decodedToken?.CommerceRole.ToString().ToLower() ?? "noUser";
             userType = userType == "seller" ? "admin" : userType;
             var verifiedUserType = userType.Reserialize<VerifiedUserType>();
-            
+
             var buyerOrderID = orderID.Split('-')[0];
             var previousLineItemsStates = await _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Incoming, buyerOrderID);
 
@@ -102,7 +102,7 @@ namespace Headstart.API.Commands
             });
 
             var buyerOrder = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, buyerOrderID);
-            var allLineItemsForOrder = await  _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Incoming, buyerOrderID);
+            var allLineItemsForOrder = await _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Incoming, buyerOrderID);
             var lineItemsChanged = allLineItemsForOrder.Where(li => lineItemStatusChanges.Changes.Select(li => li.ID).Contains(li.ID)).ToList();
             var sellerIDsRelatingToChange = lineItemsChanged.Select(li => li.SupplierID).Distinct().ToList();
 
@@ -126,7 +126,7 @@ namespace Headstart.API.Commands
         {
             await SyncOrderStatus(OrderDirection.Incoming, buyerOrder.ID, allOrderLineItems);
 
-            if(relatedSupplierOrderIDs != null)
+            if (relatedSupplierOrderIDs != null)
             {
                 foreach (var supplierOrderID in relatedSupplierOrderIDs)
                 {
@@ -134,7 +134,7 @@ namespace Headstart.API.Commands
                     var allOrderLineItemsForSupplierOrder = allOrderLineItems.Where(li => li.SupplierID == supplierID).ToList();
                     await SyncOrderStatus(OrderDirection.Outgoing, supplierOrderID, allOrderLineItemsForSupplierOrder);
                 }
-            }            
+            }
         }
 
         private async Task SyncOrderStatus(OrderDirection orderDirection, string orderID, List<HSLineItem> changedLineItems)
@@ -167,7 +167,7 @@ namespace Headstart.API.Commands
                         StatusByQuantity
                     }
                 };
-            } else if(newLineItemStatus == LineItemStatus.CancelRequested || newLineItemStatus == LineItemStatus.Canceled)
+            } else if (newLineItemStatus == LineItemStatus.CancelRequested || newLineItemStatus == LineItemStatus.Canceled)
             {
                 var cancelRequests = existingLineItem.xp.Cancelations ?? new List<LineItemClaim>();
                 return new PartialLineItem()
@@ -192,14 +192,14 @@ namespace Headstart.API.Commands
 
         private List<LineItemClaim> GetUpdatedChangeRequests(List<LineItemClaim> existinglineItemStatusChangeRequests, LineItemStatusChange lineItemStatusChange, int QuantitySetting, LineItemStatus newLineItemStatus, Dictionary<LineItemStatus, int> lineItemStatuses)
         {
-            if(newLineItemStatus == LineItemStatus.Returned || newLineItemStatus == LineItemStatus.Canceled) 
+            if (newLineItemStatus == LineItemStatus.Returned || newLineItemStatus == LineItemStatus.Canceled)
             {
-                // go through the return requests and resolve each request until there aren't enough returned or canceled items 
+                // go through the return requests and resolve each request until there aren't enough returned or canceled items
                 // to resolve an additional request
                 var numberReturnedOrCanceled = lineItemStatuses[newLineItemStatus];
                 var currentClaimIndex = 0;
-                while (numberReturnedOrCanceled > 0 && currentClaimIndex < existinglineItemStatusChangeRequests.Count()) { 
-                    if(existinglineItemStatusChangeRequests[currentClaimIndex].Quantity <= numberReturnedOrCanceled)
+                while (numberReturnedOrCanceled > 0 && currentClaimIndex < existinglineItemStatusChangeRequests.Count()) {
+                    if (existinglineItemStatusChangeRequests[currentClaimIndex].Quantity <= numberReturnedOrCanceled)
                     {
                         existinglineItemStatusChangeRequests[currentClaimIndex].IsResolved = true;
                         numberReturnedOrCanceled -= existinglineItemStatusChangeRequests[currentClaimIndex].Quantity;
@@ -220,7 +220,7 @@ namespace Headstart.API.Commands
                 });
 
             }
-            
+
             return existinglineItemStatusChangeRequests;
         }
 
@@ -236,11 +236,11 @@ namespace Headstart.API.Commands
             var validPreviousStates = LineItemStatusConstants.ValidPreviousStateLineItemChangeMap[newLineItemStatus];
 
             // decrement
-            foreach(LineItemStatus status in validPreviousStates)
+            foreach (LineItemStatus status in validPreviousStates)
             {
-                if(statusDictionary[status] != 0)
+                if (statusDictionary[status] != 0)
                 {
-                    if(statusDictionary[status] <= quantitySetting)
+                    if (statusDictionary[status] <= quantitySetting)
                     {
                         quantitySetting -= statusDictionary[status];
                         statusDictionary[status] = 0;
@@ -270,9 +270,9 @@ namespace Headstart.API.Commands
                     var userType = entry.Key;
                     var emailText = entry.Value;
 
-                    var firstName = "";
-                    var lastName = "";
-                    var email = "";
+                    var firstName = string.Empty;
+                    var lastName = string.Empty;
+                    var email = string.Empty;
 
                     if (userType == VerifiedUserType.buyer)
                     {
@@ -291,15 +291,15 @@ namespace Headstart.API.Commands
                             if (seller?.xp?.OrderEmails ?? false)
                             {
                                 tos.Add(new EmailAddress(seller.Email));
-                            };
+                            }
                             if (seller?.xp?.AddtlRcpts?.Any() ?? false)
                             {
                                 foreach (var rcpt in seller.xp.AddtlRcpts)
                                 {
                                     tos.Add(new EmailAddress(rcpt));
-                                };
-                            };
-                        };
+                                }
+                            }
+                        }
                         var shouldNotify = !(LineItemStatusConstants.LineItemStatusChangesDontNotifySetter.Contains(lineItemStatusChanges.Status) && setterUserType == VerifiedUserType.admin);
                         if (shouldNotify)
                         {
@@ -319,7 +319,7 @@ namespace Headstart.API.Commands
                                     foreach (var rcpt in supplier.xp.NotificationRcpts)
                                     {
                                         tos.Add(new EmailAddress(rcpt));
-                                    };
+                                    }
                                     await _sendgridService.SendLineItemStatusChangeEmailMultipleRcpts(buyerOrder, lineItemStatusChanges, lineItemsChanged.ToList(), tos, emailText);
                                 }
                             });
@@ -327,7 +327,7 @@ namespace Headstart.API.Commands
                         }
                     }
                 }
-            } 
+            }
             catch (Exception ex)
             {
 
@@ -340,23 +340,23 @@ namespace Headstart.API.Commands
                     { "BuyerID", buyerOrder.FromCompanyID },
                     { "UserEmail", buyerOrder.FromUser.Email },
                     { "UserType", setterUserType.ToString() },
-                    { "ErrorResponse", JsonConvert.SerializeObject(ex.Message, Newtonsoft.Json.Formatting.Indented)}
+                    { "ErrorResponse", JsonConvert.SerializeObject(ex.Message, Newtonsoft.Json.Formatting.Indented) }
                 };
                 _telemetry.TrackEvent("Email.LineItemEmailFailed", customProperties);
                 return;
             }
-          
+
         }
 
         private void ValidateLineItemStatusChange(List<HSLineItem> previousLineItemStates, LineItemStatusChanges lineItemStatusChanges, VerifiedUserType userType)
         {
             /* need to validate 2 things on a lineitem status change
-             * 
+             *
              * 1) user making the request has the ability to make that line item change based on usertype
              * 2) there are sufficient amount of the previous quantities for each lineitem
              */
 
-            // 1) 
+            // 1)
             var allowedLineItemStatuses = LineItemStatusConstants.ValidLineItemStatusSetByUserType[userType];
             Require.That(allowedLineItemStatuses.Contains(lineItemStatusChanges.Status), new ErrorCode("Not authorized to set this status on a lineItem", $"Not authorized to set line items to {lineItemStatusChanges.Status}"));
 
@@ -412,7 +412,7 @@ namespace Headstart.API.Commands
             var li = new HSLineItem();
             var markedUpPrice = ValidateLineItemUnitCost(orderID, product, existingLineItems, liReq);
             liReq.UnitPrice = liReq.Product != null ? liReq.UnitPrice : await markedUpPrice;
-            
+
             Require.That(!order.IsSubmitted, new ErrorCode("Invalid Order Status", "Order has already been submitted"));
 
             liReq.xp.StatusByQuantity = LineItemStatusConstants.EmptyStatuses;
@@ -421,7 +421,7 @@ namespace Headstart.API.Commands
             var preExistingLi = ((List<HSLineItem>)existingLineItems).Find(eli => LineItemsMatch(eli, liReq));
             if (preExistingLi != null)
             {
-                liReq.ID = preExistingLi.ID; //ensure we do not change the line item id when updating
+                liReq.ID = preExistingLi.ID; // ensure we do not change the line item id when updating
                 li = await _oc.LineItems.SaveAsync<HSLineItem>(OrderDirection.Incoming, orderID, preExistingLi.ID, liReq);
             } else
             {
@@ -446,7 +446,7 @@ namespace Headstart.API.Commands
 
         public async Task<decimal> ValidateLineItemUnitCost(string orderID, SuperHSMeProduct product, List<HSLineItem> existingLineItems, HSLineItem li)
         {
-            
+
             if (product.PriceSchedule.UseCumulativeQuantity)
             {
                 int totalQuantity = li?.Quantity ?? 0;
@@ -495,7 +495,7 @@ namespace Headstart.API.Commands
                 return;
             }
             string orderID;
-            if(rmaWithLineItemStatusByQuantity.RMA.SupplierID == null)
+            if (rmaWithLineItemStatusByQuantity.RMA.SupplierID == null)
             {
                 // this is an MPO owned RMA
                 orderID = rmaWithLineItemStatusByQuantity.RMA.SourceOrderID;
@@ -528,7 +528,7 @@ namespace Headstart.API.Commands
         private bool LineItemsMatch(LineItem li1, LineItem li2)
         {
             if (li1.ProductID != li2.ProductID) return false;
-            if (!String.IsNullOrEmpty(li2.xp.PrintArtworkURL)) 
+            if (!string.IsNullOrEmpty(li2.xp.PrintArtworkURL))
             {
                 if (li2.xp.PrintArtworkURL != li1.xp.PrintArtworkURL) return false;
             }
@@ -538,5 +538,5 @@ namespace Headstart.API.Commands
             }
             return true;
         }
-    };
+    }
 }

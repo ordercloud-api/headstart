@@ -42,7 +42,7 @@ namespace Headstart.Common.Services
                         }).ReceiveJson<PortalAuthResponse>();
 
                 return response.access_token;
-            } catch(FlurlHttpException ex)
+            } catch (FlurlHttpException ex)
             {
                 throw new CatalystBaseException(
                     ex.Call.Response.StatusCode.ToString(),
@@ -77,7 +77,7 @@ namespace Headstart.Common.Services
 
         public async Task CreateMarketplace(Marketplace marketplace, string token)
         {
-            //  doesn't return anything
+            // doesn't return anything
             await _client.Request($"organizations/{marketplace.Id}")
                 .WithOAuthBearerToken(token)
                 .PutJsonAsync(marketplace);

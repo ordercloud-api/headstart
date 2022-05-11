@@ -16,7 +16,6 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using OrderCloud.SDK;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using static Headstart.Common.Models.SendGridModels;
 using Headstart.Common.Mappers;
 using Newtonsoft.Json;
 using ordercloud.integrations.cardconnect;
@@ -25,6 +24,7 @@ using ordercloud.integrations.library;
 using Headstart.Models.Headstart;
 using OrderCloud.Catalyst;
 using System.Net;
+using static Headstart.Common.Models.SendGridModels;
 
 namespace Headstart.Common.Services
 {
@@ -53,7 +53,7 @@ namespace Headstart.Common.Services
 
     public class SendgridService : ISendgridService
     {
-        private readonly AppSettings _settings; 
+        private readonly AppSettings _settings;
         private readonly IOrderCloudClient _oc;
         private readonly ISendGridClient _client;
 
@@ -92,7 +92,7 @@ namespace Headstart.Common.Services
                 var toEmail = new EmailAddress(to);
                 var msg = MailHelper.CreateSingleTemplateEmail(fromEmail, toEmail, templateID, templateData);
                 var response = await _client.SendEmailAsync(msg);
-                if(!response.IsSuccessStatusCode)
+                if (!response.IsSuccessStatusCode)
                 {
                     throw new Exception("Error sending sendgrid email");
                 }
@@ -172,10 +172,10 @@ namespace Headstart.Common.Services
 
         private List<LineItemProductData> CreateTemplateProductList(List<HSLineItem> lineItems, LineItemStatusChanges lineItemStatusChanges)
         {
-            //  first get line items that actually had a change
+            // first get line items that actually had a change
             var changedLiIds = lineItemStatusChanges.Changes.Where(change => change.Quantity > 0).Select(change => change.ID);
             var changedLineItems = changedLiIds.Select(i => lineItems.Single(l => l.ID == i));
-            //  now map to template data
+            // now map to template data
             return changedLineItems.Select(lineItem =>
             {
                 var lineItemStatusChange = lineItemStatusChanges.Changes.First(li => li.ID == lineItem.ID);
@@ -215,8 +215,8 @@ namespace Headstart.Common.Services
             {
                 Data = new LineItemStatusChangeData
                 {
-                    FirstName = "",
-                    LastName = "",
+                    FirstName = string.Empty,
+                    LastName = string.Empty,
                     Products = productsList,
                     DateSubmitted = order.DateSubmitted.ToString(),
                     OrderID = order.ID,
@@ -318,8 +318,8 @@ namespace Headstart.Common.Services
 
                 var sellerEmailList = await GetSellerEmails();
 
-                //  send emails
-                
+                // send emails
+
                 await SendSingleTemplateEmailMultipleRcpts(_settings?.SendgridSettings?.FromEmail, sellerEmailList, _settings?.SendgridSettings?.OrderSubmitTemplateID, sellerTemplateData);
                 await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, orderWorksheet.Order.FromUser.Email, _settings?.SendgridSettings?.OrderSubmitTemplateID, buyerTemplateData);
                 await SendSupplierOrderSubmitEmails(orderWorksheet);
@@ -339,7 +339,7 @@ namespace Headstart.Common.Services
                     Message = OrderSubmitEmailConstants.GetQuoteOrderSubmitText(VerifiedUserType.supplier)
                 };
 
-                //  send emails
+                // send emails
                 await SendSingleTemplateEmailMultipleRcpts(_settings?.SendgridSettings?.FromEmail, supplierEmailList, _settings?.SendgridSettings?.QuoteOrderSubmitTemplateID, supplierTemplateData);
                 await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, orderWorksheet.Order.FromUser.Email, _settings?.SendgridSettings?.QuoteOrderSubmitTemplateID, buyerTemplateData);
             }
@@ -350,12 +350,12 @@ namespace Headstart.Common.Services
             ListPage<HSSupplier> suppliers = null;
             if (orderWorksheet.Order.xp.SupplierIDs != null)
             {
-                var filterString = String.Join("|", orderWorksheet.Order.xp.SupplierIDs);
+                var filterString = string.Join("|", orderWorksheet.Order.xp.SupplierIDs);
                 suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={filterString}");
             }
-            foreach(var supplier in suppliers.Items)
+            foreach (var supplier in suppliers.Items)
             {
-                if(supplier?.xp?.NotificationRcpts?.Count() >0)
+                if (supplier?.xp?.NotificationRcpts?.Count() > 0)
                 {
                     // get orderworksheet for supplier order and fill in some information from buyer order worksheet
                     var supplierOrderWorksheet = await BuildSupplierOrderWorksheet(orderWorksheet, supplier.ID);
@@ -385,9 +385,9 @@ namespace Headstart.Common.Services
                     foreach (var rcpt in supplier.xp.NotificationRcpts)
                     {
                         supplierTos.Add(new EmailAddress(rcpt));
-                    };
+                    }
                     await SendSingleTemplateEmailMultipleRcpts(_settings?.SendgridSettings?.FromEmail, supplierTos, _settings?.SendgridSettings?.OrderSubmitTemplateID, supplierTemplateData);
-                }   
+                }
             }
         }
 
@@ -404,7 +404,7 @@ namespace Headstart.Common.Services
             ListPage<HSSupplier> suppliers = null;
             if (orderWorksheet.Order.xp.SupplierIDs != null)
             {
-                var filterString = String.Join("|", orderWorksheet.Order.xp.SupplierIDs);
+                var filterString = string.Join("|", orderWorksheet.Order.xp.SupplierIDs);
                 suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={filterString}");
             }
             var supplierTos = new List<EmailAddress>();
@@ -415,7 +415,7 @@ namespace Headstart.Common.Services
                     foreach (var rcpt in supplier.xp.NotificationRcpts)
                     {
                         supplierTos.Add(new EmailAddress(rcpt));
-                    };
+                    }
                 }
             }
             return supplierTos;
@@ -430,15 +430,15 @@ namespace Headstart.Common.Services
                 if (seller?.xp?.OrderEmails ?? false)
                 {
                     sellerTos.Add(new EmailAddress(seller.Email));
-                };
+                }
                 if (seller?.xp?.AddtlRcpts?.Any() ?? false)
                 {
                     foreach (var rcpt in seller.xp.AddtlRcpts)
                     {
                         sellerTos.Add(new EmailAddress(rcpt));
-                    };
-                };
-            };
+                    }
+                }
+            }
             return sellerTos;
         }
 

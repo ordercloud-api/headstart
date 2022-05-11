@@ -70,7 +70,6 @@ namespace Headstart.Tests
 			_sut = new CreditCardCommand(_cardConnect, _oc, _hsExchangeRates, _supportAlerts, _settings);
 		}
 
-        #region AuthorizePayment
         [Test]
 		public void should_throw_if_no_payments()
 		{
@@ -141,7 +140,7 @@ namespace Headstart.Tests
 			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, orderID, paymentID, Arg.Is<PaymentTransaction>(x => x.Amount == paymentTotal));
 			await _cardConnect.Received().AuthWithoutCapture(Arg.Any<CardConnectAuthorizationRequest>());
 			await _oc.Payments.Received().PatchAsync<HSPayment>(OrderDirection.Incoming, orderID, paymentID, Arg.Is<PartialPayment>(p => p.Accepted == true && p.Amount == ccTotal));
-			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, orderID,paymentID, Arg.Any<PaymentTransaction>());
+			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, orderID, paymentID, Arg.Any<PaymentTransaction>());
 		}
 
 		[Test]
@@ -368,12 +367,11 @@ namespace Headstart.Tests
 			await _supportAlerts
 				.Received()
 				.VoidAuthorizationFailed(Arg.Any<HSPayment>(), transactionID, Arg.Any<HSOrder>(), Arg.Any<CreditCardVoidException>());
-				
+
 			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, orderID, paymentID, Arg.Any<PaymentTransaction>());
 		}
-		#endregion AuthorizePayment
 
-		private HSPayment MockCCPayment(decimal amount, bool accepted = false, List<HSPaymentTransaction> transactions = null)
+        private HSPayment MockCCPayment(decimal amount, bool accepted = false, List<HSPaymentTransaction> transactions = null)
         {
 			return new HSPayment
 			{
@@ -394,7 +392,7 @@ namespace Headstart.Tests
 				ExpirationDate = new DateTimeOffset(),
 				xp = new CreditCardXP
                 {
-					CCBillingAddress = new Address {}
+					CCBillingAddress = new Address { }
 				}
 			});
         }

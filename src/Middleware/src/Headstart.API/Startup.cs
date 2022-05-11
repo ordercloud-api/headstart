@@ -68,8 +68,7 @@ namespace Headstart.API
                 _settings.CosmosSettings.DatabaseName,
                 _settings.CosmosSettings.EndpointUri,
                 _settings.CosmosSettings.PrimaryKey,
-                _settings.CosmosSettings.RequestTimeoutInSeconds
-            );
+                _settings.CosmosSettings.RequestTimeoutInSeconds);
             var cosmosContainers = new List<ContainerInfo>()
             {
                 new ContainerInfo()
@@ -121,8 +120,8 @@ namespace Headstart.API
             var assetConfig = new BlobServiceConfig()
             {
                 ConnectionString = _settings.StorageAccountSettings.ConnectionString,
-                Container = "assets", 
-                AccessType = BlobContainerPublicAccessType.Container 
+                Container = "assets",
+                AccessType = BlobContainerPublicAccessType.Container
             };
 
             var flurlClientFactory = new PerBaseUrlFlurlClientFactory();
@@ -154,7 +153,7 @@ namespace Headstart.API
                     break;
             }
             var smartyService = new SmartyStreetsService(_settings.SmartyStreetSettings, smartyStreetsUsClient);
-            
+
             services.AddMvc(o =>
              {
                  o.Filters.Add(new ordercloud.integrations.library.ValidateModelAttribute());
@@ -199,19 +198,20 @@ namespace Headstart.API
                 .AddSingleton<DownloadReportCommand>()
                 .Inject<IRMARepo>()
                 .Inject<IZohoClient>()
-                .AddSingleton<IZohoCommand>(z => new ZohoCommand(new ZohoClient(
-                    new ZohoClientConfig()
-                    {
-                        ApiUrl = "https://books.zoho.com/api/v3",
-                        AccessToken = _settings.ZohoSettings.AccessToken,
-                        ClientId = _settings.ZohoSettings.ClientId,
-                        ClientSecret = _settings.ZohoSettings.ClientSecret,
-                        OrganizationID = _settings.ZohoSettings.OrgID
-                    }, flurlClientFactory),
+                .AddSingleton<IZohoCommand>(z => new ZohoCommand(
+                    new ZohoClient(
+                        new ZohoClientConfig()
+                        {
+                            ApiUrl = "https://books.zoho.com/api/v3",
+                            AccessToken = _settings.ZohoSettings.AccessToken,
+                            ClientId = _settings.ZohoSettings.ClientId,
+                            ClientSecret = _settings.ZohoSettings.ClientSecret,
+                            OrganizationID = _settings.ZohoSettings.OrgID
+                        }, flurlClientFactory),
                     orderCloudClient))
                 .AddSingleton<IOrderCloudIntegrationsExchangeRatesClient, OrderCloudIntegrationsExchangeRatesClient>()
-                .AddSingleton<IAssetClient>(provider => new AssetClient( new OrderCloudIntegrationsBlobService(assetConfig), _settings))
-                .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand( new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
+                .AddSingleton<IAssetClient>(provider => new AssetClient(new OrderCloudIntegrationsBlobService(assetConfig), _settings))
+                .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand(new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
                 .AddSingleton<ITaxCodesProvider>(provider =>
                 {
                     return _settings.EnvironmentSettings.TaxProvider switch

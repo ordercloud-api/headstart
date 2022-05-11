@@ -19,8 +19,7 @@ namespace ordercloud.integrations.exchangerates
         Task<OrderCloudIntegrationsExchangeRate> Get(CurrencySymbol symbol);
         Task<ListPage<OrderCloudIntegrationsConversionRate>> GetRateList();
 
-        ListPage<OrderCloudIntegrationsConversionRate> Filter(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs,
-            OrderCloudIntegrationsExchangeRate rates);
+        ListPage<OrderCloudIntegrationsConversionRate> Filter(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, OrderCloudIntegrationsExchangeRate rates);
 
         Task<double?> ConvertCurrency(CurrencySymbol from, CurrencySymbol to, double value);
         Task Update();
@@ -54,7 +53,7 @@ namespace ordercloud.integrations.exchangerates
             {
                 await Update();
                 return await GetCachedRates(rateArgs, currency);
-            }   
+            }
         }
 
         private async Task<ListPage<OrderCloudIntegrationsConversionRate>> GetCachedRates(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencySymbol currency)

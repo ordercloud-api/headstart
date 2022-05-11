@@ -8,7 +8,8 @@ namespace ordercloud.integrations.library.Cosmos
 {
 	public class CosmosInteropIDAttribute : RegularExpressionAttribute
     {
-        public CosmosInteropIDAttribute() : base(CosmosInteropID.VALIDATION_REGEX)
+        public CosmosInteropIDAttribute()
+            : base(CosmosInteropID.VALIDATION_REGEX)
         {
             AutoGen = true;
         }

@@ -42,7 +42,7 @@ namespace Headstart.Jobs
 
         private async Task UpsertProductDetail()
         {
-            List<Product> retrievedProductList = await _oc.Products.ListAllAsync<Product>( filters: $"Name=*");
+            List<Product> retrievedProductList = await _oc.Products.ListAllAsync<Product>(filters: $"Name=*");
 
             foreach (Product product in retrievedProductList)
             {
@@ -54,7 +54,7 @@ namespace Headstart.Jobs
                 {
                     LogFailure(ex.Message);
                 }
-               
+
             }
         }
 
@@ -64,7 +64,7 @@ namespace Headstart.Jobs
 
             List<ProductDetailData> productDataList = await CreateProductDetailDataAsync(product, lineItemData?.Items);
 
-            //Get current products in Cosmos to update/replace
+            // Get current products in Cosmos to update/replace
             var requestOptions = BuildQueryRequestOptions();
 
             foreach (ProductDetailData productData in productDataList)
@@ -75,7 +75,7 @@ namespace Headstart.Jobs
 
                 CosmosListPage<ProductDetailData> currentProductDetailListPage = await _productDetailRepo.GetItemsAsync(queryable, requestOptions, listOptions);
 
-                var cosmosID = "";
+                var cosmosID = string.Empty;
                 if (currentProductDetailListPage.Items.Count == 1)
                 {
                     cosmosID = productData.id = currentProductDetailListPage.Items[0].id;
@@ -133,7 +133,7 @@ namespace Headstart.Jobs
                     Filters = { currentProductFilter }
                 };
             }
-          
+
         }
 
         private async Task<List<ProductDetailData>> CreateProductDetailDataAsync(Product product, List<LineItemDetailData> lineItemList)
@@ -146,8 +146,8 @@ namespace Headstart.Jobs
             try
             {
                 supplier = await _oc.Suppliers.GetAsync(product.DefaultSupplierID);
-            } 
-            catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 LogFailure(ex.Message);
             }
@@ -179,7 +179,7 @@ namespace Headstart.Jobs
                     Data = await FlattenProductDataDetailAsync(product, supplier)
                 });
             }
-           
+
             return resultList;
         }
 
@@ -189,7 +189,7 @@ namespace Headstart.Jobs
             dynamic productXp = product.xp;
 
             PriceSchedule schedule = await GetPriceSchedule(product.DefaultPriceScheduleID);
-            result.SizeTier = "";
+            result.SizeTier = string.Empty;
             result.Active = product?.Active.ToString();
             if (PropertyExists(productXp, "Status")) { result.Status = productXp.Status?.ToString(); }
             if (PropertyExists(productXp, "Note")) { result.Note = productXp.Note; }
@@ -214,9 +214,9 @@ namespace Headstart.Jobs
                 result.SupplierID = supplier?.ID;
                 result.SupplierName = supplier?.Name;
             }
-          
+
             decimal price = GetPrice(schedule, variant);
-            result.Price = price * (decimal)1.06; //SEB markup of 6%
+            result.Price = price * 1.06M; // SEB markup of 6%
             result.Cost = price;
             if (product.Inventory != null)
             {
@@ -295,7 +295,7 @@ namespace Headstart.Jobs
             decimal totalPriceMarkup = 0;
             foreach (dynamic specValue in specValues)
             {
-                if (specValue?.PriceMarkup?.Trim() != "")
+                if (specValue?.PriceMarkup?.Trim() != string.Empty)
                 {
                     decimal numericMarkup = 0;
                     bool isNumeric = decimal.TryParse(specValue?.PriceMarkup?.Trim(), out numericMarkup);
@@ -310,10 +310,10 @@ namespace Headstart.Jobs
 
         private string GetSpecOptionValue(List<dynamic> specValues)
         {
-            string specOptionValue = "";
+            string specOptionValue = string.Empty;
             foreach (dynamic specValue in specValues)
             {
-                if (specValue?.SpecOptionValue != "")
+                if (specValue?.SpecOptionValue != string.Empty)
                 {
                     specOptionValue = specOptionValue + " " + specValue?.SpecOptionValue + " ";
                 }
@@ -332,21 +332,21 @@ namespace Headstart.Jobs
             List<LineItemDetailData> sixMonthLineItems = twelveMonthLineItems.Where(x => x.Data.Order.DateCreated > DateTime.Now.AddMonths(-6)).ToList();
             List<LineItemDetailData> threeMonthLineItems = twelveMonthLineItems.Where(x => x.Data.Order.DateCreated > DateTime.Now.AddMonths(-3)).ToList();
 
-            //3MO sales
+            // 3MO sales
             foreach (LineItemDetailData lineItemDetail in threeMonthLineItems)
             {
                 result.ThreeMonthQuantity = lineItemDetail.Data.LineItems.Sum(x => x.Quantity);
                 result.ThreeMonthTotal = lineItemDetail.Data.LineItems.Sum(x => x.LineSubtotal);
             }
-           
-            //6MO sales
+
+            // 6MO sales
             foreach (LineItemDetailData lineItemDetail in sixMonthLineItems)
             {
                 result.SixMonthQuantity = lineItemDetail.Data.LineItems.Sum(x => x.Quantity);
                 result.SixMonthTotal = lineItemDetail.Data.LineItems.Sum(x => x.LineSubtotal);
             }
 
-            //12MO sales
+            // 12MO sales
             foreach (LineItemDetailData lineItemDetail in twelveMonthLineItems)
             {
                 result.TwelveMonthQuantity = lineItemDetail.Data.LineItems.Sum(x => x.Quantity);

@@ -7,8 +7,8 @@ using Headstart.API.Commands;
 using OrderCloud.Catalyst;
 using ordercloud.integrations.library.intefaces;
 using System.Collections.Generic;
-using TaxCategorizationResponse = ordercloud.integrations.library.intefaces.TaxCategorizationResponse;
 using ITaxCodesProvider = ordercloud.integrations.library.intefaces.ITaxCodesProvider;
+using TaxCategorizationResponse = ordercloud.integrations.library.intefaces.TaxCategorizationResponse;
 
 namespace Headstart.Common.Controllers
 {

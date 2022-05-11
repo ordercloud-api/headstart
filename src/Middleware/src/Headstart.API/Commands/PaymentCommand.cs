@@ -23,8 +23,7 @@ namespace Headstart.API.Commands
         private readonly ICreditCardCommand _ccCommand;
         public PaymentCommand(
             IOrderCloudClient oc,
-            ICreditCardCommand ccCommand
-        )
+            ICreditCardCommand ccCommand)
         {
             _oc = oc;
             _ccCommand = ccCommand;
@@ -34,13 +33,13 @@ namespace Headstart.API.Commands
         {
             var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
             var existingPayments = (await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID)).Items;
-            existingPayments =  await DeleteStalePaymentsAsync(requestedPayments, existingPayments, worksheet.Order, userToken);
+            existingPayments = await DeleteStalePaymentsAsync(requestedPayments, existingPayments, worksheet.Order, userToken);
 
-            foreach(var requestedPayment in requestedPayments)
+            foreach (var requestedPayment in requestedPayments)
             {
                 var existingPayment = existingPayments.FirstOrDefault(p => p.Type == requestedPayment.Type);
-                if(requestedPayment.Type == PaymentType.CreditCard) { await UpdateCCPaymentAsync(requestedPayment, existingPayment, worksheet, userToken); }
-                if(requestedPayment.Type == PaymentType.PurchaseOrder) { await UpdatePoPaymentAsync(requestedPayment, existingPayment, worksheet); }
+                if (requestedPayment.Type == PaymentType.CreditCard) { await UpdateCCPaymentAsync(requestedPayment, existingPayment, worksheet, userToken); }
+                if (requestedPayment.Type == PaymentType.PurchaseOrder) { await UpdatePoPaymentAsync(requestedPayment, existingPayment, worksheet); }
             }
 
             return (await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID)).Items;
@@ -56,7 +55,7 @@ namespace Headstart.API.Commands
                 requestedPayment.Type = requestedPayment.Type;
                 await _oc.Payments.CreateAsync<HSPayment>(OrderDirection.Outgoing, worksheet.Order.ID, requestedPayment, userToken); // need user token because admins cant see personal credit cards
             }
-            else if(existingPayment.CreditCardID == requestedPayment.CreditCardID && existingPayment.Amount == paymentAmount)
+            else if (existingPayment.CreditCardID == requestedPayment.CreditCardID && existingPayment.Amount == paymentAmount)
             {
                 // do nothing, payment doesnt need updating
                 return;
@@ -88,7 +87,7 @@ namespace Headstart.API.Commands
             {
                 requestedPayment.Amount = paymentAmount;
                 await _oc.Payments.CreateAsync<HSPayment>(OrderDirection.Incoming, worksheet.Order.ID, requestedPayment);
-            } 
+            }
             else
             {
                 await _oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, worksheet.Order.ID, existingPayment.ID, new PartialPayment
@@ -133,5 +132,5 @@ namespace Headstart.API.Commands
             return existingPayments;
 
         }
-    };
+    }
 }

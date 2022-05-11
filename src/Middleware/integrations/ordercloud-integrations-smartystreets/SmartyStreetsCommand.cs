@@ -68,7 +68,7 @@ namespace ordercloud.integrations.smartystreets
 				{
 					// no valid address found
 					var suggestions = await _service.USAutoCompletePro($"{address.Street1} {address.Street2}");
-					if(suggestions.suggestions != null)
+                    if (suggestions.suggestions != null)
                     {
 						response.SuggestedAddresses = AddressMapper.Map(suggestions, address);
 					}
@@ -113,9 +113,8 @@ namespace ordercloud.integrations.smartystreets
 			return (suggestions == null || suggestions.suggestions == null || suggestions.suggestions.Count == 0);
         }
 
-		#region Ordercloud Routes
-		// ME endpoints
-		public async Task<BuyerAddress> CreateMeAddress(BuyerAddress address, DecodedToken decodedToken)
+        // ME endpoints
+        public async Task<BuyerAddress> CreateMeAddress(BuyerAddress address, DecodedToken decodedToken)
 		{
 			var validation = await ValidateAddress(address);
 			return await _oc.Me.CreateAddressAsync(validation.ValidAddress, decodedToken.AccessToken);
@@ -210,6 +209,5 @@ namespace ordercloud.integrations.smartystreets
 			var validation = await ValidateAddress(address);
 			return await _oc.Orders.SetShippingAddressAsync(direction, orderID, validation.ValidAddress, decodedToken.AccessToken);
 		}
-		#endregion
-	}
+    }
 }
