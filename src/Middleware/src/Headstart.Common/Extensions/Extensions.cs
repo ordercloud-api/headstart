@@ -11,21 +11,27 @@ namespace Headstart.Common.Extensions
         public static bool HasItem<T>(this IList<T> itemList)
         {
             if (itemList == null || itemList.Count == 0)
-            { return false; }
+            {
+                return false;
+            }
 
             return true;
         }
         public static bool HasItem<T>(this IReadOnlyList<T> itemList)
         {
             if (itemList == null || itemList.Count == 0)
-            { return false; }
+            {
+                return false;
+            }
 
             return true;
         }
         public static bool HasItem<T>(this List<T> itemList)
         {
             if (itemList == null || itemList.Count == 0)
-            { return false; }
+            {
+                return false;
+            }
 
             return true;
         }

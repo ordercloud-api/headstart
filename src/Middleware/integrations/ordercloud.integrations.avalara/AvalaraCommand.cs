@@ -71,7 +71,10 @@ namespace ordercloud.integrations.avalara
 
 		public async Task<OrderTaxCalculation> CalculateEstimateAsync(OrderWorksheet orderWorksheet, List<OrderPromotion> promotions)
 		{
-			if (ShouldMockAvalaraResponse()) { return CreateMockTransactionModel(); }
+			if (ShouldMockAvalaraResponse())
+            {
+                return CreateMockTransactionModel();
+            }
 			var taxEstimate = await CreateTransactionAsync(DocumentType.SalesOrder, orderWorksheet, promotions);
 			return taxEstimate;
 		}
@@ -107,7 +110,10 @@ namespace ordercloud.integrations.avalara
 
         public async Task<OrderTaxCalculation> CommitTransactionAsync(OrderWorksheet orderWorksheet, List<OrderPromotion> promotions)
 		{
-			if (ShouldMockAvalaraResponse()) { return CreateMockTransactionModel(); }
+			if (ShouldMockAvalaraResponse())
+            {
+                return CreateMockTransactionModel();
+            }
 
 			var transaction = await CreateTransactionAsync(DocumentType.SalesInvoice, orderWorksheet, promotions);
 			return transaction;
@@ -115,7 +121,10 @@ namespace ordercloud.integrations.avalara
 
 		public async Task<OrderTaxCalculation> CommitTransactionAsync(string transactionCode)
 		{
-			if (ShouldMockAvalaraResponse()) { return CreateMockTransactionModel(); }
+			if (ShouldMockAvalaraResponse())
+            {
+                return CreateMockTransactionModel();
+            }
 
 			var model = new CommitTransactionModel() { commit = true };
 			var transaction = await _avaTax.CommitTransactionAsync(_companyCode, transactionCode, DocumentType.SalesInvoice, string.Empty, model);
@@ -124,7 +133,10 @@ namespace ordercloud.integrations.avalara
 
 		public async Task<TaxCategorizationResponse> ListTaxCodesAsync(string searchTerm)
 		{
-            if (ShouldMockAvalaraResponse()) { return CreateMockTaxCategorizationResponseModel(); }
+            if (ShouldMockAvalaraResponse())
+            {
+                return CreateMockTaxCategorizationResponseModel();
+            }
 
             var search = TaxCodeMapper.MapSearchString(searchTerm);
 			var avataxCodes = await _avaTax.ListTaxCodesAsync(search, null, null, null);
@@ -139,7 +151,10 @@ namespace ordercloud.integrations.avalara
             {
 				try
 				{
-					if (ShouldMockAvalaraResponse()) { return CreateMockTransactionModel(); }
+					if (ShouldMockAvalaraResponse())
+                    {
+                        return CreateMockTransactionModel();
+                    }
 					var createTransactionModel = orderWorksheet.ToAvalaraTransactionModel(_companyCode, docType, promotions);
 					var transaction = await _avaTax.CreateTransactionAsync(string.Empty, createTransactionModel);
 					return transaction.ToOrderTaxCalculation();

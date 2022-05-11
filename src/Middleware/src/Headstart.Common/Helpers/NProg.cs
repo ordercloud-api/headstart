@@ -23,7 +23,9 @@ namespace Common.Services.NProg
 		private List<Task> _tasks = new List<Task>();
 		private List<TimerAction> _timers = new List<TimerAction>();
 
-		public Tracker() { }
+		public Tracker()
+        {
+        }
 		public Tracker(int itemCount) => _total = itemCount;
 
 		public void Start()
@@ -104,8 +106,10 @@ namespace Common.Services.NProg
 				var task = AsyncAction?.Invoke(prog);
 				Action?.Invoke(prog);
 				if (task?.IsCompleted == false)
-					tasks.Add(task);
-			}
+                {
+                    tasks.Add(task);
+                }
+            }
 		}
 
 		private class ProgressAction : ActionBase

@@ -194,11 +194,17 @@ namespace Headstart.API.Commands
         {
             BatchProcessResult processResults;
 
-            if (file == null) { return new BatchProcessResult(); }
+            if (file == null)
+            {
+                return new BatchProcessResult();
+            }
             using Stream stream = file.OpenReadStream();
             List<RowInfo<Misc.Shipment>> shipments = new Mapper(stream).Take<Misc.Shipment>(0, 1000).ToList();
 
-            if (shipments == null) { throw new Exception("No shipments found in sheet"); }
+            if (shipments == null)
+            {
+                throw new Exception("No shipments found in sheet");
+            }
 
             shipments.RemoveRange(0, 2);
             DocumentImportResult result = Validate(shipments);
@@ -212,8 +218,14 @@ namespace Headstart.API.Commands
         {
             BatchProcessResult processResult = new BatchProcessResult();
 
-            if (importResult == null) { return null; }
-            if (importResult.Valid?.Count < 0) { return null; }
+            if (importResult == null)
+            {
+                return null;
+            }
+            if (importResult.Valid?.Count < 0)
+            {
+                return null;
+            }
 
             foreach (Misc.Shipment shipment in importResult.Valid)
             {
@@ -303,8 +315,14 @@ namespace Headstart.API.Commands
                 errorMessage = $"{ex.Message}";
             }
 
-            if (errorMessage == null) { failure.Error = "Something went wrong"; }
-            else { failure.Error = errorMessage; }
+            if (errorMessage == null)
+            {
+                failure.Error = "Something went wrong";
+            }
+            else
+            {
+                failure.Error = errorMessage;
+            }
 
             failure.Shipment = shipment;
 
@@ -334,7 +352,10 @@ namespace Headstart.API.Commands
             Shipment ocShipment;
             try
             {
-                if (shipment == null) { throw new Exception("Shipment cannot be null"); }
+                if (shipment == null)
+                {
+                    throw new Exception("Shipment cannot be null");
+                }
 
                 Order ocOrder = await GetOutgoingOrder(shipment);
                 LineItem lineItem = await GetOutgoingLineItem(shipment);
@@ -407,7 +428,10 @@ namespace Headstart.API.Commands
 
         private void ValidateShipmentAmount(Misc.Shipment shipment, LineItem lineItem, Order ocOrder)
         {
-            if (shipment == null || lineItem == null) { return; }
+            if (shipment == null || lineItem == null)
+            {
+                return;
+            }
 
             int newAmountShipped = Convert.ToInt32(shipment.QuantityShipped) + lineItem.QuantityShipped;
 
@@ -419,7 +443,10 @@ namespace Headstart.API.Commands
 
         private async Task<LineItem> GetOutgoingLineItem(Misc.Shipment shipment)
         {
-            if (shipment == null || shipment.LineItemID == null) { throw new Exception("No LineItemID provided for shipment"); }
+            if (shipment == null || shipment.LineItemID == null)
+            {
+                throw new Exception("No LineItemID provided for shipment");
+            }
 
             try
             {
@@ -433,7 +460,10 @@ namespace Headstart.API.Commands
 
         private async Task<Order> GetOutgoingOrder(Misc.Shipment shipment)
         {
-            if (shipment == null || shipment.OrderID == null) { throw new Exception("No OrderID provided for shipment"); }
+            if (shipment == null || shipment.OrderID == null)
+            {
+                throw new Exception("No OrderID provided for shipment");
+            }
 
             try
             {
@@ -568,7 +598,10 @@ namespace Headstart.API.Commands
                 {
                     List<ValidationResult> results = new List<ValidationResult>();
 
-                    if (ShouldIgnoreRow(row.Value)) { continue; }
+                    if (ShouldIgnoreRow(row.Value))
+                    {
+                        continue;
+                    }
 
                     if (Validator.TryValidateObject(row.Value, new ValidationContext(row.Value), results, true) == false)
                     {
@@ -598,14 +631,23 @@ namespace Headstart.API.Commands
         {
             string exampleSignifier = "//EXAMPLE//";
             // Ignore if the row is empty, or if it's the example row.
-            if (value == null) { return false; }
-            if (value.OrderID?.ToUpper() == exampleSignifier) { return true; }
+            if (value == null)
+            {
+                return false;
+            }
+            if (value.OrderID?.ToUpper() == exampleSignifier)
+            {
+                return true;
+            }
 
             PropertyInfo[] props = typeof(Misc.Shipment).GetProperties();
 
             foreach (PropertyInfo prop in props)
             {
-                if (prop.GetValue(value) != null) { return false; }
+                if (prop.GetValue(value) != null)
+                {
+                    return false;
+                }
             }
             return true;
         }

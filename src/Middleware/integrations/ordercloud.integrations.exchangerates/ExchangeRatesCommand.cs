@@ -133,7 +133,11 @@ namespace ordercloud.integrations.exchangerates
         private static string GetIcon(CurrencySymbol symbol)
         {
             using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"ordercloud.integrations.exchangerates.Icons.{symbol}.gif");
-            if (stream == null) return null;
+            if (stream == null)
+            {
+                return null;
+            }
+
             using var ms = new MemoryStream();
             stream.CopyTo(ms);
             return $"data:image/jpg;base64,{Convert.ToBase64String(ms.ToArray())}";
@@ -155,7 +159,10 @@ namespace ordercloud.integrations.exchangerates
         {
             var t = values?.GetType().GetProperty($"{e}")?.GetValue(values, null).To<double?>();
             if (!t.HasValue)
+            {
                 return 1;
+            }
+
             return t.Value == 0 ? 1 : t.Value;
         }
 

@@ -22,7 +22,9 @@ namespace Headstart.Common.Services.Zoho.Resources
     public class ZohoOrganizationResource : ZohoResource, IZohoOrganizationResource
     {
         internal ZohoOrganizationResource(ZohoClient client)
-            : base(client, "organization", "organizations") { }
+            : base(client, "organization", "organizations")
+        {
+        }
 
         public Task<ZohoOrganizationList> ListAsync(params ZohoFilter[] filters) => ListAsync<ZohoOrganizationList>(filters);
         public Task<TZohoOrganizationList> ListAsync<TZohoOrganizationList>(params ZohoFilter[] filters) where TZohoOrganizationList : ZohoOrganizationList => Get()

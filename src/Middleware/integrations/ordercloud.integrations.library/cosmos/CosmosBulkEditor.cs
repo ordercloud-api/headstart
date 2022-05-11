@@ -208,7 +208,10 @@ namespace ordercloud.integrations.library
         private static DocumentCollection GetCollectionIfExists(DocumentClient client, string databaseName, string collectionName)
         {
             var database = client.CreateDatabaseQuery().Where(d => d.Id == databaseName).AsEnumerable().FirstOrDefault();
-            if (database == null) return null;
+            if (database == null)
+            {
+                return null;
+            }
 
             return client.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(databaseName))
                 .Where(c => c.Id == collectionName).AsEnumerable().FirstOrDefault();

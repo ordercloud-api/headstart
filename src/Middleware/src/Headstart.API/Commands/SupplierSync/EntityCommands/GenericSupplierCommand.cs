@@ -47,7 +47,9 @@ namespace Headstart.API.Commands
             {
                 supplierWorksheet = await _ocSeller.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, id, ocAuth.AccessToken);
             }
-            catch (OrderCloudException) { }
+            catch (OrderCloudException)
+            {
+            }
             var salesOrderID = orderType == OrderType.Standard ? id.Split('-')[0] : id;
             var buyerWorksheet = await _ocSeller.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, salesOrderID, ocAuth.AccessToken);
             var supplierID = supplierWorksheet?.Order?.ToCompanyID;

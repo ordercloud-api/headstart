@@ -78,8 +78,12 @@ namespace ordercloud.integrations.easypost
 				.SelectMany(lineItem => Enumerable.Repeat(lineItem, lineItem.Quantity))
 				.Aggregate(new List<Package>(), (packages, item) =>
 				{
-					if (packages.Count == 0) packages.Add(new Package());
-					var percentFillToAdd = (double)SIZE_FACTOR_MAP[item.Product.xp.SizeTier];
+					if (packages.Count == 0)
+                    {
+                        packages.Add(new Package());
+                    }
+
+                    var percentFillToAdd = (double)SIZE_FACTOR_MAP[item.Product.xp.SizeTier];
 					var currentPackage = packages.Last();
 					if (currentPackage.PercentFilled + percentFillToAdd > 1)
 					{

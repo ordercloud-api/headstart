@@ -120,7 +120,9 @@ namespace Headstart.API.Commands
             });
             // step 1 failed. we don't want to attempt the integrations. return error for further action
             if (activities.Any(a => !a.Success))
+            {
                 return await CreateOrderSubmitResponse(results, new List<HSOrder> { orderWorksheet.Order });
+            }
 
             // STEP 2 (integrations)
             var integrations = await HandleIntegrations(supplierOrders, buyerOrder);
@@ -146,7 +148,9 @@ namespace Headstart.API.Commands
             });
 
             if (!orderWorksheet.IsStandardOrder())
+            {
                 return results;
+            }
 
             // STEP 2: Tax transaction
             var tax = await ProcessActivityCall(
@@ -160,7 +164,10 @@ namespace Headstart.API.Commands
             });
 
             // STEP 3: Zoho orders
-            if (_settings.ZohoSettings.PerformOrderSubmitTasks) { results.Add(await this.PerformZohoTasks(orderWorksheet, supplierOrders)); }
+            if (_settings.ZohoSettings.PerformOrderSubmitTasks)
+            {
+                results.Add(await this.PerformZohoTasks(orderWorksheet, supplierOrders));
+            }
 
             // STEP 4: Validate shipping
             var shipping = await ProcessActivityCall(
@@ -458,10 +465,14 @@ namespace Headstart.API.Commands
         private static async Task ValidateShipping(HSOrderWorksheet orderWorksheet)
         {
             if (orderWorksheet.ShipEstimateResponse.HttpStatusCode != 200)
+            {
                 throw new Exception(orderWorksheet.ShipEstimateResponse.UnhandledErrorBody);
+            }
 
             if (orderWorksheet.ShipEstimateResponse.ShipEstimates.Any(s => s.SelectedShipMethodID == ShippingConstants.NoRatesID))
+            {
                 throw new Exception("No shipping rates could be determined - fallback shipping rate of $20 3-day was used");
+            }
 
             await Task.CompletedTask;
         }

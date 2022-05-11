@@ -13,7 +13,11 @@ namespace Headstart.Common.Extensions
         public static Image ResizeSmallerDimensionToTarget(this Image srcImage, int targetSize)
         {
             var scaleFactor = targetSize / (double)Math.Min(srcImage.Width, srcImage.Height);
-            if (scaleFactor > 1) return srcImage; // Don't increase image size
+            if (scaleFactor > 1)
+            {
+                return srcImage; // Don't increase image size
+            }
+
             var targetWidth = (int)(srcImage.Width * scaleFactor);
             var targetHeight = (int)(srcImage.Height * scaleFactor);
 

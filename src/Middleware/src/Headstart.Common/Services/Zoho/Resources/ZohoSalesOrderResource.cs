@@ -22,7 +22,9 @@ namespace Headstart.Common.Services.Zoho.Resources
     public class ZohoSalesOrderResource : ZohoResource, IZohoSalesOrderResource
     {
         internal ZohoSalesOrderResource(ZohoClient client)
-            : base(client, "salesorder", "salesorders") { }
+            : base(client, "salesorder", "salesorders")
+        {
+        }
 
         public Task<ZohoSalesOrderList> ListAsync(params ZohoFilter[] filters) => ListAsync<ZohoSalesOrderList>(filters);
         public Task<TZohoSalesOrderList> ListAsync<TZohoSalesOrderList>(params ZohoFilter[] filters) where TZohoSalesOrderList : ZohoSalesOrderList => Get()

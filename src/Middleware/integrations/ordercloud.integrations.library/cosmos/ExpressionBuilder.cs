@@ -35,7 +35,10 @@ namespace ordercloud.integrations.library.Cosmos
             }
 
             if (propertyType.IsEnum || (propertyType.IsNullable() && Nullable.GetUnderlyingType(propertyType).IsEnum))
+            {
                 return filter.ORExpressions(f => GetEnumExpression<T>(propertyType, member, f));
+            }
+
             return filter.ORExpressions(f => GetStringExpression<T>(propertyType, member, f));
         }
 
@@ -54,7 +57,10 @@ namespace ordercloud.integrations.library.Cosmos
         public static Expression<Func<T, bool>> GetSearchExpression<T>(IListArgs args)
         {
             if (args?.Search == null || args?.SearchOn == null)
+            {
                 return null;
+            }
+
             var param = Expression.Parameter(typeof(T), args?.SearchOn);
 
             var expr = GetExpression<T>(param, new ListFilter(args?.SearchOn, $"*{args?.Search}*"));
@@ -64,7 +70,10 @@ namespace ordercloud.integrations.library.Cosmos
         public static Expression<Func<T, bool>> GetFilterExpression<T>(IListArgs args)
         {
             if (args?.Filters == null || args?.Filters.Count == 0)
+            {
                 return null;
+            }
+
             var filters = args?.Filters;
 
             var param = Expression.Parameter(typeof(T), typeof(T).Name);
@@ -77,7 +86,10 @@ namespace ordercloud.integrations.library.Cosmos
         public static Tuple<Expression, Type> GetSortByExpression<TSource>(IListArgs args)
         {
             if (args?.SortBy.Count == 0)
+            {
                 return null;
+            }
+
             var sort = args?.SortBy;
             var param = Expression.Parameter(typeof(TSource), typeof(TSource).Name);
             Tuple<Expression, Type> exp;
@@ -97,16 +109,22 @@ namespace ordercloud.integrations.library.Cosmos
 		{
 			// TODO: this can't handle multiple values for single filter. ex: Action: Get|Ignore|Update
 			if (filter == null)
-				return Expression.Empty();
+            {
+                return Expression.Empty();
+            }
 
-			ConstantExpression right = null;
+            ConstantExpression right = null;
 			if (propertyType.IsEnum)
-				right = Expression.Constant((int)Enum.Parse(propertyType, filter?.Term).To(propertyType));
-			else if (Nullable.GetUnderlyingType(propertyType).IsEnum)
-				right = Expression.Constant((int)Enum.Parse(propertyType.GenericTypeArguments[0], filter?.Term).To(propertyType));
+            {
+                right = Expression.Constant((int)Enum.Parse(propertyType, filter?.Term).To(propertyType));
+            }
+            else if (Nullable.GetUnderlyingType(propertyType).IsEnum)
+            {
+                right = Expression.Constant((int)Enum.Parse(propertyType.GenericTypeArguments[0], filter?.Term).To(propertyType));
+            }
 
-			// var right = Expression.Constant((int)Enum.Parse(propertyType, filter.Values.FirstOrDefault()?.Term).To(propertyType));
-			var left = Expression.Convert(member, typeof(int));
+            // var right = Expression.Constant((int)Enum.Parse(propertyType, filter.Values.FirstOrDefault()?.Term).To(propertyType));
+            var left = Expression.Convert(member, typeof(int));
 
 			switch (filter.Operator)
 			{
@@ -124,7 +142,9 @@ namespace ordercloud.integrations.library.Cosmos
 		public static Expression GetListExpression<T>(Type elementType, Expression member, ListFilterValue filter)
 		{
 			if (filter == null)
-				return Expression.Empty();
+            {
+                return Expression.Empty();
+            }
 
             var converter = TypeDescriptor.GetConverter(elementType);
 			var elementValue = converter.ConvertFromInvariantString(filter?.Term);
@@ -144,7 +164,9 @@ namespace ordercloud.integrations.library.Cosmos
         {
             // TODO: this can't handle multiple values for single filter. ex: Action: Get|Ignore|Update
 			if (filter == null)
-				return Expression.Empty();
+            {
+                return Expression.Empty();
+            }
 
             var converter = TypeDescriptor.GetConverter(propertyType);
             // works for strings and probably any non-complex object
@@ -161,11 +183,18 @@ namespace ordercloud.integrations.library.Cosmos
                     {
                         var term = string.Empty;
                         if (filter.WildcardPositions.Count == 2)
+                        {
                             term = "Contains";
+                        }
                         else if (filter.WildcardPositions[0] == 0)
+                        {
                             term = "EndsWith";
+                        }
                         else if (filter.WildcardPositions[0] > 0)
+                        {
                             term = "StartsWith";
+                        }
+
                         var method = typeof(string).GetMethod(term, new[] { propertyType });
                         return Expression.Call(member, method, constant);
                     }

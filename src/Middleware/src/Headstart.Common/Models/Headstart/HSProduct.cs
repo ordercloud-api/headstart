@@ -35,7 +35,9 @@ namespace Headstart.Models
     {
     }
 
-    public class HSLineItemProduct : LineItemProduct<ProductXp> { }
+    public class HSLineItemProduct : LineItemProduct<ProductXp>
+    {
+    }
 
     public class HSProduct : Product<ProductXp>, IHSObject
     {
@@ -46,7 +48,9 @@ namespace Headstart.Models
 
     }
 
-	public class HSVariant : Variant<HSVariantXp> { }
+	public class HSVariant : Variant<HSVariantXp>
+    {
+    }
 
 
 	public class ProductXp

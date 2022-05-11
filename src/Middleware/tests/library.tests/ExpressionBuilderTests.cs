@@ -9,7 +9,9 @@ namespace library.tests
     public class ExpressionBuilderTests
     {
         [SetUp]
-        public void Setup() { }
+        public void Setup()
+        {
+        }
 
 
         [Test, TestCaseSource(typeof(ParseFactory), nameof(ParseFactory.TestCases))]

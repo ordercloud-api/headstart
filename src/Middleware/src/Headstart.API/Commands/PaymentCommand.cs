@@ -38,8 +38,14 @@ namespace Headstart.API.Commands
             foreach (var requestedPayment in requestedPayments)
             {
                 var existingPayment = existingPayments.FirstOrDefault(p => p.Type == requestedPayment.Type);
-                if (requestedPayment.Type == PaymentType.CreditCard) { await UpdateCCPaymentAsync(requestedPayment, existingPayment, worksheet, userToken); }
-                if (requestedPayment.Type == PaymentType.PurchaseOrder) { await UpdatePoPaymentAsync(requestedPayment, existingPayment, worksheet); }
+                if (requestedPayment.Type == PaymentType.CreditCard)
+                {
+                    await UpdateCCPaymentAsync(requestedPayment, existingPayment, worksheet, userToken);
+                }
+                if (requestedPayment.Type == PaymentType.PurchaseOrder)
+                {
+                    await UpdatePoPaymentAsync(requestedPayment, existingPayment, worksheet);
+                }
             }
 
             return (await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID)).Items;

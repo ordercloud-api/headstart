@@ -135,7 +135,10 @@ namespace Headstart.Jobs
 
 			var supplierLineItems = orderWorksheet?.LineItems?.Where(line => line?.SupplierID == supplierID);
 
-            if (supplierLineItems == null || supplierLineItems.Count() == 0) { return 0M; }
+            if (supplierLineItems == null || supplierLineItems.Count() == 0)
+            {
+                return 0M;
+            }
 
 			var lineItemDiscount = supplierLineItems.Sum(line => line.PromotionDiscount);
 

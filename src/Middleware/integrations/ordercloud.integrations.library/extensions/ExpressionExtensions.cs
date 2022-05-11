@@ -15,11 +15,15 @@ namespace ordercloud.integrations.library
                 : property.Body as MemberExpression;
 
             if (member == null)
+            {
                 throw new Exception($"Can't get property info for {property} because it's not a property.");
+            }
 
             var pi = member.Member as PropertyInfo;
             if (pi == null)
+            {
                 throw new Exception($"Can't get property info for {property} because it's not a property.");
+            }
 
             return pi;
         }

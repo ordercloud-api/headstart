@@ -20,7 +20,9 @@ namespace Headstart.Common.Services.ShippingIntegration.Models
 		public CheckoutIntegrationConfiguration ConfigData { get; set; }
 	}
 
-	public class ShipEstimateResponseXP { }
+	public class ShipEstimateResponseXP
+    {
+    }
 
 	public class ShipEstimateXP
 	{
@@ -43,11 +45,17 @@ namespace Headstart.Common.Services.ShippingIntegration.Models
 		public double? ExchangeRate { get; set; }
 	}
 
-	public class HSShipMethod : ShipMethod<ShipMethodXP> { }
+	public class HSShipMethod : ShipMethod<ShipMethodXP>
+    {
+    }
 
-	public class HSShipEstimate : ShipEstimate<ShipEstimateXP, HSShipMethod> { }
+	public class HSShipEstimate : ShipEstimate<ShipEstimateXP, HSShipMethod>
+    {
+    }
 
-	public class HSShipEstimateResponse : ShipEstimateResponse<ShipEstimateResponseXP, HSShipEstimate> { }
+	public class HSShipEstimateResponse : ShipEstimateResponse<ShipEstimateResponseXP, HSShipEstimate>
+    {
+    }
 
 	public class CheckoutIntegrationConfiguration
 	{

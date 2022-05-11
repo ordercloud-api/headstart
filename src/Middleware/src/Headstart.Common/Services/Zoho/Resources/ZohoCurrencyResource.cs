@@ -22,7 +22,9 @@ namespace Headstart.Common.Services.Zoho.Resources
     public class ZohoCurrencyResource : ZohoResource, IZohoCurrencyResource
     {
         internal ZohoCurrencyResource(ZohoClient client)
-            : base(client, "currency", "settings", "currencies") { }
+            : base(client, "currency", "settings", "currencies")
+        {
+        }
 
         public Task<ZohoListCurrencyList> ListAsync(params ZohoFilter[] filters) => ListAsync<ZohoListCurrencyList>(filters);
         public Task<TZohoCurrencyList> ListAsync<TZohoCurrencyList>(params ZohoFilter[] filters) where TZohoCurrencyList : ZohoListCurrencyList

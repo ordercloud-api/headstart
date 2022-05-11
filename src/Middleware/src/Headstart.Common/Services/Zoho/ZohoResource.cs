@@ -28,7 +28,11 @@ namespace Headstart.Common.Services.Zoho
 
         private object[] AppendSegments(params object[] segments)
         {
-            if (segments.Length <= 0) return _segments;
+            if (segments.Length <= 0)
+            {
+                return _segments;
+            }
+
             var appended = _segments.ToList();
             appended.AddRange(segments);
             return appended.ToArray();

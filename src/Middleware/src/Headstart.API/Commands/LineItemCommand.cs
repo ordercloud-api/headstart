@@ -539,15 +539,25 @@ namespace Headstart.API.Commands
 
         private bool LineItemsMatch(LineItem li1, LineItem li2)
         {
-            if (li1.ProductID != li2.ProductID) return false;
+            if (li1.ProductID != li2.ProductID)
+            {
+                return false;
+            }
+
             if (!string.IsNullOrEmpty(li2.xp.PrintArtworkURL))
             {
-                if (li2.xp.PrintArtworkURL != li1.xp.PrintArtworkURL) return false;
+                if (li2.xp.PrintArtworkURL != li1.xp.PrintArtworkURL)
+                {
+                    return false;
+                }
             }
             foreach (var spec1 in li1.Specs)
             {
                 var spec2 = (li2.Specs as List<LineItemSpec>)?.Find(s => s.SpecID == spec1.SpecID);
-                if (spec1?.Value != spec2?.Value) return false;
+                if (spec1?.Value != spec2?.Value)
+                {
+                    return false;
+                }
             }
             return true;
         }

@@ -28,11 +28,17 @@ namespace Headstart.Common.Controllers.CardConnect
         {
             string merchantID;
             if (payment.Currency == "USD")
+            {
                 merchantID = _settings.CardConnectSettings.UsdMerchantID;
+            }
             else if (payment.Currency == "CAD")
+            {
                 merchantID = _settings.CardConnectSettings.CadMerchantID;
+            }
             else
+            {
                 merchantID = _settings.CardConnectSettings.EurMerchantID;
+            }
 
             return await _card.AuthorizePayment(payment, UserContext.AccessToken, merchantID);
         }

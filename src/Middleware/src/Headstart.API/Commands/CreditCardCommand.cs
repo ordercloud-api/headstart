@@ -116,7 +116,10 @@ namespace ordercloud.integrations.cardconnect
 			var order = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
 			var paymentList = await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, order.ID);
 			var payment = paymentList.Items.Any() ? paymentList.Items[0] : null;
-			if (payment == null) { return; }
+			if (payment == null)
+            {
+                return;
+            }
 
 			await VoidTransactionAsync(payment, order, userToken);
 			await _oc.Payments.PatchAsync(OrderDirection.Incoming, orderID, payment.ID, new PartialPayment { Accepted = false });
@@ -160,12 +163,18 @@ namespace ordercloud.integrations.cardconnect
 		private string GetMerchantID(CurrencySymbol userCurrency)
 		{
 			if (userCurrency == CurrencySymbol.USD)
-				return _settings.CardConnectSettings.UsdMerchantID;
-			else if (userCurrency == CurrencySymbol.CAD)
-				return _settings.CardConnectSettings.CadMerchantID;
-			else
-				return _settings.CardConnectSettings.EurMerchantID;
-		}
+            {
+                return _settings.CardConnectSettings.UsdMerchantID;
+            }
+            else if (userCurrency == CurrencySymbol.CAD)
+            {
+                return _settings.CardConnectSettings.CadMerchantID;
+            }
+            else
+            {
+                return _settings.CardConnectSettings.EurMerchantID;
+            }
+        }
 
 		private async Task<CardConnectBuyerCreditCard> GetMeCardDetails(OrderCloudIntegrationsCreditCardPayment payment, string userToken)
 		{

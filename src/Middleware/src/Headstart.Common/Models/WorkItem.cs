@@ -11,7 +11,9 @@ namespace Headstart.Common.Models
 {
     public class WorkItem
     {
-        public WorkItem() { }
+        public WorkItem()
+        {
+        }
         public WorkItem(string path)
         {
             var split = path.Split("/");
@@ -99,7 +101,9 @@ namespace Headstart.Common.Models
             {
                 // first check if there is a cache object, if not it's a CREATE event
                 if (wi.Cache == null)
+                {
                     return Action.Create;
+                }
 
                 // if cache does exists, and there is no difference ignore the action
                 if (wi.Cache != null && wi.Diff == null)
@@ -113,7 +117,9 @@ namespace Headstart.Common.Models
                 // maybe in the future a true business case will be necessary to do this
                 if ((wi.RecordType == RecordType.SpecProductAssignment || wi.RecordType == RecordType.UserGroupAssignment || wi.RecordType == RecordType.CatalogAssignment)
                     && wi.Diff.Children().Count() == 1 && wi.Diff.SelectToken("ID").Path == "ID")
+                {
                     return Action.Ignore;
+                }
 
                 if (wi.Cache != null && wi.Diff != null)
                 {

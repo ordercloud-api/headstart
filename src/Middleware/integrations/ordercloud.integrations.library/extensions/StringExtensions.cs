@@ -34,7 +34,10 @@ namespace ordercloud.integrations.library
         {
             foreach (var r in remove)
                 while (s.StartsWith(r))
+                {
                     s = s.Substring(r.Length);
+                }
+
             return s;
         }
 
@@ -42,7 +45,10 @@ namespace ordercloud.integrations.library
         {
             foreach (var r in remove)
                 while (s.EndsWith(r))
+                {
                     s = s.Substring(0, s.Length - r.Length);
+                }
+
             return s;
         }
     }

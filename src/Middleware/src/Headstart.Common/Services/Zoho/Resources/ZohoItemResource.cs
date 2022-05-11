@@ -24,7 +24,9 @@ namespace Headstart.Common.Services.Zoho.Resources
     public class ZohoItemResource : ZohoResource, IZohoItemResource
     {
         internal ZohoItemResource(ZohoClient client)
-            : base(client, "item", "items") { }
+            : base(client, "item", "items")
+        {
+        }
 
         public Task<ZohoItemList> ListAsync(params ZohoFilter[] filters) => ListAsync<ZohoItemList>(filters);
         public Task<TZohoItemList> ListAsync<TZohoItemList>(params ZohoFilter[] filters) where TZohoItemList : ZohoItemList => Get()

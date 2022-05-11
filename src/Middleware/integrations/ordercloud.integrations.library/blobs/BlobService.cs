@@ -40,14 +40,21 @@ namespace ordercloud.integrations.library
             try
             {
                 if (config.ConnectionString == null)
+                {
                     throw new Exception("Connection string not supplied");
+                }
+
                 if (config.Container == null)
+                {
                     throw new Exception("Blob container not specified");
+                }
 
                 CloudStorageAccount.TryParse(config.ConnectionString, out var storage);
                 Client = storage.CreateCloudBlobClient();
                 if (config.Container != null)
+                {
                     Container = Client.GetContainerReference(config.Container);
+                }
             }
             catch (Exception ex)
             {
@@ -119,7 +126,10 @@ namespace ordercloud.integrations.library
             await this.Init();
             var block = Container.GetBlockBlobReference(reference);
             if (fileType != null)
+            {
                 block.Properties.ContentType = fileType;
+            }
+
             await block.UploadTextAsync(
                 JsonConvert.SerializeObject(blob),
                 Encoding.UTF8,
@@ -132,7 +142,10 @@ namespace ordercloud.integrations.library
             await this.Init();
             var block = Container.GetBlockBlobReference(reference);
             if (fileType != null)
+            {
                 block.Properties.ContentType = fileType;
+            }
+
             await block.UploadFromByteArrayAsync(bytes, 0, bytes.Length);
         }
 
@@ -141,7 +154,10 @@ namespace ordercloud.integrations.library
             await this.Init();
             var block = Container.GetBlockBlobReference(reference);
             if (fileType != null)
+            {
                 block.Properties.ContentType = fileType;
+            }
+
             await block.UploadTextAsync(blob, Encoding.UTF8, AccessCondition.GenerateEmptyCondition(), new BlobRequestOptions() { SingleBlobUploadThresholdInBytes = 4 * 1024 * 1024 }, new OperationContext());
         }
 

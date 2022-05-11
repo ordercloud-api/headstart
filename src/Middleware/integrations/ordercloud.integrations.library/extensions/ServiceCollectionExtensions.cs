@@ -35,7 +35,9 @@ namespace ordercloud.integrations.library
                 select new { iface, impl };
 
             foreach (var m in mappings)
+            {
                 services.AddSingleton(m.iface, m.impl);
+            }
 
             return services;
         }

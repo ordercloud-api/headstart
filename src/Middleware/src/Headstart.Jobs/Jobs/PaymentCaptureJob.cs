@@ -171,12 +171,15 @@ namespace Headstart.Jobs
     {
         public PaymentCaptureJobException(string message, string orderID)
             : base($"{message}. OrderID: {orderID}")
-        { }
+        {
+        }
         public PaymentCaptureJobException(string message, string orderID, string paymentID)
             : base($"{message}. OrderID: {orderID}. PaymentID: {paymentID}")
-        { }
+        {
+        }
         public PaymentCaptureJobException(string message, string orderID, string paymentID, string transactionID)
             : base($"{message}. OrderID: {orderID}. PaymentID: {paymentID}. TransactionID: {transactionID}")
-        { }
+        {
+        }
     }
 }

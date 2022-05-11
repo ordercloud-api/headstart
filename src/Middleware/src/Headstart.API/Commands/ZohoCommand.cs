@@ -56,7 +56,11 @@ namespace Headstart.API.Commands.Zoho
                 foreach (var item in order.ShipEstimateResponse.ShipEstimates)
                 {
                     var shipping_method = item.ShipMethods.FirstOrDefault(s => s.ID == item.SelectedShipMethodID);
-                    if (shipping_method.xp.CarrierAccountID != "ca_8bdb711131894ab4b42abcd1645d988c") continue;
+                    if (shipping_method.xp.CarrierAccountID != "ca_8bdb711131894ab4b42abcd1645d988c")
+                    {
+                        continue;
+                    }
+
                     var vendor = await _zoho.Contacts.ListAsync(new ZohoFilter() { Key = "contact_name", Value = "SMG Shipping" });
                     var oc_lineitems = new ListPage<HSLineItem>()
                     {
@@ -142,7 +146,10 @@ namespace Headstart.API.Commands.Zoho
         {
             var po = await _zoho.PurchaseOrders.ListAsync(new ZohoFilter() { Key = "purchaseorder_number", Value = order.ID });
             if (po.Items.Any())
+            {
                 return await _zoho.PurchaseOrders.SaveAsync(ZohoPurchaseOrderMapper.Map(z_order, order, items, lineitems, delivery_address, contact, po.Items.FirstOrDefault()));
+            }
+
             return await _zoho.PurchaseOrders.CreateAsync(ZohoPurchaseOrderMapper.Map(z_order, order, items, lineitems, delivery_address, contact));
         }
 
@@ -170,7 +177,10 @@ namespace Headstart.API.Commands.Zoho
             var promotions = await _oc.Orders.ListPromotionsAsync(OrderDirection.Incoming, orderWorksheet.Order.ID);
             var zOrder = await _zoho.SalesOrders.ListAsync(new ZohoFilter() { Key = "reference_number", Value = orderWorksheet.Order.ID });
             if (zOrder.Items.Any())
+            {
                 return await _zoho.SalesOrders.SaveAsync(ZohoSalesOrderMapper.Map(zOrder.Items.FirstOrDefault(), orderWorksheet, items.ToList(), contact, promotions.Items));
+            }
+
             return await _zoho.SalesOrders.CreateAsync(ZohoSalesOrderMapper.Map(orderWorksheet, items.ToList(), contact, promotions.Items));
         }
 
@@ -193,7 +203,11 @@ namespace Headstart.API.Commands.Zoho
             foreach (var list in zItems)
                 list.Items.ForEach(item =>
                 {
-                    if (z_items.Any(z => z.Key == item.sku)) return;
+                    if (z_items.Any(z => z.Key == item.sku))
+                    {
+                        return;
+                    }
+
                     z_items.Add(item.sku, item);
                 });
             return new Tuple<Dictionary<string, ZohoLineItem>, List<HSLineItem>>(z_items, uniqueLineItems);
@@ -207,7 +221,10 @@ namespace Headstart.API.Commands.Zoho
             {
                 var (sku, z_item) = z_items.FirstOrDefault(z => z.Key == lineItem.SKU());
                 if (z_item != null)
+                {
                     return await _zoho.Items.SaveAsync(ZohoSalesLineItemMapper.Map(z_item, lineItem));
+                }
+
                 return await _zoho.Items.CreateAsync(ZohoSalesLineItemMapper.Map(lineItem));
             });
             return items.ToList();
@@ -221,7 +238,10 @@ namespace Headstart.API.Commands.Zoho
             {
                 var (sku, z_item) = z_items.FirstOrDefault(z => z.Key == lineItem.SKU());
                 if (z_item != null)
+                {
                     return await _zoho.Items.SaveAsync(ZohoPurchaseLineItemMapper.Map(z_item, lineItem, supplier));
+                }
+
                 return await _zoho.Items.CreateAsync(ZohoPurchaseLineItemMapper.Map(lineItem, supplier));
             });
             return items.ToList();
@@ -235,7 +255,10 @@ namespace Headstart.API.Commands.Zoho
             {
                 var (sku, z_item) = z_items.FirstOrDefault(z => z.Key == lineItem.SKU());
                 if (z_item != null)
+                {
                     return await _zoho.Items.SaveAsync(ZohoSalesLineItemMapper.Map(z_item, lineItem));
+                }
+
                 return await _zoho.Items.CreateAsync(ZohoSalesLineItemMapper.Map(lineItem));
             });
             return items.ToList();
@@ -244,15 +267,23 @@ namespace Headstart.API.Commands.Zoho
         private async Task<List<ZohoLineItem>> ApplyShipping(HSOrderWorksheet orderWorksheet)
         {
             var list = new List<ZohoLineItem>();
-            if (orderWorksheet.ShipEstimateResponse == null) return list;
+            if (orderWorksheet.ShipEstimateResponse == null)
+            {
+                return list;
+            }
+
             foreach (var shipment in orderWorksheet.ShipEstimateResponse.ShipEstimates)
             {
                 var method = shipment.ShipMethods.FirstOrDefault(s => s.ID == shipment.SelectedShipMethodID);
                 var z_shipping = await _zoho.Items.ListAsync(new ZohoFilter() { Key = "sku", Value = method?.ShippingSku() });
                 if (z_shipping.Items.Any())
+                {
                     list.Add(await _zoho.Items.SaveAsync(ZohoShippingLineItemMapper.Map(z_shipping.Items.FirstOrDefault(), method)));
+                }
                 else
+                {
                     list.Add(await _zoho.Items.CreateAsync(ZohoShippingLineItemMapper.Map(method)));
+                }
             }
 
             return list;

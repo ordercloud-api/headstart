@@ -13,6 +13,7 @@ namespace Headstart.Common.Repositories
         public override PartitionKey ResolvePartitionKey(string entityId) => new PartitionKey("PartitionValue");
         public RMARepo(ICosmosDbContainerFactory factory)
             : base(factory)
-        { }
+        {
+        }
     }
 }

@@ -191,8 +191,14 @@ namespace Headstart.Jobs
             PriceSchedule schedule = await GetPriceSchedule(product.DefaultPriceScheduleID);
             result.SizeTier = string.Empty;
             result.Active = product?.Active.ToString();
-            if (PropertyExists(productXp, "Status")) { result.Status = productXp.Status?.ToString(); }
-            if (PropertyExists(productXp, "Note")) { result.Note = productXp.Note; }
+            if (PropertyExists(productXp, "Status"))
+            {
+                result.Status = productXp.Status?.ToString();
+            }
+            if (PropertyExists(productXp, "Note"))
+            {
+                result.Note = productXp.Note;
+            }
             if (PropertyExists(productXp, "Tax"))
             {
                 result.TaxCode = productXp?.Tax?.Code;
@@ -204,11 +210,26 @@ namespace Headstart.Jobs
                 result.UnitOfMeasureQty = productXp?.UnitOfMeasure?.Qty;
                 result.UnitOfMeasure = productXp?.UnitOfMeasure?.Unit;
             }
-            if (PropertyExists(productXp, "ProductType")) { result.ProductType = productXp.ProductType; }
-            if (PropertyExists(productXp, "SizeTier")) { result.SizeTier = productXp.SizeTier; }
-            if (PropertyExists(productXp, "IsResale")) { result.Resale = productXp.IsResale; }
-            if (PropertyExists(productXp, "Currency")) { result.Currency = productXp.Currency; }
-            if (PropertyExists(productXp, "ArtworkRequired")) { result.ArtworkRequired = productXp.ArtworkRequired; }
+            if (PropertyExists(productXp, "ProductType"))
+            {
+                result.ProductType = productXp.ProductType;
+            }
+            if (PropertyExists(productXp, "SizeTier"))
+            {
+                result.SizeTier = productXp.SizeTier;
+            }
+            if (PropertyExists(productXp, "IsResale"))
+            {
+                result.Resale = productXp.IsResale;
+            }
+            if (PropertyExists(productXp, "Currency"))
+            {
+                result.Currency = productXp.Currency;
+            }
+            if (PropertyExists(productXp, "ArtworkRequired"))
+            {
+                result.ArtworkRequired = productXp.ArtworkRequired;
+            }
             if (supplier != null)
             {
                 result.SupplierID = supplier?.ID;
@@ -255,12 +276,18 @@ namespace Headstart.Jobs
             decimal totalPrice = 0;
             if (variant == null || !variant.Specs.HasItem())
             {
-                if (!schedule.PriceBreaks.HasItem()) { return totalPrice; }
+                if (!schedule.PriceBreaks.HasItem())
+                {
+                    return totalPrice;
+                }
                 return schedule.PriceBreaks[0].Price;
             }
             foreach (VariantSpec spec in variant.Specs)
             {
-                if (spec.PriceMarkup == null) { continue; }
+                if (spec.PriceMarkup == null)
+                {
+                    continue;
+                }
                 switch (spec.PriceMarkupType)
                 {
                     case PriceMarkupType.AmountPerQuantity:
@@ -325,7 +352,10 @@ namespace Headstart.Jobs
         {
             var result = new ProductSaleDetail();
 
-            if (!lineItemList.HasItem()) { return result; }
+            if (!lineItemList.HasItem())
+            {
+                return result;
+            }
 
             List<LineItemDetailData> twelveMonthLineItems = lineItemList?.Where(x => x.Data.LineItems.Any(y => y.Product.ID == productID)).ToList();
 

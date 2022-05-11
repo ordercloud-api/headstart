@@ -95,7 +95,11 @@ namespace Headstart.API.Commands
         public IEnumerable<HSShipMethod> FilterMethodsBySupplierConfig(List<HSShipMethod> methods, EasyPostShippingProfile profile)
         {
             // will attempt to filter out by supplier method specs, but if there are filters and the result is none and there are valid methods still return the methods
-            if (profile.AllowedServiceFilter.Count == 0) return methods;
+            if (profile.AllowedServiceFilter.Count == 0)
+            {
+                return methods;
+            }
+
             var filtered_methods = methods.Where(s => profile.AllowedServiceFilter.Contains(s.Name)).Select(s => s).ToList();
             return filtered_methods.Any() ? filtered_methods : methods;
         }
@@ -118,7 +122,11 @@ namespace Headstart.API.Commands
                     method.xp.OriginalCurrency = shipperCurrency;
                     method.xp.OrderCurrency = buyerCurrency;
                     method.xp.ExchangeRate = conversionRate;
-                    if (conversionRate != null) method.Cost /= (decimal)conversionRate;
+                    if (conversionRate != null)
+                    {
+                        method.Cost /= (decimal)conversionRate;
+                    }
+
                     return method;
                 }).ToList();
                 return estimate;

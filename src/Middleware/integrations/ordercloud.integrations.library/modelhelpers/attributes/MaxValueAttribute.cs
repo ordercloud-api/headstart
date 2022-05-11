@@ -8,7 +8,9 @@ namespace ordercloud.integrations.library
     public class MaxValueAttribute : RangeAttribute
     {
         public MaxValueAttribute(int value)
-            : base(int.MinValue, value) { }
+            : base(int.MinValue, value)
+        {
+        }
 
         public override string FormatErrorMessage(string name)
         {

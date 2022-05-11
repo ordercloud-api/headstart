@@ -221,13 +221,19 @@ namespace Headstart.API.Commands.Crud
 		private async Task ValidateVariantsAsync(SuperHSProduct superProduct, string token)
         {
 			List<Variant> allVariants = new List<Variant>();
-			if (superProduct.Variants == null || !superProduct.Variants.Any()) { return; }
+			if (superProduct.Variants == null || !superProduct.Variants.Any())
+            {
+                return;
+            }
 
 			try
 			{
 				var allProducts = await _oc.Products.ListAllAsync(accessToken: token);
 
-				if (allProducts == null || !allProducts.Any()) { return; }
+				if (allProducts == null || !allProducts.Any())
+                {
+                    return;
+                }
 
 				foreach (Product product in allProducts)
 				{
@@ -244,7 +250,10 @@ namespace Headstart.API.Commands.Crud
 
 			foreach (Variant variant in superProduct.Variants)
             {
-				if (!allVariants.Any()) { return; }
+				if (!allVariants.Any())
+                {
+                    return;
+                }
 
 				List<Variant> duplicateSpecNames = allVariants.Where(currVariant => IsDifferentVariantWithSameName(variant, currVariant)).ToList();
 				if (duplicateSpecNames.Any())
@@ -322,9 +331,15 @@ namespace Headstart.API.Commands.Crud
 			{
 				ValidateRequestVariant(variant);
 				var currVariant = existingVariants.Where(v => v.ID == variant.ID);
-				if (currVariant == null || currVariant.Count() < 1) { continue; }
+				if (currVariant == null || currVariant.Count() < 1)
+                {
+                    continue;
+                }
 				hasVariantChange = HasVariantChange(variant, currVariant.First());
-				if (hasVariantChange) { break; }
+				if (hasVariantChange)
+                {
+                    break;
+                }
 			}
 			// IF variants differ, then re-generate variants and re-patch IDs to match the user input.
 			if (variantsAdded || variantsRemoved || hasVariantChange || requestVariants.Any(v => v.xp.NewID != null))
@@ -422,15 +437,42 @@ namespace Headstart.API.Commands.Crud
 
 		private bool HasVariantChange(Variant variant, Variant currVariant)
 		{
-			if (variant.Active != currVariant.Active) { return true; }
-			if (variant.Description != currVariant.Description) { return true; }
-			if (variant.Name != currVariant.Name) { return true; }
-			if (variant.ShipHeight != currVariant.ShipHeight) { return true; }
-			if (variant.ShipLength != currVariant.ShipLength) { return true; }
-			if (variant.ShipWeight != currVariant.ShipWeight) { return true; }
-			if (variant.ShipWidth != currVariant.ShipWidth) { return true; }
-			if (variant?.Inventory?.LastUpdated != currVariant?.Inventory?.LastUpdated) { return true; }
-			if (variant?.Inventory?.QuantityAvailable != currVariant?.Inventory?.QuantityAvailable) { return true; }
+			if (variant.Active != currVariant.Active)
+            {
+                return true;
+            }
+			if (variant.Description != currVariant.Description)
+            {
+                return true;
+            }
+			if (variant.Name != currVariant.Name)
+            {
+                return true;
+            }
+			if (variant.ShipHeight != currVariant.ShipHeight)
+            {
+                return true;
+            }
+			if (variant.ShipLength != currVariant.ShipLength)
+            {
+                return true;
+            }
+			if (variant.ShipWeight != currVariant.ShipWeight)
+            {
+                return true;
+            }
+			if (variant.ShipWidth != currVariant.ShipWidth)
+            {
+                return true;
+            }
+			if (variant?.Inventory?.LastUpdated != currVariant?.Inventory?.LastUpdated)
+            {
+                return true;
+            }
+			if (variant?.Inventory?.QuantityAvailable != currVariant?.Inventory?.QuantityAvailable)
+            {
+                return true;
+            }
 
 			return false;
 		}
@@ -470,11 +512,26 @@ namespace Headstart.API.Commands.Crud
 		private bool OptionHasChanges(SpecOption requestOption, List<SpecOption> currentOptions)
 		{
 			var matchingOption = currentOptions.Find(currentOption => currentOption.ID == requestOption.ID);
-			if (matchingOption == null) { return false; }
-			if (matchingOption.PriceMarkup != requestOption.PriceMarkup) { return true; }
-			if (matchingOption.IsOpenText != requestOption.IsOpenText) { return true; }
-			if (matchingOption.ListOrder != requestOption.ListOrder) { return true; }
-			if (matchingOption.PriceMarkupType != requestOption.PriceMarkupType) { return true; }
+			if (matchingOption == null)
+            {
+                return false;
+            }
+			if (matchingOption.PriceMarkup != requestOption.PriceMarkup)
+            {
+                return true;
+            }
+			if (matchingOption.IsOpenText != requestOption.IsOpenText)
+            {
+                return true;
+            }
+			if (matchingOption.ListOrder != requestOption.ListOrder)
+            {
+                return true;
+            }
+			if (matchingOption.PriceMarkupType != requestOption.PriceMarkupType)
+            {
+                return true;
+            }
 
 			return false;
 		}
@@ -505,7 +562,10 @@ namespace Headstart.API.Commands.Crud
 		{
 
 			ApiClient supplierClient = await _apiClientHelper.GetSupplierApiClient(supplierID, decodedToken.AccessToken);
-			if (supplierClient == null) { throw new Exception($"Default supplier client not found. SupplierID: {supplierID}"); }
+			if (supplierClient == null)
+            {
+                throw new Exception($"Default supplier client not found. SupplierID: {supplierID}");
+            }
 			var configToUse = new OrderCloudClientConfig
 			{
 				ApiUrl = decodedToken.ApiUrl,

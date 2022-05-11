@@ -71,7 +71,9 @@ namespace Headstart.Common.Services.CMS
             {
                 await _blob.Delete($"{id}-s");
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         public async Task DeleteAssetByUrl(string assetUrl)
@@ -82,7 +84,9 @@ namespace Headstart.Common.Services.CMS
             {
                 await _blob.Delete($"{id}-s");
             }
-            catch { }
+            catch
+            {
+            }
         }
 
         public string GetAssetIDFromUrl(string url)
