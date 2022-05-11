@@ -216,7 +216,7 @@ namespace Headstart.Jobs
             }
 
             decimal price = GetPrice(schedule, variant);
-            result.Price = price * (decimal)1.06; // SEB markup of 6%
+            result.Price = price * 1.06M; // SEB markup of 6%
             result.Cost = price;
             if (product.Inventory != null)
             {

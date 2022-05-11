@@ -480,7 +480,7 @@ dotnet_diagnostic.SA1509.severity=silent
 dotnet_diagnostic.SA1403.severity=silent
 dotnet_diagnostic.SA1408.severity=silent
 dotnet_diagnostic.SA1001.severity=warning
-dotnet_diagnostic.SA1139.severity=silent
+dotnet_diagnostic.SA1139.severity=warning
 dotnet_diagnostic.SA1520.severity=silent
 
 # CS0168: Variable is declared but never used
