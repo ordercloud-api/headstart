@@ -15,7 +15,7 @@ using Headstart.API.Commands;
 
 namespace Headstart.Tests
 {
-    class PaymentCommandTests
+    public class PaymentCommandTests
     {
         private IOrderCloudClient _oc;
         private ICreditCardCommand _ccCommand;

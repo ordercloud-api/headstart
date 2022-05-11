@@ -339,7 +339,7 @@ namespace Headstart.API.Commands.Crud
 				{
 					v.ID = v.xp.NewID ?? v.ID;
 					v.Name = v.xp.NewID ?? v.ID;
-					if ((superProduct?.Product?.Inventory?.VariantLevelTracking) == true && v.Inventory == null)
+					if (superProduct?.Product?.Inventory?.VariantLevelTracking == true && v.Inventory == null)
 					{
 						v.Inventory = new PartialVariantInventory { QuantityAvailable = 0 };
 					}

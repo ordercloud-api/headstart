@@ -67,7 +67,7 @@ namespace Headstart.Common.Services.Zoho.Models
         public bool is_new_customer_custom_fields { get; set; }
         public bool is_portal_enabled { get; set; }
         public string portal_name { get; set; }
-        bool is_registered_for_tax { get; set; }
-        string tax_payment_period { get; set; }
+        public bool is_registered_for_tax { get; set; }
+        public string tax_payment_period { get; set; }
     }
 }

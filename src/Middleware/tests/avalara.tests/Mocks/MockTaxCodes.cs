@@ -7,7 +7,7 @@ using System.Text;
 
 namespace avalara.tests.Mocks
 {
-	class MockTaxCodes
+    public class MockTaxCodes
 	{
 		public static FetchResult<TaxCodeModel> taxCodeObjectFromAvalaraFirstRecord()
 		{

@@ -23,7 +23,7 @@ using ordercloud.integrations.library;
 
 namespace Headstart.Tests
 {
-    class SendgridTests
+    public class SendgridTests
     {
         private const string ORDER_SUBMIT_TEMPLATE_ID = "order_submit_template_id";
         private const string LINE_ITEM_STATUS_CHANGE = "line_item_status_change";

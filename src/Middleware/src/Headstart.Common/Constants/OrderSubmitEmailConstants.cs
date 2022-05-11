@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Headstart.Common.Constants
 {
-    class OrderSubmitEmailConstants
+    public class OrderSubmitEmailConstants
     {
         public enum OrderEmailTypes
         {

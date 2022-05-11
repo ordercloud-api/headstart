@@ -177,7 +177,7 @@ namespace Headstart.Common.Mappers
         public static LineItemProductData MapToTemplateProduct(HSLineItem lineItem, LineItemStatusChange lineItemStatusChange, LineItemStatus status)
         {
             decimal lineTotal = 0M;
-            if (status == LineItemStatus.ReturnDenied || status == LineItemStatus.CancelDenied && lineItemStatusChange.QuantityRequestedForRefund != lineItemStatusChange.Quantity)
+            if (status == LineItemStatus.ReturnDenied || (status == LineItemStatus.CancelDenied && lineItemStatusChange.QuantityRequestedForRefund != lineItemStatusChange.Quantity))
             {
                 int quantityApproved = lineItemStatusChange.QuantityRequestedForRefund - lineItemStatusChange.Quantity;
                 decimal costPerUnitAfterTaxes = (decimal)(lineItemStatusChange.Refund / quantityApproved);

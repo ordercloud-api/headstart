@@ -14,7 +14,7 @@ using AutoFixture.NUnit3;
 
 namespace Headstart.Tests
 {
-    class CatalogAssignmentSyncTests
+    public class CatalogAssignmentSyncTests
     {
 
         [Test, AutoNSubstituteData]

@@ -128,7 +128,7 @@ namespace ordercloud.integrations.library.Cosmos
             var converter = TypeDescriptor.GetConverter(elementType);
 			var elementValue = converter.ConvertFromInvariantString(filter?.Term);
             var constant = Expression.Constant(elementValue?.ToString().To(elementType));
-            var method = (typeof(Enumerable))
+            var method = typeof(Enumerable)
                 .GetMethods()
                 .Where(m => m.Name == "Any" && m.GetParameters().Length == 2)
                 .FirstOrDefault()

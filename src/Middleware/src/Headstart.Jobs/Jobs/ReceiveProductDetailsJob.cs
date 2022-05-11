@@ -281,7 +281,7 @@ namespace Headstart.Jobs
 
         private bool PropertyExists(dynamic obj, string property)
         {
-            IDictionary<string, object> objDictionary = ((IDictionary<string, object>)obj);
+            IDictionary<string, object> objDictionary = (IDictionary<string, object>)obj;
 
             return objDictionary.ContainsKey(property);
         }

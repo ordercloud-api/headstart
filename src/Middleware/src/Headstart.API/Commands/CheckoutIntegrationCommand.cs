@@ -77,7 +77,7 @@ namespace Headstart.API.Commands
                     var carrier = _profiles.ShippingProfiles.First(p => p.CarrierAccountIDs.Contains(s.xp?.CarrierAccountID));
                     s.Cost = carrier.MarkupOverride ?
                         s.xp.OriginalCost * carrier.Markup :
-                        Math.Min((s.xp.OriginalCost * carrier.Markup), s.xp.ListRate);
+                        Math.Min(s.xp.OriginalCost * carrier.Markup, s.xp.ListRate);
 
                     return s;
                 }).ToList();

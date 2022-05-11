@@ -79,7 +79,7 @@ namespace ordercloud.integrations.cardconnect
 
 			var ccAmount = orderWorksheet.Order.Total;
 
-			var ocPaymentsList = (await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, payment.OrderID, filters: "Type=CreditCard"));
+			var ocPaymentsList = await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, payment.OrderID, filters: "Type=CreditCard");
 			var ocPayments = ocPaymentsList.Items;
 			var ocPayment = ocPayments.Any() ? ocPayments[0] : null;
 			if (ocPayment == null)

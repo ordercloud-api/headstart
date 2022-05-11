@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace Headstart.Tests
 {
-    class CreditCardCommandTests
+    public class CreditCardCommandTests
     {
 		private IOrderCloudIntegrationsCardConnectService _cardConnect;
 		private IOrderCloudClient _oc;

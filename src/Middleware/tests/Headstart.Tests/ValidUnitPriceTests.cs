@@ -10,7 +10,7 @@ using Headstart.API.Commands;
 
 namespace Headstart.Tests
 {
-    class ValidUnitPriceTests
+    public class ValidUnitPriceTests
     {
         private IOrderCloudClient _oc;
         private LineItemCommand _commandSub;

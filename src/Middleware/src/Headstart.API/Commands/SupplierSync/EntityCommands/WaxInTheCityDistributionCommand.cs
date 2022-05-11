@@ -33,13 +33,13 @@ namespace Headstart.API.Commands
             });
         }
 
-        public async Task<JObject> GetOrderAsync(string ID, OrderType orderType, DecodedToken decodedToken)
+        public async Task<JObject> GetOrderAsync(string id, OrderType orderType, DecodedToken decodedToken)
         {
             HSShipEstimate estimate;
             HSShipMethod ship_method = null;
-            var supplierWorksheet = await _ocSeller.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, ID);
+            var supplierWorksheet = await _ocSeller.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, id);
 
-            var buyerWorksheet = await _ocSeller.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, ID.Split('-')[0]);
+            var buyerWorksheet = await _ocSeller.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, id.Split('-')[0]);
             var buyerLineItems = buyerWorksheet.GetBuyerLineItemsBySupplierID(supplierWorksheet.Order.ToCompanyID);
             if (buyerWorksheet?.ShipEstimateResponse != null && buyerWorksheet?.ShipEstimateResponse?.ShipEstimates.Count > 0)
             {

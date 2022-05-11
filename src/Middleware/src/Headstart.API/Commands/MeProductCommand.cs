@@ -101,10 +101,10 @@ namespace Headstart.API.Commands
 			var sortBy = args.SortBy.FirstOrDefault();
 			var filters = string.IsNullOrEmpty(args.ToFilterString()) ? null : args.ToFilterString();
 			var meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: filters, page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.ExactPhrasePrefix, sortBy: sortBy, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: decodedToken.AccessToken);
-			if (!(bool)(meProducts?.Items?.Any()))
+			if (!(bool)meProducts?.Items?.Any())
             {
 				meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: filters, page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.AnyTerm, sortBy: sortBy, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: decodedToken.AccessToken);
-				if (!(bool)(meProducts?.Items?.Any()))
+				if (!(bool)meProducts?.Items?.Any())
                 {
 					// if no products after retry search, avoid making extra calls for pricing details
 					return meProducts;

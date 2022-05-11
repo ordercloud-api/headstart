@@ -110,7 +110,7 @@ namespace ordercloud.integrations.smartystreets
 
 		private bool NoAddressSuggestions(AutoCompleteResponse suggestions)
         {
-			return (suggestions == null || suggestions.suggestions == null || suggestions.suggestions.Count == 0);
+			return suggestions == null || suggestions.suggestions == null || suggestions.suggestions.Count == 0;
         }
 
         // ME endpoints

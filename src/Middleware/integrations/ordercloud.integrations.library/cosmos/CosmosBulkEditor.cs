@@ -223,7 +223,7 @@ namespace ordercloud.integrations.library
                 response.TotalTimeTaken.TotalSeconds));
             Console.WriteLine(string.Format(
                 "Average RU consumption per document update: {0}",
-                (response.TotalRequestUnitsConsumed / response.NumberOfDocumentsUpdated)));
+                response.TotalRequestUnitsConsumed / response.NumberOfDocumentsUpdated));
             Console.WriteLine("---------------------------------------------------------------------\n ");
         }
 
@@ -239,7 +239,7 @@ namespace ordercloud.integrations.library
                 response.TotalTimeTaken.TotalSeconds));
             Console.WriteLine(string.Format(
                 "Average RU consumption per document update: {0}",
-                (response.TotalRequestUnitsConsumed / response.NumberOfDocumentsImported)));
+                response.TotalRequestUnitsConsumed / response.NumberOfDocumentsImported));
             Console.WriteLine("---------------------------------------------------------------------\n ");
         }
 
