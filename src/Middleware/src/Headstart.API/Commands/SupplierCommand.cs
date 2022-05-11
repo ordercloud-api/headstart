@@ -161,7 +161,7 @@ namespace Headstart.API.Commands
                 SecurityProfileID = "HSMeAdmin"
             }, token);
 
-            foreach(var userType in HSUserTypes.Supplier())
+            foreach (var userType in HSUserTypes.Supplier())
             {
                 var userGroupID = $"{supplierID}{userType.UserGroupIDSuffix}";
 

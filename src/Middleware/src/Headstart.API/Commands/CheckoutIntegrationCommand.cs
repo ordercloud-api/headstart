@@ -131,7 +131,7 @@ namespace Headstart.API.Commands
             var suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={string.Join("|", supplierIDs)}");
             var updatedEstimates = new List<HSShipEstimate>();
 
-            foreach(var estimate in shipEstimates)
+            foreach (var estimate in shipEstimates)
             {
                 //  get supplier and supplier subtotal
                 var supplierID = orderWorksheet.LineItems.First(li => li.ID == estimate.ShipEstimateItems.FirstOrDefault()?.LineItemID).SupplierID;
@@ -196,7 +196,7 @@ namespace Headstart.API.Commands
             var supplierLineItems = orderWorksheet.LineItems.Where(li => li.SupplierID == supplierID);
             var supplierSubTotal = supplierLineItems.Select(li => li.LineSubtotal).Sum();
             var qualifiesForFlatRateShipping = supplierSubTotal > .01M && estimate.ShipMethods.Any(method => method.Name.Contains("GROUND"));
-            if(qualifiesForFlatRateShipping)
+            if (qualifiesForFlatRateShipping)
             {
                 estimate.ShipMethods = estimate.ShipMethods
                                         .Where(method => method.Name.Contains("GROUND")) // flat rate shipping only applies to ground shipping methods
@@ -279,7 +279,7 @@ namespace Headstart.API.Commands
 
         public async Task<HSOrderCalculateResponse> CalculateOrder(HSOrderCalculatePayload orderCalculatePayload)
         {
-            if(orderCalculatePayload.OrderWorksheet.Order.xp != null && orderCalculatePayload.OrderWorksheet.Order.xp.OrderType == OrderType.Quote)
+            if (orderCalculatePayload.OrderWorksheet.Order.xp != null && orderCalculatePayload.OrderWorksheet.Order.xp.OrderType == OrderType.Quote)
             {
                 // quote orders do not have tax cost associated with them
                 return new HSOrderCalculateResponse();

@@ -155,7 +155,7 @@ namespace Headstart.API.Commands
             {
                 return await _portal.GetMarketplace(marketplaceID, devToken);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 // the portal API no longer allows us to create a production marketplace outside of portal
                 // though its possible to create on sandbox - for consistency sake we'll require its created before seeding
@@ -231,7 +231,7 @@ namespace Headstart.API.Commands
             // assign full access security profile to default admin user
             var adminUsersList = await _oc.AdminUsers.ListAsync(filters: new { Username = SeedConstants.SellerUserName }, accessToken: marketplaceToken);
             var defaultAdminUser = adminUsersList.Items.FirstOrDefault();
-            if(defaultAdminUser == null)
+            if (defaultAdminUser == null)
             {
                 throw new Exception($"Unable to find default admin user (username: {SeedConstants.SellerUserName}");
             }

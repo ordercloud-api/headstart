@@ -135,7 +135,7 @@ namespace ordercloud.integrations.easypost
 					.AppendPathSegment("shipments")
 					.PostJsonAsync(new { shipment })
 					.ReceiveJson<EasyPostShipment>();
-			} catch(FlurlHttpException ex)
+			} catch (FlurlHttpException ex)
             {
 				var error = await ex.GetResponseJsonAsync<EasyPostApiError>();
 				throw new EasyPostException(error);

@@ -56,7 +56,7 @@ namespace Headstart.Jobs
             try
             {
                 var rmaList = await _rmaCommand.ListRMAsByOrderID(order.ID, CommerceRole.Seller, new MeUser { });
-                if(rmaList.Items.Any(x => x.Status == RMAStatus.Complete))
+                if (rmaList.Items.Any(x => x.Status == RMAStatus.Complete))
                 {
                     LogSkip($"{order.ID} has been refunded - RMA process handles authorizing new partial amount if necessary");
                     await _oc.Orders.PatchAsync(OrderDirection.Incoming, order.ID, new PartialOrder { xp = new { IsPaymentCaptured = true } });

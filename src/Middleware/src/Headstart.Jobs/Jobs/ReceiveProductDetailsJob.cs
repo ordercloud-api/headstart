@@ -147,7 +147,7 @@ namespace Headstart.Jobs
             {
                 supplier = await _oc.Suppliers.GetAsync(product.DefaultSupplierID);
             } 
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 LogFailure(ex.Message);
             }

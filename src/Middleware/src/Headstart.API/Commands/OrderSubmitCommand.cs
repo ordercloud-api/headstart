@@ -84,11 +84,11 @@ namespace Headstart.API.Commands
             {
                 // ordercloud validates the same stuff that would be checked on order submit
                 await _oc.Orders.ValidateAsync(OrderDirection.Incoming, worksheet.Order.ID);
-            } catch(OrderCloudException ex) {
+            } catch (OrderCloudException ex) {
                 // credit card payments aren't accepted yet, so ignore this error for now
                 // we'll accept the payment once the credit card auth goes through (before order submit)
                 var errors = ex.Errors.Where(ex => ex.ErrorCode != "Order.CannotSubmitWithUnaccceptedPayments");
-                if(errors.Any())
+                if (errors.Any())
                 {
                     throw new CatalystBaseException("OrderSubmit.OrderCloudValidationError", "Failed ordercloud validation, see Data for details", errors);
                 }
@@ -121,7 +121,7 @@ namespace Headstart.API.Commands
                 // so buyer needs to resubmit but we don't want to increment order again
                 return worksheet.Order.ID;
             }
-            if(worksheet.Order.ID.StartsWith(_settings.OrderCloudSettings.IncrementorPrefix))
+            if (worksheet.Order.ID.StartsWith(_settings.OrderCloudSettings.IncrementorPrefix))
             {
                 // order has already been incremented, no need to increment again
                 return worksheet.Order.ID;

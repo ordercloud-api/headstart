@@ -171,7 +171,7 @@ namespace Headstart.API.Commands
             string buyerID = "";
             string buyerOrderID = supplierOrderID.Split("-").First();
             Order relatedBuyerOrder = await _oc.Orders.GetAsync(OrderDirection.Incoming, buyerOrderID);
-            if(!String.IsNullOrEmpty(relatedBuyerOrder.FromCompanyID))
+            if (!String.IsNullOrEmpty(relatedBuyerOrder.FromCompanyID))
             {
                 buyerID = relatedBuyerOrder.FromCompanyID;
             }
@@ -267,7 +267,7 @@ namespace Headstart.API.Commands
 
 
 
-            foreach(LineItem lineItem in lineItemList.Items)
+            foreach (LineItem lineItem in lineItemList.Items)
 
             {
 

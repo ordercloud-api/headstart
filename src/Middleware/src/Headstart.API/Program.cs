@@ -20,7 +20,7 @@ namespace Headstart.API
 				.UseDefaultServiceProvider(options => options.ValidateScopes = false)
 				.ConfigureAppConfiguration((context, config) =>
 				{
-					if(appConfigConnectionString != null)
+					if (appConfigConnectionString != null)
                     {
 						config.AddAzureAppConfiguration(appConfigConnectionString);
 					}

@@ -28,7 +28,7 @@ namespace Headstart.Jobs
         protected virtual void LogSuccess(string message)
         {
             Succeeded.Add(message);
-            if(_logger != null)
+            if (_logger != null)
             {
                 _logger.LogInformation($"Success -- {message}");
             }
@@ -37,7 +37,7 @@ namespace Headstart.Jobs
         protected virtual void LogFailure(string message)
         {
             Failed.Add(message);
-            if(_logger != null)
+            if (_logger != null)
             {
                 _logger.LogError($"Failure -- {message}");
             }
@@ -46,7 +46,7 @@ namespace Headstart.Jobs
         protected virtual void LogSkip(string message)
         {
             Skipped.Add(message);
-            if(_logger != null)
+            if (_logger != null)
             {
                 _logger.LogInformation($"Skipped -- {message}");
             }
@@ -54,7 +54,7 @@ namespace Headstart.Jobs
 
         protected virtual void LogProgress()
         {
-            if(_logger != null)
+            if (_logger != null)
             {
                 _logger.LogInformation($"Found : {Total}. Failed: {Failed.Count}. Skipped: {Skipped.Count}. Succeeded: {Succeeded.Count}");
             }

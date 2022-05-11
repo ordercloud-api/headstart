@@ -141,7 +141,7 @@ namespace Headstart.API.Commands
             var AddUserTypeRequests = HSUserTypes.BuyerLocation().Select(userType => AddUserTypeToLocation(buyerLocationID, userType, accessToken, ocClient));
             await Task.WhenAll(AddUserTypeRequests);
             var isSeedingEnvironment = ocClient != null;
-            if(!isSeedingEnvironment)
+            if (!isSeedingEnvironment)
             {
                 var approvingGroupID = $"{buyerLocationID}-{UserGroupSuffix.OrderApprover}";
                 await ocClient.ApprovalRules.CreateAsync(buyerID, new ApprovalRule()

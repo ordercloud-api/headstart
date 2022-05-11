@@ -42,7 +42,7 @@ namespace Headstart.Common.Services
                         }).ReceiveJson<PortalAuthResponse>();
 
                 return response.access_token;
-            } catch(FlurlHttpException ex)
+            } catch (FlurlHttpException ex)
             {
                 throw new CatalystBaseException(
                     ex.Call.Response.StatusCode.ToString(),

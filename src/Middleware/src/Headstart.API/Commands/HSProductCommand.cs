@@ -198,7 +198,7 @@ namespace Headstart.API.Commands.Crud
 
 			superProduct.Product.DefaultPriceScheduleID = priceSchedule.ID;
 
-			if(decodedToken.CommerceRole == CommerceRole.Supplier)
+			if (decodedToken.CommerceRole == CommerceRole.Supplier)
             {
 				var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
 				var supplierName = await GetSupplierNameForXpFacet(me.Supplier.ID, decodedToken.AccessToken);

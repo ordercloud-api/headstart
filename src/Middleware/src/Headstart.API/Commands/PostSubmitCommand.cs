@@ -154,7 +154,7 @@ namespace Headstart.API.Commands
             });
 
             // STEP 3: Zoho orders
-            if(_settings.ZohoSettings.PerformOrderSubmitTasks) { results.Add(await this.PerformZohoTasks(orderWorksheet, supplierOrders)); }
+            if (_settings.ZohoSettings.PerformOrderSubmitTasks) { results.Add(await this.PerformZohoTasks(orderWorksheet, supplierOrders)); }
 
             // STEP 4: Validate shipping
             var shipping = await ProcessActivityCall(
@@ -443,10 +443,10 @@ namespace Headstart.API.Commands
 
         private static async Task ValidateShipping(HSOrderWorksheet orderWorksheet)
         {
-            if(orderWorksheet.ShipEstimateResponse.HttpStatusCode != 200)
+            if (orderWorksheet.ShipEstimateResponse.HttpStatusCode != 200)
                 throw new Exception(orderWorksheet.ShipEstimateResponse.UnhandledErrorBody);
 
-            if(orderWorksheet.ShipEstimateResponse.ShipEstimates.Any(s => s.SelectedShipMethodID == ShippingConstants.NoRatesID))
+            if (orderWorksheet.ShipEstimateResponse.ShipEstimates.Any(s => s.SelectedShipMethodID == ShippingConstants.NoRatesID))
                 throw new Exception("No shipping rates could be determined - fallback shipping rate of $20 3-day was used");
 
             await Task.CompletedTask;

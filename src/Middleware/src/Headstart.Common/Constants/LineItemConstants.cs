@@ -14,11 +14,11 @@ namespace Headstart.Common.Constants
             var shippingStatusOccurances = new HashSet<ShippingStatus>();
             var claimStatusOccurances = new HashSet<ClaimStatus>();
 
-            foreach(var lineItem in lineItems)
+            foreach (var lineItem in lineItems)
             {
-                foreach(var status in lineItem.xp.StatusByQuantity)
+                foreach (var status in lineItem.xp.StatusByQuantity)
                 {
-                    if(status.Value > 0)
+                    if (status.Value > 0)
                     {
                         orderStatusOccurances.Add(RelatedOrderStatus[status.Key]);
                         shippingStatusOccurances.Add(RelatedShippingStatus[status.Key]);
@@ -36,17 +36,17 @@ namespace Headstart.Common.Constants
 
         private static SubmittedOrderStatus GetOrderStatus(HashSet<SubmittedOrderStatus> orderStatusOccurances)
         {
-            if(orderStatusOccurances.Count == 1)
+            if (orderStatusOccurances.Count == 1)
             {
                 return orderStatusOccurances.First();
             }
 
-            if(orderStatusOccurances.Contains(SubmittedOrderStatus.Open))
+            if (orderStatusOccurances.Contains(SubmittedOrderStatus.Open))
             {
                 return SubmittedOrderStatus.Open;
             }
 
-            if(orderStatusOccurances.Contains(SubmittedOrderStatus.Completed))
+            if (orderStatusOccurances.Contains(SubmittedOrderStatus.Completed))
             {
                 return SubmittedOrderStatus.Completed;
             }

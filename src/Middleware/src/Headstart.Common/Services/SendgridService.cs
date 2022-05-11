@@ -92,7 +92,7 @@ namespace Headstart.Common.Services
                 var toEmail = new EmailAddress(to);
                 var msg = MailHelper.CreateSingleTemplateEmail(fromEmail, toEmail, templateID, templateData);
                 var response = await _client.SendEmailAsync(msg);
-                if(!response.IsSuccessStatusCode)
+                if (!response.IsSuccessStatusCode)
                 {
                     throw new Exception("Error sending sendgrid email");
                 }
@@ -353,9 +353,9 @@ namespace Headstart.Common.Services
                 var filterString = String.Join("|", orderWorksheet.Order.xp.SupplierIDs);
                 suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={filterString}");
             }
-            foreach(var supplier in suppliers.Items)
+            foreach (var supplier in suppliers.Items)
             {
-                if(supplier?.xp?.NotificationRcpts?.Count() >0)
+                if (supplier?.xp?.NotificationRcpts?.Count() >0)
                 {
                     // get orderworksheet for supplier order and fill in some information from buyer order worksheet
                     var supplierOrderWorksheet = await BuildSupplierOrderWorksheet(orderWorksheet, supplier.ID);

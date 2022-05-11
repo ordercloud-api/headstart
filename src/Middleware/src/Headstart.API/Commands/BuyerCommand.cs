@@ -35,7 +35,7 @@ namespace Headstart.API.Commands
             var createdImpersonationConfig = new ImpersonationConfig();
             var createdBuyer = await CreateBuyerAndRelatedFunctionalResources(superBuyer.Buyer, accessToken, oc);
             var createdMarkup = await CreateMarkup(superBuyer.Markup, createdBuyer.ID, accessToken, oc);
-            if(superBuyer?.ImpersonationConfig != null)
+            if (superBuyer?.ImpersonationConfig != null)
             {
                 createdImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, createdBuyer.ID, accessToken, oc);
             }
@@ -55,7 +55,7 @@ namespace Headstart.API.Commands
 
             var updatedBuyer = await _oc.Buyers.SaveAsync<HSBuyer>(buyerID, superBuyer.Buyer);
             var updatedMarkup = await UpdateMarkup(superBuyer.Markup, superBuyer.Buyer.ID);
-            if(superBuyer.ImpersonationConfig != null)
+            if (superBuyer.ImpersonationConfig != null)
             {
                 updatedImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, buyerID);
             }
@@ -166,12 +166,12 @@ namespace Headstart.API.Commands
             var ocClient = oc ?? _oc;
 
             var currentConfig = await GetImpersonationByBuyerID(buyerID);
-            if(currentConfig != null && impersonation == null)
+            if (currentConfig != null && impersonation == null)
             {
                 await ocClient.ImpersonationConfigs.DeleteAsync(currentConfig.ID);
                 return null;
             }
-            else if(currentConfig != null)
+            else if (currentConfig != null)
             {
                 return await ocClient.ImpersonationConfigs.SaveAsync(currentConfig.ID, impersonation, token);
             } else

@@ -50,7 +50,7 @@ namespace ordercloud.integrations.library
             where TQuery : class
             where TModel : class
         {
-            if(config.DatabaseName == null || config.EndpointUri == null || config.PrimaryKey == null)
+            if (config.DatabaseName == null || config.EndpointUri == null || config.PrimaryKey == null)
             {
                 // allow server to be started up without these settings
                 // in case they're just trying to seed their environment

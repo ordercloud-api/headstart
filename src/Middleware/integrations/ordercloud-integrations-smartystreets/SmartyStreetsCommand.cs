@@ -68,7 +68,7 @@ namespace ordercloud.integrations.smartystreets
 				{
 					// no valid address found
 					var suggestions = await _service.USAutoCompletePro($"{address.Street1} {address.Street2}");
-					if(suggestions.suggestions != null)
+                    if (suggestions.suggestions != null)
                     {
 						response.SuggestedAddresses = AddressMapper.Map(suggestions, address);
 					}

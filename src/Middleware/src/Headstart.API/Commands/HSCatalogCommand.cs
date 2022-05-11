@@ -55,7 +55,7 @@ namespace Headstart.API.Commands.Crud
 
 			var catalogAssignments = new List<HSCatalogAssignment>{};
 			
-			if(location.xp.CatalogAssignments != null)
+			if (location.xp.CatalogAssignments != null)
 			{
 				catalogAssignments = location.xp.CatalogAssignments.Select(catalogIDOnXp => new HSCatalogAssignment()
 					{

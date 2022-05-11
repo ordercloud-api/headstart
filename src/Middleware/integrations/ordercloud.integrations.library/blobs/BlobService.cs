@@ -56,7 +56,7 @@ namespace ordercloud.integrations.library
         }
         private async Task Init()
         {
-            if(IsInitialized)
+            if (IsInitialized)
             {
                 return;
             }

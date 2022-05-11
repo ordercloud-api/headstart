@@ -259,11 +259,11 @@ namespace Headstart.API.Commands
                 return;
             } 
             
-            if(order.Status == OrderStatus.AwaitingApproval)
+            if (order.Status == OrderStatus.AwaitingApproval)
             {
                 // logic assumes there is only one approving group per location
                 var isUserInApprovalGroup = await _locationPermissionCommand.IsUserInAccessGroup(order.BillingAddressID, UserGroupSuffix.OrderApprover.ToString(), decodedToken);
-                if(isUserInApprovalGroup)
+                if (isUserInApprovalGroup)
                 {
                     return;
                 }

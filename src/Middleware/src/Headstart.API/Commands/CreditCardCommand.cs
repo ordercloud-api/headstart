@@ -83,15 +83,15 @@ namespace ordercloud.integrations.cardconnect
 			var ocPaymentsList = (await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, payment.OrderID, filters: "Type=CreditCard" ));
 			var ocPayments = ocPaymentsList.Items;
 			var ocPayment = ocPayments.Any() ? ocPayments[0] : null;
-			if(ocPayment == null)
+			if (ocPayment == null)
             {
 				throw new CatalystBaseException("Payment.MissingCreditCardPayment", "Order is missing credit card payment");
             }
             try
             {
-				if(ocPayment?.Accepted == true)
+				if (ocPayment?.Accepted == true)
                 {
-					if(ocPayment.Amount == ccAmount)
+					if (ocPayment.Amount == ccAmount)
                     {
 						return ocPayment;
                     } else
@@ -116,7 +116,7 @@ namespace ordercloud.integrations.cardconnect
 			var order = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
 			var paymentList = await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, order.ID);
 			var payment = paymentList.Items.Any() ? paymentList.Items[0] : null;
-			if(payment == null) { return; }
+			if (payment == null) { return; }
 
 			await VoidTransactionAsync(payment, order, userToken);
 			await _oc.Payments.PatchAsync(OrderDirection.Incoming, orderID, payment.ID, new PartialPayment { Accepted = false });

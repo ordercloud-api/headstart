@@ -126,7 +126,7 @@ namespace Headstart.API.Commands
         {
             await SyncOrderStatus(OrderDirection.Incoming, buyerOrder.ID, allOrderLineItems);
 
-            if(relatedSupplierOrderIDs != null)
+            if (relatedSupplierOrderIDs != null)
             {
                 foreach (var supplierOrderID in relatedSupplierOrderIDs)
                 {
@@ -167,7 +167,7 @@ namespace Headstart.API.Commands
                         StatusByQuantity
                     }
                 };
-            } else if(newLineItemStatus == LineItemStatus.CancelRequested || newLineItemStatus == LineItemStatus.Canceled)
+            } else if (newLineItemStatus == LineItemStatus.CancelRequested || newLineItemStatus == LineItemStatus.Canceled)
             {
                 var cancelRequests = existingLineItem.xp.Cancelations ?? new List<LineItemClaim>();
                 return new PartialLineItem()
@@ -192,14 +192,14 @@ namespace Headstart.API.Commands
 
         private List<LineItemClaim> GetUpdatedChangeRequests(List<LineItemClaim> existinglineItemStatusChangeRequests, LineItemStatusChange lineItemStatusChange, int QuantitySetting, LineItemStatus newLineItemStatus, Dictionary<LineItemStatus, int> lineItemStatuses)
         {
-            if(newLineItemStatus == LineItemStatus.Returned || newLineItemStatus == LineItemStatus.Canceled) 
+            if (newLineItemStatus == LineItemStatus.Returned || newLineItemStatus == LineItemStatus.Canceled) 
             {
                 // go through the return requests and resolve each request until there aren't enough returned or canceled items 
                 // to resolve an additional request
                 var numberReturnedOrCanceled = lineItemStatuses[newLineItemStatus];
                 var currentClaimIndex = 0;
                 while (numberReturnedOrCanceled > 0 && currentClaimIndex < existinglineItemStatusChangeRequests.Count()) { 
-                    if(existinglineItemStatusChangeRequests[currentClaimIndex].Quantity <= numberReturnedOrCanceled)
+                    if (existinglineItemStatusChangeRequests[currentClaimIndex].Quantity <= numberReturnedOrCanceled)
                     {
                         existinglineItemStatusChangeRequests[currentClaimIndex].IsResolved = true;
                         numberReturnedOrCanceled -= existinglineItemStatusChangeRequests[currentClaimIndex].Quantity;
@@ -236,11 +236,11 @@ namespace Headstart.API.Commands
             var validPreviousStates = LineItemStatusConstants.ValidPreviousStateLineItemChangeMap[newLineItemStatus];
 
             // decrement
-            foreach(LineItemStatus status in validPreviousStates)
+            foreach (LineItemStatus status in validPreviousStates)
             {
-                if(statusDictionary[status] != 0)
+                if (statusDictionary[status] != 0)
                 {
-                    if(statusDictionary[status] <= quantitySetting)
+                    if (statusDictionary[status] <= quantitySetting)
                     {
                         quantitySetting -= statusDictionary[status];
                         statusDictionary[status] = 0;
@@ -495,7 +495,7 @@ namespace Headstart.API.Commands
                 return;
             }
             string orderID;
-            if(rmaWithLineItemStatusByQuantity.RMA.SupplierID == null)
+            if (rmaWithLineItemStatusByQuantity.RMA.SupplierID == null)
             {
                 // this is an MPO owned RMA
                 orderID = rmaWithLineItemStatusByQuantity.RMA.SourceOrderID;

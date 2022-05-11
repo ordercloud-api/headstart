@@ -49,7 +49,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, Route("post-staging-restore"), OrderCloudWebhookAuth]
 		public async Task PostStagingRestore()
 		{
-            if(_settings.EnvironmentSettings.Environment == AppEnvironment.Production)
+            if (_settings.EnvironmentSettings.Environment == AppEnvironment.Production)
             {
                 return;
             }

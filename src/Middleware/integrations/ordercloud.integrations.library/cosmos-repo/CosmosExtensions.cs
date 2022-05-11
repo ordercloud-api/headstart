@@ -12,7 +12,7 @@ namespace ordercloud.integrations.library
                                                      string databaseName,
                                                      List<ContainerInfo> containers)
         {
-            if(endpointUrl == null || primaryKey == null || databaseName == null)
+            if (endpointUrl == null || primaryKey == null || databaseName == null)
             {
                 // allow server to be started up without these settings
                 // in case they're just trying to seed their environment

@@ -35,7 +35,7 @@ namespace Headstart.Common.Services.CMS
             var container = _blob.Container.Name;
             var assetGuid = Guid.NewGuid().ToString();
 
-            using(var image = Image.FromStream(asset.File.OpenReadStream()))
+            using (var image = Image.FromStream(asset.File.OpenReadStream()))
             {
                 var small = image.ResizeSmallerDimensionToTarget(100);
                 var medium = image.ResizeSmallerDimensionToTarget(300);

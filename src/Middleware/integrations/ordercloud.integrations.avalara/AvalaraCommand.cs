@@ -51,7 +51,7 @@ namespace ordercloud.integrations.avalara
 
 			_companyCode = _settings.CompanyCode;
 			_baseUrl = _settings.BaseApiUrl;
-			if(hasAccountCredentials) {
+			if (hasAccountCredentials) {
 				_avaTax = new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(settings.BaseApiUrl)).WithSecurity(settings.AccountID, settings.LicenseKey);
 			}
         }
