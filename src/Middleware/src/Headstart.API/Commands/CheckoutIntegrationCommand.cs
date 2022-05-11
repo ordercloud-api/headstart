@@ -35,7 +35,7 @@ namespace Headstart.API.Commands
         private readonly IDiscountDistributionService _discountDistribution;
         private readonly HSShippingProfiles _profiles;
         private readonly AppSettings _settings;
-  
+
         public CheckoutIntegrationCommand(IDiscountDistributionService discountDistribution, ordercloud.integrations.library.ITaxCalculator taxCalculator, IExchangeRatesCommand exchangeRates, IOrderCloudClient orderCloud, IEasyPostShippingService shippingService, AppSettings settings)
         {
             _taxCalculator = taxCalculator;
@@ -61,9 +61,9 @@ namespace Headstart.API.Commands
         private async Task<ShipEstimateResponse> GetRatesAsync(HSOrderWorksheet worksheet, CheckoutIntegrationConfiguration config = null)
         {
             var groupedLineItems = worksheet.LineItems.GroupBy(li => new AddressPair { ShipFrom = li.ShipFromAddress, ShipTo = li.ShippingAddress }).ToList();
-            var shipResponse = (await _shippingService.GetRates(groupedLineItems, _profiles)).Reserialize<HSShipEstimateResponse>(); // include all accounts at this stage so we can save on order worksheet and analyze 
+            var shipResponse = (await _shippingService.GetRates(groupedLineItems, _profiles)).Reserialize<HSShipEstimateResponse>(); // include all accounts at this stage so we can save on order worksheet and analyze
 
-            // Certain suppliers use certain shipping accounts. This filters available rates based on those accounts.  
+            // Certain suppliers use certain shipping accounts. This filters available rates based on those accounts.
             for (var i = 0; i < groupedLineItems.Count; i++)
             {
                 var supplierID = groupedLineItems[i].First().SupplierID;
@@ -152,7 +152,7 @@ namespace Headstart.API.Commands
                     }
                 }
                 updatedEstimates.Add(estimate);
-                
+
             }
             return updatedEstimates;
         }
@@ -192,7 +192,7 @@ namespace Headstart.API.Commands
         public static HSShipEstimate ApplyFlatRateShippingOnEstimate(HSShipEstimate estimate, HSOrderWorksheet orderWorksheet)
         {
             var supplierID = orderWorksheet.LineItems.First(li => li.ID == estimate.ShipEstimateItems.FirstOrDefault()?.LineItemID).SupplierID;
-           
+
             var supplierLineItems = orderWorksheet.LineItems.Where(li => li.SupplierID == supplierID);
             var supplierSubTotal = supplierLineItems.Select(li => li.LineSubtotal).Sum();
             var qualifiesForFlatRateShipping = supplierSubTotal > .01M && estimate.ShipMethods.Any(method => method.Name.Contains("GROUND"));
@@ -290,7 +290,7 @@ namespace Headstart.API.Commands
                 var taxCalculationTask = _taxCalculator.CalculateEstimateAsync(orderCalculatePayload.OrderWorksheet.Reserialize<OrderWorksheet>(), promotions);
                 var taxCalculation = await taxCalculationTask;
                 await promoCalculationTask;
-          
+
                 return new HSOrderCalculateResponse
                 {
                     TaxTotal = taxCalculation.TotalTax,

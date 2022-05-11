@@ -42,7 +42,7 @@ namespace Headstart.Common.Services.CMS
                 await Task.WhenAll(new[] {
                     _blob.Save(assetGuid, medium.ToBytes(ImageFormat.Png), "image/png"),
                     _blob.Save($"{assetGuid}-s", small.ToBytes(ImageFormat.Png), "image/png")
-                }); 
+                });
             }
             return new ImageAsset
             {
@@ -92,6 +92,6 @@ namespace Headstart.Common.Services.CMS
         private string GetBaseUrl()
         {
             return _settings.StorageAccountSettings.BlobPrimaryEndpoint.EndsWith("/") ? _settings.StorageAccountSettings.BlobPrimaryEndpoint : _settings.StorageAccountSettings.BlobPrimaryEndpoint + "/";
-        } 
+        }
     }
 }

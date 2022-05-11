@@ -15,7 +15,7 @@ namespace Headstart.Common.Controllers.CardConnect
     {
         private readonly ICreditCardCommand _card;
         private readonly AppSettings _settings;
-        public MePaymentController(AppSettings settings, ICreditCardCommand card) 
+        public MePaymentController(AppSettings settings, ICreditCardCommand card)
         {
             _card = card;
             _settings = settings;
@@ -33,7 +33,7 @@ namespace Headstart.Common.Controllers.CardConnect
                 merchantID = _settings.CardConnectSettings.CadMerchantID;
             else
                 merchantID = _settings.CardConnectSettings.EurMerchantID;
-                
+
             return await _card.AuthorizePayment(payment, UserContext.AccessToken, merchantID);
         }
     }

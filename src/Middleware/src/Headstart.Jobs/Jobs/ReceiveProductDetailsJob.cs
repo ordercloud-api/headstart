@@ -54,7 +54,7 @@ namespace Headstart.Jobs
                 {
                     LogFailure(ex.Message);
                 }
-               
+
             }
         }
 
@@ -133,7 +133,7 @@ namespace Headstart.Jobs
                     Filters = { currentProductFilter }
                 };
             }
-          
+
         }
 
         private async Task<List<ProductDetailData>> CreateProductDetailDataAsync(Product product, List<LineItemDetailData> lineItemList)
@@ -146,7 +146,7 @@ namespace Headstart.Jobs
             try
             {
                 supplier = await _oc.Suppliers.GetAsync(product.DefaultSupplierID);
-            } 
+            }
             catch (Exception ex)
             {
                 LogFailure(ex.Message);
@@ -179,7 +179,7 @@ namespace Headstart.Jobs
                     Data = await FlattenProductDataDetailAsync(product, supplier)
                 });
             }
-           
+
             return resultList;
         }
 
@@ -214,7 +214,7 @@ namespace Headstart.Jobs
                 result.SupplierID = supplier?.ID;
                 result.SupplierName = supplier?.Name;
             }
-          
+
             decimal price = GetPrice(schedule, variant);
             result.Price = price * (decimal)1.06; // SEB markup of 6%
             result.Cost = price;
@@ -338,7 +338,7 @@ namespace Headstart.Jobs
                 result.ThreeMonthQuantity = lineItemDetail.Data.LineItems.Sum(x => x.Quantity);
                 result.ThreeMonthTotal = lineItemDetail.Data.LineItems.Sum(x => x.LineSubtotal);
             }
-           
+
             // 6MO sales
             foreach (LineItemDetailData lineItemDetail in sixMonthLineItems)
             {

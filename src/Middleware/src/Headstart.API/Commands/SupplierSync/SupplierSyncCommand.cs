@@ -39,7 +39,7 @@ namespace Headstart.API.Commands
             }
             try
             {
-                var type = 
+                var type =
                     Assembly.GetExecutingAssembly().GetTypeByAttribute<SupplierSyncAttribute>(attribute => attribute.SupplierID == supplierID) ??
                     Assembly.GetExecutingAssembly().GetTypeByAttribute<SupplierSyncAttribute>(attribute => attribute.SupplierID == "Generic");
                 if (type == null) throw new MissingMethodException($"Command for {supplierID} is unavailable");

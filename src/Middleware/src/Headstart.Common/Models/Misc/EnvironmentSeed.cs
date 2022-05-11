@@ -89,7 +89,7 @@ namespace Headstart.Models.Misc
 		public string AnonymousShoppingBuyerID { get; set; }
 
 		/// <summary>
-		/// An optional object of storage settings for your translations container. 
+		/// An optional object of storage settings for your translations container.
 		/// If none are provided the seeding funciton will not create a translation file or downloads file
 		/// Provide a valid ConnectionString to have the seeding function generate your translation file
 		/// </summary>
@@ -168,6 +168,6 @@ namespace Headstart.Models.Misc
 		public string AzureRegion { get; set; }
 		public string Id { get; set; }
 		public string Name { get; set; }
-		
+
 	}
 }

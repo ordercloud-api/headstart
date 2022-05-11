@@ -9,9 +9,9 @@ namespace ordercloud.integrations.library
         }
 
         public CosmosConfig(
-            string db, 
-            string uri, 
-            string key, 
+            string db,
+            string uri,
+            string key,
             int requestTimeoutInSeconds)
         {
             this.DatabaseName = db;

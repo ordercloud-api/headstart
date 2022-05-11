@@ -30,16 +30,16 @@ namespace Headstart.Common.Services.Zoho.Resources
                 .GetJsonAsync<TZohoOrganizationList>();
 
         public Task<ZohoOrganization> GetAsync(string id) => GetAsync<ZohoOrganization>(id);
-        
+
         public Task<TZohoOrganization> GetAsync<TZohoOrganization>(string id) where TZohoOrganization : ZohoOrganization =>
             Get(id).GetJsonAsync<TZohoOrganization>();
-        
+
         public Task<ZohoOrganization> SaveAsync(ZohoOrganization org) => SaveAsync<ZohoOrganization>(org);
 
         public async Task<TZohoOrganization> SaveAsync<TZohoOrganization>(TZohoOrganization org)
-            where TZohoOrganization : ZohoOrganization => 
+            where TZohoOrganization : ZohoOrganization =>
             await Put<TZohoOrganization>(org, org.organization_id);
-            
+
         public Task<ZohoOrganization> CreateAsync(ZohoOrganization org) => CreateAsync<ZohoOrganization>(org);
 
         public async Task<TZohoOrganization> CreateAsync<TZohoOrganization>(TZohoOrganization org)

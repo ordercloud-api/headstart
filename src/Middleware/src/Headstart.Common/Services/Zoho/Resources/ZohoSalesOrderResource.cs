@@ -30,16 +30,16 @@ namespace Headstart.Common.Services.Zoho.Resources
                 .GetJsonAsync<TZohoSalesOrderList>();
 
         public Task<ZohoSalesOrder> GetAsync(string id) => GetAsync<ZohoSalesOrder>(id);
-        
+
         public Task<TZohoSalesOrder> GetAsync<TZohoSalesOrder>(string id) where TZohoSalesOrder : ZohoSalesOrder =>
             Get(id).GetJsonAsync<TZohoSalesOrder>();
-        
+
         public Task<ZohoSalesOrder> SaveAsync(ZohoSalesOrder salesOrder) => SaveAsync<ZohoSalesOrder>(salesOrder);
 
         public async Task<TZohoSalesOrder> SaveAsync<TZohoSalesOrder>(TZohoSalesOrder salesOrder)
-            where TZohoSalesOrder : ZohoSalesOrder => 
+            where TZohoSalesOrder : ZohoSalesOrder =>
             await Put<TZohoSalesOrder>(salesOrder, salesOrder.salesorder_id);
-            
+
         public Task<ZohoSalesOrder> CreateAsync(ZohoSalesOrder salesOrder) => CreateAsync<ZohoSalesOrder>(salesOrder);
 
         public async Task<TZohoSalesOrder> CreateAsync<TZohoSalesOrder>(TZohoSalesOrder salesOrder)

@@ -9,8 +9,8 @@ using ordercloud.integrations.library;
 
 namespace ordercloud.integrations.easypost
 {
-	// Note, this is not an EasyPost-specific concept. 
-	// It was originally created by Bill Hickey as a way to get less expensive shipping rates from FreightPop by grouping lineItems. 
+	// Note, this is not an EasyPost-specific concept.
+	// It was originally created by Bill Hickey as a way to get less expensive shipping rates from FreightPop by grouping lineItems.
 	// Its not currently being used anywhere because the concept doesn't fit with the EasyPost API particularly well.
 	// But, I'm saving it in case its useful at some point.
 
@@ -44,22 +44,22 @@ namespace ordercloud.integrations.easypost
 	{
 		// This is intended to be a max parcel dimension, but is not being honored because of a bug in the math. see line 83 about percentage 1 vs 100
 		// however, fixing that math produces some crazy rates (~$1000).
-		public static readonly double FULL_PACKAGE_DIMENSION = 11; // inches. 
+		public static readonly double FULL_PACKAGE_DIMENSION = 11; // inches.
         public static readonly double DEFAULT_WEIGHT = 5;
 		public double PercentFilled { get; set; } = 0;
-		public decimal Weight { get; set; } = 0; // lbs 
+		public decimal Weight { get; set; } = 0; // lbs
 	}
 
 	public static class SmartPackageMapper
 	{
 		// Any parcel sent to easy post with a dimension over 33 returns no rates.
-		// Dimensions around 33 return high rates in the $200's for the slowest shipping tiers 
-		private static readonly int EASYPOST_MAX_PARCEL_DIMENSION = 33; // inches. 
+		// Dimensions around 33 return high rates in the $200's for the slowest shipping tiers
+		private static readonly int EASYPOST_MAX_PARCEL_DIMENSION = 33; // inches.
 
 		// 22 inches seems to produce rates around $20 for the slowest tiers, which feels reasonable
 		private static readonly int TARGET_REASONABLE_PARCEL_DIMENSION = 22; // inches
 
-		private static readonly Dictionary<SizeTier, double> SIZE_FACTOR_MAP = new Dictionary<SizeTier, double>() 
+		private static readonly Dictionary<SizeTier, double> SIZE_FACTOR_MAP = new Dictionary<SizeTier, double>()
 		{
 			{ SizeTier.A, .385 }, // 38.5% of a full package
 			{ SizeTier.B, .10 },

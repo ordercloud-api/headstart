@@ -23,7 +23,7 @@ namespace ordercloud.integrations.library.intefaces
 	}
 
 	/// <summary>
-	/// A Tax categorization for a product 
+	/// A Tax categorization for a product
 	/// </summary>
 	public class TaxCategorization
 	{

@@ -8,7 +8,7 @@ using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Controllers
 {
-	public class ValidatedAddressController: CatalystController
+	public class ValidatedAddressController : CatalystController
 	{
 		private readonly ISmartyStreetsCommand _command;
 		public ValidatedAddressController(ISmartyStreetsCommand command)

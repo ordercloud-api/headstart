@@ -45,7 +45,7 @@ namespace Headstart.Jobs
                 ["xp.SubmittedOrderStatus"] = "!Canceled"
             };
 
-            var orders = await  _oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Incoming, filters: filters);
+            var orders = await _oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Incoming, filters: filters);
             _logger.LogInformation($"Found {orders.Count} orders to process");
 
             await Throttler.RunAsync(orders, 100, 5, ProcessSingleOrder);

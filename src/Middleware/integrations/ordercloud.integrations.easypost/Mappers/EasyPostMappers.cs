@@ -29,12 +29,12 @@ namespace ordercloud.integrations.easypost
 		// var aggregateHeight = (double)Math.Min(MINIMUM_SHIP_DIMENSION, lineItems.Max(li => li.Product.ShipHeight ?? MINIMUM_SHIP_DIMENSION));
 		// var aggregateWidth = (double)Math.Min(MINIMUM_SHIP_DIMENSION, lineItems.Max(li => li.Product.ShipWidth ?? MINIMUM_SHIP_DIMENSION));
 		// var aggregateLength = (double)Math.Min(MINIMUM_SHIP_DIMENSION, lineItems.Max(li => li.Product.ShipLength ?? MINIMUM_SHIP_DIMENSION));
-		// var totalWeight = lineItems.Aggregate(0.0, (sum, lineItem) => 
+		// var totalWeight = lineItems.Aggregate(0.0, (sum, lineItem) =>
 		// {
 		// var productShipWeight = lineItem.Product.ShipWeight ?? 1;
 		// return sum += ((double)productShipWeight * lineItem.Quantity);
 		// });
-		// return new EasyPostParcel() { 
+		// return new EasyPostParcel() {
 		// weight = totalWeight,
 		// height = aggregateHeight,
 		// width = aggregateWidth,

@@ -94,7 +94,7 @@ namespace Headstart.API.Commands
             var ocSupplier = await _oc.Suppliers.CreateAsync(supplier, token);
             supplier.ID = ocSupplier.ID;
             var ocSupplierID = ocSupplier.ID;
-     
+
             // This supplier user is created so that we can define an api client with it as the default context user
             // this allows us to perform elevated supplier actions on behalf of that supplier company
             // It is not an actual user that will login so there is no password or valid email
@@ -150,7 +150,7 @@ namespace Headstart.API.Commands
             });
             return supplier;
         }
-    
+
         public async Task CreateUserTypeUserGroupsAndSecurityProfileAssignments(User user, string token, string supplierID)
         {
             // Assign supplier to HSMeAdmin security profile
@@ -173,7 +173,7 @@ namespace Headstart.API.Commands
                             Type = "UserPermissions",
                         }
                 }, token);
- 
+
                 await _oc.SupplierUserGroups.SaveUserAssignmentAsync(supplierID, new UserGroupAssignment()
                 {
                     UserID = user.ID,

@@ -7,8 +7,8 @@ using LazyCache;
 
 namespace OrderCloud.Common.Services
 {
-	// Lazy Cache (https://github.com/alastairtree/LazyCache) is a local in-memory cache. 
-	// It requires no setup, but is likely not appropriate for a server with multiple instances. 
+	// Lazy Cache (https://github.com/alastairtree/LazyCache) is a local in-memory cache.
+	// It requires no setup, but is likely not appropriate for a server with multiple instances.
 	// Each instance would have a separate cache, and behavior would be inconsient.
 	public class LazyCacheService : ISimpleCache
 	{

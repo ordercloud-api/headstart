@@ -12,7 +12,7 @@ using ordercloud.integrations.library.intefaces;
 using OrderCloud.SDK;
 
 namespace Headstart.Models
-{ 
+{
     public class SuperHSProduct : IHSObject
     {
         public string ID { get; set; }
@@ -30,25 +30,25 @@ namespace Headstart.Models
         public IList<Spec> Specs { get; set; }
         public IList<HSVariant> Variants { get; set; }
     }
-    
+
     public class PartialHSProduct : PartialProduct<ProductXp>
     {
     }
-    
+
     public class HSLineItemProduct : LineItemProduct<ProductXp> { }
-    
+
     public class HSProduct : Product<ProductXp>, IHSObject
     {
     }
 
-    public class HSMeProduct: BuyerProduct<ProductXp, HSPriceSchedule>
+    public class HSMeProduct : BuyerProduct<ProductXp, HSPriceSchedule>
     {
 
     }
-    
+
 	public class HSVariant : Variant<HSVariantXp> { }
 
-    
+
 	public class ProductXp
     {
         #region DO NOT DELETE
@@ -98,7 +98,7 @@ namespace Headstart.Models
 		Quote
 	}
 
-    
+
     public class HSVariantXp
     {
         public string SpecCombo { get; set; }
@@ -107,7 +107,7 @@ namespace Headstart.Models
         public List<ImageAsset> Images { get; set; }
     }
 
-    
+
     public class HSSpecValue
     {
         public string SpecName { get; set; }

@@ -73,7 +73,7 @@ namespace Headstart.API.Commands
             });
 
             var portalUserToken = await _portal.Login(seed.PortalUsername, seed.PortalPassword);
-            var marketplace = await GetOrCreateMarketplace(portalUserToken, seed, requestedEnv); 
+            var marketplace = await GetOrCreateMarketplace(portalUserToken, seed, requestedEnv);
             var marketplaceToken = await _portal.GetMarketplaceToken(marketplace.Id, portalUserToken);
 
             await CreateOrUpdateDefaultSellerUser(seed, marketplaceToken);

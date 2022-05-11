@@ -7,7 +7,7 @@ namespace ordercloud.integrations.library
     {
         public static bool IsNullOrZero(this decimal? value)
         {
-            return value == null || value == 0; 
+            return value == null || value == 0;
         }
     }
 }

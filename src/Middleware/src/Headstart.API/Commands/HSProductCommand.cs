@@ -207,7 +207,7 @@ namespace Headstart.API.Commands.Crud
 
 			// Create Product
 			var product = await _oc.Products.CreateAsync<HSProduct>(superProduct.Product, decodedToken.AccessToken);
-			
+
 			// Return the SuperProduct
 			return new SuperHSProduct
 			{
@@ -236,19 +236,19 @@ namespace Headstart.API.Commands.Crud
 						allVariants.AddRange((await _oc.Products.ListVariantsAsync(productID: product.ID, pageSize: 100, accessToken: token)).Items);
 					}
 				}
-			} 
+			}
 			catch (Exception ex)
             {
 				return;
             }
-			
+
 			foreach (Variant variant in superProduct.Variants)
             {
 				if (!allVariants.Any()) { return; }
 
 				List<Variant> duplicateSpecNames = allVariants.Where(currVariant => IsDifferentVariantWithSameName(variant, currVariant)).ToList();
 				if (duplicateSpecNames.Any())
-                {	
+                {
 					throw new Exception($"{duplicateSpecNames.First().ID} already exists on a variant. Please use unique names for SKUS and try again.");
                 }
             }
@@ -481,7 +481,7 @@ namespace Headstart.API.Commands.Crud
 
 		public async Task Delete(string id, string token)
 		{
-			
+
 			var product = await _oc.Products.GetAsync<HSProduct>(id);
 			var _specs = await _oc.Products.ListSpecsAsync<Spec>(id, accessToken: token);
 			var tasks = new List<Task>()

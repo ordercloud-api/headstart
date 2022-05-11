@@ -11,7 +11,7 @@ namespace ordercloud.integrations.easypost
 
         protected EasyPostShippingProfiles()
         {
-           
+
         }
 
         public virtual EasyPostShippingProfile FirstOrDefault(string id)
@@ -21,7 +21,7 @@ namespace ordercloud.integrations.easypost
         }
     }
 
-    
+
     public class EasyPostShippingProfile
     {
         public string ID { get; set; }

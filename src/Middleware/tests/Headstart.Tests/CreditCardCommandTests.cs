@@ -368,7 +368,7 @@ namespace Headstart.Tests
 			await _supportAlerts
 				.Received()
 				.VoidAuthorizationFailed(Arg.Any<HSPayment>(), transactionID, Arg.Any<HSOrder>(), Arg.Any<CreditCardVoidException>());
-				
+
 			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, orderID, paymentID, Arg.Any<PaymentTransaction>());
 		}
 		#endregion AuthorizePayment

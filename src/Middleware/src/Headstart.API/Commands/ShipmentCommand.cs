@@ -40,7 +40,7 @@ namespace Headstart.API.Commands
         public List<DocumentRowError> Invalid = new List<DocumentRowError>();
     }
 
-    
+
     public class BatchProcessSummary
     {
         public int TotalCount { get; set; }
@@ -50,7 +50,7 @@ namespace Headstart.API.Commands
 
     }
 
-    
+
     public class BatchProcessFailure
     {
         public Misc.Shipment Shipment { get; set; }
@@ -58,7 +58,7 @@ namespace Headstart.API.Commands
 
     }
 
-    
+
     public class BatchProcessResult
     {
         public BatchProcessSummary Meta { get; set; }
@@ -92,7 +92,7 @@ namespace Headstart.API.Commands
             string buyerOrderID = supplierOrderID.Split("-").First();
             string buyerID = "";
 
-            // in the platform, in order to make sure the order has the proper Order.Status, you must 
+            // in the platform, in order to make sure the order has the proper Order.Status, you must
             // create a shipment without a DateShipped and then patch the DateShipped after
             DateTimeOffset? dateShipped = superShipment.Shipment.DateShipped;
             superShipment.Shipment.DateShipped = null;
@@ -112,7 +112,7 @@ namespace Headstart.API.Commands
             HSShipment ocShipment = await _oc.Shipments.CreateAsync<HSShipment>(superShipment.Shipment, accessToken: decodedToken.AccessToken);
 
             // platform issue. Cant save new xp values onto shipment line item. Update order line item to have this value.
-            var shipmentItemsWithComment = superShipment.ShipmentItems.Where(s => s.xp?.Comment != null); 
+            var shipmentItemsWithComment = superShipment.ShipmentItems.Where(s => s.xp?.Comment != null);
             await Throttler.RunAsync(shipmentItemsWithComment, 100, 5, (shipmentItem) =>
             {
                 dynamic comments = new ExpandoObject();
@@ -345,7 +345,7 @@ namespace Headstart.API.Commands
                     LineItemID = lineItem.ID,
                     QuantityShipped = Convert.ToInt32(shipment.QuantityShipped),
                     UnitPrice = Convert.ToDecimal(shipment.Cost)
-                    
+
                 };
 
                 ocShipment = await GetShipmentByTrackingNumber(shipment, decodedToken?.AccessToken);

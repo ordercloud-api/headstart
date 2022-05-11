@@ -96,10 +96,10 @@ namespace ordercloud.integrations.library
             var bulkExecutor = await BuildClientAsync(collectionName);
 
             var partitionKeyProperty = GetPartitionKeyProp<T>();
-            
+
             var deleteOperations = toDelete.Select(doc => {
                 var partitionKeyValue = (string)typeof(T).GetProperty(partitionKeyProperty.Name).GetValue(doc, null);
-                    return new Tuple<string, string>(partitionKeyValue, doc.id); 
+                    return new Tuple<string, string>(partitionKeyValue, doc.id);
              }).ToList();
 
             BulkDeleteResponse bulkDeleteResponse = null;
@@ -133,7 +133,7 @@ namespace ordercloud.integrations.library
             int batchSize = 1000;
 
             var bulkExecutor = await BuildClientAsync(collectionName);
-            
+
             // Generate update items.
             var documents = await GetAllAsync<JObject>(collectionName);
 

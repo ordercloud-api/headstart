@@ -153,7 +153,7 @@ namespace Headstart.Common.Constants
         };
 
 
-        // these statuses can be set by either the supplier or the seller, but when this user modifies the 
+        // these statuses can be set by either the supplier or the seller, but when this user modifies the
         // line item status we do not want to notify themselves
         public static List<LineItemStatus> LineItemStatusChangesDontNotifySetter = new List<LineItemStatus>()
         {
@@ -164,7 +164,7 @@ namespace Headstart.Common.Constants
             LineItemStatus.ReturnDenied
         };
 
-        // defining seller and supplier together as the current logic is the 
+        // defining seller and supplier together as the current logic is the
         // seller should be able to do about anything a supplier can do
         public static List<LineItemStatus> ValidSellerOrSupplierLineItemStatuses = new List<LineItemStatus>()
         {

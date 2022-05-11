@@ -44,7 +44,7 @@ namespace Headstart.Common.Extensions
             var updatedEstimates = new List<HSShipEstimate>();
             var supplierIDs = orderWorksheet.LineItems.Select(li => li.SupplierID);
             var suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={string.Join("|", supplierIDs)}");
-            
+
             foreach (var shipEstimate in shipEstimates)
             {
                 var supplierID = orderWorksheet.LineItems.FirstOrDefault(li => li.ID == shipEstimate.ShipEstimateItems.FirstOrDefault()?.LineItemID)?.SupplierID;

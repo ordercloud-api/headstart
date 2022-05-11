@@ -57,7 +57,7 @@ namespace Headstart.Common.Models
     public enum RecordType
     {
         HydratedProduct, Product, PriceSchedule, Spec, SpecOption, SpecProductAssignment, ProductFacet,
-        Buyer, User, UserGroup, Address, CostCenter, UserGroupAssignment, AddressAssignment, 
+        Buyer, User, UserGroup, Address, CostCenter, UserGroupAssignment, AddressAssignment,
         CatalogAssignment, Catalog, Supplier, Order, TemplateProductFlat
     }
 
@@ -86,13 +86,13 @@ namespace Headstart.Common.Models
                 // but we want one in orchestration to handle caching
                 // in further retrospect I don't think we need to handle updating objects when only the ID is being changed
                 // maybe in the future a true business case will be necessary to do this
-                if ((wi.RecordType == RecordType.SpecProductAssignment || wi.RecordType == RecordType.UserGroupAssignment || wi.RecordType == RecordType.CatalogAssignment) 
+                if ((wi.RecordType == RecordType.SpecProductAssignment || wi.RecordType == RecordType.UserGroupAssignment || wi.RecordType == RecordType.CatalogAssignment)
                     && wi.Diff.Children().Count() == 1 && wi.Diff.SelectToken("ID").Path == "ID")
                     return Action.Ignore;
 
                 if (wi.Cache != null && wi.Diff != null)
                 {
-                    // cache exists, we want to force a PUT when xp has deleted properties because 
+                    // cache exists, we want to force a PUT when xp has deleted properties because
                     // it's the only way to delete the properties
                     // otherwise we want to PATCH the existing object
                     // TODO: figure this reference out

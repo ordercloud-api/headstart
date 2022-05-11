@@ -51,7 +51,7 @@ namespace Headstart.Jobs
             var lineItemsWithPurchaseOrders = await BuildLineItemsWithPurchaseOrders(orderID);
 
             var orderLineItemData = new HSOrderLineItemData()
-            { 
+            {
                 Order = orderWorksheet.Order,
                 LineItems = lineItems,
                 LineItemsWithMiscFields = lineItemsWithMiscFields,
@@ -63,7 +63,7 @@ namespace Headstart.Jobs
             var requestOptions = BuildQueryRequestOptions();
 
             var cosmosLineItemOrder = new LineItemDetailData()
-            { 
+            {
                 PartitionKey = "PartitionValue",
                 OrderID = orderID,
                 Data = orderLineItemData

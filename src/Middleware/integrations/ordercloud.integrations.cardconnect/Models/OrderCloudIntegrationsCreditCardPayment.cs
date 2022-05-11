@@ -10,7 +10,7 @@ namespace ordercloud.integrations.cardconnect
         [OrderCloud.SDK.Required]
         public string PaymentID { get; set; }
         public string CreditCardID { get; set; } // Use for saved Credit Cards
-        public OrderCloudIntegrationsCreditCardToken CreditCardDetails { get; set; }  // Use for one-time Credit Cards
+        public OrderCloudIntegrationsCreditCardToken CreditCardDetails { get; set; } // Use for one-time Credit Cards
         [OrderCloud.SDK.Required]
         [MinLength(3, ErrorMessage = "Invalid currency specified: Must be 3 digit code. Ex: USD or CAD")]
         [MaxLength(3, ErrorMessage = "Invalid currency specified: Must be 3 digit code. Ex: USD or CAD")]

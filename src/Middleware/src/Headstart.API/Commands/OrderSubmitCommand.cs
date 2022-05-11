@@ -58,13 +58,13 @@ namespace Headstart.API.Commands
         private async Task ValidateOrderAsync(HSOrderWorksheet worksheet, OrderCloudIntegrationsCreditCardPayment payment, string userToken)
         {
             Require.That(
-                !worksheet.Order.IsSubmitted, 
+                !worksheet.Order.IsSubmitted,
                 new ErrorCode("OrderSubmit.AlreadySubmitted", "Order has already been submitted"));
 
             var shipMethodsWithoutSelections = worksheet?.ShipEstimateResponse?.ShipEstimates?.Where(estimate => estimate.SelectedShipMethodID == null);
             Require.That(
                 worksheet?.ShipEstimateResponse != null &&
-                shipMethodsWithoutSelections.Count() == 0, 
+                shipMethodsWithoutSelections.Count() == 0,
                 new ErrorCode("OrderSubmit.MissingShippingSelections", "All shipments on an order must have a selection"), shipMethodsWithoutSelections);
 
             Require.That(
@@ -89,7 +89,7 @@ namespace Headstart.API.Commands
                     throw new CatalystBaseException("OrderSubmit.OrderCloudValidationError", "Failed ordercloud validation, see Data for details", errors);
                 }
             }
-            
+
         }
 
         private async Task<List<HSLineItem>> GetInactiveLineItems(HSOrderWorksheet worksheet, string userToken)
@@ -113,7 +113,7 @@ namespace Headstart.API.Commands
         {
             if (worksheet.Order.xp.IsResubmitting == true)
             {
-                // orders marked with IsResubmitting true are orders that were on hold and then declined 
+                // orders marked with IsResubmitting true are orders that were on hold and then declined
                 // so buyer needs to resubmit but we don't want to increment order again
                 return worksheet.Order.ID;
             }

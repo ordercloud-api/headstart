@@ -73,7 +73,7 @@ namespace Headstart.API.Commands
                 $"{worksheet.Order.ID}-{item}"));
 
             return await CreateOrderSubmitResponse(
-                new List<ProcessResult>() { await this.PerformZohoTasks(worksheet, supplierOrders) }, 
+                new List<ProcessResult>() { await this.PerformZohoTasks(worksheet, supplierOrders) },
                 new List<HSOrder> { worksheet.Order });
         }
 
@@ -114,7 +114,7 @@ namespace Headstart.API.Commands
             // step 1 failed. we don't want to attempt the integrations. return error for further action
             if (activities.Any(a => !a.Success))
                 return await CreateOrderSubmitResponse(results, new List<HSOrder> { orderWorksheet.Order });
-            
+
             // STEP 2 (integrations)
             var integrations = await HandleIntegrations(supplierOrders, buyerOrder);
             results.AddRange(integrations);
@@ -168,7 +168,7 @@ namespace Headstart.API.Commands
 
             return results;
         }
-        
+
         private async Task<OrderSubmitResponse> CreateOrderSubmitResponse(List<ProcessResult> processResults, List<HSOrder> ordersRelatingToProcess)
         {
             try
@@ -185,8 +185,8 @@ namespace Headstart.API.Commands
                         }
                     };
                 }
-                    
-                await UpdateOrderNeedingAttention(ordersRelatingToProcess, true); 
+
+                await UpdateOrderNeedingAttention(ordersRelatingToProcess, true);
                 return new OrderSubmitResponse()
                 {
                     HttpStatusCode = 500,
@@ -205,7 +205,7 @@ namespace Headstart.API.Commands
                 };
             }
         }
-        
+
         private async Task UpdateOrderNeedingAttention(IList<HSOrder> orders, bool isError)
         {
             var partialOrder = new PartialOrder() { xp = new { NeedsAttention = isError } };
@@ -331,7 +331,7 @@ namespace Headstart.API.Commands
 
             // need to get fresh order worksheet because this process has changed things about the worksheet
             var (getAction, hsOrderWorksheet) = await ProcessActivityCall(
-                ProcessType.Forwarding, 
+                ProcessType.Forwarding,
                 "Get Updated Order Worksheet",
                 _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderWorksheet.Order.ID));
             activities.Add(getAction);
@@ -339,7 +339,7 @@ namespace Headstart.API.Commands
             return await Task.FromResult(new Tuple<List<HSOrder>, HSOrderWorksheet, List<ProcessResultAction>>(hsOrders, hsOrderWorksheet, activities));
         }
 
-        public  async Task<List<HSOrder>> CreateOrderRelationshipsAndTransferXP(HSOrderWorksheet buyerOrder, List<Order> supplierOrders)
+        public async Task<List<HSOrder>> CreateOrderRelationshipsAndTransferXP(HSOrderWorksheet buyerOrder, List<Order> supplierOrders)
         {
             var payment = (await _oc.Payments.ListAsync(OrderDirection.Incoming, buyerOrder.Order.ID))?.Items?.FirstOrDefault();
             var updatedSupplierOrders = new List<HSOrder>();

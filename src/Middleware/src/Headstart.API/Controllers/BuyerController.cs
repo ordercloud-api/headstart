@@ -15,7 +15,7 @@ namespace Headstart.Common.Controllers
     [Route("buyer")]
     public class BuyerController : CatalystController
     {
-        
+
         private readonly IHSBuyerCommand _command;
         private readonly IOrderCloudClient _oc;
         public BuyerController(IHSBuyerCommand command, IOrderCloudClient oc)

@@ -53,7 +53,7 @@ namespace Headstart.Common.Services
 
     public class SendgridService : ISendgridService
     {
-        private readonly AppSettings _settings; 
+        private readonly AppSettings _settings;
         private readonly IOrderCloudClient _oc;
         private readonly ISendGridClient _client;
 
@@ -319,7 +319,7 @@ namespace Headstart.Common.Services
                 var sellerEmailList = await GetSellerEmails();
 
                 // send emails
-                
+
                 await SendSingleTemplateEmailMultipleRcpts(_settings?.SendgridSettings?.FromEmail, sellerEmailList, _settings?.SendgridSettings?.OrderSubmitTemplateID, sellerTemplateData);
                 await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, orderWorksheet.Order.FromUser.Email, _settings?.SendgridSettings?.OrderSubmitTemplateID, buyerTemplateData);
                 await SendSupplierOrderSubmitEmails(orderWorksheet);
@@ -387,7 +387,7 @@ namespace Headstart.Common.Services
                         supplierTos.Add(new EmailAddress(rcpt));
                     };
                     await SendSingleTemplateEmailMultipleRcpts(_settings?.SendgridSettings?.FromEmail, supplierTos, _settings?.SendgridSettings?.OrderSubmitTemplateID, supplierTemplateData);
-                }   
+                }
             }
         }
 

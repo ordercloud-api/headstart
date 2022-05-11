@@ -17,7 +17,7 @@ namespace Headstart.Jobs
         private readonly IOrderCloudClient _oc;
         private readonly ISalesOrderDetailDataRepo _salesOrderDetailDataRepo;
 
-        public ReceiveRecentSalesOrdersJob(IOrderCloudClient oc, ISalesOrderDetailDataRepo salesOrderDetailDataRepo) 
+        public ReceiveRecentSalesOrdersJob(IOrderCloudClient oc, ISalesOrderDetailDataRepo salesOrderDetailDataRepo)
         {
             _oc = oc;
             _salesOrderDetailDataRepo = salesOrderDetailDataRepo;

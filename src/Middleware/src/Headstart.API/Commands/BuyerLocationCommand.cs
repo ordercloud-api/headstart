@@ -203,10 +203,10 @@ namespace Headstart.API.Commands
         {
             var userGroupAssignments = await _oc.UserGroups.ListAllUserAssignmentsAsync(buyerID, userID: newUserID);
             await Throttler.RunAsync(userGroupAssignments, 100, 5, assignment =>
-                RemoveAndAddUserGroupAssignment(buyerID, newUserID, assignment?.UserGroupID)); 
+                RemoveAndAddUserGroupAssignment(buyerID, newUserID, assignment?.UserGroupID));
         }
 
-        // Temporary work around for a platform issue. When a new user is registered we need to 
+        // Temporary work around for a platform issue. When a new user is registered we need to
         // delete and reassign usergroup assignments for that user to view products
         // issue: https://four51.atlassian.net/browse/EX-2222
         private async Task RemoveAndAddUserGroupAssignment(string buyerID, string newUserID, string userGroupID)

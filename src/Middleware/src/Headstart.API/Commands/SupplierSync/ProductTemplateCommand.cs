@@ -166,7 +166,7 @@ namespace Headstart.API.Commands
     }
 
 
-    
+
     public class TemplateProductFlat : IHSObject
     {
         [OrderCloud.SDK.Required]

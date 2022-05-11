@@ -22,7 +22,7 @@ namespace Headstart.Common.Models
                 Customs_Certify = true,
                 Markup = 1.5M,
                 Default = true
-            });          
+            });
         }
 
         public override EasyPostShippingProfile FirstOrDefault(string id)

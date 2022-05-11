@@ -32,7 +32,7 @@ namespace Headstart.API.Commands
     public class LocationPermissionCommand : ILocationPermissionCommand
     {
         private readonly IOrderCloudClient _oc;
-        
+
         public LocationPermissionCommand(IOrderCloudClient oc)
         {
 			_oc = oc;
@@ -181,7 +181,7 @@ namespace Headstart.API.Commands
         {
             if (userGroupType == "UserPermissions")
             {
-                return await  _oc.SupplierUserGroups.ListAllUserAssignmentsAsync(
+                return await _oc.SupplierUserGroups.ListAllUserAssignmentsAsync(
                    parentID,
                    userID: userID,
                    accessToken: decodedToken.AccessToken);

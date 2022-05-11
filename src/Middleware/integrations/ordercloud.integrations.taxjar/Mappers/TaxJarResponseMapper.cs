@@ -19,7 +19,7 @@ namespace ordercloud.integrations.taxjar
 			return new OrderTaxCalculation()
 			{
 				OrderID = responses.First().request.TransactionId.Split('|')[1],
-				ExternalTransactionID = null, // There are multiple external transactionIDs 
+				ExternalTransactionID = null, // There are multiple external transactionIDs
 				TotalTax = responses.Select(r => r.response.AmountToCollect).Sum(),
 				LineItems = itemLines.Select(ToItemTaxDetails).ToList(),
 				OrderLevelTaxes = shippingLines.SelectMany(ToShippingTaxDetails).ToList()

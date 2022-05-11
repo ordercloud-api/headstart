@@ -120,8 +120,8 @@ namespace Headstart.API
             var assetConfig = new BlobServiceConfig()
             {
                 ConnectionString = _settings.StorageAccountSettings.ConnectionString,
-                Container = "assets", 
-                AccessType = BlobContainerPublicAccessType.Container 
+                Container = "assets",
+                AccessType = BlobContainerPublicAccessType.Container
             };
 
             var flurlClientFactory = new PerBaseUrlFlurlClientFactory();
@@ -153,7 +153,7 @@ namespace Headstart.API
                     break;
             }
             var smartyService = new SmartyStreetsService(_settings.SmartyStreetSettings, smartyStreetsUsClient);
-            
+
             services.AddMvc(o =>
              {
                  o.Filters.Add(new ordercloud.integrations.library.ValidateModelAttribute());

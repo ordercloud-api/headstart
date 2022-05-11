@@ -43,7 +43,7 @@ namespace Headstart.Common.Models
         Complete,
     }
 
-    
+
     public class RMALineItem
     {
         public string ID { get; set; }
@@ -72,7 +72,7 @@ namespace Headstart.Common.Models
         PartialQtyComplete
     }
 
-    
+
     public class RMALog
     {
         public RMAStatus Status { get; set; }

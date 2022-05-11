@@ -20,7 +20,7 @@ namespace Headstart.Jobs.Helpers
             var shipMethod = shipEstimate != null ? shipEstimate.ShipMethods.FirstOrDefault(method => method.ID == shipEstimate.SelectedShipMethodID) : null;
 
             var shippingTax = shipEstimate != null && orderWorksheet?.OrderCalculateResponse?.xp?.TaxCalculation?.OrderLevelTaxes?.FirstOrDefault(line => line.ShipEstimateID == shipEstimate.ID) != null
-                ? orderWorksheet.OrderCalculateResponse.xp.TaxCalculation.OrderLevelTaxes.FirstOrDefault(line => line.ShipEstimateID == shipEstimate.ID).Tax 
+                ? orderWorksheet.OrderCalculateResponse.xp.TaxCalculation.OrderLevelTaxes.FirstOrDefault(line => line.ShipEstimateID == shipEstimate.ID).Tax
                 : 0;
 
             var supplierName = ((IDictionary<string, object>)shipmentItem.Product.xp.Facets).ContainsKey("supplier") ? shipmentItem.Product.xp.Facets?.supplier[0] : null;

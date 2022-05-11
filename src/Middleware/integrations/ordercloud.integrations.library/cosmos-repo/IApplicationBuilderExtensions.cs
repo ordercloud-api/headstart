@@ -7,7 +7,7 @@ using System.Text;
 namespace ordercloud.integrations.library.cosmos_repo
 {
     /// <summary>
-    /// Extension methods for IApplicationBuilder 
+    /// Extension methods for IApplicationBuilder
     /// </summary>
     public static class IApplicationBuilderExtensions
     {

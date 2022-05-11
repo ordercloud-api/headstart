@@ -38,7 +38,7 @@ namespace Headstart.API.Commands.Zoho
             _oc = oc;
             _zoho.AuthenticateAsync();
         }
-        
+
         public async Task<ZohoOrganizationList> ListOrganizations()
         {
             await _zoho.AuthenticateAsync();
@@ -178,7 +178,7 @@ namespace Headstart.API.Commands.Zoho
             // TODO: accomodate possibility of more than 100 line items
             // Overview: variants will be saved in Zoho as the Item. If the variant is null save the Product as the Item
 
-            // gather IDs either at the product or variant level to search Zoho for existing Items 
+            // gather IDs either at the product or variant level to search Zoho for existing Items
             var uniqueLineItems = lineitems.DistinctBy(item => item.SKU()).ToList();
 
             var zItems = await Throttler.RunAsync(uniqueLineItems, delay, concurrent, id => _zoho.Items.ListAsync(new ZohoFilter()

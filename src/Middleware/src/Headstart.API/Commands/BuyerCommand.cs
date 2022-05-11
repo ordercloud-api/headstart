@@ -121,7 +121,7 @@ namespace Headstart.API.Commands
                 BuyerID = ocBuyerID
             }, token);
 
-            await ocClient.Incrementors.SaveAsync($"{ocBuyerID}-UserIncrementor", 
+            await ocClient.Incrementors.SaveAsync($"{ocBuyerID}-UserIncrementor",
                 new Incrementor { ID = $"{ocBuyerID}-UserIncrementor", LastNumber = 0, LeftPaddingCount = 5, Name = "User Incrementor" }, token);
             await ocClient.Incrementors.SaveAsync($"{ocBuyerID}-LocationIncrementor",
                 new Incrementor { ID = $"{ocBuyerID}-LocationIncrementor", LastNumber = 0, LeftPaddingCount = 4, Name = "Location Incrementor" }, token);

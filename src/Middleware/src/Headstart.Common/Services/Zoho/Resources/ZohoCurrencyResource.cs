@@ -34,20 +34,20 @@ namespace Headstart.Common.Services.Zoho.Resources
         }
 
         public Task<ZohoCurrency> GetAsync(string id) => GetAsync<ZohoCurrency>(id);
-        
+
         public Task<TZohoCurrency> GetAsync<TZohoCurrency>(string id) where TZohoCurrency : ZohoCurrency =>
             Get(id).GetJsonAsync<TZohoCurrency>();
-        
+
         public Task<ZohoCurrency> SaveAsync(ZohoCurrency currency) => SaveAsync<ZohoCurrency>(currency);
         public Task<TZohoCurrency> SaveAsync<TZohoCurrency>(TZohoCurrency currency) where TZohoCurrency : ZohoCurrency =>
-        
+
             Get(currency.currency_id).PutJsonAsync(currency).ReceiveJson<TZohoCurrency>();
-        
+
         public Task<ZohoCurrency> CreateAsync(ZohoCurrency contact) => CreateAsync<ZohoCurrency>(contact);
-        
+
         public Task<TZohoCurrency> CreateAsync<TZohoCurrency>(TZohoCurrency contact) where TZohoCurrency : ZohoCurrency =>
             Get().PostJsonAsync(contact).ReceiveJson<TZohoCurrency>();
-        
+
         public Task DeleteAsync(string id) => Get(id).DeleteAsync();
     }
 }

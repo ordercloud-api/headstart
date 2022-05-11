@@ -26,7 +26,7 @@ namespace ordercloud.integrations.vertex
 		private readonly VertexClient _client;
 		private readonly VertexConfig _config;
 
-		public VertexCommand(VertexConfig config) 
+		public VertexCommand(VertexConfig config)
 		{
 			_config = config;
 			_client = new VertexClient(config);

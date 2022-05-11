@@ -54,7 +54,7 @@ namespace ordercloud.integrations.exchangerates
             {
                 await Update();
                 return await GetCachedRates(rateArgs, currency);
-            }   
+            }
         }
 
         private async Task<ListPage<OrderCloudIntegrationsConversionRate>> GetCachedRates(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencySymbol currency)

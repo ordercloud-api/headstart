@@ -124,7 +124,7 @@ namespace Headstart.API.Commands
                     SubmittedOrderStatus = SubmittedOrderStatus.Completed
                 }
             };
-            // Need to complete sales and purchase order and patch the xp.SubmittedStatus of both orders            
+            // Need to complete sales and purchase order and patch the xp.SubmittedStatus of both orders
             var salesOrderID = orderID.Split('-')[0];
             var completeSalesOrder = _oc.Orders.CompleteAsync(OrderDirection.Incoming, salesOrderID);
             var patchSalesOrder = _oc.Orders.PatchAsync<HSOrder>(OrderDirection.Incoming, salesOrderID, orderPatch);
@@ -139,7 +139,7 @@ namespace Headstart.API.Commands
 
             return orderID == salesOrderID ? patchedSalesOrder : patchedPurchaseOrder;
         }
-       
+
         public async Task PatchOrderRequiresApprovalStatus(string orderID)
         {
                 await PatchOrderStatus(orderID, ShippingStatus.Processing, ClaimStatus.NoClaim);
@@ -242,22 +242,22 @@ namespace Headstart.API.Commands
         {
             /* ensures user has access to order through at least 1 of 3 methods
              * 1) user submitted the order
-             * 2) user has access to all orders from the location of the billingAddressID 
-             * 3) the order is awaiting approval and the user is in the approving group 
-             */ 
+             * 2) user has access to all orders from the location of the billingAddressID
+             * 3) the order is awaiting approval and the user is in the approving group
+             */
 
             var isOrderSubmitter = order.FromUser.Username == decodedToken.Username;
             if (isOrderSubmitter)
             {
                 return;
             }
-            
+
             var isUserInLocationOrderAccessGroup = await _locationPermissionCommand.IsUserInAccessGroup(order.BillingAddressID, UserGroupSuffix.ViewAllOrders.ToString(), decodedToken);
             if (isUserInLocationOrderAccessGroup)
             {
                 return;
-            } 
-            
+            }
+
             if (order.Status == OrderStatus.AwaitingApproval)
             {
                 // logic assumes there is only one approving group per location

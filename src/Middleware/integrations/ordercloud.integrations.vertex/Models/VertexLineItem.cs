@@ -33,7 +33,7 @@ namespace ordercloud.integrations.vertex
 	{
 		public string productClass { get; set; }
 		public string value { get; set; }
-	} 
+	}
 
 	public enum VertexTransactionType
 	{

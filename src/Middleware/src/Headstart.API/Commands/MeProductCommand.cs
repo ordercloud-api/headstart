@@ -30,7 +30,7 @@ namespace Headstart.API.Commands
 		private readonly AppSettings _settings;
 
 		public MeProductCommand(
-			IOrderCloudClient elevatedOc, 
+			IOrderCloudClient elevatedOc,
 			IHSBuyerCommand hsBuyerCommand,
 			ISendgridService sendgridService,
 			ISimpleCache cache,
@@ -49,7 +49,7 @@ namespace Headstart.API.Commands
 			var _product = _oc.Me.GetProductAsync<HSMeProduct>(id, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: decodedToken.AccessToken);
 			var _specs = _oc.Me.ListSpecsAsync(id, null, null, decodedToken.AccessToken);
 			var _variants = _oc.Products.ListVariantsAsync<HSVariant>(id, null, null, null, 1, 100, null);
-			var unconvertedSuperHsProduct = new SuperHSMeProduct 
+			var unconvertedSuperHsProduct = new SuperHSMeProduct
 			{
 				Product = await _product,
 				PriceSchedule = (await _product).PriceSchedule,
@@ -70,7 +70,7 @@ namespace Headstart.API.Commands
 			var markedupProduct = ApplyBuyerProductPricing(superHsProduct.Product, defaultMarkupMultiplier, exchangeRates);
 			var productCurrency = superHsProduct.Product.xp.Currency ?? CurrencySymbol.USD;
 			var markedupSpecs = ApplySpecMarkups(superHsProduct.Specs.ToList(), productCurrency, exchangeRates);
-		
+
 			superHsProduct.Product = markedupProduct;
 			superHsProduct.Specs = markedupSpecs;
 			return superHsProduct;
@@ -128,12 +128,12 @@ namespace Headstart.API.Commands
 
 		private HSMeProduct ApplyBuyerProductPricing(HSMeProduct product, decimal defaultMarkupMultiplier, List<OrderCloudIntegrationsConversionRate> exchangeRates)
 		{
-			
+
 			if (product.PriceSchedule != null)
             {
-				/* if the price schedule Id matches the product ID we 
+				/* if the price schedule Id matches the product ID we
 				 * we mark up the produc
-				 * if they dont match we just convert for currecny as the 
+				 * if they dont match we just convert for currecny as the
 				 * seller has set custom pricing */
 				var shouldMarkupProduct = product.PriceSchedule.ID == product.ID;
 				if (shouldMarkupProduct)

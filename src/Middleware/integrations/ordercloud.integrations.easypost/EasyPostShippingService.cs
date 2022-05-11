@@ -77,7 +77,7 @@ namespace ordercloud.integrations.easypost
                 var response = await Throttler.RunAsync(shipment, 200, 10, PostShipment);
 				easyPostResponses.Add(response.ToArray());
             }
-            
+
 			var shipEstimateResponse = new ShipEstimateResponse
 			{
 				ShipEstimates = groupedLineItems.Select((lineItems, index) =>
@@ -94,10 +94,10 @@ namespace ordercloud.integrations.easypost
 						ID = easyPostResponses[index][0].id,
 						ShipMethods = shipMethods, // This will get filtered down based on carrierAccounts
 						ShipEstimateItems = lineItems.Select(li => new ShipEstimateItem() { LineItemID = li.ID, Quantity = li.Quantity }).ToList(),
-						xp = { 
+						xp = {
 							AllShipMethods = shipMethods, // This is being saved so we have all data to compare rates across carrierAccounts
 							SupplierID = firstLi.SupplierID, // This will help with forwarding the supplier order
-							ShipFromAddressID = firstLi.ShipFromAddressID  // This will help with forwarding the supplier order
+							ShipFromAddressID = firstLi.ShipFromAddressID // This will help with forwarding the supplier order
 						}
 					};
 				}).ToList(),
@@ -123,7 +123,7 @@ namespace ordercloud.integrations.easypost
 				xp =
                 {
 					SupplierID = firstLi.SupplierID, // This will help with forwarding the supplier order
-					ShipFromAddressID = firstLi.ShipFromAddressID  // This will help with forwarding the supplier order
+					ShipFromAddressID = firstLi.ShipFromAddressID // This will help with forwarding the supplier order
                 }
 			};
         }
