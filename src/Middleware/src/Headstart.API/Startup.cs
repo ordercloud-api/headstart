@@ -38,7 +38,7 @@ using ordercloud.integrations.cardconnect;
 using Microsoft.WindowsAzure.Storage.Blob;
 using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.smartystreets;
-using Headstart.API.Commands.EnvironmentSeed;
+using Headstart.API.Commands;
 using ordercloud.integrations.library.helpers;
 using Microsoft.Extensions.DependencyInjection;
 using ordercloud.integrations.library.intefaces;
@@ -46,6 +46,7 @@ using ordercloud.integrations.library.cosmos_repo;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using ITaxCalculator = ordercloud.integrations.library.ITaxCalculator;
 using ITaxCodesProvider = ordercloud.integrations.library.intefaces.ITaxCodesProvider;
+using Headstart.API.Commands.SupplierSync;
 
 namespace Headstart.API
 {
@@ -71,7 +72,7 @@ namespace Headstart.API
 		/// <param name="services"></param>
 		public void ConfigureServices(IServiceCollection services)
 		{
-			var clientIds = _settings.OrderCloudSettings.ClientIDsWithAPIAccess.Split(",");
+			var clientIDs = _settings.OrderCloudSettings.ClientIDsWithAPIAccess.Split(",");
 			var cosmosConfig = new CosmosConfig(
 				_settings.CosmosSettings.DatabaseName,
 				_settings.CosmosSettings.EndpointUri,
@@ -82,43 +83,43 @@ namespace Headstart.API
 			{
 				new ContainerInfo()
 				{
-					Name = @"salesorderdetail",
-					PartitionKey = $@"/PartitionKey"
+					Name = "salesorderdetail",
+					PartitionKey = "/PartitionKey"
 				},
 				new ContainerInfo()
 				{
-					Name = @"purchaseorderdetail",
-					PartitionKey = @"/PartitionKey"
+					Name = "purchaseorderdetail",
+					PartitionKey = "/PartitionKey"
 				},
 				new ContainerInfo()
 				{
-					Name = @"lineitemdetail",
-					PartitionKey = @"/PartitionKey"
+					Name = "lineitemdetail",
+					PartitionKey = "/PartitionKey"
 				},
 				new ContainerInfo()
 				{
-					Name = @"rmas",
-					PartitionKey = $@"/PartitionKey"
+					Name = "rmas",
+					PartitionKey = "/PartitionKey"
 				},
 				new ContainerInfo()
 				{
-					Name = @"shipmentdetail",
-					PartitionKey = $@"/PartitionKey"
+					Name = "shipmentdetail",
+					PartitionKey = "/PartitionKey"
 				},
 				new ContainerInfo()
 				{
-					Name = @"productdetail",
-					PartitionKey = @"/PartitionKey"
+					Name = "productdetail",
+					PartitionKey = "/PartitionKey"
 				}
 			};
 
 			var avalaraConfig = new AvalaraConfig()
 			{
 				BaseApiUrl = _settings.AvalaraSettings.BaseApiUrl,
-				AccountID = _settings.AvalaraSettings.AccountId,
+				AccountID = _settings.AvalaraSettings.AccountID,
 				LicenseKey = _settings.AvalaraSettings.LicenseKey,
 				CompanyCode = _settings.AvalaraSettings.CompanyCode,
-				CompanyID = _settings.AvalaraSettings.CompanyId
+				CompanyID = _settings.AvalaraSettings.CompanyID
 			};
 
 			var currencyConfig = new BlobServiceConfig()
@@ -129,7 +130,7 @@ namespace Headstart.API
 			var assetConfig = new BlobServiceConfig()
 			{
 				ConnectionString = _settings.StorageAccountSettings.ConnectionString,
-				Container = $@"assets", 
+				Container = "assets", 
 				AccessType = BlobContainerPublicAccessType.Container 
 			};
 
@@ -139,7 +140,7 @@ namespace Headstart.API
 			{
 				ApiUrl = _settings.OrderCloudSettings.ApiUrl,
 				AuthUrl = _settings.OrderCloudSettings.ApiUrl,
-				ClientId = _settings.OrderCloudSettings.MiddlewareClientId,
+				ClientId = _settings.OrderCloudSettings.MiddlewareClientID,
 				ClientSecret = _settings.OrderCloudSettings.MiddlewareClientSecret,
 				Roles = new[] {ApiRole.FullAccess}
 			});
@@ -161,43 +162,48 @@ namespace Headstart.API
 				default:
 					break;
 			}
+			var smartyService = new SmartyStreetsService(_settings.SmartyStreetSettings, smartyStreetsUsClient);
             
 			services.AddMvc(o =>
-			{
-				o.Filters.Add(new ordercloud.integrations.library.ValidateModelAttribute());
-				o.EnableEndpointRouting = false;
-			}).ConfigureApiBehaviorOptions(o => o.SuppressModelStateInvalidFilter = true).SetCompatibilityVersion(CompatibilityVersion.Version_3_0).AddNewtonsoftJson(options =>
-			{
-				options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
-				options.SerializerSettings.Converters.Add(new StringEnumConverter());
-			});
+				{
+					o.Filters.Add(new ordercloud.integrations.library.ValidateModelAttribute());
+					o.EnableEndpointRouting = false;
+				})
+				.ConfigureApiBehaviorOptions(o => o.SuppressModelStateInvalidFilter = true)
+				.SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+				.AddNewtonsoftJson(options =>
+				{
+					options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+					options.SerializerSettings.Converters.Add(new StringEnumConverter());
+				});
 
 			services
-				.AddCors(o => o.AddPolicy($@"integrationcors", builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }))
+				.AddCors(o => o.AddPolicy("integrationcors", builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }))
 				.AddSingleton<ISimpleCache, LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
-				.AddOrderCloudUserAuth(opts => opts.AddValidClientIDs(clientIds))
+				.AddOrderCloudUserAuth(opts => opts.AddValidClientIDs(clientIDs))
 				.AddOrderCloudWebhookAuth(opts => opts.HashKey = _settings.OrderCloudSettings.WebhookHashKey)
 				.InjectCosmosStore<LogQuery, OrchestrationLog>(cosmosConfig)
 				.InjectCosmosStore<ReportTemplateQuery, ReportTemplate>(cosmosConfig)
 				.AddCosmosDb(_settings.CosmosSettings.EndpointUri, _settings.CosmosSettings.PrimaryKey, _settings.CosmosSettings.DatabaseName, cosmosContainers)
 				.Inject<IPortalService>()
-				.Inject<ISmartyStreetsCommand>()
+				.AddSingleton<ISmartyStreetsCommand>(x => new SmartyStreetsCommand(_settings.SmartyStreetSettings, orderCloudClient, smartyService))
 				.Inject<ICheckoutIntegrationCommand>()
 				.Inject<IShipmentCommand>()
 				.Inject<IOrderCommand>()
 				.Inject<IPaymentCommand>()
 				.Inject<IOrderSubmitCommand>()
 				.Inject<IEnvironmentSeedCommand>()
-				.Inject<IHsProductCommand>()
+				.Inject<IHSProductCommand>()
 				.Inject<ILineItemCommand>()
 				.Inject<IMeProductCommand>()
 				.Inject<IDiscountDistributionService>()
-				.Inject<IHsCatalogCommand>()
+				.Inject<IHSCatalogCommand>()
 				.Inject<ISendgridService>()
-				.Inject<IHsSupplierCommand>()
+				.Inject<IHSSupplierCommand>()
 				.Inject<ICreditCardCommand>()
 				.Inject<ISupportAlertService>()
 				.Inject<ISupplierApiClientHelper>()
+				.Inject<ISupplierSyncCommand>()
 				.AddSingleton<ISendGridClient>(x => new SendGridClient(_settings.SendgridSettings.ApiKey))
 				.AddSingleton<IFlurlClientFactory>(x => flurlClientFactory)
 				.AddSingleton<DownloadReportCommand>()
@@ -206,11 +212,11 @@ namespace Headstart.API
 				.AddSingleton<IZohoCommand>(z => new ZohoCommand(new ZohoClient(
 						new ZohoClientConfig()
 						{
-							ApiUrl = @"https://books.zoho.com/api/v3",
+							ApiUrl = "https://books.zoho.com/api/v3",
 							AccessToken = _settings.ZohoSettings.AccessToken,
 							ClientId = _settings.ZohoSettings.ClientId,
 							ClientSecret = _settings.ZohoSettings.ClientSecret,
-							OrganizationId = _settings.ZohoSettings.OrgId
+							OrganizationID = _settings.ZohoSettings.OrgID
 						}, flurlClientFactory, _settings),
 					orderCloudClient, _settings))
 				.AddSingleton<IOrderCloudIntegrationsExchangeRatesClient, OrderCloudIntegrationsExchangeRatesClient>()
@@ -236,26 +242,27 @@ namespace Headstart.API
 						_ => avalaraCommand // Avalara is default
 					};
 				})
-				.AddSingleton<IEasyPostShippingService>(x => new EasyPostShippingService(new EasyPostConfig() {APIKey = _settings.EasyPostSettings.ApiKey}))
+				.AddSingleton<IEasyPostShippingService>(x => new EasyPostShippingService(new EasyPostConfig() {APIKey = _settings.EasyPostSettings.APIKey}))
 				.AddSingleton<ISmartyStreetsService>(x => new SmartyStreetsService(_settings.SmartyStreetSettings, smartyStreetsUsClient))
 				.AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(_settings.CardConnectSettings, _settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))
 				.AddSingleton<IOrderCloudClient>(provider => orderCloudClient)
 				.AddSwaggerGen(c =>
 				{
-					c.SwaggerDoc($@"v1", new OpenApiInfo {Title = $@"Headstart Middleware API Documentation", Version = $@"v1"});
+					c.SwaggerDoc("v1", new OpenApiInfo {Title = "Headstart Middleware API Documentation", Version = "v1"});
 					c.SchemaFilter<SwaggerExcludeFilter>();
 
-					var xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml", SearchOption.TopDirectoryOnly).ToList();
+					List<string> xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml", SearchOption.TopDirectoryOnly).ToList();
 					xmlFiles.ForEach(xmlFile => c.IncludeXmlComments(xmlFile));
 				})
 				.AddSwaggerGenNewtonsoftSupport();
 
 			var serviceProvider = services.BuildServiceProvider();
-			services.AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions
-			{
-				EnableAdaptiveSampling = false, // retain all data
-				InstrumentationKey = _settings.ApplicationInsightsSettings.InstrumentationKey
-			});
+			services
+				.AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions
+				{
+					EnableAdaptiveSampling = false, // retain all data
+					InstrumentationKey = _settings.ApplicationInsightsSettings.InstrumentationKey
+				});
 			ServicePointManager.DefaultConnectionLimit = int.MaxValue;
 			ConfigureFlurl();
 		}
@@ -272,13 +279,13 @@ namespace Headstart.API
 			app.UseCatalystExceptionHandler();
 			app.UseHttpsRedirection();
 			app.UseRouting();
-			app.UseCors(@"integrationcors");
+			app.UseCors("integrationcors");
 			app.UseAuthorization();
 			app.UseEndpoints(endpoints => endpoints.MapControllers());
 			app.UseSwagger();
 			app.UseSwaggerUI(c =>
 			{
-				c.SwaggerEndpoint($@"/swagger/v1/swagger.json", $@"Headstart API v1");
+				c.SwaggerEndpoint($"/swagger/v1/swagger.json", $"Headstart API v1");
 				c.RoutePrefix = string.Empty;
 			});
 		}
@@ -292,7 +299,11 @@ namespace Headstart.API
 			// Will retry up to 3 times using exponential backoff and jitter, a mean of 3 seconds wait time in between retries
 			// https://github.com/App-vNext/Polly/wiki/Retry-with-jitter#more-complex-jitter
 			var delay = Backoff.DecorrelatedJitterBackoffV2(medianFirstRetryDelay: TimeSpan.FromSeconds(3), retryCount: 3);
-			var policy = HttpPolicyExtensions.HandleTransientHttpError().OrResult(response => response.StatusCode == HttpStatusCode.TooManyRequests).WaitAndRetryAsync(delay);
+			var policy = HttpPolicyExtensions
+                            .HandleTransientHttpError()
+                            .OrResult(response => response.StatusCode == HttpStatusCode.TooManyRequests)
+                            .WaitAndRetryAsync(delay);
+			
 			// Flurl setting for JSON serialization
 			var jsonSettings = new JsonSerializerSettings();
 			jsonSettings.Converters.Add(new StringEnumConverter());

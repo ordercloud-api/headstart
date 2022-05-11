@@ -1,24 +1,24 @@
-using OrderCloud.SDK;
-using OrderCloud.Catalyst;
 using Headstart.API.Commands;
-using System.Threading.Tasks;
+using Headstart.Models;
 using Microsoft.AspNetCore.Mvc;
-using Headstart.Common.Models.Headstart;
+using OrderCloud.Catalyst;
+using OrderCloud.SDK;
+using System.Threading.Tasks;
 
 namespace Headstart.API.Controllers
 {
 	[Route("buyers")]
 	public class CatalogController : CatalystController
 	{
-		private readonly IHsCatalogCommand _hsCatalogCommand;
+		private readonly IHSCatalogCommand _command;
 
 		/// <summary>
 		/// The IOC based constructor method for the CatalogController class object with Dependency Injection
 		/// </summary>
 		/// <param name="command"></param>
-		public CatalogController(IHsCatalogCommand command)
+		public CatalogController(IHSCatalogCommand command)
 		{
-			_hsCatalogCommand = command;
+			_command = command;
 		}
 
 		/// <summary>
@@ -26,11 +26,11 @@ namespace Headstart.API.Controllers
 		/// </summary>
 		/// <param name="args"></param>
 		/// <param name="buyerId"></param>
-		/// <returns>The ListPage of HsCatalog objects by buyerId</returns>
+		/// <returns>The ListPage of HSCatalog objects by buyerId</returns>
 		[HttpGet, Route("{buyerId}/catalogs"), OrderCloudUserAuth(ApiRole.ProductAdmin, ApiRole.ProductReader)]
-		public async Task<ListPage<HsCatalog>> List(ListArgs<HsCatalog> args, string buyerId)
+		public async Task<ListPage<HSCatalog>> List(ListArgs<HSCatalog> args, string buyerId)
 		{
-			return await _hsCatalogCommand.List(buyerId, args, UserContext);
+			return await _command.List(buyerId, args, UserContext);
 		}
 
 		/// <summary>
@@ -38,11 +38,11 @@ namespace Headstart.API.Controllers
 		/// </summary>
 		/// <param name="buyerId"></param>
 		/// <param name="catalogId"></param>
-		/// <returns>The single catalog by buyerId</returns>
+		/// <returns>The single HSCatalog by buyerId</returns>
 		[HttpGet, Route("{buyerId}/catalogs/{catalogId}"), OrderCloudUserAuth(ApiRole.ProductAdmin, ApiRole.ProductReader)]
-		public async Task<HsCatalog> Get(string buyerId, string catalogId)
+		public async Task<HSCatalog> Get(string buyerId, string catalogId)
 		{
-			return await _hsCatalogCommand.Get(buyerId, catalogId, UserContext);
+			return await _command.Get(buyerId, catalogId, UserContext);
 		}
 
 		/// <summary>
@@ -50,11 +50,11 @@ namespace Headstart.API.Controllers
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <param name="buyerId"></param>
-		/// <returns>The newly created Catalog by buyerId</returns>
+		/// <returns>The newly created HSCatalog by buyerId</returns>
 		[HttpPost, Route("{buyerId}/catalogs"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
-		public async Task<HsCatalog> Post([FromBody] HsCatalog obj, string buyerId)
+		public async Task<HSCatalog> Post([FromBody] HSCatalog obj, string buyerId)
 		{
-			return await _hsCatalogCommand.Post(buyerId, obj, UserContext);
+			return await _command.Post(buyerId, obj, UserContext);
 		}
 
 		/// <summary>
@@ -63,11 +63,11 @@ namespace Headstart.API.Controllers
 		/// <param name="buyerId"></param>
 		/// <param name="catalogId"></param>
 		/// <param name="locationId"></param>
-		/// <returns>The ListPage of Catalog location assignment objects</returns>
+		/// <returns>The ListPage of HSCatalogAssignment objects</returns>
 		[HttpGet, Route("{buyerId}/catalogs/assignments"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
-		public async Task<ListPage<HsCatalogAssignment>> GetAssignments(string buyerId, [FromQuery(Name = "catalogId")] string catalogId = "", [FromQuery(Name = "locationId")] string locationId = "")
+		public async Task<ListPage<HSCatalogAssignment>> GetAssignments(string buyerId, [FromQuery(Name = "catalogId")] string catalogId = "", [FromQuery(Name = "locationId")] string locationId = "")
 		{
-			return await _hsCatalogCommand.GetAssignments(buyerId, locationId, UserContext);
+			return await _command.GetAssignments(buyerId, locationId, UserContext);
 		}
 
 		/// <summary>
@@ -78,9 +78,9 @@ namespace Headstart.API.Controllers
 		/// <param name="assignmentRequest"></param>
 		/// <returns></returns>
 		[HttpPost, Route("{buyerId}/{locationId}/catalogs/assignments"), OrderCloudUserAuth(ApiRole.UserGroupAdmin)]
-		public async Task SetAssignments(string buyerId, string locationId, [FromBody] HsCatalogAssignmentRequest assignmentRequest)
+		public async Task SetAssignments(string buyerId, string locationId, [FromBody] HSCatalogAssignmentRequest assignmentRequest)
 		{
-			await _hsCatalogCommand.SetAssignments(buyerId, locationId, assignmentRequest.CatalogIDs, UserContext.AccessToken);
+			await _command.SetAssignments(buyerId, locationId, assignmentRequest.CatalogIDs, UserContext.AccessToken);
 		}
 
 		/// <summary>
@@ -89,11 +89,11 @@ namespace Headstart.API.Controllers
 		/// <param name="obj"></param>
 		/// <param name="buyerId"></param>
 		/// <param name="catalogId"></param>
-		/// <returns>The catalog data by buyerId</returns>
+		/// <returns>The HSCatalog data by buyerId</returns>
 		[HttpPut, Route("{buyerId}/catalogs/{catalogId}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
-		public async Task<HsCatalog> Put([FromBody] HsCatalog obj, string buyerId, string catalogId)
+		public async Task<HSCatalog> Put([FromBody] HSCatalog obj, string buyerId, string catalogId)
 		{
-			return await _hsCatalogCommand.Put(buyerId, catalogId, obj, UserContext);
+			return await _command.Put(buyerId, catalogId, obj, UserContext);
 		}
 
 		/// <summary>
@@ -105,7 +105,7 @@ namespace Headstart.API.Controllers
 		[HttpDelete, Route("{buyerId}/catalogs/{catalogId}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
 		public async Task Delete(string buyerId, string catalogId)
 		{
-			await _hsCatalogCommand.Delete(buyerId, catalogId, UserContext);
+			await _command.Delete(buyerId, catalogId, UserContext);
 		}
 
 		/// <summary>
@@ -117,7 +117,7 @@ namespace Headstart.API.Controllers
 		[HttpPost, Route("{buyerId}/catalogs/user/{userId}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
 		public async Task SyncOnRemoveFromLocation(string buyerId, string userId)
 		{
-			await _hsCatalogCommand.SyncUserCatalogAssignments(buyerId, userId);
+			await _command.SyncUserCatalogAssignments(buyerId, userId);
 		}
 	}
 }

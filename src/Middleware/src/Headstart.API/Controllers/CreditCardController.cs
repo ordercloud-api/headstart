@@ -32,13 +32,13 @@ namespace Headstart.API.Controllers
 		public async Task<Payment> Post([FromBody] OrderCloudIntegrationsCreditCardPayment payment)
 		{
 			var merchantId = string.Empty;
-			if (payment.Currency != "USD")
+			if (payment.Currency == "USD")
 			{
-				merchantId = payment.Currency != "CAD" ? _settings.CardConnectSettings.EurMerchantID : _settings.CardConnectSettings.CadMerchantID;
+				merchantId = _settings.CardConnectSettings.UsdMerchantID;				
 			}
 			else
 			{
-				merchantId = _settings.CardConnectSettings.UsdMerchantID;
+				merchantId = payment.Currency == "CAD" ? _settings.CardConnectSettings.CadMerchantID : _settings.CardConnectSettings.EurMerchantID;
 			}
 			return await _card.AuthorizePayment(payment, UserContext.AccessToken, merchantId);
 		}

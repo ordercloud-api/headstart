@@ -1,19 +1,17 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System.Collections.Generic;
-using Headstart.Common.Models.Misc;
+using ordercloud.integrations.library;
 
-namespace Headstart.Common.Models.Headstart
+namespace Headstart.Models.Misc
 {
-	public class HsUserType
+    
+	public class HSUserType
 	{
-		public string UserGroupIdSuffix { get; set; } = string.Empty;
-
-		public string UserGroupName { get; set; } = string.Empty;
-
+		public string UserGroupIDSuffix { get; set; }
+		public string UserGroupName { get; set; }
 		public UserGroupType UserGroupType { get; set; }
-
-		public List<CustomRole> CustomRoles { get; set; } = new List<CustomRole>();
+		public List<CustomRole> CustomRoles { get; set; }
 	}
 
 	[JsonConverter(typeof(StringEnumConverter))]

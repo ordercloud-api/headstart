@@ -1,17 +1,17 @@
-﻿using System;
-using System.Linq;
+﻿using Headstart.Models;
+using Headstart.Models.Extended;
+using Headstart.Models.Headstart;
 using OrderCloud.SDK;
-using Headstart.Common.Models;
+using System;
 using System.Collections.Generic;
-using Headstart.Common.Models.Headstart;
-using Headstart.Common.Models.Headstart.Extended;
+using System.Linq;
 using static Headstart.Common.Models.SendGridModels;
 
 namespace Headstart.Common.Mappers
 {
 	public static class SendgridMappers
 	{
-		public static QuoteOrderTemplateData GetQuoteOrderTemplateData(HsOrder order, IList<HsLineItem> lineItems)
+		public static QuoteOrderTemplateData GetQuoteOrderTemplateData(HSOrder order, IList<HSLineItem> lineItems)
 		{
 			return new QuoteOrderTemplateData()
 			{
@@ -20,46 +20,47 @@ namespace Headstart.Common.Mappers
 				Phone = order.xp?.QuoteOrderInfo?.Phone,
 				Email = order.xp?.QuoteOrderInfo?.Email,
 				Location = order.xp?.QuoteOrderInfo?.BuyerLocation,
-				ProductId = lineItems.FirstOrDefault()?.Product.ID,
-				ProductName = lineItems.FirstOrDefault()?.Product.Name,
-				UnitPrice = lineItems.FirstOrDefault()?.UnitPrice,
+				ProductID = lineItems.FirstOrDefault().Product.ID,
+				ProductName = lineItems.FirstOrDefault().Product.Name,
+				UnitPrice = lineItems.FirstOrDefault().UnitPrice,
 				Currency = order.xp?.Currency.ToString(),
 				Order = order,
 			};
 		}
 
-		public static List<string> GetSupplierInfo(ListPage<HsLineItem> lineItems)
+		public static List<string> GetSupplierInfo(ListPage<HSLineItem> lineItems)
 		{
-			var supplierList = lineItems?.Items?.Select(item => item.SupplierID).Distinct().ToList();
+			var supplierList = lineItems?.Items?.Select(item => item.SupplierID)
+				.Distinct()
+				.ToList();
 			return supplierList;
 		}
 
-		public static OrderTemplateData GetOrderTemplateData(HsOrder order, IList<HsLineItem> lineItems)
+		public static OrderTemplateData GetOrderTemplateData(HSOrder order, IList<HSLineItem> lineItems)
 		{
-			IEnumerable<LineItemProductData> productsList = lineItems?.Select(lineItem =>
+			var productsList = lineItems?.Select(lineItem =>
 			{
 				return new LineItemProductData()
 				{
 					ProductName = lineItem?.Product?.Name,
-					ImageUrl = lineItem?.xp?.ImageUrl,
-					ProductId = lineItem?.ProductID,
+					ImageURL = lineItem?.xp?.ImageUrl,
+					ProductID = lineItem?.ProductID,
 					Quantity = lineItem?.Quantity,
 					LineTotal = lineItem?.LineTotal,
 					SpecCombo = GetSpecCombo(lineItem?.Specs)
 				};
 			});
-
 			var shippingAddress = GetShippingAddress(lineItems);
 			var currencyString = order.xp?.Currency?.ToString();
 			return new OrderTemplateData()
 			{
 				FirstName = order?.FromUser?.FirstName,
 				LastName = order?.FromUser?.LastName,
-				OrderId = order?.ID,
+				OrderID = order?.ID,
 				DateSubmitted = order?.DateSubmitted?.ToString(),
-				ShippingAddressId = order?.ShippingAddressID,
+				ShippingAddressID = order?.ShippingAddressID,
 				ShippingAddress = shippingAddress,
-				BillingAddressId = order?.BillingAddressID,
+				BillingAddressID = order?.BillingAddressID,
 				BillingAddress = new Address()
 				{
 					Street1 = order?.BillingAddress?.Street1,
@@ -80,13 +81,13 @@ namespace Headstart.Common.Mappers
 			};
 		}
 
-		private static string GetSpecCombo(IList<LineItemSpec> specs)
+		public static string GetSpecCombo(IList<LineItemSpec> specs)
 		{
 			if (specs == null || !specs.Any())
 			{
 				return null;
 			}
-			var specCombo = $@"({string.Join(", ", specs.Select(spec => spec.Value).ToArray())})";
+			string specCombo = "(" + string.Join(", ", specs.Select(spec => spec.Value).ToArray()) + ")";
 			return specCombo;
 		}
 
@@ -94,27 +95,28 @@ namespace Headstart.Common.Mappers
 		{
 			switch (subject.ToLower())
 			{
-				case @"general":
+				case "general":
 					return settings.SendgridSettings.SupportCaseEmail;
-				case @"report an error/bug":
+				case "report an error/bug":
 					return settings.SendgridSettings.SupportCaseEmail;
-				case @"payment, billing, or refunds":
+				case "payment, billing, or refunds":
 					return settings.SendgridSettings.BillingEmail;
 				default:
 					return settings.SendgridSettings.SupportCaseEmail;
 			}
 		}
 
-		public static List<object> MapLineItemsToProducts(ListPage<HsLineItem> lineItems, string actionType)
+		public static List<object> MapLineItemsToProducts(ListPage<HSLineItem> lineItems, string actionType)
 		{
-			var products = new List<object>();
+			List<object> products = new List<object>();
+
 			foreach (var lineItem in lineItems.Items)
 			{
-				if (lineItem.xp.Returns != null && actionType.Equals($@"return", StringComparison.OrdinalIgnoreCase))
+				if (lineItem.xp.Returns != null && actionType == "return")
 				{
 					products.Add(MapReturnedLineItemToProduct(lineItem));
 				}
-				else if (lineItem.xp.Cancellations != null && actionType.Equals($@"cancel", StringComparison.OrdinalIgnoreCase))
+				else if (lineItem.xp.Cancelations != null && actionType == "cancel")
 				{
 					products.Add(MapCanceledLineItemToProduct(lineItem));
 				}
@@ -126,53 +128,42 @@ namespace Headstart.Common.Mappers
 			return products;
 		}
 
-		public static LineItemProductData MapReturnedLineItemToProduct(HsLineItem lineItem)
-		{
-			return (lineItem == null)
-				? null 
-				: new LineItemProductData()
+		public static LineItemProductData MapReturnedLineItemToProduct(HSLineItem lineItem) =>
+			lineItem == null ? null :
+				new LineItemProductData()
 				{
 					ProductName = lineItem?.Product?.Name,
-					ImageUrl = lineItem?.xp?.ImageUrl,
-					ProductId = lineItem?.ProductID,
+					ImageURL = lineItem?.xp?.ImageUrl,
+					ProductID = lineItem?.ProductID,
 					Quantity = lineItem?.Quantity,
 					LineTotal = lineItem?.LineTotal,
 				};
-		}
 
-		public static LineItemProductData MapCanceledLineItemToProduct(HsLineItem lineItem)
-		{
-			return (lineItem == null) 
-				? null 
-				: new LineItemProductData()
+		public static LineItemProductData MapCanceledLineItemToProduct(HSLineItem lineItem) =>
+			lineItem == null ? null :
+				new LineItemProductData()
 				{
 					ProductName = lineItem?.Product?.Name,
-					ImageUrl = lineItem?.xp?.ImageUrl,
-					ProductId = lineItem?.ProductID,
+					ImageURL = lineItem?.xp?.ImageUrl,
+					ProductID = lineItem?.ProductID,
 					Quantity = lineItem?.Quantity,
 					LineTotal = lineItem?.LineTotal,
 				};
-		}
 
-		public static LineItemProductData MapLineItemToProduct(HsLineItem lineItem)
-		{
-			return (lineItem == null) 
-				? null 
-				: new LineItemProductData()
+		public static LineItemProductData MapLineItemToProduct(HSLineItem lineItem) =>
+			lineItem == null ? null :
+				new LineItemProductData()
 				{
 					ProductName = lineItem?.Product?.Name,
-					ImageUrl = lineItem?.xp?.ImageUrl,
-					ProductId = lineItem?.ProductID,
+					ImageURL = lineItem?.xp?.ImageUrl,
+					ProductID = lineItem?.ProductID,
 					Quantity = lineItem?.Quantity,
 					LineTotal = lineItem?.LineTotal,
 				};
-		}
 
-		public static Address GetShippingAddress(IList<HsLineItem> lineItems)
-		{
-			return (lineItems == null) 
-				? null 
-				: new Address()
+		public static Address GetShippingAddress(IList<HSLineItem> lineItems) =>
+			lineItems == null ? null : 
+				new Address()
 				{
 					Street1 = lineItems[0]?.ShippingAddress?.Street1,
 					Street2 = lineItems[0]?.ShippingAddress?.Street2,
@@ -180,19 +171,15 @@ namespace Headstart.Common.Mappers
 					State = lineItems[0]?.ShippingAddress?.State,
 					Zip = lineItems[0]?.ShippingAddress?.Zip
 				};
-		}
-
-		public static LineItemProductData MapToTemplateProduct(HsLineItem lineItem, LineItemStatusChange lineItemStatusChange, LineItemStatus status)
+  
+		public static LineItemProductData MapToTemplateProduct(HSLineItem lineItem, LineItemStatusChange lineItemStatusChange, LineItemStatus status)
 		{
-			var lineTotal = 0M;
+			decimal lineTotal = 0M;
 			if (status == LineItemStatus.ReturnDenied || status == LineItemStatus.CancelDenied && lineItemStatusChange.QuantityRequestedForRefund != lineItemStatusChange.Quantity)
 			{
-				var quantityApproved = lineItemStatusChange.QuantityRequestedForRefund - lineItemStatusChange.Quantity;
-				if (lineItemStatusChange.Refund != null)
-				{
-					var costPerUnitAfterTaxes = (decimal) lineItemStatusChange.Refund / quantityApproved;
-					lineTotal = Math.Round(costPerUnitAfterTaxes * lineItemStatusChange.Quantity, 2);
-				}
+				int quantityApproved = lineItemStatusChange.QuantityRequestedForRefund - lineItemStatusChange.Quantity;
+				decimal costPerUnitAfterTaxes = (decimal)(lineItemStatusChange.Refund / quantityApproved);
+				lineTotal = Math.Round(costPerUnitAfterTaxes * lineItemStatusChange.Quantity, 2);
 			}
 			else
 			{
@@ -201,12 +188,12 @@ namespace Headstart.Common.Mappers
 			return new LineItemProductData
 			{
 				ProductName = lineItem?.Product?.Name,
-				ImageUrl = lineItem?.xp?.ImageUrl,
-				ProductId = lineItem?.ProductID,
+				ImageURL = lineItem?.xp?.ImageUrl,
+				ProductID = lineItem?.ProductID,
 				Quantity = lineItem?.Quantity,
 				LineTotal = lineTotal,
 				QuantityChanged = lineItemStatusChange?.Quantity,
-				MessageToBuyer = lineItemStatusChange?.Comment
+				MessageToBuyer = lineItemStatusChange.Comment
 			};
 		}
 	}

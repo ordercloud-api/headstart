@@ -1,40 +1,44 @@
-﻿using OrderCloud.SDK;
-using ordercloud.integrations.cardconnect;
+﻿using ordercloud.integrations.cardconnect;
+using ordercloud.integrations.library;
+using OrderCloud.SDK;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Headstart.Common.Models.Headstart
+namespace Headstart.Models.Headstart
 {
-	public class HsPayment : Payment<PaymentXp, HsPaymentTransaction>
-	{
-	}
+    
+    public class HSPayment : Payment<PaymentXP, HSPaymentTransaction>
+    {
 
-	public class HsPaymentTransaction : PaymentTransaction<TransactionXP>
-	{
-	}
+    }
 
-	public class PaymentXp
-	{
-		public string PartialAccountNumber { get; set; } = string.Empty;
+    
+    public class HSPaymentTransaction: PaymentTransaction<TransactionXP>
+    {
 
-		public string CardType { get; set; } = string.Empty;
-	}
+    }
 
+    
+    public class PaymentXP
+    {
+        public string partialAccountNumber { get; set; }
+        public string cardType { get; set; }
+    }
 
-	public class TransactionXP
-	{
-		public CardConnectAuthorizationResponse CardConnectResponse { get; set; } = new CardConnectAuthorizationResponse();
+    
+    public class TransactionXP
+    {
+        public CardConnectAuthorizationResponse CardConnectResponse { get; set; }
+        public RMADetails RMADetails { get; set; }
+    }
 
-		public RMADetails RMADetails { get; set; } = new RMADetails();
-	}
-
-
-	public class RMADetails
-	{
-		public string OrderRMANumber { get; set; } = string.Empty;
-
-		public string RefundComment { get; set; } = string.Empty;
-
-		public string FromSupplierId { get; set; } = string.Empty;
-
-		public string FromUserId { get; set; } = string.Empty;
-	}
+    
+    public class RMADetails
+    {
+        public string OrderRMANumber { get; set; }
+        public string RefundComment { get; set; }
+        public string FromSupplierID { get; set; }
+        public string FromUserID { get; set; }
+    }
 }

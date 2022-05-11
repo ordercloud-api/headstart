@@ -1,35 +1,42 @@
+using Headstart.Models;
+using ordercloud.integrations.library;
 using OrderCloud.SDK;
 using System.Collections.Generic;
 
-namespace Headstart.Common.Models.Headstart
+namespace Headstart.Common.Services.ShippingIntegration.Models
 {
-	public class SuperHsShipment
-	{
-		public HsShipment Shipment { get; set; } = new HsShipment();
-		public List<ShipmentItem> ShipmentItems { get; set; } = new List<ShipmentItem>();
-	}
-
-	// These are in the common namespace so that we can reference the FreightPop model
-	public class HsShipment : Shipment<ShipmentXp, HsAddressSupplier, HsAddressBuyer>
-	{
-	}
     
-	public class ShipmentXp
-	{        
-		public string Service { get; set; } = string.Empty;
+    public class SuperHSShipment
+    {
+        public HSShipment Shipment { get; set; }
+        public List<ShipmentItem> ShipmentItems { get; set; }
+    }
 
-		public string Comment { get; set; } = string.Empty;
+    // these are in the common namespace so that we can reference the FreightPop model
+    
+    public class HSShipment : Shipment<ShipmentXp, HSAddressSupplier, HSAddressBuyer>
+    {
+    }
 
-		public string BuyerId { get; set; } = string.Empty;
-	}
+    
+    public class ShipmentXp
+    {
+        // storing full freightPopShipmentRate for potential reference later
+        //public ShipmentRate FreightPopShipmentRate { get; set; }
+        public string Service { get; set; }
+        public string Comment { get; set; }
+        public string BuyerID { get; set; }
+    }
 
-	public class HsShipmentWithItems : Shipment
-	{
-		public List<HsShipmentItemWithLineItem> ShipmentItems { get; set; } = new List<HsShipmentItemWithLineItem>();
-	}
+    
+    public class HSShipmentWithItems : Shipment
+    {
+        public List<HSShipmentItemWithLineItem> ShipmentItems { get; set; }
+    }
 
-	public class HsShipmentItemWithLineItem : ShipmentItem
-	{
-		public LineItem LineItem { get; set; } = new LineItem();
-	}
+    
+    public class HSShipmentItemWithLineItem : ShipmentItem
+    {
+        public LineItem LineItem { get; set; }
+    }
 }

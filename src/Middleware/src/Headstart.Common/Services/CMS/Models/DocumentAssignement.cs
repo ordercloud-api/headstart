@@ -1,15 +1,15 @@
-﻿namespace Headstart.Common.Services.CMS.Models
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Headstart.Common.Services.CMS.Models
 {
 	public class DocumentAssignment
 	{
-		public string DocumentId { get; set; } = string.Empty;
-
-		public string ResourceId { get; set; } = string.Empty;
-
+		public string DocumentID { get; set; }
+		public string ResourceID { get; set; }
 		public ResourceType? ResourceType { get; set; }
-
-		public string ParentResourceId { get; set; } = string.Empty;
-
+		public string ParentResourceID { get; set; } = null;
 		public ParentResourceType? ParentResourceType { get; set; }
 	}
 }

@@ -1,10 +1,10 @@
-﻿using OrderCloud.SDK;
-using OrderCloud.Catalyst;
-using System.Threading.Tasks;
-using Headstart.API.Commands;
-using Microsoft.AspNetCore.Mvc;
+﻿using Headstart.API.Commands;
+using Headstart.Common.Services.ShippingIntegration.Models;
 using Microsoft.AspNetCore.Http;
-using Headstart.Common.Models.Headstart;
+using Microsoft.AspNetCore.Mvc;
+using OrderCloud.Catalyst;
+using OrderCloud.SDK;
+using System.Threading.Tasks;
 
 namespace Headstart.API.Controllers
 {
@@ -28,7 +28,7 @@ namespace Headstart.API.Controllers
 		/// <param name="superShipment"></param>
 		/// <returns>The newly created SuperHSShipment object</returns>
 		[HttpPost, OrderCloudUserAuth(ApiRole.ShipmentAdmin)]
-		public async Task<SuperHsShipment> Create([FromBody] SuperHsShipment superShipment)
+		public async Task<SuperHSShipment> Create([FromBody] SuperHSShipment superShipment)
 		{
 			// ocAuth is the token for the organization that is specified in the AppSettings
 			// todo add auth to make sure suppliers are creating shipments for their own orders

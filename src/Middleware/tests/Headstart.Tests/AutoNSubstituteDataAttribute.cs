@@ -1,79 +1,92 @@
-﻿using AutoFixture;
-using AutoFixture.AutoNSubstitute;
-using AutoFixture.NUnit3;
+﻿using System;
 using System.Collections.Generic;
-using Headstart.Common.Models.Headstart;
+using System.Text;
+using AutoFixture.AutoNSubstitute;
+using AutoFixture;
+using AutoFixture.NUnit3;
+using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Models;
+using OrderCloud.SDK;
+using Headstart.Models.Headstart;
 
 namespace Headstart.Tests
 {
-	public class AutoNSubstituteDataAttribute : AutoDataAttribute
-	{
-		public AutoNSubstituteDataAttribute() : base(() => new Fixture().Customize(new HSCompositeCustomization()))
-		{
-		}
-	}
+    public class AutoNSubstituteDataAttribute : AutoDataAttribute
+    {
+        public AutoNSubstituteDataAttribute()
+            : base(() => new Fixture().Customize(new HSCompositeCustomization()))
+        {
 
-	public class HSCompositeCustomization : CompositeCustomization
-	{
-		public HSCompositeCustomization() : base(new OrderCloudModelsCustomization(), new AutoNSubstituteCustomization())
-		{
-		}
-	}
+        }
+    }
+
+    public class HSCompositeCustomization : CompositeCustomization
+    {
+        public HSCompositeCustomization()
+            : base(
+                new OrderCloudModelsCustomization(),
+                new AutoNSubstituteCustomization()
+
+            )
+        {
+        }
+    }
 
 
-	// Autofixture can't handle ordercloud models that use custom xp
-	// due to a bug in the ordercloud sdk  https://github.com/ordercloud-api/ordercloud-dotnet-sdk/issues/60
-	// So as a workaround we are manually providing specific overrides for those types of models here
-	// if this ever does get fixed in the sdk we can delete this whole customization
-	public class OrderCloudModelsCustomization : ICustomization
-	{
-		public void Customize(IFixture fixture)
-		{
-			fixture.Customize<HsLocationUserGroup>(c => c
-				.With(x => x.xp, fixture.Create<HsLocationUserGroupXp>()));
+    // Autofixture can't handle ordercloud models that use custom xp
+    // due to a bug in the ordercloud sdk  https://github.com/ordercloud-api/ordercloud-dotnet-sdk/issues/60
+    // So as a workaround we are manually providing specific overrides for those types of models here
+    // if this ever does get fixed in the sdk we can delete this whole customization
+    public class OrderCloudModelsCustomization : ICustomization
+    {
+        public void Customize(IFixture fixture)
+        {
 
-			fixture.Customize<HsBuyer>(c => c
-				.With(x => x.xp, fixture.Create<BuyerXp>()));
+            fixture.Customize<HSLocationUserGroup>(c => c
+                .With(x => x.xp, fixture.Create<HSLocationUserGroupXp>()));
 
-			fixture.Customize<HsShipMethod>(c => c
-				.With(x => x.xp, fixture.Create<ShipMethodXp>()));
+            fixture.Customize<HSBuyer>(c => c
+                    .With(x => x.xp, fixture.Create<BuyerXp>()));
 
-			fixture.Customize<HsShipEstimate>(c => c
-				.With(x => x.xp, fixture.Create<ShipEstimateXp>())
-				.With(x => x.ShipMethods, fixture.Create<List<HsShipMethod>>()));
+            fixture.Customize<HSShipMethod>(c => c
+                    .With(x => x.xp, fixture.Create<ShipMethodXP>()));
 
-			fixture.Customize<HsLineItemProduct>(c => c
-				.With(x => x.xp, fixture.Create<ProductXp>()));
+            fixture.Customize<HSShipEstimate>(c => c
+                    .With(x => x.xp, fixture.Create<ShipEstimateXP>())
+                    .With(x => x.ShipMethods, fixture.Create<List<HSShipMethod>>()));
 
-			fixture.Customize<HsOrderCalculateResponse>(c => c
-				.With(x => x.xp, fixture.Create<OrderCalculateResponseXp>()));
+            fixture.Customize<HSLineItemProduct>(c => c
+                    .With(x => x.xp, fixture.Create<ProductXp>()));
 
-			fixture.Customize<HsShipEstimateResponse>(c => c
-				.With(x => x.xp, fixture.Create<ShipEstimateResponseXp>())
-				.With(x => x.ShipEstimates, fixture.Create<List<HsShipEstimate>>()));
+            fixture.Customize<HSOrderCalculateResponse>(c => c
+                    .With(x => x.xp, fixture.Create<OrderCalculateResponseXp>()));
 
-			fixture.Customize<HsLineItem>(c => c
-				.With(x => x.xp, fixture.Create<LineItemXp>())
-				.With(x => x.Product, fixture.Create<HsLineItemProduct>())
-				.With(x => x.ShippingAddress, fixture.Create<HsAddressBuyer>())
-				.With(x => x.ShipFromAddress, fixture.Create<HsAddressSupplier>()));
+            fixture.Customize<HSShipEstimateResponse>(c => c
+                    .With(x => x.xp, fixture.Create<ShipEstimateResponseXP>())
+                    .With(x => x.ShipEstimates, fixture.Create<List<HSShipEstimate>>()));
 
-			fixture.Customize<HsAddressBuyer>(c => c
-				.With(x => x.xp, fixture.Create<BuyerAddressXP>()));
+            fixture.Customize<HSLineItem>(c => c
+                    .With(x => x.xp, fixture.Create<LineItemXp>())
+                    .With(x => x.Product, fixture.Create<HSLineItemProduct>())
+                    .With(x => x.ShippingAddress, fixture.Create<HSAddressBuyer>())
+                    .With(x => x.ShipFromAddress, fixture.Create<HSAddressSupplier>()));
 
-			fixture.Customize<HsUser>(c => c
-				.With(x => x.xp, fixture.Create<UserXp>()));
+            fixture.Customize<HSAddressBuyer>(c => c
+                    .With(x => x.xp, fixture.Create<BuyerAddressXP>()));
 
-			fixture.Customize<HsOrder>(c => c
-				.With(x => x.xp, fixture.Create<OrderXp>())
-				.With(x => x.FromUser, fixture.Create<HsUser>())
-				.With(x => x.BillingAddress, fixture.Create<HsAddressBuyer>()));
+            fixture.Customize<HSUser>(c => c
+                    .With(x => x.xp, fixture.Create<UserXp>()));
 
-			fixture.Customize<HsOrderWorksheet>(c => c
-				.With(x => x.Order, fixture.Create<HsOrder>())
-				.With(x => x.LineItems, fixture.Create<List<HsLineItem>>())
-				.With(x => x.ShipEstimateResponse, fixture.Create<HsShipEstimateResponse>())
-				.With(x => x.OrderCalculateResponse, fixture.Create<HsOrderCalculateResponse>()));
-		}
-	}
+            fixture.Customize<HSOrder>(c => c
+                    .With(x => x.xp, fixture.Create<OrderXp>())
+                    .With(x => x.FromUser, fixture.Create<HSUser>())
+                    .With(x => x.BillingAddress, fixture.Create<HSAddressBuyer>()));
+
+            fixture.Customize<HSOrderWorksheet>(c => c
+                    .With(x => x.Order, fixture.Create<HSOrder>())
+                    .With(x => x.LineItems, fixture.Create<List<HSLineItem>>())
+                    .With(x => x.ShipEstimateResponse, fixture.Create<HSShipEstimateResponse>())
+                    .With(x => x.OrderCalculateResponse, fixture.Create<HSOrderCalculateResponse>()));
+        }
+    }
 }

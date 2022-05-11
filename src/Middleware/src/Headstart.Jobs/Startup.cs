@@ -32,7 +32,7 @@ namespace Headstart.Jobs
 	{
 		public override void Configure(IFunctionsHostBuilder builder)
 		{
-			var connectionString = Environment.GetEnvironmentVariable(@"APP_CONFIG_CONNECTION");
+			var connectionString = Environment.GetEnvironmentVariable("APP_CONFIG_CONNECTION");
 			var settings = new AppSettings();
 			var config = new ConfigurationBuilder()
 				.AddEnvironmentVariables()
@@ -51,33 +51,33 @@ namespace Headstart.Jobs
 			{
 				new ContainerInfo()
 				{
-					Name = @"salesorderdetail",
-					PartitionKey = @"/PartitionKey"
+					Name = "salesorderdetail",
+					PartitionKey = "/PartitionKey"
 				},
 				new ContainerInfo()
 				{
-					Name = @"purchaseorderdetail",
-					PartitionKey = @"/PartitionKey"
+					Name = "purchaseorderdetail",
+					PartitionKey = "/PartitionKey"
 				},
 				new ContainerInfo()
 				{
-					Name = @"lineitemdetail",
-					PartitionKey = @"/PartitionKey"
+					Name = "lineitemdetail",
+					PartitionKey = "/PartitionKey"
 				},
 				new ContainerInfo()
 				{
-					Name = @"rmas",
-					PartitionKey = @"/PartitionKey"
+					Name = "rmas",
+					PartitionKey = "/PartitionKey"
 				},
 				new ContainerInfo()
 				{
-					Name = @"shipmentdetail",
-					PartitionKey = @"/PartitionKey"
+					Name = "shipmentdetail",
+					PartitionKey = "/PartitionKey"
 				},
 				new ContainerInfo()
 				{
-					Name = @"productdetail",
-					PartitionKey = @"/PartitionKey"
+					Name = "productdetail",
+					PartitionKey = "/PartitionKey"
 				}
 			};
 
@@ -97,7 +97,7 @@ namespace Headstart.Jobs
 				{
 					ApiUrl = settings.OrderCloudSettings.ApiUrl,
 					AuthUrl = settings.OrderCloudSettings.ApiUrl,
-					ClientId = settings.OrderCloudSettings.MiddlewareClientId,
+					ClientId = settings.OrderCloudSettings.MiddlewareClientID,
 					ClientSecret = settings.OrderCloudSettings.MiddlewareClientSecret,
 					Roles = new[]
 					{
@@ -107,8 +107,8 @@ namespace Headstart.Jobs
 				.AddCosmosDb(settings.CosmosSettings.EndpointUri, settings.CosmosSettings.PrimaryKey, settings.CosmosSettings.DatabaseName, cosmosContainers)
 				.AddSingleton<IFlurlClientFactory, PerBaseUrlFlurlClientFactory>()
 				.AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(settings.CardConnectSettings, settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))
-				.Inject<IHsCatalogCommand>()
-				.Inject<IHsBuyerLocationCommand>()
+				.Inject<IHSCatalogCommand>()
+				.Inject<IHSBuyerLocationCommand>()
 				.AddSingleton<PaymentCaptureJob>()
 				.AddSingleton<SendRecentOrdersJob>()
 				.AddSingleton<ReceiveRecentSalesOrdersJob>()
@@ -122,7 +122,7 @@ namespace Headstart.Jobs
 					AccessToken = settings.ZohoSettings.AccessToken,
 					ClientId = settings.ZohoSettings.ClientId,
 					ClientSecret = settings.ZohoSettings.ClientSecret,
-					OrganizationId = settings.ZohoSettings.OrgId
+					OrganizationID = settings.ZohoSettings.OrgID
 				})
 				.Inject<IZohoClient>()
 				.Inject<IZohoCommand>()

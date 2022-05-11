@@ -1,20 +1,21 @@
 ﻿using Headstart.API.Commands;
 using Headstart.Common;
-using Headstart.Common.Models.Headstart;
+using Headstart.Models.Headstart;
 using NSubstitute;
 using NUnit.Framework;
 using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Headstart.Models;
 
 namespace Headstart.Tests
 {
-	class ValidUnitPriceTests
+    class ValidUnitPriceTests
 	{
 		private IOrderCloudClient _oc;
 		private LineItemCommand _commandSub;
-		private List<HsLineItem> _existingLineItems;
+		private List<HSLineItem> _existingLineItems;
 
 		[SetUp]
 		public void Setup()
@@ -23,7 +24,7 @@ namespace Headstart.Tests
 			_oc = Substitute.For<IOrderCloudClient>();
 			_commandSub = Substitute.ForPartsOf<LineItemCommand>(default, _oc, default, default, default, default, settings);
 			_existingLineItems = BuildMockExistingLineItemData(); // Mock data consists of two total line items for one product (with different specs)
-			Substitute.For<ILineItemsResource>().PatchAsync<HsLineItem>(OrderDirection.Incoming, default, default, default).ReturnsForAnyArgs((Task)null);
+			Substitute.For<ILineItemsResource>().PatchAsync<HSLineItem>(OrderDirection.Incoming, default, default, default).ReturnsForAnyArgs((Task)null);
 		}
 
 		[Test]
@@ -103,7 +104,7 @@ namespace Headstart.Tests
 			var lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(3, 0); // Hits discount price break (minimum quantity 5) when adding existing line item quantity (2)
 
 			var lineItemTotal = await _commandSub.ValidateLineItemUnitCost(default, product, _existingLineItems, lineItem);
-			Assert.AreEqual(lineItemTotal, 5m);
+			Assert.AreEqual(lineItemTotal, 3.5m);
 		}
 
 		[Test]
@@ -123,7 +124,7 @@ namespace Headstart.Tests
 			var lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(3, 1);  // Hits discount price break (minimum quantity 5) when adding existing line item quantity (2)
 
 			var lineItemTotal = await _commandSub.ValidateLineItemUnitCost(default, product, _existingLineItems, lineItem);
-			Assert.AreEqual(lineItemTotal, 7.25m);
+			Assert.AreEqual(lineItemTotal, 5.75m);
 		}
 
 		[Test]
@@ -143,12 +144,12 @@ namespace Headstart.Tests
 			var lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(3, 2);  // Hits discount price break (minimum quantity 5) when adding existing line item quantity (2)
 
 			var lineItemTotal = await _commandSub.ValidateLineItemUnitCost(default, product, _existingLineItems, lineItem);
-			Assert.AreEqual(lineItemTotal, 11.25m);
+			Assert.AreEqual(lineItemTotal, 9.75m);
 		}
 
-		private SuperHsMeProduct BuildMockProductData(bool UseCumulativeQty)
+		private SuperHSMeProduct BuildMockProductData(bool UseCumulativeQty)
 		{
-			var product = Substitute.For<SuperHsMeProduct>();
+			var product = Substitute.For<SuperHSMeProduct>();
 			product.PriceSchedule = Substitute.For<PriceSchedule>();
 			product.PriceSchedule.UseCumulativeQuantity = UseCumulativeQty;
 
@@ -174,20 +175,20 @@ namespace Headstart.Tests
 			return product;
 		}
 
-		private List<HsLineItem> BuildMockExistingLineItemData()
+		private List<HSLineItem> BuildMockExistingLineItemData()
 		{
-			var existingLineItem1 = Substitute.For<HsLineItem>();
+			var existingLineItem1 = Substitute.For<HSLineItem>();
 			existingLineItem1.Quantity = 1;
 			existingLineItem1.xp = new LineItemXp()
 			{
-				PrintArtworkUrl = null
+				PrintArtworkURL = null
 			};
 
-			var existingLineItem2 = Substitute.For<HsLineItem>();
+			var existingLineItem2 = Substitute.For<HSLineItem>();
 			existingLineItem2.Quantity = 1;
 			existingLineItem2.xp = new LineItemXp()
 			{
-				PrintArtworkUrl = null
+				PrintArtworkURL = null
 			};
 
 			var liSpecSizeSmall = Substitute.For<LineItemSpec>();
@@ -208,13 +209,13 @@ namespace Headstart.Tests
 			existingLineItem1.Specs = new List<LineItemSpec> { liSpecSizeSmall, liSpecColorRed };
 			existingLineItem2.Specs = new List<LineItemSpec> { liSpecSizeMedium, liSpecColorRed };
 
-			var existingLineItems = new List<HsLineItem> { existingLineItem1, existingLineItem2 };
+			var existingLineItems = new List<HSLineItem> { existingLineItem1, existingLineItem2 };
 			return existingLineItems;
 		}
 
-		private HsLineItem SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(int quantity, int numberOfMarkedUpSpecs)
+		private HSLineItem SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(int quantity, int numberOfMarkedUpSpecs)
 		{
-			var lineItem = Substitute.For<HsLineItem>();
+			var lineItem = Substitute.For<HSLineItem>();
 			lineItem.Quantity = quantity;
 
 			var liSpecSizeSmall = Substitute.For<LineItemSpec>();
@@ -236,15 +237,15 @@ namespace Headstart.Tests
 			if (numberOfMarkedUpSpecs == 0)
 			{
 				lineItem.Specs = new List<LineItemSpec> { liSpecSizeSmall, liSpecColorBlue };
-			} 
+			}
 			else if (numberOfMarkedUpSpecs == 1)
 			{
 				lineItem.Specs = new List<LineItemSpec> { liSpecSizeLarge, liSpecColorBlue };
-			} 
+			}
 			else if (numberOfMarkedUpSpecs == 2)
 			{
 				lineItem.Specs = new List<LineItemSpec> { liSpecSizeLarge, liSpecColorGreen };
-			} 
+			}
 			else
 			{
 				throw new Exception(@"The number of marked up specs for this unit test must be 0, 1, or 2.");

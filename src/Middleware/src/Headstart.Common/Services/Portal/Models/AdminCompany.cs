@@ -1,13 +1,10 @@
-﻿using Headstart.Common.Models.Base;
-
-namespace Headstart.Common.Services.Portal.Models
+﻿namespace Headstart.Common.Services.Portal.Models
 {
-	public class AdminCompany : HsBaseObject
-	{
-		public string Name { get; set; } = string.Empty;
-
-		public int OwnerDevId { get; set; }
-
-		public object AutoForwardingUserId { get; set; }
-	}
+    public class AdminCompany
+    {
+        public string Name { get; set; }
+        public string ID { get; set; }
+        public int OwnerDevID { get; set; }
+        public object AutoForwardingUserID { get; set; }
+    }
 }

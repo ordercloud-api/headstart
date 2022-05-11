@@ -27,14 +27,7 @@ namespace Headstart.Common.Services.Zoho
 	public partial class ZohoClient
 	{
 		private readonly IFlurlClientFactory _flurlFactory;
-		private IFlurlClient ApiClient => _flurlFactory.Get(Config.ApiUrl);
-		private IFlurlClient AuthClient => _flurlFactory.Get("https://accounts.zoho.com/oauth/v2/");
 		private readonly AppSettings _settings;
-
-		public ZohoTokenResponse TokenResponse { get; set; } = new ZohoTokenResponse();
-		public bool IsAuthenticated => (TokenResponse?.access_token != null);
-		public ZohoClientConfig Config { get; } = new ZohoClientConfig();
-		public ZohoClient() : this(new ZohoClientConfig(), new AppSettings()) { }
 
 		/// <summary>
 		/// The IOC based constructor method for the ZohoClient class object with Dependency Injection
@@ -54,6 +47,16 @@ namespace Headstart.Common.Services.Zoho
 					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
 			}
 		}
+		
+		private IFlurlClient ApiClient => _flurlFactory.Get(Config.ApiUrl);
+		private IFlurlClient AuthClient => _flurlFactory.Get("https://accounts.zoho.com/oauth/v2/");
+		public ZohoTokenResponse TokenResponse { get; set; }
+
+		public bool IsAuthenticated => TokenResponse?.access_token != null;
+
+		public ZohoClientConfig Config { get; }
+
+		public ZohoClient() : this(new ZohoClientConfig()) { }
 
 		/// <summary>
 		/// The IOC based constructor method for the ZohoClient class object with Dependency Injection
@@ -81,19 +84,9 @@ namespace Headstart.Common.Services.Zoho
 		/// The IOC based constructor method for the ZohoClient class object with Dependency Injection
 		/// </summary>
 		/// <param name="config"></param>
-		/// <param name="settings"></param>
-		public ZohoClient(ZohoClientConfig config, AppSettings settings)
+		public ZohoClient(ZohoClientConfig config)
 		{
-			try
-			{
-				_settings = settings;
-				Config = config;
-			}
-			catch (Exception ex)
-			{
-				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
-					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
-			}
+			this.Config = config;
 		}
 
 		/// <summary>
@@ -105,21 +98,19 @@ namespace Headstart.Common.Services.Zoho
 		{
 			try
 			{
-				var response = await AuthClient.Request($@"token")
-					.SetQueryParam($@"client_id", Config.ClientId)
-					.SetQueryParam($@"client_secret", Config.ClientSecret)
-					.SetQueryParam($@"grant_type", $@"refresh_token")
-					.SetQueryParam($@"refresh_token", Config.AccessToken)
-					.SetQueryParam($@"redirect_uri", $@"https://ordercloud.io")
+				var response = await AuthClient.Request("token")
+					.SetQueryParam("client_id", Config.ClientId)
+					.SetQueryParam("client_secret", Config.ClientSecret)
+					.SetQueryParam("grant_type", "refresh_token")
+					.SetQueryParam("refresh_token", Config.AccessToken)
+					.SetQueryParam("redirect_uri", "https://ordercloud.io")
 					.PostAsync(null);
-				TokenResponse = JObject.Parse(await response.ResponseMessage.Content.ReadAsStringAsync()).ToObject<ZohoTokenResponse>();
-				return TokenResponse;
+				this.TokenResponse = JObject.Parse(await response.ResponseMessage.Content.ReadAsStringAsync()).ToObject<ZohoTokenResponse>();
+				return this.TokenResponse;
 			}
 			catch (FlurlHttpException ex)
 			{
-				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
-					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace);
-				throw new CatalystBaseException($@"ZohoAuthenticationError", ex.Message, null, ex.Call.Response.StatusCode);
+				throw new CatalystBaseException("ZohoAuthenticationError", ex.Message, null, (int)ex.Call.Response.StatusCode);
 			}
 		}
 
@@ -128,10 +119,12 @@ namespace Headstart.Common.Services.Zoho
 		/// </summary>
 		/// <param name="segments"></param>
 		/// <param name="access_token"></param>
-		/// <returns>The WriteRequest response value</returns>
+		/// <returns>The WriteRequest value</returns>
 		internal IFlurlRequest Request(object[] segments, string access_token = null)
 		{
-			return ApiClient.Request(segments).WithHeader(@"Authorization", $@"Zoho-oauthtoken {access_token ?? TokenResponse.access_token}")
+			return ApiClient
+				.Request(segments)
+				.WithHeader("Authorization", $"Zoho-oauthtoken {access_token ?? this.TokenResponse.access_token}")
 				.ConfigureRequest(settings =>
 				{
 					settings.JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
@@ -149,22 +142,16 @@ namespace Headstart.Common.Services.Zoho
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <param name="segments"></param>
-		/// <returns>The WriteRequest response value</returns>
-		internal IFlurlRequest Put(object obj, object[] segments)
-		{
-			return WriteRequest(obj, segments);
-		}
+		/// <returns>The WriteRequest value</returns>
+		internal IFlurlRequest Put(object obj, object[] segments) => WriteRequest(obj, segments);
 
 		/// <summary>
 		/// Internal re-usable Post method
 		/// </summary>
 		/// <param name="obj"></param>
 		/// <param name="segments"></param>
-		/// <returns>The WriteRequest response value</returns>
-		internal IFlurlRequest Post(object obj, object[] segments)
-		{
-			return WriteRequest(obj, segments);
-		}
+		/// <returns>The WriteRequest  value</returns>
+		internal IFlurlRequest Post(object obj, object[] segments) => WriteRequest(obj, segments);
 
 		/// <summary>
 		/// Internal re-usable Request method
@@ -172,37 +159,24 @@ namespace Headstart.Common.Services.Zoho
 		/// <param name="obj"></param>
 		/// <param name="segments"></param>
 		/// <param name="access_token"></param>
-		/// <returns>The WriteRequest response value</returns>
-		private IFlurlRequest WriteRequest(object obj, object[] segments, string access_token = null)
-		{
-			return ApiClient.Request(segments).WithHeader(@"Authorization", $@"Zoho-oauthtoken {access_token ?? TokenResponse.access_token}")
-				.ConfigureRequest(settings =>
+		/// <returns>The WriteRequest value</returns>
+		private IFlurlRequest WriteRequest(object obj, object[] segments, string access_token = null) => ApiClient
+			.Request(segments)
+			.WithHeader("Authorization", $"Zoho-oauthtoken {access_token ?? this.TokenResponse.access_token}")
+			.ConfigureRequest(settings =>
+			{
+				settings.JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
 				{
-					settings.JsonSerializer = new NewtonsoftJsonSerializer(new JsonSerializerSettings
-					{
-						Formatting = Formatting.Indented,
-						NullValueHandling = NullValueHandling.Ignore,
-						MissingMemberHandling = MissingMemberHandling.Ignore,
-						DefaultValueHandling = DefaultValueHandling.Ignore
-					});
+					Formatting = Formatting.Indented,
+					NullValueHandling = NullValueHandling.Ignore,
+					MissingMemberHandling = MissingMemberHandling.Ignore,
+					DefaultValueHandling = DefaultValueHandling.Ignore
 				});
-		}
+			});
 	}
 
 	public partial class ZohoClient : IZohoClient
 	{
-		public IZohoOrganizationResource Organizations { get; private set; }
-
-		public IZohoContactResource Contacts { get; private set; }
-
-		public IZohoCurrencyResource Currencies { get; private set; }
-
-		public IZohoItemResource Items { get; private set; }
-
-		public IZohoSalesOrderResource SalesOrders { get; private set; }
-
-		public IZohoPurchaseOrderResource PurchaseOrders { get; private set; }
-
 		private void InitResources()
 		{
 			Contacts = new ZohoContactResource(this);
@@ -212,5 +186,12 @@ namespace Headstart.Common.Services.Zoho
 			PurchaseOrders = new ZohoPurchaseOrderResource(this);
 			Organizations = new ZohoOrganizationResource(this);
 		}
+
+		public IZohoOrganizationResource Organizations { get; private set; }
+		public IZohoContactResource Contacts { get; private set; }
+		public IZohoCurrencyResource Currencies { get; private set; }
+		public IZohoItemResource Items { get; private set; }
+		public IZohoSalesOrderResource SalesOrders { get; private set; }
+		public IZohoPurchaseOrderResource PurchaseOrders { get; private set; }
 	}
 }

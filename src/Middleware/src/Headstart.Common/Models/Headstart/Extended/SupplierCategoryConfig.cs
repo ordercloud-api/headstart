@@ -1,39 +1,35 @@
 using System;
-using Cosmonaut.Attributes;
 using System.Collections.Generic;
+using Cosmonaut.Attributes;
 using ordercloud.integrations.library;
 
-namespace Headstart.Common.Models.Headstart.Extended
+namespace Headstart.Models.Extended
 {
 	[CosmosCollection("suppliercategoryconfigs")]
 	public class SupplierCategoryConfig : ICosmosObject
-	{
-		public SupplierCategoryConfig()
-		{
-		}
+    {
+        public SupplierCategoryConfig()
+        {
+        }
 
-		public string id { get; set; } = string.Empty;
+        public string id { get; set; }
+        public DateTimeOffset timeStamp { get; set; }
+        public string HSName { get; set; }
+        public IEnumerable<SupplierCategoriesFilter> Filters { get; set; }
+    }
 
-		public string HSName { get; set; } = string.Empty;
+    public class SupplierCategoriesFilter
+    {
+        public string Display { get; set; }
+        public string Path { get; set; }
+        public IEnumerable<SupplierCategoriesFilterItem> Items { get; set; }
+    }
 
-		public DateTimeOffset timeStamp { get; set; }
-
-		public IEnumerable<SupplierCategoriesFilter> Filters { get; set; } = new List<SupplierCategoriesFilter>();
-	}
-
-	public class SupplierCategoriesFilter
-	{
-		public string Path { get; set; } = string.Empty;
-
-		public string Display { get; set; } = string.Empty;
-
-		public IEnumerable<SupplierCategoriesFilterItem> Items { get; set; } = new List<SupplierCategoriesFilterItem>();
-	}
-
-	public class SupplierCategoriesFilterItem
-	{
-		public string Text { get; set; } = string.Empty;
-
-		public string Value { get; set; } = string.Empty;
-	}
+    public class SupplierCategoriesFilterItem
+    {
+        public string Text { get; set; }
+        public string Value { get; set; }
+    }
 }
+
+

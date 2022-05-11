@@ -1,38 +1,38 @@
-namespace Headstart.Common.Models.Misc
-{ 
+namespace Headstart.Models.Misc
+{
 	public enum CustomRole
 	{
-		// Seller/Supplier
-		HsBuyerAdmin,
-		HsBuyerImpersonator,
-		HsCategoryAdmin,
-		HsContentAdmin,
-		HsMeAdmin,
-		HsMeProductAdmin,
-		HsMeSupplierAddressAdmin,
-		HsMeSupplierAdmin,
-		HsMeSupplierUserAdmin,
-		HsOrderAdmin,
-		HsProductAdmin,
-		HsPromotionAdmin,
-		HsReportAdmin,
-		HsReportReader,
-		HsSellerAdmin,
-		HsShipmentAdmin,
-		HsStorefrontAdmin,
-		HsSupplierAdmin,
-		HsSupplierUserGroupAdmin,
+		// seller/supplier
+		HSBuyerAdmin,
+		HSBuyerImpersonator,
+		HSCategoryAdmin,
+		HSContentAdmin,
+		HSMeAdmin,
+		HSMeProductAdmin,
+		HSMeSupplierAddressAdmin,
+		HSMeSupplierAdmin,
+		HSMeSupplierUserAdmin,
+		HSOrderAdmin,
+		HSProductAdmin,
+		HSPromotionAdmin,
+		HSReportAdmin,
+		HSReportReader,
+		HSSellerAdmin,
+		HSShipmentAdmin,
+		HSStorefrontAdmin,
+		HSSupplierAdmin,
+		HSSupplierUserGroupAdmin,
 
-		// Buyer
-		HsBaseBuyer,
-		HsLocationAddressAdmin,
-		HsLocationOrderApprover,
-		HsLocationViewAllOrders,
-		HsLocationPermissionAdmin,
-		HsLocationNeedsApproval,
-		HsLocationCreditCardAdmin,
+		// buyer
+		HSBaseBuyer,
+		HSLocationAddressAdmin,
+		HSLocationOrderApprover,
+		HSLocationViewAllOrders,
+		HSLocationPermissionAdmin,
+		HSLocationNeedsApproval,
+		HSLocationCreditCardAdmin,
 
-		// CMS 
+		// cms 
 		AssetAdmin,
 		AssetReader,
 		DocumentAdmin,

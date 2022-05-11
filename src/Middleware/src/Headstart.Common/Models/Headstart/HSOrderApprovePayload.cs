@@ -1,8 +1,6 @@
 ﻿using OrderCloud.SDK;
 
-namespace Headstart.Common.Models.Headstart
+namespace Headstart.Models
 {
-	public class HSOrderApprovePayload : WebhookPayloads.Orders.Approve<dynamic, OrderApprovalInfo, HsOrder>
-	{
-	}
+    public class HSOrderApprovePayload : WebhookPayloads.Orders.Approve<dynamic, OrderApprovalInfo, HSOrder> { }
 }

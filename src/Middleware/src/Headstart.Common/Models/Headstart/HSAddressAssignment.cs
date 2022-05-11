@@ -1,9 +1,10 @@
-﻿using OrderCloud.SDK;
+﻿using ordercloud.integrations.library;
+using OrderCloud.SDK;
 
-namespace Headstart.Common.Models.Headstart
+namespace Headstart.Models
 {
-	public class HSAddressAssignment : AddressAssignment
-	{
-		public string Id { get; set; } = string.Empty;
-	}
+    public class HSAddressAssignment : AddressAssignment, IHSObject
+    {
+        public string ID { get; set; }
+    }
 }

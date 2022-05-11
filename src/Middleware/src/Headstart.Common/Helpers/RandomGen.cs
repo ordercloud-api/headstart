@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Headstart.Common.Helpers
 {
@@ -6,8 +9,8 @@ namespace Headstart.Common.Helpers
 	{
 		public static string GetString(string allowedChars, int length)
 		{
-			var rng = new Random();
-			var result = new char[length];
+			Random rng = new Random();
+			char[] result  = new char[length];
 			for (var i = 0; i < length; i++)
 			{
 				var randomIndex = rng.Next(0, allowedChars.Length - 1);

@@ -3,7 +3,8 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.ApplicationInsights;
-using Headstart.Common.Models.Headstart;
+using Headstart.Models;
+using Headstart.Models.Headstart;
 using ordercloud.integrations.cardconnect;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
 using SitecoreExtensions = Sitecore.Foundation.SitecoreExtensions.Extensions;
@@ -12,7 +13,7 @@ namespace Headstart.Common.Services
 {
 	public interface ISupportAlertService
 	{
-		Task VoidAuthorizationFailed(HsPayment payment, string transactionID, HsOrder order, CreditCardVoidException ex);
+		Task VoidAuthorizationFailed(HSPayment payment, string transactionID, HSOrder order, CreditCardVoidException ex);
 	}
 
 	public class SupportAlertService : ISupportAlertService
@@ -21,6 +22,12 @@ namespace Headstart.Common.Services
 		private readonly ISendgridService _sendgrid;
 		private readonly AppSettings _settings;
 
+		/// <summary>
+		/// The IOC based constructor method for the SupportAlertService class object with Dependency Injection
+		/// </summary>
+		/// <param name="telemetry"></param>
+		/// <param name="sendgrid"></param>
+		/// <param name="settings"></param>
 		public SupportAlertService(TelemetryClient telemetry, ISendgridService sendgrid, AppSettings settings)
 		{
 			try
@@ -36,59 +43,42 @@ namespace Headstart.Common.Services
 			}
 		}
 
-		public async Task VoidAuthorizationFailed(HsPayment payment, string transactionId, HsOrder order, CreditCardVoidException ex)
+		/// <summary>
+		/// Public re-usable VoidAuthorizationFailed task method
+		/// </summary>
+		/// <param name="payment"></param>
+		/// <param name="transactionID"></param>
+		/// <param name="order"></param>
+		/// <param name="ex"></param>
+		/// <returns></returns>
+		public async Task VoidAuthorizationFailed(HSPayment payment, string transactionID, HSOrder order, CreditCardVoidException ex)
 		{
-			try
-			{
-				LogVoidAuthorizationFailed(payment, transactionId, order, ex);
-				await _sendgrid.EmailVoidAuthorizationFailedAsync(payment, transactionId, order, ex);
-			}
-			catch (Exception ex1)
-			{
-				var responseBody = ex != null ? JsonConvert.SerializeObject(ex) : string.Empty;
-				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), responseBody,
-					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex1.Message, ex1.StackTrace, ex1);
-			}
+			LogVoidAuthorizationFailed(payment, transactionID, order, ex);
+			await _sendgrid.EmailVoidAuthorizationFailedAsync(payment, transactionID, order, ex);
 		}
 
-		public void LogVoidAuthorizationFailed(HsPayment payment, string transactionId, HsOrder order, CreditCardVoidException ex)
+		/// <summary>
+		/// Public re-usable LogVoidAuthorizationFailed method
+		/// </summary>
+		/// <param name="payment"></param>
+		/// <param name="transactionID"></param>
+		/// <param name="order"></param>
+		/// <param name="ex"></param>
+		public void LogVoidAuthorizationFailed(HSPayment payment, string transactionID, HSOrder order, CreditCardVoidException ex)
 		{
-			try
+			// track in app insights
+			// to find go to Transaction Search > Event Type = Event > Filter by any of these custom properties or event name "Payment.VoidAuthorizationFailed"
+			var customProperties = new Dictionary<string, string>
 			{
-				// Track in app insights to find go to Transaction Search > Event Type = Event > Filter by any
-				// of these custom properties or event name "Payment.VoidAuthorizationFailed"
-				var customProperties = new Dictionary<string, string>
-				{
-					{
-						@"Message", @"Attempt to void authorization on payment failed."
-					},
-					{
-						@"OrderID", order.ID
-					},
-					{
-						@"BuyerID", order.FromCompanyID
-					},
-					{
-						@"UserEmail", order.FromUser.Email
-					},
-					{
-						@"PaymentID", payment.ID
-					},
-					{
-						@"TransactionID", transactionId
-					},
-					{
-						@"ErrorResponse", JsonConvert.SerializeObject(ex.ApiError, Formatting.Indented)
-					}
-				};
-				_telemetry.TrackEvent(@"Payment.VoidAuthorizationFailed", customProperties);
-			}
-			catch (Exception ex1)
-			{
-				var responseBody = ex != null ? JsonConvert.SerializeObject(ex) : string.Empty;
-				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), responseBody,
-					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex1.Message, ex1.StackTrace, ex1);
-			}
+				{ "Message", "Attempt to void authorization on payment failed" },
+				{ "OrderID", order.ID },
+				{ "BuyerID", order.FromCompanyID },
+				{ "UserEmail", order.FromUser.Email },
+				{ "PaymentID", payment.ID },
+				{ "TransactionID", transactionID },
+				{ "ErrorResponse", JsonConvert.SerializeObject(ex.ApiError, Formatting.Indented)}
+			};
+			_telemetry.TrackEvent("Payment.VoidAuthorizationFailed", customProperties);
 		}
 	}
 }

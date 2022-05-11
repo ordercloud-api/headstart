@@ -1,16 +1,19 @@
-﻿using OrderCloud.SDK;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using ordercloud.integrations.library;
+using OrderCloud.SDK;
 
-namespace Headstart.Common.Models.Headstart
+namespace Headstart.Models
 {
-	public class HsProductFacet : ProductFacet<ProductFacetXp>
-	{
-		public string Id { get; set; } = string.Empty;
-	}
+    
+    public class HSProductFacet : ProductFacet<ProductFacetXp>, IHSObject
+    {
+        
+    }
 
-	public class ProductFacetXp
-	{
-		public IEnumerable<string> Options { get; set; } = new List<string>();
-		public string ParentId { get; set; } = string.Empty;
-	}
+    
+    public class ProductFacetXp
+    {
+        public IEnumerable<string> Options { get; set; }
+        public string ParentID { get; set; }
+    }
 }

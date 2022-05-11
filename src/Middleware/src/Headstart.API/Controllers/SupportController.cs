@@ -1,13 +1,15 @@
-using OrderCloud.SDK;
-using OrderCloud.Catalyst;
-using System.Threading.Tasks;
 using Headstart.API.Commands;
-using Microsoft.AspNetCore.Mvc;
-using Headstart.Common.Services;
-using System.Collections.Generic;
 using Headstart.API.Commands.Zoho;
 using Headstart.Common.Models.Misc;
-using Headstart.Common.Models.Headstart;
+using Headstart.Common.Services;
+using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Models;
+using Headstart.Models.Headstart;
+using Microsoft.AspNetCore.Mvc;
+using OrderCloud.Catalyst;
+using OrderCloud.SDK;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Headstart.API.Controllers
 {
@@ -46,10 +48,10 @@ namespace Headstart.API.Controllers
 		[HttpGet, Route("shipping")]
 		public async Task<ShipEstimateResponse> GetShippingRates([FromBody] ShipmentTestModel model)
 		{
-			var payload = new HsOrderCalculatePayload()
+			var payload = new HSOrderCalculatePayload()
 			{
 				ConfigData = null,
-				OrderWorksheet = new HsOrderWorksheet()
+				OrderWorksheet = new HSOrderWorksheet()
 				{
 					Order = model.Order,
 					LineItems = model.LineItems
@@ -113,7 +115,7 @@ namespace Headstart.API.Controllers
 		[HttpPost, Route("postordersubmit/{orderId}"), OrderCloudUserAuth]
 		public async Task<OrderSubmitResponse> ManuallyRunPostOrderSubmit(string orderId)
 		{
-			var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HsOrderWorksheet>(OrderDirection.Incoming, orderId);
+			var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderId);
 			return await _postSubmitCommand.HandleBuyerOrderSubmit(worksheet);
 		}
 
@@ -131,7 +133,7 @@ namespace Headstart.API.Controllers
 
 	public class ShipmentTestModel
 	{
-		public HsOrder Order { get; set; } = new HsOrder();
-		public List<HsLineItem> LineItems { get; set; } = new List<HsLineItem>();
+		public HSOrder Order { get; set; }
+		public List<HSLineItem> LineItems { get; set; }
 	}
 }

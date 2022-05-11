@@ -1,31 +1,33 @@
-﻿using System;
-using System.Linq;
-using OrderCloud.SDK;
-using Headstart.Common;
-using OrderCloud.Catalyst;
-using Sitecore.Diagnostics;
-using System.Threading.Tasks;
+﻿using Headstart.Common;
 using Headstart.Common.Services;
-using Headstart.Common.Models.Headstart;
+using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Models;
+using Headstart.Models.Headstart;
 using ordercloud.integrations.exchangerates;
+using OrderCloud.Catalyst;
+using OrderCloud.SDK;
+using Sitecore.Diagnostics;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ordercloud.integrations.cardconnect
 {
 	public interface ICreditCardCommand
 	{
 		Task<BuyerCreditCard> MeTokenizeAndSave(OrderCloudIntegrationsCreditCardToken card, DecodedToken decodedToken);
-		Task<CreditCard> TokenizeAndSave(string buyerId, OrderCloudIntegrationsCreditCardToken card, DecodedToken decodedToken);
-		Task<Payment> AuthorizePayment(OrderCloudIntegrationsCreditCardPayment payment, string userToken, string merchantId);
-		Task VoidTransactionAsync(HsPayment payment, HsOrder order, string userToken);
-		Task VoidPaymentAsync(string orderId, string userToken);
+		Task<CreditCard> TokenizeAndSave(string buyerID, OrderCloudIntegrationsCreditCardToken card, DecodedToken decodedToken);
+		Task<Payment> AuthorizePayment(OrderCloudIntegrationsCreditCardPayment payment, string userToken, string merchantID);
+		Task VoidTransactionAsync(HSPayment payment, HSOrder order, string userToken);
+		Task VoidPaymentAsync(string orderID, string userToken);
 	}
 
 	public class CreditCardCommand : ICreditCardCommand
 	{
 		private readonly IOrderCloudIntegrationsCardConnectService _cardConnect;
 		private readonly IOrderCloudClient _oc;
-		private readonly IHsExchangeRatesService _hsExchangeRates;
+		private readonly IHSExchangeRatesService _hsExchangeRates;
 		private readonly ISupportAlertService _supportAlerts;
 		private readonly AppSettings _settings;
 
@@ -37,7 +39,7 @@ namespace ordercloud.integrations.cardconnect
 		/// <param name="hsExchangeRates"></param>
 		/// <param name="supportAlerts"></param>
 		/// <param name="settings"></param>
-		public CreditCardCommand(IOrderCloudIntegrationsCardConnectService card, IOrderCloudClient oc, IHsExchangeRatesService hsExchangeRates, ISupportAlertService supportAlerts, AppSettings settings)
+		public CreditCardCommand(IOrderCloudIntegrationsCardConnectService card, IOrderCloudClient oc, IHSExchangeRatesService hsExchangeRates, ISupportAlertService supportAlerts, AppSettings settings)
 		{
 			try
 			{
@@ -56,21 +58,13 @@ namespace ordercloud.integrations.cardconnect
 		/// <summary>
 		/// Public re-usable TokenizeAndSave task method
 		/// </summary>
-		/// <param name="buyerId"></param>
+		/// <param name="buyerID"></param>
 		/// <param name="card"></param>
 		/// <param name="decodedToken"></param>
 		/// <returns>The newly created CreditCard response object from the TokenizeAndSave process</returns>
-		public async Task<CreditCard> TokenizeAndSave(string buyerId, OrderCloudIntegrationsCreditCardToken card, DecodedToken decodedToken)
+		public async Task<CreditCard> TokenizeAndSave(string buyerID, OrderCloudIntegrationsCreditCardToken card, DecodedToken decodedToken)
 		{
-			var creditCard = new CreditCard();
-			try
-			{
-				creditCard = await _oc.CreditCards.CreateAsync(buyerId, await Tokenize(card, decodedToken.AccessToken), decodedToken.AccessToken);
-			}
-			catch (Exception ex)
-			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
+			var creditCard = await _oc.CreditCards.CreateAsync(buyerID, await Tokenize(card, decodedToken.AccessToken), decodedToken.AccessToken);
 			return creditCard;
 		}
 
@@ -82,15 +76,7 @@ namespace ordercloud.integrations.cardconnect
 		/// <returns>The newly created BuyerCreditCard response object from the MeTokenizeAndSave process</returns>
 		public async Task<BuyerCreditCard> MeTokenizeAndSave(OrderCloudIntegrationsCreditCardToken card, DecodedToken decodedToken)
 		{
-			var buyerCreditCard = new BuyerCreditCard();
-			try
-			{
-				buyerCreditCard = await _oc.Me.CreateCreditCardAsync(await MeTokenize(card, decodedToken.AccessToken), decodedToken.AccessToken);
-			}
-			catch (Exception ex)
-			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
+			var buyerCreditCard = await _oc.Me.CreateCreditCardAsync(await MeTokenize(card, decodedToken.AccessToken), decodedToken.AccessToken);
 			return buyerCreditCard;
 		}
 
@@ -99,30 +85,32 @@ namespace ordercloud.integrations.cardconnect
 		/// </summary>
 		/// <param name="payment"></param>
 		/// <param name="userToken"></param>
-		/// <param name="merchantId"></param>
+		/// <param name="merchantID"></param>
 		/// <returns>The authorized Payment response object from the AuthorizePayment process</returns>
 		/// <exception cref="CatalystBaseException"></exception>
-		public async Task<Payment> AuthorizePayment(OrderCloudIntegrationsCreditCardPayment payment, string userToken, string merchantId)
+		public async Task<Payment> AuthorizePayment(OrderCloudIntegrationsCreditCardPayment payment, string userToken, string merchantID)
 		{
-			Require.That((payment.CreditCardID != null) || (payment.CreditCardDetails != null), new ErrorCode(@"CreditCard.CreditCardAuth", @"The Request must include either CreditCardDetails or CreditCardID."));
-			var cc = await GetMeCardDetails(payment, userToken);
-			Require.That(payment.IsValidCvv(cc), new ErrorCode(@"CreditCardAuth.InvalidCvv", @"The CVV is required for Credit Card Payment."));
-			Require.That(cc.Token != null, new ErrorCode(@"CreditCardAuth.InvalidToken", @"The Credit card must have valid authorization token."));
-			Require.That(cc.xp.CCBillingAddress != null, new ErrorCode(@"Invalid Bill Address", @"The Credit card must have a billing address."));
+			Require.That((payment.CreditCardID != null) || (payment.CreditCardDetails != null),
+				new ErrorCode("CreditCard.CreditCardAuth", "Request must include either CreditCardDetails or CreditCardID"));
 
-			var orderWorksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HsOrderWorksheet>(OrderDirection.Incoming, payment.OrderID);
+			var cc = await GetMeCardDetails(payment, userToken);
+
+			Require.That(payment.IsValidCvv(cc), new ErrorCode("CreditCardAuth.InvalidCvv", "CVV is required for Credit Card Payment"));
+			Require.That(cc.Token != null, new ErrorCode("CreditCardAuth.InvalidToken", "Credit card must have valid authorization token"));
+			Require.That(cc.xp.CCBillingAddress != null, new ErrorCode("Invalid Bill Address", "Credit card must have a billing address"));
+
+			var orderWorksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, payment.OrderID);
 			var order = orderWorksheet.Order;
-			Require.That(!order.IsSubmitted, new ErrorCode(@"CreditCardAuth.AlreadySubmitted", @"The Order has already been submitted."));
+
+			Require.That(!order.IsSubmitted, new ErrorCode("CreditCardAuth.AlreadySubmitted", "Order has already been submitted"));
 
 			var ccAmount = orderWorksheet.Order.Total;
-			var ocPaymentsList = (await _oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, payment.OrderID, filters: @"Type=CreditCard"));
+			var ocPaymentsList = (await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, payment.OrderID, filters: "Type=CreditCard"));
 			var ocPayments = ocPaymentsList.Items;
 			var ocPayment = ocPayments.Any() ? ocPayments[0] : null;
 			if (ocPayment == null)
 			{
-				var ex = new CatalystBaseException(@"Payment.MissingCreditCardPayment", @"The Order is missing credit card payment.");
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-				throw ex;
+				throw new CatalystBaseException("Payment.MissingCreditCardPayment", "Order is missing credit card payment");
 			}
 			try
 			{
@@ -134,48 +122,33 @@ namespace ordercloud.integrations.cardconnect
 					}
 					await VoidTransactionAsync(ocPayment, order, userToken);
 				}
-				var call = await _cardConnect.AuthWithoutCapture(CardConnectMapper.Map(cc, order, payment, merchantId, ccAmount));
-				ocPayment = await _oc.Payments.PatchAsync<HsPayment>(OrderDirection.Incoming, order.ID, ocPayment.ID, new PartialPayment { Accepted = true, Amount = ccAmount });
+				var call = await _cardConnect.AuthWithoutCapture(CardConnectMapper.Map(cc, order, payment, merchantID, ccAmount));
+				ocPayment = await _oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, order.ID, ocPayment.ID, new PartialPayment { Accepted = true, Amount = ccAmount });
 				return await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, ocPayment.ID, CardConnectMapper.Map(ocPayment, call));
 			}
 			catch (CreditCardAuthorizationException ex)
 			{
-				var ex1 = new CatalystBaseException($@"CreditCardAuth.{ex.ApiError.ErrorCode}", $@"{ex.ApiError.Message}.", ex.Response);
-				ocPayment = await _oc.Payments.PatchAsync<HsPayment>(OrderDirection.Incoming, order.ID, ocPayment.ID, new PartialPayment { Accepted = false, Amount = ccAmount });
+				ocPayment = await _oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, order.ID, ocPayment.ID, new PartialPayment { Accepted = false, Amount = ccAmount });
 				await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, ocPayment.ID, CardConnectMapper.Map(ocPayment, ex.Response));
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
-				throw ex1;
+				throw new CatalystBaseException($"CreditCardAuth.{ex.ApiError.ErrorCode}", ex.ApiError.Message, ex.Response);
 			}
 		}
 
 		/// <summary>
 		/// Public re-usable VoidPaymentAsync task method
 		/// </summary>
-		/// <param name="orderId"></param>
+		/// <param name="orderID"></param>
 		/// <param name="userToken"></param>
 		/// <returns></returns>
-		public async Task VoidPaymentAsync(string orderId, string userToken)
+		public async Task VoidPaymentAsync(string orderID, string userToken)
 		{
-			try
-			{
-				var order = await _oc.Orders.GetAsync<HsOrder>(OrderDirection.Incoming, orderId);
-				var paymentList = await _oc.Payments.ListAsync<HsPayment>(OrderDirection.Incoming, order.ID);
-				var payment = paymentList.Items.Any() ? paymentList.Items[0] : null;
-				if (payment == null)
-				{
-					return;
-				}
+			var order = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
+			var paymentList = await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, order.ID);
+			var payment = paymentList.Items.Any() ? paymentList.Items[0] : null;
+			if(payment == null) { return; }
 
-				await VoidTransactionAsync(payment, order, userToken);
-				await _oc.Payments.PatchAsync(OrderDirection.Incoming, orderId, payment.ID, new PartialPayment
-				{
-					Accepted = false
-				});
-			}
-			catch (Exception ex)
-			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
+			await VoidTransactionAsync(payment, order, userToken);
+			await _oc.Payments.PatchAsync(OrderDirection.Incoming, orderID, payment.ID, new PartialPayment { Accepted = false });
 		}
 
 		/// <summary>
@@ -186,21 +159,21 @@ namespace ordercloud.integrations.cardconnect
 		/// <param name="userToken"></param>
 		/// <returns></returns>
 		/// <exception cref="CatalystBaseException"></exception>
-		public async Task VoidTransactionAsync(HsPayment payment, HsOrder order, string userToken)
+		public async Task VoidTransactionAsync(HSPayment payment, HSOrder order, string userToken)
 		{
-			var transactionId = string.Empty;
+			var transactionID = "";
 			try
 			{
 				if (payment.Accepted == true)
 				{
 					var transaction = payment.Transactions
-						.Where(x => x.Type == @"CreditCard")
+						.Where(x => x.Type == "CreditCard")
 						.OrderBy(x => x.DateExecuted)
 						.LastOrDefault(t => t.Succeeded);
 					var retref = transaction?.xp?.CardConnectResponse?.retref;
 					if (retref != null)
 					{
-						transactionId = transaction.ID;
+						transactionID = transaction.ID;
 						var userCurrency = await _hsExchangeRates.GetCurrencyForUser(userToken);
 						var response = await _cardConnect.VoidAuthorization(new CardConnectVoidRequest
 						{
@@ -214,11 +187,9 @@ namespace ordercloud.integrations.cardconnect
 			}
 			catch (CreditCardVoidException ex)
 			{
-				await _supportAlerts.VoidAuthorizationFailed(payment, transactionId, order, ex);
+				await _supportAlerts.VoidAuthorizationFailed(payment, transactionID, order, ex);
 				await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, ex.Response));
-				var ex1 = new CatalystBaseException(@"Payment.FailedToVoidAuthorization", $@"{ex.ApiError.Message}.");
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex.StackTrace, this, true);
-				throw ex1;
+				throw new CatalystBaseException("Payment.FailedToVoidAuthorization", ex.ApiError.Message);
 			}
 		}
 
@@ -229,27 +200,18 @@ namespace ordercloud.integrations.cardconnect
 		/// <returns>The MerchantID string value</returns>
 		private string GetMerchantID(CurrencySymbol userCurrency)
 		{
-			var resp = string.Empty;
-			try
+			if (userCurrency == CurrencySymbol.USD)
 			{
-				if (userCurrency == CurrencySymbol.USD)
-				{
-					resp = _settings.CardConnectSettings.UsdMerchantID;
-				}
-				else if (userCurrency == CurrencySymbol.CAD)
-				{
-					resp = _settings.CardConnectSettings.CadMerchantID;
-				}
-				else
-				{
-					resp = _settings.CardConnectSettings.EurMerchantID;
-				}
+				return _settings.CardConnectSettings.UsdMerchantID;
 			}
-			catch (CreditCardVoidException ex)
+			else if (userCurrency == CurrencySymbol.CAD)
 			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				return _settings.CardConnectSettings.CadMerchantID;
 			}
-			return resp;
+			else
+			{
+				return _settings.CardConnectSettings.EurMerchantID;
+			}
 		}
 
 		/// <summary>

@@ -1,14 +1,17 @@
-﻿using OrderCloud.SDK;
-using ordercloud.integrations.library;
+﻿using ordercloud.integrations.library;
+using OrderCloud.SDK;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Headstart.Common.Models.Headstart
+namespace Headstart.Models.Headstart
 {
-	public class HsOrderCalculateResponse : OrderCalculateResponse<OrderCalculateResponseXp>
-	{
-	}
+    public class HSOrderCalculateResponse : OrderCalculateResponse<OrderCalculateResponseXp>
+    {
+    }
 
-	public class OrderCalculateResponseXp
-	{
-		public OrderTaxCalculation TaxCalculation { get; set; } = new OrderTaxCalculation();
-	}
+    public class OrderCalculateResponseXp
+    {
+        public OrderTaxCalculation TaxCalculation { get; set; }
+    }
 }

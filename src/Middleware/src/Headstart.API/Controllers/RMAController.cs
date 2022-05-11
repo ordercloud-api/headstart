@@ -1,10 +1,10 @@
-﻿using OrderCloud.SDK;
-using OrderCloud.Catalyst;
-using Headstart.API.Commands;
-using System.Threading.Tasks;
+﻿using Headstart.API.Commands;
+using Headstart.Common.Models;
 using Microsoft.AspNetCore.Mvc;
 using ordercloud.integrations.library;
-using Headstart.Common.Repositories.Models;
+using OrderCloud.Catalyst;
+using OrderCloud.SDK;
+using System.Threading.Tasks;
 
 namespace Headstart.API.Controllers
 {
@@ -36,7 +36,7 @@ namespace Headstart.API.Controllers
 		/// Post action for the RMA request (POST method)
 		/// </summary>
 		/// <param name="rma"></param>
-		/// <returns>The response from the post action for the RMA request</returns>
+		/// <returns>The RMA object from the post action for the RMA request</returns>
 		[HttpPost, OrderCloudUserAuth(ApiRole.Shopper)]
 		public async Task<RMA> PostRMA([FromBody] RMA rma)
 		{
@@ -47,7 +47,7 @@ namespace Headstart.API.Controllers
 		/// Post action for the BuyerRMAs request (POST method)
 		/// </summary>
 		/// <param name="listOptions"></param>
-		/// <returns>The CosmosListPage of RMAs for a buyer request</returns>
+		/// <returns>The CosmosListPage of RMA ibjects for a buyer request</returns>
 		[HttpPost, Route("list/buyer"), OrderCloudUserAuth(HSLocationViewAllOrders)]
 		public async Task<CosmosListPage<RMA>> ListBuyerRMAs([FromBody] CosmosListOptions listOptions)
 		{
@@ -77,7 +77,7 @@ namespace Headstart.API.Controllers
 		[HttpGet, Route("{orderID}"), OrderCloudUserAuth(HSOrderAdmin, HSOrderReader, HSShipmentAdmin)]
 		public async Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderId, CommerceRole commerceRole, MeUser me, bool accessAllRMAsOnOrder = false)
 		{
-			return await _rmaCommand.ListRMAsByOrderId(orderId, commerceRole, me, accessAllRMAsOnOrder);
+			return await _rmaCommand.ListRMAsByOrderID(orderId, commerceRole, me, accessAllRMAsOnOrder);
 		}
 
 		/// <summary>

@@ -50,27 +50,19 @@ namespace Headstart.Common.Services
 		/// <returns></returns>
 		public async Task SendMessage<T>(string queueName, T message, double? afterMinutes = null)
 		{
-			try
+			var sender = senders.GetOrAdd(queueName, _client.CreateSender(queueName));
+			var messageString = JsonConvert.SerializeObject(message);
+			var messageBytes = Encoding.UTF8.GetBytes(messageString);
+			if (afterMinutes == null)
 			{
-				var sender = senders.GetOrAdd(queueName, _client.CreateSender(queueName));
-				var messageString = JsonConvert.SerializeObject(message);
-				var messageBytes = Encoding.UTF8.GetBytes(messageString);
-				if (afterMinutes == null)
-				{
-					// send message immediately
-					await sender.SendMessageAsync(new ServiceBusMessage(messageBytes));
-				}
-				else
-				{
-					// send message after x minutes
-					DateTime afterMinutesUtc = DateTime.UtcNow.AddMinutes((double)afterMinutes);
-					await sender.SendMessageAsync(new ServiceBusMessage(messageBytes) { ScheduledEnqueueTime = afterMinutesUtc });
-				}
+				// send message immediately
+				await sender.SendMessageAsync(new ServiceBusMessage(messageBytes));
 			}
-			catch (Exception ex)
+			else
 			{
-				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
-					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
+				// send message after x minutes
+				var afterMinutesUtc = DateTime.UtcNow.AddMinutes((double)afterMinutes);
+				await sender.SendMessageAsync(new ServiceBusMessage(messageBytes) { ScheduledEnqueueTime = afterMinutesUtc });
 			}
 		}
 
@@ -82,38 +74,30 @@ namespace Headstart.Common.Services
 		/// <returns></returns>
 		public async Task SendMessageBatchToTopicAsync(string topicName, Queue<ServiceBusMessage> messages)
 		{
-			try
+			ServiceBusSender sender = senders.GetOrAdd(topicName, _client.CreateSender(topicName));
+
+			int messageCount = messages.Count;
+
+			while (messages.Count > 0)
 			{
-				var sender = senders.GetOrAdd(topicName, _client.CreateSender(topicName));
-				var messageCount = messages.Count;
-				while (messages.Count > 0)
+				using ServiceBusMessageBatch messageBatch = await sender.CreateMessageBatchAsync();
+
+				if (messageBatch.TryAddMessage(messages.Peek()))
 				{
-					using var messageBatch = await sender.CreateMessageBatchAsync();
-
-					if (messageBatch.TryAddMessage(messages.Peek()))
-					{
-						messages.Dequeue();
-					}
-					else
-					{
-						throw new Exception($@"Message {messageCount - messages.Count} is too large and cannot be sent.");
-					}
-
-					while (messages.Count > 0 && messageBatch.TryAddMessage(messages.Peek()))
-					{
-						messages.Dequeue();
-					}
-					await sender.SendMessagesAsync(messageBatch);
+					messages.Dequeue();
 				}
-				var message = $@"Sent a batch of {messageCount} messages to the topic: {topicName}.";
-				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), message,
-					LoggingNotifications.GetExceptionMessagePrefixKey(), false);
+				else
+				{
+					throw new Exception($"Message {messageCount - messages.Count} is too large and cannot be sent.");
+				}
+
+				while (messages.Count > 0 && messageBatch.TryAddMessage(messages.Peek()))
+				{
+					messages.Dequeue();
+				}
+				await sender.SendMessagesAsync(messageBatch);
 			}
-			catch (Exception ex)
-			{
-				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
-					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
-			}
+			Console.WriteLine($"Sent a batch of {messageCount} messages to the topic: {topicName}");
 		}
 	}
 }

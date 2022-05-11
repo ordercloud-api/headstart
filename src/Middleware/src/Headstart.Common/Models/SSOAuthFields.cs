@@ -1,9 +1,12 @@
-﻿using Headstart.Common.Models.Base;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Headstart.Common.Models
 {
-	public class SsoAuthFields : HsBaseObject
+	public class SSOAuthFields
 	{
-		public string Username { get; set; } = string.Empty;
+		public string ID { get; set; }
+		public string Username { get; set; }
 	}
 }

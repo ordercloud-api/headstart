@@ -1,29 +1,29 @@
-using System;
-using System.Net;
-using System.Linq;
-using OrderCloud.SDK;
-using Headstart.Common;
-using OrderCloud.Catalyst;
-using Sitecore.Diagnostics;
-using System.Threading.Tasks;
-using Headstart.Common.Helpers;
-using System.Collections.Generic;
-using Headstart.Common.Constants;
-using Headstart.Common.Models.Headstart;
 using Headstart.API.Commands.SupplierSync;
+using Headstart.Common;
+using Headstart.Common.Constants;
+using Headstart.Common.Helpers;
+using Headstart.Models;
+using Headstart.Models.Headstart;
+using OrderCloud.Catalyst;
+using OrderCloud.SDK;
+using Sitecore.Diagnostics;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace Headstart.API.Commands
 {
-	public interface IHsSupplierCommand
+	public interface IHSSupplierCommand
 	{
-		Task<HsSupplier> Create(HsSupplier supplier, string accessToken, bool isSeedingEnvironment = false);
-		Task<HsSupplier> GetMySupplier(string supplierId, DecodedToken decodedToken);
-		Task<HsSupplier> UpdateSupplier(string supplierId, PartialSupplier supplier, DecodedToken decodedToken);
-		Task<HsSupplierOrderData> GetSupplierOrderData(string supplierOrderId, OrderType orderType, DecodedToken decodedToken);
+		Task<HSSupplier> Create(HSSupplier supplier, string accessToken, bool isSeedingEnvironment = false);
+		Task<HSSupplier> GetMySupplier(string supplierID, DecodedToken decodedToken);
+		Task<HSSupplier> UpdateSupplier(string supplierID, PartialSupplier supplier, DecodedToken decodedToken);
+		Task<HSSupplierOrderData> GetSupplierOrderData(string supplierOrderID, OrderType orderType, DecodedToken decodedToken);
 	}
 
-	public class HsSupplierCommand : IHsSupplierCommand
+	public class HSSupplierCommand : IHSSupplierCommand
 	{
 		private readonly IOrderCloudClient _oc;
 		private readonly ISupplierSyncCommand _supplierSync;
@@ -31,13 +31,13 @@ namespace Headstart.API.Commands
 		private readonly ISupplierApiClientHelper _apiClientHelper;
 
 		/// <summary>
-		/// The IOC based constructor method for the HsSupplierCommand class object with Dependency Injection
+		/// The IOC based constructor method for the HSSupplierCommand class object with Dependency Injection
 		/// </summary>
 		/// <param name="settings"></param>
 		/// <param name="oc"></param>
 		/// <param name="apiClientHelper"></param>
 		/// <param name="supplierSync"></param>
-		public HsSupplierCommand(AppSettings settings, IOrderCloudClient oc, ISupplierApiClientHelper apiClientHelper, ISupplierSyncCommand supplierSync)
+		public HSSupplierCommand(AppSettings settings, IOrderCloudClient oc, ISupplierApiClientHelper apiClientHelper, ISupplierSyncCommand supplierSync)
 		{            
 			try
 			{
@@ -55,84 +55,66 @@ namespace Headstart.API.Commands
 		/// <summary>
 		/// Public re-usable GetMySupplier task method
 		/// </summary>
-		/// <param name="supplierId"></param>
+		/// <param name="supplierID"></param>
 		/// <param name="decodedToken"></param>
-		/// <returns>The HsSupplier response object from the GetMySupplier process</returns>
-		public async Task<HsSupplier> GetMySupplier(string supplierId, DecodedToken decodedToken)
+		/// <returns>The HSSupplier object from the GetMySupplier process</returns>
+		public async Task<HSSupplier> GetMySupplier(string supplierID, DecodedToken decodedToken)
 		{
-			var resp = new HsSupplier();
-			try
-			{
-				var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-				Require.That(supplierId == me.Supplier.ID, 
-					new ErrorCode(@"Unauthorized", $@"You are only authorized to view the {me.Supplier.ID}.", HttpStatusCode.Unauthorized));
-				resp = await _oc.Suppliers.GetAsync<HsSupplier>(supplierId);
-			}
-			catch (Exception ex)
-			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
-			return resp;
+			var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+			Require.That(supplierID == me.Supplier.ID,
+				new ErrorCode("Unauthorized", $"You are only authorized to view {me.Supplier.ID}.", HttpStatusCode.Unauthorized));
+			return await _oc.Suppliers.GetAsync<HSSupplier>(supplierID);
 		}
 
 		/// <summary>
 		/// Public re-usable UpdateSupplier task method
 		/// </summary>
-		/// <param name="supplierId"></param>
+		/// <param name="supplierID"></param>
 		/// <param name="supplier"></param>
 		/// <param name="decodedToken"></param>
-		/// <returns>The HsSupplier response object from the UpdateSupplier process</returns>
-		public async Task<HsSupplier> UpdateSupplier(string supplierId, PartialSupplier supplier, DecodedToken decodedToken)
+		/// <returns>The HSSupplier object from the UpdateSupplier process</returns>
+		public async Task<HSSupplier> UpdateSupplier(string supplierID, PartialSupplier supplier, DecodedToken decodedToken)
 		{
-			var updatedSupplier = new HsSupplier();
-			try
+			var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+			Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierID == me.Supplier.ID, new ErrorCode("Unauthorized", $"You are not authorized to update supplier {supplierID}", HttpStatusCode.Unauthorized));
+			var currentSupplier = await _oc.Suppliers.GetAsync<HSSupplier>(supplierID);
+			var updatedSupplier = await _oc.Suppliers.PatchAsync<HSSupplier>(supplierID, supplier);
+			// Update supplier products only on a name change
+			if (currentSupplier.Name != supplier.Name || currentSupplier.xp.Currency.ToString() != supplier.xp.Currency.Value)
 			{
-				var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-				Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierId == me.Supplier.ID, new ErrorCode("Unauthorized", $@"You are not authorized to update supplier {supplierId}.", HttpStatusCode.Unauthorized));
-				var currentSupplier = await _oc.Suppliers.GetAsync<HsSupplier>(supplierId);
-				updatedSupplier = await _oc.Suppliers.PatchAsync<HsSupplier>(supplierId, supplier);
-				// Update supplier products only on a name change
-				if (currentSupplier.Name != supplier.Name || currentSupplier.xp.Currency.ToString() != supplier.xp.Currency.Value)
+				var productsToUpdate = await _oc.Products.ListAllAsync<HSProduct>(
+					supplierID: supplierID,
+					accessToken: decodedToken.AccessToken
+				);
+				ApiClient supplierClient = await _apiClientHelper.GetSupplierApiClient(supplierID, decodedToken.AccessToken);
+				if (supplierClient == null) { throw new Exception($"Default supplier client not found. SupplierID: {supplierID}"); }
+				var configToUse = new OrderCloudClientConfig
 				{
-					var productsToUpdate = await _oc.Products.ListAllAsync<HsProduct>(supplierID: supplierId, accessToken: decodedToken.AccessToken);
-					ApiClient supplierClient = await _apiClientHelper.GetSupplierApiClient(supplierId, decodedToken.AccessToken);
-					if (supplierClient == null) 
-					{ 
-						var ex = new Exception($@"The default supplier client with the SupplierID: {supplierId} was not found.");
-						LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-						throw ex;
-					}
-
-					var configToUse = new OrderCloudClientConfig
+					ApiUrl = decodedToken.ApiUrl,
+					AuthUrl = decodedToken.AuthUrl,
+					ClientId = supplierClient.ID,
+					ClientSecret = supplierClient.ClientSecret,
+					GrantType = GrantType.ClientCredentials,
+					Roles = new[]
 					{
-						ApiUrl = decodedToken.ApiUrl,
-						AuthUrl = decodedToken.AuthUrl,
-						ClientId = supplierClient.ID,
-						ClientSecret = supplierClient.ClientSecret,
-						GrantType = GrantType.ClientCredentials,
-						Roles = new[]
-						{
-							ApiRole.SupplierAdmin,
-							ApiRole.ProductAdmin
-						},
-					};
+						ApiRole.SupplierAdmin,
+						ApiRole.ProductAdmin
+					},
 
-					var ocClient = new OrderCloudClient(configToUse);
-					await ocClient.AuthenticateAsync();
-					var token = ocClient.TokenResponse.AccessToken;
-					foreach (var product in productsToUpdate)
-					{
-						product.xp.Facets[@"supplier"] = new List<string>() { supplier.Name };
-						product.xp.Currency = supplier.xp.Currency;
-					}
-					await Throttler.RunAsync(productsToUpdate, 100, 5, product => ocClient.Products.SaveAsync(product.ID, product, accessToken: token));
+				};
+				var ocClient = new OrderCloudClient(configToUse);
+				await ocClient.AuthenticateAsync();
+				var token = ocClient.TokenResponse.AccessToken;
+				foreach (var product in productsToUpdate)
+				{
+					product.xp.Facets["supplier"] = new List<string>() { supplier.Name };
+					product.xp.Currency = supplier.xp.Currency;
 				}
+				await Throttler.RunAsync(productsToUpdate, 100, 5, product => ocClient.Products.SaveAsync(product.ID, product, accessToken: token));
 			}
-			catch (Exception ex)
-			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
+
 			return updatedSupplier;
+
 		}
 
 		/// <summary>
@@ -141,72 +123,70 @@ namespace Headstart.API.Commands
 		/// <param name="supplier"></param>
 		/// <param name="accessToken"></param>
 		/// <param name="isSeedingEnvironment"></param>
-		/// <returns>The newly created HsSupplier response object</returns>
-		public async Task<HsSupplier> Create(HsSupplier supplier, string accessToken, bool isSeedingEnvironment = false)
+		/// <returns>The newly created HSSupplier object</returns>
+		public async Task<HSSupplier> Create(HSSupplier supplier, string accessToken, bool isSeedingEnvironment = false)
 		{
-			try
+			var token = isSeedingEnvironment ? accessToken : null;
+
+			// Create Supplier
+			supplier.ID = "{supplierIncrementor}";
+			var ocSupplier = await _oc.Suppliers.CreateAsync(supplier, token);
+			supplier.ID = ocSupplier.ID;
+			var ocSupplierID = ocSupplier.ID;
+     
+			// This supplier user is created so that we can define an api client with it as the default context user
+			// this allows us to perform elevated supplier actions on behalf of that supplier company
+			// It is not an actual user that will login so there is no password or valid email
+			var supplierUser = await _oc.SupplierUsers.CreateAsync(ocSupplierID, new User()
 			{
-				var token = isSeedingEnvironment ? accessToken : null;
-				// Create Supplier
-				supplier.ID = @"{supplierIncrementor}";
-				var ocSupplier = await _oc.Suppliers.CreateAsync(supplier, token);
-				supplier.ID = ocSupplier.ID;
-				var ocSupplierId = ocSupplier.ID;
+				Active = true,
+				FirstName = "Integration",
+				LastName = "Developer",
+				Username = $"dev_{ocSupplierID}",
+				Email = "test@test.com"
+			}, token);
 
-				// This supplier user is created so that we can define an api client with it as the default context user
-				// this allows us to perform elevated supplier actions on behalf of that supplier company
-				// It is not an actual user that will login so there is no password or valid email
-				var supplierUser = await _oc.SupplierUsers.CreateAsync(ocSupplierId, new User()
-				{
-					Active = true,
-					FirstName = @"Integration",
-					LastName = @"Developer",
-					Username = $@"dev_{ocSupplierId}",
-					Email = @"test@test.com"
-				}, token);
+			await CreateUserTypeUserGroupsAndSecurityProfileAssignments(supplierUser, token, ocSupplierID);
 
-				await CreateUserTypeUserGroupsAndSecurityProfileAssignments(supplierUser, token, ocSupplierId);
-				// Create API Client for new supplier
-				var apiClient = await _oc.ApiClients.CreateAsync(new ApiClient()
-				{
-					AppName = $@"Integration Client {ocSupplier.Name}",
-					Active = true,
-					DefaultContextUserName = supplierUser.Username,
-					ClientSecret = _settings.OrderCloudSettings.MiddlewareClientSecret,
-					AccessTokenDuration = 600,
-					RefreshTokenDuration = 43200,
-					AllowAnyBuyer = false,
-					AllowAnySupplier = false,
-					AllowSeller = false,
-					IsAnonBuyer = false,
-				}, token);
-
-				// not adding api client ID on supplier Create because that approach would require creating the API client first
-				// but creating supplier first is preferable in case there are error in the request
-				ocSupplier = await _oc.Suppliers.PatchAsync(ocSupplier.ID, new PartialSupplier()
-				{
-					xp = new
-					{
-						ApiClientID = apiClient.ID
-					}
-				}, token);
-				// Assign Supplier API Client to new supplier
-				await _oc.ApiClients.SaveAssignmentAsync(new ApiClientAssignment()
-				{
-					ApiClientID = apiClient.ID,
-					SupplierID = ocSupplierId
-				}, token);
-				// assign to message sender
-				await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
-				{
-					MessageSenderID = @"SupplierEmails",
-					SupplierID = ocSupplierId
-				});
-			}
-			catch (Exception ex)
+			// Create API Client for new supplier
+			var apiClient = await _oc.ApiClients.CreateAsync(new ApiClient()
 			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
+				AppName = $"Integration Client {ocSupplier.Name}",
+				Active = true,
+				DefaultContextUserName = supplierUser.Username,
+				ClientSecret = _settings.OrderCloudSettings.MiddlewareClientSecret,
+				AccessTokenDuration = 600,
+				RefreshTokenDuration = 43200,
+				AllowAnyBuyer = false,
+				AllowAnySupplier = false,
+				AllowSeller = false,
+				IsAnonBuyer = false,
+			}, token);
+
+
+			// not adding api client ID on supplier Create because that approach would require creating the API client first
+			// but creating supplier first is preferable in case there are error in the request
+			ocSupplier = await _oc.Suppliers.PatchAsync(ocSupplier.ID, new PartialSupplier()
+			{
+				xp = new
+				{
+					ApiClientID = apiClient.ID
+				}
+			}, token);
+
+			// Assign Supplier API Client to new supplier
+			await _oc.ApiClients.SaveAssignmentAsync(new ApiClientAssignment()
+			{
+				ApiClientID = apiClient.ID,
+				SupplierID = ocSupplierID
+			}, token);
+
+			// assign to message sender
+			await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
+			{
+				MessageSenderID = "SupplierEmails",
+				SupplierID = ocSupplierID
+			});
 			return supplier;
 		}
 
@@ -217,74 +197,58 @@ namespace Headstart.API.Commands
 		/// <param name="token"></param>
 		/// <param name="supplierId"></param>
 		/// <returns></returns>
-		public async Task CreateUserTypeUserGroupsAndSecurityProfileAssignments(User user, string token, string supplierId)
+		public async Task CreateUserTypeUserGroupsAndSecurityProfileAssignments(User user, string token, string supplierID)
 		{
-			try
+			// Assign supplier to HSMeAdmin security profile
+			await _oc.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment()
 			{
-				// Assign supplier to HsMeAdmin security profile
-				await _oc.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment()
+				SupplierID = supplierID,
+				SecurityProfileID = "HSMeAdmin"
+			}, token);
+
+			foreach(var userType in HSUserTypes.Supplier())
+			{
+				var userGroupID = $"{supplierID}{userType.UserGroupIDSuffix}";
+
+				await _oc.SupplierUserGroups.CreateAsync(supplierID, new UserGroup()
 				{
-					SupplierID = supplierId,
-					SecurityProfileID = $@"HsMeAdmin"
+					ID = userGroupID,
+					Name = userType.UserGroupName,
+					xp =
+					{
+						Type = "UserPermissions",
+					}
+				}, token);
+ 
+				await _oc.SupplierUserGroups.SaveUserAssignmentAsync(supplierID, new UserGroupAssignment()
+				{
+					UserID = user.ID,
+					UserGroupID = userGroupID
 				}, token);
 
-				foreach (var userType in HsUserTypes.Supplier())
+				foreach (var customRole in userType.CustomRoles)
 				{
-					var userGroupID = $@"{supplierId}{userType.UserGroupIdSuffix}";
-
-					await _oc.SupplierUserGroups.CreateAsync(supplierId, new UserGroup()
+					await _oc.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment()
 					{
-						ID = userGroupID,
-						Name = userType.UserGroupName,
-						xp =
-						{
-							Type = @"UserPermissions",
-						}
+						SupplierID = supplierID,
+						UserGroupID = userGroupID,
+						SecurityProfileID = customRole.ToString()
 					}, token);
-
-					await _oc.SupplierUserGroups.SaveUserAssignmentAsync(supplierId, new UserGroupAssignment()
-					{
-						UserID = user.ID,
-						UserGroupID = userGroupID
-					}, token);
-
-					foreach (var customRole in userType.CustomRoles.ToList())
-					{
-						await _oc.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment()
-						{
-							SupplierID = supplierId,
-							UserGroupID = userGroupID,
-							SecurityProfileID = customRole.ToString()
-						}, token);
-					}
 				}
-			}
-			catch (Exception ex)
-			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
 			}
 		}
 
 		/// <summary>
 		/// Public re-usable GetSupplierOrderData task method
 		/// </summary>
-		/// <param name="supplierOrderId"></param>
+		/// <param name="supplierOrderID"></param>
 		/// <param name="orderType"></param>
 		/// <param name="decodedToken"></param>
-		/// <returns>The HsSupplierOrderData response object from the GetSupplierOrderData process</returns>
-		public async Task<HsSupplierOrderData> GetSupplierOrderData(string supplierOrderId, OrderType orderType, DecodedToken decodedToken)
+		/// <returns>The HSSupplierOrderData object from the GetSupplierOrderData process</returns>
+		public async Task<HSSupplierOrderData> GetSupplierOrderData(string supplierOrderID, OrderType orderType, DecodedToken decodedToken)
 		{
-			var resp = new HsSupplierOrderData();
-			try
-			{
-				var orderData = await _supplierSync.GetOrderAsync(supplierOrderId, orderType, decodedToken);
-				resp = (HsSupplierOrderData)orderData.ToObject(typeof(HsSupplierOrderData));
-			}
-			catch (Exception ex)
-			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
-			return resp;
+			var orderData = await _supplierSync.GetOrderAsync(supplierOrderID, orderType, decodedToken);
+			return (HSSupplierOrderData)orderData.ToObject(typeof(HSSupplierOrderData));
 		}
 	}
 }

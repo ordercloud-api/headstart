@@ -1,14 +1,12 @@
-﻿using Headstart.Common.Models.Headstart;
+﻿using Headstart.Models;
 using ordercloud.integrations.library;
 
-namespace Headstart.Common.Repositories.Models
+namespace Headstart.Common.Models
 {
-	public class LineItemDetailData : CosmosObject
-	{
-		public string PartitionKey { get; set; } = string.Empty;
-
-		public string OrderId { get; set; } = string.Empty;
-
-		public HsOrderLineItemData Data { get; set; } = new HsOrderLineItemData();
-	}
+    public class LineItemDetailData : CosmosObject
+    {
+        public string PartitionKey { get; set; }
+        public string OrderID { get; set; }
+        public HSOrderLineItemData Data { get; set; }
+    }
 }

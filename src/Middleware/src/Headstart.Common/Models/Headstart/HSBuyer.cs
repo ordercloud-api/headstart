@@ -1,34 +1,31 @@
-﻿using OrderCloud.SDK;
+﻿using ordercloud.integrations.library;
+using OrderCloud.SDK;
 
-namespace Headstart.Common.Models.Headstart
+namespace Headstart.Models
 {
-	public class SuperHsBuyer
-	{
-		public HsBuyer Buyer { get; set; } = new HsBuyer();
+    public class SuperHSBuyer
+    {
+        public HSBuyer Buyer { get; set; }
+        public BuyerMarkup Markup { get; set; }
+        public ImpersonationConfig ImpersonationConfig { get; set; }
+    }
 
-		public BuyerMarkup Markup { get; set; } = new BuyerMarkup();
+    public class HSBuyer : Buyer<BuyerXp>, IHSObject
+    {
+        
+    }
 
-		public ImpersonationConfig ImpersonationConfig { get; set; } = new ImpersonationConfig();
-	}
-
-	public class HsBuyer : Buyer<BuyerXp>
-	{
-		public string Id { get; set; } = string.Empty;
-	}
-
-	/// Just int for now, but leaving the door open for future configurations on how this markup functions
+	// just int for now, but leaving the door open for future configurations on how this markup functions
 	public class BuyerMarkup
-	{
-		public int Percent { get; set; }
-	}
+    {
+        public int Percent { get; set; }
+    }
 
-	public class BuyerXp
-	{
-		// Temporary field while waiting on content docs
-		public int MarkupPercent { get; set; }
-
-		public string ChiliPublishFolder { get; set; } = string.Empty;
-
-		public string Url { get; set; } = string.Empty;
-	}
+    public class BuyerXp
+    {
+        // temporary field while waiting on content docs
+        public int MarkupPercent { get; set; }
+        public string ChiliPublishFolder { get; set; }
+        public string URL { get; set; }
+    }
 }

@@ -1,21 +1,23 @@
-using System;
-using System.Net;
-using System.Linq;
-using OrderCloud.SDK;
 using Headstart.Common;
-using OrderCloud.Catalyst;
-using Sitecore.Diagnostics;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using Headstart.Common.Models.Headstart;
+using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Models;
+using Headstart.Models.Headstart;
 using ordercloud.integrations.cardconnect;
+using OrderCloud.Catalyst;
+using OrderCloud.SDK;
+using Sitecore.Diagnostics;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace Headstart.API.Commands
 {
 	public interface IOrderSubmitCommand
 	{
-		Task<HsOrder> SubmitOrderAsync(string orderID, OrderDirection direction, OrderCloudIntegrationsCreditCardPayment payment, string userToken);
+		Task<HSOrder> SubmitOrderAsync(string orderID, OrderDirection direction, OrderCloudIntegrationsCreditCardPayment payment, string userToken);
 	}
     
 	public class OrderSubmitCommand : IOrderSubmitCommand
@@ -47,36 +49,32 @@ namespace Headstart.API.Commands
 		/// <summary>
 		/// Public re-usable SubmitOrderAsync task method
 		/// </summary>
-		/// <param name="orderId"></param>
+		/// <param name="orderID"></param>
 		/// <param name="direction"></param>
 		/// <param name="payment"></param>
 		/// <param name="userToken"></param>
-		/// <returns>The HsOrder response object from the SubmitOrderAsync process</returns>
-		public async Task<HsOrder> SubmitOrderAsync(string orderId, OrderDirection direction, OrderCloudIntegrationsCreditCardPayment payment, string userToken)
+		/// <returns>The HSOrder object from the SubmitOrderAsync process</returns>
+		public async Task<HSOrder> SubmitOrderAsync(string orderID, OrderDirection direction, OrderCloudIntegrationsCreditCardPayment payment, string userToken)
 		{
-			var resp = new HsOrder();
-			var incrementedOrderId = string.Empty;
+			var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
+			await ValidateOrderAsync(worksheet, payment, userToken);
+
+			var incrementedOrderID = await IncrementOrderAsync(worksheet);
+			// If Credit Card info is null, payment is a Purchase Order, thus skip CC validation
+			if (payment.CreditCardDetails != null || payment.CreditCardID != null)
+			{
+				payment.OrderID = incrementedOrderID;
+				await _card.AuthorizePayment(payment, userToken, GetMerchantID(payment));
+			}
 			try
 			{
-				var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HsOrderWorksheet>(OrderDirection.Incoming, orderId);
-				await ValidateOrderAsync(worksheet, payment, userToken);
-
-				incrementedOrderId = await IncrementOrderAsync(worksheet);
-				// If Credit Card info is null, payment is a Purchase Order, thus skip CC validation
-				if (payment.CreditCardDetails != null || payment.CreditCardID != null)
-				{
-					payment.OrderID = incrementedOrderId;
-					await _card.AuthorizePayment(payment, userToken, GetMerchantId(payment));
-				}
-				resp = await _oc.Orders.SubmitAsync<HsOrder>(direction, incrementedOrderId, userToken);
+				return await _oc.Orders.SubmitAsync<HSOrder>(direction, incrementedOrderID, userToken);
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
-				await _card.VoidPaymentAsync(incrementedOrderId, userToken);
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-				throw ex;
+				await _card.VoidPaymentAsync(incrementedOrderID, userToken);
+				throw;
 			}
-			return resp;
 		}
 
 		/// <summary>
@@ -87,29 +85,42 @@ namespace Headstart.API.Commands
 		/// <param name="userToken"></param>
 		/// <returns></returns>
 		/// <exception cref="CatalystBaseException"></exception>
-		private async Task ValidateOrderAsync(HsOrderWorksheet worksheet, OrderCloudIntegrationsCreditCardPayment payment, string userToken)
+		private async Task ValidateOrderAsync(HSOrderWorksheet worksheet, OrderCloudIntegrationsCreditCardPayment payment, string userToken)
 		{
+			Require.That(
+				!worksheet.Order.IsSubmitted, 
+				new ErrorCode("OrderSubmit.AlreadySubmitted", "Order has already been submitted")
+			);
+
+			var shipMethodsWithoutSelections = worksheet?.ShipEstimateResponse?.ShipEstimates?.Where(estimate => estimate.SelectedShipMethodID == null);
+			Require.That(
+				worksheet?.ShipEstimateResponse != null &&
+				shipMethodsWithoutSelections.Count() == 0, 
+				new ErrorCode("OrderSubmit.MissingShippingSelections", "All shipments on an order must have a selection"), shipMethodsWithoutSelections
+			);
+
+			Require.That(
+				!worksheet.LineItems.Any() || payment != null,
+				new ErrorCode("OrderSubmit.MissingPayment", "Order contains standard line items and must include credit card payment details"),
+				worksheet.LineItems
+			);
+			var lineItemsInactive = await GetInactiveLineItems(worksheet, userToken);
+			Require.That(
+				!lineItemsInactive.Any(),
+				new ErrorCode("OrderSubmit.InvalidProducts", "Order contains line items for products that are inactive"), lineItemsInactive
+			);
+
 			try
 			{
-				Require.That(!worksheet.Order.IsSubmitted, new ErrorCode(@"OrderSubmit.AlreadySubmitted", @"This Order has already been submitted."));
-				var shipMethodsWithoutSelections = worksheet?.ShipEstimateResponse?.ShipEstimates?.Where(estimate => estimate.SelectedShipMethodID == null);
-				Require.That(worksheet?.ShipEstimateResponse != null && shipMethodsWithoutSelections.Count() == 0, new ErrorCode(@"OrderSubmit.MissingShippingSelections", @"All shipments on an order must have a selection."), shipMethodsWithoutSelections);
-
-				Require.That(!worksheet.LineItems.Any() || payment != null, new ErrorCode(@"OrderSubmit.MissingPayment", @"This Order contains standard line items and must include credit card payment details."), worksheet.LineItems);
-				var lineItemsInactive = await GetInactiveLineItems(worksheet, userToken);
-				Require.That(!lineItemsInactive.Any(), new ErrorCode(@"OrderSubmit.InvalidProducts", @"This Order contains line items for products that are inactive."), lineItemsInactive);
-
-				// Ordercloud validates the same stuff that would be checked on order submit
+				// ordercloud validates the same stuff that would be checked on order submit
 				await _oc.Orders.ValidateAsync(OrderDirection.Incoming, worksheet.Order.ID);
-			} 
-			catch (OrderCloudException ex) {
-				// Credit card payments aren't accepted yet, so ignore this error for now
+			} catch(OrderCloudException ex) {
+				// credit card payments aren't accepted yet, so ignore this error for now
 				// we'll accept the payment once the credit card auth goes through (before order submit)
-				var errors = ex.Errors.Where(ex => (!ex.ErrorCode.Equals(@"Order.CannotSubmitWithUnacceptedPayments", StringComparison.OrdinalIgnoreCase)));
+				var errors = ex.Errors.Where(ex => ex.ErrorCode != "Order.CannotSubmitWithUnaccceptedPayments");
 				if(errors.Any())
 				{
-					var ex1 = new CatalystBaseException(@"OrderSubmit.OrderCloudValidationError", @"This is a failed ordercloud validation, see Data for details.", errors);
-					LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", $@"{ex.Message}. {ex1.Message}", ex1.StackTrace, this, true);
+					throw new CatalystBaseException("OrderSubmit.OrderCloudValidationError", "Failed ordercloud validation, see Data for details", errors);
 				}
 			}
 		}
@@ -119,28 +130,20 @@ namespace Headstart.API.Commands
 		/// </summary>
 		/// <param name="worksheet"></param>
 		/// <param name="userToken"></param>
-		/// <returns>The list of HsLineItem response object from the GetInactiveLineItems process</returns>
-		private async Task<List<HsLineItem>> GetInactiveLineItems(HsOrderWorksheet worksheet, string userToken)
+		/// <returns>The list of HSLineItem object from the GetInactiveLineItems process</returns>
+		private async Task<List<HSLineItem>> GetInactiveLineItems(HSOrderWorksheet worksheet, string userToken)
 		{
-			var inactiveLineItems = new List<HsLineItem>();
-			try
+			List<HSLineItem> inactiveLineItems = new List<HSLineItem>();
+			foreach (HSLineItem lineItem in worksheet.LineItems)
 			{
-				foreach (var lineItem in worksheet.LineItems)
+				try
 				{
-					try
-					{
-						await _oc.Me.GetProductAsync(lineItem.ProductID, sellerID: _settings.OrderCloudSettings.MarketplaceId, accessToken: userToken);
-					}
-					catch (OrderCloudException ex) when (ex.HttpStatus == HttpStatusCode.NotFound)
-					{
-						inactiveLineItems.Add(lineItem);
-						LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-					}
+					await _oc.Me.GetProductAsync(lineItem.ProductID, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: userToken);
 				}
-			}
-			catch (Exception ex)
-			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				catch (OrderCloudException ex) when (ex.HttpStatus == HttpStatusCode.NotFound)
+				{
+					inactiveLineItems.Add(lineItem);
+				}
 			}
 			return inactiveLineItems;
 		}
@@ -150,31 +153,23 @@ namespace Headstart.API.Commands
 		/// </summary>
 		/// <param name="worksheet"></param>
 		/// <returns>The order.ID string value from the IncrementOrderAsync process</returns>
-		private async Task<string> IncrementOrderAsync(HsOrderWorksheet worksheet)
+		private async Task<string> IncrementOrderAsync(HSOrderWorksheet worksheet)
 		{
-			var order = new Order();
-			try
+			if (worksheet.Order.xp.IsResubmitting == true)
 			{
-				if (worksheet.Order.xp.IsResubmitting == true)
-				{
-					// orders marked with IsResubmitting true are orders that were on hold and then declined 
-					// so buyer needs to resubmit but we don't want to increment order again
-					return worksheet.Order.ID;
-				}
-				if (worksheet.Order.ID.StartsWith(_settings.OrderCloudSettings.IncrementorPrefix))
-				{
-					// order has already been incremented, no need to increment again
-					return worksheet.Order.ID;
-				}
-				order = await _oc.Orders.PatchAsync(OrderDirection.Incoming, worksheet.Order.ID, new PartialOrder
-				{
-					ID = (_settings.OrderCloudSettings.IncrementorPrefix + "{orderIncrementor}")
-				});
+				// orders marked with IsResubmitting true are orders that were on hold and then declined 
+				// so buyer needs to resubmit but we don't want to increment order again
+				return worksheet.Order.ID;
 			}
-			catch (Exception ex)
+			if(worksheet.Order.ID.StartsWith(_settings.OrderCloudSettings.IncrementorPrefix))
 			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				// order has already been incremented, no need to increment again
+				return worksheet.Order.ID;
 			}
+			var order = await _oc.Orders.PatchAsync(OrderDirection.Incoming, worksheet.Order.ID, new PartialOrder
+			{
+				ID = _settings.OrderCloudSettings.IncrementorPrefix + "{orderIncrementor}"
+			});
 			return order.ID;
 		}
 
@@ -183,29 +178,17 @@ namespace Headstart.API.Commands
 		/// </summary>
 		/// <param name="payment"></param>
 		/// <returns>The merchantID string value from the GetMerchantID process</returns>
-		private string GetMerchantId(OrderCloudIntegrationsCreditCardPayment payment)
+		private string GetMerchantID(OrderCloudIntegrationsCreditCardPayment payment)
 		{
-			var merchantId = string.Empty;
-			try
-			{
-				if (payment.Currency.Equals(@"USD", StringComparison.OrdinalIgnoreCase))
-				{
-					merchantId = _settings.CardConnectSettings.UsdMerchantID;
-				}
-				else if (payment.Currency.Equals(@"CAD", StringComparison.OrdinalIgnoreCase))
-				{
-					merchantId = _settings.CardConnectSettings.CadMerchantID;
-				}
-				else
-				{
-					merchantId = _settings.CardConnectSettings.EurMerchantID;
-				}
-			}
-			catch (Exception ex)
-			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
-			return merchantId;
+			string merchantID;
+			if (payment.Currency == "USD")
+				merchantID = _settings.CardConnectSettings.UsdMerchantID;
+			else if (payment.Currency == "CAD")
+				merchantID = _settings.CardConnectSettings.CadMerchantID;
+			else
+				merchantID = _settings.CardConnectSettings.EurMerchantID;
+
+			return merchantID;
 		}
 	}
 }

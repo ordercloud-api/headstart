@@ -1,9 +1,13 @@
-﻿namespace Headstart.Jobs
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Headstart.Jobs
 {
-	public enum ResultCode
-	{
-		Success,
-		TemporaryFailure,
-		PermanentFailure
-	}
+    public enum ResultCode
+    {
+        Success,
+        TemporaryFailure,
+        PermanentFailure
+    }
 }

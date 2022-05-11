@@ -1,22 +1,21 @@
-﻿using System;
-using System.Linq;
-using Npoi.Mapper;
-using OrderCloud.SDK;
-using Headstart.Common;
-using OrderCloud.Catalyst;
-using Newtonsoft.Json.Linq;
-using Sitecore.Diagnostics;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
-using Headstart.Common.Models.Base;
-using ordercloud.integrations.library;
-using ordercloud.integrations.easypost;
-using Headstart.Common.Models.Headstart;
+﻿using Headstart.Common;
 using Headstart.Common.Services.CMS.Models;
-using System.ComponentModel.DataAnnotations;
+using Headstart.Models;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
+using Npoi.Mapper;
+using ordercloud.integrations.easypost;
 using ordercloud.integrations.exchangerates;
+using ordercloud.integrations.library;
+using OrderCloud.Catalyst;
+using OrderCloud.SDK;
+using Sitecore.Diagnostics;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 using IPartial = ordercloud.integrations.library.IPartial;
 
 namespace Headstart.API.Commands.SupplierSync
@@ -52,29 +51,20 @@ namespace Headstart.API.Commands.SupplierSync
 		/// </summary>
 		/// <param name="file"></param>
 		/// <param name="decodedToken"></param>
-		/// <returns>The TemplateProductResult response object for the Parse Product Template Flat process</returns>
+		/// <returns>The TemplateProductResult object for the Parse Product Template Flat process</returns>
 		public async Task<TemplateProductResult> ParseProductTemplateFlat(IFormFile file, DecodedToken decodedToken)
 		{
-			var resp = new TemplateProductResult();
-			try
-			{
-				using var stream = file.OpenReadStream();
-				var products = new Mapper(stream).Take<TemplateProductFlat>("TemplateFlat", 1000).ToList();
-				var result = Validate(products.Where(p => p.Value?.ID != null).Select(p => p).ToList());
-				resp = await Task.FromResult(result);
-			}
-			catch (Exception ex)
-			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
-			return resp;
+			using var stream = file.OpenReadStream();
+			var products = new Mapper(stream).Take<TemplateProductFlat>("TemplateFlat", 1000).ToList();
+			var result = Validate(products.Where(p => p.Value?.ID != null).Select(p => p).ToList());
+			return await Task.FromResult(result);
 		}
 
 		/// <summary>
 		/// Public re-usable Validate task method
 		/// </summary>
 		/// <param name="rows"></param>
-		/// <returns>The TemplateProductResult response object for the Validate process</returns>
+		/// <returns>The TemplateProductResult object for the Validate process</returns>
 		public TemplateProductResult Validate(List<RowInfo<TemplateProductFlat>> rows)
 		{
 			var result = new TemplateProductResult()
@@ -82,47 +72,38 @@ namespace Headstart.API.Commands.SupplierSync
 				Invalid = new List<TemplateRowError>(),
 				Valid = new List<TemplateProductFlat>()
 			};
-			try
+			foreach (var row in rows)
 			{
-				foreach (var row in rows)
+				if (row.ErrorColumnIndex > -1)
+					result.Invalid.Add(new TemplateRowError()
+					{
+						ErrorMessage = row.ErrorMessage,
+						Row = row.RowNumber++
+					});
+				else
 				{
-					if (row.ErrorColumnIndex > -1)
+					var results = new List<ValidationResult>();
+					if (Validator.TryValidateObject(row.Value, new ValidationContext(row.Value), results, true) == false)
 					{
 						result.Invalid.Add(new TemplateRowError()
 						{
-							ErrorMessage = row.ErrorMessage,
+							ErrorMessage = $"{results.FirstOrDefault()?.ErrorMessage}",
 							Row = row.RowNumber++
 						});
 					}
 					else
 					{
-						var results = new List<ValidationResult>();
-						if (Validator.TryValidateObject(row.Value, new ValidationContext(row.Value), results, true) == false)
-						{
-							result.Invalid.Add(new TemplateRowError()
-							{
-								ErrorMessage = $"{results.FirstOrDefault()?.ErrorMessage}",
-								Row = row.RowNumber++
-							});
-						}
-						else
-						{
-							result.Valid.Add(row.Value);
-						}
+						result.Valid.Add(row.Value);
 					}
 				}
-
-				result.Meta = new TemplateParseSummary()
-				{
-					InvalidCount = result.Invalid.Count,
-					ValidCount = result.Valid.Count,
-					TotalCount = rows.Count
-				};
 			}
-			catch (Exception ex)
+
+			result.Meta = new TemplateParseSummary()
 			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}            
+				InvalidCount = result.Invalid.Count,
+				ValidCount = result.Valid.Count,
+				TotalCount = rows.Count
+			};
 			return result;
 		}
 
@@ -131,43 +112,47 @@ namespace Headstart.API.Commands.SupplierSync
 		/// </summary>
 		/// <param name="file"></param>
 		/// <param name="decodedToken"></param>
-		/// <returns>Thelist of TemplateProductResult response objects for the Parse Product Template process</returns>
+		/// <returns>Thelist of TemplateProductResult objects for the Parse Product Template process</returns>
 		public async Task<List<TemplateHydratedProduct>> ParseProductTemplate(IFormFile file, DecodedToken decodedToken)
 		{
-			var list = new List<TemplateHydratedProduct>();
-			try
-			{
-				using var stream = file.OpenReadStream();
-				var mapper = new Mapper(stream);
-				var products = mapper.Take<TemplateProduct>("Products").Select(s => s.Value).ToList();
-				var prices = mapper.Take<TemplatePriceSchedule>("PriceSchedules").Select(s => s.Value).ToList().AsReadOnly();
-				var specs = mapper.Take<TemplateSpec>("Specs").Select(s => s.Value).ToList().AsReadOnly();
-				var specoptions = mapper.Take<TemplateSpecOption>("SpecOptions").Select(s => s.Value).ToList().AsReadOnly();
-				var images = mapper.Take<TemplateAsset>("Images").Select(s => s.Value).ToList().AsReadOnly();
-				var attachments = mapper.Take<TemplateAsset>("Attachments").Select(s => s.Value).ToList().AsReadOnly();
+			using var stream = file.OpenReadStream();
+			var mapper = new Mapper(stream);
+			var products = mapper.Take<TemplateProduct>("Products").Select(s => s.Value).ToList();
+			var prices = mapper.Take<TemplatePriceSchedule>("PriceSchedules").Select(s => s.Value).ToList().AsReadOnly();
+			var specs = mapper.Take<TemplateSpec>("Specs").Select(s => s.Value).ToList().AsReadOnly();
+			var specoptions = mapper.Take<TemplateSpecOption>("SpecOptions").Select(s => s.Value).ToList().AsReadOnly();
+			var images = mapper.Take<TemplateAsset>("Images").Select(s => s.Value).ToList().AsReadOnly();
+			var attachments = mapper.Take<TemplateAsset>("Attachments").Select(s => s.Value).ToList().AsReadOnly();
 
-				foreach (var product in products)
-				{
-					var p = new TemplateHydratedProduct();
-					p.Product = product;
-					p.PriceSchedule = prices.FirstOrDefault(row => row.ProductID == product.ID);
-					p.Images = images.Where(i => i.ProductID == product.ID).Select(o => o).ToList();
-					p.Attachments = attachments.Where(s => s.ProductID == product.ID).Select(o => o).ToList();
-					p.Specs = specs.Where(s => s.ProductID == product.ID).Select(s => s).ToList();
-					// 1:38
-					//var o = from options in specoptions
-					//    join sp in specs on options.SpecID equals sp.ID
-					//    join pp in products on sp.ProductID equals pp.ID
-					//        select options;
-					// :53
-					var o = specoptions.Where(x => p.Specs.Any(s => s.ID == x.SpecID));
-					p.SpecOptions = o.ToList();
-					list.Add(p);
-				}
-			}
-			catch (Exception ex)
+			//var list = products.Select(info => new TemplateHydratedProduct()
+			//{
+			//    Product = info.Value,
+			//    PriceSchedule = prices.FirstOrDefault(row => row.Value.ProductID == info.Value.ID)?.Value,
+			//    Specs = specs.Where(s => s.Value.ProductID == info.Value.ID).Select(s => s.Value).ToList(),
+			//    SpecOptions = specs.Where(s => s.Value.ProductID == info.Value.ID)
+			//        .SelectMany(s => specoptions.Where(o => o.Value.SpecID == s.Value.ID).Select(o => o.Value)).ToList(),
+			//    Images = images.Where(s => s.Value.ProductID == info.Value.ID).Select(o => o.Value).ToList(),
+			//    Attachments = attachments.Where(s => s.Value.ProductID == info.Value.ID).Select(o => o.Value).ToList()
+			//});
+
+			var list = new List<TemplateHydratedProduct>();
+			foreach (var product in products)
 			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				var p = new TemplateHydratedProduct();
+				p.Product = product;
+				p.PriceSchedule = prices.FirstOrDefault(row => row.ProductID == product.ID);
+				p.Images = images.Where(i => i.ProductID == product.ID).Select(o => o).ToList();
+				p.Attachments = attachments.Where(s => s.ProductID == product.ID).Select(o => o).ToList();
+				p.Specs = specs.Where(s => s.ProductID == product.ID).Select(s => s).ToList();
+				// 1:38
+				//var o = from options in specoptions
+				//    join sp in specs on options.SpecID equals sp.ID
+				//    join pp in products on sp.ProductID equals pp.ID
+				//        select options;
+				// :53
+				var o = specoptions.Where(x => p.Specs.Any(s => s.ID == x.SpecID));
+				p.SpecOptions = o.ToList();
+				list.Add(p);
 			}
 			return await Task.FromResult(list.ToList());
 		}
@@ -208,7 +193,7 @@ namespace Headstart.API.Commands.SupplierSync
 		public JObject Values { get; set; }
 	}
     
-	public class TemplateProductFlat : HsBaseObject
+	public class TemplateProductFlat : IHSObject
 	{
 		[OrderCloud.SDK.Required]
 		[RegularExpression("^[a-zA-Z0-9-_]*$", ErrorMessage = "IDs must have at least 8 characters and no more than 100, are required and can only contain characters Aa-Zz, 0-9, -, and _")]
@@ -298,6 +283,7 @@ namespace Headstart.API.Commands.SupplierSync
 		public bool AllowOpenText { get; set; }
 		public string DefaultOptionID { get; set; }
 		public bool DefinesVariant { get; set; }
+		//public IList<TemplateSpecOption> SpecOptions { get; set; } = new List<TemplateSpecOption>();
 	}
 
 	public class TemplateSpecOption

@@ -1,15 +1,17 @@
-﻿using OrderCloud.SDK;
+﻿using ordercloud.integrations.library;
+using OrderCloud.SDK;
 
-namespace Headstart.Common.Models.Headstart
+namespace Headstart.Models
 {
-	public class HsSpecOption : SpecOption<SpecOptionXp>
-	{
-		public string Id { get; set; } = string.Empty;
-	}
+    
+    public class HSSpecOption : SpecOption<SpecOptionXp>, IHSObject
+    {
+    }
 
-	public class SpecOptionXp
-	{
-		public string Description { get; set; } = string.Empty;
-		public string SpecId { get; set; } = string.Empty;
-	}
+    
+    public class SpecOptionXp
+    {
+        public string Description { get; set; }
+        public string SpecID { get; set; }
+    }
 }

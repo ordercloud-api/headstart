@@ -36,22 +36,22 @@ namespace Headstart.API.Controllers
 		{
 			return new
 			{
-				ID = @"CountriesServicing",
+				ID = "CountriesServicing",
 				Doc = new
 				{
-					Display = @"Countries Servicing",
-					Path = @"xp.CountriesServicing",
+					Display = "Countries Servicing",
+					Path = "xp.CountriesServicing",
 					Items = new List<dynamic>
 					{
 						new
 						{
-							Text = @"UnitedStates",
-							Value = @"US"
+							Text = "UnitedStates",
+							Value = "US"
 						}
 					},
 					AllowSellerEdit = true,
 					AllowSupplierEdit = true,
-					BuyerAppFilterType = @"NonUI"
+					BuyerAppFilterType = "NonUI"
 				}
 			};
 		}

@@ -1,10 +1,10 @@
-﻿using OrderCloud.SDK;
-using OrderCloud.Catalyst;
-using System.Threading.Tasks;
-using Headstart.API.Commands;
+﻿using Headstart.API.Commands;
+using Headstart.Models;
+using Headstart.Models.Misc;
 using Microsoft.AspNetCore.Mvc;
-using Headstart.Common.Models.Misc;
-using Headstart.Common.Models.Headstart;
+using OrderCloud.Catalyst;
+using OrderCloud.SDK;
+using System.Threading.Tasks;
 
 namespace Headstart.API.Controllers
 {
@@ -26,9 +26,9 @@ namespace Headstart.API.Controllers
 		/// Gets the list of Super Products (GET method)
 		/// </summary>
 		/// <param name="productId"></param>
-		/// <returns>The list of Super Products</returns>
+		/// <returns>The list of SuperHSMeProduct objects</returns>
 		[HttpGet, Route("products/{productId}"), OrderCloudUserAuth(ApiRole.Shopper)]
-		public async Task<SuperHsMeProduct> GetSuperProduct(string productId)
+		public async Task<SuperHSMeProduct> GetSuperProduct(string productId)
 		{
 			return await _meProductCommand.Get(productId, UserContext);
 		}
@@ -37,9 +37,9 @@ namespace Headstart.API.Controllers
 		/// Gets the ListPage of Product objects (GET method)
 		/// </summary>
 		/// <param name="args"></param>
-		/// <returns>The ListPage of Product objects</returns>
+		/// <returns>The ListPageWithFacets of HSMeProduct objects</returns>
 		[HttpGet, Route("products"), OrderCloudUserAuth(ApiRole.Shopper)]
-		public async Task<ListPageWithFacets<HsMeProduct>> ListMeProducts(ListArgs<HsMeProduct> args)
+		public async Task<ListPageWithFacets<HSMeProduct>> ListMeProducts(ListArgs<HSMeProduct> args)
 		{
 			return await _meProductCommand.List(args, UserContext);
 		}

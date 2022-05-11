@@ -1,12 +1,12 @@
-using OrderCloud.SDK;
-using Headstart.Common;
-using OrderCloud.Catalyst;
-using System.Threading.Tasks;
 using Headstart.API.Commands;
+using Headstart.Common;
 using Headstart.Common.Models;
+using Headstart.Models.Headstart;
 using Microsoft.AspNetCore.Mvc;
+using OrderCloud.Catalyst;
+using OrderCloud.SDK;
 using System.Collections.Generic;
-using Headstart.Common.Models.Headstart;
+using System.Threading.Tasks;
 
 namespace Headstart.API.Controllers
 {
@@ -30,13 +30,13 @@ namespace Headstart.API.Controllers
 		/// <summary>
 		/// Save payments. Creates or updates payments as needed for this order  (PUT method)
 		/// </summary>
-		/// <param name="orderId"></param>
+		/// <param name="orderID"></param>
 		/// <param name="request"></param>
-		/// <returns>The list of HSPayment response from the SavePayments action</returns>
-		[HttpPut, Route("{orderId}/update"), OrderCloudUserAuth(ApiRole.Shopper)]
-		public async Task<IList<HsPayment>> SavePayments(string orderId, [FromBody] PaymentUpdateRequest request)
+		/// <returns>The list of HSPayment objects from the SavePayments action</returns>
+		[HttpPut, Route("{orderID}/update"), OrderCloudUserAuth(ApiRole.Shopper)]
+		public async Task<IList<HSPayment>> SavePayments(string orderID, [FromBody] PaymentUpdateRequest request)
 		{
-			return await _command.SavePayments(orderId, request.Payments, UserContext.AccessToken);
+			return await _command.SavePayments(orderID, request.Payments, UserContext.AccessToken);
 		}
 	}
 }

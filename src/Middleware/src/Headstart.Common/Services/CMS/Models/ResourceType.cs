@@ -1,5 +1,7 @@
-﻿using System;
-using ordercloud.integrations.library;
+﻿using ordercloud.integrations.library;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Headstart.Common.Services.CMS.Models
 {
@@ -18,6 +20,7 @@ namespace Headstart.Common.Services.CMS.Models
 		PriceSchedules,
 		ProductFacets,
 		Specs,
+
 		SecurityProfiles,
 		PasswordResets,
 		OpenIdConnects,
@@ -38,11 +41,12 @@ namespace Headstart.Common.Services.CMS.Models
 		[Parent(ParentResourceType.Suppliers)] SupplierAddresses,
 
 		// Param "Direction" breaks these for now.
-		// Orders,
+		//Orders,
 		// [ParentResource(Orders)] LineItems,
 		// [ParentResource(Orders)] Payments,
 		// [ParentResource(Orders)]Shipments,
 		Promotions,
+
 		AdminUsers,
 		AdminAddresses,
 		AdminUserGroups,
@@ -58,14 +62,13 @@ namespace Headstart.Common.Services.CMS.Models
 	public class ParentAttribute : Attribute
 	{
 		public ParentResourceType ParentType { get; set; }
-
 		public ParentAttribute(ParentResourceType type)
 		{
 			ParentType = type;
 		}
 	}
 
-	public static class ResourceTypeExtensions
+	public static class ResourceTypeExtesions
 	{
 		public static ParentResourceType? GetParentType(this ResourceType type)
 		{

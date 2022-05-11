@@ -1,8 +1,8 @@
-using OrderCloud.Catalyst;
 using Headstart.API.Commands;
-using Microsoft.AspNetCore.Mvc;
 using Headstart.Common.Services;
-using Headstart.Common.Models.Misc;
+using Headstart.Models.Misc;
+using Microsoft.AspNetCore.Mvc;
+using OrderCloud.Catalyst;
 
 namespace Headstart.API.Controllers
 {
@@ -10,7 +10,7 @@ namespace Headstart.API.Controllers
 	/// OrderCloud message senders are a feature that helps to deliver event driven notifications to users.
 	/// Think of them as advanced webhooks. If for instance you wanted to use webhooks to deliver a notification to all users
 	/// who are able to approve a newly submitted order you would have to write code to cover the following steps:
-	/// 1. A handler to receive the submit for approval webhook
+	/// 1. A handler to recieve the submit for approval webhook
 	/// 2. take that high level order info and query the API for the rest of the needed order data
 	/// 3. Query the API for all of the possible approving users (which can be complex)
 	/// 4. Look up approving users' contact info
@@ -40,7 +40,8 @@ namespace Headstart.API.Controllers
 		/// New User submission action (POST method)
 		/// </summary>
 		/// <param name="payload"></param>
-		[HttpPost, Route("newuserinvitation"), OrderCloudWebhookAuth]
+		[HttpPost, Route("newuserinvitation")]
+		[OrderCloudWebhookAuth]
 		public async void HandleNewUser([FromBody] MessageNotification<PasswordResetEventBody> payload)
 		{
 			await _sendgridService.SendNewUserEmail(payload);
@@ -50,7 +51,8 @@ namespace Headstart.API.Controllers
 		/// New User submission action (POST method)
 		/// </summary>
 		/// <param name="payload"></param>
-		[HttpPost, Route("forgottenpassword"), OrderCloudWebhookAuth]
+		[HttpPost, Route("forgottenpassword")]
+		[OrderCloudWebhookAuth]
 		public async void HandlePasswordReset([FromBody] MessageNotification<PasswordResetEventBody> payload)
 		{
 			await _sendgridService.SendPasswordResetEmail(payload);
@@ -60,7 +62,8 @@ namespace Headstart.API.Controllers
 		/// Order Submitted for Approval action (POST method)
 		/// </summary>
 		/// <param name="payload"></param>
-		[HttpPost, Route("ordersubmittedforapproval"), OrderCloudWebhookAuth]
+		[HttpPost, Route("ordersubmittedforapproval")]
+		[OrderCloudWebhookAuth]
 		public async void HandleOrderSubmittedForApproval([FromBody] MessageNotification<OrderSubmitEventBody> payload)
 		{
 			await _sendgridService.SendOrderSubmittedForApprovalEmail(payload);
@@ -70,7 +73,8 @@ namespace Headstart.API.Controllers
 		/// Order Requires Approval submission action (POST method)
 		/// </summary>
 		/// <param name="payload"></param>
-		[HttpPost, Route("ordersubmittedforyourapproval"), OrderCloudWebhookAuth]
+		[HttpPost, Route("ordersubmittedforyourapproval")]
+		[OrderCloudWebhookAuth]
 		public async void HandleOrderRequiresApproval([FromBody] MessageNotification<OrderSubmitEventBody> payload)
 		{
 			await _orderCommand.PatchOrderRequiresApprovalStatus(payload.EventBody.Order.ID);
@@ -81,7 +85,8 @@ namespace Headstart.API.Controllers
 		/// Order Approved submission action (POST method)
 		/// </summary>
 		/// <param name="payload"></param>
-		[HttpPost, Route("OrderApproved"), OrderCloudWebhookAuth]
+		[HttpPost, Route("OrderApproved")]
+		[OrderCloudWebhookAuth]
 		public async void HandleOrderApproved([FromBody] MessageNotification<OrderSubmitEventBody> payload)
 		{
 			await _sendgridService.SendOrderApprovedEmail(payload);
@@ -91,7 +96,8 @@ namespace Headstart.API.Controllers
 		/// Order Declined submission action (POST method)
 		/// </summary>
 		/// <param name="payload"></param>
-		[HttpPost, Route("orderdeclined"), OrderCloudWebhookAuth]
+		[HttpPost, Route("orderdeclined")]
+		[OrderCloudWebhookAuth]
 		public async void HandleOrderDeclined([FromBody] MessageNotification<OrderSubmitEventBody> payload)
 		{
 			await _sendgridService.SendOrderDeclinedEmail(payload);

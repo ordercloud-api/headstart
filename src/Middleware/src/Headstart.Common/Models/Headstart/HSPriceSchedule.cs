@@ -1,13 +1,16 @@
-﻿using OrderCloud.SDK;
+﻿using ordercloud.integrations.library;
+using OrderCloud.SDK;
 
-namespace Headstart.Common.Models.Headstart
+namespace Headstart.Models
 {
-	public class HsPriceSchedule : PriceSchedule<PriceScheduleXp>
-	{
-		public string Id { get; set; } = string.Empty;
-	}
+    
+    public class HSPriceSchedule : PriceSchedule<PriceScheduleXp>, IHSObject
+    {
+        
+    }
 
-	public class PriceScheduleXp
-	{
-	}
+    
+    public class PriceScheduleXp
+    {
+    }
 }

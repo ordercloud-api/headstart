@@ -1,8 +1,10 @@
-﻿using OrderCloud.SDK;
+﻿using Headstart.Models;
+using OrderCloud.SDK;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace Headstart.Common.Models.Headstart
+namespace Headstart.Models.Headstart
 {
-	public class HSProductCreatePayload : WebhookPayloads.Products.Create<dynamic, HsProduct>
-	{
-	}
+    public class HSProductCreatePayload : WebhookPayloads.Products.Create<dynamic, HSProduct> { }
 }

@@ -1,24 +1,24 @@
+using Headstart.Common;
+using Headstart.Models;
+using Headstart.Models.Misc;
+using OrderCloud.SDK;
+using Sitecore.Diagnostics;
+using Sitecore.Foundation.SitecoreExtensions.Extensions;
 using System;
 using System.Linq;
-using OrderCloud.SDK;
-using Headstart.Common;
-using Sitecore.Diagnostics;
 using System.Threading.Tasks;
-using Headstart.Common.Models.Misc;
-using Headstart.Common.Models.Headstart;
-using Sitecore.Foundation.SitecoreExtensions.Extensions;
 
 namespace Headstart.API.Commands
 {
-	public interface IHsBuyerCommand
+	public interface IHSBuyerCommand
 	{
-		Task<SuperHsBuyer> Create(SuperHsBuyer buyer);
-		Task<SuperHsBuyer> Create(SuperHsBuyer buyer, string accessToken, IOrderCloudClient oc);
-		Task<SuperHsBuyer> Get(string buyerId);
-		Task<SuperHsBuyer> Update(string buyerId, SuperHsBuyer buyer);
+		Task<SuperHSBuyer> Create(SuperHSBuyer buyer);
+		Task<SuperHSBuyer> Create(SuperHSBuyer buyer, string accessToken, IOrderCloudClient oc);
+		Task<SuperHSBuyer> Get(string buyerID);
+		Task<SuperHSBuyer> Update(string buyerID, SuperHSBuyer buyer);
 	}
 
-	public class HsBuyerCommand : IHsBuyerCommand
+	public class HSBuyerCommand : IHSBuyerCommand
 	{
 		private readonly IOrderCloudClient _oc;
 		private readonly AppSettings _settings; 
@@ -28,7 +28,7 @@ namespace Headstart.API.Commands
 		/// </summary>
 		/// <param name="settings"></param>
 		/// <param name="oc"></param>
-		public HsBuyerCommand(AppSettings settings, IOrderCloudClient oc)
+		public HSBuyerCommand(AppSettings settings, IOrderCloudClient oc)
 		{
 			try
 			{
@@ -45,19 +45,10 @@ namespace Headstart.API.Commands
 		/// Public re-usable Create task method for creating a SuperHsBuyer
 		/// </summary>
 		/// <param name="superBuyer"></param>
-		/// <returns>The newly created SuperHsBuyer object</returns>
-		public async Task<SuperHsBuyer> Create(SuperHsBuyer superBuyer)
+		/// <returns>The newly created SuperHSBuyer object</returns>
+		public async Task<SuperHSBuyer> Create(SuperHSBuyer superBuyer)
 		{
-			var resp = new SuperHsBuyer();
-			try
-			{
-				resp = await Create(superBuyer, null, _oc);
-			}
-			catch (Exception ex)
-			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
-			return resp;
+			return await Create(superBuyer, null, _oc);
 		}
 
 		/// <summary>
@@ -66,120 +57,84 @@ namespace Headstart.API.Commands
 		/// <param name="superBuyer"></param>
 		/// <param name="accessToken"></param>
 		/// <param name="oc"></param>
-		/// <returns>The newly created SuperHsBuyer object</returns>
-		public async Task<SuperHsBuyer> Create(SuperHsBuyer superBuyer, string accessToken, IOrderCloudClient oc)
+		/// <returns>The newly created SuperHSBuyer object</returns>
+		public async Task<SuperHSBuyer> Create(SuperHSBuyer superBuyer, string accessToken, IOrderCloudClient oc)
 		{
-			var resp = new SuperHsBuyer();
-			try
+			var createdImpersonationConfig = new ImpersonationConfig();
+			var createdBuyer = await CreateBuyerAndRelatedFunctionalResources(superBuyer.Buyer, accessToken, oc);
+			var createdMarkup = await CreateMarkup(superBuyer.Markup, createdBuyer.ID, accessToken, oc);
+			if (superBuyer?.ImpersonationConfig != null)
 			{
-				var createdImpersonationConfig = new ImpersonationConfig();
-				var createdBuyer = await CreateBuyerAndRelatedFunctionalResources(superBuyer.Buyer, accessToken, oc);
-				var createdMarkup = await CreateMarkup(superBuyer.Markup, createdBuyer.ID, accessToken, oc);
-				if (superBuyer?.ImpersonationConfig != null)
-				{
-					createdImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, createdBuyer.ID, accessToken, oc);
-				}
-				return new SuperHsBuyer()
-				{
-					Buyer = createdBuyer,
-					Markup = createdMarkup,
-					ImpersonationConfig = createdImpersonationConfig
-				};
+				createdImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, createdBuyer.ID, accessToken, oc);
 			}
-			catch (Exception ex)
+			return new SuperHSBuyer()
 			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
-			return resp;
+				Buyer = createdBuyer,
+				Markup = createdMarkup,
+				ImpersonationConfig = createdImpersonationConfig
+			};
 		}
 
 		/// <summary>
 		/// Public re-usable Update task method for updating a SuperHsBuyer
 		/// </summary>
-		/// <param name="buyerId"></param>
+		/// <param name="buyerID"></param>
 		/// <param name="superBuyer"></param>
-		/// <returns>The newly updated SuperHsBuyer object</returns>
-		public async Task<SuperHsBuyer> Update(string buyerId, SuperHsBuyer superBuyer)
+		/// <returns>The newly updated SuperHSBuyer object</returns>
+		public async Task<SuperHSBuyer> Update(string buyerID, SuperHSBuyer superBuyer)
 		{
-			var resp = new SuperHsBuyer();
-			try
-			{
-				// to prevent changing buyerIds
-				superBuyer.Buyer.Id = buyerId;
-				var updatedImpersonationConfig = new ImpersonationConfig();
+			// to prevent changing buyerIDs
+			superBuyer.Buyer.ID = buyerID;
+			var updatedImpersonationConfig = new ImpersonationConfig();
 
-				var updatedBuyer = await _oc.Buyers.SaveAsync<HsBuyer>(buyerId, superBuyer.Buyer);
-				var updatedMarkup = await UpdateMarkup(superBuyer.Markup, superBuyer.Buyer.ID);
-				if (superBuyer.ImpersonationConfig != null)
-				{
-					updatedImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, buyerId);
-				}
-				return new SuperHsBuyer()
-				{
-					Buyer = updatedBuyer,
-					Markup = updatedMarkup,
-					ImpersonationConfig = updatedImpersonationConfig
-				};
-			}
-			catch (Exception ex)
+			var updatedBuyer = await _oc.Buyers.SaveAsync<HSBuyer>(buyerID, superBuyer.Buyer);
+			var updatedMarkup = await UpdateMarkup(superBuyer.Markup, superBuyer.Buyer.ID);
+			if (superBuyer.ImpersonationConfig != null)
 			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				updatedImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, buyerID);
 			}
-			return resp;
+			return new SuperHSBuyer()
+			{
+				Buyer = updatedBuyer,
+				Markup = updatedMarkup,
+				ImpersonationConfig = updatedImpersonationConfig
+			};
 		}
 
 		/// <summary>
 		/// Public re-usable task method to get the SuperHsBuyer object by the buyerID
 		/// </summary>
-		/// <param name="buyerId"></param>
-		/// <returns>The SuperHsBuyer response object by the buyerId</returns>
-		public async Task<SuperHsBuyer> Get(string buyerId)
+		/// <param name="buyerID"></param>
+		/// <returns>The SuperHSBuyer object by the buyerID</returns>
+		public async Task<SuperHSBuyer> Get(string buyerID)
 		{
-			var resp = new SuperHsBuyer();
-			try
+			var configReq = GetImpersonationByBuyerID(buyerID);
+			var buyer = await _oc.Buyers.GetAsync<HSBuyer>(buyerID);
+			var config = await configReq;
+			// to move into content docs logic
+			var markupPercent = buyer.xp?.MarkupPercent ?? 0;
+			var markup = new BuyerMarkup()
 			{
-				var configReq = GetImpersonationByBuyerId(buyerId);
-				var buyer = await _oc.Buyers.GetAsync<HsBuyer>(buyerId);
-				var config = await configReq;
-				// To move into content docs logic
-				var markupPercent = buyer.xp?.MarkupPercent ?? 0;
-				var markup = new BuyerMarkup()
-				{
-					Percent = markupPercent
-				};
+				Percent = markupPercent
+			};
 
-				return new SuperHsBuyer()
-				{
-					Buyer = buyer,
-					Markup = markup,
-					ImpersonationConfig = config
-				};
-			}
-			catch (Exception ex)
+			return new SuperHSBuyer()
 			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
-			return resp;
+				Buyer = buyer,
+				Markup = markup,
+				ImpersonationConfig = config
+			};
 		}
 
 		/// <summary>
 		/// Private re-usable GetImpersonationByBuyerID task method to get the ImpersonationConfig object by the buyerID
 		/// </summary>
-		/// <param name="buyerId"></param>
-		/// <returns>The ImpersonationConfig response object by the buyerId</returns>
-		private async Task<ImpersonationConfig> GetImpersonationByBuyerId(string buyerId)
+		/// <param name="buyerID"></param>
+		/// <returns>The ImpersonationConfig object by the buyerID</returns>
+		private async Task<ImpersonationConfig> GetImpersonationByBuyerID(string buyerID)
 		{
-			var resp = new ImpersonationConfig();
-			try
-			{
-				var config = await _oc.ImpersonationConfigs.ListAsync(filters: $"BuyerID={buyerId}");
-				resp = config?.Items?.FirstOrDefault();
-			}
-			catch (Exception ex)
-			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
-			return resp;
+			var config = await _oc.ImpersonationConfigs.ListAsync(filters: $"BuyerID={buyerID}");
+			return config?.Items?.FirstOrDefault();
 		}
 
 		/// <summary>
@@ -188,53 +143,46 @@ namespace Headstart.API.Commands
 		/// <param name="buyer"></param>
 		/// <param name="accessToken"></param>
 		/// <param name="oc"></param>
-		/// <returns>The newly created HsBuyer object</returns>
-		public async Task<HsBuyer> CreateBuyerAndRelatedFunctionalResources(HsBuyer buyer, string accessToken, IOrderCloudClient oc)
+		/// <returns>The newly created HSBuyer object</returns>
+		public async Task<HSBuyer> CreateBuyerAndRelatedFunctionalResources(HSBuyer buyer, string accessToken, IOrderCloudClient oc)
 		{
-			try
+			// If we're seeding then use the passed in oc client
+			// to support multiple environments and ease of setup for new orgs
+			// else used the configured client
+			var token = oc == null ? null : accessToken;
+			var ocClient = oc ?? _oc;
+
+			buyer.ID = buyer.ID ?? "{buyerIncrementor}";
+			var ocBuyer = await ocClient.Buyers.CreateAsync(buyer, accessToken);
+			var ocBuyerID = ocBuyer.ID;
+			buyer.ID = ocBuyerID;
+
+			// create base security profile assignment
+			await ocClient.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment
 			{
-				// if we're seeding then use the passed in oc client
-				// to support multiple environments and ease of setup for new orgs
-				// else used the configured client
-				var token = oc == null ? null : accessToken;
-				var ocClient = oc ?? _oc;
+				BuyerID = ocBuyerID,
+				SecurityProfileID = CustomRole.HSBaseBuyer.ToString()
+			}, token);
 
-				buyer.ID = buyer.ID ?? "{buyerIncrementor}";
-				var ocBuyer = await ocClient.Buyers.CreateAsync(buyer, accessToken);
-				var ocBuyerId = ocBuyer.ID;
-				buyer.ID = ocBuyerId;
-
-				// create base security profile assignment
-				await ocClient.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment
-				{
-					BuyerID = ocBuyerId,
-					SecurityProfileID = CustomRole.HsBaseBuyer.ToString()
-				}, token);
-
-				// assign message sender
-				await ocClient.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
-				{
-					MessageSenderID = "BuyerEmails",
-					BuyerID = ocBuyerId
-				}, token);
-
-				await ocClient.Incrementors.SaveAsync($"{ocBuyerId}-UserIncrementor",
-					new Incrementor { ID = $"{ocBuyerId}-UserIncrementor", LastNumber = 0, LeftPaddingCount = 5, Name = "User Incrementor" }, token);
-				await ocClient.Incrementors.SaveAsync($"{ocBuyerId}-LocationIncrementor",
-					new Incrementor { ID = $"{ocBuyerId}-LocationIncrementor", LastNumber = 0, LeftPaddingCount = 4, Name = "Location Incrementor" }, token);
-
-				await ocClient.Catalogs.SaveAssignmentAsync(new CatalogAssignment()
-				{
-					BuyerID = ocBuyerId,
-					CatalogID = ocBuyerId,
-					ViewAllCategories = true,
-					ViewAllProducts = false
-				}, token);
-			}
-			catch (Exception ex)
+			// assign message sender
+			await ocClient.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
 			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}            
+				MessageSenderID = "BuyerEmails",
+				BuyerID = ocBuyerID
+			}, token);
+
+			await ocClient.Incrementors.SaveAsync($"{ocBuyerID}-UserIncrementor",
+				new Incrementor { ID = $"{ocBuyerID}-UserIncrementor", LastNumber = 0, LeftPaddingCount = 5, Name = "User Incrementor" }, token);
+			await ocClient.Incrementors.SaveAsync($"{ocBuyerID}-LocationIncrementor",
+				new Incrementor { ID = $"{ocBuyerID}-LocationIncrementor", LastNumber = 0, LeftPaddingCount = 4, Name = "Location Incrementor" }, token);
+
+			await ocClient.Catalogs.SaveAssignmentAsync(new CatalogAssignment()
+			{
+				BuyerID = ocBuyerID,
+				CatalogID = ocBuyerID,
+				ViewAllCategories = true,
+				ViewAllProducts = false
+			}, token);            
 			return buyer;
 		}
 
@@ -242,117 +190,87 @@ namespace Headstart.API.Commands
 		/// Private re-usable CreateMarkup task method to create the BuyerMarkup object
 		/// </summary>
 		/// <param name="markup"></param>
-		/// <param name="buyerId"></param>
+		/// <param name="buyerID"></param>
 		/// <param name="accessToken"></param>
 		/// <param name="oc"></param>
 		/// <returns>The newly created BuyerMarkup object</returns>
-		private async Task<BuyerMarkup> CreateMarkup(BuyerMarkup markup, string buyerId, string accessToken, IOrderCloudClient oc)
+		private async Task<BuyerMarkup> CreateMarkup(BuyerMarkup markup, string buyerID, string accessToken, IOrderCloudClient oc)
 		{
-			var resp = new BuyerMarkup();
-			try
-			{
-				// if we're seeding then use the passed in oc client
-				// to support multiple environments and ease of setup for new orgs
-				// else used the configured client
-				var token = oc == null ? null : accessToken;
-				var ocClient = oc ?? _oc;
+			// if we're seeding then use the passed in oc client
+			// to support multiple environments and ease of setup for new orgs
+			// else used the configured client
+			var token = oc == null ? null : accessToken;
+			var ocClient = oc ?? _oc;
 
-				// to move from xp to content docs, that logic will go here instead of a patch
-				var updatedBuyer = await ocClient.Buyers.PatchAsync(buyerId, new PartialBuyer() { xp = new { MarkupPercent = markup.Percent } }, token);
-				resp.Percent = (int)updatedBuyer.xp.MarkupPercent;
-			}
-			catch (Exception ex)
+			// to move from xp to content docs, that logic will go here instead of a patch
+			var updatedBuyer = await ocClient.Buyers.PatchAsync(buyerID, new PartialBuyer() { xp = new { MarkupPercent = markup.Percent } }, token);
+			return new BuyerMarkup()
 			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
-			return resp;
+				Percent = (int)updatedBuyer.xp.MarkupPercent
+			};
 		}
 
 		/// <summary>
 		/// Private re-usable SaveImpersonationConfig task method to update the ImpersonationConfig object data
 		/// </summary>
 		/// <param name="impersonation"></param>
-		/// <param name="buyerId"></param>
+		/// <param name="buyerID"></param>
 		/// <returns>The updated ImpersonationConfig object</returns>
-		private async Task<ImpersonationConfig> SaveImpersonationConfig(ImpersonationConfig impersonation, string buyerId)
+		private async Task<ImpersonationConfig> SaveImpersonationConfig(ImpersonationConfig impersonation, string buyerID)
 		{
-			var resp = new ImpersonationConfig();
-			try
-			{
-				resp = await SaveImpersonationConfig(impersonation, buyerId, null, _oc);
-			}
-			catch (Exception ex)
-			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}
-			return resp;
+			return await SaveImpersonationConfig(impersonation, buyerID, null, _oc);
 		}
 
 		/// <summary>
 		/// Private re-usable SaveImpersonationConfig task method to update the ImpersonationConfig object data
 		/// </summary>
 		/// <param name="impersonation"></param>
-		/// <param name="buyerId"></param>
+		/// <param name="buyerID"></param>
 		/// <param name="accessToken"></param>
 		/// <param name="oc"></param>
 		/// <returns>The updated ImpersonationConfig object</returns>
-		private async Task<ImpersonationConfig> SaveImpersonationConfig(ImpersonationConfig impersonation, string buyerId, string accessToken, IOrderCloudClient oc = null)
+		private async Task<ImpersonationConfig> SaveImpersonationConfig(ImpersonationConfig impersonation, string buyerID, string accessToken, IOrderCloudClient oc = null)
 		{
-			var resp = new ImpersonationConfig();
-			try
+			// If we're seeding then use the passed in oc client
+			// to support multiple environments and ease of setup for new orgs
+			// else used the configured client
+			var token = oc == null ? null : accessToken;
+			var ocClient = oc ?? _oc;
+	
+			var currentConfig = await GetImpersonationByBuyerID(buyerID);
+			if (currentConfig != null && impersonation == null)
 			{
-				// if we're seeding then use the passed in oc client
-				// to support multiple environments and ease of setup for new orgs
-				// else used the configured client
-				var token = oc == null ? null : accessToken;
-				var ocClient = oc ?? _oc;
-
-				var currentConfig = await GetImpersonationByBuyerId(buyerId);
-				if (currentConfig != null && impersonation == null)
-				{
-					await ocClient.ImpersonationConfigs.DeleteAsync(currentConfig.ID);
-					return null;
-				}
-				else if (currentConfig != null)
-				{
-					return await ocClient.ImpersonationConfigs.SaveAsync(currentConfig.ID, impersonation, token);
-				}
-				else
-				{
-					impersonation.BuyerID = buyerId;
-					impersonation.SecurityProfileID = Enum.GetName(typeof(CustomRole), CustomRole.HsBaseBuyer);
-					impersonation.ID = $"hs_admin_{buyerId}";
-					return await ocClient.ImpersonationConfigs.CreateAsync(impersonation);
-				}
+				await ocClient.ImpersonationConfigs.DeleteAsync(currentConfig.ID);
+				return null;
 			}
-			catch (Exception ex)
+			else if (currentConfig != null)
 			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
+				return await ocClient.ImpersonationConfigs.SaveAsync(currentConfig.ID, impersonation, token);
 			}
-			return resp;
+			else
+			{
+				impersonation.BuyerID = buyerID;
+				impersonation.SecurityProfileID = Enum.GetName(typeof(CustomRole), CustomRole.HSBaseBuyer);
+				impersonation.ID = $"hs_admin_{buyerID}";
+				return await ocClient.ImpersonationConfigs.CreateAsync(impersonation);
+			}
 		}
 
 		/// <summary>
 		/// Private re-usable UpdateMarkup task method to update the BuyerMarkup object
 		/// </summary>
 		/// <param name="markup"></param>
-		/// <param name="buyerId"></param>
+		/// <param name="buyerID"></param>
 		/// <returns>The newly updated BuyerMarkup object</returns>
-		private async Task<BuyerMarkup> UpdateMarkup(BuyerMarkup markup, string buyerId)
+		private async Task<BuyerMarkup> UpdateMarkup(BuyerMarkup markup, string buyerID)
 		{
-			var resp = new BuyerMarkup();
-			try
+			// to move from xp to contentdocs, that logic will go here instead of a patch
+			// currently duplicate of the function above, this might need to be duplicated since there wont be a need to save the contentdocs assignment again
+			var updatedBuyer = await _oc.Buyers.PatchAsync(buyerID, new PartialBuyer() { xp = new { MarkupPercent = markup.Percent } });
+			return new BuyerMarkup()
 			{
-				// to move from xp to contentdocs, that logic will go here instead of a patch
-				// currently duplicate of the function above, this might need to be duplicated since there wont be a need to save the contentdocs assignment again
-				var updatedBuyer = await _oc.Buyers.PatchAsync(buyerId, new PartialBuyer() { xp = new { MarkupPercent = markup.Percent } });
-				resp.Percent = (int)updatedBuyer.xp.MarkupPercent;
-			}
-			catch (Exception ex)
-			{
-				LogExt.LogException(_settings.LogSettings, Helpers.GetMethodName(), $@"{LoggingNotifications.GetGeneralLogMessagePrefixKey()}", ex.Message, ex.StackTrace, this, true);
-			}            
-			return resp;
+				Percent = (int)updatedBuyer.xp.MarkupPercent
+			};
 		}
 	}
 }

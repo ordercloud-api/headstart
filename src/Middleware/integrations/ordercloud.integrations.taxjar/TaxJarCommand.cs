@@ -1,7 +1,11 @@
-﻿using OrderCloud.Catalyst;
+﻿using ordercloud.integrations.library;
+using ordercloud.integrations.library.intefaces;
+using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Taxjar;
 using ITaxCalculator = ordercloud.integrations.library.ITaxCalculator;

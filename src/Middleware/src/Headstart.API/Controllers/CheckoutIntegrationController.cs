@@ -1,9 +1,9 @@
-using OrderCloud.SDK;
-using OrderCloud.Catalyst;
-using System.Threading.Tasks;
 using Headstart.API.Commands;
+using Headstart.Common.Services.ShippingIntegration.Models;
 using Microsoft.AspNetCore.Mvc;
-using Headstart.Common.Models.Headstart;
+using OrderCloud.Catalyst;
+using OrderCloud.SDK;
+using System.Threading.Tasks;
 
 namespace Headstart.API.Controllers
 {
@@ -28,8 +28,9 @@ namespace Headstart.API.Controllers
 		/// </summary>
 		/// <param name="orderCalculatePayload"></param>
 		/// <returns>The shipping rate estimates response object</returns>
-		[HttpPost, Route("shippingrates"), OrderCloudWebhookAuth]
-		public async Task<ShipEstimateResponse> GetShippingRates([FromBody] HsOrderCalculatePayload orderCalculatePayload)
+		[HttpPost, Route("shippingrates")]
+		[OrderCloudWebhookAuth]
+		public async Task<ShipEstimateResponse> GetShippingRates([FromBody] HSOrderCalculatePayload orderCalculatePayload)
 		{
 			return await _checkoutIntegrationCommand.GetRatesAsync(orderCalculatePayload);
 		}
@@ -39,8 +40,9 @@ namespace Headstart.API.Controllers
 		/// </summary>
 		/// <param name="orderCalculatePayload"></param>
 		/// <returns>The calculated order response object</returns>
-		[HttpPost, Route("ordercalculate"), OrderCloudWebhookAuth]
-		public async Task<OrderCalculateResponse> CalculateOrder([FromBody] HsOrderCalculatePayload orderCalculatePayload)
+		[HttpPost, Route("ordercalculate")]
+		[OrderCloudWebhookAuth]
+		public async Task<OrderCalculateResponse> CalculateOrder([FromBody] HSOrderCalculatePayload orderCalculatePayload)
 		{
 			var orderCalculationResponse = await _checkoutIntegrationCommand.CalculateOrder(orderCalculatePayload);
 			return orderCalculationResponse;
@@ -65,7 +67,7 @@ namespace Headstart.API.Controllers
 		/// <returns>The submitted order response object</returns>
 		[HttpPost, Route("ordersubmit")]
 		//[OrderCloudWebhookAuth]  TODO: Add this back in once platform fixes header issue
-		public async Task<OrderSubmitResponse> HandleOrderSubmit([FromBody] HsOrderCalculatePayload payload)
+		public async Task<OrderSubmitResponse> HandleOrderSubmit([FromBody] HSOrderCalculatePayload payload)
 		{
 			var response = await _postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
 			return response;
@@ -78,7 +80,7 @@ namespace Headstart.API.Controllers
 		/// <returns>The submitted order response object</returns>
 		[HttpPost, Route("ordersubmitforapproval")]
 		//[OrderCloudWebhookAuth]  TODO: Add this back in once platform fixes header issue
-		public async Task<OrderSubmitResponse> HandleOrderSubmitForApproval([FromBody] HsOrderCalculatePayload payload)
+		public async Task<OrderSubmitResponse> HandleOrderSubmitForApproval([FromBody] HSOrderCalculatePayload payload)
 		{
 			var response = await _postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
 			return response;
@@ -91,7 +93,7 @@ namespace Headstart.API.Controllers
 		/// <returns>The submitted order response object</returns>
 		[HttpPost, Route("orderapproved")]
 		//[OrderCloudWebhookAuth]  TODO: Add this back in once platform fixes header issue
-		public async Task<OrderSubmitResponse> HandleOrderApproved([FromBody] HsOrderCalculatePayload payload)
+		public async Task<OrderSubmitResponse> HandleOrderApproved([FromBody] HSOrderCalculatePayload payload)
 		{
 			var response = await _postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
 			return response;
