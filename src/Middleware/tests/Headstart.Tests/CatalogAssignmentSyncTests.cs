@@ -41,7 +41,7 @@ namespace Headstart.Tests
                     xp = new HSLocationUserGroupXp
                     {
                         Type = "BuyerLocation",
-                        CatalogAssignments = new List<string>{ catalogID1 }
+                        CatalogAssignments = new List<string> { catalogID1 }
                     }
                 },
                 // define a Catalog assignment that is assigned but shouldn't be
@@ -99,7 +99,7 @@ namespace Headstart.Tests
                     xp = new HSLocationUserGroupXp
                     {
                         Type = "BuyerLocation",
-                        CatalogAssignments = new List<string>{ catalogID1 }
+                        CatalogAssignments = new List<string> { catalogID1 }
                     }
                 },
             };

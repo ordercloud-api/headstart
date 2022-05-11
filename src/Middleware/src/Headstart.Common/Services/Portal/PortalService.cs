@@ -77,7 +77,7 @@ namespace Headstart.Common.Services
 
         public async Task CreateMarketplace(Marketplace marketplace, string token)
         {
-            //  doesn't return anything
+            // doesn't return anything
             await _client.Request($"organizations/{marketplace.Id}")
                 .WithOAuthBearerToken(token)
                 .PutJsonAsync(marketplace);

@@ -53,7 +53,7 @@ namespace Headstart.API.Commands.Crud
 
 			var location = await _oc.UserGroups.GetAsync<HSLocationUserGroup>(buyerID, locationID, decodedToken.AccessToken);
 
-			var catalogAssignments = new List<HSCatalogAssignment>{};
+			var catalogAssignments = new List<HSCatalogAssignment> { };
 			
 			if (location.xp.CatalogAssignments != null)
 			{
@@ -73,8 +73,8 @@ namespace Headstart.API.Commands.Crud
 			await UpdateUserCatalogAssignmentsForLocation(buyerID, locationID);
 		}
 
-		//	This function looks at all catalog-user-group ids on the xp.CatalogAssignments array of all assigned BuyerLocation usergroups
-		//	Then we add or remove usergroup assignments so the actual assignments allign with what is in the BuyerLocation usergroups
+		// This function looks at all catalog-user-group ids on the xp.CatalogAssignments array of all assigned BuyerLocation usergroups
+		// Then we add or remove usergroup assignments so the actual assignments allign with what is in the BuyerLocation usergroups
 		public async Task SyncUserCatalogAssignments(string buyerID, string userID)
         {
 			// retrieve the data we'll need for further analysis

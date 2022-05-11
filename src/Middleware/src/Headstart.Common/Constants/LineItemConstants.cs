@@ -182,11 +182,11 @@ namespace Headstart.Common.Constants
         {
             { VerifiedUserType.admin, ValidSellerOrSupplierLineItemStatuses },
             { VerifiedUserType.supplier, ValidSellerOrSupplierLineItemStatuses },
-            { VerifiedUserType.buyer, new List<LineItemStatus>{ LineItemStatus.ReturnRequested, LineItemStatus.CancelRequested} },
+            { VerifiedUserType.buyer, new List<LineItemStatus> { LineItemStatus.ReturnRequested, LineItemStatus.CancelRequested } },
 
             // requests that are not directly made to modify lineItem status, derivatives of order submit or shipping,
             // these should not be set without those trigger actions (order submit or shipping)
-            { VerifiedUserType.noUser, new List<LineItemStatus>{ LineItemStatus.Submitted, LineItemStatus.Complete } }
+            { VerifiedUserType.noUser, new List<LineItemStatus> { LineItemStatus.Submitted, LineItemStatus.Complete } }
         };
 
         // definitions to control which line item status changes are allowed
@@ -200,7 +200,7 @@ namespace Headstart.Common.Constants
             * for example when setting status to canceled, cancel requested will be the first quantity to decrement,
             * once this is depleted, the backordered quantity will be decremented */
             { LineItemStatus.Complete, new List<LineItemStatus>() { LineItemStatus.Submitted, LineItemStatus.Backordered, LineItemStatus.CancelDenied } },
-            { LineItemStatus.ReturnRequested, new List<LineItemStatus>() { LineItemStatus.CancelDenied, LineItemStatus.Complete, LineItemStatus.ReturnDenied} },
+            { LineItemStatus.ReturnRequested, new List<LineItemStatus>() { LineItemStatus.CancelDenied, LineItemStatus.Complete, LineItemStatus.ReturnDenied } },
             { LineItemStatus.Returned, new List<LineItemStatus>() { LineItemStatus.ReturnRequested, LineItemStatus.Complete } },
             { LineItemStatus.ReturnDenied, new List<LineItemStatus>() { LineItemStatus.ReturnRequested } },
             { LineItemStatus.Backordered, new List<LineItemStatus>() { LineItemStatus.Submitted } },

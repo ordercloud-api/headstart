@@ -67,7 +67,7 @@ namespace Headstart.Common.Services
 			}
 
 			await Throttler.RunAsync(order.LineItems, 100, 8, async li => {
-				var patch = new HSPartialLineItem() { xp = new LineItemXp() { LineTotalWithProportionalDiscounts = li.LineTotal }};
+				var patch = new HSPartialLineItem() { xp = new LineItemXp() { LineTotalWithProportionalDiscounts = li.LineTotal } };
 				await _oc.LineItems.PatchAsync(OrderDirection.All, order.Order.ID, li.ID, patch);
 			});
 		}

@@ -124,7 +124,7 @@ namespace Headstart.API.Commands
                     SubmittedOrderStatus = SubmittedOrderStatus.Completed
                 }
             };
-            //  Need to complete sales and purchase order and patch the xp.SubmittedStatus of both orders            
+            // Need to complete sales and purchase order and patch the xp.SubmittedStatus of both orders            
             var salesOrderID = orderID.Split('-')[0];
             var completeSalesOrder = _oc.Orders.CompleteAsync(OrderDirection.Incoming, salesOrderID);
             var patchSalesOrder = _oc.Orders.PatchAsync<HSOrder>(OrderDirection.Incoming, salesOrderID, orderPatch);

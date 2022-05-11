@@ -31,7 +31,7 @@ namespace ordercloud.integrations.cardconnect
         public BinType BinType { get; set; }
         [ApiReadOnly]
         public string AuthorizationCode { get; set; } // authcode
-        //public string Signature { get; set; } // signature
+        // public string Signature { get; set; } // signature
         [ApiReadOnly]
         public bool CommercialCard { get; set; } // commcard
         [ApiReadOnly]
@@ -60,9 +60,9 @@ namespace ordercloud.integrations.cardconnect
         [MaxLength(4, ErrorMessage = "Invalid CVV Code")]
         [MinLength(3, ErrorMessage = "Invalid CVV Code")]
         public string CVV { get; set; } // cvv2
-        //[JsonIgnore] public string ecomind { get; set; } = "E";
-        //[JsonIgnore] public string capture { get; set; } = "N";
-        //[JsonIgnore] public string bin { get; set; } = "N";
+        // [JsonIgnore] public string ecomind { get; set; } = "E";
+        // [JsonIgnore] public string capture { get; set; } = "N";
+        // [JsonIgnore] public string bin { get; set; } = "N";
 
     }
 

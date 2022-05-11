@@ -41,7 +41,7 @@ namespace Headstart.Common.Services.CMS.Models
 		[Parent(ParentResourceType.Suppliers)] SupplierAddresses,
 
 		// Param "Direction" breaks these for now.
-		//Orders,
+		// Orders,
 		// [ParentResource(Orders)] LineItems,
 		// [ParentResource(Orders)] Payments,
 		// [ParentResource(Orders)]Shipments,

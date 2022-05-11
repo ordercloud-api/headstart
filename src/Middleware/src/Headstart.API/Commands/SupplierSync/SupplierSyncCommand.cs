@@ -49,13 +49,13 @@ namespace Headstart.API.Commands
                 if (method == null)
                     throw new MissingMethodException($"Get Order Method for {supplierID} is unavailable");
 
-                return await (Task<JObject>)method.Invoke(command, new object[] {ID, orderType, decodedToken });
+                return await (Task<JObject>)method.Invoke(command, new object[] { ID, orderType, decodedToken });
             }
             catch (MissingMethodException mex)
             {
                 throw new Exception(JsonConvert.SerializeObject(new ApiError()
                 {
-                    Data = new { decodedToken, OrderID = ID, OrderType = orderType},
+                    Data = new { decodedToken, OrderID = ID, OrderType = orderType },
                     ErrorCode = mex.Message,
                     Message = $"Missing Method for: {supplierID ?? "Invalid Supplier"}"
                 }));

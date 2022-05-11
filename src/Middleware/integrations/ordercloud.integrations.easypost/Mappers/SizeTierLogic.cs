@@ -21,16 +21,16 @@ namespace ordercloud.integrations.easypost
 		// ships alone
 		G,
 
-		//2-5
+		// 2-5
 		A,
 
 		// 5-15
 		B,
 
-		//15-49
+		// 15-49
 		C,
 
-		//50-99
+		// 50-99
 		D,
 
 		// 100-999

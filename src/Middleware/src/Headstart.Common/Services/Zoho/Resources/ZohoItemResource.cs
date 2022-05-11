@@ -11,8 +11,8 @@ namespace Headstart.Common.Services.Zoho.Resources
     {
         Task<ZohoItemList> ListAsync(params ZohoFilter[] filters);
         Task<TZohoItemList> ListAsync<TZohoItemList>(params ZohoFilter[] filters) where TZohoItemList : ZohoItemList;
-        //Task<ZohoLineItem> GetAsync(string id);
-        //Task<TZohoItem> GetAsync<TZohoItem>(string id) where TZohoItem : ZohoLineItem;
+        // Task<ZohoLineItem> GetAsync(string id);
+        // Task<TZohoItem> GetAsync<TZohoItem>(string id) where TZohoItem : ZohoLineItem;
         Task<ZohoLineItem> SaveAsync(ZohoLineItem item);
         Task<TZohoItem> SaveAsync<TZohoItem>(TZohoItem item) where TZohoItem : ZohoLineItem;
         Task<ZohoLineItem> CreateAsync(ZohoLineItem item);
@@ -31,9 +31,9 @@ namespace Headstart.Common.Services.Zoho.Resources
                 .SetQueryParams(filters?.Select(f => new KeyValuePair<string, object>(f.Key, f.Value)))
                 .GetJsonAsync<TZohoItemList>();
 
-        //public Task<ZohoLineItem> GetAsync(string id) => GetAsync<ZohoLineItem>(id);
+        // public Task<ZohoLineItem> GetAsync(string id) => GetAsync<ZohoLineItem>(id);
         
-        //public Task<TZohoItem> GetAsync<TZohoItem>(string id) where TZohoItem : ZohoLineItem =>
+        // public Task<TZohoItem> GetAsync<TZohoItem>(string id) where TZohoItem : ZohoLineItem =>
         //    Get(id).GetJsonAsync<TZohoItem>();
         
         public Task<ZohoLineItem> SaveAsync(ZohoLineItem item) => SaveAsync<ZohoLineItem>(item);

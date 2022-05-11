@@ -10,7 +10,7 @@ namespace Headstart.Common.Models
     {
         public HSShippingProfiles(AppSettings settings)
         {
-            //TODO: Replace this with shipping profiles needed
+            // TODO: Replace this with shipping profiles needed
             this.ShippingProfiles.Add(new EasyPostShippingProfile()
             {
                 ID = "SMG",

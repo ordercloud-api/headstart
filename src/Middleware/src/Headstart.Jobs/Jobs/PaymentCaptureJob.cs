@@ -78,7 +78,7 @@ namespace Headstart.Jobs
             }
             catch (OrderCloudException ex)
             {
-                LogFailure($"{ ex.InnerException.Message} { JsonConvert.SerializeObject(ex.Errors)}. OrderID: {order.ID}");
+                LogFailure($"{ex.InnerException.Message} {JsonConvert.SerializeObject(ex.Errors)}. OrderID: {order.ID}");
             }
             catch (PaymentCaptureJobException ex)
             {

@@ -118,7 +118,7 @@ namespace Headstart.API.Commands.Zoho
             var results = new List<ZohoPurchaseOrder>();
             foreach (var order in orders)
             {
-                var delivery_address = z_order.shipping_address; //TODO: this is not good enough. Might even need to go back to SaleOrder and split out by delivery address
+                var delivery_address = z_order.shipping_address; // TODO: this is not good enough. Might even need to go back to SaleOrder and split out by delivery address
                 var supplier = await _oc.Suppliers.GetAsync(order.ToCompanyID);
                 // TODO: accomodate possibility of more than 100 line items
                 var lineitems = await _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, order.ID);

@@ -289,7 +289,7 @@ namespace Headstart.API.Commands
                 seed.AnonymousShoppingBuyerID = SeedConstants.DefaultBuyerID;
             }
 
-            //create and assign initial buyer location
+            // create and assign initial buyer location
             await _buyerLocationCommand.Save(seed.AnonymousShoppingBuyerID,
                 $"{seed.AnonymousShoppingBuyerID}-{SeedConstants.DefaultLocationID}",
                 SeedConstants.DefaultBuyerLocation(), token, _oc);

@@ -104,7 +104,7 @@ namespace ordercloud.integrations.library.Cosmos
 			else if (Nullable.GetUnderlyingType(propertyType).IsEnum)
 				right = Expression.Constant((int)Enum.Parse(propertyType.GenericTypeArguments[0], filter?.Term).To(propertyType));
 
-			//var right = Expression.Constant((int)Enum.Parse(propertyType, filter.Values.FirstOrDefault()?.Term).To(propertyType));
+			// var right = Expression.Constant((int)Enum.Parse(propertyType, filter.Values.FirstOrDefault()?.Term).To(propertyType));
 			var left = Expression.Convert(member, typeof(int));
 
 			switch (filter.Operator)

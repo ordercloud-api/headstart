@@ -44,7 +44,7 @@ namespace Headstart.Common.Controllers
 		}
 
 		[HttpPost, Route("ordersubmit")]
-		//[OrderCloudWebhookAuth]  TODO: Add this back in once platform fixes header issue
+		// [OrderCloudWebhookAuth]  TODO: Add this back in once platform fixes header issue
 		public async Task<OrderSubmitResponse> HandleOrderSubmit([FromBody] HSOrderCalculatePayload payload)
 		{
 			var response = await _postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
@@ -52,7 +52,7 @@ namespace Headstart.Common.Controllers
 		}
 
 		[HttpPost, Route("ordersubmitforapproval")]
-		//[OrderCloudWebhookAuth]  TODO: Add this back in once platform fixes header issue
+		// [OrderCloudWebhookAuth]  TODO: Add this back in once platform fixes header issue
 		public async Task<OrderSubmitResponse> HandleOrderSubmitForApproval([FromBody] HSOrderCalculatePayload payload)
 		{
 			var response = await _postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
@@ -61,7 +61,7 @@ namespace Headstart.Common.Controllers
 
 
 		[HttpPost, Route("orderapproved")]
-		//[OrderCloudWebhookAuth]  TODO: Add this back in once platform fixes header issue
+		// [OrderCloudWebhookAuth]  TODO: Add this back in once platform fixes header issue
 		public async Task<OrderSubmitResponse> HandleOrderApproved([FromBody] HSOrderCalculatePayload payload)
 		{
 			var response = await _postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);

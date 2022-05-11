@@ -84,10 +84,10 @@ namespace Headstart.Jobs
 
         private async Task<List<LineItemsWithPurchaseOrderFields>> BuildLineItemsWithPurchaseOrders(string orderID)
         {
-            //returns POs
+            // returns POs
             var orders = await _oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Outgoing, filters: $"ID={orderID}-*");
 
-            //loop through orders, get line items, pass those.
+            // loop through orders, get line items, pass those.
             List<LineItemsWithPurchaseOrderFields> orderLineItemBySupplierID = await GetLineItemsFromPurchaseOrdersAsync(orders);
 
             return orderLineItemBySupplierID;

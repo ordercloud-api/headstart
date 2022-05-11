@@ -256,12 +256,12 @@ namespace Headstart.API.Commands.Crud
 
         private bool IsDifferentVariantWithSameName(Variant variant, Variant currVariant)
         {
-			//Do they have the same SKU
+			// Do they have the same SKU
             if (variant.xp.NewID == currVariant.ID)
             {
 				if (variant.xp.SpecCombo == currVariant.xp.SpecCombo)
                 {
-					//It's most likely the same variant
+					// It's most likely the same variant
 					return false;
                 }
 				return true;
@@ -329,7 +329,7 @@ namespace Headstart.API.Commands.Crud
 			// IF variants differ, then re-generate variants and re-patch IDs to match the user input.
 			if (variantsAdded || variantsRemoved || hasVariantChange || requestVariants.Any(v => v.xp.NewID != null))
 			{
-				//validate variant names before continuing saving.
+				// validate variant names before continuing saving.
 				await ValidateVariantsAsync(superProduct, token);
 
 				// Re-generate Variants
@@ -345,7 +345,7 @@ namespace Headstart.API.Commands.Crud
 					}
 					if (superProduct.Product?.Inventory == null)
 					{
-						//If Inventory doesn't exist on the product, don't patch variants with inventory either.
+						// If Inventory doesn't exist on the product, don't patch variants with inventory either.
 						return _oc.Products.PatchVariantAsync(id, $"{superProduct.Product.ID}-{v.xp.SpecCombo}", new PartialVariant { ID = v.ID, Name = v.Name, xp = v.xp, Active = v.Active }, accessToken: token);
 					}
 					else
@@ -384,7 +384,7 @@ namespace Headstart.API.Commands.Crud
         {
             if (variant.xp.NewID == variant.ID)
             {
-				//If NewID is same as ID, no changes have happened so NewID shouldn't be populated.
+				// If NewID is same as ID, no changes have happened so NewID shouldn't be populated.
 				variant.xp.NewID = null;
             }
         }
@@ -524,7 +524,7 @@ namespace Headstart.API.Commands.Crud
 			await ocClient.AuthenticateAsync();
 			var token = ocClient.TokenResponse.AccessToken;
 
-			//Format the facet data to change for request body
+			// Format the facet data to change for request body
 			var facetDataFormatted = new ExpandoObject();
 			var facetDataFormattedCollection = (ICollection<KeyValuePair<string, object>>)facetDataFormatted;
 			foreach (var kvp in facets)
@@ -533,7 +533,7 @@ namespace Headstart.API.Commands.Crud
 			}
 			dynamic facetDataFormattedDynamic = facetDataFormatted;
 
-			//Update the product with a supplier token
+			// Update the product with a supplier token
 			var updatedProduct = await ocClient.Products.PatchAsync(
 				id,
 				new PartialProduct() { xp = new { Facets = facetDataFormattedDynamic } },

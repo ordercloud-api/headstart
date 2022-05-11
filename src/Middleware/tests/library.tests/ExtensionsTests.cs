@@ -16,7 +16,7 @@ namespace library.tests
         [Test]
         public void join_string_words()
         {
-            var list = new List<string>() {"Product", "Spec"};
+            var list = new List<string>() { "Product", "Spec" };
             Assert.IsTrue(list.JoinString("|") == "Product|Spec");
         }
     }

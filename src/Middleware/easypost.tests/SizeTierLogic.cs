@@ -9,12 +9,12 @@ namespace easypost.tests
 {
     public class SizeTierLogic
     {
-        //[Test]
-        //public void handles_all_lines_shipping_together_new()
-        //{
+        // [Test]
+        // public void handles_all_lines_shipping_together_new()
+        // {
         //    // line items with SizeTier not equal to "G" will all ship together
 
-        //    // arrange
+        // // arrange
         //    var lines = new List<LineItem>
         //    {
         //        BuildLine(quantity: 1, shipWeight: 5, SizeTier.A),
@@ -29,16 +29,16 @@ namespace easypost.tests
         //        BuildLine(quantity: 1, shipWeight: 5, SizeTier.D),
         //    };
 
-        //    // act
+        // // act
         //    var packages = SmartPackageMapper.MapLineItemsIntoPackages(lines);
         //    var package = packages[0];
 
-        //    Assert.AreEqual(1, packages.Count);
+        // Assert.AreEqual(1, packages.Count);
         //    Assert.AreEqual(22, package.length);
         //    Assert.AreEqual(22, package.width);
         //    Assert.AreEqual(22, package.height);
         //    Assert.AreEqual(50, package.weight);
-        //}
+        // }
 
         [Test]
         public void handles_all_lines_shipping_together_legacy()

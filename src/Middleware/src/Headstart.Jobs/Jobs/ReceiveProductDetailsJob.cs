@@ -42,7 +42,7 @@ namespace Headstart.Jobs
 
         private async Task UpsertProductDetail()
         {
-            List<Product> retrievedProductList = await _oc.Products.ListAllAsync<Product>( filters: $"Name=*");
+            List<Product> retrievedProductList = await _oc.Products.ListAllAsync<Product>(filters: $"Name=*");
 
             foreach (Product product in retrievedProductList)
             {
@@ -64,7 +64,7 @@ namespace Headstart.Jobs
 
             List<ProductDetailData> productDataList = await CreateProductDetailDataAsync(product, lineItemData?.Items);
 
-            //Get current products in Cosmos to update/replace
+            // Get current products in Cosmos to update/replace
             var requestOptions = BuildQueryRequestOptions();
 
             foreach (ProductDetailData productData in productDataList)
@@ -216,7 +216,7 @@ namespace Headstart.Jobs
             }
           
             decimal price = GetPrice(schedule, variant);
-            result.Price = price * (decimal)1.06; //SEB markup of 6%
+            result.Price = price * (decimal)1.06; // SEB markup of 6%
             result.Cost = price;
             if (product.Inventory != null)
             {
@@ -332,21 +332,21 @@ namespace Headstart.Jobs
             List<LineItemDetailData> sixMonthLineItems = twelveMonthLineItems.Where(x => x.Data.Order.DateCreated > DateTime.Now.AddMonths(-6)).ToList();
             List<LineItemDetailData> threeMonthLineItems = twelveMonthLineItems.Where(x => x.Data.Order.DateCreated > DateTime.Now.AddMonths(-3)).ToList();
 
-            //3MO sales
+            // 3MO sales
             foreach (LineItemDetailData lineItemDetail in threeMonthLineItems)
             {
                 result.ThreeMonthQuantity = lineItemDetail.Data.LineItems.Sum(x => x.Quantity);
                 result.ThreeMonthTotal = lineItemDetail.Data.LineItems.Sum(x => x.LineSubtotal);
             }
            
-            //6MO sales
+            // 6MO sales
             foreach (LineItemDetailData lineItemDetail in sixMonthLineItems)
             {
                 result.SixMonthQuantity = lineItemDetail.Data.LineItems.Sum(x => x.Quantity);
                 result.SixMonthTotal = lineItemDetail.Data.LineItems.Sum(x => x.LineSubtotal);
             }
 
-            //12MO sales
+            // 12MO sales
             foreach (LineItemDetailData lineItemDetail in twelveMonthLineItems)
             {
                 result.TwelveMonthQuantity = lineItemDetail.Data.LineItems.Sum(x => x.Quantity);

@@ -106,7 +106,7 @@ namespace Headstart.API.Commands
 				meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: filters, page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.AnyTerm, sortBy: sortBy, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: decodedToken.AccessToken);
 				if (!(bool)(meProducts?.Items?.Any()))
                 {
-					//if no products after retry search, avoid making extra calls for pricing details
+					// if no products after retry search, avoid making extra calls for pricing details
 					return meProducts;
                 }
 			}

@@ -32,7 +32,7 @@ namespace ordercloud.integrations.easypost
         public string Restriction_Type { get; set; }
         public string EEL_PFC { get; set; }
         public bool Customs_Certify { get; set; }
-        public string HS_Tariff_Number { get; set; } = null; //TODO: this is temporary and should not be part of the ongoing solution. it is a product level property
+        public string HS_Tariff_Number { get; set; } = null; // TODO: this is temporary and should not be part of the ongoing solution. it is a product level property
         public decimal Markup { get; set; }
         public bool MarkupOverride { get; set; } = false;
         public List<string> AllowedServiceFilter { get; set; } = new List<string>();

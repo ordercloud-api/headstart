@@ -54,7 +54,7 @@ namespace Headstart.Common.Extensions
                 // TODO: Still waiting on decision makers to decide if we want
                 // Shipping Cost Schedules in HeadStart
 
-                //var validCostBreaks = supplier?.xp?.ShippingCostSchedule?.CostBreaks?.Where(costBreak => costBreak.OrderSubTotal < supplierSubTotal);
+                // var validCostBreaks = supplier?.xp?.ShippingCostSchedule?.CostBreaks?.Where(costBreak => costBreak.OrderSubTotal < supplierSubTotal);
 
                 // Update Free Shipping Rates
                 if (shipEstimate.ID.StartsWith(ShippingConstants.FreeShippingID))
@@ -71,10 +71,10 @@ namespace Headstart.Common.Extensions
                 // TODO: Still waiting on decision makers to decide if we want
                 // Shipping Cost Schedules in HeadStart
 
-                //foreach (var method in shipEstimate.ShipMethods)
-                //{
+                // foreach (var method in shipEstimate.ShipMethods)
+                // {
 
-                //    // If valid Cost Breaks exist, apply them
+                // // If valid Cost Breaks exist, apply them
                 //    if (validCostBreaks != null)
                 //    {
                 //        // Apply the Supplier Shipping Cost Schedule to Ground Rates only
@@ -94,7 +94,7 @@ namespace Headstart.Common.Extensions
                 //            }
                 //        }
                 //    }
-                //}
+                // }
                 updatedEstimates.Add(shipEstimate);
             }
 

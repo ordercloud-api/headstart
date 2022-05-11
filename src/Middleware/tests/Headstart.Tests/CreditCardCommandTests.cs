@@ -394,7 +394,7 @@ namespace Headstart.Tests
 				ExpirationDate = new DateTimeOffset(),
 				xp = new CreditCardXP
                 {
-					CCBillingAddress = new Address {}
+					CCBillingAddress = new Address { }
 				}
 			});
         }

@@ -88,13 +88,13 @@ namespace Headstart.Tests
             _commandSub.Configure().WhenForAnyArgs(x => x.SendSingleTemplateEmailMultipleRcpts(default, default, default, default)).DoNotCallBase();
             _commandSub.Configure().WhenForAnyArgs(x => x.SendSingleTemplateEmail(default, default, default, default)).DoNotCallBase();
 
-            //act
+            // act
             await _commandSub.SendOrderSubmitEmail(orderWorksheet);
 
-            //assert
+            // assert
             var expectedSellerEmailList = new List<EmailAddress>()
             {
-                new EmailAddress() { Email = TestConstants.sellerUser1email},
+                new EmailAddress() { Email = TestConstants.sellerUser1email },
                 new EmailAddress() { Email = TestConstants.sellerUser1AdditionalRcpts[0] }
             };
             var expectedSupplier1EmailList = new List<EmailAddress>()
@@ -106,7 +106,7 @@ namespace Headstart.Tests
             {
                 new EmailAddress() { Email = TestConstants.supplier2NotificationRcpts[0] }
             };
-            //  confirm emails sent to buyer, seller users, supplier 1 notification recipients, supplier 2 notification recipients
+            // confirm emails sent to buyer, seller users, supplier 1 notification recipients, supplier 2 notification recipients
             await _commandSub.Configure().Received().SendSingleTemplateEmail(Arg.Any<string>(), TestConstants.buyerEmail, Arg.Any<string>(), Arg.Any<object>());
             await _commandSub.Configure().Received().SendSingleTemplateEmailMultipleRcpts(Arg.Any<string>(), Arg.Is<List<EmailAddress>>(x => EqualEmailLists(x, expectedSellerEmailList)), Arg.Any<string>(), Arg.Any<object>());
             await _commandSub.Configure().Received().SendSingleTemplateEmailMultipleRcpts(Arg.Any<string>(), Arg.Is<List<EmailAddress>>(x => EqualEmailLists(x, expectedSupplier1EmailList)), Arg.Any<string>(), Arg.Any<object>());

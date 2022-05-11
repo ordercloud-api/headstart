@@ -233,7 +233,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
         {
             po.line_items = items.Select(p => new ZohoLineItem()
             {
-                //account_id = p.purchase_account_id,
+                // account_id = p.purchase_account_id,
                 item_id = p.item_id,
                 description = p.description,
                 rate = Math.Round(decimal.ToDouble(lineitems.First(l => l.SKU() == p.sku).UnitPrice.Value), 2),
@@ -257,7 +257,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
             {
                 line_items = items.Select(p => new ZohoLineItem()
                 {
-                    //account_id = p.purchase_account_id,
+                    // account_id = p.purchase_account_id,
                     item_id = p.item_id,
                     description = p.description,
                     rate = Math.Round(decimal.ToDouble(lineitems.First(l => l.SKU() == p.sku).UnitPrice.Value), 2),
@@ -293,7 +293,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
                 quantity = item.Quantity,
                 rate = Math.Round((double)(item.UnitPrice ?? 0), 2),
                 avatax_tax_code = item.Product.xp.Tax.Code
-                //discount = decimal.ToDouble(promotions.Where(p => p.LineItemLevel == true && p.LineItemID == line_item.ID).Sum(p => p.Amount)),
+                // discount = decimal.ToDouble(promotions.Where(p => p.LineItemLevel == true && p.LineItemID == line_item.ID).Sum(p => p.Amount)),
             }).ToList();
             zOrder.tax_total = decimal.ToDouble(worksheet.Order.TaxCost);
             zOrder.customer_name = contact.contact_name;
@@ -336,7 +336,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
                     quantity = item.Quantity,
                     rate = Math.Round((double)(item.UnitPrice ?? 0), 2),
                     avatax_tax_code = item.Product.xp.Tax.Code
-                    //discount = decimal.ToDouble(promotions.Where(p => p.LineItemLevel == true && p.LineItemID == line_item.ID).Sum(p => p.Amount)),
+                    // discount = decimal.ToDouble(promotions.Where(p => p.LineItemLevel == true && p.LineItemID == line_item.ID).Sum(p => p.Amount)),
                 }).ToList(),
                 tax_total = decimal.ToDouble(worksheet.Order.TaxCost),
                 customer_name = contact.contact_name,
@@ -348,7 +348,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
                 notes = promotions.Any()
                     ? $"Promotions applied: {promotions.DistinctBy(p => p.Code).Select(p => p.Code).JoinString(" - ", p => p)}"
                     : null
-                //shipping_charge = decimal.ToDouble(order.ShippingCost), //TODO: Please mention any Shipping/miscellaneous charges as additional line items.
+                // shipping_charge = decimal.ToDouble(order.ShippingCost), //TODO: Please mention any Shipping/miscellaneous charges as additional line items.
             };
             // adding shipping as a line item
             foreach (var shipment in worksheet.ShipEstimateResponse.ShipEstimates)

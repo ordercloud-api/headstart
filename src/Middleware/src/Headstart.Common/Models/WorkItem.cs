@@ -95,8 +95,8 @@ namespace Headstart.Common.Models
                     // cache exists, we want to force a PUT when xp has deleted properties because 
                     // it's the only way to delete the properties
                     // otherwise we want to PATCH the existing object
-                    //TODO: figure this reference out
-                    //return wi.Cache.HasDeletedXp(wi.Current) ? Action.Update : Action.Patch;
+                    // TODO: figure this reference out
+                    // return wi.Cache.HasDeletedXp(wi.Current) ? Action.Update : Action.Patch;
                     return Action.Patch;
                 }
             }

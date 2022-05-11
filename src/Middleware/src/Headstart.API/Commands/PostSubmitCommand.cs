@@ -62,7 +62,7 @@ namespace Headstart.API.Commands
                         ProcessType.Shipping,
                         "Validate Shipping",
                         ValidateShipping(worksheet)) }
-                }},
+                } },
                 new List<HSOrder> { worksheet.Order });
         }
 
@@ -96,7 +96,7 @@ namespace Headstart.API.Commands
             return new ProcessResult()
             {
                 Type = ProcessType.Accounting,
-                Activity = new List<ProcessResultAction>() {salesAction, poAction, shippingAction}
+                Activity = new List<ProcessResultAction>() { salesAction, poAction, shippingAction }
             };
         }
 
@@ -392,7 +392,7 @@ namespace Headstart.API.Commands
             await _lineItemCommand.SetInitialSubmittedLineItemStatuses(buyerOrder.Order.ID);
             var sellerShipEstimates = buyerOrder.ShipEstimateResponse?.ShipEstimates?.Where(se => se.xp.SupplierID == null);
 
-            //Patch Buyer Order after it has been submitted
+            // Patch Buyer Order after it has been submitted
             var buyerOrderPatch = new PartialOrder() {
                 xp = new {
                     ShipFromAddressIDs = shipFromAddressIDs,
@@ -402,7 +402,7 @@ namespace Headstart.API.Commands
                     SubmittedOrderStatus = SubmittedOrderStatus.Open,
                     HasSellerProducts = buyerOrder.LineItems.Any(li => li.SupplierID == null),
                     PaymentMethod = payment.Type == PaymentType.CreditCard ? "Credit Card" : "Purchase Order",
-                    //  If we have seller ship estimates for a seller owned product save selected method on buyer order.
+                    // If we have seller ship estimates for a seller owned product save selected method on buyer order.
                     SelectedShipMethodsSupplierView = sellerShipEstimates != null ? MapSelectedShipMethod(sellerShipEstimates) : null,
                 }
             };

@@ -133,7 +133,7 @@ namespace Headstart.API.Commands
 
             foreach (var estimate in shipEstimates)
             {
-                //  get supplier and supplier subtotal
+                // get supplier and supplier subtotal
                 var supplierID = orderWorksheet.LineItems.First(li => li.ID == estimate.ShipEstimateItems.FirstOrDefault()?.LineItemID).SupplierID;
                 var supplier = suppliers.Items.FirstOrDefault(s => s.ID == supplierID);
                 var supplierLineItems = orderWorksheet.LineItems.Where(li => li.SupplierID == supplier?.ID);
