@@ -35,7 +35,8 @@ namespace Headstart.Jobs
                     {
                         await messageReceiver.DeadLetterAsync(lockToken, "Exceeded max retries", GetDeadLetterDescription());
                         logger.LogInformation("$Dead lettered the message due to exceeding max retries, this will need to be retried manually.");
-                    } else
+                    }
+                    else
                     {
                         await ResubmitMessageAsync(message, messageSender, resubmitCount);
                         logger.LogInformation($"Resubmitted the message {message.MessageId} to be tried again in {RetryTemporaryErrorsAfterMinutes} minutes");
@@ -85,7 +86,8 @@ namespace Headstart.Jobs
             try
             {
                 return await ProcessJobAsync(message);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 LogFailure($"Unhandled exception in ProcessJobAsync - {ex.Message} {ex.InnerException.Message} {ex.StackTrace}");
                 return ResultCode.PermanentFailure;

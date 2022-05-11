@@ -213,156 +213,222 @@ namespace Headstart.Common.Constants
         {
             return new Dictionary<LineItemStatus, Dictionary<VerifiedUserType, EmailDisplayText>>()
             {
-                { LineItemStatus.Complete, new Dictionary<VerifiedUserType, EmailDisplayText>() {
-                    { VerifiedUserType.buyer, new EmailDisplayText()
+                {
+                    LineItemStatus.Complete, new Dictionary<VerifiedUserType, EmailDisplayText>()
                     {
-                        EmailSubject = "Items on your order have shipped",
-                        DynamicText = $"{supplierName} has shipped items from your order",
-                        DynamicText2 = "The following items are on their way"
-                    } }
-                } },
-                { LineItemStatus.ReturnRequested, new Dictionary<VerifiedUserType, EmailDisplayText>() {
-                    { VerifiedUserType.buyer, new EmailDisplayText()
+                        {
+                            VerifiedUserType.buyer, new EmailDisplayText()
+                            {
+                                EmailSubject = "Items on your order have shipped",
+                                DynamicText = $"{supplierName} has shipped items from your order",
+                                DynamicText2 = "The following items are on their way"
+                            }
+                        }
+                    }
+                },
+                {
+                    LineItemStatus.ReturnRequested, new Dictionary<VerifiedUserType, EmailDisplayText>()
                     {
-                        EmailSubject = "A return request has been submitted on your order",
-                        DynamicText = "You will be updated when this return is processed",
-                        DynamicText2 = "The following items have been requested for return"
-                    } },
-                    { VerifiedUserType.admin, new EmailDisplayText()
+                        {
+                            VerifiedUserType.buyer, new EmailDisplayText()
+                            {
+                                EmailSubject = "A return request has been submitted on your order",
+                                DynamicText = "You will be updated when this return is processed",
+                                DynamicText2 = "The following items have been requested for return"
+                            }
+                        },
+                        {
+                            VerifiedUserType.admin, new EmailDisplayText()
+                            {
+                                EmailSubject = "A buyer has submitted a return on their order",
+                                DynamicText = "Contact the Supplier to process the return request.",
+                                DynamicText2 = "The following items have been requested for return"
+                            }
+                        },
+                        {
+                            VerifiedUserType.supplier, new EmailDisplayText()
+                            {
+                                EmailSubject = "A buyer has submitted a return on their order",
+                                DynamicText = "The seller will contact you to process the return request",
+                                DynamicText2 = "The following items have been requested for return"
+                            }
+                        }
+                    }
+                },
+                {
+                    LineItemStatus.Returned, new Dictionary<VerifiedUserType, EmailDisplayText>()
                     {
-                        EmailSubject = "A buyer has submitted a return on their order",
-                        DynamicText = "Contact the Supplier to process the return request.",
-                        DynamicText2 = "The following items have been requested for return"
-                    } },
-                    { VerifiedUserType.supplier, new EmailDisplayText()
+                        {
+                            VerifiedUserType.buyer, new EmailDisplayText()
+                            {
+                                EmailSubject = "A return has been processed for your order",
+                                DynamicText = "You will be refunded for the proper amount",
+                                DynamicText2 = "The following items have had returns processed"
+                            }
+                        },
+                        {
+                            VerifiedUserType.admin, new EmailDisplayText()
+                            {
+                                EmailSubject = "The supplier has processed a return",
+                                DynamicText = "Ensure that the full return process is complete, and the customer was refunded",
+                                DynamicText2 = "The following items have been marked as returned"
+                            }
+                        },
+                        {
+                            VerifiedUserType.supplier, new EmailDisplayText()
+                            {
+                                EmailSubject = "The seller has processed a return",
+                                DynamicText = "Ensure that the full return process is complete",
+                                DynamicText2 = "The following items have been marked as returned"
+                            }
+                        }
+                    }
+                },
+                {
+                    LineItemStatus.ReturnDenied, new Dictionary<VerifiedUserType, EmailDisplayText>()
                     {
-                        EmailSubject = "A buyer has submitted a return on their order",
-                        DynamicText = "The seller will contact you to process the return request",
-                        DynamicText2 = "The following items have been requested for return"
-                    } }
-                } },
-                  { LineItemStatus.Returned, new Dictionary<VerifiedUserType, EmailDisplayText>() {
-                    { VerifiedUserType.buyer, new EmailDisplayText()
+                        {
+                            VerifiedUserType.buyer, new EmailDisplayText()
+                            {
+                                EmailSubject = "A return has been denied for your order",
+                                DynamicText = "A return could not be processed for this order.",
+                                DynamicText2 = "The following items will not be returned"
+                            }
+                        },
+                        {
+                            VerifiedUserType.admin, new EmailDisplayText()
+                            {
+                                EmailSubject = "The supplier has denied a return",
+                                DynamicText = "The customer will not be refunded for the following items.",
+                                DynamicText2 = "The following items have been marked as return denied"
+                            }
+                        },
+                        {
+                            VerifiedUserType.supplier, new EmailDisplayText()
+                            {
+                                EmailSubject = "The supplier has denied a return",
+                                DynamicText = "The customer will not be refunded for the following items.",
+                                DynamicText2 = "The following items have been marked as return denied"
+                            }
+                        }
+                    }
+                },
+                {
+                    LineItemStatus.Backordered, new Dictionary<VerifiedUserType, EmailDisplayText>()
                     {
-                        EmailSubject = "A return has been processed for your order",
-                        DynamicText = "You will be refunded for the proper amount",
-                        DynamicText2 = "The following items have had returns processed"
-                    } },
-                    { VerifiedUserType.admin, new EmailDisplayText()
+                        {
+                            VerifiedUserType.buyer, new EmailDisplayText()
+                            {
+                                EmailSubject = "Item(s) on your order have been backordered by supplier",
+                                DynamicText = "You will be updated on the status of the order when more information is known",
+                                DynamicText2 = "The following items have been marked as backordered"
+                            }
+                        },
+                        {
+                            VerifiedUserType.admin, new EmailDisplayText()
+                            {
+                                EmailSubject = $"{supplierName} has marked items on an order as backordered",
+                                DynamicText = "You will be updated on the status of the order when more information is known",
+                                DynamicText2 = "The following items have been marked as backordered"
+                            }
+                        },
+                        {
+                            VerifiedUserType.supplier, new EmailDisplayText()
+                            {
+                                EmailSubject = "Item(s) on order have been marked as backordered",
+                                DynamicText = "Keep the buyer updated on the status of these items when you know more information",
+                                DynamicText2 = "The following items have been marked as backordered"
+                            }
+                        },
+                    }
+                },
+                {
+                    LineItemStatus.CancelRequested, new Dictionary<VerifiedUserType, EmailDisplayText>()
                     {
-                        EmailSubject = "The supplier has processed a return",
-                        DynamicText = "Ensure that the full return process is complete, and the customer was refunded",
-                        DynamicText2 = "The following items have been marked as returned"
-                    } },
-                    { VerifiedUserType.supplier, new EmailDisplayText()
+                        {
+                            VerifiedUserType.buyer, new EmailDisplayText()
+                            {
+                                EmailSubject = "Your request for cancellation has been submitted",
+                                DynamicText = "You will be updated on the status of the cancellation when more information is known",
+                                DynamicText2 = "The following items have had cancellation requested"
+                            }
+                        },
+                        {
+                            VerifiedUserType.admin, new EmailDisplayText()
+                            {
+                                EmailSubject = "A buyer has requested cancellation of line items on an order",
+                                DynamicText = "The supplier will look into the feasibility of this cancellation",
+                                DynamicText2 = "The following items have been requested for cancellation"
+                            }
+                        },
+                        {
+                            VerifiedUserType.supplier, new EmailDisplayText()
+                            {
+                                EmailSubject = "A buyer has requested cancelation of line items on an order",
+                                DynamicText = "Review the items below to see if any can be cancelled before they ship",
+                                DynamicText2 = "The following items have have been requested for cancellation"
+                            }
+                        },
+                    }
+                },
+                {
+                    LineItemStatus.Canceled, new Dictionary<VerifiedUserType, EmailDisplayText>()
                     {
-                        EmailSubject = "The seller has processed a return",
-                        DynamicText = "Ensure that the full return process is complete",
-                        DynamicText2 = "The following items have been marked as returned"
-                    } }
-                } },
-                   { LineItemStatus.ReturnDenied, new Dictionary<VerifiedUserType, EmailDisplayText>() {
-                    { VerifiedUserType.buyer, new EmailDisplayText()
+                        {
+                            VerifiedUserType.buyer, new EmailDisplayText()
+                            {
+                                EmailSubject = "Items on your order have been cancelled",
+                                DynamicText = "You will be refunded for the cost of these items",
+                                DynamicText2 = "The following items have been cancelled"
+                            }
+                        },
+                        {
+                            VerifiedUserType.admin, new EmailDisplayText()
+                            {
+                                EmailSubject = "Item(s) on an order have been cancelled",
+                                DynamicText = "Ensure the buyer is refunded for the proper amount",
+                                DynamicText2 = "The following items have been cancelled"
+                            }
+                        },
+                        {
+                            VerifiedUserType.supplier, new EmailDisplayText()
+                            {
+                                EmailSubject = "Item(s) on an order have been cancelled",
+                                DynamicText = "The seller will refund the buyer for the proper amount",
+                                DynamicText2 = "The following items have been cancelled"
+                            }
+                        },
+                    }
+                },
+                {
+                    LineItemStatus.CancelDenied, new Dictionary<VerifiedUserType, EmailDisplayText>()
                     {
-                        EmailSubject = "A return has been denied for your order",
-                        DynamicText = "A return could not be processed for this order.",
-                        DynamicText2 = "The following items will not be returned"
-                    } },
-                    { VerifiedUserType.admin, new EmailDisplayText()
-                    {
-                        EmailSubject = "The supplier has denied a return",
-                        DynamicText = "The customer will not be refunded for the following items.",
-                        DynamicText2 = "The following items have been marked as return denied"
-                    } },
-                    { VerifiedUserType.supplier, new EmailDisplayText()
-                    {
-                        EmailSubject = "The supplier has denied a return",
-                        DynamicText = "The customer will not be refunded for the following items.",
-                        DynamicText2 = "The following items have been marked as return denied"
-                    } }
-                } },
-                    { LineItemStatus.Backordered, new Dictionary<VerifiedUserType, EmailDisplayText>() {
-                    { VerifiedUserType.buyer, new EmailDisplayText()
-                    {
-                        EmailSubject = "Item(s) on your order have been backordered by supplier",
-                        DynamicText = "You will be updated on the status of the order when more information is known",
-                        DynamicText2 = "The following items have been marked as backordered"
-                    } },
-                    { VerifiedUserType.admin, new EmailDisplayText()
-                    {
-                        EmailSubject = $"{supplierName} has marked items on an order as backordered",
-                        DynamicText = "You will be updated on the status of the order when more information is known",
-                        DynamicText2 = "The following items have been marked as backordered"
-                    } },
-                    { VerifiedUserType.supplier, new EmailDisplayText()
-                    {
-                        EmailSubject = "Item(s) on order have been marked as backordered",
-                        DynamicText = "Keep the buyer updated on the status of these items when you know more information",
-                        DynamicText2 = "The following items have been marked as backordered"
-                    } },
-                   } },
-                   { LineItemStatus.CancelRequested, new Dictionary<VerifiedUserType, EmailDisplayText>() {
-                    { VerifiedUserType.buyer, new EmailDisplayText()
-                    {
-                        EmailSubject = "Your request for cancellation has been submitted",
-                        DynamicText = "You will be updated on the status of the cancellation when more information is known",
-                        DynamicText2 = "The following items have had cancellation requested"
-                    } },
-                    { VerifiedUserType.admin, new EmailDisplayText()
-                    {
-                        EmailSubject = "A buyer has requested cancellation of line items on an order",
-                        DynamicText = "The supplier will look into the feasibility of this cancellation",
-                        DynamicText2 = "The following items have been requested for cancellation"
-                    } },
-                    { VerifiedUserType.supplier, new EmailDisplayText()
-                    {
-                        EmailSubject = "A buyer has requested cancelation of line items on an order",
-                        DynamicText = "Review the items below to see if any can be cancelled before they ship",
-                        DynamicText2 = "The following items have have been requested for cancellation"
-                    } },
-
-                } },
-                 { LineItemStatus.Canceled, new Dictionary<VerifiedUserType, EmailDisplayText>() {
-                    { VerifiedUserType.buyer, new EmailDisplayText()
-                    {
-                        EmailSubject = "Items on your order have been cancelled",
-                        DynamicText = "You will be refunded for the cost of these items",
-                        DynamicText2 = "The following items have been cancelled"
-                    } },
-                    { VerifiedUserType.admin, new EmailDisplayText()
-                    {
-                        EmailSubject = "Item(s) on an order have been cancelled",
-                        DynamicText = "Ensure the buyer is refunded for the proper amount",
-                        DynamicText2 = "The following items have been cancelled"
-                    } },
-                    { VerifiedUserType.supplier, new EmailDisplayText()
-                    {
-                        EmailSubject = "Item(s) on an order have been cancelled",
-                        DynamicText = "The seller will refund the buyer for the proper amount",
-                        DynamicText2 = "The following items have been cancelled"
-                    } },
-
-                } },
-                   { LineItemStatus.CancelDenied, new Dictionary<VerifiedUserType, EmailDisplayText>() {
-                    { VerifiedUserType.buyer, new EmailDisplayText()
-                    {
-                        EmailSubject = "A cancellation has been denied for your order",
-                        DynamicText = "A cancellation could not be processed for this order",
-                        DynamicText2 = "The following items will not be canceled"
-                    } },
-                    { VerifiedUserType.admin, new EmailDisplayText()
-                    {
-                        EmailSubject = "The supplier has denied a cancellation",
-                        DynamicText = "The customer will not be refunded for the following items",
-                        DynamicText2 = "The following items have been marked as cancel denied"
-                    } },
-                    { VerifiedUserType.supplier, new EmailDisplayText()
-                    {
-                        EmailSubject = "The supplier has denied a cancellation",
-                        DynamicText = "The customer will not be refunded for the following items",
-                        DynamicText2 = "The following items have been marked as cancel denied"
-                    } }
-                } },
+                        {
+                            VerifiedUserType.buyer, new EmailDisplayText()
+                            {
+                                EmailSubject = "A cancellation has been denied for your order",
+                                DynamicText = "A cancellation could not be processed for this order",
+                                DynamicText2 = "The following items will not be canceled"
+                            }
+                        },
+                        {
+                            VerifiedUserType.admin, new EmailDisplayText()
+                            {
+                                EmailSubject = "The supplier has denied a cancellation",
+                                DynamicText = "The customer will not be refunded for the following items",
+                                DynamicText2 = "The following items have been marked as cancel denied"
+                            }
+                        },
+                        {
+                            VerifiedUserType.supplier, new EmailDisplayText()
+                            {
+                                EmailSubject = "The supplier has denied a cancellation",
+                                DynamicText = "The customer will not be refunded for the following items",
+                                DynamicText2 = "The following items have been marked as cancel denied"
+                            }
+                        }
+                    }
+                },
             };
         }
     }

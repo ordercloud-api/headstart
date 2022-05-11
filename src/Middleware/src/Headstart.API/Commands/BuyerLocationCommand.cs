@@ -111,7 +111,8 @@ namespace Headstart.API.Commands
             try
             {
                 existingLocation = await ocClient.UserGroups.GetAsync(buyerID, buyerLocationID, token);
-            } catch (Exception e) { } // Do nothing if not found
+            }
+            catch (Exception e) { } // Do nothing if not found
             var updatedBuyerAddress = await ocClient.Addresses.SaveAsync<HSAddressBuyer>(buyerID, buyerLocationID, buyerLocation.Address, accessToken: token);
             var updatedBuyerUserGroup = await ocClient.UserGroups.SaveAsync<HSLocationUserGroup>(buyerID, buyerLocationID, buyerLocation.UserGroup, accessToken: token);
             var location = new HSBuyerLocation

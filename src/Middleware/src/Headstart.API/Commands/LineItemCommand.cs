@@ -58,7 +58,8 @@ namespace Headstart.API.Commands
                 {
                     xp = new
                     {
-                        StatusByQuantity = new Dictionary<LineItemStatus, int>() {
+                        StatusByQuantity = new Dictionary<LineItemStatus, int>()
+                        {
                             { LineItemStatus.Submitted, li.Quantity },
                             { LineItemStatus.Open, 0 },
                             { LineItemStatus.Backordered, 0 },
@@ -167,7 +168,8 @@ namespace Headstart.API.Commands
                         statusByQuantity
                     }
                 };
-            } else if (newLineItemStatus == LineItemStatus.CancelRequested || newLineItemStatus == LineItemStatus.Canceled)
+            }
+            else if (newLineItemStatus == LineItemStatus.CancelRequested || newLineItemStatus == LineItemStatus.Canceled)
             {
                 var cancelRequests = existingLineItem.xp.Cancelations ?? new List<LineItemClaim>();
                 return new PartialLineItem()
@@ -178,7 +180,8 @@ namespace Headstart.API.Commands
                         statusByQuantity
                     }
                 };
-            } else
+            }
+            else
             {
                 return new PartialLineItem()
                 {
@@ -198,18 +201,21 @@ namespace Headstart.API.Commands
                 // to resolve an additional request
                 var numberReturnedOrCanceled = lineItemStatuses[newLineItemStatus];
                 var currentClaimIndex = 0;
-                while (numberReturnedOrCanceled > 0 && currentClaimIndex < existinglineItemStatusChangeRequests.Count()) {
+                while (numberReturnedOrCanceled > 0 && currentClaimIndex < existinglineItemStatusChangeRequests.Count())
+                {
                     if (existinglineItemStatusChangeRequests[currentClaimIndex].Quantity <= numberReturnedOrCanceled)
                     {
                         existinglineItemStatusChangeRequests[currentClaimIndex].IsResolved = true;
                         numberReturnedOrCanceled -= existinglineItemStatusChangeRequests[currentClaimIndex].Quantity;
                         currentClaimIndex++;
-                    } else
+                    }
+                    else
                     {
                         currentClaimIndex++;
                     }
                 }
-            } else
+            }
+            else
             {
                 existinglineItemStatusChangeRequests.Add(new LineItemClaim()
                 {
@@ -244,7 +250,8 @@ namespace Headstart.API.Commands
                     {
                         quantitySetting -= statusDictionary[status];
                         statusDictionary[status] = 0;
-                    } else
+                    }
+                    else
                     {
                         statusDictionary[status] -= quantitySetting;
                         quantitySetting = 0;
@@ -390,7 +397,8 @@ namespace Headstart.API.Commands
 
             foreach (KeyValuePair<LineItemStatus, int> entry in existingStatusByQuantity)
             {
-                if (validPreviousStates.Contains(entry.Key)) {
+                if (validPreviousStates.Contains(entry.Key))
+                {
                     countCanBeChanged += entry.Value;
                 }
             }
@@ -423,7 +431,8 @@ namespace Headstart.API.Commands
             {
                 liReq.ID = preExistingLi.ID; // ensure we do not change the line item id when updating
                 li = await _oc.LineItems.SaveAsync<HSLineItem>(OrderDirection.Incoming, orderID, preExistingLi.ID, liReq);
-            } else
+            }
+            else
             {
                 li = await _oc.LineItems.CreateAsync<HSLineItem>(OrderDirection.Incoming, orderID, liReq);
             }
@@ -450,7 +459,8 @@ namespace Headstart.API.Commands
             if (product.PriceSchedule.UseCumulativeQuantity)
             {
                 int totalQuantity = li?.Quantity ?? 0;
-                foreach (HSLineItem lineItem in existingLineItems) {
+                foreach (HSLineItem lineItem in existingLineItems)
+                {
                     if (li == null || !LineItemsMatch(li, lineItem))
                     {
                         totalQuantity += lineItem.Quantity;
@@ -473,7 +483,8 @@ namespace Headstart.API.Commands
                 await Task.WhenAll(tasks);
                 // Return the item total for the li being added or modified
                 return li == null ? 0 : priceBasedOnQuantity + GetSpecMarkup(li.Specs, product.Specs);
-            } else
+            }
+            else
             {
                 decimal lineItemTotal = 0;
                 if (li != null)
@@ -499,7 +510,8 @@ namespace Headstart.API.Commands
             {
                 // this is an MPO owned RMA
                 orderID = rmaWithLineItemStatusByQuantity.RMA.SourceOrderID;
-            } else
+            }
+            else
             {
                 // this is a suplier owned RMA and by convention orders are in the format {orderID}-{supplierID}
                 orderID = $"{rmaWithLineItemStatusByQuantity.RMA.SourceOrderID}-{rmaWithLineItemStatusByQuantity.RMA.SupplierID}";
@@ -532,7 +544,8 @@ namespace Headstart.API.Commands
             {
                 if (li2.xp.PrintArtworkURL != li1.xp.PrintArtworkURL) return false;
             }
-            foreach (var spec1 in li1.Specs) {
+            foreach (var spec1 in li1.Specs)
+            {
                 var spec2 = (li2.Specs as List<LineItemSpec>)?.Find(s => s.SpecID == spec1.SpecID);
                 if (spec1?.Value != spec2?.Value) return false;
             }

@@ -68,7 +68,8 @@ namespace Headstart.API.Commands
             };
         }
 
-        public static readonly List<XpIndex> DefaultIndices = new List<XpIndex>() {
+        public static readonly List<XpIndex> DefaultIndices = new List<XpIndex>()
+        {
             new XpIndex { ThingType = XpThingType.UserGroup, Key = "Type" },
             new XpIndex { ThingType = XpThingType.UserGroup, Key = "Role" },
             new XpIndex { ThingType = XpThingType.UserGroup, Key = "Country" },
@@ -93,7 +94,8 @@ namespace Headstart.API.Commands
             new XpIndex { ThingType = XpThingType.Promotion, Key = "AppliesTo" },
         };
 
-        public static readonly List<Incrementor> DefaultIncrementors = new List<Incrementor>() {
+        public static readonly List<Incrementor> DefaultIncrementors = new List<Incrementor>()
+        {
             new Incrementor { ID = "orderIncrementor", Name = "Order Incrementor", LastNumber = 0, LeftPaddingCount = 6 },
             new Incrementor { ID = "supplierIncrementor", Name = "Supplier Incrementor", LastNumber = 0, LeftPaddingCount = 3 },
             new Incrementor { ID = "buyerIncrementor", Name = "Buyer Incrementor", LastNumber = 0, LeftPaddingCount = 4 },
@@ -207,7 +209,8 @@ namespace Headstart.API.Commands
             {
                 ID = "BuyerEmails",
                 Name = "Buyer Emails",
-                MessageTypes = new[] {
+                MessageTypes = new[]
+                {
                         MessageType.ForgottenPassword,
                         MessageType.NewUserInvitation,
                         MessageType.OrderApproved,
@@ -229,7 +232,8 @@ namespace Headstart.API.Commands
             {
                 ID = "SellerEmails",
                 Name = "Seller Emails",
-                MessageTypes = new[] {
+                MessageTypes = new[]
+                {
                         MessageType.ForgottenPassword,
                     },
                 URL = seed.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
@@ -243,7 +247,8 @@ namespace Headstart.API.Commands
             {
                 ID = "SupplierEmails",
                 Name = "Supplier Emails",
-                MessageTypes = new[] {
+                MessageTypes = new[]
+                {
                         MessageType.ForgottenPassword,
                     },
                 URL = seed.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
@@ -251,7 +256,8 @@ namespace Headstart.API.Commands
             };
         }
 
-        public static readonly List<HSSecurityProfile> DefaultSecurityProfiles = new List<HSSecurityProfile>() {
+        public static readonly List<HSSecurityProfile> DefaultSecurityProfiles = new List<HSSecurityProfile>()
+        {
 
 			// seller/supplier
 			new HSSecurityProfile() { ID = CustomRole.HSBuyerAdmin, CustomRoles = new CustomRole[] { CustomRole.HSBuyerAdmin }, Roles = new ApiRole[] { ApiRole.AddressAdmin, ApiRole.ApprovalRuleAdmin, ApiRole.BuyerAdmin, ApiRole.BuyerUserAdmin, ApiRole.CreditCardAdmin, ApiRole.UserGroupAdmin } },
@@ -291,7 +297,8 @@ namespace Headstart.API.Commands
 
         };
 
-        public static readonly List<CustomRole> SellerHsRoles = new List<CustomRole>() {
+        public static readonly List<CustomRole> SellerHsRoles = new List<CustomRole>()
+        {
             CustomRole.HSBuyerAdmin,
             CustomRole.HSBuyerImpersonator,
             CustomRole.HSCategoryAdmin,

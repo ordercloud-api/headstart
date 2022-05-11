@@ -85,7 +85,8 @@ namespace ordercloud.integrations.easypost
 					{
 						var newPackage = new Package() { PercentFilled = percentFillToAdd, Weight = (decimal)item.ShipWeightOrDefault(0) };
 						packages.Add(newPackage);
-					} else
+					}
+                    else
 					{
 						currentPackage.PercentFilled += percentFillToAdd;
 						currentPackage.Weight += (decimal)item.ShipWeightOrDefault(0);

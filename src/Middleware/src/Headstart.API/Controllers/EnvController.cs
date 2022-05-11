@@ -15,7 +15,8 @@ namespace Headstart.Common.Controllers
         [HttpGet]
         public object Get()
         {
-            return new {
+            return new
+            {
                 Environment = _settings.EnvironmentSettings.Environment.ToString(),
                 BuildNumber = _settings.EnvironmentSettings.BuildNumber, // set during deploy
                 Commit = _settings.EnvironmentSettings.Commit, // set during deploy

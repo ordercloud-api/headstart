@@ -62,7 +62,8 @@ namespace Headstart.API.Commands.Zoho
                     {
                         Items = new List<HSLineItem>()
                         {
-                            new HSLineItem() {
+                            new HSLineItem()
+                            {
                                 ID = $"{z_order.reference_number} - {ZohoExtensions.ShippingSuffix}",
                                 UnitPrice = shipping_method?.Cost,
                                 ProductID = shipping_method.ShippingSku(),

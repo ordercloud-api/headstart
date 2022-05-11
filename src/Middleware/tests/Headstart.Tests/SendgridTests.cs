@@ -247,12 +247,15 @@ namespace Headstart.Tests
                     {
                         TaxCalculation = new OrderTaxCalculation()
                         {
-                            OrderLevelTaxes = new List<TaxDetails> {
-                                new TaxDetails() {
+                            OrderLevelTaxes = new List<TaxDetails>
+                            {
+                                new TaxDetails()
+                                {
                                     Tax = TestConstants.lineItem1ShipmentTax,
                                     ShipEstimateID = TestConstants.selectedShipEstimate1ID
                                 },
-                                new TaxDetails() {
+                                new TaxDetails()
+                                {
                                     Tax = TestConstants.lineItem2ShipmentTax,
                                     ShipEstimateID = TestConstants.selectedShipEstimate2ID
                                 }

@@ -15,7 +15,8 @@ namespace ordercloud.integrations.taxjar
 			if (searchTerm == null || searchTerm == string.Empty)
 			{
 				toReturn = categories;
-			} else
+			}
+            else
 			{
 				toReturn = categories.Where(c =>
 				{

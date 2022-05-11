@@ -49,7 +49,8 @@ namespace ordercloud.integrations.exchangerates
             try
             {
                 return await GetCachedRates(rateArgs, currency);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 await Update();
                 return await GetCachedRates(rateArgs, currency);
@@ -58,7 +59,8 @@ namespace ordercloud.integrations.exchangerates
 
         private async Task<ListPage<OrderCloudIntegrationsConversionRate>> GetCachedRates(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencySymbol currency)
         {
-            var rates = await _cache.GetOrAddAsync($"exchangerates_{currency}", TimeSpan.FromHours(1), () => {
+            var rates = await _cache.GetOrAddAsync($"exchangerates_{currency}", TimeSpan.FromHours(1), () =>
+            {
                 return _blob.Get<OrderCloudIntegrationsExchangeRate>($"{currency}.json");
             });
             return Filter(rateArgs, rates);

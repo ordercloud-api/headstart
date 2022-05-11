@@ -28,7 +28,8 @@ namespace ordercloud.integrations.library.Cosmos
             member = filter.PropertyName.Split(".").Aggregate(member, Expression.Property); // takes X.X notation and gets to the nested property member
 
             var propertyType = ((PropertyInfo)member.To<MemberExpression>().Member).PropertyType;
-            if (propertyType.GetInterface(nameof(IList)) != null) {
+            if (propertyType.GetInterface(nameof(IList)) != null)
+            {
                 var elementType = propertyType.GetTypeInfo().GenericTypeArguments[0];
                 return filter.ORExpressions(f => GetListExpression<T>(elementType, member, f));
             }

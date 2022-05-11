@@ -21,7 +21,8 @@ namespace Headstart.Jobs
             try
             {
                 await ProcessJob();
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 LogFailure(ex.Message);
             }

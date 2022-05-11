@@ -93,7 +93,8 @@ namespace ordercloud.integrations.cardconnect
 					if (ocPayment.Amount == ccAmount)
                     {
 						return ocPayment;
-                    } else
+                    }
+                    else
                     {
 						await VoidTransactionAsync(ocPayment, order, userToken);
                     }

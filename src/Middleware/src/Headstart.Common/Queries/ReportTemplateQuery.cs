@@ -39,7 +39,8 @@ namespace Headstart.Common.Queries
             if (decodedToken.CommerceRole == CommerceRole.Seller)
             {
                 templates = await _store.Query(feedOptions).Where(x => x.ReportType == reportType).ToListAsync();
-            } else if (decodedToken.CommerceRole == CommerceRole.Supplier)
+            }
+            else if (decodedToken.CommerceRole == CommerceRole.Supplier)
             {
                 templates = await _store.Query(feedOptions).Where(x => x.ReportType == reportType && x.AvailableToSuppliers == true).ToListAsync();
             }

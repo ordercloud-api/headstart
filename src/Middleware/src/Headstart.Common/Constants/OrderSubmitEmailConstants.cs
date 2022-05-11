@@ -26,24 +26,30 @@ namespace Headstart.Common.Constants
         {
             var dictionary = new Dictionary<VerifiedUserType, EmailDisplayText>()
             {
-                { VerifiedUserType.buyer, new EmailDisplayText()
                 {
-                    EmailSubject = $"Your order has been submitted {orderID}",
-                    DynamicText = "Thank you for your order.",
-                    DynamicText2 = "We are getting your order ready to be shipped. You will be notified when it has been sent. Your order contains the folowing items."
-                } },
-                { VerifiedUserType.admin, new EmailDisplayText()
+                    VerifiedUserType.buyer, new EmailDisplayText()
+                    {
+                        EmailSubject = $"Your order has been submitted {orderID}",
+                        DynamicText = "Thank you for your order.",
+                        DynamicText2 = "We are getting your order ready to be shipped. You will be notified when it has been sent. Your order contains the folowing items."
+                    }
+                },
                 {
-                    EmailSubject = $"An order has been submitted {orderID}",
-                    DynamicText = $"{firstName} {lastName} has placed an order.",
-                    DynamicText2 = "The order contains the following items:"
-                } },
-                { VerifiedUserType.supplier, new EmailDisplayText()
+                    VerifiedUserType.admin, new EmailDisplayText()
+                    {
+                        EmailSubject = $"An order has been submitted {orderID}",
+                        DynamicText = $"{firstName} {lastName} has placed an order.",
+                        DynamicText2 = "The order contains the following items:"
+                    }
+                },
                 {
-                    EmailSubject = $"An order has been submitted {orderID}",
-                    DynamicText = $"{firstName} {lastName} has placed an order.",
-                    DynamicText2 = "The order contains the following items:"
-                } },
+                    VerifiedUserType.supplier, new EmailDisplayText()
+                    {
+                        EmailSubject = $"An order has been submitted {orderID}",
+                        DynamicText = $"{firstName} {lastName} has placed an order.",
+                        DynamicText2 = "The order contains the following items:"
+                    }
+                },
             };
             return dictionary[decodedToken];
         }
@@ -51,18 +57,22 @@ namespace Headstart.Common.Constants
         {
             var dictionary = new Dictionary<VerifiedUserType, EmailDisplayText>()
             {
-                { VerifiedUserType.buyer, new EmailDisplayText()
                 {
-                    EmailSubject = "Your quote has been submitted",
-                    DynamicText = "Your quote has been submitted.",
-                    DynamicText2 = "The vendor for this product will contact your with more information on your quote request."
-                } },
-                { VerifiedUserType.supplier, new EmailDisplayText()
+                    VerifiedUserType.buyer, new EmailDisplayText()
+                    {
+                        EmailSubject = "Your quote has been submitted",
+                        DynamicText = "Your quote has been submitted.",
+                        DynamicText2 = "The vendor for this product will contact your with more information on your quote request."
+                    }
+                },
                 {
-                    EmailSubject = "A quote has been requested",
-                    DynamicText = "A quote has been requested for one of your products",
-                    DynamicText2 = "Please reach out to the customer directly to give them more information about their quote."
-                } },
+                    VerifiedUserType.supplier, new EmailDisplayText()
+                    {
+                        EmailSubject = "A quote has been requested",
+                        DynamicText = "A quote has been requested for one of your products",
+                        DynamicText2 = "Please reach out to the customer directly to give them more information about their quote."
+                    }
+                },
             };
             return dictionary[decodedToken];
         }

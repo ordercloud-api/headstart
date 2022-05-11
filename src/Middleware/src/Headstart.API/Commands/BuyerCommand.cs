@@ -181,7 +181,8 @@ namespace Headstart.API.Commands
             else if (currentConfig != null)
             {
                 return await ocClient.ImpersonationConfigs.SaveAsync(currentConfig.ID, impersonation, token);
-            } else
+            }
+            else
             {
                 impersonation.BuyerID = buyerID;
                 impersonation.SecurityProfileID = Enum.GetName(typeof(CustomRole), CustomRole.HSBaseBuyer);

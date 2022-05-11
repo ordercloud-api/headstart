@@ -28,7 +28,8 @@ namespace ordercloud.integrations.smartystreets
 
 		public static List<BuyerAddress> Map(AutoCompleteResponse response, BuyerAddress raw)
 		{
-			var addresses = response.suggestions.Select(suggestion => {
+			var addresses = response.suggestions.Select(suggestion =>
+            {
 				var rawCopy = JsonSerializer.Deserialize<BuyerAddress>(JsonSerializer.Serialize(raw));
 				rawCopy.Street1 = suggestion.street_line;
 				rawCopy.Street2 = suggestion.secondary;

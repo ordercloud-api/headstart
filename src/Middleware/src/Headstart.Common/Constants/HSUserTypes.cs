@@ -8,10 +8,12 @@ namespace Headstart.Common.Constants
 {
     public static class HSUserTypes
     {
-        public static List<HSUserType> Supplier() {
+        public static List<HSUserType> Supplier()
+        {
             return new List<HSUserType>()
             {
-                new HSUserType {
+                new HSUserType
+                {
                     UserGroupName = "Order Admin",
                     UserGroupType = UserGroupType.UserPermissions,
                     UserGroupIDSuffix = "OrderAdmin",
@@ -21,7 +23,8 @@ namespace Headstart.Common.Constants
                         CustomRole.HSShipmentAdmin,
                     }
                 },
-                new HSUserType {
+                new HSUserType
+                {
                     UserGroupName = "Account Admin",
                     UserGroupType = UserGroupType.UserPermissions,
                     UserGroupIDSuffix = "AccountAdmin",
@@ -33,7 +36,8 @@ namespace Headstart.Common.Constants
                         CustomRole.HSMeSupplierAdmin
                     }
                 },
-                new HSUserType {
+                new HSUserType
+                {
                     UserGroupName = "Product Admin",
                     UserGroupType = UserGroupType.UserPermissions,
                     UserGroupIDSuffix = "ProductAdmin",
@@ -42,7 +46,8 @@ namespace Headstart.Common.Constants
                         CustomRole.HSMeProductAdmin,
                     }
                 },
-                 new HSUserType {
+                 new HSUserType
+                {
                     UserGroupName = "Report Reader",
                     UserGroupType = UserGroupType.UserPermissions,
                     UserGroupIDSuffix = "ReportReader",
@@ -59,7 +64,8 @@ namespace Headstart.Common.Constants
         {
             return new List<HSUserType>()
             {
-                 new HSUserType {
+                 new HSUserType
+                {
                     UserGroupName = "Location Permission Admin",
                     UserGroupType = UserGroupType.LocationPermissions,
                     UserGroupIDSuffix = UserGroupSuffix.PermissionAdmin.ToString(),
@@ -68,7 +74,8 @@ namespace Headstart.Common.Constants
                         CustomRole.HSLocationPermissionAdmin,
                     }
                 },
-                new HSUserType {
+                new HSUserType
+                {
                     UserGroupName = "Location Order Approver",
                     UserGroupType = UserGroupType.LocationPermissions,
                     UserGroupIDSuffix = UserGroupSuffix.OrderApprover.ToString(),
@@ -77,7 +84,8 @@ namespace Headstart.Common.Constants
                         CustomRole.HSLocationOrderApprover,
                     }
                 },
-                new HSUserType {
+                new HSUserType
+                {
                     UserGroupName = "Location Needs Approval",
                     UserGroupType = UserGroupType.LocationPermissions,
                     UserGroupIDSuffix = UserGroupSuffix.NeedsApproval.ToString(),
@@ -86,7 +94,8 @@ namespace Headstart.Common.Constants
                         CustomRole.HSLocationNeedsApproval,
                     }
                 },
-                new HSUserType {
+                new HSUserType
+                {
                     UserGroupName = "View All Location Orders",
                     UserGroupType = UserGroupType.LocationPermissions,
                     UserGroupIDSuffix = UserGroupSuffix.ViewAllOrders.ToString(),
@@ -95,7 +104,8 @@ namespace Headstart.Common.Constants
                         CustomRole.HSLocationViewAllOrders,
                     }
                 },
-                new HSUserType {
+                new HSUserType
+                {
                     UserGroupName = "Credit Card Admin",
                     UserGroupType = UserGroupType.LocationPermissions,
                     UserGroupIDSuffix = UserGroupSuffix.CreditCardAdmin.ToString(),
@@ -104,7 +114,8 @@ namespace Headstart.Common.Constants
                         CustomRole.HSLocationCreditCardAdmin,
                     }
                 },
-                new HSUserType {
+                new HSUserType
+                {
                     UserGroupName = "Address Admin",
                     UserGroupType = UserGroupType.LocationPermissions,
                     UserGroupIDSuffix = UserGroupSuffix.AddressAdmin.ToString(),

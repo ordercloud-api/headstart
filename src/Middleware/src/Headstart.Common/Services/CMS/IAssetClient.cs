@@ -39,7 +39,8 @@ namespace Headstart.Common.Services.CMS
             {
                 var small = image.ResizeSmallerDimensionToTarget(100);
                 var medium = image.ResizeSmallerDimensionToTarget(300);
-                await Task.WhenAll(new[] {
+                await Task.WhenAll(new[]
+                {
                     _blob.Save(assetGuid, medium.ToBytes(ImageFormat.Png), "image/png"),
                     _blob.Save($"{assetGuid}-s", small.ToBytes(ImageFormat.Png), "image/png")
                 });
@@ -69,7 +70,8 @@ namespace Headstart.Common.Services.CMS
             try
             {
                 await _blob.Delete($"{id}-s");
-            } catch { }
+            }
+            catch { }
         }
 
         public async Task DeleteAssetByUrl(string assetUrl)

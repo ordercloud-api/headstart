@@ -42,7 +42,8 @@ namespace Headstart.API.Commands
         {
             await EnsureUserIsLocationAdmin(locationID, decodedToken);
             var locationUserTypes = HSUserTypes.BuyerLocation().Where(s => s.UserGroupIDSuffix != UserGroupSuffix.NeedsApproval.ToString() || s.UserGroupIDSuffix != UserGroupSuffix.OrderApprover.ToString());
-            var userGroupAssignmentResponses = await Throttler.RunAsync(locationUserTypes, 100, 5, locationUserType => {
+            var userGroupAssignmentResponses = await Throttler.RunAsync(locationUserTypes, 100, 5, locationUserType =>
+            {
                 return _oc.UserGroups.ListUserAssignmentsAsync(buyerID, userGroupID: $"{locationID}-{locationUserType.UserGroupIDSuffix}", pageSize: 100);
             });
             return userGroupAssignmentResponses
@@ -75,7 +76,8 @@ namespace Headstart.API.Commands
         {
             await EnsureUserIsLocationAdmin(locationID, decodedToken);
             var locationUserTypes = HSUserTypes.BuyerLocation().Where(s => s.UserGroupIDSuffix == UserGroupSuffix.NeedsApproval.ToString() || s.UserGroupIDSuffix == UserGroupSuffix.OrderApprover.ToString());
-            var userGroupAssignmentResponses = await Throttler.RunAsync(locationUserTypes, 100, 5, locationUserType => {
+            var userGroupAssignmentResponses = await Throttler.RunAsync(locationUserTypes, 100, 5, locationUserType =>
+            {
                 return _oc.UserGroups.ListUserAssignmentsAsync(buyerID, userGroupID: $"{locationID}-{locationUserType.UserGroupIDSuffix}", pageSize: 100);
             });
             return userGroupAssignmentResponses
@@ -142,7 +144,8 @@ namespace Headstart.API.Commands
                    filters: $"xp.Country={user.xp.Country}&xp.Type=BuyerLocation",
                    page: args.Page,
                    pageSize: 100);
-            } else
+            }
+            else
             {
                 var userUserGroupAssignments = await GetUserUserGroupAssignments("BuyerLocation", buyerID, userID, decodedToken);
                 var userBuyerLocationAssignments = new List<HSLocationUserGroup>();
@@ -185,7 +188,8 @@ namespace Headstart.API.Commands
                    parentID,
                    userID: userID,
                    accessToken: decodedToken.AccessToken);
-            } else
+            }
+            else
             {
                 return await _oc.UserGroups.ListAllUserAssignmentsAsync(
                    parentID,

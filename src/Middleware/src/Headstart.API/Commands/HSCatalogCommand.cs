@@ -117,7 +117,8 @@ namespace Headstart.API.Commands.Crud
 				{
 					return SyncUserCatalogAssignments(buyerID, user.ID);
 				});
-			} catch (Exception ex)
+			}
+            catch (Exception ex)
 			{
 				Console.WriteLine(ex.Message);
 			}

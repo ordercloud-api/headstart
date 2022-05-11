@@ -94,7 +94,8 @@ namespace ordercloud.integrations.easypost
 						ID = easyPostResponses[index][0].id,
 						ShipMethods = shipMethods, // This will get filtered down based on carrierAccounts
 						ShipEstimateItems = lineItems.Select(li => new ShipEstimateItem() { LineItemID = li.ID, Quantity = li.Quantity }).ToList(),
-						xp = {
+						xp =
+                        {
 							AllShipMethods = shipMethods, // This is being saved so we have all data to compare rates across carrierAccounts
 							SupplierID = firstLi.SupplierID, // This will help with forwarding the supplier order
 							ShipFromAddressID = firstLi.ShipFromAddressID // This will help with forwarding the supplier order
@@ -111,8 +112,10 @@ namespace ordercloud.integrations.easypost
 			return new ShipEstimate
 			{
 				ID = FreeShipping + $"_{firstLi.SupplierID}",
-				ShipMethods = new List<ShipMethod> {
-					new ShipMethod {
+				ShipMethods = new List<ShipMethod>
+                {
+					new ShipMethod
+                    {
 						ID = FreeShipping + $"_{firstLi.SupplierID}",
 						Cost = 0,
 						Name = "FREE",
@@ -137,7 +140,8 @@ namespace ordercloud.integrations.easypost
 					.AppendPathSegment("shipments")
 					.PostJsonAsync(new { shipment })
 					.ReceiveJson<EasyPostShipment>();
-			} catch (FlurlHttpException ex)
+			}
+            catch (FlurlHttpException ex)
             {
 				var error = await ex.GetResponseJsonAsync<EasyPostApiError>();
 				throw new EasyPostException(error);

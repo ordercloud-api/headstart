@@ -256,13 +256,16 @@ namespace Headstart.Tests
             if (numberOfMarkedUpSpecs == 0)
             {
                 lineItem.Specs = new List<LineItemSpec> { liSpecSizeSmall, liSpecColorBlue };
-            } else if (numberOfMarkedUpSpecs == 1)
+            }
+            else if (numberOfMarkedUpSpecs == 1)
             {
                 lineItem.Specs = new List<LineItemSpec> { liSpecSizeLarge, liSpecColorBlue };
-            } else if (numberOfMarkedUpSpecs == 2)
+            }
+            else if (numberOfMarkedUpSpecs == 2)
             {
                 lineItem.Specs = new List<LineItemSpec> { liSpecSizeLarge, liSpecColorGreen };
-            } else
+            }
+            else
             {
                 throw new Exception("The number of marked up specs for this unit test must be 0, 1, or 2");
             }

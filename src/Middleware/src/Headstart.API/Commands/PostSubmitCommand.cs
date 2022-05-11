@@ -55,14 +55,20 @@ namespace Headstart.API.Commands
         {
             var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
             return await CreateOrderSubmitResponse(
-                new List<ProcessResult>() { new ProcessResult()
+                new List<ProcessResult>()
                 {
-                    Type = ProcessType.Accounting,
-                    Activity = new List<ProcessResultAction>() { await ProcessActivityCall(
-                        ProcessType.Shipping,
-                        "Validate Shipping",
-                        ValidateShipping(worksheet)) }
-                } },
+                    new ProcessResult()
+                    {
+                        Type = ProcessType.Accounting,
+                        Activity = new List<ProcessResultAction>()
+                        {
+                            await ProcessActivityCall(
+                                ProcessType.Shipping,
+                                "Validate Shipping",
+                                ValidateShipping(worksheet))
+                        }
+                    }
+                },
                 new List<HSOrder> { worksheet.Order });
         }
 
@@ -227,7 +233,8 @@ namespace Headstart.API.Commands
             try
             {
                 await func;
-                return new ProcessResultAction() {
+                return new ProcessResultAction()
+                {
                         ProcessType = type,
                         Description = description,
                         Success = true
@@ -255,7 +262,8 @@ namespace Headstart.API.Commands
             }
             catch (Exception ex)
             {
-                return new ProcessResultAction() {
+                return new ProcessResultAction()
+                {
                     Description = description,
                     ProcessType = type,
                     Success = false,
@@ -358,9 +366,11 @@ namespace Headstart.API.Commands
                 var shipFromAddressIDsForSupplierOrder = shipFromAddressIDs.Where(addressID => addressID != null && addressID.Contains(supplierOrder.ToCompanyID)).ToList();
                 var supplier = await _oc.Suppliers.GetAsync<HSSupplier>(supplierOrder.ToCompanyID);
                 var suppliersShipEstimates = buyerOrder.ShipEstimateResponse?.ShipEstimates?.Where(se => se.xp.SupplierID == supplier.ID);
-                var supplierOrderPatch = new PartialOrder() {
+                var supplierOrderPatch = new PartialOrder()
+                {
                     ID = $"{buyerOrder.Order.ID}-{supplierOrder.ToCompanyID}",
-                    xp = new OrderXp() {
+                    xp = new OrderXp()
+                    {
                         ShipFromAddressIDs = shipFromAddressIDsForSupplierOrder,
                         SupplierIDs = new List<string>() { supplier.ID },
                         StopShipSync = false,
@@ -398,8 +408,10 @@ namespace Headstart.API.Commands
             var sellerShipEstimates = buyerOrder.ShipEstimateResponse?.ShipEstimates?.Where(se => se.xp.SupplierID == null);
 
             // Patch Buyer Order after it has been submitted
-            var buyerOrderPatch = new PartialOrder() {
-                xp = new {
+            var buyerOrderPatch = new PartialOrder()
+            {
+                xp = new
+                {
                     ShipFromAddressIDs = shipFromAddressIDs,
                     SupplierIDs = supplierIDs,
                     ClaimStatus = ClaimStatus.NoClaim,

@@ -22,7 +22,8 @@ namespace Headstart.Common.Exceptions
             try
             {
                 this.ResponseBody = JsonConvert.SerializeObject(ex.Errors);
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 this.ResponseBody = "Error while trying to parse response body";
             }
@@ -34,7 +35,8 @@ namespace Headstart.Common.Exceptions
             try
             {
                 this.ResponseBody = ex.GetResponseJsonAsync().Result;
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 this.ResponseBody = "Error while trying to parse response body";
             }

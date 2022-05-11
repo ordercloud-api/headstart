@@ -77,9 +77,12 @@ namespace Headstart.Tests
             // https://four51.atlassian.net/browse/SEB-1825
 
             // Arrange
-            orderpromolist.Items = orderpromolist.Items.Select(p => { p.ID = "PROMO1";
+            orderpromolist.Items = orderpromolist.Items.Select(p =>
+            {
+                p.ID = "PROMO1";
                 p.Code = "PROMOCODE1";
-                return p; }).ToList();
+                return p;
+            }).ToList();
             oc.Promotions.ListAsync()
                 .ReturnsForAnyArgs(promoList);
             oc.Orders.ListPromotionsAsync(OrderDirection.Incoming, orderID, pageSize: 100)

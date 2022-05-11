@@ -108,7 +108,8 @@ namespace easypost.tests
                 Product = new LineItemProduct
                 {
                     ShipWeight = shipWeight,
-                    xp = new ProductXP {
+                    xp = new ProductXP
+                    {
                         SizeTier = sizeTier
                     }
                 }

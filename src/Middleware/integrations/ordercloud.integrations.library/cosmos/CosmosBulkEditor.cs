@@ -87,7 +87,8 @@ namespace ordercloud.integrations.library
                     LogProgress(bulkImportResponse);
                     batchesRun++;
                     totalNumberOfDocumentsImported += bulkImportResponse.NumberOfDocumentsImported;
-                } while (totalNumberOfDocumentsImported < toImport.Count);
+                }
+                while (totalNumberOfDocumentsImported < toImport.Count);
             });
         }
 
@@ -97,7 +98,8 @@ namespace ordercloud.integrations.library
 
             var partitionKeyProperty = GetPartitionKeyProp<T>();
 
-            var deleteOperations = toDelete.Select(doc => {
+            var deleteOperations = toDelete.Select(doc =>
+            {
                 var partitionKeyValue = (string)typeof(T).GetProperty(partitionKeyProperty.Name).GetValue(doc, null);
                     return new Tuple<string, string>(partitionKeyValue, doc.id);
              }).ToList();
@@ -178,7 +180,8 @@ namespace ordercloud.integrations.library
                     LogProgress(bulkUpdateResponse);
                     batchesRun++;
                     totalNumberOfDocumentsUpdated += bulkUpdateResponse.NumberOfDocumentsUpdated;
-                } while (totalNumberOfDocumentsUpdated < updateItems.Count);
+                }
+                while (totalNumberOfDocumentsUpdated < updateItems.Count);
             });
         }
 

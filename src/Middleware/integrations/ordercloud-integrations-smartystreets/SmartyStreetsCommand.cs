@@ -74,7 +74,8 @@ namespace ordercloud.integrations.smartystreets
 					}
 				}
 				if (!response.ValidAddressFound) throw new InvalidAddressException(response);
-            } else
+            }
+            else
             {
 				response.ValidAddress = address;
             }
@@ -101,7 +102,8 @@ namespace ordercloud.integrations.smartystreets
 					response.SuggestedAddresses = BuyerAddressMapper.Map(suggestions, address);
 				}
 				if (!response.ValidAddressFound) throw new InvalidBuyerAddressException(response);
-            } else
+            }
+            else
             {
 				response.ValidAddress = address;
 			}

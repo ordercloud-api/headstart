@@ -284,7 +284,8 @@ namespace Headstart.API.Commands
             {
                 // quote orders do not have tax cost associated with them
                 return new HSOrderCalculateResponse();
-            } else
+            }
+            else
             {
                 var promotions = await _oc.Orders.ListAllPromotionsAsync(OrderDirection.All, orderCalculatePayload.OrderWorksheet.Order.ID);
                 var promoCalculationTask = _discountDistribution.SetLineItemProportionalDiscount(orderCalculatePayload.OrderWorksheet, promotions);

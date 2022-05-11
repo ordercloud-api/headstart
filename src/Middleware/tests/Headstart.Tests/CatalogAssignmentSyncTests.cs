@@ -45,7 +45,8 @@ namespace Headstart.Tests
                     }
                 },
                 // define a Catalog assignment that is assigned but shouldn't be
-                new HSLocationUserGroup {
+                new HSLocationUserGroup
+                {
                     ID = catalogID2,
                     xp = new HSLocationUserGroupXp
                     {

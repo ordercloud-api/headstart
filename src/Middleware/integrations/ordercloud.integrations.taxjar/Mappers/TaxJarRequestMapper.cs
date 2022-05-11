@@ -46,7 +46,8 @@ namespace ordercloud.integrations.taxjar
 				ToCountry = lineItem.ShippingAddress.Country,
 				ToStreet = lineItem.ShippingAddress.Street1,
 
-				LineItems = new List<TaxJarLineItem> {
+				LineItems = new List<TaxJarLineItem>
+                {
 						new TaxJarLineItem()
 						{
 							Id = shipEstimate.ID,
@@ -78,7 +79,8 @@ namespace ordercloud.integrations.taxjar
 				ToCountry = lineItem.ShippingAddress.Country,
 				ToStreet = lineItem.ShippingAddress.Street1,
 
-				LineItems = new List<TaxJarLineItem> {
+				LineItems = new List<TaxJarLineItem>
+                {
 						new TaxJarLineItem()
 						{
 							Id = lineItem.ID,

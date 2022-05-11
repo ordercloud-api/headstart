@@ -13,7 +13,8 @@ namespace Headstart.Common.Models
         public string[] AdHocFilters { get; set; }
 
         // Explicitly setting available report types
-        public static ReportTypeResource[] ReportTypes = {
+        public static ReportTypeResource[] ReportTypes =
+        {
             new ReportTypeResource
             {
                 ID = ReportTypeEnum.BuyerLocation,
@@ -23,7 +24,8 @@ namespace Headstart.Common.Models
                 Value = "BuyerLocation",
                 AdHocFilters = null
             },
-            new ReportTypeResource {
+            new ReportTypeResource
+            {
                 ID = ReportTypeEnum.SalesOrderDetail,
                 Name = "Sales Order Detail Report",
                 ReportCategory = "Order",
