@@ -169,11 +169,11 @@ namespace Headstart.Tests
             Assert.AreEqual(lineItemTotal, 9.75);
         }
 
-        private SuperHSMeProduct BuildMockProductData(bool UseCumulativeQty)
+        private SuperHSMeProduct BuildMockProductData(bool useCumulativeQty)
         {
             SuperHSMeProduct product = Substitute.For<SuperHSMeProduct>();
             product.PriceSchedule = Substitute.For<PriceSchedule>();
-            product.PriceSchedule.UseCumulativeQuantity = UseCumulativeQty;
+            product.PriceSchedule.UseCumulativeQuantity = useCumulativeQty;
 
             PriceBreak priceBreak1 = Substitute.For<PriceBreak>();
             priceBreak1.Quantity = 1;

@@ -12,13 +12,13 @@ using OrderCloud.SDK;
 
 namespace Headstart.Common.Queries
 {
-    public interface IReportTemplateQuery<ReportTemplate>
+    public interface IReportTemplateQuery<TReportTemplate>
     {
-        Task<List<ReportTemplate>> List(ReportTypeEnum reportType, DecodedToken decodedToken);
-        Task<ReportTemplate> Post(ReportTemplate reportTemplate, DecodedToken decodedToken);
-        Task<ReportTemplate> Put(string id, ReportTemplate reportTemplate, DecodedToken decodedToken);
+        Task<List<TReportTemplate>> List(ReportTypeEnum reportType, DecodedToken decodedToken);
+        Task<TReportTemplate> Post(TReportTemplate reportTemplate, DecodedToken decodedToken);
+        Task<TReportTemplate> Put(string id, TReportTemplate reportTemplate, DecodedToken decodedToken);
         Task Delete(string id);
-        Task<ReportTemplate> Get(string id, DecodedToken decodedToken);
+        Task<TReportTemplate> Get(string id, DecodedToken decodedToken);
     }
 
     public class ReportTemplateQuery : IReportTemplateQuery<ReportTemplate>

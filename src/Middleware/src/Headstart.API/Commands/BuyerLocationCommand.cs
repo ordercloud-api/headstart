@@ -138,8 +138,8 @@ namespace Headstart.API.Commands
         public async Task CreateLocationUserGroupsAndApprovalRule(string buyerLocationID, string locationName, string accessToken, IOrderCloudClient ocClient)
         {
             var buyerID = buyerLocationID.Split('-').First();
-            var AddUserTypeRequests = HSUserTypes.BuyerLocation().Select(userType => AddUserTypeToLocation(buyerLocationID, userType, accessToken, ocClient));
-            await Task.WhenAll(AddUserTypeRequests);
+            var addUserTypeRequests = HSUserTypes.BuyerLocation().Select(userType => AddUserTypeToLocation(buyerLocationID, userType, accessToken, ocClient));
+            await Task.WhenAll(addUserTypeRequests);
             var isSeedingEnvironment = ocClient != null;
             if (!isSeedingEnvironment)
             {

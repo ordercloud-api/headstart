@@ -46,15 +46,15 @@ namespace Headstart.API.Commands
 		}
 		public async Task<SuperHSMeProduct> Get(string id, DecodedToken decodedToken)
 		{
-			var _product = _oc.Me.GetProductAsync<HSMeProduct>(id, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: decodedToken.AccessToken);
-			var _specs = _oc.Me.ListSpecsAsync(id, null, null, decodedToken.AccessToken);
-			var _variants = _oc.Products.ListVariantsAsync<HSVariant>(id, null, null, null, 1, 100, null);
+			var product = _oc.Me.GetProductAsync<HSMeProduct>(id, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: decodedToken.AccessToken);
+			var specs = _oc.Me.ListSpecsAsync(id, null, null, decodedToken.AccessToken);
+			var variants = _oc.Products.ListVariantsAsync<HSVariant>(id, null, null, null, 1, 100, null);
 			var unconvertedSuperHsProduct = new SuperHSMeProduct
 			{
-				Product = await _product,
-				PriceSchedule = (await _product).PriceSchedule,
-				Specs = (await _specs).Items,
-				Variants = (await _variants).Items,
+				Product = await product,
+				PriceSchedule = (await product).PriceSchedule,
+				Specs = (await specs).Items,
+				Variants = (await variants).Items,
 			};
 			return await ApplyBuyerPricing(unconvertedSuperHsProduct, decodedToken);
 		}

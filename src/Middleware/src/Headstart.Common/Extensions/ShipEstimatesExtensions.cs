@@ -39,11 +39,11 @@ namespace Headstart.Common.Extensions
             return estimates;
         }
 
-        public static async Task<IList<HSShipEstimate>> ApplyShippingLogic(this IList<HSShipEstimate> shipEstimates, HSOrderWorksheet orderWorksheet, IOrderCloudClient _oc, int freeShippingTransitDays)
+        public static async Task<IList<HSShipEstimate>> ApplyShippingLogic(this IList<HSShipEstimate> shipEstimates, HSOrderWorksheet orderWorksheet, IOrderCloudClient oc, int freeShippingTransitDays)
         {
             var updatedEstimates = new List<HSShipEstimate>();
             var supplierIDs = orderWorksheet.LineItems.Select(li => li.SupplierID);
-            var suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={string.Join("|", supplierIDs)}");
+            var suppliers = await oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={string.Join("|", supplierIDs)}");
 
             foreach (var shipEstimate in shipEstimates)
             {
@@ -102,12 +102,12 @@ namespace Headstart.Common.Extensions
             updatedEstimates = shipEstimates.Select(estimate => FilterDownFedexShippingRates(estimate)).ToList();
             return updatedEstimates;
         }
-        public static async Task<IList<HSShipEstimate>> ConvertCurrency(this IList<HSShipEstimate> shipEstimates, CurrencySymbol shipperCurrency, CurrencySymbol buyerCurrency, IExchangeRatesCommand _exchangeRates)
+        public static async Task<IList<HSShipEstimate>> ConvertCurrency(this IList<HSShipEstimate> shipEstimates, CurrencySymbol shipperCurrency, CurrencySymbol buyerCurrency, IExchangeRatesCommand exchangeRates)
         {
             // If the Buyer's currency is USD, do not convert rates.
             if (buyerCurrency == CurrencySymbol.USD) { return shipEstimates; }
 
-            var rates = (await _exchangeRates.Get(buyerCurrency)).Rates;
+            var rates = (await exchangeRates.Get(buyerCurrency)).Rates;
             var conversionRate = rates.Find(r => r.Currency == shipperCurrency).Rate;
             return shipEstimates.Select(estimate =>
             {

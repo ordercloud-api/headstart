@@ -741,7 +741,7 @@ namespace Headstart.API.Commands
 
         private string GetAdHocFilterValue(ListArgs<ReportAdHocFilters> args, string propertyName)
         {
-            return args.Filters.FirstOrDefault(Filter => Filter.PropertyName == propertyName)?.FilterExpression;
+            return args.Filters.FirstOrDefault(filter => filter.PropertyName == propertyName)?.FilterExpression;
         }
 
         private bool PassesFilters(object data, Dictionary<PropertyInfo, List<string>> filtersToEvaluate)

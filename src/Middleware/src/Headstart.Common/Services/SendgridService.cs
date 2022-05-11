@@ -46,7 +46,7 @@ namespace Headstart.Common.Services
         Task SendContactSupplierAboutProductEmail(ContactSupplierBody template);
         Task EmailVoidAuthorizationFailedAsync(HSPayment payment, string transactionID, HSOrder order, CreditCardVoidException ex);
         Task EmailGeneralSupportQueue(SupportCase supportCase);
-        Task SendQuotePriceConfirmationEmail(HSOrder order, HSLineItem LineItem, string buyerEmail);
+        Task SendQuotePriceConfirmationEmail(HSOrder order, HSLineItem lineItem, string buyerEmail);
         Task SendQuoteRequestConfirmationEmail(HSOrder order, HSLineItem lineItem, string buyerEmail);
     }
 

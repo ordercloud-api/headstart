@@ -6,7 +6,7 @@ using Headstart.Models.Headstart;
 namespace Headstart.Models.Misc
 {
 
-	public class MessageNotification<EventBodyType>
+	public class MessageNotification<TEventBodyType>
 	{
 		public string BuyerID { get; set; }
 		public string UserToken { get; set; }
@@ -14,7 +14,7 @@ namespace Headstart.Models.Misc
 		public MessageType MessageType { get; set; }
 		public string[] CCRecipient { get; set; }
 		public MessageConfigData ConfigData { get; set; }
-		public EventBodyType EventBody { get; set; }
+		public TEventBodyType EventBody { get; set; }
 	}
 
     public class OrderSubmitEventBody

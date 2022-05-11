@@ -114,26 +114,26 @@ namespace Headstart.API.Commands.Crud
 
 		public async Task<SuperHSProduct> Get(string id, string token)
 		{
-			var _product = await _oc.Products.GetAsync<HSProduct>(id, token);
-			var _priceSchedule = new PriceSchedule();
+			var product = await _oc.Products.GetAsync<HSProduct>(id, token);
+			var priceSchedule = new PriceSchedule();
 			try
 			{
-				_priceSchedule = await _oc.PriceSchedules.GetAsync<PriceSchedule>(_product.ID, token);
+				priceSchedule = await _oc.PriceSchedules.GetAsync<PriceSchedule>(product.ID, token);
 			}
 			catch
 			{
-				_priceSchedule = new PriceSchedule();
+				priceSchedule = new PriceSchedule();
 			}
-			var _specs = _oc.Products.ListSpecsAsync(id, null, null, null, 1, 100, null, token);
-			var _variants = _oc.Products.ListVariantsAsync<HSVariant>(id, null, null, null, 1, 100, null, token);
+			var specs = _oc.Products.ListSpecsAsync(id, null, null, null, 1, 100, null, token);
+			var variants = _oc.Products.ListVariantsAsync<HSVariant>(id, null, null, null, 1, 100, null, token);
 			try
 			{
 				return new SuperHSProduct
 				{
-					Product = _product,
-					PriceSchedule = _priceSchedule,
-					Specs = (await _specs).Items,
-					Variants = (await _variants).Items,
+					Product = product,
+					PriceSchedule = priceSchedule,
+					Specs = (await specs).Items,
+					Variants = (await variants).Items,
 				};
 			}
 			catch (Exception e)
@@ -145,7 +145,7 @@ namespace Headstart.API.Commands.Crud
 		public async Task<ListPage<SuperHSProduct>> List(ListArgs<HSProduct> args, string token)
 		{
 			var filterString = args.ToFilterString();
-			var _productsList = await _oc.Products.ListAsync<HSProduct>(
+			var productsList = await _oc.Products.ListAsync<HSProduct>(
 				filters: string.IsNullOrEmpty(filterString) ? null : filterString,
 				search: args.Search,
 				searchType: SearchType.ExactPhrasePrefix,
@@ -153,24 +153,24 @@ namespace Headstart.API.Commands.Crud
 				pageSize: args.PageSize,
 				page: args.Page,
 				accessToken: token);
-			var _superProductsList = new List<SuperHSProduct> { };
-			await Throttler.RunAsync(_productsList.Items, 100, 10, async product =>
+			var superProductsList = new List<SuperHSProduct> { };
+			await Throttler.RunAsync(productsList.Items, 100, 10, async product =>
 			{
 				var priceSchedule = _oc.PriceSchedules.GetAsync(product.DefaultPriceScheduleID, token);
-				var _specs = _oc.Products.ListSpecsAsync(product.ID, null, null, null, 1, 100, null, token);
-				var _variants = _oc.Products.ListVariantsAsync<HSVariant>(product.ID, null, null, null, 1, 100, null, token);
-				_superProductsList.Add(new SuperHSProduct
+				var specs = _oc.Products.ListSpecsAsync(product.ID, null, null, null, 1, 100, null, token);
+				var variants = _oc.Products.ListVariantsAsync<HSVariant>(product.ID, null, null, null, 1, 100, null, token);
+				superProductsList.Add(new SuperHSProduct
 				{
 					Product = product,
 					PriceSchedule = await priceSchedule,
-					Specs = (await _specs).Items,
-					Variants = (await _variants).Items,
+					Specs = (await specs).Items,
+					Variants = (await variants).Items,
 				});
 			});
 			return new ListPage<SuperHSProduct>
 			{
-				Meta = _productsList.Meta,
-				Items = _superProductsList
+				Meta = productsList.Meta,
+				Items = superProductsList
 			};
 		}
 
@@ -272,7 +272,7 @@ namespace Headstart.API.Commands.Crud
         public async Task<SuperHSProduct> Put(string id, SuperHSProduct superProduct, string token)
 		{
 			// Update the Product itself
-			var _updatedProduct = await _oc.Products.SaveAsync<HSProduct>(superProduct.Product.ID, superProduct.Product, token);
+			var updatedProduct = await _oc.Products.SaveAsync<HSProduct>(superProduct.Product.ID, superProduct.Product, token);
 			// Two spec lists to compare (requestSpecs and existingSpecs)
 			IList<Spec> requestSpecs = superProduct.Specs.ToList();
 			IList<Spec> existingSpecs = (await _oc.Products.ListSpecsAsync(id, accessToken: token)).Items.ToList();
@@ -356,27 +356,27 @@ namespace Headstart.API.Commands.Crud
 			}
 			// If applicable, update OR create the Product PriceSchedule
 			var tasks = new List<Task>();
-			Task<PriceSchedule> _priceScheduleReq = null;
+			Task<PriceSchedule> priceScheduleReq = null;
 			if (superProduct.PriceSchedule != null)
 			{
-				_priceScheduleReq = UpdateRelatedPriceSchedules(superProduct.PriceSchedule, token);
-				tasks.Add(_priceScheduleReq);
+				priceScheduleReq = UpdateRelatedPriceSchedules(superProduct.PriceSchedule, token);
+				tasks.Add(priceScheduleReq);
 			}
 			// List Variants
-			var _variantsReq = _oc.Products.ListVariantsAsync<HSVariant>(id, pageSize: 100, accessToken: token);
-			tasks.Add(_variantsReq);
+			var variantsReq = _oc.Products.ListVariantsAsync<HSVariant>(id, pageSize: 100, accessToken: token);
+			tasks.Add(variantsReq);
 			// List Product Specs
-			var _specsReq = _oc.Products.ListSpecsAsync<Spec>(id, accessToken: token);
-			tasks.Add(_specsReq);
+			var specsReq = _oc.Products.ListSpecsAsync<Spec>(id, accessToken: token);
+			tasks.Add(specsReq);
 
 			await Task.WhenAll(tasks);
 
 			return new SuperHSProduct
 			{
-				Product = _updatedProduct,
-				PriceSchedule = _priceScheduleReq?.Result,
-				Specs = _specsReq?.Result?.Items,
-				Variants = _variantsReq?.Result?.Items,
+				Product = updatedProduct,
+				PriceSchedule = priceScheduleReq?.Result,
+				Specs = specsReq?.Result?.Items,
+				Variants = variantsReq?.Result?.Items,
 			};
 		}
 
@@ -483,10 +483,10 @@ namespace Headstart.API.Commands.Crud
 		{
 
 			var product = await _oc.Products.GetAsync<HSProduct>(id);
-			var _specs = await _oc.Products.ListSpecsAsync<Spec>(id, accessToken: token);
+			var specs = await _oc.Products.ListSpecsAsync<Spec>(id, accessToken: token);
 			var tasks = new List<Task>()
 			{
-				Throttler.RunAsync(_specs.Items, 100, 5, s => _oc.Specs.DeleteAsync(s.ID, accessToken: token)),
+				Throttler.RunAsync(specs.Items, 100, 5, s => _oc.Specs.DeleteAsync(s.ID, accessToken: token)),
 				_oc.Products.DeleteAsync(id, token)
 			};
 			if (product?.xp?.Images?.Count() > 0)

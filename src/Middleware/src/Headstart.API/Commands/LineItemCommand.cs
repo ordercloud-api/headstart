@@ -139,14 +139,14 @@ namespace Headstart.API.Commands
 
         private async Task SyncOrderStatus(OrderDirection orderDirection, string orderID, List<HSLineItem> changedLineItems)
         {
-            var (SubmittedOrderStatus, ShippingStatus, ClaimStatus) = LineItemStatusConstants.GetOrderStatuses(changedLineItems);
+            var (submittedOrderStatus, shippingStatus, claimStatus) = LineItemStatusConstants.GetOrderStatuses(changedLineItems);
             var partialOrder = new PartialOrder()
             {
                 xp = new
                 {
-                    SubmittedOrderStatus,
-                    ShippingStatus,
-                    ClaimStatus
+                    submittedOrderStatus,
+                    shippingStatus,
+                    claimStatus
                 }
             };
             await _oc.Orders.PatchAsync(orderDirection, orderID, partialOrder);
@@ -155,7 +155,7 @@ namespace Headstart.API.Commands
         private PartialLineItem BuildNewPartialLineItem(LineItemStatusChange lineItemStatusChange, List<HSLineItem> previousLineItemStates, LineItemStatus newLineItemStatus)
         {
             var existingLineItem = previousLineItemStates.First(li => li.ID == lineItemStatusChange.ID);
-            var StatusByQuantity = BuildNewLineItemStatusByQuantity(lineItemStatusChange, existingLineItem, newLineItemStatus);
+            var statusByQuantity = BuildNewLineItemStatusByQuantity(lineItemStatusChange, existingLineItem, newLineItemStatus);
             if (newLineItemStatus == LineItemStatus.ReturnRequested || newLineItemStatus == LineItemStatus.Returned)
             {
                 var returnRequests = existingLineItem.xp.Returns ?? new List<LineItemClaim>();
@@ -163,8 +163,8 @@ namespace Headstart.API.Commands
                 {
                     xp = new
                     {
-                        Returns = GetUpdatedChangeRequests(returnRequests, lineItemStatusChange, lineItemStatusChange.Quantity, newLineItemStatus, StatusByQuantity),
-                        StatusByQuantity
+                        Returns = GetUpdatedChangeRequests(returnRequests, lineItemStatusChange, lineItemStatusChange.Quantity, newLineItemStatus, statusByQuantity),
+                        statusByQuantity
                     }
                 };
             } else if (newLineItemStatus == LineItemStatus.CancelRequested || newLineItemStatus == LineItemStatus.Canceled)
@@ -174,8 +174,8 @@ namespace Headstart.API.Commands
                 {
                     xp = new
                     {
-                        Cancelations = GetUpdatedChangeRequests(cancelRequests, lineItemStatusChange, lineItemStatusChange.Quantity, newLineItemStatus, StatusByQuantity),
-                        StatusByQuantity
+                        Cancelations = GetUpdatedChangeRequests(cancelRequests, lineItemStatusChange, lineItemStatusChange.Quantity, newLineItemStatus, statusByQuantity),
+                        statusByQuantity
                     }
                 };
             } else
@@ -184,13 +184,13 @@ namespace Headstart.API.Commands
                 {
                     xp = new
                     {
-                        StatusByQuantity
+                        statusByQuantity
                     }
                 };
             }
         }
 
-        private List<LineItemClaim> GetUpdatedChangeRequests(List<LineItemClaim> existinglineItemStatusChangeRequests, LineItemStatusChange lineItemStatusChange, int QuantitySetting, LineItemStatus newLineItemStatus, Dictionary<LineItemStatus, int> lineItemStatuses)
+        private List<LineItemClaim> GetUpdatedChangeRequests(List<LineItemClaim> existinglineItemStatusChangeRequests, LineItemStatusChange lineItemStatusChange, int quantitySetting, LineItemStatus newLineItemStatus, Dictionary<LineItemStatus, int> lineItemStatuses)
         {
             if (newLineItemStatus == LineItemStatus.Returned || newLineItemStatus == LineItemStatus.Canceled)
             {
@@ -216,7 +216,7 @@ namespace Headstart.API.Commands
                     Comment = lineItemStatusChange.Comment,
                     Reason = lineItemStatusChange.Reason,
                     IsResolved = false,
-                    Quantity = QuantitySetting
+                    Quantity = quantitySetting
                 });
 
             }
