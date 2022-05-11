@@ -13,7 +13,7 @@ namespace Headstart.Common.Exceptions
         public ProcessResultException(Exception ex)
         {
             this.Message = ex.Message;
-            this.ResponseBody = "";
+            this.ResponseBody = string.Empty;
         }
 
         public ProcessResultException(CatalystBaseException ex)

@@ -31,7 +31,12 @@ namespace ordercloud.integrations.avalara
 		Task<TaxCategorizationResponse> ListTaxCodesAsync(string searchTerm);
 	}
 
-	public enum AppEnvironment { Test, Staging, Production }
+	public enum AppEnvironment
+    {
+        Test,
+        Staging,
+        Production
+    }
 
 	public class AvalaraCommand : IAvalaraCommand, ITaxCalculator, ITaxCodesProvider
 	{
@@ -112,7 +117,7 @@ namespace ordercloud.integrations.avalara
 			if (ShouldMockAvalaraResponse()) { return CreateMockTransactionModel(); }
 
 			var model = new CommitTransactionModel() { commit = true };
-			var transaction = await _avaTax.CommitTransactionAsync(_companyCode, transactionCode, DocumentType.SalesInvoice, "", model);
+			var transaction = await _avaTax.CommitTransactionAsync(_companyCode, transactionCode, DocumentType.SalesInvoice, string.Empty, model);
 			return transaction.ToOrderTaxCalculation();
 		}
 
@@ -135,7 +140,7 @@ namespace ordercloud.integrations.avalara
 				{
 					if (ShouldMockAvalaraResponse()) { return CreateMockTransactionModel(); }
 					var createTransactionModel = orderWorksheet.ToAvalaraTransactionModel(_companyCode, docType, promotions);
-					var transaction = await _avaTax.CreateTransactionAsync("", createTransactionModel);
+					var transaction = await _avaTax.CreateTransactionAsync(string.Empty, createTransactionModel);
 					return transaction.ToOrderTaxCalculation();
 				}
 				catch (AvaTaxError e)

@@ -45,7 +45,7 @@ namespace Headstart.Jobs.Helpers
             var reportFormattedPromoData = new PromotionData();
             foreach (var promo in uniquePromotions)
             {
-                var delimiter = "";
+                var delimiter = string.Empty;
                 if (reportFormattedPromoData.PromoCode != null)
                 {
                     delimiter = " | ";
@@ -58,7 +58,7 @@ namespace Headstart.Jobs.Helpers
 
                 if (reportFormattedPromoData.PromoSupplierName == null)
                 {
-                    delimiter = "";
+                    delimiter = string.Empty;
                 }
                 // Field could be null
                 reportFormattedPromoData.PromoSupplierName += delimiter + promo.xp?.Supplier;

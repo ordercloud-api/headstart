@@ -270,9 +270,9 @@ namespace Headstart.API.Commands
                     var userType = entry.Key;
                     var emailText = entry.Value;
 
-                    var firstName = "";
-                    var lastName = "";
-                    var email = "";
+                    var firstName = string.Empty;
+                    var lastName = string.Empty;
+                    var email = string.Empty;
 
                     if (userType == VerifiedUserType.buyer)
                     {
@@ -528,7 +528,7 @@ namespace Headstart.API.Commands
         private bool LineItemsMatch(LineItem li1, LineItem li2)
         {
             if (li1.ProductID != li2.ProductID) return false;
-            if (!String.IsNullOrEmpty(li2.xp.PrintArtworkURL))
+            if (!string.IsNullOrEmpty(li2.xp.PrintArtworkURL))
             {
                 if (li2.xp.PrintArtworkURL != li1.xp.PrintArtworkURL) return false;
             }

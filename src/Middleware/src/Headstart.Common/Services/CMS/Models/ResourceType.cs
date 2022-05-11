@@ -15,7 +15,8 @@ namespace Headstart.Common.Services.CMS.Models
 	public enum ResourceType
 	{
 		Catalogs,
-		[Parent(ParentResourceType.Catalogs)] Categories,
+		[Parent(ParentResourceType.Catalogs)]
+        Categories,
 		Products,
 		PriceSchedules,
 		ProductFacets,
@@ -27,18 +28,28 @@ namespace Headstart.Common.Services.CMS.Models
 		ImpersonationConfigs,
 
 		Buyers,
-		[Parent(ParentResourceType.Buyers)] Users,
-		[Parent(ParentResourceType.Buyers)] UserGroups,
-		[Parent(ParentResourceType.Buyers)] Addresses,
-		[Parent(ParentResourceType.Buyers)] CostCenters,
-		[Parent(ParentResourceType.Buyers)] CreditCards,
-		[Parent(ParentResourceType.Buyers)] SpendingAccounts,
-		[Parent(ParentResourceType.Buyers)] ApprovalRules,
+		[Parent(ParentResourceType.Buyers)]
+        Users,
+		[Parent(ParentResourceType.Buyers)]
+        UserGroups,
+		[Parent(ParentResourceType.Buyers)]
+        Addresses,
+		[Parent(ParentResourceType.Buyers)]
+        CostCenters,
+		[Parent(ParentResourceType.Buyers)]
+        CreditCards,
+		[Parent(ParentResourceType.Buyers)]
+        SpendingAccounts,
+		[Parent(ParentResourceType.Buyers)]
+        ApprovalRules,
 
 		Suppliers,
-		[Parent(ParentResourceType.Suppliers)] SupplierUsers,
-		[Parent(ParentResourceType.Suppliers)] SupplierUserGroups,
-		[Parent(ParentResourceType.Suppliers)] SupplierAddresses,
+		[Parent(ParentResourceType.Suppliers)]
+        SupplierUsers,
+		[Parent(ParentResourceType.Suppliers)]
+        SupplierUserGroups,
+		[Parent(ParentResourceType.Suppliers)]
+        SupplierAddresses,
 
 		// Param "Direction" breaks these for now.
 		// Orders,

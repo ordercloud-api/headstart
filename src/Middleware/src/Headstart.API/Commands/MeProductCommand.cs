@@ -96,8 +96,8 @@ namespace Headstart.API.Commands
 
 		public async Task<ListPageWithFacets<HSMeProduct>> List(ListArgs<HSMeProduct> args, DecodedToken decodedToken)
 		{
-			var searchText = args.Search ?? "";
-			var searchFields = args.Search != null ? "ID,Name,Description,xp.Facets.supplier" : "";
+			var searchText = args.Search ?? string.Empty;
+			var searchFields = args.Search != null ? "ID,Name,Description,xp.Facets.supplier" : string.Empty;
 			var sortBy = args.SortBy.FirstOrDefault();
 			var filters = string.IsNullOrEmpty(args.ToFilterString()) ? null : args.ToFilterString();
 			var meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: filters, page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.ExactPhrasePrefix, sortBy: sortBy, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: decodedToken.AccessToken);
@@ -154,7 +154,7 @@ namespace Headstart.API.Commands
 						// price on price schedule will be in USD as it is set by the seller
 						// may be different rates in the future
 						// refactor to save price on the price schedule not product xp?
-						var currency = (Nullable<CurrencySymbol>)CurrencySymbol.USD;
+						var currency = (CurrencySymbol?)CurrencySymbol.USD;
 						priceBreak.Price = ConvertPrice(priceBreak.Price, currency, exchangeRates);
 						return priceBreak;
 					}).ToList();

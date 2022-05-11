@@ -33,7 +33,12 @@ namespace Headstart.Common
         public string InstrumentationKey { get; set; }
     }
 
-    public enum AppEnvironment { Test, Staging, Production }
+    public enum AppEnvironment
+    {
+        Test,
+        Staging,
+        Production
+    }
 
     public class AvalaraSettings
     {
@@ -63,7 +68,12 @@ namespace Headstart.Common
         public TaxProvider TaxProvider { get; set; } = TaxProvider.Avalara;
 	}
 
-    public enum TaxProvider { Avalara, Vertex, Taxjar }
+    public enum TaxProvider
+    {
+        Avalara,
+        Vertex,
+        Taxjar
+    }
 
 
     public class FlurlSettings

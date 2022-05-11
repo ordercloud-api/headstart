@@ -31,7 +31,12 @@ namespace ordercloud.integrations.cardconnect
         public string CadMerchantID { get; set; }
         public string EurMerchantID { get; set; }
     }
-    public enum AppEnvironment { Test, Staging, Production }
+    public enum AppEnvironment
+    {
+        Test,
+        Staging,
+        Production
+    }
 
     public class OrderCloudIntegrationsCardConnectService : IOrderCloudIntegrationsCardConnectService
     {
@@ -197,7 +202,7 @@ namespace ordercloud.integrations.cardconnect
             response = new CardConnectAccountResponse()
             {
                 message = "Mock CardConnect account response",
-                token = ""
+                token = string.Empty
             };
             return response;
         }

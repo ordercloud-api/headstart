@@ -123,7 +123,7 @@ namespace ordercloud.integrations.cardconnect
 
 		public async Task VoidTransactionAsync(HSPayment payment, HSOrder order, string userToken)
         {
-			var transactionID = "";
+			var transactionID = string.Empty;
 			try
 			{
 				if (payment.Accepted == true)

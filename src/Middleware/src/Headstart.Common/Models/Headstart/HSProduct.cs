@@ -51,11 +51,11 @@ namespace Headstart.Models
 
 	public class ProductXp
     {
-        #region DO NOT DELETE
+        // DO NOT DELETE THE FOLLOWING PROPERTIES
         [OrchestrationIgnore]
         public dynamic IntegrationData { get; set; }
         public Dictionary<string, List<string>> Facets = new Dictionary<string, List<string>>();
-        #endregion
+        // END DO NOT DELETE
 
         [System.ComponentModel.DataAnnotations.Required]
         public ObjectStatus? Status { get; set; }

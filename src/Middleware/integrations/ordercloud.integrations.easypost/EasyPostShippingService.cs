@@ -133,7 +133,7 @@ namespace ordercloud.integrations.easypost
 			try
             {
 				return await BaseUrl
-					.WithBasicAuth(_config.APIKey, "")
+					.WithBasicAuth(_config.APIKey, string.Empty)
 					.AppendPathSegment("shipments")
 					.PostJsonAsync(new { shipment })
 					.ReceiveJson<EasyPostShipment>();

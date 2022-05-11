@@ -16,7 +16,7 @@ namespace ordercloud.integrations.library.Cosmos
         private static Tuple<Expression, Type> GetExpression<T>(Expression param, string sort)
         {
             var member = param;
-            member = sort.Replace("!", "").Split(".").Aggregate(member, Expression.Property); // takes X.X notation and gets to the nested property member
+            member = sort.Replace("!", string.Empty).Split(".").Aggregate(member, Expression.Property); // takes X.X notation and gets to the nested property member
 
             var propertyType = ((PropertyInfo)member.To<MemberExpression>().Member).PropertyType;
             return Tuple.Create(member, propertyType);
@@ -158,7 +158,7 @@ namespace ordercloud.integrations.library.Cosmos
                     // * operator for start, contains and end
                     if (filter.HasWildcard)
                     {
-                        var term = "";
+                        var term = string.Empty;
                         if (filter.WildcardPositions.Count == 2)
                             term = "Contains";
                         else if (filter.WildcardPositions[0] == 0)

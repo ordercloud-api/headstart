@@ -37,6 +37,8 @@ namespace ordercloud.integrations.vertex
 
 	public enum VertexTransactionType
 	{
-		SALE, RENTAL, LEASE
+		SALE,
+        RENTAL,
+        LEASE
 	}
 }

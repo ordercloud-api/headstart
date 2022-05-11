@@ -64,7 +64,8 @@ namespace Headstart.Tests
             await _oc.Payments.Received().CreateAsync<HSPayment>(OrderDirection.Outgoing, mockOrderID, Arg.Is<HSPayment>(p => p.ID == mockCCPaymentID && p.Type == PaymentType.CreditCard && p.Amount == mockedCreditCardTotal), mockUserToken);
         }
 
-        [Test] public async Task should_handle_new_cc_payment()
+        [Test]
+        public async Task should_handle_new_cc_payment()
         {
             // Arrange
             var mockedCreditCardTotal = 20;

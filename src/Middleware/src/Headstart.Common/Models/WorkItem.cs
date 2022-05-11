@@ -16,7 +16,7 @@ namespace Headstart.Common.Models
         {
             var split = path.Split("/");
             this.ResourceId = split[0];
-            this.RecordId = split[split.Length - 1].Replace(".json", "");
+            this.RecordId = split[split.Length - 1].Replace(".json", string.Empty);
             this.RecordType = split[2] switch
             {
                 "templateproductflat" => RecordType.TemplateProductFlat,
@@ -56,13 +56,37 @@ namespace Headstart.Common.Models
     [JsonConverter(typeof(StringEnumConverter))]
     public enum RecordType
     {
-        HydratedProduct, Product, PriceSchedule, Spec, SpecOption, SpecProductAssignment, ProductFacet,
-        Buyer, User, UserGroup, Address, CostCenter, UserGroupAssignment, AddressAssignment,
-        CatalogAssignment, Catalog, Supplier, Order, TemplateProductFlat
+        HydratedProduct,
+        Product,
+        PriceSchedule,
+        Spec,
+        SpecOption,
+        SpecProductAssignment,
+        ProductFacet,
+        Buyer,
+        User,
+        UserGroup,
+        Address,
+        CostCenter,
+        UserGroupAssignment,
+        AddressAssignment,
+        CatalogAssignment,
+        Catalog,
+        Supplier,
+        Order,
+        TemplateProductFlat
     }
 
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum Action { Ignore, Create, Update, Patch, Delete, Get, SyncShipments }
+    public enum Action {
+        Ignore,
+        Create,
+        Update,
+        Patch,
+        Delete,
+        Get,
+        SyncShipments
+    }
 
     public static class WorkItemMethods
     {

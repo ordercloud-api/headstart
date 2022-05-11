@@ -57,10 +57,10 @@ namespace exchangerates.tests
         {
             return new List<OrderCloudIntegrationsConversionRate>()
                 {
-                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.EUR, Icon = "", Name = "EUR", Rate = 1, Symbol = "€" },
-                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.USD, Icon = "", Name = "USD", Rate = 1.01456, Symbol = "$" },
-                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.CAD, Icon = "", Name = "CAD", Rate = 2.65487, Symbol = "$" },
-                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.BGN, Icon = "", Name = "BGN", Rate = 31.357, Symbol = "лв" }
+                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.EUR, Icon = string.Empty, Name = "EUR", Rate = 1, Symbol = "€" },
+                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.USD, Icon = string.Empty, Name = "USD", Rate = 1.01456, Symbol = "$" },
+                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.CAD, Icon = string.Empty, Name = "CAD", Rate = 2.65487, Symbol = "$" },
+                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.BGN, Icon = string.Empty, Name = "BGN", Rate = 31.357, Symbol = "лв" }
                 };
         }
 

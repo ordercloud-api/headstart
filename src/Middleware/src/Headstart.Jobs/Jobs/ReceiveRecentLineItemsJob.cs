@@ -73,7 +73,7 @@ namespace Headstart.Jobs
 
             CosmosListPage<LineItemDetailData> currentLineItemListPage = await _lineItemDetailDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
 
-            var cosmosID = "";
+            var cosmosID = string.Empty;
             if (currentLineItemListPage.Items.Count() == 1)
             {
                 cosmosID = cosmosLineItemOrder.id = currentLineItemListPage.Items[0].id;

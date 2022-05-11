@@ -90,7 +90,7 @@ namespace Headstart.API.Commands
             ShipmentItem firstShipmentItem = superShipment.ShipmentItems.First();
             string supplierOrderID = firstShipmentItem.OrderID;
             string buyerOrderID = supplierOrderID.Split("-").First();
-            string buyerID = "";
+            string buyerID = string.Empty;
 
             // in the platform, in order to make sure the order has the proper Order.Status, you must
             // create a shipment without a DateShipped and then patch the DateShipped after
@@ -171,10 +171,10 @@ namespace Headstart.API.Commands
 
         private async Task<string> GetBuyerIDForSupplierOrder(string supplierOrderID)
         {
-            string buyerID = "";
+            string buyerID = string.Empty;
             string buyerOrderID = supplierOrderID.Split("-").First();
             Order relatedBuyerOrder = await _oc.Orders.GetAsync(OrderDirection.Incoming, buyerOrderID);
-            if (!String.IsNullOrEmpty(relatedBuyerOrder.FromCompanyID))
+            if (!string.IsNullOrEmpty(relatedBuyerOrder.FromCompanyID))
             {
                 buyerID = relatedBuyerOrder.FromCompanyID;
             }
@@ -452,7 +452,7 @@ namespace Headstart.API.Commands
             Dictionary<string, object> commentDictonary = new Dictionary<string, object>();
 
             // Add new comment
-            if (shipment?.ShipmentLineItemComment == null || shipment?.ShipmentLineItemComment == "")
+            if (shipment?.ShipmentLineItemComment == null || shipment?.ShipmentLineItemComment == string.Empty)
             {
                 return null;
             }

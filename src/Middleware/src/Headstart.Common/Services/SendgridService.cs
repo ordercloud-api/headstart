@@ -215,8 +215,8 @@ namespace Headstart.Common.Services
             {
                 Data = new LineItemStatusChangeData
                 {
-                    FirstName = "",
-                    LastName = "",
+                    FirstName = string.Empty,
+                    LastName = string.Empty,
                     Products = productsList,
                     DateSubmitted = order.DateSubmitted.ToString(),
                     OrderID = order.ID,
@@ -350,7 +350,7 @@ namespace Headstart.Common.Services
             ListPage<HSSupplier> suppliers = null;
             if (orderWorksheet.Order.xp.SupplierIDs != null)
             {
-                var filterString = String.Join("|", orderWorksheet.Order.xp.SupplierIDs);
+                var filterString = string.Join("|", orderWorksheet.Order.xp.SupplierIDs);
                 suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={filterString}");
             }
             foreach (var supplier in suppliers.Items)
@@ -404,7 +404,7 @@ namespace Headstart.Common.Services
             ListPage<HSSupplier> suppliers = null;
             if (orderWorksheet.Order.xp.SupplierIDs != null)
             {
-                var filterString = String.Join("|", orderWorksheet.Order.xp.SupplierIDs);
+                var filterString = string.Join("|", orderWorksheet.Order.xp.SupplierIDs);
                 suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={filterString}");
             }
             var supplierTos = new List<EmailAddress>();

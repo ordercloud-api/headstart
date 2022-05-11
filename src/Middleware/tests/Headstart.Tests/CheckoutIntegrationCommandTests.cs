@@ -28,7 +28,6 @@ namespace Headstart.Tests
 
         public const int FREE_SHIPPING_DAYS = 3;
 
-        #region CheckoutIntegrationTests
         public async Task default_shipping_for_no_rates()
         {
             var shipItem1 = new ShipEstimateItem
@@ -140,9 +139,6 @@ namespace Headstart.Tests
             Assert.AreEqual(method1.Name, methods[0].Name);
         }
 
-        #endregion
-
-        #region SetupMethods
         private List<HSShipEstimate> BuildEstimates(HSShipMethod[] shipMethods, ShipEstimateItem[] shipItems = null, string id = "mockID")
         {
             return new List<HSShipEstimate>
@@ -184,6 +180,5 @@ namespace Headstart.Tests
                 }
             };
         }
-        #endregion
     }
 }

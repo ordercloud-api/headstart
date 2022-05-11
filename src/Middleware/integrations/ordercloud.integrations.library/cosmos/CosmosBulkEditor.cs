@@ -124,7 +124,7 @@ namespace ordercloud.integrations.library
             Trace.WriteLine("--------------------------------------------------------------------- ");
             Trace.WriteLine("\n\nOverall summary of bulk delete:");
             Trace.WriteLine("--------------------------------------------------------------------- ");
-            Trace.WriteLine(String.Format("Deleted {0} docs", bulkDeleteResponse.NumberOfDocumentsDeleted));
+            Trace.WriteLine(string.Format("Deleted {0} docs", bulkDeleteResponse.NumberOfDocumentsDeleted));
             Trace.WriteLine("--------------------------------------------------------------------- \n");
         }
 
@@ -149,7 +149,7 @@ namespace ordercloud.integrations.library
 
             var batchedUpdateItems = updateItems.Chunk(batchSize).ToList();
 
-            Console.WriteLine(String.Format("\nFound {0} Documents to update. {1} Batches of {2}. Beginning.", documents.Count, batchedUpdateItems.Count, batchSize));
+            Console.WriteLine(string.Format("\nFound {0} Documents to update. {1} Batches of {2}. Beginning.", documents.Count, batchedUpdateItems.Count, batchSize));
 
             await Task.Run(async () =>
             {
@@ -213,15 +213,15 @@ namespace ordercloud.integrations.library
 
         private void LogProgress(BulkUpdateResponse response)
         {
-            Console.WriteLine(String.Format("\nSummary for collection"));
+            Console.WriteLine(string.Format("\nSummary for collection"));
             Console.WriteLine("--------------------------------------------------------------------- ");
-            Console.WriteLine(String.Format(
+            Console.WriteLine(string.Format(
                 "Updated {0} docs @ {1} updates/s, {2} RU/s in {3} sec",
                 response.NumberOfDocumentsUpdated,
                 Math.Round(response.NumberOfDocumentsUpdated / response.TotalTimeTaken.TotalSeconds),
                 Math.Round(response.TotalRequestUnitsConsumed / response.TotalTimeTaken.TotalSeconds),
                 response.TotalTimeTaken.TotalSeconds));
-            Console.WriteLine(String.Format(
+            Console.WriteLine(string.Format(
                 "Average RU consumption per document update: {0}",
                 (response.TotalRequestUnitsConsumed / response.NumberOfDocumentsUpdated)));
             Console.WriteLine("---------------------------------------------------------------------\n ");
@@ -229,15 +229,15 @@ namespace ordercloud.integrations.library
 
         private void LogProgress(BulkImportResponse response)
         {
-            Console.WriteLine(String.Format("\nSummary for collection"));
+            Console.WriteLine(string.Format("\nSummary for collection"));
             Console.WriteLine("--------------------------------------------------------------------- ");
-            Console.WriteLine(String.Format(
+            Console.WriteLine(string.Format(
                 "Created {0} docs @ {1} writes/s, {2} RU/s in {3} sec",
                 response.NumberOfDocumentsImported,
                 Math.Round(response.NumberOfDocumentsImported / response.TotalTimeTaken.TotalSeconds),
                 Math.Round(response.TotalRequestUnitsConsumed / response.TotalTimeTaken.TotalSeconds),
                 response.TotalTimeTaken.TotalSeconds));
-            Console.WriteLine(String.Format(
+            Console.WriteLine(string.Format(
                 "Average RU consumption per document update: {0}",
                 (response.TotalRequestUnitsConsumed / response.NumberOfDocumentsImported)));
             Console.WriteLine("---------------------------------------------------------------------\n ");

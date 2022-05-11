@@ -115,7 +115,16 @@ namespace Headstart.Common.Models
         public T GetData<T>() => JsonConvert.DeserializeObject<T>(JsonData);
     }
 
-    public enum NotificationChannel { Club, Staff }
-
-    public enum NotificationAction { Update, Delete, Create }
+    public enum NotificationChannel
+    {
+        Club,
+        Staff
     }
+
+    public enum NotificationAction
+    {
+        Update,
+        Delete,
+        Create
+    }
+}

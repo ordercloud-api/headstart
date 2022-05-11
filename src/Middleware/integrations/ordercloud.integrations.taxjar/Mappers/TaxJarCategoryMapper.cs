@@ -12,7 +12,7 @@ namespace ordercloud.integrations.taxjar
 		public static TaxCategorizationResponse ToTaxCategorization(this List<Category> categories, string searchTerm)
 		{
 			IEnumerable<Category> toReturn;
-			if (searchTerm == null || searchTerm == "")
+			if (searchTerm == null || searchTerm == string.Empty)
 			{
 				toReturn = categories;
 			} else

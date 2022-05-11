@@ -15,7 +15,7 @@ namespace ordercloud.integrations.library
             this.Bytes = Convert.FromBase64String(base64.Substring(base64.IndexOf(",", StringComparison.Ordinal) + 1));
             var tags = base64.Split(";");
             this.ContentType = tags[0].Split(":")[1];
-            this.Reference = $"{filename.Replace($".{ContentType.Split("/")[1]}", "")}.{ContentType.Split("/")[1]}";
+            this.Reference = $"{filename.Replace($".{ContentType.Split("/")[1]}", string.Empty)}.{ContentType.Split("/")[1]}";
         }
     }
 }

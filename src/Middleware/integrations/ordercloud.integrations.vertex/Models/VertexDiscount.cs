@@ -11,5 +11,9 @@ namespace ordercloud.integrations.vertex
 		public string userDefinedDiscountCode { get; set; }
 	}
 
-	public enum VertexDiscountType { DiscountAmount, DiscountPercent }
+	public enum VertexDiscountType
+    {
+        DiscountAmount,
+        DiscountPercent
+    }
 }

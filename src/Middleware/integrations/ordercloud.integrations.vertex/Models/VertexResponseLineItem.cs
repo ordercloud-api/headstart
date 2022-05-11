@@ -123,27 +123,45 @@ namespace ordercloud.integrations.vertex
 
 	public enum VertexTaxStructure
 	{
-		BRACKET, FLAT_TAX, QUANTITY, SINGLE_RATE, TIERED
+		BRACKET,
+        FLAT_TAX,
+        QUANTITY,
+        SINGLE_RATE,
+        TIERED
 	}
 
 	public enum VertexParty
 	{
-		SELLER, BUYER
+		SELLER,
+        BUYER
 	}
 
 	public enum VertexInputOutput
 	{
-		INPUT, IMPORT, OUTPUT, INPUT_OUTPUT
+		INPUT,
+        IMPORT,
+        OUTPUT,
+        INPUT_OUTPUT
 	}
 
 	public enum VertexTaxType
 	{
-		SALES, SELLER_USE, CONSUMERS_USE, VAT, IMPORT_VAT, NONE
+		SALES,
+        SELLER_USE,
+        CONSUMERS_USE,
+        VAT,
+        IMPORT_VAT,
+        NONE
 	}
 
 	public enum VertexTaxResult
 	{
-		TAXABLE, NONTAXABLE, EXEMPT, DPPAPPLIED, NO_TAX, DEFERRED
+		TAXABLE,
+        NONTAXABLE,
+        EXEMPT,
+        DPPAPPLIED,
+        NO_TAX,
+        DEFERRED
 	}
 
 	public class VertexCertificateNumber

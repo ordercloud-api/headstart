@@ -183,7 +183,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
         public static string ShippingSuffix = "Shipping (41000)";
         public static string SKU(this HSLineItem item)
         {
-            return item.Product == null ? "" : $"{item.Product.ID}-{item.Variant?.ID}".TrimEnd("-");
+            return item.Product == null ? string.Empty : $"{item.Product.ID}-{item.Variant?.ID}".TrimEnd("-");
         }
 
         public static string ShippingSku(this HSShipMethod method)

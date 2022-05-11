@@ -26,7 +26,7 @@ namespace ordercloud.integrations.library
 
         public static string ToSafeId(this string obj, params string[] replacements)
         {
-            var edited = replacements.Aggregate(obj, (current, r) => current.Replace(r, ""));
+            var edited = replacements.Aggregate(obj, (current, r) => current.Replace(r, string.Empty));
             return Regex.Replace(edited, @"[^a-zA-Z0-9-_]+", "_").ToLower();
         }
 

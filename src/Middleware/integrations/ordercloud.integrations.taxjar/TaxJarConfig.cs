@@ -8,5 +8,9 @@ namespace ordercloud.integrations.taxjar
 		public string ApiKey { get; set; }
 	}
 
-	public enum TaxJarEnvironment { Sandbox, Production }
+	public enum TaxJarEnvironment
+    {
+        Sandbox,
+        Production
+    }
 }

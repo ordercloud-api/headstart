@@ -6,7 +6,21 @@ using System.Text;
 
 namespace Headstart.Common.Services.CMS.Models
 {
-	public enum AssetType { Image, Text, Audio, Video, Presentation, SpreadSheet, PDF, Compressed, Code, JSON, Markup, Unknown }
+	public enum AssetType
+    {
+        Image,
+        Text,
+        Audio,
+        Video,
+        Presentation,
+        SpreadSheet,
+        PDF,
+        Compressed,
+        Code,
+        JSON,
+        Markup,
+        Unknown
+    }
 
 
 	public class Asset

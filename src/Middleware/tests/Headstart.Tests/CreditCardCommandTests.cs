@@ -70,7 +70,6 @@ namespace Headstart.Tests
 			_sut = new CreditCardCommand(_cardConnect, _oc, _hsExchangeRates, _supportAlerts, _settings);
 		}
 
-        #region AuthorizePayment
         [Test]
 		public void should_throw_if_no_payments()
 		{
@@ -371,9 +370,8 @@ namespace Headstart.Tests
 
 			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, orderID, paymentID, Arg.Any<PaymentTransaction>());
 		}
-		#endregion AuthorizePayment
 
-		private HSPayment MockCCPayment(decimal amount, bool accepted = false, List<HSPaymentTransaction> transactions = null)
+        private HSPayment MockCCPayment(decimal amount, bool accepted = false, List<HSPaymentTransaction> transactions = null)
         {
 			return new HSPayment
 			{

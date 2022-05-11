@@ -123,12 +123,10 @@ namespace Headstart.Common.Extensions
             }).ToList();
         }
 
-        #region Helper Methods
         public static HSShipEstimate FilterDownFedexShippingRates(HSShipEstimate estimate)
         {
             estimate.ShipMethods = estimate.ShipMethods.Where(method => (method.ID != null && method.ID.Contains("FREE_SHIPPING")) || method?.ID == ShippingConstants.NoRatesID || method?.xp?.Carrier == "USPS" || method.Name == "FEDEX_GROUND" || method.Name == "FEDEX_2_DAY" || method.Name == "STANDARD_OVERNIGHT").ToList();
             return estimate;
         }
-        #endregion
     }
 }

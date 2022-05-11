@@ -100,7 +100,6 @@ namespace Headstart.API.Commands
             new Incrementor { ID = "sellerLocationIncrementor", Name = "Seller Location Incrementor", LastNumber = 0, LeftPaddingCount = 4 }
         };
 
-        #region API CLIENTS
         public static ApiClient IntegrationsClient()
         {
             return new ApiClient()
@@ -165,9 +164,7 @@ namespace Headstart.API.Commands
                 IsAnonBuyer = seed.EnableAnonymousShopping
             };
         }
-        #endregion
 
-        #region IntegrationEvents
         public static IntegrationEvent CheckoutEvent(string middlewareBaseUrl, string webhookHashKey)
         {
             return new IntegrationEvent()
@@ -203,9 +200,7 @@ namespace Headstart.API.Commands
                 }
             };
         }
-        #endregion
 
-        #region MessageSenders
         public static MessageSender BuyerEmails(EnvironmentSeed seed)
         {
             return new MessageSender()
@@ -255,9 +250,7 @@ namespace Headstart.API.Commands
                 SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey
             };
         }
-        #endregion
 
-        #region Permissions
         public static readonly List<HSSecurityProfile> DefaultSecurityProfiles = new List<HSSecurityProfile>() {
 
 			// seller/supplier
@@ -315,9 +308,7 @@ namespace Headstart.API.Commands
             CustomRole.HSSupplierAdmin,
             CustomRole.HSSupplierUserGroupAdmin
         };
-        #endregion
 
-        #region Buyer Location
         public static HSBuyerLocation DefaultBuyerLocation()
         {
             return new HSBuyerLocation()
@@ -344,10 +335,6 @@ namespace Headstart.API.Commands
             };
         }
 
-        #endregion
-
-        #region Product Facets
-
         public static HSProductFacet DefaultProductFacet()
         {
             return new HSProductFacet()
@@ -360,10 +347,6 @@ namespace Headstart.API.Commands
                 xp = null
             };
         }
-
-        #endregion
-
-        #region Azure Regions
 
         public static Region UsEast = new Region()
         {
@@ -408,8 +391,6 @@ namespace Headstart.API.Commands
             JapanEast,
             UsWest
         };
-
-        #endregion
 
         public static class Environments
         {

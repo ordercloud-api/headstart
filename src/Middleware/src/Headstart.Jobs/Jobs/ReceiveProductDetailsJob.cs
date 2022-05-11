@@ -75,7 +75,7 @@ namespace Headstart.Jobs
 
                 CosmosListPage<ProductDetailData> currentProductDetailListPage = await _productDetailRepo.GetItemsAsync(queryable, requestOptions, listOptions);
 
-                var cosmosID = "";
+                var cosmosID = string.Empty;
                 if (currentProductDetailListPage.Items.Count == 1)
                 {
                     cosmosID = productData.id = currentProductDetailListPage.Items[0].id;
@@ -189,7 +189,7 @@ namespace Headstart.Jobs
             dynamic productXp = product.xp;
 
             PriceSchedule schedule = await GetPriceSchedule(product.DefaultPriceScheduleID);
-            result.SizeTier = "";
+            result.SizeTier = string.Empty;
             result.Active = product?.Active.ToString();
             if (PropertyExists(productXp, "Status")) { result.Status = productXp.Status?.ToString(); }
             if (PropertyExists(productXp, "Note")) { result.Note = productXp.Note; }
@@ -295,7 +295,7 @@ namespace Headstart.Jobs
             decimal totalPriceMarkup = 0;
             foreach (dynamic specValue in specValues)
             {
-                if (specValue?.PriceMarkup?.Trim() != "")
+                if (specValue?.PriceMarkup?.Trim() != string.Empty)
                 {
                     decimal numericMarkup = 0;
                     bool isNumeric = decimal.TryParse(specValue?.PriceMarkup?.Trim(), out numericMarkup);
@@ -310,10 +310,10 @@ namespace Headstart.Jobs
 
         private string GetSpecOptionValue(List<dynamic> specValues)
         {
-            string specOptionValue = "";
+            string specOptionValue = string.Empty;
             foreach (dynamic specValue in specValues)
             {
-                if (specValue?.SpecOptionValue != "")
+                if (specValue?.SpecOptionValue != string.Empty)
                 {
                     specOptionValue = specOptionValue + " " + specValue?.SpecOptionValue + " ";
                 }
