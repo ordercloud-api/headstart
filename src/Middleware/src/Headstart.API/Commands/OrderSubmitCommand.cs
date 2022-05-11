@@ -65,7 +65,8 @@ namespace Headstart.API.Commands
             Require.That(
                 worksheet?.ShipEstimateResponse != null &&
                 shipMethodsWithoutSelections.Count() == 0,
-                new ErrorCode("OrderSubmit.MissingShippingSelections", "All shipments on an order must have a selection"), shipMethodsWithoutSelections);
+                new ErrorCode("OrderSubmit.MissingShippingSelections", "All shipments on an order must have a selection"),
+                shipMethodsWithoutSelections);
 
             Require.That(
                 !worksheet.LineItems.Any() || payment != null,
@@ -74,7 +75,8 @@ namespace Headstart.API.Commands
             var lineItemsInactive = await GetInactiveLineItems(worksheet, userToken);
             Require.That(
                 !lineItemsInactive.Any(),
-                new ErrorCode("OrderSubmit.InvalidProducts", "Order contains line items for products that are inactive"), lineItemsInactive);
+                new ErrorCode("OrderSubmit.InvalidProducts", "Order contains line items for products that are inactive"),
+                lineItemsInactive);
 
             try
             {

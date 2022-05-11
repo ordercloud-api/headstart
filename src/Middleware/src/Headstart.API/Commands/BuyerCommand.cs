@@ -108,31 +108,38 @@ namespace Headstart.API.Commands
             buyer.ID = ocBuyerID;
 
             // create base security profile assignment
-            await ocClient.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment
-            {
-                BuyerID = ocBuyerID,
-                SecurityProfileID = CustomRole.HSBaseBuyer.ToString()
-            }, token);
+            await ocClient.SecurityProfiles.SaveAssignmentAsync(
+                new SecurityProfileAssignment
+                {
+                    BuyerID = ocBuyerID,
+                    SecurityProfileID = CustomRole.HSBaseBuyer.ToString()
+                }, token);
 
             // assign message sender
-            await ocClient.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
-            {
-                MessageSenderID = "BuyerEmails",
-                BuyerID = ocBuyerID
-            }, token);
+            await ocClient.MessageSenders.SaveAssignmentAsync(
+                new MessageSenderAssignment
+                {
+                    MessageSenderID = "BuyerEmails",
+                    BuyerID = ocBuyerID
+                }, token);
 
-            await ocClient.Incrementors.SaveAsync($"{ocBuyerID}-UserIncrementor",
-                new Incrementor { ID = $"{ocBuyerID}-UserIncrementor", LastNumber = 0, LeftPaddingCount = 5, Name = "User Incrementor" }, token);
-            await ocClient.Incrementors.SaveAsync($"{ocBuyerID}-LocationIncrementor",
-                new Incrementor { ID = $"{ocBuyerID}-LocationIncrementor", LastNumber = 0, LeftPaddingCount = 4, Name = "Location Incrementor" }, token);
+            await ocClient.Incrementors.SaveAsync(
+                $"{ocBuyerID}-UserIncrementor",
+                new Incrementor { ID = $"{ocBuyerID}-UserIncrementor", LastNumber = 0, LeftPaddingCount = 5, Name = "User Incrementor" },
+                token);
+            await ocClient.Incrementors.SaveAsync(
+                $"{ocBuyerID}-LocationIncrementor",
+                new Incrementor { ID = $"{ocBuyerID}-LocationIncrementor", LastNumber = 0, LeftPaddingCount = 4, Name = "Location Incrementor" },
+                token);
 
-            await ocClient.Catalogs.SaveAssignmentAsync(new CatalogAssignment()
-            {
-                BuyerID = ocBuyerID,
-                CatalogID = ocBuyerID,
-                ViewAllCategories = true,
-                ViewAllProducts = false
-            }, token);
+            await ocClient.Catalogs.SaveAssignmentAsync(
+                new CatalogAssignment()
+                {
+                    BuyerID = ocBuyerID,
+                    CatalogID = ocBuyerID,
+                    ViewAllCategories = true,
+                    ViewAllProducts = false
+                }, token);
             return buyer;
         }
 

@@ -62,7 +62,8 @@ namespace ordercloud.integrations.cardconnect
             string userToken,
 			string merchantID)
 		{
-			Require.That((payment.CreditCardID != null) || (payment.CreditCardDetails != null),
+			Require.That(
+			    (payment.CreditCardID != null) || (payment.CreditCardDetails != null),
 				new ErrorCode("CreditCard.CreditCardAuth", "Request must include either CreditCardDetails or CreditCardID"));
 
 			var cc = await GetMeCardDetails(payment, userToken);

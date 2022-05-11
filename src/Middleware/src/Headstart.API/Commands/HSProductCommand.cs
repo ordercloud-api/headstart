@@ -292,8 +292,8 @@ namespace Headstart.API.Commands.Crud
 						await Throttler.RunAsync(rSpec.Options.Where(rso => !eSpec.Options.Any(eso => eso.ID == rso.ID)), 100, 5, o => _oc.Specs.CreateOptionAsync(rSpec.ID, o, accessToken: token));
 						await Throttler.RunAsync(eSpec.Options.Where(eso => !rSpec.Options.Any(rso => rso.ID == eso.ID)), 100, 5, o => _oc.Specs.DeleteOptionAsync(rSpec.ID, o.ID, accessToken: token));
 					}
-				};
-			};
+				}
+			}
 			// Create new specs and Delete removed specs
 			var defaultSpecOptions = new List<DefaultOptionSpecAssignment>();
 			await Throttler.RunAsync(specsToAdd, 100, 5, s =>
@@ -353,7 +353,7 @@ namespace Headstart.API.Commands.Crud
 						return _oc.Products.PatchVariantAsync(id, $"{superProduct.Product.ID}-{v.xp.SpecCombo}", new PartialVariant { ID = v.ID, Name = v.Name, xp = v.xp, Active = v.Active, Inventory = v.Inventory }, accessToken: token);
 					}
 				});
-			};
+			}
 			// If applicable, update OR create the Product PriceSchedule
 			var tasks = new List<Task>();
 			Task<PriceSchedule> _priceScheduleReq = null;
@@ -470,11 +470,11 @@ namespace Headstart.API.Commands.Crud
 		private bool OptionHasChanges(SpecOption requestOption, List<SpecOption> currentOptions)
 		{
 			var matchingOption = currentOptions.Find(currentOption => currentOption.ID == requestOption.ID);
-			if (matchingOption == null) { return false; };
-			if (matchingOption.PriceMarkup != requestOption.PriceMarkup) { return true; };
-			if (matchingOption.IsOpenText != requestOption.IsOpenText) { return true; };
-			if (matchingOption.ListOrder != requestOption.ListOrder) { return true; };
-			if (matchingOption.PriceMarkupType != requestOption.PriceMarkupType) { return true; };
+			if (matchingOption == null) { return false; }
+			if (matchingOption.PriceMarkup != requestOption.PriceMarkup) { return true; }
+			if (matchingOption.IsOpenText != requestOption.IsOpenText) { return true; }
+			if (matchingOption.ListOrder != requestOption.ListOrder) { return true; }
+			if (matchingOption.PriceMarkupType != requestOption.PriceMarkupType) { return true; }
 
 			return false;
 		}

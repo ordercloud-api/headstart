@@ -10,9 +10,10 @@ namespace ordercloud.integrations.library
     {
         public Container _container { get; }
 
-        public CosmosDbContainer(CosmosClient cosmosClient,
-                                 string databaseName,
-                                 string containerName)
+        public CosmosDbContainer(
+            CosmosClient cosmosClient,
+            string databaseName,
+            string containerName)
         {
             _container = cosmosClient.GetContainer(databaseName, containerName);
         }

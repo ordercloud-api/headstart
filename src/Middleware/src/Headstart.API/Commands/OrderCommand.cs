@@ -155,7 +155,8 @@ namespace Headstart.API.Commands
         {
             listArgs.Filters.Add(new ListFilter("BillingAddress.ID", locationID));
             await EnsureUserCanAccessLocationOrders(locationID, decodedToken);
-            return await _oc.Orders.ListAsync<HSOrder>(OrderDirection.Incoming,
+            return await _oc.Orders.ListAsync<HSOrder>(
+                OrderDirection.Incoming,
                 page: listArgs.Page,
                 pageSize: listArgs.PageSize,
                 search: listArgs.Search,
@@ -271,5 +272,5 @@ namespace Headstart.API.Commands
             // if function has not been exited yet we throw an insufficient access error
             Require.That(false, new ErrorCode("Insufficient Access", $"User cannot access order {order.ID}", HttpStatusCode.Forbidden));
         }
-    };
+    }
 }

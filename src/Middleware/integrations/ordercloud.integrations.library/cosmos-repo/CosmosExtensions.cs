@@ -6,11 +6,12 @@ namespace ordercloud.integrations.library
 {
     public static class IServiceCollectionExtensions
     {
-        public static IServiceCollection AddCosmosDb(this IServiceCollection services,
-                                                     string endpointUrl,
-                                                     string primaryKey,
-                                                     string databaseName,
-                                                     List<ContainerInfo> containers)
+        public static IServiceCollection AddCosmosDb(
+            this IServiceCollection services,
+            string endpointUrl,
+            string primaryKey,
+            string databaseName,
+            List<ContainerInfo> containers)
         {
             if (endpointUrl == null || primaryKey == null || databaseName == null)
             {

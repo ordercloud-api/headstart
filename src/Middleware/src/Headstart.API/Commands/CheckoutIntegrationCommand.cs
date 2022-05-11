@@ -138,8 +138,9 @@ namespace Headstart.API.Commands
                 var supplier = suppliers.Items.FirstOrDefault(s => s.ID == supplierID);
                 var supplierLineItems = orderWorksheet.LineItems.Where(li => li.SupplierID == supplier?.ID);
                 var supplierSubTotal = supplierLineItems.Select(li => li.LineSubtotal).Sum();
-                if (supplier?.xp?.FreeShippingThreshold != null && supplier.xp?.FreeShippingThreshold < supplierSubTotal) // free shipping for this supplier
+                if (supplier?.xp?.FreeShippingThreshold != null && supplier.xp?.FreeShippingThreshold < supplierSubTotal)
                 {
+                    // free shipping for this supplier
                     foreach (var method in estimate.ShipMethods)
                     {
                         // free shipping on ground shipping or orders where we weren't able to calculate a shipping rate

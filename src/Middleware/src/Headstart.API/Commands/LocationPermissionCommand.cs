@@ -204,5 +204,5 @@ namespace Headstart.API.Commands
                    pageSize: 100);
             return userGroups;
         }
-    };
+    }
 }

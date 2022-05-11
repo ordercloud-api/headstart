@@ -198,15 +198,16 @@ namespace Headstart.API
                 .AddSingleton<DownloadReportCommand>()
                 .Inject<IRMARepo>()
                 .Inject<IZohoClient>()
-                .AddSingleton<IZohoCommand>(z => new ZohoCommand(new ZohoClient(
-                    new ZohoClientConfig()
-                    {
-                        ApiUrl = "https://books.zoho.com/api/v3",
-                        AccessToken = _settings.ZohoSettings.AccessToken,
-                        ClientId = _settings.ZohoSettings.ClientId,
-                        ClientSecret = _settings.ZohoSettings.ClientSecret,
-                        OrganizationID = _settings.ZohoSettings.OrgID
-                    }, flurlClientFactory),
+                .AddSingleton<IZohoCommand>(z => new ZohoCommand(
+                    new ZohoClient(
+                        new ZohoClientConfig()
+                        {
+                            ApiUrl = "https://books.zoho.com/api/v3",
+                            AccessToken = _settings.ZohoSettings.AccessToken,
+                            ClientId = _settings.ZohoSettings.ClientId,
+                            ClientSecret = _settings.ZohoSettings.ClientSecret,
+                            OrganizationID = _settings.ZohoSettings.OrgID
+                        }, flurlClientFactory),
                     orderCloudClient))
                 .AddSingleton<IOrderCloudIntegrationsExchangeRatesClient, OrderCloudIntegrationsExchangeRatesClient>()
                 .AddSingleton<IAssetClient>(provider => new AssetClient(new OrderCloudIntegrationsBlobService(assetConfig), _settings))

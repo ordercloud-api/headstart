@@ -215,12 +215,14 @@ namespace ordercloud.integrations.library
         {
             Console.WriteLine(String.Format("\nSummary for collection"));
             Console.WriteLine("--------------------------------------------------------------------- ");
-            Console.WriteLine(String.Format("Updated {0} docs @ {1} updates/s, {2} RU/s in {3} sec",
+            Console.WriteLine(String.Format(
+                "Updated {0} docs @ {1} updates/s, {2} RU/s in {3} sec",
                 response.NumberOfDocumentsUpdated,
                 Math.Round(response.NumberOfDocumentsUpdated / response.TotalTimeTaken.TotalSeconds),
                 Math.Round(response.TotalRequestUnitsConsumed / response.TotalTimeTaken.TotalSeconds),
                 response.TotalTimeTaken.TotalSeconds));
-            Console.WriteLine(String.Format("Average RU consumption per document update: {0}",
+            Console.WriteLine(String.Format(
+                "Average RU consumption per document update: {0}",
                 (response.TotalRequestUnitsConsumed / response.NumberOfDocumentsUpdated)));
             Console.WriteLine("---------------------------------------------------------------------\n ");
         }
@@ -229,12 +231,14 @@ namespace ordercloud.integrations.library
         {
             Console.WriteLine(String.Format("\nSummary for collection"));
             Console.WriteLine("--------------------------------------------------------------------- ");
-            Console.WriteLine(String.Format("Created {0} docs @ {1} writes/s, {2} RU/s in {3} sec",
+            Console.WriteLine(String.Format(
+                "Created {0} docs @ {1} writes/s, {2} RU/s in {3} sec",
                 response.NumberOfDocumentsImported,
                 Math.Round(response.NumberOfDocumentsImported / response.TotalTimeTaken.TotalSeconds),
                 Math.Round(response.TotalRequestUnitsConsumed / response.TotalTimeTaken.TotalSeconds),
                 response.TotalTimeTaken.TotalSeconds));
-            Console.WriteLine(String.Format("Average RU consumption per document update: {0}",
+            Console.WriteLine(String.Format(
+                "Average RU consumption per document update: {0}",
                 (response.TotalRequestUnitsConsumed / response.NumberOfDocumentsImported)));
             Console.WriteLine("---------------------------------------------------------------------\n ");
         }

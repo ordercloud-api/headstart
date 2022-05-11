@@ -89,12 +89,13 @@ namespace ordercloud.integrations.cardconnect
             {
                 return attempt;
             }
-            throw new CardConnectCaptureException(new ApiError
-            {
-                Data = attempt,
-                Message = attempt.resptext,
-                ErrorCode = attempt.respcode
-            }, attempt);
+            throw new CardConnectCaptureException(
+                new ApiError
+                {
+                    Data = attempt,
+                    Message = attempt.resptext,
+                    ErrorCode = attempt.respcode
+                }, attempt);
         }
 
         public async Task<CardConnectVoidResponse> VoidAuthorization(CardConnectVoidRequest request)
@@ -118,12 +119,13 @@ namespace ordercloud.integrations.cardconnect
             {
                 return attempt;
             }
-            throw new CreditCardVoidException(new ApiError()
-            {
-                Data = attempt,
-                Message = attempt.resptext, // response codes: https://developer.cardconnect.com/cardconnect-api?lang=json#void-service-url
-                ErrorCode = attempt.respcode
-            }, attempt);
+            throw new CreditCardVoidException(
+                new ApiError()
+                {
+                    Data = attempt,
+                    Message = attempt.resptext, // response codes: https://developer.cardconnect.com/cardconnect-api?lang=json#void-service-url
+                    ErrorCode = attempt.respcode
+                }, attempt);
         }
 
         // https://developer.cardconnect.com/cardconnect-api#inquire-by-order-id
@@ -138,12 +140,13 @@ namespace ordercloud.integrations.cardconnect
             {
                 return attempt;
             }
-            throw new CardConnectInquireException(new ApiError()
-            {
-                Data = attempt,
-                Message = attempt.resptext,
-                ErrorCode = attempt.respcode
-            }, attempt);
+            throw new CardConnectInquireException(
+                new ApiError()
+                {
+                    Data = attempt,
+                    Message = attempt.resptext,
+                    ErrorCode = attempt.respcode
+                }, attempt);
         }
 
         public async Task<CardConnectRefundResponse> Refund(CardConnectRefundRequest request)
@@ -156,12 +159,13 @@ namespace ordercloud.integrations.cardconnect
             {
                 return attempt;
             }
-            throw new CreditCardRefundException(new ApiError()
-            {
-                Data = attempt,
-                Message = attempt.resptext,
-                ErrorCode = attempt.respcode
-            }, attempt);
+            throw new CreditCardRefundException(
+                new ApiError()
+                {
+                    Data = attempt,
+                    Message = attempt.resptext,
+                    ErrorCode = attempt.respcode
+                }, attempt);
         }
 
         private CardConnectInquireResponse ExtractResponse(string body, string retref)
@@ -250,12 +254,14 @@ namespace ordercloud.integrations.cardconnect
             {
                 return attempt;
             }
-            throw new CreditCardAuthorizationException(new ApiError()
-            {
-                Data = attempt,
-                Message = attempt.resptext, // response codes: https://developer.cardconnect.com/assets/developer/assets/authResp_2-11-19.txt
-                ErrorCode = attempt.respcode
-            }, attempt);
+            throw new CreditCardAuthorizationException(
+                new ApiError()
+                {
+                    Data = attempt,
+                    Message = attempt.resptext, // response codes: https://developer.cardconnect.com/assets/developer/assets/authResp_2-11-19.txt
+                    ErrorCode = attempt.respcode
+                },
+                attempt);
         }
     }
 }

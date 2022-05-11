@@ -69,7 +69,8 @@ namespace Headstart.API.Commands
         public async Task<OrderSubmitResponse> HandleZohoRetry(string orderID)
         {
             var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
-            var supplierOrders = await Throttler.RunAsync(worksheet.LineItems.GroupBy(g => g.SupplierID).Select(s => s.Key), 100, 10, item => _oc.Orders.GetAsync<HSOrder>(OrderDirection.Outgoing,
+            var supplierOrders = await Throttler.RunAsync(worksheet.LineItems.GroupBy(g => g.SupplierID).Select(s => s.Key), 100, 10, item => _oc.Orders.GetAsync<HSOrder>(
+                OrderDirection.Outgoing,
                 $"{worksheet.Order.ID}-{item}"));
 
             return await CreateOrderSubmitResponse(
@@ -279,33 +280,36 @@ namespace Headstart.API.Commands
             }
             catch (CatalystBaseException integrationEx)
             {
-                return new Tuple<ProcessResultAction, T>(new ProcessResultAction()
-                {
-                    Description = description,
-                    ProcessType = type,
-                    Success = false,
-                    Exception = new ProcessResultException(integrationEx)
-                }, new T());
+                return new Tuple<ProcessResultAction, T>(
+                    new ProcessResultAction()
+                    {
+                        Description = description,
+                        ProcessType = type,
+                        Success = false,
+                        Exception = new ProcessResultException(integrationEx)
+                    }, new T());
             }
             catch (FlurlHttpException flurlEx)
             {
-                return new Tuple<ProcessResultAction, T>(new ProcessResultAction()
-                {
-                    Description = description,
-                    ProcessType = type,
-                    Success = false,
-                    Exception = new ProcessResultException(flurlEx)
-                }, new T());
+                return new Tuple<ProcessResultAction, T>(
+                    new ProcessResultAction()
+                    {
+                        Description = description,
+                        ProcessType = type,
+                        Success = false,
+                        Exception = new ProcessResultException(flurlEx)
+                    }, new T());
             }
             catch (Exception ex)
             {
-                return new Tuple<ProcessResultAction, T>(new ProcessResultAction()
-                {
-                    Description = description,
-                    ProcessType = type,
-                    Success = false,
-                    Exception = new ProcessResultException(ex)
-                }, new T());
+                return new Tuple<ProcessResultAction, T>(
+                    new ProcessResultAction()
+                    {
+                        Description = description,
+                        ProcessType = type,
+                        Success = false,
+                        Exception = new ProcessResultException(ex)
+                    }, new T());
             }
         }
 
@@ -325,7 +329,8 @@ namespace Headstart.API.Commands
             // creating relationship between the buyer order and the supplier order
             // no relationship exists currently in the platform
             var (updateAction, hsOrders) = await ProcessActivityCall(
-                ProcessType.Forwarding, "Create Order Relationships And Transfer XP",
+                ProcessType.Forwarding,
+                "Create Order Relationships And Transfer XP",
                 CreateOrderRelationshipsAndTransferXP(orderWorksheet, supplierOrders));
             activities.Add(updateAction);
 
@@ -478,5 +483,5 @@ namespace Headstart.API.Commands
                 }
             }
         }
-    };
+    }
 }

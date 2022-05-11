@@ -17,14 +17,15 @@ namespace CardConnect.Tests
         public void Setup()
         {
             _http = new HttpTest();
-            _service = new OrderCloudIntegrationsCardConnectService(new OrderCloudIntegrationsCardConnectConfig()
-            {
-                Authorization = "Authorization",
-                Site = "fts-uat",
-                BaseUrl = "cardconnect.com"
-            },
-            AppEnvironment.Test.ToString(),
-            new PerBaseUrlFlurlClientFactory());
+            _service = new OrderCloudIntegrationsCardConnectService(
+                new OrderCloudIntegrationsCardConnectConfig()
+                {
+                    Authorization = "Authorization",
+                    Site = "fts-uat",
+                    BaseUrl = "cardconnect.com"
+                },
+                AppEnvironment.Test.ToString(),
+                new PerBaseUrlFlurlClientFactory());
 
             _service_no_config = new OrderCloudIntegrationsCardConnectService(new OrderCloudIntegrationsCardConnectConfig() { }, AppEnvironment.Test.ToString(), new PerBaseUrlFlurlClientFactory());
         }

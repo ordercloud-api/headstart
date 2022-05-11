@@ -37,7 +37,8 @@ namespace Headstart.API.Commands.Crud
 
 		public async Task<ListPage<HSCatalog>> List(string buyerID, ListArgs<HSCatalog> args, DecodedToken decodedToken)
 		{
-			return await _oc.UserGroups.ListAsync<HSCatalog>(buyerID,
+			return await _oc.UserGroups.ListAsync<HSCatalog>(
+                buyerID,
 				filters: "xp.Type=Catalog",
 				search: args.Search,
 				pageSize: args.PageSize,

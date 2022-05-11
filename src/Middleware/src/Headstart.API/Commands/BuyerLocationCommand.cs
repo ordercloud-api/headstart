@@ -177,25 +177,30 @@ namespace Headstart.API.Commands
 
             var buyerID = buyerLocationID.Split('-').First();
             var userGroupID = $"{buyerLocationID}-{hsUserType.UserGroupIDSuffix}";
-            await ocClient.UserGroups.CreateAsync(buyerID, new PartialUserGroup()
-            {
-                ID = userGroupID,
-                Name = hsUserType.UserGroupName,
-                xp = new
+            await ocClient.UserGroups.CreateAsync(
+                buyerID,
+                new PartialUserGroup()
                 {
-                    Role = hsUserType.UserGroupIDSuffix.ToString(),
-                    Type = hsUserType.UserGroupType,
-                    Location = buyerLocationID
-                }
-            }, token);
+                    ID = userGroupID,
+                    Name = hsUserType.UserGroupName,
+                    xp = new
+                    {
+                        Role = hsUserType.UserGroupIDSuffix.ToString(),
+                        Type = hsUserType.UserGroupType,
+                        Location = buyerLocationID
+                    }
+                },
+                token);
             foreach (var customRole in hsUserType.CustomRoles)
             {
-                await ocClient.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment()
-                {
-                    BuyerID = buyerID,
-                    UserGroupID = userGroupID,
-                    SecurityProfileID = customRole.ToString()
-                }, token);
+                await ocClient.SecurityProfiles.SaveAssignmentAsync(
+                    new SecurityProfileAssignment()
+                    {
+                        BuyerID = buyerID,
+                        UserGroupID = userGroupID,
+                        SecurityProfileID = customRole.ToString()
+                    },
+                    token);
             }
         }
 

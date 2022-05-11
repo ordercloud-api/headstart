@@ -83,7 +83,7 @@ namespace Headstart.Models
         public string Url { get; set; }
         public string ThumbnailUrl { get; set; }
         public List<string> Tags { get; set; }
-    };
+    }
 
     public class DocumentAsset
     {

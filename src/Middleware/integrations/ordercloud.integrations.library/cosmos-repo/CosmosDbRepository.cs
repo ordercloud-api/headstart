@@ -100,8 +100,7 @@ namespace ordercloud.integrations.library
 
             Expression paramProp = Expression.Property(param, searchOn);
 
-            Expression toLower = Expression.Call(paramProp,
-                              typeof(string).GetMethod("ToLower", Type.EmptyTypes));
+            Expression toLower = Expression.Call(paramProp, typeof(string).GetMethod("ToLower", Type.EmptyTypes));
 
             Expression body = BuildExpressionBody(Expression.Equal, Expression.OrElse, null, toLower, search.ToLower(), propertyType);
             Expression<Func<T, bool>> lambda = Expression.Lambda<Func<T, bool>>(body, param);
@@ -217,12 +216,13 @@ namespace ordercloud.integrations.library
             return filteredQueryable.Provider.CreateQuery<T>(resultExp);
         }
 
-        private Expression BuildExpressionBody(Func<Expression, Expression, BinaryExpression> filterOperator,
-                                               Func<Expression, Expression, BinaryExpression> expressionOperator,
-                                               Expression body,
-                                               Expression paramProp,
-                                               object filterValue,
-                                               Type propType)
+        private Expression BuildExpressionBody(
+            Func<Expression, Expression, BinaryExpression> filterOperator,
+            Func<Expression, Expression, BinaryExpression> expressionOperator,
+            Expression body,
+            Expression paramProp,
+            object filterValue,
+            Type propType)
         {
             BinaryExpression predicate = filterOperator(
                             paramProp,

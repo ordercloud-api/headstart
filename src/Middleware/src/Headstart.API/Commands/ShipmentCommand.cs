@@ -118,7 +118,10 @@ namespace Headstart.API.Commands
                 dynamic comments = new ExpandoObject();
                 var commentsByShipment = comments as IDictionary<string, object>;
                 commentsByShipment[ocShipment.ID] = shipmentItem.xp?.Comment;
-                return _oc.LineItems.PatchAsync(OrderDirection.Incoming, buyerOrderID, shipmentItem.LineItemID,
+                return _oc.LineItems.PatchAsync(
+                    OrderDirection.Incoming,
+                    buyerOrderID,
+                    shipmentItem.LineItemID,
                     new PartialLineItem()
                     {
                         xp = new

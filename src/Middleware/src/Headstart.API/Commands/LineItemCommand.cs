@@ -291,15 +291,15 @@ namespace Headstart.API.Commands
                             if (seller?.xp?.OrderEmails ?? false)
                             {
                                 tos.Add(new EmailAddress(seller.Email));
-                            };
+                            }
                             if (seller?.xp?.AddtlRcpts?.Any() ?? false)
                             {
                                 foreach (var rcpt in seller.xp.AddtlRcpts)
                                 {
                                     tos.Add(new EmailAddress(rcpt));
-                                };
-                            };
-                        };
+                                }
+                            }
+                        }
                         var shouldNotify = !(LineItemStatusConstants.LineItemStatusChangesDontNotifySetter.Contains(lineItemStatusChanges.Status) && setterUserType == VerifiedUserType.admin);
                         if (shouldNotify)
                         {
@@ -319,7 +319,7 @@ namespace Headstart.API.Commands
                                     foreach (var rcpt in supplier.xp.NotificationRcpts)
                                     {
                                         tos.Add(new EmailAddress(rcpt));
-                                    };
+                                    }
                                     await _sendgridService.SendLineItemStatusChangeEmailMultipleRcpts(buyerOrder, lineItemStatusChanges, lineItemsChanged.ToList(), tos, emailText);
                                 }
                             });
@@ -538,5 +538,5 @@ namespace Headstart.API.Commands
             }
             return true;
         }
-    };
+    }
 }

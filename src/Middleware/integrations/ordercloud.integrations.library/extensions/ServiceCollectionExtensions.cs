@@ -25,8 +25,7 @@ namespace ordercloud.integrations.library
         {
             return services.AddServicesByConvention(typeof(T).Assembly, typeof(T).Namespace);
         }
-        public static IServiceCollection AddServicesByConvention(this IServiceCollection services, Assembly asm,
-            string @namespace = null)
+        public static IServiceCollection AddServicesByConvention(this IServiceCollection services, Assembly asm, string @namespace = null)
         {
             var mappings =
                 from impl in asm.GetTypes()
@@ -57,13 +56,17 @@ namespace ordercloud.integrations.library
                 // in the future we'll remove this in favor of centralized seeding capability
                 return services;
             }
-            var settings = new CosmosStoreSettings(config.DatabaseName, config.EndpointUri, config.PrimaryKey,
+            var settings = new CosmosStoreSettings(
+                config.DatabaseName,
+                config.EndpointUri,
+                config.PrimaryKey,
                 new ConnectionPolicy
                 {
                     ConnectionProtocol = Protocol.Tcp,
                     ConnectionMode = ConnectionMode.Direct,
                     RequestTimeout = config.RequestTimeout
-                }, defaultCollectionThroughput: 400)
+                },
+                defaultCollectionThroughput: 400)
             {
                 UniqueKeyPolicy = new UniqueKeyPolicy()
                 {

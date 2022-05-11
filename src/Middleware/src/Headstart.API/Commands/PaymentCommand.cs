@@ -132,5 +132,5 @@ namespace Headstart.API.Commands
             return existingPayments;
 
         }
-    };
+    }
 }

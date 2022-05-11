@@ -209,21 +209,23 @@ namespace Headstart.API.Commands
             // assign buyer security profiles
             var buyerSecurityProfileAssignmentRequests = seed.Buyers.Select(b =>
             {
-                return _oc.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment
-                {
-                    BuyerID = b.ID,
-                    SecurityProfileID = CustomRole.HSBaseBuyer.ToString()
-                }, marketplaceToken);
+                return _oc.SecurityProfiles.SaveAssignmentAsync(
+                    new SecurityProfileAssignment
+                    {
+                        BuyerID = b.ID,
+                        SecurityProfileID = CustomRole.HSBaseBuyer.ToString()
+                    }, marketplaceToken);
             });
             await Task.WhenAll(buyerSecurityProfileAssignmentRequests);
 
             // assign seller security profiles to seller marketplace
             var sellerSecurityProfileAssignmentRequests = SeedConstants.SellerHsRoles.Select(role =>
             {
-                return _oc.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment()
-                {
-                    SecurityProfileID = role.ToString()
-                }, marketplaceToken);
+                return _oc.SecurityProfiles.SaveAssignmentAsync(
+                    new SecurityProfileAssignment()
+                    {
+                        SecurityProfileID = role.ToString()
+                    }, marketplaceToken);
             });
             await Task.WhenAll(sellerSecurityProfileAssignmentRequests);
 
@@ -234,11 +236,12 @@ namespace Headstart.API.Commands
             {
                 throw new Exception($"Unable to find default admin user (username: {SeedConstants.SellerUserName}");
             }
-            await _oc.SecurityProfiles.SaveAssignmentAsync(new SecurityProfileAssignment()
-            {
-                SecurityProfileID = SeedConstants.FullAccessSecurityProfile,
-                UserID = defaultAdminUser.ID
-            }, marketplaceToken);
+            await _oc.SecurityProfiles.SaveAssignmentAsync(
+                new SecurityProfileAssignment()
+                {
+                    SecurityProfileID = SeedConstants.FullAccessSecurityProfile,
+                    UserID = defaultAdminUser.ID
+                }, marketplaceToken);
         }
 
         private async Task CreateOnlyOnceBuyers(EnvironmentSeed seed, string token)
@@ -290,9 +293,12 @@ namespace Headstart.API.Commands
             }
 
             // create and assign initial buyer location
-            await _buyerLocationCommand.Save(seed.AnonymousShoppingBuyerID,
+            await _buyerLocationCommand.Save(
+                seed.AnonymousShoppingBuyerID,
                 $"{seed.AnonymousShoppingBuyerID}-{SeedConstants.DefaultLocationID}",
-                SeedConstants.DefaultBuyerLocation(), token, _oc);
+                SeedConstants.DefaultBuyerLocation(),
+                token,
+                _oc);
 
             // create user
             var anonBuyerUser = await _oc.Users.SaveAsync(seed.AnonymousShoppingBuyerID, SeedConstants.AnonymousBuyerUser().ID, SeedConstants.AnonymousBuyerUser(), token);
@@ -484,11 +490,12 @@ namespace Headstart.API.Commands
                     {
                         try
                         {
-                            await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
-                            {
-                                MessageSenderID = messageSender.ID,
-                                BuyerID = buyer.ID
-                            }, accessToken);
+                            await _oc.MessageSenders.SaveAssignmentAsync(
+                                new MessageSenderAssignment
+                                {
+                                    MessageSenderID = messageSender.ID,
+                                    BuyerID = buyer.ID
+                                }, accessToken);
                         }
                         catch (OrderCloudException ex)
                         {
@@ -505,10 +512,11 @@ namespace Headstart.API.Commands
                 {
                     try
                     {
-                        await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
-                        {
-                            MessageSenderID = messageSender.ID
-                        }, accessToken);
+                        await _oc.MessageSenders.SaveAssignmentAsync(
+                            new MessageSenderAssignment
+                            {
+                                MessageSenderID = messageSender.ID
+                            }, accessToken);
                     }
                     catch (OrderCloudException ex)
                     {
@@ -527,11 +535,12 @@ namespace Headstart.API.Commands
                     {
                         try
                         {
-                            await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
-                            {
-                                MessageSenderID = messageSender.ID,
-                                SupplierID = supplier.ID
-                            }, accessToken);
+                            await _oc.MessageSenders.SaveAssignmentAsync(
+                                new MessageSenderAssignment
+                                {
+                                    MessageSenderID = messageSender.ID,
+                                    SupplierID = supplier.ID
+                                }, accessToken);
                         }
                         catch (OrderCloudException ex)
                         {

@@ -415,7 +415,7 @@ namespace Headstart.API.Commands
         {
             public const string Production = "Production";
             public const string Sandbox = "Sandbox";
-        };
+        }
 
         /// <summary>
         /// Constructs the OrderCloud environment.

@@ -385,7 +385,7 @@ namespace Headstart.Common.Services
                     foreach (var rcpt in supplier.xp.NotificationRcpts)
                     {
                         supplierTos.Add(new EmailAddress(rcpt));
-                    };
+                    }
                     await SendSingleTemplateEmailMultipleRcpts(_settings?.SendgridSettings?.FromEmail, supplierTos, _settings?.SendgridSettings?.OrderSubmitTemplateID, supplierTemplateData);
                 }
             }
@@ -415,7 +415,7 @@ namespace Headstart.Common.Services
                     foreach (var rcpt in supplier.xp.NotificationRcpts)
                     {
                         supplierTos.Add(new EmailAddress(rcpt));
-                    };
+                    }
                 }
             }
             return supplierTos;
@@ -430,15 +430,15 @@ namespace Headstart.Common.Services
                 if (seller?.xp?.OrderEmails ?? false)
                 {
                     sellerTos.Add(new EmailAddress(seller.Email));
-                };
+                }
                 if (seller?.xp?.AddtlRcpts?.Any() ?? false)
                 {
                     foreach (var rcpt in seller.xp.AddtlRcpts)
                     {
                         sellerTos.Add(new EmailAddress(rcpt));
-                    };
-                };
-            };
+                    }
+                }
+            }
             return sellerTos;
         }
 
