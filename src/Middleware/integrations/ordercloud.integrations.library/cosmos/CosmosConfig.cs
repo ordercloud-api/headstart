@@ -12,8 +12,7 @@ namespace ordercloud.integrations.library
             string db, 
             string uri, 
             string key, 
-            int requestTimeoutInSeconds
-        )
+            int requestTimeoutInSeconds)
         {
             this.DatabaseName = db;
             this.EndpointUri = uri;

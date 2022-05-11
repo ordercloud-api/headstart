@@ -35,8 +35,7 @@ namespace Headstart.API.Commands
 			ISendgridService sendgridService,
 			ISimpleCache cache,
 			IExchangeRatesCommand exchangeRatesCommand,
-			AppSettings settings
-		)
+			AppSettings settings)
 		{
 			_oc = elevatedOc;
 			_hsBuyerCommand = hsBuyerCommand;
@@ -98,7 +97,7 @@ namespace Headstart.API.Commands
 		public async Task<ListPageWithFacets<HSMeProduct>> List(ListArgs<HSMeProduct> args, DecodedToken decodedToken)
 		{
 			var searchText = args.Search ?? "";
-			var searchFields = args.Search!=null ? "ID,Name,Description,xp.Facets.supplier" : "";
+			var searchFields = args.Search != null ? "ID,Name,Description,xp.Facets.supplier" : "";
 			var sortBy = args.SortBy.FirstOrDefault();
 			var filters = string.IsNullOrEmpty(args.ToFilterString()) ? null : args.ToFilterString();
 			var meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: filters, page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.ExactPhrasePrefix, sortBy: sortBy, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: decodedToken.AccessToken);

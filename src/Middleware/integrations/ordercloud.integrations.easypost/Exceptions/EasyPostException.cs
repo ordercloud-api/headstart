@@ -9,7 +9,8 @@ namespace ordercloud.integrations.easypost.Exceptions
 {
 	public class EasyPostException : CatalystBaseException
 	{
-		public EasyPostException(EasyPostApiError error) : base($"EasyPost.{error.error.code}", error.error.message, error.error, 400) { }
+		public EasyPostException(EasyPostApiError error)
+            : base($"EasyPost.{error.error.code}", error.error.message, error.error, 400) { }
 	}
 
 	public class EasyPostApiError

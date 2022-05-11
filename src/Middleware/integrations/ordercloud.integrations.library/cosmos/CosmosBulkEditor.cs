@@ -98,7 +98,7 @@ namespace ordercloud.integrations.library
             var partitionKeyProperty = GetPartitionKeyProp<T>();
             
             var deleteOperations = toDelete.Select(doc => {
-                var partitionKeyValue = (string) typeof(T).GetProperty(partitionKeyProperty.Name).GetValue(doc, null);
+                var partitionKeyValue = (string)typeof(T).GetProperty(partitionKeyProperty.Name).GetValue(doc, null);
                     return new Tuple<string, string>(partitionKeyValue, doc.id); 
              }).ToList();
 
@@ -108,8 +108,7 @@ namespace ordercloud.integrations.library
                 bulkDeleteResponse = await bulkExecutor.BulkDeleteAsync(
                     deleteOperations,
                     deleteBatchSize: 1000,
-                    cancellationToken: new CancellationTokenSource().Token
-                    );
+                    cancellationToken: new CancellationTokenSource().Token);
             }
             catch (DocumentClientException de)
             {

@@ -106,8 +106,7 @@ namespace exchangerates.tests
 
             _simpleCache.GetOrAddAsync(Arg.Any<string>(), Arg.Any<TimeSpan>(), Arg.Any<Func<Task<OrderCloudIntegrationsExchangeRate>>>())
                 .ReturnsForAnyArgs(
-                    GetExchangeRate(baseCurrency, toCurrency, returnedRate)
-                ); ;
+                    GetExchangeRate(baseCurrency, toCurrency, returnedRate)); ;
 
 
             //Act

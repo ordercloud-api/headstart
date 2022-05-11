@@ -99,12 +99,12 @@ namespace Headstart.Tests
             };
             var expectedSupplier1EmailList = new List<EmailAddress>()
             {
-                new EmailAddress() { Email=TestConstants.supplier1NotificationRcpts[0] },
-                new EmailAddress() { Email=TestConstants.supplier1NotificationRcpts[1] },
+                new EmailAddress() { Email = TestConstants.supplier1NotificationRcpts[0] },
+                new EmailAddress() { Email = TestConstants.supplier1NotificationRcpts[1] },
             };
             var expectedSupplier2EmailList = new List<EmailAddress>()
             {
-                new EmailAddress() { Email=TestConstants.supplier2NotificationRcpts[0] }
+                new EmailAddress() { Email = TestConstants.supplier2NotificationRcpts[0] }
             };
             //  confirm emails sent to buyer, seller users, supplier 1 notification recipients, supplier 2 notification recipients
             await _commandSub.Configure().Received().SendSingleTemplateEmail(Arg.Any<string>(), TestConstants.buyerEmail, Arg.Any<string>(), Arg.Any<object>());
@@ -184,11 +184,11 @@ namespace Headstart.Tests
                     {
                         ID = TestConstants.lineItem1ID,
                         ProductID = TestConstants.product1ID,
-                        Quantity=1,
+                        Quantity = 1,
                         LineTotal = TestConstants.lineItem1Total,
                         Product = new HSLineItemProduct()
                         {
-                            Name=TestConstants.product1Name
+                            Name = TestConstants.product1Name
                         },
                         ShippingAddress = fixture.Create<HSAddressBuyer>(),
                         xp = fixture.Create<LineItemXp>(),
@@ -197,11 +197,11 @@ namespace Headstart.Tests
                     {
                         ID = TestConstants.lineItem2ID,
                         ProductID = TestConstants.product2ID,
-                        Quantity=1,
+                        Quantity = 1,
                         LineTotal = TestConstants.lineItem2Total,
                         Product = new HSLineItemProduct()
                         {
-                            Name=TestConstants.product2Name
+                            Name = TestConstants.product2Name
                         },
                         ShippingAddress = fixture.Create<HSAddressBuyer>(),
                         xp = fixture.Create<LineItemXp>()
@@ -213,28 +213,28 @@ namespace Headstart.Tests
                     {
                         new HSShipEstimate()
                         {
-                            SelectedShipMethodID=TestConstants.selectedShipEstimate1ID,
+                            SelectedShipMethodID = TestConstants.selectedShipEstimate1ID,
                             xp = shipEstimatexp1,
                             ShipMethods = new List<HSShipMethod>()
                             {
                                 new HSShipMethod()
                                 {
-                                    ID=TestConstants.selectedShipEstimate1ID,
-                                    Cost=TestConstants.selectedShipEstimate1Cost
+                                    ID = TestConstants.selectedShipEstimate1ID,
+                                    Cost = TestConstants.selectedShipEstimate1Cost
                                 },
                                 fixture.Create<HSShipMethod>()
                             }
                         },
                         new HSShipEstimate()
                         {
-                            SelectedShipMethodID=TestConstants.selectedShipEstimate2ID,
+                            SelectedShipMethodID = TestConstants.selectedShipEstimate2ID,
                             xp = shipEstimatexp2,
                             ShipMethods = new List<HSShipMethod>()
                             {
                                 new HSShipMethod()
                                 {
-                                    ID=TestConstants.selectedShipEstimate2ID,
-                                    Cost=TestConstants.selectedShipEstimate2Cost
+                                    ID = TestConstants.selectedShipEstimate2ID,
+                                    Cost = TestConstants.selectedShipEstimate2Cost
                                 },
                                 fixture.Create<HSShipMethod>()
                             }
@@ -291,8 +291,8 @@ namespace Headstart.Tests
                     new HSLineItem()
                     {
                         ID = lineItemID,
-                        Quantity =1,
-                        LineTotal=total,
+                        Quantity = 1,
+                        LineTotal = total,
                         ProductID = lineItemID == TestConstants.lineItem1ID ? TestConstants.product1ID : TestConstants.product2ID,
                         Product = new HSLineItemProduct()
                         {
@@ -339,9 +339,9 @@ namespace Headstart.Tests
                 {
                     new HSSellerUser()
                     {
-                        ID="selleruser1",
-                        Email=TestConstants.sellerUser1email,
-                        xp=new SellerUserXp()
+                        ID = "selleruser1",
+                        Email = TestConstants.sellerUser1email,
+                        xp = new SellerUserXp()
                         {
                             OrderEmails = true,
                             AddtlRcpts = TestConstants.sellerUser1AdditionalRcpts.ToList()
@@ -349,9 +349,9 @@ namespace Headstart.Tests
                     },
                     new HSSellerUser()
                     {
-                        ID="selleruser1",
-                        Email=TestConstants.selleruser2email,
-                        xp=new SellerUserXp()
+                        ID = "selleruser1",
+                        Email = TestConstants.selleruser2email,
+                        xp = new SellerUserXp()
                         {
                             OrderEmails = false
                         }

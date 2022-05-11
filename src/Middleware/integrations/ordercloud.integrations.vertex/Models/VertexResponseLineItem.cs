@@ -106,7 +106,7 @@ namespace ordercloud.integrations.vertex
 		/// <summary>
 		/// Indicates whether or not the product is a service.
 		/// </summary>
-		public bool isService { get; set;}
+		public bool isService { get; set; }
 		/// <summary>
 		/// A Vertex-defined classification of the applicable tax rule for returns filing purposes. Possible values are: Luxury Rate, Standard Rate, Reduced Rate 1, Reduced Rate 2, Reduced Rate 3, Reduced Rate 4, Reduced Rate 5, User Defined, Zero Rate, Outside the Scope.
 		/// </summary>

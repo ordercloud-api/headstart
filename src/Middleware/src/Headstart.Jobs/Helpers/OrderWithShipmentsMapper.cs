@@ -37,7 +37,7 @@ namespace Headstart.Jobs.Helpers
                 SupplierName = supplierName,
                 ShipRateID = shipEstimate != null ? shipEstimate.SelectedShipMethodID : null,
                 SupplierShippingCost = shipment.Cost,
-                BuyerShippingCost = shipMethod != null ? Math.Round(shipMethod.Cost, 2): (decimal?)null,
+                BuyerShippingCost = shipMethod != null ? Math.Round(shipMethod.Cost, 2) : (decimal?)null,
                 BuyerShippingTax = shippingTax,
                 BuyerShippingTotal = shipMethod != null ? Math.Round(shipMethod.Cost, 2) + shippingTax : (decimal?)null,
                 ShippingCostDifference = shipMethod != null ? Math.Round(shipMethod.Cost, 2) - (shipment.Cost ?? 0M) : (decimal?)null,

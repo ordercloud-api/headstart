@@ -40,8 +40,7 @@ namespace Headstart.API.Commands
             IHSSupplierCommand supplierCommand,
             IHSBuyerCommand buyerCommand,
             IHSBuyerLocationCommand buyerLocationCommand,
-            IOrderCloudClient oc
-        )
+            IOrderCloudClient oc)
         {
             _portal = portal;
             _supplierCommand = supplierCommand;

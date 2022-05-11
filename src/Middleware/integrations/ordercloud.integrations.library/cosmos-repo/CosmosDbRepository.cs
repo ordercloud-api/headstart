@@ -226,8 +226,7 @@ namespace ordercloud.integrations.library
         {
             BinaryExpression predicate = filterOperator(
                             paramProp,
-                            Expression.Constant(filterValue, propType)
-                        );
+                            Expression.Constant(filterValue, propType));
             return body == null ? predicate : expressionOperator(body, predicate);
         }
 

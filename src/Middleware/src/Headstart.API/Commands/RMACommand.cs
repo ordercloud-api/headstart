@@ -642,8 +642,8 @@ namespace Headstart.API.Commands
                 .Where(li => li.IsResolved
                     && !li.IsRefunded
                     && li.RefundableViaCreditCard
-                    && (li.Status == RMALineItemStatus.PartialQtyComplete || li.Status == RMALineItemStatus.Complete)
-                    ).Select(li => li.LineTotalRefund)
+                    && (li.Status == RMALineItemStatus.PartialQtyComplete || li.Status == RMALineItemStatus.Complete))
+                    .Select(li => li.LineTotalRefund)
                     .Sum();
 
             decimal totalToRefund = lineTotalToRefund + shippingRefund;

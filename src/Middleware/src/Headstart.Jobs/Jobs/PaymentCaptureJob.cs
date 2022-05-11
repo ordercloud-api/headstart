@@ -121,8 +121,7 @@ namespace Headstart.Jobs
             var authHasBeenVoided = payment.Transactions.Any(t =>
                                             t.Type == "CreditCardVoidAuthorization" &&
                                             t.Succeeded &&
-                                            t.xp?.CardConnectResponse?.retref == transaction.xp?.CardConnectResponse?.retref
-                                         );
+                                            t.xp?.CardConnectResponse?.retref == transaction.xp?.CardConnectResponse?.retref);
             if (authHasBeenVoided)
             {
                 throw new PaymentCaptureJobException("Payment authorization has been voided", orderID, payment.ID, transaction.ID);

@@ -68,8 +68,7 @@ namespace Headstart.API
                 _settings.CosmosSettings.DatabaseName,
                 _settings.CosmosSettings.EndpointUri,
                 _settings.CosmosSettings.PrimaryKey,
-                _settings.CosmosSettings.RequestTimeoutInSeconds
-            );
+                _settings.CosmosSettings.RequestTimeoutInSeconds);
             var cosmosContainers = new List<ContainerInfo>()
             {
                 new ContainerInfo()

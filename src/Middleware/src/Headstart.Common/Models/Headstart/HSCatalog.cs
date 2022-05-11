@@ -27,7 +27,7 @@ namespace Headstart.Models
     
     public class HSCatalogAssignmentRequest
     {
-        public List<string> CatalogIDs { get; set;}
+        public List<string> CatalogIDs { get; set; }
     }
 
     

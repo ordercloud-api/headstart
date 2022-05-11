@@ -30,8 +30,7 @@ namespace Headstart.Jobs
             ReceiveRecentLineItemsJob receiveRecentLineItemsJob,
             ReceiveRecentOrdersAndShipmentsJob receiveRecentOrdersAndShipmentsJob,
             ReceiveProductDetailsJob receiveProductDetailsJob,
-            AppSettings settings
-        )
+            AppSettings settings)
         {
             _paymentCapture = paymentCapture;
             _sendRecentOrdersJob = sendRecentOrdersJob;

@@ -54,8 +54,7 @@ namespace Headstart.API.Commands
             {
                 var productsToUpdate = await _oc.Products.ListAllAsync<HSProduct>(
                 supplierID: supplierID,
-                accessToken: decodedToken.AccessToken
-                );
+                accessToken: decodedToken.AccessToken);
                 ApiClient supplierClient = await _apiClientHelper.GetSupplierApiClient(supplierID, decodedToken.AccessToken);
                 if (supplierClient == null) { throw new Exception($"Default supplier client not found. SupplierID: {supplierID}"); }
                 var configToUse = new OrderCloudClientConfig

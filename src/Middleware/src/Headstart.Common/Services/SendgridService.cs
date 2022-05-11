@@ -355,7 +355,7 @@ namespace Headstart.Common.Services
             }
             foreach (var supplier in suppliers.Items)
             {
-                if (supplier?.xp?.NotificationRcpts?.Count() >0)
+                if (supplier?.xp?.NotificationRcpts?.Count() > 0)
                 {
                     // get orderworksheet for supplier order and fill in some information from buyer order worksheet
                     var supplierOrderWorksheet = await BuildSupplierOrderWorksheet(orderWorksheet, supplier.ID);

@@ -130,8 +130,7 @@ namespace Headstart.API.Commands
         {
             var user = await _oc.Users.GetAsync(
                 buyerID,
-                userID
-                );
+                userID);
             var userGroups = new ListPage<HSLocationUserGroup>();
             var assigned = args.Filters.FirstOrDefault(f => f.PropertyName == "assigned").FilterExpression;
 
@@ -142,8 +141,7 @@ namespace Headstart.API.Commands
                    search: args.Search,
                    filters: $"xp.Country={user.xp.Country}&xp.Type=BuyerLocation",
                    page: args.Page,
-                   pageSize: 100
-                   );
+                   pageSize: 100);
             } else
             {
                 var userUserGroupAssignments = await GetUserUserGroupAssignments("BuyerLocation", buyerID, userID, decodedToken);
@@ -155,8 +153,7 @@ namespace Headstart.API.Commands
                     {
                         var userGroupLocation = await _oc.UserGroups.GetAsync<HSLocationUserGroup>(
                             buyerID,
-                            assignment.UserGroupID
-                            );
+                            assignment.UserGroupID);
                             if (args.Search == null || userGroupLocation.Name.ToLower().Contains(args.Search))
                             {
                                 userBuyerLocationAssignments.Add(userGroupLocation);
@@ -187,15 +184,13 @@ namespace Headstart.API.Commands
                 return await  _oc.SupplierUserGroups.ListAllUserAssignmentsAsync(
                    parentID,
                    userID: userID,
-                   accessToken: decodedToken.AccessToken
-                   );
+                   accessToken: decodedToken.AccessToken);
             } else
             {
                 return await _oc.UserGroups.ListAllUserAssignmentsAsync(
                    parentID,
                    userID: userID,
-                   accessToken: decodedToken.AccessToken
-                   );
+                   accessToken: decodedToken.AccessToken);
             }
         }
 
@@ -206,8 +201,7 @@ namespace Headstart.API.Commands
                    search: args.Search,
                    filters: $"xp.Country={homeCountry}&xp.Type=BuyerLocation",
                    page: args.Page,
-                   pageSize: 100
-                   );
+                   pageSize: 100);
             return userGroups;
         }
     };

@@ -23,8 +23,7 @@ namespace Headstart.API.Commands
         private readonly ICreditCardCommand _ccCommand;
         public PaymentCommand(
             IOrderCloudClient oc,
-            ICreditCardCommand ccCommand
-        )
+            ICreditCardCommand ccCommand)
         {
             _oc = oc;
             _ccCommand = ccCommand;

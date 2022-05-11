@@ -48,8 +48,7 @@ namespace Headstart.API.Commands
             IPromotionCommand promotionCommand,
             IRMACommand rmaCommand,
             AppSettings settings,
-            ISendgridService sendgridService
-            )
+            ISendgridService sendgridService)
         {
 			_oc = oc;
             _locationPermissionCommand = locationPermissionCommand;

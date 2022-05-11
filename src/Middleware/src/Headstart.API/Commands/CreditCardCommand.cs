@@ -36,8 +36,7 @@ namespace ordercloud.integrations.cardconnect
 			IOrderCloudClient oc,
 			IHSExchangeRatesService hsExchangeRates,
 			ISupportAlertService supportAlerts,
-			AppSettings settings
-		)
+			AppSettings settings)
 		{
 			_cardConnect = card;
 			_oc = oc;
@@ -61,8 +60,7 @@ namespace ordercloud.integrations.cardconnect
 		public async Task<Payment> AuthorizePayment(
 			OrderCloudIntegrationsCreditCardPayment payment,
             string userToken,
-			string merchantID
-		)
+			string merchantID)
 		{
 			Require.That((payment.CreditCardID != null) || (payment.CreditCardDetails != null),
 				new ErrorCode("CreditCard.CreditCardAuth", "Request must include either CreditCardDetails or CreditCardID"));
@@ -80,7 +78,7 @@ namespace ordercloud.integrations.cardconnect
 
 			var ccAmount = orderWorksheet.Order.Total;
 
-			var ocPaymentsList = (await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, payment.OrderID, filters: "Type=CreditCard" ));
+			var ocPaymentsList = (await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, payment.OrderID, filters: "Type=CreditCard"));
 			var ocPayments = ocPaymentsList.Items;
 			var ocPayment = ocPayments.Any() ? ocPayments[0] : null;
 			if (ocPayment == null)

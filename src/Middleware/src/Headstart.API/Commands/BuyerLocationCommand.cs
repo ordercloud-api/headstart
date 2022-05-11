@@ -203,8 +203,7 @@ namespace Headstart.API.Commands
         {
             var userGroupAssignments = await _oc.UserGroups.ListAllUserAssignmentsAsync(buyerID, userID: newUserID);
             await Throttler.RunAsync(userGroupAssignments, 100, 5, assignment =>
-                RemoveAndAddUserGroupAssignment(buyerID, newUserID, assignment?.UserGroupID)
-                ); 
+                RemoveAndAddUserGroupAssignment(buyerID, newUserID, assignment?.UserGroupID)); 
         }
 
         // Temporary work around for a platform issue. When a new user is registered we need to 

@@ -41,8 +41,7 @@ namespace Headstart.API.Commands
             IOrderCloudClient oc,
             IZohoCommand zoho,
             ILineItemCommand lineItemCommand,
-            AppSettings settings
-        )
+            AppSettings settings)
         {
             _oc = oc;
             _taxCalculator = taxCalculator;
@@ -276,8 +275,7 @@ namespace Headstart.API.Commands
                         Description = description,
                         Success = true
                     },
-                    await func
-                );
+                    await func);
             }
             catch (CatalystBaseException integrationEx)
             {
@@ -319,8 +317,7 @@ namespace Headstart.API.Commands
             var (forwardAction, forwardedOrders) = await ProcessActivityCall(
                 ProcessType.Forwarding,
                 "OrderCloud API Order.ForwardAsync",
-                _oc.Orders.ForwardAsync(OrderDirection.Incoming, orderWorksheet.Order.ID)
-            );
+                _oc.Orders.ForwardAsync(OrderDirection.Incoming, orderWorksheet.Order.ID));
             activities.Add(forwardAction);
 
             var supplierOrders = forwardedOrders.OutgoingOrders.ToList();

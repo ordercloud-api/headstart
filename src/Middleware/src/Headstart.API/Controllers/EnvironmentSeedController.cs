@@ -13,8 +13,7 @@ namespace Headstart.Common.Controllers
 
         public EnvironmentSeedController(
             IEnvironmentSeedCommand command,
-            AppSettings settings
-        )
+            AppSettings settings)
         {
             _command = command;
             _settings = settings;
@@ -42,8 +41,7 @@ namespace Headstart.Common.Controllers
         {
             await _command.UpdateTranslations(
                 _settings.StorageAccountSettings.ConnectionString,
-                _settings.StorageAccountSettings.BlobContainerNameTranslations
-            );
+                _settings.StorageAccountSettings.BlobContainerNameTranslations);
         }
 
         [HttpPost, Route("post-staging-restore"), OrderCloudWebhookAuth]

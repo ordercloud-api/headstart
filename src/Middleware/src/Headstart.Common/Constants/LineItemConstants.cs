@@ -254,7 +254,7 @@ namespace Headstart.Common.Constants
                         DynamicText = "Ensure that the full return process is complete, and the customer was refunded",
                         DynamicText2 = "The following items have been marked as returned"
                     } },
-                    { VerifiedUserType.supplier , new EmailDisplayText()
+                    { VerifiedUserType.supplier, new EmailDisplayText()
                     {
                         EmailSubject = "The seller has processed a return",
                         DynamicText = "Ensure that the full return process is complete",
@@ -274,7 +274,7 @@ namespace Headstart.Common.Constants
                         DynamicText = "The customer will not be refunded for the following items.",
                         DynamicText2 = "The following items have been marked as return denied"
                     } },
-                    { VerifiedUserType.supplier , new EmailDisplayText()
+                    { VerifiedUserType.supplier, new EmailDisplayText()
                     {
                         EmailSubject = "The supplier has denied a return",
                         DynamicText = "The customer will not be refunded for the following items.",
@@ -356,7 +356,7 @@ namespace Headstart.Common.Constants
                         DynamicText = "The customer will not be refunded for the following items",
                         DynamicText2 = "The following items have been marked as cancel denied"
                     } },
-                    { VerifiedUserType.supplier , new EmailDisplayText()
+                    { VerifiedUserType.supplier, new EmailDisplayText()
                     {
                         EmailSubject = "The supplier has denied a cancellation",
                         DynamicText = "The customer will not be refunded for the following items",

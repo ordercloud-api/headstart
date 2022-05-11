@@ -14,9 +14,9 @@ namespace ordercloud.integrations.library
             { "Required", new ErrorCode("Required", "Field is required") },
             { "WriteFailure", new ErrorCode("Write Failure", "Failed to create record") },
             { "UnrecognizedType", new ErrorCode("UnrecognizedType", "Unrecognized type") },
-            { "Blob.ConnectionString", new ErrorCode("InvalidConnectionString", "Invalid Connection String", HttpStatusCode.NotFound)},
-            { "Blob.Container", new ErrorCode("InvalidContainerString", "Invalid Container", HttpStatusCode.NotFound)},
-            { "Webhook.MissingHeader", new ErrorCode("MissingWebhookHeader", "Invalid Header", HttpStatusCode.Unauthorized)},
+            { "Blob.ConnectionString", new ErrorCode("InvalidConnectionString", "Invalid Connection String", HttpStatusCode.NotFound) },
+            { "Blob.Container", new ErrorCode("InvalidContainerString", "Invalid Container", HttpStatusCode.NotFound) },
+            { "Webhook.MissingHeader", new ErrorCode("MissingWebhookHeader", "Invalid Header", HttpStatusCode.Unauthorized) },
         };
 
         public static partial class Auth

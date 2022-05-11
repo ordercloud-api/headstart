@@ -44,12 +44,12 @@ namespace Headstart.API.Commands
                     Assembly.GetExecutingAssembly().GetTypeByAttribute<SupplierSyncAttribute>(attribute => attribute.SupplierID == "Generic");
                 if (type == null) throw new MissingMethodException($"Command for {supplierID} is unavailable");
 
-                var command = (ISupplierSyncCommand) Activator.CreateInstance(type, _settings);
+                var command = (ISupplierSyncCommand)Activator.CreateInstance(type, _settings);
                 var method = command.GetType().GetMethod($"GetOrderAsync", BindingFlags.Public | BindingFlags.Instance);
                 if (method == null)
                     throw new MissingMethodException($"Get Order Method for {supplierID} is unavailable");
 
-                return await (Task<JObject>) method.Invoke(command, new object[] {ID, orderType, decodedToken });
+                return await (Task<JObject>)method.Invoke(command, new object[] {ID, orderType, decodedToken });
             }
             catch (MissingMethodException mex)
             {

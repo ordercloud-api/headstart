@@ -59,26 +59,22 @@ namespace Headstart.API.Commands
         {
             Require.That(
                 !worksheet.Order.IsSubmitted, 
-                new ErrorCode("OrderSubmit.AlreadySubmitted", "Order has already been submitted")
-            );
+                new ErrorCode("OrderSubmit.AlreadySubmitted", "Order has already been submitted"));
 
             var shipMethodsWithoutSelections = worksheet?.ShipEstimateResponse?.ShipEstimates?.Where(estimate => estimate.SelectedShipMethodID == null);
             Require.That(
                 worksheet?.ShipEstimateResponse != null &&
                 shipMethodsWithoutSelections.Count() == 0, 
-                new ErrorCode("OrderSubmit.MissingShippingSelections", "All shipments on an order must have a selection"), shipMethodsWithoutSelections
-                );
+                new ErrorCode("OrderSubmit.MissingShippingSelections", "All shipments on an order must have a selection"), shipMethodsWithoutSelections);
 
             Require.That(
                 !worksheet.LineItems.Any() || payment != null,
                 new ErrorCode("OrderSubmit.MissingPayment", "Order contains standard line items and must include credit card payment details"),
-                worksheet.LineItems
-            );
+                worksheet.LineItems);
             var lineItemsInactive = await GetInactiveLineItems(worksheet, userToken);
             Require.That(
                 !lineItemsInactive.Any(),
-                new ErrorCode("OrderSubmit.InvalidProducts", "Order contains line items for products that are inactive"), lineItemsInactive
-            );
+                new ErrorCode("OrderSubmit.InvalidProducts", "Order contains line items for products that are inactive"), lineItemsInactive);
 
             try
             {

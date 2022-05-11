@@ -537,8 +537,7 @@ namespace Headstart.API.Commands.Crud
 			var updatedProduct = await ocClient.Products.PatchAsync(
 				id,
 				new PartialProduct() { xp = new { Facets = facetDataFormattedDynamic } },
-				accessToken: token
-				);
+				accessToken: token);
 			return updatedProduct;
 		}
 

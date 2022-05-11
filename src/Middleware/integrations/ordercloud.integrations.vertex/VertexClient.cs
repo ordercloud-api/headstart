@@ -27,8 +27,7 @@ namespace ordercloud.integrations.vertex
 				$"{ApiUrl}/vertex-restapi/v1/sale"
 					.WithOAuthBearerToken(_token.access_token)
 					.AllowAnyHttpStatus()
-					.PostJsonAsync(request)
-			);
+					.PostJsonAsync(request));
 		}
 
 		private async Task<T> MakeRequest<T>(Func<Task<IFlurlResponse>> request)

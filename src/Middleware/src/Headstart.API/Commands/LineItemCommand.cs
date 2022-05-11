@@ -340,7 +340,7 @@ namespace Headstart.API.Commands
                     { "BuyerID", buyerOrder.FromCompanyID },
                     { "UserEmail", buyerOrder.FromUser.Email },
                     { "UserType", setterUserType.ToString() },
-                    { "ErrorResponse", JsonConvert.SerializeObject(ex.Message, Newtonsoft.Json.Formatting.Indented)}
+                    { "ErrorResponse", JsonConvert.SerializeObject(ex.Message, Newtonsoft.Json.Formatting.Indented) }
                 };
                 _telemetry.TrackEvent("Email.LineItemEmailFailed", customProperties);
                 return;

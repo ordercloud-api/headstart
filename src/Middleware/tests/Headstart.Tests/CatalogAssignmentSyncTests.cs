@@ -29,8 +29,7 @@ namespace Headstart.Tests
             string catalogID1,
             string catalogID2,
             string buyerID,
-            string userID
-        )
+            string userID)
         {
             // Arrange
             assignedGroups.Items = new List<HSLocationUserGroup>()
@@ -88,8 +87,7 @@ namespace Headstart.Tests
             string catalogID1,
             string catalogID2,
             string buyerID,
-            string userID
-        )
+            string userID)
         {
             // Arrange
             assignedGroups.Items = new List<HSLocationUserGroup>()

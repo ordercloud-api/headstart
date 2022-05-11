@@ -100,8 +100,7 @@ namespace Headstart.API.Commands
             {
                 //For every buyer included in the template filters, grab all buyer locations (exceeding 100 maximum)
                 var buyerLocations = await _oc.Addresses.ListAllAsync<Address>(
-                    buyerID
-                );
+                    buyerID);
                 allBuyerLocations.AddRange(buyerLocations);
             }
             //Use reflection to determine available filters from model

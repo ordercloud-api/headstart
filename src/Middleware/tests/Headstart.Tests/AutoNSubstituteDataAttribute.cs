@@ -25,9 +25,7 @@ namespace Headstart.Tests
         public HSCompositeCustomization()
             : base(
                 new OrderCloudModelsCustomization(),
-                new AutoNSubstituteCustomization()
-
-            )
+                new AutoNSubstituteCustomization())
         {
         }
     }

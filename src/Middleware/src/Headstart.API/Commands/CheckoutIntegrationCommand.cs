@@ -118,7 +118,7 @@ namespace Headstart.API.Commands
                     method.xp.OriginalCurrency = shipperCurrency;
                     method.xp.OrderCurrency = buyerCurrency;
                     method.xp.ExchangeRate = conversionRate;
-                    if (conversionRate != null) method.Cost /= (decimal) conversionRate;
+                    if (conversionRate != null) method.Cost /= (decimal)conversionRate;
                     return method;
                 }).ToList();
                 return estimate;

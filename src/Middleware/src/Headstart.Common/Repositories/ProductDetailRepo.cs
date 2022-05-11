@@ -9,6 +9,7 @@ namespace Headstart.Common.Repositories
     {
         public override string ContainerName { get; } = "productdetail";
         public override PartitionKey ResolvePartitionKey(string entityId) => new PartitionKey("PartitionValue");
-        public ProductDetailDataRepo(ICosmosDbContainerFactory factory) : base(factory) { }
+        public ProductDetailDataRepo(ICosmosDbContainerFactory factory)
+            : base(factory) { }
     }
 }

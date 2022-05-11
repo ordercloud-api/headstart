@@ -141,7 +141,7 @@ namespace Headstart.Tests
 			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, orderID, paymentID, Arg.Is<PaymentTransaction>(x => x.Amount == paymentTotal));
 			await _cardConnect.Received().AuthWithoutCapture(Arg.Any<CardConnectAuthorizationRequest>());
 			await _oc.Payments.Received().PatchAsync<HSPayment>(OrderDirection.Incoming, orderID, paymentID, Arg.Is<PartialPayment>(p => p.Accepted == true && p.Amount == ccTotal));
-			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, orderID,paymentID, Arg.Any<PaymentTransaction>());
+			await _oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, orderID, paymentID, Arg.Any<PaymentTransaction>());
 		}
 
 		[Test]

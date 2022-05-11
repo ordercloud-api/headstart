@@ -22,8 +22,7 @@ namespace Headstart.Tests
             PromotionCommand sut,
             string orderID,
             Task<ListPage<Promotion>> promoList,
-            Task<ListPage<OrderPromotion>> orderpromolist
-        )
+            Task<ListPage<OrderPromotion>> orderpromolist)
         {
             // Arrange
             oc.Promotions.ListAsync()
@@ -47,8 +46,7 @@ namespace Headstart.Tests
             PromotionCommand sut,
             string orderID,
             Task<ListPage<Promotion>> promoList,
-            Task<ListPage<OrderPromotion>> orderpromolist
-        )
+            Task<ListPage<OrderPromotion>> orderpromolist)
         {
             // Arrange
             oc.Promotions.ListAsync()
@@ -72,8 +70,7 @@ namespace Headstart.Tests
             PromotionCommand sut,
             string orderID,
             Task<ListPage<Promotion>> promoList,
-            ListPage<OrderPromotion> orderpromolist
-        )
+            ListPage<OrderPromotion> orderpromolist)
         {
             // a line item promo may be applied multiple times on an order (once for each line item)
             // we only want to remove that promo once else we'll get 404's
@@ -100,8 +97,7 @@ namespace Headstart.Tests
             string orderID,
             Task<ListPage<Promotion>> promoList,
             Task<Order> promo1result,
-            Task<ListPage<OrderPromotion>> orderpromolist
-        )
+            Task<ListPage<OrderPromotion>> orderpromolist)
         {
             // Arrange
             var fixture = new Fixture();
@@ -140,8 +136,7 @@ namespace Headstart.Tests
             Task<ListPage<Promotion>> promoList,
             Task<ListPage<OrderPromotion>> orderpromolist,
             Task<Order> removePromoResult,
-            Task<Order> addPromoResult
-        )
+            Task<Order> addPromoResult)
         {
             // Arrange
             var fixture = new Fixture();
@@ -156,8 +151,7 @@ namespace Headstart.Tests
                 .Returns(
                     addPromoResult,
                     Task.FromException<Order>(new Exception("mockerror1")),
-                    Task.FromException<Order>(new Exception("mockerror2"))
-                );
+                    Task.FromException<Order>(new Exception("mockerror2")));
 
             // Act
             await sut.AutoApplyPromotions(orderID);
