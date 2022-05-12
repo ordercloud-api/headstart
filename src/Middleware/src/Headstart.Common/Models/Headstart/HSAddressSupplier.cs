@@ -4,11 +4,9 @@ using ordercloud.integrations.library;
 
 namespace Headstart.Models
 {
-
     public class HSAddressSupplier : Address<SupplierAddressXP>, IHSObject
     {
     }
-
 
     public class SupplierAddressXP
 	{

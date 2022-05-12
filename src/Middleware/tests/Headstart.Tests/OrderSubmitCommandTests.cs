@@ -165,8 +165,6 @@ namespace Headstart.Tests
                 }
             }));
 
-
-
             // Act
             await _sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new OrderCloudIntegrationsCreditCardPayment(), "mockUserToken");
 
@@ -205,8 +203,6 @@ namespace Headstart.Tests
                     }
                 }
             }));
-
-
 
             // Act
             await _sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new OrderCloudIntegrationsCreditCardPayment(), "mockUserToken");

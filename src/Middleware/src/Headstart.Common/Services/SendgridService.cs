@@ -50,7 +50,6 @@ namespace Headstart.Common.Services
         Task SendQuoteRequestConfirmationEmail(HSOrder order, HSLineItem lineItem, string buyerEmail);
     }
 
-
     public class SendgridService : ISendgridService
     {
         private readonly AppSettings _settings;
@@ -319,7 +318,6 @@ namespace Headstart.Common.Services
                 var sellerEmailList = await GetSellerEmails();
 
                 // send emails
-
                 await SendSingleTemplateEmailMultipleRcpts(_settings?.SendgridSettings?.FromEmail, sellerEmailList, _settings?.SendgridSettings?.OrderSubmitTemplateID, sellerTemplateData);
                 await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, orderWorksheet.Order.FromUser.Email, _settings?.SendgridSettings?.OrderSubmitTemplateID, buyerTemplateData);
                 await SendSupplierOrderSubmitEmails(orderWorksheet);

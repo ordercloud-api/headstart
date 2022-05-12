@@ -73,7 +73,6 @@ namespace Headstart.API.Commands
                                  ApiRole.SupplierAdmin,
                                  ApiRole.ProductAdmin
                             },
-
                 };
                 var ocClient = new OrderCloudClient(configToUse);
                 await ocClient.AuthenticateAsync();
@@ -87,7 +86,6 @@ namespace Headstart.API.Commands
             }
 
             return updatedSupplier;
-
         }
         public async Task<HSSupplier> Create(HSSupplier supplier, string accessToken, bool isSeedingEnvironment = false)
         {
@@ -132,7 +130,6 @@ namespace Headstart.API.Commands
                     IsAnonBuyer = false,
                 },
                 token);
-
 
             // not adding api client ID on supplier Create because that approach would require creating the API client first
             // but creating supplier first is preferable in case there are error in the request

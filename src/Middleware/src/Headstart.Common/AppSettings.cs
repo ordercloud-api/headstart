@@ -75,7 +75,6 @@ namespace Headstart.Common
         Taxjar
     }
 
-
     public class FlurlSettings
     {
         public int TimeoutInSeconds { get; set; }

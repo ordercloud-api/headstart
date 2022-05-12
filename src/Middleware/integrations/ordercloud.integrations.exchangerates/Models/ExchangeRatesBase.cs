@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 
 namespace ordercloud.integrations.exchangerates
 {
-
     public class ExchangeRatesBase
     {
         public ExchangeRatesValues rates { get; set; }
@@ -48,5 +47,4 @@ namespace ordercloud.integrations.exchangerates
         public double KRW { get; set; }
         public double PLN { get; set; }
     }
-
 }

@@ -11,7 +11,6 @@ using Headstart.Models.Headstart;
 
 namespace Headstart.API.Commands
 {
-
     public interface IPaymentCommand
     {
         Task<IList<HSPayment>> SavePayments(string orderID, List<HSPayment> requestedPayments, string userToken);
@@ -109,7 +108,6 @@ namespace Headstart.API.Commands
             await _oc.Payments.DeleteAsync(OrderDirection.Incoming, order.ID, payment.ID);
         }
 
-
         private async Task<IList<HSPayment>> DeleteStalePaymentsAsync(IList<HSPayment> requestedPayments, IList<HSPayment> existingPayments, HSOrder order, string userToken)
         {
             // requestedPayments represents the payments that should be on the order
@@ -136,7 +134,6 @@ namespace Headstart.API.Commands
                 }
             }
             return existingPayments;
-
         }
     }
 }

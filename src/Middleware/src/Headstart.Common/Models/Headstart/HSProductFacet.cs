@@ -4,12 +4,9 @@ using OrderCloud.SDK;
 
 namespace Headstart.Models
 {
-
     public class HSProductFacet : ProductFacet<ProductFacetXp>, IHSObject
     {
-
     }
-
 
     public class ProductFacetXp
     {

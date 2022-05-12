@@ -7,7 +7,6 @@ using System.Text;
 using System.Text.Json;
 using Lookup = SmartyStreets.USStreetApi.Lookup;
 
-
 namespace ordercloud.integrations.smartystreets
 {
 	// TODO - exact same logic as BuyerAddressMapper - any way to merge?

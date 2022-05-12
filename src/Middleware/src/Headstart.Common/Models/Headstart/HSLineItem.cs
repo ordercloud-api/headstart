@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 namespace Headstart.Models.Headstart
 {
-
 	public class HSLineItem : LineItem<LineItemXp, HSLineItemProduct, LineItemVariant, HSAddressBuyer, HSAddressSupplier>
     {
     }
@@ -13,7 +12,6 @@ namespace Headstart.Models.Headstart
     public class HSPartialLineItem : PartialLineItem<LineItemXp, HSLineItemProduct, LineItemVariant, HSAddressBuyer, HSAddressSupplier>
     {
     }
-
 
     public class LineItemXp
     {
@@ -35,7 +33,6 @@ namespace Headstart.Models.Headstart
         public string ShipMethod { get; set; }
         public string SupplierComments { get; set; } // xp.Comments is already being used as ship comments for SEB
     }
-
 
     public class LineItemClaim
     {

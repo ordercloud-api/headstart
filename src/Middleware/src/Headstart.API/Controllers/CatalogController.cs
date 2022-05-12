@@ -15,7 +15,6 @@ namespace Headstart.Common.Controllers
 	[Route("buyers")]
 	public class CatalogController : CatalystController
 	{
-
 		private readonly IHSCatalogCommand _command;
 		public CatalogController(IHSCatalogCommand command)
 		{

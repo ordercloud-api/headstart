@@ -13,7 +13,6 @@ namespace library.tests
         {
         }
 
-
         [Test, TestCaseSource(typeof(ParseFactory), nameof(ParseFactory.TestCases))]
         public void list_filter_parse_test(string expression, dynamic filter)
         {

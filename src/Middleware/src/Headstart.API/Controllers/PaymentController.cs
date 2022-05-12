@@ -17,7 +17,6 @@ namespace Headstart.Common.Controllers
     [Route("payments")]
     public class PaymentController : CatalystController
     {
-
         private readonly IPaymentCommand _command;
         private readonly AppSettings _settings;
         public PaymentController(IPaymentCommand command, AppSettings settings)

@@ -25,7 +25,6 @@ namespace ordercloud.integrations.library
         Task Save(BlobBase64Image base64Image);
         Task Delete(string id);
         Task DeleteContainer();
-
     }
     public class OrderCloudIntegrationsBlobService : IOrderCloudIntegrationsBlobService
     {

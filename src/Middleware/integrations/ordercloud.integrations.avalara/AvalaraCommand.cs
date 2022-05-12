@@ -173,7 +173,6 @@ namespace ordercloud.integrations.avalara
 					TotalTax = 0
 				};
             }
-
 		}
 	}
 }

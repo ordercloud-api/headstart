@@ -111,7 +111,6 @@ namespace Headstart.Tests
             await commandSub.Configure().Received().SendSingleTemplateEmailMultipleRcpts(Arg.Any<string>(), Arg.Is<List<EmailAddress>>(x => EqualEmailLists(x, expectedSellerEmailList)), Arg.Any<string>(), Arg.Any<object>());
             await commandSub.Configure().Received().SendSingleTemplateEmailMultipleRcpts(Arg.Any<string>(), Arg.Is<List<EmailAddress>>(x => EqualEmailLists(x, expectedSupplier1EmailList)), Arg.Any<string>(), Arg.Any<object>());
             await commandSub.Configure().Received().SendSingleTemplateEmailMultipleRcpts(Arg.Any<string>(), Arg.Is<List<EmailAddress>>(x => EqualEmailLists(x, expectedSupplier2EmailList)), Arg.Any<string>(), Arg.Any<object>());
-
         }
 
         private bool EqualEmailLists(List<EmailAddress> list1, List<EmailAddress> list2)
@@ -142,7 +141,6 @@ namespace Headstart.Tests
                 return isEqual;
             }
         }
-
 
         private HSOrderWorksheet GetOrderWorksheet()
         {
@@ -362,6 +360,5 @@ namespace Headstart.Tests
                 }
             };
         }
-
     }
 }

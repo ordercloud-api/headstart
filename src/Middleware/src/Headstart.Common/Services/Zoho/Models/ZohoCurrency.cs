@@ -58,6 +58,5 @@ namespace Headstart.Common.Services.Zoho.Models
         /// </summary>
         /// <value>The effective_date.</value>
         public string effective_date { get; set; }
-
     }
 }

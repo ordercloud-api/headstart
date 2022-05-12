@@ -16,6 +16,4 @@ namespace ordercloud.integrations.cardconnect
         [OrderCloud.SDK.Required]
         public Address CCBillingAddress { get; set; }
     }
-
-
 }

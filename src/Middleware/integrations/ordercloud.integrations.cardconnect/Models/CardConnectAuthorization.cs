@@ -63,10 +63,7 @@ namespace ordercloud.integrations.cardconnect
         // [JsonIgnore] public string ecomind { get; set; } = "E";
         // [JsonIgnore] public string capture { get; set; } = "N";
         // [JsonIgnore] public string bin { get; set; } = "N";
-
     }
-
-
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum ResponseStatus

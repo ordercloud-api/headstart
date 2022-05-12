@@ -108,7 +108,6 @@ namespace Headstart.Tests
 		public async Task should_void_if_accepted_but_not_valid()
         {
 			// if a payment is accepted but doesn't match order total than we need to void before authorizing again for new amount
-
 			var paymentTotal = 30; // credit card total is 38
 
 			// Arrange
@@ -148,7 +147,6 @@ namespace Headstart.Tests
 		{
 			// in a scenario where a void has already been processed on the payment
 			// we want to make sure to only try to void the last successful transaction of type "CreditCard"
-
 			var paymentTotal = 30; // credit card total is 38
 
 			// Arrange
@@ -213,7 +211,6 @@ namespace Headstart.Tests
 		public async Task should_handle_existing_voids_us()
 		{
 			// same as should_handle_existing_voids but handle usd merchant
-
 			var paymentTotal = 30; // credit card total is 38
 
 			// Arrange
@@ -283,7 +280,6 @@ namespace Headstart.Tests
 		{
 			// this gives us full insight into transaction history
 			// as well as sets Accepted to false
-
 			var paymentTotal = 38; // credit card total is 38
 
 			// Arrange
@@ -329,7 +325,6 @@ namespace Headstart.Tests
 		{
 			// creates a new transaction when auth fails which
 			// gives us full insight into transaction history as well as sets Accepted to false
-
 			var paymentTotal = 30; // credit card total is 38
 
 			// Arrange

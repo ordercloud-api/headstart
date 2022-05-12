@@ -11,7 +11,6 @@ namespace ordercloud.integrations.easypost
 
         protected EasyPostShippingProfiles()
         {
-
         }
 
         public virtual EasyPostShippingProfile FirstOrDefault(string id)
@@ -24,7 +23,6 @@ namespace ordercloud.integrations.easypost
             return ShippingProfiles.FirstOrDefault(p => p.SupplierID == id) ?? ShippingProfiles.First(p => p.Default);
         }
     }
-
 
     public class EasyPostShippingProfile
     {

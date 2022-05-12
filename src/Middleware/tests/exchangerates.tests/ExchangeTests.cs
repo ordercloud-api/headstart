@@ -50,7 +50,6 @@ namespace exchangerates.tests
                     fixture.Create<OrderCloudIntegrationsConversionRate>()
                 }
             };
-
         }
 
         private List<OrderCloudIntegrationsConversionRate> GetRates()
@@ -107,7 +106,6 @@ namespace exchangerates.tests
             _simpleCache.GetOrAddAsync(Arg.Any<string>(), Arg.Any<TimeSpan>(), Arg.Any<Func<Task<OrderCloudIntegrationsExchangeRate>>>())
                 .ReturnsForAnyArgs(
                     GetExchangeRate(baseCurrency, toCurrency, returnedRate));
-
 
             // Act
             var rate = await _command.ConvertCurrency(baseCurrency, toCurrency, 1.33);

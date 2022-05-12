@@ -110,7 +110,6 @@ namespace avalara.tests.Mocks
 		public static List<TaxCategorization> headstartTaxCodeListPageFirstRecord()
 		{
 			return new List<TaxCategorization>
-
 			{
 				new TaxCategorization()
 				{
@@ -122,7 +121,6 @@ namespace avalara.tests.Mocks
 		public static List<TaxCategorization> headstartTaxCodeListPageSecondRecord()
 		{
 			return new List<TaxCategorization>
-
 			{
 				new TaxCategorization()
 				{
@@ -134,7 +132,6 @@ namespace avalara.tests.Mocks
 		public static List<TaxCategorization> headstartTaxCodeListPageAllRecords()
 		{
 			return new List<TaxCategorization>
-
 			{
 				new TaxCategorization()
 				{

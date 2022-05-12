@@ -13,7 +13,6 @@ namespace Headstart.Common.Controllers
 	[Route("products")]
 	public class ProductController : CatalystController
 	{
-
 		private readonly IHSProductCommand _command;
 		public ProductController(AppSettings settings, IHSProductCommand command)
 		{

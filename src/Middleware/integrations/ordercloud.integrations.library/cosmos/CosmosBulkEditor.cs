@@ -148,7 +148,6 @@ namespace ordercloud.integrations.library
                 return new UpdateItem(id, partitionKeyValue, updateFunc(doc));
             }).Where(ui => ui.PartitionKey != null).ToList();
 
-
             var batchedUpdateItems = updateItems.Chunk(batchSize).ToList();
 
             Console.WriteLine(string.Format("\nFound {0} Documents to update. {1} Batches of {2}. Beginning.", documents.Count, batchedUpdateItems.Count, batchSize));

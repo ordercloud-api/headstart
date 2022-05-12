@@ -8,7 +8,6 @@ using OrderCloud.SDK;
 
 namespace Headstart.Models.Headstart
 {
-
     public class OrderSubmitResponseXp
     {
         public List<ProcessResult> ProcessResults { get; set; }
@@ -38,5 +37,4 @@ namespace Headstart.Models.Headstart
         Tax,
         Shipping
     }
-
 }

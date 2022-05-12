@@ -41,7 +41,6 @@ namespace Headstart.Common.Helpers
                 // else create and return the new api client
                 return await HandleError(supplierDetails, token);
             }
-
         }
         public async Task<ApiClient> HandleError(Supplier supplierDetails, string token)
         {

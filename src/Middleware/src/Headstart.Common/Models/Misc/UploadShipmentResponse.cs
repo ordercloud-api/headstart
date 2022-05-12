@@ -27,6 +27,5 @@ namespace Headstart.Common.Models.Misc
         public string Service { get; set; }
         public string ShipmentComment { get; set; }
         public string ShipmentLineItemComment { get; set; }
-
     }
 }

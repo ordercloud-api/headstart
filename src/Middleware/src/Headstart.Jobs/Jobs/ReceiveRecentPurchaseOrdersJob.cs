@@ -132,7 +132,6 @@ namespace Headstart.Jobs
 
         private decimal GetPurchaseOrderPromotionDiscount(HSOrderWorksheet orderWorksheet, IEnumerable<OrderPromotion> promosOnOrder, string supplierID)
 		{
-
 			var supplierLineItems = orderWorksheet?.LineItems?.Where(line => line?.SupplierID == supplierID);
 
             if (supplierLineItems == null || supplierLineItems.Count() == 0)

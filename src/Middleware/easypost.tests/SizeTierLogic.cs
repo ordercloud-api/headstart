@@ -39,7 +39,6 @@ namespace easypost.tests
         //    Assert.AreEqual(22, package.height);
         //    Assert.AreEqual(50, package.weight);
         // }
-
         [Test]
         public void handles_all_lines_shipping_together_legacy()
         {

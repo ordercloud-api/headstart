@@ -84,7 +84,6 @@ namespace Headstart.Common.Models
             public string DynamicPropertyValue4 { get; set; }
         }
 
-
         public class OrderTemplateData
         {
             public string FirstName { get; set; }
@@ -119,6 +118,5 @@ namespace Headstart.Common.Models
             public string Currency { get; set; }
             public HSOrder Order { get; set; }
         }
-
     }
 }

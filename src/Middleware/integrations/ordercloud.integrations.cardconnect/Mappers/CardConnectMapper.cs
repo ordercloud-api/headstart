@@ -94,7 +94,6 @@ namespace ordercloud.integrations.cardconnect
                 {
                     CardConnectResponse = response,
                     CCBillingAddress = ccBillingAddress
-
                 }
             };
             return t;

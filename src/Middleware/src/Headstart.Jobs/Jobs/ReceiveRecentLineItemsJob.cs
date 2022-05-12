@@ -91,7 +91,6 @@ namespace Headstart.Jobs
             List<LineItemsWithPurchaseOrderFields> orderLineItemBySupplierID = await GetLineItemsFromPurchaseOrdersAsync(orders);
 
             return orderLineItemBySupplierID;
-
         }
 
         private async Task<List<LineItemsWithPurchaseOrderFields>> GetLineItemsFromPurchaseOrdersAsync(List<HSOrder> orders)
@@ -108,7 +107,6 @@ namespace Headstart.Jobs
                 }
                 foreach (HSLineItem lineItem in lineItemsBySupplier)
                 {
-
                     var lineItemWithPurchaseOrder = new LineItemsWithPurchaseOrderFields
                     {
                         ID = lineItem.ID,

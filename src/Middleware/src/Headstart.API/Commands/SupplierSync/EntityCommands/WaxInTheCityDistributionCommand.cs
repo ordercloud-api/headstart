@@ -45,7 +45,6 @@ namespace Headstart.API.Commands
             {
                 estimate = buyerWorksheet.GetMatchingShipEstimate(supplierWorksheet?.LineItems?.FirstOrDefault()?.ShipFromAddressID);
                 ship_method = estimate?.ShipMethods?.FirstOrDefault(m => m.ID == estimate.SelectedShipMethodID);
-
             }
 
             var returnObject = new JObject { };

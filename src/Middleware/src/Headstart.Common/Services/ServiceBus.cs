@@ -41,7 +41,6 @@ namespace Headstart.Common.Services
                 var afterMinutesUtc = DateTime.UtcNow.AddMinutes((double)afterMinutes);
                 await sender.SendMessageAsync(new ServiceBusMessage(messageBytes) { ScheduledEnqueueTime = afterMinutesUtc });
             }
-
         }
 
         public async Task SendMessageBatchToTopicAsync(string topicName, Queue<ServiceBusMessage> messages)

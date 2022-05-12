@@ -9,11 +9,9 @@ using OrderCloud.SDK;
 
 namespace Headstart.Models.Headstart
 {
-
     public class HSSupplier : Supplier<SupplierXp>, IHSObject
     {
     }
-
 
     public class SupplierXp
     {
@@ -31,7 +29,6 @@ namespace Headstart.Models.Headstart
         public int? FreeShippingThreshold { get; set; }
         public ImageAsset Image { get; set; }
     }
-
 
     public class SupplierCategory
     {

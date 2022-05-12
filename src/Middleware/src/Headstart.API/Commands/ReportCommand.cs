@@ -120,7 +120,6 @@ namespace Headstart.API.Commands
             var filteredBuyerLocations = new List<Address>();
             foreach (var location in allBuyerLocations)
             {
-
                 if (PassesFilters(location, filtersToEvaluateMap))
                 {
                     filteredBuyerLocations.Add(location);
@@ -269,7 +268,6 @@ namespace Headstart.API.Commands
             {
                 foreach (HSLineItem lineDetail in detailData.Data.LineItems)
                 {
-
                     lineItems.Add(new HSLineItemOrder
                     {
                         HSOrder = detailData.Data.Order,
@@ -420,7 +418,6 @@ namespace Headstart.API.Commands
 
             return rmas;
         }
-
 
         public async Task<List<ProductDetailData>> ProductDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken)
         {

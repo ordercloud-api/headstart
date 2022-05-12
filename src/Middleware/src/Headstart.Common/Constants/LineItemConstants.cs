@@ -152,7 +152,6 @@ namespace Headstart.Common.Constants
             { LineItemStatus.Canceled, ClaimStatus.Complete },
         };
 
-
         // these statuses can be set by either the supplier or the seller, but when this user modifies the
         // line item status we do not want to notify themselves
         public static List<LineItemStatus> LineItemStatusChangesDontNotifySetter = new List<LineItemStatus>()

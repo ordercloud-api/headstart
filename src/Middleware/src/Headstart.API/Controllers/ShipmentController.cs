@@ -16,7 +16,6 @@ namespace Headstart.Common.Controllers
     [Route("shipment")]
     public class ShipmentController : CatalystController
     {
-
         private readonly IShipmentCommand _command;
         public ShipmentController(IShipmentCommand command)
         {

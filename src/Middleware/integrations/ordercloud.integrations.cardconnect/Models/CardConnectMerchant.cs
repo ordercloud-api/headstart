@@ -10,5 +10,4 @@
         public bool enabled { get; set; }
         public string merchid { get; set; }
     }
-
 }

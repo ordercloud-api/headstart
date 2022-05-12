@@ -124,7 +124,6 @@ namespace ordercloud.integrations.easypost
 			return combinationPackages.Union(individualPackages).ToList();
 		}
 
-
 		private static EasyPostParcel CapParcelDimensions(EasyPostParcel parcel, double maximumDimension)
 		{
 			parcel.height = Math.Min(parcel.height, maximumDimension);

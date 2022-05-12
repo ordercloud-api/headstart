@@ -83,7 +83,6 @@ namespace Headstart.API.Commands
         /// <summary>
         /// Validates LineItemStatus Change, Updates Line Item Statuses, Updates Order Statuses, Sends Necessary Emails
         /// </summary>
-
         // all line item status changes should go through here
         public async Task<List<HSLineItem>> UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection orderDirection, string orderID, LineItemStatusChanges lineItemStatusChanges, DecodedToken decodedToken = null)
         {
@@ -224,7 +223,6 @@ namespace Headstart.API.Commands
                     IsResolved = false,
                     Quantity = quantitySetting
                 });
-
             }
 
             return existinglineItemStatusChangeRequests;
@@ -237,7 +235,6 @@ namespace Headstart.API.Commands
 
             // increment
             statusDictionary[newLineItemStatus] += quantitySetting;
-
 
             var validPreviousStates = LineItemStatusConstants.ValidPreviousStateLineItemChangeMap[newLineItemStatus];
 
@@ -258,7 +255,6 @@ namespace Headstart.API.Commands
                     }
                 }
             }
-
 
             return statusDictionary;
         }
@@ -330,14 +326,12 @@ namespace Headstart.API.Commands
                                     await _sendgridService.SendLineItemStatusChangeEmailMultipleRcpts(buyerOrder, lineItemStatusChanges, lineItemsChanged.ToList(), tos, emailText);
                                 }
                             });
-
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-
                 // track in app insights
                 // to find go to Transaction Search > Event Type = Event > Filter by any of these custom properties or event name "Email.LineItemEmailFailed"
                 var customProperties = new Dictionary<string, string>
@@ -352,7 +346,6 @@ namespace Headstart.API.Commands
                 _telemetry.TrackEvent("Email.LineItemEmailFailed", customProperties);
                 return;
             }
-
         }
 
         private void ValidateLineItemStatusChange(List<HSLineItem> previousLineItemStates, LineItemStatusChanges lineItemStatusChanges, VerifiedUserType userType)
@@ -455,7 +448,6 @@ namespace Headstart.API.Commands
 
         public async Task<decimal> ValidateLineItemUnitCost(string orderID, SuperHSMeProduct product, List<HSLineItem> existingLineItems, HSLineItem li)
         {
-
             if (product.PriceSchedule.UseCumulativeQuantity)
             {
                 int totalQuantity = li?.Quantity ?? 0;

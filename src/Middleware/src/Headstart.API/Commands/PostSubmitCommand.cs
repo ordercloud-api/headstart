@@ -232,7 +232,6 @@ namespace Headstart.API.Commands
             orderInfos.AddRange(orders.Select(o => new Tuple<OrderDirection, string>(OrderDirection.Outgoing, o.ID)));
 
             await Throttler.RunAsync(orderInfos, 100, 3, (orderInfo) => _oc.Orders.PatchAsync(orderInfo.Item1, orderInfo.Item2, partialOrder));
-
         }
 
         private static async Task<ProcessResultAction> ProcessActivityCall(ProcessType type, string description, Task func)

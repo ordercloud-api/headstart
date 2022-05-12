@@ -52,7 +52,6 @@ namespace Headstart.Common.Controllers
         {
             var reportData = await _reportDataCommand.BuyerLocation(templateID, UserContext);
             return await _downloadReportCommand.ExportToExcel(ReportTypeEnum.BuyerLocation, reportTemplate.Headers, reportData);
-
         }
 
         [HttpGet, Route("ProductDetail/preview/{templateID}"), OrderCloudUserAuth("HSReportAdmin", "HSReportReader")]

@@ -12,11 +12,9 @@ using System;
 
 namespace Headstart.Models
 {
-
     public class HSOrder : Order<OrderXp, HSUser, HSAddressBuyer>
     {
     }
-
 
     public class OrderXp
     {
@@ -45,9 +43,7 @@ namespace Headstart.Models
         public string QuoteBuyerContactEmail { get; set; }
         public DateTimeOffset? QuoteSubmittedDate { get; set; }
         public string QuoteSupplierID { get; set; }
-
     }
-
 
     public class ShipMethodSupplierView
     {
@@ -64,7 +60,6 @@ namespace Headstart.Models
         Quote
     }
 
-
     public class OrderDetails
     {
         public HSOrder Order { get; set; }
@@ -74,7 +69,6 @@ namespace Headstart.Models
         public IList<OrderApproval> Approvals { get; set; }
     }
 
-
     public class ClaimsSummary
     {
         public bool HasClaims { get; set; }
@@ -82,14 +76,12 @@ namespace Headstart.Models
         public List<ClaimResolutionStatuses> Resolutions { get; set; }
     }
 
-
     public class ClaimResolutionStatuses
     {
         public string LineItemID { get; set; }
         public string RMANumber { get; set; }
         public bool IsResolved { get; set; }
     }
-
 
     public class HSSupplierOrderData
     {

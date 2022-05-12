@@ -9,7 +9,6 @@ namespace ordercloud.integrations.library
         public static PropertyInfo GetPropertyInfo<T, TProp>(this Expression<Func<T, TProp>> property)
         {
             // http://stackoverflow.com/a/672212/62600
-
             var member = (property.Body.NodeType == ExpressionType.Convert)
                 ? ((UnaryExpression)property.Body).Operand as MemberExpression
                 : property.Body as MemberExpression;

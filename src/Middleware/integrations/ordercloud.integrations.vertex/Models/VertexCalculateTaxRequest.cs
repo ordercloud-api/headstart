@@ -21,7 +21,6 @@ namespace ordercloud.integrations.vertex
 		public VertexTaxingLocation taxingLocation { get; set; }
 	}
 
-
 	public enum VertexTaxingLocation
 	{
 		ADMINISTRATIVE_DESTINATION,
@@ -35,7 +34,6 @@ namespace ordercloud.integrations.vertex
 		public string impositionType { get; set; }
 		public VertexJurisdictionLevel value { get; set; }
 	}
-
 
 	public enum VertexTaxOverrideType
 	{
@@ -64,7 +62,6 @@ namespace ordercloud.integrations.vertex
 		public string hasPhysicalPresenceIndicator { get; set; }
 		public string impositionType { get; set; }
 	}
-
 
 	public enum VertexLocationCustomsStatus
 	{

@@ -45,13 +45,11 @@ namespace Headstart.Models
 
     public class HSMeProduct : BuyerProduct<ProductXp, HSPriceSchedule>
     {
-
     }
 
 	public class HSVariant : Variant<HSVariantXp>
     {
     }
-
 
 	public class ProductXp
     {
@@ -60,7 +58,6 @@ namespace Headstart.Models
         public dynamic IntegrationData { get; set; }
         public Dictionary<string, List<string>> Facets = new Dictionary<string, List<string>>();
         // END DO NOT DELETE
-
         [System.ComponentModel.DataAnnotations.Required]
         public ObjectStatus? Status { get; set; }
         public bool HasVariants { get; set; }
@@ -102,7 +99,6 @@ namespace Headstart.Models
 		Quote
 	}
 
-
     public class HSVariantXp
     {
         public string SpecCombo { get; set; }
@@ -110,7 +106,6 @@ namespace Headstart.Models
         public string NewID { get; set; }
         public List<ImageAsset> Images { get; set; }
     }
-
 
     public class HSSpecValue
     {

@@ -54,7 +54,6 @@ namespace Headstart.Jobs
                 {
                     LogFailure(ex.Message);
                 }
-
             }
         }
 
@@ -90,7 +89,6 @@ namespace Headstart.Jobs
             return new QueryRequestOptions()
             {
                 MaxItemCount = 1,
-
             };
         }
         private async Task<CosmosListPage<LineItemDetailData>> GetLineItemDataAsync(string productID)
@@ -106,7 +104,6 @@ namespace Headstart.Jobs
             CosmosListPage<LineItemDetailData> currentLineItemListPage = await _lineItemDetailDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
 
             return currentLineItemListPage;
-
         }
 
         public CosmosListOptions BuildProductListOptions(string productID, string specCombo)
@@ -122,7 +119,6 @@ namespace Headstart.Jobs
                     ContinuationToken = null,
                     Filters = { currentProductFilter, currentSpecComboFilter }
                 };
-
             }
             else
             {
@@ -133,7 +129,6 @@ namespace Headstart.Jobs
                     Filters = { currentProductFilter }
                 };
             }
-
         }
 
         private async Task<List<ProductDetailData>> CreateProductDetailDataAsync(Product product, List<LineItemDetailData> lineItemList)
@@ -165,7 +160,6 @@ namespace Headstart.Jobs
                         Data = await FlattenProductDataDetailAsync(product, supplier, variant)
                     };
                     resultList.Add(data);
-
                 }
             }
             else

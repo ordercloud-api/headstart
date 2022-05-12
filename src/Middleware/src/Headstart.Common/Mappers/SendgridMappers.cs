@@ -198,7 +198,5 @@ namespace Headstart.Common.Mappers
                 MessageToBuyer = lineItemStatusChange.Comment
             };
         }
-
-
     }
 }

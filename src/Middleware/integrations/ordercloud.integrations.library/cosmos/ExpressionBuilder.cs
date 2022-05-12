@@ -100,7 +100,6 @@ namespace ordercloud.integrations.library.Cosmos
                     break;
                 default:
                     throw new NotImplementedException("Multiple sort is not supported");
-
             }
             return Tuple.Create(Expression.Lambda(exp.Item1, param) as Expression, exp.Item2);
         }

@@ -49,7 +49,6 @@ namespace Headstart.Common.Exceptions
     {
         public OrchestrationError()
         {
-
         }
         [JsonConverter(typeof(StringEnumConverter))]
         public OrchestrationErrorType Type { get; set; }

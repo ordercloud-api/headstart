@@ -59,7 +59,6 @@ namespace Headstart.Common.Controllers
 			return response;
 		}
 
-
 		[HttpPost, Route("orderapproved")]
 		// [OrderCloudWebhookAuth]  TODO: Add this back in once platform fixes header issue
 		public async Task<OrderSubmitResponse> HandleOrderApproved([FromBody] HSOrderCalculatePayload payload)

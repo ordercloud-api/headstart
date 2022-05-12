@@ -40,24 +40,19 @@ namespace Headstart.API.Commands
         public List<DocumentRowError> Invalid = new List<DocumentRowError>();
     }
 
-
     public class BatchProcessSummary
     {
         public int TotalCount { get; set; }
         public int SuccessfulCount { get; set; }
         public int ProcessFailureListCount { get; set; }
         public int DocumentFailureListCount { get; set; }
-
     }
-
 
     public class BatchProcessFailure
     {
         public Misc.Shipment Shipment { get; set; }
         public string Error { get; set; }
-
     }
-
 
     public class BatchProcessResult
     {
@@ -65,8 +60,6 @@ namespace Headstart.API.Commands
         public List<Shipment> SuccessfulList = new List<Shipment>();
         public List<BatchProcessFailure> ProcessFailureList = new List<BatchProcessFailure>();
         public List<DocumentRowError> InvalidRowFailureList = new List<DocumentRowError>();
-
-
     }
 
     public interface IShipmentCommand
@@ -240,7 +233,6 @@ namespace Headstart.API.Commands
                     failureDto.Shipment = shipment;
                     processResult.ProcessFailureList.Add(failureDto);
                 }
-
             }
             processResult.InvalidRowFailureList.AddRange(importResult.Invalid);
             processResult.Meta = new BatchProcessSummary()
@@ -252,55 +244,32 @@ namespace Headstart.API.Commands
             };
 
             return processResult;
-
         }
 
-
         private async void PatchOrderStatus(Order ocOrder, ShippingStatus shippingStatus, OrderStatus orderStatus)
-
         {
-
             var partialOrder = new PartialOrder { xp = new { ShippingStatus = shippingStatus, SubmittedOrderStatus = orderStatus } };
 
             await _oc.Orders.PatchAsync(OrderDirection.Outgoing, ocOrder.ID, partialOrder);
-
         }
 
-
-
         private bool ValidateLineItemCounts(ListPage<LineItem> lineItemList)
-
         {
-
             if (lineItemList == null || lineItemList?.Items?.Count < 1)
-
             {
-
                 return false;
-
             }
 
-
-
             foreach (LineItem lineItem in lineItemList.Items)
-
             {
-
                 if (lineItem.Quantity > lineItem.QuantityShipped)
-
                 {
-
                     return false;
-
                 }
-
             }
 
             return true;
-
         }
-
-
 
         private BatchProcessFailure CreateBatchProcessFailureItem(Misc.Shipment shipment, OrderCloudException ex)
         {
@@ -369,7 +338,6 @@ namespace Headstart.API.Commands
                     LineItemID = lineItem.ID,
                     QuantityShipped = Convert.ToInt32(shipment.QuantityShipped),
                     UnitPrice = Convert.ToDecimal(shipment.Cost)
-
                 };
 
                 ocShipment = await GetShipmentByTrackingNumber(shipment, decodedToken?.AccessToken);
@@ -394,7 +362,6 @@ namespace Headstart.API.Commands
                     // Re-patch the shipment adding the date shipped now due to oc bug
                     var repatchedShipment = PatchShipment(ocShipment, shipment);
                     await _oc.Shipments.PatchAsync(newShipment.ID, repatchedShipment);
-
 
                     result.SuccessfulList.Add(processedShipment);
                 }
@@ -422,7 +389,6 @@ namespace Headstart.API.Commands
                     Shipment = shipment
                 });
                 return false;
-
             }
         }
 
@@ -473,7 +439,6 @@ namespace Headstart.API.Commands
             {
                 throw new Exception($"Unable to find Order for OrderID: {shipment.OrderID}", ex.InnerException);
             }
-
         }
 
         private async Task<LineItem> PatchPartialLineItemComment(Misc.Shipment shipment, string newShipmentId)
@@ -539,7 +504,6 @@ namespace Headstart.API.Commands
             }
             return shipmentResponse;
         }
-
 
         private PartialShipment PatchShipment(Shipment ocShipment, Misc.Shipment shipment)
         {

@@ -28,7 +28,6 @@ namespace ordercloud.integrations.vertex
 
 	public class VertexCalculateTaxResponse : VertexCalculateTaxRequest
 	{
-
 		public double subTotal { get; set; }
 		public double total { get; set; }
 		public double totalTax { get; set; }

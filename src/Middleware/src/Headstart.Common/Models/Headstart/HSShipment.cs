@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 namespace Headstart.Common.Services.ShippingIntegration.Models
 {
-
     public class SuperHSShipment
     {
         public HSShipment Shipment { get; set; }
@@ -13,11 +12,9 @@ namespace Headstart.Common.Services.ShippingIntegration.Models
     }
 
     // these are in the common namespace so that we can reference the FreightPop model
-
     public class HSShipment : Shipment<ShipmentXp, HSAddressSupplier, HSAddressBuyer>
     {
     }
-
 
     public class ShipmentXp
     {
@@ -28,12 +25,10 @@ namespace Headstart.Common.Services.ShippingIntegration.Models
         public string BuyerID { get; set; }
     }
 
-
     public class HSShipmentWithItems : Shipment
     {
         public List<HSShipmentItemWithLineItem> ShipmentItems { get; set; }
     }
-
 
     public class HSShipmentItemWithLineItem : ShipmentItem
     {

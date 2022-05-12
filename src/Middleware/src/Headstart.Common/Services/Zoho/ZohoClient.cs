@@ -73,7 +73,6 @@ namespace Headstart.Common.Services.Zoho
             {
                 throw new CatalystBaseException("ZohoAuthenticationError", ex.Message, null, (int)ex.Call.Response.StatusCode);
             }
-
         }
 
         internal IFlurlRequest Request(object[] segments, string access_token = null)

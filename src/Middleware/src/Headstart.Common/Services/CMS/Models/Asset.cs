@@ -22,7 +22,6 @@ namespace Headstart.Common.Services.CMS.Models
         Unknown
     }
 
-
 	public class Asset
 	{
 		public string ID { get; set; }
@@ -35,7 +34,6 @@ namespace Headstart.Common.Services.CMS.Models
 		public AssetMetadata Metadata { get; set; }
 		public History History { get; set; }
 	}
-
 
 	public class AssetMetadata
 	{

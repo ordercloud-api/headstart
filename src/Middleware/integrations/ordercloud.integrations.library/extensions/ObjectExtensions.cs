@@ -55,7 +55,6 @@ namespace ordercloud.integrations.library
             {
                 throw new Exception("Invalid Cast", ex);
             }
-
         }
 
         public static JRaw ToJRaw(this object obj)

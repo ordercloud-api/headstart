@@ -12,7 +12,6 @@ namespace Headstart.Models
 
     public class HSBuyer : Buyer<BuyerXp>, IHSObject
     {
-
     }
 
 	// just int for now, but leaving the door open for future configurations on how this markup functions

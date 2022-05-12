@@ -149,6 +149,5 @@ namespace Headstart.API.Commands
             };
             return fileReference.GetSharedAccessSignature(sharedAccessPolicy);
         }
-
     }
 }

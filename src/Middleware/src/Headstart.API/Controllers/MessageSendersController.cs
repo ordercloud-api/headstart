@@ -21,7 +21,6 @@ namespace Headstart.Common.Controllers
     /// </summary>
     // TODO: explore moving ordersubmit and shipmentcreated to message senders
     // unless there's a good reason not to it would be good to have all messages firing from one centralized location
-
     [Route("messagesenders")]
     public class MessageSendersController
     {

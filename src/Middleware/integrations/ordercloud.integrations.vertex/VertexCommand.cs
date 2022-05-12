@@ -6,7 +6,6 @@ using ordercloud.integrations.library;
 using ordercloud.integrations.library.intefaces;
 using OrderCloud.SDK;
 
-
 namespace ordercloud.integrations.vertex
 {
 	public interface IVertexCommand

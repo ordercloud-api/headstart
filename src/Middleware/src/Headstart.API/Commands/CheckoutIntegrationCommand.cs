@@ -71,7 +71,6 @@ namespace Headstart.API.Commands
                 var methods = FilterMethodsBySupplierConfig(shipResponse.ShipEstimates[i].ShipMethods.Where(s => profile.CarrierAccountIDs.Contains(s.xp.CarrierAccountID)).ToList(), profile);
                 shipResponse.ShipEstimates[i].ShipMethods = methods.Select(s =>
                 {
-
                     // there is logic here to support not marking up shipping over list rate. But USPS is always list rate
                     // so adding an override to the suppliers that use USPS
                     var carrier = _profiles.ShippingProfiles.First(p => p.CarrierAccountIDs.Contains(s.xp?.CarrierAccountID));
@@ -161,7 +160,6 @@ namespace Headstart.API.Commands
                     }
                 }
                 updatedEstimates.Add(estimate);
-
             }
             return updatedEstimates;
         }
@@ -170,7 +168,6 @@ namespace Headstart.API.Commands
         {
             // filter out rate estimates with slower transit days and higher costs than faster transit days
             // ex: 3 days for $20 vs 1 day for $10. Filter out the 3 days option
-
             var result = estimates.Select(estimate =>
             {
                 var methodsList = estimate.ShipMethods.OrderBy(m => m.EstimatedTransitDays).ToList();
@@ -235,7 +232,6 @@ namespace Headstart.API.Commands
         {
             // if there are no rates for a set of line items then return a mocked response so user can check out
             // this order will additionally get marked as needing attention
-
             foreach (var shipEstimate in estimates)
             {
                 if (!shipEstimate.ShipMethods.Any())

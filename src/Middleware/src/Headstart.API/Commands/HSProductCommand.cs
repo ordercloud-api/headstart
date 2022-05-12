@@ -432,7 +432,6 @@ namespace Headstart.API.Commands.Crud
 				});
 			}
 			return await _oc.PriceSchedules.SaveAsync<PriceSchedule>(updated.ID, updated, token);
-
 		}
 
 		private bool HasVariantChange(Variant variant, Variant currVariant)
@@ -538,7 +537,6 @@ namespace Headstart.API.Commands.Crud
 
 		public async Task Delete(string id, string token)
 		{
-
 			var product = await _oc.Products.GetAsync<HSProduct>(id);
 			var specs = await _oc.Products.ListSpecsAsync<Spec>(id, accessToken: token);
 			var tasks = new List<Task>()
@@ -560,7 +558,6 @@ namespace Headstart.API.Commands.Crud
 
 		public async Task<Product> FilterOptionOverride(string id, string supplierID, IDictionary<string, object> facets, DecodedToken decodedToken)
 		{
-
 			ApiClient supplierClient = await _apiClientHelper.GetSupplierApiClient(supplierID, decodedToken.AccessToken);
 			if (supplierClient == null)
             {
@@ -578,7 +575,6 @@ namespace Headstart.API.Commands.Crud
 								 ApiRole.SupplierAdmin,
 								 ApiRole.ProductAdmin
 							},
-
 			};
 			var ocClient = new OrderCloudClient(configToUse);
 			await ocClient.AuthenticateAsync();

@@ -41,7 +41,6 @@ namespace ordercloud.integrations.easypost
 		// length = aggregateLength
 		// };
 		// }
-
         private static List<EasyPostCustomsItem> MapCustomsItem(IGrouping<AddressPair, LineItem> lineitems, EasyPostShippingProfile profile)
         {
             return lineitems.Select(lineItem => new EasyPostCustomsItem()
@@ -55,7 +54,6 @@ namespace ordercloud.integrations.easypost
                 })
                 .ToList();
         }
-
 
 		public static IList<ShipMethod> MapRates(EasyPostShipment[] shipments)
 		{

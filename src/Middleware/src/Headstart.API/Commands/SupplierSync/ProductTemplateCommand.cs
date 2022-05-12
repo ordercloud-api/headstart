@@ -105,7 +105,6 @@ namespace Headstart.API.Commands
             //    Images = images.Where(s => s.Value.ProductID == info.Value.ID).Select(o => o.Value).ToList(),
             //    Attachments = attachments.Where(s => s.Value.ProductID == info.Value.ID).Select(o => o.Value).ToList()
             // });
-
             var list = new List<TemplateHydratedProduct>();
             foreach (var product in products)
             {
@@ -164,8 +163,6 @@ namespace Headstart.API.Commands
     {
         public JObject Values { get; set; }
     }
-
-
 
     public class TemplateProductFlat : IHSObject
     {

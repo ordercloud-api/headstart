@@ -64,5 +64,4 @@ namespace ordercloud.integrations.cardconnect
         public string binlo { get; set; }
         public string binhi { get; set; }
     }
-
 }

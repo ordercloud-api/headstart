@@ -4,11 +4,9 @@ using System.Collections.Generic;
 
 namespace Headstart.Models
 {
-
     public class HSSellerUser : User<SellerUserXp>, IHSObject
     {
     }
-
 
     public class SellerUserXp
     {

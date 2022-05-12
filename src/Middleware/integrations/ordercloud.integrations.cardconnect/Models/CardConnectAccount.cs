@@ -7,12 +7,10 @@ namespace ordercloud.integrations.cardconnect
         public string currency { get; set; }
     }
 
-
     public class CardConnectAccountResponse
     {
         public string message { get; set; }
         public int errorcode { get; set; }
         public string token { get; set; }
     }
-
 }

@@ -19,7 +19,6 @@ namespace Headstart.Common.Mappers
                     return CurrencySymbol.USD;
                 default:
                     throw new Exception($"A currency for country with value <{country}> cannot be found");
-
             }
         }
 

@@ -27,6 +27,5 @@ namespace ordercloud.integrations.library
 
             return services;
         }
-
     }
 }

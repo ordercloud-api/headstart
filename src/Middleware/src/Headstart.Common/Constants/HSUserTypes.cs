@@ -57,7 +57,6 @@ namespace Headstart.Common.Constants
                     }
                 },
             };
-
         }
 
         public static List<HSUserType> BuyerLocation()

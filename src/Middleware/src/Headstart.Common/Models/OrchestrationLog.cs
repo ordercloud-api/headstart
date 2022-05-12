@@ -9,7 +9,6 @@ using OrderCloud.SDK;
 
 namespace Headstart.Common.Models
 {
-
 	[CosmosCollection("orchestrationlogs")]
 	public class OrchestrationLog : CosmosObject
     {
@@ -36,17 +35,14 @@ namespace Headstart.Common.Models
 
         public OrchestrationLog(OrchestrationException ex)
         {
-
         }
 
         public OrchestrationLog(FunctionFailedException ex)
         {
-
         }
 
         public OrchestrationLog(Exception ex)
         {
-
         }
 
         [Sortable]

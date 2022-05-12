@@ -117,7 +117,6 @@ namespace ordercloud.integrations.cardconnect
                                .Request("cardconnect/rest/void", request.currency)
                                .PutJsonAsync(request)
                                .ReceiveJson<CardConnectVoidResponse>();
-
             }
 
             if (attempt.WasSuccessful())
@@ -186,7 +185,6 @@ namespace ordercloud.integrations.cardconnect
                 var list = JsonConvert.DeserializeObject<List<CardConnectInquireResponse>>(body);
                 return list.FirstOrDefault(t => t.retref == retref);
             }
-
         }
 
         private bool ShouldMockCardConnectResponse()
@@ -237,7 +235,6 @@ namespace ordercloud.integrations.cardconnect
             };
 
             return response;
-
         }
         private async Task<CardConnectAuthorizationResponse> PostAuthorizationAsync(CardConnectAuthorizationRequest request)
         {
@@ -252,7 +249,6 @@ namespace ordercloud.integrations.cardconnect
                                .Request("cardconnect/rest/auth", request.currency)
                                .PutJsonAsync(request)
                                .ReceiveJson<CardConnectAuthorizationResponse>();
-
             }
 
             if (attempt.WasSuccessful())

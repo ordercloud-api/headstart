@@ -419,7 +419,6 @@ namespace Headstart.API.Commands
                     Comment = rmaLineItem.Comment,
                     QuantityRequestedForRefund = rmaLineItem.QuantityRequested
                 });
-
             }
 
             List<HSLineItem> lineItemsChanged = worksheet.LineItems.Where(li => lineItemStatusChanges.Changes.Select(li => li.ID).Contains(li.ID)).ToList();
@@ -609,7 +608,6 @@ namespace Headstart.API.Commands
 
         public virtual async Task HandleRefund(RMA rma, CosmosListPage<RMA> allRMAsOnThisOrder, HSOrderWorksheet worksheet, DecodedToken decodedToken)
         {
-
             // Get payment info from the order
             ListPage<HSPayment> paymentResponse = await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, rma.SourceOrderID);
             HSPayment creditCardPayment = paymentResponse.Items.FirstOrDefault(payment => payment.Type == OrderCloud.SDK.PaymentType.CreditCard);

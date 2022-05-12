@@ -51,7 +51,6 @@ namespace Headstart.API.Commands.Crud
 			// assignments are stored on location usergroup xp in a string array with the ids of the catalogs
 			// currently they can only be assessed by location ID
 			// limiting to 20 catalog assignments for now
-
 			var location = await _oc.UserGroups.GetAsync<HSLocationUserGroup>(buyerID, locationID, decodedToken.AccessToken);
 
 			var catalogAssignments = new List<HSCatalogAssignment> { };
@@ -122,7 +121,6 @@ namespace Headstart.API.Commands.Crud
 			{
 				Console.WriteLine(ex.Message);
 			}
-
 		}
 
 		public async Task<HSCatalog> Post(string buyerID, HSCatalog catalog, DecodedToken decodedToken)

@@ -16,7 +16,6 @@ namespace Headstart.Tests
 {
     public class CatalogAssignmentSyncTests
     {
-
         [Test, AutoNSubstituteData]
         public async Task SyncUserCatalogAssignments_ShouldHandleBasicScenario(
             [Frozen] IOrderCloudClient oc,

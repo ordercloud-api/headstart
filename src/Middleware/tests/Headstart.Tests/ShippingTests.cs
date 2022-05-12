@@ -20,7 +20,6 @@ namespace Headstart.Tests
         [SetUp]
         public void Setup()
         {
-
         }
 
         public class LineItemFactory

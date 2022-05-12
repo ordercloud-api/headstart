@@ -15,7 +15,6 @@ namespace Headstart.Common.Extensions
         {
             // if there are no rates for a set of line items then return a mocked response so user can check out
             // this order will additionally get marked as needing attention
-
             foreach (var shipEstimate in estimates)
             {
                 if (!shipEstimate.ShipMethods.Any())

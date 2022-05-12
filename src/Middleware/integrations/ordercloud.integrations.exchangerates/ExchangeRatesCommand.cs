@@ -175,6 +175,5 @@ namespace ordercloud.integrations.exchangerates
                 await _blob.Save($"{rate.Currency}.json", JsonConvert.SerializeObject(rates));
             });
         }
-
     }
 }

@@ -21,7 +21,6 @@ namespace Headstart.Common.Constants
             Declined
         }
 
-
         public static EmailDisplayText GetOrderSubmitText(string orderID, string firstName, string lastName, VerifiedUserType decodedToken)
         {
             var dictionary = new Dictionary<VerifiedUserType, EmailDisplayText>()

@@ -20,7 +20,6 @@ namespace Headstart.Common.Controllers
     [Route("order")]
     public class OrderController : CatalystController
     {
-
         private readonly IOrderCommand _command;
         private readonly IOrderSubmitCommand _orderSubmitCommand;
         private readonly ILineItemCommand _lineItemCommand;

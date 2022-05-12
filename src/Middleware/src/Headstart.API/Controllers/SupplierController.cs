@@ -16,7 +16,6 @@ namespace Headstart.Common.Controllers
     [Route("supplier")]
     public class SupplierController : CatalystController
     {
-
 		private readonly IHSSupplierCommand _command;
         private readonly IOrderCloudClient _oc;
         public SupplierController(IHSSupplierCommand command, IOrderCloudClient oc)
@@ -65,6 +64,5 @@ namespace Headstart.Common.Controllers
         {
 			return await _command.GetSupplierOrderData(supplierOrderID, orderType, UserContext);
         }
-
 	}
 }

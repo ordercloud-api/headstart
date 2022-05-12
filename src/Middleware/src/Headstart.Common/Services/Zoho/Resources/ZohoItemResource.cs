@@ -37,7 +37,6 @@ namespace Headstart.Common.Services.Zoho.Resources
 
         // public Task<TZohoItem> GetAsync<TZohoItem>(string id) where TZohoItem : ZohoLineItem =>
         //    Get(id).GetJsonAsync<TZohoItem>();
-
         public Task<ZohoLineItem> SaveAsync(ZohoLineItem item) => SaveAsync<ZohoLineItem>(item);
 
         public async Task<TZohoItem> SaveAsync<TZohoItem>(TZohoItem item)

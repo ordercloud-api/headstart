@@ -40,7 +40,6 @@ namespace Headstart.Common.Exceptions
             {
                 this.ResponseBody = "Error while trying to parse response body";
             }
-
         }
 
         public string Message { get; set; }

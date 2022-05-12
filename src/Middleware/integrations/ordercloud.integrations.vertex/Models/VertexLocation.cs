@@ -13,6 +13,5 @@ namespace ordercloud.integrations.vertex
 		public string subDivision { get; set; } // e.g. county
 		public string postalCode { get; set; }
 		public string country { get; set; }
-
 	}
 }

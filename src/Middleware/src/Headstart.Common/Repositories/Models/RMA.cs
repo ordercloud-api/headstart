@@ -43,7 +43,6 @@ namespace Headstart.Common.Models
         Complete,
     }
 
-
     public class RMALineItem
     {
         public string ID { get; set; }
@@ -59,7 +58,6 @@ namespace Headstart.Common.Models
         public decimal LineTotalRefund { get; set; }
     }
 
-
     [JsonConverter(typeof(StringEnumConverter))]
     public enum RMALineItemStatus
     {
@@ -71,7 +69,6 @@ namespace Headstart.Common.Models
         PartialQtyApproved,
         PartialQtyComplete
     }
-
 
     public class RMALog
     {

@@ -93,7 +93,6 @@ namespace Headstart.API.Commands
                     throw new CatalystBaseException("OrderSubmit.OrderCloudValidationError", "Failed ordercloud validation, see Data for details", errors);
                 }
             }
-
         }
 
         private async Task<List<HSLineItem>> GetInactiveLineItems(HSOrderWorksheet worksheet, string userToken)

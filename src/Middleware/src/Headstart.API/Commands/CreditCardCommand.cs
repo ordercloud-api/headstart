@@ -153,7 +153,6 @@ namespace ordercloud.integrations.cardconnect
 			}
 			catch (CreditCardVoidException ex)
 			{
-
 				await _supportAlerts.VoidAuthorizationFailed(payment, transactionID, order, ex);
 				await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, ex.Response));
 				throw new CatalystBaseException("Payment.FailedToVoidAuthorization", ex.ApiError.Message);

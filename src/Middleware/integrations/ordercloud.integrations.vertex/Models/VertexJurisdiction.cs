@@ -65,5 +65,4 @@ namespace ordercloud.integrations.vertex
 	public class VertexDeductionOverride
 	{
 	}
-
 }

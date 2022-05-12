@@ -76,7 +76,6 @@ namespace Headstart.API.Commands
 			return superHsProduct;
 		}
 
-
 		private List<Spec> ApplySpecMarkups(List<Spec> specs, CurrencySymbol? productCurrency, List<OrderCloudIntegrationsConversionRate> exchangeRates)
 		{
 			return specs.Select(spec =>
@@ -128,7 +127,6 @@ namespace Headstart.API.Commands
 
 		private HSMeProduct ApplyBuyerProductPricing(HSMeProduct product, decimal defaultMarkupMultiplier, List<OrderCloudIntegrationsConversionRate> exchangeRates)
 		{
-
 			if (product.PriceSchedule != null)
             {
 				/* if the price schedule Id matches the product ID we

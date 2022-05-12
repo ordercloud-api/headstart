@@ -20,5 +20,4 @@
         public string respstat { get; set; }
         public string resptext { get; set; }
     }
-
 }

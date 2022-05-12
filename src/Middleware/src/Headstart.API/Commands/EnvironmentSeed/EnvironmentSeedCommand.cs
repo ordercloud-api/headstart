@@ -453,7 +453,6 @@ namespace Headstart.API.Commands
             var match = existingClients.FirstOrDefault(c => c.AppName == client.AppName);
             if (match == null)
             {
-
                 await CreateOnlyOnceAnonBuyerConfig(seed, token);
                 var apiClient = await _oc.ApiClients.CreateAsync(client, token);
                 return apiClient;

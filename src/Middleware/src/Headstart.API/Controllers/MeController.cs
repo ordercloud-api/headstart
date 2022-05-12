@@ -50,6 +50,5 @@ namespace Headstart.Common.Controllers
         {
 			await _meProductCommand.RequestProductInfo(template);
         }
-
 	}
 }

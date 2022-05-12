@@ -7,7 +7,6 @@ using System.Collections.Generic;
 
 namespace Headstart.Models
 {
-
     public class HSBuyerLocation
     {
         public HSLocationUserGroup UserGroup { get; set; }
@@ -18,18 +17,15 @@ namespace Headstart.Models
     {
     }
 
-
     public class UserGroupXp
     {
         public string Type { get; set; }
         public string Role { get; set; }
     }
 
-
     public class HSLocationUserGroup : UserGroup<HSLocationUserGroupXp>, IHSObject
     {
     }
-
 
     public class HSLocationUserGroupXp
     {
