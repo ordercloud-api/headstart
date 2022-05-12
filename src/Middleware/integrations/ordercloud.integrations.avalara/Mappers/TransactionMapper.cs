@@ -58,6 +58,7 @@ namespace ordercloud.integrations.avalara
 			{
 				line.exemptionCode = exemptionNo;
 			}
+
 			return line;
 		}
 

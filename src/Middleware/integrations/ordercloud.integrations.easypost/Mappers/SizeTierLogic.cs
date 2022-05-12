@@ -95,6 +95,7 @@ namespace ordercloud.integrations.easypost
 						currentPackage.PercentFilled += percentFillToAdd;
 						currentPackage.Weight += (decimal)item.ShipWeightOrDefault(0);
 					}
+
 					return packages;
 				});
 

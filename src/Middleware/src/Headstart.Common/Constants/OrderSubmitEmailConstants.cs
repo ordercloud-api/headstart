@@ -52,6 +52,7 @@ namespace Headstart.Common.Constants
             };
             return dictionary[decodedToken];
         }
+
         public static EmailDisplayText GetQuoteOrderSubmitText(VerifiedUserType decodedToken)
         {
             var dictionary = new Dictionary<VerifiedUserType, EmailDisplayText>()
@@ -75,6 +76,7 @@ namespace Headstart.Common.Constants
             };
             return dictionary[decodedToken];
         }
+
         public static EmailDisplayText GetOrderRequiresApprovalText()
         {
             return new EmailDisplayText()
@@ -84,6 +86,7 @@ namespace Headstart.Common.Constants
                 DynamicText2 = "The order for approval contains the following items"
             };
         }
+
         public static EmailDisplayText GetRequestedApprovalText()
         {
             return new EmailDisplayText()
@@ -93,6 +96,7 @@ namespace Headstart.Common.Constants
                 DynamicText2 = "Your order awaiting approval contains the following items"
             };
         }
+
         public static EmailDisplayText GetOrderApprovedText()
         {
             return new EmailDisplayText()
@@ -102,6 +106,7 @@ namespace Headstart.Common.Constants
                 DynamicText2 = "Your order contains the following items"
             };
         }
+
         public static EmailDisplayText GetOrderDeclinedText()
         {
             return new EmailDisplayText()

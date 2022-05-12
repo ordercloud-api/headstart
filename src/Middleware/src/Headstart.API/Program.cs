@@ -24,6 +24,7 @@ namespace Headstart.API
                     {
 						config.AddAzureAppConfiguration(appConfigConnectionString);
 					}
+
 					config.AddJsonFile("appSettings.json", optional: true);
 				})
 				.UseStartup<Startup>()

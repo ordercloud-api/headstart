@@ -14,6 +14,7 @@ namespace Headstart.Common.Models
         public WorkItem()
         {
         }
+
         public WorkItem(string path)
         {
             var split = path.Split("/");
@@ -41,6 +42,7 @@ namespace Headstart.Common.Models
                 _ => throw new OrchestrationException(OrchestrationErrorType.WorkItemDefinition, path)
             };
         }
+
         public string ResourceId { get; set; }
         public string RecordId { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]

@@ -47,6 +47,7 @@ namespace Headstart.Jobs
                 var serializedOrderID = JsonConvert.SerializeObject(order.ID);
                 messages.Enqueue(new ServiceBusMessage(serializedOrderID));
             }
+
             await _serviceBus.SendMessageBatchToTopicAsync("orderreports", messages);
         }
     }

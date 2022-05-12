@@ -81,6 +81,7 @@ namespace Headstart.API.Commands
                     return s;
                 }).ToList();
             }
+
             var buyerCurrency = worksheet.Order.xp.Currency ?? CurrencySymbol.USD;
 
             await shipResponse.ShipEstimates
@@ -159,8 +160,10 @@ namespace Headstart.API.Commands
                         }
                     }
                 }
+
                 updatedEstimates.Add(estimate);
             }
+
             return updatedEstimates;
         }
 
@@ -182,6 +185,7 @@ namespace Headstart.API.Commands
                         filtered.Add(method);
                     }
                 }
+
                 filtered.Reverse(); // reorder back to original since we looped backwards
                 estimate.ShipMethods = filtered;
                 return estimate;
@@ -189,6 +193,7 @@ namespace Headstart.API.Commands
 
             return result;
         }
+
         public static IList<HSShipEstimate> ApplyFlatRateShipping(HSOrderWorksheet orderWorksheet, IList<HSShipEstimate> estimates)
         {
             var result = estimates.Select(estimate => ApplyFlatRateShippingOnEstimate(estimate, orderWorksheet)).ToList();
@@ -252,6 +257,7 @@ namespace Headstart.API.Commands
                     };
                 }
             }
+
             return estimates;
         }
 
@@ -269,6 +275,7 @@ namespace Headstart.API.Commands
                     }
                 }
             }
+
             return estimates;
         }
 

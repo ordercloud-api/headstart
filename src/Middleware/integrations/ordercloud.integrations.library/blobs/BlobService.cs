@@ -26,6 +26,7 @@ namespace ordercloud.integrations.library
         Task Delete(string id);
         Task DeleteContainer();
     }
+
     public class OrderCloudIntegrationsBlobService : IOrderCloudIntegrationsBlobService
     {
         public CloudBlobClient Client { get; }
@@ -60,12 +61,14 @@ namespace ordercloud.integrations.library
                 throw new Exception($"{ex.Message}. The blob service must be invoked with a valid configuration");
             }
         }
+
         private async Task Init()
         {
             if (IsInitialized)
             {
                 return;
             }
+
             var created = await Container.CreateIfNotExistsAsync();
             if (created)
             {
@@ -91,6 +94,7 @@ namespace ordercloud.integrations.library
                 });
                 await Client.SetServicePropertiesAsync(properties);
             }
+
             IsInitialized = true;
         }
 
@@ -136,6 +140,7 @@ namespace ordercloud.integrations.library
                 new BlobRequestOptions() { SingleBlobUploadThresholdInBytes = 4 * 1024 * 1024 },
                 new OperationContext());
         }
+
         public async Task Save(string reference, byte[] bytes, string fileType = null, string cacheControl = null)
         {
             await this.Init();
@@ -168,6 +173,7 @@ namespace ordercloud.integrations.library
             await using var stream = blob.OpenReadStream();
             await block.UploadFromStreamAsync(stream);
         }
+
         public async Task Save(string reference, Stream file, string fileType = null)
         {
             await this.Init();

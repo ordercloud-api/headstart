@@ -196,6 +196,7 @@ namespace ordercloud.integrations.library
                     list = list.Concat(batch).ToList();
                 }
             }
+
             return list;
         }
 

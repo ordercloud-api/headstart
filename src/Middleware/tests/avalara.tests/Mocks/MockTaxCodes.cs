@@ -36,6 +36,7 @@ namespace avalara.tests.Mocks
 				}
 			};
 		}
+
 		public static FetchResult<TaxCodeModel> taxCodeObjectFromAvalaraSecondRecord()
 		{
 			return new FetchResult<TaxCodeModel>()
@@ -63,6 +64,7 @@ namespace avalara.tests.Mocks
 				}
 			};
 		}
+
 		public static FetchResult<TaxCodeModel> taxCodeObjectFromAvalaraAllRecords()
 		{
 			return new FetchResult<TaxCodeModel>()
@@ -107,6 +109,7 @@ namespace avalara.tests.Mocks
 				}
 			};
 		}
+
 		public static List<TaxCategorization> headstartTaxCodeListPageFirstRecord()
 		{
 			return new List<TaxCategorization>
@@ -118,6 +121,7 @@ namespace avalara.tests.Mocks
 				}
 			};
 		}
+
 		public static List<TaxCategorization> headstartTaxCodeListPageSecondRecord()
 		{
 			return new List<TaxCategorization>
@@ -129,6 +133,7 @@ namespace avalara.tests.Mocks
 				}
 			};
 		}
+
 		public static List<TaxCategorization> headstartTaxCodeListPageAllRecords()
 		{
 			return new List<TaxCategorization>

@@ -22,6 +22,7 @@ namespace ordercloud.integrations.library.Cosmos
         public override bool IsValid(object value)
         {
             var s = value as string;
+
             // ID can be null, that triggers us to generate one
             return string.IsNullOrEmpty(s) || (s.Length <= 100 && base.IsValid(value));
         }
@@ -35,6 +36,7 @@ namespace ordercloud.integrations.library.Cosmos
                 idProp.SetValue(ctx.ObjectInstance, CosmosInteropID.New());
                 return null;
             }
+
             return base.IsValid(value, ctx);
         }
 

@@ -118,6 +118,7 @@ namespace Headstart.API.Commands
                 Type = ProcessType.Forwarding,
                 Activity = activities
             });
+
             // step 1 failed. we don't want to attempt the integrations. return error for further action
             if (activities.Any(a => !a.Success))
             {
@@ -387,6 +388,7 @@ namespace Headstart.API.Commands
                         ShippingStatus = ShippingStatus.Processing,
                         SubmittedOrderStatus = SubmittedOrderStatus.Open,
                         SelectedShipMethodsSupplierView = suppliersShipEstimates != null ? MapSelectedShipMethod(suppliersShipEstimates) : null,
+
                         // ShippingAddress needed for Purchase Order Detail Report
                         ShippingAddress = new HSAddressBuyer()
                         {
@@ -425,6 +427,7 @@ namespace Headstart.API.Commands
                     SubmittedOrderStatus = SubmittedOrderStatus.Open,
                     HasSellerProducts = buyerOrder.LineItems.Any(li => li.SupplierID == null),
                     PaymentMethod = payment.Type == PaymentType.CreditCard ? "Credit Card" : "Purchase Order",
+
                     // If we have seller ship estimates for a seller owned product save selected method on buyer order.
                     SelectedShipMethodsSupplierView = sellerShipEstimates != null ? MapSelectedShipMethod(sellerShipEstimates) : null,
                 }

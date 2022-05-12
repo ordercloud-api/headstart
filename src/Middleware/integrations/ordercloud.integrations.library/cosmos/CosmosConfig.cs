@@ -19,6 +19,7 @@ namespace ordercloud.integrations.library
             this.PrimaryKey = key;
             this.RequestTimeout = TimeSpan.FromSeconds(requestTimeoutInSeconds);
         }
+
         public string DatabaseName { get; set; }
         public string EndpointUri { get; set; }
         public string PrimaryKey { get; set; }

@@ -23,6 +23,7 @@ namespace Headstart.Common.Controllers
             _command = command;
 			_oc = oc;
         }
+
 		/// <summary>
 		/// GET HSSupplier
 		/// </summary>
@@ -31,6 +32,7 @@ namespace Headstart.Common.Controllers
 		{
 			return await _command.GetMySupplier(supplierID, UserContext);
 		}
+
 		/// <summary>
 		/// POST Headstart Supplier
 		/// </summary>
@@ -39,6 +41,7 @@ namespace Headstart.Common.Controllers
 		{
 			return await _command.Create(supplier, UserContext.AccessToken);
 		}
+
 		/// <summary>
 		/// GET If Location Deletable
 		/// </summary>
@@ -48,6 +51,7 @@ namespace Headstart.Common.Controllers
 			var productList = await _oc.Products.ListAsync(filters: $"ShipFromAddressID={locationID}");
 			return productList.Items.Count == 0;
 		}
+
 		/// <summary>
 		/// PATCH Supplier
 		/// </summary>
@@ -56,6 +60,7 @@ namespace Headstart.Common.Controllers
 		{
 			return await _command.UpdateSupplier(supplierID, supplier, UserContext);
 		}
+
 		/// <summary>
 		/// GET Supplier Order Details
 		/// </summary>

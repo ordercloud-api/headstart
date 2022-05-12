@@ -51,6 +51,7 @@ namespace Headstart.Common.Controllers
             {
                 return;
             }
+
 			await _command.PostStagingRestore();
 		}
 	}

@@ -50,6 +50,7 @@ namespace Headstart.Common.Exceptions
         public OrchestrationError()
         {
         }
+
         [JsonConverter(typeof(StringEnumConverter))]
         public OrchestrationErrorType Type { get; set; }
         public string RecordId { get; set; }

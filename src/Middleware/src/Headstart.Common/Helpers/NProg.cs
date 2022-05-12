@@ -26,6 +26,7 @@ namespace Common.Services.NProg
 		public Tracker()
         {
         }
+
 		public Tracker(int itemCount) => _total = itemCount;
 
 		public void Start()
@@ -155,6 +156,7 @@ namespace Common.Services.NProg
 				_nextNumber += _targetNumber;
 				return true;
 			}
+
 			return false;
 		}
 	}

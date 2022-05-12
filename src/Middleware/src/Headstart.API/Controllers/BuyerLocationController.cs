@@ -41,6 +41,7 @@ namespace Headstart.Common.Controllers
         {
             return await _buyerLocationCommand.Create(buyerID, buyerLocation);
         }
+
         /// <summary>
         /// POST a Buyer Location permission group
         /// </summary>

@@ -89,6 +89,7 @@ namespace Headstart.Common.Mappers
             {
                 return null;
             }
+
             string specCombo = "(" + string.Join(", ", specs.Select(spec => spec.Value).ToArray()) + ")";
             return specCombo;
         }
@@ -127,6 +128,7 @@ namespace Headstart.Common.Mappers
                     products.Add(MapLineItemToProduct(lineItem));
                 }
             }
+
             return products;
         }
 
@@ -187,6 +189,7 @@ namespace Headstart.Common.Mappers
             {
                 lineTotal = lineItemStatusChange.Refund ?? lineItem.LineTotal;
             }
+
             return new LineItemProductData
             {
                 ProductName = lineItem?.Product?.Name,

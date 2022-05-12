@@ -31,10 +31,12 @@ namespace ordercloud.integrations.library.intefaces
 		/// A code that represents this categorization
 		/// </summary>
 		public string Code { get; set; }
+
 		/// <summary>
 		/// A reasonable short name for this categorization
 		/// </summary>
 		public string Description { get; set; }
+
 		/// <summary>
 		/// A full description for this categorization
 		/// </summary>

@@ -31,12 +31,14 @@ namespace Headstart.API.Commands
         public async Task<JObject> GetOrderAsync(string id, OrderType orderType, DecodedToken decodedToken)
         {
             var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+
             // Quote orders often won't have a hyphen in their order IDs, so allowing ID to be a fallback. This value is determined subsequently for quotes.
             var supplierID = id.Split("-").Length > 1 ? id.Split("-")[1] : id;
             if (orderType != OrderType.Quote)
             {
                 Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierID == me.Supplier.ID, new ErrorCode("Unauthorized", $"You are not authorized view this order", HttpStatusCode.Unauthorized));
             }
+
             try
             {
                 var type =

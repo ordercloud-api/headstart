@@ -52,6 +52,7 @@ namespace Headstart.Common.Repositories.Models
         public decimal Price { get; set; }
         public decimal Cost { get; set; }
     }
+
     public class ProductSaleDetail
     {
         public double ThreeMonthQuantity { get; set; }

@@ -105,6 +105,7 @@ namespace Headstart.Jobs
                 {
                     continue;
                 }
+
                 foreach (HSLineItem lineItem in lineItemsBySupplier)
                 {
                     var lineItemWithPurchaseOrder = new LineItemsWithPurchaseOrderFields
@@ -119,6 +120,7 @@ namespace Headstart.Jobs
                     result.Add(lineItemWithPurchaseOrder);
                 }
             }
+
             return result;
         }
 
@@ -147,6 +149,7 @@ namespace Headstart.Jobs
                     lineItemWithMiscFields.Tax = null;
                     lineItemWithMiscFields.LineTaxAvailable = false;
                 }
+
                 lineItemsWithMiscFields.Add(lineItemWithMiscFields);
             }
 

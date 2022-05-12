@@ -46,6 +46,7 @@ namespace ordercloud.integrations.exchangerates
         public string Name { get; set; }
         public string Symbol { get; set; }
     }
+
     public static class SymbolLookup
     {
         public static IDictionary<CurrencySymbol, CurrencyDisplay> CurrencySymbolLookup = new Dictionary<CurrencySymbol, CurrencyDisplay>()

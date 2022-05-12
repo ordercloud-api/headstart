@@ -18,6 +18,7 @@ namespace Headstart.Common.Controllers
 		{
 			_command = command;
 		}
+
 		/// <summary>
 		/// GET Super Product
 		/// </summary>
@@ -26,6 +27,7 @@ namespace Headstart.Common.Controllers
 		{
 			return await _command.Get(id, UserContext.AccessToken);
 		}
+
 		/// <summary>
 		/// LIST Super Product
 		/// </summary>
@@ -34,6 +36,7 @@ namespace Headstart.Common.Controllers
 		{
 			return await _command.List(args, UserContext.AccessToken);
 		}
+
 		/// <summary>
 		/// POST Super Product
 		/// </summary>
@@ -42,6 +45,7 @@ namespace Headstart.Common.Controllers
 		{
 			return await _command.Post(obj, UserContext);
 		}
+
 		/// <summary>
 		/// PUT Super Product
 		/// </summary>
@@ -61,6 +65,7 @@ namespace Headstart.Common.Controllers
 		}
 
 		// todo add auth for seller user
+
 		/// <summary>
 		/// GET Product pricing override
 		/// </summary>
@@ -71,6 +76,7 @@ namespace Headstart.Common.Controllers
 		}
 
 		// todo add auth for seller user
+
 		/// <summary>
 		/// CREATE Product pricing override
 		/// </summary>
@@ -81,6 +87,7 @@ namespace Headstart.Common.Controllers
 		}
 
 		// todo add auth for seller user
+
 		/// <summary>
 		/// PUT Product pricing override
 		/// </summary>
@@ -91,6 +98,7 @@ namespace Headstart.Common.Controllers
 		}
 
 		// todo add auth for seller user
+
 		/// <summary>
 		/// DELETE Product pricing override
 		/// </summary>
@@ -99,6 +107,7 @@ namespace Headstart.Common.Controllers
 		{
 			await _command.DeletePricingOverride(id, buyerID, UserContext.AccessToken);
 		}
+
 		/// <summary>
 		/// PATCH Product filter option override
 		/// </summary>

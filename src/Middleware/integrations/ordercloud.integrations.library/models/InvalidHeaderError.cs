@@ -10,6 +10,7 @@ namespace ordercloud.integrations.library
         {
             Header = name;
         }
+
         public string Header { get; set; }
     }
 }

@@ -8,12 +8,14 @@ namespace Headstart.Common.Services.Zoho.Models
         [JsonProperty(PropertyName = "items")]
         public List<ZohoLineItem> Items { get; set; }
     }
+
     public class ZohoLineItem
     {
         public string item_id { get; set; }
         public string line_item_id { get; set; }
         public string name { get; set; }
         public string description { get; set; }
+
         // public double item_order { get; set; } // debug removal
         // public double bcy_rate { get; set; } // debug removal
         public double rate { get; set; }
@@ -34,14 +36,17 @@ namespace Headstart.Common.Services.Zoho.Models
         // public string tax_type { get; set; }
         // public double? tax_percentage { get; set; }
         public double? item_total { get; set; }
+
         // public string account_id { get; set; }
         public string account_name { get; set; }
         public string line_id { get; set; }
         public string debit_or_credit { get; set; }
+
         // public double amount { get; set; }
         public string status { get; set; }
         public string tax_authority_id { get; set; }
         public string tax_exemption_id { get; set; }
+
         // public bool is_invoiced { get; set; }
         public List<string> tags { get; set; }
         public string source { get; set; }
@@ -49,12 +54,14 @@ namespace Headstart.Common.Services.Zoho.Models
         public double? pricebook_rate { get; set; }
         public bool? is_taxable { get; set; }
         public string stock_on_hand { get; set; }
+
         // public string purchase_account_id { get; set; }
         public string item_type { get; set; }
         public string sku { get; set; }
         public string purchase_description { get; set; }
         public double? discount { get; set; }
         public string avatax_tax_code { get; set; }
+
         // adding additional fields
         public string brand { get; set; }
         public string manufacturer { get; set; }

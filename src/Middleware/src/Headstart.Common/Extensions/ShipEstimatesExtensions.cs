@@ -35,6 +35,7 @@ namespace Headstart.Common.Extensions
                     };
                 }
             }
+
             return estimates;
         }
 
@@ -50,6 +51,7 @@ namespace Headstart.Common.Extensions
                 var supplier = suppliers.Items.FirstOrDefault(s => s.ID == supplierID);
                 var supplierLineItems = orderWorksheet.GetBuyerLineItemsBySupplierID(supplier?.ID);
                 var supplierSubTotal = supplierLineItems?.Select(li => li.LineSubtotal).Sum();
+
                 // TODO: Still waiting on decision makers to decide if we want
                 // Shipping Cost Schedules in HeadStart
 
@@ -101,6 +103,7 @@ namespace Headstart.Common.Extensions
             updatedEstimates = shipEstimates.Select(estimate => FilterDownFedexShippingRates(estimate)).ToList();
             return updatedEstimates;
         }
+
         public static async Task<IList<HSShipEstimate>> ConvertCurrency(this IList<HSShipEstimate> shipEstimates, CurrencySymbol shipperCurrency, CurrencySymbol buyerCurrency, IExchangeRatesCommand exchangeRates)
         {
             // If the Buyer's currency is USD, do not convert rates.

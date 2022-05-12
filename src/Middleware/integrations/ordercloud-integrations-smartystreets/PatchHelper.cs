@@ -20,6 +20,7 @@ namespace ordercloud.integrations.smartystreets
 					property.SetValue(existing, patchValue, null);
 				}
 			}
+
 			return existing;
 		}
 	}

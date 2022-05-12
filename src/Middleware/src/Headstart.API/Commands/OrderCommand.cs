@@ -62,6 +62,7 @@ namespace Headstart.API.Commands
         {
             var lineItem = await _oc.LineItems.GetAsync<HSLineItem>(OrderDirection.All, orderID, lineItemID);
             var orderObject = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.All, orderID);
+
             // SEND EMAIL NOTIFICATION TO BUYER
             await _sendgridService.SendQuoteRequestConfirmationEmail(orderObject, lineItem, orderObject.xp?.QuoteBuyerContactEmail);
             return lineItem;
@@ -73,6 +74,7 @@ namespace Headstart.API.Commands
             var updatedLineItem = await _oc.LineItems.PatchAsync<HSLineItem>(OrderDirection.All, orderID, lineItemID, linePatch);
             var orderPatch = new PartialOrder { xp = new { QuoteStatus = QuoteStatus.NeedsBuyerReview } };
             var updatedOrder = await _oc.Orders.PatchAsync<HSOrder>(OrderDirection.All, orderID, orderPatch);
+
             // SEND EMAIL NOTIFICATION TO BUYER
             await _sendgridService.SendQuotePriceConfirmationEmail(updatedOrder, updatedLineItem, updatedOrder.xp?.QuoteBuyerContactEmail);
             return updatedLineItem;
@@ -112,6 +114,7 @@ namespace Headstart.API.Commands
             {
                 throw new Exception("You are not authorized to view this order.");
             }
+
             return order;
         }
 
@@ -124,6 +127,7 @@ namespace Headstart.API.Commands
                     SubmittedOrderStatus = SubmittedOrderStatus.Completed
                 }
             };
+
             // Need to complete sales and purchase order and patch the xp.SubmittedStatus of both orders
             var salesOrderID = orderID.Split('-')[0];
             var completeSalesOrder = _oc.Orders.CompleteAsync(OrderDirection.Incoming, salesOrderID);
@@ -172,6 +176,7 @@ namespace Headstart.API.Commands
             var lineItems = _oc.LineItems.ListAllAsync(OrderDirection.Incoming, orderID);
             var promotions = _oc.Orders.ListAllPromotionsAsync(OrderDirection.Incoming, orderID);
             var payments = _oc.Payments.ListAllAsync(OrderDirection.Incoming, order.ID);
+
             // bug in catalyst tries to list all by ID but ID doesn't exist on approval rules
             // https://github.com/ordercloud-api/ordercloud-dotnet-catalyst/issues/33
             // var approvals = _oc.Orders.ListAllApprovalsAsync(OrderDirection.Incoming, orderID);

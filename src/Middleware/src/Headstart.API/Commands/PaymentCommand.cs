@@ -41,6 +41,7 @@ namespace Headstart.API.Commands
                 {
                     await UpdateCCPaymentAsync(requestedPayment, existingPayment, worksheet, userToken);
                 }
+
                 if (requestedPayment.Type == PaymentType.PurchaseOrder)
                 {
                     await UpdatePoPaymentAsync(requestedPayment, existingPayment, worksheet);
@@ -121,6 +122,7 @@ namespace Headstart.API.Commands
                         await _oc.Payments.DeleteAsync(OrderDirection.Incoming, order.ID, existingPayment.ID);
                         existingPayments.Remove(existingPayment);
                     }
+
                     if (existingPayment.Type == PaymentType.CreditCard)
                     {
                         await DeleteCreditCardPaymentAsync(existingPayment, order, userToken);
@@ -133,6 +135,7 @@ namespace Headstart.API.Commands
                     }
                 }
             }
+
             return existingPayments;
         }
     }

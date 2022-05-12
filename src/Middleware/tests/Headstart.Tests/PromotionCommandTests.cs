@@ -166,6 +166,7 @@ namespace Headstart.Tests
             {
                 await oc.Orders.Received().AddPromotionAsync(OrderDirection.Incoming, orderID, promo.Code);
             }
+
             foreach (var promo in orderpromolist.Result.Items)
             {
                 await oc.Orders.Received().RemovePromotionAsync(OrderDirection.Incoming, orderID, promo.Code);

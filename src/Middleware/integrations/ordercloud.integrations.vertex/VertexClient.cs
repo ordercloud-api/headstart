@@ -36,11 +36,13 @@ namespace ordercloud.integrations.vertex
 			{
 				_token = await GetToken(_config);
 			}
+
 			var response = await (await request()).GetJsonAsync<VertexResponse<T>>();
 			if (response.errors.Exists(e => e.detail == "invalid access token"))
 			{
 				// refresh the token
 				_token = await GetToken(_config);
+
 				// try the request again
 				response = await (await request()).GetJsonAsync<VertexResponse<T>>();
 			}

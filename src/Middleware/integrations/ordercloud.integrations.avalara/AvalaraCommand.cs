@@ -24,6 +24,7 @@ namespace ordercloud.integrations.avalara
 		/// Calculates tax for an order without creating any records. Use this to display tax amount to user prior to order submit.
 		/// </summary>
 		Task<OrderTaxCalculation> CalculateEstimateAsync(OrderWorksheet orderWorksheet, List<OrderPromotion> promotions);
+
 		/// <summary>
 		/// Creates a tax transaction record in the calculating system. Use this once on purchase, payment capture, or fulfillment.
 		/// </summary>
@@ -75,6 +76,7 @@ namespace ordercloud.integrations.avalara
             {
                 return CreateMockTransactionModel();
             }
+
 			var taxEstimate = await CreateTransactionAsync(DocumentType.SalesOrder, orderWorksheet, promotions);
 			return taxEstimate;
 		}
@@ -155,6 +157,7 @@ namespace ordercloud.integrations.avalara
                     {
                         return CreateMockTransactionModel();
                     }
+
 					var createTransactionModel = orderWorksheet.ToAvalaraTransactionModel(_companyCode, docType, promotions);
 					var transaction = await _avaTax.CreateTransactionAsync(string.Empty, createTransactionModel);
 					return transaction.ToOrderTaxCalculation();

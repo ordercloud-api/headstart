@@ -11,6 +11,7 @@ namespace Headstart.Common.Services.Zoho.Resources
     {
         Task<ZohoItemList> ListAsync(params ZohoFilter[] filters);
         Task<TZohoItemList> ListAsync<TZohoItemList>(params ZohoFilter[] filters) where TZohoItemList : ZohoItemList;
+
         // Task<ZohoLineItem> GetAsync(string id);
         // Task<TZohoItem> GetAsync<TZohoItem>(string id) where TZohoItem : ZohoLineItem;
         Task<ZohoLineItem> SaveAsync(ZohoLineItem item);

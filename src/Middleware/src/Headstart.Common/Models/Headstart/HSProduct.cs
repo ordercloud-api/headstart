@@ -57,6 +57,7 @@ namespace Headstart.Models
         [OrchestrationIgnore]
         public dynamic IntegrationData { get; set; }
         public Dictionary<string, List<string>> Facets = new Dictionary<string, List<string>>();
+
         // END DO NOT DELETE
         [System.ComponentModel.DataAnnotations.Required]
         public ObjectStatus? Status { get; set; }

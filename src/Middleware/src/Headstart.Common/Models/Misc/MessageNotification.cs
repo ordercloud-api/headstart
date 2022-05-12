@@ -23,6 +23,7 @@ namespace Headstart.Models.Misc
         public List<HSLineItem> LineItems { get; set; }
         public List<HSProduct> Products { get; set; }
     }
+
     public class PasswordResetEventBody
     {
         public string Username { get; set; }
@@ -30,11 +31,13 @@ namespace Headstart.Models.Misc
         public string PasswordRenewalVerificationCode { get; set; }
         public string PasswordRenewalUrl { get; set; }
     }
+
     public class MessageConfigData
     {
         public MessageTypeConfig[] MessageTypeConfig { get; set; }
         public string ApiKey;
     }
+
     public class MessageTypeConfig
     {
         public string FromEmail { get; set; }

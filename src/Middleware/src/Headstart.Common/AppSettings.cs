@@ -96,6 +96,7 @@ namespace Headstart.Common
         public string MarketplaceName { get; set; } // used for display purposes
         public string WebhookHashKey { get; set; }
 		public string IncrementorPrefix { get; set; }
+
         // Comma-separated list
         public string ClientIDsWithAPIAccess { get; set; }
 	}

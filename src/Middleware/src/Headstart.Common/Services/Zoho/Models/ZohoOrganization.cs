@@ -10,6 +10,7 @@ namespace Headstart.Common.Services.Zoho.Models
         [JsonProperty(PropertyName = "organizations")]
         public List<ZohoOrganization> Items { get; set; }
     }
+
     public class ZohoOrganization
     {
         public string organization_id { get; set; }

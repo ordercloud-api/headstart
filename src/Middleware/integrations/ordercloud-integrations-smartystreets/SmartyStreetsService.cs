@@ -13,9 +13,11 @@ namespace ordercloud.integrations.smartystreets
 	{
 		// returns many incomplete address suggestions
 		Task<AutoCompleteResponse> USAutoCompletePro(string search);
+
 		// returns one or zero very complete suggestions
 		Task<List<Candidate>> ValidateSingleUSAddress(Lookup lookup);
 	}
+
 	public class SmartyStreetsService : ISmartyStreetsService
 	{
 		private readonly SmartyStreetsConfig _config;

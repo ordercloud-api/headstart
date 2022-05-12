@@ -20,8 +20,10 @@ namespace Headstart.Models
         {
             /// <summary>Cannot proceed until all shipping selections have been made.</summary>
             public static ErrorCode<MissingShippingSelectionError> MissingShippingSelection => All["Checkout.MissingShippingSelection"] as ErrorCode<MissingShippingSelectionError>;
+
             /// <summary>This ShipFromAddressID does not exist on the order.</summary>
             public static ErrorCode<InvalidShipFromAddressIDError> InvalidShipFromAddress => All["Checkout.InvalidShipFromAddress"] as ErrorCode<InvalidShipFromAddressIDError>;
+
             /// <summary>Product dimensions are not set for a product on this order.</summary>
             public static ErrorCode<MissingProductDimensionsError> MissingProductDimensions => All["Checkout.MissingProductDimensions"] as ErrorCode<MissingProductDimensionsError>;
         }

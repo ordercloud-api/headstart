@@ -46,6 +46,7 @@ namespace Headstart.Common.Models
         public List<string> RMAStatus { get; set; }
         public List<string> ShippingStatus { get; set; }
         public List<string> Status { get; set; }
+
         // Only properties that are nested and being used as filters need to be setup here with their relative path and their full path.
         public static readonly Dictionary<string, string> NestedLocations = new Dictionary<string, string>
         {

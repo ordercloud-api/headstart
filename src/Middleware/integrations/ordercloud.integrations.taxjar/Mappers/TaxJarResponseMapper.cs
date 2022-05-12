@@ -44,6 +44,7 @@ namespace ordercloud.integrations.taxjar
 			{
 				tax.ShipEstimateID = shipEstimateID;
  			}
+
 			return taxes;
 		}
 
@@ -64,6 +65,7 @@ namespace ordercloud.integrations.taxjar
 					ShipEstimateID = null
 				});
 			}
+
 			if (breakdown.CityAmount > 0)
 			{
 				jurisidctions.Add(new TaxDetails()
@@ -77,6 +79,7 @@ namespace ordercloud.integrations.taxjar
 					ShipEstimateID = null
 				});
 			}
+
 			if (breakdown.StateAmount > 0)
 			{
 				jurisidctions.Add(new TaxDetails()
@@ -90,6 +93,7 @@ namespace ordercloud.integrations.taxjar
 					ShipEstimateID = null
 				});
 			}
+
 			if (breakdown.SpecialDistrictAmount > 0)
 			{
 				jurisidctions.Add(new TaxDetails()
@@ -103,6 +107,7 @@ namespace ordercloud.integrations.taxjar
 					ShipEstimateID = null
 				});
 			}
+
 			return jurisidctions;
 		}
 	}

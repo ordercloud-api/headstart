@@ -33,6 +33,7 @@ namespace Headstart.API.Commands.Crud
 		public string SpecID { get; set; }
 		public string OptionID { get; set; }
 	}
+
 	public class HSProductCommand : IHSProductCommand
 	{
 		private readonly IOrderCloudClient _oc;
@@ -124,6 +125,7 @@ namespace Headstart.API.Commands.Crud
 			{
 				priceSchedule = new PriceSchedule();
 			}
+
 			var specs = _oc.Products.ListSpecsAsync(id, null, null, null, 1, 100, null, token);
 			var variants = _oc.Products.ListVariantsAsync<HSVariant>(id, null, null, null, 1, 100, null, token);
 			try
@@ -273,8 +275,10 @@ namespace Headstart.API.Commands.Crud
 					// It's most likely the same variant
 					return false;
                 }
+
 				return true;
             }
+
 			return false;
         }
 
@@ -282,15 +286,19 @@ namespace Headstart.API.Commands.Crud
 		{
 			// Update the Product itself
 			var updatedProduct = await _oc.Products.SaveAsync<HSProduct>(superProduct.Product.ID, superProduct.Product, token);
+
 			// Two spec lists to compare (requestSpecs and existingSpecs)
 			IList<Spec> requestSpecs = superProduct.Specs.ToList();
 			IList<Spec> existingSpecs = (await _oc.Products.ListSpecsAsync(id, accessToken: token)).Items.ToList();
+
 			// Two variant lists to compare (requestVariants and existingVariants)
 			IList<HSVariant> requestVariants = superProduct.Variants;
 			IList<Variant> existingVariants = (await _oc.Products.ListVariantsAsync(id, pageSize: 100, accessToken: token)).Items.ToList();
+
 			// Calculate differences in specs - specs to add, and specs to delete
 			var specsToAdd = requestSpecs.Where(s => !existingSpecs.Any(s2 => s2.ID == s.ID)).ToList();
 			var specsToDelete = existingSpecs.Where(s => !requestSpecs.Any(s2 => s2.ID == s.ID)).ToList();
+
 			// Get spec options to add -- WAIT ON THESE, RUN PARALLEL THE ADD AND DELETE SPEC REQUESTS
 			foreach (var rSpec in requestSpecs)
 			{
@@ -303,6 +311,7 @@ namespace Headstart.API.Commands.Crud
 					}
 				}
 			}
+
 			// Create new specs and Delete removed specs
 			var defaultSpecOptions = new List<DefaultOptionSpecAssignment>();
 			await Throttler.RunAsync(specsToAdd, 100, 5, s =>
@@ -312,16 +321,20 @@ namespace Headstart.API.Commands.Crud
 				return _oc.Specs.SaveAsync<Spec>(s.ID, s, accessToken: token);
 			});
 			await Throttler.RunAsync(specsToDelete, 100, 5, s => _oc.Specs.DeleteAsync(s.ID, accessToken: token));
+
 			// Add spec options for new specs
 			foreach (var spec in specsToAdd)
 			{
 				await Throttler.RunAsync(spec.Options, 100, 5, o => _oc.Specs.CreateOptionAsync(spec.ID, o, accessToken: token));
 			}
+
 			// Patch Specs with requested DefaultOptionID
 			await Throttler.RunAsync(defaultSpecOptions, 100, 10, a => _oc.Specs.PatchAsync(a.SpecID, new PartialSpec { DefaultOptionID = a.OptionID }, accessToken: token));
+
 			// Make assignments for the new specs
 			await Throttler.RunAsync(specsToAdd, 100, 5, s => _oc.Specs.SaveProductAssignmentAsync(new SpecProductAssignment { ProductID = id, SpecID = s.ID }, accessToken: token));
 			HandleSpecOptionChanges(requestSpecs, existingSpecs, token);
+
 			// Check if Variants differ
 			var variantsAdded = requestVariants.Any(v => !existingVariants.Any(v2 => v2.ID == v.ID));
 			var variantsRemoved = existingVariants.Any(v => !requestVariants.Any(v2 => v2.ID == v.ID));
@@ -335,12 +348,14 @@ namespace Headstart.API.Commands.Crud
                 {
                     continue;
                 }
+
 				hasVariantChange = HasVariantChange(variant, currVariant.First());
 				if (hasVariantChange)
                 {
                     break;
                 }
 			}
+
 			// IF variants differ, then re-generate variants and re-patch IDs to match the user input.
 			if (variantsAdded || variantsRemoved || hasVariantChange || requestVariants.Any(v => v.xp.NewID != null))
 			{
@@ -349,6 +364,7 @@ namespace Headstart.API.Commands.Crud
 
 				// Re-generate Variants
 				await _oc.Products.GenerateVariantsAsync(id, overwriteExisting: true, accessToken: token);
+
 				// Patch NEW variants with the User Specified ID (Name,ID), and correct xp values (SKU)
 				await Throttler.RunAsync(superProduct.Variants, 100, 5, v =>
 				{
@@ -358,6 +374,7 @@ namespace Headstart.API.Commands.Crud
 					{
 						v.Inventory = new PartialVariantInventory { QuantityAvailable = 0 };
 					}
+
 					if (superProduct.Product?.Inventory == null)
 					{
 						// If Inventory doesn't exist on the product, don't patch variants with inventory either.
@@ -369,6 +386,7 @@ namespace Headstart.API.Commands.Crud
 					}
 				});
 			}
+
 			// If applicable, update OR create the Product PriceSchedule
 			var tasks = new List<Task>();
 			Task<PriceSchedule> priceScheduleReq = null;
@@ -377,9 +395,11 @@ namespace Headstart.API.Commands.Crud
 				priceScheduleReq = UpdateRelatedPriceSchedules(superProduct.PriceSchedule, token);
 				tasks.Add(priceScheduleReq);
 			}
+
 			// List Variants
 			var variantsReq = _oc.Products.ListVariantsAsync<HSVariant>(id, pageSize: 100, accessToken: token);
 			tasks.Add(variantsReq);
+
 			// List Product Specs
 			var specsReq = _oc.Products.ListSpecsAsync<Spec>(id, accessToken: token);
 			tasks.Add(specsReq);
@@ -431,6 +451,7 @@ namespace Headstart.API.Commands.Crud
 					return _oc.PriceSchedules.PatchAsync(p.ID, patch, ocAuth.AccessToken);
 				});
 			}
+
 			return await _oc.PriceSchedules.SaveAsync<PriceSchedule>(updated.ID, updated, token);
 		}
 
@@ -440,34 +461,42 @@ namespace Headstart.API.Commands.Crud
             {
                 return true;
             }
+
 			if (variant.Description != currVariant.Description)
             {
                 return true;
             }
+
 			if (variant.Name != currVariant.Name)
             {
                 return true;
             }
+
 			if (variant.ShipHeight != currVariant.ShipHeight)
             {
                 return true;
             }
+
 			if (variant.ShipLength != currVariant.ShipLength)
             {
                 return true;
             }
+
 			if (variant.ShipWeight != currVariant.ShipWeight)
             {
                 return true;
             }
+
 			if (variant.ShipWidth != currVariant.ShipWidth)
             {
                 return true;
             }
+
 			if (variant?.Inventory?.LastUpdated != currVariant?.Inventory?.LastUpdated)
             {
                 return true;
             }
+
 			if (variant?.Inventory?.QuantityAvailable != currVariant?.Inventory?.QuantityAvailable)
             {
                 return true;
@@ -487,8 +516,10 @@ namespace Headstart.API.Commands.Crud
 				{
 					specOpts.Add(requestSpecOption);
 				}
+
 				requestSpecOptions.Add(requestSpec.ID, specOpts);
 			}
+
 			foreach (Spec existingSpec in existingSpecs)
 			{
 				foreach (SpecOption existingSpecOption in existingSpec.Options)
@@ -496,6 +527,7 @@ namespace Headstart.API.Commands.Crud
 					existingSpecOptions.Add(existingSpecOption);
 				}
 			}
+
 			foreach (var spec in requestSpecOptions)
 			{
 				IList<SpecOption> changedSpecOptions = ChangedSpecOptions(spec.Value, existingSpecOptions);
@@ -515,18 +547,22 @@ namespace Headstart.API.Commands.Crud
             {
                 return false;
             }
+
 			if (matchingOption.PriceMarkup != requestOption.PriceMarkup)
             {
                 return true;
             }
+
 			if (matchingOption.IsOpenText != requestOption.IsOpenText)
             {
                 return true;
             }
+
 			if (matchingOption.ListOrder != requestOption.ListOrder)
             {
                 return true;
             }
+
 			if (matchingOption.PriceMarkupType != requestOption.PriceMarkupType)
             {
                 return true;
@@ -548,10 +584,12 @@ namespace Headstart.API.Commands.Crud
 			{
 				tasks.Add(Throttler.RunAsync(product.xp.Images, 100, 5, i => _assetClient.DeleteAssetByUrl(i.Url)));
 			}
+
 			if (product?.xp?.Documents != null && product?.xp?.Documents.Count() > 0)
 			{
 				tasks.Add(Throttler.RunAsync(product.xp.Documents, 100, 5, d => _assetClient.DeleteAssetByUrl(d.Url)));
 			}
+
 			// Delete images, attachments, and assignments associated with the requested product
 			await Task.WhenAll(tasks);
 		}
@@ -563,6 +601,7 @@ namespace Headstart.API.Commands.Crud
             {
                 throw new Exception($"Default supplier client not found. SupplierID: {supplierID}");
             }
+
 			var configToUse = new OrderCloudClientConfig
 			{
 				ApiUrl = decodedToken.ApiUrl,
@@ -587,6 +626,7 @@ namespace Headstart.API.Commands.Crud
 			{
 				facetDataFormattedCollection.Add(kvp);
 			}
+
 			dynamic facetDataFormattedDynamic = facetDataFormatted;
 
 			// Update the product with a supplier token

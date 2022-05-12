@@ -163,6 +163,7 @@ namespace Headstart.API.Commands
                             }
                     }
                 }
+
                 userGroups.Items = userBuyerLocationAssignments;
                 userGroups.Meta = new ListPageMeta()
                 {
@@ -170,6 +171,7 @@ namespace Headstart.API.Commands
                     PageSize = 100
                 };
             }
+
             return userGroups;
         }
 

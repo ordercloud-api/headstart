@@ -19,6 +19,7 @@ namespace Headstart.API.Commands
     {
         Task<HSOrder> SubmitOrderAsync(string orderID, OrderDirection direction, OrderCloudIntegrationsCreditCardPayment payment, string userToken);
     }
+
     public class OrderSubmitCommand : IOrderSubmitCommand
     {
         private readonly IOrderCloudClient _oc;
@@ -38,12 +39,14 @@ namespace Headstart.API.Commands
             await ValidateOrderAsync(worksheet, payment, userToken);
 
             var incrementedOrderID = await IncrementOrderAsync(worksheet);
+
             // If Credit Card info is null, payment is a Purchase Order, thus skip CC validation
             if (payment.CreditCardDetails != null || payment.CreditCardID != null)
             {
                 payment.OrderID = incrementedOrderID;
                 await _card.AuthorizePayment(payment, userToken, GetMerchantID(payment));
             }
+
             try
             {
                 return await _oc.Orders.SubmitAsync<HSOrder>(direction, incrementedOrderID, userToken);
@@ -109,6 +112,7 @@ namespace Headstart.API.Commands
                     inactiveLineItems.Add(lineItem);
                 }
             }
+
             return inactiveLineItems;
         }
 
@@ -120,11 +124,13 @@ namespace Headstart.API.Commands
                 // so buyer needs to resubmit but we don't want to increment order again
                 return worksheet.Order.ID;
             }
+
             if (worksheet.Order.ID.StartsWith(_settings.OrderCloudSettings.IncrementorPrefix))
             {
                 // order has already been incremented, no need to increment again
                 return worksheet.Order.ID;
             }
+
             var order = await _oc.Orders.PatchAsync(OrderDirection.Incoming, worksheet.Order.ID, new PartialOrder
             {
                 ID = _settings.OrderCloudSettings.IncrementorPrefix + "{orderIncrementor}"

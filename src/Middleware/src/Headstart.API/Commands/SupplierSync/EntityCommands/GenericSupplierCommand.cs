@@ -50,6 +50,7 @@ namespace Headstart.API.Commands
             catch (OrderCloudException)
             {
             }
+
             var salesOrderID = orderType == OrderType.Standard ? id.Split('-')[0] : id;
             var buyerWorksheet = await _ocSeller.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, salesOrderID, ocAuth.AccessToken);
             var supplierID = supplierWorksheet?.Order?.ToCompanyID;
@@ -57,6 +58,7 @@ namespace Headstart.API.Commands
             {
                 supplierID = buyerWorksheet.LineItems[0].SupplierID;
             }
+
             var buyerLineItems = buyerWorksheet.GetBuyerLineItemsBySupplierID(supplierID);
             if (buyerWorksheet?.ShipEstimateResponse != null && buyerWorksheet?.ShipEstimateResponse?.ShipEstimates.Count > 0)
             {
@@ -98,6 +100,7 @@ namespace Headstart.API.Commands
             {
                 returnObject.Add(new JProperty("ShipMethod", JToken.FromObject(ship_method)));
             }
+
             return JObject.FromObject(returnObject);
         }
 

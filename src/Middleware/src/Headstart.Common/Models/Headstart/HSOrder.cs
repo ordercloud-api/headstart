@@ -50,6 +50,7 @@ namespace Headstart.Models
         public int EstimatedTransitDays { get; set; }
         public string Name { get; set; } // e.g. "Fedex PRIORITY_OVERNIGHT"
         public string ShipFromAddressID { get; set; }
+
         // Do not include buyer's cost. That is none of the supplier's beeswax
     }
 

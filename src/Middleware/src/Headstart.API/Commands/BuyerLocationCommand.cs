@@ -73,15 +73,18 @@ namespace Headstart.API.Commands
                 // prevents prefix duplication with address validation prewebhooks
                 return idInRequest;
             }
+
             if (idInRequest == null || idInRequest.Length == 0)
             {
                 return buyerID + "-{" + buyerID + "-LocationIncrementor}";
             }
+
             if (idInRequest.StartsWith(buyerID + "-"))
 			{
                 // prevents prefix duplication
                 return idInRequest;
             }
+
             return buyerID + "-" + idInRequest.Replace("-", "_");
         }
 
@@ -115,6 +118,7 @@ namespace Headstart.API.Commands
             catch (Exception e)
             {
             } // Do nothing if not found
+
             var updatedBuyerAddress = await ocClient.Addresses.SaveAsync<HSAddressBuyer>(buyerID, buyerLocationID, buyerLocation.Address, accessToken: token);
             var updatedBuyerUserGroup = await ocClient.UserGroups.SaveAsync<HSLocationUserGroup>(buyerID, buyerLocationID, buyerLocation.UserGroup, accessToken: token);
             var location = new HSBuyerLocation
@@ -128,6 +132,7 @@ namespace Headstart.API.Commands
                 var groups = CreateLocationUserGroupsAndApprovalRule(buyerLocationID, buyerLocation.Address.AddressName, token, ocClient);
                 await Task.WhenAll(assignments, groups);
             }
+
             return location;
         }
 

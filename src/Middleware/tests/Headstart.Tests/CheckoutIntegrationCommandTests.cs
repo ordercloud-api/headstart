@@ -169,6 +169,7 @@ namespace Headstart.Tests
                 LineItems = lineItems.ToList()
             };
         }
+
         private HSSupplier MockSupplier(string id = "mockID", int freeShippingThreshold = 500)
         {
             return new HSSupplier

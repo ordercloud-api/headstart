@@ -8,6 +8,7 @@ namespace Headstart.Models
     public class HSAddressBuyer : Address<BuyerAddressXP>, IHSObject
     {
     }
+
     public class HSAddressMeBuyer : BuyerAddress<BuyerAddressXP>, IHSObject
     {
     }

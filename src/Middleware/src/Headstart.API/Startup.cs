@@ -152,6 +152,7 @@ namespace Headstart.API
                 default:
                     break;
             }
+
             var smartyService = new SmartyStreetsService(_settings.SmartyStreetSettings, smartyStreetsUsClient);
 
             services.AddMvc(o =>
@@ -287,9 +288,11 @@ namespace Headstart.API
                             .HandleTransientHttpError()
                             .OrResult(response => response.StatusCode == HttpStatusCode.TooManyRequests)
                             .WaitAndRetryAsync(delay);
+
             // Flurl setting for JSON serialization
             var jsonSettings = new JsonSerializerSettings();
             jsonSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+
             // Flurl setting for request timeout
             var timeout = TimeSpan.FromSeconds(_settings.FlurlSettings.TimeoutInSeconds == 0 ? 30 : _settings.FlurlSettings.TimeoutInSeconds);
 

@@ -7,6 +7,7 @@ namespace Headstart.Common.Repositories
     public interface IRMARepo : IRepository<RMA>
     {
     }
+
     public class RMARepo : CosmosDbRepository<RMA>, IRMARepo
     {
         public override string ContainerName { get; } = "rmas";

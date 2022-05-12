@@ -97,6 +97,7 @@ namespace Headstart.API.Commands
             var updatedLineItems = await Throttler.RunAsync(lineItemStatusChanges.Changes, 100, 5, (lineItemStatusChange) =>
             {
                 var newPartialLineItem = BuildNewPartialLineItem(lineItemStatusChange, previousLineItemsStates.ToList(), lineItemStatusChanges.Status);
+
                // if there is no verified user passed in it has been called from somewhere else in the code base and will be done with the client grant access
                return decodedToken != null ? _oc.LineItems.PatchAsync<HSLineItem>(orderDirection, orderID, lineItemStatusChange.ID, newPartialLineItem, decodedToken.AccessToken) : _oc.LineItems.PatchAsync<HSLineItem>(orderDirection, orderID, lineItemStatusChange.ID, newPartialLineItem);
             });
@@ -295,6 +296,7 @@ namespace Headstart.API.Commands
                             {
                                 tos.Add(new EmailAddress(seller.Email));
                             }
+
                             if (seller?.xp?.AddtlRcpts?.Any() ?? false)
                             {
                                 foreach (var rcpt in seller.xp.AddtlRcpts)
@@ -303,6 +305,7 @@ namespace Headstart.API.Commands
                                 }
                             }
                         }
+
                         var shouldNotify = !(LineItemStatusConstants.LineItemStatusChangesDontNotifySetter.Contains(lineItemStatusChanges.Status) && setterUserType == VerifiedUserType.admin);
                         if (shouldNotify)
                         {
@@ -323,6 +326,7 @@ namespace Headstart.API.Commands
                                     {
                                         tos.Add(new EmailAddress(rcpt));
                                     }
+
                                     await _sendgridService.SendLineItemStatusChangeEmailMultipleRcpts(buyerOrder, lineItemStatusChanges, lineItemsChanged.ToList(), tos, emailText);
                                 }
                             });
@@ -395,6 +399,7 @@ namespace Headstart.API.Commands
                     countCanBeChanged += entry.Value;
                 }
             }
+
             return countCanBeChanged >= lineItemStatusChange.Quantity;
         }
 
@@ -429,6 +434,7 @@ namespace Headstart.API.Commands
             {
                 li = await _oc.LineItems.CreateAsync<HSLineItem>(OrderDirection.Incoming, orderID, liReq);
             }
+
             await _promotionCommand.AutoApplyPromotions(orderID);
             return li;
         }
@@ -443,6 +449,7 @@ namespace Headstart.API.Commands
                 var product = await _meProductCommand.Get(lineItem.ProductID, decodedToken);
                 await ValidateLineItemUnitCost(orderID, product, existingLineItems, null);
             }
+
             await _promotionCommand.AutoApplyPromotions(orderID);
         }
 
@@ -458,6 +465,7 @@ namespace Headstart.API.Commands
                         totalQuantity += lineItem.Quantity;
                     }
                 }
+
                 var selectedPriceBreak = product.PriceSchedule.PriceBreaks.Last(priceBreak => priceBreak.Quantity <= totalQuantity);
                 decimal priceBasedOnQuantity = product.PriceSchedule.IsOnSale ? (decimal)selectedPriceBreak.SalePrice : selectedPriceBreak.Price;
                 var tasks = new List<Task>();
@@ -472,7 +480,9 @@ namespace Headstart.API.Commands
                        tasks.Add(_oc.LineItems.PatchAsync<HSLineItem>(OrderDirection.Incoming, orderID, lineItem.ID, lineItemToPatch));
                    }
                 }
+
                 await Task.WhenAll(tasks);
+
                 // Return the item total for the li being added or modified
                 return li == null ? 0 : priceBasedOnQuantity + GetSpecMarkup(li.Specs, product.Specs);
             }
@@ -484,9 +494,11 @@ namespace Headstart.API.Commands
                     // Determine price including quantity price break discount
                     var selectedPriceBreak = product.PriceSchedule.PriceBreaks.Last(priceBreak => priceBreak.Quantity <= li.Quantity);
                     decimal priceBasedOnQuantity = product.PriceSchedule.IsOnSale ? (decimal)selectedPriceBreak.SalePrice : selectedPriceBreak.Price;
+
                     // Determine markup for the 1 line item
                     lineItemTotal = priceBasedOnQuantity + GetSpecMarkup(li.Specs, product.Specs);
                 }
+
                 return lineItemTotal;
             }
         }
@@ -497,6 +509,7 @@ namespace Headstart.API.Commands
             {
                 return;
             }
+
             string orderID;
             if (rmaWithLineItemStatusByQuantity.RMA.SupplierID == null)
             {
@@ -508,6 +521,7 @@ namespace Headstart.API.Commands
                 // this is a suplier owned RMA and by convention orders are in the format {orderID}-{supplierID}
                 orderID = $"{rmaWithLineItemStatusByQuantity.RMA.SourceOrderID}-{rmaWithLineItemStatusByQuantity.RMA.SupplierID}";
             }
+
             foreach (var statusChange in rmaWithLineItemStatusByQuantity.LineItemStatusChangesList)
             {
                 await UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Incoming, orderID, statusChange, decodedToken);
@@ -524,6 +538,7 @@ namespace Headstart.API.Commands
                 {
                     relatedSpecMarkup = relatedProductSpec.Options?.FirstOrDefault(option => option.ID == spec.OptionID)?.PriceMarkup;
                 }
+
                 return accumulator + (relatedSpecMarkup ?? 0M);
             });
             return lineItemTotal;
@@ -543,6 +558,7 @@ namespace Headstart.API.Commands
                     return false;
                 }
             }
+
             foreach (var spec1 in li1.Specs)
             {
                 var spec2 = (li2.Specs as List<LineItemSpec>)?.Find(s => s.SpecID == spec1.SpecID);
@@ -551,6 +567,7 @@ namespace Headstart.API.Commands
                     return false;
                 }
             }
+
             return true;
         }
     }

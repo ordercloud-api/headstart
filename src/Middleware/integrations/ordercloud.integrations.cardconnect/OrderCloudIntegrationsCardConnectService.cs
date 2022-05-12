@@ -31,6 +31,7 @@ namespace ordercloud.integrations.cardconnect
         public string CadMerchantID { get; set; }
         public string EurMerchantID { get; set; }
     }
+
     public enum AppEnvironment
     {
         Test,
@@ -48,6 +49,7 @@ namespace ordercloud.integrations.cardconnect
         public OrderCloudIntegrationsCardConnectService(OrderCloudIntegrationsCardConnectConfig config, string environment, IFlurlClientFactory flurlFactory)
         {
             Config = config;
+
             // if no credentials are provided in Test and UAT, responses will be mocked.
             noAccountCredentials = string.IsNullOrEmpty(config?.Authorization) && string.IsNullOrEmpty(config?.AuthorizationCad);
             appEnvironment = (AppEnvironment)Enum.Parse(typeof(AppEnvironment), environment);
@@ -94,6 +96,7 @@ namespace ordercloud.integrations.cardconnect
             {
                 return attempt;
             }
+
             throw new CardConnectCaptureException(
                 new ApiError
                 {
@@ -123,6 +126,7 @@ namespace ordercloud.integrations.cardconnect
             {
                 return attempt;
             }
+
             throw new CreditCardVoidException(
                 new ApiError()
                 {
@@ -144,6 +148,7 @@ namespace ordercloud.integrations.cardconnect
             {
                 return attempt;
             }
+
             throw new CardConnectInquireException(
                 new ApiError()
                 {
@@ -163,6 +168,7 @@ namespace ordercloud.integrations.cardconnect
             {
                 return attempt;
             }
+
             throw new CreditCardRefundException(
                 new ApiError()
                 {
@@ -236,6 +242,7 @@ namespace ordercloud.integrations.cardconnect
 
             return response;
         }
+
         private async Task<CardConnectAuthorizationResponse> PostAuthorizationAsync(CardConnectAuthorizationRequest request)
         {
             CardConnectAuthorizationResponse attempt = new CardConnectAuthorizationResponse();
@@ -255,6 +262,7 @@ namespace ordercloud.integrations.cardconnect
             {
                 return attempt;
             }
+
             throw new CreditCardAuthorizationException(
                 new ApiError()
                 {

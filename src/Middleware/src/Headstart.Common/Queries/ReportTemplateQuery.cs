@@ -44,6 +44,7 @@ namespace Headstart.Common.Queries
             {
                 templates = await _store.Query(feedOptions).Where(x => x.ReportType == reportType && x.AvailableToSuppliers == true).ToListAsync();
             }
+
             return templates;
         }
 

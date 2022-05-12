@@ -117,6 +117,7 @@ namespace Headstart.API.Commands
                 ClientSecret = RandomGen.GetString(AllowedSecretChars, 60)
             };
         }
+
         public static ApiClient SellerClient()
         {
             return new ApiClient()
@@ -215,8 +216,10 @@ namespace Headstart.API.Commands
                         MessageType.NewUserInvitation,
                         MessageType.OrderApproved,
                         MessageType.OrderDeclined,
+
                         // MessageType.OrderSubmitted, this is currently being handled in PostOrderSubmitCommand, possibly move to message senders
                         MessageType.OrderSubmittedForApproval,
+
                         // MessageType.OrderSubmittedForYourApprovalHasBeenApproved, // too noisy
                         // MessageType.OrderSubmittedForYourApprovalHasBeenDeclined, // too noisy
                         // MessageType.ShipmentCreated this is currently being triggered in-app possibly move to message senders

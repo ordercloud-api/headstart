@@ -16,6 +16,7 @@ namespace Headstart.Common.Services.Zoho.Models
         public string designation { get; set; }
         public string department { get; set; }
         public string skype { get; set; }
+
         // public bool is_primary_contact { get; set; }
         public bool enable_portal { get; set; }
     }

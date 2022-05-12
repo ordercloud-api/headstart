@@ -24,6 +24,7 @@ namespace ordercloud.integrations.taxjar
 					return c.Name.ToLower().Contains(search) || c.Description.ToLower().Contains(search);
 				});
 			}
+
 			var list = toReturn.Select(c => new TaxCategorization()
 			{
 				Code = c.ProductTaxCode,

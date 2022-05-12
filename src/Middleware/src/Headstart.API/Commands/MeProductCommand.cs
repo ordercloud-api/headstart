@@ -44,6 +44,7 @@ namespace Headstart.API.Commands
 			_exchangeRatesCommand = exchangeRatesCommand;
 			_settings = settings;
 		}
+
 		public async Task<SuperHSMeProduct> Get(string id, DecodedToken decodedToken)
 		{
 			var product = _oc.Me.GetProductAsync<HSMeProduct>(id, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: decodedToken.AccessToken);
@@ -58,6 +59,7 @@ namespace Headstart.API.Commands
 			};
 			return await ApplyBuyerPricing(unconvertedSuperHsProduct, decodedToken);
 		}
+
 		private async Task<SuperHSMeProduct> ApplyBuyerPricing(SuperHSMeProduct superHsProduct, DecodedToken decodedToken)
 		{
 			var defaultMarkupMultiplierRequest = GetDefaultMarkupMultiplier(decodedToken);
@@ -87,6 +89,7 @@ namespace Headstart.API.Commands
 						var unconvertedMarkup = option.PriceMarkup ?? 0;
 						option.PriceMarkup = ConvertPrice(unconvertedMarkup, productCurrency, exchangeRates);
 					}
+
 					return option;
 				}).ToList();
 				return spec;
@@ -158,6 +161,7 @@ namespace Headstart.API.Commands
 					}).ToList();
 				}
 			}
+
 			return product;
 		}
 

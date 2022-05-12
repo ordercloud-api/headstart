@@ -114,6 +114,7 @@ namespace Headstart.API.Commands
                 p.Images = images.Where(i => i.ProductID == product.ID).Select(o => o).ToList();
                 p.Attachments = attachments.Where(s => s.ProductID == product.ID).Select(o => o).ToList();
                 p.Specs = specs.Where(s => s.ProductID == product.ID).Select(s => s).ToList();
+
                 // 1:38
                 // var o = from options in specoptions
                 //    join sp in specs on options.SpecID equals sp.ID
@@ -254,6 +255,7 @@ namespace Headstart.API.Commands
         public bool AllowOpenText { get; set; }
         public string DefaultOptionID { get; set; }
         public bool DefinesVariant { get; set; }
+
         // public IList<TemplateSpecOption> SpecOptions { get; set; } = new List<TemplateSpecOption>();
     }
 

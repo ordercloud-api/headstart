@@ -6,6 +6,7 @@ namespace ordercloud.integrations.library
     {
         Container _container { get; }
     }
+
     public class CosmosDbContainer : ICosmosDbContainer
     {
         public Container _container { get; }

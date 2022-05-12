@@ -67,6 +67,7 @@ namespace Headstart.API.Commands
         Task<SuperHSShipment> CreateShipment(SuperHSShipment superShipment, DecodedToken decodedToken);
         Task<BatchProcessResult> UploadShipments(IFormFile file, DecodedToken decodedToken);
     }
+
     public class ShipmentCommand : IShipmentCommand
     {
         private readonly IOrderCloudClient _oc;
@@ -78,6 +79,7 @@ namespace Headstart.API.Commands
             _oc = oc;
             _lineItemCommand = lineItemCommand;
         }
+
         public async Task<SuperHSShipment> CreateShipment(SuperHSShipment superShipment, DecodedToken decodedToken)
         {
             ShipmentItem firstShipmentItem = superShipment.ShipmentItems.First();
@@ -100,6 +102,7 @@ namespace Headstart.API.Commands
             {
                 buyerID = superShipment.Shipment.xp.BuyerID;
             }
+
             superShipment.Shipment.BuyerID = buyerID;
 
             HSShipment ocShipment = await _oc.Shipments.CreateAsync<HSShipment>(superShipment.Shipment, accessToken: decodedToken.AccessToken);
@@ -171,6 +174,7 @@ namespace Headstart.API.Commands
             {
                 buyerID = relatedBuyerOrder.FromCompanyID;
             }
+
             return buyerID;
         }
 
@@ -191,6 +195,7 @@ namespace Headstart.API.Commands
             {
                 return new BatchProcessResult();
             }
+
             using Stream stream = file.OpenReadStream();
             List<RowInfo<Misc.Shipment>> shipments = new Mapper(stream).Take<Misc.Shipment>(0, 1000).ToList();
 
@@ -215,6 +220,7 @@ namespace Headstart.API.Commands
             {
                 return null;
             }
+
             if (importResult.Valid?.Count < 0)
             {
                 return null;
@@ -234,6 +240,7 @@ namespace Headstart.API.Commands
                     processResult.ProcessFailureList.Add(failureDto);
                 }
             }
+
             processResult.InvalidRowFailureList.AddRange(importResult.Invalid);
             processResult.Meta = new BatchProcessSummary()
             {
@@ -297,6 +304,7 @@ namespace Headstart.API.Commands
 
             return failure;
         }
+
         private async Task PatchLineItemStatus(string supplierOrderID, ShipmentItem lineItem, DecodedToken decodedToken)
         {
             var lineItemStatusChangeList = new List<LineItemStatusChange>();
@@ -356,6 +364,7 @@ namespace Headstart.API.Commands
                     await PatchPartialLineItemComment(shipment, newShipment.ID);
 
                     await PatchLineItemStatus(shipment.OrderID, newShipmentItem, decodedToken);
+
                     // POST a shipment item, passing it a Shipment ID parameter, and a request body of Order ID, Line Item ID, and Quantity Shipped
                     await _oc.Shipments.SaveItemAsync(newShipment.ID, newShipmentItem, accessToken: decodedToken?.AccessToken);
 
@@ -365,6 +374,7 @@ namespace Headstart.API.Commands
 
                     result.SuccessfulList.Add(processedShipment);
                 }
+
                 if (lineItem?.ID == null)
                 {
                     // Before updating shipment item, must post the shipment line item comment to the order line item due to OC bug.
@@ -486,6 +496,7 @@ namespace Headstart.API.Commands
                 {
                     throw new Exception($"ShipmentID: {shipment.ShipmentID} could not be found. If you are not patching an existing shipment, this field must be blank so that the system can generate a Shipment ID for you. Error Detail: {ex.Message}");
                 }
+
                 if (shipmentResponse != null)
                 {
                     // add shipment to dictionary if it's found
@@ -495,6 +506,7 @@ namespace Headstart.API.Commands
             else if (shipment?.ShipmentID == null)
             {
                 PartialShipment newShipment = PatchShipment(null, shipment);
+
                 // Create shipment for tracking number provided if shipmentId wasn't included
                 shipmentResponse = await _oc.Shipments.CreateAsync(newShipment, accessToken);
                 if (shipmentResponse != null)
@@ -502,6 +514,7 @@ namespace Headstart.API.Commands
                     _shipmentByTrackingNumber.Add(shipmentResponse.TrackingNumber, shipmentResponse);
                 }
             }
+
             return shipmentResponse;
         }
 
@@ -521,6 +534,7 @@ namespace Headstart.API.Commands
                 newShipment.FromAddress = ocShipment?.FromAddress;
                 newShipment.ToAddress = ocShipment?.ToAddress;
             }
+
             if (newShipment.xp == null)
             {
                 newShipment.xp = new ShipmentXp();
@@ -594,11 +608,13 @@ namespace Headstart.API.Commands
         private static bool ShouldIgnoreRow(Misc.Shipment value)
         {
             string exampleSignifier = "//EXAMPLE//";
+
             // Ignore if the row is empty, or if it's the example row.
             if (value == null)
             {
                 return false;
             }
+
             if (value.OrderID?.ToUpper() == exampleSignifier)
             {
                 return true;
@@ -613,6 +629,7 @@ namespace Headstart.API.Commands
                     return false;
                 }
             }
+
             return true;
         }
     }

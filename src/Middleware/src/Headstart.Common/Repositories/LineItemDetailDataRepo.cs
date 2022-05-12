@@ -7,6 +7,7 @@ namespace Headstart.Common.Repositories
     public interface ILineItemDetailDataRepo : IRepository<LineItemDetailData>
     {
     }
+
     public class LineItemDetailDataRepo : CosmosDbRepository<LineItemDetailData>, ILineItemDetailDataRepo
     {
         public override string ContainerName { get; } = "lineitemdetail";

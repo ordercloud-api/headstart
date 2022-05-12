@@ -41,6 +41,7 @@ namespace Headstart.Jobs
                         await ResubmitMessageAsync(message, messageSender, resubmitCount);
                         logger.LogInformation($"Resubmitted the message {message.MessageId} to be tried again in {RetryTemporaryErrorsAfterMinutes} minutes");
                     }
+
                     break;
                 case ResultCode.PermanentFailure:
                     await messageReceiver.DeadLetterAsync(lockToken, "Permanent failure", GetDeadLetterDescription());
@@ -49,6 +50,7 @@ namespace Headstart.Jobs
                 default:
                     break;
             }
+
             LogProgress();
             if (result != ResultCode.Success)
             {
@@ -65,6 +67,7 @@ namespace Headstart.Jobs
             {
                 return message;
             }
+
             var truncatedSuffix = "...MESSAGE WAS TRUNCATED";
             var truncatedMessage = message.Substring(0, MaxDeadLetterDescriptionLength - truncatedSuffix.Length);
             return truncatedMessage + truncatedSuffix;

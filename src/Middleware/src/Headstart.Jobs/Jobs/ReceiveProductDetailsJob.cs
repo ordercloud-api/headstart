@@ -26,6 +26,7 @@ namespace Headstart.Jobs
             _productDetailRepo = productDetailRepo;
             _lineItemDetailDataRepo = lineItemDetailDataRepo;
         }
+
         protected override bool ShouldRun => true;
 
         protected override async Task ProcessJob()
@@ -91,6 +92,7 @@ namespace Headstart.Jobs
                 MaxItemCount = 1,
             };
         }
+
         private async Task<CosmosListPage<LineItemDetailData>> GetLineItemDataAsync(string productID)
         {
             var queryable = _lineItemDetailDataRepo
@@ -189,41 +191,50 @@ namespace Headstart.Jobs
             {
                 result.Status = productXp.Status?.ToString();
             }
+
             if (PropertyExists(productXp, "Note"))
             {
                 result.Note = productXp.Note;
             }
+
             if (PropertyExists(productXp, "Tax"))
             {
                 result.TaxCode = productXp?.Tax?.Code;
                 result.TaxDescription = productXp?.Tax?.Description;
                 result.TaxCategory = productXp?.Tax?.Category;
             }
+
             if (PropertyExists(productXp, "UnitOfMeasure"))
             {
                 result.UnitOfMeasureQty = productXp?.UnitOfMeasure?.Qty;
                 result.UnitOfMeasure = productXp?.UnitOfMeasure?.Unit;
             }
+
             if (PropertyExists(productXp, "ProductType"))
             {
                 result.ProductType = productXp.ProductType;
             }
+
             if (PropertyExists(productXp, "SizeTier"))
             {
                 result.SizeTier = productXp.SizeTier;
             }
+
             if (PropertyExists(productXp, "IsResale"))
             {
                 result.Resale = productXp.IsResale;
             }
+
             if (PropertyExists(productXp, "Currency"))
             {
                 result.Currency = productXp.Currency;
             }
+
             if (PropertyExists(productXp, "ArtworkRequired"))
             {
                 result.ArtworkRequired = productXp.ArtworkRequired;
             }
+
             if (supplier != null)
             {
                 result.SupplierID = supplier?.ID;
@@ -238,6 +249,7 @@ namespace Headstart.Jobs
                 result.VariantLevelTracking = product.Inventory.VariantLevelTracking;
                 result.InventoryOrderCanExceed = product.Inventory.OrderCanExceed;
             }
+
             if (schedule != null)
             {
                 result.PriceScheduleID = schedule?.ID;
@@ -274,14 +286,17 @@ namespace Headstart.Jobs
                 {
                     return totalPrice;
                 }
+
                 return schedule.PriceBreaks[0].Price;
             }
+
             foreach (VariantSpec spec in variant.Specs)
             {
                 if (spec.PriceMarkup == null)
                 {
                     continue;
                 }
+
                 switch (spec.PriceMarkupType)
                 {
                     case PriceMarkupType.AmountPerQuantity:
@@ -297,6 +312,7 @@ namespace Headstart.Jobs
                         break;
                 }
             }
+
             return totalPrice;
         }
 
@@ -306,6 +322,7 @@ namespace Headstart.Jobs
 
             return objDictionary.ContainsKey(property);
         }
+
         private async Task<PriceSchedule> GetPriceSchedule(string defaultPriceScheduleID)
         {
             return await _oc.PriceSchedules.GetAsync(defaultPriceScheduleID);
@@ -326,6 +343,7 @@ namespace Headstart.Jobs
                     }
                 }
             }
+
             return totalPriceMarkup.ToString();
         }
 
@@ -339,6 +357,7 @@ namespace Headstart.Jobs
                     specOptionValue = specOptionValue + " " + specValue?.SpecOptionValue + " ";
                 }
             }
+
             return specOptionValue;
         }
 

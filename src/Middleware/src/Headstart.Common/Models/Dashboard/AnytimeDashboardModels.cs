@@ -24,6 +24,7 @@ namespace Headstart.Common.Models
         public DateTime? openingDate { get; set; }
         public bool isDeleted { get; set; } // Not sure how/if to use this yet.
     }
+
     public class AFAddress
     {
         public string city { get; set; }
@@ -39,6 +40,7 @@ namespace Headstart.Common.Models
         public string id { get; set; }
         public string description { get; set; }
     }
+
     public class AFCredentials
     {
         public string username { get; set; }
@@ -71,6 +73,7 @@ namespace Headstart.Common.Models
         public string billingNumber { get; set; }
         public int franchiseDbId { get; set; }
     }
+
     public class AFGetStaffResponse
     {
         public string id { get; set; } // auto-incremented I think, e.g. 9381355
@@ -85,6 +88,7 @@ namespace Headstart.Common.Models
         public List<AFClub> clubs { get; set; }
         public AFClub homeClub { get; set; }
     }
+
     public class AFStaff
     {
         public string id { get; set; } // auto-incremented I think, e.g. 9381355
@@ -97,6 +101,7 @@ namespace Headstart.Common.Models
         public bool isDeleted { get; set; }
         public DateTime? updated { get; set; } // Not sure if how to use this yet, but seems like it might be helpful
     }
+
     public class AFToken
     {
         public string access_token { get; set; }

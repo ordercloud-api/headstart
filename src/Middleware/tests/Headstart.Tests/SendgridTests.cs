@@ -106,6 +106,7 @@ namespace Headstart.Tests
             {
                 new EmailAddress() { Email = TestConstants.supplier2NotificationRcpts[0] }
             };
+
             // confirm emails sent to buyer, seller users, supplier 1 notification recipients, supplier 2 notification recipients
             await commandSub.Configure().Received().SendSingleTemplateEmail(Arg.Any<string>(), TestConstants.buyerEmail, Arg.Any<string>(), Arg.Any<object>());
             await commandSub.Configure().Received().SendSingleTemplateEmailMultipleRcpts(Arg.Any<string>(), Arg.Is<List<EmailAddress>>(x => EqualEmailLists(x, expectedSellerEmailList)), Arg.Any<string>(), Arg.Any<object>());
@@ -131,6 +132,7 @@ namespace Headstart.Tests
                         isEqual = false;
                     }
                 }
+
                 foreach (var item in list2)
                 {
                     if (!list1Emails.Contains(item.Email))
@@ -138,6 +140,7 @@ namespace Headstart.Tests
                         isEqual = false;
                     }
                 }
+
                 return isEqual;
             }
         }

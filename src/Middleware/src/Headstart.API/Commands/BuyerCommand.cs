@@ -15,6 +15,7 @@ namespace Headstart.API.Commands
         Task<SuperHSBuyer> Get(string buyerID);
         Task<SuperHSBuyer> Update(string buyerID, SuperHSBuyer buyer);
     }
+
     public class HSBuyerCommand : IHSBuyerCommand
     {
         private readonly IOrderCloudClient _oc;
@@ -25,6 +26,7 @@ namespace Headstart.API.Commands
             _settings = settings;
             _oc = oc;
         }
+
         public async Task<SuperHSBuyer> Create(SuperHSBuyer superBuyer)
         {
             return await Create(superBuyer, null, _oc);
@@ -39,6 +41,7 @@ namespace Headstart.API.Commands
             {
                 createdImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, createdBuyer.ID, accessToken, oc);
             }
+
             return new SuperHSBuyer()
             {
                 Buyer = createdBuyer,
@@ -59,6 +62,7 @@ namespace Headstart.API.Commands
             {
                 updatedImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, buyerID);
             }
+
             return new SuperHSBuyer()
             {
                 Buyer = updatedBuyer,
@@ -190,6 +194,7 @@ namespace Headstart.API.Commands
                 return await ocClient.ImpersonationConfigs.CreateAsync(impersonation);
             }
         }
+
         private async Task<BuyerMarkup> UpdateMarkup(BuyerMarkup markup, string buyerID)
         {
             // to move from xp to contentdocs, that logic will go here instead of a patch

@@ -101,6 +101,7 @@ namespace ordercloud.integrations.library.Cosmos
                 default:
                     throw new NotImplementedException("Multiple sort is not supported");
             }
+
             return Tuple.Create(Expression.Lambda(exp.Item1, param) as Expression, exp.Item2);
         }
 
@@ -168,6 +169,7 @@ namespace ordercloud.integrations.library.Cosmos
             }
 
             var converter = TypeDescriptor.GetConverter(propertyType);
+
             // works for strings and probably any non-complex object
             var propertyValue = converter.ConvertFromInvariantString(filter?.Term);
             var constant = Expression.Constant(propertyValue?.ToString().To(propertyType));
@@ -197,6 +199,7 @@ namespace ordercloud.integrations.library.Cosmos
                         var method = typeof(string).GetMethod(term, new[] { propertyType });
                         return Expression.Call(member, method, constant);
                     }
+
                     return Expression.Equal(member, right);
                 case ListFilterOperator.NotEqual:
                     return Expression.NotEqual(member, right);

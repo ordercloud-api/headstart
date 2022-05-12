@@ -29,6 +29,7 @@ namespace ordercloud.integrations.avalara
 			{
 				searchString = $"{searchString} and (taxCode contains '{searchTerm}' OR description contains '{searchTerm}')";
 			}
+
 			return searchString;
 		}
 	}

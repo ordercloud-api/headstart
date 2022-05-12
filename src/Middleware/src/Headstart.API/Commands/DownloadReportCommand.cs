@@ -44,6 +44,7 @@ namespace Headstart.API.Commands
             {
                 excel.Write(stream);
             }
+
             return fileName;
         }
 
@@ -59,6 +60,7 @@ namespace Headstart.API.Commands
                     var split = headers[i].Split('.');
                     concatHeader = split[split.Length - 1];
                 }
+
                 var humanizedHeader = Regex.Replace(concatHeader, "([a-z](?=[0-9A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ");
                 cell.SetCellValue(humanizedHeader);
             }
@@ -97,8 +99,10 @@ namespace Headstart.API.Commands
                                     hasProp = false;
                                     break;
                                 }
+
                                 dataValue = JObject.Parse(dataValue[prop].ToString());
                             }
+
                             if (hasProp && dataValue.ContainsKey(split[split.Length - 1]))
                             {
                                 var value = dataValue.GetValue(split[split.Length - 1]);

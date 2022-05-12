@@ -21,6 +21,7 @@ namespace Headstart.API.Commands
         Task<HSSupplier> UpdateSupplier(string supplierID, PartialSupplier supplier, DecodedToken decodedToken);
         Task<HSSupplierOrderData> GetSupplierOrderData(string supplierOrderID, OrderType orderType, DecodedToken decodedToken);
     }
+
     public class HSSupplierCommand : IHSSupplierCommand
     {
         private readonly IOrderCloudClient _oc;
@@ -35,6 +36,7 @@ namespace Headstart.API.Commands
             _apiClientHelper = apiClientHelper;
             _supplierSync = supplierSync;
         }
+
         public async Task<HSSupplier> GetMySupplier(string supplierID, DecodedToken decodedToken)
         {
             var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
@@ -50,6 +52,7 @@ namespace Headstart.API.Commands
             Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierID == me.Supplier.ID, new ErrorCode("Unauthorized", $"You are not authorized to update supplier {supplierID}", HttpStatusCode.Unauthorized));
             var currentSupplier = await _oc.Suppliers.GetAsync<HSSupplier>(supplierID);
             var updatedSupplier = await _oc.Suppliers.PatchAsync<HSSupplier>(supplierID, supplier);
+
             // Update supplier products only on a name change
             if (currentSupplier.Name != supplier.Name || currentSupplier.xp.Currency.ToString() != supplier.xp.Currency.Value)
             {
@@ -61,6 +64,7 @@ namespace Headstart.API.Commands
                 {
                     throw new Exception($"Default supplier client not found. SupplierID: {supplierID}");
                 }
+
                 var configToUse = new OrderCloudClientConfig
                 {
                     ApiUrl = decodedToken.ApiUrl,
@@ -82,11 +86,13 @@ namespace Headstart.API.Commands
                     product.xp.Facets["supplier"] = new List<string>() { supplier.Name };
                     product.xp.Currency = supplier.xp.Currency;
                 }
+
                 await Throttler.RunAsync(productsToUpdate, 100, 5, product => ocClient.Products.SaveAsync(product.ID, product, accessToken: token));
             }
 
             return updatedSupplier;
         }
+
         public async Task<HSSupplier> Create(HSSupplier supplier, string accessToken, bool isSeedingEnvironment = false)
         {
             var token = isSeedingEnvironment ? accessToken : null;

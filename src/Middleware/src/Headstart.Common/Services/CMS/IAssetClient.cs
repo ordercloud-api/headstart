@@ -45,6 +45,7 @@ namespace Headstart.Common.Services.CMS
                     _blob.Save($"{assetGuid}-s", small.ToBytes(ImageFormat.Png), "image/png")
                 });
             }
+
             return new ImageAsset
             {
                 Url = $"{GetBaseUrl()}{container}/{assetGuid}",

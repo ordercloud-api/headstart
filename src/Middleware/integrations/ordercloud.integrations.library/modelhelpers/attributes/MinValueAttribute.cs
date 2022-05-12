@@ -11,6 +11,7 @@ namespace ordercloud.integrations.library
             : base(value, int.MaxValue)
         {
         }
+
         public MinValueAttribute(double value)
             : base(value, double.MaxValue)
         {

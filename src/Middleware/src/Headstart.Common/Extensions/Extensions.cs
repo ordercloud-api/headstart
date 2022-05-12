@@ -17,6 +17,7 @@ namespace Headstart.Common.Extensions
 
             return true;
         }
+
         public static bool HasItem<T>(this IReadOnlyList<T> itemList)
         {
             if (itemList == null || itemList.Count == 0)
@@ -26,6 +27,7 @@ namespace Headstart.Common.Extensions
 
             return true;
         }
+
         public static bool HasItem<T>(this List<T> itemList)
         {
             if (itemList == null || itemList.Count == 0)

@@ -62,6 +62,7 @@ namespace Headstart.Jobs
                     await _oc.Orders.PatchAsync(OrderDirection.Incoming, order.ID, new PartialOrder { xp = new { IsPaymentCaptured = true } });
                     return;
                 }
+
                 var payment = await GetValidPaymentAsync(order);
                 var transaction = GetValidTransaction(order.ID, payment);
                 if (await HasBeenCapturedPreviouslyAsync(order, transaction))
@@ -96,11 +97,13 @@ namespace Headstart.Jobs
             {
                 throw new PaymentCaptureJobException("Order.xp.Currency is null", order.ID);
             }
+
             var paymentList = await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, order.ID, filters: new { Accepted = true, Type = "CreditCard" });
             if (paymentList.Items.Count == 0)
             {
                 throw new PaymentCaptureJobException("No credit card payment on the order where Accepted=true", order.ID);
             }
+
             return paymentList.Items[0];
         }
 
@@ -114,10 +117,12 @@ namespace Headstart.Jobs
             {
                 throw new PaymentCaptureJobException("No valid payment authorization on the order", orderID, payment.ID);
             }
+
             if (transaction?.xp?.CardConnectResponse == null)
             {
                 throw new PaymentCaptureJobException("Missing transaction.xp.CardConnectResponse", orderID, payment.ID, transaction.ID);
             }
+
             var authHasBeenVoided = payment.Transactions.Any(t =>
                                             t.Type == "CreditCardVoidAuthorization" &&
                                             t.Succeeded &&
@@ -173,10 +178,12 @@ namespace Headstart.Jobs
             : base($"{message}. OrderID: {orderID}")
         {
         }
+
         public PaymentCaptureJobException(string message, string orderID, string paymentID)
             : base($"{message}. OrderID: {orderID}. PaymentID: {paymentID}")
         {
         }
+
         public PaymentCaptureJobException(string message, string orderID, string paymentID, string transactionID)
             : base($"{message}. OrderID: {orderID}. PaymentID: {paymentID}. TransactionID: {transactionID}")
         {

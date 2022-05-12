@@ -97,6 +97,7 @@ namespace ordercloud.integrations.easypost
 					to_address = MapAddress(groupedLineItems.Key.ShipTo),
 					parcel = parcel, // All line items with the same shipFrom and shipTo are grouped into 1 "parcel"
 					carrier_accounts = new List<EasyPostCarrierAccount>()
+
                     // carrier_accounts = profiles.ShippingProfiles.Select(id =>  new EasyPostCarrierAccount() { id = id.CarrierAccountIDs })
 				};
 				foreach (var p in profiles.ShippingProfiles)
@@ -120,6 +121,7 @@ namespace ordercloud.integrations.easypost
 						customs_items = MapCustomsItem(groupedLineItems, profile)
 					};
 				}
+
 				return shipment;
 			}).ToList();
 

@@ -20,6 +20,7 @@ namespace Headstart.Common.Controllers.CardConnect
             _card = card;
             _settings = settings;
         }
+
         /// <summary>
         /// POST Payment
         /// </summary>
@@ -43,6 +44,7 @@ namespace Headstart.Common.Controllers.CardConnect
             return await _card.AuthorizePayment(payment, UserContext.AccessToken, merchantID);
         }
     }
+
     /// <summary>
     ///  ME Credit Card Tokenization for Headstart
     /// </summary>
@@ -53,6 +55,7 @@ namespace Headstart.Common.Controllers.CardConnect
         {
             _card = card;
         }
+
         /// <summary>
         /// POST Credit Card
         /// </summary>
@@ -62,6 +65,7 @@ namespace Headstart.Common.Controllers.CardConnect
             return await _card.MeTokenizeAndSave(card, UserContext);
         }
     }
+
     /// <summary>
     /// Credit Card Tokenization for Headstart
     /// </summary>
@@ -72,6 +76,7 @@ namespace Headstart.Common.Controllers.CardConnect
         {
             _card = card;
         }
+
         /// <summary>
         /// POST Credit Cards
         /// </summary>

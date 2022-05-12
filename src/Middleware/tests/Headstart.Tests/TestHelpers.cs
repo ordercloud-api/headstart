@@ -24,6 +24,7 @@ namespace Headstart.Tests
             {
                 source = source.GetType().GetProperty(prop).GetValue(source, null);
             }
+
             return source;
         }
 

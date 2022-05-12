@@ -7,6 +7,7 @@ namespace Headstart.Common.Repositories
     public interface ISalesOrderDetailDataRepo : IRepository<OrderDetailData>
     {
     }
+
     public class SalesOrderDetailDataRepo : CosmosDbRepository<OrderDetailData>, ISalesOrderDetailDataRepo
     {
         public override string ContainerName { get; } = "salesorderdetail";

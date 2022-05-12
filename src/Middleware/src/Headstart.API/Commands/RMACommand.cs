@@ -118,6 +118,7 @@ namespace Headstart.API.Commands
                     rmaLineItems.Add(rmaLineItem);
                 }
             }
+
             return rmaLineItems;
         }
 
@@ -275,6 +276,7 @@ namespace Headstart.API.Commands
                         lineItem.Status = RMALineItemStatus.Approved;
                     }
                 }
+
                 // Check each LineItem on the RMA.  If the new Status is Approved, PartialQtyApproved, or Denied, IsResolved should be true.  Else, it should be false.
                 if (lineItem.Status == RMALineItemStatus.Approved || lineItem.Status == RMALineItemStatus.PartialQtyApproved || lineItem.Status == RMALineItemStatus.Denied)
                 {
@@ -285,6 +287,7 @@ namespace Headstart.API.Commands
                     lineItem.IsResolved = false;
                 }
             }
+
             return rmaLineItems;
         }
 
@@ -295,23 +298,27 @@ namespace Headstart.API.Commands
             {
                 rma.Status = RMAStatus.Processing;
             }
+
             // If all line items have a status of Denied, the status should be Denied.
             else if (rma.LineItems.All(li => li.Status == RMALineItemStatus.Denied))
             {
                 rma.Status = RMAStatus.Denied;
                 rma.DateComplete = DateTime.Now;
             }
+
             // If all line items have a status of Complete, PartialQtyComplete, and/or Denied, the status should be Complete.
             else if (rma.LineItems.All(li => li.Status == RMALineItemStatus.Complete || li.Status == RMALineItemStatus.PartialQtyComplete || li.Status == RMALineItemStatus.Denied))
             {
                 rma.Status = RMAStatus.Complete;
                 rma.DateComplete = DateTime.Now;
             }
+
             // If RMAs have a mixture of statuses at this point, at least one line item is approved but awaiting processing.  Set to Approved.
             else if (rma.LineItems.Any(li => li.Status == RMALineItemStatus.Approved || li.Status == RMALineItemStatus.PartialQtyApproved))
             {
                 rma.Status = RMAStatus.Approved;
             }
+
             return rma;
         }
 
@@ -321,6 +328,7 @@ namespace Headstart.API.Commands
             {
                 return new List<LineItemStatusChanges>();
             }
+
             IEnumerable<HSLineItem> orderWorksheetLineItems = worksheet.LineItems
                 .Where(li => rmaLineItemsToUpdate
                     .Any(itemToUpdate => itemToUpdate.ID == li.ID));
@@ -539,6 +547,7 @@ namespace Headstart.API.Commands
             if (allRMAsOnThisOrder.Items.Count > 1)
             {
                 decimal previouslyRefundedAmountForThisLineItem = 0M;
+
                 // Find previously refunded total for line items on this order...
                 foreach (RMA previouslyRefundedRMA in allRMAsOnThisOrder.Items)
                 {
@@ -551,6 +560,7 @@ namespace Headstart.API.Commands
                         }
                     }
                 }
+
                 // If previous total + new line total > totalRefundIfReturningAllLineItems, then totalRefundIfReturningAllLineItems - previousTotal = newLineTotal
                 if (previouslyRefundedAmountForThisLineItem + expectedLineTotalRefund > totalRefundIfReturningAllLineItems)
                 {
@@ -566,6 +576,7 @@ namespace Headstart.API.Commands
         {
             var lineItem = orderWorksheet.LineItems.First(li => li.ID == rmaLineItem.ID);
             var rmasFromThisSupplier = allRMAsOnThisOrder.Items.Where(r => r.SupplierID == supplierID);
+
             // If this is the only RMA for this line item and all requested RMA quantity are approved, and the quantity equals the original order quantity, issue a full refund (line item cost + tax).
             if (rmaLineItem.Status == RMALineItemStatus.Approved && rmaLineItem.QuantityProcessed == lineItem.Quantity && rmasFromThisSupplier.Count() == 1)
             {
@@ -583,6 +594,7 @@ namespace Headstart.API.Commands
             {
                 throw new Exception($"The refund percentage for {rmaLineItem.ID} must be greater than 0 and no higher than 100 percent.");
             }
+
             if (rmaLineItem.PercentToRefund != null)
             {
                 // Math.Round() by default would round 13.745 to 13.74 based on banker's rounding (going to the nearest even number when the final digit is 5).
@@ -616,6 +628,7 @@ namespace Headstart.API.Commands
                 // Items were not paid for with a credit card.  No refund to process via CardConnect.
                 return;
             }
+
             HSPaymentTransaction creditCardPaymentTransaction = creditCardPayment.Transactions
                 .OrderBy(x => x.DateExecuted)
                 .LastOrDefault(x => x.Type == "CreditCard" && x.Succeeded);

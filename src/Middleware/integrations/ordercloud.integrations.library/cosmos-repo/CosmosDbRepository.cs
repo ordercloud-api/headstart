@@ -260,6 +260,7 @@ namespace ordercloud.integrations.library
             {
                 return (int)Enum.Parse(propertyType, filterValue?.Term).To(propertyType);
             }
+
             // strings not converted
             return filterValue.Term;
         }
@@ -271,6 +272,7 @@ namespace ordercloud.integrations.library
             {
                 return null;
             }
+
             var filterKeys = filterKey.Split('.');
             for (var i = 0; i < filterKeys.Length; i++)
             {
@@ -289,6 +291,7 @@ namespace ordercloud.integrations.library
                         {
                             type = properties[j].PropertyType;
                         }
+
                         if (i < filterKeys.Length - 1)
                         {
                             string[] remainingLevels = new string[filterKeys.Length - i - 1];
@@ -296,10 +299,12 @@ namespace ordercloud.integrations.library
                             string remainingKeys = string.Join(".", remainingLevels);
                             return GetPropertyType(remainingKeys, type, returnUnderlyingType);
                         }
+
                         return type;
                     }
                 }
             }
+
             return null;
         }
 

@@ -122,6 +122,7 @@ namespace Headstart.Common.Services
                 {
                     await msg.AddAttachmentAsync(fileName, stream);
                 }
+
                 var response = await _client.SendEmailAsync(msg);
                 if (!response.IsSuccessStatusCode)
                 {
@@ -144,6 +145,7 @@ namespace Headstart.Common.Services
                         await msg.AddAttachmentAsync(fileReference.FileName, stream);
                     }
                 }
+
                 var response = await _client.SendEmailAsync(msg);
                 if (!response.IsSuccessStatusCode)
                 {
@@ -174,6 +176,7 @@ namespace Headstart.Common.Services
             // first get line items that actually had a change
             var changedLiIds = lineItemStatusChanges.Changes.Where(change => change.Quantity > 0).Select(change => change.ID);
             var changedLineItems = changedLiIds.Select(i => lineItems.Single(l => l.ID == i));
+
             // now map to template data
             return changedLineItems.Select(lineItem =>
             {
@@ -351,6 +354,7 @@ namespace Headstart.Common.Services
                 var filterString = string.Join("|", orderWorksheet.Order.xp.SupplierIDs);
                 suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={filterString}");
             }
+
             foreach (var supplier in suppliers.Items)
             {
                 if (supplier?.xp?.NotificationRcpts?.Count() > 0)
@@ -384,6 +388,7 @@ namespace Headstart.Common.Services
                     {
                         supplierTos.Add(new EmailAddress(rcpt));
                     }
+
                     await SendSingleTemplateEmailMultipleRcpts(_settings?.SendgridSettings?.FromEmail, supplierTos, _settings?.SendgridSettings?.OrderSubmitTemplateID, supplierTemplateData);
                 }
             }
@@ -405,6 +410,7 @@ namespace Headstart.Common.Services
                 var filterString = string.Join("|", orderWorksheet.Order.xp.SupplierIDs);
                 suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={filterString}");
             }
+
             var supplierTos = new List<EmailAddress>();
             foreach (var supplier in suppliers.Items)
             {
@@ -416,6 +422,7 @@ namespace Headstart.Common.Services
                     }
                 }
             }
+
             return supplierTos;
         }
 
@@ -429,6 +436,7 @@ namespace Headstart.Common.Services
                 {
                     sellerTos.Add(new EmailAddress(seller.Email));
                 }
+
                 if (seller?.xp?.AddtlRcpts?.Any() ?? false)
                 {
                     foreach (var rcpt in seller.xp.AddtlRcpts)
@@ -437,6 +445,7 @@ namespace Headstart.Common.Services
                     }
                 }
             }
+
             return sellerTos;
         }
 
@@ -524,6 +533,7 @@ namespace Headstart.Common.Services
             {
                 toList.Add(new EmailAddress { Email = email });
             }
+
             await SendSingleTemplateEmailMultipleRcpts(_settings?.SendgridSettings?.FromEmail, toList, _settings?.SendgridSettings?.CriticalSupportTemplateID, templateData);
         }
 

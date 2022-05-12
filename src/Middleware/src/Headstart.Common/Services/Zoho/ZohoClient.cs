@@ -21,6 +21,7 @@ namespace Headstart.Common.Services.Zoho
         IZohoOrganizationResource Organizations { get; }
         Task<ZohoTokenResponse> AuthenticateAsync();
     }
+
     public partial class ZohoClient
     {
         private readonly IFlurlClientFactory _flurlFactory;

@@ -16,6 +16,7 @@ namespace Headstart.Common.Helpers
 				var randomIndex = rng.Next(0, allowedChars.Length - 1);
 				result[i] = allowedChars[randomIndex];
 			}
+
 			return new string(result);
 		}
 	}

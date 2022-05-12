@@ -166,11 +166,13 @@ namespace ordercloud.integrations.cardconnect
                         var year = $"20{value.Substring(2, 2)}".To<int>();
                         return new DateTime(year, month, 1);
                     }
+
                 case 6:
                     {
                         var year = value.Substring(2, 4).To<int>();
                         return new DateTime(year, month, 1);
                     }
+
                 default:
                     throw new Exception("Invalid format: MMYY MMYYYY");
             }

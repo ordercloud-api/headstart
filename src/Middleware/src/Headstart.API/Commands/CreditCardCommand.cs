@@ -86,6 +86,7 @@ namespace ordercloud.integrations.cardconnect
             {
 				throw new CatalystBaseException("Payment.MissingCreditCardPayment", "Order is missing credit card payment");
             }
+
             try
             {
 				if (ocPayment?.Accepted == true)
@@ -99,6 +100,7 @@ namespace ordercloud.integrations.cardconnect
 						await VoidTransactionAsync(ocPayment, order, userToken);
                     }
                 }
+
                 var call = await _cardConnect.AuthWithoutCapture(CardConnectMapper.Map(cc, order, payment, merchantID, ccAmount));
 				ocPayment = await _oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, order.ID, ocPayment.ID, new PartialPayment { Accepted = true, Amount = ccAmount });
 				return await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, ocPayment.ID, CardConnectMapper.Map(ocPayment, call));
@@ -181,6 +183,7 @@ namespace ordercloud.integrations.cardconnect
 			{
 				return await _oc.Me.GetCreditCardAsync<CardConnectBuyerCreditCard>(payment.CreditCardID, userToken);
 			}
+
 			return await MeTokenize(payment.CreditCardDetails, userToken);
 		}
 

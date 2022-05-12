@@ -21,6 +21,7 @@ namespace Headstart.Common.Controllers
         {
             _command = command;
         }
+
         /// <summary>
         /// POST Headstart Shipment
         /// </summary>

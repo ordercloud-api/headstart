@@ -22,6 +22,7 @@ namespace ordercloud.integrations.taxjar
 		/// Calculates tax for an order without creating any records. Use this to display tax amount to user prior to order submit.
 		/// </summary>
 		Task<OrderTaxCalculation> CalculateEstimateAsync(OrderWorksheet orderWorksheet, List<OrderPromotion> promotions);
+
 		/// <summary>
 		/// Creates a tax transaction record in the calculating system. Use this once on purchase, payment capture, or fulfillment.
 		/// </summary>

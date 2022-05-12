@@ -125,6 +125,7 @@ namespace Headstart.API.Commands.Zoho
             {
                 var delivery_address = z_order.shipping_address; // TODO: this is not good enough. Might even need to go back to SaleOrder and split out by delivery address
                 var supplier = await _oc.Suppliers.GetAsync(order.ToCompanyID);
+
                 // TODO: accomodate possibility of more than 100 line items
                 var lineitems = await _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, order.ID);
 
@@ -156,6 +157,7 @@ namespace Headstart.API.Commands.Zoho
         public async Task<ZohoSalesOrder> CreateSalesOrder(HSOrderWorksheet orderWorksheet)
         {
             await _zoho.AuthenticateAsync();
+
             // Step 1: Create contact (customer) in Zoho
             var contact = await CreateOrUpdateContact(orderWorksheet.Order);
 
@@ -197,6 +199,7 @@ namespace Headstart.API.Commands.Zoho
                 Key = "sku",
                 Value = id.SKU()
             }));
+
             // the search api returns a list always. if no item was found the list will be empty
             // so we want to get found items into a pared down list
             var z_items = new Dictionary<string, ZohoLineItem>();
@@ -350,6 +353,7 @@ namespace Headstart.API.Commands.Zoho
                     location);
                 return await _zoho.Contacts.SaveAsync<ZohoContact>(map);
             }
+
             var contact = ZohoContactMapper.Map(
                 ocBuyer,
                 ocUsers.Items,

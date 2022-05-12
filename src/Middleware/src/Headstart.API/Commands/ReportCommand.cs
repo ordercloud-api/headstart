@@ -66,6 +66,7 @@ namespace Headstart.API.Commands
             {
                 types = types.Where(type => type.AvailableToSuppliers).ToList();
             }
+
             var listPage = new ListPage<ReportTypeResource>
             {
                 Items = types,
@@ -103,8 +104,10 @@ namespace Headstart.API.Commands
                     buyerID);
                 allBuyerLocations.AddRange(buyerLocations);
             }
+
             // Use reflection to determine available filters from model
             var filterClassProperties = template.Filters.GetType().GetProperties();
+
             // Create dictionary of key/value pairings of filters, where provided in the template
             var filtersToEvaluateMap = new Dictionary<PropertyInfo, List<string>>();
             foreach (var property in filterClassProperties)
@@ -116,6 +119,7 @@ namespace Headstart.API.Commands
                     filtersToEvaluateMap.Add(property, (List<string>)property.GetValue(template.Filters));
                 }
             }
+
             // Filter through collected records, adding only those that pass the PassesFilters check.
             var filteredBuyerLocations = new List<Address>();
             foreach (var location in allBuyerLocations)
@@ -125,6 +129,7 @@ namespace Headstart.API.Commands
                     filteredBuyerLocations.Add(location);
                 }
             }
+
             return filteredBuyerLocations;
         }
 
@@ -557,6 +562,7 @@ namespace Headstart.API.Commands
                     {
                         filterExpression = filterExpression == "=" ? filterExpression + value : filterExpression + $"|{value}";
                     }
+
                     if (filterExpression != "=")
                     {
                         filters.Add(new ListFilter(propertyLocation, filterExpression));
@@ -573,6 +579,7 @@ namespace Headstart.API.Commands
                 {
                     continue;
                 }
+
                 if (propertyName == "DateLow")
                 {
                     propertyName = $"{dataPathPrefix}{datePath}";
@@ -609,6 +616,7 @@ namespace Headstart.API.Commands
                 {
                     filterExpression = $"={filterExpression}";
                 }
+
                 filters.Add(new ListFilter(propertyName, filterExpression));
             }
 
@@ -672,6 +680,7 @@ namespace Headstart.API.Commands
                 propertyName = $"{dataPathPrefix}.{filter.PropertyName}";
                 filterExpression = $"={filterExpression}";
             }
+
             return new ListFilter(propertyName, filterExpression);
         }
 
@@ -703,6 +712,7 @@ namespace Headstart.API.Commands
             var template = await _template.Post(reportTemplate, decodedToken);
             return template;
         }
+
         public async Task<ReportTemplate> GetReportTemplate(string id, DecodedToken decodedToken)
         {
             return await _template.Get(id, decodedToken);
@@ -753,6 +763,7 @@ namespace Headstart.API.Commands
                 {
                     filterKey = ReportFilters.NestedLocations[filterKey];
                 }
+
                 var filterValues = filterProps.Value;
                 var dataValue = GetDataValue(filterKey, data);
                 if (dataValue == null || !filterValues.Contains(dataValue.ToString()))
@@ -760,6 +771,7 @@ namespace Headstart.API.Commands
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -769,6 +781,7 @@ namespace Headstart.API.Commands
             {
                 return null;
             }
+
             var filterKeys = filterKey.Split('.');
             for (var i = 0; i < filterKeys.Length; i++)
             {
@@ -786,10 +799,12 @@ namespace Headstart.API.Commands
                             string remainingKeys = string.Join(".", remainingLevels);
                             return GetDataValue(remainingKeys, data);
                         }
+
                         return data;
                     }
                 }
             }
+
             return null;
         }
     }

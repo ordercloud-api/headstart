@@ -236,6 +236,7 @@ namespace Headstart.API.Commands
             {
                 throw new Exception($"Unable to find default admin user (username: {SeedConstants.SellerUserName}");
             }
+
             await _oc.SecurityProfiles.SaveAssignmentAsync(
                 new SecurityProfileAssignment()
                 {
@@ -457,6 +458,7 @@ namespace Headstart.API.Commands
                 var apiClient = await _oc.ApiClients.CreateAsync(client, token);
                 return apiClient;
             }
+
             return match;
         }
 
@@ -467,6 +469,7 @@ namespace Headstart.API.Commands
             {
                 return await _oc.ApiClients.CreateAsync(client, token);
             }
+
             return match;
         }
 
@@ -562,6 +565,7 @@ namespace Headstart.API.Commands
             {
                 return await _oc.MessageSenders.CreateAsync(messageSender, accessToken);
             }
+
             return match;
         }
 

@@ -32,6 +32,7 @@ namespace ordercloud.integrations.easypost
 
             return li.Product.ShipLength.IsNullOrZero() ? defaultValue : (double)li.Product.ShipLength;
         }
+
         public static double ShipHeightOrDefault(this LineItem li, double defaultValue)
         {
             if (li.Variant?.ShipHeight != null)
@@ -41,6 +42,7 @@ namespace ordercloud.integrations.easypost
 
             return li.Product.ShipHeight.IsNullOrZero() ? defaultValue : (double)li.Product.ShipHeight;
         }
+
         public static double ShipWidthOrDefault(this LineItem li, double defaultValue)
         {
             if (li.Variant?.ShipWidth != null)

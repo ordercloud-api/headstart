@@ -16,8 +16,8 @@ namespace ordercloud.integrations.easypost
 
 		public bool Equals(AddressPair other)
 		{
-			return (ShipFrom.ID == other.ShipFrom.ID) &&
-					// we still want to compare the rest of these properties to handle one time addresses
+            // we still want to compare the rest of these properties to handle one time addresses
+            return (ShipFrom.ID == other.ShipFrom.ID) &&
 					(ShipFrom.Street1 == other?.ShipFrom.Street1) &&
 					(ShipFrom.Zip == other?.ShipFrom.Zip) &&
 					(ShipFrom.City == other?.ShipFrom.City) &&
@@ -68,6 +68,7 @@ namespace ordercloud.integrations.easypost
 				var filteredLineItems = group.ToList().Where(li => li.Product.xp.FreeShipping == false);
 				filteredGroupedList.Add(new Grouping<AddressPair, LineItem>(group.Key, filteredLineItems));
 			}
+
 			var easyPostShipments = filteredGroupedList.Select(li => EasyPostMappers.MapShipment(li, profiles)).ToList();
 			var easyPostResponses = new List<EasyPostShipment[]>();
 
@@ -87,6 +88,7 @@ namespace ordercloud.integrations.easypost
                     {
 						return MockRatesForFreeShipping(lineItems.ToList());
 					}
+
 					var firstLi = lineItems.First();
 					var shipMethods = EasyPostMappers.MapRates(easyPostResponses[index]);
 					return new ShipEstimate()

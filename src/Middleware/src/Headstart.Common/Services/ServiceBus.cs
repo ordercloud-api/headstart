@@ -66,8 +66,10 @@ namespace Headstart.Common.Services
                 {
                     messages.Dequeue();
                 }
+
                 await sender.SendMessagesAsync(messageBatch);
             }
+
             Console.WriteLine($"Sent a batch of {messageCount} messages to the topic: {topicName}");
         }
     }

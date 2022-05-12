@@ -11,6 +11,7 @@ namespace ordercloud.integrations.library
         CosmosDbContainer GetContainer(string containerName);
         Task EnsureDbSetupAsync();
     }
+
     public class CosmosDbContainerFactory : ICosmosDbContainerFactory
     {
         private readonly CosmosClient _cosmosClient;
