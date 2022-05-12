@@ -99,7 +99,7 @@ namespace ordercloud.integrations.exchangerates
         {
             var rates = await this.Get(new ListArgs<OrderCloudIntegrationsConversionRate>(), from);
             var rate = rates.Items.FirstOrDefault(r => r.Currency == to)?.Rate;
-			return value * rate;
+            return value * rate;
         }
 
         /// <summary>

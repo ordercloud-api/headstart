@@ -6,8 +6,8 @@ namespace ordercloud.integrations.exchangerates
 {
     public class OrderCloudIntegrationsConversionRate
     {
-		[JsonConverter(typeof(StringEnumConverter))]
-		public CurrencySymbol Currency { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public CurrencySymbol Currency { get; set; }
 
         public string Symbol { get; set; }
 

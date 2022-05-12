@@ -5,22 +5,22 @@ using Headstart.Models.Headstart;
 
 namespace Headstart.Models.Misc
 {
-	public class MessageNotification<TEventBodyType>
-	{
-		public string BuyerID { get; set; }
+    public class MessageNotification<TEventBodyType>
+    {
+        public string BuyerID { get; set; }
 
-		public string UserToken { get; set; }
+        public string UserToken { get; set; }
 
-		public User Recipient { get; set; }
+        public User Recipient { get; set; }
 
-		public MessageType MessageType { get; set; }
+        public MessageType MessageType { get; set; }
 
-		public string[] CCRecipient { get; set; }
+        public string[] CCRecipient { get; set; }
 
-		public MessageConfigData ConfigData { get; set; }
+        public MessageConfigData ConfigData { get; set; }
 
-		public TEventBodyType EventBody { get; set; }
-	}
+        public TEventBodyType EventBody { get; set; }
+    }
 
     public class OrderSubmitEventBody
     {

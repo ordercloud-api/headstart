@@ -211,7 +211,7 @@ namespace Headstart.API.Commands
                 ID = "BuyerEmails",
                 Name = "Buyer Emails",
                 MessageTypes = new[]
-                {
+                    {
                         MessageType.ForgottenPassword,
                         MessageType.NewUserInvitation,
                         MessageType.OrderApproved,
@@ -236,7 +236,7 @@ namespace Headstart.API.Commands
                 ID = "SellerEmails",
                 Name = "Seller Emails",
                 MessageTypes = new[]
-                {
+                    {
                         MessageType.ForgottenPassword,
                     },
                 URL = seed.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
@@ -251,7 +251,7 @@ namespace Headstart.API.Commands
                 ID = "SupplierEmails",
                 Name = "Supplier Emails",
                 MessageTypes = new[]
-                {
+                    {
                         MessageType.ForgottenPassword,
                     },
                 URL = seed.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
@@ -261,8 +261,8 @@ namespace Headstart.API.Commands
 
         public static readonly List<HSSecurityProfile> DefaultSecurityProfiles = new List<HSSecurityProfile>()
         {
-			// seller/supplier
-			new HSSecurityProfile() { ID = CustomRole.HSBuyerAdmin, CustomRoles = new CustomRole[] { CustomRole.HSBuyerAdmin }, Roles = new ApiRole[] { ApiRole.AddressAdmin, ApiRole.ApprovalRuleAdmin, ApiRole.BuyerAdmin, ApiRole.BuyerUserAdmin, ApiRole.CreditCardAdmin, ApiRole.UserGroupAdmin } },
+            // seller/supplier
+            new HSSecurityProfile() { ID = CustomRole.HSBuyerAdmin, CustomRoles = new CustomRole[] { CustomRole.HSBuyerAdmin }, Roles = new ApiRole[] { ApiRole.AddressAdmin, ApiRole.ApprovalRuleAdmin, ApiRole.BuyerAdmin, ApiRole.BuyerUserAdmin, ApiRole.CreditCardAdmin, ApiRole.UserGroupAdmin } },
             new HSSecurityProfile() { ID = CustomRole.HSBuyerImpersonator, CustomRoles = new CustomRole[] { CustomRole.HSBuyerImpersonator }, Roles = new ApiRole[] { ApiRole.BuyerImpersonation } },
             new HSSecurityProfile() { ID = CustomRole.HSCategoryAdmin, CustomRoles = new CustomRole[] { CustomRole.HSCategoryAdmin }, Roles = new ApiRole[] { ApiRole.CategoryAdmin } },
             new HSSecurityProfile() { ID = CustomRole.HSContentAdmin, CustomRoles = new CustomRole[] { CustomRole.AssetAdmin, CustomRole.DocumentAdmin, CustomRole.SchemaAdmin }, Roles = new ApiRole[] { ApiRole.ApiClientAdmin } },
@@ -282,15 +282,15 @@ namespace Headstart.API.Commands
             new HSSecurityProfile() { ID = CustomRole.HSSupplierAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSupplierAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAddressAdmin, ApiRole.SupplierAdmin, ApiRole.SupplierUserAdmin } },
             new HSSecurityProfile() { ID = CustomRole.HSSupplierUserGroupAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSupplierUserGroupAdmin }, Roles = new ApiRole[] { ApiRole.SupplierReader, ApiRole.SupplierUserGroupAdmin } },
 
-			// buyer - this is the only role needed for a buyer user to successfully check out
-			new HSSecurityProfile() { ID = CustomRole.HSBaseBuyer, CustomRoles = new CustomRole[] { CustomRole.HSBaseBuyer }, Roles = new ApiRole[] { ApiRole.MeAddressAdmin, ApiRole.MeAdmin, ApiRole.MeCreditCardAdmin, ApiRole.MeXpAdmin, ApiRole.ProductFacetReader, ApiRole.Shopper, ApiRole.SupplierAddressReader, ApiRole.SupplierReader } },
+            // buyer - this is the only role needed for a buyer user to successfully check out
+            new HSSecurityProfile() { ID = CustomRole.HSBaseBuyer, CustomRoles = new CustomRole[] { CustomRole.HSBaseBuyer }, Roles = new ApiRole[] { ApiRole.MeAddressAdmin, ApiRole.MeAdmin, ApiRole.MeCreditCardAdmin, ApiRole.MeXpAdmin, ApiRole.ProductFacetReader, ApiRole.Shopper, ApiRole.SupplierAddressReader, ApiRole.SupplierReader } },
 
-			/* these roles don't do much, access to changing location information will be done through middleware calls that
-			*  confirm the user is in the location specific access user group. These roles will be assigned to the location
-			*  specific user group and allow us to determine if a user has an admin role for at least one location through
-			*  the users JWT
-			*/
-			new HSSecurityProfile() { ID = CustomRole.HSLocationOrderApprover, CustomRoles = new CustomRole[] { CustomRole.HSLocationOrderApprover }, Roles = new ApiRole[] { } },
+            /* these roles don't do much, access to changing location information will be done through middleware calls that
+            *  confirm the user is in the location specific access user group. These roles will be assigned to the location
+            *  specific user group and allow us to determine if a user has an admin role for at least one location through
+            *  the users JWT
+            */
+            new HSSecurityProfile() { ID = CustomRole.HSLocationOrderApprover, CustomRoles = new CustomRole[] { CustomRole.HSLocationOrderApprover }, Roles = new ApiRole[] { } },
             new HSSecurityProfile() { ID = CustomRole.HSLocationViewAllOrders, CustomRoles = new CustomRole[] { CustomRole.HSLocationViewAllOrders }, Roles = new ApiRole[] { } },
             new HSSecurityProfile() { ID = CustomRole.HSLocationAddressAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationAddressAdmin }, Roles = new ApiRole[] { } },
             new HSSecurityProfile() { ID = CustomRole.HSLocationPermissionAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationPermissionAdmin }, Roles = new ApiRole[] { } },
@@ -358,37 +358,37 @@ namespace Headstart.API.Commands
 
         public static Region UsEast = new Region()
         {
-	        AzureRegion = "eastus",
-	        Id = "est",
-	        Name = "US-East"
+            AzureRegion = "eastus",
+            Id = "est",
+            Name = "US-East"
         };
 
         public static Region AustraliaEast = new Region()
         {
-	        AzureRegion = "australiaeast",
-	        Id = "aus",
-	        Name = "Australia-East"
+            AzureRegion = "australiaeast",
+            Id = "aus",
+            Name = "Australia-East"
         };
 
         public static Region EuropeWest = new Region()
         {
-	        AzureRegion = "westeurope",
-	        Id = "eur",
-	        Name = "Europe-West"
+            AzureRegion = "westeurope",
+            Id = "eur",
+            Name = "Europe-West"
         };
 
         public static Region JapanEast = new Region()
         {
-	        AzureRegion = "japaneast",
-	        Id = "jpn",
-	        Name = "Japan-East"
+            AzureRegion = "japaneast",
+            Id = "jpn",
+            Name = "Japan-East"
         };
 
         public static Region UsWest = new Region()
         {
-	        AzureRegion = "westus",
-	        Id = "usw",
-	        Name = "US-West"
+            AzureRegion = "westus",
+            Id = "usw",
+            Name = "US-West"
         };
 
         public static List<Region> Regions = new List<Region>()

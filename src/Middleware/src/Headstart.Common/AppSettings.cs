@@ -82,20 +82,20 @@ namespace Headstart.Common
         public int FreeShippingTransitDays { get; set; }
 
         public string USPSAccountId { get; set; }
-	}
+    }
 
-	public class EnvironmentSettings
-	{
-		public AppEnvironment Environment { get; set; }
+    public class EnvironmentSettings
+    {
+        public AppEnvironment Environment { get; set; }
 
-		public string BuildNumber { get; set; } // set during deploy
+        public string BuildNumber { get; set; } // set during deploy
 
-		public string Commit { get; set; } // set during deploy
+        public string Commit { get; set; } // set during deploy
 
-		public string MiddlewareBaseUrl { get; set; }
+        public string MiddlewareBaseUrl { get; set; }
 
         public TaxProvider TaxProvider { get; set; } = TaxProvider.Avalara;
-	}
+    }
 
     public enum TaxProvider
     {
@@ -132,13 +132,13 @@ namespace Headstart.Common
 
         public string WebhookHashKey { get; set; }
 
-		public string IncrementorPrefix { get; set; }
+        public string IncrementorPrefix { get; set; }
 
         // Comma-separated list
         public string ClientIDsWithAPIAccess { get; set; }
-	}
+    }
 
-	public class SendgridSettings
+    public class SendgridSettings
     {
         public string ApiKey { get; set; }
 

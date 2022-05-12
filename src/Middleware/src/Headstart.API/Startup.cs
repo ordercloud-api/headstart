@@ -225,14 +225,14 @@ namespace Headstart.API
                 })
                 .AddSingleton<ITaxCalculator>(provider =>
                 {
-					return _settings.EnvironmentSettings.TaxProvider switch
-					{
+                    return _settings.EnvironmentSettings.TaxProvider switch
+                    {
                         TaxProvider.Avalara => avalaraCommand,
-						TaxProvider.Vertex => vertexCommand,
+                        TaxProvider.Vertex => vertexCommand,
                         TaxProvider.Taxjar => taxJarCommand,
                         _ => avalaraCommand // Avalara is default
-					};
-				})
+                    };
+                })
                 .AddSingleton<IEasyPostShippingService>(x => new EasyPostShippingService(new EasyPostConfig() { APIKey = _settings.EasyPostSettings.APIKey }))
                 .AddSingleton<ISmartyStreetsService>(x => smartyService)
                 .AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(_settings.CardConnectSettings, _settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))

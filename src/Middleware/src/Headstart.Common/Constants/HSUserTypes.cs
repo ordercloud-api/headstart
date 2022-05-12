@@ -46,7 +46,7 @@ namespace Headstart.Common.Constants
                         CustomRole.HSMeProductAdmin,
                     }
                 },
-                 new HSUserType
+                new HSUserType
                 {
                     UserGroupName = "Report Reader",
                     UserGroupType = UserGroupType.UserPermissions,
@@ -63,7 +63,7 @@ namespace Headstart.Common.Constants
         {
             return new List<HSUserType>()
             {
-                 new HSUserType
+                new HSUserType
                 {
                     UserGroupName = "Location Permission Admin",
                     UserGroupType = UserGroupType.LocationPermissions,

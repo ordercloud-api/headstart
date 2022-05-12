@@ -517,9 +517,9 @@ namespace Headstart.API.Commands
                     HSLineItem lineItemFromOrder = orderWorksheet.LineItems.FirstOrDefault(li => li.ID == rmaLineItem.ID);
                     rmaLineItem.LineTotalRefund = lineItemFromOrder.LineTotal / lineItemFromOrder.Quantity * rmaLineItem.QuantityProcessed;
                 }
-				else
-				{
-					int quantityToRefund = rmaLineItem.QuantityProcessed;
+                else
+                {
+                    int quantityToRefund = rmaLineItem.QuantityProcessed;
                     var lineItem = orderWorksheet.LineItems.First(li => li.ID == rmaLineItem.ID);
                     var taxLine = taxLines == null ? null : taxLines.FirstOrDefault(taxLine => taxLine.LineItemID == rmaLineItem.ID);
                     var lineItemTotalTax = taxLine?.LineItemTotalTax ?? 0;

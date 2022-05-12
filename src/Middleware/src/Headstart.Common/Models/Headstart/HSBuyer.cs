@@ -16,8 +16,8 @@ namespace Headstart.Models
     {
     }
 
-	// just int for now, but leaving the door open for future configurations on how this markup functions
-	public class BuyerMarkup
+    // just int for now, but leaving the door open for future configurations on how this markup functions
+    public class BuyerMarkup
     {
         public int Percent { get; set; }
     }

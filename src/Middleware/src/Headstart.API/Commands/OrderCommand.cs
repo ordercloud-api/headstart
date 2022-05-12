@@ -61,13 +61,13 @@ namespace Headstart.API.Commands
             AppSettings settings,
             ISendgridService sendgridService)
         {
-			_oc = oc;
+            _oc = oc;
             _locationPermissionCommand = locationPermissionCommand;
             _promotionCommand = promotionCommand;
             _rmaCommand = rmaCommand;
             _settings = settings;
             _sendgridService = sendgridService;
-		}
+        }
 
         public async Task<HSLineItem> SendQuoteRequestToSupplier(string orderID, string lineItemID)
         {

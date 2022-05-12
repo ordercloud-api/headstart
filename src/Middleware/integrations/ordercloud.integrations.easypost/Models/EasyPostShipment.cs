@@ -4,8 +4,8 @@ using System.Text;
 
 namespace ordercloud.integrations.easypost
 {
-	public class EasyPostShipment
-	{
+    public class EasyPostShipment
+    {
         public string id { get; set; }
 
         public string mode { get; set; }

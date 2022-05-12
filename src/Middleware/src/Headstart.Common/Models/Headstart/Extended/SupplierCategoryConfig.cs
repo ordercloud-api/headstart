@@ -5,8 +5,8 @@ using ordercloud.integrations.library;
 
 namespace Headstart.Models.Extended
 {
-	[CosmosCollection("suppliercategoryconfigs")]
-	public class SupplierCategoryConfig : ICosmosObject
+    [CosmosCollection("suppliercategoryconfigs")]
+    public class SupplierCategoryConfig : ICosmosObject
     {
         public SupplierCategoryConfig()
         {

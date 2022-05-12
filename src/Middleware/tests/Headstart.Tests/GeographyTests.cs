@@ -8,8 +8,8 @@ using System.Text;
 
 namespace Headstart.Tests
 {
-	public class GeographyTests
-	{
+    public class GeographyTests
+    {
         [Test]
         [TestCase("test_example")]
         [TestCase("/dsf/df//df/e/")]

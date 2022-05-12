@@ -6,12 +6,12 @@ namespace Headstart.Models.Misc
     {
         public string Message { get; set; }
 
-		public T Body { get; set; }
+        public T Body { get; set; }
 
-		public WebhookResponse(T body)
-		{
-			Body = body;
-			Message = "Unspecified error in webhook";
-		}
-	}
+        public WebhookResponse(T body)
+        {
+            Body = body;
+            Message = "Unspecified error in webhook";
+        }
+    }
 }

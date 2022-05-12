@@ -56,7 +56,7 @@ namespace Headstart.Common.Models
                 Value = "LineItemDetail",
                 AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID", "BrandID" }
             },
-             new ReportTypeResource
+            new ReportTypeResource
             {
                 ID = ReportTypeEnum.ProductDetail,
                 Name = "Product Detail Report",

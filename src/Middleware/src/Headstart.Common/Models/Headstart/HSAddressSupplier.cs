@@ -9,10 +9,10 @@ namespace Headstart.Models
     }
 
     public class SupplierAddressXP
-	{
-		public Coordinates Coordinates;
+    {
+        public Coordinates Coordinates;
 
-		public List<OriginAddressAccessorial> Accessorials { get; set; }
+        public List<OriginAddressAccessorial> Accessorials { get; set; }
     }
 
     public enum OriginAddressAccessorial

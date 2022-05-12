@@ -45,7 +45,7 @@ namespace Headstart.API.Commands
 
         public LineItemCommand(ISendgridService sendgridService, IOrderCloudClient oc, IMeProductCommand meProductCommand, IPromotionCommand promotionCommand, IRMACommand rmaCommand, TelemetryClient telemetry)
         {
-			_oc = oc;
+            _oc = oc;
             _sendgridService = sendgridService;
             _meProductCommand = meProductCommand;
             _promotionCommand = promotionCommand;
@@ -103,8 +103,8 @@ namespace Headstart.API.Commands
             {
                 var newPartialLineItem = BuildNewPartialLineItem(lineItemStatusChange, previousLineItemsStates.ToList(), lineItemStatusChanges.Status);
 
-               // if there is no verified user passed in it has been called from somewhere else in the code base and will be done with the client grant access
-               return decodedToken != null ? _oc.LineItems.PatchAsync<HSLineItem>(orderDirection, orderID, lineItemStatusChange.ID, newPartialLineItem, decodedToken.AccessToken) : _oc.LineItems.PatchAsync<HSLineItem>(orderDirection, orderID, lineItemStatusChange.ID, newPartialLineItem);
+                // if there is no verified user passed in it has been called from somewhere else in the code base and will be done with the client grant access
+                return decodedToken != null ? _oc.LineItems.PatchAsync<HSLineItem>(orderDirection, orderID, lineItemStatusChange.ID, newPartialLineItem, decodedToken.AccessToken) : _oc.LineItems.PatchAsync<HSLineItem>(orderDirection, orderID, lineItemStatusChange.ID, newPartialLineItem);
             });
 
             var buyerOrder = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, buyerOrderID);

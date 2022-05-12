@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ordercloud.integrations.cardconnect
 {
-	public class OrderCloudIntegrationsCreditCardPayment
+    public class OrderCloudIntegrationsCreditCardPayment
     {
         [OrderCloud.SDK.Required]
         public string OrderID { get; set; }

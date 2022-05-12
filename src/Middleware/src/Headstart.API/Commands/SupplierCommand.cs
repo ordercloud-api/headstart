@@ -76,10 +76,10 @@ namespace Headstart.API.Commands
                     ClientSecret = supplierClient.ClientSecret,
                     GrantType = GrantType.ClientCredentials,
                     Roles = new[]
-                               {
-                                 ApiRole.SupplierAdmin,
-                                 ApiRole.ProductAdmin
-                            },
+                        {
+                            ApiRole.SupplierAdmin,
+                            ApiRole.ProductAdmin
+                        },
                 };
                 var ocClient = new OrderCloudClient(configToUse);
                 await ocClient.AuthenticateAsync();

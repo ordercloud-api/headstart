@@ -45,14 +45,14 @@ namespace Headstart.Common.Controllers
         }
 
         [HttpPost, Route("post-staging-restore"), OrderCloudWebhookAuth]
-		public async Task PostStagingRestore()
-		{
+        public async Task PostStagingRestore()
+        {
             if (_settings.EnvironmentSettings.Environment == AppEnvironment.Production)
             {
                 return;
             }
 
-			await _command.PostStagingRestore();
-		}
-	}
+            await _command.PostStagingRestore();
+        }
+    }
 }

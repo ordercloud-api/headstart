@@ -8,21 +8,21 @@ using Newtonsoft.Json;
 
 namespace ordercloud.integrations.library
 {
-	public interface ICosmosObject
-	{
-		string id { get; set; }
+    public interface ICosmosObject
+    {
+        string id { get; set; }
 
-		DateTimeOffset timeStamp { get; set; }
-	}
+        DateTimeOffset timeStamp { get; set; }
+    }
 
-	public abstract class CosmosObject : ICosmosObject
-	{
-		[JsonProperty("id")]
-		public string id { get; set; } = Guid.NewGuid().ToString();
+    public abstract class CosmosObject : ICosmosObject
+    {
+        [JsonProperty("id")]
+        public string id { get; set; } = Guid.NewGuid().ToString();
 
-		public DateTimeOffset timeStamp { get; set; } = DateTimeOffset.Now;
+        public DateTimeOffset timeStamp { get; set; } = DateTimeOffset.Now;
 
-		// Note, Cosmos unique keys are only unique within the partition.
-		public static Collection<UniqueKey> GetUniqueKeys() => null;
-	}
+        // Note, Cosmos unique keys are only unique within the partition.
+        public static Collection<UniqueKey> GetUniqueKeys() => null;
+    }
 }

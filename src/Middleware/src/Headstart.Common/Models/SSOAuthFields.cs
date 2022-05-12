@@ -4,10 +4,10 @@ using System.Text;
 
 namespace Headstart.Common.Models
 {
-	public class SSOAuthFields
-	{
-		public string ID { get; set; }
+    public class SSOAuthFields
+    {
+        public string ID { get; set; }
 
-		public string Username { get; set; }
-	}
+        public string Username { get; set; }
+    }
 }

@@ -4,8 +4,8 @@ using System.Text;
 
 namespace ordercloud.integrations.easypost
 {
-	public class EasyPostCarrierAccount
-	{
+    public class EasyPostCarrierAccount
+    {
         public string id { get; set; }
 
         public DateTime? created_at { get; set; }

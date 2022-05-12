@@ -55,11 +55,11 @@ namespace Headstart.Models
     {
     }
 
-	public class HSVariant : Variant<HSVariantXp>
+    public class HSVariant : Variant<HSVariantXp>
     {
     }
 
-	public class ProductXp
+    public class ProductXp
     {
         // DO NOT DELETE THE FOLLOWING PROPERTIES
         [OrchestrationIgnore]
@@ -88,8 +88,8 @@ namespace Headstart.Models
 
         public List<ProductAccessorial> Accessorials { get; set; }
 
-		[JsonConverter(typeof(StringEnumConverter))]
-		public CurrencySymbol? Currency { get; set; } = null;
+        [JsonConverter(typeof(StringEnumConverter))]
+        public CurrencySymbol? Currency { get; set; } = null;
 
         public bool? ArtworkRequired { get; set; } = false;
 
@@ -120,12 +120,12 @@ namespace Headstart.Models
         public string FileName { get; set; }
     }
 
-	[JsonConverter(typeof(StringEnumConverter))]
-	public enum ProductType
-	{
-		Standard,
-		Quote
-	}
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum ProductType
+    {
+        Standard,
+        Quote
+    }
 
     public class HSVariantXp
     {

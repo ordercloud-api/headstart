@@ -6,7 +6,7 @@ namespace ordercloud.integrations.easypost
 {
     // https://github.com/EasyPost/easypost-csharp/blob/master/EasyPost/Parcel.cs
     public class EasyPostParcel
-	{
+    {
         public string id { get; set; }
 
         public string mode { get; set; }

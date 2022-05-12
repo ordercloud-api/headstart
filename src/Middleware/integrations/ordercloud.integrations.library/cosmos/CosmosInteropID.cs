@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ordercloud.integrations.library.Cosmos
 {
-	public static class CosmosInteropID
+    public static class CosmosInteropID
     {
         public const string VALIDATION_REGEX = @"^[a-zA-Z0-9-_{}]+$";
 

@@ -131,19 +131,19 @@ namespace Headstart.Jobs
         }
 
         private decimal GetPurchaseOrderPromotionDiscount(HSOrderWorksheet orderWorksheet, IEnumerable<OrderPromotion> promosOnOrder, string supplierID)
-		{
-			var supplierLineItems = orderWorksheet?.LineItems?.Where(line => line?.SupplierID == supplierID);
+        {
+            var supplierLineItems = orderWorksheet?.LineItems?.Where(line => line?.SupplierID == supplierID);
 
             if (supplierLineItems == null || supplierLineItems.Count() == 0)
             {
                 return 0M;
             }
 
-			var lineItemDiscount = supplierLineItems.Sum(line => line.PromotionDiscount);
+            var lineItemDiscount = supplierLineItems.Sum(line => line.PromotionDiscount);
 
-			var totalOrderLevelDiscount = promosOnOrder
-				.Where(promo => promo.LineItemID == null && !promo.LineItemLevel)
-				.Select(promo => promo.Amount).Sum();
+            var totalOrderLevelDiscount = promosOnOrder
+                .Where(promo => promo.LineItemID == null && !promo.LineItemLevel)
+                .Select(promo => promo.Amount).Sum();
 
             var fractionOfOrderSubtotal = supplierLineItems.Select(l => l.LineSubtotal).Sum() / orderWorksheet.Order.Subtotal;
             var proportionalOrderDiscount = totalOrderLevelDiscount * fractionOfOrderSubtotal;

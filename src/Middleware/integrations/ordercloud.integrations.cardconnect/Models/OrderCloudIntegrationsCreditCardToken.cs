@@ -4,7 +4,7 @@ using OrderCloud.SDK;
 
 namespace ordercloud.integrations.cardconnect
 {
-	public class OrderCloudIntegrationsCreditCardToken
+    public class OrderCloudIntegrationsCreditCardToken
     {
         public string AccountNumber { get; set; }
 

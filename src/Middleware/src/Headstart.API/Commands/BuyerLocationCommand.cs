@@ -87,7 +87,7 @@ namespace Headstart.API.Commands
             }
 
             if (idInRequest.StartsWith(buyerID + "-"))
-			{
+            {
                 // prevents prefix duplication
                 return idInRequest;
             }
@@ -134,7 +134,7 @@ namespace Headstart.API.Commands
                 UserGroup = updatedBuyerUserGroup,
             };
             if (existingLocation == null)
-			{
+            {
                 var assignments = CreateUserGroupAndAssignments(buyerID, buyerLocationID, token, ocClient);
                 var groups = CreateLocationUserGroupsAndApprovalRule(buyerLocationID, buyerLocation.Address.AddressName, token, ocClient);
                 await Task.WhenAll(assignments, groups);

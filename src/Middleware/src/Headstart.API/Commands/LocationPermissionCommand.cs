@@ -45,7 +45,7 @@ namespace Headstart.API.Commands
 
         public LocationPermissionCommand(IOrderCloudClient oc)
         {
-			_oc = oc;
+            _oc = oc;
         }
 
         public async Task<List<UserGroupAssignment>> ListLocationPermissionAsssignments(string buyerID, string locationID, DecodedToken decodedToken)
@@ -167,10 +167,10 @@ namespace Headstart.API.Commands
                         var userGroupLocation = await _oc.UserGroups.GetAsync<HSLocationUserGroup>(
                             buyerID,
                             assignment.UserGroupID);
-                            if (args.Search == null || userGroupLocation.Name.ToLower().Contains(args.Search))
-                            {
-                                userBuyerLocationAssignments.Add(userGroupLocation);
-                            }
+                        if (args.Search == null || userGroupLocation.Name.ToLower().Contains(args.Search))
+                        {
+                            userBuyerLocationAssignments.Add(userGroupLocation);
+                        }
                     }
                 }
 
@@ -185,14 +185,14 @@ namespace Headstart.API.Commands
             return userGroups;
         }
 
-    private async Task<bool> IsUserInUserGroup(string buyerID, string userGroupID, DecodedToken decodedToken)
+        private async Task<bool> IsUserInUserGroup(string buyerID, string userGroupID, DecodedToken decodedToken)
         {
             var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
             var userGroupAssignmentForAccess = await _oc.UserGroups.ListUserAssignmentsAsync(buyerID, userGroupID, me.ID);
             return userGroupAssignmentForAccess.Items.Count > 0;
         }
 
-    public async Task<List<UserGroupAssignment>> GetUserUserGroupAssignments(string userGroupType, string parentID, string userID, DecodedToken decodedToken)
+        public async Task<List<UserGroupAssignment>> GetUserUserGroupAssignments(string userGroupType, string parentID, string userID, DecodedToken decodedToken)
         {
             if (userGroupType == "UserPermissions")
             {

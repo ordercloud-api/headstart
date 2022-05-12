@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ordercloud.integrations.library.Cosmos
 {
-	public class CosmosInteropIDAttribute : RegularExpressionAttribute
+    public class CosmosInteropIDAttribute : RegularExpressionAttribute
     {
         public CosmosInteropIDAttribute()
             : base(CosmosInteropID.VALIDATION_REGEX)

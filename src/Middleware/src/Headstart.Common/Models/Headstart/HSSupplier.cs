@@ -23,8 +23,8 @@ namespace Headstart.Models.Headstart
 
         public string ApiClientID { get; set; }
 
-		[JsonConverter(typeof(StringEnumConverter))]
-		public CurrencySymbol? Currency { get; set; } = null;
+        [JsonConverter(typeof(StringEnumConverter))]
+        public CurrencySymbol? Currency { get; set; } = null;
 
         public List<ProductType> ProductTypes { get; set; }
 

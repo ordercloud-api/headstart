@@ -43,7 +43,7 @@ namespace ordercloud.integrations.library.Cosmos
         }
 
         private static Expression ORExpressions(this ListFilter filter, Func<ListFilterValue, Expression> func)
-		{
+        {
             var seed = Expression.Constant(false);
             return filter.FilterValues.Aggregate<ListFilterValue, Expression>(seed, (expression, filter) => Expression.OrElse(expression, func(filter)));
         }
@@ -105,16 +105,16 @@ namespace ordercloud.integrations.library.Cosmos
             return Tuple.Create(Expression.Lambda(exp.Item1, param) as Expression, exp.Item2);
         }
 
-		private static Expression GetEnumExpression<T>(Type propertyType, Expression member, ListFilterValue filter)
-		{
-			// TODO: this can't handle multiple values for single filter. ex: Action: Get|Ignore|Update
-			if (filter == null)
+        private static Expression GetEnumExpression<T>(Type propertyType, Expression member, ListFilterValue filter)
+        {
+            // TODO: this can't handle multiple values for single filter. ex: Action: Get|Ignore|Update
+            if (filter == null)
             {
                 return Expression.Empty();
             }
 
             ConstantExpression right = null;
-			if (propertyType.IsEnum)
+            if (propertyType.IsEnum)
             {
                 right = Expression.Constant((int)Enum.Parse(propertyType, filter?.Term).To(propertyType));
             }
@@ -126,44 +126,44 @@ namespace ordercloud.integrations.library.Cosmos
             // var right = Expression.Constant((int)Enum.Parse(propertyType, filter.Values.FirstOrDefault()?.Term).To(propertyType));
             var left = Expression.Convert(member, typeof(int));
 
-			switch (filter.Operator)
-			{
-				// doesn't yet support the | OR operator
-				case ListFilterOperator.Equal:
-					return Expression.Equal(left, right);
-				case ListFilterOperator.NotEqual:
-					return Expression.NotEqual(left, right);
-				default:
-					throw new ArgumentOutOfRangeException();
-			}
-		}
+            switch (filter.Operator)
+            {
+                // doesn't yet support the | OR operator
+                case ListFilterOperator.Equal:
+                    return Expression.Equal(left, right);
+                case ListFilterOperator.NotEqual:
+                    return Expression.NotEqual(left, right);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
 
         // May not handle objects inside of arrays correctly. Only arrays of simple types like strings and numbers
-		public static Expression GetListExpression<T>(Type elementType, Expression member, ListFilterValue filter)
-		{
-			if (filter == null)
+        public static Expression GetListExpression<T>(Type elementType, Expression member, ListFilterValue filter)
+        {
+            if (filter == null)
             {
                 return Expression.Empty();
             }
 
             var converter = TypeDescriptor.GetConverter(elementType);
-			var elementValue = converter.ConvertFromInvariantString(filter?.Term);
+            var elementValue = converter.ConvertFromInvariantString(filter?.Term);
             var constant = Expression.Constant(elementValue?.ToString().To(elementType));
             var method = typeof(Enumerable)
                 .GetMethods()
                 .Where(m => m.Name == "Any" && m.GetParameters().Length == 2)
                 .FirstOrDefault()
                 .MakeGenericMethod(elementType);
-			var lambdaParam = Expression.Parameter(elementType, elementType.Name);
+            var lambdaParam = Expression.Parameter(elementType, elementType.Name);
             var lambdaBody = GetStringExpression<T>(elementType, lambdaParam, filter);  // If any element of the array matches the filter expression, return that record.
 
-             return Expression.Call(method, member, Expression.Lambda(lambdaBody, lambdaParam));
+            return Expression.Call(method, member, Expression.Lambda(lambdaBody, lambdaParam));
         }
 
         public static Expression GetStringExpression<T>(Type propertyType, Expression member, ListFilterValue filter)
         {
             // TODO: this can't handle multiple values for single filter. ex: Action: Get|Ignore|Update
-			if (filter == null)
+            if (filter == null)
             {
                 return Expression.Empty();
             }

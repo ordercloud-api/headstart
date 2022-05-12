@@ -13,11 +13,11 @@ namespace Headstart.Models
     {
     }
 
-	public class BuyerAddressXP
-	{
-		public List<DestinationAddressAccessorial> Accessorials { get; set; }
+    public class BuyerAddressXP
+    {
+        public List<DestinationAddressAccessorial> Accessorials { get; set; }
 
-		public string Email { get; set; }
+        public string Email { get; set; }
 
         public string LocationID { get; set; }
 
@@ -42,10 +42,10 @@ namespace Headstart.Models
         ResidentialDelivery = 15,
     }
 
-	public class Coordinates
-	{
-		public double Latitude { get; set; }
+    public class Coordinates
+    {
+        public double Latitude { get; set; }
 
-		public double Longitude { get; set; }
-	}
+        public double Longitude { get; set; }
+    }
 }

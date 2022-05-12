@@ -174,8 +174,8 @@ namespace Headstart.API.Commands
             }
             else
             {
-	            var marketPlaceToCreate = ConstructMarketplaceFromSeed(seed, env);
-	            try
+                var marketPlaceToCreate = ConstructMarketplaceFromSeed(seed, env);
+                try
                 {
                     await _portal.GetMarketplace(marketPlaceToCreate.Id, token);
                     return await GetOrCreateMarketplace(token, seed, env);

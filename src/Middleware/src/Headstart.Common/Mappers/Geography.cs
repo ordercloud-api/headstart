@@ -5,8 +5,8 @@ using System.Text;
 
 namespace Headstart.Common.Mappers
 {
-	public static class Geography
-	{
+    public static class Geography
+    {
         public static CurrencySymbol GetCurrency(string country)
         {
             switch (country?.Trim(' ')?.ToLower())

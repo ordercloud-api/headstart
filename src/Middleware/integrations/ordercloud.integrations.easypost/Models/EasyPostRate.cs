@@ -4,8 +4,8 @@ using System.Text;
 
 namespace ordercloud.integrations.easypost
 {
-	public class EasyPostRate
-	{
+    public class EasyPostRate
+    {
         public string id { get; set; }
 
         public DateTime? created_at { get; set; }

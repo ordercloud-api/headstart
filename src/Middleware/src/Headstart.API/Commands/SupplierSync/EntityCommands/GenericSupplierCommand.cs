@@ -71,28 +71,28 @@ namespace Headstart.API.Commands
             if (supplierWorksheet?.Order != null)
             {
                 returnObject.Add(new JProperty("SupplierOrder", new JObject
-                {
-                    { "Order", JToken.FromObject(supplierWorksheet?.Order) },
-                    new JProperty("LineItems", JToken.FromObject(supplierWorksheet?.LineItems))
-                }));
+                    {
+                        { "Order", JToken.FromObject(supplierWorksheet?.Order) },
+                        new JProperty("LineItems", JToken.FromObject(supplierWorksheet?.LineItems))
+                    }));
             }
 
             if (buyerWorksheet.Order != null)
             {
                 returnObject.Add(new JProperty("BuyerOrder", new JObject
-                {
-                    { "Order", JToken.FromObject(buyerWorksheet?.Order) },
-                    new JProperty("LineItems", JToken.FromObject(buyerLineItems))
-                }));
+                    {
+                        { "Order", JToken.FromObject(buyerWorksheet?.Order) },
+                        new JProperty("LineItems", JToken.FromObject(buyerLineItems))
+                    }));
 
                 // No supplier worksheet exists in these scenarios, just treat buyer order as supplier order.
                 if (buyerWorksheet.Order.xp?.OrderType == OrderType.Quote)
                 {
                     returnObject.Add(new JProperty("SupplierOrder", new JObject
-                    {
-                    { "Order", JToken.FromObject(buyerWorksheet?.Order) },
-                    new JProperty("LineItems", JToken.FromObject(buyerWorksheet?.LineItems))
-                }));
+                        {
+                            { "Order", JToken.FromObject(buyerWorksheet?.Order) },
+                            new JProperty("LineItems", JToken.FromObject(buyerWorksheet?.LineItems))
+                        }));
                 }
             }
 

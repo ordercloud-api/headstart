@@ -2,13 +2,13 @@
 
 namespace Headstart.Models.Exceptions
 {
-	public class MissingShippingSelectionError
-	{
-		public MissingShippingSelectionError(IEnumerable<string> ids)
-		{
-			ShipFromAddressIDsRequiringAttention = ids;
-		}
+    public class MissingShippingSelectionError
+    {
+        public MissingShippingSelectionError(IEnumerable<string> ids)
+        {
+            ShipFromAddressIDsRequiringAttention = ids;
+        }
 
-		public IEnumerable<string> ShipFromAddressIDsRequiringAttention;
-	}
+        public IEnumerable<string> ShipFromAddressIDsRequiringAttention;
+    }
 }

@@ -108,14 +108,14 @@ namespace Headstart.API.Commands
         }
 
         public static IEnumerable<HSShipMethod> WhereRateIsCheapestOfItsKind(IEnumerable<HSShipMethod> methods)
-		{
+        {
             return methods
                 .GroupBy(method => method.EstimatedTransitDays)
                 .Select(kind => kind.OrderBy(method => method.Cost).First());
         }
 
         private async Task<List<HSShipEstimate>> ConvertShippingRatesCurrency(IList<HSShipEstimate> shipEstimates, CurrencySymbol shipperCurrency, CurrencySymbol buyerCurrency)
-		{
+        {
             var rates = (await _exchangeRates.Get(buyerCurrency)).Rates;
             var conversionRate = rates.Find(r => r.Currency == shipperCurrency).Rate;
             return shipEstimates.Select(estimate =>

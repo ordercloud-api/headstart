@@ -405,7 +405,7 @@ namespace Headstart.API.Commands
                             Zip = buyerOrder?.Order?.xp?.ShippingAddress?.Zip,
                             Country = buyerOrder?.Order?.xp?.ShippingAddress?.Country,
                         }
-            }
+                    }
                 };
                 var updatedSupplierOrder = await _oc.Orders.PatchAsync<HSOrder>(OrderDirection.Outgoing, supplierOrder.ID, supplierOrderPatch);
                 var supplierLineItems = lineItems.Where(li => li.SupplierID == supplier.ID).ToList();
@@ -440,7 +440,7 @@ namespace Headstart.API.Commands
         }
 
         private List<ShipMethodSupplierView> MapSelectedShipMethod(IEnumerable<HSShipEstimate> shipEstimates)
-		{
+        {
             var selectedShipMethods = shipEstimates.Select(shipEstimate =>
             {
                 var selected = shipEstimate.ShipMethods.FirstOrDefault(sm => sm.ID == shipEstimate.SelectedShipMethodID);

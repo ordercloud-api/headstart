@@ -21,7 +21,7 @@ using Microsoft.Azure.CosmosDB.BulkExecutor.BulkImport;
 namespace ordercloud.integrations.library
 {
     public interface ICosmosBulkOperations
-	{
+    {
         Task<List<T>> GetAllAsync<T>(string collectionName);
 
         Task ImportAsync<T>(string collectionName, List<T> toImport) where T : CosmosObject;
@@ -49,7 +49,7 @@ namespace ordercloud.integrations.library
         }
 
         public async Task ImportAsync<T>(string collectionName, List<T> toImport) where T : CosmosObject
-		{
+        {
             int batchSize = 1000;
 
             var bulkExecutor = await BuildClientAsync(collectionName);
@@ -102,10 +102,10 @@ namespace ordercloud.integrations.library
             var partitionKeyProperty = GetPartitionKeyProp<T>();
 
             var deleteOperations = toDelete.Select(doc =>
-            {
-                var partitionKeyValue = (string)typeof(T).GetProperty(partitionKeyProperty.Name).GetValue(doc, null);
+                {
+                    var partitionKeyValue = (string)typeof(T).GetProperty(partitionKeyProperty.Name).GetValue(doc, null);
                     return new Tuple<string, string>(partitionKeyValue, doc.id);
-             }).ToList();
+                }).ToList();
 
             BulkDeleteResponse bulkDeleteResponse = null;
             try
@@ -204,7 +204,7 @@ namespace ordercloud.integrations.library
         }
 
         private PropertyInfo GetPartitionKeyProp<TDoc>() where TDoc : CosmosObject
-		{
+        {
            return typeof(TDoc).GetProperties().FirstOrDefault(prop => prop.HasAttribute<CosmosPartitionKeyAttribute>());
         }
 
