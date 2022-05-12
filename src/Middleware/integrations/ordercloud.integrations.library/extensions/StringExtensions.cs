@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace ordercloud.integrations.library
@@ -33,16 +32,26 @@ namespace ordercloud.integrations.library
         public static string TrimStart(this string s, params string[] remove)
         {
             foreach (var r in remove)
+            {
                 while (s.StartsWith(r))
+                {
                     s = s.Substring(r.Length);
+                }
+            }
+
             return s;
         }
 
         public static string TrimEnd(this string s, params string[] remove)
         {
             foreach (var r in remove)
+            {
                 while (s.EndsWith(r))
+                {
                     s = s.Substring(0, s.Length - r.Length);
+                }
+            }
+
             return s;
         }
     }

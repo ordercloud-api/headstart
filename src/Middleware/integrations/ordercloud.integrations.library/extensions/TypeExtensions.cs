@@ -33,9 +33,15 @@ namespace ordercloud.integrations.library
         public static Type GetCollectionItemType(this Type type)
         {
             if (type.IsArray)
+            {
                 return type.GetElementType();
+            }
+
             if (type.IsGenericType && typeof(IEnumerable).IsAssignableFrom(type))
+            {
                 return type.GetGenericArguments()[0];
+            }
+
             return null;
         }
     }

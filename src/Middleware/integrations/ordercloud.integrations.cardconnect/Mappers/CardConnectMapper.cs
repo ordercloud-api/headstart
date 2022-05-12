@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using ordercloud.integrations.library;
 using OrderCloud.SDK;
 
@@ -18,8 +17,8 @@ namespace ordercloud.integrations.cardconnect
                 Token = response.token,
                 xp = new CreditCardXP
                 {
-                    CCBillingAddress = card.CCBillingAddress
-                }
+                    CCBillingAddress = card.CCBillingAddress,
+                },
             };
             return cc;
         }
@@ -39,8 +38,8 @@ namespace ordercloud.integrations.cardconnect
                 Editable = true,
                 xp = new CreditCardXP
                 {
-                    CCBillingAddress = card.CCBillingAddress
-                }
+                    CCBillingAddress = card.CCBillingAddress,
+                },
             };
             return cc;
         }
@@ -53,7 +52,7 @@ namespace ordercloud.integrations.cardconnect
             var acct = new CardConnectAccountRequest()
             {
                 currency = currency,
-                account = card.AccountNumber
+                account = card.AccountNumber,
             };
             return acct;
         }
@@ -75,7 +74,7 @@ namespace ordercloud.integrations.cardconnect
                 merchid = merchantID,
                 orderid = order.ID,
                 postal = address.Zip,
-                region = address.State
+                region = address.State,
             };
             return req;
         }
@@ -93,9 +92,8 @@ namespace ordercloud.integrations.cardconnect
                 xp = new
                 {
                     CardConnectResponse = response,
-                    CCBillingAddress = ccBillingAddress
-
-                }
+                    CCBillingAddress = ccBillingAddress,
+                },
             };
             return t;
         }
@@ -112,8 +110,8 @@ namespace ordercloud.integrations.cardconnect
                 Type = "CreditCardVoidAuthorization",
                 xp = new
                 {
-                    CardConnectResponse = response
-                }
+                    CardConnectResponse = response,
+                },
             };
             return t;
         }
@@ -130,8 +128,8 @@ namespace ordercloud.integrations.cardconnect
                 Type = "CreditCardRefund",
                 xp = new
                 {
-                    CardConnectResponse = response
-                }
+                    CardConnectResponse = response,
+                },
             };
             return t;
         }
@@ -148,8 +146,8 @@ namespace ordercloud.integrations.cardconnect
                 Type = "CreditCardCapture",
                 xp = new
                 {
-                    CardConnectResponse = response
-                }
+                    CardConnectResponse = response,
+                },
             };
             return t;
         }
@@ -167,11 +165,13 @@ namespace ordercloud.integrations.cardconnect
                         var year = $"20{value.Substring(2, 2)}".To<int>();
                         return new DateTime(year, month, 1);
                     }
+
                 case 6:
                     {
                         var year = value.Substring(2, 4).To<int>();
                         return new DateTime(year, month, 1);
                     }
+
                 default:
                     throw new Exception("Invalid format: MMYY MMYYYY");
             }

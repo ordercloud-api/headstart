@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-using Newtonsoft.Json.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ordercloud.integrations.library.Cosmos
 {
-	public class CosmosInteropIDAttribute : RegularExpressionAttribute
+    public class CosmosInteropIDAttribute : RegularExpressionAttribute
     {
         public CosmosInteropIDAttribute()
             : base(CosmosInteropID.VALIDATION_REGEX)
@@ -15,15 +11,21 @@ namespace ordercloud.integrations.library.Cosmos
         }
 
         /// <summary>
-        /// generate if not set. defaults to true
+        /// generate if not set. defaults to true.
         /// </summary>
         public bool AutoGen { get; set; }
 
         public override bool IsValid(object value)
         {
             var s = value as string;
+
             // ID can be null, that triggers us to generate one
             return string.IsNullOrEmpty(s) || (s.Length <= 100 && base.IsValid(value));
+        }
+
+        public override string FormatErrorMessage(string name)
+        {
+            return $"{name} can only contain characters Aa-Zz 0-9 - _";
         }
 
         protected override ValidationResult IsValid(object value, ValidationContext ctx)
@@ -35,12 +37,8 @@ namespace ordercloud.integrations.library.Cosmos
                 idProp.SetValue(ctx.ObjectInstance, CosmosInteropID.New());
                 return null;
             }
-            return base.IsValid(value, ctx);
-        }
 
-        public override string FormatErrorMessage(string name)
-        {
-            return $"{name} can only contain characters Aa-Zz 0-9 - _";
+            return base.IsValid(value, ctx);
         }
     }
 }

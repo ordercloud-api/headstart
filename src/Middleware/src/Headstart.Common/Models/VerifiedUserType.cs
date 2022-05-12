@@ -11,6 +11,6 @@ namespace Headstart.Models.Headstart
         buyer,
 
         // not a user type being returned from token, used to represent states without verified user
-        noUser
+        noUser,
     }
 }

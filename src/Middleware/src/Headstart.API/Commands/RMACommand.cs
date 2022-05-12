@@ -21,31 +21,38 @@ namespace Headstart.API.Commands
     public interface IRMACommand
     {
         Task BuildRMA(HSOrder order, List<string> supplierIDs, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItemsChanged, DecodedToken decodedToken);
+
         Task<RMA> PostRMA(RMA rma);
+
         Task<CosmosListPage<RMA>> ListBuyerRMAs(CosmosListOptions listOptions, string buyerID);
+
         Task<RMA> Get(ListArgs<RMA> args, DecodedToken decodedToken);
+
         Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, CommerceRole commerceRole, MeUser me, bool accessAllRMAsOnOrder = false);
+
         Task<CosmosListPage<RMA>> ListRMAs(CosmosListOptions listOptions, DecodedToken decodedToken);
+
         Task<RMAWithLineItemStatusByQuantity> ProcessRMA(RMA rma, DecodedToken decodedToken);
+
         Task<RMAWithLineItemStatusByQuantity> ProcessRefund(string rmaNumber, DecodedToken decodedToken);
     }
 
     public class RMACommand : IRMACommand
     {
         private const string QUEUED_FOR_CAPTURE = "Queued for Capture";
-        private readonly IOrderCloudClient _oc;
-        private readonly IRMARepo _rmaRepo;
-        private readonly IOrderCloudIntegrationsCardConnectService _cardConnect;
-        private readonly ISendgridService _sendgridService;
-        private readonly AppSettings _settings;
+        private readonly IOrderCloudClient oc;
+        private readonly IRMARepo rmaRepo;
+        private readonly IOrderCloudIntegrationsCardConnectService cardConnect;
+        private readonly ISendgridService sendgridService;
+        private readonly AppSettings settings;
 
         public RMACommand(IOrderCloudClient oc, IRMARepo rmaRepo, IOrderCloudIntegrationsCardConnectService cardConnect, ISendgridService sendgridService, AppSettings settings)
         {
-            _oc = oc;
-            _rmaRepo = rmaRepo;
-            _cardConnect = cardConnect;
-            _sendgridService = sendgridService;
-            _settings = settings;
+            this.oc = oc;
+            this.rmaRepo = rmaRepo;
+            this.cardConnect = cardConnect;
+            this.sendgridService = sendgridService;
+            this.settings = settings;
         }
 
         public async Task BuildRMA(HSOrder order, List<string> supplierIDs, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItemsChanged, DecodedToken decodedToken)
@@ -53,7 +60,7 @@ namespace Headstart.API.Commands
             foreach (string supplierID in supplierIDs)
             {
                 var sellerID = supplierID;
-                var sellerName = supplierID == null ? _settings.OrderCloudSettings.MarketplaceName : (await _oc.Suppliers.GetAsync<HSSupplier>(supplierID)).Name;
+                var sellerName = supplierID == null ? settings.OrderCloudSettings.MarketplaceName : (await oc.Suppliers.GetAsync<HSSupplier>(supplierID)).Name;
 
                 RMA rma = new RMA()
                 {
@@ -71,9 +78,390 @@ namespace Headstart.API.Commands
                     LineItems = BuildLineItemRMA(supplierID, lineItemStatusChanges, lineItemsChanged, order),
                     Logs = new List<RMALog>(),
                     FromBuyerID = order.FromCompanyID,
-                    FromBuyerUserID = order.FromUser.ID
+                    FromBuyerUserID = order.FromUser.ID,
                 };
                 await PostRMA(rma);
+            }
+        }
+
+        public virtual async Task<RMA> PostRMA(RMA rma)
+        {
+            return await rmaRepo.AddItemAsync(rma);
+        }
+
+        public async Task<CosmosListPage<RMA>> ListBuyerRMAs(CosmosListOptions listOptions, string buyerID)
+        {
+            IQueryable<RMA> queryable = rmaRepo.GetQueryable().Where(rma => rma.FromBuyerID == buyerID);
+
+            CosmosListPage<RMA> rmas = await GenerateRMAList(queryable, listOptions);
+            return rmas;
+        }
+
+        public async Task<RMA> Get(ListArgs<RMA> args, DecodedToken decodedToken)
+        {
+            CosmosListOptions listOptions = new CosmosListOptions()
+            {
+                PageSize = 100,
+                Search = args.Search,
+                SearchOn = "RMANumber",
+            };
+
+            IQueryable<RMA> queryable = rmaRepo.GetQueryable()
+                .Where(rma =>
+                 rma.PartitionKey == "PartitionValue");
+
+            if (decodedToken.CommerceRole == CommerceRole.Supplier)
+            {
+                var me = await oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+                queryable = queryable.Where(rma => rma.SupplierID == me.Supplier.ID);
+            }
+
+            CosmosListPage<RMA> rmas = await GenerateRMAList(queryable, listOptions);
+            return rmas.Items[0];
+        }
+
+        public virtual async Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, CommerceRole commerceRole, MeUser me, bool accessAllRMAsOnOrder = false)
+        {
+            string sourceOrderID = orderID.Split("-")[0];
+
+            CosmosListOptions listOptions = new CosmosListOptions() { PageSize = 100 };
+
+            IQueryable<RMA> queryable = rmaRepo.GetQueryable()
+                .Where(rma =>
+                    rma.PartitionKey == "PartitionValue"
+                    && rma.SourceOrderID == sourceOrderID);
+
+            if (commerceRole == CommerceRole.Supplier && !accessAllRMAsOnOrder)
+            {
+                queryable = QueryOnlySupplierRMAs(queryable, me.Supplier.ID);
+            }
+
+            CosmosListPage<RMA> rmas = await GenerateRMAList(queryable, listOptions);
+            return rmas;
+        }
+
+        public virtual IQueryable<RMA> QueryOnlySupplierRMAs(IQueryable<RMA> queryable, string supplierID)
+        {
+            return queryable.Where(rma => rma.SupplierID == supplierID);
+        }
+
+        public async Task<CosmosListPage<RMA>> ListRMAs(CosmosListOptions listOptions, DecodedToken decodedToken)
+        {
+            IQueryable<RMA> queryable = rmaRepo.GetQueryable().Where(rma => rma.PartitionKey == "PartitionValue");
+
+            if (decodedToken.CommerceRole == CommerceRole.Supplier)
+            {
+                var me = await oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+                queryable = queryable.Where(rma => rma.SupplierID == me.Supplier.ID);
+            }
+
+            CosmosListPage<RMA> rmas = await GenerateRMAList(queryable, listOptions);
+            return rmas;
+        }
+
+        public async Task<RMAWithLineItemStatusByQuantity> ProcessRMA(RMA rma, DecodedToken decodedToken)
+        {
+            // Get the RMA from the last time it was saved.
+            var me = await oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            RMA currentRMA = await GetRMA(rma.RMANumber, decodedToken);
+            if (decodedToken.CommerceRole == CommerceRole.Supplier && currentRMA.SupplierID != me.Supplier.ID)
+            {
+                throw new Exception($"You do not have permission to process this RMA.");
+            }
+
+            // Should the Status and IsResolved proprerties of an RMALineItem change?
+            rma.LineItems = UpdateRMALineItemStatusesAndCheckIfResolved(rma.LineItems);
+
+            // Should status of RMA change?
+            rma = UpdateRMAStatus(rma);
+
+            // If the status on the new RMA differs from the old RMA, create an RMALog
+            if (rma.Status != currentRMA.Status)
+            {
+                RMALog log = new RMALog() { Status = rma.Status, Date = DateTime.Now, FromUserID = me.ID };
+                rma.Logs.Insert(0, log);
+            }
+
+            HSOrderWorksheet worksheet = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, rma.SourceOrderID);
+
+            IEnumerable<RMALineItem> deniedLineItems = rma.LineItems
+                .Where(li => !li.IsRefunded && li.Status == RMALineItemStatus.Denied)
+                .Where(li => currentRMA.LineItems.FirstOrDefault(currentLi => currentLi.ID == li.ID).Status != RMALineItemStatus.Denied).ToList();
+
+            List<LineItemStatusChanges> lineItemStatusChangesList = BuildLineItemStatusChanges(deniedLineItems, worksheet, rma.Type, true);
+
+            ItemResponse<RMA> updatedRMA = await rmaRepo.ReplaceItemAsync(currentRMA.id, rma);
+
+            await HandlePendingApprovalEmails(currentRMA, rma.LineItems, worksheet);
+
+            RMAWithLineItemStatusByQuantity rmaWithStatusByQuantityChanges = new RMAWithLineItemStatusByQuantity()
+            {
+                SupplierOrderID = $"{rma.SourceOrderID}-{rma.SupplierID}",
+                RMA = updatedRMA.Resource,
+                LineItemStatusChangesList = lineItemStatusChangesList,
+            };
+
+            return rmaWithStatusByQuantityChanges;
+        }
+
+        public async Task<RMAWithLineItemStatusByQuantity> ProcessRefund(string rmaNumber, DecodedToken decodedToken)
+        {
+            var me = await oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            RMA rma = await GetRMA(rmaNumber, decodedToken);
+
+            ValidateRMA(rma, me, decodedToken);
+
+            decimal initialAmountRefunded = rma.TotalCredited;
+
+            IEnumerable<RMALineItem> rmaLineItemsToUpdate = rma.LineItems
+                .Where(li => !li.IsRefunded
+                    && (li.Status == RMALineItemStatus.Approved || li.Status == RMALineItemStatus.PartialQtyApproved)).ToList();
+
+            HSOrderWorksheet worksheet = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, rma.SourceOrderID);
+
+            CosmosListPage<RMA> allRMAsOnThisOrder = await ListRMAsByOrderID(worksheet.Order.ID, decodedToken.CommerceRole, me, true);
+
+            CalculateAndUpdateLineTotalRefund(rmaLineItemsToUpdate, worksheet, allRMAsOnThisOrder, rma.SupplierID);
+
+            // UPDATE RMA LINE ITEM STATUSES
+            SetRMALineItemStatusesToComplete(rmaLineItemsToUpdate);
+
+            // UPDATE RMA STATUS
+            UpdateRMAStatus(rma);
+
+            await HandleRefund(rma, allRMAsOnThisOrder, worksheet, decodedToken);
+
+            MarkRMALineItemsAsRefunded(rmaLineItemsToUpdate);
+
+            decimal totalRefundedForThisTransaction = rma.TotalCredited - initialAmountRefunded;
+            RMALog log = new RMALog() { Status = rma.Status, Date = DateTime.Now, AmountRefunded = totalRefundedForThisTransaction, FromUserID = me.ID };
+            rma.Logs.Insert(0, log);
+
+            List<LineItemStatusChanges> lineItemStatusChangesList = BuildLineItemStatusChanges(rmaLineItemsToUpdate, worksheet, rma.Type, false);
+
+            // SAVE RMA
+            ItemResponse<RMA> updatedRMA = await rmaRepo.ReplaceItemAsync(rma.id, rma);
+
+            RMAWithLineItemStatusByQuantity rmaWithStatusByQuantityChanges = new RMAWithLineItemStatusByQuantity() { SupplierOrderID = $"{rma.SourceOrderID}-{rma.SupplierID}", RMA = updatedRMA.Resource, LineItemStatusChangesList = lineItemStatusChangesList };
+
+            return rmaWithStatusByQuantityChanges;
+        }
+
+        public void CalculateAndUpdateLineTotalRefund(IEnumerable<RMALineItem> lineItemsToUpdate, HSOrderWorksheet orderWorksheet, CosmosListPage<RMA> allRMAsOnThisOrder, string supplierID)
+        {
+            var taxLines = orderWorksheet?.OrderCalculateResponse?.xp?.TaxCalculation?.LineItems;
+
+            foreach (RMALineItem rmaLineItem in lineItemsToUpdate)
+            {
+                if (!rmaLineItem.RefundableViaCreditCard)
+                {
+                    HSLineItem lineItemFromOrder = orderWorksheet.LineItems.FirstOrDefault(li => li.ID == rmaLineItem.ID);
+                    rmaLineItem.LineTotalRefund = lineItemFromOrder.LineTotal / lineItemFromOrder.Quantity * rmaLineItem.QuantityProcessed;
+                }
+                else
+                {
+                    int quantityToRefund = rmaLineItem.QuantityProcessed;
+                    var lineItem = orderWorksheet.LineItems.First(li => li.ID == rmaLineItem.ID);
+                    var taxLine = taxLines == null ? null : taxLines.FirstOrDefault(taxLine => taxLine.LineItemID == rmaLineItem.ID);
+                    var lineItemTotalTax = taxLine?.LineItemTotalTax ?? 0;
+
+                    // Exempt products will have an exempt amount instead of a taxable amount.
+                    decimal lineItemBaseCost = lineItem.xp.LineTotalWithProportionalDiscounts;
+                    decimal totalRefundIfReturningAllLineItems = lineItemBaseCost + lineItemTotalTax;
+                    double taxableAmountPerSingleLineItem = (double)(lineItemBaseCost / lineItem.Quantity);
+                    double taxPerSingleLineItem = (double)(lineItemTotalTax / lineItem.Quantity);
+                    double singleQuantityLineItemRefund = Math.Round(taxableAmountPerSingleLineItem + taxPerSingleLineItem, 2);
+                    decimal expectedLineTotalRefund = (decimal)singleQuantityLineItemRefund * quantityToRefund;
+
+                    rmaLineItem.LineTotalRefund = ValidateExpectedLineTotalRefund(expectedLineTotalRefund, totalRefundIfReturningAllLineItems, allRMAsOnThisOrder, rmaLineItem, orderWorksheet, supplierID);
+                }
+
+                ApplyPercentToDiscount(rmaLineItem);
+
+                rmaLineItem.Status = rmaLineItem.QuantityProcessed == rmaLineItem.QuantityRequested ? RMALineItemStatus.Complete : RMALineItemStatus.PartialQtyComplete;
+            }
+        }
+
+        public virtual void ApplyPercentToDiscount(RMALineItem rmaLineItem)
+        {
+            if (rmaLineItem.PercentToRefund <= 0 || rmaLineItem.PercentToRefund > 100)
+            {
+                throw new Exception($"The refund percentage for {rmaLineItem.ID} must be greater than 0 and no higher than 100 percent.");
+            }
+
+            if (rmaLineItem.PercentToRefund != null)
+            {
+                // Math.Round() by default would round 13.745 to 13.74 based on banker's rounding (going to the nearest even number when the final digit is 5).
+                // This errs on the side of rounding up (away from zero) when only a percentage of a refund is applied.
+                rmaLineItem.LineTotalRefund = Math.Round((decimal)(rmaLineItem.LineTotalRefund / 100 * rmaLineItem.PercentToRefund), 2, MidpointRounding.AwayFromZero);
+            }
+        }
+
+        public virtual async Task HandleRefund(RMA rma, CosmosListPage<RMA> allRMAsOnThisOrder, HSOrderWorksheet worksheet, DecodedToken decodedToken)
+        {
+            // Get payment info from the order
+            ListPage<HSPayment> paymentResponse = await oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, rma.SourceOrderID);
+            HSPayment creditCardPayment = paymentResponse.Items.FirstOrDefault(payment => payment.Type == OrderCloud.SDK.PaymentType.CreditCard);
+            if (creditCardPayment == null)
+            {
+                // Items were not paid for with a credit card.  No refund to process via CardConnect.
+                return;
+            }
+
+            HSPaymentTransaction creditCardPaymentTransaction = creditCardPayment.Transactions
+                .OrderBy(x => x.DateExecuted)
+                .LastOrDefault(x => x.Type == "CreditCard" && x.Succeeded);
+            decimal purchaseOrderTotal = (decimal)paymentResponse.Items
+                .Where(payment => payment.Type == OrderCloud.SDK.PaymentType.PurchaseOrder)
+                .Select(payment => payment.Amount)
+                .Sum();
+
+            // Refund via CardConnect
+            CardConnectInquireResponse inquiry = await cardConnect.Inquire(new CardConnectInquireRequest
+            {
+                merchid = creditCardPaymentTransaction.xp.CardConnectResponse.merchid,
+                orderid = rma.SourceOrderID,
+                set = "1",
+                currency = worksheet.Order.xp.Currency.ToString(),
+                retref = creditCardPaymentTransaction.xp.CardConnectResponse.retref,
+            });
+
+            decimal shippingRefund = rma.Type == RMAType.Cancellation ? GetShippingRefundIfCancellingAll(worksheet, rma, allRMAsOnThisOrder) : 0M;
+
+            decimal lineTotalToRefund = rma.LineItems
+                .Where(li => li.IsResolved
+                    && !li.IsRefunded
+                    && li.RefundableViaCreditCard
+                    && (li.Status == RMALineItemStatus.PartialQtyComplete || li.Status == RMALineItemStatus.Complete))
+                    .Select(li => li.LineTotalRefund)
+                    .Sum();
+
+            decimal totalToRefund = lineTotalToRefund + shippingRefund;
+
+            // Update Total Credited on RMA
+            rma.TotalCredited += totalToRefund;
+
+            // Transactions that are queued for capture can only be fully voided, and we are only allowing partial voids moving forward.
+            if (inquiry.voidable == "Y" && inquiry.setlstat == QUEUED_FOR_CAPTURE)
+            {
+                throw new CatalystBaseException(new ApiError
+                {
+                    ErrorCode = "Payment.FailedToVoidAuthorization",
+                    Message = "This customer's credit card transaction is currently queued for capture and cannot be refunded at this time.  Please try again later.",
+                });
+            }
+
+            // If voidable, but not refundable, void the refund amount off the original order total
+            if (inquiry.voidable == "Y")
+            {
+                await HandleVoidTransaction(worksheet, creditCardPayment, creditCardPaymentTransaction, totalToRefund, rma);
+            }
+
+            // If refundable, but not voidable, do a refund
+            if (inquiry.voidable == "N")
+            {
+                await HandleRefundTransaction(worksheet, creditCardPayment, creditCardPaymentTransaction, totalToRefund, rma);
+            }
+        }
+
+        public virtual decimal GetShippingRefundIfCancellingAll(HSOrderWorksheet worksheet, RMA rma, CosmosListPage<RMA> allRMAsOnThisOrder)
+        {
+            // What are all the line items on this order for this supplier and their quantities?
+            IEnumerable<HSLineItem> allLineItemsShippedFromThisSupplier = worksheet.LineItems
+                .Where(li => li.SupplierID == rma.SupplierID && worksheet.Order.xp.PaymentMethod == "Credit Card");
+            Dictionary<string, int> allLineItemsDictionary = new Dictionary<string, int>();
+            foreach (HSLineItem li in allLineItemsShippedFromThisSupplier)
+            {
+                allLineItemsDictionary.Add(li.ID, li.Quantity);
+            }
+
+            // Including this RMA and previous RMAs for this supplier, get everything that has been refunded or is about to be refunded.
+            var rmasFromThisSupplier = allRMAsOnThisOrder.Items.Where(r => r.SupplierID == rma.SupplierID);
+            Dictionary<string, int> allCompleteRMALineItemsDictionary = new Dictionary<string, int>();
+            foreach (RMA existingRMA in rmasFromThisSupplier)
+            {
+                RMA rmaToAnalyze = existingRMA.RMANumber == rma.RMANumber ? rma : existingRMA;
+                foreach (RMALineItem rmaLineItem in rmaToAnalyze.LineItems)
+                {
+                    if (rmaLineItem.Status == RMALineItemStatus.Complete && rmaLineItem.RefundableViaCreditCard)
+                    {
+                        if (!allCompleteRMALineItemsDictionary.ContainsKey(rmaLineItem.ID))
+                        {
+                            allCompleteRMALineItemsDictionary.Add(rmaLineItem.ID, rmaLineItem.QuantityProcessed);
+                        }
+                        else
+                        {
+                            allCompleteRMALineItemsDictionary[rmaLineItem.ID] += rmaLineItem.QuantityProcessed;
+                        }
+                    }
+                }
+            }
+
+            // If these are the same, the supplier hasn't shipped anything, and shipping should be credited back to the buyer.
+            bool shouldShippingBeCanceled = allLineItemsDictionary.OrderBy(kvp => kvp.Key)
+                .SequenceEqual(allCompleteRMALineItemsDictionary.OrderBy(kvp => kvp.Key));
+
+            // Figure out what the buyer paid for shipping for this supplier on this order.
+            if (shouldShippingBeCanceled)
+            {
+                string shipEstimateID = worksheet.ShipEstimateResponse.ShipEstimates
+                    .FirstOrDefault(estimate => estimate.xp.SupplierID == rma.SupplierID)?.ID;
+                var shippingLine = worksheet.OrderCalculateResponse.xp.TaxCalculation.OrderLevelTaxes.First(tax => tax.ShipEstimateID == shipEstimateID);
+                decimal shippingCostToRefund = (decimal)(shippingLine.Taxable + shippingLine.Tax + shippingLine.Exempt);
+                rma.ShippingCredited += shippingCostToRefund;
+                return shippingCostToRefund;
+            }
+
+            return 0M;
+        }
+
+        public virtual async Task HandleVoidTransaction(HSOrderWorksheet worksheet, HSPayment creditCardPayment, HSPaymentTransaction creditCardPaymentTransaction, decimal totalToRefund, RMA rma)
+        {
+            HSPayment newCreditCardVoid = new HSPayment() { Amount = totalToRefund };
+            try
+            {
+                CardConnectVoidResponse response = await cardConnect.VoidAuthorization(new CardConnectVoidRequest
+                {
+                    currency = worksheet.Order.xp.Currency.ToString(),
+                    merchid = creditCardPaymentTransaction.xp.CardConnectResponse.merchid,
+                    retref = creditCardPaymentTransaction.xp.CardConnectResponse.retref,
+                    amount = totalToRefund.ToString("F2"),
+                });
+                await oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, rma.SourceOrderID, creditCardPayment.ID, CardConnectMapper.Map(newCreditCardVoid, response));
+            }
+            catch (CreditCardVoidException ex)
+            {
+                await oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, rma.SourceOrderID, creditCardPayment.ID, CardConnectMapper.Map(newCreditCardVoid, ex.Response));
+                throw new CatalystBaseException(new ApiError
+                {
+                    ErrorCode = "Payment.FailedToVoidAuthorization",
+                    Message = ex.ApiError.Message,
+                });
+            }
+        }
+
+        public virtual async Task HandleRefundTransaction(HSOrderWorksheet worksheet, HSPayment creditCardPayment, HSPaymentTransaction creditCardPaymentTransaction, decimal totalToRefund, RMA rma)
+        {
+            try
+            {
+                CardConnectRefundRequest requestedRefund = new CardConnectRefundRequest()
+                {
+                    currency = worksheet.Order.xp.Currency.ToString(),
+                    merchid = creditCardPaymentTransaction.xp.CardConnectResponse.merchid,
+                    retref = creditCardPaymentTransaction.xp.CardConnectResponse.retref,
+                    amount = totalToRefund.ToString("F2"),
+                };
+                CardConnectRefundResponse response = await cardConnect.Refund(requestedRefund);
+                HSPayment newCreditCardPayment = new HSPayment() { Amount = response.amount };
+                await oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, rma.SourceOrderID, creditCardPayment.ID, CardConnectMapper.Map(newCreditCardPayment, response));
+            }
+            catch (CreditCardRefundException ex)
+            {
+                throw new CatalystBaseException(new ApiError
+                {
+                    ErrorCode = "Payment.FailedToRefund",
+                    Message = ex.ApiError.Message,
+                });
             }
         }
 
@@ -82,7 +470,7 @@ namespace Headstart.API.Commands
             var args = new CosmosListOptions()
             {
                 PageSize = 100,
-                Filters = new List<ListFilter>() { new ListFilter("SourceOrderID", order.ID) }
+                Filters = new List<ListFilter>() { new ListFilter("SourceOrderID", order.ID) },
             };
 
             CosmosListPage<RMA> existingRMAsOnOrder = await ListBuyerRMAs(args, order.FromCompanyID);
@@ -113,48 +501,13 @@ namespace Headstart.API.Commands
                         RefundableViaCreditCard = order.xp.PaymentMethod == "Credit Card",
                         IsResolved = false,
                         IsRefunded = false,
-                        LineTotalRefund = 0
+                        LineTotalRefund = 0,
                     };
                     rmaLineItems.Add(rmaLineItem);
                 }
             }
+
             return rmaLineItems;
-        }
-
-        public virtual async Task<RMA> PostRMA(RMA rma)
-        {
-            return await _rmaRepo.AddItemAsync(rma);
-        }
-
-        public async Task<CosmosListPage<RMA>> ListBuyerRMAs(CosmosListOptions listOptions, string buyerID)
-        {
-            IQueryable<RMA> queryable = _rmaRepo.GetQueryable().Where(rma => rma.FromBuyerID == buyerID);
-
-            CosmosListPage<RMA> rmas = await GenerateRMAList(queryable, listOptions);
-            return rmas;
-        }
-
-        public async Task<RMA> Get(ListArgs<RMA> args, DecodedToken decodedToken)
-        {
-            CosmosListOptions listOptions = new CosmosListOptions()
-            {
-                PageSize = 100,
-                Search = args.Search,
-                SearchOn = "RMANumber"
-            };
-
-            IQueryable<RMA> queryable = _rmaRepo.GetQueryable()
-                .Where(rma =>
-                 rma.PartitionKey == "PartitionValue");
-
-            if (decodedToken.CommerceRole == CommerceRole.Supplier)
-            {
-                var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-                queryable = queryable.Where(rma => rma.SupplierID == me.Supplier.ID);
-            }
-
-            CosmosListPage<RMA> rmas = await GenerateRMAList(queryable, listOptions);
-            return rmas.Items[0];
         }
 
         private async Task<CosmosListPage<RMA>> GenerateRMAList(IQueryable<RMA> queryable, CosmosListOptions listOptions)
@@ -162,92 +515,8 @@ namespace Headstart.API.Commands
             QueryRequestOptions requestOptions = new QueryRequestOptions();
             requestOptions.MaxItemCount = listOptions.PageSize;
 
-            CosmosListPage<RMA> rmas = await _rmaRepo.GetItemsAsync(queryable, requestOptions, listOptions);
+            CosmosListPage<RMA> rmas = await rmaRepo.GetItemsAsync(queryable, requestOptions, listOptions);
             return rmas;
-        }
-
-        public virtual async Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, CommerceRole commerceRole, MeUser me, bool accessAllRMAsOnOrder = false)
-        {
-            string sourceOrderID = orderID.Split("-")[0];
-
-            CosmosListOptions listOptions = new CosmosListOptions() { PageSize = 100 };
-
-            IQueryable<RMA> queryable = _rmaRepo.GetQueryable()
-                .Where(rma =>
-                    rma.PartitionKey == "PartitionValue"
-                    && rma.SourceOrderID == sourceOrderID);
-
-            if (commerceRole == CommerceRole.Supplier && !accessAllRMAsOnOrder)
-            {
-                queryable = QueryOnlySupplierRMAs(queryable, me.Supplier.ID);
-            }
-
-            CosmosListPage<RMA> rmas = await GenerateRMAList(queryable, listOptions);
-            return rmas;
-        }
-
-        public virtual IQueryable<RMA> QueryOnlySupplierRMAs(IQueryable<RMA> queryable, string supplierID)
-        {
-            return queryable.Where(rma => rma.SupplierID == supplierID);
-        }
-
-        public async Task<CosmosListPage<RMA>> ListRMAs(CosmosListOptions listOptions, DecodedToken decodedToken)
-        {
-            IQueryable<RMA> queryable = _rmaRepo.GetQueryable().Where(rma => rma.PartitionKey == "PartitionValue");
-
-            if (decodedToken.CommerceRole == CommerceRole.Supplier)
-            {
-                var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-                queryable = queryable.Where(rma => rma.SupplierID == me.Supplier.ID);
-            }
-
-            CosmosListPage<RMA> rmas = await GenerateRMAList(queryable, listOptions);
-            return rmas;
-        }
-
-        public async Task<RMAWithLineItemStatusByQuantity> ProcessRMA(RMA rma, DecodedToken decodedToken)
-        {
-            // Get the RMA from the last time it was saved.
-            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-            RMA currentRMA = await GetRMA(rma.RMANumber, decodedToken);
-            if (decodedToken.CommerceRole == CommerceRole.Supplier && currentRMA.SupplierID != me.Supplier.ID)
-            {
-                throw new Exception($"You do not have permission to process this RMA.");
-            }
-
-            // Should the Status and IsResolved proprerties of an RMALineItem change?
-            rma.LineItems = UpdateRMALineItemStatusesAndCheckIfResolved(rma.LineItems);
-
-            // Should status of RMA change?
-            rma = UpdateRMAStatus(rma);
-
-            // If the status on the new RMA differs from the old RMA, create an RMALog
-            if (rma.Status != currentRMA.Status)
-            {
-                RMALog log = new RMALog() { Status = rma.Status, Date = DateTime.Now, FromUserID = me.ID };
-                rma.Logs.Insert(0, log);
-            }
-
-            HSOrderWorksheet worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, rma.SourceOrderID);
-
-            IEnumerable<RMALineItem> deniedLineItems = rma.LineItems
-                .Where(li => !li.IsRefunded && li.Status == RMALineItemStatus.Denied)
-                .Where(li => currentRMA.LineItems.FirstOrDefault(currentLi => currentLi.ID == li.ID).Status != RMALineItemStatus.Denied).ToList();
-
-            List<LineItemStatusChanges> lineItemStatusChangesList = BuildLineItemStatusChanges(deniedLineItems, worksheet, rma.Type, true);
-
-            ItemResponse<RMA> updatedRMA = await _rmaRepo.ReplaceItemAsync(currentRMA.id, rma);
-
-            await HandlePendingApprovalEmails(currentRMA, rma.LineItems, worksheet);
-
-            RMAWithLineItemStatusByQuantity rmaWithStatusByQuantityChanges = new RMAWithLineItemStatusByQuantity()
-            {
-                SupplierOrderID = $"{rma.SourceOrderID}-{rma.SupplierID}",
-                RMA = updatedRMA.Resource,
-                LineItemStatusChangesList = lineItemStatusChangesList
-            };
-
-            return rmaWithStatusByQuantityChanges;
         }
 
         private async Task<RMA> GetRMA(string rmaNumber, DecodedToken decodedToken)
@@ -275,6 +544,7 @@ namespace Headstart.API.Commands
                         lineItem.Status = RMALineItemStatus.Approved;
                     }
                 }
+
                 // Check each LineItem on the RMA.  If the new Status is Approved, PartialQtyApproved, or Denied, IsResolved should be true.  Else, it should be false.
                 if (lineItem.Status == RMALineItemStatus.Approved || lineItem.Status == RMALineItemStatus.PartialQtyApproved || lineItem.Status == RMALineItemStatus.Denied)
                 {
@@ -285,6 +555,7 @@ namespace Headstart.API.Commands
                     lineItem.IsResolved = false;
                 }
             }
+
             return rmaLineItems;
         }
 
@@ -295,23 +566,27 @@ namespace Headstart.API.Commands
             {
                 rma.Status = RMAStatus.Processing;
             }
+
             // If all line items have a status of Denied, the status should be Denied.
             else if (rma.LineItems.All(li => li.Status == RMALineItemStatus.Denied))
             {
                 rma.Status = RMAStatus.Denied;
                 rma.DateComplete = DateTime.Now;
             }
+
             // If all line items have a status of Complete, PartialQtyComplete, and/or Denied, the status should be Complete.
             else if (rma.LineItems.All(li => li.Status == RMALineItemStatus.Complete || li.Status == RMALineItemStatus.PartialQtyComplete || li.Status == RMALineItemStatus.Denied))
             {
                 rma.Status = RMAStatus.Complete;
                 rma.DateComplete = DateTime.Now;
             }
+
             // If RMAs have a mixture of statuses at this point, at least one line item is approved but awaiting processing.  Set to Approved.
             else if (rma.LineItems.Any(li => li.Status == RMALineItemStatus.Approved || li.Status == RMALineItemStatus.PartialQtyApproved))
             {
                 rma.Status = RMAStatus.Approved;
             }
+
             return rma;
         }
 
@@ -321,6 +596,7 @@ namespace Headstart.API.Commands
             {
                 return new List<LineItemStatusChanges>();
             }
+
             IEnumerable<HSLineItem> orderWorksheetLineItems = worksheet.LineItems
                 .Where(li => rmaLineItemsToUpdate
                     .Any(itemToUpdate => itemToUpdate.ID == li.ID));
@@ -407,7 +683,7 @@ namespace Headstart.API.Commands
             LineItemStatusChanges lineItemStatusChanges = new LineItemStatusChanges()
             {
                 Status = rma.Type == RMAType.Cancellation ? LineItemStatus.CancelRequested : LineItemStatus.ReturnRequested,
-                Changes = new List<LineItemStatusChange>()
+                Changes = new List<LineItemStatusChange>(),
             };
 
             foreach (var rmaLineItem in pendingApprovalLineItemsWithNewComments)
@@ -417,66 +693,22 @@ namespace Headstart.API.Commands
                     ID = rmaLineItem.ID,
                     Quantity = rmaLineItem.QuantityProcessed,
                     Comment = rmaLineItem.Comment,
-                    QuantityRequestedForRefund = rmaLineItem.QuantityRequested
+                    QuantityRequestedForRefund = rmaLineItem.QuantityRequested,
                 });
-
             }
 
             List<HSLineItem> lineItemsChanged = worksheet.LineItems.Where(li => lineItemStatusChanges.Changes.Select(li => li.ID).Contains(li.ID)).ToList();
 
-            Supplier supplier = await _oc.Suppliers.GetAsync(rma.SupplierID);
+            Supplier supplier = await oc.Suppliers.GetAsync(rma.SupplierID);
 
             EmailDisplayText emailText = new EmailDisplayText()
             {
                 EmailSubject = $"New message available from {supplier.Name}",
                 DynamicText = $"{supplier.Name} has contacted you regarding your request for {rma.Type.ToString().ToLower()}",
-                DynamicText2 = "The following items have new messages"
+                DynamicText2 = "The following items have new messages",
             };
 
-            await _sendgridService.SendLineItemStatusChangeEmail(worksheet.Order, lineItemStatusChanges, lineItemsChanged, worksheet.Order.FromUser.FirstName, worksheet.Order.FromUser.LastName, worksheet.Order.FromUser.Email, emailText);
-        }
-
-        public async Task<RMAWithLineItemStatusByQuantity> ProcessRefund(string rmaNumber, DecodedToken decodedToken)
-        {
-            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-            RMA rma = await GetRMA(rmaNumber, decodedToken);
-
-            ValidateRMA(rma, me, decodedToken);
-
-            decimal initialAmountRefunded = rma.TotalCredited;
-
-            IEnumerable<RMALineItem> rmaLineItemsToUpdate = rma.LineItems
-                .Where(li => !li.IsRefunded
-                    && (li.Status == RMALineItemStatus.Approved || li.Status == RMALineItemStatus.PartialQtyApproved)).ToList();
-
-            HSOrderWorksheet worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, rma.SourceOrderID);
-
-            CosmosListPage<RMA> allRMAsOnThisOrder = await ListRMAsByOrderID(worksheet.Order.ID, decodedToken.CommerceRole, me, true);
-
-            CalculateAndUpdateLineTotalRefund(rmaLineItemsToUpdate, worksheet, allRMAsOnThisOrder, rma.SupplierID);
-
-            // UPDATE RMA LINE ITEM STATUSES
-            SetRMALineItemStatusesToComplete(rmaLineItemsToUpdate);
-
-            // UPDATE RMA STATUS
-            UpdateRMAStatus(rma);
-
-            await HandleRefund(rma, allRMAsOnThisOrder, worksheet, decodedToken);
-
-            MarkRMALineItemsAsRefunded(rmaLineItemsToUpdate);
-
-            decimal totalRefundedForThisTransaction = rma.TotalCredited - initialAmountRefunded;
-            RMALog log = new RMALog() { Status = rma.Status, Date = DateTime.Now, AmountRefunded = totalRefundedForThisTransaction, FromUserID = me.ID };
-            rma.Logs.Insert(0, log);
-
-            List<LineItemStatusChanges> lineItemStatusChangesList = BuildLineItemStatusChanges(rmaLineItemsToUpdate, worksheet, rma.Type, false);
-
-            // SAVE RMA
-            ItemResponse<RMA> updatedRMA = await _rmaRepo.ReplaceItemAsync(rma.id, rma);
-
-            RMAWithLineItemStatusByQuantity rmaWithStatusByQuantityChanges = new RMAWithLineItemStatusByQuantity() { SupplierOrderID = $"{rma.SourceOrderID}-{rma.SupplierID}", RMA = updatedRMA.Resource, LineItemStatusChangesList = lineItemStatusChangesList };
-
-            return rmaWithStatusByQuantityChanges;
+            await sendgridService.SendLineItemStatusChangeEmail(worksheet.Order, lineItemStatusChanges, lineItemsChanged, worksheet.Order.FromUser.FirstName, worksheet.Order.FromUser.LastName, worksheet.Order.FromUser.Email, emailText);
         }
 
         private void ValidateRMA(RMA rma, MeUser me, DecodedToken decodedToken)
@@ -489,41 +721,6 @@ namespace Headstart.API.Commands
             if (rma.Status == RMAStatus.Complete || rma.Status == RMAStatus.Denied || rma.Status == RMAStatus.Requested)
             {
                 throw new Exception("This RMA is not in a valid status to be refunded.");
-            }
-        }
-
-        public void CalculateAndUpdateLineTotalRefund(IEnumerable<RMALineItem> lineItemsToUpdate, HSOrderWorksheet orderWorksheet, CosmosListPage<RMA> allRMAsOnThisOrder, string supplierID)
-        {
-            var taxLines = orderWorksheet?.OrderCalculateResponse?.xp?.TaxCalculation?.LineItems;
-
-            foreach (RMALineItem rmaLineItem in lineItemsToUpdate)
-            {
-                if (!rmaLineItem.RefundableViaCreditCard)
-                {
-                    HSLineItem lineItemFromOrder = orderWorksheet.LineItems.FirstOrDefault(li => li.ID == rmaLineItem.ID);
-                    rmaLineItem.LineTotalRefund = lineItemFromOrder.LineTotal / lineItemFromOrder.Quantity * rmaLineItem.QuantityProcessed;
-                }
-				else
-				{
-					int quantityToRefund = rmaLineItem.QuantityProcessed;
-                    var lineItem = orderWorksheet.LineItems.First(li => li.ID == rmaLineItem.ID);
-                    var taxLine = taxLines == null ? null : taxLines.FirstOrDefault(taxLine => taxLine.LineItemID == rmaLineItem.ID);
-                    var lineItemTotalTax = taxLine?.LineItemTotalTax ?? 0;
-
-                    // Exempt products will have an exempt amount instead of a taxable amount.
-                    decimal lineItemBaseCost = lineItem.xp.LineTotalWithProportionalDiscounts;
-                    decimal totalRefundIfReturningAllLineItems = lineItemBaseCost + lineItemTotalTax;
-                    double taxableAmountPerSingleLineItem = (double)(lineItemBaseCost / lineItem.Quantity);
-                    double taxPerSingleLineItem = (double)(lineItemTotalTax / lineItem.Quantity);
-                    double singleQuantityLineItemRefund = Math.Round(taxableAmountPerSingleLineItem + taxPerSingleLineItem, 2);
-                    decimal expectedLineTotalRefund = (decimal)singleQuantityLineItemRefund * quantityToRefund;
-
-                    rmaLineItem.LineTotalRefund = ValidateExpectedLineTotalRefund(expectedLineTotalRefund, totalRefundIfReturningAllLineItems, allRMAsOnThisOrder, rmaLineItem, orderWorksheet, supplierID);
-                }
-
-                ApplyPercentToDiscount(rmaLineItem);
-
-                rmaLineItem.Status = rmaLineItem.QuantityProcessed == rmaLineItem.QuantityRequested ? RMALineItemStatus.Complete : RMALineItemStatus.PartialQtyComplete;
             }
         }
 
@@ -540,6 +737,7 @@ namespace Headstart.API.Commands
             if (allRMAsOnThisOrder.Items.Count > 1)
             {
                 decimal previouslyRefundedAmountForThisLineItem = 0M;
+
                 // Find previously refunded total for line items on this order...
                 foreach (RMA previouslyRefundedRMA in allRMAsOnThisOrder.Items)
                 {
@@ -552,6 +750,7 @@ namespace Headstart.API.Commands
                         }
                     }
                 }
+
                 // If previous total + new line total > totalRefundIfReturningAllLineItems, then totalRefundIfReturningAllLineItems - previousTotal = newLineTotal
                 if (previouslyRefundedAmountForThisLineItem + expectedLineTotalRefund > totalRefundIfReturningAllLineItems)
                 {
@@ -567,6 +766,7 @@ namespace Headstart.API.Commands
         {
             var lineItem = orderWorksheet.LineItems.First(li => li.ID == rmaLineItem.ID);
             var rmasFromThisSupplier = allRMAsOnThisOrder.Items.Where(r => r.SupplierID == supplierID);
+
             // If this is the only RMA for this line item and all requested RMA quantity are approved, and the quantity equals the original order quantity, issue a full refund (line item cost + tax).
             if (rmaLineItem.Status == RMALineItemStatus.Approved && rmaLineItem.QuantityProcessed == lineItem.Quantity && rmasFromThisSupplier.Count() == 1)
             {
@@ -575,20 +775,6 @@ namespace Headstart.API.Commands
             else
             {
                 return false;
-            }
-        }
-
-        public virtual void ApplyPercentToDiscount(RMALineItem rmaLineItem)
-        {
-            if (rmaLineItem.PercentToRefund <= 0 || rmaLineItem.PercentToRefund > 100)
-            {
-                throw new Exception($"The refund percentage for {rmaLineItem.ID} must be greater than 0 and no higher than 100 percent.");
-            }
-            if (rmaLineItem.PercentToRefund != null)
-            {
-                // Math.Round() by default would round 13.745 to 13.74 based on banker's rounding (going to the nearest even number when the final digit is 5).
-                // This errs on the side of rounding up (away from zero) when only a percentage of a refund is applied.
-                rmaLineItem.LineTotalRefund = Math.Round((decimal)(rmaLineItem.LineTotalRefund / 100 * rmaLineItem.PercentToRefund), 2, MidpointRounding.AwayFromZero);
             }
         }
 
@@ -604,174 +790,6 @@ namespace Headstart.API.Commands
                 {
                     lineItem.Status = RMALineItemStatus.PartialQtyComplete;
                 }
-            }
-        }
-
-        public virtual async Task HandleRefund(RMA rma, CosmosListPage<RMA> allRMAsOnThisOrder, HSOrderWorksheet worksheet, DecodedToken decodedToken)
-        {
-
-            // Get payment info from the order
-            ListPage<HSPayment> paymentResponse = await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, rma.SourceOrderID);
-            HSPayment creditCardPayment = paymentResponse.Items.FirstOrDefault(payment => payment.Type == OrderCloud.SDK.PaymentType.CreditCard);
-            if (creditCardPayment == null)
-            {
-                // Items were not paid for with a credit card.  No refund to process via CardConnect.
-                return;
-            }
-            HSPaymentTransaction creditCardPaymentTransaction = creditCardPayment.Transactions
-                .OrderBy(x => x.DateExecuted)
-                .LastOrDefault(x => x.Type == "CreditCard" && x.Succeeded);
-            decimal purchaseOrderTotal = (decimal)paymentResponse.Items
-                .Where(payment => payment.Type == OrderCloud.SDK.PaymentType.PurchaseOrder)
-                .Select(payment => payment.Amount)
-                .Sum();
-
-            // Refund via CardConnect
-            CardConnectInquireResponse inquiry = await _cardConnect.Inquire(new CardConnectInquireRequest
-            {
-                merchid = creditCardPaymentTransaction.xp.CardConnectResponse.merchid,
-                orderid = rma.SourceOrderID,
-                set = "1",
-                currency = worksheet.Order.xp.Currency.ToString(),
-                retref = creditCardPaymentTransaction.xp.CardConnectResponse.retref
-            });
-
-            decimal shippingRefund = rma.Type == RMAType.Cancellation ? GetShippingRefundIfCancellingAll(worksheet, rma, allRMAsOnThisOrder) : 0M;
-
-            decimal lineTotalToRefund = rma.LineItems
-                .Where(li => li.IsResolved
-                    && !li.IsRefunded
-                    && li.RefundableViaCreditCard
-                    && (li.Status == RMALineItemStatus.PartialQtyComplete || li.Status == RMALineItemStatus.Complete))
-                    .Select(li => li.LineTotalRefund)
-                    .Sum();
-
-            decimal totalToRefund = lineTotalToRefund + shippingRefund;
-
-            // Update Total Credited on RMA
-            rma.TotalCredited += totalToRefund;
-
-            // Transactions that are queued for capture can only be fully voided, and we are only allowing partial voids moving forward.
-            if (inquiry.voidable == "Y" && inquiry.setlstat == QUEUED_FOR_CAPTURE)
-            {
-                throw new CatalystBaseException(new ApiError
-                {
-                    ErrorCode = "Payment.FailedToVoidAuthorization",
-                    Message = "This customer's credit card transaction is currently queued for capture and cannot be refunded at this time.  Please try again later."
-                });
-            }
-
-            // If voidable, but not refundable, void the refund amount off the original order total
-            if (inquiry.voidable == "Y")
-            {
-                await HandleVoidTransaction(worksheet, creditCardPayment, creditCardPaymentTransaction, totalToRefund, rma);
-            }
-
-            // If refundable, but not voidable, do a refund
-            if (inquiry.voidable == "N")
-            {
-                await HandleRefundTransaction(worksheet, creditCardPayment, creditCardPaymentTransaction, totalToRefund, rma);
-            }
-        }
-
-        public virtual decimal GetShippingRefundIfCancellingAll(HSOrderWorksheet worksheet, RMA rma, CosmosListPage<RMA> allRMAsOnThisOrder)
-        {
-            // What are all the line items on this order for this supplier and their quantities?
-            IEnumerable<HSLineItem> allLineItemsShippedFromThisSupplier = worksheet.LineItems
-                .Where(li => li.SupplierID == rma.SupplierID && worksheet.Order.xp.PaymentMethod == "Credit Card");
-            Dictionary<string, int> allLineItemsDictionary = new Dictionary<string, int>();
-            foreach (HSLineItem li in allLineItemsShippedFromThisSupplier)
-            {
-                allLineItemsDictionary.Add(li.ID, li.Quantity);
-            }
-
-            // Including this RMA and previous RMAs for this supplier, get everything that has been refunded or is about to be refunded.
-            var rmasFromThisSupplier = allRMAsOnThisOrder.Items.Where(r => r.SupplierID == rma.SupplierID);
-            Dictionary<string, int> allCompleteRMALineItemsDictionary = new Dictionary<string, int>();
-            foreach (RMA existingRMA in rmasFromThisSupplier)
-            {
-                RMA rmaToAnalyze = existingRMA.RMANumber == rma.RMANumber ? rma : existingRMA;
-                foreach (RMALineItem rmaLineItem in rmaToAnalyze.LineItems)
-                {
-                    if (rmaLineItem.Status == RMALineItemStatus.Complete && rmaLineItem.RefundableViaCreditCard)
-                    {
-                        if (!allCompleteRMALineItemsDictionary.ContainsKey(rmaLineItem.ID))
-                        {
-                            allCompleteRMALineItemsDictionary.Add(rmaLineItem.ID, rmaLineItem.QuantityProcessed);
-                        }
-                        else
-                        {
-                            allCompleteRMALineItemsDictionary[rmaLineItem.ID] += rmaLineItem.QuantityProcessed;
-                        }
-                    }
-                }
-            }
-
-            // If these are the same, the supplier hasn't shipped anything, and shipping should be credited back to the buyer.
-            bool shouldShippingBeCanceled = allLineItemsDictionary.OrderBy(kvp => kvp.Key)
-                .SequenceEqual(allCompleteRMALineItemsDictionary.OrderBy(kvp => kvp.Key));
-
-            // Figure out what the buyer paid for shipping for this supplier on this order.
-            if (shouldShippingBeCanceled)
-            {
-                string shipEstimateID = worksheet.ShipEstimateResponse.ShipEstimates
-                    .FirstOrDefault(estimate => estimate.xp.SupplierID == rma.SupplierID)?.ID;
-                var shippingLine = worksheet.OrderCalculateResponse.xp.TaxCalculation.OrderLevelTaxes.First(tax => tax.ShipEstimateID == shipEstimateID);
-                decimal shippingCostToRefund = (decimal)(shippingLine.Taxable + shippingLine.Tax + shippingLine.Exempt);
-                rma.ShippingCredited += shippingCostToRefund;
-                return shippingCostToRefund;
-            }
-
-            return 0M;
-        }
-
-        public virtual async Task HandleVoidTransaction(HSOrderWorksheet worksheet, HSPayment creditCardPayment, HSPaymentTransaction creditCardPaymentTransaction, decimal totalToRefund, RMA rma)
-        {
-            HSPayment newCreditCardVoid = new HSPayment() { Amount = totalToRefund };
-            try
-            {
-                CardConnectVoidResponse response = await _cardConnect.VoidAuthorization(new CardConnectVoidRequest
-                {
-                    currency = worksheet.Order.xp.Currency.ToString(),
-                    merchid = creditCardPaymentTransaction.xp.CardConnectResponse.merchid,
-                    retref = creditCardPaymentTransaction.xp.CardConnectResponse.retref,
-                    amount = totalToRefund.ToString("F2"),
-                });
-                await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, rma.SourceOrderID, creditCardPayment.ID, CardConnectMapper.Map(newCreditCardVoid, response));
-            }
-            catch (CreditCardVoidException ex)
-            {
-                await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, rma.SourceOrderID, creditCardPayment.ID, CardConnectMapper.Map(newCreditCardVoid, ex.Response));
-                throw new CatalystBaseException(new ApiError
-                {
-                    ErrorCode = "Payment.FailedToVoidAuthorization",
-                    Message = ex.ApiError.Message
-                });
-            }
-        }
-
-        public virtual async Task HandleRefundTransaction(HSOrderWorksheet worksheet, HSPayment creditCardPayment, HSPaymentTransaction creditCardPaymentTransaction, decimal totalToRefund, RMA rma)
-        {
-            try
-            {
-                CardConnectRefundRequest requestedRefund = new CardConnectRefundRequest()
-                {
-                    currency = worksheet.Order.xp.Currency.ToString(),
-                    merchid = creditCardPaymentTransaction.xp.CardConnectResponse.merchid,
-                    retref = creditCardPaymentTransaction.xp.CardConnectResponse.retref,
-                    amount = totalToRefund.ToString("F2"),
-                };
-                CardConnectRefundResponse response = await _cardConnect.Refund(requestedRefund);
-                HSPayment newCreditCardPayment = new HSPayment() { Amount = response.amount };
-                await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, rma.SourceOrderID, creditCardPayment.ID, CardConnectMapper.Map(newCreditCardPayment, response));
-            }
-            catch (CreditCardRefundException ex)
-            {
-                throw new CatalystBaseException(new ApiError
-                {
-                    ErrorCode = "Payment.FailedToRefund",
-                    Message = ex.ApiError.Message
-                });
             }
         }
 

@@ -10,54 +10,64 @@ using OrderCloud.SDK;
 
 namespace ordercloud.integrations.cardconnect
 {
+    public enum AppEnvironment
+    {
+        Test,
+        Staging,
+        Production,
+    }
+
     public interface IOrderCloudIntegrationsCardConnectService
     {
         Task<CardConnectAccountResponse> Tokenize(CardConnectAccountRequest request);
+
         Task<CardConnectAuthorizationResponse> AuthWithoutCapture(CardConnectAuthorizationRequest request);
+
         Task<CardConnectAuthorizationResponse> AuthWithCapture(CardConnectAuthorizationRequest request);
+
         Task<CardConnectVoidResponse> VoidAuthorization(CardConnectVoidRequest request);
+
         Task<CardConnectCaptureResponse> Capture(CardConnectCaptureRequest request);
+
         Task<CardConnectInquireResponse> Inquire(CardConnectInquireRequest request);
+
         Task<CardConnectRefundResponse> Refund(CardConnectRefundRequest request);
     }
 
     public class OrderCloudIntegrationsCardConnectConfig
     {
         public string Site { get; set; }
+
         public string BaseUrl { get; set; }
+
         public string Authorization { get; set; }
+
         public string AuthorizationCad { get; set; } // we need a separate merchant account for canadian currency
+
         public string UsdMerchantID { get; set; }
+
         public string CadMerchantID { get; set; }
+
         public string EurMerchantID { get; set; }
-    }
-    public enum AppEnvironment
-    {
-        Test,
-        Staging,
-        Production
     }
 
     public class OrderCloudIntegrationsCardConnectService : IOrderCloudIntegrationsCardConnectService
     {
-        private readonly IFlurlClient _flurl;
+        private readonly IFlurlClient flurl;
         private bool noAccountCredentials;
         private AppEnvironment appEnvironment;
-        public OrderCloudIntegrationsCardConnectConfig Config { get; }
 
         public OrderCloudIntegrationsCardConnectService(OrderCloudIntegrationsCardConnectConfig config, string environment, IFlurlClientFactory flurlFactory)
         {
             Config = config;
+
             // if no credentials are provided in Test and UAT, responses will be mocked.
             noAccountCredentials = string.IsNullOrEmpty(config?.Authorization) && string.IsNullOrEmpty(config?.AuthorizationCad);
             appEnvironment = (AppEnvironment)Enum.Parse(typeof(AppEnvironment), environment);
-            _flurl = flurlFactory.Get($"https://{Config?.Site}.{Config?.BaseUrl}/");
+            flurl = flurlFactory.Get($"https://{Config?.Site}.{Config?.BaseUrl}/");
         }
 
-        private IFlurlRequest Request(string resource, string currency)
-        {
-            return _flurl.Request($"{resource}").WithHeader("Authorization", $"Basic {((currency == "USD") ? Config.Authorization : Config.AuthorizationCad)}");
-        }
+        public OrderCloudIntegrationsCardConnectConfig Config { get; }
 
         public async Task<CardConnectAccountResponse> Tokenize(CardConnectAccountRequest request)
         {
@@ -94,12 +104,13 @@ namespace ordercloud.integrations.cardconnect
             {
                 return attempt;
             }
+
             throw new CardConnectCaptureException(
                 new ApiError
                 {
                     Data = attempt,
                     Message = attempt.resptext,
-                    ErrorCode = attempt.respcode
+                    ErrorCode = attempt.respcode,
                 }, attempt);
         }
 
@@ -117,19 +128,19 @@ namespace ordercloud.integrations.cardconnect
                                .Request("cardconnect/rest/void", request.currency)
                                .PutJsonAsync(request)
                                .ReceiveJson<CardConnectVoidResponse>();
-
             }
 
             if (attempt.WasSuccessful())
             {
                 return attempt;
             }
+
             throw new CreditCardVoidException(
                 new ApiError()
                 {
                     Data = attempt,
                     Message = attempt.resptext, // response codes: https://developer.cardconnect.com/cardconnect-api?lang=json#void-service-url
-                    ErrorCode = attempt.respcode
+                    ErrorCode = attempt.respcode,
                 }, attempt);
         }
 
@@ -145,12 +156,13 @@ namespace ordercloud.integrations.cardconnect
             {
                 return attempt;
             }
+
             throw new CardConnectInquireException(
                 new ApiError()
                 {
                     Data = attempt,
                     Message = attempt.resptext,
-                    ErrorCode = attempt.respcode
+                    ErrorCode = attempt.respcode,
                 }, attempt);
         }
 
@@ -164,13 +176,19 @@ namespace ordercloud.integrations.cardconnect
             {
                 return attempt;
             }
+
             throw new CreditCardRefundException(
                 new ApiError()
                 {
                     Data = attempt,
                     Message = attempt.resptext,
-                    ErrorCode = attempt.respcode
+                    ErrorCode = attempt.respcode,
                 }, attempt);
+        }
+
+        private IFlurlRequest Request(string resource, string currency)
+        {
+            return flurl.Request($"{resource}").WithHeader("Authorization", $"Basic {((currency == "USD") ? Config.Authorization : Config.AuthorizationCad)}");
         }
 
         private CardConnectInquireResponse ExtractResponse(string body, string retref)
@@ -181,12 +199,11 @@ namespace ordercloud.integrations.cardconnect
             {
                 return JsonConvert.DeserializeObject<CardConnectInquireResponse>(body);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 var list = JsonConvert.DeserializeObject<List<CardConnectInquireResponse>>(body);
                 return list.FirstOrDefault(t => t.retref == retref);
             }
-
         }
 
         private bool ShouldMockCardConnectResponse()
@@ -202,7 +219,7 @@ namespace ordercloud.integrations.cardconnect
             response = new CardConnectAccountResponse()
             {
                 message = "Mock CardConnect account response",
-                token = string.Empty
+                token = string.Empty,
             };
             return response;
         }
@@ -233,12 +250,12 @@ namespace ordercloud.integrations.cardconnect
                 cvvresp = "U",
                 commcard = "Mock Response",
                 respstat = "A",
-                respcode = "0"
+                respcode = "0",
             };
 
             return response;
-
         }
+
         private async Task<CardConnectAuthorizationResponse> PostAuthorizationAsync(CardConnectAuthorizationRequest request)
         {
             CardConnectAuthorizationResponse attempt = new CardConnectAuthorizationResponse();
@@ -252,19 +269,19 @@ namespace ordercloud.integrations.cardconnect
                                .Request("cardconnect/rest/auth", request.currency)
                                .PutJsonAsync(request)
                                .ReceiveJson<CardConnectAuthorizationResponse>();
-
             }
 
             if (attempt.WasSuccessful())
             {
                 return attempt;
             }
+
             throw new CreditCardAuthorizationException(
                 new ApiError()
                 {
                     Data = attempt,
                     Message = attempt.resptext, // response codes: https://developer.cardconnect.com/assets/developer/assets/authResp_2-11-19.txt
-                    ErrorCode = attempt.respcode
+                    ErrorCode = attempt.respcode,
                 },
                 attempt);
         }

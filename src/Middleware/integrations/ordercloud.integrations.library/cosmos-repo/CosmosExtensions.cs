@@ -20,6 +20,7 @@ namespace ordercloud.integrations.library
                 // in the future we'll remove this in favor of centralized seeding capability
                 return services;
             }
+
             CosmosClient client = new CosmosClient(endpointUrl, primaryKey);
             var cosmosDbClientFactory = new CosmosDbContainerFactory(client, databaseName, containers);
 
@@ -27,6 +28,5 @@ namespace ordercloud.integrations.library
 
             return services;
         }
-
     }
 }

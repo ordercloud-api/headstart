@@ -15,13 +15,13 @@ namespace Headstart.Jobs
 {
     public class ReceiveRecentLineItemsJob : BaseReportJob
     {
-        private readonly IOrderCloudClient _oc;
-        private readonly ILineItemDetailDataRepo _lineItemDetailDataRepo;
+        private readonly IOrderCloudClient oc;
+        private readonly ILineItemDetailDataRepo lineItemDetailDataRepo;
 
         public ReceiveRecentLineItemsJob(IOrderCloudClient oc, ILineItemDetailDataRepo lineItemDetailDataRepo)
         {
-            _oc = oc;
-            _lineItemDetailDataRepo = lineItemDetailDataRepo;
+            this.oc = oc;
+            this.lineItemDetailDataRepo = lineItemDetailDataRepo;
         }
 
         protected override async Task<ResultCode> ProcessJobAsync(string message)
@@ -40,11 +40,11 @@ namespace Headstart.Jobs
 
         private async Task UpsertLineItemDetail(string orderID)
         {
-            var orderWorksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
+            var orderWorksheet = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
 
-            var lineItems = await _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Incoming, orderID);
+            var lineItems = await oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Incoming, orderID);
 
-            var buyer = await _oc.Buyers.GetAsync<HSBuyer>(orderWorksheet.Order.FromCompanyID);
+            var buyer = await oc.Buyers.GetAsync<HSBuyer>(orderWorksheet.Order.FromCompanyID);
 
             var lineItemsWithMiscFields = await BuildLineItemsMiscFields(lineItems, orderWorksheet, buyer.Name);
 
@@ -55,10 +55,10 @@ namespace Headstart.Jobs
                 Order = orderWorksheet.Order,
                 LineItems = lineItems,
                 LineItemsWithMiscFields = lineItemsWithMiscFields,
-                LineItemsWithPurchaseOrderFields = lineItemsWithPurchaseOrders
+                LineItemsWithPurchaseOrderFields = lineItemsWithPurchaseOrders,
             };
 
-            var queryable = _lineItemDetailDataRepo.GetQueryable().Where(order => order.PartitionKey == "PartitionValue");
+            var queryable = lineItemDetailDataRepo.GetQueryable().Where(order => order.PartitionKey == "PartitionValue");
 
             var requestOptions = BuildQueryRequestOptions();
 
@@ -66,12 +66,12 @@ namespace Headstart.Jobs
             {
                 PartitionKey = "PartitionValue",
                 OrderID = orderID,
-                Data = orderLineItemData
+                Data = orderLineItemData,
             };
 
             var listOptions = BuildListOptions(orderID);
 
-            CosmosListPage<LineItemDetailData> currentLineItemListPage = await _lineItemDetailDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
+            CosmosListPage<LineItemDetailData> currentLineItemListPage = await lineItemDetailDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
 
             var cosmosID = string.Empty;
             if (currentLineItemListPage.Items.Count() == 1)
@@ -79,19 +79,18 @@ namespace Headstart.Jobs
                 cosmosID = cosmosLineItemOrder.id = currentLineItemListPage.Items[0].id;
             }
 
-            await _lineItemDetailDataRepo.UpsertItemAsync(cosmosID, cosmosLineItemOrder);
+            await lineItemDetailDataRepo.UpsertItemAsync(cosmosID, cosmosLineItemOrder);
         }
 
         private async Task<List<LineItemsWithPurchaseOrderFields>> BuildLineItemsWithPurchaseOrders(string orderID)
         {
             // returns POs
-            var orders = await _oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Outgoing, filters: $"ID={orderID}-*");
+            var orders = await oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Outgoing, filters: $"ID={orderID}-*");
 
             // loop through orders, get line items, pass those.
             List<LineItemsWithPurchaseOrderFields> orderLineItemBySupplierID = await GetLineItemsFromPurchaseOrdersAsync(orders);
 
             return orderLineItemBySupplierID;
-
         }
 
         private async Task<List<LineItemsWithPurchaseOrderFields>> GetLineItemsFromPurchaseOrdersAsync(List<HSOrder> orders)
@@ -100,15 +99,15 @@ namespace Headstart.Jobs
 
             foreach (HSOrder order in orders)
             {
-                List<HSLineItem> lineItemsBySupplier = await _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, order.ID);
+                List<HSLineItem> lineItemsBySupplier = await oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, order.ID);
 
                 if (lineItemsBySupplier.Count() <= 0)
                 {
                     continue;
                 }
+
                 foreach (HSLineItem lineItem in lineItemsBySupplier)
                 {
-
                     var lineItemWithPurchaseOrder = new LineItemsWithPurchaseOrderFields
                     {
                         ID = lineItem.ID,
@@ -116,11 +115,12 @@ namespace Headstart.Jobs
                         Subtotal = order.Subtotal,
                         Total = order.Total,
                         UnitPrice = lineItem.UnitPrice,
-                        SupplierID = lineItem.SupplierID
+                        SupplierID = lineItem.SupplierID,
                     };
                     result.Add(lineItemWithPurchaseOrder);
                 }
             }
+
             return result;
         }
 
@@ -130,12 +130,12 @@ namespace Headstart.Jobs
 
             foreach (var lineItem in lineItems)
             {
-                var lineItemSupplier = await _oc.Suppliers.GetAsync<HSSupplier>(lineItem.SupplierID);
+                var lineItemSupplier = await oc.Suppliers.GetAsync<HSSupplier>(lineItem.SupplierID);
                 var lineItemWithMiscFields = new LineItemMiscReportFields
                 {
                     ID = lineItem.ID,
                     SupplierName = lineItemSupplier?.Name,
-                    BrandName = buyerName
+                    BrandName = buyerName,
                 };
 
                 if (orderWorksheet.OrderCalculateResponse != null && orderWorksheet.OrderCalculateResponse.xp != null && orderWorksheet.OrderCalculateResponse.xp.TaxCalculation.ExternalTransactionID != "NotTaxable")
@@ -149,6 +149,7 @@ namespace Headstart.Jobs
                     lineItemWithMiscFields.Tax = null;
                     lineItemWithMiscFields.LineTaxAvailable = false;
                 }
+
                 lineItemsWithMiscFields.Add(lineItemWithMiscFields);
             }
 

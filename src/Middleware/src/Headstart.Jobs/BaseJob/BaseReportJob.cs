@@ -13,7 +13,7 @@ namespace Headstart.Jobs
             {
                 PageSize = 1,
                 ContinuationToken = null,
-                Filters = { currentOrderFilter }
+                Filters = { currentOrderFilter },
             };
         }
 
@@ -26,7 +26,7 @@ namespace Headstart.Jobs
             {
                 PageSize = 1,
                 ContinuationToken = null,
-                Filters = { currentOrderFilter, currentLineItemFilter, currentShipmentFilter }
+                Filters = { currentOrderFilter, currentLineItemFilter, currentShipmentFilter },
             };
         }
 
@@ -34,7 +34,7 @@ namespace Headstart.Jobs
         {
             return new QueryRequestOptions()
             {
-                MaxItemCount = 1
+                MaxItemCount = 1,
             };
         }
     }

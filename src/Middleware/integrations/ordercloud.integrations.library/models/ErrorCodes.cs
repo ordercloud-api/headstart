@@ -1,8 +1,6 @@
 ﻿using OrderCloud.Catalyst;
-using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Text;
 
 namespace ordercloud.integrations.library
 {

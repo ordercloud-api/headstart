@@ -1,14 +1,11 @@
 ﻿using OrderCloud.SDK;
 using NSubstitute;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models.Headstart;
 using System.Linq;
-using Headstart.API.Commands;
 using Headstart.Common.Extensions;
 using Headstart.Tests.Mocks;
 using Headstart.Models;
@@ -17,32 +14,32 @@ namespace Headstart.Tests
 {
     public class CheckoutIntegrationCommandTests
     {
-        private IOrderCloudClient _oc;
+        public const int FREE_SHIPPING_DAYS = 3;
+
+        private IOrderCloudClient oc;
 
         [SetUp]
         public void Setup()
         {
-            _oc = Substitute.For<IOrderCloudClient>();
-            _oc.Suppliers.ListAsync<HSSupplier>().ReturnsForAnyArgs(SupplierMocks.SupplierList(MockSupplier("010"), MockSupplier("012"), MockSupplier("027"), MockSupplier("100")));
+            oc = Substitute.For<IOrderCloudClient>();
+            oc.Suppliers.ListAsync<HSSupplier>().ReturnsForAnyArgs(SupplierMocks.SupplierList(MockSupplier("010"), MockSupplier("012"), MockSupplier("027"), MockSupplier("100")));
         }
-
-        public const int FREE_SHIPPING_DAYS = 3;
 
         public async Task default_shipping_for_no_rates()
         {
             var shipItem1 = new ShipEstimateItem
             {
-                LineItemID = "Line1"
+                LineItemID = "Line1",
             };
             var line1 = new HSLineItem
             {
                 ID = "Line1",
                 LineSubtotal = 370,
-                SupplierID = "010"
+                SupplierID = "010",
             };
             var worksheet = BuildOrderWorksheet(new HSLineItem[] { line1 });
             var estimates = BuildEstimates(new HSShipMethod[] { }, new[] { shipItem1 });
-            var result = await estimates.CheckForEmptyRates(20, 5).ApplyShippingLogic(worksheet, _oc, FREE_SHIPPING_DAYS);
+            var result = await estimates.CheckForEmptyRates(20, 5).ApplyShippingLogic(worksheet, oc, FREE_SHIPPING_DAYS);
             var methods = result[0].ShipMethods;
 
             Assert.AreEqual(1, methods.Count());
@@ -54,22 +51,22 @@ namespace Headstart.Tests
         {
             var shipItem1 = new ShipEstimateItem
             {
-                LineItemID = "Line1"
+                LineItemID = "Line1",
             };
             var line1 = new HSLineItem
             {
                 ID = "Line1",
                 LineSubtotal = 370,
-                SupplierID = "010"
+                SupplierID = "010",
             };
             var method1 = new HSShipMethod
             {
                 ID = "NO_SHIPPING_RATES",
-                xp = new ShipMethodXP()
+                xp = new ShipMethodXP(),
             };
             var worksheet = BuildOrderWorksheet(new HSLineItem[] { line1 });
             var estimates = BuildEstimates(new[] { method1 }, new[] { shipItem1 });
-            var result = await estimates.CheckForEmptyRates(20, 5).ApplyShippingLogic(worksheet, _oc, FREE_SHIPPING_DAYS);
+            var result = await estimates.CheckForEmptyRates(20, 5).ApplyShippingLogic(worksheet, oc, FREE_SHIPPING_DAYS);
             var methods = result[0].ShipMethods;
 
             Assert.AreEqual(1, methods.Count());
@@ -83,24 +80,24 @@ namespace Headstart.Tests
             // don't transform methods if they aren't ground
             var shipItem1 = new ShipEstimateItem
             {
-                LineItemID = "Line1"
+                LineItemID = "Line1",
             };
             var line1 = new HSLineItem
             {
                 ID = "Line1",
                 LineSubtotal = 20,
-                SupplierID = "027"
+                SupplierID = "027",
             };
             var method1 = new HSShipMethod
             {
                 Name = "STANDARD_OVERNIGHT",
                 EstimatedTransitDays = 1,
                 Cost = 150,
-                xp = new ShipMethodXP { }
+                xp = new ShipMethodXP { },
             };
             var worksheet = BuildOrderWorksheet(new HSLineItem[] { line1 });
             var estimates = BuildEstimates(new[] { method1 }, new[] { shipItem1 });
-            var result = await estimates.ApplyShippingLogic(worksheet, _oc, FREE_SHIPPING_DAYS);
+            var result = await estimates.ApplyShippingLogic(worksheet, oc, FREE_SHIPPING_DAYS);
             var methods = result[0].ShipMethods;
 
             Assert.AreEqual(1, methods.Count());
@@ -114,24 +111,24 @@ namespace Headstart.Tests
             // don't transform methods if they are zero cost
             var shipItem1 = new ShipEstimateItem
             {
-                LineItemID = "Line1"
+                LineItemID = "Line1",
             };
             var line1 = new HSLineItem
             {
                 ID = "Line1",
                 LineSubtotal = 0,
-                SupplierID = "027"
+                SupplierID = "027",
             };
             var method1 = new HSShipMethod
             {
                 Name = "FEDEX_GROUND",
                 EstimatedTransitDays = 3,
                 Cost = 60,
-                xp = new ShipMethodXP { }
+                xp = new ShipMethodXP { },
             };
             var worksheet = BuildOrderWorksheet(new HSLineItem[] { line1 });
             var estimates = BuildEstimates(new[] { method1 }, new[] { shipItem1 });
-            var result = await estimates.ApplyShippingLogic(worksheet, _oc, FREE_SHIPPING_DAYS);
+            var result = await estimates.ApplyShippingLogic(worksheet, oc, FREE_SHIPPING_DAYS);
             var methods = result[0].ShipMethods;
 
             Assert.AreEqual(1, methods.Count());
@@ -147,8 +144,8 @@ namespace Headstart.Tests
                 {
                     ID = id,
                     ShipMethods = shipMethods.ToList(),
-                    ShipEstimateItems = shipItems?.ToList()
-                }
+                    ShipEstimateItems = shipItems?.ToList(),
+                },
             };
         }
 
@@ -162,13 +159,14 @@ namespace Headstart.Tests
                     {
                         xp = new UserXp
                         {
-                            Country = buyerUserCountry
-                        }
-                    }
+                            Country = buyerUserCountry,
+                        },
+                    },
                 },
-                LineItems = lineItems.ToList()
+                LineItems = lineItems.ToList(),
             };
         }
+
         private HSSupplier MockSupplier(string id = "mockID", int freeShippingThreshold = 500)
         {
             return new HSSupplier
@@ -177,7 +175,7 @@ namespace Headstart.Tests
                 xp = new SupplierXp
                 {
                     FreeShippingThreshold = freeShippingThreshold,
-                }
+                },
             };
         }
     }

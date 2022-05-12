@@ -3,13 +3,11 @@ using Headstart.Common.Models;
 using NUnit.Framework;
 using ordercloud.integrations.exchangerates;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Headstart.Tests
 {
-	public class GeographyTests
-	{
+    public class GeographyTests
+    {
         [Test]
         [TestCase("test_example")]
         [TestCase("/dsf/df//df/e/")]

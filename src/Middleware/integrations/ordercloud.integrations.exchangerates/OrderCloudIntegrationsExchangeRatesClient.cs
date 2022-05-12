@@ -5,7 +5,7 @@ using Flurl.Http.Configuration;
 namespace ordercloud.integrations.exchangerates
 {
     /// <summary>
-    /// Rates supported by https://exchangeratesapi.io/
+    /// Rates supported by https://exchangeratesapi.io/.
     /// </summary>
     public interface IOrderCloudIntegrationsExchangeRatesClient
     {
@@ -14,16 +14,11 @@ namespace ordercloud.integrations.exchangerates
 
     public class OrderCloudIntegrationsExchangeRatesClient : IOrderCloudIntegrationsExchangeRatesClient
     {
-        private readonly IFlurlClient _flurl;
+        private readonly IFlurlClient flurl;
 
         public OrderCloudIntegrationsExchangeRatesClient(IFlurlClientFactory flurlFactory)
         {
-            _flurl = flurlFactory.Get($"https://api.exchangeratesapi.io/");
-        }
-
-        private IFlurlRequest Request(string resource)
-        {
-            return _flurl.Request(resource);
+            flurl = flurlFactory.Get($"https://api.exchangeratesapi.io/");
         }
 
         public async Task<ExchangeRatesBase> Get(CurrencySymbol symbol)
@@ -31,6 +26,11 @@ namespace ordercloud.integrations.exchangerates
             return await this.Request("latest")
                 .SetQueryParam("base", symbol)
                 .GetJsonAsync<ExchangeRatesBase>();
+        }
+
+        private IFlurlRequest Request(string resource)
+        {
+            return flurl.Request(resource);
         }
     }
 }

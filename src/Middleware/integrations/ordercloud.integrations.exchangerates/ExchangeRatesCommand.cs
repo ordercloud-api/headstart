@@ -8,7 +8,6 @@ using ordercloud.integrations.library;
 using OrderCloud.SDK;
 using Newtonsoft.Json;
 using Flurl.Http.Configuration;
-using LazyCache;
 using OrderCloud.Catalyst;
 
 namespace ordercloud.integrations.exchangerates
@@ -16,52 +15,48 @@ namespace ordercloud.integrations.exchangerates
     public interface IExchangeRatesCommand
     {
         Task<ListPage<OrderCloudIntegrationsConversionRate>> Get(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencySymbol currency);
+
         Task<OrderCloudIntegrationsExchangeRate> Get(CurrencySymbol symbol);
+
         Task<ListPage<OrderCloudIntegrationsConversionRate>> GetRateList();
 
         ListPage<OrderCloudIntegrationsConversionRate> Filter(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, OrderCloudIntegrationsExchangeRate rates);
 
         Task<double?> ConvertCurrency(CurrencySymbol from, CurrencySymbol to, double value);
+
         Task Update();
     }
 
     public class ExchangeRatesCommand : IExchangeRatesCommand
     {
-        private readonly IOrderCloudIntegrationsExchangeRatesClient _client;
-        private readonly IOrderCloudIntegrationsBlobService _blob;
-        private readonly ISimpleCache _cache;
+        private readonly IOrderCloudIntegrationsExchangeRatesClient client;
+        private readonly IOrderCloudIntegrationsBlobService blob;
+        private readonly ISimpleCache cache;
 
         public ExchangeRatesCommand(IOrderCloudIntegrationsBlobService blob, IFlurlClientFactory flurlFactory, ISimpleCache cache)
         {
-            _client = new OrderCloudIntegrationsExchangeRatesClient(flurlFactory);
-            _blob = blob;
-            _cache = cache;
+            client = new OrderCloudIntegrationsExchangeRatesClient(flurlFactory);
+            this.blob = blob;
+            this.cache = cache;
         }
 
         /// <summary>
-        /// Intended for public API based consumption. Hence the ListArgs implementation
+        /// Intended for public API based consumption. Hence the ListArgs implementation.
         /// </summary>
-        /// <param name="rateArgs"></param>
-        /// <param name="currency"></param>
-        /// <returns></returns>
+        /// <param name="rateArgs">The conversion rates.</param>
+        /// <param name="currency">The ISO 4217 currency code.</param>
+        /// <returns>The conversion rate.</returns>
         public async Task<ListPage<OrderCloudIntegrationsConversionRate>> Get(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencySymbol currency)
         {
             try
             {
                 return await GetCachedRates(rateArgs, currency);
-            } catch (Exception ex)
+            }
+            catch (Exception)
             {
                 await Update();
                 return await GetCachedRates(rateArgs, currency);
             }
-        }
-
-        private async Task<ListPage<OrderCloudIntegrationsConversionRate>> GetCachedRates(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencySymbol currency)
-        {
-            var rates = await _cache.GetOrAddAsync($"exchangerates_{currency}", TimeSpan.FromHours(1), () => {
-                return _blob.Get<OrderCloudIntegrationsExchangeRate>($"{currency}.json");
-            });
-            return Filter(rateArgs, rates);
         }
 
         public ListPage<OrderCloudIntegrationsConversionRate> Filter(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, OrderCloudIntegrationsExchangeRate rates)
@@ -82,9 +77,9 @@ namespace ordercloud.integrations.exchangerates
                     Page = 1,
                     PageSize = 1,
                     TotalCount = rates.Rates.Count,
-                    ItemRange = new[] { 1, rates.Rates.Count }
+                    ItemRange = new[] { 1, rates.Rates.Count },
                 },
-                Items = rates.Rates
+                Items = rates.Rates,
             };
 
             return list;
@@ -94,21 +89,21 @@ namespace ordercloud.integrations.exchangerates
         {
             var rates = await this.Get(new ListArgs<OrderCloudIntegrationsConversionRate>(), from);
             var rate = rates.Items.FirstOrDefault(r => r.Currency == to)?.Rate;
-			return value * rate;
+            return value * rate;
         }
 
         /// <summary>
         /// Intended for private consumption by functions that update the cached resources.
         /// </summary>
-        /// <param name="rateArgs"></param>
-        /// <returns></returns>
+        /// <param name="symbol">The ISO 4217 currency code.</param>
+        /// <returns>The available exchange rates.</returns>
         public async Task<OrderCloudIntegrationsExchangeRate> Get(CurrencySymbol symbol)
         {
-            var rates = await _client.Get(symbol);
+            var rates = await client.Get(symbol);
             return new OrderCloudIntegrationsExchangeRate()
             {
                 BaseSymbol = symbol,
-                Rates = MapRates(rates.rates)
+                Rates = MapRates(rates.rates),
             };
         }
 
@@ -122,16 +117,30 @@ namespace ordercloud.integrations.exchangerates
                     Page = 1,
                     PageSize = 1,
                     TotalCount = rates.Count,
-                    ItemRange = new[] { 1, rates.Count }
+                    ItemRange = new[] { 1, rates.Count },
                 },
-                Items = rates
+                Items = rates,
+            });
+        }
+
+        public async Task Update()
+        {
+            var list = await GetRateList();
+            await Throttler.RunAsync(list.Items, 100, 10, async rate =>
+            {
+                var rates = await Get(rate.Currency);
+                await blob.Save($"{rate.Currency}.json", JsonConvert.SerializeObject(rates));
             });
         }
 
         private static string GetIcon(CurrencySymbol symbol)
         {
             using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"ordercloud.integrations.exchangerates.Icons.{symbol}.gif");
-            if (stream == null) return null;
+            if (stream == null)
+            {
+                return null;
+            }
+
             using var ms = new MemoryStream();
             stream.CopyTo(ms);
             return $"data:image/jpg;base64,{Convert.ToBase64String(ms.ToArray())}";
@@ -145,7 +154,7 @@ namespace ordercloud.integrations.exchangerates
                 Icon = GetIcon(e),
                 Symbol = SymbolLookup.CurrencySymbolLookup.FirstOrDefault(s => s.Key == e).Value.Symbol,
                 Name = SymbolLookup.CurrencySymbolLookup.FirstOrDefault(s => s.Key == e).Value.Name,
-                Rate = FixRate(ratesValues, e)
+                Rate = FixRate(ratesValues, e),
             }).ToList();
         }
 
@@ -153,19 +162,20 @@ namespace ordercloud.integrations.exchangerates
         {
             var t = values?.GetType().GetProperty($"{e}")?.GetValue(values, null).To<double?>();
             if (!t.HasValue)
+            {
                 return 1;
+            }
+
             return t.Value == 0 ? 1 : t.Value;
         }
 
-        public async Task Update()
+        private async Task<ListPage<OrderCloudIntegrationsConversionRate>> GetCachedRates(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencySymbol currency)
         {
-            var list = await GetRateList();
-            await Throttler.RunAsync(list.Items, 100, 10, async rate =>
+            var rates = await cache.GetOrAddAsync($"exchangerates_{currency}", TimeSpan.FromHours(1), () =>
             {
-                var rates = await Get(rate.Currency);
-                await _blob.Save($"{rate.Currency}.json", JsonConvert.SerializeObject(rates));
+                return blob.Get<OrderCloudIntegrationsExchangeRate>($"{currency}.json");
             });
+            return Filter(rateArgs, rates);
         }
-
     }
 }

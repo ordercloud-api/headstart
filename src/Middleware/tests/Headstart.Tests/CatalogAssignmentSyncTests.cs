@@ -1,22 +1,17 @@
 ﻿using NUnit.Framework;
 using NSubstitute;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using AutoFixture;
 using OrderCloud.SDK;
 using Headstart.Models;
-using Headstart.Common;
 using Headstart.API.Commands.Crud;
 using System.Linq;
 using AutoFixture.NUnit3;
 
 namespace Headstart.Tests
 {
-    class CatalogAssignmentSyncTests
+    public class CatalogAssignmentSyncTests
     {
-
         [Test, AutoNSubstituteData]
         public async Task SyncUserCatalogAssignments_ShouldHandleBasicScenario(
             [Frozen] IOrderCloudClient oc,
@@ -41,16 +36,18 @@ namespace Headstart.Tests
                     xp = new HSLocationUserGroupXp
                     {
                         Type = "BuyerLocation",
-                        CatalogAssignments = new List<string> { catalogID1 }
-                    }
+                        CatalogAssignments = new List<string> { catalogID1 },
+                    },
                 },
+
                 // define a Catalog assignment that is assigned but shouldn't be
-                new HSLocationUserGroup {
+                new HSLocationUserGroup
+                {
                     ID = catalogID2,
                     xp = new HSLocationUserGroupXp
                     {
-                        Type = "Catalog"
-                    }
+                        Type = "Catalog",
+                    },
                 },
             };
 
@@ -99,8 +96,8 @@ namespace Headstart.Tests
                     xp = new HSLocationUserGroupXp
                     {
                         Type = "BuyerLocation",
-                        CatalogAssignments = new List<string> { catalogID1 }
-                    }
+                        CatalogAssignments = new List<string> { catalogID1 },
+                    },
                 },
             };
 

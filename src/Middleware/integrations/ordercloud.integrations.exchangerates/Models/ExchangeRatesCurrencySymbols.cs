@@ -38,17 +38,12 @@ namespace ordercloud.integrations.exchangerates
         AUD,
         ILS,
         KRW,
-        PLN
+        PLN,
     }
 
-    public class CurrencyDisplay
-    {
-        public string Name { get; set; }
-        public string Symbol { get; set; }
-    }
     public static class SymbolLookup
     {
-        public static IDictionary<CurrencySymbol, CurrencyDisplay> CurrencySymbolLookup = new Dictionary<CurrencySymbol, CurrencyDisplay>()
+        public static readonly IDictionary<CurrencySymbol, CurrencyDisplay> CurrencySymbolLookup = new Dictionary<CurrencySymbol, CurrencyDisplay>()
         {
             { CurrencySymbol.AUD, new CurrencyDisplay() { Name = "Australian Dollar", Symbol = "$" } },
             { CurrencySymbol.BGN, new CurrencyDisplay() { Name = "Bulgaria Lev", Symbol = "лв" } },
@@ -84,5 +79,12 @@ namespace ordercloud.integrations.exchangerates
             { CurrencySymbol.KRW, new CurrencyDisplay() { Name = "Korea (South) Won", Symbol = "₩" } },
             { CurrencySymbol.PLN, new CurrencyDisplay() { Name = "Poland Zloty", Symbol = "zł" } },
         };
+    }
+
+    public class CurrencyDisplay
+    {
+        public string Name { get; set; }
+
+        public string Symbol { get; set; }
     }
 }

@@ -2,7 +2,6 @@
 using Headstart.Common.Models;
 using Headstart.Common.Repositories;
 using Headstart.Common.Repositories.Models;
-using Headstart.Models;
 using Microsoft.Azure.Cosmos;
 using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
@@ -16,17 +15,43 @@ namespace Headstart.Jobs
 {
     public class ReceiveProductDetailsJob : BaseTimerJob
     {
-        private readonly IOrderCloudClient _oc;
-        private readonly IProductDetailDataRepo _productDetailRepo;
-        private readonly ILineItemDetailDataRepo _lineItemDetailDataRepo;
+        private readonly IOrderCloudClient oc;
+        private readonly IProductDetailDataRepo productDetailRepo;
+        private readonly ILineItemDetailDataRepo lineItemDetailDataRepo;
 
         public ReceiveProductDetailsJob(IOrderCloudClient oc, IProductDetailDataRepo productDetailRepo, ILineItemDetailDataRepo lineItemDetailDataRepo)
         {
-            _oc = oc;
-            _productDetailRepo = productDetailRepo;
-            _lineItemDetailDataRepo = lineItemDetailDataRepo;
+            this.oc = oc;
+            this.productDetailRepo = productDetailRepo;
+            this.lineItemDetailDataRepo = lineItemDetailDataRepo;
         }
+
         protected override bool ShouldRun => true;
+
+        public CosmosListOptions BuildProductListOptions(string productID, string specCombo)
+        {
+            ListFilter currentSpecComboFilter = null;
+            ListFilter currentProductFilter = new ListFilter("ProductID", productID);
+            if (specCombo != null)
+            {
+                currentSpecComboFilter = new ListFilter("Data.SpecCombo", specCombo);
+                return new CosmosListOptions()
+                {
+                    PageSize = 1,
+                    ContinuationToken = null,
+                    Filters = { currentProductFilter, currentSpecComboFilter },
+                };
+            }
+            else
+            {
+                return new CosmosListOptions()
+                {
+                    PageSize = 1,
+                    ContinuationToken = null,
+                    Filters = { currentProductFilter },
+                };
+            }
+        }
 
         protected override async Task ProcessJob()
         {
@@ -42,7 +67,7 @@ namespace Headstart.Jobs
 
         private async Task UpsertProductDetail()
         {
-            List<Product> retrievedProductList = await _oc.Products.ListAllAsync<Product>(filters: $"Name=*");
+            List<Product> retrievedProductList = await oc.Products.ListAllAsync<Product>(filters: $"Name=*");
 
             foreach (Product product in retrievedProductList)
             {
@@ -54,7 +79,6 @@ namespace Headstart.Jobs
                 {
                     LogFailure(ex.Message);
                 }
-
             }
         }
 
@@ -69,11 +93,11 @@ namespace Headstart.Jobs
 
             foreach (ProductDetailData productData in productDataList)
             {
-                var queryable = _productDetailRepo.GetQueryable().Where(x => x.PartitionKey == "PartitionValue" && x.Data.SpecCombo == productData.Data.SpecCombo);
+                var queryable = productDetailRepo.GetQueryable().Where(x => x.PartitionKey == "PartitionValue" && x.Data.SpecCombo == productData.Data.SpecCombo);
 
                 var listOptions = BuildProductListOptions(productData.ProductID, productData.Data.SpecCombo);
 
-                CosmosListPage<ProductDetailData> currentProductDetailListPage = await _productDetailRepo.GetItemsAsync(queryable, requestOptions, listOptions);
+                CosmosListPage<ProductDetailData> currentProductDetailListPage = await productDetailRepo.GetItemsAsync(queryable, requestOptions, listOptions);
 
                 var cosmosID = string.Empty;
                 if (currentProductDetailListPage.Items.Count == 1)
@@ -81,7 +105,7 @@ namespace Headstart.Jobs
                     cosmosID = productData.id = currentProductDetailListPage.Items[0].id;
                 }
 
-                await _productDetailRepo.UpsertItemAsync(cosmosID, productData);
+                await productDetailRepo.UpsertItemAsync(cosmosID, productData);
             }
         }
 
@@ -90,12 +114,12 @@ namespace Headstart.Jobs
             return new QueryRequestOptions()
             {
                 MaxItemCount = 1,
-
             };
         }
+
         private async Task<CosmosListPage<LineItemDetailData>> GetLineItemDataAsync(string productID)
         {
-            var queryable = _lineItemDetailDataRepo
+            var queryable = lineItemDetailDataRepo
                 .GetQueryable()
                 .Where(order => order.Data.LineItems.Any(lineItem => lineItem.ProductID == productID) && order.Data.Order.DateCreated > DateTime.Now.AddMonths(-12));
 
@@ -103,49 +127,21 @@ namespace Headstart.Jobs
 
             CosmosListOptions listOptions = new CosmosListOptions() { PageSize = 100, ContinuationToken = null };
 
-            CosmosListPage<LineItemDetailData> currentLineItemListPage = await _lineItemDetailDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
+            CosmosListPage<LineItemDetailData> currentLineItemListPage = await lineItemDetailDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
 
             return currentLineItemListPage;
-
-        }
-
-        public CosmosListOptions BuildProductListOptions(string productID, string specCombo)
-        {
-            ListFilter currentSpecComboFilter = null;
-            ListFilter currentProductFilter = new ListFilter("ProductID", productID);
-            if (specCombo != null)
-            {
-                currentSpecComboFilter = new ListFilter("Data.SpecCombo", specCombo);
-                return new CosmosListOptions()
-                {
-                    PageSize = 1,
-                    ContinuationToken = null,
-                    Filters = { currentProductFilter, currentSpecComboFilter }
-                };
-
-            }
-            else
-            {
-                return new CosmosListOptions()
-                {
-                    PageSize = 1,
-                    ContinuationToken = null,
-                    Filters = { currentProductFilter }
-                };
-            }
-
         }
 
         private async Task<List<ProductDetailData>> CreateProductDetailDataAsync(Product product, List<LineItemDetailData> lineItemList)
         {
             List<ProductDetailData> resultList = new List<ProductDetailData>();
-            Task<List<Spec>> specList = _oc.Products.ListAllSpecsAsync(product.ID);
-            Task<List<Variant>> variantList = _oc.Products.ListAllVariantsAsync(product.ID);
+            Task<List<Spec>> specList = oc.Products.ListAllSpecsAsync(product.ID);
+            Task<List<Variant>> variantList = oc.Products.ListAllVariantsAsync(product.ID);
             await Task.WhenAll(specList, variantList);
             Supplier supplier = new Supplier();
             try
             {
-                supplier = await _oc.Suppliers.GetAsync(product.DefaultSupplierID);
+                supplier = await oc.Suppliers.GetAsync(product.DefaultSupplierID);
             }
             catch (Exception ex)
             {
@@ -162,10 +158,9 @@ namespace Headstart.Jobs
                         PartitionKey = "PartitionValue",
                         ProductSales = GetProductSales(product.ID, lineItemList),
                         Product = product,
-                        Data = await FlattenProductDataDetailAsync(product, supplier, variant)
+                        Data = await FlattenProductDataDetailAsync(product, supplier, variant),
                     };
                     resultList.Add(data);
-
                 }
             }
             else
@@ -176,7 +171,7 @@ namespace Headstart.Jobs
                     PartitionKey = "PartitionValue",
                     ProductSales = GetProductSales(product.ID, lineItemList),
                     Product = product,
-                    Data = await FlattenProductDataDetailAsync(product, supplier)
+                    Data = await FlattenProductDataDetailAsync(product, supplier),
                 });
             }
 
@@ -191,24 +186,54 @@ namespace Headstart.Jobs
             PriceSchedule schedule = await GetPriceSchedule(product.DefaultPriceScheduleID);
             result.SizeTier = string.Empty;
             result.Active = product?.Active.ToString();
-            if (PropertyExists(productXp, "Status")) { result.Status = productXp.Status?.ToString(); }
-            if (PropertyExists(productXp, "Note")) { result.Note = productXp.Note; }
+            if (PropertyExists(productXp, "Status"))
+            {
+                result.Status = productXp.Status?.ToString();
+            }
+
+            if (PropertyExists(productXp, "Note"))
+            {
+                result.Note = productXp.Note;
+            }
+
             if (PropertyExists(productXp, "Tax"))
             {
                 result.TaxCode = productXp?.Tax?.Code;
                 result.TaxDescription = productXp?.Tax?.Description;
                 result.TaxCategory = productXp?.Tax?.Category;
             }
+
             if (PropertyExists(productXp, "UnitOfMeasure"))
             {
                 result.UnitOfMeasureQty = productXp?.UnitOfMeasure?.Qty;
                 result.UnitOfMeasure = productXp?.UnitOfMeasure?.Unit;
             }
-            if (PropertyExists(productXp, "ProductType")) { result.ProductType = productXp.ProductType; }
-            if (PropertyExists(productXp, "SizeTier")) { result.SizeTier = productXp.SizeTier; }
-            if (PropertyExists(productXp, "IsResale")) { result.Resale = productXp.IsResale; }
-            if (PropertyExists(productXp, "Currency")) { result.Currency = productXp.Currency; }
-            if (PropertyExists(productXp, "ArtworkRequired")) { result.ArtworkRequired = productXp.ArtworkRequired; }
+
+            if (PropertyExists(productXp, "ProductType"))
+            {
+                result.ProductType = productXp.ProductType;
+            }
+
+            if (PropertyExists(productXp, "SizeTier"))
+            {
+                result.SizeTier = productXp.SizeTier;
+            }
+
+            if (PropertyExists(productXp, "IsResale"))
+            {
+                result.Resale = productXp.IsResale;
+            }
+
+            if (PropertyExists(productXp, "Currency"))
+            {
+                result.Currency = productXp.Currency;
+            }
+
+            if (PropertyExists(productXp, "ArtworkRequired"))
+            {
+                result.ArtworkRequired = productXp.ArtworkRequired;
+            }
+
             if (supplier != null)
             {
                 result.SupplierID = supplier?.ID;
@@ -223,6 +248,7 @@ namespace Headstart.Jobs
                 result.VariantLevelTracking = product.Inventory.VariantLevelTracking;
                 result.InventoryOrderCanExceed = product.Inventory.OrderCanExceed;
             }
+
             if (schedule != null)
             {
                 result.PriceScheduleID = schedule?.ID;
@@ -255,12 +281,21 @@ namespace Headstart.Jobs
             decimal totalPrice = 0;
             if (variant == null || !variant.Specs.HasItem())
             {
-                if (!schedule.PriceBreaks.HasItem()) { return totalPrice; }
+                if (!schedule.PriceBreaks.HasItem())
+                {
+                    return totalPrice;
+                }
+
                 return schedule.PriceBreaks[0].Price;
             }
+
             foreach (VariantSpec spec in variant.Specs)
             {
-                if (spec.PriceMarkup == null) { continue; }
+                if (spec.PriceMarkup == null)
+                {
+                    continue;
+                }
+
                 switch (spec.PriceMarkupType)
                 {
                     case PriceMarkupType.AmountPerQuantity:
@@ -276,18 +311,20 @@ namespace Headstart.Jobs
                         break;
                 }
             }
+
             return totalPrice;
         }
 
         private bool PropertyExists(dynamic obj, string property)
         {
-            IDictionary<string, object> objDictionary = ((IDictionary<string, object>)obj);
+            IDictionary<string, object> objDictionary = (IDictionary<string, object>)obj;
 
             return objDictionary.ContainsKey(property);
         }
+
         private async Task<PriceSchedule> GetPriceSchedule(string defaultPriceScheduleID)
         {
-            return await _oc.PriceSchedules.GetAsync(defaultPriceScheduleID);
+            return await oc.PriceSchedules.GetAsync(defaultPriceScheduleID);
         }
 
         private string GetSpecPriceMarkup(List<dynamic> specValues)
@@ -305,6 +342,7 @@ namespace Headstart.Jobs
                     }
                 }
             }
+
             return totalPriceMarkup.ToString();
         }
 
@@ -318,6 +356,7 @@ namespace Headstart.Jobs
                     specOptionValue = specOptionValue + " " + specValue?.SpecOptionValue + " ";
                 }
             }
+
             return specOptionValue;
         }
 
@@ -325,7 +364,10 @@ namespace Headstart.Jobs
         {
             var result = new ProductSaleDetail();
 
-            if (!lineItemList.HasItem()) { return result; }
+            if (!lineItemList.HasItem())
+            {
+                return result;
+            }
 
             List<LineItemDetailData> twelveMonthLineItems = lineItemList?.Where(x => x.Data.LineItems.Any(y => y.Product.ID == productID)).ToList();
 

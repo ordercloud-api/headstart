@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
-using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -70,6 +69,10 @@ namespace ordercloud.integrations.library
 
     public class PartialConverter : JsonConverter
     {
+        public override bool CanRead => true;
+
+        public override bool CanWrite => false;
+
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
             var partial = Activator.CreateInstance(objectType) as IPartial;
@@ -83,7 +86,5 @@ namespace ordercloud.integrations.library
         }
 
         public override bool CanConvert(Type objectType) => objectType.WithoutGenericArgs() == typeof(Partial<>);
-        public override bool CanRead => true;
-        public override bool CanWrite => false;
     }
 }

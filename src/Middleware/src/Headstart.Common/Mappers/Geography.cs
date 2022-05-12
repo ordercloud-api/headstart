@@ -1,12 +1,10 @@
 ﻿using ordercloud.integrations.exchangerates;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Headstart.Common.Mappers
 {
-	public static class Geography
-	{
+    public static class Geography
+    {
         public static CurrencySymbol GetCurrency(string country)
         {
             switch (country?.Trim(' ')?.ToLower())
@@ -19,7 +17,6 @@ namespace Headstart.Common.Mappers
                     return CurrencySymbol.USD;
                 default:
                     throw new Exception($"A currency for country with value <{country}> cannot be found");
-
             }
         }
 

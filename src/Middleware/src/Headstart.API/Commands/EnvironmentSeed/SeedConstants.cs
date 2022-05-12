@@ -4,7 +4,6 @@ using Headstart.Common.Helpers;
 using Headstart.Models;
 using Headstart.Models.Misc;
 using OrderCloud.SDK;
-using Headstart.Common;
 using ordercloud.integrations.exchangerates;
 using Headstart.Common.Models;
 
@@ -12,63 +11,19 @@ namespace Headstart.API.Commands
 {
     public class SeedConstants
     {
-        public static string BuyerApiClientName = "Default Buyer Storefront";
-        public static string BuyerLocalApiClientName = "Default HeadStart Buyer UI LOCAL"; // used for pointing integration events to the ngrok url
-        public static string SellerApiClientName = "Default HeadStart Admin UI";
-        public static string IntegrationsApiClientName = "Middleware Integrations";
-        public static string SellerUserName = "Default_Admin";
-        public static string FullAccessSecurityProfile = "DefaultContext";
-        public static string DefaultBuyerName = "Default Headstart Buyer";
-        public static string DefaultBuyerID = "0001";
-        public static string DefaultLocationID = "default-buyerLocation";
-        public static string AllowedSecretChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        public const string BuyerApiClientName = "Default Buyer Storefront";
+        public const string BuyerLocalApiClientName = "Default HeadStart Buyer UI LOCAL"; // used for pointing integration events to the ngrok url
+        public const string SellerApiClientName = "Default HeadStart Admin UI";
+        public const string IntegrationsApiClientName = "Middleware Integrations";
+        public const string SellerUserName = "Default_Admin";
+        public const string FullAccessSecurityProfile = "DefaultContext";
+        public const string DefaultBuyerName = "Default Headstart Buyer";
+        public const string DefaultBuyerID = "0001";
+        public const string DefaultLocationID = "default-buyerLocation";
+        public const string AllowedSecretChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-        public static HSUser AnonymousBuyerUser()
+        public static readonly List<XpIndex> DefaultIndices = new List<XpIndex>()
         {
-            return new HSUser()
-            {
-                ID = "default-buyer-user",
-                Username = "default-buyer-user",
-                FirstName = "Default",
-                LastName = "Buyer",
-                Email = "default-buyer-user@test.com",
-                Active = true,
-                DateCreated = DateTime.Now,
-                xp = new UserXp()
-                {
-                    Country = "US"
-                }
-            };
-        }
-
-        public static User MiddlewareIntegrationsUser()
-        {
-            return new User()
-            {
-                ID = "MiddlewareIntegrationsUser",
-                Username = SellerUserName,
-                Email = "test@test.com",
-                Active = true,
-                FirstName = "Default",
-                LastName = "User"
-            };
-        }
-
-        public static HSBuyer DefaultBuyer()
-        {
-            return new HSBuyer
-            {
-                ID = DefaultBuyerID,
-                Name = DefaultBuyerName,
-                Active = true,
-                xp = new BuyerXp
-                {
-                    MarkupPercent = 0
-                }
-            };
-        }
-
-        public static readonly List<XpIndex> DefaultIndices = new List<XpIndex>() {
             new XpIndex { ThingType = XpThingType.UserGroup, Key = "Type" },
             new XpIndex { ThingType = XpThingType.UserGroup, Key = "Role" },
             new XpIndex { ThingType = XpThingType.UserGroup, Key = "Country" },
@@ -93,168 +48,18 @@ namespace Headstart.API.Commands
             new XpIndex { ThingType = XpThingType.Promotion, Key = "AppliesTo" },
         };
 
-        public static readonly List<Incrementor> DefaultIncrementors = new List<Incrementor>() {
+        public static readonly List<Incrementor> DefaultIncrementors = new List<Incrementor>()
+        {
             new Incrementor { ID = "orderIncrementor", Name = "Order Incrementor", LastNumber = 0, LeftPaddingCount = 6 },
             new Incrementor { ID = "supplierIncrementor", Name = "Supplier Incrementor", LastNumber = 0, LeftPaddingCount = 3 },
             new Incrementor { ID = "buyerIncrementor", Name = "Buyer Incrementor", LastNumber = 0, LeftPaddingCount = 4 },
-            new Incrementor { ID = "sellerLocationIncrementor", Name = "Seller Location Incrementor", LastNumber = 0, LeftPaddingCount = 4 }
+            new Incrementor { ID = "sellerLocationIncrementor", Name = "Seller Location Incrementor", LastNumber = 0, LeftPaddingCount = 4 },
         };
 
-        public static ApiClient IntegrationsClient()
+        public static readonly List<HSSecurityProfile> DefaultSecurityProfiles = new List<HSSecurityProfile>()
         {
-            return new ApiClient()
-            {
-                AppName = IntegrationsApiClientName,
-                Active = true,
-                AllowAnyBuyer = false,
-                AllowAnySupplier = false,
-                AllowSeller = true,
-                AccessTokenDuration = 600,
-                RefreshTokenDuration = 43200,
-                DefaultContextUserName = SellerUserName,
-                ClientSecret = RandomGen.GetString(AllowedSecretChars, 60)
-            };
-        }
-        public static ApiClient SellerClient()
-        {
-            return new ApiClient()
-            {
-                AppName = SellerApiClientName,
-                Active = true,
-                AllowAnyBuyer = false,
-                AllowAnySupplier = true,
-                AllowSeller = true,
-                AccessTokenDuration = 600,
-                RefreshTokenDuration = 43200
-            };
-        }
-
-        public static HSApiClient BuyerClient(EnvironmentSeed seed)
-        {
-            return new HSApiClient()
-            {
-                AppName = BuyerApiClientName,
-                Active = true,
-                AllowAnyBuyer = true,
-                AllowAnySupplier = false,
-                AllowSeller = false,
-                AccessTokenDuration = 600,
-                RefreshTokenDuration = 43200,
-                DefaultContextUserName = seed.EnableAnonymousShopping ? AnonymousBuyerUser().ID : null,
-                IsAnonBuyer = seed.EnableAnonymousShopping,
-                xp = new ApiClientXP
-                {
-                    IsStorefront = true
-                }
-            };
-        }
-
-        public static ApiClient BuyerLocalClient(EnvironmentSeed seed)
-        {
-            return new ApiClient()
-            {
-                AppName = BuyerLocalApiClientName,
-                Active = true,
-                AllowAnyBuyer = true,
-                AllowAnySupplier = false,
-                AllowSeller = false,
-                AccessTokenDuration = 600,
-                RefreshTokenDuration = 43200,
-                DefaultContextUserName = seed.EnableAnonymousShopping ? AnonymousBuyerUser().ID : null,
-                IsAnonBuyer = seed.EnableAnonymousShopping
-            };
-        }
-
-        public static IntegrationEvent CheckoutEvent(string middlewareBaseUrl, string webhookHashKey)
-        {
-            return new IntegrationEvent()
-            {
-                ElevatedRoles = new[] { ApiRole.FullAccess },
-                ID = "HeadStartCheckout",
-                EventType = IntegrationEventType.OrderCheckout,
-                Name = "HeadStart Checkout",
-                CustomImplementationUrl = middlewareBaseUrl,
-                HashKey = webhookHashKey,
-                ConfigData = new
-                {
-                    ExcludePOProductsFromShipping = false,
-                    ExcludePOProductsFromTax = true,
-                }
-            };
-        }
-
-        public static IntegrationEvent LocalCheckoutEvent(string webhookHashKey)
-        {
-            return new IntegrationEvent()
-            {
-                ElevatedRoles = new[] { ApiRole.FullAccess },
-                ID = "HeadStartCheckoutLOCAL",
-                EventType = IntegrationEventType.OrderCheckout,
-                CustomImplementationUrl = "https://changethisurl.ngrok.io", // local webhook url
-                Name = "HeadStart Checkout LOCAL",
-                HashKey = webhookHashKey,
-                ConfigData = new
-                {
-                    ExcludePOProductsFromShipping = false,
-                    ExcludePOProductsFromTax = true,
-                }
-            };
-        }
-
-        public static MessageSender BuyerEmails(EnvironmentSeed seed)
-        {
-            return new MessageSender()
-            {
-                ID = "BuyerEmails",
-                Name = "Buyer Emails",
-                MessageTypes = new[] {
-                        MessageType.ForgottenPassword,
-                        MessageType.NewUserInvitation,
-                        MessageType.OrderApproved,
-                        MessageType.OrderDeclined,
-                        // MessageType.OrderSubmitted, this is currently being handled in PostOrderSubmitCommand, possibly move to message senders
-                        MessageType.OrderSubmittedForApproval,
-                        // MessageType.OrderSubmittedForYourApprovalHasBeenApproved, // too noisy
-                        // MessageType.OrderSubmittedForYourApprovalHasBeenDeclined, // too noisy
-                        // MessageType.ShipmentCreated this is currently being triggered in-app possibly move to message senders
-                    },
-                URL = seed.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
-                SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey
-            };
-        }
-
-        public static MessageSender SellerEmails(EnvironmentSeed seed)
-        {
-            return new MessageSender()
-            {
-                ID = "SellerEmails",
-                Name = "Seller Emails",
-                MessageTypes = new[] {
-                        MessageType.ForgottenPassword,
-                    },
-                URL = seed.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
-                SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey
-            };
-        }
-
-        public static MessageSender SuplierEmails(EnvironmentSeed seed)
-        {
-            return new MessageSender()
-            {
-                ID = "SupplierEmails",
-                Name = "Supplier Emails",
-                MessageTypes = new[] {
-                        MessageType.ForgottenPassword,
-                    },
-                URL = seed.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
-                SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey
-            };
-        }
-
-        public static readonly List<HSSecurityProfile> DefaultSecurityProfiles = new List<HSSecurityProfile>() {
-
-			// seller/supplier
-			new HSSecurityProfile() { ID = CustomRole.HSBuyerAdmin, CustomRoles = new CustomRole[] { CustomRole.HSBuyerAdmin }, Roles = new ApiRole[] { ApiRole.AddressAdmin, ApiRole.ApprovalRuleAdmin, ApiRole.BuyerAdmin, ApiRole.BuyerUserAdmin, ApiRole.CreditCardAdmin, ApiRole.UserGroupAdmin } },
+            // seller/supplier
+            new HSSecurityProfile() { ID = CustomRole.HSBuyerAdmin, CustomRoles = new CustomRole[] { CustomRole.HSBuyerAdmin }, Roles = new ApiRole[] { ApiRole.AddressAdmin, ApiRole.ApprovalRuleAdmin, ApiRole.BuyerAdmin, ApiRole.BuyerUserAdmin, ApiRole.CreditCardAdmin, ApiRole.UserGroupAdmin } },
             new HSSecurityProfile() { ID = CustomRole.HSBuyerImpersonator, CustomRoles = new CustomRole[] { CustomRole.HSBuyerImpersonator }, Roles = new ApiRole[] { ApiRole.BuyerImpersonation } },
             new HSSecurityProfile() { ID = CustomRole.HSCategoryAdmin, CustomRoles = new CustomRole[] { CustomRole.HSCategoryAdmin }, Roles = new ApiRole[] { ApiRole.CategoryAdmin } },
             new HSSecurityProfile() { ID = CustomRole.HSContentAdmin, CustomRoles = new CustomRole[] { CustomRole.AssetAdmin, CustomRole.DocumentAdmin, CustomRole.SchemaAdmin }, Roles = new ApiRole[] { ApiRole.ApiClientAdmin } },
@@ -274,24 +79,24 @@ namespace Headstart.API.Commands
             new HSSecurityProfile() { ID = CustomRole.HSSupplierAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSupplierAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAddressAdmin, ApiRole.SupplierAdmin, ApiRole.SupplierUserAdmin } },
             new HSSecurityProfile() { ID = CustomRole.HSSupplierUserGroupAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSupplierUserGroupAdmin }, Roles = new ApiRole[] { ApiRole.SupplierReader, ApiRole.SupplierUserGroupAdmin } },
 
-			// buyer - this is the only role needed for a buyer user to successfully check out
-			new HSSecurityProfile() { ID = CustomRole.HSBaseBuyer, CustomRoles = new CustomRole[] { CustomRole.HSBaseBuyer }, Roles = new ApiRole[] { ApiRole.MeAddressAdmin, ApiRole.MeAdmin, ApiRole.MeCreditCardAdmin, ApiRole.MeXpAdmin, ApiRole.ProductFacetReader, ApiRole.Shopper, ApiRole.SupplierAddressReader, ApiRole.SupplierReader } },
+            // buyer - this is the only role needed for a buyer user to successfully check out
+            new HSSecurityProfile() { ID = CustomRole.HSBaseBuyer, CustomRoles = new CustomRole[] { CustomRole.HSBaseBuyer }, Roles = new ApiRole[] { ApiRole.MeAddressAdmin, ApiRole.MeAdmin, ApiRole.MeCreditCardAdmin, ApiRole.MeXpAdmin, ApiRole.ProductFacetReader, ApiRole.Shopper, ApiRole.SupplierAddressReader, ApiRole.SupplierReader } },
 
-			/* these roles don't do much, access to changing location information will be done through middleware calls that
-			*  confirm the user is in the location specific access user group. These roles will be assigned to the location
-			*  specific user group and allow us to determine if a user has an admin role for at least one location through
-			*  the users JWT
-			*/
-			new HSSecurityProfile() { ID = CustomRole.HSLocationOrderApprover, CustomRoles = new CustomRole[] { CustomRole.HSLocationOrderApprover }, Roles = new ApiRole[] { } },
+            /* these roles don't do much, access to changing location information will be done through middleware calls that
+            *  confirm the user is in the location specific access user group. These roles will be assigned to the location
+            *  specific user group and allow us to determine if a user has an admin role for at least one location through
+            *  the users JWT
+            */
+            new HSSecurityProfile() { ID = CustomRole.HSLocationOrderApprover, CustomRoles = new CustomRole[] { CustomRole.HSLocationOrderApprover }, Roles = new ApiRole[] { } },
             new HSSecurityProfile() { ID = CustomRole.HSLocationViewAllOrders, CustomRoles = new CustomRole[] { CustomRole.HSLocationViewAllOrders }, Roles = new ApiRole[] { } },
             new HSSecurityProfile() { ID = CustomRole.HSLocationAddressAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationAddressAdmin }, Roles = new ApiRole[] { } },
             new HSSecurityProfile() { ID = CustomRole.HSLocationPermissionAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationPermissionAdmin }, Roles = new ApiRole[] { } },
             new HSSecurityProfile() { ID = CustomRole.HSLocationNeedsApproval, CustomRoles = new CustomRole[] { CustomRole.HSLocationNeedsApproval }, Roles = new ApiRole[] { } },
             new HSSecurityProfile() { ID = CustomRole.HSLocationCreditCardAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationCreditCardAdmin }, Roles = new ApiRole[] { } },
-
         };
 
-        public static readonly List<CustomRole> SellerHsRoles = new List<CustomRole>() {
+        public static readonly List<CustomRole> SellerHsRoles = new List<CustomRole>()
+        {
             CustomRole.HSBuyerAdmin,
             CustomRole.HSBuyerImpersonator,
             CustomRole.HSCategoryAdmin,
@@ -306,8 +111,254 @@ namespace Headstart.API.Commands
             CustomRole.HSShipmentAdmin,
             CustomRole.HSStorefrontAdmin,
             CustomRole.HSSupplierAdmin,
-            CustomRole.HSSupplierUserGroupAdmin
+            CustomRole.HSSupplierUserGroupAdmin,
         };
+
+        public static readonly Region UsEast = new Region()
+        {
+            AzureRegion = "eastus",
+            Id = "est",
+            Name = "US-East",
+        };
+
+        public static readonly Region AustraliaEast = new Region()
+        {
+            AzureRegion = "australiaeast",
+            Id = "aus",
+            Name = "Australia-East",
+        };
+
+        public static readonly Region EuropeWest = new Region()
+        {
+            AzureRegion = "westeurope",
+            Id = "eur",
+            Name = "Europe-West",
+        };
+
+        public static readonly Region JapanEast = new Region()
+        {
+            AzureRegion = "japaneast",
+            Id = "jpn",
+            Name = "Japan-East",
+        };
+
+        public static readonly Region UsWest = new Region()
+        {
+            AzureRegion = "westus",
+            Id = "usw",
+            Name = "US-West",
+        };
+
+        public static readonly List<Region> Regions = new List<Region>()
+        {
+            UsEast,
+            AustraliaEast,
+            EuropeWest,
+            JapanEast,
+            UsWest,
+        };
+
+        public static HSUser AnonymousBuyerUser()
+        {
+            return new HSUser()
+            {
+                ID = "default-buyer-user",
+                Username = "default-buyer-user",
+                FirstName = "Default",
+                LastName = "Buyer",
+                Email = "default-buyer-user@test.com",
+                Active = true,
+                DateCreated = DateTime.Now,
+                xp = new UserXp()
+                {
+                    Country = "US",
+                },
+            };
+        }
+
+        public static User MiddlewareIntegrationsUser()
+        {
+            return new User()
+            {
+                ID = "MiddlewareIntegrationsUser",
+                Username = SellerUserName,
+                Email = "test@test.com",
+                Active = true,
+                FirstName = "Default",
+                LastName = "User",
+            };
+        }
+
+        public static HSBuyer DefaultBuyer()
+        {
+            return new HSBuyer
+            {
+                ID = DefaultBuyerID,
+                Name = DefaultBuyerName,
+                Active = true,
+                xp = new BuyerXp
+                {
+                    MarkupPercent = 0,
+                },
+            };
+        }
+
+        public static ApiClient IntegrationsClient()
+        {
+            return new ApiClient()
+            {
+                AppName = IntegrationsApiClientName,
+                Active = true,
+                AllowAnyBuyer = false,
+                AllowAnySupplier = false,
+                AllowSeller = true,
+                AccessTokenDuration = 600,
+                RefreshTokenDuration = 43200,
+                DefaultContextUserName = SellerUserName,
+                ClientSecret = RandomGen.GetString(AllowedSecretChars, 60),
+            };
+        }
+
+        public static ApiClient SellerClient()
+        {
+            return new ApiClient()
+            {
+                AppName = SellerApiClientName,
+                Active = true,
+                AllowAnyBuyer = false,
+                AllowAnySupplier = true,
+                AllowSeller = true,
+                AccessTokenDuration = 600,
+                RefreshTokenDuration = 43200,
+            };
+        }
+
+        public static HSApiClient BuyerClient(EnvironmentSeed seed)
+        {
+            return new HSApiClient()
+            {
+                AppName = BuyerApiClientName,
+                Active = true,
+                AllowAnyBuyer = true,
+                AllowAnySupplier = false,
+                AllowSeller = false,
+                AccessTokenDuration = 600,
+                RefreshTokenDuration = 43200,
+                DefaultContextUserName = seed.EnableAnonymousShopping ? AnonymousBuyerUser().ID : null,
+                IsAnonBuyer = seed.EnableAnonymousShopping,
+                xp = new ApiClientXP
+                {
+                    IsStorefront = true,
+                },
+            };
+        }
+
+        public static ApiClient BuyerLocalClient(EnvironmentSeed seed)
+        {
+            return new ApiClient()
+            {
+                AppName = BuyerLocalApiClientName,
+                Active = true,
+                AllowAnyBuyer = true,
+                AllowAnySupplier = false,
+                AllowSeller = false,
+                AccessTokenDuration = 600,
+                RefreshTokenDuration = 43200,
+                DefaultContextUserName = seed.EnableAnonymousShopping ? AnonymousBuyerUser().ID : null,
+                IsAnonBuyer = seed.EnableAnonymousShopping,
+            };
+        }
+
+        public static IntegrationEvent CheckoutEvent(string middlewareBaseUrl, string webhookHashKey)
+        {
+            return new IntegrationEvent()
+            {
+                ElevatedRoles = new[] { ApiRole.FullAccess },
+                ID = "HeadStartCheckout",
+                EventType = IntegrationEventType.OrderCheckout,
+                Name = "HeadStart Checkout",
+                CustomImplementationUrl = middlewareBaseUrl,
+                HashKey = webhookHashKey,
+                ConfigData = new
+                {
+                    ExcludePOProductsFromShipping = false,
+                    ExcludePOProductsFromTax = true,
+                },
+            };
+        }
+
+        public static IntegrationEvent LocalCheckoutEvent(string webhookHashKey)
+        {
+            return new IntegrationEvent()
+            {
+                ElevatedRoles = new[] { ApiRole.FullAccess },
+                ID = "HeadStartCheckoutLOCAL",
+                EventType = IntegrationEventType.OrderCheckout,
+                CustomImplementationUrl = "https://changethisurl.ngrok.io", // local webhook url
+                Name = "HeadStart Checkout LOCAL",
+                HashKey = webhookHashKey,
+                ConfigData = new
+                {
+                    ExcludePOProductsFromShipping = false,
+                    ExcludePOProductsFromTax = true,
+                },
+            };
+        }
+
+        public static MessageSender BuyerEmails(EnvironmentSeed seed)
+        {
+            return new MessageSender()
+            {
+                ID = "BuyerEmails",
+                Name = "Buyer Emails",
+                MessageTypes = new[]
+                    {
+                        MessageType.ForgottenPassword,
+                        MessageType.NewUserInvitation,
+                        MessageType.OrderApproved,
+                        MessageType.OrderDeclined,
+
+                        // MessageType.OrderSubmitted, this is currently being handled in PostOrderSubmitCommand, possibly move to message senders
+                        MessageType.OrderSubmittedForApproval,
+
+                        // MessageType.OrderSubmittedForYourApprovalHasBeenApproved, // too noisy
+                        // MessageType.OrderSubmittedForYourApprovalHasBeenDeclined, // too noisy
+                        // MessageType.ShipmentCreated this is currently being triggered in-app possibly move to message senders
+                    },
+                URL = seed.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
+                SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey,
+            };
+        }
+
+        public static MessageSender SellerEmails(EnvironmentSeed seed)
+        {
+            return new MessageSender()
+            {
+                ID = "SellerEmails",
+                Name = "Seller Emails",
+                MessageTypes = new[]
+                    {
+                        MessageType.ForgottenPassword,
+                    },
+                URL = seed.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
+                SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey,
+            };
+        }
+
+        public static MessageSender SuplierEmails(EnvironmentSeed seed)
+        {
+            return new MessageSender()
+            {
+                ID = "SupplierEmails",
+                Name = "Supplier Emails",
+                MessageTypes = new[]
+                    {
+                        MessageType.ForgottenPassword,
+                    },
+                URL = seed.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
+                SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey,
+            };
+        }
 
         public static HSBuyerLocation DefaultBuyerLocation()
         {
@@ -320,8 +371,8 @@ namespace Headstart.API.Commands
                     {
                         Type = "BuyerLocation",
                         Currency = CurrencySymbol.USD,
-                        Country = "US"
-                    }
+                        Country = "US",
+                    },
                 },
                 Address = new HSAddressBuyer()
                 {
@@ -330,8 +381,8 @@ namespace Headstart.API.Commands
                     City = "Minneaplis",
                     Zip = "55403",
                     State = "Minnesota",
-                    Country = "US"
-                }
+                    Country = "US",
+                },
             };
         }
 
@@ -344,65 +395,15 @@ namespace Headstart.API.Commands
                 XpPath = "Facets.supplier",
                 ListOrder = 1,
                 MinCount = 1,
-                xp = null
+                xp = null,
             };
-        }
-
-        public static Region UsEast = new Region()
-        {
-	        AzureRegion = "eastus",
-	        Id = "est",
-	        Name = "US-East"
-        };
-
-        public static Region AustraliaEast = new Region()
-        {
-	        AzureRegion = "australiaeast",
-	        Id = "aus",
-	        Name = "Australia-East"
-        };
-
-        public static Region EuropeWest = new Region()
-        {
-	        AzureRegion = "westeurope",
-	        Id = "eur",
-	        Name = "Europe-West"
-        };
-
-        public static Region JapanEast = new Region()
-        {
-	        AzureRegion = "japaneast",
-	        Id = "jpn",
-	        Name = "Japan-East"
-        };
-
-        public static Region UsWest = new Region()
-        {
-	        AzureRegion = "westus",
-	        Id = "usw",
-	        Name = "US-West"
-        };
-
-        public static List<Region> Regions = new List<Region>()
-        {
-            UsEast,
-            AustraliaEast,
-            EuropeWest,
-            JapanEast,
-            UsWest
-        };
-
-        public static class Environments
-        {
-            public const string Production = "Production";
-            public const string Sandbox = "Sandbox";
         }
 
         /// <summary>
         /// Constructs the OrderCloud environment.
         /// </summary>
-        /// <param name="orderCloudSettings"></param>
-        /// <returns>The OcEnv response object</returns>
+        /// <param name="orderCloudSettings">The OrderCloud environment settings.</param>
+        /// <returns>The OcEnv response object.</returns>
         public static OcEnv OrderCloudEnvironment(OrderCloudSeedSettings orderCloudSettings)
         {
             OcEnv marketplace = null;
@@ -416,7 +417,7 @@ namespace Headstart.API.Commands
                 marketplace = new OcEnv()
                 {
                     EnvironmentName = Environments.Production,
-                    Region = envRegion
+                    Region = envRegion,
                 };
 
                 if (envRegion == UsEast)
@@ -445,7 +446,7 @@ namespace Headstart.API.Commands
                 marketplace = new OcEnv()
                 {
                     EnvironmentName = Environments.Sandbox,
-                    Region = envRegion
+                    Region = envRegion,
                 };
 
                 if (envRegion == UsEast)
@@ -471,6 +472,12 @@ namespace Headstart.API.Commands
             }
 
             return marketplace;
+        }
+
+        public static class Environments
+        {
+            public const string Production = "Production";
+            public const string Sandbox = "Sandbox";
         }
     }
 }

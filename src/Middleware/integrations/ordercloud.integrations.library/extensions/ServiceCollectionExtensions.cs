@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Cosmonaut;
 using Cosmonaut.Extensions.Microsoft.DependencyInjection;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using OrderCloud.SDK;
 
 namespace ordercloud.integrations.library
@@ -25,6 +22,7 @@ namespace ordercloud.integrations.library
         {
             return services.AddServicesByConvention(typeof(T).Assembly, typeof(T).Namespace);
         }
+
         public static IServiceCollection AddServicesByConvention(this IServiceCollection services, Assembly asm, string @namespace = null)
         {
             var mappings =
@@ -35,10 +33,13 @@ namespace ordercloud.integrations.library
                 select new { iface, impl };
 
             foreach (var m in mappings)
+            {
                 services.AddSingleton(m.iface, m.impl);
+            }
 
             return services;
         }
+
         public static IServiceCollection InjectOrderCloud<T>(this IServiceCollection services, OrderCloudClientConfig config)
         {
             services.AddSingleton<IOrderCloudClient>(provider => new OrderCloudClient(config));
@@ -56,6 +57,7 @@ namespace ordercloud.integrations.library
                 // in the future we'll remove this in favor of centralized seeding capability
                 return services;
             }
+
             var settings = new CosmosStoreSettings(
                 config.DatabaseName,
                 config.EndpointUri,
@@ -64,7 +66,7 @@ namespace ordercloud.integrations.library
                 {
                     ConnectionProtocol = Protocol.Tcp,
                     ConnectionMode = ConnectionMode.Direct,
-                    RequestTimeout = config.RequestTimeout
+                    RequestTimeout = config.RequestTimeout,
                 },
                 defaultCollectionThroughput: 400)
             {
@@ -72,8 +74,8 @@ namespace ordercloud.integrations.library
                 {
                     UniqueKeys =
                         (Collection<UniqueKey>)typeof(TModel).GetMethod("GetUniqueKeys")?.Invoke(null, null) ??
-                        new Collection<UniqueKey>()
-                }
+                        new Collection<UniqueKey>(),
+                },
             };
             services.AddSingleton(typeof(TQuery), typeof(TQuery));
             return services.AddCosmosStore<TModel>(settings);

@@ -7,6 +7,6 @@ namespace Headstart.Models.Extended
     public enum ObjectStatus
     {
         Draft,
-        Published
+        Published,
     }
 }

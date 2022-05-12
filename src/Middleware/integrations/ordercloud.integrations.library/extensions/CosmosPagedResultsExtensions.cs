@@ -20,8 +20,8 @@ namespace ordercloud.integrations.library
                     PageSize = pageSize,
                     TotalCount = count,
                     TotalPages = (int)Math.Ceiling((double)count / pageSize),
-                    ItemRange = new[] { first, last }
-                }
+                    ItemRange = new[] { first, last },
+                },
             };
             return result;
         }
@@ -39,8 +39,8 @@ namespace ordercloud.integrations.library
                     PageSize = pageSize,
                     TotalCount = list.Count,
                     TotalPages = (int)Math.Ceiling((double)list.Count / pageSize),
-                    ItemRange = new[] { first, last }
-                }
+                    ItemRange = new[] { first, last },
+                },
             };
             return result;
         }

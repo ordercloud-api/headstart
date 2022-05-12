@@ -52,7 +52,6 @@
     <ProjectReference Include="..\..\integrations\ordercloud.integrations.exchangerates\ordercloud.integrations.exchangerates.csproj" />
     <ProjectReference Include="..\..\integrations\ordercloud.integrations.library\ordercloud.integrations.library.csproj" />
     <ProjectReference Include="..\..\integrations\ordercloud.integrations.taxjar\ordercloud.integrations.taxjar.csproj" />
-    <ProjectReference Include="..\..\integrations\ordercloud.integrations.tecra\ordercloud.integrations.tecra.csproj" />
     <ProjectReference Include="..\..\integrations\ordercloud.integrations.easypost\ordercloud.integrations.easypost.csproj" />
     <ProjectReference Include="..\..\integrations\ordercloud.integrations.vertex\ordercloud.integrations.vertex.csproj" />
   </ItemGroup>

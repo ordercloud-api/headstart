@@ -9,12 +9,11 @@ using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Headstart.Tests
 {
-    class PromotionCommandTests
+    public class PromotionCommandTests
     {
         [Test, AutoNSubstituteData]
         public async Task should_add_all_promos(
@@ -77,9 +76,12 @@ namespace Headstart.Tests
             // https://four51.atlassian.net/browse/SEB-1825
 
             // Arrange
-            orderpromolist.Items = orderpromolist.Items.Select(p => { p.ID = "PROMO1";
+            orderpromolist.Items = orderpromolist.Items.Select(p =>
+            {
+                p.ID = "PROMO1";
                 p.Code = "PROMOCODE1";
-                return p; }).ToList();
+                return p;
+            }).ToList();
             oc.Promotions.ListAsync()
                 .ReturnsForAnyArgs(promoList);
             oc.Orders.ListPromotionsAsync(OrderDirection.Incoming, orderID, pageSize: 100)
@@ -163,6 +165,7 @@ namespace Headstart.Tests
             {
                 await oc.Orders.Received().AddPromotionAsync(OrderDirection.Incoming, orderID, promo.Code);
             }
+
             foreach (var promo in orderpromolist.Result.Items)
             {
                 await oc.Orders.Received().RemovePromotionAsync(OrderDirection.Incoming, orderID, promo.Code);

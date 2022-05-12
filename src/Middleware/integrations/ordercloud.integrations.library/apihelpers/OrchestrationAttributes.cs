@@ -3,5 +3,7 @@
 namespace Headstart.Models.Attributes
 {
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class)]
-    public class OrchestrationIgnoreAttribute : Attribute { }
+    public class OrchestrationIgnoreAttribute : Attribute
+    {
+    }
 }

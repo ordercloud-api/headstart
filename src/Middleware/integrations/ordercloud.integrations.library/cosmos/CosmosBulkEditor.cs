@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -11,42 +10,43 @@ using Microsoft.Azure.CosmosDB.BulkExecutor.BulkUpdate;
 using Microsoft.Azure.CosmosDB.BulkExecutor.BulkDelete;
 using System.Linq;
 using Microsoft.Azure.Documents.Linq;
-using ordercloud.integrations.library;
 using Cosmonaut.Attributes;
 using Newtonsoft.Json.Linq;
-using Microsoft.WindowsAzure.Storage.Blob.Protocol;
 using System.Reflection;
 using Microsoft.Azure.CosmosDB.BulkExecutor.BulkImport;
 
 namespace ordercloud.integrations.library
 {
     public interface ICosmosBulkOperations
-	{
+    {
         Task<List<T>> GetAllAsync<T>(string collectionName);
+
         Task ImportAsync<T>(string collectionName, List<T> toImport) where T : CosmosObject;
+
         Task Delete<T>(string collectionName, List<T> toDelete) where T : CosmosObject;
+
         Task UpdateAllAsync<T>(string collectionName, Func<JObject, List<UpdateOperation>> updateFunc) where T : CosmosObject;
     }
 
     // https://github.com/Azure/azure-cosmosdb-bulkexecutor-dotnet-getting-started/blob/master/BulkUpdateSample/BulkUpdateSample/Program.cs
     public class CosmosBulkOperations : ICosmosBulkOperations
     {
-        private readonly string DatabaseName;
+        private readonly string databaseName;
         private readonly DocumentClient client;
 
         public CosmosBulkOperations(CosmosConfig config)
         {
-            DatabaseName = config.DatabaseName;
+            databaseName = config.DatabaseName;
             client = new DocumentClient(new Uri(config.EndpointUri), config.PrimaryKey, new ConnectionPolicy
             {
                 ConnectionMode = ConnectionMode.Direct,
                 ConnectionProtocol = Protocol.Tcp,
-                RequestTimeout = config.RequestTimeout
+                RequestTimeout = config.RequestTimeout,
             });
         }
 
         public async Task ImportAsync<T>(string collectionName, List<T> toImport) where T : CosmosObject
-		{
+        {
             int batchSize = 1000;
 
             var bulkExecutor = await BuildClientAsync(collectionName);
@@ -87,7 +87,8 @@ namespace ordercloud.integrations.library
                     LogProgress(bulkImportResponse);
                     batchesRun++;
                     totalNumberOfDocumentsImported += bulkImportResponse.NumberOfDocumentsImported;
-                } while (totalNumberOfDocumentsImported < toImport.Count);
+                }
+                while (totalNumberOfDocumentsImported < toImport.Count);
             });
         }
 
@@ -97,10 +98,11 @@ namespace ordercloud.integrations.library
 
             var partitionKeyProperty = GetPartitionKeyProp<T>();
 
-            var deleteOperations = toDelete.Select(doc => {
-                var partitionKeyValue = (string)typeof(T).GetProperty(partitionKeyProperty.Name).GetValue(doc, null);
+            var deleteOperations = toDelete.Select(doc =>
+                {
+                    var partitionKeyValue = (string)typeof(T).GetProperty(partitionKeyProperty.Name).GetValue(doc, null);
                     return new Tuple<string, string>(partitionKeyValue, doc.id);
-             }).ToList();
+                }).ToList();
 
             BulkDeleteResponse bulkDeleteResponse = null;
             try
@@ -146,7 +148,6 @@ namespace ordercloud.integrations.library
                 return new UpdateItem(id, partitionKeyValue, updateFunc(doc));
             }).Where(ui => ui.PartitionKey != null).ToList();
 
-
             var batchedUpdateItems = updateItems.Chunk(batchSize).ToList();
 
             Console.WriteLine(string.Format("\nFound {0} Documents to update. {1} Batches of {2}. Beginning.", documents.Count, batchedUpdateItems.Count, batchSize));
@@ -178,13 +179,14 @@ namespace ordercloud.integrations.library
                     LogProgress(bulkUpdateResponse);
                     batchesRun++;
                     totalNumberOfDocumentsUpdated += bulkUpdateResponse.NumberOfDocumentsUpdated;
-                } while (totalNumberOfDocumentsUpdated < updateItems.Count);
+                }
+                while (totalNumberOfDocumentsUpdated < updateItems.Count);
             });
         }
 
         public async Task<List<T>> GetAllAsync<T>(string collectionName)
         {
-            var collection = GetCollectionIfExists(client, DatabaseName, collectionName);
+            var collection = GetCollectionIfExists(client, databaseName, collectionName);
             var list = new List<T>();
             using (var queryable = client.CreateDocumentQuery<T>(collection.SelfLink).AsDocumentQuery())
             {
@@ -194,21 +196,25 @@ namespace ordercloud.integrations.library
                     list = list.Concat(batch).ToList();
                 }
             }
-            return list;
-        }
 
-        private PropertyInfo GetPartitionKeyProp<TDoc>() where TDoc : CosmosObject
-		{
-           return typeof(TDoc).GetProperties().FirstOrDefault(prop => prop.HasAttribute<CosmosPartitionKeyAttribute>());
+            return list;
         }
 
         private static DocumentCollection GetCollectionIfExists(DocumentClient client, string databaseName, string collectionName)
         {
             var database = client.CreateDatabaseQuery().Where(d => d.Id == databaseName).AsEnumerable().FirstOrDefault();
-            if (database == null) return null;
+            if (database == null)
+            {
+                return null;
+            }
 
             return client.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(databaseName))
                 .Where(c => c.Id == collectionName).AsEnumerable().FirstOrDefault();
+        }
+
+        private PropertyInfo GetPartitionKeyProp<TDoc>() where TDoc : CosmosObject
+        {
+           return typeof(TDoc).GetProperties().FirstOrDefault(prop => prop.HasAttribute<CosmosPartitionKeyAttribute>());
         }
 
         private void LogProgress(BulkUpdateResponse response)
@@ -223,7 +229,7 @@ namespace ordercloud.integrations.library
                 response.TotalTimeTaken.TotalSeconds));
             Console.WriteLine(string.Format(
                 "Average RU consumption per document update: {0}",
-                (response.TotalRequestUnitsConsumed / response.NumberOfDocumentsUpdated)));
+                response.TotalRequestUnitsConsumed / response.NumberOfDocumentsUpdated));
             Console.WriteLine("---------------------------------------------------------------------\n ");
         }
 
@@ -239,13 +245,13 @@ namespace ordercloud.integrations.library
                 response.TotalTimeTaken.TotalSeconds));
             Console.WriteLine(string.Format(
                 "Average RU consumption per document update: {0}",
-                (response.TotalRequestUnitsConsumed / response.NumberOfDocumentsImported)));
+                response.TotalRequestUnitsConsumed / response.NumberOfDocumentsImported));
             Console.WriteLine("---------------------------------------------------------------------\n ");
         }
 
         private async Task<BulkExecutor> BuildClientAsync(string collectionName)
         {
-            var collection = GetCollectionIfExists(client, DatabaseName, collectionName);
+            var collection = GetCollectionIfExists(client, databaseName, collectionName);
             var bulkExecutor = new BulkExecutor(client, collection);
             await bulkExecutor.InitializeAsync();
 

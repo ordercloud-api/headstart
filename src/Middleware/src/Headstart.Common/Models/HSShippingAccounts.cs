@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ordercloud.integrations.easypost;
 
 namespace Headstart.Common.Models
@@ -21,7 +19,7 @@ namespace Headstart.Common.Models
                 EEL_PFC = "NOEEI30.37(a)",
                 Customs_Certify = true,
                 Markup = 1.5M,
-                Default = true
+                Default = true,
             });
         }
 

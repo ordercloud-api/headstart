@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Headstart.Jobs
@@ -9,6 +7,7 @@ namespace Headstart.Jobs
     public abstract class BaseTimerJob : BaseJob
     {
         protected abstract bool ShouldRun { get; }
+
         public async Task Run(ILogger logger)
         {
             _logger = logger;
@@ -21,7 +20,8 @@ namespace Headstart.Jobs
             try
             {
                 await ProcessJob();
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 LogFailure(ex.Message);
             }

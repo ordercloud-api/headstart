@@ -12,8 +12,10 @@ namespace Headstart.Jobs
     public abstract class BaseQueueJob<T> : BaseJob
     {
         private const int MaxDeadLetterDescriptionLength = 4096;
-        protected virtual int RetryTemporaryErrorsAfterMinutes { get; } = 10;
+
         private Random jitterer = new Random();
+
+        protected virtual int RetryTemporaryErrorsAfterMinutes { get; } = 10;
 
         public async Task Run(ILogger logger, Message message, MessageReceiver messageReceiver, MessageSender messageSender)
         {
@@ -35,11 +37,13 @@ namespace Headstart.Jobs
                     {
                         await messageReceiver.DeadLetterAsync(lockToken, "Exceeded max retries", GetDeadLetterDescription());
                         logger.LogInformation("$Dead lettered the message due to exceeding max retries, this will need to be retried manually.");
-                    } else
+                    }
+                    else
                     {
                         await ResubmitMessageAsync(message, messageSender, resubmitCount);
                         logger.LogInformation($"Resubmitted the message {message.MessageId} to be tried again in {RetryTemporaryErrorsAfterMinutes} minutes");
                     }
+
                     break;
                 case ResultCode.PermanentFailure:
                     await messageReceiver.DeadLetterAsync(lockToken, "Permanent failure", GetDeadLetterDescription());
@@ -48,6 +52,7 @@ namespace Headstart.Jobs
                 default:
                     break;
             }
+
             LogProgress();
             if (result != ResultCode.Success)
             {
@@ -55,6 +60,8 @@ namespace Headstart.Jobs
                 throw new Exception("There were one or more errors during job");
             }
         }
+
+        protected abstract Task<ResultCode> ProcessJobAsync(T message);
 
         private string GetDeadLetterDescription()
         {
@@ -64,6 +71,7 @@ namespace Headstart.Jobs
             {
                 return message;
             }
+
             var truncatedSuffix = "...MESSAGE WAS TRUNCATED";
             var truncatedMessage = message.Substring(0, MaxDeadLetterDescriptionLength - truncatedSuffix.Length);
             return truncatedMessage + truncatedSuffix;
@@ -85,13 +93,12 @@ namespace Headstart.Jobs
             try
             {
                 return await ProcessJobAsync(message);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 LogFailure($"Unhandled exception in ProcessJobAsync - {ex.Message} {ex.InnerException.Message} {ex.StackTrace}");
                 return ResultCode.PermanentFailure;
             }
         }
-
-        protected abstract Task<ResultCode> ProcessJobAsync(T message);
     }
 }

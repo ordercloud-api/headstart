@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using OrderCloud.SDK;
+﻿using OrderCloud.SDK;
 
 namespace ordercloud.integrations.cardconnect
 {
@@ -59,15 +58,27 @@ namespace ordercloud.integrations.cardconnect
 
         public static bool PassedAVSCheck(this CardConnectAuthorizationResponse attempt)
         {
-            if (attempt.WasSuccessful()) return true;
-            return (attempt.avsresp != null && (attempt.avsresp != "N" && attempt.avsresp != "A" && attempt.avsresp != "Z"));
+            if (attempt.WasSuccessful())
+            {
+                return true;
+            }
+
+            return attempt.avsresp != null && attempt.avsresp != "N" && attempt.avsresp != "A" && attempt.avsresp != "Z";
         }
 
         public static bool PassedCvvCheck(this CardConnectAuthorizationResponse attempt, CardConnectAuthorizationRequest request)
         {
-            if (attempt.WasSuccessful()) return true;
-            if (request.cvv2 == null && (attempt.cvvresp == "P" || attempt.cvvresp == null)) return true;
-            return (attempt.cvvresp != null && attempt.cvvresp != "N" && attempt.cvvresp != "P" && attempt.cvvresp != "U");
+            if (attempt.WasSuccessful())
+            {
+                return true;
+            }
+
+            if (request.cvv2 == null && (attempt.cvvresp == "P" || attempt.cvvresp == null))
+            {
+                return true;
+            }
+
+            return attempt.cvvresp != null && attempt.cvvresp != "N" && attempt.cvvresp != "P" && attempt.cvvresp != "U";
         }
     }
 }

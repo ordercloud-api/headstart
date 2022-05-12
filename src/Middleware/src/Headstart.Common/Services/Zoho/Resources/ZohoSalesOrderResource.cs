@@ -9,22 +9,33 @@ namespace Headstart.Common.Services.Zoho.Resources
     public interface IZohoSalesOrderResource
     {
         Task<ZohoSalesOrderList> ListAsync(params ZohoFilter[] filters);
+
         Task<TZohoSalesOrderList> ListAsync<TZohoSalesOrderList>(params ZohoFilter[] filters) where TZohoSalesOrderList : ZohoSalesOrderList;
+
         Task<ZohoSalesOrder> GetAsync(string id);
+
         Task<TZohoSalesOrder> GetAsync<TZohoSalesOrder>(string id) where TZohoSalesOrder : ZohoSalesOrder;
+
         Task<ZohoSalesOrder> SaveAsync(ZohoSalesOrder salesOrder);
+
         Task<TZohoSalesOrder> SaveAsync<TZohoSalesOrder>(TZohoSalesOrder salesOrder) where TZohoSalesOrder : ZohoSalesOrder;
+
         Task<ZohoSalesOrder> CreateAsync(ZohoSalesOrder salesOrder);
+
         Task<TZohoSalesOrder> CreateAsync<TZohoSalesOrder>(TZohoSalesOrder salesOrder) where TZohoSalesOrder : ZohoSalesOrder;
+
         Task DeleteAsync(string id);
     }
 
     public class ZohoSalesOrderResource : ZohoResource, IZohoSalesOrderResource
     {
         internal ZohoSalesOrderResource(ZohoClient client)
-            : base(client, "salesorder", "salesorders") { }
+            : base(client, "salesorder", "salesorders")
+        {
+        }
 
         public Task<ZohoSalesOrderList> ListAsync(params ZohoFilter[] filters) => ListAsync<ZohoSalesOrderList>(filters);
+
         public Task<TZohoSalesOrderList> ListAsync<TZohoSalesOrderList>(params ZohoFilter[] filters) where TZohoSalesOrderList : ZohoSalesOrderList => Get()
                 .SetQueryParams(filters?.Select(f => new KeyValuePair<string, object>(f.Key, f.Value)))
                 .GetJsonAsync<TZohoSalesOrderList>();

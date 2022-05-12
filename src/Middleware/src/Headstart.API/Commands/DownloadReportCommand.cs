@@ -17,15 +17,15 @@ namespace Headstart.API.Commands
 {
     public class DownloadReportCommand
     {
-        private readonly OrderCloudIntegrationsBlobService _blob;
+        private readonly OrderCloudIntegrationsBlobService blob;
 
         public DownloadReportCommand(AppSettings settings)
         {
-            _blob = new OrderCloudIntegrationsBlobService(new BlobServiceConfig()
+            blob = new OrderCloudIntegrationsBlobService(new BlobServiceConfig()
             {
                 ConnectionString = settings.StorageAccountSettings.ConnectionString,
                 Container = "downloads",
-                AccessType = BlobContainerPublicAccessType.Off
+                AccessType = BlobContainerPublicAccessType.Off,
             });
         }
 
@@ -37,14 +37,27 @@ namespace Headstart.API.Commands
             var date = DateTime.UtcNow.ToString("MMddyyyy");
             var time = DateTime.Now.ToString("hmmss.ffff");
             var fileName = $"{reportType}-{date}-{time}.xlsx";
-            var fileReference = await _blob.GetAppendBlobReference(fileName);
+            var fileReference = await blob.GetAppendBlobReference(fileName);
             SetHeaders(headers, worksheet);
             SetValues(data, headers, worksheet);
             using (Stream stream = await fileReference.OpenWriteAsync(true))
             {
                 excel.Write(stream);
             }
+
             return fileName;
+        }
+
+        public async Task<string> GetSharedAccessSignature(string fileName)
+        {
+            var fileReference = await blob.GetBlobReference(fileName);
+            var sharedAccessPolicy = new SharedAccessBlobPolicy()
+            {
+                SharedAccessStartTime = DateTimeOffset.UtcNow.AddMinutes(-5),
+                SharedAccessExpiryTime = DateTimeOffset.UtcNow.AddMinutes(20),
+                Permissions = SharedAccessBlobPermissions.Read,
+            };
+            return fileReference.GetSharedAccessSignature(sharedAccessPolicy);
         }
 
         private void SetHeaders(string[] headers, ISheet worksheet)
@@ -59,6 +72,7 @@ namespace Headstart.API.Commands
                     var split = headers[i].Split('.');
                     concatHeader = split[split.Length - 1];
                 }
+
                 var humanizedHeader = Regex.Replace(concatHeader, "([a-z](?=[0-9A-Z])|[A-Z](?=[A-Z][a-z]))", "$1 ");
                 cell.SetCellValue(humanizedHeader);
             }
@@ -97,8 +111,10 @@ namespace Headstart.API.Commands
                                     hasProp = false;
                                     break;
                                 }
+
                                 dataValue = JObject.Parse(dataValue[prop].ToString());
                             }
+
                             if (hasProp && dataValue.ContainsKey(split[split.Length - 1]))
                             {
                                 var value = dataValue.GetValue(split[split.Length - 1]);
@@ -137,18 +153,5 @@ namespace Headstart.API.Commands
                 }
             }
         }
-
-        public async Task<string> GetSharedAccessSignature(string fileName)
-        {
-            var fileReference = await _blob.GetBlobReference(fileName);
-            var sharedAccessPolicy = new SharedAccessBlobPolicy()
-            {
-                SharedAccessStartTime = DateTimeOffset.UtcNow.AddMinutes(-5),
-                SharedAccessExpiryTime = DateTimeOffset.UtcNow.AddMinutes(20),
-                Permissions = SharedAccessBlobPermissions.Read
-            };
-            return fileReference.GetSharedAccessSignature(sharedAccessPolicy);
-        }
-
     }
 }

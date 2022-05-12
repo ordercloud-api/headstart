@@ -1,38 +1,38 @@
-﻿using ordercloud.integrations.library;
-using OrderCloud.Catalyst;
-using OrderCloud.SDK;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using OrderCloud.Catalyst;
 
 namespace ordercloud.integrations.easypost.Exceptions
 {
-	public class EasyPostException : CatalystBaseException
-	{
-		public EasyPostException(EasyPostApiError error)
-            : base($"EasyPost.{error.error.code}", error.error.message, error.error, 400) { }
-	}
-
-	public class EasyPostApiError
+    public class EasyPostException : CatalystBaseException
     {
-		public ErrorObject error { get; set; }
-	}
-
-	public class EasyPostError
-    {
-		public ErrorObject error { get; set; }
+        public EasyPostException(EasyPostApiError error)
+            : base($"EasyPost.{error.error.code}", error.error.message, error.error, 400)
+        {
+        }
     }
 
-	public class ErrorObject
+    public class EasyPostApiError
     {
-		public string code { get; set; } // https://www.easypost.com/errors-guide#error-codes
-		public string message { get; set; }
-		public FieldErrorObject[] errors { get; set; }
-	}
+        public ErrorObject error { get; set; }
+    }
 
-	public class FieldErrorObject
+    public class EasyPostError
     {
-		public string field { get; set; }
-		public string message { get; set; }
+        public ErrorObject error { get; set; }
+    }
+
+    public class ErrorObject
+    {
+        public string code { get; set; } // https://www.easypost.com/errors-guide#error-codes
+
+        public string message { get; set; }
+
+        public FieldErrorObject[] errors { get; set; }
+    }
+
+    public class FieldErrorObject
+    {
+        public string field { get; set; }
+
+        public string message { get; set; }
     }
 }

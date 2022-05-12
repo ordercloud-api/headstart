@@ -1,19 +1,20 @@
-﻿using ordercloud.integrations.library;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Headstart.Common.Models
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum BuyerReportViewContext
+    {
+        MyOrders,
+        Approve,
+        Location,
+    }
+
     public class ReportTypeResource
     {
-        public ReportTypeEnum ID { get; set; }
-        public string Name { get; set; }
-        public string ReportCategory { get; set; }
-        public bool AvailableToSuppliers { get; set; }
-        public string Value { get; set; }
-        public string[] AdHocFilters { get; set; }
-
         // Explicitly setting available report types
-        public static ReportTypeResource[] ReportTypes = {
+        public static ReportTypeResource[] ReportTypes { get; } =
+        {
             new ReportTypeResource
             {
                 ID = ReportTypeEnum.BuyerLocation,
@@ -21,15 +22,16 @@ namespace Headstart.Common.Models
                 ReportCategory = "Buyer",
                 AvailableToSuppliers = true,
                 Value = "BuyerLocation",
-                AdHocFilters = null
+                AdHocFilters = null,
             },
-            new ReportTypeResource {
+            new ReportTypeResource
+            {
                 ID = ReportTypeEnum.SalesOrderDetail,
                 Name = "Sales Order Detail Report",
                 ReportCategory = "Order",
                 AvailableToSuppliers = false,
                 Value = "SalesOrderDetail",
-                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow",  "TimeHigh", "SupplierID", "BrandID" }
+                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow",  "TimeHigh", "SupplierID", "BrandID" },
             },
             new ReportTypeResource
             {
@@ -38,7 +40,7 @@ namespace Headstart.Common.Models
                 ReportCategory = "Order",
                 AvailableToSuppliers = true,
                 Value = "PurchaseOrderDetail",
-                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID", "BrandID" }
+                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID", "BrandID" },
             },
             new ReportTypeResource
             {
@@ -47,16 +49,16 @@ namespace Headstart.Common.Models
                 ReportCategory = "Order",
                 AvailableToSuppliers = true,
                 Value = "LineItemDetail",
-                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID", "BrandID" }
+                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID", "BrandID" },
             },
-             new ReportTypeResource
+            new ReportTypeResource
             {
                 ID = ReportTypeEnum.ProductDetail,
                 Name = "Product Detail Report",
                 ReportCategory = "Product",
                 AvailableToSuppliers = true,
                 Value = "ProductDetail",
-                AdHocFilters = new string[] { "SupplierID" }
+                AdHocFilters = new string[] { "SupplierID" },
             },
             new ReportTypeResource
             {
@@ -65,7 +67,7 @@ namespace Headstart.Common.Models
                 ReportCategory = "RMA",
                 AvailableToSuppliers = true,
                 Value = "RMADetail",
-                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID" }
+                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID" },
             },
             new ReportTypeResource
             {
@@ -74,16 +76,20 @@ namespace Headstart.Common.Models
                 ReportCategory = "Order",
                 AvailableToSuppliers = true,
                 Value = "ShipmentDetail",
-                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID" }
-            }
+                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID" },
+            },
         };
-    }
 
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum BuyerReportViewContext
-    {
-        MyOrders,
-        Approve,
-        Location
+        public ReportTypeEnum ID { get; set; }
+
+        public string Name { get; set; }
+
+        public string ReportCategory { get; set; }
+
+        public bool AvailableToSuppliers { get; set; }
+
+        public string Value { get; set; }
+
+        public string[] AdHocFilters { get; set; }
     }
 }

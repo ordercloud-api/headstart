@@ -13,13 +13,13 @@ namespace Headstart.Jobs
 {
     public class ReceiveRecentOrdersAndShipmentsJob : BaseReportJob
     {
-        private readonly IOrderCloudClient _oc;
-        private readonly IOrdersAndShipmentsDataRepo _ordersAndShipmentsDataRepo;
+        private readonly IOrderCloudClient oc;
+        private readonly IOrdersAndShipmentsDataRepo ordersAndShipmentsDataRepo;
 
         public ReceiveRecentOrdersAndShipmentsJob(IOrderCloudClient oc, IOrdersAndShipmentsDataRepo ordersAndShipmentsDataRepo)
         {
-            _oc = oc;
-            _ordersAndShipmentsDataRepo = ordersAndShipmentsDataRepo;
+            this.oc = oc;
+            this.ordersAndShipmentsDataRepo = ordersAndShipmentsDataRepo;
         }
 
         protected override async Task<ResultCode> ProcessJobAsync(string message)
@@ -38,13 +38,13 @@ namespace Headstart.Jobs
 
         private async Task UpsertOrderAndShipments(string orderID)
         {
-            var orderWorksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
+            var orderWorksheet = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
 
-            var shipments = await _oc.Shipments.ListAllAsync(orderID);
+            var shipments = await oc.Shipments.ListAllAsync(orderID);
 
             foreach (var shipment in shipments)
             {
-                var shipmentItems = await _oc.Shipments.ListAllItemsAsync(shipment.ID);
+                var shipmentItems = await oc.Shipments.ListAllItemsAsync(shipment.ID);
 
                 foreach (var shipmentItem in shipmentItems)
                 {
@@ -52,13 +52,13 @@ namespace Headstart.Jobs
 
                     if (cosmosOrderWithShipments.QuantityShipped != 0)
                     {
-                        var queryable = _ordersAndShipmentsDataRepo.GetQueryable().Where(orderWithShipments => orderWithShipments.PartitionKey == "PartitionValue");
+                        var queryable = ordersAndShipmentsDataRepo.GetQueryable().Where(orderWithShipments => orderWithShipments.PartitionKey == "PartitionValue");
 
                         var requestOptions = BuildQueryRequestOptions();
 
                         var listOptions = BuildOrderWithShipmentsListOptions(orderID, shipmentItem.LineItemID, shipment.ID);
 
-                        CosmosListPage<OrderWithShipments> currentOrderWithShipmentsListPage = await _ordersAndShipmentsDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
+                        CosmosListPage<OrderWithShipments> currentOrderWithShipmentsListPage = await ordersAndShipmentsDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
 
                         var cosmosID = string.Empty;
                         if (currentOrderWithShipmentsListPage.Items.Count() == 1)
@@ -66,7 +66,7 @@ namespace Headstart.Jobs
                             cosmosID = cosmosOrderWithShipments.id = currentOrderWithShipmentsListPage.Items[0].id;
                         }
 
-                        await _ordersAndShipmentsDataRepo.UpsertItemAsync(cosmosID, cosmosOrderWithShipments);
+                        await ordersAndShipmentsDataRepo.UpsertItemAsync(cosmosID, cosmosOrderWithShipments);
                     }
                 }
             }

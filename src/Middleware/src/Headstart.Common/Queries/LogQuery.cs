@@ -14,16 +14,16 @@ namespace Headstart.Common.Queries
 {
     public class LogQuery : ICosmosQuery<OrchestrationLog>
     {
-        private readonly ICosmosStore<OrchestrationLog> _store;
+        private readonly ICosmosStore<OrchestrationLog> store;
 
         public LogQuery(ICosmosStore<OrchestrationLog> store)
         {
-            _store = store;
+            this.store = store;
         }
 
         public async Task<ListPage<OrchestrationLog>> List(IListArgs args)
         {
-            var query = _store.Query(new FeedOptions() { EnableCrossPartitionQuery = true })
+            var query = store.Query(new FeedOptions() { EnableCrossPartitionQuery = true })
                 .Search(args)
                 .Filter(args)
                 .Sort(args);
@@ -34,26 +34,26 @@ namespace Headstart.Common.Queries
 
         public async Task<OrchestrationLog> Get(string id)
         {
-            var item = await _store.FindAsync(id);
+            var item = await store.FindAsync(id);
             return item;
         }
 
         public async Task<OrchestrationLog> Save(OrchestrationLog log)
         {
             log.timeStamp = DateTime.Now;
-            var result = await _store.UpsertAsync(log);
+            var result = await store.UpsertAsync(log);
             return result.Entity;
         }
 
         public async Task<List<OrchestrationLog>> SaveMany(List<OrchestrationLog> logs)
         {
-            var result = await _store.UpsertRangeAsync(logs);
+            var result = await store.UpsertRangeAsync(logs);
             return result.SuccessfulEntities.Select(e => e.Entity).ToList();
         }
 
         public async Task Delete(string id)
         {
-            await _store.RemoveByIdAsync(id);
+            await store.RemoveByIdAsync(id);
         }
     }
 }

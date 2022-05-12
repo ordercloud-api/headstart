@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using ordercloud.integrations.library.Cosmos;
-using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
 
 namespace ordercloud.integrations.library
@@ -10,7 +9,11 @@ namespace ordercloud.integrations.library
         public static IOrderedQueryable<T> Sort<T>(this IQueryable<T> source, IListArgs args) where T : class
         {
             var expr = ExpressionBuilder.GetSortByExpression<T>(args);
-            if (expr == null) return source as IOrderedQueryable<T>;
+            if (expr == null)
+            {
+                return source as IOrderedQueryable<T>;
+            }
+
             var direction = args.SortBy[0].Contains("!") ? "OrderByDescending" : "OrderBy";
             var genericMethod = typeof(Queryable)
                 .GetMethods()
@@ -23,7 +26,11 @@ namespace ordercloud.integrations.library
         public static IQueryable<T> Filter<T>(this IQueryable<T> source, IListArgs args) where T : class
         {
             var expr = ExpressionBuilder.GetFilterExpression<T>(args);
-            if (expr == null) return source;
+            if (expr == null)
+            {
+                return source;
+            }
+
             var genericMethod = typeof(Queryable)
                 .GetMethods()
                 .First(m => m.Name == "Where" && m.IsGenericMethodDefinition && m.GetParameters().ToList().Count == 2)
@@ -35,7 +42,11 @@ namespace ordercloud.integrations.library
         public static IQueryable<T> Search<T>(this IQueryable<T> source, IListArgs args) where T : class
         {
             var expr = ExpressionBuilder.GetSearchExpression<T>(args);
-            if (expr == null) return source;
+            if (expr == null)
+            {
+                return source;
+            }
+
             var genericMethod = typeof(Queryable)
                 .GetMethods()
                 .First(m => m.Name == "Where" && m.IsGenericMethodDefinition && m.GetParameters().ToList().Count == 2)

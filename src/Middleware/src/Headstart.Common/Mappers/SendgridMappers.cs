@@ -1,12 +1,10 @@
 ﻿using Headstart.Models;
 using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
-using ordercloud.integrations.exchangerates;
 using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using static Headstart.Common.Models.SendGridModels;
 
 namespace Headstart.Common.Mappers
@@ -49,7 +47,7 @@ namespace Headstart.Common.Mappers
                     ProductID = lineItem?.ProductID,
                     Quantity = lineItem?.Quantity,
                     LineTotal = lineItem?.LineTotal,
-                    SpecCombo = GetSpecCombo(lineItem?.Specs)
+                    SpecCombo = GetSpecCombo(lineItem?.Specs),
                 };
             });
             var shippingAddress = GetShippingAddress(lineItems);
@@ -69,7 +67,7 @@ namespace Headstart.Common.Mappers
                     Street2 = order?.BillingAddress?.Street2,
                     City = order?.BillingAddress?.City,
                     State = order?.BillingAddress?.State,
-                    Zip = order?.BillingAddress?.Zip
+                    Zip = order?.BillingAddress?.Zip,
                 },
                 BillTo = null,
                 Products = productsList,
@@ -79,7 +77,7 @@ namespace Headstart.Common.Mappers
                 PromotionalDiscount = order?.PromotionDiscount,
                 Total = order?.Total,
                 Currency = currencyString,
-                Comments = order.Comments
+                Comments = order.Comments,
             };
         }
 
@@ -89,6 +87,7 @@ namespace Headstart.Common.Mappers
             {
                 return null;
             }
+
             string specCombo = "(" + string.Join(", ", specs.Select(spec => spec.Value).ToArray()) + ")";
             return specCombo;
         }
@@ -127,6 +126,7 @@ namespace Headstart.Common.Mappers
                     products.Add(MapLineItemToProduct(lineItem));
                 }
             }
+
             return products;
         }
 
@@ -171,13 +171,13 @@ namespace Headstart.Common.Mappers
                 Street2 = lineItems[0]?.ShippingAddress?.Street2,
                 City = lineItems[0]?.ShippingAddress?.City,
                 State = lineItems[0]?.ShippingAddress?.State,
-                Zip = lineItems[0]?.ShippingAddress?.Zip
+                Zip = lineItems[0]?.ShippingAddress?.Zip,
             };
 
         public static LineItemProductData MapToTemplateProduct(HSLineItem lineItem, LineItemStatusChange lineItemStatusChange, LineItemStatus status)
         {
             decimal lineTotal = 0M;
-            if (status == LineItemStatus.ReturnDenied || status == LineItemStatus.CancelDenied && lineItemStatusChange.QuantityRequestedForRefund != lineItemStatusChange.Quantity)
+            if (status == LineItemStatus.ReturnDenied || (status == LineItemStatus.CancelDenied && lineItemStatusChange.QuantityRequestedForRefund != lineItemStatusChange.Quantity))
             {
                 int quantityApproved = lineItemStatusChange.QuantityRequestedForRefund - lineItemStatusChange.Quantity;
                 decimal costPerUnitAfterTaxes = (decimal)(lineItemStatusChange.Refund / quantityApproved);
@@ -187,6 +187,7 @@ namespace Headstart.Common.Mappers
             {
                 lineTotal = lineItemStatusChange.Refund ?? lineItem.LineTotal;
             }
+
             return new LineItemProductData
             {
                 ProductName = lineItem?.Product?.Name,
@@ -195,10 +196,8 @@ namespace Headstart.Common.Mappers
                 Quantity = lineItem?.Quantity,
                 LineTotal = lineTotal,
                 QuantityChanged = lineItemStatusChange?.Quantity,
-                MessageToBuyer = lineItemStatusChange.Comment
+                MessageToBuyer = lineItemStatusChange.Comment,
             };
         }
-
-
     }
 }

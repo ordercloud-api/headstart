@@ -1,78 +1,90 @@
 ﻿using System.Threading.Tasks;
-using Headstart.Models.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using ordercloud.integrations.cardconnect;
-using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Controllers.CardConnect
 {
     /// <summary>
-    /// ME Credit Card Payments for Headstart
+    /// ME Credit Card Payments for Headstart.
     /// </summary>
     public class MePaymentController : CatalystController
     {
-        private readonly ICreditCardCommand _card;
-        private readonly AppSettings _settings;
+        private readonly ICreditCardCommand card;
+        private readonly AppSettings settings;
+
         public MePaymentController(AppSettings settings, ICreditCardCommand card)
         {
-            _card = card;
-            _settings = settings;
+            this.card = card;
+            this.settings = settings;
         }
+
         /// <summary>
-        /// POST Payment
+        /// POST Payment.
         /// </summary>
         [HttpPost, Route("me/payments"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<Payment> Post([FromBody] OrderCloudIntegrationsCreditCardPayment payment)
         {
             string merchantID;
             if (payment.Currency == "USD")
-                merchantID = _settings.CardConnectSettings.UsdMerchantID;
+            {
+                merchantID = settings.CardConnectSettings.UsdMerchantID;
+            }
             else if (payment.Currency == "CAD")
-                merchantID = _settings.CardConnectSettings.CadMerchantID;
+            {
+                merchantID = settings.CardConnectSettings.CadMerchantID;
+            }
             else
-                merchantID = _settings.CardConnectSettings.EurMerchantID;
+            {
+                merchantID = settings.CardConnectSettings.EurMerchantID;
+            }
 
-            return await _card.AuthorizePayment(payment, UserContext.AccessToken, merchantID);
+            return await card.AuthorizePayment(payment, UserContext.AccessToken, merchantID);
         }
     }
+
     /// <summary>
-    ///  ME Credit Card Tokenization for Headstart
+    ///  ME Credit Card Tokenization for Headstart.
     /// </summary>
     public class MeCreditCardAuthorizationController : CatalystController
     {
-        private readonly ICreditCardCommand _card;
+        private readonly ICreditCardCommand card;
+
         public MeCreditCardAuthorizationController(ICreditCardCommand card)
         {
-            _card = card;
+            this.card = card;
         }
+
         /// <summary>
-        /// POST Credit Card
+        /// POST Credit Card.
         /// </summary>
         [HttpPost, Route("me/creditcards"), OrderCloudUserAuth(ApiRole.MeCreditCardAdmin, ApiRole.CreditCardAdmin)]
         public async Task<BuyerCreditCard> MePost([FromBody] OrderCloudIntegrationsCreditCardToken card)
         {
-            return await _card.MeTokenizeAndSave(card, UserContext);
+            return await this.card.MeTokenizeAndSave(card, UserContext);
         }
     }
+
     /// <summary>
-    /// Credit Card Tokenization for Headstart
+    /// Credit Card Tokenization for Headstart.
     /// </summary>
     public class CreditCardController : CatalystController
     {
-        private readonly ICreditCardCommand _card;
+        private readonly ICreditCardCommand card;
+
         public CreditCardController(ICreditCardCommand card)
         {
-            _card = card;
+            this.card = card;
         }
+
         /// <summary>
-        /// POST Credit Cards
+        /// POST Credit Cards.
         /// </summary>
         [HttpPost, Route("buyers/{buyerID}/creditcards"), OrderCloudUserAuth(ApiRole.CreditCardAdmin)]
         public async Task<CreditCard> Post([FromBody] OrderCloudIntegrationsCreditCardToken card, string buyerID)
         {
-            return await _card.TokenizeAndSave(buyerID, card, UserContext);
+            return await this.card.TokenizeAndSave(buyerID, card, UserContext);
         }
     }
 }

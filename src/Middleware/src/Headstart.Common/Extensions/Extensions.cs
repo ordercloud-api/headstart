@@ -8,24 +8,32 @@ namespace Headstart.Common.Extensions
 {
     public static class Extensions
     {
-        public static bool HasItem<t>(this IList<t> itemList)
+        public static bool HasItem<T>(this IList<T> itemList)
         {
             if (itemList == null || itemList.Count == 0)
-            { return false; }
+            {
+                return false;
+            }
 
             return true;
         }
-        public static bool HasItem<t>(this IReadOnlyList<t> itemList)
+
+        public static bool HasItem<T>(this IReadOnlyList<T> itemList)
         {
             if (itemList == null || itemList.Count == 0)
-            { return false; }
+            {
+                return false;
+            }
 
             return true;
         }
-        public static bool HasItem<t>(this List<t> itemList)
+
+        public static bool HasItem<T>(this List<T> itemList)
         {
             if (itemList == null || itemList.Count == 0)
-            { return false; }
+            {
+                return false;
+            }
 
             return true;
         }

@@ -15,6 +15,6 @@ namespace Headstart.Models.Extended
         CancelDenied,
         Returned,
         ReturnRequested,
-        ReturnDenied
+        ReturnDenied,
     }
 }

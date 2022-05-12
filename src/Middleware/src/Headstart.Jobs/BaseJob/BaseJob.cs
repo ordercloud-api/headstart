@@ -1,21 +1,22 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Headstart.Jobs
 {
     /// <summary>
-    /// This class adds logging and validation common in jobs
+    /// This class adds logging and validation common in jobs.
     /// </summary>
     public abstract class BaseJob
     {
-        protected List<string> Skipped = new List<string>();
-        protected List<string> Succeeded = new List<string>();
-        protected List<string> Failed = new List<string>();
+        protected List<string> Skipped { get; set; } = new List<string>();
+
+        protected List<string> Succeeded { get; set; } = new List<string>();
+
+        protected List<string> Failed { get; set; } = new List<string>();
+
+        protected ILogger _logger { get; set; }
+
         private int Total => Skipped.Count + Succeeded.Count + Failed.Count;
-        protected ILogger _logger;
 
         protected virtual void LogInformation(string message)
         {

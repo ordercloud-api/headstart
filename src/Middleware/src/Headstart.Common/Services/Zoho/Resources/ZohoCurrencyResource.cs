@@ -9,22 +9,33 @@ namespace Headstart.Common.Services.Zoho.Resources
     public interface IZohoCurrencyResource
     {
         Task<ZohoListCurrencyList> ListAsync(params ZohoFilter[] filters);
+
         Task<TZohoCurrencyList> ListAsync<TZohoCurrencyList>(params ZohoFilter[] filters) where TZohoCurrencyList : ZohoListCurrencyList;
+
         Task<ZohoCurrency> GetAsync(string id);
+
         Task<TZohoCurrency> GetAsync<TZohoCurrency>(string id) where TZohoCurrency : ZohoCurrency;
+
         Task<ZohoCurrency> SaveAsync(ZohoCurrency currency);
+
         Task<TZohoCurrency> SaveAsync<TZohoCurrency>(TZohoCurrency currency) where TZohoCurrency : ZohoCurrency;
+
         Task<ZohoCurrency> CreateAsync(ZohoCurrency contact);
+
         Task<TZohoCurrency> CreateAsync<TZohoCurrency>(TZohoCurrency contact) where TZohoCurrency : ZohoCurrency;
+
         Task DeleteAsync(string id);
     }
 
     public class ZohoCurrencyResource : ZohoResource, IZohoCurrencyResource
     {
         internal ZohoCurrencyResource(ZohoClient client)
-            : base(client, "currency", "settings", "currencies") { }
+            : base(client, "currency", "settings", "currencies")
+        {
+        }
 
         public Task<ZohoListCurrencyList> ListAsync(params ZohoFilter[] filters) => ListAsync<ZohoListCurrencyList>(filters);
+
         public Task<TZohoCurrencyList> ListAsync<TZohoCurrencyList>(params ZohoFilter[] filters) where TZohoCurrencyList : ZohoListCurrencyList
         {
             var queryParams = filters?.Select(f => new KeyValuePair<string, object>(f.Key, f.Value));
@@ -39,6 +50,7 @@ namespace Headstart.Common.Services.Zoho.Resources
             Get(id).GetJsonAsync<TZohoCurrency>();
 
         public Task<ZohoCurrency> SaveAsync(ZohoCurrency currency) => SaveAsync<ZohoCurrency>(currency);
+
         public Task<TZohoCurrency> SaveAsync<TZohoCurrency>(TZohoCurrency currency) where TZohoCurrency : ZohoCurrency =>
 
             Get(currency.currency_id).PutJsonAsync(currency).ReceiveJson<TZohoCurrency>();

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ordercloud.integrations.library
+﻿namespace ordercloud.integrations.library
 {
     public class InvalidHeaderError
     {
@@ -10,6 +6,7 @@ namespace ordercloud.integrations.library
         {
             Header = name;
         }
+
         public string Header { get; set; }
     }
 }

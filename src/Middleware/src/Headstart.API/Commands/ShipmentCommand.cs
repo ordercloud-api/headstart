@@ -4,7 +4,6 @@ using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
 using Microsoft.AspNetCore.Http;
 using Npoi.Mapper;
-using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 using System;
@@ -19,72 +18,133 @@ using Misc = Headstart.Common.Models.Misc;
 
 namespace Headstart.API.Commands
 {
+    public interface IShipmentCommand
+    {
+        Task<SuperHSShipment> CreateShipment(SuperHSShipment superShipment, DecodedToken decodedToken);
+
+        Task<BatchProcessResult> UploadShipments(IFormFile file, DecodedToken decodedToken);
+    }
+
     public class DocumentRowError
     {
         public int Row { get; set; }
+
         public string ErrorMessage { get; set; }
+
         public int Column { get; set; }
     }
 
     public class DocumentImportSummary
     {
         public int TotalCount { get; set; }
+
         public int ValidCount { get; set; }
+
         public int InvalidCount { get; set; }
     }
 
     public class DocumentImportResult
     {
         public DocumentImportSummary Meta { get; set; }
-        public List<Misc.Shipment> Valid = new List<Misc.Shipment>();
-        public List<DocumentRowError> Invalid = new List<DocumentRowError>();
-    }
 
+        public List<Misc.Shipment> Valid { get; set; } = new List<Misc.Shipment>();
+
+        public List<DocumentRowError> Invalid { get; set; } = new List<DocumentRowError>();
+    }
 
     public class BatchProcessSummary
     {
         public int TotalCount { get; set; }
+
         public int SuccessfulCount { get; set; }
+
         public int ProcessFailureListCount { get; set; }
+
         public int DocumentFailureListCount { get; set; }
-
     }
-
 
     public class BatchProcessFailure
     {
         public Misc.Shipment Shipment { get; set; }
+
         public string Error { get; set; }
-
     }
-
 
     public class BatchProcessResult
     {
         public BatchProcessSummary Meta { get; set; }
-        public List<Shipment> SuccessfulList = new List<Shipment>();
-        public List<BatchProcessFailure> ProcessFailureList = new List<BatchProcessFailure>();
-        public List<DocumentRowError> InvalidRowFailureList = new List<DocumentRowError>();
 
+        public List<Shipment> SuccessfulList { get; set; } = new List<Shipment>();
 
+        public List<BatchProcessFailure> ProcessFailureList { get; set; } = new List<BatchProcessFailure>();
+
+        public List<DocumentRowError> InvalidRowFailureList { get; set; } = new List<DocumentRowError>();
     }
 
-    public interface IShipmentCommand
-    {
-        Task<SuperHSShipment> CreateShipment(SuperHSShipment superShipment, DecodedToken decodedToken);
-        Task<BatchProcessResult> UploadShipments(IFormFile file, DecodedToken decodedToken);
-    }
     public class ShipmentCommand : IShipmentCommand
     {
-        private readonly IOrderCloudClient _oc;
-        private readonly ILineItemCommand _lineItemCommand;
-        private Dictionary<string, Shipment> _shipmentByTrackingNumber = new Dictionary<string, Shipment>();
+        private readonly IOrderCloudClient oc;
+        private readonly ILineItemCommand lineItemCommand;
+        private Dictionary<string, Shipment> shipmentByTrackingNumber = new Dictionary<string, Shipment>();
 
         public ShipmentCommand(AppSettings settings, IOrderCloudClient oc, ILineItemCommand lineItemCommand)
         {
-            _oc = oc;
-            _lineItemCommand = lineItemCommand;
+            this.oc = oc;
+            this.lineItemCommand = lineItemCommand;
         }
+
+        public static DocumentImportResult Validate(List<RowInfo<Misc.Shipment>> rows)
+        {
+            DocumentImportResult result = new DocumentImportResult()
+            {
+                Invalid = new List<DocumentRowError>(),
+                Valid = new List<Misc.Shipment>(),
+            };
+
+            foreach (RowInfo<Misc.Shipment> row in rows)
+            {
+                if (row.ErrorColumnIndex > -1)
+                {
+                    result.Invalid.Add(new DocumentRowError()
+                    {
+                        ErrorMessage = row.ErrorMessage,
+                        Row = row.RowNumber++,
+                        Column = row.ErrorColumnIndex,
+                    });
+                }
+                else
+                {
+                    List<ValidationResult> results = new List<ValidationResult>();
+
+                    if (ShouldIgnoreRow(row.Value))
+                    {
+                        continue;
+                    }
+
+                    if (Validator.TryValidateObject(row.Value, new ValidationContext(row.Value), results, true) == false)
+                    {
+                        result.Invalid.Add(new DocumentRowError()
+                        {
+                            ErrorMessage = $"{results.FirstOrDefault()?.ErrorMessage}",
+                            Row = row.RowNumber++,
+                        });
+                    }
+                    else
+                    {
+                        result.Valid.Add(row.Value);
+                    }
+                }
+            }
+
+            result.Meta = new DocumentImportSummary()
+            {
+                InvalidCount = result.Invalid.Count,
+                ValidCount = result.Valid.Count,
+                TotalCount = rows.Count,
+            };
+            return result;
+        }
+
         public async Task<SuperHSShipment> CreateShipment(SuperHSShipment superShipment, DecodedToken decodedToken)
         {
             ShipmentItem firstShipmentItem = superShipment.ShipmentItems.First();
@@ -107,9 +167,10 @@ namespace Headstart.API.Commands
             {
                 buyerID = superShipment.Shipment.xp.BuyerID;
             }
+
             superShipment.Shipment.BuyerID = buyerID;
 
-            HSShipment ocShipment = await _oc.Shipments.CreateAsync<HSShipment>(superShipment.Shipment, accessToken: decodedToken.AccessToken);
+            HSShipment ocShipment = await oc.Shipments.CreateAsync<HSShipment>(superShipment.Shipment, accessToken: decodedToken.AccessToken);
 
             // platform issue. Cant save new xp values onto shipment line item. Update order line item to have this value.
             var shipmentItemsWithComment = superShipment.ShipmentItems.Where(s => s.xp?.Comment != null);
@@ -118,7 +179,7 @@ namespace Headstart.API.Commands
                 dynamic comments = new ExpandoObject();
                 var commentsByShipment = comments as IDictionary<string, object>;
                 commentsByShipment[ocShipment.ID] = shipmentItem.xp?.Comment;
-                return _oc.LineItems.PatchAsync(
+                return oc.LineItems.PatchAsync(
                     OrderDirection.Incoming,
                     buyerOrderID,
                     shipmentItem.LineItemID,
@@ -126,8 +187,8 @@ namespace Headstart.API.Commands
                     {
                         xp = new
                         {
-                            Comments = commentsByShipment
-                        }
+                            Comments = commentsByShipment,
+                        },
                     });
             });
 
@@ -135,50 +196,13 @@ namespace Headstart.API.Commands
                 superShipment.ShipmentItems,
                 100,
                 5,
-                (shipmentItem) => _oc.Shipments.SaveItemAsync(ocShipment.ID, shipmentItem, accessToken: decodedToken.AccessToken));
-            HSShipment ocShipmentWithDateShipped = await _oc.Shipments.PatchAsync<HSShipment>(ocShipment.ID, new PartialShipment() { DateShipped = dateShipped }, accessToken: decodedToken.AccessToken);
+                (shipmentItem) => oc.Shipments.SaveItemAsync(ocShipment.ID, shipmentItem, accessToken: decodedToken.AccessToken));
+            HSShipment ocShipmentWithDateShipped = await oc.Shipments.PatchAsync<HSShipment>(ocShipment.ID, new PartialShipment() { DateShipped = dateShipped }, accessToken: decodedToken.AccessToken);
             return new SuperHSShipment()
             {
                 Shipment = ocShipmentWithDateShipped,
-                ShipmentItems = shipmentItemResponses.ToList()
+                ShipmentItems = shipmentItemResponses.ToList(),
             };
-        }
-
-        private async Task PatchLineItemStatuses(string supplierOrderID, SuperHSShipment superShipment, OrderDirection direction, DecodedToken decodedToken)
-        {
-            List<LineItemStatusChange> lineItemStatusChanges = superShipment.ShipmentItems.Select(shipmentItem =>
-            {
-                return new LineItemStatusChange()
-                {
-                    Quantity = shipmentItem.QuantityShipped,
-                    ID = shipmentItem.LineItemID
-                };
-            }).ToList();
-
-            LineItemStatusChanges lineItemStatusChange = new LineItemStatusChanges()
-            {
-                Changes = lineItemStatusChanges,
-                Status = LineItemStatus.Complete,
-                SuperShipment = superShipment
-            };
-            await _lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(IsSupplierUser(decodedToken) ? OrderDirection.Outgoing : direction, supplierOrderID, lineItemStatusChange);
-        }
-
-        private bool IsSupplierUser(DecodedToken decodedToken)
-        {
-            return decodedToken.CommerceRole == CommerceRole.Supplier;
-        }
-
-        private async Task<string> GetBuyerIDForSupplierOrder(string supplierOrderID)
-        {
-            string buyerID = string.Empty;
-            string buyerOrderID = supplierOrderID.Split("-").First();
-            Order relatedBuyerOrder = await _oc.Orders.GetAsync(OrderDirection.Incoming, buyerOrderID);
-            if (!string.IsNullOrEmpty(relatedBuyerOrder.FromCompanyID))
-            {
-                buyerID = relatedBuyerOrder.FromCompanyID;
-            }
-            return buyerID;
         }
 
         public async Task<BatchProcessResult> UploadShipments(IFormFile file, DecodedToken decodedToken)
@@ -190,15 +214,88 @@ namespace Headstart.API.Commands
             return documentImportResult;
         }
 
+        private static bool ShouldIgnoreRow(Misc.Shipment value)
+        {
+            string exampleSignifier = "//EXAMPLE//";
+
+            // Ignore if the row is empty, or if it's the example row.
+            if (value == null)
+            {
+                return false;
+            }
+
+            if (value.OrderID?.ToUpper() == exampleSignifier)
+            {
+                return true;
+            }
+
+            PropertyInfo[] props = typeof(Misc.Shipment).GetProperties();
+
+            foreach (PropertyInfo prop in props)
+            {
+                if (prop.GetValue(value) != null)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private async Task PatchLineItemStatuses(string supplierOrderID, SuperHSShipment superShipment, OrderDirection direction, DecodedToken decodedToken)
+        {
+            List<LineItemStatusChange> lineItemStatusChanges = superShipment.ShipmentItems.Select(shipmentItem =>
+            {
+                return new LineItemStatusChange()
+                {
+                    Quantity = shipmentItem.QuantityShipped,
+                    ID = shipmentItem.LineItemID,
+                };
+            }).ToList();
+
+            LineItemStatusChanges lineItemStatusChange = new LineItemStatusChanges()
+            {
+                Changes = lineItemStatusChanges,
+                Status = LineItemStatus.Complete,
+                SuperShipment = superShipment,
+            };
+            await lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(IsSupplierUser(decodedToken) ? OrderDirection.Outgoing : direction, supplierOrderID, lineItemStatusChange);
+        }
+
+        private bool IsSupplierUser(DecodedToken decodedToken)
+        {
+            return decodedToken.CommerceRole == CommerceRole.Supplier;
+        }
+
+        private async Task<string> GetBuyerIDForSupplierOrder(string supplierOrderID)
+        {
+            string buyerID = string.Empty;
+            string buyerOrderID = supplierOrderID.Split("-").First();
+            Order relatedBuyerOrder = await oc.Orders.GetAsync(OrderDirection.Incoming, buyerOrderID);
+            if (!string.IsNullOrEmpty(relatedBuyerOrder.FromCompanyID))
+            {
+                buyerID = relatedBuyerOrder.FromCompanyID;
+            }
+
+            return buyerID;
+        }
+
         private async Task<BatchProcessResult> GetShipmentListFromFile(IFormFile file, DecodedToken decodedToken)
         {
             BatchProcessResult processResults;
 
-            if (file == null) { return new BatchProcessResult(); }
+            if (file == null)
+            {
+                return new BatchProcessResult();
+            }
+
             using Stream stream = file.OpenReadStream();
             List<RowInfo<Misc.Shipment>> shipments = new Mapper(stream).Take<Misc.Shipment>(0, 1000).ToList();
 
-            if (shipments == null) { throw new Exception("No shipments found in sheet"); }
+            if (shipments == null)
+            {
+                throw new Exception("No shipments found in sheet");
+            }
 
             shipments.RemoveRange(0, 2);
             DocumentImportResult result = Validate(shipments);
@@ -212,8 +309,15 @@ namespace Headstart.API.Commands
         {
             BatchProcessResult processResult = new BatchProcessResult();
 
-            if (importResult == null) { return null; }
-            if (importResult.Valid?.Count < 0) { return null; }
+            if (importResult == null)
+            {
+                return null;
+            }
+
+            if (importResult.Valid?.Count < 0)
+            {
+                return null;
+            }
 
             foreach (Misc.Shipment shipment in importResult.Valid)
             {
@@ -228,67 +332,44 @@ namespace Headstart.API.Commands
                     failureDto.Shipment = shipment;
                     processResult.ProcessFailureList.Add(failureDto);
                 }
-
             }
+
             processResult.InvalidRowFailureList.AddRange(importResult.Invalid);
             processResult.Meta = new BatchProcessSummary()
             {
                 ProcessFailureListCount = processResult.ProcessFailureList.Count(),
                 DocumentFailureListCount = processResult.InvalidRowFailureList.Count(),
                 SuccessfulCount = processResult.SuccessfulList.Count(),
-                TotalCount = importResult.Meta.TotalCount
+                TotalCount = importResult.Meta.TotalCount,
             };
 
             return processResult;
-
         }
-
 
         private async void PatchOrderStatus(Order ocOrder, ShippingStatus shippingStatus, OrderStatus orderStatus)
-
         {
-
             var partialOrder = new PartialOrder { xp = new { ShippingStatus = shippingStatus, SubmittedOrderStatus = orderStatus } };
 
-            await _oc.Orders.PatchAsync(OrderDirection.Outgoing, ocOrder.ID, partialOrder);
-
+            await oc.Orders.PatchAsync(OrderDirection.Outgoing, ocOrder.ID, partialOrder);
         }
 
-
-
         private bool ValidateLineItemCounts(ListPage<LineItem> lineItemList)
-
         {
-
             if (lineItemList == null || lineItemList?.Items?.Count < 1)
-
             {
-
                 return false;
-
             }
 
-
-
             foreach (LineItem lineItem in lineItemList.Items)
-
             {
-
                 if (lineItem.Quantity > lineItem.QuantityShipped)
-
                 {
-
                     return false;
-
                 }
-
             }
 
             return true;
-
         }
-
-
 
         private BatchProcessFailure CreateBatchProcessFailureItem(Misc.Shipment shipment, OrderCloudException ex)
         {
@@ -303,29 +384,36 @@ namespace Headstart.API.Commands
                 errorMessage = $"{ex.Message}";
             }
 
-            if (errorMessage == null) { failure.Error = "Something went wrong"; }
-            else { failure.Error = errorMessage; }
+            if (errorMessage == null)
+            {
+                failure.Error = "Something went wrong";
+            }
+            else
+            {
+                failure.Error = errorMessage;
+            }
 
             failure.Shipment = shipment;
 
             return failure;
         }
+
         private async Task PatchLineItemStatus(string supplierOrderID, ShipmentItem lineItem, DecodedToken decodedToken)
         {
             var lineItemStatusChangeList = new List<LineItemStatusChange>();
             lineItemStatusChangeList.Add(new LineItemStatusChange()
             {
                 Quantity = lineItem.QuantityShipped,
-                ID = lineItem.LineItemID
+                ID = lineItem.LineItemID,
             });
 
             LineItemStatusChanges lineItemStatusChange = new LineItemStatusChanges()
             {
                 Changes = lineItemStatusChangeList,
-                Status = LineItemStatus.Complete
+                Status = LineItemStatus.Complete,
             };
 
-            await _lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Outgoing, supplierOrderID, lineItemStatusChange, null);
+            await lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Outgoing, supplierOrderID, lineItemStatusChange, null);
         }
 
         private async Task<bool> ProcessShipment(Misc.Shipment shipment, BatchProcessResult result, DecodedToken decodedToken)
@@ -334,7 +422,10 @@ namespace Headstart.API.Commands
             Shipment ocShipment;
             try
             {
-                if (shipment == null) { throw new Exception("Shipment cannot be null"); }
+                if (shipment == null)
+                {
+                    throw new Exception("Shipment cannot be null");
+                }
 
                 Order ocOrder = await GetOutgoingOrder(shipment);
                 LineItem lineItem = await GetOutgoingLineItem(shipment);
@@ -347,8 +438,7 @@ namespace Headstart.API.Commands
                     OrderID = shipment.OrderID,
                     LineItemID = lineItem.ID,
                     QuantityShipped = Convert.ToInt32(shipment.QuantityShipped),
-                    UnitPrice = Convert.ToDecimal(shipment.Cost)
-
+                    UnitPrice = Convert.ToDecimal(shipment.Cost),
                 };
 
                 ocShipment = await GetShipmentByTrackingNumber(shipment, decodedToken?.AccessToken);
@@ -361,29 +451,30 @@ namespace Headstart.API.Commands
 
                 if (newShipment != null)
                 {
-                    Shipment processedShipment = await _oc.Shipments.PatchAsync(newShipment.ID, newShipment, decodedToken?.AccessToken);
+                    Shipment processedShipment = await oc.Shipments.PatchAsync(newShipment.ID, newShipment, decodedToken?.AccessToken);
 
                     // Before updating shipment item, must post the shipment line item comment to the order line item due to OC bug.
                     await PatchPartialLineItemComment(shipment, newShipment.ID);
 
                     await PatchLineItemStatus(shipment.OrderID, newShipmentItem, decodedToken);
+
                     // POST a shipment item, passing it a Shipment ID parameter, and a request body of Order ID, Line Item ID, and Quantity Shipped
-                    await _oc.Shipments.SaveItemAsync(newShipment.ID, newShipmentItem, accessToken: decodedToken?.AccessToken);
+                    await oc.Shipments.SaveItemAsync(newShipment.ID, newShipmentItem, accessToken: decodedToken?.AccessToken);
 
                     // Re-patch the shipment adding the date shipped now due to oc bug
                     var repatchedShipment = PatchShipment(ocShipment, shipment);
-                    await _oc.Shipments.PatchAsync(newShipment.ID, repatchedShipment);
-
+                    await oc.Shipments.PatchAsync(newShipment.ID, repatchedShipment);
 
                     result.SuccessfulList.Add(processedShipment);
                 }
+
                 if (lineItem?.ID == null)
                 {
                     // Before updating shipment item, must post the shipment line item comment to the order line item due to OC bug.
                     await PatchPartialLineItemComment(shipment, newShipment.ID);
 
                     // Create new lineItem
-                    await _oc.Shipments.SaveItemAsync(shipment.ShipmentID, newShipmentItem);
+                    await oc.Shipments.SaveItemAsync(shipment.ShipmentID, newShipmentItem);
                 }
 
                 return true;
@@ -398,16 +489,18 @@ namespace Headstart.API.Commands
                 result.ProcessFailureList.Add(new BatchProcessFailure()
                 {
                     Error = ex.Message,
-                    Shipment = shipment
+                    Shipment = shipment,
                 });
                 return false;
-
             }
         }
 
         private void ValidateShipmentAmount(Misc.Shipment shipment, LineItem lineItem, Order ocOrder)
         {
-            if (shipment == null || lineItem == null) { return; }
+            if (shipment == null || lineItem == null)
+            {
+                return;
+            }
 
             int newAmountShipped = Convert.ToInt32(shipment.QuantityShipped) + lineItem.QuantityShipped;
 
@@ -419,11 +512,14 @@ namespace Headstart.API.Commands
 
         private async Task<LineItem> GetOutgoingLineItem(Misc.Shipment shipment)
         {
-            if (shipment == null || shipment.LineItemID == null) { throw new Exception("No LineItemID provided for shipment"); }
+            if (shipment == null || shipment.LineItemID == null)
+            {
+                throw new Exception("No LineItemID provided for shipment");
+            }
 
             try
             {
-                return await _oc.LineItems.GetAsync(OrderDirection.Outgoing, shipment.OrderID, shipment.LineItemID);
+                return await oc.LineItems.GetAsync(OrderDirection.Outgoing, shipment.OrderID, shipment.LineItemID);
             }
             catch (Exception ex)
             {
@@ -433,17 +529,19 @@ namespace Headstart.API.Commands
 
         private async Task<Order> GetOutgoingOrder(Misc.Shipment shipment)
         {
-            if (shipment == null || shipment.OrderID == null) { throw new Exception("No OrderID provided for shipment"); }
+            if (shipment == null || shipment.OrderID == null)
+            {
+                throw new Exception("No OrderID provided for shipment");
+            }
 
             try
             {
-                return await _oc.Orders.GetAsync(OrderDirection.Outgoing, shipment.OrderID);
+                return await oc.Orders.GetAsync(OrderDirection.Outgoing, shipment.OrderID);
             }
             catch (Exception ex)
             {
                 throw new Exception($"Unable to find Order for OrderID: {shipment.OrderID}", ex.InnerException);
             }
-
         }
 
         private async Task<LineItem> PatchPartialLineItemComment(Misc.Shipment shipment, string newShipmentId)
@@ -463,11 +561,11 @@ namespace Headstart.API.Commands
             {
                 xp = new
                 {
-                    Comments = commentDictonary
-                }
+                    Comments = commentDictonary,
+                },
             };
 
-            return await _oc.LineItems.PatchAsync(OrderDirection.Outgoing, shipment.OrderID, shipment.LineItemID, partialLineItem);
+            return await oc.LineItems.PatchAsync(OrderDirection.Outgoing, shipment.OrderID, shipment.LineItemID, partialLineItem);
         }
 
         private async Task<Shipment> GetShipmentByTrackingNumber(Misc.Shipment shipment, string accessToken)
@@ -475,9 +573,9 @@ namespace Headstart.API.Commands
             Shipment shipmentResponse = null;
 
             // if dictionary already contains shipment, return that shipment
-            if (shipment != null && _shipmentByTrackingNumber.ContainsKey(shipment.TrackingNumber))
+            if (shipment != null && shipmentByTrackingNumber.ContainsKey(shipment.TrackingNumber))
             {
-                return _shipmentByTrackingNumber[shipment.TrackingNumber];
+                return shipmentByTrackingNumber[shipment.TrackingNumber];
             }
 
             if (shipment?.ShipmentID != null)
@@ -485,31 +583,33 @@ namespace Headstart.API.Commands
                 // get shipment if shipmentId is provided
                 try
                 {
-                    shipmentResponse = await _oc.Shipments.GetAsync(shipment.ShipmentID, accessToken);
+                    shipmentResponse = await oc.Shipments.GetAsync(shipment.ShipmentID, accessToken);
                 }
                 catch (Exception ex)
                 {
                     throw new Exception($"ShipmentID: {shipment.ShipmentID} could not be found. If you are not patching an existing shipment, this field must be blank so that the system can generate a Shipment ID for you. Error Detail: {ex.Message}");
                 }
+
                 if (shipmentResponse != null)
                 {
                     // add shipment to dictionary if it's found
-                    _shipmentByTrackingNumber.Add(shipmentResponse.TrackingNumber, shipmentResponse);
+                    shipmentByTrackingNumber.Add(shipmentResponse.TrackingNumber, shipmentResponse);
                 }
             }
             else if (shipment?.ShipmentID == null)
             {
                 PartialShipment newShipment = PatchShipment(null, shipment);
+
                 // Create shipment for tracking number provided if shipmentId wasn't included
-                shipmentResponse = await _oc.Shipments.CreateAsync(newShipment, accessToken);
+                shipmentResponse = await oc.Shipments.CreateAsync(newShipment, accessToken);
                 if (shipmentResponse != null)
                 {
-                    _shipmentByTrackingNumber.Add(shipmentResponse.TrackingNumber, shipmentResponse);
+                    shipmentByTrackingNumber.Add(shipmentResponse.TrackingNumber, shipmentResponse);
                 }
             }
+
             return shipmentResponse;
         }
-
 
         private PartialShipment PatchShipment(Shipment ocShipment, Misc.Shipment shipment)
         {
@@ -527,6 +627,7 @@ namespace Headstart.API.Commands
                 newShipment.FromAddress = ocShipment?.FromAddress;
                 newShipment.ToAddress = ocShipment?.ToAddress;
             }
+
             if (newShipment.xp == null)
             {
                 newShipment.xp = new ShipmentXp();
@@ -545,69 +646,6 @@ namespace Headstart.API.Commands
             newShipment.xp.Comment = Convert.ToString(shipment.ShipmentComment);
 
             return newShipment;
-        }
-
-        public static DocumentImportResult Validate(List<RowInfo<Misc.Shipment>> rows)
-        {
-            DocumentImportResult result = new DocumentImportResult()
-            {
-                Invalid = new List<DocumentRowError>(),
-                Valid = new List<Misc.Shipment>()
-            };
-
-            foreach (RowInfo<Misc.Shipment> row in rows)
-            {
-                if (row.ErrorColumnIndex > -1)
-                    result.Invalid.Add(new DocumentRowError()
-                    {
-                        ErrorMessage = row.ErrorMessage,
-                        Row = row.RowNumber++,
-                        Column = row.ErrorColumnIndex
-                    });
-                else
-                {
-                    List<ValidationResult> results = new List<ValidationResult>();
-
-                    if (ShouldIgnoreRow(row.Value)) { continue; }
-
-                    if (Validator.TryValidateObject(row.Value, new ValidationContext(row.Value), results, true) == false)
-                    {
-                        result.Invalid.Add(new DocumentRowError()
-                        {
-                            ErrorMessage = $"{results.FirstOrDefault()?.ErrorMessage}",
-                            Row = row.RowNumber++
-                        });
-                    }
-                    else
-                    {
-                        result.Valid.Add(row.Value);
-                    }
-                }
-            }
-
-            result.Meta = new DocumentImportSummary()
-            {
-                InvalidCount = result.Invalid.Count,
-                ValidCount = result.Valid.Count,
-                TotalCount = rows.Count
-            };
-            return result;
-        }
-
-        private static bool ShouldIgnoreRow(Misc.Shipment value)
-        {
-            string exampleSignifier = "//EXAMPLE//";
-            // Ignore if the row is empty, or if it's the example row.
-            if (value == null) { return false; }
-            if (value.OrderID?.ToUpper() == exampleSignifier) { return true; }
-
-            PropertyInfo[] props = typeof(Misc.Shipment).GetProperties();
-
-            foreach (PropertyInfo prop in props)
-            {
-                if (prop.GetValue(value) != null) { return false; }
-            }
-            return true;
         }
     }
 }

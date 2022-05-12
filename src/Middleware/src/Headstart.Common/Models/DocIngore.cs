@@ -1,22 +1,20 @@
 ﻿using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace ordercloud.integrations.library.helpers
 {
-	[AttributeUsage(AttributeTargets.Property)]
-	public class DocIgnoreAttribute : Attribute
-	{
-	}
+    [AttributeUsage(AttributeTargets.Property)]
+    public class DocIgnoreAttribute : Attribute
+    {
+    }
 
     public class SwaggerExcludeFilter : ISchemaFilter
     {
-		public void Apply(OpenApiSchema model, SchemaFilterContext context)
-		{
+        public void Apply(OpenApiSchema model, SchemaFilterContext context)
+        {
             var type = context.GetType();
             var excludeProperties = type.GetProperties().Where(t => t.GetCustomAttribute<DocIgnoreAttribute>() != null);
             if (excludeProperties != null)
@@ -32,5 +30,5 @@ namespace ordercloud.integrations.library.helpers
                 }
             }
         }
-	}
+    }
 }
