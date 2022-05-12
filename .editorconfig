@@ -458,7 +458,7 @@ dotnet_diagnostic.SA1303.severity=warning
 dotnet_diagnostic.SA1128.severity=warning
 dotnet_diagnostic.SA1122.severity=warning
 dotnet_diagnostic.SA1203.severity=warning
-dotnet_diagnostic.SA1311.severity=silent
+dotnet_diagnostic.SA1311.severity=warning
 dotnet_diagnostic.SA1307.severity=warning
 dotnet_diagnostic.SA1400.severity=warning
 dotnet_diagnostic.SA1129.severity=silent
@@ -486,17 +486,10 @@ dotnet_diagnostic.SA1520.severity=warning
 # CS0168: Variable is declared but never used
 dotnet_diagnostic.CS0168.severity = silent
 
-# CS1570: XML comment has badly formed XML
-dotnet_diagnostic.CS1570.severity = silent
-
-# CS0169: The field 'AvalaraTests._oc' is never used
-dotnet_diagnostic.CS0169.severity = silent
 
 # CS1998: Async method lacks 'await' operators and will run synchronously
 dotnet_diagnostic.CS1998.severity = silent
 
-# CS8632: The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
-dotnet_diagnostic.CS8632.severity = silent
 dotnet_diagnostic.SA1618.severity=warning
 dotnet_diagnostic.SA1126.severity=warning
 dotnet_diagnostic.SA1409.severity=silent

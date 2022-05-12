@@ -22,6 +22,7 @@ namespace Headstart.Common.Controllers
 
         /// <summary>
         /// GET SupplierCategoryConfig.
+        /// </summary>
         [HttpGet, Route("/supplierfilterconfig"), OrderCloudUserAuth(ApiRole.Shopper, ApiRole.SupplierReader)]
         public async Task<ListPage<dynamic>> Get()
         {

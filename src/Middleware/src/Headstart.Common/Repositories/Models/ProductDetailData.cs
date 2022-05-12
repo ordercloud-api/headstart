@@ -46,7 +46,7 @@ namespace Headstart.Common.Repositories.Models
 
         public bool Resale { get; set; }
 
-        public string? Currency { get; set; }
+        public string Currency { get; set; }
 
         public bool? ArtworkRequired { get; set; }
 

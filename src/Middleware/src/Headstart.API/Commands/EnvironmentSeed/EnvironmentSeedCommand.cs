@@ -181,6 +181,7 @@ namespace Headstart.API.Commands
         /// The staging environment gets restored weekly from production
         /// during that restore things like webhooks, message senders, and integration events are shut off (so you don't for example email production customers)
         /// this process restores integration events which are required for checkout (with environment specific settings).
+        /// </summary>
         public async Task PostStagingRestore()
         {
             var token = (await oc.AuthenticateAsync()).AccessToken;

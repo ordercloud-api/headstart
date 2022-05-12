@@ -8,7 +8,6 @@ namespace avalara.tests
 {
     public class AvalaraTests
     {
-        private IOrderCloudClient oc;
         private AvalaraCommand command;
 
         [SetUp]
