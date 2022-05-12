@@ -115,7 +115,7 @@ namespace Headstart.API.Commands.Zoho
 
                 return list;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return new List<ZohoPurchaseOrder>();
             }

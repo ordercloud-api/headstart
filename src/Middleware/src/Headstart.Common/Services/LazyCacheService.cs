@@ -16,6 +16,9 @@ namespace OrderCloud.Common.Services
             => await cache.GetOrAddAsync(key, addItemFactory, expireAfter);
 
         public async Task RemoveAsync(string key)
-            => cache.Remove(key);
+        {
+            cache.Remove(key);
+            await Task.CompletedTask;
+        }
     }
 }

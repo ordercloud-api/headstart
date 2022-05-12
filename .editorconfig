@@ -482,14 +482,6 @@ dotnet_diagnostic.SA1408.severity=warning
 dotnet_diagnostic.SA1001.severity=warning
 dotnet_diagnostic.SA1139.severity=warning
 dotnet_diagnostic.SA1520.severity=warning
-
-# CS0168: Variable is declared but never used
-dotnet_diagnostic.CS0168.severity = silent
-
-
-# CS1998: Async method lacks 'await' operators and will run synchronously
-dotnet_diagnostic.CS1998.severity = silent
-
 dotnet_diagnostic.SA1618.severity=warning
 dotnet_diagnostic.SA1126.severity=warning
 dotnet_diagnostic.SA1409.severity=silent

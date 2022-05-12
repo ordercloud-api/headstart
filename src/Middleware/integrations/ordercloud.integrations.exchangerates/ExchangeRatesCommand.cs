@@ -52,7 +52,7 @@ namespace ordercloud.integrations.exchangerates
             {
                 return await GetCachedRates(rateArgs, currency);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 await Update();
                 return await GetCachedRates(rateArgs, currency);

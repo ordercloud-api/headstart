@@ -48,7 +48,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_throw_if_order_is_already_submitted()
+        public void should_throw_if_order_is_already_submitted()
         {
             // Arrange
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, "mockOrderID").Returns(Task.FromResult(new HSOrderWorksheet

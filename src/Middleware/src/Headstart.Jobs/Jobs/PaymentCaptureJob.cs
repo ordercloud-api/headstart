@@ -160,7 +160,7 @@ namespace Headstart.Jobs
             }
             catch (CardConnectInquireException ex)
             {
-                throw new PaymentCaptureJobException("Error inquiring payment. Message: {ex.ApiError.Message}, ErrorCode: {ex.ApiError.ErrorCode}", order.ID, payment.ID, transaction.ID);
+                throw new PaymentCaptureJobException($"Error inquiring payment. Message: {ex.ApiError.Message}, ErrorCode: {ex.ApiError.ErrorCode}", order.ID, payment.ID, transaction.ID);
             }
             catch (CardConnectCaptureException ex)
             {

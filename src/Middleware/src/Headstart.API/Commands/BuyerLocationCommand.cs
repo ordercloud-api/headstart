@@ -99,7 +99,7 @@ namespace Headstart.API.Commands
             {
                 existingLocation = await ocClient.UserGroups.GetAsync(buyerID, buyerLocationID, token);
             }
-            catch (Exception e)
+            catch (Exception)
             {
             } // Do nothing if not found
 

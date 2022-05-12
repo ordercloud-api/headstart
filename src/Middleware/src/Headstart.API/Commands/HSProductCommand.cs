@@ -454,7 +454,7 @@ namespace Headstart.API.Commands.Crud
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return;
             }

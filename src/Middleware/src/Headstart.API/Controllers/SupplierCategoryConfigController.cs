@@ -26,13 +26,13 @@ namespace Headstart.Common.Controllers
         [HttpGet, Route("/supplierfilterconfig"), OrderCloudUserAuth(ApiRole.Shopper, ApiRole.SupplierReader)]
         public async Task<ListPage<dynamic>> Get()
         {
-            return new ListPage<dynamic>
+            return await Task.FromResult(new ListPage<dynamic>
             {
                 Items = new List<dynamic>
                 {
                     GetCountriesServicingDoc(),
                 },
-            };
+            });
         }
 
         private dynamic GetCountriesServicingDoc()

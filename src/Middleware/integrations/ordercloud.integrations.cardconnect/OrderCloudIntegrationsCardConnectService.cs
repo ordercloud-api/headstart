@@ -199,7 +199,7 @@ namespace ordercloud.integrations.cardconnect
             {
                 return JsonConvert.DeserializeObject<CardConnectInquireResponse>(body);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 var list = JsonConvert.DeserializeObject<List<CardConnectInquireResponse>>(body);
                 return list.FirstOrDefault(t => t.retref == retref);
