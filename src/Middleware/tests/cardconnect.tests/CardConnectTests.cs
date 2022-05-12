@@ -7,6 +7,36 @@ using ordercloud.integrations.cardconnect;
 
 namespace CardConnect.Tests
 {
+    public static class ResponseCodeFactory
+    {
+        public static IEnumerable AuthFailCases
+        {
+            get
+            {
+                yield return new TestCaseData(@"{'respstat': 'B', 'respcode': 'NU', 'cvvresp': 'M', 'avsresp': 'Y'}");
+                yield return new TestCaseData(@"{'respstat': 'C', 'respcode': '05', 'cvvresp': 'M', 'avsresp': 'Y'}");
+                yield return new TestCaseData(@"{'respstat': 'A', 'respcode': '101', 'cvvresp': 'N', 'avsresp': 'Y'}");
+                yield return new TestCaseData(@"{'respstat': 'C', 'respcode': '00', 'cvvresp': 'P', 'avsresp': 'Y'}");
+                yield return new TestCaseData(@"{'respstat': 'C', 'respcode': '101', 'cvvresp': 'U', 'avsresp': 'Y'}");
+                yield return new TestCaseData(@"{'respstat': 'C', 'respcode': '00', 'cvvresp': 'M', 'avsresp': 'N'}");
+                yield return new TestCaseData(@"{'respstat': 'A', 'respcode': '101', 'cvvresp': 'M', 'avsresp': 'A'}");
+                yield return new TestCaseData(@"{'respstat': 'B', 'respcode': '00', 'cvvresp': 'M', 'avsresp': 'Z'}");
+                yield return new TestCaseData(@"{'respstat': 'B', 'respcode': '100', 'cvvresp': 'M', 'avsresp': 'Z'}");
+                yield return new TestCaseData(@"{'respstat': 'A', 'respcode': '101', 'cvvresp': 'P', 'avsresp': 'Y'}");
+                yield return new TestCaseData(@"{'respstat': 'A', 'respcode': '500', 'cvvresp': 'P', 'avsresp': 'Y'}");
+            }
+        }
+
+        public static IEnumerable VoidFailCases
+        {
+            get
+            {
+                yield return new TestCaseData(@"{'respproc': 'PPS', 'respstat': 'A'}");
+                yield return new TestCaseData(@"{'respproc': 'PPS', 'respstat': 'C'}");
+            }
+        }
+    }
+
     public class CardConnectTests
     {
         private HttpTest _http;
@@ -122,36 +152,6 @@ namespace CardConnect.Tests
                 cvv2 = null,
             });
             Assert.That(call.respstat.ToResponseStatus() == result);
-        }
-    }
-
-    public static class ResponseCodeFactory
-    {
-        public static IEnumerable AuthFailCases
-        {
-            get
-            {
-                yield return new TestCaseData(@"{'respstat': 'B', 'respcode': 'NU', 'cvvresp': 'M', 'avsresp': 'Y'}");
-                yield return new TestCaseData(@"{'respstat': 'C', 'respcode': '05', 'cvvresp': 'M', 'avsresp': 'Y'}");
-                yield return new TestCaseData(@"{'respstat': 'A', 'respcode': '101', 'cvvresp': 'N', 'avsresp': 'Y'}");
-                yield return new TestCaseData(@"{'respstat': 'C', 'respcode': '00', 'cvvresp': 'P', 'avsresp': 'Y'}");
-                yield return new TestCaseData(@"{'respstat': 'C', 'respcode': '101', 'cvvresp': 'U', 'avsresp': 'Y'}");
-                yield return new TestCaseData(@"{'respstat': 'C', 'respcode': '00', 'cvvresp': 'M', 'avsresp': 'N'}");
-                yield return new TestCaseData(@"{'respstat': 'A', 'respcode': '101', 'cvvresp': 'M', 'avsresp': 'A'}");
-                yield return new TestCaseData(@"{'respstat': 'B', 'respcode': '00', 'cvvresp': 'M', 'avsresp': 'Z'}");
-                yield return new TestCaseData(@"{'respstat': 'B', 'respcode': '100', 'cvvresp': 'M', 'avsresp': 'Z'}");
-                yield return new TestCaseData(@"{'respstat': 'A', 'respcode': '101', 'cvvresp': 'P', 'avsresp': 'Y'}");
-                yield return new TestCaseData(@"{'respstat': 'A', 'respcode': '500', 'cvvresp': 'P', 'avsresp': 'Y'}");
-            }
-        }
-
-        public static IEnumerable VoidFailCases
-        {
-            get
-            {
-                yield return new TestCaseData(@"{'respproc': 'PPS', 'respstat': 'A'}");
-                yield return new TestCaseData(@"{'respproc': 'PPS', 'respstat': 'C'}");
-            }
         }
     }
 }

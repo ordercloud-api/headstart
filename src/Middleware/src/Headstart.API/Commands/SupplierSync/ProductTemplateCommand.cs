@@ -33,14 +33,6 @@ namespace Headstart.API.Commands
             _settings = settings;
         }
 
-        public async Task<TemplateProductResult> ParseProductTemplateFlat(IFormFile file, DecodedToken decodedToken)
-        {
-            using var stream = file.OpenReadStream();
-            var products = new Mapper(stream).Take<TemplateProductFlat>("TemplateFlat", 1000).ToList();
-            var result = Validate(products.Where(p => p.Value?.ID != null).Select(p => p).ToList());
-            return await Task.FromResult(result);
-        }
-
         public static TemplateProductResult Validate(List<RowInfo<TemplateProductFlat>> rows)
         {
             var result = new TemplateProductResult()
@@ -84,6 +76,14 @@ namespace Headstart.API.Commands
                 TotalCount = rows.Count,
             };
             return result;
+        }
+
+        public async Task<TemplateProductResult> ParseProductTemplateFlat(IFormFile file, DecodedToken decodedToken)
+        {
+            using var stream = file.OpenReadStream();
+            var products = new Mapper(stream).Take<TemplateProductFlat>("TemplateFlat", 1000).ToList();
+            var result = Validate(products.Where(p => p.Value?.ID != null).Select(p => p).ToList());
+            return await Task.FromResult(result);
         }
 
         public async Task<List<TemplateHydratedProduct>> ParseProductTemplate(IFormFile file, DecodedToken decodedToken)

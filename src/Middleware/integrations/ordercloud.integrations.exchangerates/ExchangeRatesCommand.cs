@@ -133,15 +133,6 @@ namespace ordercloud.integrations.exchangerates
             });
         }
 
-        private async Task<ListPage<OrderCloudIntegrationsConversionRate>> GetCachedRates(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencySymbol currency)
-        {
-            var rates = await _cache.GetOrAddAsync($"exchangerates_{currency}", TimeSpan.FromHours(1), () =>
-            {
-                return _blob.Get<OrderCloudIntegrationsExchangeRate>($"{currency}.json");
-            });
-            return Filter(rateArgs, rates);
-        }
-
         private static string GetIcon(CurrencySymbol symbol)
         {
             using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"ordercloud.integrations.exchangerates.Icons.{symbol}.gif");
@@ -176,6 +167,15 @@ namespace ordercloud.integrations.exchangerates
             }
 
             return t.Value == 0 ? 1 : t.Value;
+        }
+
+        private async Task<ListPage<OrderCloudIntegrationsConversionRate>> GetCachedRates(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencySymbol currency)
+        {
+            var rates = await _cache.GetOrAddAsync($"exchangerates_{currency}", TimeSpan.FromHours(1), () =>
+            {
+                return _blob.Get<OrderCloudIntegrationsExchangeRate>($"{currency}.json");
+            });
+            return Filter(rateArgs, rates);
         }
     }
 }

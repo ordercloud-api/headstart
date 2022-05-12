@@ -50,29 +50,6 @@ namespace Headstart.API.Commands
             _profiles = new HSShippingProfiles(_settings);
         }
 
-        public async Task<ShipEstimateResponse> GetRatesAsync(HSOrderCalculatePayload orderCalculatePayload)
-        {
-            return await this.GetRatesAsync(orderCalculatePayload.OrderWorksheet, orderCalculatePayload.ConfigData);
-        }
-
-        public async Task<ShipEstimateResponse> GetRatesAsync(string orderID)
-        {
-            var order = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
-            return await this.GetRatesAsync(order);
-        }
-
-        public IEnumerable<HSShipMethod> FilterMethodsBySupplierConfig(List<HSShipMethod> methods, EasyPostShippingProfile profile)
-        {
-            // will attempt to filter out by supplier method specs, but if there are filters and the result is none and there are valid methods still return the methods
-            if (profile.AllowedServiceFilter.Count == 0)
-            {
-                return methods;
-            }
-
-            var filtered_methods = methods.Where(s => profile.AllowedServiceFilter.Contains(s.Name)).Select(s => s).ToList();
-            return filtered_methods.Any() ? filtered_methods : methods;
-        }
-
         public static IEnumerable<HSShipMethod> WhereRateIsCheapestOfItsKind(IEnumerable<HSShipMethod> methods)
         {
             return methods
@@ -190,6 +167,29 @@ namespace Headstart.API.Commands
             }
 
             return estimates;
+        }
+
+        public async Task<ShipEstimateResponse> GetRatesAsync(HSOrderCalculatePayload orderCalculatePayload)
+        {
+            return await this.GetRatesAsync(orderCalculatePayload.OrderWorksheet, orderCalculatePayload.ConfigData);
+        }
+
+        public async Task<ShipEstimateResponse> GetRatesAsync(string orderID)
+        {
+            var order = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
+            return await this.GetRatesAsync(order);
+        }
+
+        public IEnumerable<HSShipMethod> FilterMethodsBySupplierConfig(List<HSShipMethod> methods, EasyPostShippingProfile profile)
+        {
+            // will attempt to filter out by supplier method specs, but if there are filters and the result is none and there are valid methods still return the methods
+            if (profile.AllowedServiceFilter.Count == 0)
+            {
+                return methods;
+            }
+
+            var filtered_methods = methods.Where(s => profile.AllowedServiceFilter.Contains(s.Name)).Select(s => s).ToList();
+            return filtered_methods.Any() ? filtered_methods : methods;
         }
 
         public async Task<HSOrderCalculateResponse> CalculateOrder(string orderID, DecodedToken decodedToken)

@@ -57,6 +57,24 @@ namespace Headstart.API
             _settings = settings;
         }
 
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            app.EnsureCosmosDbIsCreated();
+            app.UseCatalystExceptionHandler();
+            app.UseHttpsRedirection();
+            app.UseRouting();
+            app.UseCors("integrationcors");
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint($"/swagger/v1/swagger.json", $"Headstart API v1");
+                c.RoutePrefix = string.Empty;
+            });
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
@@ -257,24 +275,6 @@ namespace Headstart.API
             ServicePointManager.DefaultConnectionLimit = int.MaxValue;
 
             ConfigureFlurl();
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public static void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            app.EnsureCosmosDbIsCreated();
-            app.UseCatalystExceptionHandler();
-            app.UseHttpsRedirection();
-            app.UseRouting();
-            app.UseCors("integrationcors");
-            app.UseAuthorization();
-            app.UseEndpoints(endpoints => endpoints.MapControllers());
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint($"/swagger/v1/swagger.json", $"Headstart API v1");
-                c.RoutePrefix = string.Empty;
-            });
         }
 
         public void ConfigureFlurl()

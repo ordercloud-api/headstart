@@ -190,6 +190,114 @@ namespace Headstart.API.Commands
             return updatedSupplierOrders;
         }
 
+        private static async Task ValidateShipping(HSOrderWorksheet orderWorksheet)
+        {
+            if (orderWorksheet.ShipEstimateResponse.HttpStatusCode != 200)
+            {
+                throw new Exception(orderWorksheet.ShipEstimateResponse.UnhandledErrorBody);
+            }
+
+            if (orderWorksheet.ShipEstimateResponse.ShipEstimates.Any(s => s.SelectedShipMethodID == ShippingConstants.NoRatesID))
+            {
+                throw new Exception("No shipping rates could be determined - fallback shipping rate of $20 3-day was used");
+            }
+
+            await Task.CompletedTask;
+        }
+
+        private static async Task<ProcessResultAction> ProcessActivityCall(ProcessType type, string description, Task func)
+        {
+            try
+            {
+                await func;
+                return new ProcessResultAction()
+                {
+                    ProcessType = type,
+                    Description = description,
+                    Success = true,
+                };
+            }
+            catch (CatalystBaseException integrationEx)
+            {
+                return new ProcessResultAction()
+                {
+                    Description = description,
+                    ProcessType = type,
+                    Success = false,
+                    Exception = new ProcessResultException(integrationEx),
+                };
+            }
+            catch (FlurlHttpException flurlEx)
+            {
+                return new ProcessResultAction()
+                {
+                    Description = description,
+                    ProcessType = type,
+                    Success = false,
+                    Exception = new ProcessResultException(flurlEx),
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ProcessResultAction()
+                {
+                    Description = description,
+                    ProcessType = type,
+                    Success = false,
+                    Exception = new ProcessResultException(ex),
+                };
+            }
+        }
+
+        private static async Task<Tuple<ProcessResultAction, T>> ProcessActivityCall<T>(ProcessType type, string description, Task<T> func) where T : class, new()
+        {
+            // T must be a class and be newable so the error response can be handled.
+            try
+            {
+                return new Tuple<ProcessResultAction, T>(
+                    new ProcessResultAction()
+                    {
+                        ProcessType = type,
+                        Description = description,
+                        Success = true,
+                    },
+                    await func);
+            }
+            catch (CatalystBaseException integrationEx)
+            {
+                return new Tuple<ProcessResultAction, T>(
+                    new ProcessResultAction()
+                    {
+                        Description = description,
+                        ProcessType = type,
+                        Success = false,
+                        Exception = new ProcessResultException(integrationEx),
+                    }, new T());
+            }
+            catch (FlurlHttpException flurlEx)
+            {
+                return new Tuple<ProcessResultAction, T>(
+                    new ProcessResultAction()
+                    {
+                        Description = description,
+                        ProcessType = type,
+                        Success = false,
+                        Exception = new ProcessResultException(flurlEx),
+                    }, new T());
+            }
+            catch (Exception ex)
+            {
+                return new Tuple<ProcessResultAction, T>(
+                    new ProcessResultAction()
+                    {
+                        Description = description,
+                        ProcessType = type,
+                        Success = false,
+                        Exception = new ProcessResultException(ex),
+                    }, new T());
+            }
+        }
+
         private async Task<ProcessResult> PerformZohoTasks(HSOrderWorksheet worksheet, IList<HSOrder> supplierOrders)
         {
             var (salesAction, zohoSalesOrder) = await ProcessActivityCall(
@@ -315,99 +423,6 @@ namespace Headstart.API.Commands
             await Throttler.RunAsync(orderInfos, 100, 3, (orderInfo) => _oc.Orders.PatchAsync(orderInfo.Item1, orderInfo.Item2, partialOrder));
         }
 
-        private static async Task<ProcessResultAction> ProcessActivityCall(ProcessType type, string description, Task func)
-        {
-            try
-            {
-                await func;
-                return new ProcessResultAction()
-                {
-                        ProcessType = type,
-                        Description = description,
-                        Success = true,
-                };
-            }
-            catch (CatalystBaseException integrationEx)
-            {
-                return new ProcessResultAction()
-                {
-                    Description = description,
-                    ProcessType = type,
-                    Success = false,
-                    Exception = new ProcessResultException(integrationEx),
-                };
-            }
-            catch (FlurlHttpException flurlEx)
-            {
-                return new ProcessResultAction()
-                {
-                    Description = description,
-                    ProcessType = type,
-                    Success = false,
-                    Exception = new ProcessResultException(flurlEx),
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ProcessResultAction()
-                {
-                    Description = description,
-                    ProcessType = type,
-                    Success = false,
-                    Exception = new ProcessResultException(ex),
-                };
-            }
-        }
-
-        private static async Task<Tuple<ProcessResultAction, T>> ProcessActivityCall<T>(ProcessType type, string description, Task<T> func) where T : class, new()
-        {
-            // T must be a class and be newable so the error response can be handled.
-            try
-            {
-                return new Tuple<ProcessResultAction, T>(
-                    new ProcessResultAction()
-                    {
-                        ProcessType = type,
-                        Description = description,
-                        Success = true,
-                    },
-                    await func);
-            }
-            catch (CatalystBaseException integrationEx)
-            {
-                return new Tuple<ProcessResultAction, T>(
-                    new ProcessResultAction()
-                    {
-                        Description = description,
-                        ProcessType = type,
-                        Success = false,
-                        Exception = new ProcessResultException(integrationEx),
-                    }, new T());
-            }
-            catch (FlurlHttpException flurlEx)
-            {
-                return new Tuple<ProcessResultAction, T>(
-                    new ProcessResultAction()
-                    {
-                        Description = description,
-                        ProcessType = type,
-                        Success = false,
-                        Exception = new ProcessResultException(flurlEx),
-                    }, new T());
-            }
-            catch (Exception ex)
-            {
-                return new Tuple<ProcessResultAction, T>(
-                    new ProcessResultAction()
-                    {
-                        Description = description,
-                        ProcessType = type,
-                        Success = false,
-                        Exception = new ProcessResultException(ex),
-                    }, new T());
-            }
-        }
-
         private async Task<Tuple<List<HSOrder>, HSOrderWorksheet, List<ProcessResultAction>>> HandlingForwarding(HSOrderWorksheet orderWorksheet)
         {
             var activities = new List<ProcessResultAction>();
@@ -464,21 +479,6 @@ namespace Headstart.API.Commands
                 TaxCost = taxCalculation.TotalTax,  // Set this again just to make sure we have the most up to date info
                 xp = new { ExternalTaxTransactionID = taxCalculation.ExternalTransactionID },
             });
-        }
-
-        private static async Task ValidateShipping(HSOrderWorksheet orderWorksheet)
-        {
-            if (orderWorksheet.ShipEstimateResponse.HttpStatusCode != 200)
-            {
-                throw new Exception(orderWorksheet.ShipEstimateResponse.UnhandledErrorBody);
-            }
-
-            if (orderWorksheet.ShipEstimateResponse.ShipEstimates.Any(s => s.SelectedShipMethodID == ShippingConstants.NoRatesID))
-            {
-                throw new Exception("No shipping rates could be determined - fallback shipping rate of $20 3-day was used");
-            }
-
-            await Task.CompletedTask;
         }
 
         private async Task SaveShipMethodByLineItem(List<LineItem> lineItems, List<ShipMethodSupplierView> shipMethods, string buyerOrderID)

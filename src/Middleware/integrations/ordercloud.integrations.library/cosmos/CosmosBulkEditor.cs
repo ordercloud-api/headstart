@@ -200,11 +200,6 @@ namespace ordercloud.integrations.library
             return list;
         }
 
-        private PropertyInfo GetPartitionKeyProp<TDoc>() where TDoc : CosmosObject
-        {
-           return typeof(TDoc).GetProperties().FirstOrDefault(prop => prop.HasAttribute<CosmosPartitionKeyAttribute>());
-        }
-
         private static DocumentCollection GetCollectionIfExists(DocumentClient client, string databaseName, string collectionName)
         {
             var database = client.CreateDatabaseQuery().Where(d => d.Id == databaseName).AsEnumerable().FirstOrDefault();
@@ -215,6 +210,11 @@ namespace ordercloud.integrations.library
 
             return client.CreateDocumentCollectionQuery(UriFactory.CreateDatabaseUri(databaseName))
                 .Where(c => c.Id == collectionName).AsEnumerable().FirstOrDefault();
+        }
+
+        private PropertyInfo GetPartitionKeyProp<TDoc>() where TDoc : CosmosObject
+        {
+           return typeof(TDoc).GetProperties().FirstOrDefault(prop => prop.HasAttribute<CosmosPartitionKeyAttribute>());
         }
 
         private void LogProgress(BulkUpdateResponse response)

@@ -6,6 +6,31 @@ using System.Threading.Tasks;
 
 namespace Common.Services.NProg
 {
+    public static class TriggerBuilderExtensions
+    {
+        public static Trigger ItemsStarted(this int i) => new Trigger(i, p => p.ItemsStarted);
+
+        public static Trigger ItemsDone(this int i) => new Trigger(i, p => p.ItemsDone);
+
+        public static Trigger ItemsSucceeded(this int i) => new Trigger(i, p => p.ItemsSucceeded);
+
+        public static Trigger ItemsFailed(this int i) => new Trigger(i, p => p.ItemsFailed);
+
+        public static Trigger PercentStarted(this int i) => new Trigger(i, p => p.PercentStarted);
+
+        public static Trigger PercentDone(this int i) => new Trigger(i, p => p.PercentDone);
+
+        public static Trigger PercentSucceeded(this int i) => new Trigger(i, p => p.PercentSucceeded);
+
+        public static Trigger PercentFailed(this int i) => new Trigger(i, p => p.PercentFailed);
+
+        public static TimeSpan Seconds(this int i) => TimeSpan.FromSeconds(i);
+
+        public static TimeSpan Minutes(this int i) => TimeSpan.FromMinutes(i);
+
+        public static TimeSpan Hours(this int i) => TimeSpan.FromHours(i);
+    }
+
     public class Tracker
     {
         private long _startTime = DateTime.UtcNow.Ticks;
@@ -167,31 +192,6 @@ namespace Common.Services.NProg
 
             return false;
         }
-    }
-
-    public static class TriggerBuilderExtensions
-    {
-        public static Trigger ItemsStarted(this int i) => new Trigger(i, p => p.ItemsStarted);
-
-        public static Trigger ItemsDone(this int i) => new Trigger(i, p => p.ItemsDone);
-
-        public static Trigger ItemsSucceeded(this int i) => new Trigger(i, p => p.ItemsSucceeded);
-
-        public static Trigger ItemsFailed(this int i) => new Trigger(i, p => p.ItemsFailed);
-
-        public static Trigger PercentStarted(this int i) => new Trigger(i, p => p.PercentStarted);
-
-        public static Trigger PercentDone(this int i) => new Trigger(i, p => p.PercentDone);
-
-        public static Trigger PercentSucceeded(this int i) => new Trigger(i, p => p.PercentSucceeded);
-
-        public static Trigger PercentFailed(this int i) => new Trigger(i, p => p.PercentFailed);
-
-        public static TimeSpan Seconds(this int i) => TimeSpan.FromSeconds(i);
-
-        public static TimeSpan Minutes(this int i) => TimeSpan.FromMinutes(i);
-
-        public static TimeSpan Hours(this int i) => TimeSpan.FromHours(i);
     }
 
     public class Progress

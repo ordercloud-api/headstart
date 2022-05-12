@@ -93,6 +93,58 @@ namespace Headstart.API.Commands
             _lineItemCommand = lineItemCommand;
         }
 
+        public static DocumentImportResult Validate(List<RowInfo<Misc.Shipment>> rows)
+        {
+            DocumentImportResult result = new DocumentImportResult()
+            {
+                Invalid = new List<DocumentRowError>(),
+                Valid = new List<Misc.Shipment>(),
+            };
+
+            foreach (RowInfo<Misc.Shipment> row in rows)
+            {
+                if (row.ErrorColumnIndex > -1)
+                {
+                    result.Invalid.Add(new DocumentRowError()
+                    {
+                        ErrorMessage = row.ErrorMessage,
+                        Row = row.RowNumber++,
+                        Column = row.ErrorColumnIndex,
+                    });
+                }
+                else
+                {
+                    List<ValidationResult> results = new List<ValidationResult>();
+
+                    if (ShouldIgnoreRow(row.Value))
+                    {
+                        continue;
+                    }
+
+                    if (Validator.TryValidateObject(row.Value, new ValidationContext(row.Value), results, true) == false)
+                    {
+                        result.Invalid.Add(new DocumentRowError()
+                        {
+                            ErrorMessage = $"{results.FirstOrDefault()?.ErrorMessage}",
+                            Row = row.RowNumber++,
+                        });
+                    }
+                    else
+                    {
+                        result.Valid.Add(row.Value);
+                    }
+                }
+            }
+
+            result.Meta = new DocumentImportSummary()
+            {
+                InvalidCount = result.Invalid.Count,
+                ValidCount = result.Valid.Count,
+                TotalCount = rows.Count,
+            };
+            return result;
+        }
+
         public async Task<SuperHSShipment> CreateShipment(SuperHSShipment superShipment, DecodedToken decodedToken)
         {
             ShipmentItem firstShipmentItem = superShipment.ShipmentItems.First();
@@ -162,56 +214,32 @@ namespace Headstart.API.Commands
             return documentImportResult;
         }
 
-        public static DocumentImportResult Validate(List<RowInfo<Misc.Shipment>> rows)
+        private static bool ShouldIgnoreRow(Misc.Shipment value)
         {
-            DocumentImportResult result = new DocumentImportResult()
+            string exampleSignifier = "//EXAMPLE//";
+
+            // Ignore if the row is empty, or if it's the example row.
+            if (value == null)
             {
-                Invalid = new List<DocumentRowError>(),
-                Valid = new List<Misc.Shipment>(),
-            };
+                return false;
+            }
 
-            foreach (RowInfo<Misc.Shipment> row in rows)
+            if (value.OrderID?.ToUpper() == exampleSignifier)
             {
-                if (row.ErrorColumnIndex > -1)
-                {
-                    result.Invalid.Add(new DocumentRowError()
-                    {
-                        ErrorMessage = row.ErrorMessage,
-                        Row = row.RowNumber++,
-                        Column = row.ErrorColumnIndex,
-                    });
-                }
-                else
-                {
-                    List<ValidationResult> results = new List<ValidationResult>();
+                return true;
+            }
 
-                    if (ShouldIgnoreRow(row.Value))
-                    {
-                        continue;
-                    }
+            PropertyInfo[] props = typeof(Misc.Shipment).GetProperties();
 
-                    if (Validator.TryValidateObject(row.Value, new ValidationContext(row.Value), results, true) == false)
-                    {
-                        result.Invalid.Add(new DocumentRowError()
-                        {
-                            ErrorMessage = $"{results.FirstOrDefault()?.ErrorMessage}",
-                            Row = row.RowNumber++,
-                        });
-                    }
-                    else
-                    {
-                        result.Valid.Add(row.Value);
-                    }
+            foreach (PropertyInfo prop in props)
+            {
+                if (prop.GetValue(value) != null)
+                {
+                    return false;
                 }
             }
 
-            result.Meta = new DocumentImportSummary()
-            {
-                InvalidCount = result.Invalid.Count,
-                ValidCount = result.Valid.Count,
-                TotalCount = rows.Count,
-            };
-            return result;
+            return true;
         }
 
         private async Task PatchLineItemStatuses(string supplierOrderID, SuperHSShipment superShipment, OrderDirection direction, DecodedToken decodedToken)
@@ -618,34 +646,6 @@ namespace Headstart.API.Commands
             newShipment.xp.Comment = Convert.ToString(shipment.ShipmentComment);
 
             return newShipment;
-        }
-
-        private static bool ShouldIgnoreRow(Misc.Shipment value)
-        {
-            string exampleSignifier = "//EXAMPLE//";
-
-            // Ignore if the row is empty, or if it's the example row.
-            if (value == null)
-            {
-                return false;
-            }
-
-            if (value.OrderID?.ToUpper() == exampleSignifier)
-            {
-                return true;
-            }
-
-            PropertyInfo[] props = typeof(Misc.Shipment).GetProperties();
-
-            foreach (PropertyInfo prop in props)
-            {
-                if (prop.GetValue(value) != null)
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
     }
 }

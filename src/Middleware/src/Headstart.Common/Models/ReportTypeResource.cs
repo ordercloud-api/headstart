@@ -4,18 +4,6 @@ namespace Headstart.Common.Models
 {
     public class ReportTypeResource
     {
-        public ReportTypeEnum ID { get; set; }
-
-        public string Name { get; set; }
-
-        public string ReportCategory { get; set; }
-
-        public bool AvailableToSuppliers { get; set; }
-
-        public string Value { get; set; }
-
-        public string[] AdHocFilters { get; set; }
-
         // Explicitly setting available report types
         public static ReportTypeResource[] ReportTypes { get; } =
         {
@@ -83,6 +71,18 @@ namespace Headstart.Common.Models
                 AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID" },
             },
         };
+
+        public ReportTypeEnum ID { get; set; }
+
+        public string Name { get; set; }
+
+        public string ReportCategory { get; set; }
+
+        public bool AvailableToSuppliers { get; set; }
+
+        public string Value { get; set; }
+
+        public string[] AdHocFilters { get; set; }
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
