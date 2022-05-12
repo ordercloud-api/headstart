@@ -10,12 +10,12 @@ namespace OrderCloud.Common.Services
     // Each instance would have a separate cache, and behavior would be inconsient.
     public class LazyCacheService : ISimpleCache
     {
-        private readonly IAppCache _cache = new CachingService();
+        private readonly IAppCache cache = new CachingService();
 
         public async Task<T> GetOrAddAsync<T>(string key, TimeSpan expireAfter, Func<Task<T>> addItemFactory)
-            => await _cache.GetOrAddAsync(key, addItemFactory, expireAfter);
+            => await cache.GetOrAddAsync(key, addItemFactory, expireAfter);
 
         public async Task RemoveAsync(string key)
-            => _cache.Remove(key);
+            => cache.Remove(key);
     }
 }

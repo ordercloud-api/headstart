@@ -17,33 +17,33 @@ namespace Headstart.Jobs
 {
     public class PaymentCaptureJob : BaseTimerJob
     {
-        private readonly AppSettings _settings;
-        private readonly IOrderCloudClient _oc;
-        private readonly IOrderCloudIntegrationsCardConnectService _cardConnect;
-        private readonly IRMACommand _rmaCommand;
+        private readonly AppSettings settings;
+        private readonly IOrderCloudClient oc;
+        private readonly IOrderCloudIntegrationsCardConnectService cardConnect;
+        private readonly IRMACommand rmaCommand;
 
         public PaymentCaptureJob(AppSettings settings, IOrderCloudClient oc, IOrderCloudIntegrationsCardConnectService cardConnect, IRMACommand rmaCommand)
         {
-            _settings = settings;
-            _oc = oc;
-            _cardConnect = cardConnect;
-            _rmaCommand = rmaCommand;
+            this.settings = settings;
+            this.oc = oc;
+            this.cardConnect = cardConnect;
+            this.rmaCommand = rmaCommand;
         }
 
-        protected override bool ShouldRun => _settings.JobSettings.ShouldCaptureCreditCardPayments;
+        protected override bool ShouldRun => settings.JobSettings.ShouldCaptureCreditCardPayments;
 
         protected override async Task ProcessJob()
         {
             var filters = new Dictionary<string, object>
             {
-                ["DateSubmitted"] = $">{_settings.JobSettings.CaptureCreditCardsAfterDate}", // limiting scope of orders until all past orders have been updated with xp.IsPaymentCaptured=true
+                ["DateSubmitted"] = $">{settings.JobSettings.CaptureCreditCardsAfterDate}", // limiting scope of orders until all past orders have been updated with xp.IsPaymentCaptured=true
                 ["xp.PaymentMethod"] = "Credit Card",
                 ["xp.IsPaymentCaptured"] = "false|!*", // TODO: once this is in place for a week set xp.IsPaymentCaptured to true on all past orders so this filter can be more performant
                 ["IsSubmitted"] = true,
                 ["xp.SubmittedOrderStatus"] = "!Canceled",
             };
 
-            var orders = await _oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Incoming, filters: filters);
+            var orders = await oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Incoming, filters: filters);
             _logger.LogInformation($"Found {orders.Count} orders to process");
 
             await Throttler.RunAsync(orders, 100, 5, ProcessSingleOrder);
@@ -53,11 +53,11 @@ namespace Headstart.Jobs
         {
             try
             {
-                var rmaList = await _rmaCommand.ListRMAsByOrderID(order.ID, CommerceRole.Seller, new MeUser { });
+                var rmaList = await rmaCommand.ListRMAsByOrderID(order.ID, CommerceRole.Seller, new MeUser { });
                 if (rmaList.Items.Any(x => x.Status == RMAStatus.Complete))
                 {
                     LogSkip($"{order.ID} has been refunded - RMA process handles authorizing new partial amount if necessary");
-                    await _oc.Orders.PatchAsync(OrderDirection.Incoming, order.ID, new PartialOrder { xp = new { IsPaymentCaptured = true } });
+                    await oc.Orders.PatchAsync(OrderDirection.Incoming, order.ID, new PartialOrder { xp = new { IsPaymentCaptured = true } });
                     return;
                 }
 
@@ -66,12 +66,12 @@ namespace Headstart.Jobs
                 if (await HasBeenCapturedPreviouslyAsync(order, transaction))
                 {
                     LogSkip($"{order.ID} has already been captured");
-                    await _oc.Orders.PatchAsync(OrderDirection.Incoming, order.ID, new PartialOrder { xp = new { IsPaymentCaptured = true } });
+                    await oc.Orders.PatchAsync(OrderDirection.Incoming, order.ID, new PartialOrder { xp = new { IsPaymentCaptured = true } });
                 }
                 else
                 {
                     await CapturePaymentAsync(order, payment, transaction);
-                    await _oc.Orders.PatchAsync(OrderDirection.Incoming, order.ID, new PartialOrder { xp = new { IsPaymentCaptured = true } });
+                    await oc.Orders.PatchAsync(OrderDirection.Incoming, order.ID, new PartialOrder { xp = new { IsPaymentCaptured = true } });
                     LogSuccess(order.ID);
                 }
             }
@@ -96,7 +96,7 @@ namespace Headstart.Jobs
                 throw new PaymentCaptureJobException("Order.xp.Currency is null", order.ID);
             }
 
-            var paymentList = await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, order.ID, filters: new { Accepted = true, Type = "CreditCard" });
+            var paymentList = await oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, order.ID, filters: new { Accepted = true, Type = "CreditCard" });
             if (paymentList.Items.Count == 0)
             {
                 throw new PaymentCaptureJobException("No credit card payment on the order where Accepted=true", order.ID);
@@ -135,7 +135,7 @@ namespace Headstart.Jobs
 
         private async Task<bool> HasBeenCapturedPreviouslyAsync(HSOrder order, HSPaymentTransaction transaction)
         {
-            var inquire = await _cardConnect.Inquire(new CardConnectInquireRequest
+            var inquire = await cardConnect.Inquire(new CardConnectInquireRequest
             {
                 merchid = transaction.xp.CardConnectResponse.merchid,
                 orderid = order.ID,
@@ -150,13 +150,13 @@ namespace Headstart.Jobs
         {
             try
             {
-                var response = await _cardConnect.Capture(new CardConnectCaptureRequest
+                var response = await cardConnect.Capture(new CardConnectCaptureRequest
                 {
                     merchid = transaction.xp.CardConnectResponse.merchid,
                     retref = transaction.xp.CardConnectResponse.retref,
                     currency = order.xp.Currency.ToString(),
                 });
-                await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, response));
+                await oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, response));
             }
             catch (CardConnectInquireException ex)
             {
@@ -164,7 +164,7 @@ namespace Headstart.Jobs
             }
             catch (CardConnectCaptureException ex)
             {
-                await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, ex.Response));
+                await oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, ex.Response));
                 throw new PaymentCaptureJobException($"Error capturing payment. Message: {ex.ApiError.Message}, ErrorCode: {ex.ApiError.ErrorCode}", order.ID, payment.ID, transaction.ID);
             }
         }

@@ -22,18 +22,18 @@ namespace Headstart.Common.Services.CMS
 
     public class AssetClient : IAssetClient
     {
-        private readonly IOrderCloudIntegrationsBlobService _blob;
-        private readonly AppSettings _settings;
+        private readonly IOrderCloudIntegrationsBlobService blob;
+        private readonly AppSettings settings;
 
         public AssetClient(IOrderCloudIntegrationsBlobService blob, AppSettings settings)
         {
-            _blob = blob;
-            _settings = settings;
+            this.blob = blob;
+            this.settings = settings;
         }
 
         public async Task<ImageAsset> CreateImage(AssetUpload asset)
         {
-            var container = _blob.Container.Name;
+            var container = blob.Container.Name;
             var assetGuid = Guid.NewGuid().ToString();
 
             using (var image = Image.FromStream(asset.File.OpenReadStream()))
@@ -42,8 +42,8 @@ namespace Headstart.Common.Services.CMS
                 var medium = image.ResizeSmallerDimensionToTarget(300);
                 await Task.WhenAll(new[]
                 {
-                    _blob.Save(assetGuid, medium.ToBytes(ImageFormat.Png), "image/png"),
-                    _blob.Save($"{assetGuid}-s", small.ToBytes(ImageFormat.Png), "image/png"),
+                    blob.Save(assetGuid, medium.ToBytes(ImageFormat.Png), "image/png"),
+                    blob.Save($"{assetGuid}-s", small.ToBytes(ImageFormat.Png), "image/png"),
                 });
             }
 
@@ -56,9 +56,9 @@ namespace Headstart.Common.Services.CMS
 
         public async Task<DocumentAsset> CreateDocument(AssetUpload asset)
         {
-            var container = _blob.Container.Name;
+            var container = blob.Container.Name;
             var assetGuid = Guid.NewGuid().ToString();
-            await _blob.Save(assetGuid, asset.File, "application/pdf");
+            await blob.Save(assetGuid, asset.File, "application/pdf");
             return new DocumentAsset()
             {
                 FileName = asset.Filename,
@@ -68,10 +68,10 @@ namespace Headstart.Common.Services.CMS
 
         public async Task DeleteAsset(string id)
         {
-            await _blob.Delete(id);
+            await blob.Delete(id);
             try
             {
-                await _blob.Delete($"{id}-s");
+                await blob.Delete($"{id}-s");
             }
             catch
             {
@@ -81,10 +81,10 @@ namespace Headstart.Common.Services.CMS
         public async Task DeleteAssetByUrl(string assetUrl)
         {
             var id = GetAssetIDFromUrl(assetUrl);
-            await _blob.Delete(id);
+            await blob.Delete(id);
             try
             {
-                await _blob.Delete($"{id}-s");
+                await blob.Delete($"{id}-s");
             }
             catch
             {
@@ -99,7 +99,7 @@ namespace Headstart.Common.Services.CMS
 
         private string GetBaseUrl()
         {
-            return _settings.StorageAccountSettings.BlobPrimaryEndpoint.EndsWith("/") ? _settings.StorageAccountSettings.BlobPrimaryEndpoint : _settings.StorageAccountSettings.BlobPrimaryEndpoint + "/";
+            return settings.StorageAccountSettings.BlobPrimaryEndpoint.EndsWith("/") ? settings.StorageAccountSettings.BlobPrimaryEndpoint : settings.StorageAccountSettings.BlobPrimaryEndpoint + "/";
         }
     }
 }

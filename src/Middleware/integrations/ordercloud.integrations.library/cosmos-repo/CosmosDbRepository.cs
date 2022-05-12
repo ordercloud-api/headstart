@@ -13,13 +13,13 @@ namespace ordercloud.integrations.library
 {
     public abstract class CosmosDbRepository<T> : IRepository<T>, IContainerContext<T> where T : CosmosObject
     {
-        private readonly ICosmosDbContainerFactory _cosmosDbContainerFactory;
-        private readonly Container _container;
+        private readonly ICosmosDbContainerFactory cosmosDbContainerFactory;
+        private readonly Container container;
 
         public CosmosDbRepository(ICosmosDbContainerFactory cosmosDbContainerFactory)
         {
-            _cosmosDbContainerFactory = cosmosDbContainerFactory ?? throw new ArgumentNullException(nameof(ICosmosDbContainerFactory));
-            _container = _cosmosDbContainerFactory.GetContainer(ContainerName)._container;
+            this.cosmosDbContainerFactory = cosmosDbContainerFactory ?? throw new ArgumentNullException(nameof(ICosmosDbContainerFactory));
+            container = this.cosmosDbContainerFactory.GetContainer(ContainerName)._container;
         }
 
         public abstract string ContainerName { get; }
@@ -28,19 +28,19 @@ namespace ordercloud.integrations.library
 
         public async Task<T> AddItemAsync(T item)
         {
-            return await _container.CreateItemAsync<T>(item, ResolvePartitionKey(item.id));
+            return await container.CreateItemAsync<T>(item, ResolvePartitionKey(item.id));
         }
 
         public async Task DeleteItemAsync(string id)
         {
-            await _container.DeleteItemAsync<T>(id, ResolvePartitionKey(id));
+            await container.DeleteItemAsync<T>(id, ResolvePartitionKey(id));
         }
 
         public async Task<T> GetItemAsync(string id)
         {
             try
             {
-                ItemResponse<T> response = await _container.ReadItemAsync<T>(id, ResolvePartitionKey(id));
+                ItemResponse<T> response = await container.ReadItemAsync<T>(id, ResolvePartitionKey(id));
                 return response.Resource;
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
@@ -70,7 +70,7 @@ namespace ordercloud.integrations.library
 
             QueryDefinition queryDefinition = filteredQueryable.ToQueryDefinition();
 
-            FeedIterator<T> queryResultSetIterator = _container.GetItemQueryIterator<T>(queryDefinition, listOptions.ContinuationToken, requestOptions);
+            FeedIterator<T> queryResultSetIterator = container.GetItemQueryIterator<T>(queryDefinition, listOptions.ContinuationToken, requestOptions);
 
             List<T> results = new List<T>();
             FeedResponse<T> currentResultSet = await queryResultSetIterator.ReadNextAsync();
@@ -90,17 +90,17 @@ namespace ordercloud.integrations.library
 
         public async Task UpsertItemAsync(string id, T item)
         {
-            await _container.UpsertItemAsync<T>(item, ResolvePartitionKey(id));
+            await container.UpsertItemAsync<T>(item, ResolvePartitionKey(id));
         }
 
         public async Task<ItemResponse<T>> ReplaceItemAsync(string id, T item)
         {
-            return await _container.ReplaceItemAsync<T>(item, id);
+            return await container.ReplaceItemAsync<T>(item, id);
         }
 
         public IQueryable<T> GetQueryable()
         {
-            return _container.GetItemLinqQueryable<T>();
+            return container.GetItemLinqQueryable<T>();
         }
 
         private IQueryable<T> ApplySearchToQueryable(string search, string searchOn, IQueryable<T> filteredQueryable)

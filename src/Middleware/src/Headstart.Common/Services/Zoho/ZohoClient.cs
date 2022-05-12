@@ -28,7 +28,7 @@ namespace Headstart.Common.Services.Zoho
 
     public partial class ZohoClient
     {
-        private readonly IFlurlClientFactory _flurlFactory;
+        private readonly IFlurlClientFactory flurlFactory;
 
         public ZohoClient()
             : this(new ZohoClientConfig())
@@ -37,12 +37,12 @@ namespace Headstart.Common.Services.Zoho
 
         public ZohoClient(IFlurlClientFactory flurlFactory)
         {
-            _flurlFactory = flurlFactory;
+            this.flurlFactory = flurlFactory;
         }
 
         public ZohoClient(ZohoClientConfig config, IFlurlClientFactory flurlFactory)
         {
-            _flurlFactory = flurlFactory;
+            this.flurlFactory = flurlFactory;
             Config = config;
             InitResources();
         }
@@ -58,9 +58,9 @@ namespace Headstart.Common.Services.Zoho
 
         public ZohoClientConfig Config { get; }
 
-        private IFlurlClient ApiClient => _flurlFactory.Get(Config.ApiUrl);
+        private IFlurlClient ApiClient => flurlFactory.Get(Config.ApiUrl);
 
-        private IFlurlClient AuthClient => _flurlFactory.Get("https://accounts.zoho.com/oauth/v2/");
+        private IFlurlClient AuthClient => flurlFactory.Get("https://accounts.zoho.com/oauth/v2/");
 
         public async Task<ZohoTokenResponse> AuthenticateAsync()
         {

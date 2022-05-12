@@ -50,11 +50,11 @@ namespace Headstart.API
 {
     public class Startup
     {
-        private readonly AppSettings _settings;
+        private readonly AppSettings settings;
 
         public Startup(AppSettings settings)
         {
-            _settings = settings;
+            this.settings = settings;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -79,13 +79,13 @@ namespace Headstart.API
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var clientIDs = _settings.OrderCloudSettings.ClientIDsWithAPIAccess.Split(",");
+            var clientIDs = settings.OrderCloudSettings.ClientIDsWithAPIAccess.Split(",");
 
             var cosmosConfig = new CosmosConfig(
-                _settings.CosmosSettings.DatabaseName,
-                _settings.CosmosSettings.EndpointUri,
-                _settings.CosmosSettings.PrimaryKey,
-                _settings.CosmosSettings.RequestTimeoutInSeconds);
+                settings.CosmosSettings.DatabaseName,
+                settings.CosmosSettings.EndpointUri,
+                settings.CosmosSettings.PrimaryKey,
+                settings.CosmosSettings.RequestTimeoutInSeconds);
             var cosmosContainers = new List<ContainerInfo>()
             {
                 new ContainerInfo()
@@ -122,55 +122,55 @@ namespace Headstart.API
 
             var avalaraConfig = new AvalaraConfig()
             {
-                BaseApiUrl = _settings.AvalaraSettings.BaseApiUrl,
-                AccountID = _settings.AvalaraSettings.AccountID,
-                LicenseKey = _settings.AvalaraSettings.LicenseKey,
-                CompanyCode = _settings.AvalaraSettings.CompanyCode,
-                CompanyID = _settings.AvalaraSettings.CompanyID,
+                BaseApiUrl = settings.AvalaraSettings.BaseApiUrl,
+                AccountID = settings.AvalaraSettings.AccountID,
+                LicenseKey = settings.AvalaraSettings.LicenseKey,
+                CompanyCode = settings.AvalaraSettings.CompanyCode,
+                CompanyID = settings.AvalaraSettings.CompanyID,
             };
 
             var currencyConfig = new BlobServiceConfig()
             {
-                ConnectionString = _settings.StorageAccountSettings.ConnectionString,
-                Container = _settings.StorageAccountSettings.BlobContainerNameExchangeRates,
+                ConnectionString = settings.StorageAccountSettings.ConnectionString,
+                Container = settings.StorageAccountSettings.BlobContainerNameExchangeRates,
             };
             var assetConfig = new BlobServiceConfig()
             {
-                ConnectionString = _settings.StorageAccountSettings.ConnectionString,
+                ConnectionString = settings.StorageAccountSettings.ConnectionString,
                 Container = "assets",
                 AccessType = BlobContainerPublicAccessType.Container,
             };
 
             var flurlClientFactory = new PerBaseUrlFlurlClientFactory();
-            var smartyStreetsUsClient = new ClientBuilder(_settings.SmartyStreetSettings.AuthID, _settings.SmartyStreetSettings.AuthToken).BuildUsStreetApiClient();
+            var smartyStreetsUsClient = new ClientBuilder(settings.SmartyStreetSettings.AuthID, settings.SmartyStreetSettings.AuthToken).BuildUsStreetApiClient();
             var orderCloudClient = new OrderCloudClient(new OrderCloudClientConfig
             {
-                ApiUrl = _settings.OrderCloudSettings.ApiUrl,
-                AuthUrl = _settings.OrderCloudSettings.ApiUrl,
-                ClientId = _settings.OrderCloudSettings.MiddlewareClientID,
-                ClientSecret = _settings.OrderCloudSettings.MiddlewareClientSecret,
+                ApiUrl = settings.OrderCloudSettings.ApiUrl,
+                AuthUrl = settings.OrderCloudSettings.ApiUrl,
+                ClientId = settings.OrderCloudSettings.MiddlewareClientID,
+                ClientSecret = settings.OrderCloudSettings.MiddlewareClientSecret,
                 Roles = new[] { ApiRole.FullAccess },
             });
 
             AvalaraCommand avalaraCommand = null;
             VertexCommand vertexCommand = null;
             TaxJarCommand taxJarCommand = null;
-            switch (_settings.EnvironmentSettings.TaxProvider)
+            switch (settings.EnvironmentSettings.TaxProvider)
             {
                 case TaxProvider.Avalara:
-                    avalaraCommand = new AvalaraCommand(avalaraConfig, _settings.EnvironmentSettings.Environment.ToString());
+                    avalaraCommand = new AvalaraCommand(avalaraConfig, settings.EnvironmentSettings.Environment.ToString());
                     break;
                 case TaxProvider.Taxjar:
-                    taxJarCommand = new TaxJarCommand(_settings.TaxJarSettings);
+                    taxJarCommand = new TaxJarCommand(settings.TaxJarSettings);
                     break;
                 case TaxProvider.Vertex:
-                    vertexCommand = new VertexCommand(_settings.VertexSettings);
+                    vertexCommand = new VertexCommand(settings.VertexSettings);
                     break;
                 default:
                     break;
             }
 
-            var smartyService = new SmartyStreetsService(_settings.SmartyStreetSettings, smartyStreetsUsClient);
+            var smartyService = new SmartyStreetsService(settings.SmartyStreetSettings, smartyStreetsUsClient);
 
             services.AddMvc(o =>
              {
@@ -189,12 +189,12 @@ namespace Headstart.API
                 .AddCors(o => o.AddPolicy("integrationcors", builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }))
                 .AddSingleton<ISimpleCache, LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
                 .AddOrderCloudUserAuth(opts => opts.AddValidClientIDs(clientIDs))
-                .AddOrderCloudWebhookAuth(opts => opts.HashKey = _settings.OrderCloudSettings.WebhookHashKey)
+                .AddOrderCloudWebhookAuth(opts => opts.HashKey = settings.OrderCloudSettings.WebhookHashKey)
                 .InjectCosmosStore<LogQuery, OrchestrationLog>(cosmosConfig)
                 .InjectCosmosStore<ReportTemplateQuery, ReportTemplate>(cosmosConfig)
-                .AddCosmosDb(_settings.CosmosSettings.EndpointUri, _settings.CosmosSettings.PrimaryKey, _settings.CosmosSettings.DatabaseName, cosmosContainers)
+                .AddCosmosDb(settings.CosmosSettings.EndpointUri, settings.CosmosSettings.PrimaryKey, settings.CosmosSettings.DatabaseName, cosmosContainers)
                 .Inject<IPortalService>()
-                .AddSingleton<ISmartyStreetsCommand>(x => new SmartyStreetsCommand(_settings.SmartyStreetSettings, orderCloudClient, smartyService))
+                .AddSingleton<ISmartyStreetsCommand>(x => new SmartyStreetsCommand(settings.SmartyStreetSettings, orderCloudClient, smartyService))
                 .Inject<ICheckoutIntegrationCommand>()
                 .Inject<IShipmentCommand>()
                 .Inject<IOrderCommand>()
@@ -211,7 +211,7 @@ namespace Headstart.API
                 .Inject<ICreditCardCommand>()
                 .Inject<ISupportAlertService>()
                 .Inject<ISupplierApiClientHelper>()
-                .AddSingleton<ISendGridClient>(x => new SendGridClient(_settings.SendgridSettings.ApiKey))
+                .AddSingleton<ISendGridClient>(x => new SendGridClient(settings.SendgridSettings.ApiKey))
                 .AddSingleton<IFlurlClientFactory>(x => flurlClientFactory)
                 .AddSingleton<DownloadReportCommand>()
                 .Inject<IRMARepo>()
@@ -221,18 +221,18 @@ namespace Headstart.API
                         new ZohoClientConfig()
                         {
                             ApiUrl = "https://books.zoho.com/api/v3",
-                            AccessToken = _settings.ZohoSettings.AccessToken,
-                            ClientId = _settings.ZohoSettings.ClientId,
-                            ClientSecret = _settings.ZohoSettings.ClientSecret,
-                            OrganizationID = _settings.ZohoSettings.OrgID,
+                            AccessToken = settings.ZohoSettings.AccessToken,
+                            ClientId = settings.ZohoSettings.ClientId,
+                            ClientSecret = settings.ZohoSettings.ClientSecret,
+                            OrganizationID = settings.ZohoSettings.OrgID,
                         }, flurlClientFactory),
                     orderCloudClient))
                 .AddSingleton<IOrderCloudIntegrationsExchangeRatesClient, OrderCloudIntegrationsExchangeRatesClient>()
-                .AddSingleton<IAssetClient>(provider => new AssetClient(new OrderCloudIntegrationsBlobService(assetConfig), _settings))
+                .AddSingleton<IAssetClient>(provider => new AssetClient(new OrderCloudIntegrationsBlobService(assetConfig), settings))
                 .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand(new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
                 .AddSingleton<ITaxCodesProvider>(provider =>
                 {
-                    return _settings.EnvironmentSettings.TaxProvider switch
+                    return settings.EnvironmentSettings.TaxProvider switch
                     {
                         TaxProvider.Avalara => avalaraCommand,
                         TaxProvider.Taxjar => taxJarCommand,
@@ -242,7 +242,7 @@ namespace Headstart.API
                 })
                 .AddSingleton<ITaxCalculator>(provider =>
                 {
-                    return _settings.EnvironmentSettings.TaxProvider switch
+                    return settings.EnvironmentSettings.TaxProvider switch
                     {
                         TaxProvider.Avalara => avalaraCommand,
                         TaxProvider.Vertex => vertexCommand,
@@ -250,9 +250,9 @@ namespace Headstart.API
                         _ => avalaraCommand // Avalara is default
                     };
                 })
-                .AddSingleton<IEasyPostShippingService>(x => new EasyPostShippingService(new EasyPostConfig() { APIKey = _settings.EasyPostSettings.APIKey }))
+                .AddSingleton<IEasyPostShippingService>(x => new EasyPostShippingService(new EasyPostConfig() { APIKey = settings.EasyPostSettings.APIKey }))
                 .AddSingleton<ISmartyStreetsService>(x => smartyService)
-                .AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(_settings.CardConnectSettings, _settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))
+                .AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(settings.CardConnectSettings, settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))
                 .AddSingleton<IOrderCloudClient>(provider => orderCloudClient)
                 .AddSwaggerGen(c =>
                 {
@@ -269,7 +269,7 @@ namespace Headstart.API
                 .AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions
                 {
                     EnableAdaptiveSampling = false, // retain all data
-                    InstrumentationKey = _settings.ApplicationInsightsSettings.InstrumentationKey,
+                    InstrumentationKey = settings.ApplicationInsightsSettings.InstrumentationKey,
                 });
 
             ServicePointManager.DefaultConnectionLimit = int.MaxValue;
@@ -293,7 +293,7 @@ namespace Headstart.API
             jsonSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
 
             // Flurl setting for request timeout
-            var timeout = TimeSpan.FromSeconds(_settings.FlurlSettings.TimeoutInSeconds == 0 ? 30 : _settings.FlurlSettings.TimeoutInSeconds);
+            var timeout = TimeSpan.FromSeconds(settings.FlurlSettings.TimeoutInSeconds == 0 ? 30 : settings.FlurlSettings.TimeoutInSeconds);
 
             FlurlHttp.Configure(settings =>
             {

@@ -40,12 +40,12 @@ namespace ordercloud.integrations.library
 
     public class OrderCloudIntegrationsBlobService : IOrderCloudIntegrationsBlobService
     {
-        private readonly BlobServiceConfig _config;
-        private bool IsInitialized = false;
+        private readonly BlobServiceConfig config;
+        private bool isInitialized = false;
 
         public OrderCloudIntegrationsBlobService(BlobServiceConfig config)
         {
-            _config = config;
+            this.config = config;
             try
             {
                 if (config.ConnectionString == null)
@@ -180,7 +180,7 @@ namespace ordercloud.integrations.library
 
         private async Task Init()
         {
-            if (IsInitialized)
+            if (isInitialized)
             {
                 return;
             }
@@ -189,7 +189,7 @@ namespace ordercloud.integrations.library
             if (created)
             {
                 var permissions = await Container.GetPermissionsAsync();
-                permissions.PublicAccess = _config.AccessType;
+                permissions.PublicAccess = config.AccessType;
                 await Container.SetPermissionsAsync(permissions);
 
                 var properties = await Client.GetServicePropertiesAsync();
@@ -211,7 +211,7 @@ namespace ordercloud.integrations.library
                 await Client.SetServicePropertiesAsync(properties);
             }
 
-            IsInitialized = true;
+            isInitialized = true;
         }
     }
 }

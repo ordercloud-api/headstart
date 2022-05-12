@@ -12,11 +12,11 @@ namespace Headstart.Common.Controllers
     /// </summary>
     public class TaxCategoryController : CatalystController
     {
-        private readonly ITaxCodesProvider _taxCodesProvider;
+        private readonly ITaxCodesProvider taxCodesProvider;
 
         public TaxCategoryController(ITaxCodesProvider taxCodesProvider)
         {
-            _taxCodesProvider = taxCodesProvider;
+            this.taxCodesProvider = taxCodesProvider;
         }
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace Headstart.Common.Controllers
         [HttpGet, Route("tax-category"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
         public async Task<TaxCategorizationResponse> ListTaxCategories([FromQuery] string search)
         {
-            return await _taxCodesProvider.ListTaxCodesAsync(search);
+            return await taxCodesProvider.ListTaxCodesAsync(search);
         }
     }
 }

@@ -16,13 +16,13 @@ namespace Headstart.Jobs
 {
     public class ReceiveRecentPurchaseOrdersJob : BaseReportJob
     {
-        private readonly IOrderCloudClient _oc;
-        private readonly IPurchaseOrderDetailDataRepo _purchaseOrderDetailDataRepo;
+        private readonly IOrderCloudClient oc;
+        private readonly IPurchaseOrderDetailDataRepo purchaseOrderDetailDataRepo;
 
         public ReceiveRecentPurchaseOrdersJob(IOrderCloudClient oc, IPurchaseOrderDetailDataRepo purchaseOrderDetailDataRepo)
         {
-            _oc = oc;
-            _purchaseOrderDetailDataRepo = purchaseOrderDetailDataRepo;
+            this.oc = oc;
+            this.purchaseOrderDetailDataRepo = purchaseOrderDetailDataRepo;
         }
 
         protected override async Task<ResultCode> ProcessJobAsync(string message)
@@ -41,15 +41,15 @@ namespace Headstart.Jobs
 
         private async Task UpsertPurchaseOrderDetail(string orderID)
         {
-            var orders = await _oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Outgoing, filters: $"ID={orderID}-*");
+            var orders = await oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Outgoing, filters: $"ID={orderID}-*");
 
-            var queryable = _purchaseOrderDetailDataRepo.GetQueryable().Where(order => order.PartitionKey == "PartitionValue");
+            var queryable = purchaseOrderDetailDataRepo.GetQueryable().Where(order => order.PartitionKey == "PartitionValue");
 
             var requestOptions = BuildQueryRequestOptions();
 
-            var salesOrderWorksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
+            var salesOrderWorksheet = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
 
-            var promos = await _oc.Orders.ListPromotionsAsync(OrderDirection.Incoming, salesOrderWorksheet.Order.ID);
+            var promos = await oc.Orders.ListPromotionsAsync(OrderDirection.Incoming, salesOrderWorksheet.Order.ID);
 
             var discountedLineItems = new List<HSLineItem>();
 
@@ -60,7 +60,7 @@ namespace Headstart.Jobs
                     ["PromotionDiscount"] = ">0",
                 };
 
-                discountedLineItems = await _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Incoming, salesOrderWorksheet.Order.ID, filters: discountedLineFilter);
+                discountedLineItems = await oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Incoming, salesOrderWorksheet.Order.ID, filters: discountedLineFilter);
             }
 
             foreach (var order in orders)
@@ -75,8 +75,8 @@ namespace Headstart.Jobs
                     },
                 };
 
-                var brand = await _oc.Buyers.GetAsync<HSBuyer>(salesOrderWorksheet.Order.FromCompanyID);
-                var supplier = await _oc.Suppliers.GetAsync<HSSupplier>(order.ToCompanyID);
+                var brand = await oc.Buyers.GetAsync<HSBuyer>(salesOrderWorksheet.Order.FromCompanyID);
+                var supplier = await oc.Suppliers.GetAsync<HSSupplier>(order.ToCompanyID);
 
                 order.ShippingCost = GetPurchaseOrderShippingCost(salesOrderWorksheet, order.ToCompanyID);
                 if (salesOrderWorksheet.Order.PromotionDiscount > 0)
@@ -100,7 +100,7 @@ namespace Headstart.Jobs
 
                 var listOptions = BuildListOptions(order.ID);
 
-                CosmosListPage<OrderDetailData> currentOrderListPage = await _purchaseOrderDetailDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
+                CosmosListPage<OrderDetailData> currentOrderListPage = await purchaseOrderDetailDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
 
                 var cosmosID = string.Empty;
                 if (currentOrderListPage.Items.Count() == 1)
@@ -108,7 +108,7 @@ namespace Headstart.Jobs
                     cosmosID = cosmosPurchaseOrder.id = currentOrderListPage.Items[0].id;
                 }
 
-                await _purchaseOrderDetailDataRepo.UpsertItemAsync(cosmosID, cosmosPurchaseOrder);
+                await purchaseOrderDetailDataRepo.UpsertItemAsync(cosmosID, cosmosPurchaseOrder);
             }
         }
 

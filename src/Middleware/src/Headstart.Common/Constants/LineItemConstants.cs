@@ -77,7 +77,7 @@ namespace Headstart.Common.Constants
             { LineItemStatus.CancelDenied, new List<LineItemStatus>() { LineItemStatus.CancelRequested } },
         };
 
-        private static Dictionary<LineItemStatus, SubmittedOrderStatus> RelatedOrderStatus = new Dictionary<LineItemStatus, SubmittedOrderStatus>()
+        private static Dictionary<LineItemStatus, SubmittedOrderStatus> relatedOrderStatus = new Dictionary<LineItemStatus, SubmittedOrderStatus>()
         {
             { LineItemStatus.Submitted, SubmittedOrderStatus.Open },
             { LineItemStatus.Backordered, SubmittedOrderStatus.Open },
@@ -90,7 +90,7 @@ namespace Headstart.Common.Constants
             { LineItemStatus.Canceled, SubmittedOrderStatus.Canceled },
         };
 
-        private static Dictionary<LineItemStatus, ShippingStatus> RelatedShippingStatus = new Dictionary<LineItemStatus, ShippingStatus>()
+        private static Dictionary<LineItemStatus, ShippingStatus> relatedShippingStatus = new Dictionary<LineItemStatus, ShippingStatus>()
         {
             { LineItemStatus.Submitted, ShippingStatus.Processing },
             { LineItemStatus.Backordered, ShippingStatus.Processing },
@@ -103,7 +103,7 @@ namespace Headstart.Common.Constants
             { LineItemStatus.Canceled, ShippingStatus.Canceled },
         };
 
-        private static Dictionary<LineItemStatus, ClaimStatus> RelatedClaimStatus = new Dictionary<LineItemStatus, ClaimStatus>()
+        private static Dictionary<LineItemStatus, ClaimStatus> relatedClaimStatus = new Dictionary<LineItemStatus, ClaimStatus>()
         {
             { LineItemStatus.Submitted, ClaimStatus.NoClaim },
             { LineItemStatus.Backordered, ClaimStatus.Pending },
@@ -128,9 +128,9 @@ namespace Headstart.Common.Constants
                 {
                     if (status.Value > 0)
                     {
-                        orderStatusOccurances.Add(RelatedOrderStatus[status.Key]);
-                        shippingStatusOccurances.Add(RelatedShippingStatus[status.Key]);
-                        claimStatusOccurances.Add(RelatedClaimStatus[status.Key]);
+                        orderStatusOccurances.Add(relatedOrderStatus[status.Key]);
+                        shippingStatusOccurances.Add(relatedShippingStatus[status.Key]);
+                        claimStatusOccurances.Add(relatedClaimStatus[status.Key]);
                     }
                 }
             }

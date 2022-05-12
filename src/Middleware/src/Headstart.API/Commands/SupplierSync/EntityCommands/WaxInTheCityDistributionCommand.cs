@@ -15,11 +15,11 @@ namespace Headstart.API.Commands
     [SupplierSync("027"), SupplierSync("093"), SupplierSync("129"), SupplierSync("waxinthecitydistribution")]
     public class WaxInTheCityDistributionCommand : ISupplierSyncCommand
     {
-        private readonly IOrderCloudClient _ocSeller;
+        private readonly IOrderCloudClient ocSeller;
 
         public WaxInTheCityDistributionCommand(AppSettings settings)
         {
-            _ocSeller = new OrderCloudClient(new OrderCloudClientConfig
+            ocSeller = new OrderCloudClient(new OrderCloudClientConfig
             {
                 ApiUrl = settings.OrderCloudSettings.ApiUrl,
                 AuthUrl = settings.OrderCloudSettings.ApiUrl,
@@ -36,9 +36,9 @@ namespace Headstart.API.Commands
         {
             HSShipEstimate estimate;
             HSShipMethod ship_method = null;
-            var supplierWorksheet = await _ocSeller.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, id);
+            var supplierWorksheet = await ocSeller.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, id);
 
-            var buyerWorksheet = await _ocSeller.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, id.Split('-')[0]);
+            var buyerWorksheet = await ocSeller.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, id.Split('-')[0]);
             var buyerLineItems = buyerWorksheet.GetBuyerLineItemsBySupplierID(supplierWorksheet.Order.ToCompanyID);
             if (buyerWorksheet?.ShipEstimateResponse != null && buyerWorksheet?.ShipEstimateResponse?.ShipEstimates.Count > 0)
             {

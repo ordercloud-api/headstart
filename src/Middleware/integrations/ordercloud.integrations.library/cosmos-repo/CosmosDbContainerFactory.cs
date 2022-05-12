@@ -15,36 +15,36 @@ namespace ordercloud.integrations.library
 
     public class CosmosDbContainerFactory : ICosmosDbContainerFactory
     {
-        private readonly CosmosClient _cosmosClient;
-        private readonly string _databaseName;
-        private readonly List<ContainerInfo> _containers;
+        private readonly CosmosClient cosmosClient;
+        private readonly string databaseName;
+        private readonly List<ContainerInfo> containers;
 
         public CosmosDbContainerFactory(
             CosmosClient cosmosClient,
             string databaseName,
             List<ContainerInfo> containers)
         {
-            _databaseName = databaseName ?? throw new ArgumentNullException(nameof(databaseName));
-            _containers = containers ?? throw new ArgumentNullException(nameof(containers));
-            _cosmosClient = cosmosClient ?? throw new ArgumentNullException(nameof(cosmosClient));
+            this.databaseName = databaseName ?? throw new ArgumentNullException(nameof(databaseName));
+            this.containers = containers ?? throw new ArgumentNullException(nameof(containers));
+            this.cosmosClient = cosmosClient ?? throw new ArgumentNullException(nameof(cosmosClient));
         }
 
         public CosmosDbContainer GetContainer(string containerName)
         {
-            var exists = _containers.Any(c => c.Name == containerName);
+            var exists = containers.Any(c => c.Name == containerName);
             if (!exists)
             {
                 throw new ArgumentException($"Unable to find container: {containerName}");
             }
 
-            return new CosmosDbContainer(_cosmosClient, _databaseName, containerName);
+            return new CosmosDbContainer(cosmosClient, databaseName, containerName);
         }
 
         public async Task EnsureDbSetupAsync()
         {
-            DatabaseResponse database = await _cosmosClient.CreateDatabaseIfNotExistsAsync(_databaseName);
+            DatabaseResponse database = await cosmosClient.CreateDatabaseIfNotExistsAsync(databaseName);
 
-            foreach (ContainerInfo container in _containers)
+            foreach (ContainerInfo container in containers)
             {
                 await database.Database.CreateContainerIfNotExistsAsync(container.Name, $"{container.PartitionKey}");
             }

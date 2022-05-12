@@ -15,15 +15,15 @@ namespace Headstart.Jobs
 {
     public class ReceiveProductDetailsJob : BaseTimerJob
     {
-        private readonly IOrderCloudClient _oc;
-        private readonly IProductDetailDataRepo _productDetailRepo;
-        private readonly ILineItemDetailDataRepo _lineItemDetailDataRepo;
+        private readonly IOrderCloudClient oc;
+        private readonly IProductDetailDataRepo productDetailRepo;
+        private readonly ILineItemDetailDataRepo lineItemDetailDataRepo;
 
         public ReceiveProductDetailsJob(IOrderCloudClient oc, IProductDetailDataRepo productDetailRepo, ILineItemDetailDataRepo lineItemDetailDataRepo)
         {
-            _oc = oc;
-            _productDetailRepo = productDetailRepo;
-            _lineItemDetailDataRepo = lineItemDetailDataRepo;
+            this.oc = oc;
+            this.productDetailRepo = productDetailRepo;
+            this.lineItemDetailDataRepo = lineItemDetailDataRepo;
         }
 
         protected override bool ShouldRun => true;
@@ -67,7 +67,7 @@ namespace Headstart.Jobs
 
         private async Task UpsertProductDetail()
         {
-            List<Product> retrievedProductList = await _oc.Products.ListAllAsync<Product>(filters: $"Name=*");
+            List<Product> retrievedProductList = await oc.Products.ListAllAsync<Product>(filters: $"Name=*");
 
             foreach (Product product in retrievedProductList)
             {
@@ -93,11 +93,11 @@ namespace Headstart.Jobs
 
             foreach (ProductDetailData productData in productDataList)
             {
-                var queryable = _productDetailRepo.GetQueryable().Where(x => x.PartitionKey == "PartitionValue" && x.Data.SpecCombo == productData.Data.SpecCombo);
+                var queryable = productDetailRepo.GetQueryable().Where(x => x.PartitionKey == "PartitionValue" && x.Data.SpecCombo == productData.Data.SpecCombo);
 
                 var listOptions = BuildProductListOptions(productData.ProductID, productData.Data.SpecCombo);
 
-                CosmosListPage<ProductDetailData> currentProductDetailListPage = await _productDetailRepo.GetItemsAsync(queryable, requestOptions, listOptions);
+                CosmosListPage<ProductDetailData> currentProductDetailListPage = await productDetailRepo.GetItemsAsync(queryable, requestOptions, listOptions);
 
                 var cosmosID = string.Empty;
                 if (currentProductDetailListPage.Items.Count == 1)
@@ -105,7 +105,7 @@ namespace Headstart.Jobs
                     cosmosID = productData.id = currentProductDetailListPage.Items[0].id;
                 }
 
-                await _productDetailRepo.UpsertItemAsync(cosmosID, productData);
+                await productDetailRepo.UpsertItemAsync(cosmosID, productData);
             }
         }
 
@@ -119,7 +119,7 @@ namespace Headstart.Jobs
 
         private async Task<CosmosListPage<LineItemDetailData>> GetLineItemDataAsync(string productID)
         {
-            var queryable = _lineItemDetailDataRepo
+            var queryable = lineItemDetailDataRepo
                 .GetQueryable()
                 .Where(order => order.Data.LineItems.Any(lineItem => lineItem.ProductID == productID) && order.Data.Order.DateCreated > DateTime.Now.AddMonths(-12));
 
@@ -127,7 +127,7 @@ namespace Headstart.Jobs
 
             CosmosListOptions listOptions = new CosmosListOptions() { PageSize = 100, ContinuationToken = null };
 
-            CosmosListPage<LineItemDetailData> currentLineItemListPage = await _lineItemDetailDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
+            CosmosListPage<LineItemDetailData> currentLineItemListPage = await lineItemDetailDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
 
             return currentLineItemListPage;
         }
@@ -135,13 +135,13 @@ namespace Headstart.Jobs
         private async Task<List<ProductDetailData>> CreateProductDetailDataAsync(Product product, List<LineItemDetailData> lineItemList)
         {
             List<ProductDetailData> resultList = new List<ProductDetailData>();
-            Task<List<Spec>> specList = _oc.Products.ListAllSpecsAsync(product.ID);
-            Task<List<Variant>> variantList = _oc.Products.ListAllVariantsAsync(product.ID);
+            Task<List<Spec>> specList = oc.Products.ListAllSpecsAsync(product.ID);
+            Task<List<Variant>> variantList = oc.Products.ListAllVariantsAsync(product.ID);
             await Task.WhenAll(specList, variantList);
             Supplier supplier = new Supplier();
             try
             {
-                supplier = await _oc.Suppliers.GetAsync(product.DefaultSupplierID);
+                supplier = await oc.Suppliers.GetAsync(product.DefaultSupplierID);
             }
             catch (Exception ex)
             {
@@ -324,7 +324,7 @@ namespace Headstart.Jobs
 
         private async Task<PriceSchedule> GetPriceSchedule(string defaultPriceScheduleID)
         {
-            return await _oc.PriceSchedules.GetAsync(defaultPriceScheduleID);
+            return await oc.PriceSchedules.GetAsync(defaultPriceScheduleID);
         }
 
         private string GetSpecPriceMarkup(List<dynamic> specValues)

@@ -12,23 +12,23 @@ namespace Headstart.Common.Controllers
     [Route("exchangerates")]
     public class ExchangeRatesController : CatalystController
     {
-        private readonly IExchangeRatesCommand _command;
+        private readonly IExchangeRatesCommand command;
 
         public ExchangeRatesController(IExchangeRatesCommand command)
         {
-            _command = command;
+            this.command = command;
         }
 
         [HttpGet, Route("{currency}")]
         public async Task<ListPage<OrderCloudIntegrationsConversionRate>> Get(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencySymbol currency)
         {
-            return await _command.Get(rateArgs, currency);
+            return await command.Get(rateArgs, currency);
         }
 
         [HttpGet, Route("supportedrates")]
         public async Task<ListPage<OrderCloudIntegrationsConversionRate>> GetRateList()
         {
-            var list = await _command.GetRateList();
+            var list = await command.GetRateList();
             return list;
         }
     }

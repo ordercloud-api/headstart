@@ -83,14 +83,14 @@ namespace Headstart.API.Commands
 
     public class ShipmentCommand : IShipmentCommand
     {
-        private readonly IOrderCloudClient _oc;
-        private readonly ILineItemCommand _lineItemCommand;
-        private Dictionary<string, Shipment> _shipmentByTrackingNumber = new Dictionary<string, Shipment>();
+        private readonly IOrderCloudClient oc;
+        private readonly ILineItemCommand lineItemCommand;
+        private Dictionary<string, Shipment> shipmentByTrackingNumber = new Dictionary<string, Shipment>();
 
         public ShipmentCommand(AppSettings settings, IOrderCloudClient oc, ILineItemCommand lineItemCommand)
         {
-            _oc = oc;
-            _lineItemCommand = lineItemCommand;
+            this.oc = oc;
+            this.lineItemCommand = lineItemCommand;
         }
 
         public static DocumentImportResult Validate(List<RowInfo<Misc.Shipment>> rows)
@@ -170,7 +170,7 @@ namespace Headstart.API.Commands
 
             superShipment.Shipment.BuyerID = buyerID;
 
-            HSShipment ocShipment = await _oc.Shipments.CreateAsync<HSShipment>(superShipment.Shipment, accessToken: decodedToken.AccessToken);
+            HSShipment ocShipment = await oc.Shipments.CreateAsync<HSShipment>(superShipment.Shipment, accessToken: decodedToken.AccessToken);
 
             // platform issue. Cant save new xp values onto shipment line item. Update order line item to have this value.
             var shipmentItemsWithComment = superShipment.ShipmentItems.Where(s => s.xp?.Comment != null);
@@ -179,7 +179,7 @@ namespace Headstart.API.Commands
                 dynamic comments = new ExpandoObject();
                 var commentsByShipment = comments as IDictionary<string, object>;
                 commentsByShipment[ocShipment.ID] = shipmentItem.xp?.Comment;
-                return _oc.LineItems.PatchAsync(
+                return oc.LineItems.PatchAsync(
                     OrderDirection.Incoming,
                     buyerOrderID,
                     shipmentItem.LineItemID,
@@ -196,8 +196,8 @@ namespace Headstart.API.Commands
                 superShipment.ShipmentItems,
                 100,
                 5,
-                (shipmentItem) => _oc.Shipments.SaveItemAsync(ocShipment.ID, shipmentItem, accessToken: decodedToken.AccessToken));
-            HSShipment ocShipmentWithDateShipped = await _oc.Shipments.PatchAsync<HSShipment>(ocShipment.ID, new PartialShipment() { DateShipped = dateShipped }, accessToken: decodedToken.AccessToken);
+                (shipmentItem) => oc.Shipments.SaveItemAsync(ocShipment.ID, shipmentItem, accessToken: decodedToken.AccessToken));
+            HSShipment ocShipmentWithDateShipped = await oc.Shipments.PatchAsync<HSShipment>(ocShipment.ID, new PartialShipment() { DateShipped = dateShipped }, accessToken: decodedToken.AccessToken);
             return new SuperHSShipment()
             {
                 Shipment = ocShipmentWithDateShipped,
@@ -259,7 +259,7 @@ namespace Headstart.API.Commands
                 Status = LineItemStatus.Complete,
                 SuperShipment = superShipment,
             };
-            await _lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(IsSupplierUser(decodedToken) ? OrderDirection.Outgoing : direction, supplierOrderID, lineItemStatusChange);
+            await lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(IsSupplierUser(decodedToken) ? OrderDirection.Outgoing : direction, supplierOrderID, lineItemStatusChange);
         }
 
         private bool IsSupplierUser(DecodedToken decodedToken)
@@ -271,7 +271,7 @@ namespace Headstart.API.Commands
         {
             string buyerID = string.Empty;
             string buyerOrderID = supplierOrderID.Split("-").First();
-            Order relatedBuyerOrder = await _oc.Orders.GetAsync(OrderDirection.Incoming, buyerOrderID);
+            Order relatedBuyerOrder = await oc.Orders.GetAsync(OrderDirection.Incoming, buyerOrderID);
             if (!string.IsNullOrEmpty(relatedBuyerOrder.FromCompanyID))
             {
                 buyerID = relatedBuyerOrder.FromCompanyID;
@@ -350,7 +350,7 @@ namespace Headstart.API.Commands
         {
             var partialOrder = new PartialOrder { xp = new { ShippingStatus = shippingStatus, SubmittedOrderStatus = orderStatus } };
 
-            await _oc.Orders.PatchAsync(OrderDirection.Outgoing, ocOrder.ID, partialOrder);
+            await oc.Orders.PatchAsync(OrderDirection.Outgoing, ocOrder.ID, partialOrder);
         }
 
         private bool ValidateLineItemCounts(ListPage<LineItem> lineItemList)
@@ -413,7 +413,7 @@ namespace Headstart.API.Commands
                 Status = LineItemStatus.Complete,
             };
 
-            await _lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Outgoing, supplierOrderID, lineItemStatusChange, null);
+            await lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Outgoing, supplierOrderID, lineItemStatusChange, null);
         }
 
         private async Task<bool> ProcessShipment(Misc.Shipment shipment, BatchProcessResult result, DecodedToken decodedToken)
@@ -451,7 +451,7 @@ namespace Headstart.API.Commands
 
                 if (newShipment != null)
                 {
-                    Shipment processedShipment = await _oc.Shipments.PatchAsync(newShipment.ID, newShipment, decodedToken?.AccessToken);
+                    Shipment processedShipment = await oc.Shipments.PatchAsync(newShipment.ID, newShipment, decodedToken?.AccessToken);
 
                     // Before updating shipment item, must post the shipment line item comment to the order line item due to OC bug.
                     await PatchPartialLineItemComment(shipment, newShipment.ID);
@@ -459,11 +459,11 @@ namespace Headstart.API.Commands
                     await PatchLineItemStatus(shipment.OrderID, newShipmentItem, decodedToken);
 
                     // POST a shipment item, passing it a Shipment ID parameter, and a request body of Order ID, Line Item ID, and Quantity Shipped
-                    await _oc.Shipments.SaveItemAsync(newShipment.ID, newShipmentItem, accessToken: decodedToken?.AccessToken);
+                    await oc.Shipments.SaveItemAsync(newShipment.ID, newShipmentItem, accessToken: decodedToken?.AccessToken);
 
                     // Re-patch the shipment adding the date shipped now due to oc bug
                     var repatchedShipment = PatchShipment(ocShipment, shipment);
-                    await _oc.Shipments.PatchAsync(newShipment.ID, repatchedShipment);
+                    await oc.Shipments.PatchAsync(newShipment.ID, repatchedShipment);
 
                     result.SuccessfulList.Add(processedShipment);
                 }
@@ -474,7 +474,7 @@ namespace Headstart.API.Commands
                     await PatchPartialLineItemComment(shipment, newShipment.ID);
 
                     // Create new lineItem
-                    await _oc.Shipments.SaveItemAsync(shipment.ShipmentID, newShipmentItem);
+                    await oc.Shipments.SaveItemAsync(shipment.ShipmentID, newShipmentItem);
                 }
 
                 return true;
@@ -519,7 +519,7 @@ namespace Headstart.API.Commands
 
             try
             {
-                return await _oc.LineItems.GetAsync(OrderDirection.Outgoing, shipment.OrderID, shipment.LineItemID);
+                return await oc.LineItems.GetAsync(OrderDirection.Outgoing, shipment.OrderID, shipment.LineItemID);
             }
             catch (Exception ex)
             {
@@ -536,7 +536,7 @@ namespace Headstart.API.Commands
 
             try
             {
-                return await _oc.Orders.GetAsync(OrderDirection.Outgoing, shipment.OrderID);
+                return await oc.Orders.GetAsync(OrderDirection.Outgoing, shipment.OrderID);
             }
             catch (Exception ex)
             {
@@ -565,7 +565,7 @@ namespace Headstart.API.Commands
                 },
             };
 
-            return await _oc.LineItems.PatchAsync(OrderDirection.Outgoing, shipment.OrderID, shipment.LineItemID, partialLineItem);
+            return await oc.LineItems.PatchAsync(OrderDirection.Outgoing, shipment.OrderID, shipment.LineItemID, partialLineItem);
         }
 
         private async Task<Shipment> GetShipmentByTrackingNumber(Misc.Shipment shipment, string accessToken)
@@ -573,9 +573,9 @@ namespace Headstart.API.Commands
             Shipment shipmentResponse = null;
 
             // if dictionary already contains shipment, return that shipment
-            if (shipment != null && _shipmentByTrackingNumber.ContainsKey(shipment.TrackingNumber))
+            if (shipment != null && shipmentByTrackingNumber.ContainsKey(shipment.TrackingNumber))
             {
-                return _shipmentByTrackingNumber[shipment.TrackingNumber];
+                return shipmentByTrackingNumber[shipment.TrackingNumber];
             }
 
             if (shipment?.ShipmentID != null)
@@ -583,7 +583,7 @@ namespace Headstart.API.Commands
                 // get shipment if shipmentId is provided
                 try
                 {
-                    shipmentResponse = await _oc.Shipments.GetAsync(shipment.ShipmentID, accessToken);
+                    shipmentResponse = await oc.Shipments.GetAsync(shipment.ShipmentID, accessToken);
                 }
                 catch (Exception ex)
                 {
@@ -593,7 +593,7 @@ namespace Headstart.API.Commands
                 if (shipmentResponse != null)
                 {
                     // add shipment to dictionary if it's found
-                    _shipmentByTrackingNumber.Add(shipmentResponse.TrackingNumber, shipmentResponse);
+                    shipmentByTrackingNumber.Add(shipmentResponse.TrackingNumber, shipmentResponse);
                 }
             }
             else if (shipment?.ShipmentID == null)
@@ -601,10 +601,10 @@ namespace Headstart.API.Commands
                 PartialShipment newShipment = PatchShipment(null, shipment);
 
                 // Create shipment for tracking number provided if shipmentId wasn't included
-                shipmentResponse = await _oc.Shipments.CreateAsync(newShipment, accessToken);
+                shipmentResponse = await oc.Shipments.CreateAsync(newShipment, accessToken);
                 if (shipmentResponse != null)
                 {
-                    _shipmentByTrackingNumber.Add(shipmentResponse.TrackingNumber, shipmentResponse);
+                    shipmentByTrackingNumber.Add(shipmentResponse.TrackingNumber, shipmentResponse);
                 }
             }
 

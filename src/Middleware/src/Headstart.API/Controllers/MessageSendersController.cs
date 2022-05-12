@@ -23,56 +23,56 @@ namespace Headstart.Common.Controllers
     [Route("messagesenders")]
     public class MessageSendersController
     {
-        private readonly ISendgridService _sendgridService;
-        private readonly IOrderCommand _orderCommand;
+        private readonly ISendgridService sendgridService;
+        private readonly IOrderCommand orderCommand;
 
         public MessageSendersController(ISendgridService sendgridService, IOrderCommand orderCommand)
         {
-            _sendgridService = sendgridService;
-            _orderCommand = orderCommand;
+            this.sendgridService = sendgridService;
+            this.orderCommand = orderCommand;
         }
 
         [HttpPost, Route("newuserinvitation")]
         [OrderCloudWebhookAuth]
         public async void HandleNewUser([FromBody] MessageNotification<PasswordResetEventBody> payload)
         {
-            await _sendgridService.SendNewUserEmail(payload);
+            await sendgridService.SendNewUserEmail(payload);
         }
 
         [HttpPost, Route("forgottenpassword")]
         [OrderCloudWebhookAuth]
         public async void HandlePasswordReset([FromBody] MessageNotification<PasswordResetEventBody> payload)
         {
-            await _sendgridService.SendPasswordResetEmail(payload);
+            await sendgridService.SendPasswordResetEmail(payload);
         }
 
         [HttpPost, Route("ordersubmittedforapproval")]
         [OrderCloudWebhookAuth]
         public async void HandleOrderSubmittedForApproval([FromBody] MessageNotification<OrderSubmitEventBody> payload)
         {
-            await _sendgridService.SendOrderSubmittedForApprovalEmail(payload);
+            await sendgridService.SendOrderSubmittedForApprovalEmail(payload);
         }
 
         [HttpPost, Route("ordersubmittedforyourapproval")]
         [OrderCloudWebhookAuth]
         public async void HandleOrderRequiresApproval([FromBody] MessageNotification<OrderSubmitEventBody> payload)
         {
-            await _orderCommand.PatchOrderRequiresApprovalStatus(payload.EventBody.Order.ID);
-            await _sendgridService.SendOrderRequiresApprovalEmail(payload);
+            await orderCommand.PatchOrderRequiresApprovalStatus(payload.EventBody.Order.ID);
+            await sendgridService.SendOrderRequiresApprovalEmail(payload);
         }
 
         [HttpPost, Route("OrderApproved")]
         [OrderCloudWebhookAuth]
         public async void HandleOrderApproved([FromBody] MessageNotification<OrderSubmitEventBody> payload)
         {
-            await _sendgridService.SendOrderApprovedEmail(payload);
+            await sendgridService.SendOrderApprovedEmail(payload);
         }
 
         [HttpPost, Route("orderdeclined")]
         [OrderCloudWebhookAuth]
         public async void HandleOrderDeclined([FromBody] MessageNotification<OrderSubmitEventBody> payload)
         {
-            await _sendgridService.SendOrderDeclinedEmail(payload);
+            await sendgridService.SendOrderDeclinedEmail(payload);
         }
     }
 }

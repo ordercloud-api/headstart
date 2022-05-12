@@ -25,42 +25,42 @@ namespace Headstart.API.Commands
 
     public class HSSupplierCommand : IHSSupplierCommand
     {
-        private readonly IOrderCloudClient _oc;
-        private readonly ISupplierSyncCommand _supplierSync;
-        private readonly AppSettings _settings;
-        private readonly ISupplierApiClientHelper _apiClientHelper;
+        private readonly IOrderCloudClient oc;
+        private readonly ISupplierSyncCommand supplierSync;
+        private readonly AppSettings settings;
+        private readonly ISupplierApiClientHelper apiClientHelper;
 
         public HSSupplierCommand(AppSettings settings, IOrderCloudClient oc, ISupplierApiClientHelper apiClientHelper, ISupplierSyncCommand supplierSync)
         {
-            _settings = settings;
-            _oc = oc;
-            _apiClientHelper = apiClientHelper;
-            _supplierSync = supplierSync;
+            this.settings = settings;
+            this.oc = oc;
+            this.apiClientHelper = apiClientHelper;
+            this.supplierSync = supplierSync;
         }
 
         public async Task<HSSupplier> GetMySupplier(string supplierID, DecodedToken decodedToken)
         {
-            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            var me = await oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
             Require.That(
                 supplierID == me.Supplier.ID,
                 new ErrorCode("Unauthorized", $"You are only authorized to view {me.Supplier.ID}.", HttpStatusCode.Unauthorized));
-            return await _oc.Suppliers.GetAsync<HSSupplier>(supplierID);
+            return await oc.Suppliers.GetAsync<HSSupplier>(supplierID);
         }
 
         public async Task<HSSupplier> UpdateSupplier(string supplierID, PartialSupplier supplier, DecodedToken decodedToken)
         {
-            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            var me = await oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
             Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierID == me.Supplier.ID, new ErrorCode("Unauthorized", $"You are not authorized to update supplier {supplierID}", HttpStatusCode.Unauthorized));
-            var currentSupplier = await _oc.Suppliers.GetAsync<HSSupplier>(supplierID);
-            var updatedSupplier = await _oc.Suppliers.PatchAsync<HSSupplier>(supplierID, supplier);
+            var currentSupplier = await oc.Suppliers.GetAsync<HSSupplier>(supplierID);
+            var updatedSupplier = await oc.Suppliers.PatchAsync<HSSupplier>(supplierID, supplier);
 
             // Update supplier products only on a name change
             if (currentSupplier.Name != supplier.Name || currentSupplier.xp.Currency.ToString() != supplier.xp.Currency.Value)
             {
-                var productsToUpdate = await _oc.Products.ListAllAsync<HSProduct>(
+                var productsToUpdate = await oc.Products.ListAllAsync<HSProduct>(
                 supplierID: supplierID,
                 accessToken: decodedToken.AccessToken);
-                ApiClient supplierClient = await _apiClientHelper.GetSupplierApiClient(supplierID, decodedToken.AccessToken);
+                ApiClient supplierClient = await apiClientHelper.GetSupplierApiClient(supplierID, decodedToken.AccessToken);
                 if (supplierClient == null)
                 {
                     throw new Exception($"Default supplier client not found. SupplierID: {supplierID}");
@@ -100,14 +100,14 @@ namespace Headstart.API.Commands
 
             // Create Supplier
             supplier.ID = "{supplierIncrementor}";
-            var ocSupplier = await _oc.Suppliers.CreateAsync(supplier, token);
+            var ocSupplier = await oc.Suppliers.CreateAsync(supplier, token);
             supplier.ID = ocSupplier.ID;
             var ocSupplierID = ocSupplier.ID;
 
             // This supplier user is created so that we can define an api client with it as the default context user
             // this allows us to perform elevated supplier actions on behalf of that supplier company
             // It is not an actual user that will login so there is no password or valid email
-            var supplierUser = await _oc.SupplierUsers.CreateAsync(
+            var supplierUser = await oc.SupplierUsers.CreateAsync(
                 ocSupplierID,
                 new User()
                 {
@@ -122,13 +122,13 @@ namespace Headstart.API.Commands
             await CreateUserTypeUserGroupsAndSecurityProfileAssignments(supplierUser, token, ocSupplierID);
 
             // Create API Client for new supplier
-            var apiClient = await _oc.ApiClients.CreateAsync(
+            var apiClient = await oc.ApiClients.CreateAsync(
                 new ApiClient()
                 {
                     AppName = $"Integration Client {ocSupplier.Name}",
                     Active = true,
                     DefaultContextUserName = supplierUser.Username,
-                    ClientSecret = _settings.OrderCloudSettings.MiddlewareClientSecret,
+                    ClientSecret = settings.OrderCloudSettings.MiddlewareClientSecret,
                     AccessTokenDuration = 600,
                     RefreshTokenDuration = 43200,
                     AllowAnyBuyer = false,
@@ -140,7 +140,7 @@ namespace Headstart.API.Commands
 
             // not adding api client ID on supplier Create because that approach would require creating the API client first
             // but creating supplier first is preferable in case there are error in the request
-            ocSupplier = await _oc.Suppliers.PatchAsync(
+            ocSupplier = await oc.Suppliers.PatchAsync(
                 ocSupplier.ID,
                 new PartialSupplier()
                 {
@@ -152,7 +152,7 @@ namespace Headstart.API.Commands
                 token);
 
             // Assign Supplier API Client to new supplier
-            await _oc.ApiClients.SaveAssignmentAsync(
+            await oc.ApiClients.SaveAssignmentAsync(
                 new ApiClientAssignment()
                 {
                     ApiClientID = apiClient.ID,
@@ -161,7 +161,7 @@ namespace Headstart.API.Commands
                 token);
 
             // assign to message sender
-            await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
+            await oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
             {
                 MessageSenderID = "SupplierEmails",
                 SupplierID = ocSupplierID,
@@ -172,7 +172,7 @@ namespace Headstart.API.Commands
         public async Task CreateUserTypeUserGroupsAndSecurityProfileAssignments(User user, string token, string supplierID)
         {
             // Assign supplier to HSMeAdmin security profile
-            await _oc.SecurityProfiles.SaveAssignmentAsync(
+            await oc.SecurityProfiles.SaveAssignmentAsync(
                 new SecurityProfileAssignment()
                 {
                     SupplierID = supplierID,
@@ -184,7 +184,7 @@ namespace Headstart.API.Commands
             {
                 var userGroupID = $"{supplierID}{userType.UserGroupIDSuffix}";
 
-                await _oc.SupplierUserGroups.CreateAsync(
+                await oc.SupplierUserGroups.CreateAsync(
                     supplierID,
                     new UserGroup()
                     {
@@ -197,7 +197,7 @@ namespace Headstart.API.Commands
                     },
                     token);
 
-                await _oc.SupplierUserGroups.SaveUserAssignmentAsync(
+                await oc.SupplierUserGroups.SaveUserAssignmentAsync(
                     supplierID,
                     new UserGroupAssignment()
                     {
@@ -208,7 +208,7 @@ namespace Headstart.API.Commands
 
                 foreach (var customRole in userType.CustomRoles)
                 {
-                    await _oc.SecurityProfiles.SaveAssignmentAsync(
+                    await oc.SecurityProfiles.SaveAssignmentAsync(
                         new SecurityProfileAssignment()
                         {
                             SupplierID = supplierID,
@@ -222,7 +222,7 @@ namespace Headstart.API.Commands
 
         public async Task<HSSupplierOrderData> GetSupplierOrderData(string supplierOrderID, OrderType orderType, DecodedToken decodedToken)
         {
-            var orderData = await _supplierSync.GetOrderAsync(supplierOrderID, orderType, decodedToken);
+            var orderData = await supplierSync.GetOrderAsync(supplierOrderID, orderType, decodedToken);
             return (HSSupplierOrderData)orderData.ToObject(typeof(HSSupplierOrderData));
         }
     }

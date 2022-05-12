@@ -22,11 +22,11 @@ namespace Headstart.Common.Services
     /// </summary>
     public class DiscountDistributionService : IDiscountDistributionService
     {
-        private readonly IOrderCloudClient _oc;
+        private readonly IOrderCloudClient oc;
 
         public DiscountDistributionService(IOrderCloudClient oc)
         {
-            _oc = oc;
+            this.oc = oc;
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace Headstart.Common.Services
             await Throttler.RunAsync(order.LineItems, 100, 8, async li =>
             {
                 var patch = new HSPartialLineItem() { xp = new LineItemXp() { LineTotalWithProportionalDiscounts = li.LineTotal } };
-                await _oc.LineItems.PatchAsync(OrderDirection.All, order.Order.ID, li.ID, patch);
+                await oc.LineItems.PatchAsync(OrderDirection.All, order.Order.ID, li.ID, patch);
             });
         }
 

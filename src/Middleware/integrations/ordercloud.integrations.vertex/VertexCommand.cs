@@ -20,13 +20,13 @@ namespace ordercloud.integrations.vertex
 
     public class VertexCommand : IVertexCommand, ITaxCalculator
     {
-        private readonly VertexClient _client;
-        private readonly VertexConfig _config;
+        private readonly VertexClient client;
+        private readonly VertexConfig config;
 
         public VertexCommand(VertexConfig config)
         {
-            _config = config;
-            _client = new VertexClient(config);
+            this.config = config;
+            client = new VertexClient(config);
         }
 
         /// <summary>
@@ -43,8 +43,8 @@ namespace ordercloud.integrations.vertex
 
         private async Task<OrderTaxCalculation> CalculateTaxAsync(OrderWorksheet orderWorksheet, List<OrderPromotion> promotions, VertexSaleMessageType type)
         {
-            var request = orderWorksheet.ToVertexCalculateTaxRequest(promotions, _config.CompanyName, type);
-            var response = await _client.CalculateTax(request);
+            var request = orderWorksheet.ToVertexCalculateTaxRequest(promotions, config.CompanyName, type);
+            var response = await client.CalculateTax(request);
             var orderTaxCalculation = response.ToOrderTaxCalculation();
             return orderTaxCalculation;
         }

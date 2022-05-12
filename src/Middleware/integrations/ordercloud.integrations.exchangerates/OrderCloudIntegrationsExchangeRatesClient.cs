@@ -14,11 +14,11 @@ namespace ordercloud.integrations.exchangerates
 
     public class OrderCloudIntegrationsExchangeRatesClient : IOrderCloudIntegrationsExchangeRatesClient
     {
-        private readonly IFlurlClient _flurl;
+        private readonly IFlurlClient flurl;
 
         public OrderCloudIntegrationsExchangeRatesClient(IFlurlClientFactory flurlFactory)
         {
-            _flurl = flurlFactory.Get($"https://api.exchangeratesapi.io/");
+            flurl = flurlFactory.Get($"https://api.exchangeratesapi.io/");
         }
 
         public async Task<ExchangeRatesBase> Get(CurrencySymbol symbol)
@@ -30,7 +30,7 @@ namespace ordercloud.integrations.exchangerates
 
         private IFlurlRequest Request(string resource)
         {
-            return _flurl.Request(resource);
+            return flurl.Request(resource);
         }
     }
 }

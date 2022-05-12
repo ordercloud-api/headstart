@@ -29,15 +29,15 @@ namespace ordercloud.integrations.exchangerates
 
     public class ExchangeRatesCommand : IExchangeRatesCommand
     {
-        private readonly IOrderCloudIntegrationsExchangeRatesClient _client;
-        private readonly IOrderCloudIntegrationsBlobService _blob;
-        private readonly ISimpleCache _cache;
+        private readonly IOrderCloudIntegrationsExchangeRatesClient client;
+        private readonly IOrderCloudIntegrationsBlobService blob;
+        private readonly ISimpleCache cache;
 
         public ExchangeRatesCommand(IOrderCloudIntegrationsBlobService blob, IFlurlClientFactory flurlFactory, ISimpleCache cache)
         {
-            _client = new OrderCloudIntegrationsExchangeRatesClient(flurlFactory);
-            _blob = blob;
-            _cache = cache;
+            client = new OrderCloudIntegrationsExchangeRatesClient(flurlFactory);
+            this.blob = blob;
+            this.cache = cache;
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace ordercloud.integrations.exchangerates
         /// <returns>The available exchange rates.</returns>
         public async Task<OrderCloudIntegrationsExchangeRate> Get(CurrencySymbol symbol)
         {
-            var rates = await _client.Get(symbol);
+            var rates = await client.Get(symbol);
             return new OrderCloudIntegrationsExchangeRate()
             {
                 BaseSymbol = symbol,
@@ -129,7 +129,7 @@ namespace ordercloud.integrations.exchangerates
             await Throttler.RunAsync(list.Items, 100, 10, async rate =>
             {
                 var rates = await Get(rate.Currency);
-                await _blob.Save($"{rate.Currency}.json", JsonConvert.SerializeObject(rates));
+                await blob.Save($"{rate.Currency}.json", JsonConvert.SerializeObject(rates));
             });
         }
 
@@ -171,9 +171,9 @@ namespace ordercloud.integrations.exchangerates
 
         private async Task<ListPage<OrderCloudIntegrationsConversionRate>> GetCachedRates(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencySymbol currency)
         {
-            var rates = await _cache.GetOrAddAsync($"exchangerates_{currency}", TimeSpan.FromHours(1), () =>
+            var rates = await cache.GetOrAddAsync($"exchangerates_{currency}", TimeSpan.FromHours(1), () =>
             {
-                return _blob.Get<OrderCloudIntegrationsExchangeRate>($"{currency}.json");
+                return blob.Get<OrderCloudIntegrationsExchangeRate>($"{currency}.json");
             });
             return Filter(rateArgs, rates);
         }

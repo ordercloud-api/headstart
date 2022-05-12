@@ -27,7 +27,7 @@ namespace ordercloud.integrations.taxjar
 
     public class TaxJarCommand : ITaxJarCommand, ITaxCalculator, ITaxCodesProvider
     {
-        private readonly TaxjarApi _client;
+        private readonly TaxjarApi client;
 
         public TaxJarCommand(TaxJarConfig config)
         {
@@ -37,7 +37,7 @@ namespace ordercloud.integrations.taxjar
             }
 
             var apiUrl = config.Environment == TaxJarEnvironment.Production ? TaxjarConstants.DefaultApiUrl : TaxjarConstants.SandboxApiUrl;
-            _client = new TaxjarApi(config.ApiKey, new { apiUrl });
+            client = new TaxjarApi(config.ApiKey, new { apiUrl });
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace ordercloud.integrations.taxjar
                 response.request.SalesTax = response.response.TaxableAmount;
             }
 
-            await Throttler.RunAsync(orders, 100, 8, async order => await MakeRequest(() => _client.CreateOrderAsync(order)));
+            await Throttler.RunAsync(orders, 100, 8, async order => await MakeRequest(() => client.CreateOrderAsync(order)));
 
             var orderTaxCalculation = orders.ToOrderTaxCalculation();
             return orderTaxCalculation;
@@ -70,7 +70,7 @@ namespace ordercloud.integrations.taxjar
 
         public async Task<TaxCategorizationResponse> ListTaxCodesAsync(string searchTerm)
         {
-            var categories = await MakeRequest(() => _client.CategoriesAsync());
+            var categories = await MakeRequest(() => client.CategoriesAsync());
             var taxCategorizations = categories.ToTaxCategorization(searchTerm);
             return taxCategorizations;
         }
@@ -80,7 +80,7 @@ namespace ordercloud.integrations.taxjar
             var orders = orderWorksheet.ToTaxJarOrders();
             var responses = await Throttler.RunAsync(orders, 100, 8, async order =>
             {
-                var tax = await MakeRequest(() => _client.TaxForOrderAsync(order));
+                var tax = await MakeRequest(() => client.TaxForOrderAsync(order));
                 return (order, tax);
             });
             return responses;

@@ -53,7 +53,7 @@ namespace ordercloud.integrations.cardconnect
 
     public class OrderCloudIntegrationsCardConnectService : IOrderCloudIntegrationsCardConnectService
     {
-        private readonly IFlurlClient _flurl;
+        private readonly IFlurlClient flurl;
         private bool noAccountCredentials;
         private AppEnvironment appEnvironment;
 
@@ -64,7 +64,7 @@ namespace ordercloud.integrations.cardconnect
             // if no credentials are provided in Test and UAT, responses will be mocked.
             noAccountCredentials = string.IsNullOrEmpty(config?.Authorization) && string.IsNullOrEmpty(config?.AuthorizationCad);
             appEnvironment = (AppEnvironment)Enum.Parse(typeof(AppEnvironment), environment);
-            _flurl = flurlFactory.Get($"https://{Config?.Site}.{Config?.BaseUrl}/");
+            flurl = flurlFactory.Get($"https://{Config?.Site}.{Config?.BaseUrl}/");
         }
 
         public OrderCloudIntegrationsCardConnectConfig Config { get; }
@@ -188,7 +188,7 @@ namespace ordercloud.integrations.cardconnect
 
         private IFlurlRequest Request(string resource, string currency)
         {
-            return _flurl.Request($"{resource}").WithHeader("Authorization", $"Basic {((currency == "USD") ? Config.Authorization : Config.AuthorizationCad)}");
+            return flurl.Request($"{resource}").WithHeader("Authorization", $"Basic {((currency == "USD") ? Config.Authorization : Config.AuthorizationCad)}");
         }
 
         private CardConnectInquireResponse ExtractResponse(string body, string retref)

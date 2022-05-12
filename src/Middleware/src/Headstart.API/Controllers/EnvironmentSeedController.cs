@@ -8,15 +8,15 @@ namespace Headstart.Common.Controllers
 {
     public class EnvironmentSeedController : CatalystController
     {
-        private readonly IEnvironmentSeedCommand _command;
-        private readonly AppSettings _settings;
+        private readonly IEnvironmentSeedCommand command;
+        private readonly AppSettings settings;
 
         public EnvironmentSeedController(
             IEnvironmentSeedCommand command,
             AppSettings settings)
         {
-            _command = command;
-            _settings = settings;
+            this.command = command;
+            this.settings = settings;
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, Route("seed")]
         public async Task<EnvironmentSeedResponse> Seed([FromBody] EnvironmentSeed seed)
         {
-            return await _command.Seed(seed);
+            return await command.Seed(seed);
         }
 
         /// <summary>
@@ -39,20 +39,20 @@ namespace Headstart.Common.Controllers
         [HttpPut, Route("updatetranslations")]
         public async Task UpdateTranslations()
         {
-            await _command.UpdateTranslations(
-                _settings.StorageAccountSettings.ConnectionString,
-                _settings.StorageAccountSettings.BlobContainerNameTranslations);
+            await command.UpdateTranslations(
+                settings.StorageAccountSettings.ConnectionString,
+                settings.StorageAccountSettings.BlobContainerNameTranslations);
         }
 
         [HttpPost, Route("post-staging-restore"), OrderCloudWebhookAuth]
         public async Task PostStagingRestore()
         {
-            if (_settings.EnvironmentSettings.Environment == AppEnvironment.Production)
+            if (settings.EnvironmentSettings.Environment == AppEnvironment.Production)
             {
                 return;
             }
 
-            await _command.PostStagingRestore();
+            await command.PostStagingRestore();
         }
     }
 }

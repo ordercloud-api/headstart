@@ -26,27 +26,27 @@ namespace Headstart.Common.Queries
 
     public class ReportTemplateQuery : IReportTemplateQuery<ReportTemplate>
     {
-        private readonly ICosmosStore<ReportTemplate> _store;
-        private readonly IOrderCloudClient _oc;
+        private readonly ICosmosStore<ReportTemplate> store;
+        private readonly IOrderCloudClient oc;
 
         public ReportTemplateQuery(ICosmosStore<ReportTemplate> store, IOrderCloudClient oc)
         {
-            _store = store;
-            _oc = oc;
+            this.store = store;
+            this.oc = oc;
         }
 
         public async Task<List<ReportTemplate>> List(ReportTypeEnum reportType, DecodedToken decodedToken)
         {
-            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            var me = await oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
             var feedOptions = new FeedOptions() { PartitionKey = new PartitionKey($"{me?.Seller?.ID}") };
             var templates = new List<ReportTemplate>();
             if (decodedToken.CommerceRole == CommerceRole.Seller)
             {
-                templates = await _store.Query(feedOptions).Where(x => x.ReportType == reportType).ToListAsync();
+                templates = await store.Query(feedOptions).Where(x => x.ReportType == reportType).ToListAsync();
             }
             else if (decodedToken.CommerceRole == CommerceRole.Supplier)
             {
-                templates = await _store.Query(feedOptions).Where(x => x.ReportType == reportType && x.AvailableToSuppliers == true).ToListAsync();
+                templates = await store.Query(feedOptions).Where(x => x.ReportType == reportType && x.AvailableToSuppliers == true).ToListAsync();
             }
 
             return templates;
@@ -54,29 +54,29 @@ namespace Headstart.Common.Queries
 
         public async Task<ReportTemplate> Post(ReportTemplate reportTemplate, DecodedToken decodedToken)
         {
-            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            var me = await oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
             var template = reportTemplate;
             template.SellerID = me?.Seller?.ID;
-            var newTemplate = await _store.AddAsync(template);
+            var newTemplate = await store.AddAsync(template);
             return newTemplate;
         }
 
         public async Task<ReportTemplate> Put(string id, ReportTemplate reportTemplate, DecodedToken decodedToken)
         {
-            var templateToPut = await _store.Query().FirstOrDefaultAsync(template => template.TemplateID == id);
+            var templateToPut = await store.Query().FirstOrDefaultAsync(template => template.TemplateID == id);
             reportTemplate.id = templateToPut.id;
-            var updatedTemplate = await _store.UpdateAsync(reportTemplate);
+            var updatedTemplate = await store.UpdateAsync(reportTemplate);
             return updatedTemplate;
         }
 
         public async Task Delete(string id)
         {
-            await _store.RemoveAsync(template => template.TemplateID == id);
+            await store.RemoveAsync(template => template.TemplateID == id);
         }
 
         public async Task<ReportTemplate> Get(string id, DecodedToken decodedToken)
         {
-            var template = await _store.Query().FirstOrDefaultAsync(template => template.TemplateID == id);
+            var template = await store.Query().FirstOrDefaultAsync(template => template.TemplateID == id);
             return template;
         }
     }

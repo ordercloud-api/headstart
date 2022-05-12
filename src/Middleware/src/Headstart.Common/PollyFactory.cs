@@ -12,16 +12,16 @@ namespace Headstart.Common
     // https://stackoverflow.com/a/52284010/6147893
     public class PollyFactory : DefaultHttpClientFactory
     {
-        private readonly IAsyncPolicy<HttpResponseMessage> _policy;
+        private readonly IAsyncPolicy<HttpResponseMessage> policy;
 
         public PollyFactory(IAsyncPolicy<HttpResponseMessage> policy)
         {
-            _policy = policy;
+            this.policy = policy;
         }
 
         public override HttpMessageHandler CreateMessageHandler()
         {
-            return new PollyHandler(_policy)
+            return new PollyHandler(policy)
             {
                 InnerHandler = base.CreateMessageHandler(),
             };
@@ -30,16 +30,16 @@ namespace Headstart.Common
 
     public class PollyHandler : DelegatingHandler
     {
-        private readonly IAsyncPolicy<HttpResponseMessage> _policy;
+        private readonly IAsyncPolicy<HttpResponseMessage> policy;
 
         public PollyHandler(IAsyncPolicy<HttpResponseMessage> policy)
         {
-            _policy = policy;
+            this.policy = policy;
         }
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            return _policy.ExecuteAsync(ct => base.SendAsync(request, ct), cancellationToken);
+            return policy.ExecuteAsync(ct => base.SendAsync(request, ct), cancellationToken);
         }
     }
 }

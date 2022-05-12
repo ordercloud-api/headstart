@@ -9,13 +9,13 @@ namespace Headstart.Common.Controllers
 {
     public class CheckoutIntegrationController : CatalystController
     {
-        private readonly ICheckoutIntegrationCommand _checkoutIntegrationCommand;
-        private readonly IPostSubmitCommand _postSubmitCommand;
+        private readonly ICheckoutIntegrationCommand checkoutIntegrationCommand;
+        private readonly IPostSubmitCommand postSubmitCommand;
 
         public CheckoutIntegrationController(ICheckoutIntegrationCommand checkoutIntegrationCommand, IPostSubmitCommand postSubmitCommand)
         {
-            _checkoutIntegrationCommand = checkoutIntegrationCommand;
-            _postSubmitCommand = postSubmitCommand;
+            this.checkoutIntegrationCommand = checkoutIntegrationCommand;
+            this.postSubmitCommand = postSubmitCommand;
         }
 
         [Route("shippingrates")]
@@ -23,7 +23,7 @@ namespace Headstart.Common.Controllers
         [OrderCloudWebhookAuth]
         public async Task<ShipEstimateResponse> GetShippingRates([FromBody] HSOrderCalculatePayload orderCalculatePayload)
         {
-            return await _checkoutIntegrationCommand.GetRatesAsync(orderCalculatePayload);
+            return await checkoutIntegrationCommand.GetRatesAsync(orderCalculatePayload);
         }
 
         [Route("ordercalculate")]
@@ -31,7 +31,7 @@ namespace Headstart.Common.Controllers
         [OrderCloudWebhookAuth]
         public async Task<OrderCalculateResponse> CalculateOrder([FromBody] HSOrderCalculatePayload orderCalculatePayload)
         {
-            var orderCalculationResponse = await _checkoutIntegrationCommand.CalculateOrder(orderCalculatePayload);
+            var orderCalculationResponse = await checkoutIntegrationCommand.CalculateOrder(orderCalculatePayload);
             return orderCalculationResponse;
         }
 
@@ -39,7 +39,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, OrderCloudUserAuth(ApiRole.IntegrationEventAdmin)]
         public async Task<OrderCalculateResponse> CalculateOrder(string orderID)
         {
-            var orderCalculationResponse = await _checkoutIntegrationCommand.CalculateOrder(orderID, UserContext);
+            var orderCalculationResponse = await checkoutIntegrationCommand.CalculateOrder(orderID, UserContext);
             return orderCalculationResponse;
         }
 
@@ -47,7 +47,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, Route("ordersubmit")]
         public async Task<OrderSubmitResponse> HandleOrderSubmit([FromBody] HSOrderCalculatePayload payload)
         {
-            var response = await _postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
+            var response = await postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
             return response;
         }
 
@@ -55,7 +55,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, Route("ordersubmitforapproval")]
         public async Task<OrderSubmitResponse> HandleOrderSubmitForApproval([FromBody] HSOrderCalculatePayload payload)
         {
-            var response = await _postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
+            var response = await postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
             return response;
         }
 
@@ -63,14 +63,14 @@ namespace Headstart.Common.Controllers
         [HttpPost, Route("orderapproved")]
         public async Task<OrderSubmitResponse> HandleOrderApproved([FromBody] HSOrderCalculatePayload payload)
         {
-            var response = await _postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
+            var response = await postSubmitCommand.HandleBuyerOrderSubmit(payload.OrderWorksheet);
             return response;
         }
 
         [HttpPost, Route("ordersubmit/retry/zoho/{orderID}"), OrderCloudUserAuth(ApiRole.IntegrationEventAdmin)]
         public async Task<OrderSubmitResponse> RetryOrderSubmit(string orderID)
         {
-            var retry = await _postSubmitCommand.HandleZohoRetry(orderID);
+            var retry = await postSubmitCommand.HandleZohoRetry(orderID);
             return retry;
         }
     }

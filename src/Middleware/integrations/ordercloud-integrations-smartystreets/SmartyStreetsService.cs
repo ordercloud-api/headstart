@@ -17,29 +17,29 @@ namespace ordercloud.integrations.smartystreets
 
     public class SmartyStreetsService : ISmartyStreetsService
     {
-        private readonly SmartyStreetsConfig _config;
-        private readonly Client _smartyStreetsClients;
-        private readonly string AutoCompleteBaseUrl = "https://us-autocomplete-pro.api.smartystreets.com";
+        private readonly SmartyStreetsConfig config;
+        private readonly Client smartyStreetsClients;
+        private readonly string autoCompleteBaseUrl = "https://us-autocomplete-pro.api.smartystreets.com";
 
         public SmartyStreetsService(SmartyStreetsConfig config, Client smartyStreetsClients)
         {
-            _config = config;
-            _smartyStreetsClients = smartyStreetsClients;
+            this.config = config;
+            this.smartyStreetsClients = smartyStreetsClients;
         }
 
         public async Task<List<Candidate>> ValidateSingleUSAddress(Lookup lookup)
         {
-            _smartyStreetsClients.Send(lookup);
+            smartyStreetsClients.Send(lookup);
             return await Task.FromResult(lookup.Result);
         }
 
         public async Task<AutoCompleteResponse> USAutoCompletePro(string search)
         {
-            var suggestions = await AutoCompleteBaseUrl
+            var suggestions = await autoCompleteBaseUrl
                 .AppendPathSegment("lookup")
-                .SetQueryParam("key", _config.WebsiteKey)
+                .SetQueryParam("key", config.WebsiteKey)
                 .SetQueryParam("search", search)
-                .WithHeader("Referer", _config.RefererHost)
+                .WithHeader("Referer", config.RefererHost)
                 .GetJsonAsync<AutoCompleteResponse>();
 
             return suggestions;

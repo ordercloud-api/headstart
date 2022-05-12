@@ -16,21 +16,21 @@ namespace Headstart.API.Commands
 
     public class PaymentCommand : IPaymentCommand
     {
-        private readonly IOrderCloudClient _oc;
-        private readonly ICreditCardCommand _ccCommand;
+        private readonly IOrderCloudClient oc;
+        private readonly ICreditCardCommand ccCommand;
 
         public PaymentCommand(
             IOrderCloudClient oc,
             ICreditCardCommand ccCommand)
         {
-            _oc = oc;
-            _ccCommand = ccCommand;
+            this.oc = oc;
+            this.ccCommand = ccCommand;
         }
 
         public async Task<IList<HSPayment>> SavePayments(string orderID, List<HSPayment> requestedPayments, string userToken)
         {
-            var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
-            var existingPayments = (await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID)).Items;
+            var worksheet = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
+            var existingPayments = (await oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID)).Items;
             existingPayments = await DeleteStalePaymentsAsync(requestedPayments, existingPayments, worksheet.Order, userToken);
 
             foreach (var requestedPayment in requestedPayments)
@@ -47,7 +47,7 @@ namespace Headstart.API.Commands
                 }
             }
 
-            return (await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID)).Items;
+            return (await oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID)).Items;
         }
 
         private async Task UpdateCCPaymentAsync(HSPayment requestedPayment, HSPayment existingPayment, HSOrderWorksheet worksheet, string userToken)
@@ -58,7 +58,7 @@ namespace Headstart.API.Commands
                 requestedPayment.Amount = paymentAmount;
                 requestedPayment.Accepted = false;
                 requestedPayment.Type = requestedPayment.Type;
-                await _oc.Payments.CreateAsync<HSPayment>(OrderDirection.Outgoing, worksheet.Order.ID, requestedPayment, userToken); // need user token because admins cant see personal credit cards
+                await oc.Payments.CreateAsync<HSPayment>(OrderDirection.Outgoing, worksheet.Order.ID, requestedPayment, userToken); // need user token because admins cant see personal credit cards
             }
             else if (existingPayment.CreditCardID == requestedPayment.CreditCardID && existingPayment.Amount == paymentAmount)
             {
@@ -67,8 +67,8 @@ namespace Headstart.API.Commands
             }
             else if (existingPayment.CreditCardID == requestedPayment.CreditCardID)
             {
-                await _ccCommand.VoidTransactionAsync(existingPayment, worksheet.Order, userToken);
-                await _oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, worksheet.Order.ID, existingPayment.ID, new PartialPayment
+                await ccCommand.VoidTransactionAsync(existingPayment, worksheet.Order, userToken);
+                await oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, worksheet.Order.ID, existingPayment.ID, new PartialPayment
                 {
                     Accepted = false,
                     Amount = paymentAmount,
@@ -81,7 +81,7 @@ namespace Headstart.API.Commands
                 await DeleteCreditCardPaymentAsync(existingPayment, worksheet.Order, userToken);
                 requestedPayment.Amount = paymentAmount;
                 requestedPayment.Accepted = false;
-                await _oc.Payments.CreateAsync<HSPayment>(OrderDirection.Outgoing, worksheet.Order.ID, requestedPayment, userToken); // need user token because admins cant see personal credit cards
+                await oc.Payments.CreateAsync<HSPayment>(OrderDirection.Outgoing, worksheet.Order.ID, requestedPayment, userToken); // need user token because admins cant see personal credit cards
             }
         }
 
@@ -91,11 +91,11 @@ namespace Headstart.API.Commands
             if (existingPayment == null)
             {
                 requestedPayment.Amount = paymentAmount;
-                await _oc.Payments.CreateAsync<HSPayment>(OrderDirection.Incoming, worksheet.Order.ID, requestedPayment);
+                await oc.Payments.CreateAsync<HSPayment>(OrderDirection.Incoming, worksheet.Order.ID, requestedPayment);
             }
             else
             {
-                await _oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, worksheet.Order.ID, existingPayment.ID, new PartialPayment
+                await oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, worksheet.Order.ID, existingPayment.ID, new PartialPayment
                 {
                     Amount = paymentAmount,
                 });
@@ -104,8 +104,8 @@ namespace Headstart.API.Commands
 
         private async Task DeleteCreditCardPaymentAsync(HSPayment payment, HSOrder order, string userToken)
         {
-            await _ccCommand.VoidTransactionAsync(payment, order, userToken);
-            await _oc.Payments.DeleteAsync(OrderDirection.Incoming, order.ID, payment.ID);
+            await ccCommand.VoidTransactionAsync(payment, order, userToken);
+            await oc.Payments.DeleteAsync(OrderDirection.Incoming, order.ID, payment.ID);
         }
 
         private async Task<IList<HSPayment>> DeleteStalePaymentsAsync(IList<HSPayment> requestedPayments, IList<HSPayment> existingPayments, HSOrder order, string userToken)
@@ -118,7 +118,7 @@ namespace Headstart.API.Commands
                 {
                     if (existingPayment.Type == PaymentType.PurchaseOrder)
                     {
-                        await _oc.Payments.DeleteAsync(OrderDirection.Incoming, order.ID, existingPayment.ID);
+                        await oc.Payments.DeleteAsync(OrderDirection.Incoming, order.ID, existingPayment.ID);
                         existingPayments.Remove(existingPayment);
                     }
 
@@ -129,7 +129,7 @@ namespace Headstart.API.Commands
                     }
                     else
                     {
-                        await _oc.Payments.DeleteAsync(OrderDirection.Incoming, order.ID, existingPayment.ID);
+                        await oc.Payments.DeleteAsync(OrderDirection.Incoming, order.ID, existingPayment.ID);
                         existingPayments.Remove(existingPayment);
                     }
                 }

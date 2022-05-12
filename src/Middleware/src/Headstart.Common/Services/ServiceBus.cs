@@ -20,16 +20,16 @@ namespace Headstart.Common.Services
     public class ServiceBus : IServiceBus
     {
         private readonly ConcurrentDictionary<string, ServiceBusSender> senders = new ConcurrentDictionary<string, ServiceBusSender>();
-        private readonly ServiceBusClient _client;
+        private readonly ServiceBusClient client;
 
         public ServiceBus(AppSettings settings)
         {
-            _client = new ServiceBusClient(settings.ServiceBusSettings.ConnectionString);
+            client = new ServiceBusClient(settings.ServiceBusSettings.ConnectionString);
         }
 
         public async Task SendMessage<T>(string queueName, T message, double? afterMinutes = null)
         {
-            var sender = senders.GetOrAdd(queueName, _client.CreateSender(queueName));
+            var sender = senders.GetOrAdd(queueName, client.CreateSender(queueName));
             var messageString = JsonConvert.SerializeObject(message);
             var messageBytes = Encoding.UTF8.GetBytes(messageString);
             if (afterMinutes == null)
@@ -47,7 +47,7 @@ namespace Headstart.Common.Services
 
         public async Task SendMessageBatchToTopicAsync(string topicName, Queue<ServiceBusMessage> messages)
         {
-            ServiceBusSender sender = senders.GetOrAdd(topicName, _client.CreateSender(topicName));
+            ServiceBusSender sender = senders.GetOrAdd(topicName, client.CreateSender(topicName));
 
             int messageCount = messages.Count;
 

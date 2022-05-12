@@ -52,25 +52,25 @@ namespace Headstart.API.Commands
 
     public class HSReportCommand : IHSReportCommand
     {
-        private readonly IOrderCloudClient _oc;
-        private readonly ISalesOrderDetailDataRepo _salesOrderDetail;
-        private readonly IPurchaseOrderDetailDataRepo _purchaseOrderDetail;
-        private readonly ILineItemDetailDataRepo _lineItemDetail;
-        private readonly IRMARepo _rmaDetail;
-        private readonly IOrdersAndShipmentsDataRepo _ordersAndShipments;
-        private readonly IProductDetailDataRepo _productDetailRepository;
-        private readonly ReportTemplateQuery _template;
+        private readonly IOrderCloudClient oc;
+        private readonly ISalesOrderDetailDataRepo salesOrderDetail;
+        private readonly IPurchaseOrderDetailDataRepo purchaseOrderDetail;
+        private readonly ILineItemDetailDataRepo lineItemDetail;
+        private readonly IRMARepo rmaDetail;
+        private readonly IOrdersAndShipmentsDataRepo ordersAndShipments;
+        private readonly IProductDetailDataRepo productDetailRepository;
+        private readonly ReportTemplateQuery templateRepository;
 
         public HSReportCommand(IOrderCloudClient oc, ISalesOrderDetailDataRepo salesOrderDetail, IPurchaseOrderDetailDataRepo purchaseOrderDetail, ILineItemDetailDataRepo lineItemDetail, IRMARepo rmaDetail, IOrdersAndShipmentsDataRepo ordersAndShipments, IProductDetailDataRepo productDetailRepository, ReportTemplateQuery template)
         {
-            _oc = oc;
-            _salesOrderDetail = salesOrderDetail;
-            _purchaseOrderDetail = purchaseOrderDetail;
-            _lineItemDetail = lineItemDetail;
-            _rmaDetail = rmaDetail;
-            _ordersAndShipments = ordersAndShipments;
-            _productDetailRepository = productDetailRepository;
-            _template = template;
+            this.oc = oc;
+            this.salesOrderDetail = salesOrderDetail;
+            this.purchaseOrderDetail = purchaseOrderDetail;
+            this.lineItemDetail = lineItemDetail;
+            this.rmaDetail = rmaDetail;
+            this.ordersAndShipments = ordersAndShipments;
+            this.productDetailRepository = productDetailRepository;
+            this.templateRepository = template;
         }
 
         public ListPage<ReportTypeResource> FetchAllReportTypes(DecodedToken decodedToken)
@@ -98,13 +98,13 @@ namespace Headstart.API.Commands
         public async Task<List<Address>> BuyerLocation(string templateID, DecodedToken decodedToken)
         {
             // Get stored template from Cosmos DB container
-            var template = await _template.Get(templateID, decodedToken);
+            var template = await this.templateRepository.Get(templateID, decodedToken);
             var allBuyerLocations = new List<Address>();
 
             // Logic if no Buyer ID is supplied
             if (template.Filters.BuyerID.Count == 0)
             {
-                var buyers = await _oc.Buyers.ListAllAsync<HSBuyer>();
+                var buyers = await oc.Buyers.ListAllAsync<HSBuyer>();
                 foreach (var buyer in buyers)
                 {
                     template.Filters.BuyerID.Add(buyer.ID);
@@ -114,7 +114,7 @@ namespace Headstart.API.Commands
             foreach (var buyerID in template.Filters.BuyerID)
             {
                 // For every buyer included in the template filters, grab all buyer locations (exceeding 100 maximum)
-                var buyerLocations = await _oc.Addresses.ListAllAsync<Address>(
+                var buyerLocations = await oc.Addresses.ListAllAsync<Address>(
                     buyerID);
                 allBuyerLocations.AddRange(buyerLocations);
             }
@@ -159,7 +159,7 @@ namespace Headstart.API.Commands
                 Filters = filters,
             };
 
-            IQueryable<OrderDetailData> queryable = _salesOrderDetail.GetQueryable()
+            IQueryable<OrderDetailData> queryable = salesOrderDetail.GetQueryable()
                 .Where(order =>
                 order.PartitionKey == "PartitionValue");
 
@@ -169,7 +169,7 @@ namespace Headstart.API.Commands
                 MaxConcurrency = -1,
             };
 
-            CosmosListPage<OrderDetailData> salesOrderDataResponse = await _salesOrderDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+            CosmosListPage<OrderDetailData> salesOrderDataResponse = await salesOrderDetail.GetItemsAsync(queryable, requestOptions, listOptions);
 
             List<OrderDetailData> salesOrderData = salesOrderDataResponse.Items;
 
@@ -177,7 +177,7 @@ namespace Headstart.API.Commands
 
             while (listOptions.ContinuationToken != null)
             {
-                CosmosListPage<OrderDetailData> responseWithToken = await _salesOrderDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+                CosmosListPage<OrderDetailData> responseWithToken = await salesOrderDetail.GetItemsAsync(queryable, requestOptions, listOptions);
                 salesOrderData.AddRange(responseWithToken.Items);
                 listOptions.ContinuationToken = responseWithToken.Meta.ContinuationToken;
             }
@@ -204,7 +204,7 @@ namespace Headstart.API.Commands
                 Filters = filters,
             };
 
-            IQueryable<OrderDetailData> queryable = _purchaseOrderDetail.GetQueryable()
+            IQueryable<OrderDetailData> queryable = purchaseOrderDetail.GetQueryable()
                 .Where(order =>
                 order.PartitionKey == "PartitionValue");
 
@@ -214,7 +214,7 @@ namespace Headstart.API.Commands
                 MaxConcurrency = -1,
             };
 
-            CosmosListPage<OrderDetailData> purchaseOrderDataResponse = await _purchaseOrderDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+            CosmosListPage<OrderDetailData> purchaseOrderDataResponse = await purchaseOrderDetail.GetItemsAsync(queryable, requestOptions, listOptions);
 
             List<OrderDetailData> purchaseOrderData = purchaseOrderDataResponse.Items;
 
@@ -222,7 +222,7 @@ namespace Headstart.API.Commands
 
             while (listOptions.ContinuationToken != null)
             {
-                CosmosListPage<OrderDetailData> responseWithToken = await _purchaseOrderDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+                CosmosListPage<OrderDetailData> responseWithToken = await purchaseOrderDetail.GetItemsAsync(queryable, requestOptions, listOptions);
                 purchaseOrderData.AddRange(responseWithToken.Items);
                 listOptions.ContinuationToken = responseWithToken.Meta.ContinuationToken;
             }
@@ -258,7 +258,7 @@ namespace Headstart.API.Commands
                 Filters = filters,
             };
 
-            IQueryable<LineItemDetailData> queryable = _lineItemDetail.GetQueryable()
+            IQueryable<LineItemDetailData> queryable = lineItemDetail.GetQueryable()
                 .Where(order =>
                 order.PartitionKey == "PartitionValue");
 
@@ -268,7 +268,7 @@ namespace Headstart.API.Commands
                 MaxConcurrency = -1,
             };
 
-            CosmosListPage<LineItemDetailData> lineItemDataResponse = await _lineItemDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+            CosmosListPage<LineItemDetailData> lineItemDataResponse = await lineItemDetail.GetItemsAsync(queryable, requestOptions, listOptions);
 
             List<LineItemDetailData> lineItemData = lineItemDataResponse.Items;
 
@@ -276,7 +276,7 @@ namespace Headstart.API.Commands
 
             while (listOptions.ContinuationToken != null)
             {
-                CosmosListPage<LineItemDetailData> responseWithToken = await _lineItemDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+                CosmosListPage<LineItemDetailData> responseWithToken = await lineItemDetail.GetItemsAsync(queryable, requestOptions, listOptions);
                 lineItemData.AddRange(responseWithToken.Items);
                 listOptions.ContinuationToken = responseWithToken.Meta.ContinuationToken;
             }
@@ -310,7 +310,7 @@ namespace Headstart.API.Commands
                 Filters = filters,
             };
 
-            IQueryable<LineItemDetailData> queryable = _lineItemDetail.GetQueryable()
+            IQueryable<LineItemDetailData> queryable = lineItemDetail.GetQueryable()
                 .Where(order =>
                 order.PartitionKey == "PartitionValue");
 
@@ -320,7 +320,7 @@ namespace Headstart.API.Commands
                 MaxConcurrency = -1,
             };
 
-            CosmosListPage<LineItemDetailData> lineItemDataResponse = await _lineItemDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+            CosmosListPage<LineItemDetailData> lineItemDataResponse = await lineItemDetail.GetItemsAsync(queryable, requestOptions, listOptions);
 
             List<LineItemDetailData> lineItemData = lineItemDataResponse.Items;
 
@@ -328,7 +328,7 @@ namespace Headstart.API.Commands
 
             while (listOptions.ContinuationToken != null)
             {
-                CosmosListPage<LineItemDetailData> responseWithToken = await _lineItemDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+                CosmosListPage<LineItemDetailData> responseWithToken = await lineItemDetail.GetItemsAsync(queryable, requestOptions, listOptions);
                 lineItemData.AddRange(responseWithToken.Items);
                 listOptions.ContinuationToken = responseWithToken.Meta.ContinuationToken;
             }
@@ -337,7 +337,7 @@ namespace Headstart.API.Commands
 
             var supplierFilter = args.Filters.FirstOrDefault(filter => filter.PropertyName == "SupplierID");
 
-            var me = await _oc.Me.GetAsync(decodedToken.AccessToken);
+            var me = await oc.Me.GetAsync(decodedToken.AccessToken);
 
             foreach (LineItemDetailData detailData in lineItemData)
             {
@@ -388,7 +388,7 @@ namespace Headstart.API.Commands
                 Filters = filters,
             };
 
-            IQueryable<RMA> queryable = _rmaDetail.GetQueryable()
+            IQueryable<RMA> queryable = rmaDetail.GetQueryable()
                 .Where(order =>
                 order.PartitionKey == "PartitionValue");
 
@@ -398,7 +398,7 @@ namespace Headstart.API.Commands
                 MaxConcurrency = -1,
             };
 
-            CosmosListPage<RMA> rmaDataResponse = await _rmaDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+            CosmosListPage<RMA> rmaDataResponse = await rmaDetail.GetItemsAsync(queryable, requestOptions, listOptions);
 
             List<RMA> rmaData = rmaDataResponse.Items;
 
@@ -406,7 +406,7 @@ namespace Headstart.API.Commands
 
             while (listOptions.ContinuationToken != null)
             {
-                CosmosListPage<RMA> responseWithToken = await _rmaDetail.GetItemsAsync(queryable, requestOptions, listOptions);
+                CosmosListPage<RMA> responseWithToken = await rmaDetail.GetItemsAsync(queryable, requestOptions, listOptions);
                 rmaData.AddRange(responseWithToken.Items);
                 listOptions.ContinuationToken = responseWithToken.Meta.ContinuationToken;
             }
@@ -415,7 +415,7 @@ namespace Headstart.API.Commands
 
             var supplierFilter = args.Filters.FirstOrDefault(filter => filter.PropertyName == "SupplierID");
 
-            var me = await _oc.Me.GetAsync(decodedToken.AccessToken);
+            var me = await oc.Me.GetAsync(decodedToken.AccessToken);
 
             foreach (RMA detailData in rmaData)
             {
@@ -450,7 +450,7 @@ namespace Headstart.API.Commands
                 Filters = filters,
             };
 
-            IQueryable<ProductDetailData> queryable = _productDetailRepository.GetQueryable()
+            IQueryable<ProductDetailData> queryable = productDetailRepository.GetQueryable()
                .Where(order =>
                order.PartitionKey == "PartitionValue");
 
@@ -460,7 +460,7 @@ namespace Headstart.API.Commands
                 MaxConcurrency = -1,
             };
 
-            CosmosListPage<ProductDetailData> productDetailDataResponse = await _productDetailRepository.GetItemsAsync(queryable, requestOptions, listOptions);
+            CosmosListPage<ProductDetailData> productDetailDataResponse = await productDetailRepository.GetItemsAsync(queryable, requestOptions, listOptions);
 
             List<ProductDetailData> productDetailDataList = productDetailDataResponse.Items;
 
@@ -468,7 +468,7 @@ namespace Headstart.API.Commands
 
             while (listOptions.ContinuationToken != null)
             {
-                CosmosListPage<ProductDetailData> responseWithToken = await _productDetailRepository.GetItemsAsync(queryable, requestOptions, listOptions);
+                CosmosListPage<ProductDetailData> responseWithToken = await productDetailRepository.GetItemsAsync(queryable, requestOptions, listOptions);
                 productDetailDataList.AddRange(responseWithToken.Items);
                 listOptions.ContinuationToken = responseWithToken.Meta.ContinuationToken;
             }
@@ -477,7 +477,7 @@ namespace Headstart.API.Commands
 
             var supplierFilter = args.Filters.FirstOrDefault(filter => filter.PropertyName == "SupplierID");
 
-            var me = await _oc.Me.GetAsync(decodedToken.AccessToken);
+            var me = await oc.Me.GetAsync(decodedToken.AccessToken);
 
             foreach (ProductDetailData detailData in productDetailDataList)
             {
@@ -505,7 +505,7 @@ namespace Headstart.API.Commands
                 Filters = filters,
             };
 
-            IQueryable<OrderWithShipments> queryable = _ordersAndShipments.GetQueryable()
+            IQueryable<OrderWithShipments> queryable = ordersAndShipments.GetQueryable()
                 .Where(order =>
                 order.PartitionKey == "PartitionValue");
 
@@ -515,7 +515,7 @@ namespace Headstart.API.Commands
                 MaxConcurrency = -1,
             };
 
-            CosmosListPage<OrderWithShipments> ordersWithShipmentsDataResponse = await _ordersAndShipments.GetItemsAsync(queryable, requestOptions, listOptions);
+            CosmosListPage<OrderWithShipments> ordersWithShipmentsDataResponse = await ordersAndShipments.GetItemsAsync(queryable, requestOptions, listOptions);
 
             List<OrderWithShipments> orderWithShipmentsData = ordersWithShipmentsDataResponse.Items;
 
@@ -523,7 +523,7 @@ namespace Headstart.API.Commands
 
             while (listOptions.ContinuationToken != null)
             {
-                CosmosListPage<OrderWithShipments> responseWithToken = await _ordersAndShipments.GetItemsAsync(queryable, requestOptions, listOptions);
+                CosmosListPage<OrderWithShipments> responseWithToken = await ordersAndShipments.GetItemsAsync(queryable, requestOptions, listOptions);
                 orderWithShipmentsData.AddRange(responseWithToken.Items);
                 listOptions.ContinuationToken = responseWithToken.Meta.ContinuationToken;
             }
@@ -532,7 +532,7 @@ namespace Headstart.API.Commands
 
             var supplierFilter = args.Filters.FirstOrDefault(filter => filter.PropertyName == "SupplierID");
 
-            var me = await _oc.Me.GetAsync(decodedToken.AccessToken);
+            var me = await oc.Me.GetAsync(decodedToken.AccessToken);
 
             foreach (OrderWithShipments detailData in orderWithShipmentsData)
             {
@@ -550,54 +550,54 @@ namespace Headstart.API.Commands
 
         public async Task<List<ReportTemplate>> ListReportTemplatesByReportType(ReportTypeEnum reportType, DecodedToken decodedToken)
         {
-            var template = await _template.List(reportType, decodedToken);
+            var template = await templateRepository.List(reportType, decodedToken);
             return template;
         }
 
         public async Task<ReportTemplate> PostReportTemplate(ReportTemplate reportTemplate, DecodedToken decodedToken)
         {
-            var template = await _template.Post(reportTemplate, decodedToken);
+            var template = await templateRepository.Post(reportTemplate, decodedToken);
             return template;
         }
 
         public async Task<ReportTemplate> GetReportTemplate(string id, DecodedToken decodedToken)
         {
-            return await _template.Get(id, decodedToken);
+            return await templateRepository.Get(id, decodedToken);
         }
 
         public async Task<ReportTemplate> UpdateReportTemplate(string id, ReportTemplate reportTemplate, DecodedToken decodedToken)
         {
-            var template = await _template.Put(id, reportTemplate, decodedToken);
+            var template = await templateRepository.Put(id, reportTemplate, decodedToken);
             return template;
         }
 
         public async Task DeleteReportTemplate(string id)
         {
-            await _template.Delete(id);
+            await templateRepository.Delete(id);
         }
 
         public async Task<List<HSBuyer>> GetBuyerFilterValues(DecodedToken decodedToken)
         {
             if (decodedToken.CommerceRole == CommerceRole.Seller)
             {
-                return await _oc.Buyers.ListAllAsync<HSBuyer>();
+                return await oc.Buyers.ListAllAsync<HSBuyer>();
             }
 
-            var adminOcToken = _oc.TokenResponse?.AccessToken;
-            if (adminOcToken == null || DateTime.UtcNow > _oc.TokenResponse.ExpiresUtc)
+            var adminOcToken = oc.TokenResponse?.AccessToken;
+            if (adminOcToken == null || DateTime.UtcNow > oc.TokenResponse.ExpiresUtc)
             {
-                await _oc.AuthenticateAsync();
-                adminOcToken = _oc.TokenResponse.AccessToken;
+                await oc.AuthenticateAsync();
+                adminOcToken = oc.TokenResponse.AccessToken;
             }
 
-            return await _oc.Buyers.ListAllAsync<HSBuyer>(adminOcToken);
+            return await oc.Buyers.ListAllAsync<HSBuyer>(adminOcToken);
         }
 
         private async Task<IList<ListFilter>> BuildFilters(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken, string datePath, string supplierIDPath, string brandIDPath = null, string statusPath = null)
         {
             IList<ListFilter> filters = new List<ListFilter>();
 
-            ReportTemplate template = await _template.Get(templateID, decodedToken);
+            ReportTemplate template = await templateRepository.Get(templateID, decodedToken);
 
             string timeLow = GetAdHocFilterValue(args, "TimeLow");
             string timeHigh = GetAdHocFilterValue(args, "TimeHigh");
@@ -681,7 +681,7 @@ namespace Headstart.API.Commands
 
             if (decodedToken.CommerceRole == CommerceRole.Supplier)
             {
-                var me = await _oc.Me.GetAsync(decodedToken.AccessToken);
+                var me = await oc.Me.GetAsync(decodedToken.AccessToken);
                 filters.Add(new ListFilter($"{dataPathPrefix}{supplierIDPath}", me.Supplier.ID));
             }
 

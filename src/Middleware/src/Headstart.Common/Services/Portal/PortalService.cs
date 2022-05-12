@@ -21,20 +21,20 @@ namespace Headstart.Common.Services
 
     public class PortalService : IPortalService
     {
-        private readonly IFlurlClient _client;
-        private readonly AppSettings _settings;
+        private readonly IFlurlClient client;
+        private readonly AppSettings settings;
 
         public PortalService(AppSettings settings, IFlurlClientFactory flurlFactory)
         {
-            _settings = settings;
-            _client = flurlFactory.Get("https://portal.ordercloud.io/api/v1");
+            this.settings = settings;
+            client = flurlFactory.Get("https://portal.ordercloud.io/api/v1");
         }
 
         public async Task<string> Login(string username, string password)
         {
             try
             {
-                var response = await _client.Request("oauth", "token")
+                var response = await client.Request("oauth", "token")
                         .PostUrlEncodedAsync(new
                         {
                             grant_type = "password",
@@ -54,14 +54,14 @@ namespace Headstart.Common.Services
 
         public async Task<PortalUser> GetMe(string token)
         {
-            return await _client.Request("me")
+            return await client.Request("me")
                         .WithOAuthBearerToken(token)
                         .GetJsonAsync<PortalUser>();
         }
 
         public async Task<Marketplace> GetMarketplace(string marketplaceID, string token)
         {
-            return await _client.Request("organizations", marketplaceID)
+            return await client.Request("organizations", marketplaceID)
                         .WithOAuthBearerToken(token)
                         .GetJsonAsync<Marketplace>();
         }
@@ -70,7 +70,7 @@ namespace Headstart.Common.Services
         // and the roles granted are roles defined for the dev user. If you're the owner, that is full access
         public async Task<string> GetMarketplaceToken(string marketplaceID, string token)
         {
-            var request = await _client.Request("organizations", marketplaceID, "token")
+            var request = await client.Request("organizations", marketplaceID, "token")
                             .WithOAuthBearerToken(token)
                             .GetJsonAsync<MarketplaceTokenResponse>();
 
@@ -80,7 +80,7 @@ namespace Headstart.Common.Services
         public async Task CreateMarketplace(Marketplace marketplace, string token)
         {
             // doesn't return anything
-            await _client.Request($"organizations/{marketplace.Id}")
+            await client.Request($"organizations/{marketplace.Id}")
                 .WithOAuthBearerToken(token)
                 .PutJsonAsync(marketplace);
         }

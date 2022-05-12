@@ -30,12 +30,12 @@ namespace Headstart.API.Commands
 
     public class PostSubmitCommand : IPostSubmitCommand
     {
-        private readonly IOrderCloudClient _oc;
-        private readonly IZohoCommand _zoho;
-        private readonly ordercloud.integrations.library.ITaxCalculator _taxCalculator;
-        private readonly ISendgridService _sendgridService;
-        private readonly ILineItemCommand _lineItemCommand;
-        private readonly AppSettings _settings;
+        private readonly IOrderCloudClient oc;
+        private readonly IZohoCommand zoho;
+        private readonly ordercloud.integrations.library.ITaxCalculator taxCalculator;
+        private readonly ISendgridService sendgridService;
+        private readonly ILineItemCommand lineItemCommand;
+        private readonly AppSettings settings;
 
         public PostSubmitCommand(
             ISendgridService sendgridService,
@@ -45,17 +45,17 @@ namespace Headstart.API.Commands
             ILineItemCommand lineItemCommand,
             AppSettings settings)
         {
-            _oc = oc;
-            _taxCalculator = taxCalculator;
-            _zoho = zoho;
-            _sendgridService = sendgridService;
-            _lineItemCommand = lineItemCommand;
-            _settings = settings;
+            this.oc = oc;
+            this.taxCalculator = taxCalculator;
+            this.zoho = zoho;
+            this.sendgridService = sendgridService;
+            this.lineItemCommand = lineItemCommand;
+            this.settings = settings;
         }
 
         public async Task<OrderSubmitResponse> HandleShippingValidate(string orderID, DecodedToken decodedToken)
         {
-            var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
+            var worksheet = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
             return await CreateOrderSubmitResponse(
                 new List<ProcessResult>()
                 {
@@ -76,8 +76,8 @@ namespace Headstart.API.Commands
 
         public async Task<OrderSubmitResponse> HandleZohoRetry(string orderID)
         {
-            var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
-            var supplierOrders = await Throttler.RunAsync(worksheet.LineItems.GroupBy(g => g.SupplierID).Select(s => s.Key), 100, 10, item => _oc.Orders.GetAsync<HSOrder>(
+            var worksheet = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
+            var supplierOrders = await Throttler.RunAsync(worksheet.LineItems.GroupBy(g => g.SupplierID).Select(s => s.Key), 100, 10, item => oc.Orders.GetAsync<HSOrder>(
                 OrderDirection.Outgoing,
                 $"{worksheet.Order.ID}-{item}"));
 
@@ -114,17 +114,17 @@ namespace Headstart.API.Commands
 
         public async Task<List<HSOrder>> CreateOrderRelationshipsAndTransferXP(HSOrderWorksheet buyerOrder, List<Order> supplierOrders)
         {
-            var payment = (await _oc.Payments.ListAsync(OrderDirection.Incoming, buyerOrder.Order.ID))?.Items?.FirstOrDefault();
+            var payment = (await oc.Payments.ListAsync(OrderDirection.Incoming, buyerOrder.Order.ID))?.Items?.FirstOrDefault();
             var updatedSupplierOrders = new List<HSOrder>();
             var supplierIDs = new List<string>();
-            var lineItems = await _oc.LineItems.ListAllAsync(OrderDirection.Incoming, buyerOrder.Order.ID);
+            var lineItems = await oc.LineItems.ListAllAsync(OrderDirection.Incoming, buyerOrder.Order.ID);
             var shipFromAddressIDs = lineItems.DistinctBy(li => li.ShipFromAddressID).Select(li => li.ShipFromAddressID).ToList();
 
             foreach (var supplierOrder in supplierOrders)
             {
                 supplierIDs.Add(supplierOrder.ToCompanyID);
                 var shipFromAddressIDsForSupplierOrder = shipFromAddressIDs.Where(addressID => addressID != null && addressID.Contains(supplierOrder.ToCompanyID)).ToList();
-                var supplier = await _oc.Suppliers.GetAsync<HSSupplier>(supplierOrder.ToCompanyID);
+                var supplier = await oc.Suppliers.GetAsync<HSSupplier>(supplierOrder.ToCompanyID);
                 var suppliersShipEstimates = buyerOrder.ShipEstimateResponse?.ShipEstimates?.Where(se => se.xp.SupplierID == supplier.ID);
                 var supplierOrderPatch = new PartialOrder()
                 {
@@ -158,14 +158,14 @@ namespace Headstart.API.Commands
                         },
                     },
                 };
-                var updatedSupplierOrder = await _oc.Orders.PatchAsync<HSOrder>(OrderDirection.Outgoing, supplierOrder.ID, supplierOrderPatch);
+                var updatedSupplierOrder = await oc.Orders.PatchAsync<HSOrder>(OrderDirection.Outgoing, supplierOrder.ID, supplierOrderPatch);
                 var supplierLineItems = lineItems.Where(li => li.SupplierID == supplier.ID).ToList();
                 await SaveShipMethodByLineItem(supplierLineItems, supplierOrderPatch.xp.SelectedShipMethodsSupplierView, buyerOrder.Order.ID);
                 await OverrideOutgoingLineQuoteUnitPrice(updatedSupplierOrder.ID, supplierLineItems);
                 updatedSupplierOrders.Add(updatedSupplierOrder);
             }
 
-            await _lineItemCommand.SetInitialSubmittedLineItemStatuses(buyerOrder.Order.ID);
+            await lineItemCommand.SetInitialSubmittedLineItemStatuses(buyerOrder.Order.ID);
             var sellerShipEstimates = buyerOrder.ShipEstimateResponse?.ShipEstimates?.Where(se => se.xp.SupplierID == null);
 
             // Patch Buyer Order after it has been submitted
@@ -186,7 +186,7 @@ namespace Headstart.API.Commands
                 },
             };
 
-            await _oc.Orders.PatchAsync(OrderDirection.Incoming, buyerOrder.Order.ID, buyerOrderPatch);
+            await oc.Orders.PatchAsync(OrderDirection.Incoming, buyerOrder.Order.ID, buyerOrderPatch);
             return updatedSupplierOrders;
         }
 
@@ -303,17 +303,17 @@ namespace Headstart.API.Commands
             var (salesAction, zohoSalesOrder) = await ProcessActivityCall(
                 ProcessType.Accounting,
                 "Create Zoho Sales Order",
-                _zoho.CreateSalesOrder(worksheet));
+                zoho.CreateSalesOrder(worksheet));
 
             var (poAction, zohoPurchaseOrder) = await ProcessActivityCall(
                 ProcessType.Accounting,
                 "Create Zoho Purchase Order",
-                _zoho.CreateOrUpdatePurchaseOrder(zohoSalesOrder, supplierOrders.ToList()));
+                zoho.CreateOrUpdatePurchaseOrder(zohoSalesOrder, supplierOrders.ToList()));
 
             var (shippingAction, zohoShippingOrder) = await ProcessActivityCall(
                 ProcessType.Accounting,
                 "Create Zoho Shipping Purchase Order",
-                _zoho.CreateShippingPurchaseOrder(zohoSalesOrder, worksheet));
+                zoho.CreateShippingPurchaseOrder(zohoSalesOrder, worksheet));
             return new ProcessResult()
             {
                 Type = ProcessType.Accounting,
@@ -329,7 +329,7 @@ namespace Headstart.API.Commands
             var notifications = await ProcessActivityCall(
                 ProcessType.Notification,
                 "Sending Order Submit Emails",
-                _sendgridService.SendOrderSubmitEmail(orderWorksheet));
+                sendgridService.SendOrderSubmitEmail(orderWorksheet));
             results.Add(new ProcessResult()
             {
                 Type = ProcessType.Notification,
@@ -353,7 +353,7 @@ namespace Headstart.API.Commands
             });
 
             // STEP 3: Zoho orders
-            if (_settings.ZohoSettings.PerformOrderSubmitTasks)
+            if (settings.ZohoSettings.PerformOrderSubmitTasks)
             {
                 results.Add(await this.PerformZohoTasks(orderWorksheet, supplierOrders));
             }
@@ -420,7 +420,7 @@ namespace Headstart.API.Commands
             orders.RemoveAt(0);
             orderInfos.AddRange(orders.Select(o => new Tuple<OrderDirection, string>(OrderDirection.Outgoing, o.ID)));
 
-            await Throttler.RunAsync(orderInfos, 100, 3, (orderInfo) => _oc.Orders.PatchAsync(orderInfo.Item1, orderInfo.Item2, partialOrder));
+            await Throttler.RunAsync(orderInfos, 100, 3, (orderInfo) => oc.Orders.PatchAsync(orderInfo.Item1, orderInfo.Item2, partialOrder));
         }
 
         private async Task<Tuple<List<HSOrder>, HSOrderWorksheet, List<ProcessResultAction>>> HandlingForwarding(HSOrderWorksheet orderWorksheet)
@@ -431,7 +431,7 @@ namespace Headstart.API.Commands
             var (forwardAction, forwardedOrders) = await ProcessActivityCall(
                 ProcessType.Forwarding,
                 "OrderCloud API Order.ForwardAsync",
-                _oc.Orders.ForwardAsync(OrderDirection.Incoming, orderWorksheet.Order.ID));
+                oc.Orders.ForwardAsync(OrderDirection.Incoming, orderWorksheet.Order.ID));
             activities.Add(forwardAction);
 
             var supplierOrders = forwardedOrders.OutgoingOrders.ToList();
@@ -448,7 +448,7 @@ namespace Headstart.API.Commands
             var (getAction, hsOrderWorksheet) = await ProcessActivityCall(
                 ProcessType.Forwarding,
                 "Get Updated Order Worksheet",
-                _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderWorksheet.Order.ID));
+                oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderWorksheet.Order.ID));
             activities.Add(getAction);
 
             return await Task.FromResult(new Tuple<List<HSOrder>, HSOrderWorksheet, List<ProcessResultAction>>(hsOrders, hsOrderWorksheet, activities));
@@ -471,10 +471,10 @@ namespace Headstart.API.Commands
 
         private async Task HandleTaxTransactionCreationAsync(OrderWorksheet orderWorksheet)
         {
-            var promotions = await _oc.Orders.ListAllPromotionsAsync(OrderDirection.All, orderWorksheet.Order.ID);
+            var promotions = await oc.Orders.ListAllPromotionsAsync(OrderDirection.All, orderWorksheet.Order.ID);
 
-            var taxCalculation = await _taxCalculator.CommitTransactionAsync(orderWorksheet, promotions);
-            await _oc.Orders.PatchAsync<HSOrder>(OrderDirection.Incoming, orderWorksheet.Order.ID, new PartialOrder()
+            var taxCalculation = await taxCalculator.CommitTransactionAsync(orderWorksheet, promotions);
+            await oc.Orders.PatchAsync<HSOrder>(OrderDirection.Incoming, orderWorksheet.Order.ID, new PartialOrder()
             {
                 TaxCost = taxCalculation.TotalTax,  // Set this again just to make sure we have the most up to date info
                 xp = new { ExternalTaxTransactionID = taxCalculation.ExternalTransactionID },
@@ -493,7 +493,7 @@ namespace Headstart.API.Commands
                         ShipMethodSupplierView shipMethod = shipMethods.Find(shipMethod => shipMethod.ShipFromAddressID == shipFromID);
                         string readableShipMethod = shipMethod.Name.Replace("_", " ");
                         PartialLineItem lineItemToPatch = new PartialLineItem { xp = new { ShipMethod = readableShipMethod } };
-                        LineItem patchedLineItem = await _oc.LineItems.PatchAsync(OrderDirection.Incoming, buyerOrderID, lineItem.ID, lineItemToPatch);
+                        LineItem patchedLineItem = await oc.LineItems.PatchAsync(OrderDirection.Incoming, buyerOrderID, lineItem.ID, lineItemToPatch);
                     }
                 }
             }
@@ -506,7 +506,7 @@ namespace Headstart.API.Commands
                 if (lineItem?.Product?.xp?.ProductType == ProductType.Quote.ToString())
                 {
                     var patch = new PartialLineItem { UnitPrice = lineItem.UnitPrice };
-                    await _oc.LineItems.PatchAsync(OrderDirection.Outgoing, supplierOrderID, lineItem.ID, patch);
+                    await oc.LineItems.PatchAsync(OrderDirection.Outgoing, supplierOrderID, lineItem.ID, patch);
                 }
             }
         }

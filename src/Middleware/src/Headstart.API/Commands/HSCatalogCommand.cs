@@ -31,21 +31,21 @@ namespace Headstart.API.Commands.Crud
 
     public class HSCatalogCommand : IHSCatalogCommand
     {
-        private readonly IOrderCloudClient _oc;
+        private readonly IOrderCloudClient oc;
 
         public HSCatalogCommand(AppSettings settings, IOrderCloudClient oc)
         {
-            _oc = oc;
+            this.oc = oc;
         }
 
         public async Task<HSCatalog> Get(string buyerID, string catalogID, DecodedToken decodedToken)
         {
-            return await _oc.UserGroups.GetAsync<HSCatalog>(buyerID, catalogID, decodedToken.AccessToken);
+            return await oc.UserGroups.GetAsync<HSCatalog>(buyerID, catalogID, decodedToken.AccessToken);
         }
 
         public async Task<ListPage<HSCatalog>> List(string buyerID, ListArgs<HSCatalog> args, DecodedToken decodedToken)
         {
-            return await _oc.UserGroups.ListAsync<HSCatalog>(
+            return await oc.UserGroups.ListAsync<HSCatalog>(
                 buyerID,
                 filters: "xp.Type=Catalog",
                 search: args.Search,
@@ -59,7 +59,7 @@ namespace Headstart.API.Commands.Crud
             // assignments are stored on location usergroup xp in a string array with the ids of the catalogs
             // currently they can only be assessed by location ID
             // limiting to 20 catalog assignments for now
-            var location = await _oc.UserGroups.GetAsync<HSLocationUserGroup>(buyerID, locationID, decodedToken.AccessToken);
+            var location = await oc.UserGroups.GetAsync<HSLocationUserGroup>(buyerID, locationID, decodedToken.AccessToken);
 
             var catalogAssignments = new List<HSCatalogAssignment> { };
 
@@ -77,7 +77,7 @@ namespace Headstart.API.Commands.Crud
 
         public async Task SetAssignments(string buyerID, string locationID, List<string> newAssignments, string token)
         {
-            await _oc.UserGroups.PatchAsync(buyerID, locationID, new PartialUserGroup() { xp = new { CatalogAssignments = newAssignments } }, token);
+            await oc.UserGroups.PatchAsync(buyerID, locationID, new PartialUserGroup() { xp = new { CatalogAssignments = newAssignments } }, token);
             await UpdateUserCatalogAssignmentsForLocation(buyerID, locationID);
         }
 
@@ -86,10 +86,10 @@ namespace Headstart.API.Commands.Crud
         public async Task SyncUserCatalogAssignments(string buyerID, string userID)
         {
             // retrieve the data we'll need for further analysis
-            var allUserAssignments = await _oc.UserGroups.ListAllUserAssignmentsAsync(buyerID: buyerID, userID: userID);
+            var allUserAssignments = await oc.UserGroups.ListAllUserAssignmentsAsync(buyerID: buyerID, userID: userID);
             var assignedGroupIDs = allUserAssignments?.Select(assignment => assignment?.UserGroupID)?.ToList();
-            var assignedGroups = await _oc.UserGroups.ListAsync<HSLocationUserGroup>(buyerID: buyerID, filters: $"ID={string.Join("|", assignedGroupIDs)}", pageSize: 100);
-            var existingCatalogs = await _oc.UserGroups.ListAsync<HSLocationUserGroup>(buyerID, filters: "xp.Type=Catalog", pageSize: 100);
+            var assignedGroups = await oc.UserGroups.ListAsync<HSLocationUserGroup>(buyerID: buyerID, filters: $"ID={string.Join("|", assignedGroupIDs)}", pageSize: 100);
+            var existingCatalogs = await oc.UserGroups.ListAsync<HSLocationUserGroup>(buyerID, filters: "xp.Type=Catalog", pageSize: 100);
 
             // from the data extract the relevant catalogIDs
             var expectedAssignedCatalogIDs = assignedGroups.Items?.Where(item => item?.xp?.Type == "BuyerLocation")?.SelectMany(c => c?.xp?.CatalogAssignments);
@@ -103,11 +103,11 @@ namespace Headstart.API.Commands.Crud
             // throttle the calls with a 100 millisecond wait in between so as not to overload the API
             await Throttler.RunAsync(assignmentsToRemove, 100, 5, catalogAssignmentToRemove =>
             {
-                return _oc.UserGroups.DeleteUserAssignmentAsync(buyerID, catalogAssignmentToRemove, userID);
+                return oc.UserGroups.DeleteUserAssignmentAsync(buyerID, catalogAssignmentToRemove, userID);
             });
             await Throttler.RunAsync(assignmentsToAdd, 100, 5, catalogAssignmentToAdd =>
             {
-                return _oc.UserGroups.SaveUserAssignmentAsync(buyerID, new UserGroupAssignment()
+                return oc.UserGroups.SaveUserAssignmentAsync(buyerID, new UserGroupAssignment()
                 {
                     UserGroupID = catalogAssignmentToAdd,
                     UserID = userID,
@@ -117,24 +117,24 @@ namespace Headstart.API.Commands.Crud
 
         public async Task<HSCatalog> Post(string buyerID, HSCatalog catalog, DecodedToken decodedToken)
         {
-            return await _oc.UserGroups.CreateAsync<HSCatalog>(buyerID, catalog, decodedToken.AccessToken);
+            return await oc.UserGroups.CreateAsync<HSCatalog>(buyerID, catalog, decodedToken.AccessToken);
         }
 
         public async Task<HSCatalog> Put(string buyerID, string catalogID, HSCatalog catalog, DecodedToken decodedToken)
         {
-            return await _oc.UserGroups.SaveAsync<HSCatalog>(buyerID, catalogID, catalog, decodedToken.AccessToken);
+            return await oc.UserGroups.SaveAsync<HSCatalog>(buyerID, catalogID, catalog, decodedToken.AccessToken);
         }
 
         public async Task Delete(string buyerID, string catalogID, DecodedToken decodedToken)
         {
-            await _oc.UserGroups.DeleteAsync(buyerID, catalogID, decodedToken.AccessToken);
+            await oc.UserGroups.DeleteAsync(buyerID, catalogID, decodedToken.AccessToken);
         }
 
         private async Task UpdateUserCatalogAssignmentsForLocation(string buyerID, string locationID)
         {
             try
             {
-                var users = await _oc.Users.ListAllAsync<HSUser>(buyerID, userGroupID: locationID);
+                var users = await oc.Users.ListAllAsync<HSUser>(buyerID, userGroupID: locationID);
                 await Throttler.RunAsync(users, 100, 4, user =>
                 {
                     return SyncUserCatalogAssignments(buyerID, user.ID);

@@ -14,11 +14,11 @@ namespace Headstart.Common.Controllers
     [Route("me")]
     public class MeController : CatalystController
     {
-        private readonly IMeProductCommand _meProductCommand;
+        private readonly IMeProductCommand meProductCommand;
 
         public MeController(IMeProductCommand meProductCommand)
         {
-            _meProductCommand = meProductCommand;
+            this.meProductCommand = meProductCommand;
         }
 
         /// <summary>
@@ -27,7 +27,7 @@ namespace Headstart.Common.Controllers
         [HttpGet, Route("products/{productID}"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<SuperHSMeProduct> GetSuperProduct(string productID)
         {
-            return await _meProductCommand.Get(productID, UserContext);
+            return await meProductCommand.Get(productID, UserContext);
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace Headstart.Common.Controllers
         [HttpGet, Route("products"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<ListPageWithFacets<HSMeProduct>> ListMeProducts(ListArgs<HSMeProduct> args)
         {
-            return await _meProductCommand.List(args, UserContext);
+            return await meProductCommand.List(args, UserContext);
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, Route("products/requestinfo"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task RequestProductInfo([FromBody] ContactSupplierBody template)
         {
-            await _meProductCommand.RequestProductInfo(template);
+            await meProductCommand.RequestProductInfo(template);
         }
     }
 }

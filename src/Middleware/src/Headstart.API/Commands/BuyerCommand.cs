@@ -21,18 +21,18 @@ namespace Headstart.API.Commands
 
     public class HSBuyerCommand : IHSBuyerCommand
     {
-        private readonly IOrderCloudClient _oc;
-        private readonly AppSettings _settings;
+        private readonly IOrderCloudClient oc;
+        private readonly AppSettings settings;
 
         public HSBuyerCommand(AppSettings settings, IOrderCloudClient oc)
         {
-            _settings = settings;
-            _oc = oc;
+            this.settings = settings;
+            this.oc = oc;
         }
 
         public async Task<SuperHSBuyer> Create(SuperHSBuyer superBuyer)
         {
-            return await Create(superBuyer, null, _oc);
+            return await Create(superBuyer, null, oc);
         }
 
         public async Task<SuperHSBuyer> Create(SuperHSBuyer superBuyer, string accessToken, IOrderCloudClient oc)
@@ -59,7 +59,7 @@ namespace Headstart.API.Commands
             superBuyer.Buyer.ID = buyerID;
             var updatedImpersonationConfig = new ImpersonationConfig();
 
-            var updatedBuyer = await _oc.Buyers.SaveAsync<HSBuyer>(buyerID, superBuyer.Buyer);
+            var updatedBuyer = await oc.Buyers.SaveAsync<HSBuyer>(buyerID, superBuyer.Buyer);
             var updatedMarkup = await UpdateMarkup(superBuyer.Markup, superBuyer.Buyer.ID);
             if (superBuyer.ImpersonationConfig != null)
             {
@@ -77,7 +77,7 @@ namespace Headstart.API.Commands
         public async Task<SuperHSBuyer> Get(string buyerID)
         {
             var configReq = GetImpersonationByBuyerID(buyerID);
-            var buyer = await _oc.Buyers.GetAsync<HSBuyer>(buyerID);
+            var buyer = await oc.Buyers.GetAsync<HSBuyer>(buyerID);
             var config = await configReq;
 
             // to move into content docs logic
@@ -101,7 +101,7 @@ namespace Headstart.API.Commands
             // to support multiple environments and ease of setup for new orgs
             // else used the configured client
             var token = oc == null ? null : accessToken;
-            var ocClient = oc ?? _oc;
+            var ocClient = oc ?? this.oc;
 
             buyer.ID = buyer.ID ?? "{buyerIncrementor}";
             var ocBuyer = await ocClient.Buyers.CreateAsync(buyer, accessToken);
@@ -146,7 +146,7 @@ namespace Headstart.API.Commands
 
         private async Task<ImpersonationConfig> GetImpersonationByBuyerID(string buyerID)
         {
-            var config = await _oc.ImpersonationConfigs.ListAsync(filters: $"BuyerID={buyerID}");
+            var config = await oc.ImpersonationConfigs.ListAsync(filters: $"BuyerID={buyerID}");
             return config?.Items?.FirstOrDefault();
         }
 
@@ -156,7 +156,7 @@ namespace Headstart.API.Commands
             // to support multiple environments and ease of setup for new orgs
             // else used the configured client
             var token = oc == null ? null : accessToken;
-            var ocClient = oc ?? _oc;
+            var ocClient = oc ?? this.oc;
 
             // to move from xp to contentdocs, that logic will go here instead of a patch
             var updatedBuyer = await ocClient.Buyers.PatchAsync(buyerID, new PartialBuyer() { xp = new { MarkupPercent = markup.Percent } }, token);
@@ -168,7 +168,7 @@ namespace Headstart.API.Commands
 
         private async Task<ImpersonationConfig> SaveImpersonationConfig(ImpersonationConfig impersonation, string buyerID)
         {
-            return await SaveImpersonationConfig(impersonation, buyerID, null, _oc);
+            return await SaveImpersonationConfig(impersonation, buyerID, null, oc);
         }
 
         private async Task<ImpersonationConfig> SaveImpersonationConfig(ImpersonationConfig impersonation, string buyerID, string accessToken, IOrderCloudClient oc = null)
@@ -177,7 +177,7 @@ namespace Headstart.API.Commands
             // to support multiple environments and ease of setup for new orgs
             // else used the configured client
             var token = oc == null ? null : accessToken;
-            var ocClient = oc ?? _oc;
+            var ocClient = oc ?? this.oc;
 
             var currentConfig = await GetImpersonationByBuyerID(buyerID);
             if (currentConfig != null && impersonation == null)
@@ -202,7 +202,7 @@ namespace Headstart.API.Commands
         {
             // to move from xp to contentdocs, that logic will go here instead of a patch
             // currently duplicate of the function above, this might need to be duplicated since there wont be a need to save the contentdocs assignment again
-            var updatedBuyer = await _oc.Buyers.PatchAsync(buyerID, new PartialBuyer() { xp = new { MarkupPercent = markup.Percent } });
+            var updatedBuyer = await oc.Buyers.PatchAsync(buyerID, new PartialBuyer() { xp = new { MarkupPercent = markup.Percent } });
             return new BuyerMarkup()
             {
                 Percent = (int)updatedBuyer.xp.MarkupPercent,

@@ -26,11 +26,11 @@ namespace Headstart.API.Commands
 
     public class ProductTemplateCommand : IProductTemplateCommand
     {
-        private readonly AppSettings _settings;
+        private readonly AppSettings settings;
 
         public ProductTemplateCommand(AppSettings settings)
         {
-            _settings = settings;
+            this.settings = settings;
         }
 
         public static TemplateProductResult Validate(List<RowInfo<TemplateProductFlat>> rows)

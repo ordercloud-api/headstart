@@ -56,11 +56,11 @@ namespace ordercloud.integrations.easypost
     {
         public const string FreeShipping = "FREE_SHIPPING";
         private const string BaseUrl = "https://api.easypost.com/v2";
-        private readonly EasyPostConfig _config;
+        private readonly EasyPostConfig config;
 
         public EasyPostShippingService(EasyPostConfig config)
         {
-            _config = config;
+            this.config = config;
         }
 
         public async Task<ShipEstimateResponse> GetRates(IEnumerable<IGrouping<AddressPair, LineItem>> groupedLineItems, EasyPostShippingProfiles profiles)
@@ -142,7 +142,7 @@ namespace ordercloud.integrations.easypost
             try
             {
                 return await BaseUrl
-                    .WithBasicAuth(_config.APIKey, string.Empty)
+                    .WithBasicAuth(config.APIKey, string.Empty)
                     .AppendPathSegment("shipments")
                     .PostJsonAsync(new { shipment })
                     .ReceiveJson<EasyPostShipment>();

@@ -40,19 +40,19 @@ namespace Headstart.API.Commands
     public class RMACommand : IRMACommand
     {
         private const string QUEUED_FOR_CAPTURE = "Queued for Capture";
-        private readonly IOrderCloudClient _oc;
-        private readonly IRMARepo _rmaRepo;
-        private readonly IOrderCloudIntegrationsCardConnectService _cardConnect;
-        private readonly ISendgridService _sendgridService;
-        private readonly AppSettings _settings;
+        private readonly IOrderCloudClient oc;
+        private readonly IRMARepo rmaRepo;
+        private readonly IOrderCloudIntegrationsCardConnectService cardConnect;
+        private readonly ISendgridService sendgridService;
+        private readonly AppSettings settings;
 
         public RMACommand(IOrderCloudClient oc, IRMARepo rmaRepo, IOrderCloudIntegrationsCardConnectService cardConnect, ISendgridService sendgridService, AppSettings settings)
         {
-            _oc = oc;
-            _rmaRepo = rmaRepo;
-            _cardConnect = cardConnect;
-            _sendgridService = sendgridService;
-            _settings = settings;
+            this.oc = oc;
+            this.rmaRepo = rmaRepo;
+            this.cardConnect = cardConnect;
+            this.sendgridService = sendgridService;
+            this.settings = settings;
         }
 
         public async Task BuildRMA(HSOrder order, List<string> supplierIDs, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItemsChanged, DecodedToken decodedToken)
@@ -60,7 +60,7 @@ namespace Headstart.API.Commands
             foreach (string supplierID in supplierIDs)
             {
                 var sellerID = supplierID;
-                var sellerName = supplierID == null ? _settings.OrderCloudSettings.MarketplaceName : (await _oc.Suppliers.GetAsync<HSSupplier>(supplierID)).Name;
+                var sellerName = supplierID == null ? settings.OrderCloudSettings.MarketplaceName : (await oc.Suppliers.GetAsync<HSSupplier>(supplierID)).Name;
 
                 RMA rma = new RMA()
                 {
@@ -86,12 +86,12 @@ namespace Headstart.API.Commands
 
         public virtual async Task<RMA> PostRMA(RMA rma)
         {
-            return await _rmaRepo.AddItemAsync(rma);
+            return await rmaRepo.AddItemAsync(rma);
         }
 
         public async Task<CosmosListPage<RMA>> ListBuyerRMAs(CosmosListOptions listOptions, string buyerID)
         {
-            IQueryable<RMA> queryable = _rmaRepo.GetQueryable().Where(rma => rma.FromBuyerID == buyerID);
+            IQueryable<RMA> queryable = rmaRepo.GetQueryable().Where(rma => rma.FromBuyerID == buyerID);
 
             CosmosListPage<RMA> rmas = await GenerateRMAList(queryable, listOptions);
             return rmas;
@@ -106,13 +106,13 @@ namespace Headstart.API.Commands
                 SearchOn = "RMANumber",
             };
 
-            IQueryable<RMA> queryable = _rmaRepo.GetQueryable()
+            IQueryable<RMA> queryable = rmaRepo.GetQueryable()
                 .Where(rma =>
                  rma.PartitionKey == "PartitionValue");
 
             if (decodedToken.CommerceRole == CommerceRole.Supplier)
             {
-                var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+                var me = await oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
                 queryable = queryable.Where(rma => rma.SupplierID == me.Supplier.ID);
             }
 
@@ -126,7 +126,7 @@ namespace Headstart.API.Commands
 
             CosmosListOptions listOptions = new CosmosListOptions() { PageSize = 100 };
 
-            IQueryable<RMA> queryable = _rmaRepo.GetQueryable()
+            IQueryable<RMA> queryable = rmaRepo.GetQueryable()
                 .Where(rma =>
                     rma.PartitionKey == "PartitionValue"
                     && rma.SourceOrderID == sourceOrderID);
@@ -147,11 +147,11 @@ namespace Headstart.API.Commands
 
         public async Task<CosmosListPage<RMA>> ListRMAs(CosmosListOptions listOptions, DecodedToken decodedToken)
         {
-            IQueryable<RMA> queryable = _rmaRepo.GetQueryable().Where(rma => rma.PartitionKey == "PartitionValue");
+            IQueryable<RMA> queryable = rmaRepo.GetQueryable().Where(rma => rma.PartitionKey == "PartitionValue");
 
             if (decodedToken.CommerceRole == CommerceRole.Supplier)
             {
-                var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+                var me = await oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
                 queryable = queryable.Where(rma => rma.SupplierID == me.Supplier.ID);
             }
 
@@ -162,7 +162,7 @@ namespace Headstart.API.Commands
         public async Task<RMAWithLineItemStatusByQuantity> ProcessRMA(RMA rma, DecodedToken decodedToken)
         {
             // Get the RMA from the last time it was saved.
-            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            var me = await oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
             RMA currentRMA = await GetRMA(rma.RMANumber, decodedToken);
             if (decodedToken.CommerceRole == CommerceRole.Supplier && currentRMA.SupplierID != me.Supplier.ID)
             {
@@ -182,7 +182,7 @@ namespace Headstart.API.Commands
                 rma.Logs.Insert(0, log);
             }
 
-            HSOrderWorksheet worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, rma.SourceOrderID);
+            HSOrderWorksheet worksheet = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, rma.SourceOrderID);
 
             IEnumerable<RMALineItem> deniedLineItems = rma.LineItems
                 .Where(li => !li.IsRefunded && li.Status == RMALineItemStatus.Denied)
@@ -190,7 +190,7 @@ namespace Headstart.API.Commands
 
             List<LineItemStatusChanges> lineItemStatusChangesList = BuildLineItemStatusChanges(deniedLineItems, worksheet, rma.Type, true);
 
-            ItemResponse<RMA> updatedRMA = await _rmaRepo.ReplaceItemAsync(currentRMA.id, rma);
+            ItemResponse<RMA> updatedRMA = await rmaRepo.ReplaceItemAsync(currentRMA.id, rma);
 
             await HandlePendingApprovalEmails(currentRMA, rma.LineItems, worksheet);
 
@@ -206,7 +206,7 @@ namespace Headstart.API.Commands
 
         public async Task<RMAWithLineItemStatusByQuantity> ProcessRefund(string rmaNumber, DecodedToken decodedToken)
         {
-            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            var me = await oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
             RMA rma = await GetRMA(rmaNumber, decodedToken);
 
             ValidateRMA(rma, me, decodedToken);
@@ -217,7 +217,7 @@ namespace Headstart.API.Commands
                 .Where(li => !li.IsRefunded
                     && (li.Status == RMALineItemStatus.Approved || li.Status == RMALineItemStatus.PartialQtyApproved)).ToList();
 
-            HSOrderWorksheet worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, rma.SourceOrderID);
+            HSOrderWorksheet worksheet = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, rma.SourceOrderID);
 
             CosmosListPage<RMA> allRMAsOnThisOrder = await ListRMAsByOrderID(worksheet.Order.ID, decodedToken.CommerceRole, me, true);
 
@@ -240,7 +240,7 @@ namespace Headstart.API.Commands
             List<LineItemStatusChanges> lineItemStatusChangesList = BuildLineItemStatusChanges(rmaLineItemsToUpdate, worksheet, rma.Type, false);
 
             // SAVE RMA
-            ItemResponse<RMA> updatedRMA = await _rmaRepo.ReplaceItemAsync(rma.id, rma);
+            ItemResponse<RMA> updatedRMA = await rmaRepo.ReplaceItemAsync(rma.id, rma);
 
             RMAWithLineItemStatusByQuantity rmaWithStatusByQuantityChanges = new RMAWithLineItemStatusByQuantity() { SupplierOrderID = $"{rma.SourceOrderID}-{rma.SupplierID}", RMA = updatedRMA.Resource, LineItemStatusChangesList = lineItemStatusChangesList };
 
@@ -300,7 +300,7 @@ namespace Headstart.API.Commands
         public virtual async Task HandleRefund(RMA rma, CosmosListPage<RMA> allRMAsOnThisOrder, HSOrderWorksheet worksheet, DecodedToken decodedToken)
         {
             // Get payment info from the order
-            ListPage<HSPayment> paymentResponse = await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, rma.SourceOrderID);
+            ListPage<HSPayment> paymentResponse = await oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, rma.SourceOrderID);
             HSPayment creditCardPayment = paymentResponse.Items.FirstOrDefault(payment => payment.Type == OrderCloud.SDK.PaymentType.CreditCard);
             if (creditCardPayment == null)
             {
@@ -317,7 +317,7 @@ namespace Headstart.API.Commands
                 .Sum();
 
             // Refund via CardConnect
-            CardConnectInquireResponse inquiry = await _cardConnect.Inquire(new CardConnectInquireRequest
+            CardConnectInquireResponse inquiry = await cardConnect.Inquire(new CardConnectInquireRequest
             {
                 merchid = creditCardPaymentTransaction.xp.CardConnectResponse.merchid,
                 orderid = rma.SourceOrderID,
@@ -420,18 +420,18 @@ namespace Headstart.API.Commands
             HSPayment newCreditCardVoid = new HSPayment() { Amount = totalToRefund };
             try
             {
-                CardConnectVoidResponse response = await _cardConnect.VoidAuthorization(new CardConnectVoidRequest
+                CardConnectVoidResponse response = await cardConnect.VoidAuthorization(new CardConnectVoidRequest
                 {
                     currency = worksheet.Order.xp.Currency.ToString(),
                     merchid = creditCardPaymentTransaction.xp.CardConnectResponse.merchid,
                     retref = creditCardPaymentTransaction.xp.CardConnectResponse.retref,
                     amount = totalToRefund.ToString("F2"),
                 });
-                await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, rma.SourceOrderID, creditCardPayment.ID, CardConnectMapper.Map(newCreditCardVoid, response));
+                await oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, rma.SourceOrderID, creditCardPayment.ID, CardConnectMapper.Map(newCreditCardVoid, response));
             }
             catch (CreditCardVoidException ex)
             {
-                await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, rma.SourceOrderID, creditCardPayment.ID, CardConnectMapper.Map(newCreditCardVoid, ex.Response));
+                await oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, rma.SourceOrderID, creditCardPayment.ID, CardConnectMapper.Map(newCreditCardVoid, ex.Response));
                 throw new CatalystBaseException(new ApiError
                 {
                     ErrorCode = "Payment.FailedToVoidAuthorization",
@@ -451,9 +451,9 @@ namespace Headstart.API.Commands
                     retref = creditCardPaymentTransaction.xp.CardConnectResponse.retref,
                     amount = totalToRefund.ToString("F2"),
                 };
-                CardConnectRefundResponse response = await _cardConnect.Refund(requestedRefund);
+                CardConnectRefundResponse response = await cardConnect.Refund(requestedRefund);
                 HSPayment newCreditCardPayment = new HSPayment() { Amount = response.amount };
-                await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, rma.SourceOrderID, creditCardPayment.ID, CardConnectMapper.Map(newCreditCardPayment, response));
+                await oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, rma.SourceOrderID, creditCardPayment.ID, CardConnectMapper.Map(newCreditCardPayment, response));
             }
             catch (CreditCardRefundException ex)
             {
@@ -515,7 +515,7 @@ namespace Headstart.API.Commands
             QueryRequestOptions requestOptions = new QueryRequestOptions();
             requestOptions.MaxItemCount = listOptions.PageSize;
 
-            CosmosListPage<RMA> rmas = await _rmaRepo.GetItemsAsync(queryable, requestOptions, listOptions);
+            CosmosListPage<RMA> rmas = await rmaRepo.GetItemsAsync(queryable, requestOptions, listOptions);
             return rmas;
         }
 
@@ -699,7 +699,7 @@ namespace Headstart.API.Commands
 
             List<HSLineItem> lineItemsChanged = worksheet.LineItems.Where(li => lineItemStatusChanges.Changes.Select(li => li.ID).Contains(li.ID)).ToList();
 
-            Supplier supplier = await _oc.Suppliers.GetAsync(rma.SupplierID);
+            Supplier supplier = await oc.Suppliers.GetAsync(rma.SupplierID);
 
             EmailDisplayText emailText = new EmailDisplayText()
             {
@@ -708,7 +708,7 @@ namespace Headstart.API.Commands
                 DynamicText2 = "The following items have new messages",
             };
 
-            await _sendgridService.SendLineItemStatusChangeEmail(worksheet.Order, lineItemStatusChanges, lineItemsChanged, worksheet.Order.FromUser.FirstName, worksheet.Order.FromUser.LastName, worksheet.Order.FromUser.Email, emailText);
+            await sendgridService.SendLineItemStatusChangeEmail(worksheet.Order, lineItemStatusChanges, lineItemsChanged, worksheet.Order.FromUser.FirstName, worksheet.Order.FromUser.LastName, worksheet.Order.FromUser.Email, emailText);
         }
 
         private void ValidateRMA(RMA rma, MeUser me, DecodedToken decodedToken)

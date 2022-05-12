@@ -31,23 +31,23 @@ namespace Headstart.API.Commands
 
     public class CheckoutIntegrationCommand : ICheckoutIntegrationCommand
     {
-        private readonly ordercloud.integrations.library.ITaxCalculator _taxCalculator;
-        private readonly IEasyPostShippingService _shippingService;
-        private readonly IExchangeRatesCommand _exchangeRates;
-        private readonly IOrderCloudClient _oc;
-        private readonly IDiscountDistributionService _discountDistribution;
-        private readonly HSShippingProfiles _profiles;
-        private readonly AppSettings _settings;
+        private readonly ordercloud.integrations.library.ITaxCalculator taxCalculator;
+        private readonly IEasyPostShippingService shippingService;
+        private readonly IExchangeRatesCommand exchangeRates;
+        private readonly IOrderCloudClient oc;
+        private readonly IDiscountDistributionService discountDistribution;
+        private readonly HSShippingProfiles profiles;
+        private readonly AppSettings settings;
 
         public CheckoutIntegrationCommand(IDiscountDistributionService discountDistribution, ordercloud.integrations.library.ITaxCalculator taxCalculator, IExchangeRatesCommand exchangeRates, IOrderCloudClient orderCloud, IEasyPostShippingService shippingService, AppSettings settings)
         {
-            _taxCalculator = taxCalculator;
-            _exchangeRates = exchangeRates;
-            _oc = orderCloud;
-            _shippingService = shippingService;
-            _settings = settings;
-            _discountDistribution = discountDistribution;
-            _profiles = new HSShippingProfiles(_settings);
+            this.taxCalculator = taxCalculator;
+            this.exchangeRates = exchangeRates;
+            oc = orderCloud;
+            this.shippingService = shippingService;
+            this.settings = settings;
+            this.discountDistribution = discountDistribution;
+            profiles = new HSShippingProfiles(this.settings);
         }
 
         public static IEnumerable<HSShipMethod> WhereRateIsCheapestOfItsKind(IEnumerable<HSShipMethod> methods)
@@ -176,7 +176,7 @@ namespace Headstart.API.Commands
 
         public async Task<ShipEstimateResponse> GetRatesAsync(string orderID)
         {
-            var order = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
+            var order = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
             return await this.GetRatesAsync(order);
         }
 
@@ -194,7 +194,7 @@ namespace Headstart.API.Commands
 
         public async Task<HSOrderCalculateResponse> CalculateOrder(string orderID, DecodedToken decodedToken)
         {
-            var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID, decodedToken.AccessToken);
+            var worksheet = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID, decodedToken.AccessToken);
             return await this.CalculateOrder(new HSOrderCalculatePayload()
             {
                 ConfigData = null,
@@ -211,9 +211,9 @@ namespace Headstart.API.Commands
             }
             else
             {
-                var promotions = await _oc.Orders.ListAllPromotionsAsync(OrderDirection.All, orderCalculatePayload.OrderWorksheet.Order.ID);
-                var promoCalculationTask = _discountDistribution.SetLineItemProportionalDiscount(orderCalculatePayload.OrderWorksheet, promotions);
-                var taxCalculationTask = _taxCalculator.CalculateEstimateAsync(orderCalculatePayload.OrderWorksheet.Reserialize<OrderWorksheet>(), promotions);
+                var promotions = await oc.Orders.ListAllPromotionsAsync(OrderDirection.All, orderCalculatePayload.OrderWorksheet.Order.ID);
+                var promoCalculationTask = discountDistribution.SetLineItemProportionalDiscount(orderCalculatePayload.OrderWorksheet, promotions);
+                var taxCalculationTask = taxCalculator.CalculateEstimateAsync(orderCalculatePayload.OrderWorksheet.Reserialize<OrderWorksheet>(), promotions);
                 var taxCalculation = await taxCalculationTask;
                 await promoCalculationTask;
 
@@ -231,19 +231,19 @@ namespace Headstart.API.Commands
         private async Task<ShipEstimateResponse> GetRatesAsync(HSOrderWorksheet worksheet, CheckoutIntegrationConfiguration config = null)
         {
             var groupedLineItems = worksheet.LineItems.GroupBy(li => new AddressPair { ShipFrom = li.ShipFromAddress, ShipTo = li.ShippingAddress }).ToList();
-            var shipResponse = (await _shippingService.GetRates(groupedLineItems, _profiles)).Reserialize<HSShipEstimateResponse>(); // include all accounts at this stage so we can save on order worksheet and analyze
+            var shipResponse = (await shippingService.GetRates(groupedLineItems, profiles)).Reserialize<HSShipEstimateResponse>(); // include all accounts at this stage so we can save on order worksheet and analyze
 
             // Certain suppliers use certain shipping accounts. This filters available rates based on those accounts.
             for (var i = 0; i < groupedLineItems.Count; i++)
             {
                 var supplierID = groupedLineItems[i].First().SupplierID;
-                var profile = _profiles.FirstOrDefault(supplierID);
+                var profile = profiles.FirstOrDefault(supplierID);
                 var methods = FilterMethodsBySupplierConfig(shipResponse.ShipEstimates[i].ShipMethods.Where(s => profile.CarrierAccountIDs.Contains(s.xp.CarrierAccountID)).ToList(), profile);
                 shipResponse.ShipEstimates[i].ShipMethods = methods.Select(s =>
                 {
                     // there is logic here to support not marking up shipping over list rate. But USPS is always list rate
                     // so adding an override to the suppliers that use USPS
-                    var carrier = _profiles.ShippingProfiles.First(p => p.CarrierAccountIDs.Contains(s.xp?.CarrierAccountID));
+                    var carrier = profiles.ShippingProfiles.First(p => p.CarrierAccountIDs.Contains(s.xp?.CarrierAccountID));
                     s.Cost = carrier.MarkupOverride ?
                         s.xp.OriginalCost * carrier.Markup :
                         Math.Min(s.xp.OriginalCost * carrier.Markup, s.xp.ListRate);
@@ -255,16 +255,16 @@ namespace Headstart.API.Commands
             var buyerCurrency = worksheet.Order.xp.Currency ?? CurrencySymbol.USD;
 
             await shipResponse.ShipEstimates
-                .CheckForEmptyRates(_settings.EasyPostSettings.NoRatesFallbackCost, _settings.EasyPostSettings.NoRatesFallbackTransitDays)
-                .ApplyShippingLogic(worksheet, _oc, _settings.EasyPostSettings.FreeShippingTransitDays).Result
-                .ConvertCurrency(CurrencySymbol.USD, buyerCurrency, _exchangeRates);
+                .CheckForEmptyRates(settings.EasyPostSettings.NoRatesFallbackCost, settings.EasyPostSettings.NoRatesFallbackTransitDays)
+                .ApplyShippingLogic(worksheet, oc, settings.EasyPostSettings.FreeShippingTransitDays).Result
+                .ConvertCurrency(CurrencySymbol.USD, buyerCurrency, exchangeRates);
 
             return shipResponse;
         }
 
         private async Task<List<HSShipEstimate>> ConvertShippingRatesCurrency(IList<HSShipEstimate> shipEstimates, CurrencySymbol shipperCurrency, CurrencySymbol buyerCurrency)
         {
-            var rates = (await _exchangeRates.Get(buyerCurrency)).Rates;
+            var rates = (await exchangeRates.Get(buyerCurrency)).Rates;
             var conversionRate = rates.Find(r => r.Currency == shipperCurrency).Rate;
             return shipEstimates.Select(estimate =>
             {
@@ -287,7 +287,7 @@ namespace Headstart.API.Commands
         private async Task<List<HSShipEstimate>> ApplyFreeShipping(HSOrderWorksheet orderWorksheet, IList<HSShipEstimate> shipEstimates)
         {
             var supplierIDs = orderWorksheet.LineItems.Select(li => li.SupplierID);
-            var suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={string.Join("|", supplierIDs)}");
+            var suppliers = await oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={string.Join("|", supplierIDs)}");
             var updatedEstimates = new List<HSShipEstimate>();
 
             foreach (var estimate in shipEstimates)

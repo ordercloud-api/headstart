@@ -10,11 +10,11 @@ namespace Headstart.API.Controllers
     [Route("assets")]
     public class AssetController : CatalystController
     {
-        private readonly IAssetClient _command;
+        private readonly IAssetClient command;
 
         public AssetController(IAssetClient command)
         {
-            _command = command;
+            this.command = command;
         }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace Headstart.API.Controllers
         [HttpPost, Route("image"), OrderCloudUserAuth]
         public async Task<ImageAsset> CreateImage([FromForm] AssetUpload asset)
         {
-            return await _command.CreateImage(asset);
+            return await command.CreateImage(asset);
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace Headstart.API.Controllers
         [HttpDelete, Route("{id}"), OrderCloudUserAuth]
         public async Task DeleteImage(string id)
         {
-            await _command.DeleteAsset(id);
+            await command.DeleteAsset(id);
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Headstart.API.Controllers
         [HttpPost, Route("document"), OrderCloudUserAuth]
         public async Task<DocumentAsset> CreateDocument([FromForm] AssetUpload asset)
         {
-            return await _command.CreateDocument(asset);
+            return await command.CreateDocument(asset);
         }
     }
 }

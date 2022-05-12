@@ -45,23 +45,23 @@ namespace Headstart.API.Commands.Crud
 
     public class HSProductCommand : IHSProductCommand
     {
-        private readonly IOrderCloudClient _oc;
-        private readonly AppSettings _settings;
-        private readonly ISupplierApiClientHelper _apiClientHelper;
-        private readonly IAssetClient _assetClient;
+        private readonly IOrderCloudClient oc;
+        private readonly AppSettings settings;
+        private readonly ISupplierApiClientHelper apiClientHelper;
+        private readonly IAssetClient assetClient;
 
         public HSProductCommand(AppSettings settings, IOrderCloudClient elevatedOc, ISupplierApiClientHelper apiClientHelper, IAssetClient assetClient)
         {
-            _oc = elevatedOc;
-            _settings = settings;
-            _apiClientHelper = apiClientHelper;
-            _assetClient = assetClient;
+            oc = elevatedOc;
+            this.settings = settings;
+            this.apiClientHelper = apiClientHelper;
+            this.assetClient = assetClient;
         }
 
         public async Task<HSPriceSchedule> GetPricingOverride(string id, string buyerID, string token)
         {
             var priceScheduleID = $"{id}-{buyerID}";
-            var priceSchedule = await _oc.PriceSchedules.GetAsync<HSPriceSchedule>(priceScheduleID);
+            var priceSchedule = await oc.PriceSchedules.GetAsync<HSPriceSchedule>(priceScheduleID);
             return priceSchedule;
         }
 
@@ -73,7 +73,7 @@ namespace Headstart.API.Commands.Crud
             * just without the override */
             var priceScheduleID = $"{id}-{buyerID}";
             await RemovePriceScheduleAssignmentFromProductCatalogAssignments(id, buyerID, priceScheduleID);
-            await _oc.PriceSchedules.DeleteAsync(priceScheduleID);
+            await oc.PriceSchedules.DeleteAsync(priceScheduleID);
         }
 
         public async Task<HSPriceSchedule> CreatePricingOverride(string id, string buyerID, HSPriceSchedule priceSchedule, string token)
@@ -81,7 +81,7 @@ namespace Headstart.API.Commands.Crud
             /* must add the price schedule to the visibility assignments */
             var priceScheduleID = $"{id}-{buyerID}";
             priceSchedule.ID = priceScheduleID;
-            var newPriceSchedule = await _oc.PriceSchedules.SaveAsync<HSPriceSchedule>(priceScheduleID, priceSchedule);
+            var newPriceSchedule = await oc.PriceSchedules.SaveAsync<HSPriceSchedule>(priceScheduleID, priceSchedule);
             await AddPriceScheduleAssignmentToProductCatalogAssignments(id, buyerID, priceScheduleID);
             return newPriceSchedule;
         }
@@ -89,16 +89,16 @@ namespace Headstart.API.Commands.Crud
         public async Task<HSPriceSchedule> UpdatePricingOverride(string id, string buyerID, HSPriceSchedule priceSchedule, string token)
         {
             var priceScheduleID = $"{id}-{buyerID}";
-            var newPriceSchedule = await _oc.PriceSchedules.SaveAsync<HSPriceSchedule>(priceScheduleID, priceSchedule);
+            var newPriceSchedule = await oc.PriceSchedules.SaveAsync<HSPriceSchedule>(priceScheduleID, priceSchedule);
             return newPriceSchedule;
         }
 
         public async Task RemovePriceScheduleAssignmentFromProductCatalogAssignments(string productID, string buyerID, string priceScheduleID)
         {
-            var relatedProductCatalogAssignments = await _oc.Products.ListAssignmentsAsync(productID: productID, buyerID: buyerID, pageSize: 100);
+            var relatedProductCatalogAssignments = await oc.Products.ListAssignmentsAsync(productID: productID, buyerID: buyerID, pageSize: 100);
             await Throttler.RunAsync(relatedProductCatalogAssignments.Items, 100, 5, assignment =>
             {
-                return _oc.Products.SaveAssignmentAsync(new ProductAssignment
+                return oc.Products.SaveAssignmentAsync(new ProductAssignment
                 {
                     BuyerID = buyerID,
                     PriceScheduleID = null,
@@ -110,10 +110,10 @@ namespace Headstart.API.Commands.Crud
 
         public async Task AddPriceScheduleAssignmentToProductCatalogAssignments(string productID, string buyerID, string priceScheduleID)
         {
-            var relatedProductCatalogAssignments = await _oc.Products.ListAssignmentsAsync(productID: productID, buyerID: buyerID, pageSize: 100);
+            var relatedProductCatalogAssignments = await oc.Products.ListAssignmentsAsync(productID: productID, buyerID: buyerID, pageSize: 100);
             await Throttler.RunAsync(relatedProductCatalogAssignments.Items, 100, 5, assignment =>
             {
-                return _oc.Products.SaveAssignmentAsync(new ProductAssignment
+                return oc.Products.SaveAssignmentAsync(new ProductAssignment
                 {
                     BuyerID = buyerID,
                     PriceScheduleID = priceScheduleID,
@@ -125,19 +125,19 @@ namespace Headstart.API.Commands.Crud
 
         public async Task<SuperHSProduct> Get(string id, string token)
         {
-            var product = await _oc.Products.GetAsync<HSProduct>(id, token);
+            var product = await oc.Products.GetAsync<HSProduct>(id, token);
             var priceSchedule = new PriceSchedule();
             try
             {
-                priceSchedule = await _oc.PriceSchedules.GetAsync<PriceSchedule>(product.ID, token);
+                priceSchedule = await oc.PriceSchedules.GetAsync<PriceSchedule>(product.ID, token);
             }
             catch
             {
                 priceSchedule = new PriceSchedule();
             }
 
-            var specs = _oc.Products.ListSpecsAsync(id, null, null, null, 1, 100, null, token);
-            var variants = _oc.Products.ListVariantsAsync<HSVariant>(id, null, null, null, 1, 100, null, token);
+            var specs = oc.Products.ListSpecsAsync(id, null, null, null, 1, 100, null, token);
+            var variants = oc.Products.ListVariantsAsync<HSVariant>(id, null, null, null, 1, 100, null, token);
             try
             {
                 return new SuperHSProduct
@@ -157,7 +157,7 @@ namespace Headstart.API.Commands.Crud
         public async Task<ListPage<SuperHSProduct>> List(ListArgs<HSProduct> args, string token)
         {
             var filterString = args.ToFilterString();
-            var productsList = await _oc.Products.ListAsync<HSProduct>(
+            var productsList = await oc.Products.ListAsync<HSProduct>(
                 filters: string.IsNullOrEmpty(filterString) ? null : filterString,
                 search: args.Search,
                 searchType: SearchType.ExactPhrasePrefix,
@@ -168,9 +168,9 @@ namespace Headstart.API.Commands.Crud
             var superProductsList = new List<SuperHSProduct> { };
             await Throttler.RunAsync(productsList.Items, 100, 10, async product =>
             {
-                var priceSchedule = _oc.PriceSchedules.GetAsync(product.DefaultPriceScheduleID, token);
-                var specs = _oc.Products.ListSpecsAsync(product.ID, null, null, null, 1, 100, null, token);
-                var variants = _oc.Products.ListVariantsAsync<HSVariant>(product.ID, null, null, null, 1, 100, null, token);
+                var priceSchedule = oc.PriceSchedules.GetAsync(product.DefaultPriceScheduleID, token);
+                var specs = oc.Products.ListSpecsAsync(product.ID, null, null, null, 1, 100, null, token);
+                var variants = oc.Products.ListVariantsAsync<HSVariant>(product.ID, null, null, null, 1, 100, null, token);
                 superProductsList.Add(new SuperHSProduct
                 {
                     Product = product,
@@ -198,7 +198,7 @@ namespace Headstart.API.Commands.Crud
             superProduct.PriceSchedule.ID = superProduct.Product.ID;
             try
             {
-                priceSchedule = await _oc.PriceSchedules.CreateAsync<PriceSchedule>(superProduct.PriceSchedule, decodedToken.AccessToken);
+                priceSchedule = await oc.PriceSchedules.CreateAsync<PriceSchedule>(superProduct.PriceSchedule, decodedToken.AccessToken);
             }
             catch (OrderCloudException ex)
             {
@@ -212,13 +212,13 @@ namespace Headstart.API.Commands.Crud
 
             if (decodedToken.CommerceRole == CommerceRole.Supplier)
             {
-                var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+                var me = await oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
                 var supplierName = await GetSupplierNameForXpFacet(me.Supplier.ID, decodedToken.AccessToken);
                 superProduct.Product.xp.Facets.Add("supplier", new List<string>() { supplierName });
             }
 
             // Create Product
-            var product = await _oc.Products.CreateAsync<HSProduct>(superProduct.Product, decodedToken.AccessToken);
+            var product = await oc.Products.CreateAsync<HSProduct>(superProduct.Product, decodedToken.AccessToken);
 
             // Return the SuperProduct
             return new SuperHSProduct
@@ -233,15 +233,15 @@ namespace Headstart.API.Commands.Crud
         public async Task<SuperHSProduct> Put(string id, SuperHSProduct superProduct, string token)
         {
             // Update the Product itself
-            var updatedProduct = await _oc.Products.SaveAsync<HSProduct>(superProduct.Product.ID, superProduct.Product, token);
+            var updatedProduct = await oc.Products.SaveAsync<HSProduct>(superProduct.Product.ID, superProduct.Product, token);
 
             // Two spec lists to compare (requestSpecs and existingSpecs)
             IList<Spec> requestSpecs = superProduct.Specs.ToList();
-            IList<Spec> existingSpecs = (await _oc.Products.ListSpecsAsync(id, accessToken: token)).Items.ToList();
+            IList<Spec> existingSpecs = (await oc.Products.ListSpecsAsync(id, accessToken: token)).Items.ToList();
 
             // Two variant lists to compare (requestVariants and existingVariants)
             IList<HSVariant> requestVariants = superProduct.Variants;
-            IList<Variant> existingVariants = (await _oc.Products.ListVariantsAsync(id, pageSize: 100, accessToken: token)).Items.ToList();
+            IList<Variant> existingVariants = (await oc.Products.ListVariantsAsync(id, pageSize: 100, accessToken: token)).Items.ToList();
 
             // Calculate differences in specs - specs to add, and specs to delete
             var specsToAdd = requestSpecs.Where(s => !existingSpecs.Any(s2 => s2.ID == s.ID)).ToList();
@@ -254,8 +254,8 @@ namespace Headstart.API.Commands.Crud
                 {
                     if (rSpec.ID == eSpec.ID)
                     {
-                        await Throttler.RunAsync(rSpec.Options.Where(rso => !eSpec.Options.Any(eso => eso.ID == rso.ID)), 100, 5, o => _oc.Specs.CreateOptionAsync(rSpec.ID, o, accessToken: token));
-                        await Throttler.RunAsync(eSpec.Options.Where(eso => !rSpec.Options.Any(rso => rso.ID == eso.ID)), 100, 5, o => _oc.Specs.DeleteOptionAsync(rSpec.ID, o.ID, accessToken: token));
+                        await Throttler.RunAsync(rSpec.Options.Where(rso => !eSpec.Options.Any(eso => eso.ID == rso.ID)), 100, 5, o => oc.Specs.CreateOptionAsync(rSpec.ID, o, accessToken: token));
+                        await Throttler.RunAsync(eSpec.Options.Where(eso => !rSpec.Options.Any(rso => rso.ID == eso.ID)), 100, 5, o => oc.Specs.DeleteOptionAsync(rSpec.ID, o.ID, accessToken: token));
                     }
                 }
             }
@@ -266,21 +266,21 @@ namespace Headstart.API.Commands.Crud
             {
                 defaultSpecOptions.Add(new DefaultOptionSpecAssignment { SpecID = s.ID, OptionID = s.DefaultOptionID });
                 s.DefaultOptionID = null;
-                return _oc.Specs.SaveAsync<Spec>(s.ID, s, accessToken: token);
+                return oc.Specs.SaveAsync<Spec>(s.ID, s, accessToken: token);
             });
-            await Throttler.RunAsync(specsToDelete, 100, 5, s => _oc.Specs.DeleteAsync(s.ID, accessToken: token));
+            await Throttler.RunAsync(specsToDelete, 100, 5, s => oc.Specs.DeleteAsync(s.ID, accessToken: token));
 
             // Add spec options for new specs
             foreach (var spec in specsToAdd)
             {
-                await Throttler.RunAsync(spec.Options, 100, 5, o => _oc.Specs.CreateOptionAsync(spec.ID, o, accessToken: token));
+                await Throttler.RunAsync(spec.Options, 100, 5, o => oc.Specs.CreateOptionAsync(spec.ID, o, accessToken: token));
             }
 
             // Patch Specs with requested DefaultOptionID
-            await Throttler.RunAsync(defaultSpecOptions, 100, 10, a => _oc.Specs.PatchAsync(a.SpecID, new PartialSpec { DefaultOptionID = a.OptionID }, accessToken: token));
+            await Throttler.RunAsync(defaultSpecOptions, 100, 10, a => oc.Specs.PatchAsync(a.SpecID, new PartialSpec { DefaultOptionID = a.OptionID }, accessToken: token));
 
             // Make assignments for the new specs
-            await Throttler.RunAsync(specsToAdd, 100, 5, s => _oc.Specs.SaveProductAssignmentAsync(new SpecProductAssignment { ProductID = id, SpecID = s.ID }, accessToken: token));
+            await Throttler.RunAsync(specsToAdd, 100, 5, s => oc.Specs.SaveProductAssignmentAsync(new SpecProductAssignment { ProductID = id, SpecID = s.ID }, accessToken: token));
             HandleSpecOptionChanges(requestSpecs, existingSpecs, token);
 
             // Check if Variants differ
@@ -311,7 +311,7 @@ namespace Headstart.API.Commands.Crud
                 await ValidateVariantsAsync(superProduct, token);
 
                 // Re-generate Variants
-                await _oc.Products.GenerateVariantsAsync(id, overwriteExisting: true, accessToken: token);
+                await oc.Products.GenerateVariantsAsync(id, overwriteExisting: true, accessToken: token);
 
                 // Patch NEW variants with the User Specified ID (Name,ID), and correct xp values (SKU)
                 await Throttler.RunAsync(superProduct.Variants, 100, 5, v =>
@@ -326,11 +326,11 @@ namespace Headstart.API.Commands.Crud
                     if (superProduct.Product?.Inventory == null)
                     {
                         // If Inventory doesn't exist on the product, don't patch variants with inventory either.
-                        return _oc.Products.PatchVariantAsync(id, $"{superProduct.Product.ID}-{v.xp.SpecCombo}", new PartialVariant { ID = v.ID, Name = v.Name, xp = v.xp, Active = v.Active }, accessToken: token);
+                        return oc.Products.PatchVariantAsync(id, $"{superProduct.Product.ID}-{v.xp.SpecCombo}", new PartialVariant { ID = v.ID, Name = v.Name, xp = v.xp, Active = v.Active }, accessToken: token);
                     }
                     else
                     {
-                        return _oc.Products.PatchVariantAsync(id, $"{superProduct.Product.ID}-{v.xp.SpecCombo}", new PartialVariant { ID = v.ID, Name = v.Name, xp = v.xp, Active = v.Active, Inventory = v.Inventory }, accessToken: token);
+                        return oc.Products.PatchVariantAsync(id, $"{superProduct.Product.ID}-{v.xp.SpecCombo}", new PartialVariant { ID = v.ID, Name = v.Name, xp = v.xp, Active = v.Active, Inventory = v.Inventory }, accessToken: token);
                     }
                 });
             }
@@ -345,11 +345,11 @@ namespace Headstart.API.Commands.Crud
             }
 
             // List Variants
-            var variantsReq = _oc.Products.ListVariantsAsync<HSVariant>(id, pageSize: 100, accessToken: token);
+            var variantsReq = oc.Products.ListVariantsAsync<HSVariant>(id, pageSize: 100, accessToken: token);
             tasks.Add(variantsReq);
 
             // List Product Specs
-            var specsReq = _oc.Products.ListSpecsAsync<Spec>(id, accessToken: token);
+            var specsReq = oc.Products.ListSpecsAsync<Spec>(id, accessToken: token);
             tasks.Add(specsReq);
 
             await Task.WhenAll(tasks);
@@ -365,21 +365,21 @@ namespace Headstart.API.Commands.Crud
 
         public async Task Delete(string id, string token)
         {
-            var product = await _oc.Products.GetAsync<HSProduct>(id);
-            var specs = await _oc.Products.ListSpecsAsync<Spec>(id, accessToken: token);
+            var product = await oc.Products.GetAsync<HSProduct>(id);
+            var specs = await oc.Products.ListSpecsAsync<Spec>(id, accessToken: token);
             var tasks = new List<Task>()
             {
-                Throttler.RunAsync(specs.Items, 100, 5, s => _oc.Specs.DeleteAsync(s.ID, accessToken: token)),
-                _oc.Products.DeleteAsync(id, token),
+                Throttler.RunAsync(specs.Items, 100, 5, s => oc.Specs.DeleteAsync(s.ID, accessToken: token)),
+                oc.Products.DeleteAsync(id, token),
             };
             if (product?.xp?.Images?.Count() > 0)
             {
-                tasks.Add(Throttler.RunAsync(product.xp.Images, 100, 5, i => _assetClient.DeleteAssetByUrl(i.Url)));
+                tasks.Add(Throttler.RunAsync(product.xp.Images, 100, 5, i => assetClient.DeleteAssetByUrl(i.Url)));
             }
 
             if (product?.xp?.Documents != null && product?.xp?.Documents.Count() > 0)
             {
-                tasks.Add(Throttler.RunAsync(product.xp.Documents, 100, 5, d => _assetClient.DeleteAssetByUrl(d.Url)));
+                tasks.Add(Throttler.RunAsync(product.xp.Documents, 100, 5, d => assetClient.DeleteAssetByUrl(d.Url)));
             }
 
             // Delete images, attachments, and assignments associated with the requested product
@@ -388,7 +388,7 @@ namespace Headstart.API.Commands.Crud
 
         public async Task<Product> FilterOptionOverride(string id, string supplierID, IDictionary<string, object> facets, DecodedToken decodedToken)
         {
-            ApiClient supplierClient = await _apiClientHelper.GetSupplierApiClient(supplierID, decodedToken.AccessToken);
+            ApiClient supplierClient = await apiClientHelper.GetSupplierApiClient(supplierID, decodedToken.AccessToken);
             if (supplierClient == null)
             {
                 throw new Exception($"Default supplier client not found. SupplierID: {supplierID}");
@@ -439,7 +439,7 @@ namespace Headstart.API.Commands.Crud
 
             try
             {
-                var allProducts = await _oc.Products.ListAllAsync(accessToken: token);
+                var allProducts = await oc.Products.ListAllAsync(accessToken: token);
 
                 if (allProducts == null || !allProducts.Any())
                 {
@@ -450,7 +450,7 @@ namespace Headstart.API.Commands.Crud
                 {
                     if (product.VariantCount > 0 && product.ID != superProduct.Product.ID)
                     {
-                        allVariants.AddRange((await _oc.Products.ListVariantsAsync(productID: product.ID, pageSize: 100, accessToken: token)).Items);
+                        allVariants.AddRange((await oc.Products.ListVariantsAsync(productID: product.ID, pageSize: 100, accessToken: token)).Items);
                     }
                 }
             }
@@ -502,8 +502,8 @@ namespace Headstart.API.Commands.Crud
 
         private async Task<PriceSchedule> UpdateRelatedPriceSchedules(PriceSchedule updated, string token)
         {
-            var ocAuth = await _oc.AuthenticateAsync();
-            var initial = await _oc.PriceSchedules.GetAsync(updated.ID);
+            var ocAuth = await oc.AuthenticateAsync();
+            var initial = await oc.PriceSchedules.GetAsync(updated.ID);
             if (initial.MaxQuantity != updated.MaxQuantity ||
                 initial.MinQuantity != updated.MinQuantity ||
                 initial.UseCumulativeQuantity != updated.UseCumulativeQuantity ||
@@ -520,15 +520,15 @@ namespace Headstart.API.Commands.Crud
                     ApplyShipping = updated.ApplyShipping,
                     ApplyTax = updated.ApplyTax,
                 };
-                var relatedPriceSchedules = await _oc.PriceSchedules.ListAllAsync(filters: $"ID={initial.ID}*");
+                var relatedPriceSchedules = await oc.PriceSchedules.ListAllAsync(filters: $"ID={initial.ID}*");
                 var priceSchedulesToUpdate = relatedPriceSchedules.Where(p => p.ID != updated.ID);
                 await Throttler.RunAsync(priceSchedulesToUpdate, 100, 5, p =>
                 {
-                    return _oc.PriceSchedules.PatchAsync(p.ID, patch, ocAuth.AccessToken);
+                    return oc.PriceSchedules.PatchAsync(p.ID, patch, ocAuth.AccessToken);
                 });
             }
 
-            return await _oc.PriceSchedules.SaveAsync<PriceSchedule>(updated.ID, updated, token);
+            return await oc.PriceSchedules.SaveAsync<PriceSchedule>(updated.ID, updated, token);
         }
 
         private bool HasVariantChange(Variant variant, Variant currVariant)
@@ -607,7 +607,7 @@ namespace Headstart.API.Commands.Crud
             foreach (var spec in requestSpecOptions)
             {
                 IList<SpecOption> changedSpecOptions = ChangedSpecOptions(spec.Value, existingSpecOptions);
-                await Throttler.RunAsync(changedSpecOptions, 100, 5, option => _oc.Specs.SaveOptionAsync(spec.Key, option.ID, option, token));
+                await Throttler.RunAsync(changedSpecOptions, 100, 5, option => oc.Specs.SaveOptionAsync(spec.Key, option.ID, option, token));
             }
         }
 
@@ -649,7 +649,7 @@ namespace Headstart.API.Commands.Crud
 
         private async Task<string> GetSupplierNameForXpFacet(string supplierID, string accessToken)
         {
-            var supplier = await _oc.Suppliers.GetAsync(supplierID, accessToken);
+            var supplier = await oc.Suppliers.GetAsync(supplierID, accessToken);
             return supplier.Name;
         }
     }

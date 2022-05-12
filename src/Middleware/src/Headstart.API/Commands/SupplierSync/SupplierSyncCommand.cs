@@ -19,18 +19,18 @@ namespace Headstart.API.Commands
 
     public class SupplierSyncCommand : ISupplierSyncCommand
     {
-        private readonly AppSettings _settings;
-        private readonly IOrderCloudClient _oc;
+        private readonly AppSettings settings;
+        private readonly IOrderCloudClient oc;
 
         public SupplierSyncCommand(AppSettings settings, IOrderCloudClient oc)
         {
-            _settings = settings;
-            _oc = oc;
+            this.settings = settings;
+            this.oc = oc;
         }
 
         public async Task<JObject> GetOrderAsync(string id, OrderType orderType, DecodedToken decodedToken)
         {
-            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            var me = await oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
 
             // Quote orders often won't have a hyphen in their order IDs, so allowing ID to be a fallback. This value is determined subsequently for quotes.
             var supplierID = id.Split("-").Length > 1 ? id.Split("-")[1] : id;
@@ -49,7 +49,7 @@ namespace Headstart.API.Commands
                     throw new MissingMethodException($"Command for {supplierID} is unavailable");
                 }
 
-                var command = (ISupplierSyncCommand)Activator.CreateInstance(type, _settings);
+                var command = (ISupplierSyncCommand)Activator.CreateInstance(type, settings);
                 var method = command.GetType().GetMethod($"GetOrderAsync", BindingFlags.Public | BindingFlags.Instance);
                 if (method == null)
                 {

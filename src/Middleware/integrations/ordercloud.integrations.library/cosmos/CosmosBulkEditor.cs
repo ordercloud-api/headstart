@@ -31,12 +31,12 @@ namespace ordercloud.integrations.library
     // https://github.com/Azure/azure-cosmosdb-bulkexecutor-dotnet-getting-started/blob/master/BulkUpdateSample/BulkUpdateSample/Program.cs
     public class CosmosBulkOperations : ICosmosBulkOperations
     {
-        private readonly string DatabaseName;
+        private readonly string databaseName;
         private readonly DocumentClient client;
 
         public CosmosBulkOperations(CosmosConfig config)
         {
-            DatabaseName = config.DatabaseName;
+            databaseName = config.DatabaseName;
             client = new DocumentClient(new Uri(config.EndpointUri), config.PrimaryKey, new ConnectionPolicy
             {
                 ConnectionMode = ConnectionMode.Direct,
@@ -186,7 +186,7 @@ namespace ordercloud.integrations.library
 
         public async Task<List<T>> GetAllAsync<T>(string collectionName)
         {
-            var collection = GetCollectionIfExists(client, DatabaseName, collectionName);
+            var collection = GetCollectionIfExists(client, databaseName, collectionName);
             var list = new List<T>();
             using (var queryable = client.CreateDocumentQuery<T>(collection.SelfLink).AsDocumentQuery())
             {
@@ -251,7 +251,7 @@ namespace ordercloud.integrations.library
 
         private async Task<BulkExecutor> BuildClientAsync(string collectionName)
         {
-            var collection = GetCollectionIfExists(client, DatabaseName, collectionName);
+            var collection = GetCollectionIfExists(client, databaseName, collectionName);
             var bulkExecutor = new BulkExecutor(client, collection);
             await bulkExecutor.InitializeAsync();
 

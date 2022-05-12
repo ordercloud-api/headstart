@@ -14,11 +14,11 @@ namespace Headstart.Common.Controllers
     [Route("shipment")]
     public class ShipmentController : CatalystController
     {
-        private readonly IShipmentCommand _command;
+        private readonly IShipmentCommand command;
 
         public ShipmentController(IShipmentCommand command)
         {
-            _command = command;
+            this.command = command;
         }
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace Headstart.Common.Controllers
             // ocAuth is the token for the organization that is specified in the AppSettings
 
             // todo add auth to make sure suppliers are creating shipments for their own orders
-            return await _command.CreateShipment(superShipment, UserContext);
+            return await command.CreateShipment(superShipment, UserContext);
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Headstart.Common.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<BatchProcessResult> UploadShipments([FromForm] FileUpload fileRequest)
         {
-            return await _command.UploadShipments(fileRequest?.File, UserContext);
+            return await command.UploadShipments(fileRequest?.File, UserContext);
         }
     }
 

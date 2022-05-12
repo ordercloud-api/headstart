@@ -16,21 +16,21 @@ namespace Headstart.Common.Services
     // use this service to alert support of critical failures
     public class SupportAlertService : ISupportAlertService
     {
-        private readonly TelemetryClient _telemetry;
-        private readonly ISendgridService _sendgrid;
-        private readonly AppSettings _settings;
+        private readonly TelemetryClient telemetry;
+        private readonly ISendgridService sendgrid;
+        private readonly AppSettings settings;
 
         public SupportAlertService(TelemetryClient telemetry, ISendgridService sendgrid, AppSettings settings)
         {
-            _telemetry = telemetry;
-            _sendgrid = sendgrid;
-            _settings = settings;
+            this.telemetry = telemetry;
+            this.sendgrid = sendgrid;
+            this.settings = settings;
         }
 
         public async Task VoidAuthorizationFailed(HSPayment payment, string transactionID, HSOrder order, CreditCardVoidException ex)
         {
             LogVoidAuthorizationFailed(payment, transactionID, order, ex);
-            await _sendgrid.EmailVoidAuthorizationFailedAsync(payment, transactionID, order, ex);
+            await sendgrid.EmailVoidAuthorizationFailedAsync(payment, transactionID, order, ex);
         }
 
         public void LogVoidAuthorizationFailed(HSPayment payment, string transactionID, HSOrder order, CreditCardVoidException ex)
@@ -47,7 +47,7 @@ namespace Headstart.Common.Services
                     { "TransactionID", transactionID },
                     { "ErrorResponse", JsonConvert.SerializeObject(ex.ApiError, Formatting.Indented) },
                 };
-            _telemetry.TrackEvent("Payment.VoidAuthorizationFailed", customProperties);
+            telemetry.TrackEvent("Payment.VoidAuthorizationFailed", customProperties);
         }
     }
 }

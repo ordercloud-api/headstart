@@ -13,13 +13,13 @@ namespace Headstart.Jobs
 {
     public class SendRecentOrdersJob : BaseTimerJob
     {
-        private readonly IOrderCloudClient _oc;
-        private readonly IServiceBus _serviceBus;
+        private readonly IOrderCloudClient oc;
+        private readonly IServiceBus serviceBus;
 
         public SendRecentOrdersJob(IOrderCloudClient oc, IServiceBus serviceBus)
         {
-            _oc = oc;
-            _serviceBus = serviceBus;
+            this.oc = oc;
+            this.serviceBus = serviceBus;
         }
 
         protected override bool ShouldRun => true;
@@ -38,7 +38,7 @@ namespace Headstart.Jobs
                 ["IsSubmitted"] = true,
             };
 
-            var orders = await _oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Incoming, filters: filters);
+            var orders = await oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Incoming, filters: filters);
             _logger.LogInformation($"Found {orders.Count} orders with recent changes");
 
             Queue<ServiceBusMessage> messages = new Queue<ServiceBusMessage>();
@@ -48,7 +48,7 @@ namespace Headstart.Jobs
                 messages.Enqueue(new ServiceBusMessage(serializedOrderID));
             }
 
-            await _serviceBus.SendMessageBatchToTopicAsync("orderreports", messages);
+            await serviceBus.SendMessageBatchToTopicAsync("orderreports", messages);
         }
     }
 }

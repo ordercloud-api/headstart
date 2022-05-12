@@ -27,30 +27,30 @@ namespace Headstart.Tests
         private const string BUYER_PASSWORD_RESET_TEMPLATE_ID = "buyer_password_reset_template_id";
         private const string INFORMATION_REQUEST = "information_request";
         private const string PRODUCT_UPDATE_TEMPLATE_ID = "product_update_template_id";
-        private IOrderCloudClient _oc;
-        private AppSettings _settings;
-        private ISendGridClient _sendGridClient;
-        private ISendgridService _command;
+        private IOrderCloudClient oc;
+        private AppSettings settings;
+        private ISendGridClient sendGridClient;
+        private ISendgridService command;
 
         [SetUp]
         public void Setup()
         {
-            _oc = Substitute.For<IOrderCloudClient>();
-            _settings = Substitute.For<AppSettings>();
-            _sendGridClient = Substitute.For<ISendGridClient>();
+            oc = Substitute.For<IOrderCloudClient>();
+            settings = Substitute.For<AppSettings>();
+            sendGridClient = Substitute.For<ISendGridClient>();
 
-            _command = new SendgridService(_settings, _oc, _sendGridClient);
+            command = new SendgridService(settings, oc, sendGridClient);
         }
 
         [Test]
         public async Task TestOrderSubmitEmail()
         {
             var orderWorksheet = GetOrderWorksheet();
-            _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, $"{TestConstants.orderID}-{TestConstants.supplier1ID}").Returns(GetSupplierWorksheet(TestConstants.supplier1ID, TestConstants.lineItem1ID, TestConstants.lineItem1Total));
-            _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, $"{TestConstants.orderID}-{TestConstants.supplier2ID}").Returns(GetSupplierWorksheet(TestConstants.supplier2ID, TestConstants.lineItem2ID, TestConstants.lineItem2Total));
-            _oc.Suppliers.ListAsync<HSSupplier>(Arg.Any<string>()).ReturnsForAnyArgs(Task.FromResult(GetSupplierList()));
-            _oc.AdminUsers.ListAsync<HSSellerUser>().ReturnsForAnyArgs(Task.FromResult(GetSellerUserList()));
-            var commandSub = Substitute.ForPartsOf<SendgridService>(_settings, _oc, _sendGridClient);
+            oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, $"{TestConstants.orderID}-{TestConstants.supplier1ID}").Returns(GetSupplierWorksheet(TestConstants.supplier1ID, TestConstants.lineItem1ID, TestConstants.lineItem1Total));
+            oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, $"{TestConstants.orderID}-{TestConstants.supplier2ID}").Returns(GetSupplierWorksheet(TestConstants.supplier2ID, TestConstants.lineItem2ID, TestConstants.lineItem2Total));
+            oc.Suppliers.ListAsync<HSSupplier>(Arg.Any<string>()).ReturnsForAnyArgs(Task.FromResult(GetSupplierList()));
+            oc.AdminUsers.ListAsync<HSSellerUser>().ReturnsForAnyArgs(Task.FromResult(GetSellerUserList()));
+            var commandSub = Substitute.ForPartsOf<SendgridService>(settings, oc, sendGridClient);
             commandSub.Configure().WhenForAnyArgs(x => x.SendSingleTemplateEmailMultipleRcpts(default, default, default, default)).DoNotCallBase();
             commandSub.Configure().WhenForAnyArgs(x => x.SendSingleTemplateEmail(default, default, default, default)).DoNotCallBase();
 

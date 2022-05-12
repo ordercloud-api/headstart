@@ -46,12 +46,12 @@ namespace Headstart.API.Commands
 
     public class OrderCommand : IOrderCommand
     {
-        private readonly IOrderCloudClient _oc;
-        private readonly ILocationPermissionCommand _locationPermissionCommand;
-        private readonly IPromotionCommand _promotionCommand;
-        private readonly IRMACommand _rmaCommand;
-        private readonly AppSettings _settings;
-        private readonly ISendgridService _sendgridService;
+        private readonly IOrderCloudClient oc;
+        private readonly ILocationPermissionCommand locationPermissionCommand;
+        private readonly IPromotionCommand promotionCommand;
+        private readonly IRMACommand rmaCommand;
+        private readonly AppSettings settings;
+        private readonly ISendgridService sendgridService;
 
         public OrderCommand(
             ILocationPermissionCommand locationPermissionCommand,
@@ -61,33 +61,33 @@ namespace Headstart.API.Commands
             AppSettings settings,
             ISendgridService sendgridService)
         {
-            _oc = oc;
-            _locationPermissionCommand = locationPermissionCommand;
-            _promotionCommand = promotionCommand;
-            _rmaCommand = rmaCommand;
-            _settings = settings;
-            _sendgridService = sendgridService;
+            this.oc = oc;
+            this.locationPermissionCommand = locationPermissionCommand;
+            this.promotionCommand = promotionCommand;
+            this.rmaCommand = rmaCommand;
+            this.settings = settings;
+            this.sendgridService = sendgridService;
         }
 
         public async Task<HSLineItem> SendQuoteRequestToSupplier(string orderID, string lineItemID)
         {
-            var lineItem = await _oc.LineItems.GetAsync<HSLineItem>(OrderDirection.All, orderID, lineItemID);
-            var orderObject = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.All, orderID);
+            var lineItem = await oc.LineItems.GetAsync<HSLineItem>(OrderDirection.All, orderID, lineItemID);
+            var orderObject = await oc.Orders.GetAsync<HSOrder>(OrderDirection.All, orderID);
 
             // SEND EMAIL NOTIFICATION TO BUYER
-            await _sendgridService.SendQuoteRequestConfirmationEmail(orderObject, lineItem, orderObject.xp?.QuoteBuyerContactEmail);
+            await sendgridService.SendQuoteRequestConfirmationEmail(orderObject, lineItem, orderObject.xp?.QuoteBuyerContactEmail);
             return lineItem;
         }
 
         public async Task<HSLineItem> OverrideQuotePrice(string orderID, string lineItemID, decimal quotePrice)
         {
             var linePatch = new PartialLineItem { UnitPrice = quotePrice };
-            var updatedLineItem = await _oc.LineItems.PatchAsync<HSLineItem>(OrderDirection.All, orderID, lineItemID, linePatch);
+            var updatedLineItem = await oc.LineItems.PatchAsync<HSLineItem>(OrderDirection.All, orderID, lineItemID, linePatch);
             var orderPatch = new PartialOrder { xp = new { QuoteStatus = QuoteStatus.NeedsBuyerReview } };
-            var updatedOrder = await _oc.Orders.PatchAsync<HSOrder>(OrderDirection.All, orderID, orderPatch);
+            var updatedOrder = await oc.Orders.PatchAsync<HSOrder>(OrderDirection.All, orderID, orderPatch);
 
             // SEND EMAIL NOTIFICATION TO BUYER
-            await _sendgridService.SendQuotePriceConfirmationEmail(updatedOrder, updatedLineItem, updatedOrder.xp?.QuoteBuyerContactEmail);
+            await sendgridService.SendQuotePriceConfirmationEmail(updatedOrder, updatedLineItem, updatedOrder.xp?.QuoteBuyerContactEmail);
             return updatedLineItem;
         }
 
@@ -101,7 +101,7 @@ namespace Headstart.API.Commands
                 ["xp.OrderType"] = OrderType.Quote,
                 ["xp.QuoteStatus"] = quoteStatus,
             };
-            var quoteOrders = await _oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Incoming, filters: filters);
+            var quoteOrders = await oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Incoming, filters: filters);
             var quoteOrdersList = new ListPage<HSOrder>()
             {
                 Meta = new ListPageMeta()
@@ -120,7 +120,7 @@ namespace Headstart.API.Commands
         public async Task<HSOrder> GetQuoteOrder(MeUser me, string orderID)
         {
             var supplierID = me.Supplier?.ID;
-            var order = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
+            var order = await oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
             if (supplierID != null && order.xp?.QuoteSupplierID != supplierID)
             {
                 throw new Exception("You are not authorized to view this order.");
@@ -141,14 +141,14 @@ namespace Headstart.API.Commands
 
             // Need to complete sales and purchase order and patch the xp.SubmittedStatus of both orders
             var salesOrderID = orderID.Split('-')[0];
-            var completeSalesOrder = _oc.Orders.CompleteAsync(OrderDirection.Incoming, salesOrderID);
-            var patchSalesOrder = _oc.Orders.PatchAsync<HSOrder>(OrderDirection.Incoming, salesOrderID, orderPatch);
+            var completeSalesOrder = oc.Orders.CompleteAsync(OrderDirection.Incoming, salesOrderID);
+            var patchSalesOrder = oc.Orders.PatchAsync<HSOrder>(OrderDirection.Incoming, salesOrderID, orderPatch);
             var completedSalesOrder = await completeSalesOrder;
             var patchedSalesOrder = await patchSalesOrder;
 
             var purchaseOrderID = $"{salesOrderID}-{patchedSalesOrder?.xp?.SupplierIDs?.FirstOrDefault()}";
-            var completePurchaseOrder = _oc.Orders.CompleteAsync(OrderDirection.Outgoing, purchaseOrderID);
-            var patchPurchaseOrder = _oc.Orders.PatchAsync(OrderDirection.Outgoing, purchaseOrderID, orderPatch);
+            var completePurchaseOrder = oc.Orders.CompleteAsync(OrderDirection.Outgoing, purchaseOrderID);
+            var patchPurchaseOrder = oc.Orders.PatchAsync(OrderDirection.Outgoing, purchaseOrderID, orderPatch);
             var completedPurchaseOrder = await completePurchaseOrder;
             var patchedPurchaseOrder = await patchPurchaseOrder;
 
@@ -164,7 +164,7 @@ namespace Headstart.API.Commands
         {
             listArgs.Filters.Add(new ListFilter("BillingAddress.ID", locationID));
             await EnsureUserCanAccessLocationOrders(locationID, decodedToken);
-            return await _oc.Orders.ListAsync<HSOrder>(
+            return await oc.Orders.ListAsync<HSOrder>(
                 OrderDirection.Incoming,
                 page: listArgs.Page,
                 pageSize: listArgs.PageSize,
@@ -175,17 +175,17 @@ namespace Headstart.API.Commands
 
         public async Task<OrderDetails> GetOrderDetails(string orderID, DecodedToken decodedToken)
         {
-            var order = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
+            var order = await oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
             await EnsureUserCanAccessOrder(order, decodedToken);
 
-            var lineItems = _oc.LineItems.ListAllAsync(OrderDirection.Incoming, orderID);
-            var promotions = _oc.Orders.ListAllPromotionsAsync(OrderDirection.Incoming, orderID);
-            var payments = _oc.Payments.ListAllAsync(OrderDirection.Incoming, order.ID);
+            var lineItems = oc.LineItems.ListAllAsync(OrderDirection.Incoming, orderID);
+            var promotions = oc.Orders.ListAllPromotionsAsync(OrderDirection.Incoming, orderID);
+            var payments = oc.Payments.ListAllAsync(OrderDirection.Incoming, order.ID);
 
             // bug in catalyst tries to list all by ID but ID doesn't exist on approval rules
             // https://github.com/ordercloud-api/ordercloud-dotnet-catalyst/issues/33
             // var approvals = _oc.Orders.ListAllApprovalsAsync(OrderDirection.Incoming, orderID);
-            var approvals = await _oc.Orders.ListApprovalsAsync(OrderDirection.Incoming, orderID, pageSize: 100);
+            var approvals = await oc.Orders.ListApprovalsAsync(OrderDirection.Incoming, orderID, pageSize: 100);
             return new OrderDetails
             {
                 Order = order,
@@ -198,49 +198,49 @@ namespace Headstart.API.Commands
 
         public async Task<List<HSShipmentWithItems>> ListHSShipmentWithItems(string orderID, DecodedToken decodedToken)
         {
-            var order = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
+            var order = await oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
             await EnsureUserCanAccessOrder(order, decodedToken);
 
-            var lineItems = await _oc.LineItems.ListAllAsync(OrderDirection.Incoming, orderID);
-            var shipments = await _oc.Orders.ListShipmentsAsync<HSShipmentWithItems>(OrderDirection.Incoming, orderID);
+            var lineItems = await oc.LineItems.ListAllAsync(OrderDirection.Incoming, orderID);
+            var shipments = await oc.Orders.ListShipmentsAsync<HSShipmentWithItems>(OrderDirection.Incoming, orderID);
             var shipmentsWithItems = await Throttler.RunAsync(shipments.Items, 100, 5, (HSShipmentWithItems shipment) => GetShipmentWithItems(shipment, lineItems.ToList()));
             return shipmentsWithItems.ToList();
         }
 
         public async Task<CosmosListPage<RMA>> ListRMAsForOrder(string orderID, DecodedToken decodedToken)
         {
-            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-            HSOrder order = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
+            var me = await oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            HSOrder order = await oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
             await EnsureUserCanAccessOrder(order, decodedToken);
 
             var listFilter = new ListFilter("SourceOrderID", orderID);
             CosmosListOptions listOptions = new CosmosListOptions() { PageSize = 100, ContinuationToken = null, Filters = { listFilter } };
 
-            CosmosListPage<RMA> rmasOnOrder = await _rmaCommand.ListBuyerRMAs(listOptions, me.Buyer.ID);
+            CosmosListPage<RMA> rmasOnOrder = await rmaCommand.ListBuyerRMAs(listOptions, me.Buyer.ID);
             return rmasOnOrder;
         }
 
         public async Task<HSOrder> AddPromotion(string orderID, string promoCode, DecodedToken decodedToken)
         {
-            var orderPromo = await _oc.Orders.AddPromotionAsync(OrderDirection.Incoming, orderID, promoCode);
-            return await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
+            var orderPromo = await oc.Orders.AddPromotionAsync(OrderDirection.Incoming, orderID, promoCode);
+            return await oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
         }
 
         public async Task<HSOrder> ApplyAutomaticPromotions(string orderID)
         {
-            await _promotionCommand.AutoApplyPromotions(orderID);
-            return await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
+            await promotionCommand.AutoApplyPromotions(orderID);
+            return await oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
         }
 
         private async Task PatchOrderStatus(string orderID, ShippingStatus shippingStatus, ClaimStatus claimStatus)
         {
             var partialOrder = new PartialOrder { xp = new { ShippingStatus = shippingStatus, ClaimStatus = claimStatus } };
-            await _oc.Orders.PatchAsync(OrderDirection.Incoming, orderID, partialOrder);
+            await oc.Orders.PatchAsync(OrderDirection.Incoming, orderID, partialOrder);
         }
 
         private async Task<HSShipmentWithItems> GetShipmentWithItems(HSShipmentWithItems shipment, List<LineItem> lineItems)
         {
-            var shipmentItems = await _oc.Shipments.ListItemsAsync<HSShipmentItemWithLineItem>(shipment.ID);
+            var shipmentItems = await oc.Shipments.ListItemsAsync<HSShipmentItemWithLineItem>(shipment.ID);
             shipment.ShipmentItems = shipmentItems.Items.Select(shipmentItem =>
             {
                 shipmentItem.LineItem = lineItems.First(li => li.ID == shipmentItem.LineItemID);
@@ -251,7 +251,7 @@ namespace Headstart.API.Commands
 
         private async Task EnsureUserCanAccessLocationOrders(string locationID, DecodedToken decodedToken, string overrideErrorMessage = "")
         {
-            var hasAccess = await _locationPermissionCommand.IsUserInAccessGroup(locationID, UserGroupSuffix.ViewAllOrders.ToString(), decodedToken);
+            var hasAccess = await locationPermissionCommand.IsUserInAccessGroup(locationID, UserGroupSuffix.ViewAllOrders.ToString(), decodedToken);
             Require.That(hasAccess, new ErrorCode("Insufficient Access", $"User cannot access orders from this location: {locationID}", HttpStatusCode.Forbidden));
         }
 
@@ -269,7 +269,7 @@ namespace Headstart.API.Commands
                 return;
             }
 
-            var isUserInLocationOrderAccessGroup = await _locationPermissionCommand.IsUserInAccessGroup(order.BillingAddressID, UserGroupSuffix.ViewAllOrders.ToString(), decodedToken);
+            var isUserInLocationOrderAccessGroup = await locationPermissionCommand.IsUserInAccessGroup(order.BillingAddressID, UserGroupSuffix.ViewAllOrders.ToString(), decodedToken);
             if (isUserInLocationOrderAccessGroup)
             {
                 return;
@@ -278,7 +278,7 @@ namespace Headstart.API.Commands
             if (order.Status == OrderStatus.AwaitingApproval)
             {
                 // logic assumes there is only one approving group per location
-                var isUserInApprovalGroup = await _locationPermissionCommand.IsUserInAccessGroup(order.BillingAddressID, UserGroupSuffix.OrderApprover.ToString(), decodedToken);
+                var isUserInApprovalGroup = await locationPermissionCommand.IsUserInAccessGroup(order.BillingAddressID, UserGroupSuffix.OrderApprover.ToString(), decodedToken);
                 if (isUserInApprovalGroup)
                 {
                     return;

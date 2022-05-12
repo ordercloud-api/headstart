@@ -15,11 +15,11 @@ namespace Headstart.API.Commands
     [SupplierSync("Generic")]
     public class GenericSupplierCommand : ISupplierSyncCommand
     {
-        private readonly IOrderCloudClient _ocSeller;
+        private readonly IOrderCloudClient ocSeller;
 
         public GenericSupplierCommand(AppSettings settings)
         {
-            _ocSeller = new OrderCloudClient(new OrderCloudClientConfig
+            ocSeller = new OrderCloudClient(new OrderCloudClientConfig
             {
                 ApiUrl = settings.OrderCloudSettings.ApiUrl,
                 AuthUrl = settings.OrderCloudSettings.ApiUrl,
@@ -35,7 +35,7 @@ namespace Headstart.API.Commands
         public async Task<JObject> GetOrderAsync(string id, OrderType orderType, DecodedToken decodedToken)
         {
             // TODO: BaseUrl cannot be found here
-            var ocAuth = await _ocSeller.AuthenticateAsync();
+            var ocAuth = await ocSeller.AuthenticateAsync();
             HSShipEstimate estimate;
             HSShipMethod ship_method = null;
             HSOrderWorksheet supplierWorksheet = null;
@@ -43,14 +43,14 @@ namespace Headstart.API.Commands
             // Supplier worksheet will not exist on quote orders.
             try
             {
-                supplierWorksheet = await _ocSeller.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, id, ocAuth.AccessToken);
+                supplierWorksheet = await ocSeller.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, id, ocAuth.AccessToken);
             }
             catch (OrderCloudException)
             {
             }
 
             var salesOrderID = orderType == OrderType.Standard ? id.Split('-')[0] : id;
-            var buyerWorksheet = await _ocSeller.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, salesOrderID, ocAuth.AccessToken);
+            var buyerWorksheet = await ocSeller.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, salesOrderID, ocAuth.AccessToken);
             var supplierID = supplierWorksheet?.Order?.ToCompanyID;
             if (buyerWorksheet.Order.xp?.OrderType == OrderType.Quote)
             {

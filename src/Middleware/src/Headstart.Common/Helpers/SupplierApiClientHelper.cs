@@ -10,23 +10,23 @@ namespace Headstart.Common.Helpers
 
     public class SupplierApiClientHelper : ISupplierApiClientHelper
     {
-        private readonly IOrderCloudClient _oc;
-        private readonly AppSettings _settings;
+        private readonly IOrderCloudClient oc;
+        private readonly AppSettings settings;
 
         public SupplierApiClientHelper(AppSettings settings, IOrderCloudClient oc)
         {
-            _settings = settings;
-            _oc = oc;
+            this.settings = settings;
+            this.oc = oc;
         }
 
         public async Task<ApiClient> GetSupplierApiClient(string supplierID, string token)
         {
-            Supplier supplierDetails = await _oc.Suppliers.GetAsync(supplierID);
+            Supplier supplierDetails = await oc.Suppliers.GetAsync(supplierID);
 
             // GET ApiClient using the xp value on supplier
             try
             {
-                ApiClient apiClient = await _oc.ApiClients.GetAsync(supplierDetails?.xp?.ApiClientID);
+                ApiClient apiClient = await oc.ApiClients.GetAsync(supplierDetails?.xp?.ApiClientID);
 
                 // If ApiClient exists, return it
                 if (apiClient?.ID == null)
@@ -46,13 +46,13 @@ namespace Headstart.Common.Helpers
 
         public async Task<ApiClient> HandleError(Supplier supplierDetails, string token)
         {
-            var supplierClient = await _oc.ApiClients.CreateAsync(
+            var supplierClient = await oc.ApiClients.CreateAsync(
                 new ApiClient()
                 {
                     AppName = $"Integration Client {supplierDetails.Name}",
                     Active = true,
                     DefaultContextUserName = $"dev_{supplierDetails.ID}",
-                    ClientSecret = _settings.OrderCloudSettings.MiddlewareClientSecret,
+                    ClientSecret = settings.OrderCloudSettings.MiddlewareClientSecret,
                     AccessTokenDuration = 600,
                     RefreshTokenDuration = 43200,
                     AllowAnyBuyer = false,
@@ -63,7 +63,7 @@ namespace Headstart.Common.Helpers
                 token);
 
             // Assign Supplier API Client to new supplier
-            await _oc.ApiClients.SaveAssignmentAsync(
+            await oc.ApiClients.SaveAssignmentAsync(
                 new ApiClientAssignment()
                 {
                     ApiClientID = supplierClient.ID,
@@ -72,7 +72,7 @@ namespace Headstart.Common.Helpers
                 token);
 
             // Update supplierXp to contain the new api client value
-            await _oc.Suppliers.PatchAsync(supplierDetails.ID, new PartialSupplier { xp = new { ApiClientID = supplierClient.ID } });
+            await oc.Suppliers.PatchAsync(supplierDetails.ID, new PartialSupplier { xp = new { ApiClientID = supplierClient.ID } });
             return supplierClient;
         }
     }

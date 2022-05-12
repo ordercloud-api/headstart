@@ -29,12 +29,12 @@ namespace Headstart.API.Commands
 
     public class EnvironmentSeedCommand : IEnvironmentSeedCommand
     {
-        private readonly AppSettings _settings;
-        private readonly IPortalService _portal;
-        private readonly IHSSupplierCommand _supplierCommand;
-        private readonly IHSBuyerCommand _buyerCommand;
-        private readonly IHSBuyerLocationCommand _buyerLocationCommand;
-        private IOrderCloudClient _oc;
+        private readonly AppSettings settings;
+        private readonly IPortalService portal;
+        private readonly IHSSupplierCommand supplierCommand;
+        private readonly IHSBuyerCommand buyerCommand;
+        private readonly IHSBuyerLocationCommand buyerLocationCommand;
+        private IOrderCloudClient oc;
 
         public EnvironmentSeedCommand(
             AppSettings settings,
@@ -44,12 +44,12 @@ namespace Headstart.API.Commands
             IHSBuyerLocationCommand buyerLocationCommand,
             IOrderCloudClient oc)
         {
-            _portal = portal;
-            _supplierCommand = supplierCommand;
-            _buyerCommand = buyerCommand;
-            _buyerLocationCommand = buyerLocationCommand;
-            _oc = oc;
-            _settings = settings;
+            this.portal = portal;
+            this.supplierCommand = supplierCommand;
+            this.buyerCommand = buyerCommand;
+            this.buyerLocationCommand = buyerLocationCommand;
+            this.oc = oc;
+            this.settings = settings;
         }
 
         /// <summary>
@@ -68,15 +68,15 @@ namespace Headstart.API.Commands
             }
 
             // lets us handle requests to multiple api environments
-            _oc = new OrderCloudClient(new OrderCloudClientConfig
+            oc = new OrderCloudClient(new OrderCloudClientConfig
             {
                 ApiUrl = requestedEnv.ApiUrl,
                 AuthUrl = requestedEnv.ApiUrl,
             });
 
-            var portalUserToken = await _portal.Login(seed.PortalUsername, seed.PortalPassword);
+            var portalUserToken = await portal.Login(seed.PortalUsername, seed.PortalPassword);
             var marketplace = await GetOrCreateMarketplace(portalUserToken, seed, requestedEnv);
-            var marketplaceToken = await _portal.GetMarketplaceToken(marketplace.Id, portalUserToken);
+            var marketplaceToken = await portal.GetMarketplaceToken(marketplace.Id, portalUserToken);
 
             await CreateOrUpdateDefaultSellerUser(seed, marketplaceToken);
 
@@ -143,7 +143,7 @@ namespace Headstart.API.Commands
         {
             try
             {
-                return await _portal.GetMarketplace(marketplaceID, devToken);
+                return await portal.GetMarketplace(marketplaceID, devToken);
             }
             catch (Exception e)
             {
@@ -166,13 +166,13 @@ namespace Headstart.API.Commands
                 var marketPlaceToCreate = ConstructMarketplaceFromSeed(seed, env);
                 try
                 {
-                    await _portal.GetMarketplace(marketPlaceToCreate.Id, token);
+                    await portal.GetMarketplace(marketPlaceToCreate.Id, token);
                     return await GetOrCreateMarketplace(token, seed, env);
                 }
                 catch
                 {
-                    await _portal.CreateMarketplace(marketPlaceToCreate, token);
-                    return await _portal.GetMarketplace(marketPlaceToCreate.Id, token);
+                    await portal.CreateMarketplace(marketPlaceToCreate, token);
+                    return await portal.GetMarketplace(marketPlaceToCreate.Id, token);
                 }
             }
         }
@@ -183,7 +183,7 @@ namespace Headstart.API.Commands
         /// this process restores integration events which are required for checkout (with environment specific settings).
         public async Task PostStagingRestore()
         {
-            var token = (await _oc.AuthenticateAsync()).AccessToken;
+            var token = (await oc.AuthenticateAsync()).AccessToken;
 
             var deleteIE = DeleteAllIntegrationEvents(token);
             await Task.WhenAll(deleteIE);
@@ -201,7 +201,7 @@ namespace Headstart.API.Commands
             {
                 try
                 {
-                    await _oc.XpIndices.PutAsync(index, token);
+                    await oc.XpIndices.PutAsync(index, token);
                 }
                 catch (OrderCloudException ex)
                 {
@@ -219,13 +219,13 @@ namespace Headstart.API.Commands
         {
             foreach (var incrementor in SeedConstants.DefaultIncrementors)
             {
-                var exists = await _oc.Incrementors.ListAsync(pageSize: 1, filters: new { ID = incrementor.ID }, accessToken: token);
+                var exists = await oc.Incrementors.ListAsync(pageSize: 1, filters: new { ID = incrementor.ID }, accessToken: token);
 
                 // only create the incrementor if it doesn't already exist otherwise the count will be reset and it may cause 409 conflict errors
                 // when it tries to create an entity with an ID that has already been created
                 if (!exists.Items.Any())
                 {
-                    await _oc.Incrementors.CreateAsync(incrementor, token);
+                    await oc.Incrementors.CreateAsync(incrementor, token);
                 }
             }
         }
@@ -248,27 +248,27 @@ namespace Headstart.API.Commands
                 ID = SeedConstants.FullAccessSecurityProfile,
             });
 
-            var profileCreateRequests = profiles.Select(p => _oc.SecurityProfiles.SaveAsync(p.ID, p, accessToken));
+            var profileCreateRequests = profiles.Select(p => oc.SecurityProfiles.SaveAsync(p.ID, p, accessToken));
             await Task.WhenAll(profileCreateRequests);
         }
 
         public async Task DeleteAllMessageSenders(string token)
         {
-            var messageSenders = await _oc.MessageSenders.ListAllAsync(accessToken: token);
+            var messageSenders = await oc.MessageSenders.ListAllAsync(accessToken: token);
             await Throttler.RunAsync(messageSenders, 500, 20, messageSender =>
-                _oc.MessageSenders.DeleteAsync(messageSender.ID, accessToken: token));
+                oc.MessageSenders.DeleteAsync(messageSender.ID, accessToken: token));
         }
 
         public async Task DeleteAllIntegrationEvents(string token)
         {
             // can't delete integration event if its referenced by an api client so first patch it to null
-            var apiClientsWithIntegrationEvent = await _oc.IntegrationEvents.ListAllAsync(filters: new { OrderCheckoutIntegrationEventID = "*" }, accessToken: token);
+            var apiClientsWithIntegrationEvent = await oc.IntegrationEvents.ListAllAsync(filters: new { OrderCheckoutIntegrationEventID = "*" }, accessToken: token);
             await Throttler.RunAsync(apiClientsWithIntegrationEvent, 500, 20, apiClient =>
-                _oc.ApiClients.PatchAsync(apiClient.ID, new PartialApiClient { OrderCheckoutIntegrationEventID = null }, accessToken: token));
+                oc.ApiClients.PatchAsync(apiClient.ID, new PartialApiClient { OrderCheckoutIntegrationEventID = null }, accessToken: token));
 
-            var integrationEvents = await _oc.IntegrationEvents.ListAllAsync(accessToken: token);
+            var integrationEvents = await oc.IntegrationEvents.ListAllAsync(accessToken: token);
             await Throttler.RunAsync(integrationEvents, 500, 20, integrationEvent =>
-                _oc.IntegrationEvents.DeleteAsync(integrationEvent.ID, accessToken: token));
+                oc.IntegrationEvents.DeleteAsync(integrationEvent.ID, accessToken: token));
         }
 
         private static Marketplace ConstructMarketplaceFromSeed(EnvironmentSeed seed, OcEnv requestedEnv)
@@ -284,7 +284,7 @@ namespace Headstart.API.Commands
 
         private async Task CreateOnlyOnceApiClients(EnvironmentSeed seed, string token)
         {
-            var existingClients = await _oc.ApiClients.ListAllAsync(accessToken: token);
+            var existingClients = await oc.ApiClients.ListAllAsync(accessToken: token);
 
             await CreateOrGetBuyerClient(existingClients, SeedConstants.BuyerClient(seed), seed, token);
             await CreateOrGetApiClient(existingClients, SeedConstants.IntegrationsClient(), token);
@@ -297,7 +297,7 @@ namespace Headstart.API.Commands
             // assign buyer security profiles
             var buyerSecurityProfileAssignmentRequests = seed.Buyers.Select(b =>
             {
-                return _oc.SecurityProfiles.SaveAssignmentAsync(
+                return oc.SecurityProfiles.SaveAssignmentAsync(
                     new SecurityProfileAssignment
                     {
                         BuyerID = b.ID,
@@ -309,7 +309,7 @@ namespace Headstart.API.Commands
             // assign seller security profiles to seller marketplace
             var sellerSecurityProfileAssignmentRequests = SeedConstants.SellerHsRoles.Select(role =>
             {
-                return _oc.SecurityProfiles.SaveAssignmentAsync(
+                return oc.SecurityProfiles.SaveAssignmentAsync(
                     new SecurityProfileAssignment()
                     {
                         SecurityProfileID = role.ToString(),
@@ -318,14 +318,14 @@ namespace Headstart.API.Commands
             await Task.WhenAll(sellerSecurityProfileAssignmentRequests);
 
             // assign full access security profile to default admin user
-            var adminUsersList = await _oc.AdminUsers.ListAsync(filters: new { Username = SeedConstants.SellerUserName }, accessToken: marketplaceToken);
+            var adminUsersList = await oc.AdminUsers.ListAsync(filters: new { Username = SeedConstants.SellerUserName }, accessToken: marketplaceToken);
             var defaultAdminUser = adminUsersList.Items.FirstOrDefault();
             if (defaultAdminUser == null)
             {
                 throw new Exception($"Unable to find default admin user (username: {SeedConstants.SellerUserName}");
             }
 
-            await _oc.SecurityProfiles.SaveAssignmentAsync(
+            await oc.SecurityProfiles.SaveAssignmentAsync(
                 new SecurityProfileAssignment()
                 {
                     SecurityProfileID = SeedConstants.FullAccessSecurityProfile,
@@ -345,7 +345,7 @@ namespace Headstart.API.Commands
                     Buyer = SeedConstants.DefaultBuyer(),
                     Markup = new BuyerMarkup() { Percent = 0 },
                 };
-                await _buyerCommand.Create(superBuyer, token, _oc);
+                await buyerCommand.Create(superBuyer, token, oc);
             }
 
             // create seed buyers if they don't exist
@@ -360,7 +360,7 @@ namespace Headstart.API.Commands
                         Buyer = buyer,
                         Markup = new BuyerMarkup() { Percent = 0 },
                     };
-                    await _buyerCommand.Create(superBuyer, token, _oc);
+                    await buyerCommand.Create(superBuyer, token, oc);
                 }
             }
         }
@@ -368,7 +368,7 @@ namespace Headstart.API.Commands
         private async Task CreateOnlyOnceAnonBuyerConfig(EnvironmentSeed seed, string token)
         {
             // validate AnonymousShoppingBuyerID or provide fallback if none is defined
-            var allBuyers = await _oc.Buyers.ListAllAsync(accessToken: token);
+            var allBuyers = await oc.Buyers.ListAllAsync(accessToken: token);
             if (!string.IsNullOrWhiteSpace(seed.AnonymousShoppingBuyerID))
             {
                 if (!allBuyers.Select(b => b.ID).Contains(seed.AnonymousShoppingBuyerID))
@@ -382,15 +382,15 @@ namespace Headstart.API.Commands
             }
 
             // create and assign initial buyer location
-            await _buyerLocationCommand.Save(
+            await buyerLocationCommand.Save(
                 seed.AnonymousShoppingBuyerID,
                 $"{seed.AnonymousShoppingBuyerID}-{SeedConstants.DefaultLocationID}",
                 SeedConstants.DefaultBuyerLocation(),
                 token,
-                _oc);
+                oc);
 
             // create user
-            var anonBuyerUser = await _oc.Users.SaveAsync(seed.AnonymousShoppingBuyerID, SeedConstants.AnonymousBuyerUser().ID, SeedConstants.AnonymousBuyerUser(), token);
+            var anonBuyerUser = await oc.Users.SaveAsync(seed.AnonymousShoppingBuyerID, SeedConstants.AnonymousBuyerUser().ID, SeedConstants.AnonymousBuyerUser(), token);
 
             // save assignment between user and buyergroup (location)
             var assignment = new UserGroupAssignment()
@@ -398,18 +398,18 @@ namespace Headstart.API.Commands
                 UserGroupID = $"{seed.AnonymousShoppingBuyerID}-{SeedConstants.DefaultLocationID}",
                 UserID = anonBuyerUser.ID,
             };
-            await _oc.UserGroups.SaveUserAssignmentAsync(seed.AnonymousShoppingBuyerID, assignment, accessToken: token);
+            await oc.UserGroups.SaveUserAssignmentAsync(seed.AnonymousShoppingBuyerID, assignment, accessToken: token);
         }
 
         private async Task<HSBuyer> GetBuyerByName(string buyerName, string token)
         {
-            var list = await _oc.Buyers.ListAsync<HSBuyer>(filters: new { Name = buyerName }, accessToken: token);
+            var list = await oc.Buyers.ListAsync<HSBuyer>(filters: new { Name = buyerName }, accessToken: token);
             return list.Items.ToList().FirstOrDefault();
         }
 
         private async Task<HSBuyer> GetBuyerByID(string buyerID, string token)
         {
-            var list = await _oc.Buyers.ListAsync<HSBuyer>(filters: new { ID = buyerID }, accessToken: token);
+            var list = await oc.Buyers.ListAsync<HSBuyer>(filters: new { ID = buyerID }, accessToken: token);
             return list.Items.ToList().FirstOrDefault();
         }
 
@@ -421,7 +421,7 @@ namespace Headstart.API.Commands
                 var exists = await SupplierExistsAsync(supplier.Name, token);
                 if (!exists)
                 {
-                    await _supplierCommand.Create(supplier, token, isSeedingEnvironment: true);
+                    await supplierCommand.Create(supplier, token, isSeedingEnvironment: true);
                 }
             }
         }
@@ -429,12 +429,12 @@ namespace Headstart.API.Commands
         private async Task CreateOrUpdateProductFacets(string token)
         {
             var defaultFacet = SeedConstants.DefaultProductFacet();
-            await _oc.ProductFacets.SaveAsync<HSProductFacet>(defaultFacet.ID, defaultFacet, token);
+            await oc.ProductFacets.SaveAsync<HSProductFacet>(defaultFacet.ID, defaultFacet, token);
         }
 
         private async Task<bool> SupplierExistsAsync(string supplierName, string token)
         {
-            var list = await _oc.Suppliers.ListAsync(filters: new { Name = supplierName }, accessToken: token);
+            var list = await oc.Suppliers.ListAsync(filters: new { Name = supplierName }, accessToken: token);
             return list.Items.Any();
         }
 
@@ -443,7 +443,7 @@ namespace Headstart.API.Commands
             // the middleware api client will use this user as the default context user
             var middlewareIntegrationsUser = SeedConstants.MiddlewareIntegrationsUser();
 
-            await _oc.AdminUsers.SaveAsync(middlewareIntegrationsUser.ID, middlewareIntegrationsUser, token);
+            await oc.AdminUsers.SaveAsync(middlewareIntegrationsUser.ID, middlewareIntegrationsUser, token);
 
             // used to log in immediately after seeding the marketplace
             var initialAdminUser = new User
@@ -456,12 +456,12 @@ namespace Headstart.API.Commands
                 FirstName = "Initial",
                 LastName = "User",
             };
-            await _oc.AdminUsers.SaveAsync(initialAdminUser.ID, initialAdminUser, token);
+            await oc.AdminUsers.SaveAsync(initialAdminUser.ID, initialAdminUser, token);
         }
 
         private async Task<ApiClients> GetApiClients(string token)
         {
-            var list = await _oc.ApiClients.ListAllAsync<HSApiClient>(accessToken: token);
+            var list = await oc.ApiClients.ListAllAsync<HSApiClient>(accessToken: token);
             var appNames = list.Select(x => x.AppName);
             var adminUIApiClient = list.First(a => a.AppName == SeedConstants.SellerApiClientName);
             var buyerUIApiClient = list.First(a => a?.xp?.IsStorefront == true);
@@ -478,7 +478,7 @@ namespace Headstart.API.Commands
 
         private async Task<string[]> GetStoreFrontClientIDs(string token)
         {
-            var list = await _oc.ApiClients.ListAllAsync<HSApiClient>(accessToken: token);
+            var list = await oc.ApiClients.ListAllAsync<HSApiClient>(accessToken: token);
             return list
                 .Where(client => client?.xp?.IsStorefront == true) // can't index ApiClients so we need to filter client-side
                 .Select(client => client.ID).ToArray();
@@ -490,7 +490,7 @@ namespace Headstart.API.Commands
             if (match == null)
             {
                 await CreateOnlyOnceAnonBuyerConfig(seed, token);
-                var apiClient = await _oc.ApiClients.CreateAsync(client, token);
+                var apiClient = await oc.ApiClients.CreateAsync(client, token);
                 return apiClient;
             }
 
@@ -502,7 +502,7 @@ namespace Headstart.API.Commands
             var match = existingClients.FirstOrDefault(c => c.AppName == client.AppName);
             if (match == null)
             {
-                return await _oc.ApiClients.CreateAsync(client, token);
+                return await oc.ApiClients.CreateAsync(client, token);
             }
 
             return match;
@@ -516,18 +516,18 @@ namespace Headstart.API.Commands
                 SeedConstants.SellerEmails(seed),
                 SeedConstants.SuplierEmails(seed),
             };
-            var existingMessageSenders = await _oc.MessageSenders.ListAllAsync(accessToken: accessToken);
+            var existingMessageSenders = await oc.MessageSenders.ListAllAsync(accessToken: accessToken);
             foreach (var sender in defaultMessageSenders)
             {
                 var messageSender = await GetOrCreateMessageSender(existingMessageSenders, sender, accessToken);
                 if (messageSender.ID == "BuyerEmails")
                 {
-                    var allBuyers = await _oc.Buyers.ListAllAsync(accessToken: accessToken);
+                    var allBuyers = await oc.Buyers.ListAllAsync(accessToken: accessToken);
                     foreach (var buyer in allBuyers)
                     {
                         try
                         {
-                            await _oc.MessageSenders.SaveAssignmentAsync(
+                            await oc.MessageSenders.SaveAssignmentAsync(
                                 new MessageSenderAssignment
                                 {
                                     MessageSenderID = messageSender.ID,
@@ -549,7 +549,7 @@ namespace Headstart.API.Commands
                 {
                     try
                     {
-                        await _oc.MessageSenders.SaveAssignmentAsync(
+                        await oc.MessageSenders.SaveAssignmentAsync(
                             new MessageSenderAssignment
                             {
                                 MessageSenderID = messageSender.ID,
@@ -567,12 +567,12 @@ namespace Headstart.API.Commands
                 }
                 else if (messageSender.ID == "SupplierEmails")
                 {
-                    var allSuppliers = await _oc.Suppliers.ListAllAsync(accessToken: accessToken);
+                    var allSuppliers = await oc.Suppliers.ListAllAsync(accessToken: accessToken);
                     foreach (var supplier in allSuppliers)
                     {
                         try
                         {
-                            await _oc.MessageSenders.SaveAssignmentAsync(
+                            await oc.MessageSenders.SaveAssignmentAsync(
                                 new MessageSenderAssignment
                                 {
                                     MessageSenderID = messageSender.ID,
@@ -598,7 +598,7 @@ namespace Headstart.API.Commands
             var match = existingMessageSenders.Find(c => c.ID == messageSender.ID);
             if (match == null)
             {
-                return await _oc.MessageSenders.CreateAsync(messageSender, accessToken);
+                return await oc.MessageSenders.CreateAsync(messageSender, accessToken);
             }
 
             return match;
@@ -611,23 +611,23 @@ namespace Headstart.API.Commands
             var localBuyerClientID = apiClients.BuyerLocalUiApiClient.ID;
 
             // this gets called by both the /seed command and the post-staging restore so we need to handle getting settings from two sources
-            var middlewareBaseUrl = seed != null ? seed.MiddlewareBaseUrl : _settings.EnvironmentSettings.MiddlewareBaseUrl;
-            var webhookHashKey = seed != null ? seed.OrderCloudSeedSettings.WebhookHashKey : _settings.OrderCloudSettings.WebhookHashKey;
+            var middlewareBaseUrl = seed != null ? seed.MiddlewareBaseUrl : settings.EnvironmentSettings.MiddlewareBaseUrl;
+            var webhookHashKey = seed != null ? seed.OrderCloudSeedSettings.WebhookHashKey : settings.OrderCloudSettings.WebhookHashKey;
             var checkoutEvent = SeedConstants.CheckoutEvent(middlewareBaseUrl, webhookHashKey);
-            await _oc.IntegrationEvents.SaveAsync(checkoutEvent.ID, checkoutEvent, token);
+            await oc.IntegrationEvents.SaveAsync(checkoutEvent.ID, checkoutEvent, token);
             var localCheckoutEvent = SeedConstants.LocalCheckoutEvent(webhookHashKey);
-            await _oc.IntegrationEvents.SaveAsync(localCheckoutEvent.ID, localCheckoutEvent, token);
+            await oc.IntegrationEvents.SaveAsync(localCheckoutEvent.ID, localCheckoutEvent, token);
 
-            await _oc.ApiClients.PatchAsync(localBuyerClientID, new PartialApiClient { OrderCheckoutIntegrationEventID = "HeadStartCheckoutLOCAL" }, token);
+            await oc.ApiClients.PatchAsync(localBuyerClientID, new PartialApiClient { OrderCheckoutIntegrationEventID = "HeadStartCheckoutLOCAL" }, token);
             await Throttler.RunAsync(storefrontApiClientIDs, 500, 20, clientID =>
-                _oc.ApiClients.PatchAsync(clientID, new PartialApiClient { OrderCheckoutIntegrationEventID = "HeadStartCheckout" }, token));
+                oc.ApiClients.PatchAsync(clientID, new PartialApiClient { OrderCheckoutIntegrationEventID = "HeadStartCheckout" }, token));
         }
 
         private async Task ShutOffSupplierEmailsAsync(string token)
         {
-            var allSuppliers = await _oc.Suppliers.ListAllAsync(accessToken: token);
+            var allSuppliers = await oc.Suppliers.ListAllAsync(accessToken: token);
             await Throttler.RunAsync(allSuppliers, 500, 20, supplier =>
-                _oc.Suppliers.PatchAsync(supplier.ID, new PartialSupplier { xp = new { NotificationRcpts = new string[] { } } }, token));
+                oc.Suppliers.PatchAsync(supplier.ID, new PartialSupplier { xp = new { NotificationRcpts = new string[] { } } }, token));
         }
 
         public class ApiClients

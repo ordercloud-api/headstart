@@ -20,20 +20,20 @@ namespace Headstart.API.Commands
 
     public class OrderSubmitCommand : IOrderSubmitCommand
     {
-        private readonly IOrderCloudClient _oc;
-        private readonly AppSettings _settings;
-        private readonly ICreditCardCommand _card;
+        private readonly IOrderCloudClient oc;
+        private readonly AppSettings settings;
+        private readonly ICreditCardCommand card;
 
         public OrderSubmitCommand(IOrderCloudClient oc, AppSettings settings, ICreditCardCommand card)
         {
-            _oc = oc;
-            _settings = settings;
-            _card = card;
+            this.oc = oc;
+            this.settings = settings;
+            this.card = card;
         }
 
         public async Task<HSOrder> SubmitOrderAsync(string orderID, OrderDirection direction, OrderCloudIntegrationsCreditCardPayment payment, string userToken)
         {
-            var worksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
+            var worksheet = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
             await ValidateOrderAsync(worksheet, payment, userToken);
 
             var incrementedOrderID = await IncrementOrderAsync(worksheet);
@@ -42,16 +42,16 @@ namespace Headstart.API.Commands
             if (payment.CreditCardDetails != null || payment.CreditCardID != null)
             {
                 payment.OrderID = incrementedOrderID;
-                await _card.AuthorizePayment(payment, userToken, GetMerchantID(payment));
+                await card.AuthorizePayment(payment, userToken, GetMerchantID(payment));
             }
 
             try
             {
-                return await _oc.Orders.SubmitAsync<HSOrder>(direction, incrementedOrderID, userToken);
+                return await oc.Orders.SubmitAsync<HSOrder>(direction, incrementedOrderID, userToken);
             }
             catch (Exception)
             {
-                await _card.VoidPaymentAsync(incrementedOrderID, userToken);
+                await card.VoidPaymentAsync(incrementedOrderID, userToken);
                 throw;
             }
         }
@@ -82,7 +82,7 @@ namespace Headstart.API.Commands
             try
             {
                 // ordercloud validates the same stuff that would be checked on order submit
-                await _oc.Orders.ValidateAsync(OrderDirection.Incoming, worksheet.Order.ID);
+                await oc.Orders.ValidateAsync(OrderDirection.Incoming, worksheet.Order.ID);
             }
             catch (OrderCloudException ex)
             {
@@ -103,7 +103,7 @@ namespace Headstart.API.Commands
             {
                 try
                 {
-                    await _oc.Me.GetProductAsync(lineItem.ProductID, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: userToken);
+                    await oc.Me.GetProductAsync(lineItem.ProductID, sellerID: settings.OrderCloudSettings.MarketplaceID, accessToken: userToken);
                 }
                 catch (OrderCloudException ex) when (ex.HttpStatus == HttpStatusCode.NotFound)
                 {
@@ -123,15 +123,15 @@ namespace Headstart.API.Commands
                 return worksheet.Order.ID;
             }
 
-            if (worksheet.Order.ID.StartsWith(_settings.OrderCloudSettings.IncrementorPrefix))
+            if (worksheet.Order.ID.StartsWith(settings.OrderCloudSettings.IncrementorPrefix))
             {
                 // order has already been incremented, no need to increment again
                 return worksheet.Order.ID;
             }
 
-            var order = await _oc.Orders.PatchAsync(OrderDirection.Incoming, worksheet.Order.ID, new PartialOrder
+            var order = await oc.Orders.PatchAsync(OrderDirection.Incoming, worksheet.Order.ID, new PartialOrder
             {
-                ID = _settings.OrderCloudSettings.IncrementorPrefix + "{orderIncrementor}",
+                ID = settings.OrderCloudSettings.IncrementorPrefix + "{orderIncrementor}",
             });
             return order.ID;
         }
@@ -141,15 +141,15 @@ namespace Headstart.API.Commands
             string merchantID;
             if (payment.Currency == "USD")
             {
-                merchantID = _settings.CardConnectSettings.UsdMerchantID;
+                merchantID = settings.CardConnectSettings.UsdMerchantID;
             }
             else if (payment.Currency == "CAD")
             {
-                merchantID = _settings.CardConnectSettings.CadMerchantID;
+                merchantID = settings.CardConnectSettings.CadMerchantID;
             }
             else
             {
-                merchantID = _settings.CardConnectSettings.EurMerchantID;
+                merchantID = settings.CardConnectSettings.EurMerchantID;
             }
 
             return merchantID;

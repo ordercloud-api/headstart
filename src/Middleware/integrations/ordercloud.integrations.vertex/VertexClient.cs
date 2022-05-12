@@ -10,35 +10,35 @@ namespace ordercloud.integrations.vertex
     {
         private const string ApiUrl = "https://restconnect.vertexsmb.com";
         private const string AuthUrl = "https://auth.vertexsmb.com";
-        private readonly VertexConfig _config;
-        private VertexTokenResponse _token;
+        private readonly VertexConfig config;
+        private VertexTokenResponse token;
 
         public VertexClient(VertexConfig config)
         {
-            _config = config;
+            this.config = config;
         }
 
         public async Task<VertexCalculateTaxResponse> CalculateTax(VertexCalculateTaxRequest request)
         {
             return await MakeRequest<VertexCalculateTaxResponse>(() =>
                 $"{ApiUrl}/vertex-restapi/v1/sale"
-                    .WithOAuthBearerToken(_token.access_token)
+                    .WithOAuthBearerToken(token.access_token)
                     .AllowAnyHttpStatus()
                     .PostJsonAsync(request));
         }
 
         private async Task<T> MakeRequest<T>(Func<Task<IFlurlResponse>> request)
         {
-            if (_token?.access_token == null)
+            if (token?.access_token == null)
             {
-                _token = await GetToken(_config);
+                token = await GetToken(config);
             }
 
             var response = await (await request()).GetJsonAsync<VertexResponse<T>>();
             if (response.errors.Exists(e => e.detail == "invalid access token"))
             {
                 // refresh the token
-                _token = await GetToken(_config);
+                token = await GetToken(config);
 
                 // try the request again
                 response = await (await request()).GetJsonAsync<VertexResponse<T>>();

@@ -26,11 +26,11 @@ namespace ordercloud.integrations.cardconnect
 
     public class CreditCardCommand : ICreditCardCommand
     {
-        private readonly IOrderCloudIntegrationsCardConnectService _cardConnect;
-        private readonly IOrderCloudClient _oc;
-        private readonly IHSExchangeRatesService _hsExchangeRates;
-        private readonly ISupportAlertService _supportAlerts;
-        private readonly AppSettings _settings;
+        private readonly IOrderCloudIntegrationsCardConnectService cardConnect;
+        private readonly IOrderCloudClient oc;
+        private readonly IHSExchangeRatesService hsExchangeRates;
+        private readonly ISupportAlertService supportAlerts;
+        private readonly AppSettings settings;
 
         public CreditCardCommand(
             IOrderCloudIntegrationsCardConnectService card,
@@ -39,22 +39,22 @@ namespace ordercloud.integrations.cardconnect
             ISupportAlertService supportAlerts,
             AppSettings settings)
         {
-            _cardConnect = card;
-            _oc = oc;
-            _hsExchangeRates = hsExchangeRates;
-            _supportAlerts = supportAlerts;
-            _settings = settings;
+            cardConnect = card;
+            this.oc = oc;
+            this.hsExchangeRates = hsExchangeRates;
+            this.supportAlerts = supportAlerts;
+            this.settings = settings;
         }
 
         public async Task<CreditCard> TokenizeAndSave(string buyerID, OrderCloudIntegrationsCreditCardToken card, DecodedToken decodedToken)
         {
-            var creditCard = await _oc.CreditCards.CreateAsync(buyerID, await Tokenize(card, decodedToken.AccessToken), decodedToken.AccessToken);
+            var creditCard = await oc.CreditCards.CreateAsync(buyerID, await Tokenize(card, decodedToken.AccessToken), decodedToken.AccessToken);
             return creditCard;
         }
 
         public async Task<BuyerCreditCard> MeTokenizeAndSave(OrderCloudIntegrationsCreditCardToken card, DecodedToken decodedToken)
         {
-            var buyerCreditCard = await _oc.Me.CreateCreditCardAsync(await MeTokenize(card, decodedToken.AccessToken), decodedToken.AccessToken);
+            var buyerCreditCard = await oc.Me.CreateCreditCardAsync(await MeTokenize(card, decodedToken.AccessToken), decodedToken.AccessToken);
             return buyerCreditCard;
         }
 
@@ -73,14 +73,14 @@ namespace ordercloud.integrations.cardconnect
             Require.That(cc.Token != null, new ErrorCode("CreditCardAuth.InvalidToken", "Credit card must have valid authorization token"));
             Require.That(cc.xp.CCBillingAddress != null, new ErrorCode("Invalid Bill Address", "Credit card must have a billing address"));
 
-            var orderWorksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, payment.OrderID);
+            var orderWorksheet = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, payment.OrderID);
             var order = orderWorksheet.Order;
 
             Require.That(!order.IsSubmitted, new ErrorCode("CreditCardAuth.AlreadySubmitted", "Order has already been submitted"));
 
             var ccAmount = orderWorksheet.Order.Total;
 
-            var ocPaymentsList = await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, payment.OrderID, filters: "Type=CreditCard");
+            var ocPaymentsList = await oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, payment.OrderID, filters: "Type=CreditCard");
             var ocPayments = ocPaymentsList.Items;
             var ocPayment = ocPayments.Any() ? ocPayments[0] : null;
             if (ocPayment == null)
@@ -102,22 +102,22 @@ namespace ordercloud.integrations.cardconnect
                     }
                 }
 
-                var call = await _cardConnect.AuthWithoutCapture(CardConnectMapper.Map(cc, order, payment, merchantID, ccAmount));
-                ocPayment = await _oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, order.ID, ocPayment.ID, new PartialPayment { Accepted = true, Amount = ccAmount });
-                return await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, ocPayment.ID, CardConnectMapper.Map(ocPayment, call));
+                var call = await cardConnect.AuthWithoutCapture(CardConnectMapper.Map(cc, order, payment, merchantID, ccAmount));
+                ocPayment = await oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, order.ID, ocPayment.ID, new PartialPayment { Accepted = true, Amount = ccAmount });
+                return await oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, ocPayment.ID, CardConnectMapper.Map(ocPayment, call));
             }
             catch (CreditCardAuthorizationException ex)
             {
-                ocPayment = await _oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, order.ID, ocPayment.ID, new PartialPayment { Accepted = false, Amount = ccAmount });
-                await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, ocPayment.ID, CardConnectMapper.Map(ocPayment, ex.Response));
+                ocPayment = await oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, order.ID, ocPayment.ID, new PartialPayment { Accepted = false, Amount = ccAmount });
+                await oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, ocPayment.ID, CardConnectMapper.Map(ocPayment, ex.Response));
                 throw new CatalystBaseException($"CreditCardAuth.{ex.ApiError.ErrorCode}", ex.ApiError.Message, ex.Response);
             }
         }
 
         public async Task VoidPaymentAsync(string orderID, string userToken)
         {
-            var order = await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
-            var paymentList = await _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, order.ID);
+            var order = await oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
+            var paymentList = await oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, order.ID);
             var payment = paymentList.Items.Any() ? paymentList.Items[0] : null;
             if (payment == null)
             {
@@ -125,7 +125,7 @@ namespace ordercloud.integrations.cardconnect
             }
 
             await VoidTransactionAsync(payment, order, userToken);
-            await _oc.Payments.PatchAsync(OrderDirection.Incoming, orderID, payment.ID, new PartialPayment { Accepted = false });
+            await oc.Payments.PatchAsync(OrderDirection.Incoming, orderID, payment.ID, new PartialPayment { Accepted = false });
         }
 
         public async Task VoidTransactionAsync(HSPayment payment, HSOrder order, string userToken)
@@ -143,21 +143,21 @@ namespace ordercloud.integrations.cardconnect
                     if (retref != null)
                     {
                         transactionID = transaction.ID;
-                        var userCurrency = await _hsExchangeRates.GetCurrencyForUser(userToken);
-                        var response = await _cardConnect.VoidAuthorization(new CardConnectVoidRequest
+                        var userCurrency = await hsExchangeRates.GetCurrencyForUser(userToken);
+                        var response = await cardConnect.VoidAuthorization(new CardConnectVoidRequest
                         {
                             currency = userCurrency.ToString(),
                             merchid = GetMerchantID(userCurrency),
                             retref = transaction.xp.CardConnectResponse.retref,
                         });
-                        await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, response));
+                        await oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, response));
                     }
                 }
             }
             catch (CreditCardVoidException ex)
             {
-                await _supportAlerts.VoidAuthorizationFailed(payment, transactionID, order, ex);
-                await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, ex.Response));
+                await supportAlerts.VoidAuthorizationFailed(payment, transactionID, order, ex);
+                await oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, ex.Response));
                 throw new CatalystBaseException("Payment.FailedToVoidAuthorization", ex.ApiError.Message);
             }
         }
@@ -166,15 +166,15 @@ namespace ordercloud.integrations.cardconnect
         {
             if (userCurrency == CurrencySymbol.USD)
             {
-                return _settings.CardConnectSettings.UsdMerchantID;
+                return settings.CardConnectSettings.UsdMerchantID;
             }
             else if (userCurrency == CurrencySymbol.CAD)
             {
-                return _settings.CardConnectSettings.CadMerchantID;
+                return settings.CardConnectSettings.CadMerchantID;
             }
             else
             {
-                return _settings.CardConnectSettings.EurMerchantID;
+                return settings.CardConnectSettings.EurMerchantID;
             }
         }
 
@@ -182,7 +182,7 @@ namespace ordercloud.integrations.cardconnect
         {
             if (payment.CreditCardID != null)
             {
-                return await _oc.Me.GetCreditCardAsync<CardConnectBuyerCreditCard>(payment.CreditCardID, userToken);
+                return await oc.Me.GetCreditCardAsync<CardConnectBuyerCreditCard>(payment.CreditCardID, userToken);
             }
 
             return await MeTokenize(payment.CreditCardDetails, userToken);
@@ -190,15 +190,15 @@ namespace ordercloud.integrations.cardconnect
 
         private async Task<CardConnectBuyerCreditCard> MeTokenize(OrderCloudIntegrationsCreditCardToken card, string userToken)
         {
-            var userCurrency = await _hsExchangeRates.GetCurrencyForUser(userToken);
-            var auth = await _cardConnect.Tokenize(CardConnectMapper.Map(card, userCurrency.ToString()));
+            var userCurrency = await hsExchangeRates.GetCurrencyForUser(userToken);
+            var auth = await cardConnect.Tokenize(CardConnectMapper.Map(card, userCurrency.ToString()));
             return BuyerCreditCardMapper.Map(card, auth);
         }
 
         private async Task<CreditCard> Tokenize(OrderCloudIntegrationsCreditCardToken card, string userToken)
         {
-            var userCurrency = await _hsExchangeRates.GetCurrencyForUser(userToken);
-            var auth = await _cardConnect.Tokenize(CardConnectMapper.Map(card, userCurrency.ToString()));
+            var userCurrency = await hsExchangeRates.GetCurrencyForUser(userToken);
+            var auth = await cardConnect.Tokenize(CardConnectMapper.Map(card, userCurrency.ToString()));
             return CreditCardMapper.Map(card, auth);
         }
     }

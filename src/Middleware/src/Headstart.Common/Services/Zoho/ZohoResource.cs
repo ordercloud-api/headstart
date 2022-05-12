@@ -35,28 +35,28 @@ namespace Headstart.Common.Services.Zoho
 
     public abstract class ZohoResource
     {
-        private readonly ZohoClient _client;
-        private readonly string _resource;
-        private readonly object[] _segments;
+        private readonly ZohoClient client;
+        private readonly string resource;
+        private readonly object[] segments;
 
         protected ZohoResource(ZohoClient client, string resource, params object[] segments)
         {
-            _client = client;
-            _resource = resource;
-            _segments = segments;
+            this.client = client;
+            this.resource = resource;
+            this.segments = segments;
         }
 
         protected internal IFlurlRequest Get(params object[] segments) =>
-            _client.Request(this.AppendSegments(segments));
+            client.Request(this.AppendSegments(segments));
 
         protected internal IFlurlRequest Delete(params object[] segments) =>
-            _client.Request(this.AppendSegments(segments));
+            client.Request(this.AppendSegments(segments));
 
         protected internal IFlurlRequest Post(params object[] segments) =>
-            _client.Request(this.AppendSegments(segments));
+            client.Request(this.AppendSegments(segments));
 
         protected internal async Task<T> Post<T>(object obj) =>
-            await Parse<T>(await _client.Post(obj, _segments).PostMultipartAsync(f =>
+            await Parse<T>(await client.Post(obj, segments).PostMultipartAsync(f =>
             {
                 f.AddString("JSONString", JsonConvert.SerializeObject(obj, new JsonSerializerSettings()
                 {
@@ -66,7 +66,7 @@ namespace Headstart.Common.Services.Zoho
             }));
 
         protected internal async Task<T> Put<T>(object obj, params object[] segments) =>
-            await Parse<T>(await _client.Put(obj, this.AppendSegments(segments)).PutMultipartAsync(f =>
+            await Parse<T>(await client.Put(obj, this.AppendSegments(segments)).PutMultipartAsync(f =>
             {
                 f.AddString("JSONString", JsonConvert.SerializeObject(obj, new JsonSerializerSettings()
                 {
@@ -79,15 +79,15 @@ namespace Headstart.Common.Services.Zoho
         {
             if (segments.Length <= 0)
             {
-                return _segments;
+                return this.segments;
             }
 
-            var appended = _segments.ToList();
+            var appended = this.segments.ToList();
             appended.AddRange(segments);
             return appended.ToArray();
         }
 
         private async Task<T> Parse<T>(IFlurlResponse res) =>
-            JObject.Parse(await res.ResponseMessage.Content.ReadAsStringAsync()).SelectToken(_resource).ToObject<T>();
+            JObject.Parse(await res.ResponseMessage.Content.ReadAsStringAsync()).SelectToken(resource).ToObject<T>();
     }
 }
