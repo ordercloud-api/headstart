@@ -15,5 +15,3 @@ namespace Headstart.Models.Misc
 		}
 	}
 }
-
-

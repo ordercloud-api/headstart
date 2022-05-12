@@ -465,9 +465,9 @@ dotnet_diagnostic.SA1129.severity=silent
 dotnet_diagnostic.SA1025.severity=warning
 dotnet_diagnostic.SA0001.severity=warning
 dotnet_diagnostic.SA1110.severity=warning
-dotnet_diagnostic.SA1517.severity=silent
-dotnet_diagnostic.SA1519.severity=silent
-dotnet_diagnostic.SA1518.severity=silent
+dotnet_diagnostic.SA1517.severity=warning
+dotnet_diagnostic.SA1519.severity=warning
+dotnet_diagnostic.SA1518.severity=warning
 dotnet_diagnostic.SA1314.severity=warning
 dotnet_diagnostic.SA1216.severity=warning
 dotnet_diagnostic.SA1601.severity=silent
@@ -481,7 +481,7 @@ dotnet_diagnostic.SA1403.severity=warning
 dotnet_diagnostic.SA1408.severity=warning
 dotnet_diagnostic.SA1001.severity=warning
 dotnet_diagnostic.SA1139.severity=warning
-dotnet_diagnostic.SA1520.severity=silent
+dotnet_diagnostic.SA1520.severity=warning
 
 # CS0168: Variable is declared but never used
 dotnet_diagnostic.CS0168.severity = silent

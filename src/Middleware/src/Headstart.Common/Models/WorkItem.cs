@@ -118,9 +118,11 @@ namespace Headstart.Common.Models
 
                 // if cache does exists, and there is no difference ignore the action
                 if (wi.Cache != null && wi.Diff == null)
+                {
                     return (wi.RecordType == RecordType.SpecProductAssignment || wi.RecordType == RecordType.UserGroupAssignment || wi.RecordType == RecordType.CatalogAssignment)
                         ? Action.Ignore
                         : Action.Get;
+                }
 
                 // special case for SpecAssignment because there is no ID for the OC object
                 // but we want one in orchestration to handle caching

@@ -16,5 +16,3 @@ namespace Headstart.Models.Misc
         public decimal Threshold { get; set; }
     }
 }
-
-

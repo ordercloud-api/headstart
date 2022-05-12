@@ -110,7 +110,9 @@ namespace Headstart.API.Commands.Zoho
                         list.Add(await _zoho.PurchaseOrders.SaveAsync(z_po));
                     }
                     else
+                    {
                         list.Add(await _zoho.PurchaseOrders.CreateAsync(z_po));
+                    }
                 }
 
                 return list;
@@ -207,6 +209,7 @@ namespace Headstart.API.Commands.Zoho
             // so we want to get found items into a pared down list
             var z_items = new Dictionary<string, ZohoLineItem>();
             foreach (var list in zItems)
+            {
                 list.Items.ForEach(item =>
                 {
                     if (z_items.Any(z => z.Key == item.sku))
@@ -216,6 +219,8 @@ namespace Headstart.API.Commands.Zoho
 
                     z_items.Add(item.sku, item);
                 });
+            }
+
             return new Tuple<Dictionary<string, ZohoLineItem>, List<HSLineItem>>(z_items, uniqueLineItems);
         }
 

@@ -14,5 +14,3 @@ namespace ordercloud.integrations.smartystreets
         }
 	}
 }
-
-

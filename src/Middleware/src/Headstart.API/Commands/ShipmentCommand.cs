@@ -577,12 +577,14 @@ namespace Headstart.API.Commands
             foreach (RowInfo<Misc.Shipment> row in rows)
             {
                 if (row.ErrorColumnIndex > -1)
+                {
                     result.Invalid.Add(new DocumentRowError()
                     {
                         ErrorMessage = row.ErrorMessage,
                         Row = row.RowNumber++,
                         Column = row.ErrorColumnIndex
                     });
+                }
                 else
                 {
                     List<ValidationResult> results = new List<ValidationResult>();

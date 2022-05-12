@@ -1,5 +1,4 @@
-﻿
-namespace ordercloud.integrations.cardconnect
+﻿namespace ordercloud.integrations.cardconnect
 {
     public class CardConnectAccountRequest
     {

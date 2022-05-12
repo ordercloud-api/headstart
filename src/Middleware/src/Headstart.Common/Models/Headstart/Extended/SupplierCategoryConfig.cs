@@ -37,5 +37,3 @@ namespace Headstart.Models.Extended
         public string Value { get; set; }
     }
 }
-
-

@@ -54,11 +54,13 @@ namespace Headstart.API.Commands
             foreach (var row in rows)
             {
                 if (row.ErrorColumnIndex > -1)
+                {
                     result.Invalid.Add(new TemplateRowError()
                     {
                         ErrorMessage = row.ErrorMessage,
                         Row = row.RowNumber++
                     });
+                }
                 else
                 {
                     var results = new List<ValidationResult>();
