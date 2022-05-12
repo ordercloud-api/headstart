@@ -32,36 +32,6 @@ namespace exchangerates.tests
             _command = new ExchangeRatesCommand(_blob, new PerBaseUrlFlurlClientFactory(), _simpleCache);
         }
 
-        private OrderCloudIntegrationsExchangeRate GetExchangeRate(CurrencySymbol baseCurrency, CurrencySymbol toCurrency, double returnedRate)
-        {
-            Fixture fixture = new Fixture();
-            return new OrderCloudIntegrationsExchangeRate()
-            {
-                BaseSymbol = baseCurrency,
-                Rates = new List<OrderCloudIntegrationsConversionRate>()
-                {
-                    new OrderCloudIntegrationsConversionRate()
-                    {
-                        Currency = toCurrency,
-                        Rate = returnedRate,
-                    },
-                    fixture.Create<OrderCloudIntegrationsConversionRate>(),
-                    fixture.Create<OrderCloudIntegrationsConversionRate>(),
-                },
-            };
-        }
-
-        private List<OrderCloudIntegrationsConversionRate> GetRates()
-        {
-            return new List<OrderCloudIntegrationsConversionRate>()
-                {
-                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.EUR, Icon = string.Empty, Name = "EUR", Rate = 1, Symbol = "€" },
-                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.USD, Icon = string.Empty, Name = "USD", Rate = 1.01456, Symbol = "$" },
-                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.CAD, Icon = string.Empty, Name = "CAD", Rate = 2.65487, Symbol = "$" },
-                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.BGN, Icon = string.Empty, Name = "BGN", Rate = 31.357, Symbol = "лв" },
-                };
-        }
-
         [Test]
         public async Task map_raw_api_rates_test()
         {
@@ -111,6 +81,36 @@ namespace exchangerates.tests
 
             // Assert
             Assert.IsTrue(rate == (1.33 * returnedRate));
+        }
+
+        private OrderCloudIntegrationsExchangeRate GetExchangeRate(CurrencySymbol baseCurrency, CurrencySymbol toCurrency, double returnedRate)
+        {
+            Fixture fixture = new Fixture();
+            return new OrderCloudIntegrationsExchangeRate()
+            {
+                BaseSymbol = baseCurrency,
+                Rates = new List<OrderCloudIntegrationsConversionRate>()
+                {
+                    new OrderCloudIntegrationsConversionRate()
+                    {
+                        Currency = toCurrency,
+                        Rate = returnedRate,
+                    },
+                    fixture.Create<OrderCloudIntegrationsConversionRate>(),
+                    fixture.Create<OrderCloudIntegrationsConversionRate>(),
+                },
+            };
+        }
+
+        private List<OrderCloudIntegrationsConversionRate> GetRates()
+        {
+            return new List<OrderCloudIntegrationsConversionRate>()
+                {
+                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.EUR, Icon = string.Empty, Name = "EUR", Rate = 1, Symbol = "€" },
+                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.USD, Icon = string.Empty, Name = "USD", Rate = 1.01456, Symbol = "$" },
+                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.CAD, Icon = string.Empty, Name = "CAD", Rate = 2.65487, Symbol = "$" },
+                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.BGN, Icon = string.Empty, Name = "BGN", Rate = 31.357, Symbol = "лв" },
+                };
         }
     }
 }

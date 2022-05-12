@@ -61,6 +61,8 @@ namespace Headstart.Jobs
             }
         }
 
+        protected abstract Task<ResultCode> ProcessJobAsync(T message);
+
         private string GetDeadLetterDescription()
         {
             // truncate the description if it exceeds max
@@ -98,7 +100,5 @@ namespace Headstart.Jobs
                 return ResultCode.PermanentFailure;
             }
         }
-
-        protected abstract Task<ResultCode> ProcessJobAsync(T message);
     }
 }

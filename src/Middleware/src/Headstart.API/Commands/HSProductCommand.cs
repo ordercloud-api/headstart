@@ -230,68 +230,6 @@ namespace Headstart.API.Commands.Crud
             };
         }
 
-        private async Task ValidateVariantsAsync(SuperHSProduct superProduct, string token)
-        {
-            List<Variant> allVariants = new List<Variant>();
-            if (superProduct.Variants == null || !superProduct.Variants.Any())
-            {
-                return;
-            }
-
-            try
-            {
-                var allProducts = await _oc.Products.ListAllAsync(accessToken: token);
-
-                if (allProducts == null || !allProducts.Any())
-                {
-                    return;
-                }
-
-                foreach (Product product in allProducts)
-                {
-                    if (product.VariantCount > 0 && product.ID != superProduct.Product.ID)
-                    {
-                        allVariants.AddRange((await _oc.Products.ListVariantsAsync(productID: product.ID, pageSize: 100, accessToken: token)).Items);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                return;
-            }
-
-            foreach (Variant variant in superProduct.Variants)
-            {
-                if (!allVariants.Any())
-                {
-                    return;
-                }
-
-                List<Variant> duplicateSpecNames = allVariants.Where(currVariant => IsDifferentVariantWithSameName(variant, currVariant)).ToList();
-                if (duplicateSpecNames.Any())
-                {
-                    throw new Exception($"{duplicateSpecNames.First().ID} already exists on a variant. Please use unique names for SKUS and try again.");
-                }
-            }
-        }
-
-        private bool IsDifferentVariantWithSameName(Variant variant, Variant currVariant)
-        {
-            // Do they have the same SKU
-            if (variant.xp.NewID == currVariant.ID)
-            {
-                if (variant.xp.SpecCombo == currVariant.xp.SpecCombo)
-                {
-                    // It's most likely the same variant
-                    return false;
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-
         public async Task<SuperHSProduct> Put(string id, SuperHSProduct superProduct, string token)
         {
             // Update the Product itself
@@ -423,6 +361,134 @@ namespace Headstart.API.Commands.Crud
                 Specs = specsReq?.Result?.Items,
                 Variants = variantsReq?.Result?.Items,
             };
+        }
+
+        public async Task Delete(string id, string token)
+        {
+            var product = await _oc.Products.GetAsync<HSProduct>(id);
+            var specs = await _oc.Products.ListSpecsAsync<Spec>(id, accessToken: token);
+            var tasks = new List<Task>()
+            {
+                Throttler.RunAsync(specs.Items, 100, 5, s => _oc.Specs.DeleteAsync(s.ID, accessToken: token)),
+                _oc.Products.DeleteAsync(id, token),
+            };
+            if (product?.xp?.Images?.Count() > 0)
+            {
+                tasks.Add(Throttler.RunAsync(product.xp.Images, 100, 5, i => _assetClient.DeleteAssetByUrl(i.Url)));
+            }
+
+            if (product?.xp?.Documents != null && product?.xp?.Documents.Count() > 0)
+            {
+                tasks.Add(Throttler.RunAsync(product.xp.Documents, 100, 5, d => _assetClient.DeleteAssetByUrl(d.Url)));
+            }
+
+            // Delete images, attachments, and assignments associated with the requested product
+            await Task.WhenAll(tasks);
+        }
+
+        public async Task<Product> FilterOptionOverride(string id, string supplierID, IDictionary<string, object> facets, DecodedToken decodedToken)
+        {
+            ApiClient supplierClient = await _apiClientHelper.GetSupplierApiClient(supplierID, decodedToken.AccessToken);
+            if (supplierClient == null)
+            {
+                throw new Exception($"Default supplier client not found. SupplierID: {supplierID}");
+            }
+
+            var configToUse = new OrderCloudClientConfig
+            {
+                ApiUrl = decodedToken.ApiUrl,
+                AuthUrl = decodedToken.AuthUrl,
+                ClientId = supplierClient.ID,
+                ClientSecret = supplierClient.ClientSecret,
+                GrantType = GrantType.ClientCredentials,
+                Roles = new[]
+                    {
+                        ApiRole.SupplierAdmin,
+                        ApiRole.ProductAdmin,
+                    },
+            };
+            var ocClient = new OrderCloudClient(configToUse);
+            await ocClient.AuthenticateAsync();
+            var token = ocClient.TokenResponse.AccessToken;
+
+            // Format the facet data to change for request body
+            var facetDataFormatted = new ExpandoObject();
+            var facetDataFormattedCollection = (ICollection<KeyValuePair<string, object>>)facetDataFormatted;
+            foreach (var kvp in facets)
+            {
+                facetDataFormattedCollection.Add(kvp);
+            }
+
+            dynamic facetDataFormattedDynamic = facetDataFormatted;
+
+            // Update the product with a supplier token
+            var updatedProduct = await ocClient.Products.PatchAsync(
+                id,
+                new PartialProduct() { xp = new { Facets = facetDataFormattedDynamic } },
+                accessToken: token);
+            return updatedProduct;
+        }
+
+        private async Task ValidateVariantsAsync(SuperHSProduct superProduct, string token)
+        {
+            List<Variant> allVariants = new List<Variant>();
+            if (superProduct.Variants == null || !superProduct.Variants.Any())
+            {
+                return;
+            }
+
+            try
+            {
+                var allProducts = await _oc.Products.ListAllAsync(accessToken: token);
+
+                if (allProducts == null || !allProducts.Any())
+                {
+                    return;
+                }
+
+                foreach (Product product in allProducts)
+                {
+                    if (product.VariantCount > 0 && product.ID != superProduct.Product.ID)
+                    {
+                        allVariants.AddRange((await _oc.Products.ListVariantsAsync(productID: product.ID, pageSize: 100, accessToken: token)).Items);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
+
+            foreach (Variant variant in superProduct.Variants)
+            {
+                if (!allVariants.Any())
+                {
+                    return;
+                }
+
+                List<Variant> duplicateSpecNames = allVariants.Where(currVariant => IsDifferentVariantWithSameName(variant, currVariant)).ToList();
+                if (duplicateSpecNames.Any())
+                {
+                    throw new Exception($"{duplicateSpecNames.First().ID} already exists on a variant. Please use unique names for SKUS and try again.");
+                }
+            }
+        }
+
+        private bool IsDifferentVariantWithSameName(Variant variant, Variant currVariant)
+        {
+            // Do they have the same SKU
+            if (variant.xp.NewID == currVariant.ID)
+            {
+                if (variant.xp.SpecCombo == currVariant.xp.SpecCombo)
+                {
+                    // It's most likely the same variant
+                    return false;
+                }
+
+                return true;
+            }
+
+            return false;
         }
 
         private void ValidateRequestVariant(Variant variant)
@@ -579,72 +645,6 @@ namespace Headstart.API.Commands.Crud
             }
 
             return false;
-        }
-
-        public async Task Delete(string id, string token)
-        {
-            var product = await _oc.Products.GetAsync<HSProduct>(id);
-            var specs = await _oc.Products.ListSpecsAsync<Spec>(id, accessToken: token);
-            var tasks = new List<Task>()
-            {
-                Throttler.RunAsync(specs.Items, 100, 5, s => _oc.Specs.DeleteAsync(s.ID, accessToken: token)),
-                _oc.Products.DeleteAsync(id, token),
-            };
-            if (product?.xp?.Images?.Count() > 0)
-            {
-                tasks.Add(Throttler.RunAsync(product.xp.Images, 100, 5, i => _assetClient.DeleteAssetByUrl(i.Url)));
-            }
-
-            if (product?.xp?.Documents != null && product?.xp?.Documents.Count() > 0)
-            {
-                tasks.Add(Throttler.RunAsync(product.xp.Documents, 100, 5, d => _assetClient.DeleteAssetByUrl(d.Url)));
-            }
-
-            // Delete images, attachments, and assignments associated with the requested product
-            await Task.WhenAll(tasks);
-        }
-
-        public async Task<Product> FilterOptionOverride(string id, string supplierID, IDictionary<string, object> facets, DecodedToken decodedToken)
-        {
-            ApiClient supplierClient = await _apiClientHelper.GetSupplierApiClient(supplierID, decodedToken.AccessToken);
-            if (supplierClient == null)
-            {
-                throw new Exception($"Default supplier client not found. SupplierID: {supplierID}");
-            }
-
-            var configToUse = new OrderCloudClientConfig
-            {
-                ApiUrl = decodedToken.ApiUrl,
-                AuthUrl = decodedToken.AuthUrl,
-                ClientId = supplierClient.ID,
-                ClientSecret = supplierClient.ClientSecret,
-                GrantType = GrantType.ClientCredentials,
-                Roles = new[]
-                    {
-                        ApiRole.SupplierAdmin,
-                        ApiRole.ProductAdmin,
-                    },
-            };
-            var ocClient = new OrderCloudClient(configToUse);
-            await ocClient.AuthenticateAsync();
-            var token = ocClient.TokenResponse.AccessToken;
-
-            // Format the facet data to change for request body
-            var facetDataFormatted = new ExpandoObject();
-            var facetDataFormattedCollection = (ICollection<KeyValuePair<string, object>>)facetDataFormatted;
-            foreach (var kvp in facets)
-            {
-                facetDataFormattedCollection.Add(kvp);
-            }
-
-            dynamic facetDataFormattedDynamic = facetDataFormatted;
-
-            // Update the product with a supplier token
-            var updatedProduct = await ocClient.Products.PatchAsync(
-                id,
-                new PartialProduct() { xp = new { Facets = facetDataFormattedDynamic } },
-                accessToken: token);
-            return updatedProduct;
         }
 
         private async Task<string> GetSupplierNameForXpFacet(string supplierID, string accessToken)

@@ -86,29 +86,6 @@ namespace Headstart.API.Commands
                 new List<HSOrder> { worksheet.Order });
         }
 
-        private async Task<ProcessResult> PerformZohoTasks(HSOrderWorksheet worksheet, IList<HSOrder> supplierOrders)
-        {
-            var (salesAction, zohoSalesOrder) = await ProcessActivityCall(
-                ProcessType.Accounting,
-                "Create Zoho Sales Order",
-                _zoho.CreateSalesOrder(worksheet));
-
-            var (poAction, zohoPurchaseOrder) = await ProcessActivityCall(
-                ProcessType.Accounting,
-                "Create Zoho Purchase Order",
-                _zoho.CreateOrUpdatePurchaseOrder(zohoSalesOrder, supplierOrders.ToList()));
-
-            var (shippingAction, zohoShippingOrder) = await ProcessActivityCall(
-                ProcessType.Accounting,
-                "Create Zoho Shipping Purchase Order",
-                _zoho.CreateShippingPurchaseOrder(zohoSalesOrder, worksheet));
-            return new ProcessResult()
-            {
-                Type = ProcessType.Accounting,
-                Activity = new List<ProcessResultAction>() { salesAction, poAction, shippingAction },
-            };
-        }
-
         public async Task<OrderSubmitResponse> HandleBuyerOrderSubmit(HSOrderWorksheet orderWorksheet)
         {
             var results = new List<ProcessResult>();
@@ -133,6 +110,107 @@ namespace Headstart.API.Commands
 
             // STEP 3: return OrderSubmitResponse
             return await CreateOrderSubmitResponse(results, new List<HSOrder> { orderWorksheet.Order });
+        }
+
+        public async Task<List<HSOrder>> CreateOrderRelationshipsAndTransferXP(HSOrderWorksheet buyerOrder, List<Order> supplierOrders)
+        {
+            var payment = (await _oc.Payments.ListAsync(OrderDirection.Incoming, buyerOrder.Order.ID))?.Items?.FirstOrDefault();
+            var updatedSupplierOrders = new List<HSOrder>();
+            var supplierIDs = new List<string>();
+            var lineItems = await _oc.LineItems.ListAllAsync(OrderDirection.Incoming, buyerOrder.Order.ID);
+            var shipFromAddressIDs = lineItems.DistinctBy(li => li.ShipFromAddressID).Select(li => li.ShipFromAddressID).ToList();
+
+            foreach (var supplierOrder in supplierOrders)
+            {
+                supplierIDs.Add(supplierOrder.ToCompanyID);
+                var shipFromAddressIDsForSupplierOrder = shipFromAddressIDs.Where(addressID => addressID != null && addressID.Contains(supplierOrder.ToCompanyID)).ToList();
+                var supplier = await _oc.Suppliers.GetAsync<HSSupplier>(supplierOrder.ToCompanyID);
+                var suppliersShipEstimates = buyerOrder.ShipEstimateResponse?.ShipEstimates?.Where(se => se.xp.SupplierID == supplier.ID);
+                var supplierOrderPatch = new PartialOrder()
+                {
+                    ID = $"{buyerOrder.Order.ID}-{supplierOrder.ToCompanyID}",
+                    xp = new OrderXp()
+                    {
+                        ShipFromAddressIDs = shipFromAddressIDsForSupplierOrder,
+                        SupplierIDs = new List<string>() { supplier.ID },
+                        StopShipSync = false,
+                        OrderType = buyerOrder.Order.xp.OrderType,
+                        QuoteOrderInfo = buyerOrder.Order.xp.QuoteOrderInfo,
+                        Currency = supplier.xp.Currency,
+                        ClaimStatus = ClaimStatus.NoClaim,
+                        ShippingStatus = ShippingStatus.Processing,
+                        SubmittedOrderStatus = SubmittedOrderStatus.Open,
+                        SelectedShipMethodsSupplierView = suppliersShipEstimates != null ? MapSelectedShipMethod(suppliersShipEstimates) : null,
+
+                        // ShippingAddress needed for Purchase Order Detail Report
+                        ShippingAddress = new HSAddressBuyer()
+                        {
+                            ID = buyerOrder?.Order?.xp?.ShippingAddress?.ID,
+                            CompanyName = buyerOrder?.Order?.xp?.ShippingAddress?.CompanyName,
+                            FirstName = buyerOrder?.Order?.xp?.ShippingAddress?.FirstName,
+                            LastName = buyerOrder?.Order?.xp?.ShippingAddress?.LastName,
+                            Street1 = buyerOrder?.Order?.xp?.ShippingAddress?.Street1,
+                            Street2 = buyerOrder?.Order?.xp?.ShippingAddress?.Street2,
+                            City = buyerOrder?.Order?.xp?.ShippingAddress?.City,
+                            State = buyerOrder?.Order?.xp?.ShippingAddress?.State,
+                            Zip = buyerOrder?.Order?.xp?.ShippingAddress?.Zip,
+                            Country = buyerOrder?.Order?.xp?.ShippingAddress?.Country,
+                        },
+                    },
+                };
+                var updatedSupplierOrder = await _oc.Orders.PatchAsync<HSOrder>(OrderDirection.Outgoing, supplierOrder.ID, supplierOrderPatch);
+                var supplierLineItems = lineItems.Where(li => li.SupplierID == supplier.ID).ToList();
+                await SaveShipMethodByLineItem(supplierLineItems, supplierOrderPatch.xp.SelectedShipMethodsSupplierView, buyerOrder.Order.ID);
+                await OverrideOutgoingLineQuoteUnitPrice(updatedSupplierOrder.ID, supplierLineItems);
+                updatedSupplierOrders.Add(updatedSupplierOrder);
+            }
+
+            await _lineItemCommand.SetInitialSubmittedLineItemStatuses(buyerOrder.Order.ID);
+            var sellerShipEstimates = buyerOrder.ShipEstimateResponse?.ShipEstimates?.Where(se => se.xp.SupplierID == null);
+
+            // Patch Buyer Order after it has been submitted
+            var buyerOrderPatch = new PartialOrder()
+            {
+                xp = new
+                {
+                    ShipFromAddressIDs = shipFromAddressIDs,
+                    SupplierIDs = supplierIDs,
+                    ClaimStatus = ClaimStatus.NoClaim,
+                    ShippingStatus = ShippingStatus.Processing,
+                    SubmittedOrderStatus = SubmittedOrderStatus.Open,
+                    HasSellerProducts = buyerOrder.LineItems.Any(li => li.SupplierID == null),
+                    PaymentMethod = payment.Type == PaymentType.CreditCard ? "Credit Card" : "Purchase Order",
+
+                    // If we have seller ship estimates for a seller owned product save selected method on buyer order.
+                    SelectedShipMethodsSupplierView = sellerShipEstimates != null ? MapSelectedShipMethod(sellerShipEstimates) : null,
+                },
+            };
+
+            await _oc.Orders.PatchAsync(OrderDirection.Incoming, buyerOrder.Order.ID, buyerOrderPatch);
+            return updatedSupplierOrders;
+        }
+
+        private async Task<ProcessResult> PerformZohoTasks(HSOrderWorksheet worksheet, IList<HSOrder> supplierOrders)
+        {
+            var (salesAction, zohoSalesOrder) = await ProcessActivityCall(
+                ProcessType.Accounting,
+                "Create Zoho Sales Order",
+                _zoho.CreateSalesOrder(worksheet));
+
+            var (poAction, zohoPurchaseOrder) = await ProcessActivityCall(
+                ProcessType.Accounting,
+                "Create Zoho Purchase Order",
+                _zoho.CreateOrUpdatePurchaseOrder(zohoSalesOrder, supplierOrders.ToList()));
+
+            var (shippingAction, zohoShippingOrder) = await ProcessActivityCall(
+                ProcessType.Accounting,
+                "Create Zoho Shipping Purchase Order",
+                _zoho.CreateShippingPurchaseOrder(zohoSalesOrder, worksheet));
+            return new ProcessResult()
+            {
+                Type = ProcessType.Accounting,
+                Activity = new List<ProcessResultAction>() { salesAction, poAction, shippingAction },
+            };
         }
 
         private async Task<List<ProcessResult>> HandleIntegrations(List<HSOrder> supplierOrders, HSOrderWorksheet orderWorksheet)
@@ -359,84 +437,6 @@ namespace Headstart.API.Commands
             activities.Add(getAction);
 
             return await Task.FromResult(new Tuple<List<HSOrder>, HSOrderWorksheet, List<ProcessResultAction>>(hsOrders, hsOrderWorksheet, activities));
-        }
-
-        public async Task<List<HSOrder>> CreateOrderRelationshipsAndTransferXP(HSOrderWorksheet buyerOrder, List<Order> supplierOrders)
-        {
-            var payment = (await _oc.Payments.ListAsync(OrderDirection.Incoming, buyerOrder.Order.ID))?.Items?.FirstOrDefault();
-            var updatedSupplierOrders = new List<HSOrder>();
-            var supplierIDs = new List<string>();
-            var lineItems = await _oc.LineItems.ListAllAsync(OrderDirection.Incoming, buyerOrder.Order.ID);
-            var shipFromAddressIDs = lineItems.DistinctBy(li => li.ShipFromAddressID).Select(li => li.ShipFromAddressID).ToList();
-
-            foreach (var supplierOrder in supplierOrders)
-            {
-                supplierIDs.Add(supplierOrder.ToCompanyID);
-                var shipFromAddressIDsForSupplierOrder = shipFromAddressIDs.Where(addressID => addressID != null && addressID.Contains(supplierOrder.ToCompanyID)).ToList();
-                var supplier = await _oc.Suppliers.GetAsync<HSSupplier>(supplierOrder.ToCompanyID);
-                var suppliersShipEstimates = buyerOrder.ShipEstimateResponse?.ShipEstimates?.Where(se => se.xp.SupplierID == supplier.ID);
-                var supplierOrderPatch = new PartialOrder()
-                {
-                    ID = $"{buyerOrder.Order.ID}-{supplierOrder.ToCompanyID}",
-                    xp = new OrderXp()
-                    {
-                        ShipFromAddressIDs = shipFromAddressIDsForSupplierOrder,
-                        SupplierIDs = new List<string>() { supplier.ID },
-                        StopShipSync = false,
-                        OrderType = buyerOrder.Order.xp.OrderType,
-                        QuoteOrderInfo = buyerOrder.Order.xp.QuoteOrderInfo,
-                        Currency = supplier.xp.Currency,
-                        ClaimStatus = ClaimStatus.NoClaim,
-                        ShippingStatus = ShippingStatus.Processing,
-                        SubmittedOrderStatus = SubmittedOrderStatus.Open,
-                        SelectedShipMethodsSupplierView = suppliersShipEstimates != null ? MapSelectedShipMethod(suppliersShipEstimates) : null,
-
-                        // ShippingAddress needed for Purchase Order Detail Report
-                        ShippingAddress = new HSAddressBuyer()
-                        {
-                            ID = buyerOrder?.Order?.xp?.ShippingAddress?.ID,
-                            CompanyName = buyerOrder?.Order?.xp?.ShippingAddress?.CompanyName,
-                            FirstName = buyerOrder?.Order?.xp?.ShippingAddress?.FirstName,
-                            LastName = buyerOrder?.Order?.xp?.ShippingAddress?.LastName,
-                            Street1 = buyerOrder?.Order?.xp?.ShippingAddress?.Street1,
-                            Street2 = buyerOrder?.Order?.xp?.ShippingAddress?.Street2,
-                            City = buyerOrder?.Order?.xp?.ShippingAddress?.City,
-                            State = buyerOrder?.Order?.xp?.ShippingAddress?.State,
-                            Zip = buyerOrder?.Order?.xp?.ShippingAddress?.Zip,
-                            Country = buyerOrder?.Order?.xp?.ShippingAddress?.Country,
-                        },
-                    },
-                };
-                var updatedSupplierOrder = await _oc.Orders.PatchAsync<HSOrder>(OrderDirection.Outgoing, supplierOrder.ID, supplierOrderPatch);
-                var supplierLineItems = lineItems.Where(li => li.SupplierID == supplier.ID).ToList();
-                await SaveShipMethodByLineItem(supplierLineItems, supplierOrderPatch.xp.SelectedShipMethodsSupplierView, buyerOrder.Order.ID);
-                await OverrideOutgoingLineQuoteUnitPrice(updatedSupplierOrder.ID, supplierLineItems);
-                updatedSupplierOrders.Add(updatedSupplierOrder);
-            }
-
-            await _lineItemCommand.SetInitialSubmittedLineItemStatuses(buyerOrder.Order.ID);
-            var sellerShipEstimates = buyerOrder.ShipEstimateResponse?.ShipEstimates?.Where(se => se.xp.SupplierID == null);
-
-            // Patch Buyer Order after it has been submitted
-            var buyerOrderPatch = new PartialOrder()
-            {
-                xp = new
-                {
-                    ShipFromAddressIDs = shipFromAddressIDs,
-                    SupplierIDs = supplierIDs,
-                    ClaimStatus = ClaimStatus.NoClaim,
-                    ShippingStatus = ShippingStatus.Processing,
-                    SubmittedOrderStatus = SubmittedOrderStatus.Open,
-                    HasSellerProducts = buyerOrder.LineItems.Any(li => li.SupplierID == null),
-                    PaymentMethod = payment.Type == PaymentType.CreditCard ? "Credit Card" : "Purchase Order",
-
-                    // If we have seller ship estimates for a seller owned product save selected method on buyer order.
-                    SelectedShipMethodsSupplierView = sellerShipEstimates != null ? MapSelectedShipMethod(sellerShipEstimates) : null,
-                },
-            };
-
-            await _oc.Orders.PatchAsync(OrderDirection.Incoming, buyerOrder.Order.ID, buyerOrderPatch);
-            return updatedSupplierOrders;
         }
 
         private List<ShipMethodSupplierView> MapSelectedShipMethod(IEnumerable<HSShipEstimate> shipEstimates)

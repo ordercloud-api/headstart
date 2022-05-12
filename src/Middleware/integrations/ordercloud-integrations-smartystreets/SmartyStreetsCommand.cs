@@ -135,11 +135,6 @@ namespace ordercloud.integrations.smartystreets
             return response;
         }
 
-        private bool NoAddressSuggestions(AutoCompleteResponse suggestions)
-        {
-            return suggestions == null || suggestions.suggestions == null || suggestions.suggestions.Count == 0;
-        }
-
         // ME endpoints
         public async Task<BuyerAddress> CreateMeAddress(BuyerAddress address, DecodedToken decodedToken)
         {
@@ -235,6 +230,11 @@ namespace ordercloud.integrations.smartystreets
         {
             var validation = await ValidateAddress(address);
             return await _oc.Orders.SetShippingAddressAsync(direction, orderID, validation.ValidAddress, decodedToken.AccessToken);
+        }
+
+        private bool NoAddressSuggestions(AutoCompleteResponse suggestions)
+        {
+            return suggestions == null || suggestions.suggestions == null || suggestions.suggestions.Count == 0;
         }
     }
 }

@@ -182,13 +182,6 @@ namespace Headstart.API.Commands
             return userGroups;
         }
 
-        private async Task<bool> IsUserInUserGroup(string buyerID, string userGroupID, DecodedToken decodedToken)
-        {
-            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-            var userGroupAssignmentForAccess = await _oc.UserGroups.ListUserAssignmentsAsync(buyerID, userGroupID, me.ID);
-            return userGroupAssignmentForAccess.Items.Count > 0;
-        }
-
         public async Task<List<UserGroupAssignment>> GetUserUserGroupAssignments(string userGroupType, string parentID, string userID, DecodedToken decodedToken)
         {
             if (userGroupType == "UserPermissions")
@@ -216,6 +209,13 @@ namespace Headstart.API.Commands
                    page: args.Page,
                    pageSize: 100);
             return userGroups;
+        }
+
+        private async Task<bool> IsUserInUserGroup(string buyerID, string userGroupID, DecodedToken decodedToken)
+        {
+            var me = await _oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
+            var userGroupAssignmentForAccess = await _oc.UserGroups.ListUserAssignmentsAsync(buyerID, userGroupID, me.ID);
+            return userGroupAssignmentForAccess.Items.Count > 0;
         }
     }
 }

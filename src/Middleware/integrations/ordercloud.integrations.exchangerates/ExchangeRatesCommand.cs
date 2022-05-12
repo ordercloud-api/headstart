@@ -59,15 +59,6 @@ namespace ordercloud.integrations.exchangerates
             }
         }
 
-        private async Task<ListPage<OrderCloudIntegrationsConversionRate>> GetCachedRates(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencySymbol currency)
-        {
-            var rates = await _cache.GetOrAddAsync($"exchangerates_{currency}", TimeSpan.FromHours(1), () =>
-            {
-                return _blob.Get<OrderCloudIntegrationsExchangeRate>($"{currency}.json");
-            });
-            return Filter(rateArgs, rates);
-        }
-
         public ListPage<OrderCloudIntegrationsConversionRate> Filter(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, OrderCloudIntegrationsExchangeRate rates)
         {
             if (rateArgs.Filters?.Any(filter => filter.PropertyName == "Symbol") ?? false)
@@ -132,6 +123,25 @@ namespace ordercloud.integrations.exchangerates
             });
         }
 
+        public async Task Update()
+        {
+            var list = await GetRateList();
+            await Throttler.RunAsync(list.Items, 100, 10, async rate =>
+            {
+                var rates = await Get(rate.Currency);
+                await _blob.Save($"{rate.Currency}.json", JsonConvert.SerializeObject(rates));
+            });
+        }
+
+        private async Task<ListPage<OrderCloudIntegrationsConversionRate>> GetCachedRates(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencySymbol currency)
+        {
+            var rates = await _cache.GetOrAddAsync($"exchangerates_{currency}", TimeSpan.FromHours(1), () =>
+            {
+                return _blob.Get<OrderCloudIntegrationsExchangeRate>($"{currency}.json");
+            });
+            return Filter(rateArgs, rates);
+        }
+
         private static string GetIcon(CurrencySymbol symbol)
         {
             using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"ordercloud.integrations.exchangerates.Icons.{symbol}.gif");
@@ -166,16 +176,6 @@ namespace ordercloud.integrations.exchangerates
             }
 
             return t.Value == 0 ? 1 : t.Value;
-        }
-
-        public async Task Update()
-        {
-            var list = await GetRateList();
-            await Throttler.RunAsync(list.Items, 100, 10, async rate =>
-            {
-                var rates = await Get(rate.Currency);
-                await _blob.Save($"{rate.Currency}.json", JsonConvert.SerializeObject(rates));
-            });
         }
     }
 }

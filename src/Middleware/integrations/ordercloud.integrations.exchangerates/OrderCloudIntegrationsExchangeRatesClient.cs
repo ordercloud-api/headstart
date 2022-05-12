@@ -21,16 +21,16 @@ namespace ordercloud.integrations.exchangerates
             _flurl = flurlFactory.Get($"https://api.exchangeratesapi.io/");
         }
 
-        private IFlurlRequest Request(string resource)
-        {
-            return _flurl.Request(resource);
-        }
-
         public async Task<ExchangeRatesBase> Get(CurrencySymbol symbol)
         {
             return await this.Request("latest")
                 .SetQueryParam("base", symbol)
                 .GetJsonAsync<ExchangeRatesBase>();
+        }
+
+        private IFlurlRequest Request(string resource)
+        {
+            return _flurl.Request(resource);
         }
     }
 }

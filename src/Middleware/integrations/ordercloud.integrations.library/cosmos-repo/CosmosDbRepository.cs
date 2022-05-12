@@ -88,6 +88,21 @@ namespace ordercloud.integrations.library
             };
         }
 
+        public async Task UpsertItemAsync(string id, T item)
+        {
+            await _container.UpsertItemAsync<T>(item, ResolvePartitionKey(id));
+        }
+
+        public async Task<ItemResponse<T>> ReplaceItemAsync(string id, T item)
+        {
+            return await _container.ReplaceItemAsync<T>(item, id);
+        }
+
+        public IQueryable<T> GetQueryable()
+        {
+            return _container.GetItemLinqQueryable<T>();
+        }
+
         private IQueryable<T> ApplySearchToQueryable(string search, string searchOn, IQueryable<T> filteredQueryable)
         {
             ParameterExpression param = Expression.Parameter(typeof(T));
@@ -308,21 +323,6 @@ namespace ordercloud.integrations.library
             }
 
             return null;
-        }
-
-        public async Task UpsertItemAsync(string id, T item)
-        {
-            await _container.UpsertItemAsync<T>(item, ResolvePartitionKey(id));
-        }
-
-        public async Task<ItemResponse<T>> ReplaceItemAsync(string id, T item)
-        {
-            return await _container.ReplaceItemAsync<T>(item, id);
-        }
-
-        public IQueryable<T> GetQueryable()
-        {
-            return _container.GetItemLinqQueryable<T>();
         }
     }
 }

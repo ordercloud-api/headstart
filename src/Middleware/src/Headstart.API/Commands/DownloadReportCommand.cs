@@ -48,6 +48,18 @@ namespace Headstart.API.Commands
             return fileName;
         }
 
+        public async Task<string> GetSharedAccessSignature(string fileName)
+        {
+            var fileReference = await _blob.GetBlobReference(fileName);
+            var sharedAccessPolicy = new SharedAccessBlobPolicy()
+            {
+                SharedAccessStartTime = DateTimeOffset.UtcNow.AddMinutes(-5),
+                SharedAccessExpiryTime = DateTimeOffset.UtcNow.AddMinutes(20),
+                Permissions = SharedAccessBlobPermissions.Read,
+            };
+            return fileReference.GetSharedAccessSignature(sharedAccessPolicy);
+        }
+
         private void SetHeaders(string[] headers, ISheet worksheet)
         {
             var header = worksheet.CreateRow(0);
@@ -140,18 +152,6 @@ namespace Headstart.API.Commands
                     }
                 }
             }
-        }
-
-        public async Task<string> GetSharedAccessSignature(string fileName)
-        {
-            var fileReference = await _blob.GetBlobReference(fileName);
-            var sharedAccessPolicy = new SharedAccessBlobPolicy()
-            {
-                SharedAccessStartTime = DateTimeOffset.UtcNow.AddMinutes(-5),
-                SharedAccessExpiryTime = DateTimeOffset.UtcNow.AddMinutes(20),
-                Permissions = SharedAccessBlobPermissions.Read,
-            };
-            return fileReference.GetSharedAccessSignature(sharedAccessPolicy);
         }
     }
 }

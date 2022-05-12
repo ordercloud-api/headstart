@@ -237,8 +237,6 @@ namespace Common.Services.NProg
 
         public double PercentRemainingExact => SafeDivideExact(100 * ItemsRemaining, TotalItems);
 
-        private long ElapsedTicks => (_endTime == 0 ? DateTime.UtcNow.Ticks : _endTime) - _startTime;
-
         public TimeSpan ElapsedTime => TimeSpan.FromTicks(ElapsedTicks);
 
         public int ElapsedSeconds => (int)ElapsedTime.TotalSeconds;
@@ -266,6 +264,8 @@ namespace Common.Services.NProg
             ItemsSucceeded = succeeded;
             ItemsFailed = failed;
         }
+
+        private long ElapsedTicks => (_endTime == 0 ? DateTime.UtcNow.Ticks : _endTime) - _startTime;
 
         private int SafeDivide(int x, int y) => y == 0 ? 0 : x / y;
 

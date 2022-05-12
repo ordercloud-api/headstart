@@ -35,15 +35,15 @@ namespace Headstart.Common.Services.Zoho
             _flurlFactory = flurlFactory;
         }
 
-        private IFlurlClient ApiClient => _flurlFactory.Get(Config.ApiUrl);
-
-        private IFlurlClient AuthClient => _flurlFactory.Get("https://accounts.zoho.com/oauth/v2/");
-
         public ZohoTokenResponse TokenResponse { get; set; }
 
         public bool IsAuthenticated => TokenResponse?.access_token != null;
 
         public ZohoClientConfig Config { get; }
+
+        private IFlurlClient ApiClient => _flurlFactory.Get(Config.ApiUrl);
+
+        private IFlurlClient AuthClient => _flurlFactory.Get("https://accounts.zoho.com/oauth/v2/");
 
         public ZohoClient()
             : this(new ZohoClientConfig())

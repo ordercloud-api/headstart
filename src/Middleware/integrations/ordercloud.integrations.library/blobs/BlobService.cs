@@ -75,42 +75,6 @@ namespace ordercloud.integrations.library
             }
         }
 
-        private async Task Init()
-        {
-            if (IsInitialized)
-            {
-                return;
-            }
-
-            var created = await Container.CreateIfNotExistsAsync();
-            if (created)
-            {
-                var permissions = await Container.GetPermissionsAsync();
-                permissions.PublicAccess = _config.AccessType;
-                await Container.SetPermissionsAsync(permissions);
-
-                var properties = await Client.GetServicePropertiesAsync();
-                properties.Cors.CorsRules.Add(new CorsRule
-                {
-                    AllowedHeaders = { "*" },
-                    AllowedOrigins = { "*" },
-                    AllowedMethods =
-                        CorsHttpMethods.Options |
-                        CorsHttpMethods.Get |
-                        CorsHttpMethods.Put |
-                        CorsHttpMethods.Post |
-                        CorsHttpMethods.Head |
-                        CorsHttpMethods.Delete |
-                        CorsHttpMethods.Merge,
-                    ExposedHeaders = { "*" },
-                    MaxAgeInSeconds = (int)TimeSpan.FromHours(1).TotalSeconds,
-                });
-                await Client.SetServicePropertiesAsync(properties);
-            }
-
-            IsInitialized = true;
-        }
-
         public async Task<string> Get(string id)
         {
             await this.Init();
@@ -212,6 +176,42 @@ namespace ordercloud.integrations.library
         public async Task DeleteContainer()
         {
             await Container.DeleteAsync();
+        }
+
+        private async Task Init()
+        {
+            if (IsInitialized)
+            {
+                return;
+            }
+
+            var created = await Container.CreateIfNotExistsAsync();
+            if (created)
+            {
+                var permissions = await Container.GetPermissionsAsync();
+                permissions.PublicAccess = _config.AccessType;
+                await Container.SetPermissionsAsync(permissions);
+
+                var properties = await Client.GetServicePropertiesAsync();
+                properties.Cors.CorsRules.Add(new CorsRule
+                {
+                    AllowedHeaders = { "*" },
+                    AllowedOrigins = { "*" },
+                    AllowedMethods =
+                        CorsHttpMethods.Options |
+                        CorsHttpMethods.Get |
+                        CorsHttpMethods.Put |
+                        CorsHttpMethods.Post |
+                        CorsHttpMethods.Head |
+                        CorsHttpMethods.Delete |
+                        CorsHttpMethods.Merge,
+                    ExposedHeaders = { "*" },
+                    MaxAgeInSeconds = (int)TimeSpan.FromHours(1).TotalSeconds,
+                });
+                await Client.SetServicePropertiesAsync(properties);
+            }
+
+            IsInitialized = true;
         }
     }
 }

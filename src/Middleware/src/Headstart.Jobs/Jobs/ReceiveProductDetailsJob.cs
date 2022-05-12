@@ -28,6 +28,31 @@ namespace Headstart.Jobs
 
         protected override bool ShouldRun => true;
 
+        public CosmosListOptions BuildProductListOptions(string productID, string specCombo)
+        {
+            ListFilter currentSpecComboFilter = null;
+            ListFilter currentProductFilter = new ListFilter("ProductID", productID);
+            if (specCombo != null)
+            {
+                currentSpecComboFilter = new ListFilter("Data.SpecCombo", specCombo);
+                return new CosmosListOptions()
+                {
+                    PageSize = 1,
+                    ContinuationToken = null,
+                    Filters = { currentProductFilter, currentSpecComboFilter },
+                };
+            }
+            else
+            {
+                return new CosmosListOptions()
+                {
+                    PageSize = 1,
+                    ContinuationToken = null,
+                    Filters = { currentProductFilter },
+                };
+            }
+        }
+
         protected override async Task ProcessJob()
         {
             try
@@ -105,31 +130,6 @@ namespace Headstart.Jobs
             CosmosListPage<LineItemDetailData> currentLineItemListPage = await _lineItemDetailDataRepo.GetItemsAsync(queryable, requestOptions, listOptions);
 
             return currentLineItemListPage;
-        }
-
-        public CosmosListOptions BuildProductListOptions(string productID, string specCombo)
-        {
-            ListFilter currentSpecComboFilter = null;
-            ListFilter currentProductFilter = new ListFilter("ProductID", productID);
-            if (specCombo != null)
-            {
-                currentSpecComboFilter = new ListFilter("Data.SpecCombo", specCombo);
-                return new CosmosListOptions()
-                {
-                    PageSize = 1,
-                    ContinuationToken = null,
-                    Filters = { currentProductFilter, currentSpecComboFilter },
-                };
-            }
-            else
-            {
-                return new CosmosListOptions()
-                {
-                    PageSize = 1,
-                    ContinuationToken = null,
-                    Filters = { currentProductFilter },
-                };
-            }
         }
 
         private async Task<List<ProductDetailData>> CreateProductDetailDataAsync(Product product, List<LineItemDetailData> lineItemList)

@@ -61,6 +61,38 @@ namespace Headstart.API.Commands
             return await ApplyBuyerPricing(unconvertedSuperHsProduct, decodedToken);
         }
 
+        public async Task<ListPageWithFacets<HSMeProduct>> List(ListArgs<HSMeProduct> args, DecodedToken decodedToken)
+        {
+            var searchText = args.Search ?? string.Empty;
+            var searchFields = args.Search != null ? "ID,Name,Description,xp.Facets.supplier" : string.Empty;
+            var sortBy = args.SortBy.FirstOrDefault();
+            var filters = string.IsNullOrEmpty(args.ToFilterString()) ? null : args.ToFilterString();
+            var meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: filters, page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.ExactPhrasePrefix, sortBy: sortBy, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: decodedToken.AccessToken);
+            if (!(bool)meProducts?.Items?.Any())
+            {
+                meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: filters, page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.AnyTerm, sortBy: sortBy, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: decodedToken.AccessToken);
+                if (!(bool)meProducts?.Items?.Any())
+                {
+                    // if no products after retry search, avoid making extra calls for pricing details
+                    return meProducts;
+                }
+            }
+
+            var defaultMarkupMultiplierRequest = GetDefaultMarkupMultiplier(decodedToken);
+            var exchangeRatesRequest = GetExchangeRatesForUser(decodedToken.AccessToken);
+            await Task.WhenAll(defaultMarkupMultiplierRequest, exchangeRatesRequest);
+            var defaultMarkupMultiplier = await defaultMarkupMultiplierRequest;
+            var exchangeRates = await exchangeRatesRequest;
+            meProducts.Items = meProducts.Items.Select(product => ApplyBuyerProductPricing(product, defaultMarkupMultiplier, exchangeRates)).ToList();
+
+            return meProducts;
+        }
+
+        public async Task RequestProductInfo(ContactSupplierBody template)
+        {
+            await _sendgridService.SendContactSupplierAboutProductEmail(template);
+        }
+
         private async Task<SuperHSMeProduct> ApplyBuyerPricing(SuperHSMeProduct superHsProduct, DecodedToken decodedToken)
         {
             var defaultMarkupMultiplierRequest = GetDefaultMarkupMultiplier(decodedToken);
@@ -95,38 +127,6 @@ namespace Headstart.API.Commands
                 }).ToList();
                 return spec;
             }).ToList();
-        }
-
-        public async Task<ListPageWithFacets<HSMeProduct>> List(ListArgs<HSMeProduct> args, DecodedToken decodedToken)
-        {
-            var searchText = args.Search ?? string.Empty;
-            var searchFields = args.Search != null ? "ID,Name,Description,xp.Facets.supplier" : string.Empty;
-            var sortBy = args.SortBy.FirstOrDefault();
-            var filters = string.IsNullOrEmpty(args.ToFilterString()) ? null : args.ToFilterString();
-            var meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: filters, page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.ExactPhrasePrefix, sortBy: sortBy, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: decodedToken.AccessToken);
-            if (!(bool)meProducts?.Items?.Any())
-            {
-                meProducts = await _oc.Me.ListProductsAsync<HSMeProduct>(filters: filters, page: args.Page, search: searchText, searchOn: searchFields, searchType: SearchType.AnyTerm, sortBy: sortBy, sellerID: _settings.OrderCloudSettings.MarketplaceID, accessToken: decodedToken.AccessToken);
-                if (!(bool)meProducts?.Items?.Any())
-                {
-                    // if no products after retry search, avoid making extra calls for pricing details
-                    return meProducts;
-                }
-            }
-
-            var defaultMarkupMultiplierRequest = GetDefaultMarkupMultiplier(decodedToken);
-            var exchangeRatesRequest = GetExchangeRatesForUser(decodedToken.AccessToken);
-            await Task.WhenAll(defaultMarkupMultiplierRequest, exchangeRatesRequest);
-            var defaultMarkupMultiplier = await defaultMarkupMultiplierRequest;
-            var exchangeRates = await exchangeRatesRequest;
-            meProducts.Items = meProducts.Items.Select(product => ApplyBuyerProductPricing(product, defaultMarkupMultiplier, exchangeRates)).ToList();
-
-            return meProducts;
-        }
-
-        public async Task RequestProductInfo(ContactSupplierBody template)
-        {
-            await _sendgridService.SendContactSupplierAboutProductEmail(template);
         }
 
         private HSMeProduct ApplyBuyerProductPricing(HSMeProduct product, decimal defaultMarkupMultiplier, List<OrderCloudIntegrationsConversionRate> exchangeRates)

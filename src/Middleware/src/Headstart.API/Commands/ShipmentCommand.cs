@@ -153,6 +153,67 @@ namespace Headstart.API.Commands
             };
         }
 
+        public async Task<BatchProcessResult> UploadShipments(IFormFile file, DecodedToken decodedToken)
+        {
+            BatchProcessResult documentImportResult;
+
+            documentImportResult = await GetShipmentListFromFile(file, decodedToken);
+
+            return documentImportResult;
+        }
+
+        public static DocumentImportResult Validate(List<RowInfo<Misc.Shipment>> rows)
+        {
+            DocumentImportResult result = new DocumentImportResult()
+            {
+                Invalid = new List<DocumentRowError>(),
+                Valid = new List<Misc.Shipment>(),
+            };
+
+            foreach (RowInfo<Misc.Shipment> row in rows)
+            {
+                if (row.ErrorColumnIndex > -1)
+                {
+                    result.Invalid.Add(new DocumentRowError()
+                    {
+                        ErrorMessage = row.ErrorMessage,
+                        Row = row.RowNumber++,
+                        Column = row.ErrorColumnIndex,
+                    });
+                }
+                else
+                {
+                    List<ValidationResult> results = new List<ValidationResult>();
+
+                    if (ShouldIgnoreRow(row.Value))
+                    {
+                        continue;
+                    }
+
+                    if (Validator.TryValidateObject(row.Value, new ValidationContext(row.Value), results, true) == false)
+                    {
+                        result.Invalid.Add(new DocumentRowError()
+                        {
+                            ErrorMessage = $"{results.FirstOrDefault()?.ErrorMessage}",
+                            Row = row.RowNumber++,
+                        });
+                    }
+                    else
+                    {
+                        result.Valid.Add(row.Value);
+                    }
+                }
+            }
+
+            result.Meta = new DocumentImportSummary()
+            {
+                InvalidCount = result.Invalid.Count,
+                ValidCount = result.Valid.Count,
+                TotalCount = rows.Count,
+            };
+            return result;
+        }
+
         private async Task PatchLineItemStatuses(string supplierOrderID, SuperHSShipment superShipment, OrderDirection direction, DecodedToken decodedToken)
         {
             List<LineItemStatusChange> lineItemStatusChanges = superShipment.ShipmentItems.Select(shipmentItem =>
@@ -189,15 +250,6 @@ namespace Headstart.API.Commands
             }
 
             return buyerID;
-        }
-
-        public async Task<BatchProcessResult> UploadShipments(IFormFile file, DecodedToken decodedToken)
-        {
-            BatchProcessResult documentImportResult;
-
-            documentImportResult = await GetShipmentListFromFile(file, decodedToken);
-
-            return documentImportResult;
         }
 
         private async Task<BatchProcessResult> GetShipmentListFromFile(IFormFile file, DecodedToken decodedToken)
@@ -566,58 +618,6 @@ namespace Headstart.API.Commands
             newShipment.xp.Comment = Convert.ToString(shipment.ShipmentComment);
 
             return newShipment;
-        }
-
-        public static DocumentImportResult Validate(List<RowInfo<Misc.Shipment>> rows)
-        {
-            DocumentImportResult result = new DocumentImportResult()
-            {
-                Invalid = new List<DocumentRowError>(),
-                Valid = new List<Misc.Shipment>(),
-            };
-
-            foreach (RowInfo<Misc.Shipment> row in rows)
-            {
-                if (row.ErrorColumnIndex > -1)
-                {
-                    result.Invalid.Add(new DocumentRowError()
-                    {
-                        ErrorMessage = row.ErrorMessage,
-                        Row = row.RowNumber++,
-                        Column = row.ErrorColumnIndex,
-                    });
-                }
-                else
-                {
-                    List<ValidationResult> results = new List<ValidationResult>();
-
-                    if (ShouldIgnoreRow(row.Value))
-                    {
-                        continue;
-                    }
-
-                    if (Validator.TryValidateObject(row.Value, new ValidationContext(row.Value), results, true) == false)
-                    {
-                        result.Invalid.Add(new DocumentRowError()
-                        {
-                            ErrorMessage = $"{results.FirstOrDefault()?.ErrorMessage}",
-                            Row = row.RowNumber++,
-                        });
-                    }
-                    else
-                    {
-                        result.Valid.Add(row.Value);
-                    }
-                }
-            }
-
-            result.Meta = new DocumentImportSummary()
-            {
-                InvalidCount = result.Invalid.Count,
-                ValidCount = result.Valid.Count,
-                TotalCount = rows.Count,
-            };
-            return result;
         }
 
         private static bool ShouldIgnoreRow(Misc.Shipment value)

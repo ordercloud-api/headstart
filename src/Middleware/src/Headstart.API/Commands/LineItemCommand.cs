@@ -128,6 +128,162 @@ namespace Headstart.API.Commands
             return updatedLineItems.ToList();
         }
 
+        public bool ValidateCurrentQuantities(List<HSLineItem> previousLineItemStates, LineItemStatusChange lineItemStatusChange, LineItemStatus lineItemStatusChangingTo)
+        {
+            var relatedLineItems = previousLineItemStates.Where(previousState => previousState.ID == lineItemStatusChange.ID);
+            if (relatedLineItems.Count() != 1)
+            {
+                // if the lineitem is not found on the order, invalid change
+                return false;
+            }
+
+            var existingLineItem = relatedLineItems.First();
+
+            var existingStatusByQuantity = existingLineItem.xp.StatusByQuantity;
+            if (existingStatusByQuantity == null)
+            {
+                return false;
+            }
+
+            var countCanBeChanged = 0;
+            var validPreviousStates = LineItemStatusConstants.ValidPreviousStateLineItemChangeMap[lineItemStatusChangingTo];
+
+            foreach (KeyValuePair<LineItemStatus, int> entry in existingStatusByQuantity)
+            {
+                if (validPreviousStates.Contains(entry.Key))
+                {
+                    countCanBeChanged += entry.Value;
+                }
+            }
+
+            return countCanBeChanged >= lineItemStatusChange.Quantity;
+        }
+
+        public async Task<HSLineItem> UpsertLineItem(string orderID, HSLineItem liReq, DecodedToken decodedToken)
+        {
+            // get me product with markedup prices correct currency and the existing line items in parellel
+            var productRequest = _meProductCommand.Get(liReq.ProductID, decodedToken);
+            var existingLineItemsRequest = _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, orderID, filters: $"Product.ID={liReq.ProductID}", accessToken: decodedToken.AccessToken);
+            var orderRequest = _oc.Orders.GetAsync(OrderDirection.Incoming, orderID);
+            await Task.WhenAll(productRequest, existingLineItemsRequest, orderRequest);
+
+            var existingLineItems = await existingLineItemsRequest;
+            var product = await productRequest;
+            var order = await orderRequest;
+
+            var li = new HSLineItem();
+            var markedUpPrice = ValidateLineItemUnitCost(orderID, product, existingLineItems, liReq);
+            liReq.UnitPrice = liReq.Product != null ? liReq.UnitPrice : await markedUpPrice;
+
+            Require.That(!order.IsSubmitted, new ErrorCode("Invalid Order Status", "Order has already been submitted"));
+
+            liReq.xp.StatusByQuantity = LineItemStatusConstants.EmptyStatuses;
+            liReq.xp.StatusByQuantity[LineItemStatus.Open] = liReq.Quantity;
+
+            var preExistingLi = ((List<HSLineItem>)existingLineItems).Find(eli => LineItemsMatch(eli, liReq));
+            if (preExistingLi != null)
+            {
+                liReq.ID = preExistingLi.ID; // ensure we do not change the line item id when updating
+                li = await _oc.LineItems.SaveAsync<HSLineItem>(OrderDirection.Incoming, orderID, preExistingLi.ID, liReq);
+            }
+            else
+            {
+                li = await _oc.LineItems.CreateAsync<HSLineItem>(OrderDirection.Incoming, orderID, liReq);
+            }
+
+            await _promotionCommand.AutoApplyPromotions(orderID);
+            return li;
+        }
+
+        public async Task DeleteLineItem(string orderID, string lineItemID, DecodedToken decodedToken)
+        {
+            LineItem lineItem = await _oc.LineItems.GetAsync(OrderDirection.Incoming, orderID, lineItemID);
+            await _oc.LineItems.DeleteAsync(OrderDirection.Incoming, orderID, lineItemID);
+            List<HSLineItem> existingLineItems = await _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, orderID, filters: $"Product.ID={lineItem.ProductID}", accessToken: decodedToken.AccessToken);
+            if (existingLineItems != null && existingLineItems.Count > 0)
+            {
+                var product = await _meProductCommand.Get(lineItem.ProductID, decodedToken);
+                await ValidateLineItemUnitCost(orderID, product, existingLineItems, null);
+            }
+
+            await _promotionCommand.AutoApplyPromotions(orderID);
+        }
+
+        public async Task<decimal> ValidateLineItemUnitCost(string orderID, SuperHSMeProduct product, List<HSLineItem> existingLineItems, HSLineItem li)
+        {
+            if (product.PriceSchedule.UseCumulativeQuantity)
+            {
+                int totalQuantity = li?.Quantity ?? 0;
+                foreach (HSLineItem lineItem in existingLineItems)
+                {
+                    if (li == null || !LineItemsMatch(li, lineItem))
+                    {
+                        totalQuantity += lineItem.Quantity;
+                    }
+                }
+
+                var selectedPriceBreak = product.PriceSchedule.PriceBreaks.Last(priceBreak => priceBreak.Quantity <= totalQuantity);
+                decimal priceBasedOnQuantity = product.PriceSchedule.IsOnSale ? (decimal)selectedPriceBreak.SalePrice : selectedPriceBreak.Price;
+                var tasks = new List<Task>();
+                foreach (HSLineItem lineItem in existingLineItems)
+                {
+                    // Determine markup for all specs for this existing line item
+                    decimal lineItemTotal = priceBasedOnQuantity + GetSpecMarkup(lineItem.Specs, product.Specs);
+                    if (lineItem.UnitPrice != lineItemTotal)
+                    {
+                        PartialLineItem lineItemToPatch = new PartialLineItem();
+                        lineItemToPatch.UnitPrice = lineItemTotal;
+                        tasks.Add(_oc.LineItems.PatchAsync<HSLineItem>(OrderDirection.Incoming, orderID, lineItem.ID, lineItemToPatch));
+                    }
+                }
+
+                await Task.WhenAll(tasks);
+
+                // Return the item total for the li being added or modified
+                return li == null ? 0 : priceBasedOnQuantity + GetSpecMarkup(li.Specs, product.Specs);
+            }
+            else
+            {
+                decimal lineItemTotal = 0;
+                if (li != null)
+                {
+                    // Determine price including quantity price break discount
+                    var selectedPriceBreak = product.PriceSchedule.PriceBreaks.Last(priceBreak => priceBreak.Quantity <= li.Quantity);
+                    decimal priceBasedOnQuantity = product.PriceSchedule.IsOnSale ? (decimal)selectedPriceBreak.SalePrice : selectedPriceBreak.Price;
+
+                    // Determine markup for the 1 line item
+                    lineItemTotal = priceBasedOnQuantity + GetSpecMarkup(li.Specs, product.Specs);
+                }
+
+                return lineItemTotal;
+            }
+        }
+
+        public async Task HandleRMALineItemStatusChanges(OrderDirection orderDirection, RMAWithLineItemStatusByQuantity rmaWithLineItemStatusByQuantity, DecodedToken decodedToken)
+        {
+            if (!rmaWithLineItemStatusByQuantity.LineItemStatusChangesList.Any())
+            {
+                return;
+            }
+
+            string orderID;
+            if (rmaWithLineItemStatusByQuantity.RMA.SupplierID == null)
+            {
+                // this is an MPO owned RMA
+                orderID = rmaWithLineItemStatusByQuantity.RMA.SourceOrderID;
+            }
+            else
+            {
+                // this is a suplier owned RMA and by convention orders are in the format {orderID}-{supplierID}
+                orderID = $"{rmaWithLineItemStatusByQuantity.RMA.SourceOrderID}-{rmaWithLineItemStatusByQuantity.RMA.SupplierID}";
+            }
+
+            foreach (var statusChange in rmaWithLineItemStatusByQuantity.LineItemStatusChangesList)
+            {
+                await UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Incoming, orderID, statusChange, decodedToken);
+            }
+        }
+
         private async Task SyncOrderStatuses(HSOrder buyerOrder, List<string> relatedSupplierOrderIDs, List<HSLineItem> allOrderLineItems)
         {
             await SyncOrderStatus(OrderDirection.Incoming, buyerOrder.ID, allOrderLineItems);
@@ -375,162 +531,6 @@ namespace Headstart.API.Commands
                 return ValidateCurrentQuantities(previousLineItemStates, lineItemChange, lineItemStatusChanges.Status);
             });
             Require.That(areCurrentQuantitiesToSupportChange, new ErrorCode("Invalid lineItem status change", $"Current lineitem quantity statuses on the order are not sufficient to support the requested change"));
-        }
-
-        public bool ValidateCurrentQuantities(List<HSLineItem> previousLineItemStates, LineItemStatusChange lineItemStatusChange, LineItemStatus lineItemStatusChangingTo)
-        {
-            var relatedLineItems = previousLineItemStates.Where(previousState => previousState.ID == lineItemStatusChange.ID);
-            if (relatedLineItems.Count() != 1)
-            {
-                // if the lineitem is not found on the order, invalid change
-                return false;
-            }
-
-            var existingLineItem = relatedLineItems.First();
-
-            var existingStatusByQuantity = existingLineItem.xp.StatusByQuantity;
-            if (existingStatusByQuantity == null)
-            {
-                return false;
-            }
-
-            var countCanBeChanged = 0;
-            var validPreviousStates = LineItemStatusConstants.ValidPreviousStateLineItemChangeMap[lineItemStatusChangingTo];
-
-            foreach (KeyValuePair<LineItemStatus, int> entry in existingStatusByQuantity)
-            {
-                if (validPreviousStates.Contains(entry.Key))
-                {
-                    countCanBeChanged += entry.Value;
-                }
-            }
-
-            return countCanBeChanged >= lineItemStatusChange.Quantity;
-        }
-
-        public async Task<HSLineItem> UpsertLineItem(string orderID, HSLineItem liReq, DecodedToken decodedToken)
-        {
-            // get me product with markedup prices correct currency and the existing line items in parellel
-            var productRequest = _meProductCommand.Get(liReq.ProductID, decodedToken);
-            var existingLineItemsRequest = _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, orderID, filters: $"Product.ID={liReq.ProductID}", accessToken: decodedToken.AccessToken);
-            var orderRequest = _oc.Orders.GetAsync(OrderDirection.Incoming, orderID);
-            await Task.WhenAll(productRequest, existingLineItemsRequest, orderRequest);
-
-            var existingLineItems = await existingLineItemsRequest;
-            var product = await productRequest;
-            var order = await orderRequest;
-
-            var li = new HSLineItem();
-            var markedUpPrice = ValidateLineItemUnitCost(orderID, product, existingLineItems, liReq);
-            liReq.UnitPrice = liReq.Product != null ? liReq.UnitPrice : await markedUpPrice;
-
-            Require.That(!order.IsSubmitted, new ErrorCode("Invalid Order Status", "Order has already been submitted"));
-
-            liReq.xp.StatusByQuantity = LineItemStatusConstants.EmptyStatuses;
-            liReq.xp.StatusByQuantity[LineItemStatus.Open] = liReq.Quantity;
-
-            var preExistingLi = ((List<HSLineItem>)existingLineItems).Find(eli => LineItemsMatch(eli, liReq));
-            if (preExistingLi != null)
-            {
-                liReq.ID = preExistingLi.ID; // ensure we do not change the line item id when updating
-                li = await _oc.LineItems.SaveAsync<HSLineItem>(OrderDirection.Incoming, orderID, preExistingLi.ID, liReq);
-            }
-            else
-            {
-                li = await _oc.LineItems.CreateAsync<HSLineItem>(OrderDirection.Incoming, orderID, liReq);
-            }
-
-            await _promotionCommand.AutoApplyPromotions(orderID);
-            return li;
-        }
-
-        public async Task DeleteLineItem(string orderID, string lineItemID, DecodedToken decodedToken)
-        {
-            LineItem lineItem = await _oc.LineItems.GetAsync(OrderDirection.Incoming, orderID, lineItemID);
-            await _oc.LineItems.DeleteAsync(OrderDirection.Incoming, orderID, lineItemID);
-            List<HSLineItem> existingLineItems = await _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Outgoing, orderID, filters: $"Product.ID={lineItem.ProductID}", accessToken: decodedToken.AccessToken);
-            if (existingLineItems != null && existingLineItems.Count > 0)
-            {
-                var product = await _meProductCommand.Get(lineItem.ProductID, decodedToken);
-                await ValidateLineItemUnitCost(orderID, product, existingLineItems, null);
-            }
-
-            await _promotionCommand.AutoApplyPromotions(orderID);
-        }
-
-        public async Task<decimal> ValidateLineItemUnitCost(string orderID, SuperHSMeProduct product, List<HSLineItem> existingLineItems, HSLineItem li)
-        {
-            if (product.PriceSchedule.UseCumulativeQuantity)
-            {
-                int totalQuantity = li?.Quantity ?? 0;
-                foreach (HSLineItem lineItem in existingLineItems)
-                {
-                    if (li == null || !LineItemsMatch(li, lineItem))
-                    {
-                        totalQuantity += lineItem.Quantity;
-                    }
-                }
-
-                var selectedPriceBreak = product.PriceSchedule.PriceBreaks.Last(priceBreak => priceBreak.Quantity <= totalQuantity);
-                decimal priceBasedOnQuantity = product.PriceSchedule.IsOnSale ? (decimal)selectedPriceBreak.SalePrice : selectedPriceBreak.Price;
-                var tasks = new List<Task>();
-                foreach (HSLineItem lineItem in existingLineItems)
-                {
-                    // Determine markup for all specs for this existing line item
-                    decimal lineItemTotal = priceBasedOnQuantity + GetSpecMarkup(lineItem.Specs, product.Specs);
-                    if (lineItem.UnitPrice != lineItemTotal)
-                   {
-                       PartialLineItem lineItemToPatch = new PartialLineItem();
-                       lineItemToPatch.UnitPrice = lineItemTotal;
-                       tasks.Add(_oc.LineItems.PatchAsync<HSLineItem>(OrderDirection.Incoming, orderID, lineItem.ID, lineItemToPatch));
-                   }
-                }
-
-                await Task.WhenAll(tasks);
-
-                // Return the item total for the li being added or modified
-                return li == null ? 0 : priceBasedOnQuantity + GetSpecMarkup(li.Specs, product.Specs);
-            }
-            else
-            {
-                decimal lineItemTotal = 0;
-                if (li != null)
-                {
-                    // Determine price including quantity price break discount
-                    var selectedPriceBreak = product.PriceSchedule.PriceBreaks.Last(priceBreak => priceBreak.Quantity <= li.Quantity);
-                    decimal priceBasedOnQuantity = product.PriceSchedule.IsOnSale ? (decimal)selectedPriceBreak.SalePrice : selectedPriceBreak.Price;
-
-                    // Determine markup for the 1 line item
-                    lineItemTotal = priceBasedOnQuantity + GetSpecMarkup(li.Specs, product.Specs);
-                }
-
-                return lineItemTotal;
-            }
-        }
-
-        public async Task HandleRMALineItemStatusChanges(OrderDirection orderDirection, RMAWithLineItemStatusByQuantity rmaWithLineItemStatusByQuantity, DecodedToken decodedToken)
-        {
-            if (!rmaWithLineItemStatusByQuantity.LineItemStatusChangesList.Any())
-            {
-                return;
-            }
-
-            string orderID;
-            if (rmaWithLineItemStatusByQuantity.RMA.SupplierID == null)
-            {
-                // this is an MPO owned RMA
-                orderID = rmaWithLineItemStatusByQuantity.RMA.SourceOrderID;
-            }
-            else
-            {
-                // this is a suplier owned RMA and by convention orders are in the format {orderID}-{supplierID}
-                orderID = $"{rmaWithLineItemStatusByQuantity.RMA.SourceOrderID}-{rmaWithLineItemStatusByQuantity.RMA.SupplierID}";
-            }
-
-            foreach (var statusChange in rmaWithLineItemStatusByQuantity.LineItemStatusChangesList)
-            {
-                await UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Incoming, orderID, statusChange, decodedToken);
-            }
         }
 
         private decimal GetSpecMarkup(IList<LineItemSpec> lineItemSpecs, IList<Spec> productSpecs)

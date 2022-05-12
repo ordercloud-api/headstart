@@ -182,20 +182,6 @@ namespace Headstart.Common.Services
             await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, messageNotification?.Recipient?.Email, _settings?.SendgridSettings?.PasswordResetTemplateID, templateData);
         }
 
-        private List<LineItemProductData> CreateTemplateProductList(List<HSLineItem> lineItems, LineItemStatusChanges lineItemStatusChanges)
-        {
-            // first get line items that actually had a change
-            var changedLiIds = lineItemStatusChanges.Changes.Where(change => change.Quantity > 0).Select(change => change.ID);
-            var changedLineItems = changedLiIds.Select(i => lineItems.Single(l => l.ID == i));
-
-            // now map to template data
-            return changedLineItems.Select(lineItem =>
-            {
-                var lineItemStatusChange = lineItemStatusChanges.Changes.First(li => li.ID == lineItem.ID);
-                return SendgridMappers.MapToTemplateProduct(lineItem, lineItemStatusChange, lineItemStatusChanges.Status);
-            }).ToList();
-        }
-
         public async Task SendLineItemStatusChangeEmail(HSOrder order, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItems, string firstName, string lastName, string email, EmailDisplayText lineItemEmailDisplayText)
         {
             var productsList = CreateTemplateProductList(lineItems, lineItemStatusChanges);
@@ -357,109 +343,6 @@ namespace Headstart.Common.Services
             }
         }
 
-        private async Task SendSupplierOrderSubmitEmails(HSOrderWorksheet orderWorksheet)
-        {
-            ListPage<HSSupplier> suppliers = null;
-            if (orderWorksheet.Order.xp.SupplierIDs != null)
-            {
-                var filterString = string.Join("|", orderWorksheet.Order.xp.SupplierIDs);
-                suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={filterString}");
-            }
-
-            foreach (var supplier in suppliers.Items)
-            {
-                if (supplier?.xp?.NotificationRcpts?.Count() > 0)
-                {
-                    // get orderworksheet for supplier order and fill in some information from buyer order worksheet
-                    var supplierOrderWorksheet = await BuildSupplierOrderWorksheet(orderWorksheet, supplier.ID);
-                    var supplierTemplateData = new EmailTemplate<OrderTemplateData>()
-                    {
-                        Data = SendgridMappers.GetOrderTemplateData(supplierOrderWorksheet.Order, supplierOrderWorksheet.LineItems),
-                        Message = OrderSubmitEmailConstants.GetOrderSubmitText(orderWorksheet.Order.ID, supplierOrderWorksheet.Order.FromUser.FirstName, supplierOrderWorksheet.Order.FromUser.LastName, VerifiedUserType.supplier),
-                    };
-
-                    // SEB-Specific Data
-                    ((OrderTemplateData)supplierTemplateData.Data).BillTo = new Address()
-                    {
-                        CompanyName = "SEB Vendor Portal - BES",
-                        Street1 = "8646 Eagle Creek Circle",
-                        Street2 = "Suite 107",
-                        City = "Savage",
-                        State = "MN",
-                        Zip = "55378",
-                        Phone = "877-771-9123",
-                        xp =
-                        {
-                            Email = "accounting@sebvendorportal.com",
-                        },
-                    };
-
-                    var supplierTos = new List<EmailAddress>();
-                    foreach (var rcpt in supplier.xp.NotificationRcpts)
-                    {
-                        supplierTos.Add(new EmailAddress(rcpt));
-                    }
-
-                    await SendSingleTemplateEmailMultipleRcpts(_settings?.SendgridSettings?.FromEmail, supplierTos, _settings?.SendgridSettings?.OrderSubmitTemplateID, supplierTemplateData);
-                }
-            }
-        }
-
-        private async Task<HSOrderWorksheet> BuildSupplierOrderWorksheet(HSOrderWorksheet orderWorksheet, string supplierID)
-        {
-            var supplierOrderWorksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, $"{orderWorksheet.Order.ID}-{supplierID}");
-            supplierOrderWorksheet.Order.BillingAddress = orderWorksheet.Order.BillingAddress;
-            supplierOrderWorksheet.Order.FromUser = orderWorksheet.Order.FromUser;
-            return supplierOrderWorksheet;
-        }
-
-        private async Task<List<EmailAddress>> GetSupplierEmails(HSOrderWorksheet orderWorksheet)
-        {
-            ListPage<HSSupplier> suppliers = null;
-            if (orderWorksheet.Order.xp.SupplierIDs != null)
-            {
-                var filterString = string.Join("|", orderWorksheet.Order.xp.SupplierIDs);
-                suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={filterString}");
-            }
-
-            var supplierTos = new List<EmailAddress>();
-            foreach (var supplier in suppliers.Items)
-            {
-                if (supplier?.xp?.NotificationRcpts?.Count() > 0)
-                {
-                    foreach (var rcpt in supplier.xp.NotificationRcpts)
-                    {
-                        supplierTos.Add(new EmailAddress(rcpt));
-                    }
-                }
-            }
-
-            return supplierTos;
-        }
-
-        private async Task<List<EmailAddress>> GetSellerEmails()
-        {
-            var sellerUsers = await _oc.AdminUsers.ListAsync<HSSellerUser>();
-            var sellerTos = new List<EmailAddress>();
-            foreach (var seller in sellerUsers.Items)
-            {
-                if (seller?.xp?.OrderEmails ?? false)
-                {
-                    sellerTos.Add(new EmailAddress(seller.Email));
-                }
-
-                if (seller?.xp?.AddtlRcpts?.Any() ?? false)
-                {
-                    foreach (var rcpt in seller.xp.AddtlRcpts)
-                    {
-                        sellerTos.Add(new EmailAddress(rcpt));
-                    }
-                }
-            }
-
-            return sellerTos;
-        }
-
         public async Task SendLineItemStatusChangeEmail(LineItemStatusChange lineItemStatusChange, List<HSLineItem> lineItems, string firstName, string lastName, string email, EmailDisplayText lineItemEmailDisplayText)
         {
             var productsList = lineItems.Select(SendgridMappers.MapLineItemToProduct).ToList();
@@ -571,6 +454,123 @@ namespace Headstart.Common.Services
             };
             var recipient = SendgridMappers.DetermineRecipient(_settings, supportCase.Subject);
             await SendSingleTemplateEmailSingleRcptAttachment(_settings?.SendgridSettings?.FromEmail, recipient, _settings?.SendgridSettings?.CriticalSupportTemplateID, templateData, supportCase.File);
+        }
+
+        private List<LineItemProductData> CreateTemplateProductList(List<HSLineItem> lineItems, LineItemStatusChanges lineItemStatusChanges)
+        {
+            // first get line items that actually had a change
+            var changedLiIds = lineItemStatusChanges.Changes.Where(change => change.Quantity > 0).Select(change => change.ID);
+            var changedLineItems = changedLiIds.Select(i => lineItems.Single(l => l.ID == i));
+
+            // now map to template data
+            return changedLineItems.Select(lineItem =>
+            {
+                var lineItemStatusChange = lineItemStatusChanges.Changes.First(li => li.ID == lineItem.ID);
+                return SendgridMappers.MapToTemplateProduct(lineItem, lineItemStatusChange, lineItemStatusChanges.Status);
+            }).ToList();
+        }
+
+        private async Task SendSupplierOrderSubmitEmails(HSOrderWorksheet orderWorksheet)
+        {
+            ListPage<HSSupplier> suppliers = null;
+            if (orderWorksheet.Order.xp.SupplierIDs != null)
+            {
+                var filterString = string.Join("|", orderWorksheet.Order.xp.SupplierIDs);
+                suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={filterString}");
+            }
+
+            foreach (var supplier in suppliers.Items)
+            {
+                if (supplier?.xp?.NotificationRcpts?.Count() > 0)
+                {
+                    // get orderworksheet for supplier order and fill in some information from buyer order worksheet
+                    var supplierOrderWorksheet = await BuildSupplierOrderWorksheet(orderWorksheet, supplier.ID);
+                    var supplierTemplateData = new EmailTemplate<OrderTemplateData>()
+                    {
+                        Data = SendgridMappers.GetOrderTemplateData(supplierOrderWorksheet.Order, supplierOrderWorksheet.LineItems),
+                        Message = OrderSubmitEmailConstants.GetOrderSubmitText(orderWorksheet.Order.ID, supplierOrderWorksheet.Order.FromUser.FirstName, supplierOrderWorksheet.Order.FromUser.LastName, VerifiedUserType.supplier),
+                    };
+
+                    // SEB-Specific Data
+                    ((OrderTemplateData)supplierTemplateData.Data).BillTo = new Address()
+                    {
+                        CompanyName = "SEB Vendor Portal - BES",
+                        Street1 = "8646 Eagle Creek Circle",
+                        Street2 = "Suite 107",
+                        City = "Savage",
+                        State = "MN",
+                        Zip = "55378",
+                        Phone = "877-771-9123",
+                        xp =
+                        {
+                            Email = "accounting@sebvendorportal.com",
+                        },
+                    };
+
+                    var supplierTos = new List<EmailAddress>();
+                    foreach (var rcpt in supplier.xp.NotificationRcpts)
+                    {
+                        supplierTos.Add(new EmailAddress(rcpt));
+                    }
+
+                    await SendSingleTemplateEmailMultipleRcpts(_settings?.SendgridSettings?.FromEmail, supplierTos, _settings?.SendgridSettings?.OrderSubmitTemplateID, supplierTemplateData);
+                }
+            }
+        }
+
+        private async Task<HSOrderWorksheet> BuildSupplierOrderWorksheet(HSOrderWorksheet orderWorksheet, string supplierID)
+        {
+            var supplierOrderWorksheet = await _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, $"{orderWorksheet.Order.ID}-{supplierID}");
+            supplierOrderWorksheet.Order.BillingAddress = orderWorksheet.Order.BillingAddress;
+            supplierOrderWorksheet.Order.FromUser = orderWorksheet.Order.FromUser;
+            return supplierOrderWorksheet;
+        }
+
+        private async Task<List<EmailAddress>> GetSupplierEmails(HSOrderWorksheet orderWorksheet)
+        {
+            ListPage<HSSupplier> suppliers = null;
+            if (orderWorksheet.Order.xp.SupplierIDs != null)
+            {
+                var filterString = string.Join("|", orderWorksheet.Order.xp.SupplierIDs);
+                suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={filterString}");
+            }
+
+            var supplierTos = new List<EmailAddress>();
+            foreach (var supplier in suppliers.Items)
+            {
+                if (supplier?.xp?.NotificationRcpts?.Count() > 0)
+                {
+                    foreach (var rcpt in supplier.xp.NotificationRcpts)
+                    {
+                        supplierTos.Add(new EmailAddress(rcpt));
+                    }
+                }
+            }
+
+            return supplierTos;
+        }
+
+        private async Task<List<EmailAddress>> GetSellerEmails()
+        {
+            var sellerUsers = await _oc.AdminUsers.ListAsync<HSSellerUser>();
+            var sellerTos = new List<EmailAddress>();
+            foreach (var seller in sellerUsers.Items)
+            {
+                if (seller?.xp?.OrderEmails ?? false)
+                {
+                    sellerTos.Add(new EmailAddress(seller.Email));
+                }
+
+                if (seller?.xp?.AddtlRcpts?.Any() ?? false)
+                {
+                    foreach (var rcpt in seller.xp.AddtlRcpts)
+                    {
+                        sellerTos.Add(new EmailAddress(rcpt));
+                    }
+                }
+            }
+
+            return sellerTos;
         }
     }
 }

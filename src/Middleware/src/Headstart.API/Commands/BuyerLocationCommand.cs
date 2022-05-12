@@ -72,28 +72,6 @@ namespace Headstart.API.Commands
             };
         }
 
-        private string CreateBuyerLocationID(string buyerID, string idInRequest)
-        {
-            if (idInRequest.Contains("LocationIncrementor"))
-            {
-                // prevents prefix duplication with address validation prewebhooks
-                return idInRequest;
-            }
-
-            if (idInRequest == null || idInRequest.Length == 0)
-            {
-                return buyerID + "-{" + buyerID + "-LocationIncrementor}";
-            }
-
-            if (idInRequest.StartsWith(buyerID + "-"))
-            {
-                // prevents prefix duplication
-                return idInRequest;
-            }
-
-            return buyerID + "-" + idInRequest.Replace("-", "_");
-        }
-
         public async Task CreateUserGroupAndAssignments(string buyerID, string buyerLocationID, string token, IOrderCloudClient ocClient)
         {
             var assignment = new AddressAssignment
@@ -223,6 +201,28 @@ namespace Headstart.API.Commands
             var userGroupAssignments = await _oc.UserGroups.ListAllUserAssignmentsAsync(buyerID, userID: newUserID);
             await Throttler.RunAsync(userGroupAssignments, 100, 5, assignment =>
                 RemoveAndAddUserGroupAssignment(buyerID, newUserID, assignment?.UserGroupID));
+        }
+
+        private string CreateBuyerLocationID(string buyerID, string idInRequest)
+        {
+            if (idInRequest.Contains("LocationIncrementor"))
+            {
+                // prevents prefix duplication with address validation prewebhooks
+                return idInRequest;
+            }
+
+            if (idInRequest == null || idInRequest.Length == 0)
+            {
+                return buyerID + "-{" + buyerID + "-LocationIncrementor}";
+            }
+
+            if (idInRequest.StartsWith(buyerID + "-"))
+            {
+                // prevents prefix duplication
+                return idInRequest;
+            }
+
+            return buyerID + "-" + idInRequest.Replace("-", "_");
         }
 
         // Temporary work around for a platform issue. When a new user is registered we need to

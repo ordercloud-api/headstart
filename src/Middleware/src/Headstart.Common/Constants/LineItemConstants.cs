@@ -115,45 +115,6 @@ namespace Headstart.Common.Constants
             { LineItemStatus.Canceled, 0 },
         };
 
-        private static Dictionary<LineItemStatus, SubmittedOrderStatus> RelatedOrderStatus = new Dictionary<LineItemStatus, SubmittedOrderStatus>()
-        {
-            { LineItemStatus.Submitted, SubmittedOrderStatus.Open },
-            { LineItemStatus.Backordered, SubmittedOrderStatus.Open },
-            { LineItemStatus.CancelRequested, SubmittedOrderStatus.Open },
-            { LineItemStatus.CancelDenied, SubmittedOrderStatus.Open },
-            { LineItemStatus.Complete, SubmittedOrderStatus.Completed },
-            { LineItemStatus.ReturnRequested, SubmittedOrderStatus.Completed },
-            { LineItemStatus.Returned, SubmittedOrderStatus.Completed },
-            { LineItemStatus.ReturnDenied, SubmittedOrderStatus.Completed },
-            { LineItemStatus.Canceled, SubmittedOrderStatus.Canceled },
-        };
-
-        private static Dictionary<LineItemStatus, ShippingStatus> RelatedShippingStatus = new Dictionary<LineItemStatus, ShippingStatus>()
-        {
-            { LineItemStatus.Submitted, ShippingStatus.Processing },
-            { LineItemStatus.Backordered, ShippingStatus.Processing },
-            { LineItemStatus.CancelRequested, ShippingStatus.Processing },
-            { LineItemStatus.CancelDenied, ShippingStatus.Processing },
-            { LineItemStatus.Complete, ShippingStatus.Shipped },
-            { LineItemStatus.ReturnRequested, ShippingStatus.Shipped },
-            { LineItemStatus.ReturnDenied, ShippingStatus.Shipped },
-            { LineItemStatus.Returned, ShippingStatus.Shipped },
-            { LineItemStatus.Canceled, ShippingStatus.Canceled },
-        };
-
-        private static Dictionary<LineItemStatus, ClaimStatus> RelatedClaimStatus = new Dictionary<LineItemStatus, ClaimStatus>()
-        {
-            { LineItemStatus.Submitted, ClaimStatus.NoClaim },
-            { LineItemStatus.Backordered, ClaimStatus.Pending },
-            { LineItemStatus.CancelRequested, ClaimStatus.Pending },
-            { LineItemStatus.CancelDenied, ClaimStatus.NoClaim },
-            { LineItemStatus.Complete, ClaimStatus.NoClaim },
-            { LineItemStatus.ReturnRequested, ClaimStatus.Pending },
-            { LineItemStatus.Returned, ClaimStatus.Complete },
-            { LineItemStatus.ReturnDenied, ClaimStatus.NoClaim },
-            { LineItemStatus.Canceled, ClaimStatus.Complete },
-        };
-
         // these statuses can be set by either the supplier or the seller, but when this user modifies the
         // line item status we do not want to notify themselves
         public static readonly List<LineItemStatus> LineItemStatusChangesDontNotifySetter = new List<LineItemStatus>()
@@ -432,5 +393,44 @@ namespace Headstart.Common.Constants
                 },
             };
         }
+
+        private static Dictionary<LineItemStatus, SubmittedOrderStatus> RelatedOrderStatus = new Dictionary<LineItemStatus, SubmittedOrderStatus>()
+        {
+            { LineItemStatus.Submitted, SubmittedOrderStatus.Open },
+            { LineItemStatus.Backordered, SubmittedOrderStatus.Open },
+            { LineItemStatus.CancelRequested, SubmittedOrderStatus.Open },
+            { LineItemStatus.CancelDenied, SubmittedOrderStatus.Open },
+            { LineItemStatus.Complete, SubmittedOrderStatus.Completed },
+            { LineItemStatus.ReturnRequested, SubmittedOrderStatus.Completed },
+            { LineItemStatus.Returned, SubmittedOrderStatus.Completed },
+            { LineItemStatus.ReturnDenied, SubmittedOrderStatus.Completed },
+            { LineItemStatus.Canceled, SubmittedOrderStatus.Canceled },
+        };
+
+        private static Dictionary<LineItemStatus, ShippingStatus> RelatedShippingStatus = new Dictionary<LineItemStatus, ShippingStatus>()
+        {
+            { LineItemStatus.Submitted, ShippingStatus.Processing },
+            { LineItemStatus.Backordered, ShippingStatus.Processing },
+            { LineItemStatus.CancelRequested, ShippingStatus.Processing },
+            { LineItemStatus.CancelDenied, ShippingStatus.Processing },
+            { LineItemStatus.Complete, ShippingStatus.Shipped },
+            { LineItemStatus.ReturnRequested, ShippingStatus.Shipped },
+            { LineItemStatus.ReturnDenied, ShippingStatus.Shipped },
+            { LineItemStatus.Returned, ShippingStatus.Shipped },
+            { LineItemStatus.Canceled, ShippingStatus.Canceled },
+        };
+
+        private static Dictionary<LineItemStatus, ClaimStatus> RelatedClaimStatus = new Dictionary<LineItemStatus, ClaimStatus>()
+        {
+            { LineItemStatus.Submitted, ClaimStatus.NoClaim },
+            { LineItemStatus.Backordered, ClaimStatus.Pending },
+            { LineItemStatus.CancelRequested, ClaimStatus.Pending },
+            { LineItemStatus.CancelDenied, ClaimStatus.NoClaim },
+            { LineItemStatus.Complete, ClaimStatus.NoClaim },
+            { LineItemStatus.ReturnRequested, ClaimStatus.Pending },
+            { LineItemStatus.Returned, ClaimStatus.Complete },
+            { LineItemStatus.ReturnDenied, ClaimStatus.NoClaim },
+            { LineItemStatus.Canceled, ClaimStatus.Complete },
+        };
     }
 }

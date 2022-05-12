@@ -11,47 +11,6 @@ namespace ordercloud.integrations.library.Cosmos
 {
     public static class ExpressionBuilder
     {
-        private static Tuple<Expression, Type> GetExpression<T>(Expression param, string sort)
-        {
-            var member = param;
-            member = sort.Replace("!", string.Empty).Split(".").Aggregate(member, Expression.Property); // takes X.X notation and gets to the nested property member
-
-            var propertyType = ((PropertyInfo)member.To<MemberExpression>().Member).PropertyType;
-            return Tuple.Create(member, propertyType);
-        }
-
-        private static Expression GetExpression<T>(Expression param, ListFilter filter)
-        {
-            var member = param;
-            member = filter.PropertyName.Split(".").Aggregate(member, Expression.Property); // takes X.X notation and gets to the nested property member
-
-            var propertyType = ((PropertyInfo)member.To<MemberExpression>().Member).PropertyType;
-            if (propertyType.GetInterface(nameof(IList)) != null)
-            {
-                var elementType = propertyType.GetTypeInfo().GenericTypeArguments[0];
-                return filter.ORExpressions(f => GetListExpression<T>(elementType, member, f));
-            }
-
-            if (propertyType.IsEnum || (propertyType.IsNullable() && Nullable.GetUnderlyingType(propertyType).IsEnum))
-            {
-                return filter.ORExpressions(f => GetEnumExpression<T>(propertyType, member, f));
-            }
-
-            return filter.ORExpressions(f => GetStringExpression<T>(propertyType, member, f));
-        }
-
-        private static Expression ORExpressions(this ListFilter filter, Func<ListFilterValue, Expression> func)
-        {
-            var seed = Expression.Constant(false);
-            return filter.FilterValues.Aggregate<ListFilterValue, Expression>(seed, (expression, filter) => Expression.OrElse(expression, func(filter)));
-        }
-
-        private static Expression ANDExpressions(this IList<ListFilter> filters, Func<ListFilter, Expression> func)
-        {
-            var seed = Expression.Constant(true);
-            return filters.Aggregate<ListFilter, Expression>(seed, (expression, filter) => Expression.AndAlso(expression, func(filter)));
-        }
-
         public static Expression<Func<T, bool>> GetSearchExpression<T>(IListArgs args)
         {
             if (args?.Search == null || args?.SearchOn == null)
@@ -101,39 +60,6 @@ namespace ordercloud.integrations.library.Cosmos
             }
 
             return Tuple.Create(Expression.Lambda(exp.Item1, param) as Expression, exp.Item2);
-        }
-
-        private static Expression GetEnumExpression<T>(Type propertyType, Expression member, ListFilterValue filter)
-        {
-            // TODO: this can't handle multiple values for single filter. ex: Action: Get|Ignore|Update
-            if (filter == null)
-            {
-                return Expression.Empty();
-            }
-
-            ConstantExpression right = null;
-            if (propertyType.IsEnum)
-            {
-                right = Expression.Constant((int)Enum.Parse(propertyType, filter?.Term).To(propertyType));
-            }
-            else if (Nullable.GetUnderlyingType(propertyType).IsEnum)
-            {
-                right = Expression.Constant((int)Enum.Parse(propertyType.GenericTypeArguments[0], filter?.Term).To(propertyType));
-            }
-
-            // var right = Expression.Constant((int)Enum.Parse(propertyType, filter.Values.FirstOrDefault()?.Term).To(propertyType));
-            var left = Expression.Convert(member, typeof(int));
-
-            switch (filter.Operator)
-            {
-                // doesn't yet support the | OR operator
-                case ListFilterOperator.Equal:
-                    return Expression.Equal(left, right);
-                case ListFilterOperator.NotEqual:
-                    return Expression.NotEqual(left, right);
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
         }
 
         // May not handle objects inside of arrays correctly. Only arrays of simple types like strings and numbers
@@ -212,6 +138,80 @@ namespace ordercloud.integrations.library.Cosmos
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private static Expression GetEnumExpression<T>(Type propertyType, Expression member, ListFilterValue filter)
+        {
+            // TODO: this can't handle multiple values for single filter. ex: Action: Get|Ignore|Update
+            if (filter == null)
+            {
+                return Expression.Empty();
+            }
+
+            ConstantExpression right = null;
+            if (propertyType.IsEnum)
+            {
+                right = Expression.Constant((int)Enum.Parse(propertyType, filter?.Term).To(propertyType));
+            }
+            else if (Nullable.GetUnderlyingType(propertyType).IsEnum)
+            {
+                right = Expression.Constant((int)Enum.Parse(propertyType.GenericTypeArguments[0], filter?.Term).To(propertyType));
+            }
+
+            // var right = Expression.Constant((int)Enum.Parse(propertyType, filter.Values.FirstOrDefault()?.Term).To(propertyType));
+            var left = Expression.Convert(member, typeof(int));
+
+            switch (filter.Operator)
+            {
+                // doesn't yet support the | OR operator
+                case ListFilterOperator.Equal:
+                    return Expression.Equal(left, right);
+                case ListFilterOperator.NotEqual:
+                    return Expression.NotEqual(left, right);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private static Tuple<Expression, Type> GetExpression<T>(Expression param, string sort)
+        {
+            var member = param;
+            member = sort.Replace("!", string.Empty).Split(".").Aggregate(member, Expression.Property); // takes X.X notation and gets to the nested property member
+
+            var propertyType = ((PropertyInfo)member.To<MemberExpression>().Member).PropertyType;
+            return Tuple.Create(member, propertyType);
+        }
+
+        private static Expression GetExpression<T>(Expression param, ListFilter filter)
+        {
+            var member = param;
+            member = filter.PropertyName.Split(".").Aggregate(member, Expression.Property); // takes X.X notation and gets to the nested property member
+
+            var propertyType = ((PropertyInfo)member.To<MemberExpression>().Member).PropertyType;
+            if (propertyType.GetInterface(nameof(IList)) != null)
+            {
+                var elementType = propertyType.GetTypeInfo().GenericTypeArguments[0];
+                return filter.ORExpressions(f => GetListExpression<T>(elementType, member, f));
+            }
+
+            if (propertyType.IsEnum || (propertyType.IsNullable() && Nullable.GetUnderlyingType(propertyType).IsEnum))
+            {
+                return filter.ORExpressions(f => GetEnumExpression<T>(propertyType, member, f));
+            }
+
+            return filter.ORExpressions(f => GetStringExpression<T>(propertyType, member, f));
+        }
+
+        private static Expression ORExpressions(this ListFilter filter, Func<ListFilterValue, Expression> func)
+        {
+            var seed = Expression.Constant(false);
+            return filter.FilterValues.Aggregate<ListFilterValue, Expression>(seed, (expression, filter) => Expression.OrElse(expression, func(filter)));
+        }
+
+        private static Expression ANDExpressions(this IList<ListFilter> filters, Func<ListFilter, Expression> func)
+        {
+            var seed = Expression.Constant(true);
+            return filters.Aggregate<ListFilter, Expression>(seed, (expression, filter) => Expression.AndAlso(expression, func(filter)));
         }
     }
 }

@@ -23,6 +23,11 @@ namespace ordercloud.integrations.library.Cosmos
             return string.IsNullOrEmpty(s) || (s.Length <= 100 && base.IsValid(value));
         }
 
+        public override string FormatErrorMessage(string name)
+        {
+            return $"{name} can only contain characters Aa-Zz 0-9 - _";
+        }
+
         protected override ValidationResult IsValid(object value, ValidationContext ctx)
         {
             // if model is sent with a null or empty ID, generate one
@@ -34,11 +39,6 @@ namespace ordercloud.integrations.library.Cosmos
             }
 
             return base.IsValid(value, ctx);
-        }
-
-        public override string FormatErrorMessage(string name)
-        {
-            return $"{name} can only contain characters Aa-Zz 0-9 - _";
         }
     }
 }

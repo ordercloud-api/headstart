@@ -38,20 +38,6 @@ namespace ordercloud.integrations.easypost
         // length = aggregateLength
         // };
         // }
-        private static List<EasyPostCustomsItem> MapCustomsItem(IGrouping<AddressPair, LineItem> lineitems, EasyPostShippingProfile profile)
-        {
-            return lineitems.Select(lineItem => new EasyPostCustomsItem()
-                {
-                    description = lineItem.Product.Name,
-                    hs_tariff_number = profile.HS_Tariff_Number,
-                    origin_country = lineItem.ShipFromAddress.Country,
-                    value = decimal.ToDouble(lineItem.LineSubtotal),
-                    quantity = lineItem.Quantity,
-                    weight = lineItem.ShipWeightOrDefault(Package.DEFAULT_WEIGHT),
-                })
-                .ToList();
-        }
-
         public static IList<ShipMethod> MapRates(EasyPostShipment[] shipments)
         {
             return shipments
@@ -123,6 +109,20 @@ namespace ordercloud.integrations.easypost
             }).ToList();
 
             return shipments;
+        }
+
+        private static List<EasyPostCustomsItem> MapCustomsItem(IGrouping<AddressPair, LineItem> lineitems, EasyPostShippingProfile profile)
+        {
+            return lineitems.Select(lineItem => new EasyPostCustomsItem()
+            {
+                description = lineItem.Product.Name,
+                hs_tariff_number = profile.HS_Tariff_Number,
+                origin_country = lineItem.ShipFromAddress.Country,
+                value = decimal.ToDouble(lineItem.LineSubtotal),
+                quantity = lineItem.Quantity,
+                weight = lineItem.ShipWeightOrDefault(Package.DEFAULT_WEIGHT),
+            })
+                .ToList();
         }
     }
 }

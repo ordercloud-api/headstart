@@ -115,6 +115,21 @@ namespace Headstart.API.Commands.Crud
             });
         }
 
+        public async Task<HSCatalog> Post(string buyerID, HSCatalog catalog, DecodedToken decodedToken)
+        {
+            return await _oc.UserGroups.CreateAsync<HSCatalog>(buyerID, catalog, decodedToken.AccessToken);
+        }
+
+        public async Task<HSCatalog> Put(string buyerID, string catalogID, HSCatalog catalog, DecodedToken decodedToken)
+        {
+            return await _oc.UserGroups.SaveAsync<HSCatalog>(buyerID, catalogID, catalog, decodedToken.AccessToken);
+        }
+
+        public async Task Delete(string buyerID, string catalogID, DecodedToken decodedToken)
+        {
+            await _oc.UserGroups.DeleteAsync(buyerID, catalogID, decodedToken.AccessToken);
+        }
+
         private async Task UpdateUserCatalogAssignmentsForLocation(string buyerID, string locationID)
         {
             try
@@ -129,21 +144,6 @@ namespace Headstart.API.Commands.Crud
             {
                 Console.WriteLine(ex.Message);
             }
-        }
-
-        public async Task<HSCatalog> Post(string buyerID, HSCatalog catalog, DecodedToken decodedToken)
-        {
-            return await _oc.UserGroups.CreateAsync<HSCatalog>(buyerID, catalog, decodedToken.AccessToken);
-        }
-
-        public async Task<HSCatalog> Put(string buyerID, string catalogID, HSCatalog catalog, DecodedToken decodedToken)
-        {
-            return await _oc.UserGroups.SaveAsync<HSCatalog>(buyerID, catalogID, catalog, decodedToken.AccessToken);
-        }
-
-        public async Task Delete(string buyerID, string catalogID, DecodedToken decodedToken)
-        {
-            await _oc.UserGroups.DeleteAsync(buyerID, catalogID, decodedToken.AccessToken);
         }
     }
 }

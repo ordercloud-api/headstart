@@ -69,11 +69,6 @@ namespace ordercloud.integrations.cardconnect
             _flurl = flurlFactory.Get($"https://{Config?.Site}.{Config?.BaseUrl}/");
         }
 
-        private IFlurlRequest Request(string resource, string currency)
-        {
-            return _flurl.Request($"{resource}").WithHeader("Authorization", $"Basic {((currency == "USD") ? Config.Authorization : Config.AuthorizationCad)}");
-        }
-
         public async Task<CardConnectAccountResponse> Tokenize(CardConnectAccountRequest request)
         {
             if (ShouldMockCardConnectResponse())
@@ -189,6 +184,11 @@ namespace ordercloud.integrations.cardconnect
                     Message = attempt.resptext,
                     ErrorCode = attempt.respcode,
                 }, attempt);
+        }
+
+        private IFlurlRequest Request(string resource, string currency)
+        {
+            return _flurl.Request($"{resource}").WithHeader("Authorization", $"Basic {((currency == "USD") ? Config.Authorization : Config.AuthorizationCad)}");
         }
 
         private CardConnectInquireResponse ExtractResponse(string body, string retref)

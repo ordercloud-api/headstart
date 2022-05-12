@@ -25,18 +25,6 @@ namespace Headstart.Common.Services.Zoho
             _segments = segments;
         }
 
-        private object[] AppendSegments(params object[] segments)
-        {
-            if (segments.Length <= 0)
-            {
-                return _segments;
-            }
-
-            var appended = _segments.ToList();
-            appended.AddRange(segments);
-            return appended.ToArray();
-        }
-
         protected internal IFlurlRequest Get(params object[] segments) =>
             _client.Request(this.AppendSegments(segments));
 
@@ -65,6 +53,18 @@ namespace Headstart.Common.Services.Zoho
                     Formatting = Formatting.None,
                 }));
             }));
+
+        private object[] AppendSegments(params object[] segments)
+        {
+            if (segments.Length <= 0)
+            {
+                return _segments;
+            }
+
+            var appended = _segments.ToList();
+            appended.AddRange(segments);
+            return appended.ToArray();
+        }
 
         private async Task<T> Parse<T>(IFlurlResponse res) =>
             JObject.Parse(await res.ResponseMessage.Content.ReadAsStringAsync()).SelectToken(_resource).ToObject<T>();

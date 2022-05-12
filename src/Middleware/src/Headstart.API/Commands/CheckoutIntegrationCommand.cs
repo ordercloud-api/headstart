@@ -61,40 +61,6 @@ namespace Headstart.API.Commands
             return await this.GetRatesAsync(order);
         }
 
-        private async Task<ShipEstimateResponse> GetRatesAsync(HSOrderWorksheet worksheet, CheckoutIntegrationConfiguration config = null)
-        {
-            var groupedLineItems = worksheet.LineItems.GroupBy(li => new AddressPair { ShipFrom = li.ShipFromAddress, ShipTo = li.ShippingAddress }).ToList();
-            var shipResponse = (await _shippingService.GetRates(groupedLineItems, _profiles)).Reserialize<HSShipEstimateResponse>(); // include all accounts at this stage so we can save on order worksheet and analyze
-
-            // Certain suppliers use certain shipping accounts. This filters available rates based on those accounts.
-            for (var i = 0; i < groupedLineItems.Count; i++)
-            {
-                var supplierID = groupedLineItems[i].First().SupplierID;
-                var profile = _profiles.FirstOrDefault(supplierID);
-                var methods = FilterMethodsBySupplierConfig(shipResponse.ShipEstimates[i].ShipMethods.Where(s => profile.CarrierAccountIDs.Contains(s.xp.CarrierAccountID)).ToList(), profile);
-                shipResponse.ShipEstimates[i].ShipMethods = methods.Select(s =>
-                {
-                    // there is logic here to support not marking up shipping over list rate. But USPS is always list rate
-                    // so adding an override to the suppliers that use USPS
-                    var carrier = _profiles.ShippingProfiles.First(p => p.CarrierAccountIDs.Contains(s.xp?.CarrierAccountID));
-                    s.Cost = carrier.MarkupOverride ?
-                        s.xp.OriginalCost * carrier.Markup :
-                        Math.Min(s.xp.OriginalCost * carrier.Markup, s.xp.ListRate);
-
-                    return s;
-                }).ToList();
-            }
-
-            var buyerCurrency = worksheet.Order.xp.Currency ?? CurrencySymbol.USD;
-
-            await shipResponse.ShipEstimates
-                .CheckForEmptyRates(_settings.EasyPostSettings.NoRatesFallbackCost, _settings.EasyPostSettings.NoRatesFallbackTransitDays)
-                .ApplyShippingLogic(worksheet, _oc, _settings.EasyPostSettings.FreeShippingTransitDays).Result
-                .ConvertCurrency(CurrencySymbol.USD, buyerCurrency, _exchangeRates);
-
-            return shipResponse;
-        }
-
         public IEnumerable<HSShipMethod> FilterMethodsBySupplierConfig(List<HSShipMethod> methods, EasyPostShippingProfile profile)
         {
             // will attempt to filter out by supplier method specs, but if there are filters and the result is none and there are valid methods still return the methods
@@ -112,62 +78,6 @@ namespace Headstart.API.Commands
             return methods
                 .GroupBy(method => method.EstimatedTransitDays)
                 .Select(kind => kind.OrderBy(method => method.Cost).First());
-        }
-
-        private async Task<List<HSShipEstimate>> ConvertShippingRatesCurrency(IList<HSShipEstimate> shipEstimates, CurrencySymbol shipperCurrency, CurrencySymbol buyerCurrency)
-        {
-            var rates = (await _exchangeRates.Get(buyerCurrency)).Rates;
-            var conversionRate = rates.Find(r => r.Currency == shipperCurrency).Rate;
-            return shipEstimates.Select(estimate =>
-            {
-                estimate.ShipMethods = estimate.ShipMethods.Select(method =>
-                {
-                    method.xp.OriginalCurrency = shipperCurrency;
-                    method.xp.OrderCurrency = buyerCurrency;
-                    method.xp.ExchangeRate = conversionRate;
-                    if (conversionRate != null)
-                    {
-                        method.Cost /= (decimal)conversionRate;
-                    }
-
-                    return method;
-                }).ToList();
-                return estimate;
-            }).ToList();
-        }
-
-        private async Task<List<HSShipEstimate>> ApplyFreeShipping(HSOrderWorksheet orderWorksheet, IList<HSShipEstimate> shipEstimates)
-        {
-            var supplierIDs = orderWorksheet.LineItems.Select(li => li.SupplierID);
-            var suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={string.Join("|", supplierIDs)}");
-            var updatedEstimates = new List<HSShipEstimate>();
-
-            foreach (var estimate in shipEstimates)
-            {
-                // get supplier and supplier subtotal
-                var supplierID = orderWorksheet.LineItems.First(li => li.ID == estimate.ShipEstimateItems.FirstOrDefault()?.LineItemID).SupplierID;
-                var supplier = suppliers.Items.FirstOrDefault(s => s.ID == supplierID);
-                var supplierLineItems = orderWorksheet.LineItems.Where(li => li.SupplierID == supplier?.ID);
-                var supplierSubTotal = supplierLineItems.Select(li => li.LineSubtotal).Sum();
-                if (supplier?.xp?.FreeShippingThreshold != null && supplier.xp?.FreeShippingThreshold < supplierSubTotal)
-                {
-                    // free shipping for this supplier
-                    foreach (var method in estimate.ShipMethods)
-                    {
-                        // free shipping on ground shipping or orders where we weren't able to calculate a shipping rate
-                        if (method.Name.Contains("GROUND") || method.ID == ShippingConstants.NoRatesID)
-                        {
-                            method.xp.FreeShippingApplied = true;
-                            method.xp.FreeShippingThreshold = supplier.xp.FreeShippingThreshold;
-                            method.Cost = 0;
-                        }
-                    }
-                }
-
-                updatedEstimates.Add(estimate);
-            }
-
-            return updatedEstimates;
         }
 
         public static IList<HSShipEstimate> FilterSlowerRatesWithHighCost(IList<HSShipEstimate> estimates)
@@ -316,6 +226,96 @@ namespace Headstart.API.Commands
                     },
                 };
             }
+        }
+
+        private async Task<ShipEstimateResponse> GetRatesAsync(HSOrderWorksheet worksheet, CheckoutIntegrationConfiguration config = null)
+        {
+            var groupedLineItems = worksheet.LineItems.GroupBy(li => new AddressPair { ShipFrom = li.ShipFromAddress, ShipTo = li.ShippingAddress }).ToList();
+            var shipResponse = (await _shippingService.GetRates(groupedLineItems, _profiles)).Reserialize<HSShipEstimateResponse>(); // include all accounts at this stage so we can save on order worksheet and analyze
+
+            // Certain suppliers use certain shipping accounts. This filters available rates based on those accounts.
+            for (var i = 0; i < groupedLineItems.Count; i++)
+            {
+                var supplierID = groupedLineItems[i].First().SupplierID;
+                var profile = _profiles.FirstOrDefault(supplierID);
+                var methods = FilterMethodsBySupplierConfig(shipResponse.ShipEstimates[i].ShipMethods.Where(s => profile.CarrierAccountIDs.Contains(s.xp.CarrierAccountID)).ToList(), profile);
+                shipResponse.ShipEstimates[i].ShipMethods = methods.Select(s =>
+                {
+                    // there is logic here to support not marking up shipping over list rate. But USPS is always list rate
+                    // so adding an override to the suppliers that use USPS
+                    var carrier = _profiles.ShippingProfiles.First(p => p.CarrierAccountIDs.Contains(s.xp?.CarrierAccountID));
+                    s.Cost = carrier.MarkupOverride ?
+                        s.xp.OriginalCost * carrier.Markup :
+                        Math.Min(s.xp.OriginalCost * carrier.Markup, s.xp.ListRate);
+
+                    return s;
+                }).ToList();
+            }
+
+            var buyerCurrency = worksheet.Order.xp.Currency ?? CurrencySymbol.USD;
+
+            await shipResponse.ShipEstimates
+                .CheckForEmptyRates(_settings.EasyPostSettings.NoRatesFallbackCost, _settings.EasyPostSettings.NoRatesFallbackTransitDays)
+                .ApplyShippingLogic(worksheet, _oc, _settings.EasyPostSettings.FreeShippingTransitDays).Result
+                .ConvertCurrency(CurrencySymbol.USD, buyerCurrency, _exchangeRates);
+
+            return shipResponse;
+        }
+
+        private async Task<List<HSShipEstimate>> ConvertShippingRatesCurrency(IList<HSShipEstimate> shipEstimates, CurrencySymbol shipperCurrency, CurrencySymbol buyerCurrency)
+        {
+            var rates = (await _exchangeRates.Get(buyerCurrency)).Rates;
+            var conversionRate = rates.Find(r => r.Currency == shipperCurrency).Rate;
+            return shipEstimates.Select(estimate =>
+            {
+                estimate.ShipMethods = estimate.ShipMethods.Select(method =>
+                {
+                    method.xp.OriginalCurrency = shipperCurrency;
+                    method.xp.OrderCurrency = buyerCurrency;
+                    method.xp.ExchangeRate = conversionRate;
+                    if (conversionRate != null)
+                    {
+                        method.Cost /= (decimal)conversionRate;
+                    }
+
+                    return method;
+                }).ToList();
+                return estimate;
+            }).ToList();
+        }
+
+        private async Task<List<HSShipEstimate>> ApplyFreeShipping(HSOrderWorksheet orderWorksheet, IList<HSShipEstimate> shipEstimates)
+        {
+            var supplierIDs = orderWorksheet.LineItems.Select(li => li.SupplierID);
+            var suppliers = await _oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={string.Join("|", supplierIDs)}");
+            var updatedEstimates = new List<HSShipEstimate>();
+
+            foreach (var estimate in shipEstimates)
+            {
+                // get supplier and supplier subtotal
+                var supplierID = orderWorksheet.LineItems.First(li => li.ID == estimate.ShipEstimateItems.FirstOrDefault()?.LineItemID).SupplierID;
+                var supplier = suppliers.Items.FirstOrDefault(s => s.ID == supplierID);
+                var supplierLineItems = orderWorksheet.LineItems.Where(li => li.SupplierID == supplier?.ID);
+                var supplierSubTotal = supplierLineItems.Select(li => li.LineSubtotal).Sum();
+                if (supplier?.xp?.FreeShippingThreshold != null && supplier.xp?.FreeShippingThreshold < supplierSubTotal)
+                {
+                    // free shipping for this supplier
+                    foreach (var method in estimate.ShipMethods)
+                    {
+                        // free shipping on ground shipping or orders where we weren't able to calculate a shipping rate
+                        if (method.Name.Contains("GROUND") || method.ID == ShippingConstants.NoRatesID)
+                        {
+                            method.xp.FreeShippingApplied = true;
+                            method.xp.FreeShippingThreshold = supplier.xp.FreeShippingThreshold;
+                            method.Cost = 0;
+                        }
+                    }
+                }
+
+                updatedEstimates.Add(estimate);
+            }
+
+            return updatedEstimates;
         }
     }
 }

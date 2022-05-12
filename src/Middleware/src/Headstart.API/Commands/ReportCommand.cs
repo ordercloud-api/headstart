@@ -548,6 +548,51 @@ namespace Headstart.API.Commands
             return ordersWithShipments;
         }
 
+        public async Task<List<ReportTemplate>> ListReportTemplatesByReportType(ReportTypeEnum reportType, DecodedToken decodedToken)
+        {
+            var template = await _template.List(reportType, decodedToken);
+            return template;
+        }
+
+        public async Task<ReportTemplate> PostReportTemplate(ReportTemplate reportTemplate, DecodedToken decodedToken)
+        {
+            var template = await _template.Post(reportTemplate, decodedToken);
+            return template;
+        }
+
+        public async Task<ReportTemplate> GetReportTemplate(string id, DecodedToken decodedToken)
+        {
+            return await _template.Get(id, decodedToken);
+        }
+
+        public async Task<ReportTemplate> UpdateReportTemplate(string id, ReportTemplate reportTemplate, DecodedToken decodedToken)
+        {
+            var template = await _template.Put(id, reportTemplate, decodedToken);
+            return template;
+        }
+
+        public async Task DeleteReportTemplate(string id)
+        {
+            await _template.Delete(id);
+        }
+
+        public async Task<List<HSBuyer>> GetBuyerFilterValues(DecodedToken decodedToken)
+        {
+            if (decodedToken.CommerceRole == CommerceRole.Seller)
+            {
+                return await _oc.Buyers.ListAllAsync<HSBuyer>();
+            }
+
+            var adminOcToken = _oc.TokenResponse?.AccessToken;
+            if (adminOcToken == null || DateTime.UtcNow > _oc.TokenResponse.ExpiresUtc)
+            {
+                await _oc.AuthenticateAsync();
+                adminOcToken = _oc.TokenResponse.AccessToken;
+            }
+
+            return await _oc.Buyers.ListAllAsync<HSBuyer>(adminOcToken);
+        }
+
         private async Task<IList<ListFilter>> BuildFilters(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken, string datePath, string supplierIDPath, string brandIDPath = null, string statusPath = null)
         {
             IList<ListFilter> filters = new List<ListFilter>();
@@ -713,51 +758,6 @@ namespace Headstart.API.Commands
                 default:
                     return null;
             }
-        }
-
-        public async Task<List<ReportTemplate>> ListReportTemplatesByReportType(ReportTypeEnum reportType, DecodedToken decodedToken)
-        {
-            var template = await _template.List(reportType, decodedToken);
-            return template;
-        }
-
-        public async Task<ReportTemplate> PostReportTemplate(ReportTemplate reportTemplate, DecodedToken decodedToken)
-        {
-            var template = await _template.Post(reportTemplate, decodedToken);
-            return template;
-        }
-
-        public async Task<ReportTemplate> GetReportTemplate(string id, DecodedToken decodedToken)
-        {
-            return await _template.Get(id, decodedToken);
-        }
-
-        public async Task<ReportTemplate> UpdateReportTemplate(string id, ReportTemplate reportTemplate, DecodedToken decodedToken)
-        {
-            var template = await _template.Put(id, reportTemplate, decodedToken);
-            return template;
-        }
-
-        public async Task DeleteReportTemplate(string id)
-        {
-            await _template.Delete(id);
-        }
-
-        public async Task<List<HSBuyer>> GetBuyerFilterValues(DecodedToken decodedToken)
-        {
-            if (decodedToken.CommerceRole == CommerceRole.Seller)
-            {
-                return await _oc.Buyers.ListAllAsync<HSBuyer>();
-            }
-
-            var adminOcToken = _oc.TokenResponse?.AccessToken;
-            if (adminOcToken == null || DateTime.UtcNow > _oc.TokenResponse.ExpiresUtc)
-            {
-                await _oc.AuthenticateAsync();
-                adminOcToken = _oc.TokenResponse.AccessToken;
-            }
-
-            return await _oc.Buyers.ListAllAsync<HSBuyer>(adminOcToken);
         }
 
         private string GetAdHocFilterValue(ListArgs<ReportAdHocFilters> args, string propertyName)

@@ -146,17 +146,6 @@ namespace Headstart.API.Commands.Zoho
             return results;
         }
 
-        private async Task<ZohoPurchaseOrder> CreatePurchaseOrder(ZohoSalesOrder z_order, HSOrder order, List<ZohoLineItem> items, List<HSLineItem> lineitems, ZohoAddress delivery_address, ZohoContact contact)
-        {
-            var po = await _zoho.PurchaseOrders.ListAsync(new ZohoFilter() { Key = "purchaseorder_number", Value = order.ID });
-            if (po.Items.Any())
-            {
-                return await _zoho.PurchaseOrders.SaveAsync(ZohoPurchaseOrderMapper.Map(z_order, order, items, lineitems, delivery_address, contact, po.Items.FirstOrDefault()));
-            }
-
-            return await _zoho.PurchaseOrders.CreateAsync(ZohoPurchaseOrderMapper.Map(z_order, order, items, lineitems, delivery_address, contact));
-        }
-
         public async Task<ZohoSalesOrder> CreateSalesOrder(HSOrderWorksheet orderWorksheet)
         {
             await _zoho.AuthenticateAsync();
@@ -174,6 +163,17 @@ namespace Headstart.API.Commands.Zoho
             var salesOrder = await CreateSalesOrder(orderWorksheet, items, contact);
 
             return salesOrder;
+        }
+
+        private async Task<ZohoPurchaseOrder> CreatePurchaseOrder(ZohoSalesOrder z_order, HSOrder order, List<ZohoLineItem> items, List<HSLineItem> lineitems, ZohoAddress delivery_address, ZohoContact contact)
+        {
+            var po = await _zoho.PurchaseOrders.ListAsync(new ZohoFilter() { Key = "purchaseorder_number", Value = order.ID });
+            if (po.Items.Any())
+            {
+                return await _zoho.PurchaseOrders.SaveAsync(ZohoPurchaseOrderMapper.Map(z_order, order, items, lineitems, delivery_address, contact, po.Items.FirstOrDefault()));
+            }
+
+            return await _zoho.PurchaseOrders.CreateAsync(ZohoPurchaseOrderMapper.Map(z_order, order, items, lineitems, delivery_address, contact));
         }
 
         private async Task<ZohoSalesOrder> CreateSalesOrder(HSOrderWorksheet orderWorksheet, IEnumerable<ZohoLineItem> items, ZohoContact contact)

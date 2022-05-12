@@ -54,8 +54,8 @@ namespace ordercloud.integrations.easypost
 
     public class EasyPostShippingService : IEasyPostShippingService
     {
-        private const string BaseUrl = "https://api.easypost.com/v2";
         public const string FreeShipping = "FREE_SHIPPING";
+        private const string BaseUrl = "https://api.easypost.com/v2";
         private readonly EasyPostConfig _config;
 
         public EasyPostShippingService(EasyPostConfig config)

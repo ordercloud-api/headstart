@@ -95,12 +95,6 @@ namespace Headstart.API.Commands
             };
         }
 
-        private async Task<ImpersonationConfig> GetImpersonationByBuyerID(string buyerID)
-        {
-            var config = await _oc.ImpersonationConfigs.ListAsync(filters: $"BuyerID={buyerID}");
-            return config?.Items?.FirstOrDefault();
-        }
-
         public async Task<HSBuyer> CreateBuyerAndRelatedFunctionalResources(HSBuyer buyer, string accessToken, IOrderCloudClient oc)
         {
             // if we're seeding then use the passed in oc client
@@ -148,6 +142,12 @@ namespace Headstart.API.Commands
                     ViewAllProducts = false,
                 }, token);
             return buyer;
+        }
+
+        private async Task<ImpersonationConfig> GetImpersonationByBuyerID(string buyerID)
+        {
+            var config = await _oc.ImpersonationConfigs.ListAsync(filters: $"BuyerID={buyerID}");
+            return config?.Items?.FirstOrDefault();
         }
 
         private async Task<BuyerMarkup> CreateMarkup(BuyerMarkup markup, string buyerID, string accessToken, IOrderCloudClient oc)

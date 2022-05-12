@@ -160,12 +160,6 @@ namespace Headstart.API.Commands
                 await PatchOrderStatus(orderID, ShippingStatus.Processing, ClaimStatus.NoClaim);
         }
 
-        private async Task PatchOrderStatus(string orderID, ShippingStatus shippingStatus, ClaimStatus claimStatus)
-        {
-            var partialOrder = new PartialOrder { xp = new { ShippingStatus = shippingStatus, ClaimStatus = claimStatus } };
-            await _oc.Orders.PatchAsync(OrderDirection.Incoming, orderID, partialOrder);
-        }
-
         public async Task<ListPage<HSOrder>> ListOrdersForLocation(string locationID, ListArgs<HSOrder> listArgs, DecodedToken decodedToken)
         {
             listArgs.Filters.Add(new ListFilter("BillingAddress.ID", locationID));
@@ -226,17 +220,6 @@ namespace Headstart.API.Commands
             return rmasOnOrder;
         }
 
-        private async Task<HSShipmentWithItems> GetShipmentWithItems(HSShipmentWithItems shipment, List<LineItem> lineItems)
-        {
-            var shipmentItems = await _oc.Shipments.ListItemsAsync<HSShipmentItemWithLineItem>(shipment.ID);
-            shipment.ShipmentItems = shipmentItems.Items.Select(shipmentItem =>
-            {
-                shipmentItem.LineItem = lineItems.First(li => li.ID == shipmentItem.LineItemID);
-                return shipmentItem;
-            }).ToList();
-            return shipment;
-        }
-
         public async Task<HSOrder> AddPromotion(string orderID, string promoCode, DecodedToken decodedToken)
         {
             var orderPromo = await _oc.Orders.AddPromotionAsync(OrderDirection.Incoming, orderID, promoCode);
@@ -247,6 +230,23 @@ namespace Headstart.API.Commands
         {
             await _promotionCommand.AutoApplyPromotions(orderID);
             return await _oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
+        }
+
+        private async Task PatchOrderStatus(string orderID, ShippingStatus shippingStatus, ClaimStatus claimStatus)
+        {
+            var partialOrder = new PartialOrder { xp = new { ShippingStatus = shippingStatus, ClaimStatus = claimStatus } };
+            await _oc.Orders.PatchAsync(OrderDirection.Incoming, orderID, partialOrder);
+        }
+
+        private async Task<HSShipmentWithItems> GetShipmentWithItems(HSShipmentWithItems shipment, List<LineItem> lineItems)
+        {
+            var shipmentItems = await _oc.Shipments.ListItemsAsync<HSShipmentItemWithLineItem>(shipment.ID);
+            shipment.ShipmentItems = shipmentItems.Items.Select(shipmentItem =>
+            {
+                shipmentItem.LineItem = lineItems.First(li => li.ID == shipmentItem.LineItemID);
+                return shipmentItem;
+            }).ToList();
+            return shipment;
         }
 
         private async Task EnsureUserCanAccessLocationOrders(string locationID, DecodedToken decodedToken, string overrideErrorMessage = "")

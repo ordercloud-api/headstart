@@ -126,17 +126,6 @@ namespace Headstart.API.Commands
             };
         }
 
-        private static Marketplace ConstructMarketplaceFromSeed(EnvironmentSeed seed, OcEnv requestedEnv)
-        {
-            return new Marketplace()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Environment = requestedEnv.EnvironmentName,
-                Name = seed.MarketplaceName == null ? "My Headstart Marketplace" : seed.MarketplaceName,
-                Region = requestedEnv.Region,
-            };
-        }
-
         public async Task UpdateTranslations(string connectionString, string containerName)
         {
             var englishTranslationsPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "Assets", "english-translations.json"));
@@ -204,6 +193,52 @@ namespace Headstart.API.Commands
             var shutOffSupplierEmails = ShutOffSupplierEmailsAsync(token); // shut off email notifications for all suppliers
 
             await Task.WhenAll(createIE, shutOffSupplierEmails);
+        }
+
+        public async Task CreateOrUpdateXPIndices(string token)
+        {
+            foreach (var index in SeedConstants.DefaultIndices)
+            {
+                try
+                {
+                    await _oc.XpIndices.PutAsync(index, token);
+                }
+                catch (OrderCloudException ex)
+                {
+                    // this is a bug in the api PUTs should never return 409s so ignore those errors
+                    // https://four51.atlassian.net/browse/EX-2210
+                    if (ex.HttpStatus != HttpStatusCode.Conflict)
+                    {
+                        throw ex;
+                    }
+                }
+            }
+        }
+
+        public async Task CreateOnlyOnceIncrementors(string token)
+        {
+            foreach (var incrementor in SeedConstants.DefaultIncrementors)
+            {
+                var exists = await _oc.Incrementors.ListAsync(pageSize: 1, filters: new { ID = incrementor.ID }, accessToken: token);
+
+                // only create the incrementor if it doesn't already exist otherwise the count will be reset and it may cause 409 conflict errors
+                // when it tries to create an entity with an ID that has already been created
+                if (!exists.Items.Any())
+                {
+                    await _oc.Incrementors.CreateAsync(incrementor, token);
+                }
+            }
+        }
+
+        private static Marketplace ConstructMarketplaceFromSeed(EnvironmentSeed seed, OcEnv requestedEnv)
+        {
+            return new Marketplace()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Environment = requestedEnv.EnvironmentName,
+                Name = seed.MarketplaceName == null ? "My Headstart Marketplace" : seed.MarketplaceName,
+                Region = requestedEnv.Region,
+            };
         }
 
         private async Task CreateOrUpdateSecurityProfileAssignments(EnvironmentSeed seed, string marketplaceToken)
@@ -373,41 +408,6 @@ namespace Headstart.API.Commands
             await _oc.AdminUsers.SaveAsync(initialAdminUser.ID, initialAdminUser, token);
         }
 
-        public async Task CreateOrUpdateXPIndices(string token)
-        {
-            foreach (var index in SeedConstants.DefaultIndices)
-            {
-                try
-                {
-                    await _oc.XpIndices.PutAsync(index, token);
-                }
-                catch (OrderCloudException ex)
-                {
-                    // this is a bug in the api PUTs should never return 409s so ignore those errors
-                    // https://four51.atlassian.net/browse/EX-2210
-                    if (ex.HttpStatus != HttpStatusCode.Conflict)
-                    {
-                        throw ex;
-                    }
-                }
-            }
-        }
-
-        public async Task CreateOnlyOnceIncrementors(string token)
-        {
-            foreach (var incrementor in SeedConstants.DefaultIncrementors)
-            {
-                var exists = await _oc.Incrementors.ListAsync(pageSize: 1, filters: new { ID = incrementor.ID }, accessToken: token);
-
-                // only create the incrementor if it doesn't already exist otherwise the count will be reset and it may cause 409 conflict errors
-                // when it tries to create an entity with an ID that has already been created
-                if (!exists.Items.Any())
-                {
-                    await _oc.Incrementors.CreateAsync(incrementor, token);
-                }
-            }
-        }
-
         private async Task<ApiClients> GetApiClients(string token)
         {
             var list = await _oc.ApiClients.ListAllAsync<HSApiClient>(accessToken: token);
@@ -442,6 +442,47 @@ namespace Headstart.API.Commands
             public ApiClient BuyerLocalUiApiClient { get; set; }
 
             public ApiClient MiddlewareApiClient { get; set; }
+        }
+
+        public async Task CreateOrUpdateSecurityProfiles(string accessToken)
+        {
+            var profiles = SeedConstants.DefaultSecurityProfiles.Select(p =>
+                new SecurityProfile()
+                {
+                    Name = p.ID.ToString(),
+                    ID = p.ID.ToString(),
+                    CustomRoles = p.CustomRoles.Select(r => r.ToString()).ToList(),
+                    Roles = p.Roles,
+                }).ToList();
+
+            profiles.Add(new SecurityProfile()
+            {
+                Roles = new List<ApiRole> { ApiRole.FullAccess },
+                Name = SeedConstants.FullAccessSecurityProfile,
+                ID = SeedConstants.FullAccessSecurityProfile,
+            });
+
+            var profileCreateRequests = profiles.Select(p => _oc.SecurityProfiles.SaveAsync(p.ID, p, accessToken));
+            await Task.WhenAll(profileCreateRequests);
+        }
+
+        public async Task DeleteAllMessageSenders(string token)
+        {
+            var messageSenders = await _oc.MessageSenders.ListAllAsync(accessToken: token);
+            await Throttler.RunAsync(messageSenders, 500, 20, messageSender =>
+                _oc.MessageSenders.DeleteAsync(messageSender.ID, accessToken: token));
+        }
+
+        public async Task DeleteAllIntegrationEvents(string token)
+        {
+            // can't delete integration event if its referenced by an api client so first patch it to null
+            var apiClientsWithIntegrationEvent = await _oc.IntegrationEvents.ListAllAsync(filters: new { OrderCheckoutIntegrationEventID = "*" }, accessToken: token);
+            await Throttler.RunAsync(apiClientsWithIntegrationEvent, 500, 20, apiClient =>
+                _oc.ApiClients.PatchAsync(apiClient.ID, new PartialApiClient { OrderCheckoutIntegrationEventID = null }, accessToken: token));
+
+            var integrationEvents = await _oc.IntegrationEvents.ListAllAsync(accessToken: token);
+            await Throttler.RunAsync(integrationEvents, 500, 20, integrationEvent =>
+                _oc.IntegrationEvents.DeleteAsync(integrationEvent.ID, accessToken: token));
         }
 
         private async Task CreateOnlyOnceApiClients(EnvironmentSeed seed, string token)
@@ -598,47 +639,6 @@ namespace Headstart.API.Commands
             var allSuppliers = await _oc.Suppliers.ListAllAsync(accessToken: token);
             await Throttler.RunAsync(allSuppliers, 500, 20, supplier =>
                 _oc.Suppliers.PatchAsync(supplier.ID, new PartialSupplier { xp = new { NotificationRcpts = new string[] { } } }, token));
-        }
-
-        public async Task CreateOrUpdateSecurityProfiles(string accessToken)
-        {
-            var profiles = SeedConstants.DefaultSecurityProfiles.Select(p =>
-                new SecurityProfile()
-                {
-                    Name = p.ID.ToString(),
-                    ID = p.ID.ToString(),
-                    CustomRoles = p.CustomRoles.Select(r => r.ToString()).ToList(),
-                    Roles = p.Roles,
-                }).ToList();
-
-            profiles.Add(new SecurityProfile()
-            {
-                Roles = new List<ApiRole> { ApiRole.FullAccess },
-                Name = SeedConstants.FullAccessSecurityProfile,
-                ID = SeedConstants.FullAccessSecurityProfile,
-            });
-
-            var profileCreateRequests = profiles.Select(p => _oc.SecurityProfiles.SaveAsync(p.ID, p, accessToken));
-            await Task.WhenAll(profileCreateRequests);
-        }
-
-        public async Task DeleteAllMessageSenders(string token)
-        {
-            var messageSenders = await _oc.MessageSenders.ListAllAsync(accessToken: token);
-            await Throttler.RunAsync(messageSenders, 500, 20, messageSender =>
-                _oc.MessageSenders.DeleteAsync(messageSender.ID, accessToken: token));
-        }
-
-        public async Task DeleteAllIntegrationEvents(string token)
-        {
-            // can't delete integration event if its referenced by an api client so first patch it to null
-            var apiClientsWithIntegrationEvent = await _oc.IntegrationEvents.ListAllAsync(filters: new { OrderCheckoutIntegrationEventID = "*" }, accessToken: token);
-            await Throttler.RunAsync(apiClientsWithIntegrationEvent, 500, 20, apiClient =>
-                _oc.ApiClients.PatchAsync(apiClient.ID, new PartialApiClient { OrderCheckoutIntegrationEventID = null }, accessToken: token));
-
-            var integrationEvents = await _oc.IntegrationEvents.ListAllAsync(accessToken: token);
-            await Throttler.RunAsync(integrationEvents, 500, 20, integrationEvent =>
-                _oc.IntegrationEvents.DeleteAsync(integrationEvent.ID, accessToken: token));
         }
     }
 }
