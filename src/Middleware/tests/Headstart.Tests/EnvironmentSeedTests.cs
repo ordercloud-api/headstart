@@ -18,12 +18,12 @@ namespace Headstart.Tests
             // Arrange
             var seed = new EnvironmentSeed()
             {
-                InitialAdminPassword = password
+                InitialAdminPassword = password,
             };
 
             var ctx = new ValidationContext(seed)
             {
-                MemberName = nameof(seed.InitialAdminPassword)
+                MemberName = nameof(seed.InitialAdminPassword),
             };
 
             // Act
@@ -40,12 +40,12 @@ namespace Headstart.Tests
             // Arrange
             var seed = new EnvironmentSeed()
             {
-                InitialAdminPassword = password
+                InitialAdminPassword = password,
             };
 
             var ctx = new ValidationContext(seed)
             {
-                MemberName = nameof(seed.InitialAdminPassword)
+                MemberName = nameof(seed.InitialAdminPassword),
             };
 
             // Act
@@ -62,12 +62,12 @@ namespace Headstart.Tests
             // Arrange
             var seed = new EnvironmentSeed()
             {
-                OrderCloudSeedSettings = new OrderCloudSeedSettings() { Region = region }
+                OrderCloudSeedSettings = new OrderCloudSeedSettings() { Region = region },
             };
 
             var ctx = new ValidationContext(seed.OrderCloudSeedSettings)
             {
-                MemberName = nameof(seed.OrderCloudSeedSettings.Region)
+                MemberName = nameof(seed.OrderCloudSeedSettings.Region),
             };
 
             // Act
@@ -90,12 +90,12 @@ namespace Headstart.Tests
             // Arrange
             var seed = new EnvironmentSeed()
             {
-                OrderCloudSeedSettings = new OrderCloudSeedSettings() { Region = region }
+                OrderCloudSeedSettings = new OrderCloudSeedSettings() { Region = region },
             };
 
             var ctx = new ValidationContext(seed.OrderCloudSeedSettings)
             {
-                MemberName = nameof(seed.OrderCloudSeedSettings.Region)
+                MemberName = nameof(seed.OrderCloudSeedSettings.Region),
             };
 
             // Act

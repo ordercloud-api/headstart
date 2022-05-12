@@ -25,7 +25,7 @@ namespace Headstart.API.Commands
             {
                 ConnectionString = settings.StorageAccountSettings.ConnectionString,
                 Container = "downloads",
-                AccessType = BlobContainerPublicAccessType.Off
+                AccessType = BlobContainerPublicAccessType.Off,
             });
         }
 
@@ -149,7 +149,7 @@ namespace Headstart.API.Commands
             {
                 SharedAccessStartTime = DateTimeOffset.UtcNow.AddMinutes(-5),
                 SharedAccessExpiryTime = DateTimeOffset.UtcNow.AddMinutes(20),
-                Permissions = SharedAccessBlobPermissions.Read
+                Permissions = SharedAccessBlobPermissions.Read,
             };
             return fileReference.GetSharedAccessSignature(sharedAccessPolicy);
         }

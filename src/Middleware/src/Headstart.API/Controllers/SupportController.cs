@@ -38,8 +38,8 @@ namespace Headstart.Common.Controllers
                 OrderWorksheet = new HSOrderWorksheet()
                 {
                     Order = model.Order,
-                    LineItems = model.LineItems
-                }
+                    LineItems = model.LineItems,
+                },
             };
             return await _checkoutIntegrationCommand.GetRatesAsync(payload);
         }

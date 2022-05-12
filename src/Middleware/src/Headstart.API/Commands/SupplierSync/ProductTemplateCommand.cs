@@ -46,7 +46,7 @@ namespace Headstart.API.Commands
             var result = new TemplateProductResult()
             {
                 Invalid = new List<TemplateRowError>(),
-                Valid = new List<TemplateProductFlat>()
+                Valid = new List<TemplateProductFlat>(),
             };
 
             foreach (var row in rows)
@@ -56,7 +56,7 @@ namespace Headstart.API.Commands
                     result.Invalid.Add(new TemplateRowError()
                     {
                         ErrorMessage = row.ErrorMessage,
-                        Row = row.RowNumber++
+                        Row = row.RowNumber++,
                     });
                 }
                 else
@@ -67,7 +67,7 @@ namespace Headstart.API.Commands
                         result.Invalid.Add(new TemplateRowError()
                         {
                             ErrorMessage = $"{results.FirstOrDefault()?.ErrorMessage}",
-                            Row = row.RowNumber++
+                            Row = row.RowNumber++,
                         });
                     }
                     else
@@ -81,7 +81,7 @@ namespace Headstart.API.Commands
             {
                 InvalidCount = result.Invalid.Count,
                 ValidCount = result.Valid.Count,
-                TotalCount = rows.Count
+                TotalCount = rows.Count,
             };
             return result;
         }

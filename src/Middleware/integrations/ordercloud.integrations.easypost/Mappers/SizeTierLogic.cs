@@ -34,7 +34,7 @@ namespace ordercloud.integrations.easypost
         E,
 
         // 1000+
-        F
+        F,
     }
 
     public class Package
@@ -65,7 +65,7 @@ namespace ordercloud.integrations.easypost
             { SizeTier.C, .031 },
             { SizeTier.D, .0134 },
             { SizeTier.E, .0018 },
-            { SizeTier.F, .00067 }
+            { SizeTier.F, .00067 },
         };
 
         public static List<EasyPostParcel> MapLineItemsIntoPackages(List<LineItem> lineItems)
@@ -106,7 +106,7 @@ namespace ordercloud.integrations.easypost
                     weight = (double)package.Weight,
                     length = Math.Max(dimension, Package.FULL_PACKAGE_DIMENSION),
                     width = Math.Max(dimension, Package.FULL_PACKAGE_DIMENSION),
-                    height = Math.Max(dimension, Package.FULL_PACKAGE_DIMENSION)
+                    height = Math.Max(dimension, Package.FULL_PACKAGE_DIMENSION),
                 };
             }).Select(p => CapParcelDimensions(p, TARGET_REASONABLE_PARCEL_DIMENSION));
 

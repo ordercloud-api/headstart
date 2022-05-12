@@ -27,7 +27,7 @@ namespace ordercloud.integrations.taxjar
             {
                 Code = c.ProductTaxCode,
                 Description = c.Name,
-                LongDescription = c.Description
+                LongDescription = c.Description,
             }).ToList();
             return new TaxCategorizationResponse() { Categories = list, ProductsShouldHaveTaxCodes = true };
         }

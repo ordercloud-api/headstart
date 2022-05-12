@@ -79,7 +79,7 @@ namespace Headstart.Common.Services
             var buyerTemplateData = new EmailTemplate<QuoteOrderTemplateData>()
             {
                 Data = SendgridMappers.GetQuoteOrderTemplateData(order, new List<HSLineItem> { lineItem }),
-                Message = OrderSubmitEmailConstants.GetQuoteRequestConfirmationText()
+                Message = OrderSubmitEmailConstants.GetQuoteRequestConfirmationText(),
             };
             await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, buyerEmail, _settings?.SendgridSettings?.QuoteOrderSubmitTemplateID, buyerTemplateData);
         }
@@ -89,7 +89,7 @@ namespace Headstart.Common.Services
             var buyerTemplateData = new EmailTemplate<QuoteOrderTemplateData>()
             {
                 Data = SendgridMappers.GetQuoteOrderTemplateData(order, new List<HSLineItem> { lineItem }),
-                Message = OrderSubmitEmailConstants.GetQuotePriceConfirmationText()
+                Message = OrderSubmitEmailConstants.GetQuotePriceConfirmationText(),
             };
             await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, buyerEmail, _settings?.SendgridSettings?.QuoteOrderSubmitTemplateID, buyerTemplateData);
         }
@@ -176,8 +176,8 @@ namespace Headstart.Common.Services
                     Username = messageNotification?.Recipient?.Username,
                     PasswordRenewalVerificationCode = messageNotification?.EventBody?.PasswordRenewalVerificationCode,
                     PasswordRenewalAccessToken = messageNotification?.EventBody?.PasswordRenewalAccessToken,
-                    PasswordRenewalUrl = messageNotification?.EventBody?.PasswordRenewalUrl
-                }
+                    PasswordRenewalUrl = messageNotification?.EventBody?.PasswordRenewalUrl,
+                },
             };
             await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, messageNotification?.Recipient?.Email, _settings?.SendgridSettings?.PasswordResetTemplateID, templateData);
         }
@@ -209,14 +209,14 @@ namespace Headstart.Common.Services
                     DateSubmitted = order?.DateSubmitted?.ToString(),
                     OrderID = order.ID,
                     Comments = order.Comments,
-                    TrackingNumber = lineItemStatusChanges.SuperShipment?.Shipment?.TrackingNumber
+                    TrackingNumber = lineItemStatusChanges.SuperShipment?.Shipment?.TrackingNumber,
                 },
                 Message = new EmailDisplayText
                 {
                     EmailSubject = lineItemEmailDisplayText?.EmailSubject,
                     DynamicText = lineItemEmailDisplayText?.DynamicText,
-                    DynamicText2 = lineItemEmailDisplayText?.DynamicText2
-                }
+                    DynamicText2 = lineItemEmailDisplayText?.DynamicText2,
+                },
             };
             await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, email, _settings?.SendgridSettings?.LineItemStatusChangeTemplateID, templateData);
         }
@@ -233,14 +233,14 @@ namespace Headstart.Common.Services
                     Products = productsList,
                     DateSubmitted = order.DateSubmitted.ToString(),
                     OrderID = order.ID,
-                    Comments = order.Comments
+                    Comments = order.Comments,
                 },
                 Message = new EmailDisplayText
                 {
                     EmailSubject = lineItemEmailDisplayText?.EmailSubject,
                     DynamicText = lineItemEmailDisplayText?.DynamicText,
                     DynamicText2 = lineItemEmailDisplayText?.DynamicText2,
-                }
+                },
             };
             await SendSingleTemplateEmailMultipleRcpts(_settings?.SendgridSettings?.FromEmail, tos, _settings?.SendgridSettings?.LineItemStatusChangeTemplateID, templateData);
         }
@@ -251,7 +251,7 @@ namespace Headstart.Common.Services
             var templateData = new EmailTemplate<OrderTemplateData>()
             {
                 Data = SendgridMappers.GetOrderTemplateData(order, messageNotification.EventBody.LineItems),
-                Message = OrderSubmitEmailConstants.GetRequestedApprovalText()
+                Message = OrderSubmitEmailConstants.GetRequestedApprovalText(),
             };
             await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, messageNotification?.Recipient?.Email, _settings?.SendgridSettings?.OrderApprovalTemplateID, templateData);
         }
@@ -262,7 +262,7 @@ namespace Headstart.Common.Services
             var templateData = new EmailTemplate<OrderTemplateData>()
             {
                 Data = SendgridMappers.GetOrderTemplateData(order, messageNotification.EventBody.LineItems),
-                Message = OrderSubmitEmailConstants.GetOrderRequiresApprovalText()
+                Message = OrderSubmitEmailConstants.GetOrderRequiresApprovalText(),
             };
             await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, messageNotification?.Recipient?.Email, _settings?.SendgridSettings?.OrderApprovalTemplateID, templateData);
         }
@@ -277,8 +277,8 @@ namespace Headstart.Common.Services
                     LastName = messageNotification?.Recipient?.LastName,
                     PasswordRenewalAccessToken = messageNotification?.EventBody?.PasswordRenewalAccessToken,
                     BaseAppURL = _settings?.UI?.BaseAdminUrl,
-                    Username = messageNotification?.EventBody?.Username
-                }
+                    Username = messageNotification?.EventBody?.Username,
+                },
             };
             await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, messageNotification?.Recipient?.Email, _settings?.SendgridSettings?.NewUserTemplateID, templateData);
         }
@@ -290,7 +290,7 @@ namespace Headstart.Common.Services
             var templateData = new EmailTemplate<OrderTemplateData>()
             {
                 Data = SendgridMappers.GetOrderTemplateData(order, messageNotification.EventBody.LineItems),
-                Message = OrderSubmitEmailConstants.GetOrderApprovedText()
+                Message = OrderSubmitEmailConstants.GetOrderApprovedText(),
             };
             templateData.Data.Comments = approval.Comments;
             await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, messageNotification?.Recipient?.Email, _settings?.SendgridSettings?.OrderApprovalTemplateID, templateData);
@@ -303,7 +303,7 @@ namespace Headstart.Common.Services
             var templateData = new EmailTemplate<OrderTemplateData>()
             {
                 Data = SendgridMappers.GetOrderTemplateData(order, messageNotification.EventBody.LineItems),
-                Message = OrderSubmitEmailConstants.GetOrderDeclinedText()
+                Message = OrderSubmitEmailConstants.GetOrderDeclinedText(),
             };
 
             templateData.Data.Comments = approval.Comments;
@@ -321,12 +321,12 @@ namespace Headstart.Common.Services
                 var sellerTemplateData = new EmailTemplate<OrderTemplateData>()
                 {
                     Data = orderData,
-                    Message = OrderSubmitEmailConstants.GetOrderSubmitText(orderWorksheet.Order.ID, firstName, lastName, VerifiedUserType.admin)
+                    Message = OrderSubmitEmailConstants.GetOrderSubmitText(orderWorksheet.Order.ID, firstName, lastName, VerifiedUserType.admin),
                 };
                 var buyerTemplateData = new EmailTemplate<OrderTemplateData>()
                 {
                     Data = orderData,
-                    Message = OrderSubmitEmailConstants.GetOrderSubmitText(orderWorksheet.Order.ID, firstName, lastName, VerifiedUserType.buyer)
+                    Message = OrderSubmitEmailConstants.GetOrderSubmitText(orderWorksheet.Order.ID, firstName, lastName, VerifiedUserType.buyer),
                 };
 
                 var sellerEmailList = await GetSellerEmails();
@@ -343,12 +343,12 @@ namespace Headstart.Common.Services
                 var buyerTemplateData = new EmailTemplate<QuoteOrderTemplateData>()
                 {
                     Data = orderData,
-                    Message = OrderSubmitEmailConstants.GetQuoteOrderSubmitText(VerifiedUserType.buyer)
+                    Message = OrderSubmitEmailConstants.GetQuoteOrderSubmitText(VerifiedUserType.buyer),
                 };
                 var supplierTemplateData = new EmailTemplate<QuoteOrderTemplateData>()
                 {
                     Data = orderData,
-                    Message = OrderSubmitEmailConstants.GetQuoteOrderSubmitText(VerifiedUserType.supplier)
+                    Message = OrderSubmitEmailConstants.GetQuoteOrderSubmitText(VerifiedUserType.supplier),
                 };
 
                 // send emails
@@ -375,7 +375,7 @@ namespace Headstart.Common.Services
                     var supplierTemplateData = new EmailTemplate<OrderTemplateData>()
                     {
                         Data = SendgridMappers.GetOrderTemplateData(supplierOrderWorksheet.Order, supplierOrderWorksheet.LineItems),
-                        Message = OrderSubmitEmailConstants.GetOrderSubmitText(orderWorksheet.Order.ID, supplierOrderWorksheet.Order.FromUser.FirstName, supplierOrderWorksheet.Order.FromUser.LastName, VerifiedUserType.supplier)
+                        Message = OrderSubmitEmailConstants.GetOrderSubmitText(orderWorksheet.Order.ID, supplierOrderWorksheet.Order.FromUser.FirstName, supplierOrderWorksheet.Order.FromUser.LastName, VerifiedUserType.supplier),
                     };
 
                     // SEB-Specific Data
@@ -390,8 +390,8 @@ namespace Headstart.Common.Services
                         Phone = "877-771-9123",
                         xp =
                         {
-                            Email = "accounting@sebvendorportal.com"
-                        }
+                            Email = "accounting@sebvendorportal.com",
+                        },
                     };
 
                     var supplierTos = new List<EmailAddress>();
@@ -476,8 +476,8 @@ namespace Headstart.Common.Services
                 {
                     EmailSubject = lineItemEmailDisplayText?.EmailSubject,
                     DynamicText = lineItemEmailDisplayText?.DynamicText,
-                    DynamicText2 = lineItemEmailDisplayText?.DynamicText2
-                }
+                    DynamicText2 = lineItemEmailDisplayText?.DynamicText2,
+                },
             };
             await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, email, _settings?.SendgridSettings?.LineItemStatusChangeTemplateID, templateData);
         }
@@ -497,8 +497,8 @@ namespace Headstart.Common.Services
                     Location = template?.BuyerRequest?.BuyerLocation,
                     Phone = template?.BuyerRequest?.Phone,
                     Email = template?.BuyerRequest?.Email,
-                    Note = template?.BuyerRequest?.Comments
-                }
+                    Note = template?.BuyerRequest?.Comments,
+                },
             };
             await SendSingleTemplateEmail(_settings?.SendgridSettings?.FromEmail, supplierEmail, _settings?.SendgridSettings?.ProductInformationRequestTemplateID, templateData);
             var sellerUsers = await _oc.AdminUsers.ListAllAsync<HSUser>(filters: $"xp.RequestInfoEmails=true");
@@ -530,13 +530,13 @@ namespace Headstart.Common.Services
                     DynamicPropertyValue3 = payment.ID,
                     DynamicPropertyName4 = "TransactionID",
                     DynamicPropertyValue4 = transactionID,
-                    ErrorJsonString = JsonConvert.SerializeObject(ex.ApiError)
+                    ErrorJsonString = JsonConvert.SerializeObject(ex.ApiError),
                 },
                 Message = new EmailDisplayText()
                 {
                     EmailSubject = "Manual intervention required for this order",
-                    DynamicText = "Error encountered while trying to void authorization on this order. Please contact customer and help them manually void authorization"
-                }
+                    DynamicText = "Error encountered while trying to void authorization on this order. Please contact customer and help them manually void authorization",
+                },
             };
             var toList = new List<EmailAddress>();
             var supportEmails = _settings?.SendgridSettings?.CriticalSupportEmails.Split(",");
@@ -566,8 +566,8 @@ namespace Headstart.Common.Services
                 Message = new EmailDisplayText()
                 {
                     EmailSubject = supportCase.Subject,
-                    DynamicText = supportCase.Message
-                }
+                    DynamicText = supportCase.Message,
+                },
             };
             var recipient = SendgridMappers.DetermineRecipient(_settings, supportCase.Subject);
             await SendSingleTemplateEmailSingleRcptAttachment(_settings?.SendgridSettings?.FromEmail, recipient, _settings?.SendgridSettings?.CriticalSupportTemplateID, templateData, supportCase.File);

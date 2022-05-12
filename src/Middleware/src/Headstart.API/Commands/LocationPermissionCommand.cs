@@ -175,7 +175,7 @@ namespace Headstart.API.Commands
                 userGroups.Meta = new ListPageMeta()
                 {
                     Page = 1,
-                    PageSize = 100
+                    PageSize = 100,
                 };
             }
 

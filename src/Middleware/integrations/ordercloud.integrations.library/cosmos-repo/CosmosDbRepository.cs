@@ -84,7 +84,7 @@ namespace ordercloud.integrations.library
             return new CosmosListPage<T>()
             {
                 Meta = new CosmosMeta() { PageSize = (int)requestOptions.MaxItemCount, Total = count.Resource, ContinuationToken = currentResultSet.ContinuationToken },
-                Items = results
+                Items = results,
             };
         }
 

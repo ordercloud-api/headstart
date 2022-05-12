@@ -55,7 +55,7 @@ namespace Headstart.Jobs
                 Order = orderWorksheet.Order,
                 LineItems = lineItems,
                 LineItemsWithMiscFields = lineItemsWithMiscFields,
-                LineItemsWithPurchaseOrderFields = lineItemsWithPurchaseOrders
+                LineItemsWithPurchaseOrderFields = lineItemsWithPurchaseOrders,
             };
 
             var queryable = _lineItemDetailDataRepo.GetQueryable().Where(order => order.PartitionKey == "PartitionValue");
@@ -66,7 +66,7 @@ namespace Headstart.Jobs
             {
                 PartitionKey = "PartitionValue",
                 OrderID = orderID,
-                Data = orderLineItemData
+                Data = orderLineItemData,
             };
 
             var listOptions = BuildListOptions(orderID);
@@ -115,7 +115,7 @@ namespace Headstart.Jobs
                         Subtotal = order.Subtotal,
                         Total = order.Total,
                         UnitPrice = lineItem.UnitPrice,
-                        SupplierID = lineItem.SupplierID
+                        SupplierID = lineItem.SupplierID,
                     };
                     result.Add(lineItemWithPurchaseOrder);
                 }
@@ -135,7 +135,7 @@ namespace Headstart.Jobs
                 {
                     ID = lineItem.ID,
                     SupplierName = lineItemSupplier?.Name,
-                    BrandName = buyerName
+                    BrandName = buyerName,
                 };
 
                 if (orderWorksheet.OrderCalculateResponse != null && orderWorksheet.OrderCalculateResponse.xp != null && orderWorksheet.OrderCalculateResponse.xp.TaxCalculation.ExternalTransactionID != "NotTaxable")

@@ -29,13 +29,13 @@ namespace Headstart.Tests
         {
             var shipItem1 = new ShipEstimateItem
             {
-                LineItemID = "Line1"
+                LineItemID = "Line1",
             };
             var line1 = new HSLineItem
             {
                 ID = "Line1",
                 LineSubtotal = 370,
-                SupplierID = "010"
+                SupplierID = "010",
             };
             var worksheet = BuildOrderWorksheet(new HSLineItem[] { line1 });
             var estimates = BuildEstimates(new HSShipMethod[] { }, new[] { shipItem1 });
@@ -51,18 +51,18 @@ namespace Headstart.Tests
         {
             var shipItem1 = new ShipEstimateItem
             {
-                LineItemID = "Line1"
+                LineItemID = "Line1",
             };
             var line1 = new HSLineItem
             {
                 ID = "Line1",
                 LineSubtotal = 370,
-                SupplierID = "010"
+                SupplierID = "010",
             };
             var method1 = new HSShipMethod
             {
                 ID = "NO_SHIPPING_RATES",
-                xp = new ShipMethodXP()
+                xp = new ShipMethodXP(),
             };
             var worksheet = BuildOrderWorksheet(new HSLineItem[] { line1 });
             var estimates = BuildEstimates(new[] { method1 }, new[] { shipItem1 });
@@ -80,20 +80,20 @@ namespace Headstart.Tests
             // don't transform methods if they aren't ground
             var shipItem1 = new ShipEstimateItem
             {
-                LineItemID = "Line1"
+                LineItemID = "Line1",
             };
             var line1 = new HSLineItem
             {
                 ID = "Line1",
                 LineSubtotal = 20,
-                SupplierID = "027"
+                SupplierID = "027",
             };
             var method1 = new HSShipMethod
             {
                 Name = "STANDARD_OVERNIGHT",
                 EstimatedTransitDays = 1,
                 Cost = 150,
-                xp = new ShipMethodXP { }
+                xp = new ShipMethodXP { },
             };
             var worksheet = BuildOrderWorksheet(new HSLineItem[] { line1 });
             var estimates = BuildEstimates(new[] { method1 }, new[] { shipItem1 });
@@ -111,20 +111,20 @@ namespace Headstart.Tests
             // don't transform methods if they are zero cost
             var shipItem1 = new ShipEstimateItem
             {
-                LineItemID = "Line1"
+                LineItemID = "Line1",
             };
             var line1 = new HSLineItem
             {
                 ID = "Line1",
                 LineSubtotal = 0,
-                SupplierID = "027"
+                SupplierID = "027",
             };
             var method1 = new HSShipMethod
             {
                 Name = "FEDEX_GROUND",
                 EstimatedTransitDays = 3,
                 Cost = 60,
-                xp = new ShipMethodXP { }
+                xp = new ShipMethodXP { },
             };
             var worksheet = BuildOrderWorksheet(new HSLineItem[] { line1 });
             var estimates = BuildEstimates(new[] { method1 }, new[] { shipItem1 });
@@ -144,8 +144,8 @@ namespace Headstart.Tests
                 {
                     ID = id,
                     ShipMethods = shipMethods.ToList(),
-                    ShipEstimateItems = shipItems?.ToList()
-                }
+                    ShipEstimateItems = shipItems?.ToList(),
+                },
             };
         }
 
@@ -159,11 +159,11 @@ namespace Headstart.Tests
                     {
                         xp = new UserXp
                         {
-                            Country = buyerUserCountry
-                        }
-                    }
+                            Country = buyerUserCountry,
+                        },
+                    },
                 },
-                LineItems = lineItems.ToList()
+                LineItems = lineItems.ToList(),
             };
         }
 
@@ -175,7 +175,7 @@ namespace Headstart.Tests
                 xp = new SupplierXp
                 {
                     FreeShippingThreshold = freeShippingThreshold,
-                }
+                },
             };
         }
     }

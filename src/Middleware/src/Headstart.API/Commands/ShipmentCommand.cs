@@ -135,8 +135,8 @@ namespace Headstart.API.Commands
                     {
                         xp = new
                         {
-                            Comments = commentsByShipment
-                        }
+                            Comments = commentsByShipment,
+                        },
                     });
             });
 
@@ -149,7 +149,7 @@ namespace Headstart.API.Commands
             return new SuperHSShipment()
             {
                 Shipment = ocShipmentWithDateShipped,
-                ShipmentItems = shipmentItemResponses.ToList()
+                ShipmentItems = shipmentItemResponses.ToList(),
             };
         }
 
@@ -160,7 +160,7 @@ namespace Headstart.API.Commands
                 return new LineItemStatusChange()
                 {
                     Quantity = shipmentItem.QuantityShipped,
-                    ID = shipmentItem.LineItemID
+                    ID = shipmentItem.LineItemID,
                 };
             }).ToList();
 
@@ -168,7 +168,7 @@ namespace Headstart.API.Commands
             {
                 Changes = lineItemStatusChanges,
                 Status = LineItemStatus.Complete,
-                SuperShipment = superShipment
+                SuperShipment = superShipment,
             };
             await _lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(IsSupplierUser(decodedToken) ? OrderDirection.Outgoing : direction, supplierOrderID, lineItemStatusChange);
         }
@@ -260,7 +260,7 @@ namespace Headstart.API.Commands
                 ProcessFailureListCount = processResult.ProcessFailureList.Count(),
                 DocumentFailureListCount = processResult.InvalidRowFailureList.Count(),
                 SuccessfulCount = processResult.SuccessfulList.Count(),
-                TotalCount = importResult.Meta.TotalCount
+                TotalCount = importResult.Meta.TotalCount,
             };
 
             return processResult;
@@ -324,13 +324,13 @@ namespace Headstart.API.Commands
             lineItemStatusChangeList.Add(new LineItemStatusChange()
             {
                 Quantity = lineItem.QuantityShipped,
-                ID = lineItem.LineItemID
+                ID = lineItem.LineItemID,
             });
 
             LineItemStatusChanges lineItemStatusChange = new LineItemStatusChanges()
             {
                 Changes = lineItemStatusChangeList,
-                Status = LineItemStatus.Complete
+                Status = LineItemStatus.Complete,
             };
 
             await _lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Outgoing, supplierOrderID, lineItemStatusChange, null);
@@ -358,7 +358,7 @@ namespace Headstart.API.Commands
                     OrderID = shipment.OrderID,
                     LineItemID = lineItem.ID,
                     QuantityShipped = Convert.ToInt32(shipment.QuantityShipped),
-                    UnitPrice = Convert.ToDecimal(shipment.Cost)
+                    UnitPrice = Convert.ToDecimal(shipment.Cost),
                 };
 
                 ocShipment = await GetShipmentByTrackingNumber(shipment, decodedToken?.AccessToken);
@@ -409,7 +409,7 @@ namespace Headstart.API.Commands
                 result.ProcessFailureList.Add(new BatchProcessFailure()
                 {
                     Error = ex.Message,
-                    Shipment = shipment
+                    Shipment = shipment,
                 });
                 return false;
             }
@@ -481,8 +481,8 @@ namespace Headstart.API.Commands
             {
                 xp = new
                 {
-                    Comments = commentDictonary
-                }
+                    Comments = commentDictonary,
+                },
             };
 
             return await _oc.LineItems.PatchAsync(OrderDirection.Outgoing, shipment.OrderID, shipment.LineItemID, partialLineItem);
@@ -573,7 +573,7 @@ namespace Headstart.API.Commands
             DocumentImportResult result = new DocumentImportResult()
             {
                 Invalid = new List<DocumentRowError>(),
-                Valid = new List<Misc.Shipment>()
+                Valid = new List<Misc.Shipment>(),
             };
 
             foreach (RowInfo<Misc.Shipment> row in rows)
@@ -584,7 +584,7 @@ namespace Headstart.API.Commands
                     {
                         ErrorMessage = row.ErrorMessage,
                         Row = row.RowNumber++,
-                        Column = row.ErrorColumnIndex
+                        Column = row.ErrorColumnIndex,
                     });
                 }
                 else
@@ -601,7 +601,7 @@ namespace Headstart.API.Commands
                         result.Invalid.Add(new DocumentRowError()
                         {
                             ErrorMessage = $"{results.FirstOrDefault()?.ErrorMessage}",
-                            Row = row.RowNumber++
+                            Row = row.RowNumber++,
                         });
                     }
                     else
@@ -615,7 +615,7 @@ namespace Headstart.API.Commands
             {
                 InvalidCount = result.Invalid.Count,
                 ValidCount = result.Valid.Count,
-                TotalCount = rows.Count
+                TotalCount = rows.Count,
             };
             return result;
         }

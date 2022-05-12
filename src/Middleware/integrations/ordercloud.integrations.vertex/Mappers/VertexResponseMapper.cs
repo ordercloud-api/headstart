@@ -17,7 +17,7 @@ namespace ordercloud.integrations.vertex
                 ExternalTransactionID = response.transactionId,
                 TotalTax = (decimal)response.totalTax,
                 LineItems = itemLines.Select(ToItemTaxDetails).ToList(),
-                OrderLevelTaxes = shippingLines.SelectMany(ToShippingTaxDetails).ToList()
+                OrderLevelTaxes = shippingLines.SelectMany(ToShippingTaxDetails).ToList(),
             };
         }
 
@@ -32,7 +32,7 @@ namespace ordercloud.integrations.vertex
             {
                 LineItemID = transactionLineModel.lineItemId,
                 LineItemTotalTax = (decimal)transactionLineModel.totalTax,
-                LineItemLevelTaxes = transactionLineModel.taxes?.Select(detail => detail.ToTaxDetails(null)).ToList() ?? new List<TaxDetails>()
+                LineItemLevelTaxes = transactionLineModel.taxes?.Select(detail => detail.ToTaxDetails(null)).ToList() ?? new List<TaxDetails>(),
             };
         }
 
@@ -46,7 +46,7 @@ namespace ordercloud.integrations.vertex
                 TaxDescription = detail.impositionType.value,
                 JurisdictionLevel = detail.jurisdiction.jurisdictionLevel.ToString(),
                 JurisdictionValue = detail.jurisdiction.value,
-                ShipEstimateID = shipEstimateID
+                ShipEstimateID = shipEstimateID,
             };
         }
     }

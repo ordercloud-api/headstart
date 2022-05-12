@@ -9,6 +9,6 @@ namespace Headstart.Common.Models
         Progress,
         Error,
         Warn,
-        Success
+        Success,
     }
 }

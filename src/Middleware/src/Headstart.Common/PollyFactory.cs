@@ -23,7 +23,7 @@ namespace Headstart.Common
         {
             return new PollyHandler(_policy)
             {
-                InnerHandler = base.CreateMessageHandler()
+                InnerHandler = base.CreateMessageHandler(),
             };
         }
     }

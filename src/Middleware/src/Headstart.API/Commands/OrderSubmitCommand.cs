@@ -131,7 +131,7 @@ namespace Headstart.API.Commands
 
             var order = await _oc.Orders.PatchAsync(OrderDirection.Incoming, worksheet.Order.ID, new PartialOrder
             {
-                ID = _settings.OrderCloudSettings.IncrementorPrefix + "{orderIncrementor}"
+                ID = _settings.OrderCloudSettings.IncrementorPrefix + "{orderIncrementor}",
             });
             return order.ID;
         }

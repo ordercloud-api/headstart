@@ -16,7 +16,7 @@ namespace Headstart.Tests.Mocks
             var items = new List<HSSupplier>();
             return new ListPage<HSSupplier>
             {
-                Items = items
+                Items = items,
             };
         }
 
@@ -24,7 +24,7 @@ namespace Headstart.Tests.Mocks
         {
             return new ListPage<HSSupplier>
             {
-                Items = new List<HSSupplier>(suppliers)
+                Items = new List<HSSupplier>(suppliers),
             };
         }
     }

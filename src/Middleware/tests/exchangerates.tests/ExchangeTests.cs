@@ -43,11 +43,11 @@ namespace exchangerates.tests
                     new OrderCloudIntegrationsConversionRate()
                     {
                         Currency = toCurrency,
-                        Rate = returnedRate
+                        Rate = returnedRate,
                     },
                     fixture.Create<OrderCloudIntegrationsConversionRate>(),
-                    fixture.Create<OrderCloudIntegrationsConversionRate>()
-                }
+                    fixture.Create<OrderCloudIntegrationsConversionRate>(),
+                },
             };
         }
 
@@ -58,7 +58,7 @@ namespace exchangerates.tests
                     new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.EUR, Icon = string.Empty, Name = "EUR", Rate = 1, Symbol = "€" },
                     new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.USD, Icon = string.Empty, Name = "USD", Rate = 1.01456, Symbol = "$" },
                     new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.CAD, Icon = string.Empty, Name = "CAD", Rate = 2.65487, Symbol = "$" },
-                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.BGN, Icon = string.Empty, Name = "BGN", Rate = 31.357, Symbol = "лв" }
+                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.BGN, Icon = string.Empty, Name = "BGN", Rate = 31.357, Symbol = "лв" },
                 };
         }
 
@@ -78,13 +78,13 @@ namespace exchangerates.tests
             {
                 Filters = new List<ListFilter>()
                 {
-                    new ListFilter("Symbol", "CAD|USD")
-                }
+                    new ListFilter("Symbol", "CAD|USD"),
+                },
             };
             var rates = new OrderCloudIntegrationsExchangeRate()
             {
                 BaseSymbol = CurrencySymbol.EUR,
-                Rates = GetRates()
+                Rates = GetRates(),
             };
             var filtered = _command.Filter(args, rates);
             Assert.IsTrue(filtered.Meta.TotalCount == 2);

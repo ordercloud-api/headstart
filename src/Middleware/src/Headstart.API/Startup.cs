@@ -73,33 +73,33 @@ namespace Headstart.API
                 new ContainerInfo()
                 {
                     Name = "salesorderdetail",
-                    PartitionKey = "/PartitionKey"
+                    PartitionKey = "/PartitionKey",
                 },
                 new ContainerInfo()
                 {
                     Name = "purchaseorderdetail",
-                    PartitionKey = "/PartitionKey"
+                    PartitionKey = "/PartitionKey",
                 },
                 new ContainerInfo()
                 {
                     Name = "lineitemdetail",
-                    PartitionKey = "/PartitionKey"
+                    PartitionKey = "/PartitionKey",
                 },
                 new ContainerInfo()
                 {
                     Name = "rmas",
-                    PartitionKey = "/PartitionKey"
+                    PartitionKey = "/PartitionKey",
                 },
                 new ContainerInfo()
                 {
                     Name = "shipmentdetail",
-                    PartitionKey = "/PartitionKey"
+                    PartitionKey = "/PartitionKey",
                 },
                 new ContainerInfo()
                 {
                     Name = "productdetail",
-                    PartitionKey = "/PartitionKey"
-                }
+                    PartitionKey = "/PartitionKey",
+                },
             };
 
             var avalaraConfig = new AvalaraConfig()
@@ -108,19 +108,19 @@ namespace Headstart.API
                 AccountID = _settings.AvalaraSettings.AccountID,
                 LicenseKey = _settings.AvalaraSettings.LicenseKey,
                 CompanyCode = _settings.AvalaraSettings.CompanyCode,
-                CompanyID = _settings.AvalaraSettings.CompanyID
+                CompanyID = _settings.AvalaraSettings.CompanyID,
             };
 
             var currencyConfig = new BlobServiceConfig()
             {
                 ConnectionString = _settings.StorageAccountSettings.ConnectionString,
-                Container = _settings.StorageAccountSettings.BlobContainerNameExchangeRates
+                Container = _settings.StorageAccountSettings.BlobContainerNameExchangeRates,
             };
             var assetConfig = new BlobServiceConfig()
             {
                 ConnectionString = _settings.StorageAccountSettings.ConnectionString,
                 Container = "assets",
-                AccessType = BlobContainerPublicAccessType.Container
+                AccessType = BlobContainerPublicAccessType.Container,
             };
 
             var flurlClientFactory = new PerBaseUrlFlurlClientFactory();
@@ -131,7 +131,7 @@ namespace Headstart.API
                 AuthUrl = _settings.OrderCloudSettings.ApiUrl,
                 ClientId = _settings.OrderCloudSettings.MiddlewareClientID,
                 ClientSecret = _settings.OrderCloudSettings.MiddlewareClientSecret,
-                Roles = new[] { ApiRole.FullAccess }
+                Roles = new[] { ApiRole.FullAccess },
             });
 
             AvalaraCommand avalaraCommand = null;
@@ -206,7 +206,7 @@ namespace Headstart.API
                             AccessToken = _settings.ZohoSettings.AccessToken,
                             ClientId = _settings.ZohoSettings.ClientId,
                             ClientSecret = _settings.ZohoSettings.ClientSecret,
-                            OrganizationID = _settings.ZohoSettings.OrgID
+                            OrganizationID = _settings.ZohoSettings.OrgID,
                         }, flurlClientFactory),
                     orderCloudClient))
                 .AddSingleton<IOrderCloudIntegrationsExchangeRatesClient, OrderCloudIntegrationsExchangeRatesClient>()
@@ -251,7 +251,7 @@ namespace Headstart.API
                 .AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions
                 {
                     EnableAdaptiveSampling = false, // retain all data
-                    InstrumentationKey = _settings.ApplicationInsightsSettings.InstrumentationKey
+                    InstrumentationKey = _settings.ApplicationInsightsSettings.InstrumentationKey,
                 });
 
             ServicePointManager.DefaultConnectionLimit = int.MaxValue;

@@ -45,7 +45,7 @@ namespace Headstart.Common.Services
                     { "UserEmail", order.FromUser.Email },
                     { "PaymentID", payment.ID },
                     { "TransactionID", transactionID },
-                    { "ErrorResponse", JsonConvert.SerializeObject(ex.ApiError, Formatting.Indented) }
+                    { "ErrorResponse", JsonConvert.SerializeObject(ex.ApiError, Formatting.Indented) },
                 };
             _telemetry.TrackEvent("Payment.VoidAuthorizationFailed", customProperties);
         }

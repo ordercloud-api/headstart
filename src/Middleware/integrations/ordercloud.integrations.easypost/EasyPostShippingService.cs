@@ -104,8 +104,8 @@ namespace ordercloud.integrations.easypost
                         {
                             AllShipMethods = shipMethods, // This is being saved so we have all data to compare rates across carrierAccounts
                             SupplierID = firstLi.SupplierID, // This will help with forwarding the supplier order
-                            ShipFromAddressID = firstLi.ShipFromAddressID // This will help with forwarding the supplier order
-                        }
+                            ShipFromAddressID = firstLi.ShipFromAddressID, // This will help with forwarding the supplier order
+                        },
                     };
                 }).ToList(),
             };
@@ -125,15 +125,15 @@ namespace ordercloud.integrations.easypost
                         ID = FreeShipping + $"_{firstLi.SupplierID}",
                         Cost = 0,
                         Name = "FREE",
-                        EstimatedTransitDays = 1 // Can be overwritten by app settings
-                    }
+                        EstimatedTransitDays = 1, // Can be overwritten by app settings
+                    },
                 },
                 ShipEstimateItems = lineItems.Select(li => new ShipEstimateItem() { LineItemID = li.ID, Quantity = li.Quantity }).ToList(),
                 xp =
                 {
                     SupplierID = firstLi.SupplierID, // This will help with forwarding the supplier order
-                    ShipFromAddressID = firstLi.ShipFromAddressID // This will help with forwarding the supplier order
-                }
+                    ShipFromAddressID = firstLi.ShipFromAddressID, // This will help with forwarding the supplier order
+                },
             };
         }
 

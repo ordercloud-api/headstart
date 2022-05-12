@@ -47,7 +47,7 @@ namespace Headstart.Common.Mappers
                     ProductID = lineItem?.ProductID,
                     Quantity = lineItem?.Quantity,
                     LineTotal = lineItem?.LineTotal,
-                    SpecCombo = GetSpecCombo(lineItem?.Specs)
+                    SpecCombo = GetSpecCombo(lineItem?.Specs),
                 };
             });
             var shippingAddress = GetShippingAddress(lineItems);
@@ -67,7 +67,7 @@ namespace Headstart.Common.Mappers
                     Street2 = order?.BillingAddress?.Street2,
                     City = order?.BillingAddress?.City,
                     State = order?.BillingAddress?.State,
-                    Zip = order?.BillingAddress?.Zip
+                    Zip = order?.BillingAddress?.Zip,
                 },
                 BillTo = null,
                 Products = productsList,
@@ -77,7 +77,7 @@ namespace Headstart.Common.Mappers
                 PromotionalDiscount = order?.PromotionDiscount,
                 Total = order?.Total,
                 Currency = currencyString,
-                Comments = order.Comments
+                Comments = order.Comments,
             };
         }
 
@@ -171,7 +171,7 @@ namespace Headstart.Common.Mappers
                 Street2 = lineItems[0]?.ShippingAddress?.Street2,
                 City = lineItems[0]?.ShippingAddress?.City,
                 State = lineItems[0]?.ShippingAddress?.State,
-                Zip = lineItems[0]?.ShippingAddress?.Zip
+                Zip = lineItems[0]?.ShippingAddress?.Zip,
             };
 
         public static LineItemProductData MapToTemplateProduct(HSLineItem lineItem, LineItemStatusChange lineItemStatusChange, LineItemStatus status)
@@ -196,7 +196,7 @@ namespace Headstart.Common.Mappers
                 Quantity = lineItem?.Quantity,
                 LineTotal = lineTotal,
                 QuantityChanged = lineItemStatusChange?.Quantity,
-                MessageToBuyer = lineItemStatusChange.Comment
+                MessageToBuyer = lineItemStatusChange.Comment,
             };
         }
     }

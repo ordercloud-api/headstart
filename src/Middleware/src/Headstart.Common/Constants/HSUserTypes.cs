@@ -18,7 +18,7 @@ namespace Headstart.Common.Constants
                     {
                         CustomRole.HSOrderAdmin,
                         CustomRole.HSShipmentAdmin,
-                    }
+                    },
                 },
                 new HSUserType
                 {
@@ -30,8 +30,8 @@ namespace Headstart.Common.Constants
                         CustomRole.HSMeSupplierAddressAdmin,
                         CustomRole.HSMeSupplierUserAdmin,
                         CustomRole.HSSupplierUserGroupAdmin,
-                        CustomRole.HSMeSupplierAdmin
-                    }
+                        CustomRole.HSMeSupplierAdmin,
+                    },
                 },
                 new HSUserType
                 {
@@ -41,7 +41,7 @@ namespace Headstart.Common.Constants
                     CustomRoles = new List<CustomRole>
                     {
                         CustomRole.HSMeProductAdmin,
-                    }
+                    },
                 },
                 new HSUserType
                 {
@@ -51,7 +51,7 @@ namespace Headstart.Common.Constants
                     CustomRoles = new List<CustomRole>
                     {
                         CustomRole.HSReportReader,
-                    }
+                    },
                 },
             };
         }
@@ -68,7 +68,7 @@ namespace Headstart.Common.Constants
                     CustomRoles = new List<CustomRole>
                     {
                         CustomRole.HSLocationPermissionAdmin,
-                    }
+                    },
                 },
                 new HSUserType
                 {
@@ -78,7 +78,7 @@ namespace Headstart.Common.Constants
                     CustomRoles = new List<CustomRole>
                     {
                         CustomRole.HSLocationOrderApprover,
-                    }
+                    },
                 },
                 new HSUserType
                 {
@@ -88,7 +88,7 @@ namespace Headstart.Common.Constants
                     CustomRoles = new List<CustomRole>
                     {
                         CustomRole.HSLocationNeedsApproval,
-                    }
+                    },
                 },
                 new HSUserType
                 {
@@ -98,7 +98,7 @@ namespace Headstart.Common.Constants
                     CustomRoles = new List<CustomRole>
                     {
                         CustomRole.HSLocationViewAllOrders,
-                    }
+                    },
                 },
                 new HSUserType
                 {
@@ -108,7 +108,7 @@ namespace Headstart.Common.Constants
                     CustomRoles = new List<CustomRole>
                     {
                         CustomRole.HSLocationCreditCardAdmin,
-                    }
+                    },
                 },
                 new HSUserType
                 {
@@ -118,7 +118,7 @@ namespace Headstart.Common.Constants
                     CustomRoles = new List<CustomRole>
                     {
                         CustomRole.HSLocationAddressAdmin,
-                    }
+                    },
                 },
             };
         }

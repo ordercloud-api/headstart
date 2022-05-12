@@ -103,7 +103,7 @@ namespace Headstart.API.Commands.Crud
                     BuyerID = buyerID,
                     PriceScheduleID = null,
                     ProductID = productID,
-                    UserGroupID = assignment.UserGroupID
+                    UserGroupID = assignment.UserGroupID,
                 });
             });
         }
@@ -118,7 +118,7 @@ namespace Headstart.API.Commands.Crud
                     BuyerID = buyerID,
                     PriceScheduleID = priceScheduleID,
                     ProductID = productID,
-                    UserGroupID = assignment.UserGroupID
+                    UserGroupID = assignment.UserGroupID,
                 });
             });
         }
@@ -182,7 +182,7 @@ namespace Headstart.API.Commands.Crud
             return new ListPage<SuperHSProduct>
             {
                 Meta = productsList.Meta,
-                Items = superProductsList
+                Items = superProductsList,
             };
         }
 
@@ -452,7 +452,7 @@ namespace Headstart.API.Commands.Crud
                     UseCumulativeQuantity = updated.UseCumulativeQuantity,
                     RestrictedQuantity = updated.RestrictedQuantity,
                     ApplyShipping = updated.ApplyShipping,
-                    ApplyTax = updated.ApplyTax
+                    ApplyTax = updated.ApplyTax,
                 };
                 var relatedPriceSchedules = await _oc.PriceSchedules.ListAllAsync(filters: $"ID={initial.ID}*");
                 var priceSchedulesToUpdate = relatedPriceSchedules.Where(p => p.ID != updated.ID);
@@ -588,7 +588,7 @@ namespace Headstart.API.Commands.Crud
             var tasks = new List<Task>()
             {
                 Throttler.RunAsync(specs.Items, 100, 5, s => _oc.Specs.DeleteAsync(s.ID, accessToken: token)),
-                _oc.Products.DeleteAsync(id, token)
+                _oc.Products.DeleteAsync(id, token),
             };
             if (product?.xp?.Images?.Count() > 0)
             {
@@ -622,7 +622,7 @@ namespace Headstart.API.Commands.Crud
                 Roles = new[]
                     {
                         ApiRole.SupplierAdmin,
-                        ApiRole.ProductAdmin
+                        ApiRole.ProductAdmin,
                     },
             };
             var ocClient = new OrderCloudClient(configToUse);

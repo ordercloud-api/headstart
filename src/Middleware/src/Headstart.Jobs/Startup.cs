@@ -53,33 +53,33 @@ namespace Headstart.Jobs
                 new ContainerInfo()
                 {
                     Name = "salesorderdetail",
-                    PartitionKey = "/PartitionKey"
+                    PartitionKey = "/PartitionKey",
                 },
                 new ContainerInfo()
                 {
                     Name = "purchaseorderdetail",
-                    PartitionKey = "/PartitionKey"
+                    PartitionKey = "/PartitionKey",
                 },
                 new ContainerInfo()
                 {
                     Name = "lineitemdetail",
-                    PartitionKey = "/PartitionKey"
+                    PartitionKey = "/PartitionKey",
                 },
                 new ContainerInfo()
                 {
                     Name = "rmas",
-                    PartitionKey = "/PartitionKey"
+                    PartitionKey = "/PartitionKey",
                 },
                 new ContainerInfo()
                 {
                     Name = "shipmentdetail",
-                    PartitionKey = "/PartitionKey"
+                    PartitionKey = "/PartitionKey",
                 },
                 new ContainerInfo()
                 {
                     Name = "productdetail",
-                    PartitionKey = "/PartitionKey"
-                }
+                    PartitionKey = "/PartitionKey",
+                },
             };
 
             // https://github.com/Polly-Contrib/Polly.Contrib.WaitAndRetry#wait-and-retry-with-jittered-back-off
@@ -102,8 +102,8 @@ namespace Headstart.Jobs
                     ClientSecret = settings.OrderCloudSettings.MiddlewareClientSecret,
                     Roles = new[]
                     {
-                        ApiRole.FullAccess
-                    }
+                        ApiRole.FullAccess,
+                    },
                 })
                 .AddCosmosDb(settings.CosmosSettings.EndpointUri, settings.CosmosSettings.PrimaryKey, settings.CosmosSettings.DatabaseName, cosmosContainers)
                 .AddSingleton<IFlurlClientFactory, PerBaseUrlFlurlClientFactory>()
@@ -123,7 +123,7 @@ namespace Headstart.Jobs
                     AccessToken = settings.ZohoSettings.AccessToken,
                     ClientId = settings.ZohoSettings.ClientId,
                     ClientSecret = settings.ZohoSettings.ClientSecret,
-                    OrganizationID = settings.ZohoSettings.OrgID
+                    OrganizationID = settings.ZohoSettings.OrgID,
                 })
                 .Inject<IZohoClient>()
                 .Inject<IZohoCommand>()

@@ -40,7 +40,7 @@ namespace Headstart.Jobs
                 ["xp.PaymentMethod"] = "Credit Card",
                 ["xp.IsPaymentCaptured"] = "false|!*", // TODO: once this is in place for a week set xp.IsPaymentCaptured to true on all past orders so this filter can be more performant
                 ["IsSubmitted"] = true,
-                ["xp.SubmittedOrderStatus"] = "!Canceled"
+                ["xp.SubmittedOrderStatus"] = "!Canceled",
             };
 
             var orders = await _oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Incoming, filters: filters);
@@ -141,7 +141,7 @@ namespace Headstart.Jobs
                 orderid = order.ID,
                 set = "1",
                 currency = order.xp.Currency.ToString(),
-                retref = transaction.xp.CardConnectResponse.retref
+                retref = transaction.xp.CardConnectResponse.retref,
             });
             return !string.IsNullOrEmpty(inquire.capturedate);
         }
@@ -154,7 +154,7 @@ namespace Headstart.Jobs
                 {
                     merchid = transaction.xp.CardConnectResponse.merchid,
                     retref = transaction.xp.CardConnectResponse.retref,
-                    currency = order.xp.Currency.ToString()
+                    currency = order.xp.Currency.ToString(),
                 });
                 await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, response));
             }

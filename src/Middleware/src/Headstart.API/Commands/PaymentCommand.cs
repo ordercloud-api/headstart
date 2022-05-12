@@ -72,7 +72,7 @@ namespace Headstart.API.Commands
                 {
                     Accepted = false,
                     Amount = paymentAmount,
-                    xp = requestedPayment.xp
+                    xp = requestedPayment.xp,
                 });
             }
             else
@@ -97,7 +97,7 @@ namespace Headstart.API.Commands
             {
                 await _oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, worksheet.Order.ID, existingPayment.ID, new PartialPayment
                 {
-                    Amount = paymentAmount
+                    Amount = paymentAmount,
                 });
             }
         }

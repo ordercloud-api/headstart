@@ -10,6 +10,6 @@
     public enum TaxJarEnvironment
     {
         Sandbox,
-        Production
+        Production,
     }
 }

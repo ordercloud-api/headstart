@@ -31,11 +31,11 @@ namespace Headstart.Tests
             {
                 UsdMerchantID = "mockUsdMerchantID",
                 CadMerchantID = "mockCadMerchantID",
-                EurMerchantID = "mockEurMerchantID"
+                EurMerchantID = "mockEurMerchantID",
             };
             _settings.OrderCloudSettings = new OrderCloudSettings
             {
-                IncrementorPrefix = "SEB"
+                IncrementorPrefix = "SEB",
             };
             _card = Substitute.For<ICreditCardCommand>();
             _card.AuthorizePayment(Arg.Any<OrderCloudIntegrationsCreditCardPayment>(), "mockUserToken", Arg.Any<string>())
@@ -53,7 +53,7 @@ namespace Headstart.Tests
             // Arrange
             _oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, "mockOrderID").Returns(Task.FromResult(new HSOrderWorksheet
             {
-                Order = new Models.HSOrder { ID = "mockOrderID", IsSubmitted = true }
+                Order = new Models.HSOrder { ID = "mockOrderID", IsSubmitted = true },
             }));
 
             // Act
@@ -76,14 +76,14 @@ namespace Headstart.Tests
                     {
                         new HSShipEstimate
                         {
-                            SelectedShipMethodID = "FEDEX_GROUND"
+                            SelectedShipMethodID = "FEDEX_GROUND",
                         },
                         new HSShipEstimate
                         {
-                            SelectedShipMethodID = null
-                        }
-                    }
-                }
+                            SelectedShipMethodID = null,
+                        },
+                    },
+                },
             }));
 
             // Act
@@ -106,9 +106,9 @@ namespace Headstart.Tests
                     {
                         new HSShipEstimate
                         {
-                            SelectedShipMethodID = "FEDEX_GROUND"
-                        }
-                    }
+                            SelectedShipMethodID = "FEDEX_GROUND",
+                        },
+                    },
                 },
                 LineItems = new List<HSLineItem>()
                 {
@@ -118,11 +118,11 @@ namespace Headstart.Tests
                         {
                             xp = new ProductXp
                             {
-                                ProductType = ProductType.Standard
-                            }
-                        }
-                    }
-                }
+                                ProductType = ProductType.Standard,
+                            },
+                        },
+                    },
+                },
             }));
 
             // Act
@@ -145,9 +145,9 @@ namespace Headstart.Tests
                     {
                         new HSShipEstimate
                         {
-                            SelectedShipMethodID = "FEDEX_GROUND"
-                        }
-                    }
+                            SelectedShipMethodID = "FEDEX_GROUND",
+                        },
+                    },
                 },
                 LineItems = new List<HSLineItem>()
                 {
@@ -157,11 +157,11 @@ namespace Headstart.Tests
                         {
                             xp = new ProductXp
                             {
-                                ProductType = ProductType.Standard
-                            }
-                        }
-                    }
-                }
+                                ProductType = ProductType.Standard,
+                            },
+                        },
+                    },
+                },
             }));
 
             // Act
@@ -184,9 +184,9 @@ namespace Headstart.Tests
                     {
                         new HSShipEstimate
                         {
-                            SelectedShipMethodID = "FEDEX_GROUND"
-                        }
-                    }
+                            SelectedShipMethodID = "FEDEX_GROUND",
+                        },
+                    },
                 },
                 LineItems = new List<HSLineItem>()
                 {
@@ -196,11 +196,11 @@ namespace Headstart.Tests
                         {
                             xp = new ProductXp
                             {
-                                ProductType = ProductType.Standard
-                            }
-                        }
-                    }
-                }
+                                ProductType = ProductType.Standard,
+                            },
+                        },
+                    },
+                },
             }));
 
             // Act
@@ -223,9 +223,9 @@ namespace Headstart.Tests
                     {
                         new HSShipEstimate
                         {
-                            SelectedShipMethodID = "FEDEX_GROUND"
-                        }
-                    }
+                            SelectedShipMethodID = "FEDEX_GROUND",
+                        },
+                    },
                 },
                 LineItems = new List<HSLineItem>()
                 {
@@ -235,11 +235,11 @@ namespace Headstart.Tests
                         {
                             xp = new ProductXp
                             {
-                                ProductType = ProductType.Standard
-                            }
-                        }
-                    }
-                }
+                                ProductType = ProductType.Standard,
+                            },
+                        },
+                    },
+                },
             }));
 
             // Act
@@ -262,9 +262,9 @@ namespace Headstart.Tests
                     {
                         new HSShipEstimate
                         {
-                            SelectedShipMethodID = "FEDEX_GROUND"
-                        }
-                    }
+                            SelectedShipMethodID = "FEDEX_GROUND",
+                        },
+                    },
                 },
                 LineItems = new List<HSLineItem>()
                 {
@@ -274,11 +274,11 @@ namespace Headstart.Tests
                         {
                             xp = new ProductXp
                             {
-                                ProductType = ProductType.Standard
-                            }
-                        }
-                    }
-                }
+                                ProductType = ProductType.Standard,
+                            },
+                        },
+                    },
+                },
             }));
 
             // Act
@@ -303,9 +303,9 @@ namespace Headstart.Tests
                     {
                         new HSShipEstimate
                         {
-                            SelectedShipMethodID = "FEDEX_GROUND"
-                        }
-                    }
+                            SelectedShipMethodID = "FEDEX_GROUND",
+                        },
+                    },
                 },
                 LineItems = new List<HSLineItem>()
                 {
@@ -315,11 +315,11 @@ namespace Headstart.Tests
                         {
                             xp = new ProductXp
                             {
-                                ProductType = ProductType.Standard
-                            }
-                        }
-                    }
-                }
+                                ProductType = ProductType.Standard,
+                            },
+                        },
+                    },
+                },
             }));
 
             // Act
@@ -343,9 +343,9 @@ namespace Headstart.Tests
                     {
                         new HSShipEstimate
                         {
-                            SelectedShipMethodID = "FEDEX_GROUND"
-                        }
-                    }
+                            SelectedShipMethodID = "FEDEX_GROUND",
+                        },
+                    },
                 },
                 LineItems = new List<HSLineItem>()
                 {
@@ -355,11 +355,11 @@ namespace Headstart.Tests
                         {
                             xp = new ProductXp
                             {
-                                ProductType = ProductType.Standard
-                            }
-                        }
-                    }
-                }
+                                ProductType = ProductType.Standard,
+                            },
+                        },
+                    },
+                },
             }));
 
             // Act
@@ -382,9 +382,9 @@ namespace Headstart.Tests
                     {
                         new HSShipEstimate
                         {
-                            SelectedShipMethodID = "FEDEX_GROUND"
-                        }
-                    }
+                            SelectedShipMethodID = "FEDEX_GROUND",
+                        },
+                    },
                 },
                 LineItems = new List<HSLineItem>()
                 {
@@ -394,11 +394,11 @@ namespace Headstart.Tests
                         {
                             xp = new ProductXp
                             {
-                                ProductType = ProductType.Standard
-                            }
-                        }
-                    }
-                }
+                                ProductType = ProductType.Standard,
+                            },
+                        },
+                    },
+                },
             }));
 
             // Act
@@ -423,9 +423,9 @@ namespace Headstart.Tests
                     {
                         new HSShipEstimate
                         {
-                            SelectedShipMethodID = "FEDEX_GROUND"
-                        }
-                    }
+                            SelectedShipMethodID = "FEDEX_GROUND",
+                        },
+                    },
                 },
                 LineItems = new List<HSLineItem>()
                 {
@@ -435,11 +435,11 @@ namespace Headstart.Tests
                         {
                             xp = new ProductXp
                             {
-                                ProductType = ProductType.Standard
-                            }
-                        }
-                    }
-                }
+                                ProductType = ProductType.Standard,
+                            },
+                        },
+                    },
+                },
             }));
 
             // Act
@@ -464,9 +464,9 @@ namespace Headstart.Tests
                     {
                         new HSShipEstimate
                         {
-                            SelectedShipMethodID = "FEDEX_GROUND"
-                        }
-                    }
+                            SelectedShipMethodID = "FEDEX_GROUND",
+                        },
+                    },
                 },
                 LineItems = new List<HSLineItem>()
                 {
@@ -476,11 +476,11 @@ namespace Headstart.Tests
                         {
                             xp = new ProductXp
                             {
-                                ProductType = ProductType.Standard
-                            }
-                        }
-                    }
-                }
+                                ProductType = ProductType.Standard,
+                            },
+                        },
+                    },
+                },
             }));
 
             // Act
@@ -505,9 +505,9 @@ namespace Headstart.Tests
                     {
                         new HSShipEstimate
                         {
-                            SelectedShipMethodID = "FEDEX_GROUND"
-                        }
-                    }
+                            SelectedShipMethodID = "FEDEX_GROUND",
+                        },
+                    },
                 },
                 LineItems = new List<HSLineItem>()
                 {
@@ -517,11 +517,11 @@ namespace Headstart.Tests
                         {
                             xp = new ProductXp
                             {
-                                ProductType = ProductType.Standard
-                            }
-                        }
-                    }
-                }
+                                ProductType = ProductType.Standard,
+                            },
+                        },
+                    },
+                },
             }));
 
             // Act

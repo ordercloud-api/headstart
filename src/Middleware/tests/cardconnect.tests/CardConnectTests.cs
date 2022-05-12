@@ -22,7 +22,7 @@ namespace CardConnect.Tests
                 {
                     Authorization = "Authorization",
                     Site = "fts-uat",
-                    BaseUrl = "cardconnect.com"
+                    BaseUrl = "cardconnect.com",
                 },
                 AppEnvironment.Test.ToString(),
                 new PerBaseUrlFlurlClientFactory());
@@ -119,7 +119,7 @@ namespace CardConnect.Tests
             _http.RespondWith(body);
             var call = await _service.AuthWithoutCapture(new CardConnectAuthorizationRequest()
             {
-                cvv2 = null
+                cvv2 = null,
             });
             Assert.That(call.respstat.ToResponseStatus() == result);
         }

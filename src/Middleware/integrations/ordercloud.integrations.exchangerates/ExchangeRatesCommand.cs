@@ -86,9 +86,9 @@ namespace ordercloud.integrations.exchangerates
                     Page = 1,
                     PageSize = 1,
                     TotalCount = rates.Rates.Count,
-                    ItemRange = new[] { 1, rates.Rates.Count }
+                    ItemRange = new[] { 1, rates.Rates.Count },
                 },
-                Items = rates.Rates
+                Items = rates.Rates,
             };
 
             return list;
@@ -112,7 +112,7 @@ namespace ordercloud.integrations.exchangerates
             return new OrderCloudIntegrationsExchangeRate()
             {
                 BaseSymbol = symbol,
-                Rates = MapRates(rates.rates)
+                Rates = MapRates(rates.rates),
             };
         }
 
@@ -126,9 +126,9 @@ namespace ordercloud.integrations.exchangerates
                     Page = 1,
                     PageSize = 1,
                     TotalCount = rates.Count,
-                    ItemRange = new[] { 1, rates.Count }
+                    ItemRange = new[] { 1, rates.Count },
                 },
-                Items = rates
+                Items = rates,
             });
         }
 
@@ -153,7 +153,7 @@ namespace ordercloud.integrations.exchangerates
                 Icon = GetIcon(e),
                 Symbol = SymbolLookup.CurrencySymbolLookup.FirstOrDefault(s => s.Key == e).Value.Symbol,
                 Name = SymbolLookup.CurrencySymbolLookup.FirstOrDefault(s => s.Key == e).Value.Name,
-                Rate = FixRate(ratesValues, e)
+                Rate = FixRate(ratesValues, e),
             }).ToList();
         }
 

@@ -19,7 +19,7 @@ namespace Headstart.Common.Models
                 EEL_PFC = "NOEEI30.37(a)",
                 Customs_Certify = true,
                 Markup = 1.5M,
-                Default = true
+                Default = true,
             });
         }
 

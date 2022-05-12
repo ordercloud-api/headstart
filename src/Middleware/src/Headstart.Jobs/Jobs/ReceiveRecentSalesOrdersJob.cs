@@ -48,7 +48,7 @@ namespace Headstart.Jobs
                 PartitionKey = "PartitionValue",
                 OrderID = orderID,
                 Data = order,
-                BrandName = brand.Name
+                BrandName = brand.Name,
             };
 
             if (promos.Items.Count > 0)

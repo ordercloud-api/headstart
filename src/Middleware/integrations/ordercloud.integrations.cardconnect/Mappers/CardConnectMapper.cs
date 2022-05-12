@@ -17,8 +17,8 @@ namespace ordercloud.integrations.cardconnect
                 Token = response.token,
                 xp = new CreditCardXP
                 {
-                    CCBillingAddress = card.CCBillingAddress
-                }
+                    CCBillingAddress = card.CCBillingAddress,
+                },
             };
             return cc;
         }
@@ -38,8 +38,8 @@ namespace ordercloud.integrations.cardconnect
                 Editable = true,
                 xp = new CreditCardXP
                 {
-                    CCBillingAddress = card.CCBillingAddress
-                }
+                    CCBillingAddress = card.CCBillingAddress,
+                },
             };
             return cc;
         }
@@ -52,7 +52,7 @@ namespace ordercloud.integrations.cardconnect
             var acct = new CardConnectAccountRequest()
             {
                 currency = currency,
-                account = card.AccountNumber
+                account = card.AccountNumber,
             };
             return acct;
         }
@@ -74,7 +74,7 @@ namespace ordercloud.integrations.cardconnect
                 merchid = merchantID,
                 orderid = order.ID,
                 postal = address.Zip,
-                region = address.State
+                region = address.State,
             };
             return req;
         }
@@ -92,8 +92,8 @@ namespace ordercloud.integrations.cardconnect
                 xp = new
                 {
                     CardConnectResponse = response,
-                    CCBillingAddress = ccBillingAddress
-                }
+                    CCBillingAddress = ccBillingAddress,
+                },
             };
             return t;
         }
@@ -110,8 +110,8 @@ namespace ordercloud.integrations.cardconnect
                 Type = "CreditCardVoidAuthorization",
                 xp = new
                 {
-                    CardConnectResponse = response
-                }
+                    CardConnectResponse = response,
+                },
             };
             return t;
         }
@@ -128,8 +128,8 @@ namespace ordercloud.integrations.cardconnect
                 Type = "CreditCardRefund",
                 xp = new
                 {
-                    CardConnectResponse = response
-                }
+                    CardConnectResponse = response,
+                },
             };
             return t;
         }
@@ -146,8 +146,8 @@ namespace ordercloud.integrations.cardconnect
                 Type = "CreditCardCapture",
                 xp = new
                 {
-                    CardConnectResponse = response
-                }
+                    CardConnectResponse = response,
+                },
             };
             return t;
         }

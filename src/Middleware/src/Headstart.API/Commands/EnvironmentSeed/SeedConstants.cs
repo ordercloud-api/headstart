@@ -35,8 +35,8 @@ namespace Headstart.API.Commands
                 DateCreated = DateTime.Now,
                 xp = new UserXp()
                 {
-                    Country = "US"
-                }
+                    Country = "US",
+                },
             };
         }
 
@@ -49,7 +49,7 @@ namespace Headstart.API.Commands
                 Email = "test@test.com",
                 Active = true,
                 FirstName = "Default",
-                LastName = "User"
+                LastName = "User",
             };
         }
 
@@ -62,8 +62,8 @@ namespace Headstart.API.Commands
                 Active = true,
                 xp = new BuyerXp
                 {
-                    MarkupPercent = 0
-                }
+                    MarkupPercent = 0,
+                },
             };
         }
 
@@ -98,7 +98,7 @@ namespace Headstart.API.Commands
             new Incrementor { ID = "orderIncrementor", Name = "Order Incrementor", LastNumber = 0, LeftPaddingCount = 6 },
             new Incrementor { ID = "supplierIncrementor", Name = "Supplier Incrementor", LastNumber = 0, LeftPaddingCount = 3 },
             new Incrementor { ID = "buyerIncrementor", Name = "Buyer Incrementor", LastNumber = 0, LeftPaddingCount = 4 },
-            new Incrementor { ID = "sellerLocationIncrementor", Name = "Seller Location Incrementor", LastNumber = 0, LeftPaddingCount = 4 }
+            new Incrementor { ID = "sellerLocationIncrementor", Name = "Seller Location Incrementor", LastNumber = 0, LeftPaddingCount = 4 },
         };
 
         public static ApiClient IntegrationsClient()
@@ -113,7 +113,7 @@ namespace Headstart.API.Commands
                 AccessTokenDuration = 600,
                 RefreshTokenDuration = 43200,
                 DefaultContextUserName = SellerUserName,
-                ClientSecret = RandomGen.GetString(AllowedSecretChars, 60)
+                ClientSecret = RandomGen.GetString(AllowedSecretChars, 60),
             };
         }
 
@@ -127,7 +127,7 @@ namespace Headstart.API.Commands
                 AllowAnySupplier = true,
                 AllowSeller = true,
                 AccessTokenDuration = 600,
-                RefreshTokenDuration = 43200
+                RefreshTokenDuration = 43200,
             };
         }
 
@@ -146,8 +146,8 @@ namespace Headstart.API.Commands
                 IsAnonBuyer = seed.EnableAnonymousShopping,
                 xp = new ApiClientXP
                 {
-                    IsStorefront = true
-                }
+                    IsStorefront = true,
+                },
             };
         }
 
@@ -163,7 +163,7 @@ namespace Headstart.API.Commands
                 AccessTokenDuration = 600,
                 RefreshTokenDuration = 43200,
                 DefaultContextUserName = seed.EnableAnonymousShopping ? AnonymousBuyerUser().ID : null,
-                IsAnonBuyer = seed.EnableAnonymousShopping
+                IsAnonBuyer = seed.EnableAnonymousShopping,
             };
         }
 
@@ -181,7 +181,7 @@ namespace Headstart.API.Commands
                 {
                     ExcludePOProductsFromShipping = false,
                     ExcludePOProductsFromTax = true,
-                }
+                },
             };
         }
 
@@ -199,7 +199,7 @@ namespace Headstart.API.Commands
                 {
                     ExcludePOProductsFromShipping = false,
                     ExcludePOProductsFromTax = true,
-                }
+                },
             };
         }
 
@@ -224,7 +224,7 @@ namespace Headstart.API.Commands
                         // MessageType.ShipmentCreated this is currently being triggered in-app possibly move to message senders
                     },
                 URL = seed.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
-                SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey
+                SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey,
             };
         }
 
@@ -239,7 +239,7 @@ namespace Headstart.API.Commands
                         MessageType.ForgottenPassword,
                     },
                 URL = seed.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
-                SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey
+                SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey,
             };
         }
 
@@ -254,7 +254,7 @@ namespace Headstart.API.Commands
                         MessageType.ForgottenPassword,
                     },
                 URL = seed.MiddlewareBaseUrl + "/messagesenders/{messagetype}",
-                SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey
+                SharedKey = seed.OrderCloudSeedSettings.WebhookHashKey,
             };
         }
 
@@ -313,7 +313,7 @@ namespace Headstart.API.Commands
             CustomRole.HSShipmentAdmin,
             CustomRole.HSStorefrontAdmin,
             CustomRole.HSSupplierAdmin,
-            CustomRole.HSSupplierUserGroupAdmin
+            CustomRole.HSSupplierUserGroupAdmin,
         };
 
         public static HSBuyerLocation DefaultBuyerLocation()
@@ -327,8 +327,8 @@ namespace Headstart.API.Commands
                     {
                         Type = "BuyerLocation",
                         Currency = CurrencySymbol.USD,
-                        Country = "US"
-                    }
+                        Country = "US",
+                    },
                 },
                 Address = new HSAddressBuyer()
                 {
@@ -337,8 +337,8 @@ namespace Headstart.API.Commands
                     City = "Minneaplis",
                     Zip = "55403",
                     State = "Minnesota",
-                    Country = "US"
-                }
+                    Country = "US",
+                },
             };
         }
 
@@ -351,7 +351,7 @@ namespace Headstart.API.Commands
                 XpPath = "Facets.supplier",
                 ListOrder = 1,
                 MinCount = 1,
-                xp = null
+                xp = null,
             };
         }
 
@@ -359,35 +359,35 @@ namespace Headstart.API.Commands
         {
             AzureRegion = "eastus",
             Id = "est",
-            Name = "US-East"
+            Name = "US-East",
         };
 
         public static readonly Region AustraliaEast = new Region()
         {
             AzureRegion = "australiaeast",
             Id = "aus",
-            Name = "Australia-East"
+            Name = "Australia-East",
         };
 
         public static readonly Region EuropeWest = new Region()
         {
             AzureRegion = "westeurope",
             Id = "eur",
-            Name = "Europe-West"
+            Name = "Europe-West",
         };
 
         public static readonly Region JapanEast = new Region()
         {
             AzureRegion = "japaneast",
             Id = "jpn",
-            Name = "Japan-East"
+            Name = "Japan-East",
         };
 
         public static readonly Region UsWest = new Region()
         {
             AzureRegion = "westus",
             Id = "usw",
-            Name = "US-West"
+            Name = "US-West",
         };
 
         public static readonly List<Region> Regions = new List<Region>()
@@ -396,7 +396,7 @@ namespace Headstart.API.Commands
             AustraliaEast,
             EuropeWest,
             JapanEast,
-            UsWest
+            UsWest,
         };
 
         public static class Environments
@@ -423,7 +423,7 @@ namespace Headstart.API.Commands
                 marketplace = new OcEnv()
                 {
                     EnvironmentName = Environments.Production,
-                    Region = envRegion
+                    Region = envRegion,
                 };
 
                 if (envRegion == UsEast)
@@ -452,7 +452,7 @@ namespace Headstart.API.Commands
                 marketplace = new OcEnv()
                 {
                     EnvironmentName = Environments.Sandbox,
-                    Region = envRegion
+                    Region = envRegion,
                 };
 
                 if (envRegion == UsEast)

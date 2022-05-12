@@ -103,7 +103,7 @@ namespace ordercloud.integrations.library
                         CorsHttpMethods.Delete |
                         CorsHttpMethods.Merge,
                     ExposedHeaders = { "*" },
-                    MaxAgeInSeconds = (int)TimeSpan.FromHours(1).TotalSeconds
+                    MaxAgeInSeconds = (int)TimeSpan.FromHours(1).TotalSeconds,
                 });
                 await Client.SetServicePropertiesAsync(properties);
             }

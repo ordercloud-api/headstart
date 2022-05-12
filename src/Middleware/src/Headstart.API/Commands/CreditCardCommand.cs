@@ -148,7 +148,7 @@ namespace ordercloud.integrations.cardconnect
                         {
                             currency = userCurrency.ToString(),
                             merchid = GetMerchantID(userCurrency),
-                            retref = transaction.xp.CardConnectResponse.retref
+                            retref = transaction.xp.CardConnectResponse.retref,
                         });
                         await _oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, response));
                     }

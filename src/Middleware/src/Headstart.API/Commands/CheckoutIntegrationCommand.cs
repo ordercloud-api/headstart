@@ -254,9 +254,9 @@ namespace Headstart.API.Commands
                             EstimatedTransitDays = noRatesTransitDays,
                             xp = new ShipMethodXP
                             {
-                                OriginalCost = noRatesCost
-                            }
-                        }
+                                OriginalCost = noRatesCost,
+                            },
+                        },
                     };
                 }
             }
@@ -288,7 +288,7 @@ namespace Headstart.API.Commands
             return await this.CalculateOrder(new HSOrderCalculatePayload()
             {
                 ConfigData = null,
-                OrderWorksheet = worksheet
+                OrderWorksheet = worksheet,
             });
         }
 
@@ -312,8 +312,8 @@ namespace Headstart.API.Commands
                     TaxTotal = taxCalculation.TotalTax,
                     xp = new OrderCalculateResponseXp()
                     {
-                        TaxCalculation = taxCalculation
-                    }
+                        TaxCalculation = taxCalculation,
+                    },
                 };
             }
         }

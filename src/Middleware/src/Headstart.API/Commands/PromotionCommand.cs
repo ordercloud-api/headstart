@@ -49,7 +49,7 @@ namespace Headstart.API.Commands
                 {
                     ErrorCode = "Promotion.ErrorRemovingAll",
                     Message = "One or more promotions could not be removed",
-                    Data = allTasks.Exception.InnerExceptions
+                    Data = allTasks.Exception.InnerExceptions,
                 });
             }
         }
@@ -69,8 +69,8 @@ namespace Headstart.API.Commands
                     Message = $"Unable to remove promotion {promo.Code}",
                     Data = new
                     {
-                        Promotion = promo
-                    }
+                        Promotion = promo,
+                    },
                 });
             }
         }

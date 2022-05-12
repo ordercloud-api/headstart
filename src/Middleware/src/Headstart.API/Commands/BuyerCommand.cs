@@ -49,7 +49,7 @@ namespace Headstart.API.Commands
             {
                 Buyer = createdBuyer,
                 Markup = createdMarkup,
-                ImpersonationConfig = createdImpersonationConfig
+                ImpersonationConfig = createdImpersonationConfig,
             };
         }
 
@@ -70,7 +70,7 @@ namespace Headstart.API.Commands
             {
                 Buyer = updatedBuyer,
                 Markup = updatedMarkup,
-                ImpersonationConfig = updatedImpersonationConfig
+                ImpersonationConfig = updatedImpersonationConfig,
             };
         }
 
@@ -84,14 +84,14 @@ namespace Headstart.API.Commands
             var markupPercent = buyer.xp?.MarkupPercent ?? 0;
             var markup = new BuyerMarkup()
             {
-                Percent = markupPercent
+                Percent = markupPercent,
             };
 
             return new SuperHSBuyer()
             {
                 Buyer = buyer,
                 Markup = markup,
-                ImpersonationConfig = config
+                ImpersonationConfig = config,
             };
         }
 
@@ -119,7 +119,7 @@ namespace Headstart.API.Commands
                 new SecurityProfileAssignment
                 {
                     BuyerID = ocBuyerID,
-                    SecurityProfileID = CustomRole.HSBaseBuyer.ToString()
+                    SecurityProfileID = CustomRole.HSBaseBuyer.ToString(),
                 }, token);
 
             // assign message sender
@@ -127,7 +127,7 @@ namespace Headstart.API.Commands
                 new MessageSenderAssignment
                 {
                     MessageSenderID = "BuyerEmails",
-                    BuyerID = ocBuyerID
+                    BuyerID = ocBuyerID,
                 }, token);
 
             await ocClient.Incrementors.SaveAsync(
@@ -145,7 +145,7 @@ namespace Headstart.API.Commands
                     BuyerID = ocBuyerID,
                     CatalogID = ocBuyerID,
                     ViewAllCategories = true,
-                    ViewAllProducts = false
+                    ViewAllProducts = false,
                 }, token);
             return buyer;
         }
@@ -162,7 +162,7 @@ namespace Headstart.API.Commands
             var updatedBuyer = await ocClient.Buyers.PatchAsync(buyerID, new PartialBuyer() { xp = new { MarkupPercent = markup.Percent } }, token);
             return new BuyerMarkup()
             {
-                Percent = (int)updatedBuyer.xp.MarkupPercent
+                Percent = (int)updatedBuyer.xp.MarkupPercent,
             };
         }
 
@@ -205,7 +205,7 @@ namespace Headstart.API.Commands
             var updatedBuyer = await _oc.Buyers.PatchAsync(buyerID, new PartialBuyer() { xp = new { MarkupPercent = markup.Percent } });
             return new BuyerMarkup()
             {
-                Percent = (int)updatedBuyer.xp.MarkupPercent
+                Percent = (int)updatedBuyer.xp.MarkupPercent,
             };
         }
     }

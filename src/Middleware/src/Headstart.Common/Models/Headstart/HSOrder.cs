@@ -81,7 +81,7 @@ namespace Headstart.Models
     public enum OrderType
     {
         Standard,
-        Quote
+        Quote,
     }
 
     public class OrderDetails
@@ -180,13 +180,13 @@ namespace Headstart.Models
     {
         Open,
         Completed,
-        Canceled
+        Canceled,
     }
 
     [JsonConverter(typeof(StringEnumConverter))]
     public enum QuoteStatus
     {
         NeedsBuyerReview,
-        NeedsSellerReview
+        NeedsSellerReview,
     }
 }

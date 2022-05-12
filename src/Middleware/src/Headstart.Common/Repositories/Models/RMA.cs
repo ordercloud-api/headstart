@@ -44,7 +44,7 @@ namespace Headstart.Common.Models
     public enum RMAType
     {
         Cancellation,
-        Return
+        Return,
     }
 
     [JsonConverter(typeof(StringEnumConverter))]
@@ -91,7 +91,7 @@ namespace Headstart.Common.Models
         Complete,
         Denied,
         PartialQtyApproved,
-        PartialQtyComplete
+        PartialQtyComplete,
     }
 
     public class RMALog

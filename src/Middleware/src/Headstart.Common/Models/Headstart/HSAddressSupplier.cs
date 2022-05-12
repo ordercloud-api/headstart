@@ -20,6 +20,6 @@ namespace Headstart.Models
         OriginExhibition = 11,
         OriginInsidePickup = 12,
         OriginLiftGate = 13,
-        ResidentialPickup = 16
+        ResidentialPickup = 16,
     }
 }

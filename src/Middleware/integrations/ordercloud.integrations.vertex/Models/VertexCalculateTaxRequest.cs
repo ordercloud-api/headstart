@@ -31,7 +31,7 @@ namespace ordercloud.integrations.vertex
         ADMINISTRATIVE_DESTINATION,
         ADMINISTRATIVE_ORIGIN,
         DESTINATION,
-        PHYSICAL_ORIGIN
+        PHYSICAL_ORIGIN,
     }
 
     public class VertexImposition
@@ -44,7 +44,7 @@ namespace ordercloud.integrations.vertex
     public enum VertexTaxOverrideType
     {
         TAXABLE,
-        NONTAXABLE
+        NONTAXABLE,
     }
 
     public class VertexTaxOverride
@@ -58,7 +58,7 @@ namespace ordercloud.integrations.vertex
     {
         QUOTATION,
         INVOICE,
-        DISTRIBUTE_TAX
+        DISTRIBUTE_TAX,
     }
 
     public class VertexTaxRegistrations
@@ -81,7 +81,7 @@ namespace ordercloud.integrations.vertex
         FREE_TRADE_ZONE,
         TEMPORARY_IMPORT,
         INWARD_PROCESSING_RELIEF,
-        OUTWARD_PROCESSING_RELIEF
+        OUTWARD_PROCESSING_RELIEF,
     }
 
     public class VertexExemptionCertificate

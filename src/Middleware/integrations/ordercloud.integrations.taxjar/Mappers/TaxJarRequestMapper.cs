@@ -52,8 +52,8 @@ namespace ordercloud.integrations.taxjar
                         UnitPrice = selectedShipMethod.Cost,
                         Description = selectedShipMethod.Name,
                         ProductIdentifier = "shipping_code",
-                    }
-                }
+                    },
+                },
             };
         }
 
@@ -85,8 +85,8 @@ namespace ordercloud.integrations.taxjar
                         UnitPrice = lineItem.UnitPrice ?? 0,
                         Description = lineItem.Product.Name,
                         ProductIdentifier = lineItem.Product.ID,
-                    }
-                }
+                    },
+                },
             };
         }
     }

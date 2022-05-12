@@ -20,7 +20,7 @@ namespace Headstart.Common.Controllers
                 Environment = _settings.EnvironmentSettings.Environment.ToString(),
                 BuildNumber = _settings.EnvironmentSettings.BuildNumber, // set during deploy
                 Commit = _settings.EnvironmentSettings.Commit, // set during deploy
-                CosmosDatabase = _settings.CosmosSettings.DatabaseName
+                CosmosDatabase = _settings.CosmosSettings.DatabaseName,
             };
         }
     }

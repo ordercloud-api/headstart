@@ -38,6 +38,6 @@ namespace Headstart.Models.Misc
         DocumentAdmin,
         DocumentReader,
         SchemaAdmin,
-        SchemaReader
+        SchemaReader,
     }
 }

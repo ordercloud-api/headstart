@@ -29,9 +29,9 @@ namespace Headstart.Common.Extensions
                             EstimatedTransitDays = noRatesTransitDays,
                             xp = new ShipMethodXP
                             {
-                                OriginalCost = noRatesCost
-                            }
-                        }
+                                OriginalCost = noRatesCost,
+                            },
+                        },
                     };
                 }
             }

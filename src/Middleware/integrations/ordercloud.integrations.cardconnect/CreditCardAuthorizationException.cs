@@ -21,7 +21,7 @@ namespace ordercloud.integrations.cardconnect
             {
                 Data = data,
                 ErrorCode = errorCode,
-                Message = message
+                Message = message,
             };
             Response = data;
         }
@@ -45,7 +45,7 @@ namespace ordercloud.integrations.cardconnect
             {
                 Data = data,
                 ErrorCode = errorCode,
-                Message = message
+                Message = message,
             };
             Response = data;
         }
@@ -69,7 +69,7 @@ namespace ordercloud.integrations.cardconnect
             {
                 Data = data,
                 ErrorCode = errorCode,
-                Message = message
+                Message = message,
             };
             Response = data;
         }
@@ -93,7 +93,7 @@ namespace ordercloud.integrations.cardconnect
             {
                 Data = data,
                 ErrorCode = errorCode,
-                Message = message
+                Message = message,
             };
             Response = data;
         }
@@ -117,7 +117,7 @@ namespace ordercloud.integrations.cardconnect
             {
                 Data = data,
                 ErrorCode = errorCode,
-                Message = message
+                Message = message,
             };
             Response = data;
         }

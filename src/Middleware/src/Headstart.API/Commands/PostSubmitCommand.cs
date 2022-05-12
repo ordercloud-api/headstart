@@ -67,9 +67,9 @@ namespace Headstart.API.Commands
                             await ProcessActivityCall(
                                 ProcessType.Shipping,
                                 "Validate Shipping",
-                                ValidateShipping(worksheet))
-                        }
-                    }
+                                ValidateShipping(worksheet)),
+                        },
+                    },
                 },
                 new List<HSOrder> { worksheet.Order });
         }
@@ -105,7 +105,7 @@ namespace Headstart.API.Commands
             return new ProcessResult()
             {
                 Type = ProcessType.Accounting,
-                Activity = new List<ProcessResultAction>() { salesAction, poAction, shippingAction }
+                Activity = new List<ProcessResultAction>() { salesAction, poAction, shippingAction },
             };
         }
 
@@ -118,7 +118,7 @@ namespace Headstart.API.Commands
             results.Add(new ProcessResult()
             {
                 Type = ProcessType.Forwarding,
-                Activity = activities
+                Activity = activities,
             });
 
             // step 1 failed. we don't want to attempt the integrations. return error for further action
@@ -147,7 +147,7 @@ namespace Headstart.API.Commands
             results.Add(new ProcessResult()
             {
                 Type = ProcessType.Notification,
-                Activity = new List<ProcessResultAction>() { notifications }
+                Activity = new List<ProcessResultAction>() { notifications },
             });
 
             if (!orderWorksheet.IsStandardOrder())
@@ -163,7 +163,7 @@ namespace Headstart.API.Commands
             results.Add(new ProcessResult()
             {
                 Type = ProcessType.Tax,
-                Activity = new List<ProcessResultAction>() { tax }
+                Activity = new List<ProcessResultAction>() { tax },
             });
 
             // STEP 3: Zoho orders
@@ -180,7 +180,7 @@ namespace Headstart.API.Commands
             results.Add(new ProcessResult()
             {
                 Type = ProcessType.Shipping,
-                Activity = new List<ProcessResultAction>() { shipping }
+                Activity = new List<ProcessResultAction>() { shipping },
             });
 
             return results;
@@ -198,8 +198,8 @@ namespace Headstart.API.Commands
                         HttpStatusCode = 200,
                         xp = new OrderSubmitResponseXp()
                         {
-                            ProcessResults = processResults
-                        }
+                            ProcessResults = processResults,
+                        },
                     };
                 }
 
@@ -209,8 +209,8 @@ namespace Headstart.API.Commands
                     HttpStatusCode = 500,
                     xp = new OrderSubmitResponseXp()
                     {
-                        ProcessResults = processResults
-                    }
+                        ProcessResults = processResults,
+                    },
                 };
             }
             catch (OrderCloudException ex)
@@ -218,7 +218,7 @@ namespace Headstart.API.Commands
                 return new OrderSubmitResponse()
                 {
                     HttpStatusCode = 500,
-                    UnhandledErrorBody = JsonConvert.SerializeObject(ex.Errors)
+                    UnhandledErrorBody = JsonConvert.SerializeObject(ex.Errors),
                 };
             }
         }
@@ -246,7 +246,7 @@ namespace Headstart.API.Commands
                 {
                         ProcessType = type,
                         Description = description,
-                        Success = true
+                        Success = true,
                 };
             }
             catch (CatalystBaseException integrationEx)
@@ -256,7 +256,7 @@ namespace Headstart.API.Commands
                     Description = description,
                     ProcessType = type,
                     Success = false,
-                    Exception = new ProcessResultException(integrationEx)
+                    Exception = new ProcessResultException(integrationEx),
                 };
             }
             catch (FlurlHttpException flurlEx)
@@ -266,7 +266,7 @@ namespace Headstart.API.Commands
                     Description = description,
                     ProcessType = type,
                     Success = false,
-                    Exception = new ProcessResultException(flurlEx)
+                    Exception = new ProcessResultException(flurlEx),
                 };
             }
             catch (Exception ex)
@@ -276,7 +276,7 @@ namespace Headstart.API.Commands
                     Description = description,
                     ProcessType = type,
                     Success = false,
-                    Exception = new ProcessResultException(ex)
+                    Exception = new ProcessResultException(ex),
                 };
             }
         }
@@ -291,7 +291,7 @@ namespace Headstart.API.Commands
                     {
                         ProcessType = type,
                         Description = description,
-                        Success = true
+                        Success = true,
                     },
                     await func);
             }
@@ -303,7 +303,7 @@ namespace Headstart.API.Commands
                         Description = description,
                         ProcessType = type,
                         Success = false,
-                        Exception = new ProcessResultException(integrationEx)
+                        Exception = new ProcessResultException(integrationEx),
                     }, new T());
             }
             catch (FlurlHttpException flurlEx)
@@ -314,7 +314,7 @@ namespace Headstart.API.Commands
                         Description = description,
                         ProcessType = type,
                         Success = false,
-                        Exception = new ProcessResultException(flurlEx)
+                        Exception = new ProcessResultException(flurlEx),
                     }, new T());
             }
             catch (Exception ex)
@@ -325,7 +325,7 @@ namespace Headstart.API.Commands
                         Description = description,
                         ProcessType = type,
                         Success = false,
-                        Exception = new ProcessResultException(ex)
+                        Exception = new ProcessResultException(ex),
                     }, new T());
             }
         }
@@ -404,8 +404,8 @@ namespace Headstart.API.Commands
                             State = buyerOrder?.Order?.xp?.ShippingAddress?.State,
                             Zip = buyerOrder?.Order?.xp?.ShippingAddress?.Zip,
                             Country = buyerOrder?.Order?.xp?.ShippingAddress?.Country,
-                        }
-                    }
+                        },
+                    },
                 };
                 var updatedSupplierOrder = await _oc.Orders.PatchAsync<HSOrder>(OrderDirection.Outgoing, supplierOrder.ID, supplierOrderPatch);
                 var supplierLineItems = lineItems.Where(li => li.SupplierID == supplier.ID).ToList();
@@ -432,7 +432,7 @@ namespace Headstart.API.Commands
 
                     // If we have seller ship estimates for a seller owned product save selected method on buyer order.
                     SelectedShipMethodsSupplierView = sellerShipEstimates != null ? MapSelectedShipMethod(sellerShipEstimates) : null,
-                }
+                },
             };
 
             await _oc.Orders.PatchAsync(OrderDirection.Incoming, buyerOrder.Order.ID, buyerOrderPatch);
@@ -448,7 +448,7 @@ namespace Headstart.API.Commands
                 {
                     EstimatedTransitDays = selected.EstimatedTransitDays,
                     Name = selected.Name,
-                    ShipFromAddressID = shipEstimate.xp.ShipFromAddressID
+                    ShipFromAddressID = shipEstimate.xp.ShipFromAddressID,
                 };
             }).ToList();
             return selectedShipMethods;
@@ -462,7 +462,7 @@ namespace Headstart.API.Commands
             await _oc.Orders.PatchAsync<HSOrder>(OrderDirection.Incoming, orderWorksheet.Order.ID, new PartialOrder()
             {
                 TaxCost = taxCalculation.TotalTax,  // Set this again just to make sure we have the most up to date info
-                xp = new { ExternalTaxTransactionID = taxCalculation.ExternalTransactionID }
+                xp = new { ExternalTaxTransactionID = taxCalculation.ExternalTransactionID },
             });
         }
 

@@ -45,7 +45,7 @@ namespace Headstart.API.Commands
             return new HSBuyerLocation
             {
                 Address = buyerAddress,
-                UserGroup = buyerUserGroup
+                UserGroup = buyerUserGroup,
             };
         }
 
@@ -101,7 +101,7 @@ namespace Headstart.API.Commands
                 AddressID = buyerLocationID,
                 UserGroupID = buyerLocationID,
                 IsBilling = true,
-                IsShipping = true
+                IsShipping = true,
             };
             await ocClient.Addresses.SaveAssignmentAsync(buyerID, assignment, accessToken: token);
         }
@@ -164,7 +164,7 @@ namespace Headstart.API.Commands
                     ApprovingGroupID = approvingGroupID,
                     Description = "General Approval Rule for Location. Every Order Over a Certain Limit will Require Approval for the designated group of users.",
                     Name = $"{locationName} General Location Approval Rule",
-                    RuleExpression = $"order.xp.ApprovalNeeded = '{buyerLocationID}' & order.Total > 0"
+                    RuleExpression = $"order.xp.ApprovalNeeded = '{buyerLocationID}' & order.Total > 0",
                 });
             }
         }
@@ -201,8 +201,8 @@ namespace Headstart.API.Commands
                     {
                         Role = hsUserType.UserGroupIDSuffix.ToString(),
                         Type = hsUserType.UserGroupType,
-                        Location = buyerLocationID
-                    }
+                        Location = buyerLocationID,
+                    },
                 },
                 token);
             foreach (var customRole in hsUserType.CustomRoles)
@@ -212,7 +212,7 @@ namespace Headstart.API.Commands
                     {
                         BuyerID = buyerID,
                         UserGroupID = userGroupID,
-                        SecurityProfileID = customRole.ToString()
+                        SecurityProfileID = customRole.ToString(),
                     },
                     token);
             }
@@ -234,7 +234,7 @@ namespace Headstart.API.Commands
             await _oc.UserGroups.SaveUserAssignmentAsync(buyerID, new UserGroupAssignment
             {
                 UserGroupID = userGroupID,
-                UserID = newUserID
+                UserID = newUserID,
             });
         }
     }

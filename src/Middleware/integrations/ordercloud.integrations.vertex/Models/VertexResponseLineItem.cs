@@ -157,13 +157,13 @@ namespace ordercloud.integrations.vertex
         FLAT_TAX,
         QUANTITY,
         SINGLE_RATE,
-        TIERED
+        TIERED,
     }
 
     public enum VertexParty
     {
         SELLER,
-        BUYER
+        BUYER,
     }
 
     public enum VertexInputOutput
@@ -171,7 +171,7 @@ namespace ordercloud.integrations.vertex
         INPUT,
         IMPORT,
         OUTPUT,
-        INPUT_OUTPUT
+        INPUT_OUTPUT,
     }
 
     public enum VertexTaxType
@@ -181,7 +181,7 @@ namespace ordercloud.integrations.vertex
         CONSUMERS_USE,
         VAT,
         IMPORT_VAT,
-        NONE
+        NONE,
     }
 
     public enum VertexTaxResult
@@ -191,7 +191,7 @@ namespace ordercloud.integrations.vertex
         EXEMPT,
         DPPAPPLIED,
         NO_TAX,
-        DEFERRED
+        DEFERRED,
     }
 
     public class VertexCertificateNumber

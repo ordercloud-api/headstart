@@ -60,7 +60,7 @@ namespace ordercloud.integrations.vertex
         TERRITORY,
         TOWNSHIP,
         TRADE_BLOCK,
-        TRANSIT_DISTRICT
+        TRANSIT_DISTRICT,
     }
 
     public class VertexRateOverride

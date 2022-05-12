@@ -13,7 +13,7 @@ namespace ordercloud.integrations.avalara
             return codes.value.Select(code => new TaxCategorization
             {
                 Code = code.taxCode,
-                Description = code.description
+                Description = code.description,
             }).ToList();
         }
 

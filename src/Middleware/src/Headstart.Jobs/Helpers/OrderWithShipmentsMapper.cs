@@ -70,7 +70,7 @@ namespace Headstart.Jobs.Helpers
                 ShipmentID = shipment.ID,
                 DateShipped = shipment.DateShipped,
                 TrackingNumber = shipment.TrackingNumber,
-                Service = ((IDictionary<string, object>)shipmentItem.xp).ContainsKey("ShipMethod") ? shipmentItem.xp.ShipMethod : null
+                Service = ((IDictionary<string, object>)shipmentItem.xp).ContainsKey("ShipMethod") ? shipmentItem.xp.ShipMethod : null,
             };
 
             return orderWithShipments;

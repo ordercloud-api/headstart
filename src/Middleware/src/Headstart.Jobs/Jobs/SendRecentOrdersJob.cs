@@ -35,7 +35,7 @@ namespace Headstart.Jobs
             var filters = new Dictionary<string, object>
             {
                 ["LastUpdated"] = $"{dateFilter}",
-                ["IsSubmitted"] = true
+                ["IsSubmitted"] = true,
             };
 
             var orders = await _oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Incoming, filters: filters);

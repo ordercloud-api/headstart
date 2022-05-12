@@ -14,6 +14,6 @@ namespace Headstart.Models.Extended
         Text,
         DropDown,
         Checkbox,
-        Range
+        Range,
     }
 }

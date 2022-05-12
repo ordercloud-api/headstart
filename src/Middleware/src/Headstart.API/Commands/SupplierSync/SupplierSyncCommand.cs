@@ -64,7 +64,7 @@ namespace Headstart.API.Commands
                 {
                     Data = new { decodedToken, OrderID = id, OrderType = orderType },
                     ErrorCode = mex.Message,
-                    Message = $"Missing Method for: {supplierID ?? "Invalid Supplier"}"
+                    Message = $"Missing Method for: {supplierID ?? "Invalid Supplier"}",
                 }));
             }
         }

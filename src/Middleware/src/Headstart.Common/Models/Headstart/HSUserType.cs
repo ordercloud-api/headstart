@@ -20,7 +20,7 @@ namespace Headstart.Models.Misc
     {
         UserPermissions,
         BuyerLocation,
-        LocationPermissions
+        LocationPermissions,
     }
 
     [JsonConverter(typeof(StringEnumConverter))]
@@ -31,6 +31,6 @@ namespace Headstart.Models.Misc
         NeedsApproval,
         ViewAllOrders,
         CreditCardAdmin,
-        AddressAdmin
+        AddressAdmin,
     }
 }

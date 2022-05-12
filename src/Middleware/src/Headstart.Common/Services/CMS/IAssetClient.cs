@@ -43,14 +43,14 @@ namespace Headstart.Common.Services.CMS
                 await Task.WhenAll(new[]
                 {
                     _blob.Save(assetGuid, medium.ToBytes(ImageFormat.Png), "image/png"),
-                    _blob.Save($"{assetGuid}-s", small.ToBytes(ImageFormat.Png), "image/png")
+                    _blob.Save($"{assetGuid}-s", small.ToBytes(ImageFormat.Png), "image/png"),
                 });
             }
 
             return new ImageAsset
             {
                 Url = $"{GetBaseUrl()}{container}/{assetGuid}",
-                ThumbnailUrl = $"{GetBaseUrl()}{container}/{assetGuid}-s"
+                ThumbnailUrl = $"{GetBaseUrl()}{container}/{assetGuid}-s",
             };
         }
 
@@ -62,7 +62,7 @@ namespace Headstart.Common.Services.CMS
             return new DocumentAsset()
             {
                 FileName = asset.Filename,
-                Url = $"{GetBaseUrl()}{container}/{assetGuid}"
+                Url = $"{GetBaseUrl()}{container}/{assetGuid}",
             };
         }
 

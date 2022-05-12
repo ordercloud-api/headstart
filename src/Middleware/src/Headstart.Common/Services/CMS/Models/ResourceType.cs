@@ -64,7 +64,7 @@ namespace Headstart.Common.Services.CMS.Models
         ApiClients,
         Incrementors,
         IntegrationEvents,
-        XpIndices
+        XpIndices,
     }
 
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]

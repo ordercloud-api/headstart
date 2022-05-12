@@ -10,6 +10,6 @@ namespace Headstart.Models.Extended
         PartiallyShipped,
         Canceled,
         Processing,
-        Backordered
+        Backordered,
     }
 }

@@ -59,7 +59,7 @@ namespace ordercloud.integrations.vertex
                 client_id = config.ClientID,
                 client_secret = config.ClientSecret,
                 username = config.Username,
-                password = config.Password
+                password = config.Password,
             };
             var response = await $"{AuthUrl}/identity/connect/token".PostUrlEncodedAsync(body);
             var token = await response.GetJsonAsync<VertexTokenResponse>();

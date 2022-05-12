@@ -26,7 +26,7 @@ namespace Headstart.Common.Models
                 ReportCategory = "Buyer",
                 AvailableToSuppliers = true,
                 Value = "BuyerLocation",
-                AdHocFilters = null
+                AdHocFilters = null,
             },
             new ReportTypeResource
             {
@@ -35,7 +35,7 @@ namespace Headstart.Common.Models
                 ReportCategory = "Order",
                 AvailableToSuppliers = false,
                 Value = "SalesOrderDetail",
-                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow",  "TimeHigh", "SupplierID", "BrandID" }
+                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow",  "TimeHigh", "SupplierID", "BrandID" },
             },
             new ReportTypeResource
             {
@@ -44,7 +44,7 @@ namespace Headstart.Common.Models
                 ReportCategory = "Order",
                 AvailableToSuppliers = true,
                 Value = "PurchaseOrderDetail",
-                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID", "BrandID" }
+                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID", "BrandID" },
             },
             new ReportTypeResource
             {
@@ -53,7 +53,7 @@ namespace Headstart.Common.Models
                 ReportCategory = "Order",
                 AvailableToSuppliers = true,
                 Value = "LineItemDetail",
-                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID", "BrandID" }
+                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID", "BrandID" },
             },
             new ReportTypeResource
             {
@@ -62,7 +62,7 @@ namespace Headstart.Common.Models
                 ReportCategory = "Product",
                 AvailableToSuppliers = true,
                 Value = "ProductDetail",
-                AdHocFilters = new string[] { "SupplierID" }
+                AdHocFilters = new string[] { "SupplierID" },
             },
             new ReportTypeResource
             {
@@ -71,7 +71,7 @@ namespace Headstart.Common.Models
                 ReportCategory = "RMA",
                 AvailableToSuppliers = true,
                 Value = "RMADetail",
-                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID" }
+                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID" },
             },
             new ReportTypeResource
             {
@@ -80,8 +80,8 @@ namespace Headstart.Common.Models
                 ReportCategory = "Order",
                 AvailableToSuppliers = true,
                 Value = "ShipmentDetail",
-                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID" }
-            }
+                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID" },
+            },
         };
     }
 
@@ -90,6 +90,6 @@ namespace Headstart.Common.Models
     {
         MyOrders,
         Approve,
-        Location
+        Location,
     }
 }

@@ -78,7 +78,7 @@ namespace Headstart.API.Commands
                     LineItems = BuildLineItemRMA(supplierID, lineItemStatusChanges, lineItemsChanged, order),
                     Logs = new List<RMALog>(),
                     FromBuyerID = order.FromCompanyID,
-                    FromBuyerUserID = order.FromUser.ID
+                    FromBuyerUserID = order.FromUser.ID,
                 };
                 await PostRMA(rma);
             }
@@ -89,7 +89,7 @@ namespace Headstart.API.Commands
             var args = new CosmosListOptions()
             {
                 PageSize = 100,
-                Filters = new List<ListFilter>() { new ListFilter("SourceOrderID", order.ID) }
+                Filters = new List<ListFilter>() { new ListFilter("SourceOrderID", order.ID) },
             };
 
             CosmosListPage<RMA> existingRMAsOnOrder = await ListBuyerRMAs(args, order.FromCompanyID);
@@ -120,7 +120,7 @@ namespace Headstart.API.Commands
                         RefundableViaCreditCard = order.xp.PaymentMethod == "Credit Card",
                         IsResolved = false,
                         IsRefunded = false,
-                        LineTotalRefund = 0
+                        LineTotalRefund = 0,
                     };
                     rmaLineItems.Add(rmaLineItem);
                 }
@@ -148,7 +148,7 @@ namespace Headstart.API.Commands
             {
                 PageSize = 100,
                 Search = args.Search,
-                SearchOn = "RMANumber"
+                SearchOn = "RMANumber",
             };
 
             IQueryable<RMA> queryable = _rmaRepo.GetQueryable()
@@ -252,7 +252,7 @@ namespace Headstart.API.Commands
             {
                 SupplierOrderID = $"{rma.SourceOrderID}-{rma.SupplierID}",
                 RMA = updatedRMA.Resource,
-                LineItemStatusChangesList = lineItemStatusChangesList
+                LineItemStatusChangesList = lineItemStatusChangesList,
             };
 
             return rmaWithStatusByQuantityChanges;
@@ -422,7 +422,7 @@ namespace Headstart.API.Commands
             LineItemStatusChanges lineItemStatusChanges = new LineItemStatusChanges()
             {
                 Status = rma.Type == RMAType.Cancellation ? LineItemStatus.CancelRequested : LineItemStatus.ReturnRequested,
-                Changes = new List<LineItemStatusChange>()
+                Changes = new List<LineItemStatusChange>(),
             };
 
             foreach (var rmaLineItem in pendingApprovalLineItemsWithNewComments)
@@ -432,7 +432,7 @@ namespace Headstart.API.Commands
                     ID = rmaLineItem.ID,
                     Quantity = rmaLineItem.QuantityProcessed,
                     Comment = rmaLineItem.Comment,
-                    QuantityRequestedForRefund = rmaLineItem.QuantityRequested
+                    QuantityRequestedForRefund = rmaLineItem.QuantityRequested,
                 });
             }
 
@@ -444,7 +444,7 @@ namespace Headstart.API.Commands
             {
                 EmailSubject = $"New message available from {supplier.Name}",
                 DynamicText = $"{supplier.Name} has contacted you regarding your request for {rma.Type.ToString().ToLower()}",
-                DynamicText2 = "The following items have new messages"
+                DynamicText2 = "The following items have new messages",
             };
 
             await _sendgridService.SendLineItemStatusChangeEmail(worksheet.Order, lineItemStatusChanges, lineItemsChanged, worksheet.Order.FromUser.FirstName, worksheet.Order.FromUser.LastName, worksheet.Order.FromUser.Email, emailText);
@@ -651,7 +651,7 @@ namespace Headstart.API.Commands
                 orderid = rma.SourceOrderID,
                 set = "1",
                 currency = worksheet.Order.xp.Currency.ToString(),
-                retref = creditCardPaymentTransaction.xp.CardConnectResponse.retref
+                retref = creditCardPaymentTransaction.xp.CardConnectResponse.retref,
             });
 
             decimal shippingRefund = rma.Type == RMAType.Cancellation ? GetShippingRefundIfCancellingAll(worksheet, rma, allRMAsOnThisOrder) : 0M;
@@ -675,7 +675,7 @@ namespace Headstart.API.Commands
                 throw new CatalystBaseException(new ApiError
                 {
                     ErrorCode = "Payment.FailedToVoidAuthorization",
-                    Message = "This customer's credit card transaction is currently queued for capture and cannot be refunded at this time.  Please try again later."
+                    Message = "This customer's credit card transaction is currently queued for capture and cannot be refunded at this time.  Please try again later.",
                 });
             }
 
@@ -763,7 +763,7 @@ namespace Headstart.API.Commands
                 throw new CatalystBaseException(new ApiError
                 {
                     ErrorCode = "Payment.FailedToVoidAuthorization",
-                    Message = ex.ApiError.Message
+                    Message = ex.ApiError.Message,
                 });
             }
         }
@@ -788,7 +788,7 @@ namespace Headstart.API.Commands
                 throw new CatalystBaseException(new ApiError
                 {
                     ErrorCode = "Payment.FailedToRefund",
-                    Message = ex.ApiError.Message
+                    Message = ex.ApiError.Message,
                 });
             }
         }

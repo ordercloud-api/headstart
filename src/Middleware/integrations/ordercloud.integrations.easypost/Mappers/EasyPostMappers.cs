@@ -47,7 +47,7 @@ namespace ordercloud.integrations.easypost
                     origin_country = lineItem.ShipFromAddress.Country,
                     value = decimal.ToDouble(lineItem.LineSubtotal),
                     quantity = lineItem.Quantity,
-                    weight = lineItem.ShipWeightOrDefault(Package.DEFAULT_WEIGHT)
+                    weight = lineItem.ShipWeightOrDefault(Package.DEFAULT_WEIGHT),
                 })
                 .ToList();
         }
@@ -77,8 +77,8 @@ namespace ordercloud.integrations.easypost
                             CarrierAccountID = group.Key.carrier_account_id,
                             ListRate = listRate,
                             Guaranteed = guaranteedDeliveryDays,
-                            OriginalCost = cost
-                        }
+                            OriginalCost = cost,
+                        },
                     };
                 }).ToList();
         }
@@ -93,7 +93,7 @@ namespace ordercloud.integrations.easypost
                     from_address = MapAddress(groupedLineItems.Key.ShipFrom),
                     to_address = MapAddress(groupedLineItems.Key.ShipTo),
                     parcel = parcel, // All line items with the same shipFrom and shipTo are grouped into 1 "parcel"
-                    carrier_accounts = new List<EasyPostCarrierAccount>()
+                    carrier_accounts = new List<EasyPostCarrierAccount>(),
 
                     // carrier_accounts = profiles.ShippingProfiles.Select(id =>  new EasyPostCarrierAccount() { id = id.CarrierAccountIDs })
                 };
@@ -115,7 +115,7 @@ namespace ordercloud.integrations.easypost
                         eel_pfc = profile.EEL_PFC,
                         customs_certify = profile.Customs_Certify,
                         customs_signer = profile.Customs_Signer,
-                        customs_items = MapCustomsItem(groupedLineItems, profile)
+                        customs_items = MapCustomsItem(groupedLineItems, profile),
                     };
                 }
 

@@ -66,7 +66,7 @@ namespace ordercloud.integrations.library
                 {
                     ConnectionProtocol = Protocol.Tcp,
                     ConnectionMode = ConnectionMode.Direct,
-                    RequestTimeout = config.RequestTimeout
+                    RequestTimeout = config.RequestTimeout,
                 },
                 defaultCollectionThroughput: 400)
             {
@@ -74,8 +74,8 @@ namespace ordercloud.integrations.library
                 {
                     UniqueKeys =
                         (Collection<UniqueKey>)typeof(TModel).GetMethod("GetUniqueKeys")?.Invoke(null, null) ??
-                        new Collection<UniqueKey>()
-                }
+                        new Collection<UniqueKey>(),
+                },
             };
             services.AddSingleton(typeof(TQuery), typeof(TQuery));
             return services.AddCosmosStore<TModel>(settings);

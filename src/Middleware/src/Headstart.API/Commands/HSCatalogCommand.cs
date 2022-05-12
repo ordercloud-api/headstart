@@ -68,7 +68,7 @@ namespace Headstart.API.Commands.Crud
                 catalogAssignments = location.xp.CatalogAssignments.Select(catalogIDOnXp => new HSCatalogAssignment()
                     {
                         CatalogID = catalogIDOnXp,
-                        LocationID = locationID
+                        LocationID = locationID,
                     }).ToList();
             }
 
@@ -110,7 +110,7 @@ namespace Headstart.API.Commands.Crud
                 return _oc.UserGroups.SaveUserAssignmentAsync(buyerID, new UserGroupAssignment()
                 {
                     UserGroupID = catalogAssignmentToAdd,
-                    UserID = userID
+                    UserID = userID,
                 });
             });
         }

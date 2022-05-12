@@ -24,17 +24,17 @@ namespace ordercloud.integrations.vertex
                 transactionId = order.Order.ID,
                 seller = new VertexSeller()
                 {
-                    company = companyCode
+                    company = companyCode,
                 },
                 customer = new VertexCustomer()
                 {
                     customerCode = new VertexCustomerCode()
                     {
                         classCode = order.Order.FromUserID,
-                        value = order.Order.FromUser.Email
+                        value = order.Order.FromUser.Email,
                     },
                 },
-                lineItems = itemLines.Concat(shippingLines).ToList()
+                lineItems = itemLines.Concat(shippingLines).ToList(),
             };
         }
 
@@ -49,15 +49,15 @@ namespace ordercloud.integrations.vertex
                 product = new VertexProduct()
                 {
                     productClass = lineItem.Product.ID,
-                    value = lineItem.Product.Name
+                    value = lineItem.Product.Name,
                 },
                 quantity = new VertexMeasure()
                 {
-                    value = lineItem.Quantity
+                    value = lineItem.Quantity,
                 },
                 unitPrice = (double)lineItem.UnitPrice,
                 lineItemId = lineItem.ID,
-                extendedPrice = (double)lineItem.LineTotal // this takes precedence over quanitity and unit price in determining tax cost
+                extendedPrice = (double)lineItem.LineTotal, // this takes precedence over quanitity and unit price in determining tax cost
             };
         }
 
@@ -73,11 +73,11 @@ namespace ordercloud.integrations.vertex
                 product = new VertexProduct()
                 {
                     productClass = "shipping_code",
-                    value = selectedMethod.Name
+                    value = selectedMethod.Name,
                 },
                 quantity = new VertexMeasure()
                 {
-                    value = 1
+                    value = 1,
                 },
                 unitPrice = (double)selectedMethod.Cost,
                 lineItemId = shipEstimate.ID,
@@ -93,7 +93,7 @@ namespace ordercloud.integrations.vertex
                 city = address.City,
                 mainDivision = address.State,
                 postalCode = address.Zip,
-                country = address.Country
+                country = address.Country,
             };
         }
     }

@@ -86,7 +86,7 @@ namespace Headstart.Common.Models
         Catalog,
         Supplier,
         Order,
-        TemplateProductFlat
+        TemplateProductFlat,
     }
 
     [JsonConverter(typeof(StringEnumConverter))]
@@ -98,7 +98,7 @@ namespace Headstart.Common.Models
         Patch,
         Delete,
         Get,
-        SyncShipments
+        SyncShipments,
     }
 
     public static class WorkItemMethods

@@ -16,7 +16,7 @@ namespace Headstart.Tests.Mocks
             var items = new List<HSPayment>();
             return new ListPage<HSPayment>
             {
-                Items = items
+                Items = items,
             };
         }
 
@@ -24,7 +24,7 @@ namespace Headstart.Tests.Mocks
         {
             return new ListPage<HSPayment>
             {
-                Items = new List<HSPayment>(payments)
+                Items = new List<HSPayment>(payments),
             };
         }
 
@@ -36,7 +36,7 @@ namespace Headstart.Tests.Mocks
                 Type = PaymentType.CreditCard,
                 CreditCardID = creditCardID,
                 Amount = amount,
-                Accepted = accepted
+                Accepted = accepted,
             };
         }
 
@@ -46,7 +46,7 @@ namespace Headstart.Tests.Mocks
             {
                 ID = id,
                 Type = PaymentType.PurchaseOrder,
-                Amount = amount
+                Amount = amount,
             };
         }
 
@@ -56,7 +56,7 @@ namespace Headstart.Tests.Mocks
             {
                 ID = id,
                 Type = PaymentType.SpendingAccount,
-                Amount = amount
+                Amount = amount,
             };
         }
     }

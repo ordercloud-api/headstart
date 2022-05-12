@@ -41,7 +41,7 @@ namespace ordercloud.integrations.library
             {
                 ConnectionMode = ConnectionMode.Direct,
                 ConnectionProtocol = Protocol.Tcp,
-                RequestTimeout = config.RequestTimeout
+                RequestTimeout = config.RequestTimeout,
             });
         }
 

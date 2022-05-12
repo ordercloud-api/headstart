@@ -29,8 +29,8 @@ namespace Headstart.Common.Controllers
             {
                 Items = new List<dynamic>
                 {
-                    GetCountriesServicingDoc()
-                }
+                    GetCountriesServicingDoc(),
+                },
             };
         }
 
@@ -48,13 +48,13 @@ namespace Headstart.Common.Controllers
                         new
                         {
                             Text = "UnitedStates",
-                            Value = "US"
-                        }
+                            Value = "US",
+                        },
                     },
                     AllowSellerEdit = true,
                     AllowSupplierEdit = true,
-                    BuyerAppFilterType = "NonUI"
-                }
+                    BuyerAppFilterType = "NonUI",
+                },
             };
         }
     }

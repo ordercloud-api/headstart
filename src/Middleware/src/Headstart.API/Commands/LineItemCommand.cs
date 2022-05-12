@@ -74,11 +74,11 @@ namespace Headstart.API.Commands
                             { LineItemStatus.Returned, 0 },
                             { LineItemStatus.ReturnRequested, 0 },
                             { LineItemStatus.ReturnDenied, 0 },
-                            { LineItemStatus.Complete, 0 }
+                            { LineItemStatus.Complete, 0 },
                         },
                         Returns = new List<LineItemClaim>(),
-                        Cancelations = new List<LineItemClaim>()
-                    }
+                        Cancelations = new List<LineItemClaim>(),
+                    },
                 };
                 return _oc.LineItems.PatchAsync<HSLineItem>(OrderDirection.Incoming, buyerOrderID, li.ID, partial);
             });
@@ -152,8 +152,8 @@ namespace Headstart.API.Commands
                 {
                     submittedOrderStatus,
                     shippingStatus,
-                    claimStatus
-                }
+                    claimStatus,
+                },
             };
             await _oc.Orders.PatchAsync(orderDirection, orderID, partialOrder);
         }
@@ -170,8 +170,8 @@ namespace Headstart.API.Commands
                     xp = new
                     {
                         Returns = GetUpdatedChangeRequests(returnRequests, lineItemStatusChange, lineItemStatusChange.Quantity, newLineItemStatus, statusByQuantity),
-                        statusByQuantity
-                    }
+                        statusByQuantity,
+                    },
                 };
             }
             else if (newLineItemStatus == LineItemStatus.CancelRequested || newLineItemStatus == LineItemStatus.Canceled)
@@ -182,8 +182,8 @@ namespace Headstart.API.Commands
                     xp = new
                     {
                         Cancelations = GetUpdatedChangeRequests(cancelRequests, lineItemStatusChange, lineItemStatusChange.Quantity, newLineItemStatus, statusByQuantity),
-                        statusByQuantity
-                    }
+                        statusByQuantity,
+                    },
                 };
             }
             else
@@ -192,8 +192,8 @@ namespace Headstart.API.Commands
                 {
                     xp = new
                     {
-                        statusByQuantity
-                    }
+                        statusByQuantity,
+                    },
                 };
             }
         }
@@ -227,7 +227,7 @@ namespace Headstart.API.Commands
                     Comment = lineItemStatusChange.Comment,
                     Reason = lineItemStatusChange.Reason,
                     IsResolved = false,
-                    Quantity = quantitySetting
+                    Quantity = quantitySetting,
                 });
             }
 
@@ -350,7 +350,7 @@ namespace Headstart.API.Commands
                     { "BuyerID", buyerOrder.FromCompanyID },
                     { "UserEmail", buyerOrder.FromUser.Email },
                     { "UserType", setterUserType.ToString() },
-                    { "ErrorResponse", JsonConvert.SerializeObject(ex.Message, Newtonsoft.Json.Formatting.Indented) }
+                    { "ErrorResponse", JsonConvert.SerializeObject(ex.Message, Newtonsoft.Json.Formatting.Indented) },
                 };
                 _telemetry.TrackEvent("Email.LineItemEmailFailed", customProperties);
                 return;

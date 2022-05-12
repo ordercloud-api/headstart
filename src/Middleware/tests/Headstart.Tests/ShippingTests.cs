@@ -21,17 +21,17 @@ namespace Headstart.Tests
                     yield return new TestCaseData(new LineItem()
                     {
                         Product = new LineItemProduct() { ShipLength = 5, ShipWidth = 5, ShipHeight = 5, ShipWeight = 5 },
-                        Variant = null
+                        Variant = null,
                     }).Returns(5);
                     yield return new TestCaseData(new LineItem()
                     {
                         Product = new LineItemProduct() { ShipLength = 5, ShipWidth = 5, ShipHeight = 5, ShipWeight = 5 },
-                        Variant = new LineItemVariant() { ShipLength = 10, ShipHeight = 10, ShipWeight = 10, ShipWidth = 10 }
+                        Variant = new LineItemVariant() { ShipLength = 10, ShipHeight = 10, ShipWeight = 10, ShipWidth = 10 },
                     }).Returns(10);
                     yield return new TestCaseData(new LineItem()
                     {
                         Product = new LineItemProduct() { ShipLength = null, ShipWidth = null, ShipHeight = null, ShipWeight = null },
-                        Variant = new LineItemVariant() { ShipLength = null, ShipHeight = null, ShipWeight = null, ShipWidth = null }
+                        Variant = new LineItemVariant() { ShipLength = null, ShipHeight = null, ShipWeight = null, ShipWidth = null },
                     }).Returns(100);
                 }
             }

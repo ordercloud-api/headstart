@@ -29,9 +29,9 @@ namespace avalara.tests.Mocks
                         createdDate = DateTime.Parse("2006-01-24T04:59:48.27"),
                         createdUserId = 0,
                         modifiedDate = DateTime.Parse("2013-03-27T22:54:25.363"),
-                        modifiedUserId = 0
-                    }
-                }
+                        modifiedUserId = 0,
+                    },
+                },
             };
         }
 
@@ -57,9 +57,9 @@ namespace avalara.tests.Mocks
                         createdDate = DateTime.Parse("2006-01-24T04:59:48.27"),
                         createdUserId = 0,
                         modifiedDate = DateTime.Parse("2013-03-27T22:54:25.363"),
-                        modifiedUserId = 0
-                    }
-                }
+                        modifiedUserId = 0,
+                    },
+                },
             };
         }
 
@@ -85,7 +85,7 @@ namespace avalara.tests.Mocks
                         createdDate = DateTime.Parse("2006-01-24T04:59:48.27"),
                         createdUserId = 0,
                         modifiedDate = DateTime.Parse("2013-03-27T22:54:25.363"),
-                        modifiedUserId = 0
+                        modifiedUserId = 0,
                     },
                     new TaxCodeModel
                     {
@@ -102,9 +102,9 @@ namespace avalara.tests.Mocks
                         createdDate = DateTime.Parse("2006-01-24T04:59:48.27"),
                         createdUserId = 0,
                         modifiedDate = DateTime.Parse("2013-03-27T22:54:25.363"),
-                        modifiedUserId = 0
-                    }
-                }
+                        modifiedUserId = 0,
+                    },
+                },
             };
         }
 
@@ -115,8 +115,8 @@ namespace avalara.tests.Mocks
                 new TaxCategorization()
                 {
                     Code = "Test-Tax-Code",
-                    Description = "Test Tax Code Description"
-                }
+                    Description = "Test Tax Code Description",
+                },
             };
         }
 
@@ -127,8 +127,8 @@ namespace avalara.tests.Mocks
                 new TaxCategorization()
                 {
                     Code = "Second-Test-Tax-Code",
-                    Description = "Second Test Tax Code Description"
-                }
+                    Description = "Second Test Tax Code Description",
+                },
             };
         }
 
@@ -139,13 +139,13 @@ namespace avalara.tests.Mocks
                 new TaxCategorization()
                 {
                     Code = "Test-Tax-Code",
-                    Description = "Test Tax Code Description"
+                    Description = "Test Tax Code Description",
                 },
                 new TaxCategorization()
                 {
                     Code = "Second-Test-Tax-Code",
-                    Description = "Second Test Tax Code Description"
-                }
+                    Description = "Second Test Tax Code Description",
+                },
             };
         }
     }

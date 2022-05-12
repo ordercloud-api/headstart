@@ -19,7 +19,7 @@ namespace ordercloud.integrations.smartystreets
                 State = address.State,
                 ZipCode = address.Zip,
                 MatchStrategy = Lookup.STRICT,
-                MaxCandidates = 5
+                MaxCandidates = 5,
             };
             return lookup;
         }

@@ -36,6 +36,6 @@ namespace Headstart.Models.Headstart
         Notification,
         Accounting,
         Tax,
-        Shipping
+        Shipping,
     }
 }

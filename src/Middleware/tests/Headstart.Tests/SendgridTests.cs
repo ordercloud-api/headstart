@@ -90,7 +90,7 @@ namespace Headstart.Tests
             var expectedSellerEmailList = new List<EmailAddress>()
             {
                 new EmailAddress() { Email = TestConstants.sellerUser1email },
-                new EmailAddress() { Email = TestConstants.sellerUser1AdditionalRcpts[0] }
+                new EmailAddress() { Email = TestConstants.sellerUser1AdditionalRcpts[0] },
             };
             var expectedSupplier1EmailList = new List<EmailAddress>()
             {
@@ -99,7 +99,7 @@ namespace Headstart.Tests
             };
             var expectedSupplier2EmailList = new List<EmailAddress>()
             {
-                new EmailAddress() { Email = TestConstants.supplier2NotificationRcpts[0] }
+                new EmailAddress() { Email = TestConstants.supplier2NotificationRcpts[0] },
             };
 
             // confirm emails sent to buyer, seller users, supplier 1 notification recipients, supplier 2 notification recipients
@@ -158,7 +158,7 @@ namespace Headstart.Tests
                     {
                         FirstName = "john",
                         LastName = "johnson",
-                        Email = TestConstants.buyerEmail
+                        Email = TestConstants.buyerEmail,
                     },
                     BillingAddressID = "testbillingaddressid",
                     BillingAddress = fixture.Create<HSAddressBuyer>(),
@@ -168,11 +168,11 @@ namespace Headstart.Tests
                         SupplierIDs = new List<string>()
                         {
                             TestConstants.supplier1ID,
-                            TestConstants.supplier2ID
+                            TestConstants.supplier2ID,
                         },
-                        Currency = ordercloud.integrations.exchangerates.CurrencySymbol.USD
+                        Currency = ordercloud.integrations.exchangerates.CurrencySymbol.USD,
                     },
-                    DateSubmitted = new DateTimeOffset()
+                    DateSubmitted = new DateTimeOffset(),
                 },
                 LineItems = new List<HSLineItem>()
                 {
@@ -184,7 +184,7 @@ namespace Headstart.Tests
                         LineTotal = TestConstants.lineItem1Total,
                         Product = new HSLineItemProduct()
                         {
-                            Name = TestConstants.product1Name
+                            Name = TestConstants.product1Name,
                         },
                         ShippingAddress = fixture.Create<HSAddressBuyer>(),
                         xp = fixture.Create<LineItemXp>(),
@@ -197,11 +197,11 @@ namespace Headstart.Tests
                         LineTotal = TestConstants.lineItem2Total,
                         Product = new HSLineItemProduct()
                         {
-                            Name = TestConstants.product2Name
+                            Name = TestConstants.product2Name,
                         },
                         ShippingAddress = fixture.Create<HSAddressBuyer>(),
-                        xp = fixture.Create<LineItemXp>()
-                    }
+                        xp = fixture.Create<LineItemXp>(),
+                    },
                 },
                 ShipEstimateResponse = new HSShipEstimateResponse()
                 {
@@ -216,10 +216,10 @@ namespace Headstart.Tests
                                 new HSShipMethod()
                                 {
                                     ID = TestConstants.selectedShipEstimate1ID,
-                                    Cost = TestConstants.selectedShipEstimate1Cost
+                                    Cost = TestConstants.selectedShipEstimate1Cost,
                                 },
-                                fixture.Create<HSShipMethod>()
-                            }
+                                fixture.Create<HSShipMethod>(),
+                            },
                         },
                         new HSShipEstimate()
                         {
@@ -230,12 +230,12 @@ namespace Headstart.Tests
                                 new HSShipMethod()
                                 {
                                     ID = TestConstants.selectedShipEstimate2ID,
-                                    Cost = TestConstants.selectedShipEstimate2Cost
+                                    Cost = TestConstants.selectedShipEstimate2Cost,
                                 },
-                                fixture.Create<HSShipMethod>()
-                            }
-                        }
-                    }
+                                fixture.Create<HSShipMethod>(),
+                            },
+                        },
+                    },
                 },
                 OrderCalculateResponse = new HSOrderCalculateResponse()
                 {
@@ -248,30 +248,30 @@ namespace Headstart.Tests
                                 new TaxDetails()
                                 {
                                     Tax = TestConstants.lineItem1ShipmentTax,
-                                    ShipEstimateID = TestConstants.selectedShipEstimate1ID
+                                    ShipEstimateID = TestConstants.selectedShipEstimate1ID,
                                 },
                                 new TaxDetails()
                                 {
                                     Tax = TestConstants.lineItem2ShipmentTax,
-                                    ShipEstimateID = TestConstants.selectedShipEstimate2ID
-                                }
+                                    ShipEstimateID = TestConstants.selectedShipEstimate2ID,
+                                },
                             },
                             LineItems = new List<LineItemTaxCalculation>()
                             {
                                 new LineItemTaxCalculation()
                                 {
                                     LineItemID = TestConstants.lineItem1ID,
-                                    LineItemTotalTax = TestConstants.lineItem1Tax
+                                    LineItemTotalTax = TestConstants.lineItem1Tax,
                                 },
                                 new LineItemTaxCalculation()
                                 {
                                     LineItemID = TestConstants.lineItem2ID,
-                                    LineItemTotalTax = TestConstants.lineItem2Tax
+                                    LineItemTotalTax = TestConstants.lineItem2Tax,
                                 },
-                            }
-                        }
-                    }
-                }
+                            },
+                        },
+                    },
+                },
             };
         }
 
@@ -283,7 +283,7 @@ namespace Headstart.Tests
                 Order = new HSOrder()
                 {
                     ID = $"{TestConstants.orderID}-{supplierID}",
-                    Total = total
+                    Total = total,
                 },
                 LineItems = new List<HSLineItem>()
                 {
@@ -295,12 +295,12 @@ namespace Headstart.Tests
                         ProductID = lineItemID == TestConstants.lineItem1ID ? TestConstants.product1ID : TestConstants.product2ID,
                         Product = new HSLineItemProduct()
                         {
-                            Name = lineItemID == TestConstants.lineItem1ID ? TestConstants.product1Name : TestConstants.product2Name
+                            Name = lineItemID == TestConstants.lineItem1ID ? TestConstants.product1Name : TestConstants.product2Name,
                         },
                         xp = fixture.Create<LineItemXp>(),
-                        ShippingAddress = fixture.Create<HSAddressBuyer>()
-                    }
-                }
+                        ShippingAddress = fixture.Create<HSAddressBuyer>(),
+                    },
+                },
             };
         }
 
@@ -315,18 +315,18 @@ namespace Headstart.Tests
                         ID = TestConstants.supplier1ID,
                         xp = new SupplierXp()
                         {
-                            NotificationRcpts = TestConstants.supplier1NotificationRcpts.ToList()
-                        }
+                            NotificationRcpts = TestConstants.supplier1NotificationRcpts.ToList(),
+                        },
                     },
                     new HSSupplier()
                     {
                         ID = TestConstants.supplier2ID,
                         xp = new SupplierXp()
                         {
-                            NotificationRcpts = TestConstants.supplier2NotificationRcpts.ToList()
-                        }
-                    }
-                }
+                            NotificationRcpts = TestConstants.supplier2NotificationRcpts.ToList(),
+                        },
+                    },
+                },
             };
         }
 
@@ -343,8 +343,8 @@ namespace Headstart.Tests
                         xp = new SellerUserXp()
                         {
                             OrderEmails = true,
-                            AddtlRcpts = TestConstants.sellerUser1AdditionalRcpts.ToList()
-                        }
+                            AddtlRcpts = TestConstants.sellerUser1AdditionalRcpts.ToList(),
+                        },
                     },
                     new HSSellerUser()
                     {
@@ -352,10 +352,10 @@ namespace Headstart.Tests
                         Email = TestConstants.selleruser2email,
                         xp = new SellerUserXp()
                         {
-                            OrderEmails = false
-                        }
-                    }
-                }
+                            OrderEmails = false,
+                        },
+                    },
+                },
             };
         }
     }

@@ -76,7 +76,7 @@ namespace Headstart.API.Commands
                     Roles = new[]
                         {
                             ApiRole.SupplierAdmin,
-                            ApiRole.ProductAdmin
+                            ApiRole.ProductAdmin,
                         },
                 };
                 var ocClient = new OrderCloudClient(configToUse);
@@ -115,7 +115,7 @@ namespace Headstart.API.Commands
                     FirstName = "Integration",
                     LastName = "Developer",
                     Username = $"dev_{ocSupplierID}",
-                    Email = "test@test.com"
+                    Email = "test@test.com",
                 },
                 token);
 
@@ -146,8 +146,8 @@ namespace Headstart.API.Commands
                 {
                     xp = new
                     {
-                        ApiClientID = apiClient.ID
-                    }
+                        ApiClientID = apiClient.ID,
+                    },
                 },
                 token);
 
@@ -156,7 +156,7 @@ namespace Headstart.API.Commands
                 new ApiClientAssignment()
                 {
                     ApiClientID = apiClient.ID,
-                    SupplierID = ocSupplierID
+                    SupplierID = ocSupplierID,
                 },
                 token);
 
@@ -164,7 +164,7 @@ namespace Headstart.API.Commands
             await _oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
             {
                 MessageSenderID = "SupplierEmails",
-                SupplierID = ocSupplierID
+                SupplierID = ocSupplierID,
             });
             return supplier;
         }
@@ -176,7 +176,7 @@ namespace Headstart.API.Commands
                 new SecurityProfileAssignment()
                 {
                     SupplierID = supplierID,
-                    SecurityProfileID = "HSMeAdmin"
+                    SecurityProfileID = "HSMeAdmin",
                 },
                 token);
 
@@ -193,7 +193,7 @@ namespace Headstart.API.Commands
                         xp =
                             {
                                 Type = "UserPermissions",
-                            }
+                            },
                     },
                     token);
 
@@ -202,7 +202,7 @@ namespace Headstart.API.Commands
                     new UserGroupAssignment()
                     {
                         UserID = user.ID,
-                        UserGroupID = userGroupID
+                        UserGroupID = userGroupID,
                     },
                     token);
 
@@ -213,7 +213,7 @@ namespace Headstart.API.Commands
                         {
                             SupplierID = supplierID,
                             UserGroupID = userGroupID,
-                            SecurityProfileID = customRole.ToString()
+                            SecurityProfileID = customRole.ToString(),
                         },
                         token);
                 }

@@ -50,7 +50,7 @@ namespace easypost.tests
                 BuildLine(quantity: 1, shipWeight: 5, SizeTier.A),
                 BuildLine(quantity: 1, shipWeight: 5, SizeTier.A),
                 BuildLine(quantity: 1, shipWeight: 5, SizeTier.A),
-                BuildLine(quantity: 1, shipWeight: 5, SizeTier.A)
+                BuildLine(quantity: 1, shipWeight: 5, SizeTier.A),
             };
 
             // Act
@@ -87,7 +87,7 @@ namespace easypost.tests
             var lines = new List<LineItem>
             {
                 BuildLine(quantity: 3, shipWeight: 3, SizeTier.G),
-                BuildLine(quantity: 1, shipWeight: 3, SizeTier.G)
+                BuildLine(quantity: 1, shipWeight: 3, SizeTier.G),
             };
 
             // Act
@@ -107,9 +107,9 @@ namespace easypost.tests
                     ShipWeight = shipWeight,
                     xp = new ProductXP
                     {
-                        SizeTier = sizeTier
-                    }
-                }
+                        SizeTier = sizeTier,
+                    },
+                },
             };
         }
     }

@@ -99,7 +99,7 @@ namespace Headstart.API.Commands
                 ["xp.QuoteSupplierID"] = supplierID != null ? supplierID : "*",
                 ["IsSubmitted"] = false,
                 ["xp.OrderType"] = OrderType.Quote,
-                ["xp.QuoteStatus"] = quoteStatus
+                ["xp.QuoteStatus"] = quoteStatus,
             };
             var quoteOrders = await _oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Incoming, filters: filters);
             var quoteOrdersList = new ListPage<HSOrder>()
@@ -110,9 +110,9 @@ namespace Headstart.API.Commands
                     PageSize = 1,
                     TotalCount = quoteOrders.Count,
                     TotalPages = 1,
-                    ItemRange = new[] { 1, quoteOrders.Count }
+                    ItemRange = new[] { 1, quoteOrders.Count },
                 },
-                Items = quoteOrders
+                Items = quoteOrders,
             };
             return quoteOrdersList;
         }
@@ -135,8 +135,8 @@ namespace Headstart.API.Commands
             {
                 xp = new
                 {
-                    SubmittedOrderStatus = SubmittedOrderStatus.Completed
-                }
+                    SubmittedOrderStatus = SubmittedOrderStatus.Completed,
+                },
             };
 
             // Need to complete sales and purchase order and patch the xp.SubmittedStatus of both orders
@@ -198,7 +198,7 @@ namespace Headstart.API.Commands
                 LineItems = await lineItems,
                 Promotions = await promotions,
                 Payments = await payments,
-                Approvals = approvals.Items
+                Approvals = approvals.Items,
             };
         }
 

@@ -48,7 +48,7 @@ namespace ordercloud.integrations.cardconnect
     {
         Test,
         Staging,
-        Production
+        Production,
     }
 
     public class OrderCloudIntegrationsCardConnectService : IOrderCloudIntegrationsCardConnectService
@@ -115,7 +115,7 @@ namespace ordercloud.integrations.cardconnect
                 {
                     Data = attempt,
                     Message = attempt.resptext,
-                    ErrorCode = attempt.respcode
+                    ErrorCode = attempt.respcode,
                 }, attempt);
         }
 
@@ -145,7 +145,7 @@ namespace ordercloud.integrations.cardconnect
                 {
                     Data = attempt,
                     Message = attempt.resptext, // response codes: https://developer.cardconnect.com/cardconnect-api?lang=json#void-service-url
-                    ErrorCode = attempt.respcode
+                    ErrorCode = attempt.respcode,
                 }, attempt);
         }
 
@@ -167,7 +167,7 @@ namespace ordercloud.integrations.cardconnect
                 {
                     Data = attempt,
                     Message = attempt.resptext,
-                    ErrorCode = attempt.respcode
+                    ErrorCode = attempt.respcode,
                 }, attempt);
         }
 
@@ -187,7 +187,7 @@ namespace ordercloud.integrations.cardconnect
                 {
                     Data = attempt,
                     Message = attempt.resptext,
-                    ErrorCode = attempt.respcode
+                    ErrorCode = attempt.respcode,
                 }, attempt);
         }
 
@@ -219,7 +219,7 @@ namespace ordercloud.integrations.cardconnect
             response = new CardConnectAccountResponse()
             {
                 message = "Mock CardConnect account response",
-                token = string.Empty
+                token = string.Empty,
             };
             return response;
         }
@@ -250,7 +250,7 @@ namespace ordercloud.integrations.cardconnect
                 cvvresp = "U",
                 commcard = "Mock Response",
                 respstat = "A",
-                respcode = "0"
+                respcode = "0",
             };
 
             return response;
@@ -281,7 +281,7 @@ namespace ordercloud.integrations.cardconnect
                 {
                     Data = attempt,
                     Message = attempt.resptext, // response codes: https://developer.cardconnect.com/assets/developer/assets/authResp_2-11-19.txt
-                    ErrorCode = attempt.respcode
+                    ErrorCode = attempt.respcode,
                 },
                 attempt);
         }

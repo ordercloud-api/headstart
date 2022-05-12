@@ -16,7 +16,7 @@ namespace Headstart.Common.Services.CMS.Models
         Code,
         JSON,
         Markup,
-        Unknown
+        Unknown,
     }
 
     public class Asset

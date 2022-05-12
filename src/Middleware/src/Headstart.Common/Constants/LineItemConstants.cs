@@ -162,7 +162,7 @@ namespace Headstart.Common.Constants
             LineItemStatus.Backordered,
             LineItemStatus.Canceled,
             LineItemStatus.CancelDenied,
-            LineItemStatus.ReturnDenied
+            LineItemStatus.ReturnDenied,
         };
 
         // defining seller and supplier together as the current logic is the
@@ -175,7 +175,7 @@ namespace Headstart.Common.Constants
             LineItemStatus.CancelDenied,
             LineItemStatus.ReturnDenied,
             LineItemStatus.CancelRequested,
-            LineItemStatus.ReturnRequested
+            LineItemStatus.ReturnRequested,
         };
 
         // definitions of which user contexts can can set which lineItemStatuses
@@ -187,7 +187,7 @@ namespace Headstart.Common.Constants
 
             // requests that are not directly made to modify lineItem status, derivatives of order submit or shipping,
             // these should not be set without those trigger actions (order submit or shipping)
-            { VerifiedUserType.noUser, new List<LineItemStatus> { LineItemStatus.Submitted, LineItemStatus.Complete } }
+            { VerifiedUserType.noUser, new List<LineItemStatus> { LineItemStatus.Submitted, LineItemStatus.Complete } },
         };
 
         // definitions to control which line item status changes are allowed
@@ -222,9 +222,9 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "Items on your order have shipped",
                                 DynamicText = $"{supplierName} has shipped items from your order",
-                                DynamicText2 = "The following items are on their way"
+                                DynamicText2 = "The following items are on their way",
                             }
-                        }
+                        },
                     }
                 },
                 {
@@ -235,7 +235,7 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "A return request has been submitted on your order",
                                 DynamicText = "You will be updated when this return is processed",
-                                DynamicText2 = "The following items have been requested for return"
+                                DynamicText2 = "The following items have been requested for return",
                             }
                         },
                         {
@@ -243,7 +243,7 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "A buyer has submitted a return on their order",
                                 DynamicText = "Contact the Supplier to process the return request.",
-                                DynamicText2 = "The following items have been requested for return"
+                                DynamicText2 = "The following items have been requested for return",
                             }
                         },
                         {
@@ -251,9 +251,9 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "A buyer has submitted a return on their order",
                                 DynamicText = "The seller will contact you to process the return request",
-                                DynamicText2 = "The following items have been requested for return"
+                                DynamicText2 = "The following items have been requested for return",
                             }
-                        }
+                        },
                     }
                 },
                 {
@@ -264,7 +264,7 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "A return has been processed for your order",
                                 DynamicText = "You will be refunded for the proper amount",
-                                DynamicText2 = "The following items have had returns processed"
+                                DynamicText2 = "The following items have had returns processed",
                             }
                         },
                         {
@@ -272,7 +272,7 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "The supplier has processed a return",
                                 DynamicText = "Ensure that the full return process is complete, and the customer was refunded",
-                                DynamicText2 = "The following items have been marked as returned"
+                                DynamicText2 = "The following items have been marked as returned",
                             }
                         },
                         {
@@ -280,9 +280,9 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "The seller has processed a return",
                                 DynamicText = "Ensure that the full return process is complete",
-                                DynamicText2 = "The following items have been marked as returned"
+                                DynamicText2 = "The following items have been marked as returned",
                             }
-                        }
+                        },
                     }
                 },
                 {
@@ -293,7 +293,7 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "A return has been denied for your order",
                                 DynamicText = "A return could not be processed for this order.",
-                                DynamicText2 = "The following items will not be returned"
+                                DynamicText2 = "The following items will not be returned",
                             }
                         },
                         {
@@ -301,7 +301,7 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "The supplier has denied a return",
                                 DynamicText = "The customer will not be refunded for the following items.",
-                                DynamicText2 = "The following items have been marked as return denied"
+                                DynamicText2 = "The following items have been marked as return denied",
                             }
                         },
                         {
@@ -309,9 +309,9 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "The supplier has denied a return",
                                 DynamicText = "The customer will not be refunded for the following items.",
-                                DynamicText2 = "The following items have been marked as return denied"
+                                DynamicText2 = "The following items have been marked as return denied",
                             }
-                        }
+                        },
                     }
                 },
                 {
@@ -322,7 +322,7 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "Item(s) on your order have been backordered by supplier",
                                 DynamicText = "You will be updated on the status of the order when more information is known",
-                                DynamicText2 = "The following items have been marked as backordered"
+                                DynamicText2 = "The following items have been marked as backordered",
                             }
                         },
                         {
@@ -330,7 +330,7 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = $"{supplierName} has marked items on an order as backordered",
                                 DynamicText = "You will be updated on the status of the order when more information is known",
-                                DynamicText2 = "The following items have been marked as backordered"
+                                DynamicText2 = "The following items have been marked as backordered",
                             }
                         },
                         {
@@ -338,7 +338,7 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "Item(s) on order have been marked as backordered",
                                 DynamicText = "Keep the buyer updated on the status of these items when you know more information",
-                                DynamicText2 = "The following items have been marked as backordered"
+                                DynamicText2 = "The following items have been marked as backordered",
                             }
                         },
                     }
@@ -351,7 +351,7 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "Your request for cancellation has been submitted",
                                 DynamicText = "You will be updated on the status of the cancellation when more information is known",
-                                DynamicText2 = "The following items have had cancellation requested"
+                                DynamicText2 = "The following items have had cancellation requested",
                             }
                         },
                         {
@@ -359,7 +359,7 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "A buyer has requested cancellation of line items on an order",
                                 DynamicText = "The supplier will look into the feasibility of this cancellation",
-                                DynamicText2 = "The following items have been requested for cancellation"
+                                DynamicText2 = "The following items have been requested for cancellation",
                             }
                         },
                         {
@@ -367,7 +367,7 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "A buyer has requested cancelation of line items on an order",
                                 DynamicText = "Review the items below to see if any can be cancelled before they ship",
-                                DynamicText2 = "The following items have have been requested for cancellation"
+                                DynamicText2 = "The following items have have been requested for cancellation",
                             }
                         },
                     }
@@ -380,7 +380,7 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "Items on your order have been cancelled",
                                 DynamicText = "You will be refunded for the cost of these items",
-                                DynamicText2 = "The following items have been cancelled"
+                                DynamicText2 = "The following items have been cancelled",
                             }
                         },
                         {
@@ -388,7 +388,7 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "Item(s) on an order have been cancelled",
                                 DynamicText = "Ensure the buyer is refunded for the proper amount",
-                                DynamicText2 = "The following items have been cancelled"
+                                DynamicText2 = "The following items have been cancelled",
                             }
                         },
                         {
@@ -396,7 +396,7 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "Item(s) on an order have been cancelled",
                                 DynamicText = "The seller will refund the buyer for the proper amount",
-                                DynamicText2 = "The following items have been cancelled"
+                                DynamicText2 = "The following items have been cancelled",
                             }
                         },
                     }
@@ -409,7 +409,7 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "A cancellation has been denied for your order",
                                 DynamicText = "A cancellation could not be processed for this order",
-                                DynamicText2 = "The following items will not be canceled"
+                                DynamicText2 = "The following items will not be canceled",
                             }
                         },
                         {
@@ -417,7 +417,7 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "The supplier has denied a cancellation",
                                 DynamicText = "The customer will not be refunded for the following items",
-                                DynamicText2 = "The following items have been marked as cancel denied"
+                                DynamicText2 = "The following items have been marked as cancel denied",
                             }
                         },
                         {
@@ -425,9 +425,9 @@ namespace Headstart.Common.Constants
                             {
                                 EmailSubject = "The supplier has denied a cancellation",
                                 DynamicText = "The customer will not be refunded for the following items",
-                                DynamicText2 = "The following items have been marked as cancel denied"
+                                DynamicText2 = "The following items have been marked as cancel denied",
                             }
-                        }
+                        },
                     }
                 },
             };

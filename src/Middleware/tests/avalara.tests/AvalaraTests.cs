@@ -17,7 +17,7 @@ namespace avalara.tests
             var avalaraConfig = new AvalaraConfig()
             {
                 LicenseKey = null,
-                BaseApiUrl = "http://www.supersweeturi.com"
+                BaseApiUrl = "http://www.supersweeturi.com",
             };
             _command = new AvalaraCommand(avalaraConfig,  AppEnvironment.Test.ToString());
         }

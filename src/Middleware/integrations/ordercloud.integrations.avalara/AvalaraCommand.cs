@@ -32,7 +32,7 @@ namespace ordercloud.integrations.avalara
     {
         Test,
         Staging,
-        Production
+        Production,
     }
 
     public class AvalaraCommand : IAvalaraCommand, ITaxCalculator, ITaxCodesProvider
@@ -83,7 +83,7 @@ namespace ordercloud.integrations.avalara
                 {
                     totalTax = (decimal?)123.45,
                     code = "Mock Avalara Response for Headstart",
-                    date = DateTime.Now
+                    date = DateTime.Now,
                 };
 
             return result.ToOrderTaxCalculation();
@@ -100,9 +100,9 @@ namespace ordercloud.integrations.avalara
                     {
                         Code = "Headstart Tax Code",
                         Description = "Mock Tax Code for Headstart",
-                        LongDescription = "This is a mock tax categorization"
-                    }
-                }
+                        LongDescription = "This is a mock tax categorization",
+                    },
+                },
             };
         }
 
@@ -169,7 +169,7 @@ namespace ordercloud.integrations.avalara
                 {
                     OrderID = orderWorksheet.Order.ID,
                     ExternalTransactionID = "NotTaxable",
-                    TotalTax = 0
+                    TotalTax = 0,
                 };
             }
         }

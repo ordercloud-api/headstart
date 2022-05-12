@@ -38,7 +38,7 @@ namespace Headstart.Common.Models
         LineItemDetail,
         RMADetail,
         ShipmentDetail,
-        ProductDetail
+        ProductDetail,
     }
 
     public class ReportFilters

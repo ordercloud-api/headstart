@@ -57,7 +57,7 @@ namespace Headstart.Jobs
             {
                 var discountedLineFilter = new Dictionary<string, object>
                 {
-                    ["PromotionDiscount"] = ">0"
+                    ["PromotionDiscount"] = ">0",
                 };
 
                 discountedLineItems = await _oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Incoming, salesOrderWorksheet.Order.ID, filters: discountedLineFilter);
@@ -71,8 +71,8 @@ namespace Headstart.Jobs
                 {
                     xp = new BuyerAddressXP()
                     {
-                        LocationID = salesOrderWorksheet?.Order?.BillingAddress?.xp?.LocationID
-                    }
+                        LocationID = salesOrderWorksheet?.Order?.BillingAddress?.xp?.LocationID,
+                    },
                 };
 
                 var brand = await _oc.Buyers.GetAsync<HSBuyer>(salesOrderWorksheet.Order.FromCompanyID);

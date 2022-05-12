@@ -15,7 +15,7 @@ namespace Headstart.Common.Exceptions
             Error = new OrchestrationError
             {
                 Type = type,
-                Data = data
+                Data = data,
             };
         }
 
@@ -24,7 +24,7 @@ namespace Headstart.Common.Exceptions
             Error = new OrchestrationError
             {
                 Type = type,
-                Data = message
+                Data = message,
             };
         }
 
@@ -40,7 +40,7 @@ namespace Headstart.Common.Exceptions
                 Current = wi.Current,
                 Cache = wi.Cache,
                 Diff = wi.Diff,
-                Data = data
+                Data = data,
             };
         }
     }

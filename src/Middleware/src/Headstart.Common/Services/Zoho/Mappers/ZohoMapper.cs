@@ -28,10 +28,10 @@ namespace Headstart.Common.Services.Zoho.Mappers
                         email = user.Email,
                         first_name = user.FirstName,
                         last_name = user.LastName,
-                        phone = user.Phone
-                    }
+                        phone = user.Phone,
+                    },
                 },
-                currency_id = currency.currency_id
+                currency_id = currency.currency_id,
             };
         }
 
@@ -54,11 +54,11 @@ namespace Headstart.Common.Services.Zoho.Mappers
                             email = user.Email,
                             first_name = user.FirstName,
                             last_name = user.LastName,
-                            phone = user.Phone
-                        }
+                            phone = user.Phone,
+                        },
                     }
                     : null,
-                currency_id = currency.currency_id
+                currency_id = currency.currency_id,
             };
         }
 
@@ -73,7 +73,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
                 shipping_address = ZohoAddressMapper.Map(location.Address),
                 contact_persons = ZohoContactMapper.Map(users),
                 currency_id = currency.currency_id,
-                notes = $"Franchise ID: {buyer.ID} ~ Location ID: {location.Address?.xp.LocationID}"
+                notes = $"Franchise ID: {buyer.ID} ~ Location ID: {location.Address?.xp.LocationID}",
             };
         }
 
@@ -151,7 +151,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
                 quantity = 1,
                 unit = "each",
                 purchase_description = $"{method.Name} - {method.EstimatedTransitDays} days transit",
-                avatax_tax_code = "FR"
+                avatax_tax_code = "FR",
             };
             return item;
         }
@@ -206,7 +206,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
                 description = $"{item.Variant?.Name ?? item.Product.Name} {item.Variant?.xp?.SpecCombo ?? item.SKU()}".Trim(),
                 sku = item.SKU(),
                 unit = item.Product.xp?.UnitOfMeasure?.Unit,
-                avatax_tax_code = item.Product.xp?.Tax.Code
+                avatax_tax_code = item.Product.xp?.Tax.Code,
             };
         }
 
@@ -240,7 +240,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
                 item_id = p.item_id,
                 description = p.description,
                 rate = Math.Round(decimal.ToDouble(lineitems.First(l => l.SKU() == p.sku).UnitPrice.Value), 2),
-                quantity = lineitems.FirstOrDefault(li => li.SKU() == p.sku)?.Quantity
+                quantity = lineitems.FirstOrDefault(li => li.SKU() == p.sku)?.Quantity,
             }).ToList();
             po.salesorder_id = salesorder.salesorder_id;
             po.purchaseorder_number = order.ID;
@@ -269,7 +269,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
                     item_id = p.item_id,
                     description = p.description,
                     rate = Math.Round(decimal.ToDouble(lineitems.First(l => l.SKU() == p.sku).UnitPrice.Value), 2),
-                    quantity = lineitems.First(l => l.SKU() == p.sku)?.Quantity
+                    quantity = lineitems.First(l => l.SKU() == p.sku)?.Quantity,
                 }).ToList(),
                 salesorder_id = salesorder.salesorder_id,
                 purchaseorder_number = order.ID,
@@ -278,7 +278,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
                 tax_total = decimal.ToDouble(order.TaxCost),
                 total = decimal.ToDouble(order.Total),
                 vendor_id = vendor.contact_id,
-                delivery_customer_id = salesorder.customer_id
+                delivery_customer_id = salesorder.customer_id,
             };
 
             return po;
@@ -300,7 +300,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
                 item_id = items.First(i => i.sku == item.SKU()).item_id,
                 quantity = item.Quantity,
                 rate = Math.Round((double)(item.UnitPrice ?? 0), 2),
-                avatax_tax_code = item.Product.xp.Tax.Code
+                avatax_tax_code = item.Product.xp.Tax.Code,
 
                 // discount = decimal.ToDouble(promotions.Where(p => p.LineItemLevel == true && p.LineItemID == line_item.ID).Sum(p => p.Amount)),
             }).ToList();
@@ -324,7 +324,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
                     item_id = items.First(i => i.sku == method?.ShippingSku()).item_id,
                     quantity = 1,
                     rate = Math.Round((double)(method?.Cost ?? 0), 2),
-                    avatax_tax_code = "FR"
+                    avatax_tax_code = "FR",
                 });
             }
 
@@ -346,7 +346,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
                     item_id = items.First(i => i.sku == item.SKU()).item_id,
                     quantity = item.Quantity,
                     rate = Math.Round((double)(item.UnitPrice ?? 0), 2),
-                    avatax_tax_code = item.Product.xp.Tax.Code
+                    avatax_tax_code = item.Product.xp.Tax.Code,
 
                     // discount = decimal.ToDouble(promotions.Where(p => p.LineItemLevel == true && p.LineItemID == line_item.ID).Sum(p => p.Amount)),
                 }).ToList(),
@@ -359,7 +359,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
                 currency_symbol = contact.currency_symbol,
                 notes = promotions.Any()
                     ? $"Promotions applied: {promotions.DistinctBy(p => p.Code).Select(p => p.Code).JoinString(" - ", p => p)}"
-                    : null
+                    : null,
 
                 // shipping_charge = decimal.ToDouble(order.ShippingCost), //TODO: Please mention any Shipping/miscellaneous charges as additional line items.
             };
@@ -373,7 +373,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
                     item_id = items.First(i => i.sku == method?.ShippingSku()).item_id,
                     quantity = 1,
                     rate = Math.Round((double)(method?.Cost ?? 0), 2),
-                    avatax_tax_code = "FR"
+                    avatax_tax_code = "FR",
                 });
             }
 
@@ -395,7 +395,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
                 zip = address.Zip,
                 country = address.Country,
                 phone = address.Phone,
-                state_code = address.State
+                state_code = address.State,
             };
         }
 
@@ -411,7 +411,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
                 zip = address.Zip,
                 country = address.Country,
                 phone = address.Phone,
-                state_code = address.State
+                state_code = address.State,
             };
         }
     }

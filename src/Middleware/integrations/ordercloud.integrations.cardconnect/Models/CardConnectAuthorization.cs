@@ -95,7 +95,7 @@ namespace ordercloud.integrations.cardconnect
     {
         Approved,
         Retry,
-        Declined
+        Declined,
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -105,7 +105,7 @@ namespace ordercloud.integrations.cardconnect
         Invalid,
         NotProcessed,
         NotPresent,
-        NotCertified
+        NotCertified,
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -118,6 +118,6 @@ namespace ordercloud.integrations.cardconnect
         PrepaidCorporate,
         PrepaidPurchase,
         Purchase,
-        Invalid
+        Invalid,
     }
 }

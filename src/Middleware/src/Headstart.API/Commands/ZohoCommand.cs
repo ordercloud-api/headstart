@@ -84,12 +84,12 @@ namespace Headstart.API.Commands.Zoho
                                         Tax = new TaxCategorization()
                                         {
                                             Code = "FR",
-                                            Description = "Shipping Charge"
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                                            Description = "Shipping Charge",
+                                        },
+                                    },
+                                },
+                            },
+                        },
                     };
                     var z_item = await CreateOrUpdateShippingLineItem(oc_lineitems.Items);
                     var oc_order = new Order()
@@ -97,7 +97,7 @@ namespace Headstart.API.Commands.Zoho
                         ID = $"{order.Order.ID}-{order.LineItems.FirstOrDefault()?.SupplierID} - 41000",
                         Subtotal = shipping_method.Cost,
                         Total = shipping_method.Cost,
-                        TaxCost = 0M
+                        TaxCost = 0M,
                     };
                     var oc_lineitem = new ListPage<HSLineItem>() { Items = new List<HSLineItem>() { new HSLineItem() { Quantity = 1 } } };
                     var z_po = ZohoPurchaseOrderMapper.Map(z_order, oc_order, z_item, oc_lineitem.Items.ToList(), null, vendor.Items.FirstOrDefault());
@@ -200,7 +200,7 @@ namespace Headstart.API.Commands.Zoho
             var zItems = await Throttler.RunAsync(uniqueLineItems, delay, concurrent, id => _zoho.Items.ListAsync(new ZohoFilter()
             {
                 Key = "sku",
-                Value = id.SKU()
+                Value = id.SKU(),
             }));
 
             // the search api returns a list always. if no item was found the list will be empty
@@ -335,7 +335,7 @@ namespace Headstart.API.Commands.Zoho
             var location = new HSBuyerLocation
             {
                 Address = buyerAddress,
-                UserGroup = buyerUserGroup
+                UserGroup = buyerUserGroup,
             };
 
             // TODO: MODEL update ~ eventually add a filter to get the primary contact user

@@ -39,7 +39,7 @@ namespace Headstart.Common.Services
                         {
                             grant_type = "password",
                             username = username,
-                            password = password
+                            password = password,
                         }).ReceiveJson<PortalAuthResponse>();
 
                 return response.access_token;

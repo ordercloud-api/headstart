@@ -67,7 +67,7 @@ namespace Headstart.Common.Helpers
                 new ApiClientAssignment()
                 {
                     ApiClientID = supplierClient.ID,
-                    SupplierID = supplierDetails.ID
+                    SupplierID = supplierDetails.ID,
                 },
                 token);
 

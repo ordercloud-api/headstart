@@ -62,6 +62,6 @@ namespace ordercloud.integrations.library
     public enum SortDirection
     {
         ASC,
-        DESC
+        DESC,
     }
 }

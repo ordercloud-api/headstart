@@ -52,7 +52,7 @@ namespace Headstart.Common
     {
         Test,
         Staging,
-        Production
+        Production,
     }
 
     public class AvalaraSettings
@@ -100,7 +100,7 @@ namespace Headstart.Common
     {
         Avalara,
         Vertex,
-        Taxjar
+        Taxjar,
     }
 
     public class FlurlSettings

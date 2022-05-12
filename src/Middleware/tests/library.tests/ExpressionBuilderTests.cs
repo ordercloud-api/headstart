@@ -37,70 +37,70 @@ namespace library.tests
                     Operator = ListFilterOperator.NotEqual,
                     Term = "todd",
                     HasWildcard = true,
-                    WildcardPositions = new List<int>() { 4 }
+                    WildcardPositions = new List<int>() { 4 },
                 });
                 yield return new TestCaseData("*todd", new
                 {
                     Operator = ListFilterOperator.Equal,
                     Term = "todd",
                     HasWildcard = true,
-                    WildcardPositions = new List<int>() { 0 }
+                    WildcardPositions = new List<int>() { 0 },
                 });
                 yield return new TestCaseData("todd*", new
                 {
                     Operator = ListFilterOperator.Equal,
                     Term = "todd",
                     HasWildcard = true,
-                    WildcardPositions = new List<int>() { 4 }
+                    WildcardPositions = new List<int>() { 4 },
                 });
                 yield return new TestCaseData("*todd*", new
                 {
                     Operator = ListFilterOperator.Equal,
                     Term = "todd",
                     HasWildcard = true,
-                    WildcardPositions = new List<int>() { 0, 4 }
+                    WildcardPositions = new List<int>() { 0, 4 },
                 });
                 yield return new TestCaseData(">=todd", new
                 {
                     Operator = ListFilterOperator.GreaterThanOrEqual,
                     Term = "todd",
                     HasWildcard = false,
-                    WildcardPositions = new List<int>() { }
+                    WildcardPositions = new List<int>() { },
                 });
                 yield return new TestCaseData("<=todd", new
                 {
                     Operator = ListFilterOperator.LessThanOrEqual,
                     Term = "todd",
                     HasWildcard = false,
-                    WildcardPositions = new List<int>() { }
+                    WildcardPositions = new List<int>() { },
                 });
                 yield return new TestCaseData("!todd", new
                 {
                     Operator = ListFilterOperator.NotEqual,
                     Term = "todd",
                     HasWildcard = false,
-                    WildcardPositions = new List<int>() { }
+                    WildcardPositions = new List<int>() { },
                 });
                 yield return new TestCaseData("=todd", new
                 {
                     Operator = ListFilterOperator.Equal,
                     Term = "todd",
                     HasWildcard = false,
-                    WildcardPositions = new List<int>() { }
+                    WildcardPositions = new List<int>() { },
                 });
                 yield return new TestCaseData(">todd", new
                 {
                     Operator = ListFilterOperator.GreaterThan,
                     Term = "todd",
                     HasWildcard = false,
-                    WildcardPositions = new List<int>() { }
+                    WildcardPositions = new List<int>() { },
                 });
                 yield return new TestCaseData("<todd", new
                 {
                     Operator = ListFilterOperator.LessThan,
                     Term = "todd",
                     HasWildcard = false,
-                    WildcardPositions = new List<int>() { }
+                    WildcardPositions = new List<int>() { },
                 });
             }
         }

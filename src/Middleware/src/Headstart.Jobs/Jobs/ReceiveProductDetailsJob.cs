@@ -118,7 +118,7 @@ namespace Headstart.Jobs
                 {
                     PageSize = 1,
                     ContinuationToken = null,
-                    Filters = { currentProductFilter, currentSpecComboFilter }
+                    Filters = { currentProductFilter, currentSpecComboFilter },
                 };
             }
             else
@@ -127,7 +127,7 @@ namespace Headstart.Jobs
                 {
                     PageSize = 1,
                     ContinuationToken = null,
-                    Filters = { currentProductFilter }
+                    Filters = { currentProductFilter },
                 };
             }
         }
@@ -158,7 +158,7 @@ namespace Headstart.Jobs
                         PartitionKey = "PartitionValue",
                         ProductSales = GetProductSales(product.ID, lineItemList),
                         Product = product,
-                        Data = await FlattenProductDataDetailAsync(product, supplier, variant)
+                        Data = await FlattenProductDataDetailAsync(product, supplier, variant),
                     };
                     resultList.Add(data);
                 }
@@ -171,7 +171,7 @@ namespace Headstart.Jobs
                     PartitionKey = "PartitionValue",
                     ProductSales = GetProductSales(product.ID, lineItemList),
                     Product = product,
-                    Data = await FlattenProductDataDetailAsync(product, supplier)
+                    Data = await FlattenProductDataDetailAsync(product, supplier),
                 });
             }
 

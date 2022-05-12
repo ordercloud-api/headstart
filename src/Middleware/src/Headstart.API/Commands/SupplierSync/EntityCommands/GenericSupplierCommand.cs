@@ -27,8 +27,8 @@ namespace Headstart.API.Commands
                 ClientSecret = settings.OrderCloudSettings.MiddlewareClientSecret,
                 Roles = new[]
                 {
-                    ApiRole.FullAccess
-                }
+                    ApiRole.FullAccess,
+                },
             });
         }
 
@@ -71,7 +71,7 @@ namespace Headstart.API.Commands
                 returnObject.Add(new JProperty("SupplierOrder", new JObject
                     {
                         { "Order", JToken.FromObject(supplierWorksheet?.Order) },
-                        new JProperty("LineItems", JToken.FromObject(supplierWorksheet?.LineItems))
+                        new JProperty("LineItems", JToken.FromObject(supplierWorksheet?.LineItems)),
                     }));
             }
 
@@ -80,7 +80,7 @@ namespace Headstart.API.Commands
                 returnObject.Add(new JProperty("BuyerOrder", new JObject
                     {
                         { "Order", JToken.FromObject(buyerWorksheet?.Order) },
-                        new JProperty("LineItems", JToken.FromObject(buyerLineItems))
+                        new JProperty("LineItems", JToken.FromObject(buyerLineItems)),
                     }));
 
                 // No supplier worksheet exists in these scenarios, just treat buyer order as supplier order.
@@ -89,7 +89,7 @@ namespace Headstart.API.Commands
                     returnObject.Add(new JProperty("SupplierOrder", new JObject
                         {
                             { "Order", JToken.FromObject(buyerWorksheet?.Order) },
-                            new JProperty("LineItems", JToken.FromObject(buyerWorksheet?.LineItems))
+                            new JProperty("LineItems", JToken.FromObject(buyerWorksheet?.LineItems)),
                         }));
                 }
             }

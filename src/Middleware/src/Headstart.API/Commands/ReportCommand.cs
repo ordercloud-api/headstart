@@ -89,8 +89,8 @@ namespace Headstart.API.Commands
                     Page = 1,
                     PageSize = 100,
                     TotalCount = types.Count,
-                    TotalPages = 1
-                }
+                    TotalPages = 1,
+                },
             };
             return listPage;
         }
@@ -166,7 +166,7 @@ namespace Headstart.API.Commands
             QueryRequestOptions requestOptions = new QueryRequestOptions
             {
                 MaxItemCount = listOptions.PageSize,
-                MaxConcurrency = -1
+                MaxConcurrency = -1,
             };
 
             CosmosListPage<OrderDetailData> salesOrderDataResponse = await _salesOrderDetail.GetItemsAsync(queryable, requestOptions, listOptions);
@@ -211,7 +211,7 @@ namespace Headstart.API.Commands
             QueryRequestOptions requestOptions = new QueryRequestOptions
             {
                 MaxItemCount = listOptions.PageSize,
-                MaxConcurrency = -1
+                MaxConcurrency = -1,
             };
 
             CosmosListPage<OrderDetailData> purchaseOrderDataResponse = await _purchaseOrderDetail.GetItemsAsync(queryable, requestOptions, listOptions);
@@ -265,7 +265,7 @@ namespace Headstart.API.Commands
             QueryRequestOptions requestOptions = new QueryRequestOptions
             {
                 MaxItemCount = listOptions.PageSize,
-                MaxConcurrency = -1
+                MaxConcurrency = -1,
             };
 
             CosmosListPage<LineItemDetailData> lineItemDataResponse = await _lineItemDetail.GetItemsAsync(queryable, requestOptions, listOptions);
@@ -290,7 +290,7 @@ namespace Headstart.API.Commands
                     lineItems.Add(new HSLineItemOrder
                     {
                         HSOrder = detailData.Data.Order,
-                        HSLineItem = lineDetail
+                        HSLineItem = lineDetail,
                     });
                 }
             }
@@ -317,7 +317,7 @@ namespace Headstart.API.Commands
             QueryRequestOptions requestOptions = new QueryRequestOptions
             {
                 MaxItemCount = listOptions.PageSize,
-                MaxConcurrency = -1
+                MaxConcurrency = -1,
             };
 
             CosmosListPage<LineItemDetailData> lineItemDataResponse = await _lineItemDetail.GetItemsAsync(queryable, requestOptions, listOptions);
@@ -366,7 +366,7 @@ namespace Headstart.API.Commands
                             lineItems.Add(new HSLineItemOrder
                             {
                                 HSOrder = detailData.Data.Order,
-                                HSLineItem = lineDetail
+                                HSLineItem = lineDetail,
                             });
                         }
                     }
@@ -395,7 +395,7 @@ namespace Headstart.API.Commands
             QueryRequestOptions requestOptions = new QueryRequestOptions
             {
                 MaxItemCount = listOptions.PageSize,
-                MaxConcurrency = -1
+                MaxConcurrency = -1,
             };
 
             CosmosListPage<RMA> rmaDataResponse = await _rmaDetail.GetItemsAsync(queryable, requestOptions, listOptions);
@@ -428,7 +428,7 @@ namespace Headstart.API.Commands
                             rmas.Add(new RMAWithRMALineItem
                             {
                                 RMA = detailData,
-                                RMALineItem = rmaLineItem
+                                RMALineItem = rmaLineItem,
                             });
                         }
                     }
@@ -457,7 +457,7 @@ namespace Headstart.API.Commands
             QueryRequestOptions requestOptions = new QueryRequestOptions
             {
                 MaxItemCount = listOptions.PageSize,
-                MaxConcurrency = -1
+                MaxConcurrency = -1,
             };
 
             CosmosListPage<ProductDetailData> productDetailDataResponse = await _productDetailRepository.GetItemsAsync(queryable, requestOptions, listOptions);
@@ -512,7 +512,7 @@ namespace Headstart.API.Commands
             QueryRequestOptions requestOptions = new QueryRequestOptions
             {
                 MaxItemCount = listOptions.PageSize,
-                MaxConcurrency = -1
+                MaxConcurrency = -1,
             };
 
             CosmosListPage<OrderWithShipments> ordersWithShipmentsDataResponse = await _ordersAndShipments.GetItemsAsync(queryable, requestOptions, listOptions);

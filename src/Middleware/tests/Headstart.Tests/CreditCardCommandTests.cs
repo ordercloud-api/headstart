@@ -120,10 +120,10 @@ namespace Headstart.Tests
                     {
                         CardConnectResponse = new CardConnectAuthorizationResponse
                         {
-                            retref = validretref
-                        }
-                    }
-                }
+                            retref = validretref,
+                        },
+                    },
+                },
             };
             _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
                 .Returns(PaymentMocks.PaymentList(MockCCPayment(paymentTotal, true, payment1transactions)));
@@ -159,9 +159,9 @@ namespace Headstart.Tests
                     {
                         CardConnectResponse = new CardConnectAuthorizationResponse
                         {
-                            retref = "retref1"
-                        }
-                    }
+                            retref = "retref1",
+                        },
+                    },
                 },
                 new HSPaymentTransaction
                 {
@@ -172,9 +172,9 @@ namespace Headstart.Tests
                     {
                         CardConnectResponse = new CardConnectAuthorizationResponse
                         {
-                            retref = "retref2"
-                        }
-                    }
+                            retref = "retref2",
+                        },
+                    },
                 },
                 new HSPaymentTransaction
                 {
@@ -185,10 +185,10 @@ namespace Headstart.Tests
                     {
                         CardConnectResponse = new CardConnectAuthorizationResponse
                         {
-                            retref = "retref3"
-                        }
-                    }
-                }
+                            retref = "retref3",
+                        },
+                    },
+                },
             };
             _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
                 .Returns(PaymentMocks.PaymentList(MockCCPayment(paymentTotal, true, payment1transactions)));
@@ -223,9 +223,9 @@ namespace Headstart.Tests
                     {
                         CardConnectResponse = new CardConnectAuthorizationResponse
                         {
-                            retref = "retref1"
-                        }
-                    }
+                            retref = "retref1",
+                        },
+                    },
                 },
                 new HSPaymentTransaction
                 {
@@ -236,9 +236,9 @@ namespace Headstart.Tests
                     {
                         CardConnectResponse = new CardConnectAuthorizationResponse
                         {
-                            retref = "retref2"
-                        }
-                    }
+                            retref = "retref2",
+                        },
+                    },
                 },
                 new HSPaymentTransaction
                 {
@@ -249,10 +249,10 @@ namespace Headstart.Tests
                     {
                         CardConnectResponse = new CardConnectAuthorizationResponse
                         {
-                            retref = "retref3"
-                        }
-                    }
-                }
+                            retref = "retref3",
+                        },
+                    },
+                },
             };
             _settings.CardConnectSettings.UsdMerchantID = merchantID;
             _settings.CardConnectSettings.CadMerchantID = "somethingelse";
@@ -291,10 +291,10 @@ namespace Headstart.Tests
                     {
                         CardConnectResponse = new CardConnectAuthorizationResponse
                         {
-                            retref = validretref
-                        }
-                    }
-                }
+                            retref = validretref,
+                        },
+                    },
+                },
             };
             var mockedCCPayment = MockCCPayment(paymentTotal, false, payment1transactions);
             _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
@@ -337,10 +337,10 @@ namespace Headstart.Tests
                     {
                         CardConnectResponse = new CardConnectAuthorizationResponse
                         {
-                            retref = validretref
-                        }
-                    }
-                }
+                            retref = validretref,
+                        },
+                    },
+                },
             };
             var mockedCCPayment = MockCCPayment(paymentTotal, true, payment1transactions);
             _oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
@@ -373,7 +373,7 @@ namespace Headstart.Tests
                 Amount = amount,
                 Accepted = accepted,
                 xp = new PaymentXP { },
-                Transactions = new ReadOnlyCollection<HSPaymentTransaction>(transactions ?? new List<HSPaymentTransaction>())
+                Transactions = new ReadOnlyCollection<HSPaymentTransaction>(transactions ?? new List<HSPaymentTransaction>()),
             };
         }
 
@@ -385,8 +385,8 @@ namespace Headstart.Tests
                 ExpirationDate = new DateTimeOffset(),
                 xp = new CreditCardXP
                 {
-                    CCBillingAddress = new Address { }
-                }
+                    CCBillingAddress = new Address { },
+                },
             });
         }
 
@@ -396,7 +396,7 @@ namespace Headstart.Tests
             {
                 CVV = cvv,
                 CreditCardID = creditCardID,
-                OrderID = orderID
+                OrderID = orderID,
             };
         }
     }

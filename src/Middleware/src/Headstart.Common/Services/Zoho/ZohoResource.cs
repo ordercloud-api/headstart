@@ -52,7 +52,7 @@ namespace Headstart.Common.Services.Zoho
                 f.AddString("JSONString", JsonConvert.SerializeObject(obj, new JsonSerializerSettings()
                 {
                     NullValueHandling = NullValueHandling.Ignore,
-                    Formatting = Formatting.None
+                    Formatting = Formatting.None,
                 }));
             }));
 
@@ -62,7 +62,7 @@ namespace Headstart.Common.Services.Zoho
                 f.AddString("JSONString", JsonConvert.SerializeObject(obj, new JsonSerializerSettings()
                 {
                     NullValueHandling = NullValueHandling.Ignore,
-                    Formatting = Formatting.None
+                    Formatting = Formatting.None,
                 }));
             }));
 

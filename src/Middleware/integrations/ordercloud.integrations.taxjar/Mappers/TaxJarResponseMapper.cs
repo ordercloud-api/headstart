@@ -19,7 +19,7 @@ namespace ordercloud.integrations.taxjar
                 ExternalTransactionID = null, // There are multiple external transactionIDs
                 TotalTax = responses.Select(r => r.response.AmountToCollect).Sum(),
                 LineItems = itemLines.Select(ToItemTaxDetails).ToList(),
-                OrderLevelTaxes = shippingLines.SelectMany(ToShippingTaxDetails).ToList()
+                OrderLevelTaxes = shippingLines.SelectMany(ToShippingTaxDetails).ToList(),
             };
         }
 
@@ -29,7 +29,7 @@ namespace ordercloud.integrations.taxjar
             {
                 LineItemID = taxJarOrder.request.TransactionId.Split('|')[3],
                 LineItemTotalTax = taxJarOrder.response.AmountToCollect,
-                LineItemLevelTaxes = ToTaxDetails(taxJarOrder.response)
+                LineItemLevelTaxes = ToTaxDetails(taxJarOrder.response),
             };
         }
 
@@ -59,7 +59,7 @@ namespace ordercloud.integrations.taxjar
                     JurisdictionLevel = "County",
                     JurisdictionValue = taxResponse.Jurisdictions.County,
                     TaxDescription = $"{taxResponse.Jurisdictions.County} County tax",
-                    ShipEstimateID = null
+                    ShipEstimateID = null,
                 });
             }
 
@@ -73,7 +73,7 @@ namespace ordercloud.integrations.taxjar
                     JurisdictionLevel = "City",
                     JurisdictionValue = taxResponse.Jurisdictions.City,
                     TaxDescription = $"{taxResponse.Jurisdictions.City} City tax",
-                    ShipEstimateID = null
+                    ShipEstimateID = null,
                 });
             }
 
@@ -87,7 +87,7 @@ namespace ordercloud.integrations.taxjar
                     JurisdictionLevel = "State",
                     JurisdictionValue = taxResponse.Jurisdictions.State,
                     TaxDescription = $"{taxResponse.Jurisdictions.State} State tax",
-                    ShipEstimateID = null
+                    ShipEstimateID = null,
                 });
             }
 
@@ -101,7 +101,7 @@ namespace ordercloud.integrations.taxjar
                     JurisdictionLevel = "Special District",
                     JurisdictionValue = "Special District",
                     TaxDescription = "Special District tax",
-                    ShipEstimateID = null
+                    ShipEstimateID = null,
                 });
             }
 

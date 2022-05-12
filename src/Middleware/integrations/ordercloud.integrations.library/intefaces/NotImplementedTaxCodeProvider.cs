@@ -10,7 +10,7 @@ namespace ordercloud.integrations.library.intefaces
             return Task.FromResult(new TaxCategorizationResponse()
             {
                 ProductsShouldHaveTaxCodes = false,
-                Categories = new List<TaxCategorization>()
+                Categories = new List<TaxCategorization>(),
             });
         }
     }

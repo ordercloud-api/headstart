@@ -38,7 +38,7 @@ namespace ordercloud.integrations.exchangerates
         AUD,
         ILS,
         KRW,
-        PLN
+        PLN,
     }
 
     public class CurrencyDisplay

@@ -42,6 +42,6 @@
     {
         SALE,
         RENTAL,
-        LEASE
+        LEASE,
     }
 }

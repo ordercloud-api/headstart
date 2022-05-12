@@ -4,6 +4,6 @@
     {
         Success,
         TemporaryFailure,
-        PermanentFailure
+        PermanentFailure,
     }
 }

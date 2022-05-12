@@ -71,7 +71,7 @@ namespace Headstart.API.Commands
             _oc = new OrderCloudClient(new OrderCloudClientConfig
             {
                 ApiUrl = requestedEnv.ApiUrl,
-                AuthUrl = requestedEnv.ApiUrl
+                AuthUrl = requestedEnv.ApiUrl,
             });
 
             var portalUserToken = await _portal.Login(seed.PortalUsername, seed.PortalPassword);
@@ -112,17 +112,17 @@ namespace Headstart.API.Commands
                     ["Middleware"] = new
                     {
                         ClientID = apiClients.MiddlewareApiClient.ID,
-                        ClientSecret = apiClients.MiddlewareApiClient.ClientSecret
+                        ClientSecret = apiClients.MiddlewareApiClient.ClientSecret,
                     },
                     ["Seller"] = new
                     {
-                        ClientID = apiClients.AdminUiApiClient.ID
+                        ClientID = apiClients.AdminUiApiClient.ID,
                     },
                     ["Buyer"] = new
                     {
-                        ClientID = apiClients.BuyerUiApiClient.ID
-                    }
-                }
+                        ClientID = apiClients.BuyerUiApiClient.ID,
+                    },
+                },
             };
         }
 
@@ -133,7 +133,7 @@ namespace Headstart.API.Commands
                 Id = Guid.NewGuid().ToString(),
                 Environment = requestedEnv.EnvironmentName,
                 Name = seed.MarketplaceName == null ? "My Headstart Marketplace" : seed.MarketplaceName,
-                Region = requestedEnv.Region
+                Region = requestedEnv.Region,
             };
         }
 
@@ -144,7 +144,7 @@ namespace Headstart.API.Commands
             {
                 ConnectionString = connectionString,
                 Container = containerName,
-                AccessType = BlobContainerPublicAccessType.Container
+                AccessType = BlobContainerPublicAccessType.Container,
             };
             var translationsBlob = new OrderCloudIntegrationsBlobService(translationsConfig);
             await translationsBlob.Save("i18n/en.json", File.ReadAllText(englishTranslationsPath));
@@ -215,7 +215,7 @@ namespace Headstart.API.Commands
                     new SecurityProfileAssignment
                     {
                         BuyerID = b.ID,
-                        SecurityProfileID = CustomRole.HSBaseBuyer.ToString()
+                        SecurityProfileID = CustomRole.HSBaseBuyer.ToString(),
                     }, marketplaceToken);
             });
             await Task.WhenAll(buyerSecurityProfileAssignmentRequests);
@@ -226,7 +226,7 @@ namespace Headstart.API.Commands
                 return _oc.SecurityProfiles.SaveAssignmentAsync(
                     new SecurityProfileAssignment()
                     {
-                        SecurityProfileID = role.ToString()
+                        SecurityProfileID = role.ToString(),
                     }, marketplaceToken);
             });
             await Task.WhenAll(sellerSecurityProfileAssignmentRequests);
@@ -243,7 +243,7 @@ namespace Headstart.API.Commands
                 new SecurityProfileAssignment()
                 {
                     SecurityProfileID = SeedConstants.FullAccessSecurityProfile,
-                    UserID = defaultAdminUser.ID
+                    UserID = defaultAdminUser.ID,
                 }, marketplaceToken);
         }
 
@@ -257,7 +257,7 @@ namespace Headstart.API.Commands
                 var superBuyer = new SuperHSBuyer()
                 {
                     Buyer = SeedConstants.DefaultBuyer(),
-                    Markup = new BuyerMarkup() { Percent = 0 }
+                    Markup = new BuyerMarkup() { Percent = 0 },
                 };
                 await _buyerCommand.Create(superBuyer, token, _oc);
             }
@@ -272,7 +272,7 @@ namespace Headstart.API.Commands
                     var superBuyer = new SuperHSBuyer()
                     {
                         Buyer = buyer,
-                        Markup = new BuyerMarkup() { Percent = 0 }
+                        Markup = new BuyerMarkup() { Percent = 0 },
                     };
                     await _buyerCommand.Create(superBuyer, token, _oc);
                 }
@@ -310,7 +310,7 @@ namespace Headstart.API.Commands
             var assignment = new UserGroupAssignment()
             {
                 UserGroupID = $"{seed.AnonymousShoppingBuyerID}-{SeedConstants.DefaultLocationID}",
-                UserID = anonBuyerUser.ID
+                UserID = anonBuyerUser.ID,
             };
             await _oc.UserGroups.SaveUserAssignmentAsync(seed.AnonymousShoppingBuyerID, assignment, accessToken: token);
         }
@@ -368,7 +368,7 @@ namespace Headstart.API.Commands
                 Email = "test@test.com",
                 Active = true,
                 FirstName = "Initial",
-                LastName = "User"
+                LastName = "User",
             };
             await _oc.AdminUsers.SaveAsync(initialAdminUser.ID, initialAdminUser, token);
         }
@@ -421,7 +421,7 @@ namespace Headstart.API.Commands
                 AdminUiApiClient = adminUIApiClient,
                 BuyerUiApiClient = buyerUIApiClient,
                 BuyerLocalUiApiClient = buyerLocalUIApiClient,
-                MiddlewareApiClient = middlewareApiClient
+                MiddlewareApiClient = middlewareApiClient,
             };
         }
 
@@ -484,7 +484,7 @@ namespace Headstart.API.Commands
             {
                 SeedConstants.BuyerEmails(seed),
                 SeedConstants.SellerEmails(seed),
-                SeedConstants.SuplierEmails(seed)
+                SeedConstants.SuplierEmails(seed),
             };
             var existingMessageSenders = await _oc.MessageSenders.ListAllAsync(accessToken: accessToken);
             foreach (var sender in defaultMessageSenders)
@@ -501,7 +501,7 @@ namespace Headstart.API.Commands
                                 new MessageSenderAssignment
                                 {
                                     MessageSenderID = messageSender.ID,
-                                    BuyerID = buyer.ID
+                                    BuyerID = buyer.ID,
                                 }, accessToken);
                         }
                         catch (OrderCloudException ex)
@@ -522,7 +522,7 @@ namespace Headstart.API.Commands
                         await _oc.MessageSenders.SaveAssignmentAsync(
                             new MessageSenderAssignment
                             {
-                                MessageSenderID = messageSender.ID
+                                MessageSenderID = messageSender.ID,
                             }, accessToken);
                     }
                     catch (OrderCloudException ex)
@@ -546,7 +546,7 @@ namespace Headstart.API.Commands
                                 new MessageSenderAssignment
                                 {
                                     MessageSenderID = messageSender.ID,
-                                    SupplierID = supplier.ID
+                                    SupplierID = supplier.ID,
                                 }, accessToken);
                         }
                         catch (OrderCloudException ex)
@@ -608,14 +608,14 @@ namespace Headstart.API.Commands
                     Name = p.ID.ToString(),
                     ID = p.ID.ToString(),
                     CustomRoles = p.CustomRoles.Select(r => r.ToString()).ToList(),
-                    Roles = p.Roles
+                    Roles = p.Roles,
                 }).ToList();
 
             profiles.Add(new SecurityProfile()
             {
                 Roles = new List<ApiRole> { ApiRole.FullAccess },
                 Name = SeedConstants.FullAccessSecurityProfile,
-                ID = SeedConstants.FullAccessSecurityProfile
+                ID = SeedConstants.FullAccessSecurityProfile,
             });
 
             var profileCreateRequests = profiles.Select(p => _oc.SecurityProfiles.SaveAsync(p.ID, p, accessToken));

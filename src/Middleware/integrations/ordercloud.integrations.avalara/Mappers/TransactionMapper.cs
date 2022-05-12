@@ -35,7 +35,7 @@ namespace ordercloud.integrations.avalara
                 date = DateTime.Now,
                 discount = GetOrderOnlyTotalDiscount(promosOnOrder),
                 lines = productLines.Concat(shippingLines).ToList(),
-                purchaseOrderNo = order.Order.ID
+                purchaseOrderNo = order.Order.ID,
             };
         }
 
@@ -50,7 +50,7 @@ namespace ordercloud.integrations.avalara
                 discounted = true, // Assumption that all products are eligible for order-level promotions
                 customerUsageType = null,
                 number = lineItem.ID,
-                addresses = ToAddressesModel(shipFrom, shipTo)
+                addresses = ToAddressesModel(shipFrom, shipTo),
             };
             var isResaleProduct = (bool)lineItem.Product.xp?.IsResale;
             if (isResaleProduct && exemptionNo != null)
@@ -71,7 +71,7 @@ namespace ordercloud.integrations.avalara
                 itemCode = method.Name,
                 customerUsageType = null,
                 number = shipEstimate.ID,
-                addresses = ToAddressesModel(shipFrom, shipTo)
+                addresses = ToAddressesModel(shipFrom, shipTo),
             };
         }
 
@@ -100,7 +100,7 @@ namespace ordercloud.integrations.avalara
                 city = address.City,
                 region = address.State,
                 postalCode = address.Zip,
-                country = address.Country
+                country = address.Country,
             };
         }
     }

@@ -94,7 +94,7 @@ namespace Headstart.Common.Services.Zoho
                     Formatting = Formatting.Indented,
                     NullValueHandling = NullValueHandling.Ignore,
                     MissingMemberHandling = MissingMemberHandling.Ignore,
-                    DefaultValueHandling = DefaultValueHandling.Ignore
+                    DefaultValueHandling = DefaultValueHandling.Ignore,
                 });
             });
         }
@@ -113,7 +113,7 @@ namespace Headstart.Common.Services.Zoho
                     Formatting = Formatting.Indented,
                     NullValueHandling = NullValueHandling.Ignore,
                     MissingMemberHandling = MissingMemberHandling.Ignore,
-                    DefaultValueHandling = DefaultValueHandling.Ignore
+                    DefaultValueHandling = DefaultValueHandling.Ignore,
                 });
             });
     }

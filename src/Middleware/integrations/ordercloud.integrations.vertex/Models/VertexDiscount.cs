@@ -12,6 +12,6 @@
     public enum VertexDiscountType
     {
         DiscountAmount,
-        DiscountPercent
+        DiscountPercent,
     }
 }

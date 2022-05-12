@@ -177,13 +177,13 @@ namespace Headstart.Common.Models
     public enum NotificationChannel
     {
         Club,
-        Staff
+        Staff,
     }
 
     public enum NotificationAction
     {
         Update,
         Delete,
-        Create
+        Create,
     }
 }
