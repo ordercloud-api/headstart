@@ -9,6 +9,6 @@ namespace Headstart.Models.Exceptions
             ShipFromAddressIDsRequiringAttention = ids;
         }
 
-        public IEnumerable<string> ShipFromAddressIDsRequiringAttention;
+        public IEnumerable<string> ShipFromAddressIDsRequiringAttention { get; set; }
     }
 }

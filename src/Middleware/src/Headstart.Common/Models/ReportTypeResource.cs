@@ -17,7 +17,7 @@ namespace Headstart.Common.Models
         public string[] AdHocFilters { get; set; }
 
         // Explicitly setting available report types
-        public static ReportTypeResource[] ReportTypes =
+        public static ReportTypeResource[] ReportTypes { get; } =
         {
             new ReportTypeResource
             {

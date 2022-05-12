@@ -9,7 +9,7 @@ namespace Headstart.Models
 
     public class SupplierAddressXP
     {
-        public Coordinates Coordinates;
+        public Coordinates Coordinates { get; set; }
 
         public List<OriginAddressAccessorial> Accessorials { get; set; }
     }

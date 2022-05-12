@@ -151,8 +151,9 @@ namespace Headstart.API.Commands
     {
         public TemplateParseSummary Meta { get; set; }
 
-        public List<TemplateProductFlat> Valid = new List<TemplateProductFlat>();
-        public List<TemplateRowError> Invalid = new List<TemplateRowError>();
+        public List<TemplateProductFlat> Valid { get; set; } = new List<TemplateProductFlat>();
+
+        public List<TemplateRowError> Invalid { get; set; } = new List<TemplateRowError>();
     }
 
     public class TemplateParseSummary

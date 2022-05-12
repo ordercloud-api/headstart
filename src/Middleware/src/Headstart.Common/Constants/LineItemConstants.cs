@@ -102,7 +102,7 @@ namespace Headstart.Common.Constants
             return ClaimStatus.NoClaim;
         }
 
-        public static Dictionary<LineItemStatus, int> EmptyStatuses = new Dictionary<LineItemStatus, int>()
+        public static readonly Dictionary<LineItemStatus, int> EmptyStatuses = new Dictionary<LineItemStatus, int>()
         {
             { LineItemStatus.Submitted, 0 },
             { LineItemStatus.Backordered, 0 },
@@ -156,7 +156,7 @@ namespace Headstart.Common.Constants
 
         // these statuses can be set by either the supplier or the seller, but when this user modifies the
         // line item status we do not want to notify themselves
-        public static List<LineItemStatus> LineItemStatusChangesDontNotifySetter = new List<LineItemStatus>()
+        public static readonly List<LineItemStatus> LineItemStatusChangesDontNotifySetter = new List<LineItemStatus>()
         {
             LineItemStatus.Returned,
             LineItemStatus.Backordered,
@@ -167,7 +167,7 @@ namespace Headstart.Common.Constants
 
         // defining seller and supplier together as the current logic is the
         // seller should be able to do about anything a supplier can do
-        public static List<LineItemStatus> ValidSellerOrSupplierLineItemStatuses = new List<LineItemStatus>()
+        public static readonly List<LineItemStatus> ValidSellerOrSupplierLineItemStatuses = new List<LineItemStatus>()
         {
             LineItemStatus.Returned,
             LineItemStatus.Backordered,
@@ -179,7 +179,7 @@ namespace Headstart.Common.Constants
         };
 
         // definitions of which user contexts can can set which lineItemStatuses
-        public static Dictionary<VerifiedUserType, List<LineItemStatus>> ValidLineItemStatusSetByUserType = new Dictionary<VerifiedUserType, List<LineItemStatus>>()
+        public static readonly Dictionary<VerifiedUserType, List<LineItemStatus>> ValidLineItemStatusSetByUserType = new Dictionary<VerifiedUserType, List<LineItemStatus>>()
         {
             { VerifiedUserType.admin, ValidSellerOrSupplierLineItemStatuses },
             { VerifiedUserType.supplier, ValidSellerOrSupplierLineItemStatuses },
@@ -192,7 +192,7 @@ namespace Headstart.Common.Constants
 
         // definitions to control which line item status changes are allowed
         // for example cannot change a completed line item to anything but returned or return requested (or return denied)
-        public static Dictionary<LineItemStatus, List<LineItemStatus>> ValidPreviousStateLineItemChangeMap = new Dictionary<LineItemStatus, List<LineItemStatus>>()
+        public static readonly Dictionary<LineItemStatus, List<LineItemStatus>> ValidPreviousStateLineItemChangeMap = new Dictionary<LineItemStatus, List<LineItemStatus>>()
         {
             // no previous states for submitted
             { LineItemStatus.Submitted, new List<LineItemStatus>() { } },

@@ -50,7 +50,7 @@ namespace ordercloud.integrations.exchangerates
 
     public static class SymbolLookup
     {
-        public static IDictionary<CurrencySymbol, CurrencyDisplay> CurrencySymbolLookup = new Dictionary<CurrencySymbol, CurrencyDisplay>()
+        public static readonly IDictionary<CurrencySymbol, CurrencyDisplay> CurrencySymbolLookup = new Dictionary<CurrencySymbol, CurrencyDisplay>()
         {
             { CurrencySymbol.AUD, new CurrencyDisplay() { Name = "Australian Dollar", Symbol = "$" } },
             { CurrencySymbol.BGN, new CurrencyDisplay() { Name = "Bulgaria Lev", Symbol = "лв" } },

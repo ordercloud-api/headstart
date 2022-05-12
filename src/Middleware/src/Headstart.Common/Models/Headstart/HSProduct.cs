@@ -59,13 +59,13 @@ namespace Headstart.Models
 
     public class ProductXp
     {
-        // DO NOT DELETE THE FOLLOWING PROPERTIES
+        // DO NOT DELETE
         [OrchestrationIgnore]
         public dynamic IntegrationData { get; set; }
 
-        public Dictionary<string, List<string>> Facets = new Dictionary<string, List<string>>();
+        // DO NOT DELETE
+        public Dictionary<string, List<string>> Facets { get; set; } = new Dictionary<string, List<string>>();
 
-        // END DO NOT DELETE
         [System.ComponentModel.DataAnnotations.Required]
         public ObjectStatus? Status { get; set; }
 

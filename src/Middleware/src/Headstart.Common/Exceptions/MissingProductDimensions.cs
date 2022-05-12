@@ -9,6 +9,6 @@ namespace Headstart.Models.Exceptions
             ProductIDsRequiringAttention = ids;
         }
 
-        public IEnumerable<string> ProductIDsRequiringAttention;
+        public IEnumerable<string> ProductIDsRequiringAttention { get; set; }
     }
 }

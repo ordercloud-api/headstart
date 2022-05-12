@@ -47,7 +47,7 @@ namespace Headstart.Models.Misc
     {
         public MessageTypeConfig[] MessageTypeConfig { get; set; }
 
-        public string ApiKey;
+        public string ApiKey { get; set; }
     }
 
     public class MessageTypeConfig

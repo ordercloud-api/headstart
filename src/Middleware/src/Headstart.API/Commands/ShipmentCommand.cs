@@ -40,8 +40,9 @@ namespace Headstart.API.Commands
     {
         public DocumentImportSummary Meta { get; set; }
 
-        public List<Misc.Shipment> Valid = new List<Misc.Shipment>();
-        public List<DocumentRowError> Invalid = new List<DocumentRowError>();
+        public List<Misc.Shipment> Valid { get; set; } = new List<Misc.Shipment>();
+
+        public List<DocumentRowError> Invalid { get; set; } = new List<DocumentRowError>();
     }
 
     public class BatchProcessSummary
@@ -66,9 +67,11 @@ namespace Headstart.API.Commands
     {
         public BatchProcessSummary Meta { get; set; }
 
-        public List<Shipment> SuccessfulList = new List<Shipment>();
-        public List<BatchProcessFailure> ProcessFailureList = new List<BatchProcessFailure>();
-        public List<DocumentRowError> InvalidRowFailureList = new List<DocumentRowError>();
+        public List<Shipment> SuccessfulList { get; set; } = new List<Shipment>();
+
+        public List<BatchProcessFailure> ProcessFailureList { get; set; } = new List<BatchProcessFailure>();
+
+        public List<DocumentRowError> InvalidRowFailureList { get; set; } = new List<DocumentRowError>();
     }
 
     public interface IShipmentCommand

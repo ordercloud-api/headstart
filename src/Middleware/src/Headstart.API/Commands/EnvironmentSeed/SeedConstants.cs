@@ -11,16 +11,16 @@ namespace Headstart.API.Commands
 {
     public class SeedConstants
     {
-        public static string BuyerApiClientName = "Default Buyer Storefront";
-        public static string BuyerLocalApiClientName = "Default HeadStart Buyer UI LOCAL"; // used for pointing integration events to the ngrok url
-        public static string SellerApiClientName = "Default HeadStart Admin UI";
-        public static string IntegrationsApiClientName = "Middleware Integrations";
-        public static string SellerUserName = "Default_Admin";
-        public static string FullAccessSecurityProfile = "DefaultContext";
-        public static string DefaultBuyerName = "Default Headstart Buyer";
-        public static string DefaultBuyerID = "0001";
-        public static string DefaultLocationID = "default-buyerLocation";
-        public static string AllowedSecretChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        public const string BuyerApiClientName = "Default Buyer Storefront";
+        public const string BuyerLocalApiClientName = "Default HeadStart Buyer UI LOCAL"; // used for pointing integration events to the ngrok url
+        public const string SellerApiClientName = "Default HeadStart Admin UI";
+        public const string IntegrationsApiClientName = "Middleware Integrations";
+        public const string SellerUserName = "Default_Admin";
+        public const string FullAccessSecurityProfile = "DefaultContext";
+        public const string DefaultBuyerName = "Default Headstart Buyer";
+        public const string DefaultBuyerID = "0001";
+        public const string DefaultLocationID = "default-buyerLocation";
+        public const string AllowedSecretChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
         public static HSUser AnonymousBuyerUser()
         {
@@ -355,42 +355,42 @@ namespace Headstart.API.Commands
             };
         }
 
-        public static Region UsEast = new Region()
+        public static readonly Region UsEast = new Region()
         {
             AzureRegion = "eastus",
             Id = "est",
             Name = "US-East"
         };
 
-        public static Region AustraliaEast = new Region()
+        public static readonly Region AustraliaEast = new Region()
         {
             AzureRegion = "australiaeast",
             Id = "aus",
             Name = "Australia-East"
         };
 
-        public static Region EuropeWest = new Region()
+        public static readonly Region EuropeWest = new Region()
         {
             AzureRegion = "westeurope",
             Id = "eur",
             Name = "Europe-West"
         };
 
-        public static Region JapanEast = new Region()
+        public static readonly Region JapanEast = new Region()
         {
             AzureRegion = "japaneast",
             Id = "jpn",
             Name = "Japan-East"
         };
 
-        public static Region UsWest = new Region()
+        public static readonly Region UsWest = new Region()
         {
             AzureRegion = "westus",
             Id = "usw",
             Name = "US-West"
         };
 
-        public static List<Region> Regions = new List<Region>()
+        public static readonly List<Region> Regions = new List<Region>()
         {
             UsEast,
             AustraliaEast,

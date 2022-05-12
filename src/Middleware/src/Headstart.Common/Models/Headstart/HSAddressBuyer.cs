@@ -20,7 +20,7 @@ namespace Headstart.Models
 
         public string LocationID { get; set; }
 
-        public Coordinates Coordinates;
+        public Coordinates Coordinates { get; set; }
 
         public DateTimeOffset? OpeningDate { get; set; }
 

@@ -8,13 +8,15 @@ namespace Headstart.Jobs
     /// </summary>
     public abstract class BaseJob
     {
-        protected List<string> Skipped = new List<string>();
-        protected List<string> Succeeded = new List<string>();
-        protected List<string> Failed = new List<string>();
+        protected List<string> Skipped { get; set; } = new List<string>();
+
+        protected List<string> Succeeded { get; set; } = new List<string>();
+
+        protected List<string> Failed { get; set; } = new List<string>();
 
         private int Total => Skipped.Count + Succeeded.Count + Failed.Count;
 
-        protected ILogger _logger;
+        protected ILogger _logger { get; set; }
 
         protected virtual void LogInformation(string message)
         {
