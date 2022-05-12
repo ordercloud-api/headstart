@@ -12,7 +12,7 @@ using Headstart.Common.Repositories.Models;
 namespace Headstart.Common.Controllers
 {
     /// <summary>
-    ///  For generating and downloading reports in the Admin application
+    ///  For generating and downloading reports in the Admin application.
     /// </summary>
     [Route("reports")]
     public class ReportController : CatalystController

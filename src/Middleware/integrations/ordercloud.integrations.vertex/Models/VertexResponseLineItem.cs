@@ -89,7 +89,7 @@ namespace ordercloud.integrations.vertex
         public VertexTaxResult taxResult { get; set; }
 
         /// <summary>
-        /// System determined tax type, based on situs, transaction type, and party role type (perspective)
+        /// System determined tax type, based on situs, transaction type, and party role type (perspective).
         /// </summary>
         public VertexTaxType taxType { get; set; }
 

@@ -41,11 +41,11 @@ namespace ordercloud.integrations.exchangerates
         }
 
         /// <summary>
-        /// Intended for public API based consumption. Hence the ListArgs implementation
+        /// Intended for public API based consumption. Hence the ListArgs implementation.
         /// </summary>
-        /// <param name="rateArgs"></param>
-        /// <param name="currency"></param>
-        /// <returns></returns>
+        /// <param name="rateArgs">The conversion rates.</param>
+        /// <param name="currency">The ISO 4217 currency code.</param>
+        /// <returns>The conversion rate.</returns>
         public async Task<ListPage<OrderCloudIntegrationsConversionRate>> Get(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencySymbol currency)
         {
             try
@@ -104,8 +104,8 @@ namespace ordercloud.integrations.exchangerates
         /// <summary>
         /// Intended for private consumption by functions that update the cached resources.
         /// </summary>
-        /// <param name="rateArgs"></param>
-        /// <returns></returns>
+        /// <param name="symbol">The ISO 4217 currency code.</param>
+        /// <returns>The available exchange rates.</returns>
         public async Task<OrderCloudIntegrationsExchangeRate> Get(CurrencySymbol symbol)
         {
             var rates = await _client.Get(symbol);

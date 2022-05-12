@@ -12,7 +12,7 @@ namespace Headstart.Common.Controllers
     // once we have more time we should aim to remove the whole notion of supplier filter configs and just have this live in code
 
     /// <summary>
-    /// Supplier Category Configuration
+    /// Supplier Category Configuration.
     /// </summary>
     public class SupplierFilterConfigController : CatalystController
     {
@@ -21,7 +21,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// GET SupplierCategoryConfig
+        /// GET SupplierCategoryConfig.
         [HttpGet, Route("/supplierfilterconfig"), OrderCloudUserAuth(ApiRole.Shopper, ApiRole.SupplierReader)]
         public async Task<ListPage<dynamic>> Get()
         {

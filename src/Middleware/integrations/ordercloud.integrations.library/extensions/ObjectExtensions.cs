@@ -7,8 +7,9 @@ namespace ordercloud.integrations.library
     public static class ObjectExtensions
     {
         /// <summary>
-        /// The most useful method known to mankind
+        /// The most useful method known to mankind.
         /// </summary>
+        /// <typeparam name="T">The object to be converted to.</typeparam>
         public static T To<T>(this object obj)
         {
             return (T)obj.To(typeof(T));

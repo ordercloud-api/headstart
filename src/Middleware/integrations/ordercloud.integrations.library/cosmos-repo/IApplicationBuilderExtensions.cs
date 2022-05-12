@@ -4,14 +4,14 @@ using Microsoft.Extensions.DependencyInjection;
 namespace ordercloud.integrations.library.cosmos_repo
 {
     /// <summary>
-    /// Extension methods for IApplicationBuilder
+    /// Extension methods for IApplicationBuilder.
     /// </summary>
     public static class IApplicationBuilderExtensions
     {
         /// <summary>
-        /// Ensure Cosmos DB is created
+        /// Ensure Cosmos DB is created.
         /// </summary>
-        /// <param name="builder"></param>
+        /// <param name="builder">The <see cref="IApplicationBuilder"/>.</param>
         public static void EnsureCosmosDbIsCreated(this IApplicationBuilder builder)
         {
             using (IServiceScope serviceScope = builder.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())

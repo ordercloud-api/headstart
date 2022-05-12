@@ -20,10 +20,10 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// Seeds a brand new organization
+        /// Seeds a brand new organization.
         /// </summary>
         /// <remarks>
-        /// Check out the readme for more info https://github.com/ordercloud-api/headstart#seeding-ordercloud-data
+        /// Check out the readme for more info https://github.com/ordercloud-api/headstart#seeding-ordercloud-data.
         /// </remarks>
         [HttpPost, Route("seed")]
         public async Task<EnvironmentSeedResponse> Seed([FromBody] EnvironmentSeed seed)
@@ -34,7 +34,7 @@ namespace Headstart.Common.Controllers
         /// <summary>
         /// Call this endpoint to update translation files from source
         /// useful if pulling in updates from repo and only want to update translation files
-        /// assumes storage account connection string is in settings
+        /// assumes storage account connection string is in settings.
         /// </summary>
         [HttpPut, Route("updatetranslations")]
         public async Task UpdateTranslations()

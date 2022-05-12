@@ -86,7 +86,7 @@ namespace Headstart.API.Commands
         }
 
         /// <summary>
-        /// Validates LineItemStatus Change, Updates Line Item Statuses, Updates Order Statuses, Sends Necessary Emails
+        /// Validates LineItemStatus Change, Updates Line Item Statuses, Updates Order Statuses, Sends Necessary Emails.
         /// </summary>
         // all line item status changes should go through here
         public async Task<List<HSLineItem>> UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection orderDirection, string orderID, LineItemStatusChanges lineItemStatusChanges, DecodedToken decodedToken = null)

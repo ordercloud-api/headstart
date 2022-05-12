@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Headstart.Jobs
 {
     /// <summary>
-    /// This class adds logging and validation common in jobs
+    /// This class adds logging and validation common in jobs.
     /// </summary>
     public abstract class BaseJob
     {

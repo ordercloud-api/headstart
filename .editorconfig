@@ -425,9 +425,9 @@ dotnet_diagnostic.SA1505.severity=warning
 dotnet_diagnostic.SA1508.severity=warning
 dotnet_diagnostic.SA1107.severity=warning
 dotnet_diagnostic.SA1009.severity=warning
-dotnet_diagnostic.SA1629.severity=silent
+dotnet_diagnostic.SA1629.severity=warning
 dotnet_diagnostic.SA1615.severity=silent
-dotnet_diagnostic.SA1614.severity=silent
+dotnet_diagnostic.SA1614.severity=warning
 dotnet_diagnostic.SA1503.severity=warning
 dotnet_diagnostic.SA1611.severity=silent
 dotnet_diagnostic.SA1133.severity=silent
@@ -497,7 +497,7 @@ dotnet_diagnostic.CS1998.severity = silent
 
 # CS8632: The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
 dotnet_diagnostic.CS8632.severity = silent
-dotnet_diagnostic.SA1618.severity=silent
+dotnet_diagnostic.SA1618.severity=warning
 dotnet_diagnostic.SA1126.severity=warning
 dotnet_diagnostic.SA1409.severity=silent
 dotnet_diagnostic.SA1410.severity=warning

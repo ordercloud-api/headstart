@@ -7,7 +7,7 @@ using OrderCloud.SDK;
 namespace Headstart.Common.Controllers.CardConnect
 {
     /// <summary>
-    /// ME Credit Card Payments for Headstart
+    /// ME Credit Card Payments for Headstart.
     /// </summary>
     public class MePaymentController : CatalystController
     {
@@ -21,7 +21,7 @@ namespace Headstart.Common.Controllers.CardConnect
         }
 
         /// <summary>
-        /// POST Payment
+        /// POST Payment.
         /// </summary>
         [HttpPost, Route("me/payments"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<Payment> Post([FromBody] OrderCloudIntegrationsCreditCardPayment payment)
@@ -45,7 +45,7 @@ namespace Headstart.Common.Controllers.CardConnect
     }
 
     /// <summary>
-    ///  ME Credit Card Tokenization for Headstart
+    ///  ME Credit Card Tokenization for Headstart.
     /// </summary>
     public class MeCreditCardAuthorizationController : CatalystController
     {
@@ -57,7 +57,7 @@ namespace Headstart.Common.Controllers.CardConnect
         }
 
         /// <summary>
-        /// POST Credit Card
+        /// POST Credit Card.
         /// </summary>
         [HttpPost, Route("me/creditcards"), OrderCloudUserAuth(ApiRole.MeCreditCardAdmin, ApiRole.CreditCardAdmin)]
         public async Task<BuyerCreditCard> MePost([FromBody] OrderCloudIntegrationsCreditCardToken card)
@@ -67,7 +67,7 @@ namespace Headstart.Common.Controllers.CardConnect
     }
 
     /// <summary>
-    /// Credit Card Tokenization for Headstart
+    /// Credit Card Tokenization for Headstart.
     /// </summary>
     public class CreditCardController : CatalystController
     {
@@ -79,7 +79,7 @@ namespace Headstart.Common.Controllers.CardConnect
         }
 
         /// <summary>
-        /// POST Credit Cards
+        /// POST Credit Cards.
         /// </summary>
         [HttpPost, Route("buyers/{buyerID}/creditcards"), OrderCloudUserAuth(ApiRole.CreditCardAdmin)]
         public async Task<CreditCard> Post([FromBody] OrderCloudIntegrationsCreditCardToken card, string buyerID)

@@ -5,7 +5,7 @@ using Flurl.Http.Configuration;
 namespace ordercloud.integrations.exchangerates
 {
     /// <summary>
-    /// Rates supported by https://exchangeratesapi.io/
+    /// Rates supported by https://exchangeratesapi.io/.
     /// </summary>
     public interface IOrderCloudIntegrationsExchangeRatesClient
     {

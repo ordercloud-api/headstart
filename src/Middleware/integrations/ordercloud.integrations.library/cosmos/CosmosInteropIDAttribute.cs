@@ -11,7 +11,7 @@ namespace ordercloud.integrations.library.Cosmos
         }
 
         /// <summary>
-        /// generate if not set. defaults to true
+        /// generate if not set. defaults to true.
         /// </summary>
         public bool AutoGen { get; set; }
 

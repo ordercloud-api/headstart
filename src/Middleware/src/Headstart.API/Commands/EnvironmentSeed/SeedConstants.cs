@@ -408,8 +408,8 @@ namespace Headstart.API.Commands
         /// <summary>
         /// Constructs the OrderCloud environment.
         /// </summary>
-        /// <param name="orderCloudSettings"></param>
-        /// <returns>The OcEnv response object</returns>
+        /// <param name="orderCloudSettings">The OrderCloud environment settings.</param>
+        /// <returns>The OcEnv response object.</returns>
         public static OcEnv OrderCloudEnvironment(OrderCloudSeedSettings orderCloudSettings)
         {
             OcEnv marketplace = null;

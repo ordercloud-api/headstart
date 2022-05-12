@@ -18,7 +18,7 @@ namespace Headstart.API.Controllers
         }
 
         /// <summary>
-        /// Create Image
+        /// Create Image.
         /// </summary>
         [HttpPost, Route("image"), OrderCloudUserAuth]
         public async Task<ImageAsset> CreateImage([FromForm] AssetUpload asset)
@@ -27,7 +27,7 @@ namespace Headstart.API.Controllers
         }
 
         /// <summary>
-        /// Delete Asset
+        /// Delete Asset.
         /// </summary>
         [HttpDelete, Route("{id}"), OrderCloudUserAuth]
         public async Task DeleteImage(string id)
@@ -36,7 +36,7 @@ namespace Headstart.API.Controllers
         }
 
         /// <summary>
-        /// Create Document
+        /// Create Document.
         /// </summary>
         [HttpPost, Route("document"), OrderCloudUserAuth]
         public async Task<DocumentAsset> CreateDocument([FromForm] AssetUpload asset)

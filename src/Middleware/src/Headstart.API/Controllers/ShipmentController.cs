@@ -9,7 +9,7 @@ using OrderCloud.Catalyst;
 namespace Headstart.Common.Controllers
 {
     /// <summary>
-    /// Shipments
+    /// Shipments.
     /// </summary>
     [Route("shipment")]
     public class ShipmentController : CatalystController
@@ -22,7 +22,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// POST Headstart Shipment
+        /// POST Headstart Shipment.
         /// </summary>
         // todo update auth
         [HttpPost, OrderCloudUserAuth(ApiRole.ShipmentAdmin)]
@@ -35,7 +35,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// POST Batch Shipment Update
+        /// POST Batch Shipment Update.
         /// </summary>
         [HttpPost, Route("batch/uploadshipment"), OrderCloudUserAuth(ApiRole.ShipmentAdmin)]
         [ApiExplorerSettings(IgnoreApi = true)]

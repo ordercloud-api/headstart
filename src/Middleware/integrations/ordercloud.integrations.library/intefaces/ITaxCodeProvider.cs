@@ -9,7 +9,7 @@ namespace ordercloud.integrations.library.intefaces
     public interface ITaxCodesProvider
     {
         /// <summary>
-        /// List the various tax categories a product could fall under
+        /// List the various tax categories a product could fall under.
         /// </summary>
         Task<TaxCategorizationResponse> ListTaxCodesAsync(string searchTerm);
     }
@@ -22,22 +22,22 @@ namespace ordercloud.integrations.library.intefaces
     }
 
     /// <summary>
-    /// A Tax categorization for a product
+    /// A Tax categorization for a product.
     /// </summary>
     public class TaxCategorization
     {
         /// <summary>
-        /// A code that represents this categorization
+        /// A code that represents this categorization.
         /// </summary>
         public string Code { get; set; }
 
         /// <summary>
-        /// A reasonable short name for this categorization
+        /// A reasonable short name for this categorization.
         /// </summary>
         public string Description { get; set; }
 
         /// <summary>
-        /// A full description for this categorization
+        /// A full description for this categorization.
         /// </summary>
         public string LongDescription { get; set; }
     }

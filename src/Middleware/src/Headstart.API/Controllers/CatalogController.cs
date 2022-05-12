@@ -8,7 +8,7 @@ using OrderCloud.Catalyst;
 namespace Headstart.Common.Controllers
 {
     /// <summary>
-    /// Catalogs for product groupings and visibility in Headstart
+    /// Catalogs for product groupings and visibility in Headstart.
     /// </summary>
     [Route("buyers")]
     public class CatalogController : CatalystController
@@ -21,7 +21,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// GET a list of Catalogs
+        /// GET a list of Catalogs.
         /// </summary>
         [HttpGet, Route("{buyerID}/catalogs"), OrderCloudUserAuth(ApiRole.ProductAdmin, ApiRole.ProductReader)]
         public async Task<ListPage<HSCatalog>> List(ListArgs<HSCatalog> args, string buyerID)
@@ -30,7 +30,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// GET a single Catalog
+        /// GET a single Catalog.
         /// </summary>
         [HttpGet, Route("{buyerID}/catalogs/{catalogID}"), OrderCloudUserAuth(ApiRole.ProductAdmin, ApiRole.ProductReader)]
         public async Task<HSCatalog> Get(string buyerID, string catalogID)
@@ -39,7 +39,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// Create a new Catalog
+        /// Create a new Catalog.
         /// </summary>
         [HttpPost, Route("{buyerID}/catalogs"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
         public async Task<HSCatalog> Post([FromBody] HSCatalog obj, string buyerID)
@@ -48,7 +48,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// Get a list of catalog location assignments
+        /// Get a list of catalog location assignments.
         /// </summary>
         [HttpGet, Route("{buyerID}/catalogs/assignments"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
         public async Task<ListPage<HSCatalogAssignment>> GetAssignments(string buyerID, [FromQuery(Name = "catalogID")] string catalogID = "", [FromQuery(Name = "locationID")] string locationID = "")
@@ -57,7 +57,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// Set catalog assignments for a location
+        /// Set catalog assignments for a location.
         /// </summary>
         [HttpPost, Route("{buyerID}/{locationID}/catalogs/assignments"), OrderCloudUserAuth(ApiRole.UserGroupAdmin)]
         public async Task SetAssignments(string buyerID, string locationID, [FromBody] HSCatalogAssignmentRequest assignmentRequest)
@@ -66,7 +66,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// PUT Catalog
+        /// PUT Catalog.
         /// </summary>
         [HttpPut, Route("{buyerID}/catalogs/{catalogID}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
         public async Task<HSCatalog> Put([FromBody] HSCatalog obj, string buyerID, string catalogID)
@@ -75,7 +75,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// DELETE Catalog
+        /// DELETE Catalog.
         /// </summary>
         [HttpDelete, Route("{buyerID}/catalogs/{catalogID}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
         public async Task Delete(string buyerID, string catalogID)
@@ -84,7 +84,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// SYNC User Catalogs Assignments
+        /// SYNC User Catalogs Assignments.
         /// </summary>
         [HttpPost, Route("{buyerID}/catalogs/user/{userID}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
         public async Task SyncOnRemoveFromLocation(string buyerID, string userID)

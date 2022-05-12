@@ -7,7 +7,7 @@ using OrderCloud.SDK;
 namespace Headstart.Common.Controllers
 {
     /// <summary>
-    ///  Currency Conversion Charts
+    ///  Currency Conversion Charts.
     /// </summary>
     [Route("exchangerates")]
     public class ExchangeRatesController : CatalystController

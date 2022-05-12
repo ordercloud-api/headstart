@@ -8,7 +8,7 @@ using TaxCategorizationResponse = ordercloud.integrations.library.intefaces.TaxC
 namespace Headstart.Common.Controllers
 {
     /// <summary>
-    /// Tax Functionality
+    /// Tax Functionality.
     /// </summary>
     public class TaxCategoryController : CatalystController
     {
@@ -20,7 +20,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// List Tax Codes
+        /// List Tax Codes.
         /// </summary>
         [HttpGet, Route("tax-category"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
         public async Task<TaxCategorizationResponse> ListTaxCategories([FromQuery] string search)

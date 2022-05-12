@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Headstart.Common.Controllers
 {
     /// <summary>
-    /// Payment commands in Headstart
+    /// Payment commands in Headstart.
     /// </summary>
     [Route("payments")]
     public class PaymentController : CatalystController

@@ -14,7 +14,7 @@ using Headstart.Common.Models;
 namespace Headstart.Common.Controllers
 {
     /// <summary>
-    /// Order commands in Headstart
+    /// Order commands in Headstart.
     /// </summary>
     [Route("order")]
     public class OrderController : CatalystController
@@ -33,7 +33,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// Submit Order. Performs validation, submits credit card payment and finally submits order via OrderCloud
+        /// Submit Order. Performs validation, submits credit card payment and finally submits order via OrderCloud.
         /// </summary>
         [HttpPost, Route("{direction}/{orderID}/submit"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<HSOrder> Submit(OrderDirection direction, string orderID, [FromBody] OrderCloudIntegrationsCreditCardPayment payment)
@@ -42,7 +42,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// POST Acknowledge Quote Order
+        /// POST Acknowledge Quote Order.
         /// </summary>
         [HttpPost, Route("acknowledgequote/{orderID}"), OrderCloudUserAuth(ApiRole.OrderAdmin)]
         public async Task<Order> AcknowledgeQuoteOrder(string orderID)
@@ -51,7 +51,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// LIST orders for a specific location as a buyer, ensures user has access to location orders
+        /// LIST orders for a specific location as a buyer, ensures user has access to location orders.
         /// </summary>
         [HttpGet, Route("location/{locationID}"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<ListPage<HSOrder>> ListLocationOrders(string locationID, ListArgs<HSOrder> listArgs)
@@ -60,7 +60,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// GET order details as buyer, ensures user has access to location orders or created the order themselves
+        /// GET order details as buyer, ensures user has access to location orders or created the order themselves.
         /// </summary>
         [HttpGet, Route("{orderID}/details"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<OrderDetails> GetOrderDetails(string orderID)
@@ -69,7 +69,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// GET order shipments as buyer, ensures user has access to location orders or created the order themselves
+        /// GET order shipments as buyer, ensures user has access to location orders or created the order themselves.
         /// </summary>
         [HttpGet, Route("{orderID}/shipmentswithitems"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<List<HSShipmentWithItems>> ListShipmentsWithItems(string orderID)
@@ -90,7 +90,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// Delete a line item
+        /// Delete a line item.
         /// </summary>
         [HttpDelete, Route("{orderID}/lineitems/{lineItemID}"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task DeleteLineItem(string orderID, string lineItemID)
@@ -99,7 +99,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// Apply a promotion to an order
+        /// Apply a promotion to an order.
         /// </summary>
         [HttpPost, Route("{orderID}/promotions/{promoCode}")]
         public async Task<HSOrder> AddPromotion(string orderID, string promoCode)
@@ -108,7 +108,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// Seller or Supplier Set Line Item Statuses On Order with Related Notification
+        /// Seller or Supplier Set Line Item Statuses On Order with Related Notification.
         /// </summary>
         [HttpPost, Route("{orderID}/{orderDirection}/lineitem/status"), OrderCloudUserAuth(ApiRole.OrderAdmin)]
         public async Task<List<HSLineItem>> SellerSupplierUpdateLineItemStatusesWithNotification(string orderID, OrderDirection orderDirection, [FromBody] LineItemStatusChanges lineItemStatusChanges)
@@ -117,7 +117,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// Buyer Set Line Item Statuses On Order with Related Notification
+        /// Buyer Set Line Item Statuses On Order with Related Notification.
         /// </summary>
         [HttpPost, Route("{orderID}/lineitem/status"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<List<HSLineItem>> BuyerUpdateLineItemStatusesWithNotification(string orderID, [FromBody] LineItemStatusChanges lineItemStatusChanges)
@@ -126,7 +126,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// Apply Automatic Promtions to order and remove promotions no longer valid on order
+        /// Apply Automatic Promtions to order and remove promotions no longer valid on order.
         /// </summary>
         [HttpPost, Route("{orderID}/applypromotions")]
         public async Task<HSOrder> ApplyAutomaticPromotions(string orderID)
@@ -135,7 +135,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// Send quote request details to supplier
+        /// Send quote request details to supplier.
         /// </summary>
         [HttpPost, Route("submitquoterequest/{orderID}/{lineItemID}"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<HSLineItem> SendQuoteRequestToSupplier(string orderID, string lineItemID)
@@ -144,7 +144,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// Override unit price on order for quote order process
+        /// Override unit price on order for quote order process.
         /// </summary>
         [HttpPost, Route("overridequote/{orderID}/{lineItemID}"), OrderCloudUserAuth(ApiRole.OrderAdmin)]
         public async Task<HSLineItem> OverrideQuotePrice(string orderID, string lineItemID, [FromBody] decimal quotePrice)
@@ -153,7 +153,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// Lists quote orders, which are in an unsubmitted status
+        /// Lists quote orders, which are in an unsubmitted status.
         /// </summary>
         [HttpGet, Route("listquoteorders/{quoteStatus}"), OrderCloudUserAuth(ApiRole.OrderReader, ApiRole.OrderAdmin)]
         public async Task<ListPage<HSOrder>> ListQuoteOrders(QuoteStatus quoteStatus)
@@ -163,7 +163,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// Gets a single quote order
+        /// Gets a single quote order.
         /// </summary>
         [HttpGet, Route("getquoteorder/{orderID}"), OrderCloudUserAuth(ApiRole.OrderReader, ApiRole.OrderAdmin)]
         public async Task<HSOrder> GetQuoteOrder(string orderID)

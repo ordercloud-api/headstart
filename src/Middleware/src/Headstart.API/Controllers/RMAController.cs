@@ -9,7 +9,7 @@ using OrderCloud.Catalyst;
 namespace Headstart.Common.Controllers
 {
     /// <summary>
-    /// Returns
+    /// Returns.
     /// </summary>
     [Route("rma")]
     public class RMAController : CatalystController
@@ -32,7 +32,7 @@ namespace Headstart.Common.Controllers
         // Buyer Routes
 
         /// <summary>
-        /// POST Headstart RMA
+        /// POST Headstart RMA.
         /// </summary>
         [HttpPost, OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<RMA> PostRMA([FromBody] RMA rma)

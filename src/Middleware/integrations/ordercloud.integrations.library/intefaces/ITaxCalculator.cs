@@ -26,22 +26,22 @@ namespace ordercloud.integrations.library
     public class OrderTaxCalculation
     {
         /// <summary>
-        /// ID of the OrderCloud Order
+        /// ID of the OrderCloud Order.
         /// </summary>
         public string OrderID { get; set; }
 
         /// <summary>
-        /// An ID from the tax calculation system that identifies this transaction or calculation
+        /// An ID from the tax calculation system that identifies this transaction or calculation.
         /// </summary>
         public string ExternalTransactionID { get; set; }
 
         /// <summary>
-        /// The total tax to be paid by the purchaser on the order
+        /// The total tax to be paid by the purchaser on the order.
         /// </summary>
         public decimal TotalTax { get; set; }
 
         /// <summary>
-        /// Tax details broken down by line item
+        /// Tax details broken down by line item.
         /// </summary>
         public List<LineItemTaxCalculation> LineItems { get; set; } = new List<LineItemTaxCalculation>();
 
@@ -57,17 +57,17 @@ namespace ordercloud.integrations.library
     public class LineItemTaxCalculation
     {
         /// <summary>
-        /// ID of the OrderCloud line item
+        /// ID of the OrderCloud line item.
         /// </summary>
         public string LineItemID { get; set; }
 
         /// <summary>
-        /// The sum of taxes that apply to this line item
+        /// The sum of taxes that apply to this line item.
         /// </summary>
         public decimal LineItemTotalTax { get; set; }
 
         /// <summary>
-        /// Taxes that apply specifically to this line item
+        /// Taxes that apply specifically to this line item.
         /// </summary>
         public List<TaxDetails> LineItemLevelTaxes { get; set; } = new List<TaxDetails>();
     }
@@ -78,17 +78,17 @@ namespace ordercloud.integrations.library
     public class TaxDetails
     {
         /// <summary>
-        /// The tax to be paid by the purchaser
+        /// The tax to be paid by the purchaser.
         /// </summary>
         public decimal Tax { get; set; }
 
         /// <summary>
-        /// The amount of the line item cost on which tax applies
+        /// The amount of the line item cost on which tax applies.
         /// </summary>
         public decimal Taxable { get; set; }
 
         /// <summary>
-        /// The amount of the line item cost on which tax does not apply
+        /// The amount of the line item cost on which tax does not apply.
         /// </summary>
         public decimal Exempt { get; set; }
 

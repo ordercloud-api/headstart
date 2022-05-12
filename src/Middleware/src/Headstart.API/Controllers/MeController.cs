@@ -9,7 +9,7 @@ using OrderCloud.SDK;
 namespace Headstart.Common.Controllers
 {
     /// <summary>
-    /// Me and my stuff
+    /// Me and my stuff.
     /// </summary>
     [Route("me")]
     public class MeController : CatalystController
@@ -22,7 +22,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// GET Super Product
+        /// GET Super Product.
         /// </summary>
         [HttpGet, Route("products/{productID}"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<SuperHSMeProduct> GetSuperProduct(string productID)
@@ -31,7 +31,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// LIST products
+        /// LIST products.
         /// </summary>
         [HttpGet, Route("products"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<ListPageWithFacets<HSMeProduct>> ListMeProducts(ListArgs<HSMeProduct> args)
@@ -40,7 +40,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// POST request information about product
+        /// POST request information about product.
         /// </summary>
         [HttpPost, Route("products/requestinfo"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task RequestProductInfo([FromBody] ContactSupplierBody template)

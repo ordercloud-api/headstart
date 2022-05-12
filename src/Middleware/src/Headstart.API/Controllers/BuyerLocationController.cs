@@ -24,7 +24,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// GET a Buyer Location
+        /// GET a Buyer Location.
         /// </summary>
         [HttpGet, Route("{buyerID}/{buyerLocationID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
         public async Task<HSBuyerLocation> Get(string buyerID, string buyerLocationID)
@@ -33,7 +33,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// POST a Buyer Location
+        /// POST a Buyer Location.
         /// </summary>
         [HttpPost, Route("{buyerID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
         public async Task<HSBuyerLocation> Create(string buyerID, [FromBody] HSBuyerLocation buyerLocation)
@@ -42,7 +42,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// POST a Buyer Location permission group
+        /// POST a Buyer Location permission group.
         /// </summary>
         [HttpPost, Route("{buyerID}/{buyerLocationID}/permissions/{permissionGroupID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
         public async Task CreatePermissionGroup(string buyerID, string buyerLocationID, string permissionGroupID)
@@ -51,7 +51,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// PUT a Buyer Location
+        /// PUT a Buyer Location.
         /// </summary>
         [HttpPut, Route("{buyerID}/{buyerLocationID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
         public async Task<HSBuyerLocation> Save(string buyerID, string buyerLocationID, [FromBody] HSBuyerLocation buyerLocation)
@@ -60,7 +60,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// Delete a Buyer Location
+        /// Delete a Buyer Location.
         /// </summary>
         [HttpDelete, Route("{buyerID}/{buyerLocationID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin, ApiRole.AddressAdmin)]
         public async Task Delete(string buyerID, string buyerLocationID)
@@ -69,7 +69,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// GET List of location permission user groups
+        /// GET List of location permission user groups.
         /// </summary>
         [HttpGet]
         [OrderCloudUserAuth(ApiRole.Shopper)]
@@ -80,7 +80,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// LIST orders for a specific location as a buyer, ensures user has access to location orders
+        /// LIST orders for a specific location as a buyer, ensures user has access to location orders.
         /// </summary>
         [HttpGet, Route("{buyerID}/{buyerLocationID}/users"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<ListPage<HSUser>> ListLocationUsers(string buyerID, string buyerLocationID, ListArgs<HSOrder> listArgs)
@@ -89,7 +89,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// POST location permissions, add or delete access
+        /// POST location permissions, add or delete access.
         /// </summary>
         [HttpPost, Route("{buyerID}/{buyerLocationID}/permissions"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<List<UserGroupAssignment>> UpdateLocationPermissions(string buyerID, string buyerLocationID, [FromBody] LocationPermissionUpdate locationPermissionUpdate)
@@ -98,7 +98,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// GET List of location approval permission user groups
+        /// GET List of location approval permission user groups.
         /// </summary>
         [HttpGet]
         [OrderCloudUserAuth(ApiRole.Shopper)]
@@ -109,7 +109,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// GET general approval threshold for location
+        /// GET general approval threshold for location.
         /// </summary>
         [HttpGet]
         [OrderCloudUserAuth(ApiRole.Shopper)]
@@ -120,7 +120,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// POST Location Approval Rule
+        /// POST Location Approval Rule.
         /// </summary>
         [HttpPost]
         [OrderCloudUserAuth(ApiRole.Shopper)]
@@ -131,7 +131,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// DELETE Location Approval Rule
+        /// DELETE Location Approval Rule.
         /// </summary>
         [HttpPut]
         [OrderCloudUserAuth(ApiRole.Shopper)]
@@ -142,7 +142,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// LIST all of a user's user group assignments
+        /// LIST all of a user's user group assignments.
         /// </summary>
         [HttpGet, Route("{userGroupType}/{parentID}/usergroupassignments/{userID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin)]
         public async Task<List<UserGroupAssignment>> ListUserUserGroupAssignments(string userGroupType, string parentID, string userID)
@@ -151,7 +151,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// LIST user groups for home country
+        /// LIST user groups for home country.
         /// </summary>
         [HttpGet, Route("{buyerID}/usergroups/{userID}"), OrderCloudUserAuth(ApiRole.UserGroupAdmin)]
         public async Task<ListPage<HSLocationUserGroup>> ListUserGroupsByCountry(ListArgs<HSLocationUserGroup> args, string buyerID, string userID)
@@ -160,7 +160,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// LIST user groups for new user
+        /// LIST user groups for new user.
         /// </summary>
         [HttpGet, Route("{buyerID}/{homeCountry}/usergroups"), OrderCloudUserAuth(ApiRole.UserGroupAdmin)]
         public async Task<ListPage<HSLocationUserGroup>> ListUserGroupsForNewUser(ListArgs<HSLocationUserGroup> args, string buyerID, string homeCountry)
@@ -169,7 +169,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// PUT usergroups from anonymous to new user
+        /// PUT usergroups from anonymous to new user.
         /// </summary>
         [OrderCloudUserAuth(ApiRole.Shopper)]
         [HttpPut, Route("{buyerID}/reassignusergroups/{newUserID}")]

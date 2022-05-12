@@ -57,7 +57,7 @@ namespace Headstart.API.Commands
         /// it is also meant to be safe to call after an marketplace has been seeded (by including seed.MarketplaceID)
         /// If a method starts with CreateOrUpdate it will update the resource every time its called based on what has been defined in SeedConstants.cs
         /// If a method starts with CreateOnlyOnce it will only create the resource once and then ignore thereafter
-        /// The CreateOnlyOnce resources are likely to change after initial creation so we ignore to avoid overwriting desired changes that happen outside of seeding
+        /// The CreateOnlyOnce resources are likely to change after initial creation so we ignore to avoid overwriting desired changes that happen outside of seeding.
         /// </summary>
         public async Task<EnvironmentSeedResponse> Seed(EnvironmentSeed seed)
         {
@@ -191,7 +191,7 @@ namespace Headstart.API.Commands
         /// <summary>
         /// The staging environment gets restored weekly from production
         /// during that restore things like webhooks, message senders, and integration events are shut off (so you don't for example email production customers)
-        /// this process restores integration events which are required for checkout (with environment specific settings)
+        /// this process restores integration events which are required for checkout (with environment specific settings).
         public async Task PostStagingRestore()
         {
             var token = (await _oc.AuthenticateAsync()).AccessToken;

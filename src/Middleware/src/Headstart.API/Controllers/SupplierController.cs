@@ -9,7 +9,7 @@ using OrderCloud.Catalyst;
 namespace Headstart.Common.Controllers
 {
     /// <summary>
-    /// Suppliers
+    /// Suppliers.
     /// </summary>
     [Route("supplier")]
     public class SupplierController : CatalystController
@@ -24,7 +24,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// GET HSSupplier
+        /// GET HSSupplier.
         /// </summary>
         [HttpGet, Route("me/{supplierID}"), OrderCloudUserAuth]
         public async Task<HSSupplier> GetMySupplier(string supplierID)
@@ -33,7 +33,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// POST Headstart Supplier
+        /// POST Headstart Supplier.
         /// </summary>
         [HttpPost, OrderCloudUserAuth(ApiRole.SupplierAdmin)]
         public async Task<HSSupplier> Create([FromBody] HSSupplier supplier)
@@ -42,7 +42,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// GET If Location Deletable
+        /// GET If Location Deletable.
         /// </summary>
         [HttpGet, Route("candelete/{locationID}"), OrderCloudUserAuth(ApiRole.SupplierAddressAdmin)]
         public async Task<bool> CanDeleteLocation(string locationID)
@@ -52,7 +52,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// PATCH Supplier
+        /// PATCH Supplier.
         /// </summary>
         [HttpPatch, Route("{supplierID}"), OrderCloudUserAuth]
         public async Task<HSSupplier> UpdateSupplier(string supplierID, [FromBody] PartialSupplier supplier)
@@ -61,7 +61,7 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// GET Supplier Order Details
+        /// GET Supplier Order Details.
         /// </summary>
         [HttpGet, Route("orderdetails/{supplierOrderID}/{orderType}"), OrderCloudUserAuth(ApiRole.OrderAdmin, ApiRole.OrderReader)]
         public async Task<HSSupplierOrderData> GetSupplierOrder(string supplierOrderID, OrderType orderType)

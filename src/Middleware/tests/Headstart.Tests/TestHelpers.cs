@@ -9,11 +9,10 @@ namespace Headstart.Tests
     public static class TestHelpers
     {
         /// <summary>
-        /// use to access values on dynamics
+        /// use to access values on dynamics.
         /// </summary>
-        /// <param name="source">the thing to drill into</param>
-        /// <param name="accessor">typically the name of the property, use dot notation to access nested values</param>
-        /// <returns></returns>
+        /// <param name="source">the thing to drill into.</param>
+        /// <param name="accessor">typically the name of the property, use dot notation to access nested values.</param>
         public static dynamic GetDynamicVal(dynamic source, string accessor)
         {
             var props = accessor.Split('.');
