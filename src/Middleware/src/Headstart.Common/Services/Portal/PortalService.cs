@@ -1,11 +1,8 @@
-using System;
 using System.Threading.Tasks;
 using Flurl.Http;
 using Flurl.Http.Configuration;
 using Headstart.Common.Services.Portal.Models;
-using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
-using OrderCloud.SDK;
 
 namespace Headstart.Common.Services
 {

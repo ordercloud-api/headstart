@@ -4,7 +4,6 @@ using ordercloud.integrations.library;
 using System.Collections.Generic;
 using Newtonsoft.Json.Converters;
 using ordercloud.integrations.library.Cosmos;
-using Headstart.Models;
 
 namespace Headstart.Common.Models
 {

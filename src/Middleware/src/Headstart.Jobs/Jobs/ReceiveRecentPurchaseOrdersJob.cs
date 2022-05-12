@@ -8,7 +8,6 @@ using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Jobs.Helpers;
 using Headstart.Models;
 using Headstart.Models.Headstart;
-using Microsoft.Azure.Cosmos;
 using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;

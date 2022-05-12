@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using Headstart.Models.Exceptions;
-using ordercloud.integrations.library;
-
-namespace Headstart.Models
+﻿namespace Headstart.Models
 {
     public class EmailDisplayText
     {

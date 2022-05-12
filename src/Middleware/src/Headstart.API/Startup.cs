@@ -1,4 +1,3 @@
-using Avalara.AvaTax.RestClient;
 using Flurl.Http;
 using Flurl.Http.Configuration;
 using Headstart.API.Commands;

@@ -1,12 +1,9 @@
 ﻿using Headstart.Models;
 using ordercloud.integrations.exchangerates;
-using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Headstart.Common.Services

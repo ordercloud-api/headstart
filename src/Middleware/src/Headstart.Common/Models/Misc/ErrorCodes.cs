@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 using Headstart.Models.Exceptions;
-using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
 
 namespace Headstart.Models

@@ -1,8 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Headstart.Models.Attributes;
 using Microsoft.AspNetCore.Mvc;
 using ordercloud.integrations.cardconnect;
-using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 

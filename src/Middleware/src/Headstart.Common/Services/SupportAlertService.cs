@@ -2,10 +2,7 @@ using Headstart.Models;
 using Microsoft.ApplicationInsights;
 using Newtonsoft.Json;
 using ordercloud.integrations.cardconnect;
-using SendGrid.Helpers.Mail;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Headstart.Models.Headstart;
 

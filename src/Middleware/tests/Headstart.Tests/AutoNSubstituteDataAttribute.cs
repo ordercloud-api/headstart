@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture;
 using AutoFixture.NUnit3;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
-using OrderCloud.SDK;
 using Headstart.Models.Headstart;
 
 namespace Headstart.Tests

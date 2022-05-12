@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Headstart.Common.Exceptions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using OrderCloud.SDK;
 
 namespace Headstart.Models.Headstart
 {

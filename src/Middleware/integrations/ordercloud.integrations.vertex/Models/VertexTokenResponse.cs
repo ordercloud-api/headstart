@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ordercloud.integrations.vertex.Models
+﻿namespace ordercloud.integrations.vertex.Models
 {
     public class VertexTokenResponse
     {

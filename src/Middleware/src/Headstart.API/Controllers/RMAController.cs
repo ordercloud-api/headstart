@@ -2,9 +2,7 @@
 using OrderCloud.SDK;
 using System.Threading.Tasks;
 using ordercloud.integrations.library;
-using Headstart.Models.Attributes;
 using Headstart.Common.Models;
-using Headstart.Models.Misc;
 using Headstart.API.Commands;
 using OrderCloud.Catalyst;
 

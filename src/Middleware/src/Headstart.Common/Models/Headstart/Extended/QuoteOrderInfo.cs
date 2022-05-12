@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using ordercloud.integrations.library;
 
 namespace Headstart.Models.Extended
 {

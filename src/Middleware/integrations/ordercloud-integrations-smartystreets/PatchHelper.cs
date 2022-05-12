@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ordercloud.integrations.smartystreets
+﻿namespace ordercloud.integrations.smartystreets
 {
     // todo: add test for this function
     // todo: should this live in the extensions project?

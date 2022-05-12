@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -11,10 +10,8 @@ using Microsoft.Azure.CosmosDB.BulkExecutor.BulkUpdate;
 using Microsoft.Azure.CosmosDB.BulkExecutor.BulkDelete;
 using System.Linq;
 using Microsoft.Azure.Documents.Linq;
-using ordercloud.integrations.library;
 using Cosmonaut.Attributes;
 using Newtonsoft.Json.Linq;
-using Microsoft.WindowsAzure.Storage.Blob.Protocol;
 using System.Reflection;
 using Microsoft.Azure.CosmosDB.BulkExecutor.BulkImport;
 

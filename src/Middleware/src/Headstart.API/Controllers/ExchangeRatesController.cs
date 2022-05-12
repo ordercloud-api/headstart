@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Headstart.Models.Attributes;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using ordercloud.integrations.exchangerates;
-using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 

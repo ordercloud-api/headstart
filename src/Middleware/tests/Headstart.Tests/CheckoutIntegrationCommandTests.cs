@@ -1,14 +1,11 @@
 ﻿using OrderCloud.SDK;
 using NSubstitute;
 using NUnit.Framework;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models.Headstart;
 using System.Linq;
-using Headstart.API.Commands;
 using Headstart.Common.Extensions;
 using Headstart.Tests.Mocks;
 using Headstart.Models;

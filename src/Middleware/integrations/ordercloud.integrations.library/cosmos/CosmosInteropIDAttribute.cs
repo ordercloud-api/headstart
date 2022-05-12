@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
-using Newtonsoft.Json.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ordercloud.integrations.library.Cosmos
 {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ordercloud.integrations.vertex
+﻿namespace ordercloud.integrations.vertex
 {
     public class VertexCustomer
     {

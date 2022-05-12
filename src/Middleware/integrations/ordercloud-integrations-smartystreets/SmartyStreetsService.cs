@@ -1,10 +1,7 @@
 ﻿using Flurl;
 using Flurl.Http;
-using SmartyStreets;
 using SmartyStreets.USStreetApi;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ordercloud.integrations.smartystreets

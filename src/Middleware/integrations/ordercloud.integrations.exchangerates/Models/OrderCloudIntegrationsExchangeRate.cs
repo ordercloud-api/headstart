@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using ordercloud.integrations.library;
 
 namespace ordercloud.integrations.exchangerates
 {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ordercloud.integrations.library
+﻿namespace ordercloud.integrations.library
 {
     public class CosmosSettings
     {

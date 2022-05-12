@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Flurl.Http;
-using ordercloud.integrations.library;
 using Newtonsoft.Json;
 using OrderCloud.Catalyst;
 

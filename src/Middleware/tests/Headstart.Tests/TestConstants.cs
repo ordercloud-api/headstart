@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Headstart.Tests
+﻿namespace Headstart.Tests
 {
     public static class TestConstants
     {

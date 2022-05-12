@@ -1,16 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Headstart.API.Commands;
-using Headstart.Common;
-using Headstart.Common.Models;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using NSubstitute;
+﻿using System.Collections;
 using NUnit.Framework;
 using ordercloud.integrations.easypost;
-using ordercloud.integrations.exchangerates;
 using OrderCloud.SDK;
 
 namespace Headstart.Tests

@@ -8,13 +8,11 @@ using NSubstitute;
 using NUnit.Framework;
 using ordercloud.integrations.cardconnect;
 using ordercloud.integrations.exchangerates;
-using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Headstart.Tests

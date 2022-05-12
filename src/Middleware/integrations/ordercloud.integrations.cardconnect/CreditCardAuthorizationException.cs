@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using OrderCloud.SDK;
 
 namespace ordercloud.integrations.cardconnect

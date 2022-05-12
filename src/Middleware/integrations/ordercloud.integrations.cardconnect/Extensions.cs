@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using OrderCloud.SDK;
+﻿using OrderCloud.SDK;
 
 namespace ordercloud.integrations.cardconnect
 {

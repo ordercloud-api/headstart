@@ -5,9 +5,7 @@ using Headstart.Common.Models;
 using Headstart.Common.Repositories;
 using Headstart.Jobs.Helpers;
 using Headstart.Models;
-using Microsoft.Azure.Cosmos;
 using ordercloud.integrations.library;
-using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
 namespace Headstart.Jobs

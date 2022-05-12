@@ -3,10 +3,8 @@ using Headstart.Common.Services.CMS.Models;
 using Headstart.Models;
 using ordercloud.integrations.library;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Headstart.Common.Services.CMS

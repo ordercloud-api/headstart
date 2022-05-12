@@ -1,5 +1,4 @@
 using ordercloud.integrations.cardconnect;
-using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;
 using ordercloud.integrations.smartystreets;
 using ordercloud.integrations.taxjar;

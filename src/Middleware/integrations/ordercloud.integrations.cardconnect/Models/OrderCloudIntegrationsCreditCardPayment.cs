@@ -1,5 +1,4 @@
-﻿using ordercloud.integrations.library;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace ordercloud.integrations.cardconnect
 {

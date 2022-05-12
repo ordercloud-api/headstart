@@ -1,10 +1,7 @@
-﻿using Avalara.AvaTax.RestClient;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using ordercloud.integrations.avalara;
 using OrderCloud.SDK;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace avalara.tests

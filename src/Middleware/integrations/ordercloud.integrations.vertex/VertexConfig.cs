@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ordercloud.integrations.vertex
+﻿namespace ordercloud.integrations.vertex
 {
     public class VertexConfig
     {

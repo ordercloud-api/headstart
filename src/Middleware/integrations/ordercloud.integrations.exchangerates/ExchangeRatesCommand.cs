@@ -8,7 +8,6 @@ using ordercloud.integrations.library;
 using OrderCloud.SDK;
 using Newtonsoft.Json;
 using Flurl.Http.Configuration;
-using LazyCache;
 using OrderCloud.Catalyst;
 
 namespace ordercloud.integrations.exchangerates

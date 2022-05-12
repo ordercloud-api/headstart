@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using ordercloud.integrations.library;
-using ordercloud.integrations.library.intefaces;
 using OrderCloud.SDK;
 
 namespace ordercloud.integrations.vertex

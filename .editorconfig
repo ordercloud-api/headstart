@@ -503,3 +503,4 @@ dotnet_diagnostic.SA1409.severity=silent
 dotnet_diagnostic.SA1410.severity=warning
 dotnet_diagnostic.SA1119_p.severity=warning
 dotnet_diagnostic.SA1027.severity=warning
+csharp_using_directive_placement=outside_namespace:warning

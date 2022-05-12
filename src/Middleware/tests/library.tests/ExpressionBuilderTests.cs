@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
-using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
 
 namespace library.tests

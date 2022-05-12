@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ordercloud.integrations.cardconnect
+﻿namespace ordercloud.integrations.cardconnect
 {
     // https://developer.cardconnect.com/cardconnect-api#refund-request
     public class CardConnectRefundRequest

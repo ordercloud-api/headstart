@@ -1,6 +1,4 @@
-﻿using ordercloud.integrations.library;
-
-namespace ordercloud.integrations.cardconnect
+﻿namespace ordercloud.integrations.cardconnect
 {
     public class CardConnectAuthorizationRequest
     {

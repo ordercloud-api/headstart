@@ -1,10 +1,8 @@
-using System;
 using System.Collections.Generic;
 using Headstart.Models.Headstart.Extended;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using ordercloud.integrations.exchangerates;
-using ordercloud.integrations.library;
 using OrderCloud.SDK;
 
 namespace Headstart.Models.Headstart

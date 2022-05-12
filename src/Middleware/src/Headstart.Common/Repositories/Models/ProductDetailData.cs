@@ -1,10 +1,7 @@
 ﻿using Headstart.Models;
-using ordercloud.integrations.easypost;
-using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;
 using OrderCloud.SDK;
 using System;
-using System.Collections.Generic;
 
 namespace Headstart.Common.Repositories.Models
 {

@@ -1,6 +1,4 @@
-﻿using ordercloud.integrations.library;
-
-namespace Headstart.Models.Headstart.Extended
+﻿namespace Headstart.Models.Headstart.Extended
 {
     public class Contact
     {

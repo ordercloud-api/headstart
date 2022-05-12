@@ -1,13 +1,9 @@
 ﻿using NUnit.Framework;
 using NSubstitute;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using AutoFixture;
 using OrderCloud.SDK;
 using Headstart.Models;
-using Headstart.Common;
 using Headstart.API.Commands.Crud;
 using System.Linq;
 using AutoFixture.NUnit3;

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ordercloud.integrations.taxjar
+﻿namespace ordercloud.integrations.taxjar
 {
     public class TaxJarConfig
     {

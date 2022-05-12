@@ -1,6 +1,4 @@
-﻿using ordercloud.integrations.library;
-
-namespace Headstart.Models.Extended
+﻿namespace Headstart.Models.Extended
 {
     public class UnitOfMeasure
     {

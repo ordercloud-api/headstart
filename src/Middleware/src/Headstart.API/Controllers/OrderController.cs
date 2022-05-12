@@ -2,7 +2,6 @@ using Headstart.Models;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.SDK;
 using System.Threading.Tasks;
-using Headstart.Models.Attributes;
 using System.Collections.Generic;
 using ordercloud.integrations.library;
 using Headstart.Models.Headstart;

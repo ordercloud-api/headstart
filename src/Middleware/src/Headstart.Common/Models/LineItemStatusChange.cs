@@ -1,7 +1,5 @@
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models.Extended;
-using ordercloud.integrations.library;
-using OrderCloud.SDK;
 using System.Collections.Generic;
 
 namespace Headstart.Models.Headstart

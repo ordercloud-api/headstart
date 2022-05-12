@@ -4,21 +4,16 @@ using NSubstitute;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Headstart.Models.Headstart;
 using Headstart.Models;
 using Headstart.Common;
-using System.Security.Cryptography.X509Certificates;
 using System.Linq;
-using Microsoft.VisualStudio.TestPlatform.Common;
 using SendGrid.Helpers.Mail;
-using System.Dynamic;
 using NSubstitute.Extensions;
 using AutoFixture;
 using SendGrid;
 using Headstart.Common.Services.ShippingIntegration.Models;
-using Avalara.AvaTax.RestClient;
 using ordercloud.integrations.library;
 
 namespace Headstart.Tests

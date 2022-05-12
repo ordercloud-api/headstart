@@ -1,8 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using ordercloud.integrations.library;
-using OrderCloud.Catalyst;
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;

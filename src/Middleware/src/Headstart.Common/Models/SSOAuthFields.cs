@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Headstart.Common.Models
+﻿namespace Headstart.Common.Models
 {
     public class SSOAuthFields
     {

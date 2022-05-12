@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace ordercloud.integrations.library
 {
     public class StorageAccountSettings

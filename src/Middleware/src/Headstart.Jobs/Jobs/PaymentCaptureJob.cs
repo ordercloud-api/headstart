@@ -6,13 +6,11 @@ using Headstart.Models.Headstart;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using ordercloud.integrations.cardconnect;
-using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Headstart.Jobs

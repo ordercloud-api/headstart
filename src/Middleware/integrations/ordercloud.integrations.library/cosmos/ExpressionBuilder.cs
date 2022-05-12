@@ -5,8 +5,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Text;
-using ordercloud.integrations.library;
 using OrderCloud.Catalyst;
 
 namespace ordercloud.integrations.library.Cosmos

@@ -1,8 +1,6 @@
 ﻿using ordercloud.integrations.library.intefaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Taxjar;
 
 namespace ordercloud.integrations.taxjar

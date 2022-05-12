@@ -9,9 +9,7 @@ using ordercloud.integrations.exchangerates;
 using ordercloud.integrations.library;
 using AutoFixture;
 using Flurl.Http.Configuration;
-using LazyCache.Mocks;
 using OrderCloud.Catalyst;
-using OrderCloud.SDK;
 
 namespace exchangerates.tests
 {

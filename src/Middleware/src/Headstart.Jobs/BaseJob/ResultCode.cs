@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Headstart.Jobs
+﻿namespace Headstart.Jobs
 {
     public enum ResultCode
     {
