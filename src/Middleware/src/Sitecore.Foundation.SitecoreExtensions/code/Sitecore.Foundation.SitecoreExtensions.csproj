@@ -1,0 +1,616 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject />
+    <LangVersion>8.0</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="51Degrees.mobi-core" Version="3.2.21.1" />
+    <PackageReference Include="Antlr" Version="3.5.0.2" />
+    <PackageReference Include="Azure.Core" Version="1.24.0" />
+    <PackageReference Include="Azure.Core.Amqp" Version="1.2.0" />
+    <PackageReference Include="Azure.Identity" Version="1.6.0" />
+    <PackageReference Include="chilkat-x64" Version="9.5.0.90" />
+    <PackageReference Include="CommonServiceLocator" Version="2.0.6" />
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="DnsClient" Version="1.6.0" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="2.16.0" />
+    <PackageReference Include="DynamicPlaceholders" Version="1.2.0.2" />
+    <PackageReference Include="DynamicPlaceholders.Mvc" Version="1.2.0" />
+    <PackageReference Include="EcmaScript.Net" Version="2.0.0" />
+    <PackageReference Include="EnterpriseLibrary.Common" Version="6.0.1304" />
+    <PackageReference Include="EnterpriseLibrary.TransientFaultHandling" Version="6.0.1304" />
+    <PackageReference Include="EnterpriseLibrary.TransientFaultHandling.Configuration" Version="6.0.1304" />
+    <PackageReference Include="EnterpriseLibrary.TransientFaultHandling.Data" Version="6.0.1304.1" />
+    <PackageReference Include="EnterpriseLibrary.TransientFaultHandling.WindowsAzure.Storage" Version="6.0.1304" />
+    <PackageReference Include="Google.Protobuf" Version="3.20.1" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
+    <PackageReference Include="IdentityModel" Version="6.0.0" />
+    <PackageReference Include="Markdown" Version="2.2.1" />
+    <PackageReference Include="Microsoft.ApplicationInsights" Version="2.20.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.Agent.Intercept" Version="2.4.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.20.0" />
+    <PackageReference Include="Microsoft.AspNet.Cors" Version="5.2.8" />
+    <PackageReference Include="Microsoft.AspNet.Identity.Core" Version="2.2.3" />
+    <PackageReference Include="Microsoft.AspNet.Identity.Owin" Version="2.2.3" />
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.8" />
+    <PackageReference Include="Microsoft.AspNet.OData" Version="7.5.14" />
+    <PackageReference Include="Microsoft.AspNet.Razor" Version="3.2.8" />
+    <PackageReference Include="Microsoft.AspNet.SessionState.SessionStateModule" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNet.Web.Optimization" Version="1.1.3" />
+    <PackageReference Include="Microsoft.AspNet.WebApi" Version="5.2.8" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.8" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.8" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Cors" Version="5.2.8" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Extensions.Compression.Server" Version="2.0.6" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Owin" Version="5.2.8" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.OwinSelfHost" Version="5.2.8" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.WebHost" Version="5.2.8" />
+    <PackageReference Include="Microsoft.AspNet.WebPages" Version="3.2.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.Server.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.16" />
+    <PackageReference Include="Microsoft.Azure.Amqp" Version="2.5.10" />
+    <PackageReference Include="Microsoft.Azure.KeyVault" Version="3.0.5" />
+    <PackageReference Include="Microsoft.Azure.KeyVault.Core" Version="3.0.5" />
+    <PackageReference Include="Microsoft.Azure.KeyVault.WebKey" Version="3.0.5" />
+    <PackageReference Include="Microsoft.Azure.ServiceBus" Version="5.2.0" />
+    <PackageReference Include="Microsoft.Azure.Services.AppAuthentication" Version="1.6.2" />
+    <PackageReference Include="Microsoft.Azure.SqlDatabase.ElasticScale.Client" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="6.0.0" />
+    <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" Version="3.6.0" />
+    <PackageReference Include="Microsoft.Configuration.ConfigurationBuilders.Base" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Configuration.ConfigurationBuilders.Environment" Version="2.0.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="4.1.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient.SNI" Version="4.0.0" />
+    <PackageReference Include="Microsoft.DotNet.InternalAbstractions" Version="1.0.0" />
+    <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.CommandLineUtils" Version="1.1.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.CommandLine" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Xml" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="6.0.4" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.FileSystemGlobbing" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Primitives" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.43.1" />
+    <PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="2.20.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Clients.ActiveDirectory" Version="5.2.9" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="6.17.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Logging" Version="6.17.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Protocols" Version="6.17.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="6.17.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Protocols.WsFederation" Version="6.17.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.17.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens.Saml" Version="6.17.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Xml" Version="6.17.0" />
+    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Net.Compilers" Version="4.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.Platforms" Version="6.0.3" />
+    <PackageReference Include="Microsoft.NETCore.Targets" Version="5.0.0" />
+    <PackageReference Include="Microsoft.OData.Core" Version="7.10.0" />
+    <PackageReference Include="Microsoft.OData.Edm" Version="7.10.0" />
+    <PackageReference Include="Microsoft.Owin" Version="4.2.1" />
+    <PackageReference Include="Microsoft.Owin.Host.HttpListener" Version="4.2.1" />
+    <PackageReference Include="Microsoft.Owin.Hosting" Version="4.2.1" />
+    <PackageReference Include="Microsoft.Owin.Security" Version="4.2.1" />
+    <PackageReference Include="Microsoft.Owin.Security.ActiveDirectory" Version="4.2.1" />
+    <PackageReference Include="Microsoft.Owin.Security.Cookies" Version="4.2.1" />
+    <PackageReference Include="Microsoft.Owin.Security.Jwt" Version="4.2.1" />
+    <PackageReference Include="Microsoft.Owin.Security.OAuth" Version="4.2.1" />
+    <PackageReference Include="Microsoft.Owin.Security.OpenIdConnect" Version="4.2.1" />
+    <PackageReference Include="Microsoft.Practices.EnterpriseLibrary.TransientFaultHandling.ServiceBus" Version="6.0.1304" />
+    <PackageReference Include="Microsoft.Rest.ClientRuntime" Version="2.3.24" />
+    <PackageReference Include="Microsoft.Rest.ClientRuntime.Azure" Version="3.3.19" />
+    <PackageReference Include="Microsoft.Spatial" Version="7.10.0" />
+    <PackageReference Include="Microsoft.SqlServer.Management.AlwaysEncrypted.AzureKeyVaultProvider" Version="2.4.0" />
+    <PackageReference Include="Microsoft.Web.Infrastructure" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
+    <PackageReference Include="mongocsharpdriver" Version="2.15.0" />
+    <PackageReference Include="MongoDB.Bson" Version="2.15.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.15.0" />
+    <PackageReference Include="MongoDB.Driver.Core" Version="2.15.0" />
+    <PackageReference Include="MongoDB.Libmongocrypt" Version="1.3.0" />
+    <PackageReference Include="MSBuild.Microsoft.VisualStudio.Web.targets" Version="14.0.0.3" />
+    <PackageReference Include="Mvp.Xml" Version="2.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Owin" Version="1.0.0" />
+    <PackageReference Include="PdfSharp" Version="1.50.5147" />
+    <PackageReference Include="Pipelines.Sockets.Unofficial" Version="2.2.2" />
+    <PackageReference Include="Polly" Version="7.2.1" />
+    <PackageReference Include="Proto.Actor" Version="0.29.0" />
+    <PackageReference Include="Proto.Mailbox" Version="0.1.15" />
+    <PackageReference Include="Proto.Schedulers.SimpleScheduler" Version="0.1.15" />
+    <PackageReference Include="protobuf-net" Version="3.1.0" />
+    <PackageReference Include="protobuf-net.Core" Version="3.1.0" />
+    <PackageReference Include="RazorGenerator.MsBuild" Version="2.5.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="RazorGenerator.Mvc" Version="2.4.9" />
+    <PackageReference Include="Rebus" Version="6.6.4" />
+    <PackageReference Include="Rebus.AzureServiceBus" Version="9.0.8" />
+    <PackageReference Include="Rebus.SqlServer" Version="7.2.0" />
+    <PackageReference Include="Remotion.Linq" Version="2.2.0" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
+    <PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
+    <PackageReference Include="Serilog.Sinks.Trace" Version="3.0.0" />
+    <PackageReference Include="SharpCompress" Version="0.31.0" />
+    <PackageReference Include="SharpZipLib" Version="1.3.3" />
+    <PackageReference Include="Sitecore" Version="10.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Sitecore.Analytics" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Analytics.Aggregation" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Analytics.Core" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Analytics.Core.NoReferences" Version="9.0.180604">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Sitecore.Analytics.DataAccess" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Analytics.Model" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Analytics.Model.NoReferences" Version="9.0.180604">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Sitecore.Analytics.NoReferences" Version="9.0.180604">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Sitecore.Analytics.OmniChannel" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Analytics.Outcome.NoReferences" Version="8.2.180406">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Sitecore.Analytics.Processing" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Analytics.RobotDetection" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Analytics.Sql" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Analytics.XConnect" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Annotations" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Apps.Loader" Version="9.3.0" />
+    <PackageReference Include="Sitecore.Assemblies.Platform" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Assemblies.XConnect.IndexWorker" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Assemblies.XConnect.MarketingAutomationEngine" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Assemblies.XConnect.ProcessingEngine" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Assemblies.XConnect.Web" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Async.Extensions.Legacy" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Buckets" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Buckets.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.CES" Version="10.2.0" />
+    <PackageReference Include="Sitecore.CES.DeviceDetection" Version="10.2.0" />
+    <PackageReference Include="Sitecore.CES.DeviceDetection.Rules" Version="10.2.0" />
+    <PackageReference Include="Sitecore.CES.GeoIp" Version="10.2.0" />
+    <PackageReference Include="Sitecore.CES.GeoIp.Core" Version="10.2.0" />
+    <PackageReference Include="Sitecore.CES.GeoIp.IpFiltering" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Cintel" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Cintel.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Client.LicenseOptions" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Cloud.Nexus" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Content.Services" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentSearch" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentSearch.Azure" Version="10.1.2" />
+    <PackageReference Include="Sitecore.ContentSearch.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentSearch.ContentExtraction" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentSearch.Data" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentSearch.Linq" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentSearch.Linq.NoReferences" Version="9.0.180604">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Sitecore.ContentSearch.Linq.Solr" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentSearch.NoReferences" Version="9.0.180604">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Sitecore.ContentSearch.SolrNetExtension" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentSearch.SolrProvider" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentTagging" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentTagging.Core" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentTagging.OpenCalais" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentTesting" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentTesting.Intelligence" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentTesting.ML" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentTesting.ML.Core" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentTesting.ML.Core.Abstractions" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentTesting.Model" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentTesting.Model.xConnect" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentTesting.Mvc" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ContentTesting.Reporting.Model" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ControlPanel" Version="10.2.0" />
+    <PackageReference Include="Sitecore.EDS.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.EDS.Core" Version="10.2.0" />
+    <PackageReference Include="Sitecore.EDS.Providers.CustomSMTP" Version="10.2.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Sitecore.EDS.Providers.SparkPost" Version="10.2.0" />
+    <PackageReference Include="Sitecore.EDS.SparkPost.ClientServices" Version="10.2.0" />
+    <PackageReference Include="Sitecore.EmailCampaign" Version="10.2.0" />
+    <PackageReference Include="Sitecore.EmailCampaign.Activities" Version="10.2.0" />
+    <PackageReference Include="Sitecore.EmailCampaign.Application" Version="10.2.0" />
+    <PackageReference Include="Sitecore.EmailCampaign.Cd" Version="10.2.0" />
+    <PackageReference Include="Sitecore.EmailCampaign.Cm" Version="10.2.0" />
+    <PackageReference Include="Sitecore.EmailCampaign.Cm.UI" Version="10.2.0" />
+    <PackageReference Include="Sitecore.EmailCampaign.Core" Version="10.2.0" />
+    <PackageReference Include="Sitecore.EmailCampaign.ExperienceAnalytics" Version="10.2.0" />
+    <PackageReference Include="Sitecore.EmailCampaign.Model" Version="10.2.0" />
+    <PackageReference Include="Sitecore.EmailCampaign.Model.Web" Version="10.2.0" />
+    <PackageReference Include="Sitecore.EmailCampaign.SampleNewsletter" Version="10.2.0" />
+    <PackageReference Include="Sitecore.EmailCampaign.Server" Version="10.2.0" />
+    <PackageReference Include="Sitecore.EmailCampaign.Templates" Version="10.2.0" />
+    <PackageReference Include="Sitecore.EmailCampaign.XConnect" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExM.Framework" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceAnalytics.Aggregation" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceAnalytics.Api" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceAnalytics.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceAnalytics.Core" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceAnalytics.ReAggregation" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceAnalytics.Reduce" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceContentManagement.Administration" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceEditor" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceEditor.NoReferences" Version="9.0.180604">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Sitecore.ExperienceEditor.Speak" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceEditor.Speak.Ribbon" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceExplorer" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceExplorer.Analytics" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceExplorer.Business" Version="8.2.180406">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Sitecore.ExperienceExplorer.Core" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceExplorer.Web" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceForms" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceForms.Analytics" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceForms.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceForms.Data.SqlServer" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceForms.Mvc" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ExperienceForms.SubmitActions" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Framework.Common" Version="5.0.1" />
+    <PackageReference Include="Sitecore.Framework.Common.Abstractions" Version="5.0.1" />
+    <PackageReference Include="Sitecore.Framework.Common.Extensions" Version="3.3.0" />
+    <PackageReference Include="Sitecore.Framework.Common.WildcardMatch" Version="5.0.1" />
+    <PackageReference Include="Sitecore.Framework.Conditions" Version="5.0.0" />
+    <PackageReference Include="Sitecore.Framework.Configuration" Version="6.0.1" />
+    <PackageReference Include="Sitecore.Framework.Configuration.Abstractions" Version="6.0.1" />
+    <PackageReference Include="Sitecore.Framework.Configuration.Common" Version="6.0.1" />
+    <PackageReference Include="Sitecore.Framework.Configuration.Extensions" Version="6.0.1" />
+    <PackageReference Include="Sitecore.Framework.Configuration.Xml" Version="6.0.1" />
+    <PackageReference Include="Sitecore.Framework.Data.Blobs" Version="2.0.0" />
+    <PackageReference Include="Sitecore.Framework.Data.Blobs.Abstractions" Version="2.0.0" />
+    <PackageReference Include="Sitecore.Framework.Messaging.Abstractions" Version="5.0.1" />
+    <PackageReference Include="Sitecore.Framework.Messaging.Configuration" Version="5.0.1" />
+    <PackageReference Include="Sitecore.Framework.Messaging.Rebus" Version="5.0.1" />
+    <PackageReference Include="Sitecore.Framework.Messaging.Rebus.Azure" Version="5.0.1" />
+    <PackageReference Include="Sitecore.Framework.Messaging.Rebus.SqlServer" Version="5.0.1" />
+    <PackageReference Include="Sitecore.Framework.Rules" Version="5.1.3" />
+    <PackageReference Include="Sitecore.Framework.Rules.Abstractions" Version="5.1.3" />
+    <PackageReference Include="Sitecore.Framework.Rules.Api" Version="5.1.3" />
+    <PackageReference Include="Sitecore.Framework.Rules.Core" Version="5.1.3" />
+    <PackageReference Include="Sitecore.Framework.Rules.Model" Version="5.1.3" />
+    <PackageReference Include="Sitecore.Framework.Rules.Registry" Version="5.1.3" />
+    <PackageReference Include="Sitecore.Framework.Rules.Serialization" Version="5.1.3" />
+    <PackageReference Include="Sitecore.Framework.TransientFaultHandling" Version="3.0.3" />
+    <PackageReference Include="Sitecore.Framework.TransientFaultHandling.Abstractions" Version="3.0.3" />
+    <PackageReference Include="Sitecore.Framework.TransientFaultHandling.EntLib" Version="3.0.3" />
+    <PackageReference Include="Sitecore.Framework.TransientFaultHandling.Sql" Version="3.0.3" />
+    <PackageReference Include="Sitecore.FXM" Version="10.2.0" />
+    <PackageReference Include="Sitecore.FXM.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.FXM.Service" Version="10.2.0" />
+    <PackageReference Include="Sitecore.FXM.Speak" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ItemWebApi" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Kernel" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Kernel.NoReferences" Version="9.0.180604">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Sitecore.LaunchPad" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ListManagement" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ListManagement.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ListManagement.Services" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ListManagement.XConnect" Version="10.2.0" />
+    <PackageReference Include="Sitecore.ListManagement.XConnect.Web" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Logging" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Logging.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.Automation" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.Automation.Activity" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.Automation.ActivityDescriptors" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.Automation.ActivityDescriptors.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.Automation.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.Automation.Models" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.Campaigns.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.Campaigns.Services" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.Core" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.Definitions.MarketingAssets.Repositories" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.Operations.Xdb.ReferenceData" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.Operations.Xdb.ReferenceData.Model" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.Operations.Xdb.ReferenceData.Service" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.Search" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.Segmentation.xMgmt" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.Taxonomy" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.Taxonomy.xMgmt" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.xMgmt" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Marketing.xMgmt.ReferenceData" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Messaging" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Messaging.Azure" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Messaging.SqlServer" Version="10.2.0" />
+    <PackageReference Include="Sitecore.MRSClient" Version="10.0.3" />
+    <PackageReference Include="Sitecore.Mvc" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Mvc.Analytics" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Mvc.DeviceSimulator" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Mvc.ExperienceEditor" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Mvc.ExperienceEditor.NoReferences" Version="9.0.180604">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Sitecore.Mvc.NoReferences" Version="9.0.180604">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Sitecore.Netstandard.Compatibility" Version="9.3.0" />
+    <PackageReference Include="Sitecore.Nexus" Version="10.1.2" />
+    <PackageReference Include="Sitecore.Nexus.Consumption" Version="1.4.2" />
+    <PackageReference Include="Sitecore.Nexus.Licensing" Version="9.0.180604">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Sitecore.Owin" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Owin.Authentication" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Owin.Authentication.IdentityServer" Version="10.2.0" />
+    <PackageReference Include="Sitecore.PathAnalyzer" Version="10.2.0" />
+    <PackageReference Include="Sitecore.PathAnalyzer.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.PathAnalyzer.Services" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Personalization" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Personalization.Mvc" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Processing.Common" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Processing.Common.Sql" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Processing.Cursors.Abstractions" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Processing.Cursors.Sql" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Processing.Engine" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Processing.Engine.Abstractions" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Processing.Engine.ML" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Processing.Engine.ML.Abstractions" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Processing.Engine.Projection" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Processing.Engine.Scripting" Version="10.0.3" />
+    <PackageReference Include="Sitecore.Processing.Engine.Scripting.Abstractions" Version="10.0.3" />
+    <PackageReference Include="Sitecore.Processing.Engine.Scripting.Mrs" Version="10.0.3" />
+    <PackageReference Include="Sitecore.Processing.Engine.Storage" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Processing.Engine.Storage.Abstractions" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Processing.Engine.Storage.Sql" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Processing.Engine.Storage.WebApi" Version="10.1.2" />
+    <PackageReference Include="Sitecore.Processing.Tasks.Abstractions" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Processing.Tasks.Messaging" Version="10.1.2" />
+    <PackageReference Include="Sitecore.Processing.Tasks.Messaging.Xmgmt" Version="10.1.2" />
+    <PackageReference Include="Sitecore.Processing.Tasks.Options" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Processing.Tasks.Sql" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Reporting.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Reporting.Core" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Reporting.Data.Abstractions" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Reporting.Data.Sql" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Reporting.Service.Abstractions" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Reporting.Service.Data" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Reporting.Service.Http.Abstractions" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Reporting.Service.Http.XConnectClient" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Reporting.TypeGenerator" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Reporting.Web" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Reporting.Web.XConnect" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Reporting.xMgmt" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Security.AntiCsrf" Version="10.2.0" />
+    <PackageReference Include="Sitecore.SequenceAnalyzer" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Services.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Services.Core" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Services.Infrastructure" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Services.Infrastructure.Sitecore" Version="10.2.0" />
+    <PackageReference Include="Sitecore.SessionProvider" Version="10.2.0" />
+    <PackageReference Include="Sitecore.SessionProvider.Memory" Version="10.2.0" />
+    <PackageReference Include="Sitecore.SessionProvider.MongoDB" Version="10.0.3" />
+    <PackageReference Include="Sitecore.SessionProvider.Redis" Version="10.2.0" />
+    <PackageReference Include="Sitecore.SessionProvider.Sql" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Speak.Applications" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Speak.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Speak.Components" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Speak.Components.Guidance" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Speak.Components.Web" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Speak.ItemWebApi" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Speak.Web" Version="10.2.0" />
+    <PackageReference Include="Sitecore.TransientFaultHandling" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Update" Version="10.2.0" />
+    <PackageReference Include="Sitecore.UpdateCenter" Version="10.2.0" />
+    <PackageReference Include="Sitecore.UpdateCenter.Core" Version="10.2.0" />
+    <PackageReference Include="Sitecore.UpdateCenter.ServiceClient" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Web" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Client.Configuration" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Client.Configuration.XConnect" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Client.Services.Configuration" Version="9.3.0" />
+    <PackageReference Include="Sitecore.XConnect.Collection.Model" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Collection.Model.Plugins" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Configuration" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Core" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.DataPurge.CortexWorkers" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.DataPurge.Tasks.Options" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.DataPurge.Xmgmt" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.DataTools.Abstractions" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.DataTools.Conditions" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.DependencyInjection" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.DependencyInjection.Web" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Diagnostics" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Diagnostics.ApplicationInsights" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Diagnostics.PerformanceCounters" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.HealthCheck.WebApi" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Hosting" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Hosting.OwinSelfHost" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Logging.Serilog" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Logging.Serilog.AppInsights" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Messaging" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Messaging.Azure" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Messaging.SqlServer" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Search" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Security.Web" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Segmentation.Conditions" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Segmentation.Configuration" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Segmentation.Engine" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Segmentation.ExpressionBuilder.Model" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Segmentation.Predicates" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Segmentation.Predicates.Model" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Service" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Service.Plugins" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Service.Plugins.MarketingAutomation" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Service.Plugins.Processing" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Web" Version="10.2.0" />
+    <PackageReference Include="Sitecore.XConnect.Web.Host" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.Collection" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.Collection.Data.MongoDb" Version="10.0.3" />
+    <PackageReference Include="Sitecore.Xdb.Collection.Data.SqlServer" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.Collection.Search.Azure" Version="10.1.2" />
+    <PackageReference Include="Sitecore.Xdb.Collection.Search.Solr" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.Common.Web" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.Common.Web.Xmgmt" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.Configuration" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.MarketingAutomation" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.MarketingAutomation.Core" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.MarketingAutomation.Locators" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.MarketingAutomation.Locators.Xmgmt" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.MarketingAutomation.OperationsClient" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.MarketingAutomation.OperationsClient.Configuration" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.MarketingAutomation.ReportingClient" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.MarketingAutomation.ReportingClient.Configuration" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.MarketingAutomation.SqlServer" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.MarketingAutomation.Tracking" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.MarketingAutomation.Web" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.MarketingAutomation.Web.XConnect" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.Processing.ContactMerge" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.Processing.ContactMerge.UI" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.Processing.Queue" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.Processing.Queue.SqlServer" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.Processing.Queue.SqlServer.XConnect" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.ReferenceData.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.ReferenceData.Client.Xmgmt" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.ReferenceData.Core" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.ReferenceData.Service" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.ReferenceData.Service.Xmgmt" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.ReferenceData.SqlServer" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.ReferenceData.SqlServer.Xmgmt" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.ReferenceData.Web" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.ReferenceData.Web.XConnect" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.Sql.Common" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.Sql.Common.Encryption" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.Sql.Common.HealthCheck" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.Sql.Common.Xmgmt" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Xdb.Tracking.Client" Version="10.2.0" />
+    <PackageReference Include="Sitecore.Zip" Version="10.1.2" />
+    <PackageReference Include="SolrNet" Version="1.1.0" />
+    <PackageReference Include="SolrNet.Core" Version="1.1.0" />
+    <PackageReference Include="StackExchange.Redis" Version="2.5.61" />
+    <PackageReference Include="System.Buffers" Version="4.5.1" />
+    <PackageReference Include="System.Collections" Version="4.3.0" />
+    <PackageReference Include="System.Collections.Concurrent" Version="4.3.0" />
+    <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
+    <PackageReference Include="System.ComponentModel" Version="4.3.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+    <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="6.0.0" />
+    <PackageReference Include="System.Diagnostics.PerformanceCounter" Version="6.0.1" />
+    <PackageReference Include="System.Globalization" Version="4.3.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.17.0" />
+    <PackageReference Include="System.Interactive.Async" Version="6.0.1" />
+    <PackageReference Include="System.Interactive.Async.Providers" Version="6.0.1" />
+    <PackageReference Include="System.IO" Version="4.3.0" />
+    <PackageReference Include="System.IO.Compression" Version="4.3.0" />
+    <PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.IO.Packaging" Version="6.0.0" />
+    <PackageReference Include="System.IO.Pipelines" Version="6.0.2" />
+    <PackageReference Include="System.Linq" Version="4.3.0" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
+    <PackageReference Include="System.Linq.Async.Queryable" Version="6.0.1" />
+    <PackageReference Include="System.Linq.Expressions" Version="4.3.0" />
+    <PackageReference Include="System.Memory" Version="4.5.4" />
+    <PackageReference Include="System.Memory.Data" Version="6.0.0" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Net.WebSockets" Version="4.3.0" />
+    <PackageReference Include="System.Net.WebSockets.Client" Version="4.3.2" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+    <PackageReference Include="System.Private.Uri" Version="4.3.2" />
+    <PackageReference Include="System.Reflection" Version="4.3.0" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
+    <PackageReference Include="System.Resources.ResourceManager" Version="4.3.0" />
+    <PackageReference Include="System.Runtime" Version="4.3.1" />
+    <PackageReference Include="System.Runtime.Caching" Version="6.0.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+    <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" />
+    <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.Security.AccessControl" Version="6.0.0" />
+    <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1" />
+    <PackageReference Include="System.Security.Cryptography.Encoding" Version="4.3.0" />
+    <PackageReference Include="System.Security.Cryptography.Primitives" Version="4.3.0" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="6.0.0" />
+    <PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="6.0.0" />
+    <PackageReference Include="System.Security.Permissions" Version="6.0.0" />
+    <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="6.0.0" />
+    <PackageReference Include="System.Text.Json" Version="6.0.3" />
+    <PackageReference Include="System.Threading" Version="4.3.0" />
+    <PackageReference Include="System.Threading.Channels" Version="6.0.0" />
+    <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="TransientFaultHandling.Caching" Version="3.0.0" />
+    <PackageReference Include="WebActivatorEx" Version="2.2.0" />
+    <PackageReference Include="WebGrease" Version="1.6.0" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.abstractions" Version="2.0.3" />
+    <PackageReference Include="xunit.assert" Version="2.4.1" />
+    <PackageReference Include="xunit.core" Version="2.4.1" />
+    <PackageReference Include="xunit.extensibility.core" Version="2.4.1" />
+    <PackageReference Include="xunit.extensibility.execution" Version="2.4.1" />
+    <PackageReference Include="YUICompressor.NET" Version="3.1.0" />
+  </ItemGroup>
+
+</Project>

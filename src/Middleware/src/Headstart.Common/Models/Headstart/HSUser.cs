@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 namespace Headstart.Models
 {
-
+    
     public class HSUser : User<UserXp>, IHSObject
     {
     }
 
-
+    
     public class UserXp
     {
     public string Country { get; set; }

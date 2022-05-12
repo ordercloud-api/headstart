@@ -2,11 +2,12 @@
 using Headstart.Models.Headstart;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
+using Sitecore.Foundation.SitecoreExtensions.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using SitecoreExtensions = Sitecore.Foundation.SitecoreExtensions.Extensions;
 
 namespace Headstart.Common.Services
 {
@@ -18,16 +19,28 @@ namespace Headstart.Common.Services
 		Task SetLineItemProportionalDiscount(HSOrderWorksheet order, List<OrderPromotion> promotions);
 	}
 
-	/// <summary>
-	/// Promotion discounts are distributed evenly accross line items. Proportional distribution is required for accurate partial returns.
-	/// </summary>
 	public class DiscountDistributionService : IDiscountDistributionService
 	{
 		private readonly IOrderCloudClient _oc;
+		private readonly AppSettings _settings;
 
-		public DiscountDistributionService(IOrderCloudClient oc)
+		/// <summary>
+		/// The IOC based constructor method for the DiscountDistributionService class object with Dependency Injection
+		/// </summary>
+		/// <param name="oc"></param>
+		/// <param name="settings"></param>
+		public DiscountDistributionService(IOrderCloudClient oc, AppSettings settings)
 		{
-			_oc = oc;
+			try
+			{
+				_settings = settings;
+				_oc = oc;
+			}
+			catch (Exception ex)
+			{
+				LoggingNotifications.LogApiResponseMessages(_settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
+					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
+			}
 		}
 
 		/// <summary>
@@ -67,11 +80,18 @@ namespace Headstart.Common.Services
 			}
 
 			await Throttler.RunAsync(order.LineItems, 100, 8, async li => {
-				var patch = new HSPartialLineItem() { xp = new LineItemXp() { LineTotalWithProportionalDiscounts = li.LineTotal } };
+				var patch = new HSPartialLineItem() { xp = new LineItemXp() { LineTotalWithProportionalDiscounts = li.LineTotal }};
 				await _oc.LineItems.PatchAsync(OrderDirection.All, order.Order.ID, li.ID, patch);
 			});
 		}
 
+		/// <summary>
+		/// Private re-usable CalculateDiscountByPromoCode static method
+		/// </summary>
+		/// <param name="promoCode"></param>
+		/// <param name="order"></param>
+		/// <param name="promosOnOrder"></param>
+		/// <param name="totalWeightedLineItemDiscounts"></param>
 		private static void CalculateDiscountByPromoCode(string promoCode, HSOrderWorksheet order, List<OrderPromotion> promosOnOrder, Dictionary<string, decimal> totalWeightedLineItemDiscounts)
 		{
 			// Total discounted from this code for all line items
@@ -102,6 +122,14 @@ namespace Headstart.Common.Services
 			}
 		}
 
+		/// <summary>
+		/// Private re-usable HandleWeightedDiscounting static method
+		/// </summary>
+		/// <param name="eligibleLineItemIDs"></param>
+		/// <param name="weightedLineItemDiscountsByPromoCode"></param>
+		/// <param name="order"></param>
+		/// <param name="eligibleLineItemSubtotal"></param>
+		/// <param name="totalDiscountedByOrderCloud"></param>
 		private static void HandleWeightedDiscounting(List<string> eligibleLineItemIDs, Dictionary<string, decimal> weightedLineItemDiscountsByPromoCode, HSOrderWorksheet order, decimal eligibleLineItemSubtotal, decimal totalDiscountedByOrderCloud)
 		{
 			foreach (string lineItemID in eligibleLineItemIDs)

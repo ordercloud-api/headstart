@@ -13,7 +13,7 @@ namespace Headstart.Common.Exceptions
         public ProcessResultException(Exception ex)
         {
             this.Message = ex.Message;
-            this.ResponseBody = string.Empty;
+            this.ResponseBody = "";
         }
 
         public ProcessResultException(CatalystBaseException ex)
@@ -22,7 +22,7 @@ namespace Headstart.Common.Exceptions
             try
             {
                 this.ResponseBody = JsonConvert.SerializeObject(ex.Errors);
-            } catch (Exception)
+            } catch(Exception)
             {
                 this.ResponseBody = "Error while trying to parse response body";
             }
@@ -34,11 +34,11 @@ namespace Headstart.Common.Exceptions
             try
             {
                 this.ResponseBody = ex.GetResponseJsonAsync().Result;
-            } catch (Exception)
+            } catch(Exception)
             {
                 this.ResponseBody = "Error while trying to parse response body";
             }
-
+            
         }
 
         public string Message { get; set; }

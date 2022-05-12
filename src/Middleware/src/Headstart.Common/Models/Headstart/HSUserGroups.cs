@@ -7,30 +7,30 @@ using System.Collections.Generic;
 
 namespace Headstart.Models
 {
-
+    
     public class HSBuyerLocation
     {
         public HSLocationUserGroup UserGroup { get; set; }
         public HSAddressBuyer Address { get; set; }
     }
-
+    
     public class HSUserGroup : UserGroup<UserGroupXp>, IHSObject
     {
     }
 
-
+    
     public class UserGroupXp
     {
         public string Type { get; set; }
         public string Role { get; set; }
     }
 
-
+    
     public class HSLocationUserGroup : UserGroup<HSLocationUserGroupXp>, IHSObject
     {
     }
 
-
+    
     public class HSLocationUserGroupXp
     {
         public string Type { get; set; }

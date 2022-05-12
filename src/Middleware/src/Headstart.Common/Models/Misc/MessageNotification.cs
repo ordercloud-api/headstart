@@ -5,7 +5,7 @@ using Headstart.Models.Headstart;
 
 namespace Headstart.Models.Misc
 {
-
+    
 	public class MessageNotification<EventBodyType>
 	{
 		public string BuyerID { get; set; }

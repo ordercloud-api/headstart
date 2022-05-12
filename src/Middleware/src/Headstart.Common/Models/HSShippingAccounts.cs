@@ -10,7 +10,7 @@ namespace Headstart.Common.Models
     {
         public HSShippingProfiles(AppSettings settings)
         {
-            // TODO: Replace this with shipping profiles needed
+            //TODO: Replace this with shipping profiles needed
             this.ShippingProfiles.Add(new EasyPostShippingProfile()
             {
                 ID = "SMG",
@@ -22,7 +22,7 @@ namespace Headstart.Common.Models
                 Customs_Certify = true,
                 Markup = 1.5M,
                 Default = true
-            });
+            });          
         }
 
         public override EasyPostShippingProfile FirstOrDefault(string id)

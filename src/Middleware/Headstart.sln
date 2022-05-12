@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29230.47
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Headstart.Common", "src\Headstart.Common\Headstart.Common.csproj", "{487E6294-64B7-4D14-A906-71513D5C49E4}"
 EndProject
@@ -10,7 +10,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0B969DE0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{914CFF67-B4A4-464F-B3DB-23A8B09F88E2}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\.editorconfig = ..\..\.editorconfig
 		nuget.config = nuget.config
 	EndProjectSection
 EndProject
@@ -49,6 +48,13 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ordercloud.integrations.vertex", "integrations\ordercloud.integrations.vertex\ordercloud.integrations.vertex.csproj", "{FF77C6FA-058A-45E4-9D3D-A6D185892AEC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ordercloud.integrations.taxjar", "integrations\ordercloud.integrations.taxjar\ordercloud.integrations.taxjar.csproj", "{39EA02AA-FD2B-4FF5-9CF4-6215659894A8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6935813E-A76E-43B9-8BDE-FC7E1BFB17AE}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sitecore.Foundation.SitecoreExtensions", "src\Sitecore.Foundation.SitecoreExtensions\code\Sitecore.Foundation.SitecoreExtensions.csproj", "{83F98CBC-0829-4A5D-A92C-3D6B36728D17}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -132,6 +138,10 @@ Global
 		{39EA02AA-FD2B-4FF5-9CF4-6215659894A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39EA02AA-FD2B-4FF5-9CF4-6215659894A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39EA02AA-FD2B-4FF5-9CF4-6215659894A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83F98CBC-0829-4A5D-A92C-3D6B36728D17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83F98CBC-0829-4A5D-A92C-3D6B36728D17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83F98CBC-0829-4A5D-A92C-3D6B36728D17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83F98CBC-0829-4A5D-A92C-3D6B36728D17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -155,6 +165,7 @@ Global
 		{39EA02AA-FD2B-4FF5-9CF4-6215659894A8} = {CCAF8AD5-2FCC-46E0-82EF-2FCC0EEC8B16}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
+		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.TransientFaultHandling.6.0.1304.0\lib\portable-net45+win+wp8;packages\EnterpriseLibrary.TransientFaultHandling.Caching.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.TransientFaultHandling.Data.6.0.1304.1\lib\NET45;packages\EnterpriseLibrary.TransientFaultHandling.ServiceBus.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.TransientFaultHandling.WindowsAzure.Storage.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.TransientFaultHandling.Configuration.6.0.1304.0\lib\NET45
 		SolutionGuid = {D28C7C46-780F-4A68-80B8-9789997A37F7}
 	EndGlobalSection
 EndGlobal

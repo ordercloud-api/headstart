@@ -77,7 +77,7 @@ namespace Headstart.Common.Models
         public string firstName { get; set; }
         public string lastName { get; set; }
         public string type { get; set; } // "Owner", "Staff", "Manager", "Trainer", "Regional Manager"
-        public string language { get; set; } // "en-US",
+        public string language { get; set; } // "en-US", 
         public string email { get; set; }
         public string username { get; set; } // seems to match email
         public bool isDeleted { get; set; }
@@ -91,7 +91,7 @@ namespace Headstart.Common.Models
         public string firstName { get; set; }
         public string lastName { get; set; }
         public string type { get; set; } // "Owner", "Staff", "Manager", "Trainer", "Regional Manager"
-        public string language { get; set; } // "en-US",
+        public string language { get; set; } // "en-US", 
         public string email { get; set; }
         public string username { get; set; } // seems to match email
         public bool isDeleted { get; set; }
@@ -115,16 +115,7 @@ namespace Headstart.Common.Models
         public T GetData<T>() => JsonConvert.DeserializeObject<T>(JsonData);
     }
 
-    public enum NotificationChannel
-    {
-        Club,
-        Staff
-    }
+    public enum NotificationChannel { Club, Staff }
 
-    public enum NotificationAction
-    {
-        Update,
-        Delete,
-        Create
+    public enum NotificationAction { Update, Delete, Create }
     }
-}

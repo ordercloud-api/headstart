@@ -29,17 +29,17 @@ namespace Headstart.Common.Services.Zoho.Models
         public bool is_emailed { get; set; }
         public List<string> contact_persons { get; set; }
         public string currency_symbol { get; set; }
-        // public double exchange_rate { get; set; }
+        //public double exchange_rate { get; set; }
 
         // discount fields resulting in errror "Discount after tax cannot be applied when discount is given at the item level"
         // reevaluation fields when handling promotions
-        // public decimal discount_amount { get; set; }
-        // public decimal discount { get; set; }
-        // public bool is_discount_before_tax { get; set; }
+        //public decimal discount_amount { get; set; }
+        //public decimal discount { get; set; }
+        //public bool is_discount_before_tax { get; set; }
 
         // discount fields resulting in errror "Discount after tax cannot be applied when discount is given at the item level"
         // reevaluation fields when handling promotions
-        // public string discount_type { get; set; }
+        //public string discount_type { get; set; }
         public string estimate_id { get; set; }
         public string delivery_method { get; set; }
         public string delivery_method_id { get; set; }

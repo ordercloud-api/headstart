@@ -12,7 +12,7 @@ using ordercloud.integrations.library.intefaces;
 using OrderCloud.SDK;
 
 namespace Headstart.Models
-{
+{ 
     public class SuperHSProduct : IHSObject
     {
         public string ID { get; set; }
@@ -30,32 +30,32 @@ namespace Headstart.Models
         public IList<Spec> Specs { get; set; }
         public IList<HSVariant> Variants { get; set; }
     }
-
+    
     public class PartialHSProduct : PartialProduct<ProductXp>
     {
     }
-
+    
     public class HSLineItemProduct : LineItemProduct<ProductXp> { }
-
+    
     public class HSProduct : Product<ProductXp>, IHSObject
     {
     }
 
-    public class HSMeProduct : BuyerProduct<ProductXp, HSPriceSchedule>
+    public class HSMeProduct: BuyerProduct<ProductXp, HSPriceSchedule>
     {
 
     }
-
+    
 	public class HSVariant : Variant<HSVariantXp> { }
 
-
+    
 	public class ProductXp
     {
-        // DO NOT DELETE THE FOLLOWING PROPERTIES
+        #region DO NOT DELETE
         [OrchestrationIgnore]
         public dynamic IntegrationData { get; set; }
         public Dictionary<string, List<string>> Facets = new Dictionary<string, List<string>>();
-        // END DO NOT DELETE
+        #endregion
 
         [System.ComponentModel.DataAnnotations.Required]
         public ObjectStatus? Status { get; set; }
@@ -83,7 +83,7 @@ namespace Headstart.Models
         public string Url { get; set; }
         public string ThumbnailUrl { get; set; }
         public List<string> Tags { get; set; }
-    }
+    };
 
     public class DocumentAsset
     {
@@ -98,7 +98,7 @@ namespace Headstart.Models
 		Quote
 	}
 
-
+    
     public class HSVariantXp
     {
         public string SpecCombo { get; set; }
@@ -107,7 +107,7 @@ namespace Headstart.Models
         public List<ImageAsset> Images { get; set; }
     }
 
-
+    
     public class HSSpecValue
     {
         public string SpecName { get; set; }

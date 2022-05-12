@@ -1,27 +1,30 @@
 using System;
 using Headstart.Common;
 using Microsoft.AspNetCore;
+using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace Headstart.API
 {
 	public static class Program
 	{
+		/// <summary>
+		/// The Program.Main void method
+		/// </summary>
+		/// <param name="args"></param>
 		public static void Main(string[] args)
 		{
 			// Links to an Azure App Configuration resource that holds the app settings.
 			// Set this in your visual studio Env Variables.
 			var appConfigConnectionString = Environment.GetEnvironmentVariable("APP_CONFIG_CONNECTION");
-
 			WebHost.CreateDefaultBuilder(args)
 				.UseDefaultServiceProvider(options => options.ValidateScopes = false)
 				.ConfigureAppConfiguration((context, config) =>
 				{
-					if (appConfigConnectionString != null)
-                    {
+					if(appConfigConnectionString != null)
+					{
 						config.AddAzureAppConfiguration(appConfigConnectionString);
 					}
 					config.AddJsonFile("appSettings.json", optional: true);

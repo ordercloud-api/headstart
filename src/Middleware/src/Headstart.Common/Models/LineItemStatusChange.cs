@@ -13,7 +13,7 @@ namespace Headstart.Models.Headstart
 	* and completed for 2 others and the user is setting 3 quantity to returned we need to know which quantities to decrement when
 	* incrementing the returned count */
 
-
+	
 	public class LineItemStatusChanges
 	{
 		public LineItemStatus Status { get; set; }
@@ -21,7 +21,7 @@ namespace Headstart.Models.Headstart
         public SuperHSShipment SuperShipment { get; set; }
     }
 
-
+	
 	public class LineItemStatusChange
 	{
 		public string ID { get; set; }

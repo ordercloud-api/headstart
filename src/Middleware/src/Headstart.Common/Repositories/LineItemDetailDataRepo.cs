@@ -11,8 +11,7 @@ namespace Headstart.Common.Repositories
     {
         public override string ContainerName { get; } = "lineitemdetail";
         public override PartitionKey ResolvePartitionKey(string entityId) => new PartitionKey("PartitionValue");
-        public LineItemDetailDataRepo(ICosmosDbContainerFactory factory)
-            : base(factory)
+        public LineItemDetailDataRepo(ICosmosDbContainerFactory factory) : base(factory)
         { }
     }
 }

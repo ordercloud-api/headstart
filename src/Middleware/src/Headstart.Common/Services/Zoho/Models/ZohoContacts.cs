@@ -35,10 +35,10 @@ namespace Headstart.Common.Services.Zoho.Models
         public ZohoDefaultTemplates default_templates { get; set; }
         public List<ZohoCustomFields> custom_fields { get; set; }
         public string owner_id { get; set; }
-        // public string tax_reg_no { get; set; }
-        // public string place_of_contact { get; set; }
-        // public string gst_no { get; set; }
-        // public string gst_treatment { get; set; }
+        //public string tax_reg_no { get; set; }
+        //public string place_of_contact { get; set; }
+        //public string gst_no { get; set; }
+        //public string gst_treatment { get; set; }
         public string tax_exemption_id { get; set; }
         public string tax_authority_id { get; set; }
         public string tax_id { get; set; }
@@ -46,7 +46,7 @@ namespace Headstart.Common.Services.Zoho.Models
         // commenting out this field for now, call currently fails when going into zoho now
         // some configuration changes in zoho have the potential to allow us to use this
         // but it's not entirely clear what is needed to be done
-        // public bool is_taxable { get; set; } = true;
+        //public bool is_taxable { get; set; } = true;
         public string facebook { get; set; }
         public string twitter { get; set; }
     }

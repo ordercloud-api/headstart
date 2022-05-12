@@ -7,6 +7,6 @@
 			ShipFromAddressID = id;
 		}
 
-		public string ShipFromAddressID { get; set; }
+		public string ShipFromAddressID { get; set; } 
 	}
 }

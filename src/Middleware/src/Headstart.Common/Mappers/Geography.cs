@@ -115,7 +115,7 @@ namespace Headstart.Common.Mappers
                 case "QUEBEC": return "QC";
                 case "SASKATCHEWAN": return "SK";
                 case "YUKON": return "YT";
-                default:
+                default: 
                     throw new Exception($"A State code cannot be detmined for <{state}>");
             }
         }

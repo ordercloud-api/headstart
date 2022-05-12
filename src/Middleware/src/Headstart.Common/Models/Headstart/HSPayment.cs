@@ -7,33 +7,33 @@ using System.Text;
 
 namespace Headstart.Models.Headstart
 {
-
+    
     public class HSPayment : Payment<PaymentXP, HSPaymentTransaction>
     {
 
     }
 
-
-    public class HSPaymentTransaction : PaymentTransaction<TransactionXP>
+    
+    public class HSPaymentTransaction: PaymentTransaction<TransactionXP>
     {
 
     }
 
-
+    
     public class PaymentXP
     {
         public string partialAccountNumber { get; set; }
         public string cardType { get; set; }
     }
 
-
+    
     public class TransactionXP
     {
         public CardConnectAuthorizationResponse CardConnectResponse { get; set; }
         public RMADetails RMADetails { get; set; }
     }
 
-
+    
     public class RMADetails
     {
         public string OrderRMANumber { get; set; }

@@ -5,7 +5,7 @@ using ordercloud.integrations.library;
 
 namespace Headstart.Models.Misc
 {
-
+    
 	public class HSUserType
 	{
 		public string UserGroupIDSuffix { get; set; }

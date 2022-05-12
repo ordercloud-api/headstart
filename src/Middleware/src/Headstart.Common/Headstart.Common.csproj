@@ -23,7 +23,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.3.0" />
+	<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.7.0" />
     <PackageReference Include="Cosmonaut.Extensions.Microsoft.DependencyInjection" Version="2.3.0" />
     <PackageReference Include="CreditCardValidator" Version="1.4.6" />
     <PackageReference Include="CsvHelper" Version="15.0.5" />
@@ -38,10 +38,6 @@
     <PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
     <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
     <PackageReference Include="SendGrid" Version="9.22.0" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.0.1" />
   </ItemGroup>
 
@@ -55,6 +51,7 @@
     <ProjectReference Include="..\..\integrations\ordercloud.integrations.tecra\ordercloud.integrations.tecra.csproj" />
     <ProjectReference Include="..\..\integrations\ordercloud.integrations.easypost\ordercloud.integrations.easypost.csproj" />
     <ProjectReference Include="..\..\integrations\ordercloud.integrations.vertex\ordercloud.integrations.vertex.csproj" />
+    <ProjectReference Include="..\Sitecore.Foundation.SitecoreExtensions\code\Sitecore.Foundation.SitecoreExtensions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -72,6 +69,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\..\Program Files (x86)\dotnet\sdk\NuGetFallbackFolder\newtonsoft.json\9.0.1\lib\netstandard1.0\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc">
+      <HintPath>..\..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
     </Reference>
   </ItemGroup>
 

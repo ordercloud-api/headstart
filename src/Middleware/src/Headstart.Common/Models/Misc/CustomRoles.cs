@@ -32,7 +32,7 @@ namespace Headstart.Models.Misc
 		HSLocationNeedsApproval,
 		HSLocationCreditCardAdmin,
 
-		// cms
+		// cms 
 		AssetAdmin,
 		AssetReader,
 		DocumentAdmin,

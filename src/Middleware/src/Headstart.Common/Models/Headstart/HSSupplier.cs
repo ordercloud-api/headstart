@@ -9,12 +9,12 @@ using OrderCloud.SDK;
 
 namespace Headstart.Models.Headstart
 {
-
+    
     public class HSSupplier : Supplier<SupplierXp>, IHSObject
     {
     }
 
-
+    
     public class SupplierXp
     {
         public string Description { get; set; }
@@ -28,11 +28,11 @@ namespace Headstart.Models.Headstart
         public List<string> BuyersServicing { get; set; }
         public List<SupplierCategory> Categories { get; set; }
         public List<string> NotificationRcpts { get; set; }
-        public int? FreeShippingThreshold { get; set; }
+        public Nullable<int> FreeShippingThreshold { get; set; }
         public ImageAsset Image { get; set; }
     }
 
-
+    
     public class SupplierCategory
     {
         public string ServiceCategory { get; set; }

@@ -12,9 +12,6 @@ namespace Headstart.Models.Extended
     [JsonConverter(typeof(StringEnumConverter))]
     public enum ControlType
     {
-        Text,
-        DropDown,
-        Checkbox,
-        Range
+        Text, DropDown, Checkbox, Range
     }
 }

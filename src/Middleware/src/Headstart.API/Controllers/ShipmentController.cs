@@ -1,53 +1,55 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using OrderCloud.SDK;
-using System.Threading.Tasks;
-using Headstart.Models.Attributes;
-using ordercloud.integrations.library;
+﻿using Headstart.API.Commands;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Microsoft.AspNetCore.Http;
-using Headstart.API.Commands;
+using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
+using OrderCloud.SDK;
+using System.Threading.Tasks;
 
-namespace Headstart.Common.Controllers
+namespace Headstart.API.Controllers
 {
-    /// <summary>
-    /// Shipments
-    /// </summary>
-    [Route("shipment")]
-    public class ShipmentController : CatalystController
-    {
+	[Route("shipment")]
+	public class ShipmentController : CatalystController
+	{
+		private readonly IShipmentCommand _command;
 
-        private readonly IShipmentCommand _command;
-        public ShipmentController(IShipmentCommand command)
-        {
-            _command = command;
-        }
-        /// <summary>
-        /// POST Headstart Shipment
-        /// </summary>
-        // todo update auth
-        [HttpPost, OrderCloudUserAuth(ApiRole.ShipmentAdmin)]
-        public async Task<SuperHSShipment> Create([FromBody] SuperHSShipment superShipment)
-        {
-            // ocAuth is the token for the organization that is specified in the AppSettings
+		/// <summary>
+		/// The IOC based constructor method for the ShipmentController class object with Dependency Injection
+		/// </summary>
+		/// <param name="command"></param>
+		public ShipmentController(IShipmentCommand command)
+		{
+			_command = command;
+		}
 
-            // todo add auth to make sure suppliers are creating shipments for their own orders
-            return await _command.CreateShipment(superShipment, UserContext);
-        }
+		/// <summary>
+		/// Creates the Shipment item request (POST method)
+		/// </summary>
+		/// <param name="superShipment"></param>
+		/// <returns>The newly created SuperHSShipment object</returns>
+		[HttpPost, OrderCloudUserAuth(ApiRole.ShipmentAdmin)]
+		public async Task<SuperHSShipment> Create([FromBody] SuperHSShipment superShipment)
+		{
+			// ocAuth is the token for the organization that is specified in the AppSettings
+			// todo add auth to make sure suppliers are creating shipments for their own orders
+			return await _command.CreateShipment(superShipment, UserContext);
+		}
 
-        /// <summary>
-        /// POST Batch Shipment Update
-        /// </summary>
-        [HttpPost, Route("batch/uploadshipment"), OrderCloudUserAuth(ApiRole.ShipmentAdmin)]
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<BatchProcessResult> UploadShipments([FromForm] FileUpload fileRequest)
-        {
-            return await _command.UploadShipments(fileRequest?.File, UserContext);
-        }
-    }
+		/// <summary>
+		/// Upload action for Shipment items request (POST method)
+		/// </summary>
+		/// <param name="fileRequest"></param>
+		/// <returns>The upload created BatchProcessResult object</returns>
+		[HttpPost, Route("batch/uploadshipment"), OrderCloudUserAuth(ApiRole.ShipmentAdmin)]
+		[ApiExplorerSettings(IgnoreApi = true)]
+		public async Task<BatchProcessResult> UploadShipments([FromForm] FileUpload fileRequest)
+		{
+			return await _command.UploadShipments(fileRequest?.File, UserContext);
+		}
+	}
 
-    public class FileUpload
-    {
-        public IFormFile File { get; set; }
-    }
+	public class FileUpload
+	{
+		public IFormFile File { get; set; }
+	}
 }

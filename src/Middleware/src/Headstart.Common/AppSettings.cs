@@ -1,44 +1,56 @@
-using ordercloud.integrations.cardconnect;
-using ordercloud.integrations.exchangerates;
-using ordercloud.integrations.library;
-using ordercloud.integrations.smartystreets;
 using ordercloud.integrations.taxjar;
 using ordercloud.integrations.vertex;
+using ordercloud.integrations.library;
+using ordercloud.integrations.cardconnect;
+using ordercloud.integrations.smartystreets;
+using Sitecore.Foundation.SitecoreExtensions.MVC.Extensions;
 
 namespace Headstart.Common
 {
-    public class AppSettings
-    {
-        public ApplicationInsightsSettings ApplicationInsightsSettings { get; set; } = new ApplicationInsightsSettings();
-        public AvalaraSettings AvalaraSettings { get; set; } = new AvalaraSettings();
-        public CosmosSettings CosmosSettings { get; set; } = new CosmosSettings();
-        public EasyPostSettings EasyPostSettings { get; set; } = new EasyPostSettings();
-        public EnvironmentSettings EnvironmentSettings { get; set; } = new EnvironmentSettings();
-        public FlurlSettings FlurlSettings { get; set; } = new FlurlSettings();
-        public JobSettings JobSettings { get; set; } = new JobSettings();
-        public OrderCloudSettings OrderCloudSettings { get; set; } = new OrderCloudSettings();
-        public OrderCloudIntegrationsCardConnectConfig CardConnectSettings { get; set; } = new OrderCloudIntegrationsCardConnectConfig();
-        public SendgridSettings SendgridSettings { get; set; } = new SendgridSettings();
-        public ServiceBusSettings ServiceBusSettings { get; set; } = new ServiceBusSettings();
-        public SmartyStreetsConfig SmartyStreetSettings { get; set; } = new SmartyStreetsConfig();
-        public VertexConfig VertexSettings { get; set; } = new VertexConfig();
-        public TaxJarConfig TaxJarSettings { get; set; } = new TaxJarConfig();
-        public StorageAccountSettings StorageAccountSettings { get; set; } = new StorageAccountSettings();
-        public UI UI { get; set; }
-        public ZohoSettings ZohoSettings { get; set; } = new ZohoSettings();
-    }
+	public class AppSettings
+	{
+		public ApplicationInsightsSettings ApplicationInsightsSettings { get; set; } = new ApplicationInsightsSettings();
 
-    public class ApplicationInsightsSettings
+		public AvalaraSettings AvalaraSettings { get; set; } = new AvalaraSettings();
+
+		public CosmosSettings CosmosSettings { get; set; } = new CosmosSettings();
+
+		public EasyPostSettings EasyPostSettings { get; set; } = new EasyPostSettings();
+
+		public EnvironmentSettings EnvironmentSettings { get; set; } = new EnvironmentSettings();
+
+		public FlurlSettings FlurlSettings { get; set; } = new FlurlSettings();
+
+		public JobSettings JobSettings { get; set; } = new JobSettings();
+
+		public OrderCloudSettings OrderCloudSettings { get; set; } = new OrderCloudSettings();
+
+		public OrderCloudIntegrationsCardConnectConfig CardConnectSettings { get; set; } = new OrderCloudIntegrationsCardConnectConfig();
+
+		public SendgridSettings SendgridSettings { get; set; } = new SendgridSettings();
+
+		public ServiceBusSettings ServiceBusSettings { get; set; } = new ServiceBusSettings();
+
+		public SmartyStreetsConfig SmartyStreetSettings { get; set; } = new SmartyStreetsConfig();
+
+		public VertexConfig VertexSettings { get; set; } = new VertexConfig();
+
+		public TaxJarConfig TaxJarSettings { get; set; } = new TaxJarConfig();
+
+		public StorageAccountSettings StorageAccountSettings { get; set; } = new StorageAccountSettings();
+		public UI UI { get; set; }
+
+		public ZohoSettings ZohoSettings { get; set; } = new ZohoSettings();
+
+		public LogSettings LogSettings { get; set; } = new LogSettings();
+	}
+
+	public class ApplicationInsightsSettings
     {
         public string InstrumentationKey { get; set; }
     }
 
-    public enum AppEnvironment
-    {
-        Test,
-        Staging,
-        Production
-    }
+    public enum AppEnvironment { Test, Staging, Production }
 
     public class AvalaraSettings
     {
@@ -68,12 +80,7 @@ namespace Headstart.Common
         public TaxProvider TaxProvider { get; set; } = TaxProvider.Avalara;
 	}
 
-    public enum TaxProvider
-    {
-        Avalara,
-        Vertex,
-        Taxjar
-    }
+    public enum TaxProvider { Avalara, Vertex, Taxjar }
 
 
     public class FlurlSettings
@@ -128,7 +135,7 @@ namespace Headstart.Common
     {
         public string AuthID { get; set; }
         public string AuthToken { get; set; }
-        public string RefererHost { get; set; } // The autocomplete pro endpoint requires the Referer header to be a pre-set value
+        public string RefererHost { get; set; } // The autocomplete pro endpoint requires the Referer header to be a pre-set value 
         public string WebsiteKey { get; set; }
     }
 

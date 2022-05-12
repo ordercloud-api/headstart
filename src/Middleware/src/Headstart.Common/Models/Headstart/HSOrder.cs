@@ -12,12 +12,12 @@ using System;
 
 namespace Headstart.Models
 {
-
+    
     public class HSOrder : Order<OrderXp, HSUser, HSAddressBuyer>
     {
     }
 
-
+    
     public class OrderXp
     {
         public string ExternalTaxTransactionID { get; set; }
@@ -48,13 +48,13 @@ namespace Headstart.Models
 
     }
 
-
-    public class ShipMethodSupplierView
+    
+    public class ShipMethodSupplierView 
     {
         public int EstimatedTransitDays { get; set; }
         public string Name { get; set; } // e.g. "Fedex PRIORITY_OVERNIGHT"
         public string ShipFromAddressID { get; set; }
-        // Do not include buyer's cost. That is none of the supplier's beeswax
+        // Do not include buyer's cost. That is none of the supplier's beeswax 
     }
 
     [JsonConverter(typeof(StringEnumConverter))]
@@ -64,7 +64,7 @@ namespace Headstart.Models
         Quote
     }
 
-
+    
     public class OrderDetails
     {
         public HSOrder Order { get; set; }
@@ -74,7 +74,7 @@ namespace Headstart.Models
         public IList<OrderApproval> Approvals { get; set; }
     }
 
-
+    
     public class ClaimsSummary
     {
         public bool HasClaims { get; set; }
@@ -82,7 +82,7 @@ namespace Headstart.Models
         public List<ClaimResolutionStatuses> Resolutions { get; set; }
     }
 
-
+    
     public class ClaimResolutionStatuses
     {
         public string LineItemID { get; set; }
@@ -90,7 +90,7 @@ namespace Headstart.Models
         public bool IsResolved { get; set; }
     }
 
-
+    
     public class HSSupplierOrderData
     {
         public HSOrderLineItemData SupplierOrder { get; set; }
@@ -130,7 +130,7 @@ namespace Headstart.Models
     {
         public HSOrderSubmitPayloadResponse Response { get; set; }
     }
-
+    
     public class HSOrderSubmitPayloadResponse
     {
         public HSOrder Body { get; set; }

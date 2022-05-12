@@ -10,10 +10,12 @@ namespace Headstart.Models.Misc
 {
 	public class EnvironmentSeed
 	{
-        /// <summary>
-        /// The username for logging in to https://portal.ordercloud.io
-        /// </summary>
-        [Required]
+		#region Required settings
+
+		/// <summary>
+		/// The username for logging in to https://portal.ordercloud.io
+		/// </summary>
+		[Required]
 		public string PortalUsername { get; set; }
 
 		/// <summary>
@@ -48,11 +50,15 @@ namespace Headstart.Models.Misc
 		[Required]
 		public OrderCloudSeedSettings OrderCloudSeedSettings { get; set; }
 
-        /// <summary>
-        /// Optionally pass in a value if you have an existing marketplace you would like to seed. If no value is present a new marketplace will be created
-        /// Creating a marketplace via seeding is only possible in the sandbox api environment
-        /// </summary>
-        public string MarketplaceID { get; set; }
+		#endregion
+
+		#region Optional settings
+
+		/// <summary>
+		/// Optionally pass in a value if you have an existing marketplace you would like to seed. If no value is present a new marketplace will be created
+		/// Creating a marketplace via seeding is only possible in the sandbox api environment
+		/// </summary>
+		public string MarketplaceID { get; set; }
 
 		/// <summary>
 		/// Optionally pass in a marketplace name when first creating a marketplace
@@ -83,14 +89,16 @@ namespace Headstart.Models.Misc
 		public string AnonymousShoppingBuyerID { get; set; }
 
 		/// <summary>
-		/// An optional object of storage settings for your translations container.
+		/// An optional object of storage settings for your translations container. 
 		/// If none are provided the seeding funciton will not create a translation file or downloads file
 		/// Provide a valid ConnectionString to have the seeding function generate your translation file
 		/// </summary>
 		public StorageAccountSeedSettings StorageAccountSettings { get; set; }
+
+        #endregion
     }
 
-    public class EnvironmentSeedResponse
+	public class EnvironmentSeedResponse
     {
 		public string Comments { get; set; }
 		public string MarketplaceName { get; set; }
@@ -160,6 +168,6 @@ namespace Headstart.Models.Misc
 		public string AzureRegion { get; set; }
 		public string Id { get; set; }
 		public string Name { get; set; }
-
+		
 	}
 }
