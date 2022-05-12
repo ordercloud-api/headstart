@@ -8,100 +8,6 @@ namespace Headstart.Common.Constants
 {
     public static class LineItemStatusConstants
     {
-        public static (SubmittedOrderStatus, ShippingStatus, ClaimStatus) GetOrderStatuses(List<HSLineItem> lineItems)
-        {
-            var orderStatusOccurances = new HashSet<SubmittedOrderStatus>();
-            var shippingStatusOccurances = new HashSet<ShippingStatus>();
-            var claimStatusOccurances = new HashSet<ClaimStatus>();
-
-            foreach (var lineItem in lineItems)
-            {
-                foreach (var status in lineItem.xp.StatusByQuantity)
-                {
-                    if (status.Value > 0)
-                    {
-                        orderStatusOccurances.Add(RelatedOrderStatus[status.Key]);
-                        shippingStatusOccurances.Add(RelatedShippingStatus[status.Key]);
-                        claimStatusOccurances.Add(RelatedClaimStatus[status.Key]);
-                    }
-                }
-            }
-
-            var orderStatus = GetOrderStatus(orderStatusOccurances);
-            var shippingStatus = GetOrderShippingStatus(shippingStatusOccurances);
-            var claimStatus = GetOrderClaimStatus(claimStatusOccurances);
-
-            return (orderStatus, shippingStatus, claimStatus);
-        }
-
-        private static SubmittedOrderStatus GetOrderStatus(HashSet<SubmittedOrderStatus> orderStatusOccurances)
-        {
-            if (orderStatusOccurances.Count == 1)
-            {
-                return orderStatusOccurances.First();
-            }
-
-            if (orderStatusOccurances.Contains(SubmittedOrderStatus.Open))
-            {
-                return SubmittedOrderStatus.Open;
-            }
-
-            if (orderStatusOccurances.Contains(SubmittedOrderStatus.Completed))
-            {
-                return SubmittedOrderStatus.Completed;
-            }
-
-            // otherwise all lineitem statuses are canceled
-            return SubmittedOrderStatus.Canceled;
-        }
-
-        private static ShippingStatus GetOrderShippingStatus(HashSet<ShippingStatus> shippingStatusOccurances)
-        {
-            if (shippingStatusOccurances.Count == 1)
-            {
-                return shippingStatusOccurances.First();
-            }
-
-            if (shippingStatusOccurances.Contains(ShippingStatus.Processing) && shippingStatusOccurances.Contains(ShippingStatus.Shipped))
-            {
-                return ShippingStatus.PartiallyShipped;
-            }
-
-            if (shippingStatusOccurances.Contains(ShippingStatus.Shipped))
-            {
-                return ShippingStatus.Shipped;
-            }
-
-            if (shippingStatusOccurances.Contains(ShippingStatus.Processing))
-            {
-                return ShippingStatus.Processing;
-            }
-
-            // otherwise all lineitem statuses are canceled
-            return ShippingStatus.Canceled;
-        }
-
-        private static ClaimStatus GetOrderClaimStatus(HashSet<ClaimStatus> claimStatusOccurances)
-        {
-            if (claimStatusOccurances.Count == 1)
-            {
-                return claimStatusOccurances.First();
-            }
-
-            if (claimStatusOccurances.Contains(ClaimStatus.Pending))
-            {
-                return ClaimStatus.Pending;
-            }
-
-            if (claimStatusOccurances.Contains(ClaimStatus.Complete))
-            {
-                return ClaimStatus.Complete;
-            }
-
-            // otherwise there are no claims
-            return ClaimStatus.NoClaim;
-        }
-
         public static readonly Dictionary<LineItemStatus, int> EmptyStatuses = new Dictionary<LineItemStatus, int>()
         {
             { LineItemStatus.Submitted, 0 },
@@ -170,6 +76,71 @@ namespace Headstart.Common.Constants
             { LineItemStatus.Canceled, new List<LineItemStatus>() { LineItemStatus.CancelRequested, LineItemStatus.Backordered, LineItemStatus.Submitted } },
             { LineItemStatus.CancelDenied, new List<LineItemStatus>() { LineItemStatus.CancelRequested } },
         };
+
+        private static Dictionary<LineItemStatus, SubmittedOrderStatus> RelatedOrderStatus = new Dictionary<LineItemStatus, SubmittedOrderStatus>()
+        {
+            { LineItemStatus.Submitted, SubmittedOrderStatus.Open },
+            { LineItemStatus.Backordered, SubmittedOrderStatus.Open },
+            { LineItemStatus.CancelRequested, SubmittedOrderStatus.Open },
+            { LineItemStatus.CancelDenied, SubmittedOrderStatus.Open },
+            { LineItemStatus.Complete, SubmittedOrderStatus.Completed },
+            { LineItemStatus.ReturnRequested, SubmittedOrderStatus.Completed },
+            { LineItemStatus.Returned, SubmittedOrderStatus.Completed },
+            { LineItemStatus.ReturnDenied, SubmittedOrderStatus.Completed },
+            { LineItemStatus.Canceled, SubmittedOrderStatus.Canceled },
+        };
+
+        private static Dictionary<LineItemStatus, ShippingStatus> RelatedShippingStatus = new Dictionary<LineItemStatus, ShippingStatus>()
+        {
+            { LineItemStatus.Submitted, ShippingStatus.Processing },
+            { LineItemStatus.Backordered, ShippingStatus.Processing },
+            { LineItemStatus.CancelRequested, ShippingStatus.Processing },
+            { LineItemStatus.CancelDenied, ShippingStatus.Processing },
+            { LineItemStatus.Complete, ShippingStatus.Shipped },
+            { LineItemStatus.ReturnRequested, ShippingStatus.Shipped },
+            { LineItemStatus.ReturnDenied, ShippingStatus.Shipped },
+            { LineItemStatus.Returned, ShippingStatus.Shipped },
+            { LineItemStatus.Canceled, ShippingStatus.Canceled },
+        };
+
+        private static Dictionary<LineItemStatus, ClaimStatus> RelatedClaimStatus = new Dictionary<LineItemStatus, ClaimStatus>()
+        {
+            { LineItemStatus.Submitted, ClaimStatus.NoClaim },
+            { LineItemStatus.Backordered, ClaimStatus.Pending },
+            { LineItemStatus.CancelRequested, ClaimStatus.Pending },
+            { LineItemStatus.CancelDenied, ClaimStatus.NoClaim },
+            { LineItemStatus.Complete, ClaimStatus.NoClaim },
+            { LineItemStatus.ReturnRequested, ClaimStatus.Pending },
+            { LineItemStatus.Returned, ClaimStatus.Complete },
+            { LineItemStatus.ReturnDenied, ClaimStatus.NoClaim },
+            { LineItemStatus.Canceled, ClaimStatus.Complete },
+        };
+
+        public static (SubmittedOrderStatus, ShippingStatus, ClaimStatus) GetOrderStatuses(List<HSLineItem> lineItems)
+        {
+            var orderStatusOccurances = new HashSet<SubmittedOrderStatus>();
+            var shippingStatusOccurances = new HashSet<ShippingStatus>();
+            var claimStatusOccurances = new HashSet<ClaimStatus>();
+
+            foreach (var lineItem in lineItems)
+            {
+                foreach (var status in lineItem.xp.StatusByQuantity)
+                {
+                    if (status.Value > 0)
+                    {
+                        orderStatusOccurances.Add(RelatedOrderStatus[status.Key]);
+                        shippingStatusOccurances.Add(RelatedShippingStatus[status.Key]);
+                        claimStatusOccurances.Add(RelatedClaimStatus[status.Key]);
+                    }
+                }
+            }
+
+            var orderStatus = GetOrderStatus(orderStatusOccurances);
+            var shippingStatus = GetOrderShippingStatus(shippingStatusOccurances);
+            var claimStatus = GetOrderClaimStatus(claimStatusOccurances);
+
+            return (orderStatus, shippingStatus, claimStatus);
+        }
 
         public static Dictionary<LineItemStatus, Dictionary<VerifiedUserType, EmailDisplayText>> GetStatusChangeEmailText(string supplierName)
         {
@@ -394,43 +365,72 @@ namespace Headstart.Common.Constants
             };
         }
 
-        private static Dictionary<LineItemStatus, SubmittedOrderStatus> RelatedOrderStatus = new Dictionary<LineItemStatus, SubmittedOrderStatus>()
+        private static SubmittedOrderStatus GetOrderStatus(HashSet<SubmittedOrderStatus> orderStatusOccurances)
         {
-            { LineItemStatus.Submitted, SubmittedOrderStatus.Open },
-            { LineItemStatus.Backordered, SubmittedOrderStatus.Open },
-            { LineItemStatus.CancelRequested, SubmittedOrderStatus.Open },
-            { LineItemStatus.CancelDenied, SubmittedOrderStatus.Open },
-            { LineItemStatus.Complete, SubmittedOrderStatus.Completed },
-            { LineItemStatus.ReturnRequested, SubmittedOrderStatus.Completed },
-            { LineItemStatus.Returned, SubmittedOrderStatus.Completed },
-            { LineItemStatus.ReturnDenied, SubmittedOrderStatus.Completed },
-            { LineItemStatus.Canceled, SubmittedOrderStatus.Canceled },
-        };
+            if (orderStatusOccurances.Count == 1)
+            {
+                return orderStatusOccurances.First();
+            }
 
-        private static Dictionary<LineItemStatus, ShippingStatus> RelatedShippingStatus = new Dictionary<LineItemStatus, ShippingStatus>()
-        {
-            { LineItemStatus.Submitted, ShippingStatus.Processing },
-            { LineItemStatus.Backordered, ShippingStatus.Processing },
-            { LineItemStatus.CancelRequested, ShippingStatus.Processing },
-            { LineItemStatus.CancelDenied, ShippingStatus.Processing },
-            { LineItemStatus.Complete, ShippingStatus.Shipped },
-            { LineItemStatus.ReturnRequested, ShippingStatus.Shipped },
-            { LineItemStatus.ReturnDenied, ShippingStatus.Shipped },
-            { LineItemStatus.Returned, ShippingStatus.Shipped },
-            { LineItemStatus.Canceled, ShippingStatus.Canceled },
-        };
+            if (orderStatusOccurances.Contains(SubmittedOrderStatus.Open))
+            {
+                return SubmittedOrderStatus.Open;
+            }
 
-        private static Dictionary<LineItemStatus, ClaimStatus> RelatedClaimStatus = new Dictionary<LineItemStatus, ClaimStatus>()
+            if (orderStatusOccurances.Contains(SubmittedOrderStatus.Completed))
+            {
+                return SubmittedOrderStatus.Completed;
+            }
+
+            // otherwise all lineitem statuses are canceled
+            return SubmittedOrderStatus.Canceled;
+        }
+
+        private static ShippingStatus GetOrderShippingStatus(HashSet<ShippingStatus> shippingStatusOccurances)
         {
-            { LineItemStatus.Submitted, ClaimStatus.NoClaim },
-            { LineItemStatus.Backordered, ClaimStatus.Pending },
-            { LineItemStatus.CancelRequested, ClaimStatus.Pending },
-            { LineItemStatus.CancelDenied, ClaimStatus.NoClaim },
-            { LineItemStatus.Complete, ClaimStatus.NoClaim },
-            { LineItemStatus.ReturnRequested, ClaimStatus.Pending },
-            { LineItemStatus.Returned, ClaimStatus.Complete },
-            { LineItemStatus.ReturnDenied, ClaimStatus.NoClaim },
-            { LineItemStatus.Canceled, ClaimStatus.Complete },
-        };
+            if (shippingStatusOccurances.Count == 1)
+            {
+                return shippingStatusOccurances.First();
+            }
+
+            if (shippingStatusOccurances.Contains(ShippingStatus.Processing) && shippingStatusOccurances.Contains(ShippingStatus.Shipped))
+            {
+                return ShippingStatus.PartiallyShipped;
+            }
+
+            if (shippingStatusOccurances.Contains(ShippingStatus.Shipped))
+            {
+                return ShippingStatus.Shipped;
+            }
+
+            if (shippingStatusOccurances.Contains(ShippingStatus.Processing))
+            {
+                return ShippingStatus.Processing;
+            }
+
+            // otherwise all lineitem statuses are canceled
+            return ShippingStatus.Canceled;
+        }
+
+        private static ClaimStatus GetOrderClaimStatus(HashSet<ClaimStatus> claimStatusOccurances)
+        {
+            if (claimStatusOccurances.Count == 1)
+            {
+                return claimStatusOccurances.First();
+            }
+
+            if (claimStatusOccurances.Contains(ClaimStatus.Pending))
+            {
+                return ClaimStatus.Pending;
+            }
+
+            if (claimStatusOccurances.Contains(ClaimStatus.Complete))
+            {
+                return ClaimStatus.Complete;
+            }
+
+            // otherwise there are no claims
+            return ClaimStatus.NoClaim;
+        }
     }
 }

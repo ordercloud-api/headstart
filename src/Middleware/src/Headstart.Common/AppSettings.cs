@@ -6,6 +6,20 @@ using ordercloud.integrations.vertex;
 
 namespace Headstart.Common
 {
+    public enum AppEnvironment
+    {
+        Test,
+        Staging,
+        Production,
+    }
+
+    public enum TaxProvider
+    {
+        Avalara,
+        Vertex,
+        Taxjar,
+    }
+
     public class AppSettings
     {
         public ApplicationInsightsSettings ApplicationInsightsSettings { get; set; } = new ApplicationInsightsSettings();
@@ -48,13 +62,6 @@ namespace Headstart.Common
         public string InstrumentationKey { get; set; }
     }
 
-    public enum AppEnvironment
-    {
-        Test,
-        Staging,
-        Production,
-    }
-
     public class AvalaraSettings
     {
         public string BaseApiUrl { get; set; }
@@ -94,13 +101,6 @@ namespace Headstart.Common
         public string MiddlewareBaseUrl { get; set; }
 
         public TaxProvider TaxProvider { get; set; } = TaxProvider.Avalara;
-    }
-
-    public enum TaxProvider
-    {
-        Avalara,
-        Vertex,
-        Taxjar,
     }
 
     public class FlurlSettings

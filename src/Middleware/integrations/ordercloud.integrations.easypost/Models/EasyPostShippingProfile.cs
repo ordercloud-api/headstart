@@ -6,11 +6,11 @@ namespace ordercloud.integrations.easypost
 {
     public abstract class EasyPostShippingProfiles
     {
-        public IList<EasyPostShippingProfile> ShippingProfiles { get; set; } = new List<EasyPostShippingProfile>();
-
         protected EasyPostShippingProfiles()
         {
         }
+
+        public IList<EasyPostShippingProfile> ShippingProfiles { get; set; } = new List<EasyPostShippingProfile>();
 
         public virtual EasyPostShippingProfile FirstOrDefault(string id)
         {

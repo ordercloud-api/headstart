@@ -11,6 +11,20 @@ using OrderCloud.SDK;
 
 namespace Headstart.Models
 {
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum ProductType
+    {
+        Standard,
+        Quote,
+    }
+
+    public enum ProductAccessorial
+    {
+        Freezable = 6,
+        Hazmat = 7,
+        KeepFromFreezing = 8,
+    }
+
     public class SuperHSProduct : IHSObject
     {
         public string ID { get; set; }
@@ -118,13 +132,6 @@ namespace Headstart.Models
         public string FileName { get; set; }
     }
 
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum ProductType
-    {
-        Standard,
-        Quote,
-    }
-
     public class HSVariantXp
     {
         public string SpecCombo { get; set; }
@@ -143,12 +150,5 @@ namespace Headstart.Models
         public string SpecOptionValue { get; set; }
 
         public string PriceMarkup { get; set; }
-    }
-
-    public enum ProductAccessorial
-    {
-        Freezable = 6,
-        Hazmat = 7,
-        KeepFromFreezing = 8,
     }
 }

@@ -7,6 +7,35 @@ using Headstart.Models.Headstart;
 
 namespace Headstart.Common.Models
 {
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum RMAType
+    {
+        Cancellation,
+        Return,
+    }
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum RMAStatus
+    {
+        Requested,
+        Denied,
+        Processing,
+        Approved,
+        Complete,
+    }
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum RMALineItemStatus
+    {
+        Requested,
+        Processing,
+        Approved,
+        Complete,
+        Denied,
+        PartialQtyApproved,
+        PartialQtyComplete,
+    }
+
     public class RMA : CosmosObject
     {
         public string PartitionKey { get; set; }
@@ -40,23 +69,6 @@ namespace Headstart.Common.Models
         public string FromBuyerUserID { get; set; }
     }
 
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum RMAType
-    {
-        Cancellation,
-        Return,
-    }
-
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum RMAStatus
-    {
-        Requested,
-        Denied,
-        Processing,
-        Approved,
-        Complete,
-    }
-
     public class RMALineItem
     {
         public string ID { get; set; }
@@ -80,18 +92,6 @@ namespace Headstart.Common.Models
         public bool IsRefunded { get; set; }
 
         public decimal LineTotalRefund { get; set; }
-    }
-
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum RMALineItemStatus
-    {
-        Requested,
-        Processing,
-        Approved,
-        Complete,
-        Denied,
-        PartialQtyApproved,
-        PartialQtyComplete,
     }
 
     public class RMALog

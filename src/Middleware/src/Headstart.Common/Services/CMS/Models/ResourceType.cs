@@ -3,14 +3,6 @@ using System;
 
 namespace Headstart.Common.Services.CMS.Models
 {
-    public static class ResourceTypeExtesions
-    {
-        public static ParentResourceType? GetParentType(this ResourceType type)
-        {
-            return typeof(ResourceType).GetField(type.ToString()).GetAttribute<ParentAttribute>()?.ParentType;
-        }
-    }
-
     public enum ParentResourceType
     {
         Catalogs,
@@ -75,14 +67,22 @@ namespace Headstart.Common.Services.CMS.Models
         XpIndices,
     }
 
+    public static class ResourceTypeExtesions
+    {
+        public static ParentResourceType? GetParentType(this ResourceType type)
+        {
+            return typeof(ResourceType).GetField(type.ToString()).GetAttribute<ParentAttribute>()?.ParentType;
+        }
+    }
+
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class ParentAttribute : Attribute
     {
-        public ParentResourceType ParentType { get; set; }
-
         public ParentAttribute(ParentResourceType type)
         {
             ParentType = type;
         }
+
+        public ParentResourceType ParentType { get; set; }
     }
 }

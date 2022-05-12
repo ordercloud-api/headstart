@@ -3,11 +3,6 @@ using Newtonsoft.Json.Converters;
 
 namespace Headstart.Models.Extended
 {
-    public class SpecUI
-    {
-        public ControlType ControlType { get; set; } = ControlType.Text;
-    }
-
     [JsonConverter(typeof(StringEnumConverter))]
     public enum ControlType
     {
@@ -15,5 +10,10 @@ namespace Headstart.Models.Extended
         DropDown,
         Checkbox,
         Range,
+    }
+
+    public class SpecUI
+    {
+        public ControlType ControlType { get; set; } = ControlType.Text;
     }
 }

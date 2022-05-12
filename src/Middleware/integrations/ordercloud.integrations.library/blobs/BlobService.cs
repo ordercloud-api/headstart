@@ -40,10 +40,6 @@ namespace ordercloud.integrations.library
 
     public class OrderCloudIntegrationsBlobService : IOrderCloudIntegrationsBlobService
     {
-        public CloudBlobClient Client { get; }
-
-        public CloudBlobContainer Container { get; }
-
         private readonly BlobServiceConfig _config;
         private bool IsInitialized = false;
 
@@ -74,6 +70,10 @@ namespace ordercloud.integrations.library
                 throw new Exception($"{ex.Message}. The blob service must be invoked with a valid configuration");
             }
         }
+
+        public CloudBlobClient Client { get; }
+
+        public CloudBlobContainer Container { get; }
 
         public async Task<string> Get(string id)
         {

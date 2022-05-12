@@ -2,6 +2,37 @@
 
 namespace ordercloud.integrations.vertex
 {
+    public enum VertexTaxingLocation
+    {
+        ADMINISTRATIVE_DESTINATION,
+        ADMINISTRATIVE_ORIGIN,
+        DESTINATION,
+        PHYSICAL_ORIGIN,
+    }
+
+    public enum VertexTaxOverrideType
+    {
+        TAXABLE,
+        NONTAXABLE,
+    }
+
+    public enum VertexSaleMessageType
+    {
+        QUOTATION,
+        INVOICE,
+        DISTRIBUTE_TAX,
+    }
+
+    public enum VertexLocationCustomsStatus
+    {
+        FREE_CIRCULATION,
+        BONDED_WAREHOUSE,
+        FREE_TRADE_ZONE,
+        TEMPORARY_IMPORT,
+        INWARD_PROCESSING_RELIEF,
+        OUTWARD_PROCESSING_RELIEF,
+    }
+
     public class VertexCalculateTaxRequest
     {
         public VertexSaleMessageType saleMessageType { get; set; }
@@ -26,14 +57,6 @@ namespace ordercloud.integrations.vertex
         public VertexTaxingLocation taxingLocation { get; set; }
     }
 
-    public enum VertexTaxingLocation
-    {
-        ADMINISTRATIVE_DESTINATION,
-        ADMINISTRATIVE_ORIGIN,
-        DESTINATION,
-        PHYSICAL_ORIGIN,
-    }
-
     public class VertexImposition
     {
         public string impositionType { get; set; }
@@ -41,24 +64,11 @@ namespace ordercloud.integrations.vertex
         public VertexJurisdictionLevel value { get; set; }
     }
 
-    public enum VertexTaxOverrideType
-    {
-        TAXABLE,
-        NONTAXABLE,
-    }
-
     public class VertexTaxOverride
     {
         public VertexTaxOverrideType overrideType { get; set; }
 
         public string overrideReasonCode { get; set; }
-    }
-
-    public enum VertexSaleMessageType
-    {
-        QUOTATION,
-        INVOICE,
-        DISTRIBUTE_TAX,
     }
 
     public class VertexTaxRegistrations
@@ -72,16 +82,6 @@ namespace ordercloud.integrations.vertex
         public string hasPhysicalPresenceIndicator { get; set; }
 
         public string impositionType { get; set; }
-    }
-
-    public enum VertexLocationCustomsStatus
-    {
-        FREE_CIRCULATION,
-        BONDED_WAREHOUSE,
-        FREE_TRADE_ZONE,
-        TEMPORARY_IMPORT,
-        INWARD_PROCESSING_RELIEF,
-        OUTWARD_PROCESSING_RELIEF,
     }
 
     public class VertexExemptionCertificate

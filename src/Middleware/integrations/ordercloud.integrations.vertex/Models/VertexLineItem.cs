@@ -1,5 +1,12 @@
 ﻿namespace ordercloud.integrations.vertex
 {
+    public enum VertexTransactionType
+    {
+        SALE,
+        RENTAL,
+        LEASE,
+    }
+
     public class VertexLineItem
     {
         public VertexCustomer customer { get; set; }
@@ -36,12 +43,5 @@
         public string productClass { get; set; }
 
         public string value { get; set; }
-    }
-
-    public enum VertexTransactionType
-    {
-        SALE,
-        RENTAL,
-        LEASE,
     }
 }

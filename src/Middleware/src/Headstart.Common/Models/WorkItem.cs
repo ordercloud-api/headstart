@@ -8,63 +8,6 @@ using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Models
 {
-    public class WorkItem
-    {
-        public WorkItem()
-        {
-        }
-
-        public WorkItem(string path)
-        {
-            var split = path.Split("/");
-            this.ResourceId = split[0];
-            this.RecordId = split[split.Length - 1].Replace(".json", string.Empty);
-            this.RecordType = split[2] switch
-            {
-                "templateproductflat" => RecordType.TemplateProductFlat,
-                "hydratedproduct" => RecordType.HydratedProduct,
-                "product" => RecordType.Product,
-                "priceschedule" => RecordType.PriceSchedule,
-                "productfacet" => RecordType.ProductFacet,
-                "specproductassignment" => RecordType.SpecProductAssignment,
-                "specoption" => RecordType.SpecOption,
-                "spec" => RecordType.Spec,
-                "buyer" => RecordType.Buyer,
-                "user" => RecordType.User,
-                "usergroup" => RecordType.UserGroup,
-                "address" => RecordType.Address,
-                "usergroupassignment" => RecordType.UserGroupAssignment,
-                "addressassignment" => RecordType.AddressAssignment,
-                "costcenter" => RecordType.CostCenter,
-                "catalogassignment" => RecordType.CatalogAssignment,
-                "catalog" => RecordType.Catalog,
-                _ => throw new OrchestrationException(OrchestrationErrorType.WorkItemDefinition, path)
-            };
-        }
-
-        public string ResourceId { get; set; }
-
-        public string RecordId { get; set; }
-
-        [JsonConverter(typeof(StringEnumConverter))]
-        public RecordType RecordType { get; set; }
-
-        [JsonConverter(typeof(StringEnumConverter))]
-        public Action Action { get; set; }
-
-        public JObject Current { get; set; } // not used for delete
-
-        public JObject Cache { get; set; } // not used for create
-
-        public JObject Diff { get; set; }
-
-        public string Token { get; set; }
-
-        public string ClientId { get; set; }
-
-        public DecodedToken User { get; set; }
-    }
-
     [JsonConverter(typeof(StringEnumConverter))]
     public enum RecordType
     {
@@ -150,5 +93,62 @@ namespace Headstart.Common.Models
 
             throw new OrchestrationException(OrchestrationErrorType.ActionEvaluationError, wi, "Unable to determine action");
         }
+    }
+
+    public class WorkItem
+    {
+        public WorkItem()
+        {
+        }
+
+        public WorkItem(string path)
+        {
+            var split = path.Split("/");
+            this.ResourceId = split[0];
+            this.RecordId = split[split.Length - 1].Replace(".json", string.Empty);
+            this.RecordType = split[2] switch
+            {
+                "templateproductflat" => RecordType.TemplateProductFlat,
+                "hydratedproduct" => RecordType.HydratedProduct,
+                "product" => RecordType.Product,
+                "priceschedule" => RecordType.PriceSchedule,
+                "productfacet" => RecordType.ProductFacet,
+                "specproductassignment" => RecordType.SpecProductAssignment,
+                "specoption" => RecordType.SpecOption,
+                "spec" => RecordType.Spec,
+                "buyer" => RecordType.Buyer,
+                "user" => RecordType.User,
+                "usergroup" => RecordType.UserGroup,
+                "address" => RecordType.Address,
+                "usergroupassignment" => RecordType.UserGroupAssignment,
+                "addressassignment" => RecordType.AddressAssignment,
+                "costcenter" => RecordType.CostCenter,
+                "catalogassignment" => RecordType.CatalogAssignment,
+                "catalog" => RecordType.Catalog,
+                _ => throw new OrchestrationException(OrchestrationErrorType.WorkItemDefinition, path)
+            };
+        }
+
+        public string ResourceId { get; set; }
+
+        public string RecordId { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public RecordType RecordType { get; set; }
+
+        [JsonConverter(typeof(StringEnumConverter))]
+        public Action Action { get; set; }
+
+        public JObject Current { get; set; } // not used for delete
+
+        public JObject Cache { get; set; } // not used for create
+
+        public JObject Diff { get; set; }
+
+        public string Token { get; set; }
+
+        public string ClientId { get; set; }
+
+        public DecodedToken User { get; set; }
     }
 }

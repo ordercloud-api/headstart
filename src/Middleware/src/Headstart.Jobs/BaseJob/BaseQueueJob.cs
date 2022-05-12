@@ -13,9 +13,9 @@ namespace Headstart.Jobs
     {
         private const int MaxDeadLetterDescriptionLength = 4096;
 
-        protected virtual int RetryTemporaryErrorsAfterMinutes { get; } = 10;
-
         private Random jitterer = new Random();
+
+        protected virtual int RetryTemporaryErrorsAfterMinutes { get; } = 10;
 
         public async Task Run(ILogger logger, Message message, MessageReceiver messageReceiver, MessageSender messageSender)
         {

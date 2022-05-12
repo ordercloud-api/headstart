@@ -8,6 +8,13 @@ using System.Threading.Tasks;
 
 namespace ordercloud.integrations.library
 {
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum SortDirection
+    {
+        ASC,
+        DESC,
+    }
+
     public interface IRepository<T> where T : CosmosObject
     {
         Task<CosmosListPage<T>> GetItemsAsync(IQueryable<T> queryable, QueryRequestOptions requestOptions, CosmosListOptions listOptions);
@@ -56,12 +63,5 @@ namespace ordercloud.integrations.library
         public string Search { get; set; }
 
         public string SearchOn { get; set; }
-    }
-
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum SortDirection
-    {
-        ASC,
-        DESC,
     }
 }

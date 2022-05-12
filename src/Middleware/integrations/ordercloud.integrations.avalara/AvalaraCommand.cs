@@ -13,6 +13,13 @@ using TaxCategorizationResponse = ordercloud.integrations.library.intefaces.TaxC
 
 namespace ordercloud.integrations.avalara
 {
+    public enum AppEnvironment
+    {
+        Test,
+        Staging,
+        Production,
+    }
+
     public interface IAvalaraCommand
     {
         /// <summary>
@@ -26,13 +33,6 @@ namespace ordercloud.integrations.avalara
         Task<OrderTaxCalculation> CommitTransactionAsync(OrderWorksheet orderWorksheet, List<OrderPromotion> promotions);
 
         Task<TaxCategorizationResponse> ListTaxCodesAsync(string searchTerm);
-    }
-
-    public enum AppEnvironment
-    {
-        Test,
-        Staging,
-        Production,
     }
 
     public class AvalaraCommand : IAvalaraCommand, ITaxCalculator, ITaxCodesProvider

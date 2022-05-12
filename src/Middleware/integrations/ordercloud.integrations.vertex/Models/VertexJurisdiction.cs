@@ -2,6 +2,26 @@
 
 namespace ordercloud.integrations.vertex
 {
+    public enum VertexJurisdictionLevel
+    {
+        APO,
+        BOROUGH,
+        CITY,
+        COUNTRY,
+        COUNTY,
+        DISTRICT,
+        FPO,
+        LOCAL_IMPROVEMENT_DISTRICT,
+        PARISH,
+        PROVINCE,
+        SPECIAL_PURPOSE_DISTRICT,
+        STATE,
+        TERRITORY,
+        TOWNSHIP,
+        TRADE_BLOCK,
+        TRANSIT_DISTRICT,
+    }
+
     public class VertexJurisdiction
     {
         /// <summary>
@@ -41,26 +61,6 @@ namespace ordercloud.integrations.vertex
         public VertexRateOverride rateOverride { get; set; }
 
         public VertexDeductionOverride deductionOverride { get; set; }
-    }
-
-    public enum VertexJurisdictionLevel
-    {
-        APO,
-        BOROUGH,
-        CITY,
-        COUNTRY,
-        COUNTY,
-        DISTRICT,
-        FPO,
-        LOCAL_IMPROVEMENT_DISTRICT,
-        PARISH,
-        PROVINCE,
-        SPECIAL_PURPOSE_DISTRICT,
-        STATE,
-        TERRITORY,
-        TOWNSHIP,
-        TRADE_BLOCK,
-        TRANSIT_DISTRICT,
     }
 
     public class VertexRateOverride

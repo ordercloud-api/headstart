@@ -13,10 +13,6 @@ namespace ordercloud.integrations.library
 {
     public abstract class CosmosDbRepository<T> : IRepository<T>, IContainerContext<T> where T : CosmosObject
     {
-        public abstract string ContainerName { get; }
-
-        public abstract PartitionKey ResolvePartitionKey(string entityId);
-
         private readonly ICosmosDbContainerFactory _cosmosDbContainerFactory;
         private readonly Container _container;
 
@@ -25,6 +21,10 @@ namespace ordercloud.integrations.library
             _cosmosDbContainerFactory = cosmosDbContainerFactory ?? throw new ArgumentNullException(nameof(ICosmosDbContainerFactory));
             _container = _cosmosDbContainerFactory.GetContainer(ContainerName)._container;
         }
+
+        public abstract string ContainerName { get; }
+
+        public abstract PartitionKey ResolvePartitionKey(string entityId);
 
         public async Task<T> AddItemAsync(T item)
         {

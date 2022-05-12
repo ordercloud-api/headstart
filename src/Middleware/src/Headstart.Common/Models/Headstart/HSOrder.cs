@@ -10,6 +10,28 @@ using System;
 
 namespace Headstart.Models
 {
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum OrderType
+    {
+        Standard,
+        Quote,
+    }
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum SubmittedOrderStatus
+    {
+        Open,
+        Completed,
+        Canceled,
+    }
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum QuoteStatus
+    {
+        NeedsBuyerReview,
+        NeedsSellerReview,
+    }
+
     public class HSOrder : Order<OrderXp, HSUser, HSAddressBuyer>
     {
     }
@@ -75,13 +97,6 @@ namespace Headstart.Models
         public string ShipFromAddressID { get; set; }
 
         // Do not include buyer's cost. That is none of the supplier's beeswax
-    }
-
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum OrderType
-    {
-        Standard,
-        Quote,
     }
 
     public class OrderDetails
@@ -173,20 +188,5 @@ namespace Headstart.Models
     public class HSOrderSubmitPayloadResponse
     {
         public HSOrder Body { get; set; }
-    }
-
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum SubmittedOrderStatus
-    {
-        Open,
-        Completed,
-        Canceled,
-    }
-
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum QuoteStatus
-    {
-        NeedsBuyerReview,
-        NeedsSellerReview,
     }
 }

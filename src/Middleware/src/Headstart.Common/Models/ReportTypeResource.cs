@@ -2,6 +2,14 @@
 
 namespace Headstart.Common.Models
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum BuyerReportViewContext
+    {
+        MyOrders,
+        Approve,
+        Location,
+    }
+
     public class ReportTypeResource
     {
         // Explicitly setting available report types
@@ -83,13 +91,5 @@ namespace Headstart.Common.Models
         public string Value { get; set; }
 
         public string[] AdHocFilters { get; set; }
-    }
-
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum BuyerReportViewContext
-    {
-        MyOrders,
-        Approve,
-        Location,
     }
 }

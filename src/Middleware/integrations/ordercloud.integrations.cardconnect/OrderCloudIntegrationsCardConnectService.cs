@@ -10,6 +10,13 @@ using OrderCloud.SDK;
 
 namespace ordercloud.integrations.cardconnect
 {
+    public enum AppEnvironment
+    {
+        Test,
+        Staging,
+        Production,
+    }
+
     public interface IOrderCloudIntegrationsCardConnectService
     {
         Task<CardConnectAccountResponse> Tokenize(CardConnectAccountRequest request);
@@ -44,20 +51,11 @@ namespace ordercloud.integrations.cardconnect
         public string EurMerchantID { get; set; }
     }
 
-    public enum AppEnvironment
-    {
-        Test,
-        Staging,
-        Production,
-    }
-
     public class OrderCloudIntegrationsCardConnectService : IOrderCloudIntegrationsCardConnectService
     {
         private readonly IFlurlClient _flurl;
         private bool noAccountCredentials;
         private AppEnvironment appEnvironment;
-
-        public OrderCloudIntegrationsCardConnectConfig Config { get; }
 
         public OrderCloudIntegrationsCardConnectService(OrderCloudIntegrationsCardConnectConfig config, string environment, IFlurlClientFactory flurlFactory)
         {
@@ -68,6 +66,8 @@ namespace ordercloud.integrations.cardconnect
             appEnvironment = (AppEnvironment)Enum.Parse(typeof(AppEnvironment), environment);
             _flurl = flurlFactory.Get($"https://{Config?.Site}.{Config?.BaseUrl}/");
         }
+
+        public OrderCloudIntegrationsCardConnectConfig Config { get; }
 
         public async Task<CardConnectAccountResponse> Tokenize(CardConnectAccountRequest request)
         {

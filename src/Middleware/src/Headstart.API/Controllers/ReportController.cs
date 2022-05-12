@@ -26,11 +26,6 @@ namespace Headstart.Common.Controllers
             _downloadReportCommand = downloadReportCommand;
         }
 
-        public class ReportRequestBody
-        {
-            public string[] Headers { get; set; }
-        }
-
         [HttpGet, Route("fetchAllReportTypes"), OrderCloudUserAuth("HSReportReader", "HSReportAdmin")]
         public ListPage<ReportTypeResource> FetchAllReportTypes()
         {
@@ -176,6 +171,11 @@ namespace Headstart.Common.Controllers
         public async Task<List<HSBuyer>> GetBuyerFilterValues()
         {
             return await _reportDataCommand.GetBuyerFilterValues(UserContext);
+        }
+
+        public class ReportRequestBody
+        {
+            public string[] Headers { get; set; }
         }
     }
 }

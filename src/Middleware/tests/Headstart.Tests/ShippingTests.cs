@@ -12,6 +12,12 @@ namespace Headstart.Tests
         {
         }
 
+        [Test, TestCaseSource(typeof(LineItemFactory), nameof(LineItemFactory.LineItemCases))]
+        public double TestShipDimensions(LineItem item)
+        {
+            return item.ShipWeightOrDefault(100);
+        }
+
         public class LineItemFactory
         {
             public static IEnumerable LineItemCases
@@ -35,12 +41,6 @@ namespace Headstart.Tests
                     }).Returns(100);
                 }
             }
-        }
-
-        [Test, TestCaseSource(typeof(LineItemFactory), nameof(LineItemFactory.LineItemCases))]
-        public double TestShipDimensions(LineItem item)
-        {
-            return item.ShipWeightOrDefault(100);
         }
     }
 }

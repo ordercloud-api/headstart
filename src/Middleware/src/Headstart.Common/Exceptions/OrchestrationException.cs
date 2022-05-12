@@ -6,10 +6,28 @@ using Newtonsoft.Json.Linq;
 
 namespace Headstart.Common.Exceptions
 {
+    [JsonConverter(typeof(StringEnumConverter))]
+    public enum OrchestrationErrorType
+    {
+        WorkItemDefinition,
+        QueuedGetError,
+        CachedGetError,
+        DiffCalculationError,
+        ActionEvaluationError,
+        CacheUpdateError,
+        QueueCleanupError,
+        SyncCommandError,
+        CreateExistsError,
+        CreateGeneralError,
+        UpdateGeneralError,
+        PatchGeneralError,
+        GetGeneralError,
+        AuthenticateSupplierError,
+        NoRelatedOrderCloudOrderFound,
+    }
+
     public class OrchestrationException : Exception
     {
-        public OrchestrationError Error { get; set; }
-
         public OrchestrationException(OrchestrationErrorType type, object data)
         {
             Error = new OrchestrationError
@@ -43,6 +61,8 @@ namespace Headstart.Common.Exceptions
                 Data = data,
             };
         }
+
+        public OrchestrationError Error { get; set; }
     }
 
     public class OrchestrationError
@@ -71,25 +91,5 @@ namespace Headstart.Common.Exceptions
         public JToken Diff { get; set; }
 
         public object Data { get; set; }
-    }
-
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum OrchestrationErrorType
-    {
-        WorkItemDefinition,
-        QueuedGetError,
-        CachedGetError,
-        DiffCalculationError,
-        ActionEvaluationError,
-        CacheUpdateError,
-        QueueCleanupError,
-        SyncCommandError,
-        CreateExistsError,
-        CreateGeneralError,
-        UpdateGeneralError,
-        PatchGeneralError,
-        GetGeneralError,
-        AuthenticateSupplierError,
-        NoRelatedOrderCloudOrderFound,
     }
 }

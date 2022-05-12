@@ -22,6 +22,142 @@ namespace Headstart.API.Commands
         public const string DefaultLocationID = "default-buyerLocation";
         public const string AllowedSecretChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
+        public static readonly List<XpIndex> DefaultIndices = new List<XpIndex>()
+        {
+            new XpIndex { ThingType = XpThingType.UserGroup, Key = "Type" },
+            new XpIndex { ThingType = XpThingType.UserGroup, Key = "Role" },
+            new XpIndex { ThingType = XpThingType.UserGroup, Key = "Country" },
+            new XpIndex { ThingType = XpThingType.UserGroup, Key = "CatalogAssignments" },
+            new XpIndex { ThingType = XpThingType.Company, Key = "Data.ServiceCategory" },
+            new XpIndex { ThingType = XpThingType.Company, Key = "Data.VendorLevel" },
+            new XpIndex { ThingType = XpThingType.Company, Key = "SyncFreightPop" },
+            new XpIndex { ThingType = XpThingType.Company, Key = "BuyersServicing" },
+            new XpIndex { ThingType = XpThingType.Company, Key = "CountriesServicing" },
+            new XpIndex { ThingType = XpThingType.Order, Key = "NeedsAttention" },
+            new XpIndex { ThingType = XpThingType.Order, Key = "StopShipSync" },
+            new XpIndex { ThingType = XpThingType.Order, Key = "OrderType" },
+            new XpIndex { ThingType = XpThingType.Order, Key = "LocationID" },
+            new XpIndex { ThingType = XpThingType.Order, Key = "SubmittedOrderStatus" },
+            new XpIndex { ThingType = XpThingType.Order, Key = "IsResubmitting" },
+            new XpIndex { ThingType = XpThingType.Order, Key = "SupplierIDs" },
+            new XpIndex { ThingType = XpThingType.Order, Key = "QuoteStatus" },
+            new XpIndex { ThingType = XpThingType.Order, Key = "QuoteSupplierID" },
+            new XpIndex { ThingType = XpThingType.User, Key = "UserGroupID" },
+            new XpIndex { ThingType = XpThingType.User, Key = "RequestInfoEmails" },
+            new XpIndex { ThingType = XpThingType.Promotion, Key = "Automatic" },
+            new XpIndex { ThingType = XpThingType.Promotion, Key = "AppliesTo" },
+        };
+
+        public static readonly List<Incrementor> DefaultIncrementors = new List<Incrementor>()
+        {
+            new Incrementor { ID = "orderIncrementor", Name = "Order Incrementor", LastNumber = 0, LeftPaddingCount = 6 },
+            new Incrementor { ID = "supplierIncrementor", Name = "Supplier Incrementor", LastNumber = 0, LeftPaddingCount = 3 },
+            new Incrementor { ID = "buyerIncrementor", Name = "Buyer Incrementor", LastNumber = 0, LeftPaddingCount = 4 },
+            new Incrementor { ID = "sellerLocationIncrementor", Name = "Seller Location Incrementor", LastNumber = 0, LeftPaddingCount = 4 },
+        };
+
+        public static readonly List<HSSecurityProfile> DefaultSecurityProfiles = new List<HSSecurityProfile>()
+        {
+            // seller/supplier
+            new HSSecurityProfile() { ID = CustomRole.HSBuyerAdmin, CustomRoles = new CustomRole[] { CustomRole.HSBuyerAdmin }, Roles = new ApiRole[] { ApiRole.AddressAdmin, ApiRole.ApprovalRuleAdmin, ApiRole.BuyerAdmin, ApiRole.BuyerUserAdmin, ApiRole.CreditCardAdmin, ApiRole.UserGroupAdmin } },
+            new HSSecurityProfile() { ID = CustomRole.HSBuyerImpersonator, CustomRoles = new CustomRole[] { CustomRole.HSBuyerImpersonator }, Roles = new ApiRole[] { ApiRole.BuyerImpersonation } },
+            new HSSecurityProfile() { ID = CustomRole.HSCategoryAdmin, CustomRoles = new CustomRole[] { CustomRole.HSCategoryAdmin }, Roles = new ApiRole[] { ApiRole.CategoryAdmin } },
+            new HSSecurityProfile() { ID = CustomRole.HSContentAdmin, CustomRoles = new CustomRole[] { CustomRole.AssetAdmin, CustomRole.DocumentAdmin, CustomRole.SchemaAdmin }, Roles = new ApiRole[] { ApiRole.ApiClientAdmin } },
+            new HSSecurityProfile() { ID = CustomRole.HSMeAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeAdmin }, Roles = new ApiRole[] { ApiRole.MeAdmin, ApiRole.MeXpAdmin } },
+            new HSSecurityProfile() { ID = CustomRole.HSMeProductAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeProductAdmin }, Roles = new ApiRole[] { ApiRole.PriceScheduleAdmin, ApiRole.ProductAdmin, ApiRole.ProductFacetReader, ApiRole.SupplierAddressReader } },
+            new HSSecurityProfile() { ID = CustomRole.HSMeSupplierAddressAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeSupplierAddressAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAddressAdmin, ApiRole.SupplierReader } },
+            new HSSecurityProfile() { ID = CustomRole.HSMeSupplierAdmin, CustomRoles = new CustomRole[] { CustomRole.AssetAdmin, CustomRole.HSMeSupplierAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAdmin, ApiRole.SupplierReader } },
+            new HSSecurityProfile() { ID = CustomRole.HSMeSupplierUserAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeSupplierUserAdmin }, Roles = new ApiRole[] { ApiRole.SupplierReader, ApiRole.SupplierUserAdmin } },
+            new HSSecurityProfile() { ID = CustomRole.HSOrderAdmin, CustomRoles = new CustomRole[] { CustomRole.HSOrderAdmin }, Roles = new ApiRole[] { ApiRole.AddressReader, ApiRole.OrderAdmin, ApiRole.ShipmentReader } },
+            new HSSecurityProfile() { ID = CustomRole.HSProductAdmin, CustomRoles = new CustomRole[] { CustomRole.HSProductAdmin }, Roles = new ApiRole[] { ApiRole.AdminAddressAdmin, ApiRole.AdminAddressReader, ApiRole.CatalogAdmin, ApiRole.PriceScheduleAdmin, ApiRole.ProductAdmin, ApiRole.ProductAssignmentAdmin, ApiRole.ProductFacetAdmin, ApiRole.SupplierAddressReader } },
+            new HSSecurityProfile() { ID = CustomRole.HSPromotionAdmin, CustomRoles = new CustomRole[] { CustomRole.HSPromotionAdmin }, Roles = new ApiRole[] { ApiRole.PromotionAdmin } },
+            new HSSecurityProfile() { ID = CustomRole.HSReportAdmin, CustomRoles = new CustomRole[] { CustomRole.HSReportAdmin }, Roles = new ApiRole[] { } },
+            new HSSecurityProfile() { ID = CustomRole.HSReportReader, CustomRoles = new CustomRole[] { CustomRole.HSReportReader }, Roles = new ApiRole[] { } },
+            new HSSecurityProfile() { ID = CustomRole.HSSellerAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSellerAdmin }, Roles = new ApiRole[] { ApiRole.AdminUserAdmin } },
+            new HSSecurityProfile() { ID = CustomRole.HSShipmentAdmin, CustomRoles = new CustomRole[] { CustomRole.HSShipmentAdmin }, Roles = new ApiRole[] { ApiRole.AddressReader, ApiRole.OrderReader, ApiRole.ShipmentAdmin } },
+            new HSSecurityProfile() { ID = CustomRole.HSStorefrontAdmin, CustomRoles = new CustomRole[] { CustomRole.HSStorefrontAdmin }, Roles = new ApiRole[] { ApiRole.ProductFacetAdmin, ApiRole.ProductFacetReader } },
+            new HSSecurityProfile() { ID = CustomRole.HSSupplierAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSupplierAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAddressAdmin, ApiRole.SupplierAdmin, ApiRole.SupplierUserAdmin } },
+            new HSSecurityProfile() { ID = CustomRole.HSSupplierUserGroupAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSupplierUserGroupAdmin }, Roles = new ApiRole[] { ApiRole.SupplierReader, ApiRole.SupplierUserGroupAdmin } },
+
+            // buyer - this is the only role needed for a buyer user to successfully check out
+            new HSSecurityProfile() { ID = CustomRole.HSBaseBuyer, CustomRoles = new CustomRole[] { CustomRole.HSBaseBuyer }, Roles = new ApiRole[] { ApiRole.MeAddressAdmin, ApiRole.MeAdmin, ApiRole.MeCreditCardAdmin, ApiRole.MeXpAdmin, ApiRole.ProductFacetReader, ApiRole.Shopper, ApiRole.SupplierAddressReader, ApiRole.SupplierReader } },
+
+            /* these roles don't do much, access to changing location information will be done through middleware calls that
+            *  confirm the user is in the location specific access user group. These roles will be assigned to the location
+            *  specific user group and allow us to determine if a user has an admin role for at least one location through
+            *  the users JWT
+            */
+            new HSSecurityProfile() { ID = CustomRole.HSLocationOrderApprover, CustomRoles = new CustomRole[] { CustomRole.HSLocationOrderApprover }, Roles = new ApiRole[] { } },
+            new HSSecurityProfile() { ID = CustomRole.HSLocationViewAllOrders, CustomRoles = new CustomRole[] { CustomRole.HSLocationViewAllOrders }, Roles = new ApiRole[] { } },
+            new HSSecurityProfile() { ID = CustomRole.HSLocationAddressAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationAddressAdmin }, Roles = new ApiRole[] { } },
+            new HSSecurityProfile() { ID = CustomRole.HSLocationPermissionAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationPermissionAdmin }, Roles = new ApiRole[] { } },
+            new HSSecurityProfile() { ID = CustomRole.HSLocationNeedsApproval, CustomRoles = new CustomRole[] { CustomRole.HSLocationNeedsApproval }, Roles = new ApiRole[] { } },
+            new HSSecurityProfile() { ID = CustomRole.HSLocationCreditCardAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationCreditCardAdmin }, Roles = new ApiRole[] { } },
+        };
+
+        public static readonly List<CustomRole> SellerHsRoles = new List<CustomRole>()
+        {
+            CustomRole.HSBuyerAdmin,
+            CustomRole.HSBuyerImpersonator,
+            CustomRole.HSCategoryAdmin,
+            CustomRole.HSContentAdmin,
+            CustomRole.HSMeAdmin,
+            CustomRole.HSOrderAdmin,
+            CustomRole.HSProductAdmin,
+            CustomRole.HSPromotionAdmin,
+            CustomRole.HSReportAdmin,
+            CustomRole.HSReportReader,
+            CustomRole.HSSellerAdmin,
+            CustomRole.HSShipmentAdmin,
+            CustomRole.HSStorefrontAdmin,
+            CustomRole.HSSupplierAdmin,
+            CustomRole.HSSupplierUserGroupAdmin,
+        };
+
+        public static readonly Region UsEast = new Region()
+        {
+            AzureRegion = "eastus",
+            Id = "est",
+            Name = "US-East",
+        };
+
+        public static readonly Region AustraliaEast = new Region()
+        {
+            AzureRegion = "australiaeast",
+            Id = "aus",
+            Name = "Australia-East",
+        };
+
+        public static readonly Region EuropeWest = new Region()
+        {
+            AzureRegion = "westeurope",
+            Id = "eur",
+            Name = "Europe-West",
+        };
+
+        public static readonly Region JapanEast = new Region()
+        {
+            AzureRegion = "japaneast",
+            Id = "jpn",
+            Name = "Japan-East",
+        };
+
+        public static readonly Region UsWest = new Region()
+        {
+            AzureRegion = "westus",
+            Id = "usw",
+            Name = "US-West",
+        };
+
+        public static readonly List<Region> Regions = new List<Region>()
+        {
+            UsEast,
+            AustraliaEast,
+            EuropeWest,
+            JapanEast,
+            UsWest,
+        };
+
         public static HSUser AnonymousBuyerUser()
         {
             return new HSUser()
@@ -66,40 +202,6 @@ namespace Headstart.API.Commands
                 },
             };
         }
-
-        public static readonly List<XpIndex> DefaultIndices = new List<XpIndex>()
-        {
-            new XpIndex { ThingType = XpThingType.UserGroup, Key = "Type" },
-            new XpIndex { ThingType = XpThingType.UserGroup, Key = "Role" },
-            new XpIndex { ThingType = XpThingType.UserGroup, Key = "Country" },
-            new XpIndex { ThingType = XpThingType.UserGroup, Key = "CatalogAssignments" },
-            new XpIndex { ThingType = XpThingType.Company, Key = "Data.ServiceCategory" },
-            new XpIndex { ThingType = XpThingType.Company, Key = "Data.VendorLevel" },
-            new XpIndex { ThingType = XpThingType.Company, Key = "SyncFreightPop" },
-            new XpIndex { ThingType = XpThingType.Company, Key = "BuyersServicing" },
-            new XpIndex { ThingType = XpThingType.Company, Key = "CountriesServicing" },
-            new XpIndex { ThingType = XpThingType.Order, Key = "NeedsAttention" },
-            new XpIndex { ThingType = XpThingType.Order, Key = "StopShipSync" },
-            new XpIndex { ThingType = XpThingType.Order, Key = "OrderType" },
-            new XpIndex { ThingType = XpThingType.Order, Key = "LocationID" },
-            new XpIndex { ThingType = XpThingType.Order, Key = "SubmittedOrderStatus" },
-            new XpIndex { ThingType = XpThingType.Order, Key = "IsResubmitting" },
-            new XpIndex { ThingType = XpThingType.Order, Key = "SupplierIDs" },
-            new XpIndex { ThingType = XpThingType.Order, Key = "QuoteStatus" },
-            new XpIndex { ThingType = XpThingType.Order, Key = "QuoteSupplierID" },
-            new XpIndex { ThingType = XpThingType.User, Key = "UserGroupID" },
-            new XpIndex { ThingType = XpThingType.User, Key = "RequestInfoEmails" },
-            new XpIndex { ThingType = XpThingType.Promotion, Key = "Automatic" },
-            new XpIndex { ThingType = XpThingType.Promotion, Key = "AppliesTo" },
-        };
-
-        public static readonly List<Incrementor> DefaultIncrementors = new List<Incrementor>()
-        {
-            new Incrementor { ID = "orderIncrementor", Name = "Order Incrementor", LastNumber = 0, LeftPaddingCount = 6 },
-            new Incrementor { ID = "supplierIncrementor", Name = "Supplier Incrementor", LastNumber = 0, LeftPaddingCount = 3 },
-            new Incrementor { ID = "buyerIncrementor", Name = "Buyer Incrementor", LastNumber = 0, LeftPaddingCount = 4 },
-            new Incrementor { ID = "sellerLocationIncrementor", Name = "Seller Location Incrementor", LastNumber = 0, LeftPaddingCount = 4 },
-        };
 
         public static ApiClient IntegrationsClient()
         {
@@ -258,64 +360,6 @@ namespace Headstart.API.Commands
             };
         }
 
-        public static readonly List<HSSecurityProfile> DefaultSecurityProfiles = new List<HSSecurityProfile>()
-        {
-            // seller/supplier
-            new HSSecurityProfile() { ID = CustomRole.HSBuyerAdmin, CustomRoles = new CustomRole[] { CustomRole.HSBuyerAdmin }, Roles = new ApiRole[] { ApiRole.AddressAdmin, ApiRole.ApprovalRuleAdmin, ApiRole.BuyerAdmin, ApiRole.BuyerUserAdmin, ApiRole.CreditCardAdmin, ApiRole.UserGroupAdmin } },
-            new HSSecurityProfile() { ID = CustomRole.HSBuyerImpersonator, CustomRoles = new CustomRole[] { CustomRole.HSBuyerImpersonator }, Roles = new ApiRole[] { ApiRole.BuyerImpersonation } },
-            new HSSecurityProfile() { ID = CustomRole.HSCategoryAdmin, CustomRoles = new CustomRole[] { CustomRole.HSCategoryAdmin }, Roles = new ApiRole[] { ApiRole.CategoryAdmin } },
-            new HSSecurityProfile() { ID = CustomRole.HSContentAdmin, CustomRoles = new CustomRole[] { CustomRole.AssetAdmin, CustomRole.DocumentAdmin, CustomRole.SchemaAdmin }, Roles = new ApiRole[] { ApiRole.ApiClientAdmin } },
-            new HSSecurityProfile() { ID = CustomRole.HSMeAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeAdmin }, Roles = new ApiRole[] { ApiRole.MeAdmin, ApiRole.MeXpAdmin } },
-            new HSSecurityProfile() { ID = CustomRole.HSMeProductAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeProductAdmin }, Roles = new ApiRole[] { ApiRole.PriceScheduleAdmin, ApiRole.ProductAdmin, ApiRole.ProductFacetReader, ApiRole.SupplierAddressReader } },
-            new HSSecurityProfile() { ID = CustomRole.HSMeSupplierAddressAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeSupplierAddressAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAddressAdmin, ApiRole.SupplierReader } },
-            new HSSecurityProfile() { ID = CustomRole.HSMeSupplierAdmin, CustomRoles = new CustomRole[] { CustomRole.AssetAdmin, CustomRole.HSMeSupplierAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAdmin, ApiRole.SupplierReader } },
-            new HSSecurityProfile() { ID = CustomRole.HSMeSupplierUserAdmin, CustomRoles = new CustomRole[] { CustomRole.HSMeSupplierUserAdmin }, Roles = new ApiRole[] { ApiRole.SupplierReader, ApiRole.SupplierUserAdmin } },
-            new HSSecurityProfile() { ID = CustomRole.HSOrderAdmin, CustomRoles = new CustomRole[] { CustomRole.HSOrderAdmin }, Roles = new ApiRole[] { ApiRole.AddressReader, ApiRole.OrderAdmin, ApiRole.ShipmentReader } },
-            new HSSecurityProfile() { ID = CustomRole.HSProductAdmin, CustomRoles = new CustomRole[] { CustomRole.HSProductAdmin }, Roles = new ApiRole[] { ApiRole.AdminAddressAdmin, ApiRole.AdminAddressReader, ApiRole.CatalogAdmin, ApiRole.PriceScheduleAdmin, ApiRole.ProductAdmin, ApiRole.ProductAssignmentAdmin, ApiRole.ProductFacetAdmin, ApiRole.SupplierAddressReader } },
-            new HSSecurityProfile() { ID = CustomRole.HSPromotionAdmin, CustomRoles = new CustomRole[] { CustomRole.HSPromotionAdmin }, Roles = new ApiRole[] { ApiRole.PromotionAdmin } },
-            new HSSecurityProfile() { ID = CustomRole.HSReportAdmin, CustomRoles = new CustomRole[] { CustomRole.HSReportAdmin }, Roles = new ApiRole[] { } },
-            new HSSecurityProfile() { ID = CustomRole.HSReportReader, CustomRoles = new CustomRole[] { CustomRole.HSReportReader }, Roles = new ApiRole[] { } },
-            new HSSecurityProfile() { ID = CustomRole.HSSellerAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSellerAdmin }, Roles = new ApiRole[] { ApiRole.AdminUserAdmin } },
-            new HSSecurityProfile() { ID = CustomRole.HSShipmentAdmin, CustomRoles = new CustomRole[] { CustomRole.HSShipmentAdmin }, Roles = new ApiRole[] { ApiRole.AddressReader, ApiRole.OrderReader, ApiRole.ShipmentAdmin } },
-            new HSSecurityProfile() { ID = CustomRole.HSStorefrontAdmin, CustomRoles = new CustomRole[] { CustomRole.HSStorefrontAdmin }, Roles = new ApiRole[] { ApiRole.ProductFacetAdmin, ApiRole.ProductFacetReader } },
-            new HSSecurityProfile() { ID = CustomRole.HSSupplierAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSupplierAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAddressAdmin, ApiRole.SupplierAdmin, ApiRole.SupplierUserAdmin } },
-            new HSSecurityProfile() { ID = CustomRole.HSSupplierUserGroupAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSupplierUserGroupAdmin }, Roles = new ApiRole[] { ApiRole.SupplierReader, ApiRole.SupplierUserGroupAdmin } },
-
-            // buyer - this is the only role needed for a buyer user to successfully check out
-            new HSSecurityProfile() { ID = CustomRole.HSBaseBuyer, CustomRoles = new CustomRole[] { CustomRole.HSBaseBuyer }, Roles = new ApiRole[] { ApiRole.MeAddressAdmin, ApiRole.MeAdmin, ApiRole.MeCreditCardAdmin, ApiRole.MeXpAdmin, ApiRole.ProductFacetReader, ApiRole.Shopper, ApiRole.SupplierAddressReader, ApiRole.SupplierReader } },
-
-            /* these roles don't do much, access to changing location information will be done through middleware calls that
-            *  confirm the user is in the location specific access user group. These roles will be assigned to the location
-            *  specific user group and allow us to determine if a user has an admin role for at least one location through
-            *  the users JWT
-            */
-            new HSSecurityProfile() { ID = CustomRole.HSLocationOrderApprover, CustomRoles = new CustomRole[] { CustomRole.HSLocationOrderApprover }, Roles = new ApiRole[] { } },
-            new HSSecurityProfile() { ID = CustomRole.HSLocationViewAllOrders, CustomRoles = new CustomRole[] { CustomRole.HSLocationViewAllOrders }, Roles = new ApiRole[] { } },
-            new HSSecurityProfile() { ID = CustomRole.HSLocationAddressAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationAddressAdmin }, Roles = new ApiRole[] { } },
-            new HSSecurityProfile() { ID = CustomRole.HSLocationPermissionAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationPermissionAdmin }, Roles = new ApiRole[] { } },
-            new HSSecurityProfile() { ID = CustomRole.HSLocationNeedsApproval, CustomRoles = new CustomRole[] { CustomRole.HSLocationNeedsApproval }, Roles = new ApiRole[] { } },
-            new HSSecurityProfile() { ID = CustomRole.HSLocationCreditCardAdmin, CustomRoles = new CustomRole[] { CustomRole.HSLocationCreditCardAdmin }, Roles = new ApiRole[] { } },
-        };
-
-        public static readonly List<CustomRole> SellerHsRoles = new List<CustomRole>()
-        {
-            CustomRole.HSBuyerAdmin,
-            CustomRole.HSBuyerImpersonator,
-            CustomRole.HSCategoryAdmin,
-            CustomRole.HSContentAdmin,
-            CustomRole.HSMeAdmin,
-            CustomRole.HSOrderAdmin,
-            CustomRole.HSProductAdmin,
-            CustomRole.HSPromotionAdmin,
-            CustomRole.HSReportAdmin,
-            CustomRole.HSReportReader,
-            CustomRole.HSSellerAdmin,
-            CustomRole.HSShipmentAdmin,
-            CustomRole.HSStorefrontAdmin,
-            CustomRole.HSSupplierAdmin,
-            CustomRole.HSSupplierUserGroupAdmin,
-        };
-
         public static HSBuyerLocation DefaultBuyerLocation()
         {
             return new HSBuyerLocation()
@@ -353,56 +397,6 @@ namespace Headstart.API.Commands
                 MinCount = 1,
                 xp = null,
             };
-        }
-
-        public static readonly Region UsEast = new Region()
-        {
-            AzureRegion = "eastus",
-            Id = "est",
-            Name = "US-East",
-        };
-
-        public static readonly Region AustraliaEast = new Region()
-        {
-            AzureRegion = "australiaeast",
-            Id = "aus",
-            Name = "Australia-East",
-        };
-
-        public static readonly Region EuropeWest = new Region()
-        {
-            AzureRegion = "westeurope",
-            Id = "eur",
-            Name = "Europe-West",
-        };
-
-        public static readonly Region JapanEast = new Region()
-        {
-            AzureRegion = "japaneast",
-            Id = "jpn",
-            Name = "Japan-East",
-        };
-
-        public static readonly Region UsWest = new Region()
-        {
-            AzureRegion = "westus",
-            Id = "usw",
-            Name = "US-West",
-        };
-
-        public static readonly List<Region> Regions = new List<Region>()
-        {
-            UsEast,
-            AustraliaEast,
-            EuropeWest,
-            JapanEast,
-            UsWest,
-        };
-
-        public static class Environments
-        {
-            public const string Production = "Production";
-            public const string Sandbox = "Sandbox";
         }
 
         /// <summary>
@@ -478,6 +472,12 @@ namespace Headstart.API.Commands
             }
 
             return marketplace;
+        }
+
+        public static class Environments
+        {
+            public const string Production = "Production";
+            public const string Sandbox = "Sandbox";
         }
     }
 }

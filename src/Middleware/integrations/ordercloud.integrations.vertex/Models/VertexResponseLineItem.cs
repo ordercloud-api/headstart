@@ -2,6 +2,49 @@
 
 namespace ordercloud.integrations.vertex
 {
+    public enum VertexTaxStructure
+    {
+        BRACKET,
+        FLAT_TAX,
+        QUANTITY,
+        SINGLE_RATE,
+        TIERED,
+    }
+
+    public enum VertexParty
+    {
+        SELLER,
+        BUYER,
+    }
+
+    public enum VertexInputOutput
+    {
+        INPUT,
+        IMPORT,
+        OUTPUT,
+        INPUT_OUTPUT,
+    }
+
+    public enum VertexTaxType
+    {
+        SALES,
+        SELLER_USE,
+        CONSUMERS_USE,
+        VAT,
+        IMPORT_VAT,
+        NONE,
+    }
+
+    public enum VertexTaxResult
+    {
+        TAXABLE,
+        NONTAXABLE,
+        EXEMPT,
+        DPPAPPLIED,
+        NO_TAX,
+        DEFERRED,
+    }
+
     public class VertexResponseLineItem : VertexLineItem
     {
         public double totalTax { get; set; }
@@ -149,49 +192,6 @@ namespace ordercloud.integrations.vertex
         /// Specifies the applicable tax structure when the transaction includes a flat fee or quantity-based fee.
         /// </summary>
         public VertexTaxStructure taxStructure { get; set; }
-    }
-
-    public enum VertexTaxStructure
-    {
-        BRACKET,
-        FLAT_TAX,
-        QUANTITY,
-        SINGLE_RATE,
-        TIERED,
-    }
-
-    public enum VertexParty
-    {
-        SELLER,
-        BUYER,
-    }
-
-    public enum VertexInputOutput
-    {
-        INPUT,
-        IMPORT,
-        OUTPUT,
-        INPUT_OUTPUT,
-    }
-
-    public enum VertexTaxType
-    {
-        SALES,
-        SELLER_USE,
-        CONSUMERS_USE,
-        VAT,
-        IMPORT_VAT,
-        NONE,
-    }
-
-    public enum VertexTaxResult
-    {
-        TAXABLE,
-        NONTAXABLE,
-        EXEMPT,
-        DPPAPPLIED,
-        NO_TAX,
-        DEFERRED,
     }
 
     public class VertexCertificateNumber

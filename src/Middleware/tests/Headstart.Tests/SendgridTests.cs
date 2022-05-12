@@ -42,35 +42,6 @@ namespace Headstart.Tests
             _command = new SendgridService(_settings, _oc, _sendGridClient);
         }
 
-        public class TestConstants
-        {
-            public const string orderID = "testorder";
-            public const string buyerEmail = "buyer@test.com";
-            public const string lineItem1ID = "testlineitem1";
-            public const string lineItem2ID = "testlineitem2";
-            public const decimal lineItem1Total = 15;
-            public const decimal lineItem2Total = 10;
-            public const string product1ID = "testproduct1";
-            public const string product1Name = "shirt";
-            public const string product2ID = "testproduct2";
-            public const string product2Name = "pants";
-            public const string supplier1ID = "001";
-            public const string supplier2ID = "002";
-            public const string selectedShipEstimate1ID = "shipEstimate001";
-            public const string selectedShipEstimate2ID = "shipEstimate002";
-            public const decimal selectedShipEstimate1Cost = 10;
-            public const decimal selectedShipEstimate2Cost = 15;
-            public const string sellerUser1email = "selleruser1@test.com";
-            public const string selleruser2email = "selleruser2@test.com";
-            public const decimal lineItem1Tax = 5;
-            public const decimal lineItem2Tax = 7;
-            public const decimal lineItem1ShipmentTax = 2;
-            public const decimal lineItem2ShipmentTax = 2;
-            public static readonly string[] supplier1NotificationRcpts = { "001user@test.com", "001user2@test.com" };
-            public static readonly string[] supplier2NotificationRcpts = { "002user@test.com" };
-            public static readonly string[] sellerUser1AdditionalRcpts = { "additionalrecipient1@test.com" };
-        }
-
         [Test]
         public async Task TestOrderSubmitEmail()
         {
@@ -357,6 +328,35 @@ namespace Headstart.Tests
                     },
                 },
             };
+        }
+
+        public class TestConstants
+        {
+            public const string orderID = "testorder";
+            public const string buyerEmail = "buyer@test.com";
+            public const string lineItem1ID = "testlineitem1";
+            public const string lineItem2ID = "testlineitem2";
+            public const decimal lineItem1Total = 15;
+            public const decimal lineItem2Total = 10;
+            public const string product1ID = "testproduct1";
+            public const string product1Name = "shirt";
+            public const string product2ID = "testproduct2";
+            public const string product2Name = "pants";
+            public const string supplier1ID = "001";
+            public const string supplier2ID = "002";
+            public const string selectedShipEstimate1ID = "shipEstimate001";
+            public const string selectedShipEstimate2ID = "shipEstimate002";
+            public const decimal selectedShipEstimate1Cost = 10;
+            public const decimal selectedShipEstimate2Cost = 15;
+            public const string sellerUser1email = "selleruser1@test.com";
+            public const string selleruser2email = "selleruser2@test.com";
+            public const decimal lineItem1Tax = 5;
+            public const decimal lineItem2Tax = 7;
+            public const decimal lineItem1ShipmentTax = 2;
+            public const decimal lineItem2ShipmentTax = 2;
+            public static readonly string[] supplier1NotificationRcpts = { "001user@test.com", "001user2@test.com" };
+            public static readonly string[] supplier2NotificationRcpts = { "002user@test.com" };
+            public static readonly string[] sellerUser1AdditionalRcpts = { "additionalrecipient1@test.com" };
         }
     }
 }

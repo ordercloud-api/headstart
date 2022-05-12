@@ -4,6 +4,14 @@ using System.Collections.Generic;
 
 namespace Headstart.Models
 {
+    public enum DestinationAddressAccessorial
+    {
+        DestinationInsideDelivery = 3,
+        DestinationLiftGate = 4,
+        LimitedAccessDelivery = 9,
+        ResidentialDelivery = 15,
+    }
+
     public class HSAddressBuyer : Address<BuyerAddressXP>, IHSObject
     {
     }
@@ -31,14 +39,6 @@ namespace Headstart.Models
         public string LegalEntity { get; set; }
 
         public string PrimaryContactName { get; set; }
-    }
-
-    public enum DestinationAddressAccessorial
-    {
-        DestinationInsideDelivery = 3,
-        DestinationLiftGate = 4,
-        LimitedAccessDelivery = 9,
-        ResidentialDelivery = 15,
     }
 
     public class Coordinates

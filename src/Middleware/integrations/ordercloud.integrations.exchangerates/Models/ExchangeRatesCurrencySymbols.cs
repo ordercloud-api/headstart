@@ -3,6 +3,44 @@ using System.Text.Json.Serialization;
 
 namespace ordercloud.integrations.exchangerates
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum CurrencySymbol
+    {
+        CAD,
+        HKD,
+        ISK,
+        PHP,
+        DKK,
+        HUF,
+        CZK,
+        GBP,
+        RON,
+        SEK,
+        IDR,
+        INR,
+        BRL,
+        RUB,
+        HRK,
+        JPY,
+        THB,
+        CHF,
+        EUR,
+        MYR,
+        BGN,
+        TRY,
+        CNY,
+        NOK,
+        NZD,
+        ZAR,
+        USD,
+        MXN,
+        SGD,
+        AUD,
+        ILS,
+        KRW,
+        PLN,
+    }
+
     public static class SymbolLookup
     {
         public static readonly IDictionary<CurrencySymbol, CurrencyDisplay> CurrencySymbolLookup = new Dictionary<CurrencySymbol, CurrencyDisplay>()
@@ -41,44 +79,6 @@ namespace ordercloud.integrations.exchangerates
             { CurrencySymbol.KRW, new CurrencyDisplay() { Name = "Korea (South) Won", Symbol = "₩" } },
             { CurrencySymbol.PLN, new CurrencyDisplay() { Name = "Poland Zloty", Symbol = "zł" } },
         };
-    }
-
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum CurrencySymbol
-    {
-        CAD,
-        HKD,
-        ISK,
-        PHP,
-        DKK,
-        HUF,
-        CZK,
-        GBP,
-        RON,
-        SEK,
-        IDR,
-        INR,
-        BRL,
-        RUB,
-        HRK,
-        JPY,
-        THB,
-        CHF,
-        EUR,
-        MYR,
-        BGN,
-        TRY,
-        CNY,
-        NOK,
-        NZD,
-        ZAR,
-        USD,
-        MXN,
-        SGD,
-        AUD,
-        ILS,
-        KRW,
-        PLN,
     }
 
     public class CurrencyDisplay

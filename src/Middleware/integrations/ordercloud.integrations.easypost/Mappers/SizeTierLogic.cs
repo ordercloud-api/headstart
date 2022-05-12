@@ -10,6 +10,33 @@ namespace ordercloud.integrations.easypost
     // It was originally created by Bill Hickey as a way to get less expensive shipping rates from FreightPop by grouping lineItems.
     // Its not currently being used anywhere because the concept doesn't fit with the EasyPost API particularly well.
     // But, I'm saving it in case its useful at some point.
+
+    // measured in how many of the product fit in a 22x22x22 box
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum SizeTier
+    {
+        // ships alone
+        G,
+
+        // 2-5
+        A,
+
+        // 5-15
+        B,
+
+        // 15-49
+        C,
+
+        // 50-99
+        D,
+
+        // 100-999
+        E,
+
+        // 1000+
+        F,
+    }
+
     public static class SmartPackageMapper
     {
         // Any parcel sent to easy post with a dimension over 33 returns no rates.
@@ -92,32 +119,6 @@ namespace ordercloud.integrations.easypost
             parcel.length = Math.Min(parcel.length, maximumDimension);
             return parcel;
         }
-    }
-
-    // measured in how many of the product fit in a 22x22x22 box
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum SizeTier
-    {
-        // ships alone
-        G,
-
-        // 2-5
-        A,
-
-        // 5-15
-        B,
-
-        // 15-49
-        C,
-
-        // 50-99
-        D,
-
-        // 100-999
-        E,
-
-        // 1000+
-        F,
     }
 
     public class Package

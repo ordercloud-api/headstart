@@ -230,6 +230,47 @@ namespace Headstart.API.Commands
             }
         }
 
+        public async Task CreateOrUpdateSecurityProfiles(string accessToken)
+        {
+            var profiles = SeedConstants.DefaultSecurityProfiles.Select(p =>
+                new SecurityProfile()
+                {
+                    Name = p.ID.ToString(),
+                    ID = p.ID.ToString(),
+                    CustomRoles = p.CustomRoles.Select(r => r.ToString()).ToList(),
+                    Roles = p.Roles,
+                }).ToList();
+
+            profiles.Add(new SecurityProfile()
+            {
+                Roles = new List<ApiRole> { ApiRole.FullAccess },
+                Name = SeedConstants.FullAccessSecurityProfile,
+                ID = SeedConstants.FullAccessSecurityProfile,
+            });
+
+            var profileCreateRequests = profiles.Select(p => _oc.SecurityProfiles.SaveAsync(p.ID, p, accessToken));
+            await Task.WhenAll(profileCreateRequests);
+        }
+
+        public async Task DeleteAllMessageSenders(string token)
+        {
+            var messageSenders = await _oc.MessageSenders.ListAllAsync(accessToken: token);
+            await Throttler.RunAsync(messageSenders, 500, 20, messageSender =>
+                _oc.MessageSenders.DeleteAsync(messageSender.ID, accessToken: token));
+        }
+
+        public async Task DeleteAllIntegrationEvents(string token)
+        {
+            // can't delete integration event if its referenced by an api client so first patch it to null
+            var apiClientsWithIntegrationEvent = await _oc.IntegrationEvents.ListAllAsync(filters: new { OrderCheckoutIntegrationEventID = "*" }, accessToken: token);
+            await Throttler.RunAsync(apiClientsWithIntegrationEvent, 500, 20, apiClient =>
+                _oc.ApiClients.PatchAsync(apiClient.ID, new PartialApiClient { OrderCheckoutIntegrationEventID = null }, accessToken: token));
+
+            var integrationEvents = await _oc.IntegrationEvents.ListAllAsync(accessToken: token);
+            await Throttler.RunAsync(integrationEvents, 500, 20, integrationEvent =>
+                _oc.IntegrationEvents.DeleteAsync(integrationEvent.ID, accessToken: token));
+        }
+
         private static Marketplace ConstructMarketplaceFromSeed(EnvironmentSeed seed, OcEnv requestedEnv)
         {
             return new Marketplace()
@@ -239,6 +280,16 @@ namespace Headstart.API.Commands
                 Name = seed.MarketplaceName == null ? "My Headstart Marketplace" : seed.MarketplaceName,
                 Region = requestedEnv.Region,
             };
+        }
+
+        private async Task CreateOnlyOnceApiClients(EnvironmentSeed seed, string token)
+        {
+            var existingClients = await _oc.ApiClients.ListAllAsync(accessToken: token);
+
+            await CreateOrGetBuyerClient(existingClients, SeedConstants.BuyerClient(seed), seed, token);
+            await CreateOrGetApiClient(existingClients, SeedConstants.IntegrationsClient(), token);
+            await CreateOrGetApiClient(existingClients, SeedConstants.SellerClient(), token);
+            await CreateOrGetApiClient(existingClients, SeedConstants.BuyerLocalClient(seed), token);
         }
 
         private async Task CreateOrUpdateSecurityProfileAssignments(EnvironmentSeed seed, string marketplaceToken)
@@ -433,68 +484,6 @@ namespace Headstart.API.Commands
                 .Select(client => client.ID).ToArray();
         }
 
-        public class ApiClients
-        {
-            public ApiClient AdminUiApiClient { get; set; }
-
-            public ApiClient BuyerUiApiClient { get; set; }
-
-            public ApiClient BuyerLocalUiApiClient { get; set; }
-
-            public ApiClient MiddlewareApiClient { get; set; }
-        }
-
-        public async Task CreateOrUpdateSecurityProfiles(string accessToken)
-        {
-            var profiles = SeedConstants.DefaultSecurityProfiles.Select(p =>
-                new SecurityProfile()
-                {
-                    Name = p.ID.ToString(),
-                    ID = p.ID.ToString(),
-                    CustomRoles = p.CustomRoles.Select(r => r.ToString()).ToList(),
-                    Roles = p.Roles,
-                }).ToList();
-
-            profiles.Add(new SecurityProfile()
-            {
-                Roles = new List<ApiRole> { ApiRole.FullAccess },
-                Name = SeedConstants.FullAccessSecurityProfile,
-                ID = SeedConstants.FullAccessSecurityProfile,
-            });
-
-            var profileCreateRequests = profiles.Select(p => _oc.SecurityProfiles.SaveAsync(p.ID, p, accessToken));
-            await Task.WhenAll(profileCreateRequests);
-        }
-
-        public async Task DeleteAllMessageSenders(string token)
-        {
-            var messageSenders = await _oc.MessageSenders.ListAllAsync(accessToken: token);
-            await Throttler.RunAsync(messageSenders, 500, 20, messageSender =>
-                _oc.MessageSenders.DeleteAsync(messageSender.ID, accessToken: token));
-        }
-
-        public async Task DeleteAllIntegrationEvents(string token)
-        {
-            // can't delete integration event if its referenced by an api client so first patch it to null
-            var apiClientsWithIntegrationEvent = await _oc.IntegrationEvents.ListAllAsync(filters: new { OrderCheckoutIntegrationEventID = "*" }, accessToken: token);
-            await Throttler.RunAsync(apiClientsWithIntegrationEvent, 500, 20, apiClient =>
-                _oc.ApiClients.PatchAsync(apiClient.ID, new PartialApiClient { OrderCheckoutIntegrationEventID = null }, accessToken: token));
-
-            var integrationEvents = await _oc.IntegrationEvents.ListAllAsync(accessToken: token);
-            await Throttler.RunAsync(integrationEvents, 500, 20, integrationEvent =>
-                _oc.IntegrationEvents.DeleteAsync(integrationEvent.ID, accessToken: token));
-        }
-
-        private async Task CreateOnlyOnceApiClients(EnvironmentSeed seed, string token)
-        {
-            var existingClients = await _oc.ApiClients.ListAllAsync(accessToken: token);
-
-            await CreateOrGetBuyerClient(existingClients, SeedConstants.BuyerClient(seed), seed, token);
-            await CreateOrGetApiClient(existingClients, SeedConstants.IntegrationsClient(), token);
-            await CreateOrGetApiClient(existingClients, SeedConstants.SellerClient(), token);
-            await CreateOrGetApiClient(existingClients, SeedConstants.BuyerLocalClient(seed), token);
-        }
-
         private async Task<ApiClient> CreateOrGetBuyerClient(List<ApiClient> existingClients, ApiClient client, EnvironmentSeed seed, string token)
         {
             var match = existingClients.FirstOrDefault(c => c.AppName == client.AppName);
@@ -639,6 +628,17 @@ namespace Headstart.API.Commands
             var allSuppliers = await _oc.Suppliers.ListAllAsync(accessToken: token);
             await Throttler.RunAsync(allSuppliers, 500, 20, supplier =>
                 _oc.Suppliers.PatchAsync(supplier.ID, new PartialSupplier { xp = new { NotificationRcpts = new string[] { } } }, token));
+        }
+
+        public class ApiClients
+        {
+            public ApiClient AdminUiApiClient { get; set; }
+
+            public ApiClient BuyerUiApiClient { get; set; }
+
+            public ApiClient BuyerLocalUiApiClient { get; set; }
+
+            public ApiClient MiddlewareApiClient { get; set; }
         }
     }
 }

@@ -18,6 +18,13 @@ using Misc = Headstart.Common.Models.Misc;
 
 namespace Headstart.API.Commands
 {
+    public interface IShipmentCommand
+    {
+        Task<SuperHSShipment> CreateShipment(SuperHSShipment superShipment, DecodedToken decodedToken);
+
+        Task<BatchProcessResult> UploadShipments(IFormFile file, DecodedToken decodedToken);
+    }
+
     public class DocumentRowError
     {
         public int Row { get; set; }
@@ -72,13 +79,6 @@ namespace Headstart.API.Commands
         public List<BatchProcessFailure> ProcessFailureList { get; set; } = new List<BatchProcessFailure>();
 
         public List<DocumentRowError> InvalidRowFailureList { get; set; } = new List<DocumentRowError>();
-    }
-
-    public interface IShipmentCommand
-    {
-        Task<SuperHSShipment> CreateShipment(SuperHSShipment superShipment, DecodedToken decodedToken);
-
-        Task<BatchProcessResult> UploadShipments(IFormFile file, DecodedToken decodedToken);
     }
 
     public class ShipmentCommand : IShipmentCommand

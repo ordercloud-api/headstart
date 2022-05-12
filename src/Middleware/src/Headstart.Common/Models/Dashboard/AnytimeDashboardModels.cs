@@ -5,6 +5,19 @@ using System.Collections.Generic;
 
 namespace Headstart.Common.Models
 {
+    public enum NotificationChannel
+    {
+        Club,
+        Staff,
+    }
+
+    public enum NotificationAction
+    {
+        Update,
+        Delete,
+        Create,
+    }
+
     public class AFClub
     {
         public string id { get; set; }
@@ -172,18 +185,5 @@ namespace Headstart.Common.Models
         public string JsonData { get; set; } // json formatted string
 
         public T GetData<T>() => JsonConvert.DeserializeObject<T>(JsonData);
-    }
-
-    public enum NotificationChannel
-    {
-        Club,
-        Staff,
-    }
-
-    public enum NotificationAction
-    {
-        Update,
-        Delete,
-        Create,
     }
 }

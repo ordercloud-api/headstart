@@ -4,6 +4,37 @@ using OrderCloud.SDK;
 
 namespace ordercloud.integrations.cardconnect
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum ResponseStatus
+    {
+        Approved,
+        Retry,
+        Declined,
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum CVVResponse
+    {
+        Valid,
+        Invalid,
+        NotProcessed,
+        NotPresent,
+        NotCertified,
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum BinType
+    {
+        Corporate,
+        FSAPrepaid,
+        GSAPurchase,
+        Prepaid,
+        PrepaidCorporate,
+        PrepaidPurchase,
+        Purchase,
+        Invalid,
+    }
+
     public class CreditCardAuthorization
     {
         [ApiReadOnly]
@@ -88,36 +119,5 @@ namespace ordercloud.integrations.cardconnect
         // [JsonIgnore] public string ecomind { get; set; } = "E";
         // [JsonIgnore] public string capture { get; set; } = "N";
         // [JsonIgnore] public string bin { get; set; } = "N";
-    }
-
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum ResponseStatus
-    {
-        Approved,
-        Retry,
-        Declined,
-    }
-
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum CVVResponse
-    {
-        Valid,
-        Invalid,
-        NotProcessed,
-        NotPresent,
-        NotCertified,
-    }
-
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum BinType
-    {
-        Corporate,
-        FSAPrepaid,
-        GSAPurchase,
-        Prepaid,
-        PrepaidCorporate,
-        PrepaidPurchase,
-        Purchase,
-        Invalid,
     }
 }

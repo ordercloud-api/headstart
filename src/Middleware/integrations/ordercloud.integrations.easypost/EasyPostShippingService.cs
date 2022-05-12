@@ -9,6 +9,11 @@ using OrderCloud.Catalyst;
 
 namespace ordercloud.integrations.easypost
 {
+    public interface IEasyPostShippingService
+    {
+        Task<ShipEstimateResponse> GetRates(IEnumerable<IGrouping<AddressPair, LineItem>> groupedLineItems, EasyPostShippingProfiles profiles);
+    }
+
     public class AddressPair : IEquatable<AddressPair>
     {
         public Address ShipFrom { get; set; }
@@ -31,11 +36,6 @@ namespace ordercloud.integrations.easypost
         {
             return 1; // force Equals to be called for comparison
         }
-    }
-
-    public interface IEasyPostShippingService
-    {
-        Task<ShipEstimateResponse> GetRates(IEnumerable<IGrouping<AddressPair, LineItem>> groupedLineItems, EasyPostShippingProfiles profiles);
     }
 
     public class Grouping<TKey, TElement> : List<TElement>, IGrouping<TKey, TElement>

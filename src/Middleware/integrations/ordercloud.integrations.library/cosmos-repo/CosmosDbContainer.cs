@@ -9,8 +9,6 @@ namespace ordercloud.integrations.library
 
     public class CosmosDbContainer : ICosmosDbContainer
     {
-        public Container _container { get; }
-
         public CosmosDbContainer(
             CosmosClient cosmosClient,
             string databaseName,
@@ -18,5 +16,7 @@ namespace ordercloud.integrations.library
         {
             _container = cosmosClient.GetContainer(databaseName, containerName);
         }
+
+        public Container _container { get; }
     }
 }

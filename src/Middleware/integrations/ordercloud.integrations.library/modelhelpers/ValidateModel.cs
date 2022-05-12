@@ -32,6 +32,13 @@ namespace ordercloud.integrations.library
 
     public class ApiValidationError
     {
+        public ApiValidationError(ModelStateDictionary dict)
+        {
+            this.ErrorCode = "400";
+            this.Errors = dict.Keys.SelectMany(key => dict[key].Errors.Select(x => new ApiError { ErrorCode = key, Message = x.ErrorMessage }));
+            this.Message = "Validation Failed";
+        }
+
         [JsonIgnore]
         public HttpStatusCode StatusCode { get; set; }
 
@@ -40,12 +47,5 @@ namespace ordercloud.integrations.library
         public string Message { get; set; }
 
         public object Errors { get; set; }
-
-        public ApiValidationError(ModelStateDictionary dict)
-        {
-            this.ErrorCode = "400";
-            this.Errors = dict.Keys.SelectMany(key => dict[key].Errors.Select(x => new ApiError { ErrorCode = key, Message = x.ErrorMessage }));
-            this.Message = "Validation Failed";
-        }
     }
 }

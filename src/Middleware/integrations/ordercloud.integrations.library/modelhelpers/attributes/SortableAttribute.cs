@@ -5,10 +5,6 @@ namespace ordercloud.integrations.library
     [AttributeUsage(AttributeTargets.Property)]
     public class SortableAttribute : Attribute
     {
-        public int? Priority { get; set; }
-
-        public bool Descending { get; set; }
-
         public SortableAttribute()
         {
         }
@@ -17,5 +13,9 @@ namespace ordercloud.integrations.library
         {
             Priority = priority;
         }
+
+        public int? Priority { get; set; }
+
+        public bool Descending { get; set; }
     }
 }

@@ -30,24 +30,14 @@ namespace Headstart.Common.Services.Zoho
     {
         private readonly IFlurlClientFactory _flurlFactory;
 
-        public ZohoClient(IFlurlClientFactory flurlFactory)
-        {
-            _flurlFactory = flurlFactory;
-        }
-
-        public ZohoTokenResponse TokenResponse { get; set; }
-
-        public bool IsAuthenticated => TokenResponse?.access_token != null;
-
-        public ZohoClientConfig Config { get; }
-
-        private IFlurlClient ApiClient => _flurlFactory.Get(Config.ApiUrl);
-
-        private IFlurlClient AuthClient => _flurlFactory.Get("https://accounts.zoho.com/oauth/v2/");
-
         public ZohoClient()
             : this(new ZohoClientConfig())
         {
+        }
+
+        public ZohoClient(IFlurlClientFactory flurlFactory)
+        {
+            _flurlFactory = flurlFactory;
         }
 
         public ZohoClient(ZohoClientConfig config, IFlurlClientFactory flurlFactory)
@@ -61,6 +51,16 @@ namespace Headstart.Common.Services.Zoho
         {
             this.Config = config;
         }
+
+        public ZohoTokenResponse TokenResponse { get; set; }
+
+        public bool IsAuthenticated => TokenResponse?.access_token != null;
+
+        public ZohoClientConfig Config { get; }
+
+        private IFlurlClient ApiClient => _flurlFactory.Get(Config.ApiUrl);
+
+        private IFlurlClient AuthClient => _flurlFactory.Get("https://accounts.zoho.com/oauth/v2/");
 
         public async Task<ZohoTokenResponse> AuthenticateAsync()
         {
@@ -120,16 +120,6 @@ namespace Headstart.Common.Services.Zoho
 
     public partial class ZohoClient : IZohoClient
     {
-        private void InitResources()
-        {
-            Contacts = new ZohoContactResource(this);
-            Currencies = new ZohoCurrencyResource(this);
-            Items = new ZohoItemResource(this);
-            SalesOrders = new ZohoSalesOrderResource(this);
-            PurchaseOrders = new ZohoPurchaseOrderResource(this);
-            Organizations = new ZohoOrganizationResource(this);
-        }
-
         public IZohoOrganizationResource Organizations { get; private set; }
 
         public IZohoContactResource Contacts { get; private set; }
@@ -141,5 +131,15 @@ namespace Headstart.Common.Services.Zoho
         public IZohoSalesOrderResource SalesOrders { get; private set; }
 
         public IZohoPurchaseOrderResource PurchaseOrders { get; private set; }
+
+        private void InitResources()
+        {
+            Contacts = new ZohoContactResource(this);
+            Currencies = new ZohoCurrencyResource(this);
+            Items = new ZohoItemResource(this);
+            SalesOrders = new ZohoSalesOrderResource(this);
+            PurchaseOrders = new ZohoPurchaseOrderResource(this);
+            Organizations = new ZohoOrganizationResource(this);
+        }
     }
 }

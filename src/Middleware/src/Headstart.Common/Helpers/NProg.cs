@@ -33,6 +33,8 @@ namespace Common.Services.NProg
 
     public class Tracker
     {
+        private readonly object _lock = new object();
+
         private long _startTime = DateTime.UtcNow.Ticks;
         private long _endTime;
         private int _total;
@@ -81,8 +83,6 @@ namespace Common.Services.NProg
         public void OnComplete(Func<Progress, Task> action) => On(_total.ItemsDone(), action);
 
         public void Now(Func<Progress, Task> action) => action(GetProgress());
-
-        private readonly object _lock = new object();
 
         public void ItemStarted() => ProcessTriggers(ref _started);
 
@@ -199,6 +199,16 @@ namespace Common.Services.NProg
         private readonly long _startTime;
         private readonly long _endTime;
 
+        public Progress(long startTime, long endTime, int total, int started, int succeeded, int failed)
+        {
+            _startTime = startTime;
+            _endTime = endTime;
+            TotalItems = total;
+            ItemsStarted = started;
+            ItemsSucceeded = succeeded;
+            ItemsFailed = failed;
+        }
+
         public int TotalItems { get; }
 
         public int ItemsStarted { get; }
@@ -254,16 +264,6 @@ namespace Common.Services.NProg
         public DateTime EstEndTimeLocal => DateTime.Now + EstTimeRemaining;
 
         public bool IsDone => ItemsDone == TotalItems;
-
-        public Progress(long startTime, long endTime, int total, int started, int succeeded, int failed)
-        {
-            _startTime = startTime;
-            _endTime = endTime;
-            TotalItems = total;
-            ItemsStarted = started;
-            ItemsSucceeded = succeeded;
-            ItemsFailed = failed;
-        }
 
         private long ElapsedTicks => (_endTime == 0 ? DateTime.UtcNow.Ticks : _endTime) - _startTime;
 

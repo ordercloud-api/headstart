@@ -14,6 +14,8 @@ namespace Headstart.Tests
 {
     public class CheckoutIntegrationCommandTests
     {
+        public const int FREE_SHIPPING_DAYS = 3;
+
         private IOrderCloudClient _oc;
 
         [SetUp]
@@ -22,8 +24,6 @@ namespace Headstart.Tests
             _oc = Substitute.For<IOrderCloudClient>();
             _oc.Suppliers.ListAsync<HSSupplier>().ReturnsForAnyArgs(SupplierMocks.SupplierList(MockSupplier("010"), MockSupplier("012"), MockSupplier("027"), MockSupplier("100")));
         }
-
-        public const int FREE_SHIPPING_DAYS = 3;
 
         public async Task default_shipping_for_no_rates()
         {
