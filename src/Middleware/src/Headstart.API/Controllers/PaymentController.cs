@@ -19,6 +19,7 @@ namespace Headstart.Common.Controllers
     {
         private readonly IPaymentCommand _command;
         private readonly AppSettings _settings;
+
         public PaymentController(IPaymentCommand command, AppSettings settings)
         {
             _command = command;

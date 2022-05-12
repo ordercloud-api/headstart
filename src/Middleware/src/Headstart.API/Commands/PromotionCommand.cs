@@ -18,6 +18,7 @@ namespace Headstart.API.Commands
     public class PromotionCommand : IPromotionCommand
     {
         private readonly IOrderCloudClient _oc;
+
         public PromotionCommand(IOrderCloudClient oc)
         {
             _oc = oc;

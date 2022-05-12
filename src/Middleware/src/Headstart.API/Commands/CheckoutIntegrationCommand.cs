@@ -21,8 +21,11 @@ namespace Headstart.API.Commands
     public interface ICheckoutIntegrationCommand
     {
         Task<ShipEstimateResponse> GetRatesAsync(HSOrderCalculatePayload orderCalculatePayload);
+
         Task<HSOrderCalculateResponse> CalculateOrder(HSOrderCalculatePayload orderCalculatePayload);
+
         Task<HSOrderCalculateResponse> CalculateOrder(string orderID, DecodedToken decodedToken);
+
         Task<ShipEstimateResponse> GetRatesAsync(string orderID);
     }
 

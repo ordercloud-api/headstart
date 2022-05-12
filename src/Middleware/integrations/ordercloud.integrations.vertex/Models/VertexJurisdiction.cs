@@ -30,14 +30,18 @@ namespace ordercloud.integrations.vertex
 		/// Jurisdiction code assigned by the relevant governmental authority.
 		/// </summary>
 		public string externalJurisdictionCode { get; set; }
+
 		public string value { get; set; }
 	}
 
 	public class VertexJurisdictionOverride
 	{
 		public string impositionType { get; set; }
+
 		public VertexJurisdictionLevel jurisdictionLevel { get; set; }
+
 		public VertexRateOverride rateOverride { get; set; }
+
 		public VertexDeductionOverride deductionOverride { get; set; }
 	}
 

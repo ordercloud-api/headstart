@@ -17,7 +17,9 @@ namespace Headstart.Models
     {
         // ID not used but to get marketplaceobject extension working for now
         public string ID { get; set; }
+
         public string LocationID { get; set; }
+
         public string CatalogID { get; set; }
     }
 

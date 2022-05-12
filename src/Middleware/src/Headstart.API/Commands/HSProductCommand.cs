@@ -12,25 +12,36 @@ using Headstart.Models;
 using ordercloud.integrations.library.Cosmos;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
+
 namespace Headstart.API.Commands.Crud
 {
 	public interface IHSProductCommand
 	{
 		Task<SuperHSProduct> Get(string id, string token);
+
 		Task<ListPage<SuperHSProduct>> List(ListArgs<HSProduct> args, string token);
+
 		Task<SuperHSProduct> Post(SuperHSProduct product, DecodedToken decodedToken);
+
 		Task<SuperHSProduct> Put(string id, SuperHSProduct product, string token);
+
 		Task Delete(string id, string token);
+
 		Task<HSPriceSchedule> GetPricingOverride(string id, string buyerID, string token);
+
 		Task DeletePricingOverride(string id, string buyerID, string token);
+
 		Task<HSPriceSchedule> UpdatePricingOverride(string id, string buyerID, HSPriceSchedule pricingOverride, string token);
+
 		Task<HSPriceSchedule> CreatePricingOverride(string id, string buyerID, HSPriceSchedule pricingOverride, string token);
+
 		Task<Product> FilterOptionOverride(string id, string supplierID, IDictionary<string, object> facets, DecodedToken decodedToken);
 	}
 
 	public class DefaultOptionSpecAssignment
 	{
 		public string SpecID { get; set; }
+
 		public string OptionID { get; set; }
 	}
 
@@ -40,6 +51,7 @@ namespace Headstart.API.Commands.Crud
 		private readonly AppSettings _settings;
 		private readonly ISupplierApiClientHelper _apiClientHelper;
 		private readonly IAssetClient _assetClient;
+
 		public HSProductCommand(AppSettings settings, IOrderCloudClient elevatedOc, ISupplierApiClientHelper apiClientHelper, IAssetClient assetClient)
 		{
 			_oc = elevatedOc;

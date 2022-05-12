@@ -42,21 +42,31 @@ namespace Common.Services.NProg
 		}
 
 		public void Every(Trigger trigger, Action<Progress> action) => _actions.Add(new ProgressAction { Trigger = trigger, Action = action, Recurring = true });
+
 		public void On(Trigger trigger, Action<Progress> action) => _actions.Add(new ProgressAction { Trigger = trigger, Action = action, Recurring = false });
+
 		public void Every(TimeSpan interval, Action<Progress> action) => _timers.Add(new TimerAction { Interval = interval, Action = action });
+
 		public void OnComplete(Action<Progress> action) => On(_total.ItemsDone(), action);
+
 		public void Now(Action<Progress> action) => action(GetProgress());
 
 		public void Every(Trigger trigger, Func<Progress, Task> action) => _actions.Add(new ProgressAction { Trigger = trigger, AsyncAction = action, Recurring = true });
+
 		public void On(Trigger trigger, Func<Progress, Task> action) => _actions.Add(new ProgressAction { Trigger = trigger, AsyncAction = action, Recurring = false });
+
 		public void Every(TimeSpan interval, Func<Progress, Task> action) => _timers.Add(new TimerAction { Interval = interval, AsyncAction = action });
+
 		public void OnComplete(Func<Progress, Task> action) => On(_total.ItemsDone(), action);
+
 		public void Now(Func<Progress, Task> action) => action(GetProgress());
 
 		private readonly object _lock = new object();
 
 		public void ItemStarted() => ProcessTriggers(ref _started);
+
 		public void ItemSucceeded() => ProcessTriggers(ref _succeeded);
+
 		public void ItemFailed() => ProcessTriggers(ref _failed);
 
 		public void ItemsDiscovered(int count)
@@ -100,6 +110,7 @@ namespace Common.Services.NProg
 		private abstract class ActionBase
 		{
 			public Action<Progress> Action { get; set; }
+
 			public Func<Progress, Task> AsyncAction { get; set; }
 
 			public void Invoke(Progress prog, IList<Task> tasks)
@@ -116,6 +127,7 @@ namespace Common.Services.NProg
 		private class ProgressAction : ActionBase
 		{
 			public Trigger Trigger { get; set; }
+
 			public bool Recurring { get; set; }
 		}
 
@@ -164,17 +176,25 @@ namespace Common.Services.NProg
 	public static class TriggerBuilderExtensions
 	{
 		public static Trigger ItemsStarted(this int i) => new Trigger(i, p => p.ItemsStarted);
+
 		public static Trigger ItemsDone(this int i) => new Trigger(i, p => p.ItemsDone);
+
 		public static Trigger ItemsSucceeded(this int i) => new Trigger(i, p => p.ItemsSucceeded);
+
 		public static Trigger ItemsFailed(this int i) => new Trigger(i, p => p.ItemsFailed);
 
 		public static Trigger PercentStarted(this int i) => new Trigger(i, p => p.PercentStarted);
+
 		public static Trigger PercentDone(this int i) => new Trigger(i, p => p.PercentDone);
+
 		public static Trigger PercentSucceeded(this int i) => new Trigger(i, p => p.PercentSucceeded);
+
 		public static Trigger PercentFailed(this int i) => new Trigger(i, p => p.PercentFailed);
 
 		public static TimeSpan Seconds(this int i) => TimeSpan.FromSeconds(i);
+
 		public static TimeSpan Minutes(this int i) => TimeSpan.FromMinutes(i);
+
 		public static TimeSpan Hours(this int i) => TimeSpan.FromHours(i);
 	}
 
@@ -184,38 +204,59 @@ namespace Common.Services.NProg
 		private readonly long _endTime;
 
 		public int TotalItems { get; }
+
 		public int ItemsStarted { get; }
+
 		public int ItemsSucceeded { get; }
+
 		public int ItemsFailed { get; }
 
 		public int ItemsDone => ItemsSucceeded + ItemsFailed;
+
 		public int ItemsInProgress => ItemsStarted - ItemsDone;
+
 		public int ItemsRemaining => TotalItems - ItemsStarted;
 
 		public int PercentStarted => SafeDivide(100 * ItemsStarted, TotalItems);
+
 		public int PercentDone => SafeDivide(100 * ItemsDone, TotalItems);
+
 		public int PercentSucceeded => SafeDivide(100 * ItemsSucceeded, TotalItems);
+
 		public int PercentFailed => SafeDivide(100 * ItemsFailed, TotalItems);
+
 		public int PercentInProgress => SafeDivide(100 * ItemsInProgress, TotalItems);
+
 		public int PercentRemaining => SafeDivide(100 * ItemsRemaining, TotalItems);
 
 		public double PercentStartedExact => SafeDivideExact(100 * ItemsStarted, TotalItems);
+
 		public double PercentDoneExact => SafeDivideExact(100 * ItemsDone, TotalItems);
+
 		public double PercentSucceededExact => SafeDivideExact(100 * ItemsSucceeded, TotalItems);
+
 		public double PercentFailedExact => SafeDivideExact(100 * ItemsFailed, TotalItems);
+
 		public double PercentInProgressExact => SafeDivideExact(100 * ItemsInProgress, TotalItems);
+
 		public double PercentRemainingExact => SafeDivideExact(100 * ItemsRemaining, TotalItems);
 
 		private long ElapsedTicks => (_endTime == 0 ? DateTime.UtcNow.Ticks : _endTime) - _startTime;
 
 		public TimeSpan ElapsedTime => TimeSpan.FromTicks(ElapsedTicks);
+
 		public int ElapsedSeconds => (int)ElapsedTime.TotalSeconds;
+
 		public int ElapsedMinutes => (int)ElapsedTime.TotalMinutes;
+
 		public int ElapsedHours => (int)ElapsedTime.TotalHours;
 
 		public TimeSpan EstTotalTime => TimeSpan.FromTicks(SafeDivide(ElapsedTicks * TotalItems, ItemsDone));
+
 		public TimeSpan EstTimeRemaining => EstTotalTime - ElapsedTime;
+
 		public DateTime EstEndTimeUtc => DateTime.UtcNow + EstTimeRemaining;
+
 		public DateTime EstEndTimeLocal => DateTime.Now + EstTimeRemaining;
 
 		public bool IsDone => ItemsDone == TotalItems;
@@ -231,7 +272,9 @@ namespace Common.Services.NProg
 		}
 
 		private int SafeDivide(int x, int y) => y == 0 ? 0 : x / y;
+
 		private long SafeDivide(long x, long y) => y == 0 ? 0 : x / y;
+
 		private double SafeDivideExact(long x, long y) => y == 0 ? 0 : (double)x / y;
 	}
 }

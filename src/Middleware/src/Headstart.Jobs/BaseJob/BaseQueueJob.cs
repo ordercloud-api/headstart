@@ -12,7 +12,9 @@ namespace Headstart.Jobs
     public abstract class BaseQueueJob<T> : BaseJob
     {
         private const int MaxDeadLetterDescriptionLength = 4096;
+
         protected virtual int RetryTemporaryErrorsAfterMinutes { get; } = 10;
+
         private Random jitterer = new Random();
 
         public async Task Run(ILogger logger, Message message, MessageReceiver messageReceiver, MessageSender messageSender)

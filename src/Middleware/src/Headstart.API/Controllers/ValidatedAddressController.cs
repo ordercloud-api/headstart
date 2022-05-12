@@ -11,6 +11,7 @@ namespace Headstart.Common.Controllers
 	public class ValidatedAddressController : CatalystController
 	{
 		private readonly ISmartyStreetsCommand _command;
+
 		public ValidatedAddressController(ISmartyStreetsCommand command)
 		{
 			_command = command;

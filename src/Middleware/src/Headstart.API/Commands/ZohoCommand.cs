@@ -20,8 +20,11 @@ namespace Headstart.API.Commands.Zoho
     public interface IZohoCommand
     {
         Task<ZohoSalesOrder> CreateSalesOrder(HSOrderWorksheet orderWorksheet);
+
         Task<List<ZohoPurchaseOrder>> CreateOrUpdatePurchaseOrder(ZohoSalesOrder z_order, List<HSOrder> orders);
+
         Task<List<ZohoPurchaseOrder>> CreateShippingPurchaseOrder(ZohoSalesOrder z_order, HSOrderWorksheet order);
+
         Task<ZohoOrganizationList> ListOrganizations();
     }
 

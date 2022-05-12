@@ -44,16 +44,25 @@ namespace Headstart.Common.Models
         }
 
         public string ResourceId { get; set; }
+
         public string RecordId { get; set; }
+
         [JsonConverter(typeof(StringEnumConverter))]
         public RecordType RecordType { get; set; }
+
         [JsonConverter(typeof(StringEnumConverter))]
         public Action Action { get; set; }
+
         public JObject Current { get; set; } // not used for delete
+
         public JObject Cache { get; set; } // not used for create
+
         public JObject Diff { get; set; }
+
         public string Token { get; set; }
+
         public string ClientId { get; set; }
+
         public DecodedToken User { get; set; }
     }
 

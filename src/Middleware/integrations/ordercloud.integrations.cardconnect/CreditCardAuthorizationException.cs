@@ -8,6 +8,7 @@ namespace ordercloud.integrations.cardconnect
     public class CreditCardAuthorizationException : Exception
     {
         public ApiError ApiError { get; }
+
         public CardConnectAuthorizationResponse Response { get; }
 
         public CreditCardAuthorizationException(ApiError error, CardConnectAuthorizationResponse response)
@@ -31,6 +32,7 @@ namespace ordercloud.integrations.cardconnect
     public class CardConnectInquireException : Exception
     {
         public ApiError ApiError { get; }
+
         public CardConnectInquireResponse Response { get; }
 
         public CardConnectInquireException(ApiError error, CardConnectInquireResponse response)
@@ -54,6 +56,7 @@ namespace ordercloud.integrations.cardconnect
     public class CreditCardVoidException : Exception
     {
         public ApiError ApiError { get; }
+
         public CardConnectVoidResponse Response { get; }
 
         public CreditCardVoidException(ApiError error, CardConnectVoidResponse response)
@@ -77,6 +80,7 @@ namespace ordercloud.integrations.cardconnect
     public class CardConnectCaptureException : Exception
     {
         public ApiError ApiError { get; }
+
         public CardConnectCaptureResponse Response { get; }
 
         public CardConnectCaptureException(ApiError error, CardConnectCaptureResponse response)
@@ -100,6 +104,7 @@ namespace ordercloud.integrations.cardconnect
     public class CreditCardRefundException : Exception
     {
         public ApiError ApiError { get; }
+
         public CardConnectRefundResponse Response { get; }
 
         public CreditCardRefundException(ApiError error, CardConnectRefundResponse response)

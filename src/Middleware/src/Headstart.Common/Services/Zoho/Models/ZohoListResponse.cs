@@ -9,8 +9,10 @@ namespace Headstart.Common.Services.Zoho.Models
     {
         [JsonProperty(PropertyName = "code")]
         public int Code { get; set; }
+
         [JsonProperty(PropertyName = "message")]
         public string Message { get; set; }
+
         [JsonProperty(PropertyName = "page_context")]
         public ZohoPageContext Meta { get; set; }
     }
@@ -18,6 +20,7 @@ namespace Headstart.Common.Services.Zoho.Models
     public class ZohoFilter
     {
         public string Key { get; set; }
+
         public string Value { get; set; }
     }
 }

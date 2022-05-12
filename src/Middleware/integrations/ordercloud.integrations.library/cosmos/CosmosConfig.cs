@@ -21,8 +21,11 @@ namespace ordercloud.integrations.library
         }
 
         public string DatabaseName { get; set; }
+
         public string EndpointUri { get; set; }
+
         public string PrimaryKey { get; set; }
+
         public TimeSpan RequestTimeout { get; set; }
     }
 }

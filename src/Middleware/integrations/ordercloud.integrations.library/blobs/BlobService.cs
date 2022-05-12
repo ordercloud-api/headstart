@@ -14,23 +14,36 @@ namespace ordercloud.integrations.library
     public interface IOrderCloudIntegrationsBlobService
     {
         CloudBlobClient Client { get; }
+
         CloudBlobContainer Container { get; }
+
         Task<T> Get<T>(string id);
+
         Task<string> Get(string id);
+
         Task Save(string reference, string blob, string fileType = null);
+
         Task Save(string reference, JObject blob, string fileType = null);
+
         Task Save(string reference, IFormFile blob, string fileType = null);
+
         Task Save(string reference, Stream file, string fileType = null);
+
         Task Save(string reference, byte[] bytes, string fileType = null, string cacheControl = null);
+
         Task Save(BlobBase64Image base64Image);
+
         Task Delete(string id);
+
         Task DeleteContainer();
     }
 
     public class OrderCloudIntegrationsBlobService : IOrderCloudIntegrationsBlobService
     {
         public CloudBlobClient Client { get; }
+
         public CloudBlobContainer Container { get; }
+
         private readonly BlobServiceConfig _config;
         private bool IsInitialized = false;
 

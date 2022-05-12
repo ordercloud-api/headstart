@@ -20,19 +20,33 @@ namespace Headstart.API.Commands
     public interface IHSReportCommand
     {
         ListPage<ReportTypeResource> FetchAllReportTypes(DecodedToken decodedToken);
+
         Task<List<Address>> BuyerLocation(string templateID, DecodedToken decodedToken);
+
         Task<List<OrderDetailData>> SalesOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
+
         Task<List<OrderDetailData>> PurchaseOrderDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
+
         Task<List<HSLineItemOrder>> BuyerLineItemDetail(ListArgs<HSOrder> args, BuyerReportViewContext viewContext, string userID, string locationID, DecodedToken decodedToken);
+
         Task<List<HSLineItemOrder>> LineItemDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
+
         Task<List<RMAWithRMALineItem>> RMADetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
+
         Task<List<OrderWithShipments>> ShipmentDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
+
         Task<List<ReportTemplate>> ListReportTemplatesByReportType(ReportTypeEnum reportType, DecodedToken decodedToken);
+
         Task<ReportTemplate> PostReportTemplate(ReportTemplate reportTemplate, DecodedToken decodedToken);
+
         Task<ReportTemplate> GetReportTemplate(string id, DecodedToken decodedToken);
+
         Task<ReportTemplate> UpdateReportTemplate(string id, ReportTemplate reportTemplate, DecodedToken decodedToken);
+
         Task DeleteReportTemplate(string id);
+
         Task<List<HSBuyer>> GetBuyerFilterValues(DecodedToken decodedToken);
+
         Task<List<ProductDetailData>> ProductDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
     }
 

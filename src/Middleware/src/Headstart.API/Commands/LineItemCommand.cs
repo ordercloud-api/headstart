@@ -21,10 +21,15 @@ namespace Headstart.API.Commands
     public interface ILineItemCommand
     {
         Task<HSLineItem> UpsertLineItem(string orderID, HSLineItem li, DecodedToken decodedToken);
+
         Task<List<HSLineItem>> UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection orderDirection, string orderID, LineItemStatusChanges lineItemStatusChanges, DecodedToken decodedToken = null);
+
         Task<List<HSLineItem>> SetInitialSubmittedLineItemStatuses(string buyerOrderID);
+
         Task DeleteLineItem(string orderID, string lineItemID, DecodedToken decodedToken);
+
         Task<decimal> ValidateLineItemUnitCost(string orderID, SuperHSMeProduct product, List<HSLineItem> existingLineItems, HSLineItem li);
+
         Task HandleRMALineItemStatusChanges(OrderDirection orderDirection, RMAWithLineItemStatusByQuantity rmaWithLineItemStatusByQuantity, DecodedToken decodedToken);
     }
 

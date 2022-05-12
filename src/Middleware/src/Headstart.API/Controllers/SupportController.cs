@@ -91,6 +91,7 @@ namespace Headstart.Common.Controllers
     public class ShipmentTestModel
     {
         public HSOrder Order { get; set; }
+
         public List<HSLineItem> LineItems { get; set; }
     }
 }

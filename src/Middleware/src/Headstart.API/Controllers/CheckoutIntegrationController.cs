@@ -12,6 +12,7 @@ namespace Headstart.Common.Controllers
 	{
 		private readonly ICheckoutIntegrationCommand _checkoutIntegrationCommand;
 		private readonly IPostSubmitCommand _postSubmitCommand;
+
 		public CheckoutIntegrationController(ICheckoutIntegrationCommand checkoutIntegrationCommand, IPostSubmitCommand postSubmitCommand)
 		{
 			_checkoutIntegrationCommand = checkoutIntegrationCommand;

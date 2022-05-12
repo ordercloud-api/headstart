@@ -8,9 +8,13 @@ namespace ordercloud.integrations.exchangerates
     {
 		[JsonConverter(typeof(StringEnumConverter))]
 		public CurrencySymbol Currency { get; set; }
+
         public string Symbol { get; set; }
+
         public string Name { get; set; }
+
         public double? Rate { get; set; }
+
         public string Icon { get; set; }
     }
 }

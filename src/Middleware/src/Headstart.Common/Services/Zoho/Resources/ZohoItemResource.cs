@@ -10,15 +10,21 @@ namespace Headstart.Common.Services.Zoho.Resources
     public interface IZohoItemResource
     {
         Task<ZohoItemList> ListAsync(params ZohoFilter[] filters);
+
         Task<TZohoItemList> ListAsync<TZohoItemList>(params ZohoFilter[] filters) where TZohoItemList : ZohoItemList;
 
         // Task<ZohoLineItem> GetAsync(string id);
         // Task<TZohoItem> GetAsync<TZohoItem>(string id) where TZohoItem : ZohoLineItem;
         Task<ZohoLineItem> SaveAsync(ZohoLineItem item);
+
         Task<TZohoItem> SaveAsync<TZohoItem>(TZohoItem item) where TZohoItem : ZohoLineItem;
+
         Task<ZohoLineItem> CreateAsync(ZohoLineItem item);
+
         Task<TZohoItem> CreateAsync<TZohoItem>(TZohoItem item) where TZohoItem : ZohoLineItem;
+
         Task DeleteAsync(string id);
+
         Task MarkActiveAsync(string id);
     }
 
@@ -30,6 +36,7 @@ namespace Headstart.Common.Services.Zoho.Resources
         }
 
         public Task<ZohoItemList> ListAsync(params ZohoFilter[] filters) => ListAsync<ZohoItemList>(filters);
+
         public Task<TZohoItemList> ListAsync<TZohoItemList>(params ZohoFilter[] filters) where TZohoItemList : ZohoItemList => Get()
                 .SetQueryParams(filters?.Select(f => new KeyValuePair<string, object>(f.Key, f.Value)))
                 .GetJsonAsync<TZohoItemList>();

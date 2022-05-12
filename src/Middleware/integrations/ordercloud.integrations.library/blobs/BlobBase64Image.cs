@@ -6,8 +6,11 @@ namespace ordercloud.integrations.library
     public class BlobBase64Image
     {
         public byte[] Bytes { get; }
+
         public string Reference { get; }
+
         public string ContentType { get; }
+
         public Dictionary<string, string> MetaData { get; set; } = new Dictionary<string, string>();
 
         public BlobBase64Image(string filename, string base64)

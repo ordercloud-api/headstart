@@ -14,11 +14,17 @@ namespace Headstart.Common.Services.Zoho
     public partial interface IZohoClient
     {
         IZohoContactResource Contacts { get; }
+
         IZohoCurrencyResource Currencies { get; }
+
         IZohoItemResource Items { get; }
+
         IZohoSalesOrderResource SalesOrders { get; }
+
         IZohoPurchaseOrderResource PurchaseOrders { get; }
+
         IZohoOrganizationResource Organizations { get; }
+
         Task<ZohoTokenResponse> AuthenticateAsync();
     }
 
@@ -32,7 +38,9 @@ namespace Headstart.Common.Services.Zoho
         }
 
         private IFlurlClient ApiClient => _flurlFactory.Get(Config.ApiUrl);
+
         private IFlurlClient AuthClient => _flurlFactory.Get("https://accounts.zoho.com/oauth/v2/");
+
         public ZohoTokenResponse TokenResponse { get; set; }
 
         public bool IsAuthenticated => TokenResponse?.access_token != null;
@@ -94,6 +102,7 @@ namespace Headstart.Common.Services.Zoho
         }
 
         internal IFlurlRequest Put(object obj, object[] segments) => WriteRequest(obj, segments);
+
         internal IFlurlRequest Post(object obj, object[] segments) => WriteRequest(obj, segments);
 
         private IFlurlRequest WriteRequest(object obj, object[] segments, string access_token = null) => ApiClient
@@ -124,10 +133,15 @@ namespace Headstart.Common.Services.Zoho
         }
 
         public IZohoOrganizationResource Organizations { get; private set; }
+
         public IZohoContactResource Contacts { get; private set; }
+
         public IZohoCurrencyResource Currencies { get; private set; }
+
         public IZohoItemResource Items { get; private set; }
+
         public IZohoSalesOrderResource SalesOrders { get; private set; }
+
         public IZohoPurchaseOrderResource PurchaseOrders { get; private set; }
     }
 }

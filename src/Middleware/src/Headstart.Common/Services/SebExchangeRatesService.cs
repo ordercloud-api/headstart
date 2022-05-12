@@ -14,6 +14,7 @@ namespace Headstart.Common.Services
     public interface IHSExchangeRatesService
     {
         Task<CurrencySymbol> GetCurrencyForUser(string userToken);
+
         Task<List<OrderCloudIntegrationsConversionRate>> GetExchangeRatesForUser(string userToken);
     }
 
@@ -21,6 +22,7 @@ namespace Headstart.Common.Services
     {
         private readonly IOrderCloudClient _oc;
         private readonly IExchangeRatesCommand _exchangeRatesCommand;
+
         public HSExchangeRatesService(IOrderCloudClient oc, IExchangeRatesCommand exchangeRatesCommand)
         {
             _oc = oc;

@@ -16,12 +16,15 @@ namespace ordercloud.integrations.exchangerates
     public interface IExchangeRatesCommand
     {
         Task<ListPage<OrderCloudIntegrationsConversionRate>> Get(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencySymbol currency);
+
         Task<OrderCloudIntegrationsExchangeRate> Get(CurrencySymbol symbol);
+
         Task<ListPage<OrderCloudIntegrationsConversionRate>> GetRateList();
 
         ListPage<OrderCloudIntegrationsConversionRate> Filter(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, OrderCloudIntegrationsExchangeRate rates);
 
         Task<double?> ConvertCurrency(CurrencySymbol from, CurrencySymbol to, double value);
+
         Task Update();
     }
 

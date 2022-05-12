@@ -16,14 +16,18 @@ namespace Headstart.Models.Headstart
     public class ProcessResult
     {
         public ProcessType Type { get; set; }
+
         public List<ProcessResultAction> Activity { get; set; } = new List<ProcessResultAction>();
     }
 
     public class ProcessResultAction
     {
         public ProcessType ProcessType { get; set; }
+
         public string Description { get; set; }
+
         public bool Success { get; set; }
+
         public ProcessResultException Exception { get; set; }
     }
 

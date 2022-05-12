@@ -11,8 +11,11 @@ namespace Headstart.Models
     public class UserXp
     {
     public string Country { get; set; }
+
     public string OrderEmails { get; set; }
+
     public string RequestInfoEmails { get; set; }
+
     public List<string> AddtlRcpts { get; set; }
     }
 }

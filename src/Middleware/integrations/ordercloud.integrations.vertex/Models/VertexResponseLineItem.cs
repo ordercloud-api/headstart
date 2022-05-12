@@ -7,6 +7,7 @@ namespace ordercloud.integrations.vertex
 	public class VertexResponseLineItem : VertexLineItem
 	{
 		public double totalTax { get; set; }
+
 		public List<VertexTax> taxes { get; set; } = new List<VertexTax>();
 	}
 
@@ -51,10 +52,15 @@ namespace ordercloud.integrations.vertex
 		/// The type description assigned to the imposition. When multiple impositions are imposed within a jurisdiction, each must have a different type. This is assigned either by Vertex or by the user when setting up a user-defined imposition in the Vertex Central user interface.
 		/// </summary>
 		public VertexResponseImposition impositionType { get; set; }
+
 		public VertexRule taxRuleId { get; set; }
+
 		public VertexRule maxTaxRuleId { get; set; }
+
 		public VertexRule basisRuleId { get; set; }
+
 		public VertexRule recoverableRuleId { get; set; }
+
 		public VertexCertificateNumber certificateNumber { get; set; }
 
 		/// <summary>
@@ -71,6 +77,7 @@ namespace ordercloud.integrations.vertex
 		/// The Registration ID for the Owner associated with this line item tax.
 		/// </summary>
 		public string ownerRegistrationId { get; set; }
+
 		public List<int> invoiceTextCodes { get; set; } = new List<int>();
 
 		/// <summary>
@@ -122,6 +129,7 @@ namespace ordercloud.integrations.vertex
 		/// A code that indicates the reason for the exception that was applied to this tax.
 		/// </summary>
 		public string reasonCode { get; set; }
+
 		public int filingCategoryCode { get; set; }
 
 		/// <summary>
@@ -191,6 +199,7 @@ namespace ordercloud.integrations.vertex
 	public class VertexCertificateNumber
 	{
 		public string certificateType { get; set; }
+
 		public string value { get; set; }
 	}
 
@@ -205,6 +214,7 @@ namespace ordercloud.integrations.vertex
 		/// Indicates whether this rule applies as a Sales Tax Holiday.
 		/// </summary>
 		public bool salesTaxHolidayIndicator { get; set; }
+
 		public string value { get; set; }
 	}
 
@@ -219,6 +229,7 @@ namespace ordercloud.integrations.vertex
 		/// The Vertex internal identifier for the impositionType.
 		/// </summary>
 		public int impositionTypeId { get; set; }
+
 		public string value { get; set; }
 	}
 }

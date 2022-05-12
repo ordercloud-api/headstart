@@ -17,8 +17,11 @@ namespace Headstart.API.Commands
     public interface IHSSupplierCommand
     {
         Task<HSSupplier> Create(HSSupplier supplier, string accessToken, bool isSeedingEnvironment = false);
+
         Task<HSSupplier> GetMySupplier(string supplierID, DecodedToken decodedToken);
+
         Task<HSSupplier> UpdateSupplier(string supplierID, PartialSupplier supplier, DecodedToken decodedToken);
+
         Task<HSSupplierOrderData> GetSupplierOrderData(string supplierOrderID, OrderType orderType, DecodedToken decodedToken);
     }
 

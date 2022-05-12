@@ -6,7 +6,9 @@ namespace Headstart.Common.Models
     public interface IOrchestrationObject<T>
     {
         string ID { get; set; }
+
         string Token { get; set; }
+
         string ClientId { get; set; }
     }
 
@@ -17,8 +19,11 @@ namespace Headstart.Common.Models
         [MaxLength(100, ErrorMessage = "Must be a minimum of 8 and maximum of 100 characters")]
         [MinLength(8, ErrorMessage = "Must be a minimum of 8 and maximum of 100 characters")]
         public string ID { get; set; }
+
         public string Token { get; set; }
+
         public string ClientId { get; set; }
+
         public IHSObject Model { get; set; }
     }
 }

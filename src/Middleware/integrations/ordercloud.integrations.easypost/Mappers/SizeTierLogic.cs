@@ -46,7 +46,9 @@ namespace ordercloud.integrations.easypost
 		// however, fixing that math produces some crazy rates (~$1000).
 		public static readonly double FULL_PACKAGE_DIMENSION = 11; // inches.
         public static readonly double DEFAULT_WEIGHT = 5;
+
 		public double PercentFilled { get; set; } = 0;
+
 		public decimal Weight { get; set; } = 0; // lbs
 	}
 

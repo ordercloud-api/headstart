@@ -17,6 +17,7 @@ namespace Headstart.Common.Services.ShippingIntegration.Models
 	public class HSOrderCalculatePayload
 	{
 		public HSOrderWorksheet OrderWorksheet { get; set; }
+
 		public CheckoutIntegrationConfiguration ConfigData { get; set; }
 	}
 
@@ -27,21 +28,32 @@ namespace Headstart.Common.Services.ShippingIntegration.Models
 	public class ShipEstimateXP
 	{
 		public List<HSShipMethod> AllShipMethods { get; set; }
+
 		public string SupplierID { get; set; }
+
 		public string ShipFromAddressID { get; set; }
 	}
 
 	public class ShipMethodXP
 	{
 		public string Carrier { get; set; } // e.g. "Fedex"
+
 		public string CarrierAccountID { get; set; }
+
 		public decimal ListRate { get; set; }
+
 		public bool Guaranteed { get; set; }
+
 		public decimal OriginalCost { get; set; }
+
 		public bool FreeShippingApplied { get; set; }
+
 		public int? FreeShippingThreshold { get; set; }
+
 		public CurrencySymbol? OriginalCurrency { get; set; }
+
 		public CurrencySymbol? OrderCurrency { get; set; }
+
 		public double? ExchangeRate { get; set; }
 	}
 
@@ -60,6 +72,7 @@ namespace Headstart.Common.Services.ShippingIntegration.Models
 	public class CheckoutIntegrationConfiguration
 	{
 		public bool ExcludePOProductsFromShipping { get; set; }
+
 		public bool ExcludePOProductsFromTax { get; set; }
 	}
 

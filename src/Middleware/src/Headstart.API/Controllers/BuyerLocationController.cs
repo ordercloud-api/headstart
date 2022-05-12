@@ -17,6 +17,7 @@ namespace Headstart.Common.Controllers
         private readonly IHSBuyerLocationCommand _buyerLocationCommand;
         private readonly IOrderCloudClient _oc;
         private readonly ILocationPermissionCommand _locationPermissionCommand;
+
         public BuyerLocationController(ILocationPermissionCommand locationPermissionCommand, IHSBuyerLocationCommand buyerLocationCommand, IOrderCloudClient oc)
         {
             _buyerLocationCommand = buyerLocationCommand;

@@ -12,9 +12,13 @@ namespace Headstart.Common.Services
     public interface IPortalService
     {
         Task<string> Login(string username, string password);
+
         Task<string> GetMarketplaceToken(string marketplaceID, string token);
+
         Task<PortalUser> GetMe(string token);
+
         Task CreateMarketplace(Marketplace marketplace, string token);
+
         Task<Marketplace> GetMarketplace(string marketplaceID, string token);
     }
 

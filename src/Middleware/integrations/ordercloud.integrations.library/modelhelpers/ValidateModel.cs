@@ -37,8 +37,11 @@ namespace ordercloud.integrations.library
     {
         [JsonIgnore]
         public HttpStatusCode StatusCode { get; set; }
+
         public string ErrorCode { get; set; }
+
         public string Message { get; set; }
+
         public object Errors { get; set; }
 
         public ApiValidationError(ModelStateDictionary dict)

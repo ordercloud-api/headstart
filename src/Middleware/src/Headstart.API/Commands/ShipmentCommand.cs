@@ -22,20 +22,25 @@ namespace Headstart.API.Commands
     public class DocumentRowError
     {
         public int Row { get; set; }
+
         public string ErrorMessage { get; set; }
+
         public int Column { get; set; }
     }
 
     public class DocumentImportSummary
     {
         public int TotalCount { get; set; }
+
         public int ValidCount { get; set; }
+
         public int InvalidCount { get; set; }
     }
 
     public class DocumentImportResult
     {
         public DocumentImportSummary Meta { get; set; }
+
         public List<Misc.Shipment> Valid = new List<Misc.Shipment>();
         public List<DocumentRowError> Invalid = new List<DocumentRowError>();
     }
@@ -43,20 +48,25 @@ namespace Headstart.API.Commands
     public class BatchProcessSummary
     {
         public int TotalCount { get; set; }
+
         public int SuccessfulCount { get; set; }
+
         public int ProcessFailureListCount { get; set; }
+
         public int DocumentFailureListCount { get; set; }
     }
 
     public class BatchProcessFailure
     {
         public Misc.Shipment Shipment { get; set; }
+
         public string Error { get; set; }
     }
 
     public class BatchProcessResult
     {
         public BatchProcessSummary Meta { get; set; }
+
         public List<Shipment> SuccessfulList = new List<Shipment>();
         public List<BatchProcessFailure> ProcessFailureList = new List<BatchProcessFailure>();
         public List<DocumentRowError> InvalidRowFailureList = new List<DocumentRowError>();
@@ -65,6 +75,7 @@ namespace Headstart.API.Commands
     public interface IShipmentCommand
     {
         Task<SuperHSShipment> CreateShipment(SuperHSShipment superShipment, DecodedToken decodedToken);
+
         Task<BatchProcessResult> UploadShipments(IFormFile file, DecodedToken decodedToken);
     }
 

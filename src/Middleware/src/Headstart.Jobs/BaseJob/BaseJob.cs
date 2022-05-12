@@ -14,7 +14,9 @@ namespace Headstart.Jobs
         protected List<string> Skipped = new List<string>();
         protected List<string> Succeeded = new List<string>();
         protected List<string> Failed = new List<string>();
+
         private int Total => Skipped.Count + Succeeded.Count + Failed.Count;
+
         protected ILogger _logger;
 
         protected virtual void LogInformation(string message)

@@ -27,6 +27,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Headstart.Common.Repositories;
 
 [assembly: FunctionsStartup(typeof(Startup))]
+
 namespace Headstart.Jobs
 {
     public class Startup : FunctionsStartup

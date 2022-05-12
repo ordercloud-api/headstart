@@ -7,12 +7,19 @@ namespace ordercloud.integrations.vertex
 	public class VertexCalculateTaxRequest
 	{
 		public VertexSaleMessageType saleMessageType { get; set; }
+
 		public VertexSeller seller { get; set; }
+
 		public VertexCustomer customer { get; set; }
+
 		public VertexDiscount discount { get; set; }
+
 		public List<VertexLineItem> lineItems { get; set; } = new List<VertexLineItem>();
+
 		public string postingDate { get; set; }
+
 		public string transactionId { get; set; }
+
 		public VertexTransactionType transactionType { get; set; }
 	}
 
@@ -32,6 +39,7 @@ namespace ordercloud.integrations.vertex
 	public class VertexImposition
 	{
 		public string impositionType { get; set; }
+
 		public VertexJurisdictionLevel value { get; set; }
 	}
 
@@ -44,6 +52,7 @@ namespace ordercloud.integrations.vertex
 	public class VertexTaxOverride
 	{
 		public VertexTaxOverrideType overrideType { get; set; }
+
 		public string overrideReasonCode { get; set; }
 	}
 
@@ -57,9 +66,13 @@ namespace ordercloud.integrations.vertex
 	public class VertexTaxRegistrations
 	{
 		public string taxRegistrationNumber { get; set; }
+
 		public string isoCountryCode { get; set; }
+
 		public string mainDivision { get; set; }
+
 		public string hasPhysicalPresenceIndicator { get; set; }
+
 		public string impositionType { get; set; }
 	}
 
@@ -76,6 +89,7 @@ namespace ordercloud.integrations.vertex
 	public class VertexExemptionCertificate
 	{
 		public string exemptionCertificateNumber { get; set; }
+
 		public string value { get; set; }
 	}
 }

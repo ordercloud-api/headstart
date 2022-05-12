@@ -11,7 +11,9 @@ namespace Headstart.Common.Repositories
     public class RMARepo : CosmosDbRepository<RMA>, IRMARepo
     {
         public override string ContainerName { get; } = "rmas";
+
         public override PartitionKey ResolvePartitionKey(string entityId) => new PartitionKey("PartitionValue");
+
         public RMARepo(ICosmosDbContainerFactory factory)
             : base(factory)
         {

@@ -73,6 +73,7 @@ namespace Headstart.Common.Services.CMS.Models
 	public class ParentAttribute : Attribute
 	{
 		public ParentResourceType ParentType { get; set; }
+
 		public ParentAttribute(ParentResourceType type)
 		{
 			ParentType = type;

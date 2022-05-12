@@ -12,6 +12,7 @@ namespace ordercloud.integrations.easypost
 	public class AddressPair : IEquatable<AddressPair>
 	{
 		public Address ShipFrom { get; set; }
+
 		public Address ShipTo { get; set; }
 
 		public bool Equals(AddressPair other)
@@ -41,10 +42,13 @@ namespace ordercloud.integrations.easypost
 	{
 		public Grouping(TKey key)
             : base() => Key = key;
+
 		public Grouping(TKey key, int capacity)
             : base(capacity) => Key = key;
+
 		public Grouping(TKey key, IEnumerable<TElement> collection)
 			: base(collection) => Key = key;
+
 		public TKey Key { get; private set; }
 	}
 

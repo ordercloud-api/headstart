@@ -14,6 +14,7 @@ namespace Headstart.Common.Controllers
 	public class ProductController : CatalystController
 	{
 		private readonly IHSProductCommand _command;
+
 		public ProductController(AppSettings settings, IHSProductCommand command)
 		{
 			_command = command;

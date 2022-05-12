@@ -9,6 +9,7 @@ namespace ordercloud.integrations.library
     public interface ICosmosDbContainerFactory
     {
         CosmosDbContainer GetContainer(string containerName);
+
         Task EnsureDbSetupAsync();
     }
 

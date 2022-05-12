@@ -16,13 +16,21 @@ namespace Headstart.Models
 	public class BuyerAddressXP
 	{
 		public List<DestinationAddressAccessorial> Accessorials { get; set; }
+
 		public string Email { get; set; }
+
         public string LocationID { get; set; }
+
         public Coordinates Coordinates;
+
         public DateTimeOffset? OpeningDate { get; set; }
+
         public string BillingNumber { get; set; }
+
         public string Status { get; set; }
+
         public string LegalEntity { get; set; }
+
         public string PrimaryContactName { get; set; }
     }
 
@@ -37,6 +45,7 @@ namespace Headstart.Models
 	public class Coordinates
 	{
 		public double Latitude { get; set; }
+
 		public double Longitude { get; set; }
 	}
 }

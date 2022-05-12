@@ -11,6 +11,7 @@ namespace Headstart.Models
     public class ProductFacetXp
     {
         public IEnumerable<string> Options { get; set; }
+
         public string ParentID { get; set; }
     }
 }

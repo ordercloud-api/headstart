@@ -11,6 +11,7 @@ namespace Headstart.Common.Services
     public interface IServiceBus
     {
         Task SendMessage<T>(string queueName, T message, double? afterMinutes = null);
+
         Task SendMessageBatchToTopicAsync(string queueName, Queue<ServiceBusMessage> messages);
     }
 
@@ -20,6 +21,7 @@ namespace Headstart.Common.Services
     {
         private readonly ConcurrentDictionary<string, ServiceBusSender> senders = new ConcurrentDictionary<string, ServiceBusSender>();
         private readonly ServiceBusClient _client;
+
         public ServiceBus(AppSettings settings)
         {
             _client = new ServiceBusClient(settings.ServiceBusSettings.ConnectionString);

@@ -9,6 +9,7 @@ namespace Headstart.Jobs
     public abstract class BaseTimerJob : BaseJob
     {
         protected abstract bool ShouldRun { get; }
+
         public async Task Run(ILogger logger)
         {
             _logger = logger;

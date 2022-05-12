@@ -14,8 +14,11 @@ namespace Headstart.Common.Services.CMS
     public interface IAssetClient
     {
         Task<ImageAsset> CreateImage(AssetUpload asset);
+
         Task DeleteAsset(string id);
+
         Task<DocumentAsset> CreateDocument(AssetUpload asset);
+
         Task DeleteAssetByUrl(string assetUrl);
     }
 

@@ -8,6 +8,7 @@ namespace ordercloud.integrations.library
     public class SortableAttribute : Attribute
     {
         public int? Priority { get; set; }
+
         public bool Descending { get; set; }
 
         public SortableAttribute()

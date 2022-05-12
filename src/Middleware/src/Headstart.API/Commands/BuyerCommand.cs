@@ -11,8 +11,11 @@ namespace Headstart.API.Commands
     public interface IHSBuyerCommand
     {
         Task<SuperHSBuyer> Create(SuperHSBuyer buyer);
+
         Task<SuperHSBuyer> Create(SuperHSBuyer buyer, string accessToken, IOrderCloudClient oc);
+
         Task<SuperHSBuyer> Get(string buyerID);
+
         Task<SuperHSBuyer> Update(string buyerID, SuperHSBuyer buyer);
     }
 

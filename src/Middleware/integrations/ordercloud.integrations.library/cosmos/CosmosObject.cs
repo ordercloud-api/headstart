@@ -11,6 +11,7 @@ namespace ordercloud.integrations.library
 	public interface ICosmosObject
 	{
 		string id { get; set; }
+
 		DateTimeOffset timeStamp { get; set; }
 	}
 
@@ -18,6 +19,7 @@ namespace ordercloud.integrations.library
 	{
 		[JsonProperty("id")]
 		public string id { get; set; } = Guid.NewGuid().ToString();
+
 		public DateTimeOffset timeStamp { get; set; } = DateTimeOffset.Now;
 
 		// Note, Cosmos unique keys are only unique within the partition.

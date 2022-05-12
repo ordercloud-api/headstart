@@ -17,6 +17,7 @@ namespace Headstart.Common.Helpers
     {
         private readonly IOrderCloudClient _oc;
         private readonly AppSettings _settings;
+
         public SupplierApiClientHelper(AppSettings settings, IOrderCloudClient oc)
         {
             _settings = settings;

@@ -6,10 +6,15 @@ namespace Headstart.Common.Models
     public class ReportTypeResource
     {
         public ReportTypeEnum ID { get; set; }
+
         public string Name { get; set; }
+
         public string ReportCategory { get; set; }
+
         public bool AvailableToSuppliers { get; set; }
+
         public string Value { get; set; }
+
         public string[] AdHocFilters { get; set; }
 
         // Explicitly setting available report types

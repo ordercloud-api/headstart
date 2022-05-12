@@ -11,7 +11,9 @@ namespace Headstart.Common.Repositories
     public class OrdersAndShipmentsDataRepo : CosmosDbRepository<OrderWithShipments>, IOrdersAndShipmentsDataRepo
     {
         public override string ContainerName { get; } = "shipmentdetail";
+
         public override PartitionKey ResolvePartitionKey(string entityId) => new PartitionKey("PartitionValue");
+
         public OrdersAndShipmentsDataRepo(ICosmosDbContainerFactory factory)
             : base(factory)
         {

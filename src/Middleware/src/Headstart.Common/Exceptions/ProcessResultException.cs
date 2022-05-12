@@ -43,6 +43,7 @@ namespace Headstart.Common.Exceptions
         }
 
         public string Message { get; set; }
+
         public dynamic ResponseBody { get; set; }
     }
 }

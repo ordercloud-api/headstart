@@ -29,6 +29,7 @@ namespace ordercloud.integrations.avalara
 		/// Creates a tax transaction record in the calculating system. Use this once on purchase, payment capture, or fulfillment.
 		/// </summary>
 		Task<OrderTaxCalculation> CommitTransactionAsync(OrderWorksheet orderWorksheet, List<OrderPromotion> promotions);
+
 		Task<TaxCategorizationResponse> ListTaxCodesAsync(string searchTerm);
 	}
 

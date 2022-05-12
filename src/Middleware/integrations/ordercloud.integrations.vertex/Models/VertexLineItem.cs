@@ -17,8 +17,11 @@ namespace ordercloud.integrations.vertex
 		/// A standardized, unique code for the product or service.
 		/// </summary>
 		public VertexMeasure quantity { get; set; }
+
 		public double unitPrice { get; set; }
+
 		public double extendedPrice { get; set; }
+
 		public VertexDiscount discount { get; set; }
 
 		/// <summary>
@@ -35,6 +38,7 @@ namespace ordercloud.integrations.vertex
 	public class VertexProduct
 	{
 		public string productClass { get; set; }
+
 		public string value { get; set; }
 	}
 

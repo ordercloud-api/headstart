@@ -93,9 +93,13 @@ namespace Headstart.Models.Misc
     public class EnvironmentSeedResponse
     {
 		public string Comments { get; set; }
+
 		public string MarketplaceName { get; set; }
+
 		public string MarketplaceID { get; set; }
+
 		public string OrderCloudEnvironment { get; set; }
+
 		public Dictionary<string, dynamic> ApiClients { get; set; }
     }
 
@@ -129,7 +133,9 @@ namespace Headstart.Models.Misc
     {
 		[Required]
 		public string ConnectionString { get; set; }
+
 		public string ContainerNameTranslations { get; set; } = "ngx-translate";
+
 		public string ContainerNameDownloads { get; set; } = "downloads";
 	}
 
@@ -152,14 +158,18 @@ namespace Headstart.Models.Misc
 	public class OcEnv
     {
         public string EnvironmentName { get; set; }
+
 		public string ApiUrl { get; set; }
+
         public Region Region { get; set; }
     }
 
 	public class Region
 	{
 		public string AzureRegion { get; set; }
+
 		public string Id { get; set; }
+
 		public string Name { get; set; }
 	}
 }

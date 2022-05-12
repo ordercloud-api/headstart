@@ -53,15 +53,23 @@ namespace Headstart.Common.Exceptions
 
         [JsonConverter(typeof(StringEnumConverter))]
         public OrchestrationErrorType Type { get; set; }
+
         public string RecordId { get; set; }
+
         public string SupplierId { get; set; }
+
         [JsonConverter(typeof(StringEnumConverter))]
         public RecordType RecordType { get; set; }
+
         [JsonConverter(typeof(StringEnumConverter))]
         public Models.Action Action { get; set; }
+
         public JObject Current { get; set; }
+
         public JObject Cache { get; set; }
+
         public JToken Diff { get; set; }
+
         public object Data { get; set; }
     }
 

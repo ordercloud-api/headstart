@@ -18,6 +18,7 @@ namespace Headstart.Common.Controllers
     {
 		private readonly IHSSupplierCommand _command;
         private readonly IOrderCloudClient _oc;
+
         public SupplierController(IHSSupplierCommand command, IOrderCloudClient oc)
         {
             _command = command;

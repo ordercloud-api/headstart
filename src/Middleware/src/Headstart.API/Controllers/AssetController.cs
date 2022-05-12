@@ -12,6 +12,7 @@ namespace Headstart.API.Controllers
     public class AssetController : CatalystController
     {
         private readonly IAssetClient _command;
+
         public AssetController(IAssetClient command)
         {
             _command = command;

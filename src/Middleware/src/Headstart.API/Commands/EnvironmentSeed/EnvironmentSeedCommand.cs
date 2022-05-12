@@ -21,7 +21,9 @@ namespace Headstart.API.Commands
     public interface IEnvironmentSeedCommand
     {
         Task<EnvironmentSeedResponse> Seed(EnvironmentSeed seed);
+
         Task UpdateTranslations(string connectionString, string containerName);
+
         Task PostStagingRestore();
     }
 
@@ -434,8 +436,11 @@ namespace Headstart.API.Commands
         public class ApiClients
         {
             public ApiClient AdminUiApiClient { get; set; }
+
             public ApiClient BuyerUiApiClient { get; set; }
+
             public ApiClient BuyerLocalUiApiClient { get; set; }
+
             public ApiClient MiddlewareApiClient { get; set; }
         }
 

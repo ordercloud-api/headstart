@@ -8,8 +8,11 @@ namespace Headstart.Models.Misc
 	public class HSUserType
 	{
 		public string UserGroupIDSuffix { get; set; }
+
 		public string UserGroupName { get; set; }
+
 		public UserGroupType UserGroupType { get; set; }
+
 		public List<CustomRole> CustomRoles { get; set; }
 	}
 

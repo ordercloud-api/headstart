@@ -44,6 +44,7 @@ namespace ordercloud.integrations.exchangerates
     public class CurrencyDisplay
     {
         public string Name { get; set; }
+
         public string Symbol { get; set; }
     }
 

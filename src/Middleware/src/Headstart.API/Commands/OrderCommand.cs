@@ -20,16 +20,27 @@ namespace Headstart.API.Commands
     public interface IOrderCommand
     {
         Task<Order> AcknowledgeQuoteOrder(string orderID);
+
         Task<ListPage<HSOrder>> ListOrdersForLocation(string locationID, ListArgs<HSOrder> listArgs, DecodedToken decodedToken);
+
         Task<OrderDetails> GetOrderDetails(string orderID, DecodedToken decodedToken);
+
         Task<List<HSShipmentWithItems>> ListHSShipmentWithItems(string orderID, DecodedToken decodedToken);
+
         Task<CosmosListPage<RMA>> ListRMAsForOrder(string orderID, DecodedToken decodedToken);
+
         Task<HSOrder> AddPromotion(string orderID, string promoCode, DecodedToken decodedToken);
+
         Task<HSOrder> ApplyAutomaticPromotions(string orderID);
+
         Task PatchOrderRequiresApprovalStatus(string orderID);
+
         Task<HSLineItem> SendQuoteRequestToSupplier(string orderID, string lineItemID);
+
         Task<HSLineItem> OverrideQuotePrice(string orderID, string lineItemID, decimal quotePrice);
+
         Task<ListPage<HSOrder>> ListQuoteOrders(MeUser me, QuoteStatus quoteStatus);
+
         Task<HSOrder> GetQuoteOrder(MeUser me, string orderID);
     }
 

@@ -15,9 +15,13 @@ namespace Headstart.Common.Queries
     public interface IReportTemplateQuery<TReportTemplate>
     {
         Task<List<TReportTemplate>> List(ReportTypeEnum reportType, DecodedToken decodedToken);
+
         Task<TReportTemplate> Post(TReportTemplate reportTemplate, DecodedToken decodedToken);
+
         Task<TReportTemplate> Put(string id, TReportTemplate reportTemplate, DecodedToken decodedToken);
+
         Task Delete(string id);
+
         Task<TReportTemplate> Get(string id, DecodedToken decodedToken);
     }
 
@@ -25,6 +29,7 @@ namespace Headstart.Common.Queries
     {
         private readonly ICosmosStore<ReportTemplate> _store;
         private readonly IOrderCloudClient _oc;
+
         public ReportTemplateQuery(ICosmosStore<ReportTemplate> store, IOrderCloudClient oc)
         {
             _store = store;

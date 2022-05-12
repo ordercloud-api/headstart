@@ -16,7 +16,9 @@ namespace Headstart.API.Commands
 	public interface IMeProductCommand
 	{
 		Task<ListPageWithFacets<HSMeProduct>> List(ListArgs<HSMeProduct> args, DecodedToken decodedToken);
+
 		Task<SuperHSMeProduct> Get(string id, DecodedToken decodedToken);
+
 		Task RequestProductInfo(ContactSupplierBody template);
 	}
 

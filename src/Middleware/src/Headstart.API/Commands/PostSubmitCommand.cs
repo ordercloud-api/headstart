@@ -22,7 +22,9 @@ namespace Headstart.API.Commands
     public interface IPostSubmitCommand
     {
         Task<OrderSubmitResponse> HandleBuyerOrderSubmit(HSOrderWorksheet order);
+
         Task<OrderSubmitResponse> HandleZohoRetry(string orderID);
+
         Task<OrderSubmitResponse> HandleShippingValidate(string orderID, DecodedToken decodedToken);
     }
 

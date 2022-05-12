@@ -23,8 +23,11 @@ namespace ordercloud.integrations.library
     public interface ICosmosBulkOperations
 	{
         Task<List<T>> GetAllAsync<T>(string collectionName);
+
         Task ImportAsync<T>(string collectionName, List<T> toImport) where T : CosmosObject;
+
         Task Delete<T>(string collectionName, List<T> toDelete) where T : CosmosObject;
+
         Task UpdateAllAsync<T>(string collectionName, Func<JObject, List<UpdateOperation>> updateFunc) where T : CosmosObject;
     }
 

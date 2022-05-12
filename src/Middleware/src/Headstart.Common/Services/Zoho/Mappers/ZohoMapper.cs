@@ -181,6 +181,7 @@ namespace Headstart.Common.Services.Zoho.Mappers
     public static class ZohoExtensions
     {
         public static string ShippingSuffix = "Shipping (41000)";
+
         public static string SKU(this HSLineItem item)
         {
             return item.Product == null ? string.Empty : $"{item.Product.ID}-{item.Variant?.ID}".TrimEnd("-");

@@ -22,6 +22,7 @@ namespace Headstart.Common.Services
         private readonly TelemetryClient _telemetry;
         private readonly ISendgridService _sendgrid;
         private readonly AppSettings _settings;
+
         public SupportAlertService(TelemetryClient telemetry, ISendgridService sendgrid, AppSettings settings)
         {
             _telemetry = telemetry;

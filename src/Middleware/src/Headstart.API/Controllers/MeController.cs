@@ -19,6 +19,7 @@ namespace Headstart.Common.Controllers
 	public class MeController : CatalystController
 	{
 		private readonly IMeProductCommand _meProductCommand;
+
 		public MeController(IMeProductCommand meProductCommand)
 		{
 			_meProductCommand = meProductCommand;

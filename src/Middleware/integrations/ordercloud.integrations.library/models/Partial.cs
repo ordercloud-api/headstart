@@ -83,7 +83,9 @@ namespace ordercloud.integrations.library
         }
 
         public override bool CanConvert(Type objectType) => objectType.WithoutGenericArgs() == typeof(Partial<>);
+
         public override bool CanRead => true;
+
         public override bool CanWrite => false;
     }
 }

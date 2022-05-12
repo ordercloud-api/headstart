@@ -28,13 +28,16 @@ namespace ordercloud.integrations.easypost.Exceptions
 	public class ErrorObject
     {
 		public string code { get; set; } // https://www.easypost.com/errors-guide#error-codes
+
 		public string message { get; set; }
+
 		public FieldErrorObject[] errors { get; set; }
 	}
 
 	public class FieldErrorObject
     {
 		public string field { get; set; }
+
 		public string message { get; set; }
     }
 }

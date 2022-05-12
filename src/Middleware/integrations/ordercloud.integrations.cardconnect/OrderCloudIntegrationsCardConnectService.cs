@@ -13,22 +13,34 @@ namespace ordercloud.integrations.cardconnect
     public interface IOrderCloudIntegrationsCardConnectService
     {
         Task<CardConnectAccountResponse> Tokenize(CardConnectAccountRequest request);
+
         Task<CardConnectAuthorizationResponse> AuthWithoutCapture(CardConnectAuthorizationRequest request);
+
         Task<CardConnectAuthorizationResponse> AuthWithCapture(CardConnectAuthorizationRequest request);
+
         Task<CardConnectVoidResponse> VoidAuthorization(CardConnectVoidRequest request);
+
         Task<CardConnectCaptureResponse> Capture(CardConnectCaptureRequest request);
+
         Task<CardConnectInquireResponse> Inquire(CardConnectInquireRequest request);
+
         Task<CardConnectRefundResponse> Refund(CardConnectRefundRequest request);
     }
 
     public class OrderCloudIntegrationsCardConnectConfig
     {
         public string Site { get; set; }
+
         public string BaseUrl { get; set; }
+
         public string Authorization { get; set; }
+
         public string AuthorizationCad { get; set; } // we need a separate merchant account for canadian currency
+
         public string UsdMerchantID { get; set; }
+
         public string CadMerchantID { get; set; }
+
         public string EurMerchantID { get; set; }
     }
 
@@ -44,6 +56,7 @@ namespace ordercloud.integrations.cardconnect
         private readonly IFlurlClient _flurl;
         private bool noAccountCredentials;
         private AppEnvironment appEnvironment;
+
         public OrderCloudIntegrationsCardConnectConfig Config { get; }
 
         public OrderCloudIntegrationsCardConnectService(OrderCloudIntegrationsCardConnectConfig config, string environment, IFlurlClientFactory flurlFactory)

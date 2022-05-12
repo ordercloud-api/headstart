@@ -10,6 +10,7 @@ namespace Headstart.Models
     public class SpecOptionXp
     {
         public string Description { get; set; }
+
         public string SpecID { get; set; }
     }
 }

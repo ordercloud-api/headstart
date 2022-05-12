@@ -127,6 +127,7 @@ namespace Headstart.Common.Constants
             { LineItemStatus.ReturnDenied, SubmittedOrderStatus.Completed },
             { LineItemStatus.Canceled, SubmittedOrderStatus.Canceled },
         };
+
         private static Dictionary<LineItemStatus, ShippingStatus> RelatedShippingStatus = new Dictionary<LineItemStatus, ShippingStatus>()
         {
             { LineItemStatus.Submitted, ShippingStatus.Processing },
@@ -139,6 +140,7 @@ namespace Headstart.Common.Constants
             { LineItemStatus.Returned, ShippingStatus.Shipped },
             { LineItemStatus.Canceled, ShippingStatus.Canceled },
         };
+
         private static Dictionary<LineItemStatus, ClaimStatus> RelatedClaimStatus = new Dictionary<LineItemStatus, ClaimStatus>()
         {
             { LineItemStatus.Submitted, ClaimStatus.NoClaim },

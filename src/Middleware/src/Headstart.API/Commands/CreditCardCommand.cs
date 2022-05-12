@@ -17,9 +17,13 @@ namespace ordercloud.integrations.cardconnect
 	public interface ICreditCardCommand
 	{
 		Task<BuyerCreditCard> MeTokenizeAndSave(OrderCloudIntegrationsCreditCardToken card, DecodedToken decodedToken);
+
 		Task<CreditCard> TokenizeAndSave(string buyerID, OrderCloudIntegrationsCreditCardToken card, DecodedToken decodedToken);
+
 		Task<Payment> AuthorizePayment(OrderCloudIntegrationsCreditCardPayment payment, string userToken, string merchantID);
+
 		Task VoidTransactionAsync(HSPayment payment, HSOrder order, string userToken);
+
 		Task VoidPaymentAsync(string orderID, string userToken);
 	}
 

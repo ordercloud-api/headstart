@@ -14,8 +14,11 @@ namespace ordercloud.integrations.smartystreets
 		}
 
 		public Address RawAddress { get; set; }
+
 		public Address ValidAddress { get; set; }
+
 		public bool ValidAddressFound => ValidAddress != null;
+
 		public List<Address> SuggestedAddresses { get; set; } = new List<Address>() { };
 
 		// https://smartystreets.com/docs/cloud/us-street-api#footnotes

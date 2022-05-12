@@ -21,12 +21,19 @@ namespace Headstart.API.Commands
     public interface IRMACommand
     {
         Task BuildRMA(HSOrder order, List<string> supplierIDs, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItemsChanged, DecodedToken decodedToken);
+
         Task<RMA> PostRMA(RMA rma);
+
         Task<CosmosListPage<RMA>> ListBuyerRMAs(CosmosListOptions listOptions, string buyerID);
+
         Task<RMA> Get(ListArgs<RMA> args, DecodedToken decodedToken);
+
         Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, CommerceRole commerceRole, MeUser me, bool accessAllRMAsOnOrder = false);
+
         Task<CosmosListPage<RMA>> ListRMAs(CosmosListOptions listOptions, DecodedToken decodedToken);
+
         Task<RMAWithLineItemStatusByQuantity> ProcessRMA(RMA rma, DecodedToken decodedToken);
+
         Task<RMAWithLineItemStatusByQuantity> ProcessRefund(string rmaNumber, DecodedToken decodedToken);
     }
 

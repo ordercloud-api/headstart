@@ -18,6 +18,7 @@ namespace Headstart.Common.Controllers
 	public class TaxCategoryController : CatalystController
 	{
 		private readonly ITaxCodesProvider _taxCodesProvider;
+
 		public TaxCategoryController(ITaxCodesProvider taxCodesProvider)
 		{
 			_taxCodesProvider = taxCodesProvider;

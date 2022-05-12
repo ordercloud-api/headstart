@@ -24,6 +24,7 @@ namespace Headstart.Common.Controllers
         private readonly IOrderSubmitCommand _orderSubmitCommand;
         private readonly ILineItemCommand _lineItemCommand;
         private readonly IOrderCloudClient _oc;
+
         public OrderController(IOrderCommand command, ILineItemCommand lineItemCommand, IOrderSubmitCommand orderSubmitCommand, IOrderCloudClient oc)
         {
             _command = command;

@@ -16,6 +16,7 @@ namespace Headstart.Common.Controllers
 	public class CatalogController : CatalystController
 	{
 		private readonly IHSCatalogCommand _command;
+
 		public CatalogController(IHSCatalogCommand command)
 		{
 			_command = command;
