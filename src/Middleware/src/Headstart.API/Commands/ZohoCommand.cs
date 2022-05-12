@@ -28,8 +28,8 @@ namespace Headstart.API.Commands.Zoho
 
     public class ZohoCommand : IZohoCommand
     {
-        private const int delay = 250;
-        private const int concurrent = 1;
+        private const int Delay = 250;
+        private const int Concurrent = 1;
         private readonly IZohoClient zoho;
         private readonly IOrderCloudClient oc;
 
@@ -197,7 +197,7 @@ namespace Headstart.API.Commands.Zoho
             // gather IDs either at the product or variant level to search Zoho for existing Items
             var uniqueLineItems = lineitems.DistinctBy(item => item.SKU()).ToList();
 
-            var zItems = await Throttler.RunAsync(uniqueLineItems, delay, concurrent, id => zoho.Items.ListAsync(new ZohoFilter()
+            var zItems = await Throttler.RunAsync(uniqueLineItems, Delay, Concurrent, id => zoho.Items.ListAsync(new ZohoFilter()
             {
                 Key = "sku",
                 Value = id.SKU(),
@@ -226,7 +226,7 @@ namespace Headstart.API.Commands.Zoho
         {
             var (z_items, oc_items) = await this.PrepareLineItems(lineitems);
 
-            var items = await Throttler.RunAsync(oc_items, delay, concurrent, async lineItem =>
+            var items = await Throttler.RunAsync(oc_items, Delay, Concurrent, async lineItem =>
             {
                 var (sku, z_item) = z_items.FirstOrDefault(z => z.Key == lineItem.SKU());
                 if (z_item != null)
@@ -243,7 +243,7 @@ namespace Headstart.API.Commands.Zoho
         {
             var (z_items, oc_items) = await this.PrepareLineItems(lineitems);
 
-            var items = await Throttler.RunAsync(oc_items, delay, concurrent, async lineItem =>
+            var items = await Throttler.RunAsync(oc_items, Delay, Concurrent, async lineItem =>
             {
                 var (sku, z_item) = z_items.FirstOrDefault(z => z.Key == lineItem.SKU());
                 if (z_item != null)
@@ -260,7 +260,7 @@ namespace Headstart.API.Commands.Zoho
         {
             var (z_items, oc_items) = await this.PrepareLineItems(lineitems);
 
-            var items = await Throttler.RunAsync(oc_items, delay, concurrent, async lineItem =>
+            var items = await Throttler.RunAsync(oc_items, Delay, Concurrent, async lineItem =>
             {
                 var (sku, z_item) = z_items.FirstOrDefault(z => z.Key == lineItem.SKU());
                 if (z_item != null)
