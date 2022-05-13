@@ -13,7 +13,7 @@ using SendGrid;
 using SendGrid.Helpers.Mail;
 using Headstart.Common.Mappers;
 using Newtonsoft.Json;
-using ordercloud.integrations.cardconnect;
+using OrderCloud.Integrations.CardConnect;
 using Headstart.Common.Models.Misc;
 using Headstart.Models.Headstart;
 using OrderCloud.Catalyst;

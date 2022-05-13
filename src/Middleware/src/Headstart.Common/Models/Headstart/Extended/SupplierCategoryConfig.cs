@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cosmonaut.Attributes;
-using ordercloud.integrations.library;
+using OrderCloud.Integrations.Library.Cosmos;
 
 namespace Headstart.Models.Extended
 {

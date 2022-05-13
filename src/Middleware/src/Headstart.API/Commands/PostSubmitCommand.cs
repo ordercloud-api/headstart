@@ -9,13 +9,14 @@ using Headstart.Common.Exceptions;
 using Headstart.Models;
 using Headstart.Common.Services;
 using Headstart.Models.Headstart;
-using ordercloud.integrations.library;
+using OrderCloud.Integrations.Library;
 using Headstart.Models.Extended;
 using Headstart.Common.Constants;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Common;
 using Headstart.API.Commands.Zoho;
 using OrderCloud.Catalyst;
+using ITaxCalculator = OrderCloud.Integrations.Library.Interfaces.ITaxCalculator;
 
 namespace Headstart.API.Commands
 {
@@ -32,14 +33,14 @@ namespace Headstart.API.Commands
     {
         private readonly IOrderCloudClient oc;
         private readonly IZohoCommand zoho;
-        private readonly ordercloud.integrations.library.ITaxCalculator taxCalculator;
+        private readonly ITaxCalculator taxCalculator;
         private readonly ISendgridService sendgridService;
         private readonly ILineItemCommand lineItemCommand;
         private readonly AppSettings settings;
 
         public PostSubmitCommand(
             ISendgridService sendgridService,
-            ordercloud.integrations.library.ITaxCalculator taxCalculator,
+            ITaxCalculator taxCalculator,
             IOrderCloudClient oc,
             IZohoCommand zoho,
             ILineItemCommand lineItemCommand,

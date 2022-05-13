@@ -10,11 +10,14 @@ using Headstart.Common.Services;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
 using Headstart.Models.Headstart;
-using ordercloud.integrations.easypost;
-using ordercloud.integrations.exchangerates;
-using ordercloud.integrations.library;
+using OrderCloud.Integrations.EasyPost;
+using OrderCloud.Integrations.ExchangeRates;
+using OrderCloud.Integrations.Library;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
+using OrderCloud.Integrations.EasyPost.Models;
+using OrderCloud.Integrations.ExchangeRates.Models;
+using ITaxCalculator = OrderCloud.Integrations.Library.Interfaces.ITaxCalculator;
 
 namespace Headstart.API.Commands
 {
@@ -31,7 +34,7 @@ namespace Headstart.API.Commands
 
     public class CheckoutIntegrationCommand : ICheckoutIntegrationCommand
     {
-        private readonly ordercloud.integrations.library.ITaxCalculator taxCalculator;
+        private readonly ITaxCalculator taxCalculator;
         private readonly IEasyPostShippingService shippingService;
         private readonly IExchangeRatesCommand exchangeRates;
         private readonly IOrderCloudClient oc;
@@ -39,7 +42,7 @@ namespace Headstart.API.Commands
         private readonly HSShippingProfiles profiles;
         private readonly AppSettings settings;
 
-        public CheckoutIntegrationCommand(IDiscountDistributionService discountDistribution, ordercloud.integrations.library.ITaxCalculator taxCalculator, IExchangeRatesCommand exchangeRates, IOrderCloudClient orderCloud, IEasyPostShippingService shippingService, AppSettings settings)
+        public CheckoutIntegrationCommand(IDiscountDistributionService discountDistribution, ITaxCalculator taxCalculator, IExchangeRatesCommand exchangeRates, IOrderCloudClient orderCloud, IEasyPostShippingService shippingService, AppSettings settings)
         {
             this.taxCalculator = taxCalculator;
             this.exchangeRates = exchangeRates;

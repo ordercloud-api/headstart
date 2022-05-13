@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using NSubstitute;
 using OrderCloud.SDK;
-using ordercloud.integrations.cardconnect;
 using System.Threading.Tasks;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models.Headstart;

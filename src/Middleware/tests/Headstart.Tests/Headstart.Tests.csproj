@@ -25,13 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\integrations\ordercloud.integrations.exchangerates\ordercloud.integrations.exchangerates.csproj" />
+    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.ExchangeRates\OrderCloud.Integrations.ExchangeRates.csproj" />
     <ProjectReference Include="..\..\src\Headstart.API\Headstart.API.csproj" />
     <ProjectReference Include="..\..\src\Headstart.Common\Headstart.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Tests\" />
   </ItemGroup>
 
 </Project>

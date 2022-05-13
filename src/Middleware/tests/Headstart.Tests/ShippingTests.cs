@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using NUnit.Framework;
-using ordercloud.integrations.easypost;
+using OrderCloud.Integrations.EasyPost;
 using OrderCloud.SDK;
 
 namespace Headstart.Tests

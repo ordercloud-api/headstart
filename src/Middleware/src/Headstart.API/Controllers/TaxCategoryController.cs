@@ -2,8 +2,8 @@
 using OrderCloud.SDK;
 using System.Threading.Tasks;
 using OrderCloud.Catalyst;
-using ITaxCodesProvider = ordercloud.integrations.library.intefaces.ITaxCodesProvider;
-using TaxCategorizationResponse = ordercloud.integrations.library.intefaces.TaxCategorizationResponse;
+using ITaxCodesProvider = OrderCloud.Integrations.Library.Interfaces.ITaxCodesProvider;
+using TaxCategorizationResponse = OrderCloud.Integrations.Library.Interfaces.TaxCategorizationResponse;
 
 namespace Headstart.Common.Controllers
 {

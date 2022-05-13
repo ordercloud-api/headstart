@@ -5,10 +5,11 @@ using System.Threading.Tasks;
 using Headstart.Common.Services;
 using Headstart.Models;
 using Headstart.Models.Misc;
-using ordercloud.integrations.exchangerates;
+using OrderCloud.Integrations.ExchangeRates;
 using OrderCloud.SDK;
 using OrderCloud.Catalyst;
 using Headstart.Common;
+using OrderCloud.Integrations.ExchangeRates.Models;
 
 namespace Headstart.API.Commands
 {

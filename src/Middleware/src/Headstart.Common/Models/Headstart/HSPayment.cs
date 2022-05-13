@@ -1,4 +1,4 @@
-﻿using ordercloud.integrations.cardconnect;
+﻿using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.Models.Headstart

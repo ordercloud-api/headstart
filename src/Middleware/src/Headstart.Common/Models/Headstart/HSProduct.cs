@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Headstart.Models.Attributes;
 using Headstart.Models.Extended;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using ordercloud.integrations.easypost;
-using ordercloud.integrations.exchangerates;
-using ordercloud.integrations.library.intefaces;
 using OrderCloud.SDK;
+using OrderCloud.Integrations.EasyPost.Mappers;
+using OrderCloud.Integrations.ExchangeRates.Models;
+using OrderCloud.Integrations.Library.Interfaces;
+using OrderCloud.Integrations.Library.Attributes;
 
 namespace Headstart.Models
 {

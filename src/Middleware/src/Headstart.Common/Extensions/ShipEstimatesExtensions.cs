@@ -1,7 +1,8 @@
 using Headstart.Common.Constants;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models.Headstart;
-using ordercloud.integrations.exchangerates;
+using OrderCloud.Integrations.ExchangeRates;
+using OrderCloud.Integrations.ExchangeRates.Models;
 using OrderCloud.SDK;
 using System.Collections.Generic;
 using System.Linq;

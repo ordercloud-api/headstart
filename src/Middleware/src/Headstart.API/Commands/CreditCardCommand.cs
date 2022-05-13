@@ -5,11 +5,14 @@ using Headstart.Common.Services;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
 using Headstart.Models.Headstart;
-using ordercloud.integrations.exchangerates;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.CardConnect;
+using OrderCloud.Integrations.CardConnect.Mappers;
+using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.SDK;
+using OrderCloud.Integrations.ExchangeRates.Models;
 
-namespace ordercloud.integrations.cardconnect
+namespace Headstart.API.Commands
 {
     public interface ICreditCardCommand
     {

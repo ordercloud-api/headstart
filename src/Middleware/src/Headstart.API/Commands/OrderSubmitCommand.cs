@@ -1,5 +1,4 @@
 using Headstart.Models;
-using ordercloud.integrations.cardconnect;
 using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
@@ -10,6 +9,7 @@ using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models.Headstart;
 using Headstart.Common;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.CardConnect.Models;
 
 namespace Headstart.API.Commands
 {
