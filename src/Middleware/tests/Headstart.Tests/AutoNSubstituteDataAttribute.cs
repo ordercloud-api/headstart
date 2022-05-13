@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using AutoFixture.AutoNSubstitute;
 using AutoFixture;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;

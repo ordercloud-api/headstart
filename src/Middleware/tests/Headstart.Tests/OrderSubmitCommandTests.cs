@@ -1,18 +1,18 @@
-using NUnit.Framework;
-using NSubstitute;
-using OrderCloud.SDK;
-using System.Collections.Generic;
-using Headstart.Common;
-using OrderCloud.Integrations.CardConnect;
-using System.Threading.Tasks;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Models.Headstart;
-using Headstart.Models;
 using System;
-using NSubstitute.ExceptionExtensions;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Headstart.API.Commands;
+using Headstart.Common;
+using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Models;
+using Headstart.Models.Headstart;
+using NSubstitute;
+using NSubstitute.ExceptionExtensions;
+using NUnit.Framework;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.CardConnect.Models;
+using OrderCloud.SDK;
 
 namespace Headstart.Tests
 {

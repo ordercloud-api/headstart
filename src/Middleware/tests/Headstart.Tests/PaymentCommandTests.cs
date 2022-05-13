@@ -1,12 +1,12 @@
-﻿using NUnit.Framework;
-using NSubstitute;
-using OrderCloud.SDK;
-using System.Threading.Tasks;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Models.Headstart;
-using Headstart.Models;
-using Headstart.Tests.Mocks;
+﻿using System.Threading.Tasks;
 using Headstart.API.Commands;
+using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Models;
+using Headstart.Models.Headstart;
+using Headstart.Tests.Mocks;
+using NSubstitute;
+using NUnit.Framework;
+using OrderCloud.SDK;
 
 namespace Headstart.Tests
 {

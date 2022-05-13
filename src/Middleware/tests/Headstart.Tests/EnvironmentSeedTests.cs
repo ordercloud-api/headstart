@@ -1,6 +1,6 @@
-﻿using Headstart.Models.Misc;
+﻿using System.ComponentModel.DataAnnotations;
+using Headstart.Models.Misc;
 using NUnit.Framework;
-using System.ComponentModel.DataAnnotations;
 
 namespace Headstart.Tests
 {

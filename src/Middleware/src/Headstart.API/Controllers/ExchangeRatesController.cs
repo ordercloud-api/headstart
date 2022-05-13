@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using OrderCloud.Integrations.ExchangeRates;
 using OrderCloud.Catalyst;
-using OrderCloud.SDK;
+using OrderCloud.Integrations.ExchangeRates;
 using OrderCloud.Integrations.ExchangeRates.Models;
+using OrderCloud.SDK;
 
 namespace Headstart.Common.Controllers
 {

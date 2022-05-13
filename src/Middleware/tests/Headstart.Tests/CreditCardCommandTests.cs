@@ -1,4 +1,9 @@
-﻿using Headstart.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using Headstart.API.Commands;
+using Headstart.Common;
 using Headstart.Common.Services;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
@@ -6,16 +11,11 @@ using Headstart.Models.Headstart;
 using Headstart.Tests.Mocks;
 using NSubstitute;
 using NUnit.Framework;
-using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Catalyst;
-using OrderCloud.SDK;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
+using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.CardConnect.Models;
-using Headstart.API.Commands;
 using OrderCloud.Integrations.ExchangeRates.Models;
+using OrderCloud.SDK;
 
 namespace Headstart.Tests
 {

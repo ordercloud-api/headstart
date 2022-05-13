@@ -1,7 +1,7 @@
-﻿using OrderCloud.Catalyst;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using LazyCache;
+using OrderCloud.Catalyst;
 
 namespace OrderCloud.Common.Services
 {

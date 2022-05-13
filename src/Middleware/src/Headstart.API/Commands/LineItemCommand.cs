@@ -1,20 +1,20 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Headstart.Common.Constants;
 using Headstart.Common.Extensions;
-using Headstart.Common.Services;
 using Headstart.Common.Models;
+using Headstart.Common.Services;
 using Headstart.Models;
 using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
 using Microsoft.ApplicationInsights;
 using Newtonsoft.Json;
-using OrderCloud.Integrations.Library;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
 using SendGrid.Helpers.Mail;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Headstart.API.Commands
 {

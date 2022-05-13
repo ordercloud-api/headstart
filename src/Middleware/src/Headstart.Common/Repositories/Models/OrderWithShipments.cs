@@ -1,6 +1,6 @@
-﻿using Headstart.Models;
+﻿using System;
+using Headstart.Models;
 using Headstart.Models.Extended;
-using System;
 using OrderCloud.Integrations.EasyPost.Mappers;
 using OrderCloud.Integrations.Library.Cosmos;
 

@@ -1,9 +1,9 @@
-using OrderCloud.Integrations.EasyPost.Models;
-using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
+using OrderCloud.Integrations.EasyPost.Models;
+using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.EasyPost.Mappers
 {

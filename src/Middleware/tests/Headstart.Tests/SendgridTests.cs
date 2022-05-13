@@ -1,21 +1,21 @@
-using Headstart.Common.Services;
-using OrderCloud.SDK;
-using NSubstitute;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Headstart.Models.Headstart;
-using Headstart.Models;
-using Headstart.Common;
 using System.Linq;
-using SendGrid.Helpers.Mail;
-using NSubstitute.Extensions;
+using System.Threading.Tasks;
 using AutoFixture;
-using SendGrid;
+using Headstart.Common;
+using Headstart.Common.Services;
 using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Models;
+using Headstart.Models.Headstart;
+using NSubstitute;
+using NSubstitute.Extensions;
+using NUnit.Framework;
 using OrderCloud.Integrations.ExchangeRates.Models;
 using OrderCloud.Integrations.Library.Interfaces;
+using OrderCloud.SDK;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace Headstart.Tests
 {

@@ -1,14 +1,14 @@
-using Headstart.Models.Headstart;
-using OrderCloud.SDK;
-using System.Threading.Tasks;
-using Headstart.Common.Constants;
-using Headstart.Models;
 using System;
 using System.Collections.Generic;
-using Headstart.Common.Helpers;
-using Headstart.Common;
-using OrderCloud.Catalyst;
 using System.Net;
+using System.Threading.Tasks;
+using Headstart.Common;
+using Headstart.Common.Constants;
+using Headstart.Common.Helpers;
+using Headstart.Models;
+using Headstart.Models.Headstart;
+using OrderCloud.Catalyst;
+using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
 {

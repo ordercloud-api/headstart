@@ -1,14 +1,14 @@
-﻿using OrderCloud.SDK;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Headstart.Common.Extensions;
+using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Models;
+using Headstart.Models.Headstart;
+using Headstart.Tests.Mocks;
 using NSubstitute;
 using NUnit.Framework;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Models.Headstart;
-using System.Linq;
-using Headstart.Common.Extensions;
-using Headstart.Tests.Mocks;
-using Headstart.Models;
+using OrderCloud.SDK;
 
 namespace Headstart.Tests
 {

@@ -1,23 +1,23 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Headstart.Common.Constants;
+using Headstart.Common.Mappers;
+using Headstart.Common.Models.Misc;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
+using Headstart.Models.Headstart;
 using Headstart.Models.Misc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.WindowsAzure.Storage.Blob;
+using Newtonsoft.Json;
+using OrderCloud.Catalyst;
+using OrderCloud.Integrations.CardConnect;
 using OrderCloud.SDK;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using Headstart.Common.Mappers;
-using Newtonsoft.Json;
-using OrderCloud.Integrations.CardConnect;
-using Headstart.Common.Models.Misc;
-using Headstart.Models.Headstart;
-using OrderCloud.Catalyst;
-using System.Net;
 using static Headstart.Common.Models.SendGridModels;
 
 namespace Headstart.Common.Services

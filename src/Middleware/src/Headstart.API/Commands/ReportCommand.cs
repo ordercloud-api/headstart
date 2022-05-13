@@ -1,19 +1,19 @@
-﻿using Headstart.Models;
-using OrderCloud.SDK;
-using System.Threading.Tasks;
-using OrderCloud.Integrations.Library;
+﻿using System;
 using System.Collections.Generic;
-using Headstart.Common.Models;
-using Headstart.Common.Queries;
-using System;
 using System.Linq;
 using System.Reflection;
-using Headstart.Models.Headstart;
-using OrderCloud.Catalyst;
+using System.Threading.Tasks;
+using Headstart.Common.Models;
+using Headstart.Common.Queries;
 using Headstart.Common.Repositories;
-using Microsoft.Azure.Cosmos;
-using Headstart.Models.Misc;
 using Headstart.Common.Repositories.Models;
+using Headstart.Models;
+using Headstart.Models.Headstart;
+using Headstart.Models.Misc;
+using Microsoft.Azure.Cosmos;
+using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Library;
+using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
 {

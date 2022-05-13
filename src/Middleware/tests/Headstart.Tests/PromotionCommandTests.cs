@@ -1,15 +1,15 @@
-﻿using AutoFixture;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoFixture;
 using AutoFixture.NUnit3;
 using Headstart.API.Commands;
 using NSubstitute;
 using NUnit.Framework;
-using OrderCloud.Integrations.Library;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Headstart.Tests
 {

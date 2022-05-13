@@ -1,11 +1,11 @@
-﻿using Microsoft.Azure.Cosmos;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.Azure.Cosmos;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Library.Cosmos;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace OrderCloud.Integrations.Library
 {

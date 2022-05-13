@@ -1,12 +1,12 @@
-﻿using OrderCloud.SDK;
-using NSubstitute;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Headstart.Models.Headstart;
-using Headstart.Models;
 using Headstart.API.Commands;
+using Headstart.Models;
+using Headstart.Models.Headstart;
+using NSubstitute;
+using NUnit.Framework;
+using OrderCloud.SDK;
 
 namespace Headstart.Tests
 {

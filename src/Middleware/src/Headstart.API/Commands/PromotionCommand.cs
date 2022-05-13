@@ -1,9 +1,9 @@
-using OrderCloud.Integrations.Library;
-using OrderCloud.SDK;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Library;
+using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
 {

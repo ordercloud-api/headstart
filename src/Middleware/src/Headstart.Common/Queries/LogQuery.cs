@@ -6,10 +6,10 @@ using Cosmonaut;
 using Cosmonaut.Extensions;
 using Headstart.Common.Models;
 using Microsoft.Azure.Documents.Client;
-using OrderCloud.Integrations.Library;
 using OrderCloud.Catalyst;
-using OrderCloud.SDK;
+using OrderCloud.Integrations.Library;
 using OrderCloud.Integrations.Library.Cosmos;
+using OrderCloud.SDK;
 
 namespace Headstart.Common.Queries
 {

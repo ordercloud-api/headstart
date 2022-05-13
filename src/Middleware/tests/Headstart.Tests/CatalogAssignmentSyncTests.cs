@@ -1,12 +1,12 @@
-﻿using NUnit.Framework;
-using NSubstitute;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using OrderCloud.SDK;
-using Headstart.Models;
-using Headstart.API.Commands.Crud;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using Headstart.API.Commands.Crud;
+using Headstart.Models;
+using NSubstitute;
+using NUnit.Framework;
+using OrderCloud.SDK;
 
 namespace Headstart.Tests
 {

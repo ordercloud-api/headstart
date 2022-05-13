@@ -1,7 +1,7 @@
-﻿using NUnit.Framework;
-using OrderCloud.SDK;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using NUnit.Framework;
+using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.Avalara.Tests
 {

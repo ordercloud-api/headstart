@@ -9,8 +9,8 @@ using OrderCloud.Catalyst;
 using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.CardConnect.Mappers;
 using OrderCloud.Integrations.CardConnect.Models;
-using OrderCloud.SDK;
 using OrderCloud.Integrations.ExchangeRates.Models;
+using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
 {

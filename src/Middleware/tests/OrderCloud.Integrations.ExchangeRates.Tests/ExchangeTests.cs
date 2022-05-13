@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoFixture;
+using Flurl.Http.Configuration;
 using Flurl.Http.Testing;
 using NSubstitute;
 using NUnit.Framework;
-using OrderCloud.Integrations.Library;
-using AutoFixture;
-using Flurl.Http.Configuration;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.ExchangeRates.Models;
+using OrderCloud.Integrations.Library;
 
 namespace OrderCloud.Integrations.ExchangeRates.Tests
 {

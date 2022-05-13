@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Headstart.Models.Extended;
-using Headstart.Models;
 using System.Linq;
+using Headstart.Models;
+using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
 
 namespace Headstart.Common.Constants

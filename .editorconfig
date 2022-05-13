@@ -393,9 +393,9 @@ dotnet_diagnostic.SX1309S.severity = none
 
 [*.cs]
 dotnet_diagnostic.SA1200.severity=silent
-dotnet_diagnostic.SA1210.severity=silent
+dotnet_diagnostic.SA1210.severity=warning
 dotnet_diagnostic.SA1600.severity=silent
-dotnet_diagnostic.SA1208.severity=silent
+dotnet_diagnostic.SA1208.severity=warning
 dotnet_diagnostic.SA1214.severity=warning
 dotnet_diagnostic.SA1309.severity=warning
 dotnet_diagnostic.SA1116.severity=warning

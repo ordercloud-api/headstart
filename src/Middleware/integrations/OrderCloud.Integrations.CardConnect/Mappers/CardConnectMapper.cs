@@ -1,6 +1,6 @@
 ﻿using System;
-using OrderCloud.Integrations.Library;
 using OrderCloud.Integrations.CardConnect.Models;
+using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.CardConnect.Mappers

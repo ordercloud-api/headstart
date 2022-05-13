@@ -1,8 +1,8 @@
-﻿using Headstart.Common.Models;
+﻿using System.Security.Cryptography;
+using System.Text;
+using Headstart.Common.Models;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Headstart.Common.Mappers
 {

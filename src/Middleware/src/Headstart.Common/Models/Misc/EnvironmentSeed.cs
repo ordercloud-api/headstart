@@ -1,9 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Newtonsoft.Json;
-using Headstart.Models.Headstart;
 using System.Linq;
-using System;
+using Headstart.Models.Headstart;
+using Newtonsoft.Json;
 
 namespace Headstart.Models.Misc
 {

@@ -10,13 +10,13 @@ using Headstart.Common.Services;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
 using Headstart.Models.Headstart;
-using OrderCloud.Integrations.EasyPost;
-using OrderCloud.Integrations.ExchangeRates;
-using OrderCloud.Integrations.Library;
 using OrderCloud.Catalyst;
-using OrderCloud.SDK;
+using OrderCloud.Integrations.EasyPost;
 using OrderCloud.Integrations.EasyPost.Models;
+using OrderCloud.Integrations.ExchangeRates;
 using OrderCloud.Integrations.ExchangeRates.Models;
+using OrderCloud.Integrations.Library;
+using OrderCloud.SDK;
 using ITaxCalculator = OrderCloud.Integrations.Library.Interfaces.ITaxCalculator;
 
 namespace Headstart.API.Commands

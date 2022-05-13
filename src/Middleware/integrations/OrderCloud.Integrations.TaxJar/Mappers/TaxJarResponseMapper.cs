@@ -1,6 +1,6 @@
-﻿using OrderCloud.Integrations.Library.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using OrderCloud.Integrations.Library.Interfaces;
 using Taxjar;
 using TaxJarOrder = Taxjar.Order;
 

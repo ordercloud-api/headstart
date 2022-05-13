@@ -1,15 +1,15 @@
-﻿using Headstart.Common.Extensions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Headstart.Common.Extensions;
 using Headstart.Common.Models;
 using Headstart.Common.Repositories;
 using Headstart.Common.Repositories.Models;
 using Microsoft.Azure.Cosmos;
-using OrderCloud.Integrations.Library;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Headstart.Jobs
 {

@@ -1,13 +1,13 @@
-using Flurl.Http;
-using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using OrderCloud.Integrations.EasyPost.Exceptions;
+using Flurl.Http;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.EasyPost.Models;
+using OrderCloud.Integrations.EasyPost.Exceptions;
 using OrderCloud.Integrations.EasyPost.Mappers;
+using OrderCloud.Integrations.EasyPost.Models;
+using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.EasyPost
 {

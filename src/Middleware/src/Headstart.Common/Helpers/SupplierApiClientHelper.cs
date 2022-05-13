@@ -1,5 +1,5 @@
-﻿using OrderCloud.SDK;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using OrderCloud.SDK;
 
 namespace Headstart.Common.Helpers
 {

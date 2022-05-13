@@ -1,8 +1,8 @@
-﻿using Headstart.Common.Mappers;
+﻿using System;
+using Headstart.Common.Mappers;
 using Headstart.Common.Models;
 using NUnit.Framework;
 using OrderCloud.Integrations.ExchangeRates.Models;
-using System;
 
 namespace Headstart.Tests
 {
