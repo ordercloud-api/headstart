@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ordercloud.integrations.library\ordercloud.integrations.library.csproj" />
+    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Library\OrderCloud.Integrations.Library.csproj" />
   </ItemGroup>
 
 </Project>
