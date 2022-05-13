@@ -59,7 +59,7 @@ This solution relies on various third-party services and credentials for those s
 1. [Avalara](./src/Middleware/integrations/ordercloud.integrations.avalara) - Tax calculation - If a License Key isn't provided, responses will be mocked in Test and UAT. A key is still needed for Production
 2. [CardConnect](https://cardconnect.com/signup) - Credit card payment processor - If account isn't provided, responses will be mocked in Test and UAT. An account is still needed for Production
 3. [EasyPost](https://www.easypost.com/signup) - Shipping estimates
-4. [SmartyStreets](https://smartystreets.com/pricing) - Address validation
+4. [SmartyStreets](https://smartystreets.com/pricing) - Address validation **(Optional by setting SmartyStreetSettings.SmartyEnabled=false)**
 5. [Sendgrid](https://signup.sendgrid.com/) - Transactional emails **(Optional but emails won't work until set up)**
 6. [Sitecore Send](./src/UI/Buyer/src/app/services/sitecore-send) - Automated email campaigns  **(Optional. AKA Moosend)**
 7. [Sitecore CDP](./src/UI/Buyer/src/app/services/sitecore-cdp) - Customer Tracking and Data Platform **(Optional. AKA Boxever)**
