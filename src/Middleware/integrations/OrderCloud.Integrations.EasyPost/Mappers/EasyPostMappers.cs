@@ -121,7 +121,7 @@ namespace OrderCloud.Integrations.EasyPost.Mappers
                 origin_country = lineItem.ShipFromAddress.Country,
                 value = decimal.ToDouble(lineItem.LineSubtotal),
                 quantity = lineItem.Quantity,
-                weight = lineItem.ShipWeightOrDefault(Package.DEFAULT_WEIGHT),
+                weight = lineItem.ShipWeightOrDefault(Package.DefaultWeight),
             })
                 .ToList();
         }

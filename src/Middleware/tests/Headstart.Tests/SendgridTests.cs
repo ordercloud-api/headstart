@@ -21,13 +21,6 @@ namespace Headstart.Tests
 {
     public class SendgridTests
     {
-        private const string ORDER_SUBMIT_TEMPLATE_ID = "order_submit_template_id";
-        private const string LINE_ITEM_STATUS_CHANGE = "line_item_status_change";
-        private const string QUOTE_ORDER_SUBMIT_TEMPLATE_ID = "quote_order_submit_template_id";
-        private const string BUYER_NEW_USER_TEMPLATE_ID = "buyer_new_user_template_id";
-        private const string BUYER_PASSWORD_RESET_TEMPLATE_ID = "buyer_password_reset_template_id";
-        private const string INFORMATION_REQUEST = "information_request";
-        private const string PRODUCT_UPDATE_TEMPLATE_ID = "product_update_template_id";
         private IOrderCloudClient oc;
         private AppSettings settings;
         private ISendGridClient sendGridClient;

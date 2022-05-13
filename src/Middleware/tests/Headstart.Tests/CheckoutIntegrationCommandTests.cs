@@ -14,7 +14,7 @@ namespace Headstart.Tests
 {
     public class CheckoutIntegrationCommandTests
     {
-        public const int FREE_SHIPPING_DAYS = 3;
+        private const int FreeShippingDays = 3;
 
         private IOrderCloudClient oc;
 
@@ -39,7 +39,7 @@ namespace Headstart.Tests
             };
             var worksheet = BuildOrderWorksheet(new HSLineItem[] { line1 });
             var estimates = BuildEstimates(new HSShipMethod[] { }, new[] { shipItem1 });
-            var result = await estimates.CheckForEmptyRates(20, 5).ApplyShippingLogic(worksheet, oc, FREE_SHIPPING_DAYS);
+            var result = await estimates.CheckForEmptyRates(20, 5).ApplyShippingLogic(worksheet, oc, FreeShippingDays);
             var methods = result[0].ShipMethods;
 
             Assert.AreEqual(1, methods.Count());
@@ -66,7 +66,7 @@ namespace Headstart.Tests
             };
             var worksheet = BuildOrderWorksheet(new HSLineItem[] { line1 });
             var estimates = BuildEstimates(new[] { method1 }, new[] { shipItem1 });
-            var result = await estimates.CheckForEmptyRates(20, 5).ApplyShippingLogic(worksheet, oc, FREE_SHIPPING_DAYS);
+            var result = await estimates.CheckForEmptyRates(20, 5).ApplyShippingLogic(worksheet, oc, FreeShippingDays);
             var methods = result[0].ShipMethods;
 
             Assert.AreEqual(1, methods.Count());
@@ -97,7 +97,7 @@ namespace Headstart.Tests
             };
             var worksheet = BuildOrderWorksheet(new HSLineItem[] { line1 });
             var estimates = BuildEstimates(new[] { method1 }, new[] { shipItem1 });
-            var result = await estimates.ApplyShippingLogic(worksheet, oc, FREE_SHIPPING_DAYS);
+            var result = await estimates.ApplyShippingLogic(worksheet, oc, FreeShippingDays);
             var methods = result[0].ShipMethods;
 
             Assert.AreEqual(1, methods.Count());
@@ -128,7 +128,7 @@ namespace Headstart.Tests
             };
             var worksheet = BuildOrderWorksheet(new HSLineItem[] { line1 });
             var estimates = BuildEstimates(new[] { method1 }, new[] { shipItem1 });
-            var result = await estimates.ApplyShippingLogic(worksheet, oc, FREE_SHIPPING_DAYS);
+            var result = await estimates.ApplyShippingLogic(worksheet, oc, FreeShippingDays);
             var methods = result[0].ShipMethods;
 
             Assert.AreEqual(1, methods.Count());

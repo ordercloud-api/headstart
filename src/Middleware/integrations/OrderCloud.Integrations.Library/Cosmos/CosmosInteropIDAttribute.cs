@@ -5,7 +5,7 @@ namespace OrderCloud.Integrations.Library.Cosmos
     public class CosmosInteropIDAttribute : RegularExpressionAttribute
     {
         public CosmosInteropIDAttribute()
-            : base(CosmosInteropID.VALIDATION_REGEX)
+            : base(CosmosInteropID.ValidationRegex)
         {
             AutoGen = true;
         }

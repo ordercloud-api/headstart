@@ -41,7 +41,7 @@ namespace Headstart.API.Commands
 
     public class RMACommand : IRMACommand
     {
-        private const string QUEUED_FOR_CAPTURE = "Queued for Capture";
+        private const string QueuedForCapture = "Queued for Capture";
         private readonly IOrderCloudClient oc;
         private readonly IRMARepo rmaRepo;
         private readonly IOrderCloudIntegrationsCardConnectService cardConnect;
@@ -344,7 +344,7 @@ namespace Headstart.API.Commands
             rma.TotalCredited += totalToRefund;
 
             // Transactions that are queued for capture can only be fully voided, and we are only allowing partial voids moving forward.
-            if (inquiry.voidable == "Y" && inquiry.setlstat == QUEUED_FOR_CAPTURE)
+            if (inquiry.voidable == "Y" && inquiry.setlstat == QueuedForCapture)
             {
                 throw new CatalystBaseException(new ApiError
                 {

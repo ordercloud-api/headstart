@@ -42,7 +42,7 @@ namespace OrderCloud.Integrations.CardConnect.Tests
     {
         private HttpTest http;
         private OrderCloudIntegrationsCardConnectService service;
-        private OrderCloudIntegrationsCardConnectService service_no_config;
+        private OrderCloudIntegrationsCardConnectService serviceNoConfig;
 
         [SetUp]
         public void Setup()
@@ -58,7 +58,7 @@ namespace OrderCloud.Integrations.CardConnect.Tests
                 AppEnvironment.Test.ToString(),
                 new PerBaseUrlFlurlClientFactory());
 
-            service_no_config = new OrderCloudIntegrationsCardConnectService(new OrderCloudIntegrationsCardConnectConfig() { }, AppEnvironment.Test.ToString(), new PerBaseUrlFlurlClientFactory());
+            serviceNoConfig = new OrderCloudIntegrationsCardConnectService(new OrderCloudIntegrationsCardConnectConfig() { }, AppEnvironment.Test.ToString(), new PerBaseUrlFlurlClientFactory());
         }
 
         [TearDown]
@@ -80,14 +80,14 @@ namespace OrderCloud.Integrations.CardConnect.Tests
         [Test]
         public void verify_mock_responses_Auth()
         {
-            var response = service_no_config.AuthWithCapture(new CardConnectAuthorizationRequest() { amount = "10000" });
+            var response = serviceNoConfig.AuthWithCapture(new CardConnectAuthorizationRequest() { amount = "10000" });
             Assert.AreEqual("Mock Response", response.Result.commcard);
         }
 
         [Test]
         public void verify_mock_responses_Tokenize()
         {
-            var response = service_no_config.Tokenize(new CardConnectAccountRequest() { account = "super_sweet_account" });
+            var response = serviceNoConfig.Tokenize(new CardConnectAccountRequest() { account = "super_sweet_account" });
             Assert.AreEqual("Mock CardConnect account response", response.Result.message);
         }
 
