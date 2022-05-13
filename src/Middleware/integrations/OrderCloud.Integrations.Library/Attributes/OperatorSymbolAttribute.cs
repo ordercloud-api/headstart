@@ -2,9 +2,9 @@
 
 namespace OrderCloud.Integrations.Library.Attributes
 {
-    public class OperatorSymbol : Attribute
+    public class OperatorSymbolAttribute : Attribute
     {
-        public OperatorSymbol(string symbol)
+        public OperatorSymbolAttribute(string symbol)
         {
             this.Symbol = symbol;
         }
