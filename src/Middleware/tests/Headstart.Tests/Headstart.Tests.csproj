@@ -30,8 +30,4 @@
     <ProjectReference Include="..\..\src\Headstart.Common\Headstart.Common.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Tests\" />
-  </ItemGroup>
-
 </Project>

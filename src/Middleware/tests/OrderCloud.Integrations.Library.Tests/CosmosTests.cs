@@ -1,9 +1,8 @@
 using System.Runtime.Serialization;
 using Cosmonaut.Response;
 using NUnit.Framework;
-using OrderCloud.Integrations.Library;
 
-namespace cosmos.tests
+namespace OrderCloud.Integrations.Library.Tests
 {
     public class CosmosTests
     {
@@ -14,7 +13,7 @@ namespace cosmos.tests
         [TestCase(4, 12, 345, 29, new[] { 37, 48 })]
         public void to_list_page_test(int page, int pageSize, int count, int totalPages, int[] itemRange)
         {
-            var mock = (CosmosPagedResults<object>)FormatterServices.GetUninitializedObject(typeof(CosmosPagedResults<object>)); //does not call ctor
+            var mock = (CosmosPagedResults<object>)FormatterServices.GetUninitializedObject(typeof(CosmosPagedResults<object>)); // does not call ctor
             var result = mock.ToListPage<object>(page, pageSize, count);
             Assert.AreEqual(page, result.Meta.Page);
             Assert.AreEqual(pageSize, result.Meta.PageSize);

@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
-using OrderCloud.Integrations.Library;
 
-namespace library.tests
+namespace OrderCloud.Integrations.Library.Tests
 {
     public class ExtensionsTests
     {

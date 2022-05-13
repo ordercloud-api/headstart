@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using OrderCloud.SDK;
 using OrderCloud.Integrations.EasyPost.Mappers;
 
-namespace easypost.tests
+namespace OrderCloud.Integrations.EasyPost.Tests
 {
-    public class SizeTierLogic
+    public class SmartPackageMapperTests
     {
         // [Test]
         // public void handles_all_lines_shipping_together_new()

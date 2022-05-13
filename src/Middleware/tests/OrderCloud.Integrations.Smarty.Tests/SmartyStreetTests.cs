@@ -1,6 +1,6 @@
 using NUnit.Framework;
 
-namespace smartystreets.test
+namespace OrderCloud.Integrations.Smarty.Tests
 {
     public class SmartyStreetTests
     {

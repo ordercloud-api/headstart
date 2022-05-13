@@ -1,10 +1,9 @@
 ﻿using NUnit.Framework;
-using OrderCloud.Integrations.Avalara;
 using OrderCloud.SDK;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace avalara.tests
+namespace OrderCloud.Integrations.Avalara.Tests
 {
     public class AvalaraTests
     {

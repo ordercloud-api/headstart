@@ -3,7 +3,7 @@ using OrderCloud.Integrations.Library.Interfaces;
 using System;
 using System.Collections.Generic;
 
-namespace avalara.tests.Mocks
+namespace OrderCloud.Integrations.Avalara.Tests.Mocks
 {
     public class MockTaxCodes
     {

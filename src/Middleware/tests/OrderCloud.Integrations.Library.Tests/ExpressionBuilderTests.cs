@@ -3,7 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using OrderCloud.Catalyst;
 
-namespace library.tests
+namespace OrderCloud.Integrations.Library.Tests
 {
     public class ExpressionBuilderTests
     {
