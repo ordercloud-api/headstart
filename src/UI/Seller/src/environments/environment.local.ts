@@ -1,7 +1,7 @@
 // ===== MAKE CHANGES TO CONFIGURATION BETWEEN THESE LINES ONLY =======
 // ====================================================================
 const brand = Brand.DEFAULT_ADMIN
-const sebEnvironment = Environment.TEST
+const environment = Environment.TEST
 const useLocalMiddleware = true
 const localMiddlewareURL = 'https://localhost:5001'
 // ====================================================================
@@ -30,7 +30,7 @@ import {
   Environment,
   EnvironmentConfig,
 } from '@app-seller/models/environment.types'
-const target: EnvironmentConfig = apps[sebEnvironment][brand]
+const target: EnvironmentConfig = apps[environment][brand]
 target.hostedApp = false
 if (useLocalMiddleware) {
   target.middlewareUrl = localMiddlewareURL

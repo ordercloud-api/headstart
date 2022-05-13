@@ -45,7 +45,7 @@ namespace OrderCloud.Integrations.Avalara
         private bool hasAccountCredentials;
         private AppEnvironment appEnvironment;
 
-        public AvalaraCommand(AvalaraConfig settings,  string environment)
+        public AvalaraCommand(AvalaraConfig settings, string environment)
         {
             this.settings = settings;
             appEnvironment = (AppEnvironment)Enum.Parse(typeof(AppEnvironment), environment);
@@ -56,7 +56,7 @@ namespace OrderCloud.Integrations.Avalara
             baseUrl = this.settings.BaseApiUrl;
             if (hasAccountCredentials)
             {
-                avaTax = new AvaTaxClient("four51_headstart", "v1", "four51_headstart", new Uri(settings.BaseApiUrl)).WithSecurity(settings.AccountID, settings.LicenseKey);
+                avaTax = new AvaTaxClient("sitecore_headstart", "v1", "sitecore_headstart", new Uri(settings.BaseApiUrl)).WithSecurity(settings.AccountID, settings.LicenseKey);
             }
         }
 
