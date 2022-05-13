@@ -11,7 +11,6 @@ export class PDFService {
 
   async createAndSavePDF(orderID: string) {
     /*
-    Code taken largely from what Winmark uses for the Order Invoice PDF Download.
     There are different functions for whether or not the user is on Safari.
     */
 
@@ -95,7 +94,6 @@ export class PDFService {
     } finally {
       this.removeNodesOfClass(document, 'hidden-print-area')
     }
-
   }
 
   private removeNodesOfClass(parentObject: any, classToRemove: string): void {

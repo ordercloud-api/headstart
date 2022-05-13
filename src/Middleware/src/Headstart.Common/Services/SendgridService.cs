@@ -491,22 +491,6 @@ namespace Headstart.Common.Services
                         Message = OrderSubmitEmailConstants.GetOrderSubmitText(orderWorksheet.Order.ID, supplierOrderWorksheet.Order.FromUser.FirstName, supplierOrderWorksheet.Order.FromUser.LastName, VerifiedUserType.supplier),
                     };
 
-                    // SEB-Specific Data
-                    ((OrderTemplateData)supplierTemplateData.Data).BillTo = new Address()
-                    {
-                        CompanyName = "SEB Vendor Portal - BES",
-                        Street1 = "8646 Eagle Creek Circle",
-                        Street2 = "Suite 107",
-                        City = "Savage",
-                        State = "MN",
-                        Zip = "55378",
-                        Phone = "877-771-9123",
-                        xp =
-                        {
-                            Email = "accounting@sebvendorportal.com",
-                        },
-                    };
-
                     var supplierTos = new List<EmailAddress>();
                     foreach (var rcpt in supplier.xp.NotificationRcpts)
                     {
