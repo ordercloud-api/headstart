@@ -14,15 +14,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		nuget.config = nuget.config
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ordercloud.integrations.library", "integrations\ordercloud.integrations.library\ordercloud.integrations.library.csproj", "{854B7782-2147-4820-9237-86AE4FE741D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderCloud.Integrations.Library", "integrations\OrderCloud.Integrations.Library\OrderCloud.Integrations.Library.csproj", "{854B7782-2147-4820-9237-86AE4FE741D5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ordercloud.integrations.exchangerates", "integrations\ordercloud.integrations.exchangerates\ordercloud.integrations.exchangerates.csproj", "{D1C77C25-FC09-4E94-BF8A-35D55967ABE9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderCloud.Integrations.ExchangeRates", "integrations\OrderCloud.Integrations.ExchangeRates\OrderCloud.Integrations.ExchangeRates.csproj", "{D1C77C25-FC09-4E94-BF8A-35D55967ABE9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ordercloud.integrations.cardconnect", "integrations\ordercloud.integrations.cardconnect\ordercloud.integrations.cardconnect.csproj", "{5C320131-2000-4FCB-BCF6-0F8E62D52BCF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderCloud.Integrations.CardConnect", "integrations\OrderCloud.Integrations.CardConnect\OrderCloud.Integrations.CardConnect.csproj", "{5C320131-2000-4FCB-BCF6-0F8E62D52BCF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ordercloud.integrations.avalara", "integrations\ordercloud.integrations.avalara\ordercloud.integrations.avalara.csproj", "{818EB883-B66B-4B88-8267-9CF196D05D8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderCloud.Integrations.Avalara", "integrations\OrderCloud.Integrations.Avalara\OrderCloud.Integrations.Avalara.csproj", "{818EB883-B66B-4B88-8267-9CF196D05D8B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ordercloud.integrations.smartystreets", "integrations\ordercloud-integrations-smartystreets\ordercloud.integrations.smartystreets.csproj", "{237BAFE6-2F8B-418A-8A50-026885ABC4CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderCloud.Integrations.Smarty", "integrations\OrderCloud.Integrations.Smarty\OrderCloud.Integrations.Smarty.csproj", "{237BAFE6-2F8B-418A-8A50-026885ABC4CC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "smartystreets.tests", "tests\smartystreets.test\smartystreets.tests.csproj", "{DC1767FC-9E4C-4A2C-8B33-1D9596E0DACC}"
 EndProject
@@ -38,15 +38,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Headstart.Tests", "tests\He
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Integrations", "Integrations", "{CCAF8AD5-2FCC-46E0-82EF-2FCC0EEC8B16}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ordercloud.integrations.easypost", "integrations\ordercloud.integrations.easypost\ordercloud.integrations.easypost.csproj", "{DA2B1503-680A-44BA-B23D-0188BF282B2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderCloud.Integrations.EasyPost", "integrations\OrderCloud.Integrations.EasyPost\OrderCloud.Integrations.EasyPost.csproj", "{DA2B1503-680A-44BA-B23D-0188BF282B2E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "easypost.tests", "easypost.tests\easypost.tests.csproj", "{A5C99CFB-230B-4B94-9F3E-F2682BFA5D3B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Headstart.Jobs", "src\Headstart.Jobs\Headstart.Jobs.csproj", "{93F86722-0DA4-40E6-88F8-FB6C6EE5A27A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ordercloud.integrations.vertex", "integrations\ordercloud.integrations.vertex\ordercloud.integrations.vertex.csproj", "{FF77C6FA-058A-45E4-9D3D-A6D185892AEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderCloud.Integrations.Vertex", "integrations\OrderCloud.Integrations.Vertex\OrderCloud.Integrations.Vertex.csproj", "{FF77C6FA-058A-45E4-9D3D-A6D185892AEC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ordercloud.integrations.taxjar", "integrations\ordercloud.integrations.taxjar\ordercloud.integrations.taxjar.csproj", "{39EA02AA-FD2B-4FF5-9CF4-6215659894A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderCloud.Integrations.TaxJar", "integrations\OrderCloud.Integrations.TaxJar\OrderCloud.Integrations.TaxJar.csproj", "{39EA02AA-FD2B-4FF5-9CF4-6215659894A8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -8,12 +8,12 @@ using Headstart.Models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using Npoi.Mapper;
-using ordercloud.integrations.easypost;
-using ordercloud.integrations.exchangerates;
-using ordercloud.integrations.library;
+using OrderCloud.Integrations.EasyPost.Mappers;
+using OrderCloud.Integrations.ExchangeRates.Models;
+using OrderCloud.Integrations.Library.Attributes;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
-using IPartial = ordercloud.integrations.library.IPartial;
+using IPartial = OrderCloud.Integrations.Library.Models.IPartial;
 
 namespace Headstart.API.Commands
 {

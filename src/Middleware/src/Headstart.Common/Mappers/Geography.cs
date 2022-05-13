@@ -1,4 +1,4 @@
-﻿using ordercloud.integrations.exchangerates;
+﻿using OrderCloud.Integrations.ExchangeRates.Models;
 using System;
 
 namespace Headstart.Common.Mappers

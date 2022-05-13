@@ -6,14 +6,16 @@ using Headstart.Models.Headstart;
 using Headstart.Tests.Mocks;
 using NSubstitute;
 using NUnit.Framework;
-using ordercloud.integrations.cardconnect;
-using ordercloud.integrations.exchangerates;
+using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using OrderCloud.Integrations.CardConnect.Models;
+using Headstart.API.Commands;
+using OrderCloud.Integrations.ExchangeRates.Models;
 
 namespace Headstart.Tests
 {

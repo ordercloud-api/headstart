@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using ordercloud.integrations.cardconnect;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
+using Headstart.API.Commands;
+using OrderCloud.Integrations.CardConnect.Models;
 
 namespace Headstart.Common.Controllers.CardConnect
 {

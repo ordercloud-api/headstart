@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace ordercloud.integrations.library.helpers
+namespace Headstart.Common.Models
 {
     [AttributeUsage(AttributeTargets.Property)]
     public class DocIgnoreAttribute : Attribute

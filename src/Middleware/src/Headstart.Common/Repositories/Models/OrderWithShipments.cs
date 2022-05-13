@@ -1,8 +1,8 @@
 ﻿using Headstart.Models;
 using Headstart.Models.Extended;
-using ordercloud.integrations.easypost;
-using ordercloud.integrations.library;
 using System;
+using OrderCloud.Integrations.EasyPost.Mappers;
+using OrderCloud.Integrations.Library.Cosmos;
 
 namespace Headstart.Common.Models
 {

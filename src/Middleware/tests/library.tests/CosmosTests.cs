@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
 using Cosmonaut.Response;
 using NUnit.Framework;
-using ordercloud.integrations.library;
+using OrderCloud.Integrations.Library;
 
 namespace cosmos.tests
 {

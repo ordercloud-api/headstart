@@ -14,7 +14,8 @@ using NSubstitute.Extensions;
 using AutoFixture;
 using SendGrid;
 using Headstart.Common.Services.ShippingIntegration.Models;
-using ordercloud.integrations.library;
+using OrderCloud.Integrations.ExchangeRates.Models;
+using OrderCloud.Integrations.Library.Interfaces;
 
 namespace Headstart.Tests
 {
@@ -141,7 +142,7 @@ namespace Headstart.Tests
                             TestConstants.Supplier1ID,
                             TestConstants.Supplier2ID,
                         },
-                        Currency = ordercloud.integrations.exchangerates.CurrencySymbol.USD,
+                        Currency = CurrencySymbol.USD,
                     },
                     DateSubmitted = new DateTimeOffset(),
                 },

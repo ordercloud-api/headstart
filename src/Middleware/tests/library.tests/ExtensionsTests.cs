@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
-using ordercloud.integrations.library;
+using OrderCloud.Integrations.Library;
 
 namespace library.tests
 {

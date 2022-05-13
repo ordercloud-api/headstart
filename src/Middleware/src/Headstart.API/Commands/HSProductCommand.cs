@@ -7,7 +7,7 @@ using Headstart.Common;
 using Headstart.Common.Helpers;
 using Headstart.Common.Services.CMS;
 using Headstart.Models;
-using ordercloud.integrations.library.Cosmos;
+using OrderCloud.Integrations.Library.Cosmos;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 

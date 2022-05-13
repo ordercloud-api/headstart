@@ -1,6 +1,6 @@
 ﻿using Headstart.Common.Repositories.Models;
 using Microsoft.Azure.Cosmos;
-using ordercloud.integrations.library;
+using OrderCloud.Integrations.Library;
 
 namespace Headstart.Common.Repositories
 {

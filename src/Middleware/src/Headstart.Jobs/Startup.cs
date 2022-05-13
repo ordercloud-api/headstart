@@ -10,8 +10,8 @@ using Headstart.Common;
 using Headstart.Common.Services;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
-using ordercloud.integrations.cardconnect;
-using ordercloud.integrations.library;
+using OrderCloud.Integrations.CardConnect;
+using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
 using SendGrid;
 using Polly;
@@ -25,6 +25,7 @@ using Newtonsoft.Json;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Headstart.Common.Repositories;
+using OrderCloud.Integrations.Library.Cosmos;
 
 [assembly: FunctionsStartup(typeof(Startup))]
 

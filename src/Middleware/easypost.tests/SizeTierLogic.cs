@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
 using OrderCloud.SDK;
-using ordercloud.integrations.easypost;
+using OrderCloud.Integrations.EasyPost.Mappers;
 
 namespace easypost.tests
 {

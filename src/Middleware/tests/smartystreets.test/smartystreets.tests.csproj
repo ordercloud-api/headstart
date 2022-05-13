@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\integrations\ordercloud-integrations-smartystreets\ordercloud.integrations.smartystreets.csproj" />
+    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Smarty\OrderCloud.Integrations.Smarty.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,9 +1,8 @@
 ﻿using Cosmonaut.Attributes;
 using Newtonsoft.Json;
-using ordercloud.integrations.library;
 using System.Collections.Generic;
 using Newtonsoft.Json.Converters;
-using ordercloud.integrations.library.Cosmos;
+using OrderCloud.Integrations.Library.Cosmos;
 
 namespace Headstart.Common.Models
 {

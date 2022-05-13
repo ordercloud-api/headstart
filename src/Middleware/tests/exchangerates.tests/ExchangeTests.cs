@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 using Flurl.Http.Testing;
 using NSubstitute;
 using NUnit.Framework;
-using ordercloud.integrations.exchangerates;
-using ordercloud.integrations.library;
+using OrderCloud.Integrations.ExchangeRates;
+using OrderCloud.Integrations.Library;
 using AutoFixture;
 using Flurl.Http.Configuration;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.ExchangeRates.Models;
 
 namespace exchangerates.tests
 {

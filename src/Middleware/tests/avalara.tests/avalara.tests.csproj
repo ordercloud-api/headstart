@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\integrations\ordercloud.integrations.avalara\ordercloud.integrations.avalara.csproj" />
+    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Avalara\OrderCloud.Integrations.Avalara.csproj" />
   </ItemGroup>
 
 </Project>

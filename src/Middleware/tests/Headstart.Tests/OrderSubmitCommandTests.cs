@@ -3,7 +3,7 @@ using NSubstitute;
 using OrderCloud.SDK;
 using System.Collections.Generic;
 using Headstart.Common;
-using ordercloud.integrations.cardconnect;
+using OrderCloud.Integrations.CardConnect;
 using System.Threading.Tasks;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models.Headstart;
@@ -12,6 +12,7 @@ using System;
 using NSubstitute.ExceptionExtensions;
 using Headstart.API.Commands;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.CardConnect.Models;
 
 namespace Headstart.Tests
 {

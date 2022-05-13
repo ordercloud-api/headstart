@@ -16,12 +16,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using OrderCloud.SDK;
-using ordercloud.integrations.smartystreets;
-using ordercloud.integrations.easypost;
-using ordercloud.integrations.avalara;
-using ordercloud.integrations.cardconnect;
-using ordercloud.integrations.exchangerates;
-using ordercloud.integrations.library;
+using OrderCloud.Integrations.Smarty;
+using OrderCloud.Integrations.EasyPost;
+using OrderCloud.Integrations.EasyPost.Models;
+using OrderCloud.Integrations.Avalara;
+using OrderCloud.Integrations.CardConnect;
+using OrderCloud.Integrations.ExchangeRates;
+using OrderCloud.Integrations.Library;
 using SendGrid;
 using SmartyStreets;
 using System;
@@ -29,22 +30,22 @@ using System.Collections.Generic;
 using System.Net;
 using Microsoft.OpenApi.Models;
 using OrderCloud.Catalyst;
-using ordercloud.integrations.library.helpers;
 using Polly;
 using Polly.Extensions.Http;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Polly.Contrib.WaitAndRetry;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Converters;
-using ordercloud.integrations.library.cosmos_repo;
-using ordercloud.integrations.vertex;
+using OrderCloud.Integrations.Library.Cosmos;
+using OrderCloud.Integrations.Library.cosmos_repo;
+using OrderCloud.Integrations.Library.Interfaces;
+using OrderCloud.Integrations.Vertex;
 using Newtonsoft.Json;
-using ordercloud.integrations.taxjar;
-using ordercloud.integrations.library.intefaces;
+using OrderCloud.Integrations.TaxJar;
 using System.IO;
 using System.Linq;
-using ITaxCalculator = ordercloud.integrations.library.ITaxCalculator;
-using ITaxCodesProvider = ordercloud.integrations.library.intefaces.ITaxCodesProvider;
+using ITaxCalculator = OrderCloud.Integrations.Library.Interfaces.ITaxCalculator;
+using ITaxCodesProvider = OrderCloud.Integrations.Library.Interfaces.ITaxCodesProvider;
 
 namespace Headstart.API
 {
@@ -174,7 +175,7 @@ namespace Headstart.API
 
             services.AddMvc(o =>
              {
-                 o.Filters.Add(new ordercloud.integrations.library.ValidateModelAttribute());
+                 o.Filters.Add(new OrderCloud.Integrations.Library.Attributes.ValidateModelAttribute());
                  o.EnableEndpointRouting = false;
              })
             .ConfigureApiBehaviorOptions(o => o.SuppressModelStateInvalidFilter = true)

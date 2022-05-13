@@ -3,8 +3,8 @@ using Cosmonaut.Attributes;
 using Headstart.Common.Exceptions;
 using Microsoft.Azure.WebJobs;
 using Newtonsoft.Json.Linq;
-using ordercloud.integrations.library;
-using ordercloud.integrations.library.helpers;
+using OrderCloud.Integrations.Library.Attributes;
+using OrderCloud.Integrations.Library.Cosmos;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Models

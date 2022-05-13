@@ -1,8 +1,9 @@
-using ordercloud.integrations.cardconnect;
-using ordercloud.integrations.library;
-using ordercloud.integrations.smartystreets;
-using ordercloud.integrations.taxjar;
-using ordercloud.integrations.vertex;
+using OrderCloud.Integrations.CardConnect;
+using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.Library.Cosmos;
+using OrderCloud.Integrations.Smarty;
+using OrderCloud.Integrations.TaxJar;
+using OrderCloud.Integrations.Vertex;
 
 namespace Headstart.Common
 {

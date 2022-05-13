@@ -3,7 +3,9 @@ using System.Threading.Tasks;
 using Flurl.Http.Configuration;
 using Flurl.Http.Testing;
 using NUnit.Framework;
-using ordercloud.integrations.cardconnect;
+using OrderCloud.Integrations.CardConnect;
+using OrderCloud.Integrations.CardConnect.Mappers;
+using OrderCloud.Integrations.CardConnect.Models;
 
 namespace CardConnect.Tests
 {

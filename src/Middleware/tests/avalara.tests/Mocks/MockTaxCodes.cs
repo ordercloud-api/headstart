@@ -1,5 +1,5 @@
 ﻿using Avalara.AvaTax.RestClient;
-using ordercloud.integrations.library.intefaces;
+using OrderCloud.Integrations.Library.Interfaces;
 using System;
 using System.Collections.Generic;
 

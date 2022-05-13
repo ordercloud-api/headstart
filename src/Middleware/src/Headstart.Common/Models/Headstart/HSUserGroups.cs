@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using ordercloud.integrations.exchangerates;
+using OrderCloud.Integrations.ExchangeRates.Models;
 using OrderCloud.SDK;
 using System.Collections.Generic;
 

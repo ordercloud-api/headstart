@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
-using ordercloud.integrations.library;
 using System.Collections.Generic;
 using Newtonsoft.Json.Converters;
 using System;
 using Headstart.Models.Headstart;
+using OrderCloud.Integrations.Library.Cosmos;
 
 namespace Headstart.Common.Models
 {

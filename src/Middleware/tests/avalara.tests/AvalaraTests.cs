@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using ordercloud.integrations.avalara;
+using OrderCloud.Integrations.Avalara;
 using OrderCloud.SDK;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\integrations\ordercloud.integrations.easypost\ordercloud.integrations.easypost.csproj" />
+    <ProjectReference Include="..\integrations\OrderCloud.Integrations.EasyPost\OrderCloud.Integrations.EasyPost.csproj" />
   </ItemGroup>
 
 </Project>
