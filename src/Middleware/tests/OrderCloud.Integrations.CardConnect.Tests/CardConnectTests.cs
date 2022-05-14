@@ -159,7 +159,7 @@ namespace OrderCloud.Integrations.CardConnect.Tests
         }
 
         [Test]
-        [TestCase(@"{'respstat': 'A', 'respcode': '0', 'authcode': 'REVERS'}", ResponseStatus.Approved)]
+        [TestCase(@"{'respstat': 'A', 'respcode': '0', 'authcode': 'REVERS'}")]
         public async Task VoidAuthorization_WithSuccessfulResponse_ReturnsSuccessfulResponse(string body)
         {
             // Arrange
