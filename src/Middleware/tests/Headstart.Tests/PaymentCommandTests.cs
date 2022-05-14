@@ -42,7 +42,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_delete_stale_payments()
+        public async Task SavePayments_WithStalePayments_RemovesStalePayments()
         {
             // Arrange
             var mockedCreditCardTotal = 20;
@@ -60,7 +60,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_handle_new_cc_payment()
+        public async Task SavePayments_WithNewCreditCardPayment_CallsOrderCloudPayment()
         {
             // Arrange
             var mockedCreditCardTotal = 20;
@@ -78,11 +78,8 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_handle_same_cc_different_amount()
+        public async Task SavePayments_WithUpdatedCreditCardPaymentAmount_VoidsExistingTransaction()
         {
-            // if the credit card hasn't changed but the amount has
-            // then we should void any existing transactions if necessary and update the payment
-
             // Arrange
             var mockedCreditCardTotal = 20;
             var existing = PaymentMocks.PaymentList(PaymentMocks.CCPayment(creditcard1, 30));

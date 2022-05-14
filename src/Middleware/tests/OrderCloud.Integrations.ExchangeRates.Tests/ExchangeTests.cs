@@ -33,17 +33,23 @@ namespace OrderCloud.Integrations.ExchangeRates.Tests
         }
 
         [Test]
-        public async Task map_raw_api_rates_test()
+        public async Task Get_WithEURCurrency_ReturnsMappedRates()
         {
+            // Arrange
+
+            // Act
             var rates = await command.Get(CurrencySymbol.EUR);
+
+            // Assert
             Assert.IsTrue(rates.BaseSymbol == CurrencySymbol.EUR);
             Assert.IsTrue(rates.Rates.Count(r => r.Rate == 0) == 0); // make sure any errors in returned data (null rate for EUR) is set to 1
             Assert.IsFalse(rates.Rates.Any(r => r.Icon == null));
         }
 
         [Test]
-        public void has_filtered_symbols()
+        public void Filter_WithValidArguments_ReturnsFilteredResults()
         {
+            // Arrange
             var args = new ListArgs<OrderCloudIntegrationsConversionRate>()
             {
                 Filters = new List<ListFilter>()
@@ -56,7 +62,11 @@ namespace OrderCloud.Integrations.ExchangeRates.Tests
                 BaseSymbol = CurrencySymbol.EUR,
                 Rates = GetRates(),
             };
+
+            // Act
             var filtered = command.Filter(args, rates);
+
+            // Assert
             Assert.IsTrue(filtered.Meta.TotalCount == 2);
             Assert.IsTrue(filtered.Items.Count == 2);
             Assert.IsTrue(filtered.Items.Any(i => i.Currency == CurrencySymbol.USD));
@@ -65,7 +75,7 @@ namespace OrderCloud.Integrations.ExchangeRates.Tests
         }
 
         [Test]
-        public async Task conversion_rate_by_currency()
+        public async Task ConvertCurrency_WithValidArguments_ReturnsCalculatedValue()
         {
             // Arrange
             var baseCurrency = CurrencySymbol.EUR;

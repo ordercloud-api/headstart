@@ -13,7 +13,7 @@ namespace Headstart.Tests
         [TestCase("A@10123456")] // missing lower case
         [TestCase("Aa@abcdefg")] // missing number
         [TestCase("Aa10123456")] // missing special character
-        public void initial_admin_password_does_not_meet_minimum_requirements_fails_validation(string password)
+        public void InitialAdminPassword_DoesNotMeetMinimumRequirements_FailsValidation(string password)
         {
             // Arrange
             var seed = new EnvironmentSeed()
@@ -35,7 +35,7 @@ namespace Headstart.Tests
 
         [Test]
         [TestCase("Aa@1012345")]
-        public void initial_admin_password_meets_minimum_requirements_passes_validation(string password)
+        public void InitialAdminPassword_MeetsMinimumRequirements_PassesValidation(string password)
         {
             // Arrange
             var seed = new EnvironmentSeed()
@@ -57,7 +57,7 @@ namespace Headstart.Tests
 
         [Test]
         [TestCase("other")]
-        public void region_not_in_value_range_fails_validation(string region)
+        public void Region_NotInValueRange_FailsValidation(string region)
         {
             // Arrange
             var seed = new EnvironmentSeed()
@@ -85,7 +85,7 @@ namespace Headstart.Tests
         [TestCase("Europe-West")]
         [TestCase("Japan-East")]
         [TestCase("US-West")]
-        public void region_in_value_range_passes_validation(string region)
+        public void Region_InValueRange_PassesValidation(string region)
         {
             // Arrange
             var seed = new EnvironmentSeed()

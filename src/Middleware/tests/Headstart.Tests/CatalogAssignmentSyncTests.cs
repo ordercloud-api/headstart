@@ -70,6 +70,8 @@ namespace Headstart.Tests
 
             // Act
             await sut.SyncUserCatalogAssignments(buyerID, userID);
+
+            // Assert
             await oc.UserGroups.Received().SaveUserAssignmentAsync(buyerID, Arg.Is<UserGroupAssignment>(ass => ass.UserGroupID == catalogID1 && ass.UserID == userID));
             await oc.UserGroups.Received().DeleteUserAssignmentAsync(buyerID, catalogID2, userID);
         }
@@ -114,6 +116,8 @@ namespace Headstart.Tests
 
             // Act
             await sut.SyncUserCatalogAssignments(buyerID, userID);
+
+            // Assert
             await oc.UserGroups.DidNotReceive().SaveUserAssignmentAsync(buyerID, Arg.Is<UserGroupAssignment>(ass => ass.UserGroupID == catalogID1 && ass.UserID == userID));
         }
     }

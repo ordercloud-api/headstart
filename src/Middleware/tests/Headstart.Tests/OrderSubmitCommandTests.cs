@@ -49,7 +49,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public void should_throw_if_order_is_already_submitted()
+        public void SubmitOrderAsync_WithSubmittedOrder_ThrowsAlreadySubmittedError()
         {
             // Arrange
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, "mockOrderID").Returns(Task.FromResult(new HSOrderWorksheet
@@ -65,7 +65,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public void should_throw_if_order_is_missing_shipping_selections()
+        public void SubmitOrderAsync_WithoutShippingSelections_ThrowsMissingShippingSelectionsError()
         {
             // Arrange
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, "mockOrderID").Returns(Task.FromResult(new HSOrderWorksheet
@@ -95,7 +95,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public void should_throw_if_has_standard_lines_and_missing_payment()
+        public void SubmitOrderAsync_WithoutPayment_ThrowsMissingPaymentError()
         {
             // Arrange
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, "mockOrderID").Returns(Task.FromResult(new HSOrderWorksheet
@@ -134,7 +134,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_not_increment_orderid_if_is_resubmitting()
+        public async Task SubmitOrderAsync_IsResubmitted_DoesNotIncrementOrderID()
         {
             // Arrange
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, "mockOrderID").Returns(Task.FromResult(new HSOrderWorksheet
@@ -173,46 +173,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_not_increment_orderid_if_is_already_incremented()
-        {
-            // Arrange
-            oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, "mockOrderID").Returns(Task.FromResult(new HSOrderWorksheet
-            {
-                Order = new HSOrder { ID = "SEBmockOrderID", IsSubmitted = false, xp = new OrderXp { } },
-                ShipEstimateResponse = new HSShipEstimateResponse
-                {
-                    ShipEstimates = new List<HSShipEstimate>()
-                    {
-                        new HSShipEstimate
-                        {
-                            SelectedShipMethodID = "FEDEX_GROUND",
-                        },
-                    },
-                },
-                LineItems = new List<HSLineItem>()
-                {
-                    new HSLineItem
-                    {
-                        Product = new HSLineItemProduct
-                        {
-                            xp = new ProductXp
-                            {
-                                ProductType = ProductType.Standard,
-                            },
-                        },
-                    },
-                },
-            }));
-
-            // Act
-            await sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new OrderCloudIntegrationsCreditCardPayment(), "mockUserToken");
-
-            // Assert
-            await oc.Orders.DidNotReceive().PatchAsync(OrderDirection.Incoming, "mockOrderID", Arg.Any<PartialOrder>());
-        }
-
-        [Test]
-        public async Task should_increment_orderid_if_has_not_been_incremented_and_is_not_resubmit()
+        public async Task SubmitOrderAsync_IsNotResubmitted_IncrementsOrderID()
         {
             // Arrange
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, "mockOrderID").Returns(Task.FromResult(new HSOrderWorksheet
@@ -251,7 +212,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_capture_credit_card_payment_if_has_standard_lineitems()
+        public async Task SubmitOrderAsync_HasCreditCardPayment_AuthorizesPayment()
         {
             // Arrange
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, "mockOrderID").Returns(Task.FromResult(new HSOrderWorksheet
@@ -290,7 +251,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_void_payment_if_error_on_submit()
+        public async Task SubmitOrderAsync_ExceptionCaughtDuringOrderCloudSubmit_VoidsPayment()
         {
             // Arrange
             oc.Orders.SubmitAsync<HSOrder>(Arg.Any<OrderDirection>(), Arg.Any<string>(), Arg.Any<string>()).Throws(new Exception("Some error"));
@@ -332,7 +293,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_use_usd_merchant_when_appropriate()
+        public async Task SubmitOrderAsync_WithUSDCurrency_CallsAuthorizePaymentWithUSDMechant()
         {
             // Arrange
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, "mockOrderID").Returns(Task.FromResult(new HSOrderWorksheet
@@ -371,7 +332,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_use_cad_merchant_when_appropriate()
+        public async Task SubmitOrderAsync_WithCADCurrency_CallsAuthorizePaymentWithCADMechant()
         {
             // Arrange
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, "mockOrderID").Returns(Task.FromResult(new HSOrderWorksheet
@@ -410,7 +371,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_use_eur_merchant_when_appropriate()
+        public async Task SubmitOrderAsync_WithEURCurrency_CallsAuthorizePaymentWithEURMechant()
         {
             // use eur merchant account when currency is not USD and not CAD
 
@@ -451,10 +412,8 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_handle_direction_outgoing()
+        public async Task SubmitOrderAsync_WithOutgoingOrderDirection_CallsOrderCloudSubmitWithMatchingOrderDirection()
         {
-            // call order submit with direction outgoing
-
             // Arrange
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, "mockOrderID").Returns(Task.FromResult(new HSOrderWorksheet
             {
@@ -492,7 +451,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_handle_direction_incoming()
+        public async Task SubmitOrderAsync_WithIngoingOrderDirection_CallsOrderCloudSubmitWithMatchingOrderDirection()
         {
             // call order submit with direction incoming
 

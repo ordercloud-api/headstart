@@ -48,10 +48,10 @@ namespace Headstart.Common.Extensions
 
             foreach (var shipEstimate in shipEstimates)
             {
-                var supplierID = orderWorksheet.LineItems.FirstOrDefault(li => li.ID == shipEstimate.ShipEstimateItems.FirstOrDefault()?.LineItemID)?.SupplierID;
-                var supplier = suppliers.Items.FirstOrDefault(s => s.ID == supplierID);
-                var supplierLineItems = orderWorksheet.GetBuyerLineItemsBySupplierID(supplier?.ID);
-                var supplierSubTotal = supplierLineItems?.Select(li => li.LineSubtotal).Sum();
+                // var supplierID = orderWorksheet.LineItems.FirstOrDefault(li => li.ID == shipEstimate.ShipEstimateItems.FirstOrDefault()?.LineItemID)?.SupplierID;
+                // var supplier = suppliers.Items.FirstOrDefault(s => s.ID == supplierID);
+                // var supplierLineItems = orderWorksheet.GetBuyerLineItemsBySupplierID(supplier?.ID);
+                // var supplierSubTotal = supplierLineItems?.Select(li => li.LineSubtotal).Sum();
 
                 // TODO: Still waiting on decision makers to decide if we want
                 // Shipping Cost Schedules in HeadStart

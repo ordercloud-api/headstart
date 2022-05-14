@@ -25,8 +25,10 @@ namespace Headstart.Tests
             oc.Suppliers.ListAsync<HSSupplier>().ReturnsForAnyArgs(SupplierMocks.SupplierList(MockSupplier("010"), MockSupplier("012"), MockSupplier("027"), MockSupplier("100")));
         }
 
-        public async Task default_shipping_for_no_rates()
+        [Test]
+        public async Task ApplyShippingLogic_WithNoRates_ReturnsDefaultShipping()
         {
+            // Arrange
             var shipItem1 = new ShipEstimateItem
             {
                 LineItemID = "Line1",
@@ -39,7 +41,12 @@ namespace Headstart.Tests
             };
             var worksheet = BuildOrderWorksheet(new HSLineItem[] { line1 });
             var estimates = BuildEstimates(new HSShipMethod[] { }, new[] { shipItem1 });
-            var result = await estimates.CheckForEmptyRates(20, 5).ApplyShippingLogic(worksheet, oc, FreeShippingDays);
+            estimates = estimates.CheckForEmptyRates(20, 5);
+
+            // Act
+            var result = await estimates.ApplyShippingLogic(worksheet, oc, FreeShippingDays);
+
+            // Assert
             var methods = result[0].ShipMethods;
 
             Assert.AreEqual(1, methods.Count());
@@ -47,8 +54,9 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task free_shipping_for_free_shiping_line_items()
+        public async Task ApplyShippingLogic_WithFreeShippingLineItems_ReturnsFreeShipping()
         {
+            // Arrange
             var shipItem1 = new ShipEstimateItem
             {
                 LineItemID = "Line1",
@@ -66,7 +74,12 @@ namespace Headstart.Tests
             };
             var worksheet = BuildOrderWorksheet(new HSLineItem[] { line1 });
             var estimates = BuildEstimates(new[] { method1 }, new[] { shipItem1 });
-            var result = await estimates.CheckForEmptyRates(20, 5).ApplyShippingLogic(worksheet, oc, FreeShippingDays);
+            estimates = estimates.CheckForEmptyRates(20, 5);
+
+            // Act
+            var result = await estimates.ApplyShippingLogic(worksheet, oc, FreeShippingDays);
+
+            // Assert
             var methods = result[0].ShipMethods;
 
             Assert.AreEqual(1, methods.Count());
@@ -75,8 +88,9 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task shipping_ignore_nongroundAsync()
+        public async Task ApplyShippingLogic_WithStandardLineItems_ReturnsStandardOvernightShipping()
         {
+            // Arrange
             // don't transform methods if they aren't ground
             var shipItem1 = new ShipEstimateItem
             {
@@ -97,7 +111,11 @@ namespace Headstart.Tests
             };
             var worksheet = BuildOrderWorksheet(new HSLineItem[] { line1 });
             var estimates = BuildEstimates(new[] { method1 }, new[] { shipItem1 });
+
+            // Act
             var result = await estimates.ApplyShippingLogic(worksheet, oc, FreeShippingDays);
+
+            // Assert
             var methods = result[0].ShipMethods;
 
             Assert.AreEqual(1, methods.Count());
@@ -105,38 +123,7 @@ namespace Headstart.Tests
             Assert.AreEqual(method1.Name, methods[0].Name);
         }
 
-        [Test]
-        public async Task shipping_ignore_zerocostAsync()
-        {
-            // don't transform methods if they are zero cost
-            var shipItem1 = new ShipEstimateItem
-            {
-                LineItemID = "Line1",
-            };
-            var line1 = new HSLineItem
-            {
-                ID = "Line1",
-                LineSubtotal = 0,
-                SupplierID = "027",
-            };
-            var method1 = new HSShipMethod
-            {
-                Name = "FEDEX_GROUND",
-                EstimatedTransitDays = 3,
-                Cost = 60,
-                xp = new ShipMethodXP { },
-            };
-            var worksheet = BuildOrderWorksheet(new HSLineItem[] { line1 });
-            var estimates = BuildEstimates(new[] { method1 }, new[] { shipItem1 });
-            var result = await estimates.ApplyShippingLogic(worksheet, oc, FreeShippingDays);
-            var methods = result[0].ShipMethods;
-
-            Assert.AreEqual(1, methods.Count());
-            Assert.AreEqual(method1.Cost, methods[0].Cost);
-            Assert.AreEqual(method1.Name, methods[0].Name);
-        }
-
-        private List<HSShipEstimate> BuildEstimates(HSShipMethod[] shipMethods, ShipEstimateItem[] shipItems = null, string id = "mockID")
+        private IList<HSShipEstimate> BuildEstimates(HSShipMethod[] shipMethods, ShipEstimateItem[] shipItems = null, string id = "mockID")
         {
             return new List<HSShipEstimate>
             {

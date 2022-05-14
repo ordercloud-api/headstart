@@ -71,7 +71,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public void should_throw_if_no_payments()
+        public void AuthorizePayment_WithNoPayments_ThrowsMissingCreditCardPaymentError()
         {
             // Arrange
             oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
@@ -86,11 +86,8 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_skip_auth_if_payment_valid()
+        public async Task AuthorizePayment_PaymentAcceptedMatchingOrderTotal_ShoudNotAuthorize()
         {
-            // If a payment has already been accepted and is equal to the
-            // order total then don't auth again
-
             // Arrange
             oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
                 .Returns(Task.FromResult(PaymentMocks.PaymentList(PaymentMocks.CCPayment("creditcardid1", 38))));
@@ -105,12 +102,10 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_void_if_accepted_but_not_valid()
+        public async Task AuthorizePayment_PaymentAcceptedDoesNotMatchOrderTotal_VoidsAuthorization()
         {
-            // if a payment is accepted but doesn't match order total than we need to void before authorizing again for new amount
-            var paymentTotal = 30; // credit card total is 38
-
             // Arrange
+            var paymentTotal = 30; // credit card total is 38
             var payment1transactions = new List<HSPaymentTransaction>()
             {
                 new HSPaymentTransaction
@@ -143,13 +138,10 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_handle_existing_voids()
+        public async Task AuthorizePayment_PaymentAcceptedDoesNotMatchOrderTotalAndMultipleTransactions_VoidsAuthorization()
         {
-            // in a scenario where a void has already been processed on the payment
-            // we want to make sure to only try to void the last successful transaction of type "CreditCard"
-            var paymentTotal = 30; // credit card total is 38
-
             // Arrange
+            var paymentTotal = 30; // credit card total is 38
             var payment1transactions = new List<HSPaymentTransaction>()
             {
                 new HSPaymentTransaction
@@ -208,12 +200,10 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_handle_existing_voids_us()
+        public async Task AuthorizePayment_USDPaymentAcceptedDoesNotMatchOrderTotalAndMultipleTransactions_VoidsAuthorization()
         {
-            // same as should_handle_existing_voids but handle usd merchant
-            var paymentTotal = 30; // credit card total is 38
-
             // Arrange
+            var paymentTotal = 30; // credit card total is 38
             var payment1transactions = new List<HSPaymentTransaction>()
             {
                 new HSPaymentTransaction
@@ -276,13 +266,13 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_still_create_transaction_on_failed_auths()
+        public async Task AuthorizePayment_WithFailedAuthorization_CallsPaymentTransaction()
         {
             // this gives us full insight into transaction history
             // as well as sets Accepted to false
-            var paymentTotal = 38; // credit card total is 38
 
             // Arrange
+            var paymentTotal = 38; // credit card total is 38
             var payment1transactions = new List<HSPaymentTransaction>()
             {
                 new HSPaymentTransaction
@@ -321,7 +311,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_handle_failed_auth_void()
+        public async Task AuthorizePayment_ThrowsExceptionInVoidAuthorization_CallsPaymentTransaction()
         {
             // creates a new transaction when auth fails which
             // gives us full insight into transaction history as well as sets Accepted to false
