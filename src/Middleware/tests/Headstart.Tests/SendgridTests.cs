@@ -37,8 +37,9 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task TestOrderSubmitEmail()
+        public async Task SendOrderSubmitEmail_WithValidWorksheet_SendsEmailNotifications()
         {
+            // Arrange
             var orderWorksheet = GetOrderWorksheet();
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, $"{TestConstants.OrderID}-{TestConstants.Supplier1ID}").Returns(GetSupplierWorksheet(TestConstants.Supplier1ID, TestConstants.LineItem1ID, TestConstants.LineItem1Total));
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, $"{TestConstants.OrderID}-{TestConstants.Supplier2ID}").Returns(GetSupplierWorksheet(TestConstants.Supplier2ID, TestConstants.LineItem2ID, TestConstants.LineItem2Total));
@@ -48,10 +49,6 @@ namespace Headstart.Tests
             commandSub.Configure().WhenForAnyArgs(x => x.SendSingleTemplateEmailMultipleRcpts(default, default, default, default)).DoNotCallBase();
             commandSub.Configure().WhenForAnyArgs(x => x.SendSingleTemplateEmail(default, default, default, default)).DoNotCallBase();
 
-            // act
-            await commandSub.SendOrderSubmitEmail(orderWorksheet);
-
-            // assert
             var expectedSellerEmailList = new List<EmailAddress>()
             {
                 new EmailAddress() { Email = TestConstants.SellerUser1email },
@@ -67,7 +64,11 @@ namespace Headstart.Tests
                 new EmailAddress() { Email = TestConstants.Supplier2NotificationRcpts[0] },
             };
 
-            // confirm emails sent to buyer, seller users, supplier 1 notification recipients, supplier 2 notification recipients
+            // Act
+            await commandSub.SendOrderSubmitEmail(orderWorksheet);
+
+            // Assert
+            // Confirm emails sent to buyer, seller users, supplier 1 notification recipients, supplier 2 notification recipients
             await commandSub.Configure().Received().SendSingleTemplateEmail(Arg.Any<string>(), TestConstants.BuyerEmail, Arg.Any<string>(), Arg.Any<object>());
             await commandSub.Configure().Received().SendSingleTemplateEmailMultipleRcpts(Arg.Any<string>(), Arg.Is<List<EmailAddress>>(x => EqualEmailLists(x, expectedSellerEmailList)), Arg.Any<string>(), Arg.Any<object>());
             await commandSub.Configure().Received().SendSingleTemplateEmailMultipleRcpts(Arg.Any<string>(), Arg.Is<List<EmailAddress>>(x => EqualEmailLists(x, expectedSupplier1EmailList)), Arg.Any<string>(), Arg.Any<object>());

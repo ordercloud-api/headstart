@@ -16,18 +16,18 @@ namespace Headstart.Tests
     public class PromotionCommandTests
     {
         [Test, AutoNSubstituteData]
-        public async Task should_add_all_promos(
+        public async Task AutoApplyPromotions_WithValidOrderID_AddsAllAutomaticPromotionsToOrder(
             [Frozen] IOrderCloudClient oc,
             PromotionCommand sut,
             string orderID,
             Task<ListPage<Promotion>> promoList,
-            Task<ListPage<OrderPromotion>> orderpromolist)
+            Task<ListPage<OrderPromotion>> orderPromoList)
         {
             // Arrange
             oc.Promotions.ListAsync()
                 .ReturnsForAnyArgs(promoList);
             oc.Orders.ListPromotionsAsync(OrderDirection.Incoming, orderID, pageSize: 100)
-                .Returns(orderpromolist);
+                .Returns(orderPromoList);
 
             // Act
             await sut.AutoApplyPromotions(orderID);
@@ -40,43 +40,43 @@ namespace Headstart.Tests
         }
 
         [Test, AutoNSubstituteData]
-        public async Task should_remove_all_promos(
+        public async Task AutoApplyPromotions_WithValidOrderID_RemovesExistingAutomaticPromotionsToOrder(
             [Frozen] IOrderCloudClient oc,
             PromotionCommand sut,
             string orderID,
             Task<ListPage<Promotion>> promoList,
-            Task<ListPage<OrderPromotion>> orderpromolist)
+            Task<ListPage<OrderPromotion>> orderPromoList)
         {
             // Arrange
             oc.Promotions.ListAsync()
                 .ReturnsForAnyArgs(promoList);
             oc.Orders.ListPromotionsAsync(OrderDirection.Incoming, orderID, pageSize: 100)
-                .Returns(orderpromolist);
+                .Returns(orderPromoList);
 
             // Act
             await sut.AutoApplyPromotions(orderID);
 
             // Assert
-            foreach (var promo in orderpromolist.Result.Items)
+            foreach (var promo in orderPromoList.Result.Items)
             {
                 await oc.Orders.Received().RemovePromotionAsync(OrderDirection.Incoming, orderID, promo.Code);
             }
         }
 
         [Test, AutoNSubstituteData]
-        public async Task should_remove_all_distinct_promos(
+        public async Task AutoApplyPromotions_WithValidOrderID_RemovesMultiLinePromotionsOnce(
             [Frozen] IOrderCloudClient oc,
             PromotionCommand sut,
             string orderID,
             Task<ListPage<Promotion>> promoList,
-            ListPage<OrderPromotion> orderpromolist)
+            ListPage<OrderPromotion> orderPromoList)
         {
             // a line item promo may be applied multiple times on an order (once for each line item)
             // we only want to remove that promo once else we'll get 404's
             // https://four51.atlassian.net/browse/SEB-1825
 
             // Arrange
-            orderpromolist.Items = orderpromolist.Items.Select(p =>
+            orderPromoList.Items = orderPromoList.Items.Select(p =>
             {
                 p.ID = "PROMO1";
                 p.Code = "PROMOCODE1";
@@ -85,7 +85,7 @@ namespace Headstart.Tests
             oc.Promotions.ListAsync()
                 .ReturnsForAnyArgs(promoList);
             oc.Orders.ListPromotionsAsync(OrderDirection.Incoming, orderID, pageSize: 100)
-                .Returns(orderpromolist.ToTask());
+                .Returns(orderPromoList.ToTask());
 
             // Act
             await sut.AutoApplyPromotions(orderID);
@@ -95,13 +95,13 @@ namespace Headstart.Tests
         }
 
         [Test, AutoNSubstituteData]
-        public void should_throw_if_any_errors_removing_promotions(
+        public void AutoApplyPromotions_ErrorsDuringRemovingPromotions_ThrowsException(
             [Frozen] IOrderCloudClient oc,
             PromotionCommand sut,
             string orderID,
             Task<ListPage<Promotion>> promoList,
-            Task<Order> promo1result,
-            Task<ListPage<OrderPromotion>> orderpromolist)
+            Task<Order> promo1Result,
+            Task<ListPage<OrderPromotion>> orderPromoList)
         {
             // Arrange
             var fixture = new Fixture();
@@ -109,10 +109,10 @@ namespace Headstart.Tests
             oc.Promotions.ListAsync()
                 .ReturnsForAnyArgs(promoList);
             oc.Orders.ListPromotionsAsync(OrderDirection.Incoming, orderID, pageSize: 100)
-                .Returns(orderpromolist);
+                .Returns(orderPromoList);
             oc.Orders.RemovePromotionAsync(OrderDirection.Incoming, orderID, Arg.Any<string>())
                 .Returns(
-                    promo1result,
+                    promo1Result,
                     Task.FromException<Order>(new Exception("mockerror1")),
                     Task.FromException<Order>(new Exception("mockerror2")));
 
@@ -133,12 +133,12 @@ namespace Headstart.Tests
             }
         }
 
-        public async Task should_not_throw_if_errors_adding_promotions(
+        public async Task AutoApplyPromotions_ErrorsDuringAddingPromotions_DoesNotThrowException(
             [Frozen] IOrderCloudClient oc,
             PromotionCommand sut,
             string orderID,
             Task<ListPage<Promotion>> promoList,
-            Task<ListPage<OrderPromotion>> orderpromolist,
+            Task<ListPage<OrderPromotion>> orderPromoList,
             Task<Order> removePromoResult,
             Task<Order> addPromoResult)
         {
@@ -146,9 +146,9 @@ namespace Headstart.Tests
             var fixture = new Fixture();
             oc.Promotions.ListAsync()
                 .ReturnsForAnyArgs(promoList);
-            orderpromolist.Result.Items = fixture.CreateMany<OrderPromotion>(3).ToList();
+            orderPromoList.Result.Items = fixture.CreateMany<OrderPromotion>(3).ToList();
             oc.Orders.ListPromotionsAsync(OrderDirection.Incoming, orderID, pageSize: 100)
-                .Returns(orderpromolist);
+                .Returns(orderPromoList);
             oc.Orders.RemovePromotionAsync(OrderDirection.Incoming, orderID, Arg.Any<string>())
                 .Returns(removePromoResult);
             oc.Orders.RemovePromotionAsync(OrderDirection.Incoming, orderID, Arg.Any<string>())
@@ -166,7 +166,7 @@ namespace Headstart.Tests
                 await oc.Orders.Received().AddPromotionAsync(OrderDirection.Incoming, orderID, promo.Code);
             }
 
-            foreach (var promo in orderpromolist.Result.Items)
+            foreach (var promo in orderPromoList.Result.Items)
             {
                 await oc.Orders.Received().RemovePromotionAsync(OrderDirection.Incoming, orderID, promo.Code);
             }
