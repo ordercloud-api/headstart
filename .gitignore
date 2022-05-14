@@ -287,6 +287,7 @@ __pycache__/
 *.odx.cs
 *.xsd.cs
 appSettings.json
+src/Winmark.Integrations.WebJob/*.json
 tests//TestData/*.json
 tests/TestData/output/*
 
@@ -299,3 +300,4 @@ src/Middleware/ngrok.exe
 
 .DS_Store
 .env
+*.bak

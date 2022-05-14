@@ -2,11 +2,11 @@
 
 namespace Headstart.Models
 {
-    public class HSCostCenter : CostCenter<CostCenterXp>, IHSObject
-    {
-    }
+	public class HSCostCenter : CostCenter<CostCenterXp>, IHSObject
+	{
+	}
 
-    public class CostCenterXp
-    {
-    }
+	public class CostCenterXp
+	{
+	}
 }

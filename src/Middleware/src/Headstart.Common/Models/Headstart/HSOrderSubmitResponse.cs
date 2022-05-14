@@ -5,37 +5,37 @@ using Newtonsoft.Json.Converters;
 
 namespace Headstart.Models.Headstart
 {
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum ProcessType
-    {
-        Patching,
-        Forwarding,
-        Notification,
-        Accounting,
-        Tax,
-        Shipping,
-    }
+	[JsonConverter(typeof(StringEnumConverter))]
+	public enum ProcessType
+	{
+		Patching,
+		Forwarding,
+		Notification,
+		Accounting,
+		Tax,
+		Shipping,
+	}
 
-    public class OrderSubmitResponseXp
-    {
-        public List<ProcessResult> ProcessResults { get; set; }
-    }
+	public class OrderSubmitResponseXp
+	{
+		public List<ProcessResult> ProcessResults { get; set; }
+	}
 
-    public class ProcessResult
-    {
-        public ProcessType Type { get; set; }
+	public class ProcessResult
+	{
+		public ProcessType Type { get; set; }
 
-        public List<ProcessResultAction> Activity { get; set; } = new List<ProcessResultAction>();
-    }
+		public List<ProcessResultAction> Activity { get; set; } = new List<ProcessResultAction>();
+	}
 
-    public class ProcessResultAction
-    {
-        public ProcessType ProcessType { get; set; }
+	public class ProcessResultAction
+	{
+		public ProcessType ProcessType { get; set; }
 
-        public string Description { get; set; }
+		public string Description { get; set; }
 
-        public bool Success { get; set; }
+		public bool Success { get; set; }
 
-        public ProcessResultException Exception { get; set; }
-    }
+		public ProcessResultException Exception { get; set; }
+	}
 }

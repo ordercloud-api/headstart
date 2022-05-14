@@ -50,7 +50,6 @@ namespace Headstart.Jobs.Helpers
                 {
                     delimiter = " | ";
                 }
-
                 // Promotions always have values for these fields
                 reportFormattedPromoData.PromoCode += delimiter + promo.Code;
                 reportFormattedPromoData.SupplierSpecific += delimiter + promo.xp?.ScopeToSupplier.ToString().ToLower();
@@ -61,7 +60,6 @@ namespace Headstart.Jobs.Helpers
                 {
                     delimiter = string.Empty;
                 }
-
                 // Field could be null
                 reportFormattedPromoData.PromoSupplierName += delimiter + promo.xp?.Supplier;
             }

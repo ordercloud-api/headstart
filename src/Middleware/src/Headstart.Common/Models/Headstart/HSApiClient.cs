@@ -2,12 +2,12 @@
 
 namespace Headstart.Common.Models
 {
-    public class HSApiClient : ApiClient<ApiClientXP>
-    {
-    }
+	public class HSApiClient : ApiClient<ApiClientXP>
+	{
+	}
 
-    public class ApiClientXP
-    {
-        public bool IsStorefront { get; set; }
-    }
+	public class ApiClientXP
+	{
+		public bool IsStorefront { get; set; }
+	}
 }

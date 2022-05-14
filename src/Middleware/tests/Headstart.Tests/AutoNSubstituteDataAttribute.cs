@@ -13,6 +13,7 @@ namespace Headstart.Tests
         public AutoNSubstituteDataAttribute()
             : base(() => new Fixture().Customize(new HSCompositeCustomization()))
         {
+
         }
     }
 
@@ -26,6 +27,7 @@ namespace Headstart.Tests
         }
     }
 
+
     // Autofixture can't handle ordercloud models that use custom xp
     // due to a bug in the ordercloud sdk  https://github.com/ordercloud-api/ordercloud-dotnet-sdk/issues/60
     // So as a workaround we are manually providing specific overrides for those types of models here
@@ -34,6 +36,7 @@ namespace Headstart.Tests
     {
         public void Customize(IFixture fixture)
         {
+
             fixture.Customize<HSLocationUserGroup>(c => c
                 .With(x => x.xp, fixture.Create<HSLocationUserGroupXp>()));
 

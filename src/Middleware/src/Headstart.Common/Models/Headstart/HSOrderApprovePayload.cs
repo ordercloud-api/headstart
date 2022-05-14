@@ -2,7 +2,7 @@
 
 namespace Headstart.Models
 {
-    public class HSOrderApprovePayload : WebhookPayloads.Orders.Approve<dynamic, OrderApprovalInfo, HSOrder>
-    {
-    }
+	public class HSOrderApprovePayload : WebhookPayloads.Orders.Approve<dynamic, OrderApprovalInfo, HSOrder>
+	{
+	}
 }

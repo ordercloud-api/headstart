@@ -2,7 +2,7 @@
 
 namespace Headstart.Models.Headstart
 {
-    public class HSProductCreatePayload : WebhookPayloads.Products.Create<dynamic, HSProduct>
-    {
-    }
+	public class HSProductCreatePayload : WebhookPayloads.Products.Create<dynamic, HSProduct>
+	{
+	}
 }

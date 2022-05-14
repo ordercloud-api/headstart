@@ -7,41 +7,43 @@ using Headstart.Models.Headstart;
 using Headstart.Models;
 using Headstart.Tests.Mocks;
 using Headstart.API.Commands;
+using Headstart.Common;
 
 namespace Headstart.Tests
 {
     public class PaymentCommandTests
-    {
+	{
         private IOrderCloudClient oc;
         private ICreditCardCommand ccCommand;
         private IPaymentCommand sut;
-        private string mockOrderID = "mockOrderID";
-        private string mockUserToken = "mockUserToken";
-        private string mockCCPaymentID = "mockCCPaymentID";
-        private string mockPoPaymentID = "mockPoPaymentID";
-        private string creditcard1 = "creditcard1";
-        private string creditcard2 = "creditcard2";
-        private string mockSpendingAccountID = "mockSpendingAccountID";
+		private string mockOrderID = "mockOrderID";
+		private string mockUserToken = "mockUserToken";
+		private string mockCCPaymentID = "mockCCPaymentID";
+		private string mockPoPaymentID = "mockPoPaymentID";
+		private string creditcard1 = "creditcard1";
+		private string creditcard2 = "creditcard2";
+		private string mockSpendingAccountID = "mockSpendingAccountID";
 
-        [SetUp]
-        public void Setup()
-        {
-            // oc
+		[SetUp]
+		public void Setup()
+		{
+			// oc
             oc = Substitute.For<IOrderCloudClient>();
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, mockOrderID)
-                    .Returns(Task.FromResult(new HSOrderWorksheet { Order = new Models.HSOrder { ID = mockOrderID, Total = 20 } }));
+				.Returns(Task.FromResult(new HSOrderWorksheet { Order = new Models.HSOrder { ID = mockOrderID, Total = 20 } }));
             oc.Payments.CreateAsync<HSPayment>(OrderDirection.Incoming, mockOrderID, Arg.Any<HSPayment>())
-                .Returns(Task.FromResult(PaymentMocks.CCPayment(creditcard1, 20)));
+				.Returns(Task.FromResult(PaymentMocks.CCPayment(creditcard1, 20)));
 
-            // ccCommand
+			// ccCommand
             ccCommand = Substitute.For<ICreditCardCommand>();
             ccCommand.VoidTransactionAsync(Arg.Any<HSPayment>(), Arg.Any<HSOrder>(), mockUserToken)
-                .Returns(Task.FromResult(0));
+				.Returns(Task.FromResult(0));
+			
+			var settings = Substitute.For<AppSettings>();
+			sut = new PaymentCommand(oc, ccCommand, settings);
+		}
 
-            sut = new PaymentCommand(oc, ccCommand);
-        }
-
-        [Test]
+		[Test]
         public async Task should_delete_stale_payments()
         {
             // Arrange

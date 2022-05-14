@@ -161,12 +161,11 @@ namespace Headstart.Tests
                         {
                             Country = buyerUserCountry,
                         },
-                    },
+                },
                 },
                 LineItems = lineItems.ToList(),
             };
         }
-
         private HSSupplier MockSupplier(string id = "mockID", int freeShippingThreshold = 500)
         {
             return new HSSupplier

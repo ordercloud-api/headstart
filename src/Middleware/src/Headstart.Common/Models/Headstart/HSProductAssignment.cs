@@ -2,8 +2,8 @@
 
 namespace Headstart.Models
 {
-    public class HSProductAssignment : ProductAssignment, IHSObject
-    {
-        public string ID { get; set; }
-    }
+	public class HSProductAssignment : ProductAssignment, IHSObject
+	{
+		public string ID { get; set; }
+	}
 }

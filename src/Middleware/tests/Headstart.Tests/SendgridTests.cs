@@ -20,33 +20,33 @@ using OrderCloud.Integrations.Library.Interfaces;
 namespace Headstart.Tests
 {
     public class SendgridTests
-    {
-        private const string ORDER_SUBMIT_TEMPLATE_ID = "order_submit_template_id";
-        private const string LINE_ITEM_STATUS_CHANGE = "line_item_status_change";
-        private const string QUOTE_ORDER_SUBMIT_TEMPLATE_ID = "quote_order_submit_template_id";
-        private const string BUYER_NEW_USER_TEMPLATE_ID = "buyer_new_user_template_id";
-        private const string BUYER_PASSWORD_RESET_TEMPLATE_ID = "buyer_password_reset_template_id";
-        private const string INFORMATION_REQUEST = "information_request";
-        private const string PRODUCT_UPDATE_TEMPLATE_ID = "product_update_template_id";
+	{
+		private const string ORDER_SUBMIT_TEMPLATE_ID = "order_submit_template_id";
+		private const string LINE_ITEM_STATUS_CHANGE = "line_item_status_change";
+		private const string QUOTE_ORDER_SUBMIT_TEMPLATE_ID = "quote_order_submit_template_id";
+		private const string BUYER_NEW_USER_TEMPLATE_ID = "buyer_new_user_template_id";
+		private const string BUYER_PASSWORD_RESET_TEMPLATE_ID = "buyer_password_reset_template_id";
+		private const string INFORMATION_REQUEST = "information_request";
+		private const string PRODUCT_UPDATE_TEMPLATE_ID = "product_update_template_id";
         private IOrderCloudClient oc;
         private AppSettings settings;
         private ISendGridClient sendGridClient;
         private ISendgridService command;
 
-        [SetUp]
-        public void Setup()
-        {
+		[SetUp]
+		public void Setup()
+		{
             oc = Substitute.For<IOrderCloudClient>();
             settings = Substitute.For<AppSettings>();
             sendGridClient = Substitute.For<ISendGridClient>();
 
             command = new SendgridService(settings, oc, sendGridClient);
-        }
+		}
 
-        [Test]
-        public async Task TestOrderSubmitEmail()
-        {
-            var orderWorksheet = GetOrderWorksheet();
+		[Test]
+		public async Task TestOrderSubmitEmail()
+		{
+			var orderWorksheet = GetOrderWorksheet();
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, $"{TestConstants.OrderID}-{TestConstants.Supplier1ID}").Returns(GetSupplierWorksheet(TestConstants.Supplier1ID, TestConstants.LineItem1ID, TestConstants.LineItem1Total));
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, $"{TestConstants.OrderID}-{TestConstants.Supplier2ID}").Returns(GetSupplierWorksheet(TestConstants.Supplier2ID, TestConstants.LineItem2ID, TestConstants.LineItem2Total));
             oc.Suppliers.ListAsync<HSSupplier>(Arg.Any<string>()).ReturnsForAnyArgs(Task.FromResult(GetSupplierList()));
@@ -55,166 +55,165 @@ namespace Headstart.Tests
             commandSub.Configure().WhenForAnyArgs(x => x.SendSingleTemplateEmailMultipleRcpts(default, default, default, default)).DoNotCallBase();
             commandSub.Configure().WhenForAnyArgs(x => x.SendSingleTemplateEmail(default, default, default, default)).DoNotCallBase();
 
-            // act
+			// act
             await commandSub.SendOrderSubmitEmail(orderWorksheet);
 
-            // assert
-            var expectedSellerEmailList = new List<EmailAddress>()
-            {
+			// assert
+			var expectedSellerEmailList = new List<EmailAddress>()
+			{
                 new EmailAddress() { Email = TestConstants.SellerUser1email },
                 new EmailAddress() { Email = TestConstants.SellerUser1AdditionalRcpts[0] },
-            };
-            var expectedSupplier1EmailList = new List<EmailAddress>()
-            {
+			};
+			var expectedSupplier1EmailList = new List<EmailAddress>()
+			{
                 new EmailAddress() { Email = TestConstants.Supplier1NotificationRcpts[0] },
                 new EmailAddress() { Email = TestConstants.Supplier1NotificationRcpts[1] },
-            };
-            var expectedSupplier2EmailList = new List<EmailAddress>()
-            {
+			};
+			var expectedSupplier2EmailList = new List<EmailAddress>()
+			{
                 new EmailAddress() { Email = TestConstants.Supplier2NotificationRcpts[0] },
-            };
+			};
 
             // confirm emails sent to buyer, seller users, supplier 1 notification recipients, supplier 2 notification recipients
             await commandSub.Configure().Received().SendSingleTemplateEmail(Arg.Any<string>(), TestConstants.BuyerEmail, Arg.Any<string>(), Arg.Any<object>());
             await commandSub.Configure().Received().SendSingleTemplateEmailMultipleRcpts(Arg.Any<string>(), Arg.Is<List<EmailAddress>>(x => EqualEmailLists(x, expectedSellerEmailList)), Arg.Any<string>(), Arg.Any<object>());
             await commandSub.Configure().Received().SendSingleTemplateEmailMultipleRcpts(Arg.Any<string>(), Arg.Is<List<EmailAddress>>(x => EqualEmailLists(x, expectedSupplier1EmailList)), Arg.Any<string>(), Arg.Any<object>());
             await commandSub.Configure().Received().SendSingleTemplateEmailMultipleRcpts(Arg.Any<string>(), Arg.Is<List<EmailAddress>>(x => EqualEmailLists(x, expectedSupplier2EmailList)), Arg.Any<string>(), Arg.Any<object>());
-        }
+		}
 
-        private bool EqualEmailLists(List<EmailAddress> list1, List<EmailAddress> list2)
-        {
-            if (list1.Count() != list2.Count())
-            {
-                return false;
-            }
-            else
-            {
-                var isEqual = true;
-                var list2Emails = list2.Select(item => item.Email);
-                var list1Emails = list1.Select(item => item.Email);
-                foreach (var item in list1)
-                {
-                    if (!list2Emails.Contains(item.Email))
-                    {
-                        isEqual = false;
-                    }
-                }
+		private bool EqualEmailLists(List<EmailAddress> list1, List<EmailAddress> list2)
+		{
+			if (list1.Count() != list2.Count())
+			{
+				return false;
+			}
+			else
+			{
+				var isEqual = true;
+				var list2Emails = list2.Select(item => item.Email);
+				var list1Emails = list1.Select(item => item.Email);
+				foreach (var item in list1)
+				{
+					if (!list2Emails.Contains(item.Email))
+					{
+						isEqual = false;
+					}
+				}
+				foreach (var item in list2)
+				{
+					if (!list1Emails.Contains(item.Email))
+					{
+						isEqual = false;
+					}
+				}
+				return isEqual;
+			}
+		}
 
-                foreach (var item in list2)
-                {
-                    if (!list1Emails.Contains(item.Email))
-                    {
-                        isEqual = false;
-                    }
-                }
 
-                return isEqual;
-            }
-        }
+		private HSOrderWorksheet GetOrderWorksheet()
+		{
+			Fixture fixture = new Fixture();
 
-        private HSOrderWorksheet GetOrderWorksheet()
-        {
-            Fixture fixture = new Fixture();
-
-            dynamic shipEstimatexp1 = new ShipEstimateXP();
-            dynamic shipEstimatexp2 = new ShipEstimateXP();
+			dynamic shipEstimatexp1 = new ShipEstimateXP();
+			dynamic shipEstimatexp2 = new ShipEstimateXP();
             shipEstimatexp1.SupplierID = TestConstants.Supplier1ID;
             shipEstimatexp2.SupplierID = TestConstants.Supplier2ID;
 
-            return new HSOrderWorksheet()
-            {
-                Order = new HSOrder()
-                {
+			return new HSOrderWorksheet()
+			{
+				Order = new HSOrder()
+				{
                     ID = TestConstants.OrderID,
-                    FromUser = new HSUser()
-                    {
-                        FirstName = "john",
-                        LastName = "johnson",
+					FromUser = new HSUser()
+					{
+						FirstName = "john",
+						LastName = "johnson",
                         Email = TestConstants.BuyerEmail,
-                    },
-                    BillingAddressID = "testbillingaddressid",
-                    BillingAddress = fixture.Create<HSAddressBuyer>(),
-                    xp = new OrderXp()
-                    {
-                        OrderType = OrderType.Standard,
-                        SupplierIDs = new List<string>()
-                        {
+					},
+					BillingAddressID = "testbillingaddressid",
+					BillingAddress = fixture.Create<HSAddressBuyer>(),
+					xp = new OrderXp()
+					{
+						OrderType = OrderType.Standard,
+						SupplierIDs = new List<string>()
+						{
                             TestConstants.Supplier1ID,
                             TestConstants.Supplier2ID,
-                        },
+						},
                         Currency = CurrencySymbol.USD,
-                    },
+					},
                     DateSubmitted = new DateTimeOffset(),
-                },
-                LineItems = new List<HSLineItem>()
-                {
-                    new HSLineItem()
-                    {
+				},
+				LineItems = new List<HSLineItem>()
+				{
+					new HSLineItem()
+					{
                         ID = TestConstants.LineItem1ID,
                         ProductID = TestConstants.Product1ID,
-                        Quantity = 1,
+						Quantity = 1,
                         LineTotal = TestConstants.LineItem1Total,
-                        Product = new HSLineItemProduct()
-                        {
+						Product = new HSLineItemProduct()
+						{
                             Name = TestConstants.Product1Name,
-                        },
-                        ShippingAddress = fixture.Create<HSAddressBuyer>(),
-                        xp = fixture.Create<LineItemXp>(),
-                    },
-                    new HSLineItem()
-                    {
+						},
+						ShippingAddress = fixture.Create<HSAddressBuyer>(),
+						xp = fixture.Create<LineItemXp>(),
+					},
+					new HSLineItem()
+					{
                         ID = TestConstants.LineItem2ID,
                         ProductID = TestConstants.Product2ID,
-                        Quantity = 1,
+						Quantity = 1,
                         LineTotal = TestConstants.LineItem2Total,
-                        Product = new HSLineItemProduct()
-                        {
+						Product = new HSLineItemProduct()
+						{
                             Name = TestConstants.Product2Name,
-                        },
-                        ShippingAddress = fixture.Create<HSAddressBuyer>(),
+						},
+						ShippingAddress = fixture.Create<HSAddressBuyer>(),
                         xp = fixture.Create<LineItemXp>(),
                     },
-                },
-                ShipEstimateResponse = new HSShipEstimateResponse()
-                {
-                    ShipEstimates = new List<HSShipEstimate>()
-                    {
-                        new HSShipEstimate()
-                        {
+				},
+				ShipEstimateResponse = new HSShipEstimateResponse()
+				{
+					ShipEstimates = new List<HSShipEstimate>()
+					{
+						new HSShipEstimate()
+						{
                             SelectedShipMethodID = TestConstants.SelectedShipEstimate1ID,
-                            xp = shipEstimatexp1,
-                            ShipMethods = new List<HSShipMethod>()
-                            {
-                                new HSShipMethod()
-                                {
+							xp = shipEstimatexp1,
+							ShipMethods = new List<HSShipMethod>()
+							{
+								new HSShipMethod()
+								{
                                     ID = TestConstants.SelectedShipEstimate1ID,
                                     Cost = TestConstants.SelectedShipEstimate1Cost,
                                 },
                                 fixture.Create<HSShipMethod>(),
-                            },
-                        },
-                        new HSShipEstimate()
-                        {
+								},
+						},
+						new HSShipEstimate()
+						{
                             SelectedShipMethodID = TestConstants.SelectedShipEstimate2ID,
-                            xp = shipEstimatexp2,
-                            ShipMethods = new List<HSShipMethod>()
-                            {
-                                new HSShipMethod()
-                                {
+							xp = shipEstimatexp2,
+							ShipMethods = new List<HSShipMethod>()
+							{
+								new HSShipMethod()
+								{
                                     ID = TestConstants.SelectedShipEstimate2ID,
                                     Cost = TestConstants.SelectedShipEstimate2Cost,
                                 },
                                 fixture.Create<HSShipMethod>(),
                             },
                         },
-                    },
-                },
-                OrderCalculateResponse = new HSOrderCalculateResponse()
-                {
-                    xp = new OrderCalculateResponseXp()
-                    {
-                        TaxCalculation = new OrderTaxCalculation()
-                        {
+								},
+				},
+				OrderCalculateResponse = new HSOrderCalculateResponse()
+				{
+					xp = new OrderCalculateResponseXp()
+					{
+						TaxCalculation = new OrderTaxCalculation()
+						{
                             OrderLevelTaxes = new List<TaxDetails>
                             {
                                 new TaxDetails()
@@ -227,109 +226,109 @@ namespace Headstart.Tests
                                     Tax = TestConstants.LineItem2ShipmentTax,
                                     ShipEstimateID = TestConstants.SelectedShipEstimate2ID,
                                 },
-                            },
-                            LineItems = new List<LineItemTaxCalculation>()
-                            {
-                                new LineItemTaxCalculation()
-                                {
+							},
+							LineItems = new List<LineItemTaxCalculation>()
+							{
+								new LineItemTaxCalculation()
+								{
                                     LineItemID = TestConstants.LineItem1ID,
                                     LineItemTotalTax = TestConstants.LineItem1Tax,
-                                },
-                                new LineItemTaxCalculation()
-                                {
+								},
+								new LineItemTaxCalculation()
+								{
                                     LineItemID = TestConstants.LineItem2ID,
                                     LineItemTotalTax = TestConstants.LineItem2Tax,
                                 },
                             },
                         },
                     },
-                },
-            };
-        }
+								},
+			};
+		}
 
-        private HSOrderWorksheet GetSupplierWorksheet(string supplierID, string lineItemID, decimal total)
-        {
-            Fixture fixture = new Fixture();
-            return new HSOrderWorksheet()
-            {
-                Order = new HSOrder()
-                {
+		private HSOrderWorksheet GetSupplierWorksheet(string supplierID, string lineItemID, decimal total)
+		{
+			Fixture fixture = new Fixture();
+			return new HSOrderWorksheet()
+			{
+				Order = new HSOrder()
+				{
                     ID = $"{TestConstants.OrderID}-{supplierID}",
                     Total = total,
-                },
-                LineItems = new List<HSLineItem>()
-                {
-                    new HSLineItem()
-                    {
-                        ID = lineItemID,
-                        Quantity = 1,
-                        LineTotal = total,
+				},
+				LineItems = new List<HSLineItem>()
+				{
+					new HSLineItem()
+					{
+						ID = lineItemID,
+						Quantity = 1,
+						LineTotal = total,
                         ProductID = lineItemID == TestConstants.LineItem1ID ? TestConstants.Product1ID : TestConstants.Product2ID,
-                        Product = new HSLineItemProduct()
-                        {
+						Product = new HSLineItemProduct()
+						{
                             Name = lineItemID == TestConstants.LineItem1ID ? TestConstants.Product1Name : TestConstants.Product2Name,
-                        },
-                        xp = fixture.Create<LineItemXp>(),
+						},
+						xp = fixture.Create<LineItemXp>(),
                         ShippingAddress = fixture.Create<HSAddressBuyer>(),
                     },
                 },
-            };
-        }
+			};
+		}
 
-        private ListPage<HSSupplier> GetSupplierList()
-        {
-            return new ListPage<HSSupplier>()
-            {
-                Items = new List<HSSupplier>()
-                {
-                    new HSSupplier()
-                    {
+		private ListPage<HSSupplier> GetSupplierList()
+		{
+			return new ListPage<HSSupplier>()
+			{
+				Items = new List<HSSupplier>()
+				{
+					new HSSupplier()
+					{
                         ID = TestConstants.Supplier1ID,
-                        xp = new SupplierXp()
-                        {
+						xp = new SupplierXp()
+						{
                             NotificationRcpts = TestConstants.Supplier1NotificationRcpts.ToList(),
                         },
-                    },
-                    new HSSupplier()
-                    {
+					},
+					new HSSupplier()
+					{
                         ID = TestConstants.Supplier2ID,
-                        xp = new SupplierXp()
-                        {
+						xp = new SupplierXp()
+						{
                             NotificationRcpts = TestConstants.Supplier2NotificationRcpts.ToList(),
                         },
                     },
                 },
-            };
-        }
+			};
+		}
 
-        private ListPage<HSSellerUser> GetSellerUserList()
-        {
-            return new ListPage<HSSellerUser>()
-            {
-                Items = new List<HSSellerUser>()
-                {
-                    new HSSellerUser()
-                    {
-                        ID = "selleruser1",
+		private ListPage<HSSellerUser> GetSellerUserList()
+		{
+			return new ListPage<HSSellerUser>()
+			{
+				Items = new List<HSSellerUser>()
+				{
+					new HSSellerUser()
+					{
+						ID = "selleruser1",
                         Email = TestConstants.SellerUser1email,
-                        xp = new SellerUserXp()
-                        {
-                            OrderEmails = true,
+						xp = new SellerUserXp()
+						{
+							OrderEmails = true,
                             AddtlRcpts = TestConstants.SellerUser1AdditionalRcpts.ToList(),
                         },
-                    },
-                    new HSSellerUser()
-                    {
-                        ID = "selleruser1",
+					},
+					new HSSellerUser()
+					{
+						ID = "selleruser1",
                         Email = TestConstants.Selleruser2email,
-                        xp = new SellerUserXp()
-                        {
+						xp = new SellerUserXp()
+						{
                             OrderEmails = false,
                         },
                     },
                 },
-            };
-        }
+			};
+		}
 
         public class TestConstants
         {
@@ -359,5 +358,5 @@ namespace Headstart.Tests
             public static readonly string[] Supplier2NotificationRcpts = { "002user@test.com" };
             public static readonly string[] SellerUser1AdditionalRcpts = { "additionalrecipient1@test.com" };
         }
-    }
+	}
 }

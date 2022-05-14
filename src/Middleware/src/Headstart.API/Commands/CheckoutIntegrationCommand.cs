@@ -18,23 +18,22 @@ using OrderCloud.SDK;
 using OrderCloud.Integrations.EasyPost.Models;
 using OrderCloud.Integrations.ExchangeRates.Models;
 using ITaxCalculator = OrderCloud.Integrations.Library.Interfaces.ITaxCalculator;
+using Sitecore.Foundation.SitecoreExtensions.Extensions;
+using SitecoreExtensions = Sitecore.Foundation.SitecoreExtensions.Extensions;
 
 namespace Headstart.API.Commands
 {
-    public interface ICheckoutIntegrationCommand
-    {
-        Task<ShipEstimateResponse> GetRatesAsync(HSOrderCalculatePayload orderCalculatePayload);
+	public interface ICheckoutIntegrationCommand
+	{
+		Task<ShipEstimateResponse> GetRatesAsync(HSOrderCalculatePayload orderCalculatePayload);
+		Task<HSOrderCalculateResponse> CalculateOrder(HSOrderCalculatePayload orderCalculatePayload);
+		Task<HSOrderCalculateResponse> CalculateOrder(string orderID, DecodedToken decodedToken);
+		Task<ShipEstimateResponse> GetRatesAsync(string orderID);
+	}
 
-        Task<HSOrderCalculateResponse> CalculateOrder(HSOrderCalculatePayload orderCalculatePayload);
-
-        Task<HSOrderCalculateResponse> CalculateOrder(string orderID, DecodedToken decodedToken);
-
-        Task<ShipEstimateResponse> GetRatesAsync(string orderID);
-    }
-
-    public class CheckoutIntegrationCommand : ICheckoutIntegrationCommand
-    {
-        private readonly ITaxCalculator taxCalculator;
+	public class CheckoutIntegrationCommand : ICheckoutIntegrationCommand
+	{
+		private readonly ITaxCalculator taxCalculator;
         private readonly IEasyPostShippingService shippingService;
         private readonly IExchangeRatesCommand exchangeRates;
         private readonly IOrderCloudClient oc;
@@ -42,283 +41,376 @@ namespace Headstart.API.Commands
         private readonly HSShippingProfiles profiles;
         private readonly AppSettings settings;
 
-        public CheckoutIntegrationCommand(IDiscountDistributionService discountDistribution, ITaxCalculator taxCalculator, IExchangeRatesCommand exchangeRates, IOrderCloudClient orderCloud, IEasyPostShippingService shippingService, AppSettings settings)
-        {
-            this.taxCalculator = taxCalculator;
-            this.exchangeRates = exchangeRates;
-            oc = orderCloud;
-            this.shippingService = shippingService;
-            this.settings = settings;
-            this.discountDistribution = discountDistribution;
-            profiles = new HSShippingProfiles(this.settings);
-        }
+		/// <summary>
+		/// The IOC based constructor method for the CheckoutIntegrationCommand class object with Dependency Injection
+		/// </summary>
+		/// <param name="discountDistribution"></param>
+		/// <param name="taxCalculator"></param>
+		/// <param name="exchangeRates"></param>
+		/// <param name="orderCloud"></param>
+		/// <param name="shippingService"></param>
+		/// <param name="settings"></param>
+		public CheckoutIntegrationCommand(IDiscountDistributionService discountDistribution, ITaxCalculator taxCalculator, IExchangeRatesCommand exchangeRates, IOrderCloudClient orderCloud, IEasyPostShippingService shippingService, AppSettings settings)
+		{
+			try
+			{
+				this.settings = settings;
+				this.taxCalculator = taxCalculator;
+				this.exchangeRates = exchangeRates;
+				oc = orderCloud;
+				this.shippingService = shippingService;
+				this.discountDistribution = discountDistribution;
+				profiles = new HSShippingProfiles(this.settings);
+			}
+			catch (Exception ex)
+			{
+				LoggingNotifications.LogApiResponseMessages(this.settings.LogSettings, SitecoreExtensions.Helpers.GetMethodName(), "",
+					LoggingNotifications.GetExceptionMessagePrefixKey(), true, ex.Message, ex.StackTrace, ex);
+			}
+		}
+		
+		/// <summary>
+		/// Public re-usable WhereRateIsCheapestOfItsKind task method
+		/// </summary>
+		/// <param name="methods"></param>
+		/// <returns>The HSShipMethod response object from the WhereRateIsCheapestOfItsKind process</returns>
+		public IEnumerable<HSShipMethod> WhereRateIsCheapestOfItsKind(IEnumerable<HSShipMethod> methods)
+		{
+			return methods
+				.GroupBy(method => method.EstimatedTransitDays)
+				.Select(kind => kind.OrderBy(method => method.Cost).First());
+		}
+		
 
-        public static IEnumerable<HSShipMethod> WhereRateIsCheapestOfItsKind(IEnumerable<HSShipMethod> methods)
-        {
-            return methods
-                .GroupBy(method => method.EstimatedTransitDays)
-                .Select(kind => kind.OrderBy(method => method.Cost).First());
-        }
+		/// <summary>
+		/// Public re-usable FilterSlowerRatesWithHighCost method
+		/// </summary>
+		/// <param name="estimates"></param>
+		/// <returns>The list of HSShipEstimate objects from the FilterSlowerRatesWithHighCost process</returns>
+		public static IList<HSShipEstimate> FilterSlowerRatesWithHighCost(IList<HSShipEstimate> estimates)
+		{
+			// filter out rate estimates with slower transit days and higher costs than faster transit days
+			// ex: 3 days for $20 vs 1 day for $10. Filter out the 3 days option
 
-        public static IList<HSShipEstimate> FilterSlowerRatesWithHighCost(IList<HSShipEstimate> estimates)
-        {
-            // filter out rate estimates with slower transit days and higher costs than faster transit days
-            // ex: 3 days for $20 vs 1 day for $10. Filter out the 3 days option
-            var result = estimates.Select(estimate =>
-            {
-                var methodsList = estimate.ShipMethods.OrderBy(m => m.EstimatedTransitDays).ToList();
-                var filtered = new List<HSShipMethod>();
-                for (var i = methodsList.Count - 1; i >= 0; i--)
-                {
-                    var method = methodsList[i];
-                    var fasterMethods = methodsList.GetRange(0, i);
-                    var existsFasterCheaperRate = fasterMethods.Any(m => m.Cost < method.Cost);
-                    if (!existsFasterCheaperRate)
-                    {
-                        filtered.Add(method);
-                    }
-                }
+			var result = estimates.Select(estimate =>
+			{
+				var methodsList = estimate.ShipMethods.OrderBy(m => m.EstimatedTransitDays).ToList();
+				var filtered = new List<HSShipMethod>();
+				for (var i = methodsList.Count - 1; i >= 0; i--)
+				{
+					var method = methodsList[i];
+					var fasterMethods = methodsList.GetRange(0, i);
+					var existsFasterCheaperRate = fasterMethods.Any(m => m.Cost < method.Cost);
+					if (!existsFasterCheaperRate)
+					{
+						filtered.Add(method);
+					}
+				}
+				filtered.Reverse(); // reorder back to original since we looped backwards
+				estimate.ShipMethods = filtered;
+				return estimate;
+			}).ToList();
 
-                filtered.Reverse(); // reorder back to original since we looped backwards
-                estimate.ShipMethods = filtered;
-                return estimate;
-            }).ToList();
+			return result;
+		}
 
-            return result;
-        }
+		/// <summary>
+		/// Public re-usable ApplyFlatRateShipping method
+		/// </summary>
+		/// <param name="orderWorksheet"></param>
+		/// <param name="estimates"></param>
+		/// <returns>The list of HSShipEstimate objects from the ApplyFlatRateShipping process</returns>
+		public static IList<HSShipEstimate> ApplyFlatRateShipping(HSOrderWorksheet orderWorksheet, IList<HSShipEstimate> estimates)
+		{
+			var result = estimates.Select(estimate => ApplyFlatRateShippingOnEstimate(estimate, orderWorksheet)).ToList();
+			return result;
+		}
 
-        public static IList<HSShipEstimate> ApplyFlatRateShipping(HSOrderWorksheet orderWorksheet, IList<HSShipEstimate> estimates)
-        {
-            var result = estimates.Select(estimate => ApplyFlatRateShippingOnEstimate(estimate, orderWorksheet)).ToList();
-            return result;
-        }
+		/// <summary>
+		/// Public re-usable ApplyFlatRateShippingOnEstimate method
+		/// </summary>
+		/// <param name="estimate"></param>
+		/// <param name="orderWorksheet"></param>
+		/// <returns>The HSShipEstimate object from the ApplyFlatRateShippingOnEstimate process</returns>
+		public static HSShipEstimate ApplyFlatRateShippingOnEstimate(HSShipEstimate estimate, HSOrderWorksheet orderWorksheet)
+		{
+			var supplierID = orderWorksheet.LineItems.First(li => li.ID == estimate.ShipEstimateItems.FirstOrDefault()?.LineItemID).SupplierID;
+           	
+			var supplierLineItems = orderWorksheet.LineItems.Where(li => li.SupplierID == supplierID);
+			var supplierSubTotal = supplierLineItems.Select(li => li.LineSubtotal).Sum();
+			var qualifiesForFlatRateShipping = supplierSubTotal > .01M && estimate.ShipMethods.Any(method => method.Name.Contains("GROUND"));
+			if(qualifiesForFlatRateShipping)
+			{
+				estimate.ShipMethods = estimate.ShipMethods
+					.Where(method => method.Name.Contains("GROUND")) // flat rate shipping only applies to ground shipping methods
+					.Select(method => ApplyFlatRateShippingOnShipmethod(method, supplierSubTotal))
+					.ToList();
+			}
+			return estimate;
+		}
 
-        public static HSShipEstimate ApplyFlatRateShippingOnEstimate(HSShipEstimate estimate, HSOrderWorksheet orderWorksheet)
-        {
-            var supplierID = orderWorksheet.LineItems.First(li => li.ID == estimate.ShipEstimateItems.FirstOrDefault()?.LineItemID).SupplierID;
+		/// <summary>
+		/// Public re-usable ApplyFlatRateShippingOnShipMethod method
+		/// </summary>
+		/// <param name="method"></param>
+		/// <param name="supplierSubTotal"></param>
+		/// <returns>The HSShipMethod object from the ApplyFlatRateShippingOnShipMethod process</returns>
+		public static HSShipMethod ApplyFlatRateShippingOnShipmethod(HSShipMethod method, decimal supplierSubTotal)
+		{
+			if (supplierSubTotal > .01M && supplierSubTotal <= 499.99M)
+			{
+				method.Cost = 29.99M;
+			}
+			else if (supplierSubTotal > 499.9M)
+			{
+				method.Cost = 0;
+				method.xp.FreeShippingApplied = true;
+			}
 
-            var supplierLineItems = orderWorksheet.LineItems.Where(li => li.SupplierID == supplierID);
-            var supplierSubTotal = supplierLineItems.Select(li => li.LineSubtotal).Sum();
-            var qualifiesForFlatRateShipping = supplierSubTotal > .01M && estimate.ShipMethods.Any(method => method.Name.Contains("GROUND"));
-            if (qualifiesForFlatRateShipping)
-            {
-                estimate.ShipMethods = estimate.ShipMethods
-                                        .Where(method => method.Name.Contains("GROUND")) // flat rate shipping only applies to ground shipping methods
-                                        .Select(method => ApplyFlatRateShippingOnShipmethod(method, supplierSubTotal))
-                                        .ToList();
-            }
+			return method;
+		}
 
-            return estimate;
-        }
+		public static IList<HSShipEstimate> CheckForEmptyRates(IList<HSShipEstimate> estimates, decimal noRatesCost, int noRatesTransitDays)
+		{
+			// if there are no rates for a set of line items then return a mocked response so user can check out
+			// this order will additionally get marked as needing attention
 
-        public static HSShipMethod ApplyFlatRateShippingOnShipmethod(HSShipMethod method, decimal supplierSubTotal)
-        {
-            if (supplierSubTotal > .01M && supplierSubTotal <= 499.99M)
-            {
-                method.Cost = 29.99M;
-            }
-            else if (supplierSubTotal > 499.9M)
-            {
-                method.Cost = 0;
-                method.xp.FreeShippingApplied = true;
-            }
-
-            return method;
-        }
-
-        public static IList<HSShipEstimate> CheckForEmptyRates(IList<HSShipEstimate> estimates, decimal noRatesCost, int noRatesTransitDays)
-        {
-            // if there are no rates for a set of line items then return a mocked response so user can check out
-            // this order will additionally get marked as needing attention
-            foreach (var shipEstimate in estimates)
-            {
-                if (!shipEstimate.ShipMethods.Any())
-                {
-                    shipEstimate.ShipMethods = new List<HSShipMethod>()
-                    {
-                        new HSShipMethod
-                        {
-                            ID = ShippingConstants.NoRatesID,
-                            Name = "No shipping rates",
-                            Cost = noRatesCost,
-                            EstimatedTransitDays = noRatesTransitDays,
-                            xp = new ShipMethodXP
-                            {
+			foreach (var shipEstimate in estimates)
+			{
+				if (!shipEstimate.ShipMethods.Any())
+				{
+					shipEstimate.ShipMethods = new List<HSShipMethod>()
+					{
+						new HSShipMethod
+						{
+							ID = ShippingConstants.NoRatesID,
+							Name = "No shipping rates",
+							Cost = noRatesCost,
+							EstimatedTransitDays = noRatesTransitDays,
+							xp = new ShipMethodXP
+							{
                                 OriginalCost = noRatesCost,
                             },
                         },
-                    };
-                }
-            }
+					};
+				}
+			}
+			return estimates;
+		}
 
-            return estimates;
-        }
+		/// <summary>
+		/// Public re-usable UpdateFreeShippingRates method
+		/// </summary>
+		/// <param name="estimates"></param>
+		/// <param name="freeShippingTransitDays"></param>
+		/// <returns>The list of HSShipEstimate objects from the UpdateFreeShippingRates process</returns>
+		public static IList<HSShipEstimate> UpdateFreeShippingRates(IList<HSShipEstimate> estimates, int freeShippingTransitDays)
+		{
+			foreach (var shipEstimate in estimates)
+			{
+				if (shipEstimate.ID.StartsWith(ShippingConstants.FreeShippingID))
+				{
+					foreach (var method in shipEstimate.ShipMethods)
+					{
+						method.ID = shipEstimate.ID;
+						method.Cost = 0;
+						method.EstimatedTransitDays = freeShippingTransitDays;
+					}
+				}
+			}
+			return estimates;
+		}
+		
+		/// <summary>
+		/// Public re-usable GetRatesAsync task method
+		/// </summary>
+		/// <param name="orderCalculatePayload"></param>
+		/// <returns>The ShipEstimateResponse response object from the GetRates process</returns>
+		public async Task<ShipEstimateResponse> GetRatesAsync(HSOrderCalculatePayload orderCalculatePayload)
+		{
+			return await this.GetRatesAsync(orderCalculatePayload.OrderWorksheet, orderCalculatePayload.ConfigData);
+		}
 
-        public static IList<HSShipEstimate> UpdateFreeShippingRates(IList<HSShipEstimate> estimates, int freeShippingTransitDays)
-        {
-            foreach (var shipEstimate in estimates)
-            {
-                if (shipEstimate.ID.StartsWith(ShippingConstants.FreeShippingID))
-                {
-                    foreach (var method in shipEstimate.ShipMethods)
-                    {
-                        method.ID = shipEstimate.ID;
-                        method.Cost = 0;
-                        method.EstimatedTransitDays = freeShippingTransitDays;
-                    }
-                }
-            }
-
-            return estimates;
-        }
-
-        public async Task<ShipEstimateResponse> GetRatesAsync(HSOrderCalculatePayload orderCalculatePayload)
-        {
-            return await this.GetRatesAsync(orderCalculatePayload.OrderWorksheet, orderCalculatePayload.ConfigData);
-        }
-
-        public async Task<ShipEstimateResponse> GetRatesAsync(string orderID)
-        {
+		/// <summary>
+		/// Public re-usable GetRatesAsync task method
+		/// </summary>
+		/// <param name="orderID"></param>
+		/// <returns>The ShipEstimateResponse response object from the GetRates process</returns>
+		public async Task<ShipEstimateResponse> GetRatesAsync(string orderID)
+		{
             var order = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
-            return await this.GetRatesAsync(order);
-        }
+			return await this.GetRatesAsync(order);
+		}
 
-        public IEnumerable<HSShipMethod> FilterMethodsBySupplierConfig(List<HSShipMethod> methods, EasyPostShippingProfile profile)
-        {
-            // will attempt to filter out by supplier method specs, but if there are filters and the result is none and there are valid methods still return the methods
+		/// <summary>
+		/// Public re-usable FilterMethodsBySupplierConfig task method
+		/// </summary>
+		/// <param name="methods"></param>
+		/// <param name="profile"></param>
+		/// <returns>The HSShipMethod object from the FilterMethodsBySupplierConfig process</returns>
+		public IEnumerable<HSShipMethod> FilterMethodsBySupplierConfig(List<HSShipMethod> methods, EasyPostShippingProfile profile)
+		{
+			// will attempt to filter out by supplier method specs, but if there are filters and the result is none and there are valid methods still return the methods
             if (profile.AllowedServiceFilter.Count == 0)
             {
                 return methods;
             }
 
-            var filtered_methods = methods.Where(s => profile.AllowedServiceFilter.Contains(s.Name)).Select(s => s).ToList();
-            return filtered_methods.Any() ? filtered_methods : methods;
-        }
+			var filtered_methods = methods.Where(s => profile.AllowedServiceFilter.Contains(s.Name)).Select(s => s).ToList();
+			return filtered_methods.Any() ? filtered_methods : methods;
+		}
 
-        public async Task<HSOrderCalculateResponse> CalculateOrder(string orderID, DecodedToken decodedToken)
-        {
+		/// <summary>
+		/// Public re-usable CalculateOrder task method
+		/// </summary>
+		/// <param name="orderID"></param>
+		/// <param name="decodedToken"></param>
+		/// <returns>The HSOrderCalculateResponse response object from the CalculateOrder process</returns>
+		public async Task<HSOrderCalculateResponse> CalculateOrder(string orderID, DecodedToken decodedToken)
+		{
             var worksheet = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID, decodedToken.AccessToken);
-            return await this.CalculateOrder(new HSOrderCalculatePayload()
-            {
-                ConfigData = null,
+			return await this.CalculateOrder(new HSOrderCalculatePayload()
+			{
+				ConfigData = null,
                 OrderWorksheet = worksheet,
-            });
-        }
+			});
+		}
 
-        public async Task<HSOrderCalculateResponse> CalculateOrder(HSOrderCalculatePayload orderCalculatePayload)
-        {
-            if (orderCalculatePayload.OrderWorksheet.Order.xp != null && orderCalculatePayload.OrderWorksheet.Order.xp.OrderType == OrderType.Quote)
-            {
-                // quote orders do not have tax cost associated with them
-                return new HSOrderCalculateResponse();
+		/// <summary>
+		/// Public re-usable CalculateOrder task method
+		/// </summary>
+		/// <param name="orderCalculatePayload"></param>
+		/// <returns>The HSOrderCalculateResponse response object from the CalculateOrder process</returns>
+		public async Task<HSOrderCalculateResponse> CalculateOrder(HSOrderCalculatePayload orderCalculatePayload)
+		{
+			if (orderCalculatePayload.OrderWorksheet.Order.xp != null && orderCalculatePayload.OrderWorksheet.Order.xp.OrderType == OrderType.Quote)
+			{
+				// quote orders do not have tax cost associated with them
+				return new HSOrderCalculateResponse();
             }
             else
-            {
+			{
                 var promotions = await oc.Orders.ListAllPromotionsAsync(OrderDirection.All, orderCalculatePayload.OrderWorksheet.Order.ID);
                 var promoCalculationTask = discountDistribution.SetLineItemProportionalDiscount(orderCalculatePayload.OrderWorksheet, promotions);
                 var taxCalculationTask = taxCalculator.CalculateEstimateAsync(orderCalculatePayload.OrderWorksheet.Reserialize<OrderWorksheet>(), promotions);
-                var taxCalculation = await taxCalculationTask;
-                await promoCalculationTask;
+				var taxCalculation = await taxCalculationTask;
+				await promoCalculationTask;
 
-                return new HSOrderCalculateResponse
-                {
-                    TaxTotal = taxCalculation.TotalTax,
-                    xp = new OrderCalculateResponseXp()
-                    {
+				return new HSOrderCalculateResponse
+				{
+					TaxTotal = taxCalculation.TotalTax,
+					xp = new OrderCalculateResponseXp()
+					{
                         TaxCalculation = taxCalculation,
                     },
-                };
-            }
-        }
-
-        private async Task<ShipEstimateResponse> GetRatesAsync(HSOrderWorksheet worksheet, CheckoutIntegrationConfiguration config = null)
-        {
-            var groupedLineItems = worksheet.LineItems.GroupBy(li => new AddressPair { ShipFrom = li.ShipFromAddress, ShipTo = li.ShippingAddress }).ToList();
+				};
+			}
+		}
+		
+		/// <summary>
+		/// Private re-usable GetRatesAsync task method
+		/// </summary>
+		/// <param name="worksheet"></param>
+		/// <param name="config"></param>
+		/// <returns>The ShipEstimateResponse object from the GetRates process</returns>
+		private async Task<ShipEstimateResponse> GetRatesAsync(HSOrderWorksheet worksheet, CheckoutIntegrationConfiguration config = null)
+		{
+			var groupedLineItems = worksheet.LineItems.GroupBy(li => new AddressPair { ShipFrom = li.ShipFromAddress, ShipTo = li.ShippingAddress }).ToList();
             var shipResponse = (await shippingService.GetRates(groupedLineItems, profiles)).Reserialize<HSShipEstimateResponse>(); // include all accounts at this stage so we can save on order worksheet and analyze
 
-            // Certain suppliers use certain shipping accounts. This filters available rates based on those accounts.
-            for (var i = 0; i < groupedLineItems.Count; i++)
-            {
-                var supplierID = groupedLineItems[i].First().SupplierID;
+			// Certain suppliers use certain shipping accounts. This filters available rates based on those accounts.  
+			for (var i = 0; i < groupedLineItems.Count; i++)
+			{
+				var supplierID = groupedLineItems[i].First().SupplierID;
                 var profile = profiles.FirstOrDefault(supplierID);
-                var methods = FilterMethodsBySupplierConfig(shipResponse.ShipEstimates[i].ShipMethods.Where(s => profile.CarrierAccountIDs.Contains(s.xp.CarrierAccountID)).ToList(), profile);
-                shipResponse.ShipEstimates[i].ShipMethods = methods.Select(s =>
-                {
-                    // there is logic here to support not marking up shipping over list rate. But USPS is always list rate
-                    // so adding an override to the suppliers that use USPS
+				var methods = FilterMethodsBySupplierConfig(shipResponse.ShipEstimates[i].ShipMethods.Where(s => profile.CarrierAccountIDs.Contains(s.xp.CarrierAccountID)).ToList(), profile);
+				shipResponse.ShipEstimates[i].ShipMethods = methods.Select(s =>
+				{
+					// there is logic here to support not marking up shipping over list rate. But USPS is always list rate
+					// so adding an override to the suppliers that use USPS
                     var carrier = profiles.ShippingProfiles.First(p => p.CarrierAccountIDs.Contains(s.xp?.CarrierAccountID));
-                    s.Cost = carrier.MarkupOverride ?
-                        s.xp.OriginalCost * carrier.Markup :
+					s.Cost = carrier.MarkupOverride ?
+						s.xp.OriginalCost * carrier.Markup :
                         Math.Min(s.xp.OriginalCost * carrier.Markup, s.xp.ListRate);
 
-                    return s;
-                }).ToList();
-            }
+					return s;
+				}).ToList();
+			}
 
-            var buyerCurrency = worksheet.Order.xp.Currency ?? CurrencySymbol.USD;
-
-            await shipResponse.ShipEstimates
+			var buyerCurrency = worksheet.Order.xp.Currency ?? CurrencySymbol.USD;
+			await shipResponse.ShipEstimates
                 .CheckForEmptyRates(settings.EasyPostSettings.NoRatesFallbackCost, settings.EasyPostSettings.NoRatesFallbackTransitDays)
                 .ApplyShippingLogic(worksheet, oc, settings.EasyPostSettings.FreeShippingTransitDays).Result
                 .ConvertCurrency(CurrencySymbol.USD, buyerCurrency, exchangeRates);
 
-            return shipResponse;
-        }
+			return shipResponse;
+		}
 
-        private async Task<List<HSShipEstimate>> ConvertShippingRatesCurrency(IList<HSShipEstimate> shipEstimates, CurrencySymbol shipperCurrency, CurrencySymbol buyerCurrency)
-        {
+		/// <summary>
+		/// Private re-usable ConvertShippingRatesCurrency task method
+		/// </summary>
+		/// <param name="shipEstimates"></param>
+		/// <param name="shipperCurrency"></param>
+		/// <param name="buyerCurrency"></param>
+		/// <returns>The list of HSShipEstimate objects from the ConvertShippingRatesCurrency process</returns>
+		private async Task<List<HSShipEstimate>> ConvertShippingRatesCurrency(IList<HSShipEstimate> shipEstimates, CurrencySymbol shipperCurrency, CurrencySymbol buyerCurrency)
+		{
             var rates = (await exchangeRates.Get(buyerCurrency)).Rates;
-            var conversionRate = rates.Find(r => r.Currency == shipperCurrency).Rate;
-            return shipEstimates.Select(estimate =>
-            {
-                estimate.ShipMethods = estimate.ShipMethods.Select(method =>
-                {
-                    method.xp.OriginalCurrency = shipperCurrency;
-                    method.xp.OrderCurrency = buyerCurrency;
-                    method.xp.ExchangeRate = conversionRate;
+			var conversionRate = rates.Find(r => r.Currency == shipperCurrency).Rate;
+			return shipEstimates.Select(estimate =>
+			{
+				estimate.ShipMethods = estimate.ShipMethods.Select(method =>
+				{
+					method.xp.OriginalCurrency = shipperCurrency;
+					method.xp.OrderCurrency = buyerCurrency;
+					method.xp.ExchangeRate = conversionRate;
                     if (conversionRate != null)
                     {
                         method.Cost /= (decimal)conversionRate;
                     }
 
-                    return method;
-                }).ToList();
-                return estimate;
-            }).ToList();
-        }
+					return method;
+				}).ToList();
+				return estimate;
+			}).ToList();
+		}
 
-        private async Task<List<HSShipEstimate>> ApplyFreeShipping(HSOrderWorksheet orderWorksheet, IList<HSShipEstimate> shipEstimates)
-        {
-            var supplierIDs = orderWorksheet.LineItems.Select(li => li.SupplierID);
+		/// <summary>
+		/// Private re-usable ApplyFreeShipping task method
+		/// </summary>
+		/// <param name="orderWorksheet"></param>
+		/// <param name="shipEstimates"></param>
+		/// <returns>The list of HSShipEstimate objects from the ApplyFreeShipping process</returns>
+		private async Task<List<HSShipEstimate>> ApplyFreeShipping(HSOrderWorksheet orderWorksheet, IList<HSShipEstimate> shipEstimates)
+		{
+			var supplierIDs = orderWorksheet.LineItems.Select(li => li.SupplierID);
             var suppliers = await oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={string.Join("|", supplierIDs)}");
-            var updatedEstimates = new List<HSShipEstimate>();
+			var updatedEstimates = new List<HSShipEstimate>();
 
-            foreach (var estimate in shipEstimates)
-            {
-                // get supplier and supplier subtotal
-                var supplierID = orderWorksheet.LineItems.First(li => li.ID == estimate.ShipEstimateItems.FirstOrDefault()?.LineItemID).SupplierID;
-                var supplier = suppliers.Items.FirstOrDefault(s => s.ID == supplierID);
-                var supplierLineItems = orderWorksheet.LineItems.Where(li => li.SupplierID == supplier?.ID);
-                var supplierSubTotal = supplierLineItems.Select(li => li.LineSubtotal).Sum();
+			foreach(var estimate in shipEstimates)
+			{
+				//  get supplier and supplier subtotal
+				var supplierID = orderWorksheet.LineItems.First(li => li.ID == estimate.ShipEstimateItems.FirstOrDefault()?.LineItemID).SupplierID;
+				var supplier = suppliers.Items.FirstOrDefault(s => s.ID == supplierID);
+				var supplierLineItems = orderWorksheet.LineItems.Where(li => li.SupplierID == supplier?.ID);
+				var supplierSubTotal = supplierLineItems.Select(li => li.LineSubtotal).Sum();
                 if (supplier?.xp?.FreeShippingThreshold != null && supplier.xp?.FreeShippingThreshold < supplierSubTotal)
-                {
+				{
                     // free shipping for this supplier
-                    foreach (var method in estimate.ShipMethods)
-                    {
-                        // free shipping on ground shipping or orders where we weren't able to calculate a shipping rate
-                        if (method.Name.Contains("GROUND") || method.ID == ShippingConstants.NoRatesID)
-                        {
-                            method.xp.FreeShippingApplied = true;
-                            method.xp.FreeShippingThreshold = supplier.xp.FreeShippingThreshold;
-                            method.Cost = 0;
-                        }
-                    }
-                }
-
-                updatedEstimates.Add(estimate);
-            }
-
-            return updatedEstimates;
-        }
-    }
+					foreach (var method in estimate.ShipMethods)
+					{
+						// free shipping on ground shipping or orders where we weren't able to calculate a shipping rate
+						if (method.Name.Contains("GROUND") || method.ID == ShippingConstants.NoRatesID)
+						{
+							method.xp.FreeShippingApplied = true;
+							method.xp.FreeShippingThreshold = supplier.xp.FreeShippingThreshold;
+							method.Cost = 0;
+						}
+					}
+				}
+				updatedEstimates.Add(estimate);
+			}
+			return updatedEstimates;
+		}
+	}
 }

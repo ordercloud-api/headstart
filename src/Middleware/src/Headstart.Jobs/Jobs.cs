@@ -50,7 +50,6 @@ namespace Headstart.Jobs
         public async Task ReceiveRecentProductDetails([TimerTrigger("0 7 * * *")] TimerInfo myTimer, ILogger logger) => await receiveProductDetailsJob.Run(logger);
 
         [FunctionName("SendRecentOrders")]
-
         // Runs every ten minutes
         public async Task ListRecentOrders([TimerTrigger("0 */10 * * * *")] TimerInfo myTimer, ILogger logger) => await sendRecentOrdersJob.Run(logger);
 

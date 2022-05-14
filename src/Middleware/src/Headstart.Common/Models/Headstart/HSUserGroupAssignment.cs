@@ -2,8 +2,8 @@
 
 namespace Headstart.Models
 {
-    public class HSUserGroupAssignment : UserGroupAssignment, IHSObject
-    {
-        public string ID { get; set; }
-    }
+	public class HSUserGroupAssignment : UserGroupAssignment, IHSObject
+	{
+		public string ID { get; set; }
+	}
 }

@@ -23,7 +23,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.3.0" />
+	<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.7.0" />
     <PackageReference Include="Cosmonaut.Extensions.Microsoft.DependencyInjection" Version="2.3.0" />
     <PackageReference Include="CreditCardValidator" Version="1.4.6" />
     <PackageReference Include="CsvHelper" Version="15.0.5" />
@@ -54,6 +54,7 @@
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.TaxJar\OrderCloud.Integrations.TaxJar.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.EasyPost\OrderCloud.Integrations.EasyPost.csproj" />
     <ProjectReference Include="..\..\integrations\Ordercloud.Integrations.Vertex\Ordercloud.Integrations.Vertex.csproj" />
+    <ProjectReference Include="..\Sitecore.Foundation.SitecoreExtensions\code\Sitecore.Foundation.SitecoreExtensions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -71,6 +72,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\..\Program Files (x86)\dotnet\sdk\NuGetFallbackFolder\newtonsoft.json\9.0.1\lib\netstandard1.0\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc">
+      <HintPath>..\..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
     </Reference>
   </ItemGroup>
 
