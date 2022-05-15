@@ -84,7 +84,6 @@ export async function createDefaultProduct(
 			Inventory: null,
 			DefaultSupplierID: null,
 			xp: {
-				ArtworkRequired: false,
 				//@ts-ignore
 				IntegrationData: null,
 				IsResale: false,
@@ -93,7 +92,6 @@ export async function createDefaultProduct(
 				//@ts-ignore
 				Images: [],
 				Status: 'Draft',
-				HasVariants: false,
 				Note: '',
 				Tax: {
 					Category: 'FR000000',

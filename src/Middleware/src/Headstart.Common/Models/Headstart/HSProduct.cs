@@ -18,13 +18,6 @@ namespace Headstart.Models
         Quote,
     }
 
-    public enum ProductAccessorial
-    {
-        Freezable = 6,
-        Hazmat = 7,
-        KeepFromFreezing = 8,
-    }
-
     public class SuperHSProduct : IHSObject
     {
         public string ID { get; set; }
@@ -83,8 +76,6 @@ namespace Headstart.Models
         [System.ComponentModel.DataAnnotations.Required]
         public ObjectStatus? Status { get; set; }
 
-        public bool HasVariants { get; set; }
-
         [MaxLength(500), OrchestrationIgnore]
         public string Note { get; set; }
 
@@ -98,12 +89,8 @@ namespace Headstart.Models
 
         public bool IsResale { get; set; } = false;
 
-        public List<ProductAccessorial> Accessorials { get; set; }
-
         [JsonConverter(typeof(StringEnumConverter))]
         public CurrencySymbol? Currency { get; set; } = null;
-
-        public bool? ArtworkRequired { get; set; } = false;
 
         public bool PromotionEligible { get; set; }
 

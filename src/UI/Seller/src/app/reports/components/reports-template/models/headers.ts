@@ -143,10 +143,6 @@ export const lineItemDetail = [
     value: 'Unit of Measure',
     path: 'HSLineItem.Product.xp.UnitOfMeasure.Unit',
   },
-  {
-    value: 'Has Variants?',
-    path: 'HSLineItem.Product.xp.HasVariants',
-  },
   { value: 'Ship Method', path: 'HSLineItem.xp.ShipMethod' },
   {
     value: 'Shipping First Name',
@@ -270,7 +266,6 @@ export const productDetail = [
   { value: 'Size Tier', path: 'Data.SizeTier' },
   { value: 'Resale', path: 'Data.Resale' },
   { value: 'Currency', path: 'Data.Currency' },
-  { value: 'Artwork Required', path: 'Data.ArtworkRequired' },
   { value: '3 Month Sales', path: 'ProductSales.ThreeMonthQuantity' },
   { value: '6 Month Sales', path: 'ProductSales.SixMonthQuantity' },
   { value: '12 Month Sales', path: 'ProductSales.TwelveMonthQuantity' },

@@ -40,7 +40,6 @@ export class ProductService extends ResourceCrudService<Product> {
         Facets: {},
         Images: [],
         Status: null,
-        HasVariants: false,
         Note: '',
         Tax: {
           Category: null, // SEB-827 default tax category to TPP
@@ -53,7 +52,6 @@ export class ProductService extends ResourceCrudService<Product> {
         },
         ProductType: null,
         StaticContent: null,
-        ArtworkRequired: false,
         FreeShipping: false,
         FreeShippingMessage: 'Free Shipping',
       },

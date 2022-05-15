@@ -229,11 +229,6 @@ namespace Headstart.Jobs
                 result.Currency = productXp.Currency;
             }
 
-            if (PropertyExists(productXp, "ArtworkRequired"))
-            {
-                result.ArtworkRequired = productXp.ArtworkRequired;
-            }
-
             if (supplier != null)
             {
                 result.SupplierID = supplier?.ID;

@@ -171,7 +171,6 @@ export const LINE_ITEM_HEADERS = [
     "HSLineItem.Product.xp.IsResale",
     "HSLineItem.Product.xp.UnitOfMeasure.Qty",
     "HSLineItem.Product.xp.UnitOfMeasure.Unit",
-    "HSLineItem.Product.xp.HasVariants",
     "HSLineItem.xp.ShipMethod",
     "HSLineItem.ShippingAddress.FirstName",
     "HSLineItem.ShippingAddress.LastName",

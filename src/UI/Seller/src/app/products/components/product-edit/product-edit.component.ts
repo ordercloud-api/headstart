@@ -352,9 +352,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
             _get(superHSProduct.Product, 'xp.UnitOfMeasure.Qty'),
             Validators.required
           ),
-          ArtworkRequired: new FormControl(
-            _get(superHSProduct.Product, 'xp.ArtworkRequired')
-          ),
           FreeShipping: new FormControl(
             _get(superHSProduct.Product, 'xp.FreeShipping')
           ),
@@ -646,7 +643,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       'Product.Inventory.Enabled',
       'Product.Inventory.OrderCanExceed',
       'Product.Inventory.VariantLevelTracking',
-      'Product.xp.ArtworkRequired',
       'Product.xp.FreeShipping',
     ]
     const productUpdate = {

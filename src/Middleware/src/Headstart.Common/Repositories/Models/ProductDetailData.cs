@@ -48,8 +48,6 @@ namespace Headstart.Common.Repositories.Models
 
         public string Currency { get; set; }
 
-        public bool? ArtworkRequired { get; set; }
-
         public string VariantID { get; set; }
 
         public bool VariantActive { get; set; }
