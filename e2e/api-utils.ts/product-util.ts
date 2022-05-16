@@ -103,8 +103,6 @@ export async function createDefaultProduct(
 					Qty: '1',
 				},
 				ProductType: 'Standard',
-				//@ts-ignore
-				StaticContent: null,
 				Currency: 'USD',
 				//@ts-ignore
 				SizeTier: 'A',
