@@ -4,12 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using OrderCloud.Integrations.Library;
-using OrderCloud.SDK;
-using Newtonsoft.Json;
 using Flurl.Http.Configuration;
+using Newtonsoft.Json;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.ExchangeRates.Models;
+using OrderCloud.Integrations.Library;
+using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.ExchangeRates
 {

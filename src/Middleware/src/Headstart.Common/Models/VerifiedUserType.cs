@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json.Converters;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
+using Newtonsoft.Json.Converters;
 
 namespace Headstart.Models.Headstart
 {

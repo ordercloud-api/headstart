@@ -1,10 +1,10 @@
-﻿using Headstart.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Headstart.Models;
 using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
 using OrderCloud.SDK;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using static Headstart.Common.Models.SendGridModels;
 
 namespace Headstart.Common.Mappers

@@ -1,6 +1,6 @@
-﻿using OrderCloud.SDK;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using OrderCloud.SDK;
 using OCLineItem = OrderCloud.SDK.LineItem;
 using TaxJarLineItem = Taxjar.LineItem;
 using TaxJarOrder = Taxjar.Order;

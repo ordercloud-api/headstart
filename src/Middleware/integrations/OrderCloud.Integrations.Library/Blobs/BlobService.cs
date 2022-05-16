@@ -1,13 +1,13 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Blob;
-using System.IO;
+using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 
 namespace OrderCloud.Integrations.Library
 {

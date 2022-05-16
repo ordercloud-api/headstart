@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.DependencyInjection;
 using OrderCloud.Integrations.Library.Cosmos;
 
 namespace OrderCloud.Integrations.Library

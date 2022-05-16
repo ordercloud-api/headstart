@@ -1,6 +1,6 @@
 ﻿using System.Linq;
-using OrderCloud.Integrations.Library.Cosmos;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Library.Cosmos;
 
 namespace OrderCloud.Integrations.Library
 {

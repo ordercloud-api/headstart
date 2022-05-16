@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Cosmonaut.Attributes;
+using Microsoft.Azure.CosmosDB.BulkExecutor;
+using Microsoft.Azure.CosmosDB.BulkExecutor.BulkDelete;
+using Microsoft.Azure.CosmosDB.BulkExecutor.BulkImport;
+using Microsoft.Azure.CosmosDB.BulkExecutor.BulkUpdate;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
-using Microsoft.Azure.CosmosDB.BulkExecutor;
-using Microsoft.Azure.CosmosDB.BulkExecutor.BulkUpdate;
-using Microsoft.Azure.CosmosDB.BulkExecutor.BulkDelete;
-using System.Linq;
 using Microsoft.Azure.Documents.Linq;
-using Cosmonaut.Attributes;
 using Newtonsoft.Json.Linq;
-using System.Reflection;
-using Microsoft.Azure.CosmosDB.BulkExecutor.BulkImport;
 
 namespace OrderCloud.Integrations.Library.Cosmos
 {

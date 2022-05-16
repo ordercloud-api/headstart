@@ -1,6 +1,6 @@
-﻿using Cosmonaut.Attributes;
+﻿using System.Collections.Generic;
+using Cosmonaut.Attributes;
 using Newtonsoft.Json;
-using System.Collections.Generic;
 using Newtonsoft.Json.Converters;
 using OrderCloud.Integrations.Library.Cosmos;
 

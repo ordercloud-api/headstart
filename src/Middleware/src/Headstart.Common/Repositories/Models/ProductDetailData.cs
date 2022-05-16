@@ -1,7 +1,7 @@
-﻿using Headstart.Models;
+﻿using System;
+using Headstart.Models;
 using OrderCloud.Integrations.Library.Cosmos;
 using OrderCloud.SDK;
-using System;
 
 namespace Headstart.Common.Repositories.Models
 {

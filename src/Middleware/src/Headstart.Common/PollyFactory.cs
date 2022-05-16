@@ -1,8 +1,8 @@
-﻿using Flurl.Http.Configuration;
-using Polly;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Flurl.Http.Configuration;
+using Polly;
 
 namespace Headstart.Common
 {

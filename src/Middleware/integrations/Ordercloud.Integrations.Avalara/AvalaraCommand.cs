@@ -1,11 +1,11 @@
-﻿using Avalara.AvaTax.RestClient;
-using OrderCloud.SDK;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
+using Avalara.AvaTax.RestClient;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Avalara.Mappers;
+using OrderCloud.SDK;
 using ITaxCalculator = OrderCloud.Integrations.Library.Interfaces.ITaxCalculator;
 using ITaxCodesProvider = OrderCloud.Integrations.Library.Interfaces.ITaxCodesProvider;
 using OrderTaxCalculation = OrderCloud.Integrations.Library.Interfaces.OrderTaxCalculation;

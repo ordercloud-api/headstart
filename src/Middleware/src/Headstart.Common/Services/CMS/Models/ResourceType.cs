@@ -1,5 +1,5 @@
-﻿using OrderCloud.Integrations.Library;
-using System;
+﻿using System;
+using OrderCloud.Integrations.Library;
 
 namespace Headstart.Common.Services.CMS.Models
 {

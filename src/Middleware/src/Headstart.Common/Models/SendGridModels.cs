@@ -1,6 +1,6 @@
-﻿using Headstart.Models;
+﻿using System.Collections.Generic;
+using Headstart.Models;
 using OrderCloud.SDK;
-using System.Collections.Generic;
 
 namespace Headstart.Common.Models
 {

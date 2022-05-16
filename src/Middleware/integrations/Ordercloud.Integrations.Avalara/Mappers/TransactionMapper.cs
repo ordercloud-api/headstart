@@ -1,8 +1,8 @@
-using Avalara.AvaTax.RestClient;
-using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Avalara.AvaTax.RestClient;
+using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.Avalara.Mappers
 {

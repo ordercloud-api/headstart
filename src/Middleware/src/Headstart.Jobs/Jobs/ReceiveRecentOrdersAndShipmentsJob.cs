@@ -1,13 +1,13 @@
-﻿using Headstart.Common.Models;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Headstart.Common.Models;
 using Headstart.Common.Repositories;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Jobs.Helpers;
-using OrderCloud.Integrations.Library;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Headstart.Jobs
 {

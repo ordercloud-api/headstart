@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using OrderCloud.Catalyst;
+﻿using System.Threading.Tasks;
 using Headstart.Common.Services.CMS;
 using Headstart.Common.Services.CMS.Models;
 using Headstart.Models;
+using Microsoft.AspNetCore.Mvc;
+using OrderCloud.Catalyst;
 
 namespace Headstart.API.Controllers
 {

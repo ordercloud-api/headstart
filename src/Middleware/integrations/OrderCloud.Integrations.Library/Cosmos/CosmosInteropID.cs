@@ -4,7 +4,7 @@ namespace OrderCloud.Integrations.Library.Cosmos
 {
     public static class CosmosInteropID
     {
-        public const string VALIDATION_REGEX = @"^[a-zA-Z0-9-_{}]+$";
+        public const string ValidationRegex = @"^[a-zA-Z0-9-_{}]+$";
 
         public static string New()
         {

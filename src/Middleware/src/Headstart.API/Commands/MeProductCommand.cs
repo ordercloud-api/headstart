@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Headstart.Common;
 using Headstart.Common.Services;
 using Headstart.Models;
 using Headstart.Models.Misc;
-using OrderCloud.Integrations.ExchangeRates;
-using OrderCloud.SDK;
 using OrderCloud.Catalyst;
-using Headstart.Common;
+using OrderCloud.Integrations.ExchangeRates;
 using OrderCloud.Integrations.ExchangeRates.Models;
+using OrderCloud.SDK;
 using Sitecore.Foundation.SitecoreExtensions.Extensions;
 using SitecoreExtensions = Sitecore.Foundation.SitecoreExtensions.Extensions;
 

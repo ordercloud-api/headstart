@@ -1,10 +1,10 @@
-﻿using Headstart.Common;
+﻿using System.Threading.Tasks;
+using Headstart.Common;
 using Headstart.Common.Services;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 namespace Headstart.Jobs
 {

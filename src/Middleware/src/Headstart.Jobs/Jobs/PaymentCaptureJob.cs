@@ -1,19 +1,19 @@
-﻿using Headstart.API.Commands;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Headstart.API.Commands;
 using Headstart.Common;
 using Headstart.Common.Models;
 using Headstart.Models;
 using Headstart.Models.Headstart;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using OrderCloud.Catalyst;
 using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.CardConnect.Mappers;
 using OrderCloud.Integrations.CardConnect.Models;
-using OrderCloud.Catalyst;
 using OrderCloud.SDK;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Headstart.Jobs
 {

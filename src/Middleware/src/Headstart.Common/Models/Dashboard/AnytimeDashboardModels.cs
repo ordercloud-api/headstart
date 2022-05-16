@@ -1,7 +1,7 @@
-﻿using Headstart.Models;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Headstart.Models;
+using Newtonsoft.Json;
 
 namespace Headstart.Common.Models
 {

@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models.Extended;
-using System.Collections.Generic;
 
 namespace Headstart.Models.Headstart
 {

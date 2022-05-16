@@ -1,8 +1,8 @@
-﻿using Flurl.Http;
-using OrderCloud.Integrations.Vertex.Models;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Flurl.Http;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Vertex.Models;
 
 namespace OrderCloud.Integrations.Vertex
 {

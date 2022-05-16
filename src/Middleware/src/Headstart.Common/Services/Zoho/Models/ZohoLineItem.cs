@@ -10,8 +10,8 @@ namespace Headstart.Common.Services.Zoho.Models
 	}
 	public class ZohoLineItem
 	{
+        public string item_id { get; set; }
 
-		public string item_id { get; set; }
 		public string line_item_id { get; set; }
 		public string name { get; set; }
 		public string description { get; set; }
