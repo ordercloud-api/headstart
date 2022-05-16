@@ -1,15 +1,15 @@
-using Headstart.Models;
-using Microsoft.AspNetCore.Mvc;
-using OrderCloud.SDK;
-using System.Threading.Tasks;
 using System.Collections.Generic;
-using OrderCloud.Integrations.Library;
-using Headstart.Models.Headstart;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using OrderCloud.Integrations.CardConnect.Models;
+using System.Threading.Tasks;
 using Headstart.API.Commands;
-using OrderCloud.Catalyst;
 using Headstart.Common.Models;
+using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Models;
+using Headstart.Models.Headstart;
+using Microsoft.AspNetCore.Mvc;
+using OrderCloud.Catalyst;
+using OrderCloud.Integrations.CardConnect.Models;
+using OrderCloud.Integrations.Library;
+using OrderCloud.SDK;
 
 namespace Headstart.Common.Controllers
 {

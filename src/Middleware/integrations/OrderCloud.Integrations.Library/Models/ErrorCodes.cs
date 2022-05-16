@@ -1,6 +1,6 @@
-﻿using OrderCloud.Catalyst;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net;
+using OrderCloud.Catalyst;
 
 namespace OrderCloud.Integrations.Library.Models
 {

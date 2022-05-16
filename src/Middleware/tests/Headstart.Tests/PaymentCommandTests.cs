@@ -1,12 +1,12 @@
-﻿using NUnit.Framework;
-using NSubstitute;
-using OrderCloud.SDK;
-using System.Threading.Tasks;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Models.Headstart;
-using Headstart.Models;
-using Headstart.Tests.Mocks;
+﻿using System.Threading.Tasks;
 using Headstart.API.Commands;
+using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Models;
+using Headstart.Models.Headstart;
+using Headstart.Tests.Mocks;
+using NSubstitute;
+using NUnit.Framework;
+using OrderCloud.SDK;
 
 namespace Headstart.Tests
 {
@@ -42,7 +42,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_delete_stale_payments()
+        public async Task SavePayments_WithStalePayments_RemovesStalePayments()
         {
             // Arrange
             var mockedCreditCardTotal = 20;
@@ -60,7 +60,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_handle_new_cc_payment()
+        public async Task SavePayments_WithNewCreditCardPayment_CallsOrderCloudPayment()
         {
             // Arrange
             var mockedCreditCardTotal = 20;
@@ -78,11 +78,8 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_handle_same_cc_different_amount()
+        public async Task SavePayments_WithDifferentCreditCardPaymentAmount_VoidsExistingTransaction()
         {
-            // if the credit card hasn't changed but the amount has
-            // then we should void any existing transactions if necessary and update the payment
-
             // Arrange
             var mockedCreditCardTotal = 20;
             var existing = PaymentMocks.PaymentList(PaymentMocks.CCPayment(creditcard1, 30));
@@ -100,7 +97,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_handle_different_cc_same_amount()
+        public async Task SavePayments_WithDifferentCreditCard_UpdatesPaymentsAndVoidsTransaction()
         {
             // if the credit card has changed we need to delete the payment
             // but should void the existing authorization before that
@@ -122,29 +119,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_handle_different_cc_different_amount()
-        {
-            // if the credit card has changed we need to delete the payment
-            // but should void the existing authorization before that
-
-            // Arrange
-            var mockedCreditCardTotal = 20;
-            var existing = PaymentMocks.PaymentList(PaymentMocks.CCPayment(creditcard1, 40, mockCCPaymentID));
-            oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, mockOrderID)
-                .Returns(Task.FromResult(existing));
-            var requested = PaymentMocks.Payments(PaymentMocks.CCPayment(creditcard2));
-
-            // Act
-            var result = await sut.SavePayments(mockOrderID, requested, mockUserToken);
-
-            // Assert
-            await oc.Payments.Received().DeleteAsync(OrderDirection.Incoming, mockOrderID, mockCCPaymentID);
-            await ccCommand.Received().VoidTransactionAsync(Arg.Is<HSPayment>(p => p.ID == mockCCPaymentID), Arg.Is<HSOrder>(o => o.ID == mockOrderID), mockUserToken);
-            await oc.Payments.Received().CreateAsync<HSPayment>(OrderDirection.Outgoing, mockOrderID, Arg.Is<HSPayment>(p => p.CreditCardID == creditcard2 && p.Amount == mockedCreditCardTotal && p.Accepted == false), mockUserToken);
-        }
-
-        [Test]
-        public async Task should_handle_same_cc_same_amount()
+        public async Task SavePayments_WithSameCreditCardDetails_DoesNotUpdatePayments()
         {
             // do nothing, payment doesn't need updating
 
@@ -165,7 +140,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_handle_new_po_payment()
+        public async Task SavePayments_WithPurchaseOrderPayment_CreatesPayment()
         {
             // Arrange
             var mockedPOTotal = 20;
@@ -182,7 +157,7 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task should_handle_existing_po_payment()
+        public async Task SavePayments_WithDifferentPurchaseOrderAmount_UpdatesPayments()
         {
             // Arrange
             var mockedPOTotal = 20;

@@ -1,22 +1,22 @@
-﻿using OrderCloud.SDK;
-using System.Threading.Tasks;
-using OrderCloud.Integrations.Library;
-using Headstart.Common.Models;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Headstart.Common;
+using Headstart.Common.Models;
 using Headstart.Common.Repositories;
+using Headstart.Common.Services;
+using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Models;
+using Headstart.Models.Extended;
+using Headstart.Models.Headstart;
 using Microsoft.Azure.Cosmos;
 using OrderCloud.Catalyst;
-using Headstart.Models;
-using System.Collections.Generic;
-using Headstart.Models.Headstart;
 using OrderCloud.Integrations.CardConnect;
-using Headstart.Common.Services;
-using System;
-using Headstart.Models.Extended;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Common;
-using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.Integrations.CardConnect.Mappers;
+using OrderCloud.Integrations.CardConnect.Models;
+using OrderCloud.Integrations.Library;
+using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
 {
@@ -41,7 +41,7 @@ namespace Headstart.API.Commands
 
     public class RMACommand : IRMACommand
     {
-        private const string QUEUED_FOR_CAPTURE = "Queued for Capture";
+        private const string QueuedForCapture = "Queued for Capture";
         private readonly IOrderCloudClient oc;
         private readonly IRMARepo rmaRepo;
         private readonly IOrderCloudIntegrationsCardConnectService cardConnect;
@@ -344,7 +344,7 @@ namespace Headstart.API.Commands
             rma.TotalCredited += totalToRefund;
 
             // Transactions that are queued for capture can only be fully voided, and we are only allowing partial voids moving forward.
-            if (inquiry.voidable == "Y" && inquiry.setlstat == QUEUED_FOR_CAPTURE)
+            if (inquiry.voidable == "Y" && inquiry.setlstat == QueuedForCapture)
             {
                 throw new CatalystBaseException(new ApiError
                 {

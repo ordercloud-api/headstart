@@ -1,13 +1,13 @@
-﻿using Avalara.AvaTax.RestClient;
-using OrderCloud.Integrations.Library.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Avalara.AvaTax.RestClient;
+using OrderCloud.Integrations.Library.Interfaces;
 
 namespace OrderCloud.Integrations.Avalara.Tests.Mocks
 {
     public class MockTaxCodes
     {
-        public static FetchResult<TaxCodeModel> taxCodeObjectFromAvalaraFirstRecord()
+        public static FetchResult<TaxCodeModel> TaxCodeObjectFromAvalaraFirstRecord()
         {
             return new FetchResult<TaxCodeModel>()
             {
@@ -35,7 +35,7 @@ namespace OrderCloud.Integrations.Avalara.Tests.Mocks
             };
         }
 
-        public static FetchResult<TaxCodeModel> taxCodeObjectFromAvalaraSecondRecord()
+        public static FetchResult<TaxCodeModel> TaxCodeObjectFromAvalaraSecondRecord()
         {
             return new FetchResult<TaxCodeModel>()
             {
@@ -63,7 +63,7 @@ namespace OrderCloud.Integrations.Avalara.Tests.Mocks
             };
         }
 
-        public static FetchResult<TaxCodeModel> taxCodeObjectFromAvalaraAllRecords()
+        public static FetchResult<TaxCodeModel> TaxCodeObjectFromAvalaraAllRecords()
         {
             return new FetchResult<TaxCodeModel>()
             {
@@ -108,7 +108,7 @@ namespace OrderCloud.Integrations.Avalara.Tests.Mocks
             };
         }
 
-        public static List<TaxCategorization> headstartTaxCodeListPageFirstRecord()
+        public static List<TaxCategorization> HeadstartTaxCodeListPageFirstRecord()
         {
             return new List<TaxCategorization>
             {
@@ -120,7 +120,7 @@ namespace OrderCloud.Integrations.Avalara.Tests.Mocks
             };
         }
 
-        public static List<TaxCategorization> headstartTaxCodeListPageSecondRecord()
+        public static List<TaxCategorization> HeadstartTaxCodeListPageSecondRecord()
         {
             return new List<TaxCategorization>
             {
@@ -132,7 +132,7 @@ namespace OrderCloud.Integrations.Avalara.Tests.Mocks
             };
         }
 
-        public static List<TaxCategorization> headstartTaxCodeListPageAllRecords()
+        public static List<TaxCategorization> HeadstartTaxCodeListPageAllRecords()
         {
             return new List<TaxCategorization>
             {

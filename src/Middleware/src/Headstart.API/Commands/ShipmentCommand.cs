@@ -1,11 +1,3 @@
-using Headstart.Common;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Models.Extended;
-using Headstart.Models.Headstart;
-using Microsoft.AspNetCore.Http;
-using Npoi.Mapper;
-using OrderCloud.Catalyst;
-using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,6 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Headstart.Common;
+using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Models.Extended;
+using Headstart.Models.Headstart;
+using Microsoft.AspNetCore.Http;
+using Npoi.Mapper;
+using OrderCloud.Catalyst;
+using OrderCloud.SDK;
 using Misc = Headstart.Common.Models.Misc;
 
 namespace Headstart.API.Commands

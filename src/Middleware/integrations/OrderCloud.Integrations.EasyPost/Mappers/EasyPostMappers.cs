@@ -1,7 +1,7 @@
-using OrderCloud.Integrations.EasyPost.Models;
-using OrderCloud.SDK;
 using System.Collections.Generic;
 using System.Linq;
+using OrderCloud.Integrations.EasyPost.Models;
+using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.EasyPost.Mappers
 {
@@ -121,7 +121,7 @@ namespace OrderCloud.Integrations.EasyPost.Mappers
                 origin_country = lineItem.ShipFromAddress.Country,
                 value = decimal.ToDouble(lineItem.LineSubtotal),
                 quantity = lineItem.Quantity,
-                weight = lineItem.ShipWeightOrDefault(Package.DEFAULT_WEIGHT),
+                weight = lineItem.ShipWeightOrDefault(Package.DefaultWeight),
             })
                 .ToList();
         }

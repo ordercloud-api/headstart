@@ -42,7 +42,7 @@ namespace OrderCloud.Integrations.CardConnect.Tests
     {
         private HttpTest http;
         private OrderCloudIntegrationsCardConnectService service;
-        private OrderCloudIntegrationsCardConnectService service_no_config;
+        private OrderCloudIntegrationsCardConnectService serviceNoConfig;
 
         [SetUp]
         public void Setup()
@@ -58,7 +58,7 @@ namespace OrderCloud.Integrations.CardConnect.Tests
                 AppEnvironment.Test.ToString(),
                 new PerBaseUrlFlurlClientFactory());
 
-            service_no_config = new OrderCloudIntegrationsCardConnectService(new OrderCloudIntegrationsCardConnectConfig() { }, AppEnvironment.Test.ToString(), new PerBaseUrlFlurlClientFactory());
+            serviceNoConfig = new OrderCloudIntegrationsCardConnectService(new OrderCloudIntegrationsCardConnectConfig() { }, AppEnvironment.Test.ToString(), new PerBaseUrlFlurlClientFactory());
         }
 
         [TearDown]
@@ -68,42 +68,66 @@ namespace OrderCloud.Integrations.CardConnect.Tests
         }
 
         [Test]
-        public void to_credit_card_display_test()
+        public void ToCreditCardDisplay_ReturnsMaskedNumber()
         {
-            var visa = "4444333322221111".ToCreditCardDisplay();
-            Assert.AreEqual("1111", visa);
+            // Arrange
 
+            // Act
+            var visa = "4444333322221111".ToCreditCardDisplay();
             var amex = "373485467448025".ToCreditCardDisplay();
+
+            // Assert
+            Assert.AreEqual("1111", visa);
             Assert.AreEqual("8025", amex);
         }
 
         [Test]
-        public void verify_mock_responses_Auth()
+        public void AuthWithCapture_WithoutCredentials_ReturnsMockResponse()
         {
-            var response = service_no_config.AuthWithCapture(new CardConnectAuthorizationRequest() { amount = "10000" });
+            // Arrange
+
+            // Act
+            var response = serviceNoConfig.AuthWithCapture(new CardConnectAuthorizationRequest() { amount = "10000" });
+
+            // Assert
             Assert.AreEqual("Mock Response", response.Result.commcard);
         }
 
         [Test]
-        public void verify_mock_responses_Tokenize()
+        public void Tokenize_WithoutCredentials_ReturnsMockResponse()
         {
-            var response = service_no_config.Tokenize(new CardConnectAccountRequest() { account = "super_sweet_account" });
+            // Arrange
+
+            // Act
+            var response = serviceNoConfig.Tokenize(new CardConnectAccountRequest() { account = "super_sweet_account" });
+
+            // Assert
             Assert.AreEqual("Mock CardConnect account response", response.Result.message);
         }
 
         [Test]
-        public async Task verify_correct_auth_url_called()
+        public async Task AuthWithoutCapture_WithCredentials_CallsConstructedUrl()
         {
+            // Arrange
             http.RespondWith(@"{'respstat': 'A', 'respcode': '00', 'cvvresp': 'M', 'avsresp': 'X'}");
+
+            // Act
             await service.AuthWithoutCapture(new CardConnectAuthorizationRequest());
+
+            // Assert
             http.ShouldHaveCalled("https://fts-uat.cardconnect.com/cardconnect/rest/auth");
         }
 
         [Test]
-        public async Task verify_correct_tokenize_url_called()
+        public async Task Tokenize_WithCredentials_CallsConstructedUrl()
         {
+            // Arrange
             http.RespondWith(@"{'account': 'test'}");
+
+            // Act
             await service.Tokenize(new CardConnectAccountRequest());
+
+            // Assert
             http.ShouldHaveCalled("https://fts-uat.cardconnect.com/cardsecure/api/v1/ccn/tokenize");
         }
 
@@ -112,46 +136,67 @@ namespace OrderCloud.Integrations.CardConnect.Tests
         [TestCase(@"{'respstat': 'A', 'respcode': '00', 'cvvresp': 'M', 'avsresp': 'X'}", ResponseStatus.Approved)]
         [TestCase(@"{'respstat': 'A', 'respcode': '000', 'cvvresp': 'M', 'avsresp': 'X'}", ResponseStatus.Approved)]
         [TestCase(@"{'respstat': 'A', 'respcode': '0', 'cvvresp': 'N', 'avsresp': 'Z'}", ResponseStatus.Approved)]
-        public async Task auth_success_attempt_test(string body, ResponseStatus result)
+        public async Task AuthWithoutCapture_WithCredentials_ReturnsApprovedResponseStatus(string body, ResponseStatus result)
         {
+            // Arrange
             http.RespondWith(body);
+
+            // Act
             var call = await service.AuthWithoutCapture(new CardConnectAuthorizationRequest());
+
+            // Assert
             Assert.That(call.respstat.ToResponseStatus() == result);
         }
 
         [Test, TestCaseSource(typeof(ResponseCodeFactory), nameof(ResponseCodeFactory.AuthFailCases))]
-        public void auth_failure_attempt_tests(string body)
+        public void AuthWithoutCapture_WithUnsuccessfulResponse_ThrowsCreditCardAuthorizationException(string body)
         {
+            // Arrange
             http.RespondWith(body);
+
+            // Act/Assert
             var ex = Assert.ThrowsAsync<CreditCardAuthorizationException>(() => service.AuthWithoutCapture(new CardConnectAuthorizationRequest() { cvv2 = "112" }));
         }
 
         [Test]
-        [TestCase(@"{'respstat': 'A', 'respcode': '0', 'authcode': 'REVERS'}", ResponseStatus.Approved)]
-        public async Task void_success_attempt_test(string body, ResponseStatus result)
+        [TestCase(@"{'respstat': 'A', 'respcode': '0', 'authcode': 'REVERS'}")]
+        public async Task VoidAuthorization_WithSuccessfulResponse_ReturnsSuccessfulResponse(string body)
         {
+            // Arrange
             http.RespondWith(body);
+
+            // Act
             var call = await service.VoidAuthorization(new CardConnectVoidRequest());
+
+            // Assert
             Assert.IsTrue(call.WasSuccessful());
         }
 
         [Test, TestCaseSource(typeof(ResponseCodeFactory), nameof(ResponseCodeFactory.VoidFailCases))]
-        public void void_failure_attempt_tests(string body)
+        public void VoidAuthorization_WithUnsuccessfulResponse_ThrowsCreditCardVoidException(string body)
         {
+            // Arrange
             http.RespondWith(body);
+
+            // Act/Assert
             var ex = Assert.ThrowsAsync<CreditCardVoidException>(() => service.VoidAuthorization(new CardConnectVoidRequest() { }));
         }
 
         [Test]
         [TestCase(@"{'respstat': 'A', 'respcode': '00', 'cvvresp': 'P', 'avsresp': 'Y'}", ResponseStatus.Approved)]
         [TestCase(@"{'respstat': 'A', 'respcode': '00', 'cvvresp': null, 'avsresp': 'Y'}", ResponseStatus.Approved)]
-        public async Task auth_success_attempt_without_cvv_auth_test(string body, ResponseStatus result)
+        public async Task AuthWithoutCapture_WithoutCvv_ReturnsSuccessfulResponse(string body, ResponseStatus result)
         {
+            // Arrange
             http.RespondWith(body);
+
+            // Act
             var call = await service.AuthWithoutCapture(new CardConnectAuthorizationRequest()
             {
                 cvv2 = null,
             });
+
+            // Assert
             Assert.That(call.respstat.ToResponseStatus() == result);
         }
     }

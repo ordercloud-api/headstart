@@ -1,33 +1,26 @@
-using Headstart.Common.Services;
-using OrderCloud.SDK;
-using NSubstitute;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Headstart.Models.Headstart;
-using Headstart.Models;
-using Headstart.Common;
 using System.Linq;
-using SendGrid.Helpers.Mail;
-using NSubstitute.Extensions;
+using System.Threading.Tasks;
 using AutoFixture;
-using SendGrid;
+using Headstart.Common;
+using Headstart.Common.Services;
 using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Models;
+using Headstart.Models.Headstart;
+using NSubstitute;
+using NSubstitute.Extensions;
+using NUnit.Framework;
 using OrderCloud.Integrations.ExchangeRates.Models;
 using OrderCloud.Integrations.Library.Interfaces;
+using OrderCloud.SDK;
+using SendGrid;
+using SendGrid.Helpers.Mail;
 
 namespace Headstart.Tests
 {
     public class SendgridTests
     {
-        private const string ORDER_SUBMIT_TEMPLATE_ID = "order_submit_template_id";
-        private const string LINE_ITEM_STATUS_CHANGE = "line_item_status_change";
-        private const string QUOTE_ORDER_SUBMIT_TEMPLATE_ID = "quote_order_submit_template_id";
-        private const string BUYER_NEW_USER_TEMPLATE_ID = "buyer_new_user_template_id";
-        private const string BUYER_PASSWORD_RESET_TEMPLATE_ID = "buyer_password_reset_template_id";
-        private const string INFORMATION_REQUEST = "information_request";
-        private const string PRODUCT_UPDATE_TEMPLATE_ID = "product_update_template_id";
         private IOrderCloudClient oc;
         private AppSettings settings;
         private ISendGridClient sendGridClient;
@@ -44,8 +37,9 @@ namespace Headstart.Tests
         }
 
         [Test]
-        public async Task TestOrderSubmitEmail()
+        public async Task SendOrderSubmitEmail_WithValidWorksheet_SendsEmailNotifications()
         {
+            // Arrange
             var orderWorksheet = GetOrderWorksheet();
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, $"{TestConstants.OrderID}-{TestConstants.Supplier1ID}").Returns(GetSupplierWorksheet(TestConstants.Supplier1ID, TestConstants.LineItem1ID, TestConstants.LineItem1Total));
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, $"{TestConstants.OrderID}-{TestConstants.Supplier2ID}").Returns(GetSupplierWorksheet(TestConstants.Supplier2ID, TestConstants.LineItem2ID, TestConstants.LineItem2Total));
@@ -55,10 +49,6 @@ namespace Headstart.Tests
             commandSub.Configure().WhenForAnyArgs(x => x.SendSingleTemplateEmailMultipleRcpts(default, default, default, default)).DoNotCallBase();
             commandSub.Configure().WhenForAnyArgs(x => x.SendSingleTemplateEmail(default, default, default, default)).DoNotCallBase();
 
-            // act
-            await commandSub.SendOrderSubmitEmail(orderWorksheet);
-
-            // assert
             var expectedSellerEmailList = new List<EmailAddress>()
             {
                 new EmailAddress() { Email = TestConstants.SellerUser1email },
@@ -74,7 +64,11 @@ namespace Headstart.Tests
                 new EmailAddress() { Email = TestConstants.Supplier2NotificationRcpts[0] },
             };
 
-            // confirm emails sent to buyer, seller users, supplier 1 notification recipients, supplier 2 notification recipients
+            // Act
+            await commandSub.SendOrderSubmitEmail(orderWorksheet);
+
+            // Assert
+            // Confirm emails sent to buyer, seller users, supplier 1 notification recipients, supplier 2 notification recipients
             await commandSub.Configure().Received().SendSingleTemplateEmail(Arg.Any<string>(), TestConstants.BuyerEmail, Arg.Any<string>(), Arg.Any<object>());
             await commandSub.Configure().Received().SendSingleTemplateEmailMultipleRcpts(Arg.Any<string>(), Arg.Is<List<EmailAddress>>(x => EqualEmailLists(x, expectedSellerEmailList)), Arg.Any<string>(), Arg.Any<object>());
             await commandSub.Configure().Received().SendSingleTemplateEmailMultipleRcpts(Arg.Any<string>(), Arg.Is<List<EmailAddress>>(x => EqualEmailLists(x, expectedSupplier1EmailList)), Arg.Any<string>(), Arg.Any<object>());

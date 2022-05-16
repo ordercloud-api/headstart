@@ -1,13 +1,13 @@
-﻿using Headstart.Models;
-using Microsoft.AspNetCore.Mvc;
-using OrderCloud.SDK;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using Headstart.Common.Models;
 using Headstart.API.Commands;
-using Headstart.Models.Headstart;
-using OrderCloud.Catalyst;
+using Headstart.Common.Models;
 using Headstart.Common.Repositories.Models;
+using Headstart.Models;
+using Headstart.Models.Headstart;
+using Microsoft.AspNetCore.Mvc;
+using OrderCloud.Catalyst;
+using OrderCloud.SDK;
 
 namespace Headstart.Common.Controllers
 {

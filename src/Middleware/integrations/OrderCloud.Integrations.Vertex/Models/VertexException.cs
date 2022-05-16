@@ -1,6 +1,6 @@
-﻿using OrderCloud.Catalyst;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using OrderCloud.Catalyst;
 
 namespace OrderCloud.Integrations.Vertex.Models
 {

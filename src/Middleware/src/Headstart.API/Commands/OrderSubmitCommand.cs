@@ -1,15 +1,15 @@
-using Headstart.Models;
-using OrderCloud.SDK;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Net;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Models.Headstart;
+using System.Threading.Tasks;
 using Headstart.Common;
+using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Models;
+using Headstart.Models.Headstart;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.CardConnect.Models;
+using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
 {

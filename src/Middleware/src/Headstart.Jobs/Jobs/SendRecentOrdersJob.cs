@@ -1,13 +1,13 @@
-﻿using Azure.Messaging.ServiceBus;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Azure.Messaging.ServiceBus;
 using Headstart.Common.Services;
 using Headstart.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Headstart.Jobs
 {

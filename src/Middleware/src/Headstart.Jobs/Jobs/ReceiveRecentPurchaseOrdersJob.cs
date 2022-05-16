@@ -8,8 +8,8 @@ using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Jobs.Helpers;
 using Headstart.Models;
 using Headstart.Models.Headstart;
-using OrderCloud.Integrations.Library;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
 
 namespace Headstart.Jobs

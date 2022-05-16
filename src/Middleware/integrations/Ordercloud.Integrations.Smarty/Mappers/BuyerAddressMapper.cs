@@ -1,9 +1,9 @@
-﻿using OrderCloud.Integrations.Smarty.Models;
-using OrderCloud.SDK;
-using SmartyStreets.USStreetApi;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using OrderCloud.Integrations.Smarty.Models;
+using OrderCloud.SDK;
+using SmartyStreets.USStreetApi;
 
 namespace OrderCloud.Integrations.Smarty.Mappers
 {

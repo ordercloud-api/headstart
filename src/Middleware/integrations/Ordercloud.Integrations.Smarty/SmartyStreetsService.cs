@@ -1,9 +1,9 @@
-﻿using Flurl;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Flurl;
 using Flurl.Http;
 using OrderCloud.Integrations.Smarty.Models;
 using SmartyStreets.USStreetApi;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace OrderCloud.Integrations.Smarty
 {

@@ -1,8 +1,8 @@
-﻿using OrderCloud.Integrations.Vertex.Models;
-using OrderCloud.SDK;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using OrderCloud.Integrations.Vertex.Models;
+using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.Vertex.Mappers
 {

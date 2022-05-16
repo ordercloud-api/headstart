@@ -1,12 +1,12 @@
-﻿using OrderCloud.SDK;
-using NSubstitute;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Headstart.Models.Headstart;
-using Headstart.Models;
 using Headstart.API.Commands;
+using Headstart.Models;
+using Headstart.Models.Headstart;
+using NSubstitute;
+using NUnit.Framework;
+using OrderCloud.SDK;
 
 namespace Headstart.Tests
 {
@@ -28,144 +28,180 @@ namespace Headstart.Tests
         [Test]
         public async Task GetUnitPrice_FirstPriceBreak_NoMarkups_CumulativeQtyFalse()
         {
+            // Arrange
             SuperHSMeProduct product = BuildMockProductData(false);
 
             HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(4, 0); // Existing line items with different specs (quantity 2) cannot combine with this quantity (4).  Does not hit discount price break (minimum quantity 5).
 
+            // Act
             decimal lineItemTotal = await commandSub.ValidateLineItemUnitCost(default, product, existingLineItems, lineItem);
 
+            // Assert
             Assert.AreEqual(lineItemTotal, 5);
         }
 
         [Test]
         public async Task GetUnitPrice_SecondPriceBreak_NoMarkups_CumulativeQtyFalse()
         {
+            // Arrange
             SuperHSMeProduct product = BuildMockProductData(false);
 
             HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(5, 0);
 
+            // Act
             decimal lineItemTotal = await commandSub.ValidateLineItemUnitCost(default, product, existingLineItems, lineItem);
 
+            // Assert
             Assert.AreEqual(lineItemTotal, 3.5);
         }
 
         [Test]
         public async Task GetUnitPrice_FirstPriceBreak_OneMarkup_CumulativeQtyFalse()
         {
+            // Arrange
             SuperHSMeProduct product = BuildMockProductData(false);
 
             HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(4, 1); // Existing line items with different specs (quantity 2) cannot combine with this quantity (4).  Does not hit discount price break (minimum quantity 5).
 
+            // Act
             decimal lineItemTotal = await commandSub.ValidateLineItemUnitCost(default, product, existingLineItems, lineItem);
 
+            // Assert
             Assert.AreEqual(lineItemTotal, 7.25);
         }
 
         [Test]
         public async Task GetUnitPrice_SecondPriceBreak_OneMarkup_CumulativeQtyFalse()
         {
+            // Arrange
             SuperHSMeProduct product = BuildMockProductData(false);
 
             HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(5, 1);
 
+            // Act
             decimal lineItemTotal = await commandSub.ValidateLineItemUnitCost(default, product, existingLineItems, lineItem);
 
+            // Assert
             Assert.AreEqual(lineItemTotal, 5.75);
         }
 
         [Test]
         public async Task GetUnitPrice_FirstPriceBreak_TwoMarkups_CumulativeQtyFalse()
         {
+            // Arrange
             SuperHSMeProduct product = BuildMockProductData(false);
 
             HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(4, 2); // Existing line items with different specs (quantity 2) cannot combine with this quantity (4).  Does not hit discount price break (minimum quantity 5).
 
+            // Act
             decimal lineItemTotal = await commandSub.ValidateLineItemUnitCost(default, product, existingLineItems, lineItem);
 
+            // Assert
             Assert.AreEqual(lineItemTotal, 11.25);
         }
 
         [Test]
         public async Task GetUnitPrice_SecondPriceBreak_TwoMarkups_CumulativeQtyFalse()
         {
+            // Arrange
             SuperHSMeProduct product = BuildMockProductData(false);
 
             HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(5, 2);
 
+            // Act
             decimal lineItemTotal = await commandSub.ValidateLineItemUnitCost(default, product, existingLineItems, lineItem);
 
+            // Assert
             Assert.AreEqual(lineItemTotal, 9.75);
         }
 
         [Test]
         public async Task GetUnitPrice_FirstPriceBreak_NoMarkups_CumulativeQtyTrue()
         {
+            // Arrange
             SuperHSMeProduct product = BuildMockProductData(true);
 
             HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(2, 0); // Does not hit discount price break (minimum quantity 5) when adding existing line item quantity (2)
 
+            // Act
             decimal lineItemTotal = await commandSub.ValidateLineItemUnitCost(default, product, existingLineItems, lineItem);
 
+            // Assert
             Assert.AreEqual(lineItemTotal, 5);
         }
 
         [Test]
         public async Task GetUnitPrice_SecondPriceBreak_NoMarkups_CumulativeQtyTrue()
         {
+            // Arrange
             SuperHSMeProduct product = BuildMockProductData(true);
 
             HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(3, 0); // Hits discount price break (minimum quantity 5) when adding existing line item quantity (2)
 
+            // Act
             decimal lineItemTotal = await commandSub.ValidateLineItemUnitCost(default, product, existingLineItems, lineItem);
 
+            // Assert
             Assert.AreEqual(lineItemTotal, 3.5);
         }
 
         [Test]
         public async Task GetUnitPrice_FirstPriceBreak_OneMarkup_CumulativeQtyTrue()
         {
+            // Arrange
             SuperHSMeProduct product = BuildMockProductData(true);
 
             HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(2, 1); // Does not hit discount price break (minimum quantity 5) when adding existing line item quantity (2)
 
+            // Act
             decimal lineItemTotal = await commandSub.ValidateLineItemUnitCost(default, product, existingLineItems, lineItem);
 
+            // Assert
             Assert.AreEqual(lineItemTotal, 7.25);
         }
 
         [Test]
         public async Task GetUnitPrice_SecondPriceBreak_OneMarkup_CumulativeQtyTrue()
         {
+            // Arrange
             SuperHSMeProduct product = BuildMockProductData(true);
 
             HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(3, 1);  // Hits discount price break (minimum quantity 5) when adding existing line item quantity (2)
 
+            // Act
             decimal lineItemTotal = await commandSub.ValidateLineItemUnitCost(default, product, existingLineItems, lineItem);
 
+            // Assert
             Assert.AreEqual(lineItemTotal, 5.75);
         }
 
         [Test]
         public async Task GetUnitPrice_FirstPriceBreak_TwoMarkups_CumulativeQtyTrue()
         {
+            // Arrange
             SuperHSMeProduct product = BuildMockProductData(true);
 
             HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(2, 2); // Does not hit discount price break (minimum quantity 5) when adding existing line item quantity (2)
 
+            // Act
             decimal lineItemTotal = await commandSub.ValidateLineItemUnitCost(default, product, existingLineItems, lineItem);
 
+            // Assert
             Assert.AreEqual(lineItemTotal, 11.25);
         }
 
         [Test]
         public async Task GetUnitPrice_SecondPriceBreak_TwoMarkups_CumulativeQtyTrue()
         {
+            // Arrange
             SuperHSMeProduct product = BuildMockProductData(true);
 
             HSLineItem lineItem = SetMockLineItemQtyAndMockNumberOfMarkedUpSpecs(3, 2);  // Hits discount price break (minimum quantity 5) when adding existing line item quantity (2)
 
+            // Act
             decimal lineItemTotal = await commandSub.ValidateLineItemUnitCost(default, product, existingLineItems, lineItem);
 
+            // Assert
             Assert.AreEqual(lineItemTotal, 9.75);
         }
 

@@ -1,10 +1,10 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Headstart.Models;
+using Headstart.Models.Headstart;
 using Microsoft.ApplicationInsights;
 using Newtonsoft.Json;
 using OrderCloud.Integrations.CardConnect;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Headstart.Models.Headstart;
 
 namespace Headstart.Common.Services
 {

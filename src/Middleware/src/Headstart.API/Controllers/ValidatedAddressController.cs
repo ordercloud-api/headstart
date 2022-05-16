@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Mvc;
-using OrderCloud.SDK;
 using System.Threading.Tasks;
-using OrderCloud.Integrations.Smarty;
+using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Smarty;
+using OrderCloud.SDK;
 
 namespace Headstart.Common.Controllers
 {

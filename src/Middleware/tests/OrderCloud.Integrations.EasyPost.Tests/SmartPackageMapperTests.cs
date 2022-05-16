@@ -1,7 +1,7 @@
-﻿using NUnit.Framework;
-using System.Collections.Generic;
-using OrderCloud.SDK;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
 using OrderCloud.Integrations.EasyPost.Mappers;
+using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.EasyPost.Tests
 {
@@ -38,10 +38,8 @@ namespace OrderCloud.Integrations.EasyPost.Tests
         //    Assert.AreEqual(50, package.weight);
         // }
         [Test]
-        public void handles_all_lines_shipping_together_legacy()
+        public void MapLineItemsIntoPackages_WithoutSizeTierGLineItems_ShipsLineItemsTogether()
         {
-            // line items with SizeTier not equal to "G" will all ship together
-
             // Arrange
             var lines = new List<LineItem>
             {
@@ -79,10 +77,8 @@ namespace OrderCloud.Integrations.EasyPost.Tests
         }
 
         [Test]
-        public void handles_ship_alone()
+        public void MapLineItemsIntoPackageshandles_WithSizeTierGLineItems_ShipsLineItemsAlone()
         {
-            // line items with SizeTier "G" will all ship alone
-
             // Arrange
             var lines = new List<LineItem>
             {

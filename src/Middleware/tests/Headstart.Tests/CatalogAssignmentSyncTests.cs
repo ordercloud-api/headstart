@@ -1,12 +1,12 @@
-﻿using NUnit.Framework;
-using NSubstitute;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using OrderCloud.SDK;
-using Headstart.Models;
-using Headstart.API.Commands.Crud;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using Headstart.API.Commands.Crud;
+using Headstart.Models;
+using NSubstitute;
+using NUnit.Framework;
+using OrderCloud.SDK;
 
 namespace Headstart.Tests
 {
@@ -70,6 +70,8 @@ namespace Headstart.Tests
 
             // Act
             await sut.SyncUserCatalogAssignments(buyerID, userID);
+
+            // Assert
             await oc.UserGroups.Received().SaveUserAssignmentAsync(buyerID, Arg.Is<UserGroupAssignment>(ass => ass.UserGroupID == catalogID1 && ass.UserID == userID));
             await oc.UserGroups.Received().DeleteUserAssignmentAsync(buyerID, catalogID2, userID);
         }
@@ -114,6 +116,8 @@ namespace Headstart.Tests
 
             // Act
             await sut.SyncUserCatalogAssignments(buyerID, userID);
+
+            // Assert
             await oc.UserGroups.DidNotReceive().SaveUserAssignmentAsync(buyerID, Arg.Is<UserGroupAssignment>(ass => ass.UserGroupID == catalogID1 && ass.UserID == userID));
         }
     }

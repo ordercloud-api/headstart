@@ -1,9 +1,9 @@
-﻿using OrderCloud.Catalyst;
-using OrderCloud.Integrations.TaxJar.Mappers;
-using OrderCloud.SDK;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using OrderCloud.Catalyst;
+using OrderCloud.Integrations.TaxJar.Mappers;
+using OrderCloud.SDK;
 using Taxjar;
 using ITaxCalculator = OrderCloud.Integrations.Library.Interfaces.ITaxCalculator;
 using ITaxCodesProvider = OrderCloud.Integrations.Library.Interfaces.ITaxCodesProvider;
