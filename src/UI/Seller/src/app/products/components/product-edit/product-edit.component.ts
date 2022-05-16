@@ -105,9 +105,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   dataIsSaving = false
   userContext: UserContext = {} as UserContext
   isSellerUser = false
-  hasVariations = false
   images: ImageAsset[] = []
-  files: FileHandle[] = []
   faTimes = faTimes
   faTrash = faTrash
   faCircle = faCircle
@@ -125,7 +123,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   taxCodes: TaxCategorizationResponse
   productType: ProductXp['ProductType']
   shippingAddress: any
-  productVariations: any
   variantsValid = true
   specsValid = true
   editSpecs = false
@@ -134,11 +131,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   staticContentFiles: FileHandle[] = []
   staticContent: DocumentAsset[] = []
   documentName: string
-  selectedTabIndex = 0
-  editPriceBreaks = false
-  newPriceBreakPrice = 0
-  newPriceBreakQty = 2
-  newProductPriceBreaks = []
   availableProductTypes = []
   availableSizeTiers = SizerTiersDescriptionMap
   active: number
