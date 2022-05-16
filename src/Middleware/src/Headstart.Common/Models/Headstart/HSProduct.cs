@@ -73,9 +73,6 @@ namespace Headstart.Models
         // DO NOT DELETE
         public Dictionary<string, List<string>> Facets { get; set; } = new Dictionary<string, List<string>>();
 
-        [System.ComponentModel.DataAnnotations.Required]
-        public ObjectStatus? Status { get; set; }
-
         [MaxLength(500), OrchestrationIgnore]
         public string Note { get; set; }
 

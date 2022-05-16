@@ -91,7 +91,6 @@ export async function createDefaultProduct(
 				Facets: {},
 				//@ts-ignore
 				Images: [],
-				Status: 'Draft',
 				Note: '',
 				Tax: {
 					Category: 'FR000000',

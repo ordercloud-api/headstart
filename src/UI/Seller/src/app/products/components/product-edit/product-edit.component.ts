@@ -814,7 +814,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     const supplier = await this.currentUserService.getMySupplier()
     superHSProduct.Product.xp.ProductType = this.productType
     superHSProduct.Product.xp.PromotionEligible = true
-    superHSProduct.Product.xp.Status = 'Draft'
     superHSProduct.Product.xp.Currency = supplier?.xp?.Currency
     superHSProduct.PriceSchedule.ID = superHSProduct.Product.ID
     superHSProduct.PriceSchedule.Name = `Default_HS_Buyer${superHSProduct.Product.Name}`
@@ -868,7 +867,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     }
     if (superHSProduct.PriceSchedule.PriceBreaks.length === 0)
       superHSProduct.PriceSchedule = null
-    superHSProduct.Product.xp.Status = 'Draft'
     if (this.imageFiles.length > 0) {
       const imgAssets = await this.assetService.uploadImageFiles(
         this.imageFiles

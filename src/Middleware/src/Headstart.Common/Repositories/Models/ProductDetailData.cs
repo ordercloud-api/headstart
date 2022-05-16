@@ -26,8 +26,6 @@ namespace Headstart.Common.Repositories.Models
 
         public string Active { get; set; }
 
-        public string Status { get; set; }
-
         public string Note { get; set; }
 
         public string TaxCategory { get; set; }
