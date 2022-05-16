@@ -60,6 +60,7 @@
   "SendgridSettings:CriticalSupportTemplateID": "",
   "ServiceBusSettings:ConnectionString": "",
   "ServiceBusSettings:ZohoQueueName": "",
+  "SmartyStreetSettings:SmartyEnabled": false,
   "SmartyStreetSettings:AuthID": "",
   "SmartyStreetSettings:AuthToken": "",
   "SmartyStreetSettings:RefererHost": "",

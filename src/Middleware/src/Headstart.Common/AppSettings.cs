@@ -174,17 +174,6 @@ namespace Headstart.Common
         public string ZohoQueueName { get; set; }
     }
 
-    public class SmartyStreetSettings
-    {
-        public string AuthID { get; set; }
-
-        public string AuthToken { get; set; }
-
-        public string RefererHost { get; set; } // The autocomplete pro endpoint requires the Referer header to be a pre-set value
-
-        public string WebsiteKey { get; set; }
-    }
-
     public class UI
     {
         public string BaseAdminUrl { get; set; }
