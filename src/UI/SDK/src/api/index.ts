@@ -1,4 +1,3 @@
-import AnytimeWebhooks from './AnytimeWebhooks';
 import Buyers from './Buyers';
 import SsoLogins from './SsoLogins';
 import Catalogs from './Catalogs';
@@ -37,7 +36,6 @@ export { HeadStartSDK }
 
 const HeadStartSDK: HeadStartSDK = {
     Assets : new Assets(),
-    AnytimeWebhooks : new AnytimeWebhooks(),
     Buyers : new Buyers(),
     SsoLogins : new SsoLogins(),
     Catalogs : new Catalogs(),
@@ -74,7 +72,6 @@ const HeadStartSDK: HeadStartSDK = {
 
 interface HeadStartSDK {
     Assets : Assets,
-    AnytimeWebhooks : AnytimeWebhooks,
     Buyers : Buyers,
     SsoLogins : SsoLogins,
     Catalogs : Catalogs,
