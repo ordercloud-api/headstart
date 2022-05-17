@@ -96,8 +96,6 @@ export * from './SupplierCategory';
 export * from './SupplierXp';
 export * from './TaxCategorizationResponse';
 export * from './TaxCategorization';
-export * from './TecraDocument';
-export * from './TecraSpec';
 export * from './TemplateProductFlat';
 export * from './TransactionXP';
 export * from './UnitOfMeasure';
