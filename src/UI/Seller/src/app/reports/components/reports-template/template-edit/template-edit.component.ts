@@ -188,9 +188,6 @@ export class TemplateEditComponent implements OnChanges {
               'Backordered',
             ]
           }
-          if (filter.name === 'Product Status') {
-            filter.filterValues = ['Draft', 'Published']
-          }
           if (filter.name === 'Product Vendor') {
             const supplierList = await this.supplierService
               .List()

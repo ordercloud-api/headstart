@@ -3,7 +3,6 @@ import { TaxCategorization } from './TaxCategorization';
 import { UnitOfMeasure } from './UnitOfMeasure';
 
 export interface ProductXp {
-    Status?: 'Draft' | 'Published'
     Note?: string
     Tax?: TaxCategorization
     UnitOfMeasure?: UnitOfMeasure
