@@ -54,13 +54,10 @@ export const BUYER_LOCATION_HEADERS = [
     "Zip",
     "Country",
     "CompanyName",
-    "xp.PrimaryContactName",
     "xp.Email",
     "Phone",
-    "xp.OpeningDate",
     "xp.BillingNumber",
     "xp.Status",
-    "xp.LegalEntity"
 ]
 
 export const SALES_ORDER_DETAIL_HEADERS = [
