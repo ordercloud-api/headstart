@@ -227,11 +227,11 @@ export class ReflektionService {
    */
   trackAddToCart(view: 'pdp' | 'qview' | 'cart', lineItem: HSLineItem): void {
     this.trackReflectionEvent('a2c', view, {
-      products: {
+      products: [{
         sku: lineItem.ProductID,
         price: lineItem.UnitPrice,
         quantity: lineItem.Quantity,
-      },
+      }],
     })
   }
 
