@@ -44,7 +44,6 @@ export async function createDefaultBuyer(clientAuth: string) {
 			Name: `Automationbuyer_${randomString(5)}`,
 			Active: true,
 			xp: {
-				ChiliPublishFolder: '',
 				URL: testConfig.buyerAppUrl,
 			}
 		},

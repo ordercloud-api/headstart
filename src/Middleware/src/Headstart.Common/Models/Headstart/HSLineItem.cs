@@ -27,9 +27,6 @@ namespace Headstart.Models.Headstart
 
         public string ImageUrl { get; set; }
 
-        // chili specific fields
-        public string PrintArtworkURL { get; set; }
-
         public string ConfigurationID { get; set; }
 
         public string DocumentID { get; set; }

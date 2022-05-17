@@ -15,20 +15,6 @@ const AllProducts: HSRoute = {
   title: 'ADMIN.NAV.ALL_PRODUCTS',
   route: '/products',
 }
-// TODO: Reimplement once UI is added to address these xp values
-// const LiveProducts: HSRoute = {
-//   rolesWithAccess: [HSRoles.HSProductAdmin, HSRoles.HSProductReader, HSRoles.HSMeProductAdmin],
-//   title: 'ADMIN.NAV.LIVE_PRODUCTS',
-//   route: '/products',
-//   queryParams: { 'xp.Status': 'Published' },
-// };
-
-// const PendingProducts: HSRoute = {
-//   rolesWithAccess: [HSRoles.HSProductAdmin, HSRoles.HSProductReader, HSRoles.HSMeProductAdmin],
-//   title: 'ADMIN.NAV.PENDING_PRODUCTS',
-//   route: '/products',
-//   queryParams: { 'xp.Status': 'Draft' },
-// };
 
 const Promotions: HSRoute = {
   rolesWithAccess: [HSRoles.HSPromotionAdmin, HSRoles.HSPromotionReader],

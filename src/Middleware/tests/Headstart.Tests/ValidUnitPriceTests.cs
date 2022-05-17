@@ -238,11 +238,9 @@ namespace Headstart.Tests
         {
             HSLineItem existingLineItem1 = Substitute.For<HSLineItem>();
             existingLineItem1.Quantity = 1;
-            existingLineItem1.xp = new LineItemXp() { PrintArtworkURL = null };
 
             HSLineItem existingLineItem2 = Substitute.For<HSLineItem>();
             existingLineItem2.Quantity = 1;
-            existingLineItem2.xp = new LineItemXp() { PrintArtworkURL = null };
 
             LineItemSpec liSpecSizeSmall = Substitute.For<LineItemSpec>();
             liSpecSizeSmall.SpecID = "Size";

@@ -186,10 +186,6 @@ namespace Headstart.Jobs
             PriceSchedule schedule = await GetPriceSchedule(product.DefaultPriceScheduleID);
             result.SizeTier = string.Empty;
             result.Active = product?.Active.ToString();
-            if (PropertyExists(productXp, "Status"))
-            {
-                result.Status = productXp.Status?.ToString();
-            }
 
             if (PropertyExists(productXp, "Note"))
             {
@@ -227,11 +223,6 @@ namespace Headstart.Jobs
             if (PropertyExists(productXp, "Currency"))
             {
                 result.Currency = productXp.Currency;
-            }
-
-            if (PropertyExists(productXp, "ArtworkRequired"))
-            {
-                result.ArtworkRequired = productXp.ArtworkRequired;
             }
 
             if (supplier != null)

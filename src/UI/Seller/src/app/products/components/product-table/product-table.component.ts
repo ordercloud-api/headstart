@@ -33,17 +33,7 @@ export class ProductTableComponent
   async buildFilterConfig(): Promise<void> {
     this.userContext = await this.currentUserService.getUserContext()
 
-    const filters = [
-      {
-        Display: 'ADMIN.FILTERS.STATUS',
-        Path: 'xp.Status',
-        Items: [
-          { Text: 'ADMIN.FILTER_OPTIONS.DRAFT', Value: 'Draft' },
-          { Text: 'ADMIN.FILTER_OPTIONS.PUBLISHED', Value: 'Published' },
-        ],
-        Type: 'Dropdown',
-      },
-    ]
+    const filters = []
     if (
       this.userContext.UserRoles.includes('SupplierReader') ||
       this.userContext.UserRoles.includes('SupplierAdmin')

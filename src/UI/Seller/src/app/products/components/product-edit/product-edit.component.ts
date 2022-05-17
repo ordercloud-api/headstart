@@ -105,9 +105,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   dataIsSaving = false
   userContext: UserContext = {} as UserContext
   isSellerUser = false
-  hasVariations = false
   images: ImageAsset[] = []
-  files: FileHandle[] = []
   faTimes = faTimes
   faTrash = faTrash
   faCircle = faCircle
@@ -125,7 +123,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   taxCodes: TaxCategorizationResponse
   productType: ProductXp['ProductType']
   shippingAddress: any
-  productVariations: any
   variantsValid = true
   specsValid = true
   editSpecs = false
@@ -134,11 +131,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   staticContentFiles: FileHandle[] = []
   staticContent: DocumentAsset[] = []
   documentName: string
-  selectedTabIndex = 0
-  editPriceBreaks = false
-  newPriceBreakPrice = 0
-  newPriceBreakQty = 2
-  newProductPriceBreaks = []
   availableProductTypes = []
   availableSizeTiers = SizerTiersDescriptionMap
   active: number
@@ -351,9 +343,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
           UnitOfMeasureQty: new FormControl(
             _get(superHSProduct.Product, 'xp.UnitOfMeasure.Qty'),
             Validators.required
-          ),
-          ArtworkRequired: new FormControl(
-            _get(superHSProduct.Product, 'xp.ArtworkRequired')
           ),
           FreeShipping: new FormControl(
             _get(superHSProduct.Product, 'xp.FreeShipping')
@@ -646,7 +635,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       'Product.Inventory.Enabled',
       'Product.Inventory.OrderCanExceed',
       'Product.Inventory.VariantLevelTracking',
-      'Product.xp.ArtworkRequired',
       'Product.xp.FreeShipping',
     ]
     const productUpdate = {
@@ -818,7 +806,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     const supplier = await this.currentUserService.getMySupplier()
     superHSProduct.Product.xp.ProductType = this.productType
     superHSProduct.Product.xp.PromotionEligible = true
-    superHSProduct.Product.xp.Status = 'Draft'
     superHSProduct.Product.xp.Currency = supplier?.xp?.Currency
     superHSProduct.PriceSchedule.ID = superHSProduct.Product.ID
     superHSProduct.PriceSchedule.Name = `Default_HS_Buyer${superHSProduct.Product.Name}`
@@ -872,7 +859,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     }
     if (superHSProduct.PriceSchedule.PriceBreaks.length === 0)
       superHSProduct.PriceSchedule = null
-    superHSProduct.Product.xp.Status = 'Draft'
     if (this.imageFiles.length > 0) {
       const imgAssets = await this.assetService.uploadImageFiles(
         this.imageFiles

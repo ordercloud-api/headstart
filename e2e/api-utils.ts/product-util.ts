@@ -84,7 +84,6 @@ export async function createDefaultProduct(
 			Inventory: null,
 			DefaultSupplierID: null,
 			xp: {
-				ArtworkRequired: false,
 				//@ts-ignore
 				IntegrationData: null,
 				IsResale: false,
@@ -92,8 +91,6 @@ export async function createDefaultProduct(
 				Facets: {},
 				//@ts-ignore
 				Images: [],
-				Status: 'Draft',
-				HasVariants: false,
 				Note: '',
 				Tax: {
 					Category: 'FR000000',
@@ -106,8 +103,6 @@ export async function createDefaultProduct(
 					Qty: '1',
 				},
 				ProductType: 'Standard',
-				//@ts-ignore
-				StaticContent: null,
 				Currency: 'USD',
 				//@ts-ignore
 				SizeTier: 'A',

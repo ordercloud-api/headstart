@@ -26,8 +26,6 @@ namespace Headstart.Common.Repositories.Models
 
         public string Active { get; set; }
 
-        public string Status { get; set; }
-
         public string Note { get; set; }
 
         public string TaxCategory { get; set; }
@@ -47,8 +45,6 @@ namespace Headstart.Common.Repositories.Models
         public bool Resale { get; set; }
 
         public string Currency { get; set; }
-
-        public bool? ArtworkRequired { get; set; }
 
         public string VariantID { get; set; }
 

@@ -22,9 +22,7 @@ export class BuyerService extends ResourceCrudService<Buyer> {
     Buyer: {
       Name: '',
       Active: true,
-      xp: {
-        ChiliPublishFolder: '',
-      },
+      xp: {},
     },
     Markup: {
       Percent: 0,

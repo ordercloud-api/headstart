@@ -69,15 +69,8 @@ export async function createDefaultBuyerLocation(
 		Phone: '1231231234',
 		//not sure if these xp values are needed, but this is returned from the API for a created location
 		xp: {
-			Accessorials: null,
-			AvalaraCertificateExpiration: null,
-			AvalaraCertificateID: null,
 			BillingNumber: null,
-			Coordinates: null,
-			LegalEntity: null,
 			LocationID: null,
-			OpeningDate: null,
-			PrimaryContactName: null,
 			Status: null,
 			Email: `${addressName}.hpmqx9la@mailosaur.io`,
 		},
@@ -128,15 +121,8 @@ export async function createDefaultCanadianBuyerLocation(
 		Phone: '1231231234',
 		//not sure if these xp values are needed, but this is returned from the API for a created location
 		xp: {
-			Accessorials: null,
-			AvalaraCertificateExpiration: null,
-			AvalaraCertificateID: null,
 			BillingNumber: null,
-			Coordinates: null,
-			LegalEntity: null,
 			LocationID: null,
-			OpeningDate: null,
-			PrimaryContactName: null,
 			Status: null,
 			Email: `${addressName}.hpmqx9la@mailosaur.io`,
 		},

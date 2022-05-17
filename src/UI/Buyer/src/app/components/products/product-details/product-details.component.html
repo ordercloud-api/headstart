@@ -95,7 +95,7 @@
       </ng-container>
       <!--DISPLAY SHORT SPEC FORM -->
       <ng-container
-        *ngIf="specs?.length < 4 && !showGrid && !_product.xp.ArtworkRequired"
+        *ngIf="specs?.length < 4 && !showGrid"
       >
         <ocm-spec-form
           *ngIf="isOrderable && specs?.length > 0"

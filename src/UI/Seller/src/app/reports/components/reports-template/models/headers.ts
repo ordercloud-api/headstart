@@ -7,13 +7,10 @@ export const buyerLocation = [
   { value: 'Zip', path: 'Zip' },
   { value: 'Country', path: 'Country' },
   { value: 'Company Name', path: 'CompanyName' },
-  { value: 'Primary Contact Name', path: 'xp.PrimaryContactName' },
   { value: 'Email', path: 'xp.Email' },
   { value: 'Phone', path: 'Phone' },
-  { value: 'Opening Date', path: 'xp.OpeningDate' },
   { value: 'Billing Number', path: 'xp.BillingNumber' },
   { value: 'Status', path: 'xp.Status' },
-  { value: 'Legal Entity', path: 'xp.LegalEntity' },
 ]
 
 export const salesOrderDetail = [
@@ -143,10 +140,6 @@ export const lineItemDetail = [
     value: 'Unit of Measure',
     path: 'HSLineItem.Product.xp.UnitOfMeasure.Unit',
   },
-  {
-    value: 'Has Variants?',
-    path: 'HSLineItem.Product.xp.HasVariants',
-  },
   { value: 'Ship Method', path: 'HSLineItem.xp.ShipMethod' },
   {
     value: 'Shipping First Name',
@@ -270,7 +263,6 @@ export const productDetail = [
   { value: 'Size Tier', path: 'Data.SizeTier' },
   { value: 'Resale', path: 'Data.Resale' },
   { value: 'Currency', path: 'Data.Currency' },
-  { value: 'Artwork Required', path: 'Data.ArtworkRequired' },
   { value: '3 Month Sales', path: 'ProductSales.ThreeMonthQuantity' },
   { value: '6 Month Sales', path: 'ProductSales.SixMonthQuantity' },
   { value: '12 Month Sales', path: 'ProductSales.TwelveMonthQuantity' },

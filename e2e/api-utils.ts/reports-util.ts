@@ -54,13 +54,10 @@ export const BUYER_LOCATION_HEADERS = [
     "Zip",
     "Country",
     "CompanyName",
-    "xp.PrimaryContactName",
     "xp.Email",
     "Phone",
-    "xp.OpeningDate",
     "xp.BillingNumber",
     "xp.Status",
-    "xp.LegalEntity"
 ]
 
 export const SALES_ORDER_DETAIL_HEADERS = [
@@ -171,7 +168,6 @@ export const LINE_ITEM_HEADERS = [
     "HSLineItem.Product.xp.IsResale",
     "HSLineItem.Product.xp.UnitOfMeasure.Qty",
     "HSLineItem.Product.xp.UnitOfMeasure.Unit",
-    "HSLineItem.Product.xp.HasVariants",
     "HSLineItem.xp.ShipMethod",
     "HSLineItem.ShippingAddress.FirstName",
     "HSLineItem.ShippingAddress.LastName",
