@@ -118,7 +118,6 @@ export class BuyerEditComponent implements OnDestroy {
       Name: new FormControl(Buyer.Name, Validators.required),
       Active: new FormControl(Buyer.Active),
       Markup: new FormControl(Markup.Percent),
-      ChiliPublishFolder: new FormControl(Buyer.xp.ChiliPublishFolder),
       ImpersonatingEnabled: new FormControl(this.showImpersonation),
       URL: new FormControl(Buyer.xp.URL),
       ClientID: new FormControl(ImpersonationConfig?.ClientID),
