@@ -34,7 +34,7 @@ using OrderCloud.Integrations.ExchangeRates;
 using OrderCloud.Integrations.Library;
 using OrderCloud.Integrations.Library.Cosmos;
 using OrderCloud.Integrations.Library.cosmos_repo;
-using OrderCloud.Integrations.Library.Interfaces;
+using OrderCloud.Integrations.Taxation.Interfaces;
 using OrderCloud.Integrations.Smarty;
 using OrderCloud.Integrations.TaxJar;
 using OrderCloud.Integrations.Vertex;
@@ -44,8 +44,8 @@ using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
 using SendGrid;
 using SmartyStreets;
-using ITaxCalculator = OrderCloud.Integrations.Library.Interfaces.ITaxCalculator;
-using ITaxCodesProvider = OrderCloud.Integrations.Library.Interfaces.ITaxCodesProvider;
+using ITaxCalculator = OrderCloud.Integrations.Taxation.Interfaces.ITaxCalculator;
+using ITaxCodesProvider = OrderCloud.Integrations.Taxation.Interfaces.ITaxCodesProvider;
 
 namespace Headstart.API
 {
@@ -143,7 +143,7 @@ namespace Headstart.API
             };
 
             var flurlClientFactory = new PerBaseUrlFlurlClientFactory();
-            var smartyStreetsUsClient = new ClientBuilder(settings.SmartyStreetSettings.AuthID, settings.SmartyStreetSettings.AuthToken).BuildUsStreetApiClient();
+            //var smartyStreetsUsClient = new ClientBuilder(settings.SmartyStreetSettings.AuthID, settings.SmartyStreetSettings.AuthToken).BuildUsStreetApiClient();
             var orderCloudClient = new OrderCloudClient(new OrderCloudClientConfig
             {
                 ApiUrl = settings.OrderCloudSettings.ApiUrl,
@@ -181,7 +181,7 @@ namespace Headstart.API
                     break;
             }
 
-            var smartyService = new SmartyStreetsService(settings.SmartyStreetSettings, smartyStreetsUsClient);
+            //var smartyService = new SmartyStreetsService(settings.SmartyStreetSettings, smartyStreetsUsClient);
 
             services.AddMvc(o =>
              {
@@ -205,7 +205,7 @@ namespace Headstart.API
                 .InjectCosmosStore<ReportTemplateQuery, ReportTemplate>(cosmosConfig)
                 .AddCosmosDb(settings.CosmosSettings.EndpointUri, settings.CosmosSettings.PrimaryKey, settings.CosmosSettings.DatabaseName, cosmosContainers)
                 .Inject<IPortalService>()
-                .AddSingleton<ISmartyStreetsCommand>(x => new SmartyStreetsCommand(settings.SmartyStreetSettings, orderCloudClient, smartyService))
+                //.AddSingleton<ISmartyStreetsCommand>(x => new SmartyStreetsCommand(settings.SmartyStreetSettings, orderCloudClient, smartyService))
                 .Inject<ICheckoutIntegrationCommand>()
                 .Inject<IShipmentCommand>()
                 .Inject<IOrderCommand>()
@@ -268,7 +268,7 @@ namespace Headstart.API
                         _ => easyPostShippingService // EasyPost is default
                     };
                 })
-                .AddSingleton<ISmartyStreetsService>(x => smartyService)
+                //.AddSingleton<ISmartyStreetsService>(x => smartyService)
                 .AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(settings.CardConnectSettings, settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))
                 .AddSingleton<IOrderCloudClient>(provider => orderCloudClient)
                 .AddSwaggerGen(c =>
@@ -279,7 +279,8 @@ namespace Headstart.API
                     List<string> xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml", SearchOption.TopDirectoryOnly).ToList();
                     xmlFiles.ForEach(xmlFile => c.IncludeXmlComments(xmlFile));
                 })
-                .AddSwaggerGenNewtonsoftSupport();
+                .AddSwaggerGenNewtonsoftSupport()
+                .AddSmartyIntegration();
 
             var serviceProvider = services.BuildServiceProvider();
             services

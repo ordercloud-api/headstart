@@ -17,7 +17,7 @@ using OrderCloud.Integrations.Library;
 using OrderCloud.Integrations.Library.Interfaces;
 using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
-using ITaxCalculator = OrderCloud.Integrations.Library.Interfaces.ITaxCalculator;
+using ITaxCalculator = OrderCloud.Integrations.Taxation.Interfaces.ITaxCalculator;
 
 namespace Headstart.API.Commands
 {

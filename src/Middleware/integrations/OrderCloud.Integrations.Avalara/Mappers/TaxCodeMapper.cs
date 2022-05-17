@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Avalara.AvaTax.RestClient;
-using TaxCategorization = OrderCloud.Integrations.Library.Interfaces.TaxCategorization;
+using TaxCategorization = OrderCloud.Integrations.Taxation.Interfaces.TaxCategorization;
 
 namespace OrderCloud.Integrations.Avalara.Mappers
 {

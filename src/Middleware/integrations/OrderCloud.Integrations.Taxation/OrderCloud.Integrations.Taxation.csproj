@@ -1,7 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>0.0.1</Version>
+    <Authors>Sitecore</Authors>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -10,6 +13,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ordercloud-dotnet-catalyst" Version="2.0.1" />
+    <PackageReference Include="OrderCloud.SDK" Version="0.11.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -17,8 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OrderCloud.Integrations.Library\OrderCloud.Integrations.Library.csproj" />
-    <ProjectReference Include="..\OrderCloud.Integrations.Taxation\OrderCloud.Integrations.Taxation.csproj" />
+    <Folder Include="Interfaces\" />
   </ItemGroup>
 
 </Project>

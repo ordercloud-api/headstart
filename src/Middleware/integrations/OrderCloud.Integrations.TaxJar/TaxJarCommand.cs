@@ -5,10 +5,10 @@ using OrderCloud.Catalyst;
 using OrderCloud.Integrations.TaxJar.Mappers;
 using OrderCloud.SDK;
 using Taxjar;
-using ITaxCalculator = OrderCloud.Integrations.Library.Interfaces.ITaxCalculator;
-using ITaxCodesProvider = OrderCloud.Integrations.Library.Interfaces.ITaxCodesProvider;
-using OrderTaxCalculation = OrderCloud.Integrations.Library.Interfaces.OrderTaxCalculation;
-using TaxCategorizationResponse = OrderCloud.Integrations.Library.Interfaces.TaxCategorizationResponse;
+using ITaxCalculator = OrderCloud.Integrations.Taxation.Interfaces.ITaxCalculator;
+using ITaxCodesProvider = OrderCloud.Integrations.Taxation.Interfaces.ITaxCodesProvider;
+using OrderTaxCalculation = OrderCloud.Integrations.Taxation.Interfaces.OrderTaxCalculation;
+using TaxCategorizationResponse = OrderCloud.Integrations.Taxation.Interfaces.TaxCategorizationResponse;
 using TaxJarOrder = Taxjar.Order;
 
 namespace OrderCloud.Integrations.TaxJar

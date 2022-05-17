@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OrderCloud.Integrations.Library.Interfaces
+namespace OrderCloud.Integrations.Taxation.Interfaces
 {
     public class NotImplementedTaxCodesProvider : ITaxCodesProvider
     {

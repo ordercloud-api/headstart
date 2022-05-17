@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Avalara.AvaTax.RestClient;
-using OrderCloud.Integrations.Library.Interfaces;
+using OrderCloud.Integrations.Taxation.Interfaces;
 
 namespace OrderCloud.Integrations.Avalara.Tests.Mocks
 {

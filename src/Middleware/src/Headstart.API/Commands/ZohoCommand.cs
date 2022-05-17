@@ -11,7 +11,7 @@ using Headstart.Models.Headstart;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
-using TaxCategorization = OrderCloud.Integrations.Library.Interfaces.TaxCategorization;
+using TaxCategorization = OrderCloud.Integrations.Taxation.Interfaces.TaxCategorization;
 
 namespace Headstart.API.Commands.Zoho
 {

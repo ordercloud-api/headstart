@@ -6,11 +6,11 @@ using Avalara.AvaTax.RestClient;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Avalara.Mappers;
 using OrderCloud.SDK;
-using ITaxCalculator = OrderCloud.Integrations.Library.Interfaces.ITaxCalculator;
-using ITaxCodesProvider = OrderCloud.Integrations.Library.Interfaces.ITaxCodesProvider;
-using OrderTaxCalculation = OrderCloud.Integrations.Library.Interfaces.OrderTaxCalculation;
-using TaxCategorization = OrderCloud.Integrations.Library.Interfaces.TaxCategorization;
-using TaxCategorizationResponse = OrderCloud.Integrations.Library.Interfaces.TaxCategorizationResponse;
+using ITaxCalculator = OrderCloud.Integrations.Taxation.Interfaces.ITaxCalculator;
+using ITaxCodesProvider = OrderCloud.Integrations.Taxation.Interfaces.ITaxCodesProvider;
+using OrderTaxCalculation = OrderCloud.Integrations.Taxation.Interfaces.OrderTaxCalculation;
+using TaxCategorization = OrderCloud.Integrations.Taxation.Interfaces.TaxCategorization;
+using TaxCategorizationResponse = OrderCloud.Integrations.Taxation.Interfaces.TaxCategorizationResponse;
 
 namespace OrderCloud.Integrations.Avalara
 {
