@@ -226,7 +226,7 @@ export class CheckoutService {
     return {
       supplier: {
         ID: null,
-        Name: this.appConfig.sellerName || 'Purchasing from Seller',
+        Name: this.appConfig.marketplaceName || 'Purchasing from Seller',
       },
       shipFrom: {
         ID: shipFromAddressID,

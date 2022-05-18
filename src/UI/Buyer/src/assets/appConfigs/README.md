@@ -10,7 +10,7 @@ You can have any number of configurations each representing a deployment. By def
 | baseUrl                       | The base url for this hosted application                                                                                                         |
 | middlewareUrl                 | The base url to the hosted backend middleware API                                                                                                |
 | creditCardIframeUrl           | The base url to cardconnect's iframe url                                                                                                         |
-| sellerID                      | The ID of the seller organization that this buyer belongs to. This can be found in the portal https://portal.ordercloud.io                       |
+| marketplaceID                      | The ID of the seller organization that this buyer belongs to. This can be found in the portal https://portal.ordercloud.io                       |
 | translateBlobUrl              | The base url to the folder including your translations. See https://github.com/ngx-translate/core for more info                                  |
 | orderCloudApiUrl              | The base url to the OrderCloud API. Can be one of: https://api.ordercloud.io, https://sandbox.ordercloud.io, https://staging.ordercloud.io       |
 | theme                         | An object containing theme related configuration. At this time only logoSrc exists. logoSrc is the path to a logo to be used for general display |

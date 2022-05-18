@@ -1,7 +1,7 @@
 {
   "hostedApp": true,
-  "sellerID": "my-seller-id",
-  "sellerName": "Default Admin",
+  "marketplaceID": "my-seller-id",
+  "marketplaceName": "Default Admin",
   "appname": "Default Admin",
   "clientID": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
   "middlewareUrl": "https://my-hosted-middleware.com",
