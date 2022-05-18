@@ -299,3 +299,4 @@ src/Middleware/ngrok.exe
 
 .DS_Store
 .env
+*.bak
