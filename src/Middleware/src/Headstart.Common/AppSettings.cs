@@ -65,15 +65,15 @@ namespace Headstart.Common
 
     public class AvalaraSettings
     {
-        public string BaseApiUrl { get; set; }
-
         public int AccountID { get; set; }
 
-        public string LicenseKey { get; set; }
+        public string BaseApiUrl { get; set; }
 
         public string CompanyCode { get; set; }
 
         public int CompanyID { get; set; }
+
+        public string LicenseKey { get; set; }
     }
 
     public class EasyPostSettings
@@ -82,22 +82,22 @@ namespace Headstart.Common
 
         public string FedexAccountId { get; set; }
 
+        public int FreeShippingTransitDays { get; set; }
+
         public decimal NoRatesFallbackCost { get; set; }
 
         public int NoRatesFallbackTransitDays { get; set; }
-
-        public int FreeShippingTransitDays { get; set; }
 
         public string USPSAccountId { get; set; }
     }
 
     public class EnvironmentSettings
     {
-        public AppEnvironment Environment { get; set; }
-
         public string BuildNumber { get; set; } // set during deploy
 
         public string Commit { get; set; } // set during deploy
+
+        public AppEnvironment Environment { get; set; }
 
         public string MiddlewareBaseUrl { get; set; }
 
@@ -111,11 +111,11 @@ namespace Headstart.Common
 
     public class JobSettings
     {
+        public string CaptureCreditCardsAfterDate { get; set; } // TODO: remove this once all orders have IsPaymentCaptured set
+
         public bool ShouldCaptureCreditCardPayments { get; set; }
 
         public bool ShouldRunZoho { get; set; }
-
-        public string CaptureCreditCardsAfterDate { get; set; } // TODO: remove this once all orders have IsPaymentCaptured set
     }
 
     public class OrderCloudSettings

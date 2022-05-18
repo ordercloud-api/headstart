@@ -41,15 +41,6 @@ services:
       AvalaraSettings_LicenseKey: "${AvalaraSettings_LicenseKey}"
       AvalaraSettings_BaseApiUrl: "${AvalaraSettings_BaseApiUrl}"
 
-      StorageAccountSettings_ConnectionString: "${StorageAccountSettings_ConnectionString}"
-      StorageAccountSettings_HostUrl: "${StorageAccountSettings_HostUrl}"
-      StorageAccountSettings_Key: "${StorageAccountSettings_Key}"
-      StorageAccountSettings_ContainerNameQueue: "${StorageAccountSettings_ContainerNameQueue}"
-      StorageAccountSettings_ContainerNameCache: "${StorageAccountSettings_ContainerNameCache}"
-      StorageAccountSettings_BlobContainerNameExchangeRates: "${StorageAccountSettings_ContainerNameExchangeRates}"
-      StorageAccountSettings_ContainerNameTranslations: "${StorageAccountSettings_ContainerNameTranslations}"
-      CMSSettings_BaseUrl: "${CMSSettings_BaseUrl}"
-
       CardConnectSettings_Authorization: "${CardConnectSettings_Authorization}"
       CardConnectSettings_AuthorizationCad: "${CardConnectSettings_AuthorizationCad}"
       CardConnectSettings_BaseUrl: "${CardConnectSettings_BaseUrl}"
@@ -58,49 +49,70 @@ services:
       CardConnectSettings_UsdMerchantID: "${CardConnectSettings_UsdMerchantID}"
 
       CosmosSettings_DatabaseName: "${CosmosSettings_DatabaseName}"
-      CosmosSettings_EnableTcpConnectionEndpointRediscovery: "${CosmosSettings_EnableTcpConnectionEndpointRediscovery}"
+      CosmosSettings_EndpointUri: "${CosmosSettings_EndpointUri}"
       CosmosSettings_PrimaryKey: "${CosmosSettings_PrimaryKey}"
       CosmosSettings_RequestTimeoutInSeconds: "${CosmosSettings_RequestTimeoutInSeconds}"
 
       EasyPostSettings_APIKey: "${EasyPostSettings_APIKey}"
+      EasyPostSettings_FedexAccountId: "${EasyPostSettings_FedexAccountId}"
       EasyPostSettings_FreeShippingTransitDays: "${EasyPostSettings_FreeShippingTransitDays}"
       EasyPostSettings_NoRatesFallbackCost: "${EasyPostSettings_NoRatesFallbackCost}"
       EasyPostSettings_NoRatesFallbackTransitDays: "${EasyPostSettings_NoRatesFallbackTransitDays}"
+      EasyPostSettings_USPSAccountId: "${EasyPostSettings_USPSAccountId}"
 
-      EnvironmentSettings_AppTimeoutInSeconds: "${EnvironmentSettings_AppTimeoutInSeconds}"
-      EnvironmentSettings_MiddlewareBaseUrl: "${API_HOST}"
       EnvironmentSettings_BuildNumber: "${EnvironmentSettings_BuildNumber}"
       EnvironmentSettings_Commit: "${EnvironmentSettings_Commit}"
       EnvironmentSettings_Environment: "${EnvironmentSettings_Environment}"
-
+      EnvironmentSettings_MiddlewareBaseUrl: "${API_HOST}"
+      EnvironmentSettings_TaxProvider: "${EnvironmentSettings_TaxProvider}"
+      
       FlurlSettings_TimeoutInSeconds: "${FlurlSettings_TimeoutInSeconds}"
 
+      JobSettings_CaptureCreditCardsAfterDate: "${JobSettings_CaptureCreditCardsAfterDate}"
+      JobSettings_ShouldCaptureCreditCardPayments: "${JobSettings_ShouldCaptureCreditCardPayments}"
+      JobSettings_ShouldRunZoho: "${JobSettings_ShouldRunZoho}"
+
       OrderCloudSettings_ApiUrl: "${OrderCloudSettings_ApiUrl}"
+      OrderCloudSettings_ClientIDsWithAPIAccess: "${OrderCloudSettings_ClientIDsWithAPIAccess}"
+      OrderCloudSettings_IncrementorPrefix: "${OrderCloudSettings_IncrementorPrefix}"
+      OrderCloudSettings_MarketplaceID: "${OrderCloudSettings_MarketplaceID}"
+      OrderCloudSettings_MarketplaceName: "${OrderCloudSettings_MarketplaceName}"
       OrderCloudSettings_MiddlewareClientID: "${OrderCloudSettings_MiddlewareClientID}"
       OrderCloudSettings_MiddlewareClientSecret: "${OrderCloudSettings_MiddlewareClientSecret}"
-      OrderCloudSettings_IncrementorPrefix: "${OrderCloudSettings_IncrementorPrefix}"
       OrderCloudSettings_WebhookHashKey: "${OrderCloudSettings_WebhookHashKey}"
 
       SendGridSettings_ApiKey: "${SendGridSettings_ApiKey}"
-      SendgridSettings_FromEmail: "${SendgridSettings_FromEmail}"
-      SendgridSettings_CriticalSupportEmails: "${SendgridSettings_CriticalSupportEmails}"
-      SendgridSettings_SupportCaseEmail: "${SendgridSettings_SupportCaseEmail}"
       SendgridSettings_BillingEmail: "${SendgridSettings_BillingEmail}"
-      SendgridSettings_OrderSubmitTemplateID: "${SendgridSettings_OrderSubmitTemplateID}"
-      SendgridSettings_OrderApprovalTemplateID: "${SendgridSettings_OrderApprovalTemplateID}"
-      SendgridSettings_LineItemStatusChangeTemplateID: "${SendgridSettings_LineItemStatusChangeTemplateID}"
-      SendgridSettings_QuoteOrderSubmitTemplateID: "${SendgridSettings_QuoteOrderSubmitTemplateID}"
-      SendgridSettings_NewUserTemplateID: "${SendgridSettings_NewUserTemplateID}"
-      SendgridSettings_ProductInformationRequestTemplateID: "${SendgridSettings_ProductInformationRequestTemplateID}"
-      SendgridSettings_PasswordResetTemplateID: "${SendgridSettings_PasswordResetTemplateID}"
+      SendgridSettings_CriticalSupportEmails: "${SendgridSettings_CriticalSupportEmails}"
       SendgridSettings_CriticalSupportTemplateID: "${SendgridSettings_CriticalSupportTemplateID}"
+      SendgridSettings_FromEmail: "${SendgridSettings_FromEmail}"
+      SendgridSettings_LineItemStatusChangeTemplateID: "${SendgridSettings_LineItemStatusChangeTemplateID}"
+      SendgridSettings_NewUserTemplateID: "${SendgridSettings_NewUserTemplateID}"
+      SendgridSettings_OrderApprovalTemplateID: "${SendgridSettings_OrderApprovalTemplateID}"
+      SendgridSettings_OrderSubmitTemplateID: "${SendgridSettings_OrderSubmitTemplateID}"
+      SendgridSettings_PasswordResetTemplateID: "${SendgridSettings_PasswordResetTemplateID}"
+      SendgridSettings_ProductInformationRequestTemplateID: "${SendgridSettings_ProductInformationRequestTemplateID}"
+      SendgridSettings_QuoteOrderSubmitTemplateID: "${SendgridSettings_QuoteOrderSubmitTemplateID}"
+      SendgridSettings_SupportCaseEmail: "${SendgridSettings_SupportCaseEmail}"
 
+      ServiceBusSettings_ConnectionString: "${ServiceBusSettings_ConnectionString}"
+      ServiceBusSettings_ZohoQueueName: "${ServiceBusSettings_ZohoQueueName}"
+      
       SmartyStreetSettings_AuthID: "${SmartyStreetSettings_AuthID}"
       SmartyStreetSettings_AuthToken: "${SmartyStreetSettings_AuthToken}"
       SmartyStreetSettings_RefererHost: "${SmartyStreetSettings_RefererHost}"
+      SmartyStreetSettings_SmartyEnabled: "${SmartyStreetSettings_SmartyEnabled}"
       SmartyStreetSettings_WebsiteKey: "${SmartyStreetSettings_WebsiteKey}"
 
-      UI_BaseAdminUrl: "${SELLER_HOST}"
+      StorageAccountSettings_ConnectionString: "${StorageAccountSettings_ConnectionString}"
+      StorageAccountSettings_HostUrl: "${StorageAccountSettings_HostUrl}"
+      StorageAccountSettings_Key: "${StorageAccountSettings_Key}"
+      StorageAccountSettings_ContainerNameQueue: "${StorageAccountSettings_ContainerNameQueue}"
+      StorageAccountSettings_ContainerNameCache: "${StorageAccountSettings_ContainerNameCache}"
+      StorageAccountSettings_BlobContainerNameExchangeRates: "${StorageAccountSettings_ContainerNameExchangeRates}"
+      StorageAccountSettings_ContainerNameTranslations: "${StorageAccountSettings_ContainerNameTranslations}"
+
+      UI_BaseAdminUrl: "http://${SELLER_HOST}"
 
       ZohoSettings_AccessToken: "${ZohoSettings_AccessToken}"
       ZohoSettings_ClientId: "${ZohoSettings_ClientId}"
@@ -122,7 +134,7 @@ services:
     image: ${REGISTRY}headstart-seller:${VERSION}-linux
     isolation: default
     environment:
-      SELLER_ID: ${SELLER_ID}
+      MARKETPLACE_ID: ${OrderCloudSettings_MarketplaceID}
       SELLER_CLIENT_ID: ${SELLER_CLIENT_ID}
       MIDDLEWARE_URL: http://${API_HOST}
       TRANSLATE_BLOB_URL: ${TRANSLATE_BLOB_URL}
@@ -134,7 +146,7 @@ services:
       context: .
       dockerfile: docker/build/UI/Dockerfile
       args:
-        BASE_IMAGE: node:12.16.3-alpine
+        BASE_IMAGE: node:16.15-alpine3.15
         ROLE: Seller
     labels:
       - "traefik.enable=true"
@@ -151,15 +163,17 @@ services:
       BUYER_CLIENT_ID: ${BUYER_CLIENT_ID}
       MIDDLEWARE_URL: http://${API_HOST}
       BUYER_URL: http://${BUYER_HOST}
-      SELLER_ID: ${SELLER_ID}
+      MARKETPLACE_ID: ${OrderCloudSettings_MarketplaceID}
+      MARKETPLACE_NAME: ${OrderCloudSettings_MarketplaceName}
       TRANSLATE_BLOB_URL: ${TRANSLATE_BLOB_URL}
+
     ports:
       - 43015:80
     build:
       context: .
       dockerfile: docker/build/UI/Dockerfile
       args:
-        BASE_IMAGE: node:12.16.3-alpine
+        BASE_IMAGE: node:16.15-alpine3.15
         ROLE: Buyer
     labels:
       - "traefik.enable=true"

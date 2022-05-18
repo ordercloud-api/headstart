@@ -1,5 +1,5 @@
 json -I -f /usr/share/nginx/html/assets/appConfigs/defaultadmin-test.json \
-      -e "this.sellerID='$SELLER_ID'" \
+      -e "this.marketplaceID='$MARKETPLACE_ID'" \
       -e "this.clientID='$SELLER_CLIENT_ID'" \
       -e "this.middlewareUrl='$MIDDLEWARE_URL'" \
       -e "this.translateBlobUrl='$TRANSLATE_BLOB_URL'" \

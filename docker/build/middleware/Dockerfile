@@ -19,6 +19,7 @@ FROM ${BASE_IMAGE} as production
 
 RUN apk add --update nodejs npm
 
+# used in entrypoint.sh
 RUN npm install -g json
 
 RUN apk add --no-cache --upgrade bash curl dos2unix
