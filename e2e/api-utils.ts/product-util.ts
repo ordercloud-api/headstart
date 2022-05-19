@@ -85,8 +85,6 @@ export async function createDefaultProduct(
 			DefaultSupplierID: null,
 			xp: {
 				//@ts-ignore
-				IntegrationData: null,
-				//@ts-ignore
 				Facets: {},
 				//@ts-ignore
 				Images: [],

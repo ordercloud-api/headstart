@@ -35,7 +35,6 @@ export class ProductService extends ResourceCrudService<Product> {
       Inventory: null,
       DefaultSupplierID: null,
       xp: {
-        IntegrationData: null,
         Facets: {},
         Images: [],
         Note: '',

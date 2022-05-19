@@ -67,10 +67,6 @@ namespace Headstart.Models
     public class ProductXp
     {
         // DO NOT DELETE
-        [OrchestrationIgnore]
-        public dynamic IntegrationData { get; set; }
-
-        // DO NOT DELETE
         public Dictionary<string, List<string>> Facets { get; set; } = new Dictionary<string, List<string>>();
 
         [MaxLength(500), OrchestrationIgnore]
