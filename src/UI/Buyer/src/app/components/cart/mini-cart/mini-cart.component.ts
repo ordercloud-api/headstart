@@ -29,8 +29,6 @@ export class OCMMiniCart implements OnInit {
 
   toProductDetails(
     productID: string,
-    configurationID: string,
-    documentID: string
   ): void {
     this.context.router.toProductDetails(productID)
     this.navigate.emit()

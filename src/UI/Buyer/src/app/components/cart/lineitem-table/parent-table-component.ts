@@ -124,9 +124,7 @@ export abstract class OCMParentTableComponent implements OnInit {
   }
 
   toProductDetails(
-    productID: string,
-    configurationID: string,
-    documentID: string
+    productID: string
   ): void {
     if (!this.invalidItem) {
       this.context.router.toProductDetails(productID)
