@@ -39,11 +39,6 @@ export class OrderStateService {
       OrderType: 'Standard',
       QuoteOrderInfo: null,
       Currency: 'USD', // Default value, overriden in reset() when app loads
-      Returns: {
-        HasClaims: false,
-        HasUnresolvedClaims: false,
-        Resolutions: [],
-      },
       ClaimStatus: ClaimStatus.NoClaim,
       ShippingStatus: ShippingStatus.Processing,
     },

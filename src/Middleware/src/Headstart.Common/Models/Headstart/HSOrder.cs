@@ -52,10 +52,6 @@ namespace Headstart.Models
 
         public QuoteOrderInfo QuoteOrderInfo { get; set; }
 
-        public ClaimsSummary Returns { get; set; }
-
-        public ClaimsSummary Cancelations { get; set; }
-
         [JsonConverter(typeof(StringEnumConverter))]
         public CurrencySymbol? Currency { get; set; } = null;
 
@@ -110,24 +106,6 @@ namespace Headstart.Models
         public IList<Payment> Payments { get; set; }
 
         public IList<OrderApproval> Approvals { get; set; }
-    }
-
-    public class ClaimsSummary
-    {
-        public bool HasClaims { get; set; }
-
-        public bool HasUnresolvedClaims { get; set; }
-
-        public List<ClaimResolutionStatuses> Resolutions { get; set; }
-    }
-
-    public class ClaimResolutionStatuses
-    {
-        public string LineItemID { get; set; }
-
-        public string RMANumber { get; set; }
-
-        public bool IsResolved { get; set; }
     }
 
     public class HSSupplierOrderData

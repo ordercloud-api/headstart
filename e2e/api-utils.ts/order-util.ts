@@ -80,11 +80,6 @@ export async function createOrder(
 				OrderType: 'Standard',
 				QuoteOrderInfo: null,
 				Currency: 'USD',
-				Returns: {
-					HasClaims: false,
-					HasUnresolvedClaims: false,
-					Resolutions: [],
-				},
 				ClaimStatus: 'NoClaim',
 				ShippingStatus: 'Processing',
 			},
