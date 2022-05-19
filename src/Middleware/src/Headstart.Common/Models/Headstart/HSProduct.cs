@@ -89,8 +89,6 @@ namespace Headstart.Models
         [JsonConverter(typeof(StringEnumConverter))]
         public CurrencySymbol? Currency { get; set; } = null;
 
-        public bool PromotionEligible { get; set; }
-
         public bool FreeShipping { get; set; }
 
         public string FreeShippingMessage { get; set; }

@@ -106,7 +106,6 @@ export async function createDefaultProduct(
 				Currency: 'USD',
 				//@ts-ignore
 				SizeTier: 'A',
-				PromotionEligible: true,
 				FreeShipping: false,
 				FreeShippingMessage: "Free Shipping",
 
