@@ -53,7 +53,7 @@
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Library\OrderCloud.Integrations.Library.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.TaxJar\OrderCloud.Integrations.TaxJar.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.EasyPost\OrderCloud.Integrations.EasyPost.csproj" />
-    <ProjectReference Include="..\..\integrations\Ordercloud.Integrations.Vertex\Ordercloud.Integrations.Vertex.csproj" />
+    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Vertex\OrderCloud.Integrations.Vertex.csproj" />
   </ItemGroup>
 
   <ItemGroup>

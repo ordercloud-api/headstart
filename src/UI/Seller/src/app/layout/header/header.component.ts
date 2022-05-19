@@ -66,7 +66,7 @@ export class HeaderComponent implements OnInit {
     if (this.isSupplierUser) {
       this.getSupplierOrg()
     } else {
-      this.organizationName = this.appConfig.sellerName
+      this.organizationName = this.appConfig.marketplaceName
     }
   }
 

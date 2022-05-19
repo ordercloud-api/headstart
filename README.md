@@ -7,6 +7,7 @@ Welcome! The purpose of this project is to give you and your business a "headsta
 3. [Seller](./src/UI/Seller/README.md) - The frontend admin application written in Angular. This includes everything needed to manage the data in your buyer application(s).
 
 ## Demo
+
 Want to check out the features included in headstart without having to build and deploy your own instance? We have two hosted instances that you are free to log in and check out. These sites auto-deploy anytime code changes are merged into the development branch.
 
 | Instance Name | Description                                                                                                                                                                                      |
@@ -18,20 +19,20 @@ Want to check out the features included in headstart without having to build and
 
 **QA Buyer**
 
-| URL      | https://headstartdemo-buyer-ui-test.azurewebsites.net |
+| URL      | <https://headstartdemo-buyer-ui-test.azurewebsites.net> |
 |----------|-------------------------------------------------------|
 | Username | testbuyer                                             |
 | Password | Summer2021!                                           |
 
 **QA Admin**
 
-| URL      | https://headstartdemo-admin-ui-test.azurewebsites.net |
+| URL      | <https://headstartdemo-admin-ui-test.azurewebsites.net> |
 |----------|-------------------------------------------------------|
 | Username | testadmin                                             |
 | Password | Summer2021!                                           |
 
 **Demo Buyer**
-| URL      | https://headstartdemo-buyer-ui.azurewebsites.net      |
+| URL      | <https://headstartdemo-buyer-ui.azurewebsites.net>      |
 |----------|-------------------------------------------------------|
 | Username | testbuyer                                             |
 | Password | Summer2021!                                           |
@@ -54,7 +55,7 @@ There are some tasks that must be completed before you can get an instance of He
 
 This solution relies on various third-party services and credentials for those services. You should have a set of test credentials as well as production credentials. Start by creating an account for all of the services listed.
 
-> Note: Many of the accounts listed have been built to use a mocked response in the test environment to help you get started developing quicker. They will still require a valid production account prior to your first release. See details on each account to determine how to use mocked rates. 
+> Note: Many of the accounts listed have been built to use a mocked response in the test environment to help you get started developing quicker. They will still require a valid production account prior to your first release. See details on each account to determine how to use mocked rates.
 
 1. [Avalara](./src/Middleware/integrations/ordercloud.integrations.avalara) - Tax calculation - If a License Key isn't provided, responses will be mocked in Test and UAT. A key is still needed for Production
 2. [CardConnect](https://cardconnect.com/signup) - Credit card payment processor - If account isn't provided, responses will be mocked in Test and UAT. An account is still needed for Production
@@ -109,7 +110,7 @@ Detailed Steps:
 6. Make a POST to `/seed` endpoint with [this template body](./src/Middleware/src/Headstart.Common/Assets/SeedTemplate.json). For a description of the properties please refer to [the definition](./src/Middleware/src/Headstart.Common/Models/Misc/EnvironmentSeed.cs).
 7. A successful response will include:
    1. The middleware clientID and secret. Save these two values in your app configuration under `OrderCloudSettings:MiddlewareClientID` and `OrderCloudSettings:MiddlewareClientSecret`.
-   2. The buyer clientID. Follow the instructions in [frontend configuration](#frontend-configuration) and set it in the buyer config `clientID`. 
+   2. The buyer clientID. Follow the instructions in [frontend configuration](#frontend-configuration) and set it in the buyer config `clientID`.
    3. The seller clientID. Follow the instructions in [frontend-configuration](#frontend-configuration) and set it in the seller config `clientID`.
 8. Add the `clientID`s for both the buyer and seller from the `/seed` response to the `OrderCloudSettings:ClientIDsWithAPIAccess`, along with the `clientID` of a secondary buyer API Client ("*Default HeadStart Buyer UI LOCAL*"), which can be found using the OrderCloud portal.
 
@@ -131,14 +132,13 @@ Detailed Steps:
 |     QuoteOrderSubmit      | sent to the buyer user when their quote is submitted                                                                            |
 |                           |                                                                                                                                 |
 
-### Moosend 
+### Moosend
 
-Moosend is a platform for sending automated email campaigns. It is integrated into the storefront in order to capture events like view product, add to cart and purchase. This data can provide intelligence for abandonded cart emails, user segmentation for peronsonalized marketing and user-history-based product recomendations. 
+Moosend is a platform for sending automated email campaigns. It is integrated into the storefront in order to capture events like view product, add to cart and purchase. This data can provide intelligence for abandonded cart emails, user segmentation for peronsonalized marketing and user-history-based product recomendations.
 
-Usage is optional and controlled with the buyer setting `useMoosend`. To connect moosend [get a website ID](https://help.moosend.com/hc/en-us/articles/115002945125-How-can-I-connect-my-website-to-Moosend-) and add it to buyer settings. 
+Usage is optional and controlled with the buyer setting `useMoosend`. To connect moosend [get a website ID](https://help.moosend.com/hc/en-us/articles/115002945125-How-can-I-connect-my-website-to-Moosend-) and add it to buyer settings.
 
-Moosend and Ordercloud are both owned by Sitecore. You can expect the two products to be more integrated over time. Sendgrid will be replaced by Moosend once transactional email feature are ready. 
-
+Moosend and Ordercloud are both owned by Sitecore. You can expect the two products to be more integrated over time. Sendgrid will be replaced by Moosend once transactional email feature are ready.
 
 ### Frontend Configuration
 
@@ -178,6 +178,7 @@ On the OrderCloud platform, suppliers are an organization type used in indirect 
 In the HeadStart application, suppliers are responsible for creating products so we will first need to create suppliers.
 
 In the admin (seller) application:
+
 1. Log in with your initial admin user credentials
 2. From the navigation bar, click "Suppliers" > "All Suppliers"
 3. Click "Create New Supplier"
@@ -196,18 +197,19 @@ In the admin (seller) application:
 #### Step 2: Create Catalog(s)
 
 In the admin (seller) application:
-1.  From the navigation bar, click on "Buyers" > "All Buyers"
-2.  Click the "Default HeadStart Buyer" buyer
-3.  Click "Catalogs"
-4.  Click "Create New Catalog" (_this will be the container that holds our products_)
+
+1. From the navigation bar, click on "Buyers" > "All Buyers"
+2. Click the "Default HeadStart Buyer" buyer
+3. Click "Catalogs"
+4. Click "Create New Catalog" (*this will be the container that holds our products*)
     1. Enter a catalog name and click "Create"
-5.  Navigate back to the buyer detail page via the breadcrumbs (i.e. Buyers > _\<buyer id>_)
-6.  Click "Buyer Groups"
-7.  Click "Create New Buyer Group"
+5. Navigate back to the buyer detail page via the breadcrumbs (i.e. Buyers > _\<buyer id>_)
+6. Click "Buyer Groups"
+7. Click "Create New Buyer Group"
     1. Fill in the details. **Use an actual address or it will fail address validation**
     2. Under "Catalogs", set "assigned"to true for the catalog
-8.  Navigate back to the buyer detail page via the breadcrumbs (i.e. Buyers > _\<buyer id>_)
-9.  Click "Users"
+8. Navigate back to the buyer detail page via the breadcrumbs (i.e. Buyers > _\<buyer id>_)
+9. Click "Users"
 10. Click "Create New User"
     1. Make sure "Active" is set to true
     2. Set the "Home Country" as the country defined for the buyer group address
@@ -219,21 +221,22 @@ In the admin (seller) application:
 At this point we've done all we can as a seller user. We now need to log in to the admin application as a supplier user to create our product.
 
 In the admin (seller) application:
-1.  Log out of the initial admin user, if applicable
-2.  Log in as the supplier user from [Step 1: Create Supplier(s)](#step-1-create-suppliers)
-3.  Click on "Products" > "All Products"
-4.  Click "Create New Product" > "Standard Product"
+
+1. Log out of the initial admin user, if applicable
+2. Log in as the supplier user from [Step 1: Create Supplier(s)](#step-1-create-suppliers)
+3. Click on "Products" > "All Products"
+4. Click "Create New Product" > "Standard Product"
     1. Enter the required fields (*required fields are marked with a red asterisk*)
     2. Make sure "Active" is set to true
     3. Click "Create" to save the product
 
 Now that the product is created, our seller needs to define the visibility.
 
-5.  Log out of the supplier user
-6.  Log in as the initial admin user
-7.  Click on "Products" > "All Products"
-8.  Click on the previously created product
-9.  Click the "Buyer Visibility" tab
+5. Log out of the supplier user
+6. Log in as the initial admin user
+7. Click on "Products" > "All Products"
+8. Click on the previously created product
+9. Click the "Buyer Visibility" tab
 10. Click "Edit" on "Default Headstart Buyer"
     1. Set "visible" to true for the previously created catalog
     2. Click "Save"
@@ -242,18 +245,18 @@ Now that the product is created, our seller needs to define the visibility.
 
 In the buyer application:
 
-1.  Log in as the buyer user from [Step 2: Create Catalog(s)](#step-2-create-catalogs)
-2.  Products can be viewed in the following ways:
-    1.  From the navigation bar, click "Products" (*returns all products*)
-    2.  From the search bar, type in a valid search term that will return products (*returns all products, filtered by search term*)
-    3.  Click the "SHOP" (category) navigation, then click a category from the category hierarchy. (*returns all products under the selected category*) (*Note: In [Step 2: Create Catalog(s)](#step-2-create-catalogs), no categories were created, therefore the category navigation menu may appear empty at this time*)
-3.  Add the product to the cart in the following ways:
-    1.  From the product details page: Click the product tile to navigate to the product details page, then click the "Add to Cart" button
-    2.  From the product results page: Click the "Add to Cart" button in the product tile of the product results page (*only applicable for products without variations*)
-4.  Products in the cart can be viewed in the following ways:
-    1.  Highlight the cart icon from the top menu, which will display the mini cart
-    2.  Click the "Edit Cart" link from the mini cart
-    3.  Click the cart icon from the top menu, which will display the cart page with additional functionality for managing the cart
+1. Log in as the buyer user from [Step 2: Create Catalog(s)](#step-2-create-catalogs)
+2. Products can be viewed in the following ways:
+    1. From the navigation bar, click "Products" (*returns all products*)
+    2. From the search bar, type in a valid search term that will return products (*returns all products, filtered by search term*)
+    3. Click the "SHOP" (category) navigation, then click a category from the category hierarchy. (*returns all products under the selected category*) (*Note: In [Step 2: Create Catalog(s)](#step-2-create-catalogs), no categories were created, therefore the category navigation menu may appear empty at this time*)
+3. Add the product to the cart in the following ways:
+    1. From the product details page: Click the product tile to navigate to the product details page, then click the "Add to Cart" button
+    2. From the product results page: Click the "Add to Cart" button in the product tile of the product results page (*only applicable for products without variations*)
+4. Products in the cart can be viewed in the following ways:
+    1. Highlight the cart icon from the top menu, which will display the mini cart
+    2. Click the "Edit Cart" link from the mini cart
+    3. Click the cart icon from the top menu, which will display the cart page with additional functionality for managing the cart
 
 Congrats! Hopefully you didn't get any errors and understand a little bit more about how everything is connected. If you did encounter errors please capture the details and submit an issue on Github.
 
@@ -294,27 +297,31 @@ You can run the project using Docker, sample docker-compose.yml file includes Bu
     - 127.0.0.1 api.headstart.localhost
 4. From the project directory, start up your application by running `docker-compose up -d`
     - Note the `Middleware` container may take longer to start as it depends on the Cosmos emulator being healthy.
+    - If you run into issues with @ordercloud/headstart-sdk not being found try running `docker-compose build --no-cache`
 5. Follow the steps to seed the initial data values listed in the [Seeding OrderCloud Data](https://github.com/ordercloud-api/headstart#seeding-ordercloud-data) section above.
+    - If you are building against a marketplace that has already been seeded you can instead open postman and call the endpoint PUT <http://headstart.api.localhost/updatetranslations> with an empty body to update your local azurite instance with the default english translation files.
 6. Open `.env` file and populate the rest of the variables in the `REQUIRED ENVIRONMENT VARIABLES` section:
     - The following values comes from from the `/seed` command response executed in previous step
         - SELLER_CLIENT_ID
         - BUYER_CLIENT_ID
         - OrderCloudSettings_MiddlewareClientID
         - OrderCloudSettings_MiddlewareClientSecret
+        - OrderCloudSettings_ClientIDsWithAPIAccess (a comma delimited list of API clients that can access middleware - start with BUYER_CLIENT_ID and SELLER_CLIENT_ID)
         - SELLER_ID (This should be set to the `MarketplaceID`)
     - The following values need to be obtained by create accounts with EasyPost & SmartyStreets
-        - EasyPostSettings_APIKey 
-        - SmartyStreetSettings_AuthID
-        - SmartyStreetSettings_AuthToken
-    
+        - EasyPostSettings_APIKey
+
 7. Restart your docker containers to make use of the new env vars by running `docker-compose down` followed by `docker-compose up -d`.
     - Note you can't run a `docker-compose restart` here as if the containers are already running then the Middleware app will restart before Cosmos is healthy.
-8. Follow the steps in the [Validating Setup](https://github.com/ordercloud-api/headstart#validating-setup) section above to walk through generating some sample data and testing each of the application instances.
+8. Follow the steps in the [Validating Setup](https://github.com/ordercloud-api/headstart#validating-setup) section above to walk through generating some sample data and testing each of the application. Access your applications from:
+    - <http://buyer.headstart.localhost>
+    - <http://seller.headstart.localhost>
+    - <http://api.headstart.localhost>
 
 ## Git Flow
 
-1.  **Fork** the repo on GitHub
-2.  **Clone** the project to your own machine
-3.  **Commit** changes to your own branch
-4.  **Push** your work back up to your fork
-5.  Submit a **Pull request** so that we can review your changes
+1. **Fork** the repo on GitHub
+2. **Clone** the project to your own machine
+3. **Commit** changes to your own branch
+4. **Push** your work back up to your fork
+5. Submit a **Pull request** so that we can review your changes

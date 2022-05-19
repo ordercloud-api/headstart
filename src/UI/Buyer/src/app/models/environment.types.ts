@@ -51,8 +51,8 @@ export interface EnvironmentConfig {
   baseUrl: string
   middlewareUrl: string
   creditCardIframeUrl: string
-  sellerID: string
-  sellerName?: string
+  marketplaceID: string
+  marketplaceName?: string
   translateBlobUrl: string
   orderCloudApiUrl: string
   theme?: Theme
@@ -115,17 +115,17 @@ export class AppConfig {
   creditCardIframeUrl: string
 
   /**
-   *  The ID of the seller organization.
+   *  The ID of the marketplace.
    */
-  sellerID: string
+  marketplaceID: string
 
   /**
-   * Name to use when displaying seller organization (i.e. seller owned products)
+   * Name to use when displaying marketplace (i.e. MPO owned products)
    */
-  sellerName: string
+  marketplaceName: string
 
   /**
-   * Email for sending quote requests to seller (i.e. seller owned products)
+   * Email for sending quote requests to seller (i.e. MPO owned products)
    */
   sellerQuoteContactEmail: string
 

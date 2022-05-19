@@ -6,8 +6,6 @@ FROM ${BASE_IMAGE} as base
 
 RUN npm config set registry http://registry.npmjs.org/ --global
 
-RUN npm install -g @angular/cli
-
 RUN npm install -g json
 
 RUN apk add --no-cache git
@@ -18,22 +16,17 @@ ARG ROLE
 
 WORKDIR /build
 
+# Build SDK
 COPY src/UI/SDK/package*.json SDK/
-
-COPY src/UI/${ROLE}/package*.json APP/
-
 RUN cd /build/SDK && npm install
-
-RUN cd /build/APP && npm install
-
 COPY src/UI/SDK SDK/
-
-COPY src/UI/${ROLE} APP/
-
-RUN sed -i 's/useLocalMiddleware = true/useLocalMiddleware = false/g' /build/APP/src/environments/environment.local.ts
-
 RUN cd /build/SDK && npm run build
 
+# Build APP (Buyer or Seller)
+COPY src/UI/${ROLE}/package*.json APP/
+RUN cd /build/APP && npm install
+COPY src/UI/${ROLE} APP/
+RUN sed -i 's/useLocalMiddleware = true/useLocalMiddleware = false/g' /build/APP/src/environments/environment.local.ts
 RUN cd /build/APP && npm run build --prod
 
 FROM nginx:1.19.8-alpine as production

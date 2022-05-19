@@ -5,8 +5,6 @@ ARG BUILD_IMAGE
 ARG BUILD_CONFIGURATION
 FROM ${BUILD_IMAGE} as build
 
-COPY docs/Reference.md ./docs/
-
 WORKDIR /src/Middleware
 
 COPY src/Middleware/ .
@@ -21,6 +19,7 @@ FROM ${BASE_IMAGE} as production
 
 RUN apk add --update nodejs npm
 
+# used in entrypoint.sh
 RUN npm install -g json
 
 RUN apk add --no-cache --upgrade bash curl dos2unix
@@ -28,8 +27,6 @@ RUN apk add --no-cache --upgrade bash curl dos2unix
 WORKDIR /app
 
 COPY --from=build /out/middleware .
-
-COPY docs/Reference.md ./reference.md
 
 COPY docker/build/middleware/* ./
 

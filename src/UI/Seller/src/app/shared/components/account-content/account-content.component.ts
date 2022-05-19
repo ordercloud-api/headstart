@@ -50,7 +50,7 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
     await this.setUser()
     this.userContext.Me.Supplier
       ? this.getSupplierOrg()
-      : (this.organizationName = this.appConfig.sellerName)
+      : (this.organizationName = this.appConfig.marketplaceName)
     this.refresh(this.userContext.Me)
   }
 
