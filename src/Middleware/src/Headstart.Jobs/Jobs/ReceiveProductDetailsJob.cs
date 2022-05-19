@@ -215,11 +215,6 @@ namespace Headstart.Jobs
                 result.SizeTier = productXp.SizeTier;
             }
 
-            if (PropertyExists(productXp, "IsResale"))
-            {
-                result.Resale = productXp.IsResale;
-            }
-
             if (PropertyExists(productXp, "Currency"))
             {
                 result.Currency = productXp.Currency;

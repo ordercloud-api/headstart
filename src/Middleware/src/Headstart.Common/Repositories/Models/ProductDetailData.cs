@@ -42,8 +42,6 @@ namespace Headstart.Common.Repositories.Models
 
         public string SizeTier { get; set; }
 
-        public bool Resale { get; set; }
-
         public string Currency { get; set; }
 
         public string VariantID { get; set; }

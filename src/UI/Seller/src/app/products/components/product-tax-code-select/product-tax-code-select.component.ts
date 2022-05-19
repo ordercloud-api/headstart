@@ -28,8 +28,6 @@ export class ProductTaxCodeSelect {
   handleTaxCodeSelection = new EventEmitter<any>()
   @Output()
   handleTaxCodesSearched = new EventEmitter<string>()
-  @Output()
-  handleIsResale = new EventEmitter<boolean>()
   @Input()
   readonly = false
   @Input()
@@ -39,10 +37,6 @@ export class ProductTaxCodeSelect {
   faTimesCircle = faTimesCircle
   faCheckCircle = faCheckCircle
   faAsterisk = faAsterisk
-
-  handleIsResaleInput(event: boolean): void {
-    return this.handleIsResale.emit(event)
-  }
 
   handleSelectTaxCode(taxCodeSelection: TaxCategorization): void {
     const event = {

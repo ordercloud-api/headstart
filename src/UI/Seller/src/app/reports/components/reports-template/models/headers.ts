@@ -131,7 +131,6 @@ export const lineItemDetail = [
   { value: 'Variant Name', path: 'HSLineItem.Variant.xp.SpecCombo' },
   { value: 'Quantity', path: 'HSLineItem.Quantity' },
   { value: 'Tax Code', path: 'HSLineItem.Product.xp.Tax.Code' },
-  { value: 'Is Resale?', path: 'HSLineItem.Product.xp.IsResale' },
   {
     value: 'Unit of Measure Qty',
     path: 'HSLineItem.Product.xp.UnitOfMeasure.Qty',
@@ -261,7 +260,6 @@ export const productDetail = [
   { value: 'Unit of Measure', path: 'Data.UnitOfMeasure' },
   { value: 'Product Type', path: 'Data.ProductType' },
   { value: 'Size Tier', path: 'Data.SizeTier' },
-  { value: 'Resale', path: 'Data.Resale' },
   { value: 'Currency', path: 'Data.Currency' },
   { value: '3 Month Sales', path: 'ProductSales.ThreeMonthQuantity' },
   { value: '6 Month Sales', path: 'ProductSales.SixMonthQuantity' },

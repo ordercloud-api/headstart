@@ -16,7 +16,6 @@ export interface TemplateProductFlat {
     TaxDescription?: string
     UnitOfMeasureQuantity?: number
     UnitOfMeasure?: string
-    IsResale?: boolean
     ApplyTax?: boolean
     ApplyShipping?: boolean
     MinQuantity?: number

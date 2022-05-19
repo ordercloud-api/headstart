@@ -33,22 +33,5 @@
         </product-tax-code-select-dropdown>
       </div>
     </div>
-    <hr />
-    <h6 class="font-weight-medium">Resale Status</h6>
-    <div class="form-group">
-      <div class="custom-control custom-checkbox">
-        <input
-          [attr.disabled]="readonly ? true : null"
-          type="checkbox"
-          class="custom-control-input"
-          formControlName="IsResale"
-          (input)="handleIsResaleInput($event.target.checked)"
-          id="IsResale"
-        />
-        <label class="custom-control-label" for="IsResale" translate
-          >ADMIN.PRODUCT_EDIT.RESALE</label
-        >
-      </div>
-    </div>
   </form>
 </div>

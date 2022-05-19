@@ -347,7 +347,6 @@
       "QUANTITY_PER_UNIT": "Quantity Per Unit",
       "QUOTE": "Quote",
       "REMOVE_OPTION": "Remove Option",
-      "RESALE": "This product is resale",
       "SALE_END": "Sale End",
       "SALE_END_POPOVER": "When sale prices should stop being active",
       "SALE_PRICE": "Sale Price",
@@ -1024,13 +1023,6 @@
       "SAVE": "Save"
     },
     "LOCATION_DETAILS": {
-      "ADD": "Add Resale Cert",
-      "DOWNLOAD_CERT": "Download Current Cert",
-      "EXP": "Expires",
-      "NEW_CERT": "New Resale Tax Certificate",
-      "REPLACE": "Replace Resale Cert",
-      "RESALE_TAX": "Resale Tax Certificate",
-      "RESALE_TAX_INFO": "Intending to resale goods purchased on this site? You many need to provide a signed document to indicate this.",
       "TITLE": "Location Management"
     },
     "LOCATION_LIST": {

@@ -22,10 +22,8 @@ namespace OrderCloud.Integrations.Avalara.Mappers
                 return shipment.ToLineItemModel(shipFrom, shipTo);
             });
 
-            string exemptionNo = null; // can set to a resale cert id
-
             var productLines = standardLineItems.Select(lineItem =>
-                 lineItem.ToLineItemModel(lineItem.ShipFromAddress, lineItem.ShippingAddress, exemptionNo));
+                 lineItem.ToLineItemModel(lineItem.ShipFromAddress, lineItem.ShippingAddress));
 
             return new CreateTransactionModel()
             {
@@ -39,7 +37,7 @@ namespace OrderCloud.Integrations.Avalara.Mappers
             };
         }
 
-        private static LineItemModel ToLineItemModel(this LineItem lineItem, Address shipFrom, Address shipTo, string exemptionNo)
+        private static LineItemModel ToLineItemModel(this LineItem lineItem, Address shipFrom, Address shipTo)
         {
             var line = new LineItemModel()
             {
@@ -52,11 +50,6 @@ namespace OrderCloud.Integrations.Avalara.Mappers
                 number = lineItem.ID,
                 addresses = ToAddressesModel(shipFrom, shipTo),
             };
-            var isResaleProduct = (bool)lineItem.Product.xp?.IsResale;
-            if (isResaleProduct && exemptionNo != null)
-            {
-                line.exemptionCode = exemptionNo;
-            }
 
             return line;
         }

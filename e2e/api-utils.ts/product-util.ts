@@ -86,7 +86,6 @@ export async function createDefaultProduct(
 			xp: {
 				//@ts-ignore
 				IntegrationData: null,
-				IsResale: false,
 				//@ts-ignore
 				Facets: {},
 				//@ts-ignore

@@ -311,9 +311,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
             _get(superHSProduct.Product, 'xp.ProductType'),
             Validators.required
           ),
-          IsResale: new FormControl(
-            _get(superHSProduct.Product, 'xp.IsResale')
-          ),
           QuantityAvailable: new FormControl(
             superHSProduct.Product?.Inventory?.QuantityAvailable,
             null
@@ -925,10 +922,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
 
   validateSpecs(e: boolean): void {
     this.specsValid = e
-  }
-
-  shouldIsResaleBeChecked(): boolean {
-    return this._superHSProductEditable?.Product?.xp?.IsResale
   }
 
   getProductPreviewImage(): string | SafeUrl {

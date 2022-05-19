@@ -84,8 +84,6 @@ namespace Headstart.Models
 
         public SizeTier SizeTier { get; set; }
 
-        public bool IsResale { get; set; } = false;
-
         [JsonConverter(typeof(StringEnumConverter))]
         public CurrencySymbol? Currency { get; set; } = null;
 

@@ -218,8 +218,6 @@ namespace Headstart.API.Commands
 
         public string UnitOfMeasure { get; set; }
 
-        public bool IsResale { get; set; }
-
         public bool ApplyTax { get; set; }
 
         public bool ApplyShipping { get; set; }
@@ -279,8 +277,6 @@ namespace Headstart.API.Commands
         public string UnitOfMeasureQty { get; set; }
 
         public string UnitOfMeasure { get; set; }
-
-        public bool IsResale { get; set; }
 
         public CurrencySymbol Currency { get; set; }
 
