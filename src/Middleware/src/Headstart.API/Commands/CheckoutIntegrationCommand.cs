@@ -255,17 +255,17 @@ namespace Headstart.API.Commands
                 }).ToList();
             }
 
-            var buyerCurrency = worksheet.Order.xp.Currency ?? CurrencySymbol.USD;
+            var buyerCurrency = worksheet.Order.xp.Currency ?? CurrencyCode.USD;
 
             await shipResponse.ShipEstimates
                 .CheckForEmptyRates(settings.EasyPostSettings.NoRatesFallbackCost, settings.EasyPostSettings.NoRatesFallbackTransitDays)
                 .ApplyShippingLogic(worksheet, oc, settings.EasyPostSettings.FreeShippingTransitDays).Result
-                .ConvertCurrency(CurrencySymbol.USD, buyerCurrency, exchangeRates);
+                .ConvertCurrency(CurrencyCode.USD, buyerCurrency, exchangeRates);
 
             return shipResponse;
         }
 
-        private async Task<List<HSShipEstimate>> ConvertShippingRatesCurrency(IList<HSShipEstimate> shipEstimates, CurrencySymbol shipperCurrency, CurrencySymbol buyerCurrency)
+        private async Task<List<HSShipEstimate>> ConvertShippingRatesCurrency(IList<HSShipEstimate> shipEstimates, CurrencyCode shipperCurrency, CurrencyCode buyerCurrency)
         {
             var rates = (await exchangeRates.Get(buyerCurrency)).Rates;
             var conversionRate = rates.Find(r => r.Currency == shipperCurrency).Rate;

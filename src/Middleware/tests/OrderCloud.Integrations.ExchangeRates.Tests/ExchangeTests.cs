@@ -38,10 +38,10 @@ namespace OrderCloud.Integrations.ExchangeRates.Tests
             // Arrange
 
             // Act
-            var rates = await command.Get(CurrencySymbol.EUR);
+            var rates = await command.Get(CurrencyCode.EUR);
 
             // Assert
-            Assert.IsTrue(rates.BaseSymbol == CurrencySymbol.EUR);
+            Assert.IsTrue(rates.BaseCode == CurrencyCode.EUR);
             Assert.IsTrue(rates.Rates.Count(r => r.Rate == 0) == 0); // make sure any errors in returned data (null rate for EUR) is set to 1
             Assert.IsFalse(rates.Rates.Any(r => r.Icon == null));
         }
@@ -54,12 +54,12 @@ namespace OrderCloud.Integrations.ExchangeRates.Tests
             {
                 Filters = new List<ListFilter>()
                 {
-                    new ListFilter("Symbol", "CAD|USD"),
+                    new ListFilter("CurrencyCode", "CAD|USD"),
                 },
             };
             var rates = new OrderCloudIntegrationsExchangeRate()
             {
-                BaseSymbol = CurrencySymbol.EUR,
+                BaseCode = CurrencyCode.EUR,
                 Rates = GetRates(),
             };
 
@@ -69,17 +69,17 @@ namespace OrderCloud.Integrations.ExchangeRates.Tests
             // Assert
             Assert.IsTrue(filtered.Meta.TotalCount == 2);
             Assert.IsTrue(filtered.Items.Count == 2);
-            Assert.IsTrue(filtered.Items.Any(i => i.Currency == CurrencySymbol.USD));
-            Assert.IsTrue(filtered.Items.Any(i => i.Currency == CurrencySymbol.CAD));
-            Assert.IsFalse(filtered.Items.Any(i => i.Currency == CurrencySymbol.BGN));
+            Assert.IsTrue(filtered.Items.Any(i => i.Currency == CurrencyCode.USD));
+            Assert.IsTrue(filtered.Items.Any(i => i.Currency == CurrencyCode.CAD));
+            Assert.IsFalse(filtered.Items.Any(i => i.Currency == CurrencyCode.BGN));
         }
 
         [Test]
         public async Task ConvertCurrency_WithValidArguments_ReturnsCalculatedValue()
         {
             // Arrange
-            var baseCurrency = CurrencySymbol.EUR;
-            var toCurrency = CurrencySymbol.MYR;
+            var baseCurrency = CurrencyCode.EUR;
+            var toCurrency = CurrencyCode.MYR;
             double returnedRate = 4.6982;
 
             simpleCache.GetOrAddAsync(Arg.Any<string>(), Arg.Any<TimeSpan>(), Arg.Any<Func<Task<OrderCloudIntegrationsExchangeRate>>>())
@@ -93,12 +93,12 @@ namespace OrderCloud.Integrations.ExchangeRates.Tests
             Assert.IsTrue(rate == (1.33 * returnedRate));
         }
 
-        private OrderCloudIntegrationsExchangeRate GetExchangeRate(CurrencySymbol baseCurrency, CurrencySymbol toCurrency, double returnedRate)
+        private OrderCloudIntegrationsExchangeRate GetExchangeRate(CurrencyCode baseCurrency, CurrencyCode toCurrency, double returnedRate)
         {
             Fixture fixture = new Fixture();
             return new OrderCloudIntegrationsExchangeRate()
             {
-                BaseSymbol = baseCurrency,
+                BaseCode = baseCurrency,
                 Rates = new List<OrderCloudIntegrationsConversionRate>()
                 {
                     new OrderCloudIntegrationsConversionRate()
@@ -116,10 +116,10 @@ namespace OrderCloud.Integrations.ExchangeRates.Tests
         {
             return new List<OrderCloudIntegrationsConversionRate>()
                 {
-                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.EUR, Icon = string.Empty, Name = "EUR", Rate = 1, Symbol = "€" },
-                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.USD, Icon = string.Empty, Name = "USD", Rate = 1.01456, Symbol = "$" },
-                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.CAD, Icon = string.Empty, Name = "CAD", Rate = 2.65487, Symbol = "$" },
-                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencySymbol.BGN, Icon = string.Empty, Name = "BGN", Rate = 31.357, Symbol = "лв" },
+                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencyCode.EUR, Icon = string.Empty, Name = "EUR", Rate = 1, Symbol = "€" },
+                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencyCode.USD, Icon = string.Empty, Name = "USD", Rate = 1.01456, Symbol = "$" },
+                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencyCode.CAD, Icon = string.Empty, Name = "CAD", Rate = 2.65487, Symbol = "$" },
+                    new OrderCloudIntegrationsConversionRate() { Currency = CurrencyCode.BGN, Icon = string.Empty, Name = "BGN", Rate = 31.357, Symbol = "лв" },
                 };
         }
     }

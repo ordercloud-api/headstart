@@ -21,7 +21,7 @@ namespace Headstart.Common.Controllers
         }
 
         [HttpGet, Route("{currency}")]
-        public async Task<ListPage<OrderCloudIntegrationsConversionRate>> Get(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencySymbol currency)
+        public async Task<ListPage<OrderCloudIntegrationsConversionRate>> Get(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencyCode currency)
         {
             return await command.Get(rateArgs, currency);
         }

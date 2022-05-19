@@ -11,7 +11,7 @@ namespace Headstart.Common.Services
 {
     public interface IHSExchangeRatesService
     {
-        Task<CurrencySymbol> GetCurrencyForUser(string userToken);
+        Task<CurrencyCode> GetCurrencyForUser(string userToken);
 
         Task<List<OrderCloudIntegrationsConversionRate>> GetExchangeRatesForUser(string userToken);
     }
@@ -27,12 +27,12 @@ namespace Headstart.Common.Services
             this.exchangeRatesCommand = exchangeRatesCommand;
         }
 
-        public async Task<CurrencySymbol> GetCurrencyForUser(string userToken)
+        public async Task<CurrencyCode> GetCurrencyForUser(string userToken)
         {
             var buyerUserGroups = await oc.Me.ListUserGroupsAsync<HSLocationUserGroup>(opts => opts.AddFilter(u => u.xp.Type == "BuyerLocation"), userToken);
             var currency = buyerUserGroups.Items.FirstOrDefault(u => u.xp.Currency != null)?.xp?.Currency;
             Require.That(currency != null, new ErrorCode("Exchange Rate Error", "Exchange Rate Not Defined For User"));
-            return (CurrencySymbol)currency;
+            return (CurrencyCode)currency;
         }
 
         public async Task<List<OrderCloudIntegrationsConversionRate>> GetExchangeRatesForUser(string userToken)

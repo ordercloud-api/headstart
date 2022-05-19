@@ -136,7 +136,7 @@ namespace Headstart.Tests
                             TestConstants.Supplier1ID,
                             TestConstants.Supplier2ID,
                         },
-                        Currency = CurrencySymbol.USD,
+                        Currency = CurrencyCode.USD,
                     },
                     DateSubmitted = new DateTimeOffset(),
                 },

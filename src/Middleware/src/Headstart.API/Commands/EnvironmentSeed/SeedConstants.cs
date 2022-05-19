@@ -370,7 +370,7 @@ namespace Headstart.API.Commands
                     xp = new HSLocationUserGroupXp()
                     {
                         Type = "BuyerLocation",
-                        Currency = CurrencySymbol.USD,
+                        Currency = CurrencyCode.USD,
                         Country = "US",
                     },
                 },

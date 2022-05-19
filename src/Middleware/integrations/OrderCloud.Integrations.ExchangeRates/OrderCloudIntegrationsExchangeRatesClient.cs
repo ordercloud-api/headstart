@@ -10,7 +10,7 @@ namespace OrderCloud.Integrations.ExchangeRates
     /// </summary>
     public interface IOrderCloudIntegrationsExchangeRatesClient
     {
-        Task<ExchangeRatesBase> Get(CurrencySymbol symbol);
+        Task<ExchangeRatesBase> Get(CurrencyCode currencyCode);
     }
 
     public class OrderCloudIntegrationsExchangeRatesClient : IOrderCloudIntegrationsExchangeRatesClient
@@ -22,10 +22,10 @@ namespace OrderCloud.Integrations.ExchangeRates
             flurl = flurlFactory.Get($"https://api.exchangeratesapi.io/");
         }
 
-        public async Task<ExchangeRatesBase> Get(CurrencySymbol symbol)
+        public async Task<ExchangeRatesBase> Get(CurrencyCode currencyCode)
         {
             return await this.Request("latest")
-                .SetQueryParam("base", symbol)
+                .SetQueryParam("base", currencyCode)
                 .GetJsonAsync<ExchangeRatesBase>();
         }
 

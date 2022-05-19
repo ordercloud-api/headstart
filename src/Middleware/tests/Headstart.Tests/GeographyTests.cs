@@ -27,11 +27,11 @@ namespace Headstart.Tests
         }
 
         [Test]
-        [TestCase("US ", CurrencySymbol.USD)]
-        [TestCase(" usa  ", CurrencySymbol.USD)]
-        [TestCase("  CAN ", CurrencySymbol.CAD)]
-        [TestCase(" ca", CurrencySymbol.CAD)]
-        public void GetCurrency_ForSupportedCountryCode_ReturnsCorrectCurrency(string country, CurrencySymbol expectedCurrency)
+        [TestCase("US ", CurrencyCode.USD)]
+        [TestCase(" usa  ", CurrencyCode.USD)]
+        [TestCase("  CAN ", CurrencyCode.CAD)]
+        [TestCase(" ca", CurrencyCode.CAD)]
+        public void GetCurrency_ForSupportedCountryCode_ReturnsCorrectCurrency(string country, CurrencyCode expectedCurrency)
         {
             // Arrange
 

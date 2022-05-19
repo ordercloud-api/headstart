@@ -104,7 +104,7 @@ namespace Headstart.API.Commands
             var exchangeRates = await exchangeRatesRequest;
 
             var markedupProduct = ApplyBuyerProductPricing(superHsProduct.Product, defaultMarkupMultiplier, exchangeRates);
-            var productCurrency = superHsProduct.Product.xp.Currency ?? CurrencySymbol.USD;
+            var productCurrency = superHsProduct.Product.xp.Currency ?? CurrencyCode.USD;
             var markedupSpecs = ApplySpecMarkups(superHsProduct.Specs.ToList(), productCurrency, exchangeRates);
 
             superHsProduct.Product = markedupProduct;
@@ -112,7 +112,7 @@ namespace Headstart.API.Commands
             return superHsProduct;
         }
 
-        private List<Spec> ApplySpecMarkups(List<Spec> specs, CurrencySymbol? productCurrency, List<OrderCloudIntegrationsConversionRate> exchangeRates)
+        private List<Spec> ApplySpecMarkups(List<Spec> specs, CurrencyCode? productCurrency, List<OrderCloudIntegrationsConversionRate> exchangeRates)
         {
             return specs.Select(spec =>
             {
@@ -144,7 +144,7 @@ namespace Headstart.API.Commands
                     product.PriceSchedule.PriceBreaks = product.PriceSchedule.PriceBreaks.Select(priceBreak =>
                     {
                         var markedupPrice = Math.Round(priceBreak.Price * defaultMarkupMultiplier, 2); // round to 2 decimal places since we're dealing with price
-                        var currency = product?.xp?.Currency ?? CurrencySymbol.USD;
+                        var currency = product?.xp?.Currency ?? CurrencyCode.USD;
                         var convertedPrice = ConvertPrice(markedupPrice, currency, exchangeRates);
                         priceBreak.Price = convertedPrice;
                         return priceBreak;
@@ -157,7 +157,7 @@ namespace Headstart.API.Commands
                         // price on price schedule will be in USD as it is set by the seller
                         // may be different rates in the future
                         // refactor to save price on the price schedule not product xp?
-                        var currency = (CurrencySymbol?)CurrencySymbol.USD;
+                        var currency = (CurrencyCode?)CurrencyCode.USD;
                         priceBreak.Price = ConvertPrice(priceBreak.Price, currency, exchangeRates);
                         return priceBreak;
                     }).ToList();
@@ -167,7 +167,7 @@ namespace Headstart.API.Commands
             return product;
         }
 
-        private decimal ConvertPrice(decimal defaultPrice, CurrencySymbol? productCurrency, List<OrderCloudIntegrationsConversionRate> exchangeRates)
+        private decimal ConvertPrice(decimal defaultPrice, CurrencyCode? productCurrency, List<OrderCloudIntegrationsConversionRate> exchangeRates)
         {
             var exchangeRateForProduct = exchangeRates.Find(e => e.Currency == productCurrency).Rate;
             var price = defaultPrice / (decimal)exchangeRateForProduct;
@@ -186,12 +186,12 @@ namespace Headstart.API.Commands
             return markupMultiplier;
         }
 
-        private async Task<CurrencySymbol> GetCurrencyForUser(string userToken)
+        private async Task<CurrencyCode> GetCurrencyForUser(string userToken)
         {
             var buyerUserGroups = await oc.Me.ListUserGroupsAsync<HSLocationUserGroup>(opts => opts.AddFilter(u => u.xp.Type == "BuyerLocation"), userToken);
             var currency = buyerUserGroups.Items.FirstOrDefault(u => u.xp.Currency != null)?.xp?.Currency;
             Require.That(currency != null, new ErrorCode("Exchange Rate Error", "Exchange Rate Not Defined For User"));
-            return (CurrencySymbol)currency;
+            return (CurrencyCode)currency;
         }
 
         private async Task<List<OrderCloudIntegrationsConversionRate>> GetExchangeRatesForUser(string userToken)

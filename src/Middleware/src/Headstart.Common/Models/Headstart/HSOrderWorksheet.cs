@@ -54,9 +54,9 @@ namespace Headstart.Common.Services.ShippingIntegration.Models
 
         public int? FreeShippingThreshold { get; set; }
 
-        public CurrencySymbol? OriginalCurrency { get; set; }
+        public CurrencyCode? OriginalCurrency { get; set; }
 
-        public CurrencySymbol? OrderCurrency { get; set; }
+        public CurrencyCode? OrderCurrency { get; set; }
 
         public double? ExchangeRate { get; set; }
     }
