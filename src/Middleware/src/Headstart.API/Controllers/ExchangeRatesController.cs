@@ -21,13 +21,13 @@ namespace Headstart.Common.Controllers
         }
 
         [HttpGet, Route("{currency}")]
-        public async Task<ListPage<OrderCloudIntegrationsConversionRate>> Get(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencyCode currency)
+        public async Task<ListPage<ConversionRate>> Get(ListArgs<ConversionRate> rateArgs, CurrencyCode currency)
         {
             return await command.Get(rateArgs, currency);
         }
 
         [HttpGet, Route("supportedrates")]
-        public async Task<ListPage<OrderCloudIntegrationsConversionRate>> GetRateList()
+        public async Task<ListPage<ConversionRate>> GetRateList()
         {
             var list = await command.GetRateList();
             return list;

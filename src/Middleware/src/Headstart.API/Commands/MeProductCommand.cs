@@ -112,7 +112,7 @@ namespace Headstart.API.Commands
             return superHsProduct;
         }
 
-        private List<Spec> ApplySpecMarkups(List<Spec> specs, CurrencyCode? productCurrency, List<OrderCloudIntegrationsConversionRate> exchangeRates)
+        private List<Spec> ApplySpecMarkups(List<Spec> specs, CurrencyCode? productCurrency, List<ConversionRate> exchangeRates)
         {
             return specs.Select(spec =>
             {
@@ -130,7 +130,7 @@ namespace Headstart.API.Commands
             }).ToList();
         }
 
-        private HSMeProduct ApplyBuyerProductPricing(HSMeProduct product, decimal defaultMarkupMultiplier, List<OrderCloudIntegrationsConversionRate> exchangeRates)
+        private HSMeProduct ApplyBuyerProductPricing(HSMeProduct product, decimal defaultMarkupMultiplier, List<ConversionRate> exchangeRates)
         {
             if (product.PriceSchedule != null)
             {
@@ -167,7 +167,7 @@ namespace Headstart.API.Commands
             return product;
         }
 
-        private decimal ConvertPrice(decimal defaultPrice, CurrencyCode? productCurrency, List<OrderCloudIntegrationsConversionRate> exchangeRates)
+        private decimal ConvertPrice(decimal defaultPrice, CurrencyCode? productCurrency, List<ConversionRate> exchangeRates)
         {
             var exchangeRateForProduct = exchangeRates.Find(e => e.Currency == productCurrency).Rate;
             var price = defaultPrice / (decimal)exchangeRateForProduct;
@@ -194,10 +194,10 @@ namespace Headstart.API.Commands
             return (CurrencyCode)currency;
         }
 
-        private async Task<List<OrderCloudIntegrationsConversionRate>> GetExchangeRatesForUser(string userToken)
+        private async Task<List<ConversionRate>> GetExchangeRatesForUser(string userToken)
         {
             var currency = await GetCurrencyForUser(userToken);
-            var exchangeRates = await exchangeRatesCommand.Get(new ListArgs<OrderCloudIntegrationsConversionRate>() { }, currency);
+            var exchangeRates = await exchangeRatesCommand.Get(new ListArgs<ConversionRate>() { }, currency);
             return exchangeRates.Items.ToList();
         }
     }

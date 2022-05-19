@@ -2,10 +2,10 @@
 
 namespace OrderCloud.Integrations.ExchangeRates.Models
 {
-    public class OrderCloudIntegrationsExchangeRate
+    public class ConversionRates
     {
         public CurrencyCode BaseCode { get; set; }
 
-        public List<OrderCloudIntegrationsConversionRate> Rates { get; set; }
+        public List<ConversionRate> Rates { get; set; }
     }
 }

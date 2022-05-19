@@ -15,13 +15,13 @@ namespace OrderCloud.Integrations.ExchangeRates
 {
     public interface IExchangeRatesCommand
     {
-        Task<ListPage<OrderCloudIntegrationsConversionRate>> Get(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencyCode currency);
+        Task<ListPage<ConversionRate>> Get(ListArgs<ConversionRate> rateArgs, CurrencyCode currency);
 
-        Task<OrderCloudIntegrationsExchangeRate> Get(CurrencyCode currencyCode);
+        Task<ConversionRates> Get(CurrencyCode currencyCode);
 
-        Task<ListPage<OrderCloudIntegrationsConversionRate>> GetRateList();
+        Task<ListPage<ConversionRate>> GetRateList();
 
-        ListPage<OrderCloudIntegrationsConversionRate> Filter(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, OrderCloudIntegrationsExchangeRate rates);
+        ListPage<ConversionRate> Filter(ListArgs<ConversionRate> rateArgs, ConversionRates rates);
 
         Task<double?> ConvertCurrency(CurrencyCode from, CurrencyCode to, double value);
 
@@ -30,13 +30,13 @@ namespace OrderCloud.Integrations.ExchangeRates
 
     public class ExchangeRatesCommand : IExchangeRatesCommand
     {
-        private readonly IOrderCloudIntegrationsExchangeRatesClient client;
+        private readonly IExchangeRatesClient client;
         private readonly IOrderCloudIntegrationsBlobService blob;
         private readonly ISimpleCache cache;
 
         public ExchangeRatesCommand(IOrderCloudIntegrationsBlobService blob, IFlurlClientFactory flurlFactory, ISimpleCache cache)
         {
-            client = new OrderCloudIntegrationsExchangeRatesClient(flurlFactory);
+            client = new ExchangeRatesClient(flurlFactory);
             this.blob = blob;
             this.cache = cache;
         }
@@ -47,7 +47,7 @@ namespace OrderCloud.Integrations.ExchangeRates
         /// <param name="rateArgs">The conversion rates.</param>
         /// <param name="currency">The ISO 4217 currency code.</param>
         /// <returns>The conversion rate.</returns>
-        public async Task<ListPage<OrderCloudIntegrationsConversionRate>> Get(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencyCode currency)
+        public async Task<ListPage<ConversionRate>> Get(ListArgs<ConversionRate> rateArgs, CurrencyCode currency)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace OrderCloud.Integrations.ExchangeRates
             }
         }
 
-        public ListPage<OrderCloudIntegrationsConversionRate> Filter(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, OrderCloudIntegrationsExchangeRate rates)
+        public ListPage<ConversionRate> Filter(ListArgs<ConversionRate> rateArgs, ConversionRates rates)
         {
             if (rateArgs.Filters?.Any(filter => filter.PropertyName == "CurrencyCode") ?? false)
             {
@@ -71,7 +71,7 @@ namespace OrderCloud.Integrations.ExchangeRates
                         select rate).ToList();
             }
 
-            var list = new ListPage<OrderCloudIntegrationsConversionRate>()
+            var list = new ListPage<ConversionRate>()
             {
                 Meta = new ListPageMeta()
                 {
@@ -88,7 +88,7 @@ namespace OrderCloud.Integrations.ExchangeRates
 
         public async Task<double?> ConvertCurrency(CurrencyCode from, CurrencyCode to, double value)
         {
-            var rates = await this.Get(new ListArgs<OrderCloudIntegrationsConversionRate>(), from);
+            var rates = await this.Get(new ListArgs<ConversionRate>(), from);
             var rate = rates.Items.FirstOrDefault(r => r.Currency == to)?.Rate;
             return value * rate;
         }
@@ -98,20 +98,20 @@ namespace OrderCloud.Integrations.ExchangeRates
         /// </summary>
         /// <param name="currencyCode">The ISO 4217 currency code.</param>
         /// <returns>The available exchange rates.</returns>
-        public async Task<OrderCloudIntegrationsExchangeRate> Get(CurrencyCode currencyCode)
+        public async Task<ConversionRates> Get(CurrencyCode currencyCode)
         {
             var rates = await client.Get(currencyCode);
-            return new OrderCloudIntegrationsExchangeRate()
+            return new ConversionRates()
             {
                 BaseCode = currencyCode,
                 Rates = MapRates(rates.rates),
             };
         }
 
-        public async Task<ListPage<OrderCloudIntegrationsConversionRate>> GetRateList()
+        public async Task<ListPage<ConversionRate>> GetRateList()
         {
             var rates = MapRates();
-            return await Task.FromResult(new ListPage<OrderCloudIntegrationsConversionRate>()
+            return await Task.FromResult(new ListPage<ConversionRate>()
             {
                 Meta = new ListPageMeta()
                 {
@@ -147,9 +147,9 @@ namespace OrderCloud.Integrations.ExchangeRates
             return $"data:image/jpg;base64,{Convert.ToBase64String(ms.ToArray())}";
         }
 
-        private static List<OrderCloudIntegrationsConversionRate> MapRates(ExchangeRatesValues ratesValues = null)
+        private static List<ConversionRate> MapRates(ExchangeRatesValues ratesValues = null)
         {
-            return Enum.GetValues(typeof(CurrencyCode)).Cast<CurrencyCode>().Select(currencyCode => new OrderCloudIntegrationsConversionRate()
+            return Enum.GetValues(typeof(CurrencyCode)).Cast<CurrencyCode>().Select(currencyCode => new ConversionRate()
             {
                 Currency = currencyCode,
                 Icon = GetIcon(currencyCode),
@@ -170,11 +170,11 @@ namespace OrderCloud.Integrations.ExchangeRates
             return t.Value == 0 ? 1 : t.Value;
         }
 
-        private async Task<ListPage<OrderCloudIntegrationsConversionRate>> GetCachedRates(ListArgs<OrderCloudIntegrationsConversionRate> rateArgs, CurrencyCode currency)
+        private async Task<ListPage<ConversionRate>> GetCachedRates(ListArgs<ConversionRate> rateArgs, CurrencyCode currency)
         {
             var rates = await cache.GetOrAddAsync($"exchangerates_{currency}", TimeSpan.FromHours(1), () =>
             {
-                return blob.Get<OrderCloudIntegrationsExchangeRate>($"{currency}.json");
+                return blob.Get<ConversionRates>($"{currency}.json");
             });
             return Filter(rateArgs, rates);
         }

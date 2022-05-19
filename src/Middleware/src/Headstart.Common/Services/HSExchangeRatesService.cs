@@ -13,7 +13,7 @@ namespace Headstart.Common.Services
     {
         Task<CurrencyCode> GetCurrencyForUser(string userToken);
 
-        Task<List<OrderCloudIntegrationsConversionRate>> GetExchangeRatesForUser(string userToken);
+        Task<List<ConversionRate>> GetExchangeRatesForUser(string userToken);
     }
 
     public class HSExchangeRatesService : IHSExchangeRatesService
@@ -35,10 +35,10 @@ namespace Headstart.Common.Services
             return (CurrencyCode)currency;
         }
 
-        public async Task<List<OrderCloudIntegrationsConversionRate>> GetExchangeRatesForUser(string userToken)
+        public async Task<List<ConversionRate>> GetExchangeRatesForUser(string userToken)
         {
             var currency = await GetCurrencyForUser(userToken);
-            var exchangeRates = await exchangeRatesCommand.Get(new ListArgs<OrderCloudIntegrationsConversionRate>() { }, currency);
+            var exchangeRates = await exchangeRatesCommand.Get(new ListArgs<ConversionRate>() { }, currency);
             return exchangeRates.Items.ToList();
         }
     }
