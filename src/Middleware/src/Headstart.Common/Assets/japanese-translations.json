@@ -347,7 +347,6 @@
       "QUANTITY_PER_UNIT": "ユニット当たりの数量",
       "QUOTE": "見積もり",
       "REMOVE_OPTION": "オプションを削除",
-      "RESALE": "この商品は再販です。",
       "SAVE": "保存",
       "SAVE_CHANGES": "変更を保存",
       "SAVE_PRODUCT_FIRST": "この新しいオプションをデフォルトとして設定する前に、商品を保存する必要があります。",
@@ -1018,13 +1017,6 @@
       "SAVE": "保存"
     },
     "LOCATION_DETAILS": {
-      "ADD": "再販証明書を追加",
-      "DOWNLOAD_CERT": "現在の証明書をダウンロード",
-      "EXP": "有効期限が切れます。",
-      "NEW_CERT": "新しい再販税証明書",
-      "REPLACE": "再販証明書を差し替える",
-      "RESALE_TAX": "再販税証明書",
-      "RESALE_TAX_INFO": "本Webサイトで購入した商品を再販する予定がありますか？その場合、その旨を示す署名入りの文書の提出が必要です。",
       "TITLE": "ロケーション管理"
     },
     "LOCATION_LIST": {

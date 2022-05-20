@@ -67,10 +67,6 @@ namespace Headstart.Models
     public class ProductXp
     {
         // DO NOT DELETE
-        [OrchestrationIgnore]
-        public dynamic IntegrationData { get; set; }
-
-        // DO NOT DELETE
         public Dictionary<string, List<string>> Facets { get; set; } = new Dictionary<string, List<string>>();
 
         [MaxLength(500), OrchestrationIgnore]
@@ -84,12 +80,8 @@ namespace Headstart.Models
 
         public SizeTier SizeTier { get; set; }
 
-        public bool IsResale { get; set; } = false;
-
         [JsonConverter(typeof(StringEnumConverter))]
         public CurrencyCode? Currency { get; set; } = null;
-
-        public bool PromotionEligible { get; set; }
 
         public bool FreeShipping { get; set; }
 

@@ -165,7 +165,6 @@ export const LINE_ITEM_HEADERS = [
     "HSLineItem.Variant.xp.SpecCombo",
     "HSLineItem.Quantity",
     "HSLineItem.Product.xp.Tax.Code",
-    "HSLineItem.Product.xp.IsResale",
     "HSLineItem.Product.xp.UnitOfMeasure.Qty",
     "HSLineItem.Product.xp.UnitOfMeasure.Unit",
     "HSLineItem.xp.ShipMethod",

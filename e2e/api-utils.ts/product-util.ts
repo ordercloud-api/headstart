@@ -85,9 +85,6 @@ export async function createDefaultProduct(
 			DefaultSupplierID: null,
 			xp: {
 				//@ts-ignore
-				IntegrationData: null,
-				IsResale: false,
-				//@ts-ignore
 				Facets: {},
 				//@ts-ignore
 				Images: [],
@@ -106,7 +103,6 @@ export async function createDefaultProduct(
 				Currency: 'USD',
 				//@ts-ignore
 				SizeTier: 'A',
-				PromotionEligible: true,
 				FreeShipping: false,
 				FreeShippingMessage: "Free Shipping",
 

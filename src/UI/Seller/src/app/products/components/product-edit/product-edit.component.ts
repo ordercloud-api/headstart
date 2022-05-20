@@ -311,9 +311,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
             _get(superHSProduct.Product, 'xp.ProductType'),
             Validators.required
           ),
-          IsResale: new FormControl(
-            _get(superHSProduct.Product, 'xp.IsResale')
-          ),
           QuantityAvailable: new FormControl(
             superHSProduct.Product?.Inventory?.QuantityAvailable,
             null
@@ -805,7 +802,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   ): Promise<SuperHSProduct> {
     const supplier = await this.currentUserService.getMySupplier()
     superHSProduct.Product.xp.ProductType = this.productType
-    superHSProduct.Product.xp.PromotionEligible = true
     superHSProduct.Product.xp.Currency = supplier?.xp?.Currency
     superHSProduct.PriceSchedule.ID = superHSProduct.Product.ID
     superHSProduct.PriceSchedule.Name = `Default_HS_Buyer${superHSProduct.Product.Name}`
@@ -926,10 +922,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
 
   validateSpecs(e: boolean): void {
     this.specsValid = e
-  }
-
-  shouldIsResaleBeChecked(): boolean {
-    return this._superHSProductEditable?.Product?.xp?.IsResale
   }
 
   getProductPreviewImage(): string | SafeUrl {

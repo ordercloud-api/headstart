@@ -157,9 +157,7 @@ export class PromotionService extends ResourceCrudService<Promotion> {
         break
       default:
         if (safeXp?.Type === HSPromoType.Percentage) {
-          valueExpression = `items.total(Product.xp.PromotionEligible=\'true\') * ${
-            safeXp.Value / 100
-          }`
+          valueExpression = `Order.Subtotal * ${safeXp.Value / 100}`
         }
         if (safeXp?.Type === HSPromoType.FixedAmount) {
           valueExpression = `${safeXp?.Value}`
