@@ -1,6 +1,6 @@
 import { HSLocationUserGroup } from "@ordercloud/headstart-sdk";
 import { MeUser } from "ordercloud-javascript-sdk";
-import { CurrenySymbol } from "./currency.types";
+import { CurrencyCode } from "./currency.types";
 
 
   export interface DecodedOCToken {
@@ -61,5 +61,5 @@ import { CurrenySymbol } from "./currency.types";
     FavoriteProductIDs: string[]
     FavoriteOrderIDs: string[]
     UserGroups: HSLocationUserGroup[]
-    Currency: CurrenySymbol
+    Currency: CurrencyCode
   }

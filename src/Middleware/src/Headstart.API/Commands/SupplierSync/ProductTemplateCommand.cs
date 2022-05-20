@@ -233,7 +233,7 @@ namespace Headstart.API.Commands
         [OrderCloud.SDK.Required]
         public decimal? Price { get; set; }
 
-        public CurrencySymbol Currency { get; set; }
+        public CurrencyCode Currency { get; set; }
 
         public string ImageTitle { get; set; }
 
@@ -277,8 +277,10 @@ namespace Headstart.API.Commands
         public string UnitOfMeasureQty { get; set; }
 
         public string UnitOfMeasure { get; set; }
+      
+        public bool IsResale { get; set; }
 
-        public CurrencySymbol Currency { get; set; }
+        public CurrencyCode Currency { get; set; }
 
         public SizeTier SizeTier { get; set; }
     }

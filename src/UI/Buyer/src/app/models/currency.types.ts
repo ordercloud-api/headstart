@@ -7,7 +7,7 @@ export interface HeadstartExchangeRates {
 }
 
 // TODO - remove when sdk has enum types
-export type CurrenySymbol =
+export type CurrencyCode =
   | 'CAD'
   | 'HKD'
   | 'ISK'

@@ -29,7 +29,7 @@ namespace Headstart.Tests
         private ICreditCardCommand sut;
 
         private string validretref = "myretref";
-        private CurrencySymbol currency = CurrencySymbol.CAD;
+        private CurrencyCode currency = CurrencyCode.CAD;
         private string merchantID = "123";
         private string cvv = "112";
         private string orderID = "mockOrderID";
@@ -249,7 +249,7 @@ namespace Headstart.Tests
             settings.CardConnectSettings.UsdMerchantID = merchantID;
             settings.CardConnectSettings.CadMerchantID = "somethingelse";
             hsExchangeRates.GetCurrencyForUser(userToken)
-                .Returns(Task.FromResult(CurrencySymbol.USD));
+                .Returns(Task.FromResult(CurrencyCode.USD));
             oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
                 .Returns(PaymentMocks.PaymentList(MockCCPayment(paymentTotal, true, payment1transactions)));
             var payment = ValidIntegrationsPayment();

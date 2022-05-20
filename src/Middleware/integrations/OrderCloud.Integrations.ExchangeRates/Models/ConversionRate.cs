@@ -3,10 +3,10 @@ using Newtonsoft.Json.Converters;
 
 namespace OrderCloud.Integrations.ExchangeRates.Models
 {
-    public class OrderCloudIntegrationsConversionRate
+    public class ConversionRate
     {
         [JsonConverter(typeof(StringEnumConverter))]
-        public CurrencySymbol Currency { get; set; }
+        public CurrencyCode Currency { get; set; }
 
         public string Symbol { get; set; }
 

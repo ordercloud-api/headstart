@@ -5,16 +5,16 @@ namespace Headstart.Common.Mappers
 {
     public static class Geography
     {
-        public static CurrencySymbol GetCurrency(string country)
+        public static CurrencyCode GetCurrency(string country)
         {
             switch (country?.Trim(' ')?.ToLower())
             {
                 case "ca":
                 case "can":
-                    return CurrencySymbol.CAD;
+                    return CurrencyCode.CAD;
                 case "us":
                 case "usa":
-                    return CurrencySymbol.USD;
+                    return CurrencyCode.USD;
                 default:
                     throw new Exception($"A currency for country with value <{country}> cannot be found");
             }
