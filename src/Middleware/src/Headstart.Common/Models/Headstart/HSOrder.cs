@@ -57,7 +57,7 @@ namespace Headstart.Models
         public ClaimsSummary Cancelations { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public CurrencySymbol? Currency { get; set; } = null;
+        public CurrencyCode? Currency { get; set; } = null;
 
         public SubmittedOrderStatus SubmittedOrderStatus { get; set; }
 

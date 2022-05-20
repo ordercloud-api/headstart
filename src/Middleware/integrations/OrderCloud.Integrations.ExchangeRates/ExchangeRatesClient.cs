@@ -8,24 +8,24 @@ namespace OrderCloud.Integrations.ExchangeRates
     /// <summary>
     /// Rates supported by https://exchangeratesapi.io/.
     /// </summary>
-    public interface IOrderCloudIntegrationsExchangeRatesClient
+    public interface IExchangeRatesClient
     {
-        Task<ExchangeRatesBase> Get(CurrencySymbol symbol);
+        Task<ExchangeRatesBase> Get(CurrencyCode currencyCode);
     }
 
-    public class OrderCloudIntegrationsExchangeRatesClient : IOrderCloudIntegrationsExchangeRatesClient
+    public class ExchangeRatesClient : IExchangeRatesClient
     {
         private readonly IFlurlClient flurl;
 
-        public OrderCloudIntegrationsExchangeRatesClient(IFlurlClientFactory flurlFactory)
+        public ExchangeRatesClient(IFlurlClientFactory flurlFactory)
         {
             flurl = flurlFactory.Get($"https://api.exchangeratesapi.io/");
         }
 
-        public async Task<ExchangeRatesBase> Get(CurrencySymbol symbol)
+        public async Task<ExchangeRatesBase> Get(CurrencyCode currencyCode)
         {
             return await this.Request("latest")
-                .SetQueryParam("base", symbol)
+                .SetQueryParam("base", currencyCode)
                 .GetJsonAsync<ExchangeRatesBase>();
         }
 

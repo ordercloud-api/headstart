@@ -165,13 +165,13 @@ namespace Headstart.API.Commands
             }
         }
 
-        private string GetMerchantID(CurrencySymbol userCurrency)
+        private string GetMerchantID(CurrencyCode userCurrency)
         {
-            if (userCurrency == CurrencySymbol.USD)
+            if (userCurrency == CurrencyCode.USD)
             {
                 return settings.CardConnectSettings.UsdMerchantID;
             }
-            else if (userCurrency == CurrencySymbol.CAD)
+            else if (userCurrency == CurrencyCode.CAD)
             {
                 return settings.CardConnectSettings.CadMerchantID;
             }

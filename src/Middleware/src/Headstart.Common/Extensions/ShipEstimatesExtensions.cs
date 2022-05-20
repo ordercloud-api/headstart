@@ -105,10 +105,10 @@ namespace Headstart.Common.Extensions
             return updatedEstimates;
         }
 
-        public static async Task<IList<HSShipEstimate>> ConvertCurrency(this IList<HSShipEstimate> shipEstimates, CurrencySymbol shipperCurrency, CurrencySymbol buyerCurrency, IExchangeRatesCommand exchangeRates)
+        public static async Task<IList<HSShipEstimate>> ConvertCurrency(this IList<HSShipEstimate> shipEstimates, CurrencyCode shipperCurrency, CurrencyCode buyerCurrency, IExchangeRatesCommand exchangeRates)
         {
             // If the Buyer's currency is USD, do not convert rates.
-            if (buyerCurrency == CurrencySymbol.USD)
+            if (buyerCurrency == CurrencyCode.USD)
             {
                 return shipEstimates;
             }

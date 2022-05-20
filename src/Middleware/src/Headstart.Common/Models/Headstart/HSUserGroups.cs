@@ -35,7 +35,7 @@ namespace Headstart.Models
         public string Role { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public CurrencySymbol? Currency { get; set; } = null;
+        public CurrencyCode? Currency { get; set; } = null;
 
         public string Country { get; set; }
 
