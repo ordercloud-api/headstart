@@ -32,6 +32,7 @@
   "EnvironmentSettings:BuildNumber": "",
   "EnvironmentSettings:Commit": "",
   "EnvironmentSettings:Environment": "Test",
+  "EnvironmentSettings:ShippingProvider": "EasyPost",
   "EnvironmentSettings:TaxProvider": "Avalara",
   "FlurlSettings:TimeoutInSeconds": "40",
   "JobSettings:ShouldCaptureCreditCardPayments": false,

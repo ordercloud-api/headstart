@@ -107,9 +107,9 @@ namespace Headstart.Common
 
         public string MiddlewareBaseUrl { get; set; }
 
-        public TaxProvider TaxProvider { get; set; } = TaxProvider.Avalara;
-
         public ShippingProvider ShippingProvider { get; set; } = ShippingProvider.EasyPost;
+
+        public TaxProvider TaxProvider { get; set; } = TaxProvider.Avalara;
     }
 
     public class FlurlSettings
