@@ -1,46 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
+using OrderCloud.Integrations.Library.Models;
 
 namespace OrderCloud.Integrations.ExchangeRates.Models
 {
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum CurrencyCode
-    {
-        CAD,
-        HKD,
-        ISK,
-        PHP,
-        DKK,
-        HUF,
-        CZK,
-        GBP,
-        RON,
-        SEK,
-        IDR,
-        INR,
-        BRL,
-        RUB,
-        HRK,
-        JPY,
-        THB,
-        CHF,
-        EUR,
-        MYR,
-        BGN,
-        TRY,
-        CNY,
-        NOK,
-        NZD,
-        ZAR,
-        USD,
-        MXN,
-        SGD,
-        AUD,
-        ILS,
-        KRW,
-        PLN,
-    }
-
     public static class CurrencyLookup
     {
         public static readonly IDictionary<CurrencyCode, CurrencyDisplay> CurrencyCodeLookup = new Dictionary<CurrencyCode, CurrencyDisplay>()

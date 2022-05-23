@@ -6,6 +6,7 @@ using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models.Headstart;
 using OrderCloud.Integrations.ExchangeRates;
 using OrderCloud.Integrations.ExchangeRates.Models;
+using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Extensions

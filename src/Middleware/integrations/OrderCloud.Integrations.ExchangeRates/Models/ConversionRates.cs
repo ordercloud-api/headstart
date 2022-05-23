@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using OrderCloud.Integrations.Library.Models;
 
 namespace OrderCloud.Integrations.ExchangeRates.Models
 {

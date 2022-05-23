@@ -10,6 +10,7 @@ using NUnit.Framework;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.ExchangeRates.Models;
 using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.Library.Models;
 
 namespace OrderCloud.Integrations.ExchangeRates.Tests
 {

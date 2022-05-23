@@ -1,19 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OrderCloud.Integrations.EasyPost.Models;
 
-namespace Headstart.Common.Models
+namespace OrderCloud.Integrations.EasyPost.Models
 {
     public class HSShippingProfiles : EasyPostShippingProfiles
     {
-        public HSShippingProfiles(AppSettings settings)
+        public HSShippingProfiles(string carrierAccountId)
         {
             // TODO: Replace this with shipping profiles needed
             this.ShippingProfiles.Add(new EasyPostShippingProfile()
             {
                 ID = "SMG",
                 SupplierID = null,
-                CarrierAccountIDs = new List<string>() { settings.EasyPostSettings.FedexAccountId },
+                CarrierAccountIDs = new List<string>() { carrierAccountId },
                 Customs_Signer = "Bob Bernier",
                 Restriction_Type = "none",
                 EEL_PFC = "NOEEI30.37(a)",

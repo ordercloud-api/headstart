@@ -10,8 +10,8 @@ using Newtonsoft.Json.Linq;
 using Npoi.Mapper;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.EasyPost.Mappers;
-using OrderCloud.Integrations.ExchangeRates.Models;
 using OrderCloud.Integrations.Library.Attributes;
+using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 using IPartial = OrderCloud.Integrations.Library.Models.IPartial;
 

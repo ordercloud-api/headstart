@@ -5,6 +5,7 @@ using Headstart.Common.Models;
 using Headstart.Models;
 using Headstart.Models.Misc;
 using OrderCloud.Integrations.ExchangeRates.Models;
+using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Commands

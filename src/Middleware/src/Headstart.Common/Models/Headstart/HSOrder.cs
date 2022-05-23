@@ -6,6 +6,7 @@ using Headstart.Models.Headstart;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using OrderCloud.Integrations.ExchangeRates.Models;
+using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.Models

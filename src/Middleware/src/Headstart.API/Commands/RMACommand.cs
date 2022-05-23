@@ -16,6 +16,7 @@ using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.CardConnect.Mappers;
 using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
