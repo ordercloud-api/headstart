@@ -235,7 +235,6 @@ namespace Headstart.API.Commands
             }
         }
 
-
         // TODO: To be replaced with direct calls to integration services once solution has been rearchitected.
         private async Task<ShipEstimateResponse> GetRatesAsync(HSOrderWorksheet worksheet, CheckoutIntegrationConfiguration config = null)
         {
