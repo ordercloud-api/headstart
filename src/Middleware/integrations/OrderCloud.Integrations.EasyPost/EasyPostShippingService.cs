@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,51 +6,15 @@ using OrderCloud.Catalyst;
 using OrderCloud.Integrations.EasyPost.Exceptions;
 using OrderCloud.Integrations.EasyPost.Mappers;
 using OrderCloud.Integrations.EasyPost.Models;
+using OrderCloud.Integrations.Library.Interfaces;
+using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.EasyPost
 {
-    public interface IEasyPostShippingService
+    public interface IEasyPostShippingService : IShippingService
     {
-        Task<ShipEstimateResponse> GetRates(IEnumerable<IGrouping<AddressPair, LineItem>> groupedLineItems, EasyPostShippingProfiles profiles);
-    }
-
-    public class AddressPair : IEquatable<AddressPair>
-    {
-        public Address ShipFrom { get; set; }
-
-        public Address ShipTo { get; set; }
-
-        public bool Equals(AddressPair other)
-        {
-            // we still want to compare the rest of these properties to handle one time addresses
-            return (ShipFrom.ID == other.ShipFrom.ID) &&
-                    (ShipFrom.Street1 == other?.ShipFrom.Street1) &&
-                    (ShipFrom.Zip == other?.ShipFrom.Zip) &&
-                    (ShipFrom.City == other?.ShipFrom.City) &&
-                    (ShipTo.Street1 == other?.ShipTo.Street1) &&
-                    (ShipTo.Zip == other?.ShipTo.Zip) &&
-                    (ShipTo.City == other?.ShipTo.City);
-        }
-
-        public override int GetHashCode()
-        {
-            return 1; // force Equals to be called for comparison
-        }
-    }
-
-    public class Grouping<TKey, TElement> : List<TElement>, IGrouping<TKey, TElement>
-    {
-        public Grouping(TKey key)
-            : base() => Key = key;
-
-        public Grouping(TKey key, int capacity)
-            : base(capacity) => Key = key;
-
-        public Grouping(TKey key, IEnumerable<TElement> collection)
-            : base(collection) => Key = key;
-
-        public TKey Key { get; private set; }
+        HSShippingProfiles Profiles { get; }
     }
 
     public class EasyPostShippingService : IEasyPostShippingService
@@ -60,12 +23,15 @@ namespace OrderCloud.Integrations.EasyPost
         private const string BaseUrl = "https://api.easypost.com/v2";
         private readonly EasyPostConfig config;
 
-        public EasyPostShippingService(EasyPostConfig config)
+        public EasyPostShippingService(EasyPostConfig config, string carrierAccountId)
         {
             this.config = config;
+            Profiles = new HSShippingProfiles(carrierAccountId);
         }
 
-        public async Task<ShipEstimateResponse> GetRates(IEnumerable<IGrouping<AddressPair, LineItem>> groupedLineItems, EasyPostShippingProfiles profiles)
+        public HSShippingProfiles Profiles { get; }
+
+        public async Task<ShipEstimateResponse> GetRates(IEnumerable<IGrouping<AddressPair, LineItem>> groupedLineItems)
         {
             // First, filter out any line items that are set to have free shipping
             var filteredGroupedList = new List<Grouping<AddressPair, LineItem>>();
@@ -75,7 +41,7 @@ namespace OrderCloud.Integrations.EasyPost
                 filteredGroupedList.Add(new Grouping<AddressPair, LineItem>(group.Key, filteredLineItems));
             }
 
-            var easyPostShipments = filteredGroupedList.Select(li => EasyPostMappers.MapShipment(li, profiles)).ToList();
+            var easyPostShipments = filteredGroupedList.Select(li => EasyPostMappers.MapShipment(li, Profiles)).ToList();
             var easyPostResponses = new List<EasyPostShipment[]>();
 
             var postShipments = easyPostShipments;

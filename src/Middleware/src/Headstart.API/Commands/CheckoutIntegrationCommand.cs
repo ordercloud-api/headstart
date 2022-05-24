@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Headstart.Common;
 using Headstart.Common.Constants;
 using Headstart.Common.Extensions;
-using Headstart.Common.Models;
 using Headstart.Common.Services;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
@@ -14,8 +13,9 @@ using OrderCloud.Catalyst;
 using OrderCloud.Integrations.EasyPost;
 using OrderCloud.Integrations.EasyPost.Models;
 using OrderCloud.Integrations.ExchangeRates;
-using OrderCloud.Integrations.ExchangeRates.Models;
 using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.Library.Interfaces;
+using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 using ITaxCalculator = OrderCloud.Integrations.Library.Interfaces.ITaxCalculator;
 
@@ -35,14 +35,19 @@ namespace Headstart.API.Commands
     public class CheckoutIntegrationCommand : ICheckoutIntegrationCommand
     {
         private readonly ITaxCalculator taxCalculator;
-        private readonly IEasyPostShippingService shippingService;
+        private readonly IShippingService shippingService;
         private readonly IExchangeRatesCommand exchangeRates;
         private readonly IOrderCloudClient oc;
         private readonly IDiscountDistributionService discountDistribution;
-        private readonly HSShippingProfiles profiles;
         private readonly AppSettings settings;
 
-        public CheckoutIntegrationCommand(IDiscountDistributionService discountDistribution, ITaxCalculator taxCalculator, IExchangeRatesCommand exchangeRates, IOrderCloudClient orderCloud, IEasyPostShippingService shippingService, AppSettings settings)
+        public CheckoutIntegrationCommand(
+            IDiscountDistributionService discountDistribution,
+            ITaxCalculator taxCalculator,
+            IExchangeRatesCommand exchangeRates,
+            IOrderCloudClient orderCloud,
+            IShippingService shippingService,
+            AppSettings settings)
         {
             this.taxCalculator = taxCalculator;
             this.exchangeRates = exchangeRates;
@@ -50,7 +55,6 @@ namespace Headstart.API.Commands
             this.shippingService = shippingService;
             this.settings = settings;
             this.discountDistribution = discountDistribution;
-            profiles = new HSShippingProfiles(this.settings);
         }
 
         public static IEnumerable<HSShipMethod> WhereRateIsCheapestOfItsKind(IEnumerable<HSShipMethod> methods)
@@ -231,22 +235,47 @@ namespace Headstart.API.Commands
             }
         }
 
+        // TODO: To be replaced with direct calls to integration services once solution has been rearchitected.
         private async Task<ShipEstimateResponse> GetRatesAsync(HSOrderWorksheet worksheet, CheckoutIntegrationConfiguration config = null)
         {
+            HSShipEstimateResponse shipResponse;
+            switch (settings.EnvironmentSettings.ShippingProvider)
+            {
+                case ShippingProvider.Custom:
+                    shipResponse = await CustomShippingCommand(worksheet, config);
+                    break;
+                default:
+                    shipResponse = await EasyPostShippingCommand(worksheet, config);
+                    break;
+            }
+
+            return shipResponse;
+        }
+
+        private async Task<HSShipEstimateResponse> CustomShippingCommand(HSOrderWorksheet worksheet, CheckoutIntegrationConfiguration config = null)
+        {
+            return await Task.FromResult(new HSShipEstimateResponse());
+        }
+
+        private async Task<HSShipEstimateResponse> EasyPostShippingCommand(HSOrderWorksheet worksheet, CheckoutIntegrationConfiguration config = null)
+        {
+            var easyPostShippingService = shippingService as IEasyPostShippingService;
             var groupedLineItems = worksheet.LineItems.GroupBy(li => new AddressPair { ShipFrom = li.ShipFromAddress, ShipTo = li.ShippingAddress }).ToList();
-            var shipResponse = (await shippingService.GetRates(groupedLineItems, profiles)).Reserialize<HSShipEstimateResponse>(); // include all accounts at this stage so we can save on order worksheet and analyze
+
+            // include all accounts at this stage so we can save on order worksheet and analyze
+            var shipResponse = (await shippingService.GetRates(groupedLineItems)).Reserialize<HSShipEstimateResponse>();
 
             // Certain suppliers use certain shipping accounts. This filters available rates based on those accounts.
             for (var i = 0; i < groupedLineItems.Count; i++)
             {
                 var supplierID = groupedLineItems[i].First().SupplierID;
-                var profile = profiles.FirstOrDefault(supplierID);
+                var profile = easyPostShippingService.Profiles.FirstOrDefault(supplierID);
                 var methods = FilterMethodsBySupplierConfig(shipResponse.ShipEstimates[i].ShipMethods.Where(s => profile.CarrierAccountIDs.Contains(s.xp.CarrierAccountID)).ToList(), profile);
                 shipResponse.ShipEstimates[i].ShipMethods = methods.Select(s =>
                 {
                     // there is logic here to support not marking up shipping over list rate. But USPS is always list rate
                     // so adding an override to the suppliers that use USPS
-                    var carrier = profiles.ShippingProfiles.First(p => p.CarrierAccountIDs.Contains(s.xp?.CarrierAccountID));
+                    var carrier = easyPostShippingService.Profiles.ShippingProfiles.First(p => p.CarrierAccountIDs.Contains(s.xp?.CarrierAccountID));
                     s.Cost = carrier.MarkupOverride ?
                         s.xp.OriginalCost * carrier.Markup :
                         Math.Min(s.xp.OriginalCost * carrier.Markup, s.xp.ListRate);

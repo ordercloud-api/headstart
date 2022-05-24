@@ -13,6 +13,7 @@ using NSubstitute.Extensions;
 using NUnit.Framework;
 using OrderCloud.Integrations.ExchangeRates.Models;
 using OrderCloud.Integrations.Library.Interfaces;
+using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 using SendGrid;
 using SendGrid.Helpers.Mail;

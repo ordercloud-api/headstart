@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.ExchangeRates.Models;
 using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.ExchangeRates

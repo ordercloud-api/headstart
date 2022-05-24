@@ -2,6 +2,7 @@
 using Flurl.Http;
 using Flurl.Http.Configuration;
 using OrderCloud.Integrations.ExchangeRates.Models;
+using OrderCloud.Integrations.Library.Models;
 
 namespace OrderCloud.Integrations.ExchangeRates
 {

@@ -171,6 +171,16 @@ namespace Headstart.API
                     break;
             }
 
+            IEasyPostShippingService easyPostShippingService = null;
+            switch (settings.EnvironmentSettings.ShippingProvider)
+            {
+                case ShippingProvider.Custom:
+                    break;
+                default:
+                    easyPostShippingService = new EasyPostShippingService(new EasyPostConfig() { APIKey = settings.EasyPostSettings.APIKey }, settings.EasyPostSettings.FedexAccountId);
+                    break;
+            }
+
             var smartyService = new SmartyStreetsService(settings.SmartyStreetSettings, smartyStreetsUsClient);
 
             services.AddMvc(o =>
@@ -251,7 +261,13 @@ namespace Headstart.API
                         _ => avalaraCommand // Avalara is default
                     };
                 })
-                .AddSingleton<IEasyPostShippingService>(x => new EasyPostShippingService(new EasyPostConfig() { APIKey = settings.EasyPostSettings.APIKey }))
+                .AddSingleton<IShippingService>(provider =>
+                {
+                    return settings.EnvironmentSettings.ShippingProvider switch
+                    {
+                        _ => easyPostShippingService // EasyPost is default
+                    };
+                })
                 .AddSingleton<ISmartyStreetsService>(x => smartyService)
                 .AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(settings.CardConnectSettings, settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))
                 .AddSingleton<IOrderCloudClient>(provider => orderCloudClient)

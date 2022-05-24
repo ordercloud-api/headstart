@@ -14,6 +14,12 @@ namespace Headstart.Common
         Production,
     }
 
+    public enum ShippingProvider
+    {
+        EasyPost,
+        Custom,
+    }
+
     public enum TaxProvider
     {
         Avalara,
@@ -100,6 +106,8 @@ namespace Headstart.Common
         public AppEnvironment Environment { get; set; }
 
         public string MiddlewareBaseUrl { get; set; }
+
+        public ShippingProvider ShippingProvider { get; set; } = ShippingProvider.EasyPost;
 
         public TaxProvider TaxProvider { get; set; } = TaxProvider.Avalara;
     }
