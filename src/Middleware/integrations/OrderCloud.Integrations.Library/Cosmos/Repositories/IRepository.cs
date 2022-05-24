@@ -24,7 +24,7 @@ namespace OrderCloud.Integrations.Library
 
         Task<T> AddItemAsync(T item);
 
-        Task UpsertItemAsync(string id, T item);
+        Task<T> UpsertItemAsync(string id, T item);
 
         Task<ItemResponse<T>> ReplaceItemAsync(string id, T item);
 

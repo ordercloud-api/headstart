@@ -89,9 +89,9 @@ namespace OrderCloud.Integrations.Library
             };
         }
 
-        public async Task UpsertItemAsync(string id, T item)
+        public async Task<T> UpsertItemAsync(string id, T item)
         {
-            await container.UpsertItemAsync<T>(item, ResolvePartitionKey(id));
+            return await container.UpsertItemAsync<T>(item, ResolvePartitionKey(id));
         }
 
         public async Task<ItemResponse<T>> ReplaceItemAsync(string id, T item)
