@@ -18,6 +18,5 @@ namespace OrderCloud.Integrations.Smarty
         {
             return await Task.FromResult(new ShipEstimateResponse());
         }
-
     }
 }

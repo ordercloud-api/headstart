@@ -277,7 +277,7 @@ namespace Headstart.API.Commands
         public string UnitOfMeasureQty { get; set; }
 
         public string UnitOfMeasure { get; set; }
-      
+
         public bool IsResale { get; set; }
 
         public CurrencyCode Currency { get; set; }

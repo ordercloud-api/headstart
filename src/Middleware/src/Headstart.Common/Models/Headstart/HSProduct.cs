@@ -5,8 +5,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using OrderCloud.Integrations.EasyPost.Mappers;
 using OrderCloud.Integrations.Library.Attributes;
-using OrderCloud.Integrations.Library.Interfaces;
 using OrderCloud.Integrations.Library.Models;
+using OrderCloud.Integrations.Taxation.Interfaces;
 using OrderCloud.SDK;
 
 namespace Headstart.Models

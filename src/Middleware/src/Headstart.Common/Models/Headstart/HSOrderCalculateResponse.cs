@@ -1,4 +1,4 @@
-﻿using OrderCloud.Integrations.Library.Interfaces;
+﻿using OrderCloud.Integrations.Taxation.Interfaces;
 using OrderCloud.SDK;
 
 namespace Headstart.Models.Headstart
