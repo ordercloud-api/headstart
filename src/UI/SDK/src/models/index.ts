@@ -9,8 +9,6 @@ export * from './BuyerMarkup';
 export * from './BuyerXp';
 export * from './CardConnectAuthorizationResponse';
 export * from './CatalogXp';
-export * from './ClaimResolutionStatuses';
-export * from './ClaimsSummary';
 export * from './Contact';
 export * from './CosmosListOptions';
 export * from './CosmosListPage';

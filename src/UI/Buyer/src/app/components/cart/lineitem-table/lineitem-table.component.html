@@ -112,13 +112,7 @@
               <div class="col-md-3 col-sm-6 pr-md-3">
                 <a
                   class="d-block"
-                  (click)="
-                    toProductDetails(
-                      li.Product.ID,
-                      li.xp.ConfigurationID,
-                      li.xp.DocumentID
-                    )
-                  "
+                  (click)="toProductDetails(li.Product.ID)"
                 >
                   <img
                     class="img-thumbnail w-100"
@@ -129,13 +123,7 @@
               </div>
               <div class="col-md-9 col-sm-6">
                 <a
-                  (click)="
-                    toProductDetails(
-                      li.Product.ID,
-                      li.xp.ConfigurationID,
-                      li.xp.DocumentID
-                    )
-                  "
+                  (click)="toProductDetails(li.Product.ID)"
                   class="text-dark font-weight-medium line-height-1"
                 >
                   {{ li | productNameWithSpecs }} 

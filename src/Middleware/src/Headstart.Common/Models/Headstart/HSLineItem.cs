@@ -27,10 +27,6 @@ namespace Headstart.Models.Headstart
 
         public string ImageUrl { get; set; }
 
-        public string ConfigurationID { get; set; }
-
-        public string DocumentID { get; set; }
-
         // needed for Line Item Detail Report
         public string ShipMethod { get; set; }
 

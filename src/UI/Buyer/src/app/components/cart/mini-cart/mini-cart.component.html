@@ -7,7 +7,7 @@
       class="list-group-item"
       *ngFor="let li of lineItems | slice: 0:maxLines"
     >
-      <a href="javascript:;" (click)="toProductDetails(li.Product.ID, li.xp.ConfigurationID, li.xp.DocumentID)">{{
+      <a href="javascript:;" (click)="toProductDetails(li.Product.ID)">{{
         li | productNameWithSpecs
       }}</a>
       <div class="d-flex justify-content-between">
