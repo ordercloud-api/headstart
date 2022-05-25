@@ -10,7 +10,6 @@ export const buyerLocation = [
   { value: 'Email', path: 'xp.Email' },
   { value: 'Phone', path: 'Phone' },
   { value: 'Billing Number', path: 'xp.BillingNumber' },
-  { value: 'Status', path: 'xp.Status' },
 ]
 
 export const salesOrderDetail = [
