@@ -1,16 +1,8 @@
-﻿using Headstart.Models.Extended;
-using OrderCloud.SDK;
-using RequiredAttribute = System.ComponentModel.DataAnnotations.RequiredAttribute;
+﻿using OrderCloud.SDK;
 
 namespace Headstart.Models
 {
     public class HSSpec : Spec, IHSObject
     {
-    }
-
-    public class SpecXp
-    {
-        [Required]
-        public SpecUI UI { get; set; } = new SpecUI();
     }
 }
