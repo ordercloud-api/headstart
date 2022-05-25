@@ -40,7 +40,6 @@ export * from './HSShipment';
 export * from './HSShipmentItemWithLineItem';
 export * from './HSShipmentWithItems';
 export * from './HSShipMethod';
-export * from './HSSpecOption';
 export * from './HSSpecProductAssignment';
 export * from './HSSpecValue';
 export * from './HSSupplier';
