@@ -197,10 +197,6 @@ namespace Headstart.API.Commands
                 ID = DefaultBuyerID,
                 Name = DefaultBuyerName,
                 Active = true,
-                xp = new BuyerXp
-                {
-                    MarkupPercent = 0,
-                },
             };
         }
 

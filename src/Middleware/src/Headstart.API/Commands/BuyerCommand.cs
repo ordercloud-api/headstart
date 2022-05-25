@@ -80,11 +80,9 @@ namespace Headstart.API.Commands
             var buyer = await oc.Buyers.GetAsync<HSBuyer>(buyerID);
             var config = await configReq;
 
-            // to move into content docs logic
-            var markupPercent = buyer.xp?.MarkupPercent ?? 0;
             var markup = new BuyerMarkup()
             {
-                Percent = markupPercent,
+                Percent = 0,
             };
 
             return new SuperHSBuyer()
