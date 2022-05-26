@@ -95,7 +95,6 @@ export * from './TaxCategorization';
 export * from './TemplateProductFlat';
 export * from './TransactionXP';
 export * from './UnitOfMeasure';
-export * from './UserGroupAssignment';
 export * from './UserGroupXp';
 export * from './UserXp';
 export * from './Authentication';

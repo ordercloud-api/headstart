@@ -1,4 +1,4 @@
-import { UserGroupAssignment } from './UserGroupAssignment';
+import { UserGroupAssignment } from 'ordercloud-javascript-sdk';
 
 export interface LocationPermissionUpdate {
     AssignmentsToAdd?: UserGroupAssignment[]
