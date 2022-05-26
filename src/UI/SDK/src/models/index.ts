@@ -14,7 +14,6 @@ export * from './CosmosListOptions';
 export * from './CosmosListPage';
 export * from './CosmosMeta';
 export * from './Filter';
-export * from './HSAddressAssignment';
 export * from './HSAddressBuyer';
 export * from './HSAddressSupplier';
 export * from './HSApiClient';

@@ -2,8 +2,7 @@
 
 namespace Headstart.Models
 {
-    public class HSAddressAssignment : AddressAssignment, IHSObject
+    public class HSAddressAssignment : AddressAssignment
     {
-        public string ID { get; set; }
     }
 }
