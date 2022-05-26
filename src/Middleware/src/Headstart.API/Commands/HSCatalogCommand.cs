@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Headstart.Common;
+using Headstart.Common.Models;
 using Headstart.Models;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Library;
@@ -16,7 +17,7 @@ namespace Headstart.API.Commands.Crud
 
         Task<HSCatalog> Post(string buyerID, HSCatalog catalog, DecodedToken decodedToken);
 
-        Task<ListPage<HSCatalogAssignment>> GetAssignments(string buyerID, string locationID, DecodedToken decodedToken);
+        Task<ListPage<HSCatalogAssignmentResponse>> GetAssignments(string buyerID, string locationID, DecodedToken decodedToken);
 
         Task SetAssignments(string buyerID, string locationID, List<string> assignments, string token);
 
@@ -54,18 +55,18 @@ namespace Headstart.API.Commands.Crud
                 accessToken: decodedToken.AccessToken);
         }
 
-        public async Task<ListPage<HSCatalogAssignment>> GetAssignments(string buyerID, string locationID, DecodedToken decodedToken)
+        public async Task<ListPage<HSCatalogAssignmentResponse>> GetAssignments(string buyerID, string locationID, DecodedToken decodedToken)
         {
             // assignments are stored on location usergroup xp in a string array with the ids of the catalogs
             // currently they can only be assessed by location ID
             // limiting to 20 catalog assignments for now
             var location = await oc.UserGroups.GetAsync<HSLocationUserGroup>(buyerID, locationID, decodedToken.AccessToken);
 
-            var catalogAssignments = new List<HSCatalogAssignment> { };
+            var catalogAssignments = new List<HSCatalogAssignmentResponse> { };
 
             if (location.xp.CatalogAssignments != null)
             {
-                catalogAssignments = location.xp.CatalogAssignments.Select(catalogIDOnXp => new HSCatalogAssignment()
+                catalogAssignments = location.xp.CatalogAssignments.Select(catalogIDOnXp => new HSCatalogAssignmentResponse()
                     {
                         CatalogID = catalogIDOnXp,
                         LocationID = locationID,

@@ -20,7 +20,7 @@ export * from './HSApiClient';
 export * from './HSBuyer';
 export * from './HSBuyerLocation';
 export * from './HSCatalog';
-export * from './HSCatalogAssignment';
+export * from './HSCatalogAssignmentResponse';
 export * from './HSCatalogAssignmentRequest';
 export * from './HSLineItem';
 export * from './HSLineItemOrder';

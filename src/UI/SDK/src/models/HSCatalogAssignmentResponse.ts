@@ -1,5 +1,5 @@
 
-export interface HSCatalogAssignment {
+export interface HSCatalogAssignmentResponse {
     LocationID?: string
     CatalogID?: string
 }
