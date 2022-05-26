@@ -39,7 +39,6 @@ export * from './HSShipment';
 export * from './HSShipmentItemWithLineItem';
 export * from './HSShipmentWithItems';
 export * from './HSShipMethod';
-export * from './HSSpecProductAssignment';
 export * from './HSSpecValue';
 export * from './HSSupplier';
 export * from './HSSupplierOrderData';
