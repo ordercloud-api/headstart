@@ -1,4 +1,2 @@
 
-export interface CatalogXp {
-    Type?: string
-}
+export interface CatalogXp {}

@@ -7,16 +7,9 @@ namespace Headstart.Models
     {
     }
 
-    public class PartialHSCatalog : PartialUserGroup<CatalogXp>
-    {
-    }
-
     // potentially use this for the api later
-    public class HSCatalogAssignment : IHSObject
+    public class HSCatalogAssignment
     {
-        // ID not used but to get marketplaceobject extension working for now
-        public string ID { get; set; }
-
         public string LocationID { get; set; }
 
         public string CatalogID { get; set; }
@@ -29,6 +22,5 @@ namespace Headstart.Models
 
     public class CatalogXp
     {
-        public string Type { get; set; } = "Catalog";
     }
 }
