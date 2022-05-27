@@ -1,7 +1,7 @@
 import { HSCatalogAssignmentRequest } from '../models/HSCatalogAssignmentRequest';
 import { ListPage } from '../models/ListPage';
 import { HSCatalog } from '../models/HSCatalog';
-import { HSCatalogAssignment } from '../models/HSCatalogAssignment';
+import { HSCatalogAssignmentResponse } from '../models/HSCatalogAssignmentResponse';
 import { RequiredDeep } from '../models/RequiredDeep';
 import { ListArgs } from '../models/ListArgs'
 import httpClient from '../utils/HttpClient';
@@ -104,7 +104,7 @@ export default class Catalogs {
     * @param options.locationID ID of the location.
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async GetAssignments(buyerID: string,  options: ListArgs<HSCatalogAssignment> = {}, accessToken?: string ): Promise<RequiredDeep<ListPage<HSCatalogAssignment>>> {
+    public async GetAssignments(buyerID: string,  options: ListArgs<HSCatalogAssignmentResponse> = {}, accessToken?: string ): Promise<RequiredDeep<ListPage<HSCatalogAssignmentResponse>>> {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.get(`/buyers/${buyerID}/catalogs/assignments`, { params: { ...options,  accessToken, impersonating } } );

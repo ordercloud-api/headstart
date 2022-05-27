@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using OrderCloud.SDK;
+﻿using OrderCloud.SDK;
 
 namespace Headstart.Models
 {
@@ -19,7 +17,5 @@ namespace Headstart.Models
         public string LocationID { get; set; }
 
         public string BillingNumber { get; set; }
-
-        public string Status { get; set; }
     }
 }

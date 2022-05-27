@@ -25,7 +25,5 @@ namespace Headstart.Models
     {
         // temporary field while waiting on content docs
         public int MarkupPercent { get; set; }
-
-        public string URL { get; set; }
     }
 }

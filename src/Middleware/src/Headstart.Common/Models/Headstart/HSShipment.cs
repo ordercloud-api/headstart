@@ -11,15 +11,12 @@ namespace Headstart.Common.Services.ShippingIntegration.Models
         public List<ShipmentItem> ShipmentItems { get; set; }
     }
 
-    // these are in the common namespace so that we can reference the FreightPop model
     public class HSShipment : Shipment<ShipmentXp, HSAddressSupplier, HSAddressBuyer>
     {
     }
 
     public class ShipmentXp
     {
-        // storing full freightPopShipmentRate for potential reference later
-        // public ShipmentRate FreightPopShipmentRate { get; set; }
         public string Service { get; set; }
 
         public string Comment { get; set; }

@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Headstart.API.Commands.Crud;
+using Headstart.Common.Models;
 using Headstart.Models;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
@@ -51,7 +52,7 @@ namespace Headstart.Common.Controllers
         /// Get a list of catalog location assignments.
         /// </summary>
         [HttpGet, Route("{buyerID}/catalogs/assignments"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
-        public async Task<ListPage<HSCatalogAssignment>> GetAssignments(string buyerID, [FromQuery(Name = "catalogID")] string catalogID = "", [FromQuery(Name = "locationID")] string locationID = "")
+        public async Task<ListPage<HSCatalogAssignmentResponse>> GetAssignments(string buyerID, [FromQuery(Name = "catalogID")] string catalogID = "", [FromQuery(Name = "locationID")] string locationID = "")
         {
             return await command.GetAssignments(buyerID, locationID, UserContext);
         }

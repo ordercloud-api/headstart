@@ -1,34 +1,16 @@
-﻿using System.Collections.Generic;
-using OrderCloud.SDK;
+﻿using OrderCloud.SDK;
 
 namespace Headstart.Models
 {
-    public class HSCatalog : UserGroup<CatalogXp>, IHSObject
+    public class HSCatalog : UserGroup<UserGroupCatalogXp>, IHSObject
     {
     }
 
-    public class PartialHSCatalog : PartialUserGroup<CatalogXp>
+    public class UserGroupCatalogXp
     {
-    }
-
-    // potentially use this for the api later
-    public class HSCatalogAssignment : IHSObject
-    {
-        // ID not used but to get marketplaceobject extension working for now
-        public string ID { get; set; }
-
-        public string LocationID { get; set; }
-
-        public string CatalogID { get; set; }
-    }
-
-    public class HSCatalogAssignmentRequest
-    {
-        public List<string> CatalogIDs { get; set; }
-    }
-
-    public class CatalogXp
-    {
+        /// <summary>
+        /// Provides context type to the user group to drive functionality. User groups created with this xp will always be of type "Catalog".
+        /// </summary>
         public string Type { get; set; } = "Catalog";
     }
 }
