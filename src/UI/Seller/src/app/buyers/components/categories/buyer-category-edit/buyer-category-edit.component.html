@@ -1,9 +1,10 @@
-<h4 class="mt-3" *ngIf="checkForParent()">
-  Add a Sub-Category to {{ getParentID() }}
-</h4>
 <form *ngIf="resourceForm" [formGroup]="resourceForm">
   <span class="required-field">* required fields</span>
-  <ng-container *ngFor="let field of _categoryFields">
+  <div class="card bg-white shadow-sm p-4 mt-3">
+    <h4 class="mt-3" *ngIf="checkForParent()">
+      Add a Sub-Category to {{ getParentID() }}
+    </h4>
+    <ng-container *ngFor="let field of _categoryFields">
     <div
       *ngIf="field.type === 'string' && field.field === 'ParentID' && _params"
       class="form-group"
@@ -97,4 +98,5 @@
       </label>
     </div>
   </ng-container>
+</div>
 </form>
