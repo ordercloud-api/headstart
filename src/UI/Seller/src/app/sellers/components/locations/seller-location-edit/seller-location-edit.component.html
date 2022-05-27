@@ -1,4 +1,5 @@
 <div class="container-fluid resource-edit">
+  <span class="required-field">* required fields</span>
     <form *ngIf="resourceForm" [formGroup]="resourceForm">
       <div class="row pt-3">
         <div class="col-md-7">
@@ -12,7 +13,7 @@
                   >{{
                     'ALIAS.SELLER_LOCATION' | translate | titlecase
                   }}
-                  Name</label
+                  Name <span class="required-field">*</span></label
                 >
                 <input
                   type="text"
@@ -30,7 +31,7 @@
                 />
               </div>
               <div class="form-group col-md-6">
-                <label for="Company Name">Company Name</label>
+                <label for="Company Name">Company Name <span class="required-field">*</span></label>
                 <input
                   type="text"
                   class="form-control"
@@ -46,7 +47,7 @@
               </div>
             </div>
             <div class="form-group">
-              <label for="Country">Country</label>
+              <label for="Country">Country <span class="required-field">*</span></label>
               <select
                 *ngIf="countryOptions.length"
                 type="dropdown"
@@ -80,7 +81,7 @@
                   getControlValue('Country') === 'CA'
                     ? 'Civic Address'
                     : 'Street 1'
-                }}</label>
+                }} <span class="required-field">*</span></label>
                 <input
                   type="text"
                   class="form-control"
@@ -116,7 +117,7 @@
               <div class="form-group">
                 <label for="City">{{
                   getControlValue('Country') === 'CA' ? 'Municipality' : 'City'
-                }}</label>
+                }} <span class="required-field">*</span></label>
                 <input
                   type="text"
                   class="form-control"
@@ -137,7 +138,7 @@
               <div class="form-group">
                 <label for="State">{{
                   getControlValue('Country') === 'CA' ? 'Province' : 'State'
-                }}</label>
+                }} <span class="required-field">*</span></label>
                 <input
                   type="text"
                   class="form-control"
@@ -158,7 +159,7 @@
               <div class="form-group">
                 <label for="Zip">{{
                   getControlValue('Country') === 'CA' ? 'Postal Code' : 'Zip'
-                }}</label>
+                }} <span class="required-field">*</span></label>
                 <input
                   type="text"
                   class="form-control"
