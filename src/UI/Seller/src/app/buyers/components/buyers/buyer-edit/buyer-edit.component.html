@@ -1,5 +1,6 @@
 <div *ngIf="resourceForm" class="container-fluid resource-edit">
   <form [formGroup]="resourceForm">
+    <span class="required-field">* required fields</span>
     <div class="row pt-3">
       <div class="col-md-5">
         <h5>{{ 'ALIAS.BUYER' | translate }} Details</h5>
@@ -7,7 +8,7 @@
       </div>
       <div class="col-md-7 form-group">
         <div class="form-group">
-          <label for="Name">Name</label>
+          <label for="Name">Name <span class="required-field">*</span></label>
           <input
             type="text"
             class="form-control"

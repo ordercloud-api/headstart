@@ -2,6 +2,7 @@
   Add a Sub-Category to {{ getParentID() }}
 </h4>
 <form *ngIf="resourceForm" [formGroup]="resourceForm">
+  <span class="required-field">* required fields</span>
   <ng-container *ngFor="let field of _categoryFields">
     <div
       *ngIf="field.type === 'string' && field.field === 'ParentID' && _params"
@@ -68,7 +69,7 @@
       class="form-group"
     >
       <label for="field.field"
-        >{{ field.field | uncamel }} {{ getOptionalText(field.field) }}</label
+        >{{ field.field | uncamel }} {{ getOptionalText(field.field) }} <span *ngIf="field.field === 'Name'" class="required-field">*</span></label
       >
       <input
         maxlength="100"
