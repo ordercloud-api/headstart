@@ -1,5 +1,6 @@
 <div class="container-fluid resource-edit">
   <form [formGroup]="resourceForm">
+    <span class="required-field">* required fields</span>
     <div class="row pt-3">
       <div class="col-md-5">
         <h5>{{ 'ALIAS.SUPPLIER' | translate }} Details</h5>
@@ -18,7 +19,7 @@
           </label>
         </div>
         <div class="form-group">
-          <label for="Name">Name</label>
+          <label for="Name">Name <span class="required-field">*</span></label>
           <input type="text" class="form-control" id="Name" showErrors aria-describedby="Name" maxlength="100"
             formControlName="Name" (input)="updateResourceFromEvent($event, 'Name')" placeholder="Enter Name" />
         </div>
@@ -53,8 +54,7 @@
         </div>
         <div class="form-row">
           <div class="form-group col-md-6">
-            <label for="Currency">Currency
-              <small *ngIf="isCreatingNew" class="text-danger font-weight-bolder">*</small></label>
+            <label for="Currency">Currency <span class="required-field">*</span></label>
             <select class="form-control" id="Currency" formControlName="Currency"
               (change)="updateResourceFromEvent($event, 'xp.Currency')">
               <option *ngFor="let currency of availableCurrencies" [value]="currency.Currency">
@@ -64,8 +64,7 @@
           </div>
 
           <div class="form-group col-md-12" formGroupName="ProductTypes">
-            <label>Product Types
-              <small *ngIf="isCreatingNew" class="text-danger font-weight-bolder">*</small>
+            <label>Product Types <span class="required-field">*</span>
               <small id="productTypesHelp" class="form-text text-muted">
                 What types of products is this supplier able to sell? Check at
                 least one.
