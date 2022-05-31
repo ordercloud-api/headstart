@@ -93,7 +93,7 @@ namespace Headstart.API.Commands.Crud
             var existingCatalogs = await oc.UserGroups.ListAsync<HSLocationUserGroup>(buyerID, filters: "xp.Type=Catalog", pageSize: 100);
 
             // from the data extract the relevant catalogIDs
-            var expectedAssignedCatalogIDs = assignedGroups.Items?.Where(item => item?.xp?.Type == "BuyerLocation")?.SelectMany(c => c?.xp?.CatalogAssignments);
+            var expectedAssignedCatalogIDs = assignedGroups.Items?.Where(item => item?.xp?.Type == "BuyerLocation" && item?.xp?.CatalogAssignments != null)?.SelectMany(c => c?.xp?.CatalogAssignments);
             var actualAssignedCatalogIDs = assignedGroups.Items?.Where(item => item?.xp?.Type == "Catalog")?.Select(c => c.ID)?.ToList();
             var existingCatalogIDs = existingCatalogs.Items.Select(x => x.ID);
 

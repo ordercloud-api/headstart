@@ -1,14 +1,4 @@
 <div class="container-fluid">
-  <user-group-assignments
-    *ngIf="selectedResource && !isCreatingNew"
-    [isCreatingNew]="isCreatingNew"
-    userGroupType="BuyerLocation"
-    [user]="selectedResource"
-    (assignmentsToAdd)="addUserGroupAssignments($event)"
-    (hasAssignments)="userHasAssignments($event)"
-    [userPermissionsService]="buyerUserService"
-  >
-  </user-group-assignments>
   <form *ngIf="resourceForm" [formGroup]="resourceForm">
     <div class="row pt-3">
       <div class="col-md-5">
@@ -150,6 +140,16 @@
       </div>
     </div>
   </form>
+  <user-group-assignments
+    *ngIf="selectedResource && !isCreatingNew"
+    [isCreatingNew]="isCreatingNew"
+    userGroupType="BuyerLocation"
+    [user]="selectedResource"
+    (assignmentsToAdd)="addUserGroupAssignments($event)"
+    (hasAssignments)="userHasAssignments($event)"
+    [userPermissionsService]="buyerUserService"
+  >
+  </user-group-assignments>
   <user-group-assignments
     *ngIf="
       selectedResource &&
