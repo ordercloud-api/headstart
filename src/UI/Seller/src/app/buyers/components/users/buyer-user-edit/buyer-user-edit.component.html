@@ -1,5 +1,6 @@
 <div class="container-fluid">
   <form *ngIf="resourceForm" [formGroup]="resourceForm">
+    <span class="required-field">* required fields</span>
     <div class="row pt-3">
       <div class="col-md-5">
         <h5>Account Information</h5>
@@ -26,7 +27,7 @@
         </div>
         <div class="form-row">
           <div class="form-group col-md-6">
-            <label for="Username">Username</label>
+            <label for="Username">Username <span class="required-field">*</span></label>
             <input
               type="text"
               class="form-control"
@@ -40,7 +41,7 @@
             />
           </div>
           <div class="form-group col-md-6">
-            <label for="Email">Email</label>
+            <label for="Email">Email <span class="required-field">*</span></label>
             <input
               type="text"
               class="form-control"
@@ -67,7 +68,7 @@
       <div class="col-md-7 form-group">
         <div class="form-row">
           <div class="form-group col-md-6">
-            <label for="FirstName">First Name</label>
+            <label for="FirstName">First Name <span class="required-field">*</span></label>
             <input
               type="text"
               class="form-control"
@@ -81,7 +82,7 @@
             />
           </div>
           <div class="form-group col-md-6">
-            <label for="LastName">Last Name</label>
+            <label for="LastName">Last Name <span class="required-field">*</span></label>
             <input
               type="text"
               class="form-control"
@@ -97,7 +98,7 @@
         </div>
         <div class="form-row">
           <div class="form-group col-md-6">
-            <label for="Country">Home Country</label>
+            <label for="Country">Home Country <span class="required-field">*</span></label>
             <select
               *ngIf="countryOptions.length"
               type="dropdown"

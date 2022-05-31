@@ -1,7 +1,8 @@
 <div class="container-fluid">
   <form *ngIf="resourceForm" [formGroup]="resourceForm">
+    <span class="required-field">* required fields</span>
     <div class="form-group">
-      <label for="Username">Username</label>
+      <label for="Username">Username <span class="required-field">*</span></label>
       <input
         type="text"
         class="form-control"
@@ -12,7 +13,7 @@
         (input)="updateResourceFromEvent($event, 'Username')"
         placeholder="Enter Username"
       />
-      <label for="FirstName">First Name</label>
+      <label for="FirstName">First Name <span class="required-field">*</span></label>
       <input
         type="text"
         class="form-control"
@@ -23,7 +24,7 @@
         (input)="updateResourceFromEvent($event, 'FirstName')"
         placeholder="Enter FirstName"
       />
-      <label for="LastName">Last Name</label>
+      <label for="LastName">Last Name <span class="required-field">*</span></label>
       <input
         type="text"
         class="form-control"
@@ -35,7 +36,7 @@
         placeholder="Enter LastName"
       />
       <div class="form-group">
-        <label for="Email">Email</label>
+        <label for="Email">Email <span class="required-field">*</span></label>
         <input
           type="text"
           class="form-control"
