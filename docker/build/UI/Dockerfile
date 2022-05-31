@@ -23,9 +23,9 @@ COPY src/UI/SDK SDK/
 RUN cd /build/SDK && npm run build
 
 # Build APP (Buyer or Seller)
-COPY src/UI/${ROLE}/package*.json APP/
-RUN cd /build/APP && npm install
+# Note: Doesn't seem to be run npm install as a separate layer because its required to symlink sdk
 COPY src/UI/${ROLE} APP/
+RUN cd /build/APP && npm install
 RUN sed -i 's/useLocalMiddleware = true/useLocalMiddleware = false/g' /build/APP/src/environments/environment.local.ts
 RUN cd /build/APP && npm run build --prod
 
