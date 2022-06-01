@@ -119,7 +119,7 @@ export class ProductPricingComponent {
 
   getBuyerPercentMarkupPrice(supplierPrice: number): number {
     const markupMultiplier =
-      (this.selectedSuperHSBuyer?.Markup?.Percent || 0) / 100 + 1
+      (this.selectedSuperHSBuyer?.Buyer?.xp?.MarkupPercent || 0) / 100 + 1
     return supplierPrice * markupMultiplier
   }
 

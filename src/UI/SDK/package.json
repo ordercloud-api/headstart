@@ -40,8 +40,13 @@
     "typescript": "~3.7.5"
   },
   "dependencies": {
+    "@angular/common": "^12.1.1",
+    "@angular/core": "^12.1.1",
+    "@ordercloud/angular-sdk": "^1.1.0",
     "lodash": "^4.17.21",
-    "ordercloud-javascript-sdk": "4.5.4"
+    "ngx-cookie": "^4.1.2",
+    "ordercloud-javascript-sdk": "4.5.4",
+    "rxjs": "^6.5.4"
   },
   "peerDependencies": {
     "axios": ">=0.19.2"

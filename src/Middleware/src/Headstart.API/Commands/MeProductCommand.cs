@@ -181,8 +181,8 @@ namespace Headstart.API.Commands
             var buyerID = me.Buyer.ID;
             var buyer = await cache.GetOrAddAsync($"buyer_{buyerID}", TimeSpan.FromHours(1), () => hsBuyerCommand.Get(buyerID));
 
-            // must convert markup to decimal before division to prevent rouding error
-            var markupPercent = (decimal)buyer.Markup.Percent / 100;
+            // must convert markup to decimal before division to prevent rounding error
+            var markupPercent = (decimal)buyer.Buyer.xp.MarkupPercent / 100;
             var markupMultiplier = markupPercent + 1;
             return markupMultiplier;
         }

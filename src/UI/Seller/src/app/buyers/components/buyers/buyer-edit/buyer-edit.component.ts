@@ -111,13 +111,13 @@ export class BuyerEditComponent implements OnDestroy {
   }
 
   createBuyerForm(superBuyer: any): void {
-    const { Buyer, Markup, ImpersonationConfig } = superBuyer
+    const { Buyer, ImpersonationConfig } = superBuyer
     this.showImpersonation = ImpersonationConfig && ImpersonationConfig !== null
 
     this.resourceForm = new FormGroup({
       Name: new FormControl(Buyer.Name, Validators.required),
       Active: new FormControl(Buyer.Active),
-      Markup: new FormControl(Markup.Percent),
+      Markup: new FormControl(Buyer.xp.MarkupPercent),
       ImpersonatingEnabled: new FormControl(this.showImpersonation),
       URL: new FormControl(Buyer.xp.URL),
       ClientID: new FormControl(ImpersonationConfig?.ClientID),
