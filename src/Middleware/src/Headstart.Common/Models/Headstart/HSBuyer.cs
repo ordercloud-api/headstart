@@ -9,12 +9,14 @@ namespace Headstart.Models
         public ImpersonationConfig ImpersonationConfig { get; set; }
     }
 
-    public class HSBuyer : Buyer<BuyerXp>, IHSObject
+    public class HSBuyer : Buyer<BuyerXp>
     {
     }
 
     public class BuyerXp
     {
         public int MarkupPercent { get; set; }
+
+        public string URL { get; set; }
     }
 }

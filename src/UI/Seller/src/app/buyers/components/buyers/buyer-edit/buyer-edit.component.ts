@@ -7,11 +7,10 @@ import {
 } from '@angular/core'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { BuyerTempService } from '@app-seller/shared/services/middleware-api/buyer-temp.service'
-import { HSBuyer } from '@ordercloud/headstart-sdk'
+import { HSBuyer, SuperHSBuyer } from '@ordercloud/headstart-sdk'
 import { BuyerService } from '../buyer.service'
 import { Router } from '@angular/router'
 import { isEqual as _isEqual } from 'lodash'
-import { HSBuyerPriceMarkup } from '@app-seller/models/buyer.types'
 import { Subscription } from 'rxjs'
 import { ResourceUpdate } from '@app-seller/shared'
 import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/catalogs-temp.service'
@@ -33,8 +32,8 @@ export class BuyerEditComponent implements OnDestroy {
   helperAction: string
   helperLink: string
 
-  _superBuyerStatic: HSBuyerPriceMarkup
-  _superBuyerEditable: HSBuyerPriceMarkup
+  _superBuyerStatic: SuperHSBuyer
+  _superBuyerEditable: SuperHSBuyer
 
   @Input()
   labelSingular: string
@@ -103,7 +102,7 @@ export class BuyerEditComponent implements OnDestroy {
         form: this.resourceForm,
       }
     }
-    this._superBuyerEditable = this.buyerService.getUpdatedEditableResource<HSBuyerPriceMarkup>(
+    this._superBuyerEditable = this.buyerService.getUpdatedEditableResource<SuperHSBuyer>(
       resourceUpdate,
       this._superBuyerEditable
     )
@@ -146,7 +145,7 @@ export class BuyerEditComponent implements OnDestroy {
     this.refreshBuyerData(superHSBuyer)
   }
 
-  refreshBuyerData(superBuyer: HSBuyerPriceMarkup): void {
+  refreshBuyerData(superBuyer: SuperHSBuyer): void {
     this.createBuyerForm(superBuyer)
     this._superBuyerStatic = superBuyer
     this._superBuyerEditable = superBuyer
