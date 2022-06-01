@@ -57,7 +57,7 @@ namespace Headstart.API.Commands
         {
             // to prevent changing buyerIDs
             superBuyer.Buyer.ID = buyerID;
-            var updatedImpersonationConfig = new ImpersonationConfig();
+            ImpersonationConfig updatedImpersonationConfig = null;
 
             var updatedBuyer = await oc.Buyers.SaveAsync<HSBuyer>(buyerID, superBuyer.Buyer);
             var updatedMarkup = await UpdateMarkup(superBuyer.Markup, superBuyer.Buyer.ID);
