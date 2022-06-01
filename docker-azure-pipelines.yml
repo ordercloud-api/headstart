@@ -25,6 +25,6 @@ stages:
 
                 $env:REGISTRY="$(container.registry)/headstart/"
                 $env:VERSION = $version
-
+                $env:COSMOS_TAG = "latest"
                 docker-compose build --parallel
                 docker-compose push
