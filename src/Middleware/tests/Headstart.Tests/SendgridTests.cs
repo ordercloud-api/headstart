@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using Headstart.Common;
 using Headstart.Common.Services;
 using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Common.Settings;
 using Headstart.Models;
 using Headstart.Models.Headstart;
 using NSubstitute;
@@ -22,7 +22,8 @@ namespace Headstart.Tests
     public class SendgridTests
     {
         private IOrderCloudClient oc;
-        private AppSettings settings;
+        private SendgridSettings sendgridSettings;
+        private UI uiSettings;
         private ISendGridClient sendGridClient;
         private ISendgridService command;
 
@@ -30,10 +31,11 @@ namespace Headstart.Tests
         public void Setup()
         {
             oc = Substitute.For<IOrderCloudClient>();
-            settings = Substitute.For<AppSettings>();
+            sendgridSettings = Substitute.For<SendgridSettings>();
+            uiSettings = Substitute.For<UI>();
             sendGridClient = Substitute.For<ISendGridClient>();
 
-            command = new SendgridService(settings, oc, sendGridClient);
+            command = new SendgridService(sendgridSettings, uiSettings, oc, sendGridClient);
         }
 
         [Test]
@@ -45,7 +47,7 @@ namespace Headstart.Tests
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, $"{TestConstants.OrderID}-{TestConstants.Supplier2ID}").Returns(GetSupplierWorksheet(TestConstants.Supplier2ID, TestConstants.LineItem2ID, TestConstants.LineItem2Total));
             oc.Suppliers.ListAsync<HSSupplier>(Arg.Any<string>()).ReturnsForAnyArgs(Task.FromResult(GetSupplierList()));
             oc.AdminUsers.ListAsync<HSSellerUser>().ReturnsForAnyArgs(Task.FromResult(GetSellerUserList()));
-            var commandSub = Substitute.ForPartsOf<SendgridService>(settings, oc, sendGridClient);
+            var commandSub = Substitute.ForPartsOf<SendgridService>(sendgridSettings, oc, sendGridClient);
             commandSub.Configure().WhenForAnyArgs(x => x.SendSingleTemplateEmailMultipleRcpts(default, default, default, default)).DoNotCallBase();
             commandSub.Configure().WhenForAnyArgs(x => x.SendSingleTemplateEmail(default, default, default, default)).DoNotCallBase();
 

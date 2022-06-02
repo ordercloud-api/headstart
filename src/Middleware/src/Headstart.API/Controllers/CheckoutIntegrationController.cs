@@ -18,7 +18,7 @@ namespace Headstart.Common.Controllers
             this.postSubmitCommand = postSubmitCommand;
         }
 
-        [Route("shippingrates1")]
+        [Route("shippingrates")]
         [HttpPost]
         [OrderCloudWebhookAuth]
         public async Task<ShipEstimateResponse> GetShippingRates([FromBody] HSOrderCalculatePayload orderCalculatePayload)

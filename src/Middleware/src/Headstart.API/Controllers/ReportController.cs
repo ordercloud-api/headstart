@@ -20,7 +20,7 @@ namespace Headstart.Common.Controllers
         private readonly IHSReportCommand reportDataCommand;
         private readonly DownloadReportCommand downloadReportCommand;
 
-        public ReportController(IHSReportCommand reportDataCommand, AppSettings settings, DownloadReportCommand downloadReportCommand)
+        public ReportController(IHSReportCommand reportDataCommand, DownloadReportCommand downloadReportCommand)
         {
             this.reportDataCommand = reportDataCommand;
             this.downloadReportCommand = downloadReportCommand;

@@ -2,7 +2,6 @@
 using Headstart.Common.Mappers;
 using Headstart.Common.Models;
 using NUnit.Framework;
-using OrderCloud.Integrations.ExchangeRates.Models;
 using OrderCloud.Integrations.Library.Models;
 
 namespace Headstart.Tests

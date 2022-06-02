@@ -4,7 +4,7 @@ using Headstart.Models.Misc;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
 
-namespace Headstart.Common.Controllers
+namespace Headstart.API.Controllers
 {
     public class EnvironmentSeedController : CatalystController
     {

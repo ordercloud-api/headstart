@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Headstart.Common.Controllers
+namespace Headstart.API.Controllers
 {
     [Route("env")]
     public class EnvController : ControllerBase

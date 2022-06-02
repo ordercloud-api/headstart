@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using Headstart.API;
 using Headstart.API.Commands;
-using Headstart.Common;
 using Headstart.Common.Services;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
@@ -14,7 +14,6 @@ using NUnit.Framework;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.CardConnect.Models;
-using OrderCloud.Integrations.ExchangeRates.Models;
 using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 

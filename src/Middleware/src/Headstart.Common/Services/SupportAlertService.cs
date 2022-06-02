@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Headstart.Common.Settings;
 using Headstart.Models;
 using Headstart.Models.Headstart;
 using Microsoft.ApplicationInsights;
@@ -18,13 +19,13 @@ namespace Headstart.Common.Services
     {
         private readonly TelemetryClient telemetry;
         private readonly ISendgridService sendgrid;
-        private readonly AppSettings settings;
+        private readonly SendgridSettings sendgridSettings;
 
-        public SupportAlertService(TelemetryClient telemetry, ISendgridService sendgrid, AppSettings settings)
+        public SupportAlertService(TelemetryClient telemetry, ISendgridService sendgrid, SendgridSettings sendgridSettings)
         {
             this.telemetry = telemetry;
             this.sendgrid = sendgrid;
-            this.settings = settings;
+            this.sendgridSettings = sendgridSettings;
         }
 
         public async Task VoidAuthorizationFailed(HSPayment payment, string transactionID, HSOrder order, CreditCardVoidException ex)

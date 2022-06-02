@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Headstart.Common.Settings;
 using Headstart.Models;
 using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
@@ -92,18 +93,18 @@ namespace Headstart.Common.Mappers
             return specCombo;
         }
 
-        public static string DetermineRecipient(AppSettings settings, string subject)
+        public static string DetermineRecipient(SendgridSettings sendgridSettings, string subject)
         {
             switch (subject.ToLower())
             {
                 case "general":
-                    return settings.SendgridSettings.SupportCaseEmail;
+                    return sendgridSettings.SupportCaseEmail;
                 case "report an error/bug":
-                    return settings.SendgridSettings.SupportCaseEmail;
+                    return sendgridSettings.SupportCaseEmail;
                 case "payment, billing, or refunds":
-                    return settings.SendgridSettings.BillingEmail;
+                    return sendgridSettings.BillingEmail;
                 default:
-                    return settings.SendgridSettings.SupportCaseEmail;
+                    return sendgridSettings.SupportCaseEmail;
             }
         }
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Azure.Messaging.ServiceBus;
+using Headstart.Common.Settings;
 using Newtonsoft.Json;
 
 namespace Headstart.Common.Services
@@ -22,9 +23,9 @@ namespace Headstart.Common.Services
         private readonly ConcurrentDictionary<string, ServiceBusSender> senders = new ConcurrentDictionary<string, ServiceBusSender>();
         private readonly ServiceBusClient client;
 
-        public ServiceBus(AppSettings settings)
+        public ServiceBus(ServiceBusSettings serviceBusSettings)
         {
-            client = new ServiceBusClient(settings.ServiceBusSettings.ConnectionString);
+            client = new ServiceBusClient(serviceBusSettings.ConnectionString);
         }
 
         public async Task SendMessage<T>(string queueName, T message, double? afterMinutes = null)

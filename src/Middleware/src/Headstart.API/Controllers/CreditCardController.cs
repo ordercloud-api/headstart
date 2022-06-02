@@ -5,7 +5,7 @@ using OrderCloud.Catalyst;
 using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.SDK;
 
-namespace Headstart.Common.Controllers.CardConnect
+namespace Headstart.API.Controllers
 {
     /// <summary>
     /// ME Credit Card Payments for Headstart.

@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Headstart.Common;
 using Headstart.Common.Constants;
 using Headstart.Models;
 using Headstart.Models.Misc;
@@ -199,6 +198,8 @@ namespace Headstart.API.Commands
         public async Task ReassignUserGroups(string buyerID, string newUserID)
         {
             var userGroupAssignments = await oc.UserGroups.ListAllUserAssignmentsAsync(buyerID, userID: newUserID);
+
+            // TODO: This was to cater for a bug that has since been resolved and is therefore redundant. Validate and remove.
             await Throttler.RunAsync(userGroupAssignments, 100, 5, assignment =>
                 RemoveAndAddUserGroupAssignment(buyerID, newUserID, assignment?.UserGroupID));
         }

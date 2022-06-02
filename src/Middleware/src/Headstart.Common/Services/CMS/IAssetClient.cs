@@ -23,12 +23,12 @@ namespace Headstart.Common.Services.CMS
     public class AssetClient : IAssetClient
     {
         private readonly IOrderCloudIntegrationsBlobService blob;
-        private readonly AppSettings settings;
+        private readonly StorageAccountSettings storageAccountSettings;
 
-        public AssetClient(IOrderCloudIntegrationsBlobService blob, AppSettings settings)
+        public AssetClient(IOrderCloudIntegrationsBlobService blob, StorageAccountSettings storageAccountSettings)
         {
             this.blob = blob;
-            this.settings = settings;
+            this.storageAccountSettings = storageAccountSettings;
         }
 
         public async Task<ImageAsset> CreateImage(AssetUpload asset)
@@ -99,7 +99,7 @@ namespace Headstart.Common.Services.CMS
 
         private string GetBaseUrl()
         {
-            return settings.StorageAccountSettings.BlobPrimaryEndpoint.EndsWith("/") ? settings.StorageAccountSettings.BlobPrimaryEndpoint : settings.StorageAccountSettings.BlobPrimaryEndpoint + "/";
+            return storageAccountSettings.BlobPrimaryEndpoint.EndsWith("/") ? storageAccountSettings.BlobPrimaryEndpoint : storageAccountSettings.BlobPrimaryEndpoint + "/";
         }
     }
 }

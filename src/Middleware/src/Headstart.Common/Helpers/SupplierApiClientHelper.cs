@@ -1,7 +1,8 @@
 ﻿using System.Threading.Tasks;
+using Headstart.Common.Settings;
 using OrderCloud.SDK;
 
-namespace Headstart.Common.Helpers
+namespace Headstart.API.Helpers
 {
     public interface ISupplierApiClientHelper
     {
@@ -11,11 +12,11 @@ namespace Headstart.Common.Helpers
     public class SupplierApiClientHelper : ISupplierApiClientHelper
     {
         private readonly IOrderCloudClient oc;
-        private readonly AppSettings settings;
+        private readonly OrderCloudSettings orderCloudSettings;
 
-        public SupplierApiClientHelper(AppSettings settings, IOrderCloudClient oc)
+        public SupplierApiClientHelper(OrderCloudSettings orderCloudSettings, IOrderCloudClient oc)
         {
-            this.settings = settings;
+            this.orderCloudSettings = orderCloudSettings;
             this.oc = oc;
         }
 
@@ -52,7 +53,7 @@ namespace Headstart.Common.Helpers
                     AppName = $"Integration Client {supplierDetails.Name}",
                     Active = true,
                     DefaultContextUserName = $"dev_{supplierDetails.ID}",
-                    ClientSecret = settings.OrderCloudSettings.MiddlewareClientSecret,
+                    ClientSecret = orderCloudSettings.MiddlewareClientSecret,
                     AccessTokenDuration = 600,
                     RefreshTokenDuration = 43200,
                     AllowAnyBuyer = false,

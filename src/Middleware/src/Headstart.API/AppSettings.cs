@@ -1,3 +1,4 @@
+using Headstart.Common.Settings;
 using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.Library;
 using OrderCloud.Integrations.Library.Cosmos;
@@ -5,7 +6,7 @@ using OrderCloud.Integrations.Smarty;
 using OrderCloud.Integrations.TaxJar;
 using OrderCloud.Integrations.Vertex;
 
-namespace Headstart.Common
+namespace Headstart.API
 {
     public enum AppEnvironment
     {
@@ -124,66 +125,6 @@ namespace Headstart.Common
         public bool ShouldCaptureCreditCardPayments { get; set; }
 
         public bool ShouldRunZoho { get; set; }
-    }
-
-    public class OrderCloudSettings
-    {
-        public string ApiUrl { get; set; }
-
-        public string ClientIDsWithAPIAccess { get; set; } // Comma-separated list
-
-        public string IncrementorPrefix { get; set; }
-
-        public string MiddlewareClientID { get; set; }
-
-        public string MiddlewareClientSecret { get; set; }
-
-        public string MarketplaceID { get; set; }
-
-        public string MarketplaceName { get; set; } // used for display purposes
-
-        public string WebhookHashKey { get; set; }
-    }
-
-    public class SendgridSettings
-    {
-        public string ApiKey { get; set; }
-
-        public string BillingEmail { get; set; } // (Optional) Email to send for payment, billing, or refund queries
-
-        public string CriticalSupportEmails { get; set; } // (Optional) Comma delimited list of emails that should be contacted when criticial failures occur that require manual intervention
-
-        public string CriticalSupportTemplateID { get; set; } // (Optional but required to send CriticalSupport emails) ID for template to be used for CriticalSupport emails
-
-        public string FromEmail { get; set; }
-
-        public string LineItemStatusChangeTemplateID { get; set; } // (Optional but required to send LineItemStatusChange emails) ID for template to be used for LineItemStatusChange emails
-
-        public string NewUserTemplateID { get; set; } // (Optional but required to send NewUser emails) ID for template to be used for NewUser emails
-
-        public string OrderApprovalTemplateID { get; set; } // (Optional but required to send OrderApproval emails) ID for template to be used for OrderApproval emails
-
-        public string OrderSubmitTemplateID { get; set; } // (Optional but required to send OrderSubmit emails) ID for the template to be used for OrderSubmit emails
-
-        public string PasswordResetTemplateID { get; set; } // (Optional but required to send PasswordReset emails) ID for template to be used for PasswordReset emails
-
-        public string ProductInformationRequestTemplateID { get; set; } // (Optional but required to send ProductInformationRequest emails) ID for template to be used for ProductInformationRequest emails
-
-        public string QuoteOrderSubmitTemplateID { get; set; } // (Optional but required to send QuoteOrderSubmit emails) ID for template to be used for QuoteOrderSubmit emails
-
-        public string SupportCaseEmail { get; set; } // (Optional) Email to send support cases to
-    }
-
-    public class ServiceBusSettings
-    {
-        public string ConnectionString { get; set; }
-
-        public string ZohoQueueName { get; set; }
-    }
-
-    public class UI
-    {
-        public string BaseAdminUrl { get; set; }
     }
 
     public class ZohoSettings

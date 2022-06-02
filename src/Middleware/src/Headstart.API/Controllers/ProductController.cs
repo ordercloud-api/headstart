@@ -13,7 +13,7 @@ namespace Headstart.Common.Controllers
     {
         private readonly IHSProductCommand command;
 
-        public ProductController(AppSettings settings, IHSProductCommand command)
+        public ProductController(IHSProductCommand command)
         {
             this.command = command;
         }

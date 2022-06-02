@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Headstart.Common;
 using Headstart.Common.Services;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
@@ -9,7 +8,6 @@ using OrderCloud.Catalyst;
 using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.CardConnect.Mappers;
 using OrderCloud.Integrations.CardConnect.Models;
-using OrderCloud.Integrations.ExchangeRates.Models;
 using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 

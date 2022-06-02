@@ -8,8 +8,8 @@ using Flurl.Http.Configuration;
 using Headstart.API.Commands;
 using Headstart.API.Commands.Crud;
 using Headstart.API.Commands.Zoho;
+using Headstart.API.Helpers;
 using Headstart.Common;
-using Headstart.Common.Helpers;
 using Headstart.Common.Models;
 using Headstart.Common.Queries;
 using Headstart.Common.Repositories;
@@ -194,6 +194,23 @@ namespace Headstart.API
             });
 
             services
+                .AddSingleton(x => settings.ApplicationInsightsSettings)
+                .AddSingleton(x => settings.AvalaraSettings)
+                .AddSingleton(x => settings.CardConnectSettings)
+                .AddSingleton(x => settings.CosmosSettings)
+                .AddSingleton(x => settings.EasyPostSettings)
+                .AddSingleton(x => settings.EnvironmentSettings)
+                .AddSingleton(x => settings.FlurlSettings)
+                .AddSingleton(x => settings.JobSettings)
+                .AddSingleton(x => settings.OrderCloudSettings)
+                .AddSingleton(x => settings.SendgridSettings)
+                .AddSingleton(x => settings.ServiceBusSettings)
+                .AddSingleton(x => settings.SmartyStreetSettings)
+                .AddSingleton(x => settings.StorageAccountSettings)
+                .AddSingleton(x => settings.TaxJarSettings)
+                .AddSingleton(x => settings.UI)
+                .AddSingleton(x => settings.VertexSettings)
+                .AddSingleton(x => settings.ZohoSettings)
                 .AddCors(o => o.AddPolicy("integrationcors", builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }))
                 .AddSingleton<ISimpleCache, LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
                 .AddOrderCloudUserAuth(opts => opts.AddValidClientIDs(clientIDs))
@@ -235,7 +252,7 @@ namespace Headstart.API
                         }, flurlClientFactory),
                     orderCloudClient))
                 .AddSingleton<IExchangeRatesClient, ExchangeRatesClient>()
-                .AddSingleton<IAssetClient>(provider => new AssetClient(new OrderCloudIntegrationsBlobService(assetConfig), settings))
+                .AddSingleton<IAssetClient>(provider => new AssetClient(new OrderCloudIntegrationsBlobService(assetConfig), settings.StorageAccountSettings))
                 .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand(new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
                 .AddSingleton<ITaxCodesProvider>(provider =>
                 {

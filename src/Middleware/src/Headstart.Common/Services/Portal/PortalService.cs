@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Flurl.Http;
 using Flurl.Http.Configuration;
 using Headstart.Common.Services.Portal.Models;
+using Headstart.Common.Settings;
 using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Services
@@ -22,11 +23,11 @@ namespace Headstart.Common.Services
     public class PortalService : IPortalService
     {
         private readonly IFlurlClient client;
-        private readonly AppSettings settings;
+        private readonly OrderCloudSettings orderCloudSettings;
 
-        public PortalService(AppSettings settings, IFlurlClientFactory flurlFactory)
+        public PortalService(OrderCloudSettings orderCloudSettings, IFlurlClientFactory flurlFactory)
         {
-            this.settings = settings;
+            this.orderCloudSettings = orderCloudSettings;
             client = flurlFactory.Get("https://portal.ordercloud.io/api/v1");
         }
 

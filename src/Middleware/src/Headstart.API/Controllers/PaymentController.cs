@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
-namespace Headstart.Common.Controllers
+namespace Headstart.API.Controllers
 {
     /// <summary>
     /// Payment commands in Headstart.

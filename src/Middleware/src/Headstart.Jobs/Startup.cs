@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using Flurl.Http;
 using Flurl.Http.Configuration;
+using Headstart.API;
 using Headstart.API.Commands;
 using Headstart.API.Commands.Crud;
 using Headstart.API.Commands.Zoho;
@@ -10,7 +11,6 @@ using Headstart.Common;
 using Headstart.Common.Repositories;
 using Headstart.Common.Services;
 using Headstart.Common.Services.Zoho;
-using Headstart.Jobs;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,7 +27,7 @@ using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
 using SendGrid;
 
-[assembly: FunctionsStartup(typeof(Startup))]
+[assembly: FunctionsStartup(typeof(Headstart.Jobs.Startup))]
 
 namespace Headstart.Jobs
 {
