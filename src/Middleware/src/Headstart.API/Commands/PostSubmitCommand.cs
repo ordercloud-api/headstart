@@ -6,13 +6,13 @@ using Flurl.Http;
 using Headstart.API.Commands.Zoho;
 using Headstart.Common.Constants;
 using Headstart.Common.Exceptions;
-using Headstart.Common.Services;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
 using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
 using Newtonsoft.Json;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Emails;
 using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
 using ITaxCalculator = OrderCloud.Integrations.Taxation.Interfaces.ITaxCalculator;
@@ -33,12 +33,12 @@ namespace Headstart.API.Commands
         private readonly IOrderCloudClient oc;
         private readonly IZohoCommand zoho;
         private readonly ITaxCalculator taxCalculator;
-        private readonly ISendgridService sendgridService;
+        private readonly IEmailServiceProvider emailServiceProvider;
         private readonly ILineItemCommand lineItemCommand;
         private readonly AppSettings settings;
 
         public PostSubmitCommand(
-            ISendgridService sendgridService,
+            IEmailServiceProvider emailServiceProvider,
             ITaxCalculator taxCalculator,
             IOrderCloudClient oc,
             IZohoCommand zoho,
@@ -48,7 +48,7 @@ namespace Headstart.API.Commands
             this.oc = oc;
             this.taxCalculator = taxCalculator;
             this.zoho = zoho;
-            this.sendgridService = sendgridService;
+            this.emailServiceProvider = emailServiceProvider;
             this.lineItemCommand = lineItemCommand;
             this.settings = settings;
         }
@@ -329,7 +329,7 @@ namespace Headstart.API.Commands
             var notifications = await ProcessActivityCall(
                 ProcessType.Notification,
                 "Sending Order Submit Emails",
-                sendgridService.SendOrderSubmitEmail(orderWorksheet));
+                emailServiceProvider.SendOrderSubmitEmail(orderWorksheet));
             results.Add(new ProcessResult()
             {
                 Type = ProcessType.Notification,

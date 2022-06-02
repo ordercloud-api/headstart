@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Headstart.Common.Services;
 using Headstart.Models;
 using Headstart.Models.Misc;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Emails;
 using OrderCloud.Integrations.ExchangeRates;
 using OrderCloud.Integrations.ExchangeRates.Models;
 using OrderCloud.Integrations.Library.Models;
@@ -26,7 +26,7 @@ namespace Headstart.API.Commands
     {
         private readonly IOrderCloudClient oc;
         private readonly IHSBuyerCommand hsBuyerCommand;
-        private readonly ISendgridService sendgridService;
+        private readonly IEmailServiceProvider emailServiceProvider;
         private readonly ISimpleCache cache;
         private readonly IExchangeRatesCommand exchangeRatesCommand;
         private readonly AppSettings settings;
@@ -34,14 +34,14 @@ namespace Headstart.API.Commands
         public MeProductCommand(
             IOrderCloudClient elevatedOc,
             IHSBuyerCommand hsBuyerCommand,
-            ISendgridService sendgridService,
+            IEmailServiceProvider emailServiceProvider,
             ISimpleCache cache,
             IExchangeRatesCommand exchangeRatesCommand,
             AppSettings settings)
         {
             oc = elevatedOc;
             this.hsBuyerCommand = hsBuyerCommand;
-            this.sendgridService = sendgridService;
+            this.emailServiceProvider = emailServiceProvider;
             this.cache = cache;
             this.exchangeRatesCommand = exchangeRatesCommand;
             this.settings = settings;
@@ -91,7 +91,7 @@ namespace Headstart.API.Commands
 
         public async Task RequestProductInfo(ContactSupplierBody template)
         {
-            await sendgridService.SendContactSupplierAboutProductEmail(template);
+            await emailServiceProvider.SendContactSupplierAboutProductEmail(template);
         }
 
         private async Task<SuperHSMeProduct> ApplyBuyerPricing(SuperHSMeProduct superHsProduct, DecodedToken decodedToken)

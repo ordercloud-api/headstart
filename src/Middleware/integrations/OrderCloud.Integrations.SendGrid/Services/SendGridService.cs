@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Headstart.Common.Constants;
-using Headstart.Common.Mappers;
 using Headstart.Common.Models.Misc;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Common.Settings;
@@ -15,61 +14,22 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.CardConnect;
+using OrderCloud.Integrations.Emails;
 using OrderCloud.SDK;
 using SendGrid;
 using SendGrid.Helpers.Mail;
-using static Headstart.Common.Models.SendGridModels;
+using static OrderCloud.Integrations.SendGrid.SendGridModels;
 
-namespace Headstart.Common.Services
+namespace OrderCloud.Integrations.SendGrid
 {
-    public interface ISendgridService
+    public class SendGridService : IEmailServiceProvider
     {
-        Task SendSingleTemplateEmail(string from, string to, string templateID, object templateData);
-
-        Task SendSingleTemplateEmailMultipleRcpts(string from, List<EmailAddress> tos, string templateID, object templateData);
-
-        Task SendSingleTemplateEmailMultipleRcptsAttachment(string from, List<EmailAddress> tos, string templateID, object templateData, CloudAppendBlob fileReference, string fileName);
-
-        Task SendSingleTemplateEmailSingleRcptAttachment(string from, string to, string templateID, object templateData, IFormFile fileReference);
-
-        Task SendOrderSubmitEmail(HSOrderWorksheet orderData);
-
-        Task SendNewUserEmail(MessageNotification<PasswordResetEventBody> payload);
-
-        Task SendPasswordResetEmail(MessageNotification<PasswordResetEventBody> messageNotification);
-
-        Task SendOrderRequiresApprovalEmail(MessageNotification<OrderSubmitEventBody> messageNotification);
-
-        Task SendOrderSubmittedForApprovalEmail(MessageNotification<OrderSubmitEventBody> messageNotification);
-
-        Task SendOrderApprovedEmail(MessageNotification<OrderSubmitEventBody> messageNotification);
-
-        Task SendOrderDeclinedEmail(MessageNotification<OrderSubmitEventBody> messageNotification);
-
-        Task SendLineItemStatusChangeEmail(HSOrder order, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItems, string firstName, string lastName, string email, EmailDisplayText lineItemEmailDisplayText);
-
-        Task SendLineItemStatusChangeEmailMultipleRcpts(HSOrder order, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItems, List<EmailAddress> tos, EmailDisplayText lineItemEmailDisplayText);
-
-        Task SendContactSupplierAboutProductEmail(ContactSupplierBody template);
-
-        Task EmailVoidAuthorizationFailedAsync(HSPayment payment, string transactionID, HSOrder order, CreditCardVoidException ex);
-
-        Task EmailGeneralSupportQueue(SupportCase supportCase);
-
-        Task SendQuotePriceConfirmationEmail(HSOrder order, HSLineItem lineItem, string buyerEmail);
-
-        Task SendQuoteRequestConfirmationEmail(HSOrder order, HSLineItem lineItem, string buyerEmail);
-    }
-
-    public class SendgridService : ISendgridService
-    {
-        private readonly SendgridSettings sendgridSettings;
+        private readonly SendGridSettings sendgridSettings;
         private readonly UI uiSettings;
         private readonly IOrderCloudClient oc;
         private readonly ISendGridClient client;
 
-        public SendgridService(SendgridSettings sendgridSettings, UI uiSettings, IOrderCloudClient ocClient, ISendGridClient client)
+        public SendGridService(SendGridSettings sendgridSettings, UI uiSettings, IOrderCloudClient ocClient, ISendGridClient client)
         {
             oc = ocClient;
             this.client = client;
@@ -401,7 +361,7 @@ namespace Headstart.Common.Services
             }
         }
 
-        public async Task EmailVoidAuthorizationFailedAsync(HSPayment payment, string transactionID, HSOrder order, CreditCardVoidException ex)
+        public async Task EmailVoidAuthorizationFailedAsync(HSPayment payment, string transactionID, HSOrder order, ApiError apiError)
         {
             var templateData = new EmailTemplate<SupportTemplateData>()
             {
@@ -416,7 +376,7 @@ namespace Headstart.Common.Services
                     DynamicPropertyValue3 = payment.ID,
                     DynamicPropertyName4 = "TransactionID",
                     DynamicPropertyValue4 = transactionID,
-                    ErrorJsonString = JsonConvert.SerializeObject(ex.ApiError),
+                    ErrorJsonString = JsonConvert.SerializeObject(apiError),
                 },
                 Message = new EmailDisplayText()
                 {

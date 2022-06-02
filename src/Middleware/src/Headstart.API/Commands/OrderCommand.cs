@@ -4,13 +4,13 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Headstart.Common.Models;
-using Headstart.Common.Services;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
 using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
 using Headstart.Models.Misc;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Emails;
 using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
 
@@ -50,7 +50,7 @@ namespace Headstart.API.Commands
         private readonly IPromotionCommand promotionCommand;
         private readonly IRMACommand rmaCommand;
         private readonly AppSettings settings;
-        private readonly ISendgridService sendgridService;
+        private readonly IEmailServiceProvider emailServiceProvider;
 
         public OrderCommand(
             ILocationPermissionCommand locationPermissionCommand,
@@ -58,14 +58,14 @@ namespace Headstart.API.Commands
             IPromotionCommand promotionCommand,
             IRMACommand rmaCommand,
             AppSettings settings,
-            ISendgridService sendgridService)
+            IEmailServiceProvider sendgridService)
         {
             this.oc = oc;
             this.locationPermissionCommand = locationPermissionCommand;
             this.promotionCommand = promotionCommand;
             this.rmaCommand = rmaCommand;
             this.settings = settings;
-            this.sendgridService = sendgridService;
+            this.emailServiceProvider = sendgridService;
         }
 
         public async Task<HSLineItem> SendQuoteRequestToSupplier(string orderID, string lineItemID)
@@ -74,7 +74,7 @@ namespace Headstart.API.Commands
             var orderObject = await oc.Orders.GetAsync<HSOrder>(OrderDirection.All, orderID);
 
             // SEND EMAIL NOTIFICATION TO BUYER
-            await sendgridService.SendQuoteRequestConfirmationEmail(orderObject, lineItem, orderObject.xp?.QuoteBuyerContactEmail);
+            await emailServiceProvider.SendQuoteRequestConfirmationEmail(orderObject, lineItem, orderObject.xp?.QuoteBuyerContactEmail);
             return lineItem;
         }
 
@@ -86,7 +86,7 @@ namespace Headstart.API.Commands
             var updatedOrder = await oc.Orders.PatchAsync<HSOrder>(OrderDirection.All, orderID, orderPatch);
 
             // SEND EMAIL NOTIFICATION TO BUYER
-            await sendgridService.SendQuotePriceConfirmationEmail(updatedOrder, updatedLineItem, updatedOrder.xp?.QuoteBuyerContactEmail);
+            await emailServiceProvider.SendQuotePriceConfirmationEmail(updatedOrder, updatedLineItem, updatedOrder.xp?.QuoteBuyerContactEmail);
             return updatedLineItem;
         }
 

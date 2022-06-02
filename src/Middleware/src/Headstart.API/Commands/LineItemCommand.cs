@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 using Headstart.Common.Constants;
 using Headstart.Common.Extensions;
 using Headstart.Common.Models;
-using Headstart.Common.Services;
 using Headstart.Models;
 using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
 using Microsoft.ApplicationInsights;
 using Newtonsoft.Json;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Emails;
 using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
 using SendGrid.Helpers.Mail;
@@ -36,17 +36,17 @@ namespace Headstart.API.Commands
     public class LineItemCommand : ILineItemCommand
     {
         private readonly IOrderCloudClient oc;
-        private readonly ISendgridService sendgridService;
+        private readonly IEmailServiceProvider emailServiceProvider;
         private readonly IMeProductCommand meProductCommand;
         private readonly IPromotionCommand promotionCommand;
         private readonly IRMACommand rmaCommand;
 
         private readonly TelemetryClient telemetry;
 
-        public LineItemCommand(ISendgridService sendgridService, IOrderCloudClient oc, IMeProductCommand meProductCommand, IPromotionCommand promotionCommand, IRMACommand rmaCommand, TelemetryClient telemetry)
+        public LineItemCommand(IEmailServiceProvider emailServiceProvider, IOrderCloudClient oc, IMeProductCommand meProductCommand, IPromotionCommand promotionCommand, IRMACommand rmaCommand, TelemetryClient telemetry)
         {
             this.oc = oc;
-            this.sendgridService = sendgridService;
+            this.emailServiceProvider = emailServiceProvider;
             this.meProductCommand = meProductCommand;
             this.promotionCommand = promotionCommand;
             this.rmaCommand = rmaCommand;
@@ -444,7 +444,7 @@ namespace Headstart.API.Commands
                         firstName = buyerOrder.FromUser.FirstName;
                         lastName = buyerOrder.FromUser.LastName;
                         email = buyerOrder.FromUser.Email;
-                        await sendgridService.SendLineItemStatusChangeEmail(buyerOrder, lineItemStatusChanges, lineItemsChanged.ToList(), firstName, lastName, email, emailText);
+                        await emailServiceProvider.SendLineItemStatusChangeEmail(buyerOrder, lineItemStatusChanges, lineItemsChanged.ToList(), firstName, lastName, email, emailText);
                     }
                     else if (userType == VerifiedUserType.admin)
                     {
@@ -470,7 +470,7 @@ namespace Headstart.API.Commands
                         var shouldNotify = !(LineItemStatusConstants.LineItemStatusChangesDontNotifySetter.Contains(lineItemStatusChanges.Status) && setterUserType == VerifiedUserType.admin);
                         if (shouldNotify)
                         {
-                            await sendgridService.SendLineItemStatusChangeEmailMultipleRcpts(buyerOrder, lineItemStatusChanges, lineItemsChanged.ToList(), tos, emailText);
+                            await emailServiceProvider.SendLineItemStatusChangeEmailMultipleRcpts(buyerOrder, lineItemStatusChanges, lineItemsChanged.ToList(), tos, emailText);
                         }
                     }
                     else
@@ -488,7 +488,7 @@ namespace Headstart.API.Commands
                                         tos.Add(new EmailAddress(rcpt));
                                     }
 
-                                    await sendgridService.SendLineItemStatusChangeEmailMultipleRcpts(buyerOrder, lineItemStatusChanges, lineItemsChanged.ToList(), tos, emailText);
+                                    await emailServiceProvider.SendLineItemStatusChangeEmailMultipleRcpts(buyerOrder, lineItemStatusChanges, lineItemsChanged.ToList(), tos, emailText);
                                 }
                             });
                         }

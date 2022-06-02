@@ -2,6 +2,7 @@ using Headstart.Common.Settings;
 using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.Library;
 using OrderCloud.Integrations.Library.Cosmos;
+using OrderCloud.Integrations.SendGrid;
 using OrderCloud.Integrations.Smarty;
 using OrderCloud.Integrations.TaxJar;
 using OrderCloud.Integrations.Vertex;
@@ -48,7 +49,7 @@ namespace Headstart.API
 
         public OrderCloudIntegrationsCardConnectConfig CardConnectSettings { get; set; } = new OrderCloudIntegrationsCardConnectConfig();
 
-        public SendgridSettings SendgridSettings { get; set; } = new SendgridSettings();
+        public SendGridSettings SendgridSettings { get; set; } = new SendGridSettings();
 
         public ServiceBusSettings ServiceBusSettings { get; set; } = new ServiceBusSettings();
 

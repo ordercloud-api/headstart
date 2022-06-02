@@ -12,6 +12,7 @@ using Headstart.Tests.Mocks;
 using NSubstitute;
 using NUnit.Framework;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Alerts;
 using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.Integrations.Library.Models;
@@ -351,7 +352,7 @@ namespace Headstart.Tests
             // stuff that happens in catch block
             await supportAlerts
                 .Received()
-                .VoidAuthorizationFailed(Arg.Any<HSPayment>(), transactionID, Arg.Any<HSOrder>(), Arg.Any<CreditCardVoidException>());
+                .VoidAuthorizationFailed(Arg.Any<HSPayment>(), transactionID, Arg.Any<HSOrder>(), Arg.Any<ApiError>());
 
             await oc.Payments.Received().CreateTransactionAsync(OrderDirection.Incoming, orderID, paymentID, Arg.Any<PaymentTransaction>());
         }

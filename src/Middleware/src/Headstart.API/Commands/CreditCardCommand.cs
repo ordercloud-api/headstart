@@ -5,6 +5,7 @@ using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
 using Headstart.Models.Headstart;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Alerts;
 using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.CardConnect.Mappers;
 using OrderCloud.Integrations.CardConnect.Models;
@@ -158,7 +159,7 @@ namespace Headstart.API.Commands
             }
             catch (CreditCardVoidException ex)
             {
-                await supportAlerts.VoidAuthorizationFailed(payment, transactionID, order, ex);
+                await supportAlerts.VoidAuthorizationFailed(payment, transactionID, order, ex.ApiError);
                 await oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, ex.Response));
                 throw new CatalystBaseException("Payment.FailedToVoidAuthorization", ex.ApiError.Message);
             }

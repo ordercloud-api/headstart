@@ -1,8 +1,8 @@
 using Headstart.API.Commands;
-using Headstart.Common.Services;
 using Headstart.Models.Misc;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Emails;
 
 namespace Headstart.Common.Controllers
 {
@@ -23,12 +23,12 @@ namespace Headstart.Common.Controllers
     [Route("messagesenders")]
     public class MessageSendersController
     {
-        private readonly ISendgridService sendgridService;
+        private readonly IEmailServiceProvider emailServiceProvider;
         private readonly IOrderCommand orderCommand;
 
-        public MessageSendersController(ISendgridService sendgridService, IOrderCommand orderCommand)
+        public MessageSendersController(IEmailServiceProvider emailServiceProvider, IOrderCommand orderCommand)
         {
-            this.sendgridService = sendgridService;
+            this.emailServiceProvider = emailServiceProvider;
             this.orderCommand = orderCommand;
         }
 
@@ -36,21 +36,21 @@ namespace Headstart.Common.Controllers
         [OrderCloudWebhookAuth]
         public async void HandleNewUser([FromBody] MessageNotification<PasswordResetEventBody> payload)
         {
-            await sendgridService.SendNewUserEmail(payload);
+            await emailServiceProvider.SendNewUserEmail(payload);
         }
 
         [HttpPost, Route("forgottenpassword")]
         [OrderCloudWebhookAuth]
         public async void HandlePasswordReset([FromBody] MessageNotification<PasswordResetEventBody> payload)
         {
-            await sendgridService.SendPasswordResetEmail(payload);
+            await emailServiceProvider.SendPasswordResetEmail(payload);
         }
 
         [HttpPost, Route("ordersubmittedforapproval")]
         [OrderCloudWebhookAuth]
         public async void HandleOrderSubmittedForApproval([FromBody] MessageNotification<OrderSubmitEventBody> payload)
         {
-            await sendgridService.SendOrderSubmittedForApprovalEmail(payload);
+            await emailServiceProvider.SendOrderSubmittedForApprovalEmail(payload);
         }
 
         [HttpPost, Route("ordersubmittedforyourapproval")]
@@ -58,21 +58,21 @@ namespace Headstart.Common.Controllers
         public async void HandleOrderRequiresApproval([FromBody] MessageNotification<OrderSubmitEventBody> payload)
         {
             await orderCommand.PatchOrderRequiresApprovalStatus(payload.EventBody.Order.ID);
-            await sendgridService.SendOrderRequiresApprovalEmail(payload);
+            await emailServiceProvider.SendOrderRequiresApprovalEmail(payload);
         }
 
         [HttpPost, Route("OrderApproved")]
         [OrderCloudWebhookAuth]
         public async void HandleOrderApproved([FromBody] MessageNotification<OrderSubmitEventBody> payload)
         {
-            await sendgridService.SendOrderApprovedEmail(payload);
+            await emailServiceProvider.SendOrderApprovedEmail(payload);
         }
 
         [HttpPost, Route("orderdeclined")]
         [OrderCloudWebhookAuth]
         public async void HandleOrderDeclined([FromBody] MessageNotification<OrderSubmitEventBody> payload)
         {
-            await sendgridService.SendOrderDeclinedEmail(payload);
+            await emailServiceProvider.SendOrderDeclinedEmail(payload);
         }
     }
 }

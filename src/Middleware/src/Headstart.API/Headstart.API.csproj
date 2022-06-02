@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.16.0" />
-    <PackageReference Include="SendGrid" Version="9.22.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -28,11 +27,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Alerts\OrderCloud.Integrations.Alerts.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Avalara\OrderCloud.Integrations.Avalara.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.CardConnect\OrderCloud.Integrations.CardConnect.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.EasyPost\OrderCloud.Integrations.EasyPost.csproj" />
+    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Emails\OrderCloud.Integrations.Emails.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.ExchangeRates\OrderCloud.Integrations.ExchangeRates.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Library\OrderCloud.Integrations.Library.csproj" />
+    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.SendGrid\OrderCloud.Integrations.SendGrid.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Smarty\OrderCloud.Integrations.Smarty.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Taxation\OrderCloud.Integrations.Taxation.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.TaxJar\OrderCloud.Integrations.TaxJar.csproj" />

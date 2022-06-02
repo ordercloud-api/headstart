@@ -26,15 +26,18 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Alerts;
 using OrderCloud.Integrations.Avalara;
 using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.EasyPost;
 using OrderCloud.Integrations.EasyPost.Models;
+using OrderCloud.Integrations.Emails;
 using OrderCloud.Integrations.ExchangeRates;
 using OrderCloud.Integrations.Library;
 using OrderCloud.Integrations.Library.Cosmos;
 using OrderCloud.Integrations.Library.cosmos_repo;
 using OrderCloud.Integrations.Library.Interfaces;
+using OrderCloud.Integrations.SendGrid;
 using OrderCloud.Integrations.Smarty;
 using OrderCloud.Integrations.Taxation.Interfaces;
 using OrderCloud.Integrations.TaxJar;
@@ -230,11 +233,11 @@ namespace Headstart.API
                 .Inject<IMeProductCommand>()
                 .Inject<IDiscountDistributionService>()
                 .Inject<IHSCatalogCommand>()
-                .Inject<ISendgridService>()
                 .Inject<IHSSupplierCommand>()
                 .Inject<ICreditCardCommand>()
                 .Inject<ISupportAlertService>()
                 .Inject<ISupplierApiClientHelper>()
+                .AddSingleton<IEmailServiceProvider, SendGridService>()
                 .AddSingleton<ISendGridClient>(x => new SendGridClient(settings.SendgridSettings.ApiKey))
                 .AddSingleton<IFlurlClientFactory>(x => flurlClientFactory)
                 .AddSingleton<DownloadReportCommand>()

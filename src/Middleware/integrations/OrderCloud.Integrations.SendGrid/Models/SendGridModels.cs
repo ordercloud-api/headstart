@@ -2,7 +2,7 @@
 using Headstart.Models;
 using OrderCloud.SDK;
 
-namespace Headstart.Common.Models
+namespace OrderCloud.Integrations.SendGrid
 {
     public class SendGridModels
     {

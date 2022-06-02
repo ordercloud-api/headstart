@@ -9,7 +9,6 @@ using Headstart.API.Commands.Crud;
 using Headstart.API.Commands.Zoho;
 using Headstart.Common;
 using Headstart.Common.Repositories;
-using Headstart.Common.Services;
 using Headstart.Common.Services.Zoho;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
@@ -19,8 +18,10 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using OrderCloud.Integrations.CardConnect;
+using OrderCloud.Integrations.Emails;
 using OrderCloud.Integrations.Library;
 using OrderCloud.Integrations.Library.Cosmos;
+using OrderCloud.Integrations.SendGrid;
 using OrderCloud.SDK;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
@@ -129,7 +130,7 @@ namespace Headstart.Jobs
                 .Inject<IZohoClient>()
                 .Inject<IZohoCommand>()
                 .AddSingleton<ISendGridClient>(x => new SendGridClient(settings.SendgridSettings.ApiKey))
-                .Inject<ISendgridService>()
+                .AddSingleton<IEmailServiceProvider, SendGridService>()
                 .Inject<ISalesOrderDetailDataRepo>()
                 .Inject<IPurchaseOrderDetailDataRepo>()
                 .Inject<ILineItemDetailDataRepo>()

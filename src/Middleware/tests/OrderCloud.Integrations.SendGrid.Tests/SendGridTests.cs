@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
-using Headstart.Common.Services;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Common.Settings;
 using Headstart.Models;
@@ -11,31 +10,32 @@ using Headstart.Models.Headstart;
 using NSubstitute;
 using NSubstitute.Extensions;
 using NUnit.Framework;
+using OrderCloud.Integrations.Emails;
 using OrderCloud.Integrations.Library.Models;
 using OrderCloud.Integrations.Taxation.Interfaces;
 using OrderCloud.SDK;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
-namespace Headstart.Tests
+namespace OrderCloud.Integrations.SendGrid.Tests
 {
     public class SendgridTests
     {
         private IOrderCloudClient oc;
-        private SendgridSettings sendgridSettings;
+        private SendGridSettings sendgridSettings;
         private UI uiSettings;
         private ISendGridClient sendGridClient;
-        private ISendgridService command;
+        private IEmailServiceProvider emailServiceProvider;
 
         [SetUp]
         public void Setup()
         {
             oc = Substitute.For<IOrderCloudClient>();
-            sendgridSettings = Substitute.For<SendgridSettings>();
+            sendgridSettings = Substitute.For<SendGridSettings>();
             uiSettings = Substitute.For<UI>();
             sendGridClient = Substitute.For<ISendGridClient>();
 
-            command = new SendgridService(sendgridSettings, uiSettings, oc, sendGridClient);
+            emailServiceProvider = new SendGridService(sendgridSettings, uiSettings, oc, sendGridClient);
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace Headstart.Tests
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, $"{TestConstants.OrderID}-{TestConstants.Supplier2ID}").Returns(GetSupplierWorksheet(TestConstants.Supplier2ID, TestConstants.LineItem2ID, TestConstants.LineItem2Total));
             oc.Suppliers.ListAsync<HSSupplier>(Arg.Any<string>()).ReturnsForAnyArgs(Task.FromResult(GetSupplierList()));
             oc.AdminUsers.ListAsync<HSSellerUser>().ReturnsForAnyArgs(Task.FromResult(GetSellerUserList()));
-            var commandSub = Substitute.ForPartsOf<SendgridService>(sendgridSettings, oc, sendGridClient);
+            var commandSub = Substitute.ForPartsOf<SendGridService>(sendgridSettings, oc, sendGridClient);
             commandSub.Configure().WhenForAnyArgs(x => x.SendSingleTemplateEmailMultipleRcpts(default, default, default, default)).DoNotCallBase();
             commandSub.Configure().WhenForAnyArgs(x => x.SendSingleTemplateEmail(default, default, default, default)).DoNotCallBase();
 

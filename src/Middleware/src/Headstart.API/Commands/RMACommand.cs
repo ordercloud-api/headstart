@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Headstart.Common.Models;
 using Headstart.Common.Repositories;
-using Headstart.Common.Services;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
 using Headstart.Models.Extended;
@@ -14,6 +13,7 @@ using OrderCloud.Catalyst;
 using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.CardConnect.Mappers;
 using OrderCloud.Integrations.CardConnect.Models;
+using OrderCloud.Integrations.Emails;
 using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
 
@@ -44,15 +44,15 @@ namespace Headstart.API.Commands
         private readonly IOrderCloudClient oc;
         private readonly IRMARepo rmaRepo;
         private readonly IOrderCloudIntegrationsCardConnectService cardConnect;
-        private readonly ISendgridService sendgridService;
+        private readonly IEmailServiceProvider emailServiceProvider;
         private readonly AppSettings settings;
 
-        public RMACommand(IOrderCloudClient oc, IRMARepo rmaRepo, IOrderCloudIntegrationsCardConnectService cardConnect, ISendgridService sendgridService, AppSettings settings)
+        public RMACommand(IOrderCloudClient oc, IRMARepo rmaRepo, IOrderCloudIntegrationsCardConnectService cardConnect, IEmailServiceProvider emailServiceProvider, AppSettings settings)
         {
             this.oc = oc;
             this.rmaRepo = rmaRepo;
             this.cardConnect = cardConnect;
-            this.sendgridService = sendgridService;
+            this.emailServiceProvider = emailServiceProvider;
             this.settings = settings;
         }
 
@@ -709,7 +709,7 @@ namespace Headstart.API.Commands
                 DynamicText2 = "The following items have new messages",
             };
 
-            await sendgridService.SendLineItemStatusChangeEmail(worksheet.Order, lineItemStatusChanges, lineItemsChanged, worksheet.Order.FromUser.FirstName, worksheet.Order.FromUser.LastName, worksheet.Order.FromUser.Email, emailText);
+            await emailServiceProvider.SendLineItemStatusChangeEmail(worksheet.Order, lineItemStatusChanges, lineItemsChanged, worksheet.Order.FromUser.FirstName, worksheet.Order.FromUser.LastName, worksheet.Order.FromUser.Email, emailText);
         }
 
         private void ValidateRMA(RMA rma, MeUser me, DecodedToken decodedToken)

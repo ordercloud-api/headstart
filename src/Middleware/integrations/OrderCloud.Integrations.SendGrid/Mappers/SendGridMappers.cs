@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Headstart.Common.Settings;
 using Headstart.Models;
 using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
 using OrderCloud.SDK;
-using static Headstart.Common.Models.SendGridModels;
+using static OrderCloud.Integrations.SendGrid.SendGridModels;
 
-namespace Headstart.Common.Mappers
+namespace OrderCloud.Integrations.SendGrid
 {
     public static class SendgridMappers
     {
@@ -93,7 +92,7 @@ namespace Headstart.Common.Mappers
             return specCombo;
         }
 
-        public static string DetermineRecipient(SendgridSettings sendgridSettings, string subject)
+        public static string DetermineRecipient(SendGridSettings sendgridSettings, string subject)
         {
             switch (subject.ToLower())
             {

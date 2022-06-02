@@ -1,6 +1,6 @@
-﻿namespace Headstart.Common.Settings
+﻿namespace OrderCloud.Integrations.SendGrid
 {
-    public class SendgridSettings
+    public class SendGridSettings
     {
         public string ApiKey { get; set; }
 

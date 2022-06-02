@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 using Headstart.API.Commands;
 using Headstart.API.Commands.Zoho;
 using Headstart.Common.Models.Misc;
-using Headstart.Common.Services;
 using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
 using Headstart.Models.Headstart;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Emails;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Controllers
@@ -19,14 +19,14 @@ namespace Headstart.Common.Controllers
         private static ICheckoutIntegrationCommand checkoutIntegrationCommand;
         private static IPostSubmitCommand postSubmitCommand;
         private readonly IOrderCloudClient oc;
-        private readonly ISendgridService sendgrid;
+        private readonly IEmailServiceProvider emailServiceProvider;
 
-        public SupportController(ICheckoutIntegrationCommand checkoutIntegrationCommand, IPostSubmitCommand postSubmitCommand, IZohoCommand zoho, IOrderCloudClient oc, ISupportAlertService supportAlertService, ISendgridService sendgrid)
+        public SupportController(ICheckoutIntegrationCommand checkoutIntegrationCommand, IPostSubmitCommand postSubmitCommand, IZohoCommand zoho, IOrderCloudClient oc, IEmailServiceProvider emailServiceProvider)
         {
             SupportController.checkoutIntegrationCommand = checkoutIntegrationCommand;
             SupportController.postSubmitCommand = postSubmitCommand;
             this.oc = oc;
-            this.sendgrid = sendgrid;
+            this.emailServiceProvider = emailServiceProvider;
         }
 
         [HttpGet, Route("shipping")]
@@ -83,7 +83,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, Route("submitcase")]
         public async Task SendSupportRequest([FromForm]SupportCase supportCase)
         {
-            await sendgrid.EmailGeneralSupportQueue(supportCase);
+            await emailServiceProvider.EmailGeneralSupportQueue(supportCase);
         }
     }
 
