@@ -22,10 +22,9 @@ export class BuyerService extends ResourceCrudService<Buyer> {
     Buyer: {
       Name: '',
       Active: true,
-      xp: {},
-    },
-    Markup: {
-      Percent: 0,
+      xp: {
+        MarkupPercent: 0,
+      },
     },
   }
   constructor(

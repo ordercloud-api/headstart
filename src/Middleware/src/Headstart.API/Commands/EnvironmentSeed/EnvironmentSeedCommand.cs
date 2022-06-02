@@ -344,7 +344,6 @@ namespace Headstart.API.Commands
                 var superBuyer = new SuperHSBuyer()
                 {
                     Buyer = SeedConstants.DefaultBuyer(),
-                    Markup = new BuyerMarkup() { Percent = 0 },
                 };
                 await buyerCommand.Create(superBuyer, token, oc);
             }
@@ -359,7 +358,6 @@ namespace Headstart.API.Commands
                     var superBuyer = new SuperHSBuyer()
                     {
                         Buyer = buyer,
-                        Markup = new BuyerMarkup() { Percent = 0 },
                     };
                     await buyerCommand.Create(superBuyer, token, oc);
                 }

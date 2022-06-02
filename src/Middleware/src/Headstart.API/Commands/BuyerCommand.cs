@@ -39,7 +39,6 @@ namespace Headstart.API.Commands
         {
             var createdImpersonationConfig = new ImpersonationConfig();
             var createdBuyer = await CreateBuyerAndRelatedFunctionalResources(superBuyer.Buyer, accessToken, oc);
-            var createdMarkup = await CreateMarkup(superBuyer.Markup, createdBuyer.ID, accessToken, oc);
             if (superBuyer?.ImpersonationConfig != null)
             {
                 createdImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, createdBuyer.ID, accessToken, oc);
@@ -48,7 +47,6 @@ namespace Headstart.API.Commands
             return new SuperHSBuyer()
             {
                 Buyer = createdBuyer,
-                Markup = createdMarkup,
                 ImpersonationConfig = createdImpersonationConfig,
             };
         }
@@ -60,7 +58,6 @@ namespace Headstart.API.Commands
             ImpersonationConfig updatedImpersonationConfig = null;
 
             var updatedBuyer = await oc.Buyers.SaveAsync<HSBuyer>(buyerID, superBuyer.Buyer);
-            var updatedMarkup = await UpdateMarkup(superBuyer.Markup, superBuyer.Buyer.ID);
             if (superBuyer.ImpersonationConfig != null)
             {
                 updatedImpersonationConfig = await SaveImpersonationConfig(superBuyer.ImpersonationConfig, buyerID);
@@ -69,7 +66,6 @@ namespace Headstart.API.Commands
             return new SuperHSBuyer()
             {
                 Buyer = updatedBuyer,
-                Markup = updatedMarkup,
                 ImpersonationConfig = updatedImpersonationConfig,
             };
         }
@@ -80,17 +76,9 @@ namespace Headstart.API.Commands
             var buyer = await oc.Buyers.GetAsync<HSBuyer>(buyerID);
             var config = await configReq;
 
-            // to move into content docs logic
-            var markupPercent = buyer.xp?.MarkupPercent ?? 0;
-            var markup = new BuyerMarkup()
-            {
-                Percent = markupPercent,
-            };
-
             return new SuperHSBuyer()
             {
                 Buyer = buyer,
-                Markup = markup,
                 ImpersonationConfig = config,
             };
         }
@@ -150,22 +138,6 @@ namespace Headstart.API.Commands
             return config?.Items?.FirstOrDefault();
         }
 
-        private async Task<BuyerMarkup> CreateMarkup(BuyerMarkup markup, string buyerID, string accessToken, IOrderCloudClient oc)
-        {
-            // if we're seeding then use the passed in oc client
-            // to support multiple environments and ease of setup for new orgs
-            // else used the configured client
-            var token = oc == null ? null : accessToken;
-            var ocClient = oc ?? this.oc;
-
-            // to move from xp to contentdocs, that logic will go here instead of a patch
-            var updatedBuyer = await ocClient.Buyers.PatchAsync(buyerID, new PartialBuyer() { xp = new { MarkupPercent = markup.Percent } }, token);
-            return new BuyerMarkup()
-            {
-                Percent = (int)updatedBuyer.xp.MarkupPercent,
-            };
-        }
-
         private async Task<ImpersonationConfig> SaveImpersonationConfig(ImpersonationConfig impersonation, string buyerID)
         {
             return await SaveImpersonationConfig(impersonation, buyerID, null, oc);
@@ -196,17 +168,6 @@ namespace Headstart.API.Commands
                 impersonation.ID = $"hs_admin_{buyerID}";
                 return await ocClient.ImpersonationConfigs.CreateAsync(impersonation);
             }
-        }
-
-        private async Task<BuyerMarkup> UpdateMarkup(BuyerMarkup markup, string buyerID)
-        {
-            // to move from xp to contentdocs, that logic will go here instead of a patch
-            // currently duplicate of the function above, this might need to be duplicated since there wont be a need to save the contentdocs assignment again
-            var updatedBuyer = await oc.Buyers.PatchAsync(buyerID, new PartialBuyer() { xp = new { MarkupPercent = markup.Percent } });
-            return new BuyerMarkup()
-            {
-                Percent = (int)updatedBuyer.xp.MarkupPercent,
-            };
         }
     }
 }

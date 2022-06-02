@@ -8,6 +8,7 @@
     "outDir": "./dist",
     "lib": ["ES2015", "dom"],
     "target": "es5",
+    "skipLibCheck": true,
     "esModuleInterop": true
   },
   "include": [

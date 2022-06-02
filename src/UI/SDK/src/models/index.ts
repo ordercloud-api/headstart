@@ -5,7 +5,6 @@ export * from './BatchProcessResult';
 export * from './BatchProcessSummary';
 export * from './BinInfo';
 export * from './BuyerAddressXP';
-export * from './BuyerMarkup';
 export * from './BuyerXp';
 export * from './CardConnectAuthorizationResponse';
 export * from './CatalogXp';

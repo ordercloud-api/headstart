@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Inject, Injectable } from '@angular/core'
 import { applicationConfiguration } from '@app-seller/config/app.config'
-import { HSBuyerPriceMarkup } from '@app-seller/models/buyer.types'
+import { SuperHSBuyer } from '@ordercloud/headstart-sdk'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { OcTokenService } from '@ordercloud/angular-sdk'
 
@@ -23,17 +23,17 @@ export class BuyerTempService {
     })
   }
 
-  async get(buyerID: string): Promise<HSBuyerPriceMarkup> {
+  async get(buyerID: string): Promise<SuperHSBuyer> {
     const url = `${this.appConfig.middlewareUrl}/buyer/${buyerID}`
     return await this.http
-      .get<HSBuyerPriceMarkup>(url, { headers: this.buildHeaders() })
+      .get<SuperHSBuyer>(url, { headers: this.buildHeaders() })
       .toPromise()
   }
 
-  async create(superBuyer: HSBuyerPriceMarkup): Promise<HSBuyerPriceMarkup> {
+  async create(superBuyer: SuperHSBuyer): Promise<SuperHSBuyer> {
     const url = `${this.appConfig.middlewareUrl}/buyer`
     return await this.http
-      .post<HSBuyerPriceMarkup>(url, superBuyer, {
+      .post<SuperHSBuyer>(url, superBuyer, {
         headers: this.buildHeaders(),
       })
       .toPromise()
@@ -41,11 +41,11 @@ export class BuyerTempService {
 
   async save(
     buyerID: string,
-    superBuyer: HSBuyerPriceMarkup
-  ): Promise<HSBuyerPriceMarkup> {
+    superBuyer: SuperHSBuyer
+  ): Promise<SuperHSBuyer> {
     const url = `${this.appConfig.middlewareUrl}/buyer/${buyerID}`
     return await this.http
-      .put<HSBuyerPriceMarkup>(url, superBuyer, {
+      .put<SuperHSBuyer>(url, superBuyer, {
         headers: this.buildHeaders(),
       })
       .toPromise()

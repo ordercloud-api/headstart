@@ -8,10 +8,10 @@ import {
   HSBuyer,
   HeadStartSDK,
   HSPriceSchedule,
+  SuperHSBuyer,
 } from '@ordercloud/headstart-sdk'
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import { SupportedRates } from '@app-seller/models/currency-geography.types'
-import { HSBuyerPriceMarkup } from '@app-seller/models/buyer.types'
 
 @Component({
   selector: 'product-pricing-component',
@@ -48,7 +48,7 @@ export class ProductPricingComponent {
 
   buyers: HSBuyer[] = []
   selectedBuyerIndex = 0
-  selectedSuperHSBuyer: HSBuyerPriceMarkup
+  selectedSuperHSBuyer: SuperHSBuyer
 
   isUsingPriceOverride = false
   areChangesToBuyerVisibility = false
@@ -119,7 +119,7 @@ export class ProductPricingComponent {
 
   getBuyerPercentMarkupPrice(supplierPrice: number): number {
     const markupMultiplier =
-      (this.selectedSuperHSBuyer?.Markup?.Percent || 0) / 100 + 1
+      (this.selectedSuperHSBuyer?.Buyer?.xp?.MarkupPercent || 0) / 100 + 1
     return supplierPrice * markupMultiplier
   }
 
