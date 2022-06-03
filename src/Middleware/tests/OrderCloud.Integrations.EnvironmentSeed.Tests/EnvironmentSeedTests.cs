@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Headstart.Models.Misc;
 using NUnit.Framework;
+using OrderCloud.Integrations.EnvironmentSeed;
 
 namespace Headstart.Tests
 {
@@ -16,7 +16,7 @@ namespace Headstart.Tests
         public void InitialAdminPassword_DoesNotMeetMinimumRequirements_FailsValidation(string password)
         {
             // Arrange
-            var seed = new EnvironmentSeed()
+            var seed = new EnvironmentSeedConfig()
             {
                 InitialAdminPassword = password,
             };
@@ -38,7 +38,7 @@ namespace Headstart.Tests
         public void InitialAdminPassword_MeetsMinimumRequirements_PassesValidation(string password)
         {
             // Arrange
-            var seed = new EnvironmentSeed()
+            var seed = new EnvironmentSeedConfig()
             {
                 InitialAdminPassword = password,
             };
@@ -60,7 +60,7 @@ namespace Headstart.Tests
         public void Region_NotInValueRange_FailsValidation(string region)
         {
             // Arrange
-            var seed = new EnvironmentSeed()
+            var seed = new EnvironmentSeedConfig()
             {
                 OrderCloudSeedSettings = new OrderCloudSeedSettings() { Region = region },
             };
@@ -88,7 +88,7 @@ namespace Headstart.Tests
         public void Region_InValueRange_PassesValidation(string region)
         {
             // Arrange
-            var seed = new EnvironmentSeed()
+            var seed = new EnvironmentSeedConfig()
             {
                 OrderCloudSeedSettings = new OrderCloudSeedSettings() { Region = region },
             };

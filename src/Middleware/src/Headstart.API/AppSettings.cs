@@ -10,26 +10,6 @@ using OrderCloud.Integrations.Zoho;
 
 namespace Headstart.API
 {
-    public enum AppEnvironment
-    {
-        Test,
-        Staging,
-        Production,
-    }
-
-    public enum ShippingProvider
-    {
-        EasyPost,
-        Custom,
-    }
-
-    public enum TaxProvider
-    {
-        Avalara,
-        Vertex,
-        Taxjar,
-    }
-
     public class AppSettings
     {
         public ApplicationInsightsSettings ApplicationInsightsSettings { get; set; } = new ApplicationInsightsSettings();
@@ -98,21 +78,6 @@ namespace Headstart.API
         public int NoRatesFallbackTransitDays { get; set; }
 
         public string USPSAccountId { get; set; }
-    }
-
-    public class EnvironmentSettings
-    {
-        public string BuildNumber { get; set; } // set during deploy
-
-        public string Commit { get; set; } // set during deploy
-
-        public AppEnvironment Environment { get; set; }
-
-        public string MiddlewareBaseUrl { get; set; }
-
-        public ShippingProvider ShippingProvider { get; set; } = ShippingProvider.EasyPost;
-
-        public TaxProvider TaxProvider { get; set; } = TaxProvider.Avalara;
     }
 
     public class FlurlSettings

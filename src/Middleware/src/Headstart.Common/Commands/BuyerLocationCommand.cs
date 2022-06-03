@@ -6,7 +6,7 @@ using Headstart.Common.Models;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
-namespace Headstart.API.Commands
+namespace Headstart.Common.Commands
 {
     public interface IHSBuyerLocationCommand
     {
@@ -27,12 +27,10 @@ namespace Headstart.API.Commands
 
     public class HSBuyerLocationCommand : IHSBuyerLocationCommand
     {
-        private readonly AppSettings settings;
         private IOrderCloudClient oc;
 
-        public HSBuyerLocationCommand(AppSettings settings, IOrderCloudClient oc)
+        public HSBuyerLocationCommand(IOrderCloudClient oc)
         {
-            this.settings = settings;
             this.oc = oc;
         }
 

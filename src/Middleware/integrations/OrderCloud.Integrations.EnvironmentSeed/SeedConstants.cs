@@ -6,7 +6,7 @@ using Headstart.Models.Misc;
 using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 
-namespace Headstart.API.Commands
+namespace OrderCloud.Integrations.EnvironmentSeed
 {
     public class SeedConstants
     {
@@ -232,7 +232,7 @@ namespace Headstart.API.Commands
             };
         }
 
-        public static HSApiClient BuyerClient(EnvironmentSeed seed)
+        public static HSApiClient BuyerClient(EnvironmentSeedConfig seed)
         {
             return new HSApiClient()
             {
@@ -252,7 +252,7 @@ namespace Headstart.API.Commands
             };
         }
 
-        public static ApiClient BuyerLocalClient(EnvironmentSeed seed)
+        public static ApiClient BuyerLocalClient(EnvironmentSeedConfig seed)
         {
             return new ApiClient()
             {
@@ -304,7 +304,7 @@ namespace Headstart.API.Commands
             };
         }
 
-        public static MessageSender BuyerEmails(EnvironmentSeed seed)
+        public static MessageSender BuyerEmails(EnvironmentSeedConfig seed)
         {
             return new MessageSender()
             {
@@ -329,7 +329,7 @@ namespace Headstart.API.Commands
             };
         }
 
-        public static MessageSender SellerEmails(EnvironmentSeed seed)
+        public static MessageSender SellerEmails(EnvironmentSeedConfig seed)
         {
             return new MessageSender()
             {
@@ -344,7 +344,7 @@ namespace Headstart.API.Commands
             };
         }
 
-        public static MessageSender SuplierEmails(EnvironmentSeed seed)
+        public static MessageSender SuplierEmails(EnvironmentSeedConfig seed)
         {
             return new MessageSender()
             {

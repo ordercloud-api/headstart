@@ -8,26 +8,16 @@ using Newtonsoft.Json.Linq;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
-namespace Headstart.API.Commands
+namespace Headstart.Common.Commands
 {
     [SupplierSync("Generic")]
     public class GenericSupplierCommand : ISupplierSyncCommand
     {
         private readonly IOrderCloudClient ocSeller;
 
-        public GenericSupplierCommand(AppSettings settings)
+        public GenericSupplierCommand(IOrderCloudClient ocClient)
         {
-            ocSeller = new OrderCloudClient(new OrderCloudClientConfig
-            {
-                ApiUrl = settings.OrderCloudSettings.ApiUrl,
-                AuthUrl = settings.OrderCloudSettings.ApiUrl,
-                ClientId = settings.OrderCloudSettings.MiddlewareClientID,
-                ClientSecret = settings.OrderCloudSettings.MiddlewareClientSecret,
-                Roles = new[]
-                {
-                    ApiRole.FullAccess,
-                },
-            });
+            ocSeller = ocClient;
         }
 
         public async Task<JObject> GetOrderAsync(string id, OrderType orderType, DecodedToken decodedToken)

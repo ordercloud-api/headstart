@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
-using Headstart.API.Commands;
-using Headstart.Models.Misc;
+using Headstart.Common.Settings;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.EnvironmentSeed;
+using OrderCloud.Integrations.EnvironmentSeed.Commands;
 
 namespace Headstart.API.Controllers
 {
@@ -26,7 +27,7 @@ namespace Headstart.API.Controllers
         /// Check out the readme for more info https://github.com/ordercloud-api/headstart#seeding-ordercloud-data.
         /// </remarks>
         [HttpPost, Route("seed")]
-        public async Task<EnvironmentSeedResponse> Seed([FromBody] EnvironmentSeed seed)
+        public async Task<EnvironmentSeedResponse> Seed([FromBody] EnvironmentSeedConfig seed)
         {
             return await command.Seed(seed);
         }

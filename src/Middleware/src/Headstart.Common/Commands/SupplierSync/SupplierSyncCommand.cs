@@ -9,7 +9,7 @@ using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
 
-namespace Headstart.API.Commands
+namespace Headstart.Common.Commands
 {
     public interface ISupplierSyncCommand
     {
@@ -18,12 +18,10 @@ namespace Headstart.API.Commands
 
     public class SupplierSyncCommand : ISupplierSyncCommand
     {
-        private readonly AppSettings settings;
         private readonly IOrderCloudClient oc;
 
-        public SupplierSyncCommand(AppSettings settings, IOrderCloudClient oc)
+        public SupplierSyncCommand(IOrderCloudClient oc)
         {
-            this.settings = settings;
             this.oc = oc;
         }
 
@@ -48,7 +46,7 @@ namespace Headstart.API.Commands
                     throw new MissingMethodException($"Command for {supplierID} is unavailable");
                 }
 
-                var command = (ISupplierSyncCommand)Activator.CreateInstance(type, settings);
+                var command = (ISupplierSyncCommand)Activator.CreateInstance(type);
                 var method = command.GetType().GetMethod($"GetOrderAsync", BindingFlags.Public | BindingFlags.Instance);
                 if (method == null)
                 {

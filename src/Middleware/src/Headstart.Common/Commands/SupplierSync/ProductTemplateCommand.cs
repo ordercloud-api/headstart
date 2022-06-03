@@ -14,7 +14,7 @@ using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 using IPartial = OrderCloud.Integrations.Library.Models.IPartial;
 
-namespace Headstart.API.Commands
+namespace Headstart.Common.Commands
 {
     public interface IProductTemplateCommand
     {
@@ -25,11 +25,8 @@ namespace Headstart.API.Commands
 
     public class ProductTemplateCommand : IProductTemplateCommand
     {
-        private readonly AppSettings settings;
-
-        public ProductTemplateCommand(AppSettings settings)
+        public ProductTemplateCommand()
         {
-            this.settings = settings;
         }
 
         public static TemplateProductResult Validate(List<RowInfo<TemplateProductFlat>> rows)

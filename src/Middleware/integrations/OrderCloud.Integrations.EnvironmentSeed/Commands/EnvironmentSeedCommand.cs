@@ -4,20 +4,22 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Headstart.Common.Commands;
 using Headstart.Common.Models;
 using Headstart.Common.Services;
 using Headstart.Common.Services.Portal.Models;
+using Headstart.Common.Settings;
 using Headstart.Models.Misc;
 using Microsoft.WindowsAzure.Storage.Blob;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
 
-namespace Headstart.API.Commands
+namespace OrderCloud.Integrations.EnvironmentSeed.Commands
 {
     public interface IEnvironmentSeedCommand
     {
-        Task<EnvironmentSeedResponse> Seed(EnvironmentSeed seed);
+        Task<EnvironmentSeedResponse> Seed(EnvironmentSeedConfig seed);
 
         Task UpdateTranslations(string connectionString, string containerName);
 
@@ -26,7 +28,8 @@ namespace Headstart.API.Commands
 
     public class EnvironmentSeedCommand : IEnvironmentSeedCommand
     {
-        private readonly AppSettings settings;
+        private readonly EnvironmentSettings environmentSettings;
+        private readonly OrderCloudSettings orderCloudSettings;
         private readonly IPortalService portal;
         private readonly IHSSupplierCommand supplierCommand;
         private readonly IHSBuyerCommand buyerCommand;
@@ -34,7 +37,8 @@ namespace Headstart.API.Commands
         private IOrderCloudClient oc;
 
         public EnvironmentSeedCommand(
-            AppSettings settings,
+            EnvironmentSettings environmentSettings,
+            OrderCloudSettings orderCloudSettings,
             IPortalService portal,
             IHSSupplierCommand supplierCommand,
             IHSBuyerCommand buyerCommand,
@@ -46,7 +50,8 @@ namespace Headstart.API.Commands
             this.buyerCommand = buyerCommand;
             this.buyerLocationCommand = buyerLocationCommand;
             this.oc = oc;
-            this.settings = settings;
+            this.environmentSettings = environmentSettings;
+            this.orderCloudSettings = orderCloudSettings;
         }
 
         /// <summary>
@@ -56,7 +61,7 @@ namespace Headstart.API.Commands
         /// If a method starts with CreateOnlyOnce it will only create the resource once and then ignore thereafter
         /// The CreateOnlyOnce resources are likely to change after initial creation so we ignore to avoid overwriting desired changes that happen outside of seeding.
         /// </summary>
-        public async Task<EnvironmentSeedResponse> Seed(EnvironmentSeed seed)
+        public async Task<EnvironmentSeedResponse> Seed(EnvironmentSeedConfig seed)
         {
             var requestedEnv = SeedConstants.OrderCloudEnvironment(seed.OrderCloudSeedSettings);
             if (requestedEnv.EnvironmentName.Equals(SeedConstants.Environments.Production, StringComparison.OrdinalIgnoreCase) && seed.MarketplaceID == null)
@@ -151,7 +156,7 @@ namespace Headstart.API.Commands
             }
         }
 
-        public async Task<Marketplace> GetOrCreateMarketplace(string token, EnvironmentSeed seed, OcEnv env)
+        public async Task<Marketplace> GetOrCreateMarketplace(string token, EnvironmentSeedConfig seed, OcEnv env)
         {
             if (seed.MarketplaceID != null)
             {
@@ -269,7 +274,7 @@ namespace Headstart.API.Commands
                 oc.IntegrationEvents.DeleteAsync(integrationEvent.ID, accessToken: token));
         }
 
-        private static Marketplace ConstructMarketplaceFromSeed(EnvironmentSeed seed, OcEnv requestedEnv)
+        private static Marketplace ConstructMarketplaceFromSeed(EnvironmentSeedConfig seed, OcEnv requestedEnv)
         {
             return new Marketplace()
             {
@@ -280,7 +285,7 @@ namespace Headstart.API.Commands
             };
         }
 
-        private async Task CreateOnlyOnceApiClients(EnvironmentSeed seed, string token)
+        private async Task CreateOnlyOnceApiClients(EnvironmentSeedConfig seed, string token)
         {
             var existingClients = await oc.ApiClients.ListAllAsync(accessToken: token);
 
@@ -290,7 +295,7 @@ namespace Headstart.API.Commands
             await CreateOrGetApiClient(existingClients, SeedConstants.BuyerLocalClient(seed), token);
         }
 
-        private async Task CreateOrUpdateSecurityProfileAssignments(EnvironmentSeed seed, string marketplaceToken)
+        private async Task CreateOrUpdateSecurityProfileAssignments(EnvironmentSeedConfig seed, string marketplaceToken)
         {
             // assign buyer security profiles
             var buyerSecurityProfileAssignmentRequests = seed.Buyers.Select(b =>
@@ -331,7 +336,7 @@ namespace Headstart.API.Commands
                 }, marketplaceToken);
         }
 
-        private async Task CreateOnlyOnceBuyers(EnvironmentSeed seed, string token)
+        private async Task CreateOnlyOnceBuyers(EnvironmentSeedConfig seed, string token)
         {
             // create default buyer if it does not exist
             // default buyer will have a well-known ID we can use to query with
@@ -361,7 +366,7 @@ namespace Headstart.API.Commands
             }
         }
 
-        private async Task CreateOnlyOnceAnonBuyerConfig(EnvironmentSeed seed, string token)
+        private async Task CreateOnlyOnceAnonBuyerConfig(EnvironmentSeedConfig seed, string token)
         {
             // validate AnonymousShoppingBuyerID or provide fallback if none is defined
             var allBuyers = await oc.Buyers.ListAllAsync(accessToken: token);
@@ -409,7 +414,7 @@ namespace Headstart.API.Commands
             return list.Items.ToList().FirstOrDefault();
         }
 
-        private async Task CreateOrUpdateSuppliers(EnvironmentSeed seed, string token)
+        private async Task CreateOrUpdateSuppliers(EnvironmentSeedConfig seed, string token)
         {
             // Create Suppliers and necessary user groups and security profile assignments
             foreach (HSSupplier supplier in seed.Suppliers)
@@ -434,7 +439,7 @@ namespace Headstart.API.Commands
             return list.Items.Any();
         }
 
-        private async Task CreateOrUpdateDefaultSellerUser(EnvironmentSeed seed, string token)
+        private async Task CreateOrUpdateDefaultSellerUser(EnvironmentSeedConfig seed, string token)
         {
             // the middleware api client will use this user as the default context user
             var middlewareIntegrationsUser = SeedConstants.MiddlewareIntegrationsUser();
@@ -480,7 +485,7 @@ namespace Headstart.API.Commands
                 .Select(client => client.ID).ToArray();
         }
 
-        private async Task<ApiClient> CreateOrGetBuyerClient(List<ApiClient> existingClients, ApiClient client, EnvironmentSeed seed, string token)
+        private async Task<ApiClient> CreateOrGetBuyerClient(List<ApiClient> existingClients, ApiClient client, EnvironmentSeedConfig seed, string token)
         {
             var match = existingClients.FirstOrDefault(c => c.AppName == client.AppName);
             if (match == null)
@@ -504,7 +509,7 @@ namespace Headstart.API.Commands
             return match;
         }
 
-        private async Task CreateOrUpdateMessageSendersAndAssignments(EnvironmentSeed seed, string accessToken)
+        private async Task CreateOrUpdateMessageSendersAndAssignments(EnvironmentSeedConfig seed, string accessToken)
         {
             var defaultMessageSenders = new List<MessageSender>()
             {
@@ -600,15 +605,15 @@ namespace Headstart.API.Commands
             return match;
         }
 
-        private async Task CreateOrUpdateAndAssignIntegrationEvents(string token, EnvironmentSeed seed = null)
+        private async Task CreateOrUpdateAndAssignIntegrationEvents(string token, EnvironmentSeedConfig seed = null)
         {
             var storefrontApiClientIDs = await GetStoreFrontClientIDs(token);
             var apiClients = await GetApiClients(token);
             var localBuyerClientID = apiClients.BuyerLocalUiApiClient.ID;
 
             // this gets called by both the /seed command and the post-staging restore so we need to handle getting settings from two sources
-            var middlewareBaseUrl = seed != null ? seed.MiddlewareBaseUrl : settings.EnvironmentSettings.MiddlewareBaseUrl;
-            var webhookHashKey = seed != null ? seed.OrderCloudSeedSettings.WebhookHashKey : settings.OrderCloudSettings.WebhookHashKey;
+            var middlewareBaseUrl = seed != null ? seed.MiddlewareBaseUrl : environmentSettings.MiddlewareBaseUrl;
+            var webhookHashKey = seed != null ? seed.OrderCloudSeedSettings.WebhookHashKey : orderCloudSettings.WebhookHashKey;
             var checkoutEvent = SeedConstants.CheckoutEvent(middlewareBaseUrl, webhookHashKey);
             await oc.IntegrationEvents.SaveAsync(checkoutEvent.ID, checkoutEvent, token);
             var localCheckoutEvent = SeedConstants.LocalCheckoutEvent(webhookHashKey);

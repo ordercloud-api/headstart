@@ -5,9 +5,9 @@ using System.Linq;
 using Headstart.Common.Models;
 using Newtonsoft.Json;
 
-namespace Headstart.Models.Misc
+namespace OrderCloud.Integrations.EnvironmentSeed
 {
-    public class EnvironmentSeed
+    public class EnvironmentSeedConfig
     {
         /// <summary>
         /// The username for logging in to https://portal.ordercloud.io.
@@ -161,14 +161,5 @@ namespace Headstart.Models.Misc
         public string ApiUrl { get; set; }
 
         public Region Region { get; set; }
-    }
-
-    public class Region
-    {
-        public string AzureRegion { get; set; }
-
-        public string Id { get; set; }
-
-        public string Name { get; set; }
     }
 }

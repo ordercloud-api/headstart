@@ -5,7 +5,7 @@ using Headstart.Common.Models;
 using Headstart.Models.Misc;
 using OrderCloud.SDK;
 
-namespace Headstart.API.Commands
+namespace Headstart.Common.Commands
 {
     public interface IHSBuyerCommand
     {
@@ -21,11 +21,9 @@ namespace Headstart.API.Commands
     public class HSBuyerCommand : IHSBuyerCommand
     {
         private readonly IOrderCloudClient oc;
-        private readonly AppSettings settings;
 
-        public HSBuyerCommand(AppSettings settings, IOrderCloudClient oc)
+        public HSBuyerCommand(IOrderCloudClient oc)
         {
-            this.settings = settings;
             this.oc = oc;
         }
 
