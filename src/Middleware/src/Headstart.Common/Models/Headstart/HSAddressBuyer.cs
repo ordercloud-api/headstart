@@ -1,7 +1,6 @@
-﻿using Headstart.Common.Models;
-using OrderCloud.SDK;
+﻿using OrderCloud.SDK;
 
-namespace Headstart.Models
+namespace Headstart.Common.Models
 {
     public class HSAddressBuyer : Address<BuyerAddressXP>, IHSObject, IHSAddress
     {

@@ -4,8 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Headstart.Common.Models;
-using Headstart.Models;
-using Headstart.Models.Headstart;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.SDK;

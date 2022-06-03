@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Headstart.Common.Constants;
-using Headstart.Models;
+using Headstart.Common.Models;
 using Headstart.Models.Misc;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;

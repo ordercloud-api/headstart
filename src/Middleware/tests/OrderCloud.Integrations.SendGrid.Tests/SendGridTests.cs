@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using AutoFixture;
 using Headstart.Common.Models;
 using Headstart.Common.Settings;
-using Headstart.Models;
-using Headstart.Models.Headstart;
 using NSubstitute;
 using NSubstitute.Extensions;
 using NUnit.Framework;

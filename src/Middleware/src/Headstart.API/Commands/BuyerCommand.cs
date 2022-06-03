@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Headstart.Models;
+using Headstart.Common.Models;
 using Headstart.Models.Misc;
 using OrderCloud.SDK;
 

@@ -1,6 +1,6 @@
 ﻿using OrderCloud.SDK;
 
-namespace Headstart.Models.Headstart
+namespace Headstart.Common.Models
 {
     public class HSProductCreatePayload : WebhookPayloads.Products.Create<dynamic, HSProduct>
     {

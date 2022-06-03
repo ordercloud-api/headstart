@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Headstart.API.Commands.Crud;
-using Headstart.Models;
+using Headstart.Common.Models;
 using NSubstitute;
 using NUnit.Framework;
 using OrderCloud.SDK;

@@ -9,7 +9,7 @@ using OrderCloud.Integrations.Library.Models;
 using OrderCloud.Integrations.Taxation.Interfaces;
 using OrderCloud.SDK;
 
-namespace Headstart.Models
+namespace Headstart.Common.Models
 {
     [JsonConverter(typeof(StringEnumConverter))]
     public enum ProductType

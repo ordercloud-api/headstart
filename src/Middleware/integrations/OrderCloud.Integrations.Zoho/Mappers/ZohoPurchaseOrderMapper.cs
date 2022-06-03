@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Headstart.Models.Headstart;
+using Headstart.Common.Models;
 using OrderCloud.Integrations.Zoho.Models;
 using OrderCloud.SDK;
 

@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using Headstart.Models.Misc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace Headstart.Models.Misc
+namespace Headstart.Common.Models
 {
     [JsonConverter(typeof(StringEnumConverter))]
     public enum UserGroupType

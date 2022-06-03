@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Headstart.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Models

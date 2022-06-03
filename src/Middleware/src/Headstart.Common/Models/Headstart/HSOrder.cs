@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Headstart.Common.Models;
 using Headstart.Models.Extended;
-using Headstart.Models.Headstart;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 
-namespace Headstart.Models
+namespace Headstart.Common.Models
 {
     [JsonConverter(typeof(StringEnumConverter))]
     public enum OrderType

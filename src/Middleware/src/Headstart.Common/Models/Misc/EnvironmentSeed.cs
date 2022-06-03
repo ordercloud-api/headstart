@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Headstart.Models.Headstart;
+using Headstart.Common.Models;
 using Newtonsoft.Json;
 
 namespace Headstart.Models.Misc

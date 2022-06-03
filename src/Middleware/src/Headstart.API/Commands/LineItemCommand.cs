@@ -14,7 +14,6 @@ using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Emails;
 using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
-using SendGrid.Helpers.Mail;
 
 namespace Headstart.API.Commands
 {

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Headstart.Models;
 
 namespace Headstart.Common.Models
 {

@@ -7,8 +7,6 @@ using Headstart.Common.Models;
 using Headstart.Common.Queries;
 using Headstart.Common.Repositories;
 using Headstart.Common.Repositories.Models;
-using Headstart.Models;
-using Headstart.Models.Headstart;
 using Headstart.Models.Misc;
 using Microsoft.Azure.Cosmos;
 using OrderCloud.Catalyst;

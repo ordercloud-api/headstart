@@ -1,6 +1,6 @@
 ﻿using OrderCloud.SDK;
 
-namespace Headstart.Models
+namespace Headstart.Common.Models
 {
     public class HSCostCenter : CostCenter<CostCenterXp>, IHSObject
     {

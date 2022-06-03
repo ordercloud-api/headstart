@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Headstart.Models.Headstart;
+using Headstart.Common.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.Tests.Mocks

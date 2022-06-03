@@ -1,5 +1,5 @@
 ﻿using System;
-using Headstart.Models.Headstart;
+using Headstart.Common.Models;
 using OrderCloud.Integrations.Zoho.Models;
 using OrderCloud.SDK;
 

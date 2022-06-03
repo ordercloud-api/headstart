@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using OrderCloud.SDK;
 
-namespace Headstart.Models
+namespace Headstart.Common.Models
 {
     public class HSSellerUser : User<SellerUserXp>, IHSObject
     {

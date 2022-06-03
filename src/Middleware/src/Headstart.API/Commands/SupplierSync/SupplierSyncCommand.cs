@@ -2,7 +2,7 @@ using System;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
-using Headstart.Models;
+using Headstart.Common.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OrderCloud.Catalyst;

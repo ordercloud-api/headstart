@@ -6,8 +6,6 @@ using Headstart.Common.Constants;
 using Headstart.Common.Extensions;
 using Headstart.Common.Models;
 using Headstart.Common.Services;
-using Headstart.Models;
-using Headstart.Models.Headstart;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.EasyPost;
 using OrderCloud.Integrations.EasyPost.Models;

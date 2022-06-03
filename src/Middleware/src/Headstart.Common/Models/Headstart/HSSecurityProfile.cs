@@ -1,6 +1,7 @@
-﻿using OrderCloud.SDK;
+﻿using Headstart.Models.Misc;
+using OrderCloud.SDK;
 
-namespace Headstart.Models.Misc
+namespace Headstart.Common.Models
 {
     public class HSSecurityProfile
     {

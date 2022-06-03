@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using Headstart.Models;
-using Headstart.Models.Headstart;
 using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 

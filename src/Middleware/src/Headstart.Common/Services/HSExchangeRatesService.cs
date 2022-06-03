@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Headstart.Models;
+using Headstart.Common.Models;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.ExchangeRates;
 using OrderCloud.Integrations.ExchangeRates.Models;

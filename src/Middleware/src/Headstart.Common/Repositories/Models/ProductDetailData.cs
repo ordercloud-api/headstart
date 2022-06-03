@@ -1,5 +1,5 @@
 ﻿using System;
-using Headstart.Models;
+using Headstart.Common.Models;
 using OrderCloud.Integrations.Library.Cosmos;
 using OrderCloud.SDK;
 

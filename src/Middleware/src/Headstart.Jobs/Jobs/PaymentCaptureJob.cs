@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using Headstart.API;
 using Headstart.API.Commands;
 using Headstart.Common.Models;
-using Headstart.Models;
-using Headstart.Models.Headstart;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using OrderCloud.Catalyst;

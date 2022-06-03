@@ -2,8 +2,6 @@
 using System.Threading.Tasks;
 using Headstart.Common.Models;
 using Headstart.Common.Services;
-using Headstart.Models;
-using Headstart.Models.Headstart;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Alerts;
 using OrderCloud.Integrations.CardConnect;

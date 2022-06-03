@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Flurl.Http;
 using Headstart.Common.Exceptions;
-using Headstart.Models.Headstart;
+using Headstart.Common.Models;
 using OrderCloud.Catalyst;
 
 namespace Headstart.Common.Utils

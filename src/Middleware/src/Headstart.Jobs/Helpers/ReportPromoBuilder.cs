@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Headstart.Common.Models;
-using Headstart.Models.Headstart;
 using OrderCloud.SDK;
 
 namespace Headstart.Jobs.Helpers

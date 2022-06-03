@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using Headstart.Common.Models;
 using Headstart.Common.Services;
 using Headstart.Common.Utils;
-using Headstart.Models;
-using Headstart.Models.Headstart;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Library;
 using OrderCloud.Integrations.Zoho.Mappers;

@@ -5,8 +5,6 @@ using Headstart.API;
 using Headstart.API.Commands;
 using Headstart.Common.Models;
 using Headstart.Common.Settings;
-using Headstart.Models;
-using Headstart.Models.Headstart;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
@@ -55,7 +53,7 @@ namespace Headstart.Tests
             // Arrange
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, "mockOrderID").Returns(Task.FromResult(new HSOrderWorksheet
             {
-                Order = new Models.HSOrder { ID = "mockOrderID", IsSubmitted = true },
+                Order = new HSOrder { ID = "mockOrderID", IsSubmitted = true },
             }));
 
             // Act

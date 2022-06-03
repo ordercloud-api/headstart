@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Headstart.Models;
+using Headstart.Common.Models;
 using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
 using OrderCloud.SDK;

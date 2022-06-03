@@ -1,7 +1,7 @@
 ﻿using OrderCloud.Integrations.Taxation.Interfaces;
 using OrderCloud.SDK;
 
-namespace Headstart.Models.Headstart
+namespace Headstart.Common.Models
 {
     public class HSOrderCalculateResponse : OrderCalculateResponse<OrderCalculateResponseXp>
     {

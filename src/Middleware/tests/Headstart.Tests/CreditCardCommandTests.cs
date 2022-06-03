@@ -6,8 +6,6 @@ using Headstart.API;
 using Headstart.API.Commands;
 using Headstart.Common.Models;
 using Headstart.Common.Services;
-using Headstart.Models;
-using Headstart.Models.Headstart;
 using Headstart.Tests.Mocks;
 using NSubstitute;
 using NUnit.Framework;

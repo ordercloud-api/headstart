@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Headstart.Models;
-using Headstart.Models.Headstart;
+using Headstart.Common.Models;
 using Microsoft.ApplicationInsights;
 using Newtonsoft.Json;
 using OrderCloud.Integrations.Emails;
