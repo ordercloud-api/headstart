@@ -6,6 +6,7 @@ using OrderCloud.Integrations.SendGrid;
 using OrderCloud.Integrations.Smarty;
 using OrderCloud.Integrations.TaxJar;
 using OrderCloud.Integrations.Vertex;
+using OrderCloud.Integrations.Zoho;
 
 namespace Headstart.API
 {
@@ -63,7 +64,7 @@ namespace Headstart.API
 
         public UI UI { get; set; }
 
-        public ZohoSettings ZohoSettings { get; set; } = new ZohoSettings();
+        public ZohoClientConfig ZohoSettings { get; set; } = new ZohoClientConfig();
     }
 
     public class ApplicationInsightsSettings
@@ -126,18 +127,5 @@ namespace Headstart.API
         public bool ShouldCaptureCreditCardPayments { get; set; }
 
         public bool ShouldRunZoho { get; set; }
-    }
-
-    public class ZohoSettings
-    {
-        public string AccessToken { get; set; }
-
-        public string ClientId { get; set; }
-
-        public string ClientSecret { get; set; }
-
-        public string OrgID { get; set; }
-
-        public bool PerformOrderSubmitTasks { get; set; }
     }
 }

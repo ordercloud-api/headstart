@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Common.Models;
 using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
 using Microsoft.AspNetCore.Http;

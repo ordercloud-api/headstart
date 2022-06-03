@@ -7,7 +7,6 @@ using Flurl.Http;
 using Flurl.Http.Configuration;
 using Headstart.API.Commands;
 using Headstart.API.Commands.Crud;
-using Headstart.API.Commands.Zoho;
 using Headstart.API.Helpers;
 using Headstart.Common;
 using Headstart.Common.Models;
@@ -15,7 +14,6 @@ using Headstart.Common.Queries;
 using Headstart.Common.Repositories;
 using Headstart.Common.Services;
 using Headstart.Common.Services.CMS;
-using Headstart.Common.Services.Zoho;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -42,6 +40,7 @@ using OrderCloud.Integrations.Smarty;
 using OrderCloud.Integrations.Taxation.Interfaces;
 using OrderCloud.Integrations.TaxJar;
 using OrderCloud.Integrations.Vertex;
+using OrderCloud.Integrations.Zoho;
 using OrderCloud.SDK;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
@@ -243,16 +242,8 @@ namespace Headstart.API
                 .AddSingleton<DownloadReportCommand>()
                 .Inject<IRMARepo>()
                 .Inject<IZohoClient>()
-                .AddSingleton<IZohoCommand>(z => new ZohoCommand(
-                    new ZohoClient(
-                        new ZohoClientConfig()
-                        {
-                            ApiUrl = "https://books.zoho.com/api/v3",
-                            AccessToken = settings.ZohoSettings.AccessToken,
-                            ClientId = settings.ZohoSettings.ClientId,
-                            ClientSecret = settings.ZohoSettings.ClientSecret,
-                            OrganizationID = settings.ZohoSettings.OrgID,
-                        }, flurlClientFactory),
+                .AddSingleton<IOMSService>(z => new ZohoCommand(
+                    new ZohoClient(settings.ZohoSettings, flurlClientFactory),
                     orderCloudClient))
                 .AddSingleton<IExchangeRatesClient, ExchangeRatesClient>()
                 .AddSingleton<IAssetClient>(provider => new AssetClient(new OrderCloudIntegrationsBlobService(assetConfig), settings.StorageAccountSettings))

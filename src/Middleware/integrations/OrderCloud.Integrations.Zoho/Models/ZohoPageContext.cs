@@ -1,4 +1,4 @@
-﻿namespace Headstart.Common.Services.Zoho.Models
+﻿namespace OrderCloud.Integrations.Zoho.Models
 {
     /// <summary>
     /// Used to define the model object of ZohoPageContext.

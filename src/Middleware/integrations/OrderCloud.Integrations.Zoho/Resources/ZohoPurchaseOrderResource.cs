@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Flurl.Http;
-using Headstart.Common.Services.Zoho.Models;
+using OrderCloud.Integrations.Zoho.Models;
 
-namespace Headstart.Common.Services.Zoho.Resources
+namespace OrderCloud.Integrations.Zoho.Resources
 {
     public interface IZohoPurchaseOrderResource
     {

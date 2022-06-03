@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Headstart.API.Commands;
-using Headstart.API.Commands.Zoho;
+using Headstart.Common.Models;
 using Headstart.Common.Models.Misc;
-using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
 using Headstart.Models.Headstart;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +20,7 @@ namespace Headstart.Common.Controllers
         private readonly IOrderCloudClient oc;
         private readonly IEmailServiceProvider emailServiceProvider;
 
-        public SupportController(ICheckoutIntegrationCommand checkoutIntegrationCommand, IPostSubmitCommand postSubmitCommand, IZohoCommand zoho, IOrderCloudClient oc, IEmailServiceProvider emailServiceProvider)
+        public SupportController(ICheckoutIntegrationCommand checkoutIntegrationCommand, IPostSubmitCommand postSubmitCommand, IOrderCloudClient oc, IEmailServiceProvider emailServiceProvider)
         {
             SupportController.checkoutIntegrationCommand = checkoutIntegrationCommand;
             SupportController.postSubmitCommand = postSubmitCommand;
@@ -50,13 +49,6 @@ namespace Headstart.Common.Controllers
         {
             var orderCalculationResponse = await checkoutIntegrationCommand.CalculateOrder(orderID, UserContext);
             return orderCalculationResponse;
-        }
-
-        [HttpGet, Route("zoho/{orderID}")]
-        public async Task<OrderSubmitResponse> RetryOrderSubmit(string orderID)
-        {
-            var retry = await postSubmitCommand.HandleZohoRetry(orderID);
-            return retry;
         }
 
         [HttpGet, Route("shipping/validate/{orderID}"), OrderCloudUserAuth(ApiRole.IntegrationEventAdmin)]

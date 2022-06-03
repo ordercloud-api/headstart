@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Headstart.Common.Services.Zoho.Models
+namespace OrderCloud.Integrations.Zoho.Models
 {
     public class ZohoContactList : ZohoListResponse
     {

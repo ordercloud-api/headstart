@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Headstart.Common.Extensions;
-using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Common.Models;
 using Headstart.Models;
 using Headstart.Models.Headstart;
 using Headstart.Tests.Mocks;

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Headstart.API.Commands;
-using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Common.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;

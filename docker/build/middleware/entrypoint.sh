@@ -108,9 +108,10 @@ json -I -f appSettings.json \
 
 json -I -f appSettings.json \
       -e "this['ZohoSettings:AccessToken']='$ZohoSettings_AccessToken'" \
+      -e "this['ZohoSettings:ApiUrl']='$ZohoSettings_ApiUrl'" \
       -e "this['ZohoSettings:ClientId']='$ZohoSettings_ClientId'" \
       -e "this['ZohoSettings:ClientSecret']='$ZohoSettings_ClientSecret'" \
-      -e "this['ZohoSettings:OrgID']='$ZohoSettings_OrgID'" \
+      -e "this['ZohoSettings:OrganizationID']='$ZohoSettings_OrganizationID'" \
       -e "this['ZohoSettings:PerformOrderSubmitTasks']='$ZohoSettings_PerformOrderSubmitTasks'"
 
 echo "Run Middleware"

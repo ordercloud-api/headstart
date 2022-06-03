@@ -1,16 +1,18 @@
 ﻿using System.Threading.Tasks;
 using Flurl.Http;
 using Flurl.Http.Configuration;
-using Headstart.Common.Services.Zoho.Models;
-using Headstart.Common.Services.Zoho.Resources;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Zoho.Models;
+using OrderCloud.Integrations.Zoho.Resources;
 
-namespace Headstart.Common.Services.Zoho
+namespace OrderCloud.Integrations.Zoho
 {
-    public partial interface IZohoClient
+    public interface IZohoClient
     {
+        ZohoClientConfig Config { get; }
+
         IZohoContactResource Contacts { get; }
 
         IZohoCurrencyResource Currencies { get; }
@@ -26,7 +28,7 @@ namespace Headstart.Common.Services.Zoho
         Task<ZohoTokenResponse> AuthenticateAsync();
     }
 
-    public partial class ZohoClient
+    public class ZohoClient : IZohoClient
     {
         private readonly IFlurlClientFactory flurlFactory;
 
@@ -51,6 +53,18 @@ namespace Headstart.Common.Services.Zoho
         {
             this.Config = config;
         }
+
+        public IZohoOrganizationResource Organizations { get; private set; }
+
+        public IZohoContactResource Contacts { get; private set; }
+
+        public IZohoCurrencyResource Currencies { get; private set; }
+
+        public IZohoItemResource Items { get; private set; }
+
+        public IZohoSalesOrderResource SalesOrders { get; private set; }
+
+        public IZohoPurchaseOrderResource PurchaseOrders { get; private set; }
 
         public ZohoTokenResponse TokenResponse { get; set; }
 
@@ -116,21 +130,6 @@ namespace Headstart.Common.Services.Zoho
                     DefaultValueHandling = DefaultValueHandling.Ignore,
                 });
             });
-    }
-
-    public partial class ZohoClient : IZohoClient
-    {
-        public IZohoOrganizationResource Organizations { get; private set; }
-
-        public IZohoContactResource Contacts { get; private set; }
-
-        public IZohoCurrencyResource Currencies { get; private set; }
-
-        public IZohoItemResource Items { get; private set; }
-
-        public IZohoSalesOrderResource SalesOrders { get; private set; }
-
-        public IZohoPurchaseOrderResource PurchaseOrders { get; private set; }
 
         private void InitResources()
         {

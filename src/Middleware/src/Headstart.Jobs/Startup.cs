@@ -6,10 +6,9 @@ using Flurl.Http.Configuration;
 using Headstart.API;
 using Headstart.API.Commands;
 using Headstart.API.Commands.Crud;
-using Headstart.API.Commands.Zoho;
 using Headstart.Common;
 using Headstart.Common.Repositories;
-using Headstart.Common.Services.Zoho;
+using Headstart.Common.Services;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +21,7 @@ using OrderCloud.Integrations.Emails;
 using OrderCloud.Integrations.Library;
 using OrderCloud.Integrations.Library.Cosmos;
 using OrderCloud.Integrations.SendGrid;
+using OrderCloud.Integrations.Zoho;
 using OrderCloud.SDK;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
@@ -96,6 +96,23 @@ namespace Headstart.Jobs
             FlurlHttp.Configure(settings => settings.HttpClientFactory = new PollyFactory(policy));
 
             builder.Services
+                .AddSingleton(x => settings.ApplicationInsightsSettings)
+                .AddSingleton(x => settings.AvalaraSettings)
+                .AddSingleton(x => settings.CardConnectSettings)
+                .AddSingleton(x => settings.CosmosSettings)
+                .AddSingleton(x => settings.EasyPostSettings)
+                .AddSingleton(x => settings.EnvironmentSettings)
+                .AddSingleton(x => settings.FlurlSettings)
+                .AddSingleton(x => settings.JobSettings)
+                .AddSingleton(x => settings.OrderCloudSettings)
+                .AddSingleton(x => settings.SendgridSettings)
+                .AddSingleton(x => settings.ServiceBusSettings)
+                .AddSingleton(x => settings.SmartyStreetSettings)
+                .AddSingleton(x => settings.StorageAccountSettings)
+                .AddSingleton(x => settings.TaxJarSettings)
+                .AddSingleton(x => settings.UI)
+                .AddSingleton(x => settings.VertexSettings)
+                .AddSingleton(x => settings.ZohoSettings)
                 .InjectOrderCloud<IOrderCloudClient>(new OrderCloudClientConfig()
                 {
                     ApiUrl = settings.OrderCloudSettings.ApiUrl,
@@ -119,16 +136,8 @@ namespace Headstart.Jobs
                 .AddSingleton<ReceiveRecentPurchaseOrdersJob>()
                 .AddSingleton<ReceiveRecentLineItemsJob>()
                 .AddSingleton<ReceiveRecentOrdersAndShipmentsJob>()
-                .AddSingleton(x => new ZohoClientConfig
-                {
-                    ApiUrl = "https://books.zoho.com/api/v3",
-                    AccessToken = settings.ZohoSettings.AccessToken,
-                    ClientId = settings.ZohoSettings.ClientId,
-                    ClientSecret = settings.ZohoSettings.ClientSecret,
-                    OrganizationID = settings.ZohoSettings.OrgID,
-                })
                 .Inject<IZohoClient>()
-                .Inject<IZohoCommand>()
+                .AddSingleton<IOMSService, ZohoCommand>()
                 .AddSingleton<ISendGridClient>(x => new SendGridClient(settings.SendgridSettings.ApiKey))
                 .AddSingleton<IEmailServiceProvider, SendGridService>()
                 .Inject<ISalesOrderDetailDataRepo>()

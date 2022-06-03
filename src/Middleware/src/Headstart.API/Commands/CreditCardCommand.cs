@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Headstart.Common.Models;
 using Headstart.Common.Services;
-using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Models;
 using Headstart.Models.Headstart;
 using OrderCloud.Catalyst;

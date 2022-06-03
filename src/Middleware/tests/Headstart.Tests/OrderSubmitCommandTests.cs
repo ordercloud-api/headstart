@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Headstart.API;
 using Headstart.API.Commands;
-using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Common.Models;
 using Headstart.Common.Settings;
 using Headstart.Models;
 using Headstart.Models.Headstart;

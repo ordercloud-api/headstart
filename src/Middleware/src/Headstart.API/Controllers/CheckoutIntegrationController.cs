@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 using Headstart.API.Commands;
-using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Common.Models;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
@@ -67,11 +67,11 @@ namespace Headstart.Common.Controllers
             return response;
         }
 
-        [HttpPost, Route("ordersubmit/retry/zoho/{orderID}"), OrderCloudUserAuth(ApiRole.IntegrationEventAdmin)]
-        public async Task<OrderSubmitResponse> RetryOrderSubmit(string orderID)
+        [HttpPost, Route("ordersubmit/export/{orderID}"), OrderCloudUserAuth(ApiRole.IntegrationEventAdmin)]
+        public async Task<OrderSubmitResponse> ExportOrder(string orderID)
         {
-            var retry = await postSubmitCommand.HandleZohoRetry(orderID);
-            return retry;
+            var response = await postSubmitCommand.ExportOrder(orderID);
+            return response;
         }
     }
 }

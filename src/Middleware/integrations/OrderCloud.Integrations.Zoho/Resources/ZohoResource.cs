@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NullValueHandling = Newtonsoft.Json.NullValueHandling;
 
-namespace Headstart.Common.Services.Zoho
+namespace OrderCloud.Integrations.Zoho.Resources
 {
     // https://stackoverflow.com/questions/52541918/flurl-extension-for-multi-part-put
     public static class MultipartPutExtensions

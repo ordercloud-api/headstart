@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Headstart.Common.Models;
 using Headstart.Common.Repositories;
-using Headstart.Common.Services.ShippingIntegration.Models;
 using Headstart.Jobs.Helpers;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Library;

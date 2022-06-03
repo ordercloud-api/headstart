@@ -115,9 +115,10 @@ services:
       UI_BaseAdminUrl: "http://${SELLER_HOST}"
 
       ZohoSettings_AccessToken: "${ZohoSettings_AccessToken}"
+      ZohoSettings_ApiUrl: "${ZohoSettings_ApiUrl}"
       ZohoSettings_ClientId: "${ZohoSettings_ClientId}"
       ZohoSettings_ClientSecret: "${ZohoSettings_ClientSecret}"
-      ZohoSettings_OrgID: "${ZohoSettings_OrgID}"
+      ZohoSettings_OrganizationID: "${ZohoSettings_OrganizationID}"
       ZohoSettings_PerformOrderSubmitTasks: "${ZohoSettings_PerformOrderSubmitTasks}"
     depends_on:
       cosmos:

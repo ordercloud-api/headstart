@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Common.Models;
 using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
 using Newtonsoft.Json;

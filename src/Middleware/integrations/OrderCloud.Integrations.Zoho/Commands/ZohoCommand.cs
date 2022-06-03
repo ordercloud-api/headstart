@@ -2,31 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Common.Services.Zoho;
-using Headstart.Common.Services.Zoho.Mappers;
-using Headstart.Common.Services.Zoho.Models;
+using Headstart.Common.Models;
+using Headstart.Common.Services;
+using Headstart.Common.Utils;
 using Headstart.Models;
 using Headstart.Models.Headstart;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.Zoho.Mappers;
+using OrderCloud.Integrations.Zoho.Models;
 using OrderCloud.SDK;
 using TaxCategorization = OrderCloud.Integrations.Taxation.Interfaces.TaxCategorization;
 
-namespace Headstart.API.Commands.Zoho
+namespace OrderCloud.Integrations.Zoho
 {
-    public interface IZohoCommand
-    {
-        Task<ZohoSalesOrder> CreateSalesOrder(HSOrderWorksheet orderWorksheet);
-
-        Task<List<ZohoPurchaseOrder>> CreateOrUpdatePurchaseOrder(ZohoSalesOrder z_order, List<HSOrder> orders);
-
-        Task<List<ZohoPurchaseOrder>> CreateShippingPurchaseOrder(ZohoSalesOrder z_order, HSOrderWorksheet order);
-
-        Task<ZohoOrganizationList> ListOrganizations();
-    }
-
-    public class ZohoCommand : IZohoCommand
+    public class ZohoCommand : IOMSService
     {
         private const int Delay = 250;
         private const int Concurrent = 1;
@@ -40,14 +30,43 @@ namespace Headstart.API.Commands.Zoho
             this.zoho.AuthenticateAsync();
         }
 
-        public async Task<ZohoOrganizationList> ListOrganizations()
+        public async Task<ProcessResult> ExportOrder(HSOrderWorksheet worksheet, IList<HSOrder> supplierOrders, bool isOrderSubmit = true)
+        {
+            if (isOrderSubmit && !zoho.Config.PerformOrderSubmitTasks)
+            {
+                return null;
+            }
+
+            var (salesAction, zohoSalesOrder) = await ProcessAction.Execute(
+                ProcessType.Accounting,
+                "Create Zoho Sales Order",
+                CreateSalesOrder(worksheet));
+
+            var (poAction, zohoPurchaseOrder) = await ProcessAction.Execute(
+                ProcessType.Accounting,
+                "Create Zoho Purchase Order",
+                CreateOrUpdatePurchaseOrder(zohoSalesOrder, supplierOrders.ToList()));
+
+            var (shippingAction, zohoShippingOrder) = await ProcessAction.Execute(
+                ProcessType.Accounting,
+                "Create Zoho Shipping Purchase Order",
+                CreateShippingPurchaseOrder(zohoSalesOrder, worksheet));
+
+            return new ProcessResult()
+            {
+                Type = ProcessType.Accounting,
+                Activity = new List<ProcessResultAction>() { salesAction, poAction, shippingAction },
+            };
+        }
+
+        private async Task<ZohoOrganizationList> ListOrganizations()
         {
             await zoho.AuthenticateAsync();
             var results = await zoho.Organizations.ListAsync();
             return results;
         }
 
-        public async Task<List<ZohoPurchaseOrder>> CreateShippingPurchaseOrder(ZohoSalesOrder z_order, HSOrderWorksheet order)
+        private async Task<List<ZohoPurchaseOrder>> CreateShippingPurchaseOrder(ZohoSalesOrder z_order, HSOrderWorksheet order)
         {
             // special request by SMG for creating PO of shipments
             // we definitely don't want this stopping orders from flowing into Zoho so I'm going to handle exceptions and allow to proceed
@@ -121,7 +140,7 @@ namespace Headstart.API.Commands.Zoho
             }
         }
 
-        public async Task<List<ZohoPurchaseOrder>> CreateOrUpdatePurchaseOrder(ZohoSalesOrder z_order, List<HSOrder> orders)
+        private async Task<List<ZohoPurchaseOrder>> CreateOrUpdatePurchaseOrder(ZohoSalesOrder z_order, List<HSOrder> orders)
         {
             var results = new List<ZohoPurchaseOrder>();
             foreach (var order in orders)
@@ -146,7 +165,7 @@ namespace Headstart.API.Commands.Zoho
             return results;
         }
 
-        public async Task<ZohoSalesOrder> CreateSalesOrder(HSOrderWorksheet orderWorksheet)
+        private async Task<ZohoSalesOrder> CreateSalesOrder(HSOrderWorksheet orderWorksheet)
         {
             await zoho.AuthenticateAsync();
 

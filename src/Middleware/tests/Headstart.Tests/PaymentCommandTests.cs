@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Headstart.API.Commands;
-using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Common.Models;
 using Headstart.Models;
 using Headstart.Models.Headstart;
 using Headstart.Tests.Mocks;

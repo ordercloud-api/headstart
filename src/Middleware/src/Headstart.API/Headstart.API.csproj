@@ -39,6 +39,7 @@
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Taxation\OrderCloud.Integrations.Taxation.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.TaxJar\OrderCloud.Integrations.TaxJar.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Vertex\OrderCloud.Integrations.Vertex.csproj" />
+    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Zoho\OrderCloud.Integrations.Zoho.csproj" />
     <ProjectReference Include="..\Headstart.Common\Headstart.Common.csproj" />
   </ItemGroup>
 

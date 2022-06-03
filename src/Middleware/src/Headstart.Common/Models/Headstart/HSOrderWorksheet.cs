@@ -4,7 +4,7 @@ using Headstart.Models.Headstart;
 using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 
-namespace Headstart.Common.Services.ShippingIntegration.Models
+namespace Headstart.Common.Models
 {
     public static class HSOrderWorksheetExtensions
     {

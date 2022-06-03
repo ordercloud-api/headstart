@@ -2,7 +2,7 @@
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
-using Headstart.Common.Services.ShippingIntegration.Models;
+using Headstart.Common.Models;
 using Headstart.Models;
 using Headstart.Models.Headstart;
 
