@@ -1,6 +1,6 @@
 ﻿namespace OrderCloud.Integrations.Zoho
 {
-    public class ZohoClientConfig
+    public class ZohoConfig
     {
         public string AccessToken { get; set; }
 

@@ -161,12 +161,7 @@ namespace OrderCloud.Integrations.Zoho.Mappers
     {
         public static ZohoLineItem Map(HSLineItem item, Supplier supplier)
         {
-            return new ZohoLineItem()
-            {
-                purchase_description = $"{item.Product.Name ?? item.Variant?.Name} {item.Variant?.xp?.SpecCombo ?? item.SKU()}".Trim(),
-                purchase_rate = item.UnitPrice.HasValue ? Math.Round(decimal.ToDouble(item.UnitPrice.Value), 2) : 0,
-                manufacturer = supplier.Name,
-            };
+            return Map(new ZohoLineItem(), item, supplier);
         }
 
         public static ZohoLineItem Map(ZohoLineItem zItem, HSLineItem item, Supplier supplier)
@@ -261,33 +256,13 @@ namespace OrderCloud.Integrations.Zoho.Mappers
             ZohoAddress delivery_address,
             ZohoContact vendor)
         {
-            var po = new ZohoPurchaseOrder()
-            {
-                line_items = items.Select(p => new ZohoLineItem()
-                {
-                    // account_id = p.purchase_account_id,
-                    item_id = p.item_id,
-                    description = p.description,
-                    rate = Math.Round(decimal.ToDouble(lineitems.First(l => l.SKU() == p.sku).UnitPrice.Value), 2),
-                    quantity = lineitems.First(l => l.SKU() == p.sku)?.Quantity,
-                }).ToList(),
-                salesorder_id = salesorder.salesorder_id,
-                purchaseorder_number = order.ID,
-                reference_number = salesorder.reference_number,
-                sub_total = decimal.ToDouble(order.Subtotal),
-                tax_total = decimal.ToDouble(order.TaxCost),
-                total = decimal.ToDouble(order.Total),
-                vendor_id = vendor.contact_id,
-                delivery_customer_id = salesorder.customer_id,
-            };
-
-            return po;
+            return Map(salesorder, order, items, lineitems, delivery_address, vendor, new ZohoPurchaseOrder());
         }
     }
 
     public static class ZohoSalesOrderMapper
     {
-        public static ZohoSalesOrder Map(ZohoSalesOrder zOrder, HSOrderWorksheet worksheet, List<ZohoLineItem> items, ZohoContact contact, IList<OrderPromotion> promotions)
+        public static ZohoSalesOrder Map(HSOrderWorksheet worksheet, List<ZohoLineItem> items, ZohoContact contact, IList<OrderPromotion> promotions, ZohoSalesOrder zOrder)
         {
             zOrder.reference_number = worksheet.Order.ID;
             zOrder.salesorder_number = worksheet.Order.ID;
@@ -333,73 +308,13 @@ namespace OrderCloud.Integrations.Zoho.Mappers
 
         public static ZohoSalesOrder Map(HSOrderWorksheet worksheet, List<ZohoLineItem> items, ZohoContact contact, IList<OrderPromotion> promotions)
         {
-            var o = new ZohoSalesOrder()
-            {
-                reference_number = worksheet.Order.ID,
-                salesorder_number = worksheet.Order.ID,
-                date = worksheet.Order.DateSubmitted?.ToString("yyyy-MM-dd"),
-                is_discount_before_tax = true,
-                discount = decimal.ToDouble(promotions.Sum(p => p.Amount)),
-                discount_type = "entity_level",
-                line_items = worksheet.LineItems.Select(item => new ZohoLineItem
-                {
-                    item_id = items.First(i => i.sku == item.SKU()).item_id,
-                    quantity = item.Quantity,
-                    rate = Math.Round((double)(item.UnitPrice ?? 0), 2),
-                    avatax_tax_code = item.Product.xp.Tax.Code,
-
-                    // discount = decimal.ToDouble(promotions.Where(p => p.LineItemLevel == true && p.LineItemID == line_item.ID).Sum(p => p.Amount)),
-                }).ToList(),
-                tax_total = decimal.ToDouble(worksheet.Order.TaxCost),
-                customer_name = contact.contact_name,
-                sub_total = decimal.ToDouble(worksheet.Order.Subtotal),
-                total = decimal.ToDouble(worksheet.Order.Total),
-                customer_id = contact.contact_id,
-                currency_code = contact.currency_code,
-                currency_symbol = contact.currency_symbol,
-                notes = promotions.Any()
-                    ? $"Promotions applied: {promotions.DistinctBy(p => p.Code).Select(p => p.Code).JoinString(" - ", p => p)}"
-                    : null,
-
-                // shipping_charge = decimal.ToDouble(order.ShippingCost), //TODO: Please mention any Shipping/miscellaneous charges as additional line items.
-            };
-
-            // adding shipping as a line item
-            foreach (var shipment in worksheet.ShipEstimateResponse.ShipEstimates)
-            {
-                var method = shipment.ShipMethods.FirstOrDefault(s => s.ID == shipment.SelectedShipMethodID);
-                o.line_items.Add(new ZohoLineItem
-                {
-                    item_id = items.First(i => i.sku == method?.ShippingSku()).item_id,
-                    quantity = 1,
-                    rate = Math.Round((double)(method?.Cost ?? 0), 2),
-                    avatax_tax_code = "FR",
-                });
-            }
-
-            return o;
+            return Map(worksheet, items, contact, promotions, new ZohoSalesOrder());
         }
     }
 
     public static class ZohoAddressMapper
     {
-        public static ZohoAddress Map(HSAddressSupplier address)
-        {
-            return new ZohoAddress()
-            {
-                attention = address.CompanyName,
-                address = address.Street1,
-                street2 = address.Street2,
-                city = address.City,
-                state = address.State,
-                zip = address.Zip,
-                country = address.Country,
-                phone = address.Phone,
-                state_code = address.State,
-            };
-        }
-
-        public static ZohoAddress Map(HSAddressBuyer address)
+        public static ZohoAddress Map(IHSAddress address)
         {
             return new ZohoAddress()
             {

@@ -137,7 +137,7 @@ namespace Headstart.Jobs
                 .AddSingleton<ReceiveRecentLineItemsJob>()
                 .AddSingleton<ReceiveRecentOrdersAndShipmentsJob>()
                 .Inject<IZohoClient>()
-                .AddSingleton<IOMSService, ZohoCommand>()
+                .AddSingleton<IOMSService, ZohoService>()
                 .AddSingleton<ISendGridClient>(x => new SendGridClient(settings.SendgridSettings.ApiKey))
                 .AddSingleton<IEmailServiceProvider, SendGridService>()
                 .Inject<ISalesOrderDetailDataRepo>()

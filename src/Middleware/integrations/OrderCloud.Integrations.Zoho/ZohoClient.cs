@@ -11,7 +11,7 @@ namespace OrderCloud.Integrations.Zoho
 {
     public interface IZohoClient
     {
-        ZohoClientConfig Config { get; }
+        ZohoConfig Config { get; }
 
         IZohoContactResource Contacts { get; }
 
@@ -33,7 +33,7 @@ namespace OrderCloud.Integrations.Zoho
         private readonly IFlurlClientFactory flurlFactory;
 
         public ZohoClient()
-            : this(new ZohoClientConfig())
+            : this(new ZohoConfig())
         {
         }
 
@@ -42,14 +42,14 @@ namespace OrderCloud.Integrations.Zoho
             this.flurlFactory = flurlFactory;
         }
 
-        public ZohoClient(ZohoClientConfig config, IFlurlClientFactory flurlFactory)
+        public ZohoClient(ZohoConfig config, IFlurlClientFactory flurlFactory)
         {
             this.flurlFactory = flurlFactory;
             Config = config;
             InitResources();
         }
 
-        public ZohoClient(ZohoClientConfig config)
+        public ZohoClient(ZohoConfig config)
         {
             this.Config = config;
         }
@@ -70,7 +70,7 @@ namespace OrderCloud.Integrations.Zoho
 
         public bool IsAuthenticated => TokenResponse?.access_token != null;
 
-        public ZohoClientConfig Config { get; }
+        public ZohoConfig Config { get; }
 
         private IFlurlClient ApiClient => flurlFactory.Get(Config.ApiUrl);
 

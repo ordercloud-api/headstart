@@ -242,7 +242,7 @@ namespace Headstart.API
                 .AddSingleton<DownloadReportCommand>()
                 .Inject<IRMARepo>()
                 .Inject<IZohoClient>()
-                .AddSingleton<IOMSService>(z => new ZohoCommand(
+                .AddSingleton<IOMSService>(z => new ZohoService(
                     new ZohoClient(settings.ZohoSettings, flurlClientFactory),
                     orderCloudClient))
                 .AddSingleton<IExchangeRatesClient, ExchangeRatesClient>()

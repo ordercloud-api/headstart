@@ -64,7 +64,7 @@ namespace Headstart.API
 
         public UI UI { get; set; }
 
-        public ZohoClientConfig ZohoSettings { get; set; } = new ZohoClientConfig();
+        public ZohoConfig ZohoSettings { get; set; } = new ZohoConfig();
     }
 
     public class ApplicationInsightsSettings

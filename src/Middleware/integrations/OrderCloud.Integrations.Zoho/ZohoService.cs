@@ -12,18 +12,17 @@ using OrderCloud.Integrations.Library;
 using OrderCloud.Integrations.Zoho.Mappers;
 using OrderCloud.Integrations.Zoho.Models;
 using OrderCloud.SDK;
-using TaxCategorization = OrderCloud.Integrations.Taxation.Interfaces.TaxCategorization;
 
 namespace OrderCloud.Integrations.Zoho
 {
-    public class ZohoCommand : IOMSService
+    public class ZohoService : IOMSService
     {
         private const int Delay = 250;
         private const int Concurrent = 1;
         private readonly IZohoClient zoho;
         private readonly IOrderCloudClient oc;
 
-        public ZohoCommand(IZohoClient zoho, IOrderCloudClient oc)
+        public ZohoService(IZohoClient zoho, IOrderCloudClient oc)
         {
             this.zoho = zoho;
             this.oc = oc;
@@ -47,15 +46,10 @@ namespace OrderCloud.Integrations.Zoho
                 "Create Zoho Purchase Order",
                 CreateOrUpdatePurchaseOrder(zohoSalesOrder, supplierOrders.ToList()));
 
-            var (shippingAction, zohoShippingOrder) = await ProcessAction.Execute(
-                ProcessType.Accounting,
-                "Create Zoho Shipping Purchase Order",
-                CreateShippingPurchaseOrder(zohoSalesOrder, worksheet));
-
             return new ProcessResult()
             {
                 Type = ProcessType.Accounting,
-                Activity = new List<ProcessResultAction>() { salesAction, poAction, shippingAction },
+                Activity = new List<ProcessResultAction>() { salesAction, poAction },
             };
         }
 
@@ -64,80 +58,6 @@ namespace OrderCloud.Integrations.Zoho
             await zoho.AuthenticateAsync();
             var results = await zoho.Organizations.ListAsync();
             return results;
-        }
-
-        private async Task<List<ZohoPurchaseOrder>> CreateShippingPurchaseOrder(ZohoSalesOrder z_order, HSOrderWorksheet order)
-        {
-            // special request by SMG for creating PO of shipments
-            // we definitely don't want this stopping orders from flowing into Zoho so I'm going to handle exceptions and allow to proceed
-            try
-            {
-                var list = new List<ZohoPurchaseOrder>();
-                foreach (var item in order.ShipEstimateResponse.ShipEstimates)
-                {
-                    var shipping_method = item.ShipMethods.FirstOrDefault(s => s.ID == item.SelectedShipMethodID);
-                    if (shipping_method.xp.CarrierAccountID != "ca_8bdb711131894ab4b42abcd1645d988c")
-                    {
-                        continue;
-                    }
-
-                    var vendor = await zoho.Contacts.ListAsync(new ZohoFilter() { Key = "contact_name", Value = "SMG Shipping" });
-                    var oc_lineitems = new ListPage<HSLineItem>()
-                    {
-                        Items = new List<HSLineItem>()
-                        {
-                            new HSLineItem()
-                            {
-                                ID = $"{z_order.reference_number} - {ZohoExtensions.ShippingSuffix}",
-                                UnitPrice = shipping_method?.Cost,
-                                ProductID = shipping_method.ShippingSku(),
-                                SupplierID = "SMG Shipping",
-                                Product = new HSLineItemProduct()
-                                {
-                                    Description = $"{shipping_method?.xp?.Carrier} Shipping Charge",
-                                    Name = shipping_method.ShippingSku(),
-                                    ID = shipping_method.ShippingSku(),
-                                    QuantityMultiplier = 1,
-                                    xp = new ProductXp()
-                                    {
-                                        Tax = new TaxCategorization()
-                                        {
-                                            Code = "FR",
-                                            Description = "Shipping Charge",
-                                        },
-                                    },
-                                },
-                            },
-                        },
-                    };
-                    var z_item = await CreateOrUpdateShippingLineItem(oc_lineitems.Items);
-                    var oc_order = new Order()
-                    {
-                        ID = $"{order.Order.ID}-{order.LineItems.FirstOrDefault()?.SupplierID} - 41000",
-                        Subtotal = shipping_method.Cost,
-                        Total = shipping_method.Cost,
-                        TaxCost = 0M,
-                    };
-                    var oc_lineitem = new ListPage<HSLineItem>() { Items = new List<HSLineItem>() { new HSLineItem() { Quantity = 1 } } };
-                    var z_po = ZohoPurchaseOrderMapper.Map(z_order, oc_order, z_item, oc_lineitem.Items.ToList(), null, vendor.Items.FirstOrDefault());
-                    var shipping_po = await zoho.PurchaseOrders.ListAsync(new ZohoFilter() { Key = "purchaseorder_number", Value = $"{order.Order.ID}-{order.LineItems.FirstOrDefault()?.SupplierID} - 41000" });
-                    if (shipping_po.Items.Any())
-                    {
-                        z_po.purchaseorder_id = shipping_po.Items.FirstOrDefault()?.purchaseorder_id;
-                        list.Add(await zoho.PurchaseOrders.SaveAsync(z_po));
-                    }
-                    else
-                    {
-                        list.Add(await zoho.PurchaseOrders.CreateAsync(z_po));
-                    }
-                }
-
-                return list;
-            }
-            catch (Exception)
-            {
-                return new List<ZohoPurchaseOrder>();
-            }
         }
 
         private async Task<List<ZohoPurchaseOrder>> CreateOrUpdatePurchaseOrder(ZohoSalesOrder z_order, List<HSOrder> orders)
@@ -202,7 +122,7 @@ namespace OrderCloud.Integrations.Zoho
             var zOrder = await zoho.SalesOrders.ListAsync(new ZohoFilter() { Key = "reference_number", Value = orderWorksheet.Order.ID });
             if (zOrder.Items.Any())
             {
-                return await zoho.SalesOrders.SaveAsync(ZohoSalesOrderMapper.Map(zOrder.Items.FirstOrDefault(), orderWorksheet, items.ToList(), contact, promotions.Items));
+                return await zoho.SalesOrders.SaveAsync(ZohoSalesOrderMapper.Map(orderWorksheet, items.ToList(), contact, promotions.Items, zOrder.Items.FirstOrDefault()));
             }
 
             return await zoho.SalesOrders.CreateAsync(ZohoSalesOrderMapper.Map(orderWorksheet, items.ToList(), contact, promotions.Items));
