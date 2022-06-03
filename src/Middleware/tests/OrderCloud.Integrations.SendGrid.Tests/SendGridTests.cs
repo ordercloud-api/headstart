@@ -47,7 +47,7 @@ namespace OrderCloud.Integrations.SendGrid.Tests
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, $"{TestConstants.OrderID}-{TestConstants.Supplier2ID}").Returns(GetSupplierWorksheet(TestConstants.Supplier2ID, TestConstants.LineItem2ID, TestConstants.LineItem2Total));
             oc.Suppliers.ListAsync<HSSupplier>(Arg.Any<string>()).ReturnsForAnyArgs(Task.FromResult(GetSupplierList()));
             oc.AdminUsers.ListAsync<HSSellerUser>().ReturnsForAnyArgs(Task.FromResult(GetSellerUserList()));
-            var commandSub = Substitute.ForPartsOf<SendGridService>(sendgridSettings, oc, sendGridClient);
+            var commandSub = Substitute.ForPartsOf<SendGridService>(sendgridSettings, uiSettings, oc, sendGridClient);
             commandSub.Configure().WhenForAnyArgs(x => x.SendSingleTemplateEmailMultipleRcpts(default, default, default, default)).DoNotCallBase();
             commandSub.Configure().WhenForAnyArgs(x => x.SendSingleTemplateEmail(default, default, default, default)).DoNotCallBase();
 
@@ -72,12 +72,12 @@ namespace OrderCloud.Integrations.SendGrid.Tests
             // Assert
             // Confirm emails sent to buyer, seller users, supplier 1 notification recipients, supplier 2 notification recipients
             await commandSub.Configure().Received().SendSingleTemplateEmail(Arg.Any<string>(), TestConstants.BuyerEmail, Arg.Any<string>(), Arg.Any<object>());
-            await commandSub.Configure().Received().SendSingleTemplateEmailMultipleRcpts(Arg.Any<string>(), Arg.Is<List<EmailAddress>>(x => EqualEmailLists(x, expectedSellerEmailList)), Arg.Any<string>(), Arg.Any<object>());
-            await commandSub.Configure().Received().SendSingleTemplateEmailMultipleRcpts(Arg.Any<string>(), Arg.Is<List<EmailAddress>>(x => EqualEmailLists(x, expectedSupplier1EmailList)), Arg.Any<string>(), Arg.Any<object>());
-            await commandSub.Configure().Received().SendSingleTemplateEmailMultipleRcpts(Arg.Any<string>(), Arg.Is<List<EmailAddress>>(x => EqualEmailLists(x, expectedSupplier2EmailList)), Arg.Any<string>(), Arg.Any<object>());
+            await commandSub.Configure().Received().SendSingleTemplateEmailMultipleRcpts(Arg.Any<string>(), Arg.Is<List<string>>(x => EqualEmailLists(x, expectedSellerEmailList)), Arg.Any<string>(), Arg.Any<object>());
+            await commandSub.Configure().Received().SendSingleTemplateEmailMultipleRcpts(Arg.Any<string>(), Arg.Is<List<string>>(x => EqualEmailLists(x, expectedSupplier1EmailList)), Arg.Any<string>(), Arg.Any<object>());
+            await commandSub.Configure().Received().SendSingleTemplateEmailMultipleRcpts(Arg.Any<string>(), Arg.Is<List<string>>(x => EqualEmailLists(x, expectedSupplier2EmailList)), Arg.Any<string>(), Arg.Any<object>());
         }
 
-        private bool EqualEmailLists(List<EmailAddress> list1, List<EmailAddress> list2)
+        private bool EqualEmailLists(List<string> list1, List<EmailAddress> list2)
         {
             if (list1.Count() != list2.Count())
             {
@@ -87,10 +87,9 @@ namespace OrderCloud.Integrations.SendGrid.Tests
             {
                 var isEqual = true;
                 var list2Emails = list2.Select(item => item.Email);
-                var list1Emails = list1.Select(item => item.Email);
                 foreach (var item in list1)
                 {
-                    if (!list2Emails.Contains(item.Email))
+                    if (!list2Emails.Contains(item))
                     {
                         isEqual = false;
                     }
@@ -98,7 +97,7 @@ namespace OrderCloud.Integrations.SendGrid.Tests
 
                 foreach (var item in list2)
                 {
-                    if (!list1Emails.Contains(item.Email))
+                    if (!list1.Contains(item.Email))
                     {
                         isEqual = false;
                     }

@@ -8,7 +8,6 @@ using Headstart.Models.Misc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.WindowsAzure.Storage.Blob;
 using OrderCloud.SDK;
-using SendGrid.Helpers.Mail;
 
 namespace OrderCloud.Integrations.Emails
 {
@@ -16,9 +15,9 @@ namespace OrderCloud.Integrations.Emails
     {
         Task SendSingleTemplateEmail(string from, string to, string templateID, object templateData);
 
-        Task SendSingleTemplateEmailMultipleRcpts(string from, List<EmailAddress> tos, string templateID, object templateData);
+        Task SendSingleTemplateEmailMultipleRcpts(string from, List<string> tos, string templateID, object templateData);
 
-        Task SendSingleTemplateEmailMultipleRcptsAttachment(string from, List<EmailAddress> tos, string templateID, object templateData, CloudAppendBlob fileReference, string fileName);
+        Task SendSingleTemplateEmailMultipleRcptsAttachment(string from, List<string> tos, string templateID, object templateData, CloudAppendBlob fileReference, string fileName);
 
         Task SendSingleTemplateEmailSingleRcptAttachment(string from, string to, string templateID, object templateData, IFormFile fileReference);
 
@@ -38,7 +37,7 @@ namespace OrderCloud.Integrations.Emails
 
         Task SendLineItemStatusChangeEmail(HSOrder order, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItems, string firstName, string lastName, string email, EmailDisplayText lineItemEmailDisplayText);
 
-        Task SendLineItemStatusChangeEmailMultipleRcpts(HSOrder order, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItems, List<EmailAddress> tos, EmailDisplayText lineItemEmailDisplayText);
+        Task SendLineItemStatusChangeEmailMultipleRcpts(HSOrder order, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItems, List<string> tos, EmailDisplayText lineItemEmailDisplayText);
 
         Task SendContactSupplierAboutProductEmail(ContactSupplierBody template);
 

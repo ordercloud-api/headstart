@@ -450,20 +450,17 @@ namespace Headstart.API.Commands
                     {
                         // Loop over seller users, pull out THEIR boolean, as well as the List<string> of AddtlRcpts
                         var sellerUsers = await oc.AdminUsers.ListAsync<HSSellerUser>();
-                        var tos = new List<EmailAddress>();
+                        var tos = new List<string>();
                         foreach (var seller in sellerUsers.Items)
                         {
                             if (seller?.xp?.OrderEmails ?? false)
                             {
-                                tos.Add(new EmailAddress(seller.Email));
+                                tos.Add(seller.Email);
                             }
 
                             if (seller?.xp?.AddtlRcpts?.Any() ?? false)
                             {
-                                foreach (var rcpt in seller.xp.AddtlRcpts)
-                                {
-                                    tos.Add(new EmailAddress(rcpt));
-                                }
+                                tos.AddRange(seller.xp.AddtlRcpts);
                             }
                         }
 
@@ -482,13 +479,7 @@ namespace Headstart.API.Commands
                             {
                                 if (supplier?.xp?.NotificationRcpts?.Any() ?? false)
                                 {
-                                    var tos = new List<EmailAddress>();
-                                    foreach (var rcpt in supplier.xp.NotificationRcpts)
-                                    {
-                                        tos.Add(new EmailAddress(rcpt));
-                                    }
-
-                                    await emailServiceProvider.SendLineItemStatusChangeEmailMultipleRcpts(buyerOrder, lineItemStatusChanges, lineItemsChanged.ToList(), tos, emailText);
+                                    await emailServiceProvider.SendLineItemStatusChangeEmailMultipleRcpts(buyerOrder, lineItemStatusChanges, lineItemsChanged.ToList(), supplier.xp.NotificationRcpts, emailText);
                                 }
                             });
                         }

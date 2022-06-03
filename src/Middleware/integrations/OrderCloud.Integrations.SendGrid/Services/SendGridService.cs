@@ -72,12 +72,13 @@ namespace OrderCloud.Integrations.SendGrid
             }
         }
 
-        public virtual async Task SendSingleTemplateEmailMultipleRcpts(string from, List<EmailAddress> tos, string templateID, object templateData)
+        public virtual async Task SendSingleTemplateEmailMultipleRcpts(string from, List<string> tos, string templateID, object templateData)
         {
             Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sengrid template ID not configured in app settings", HttpStatusCode.NotImplemented));
             {
                 var fromEmail = new EmailAddress(from);
-                var msg = MailHelper.CreateSingleTemplateEmailToMultipleRecipients(fromEmail, tos, templateID, templateData);
+                var toEmails = tos.Select(email => new EmailAddress(email)).ToList();
+                var msg = MailHelper.CreateSingleTemplateEmailToMultipleRecipients(fromEmail, toEmails, templateID, templateData);
                 var response = await client.SendEmailAsync(msg);
                 if (!response.IsSuccessStatusCode)
                 {
@@ -86,12 +87,13 @@ namespace OrderCloud.Integrations.SendGrid
             }
         }
 
-        public async Task SendSingleTemplateEmailMultipleRcptsAttachment(string from, List<EmailAddress> tos, string templateID, object templateData, CloudAppendBlob fileReference, string fileName)
+        public async Task SendSingleTemplateEmailMultipleRcptsAttachment(string from, List<string> tos, string templateID, object templateData, CloudAppendBlob fileReference, string fileName)
         {
             Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sengrid template ID not configured in app settings", HttpStatusCode.NotImplemented));
             {
                 var fromEmail = new EmailAddress(from);
-                var msg = MailHelper.CreateSingleTemplateEmailToMultipleRecipients(fromEmail, tos, templateID, templateData);
+                var toEmails = tos.Select(email => new EmailAddress(email)).ToList();
+                var msg = MailHelper.CreateSingleTemplateEmailToMultipleRecipients(fromEmail, toEmails, templateID, templateData);
                 using (var stream = await fileReference.OpenReadAsync())
                 {
                     await msg.AddAttachmentAsync(fileName, stream);
@@ -170,7 +172,7 @@ namespace OrderCloud.Integrations.SendGrid
             await SendSingleTemplateEmail(sendgridSettings?.FromEmail, email, sendgridSettings?.LineItemStatusChangeTemplateID, templateData);
         }
 
-        public async Task SendLineItemStatusChangeEmailMultipleRcpts(HSOrder order, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItems, List<EmailAddress> tos, EmailDisplayText lineItemEmailDisplayText)
+        public async Task SendLineItemStatusChangeEmailMultipleRcpts(HSOrder order, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItems, List<string> tos, EmailDisplayText lineItemEmailDisplayText)
         {
             var productsList = CreateTemplateProductList(lineItems, lineItemStatusChanges);
             var templateData = new EmailTemplate<LineItemStatusChangeData>()
@@ -384,14 +386,10 @@ namespace OrderCloud.Integrations.SendGrid
                     DynamicText = "Error encountered while trying to void authorization on this order. Please contact customer and help them manually void authorization",
                 },
             };
-            var toList = new List<EmailAddress>();
-            var supportEmails = sendgridSettings?.CriticalSupportEmails.Split(",");
-            foreach (var email in supportEmails)
-            {
-                toList.Add(new EmailAddress { Email = email });
-            }
 
-            await SendSingleTemplateEmailMultipleRcpts(sendgridSettings?.FromEmail, toList, sendgridSettings?.CriticalSupportTemplateID, templateData);
+            var supportEmails = sendgridSettings?.CriticalSupportEmails.Split(",")?.ToList();
+
+            await SendSingleTemplateEmailMultipleRcpts(sendgridSettings?.FromEmail, supportEmails, sendgridSettings?.CriticalSupportTemplateID, templateData);
         }
 
         public async Task EmailGeneralSupportQueue(SupportCase supportCase)
@@ -454,13 +452,7 @@ namespace OrderCloud.Integrations.SendGrid
                         Message = OrderSubmitEmailConstants.GetOrderSubmitText(orderWorksheet.Order.ID, supplierOrderWorksheet.Order.FromUser.FirstName, supplierOrderWorksheet.Order.FromUser.LastName, VerifiedUserType.supplier),
                     };
 
-                    var supplierTos = new List<EmailAddress>();
-                    foreach (var rcpt in supplier.xp.NotificationRcpts)
-                    {
-                        supplierTos.Add(new EmailAddress(rcpt));
-                    }
-
-                    await SendSingleTemplateEmailMultipleRcpts(sendgridSettings?.FromEmail, supplierTos, sendgridSettings?.OrderSubmitTemplateID, supplierTemplateData);
+                    await SendSingleTemplateEmailMultipleRcpts(sendgridSettings?.FromEmail, supplier.xp.NotificationRcpts, sendgridSettings?.OrderSubmitTemplateID, supplierTemplateData);
                 }
             }
         }
@@ -473,7 +465,7 @@ namespace OrderCloud.Integrations.SendGrid
             return supplierOrderWorksheet;
         }
 
-        private async Task<List<EmailAddress>> GetSupplierEmails(HSOrderWorksheet orderWorksheet)
+        private async Task<List<string>> GetSupplierEmails(HSOrderWorksheet orderWorksheet)
         {
             ListPage<HSSupplier> suppliers = null;
             if (orderWorksheet.Order.xp.SupplierIDs != null)
@@ -482,38 +474,33 @@ namespace OrderCloud.Integrations.SendGrid
                 suppliers = await oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={filterString}");
             }
 
-            var supplierTos = new List<EmailAddress>();
+            var supplierTos = new List<string>();
             foreach (var supplier in suppliers.Items)
             {
-                if (supplier?.xp?.NotificationRcpts?.Count() > 0)
+                if (supplier?.xp?.NotificationRcpts?.Any() ?? false)
                 {
-                    foreach (var rcpt in supplier.xp.NotificationRcpts)
-                    {
-                        supplierTos.Add(new EmailAddress(rcpt));
-                    }
+                    supplierTos.AddRange(supplier.xp.NotificationRcpts);
                 }
             }
 
             return supplierTos;
         }
 
-        private async Task<List<EmailAddress>> GetSellerEmails()
+        private async Task<List<string>> GetSellerEmails()
         {
             var sellerUsers = await oc.AdminUsers.ListAsync<HSSellerUser>();
-            var sellerTos = new List<EmailAddress>();
+            var sellerTos = new List<string>();
+
             foreach (var seller in sellerUsers.Items)
             {
                 if (seller?.xp?.OrderEmails ?? false)
                 {
-                    sellerTos.Add(new EmailAddress(seller.Email));
+                    sellerTos.Add(seller.Email);
                 }
 
                 if (seller?.xp?.AddtlRcpts?.Any() ?? false)
                 {
-                    foreach (var rcpt in seller.xp.AddtlRcpts)
-                    {
-                        sellerTos.Add(new EmailAddress(rcpt));
-                    }
+                    sellerTos.AddRange(seller.xp.AddtlRcpts);
                 }
             }
 
