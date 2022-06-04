@@ -9,7 +9,6 @@ using NSubstitute;
 using NSubstitute.Extensions;
 using NUnit.Framework;
 using OrderCloud.Integrations.Emails;
-using OrderCloud.Integrations.Library.Models;
 using OrderCloud.Integrations.Taxation.Interfaces;
 using OrderCloud.SDK;
 using SendGrid;

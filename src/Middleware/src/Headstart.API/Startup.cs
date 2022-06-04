@@ -248,9 +248,11 @@ namespace Headstart.API
                 .AddSingleton<IOMSService>(z => new ZohoService(
                     new ZohoClient(settings.ZohoSettings, flurlClientFactory),
                     orderCloudClient))
-                .AddSingleton<IExchangeRatesClient, ExchangeRatesClient>()
+                .AddSingleton<IExchangeRatesClient>(x => new ExchangeRatesClient(flurlClientFactory))
+                .AddSingleton<ICurrencyConversionService, ExchangeRatesService>()
                 .AddSingleton<IAssetClient>(provider => new AssetClient(new OrderCloudIntegrationsBlobService(assetConfig), settings.StorageAccountSettings))
-                .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand(new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
+                .AddSingleton<ICurrencyConversionCommand>(provider =>
+                    new ExchangeRatesCommand(orderCloudClient, new OrderCloudIntegrationsBlobService(currencyConfig), provider.GetService<ICurrencyConversionService>(), provider.GetService<ISimpleCache>()))
                 .AddSingleton<ITaxCodesProvider>(provider =>
                 {
                     return settings.EnvironmentSettings.TaxProvider switch

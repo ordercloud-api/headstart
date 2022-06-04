@@ -3,8 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Headstart.Common.Constants;
 using Headstart.Common.Models;
-using OrderCloud.Integrations.ExchangeRates;
-using OrderCloud.Integrations.Library.Models;
+using Headstart.Common.Services;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Extensions
@@ -104,7 +103,7 @@ namespace Headstart.Common.Extensions
             return updatedEstimates;
         }
 
-        public static async Task<IList<HSShipEstimate>> ConvertCurrency(this IList<HSShipEstimate> shipEstimates, CurrencyCode shipperCurrency, CurrencyCode buyerCurrency, IExchangeRatesCommand exchangeRates)
+        public static async Task<IList<HSShipEstimate>> ConvertCurrency(this IList<HSShipEstimate> shipEstimates, CurrencyCode shipperCurrency, CurrencyCode buyerCurrency, ICurrencyConversionService currencyConversionService)
         {
             // If the Buyer's currency is USD, do not convert rates.
             if (buyerCurrency == CurrencyCode.USD)
@@ -112,7 +111,7 @@ namespace Headstart.Common.Extensions
                 return shipEstimates;
             }
 
-            var rates = (await exchangeRates.Get(buyerCurrency)).Rates;
+            var rates = (await currencyConversionService.Get(buyerCurrency)).Rates;
             var conversionRate = rates.Find(r => r.Currency == shipperCurrency).Rate;
             return shipEstimates.Select(estimate =>
             {

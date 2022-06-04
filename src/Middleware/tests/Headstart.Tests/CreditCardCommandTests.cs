@@ -4,8 +4,8 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Headstart.API;
 using Headstart.API.Commands;
+using Headstart.Common.Commands;
 using Headstart.Common.Models;
-using Headstart.Common.Services;
 using Headstart.Tests.Mocks;
 using NSubstitute;
 using NUnit.Framework;
@@ -13,7 +13,6 @@ using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Alerts;
 using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.CardConnect.Models;
-using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.Tests
@@ -22,7 +21,7 @@ namespace Headstart.Tests
     {
         private IOrderCloudIntegrationsCardConnectService cardConnect;
         private IOrderCloudClient oc;
-        private IHSExchangeRatesService hsExchangeRates;
+        private ICurrencyConversionCommand currencyConversionCommand;
         private ISupportAlertService supportAlerts;
         private AppSettings settings;
         private ICreditCardCommand sut;
@@ -58,15 +57,15 @@ namespace Headstart.Tests
             oc.Payments.PatchAsync<HSPayment>(OrderDirection.Incoming, orderID, Arg.Any<string>(), Arg.Any<PartialPayment>())
                 .Returns(Task.FromResult(new HSPayment { }));
 
-            hsExchangeRates = Substitute.For<IHSExchangeRatesService>();
-            hsExchangeRates.GetCurrencyForUser(userToken)
+            currencyConversionCommand = Substitute.For<ICurrencyConversionCommand>();
+            currencyConversionCommand.GetCurrencyForUser(userToken)
                 .Returns(Task.FromResult(currency));
 
             supportAlerts = Substitute.For<ISupportAlertService>();
             settings = Substitute.For<AppSettings>();
             settings.CardConnectSettings.CadMerchantID = merchantID;
 
-            sut = new CreditCardCommand(cardConnect, oc, hsExchangeRates, supportAlerts, settings);
+            sut = new CreditCardCommand(cardConnect, oc, currencyConversionCommand, supportAlerts, settings);
         }
 
         [Test]
@@ -247,7 +246,7 @@ namespace Headstart.Tests
             };
             settings.CardConnectSettings.UsdMerchantID = merchantID;
             settings.CardConnectSettings.CadMerchantID = "somethingelse";
-            hsExchangeRates.GetCurrencyForUser(userToken)
+            currencyConversionCommand.GetCurrencyForUser(userToken)
                 .Returns(Task.FromResult(CurrencyCode.USD));
             oc.Payments.ListAsync<HSPayment>(OrderDirection.Incoming, orderID, filters: Arg.Is<object>(f => (string)f == "Type=CreditCard"))
                 .Returns(PaymentMocks.PaymentList(MockCCPayment(paymentTotal, true, payment1transactions)));

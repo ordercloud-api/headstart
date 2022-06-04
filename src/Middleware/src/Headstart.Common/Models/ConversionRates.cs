@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using OrderCloud.Integrations.Library.Models;
 
-namespace OrderCloud.Integrations.ExchangeRates.Models
+namespace Headstart.Common.Models
 {
     public class ConversionRates
     {

@@ -1,8 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using OrderCloud.Integrations.Library.Models;
 
-namespace OrderCloud.Integrations.ExchangeRates.Models
+namespace Headstart.Common.Models
 {
     public class ConversionRate
     {

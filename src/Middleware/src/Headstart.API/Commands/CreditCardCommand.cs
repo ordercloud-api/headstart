@@ -1,13 +1,12 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Headstart.Common.Commands;
 using Headstart.Common.Models;
-using Headstart.Common.Services;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Alerts;
 using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.CardConnect.Mappers;
 using OrderCloud.Integrations.CardConnect.Models;
-using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
@@ -29,20 +28,20 @@ namespace Headstart.API.Commands
     {
         private readonly IOrderCloudIntegrationsCardConnectService cardConnect;
         private readonly IOrderCloudClient oc;
-        private readonly IHSExchangeRatesService hsExchangeRates;
+        private readonly ICurrencyConversionCommand currencyConversionCommand;
         private readonly ISupportAlertService supportAlerts;
         private readonly AppSettings settings;
 
         public CreditCardCommand(
             IOrderCloudIntegrationsCardConnectService card,
             IOrderCloudClient oc,
-            IHSExchangeRatesService hsExchangeRates,
+            ICurrencyConversionCommand currencyConversionCommand,
             ISupportAlertService supportAlerts,
             AppSettings settings)
         {
             cardConnect = card;
             this.oc = oc;
-            this.hsExchangeRates = hsExchangeRates;
+            this.currencyConversionCommand = currencyConversionCommand;
             this.supportAlerts = supportAlerts;
             this.settings = settings;
         }
@@ -144,7 +143,7 @@ namespace Headstart.API.Commands
                     if (retref != null)
                     {
                         transactionID = transaction.ID;
-                        var userCurrency = await hsExchangeRates.GetCurrencyForUser(userToken);
+                        var userCurrency = await currencyConversionCommand.GetCurrencyForUser(userToken);
                         var response = await cardConnect.VoidAuthorization(new CardConnectVoidRequest
                         {
                             currency = userCurrency.ToString(),
@@ -191,14 +190,14 @@ namespace Headstart.API.Commands
 
         private async Task<CardConnectBuyerCreditCard> MeTokenize(OrderCloudIntegrationsCreditCardToken card, string userToken)
         {
-            var userCurrency = await hsExchangeRates.GetCurrencyForUser(userToken);
+            var userCurrency = await currencyConversionCommand.GetCurrencyForUser(userToken);
             var auth = await cardConnect.Tokenize(CardConnectMapper.Map(card, userCurrency.ToString()));
             return BuyerCreditCardMapper.Map(card, auth);
         }
 
         private async Task<CreditCard> Tokenize(OrderCloudIntegrationsCreditCardToken card, string userToken)
         {
-            var userCurrency = await hsExchangeRates.GetCurrencyForUser(userToken);
+            var userCurrency = await currencyConversionCommand.GetCurrencyForUser(userToken);
             var auth = await cardConnect.Tokenize(CardConnectMapper.Map(card, userCurrency.ToString()));
             return CreditCardMapper.Map(card, auth);
         }

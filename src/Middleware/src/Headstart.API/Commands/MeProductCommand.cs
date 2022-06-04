@@ -7,9 +7,6 @@ using Headstart.Common.Models;
 using Headstart.Models.Misc;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Emails;
-using OrderCloud.Integrations.ExchangeRates;
-using OrderCloud.Integrations.ExchangeRates.Models;
-using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
@@ -29,7 +26,7 @@ namespace Headstart.API.Commands
         private readonly IHSBuyerCommand hsBuyerCommand;
         private readonly IEmailServiceProvider emailServiceProvider;
         private readonly ISimpleCache cache;
-        private readonly IExchangeRatesCommand exchangeRatesCommand;
+        private readonly ICurrencyConversionCommand currencyConversionCommand;
         private readonly AppSettings settings;
 
         public MeProductCommand(
@@ -37,14 +34,14 @@ namespace Headstart.API.Commands
             IHSBuyerCommand hsBuyerCommand,
             IEmailServiceProvider emailServiceProvider,
             ISimpleCache cache,
-            IExchangeRatesCommand exchangeRatesCommand,
+            ICurrencyConversionCommand currencyConversionCommand,
             AppSettings settings)
         {
             oc = elevatedOc;
             this.hsBuyerCommand = hsBuyerCommand;
             this.emailServiceProvider = emailServiceProvider;
             this.cache = cache;
-            this.exchangeRatesCommand = exchangeRatesCommand;
+            this.currencyConversionCommand = currencyConversionCommand;
             this.settings = settings;
         }
 
@@ -198,7 +195,7 @@ namespace Headstart.API.Commands
         private async Task<List<ConversionRate>> GetExchangeRatesForUser(string userToken)
         {
             var currency = await GetCurrencyForUser(userToken);
-            var exchangeRates = await exchangeRatesCommand.Get(new ListArgs<ConversionRate>() { }, currency);
+            var exchangeRates = await currencyConversionCommand.Get(new ListArgs<ConversionRate>() { }, currency);
             return exchangeRates.Items.ToList();
         }
     }

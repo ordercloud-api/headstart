@@ -1,43 +1,29 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
-using Flurl.Http.Configuration;
+using Headstart.Common.Commands;
+using Headstart.Common.Models;
+using Headstart.Common.Services;
 using Newtonsoft.Json;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.ExchangeRates.Models;
+using OrderCloud.Integrations.ExchangeRates.Mappers;
 using OrderCloud.Integrations.Library;
-using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.ExchangeRates
 {
-    public interface IExchangeRatesCommand
+    public class ExchangeRatesCommand : ICurrencyConversionCommand
     {
-        Task<ListPage<ConversionRate>> Get(ListArgs<ConversionRate> rateArgs, CurrencyCode currency);
-
-        Task<ConversionRates> Get(CurrencyCode currencyCode);
-
-        Task<ListPage<ConversionRate>> GetRateList();
-
-        ListPage<ConversionRate> Filter(ListArgs<ConversionRate> rateArgs, ConversionRates rates);
-
-        Task<double?> ConvertCurrency(CurrencyCode from, CurrencyCode to, double value);
-
-        Task Update();
-    }
-
-    public class ExchangeRatesCommand : IExchangeRatesCommand
-    {
-        private readonly IExchangeRatesClient client;
+        private readonly IOrderCloudClient oc;
+        private readonly ICurrencyConversionService currencyConversionService;
         private readonly IOrderCloudIntegrationsBlobService blob;
         private readonly ISimpleCache cache;
 
-        public ExchangeRatesCommand(IOrderCloudIntegrationsBlobService blob, IFlurlClientFactory flurlFactory, ISimpleCache cache)
+        public ExchangeRatesCommand(IOrderCloudClient oc, IOrderCloudIntegrationsBlobService blob, ICurrencyConversionService currencyConversionService, ISimpleCache cache)
         {
-            client = new ExchangeRatesClient(flurlFactory);
+            this.oc = oc;
+            this.currencyConversionService = currencyConversionService;
             this.blob = blob;
             this.cache = cache;
         }
@@ -94,24 +80,9 @@ namespace OrderCloud.Integrations.ExchangeRates
             return value * rate;
         }
 
-        /// <summary>
-        /// Intended for private consumption by functions that update the cached resources.
-        /// </summary>
-        /// <param name="currencyCode">The ISO 4217 currency code.</param>
-        /// <returns>The available exchange rates.</returns>
-        public async Task<ConversionRates> Get(CurrencyCode currencyCode)
-        {
-            var rates = await client.Get(currencyCode);
-            return new ConversionRates()
-            {
-                BaseCode = currencyCode,
-                Rates = MapRates(rates.rates),
-            };
-        }
-
         public async Task<ListPage<ConversionRate>> GetRateList()
         {
-            var rates = MapRates();
+            var rates = ExchangeRatesMapper.MapRates();
             return await Task.FromResult(new ListPage<ConversionRate>()
             {
                 Meta = new ListPageMeta()
@@ -125,50 +96,29 @@ namespace OrderCloud.Integrations.ExchangeRates
             });
         }
 
+        public async Task<CurrencyCode> GetCurrencyForUser(string userToken)
+        {
+            var buyerUserGroups = await oc.Me.ListUserGroupsAsync<HSLocationUserGroup>(opts => opts.AddFilter(u => u.xp.Type == "BuyerLocation"), userToken);
+            var currency = buyerUserGroups.Items.FirstOrDefault(u => u.xp.Currency != null)?.xp?.Currency;
+            Require.That(currency != null, new ErrorCode("Exchange Rate Error", "Exchange Rate Not Defined For User"));
+            return (CurrencyCode)currency;
+        }
+
+        public async Task<List<ConversionRate>> GetExchangeRatesForUser(string userToken)
+        {
+            var currency = await GetCurrencyForUser(userToken);
+            var exchangeRates = await Get(new ListArgs<ConversionRate>() { }, currency);
+            return exchangeRates.Items.ToList();
+        }
+
         public async Task Update()
         {
             var list = await GetRateList();
             await Throttler.RunAsync(list.Items, 100, 10, async rate =>
             {
-                var rates = await Get(rate.Currency);
+                var rates = await currencyConversionService.Get(rate.Currency);
                 await blob.Save($"{rate.Currency}.json", JsonConvert.SerializeObject(rates));
             });
-        }
-
-        private static string GetIcon(CurrencyCode currencyCode)
-        {
-            using var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream($"OrderCloud.Integrations.ExchangeRates.Icons.{currencyCode}.gif");
-            if (stream == null)
-            {
-                return null;
-            }
-
-            using var ms = new MemoryStream();
-            stream.CopyTo(ms);
-            return $"data:image/jpg;base64,{Convert.ToBase64String(ms.ToArray())}";
-        }
-
-        private static List<ConversionRate> MapRates(ExchangeRatesValues ratesValues = null)
-        {
-            return Enum.GetValues(typeof(CurrencyCode)).Cast<CurrencyCode>().Select(currencyCode => new ConversionRate()
-            {
-                Currency = currencyCode,
-                Icon = GetIcon(currencyCode),
-                Symbol = CurrencyLookup.CurrencyCodeLookup.FirstOrDefault(s => s.Key == currencyCode).Value.Symbol,
-                Name = CurrencyLookup.CurrencyCodeLookup.FirstOrDefault(s => s.Key == currencyCode).Value.Name,
-                Rate = FixRate(ratesValues, currencyCode),
-            }).ToList();
-        }
-
-        private static double? FixRate(ExchangeRatesValues values, CurrencyCode e)
-        {
-            var t = values?.GetType().GetProperty($"{e}")?.GetValue(values, null).To<double?>();
-            if (!t.HasValue)
-            {
-                return 1;
-            }
-
-            return t.Value == 0 ? 1 : t.Value;
         }
 
         private async Task<ListPage<ConversionRate>> GetCachedRates(ListArgs<ConversionRate> rateArgs, CurrencyCode currency)

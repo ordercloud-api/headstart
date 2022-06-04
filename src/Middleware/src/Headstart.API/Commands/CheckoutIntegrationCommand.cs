@@ -10,7 +10,6 @@ using Headstart.Common.Settings;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.EasyPost;
 using OrderCloud.Integrations.EasyPost.Models;
-using OrderCloud.Integrations.ExchangeRates;
 using OrderCloud.Integrations.Library;
 using OrderCloud.Integrations.Library.Interfaces;
 using OrderCloud.Integrations.Library.Models;
@@ -34,7 +33,7 @@ namespace Headstart.API.Commands
     {
         private readonly ITaxCalculator taxCalculator;
         private readonly IShippingService shippingService;
-        private readonly IExchangeRatesCommand exchangeRates;
+        private readonly ICurrencyConversionService currencyConversionService;
         private readonly IOrderCloudClient oc;
         private readonly IDiscountDistributionService discountDistribution;
         private readonly AppSettings settings;
@@ -42,14 +41,14 @@ namespace Headstart.API.Commands
         public CheckoutIntegrationCommand(
             IDiscountDistributionService discountDistribution,
             ITaxCalculator taxCalculator,
-            IExchangeRatesCommand exchangeRates,
-            IOrderCloudClient orderCloud,
+            ICurrencyConversionService currencyConversionService,
+            IOrderCloudClient orderCloudClient,
             IShippingService shippingService,
             AppSettings settings)
         {
             this.taxCalculator = taxCalculator;
-            this.exchangeRates = exchangeRates;
-            oc = orderCloud;
+            this.currencyConversionService = currencyConversionService;
+            oc = orderCloudClient;
             this.shippingService = shippingService;
             this.settings = settings;
             this.discountDistribution = discountDistribution;
@@ -287,14 +286,14 @@ namespace Headstart.API.Commands
             await shipResponse.ShipEstimates
                 .CheckForEmptyRates(settings.EasyPostSettings.NoRatesFallbackCost, settings.EasyPostSettings.NoRatesFallbackTransitDays)
                 .ApplyShippingLogic(worksheet, oc, settings.EasyPostSettings.FreeShippingTransitDays).Result
-                .ConvertCurrency(CurrencyCode.USD, buyerCurrency, exchangeRates);
+                .ConvertCurrency(CurrencyCode.USD, buyerCurrency, currencyConversionService);
 
             return shipResponse;
         }
 
         private async Task<List<HSShipEstimate>> ConvertShippingRatesCurrency(IList<HSShipEstimate> shipEstimates, CurrencyCode shipperCurrency, CurrencyCode buyerCurrency)
         {
-            var rates = (await exchangeRates.Get(buyerCurrency)).Rates;
+            var rates = (await currencyConversionService.Get(buyerCurrency)).Rates;
             var conversionRate = rates.Find(r => r.Currency == shipperCurrency).Rate;
             return shipEstimates.Select(estimate =>
             {

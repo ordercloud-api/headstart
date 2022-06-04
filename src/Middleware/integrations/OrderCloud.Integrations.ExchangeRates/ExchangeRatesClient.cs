@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Flurl.Http;
 using Flurl.Http.Configuration;
+using Headstart.Common.Models;
 using OrderCloud.Integrations.ExchangeRates.Models;
-using OrderCloud.Integrations.Library.Models;
 
 namespace OrderCloud.Integrations.ExchangeRates
 {

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace OrderCloud.Integrations.Library.Models
+namespace Headstart.Common.Models
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum CurrencyCode
