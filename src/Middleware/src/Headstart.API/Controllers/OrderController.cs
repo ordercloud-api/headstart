@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.RMAs.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Controllers

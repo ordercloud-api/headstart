@@ -35,6 +35,7 @@
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.EnvironmentSeed\OrderCloud.Integrations.EnvironmentSeed.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.ExchangeRates\OrderCloud.Integrations.ExchangeRates.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Library\OrderCloud.Integrations.Library.csproj" />
+    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.RMAs\OrderCloud.Integrations.RMAs.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.SendGrid\OrderCloud.Integrations.SendGrid.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Smarty\OrderCloud.Integrations.Smarty.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Taxation\OrderCloud.Integrations.Taxation.csproj" />

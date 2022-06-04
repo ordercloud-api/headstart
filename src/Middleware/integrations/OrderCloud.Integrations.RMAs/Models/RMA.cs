@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using OrderCloud.Integrations.Library.Cosmos;
 
-namespace Headstart.Common.Models
+namespace OrderCloud.Integrations.RMAs.Models
 {
     [JsonConverter(typeof(StringEnumConverter))]
     public enum RMAType

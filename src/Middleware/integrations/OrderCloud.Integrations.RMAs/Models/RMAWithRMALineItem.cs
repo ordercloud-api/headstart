@@ -1,6 +1,4 @@
-﻿using Headstart.Common.Models;
-
-namespace Headstart.Common.Repositories.Models
+﻿namespace OrderCloud.Integrations.RMAs.Models
 {
     public class RMAWithRMALineItem
     {

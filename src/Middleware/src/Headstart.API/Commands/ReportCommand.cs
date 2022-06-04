@@ -11,6 +11,8 @@ using Headstart.Models.Misc;
 using Microsoft.Azure.Cosmos;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.RMAs.Models;
+using OrderCloud.Integrations.RMAs.Repositories;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Commands

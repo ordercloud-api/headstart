@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Headstart.Common.Models;
-using Headstart.Common.Repositories;
+using Headstart.Common.Settings;
 using Headstart.Models;
 using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
@@ -14,9 +14,11 @@ using OrderCloud.Integrations.CardConnect.Mappers;
 using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.Integrations.Emails;
 using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.RMAs.Models;
+using OrderCloud.Integrations.RMAs.Repositories;
 using OrderCloud.SDK;
 
-namespace Headstart.API.Commands
+namespace OrderCloud.Integrations.RMAs.Commands
 {
     public interface IRMACommand
     {
@@ -44,15 +46,15 @@ namespace Headstart.API.Commands
         private readonly IRMARepo rmaRepo;
         private readonly IOrderCloudIntegrationsCardConnectService cardConnect;
         private readonly IEmailServiceProvider emailServiceProvider;
-        private readonly AppSettings settings;
+        private readonly OrderCloudSettings orderCloudSettings;
 
-        public RMACommand(IOrderCloudClient oc, IRMARepo rmaRepo, IOrderCloudIntegrationsCardConnectService cardConnect, IEmailServiceProvider emailServiceProvider, AppSettings settings)
+        public RMACommand(IOrderCloudClient oc, IRMARepo rmaRepo, IOrderCloudIntegrationsCardConnectService cardConnect, IEmailServiceProvider emailServiceProvider, OrderCloudSettings orderCloudSettings)
         {
             this.oc = oc;
             this.rmaRepo = rmaRepo;
             this.cardConnect = cardConnect;
             this.emailServiceProvider = emailServiceProvider;
-            this.settings = settings;
+            this.orderCloudSettings = orderCloudSettings;
         }
 
         public async Task BuildRMA(HSOrder order, List<string> supplierIDs, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItemsChanged, DecodedToken decodedToken)
@@ -60,7 +62,7 @@ namespace Headstart.API.Commands
             foreach (string supplierID in supplierIDs)
             {
                 var sellerID = supplierID;
-                var sellerName = supplierID == null ? settings.OrderCloudSettings.MarketplaceName : (await oc.Suppliers.GetAsync<HSSupplier>(supplierID)).Name;
+                var sellerName = supplierID == null ? orderCloudSettings.MarketplaceName : (await oc.Suppliers.GetAsync<HSSupplier>(supplierID)).Name;
 
                 RMA rma = new RMA()
                 {

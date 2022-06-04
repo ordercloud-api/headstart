@@ -5,6 +5,7 @@ using Headstart.Common.Models;
 using Headstart.Common.Repositories.Models;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.RMAs.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Controllers

@@ -1,8 +1,8 @@
-﻿using Headstart.Common.Models;
-using Microsoft.Azure.Cosmos;
+﻿using Microsoft.Azure.Cosmos;
 using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.RMAs.Models;
 
-namespace Headstart.Common.Repositories
+namespace OrderCloud.Integrations.RMAs.Repositories
 {
     public interface IRMARepo : IRepository<RMA>
     {
