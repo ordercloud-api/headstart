@@ -18,7 +18,7 @@ namespace OrderCloud.Integrations.CardConnect
         Production,
     }
 
-    public interface IOrderCloudIntegrationsCardConnectService
+    public interface ICardConnectClient
     {
         Task<CardConnectAccountResponse> Tokenize(CardConnectAccountRequest request);
 
@@ -35,30 +35,13 @@ namespace OrderCloud.Integrations.CardConnect
         Task<CardConnectRefundResponse> Refund(CardConnectRefundRequest request);
     }
 
-    public class OrderCloudIntegrationsCardConnectConfig
-    {
-        public string Site { get; set; }
-
-        public string BaseUrl { get; set; }
-
-        public string Authorization { get; set; }
-
-        public string AuthorizationCad { get; set; } // we need a separate merchant account for canadian currency
-
-        public string UsdMerchantID { get; set; }
-
-        public string CadMerchantID { get; set; }
-
-        public string EurMerchantID { get; set; }
-    }
-
-    public class OrderCloudIntegrationsCardConnectService : IOrderCloudIntegrationsCardConnectService
+    public class CardConnectClient : ICardConnectClient
     {
         private readonly IFlurlClient flurl;
         private bool noAccountCredentials;
         private AppEnvironment appEnvironment;
 
-        public OrderCloudIntegrationsCardConnectService(OrderCloudIntegrationsCardConnectConfig config, string environment, IFlurlClientFactory flurlFactory)
+        public CardConnectClient(CardConnectConfig config, string environment, IFlurlClientFactory flurlFactory)
         {
             Config = config;
 
@@ -68,7 +51,7 @@ namespace OrderCloud.Integrations.CardConnect
             flurl = flurlFactory.Get($"https://{Config?.Site}.{Config?.BaseUrl}/");
         }
 
-        public OrderCloudIntegrationsCardConnectConfig Config { get; }
+        public CardConnectConfig Config { get; }
 
         public async Task<CardConnectAccountResponse> Tokenize(CardConnectAccountRequest request)
         {

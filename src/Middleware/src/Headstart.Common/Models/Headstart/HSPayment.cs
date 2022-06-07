@@ -1,5 +1,4 @@
-﻿using OrderCloud.Integrations.CardConnect.Models;
-using OrderCloud.SDK;
+﻿using OrderCloud.SDK;
 
 namespace Headstart.Common.Models
 {
@@ -20,7 +19,7 @@ namespace Headstart.Common.Models
 
     public class TransactionXP
     {
-        public CardConnectAuthorizationResponse CardConnectResponse { get; set; }
+        public CCTransactionResult CCTransactionResult { get; set; }
 
         public RMADetails RMADetails { get; set; }
     }

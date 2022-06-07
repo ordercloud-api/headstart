@@ -4,12 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Headstart.API;
 using Headstart.Common.Models;
+using Headstart.Common.Services;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.CardConnect;
-using OrderCloud.Integrations.CardConnect.Mappers;
-using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.Integrations.RMAs.Commands;
 using OrderCloud.Integrations.RMAs.Models;
 using OrderCloud.SDK;
@@ -20,14 +18,14 @@ namespace Headstart.Jobs
     {
         private readonly AppSettings settings;
         private readonly IOrderCloudClient oc;
-        private readonly IOrderCloudIntegrationsCardConnectService cardConnect;
+        private readonly ICreditCardProcessor creditCardService;
         private readonly IRMACommand rmaCommand;
 
-        public PaymentCaptureJob(AppSettings settings, IOrderCloudClient oc, IOrderCloudIntegrationsCardConnectService cardConnect, IRMACommand rmaCommand)
+        public PaymentCaptureJob(AppSettings settings, IOrderCloudClient oc, ICreditCardProcessor creditCardService, IRMACommand rmaCommand)
         {
             this.settings = settings;
             this.oc = oc;
-            this.cardConnect = cardConnect;
+            this.creditCardService = creditCardService;
             this.rmaCommand = rmaCommand;
         }
 
@@ -117,7 +115,7 @@ namespace Headstart.Jobs
                 throw new PaymentCaptureJobException("No valid payment authorization on the order", orderID, payment.ID);
             }
 
-            if (transaction?.xp?.CardConnectResponse == null)
+            if (transaction?.xp?.CCTransactionResult == null)
             {
                 throw new PaymentCaptureJobException("Missing transaction.xp.CardConnectResponse", orderID, payment.ID, transaction.ID);
             }
@@ -125,7 +123,7 @@ namespace Headstart.Jobs
             var authHasBeenVoided = payment.Transactions.Any(t =>
                                             t.Type == "CreditCardVoidAuthorization" &&
                                             t.Succeeded &&
-                                            t.xp?.CardConnectResponse?.retref == transaction.xp?.CardConnectResponse?.retref);
+                                            t.xp?.CCTransactionResult?.TransactionID == transaction.xp?.CCTransactionResult?.TransactionID);
             if (authHasBeenVoided)
             {
                 throw new PaymentCaptureJobException("Payment authorization has been voided", orderID, payment.ID, transaction.ID);
@@ -136,37 +134,19 @@ namespace Headstart.Jobs
 
         private async Task<bool> HasBeenCapturedPreviouslyAsync(HSOrder order, HSPaymentTransaction transaction)
         {
-            var inquire = await cardConnect.Inquire(new CardConnectInquireRequest
-            {
-                merchid = transaction.xp.CardConnectResponse.merchid,
-                orderid = order.ID,
-                set = "1",
-                currency = order.xp.Currency.ToString(),
-                retref = transaction.xp.CardConnectResponse.retref,
-            });
-            return !string.IsNullOrEmpty(inquire.capturedate);
+            var inquire = await creditCardService.Inquire(order, transaction);
+            return !string.IsNullOrEmpty(inquire.CaptureDate);
         }
 
         private async Task CapturePaymentAsync(HSOrder order, HSPayment payment, HSPaymentTransaction transaction)
         {
             try
             {
-                var response = await cardConnect.Capture(new CardConnectCaptureRequest
-                {
-                    merchid = transaction.xp.CardConnectResponse.merchid,
-                    retref = transaction.xp.CardConnectResponse.retref,
-                    currency = order.xp.Currency.ToString(),
-                });
-                await oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, response));
+                await creditCardService.Capture(order, payment, transaction);
             }
-            catch (CardConnectInquireException ex)
+            catch (CatalystBaseException ex)
             {
-                throw new PaymentCaptureJobException($"Error inquiring payment. Message: {ex.ApiError.Message}, ErrorCode: {ex.ApiError.ErrorCode}", order.ID, payment.ID, transaction.ID);
-            }
-            catch (CardConnectCaptureException ex)
-            {
-                await oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(payment, ex.Response));
-                throw new PaymentCaptureJobException($"Error capturing payment. Message: {ex.ApiError.Message}, ErrorCode: {ex.ApiError.ErrorCode}", order.ID, payment.ID, transaction.ID);
+                throw new PaymentCaptureJobException($"Error capturing payment. Message: {ex.Errors[0].Message}, ErrorCode: {ex.Errors[0].ErrorCode}", order.ID, payment.ID, transaction.ID);
             }
         }
     }

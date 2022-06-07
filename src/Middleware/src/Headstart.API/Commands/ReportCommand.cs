@@ -114,8 +114,7 @@ namespace Headstart.API.Commands
             foreach (var buyerID in template.Filters.BuyerID)
             {
                 // For every buyer included in the template filters, grab all buyer locations (exceeding 100 maximum)
-                var buyerLocations = await oc.Addresses.ListAllAsync<Address>(
-                    buyerID);
+                var buyerLocations = await oc.Addresses.ListAllAsync<Address>(buyerID);
                 allBuyerLocations.AddRange(buyerLocations);
             }
 

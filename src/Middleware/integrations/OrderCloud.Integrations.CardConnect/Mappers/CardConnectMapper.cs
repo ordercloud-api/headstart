@@ -1,4 +1,5 @@
 ﻿using System;
+using Headstart.Common.Models;
 using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
@@ -7,16 +8,16 @@ namespace OrderCloud.Integrations.CardConnect.Mappers
 {
     public static class CreditCardMapper
     {
-        public static CardConnectCreditCard Map(OrderCloudIntegrationsCreditCardToken card, CardConnectAccountResponse response)
+        public static HSCreditCard Map(CCToken card, CardConnectAccountResponse response)
         {
-            var cc = new CardConnectCreditCard()
+            var cc = new HSCreditCard()
             {
                 CardType = card.CardType,
                 CardholderName = card.CardholderName,
                 ExpirationDate = card.ExpirationDate.ToDateTime(),
                 PartialAccountNumber = card.AccountNumber.ToCreditCardDisplay(),
                 Token = response.token,
-                xp = new CreditCardXP
+                xp = new HSCreditCardXP
                 {
                     CCBillingAddress = card.CCBillingAddress,
                 },
@@ -27,9 +28,9 @@ namespace OrderCloud.Integrations.CardConnect.Mappers
 
     public static class BuyerCreditCardMapper
     {
-        public static CardConnectBuyerCreditCard Map(OrderCloudIntegrationsCreditCardToken card, CardConnectAccountResponse response)
+        public static HSBuyerCreditCard Map(CCToken card, CardConnectAccountResponse response)
         {
-            var cc = new CardConnectBuyerCreditCard()
+            var cc = new HSBuyerCreditCard()
             {
                 CardType = card.CardType,
                 CardholderName = card.CardholderName,
@@ -37,7 +38,7 @@ namespace OrderCloud.Integrations.CardConnect.Mappers
                 PartialAccountNumber = card.AccountNumber.ToCreditCardDisplay(),
                 Token = response.token,
                 Editable = true,
-                xp = new CreditCardXP
+                xp = new HSCreditCardXP
                 {
                     CCBillingAddress = card.CCBillingAddress,
                 },
@@ -48,7 +49,7 @@ namespace OrderCloud.Integrations.CardConnect.Mappers
 
     public static class CardConnectMapper
     {
-        public static CardConnectAccountRequest Map(OrderCloudIntegrationsCreditCardToken card, string currency)
+        public static CardConnectAccountRequest Map(CCToken card, string currency)
         {
             var acct = new CardConnectAccountRequest()
             {
@@ -58,7 +59,7 @@ namespace OrderCloud.Integrations.CardConnect.Mappers
             return acct;
         }
 
-        public static CardConnectAuthorizationRequest Map(BuyerCreditCard card, Order order, OrderCloudIntegrationsCreditCardPayment payment, string merchantID, decimal amount)
+        public static CardConnectAuthorizationRequest Map(BuyerCreditCard card, Order order, CCPayment payment, string merchantID, decimal amount)
         {
             var address = card.xp.CCBillingAddress;
             var req = new CardConnectAuthorizationRequest()

@@ -5,14 +5,13 @@ using System.Net;
 using System.Threading.Tasks;
 using Headstart.Common.Models;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
 {
     public interface IOrderSubmitCommand
     {
-        Task<HSOrder> SubmitOrderAsync(string orderID, OrderDirection direction, OrderCloudIntegrationsCreditCardPayment payment, string userToken);
+        Task<HSOrder> SubmitOrderAsync(string orderID, OrderDirection direction, CCPayment payment, string userToken);
     }
 
     public class OrderSubmitCommand : IOrderSubmitCommand
@@ -28,7 +27,7 @@ namespace Headstart.API.Commands
             this.card = card;
         }
 
-        public async Task<HSOrder> SubmitOrderAsync(string orderID, OrderDirection direction, OrderCloudIntegrationsCreditCardPayment payment, string userToken)
+        public async Task<HSOrder> SubmitOrderAsync(string orderID, OrderDirection direction, CCPayment payment, string userToken)
         {
             var worksheet = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
             await ValidateOrderAsync(worksheet, payment, userToken);
@@ -39,7 +38,7 @@ namespace Headstart.API.Commands
             if (payment.CreditCardDetails != null || payment.CreditCardID != null)
             {
                 payment.OrderID = incrementedOrderID;
-                await card.AuthorizePayment(payment, userToken, GetMerchantID(payment));
+                await card.AuthorizePayment(payment, userToken);
             }
 
             try
@@ -53,7 +52,7 @@ namespace Headstart.API.Commands
             }
         }
 
-        private async Task ValidateOrderAsync(HSOrderWorksheet worksheet, OrderCloudIntegrationsCreditCardPayment payment, string userToken)
+        private async Task ValidateOrderAsync(HSOrderWorksheet worksheet, CCPayment payment, string userToken)
         {
             Require.That(
                 !worksheet.Order.IsSubmitted,
@@ -131,25 +130,6 @@ namespace Headstart.API.Commands
                 ID = settings.OrderCloudSettings.IncrementorPrefix + "{orderIncrementor}",
             });
             return order.ID;
-        }
-
-        private string GetMerchantID(OrderCloudIntegrationsCreditCardPayment payment)
-        {
-            string merchantID;
-            if (payment.Currency == "USD")
-            {
-                merchantID = settings.CardConnectSettings.UsdMerchantID;
-            }
-            else if (payment.Currency == "CAD")
-            {
-                merchantID = settings.CardConnectSettings.CadMerchantID;
-            }
-            else
-            {
-                merchantID = settings.CardConnectSettings.EurMerchantID;
-            }
-
-            return merchantID;
         }
     }
 }

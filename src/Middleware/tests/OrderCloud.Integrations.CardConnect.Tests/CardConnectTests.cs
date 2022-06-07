@@ -41,15 +41,15 @@ namespace OrderCloud.Integrations.CardConnect.Tests
     public class CardConnectTests
     {
         private HttpTest http;
-        private OrderCloudIntegrationsCardConnectService service;
-        private OrderCloudIntegrationsCardConnectService serviceNoConfig;
+        private CardConnectClient service;
+        private CardConnectClient serviceNoConfig;
 
         [SetUp]
         public void Setup()
         {
             http = new HttpTest();
-            service = new OrderCloudIntegrationsCardConnectService(
-                new OrderCloudIntegrationsCardConnectConfig()
+            service = new CardConnectClient(
+                new CardConnectConfig()
                 {
                     Authorization = "Authorization",
                     Site = "fts-uat",
@@ -58,7 +58,7 @@ namespace OrderCloud.Integrations.CardConnect.Tests
                 AppEnvironment.Test.ToString(),
                 new PerBaseUrlFlurlClientFactory());
 
-            serviceNoConfig = new OrderCloudIntegrationsCardConnectService(new OrderCloudIntegrationsCardConnectConfig() { }, AppEnvironment.Test.ToString(), new PerBaseUrlFlurlClientFactory());
+            serviceNoConfig = new CardConnectClient(new CardConnectConfig() { }, AppEnvironment.Test.ToString(), new PerBaseUrlFlurlClientFactory());
         }
 
         [TearDown]

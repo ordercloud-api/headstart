@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using OrderCloud.SDK;
 
-namespace OrderCloud.Integrations.CardConnect.Models
+namespace Headstart.Common.Models
 {
-    public class OrderCloudIntegrationsCreditCardToken
+    public class CCToken
     {
         public string AccountNumber { get; set; }
 

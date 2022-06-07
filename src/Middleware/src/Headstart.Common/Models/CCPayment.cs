@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace OrderCloud.Integrations.CardConnect.Models
+namespace Headstart.Common.Models
 {
-    public class OrderCloudIntegrationsCreditCardPayment
+    public class CCPayment
     {
         [OrderCloud.SDK.Required]
         public string OrderID { get; set; }
@@ -12,7 +12,7 @@ namespace OrderCloud.Integrations.CardConnect.Models
 
         public string CreditCardID { get; set; } // Use for saved Credit Cards
 
-        public OrderCloudIntegrationsCreditCardToken CreditCardDetails { get; set; } // Use for one-time Credit Cards
+        public CCToken CreditCardDetails { get; set; } // Use for one-time Credit Cards
 
         [OrderCloud.SDK.Required]
         [MinLength(3, ErrorMessage = "Invalid currency specified: Must be 3 digit code. Ex: USD or CAD")]

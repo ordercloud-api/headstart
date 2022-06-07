@@ -50,5 +50,12 @@ namespace Headstart.Common.Extensions
         {
             return buyerWorksheet?.LineItems.Where(li => li.Product.xp.ProductType == type);
         }
+
+        public static bool IsValidCvv(this CCPayment payment, HSBuyerCreditCard cc)
+        {
+            // if credit card is direct without using a saved card then consider it a ME card and should enforce CVV
+            // saved credit cards for ME just require CVV
+            return (payment.CreditCardDetails == null || payment.CVV != null) && (!cc.Editable || payment.CVV != null);
+        }
     }
 }

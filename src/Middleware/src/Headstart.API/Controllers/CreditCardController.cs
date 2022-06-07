@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Headstart.API.Commands;
+using Headstart.Common.Models;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Controllers
@@ -12,36 +12,20 @@ namespace Headstart.API.Controllers
     /// </summary>
     public class MePaymentController : CatalystController
     {
-        private readonly ICreditCardCommand card;
-        private readonly AppSettings settings;
+        private readonly ICreditCardCommand creditCardCommand;
 
-        public MePaymentController(AppSettings settings, ICreditCardCommand card)
+        public MePaymentController(ICreditCardCommand creditCardCommand)
         {
-            this.card = card;
-            this.settings = settings;
+            this.creditCardCommand = creditCardCommand;
         }
 
         /// <summary>
         /// POST Payment.
         /// </summary>
         [HttpPost, Route("me/payments"), OrderCloudUserAuth(ApiRole.Shopper)]
-        public async Task<Payment> Post([FromBody] OrderCloudIntegrationsCreditCardPayment payment)
+        public async Task<Payment> Post([FromBody] CCPayment payment)
         {
-            string merchantID;
-            if (payment.Currency == "USD")
-            {
-                merchantID = settings.CardConnectSettings.UsdMerchantID;
-            }
-            else if (payment.Currency == "CAD")
-            {
-                merchantID = settings.CardConnectSettings.CadMerchantID;
-            }
-            else
-            {
-                merchantID = settings.CardConnectSettings.EurMerchantID;
-            }
-
-            return await card.AuthorizePayment(payment, UserContext.AccessToken, merchantID);
+            return await creditCardCommand.AuthorizePayment(payment, UserContext.AccessToken);
         }
     }
 
@@ -61,7 +45,7 @@ namespace Headstart.API.Controllers
         /// POST Credit Card.
         /// </summary>
         [HttpPost, Route("me/creditcards"), OrderCloudUserAuth(ApiRole.MeCreditCardAdmin, ApiRole.CreditCardAdmin)]
-        public async Task<BuyerCreditCard> MePost([FromBody] OrderCloudIntegrationsCreditCardToken card)
+        public async Task<BuyerCreditCard> MePost([FromBody] CCToken card)
         {
             return await this.card.MeTokenizeAndSave(card, UserContext);
         }
@@ -83,7 +67,7 @@ namespace Headstart.API.Controllers
         /// POST Credit Cards.
         /// </summary>
         [HttpPost, Route("buyers/{buyerID}/creditcards"), OrderCloudUserAuth(ApiRole.CreditCardAdmin)]
-        public async Task<CreditCard> Post([FromBody] OrderCloudIntegrationsCreditCardToken card, string buyerID)
+        public async Task<CreditCard> Post([FromBody] CCToken card, string buyerID)
         {
             return await this.card.TokenizeAndSave(buyerID, card, UserContext);
         }

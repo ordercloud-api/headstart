@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Headstart.Common.Models;
+using Headstart.Common.Services;
 using Headstart.Common.Settings;
 using Headstart.Models;
 using Headstart.Models.Extended;
 using Headstart.Models.Headstart;
 using Microsoft.Azure.Cosmos;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.CardConnect;
-using OrderCloud.Integrations.CardConnect.Mappers;
-using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.Integrations.Emails;
 using OrderCloud.Integrations.Library;
 using OrderCloud.Integrations.RMAs.Models;
@@ -41,18 +39,17 @@ namespace OrderCloud.Integrations.RMAs.Commands
 
     public class RMACommand : IRMACommand
     {
-        private const string QueuedForCapture = "Queued for Capture";
         private readonly IOrderCloudClient oc;
         private readonly IRMARepo rmaRepo;
-        private readonly IOrderCloudIntegrationsCardConnectService cardConnect;
+        private readonly ICreditCardProcessor creditCardService;
         private readonly IEmailServiceProvider emailServiceProvider;
         private readonly OrderCloudSettings orderCloudSettings;
 
-        public RMACommand(IOrderCloudClient oc, IRMARepo rmaRepo, IOrderCloudIntegrationsCardConnectService cardConnect, IEmailServiceProvider emailServiceProvider, OrderCloudSettings orderCloudSettings)
+        public RMACommand(IOrderCloudClient oc, IRMARepo rmaRepo, ICreditCardProcessor creditCardService, IEmailServiceProvider emailServiceProvider, OrderCloudSettings orderCloudSettings)
         {
             this.oc = oc;
             this.rmaRepo = rmaRepo;
-            this.cardConnect = cardConnect;
+            this.creditCardService = creditCardService;
             this.emailServiceProvider = emailServiceProvider;
             this.orderCloudSettings = orderCloudSettings;
         }
@@ -319,14 +316,7 @@ namespace OrderCloud.Integrations.RMAs.Commands
                 .Sum();
 
             // Refund via CardConnect
-            CardConnectInquireResponse inquiry = await cardConnect.Inquire(new CardConnectInquireRequest
-            {
-                merchid = creditCardPaymentTransaction.xp.CardConnectResponse.merchid,
-                orderid = rma.SourceOrderID,
-                set = "1",
-                currency = worksheet.Order.xp.Currency.ToString(),
-                retref = creditCardPaymentTransaction.xp.CardConnectResponse.retref,
-            });
+            var inquiryResult = await creditCardService.Inquire(worksheet.Order, creditCardPaymentTransaction);
 
             decimal shippingRefund = rma.Type == RMAType.Cancellation ? GetShippingRefundIfCancellingAll(worksheet, rma, allRMAsOnThisOrder) : 0M;
 
@@ -344,7 +334,7 @@ namespace OrderCloud.Integrations.RMAs.Commands
             rma.TotalCredited += totalToRefund;
 
             // Transactions that are queued for capture can only be fully voided, and we are only allowing partial voids moving forward.
-            if (inquiry.voidable == "Y" && inquiry.setlstat == QueuedForCapture)
+            if (inquiryResult.PendingCapture)
             {
                 throw new CatalystBaseException(new ApiError
                 {
@@ -354,15 +344,15 @@ namespace OrderCloud.Integrations.RMAs.Commands
             }
 
             // If voidable, but not refundable, void the refund amount off the original order total
-            if (inquiry.voidable == "Y")
+            if (inquiryResult.CanVoid)
             {
-                await HandleVoidTransaction(worksheet, creditCardPayment, creditCardPaymentTransaction, totalToRefund, rma);
+                await creditCardService.VoidAuthorization(worksheet.Order, creditCardPayment, creditCardPaymentTransaction, totalToRefund);
             }
 
             // If refundable, but not voidable, do a refund
-            if (inquiry.voidable == "N")
+            if (inquiryResult.CanRefund)
             {
-                await HandleRefundTransaction(worksheet, creditCardPayment, creditCardPaymentTransaction, totalToRefund, rma);
+                await creditCardService.Refund(worksheet, creditCardPayment, creditCardPaymentTransaction, totalToRefund);
             }
         }
 
@@ -415,56 +405,6 @@ namespace OrderCloud.Integrations.RMAs.Commands
             }
 
             return 0M;
-        }
-
-        public virtual async Task HandleVoidTransaction(HSOrderWorksheet worksheet, HSPayment creditCardPayment, HSPaymentTransaction creditCardPaymentTransaction, decimal totalToRefund, RMA rma)
-        {
-            HSPayment newCreditCardVoid = new HSPayment() { Amount = totalToRefund };
-            try
-            {
-                CardConnectVoidResponse response = await cardConnect.VoidAuthorization(new CardConnectVoidRequest
-                {
-                    currency = worksheet.Order.xp.Currency.ToString(),
-                    merchid = creditCardPaymentTransaction.xp.CardConnectResponse.merchid,
-                    retref = creditCardPaymentTransaction.xp.CardConnectResponse.retref,
-                    amount = totalToRefund.ToString("F2"),
-                });
-                await oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, rma.SourceOrderID, creditCardPayment.ID, CardConnectMapper.Map(newCreditCardVoid, response));
-            }
-            catch (CreditCardVoidException ex)
-            {
-                await oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, rma.SourceOrderID, creditCardPayment.ID, CardConnectMapper.Map(newCreditCardVoid, ex.Response));
-                throw new CatalystBaseException(new ApiError
-                {
-                    ErrorCode = "Payment.FailedToVoidAuthorization",
-                    Message = ex.ApiError.Message,
-                });
-            }
-        }
-
-        public virtual async Task HandleRefundTransaction(HSOrderWorksheet worksheet, HSPayment creditCardPayment, HSPaymentTransaction creditCardPaymentTransaction, decimal totalToRefund, RMA rma)
-        {
-            try
-            {
-                CardConnectRefundRequest requestedRefund = new CardConnectRefundRequest()
-                {
-                    currency = worksheet.Order.xp.Currency.ToString(),
-                    merchid = creditCardPaymentTransaction.xp.CardConnectResponse.merchid,
-                    retref = creditCardPaymentTransaction.xp.CardConnectResponse.retref,
-                    amount = totalToRefund.ToString("F2"),
-                };
-                CardConnectRefundResponse response = await cardConnect.Refund(requestedRefund);
-                HSPayment newCreditCardPayment = new HSPayment() { Amount = response.amount };
-                await oc.Payments.CreateTransactionAsync(OrderDirection.Incoming, rma.SourceOrderID, creditCardPayment.ID, CardConnectMapper.Map(newCreditCardPayment, response));
-            }
-            catch (CreditCardRefundException ex)
-            {
-                throw new CatalystBaseException(new ApiError
-                {
-                    ErrorCode = "Payment.FailedToRefund",
-                    Message = ex.ApiError.Message,
-                });
-            }
         }
 
         private async Task<string> BuildRMANumber(HSOrder order)

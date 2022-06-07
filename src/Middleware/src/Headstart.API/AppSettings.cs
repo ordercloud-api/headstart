@@ -28,7 +28,7 @@ namespace Headstart.API
 
         public OrderCloudSettings OrderCloudSettings { get; set; } = new OrderCloudSettings();
 
-        public OrderCloudIntegrationsCardConnectConfig CardConnectSettings { get; set; } = new OrderCloudIntegrationsCardConnectConfig();
+        public CardConnectConfig CardConnectSettings { get; set; } = new CardConnectConfig();
 
         public SendGridSettings SendgridSettings { get; set; } = new SendGridSettings();
 

@@ -11,6 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="CreditCardCommandTests.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoFixture" Version="4.17.0" />
     <PackageReference Include="AutoFixture.AutoNSubstitute" Version="4.17.0" />
     <PackageReference Include="AutoFixture.NUnit3" Version="4.17.0" />

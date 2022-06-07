@@ -5,7 +5,6 @@ using Headstart.Common.Models;
 using Headstart.Models.Headstart;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.Integrations.Library;
 using OrderCloud.Integrations.RMAs.Models;
 using OrderCloud.SDK;
@@ -35,7 +34,7 @@ namespace Headstart.Common.Controllers
         /// Submit Order. Performs validation, submits credit card payment and finally submits order via OrderCloud.
         /// </summary>
         [HttpPost, Route("{direction}/{orderID}/submit"), OrderCloudUserAuth(ApiRole.Shopper)]
-        public async Task<HSOrder> Submit(OrderDirection direction, string orderID, [FromBody] OrderCloudIntegrationsCreditCardPayment payment)
+        public async Task<HSOrder> Submit(OrderDirection direction, string orderID, [FromBody] CCPayment payment)
         {
             return await orderSubmitCommand.SubmitOrderAsync(orderID, direction, payment, UserContext.AccessToken);
         }

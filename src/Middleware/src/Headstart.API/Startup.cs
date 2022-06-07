@@ -280,7 +280,8 @@ namespace Headstart.API
                         _ => easyPostShippingService // EasyPost is default
                     };
                 })
-                .AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(settings.CardConnectSettings, settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))
+                .AddSingleton<ICardConnectClient>(x => new CardConnectClient(settings.CardConnectSettings, settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))
+                .AddSingleton<ICreditCardProcessor, CardConnectService>()
                 .AddSingleton<IOrderCloudClient>(provider => orderCloudClient)
                 .AddSwaggerGen(c =>
                 {
