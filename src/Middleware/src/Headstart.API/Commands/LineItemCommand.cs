@@ -326,7 +326,7 @@ namespace Headstart.API.Commands
                     xp = new
                     {
                         Returns = GetUpdatedChangeRequests(returnRequests, lineItemStatusChange, lineItemStatusChange.Quantity, newLineItemStatus, statusByQuantity),
-                        statusByQuantity,
+                        StatusByQuantity = statusByQuantity,
                     },
                 };
             }
@@ -338,7 +338,7 @@ namespace Headstart.API.Commands
                     xp = new
                     {
                         Cancelations = GetUpdatedChangeRequests(cancelRequests, lineItemStatusChange, lineItemStatusChange.Quantity, newLineItemStatus, statusByQuantity),
-                        statusByQuantity,
+                        StatusByQuantity = statusByQuantity,
                     },
                 };
             }
@@ -348,7 +348,7 @@ namespace Headstart.API.Commands
                 {
                     xp = new
                     {
-                        statusByQuantity,
+                        StatusByQuantity = statusByQuantity,
                     },
                 };
             }
