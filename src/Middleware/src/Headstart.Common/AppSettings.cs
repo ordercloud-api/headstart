@@ -130,7 +130,7 @@ namespace Headstart.Common
     {
         public string ApiUrl { get; set; }
 
-        public string ClientIDsWithAPIAccess { get; set; } // Comma-separated list
+        public string ClientIDsWithAPIAccess { get; set; } = string.Empty; // Comma-separated list
 
         public string IncrementorPrefix { get; set; }
 
