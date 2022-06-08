@@ -80,17 +80,17 @@ This solution relies on various third-party services and credentials for those s
 
 [Azure App Configuration](https://docs.microsoft.com/en-us/azure/azure-app-configuration/overview) - Used to store sensitive app settings that are consumed by the backend middleware application. We've defined [a template for you](./src/Middleware/src/Headstart.Common/AppSettingConfigTemplate.json) with the settings that are used in this application. You can fill out the template and then use Azure's import functionality to easily import it into your app configuration resource. For more detail on what each setting means check out [our readme](./src/Middleware/src/Headstart.Common/AppSettingsReadme.md).
 
-![application configuration import](./src/Middleware/src/Headstart.Common/Assets/Images/app-configuration-import.png)
+![application configuration import](./images/app-configuration-import.png)
 
 You will need an azure app configuration for each environment (we recommend three environments: Test, UAT, and Production)
 
 In order for you application to consume the settings, you'll need to define the environment variable `APP_CONFIG_CONNECTION` whose value should be the connection string (read-only) to your azure app configuration.
 
 - For **local** development - In Visual Studio right-click the Headstart.API project and go to Properties -> Debug -> Environment Variables.
-![local app settings](./src/Middleware/src/Headstart.Common/Assets/Images/local-app-settings.png)
+![local app settings](./images/local-app-settings.png)
 
 - For **hosted** apps - In Azure navigate to your app service. Go to the correct deployment slot, and go to Settings -> Configuration -> New application setting
-![hosted app settings](./src/Middleware/src/Headstart.Common/Assets/Images/remote-app-settings.png)
+![hosted app settings](./images/remote-app-settings.png)
 
 It is also possible to consume app settings from a JSON file while developing locally. Simply add an `appSettings.json` file to the root of the Headstart.API project. Settings defined here are applied after and override any settings in the azure app configuration.
 
