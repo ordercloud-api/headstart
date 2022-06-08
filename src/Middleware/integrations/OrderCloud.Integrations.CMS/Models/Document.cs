@@ -1,4 +1,4 @@
-﻿namespace Headstart.Common.Services.CMS.Models
+﻿namespace Headstart.Integrations.CMS.Models
 {
     public class Document<T>
     {

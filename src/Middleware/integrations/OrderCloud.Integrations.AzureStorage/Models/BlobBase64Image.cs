@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace OrderCloud.Integrations.Library
+namespace OrderCloud.Integrations.AzureStorage.Models
 {
     public class BlobBase64Image
     {

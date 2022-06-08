@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Headstart.Common.Models;
-using Headstart.Common.Services.CMS.Models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using Npoi.Mapper;
@@ -233,7 +232,7 @@ namespace Headstart.Common.Commands
 
         public string Url { get; set; }
 
-        public AssetType Type { get; set; }
+        /*public AssetType Type { get; set; }*/
 
         public string Tags { get; set; }
 
@@ -354,7 +353,7 @@ namespace Headstart.Common.Commands
 
         public string Url { get; set; }
 
-        public AssetType Type { get; set; }
+        /*public AssetType Type { get; set; }*/
 
         public List<string> Tags { get; set; } = new List<string>();
 

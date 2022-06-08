@@ -7,6 +7,7 @@ using Headstart.Common.Models;
 using Headstart.Common.Services;
 using Newtonsoft.Json;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.AzureStorage;
 using OrderCloud.Integrations.ExchangeRates.Mappers;
 using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
@@ -17,14 +18,14 @@ namespace OrderCloud.Integrations.ExchangeRates
     {
         private readonly IOrderCloudClient oc;
         private readonly ICurrencyConversionService currencyConversionService;
-        private readonly IOrderCloudIntegrationsBlobService blob;
+        private readonly ICloudBlobService cloudBlobService;
         private readonly ISimpleCache cache;
 
-        public ExchangeRatesCommand(IOrderCloudClient oc, IOrderCloudIntegrationsBlobService blob, ICurrencyConversionService currencyConversionService, ISimpleCache cache)
+        public ExchangeRatesCommand(IOrderCloudClient oc, ICloudBlobService cloudBlobService, ICurrencyConversionService currencyConversionService, ISimpleCache cache)
         {
             this.oc = oc;
             this.currencyConversionService = currencyConversionService;
-            this.blob = blob;
+            this.cloudBlobService = cloudBlobService;
             this.cache = cache;
         }
 
@@ -117,7 +118,7 @@ namespace OrderCloud.Integrations.ExchangeRates
             await Throttler.RunAsync(list.Items, 100, 10, async rate =>
             {
                 var rates = await currencyConversionService.Get(rate.Currency);
-                await blob.Save($"{rate.Currency}.json", JsonConvert.SerializeObject(rates));
+                await cloudBlobService.Save($"{rate.Currency}.json", JsonConvert.SerializeObject(rates));
             });
         }
 
@@ -125,7 +126,7 @@ namespace OrderCloud.Integrations.ExchangeRates
         {
             var rates = await cache.GetOrAddAsync($"exchangerates_{currency}", TimeSpan.FromHours(1), () =>
             {
-                return blob.Get<ConversionRates>($"{currency}.json");
+                return cloudBlobService.Get<ConversionRates>($"{currency}.json");
             });
             return Filter(rateArgs, rates);
         }

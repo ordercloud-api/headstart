@@ -1,8 +1,8 @@
-﻿namespace Headstart.Common.Services.CMS.Models
+﻿namespace Headstart.Integrations.CMS.Models
 {
-    public class DocumentAssignment
+    public class AssetAssignment
     {
-        public string DocumentID { get; set; }
+        public string AssetID { get; set; }
 
         public string ResourceID { get; set; }
 

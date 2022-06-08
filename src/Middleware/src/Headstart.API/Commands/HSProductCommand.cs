@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Headstart.API.Helpers;
 using Headstart.Common.Models;
-using Headstart.Common.Services.CMS;
+using Headstart.Integrations.CMS;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Library.Cosmos;
 using OrderCloud.SDK;

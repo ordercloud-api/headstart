@@ -9,7 +9,7 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json.Linq;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
-using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.AzureStorage;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
@@ -23,11 +23,11 @@ namespace Headstart.API.Commands
 
     public class DownloadReportCommand : IDownloadReportCommand
     {
-        private readonly OrderCloudIntegrationsBlobService blob;
+        private readonly CloudBlobService cloudBlobService;
 
         public DownloadReportCommand(AppSettings settings)
         {
-            blob = new OrderCloudIntegrationsBlobService(new BlobServiceConfig()
+            cloudBlobService = new CloudBlobService(new CloudBlobServiceConfig()
             {
                 ConnectionString = settings.StorageAccountSettings.ConnectionString,
                 Container = "downloads",
@@ -43,7 +43,7 @@ namespace Headstart.API.Commands
             var date = DateTime.UtcNow.ToString("MMddyyyy");
             var time = DateTime.Now.ToString("hmmss.ffff");
             var fileName = $"{reportType}-{date}-{time}.xlsx";
-            var fileReference = await blob.GetAppendBlobReference(fileName);
+            var fileReference = await cloudBlobService.GetAppendBlobReference(fileName);
             SetHeaders(headers, worksheet);
             SetValues(data, headers, worksheet);
             using (Stream stream = await fileReference.OpenWriteAsync(true))
@@ -56,7 +56,7 @@ namespace Headstart.API.Commands
 
         public async Task<string> GetSharedAccessSignature(string fileName)
         {
-            var fileReference = await blob.GetBlobReference(fileName);
+            var fileReference = await cloudBlobService.GetBlobReference(fileName);
             var sharedAccessPolicy = new SharedAccessBlobPolicy()
             {
                 SharedAccessStartTime = DateTimeOffset.UtcNow.AddMinutes(-5),

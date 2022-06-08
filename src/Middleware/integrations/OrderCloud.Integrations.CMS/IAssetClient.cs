@@ -4,10 +4,10 @@ using System.Drawing.Imaging;
 using System.Threading.Tasks;
 using Headstart.Common.Extensions;
 using Headstart.Common.Models;
-using Headstart.Common.Services.CMS.Models;
-using OrderCloud.Integrations.Library;
+using Headstart.Integrations.CMS.Models;
+using OrderCloud.Integrations.AzureStorage;
 
-namespace Headstart.Common.Services.CMS
+namespace Headstart.Integrations.CMS
 {
     public interface IAssetClient
     {
@@ -22,18 +22,18 @@ namespace Headstart.Common.Services.CMS
 
     public class AssetClient : IAssetClient
     {
-        private readonly IOrderCloudIntegrationsBlobService blob;
+        private readonly ICloudBlobService cloudBlobService;
         private readonly StorageAccountSettings storageAccountSettings;
 
-        public AssetClient(IOrderCloudIntegrationsBlobService blob, StorageAccountSettings storageAccountSettings)
+        public AssetClient(ICloudBlobService blob, StorageAccountSettings storageAccountSettings)
         {
-            this.blob = blob;
+            this.cloudBlobService = blob;
             this.storageAccountSettings = storageAccountSettings;
         }
 
         public async Task<ImageAsset> CreateImage(AssetUpload asset)
         {
-            var container = blob.Container.Name;
+            var container = cloudBlobService.Container.Name;
             var assetGuid = Guid.NewGuid().ToString();
 
             using (var image = Image.FromStream(asset.File.OpenReadStream()))
@@ -42,8 +42,8 @@ namespace Headstart.Common.Services.CMS
                 var medium = image.ResizeSmallerDimensionToTarget(300);
                 await Task.WhenAll(new[]
                 {
-                    blob.Save(assetGuid, medium.ToBytes(ImageFormat.Png), "image/png"),
-                    blob.Save($"{assetGuid}-s", small.ToBytes(ImageFormat.Png), "image/png"),
+                    cloudBlobService.Save(assetGuid, medium.ToBytes(ImageFormat.Png), "image/png"),
+                    cloudBlobService.Save($"{assetGuid}-s", small.ToBytes(ImageFormat.Png), "image/png"),
                 });
             }
 
@@ -56,9 +56,9 @@ namespace Headstart.Common.Services.CMS
 
         public async Task<DocumentAsset> CreateDocument(AssetUpload asset)
         {
-            var container = blob.Container.Name;
+            var container = cloudBlobService.Container.Name;
             var assetGuid = Guid.NewGuid().ToString();
-            await blob.Save(assetGuid, asset.File, "application/pdf");
+            await cloudBlobService.Save(assetGuid, asset.File, "application/pdf");
             return new DocumentAsset()
             {
                 FileName = asset.Filename,
@@ -68,10 +68,10 @@ namespace Headstart.Common.Services.CMS
 
         public async Task DeleteAsset(string id)
         {
-            await blob.Delete(id);
+            await cloudBlobService.Delete(id);
             try
             {
-                await blob.Delete($"{id}-s");
+                await cloudBlobService.Delete($"{id}-s");
             }
             catch
             {
@@ -81,10 +81,10 @@ namespace Headstart.Common.Services.CMS
         public async Task DeleteAssetByUrl(string assetUrl)
         {
             var id = GetAssetIDFromUrl(assetUrl);
-            await blob.Delete(id);
+            await cloudBlobService.Delete(id);
             try
             {
-                await blob.Delete($"{id}-s");
+                await cloudBlobService.Delete($"{id}-s");
             }
             catch
             {

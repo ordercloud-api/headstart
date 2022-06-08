@@ -1,7 +1,7 @@
 ﻿using System;
 using OrderCloud.Integrations.Library;
 
-namespace Headstart.Common.Services.CMS.Models
+namespace Headstart.Integrations.CMS.Models
 {
     public enum ParentResourceType
     {

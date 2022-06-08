@@ -1,8 +1,8 @@
 ﻿using Microsoft.WindowsAzure.Storage.Blob;
 
-namespace OrderCloud.Integrations.Library
+namespace OrderCloud.Integrations.AzureStorage
 {
-    public class BlobServiceConfig
+    public class CloudBlobServiceConfig
     {
         public string ConnectionString { get; set; }
 

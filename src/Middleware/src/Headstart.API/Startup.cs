@@ -13,8 +13,8 @@ using Headstart.Common.Commands;
 using Headstart.Common.Models;
 using Headstart.Common.Queries;
 using Headstart.Common.Services;
-using Headstart.Common.Services.CMS;
 using Headstart.Common.Settings;
+using Headstart.Integrations.CMS;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +27,7 @@ using Newtonsoft.Json.Converters;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Alerts;
 using OrderCloud.Integrations.Avalara;
+using OrderCloud.Integrations.AzureStorage;
 using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.EasyPost;
 using OrderCloud.Integrations.EasyPost.Models;
@@ -137,12 +138,12 @@ namespace Headstart.API
                 CompanyID = settings.AvalaraSettings.CompanyID,
             };
 
-            var currencyConfig = new BlobServiceConfig()
+            var currencyConfig = new CloudBlobServiceConfig()
             {
                 ConnectionString = settings.StorageAccountSettings.ConnectionString,
                 Container = settings.StorageAccountSettings.BlobContainerNameExchangeRates,
             };
-            var assetConfig = new BlobServiceConfig()
+            var assetConfig = new CloudBlobServiceConfig()
             {
                 ConnectionString = settings.StorageAccountSettings.ConnectionString,
                 Container = "assets",
@@ -253,9 +254,9 @@ namespace Headstart.API
                     orderCloudClient))
                 .AddSingleton<IExchangeRatesClient>(x => new ExchangeRatesClient(flurlClientFactory))
                 .AddSingleton<ICurrencyConversionService, ExchangeRatesService>()
-                .AddSingleton<IAssetClient>(provider => new AssetClient(new OrderCloudIntegrationsBlobService(assetConfig), settings.StorageAccountSettings))
+                .AddSingleton<IAssetClient>(provider => new AssetClient(new CloudBlobService(assetConfig), settings.StorageAccountSettings))
                 .AddSingleton<ICurrencyConversionCommand>(provider =>
-                    new ExchangeRatesCommand(orderCloudClient, new OrderCloudIntegrationsBlobService(currencyConfig), provider.GetService<ICurrencyConversionService>(), provider.GetService<ISimpleCache>()))
+                    new ExchangeRatesCommand(orderCloudClient, new CloudBlobService(currencyConfig), provider.GetService<ICurrencyConversionService>(), provider.GetService<ISimpleCache>()))
                 .AddSingleton<ITaxCodesProvider>(provider =>
                 {
                     return settings.EnvironmentSettings.TaxProvider switch

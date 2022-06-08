@@ -10,7 +10,7 @@ using Headstart.Common.Services;
 using NSubstitute;
 using NUnit.Framework;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.AzureStorage;
 using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.ExchangeRates.Tests
@@ -21,7 +21,7 @@ namespace OrderCloud.Integrations.ExchangeRates.Tests
         private IOrderCloudClient oc;
         private ICurrencyConversionCommand command;
         private ICurrencyConversionService currencyConversionService;
-        private IOrderCloudIntegrationsBlobService blob;
+        private ICloudBlobService cloudBlobService;
         private ISimpleCache simpleCache;
 
         [SetUp]
@@ -32,10 +32,10 @@ namespace OrderCloud.Integrations.ExchangeRates.Tests
 
             // _http.RespondWith(@"{'rates':{'MYR':4.6982},'base':'EUR','date':'2020-05-15'}");
             oc = Substitute.For<IOrderCloudClient>();
-            blob = Substitute.For<IOrderCloudIntegrationsBlobService>();
+            cloudBlobService = Substitute.For<ICloudBlobService>();
             currencyConversionService = Substitute.For<ICurrencyConversionService>();
             simpleCache = Substitute.For<ISimpleCache>();
-            command = new ExchangeRatesCommand(oc, blob, currencyConversionService, simpleCache);
+            command = new ExchangeRatesCommand(oc, cloudBlobService, currencyConversionService, simpleCache);
         }
 
         [Test]

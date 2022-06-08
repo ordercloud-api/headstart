@@ -1,4 +1,4 @@
-namespace OrderCloud.Integrations.Library
+namespace OrderCloud.Integrations.AzureStorage
 {
     public class StorageAccountSettings
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 
-namespace Headstart.Common.Services.CMS.Models
+namespace Headstart.Integrations.CMS.Models
 {
     public enum AssetType
     {

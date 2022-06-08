@@ -9,6 +9,7 @@ using Headstart.Common.Models;
 using Headstart.Common.Settings;
 using Microsoft.WindowsAzure.Storage.Blob;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.AzureStorage;
 using OrderCloud.Integrations.Library;
 using OrderCloud.Integrations.Portal;
 using OrderCloud.Integrations.Portal.Models;
@@ -130,13 +131,13 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
         public async Task UpdateTranslations(string connectionString, string containerName)
         {
             var englishTranslationsPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "Assets", "english-translations.json"));
-            var translationsConfig = new BlobServiceConfig()
+            var translationsConfig = new CloudBlobServiceConfig()
             {
                 ConnectionString = connectionString,
                 Container = containerName,
                 AccessType = BlobContainerPublicAccessType.Container,
             };
-            var translationsBlob = new OrderCloudIntegrationsBlobService(translationsConfig);
+            var translationsBlob = new CloudBlobService(translationsConfig);
             await translationsBlob.Save("i18n/en.json", File.ReadAllText(englishTranslationsPath));
         }
 

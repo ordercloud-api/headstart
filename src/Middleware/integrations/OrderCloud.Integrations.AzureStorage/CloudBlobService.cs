@@ -8,10 +8,11 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using Microsoft.WindowsAzure.Storage.Shared.Protocol;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OrderCloud.Integrations.AzureStorage.Models;
 
-namespace OrderCloud.Integrations.Library
+namespace OrderCloud.Integrations.AzureStorage
 {
-    public interface IOrderCloudIntegrationsBlobService
+    public interface ICloudBlobService
     {
         CloudBlobClient Client { get; }
 
@@ -38,12 +39,12 @@ namespace OrderCloud.Integrations.Library
         Task DeleteContainer();
     }
 
-    public class OrderCloudIntegrationsBlobService : IOrderCloudIntegrationsBlobService
+    public class CloudBlobService : ICloudBlobService
     {
-        private readonly BlobServiceConfig config;
+        private readonly CloudBlobServiceConfig config;
         private bool isInitialized = false;
 
-        public OrderCloudIntegrationsBlobService(BlobServiceConfig config)
+        public CloudBlobService(CloudBlobServiceConfig config)
         {
             this.config = config;
             try
