@@ -69,7 +69,8 @@ json -I -f appSettings.json \
       -e "this['OrderCloudSettings:WebhookHashKey']='$OrderCloudSettings_WebhookHashKey'"
 
 json -I -f appSettings.json \
-      -e "this['SendGridSettings:ApiKey']='$SendGridSettings_ApiKey'" \
+      -e "this['SendgridSettings:Enabled']='$SendgridSettings_Enabled'" \
+      -e "this['SendgridSettings:ApiKey']='$SendgridSettings_ApiKey'" \
       -e "this['SendgridSettings:BillingEmail']='$SendgridSettings_BillingEmail'" \
       -e "this['SendgridSettings:CriticalSupportEmails']='$SendgridSettings_CriticalSupportEmails'" \
       -e "this['SendgridSettings:CriticalSupportTemplateID']='$SendgridSettings_CriticalSupportTemplateID'"

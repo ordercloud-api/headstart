@@ -96,6 +96,11 @@ namespace Headstart.Common.Services
 
         public virtual async Task SendSingleTemplateEmail(string from, string to, string templateID, object templateData)
         {
+            if (client == null) {
+                // Either Enabled=false or ApiKey is missing
+                return;
+            }
+
             Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sengrid template ID not configured in app settings", HttpStatusCode.NotImplemented));
             {
                 var fromEmail = new EmailAddress(from);
@@ -111,6 +116,11 @@ namespace Headstart.Common.Services
 
         public virtual async Task SendSingleTemplateEmailMultipleRcpts(string from, List<EmailAddress> tos, string templateID, object templateData)
         {
+            if (client == null) {
+                // Either Enabled=false or ApiKey is missing
+                return;
+            }
+
             Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sengrid template ID not configured in app settings", HttpStatusCode.NotImplemented));
             {
                 var fromEmail = new EmailAddress(from);
@@ -125,6 +135,11 @@ namespace Headstart.Common.Services
 
         public async Task SendSingleTemplateEmailMultipleRcptsAttachment(string from, List<EmailAddress> tos, string templateID, object templateData, CloudAppendBlob fileReference, string fileName)
         {
+            if (client == null) {
+                // Either Enabled=false or ApiKey is missing
+                return;
+            }
+
             Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sengrid template ID not configured in app settings", HttpStatusCode.NotImplemented));
             {
                 var fromEmail = new EmailAddress(from);
@@ -144,6 +159,11 @@ namespace Headstart.Common.Services
 
         public async Task SendSingleTemplateEmailSingleRcptAttachment(string from, string to, string templateID, object templateData, IFormFile fileReference)
         {
+            if (client == null) {
+                // Either Enabled=false or ApiKey is missing
+                return;
+            }
+
             Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sengrid template ID not configured in app settings", HttpStatusCode.NotImplemented));
             {
                 var fromEmail = new EmailAddress(from);

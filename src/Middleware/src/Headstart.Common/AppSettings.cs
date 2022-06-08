@@ -155,6 +155,8 @@ namespace Headstart.Common
 
         public string CriticalSupportTemplateID { get; set; } // (Optional but required to send CriticalSupport emails) ID for template to be used for CriticalSupport emails
 
+        public bool Enabled { get; set; }
+
         public string FromEmail { get; set; }
 
         public string LineItemStatusChangeTemplateID { get; set; } // (Optional but required to send LineItemStatusChange emails) ID for template to be used for LineItemStatusChange emails

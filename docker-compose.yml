@@ -81,7 +81,8 @@ services:
       OrderCloudSettings_MiddlewareClientSecret: "${OrderCloudSettings_MiddlewareClientSecret}"
       OrderCloudSettings_WebhookHashKey: "${OrderCloudSettings_WebhookHashKey}"
 
-      SendGridSettings_ApiKey: "${SendGridSettings_ApiKey}"
+      SendgridSettings_Enabled: "${SendgridSettings_Enabled}"
+      SendgridSettings_ApiKey: "${SendgridSettings_ApiKey}"
       SendgridSettings_BillingEmail: "${SendgridSettings_BillingEmail}"
       SendgridSettings_CriticalSupportEmails: "${SendgridSettings_CriticalSupportEmails}"
       SendgridSettings_CriticalSupportTemplateID: "${SendgridSettings_CriticalSupportTemplateID}"

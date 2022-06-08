@@ -196,6 +196,8 @@ namespace Headstart.API
                 options.SerializerSettings.Converters.Add(new StringEnumConverter());
             });
 
+            var sendgridClient = !string.IsNullOrEmpty(settings.SendgridSettings.ApiKey) && settings.SendgridSettings.Enabled ? new SendGridClient(settings.SendgridSettings.ApiKey) : null;
+
             services
                 .AddCors(o => o.AddPolicy("integrationcors", builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }))
                 .AddSingleton<ISimpleCache, LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
@@ -222,7 +224,7 @@ namespace Headstart.API
                 .Inject<ICreditCardCommand>()
                 .Inject<ISupportAlertService>()
                 .Inject<ISupplierApiClientHelper>()
-                .AddSingleton<ISendGridClient>(x => new SendGridClient(settings.SendgridSettings.ApiKey))
+                .AddSingleton<ISendGridClient>(x => sendgridClient)
                 .AddSingleton<IFlurlClientFactory>(x => flurlClientFactory)
                 .AddSingleton<DownloadReportCommand>()
                 .Inject<IRMARepo>()
