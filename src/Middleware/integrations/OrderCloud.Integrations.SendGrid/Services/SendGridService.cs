@@ -55,7 +55,7 @@ namespace OrderCloud.Integrations.SendGrid
 
         public virtual async Task SendSingleTemplateEmail(string from, string to, string templateID, object templateData)
         {
-            Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sengrid template ID not configured in app settings", HttpStatusCode.NotImplemented));
+            Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sendgrid template ID not configured in app settings", HttpStatusCode.NotImplemented));
             {
                 var fromEmail = new EmailAddress(from);
                 var toEmail = new EmailAddress(to);
@@ -70,7 +70,7 @@ namespace OrderCloud.Integrations.SendGrid
 
         public virtual async Task SendSingleTemplateEmailMultipleRcpts(string from, List<string> tos, string templateID, object templateData)
         {
-            Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sengrid template ID not configured in app settings", HttpStatusCode.NotImplemented));
+            Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sendgrid template ID not configured in app settings", HttpStatusCode.NotImplemented));
             {
                 var fromEmail = new EmailAddress(from);
                 var toEmails = tos.Select(email => new EmailAddress(email)).ToList();
@@ -85,7 +85,7 @@ namespace OrderCloud.Integrations.SendGrid
 
         public async Task SendSingleTemplateEmailMultipleRcptsAttachment(string from, List<string> tos, string templateID, object templateData, CloudAppendBlob fileReference, string fileName)
         {
-            Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sengrid template ID not configured in app settings", HttpStatusCode.NotImplemented));
+            Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sendgrid template ID not configured in app settings", HttpStatusCode.NotImplemented));
             {
                 var fromEmail = new EmailAddress(from);
                 var toEmails = tos.Select(email => new EmailAddress(email)).ToList();
@@ -105,7 +105,7 @@ namespace OrderCloud.Integrations.SendGrid
 
         public async Task SendSingleTemplateEmailSingleRcptAttachment(string from, string to, string templateID, object templateData, IFormFile fileReference)
         {
-            Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sengrid template ID not configured in app settings", HttpStatusCode.NotImplemented));
+            Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sendgrid template ID not configured in app settings", HttpStatusCode.NotImplemented));
             {
                 var fromEmail = new EmailAddress(from);
                 var toEmail = new EmailAddress(to);
