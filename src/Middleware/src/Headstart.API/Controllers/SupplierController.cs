@@ -13,12 +13,12 @@ namespace Headstart.API.Controllers
     [Route("supplier")]
     public class SupplierController : CatalystController
     {
-        private readonly IHSSupplierCommand command;
+        private readonly IHSSupplierCommand supplierCommand;
         private readonly IOrderCloudClient oc;
 
-        public SupplierController(IHSSupplierCommand command, IOrderCloudClient oc)
+        public SupplierController(IHSSupplierCommand supplierCommand, IOrderCloudClient oc)
         {
-            this.command = command;
+            this.supplierCommand = supplierCommand;
             this.oc = oc;
         }
 
@@ -28,7 +28,7 @@ namespace Headstart.API.Controllers
         [HttpGet, Route("me/{supplierID}"), OrderCloudUserAuth]
         public async Task<HSSupplier> GetMySupplier(string supplierID)
         {
-            return await command.GetMySupplier(supplierID, UserContext);
+            return await supplierCommand.GetMySupplier(supplierID, UserContext);
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Headstart.API.Controllers
         [HttpPost, OrderCloudUserAuth(ApiRole.SupplierAdmin)]
         public async Task<HSSupplier> Create([FromBody] HSSupplier supplier)
         {
-            return await command.Create(supplier, UserContext.AccessToken);
+            return await supplierCommand.Create(supplier, UserContext.AccessToken);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Headstart.API.Controllers
         [HttpPatch, Route("{supplierID}"), OrderCloudUserAuth]
         public async Task<HSSupplier> UpdateSupplier(string supplierID, [FromBody] PartialSupplier supplier)
         {
-            return await command.UpdateSupplier(supplierID, supplier, UserContext);
+            return await supplierCommand.UpdateSupplier(supplierID, supplier, UserContext);
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Headstart.API.Controllers
         [HttpGet, Route("orderdetails/{supplierOrderID}/{orderType}"), OrderCloudUserAuth(ApiRole.OrderAdmin, ApiRole.OrderReader)]
         public async Task<HSSupplierOrderData> GetSupplierOrder(string supplierOrderID, OrderType orderType)
         {
-            return await command.GetSupplierOrderData(supplierOrderID, orderType, UserContext);
+            return await supplierCommand.GetSupplierOrderData(supplierOrderID, orderType, UserContext);
         }
     }
 }

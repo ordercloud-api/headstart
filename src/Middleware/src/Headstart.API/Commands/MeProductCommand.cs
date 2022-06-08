@@ -23,7 +23,7 @@ namespace Headstart.API.Commands
     public class MeProductCommand : IMeProductCommand
     {
         private readonly IOrderCloudClient oc;
-        private readonly IHSBuyerCommand hsBuyerCommand;
+        private readonly IBuyerCommand hsBuyerCommand;
         private readonly IEmailServiceProvider emailServiceProvider;
         private readonly ISimpleCache cache;
         private readonly ICurrencyConversionCommand currencyConversionCommand;
@@ -31,7 +31,7 @@ namespace Headstart.API.Commands
 
         public MeProductCommand(
             IOrderCloudClient elevatedOc,
-            IHSBuyerCommand hsBuyerCommand,
+            IBuyerCommand hsBuyerCommand,
             IEmailServiceProvider emailServiceProvider,
             ISimpleCache cache,
             ICurrencyConversionCommand currencyConversionCommand,

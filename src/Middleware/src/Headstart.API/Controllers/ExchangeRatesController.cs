@@ -13,24 +13,23 @@ namespace Headstart.Common.Controllers
     [Route("exchangerates")]
     public class ExchangeRatesController : CatalystController
     {
-        private readonly ICurrencyConversionCommand command;
+        private readonly ICurrencyConversionCommand currencyConversionCommand;
 
-        public ExchangeRatesController(ICurrencyConversionCommand command)
+        public ExchangeRatesController(ICurrencyConversionCommand currencyConversionCommand)
         {
-            this.command = command;
+            this.currencyConversionCommand = currencyConversionCommand;
         }
 
         [HttpGet, Route("{currency}")]
         public async Task<ListPage<ConversionRate>> Get(ListArgs<ConversionRate> rateArgs, CurrencyCode currency)
         {
-            return await command.Get(rateArgs, currency);
+            return await currencyConversionCommand.Get(rateArgs, currency);
         }
 
         [HttpGet, Route("supportedrates")]
         public async Task<ListPage<ConversionRate>> GetRateList()
         {
-            var list = await command.GetRateList();
-            return list;
+            return await currencyConversionCommand.GetRateList();
         }
     }
 }

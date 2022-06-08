@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using OrderCloud.SDK;
 
-namespace OrderCloud.Integrations.Smarty.Models
+namespace Headstart.Common.Models
 {
     public class BuyerAddressValidation
     {
@@ -18,7 +18,6 @@ namespace OrderCloud.Integrations.Smarty.Models
 
         public List<BuyerAddress> SuggestedAddresses { get; set; } = new List<BuyerAddress>() { };
 
-        // https://smartystreets.com/docs/cloud/us-street-api#footnotes
         public string GapBetweenRawAndValid { get; set; }
     }
 }

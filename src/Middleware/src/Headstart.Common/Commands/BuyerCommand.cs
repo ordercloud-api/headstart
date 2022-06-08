@@ -7,7 +7,7 @@ using OrderCloud.SDK;
 
 namespace Headstart.Common.Commands
 {
-    public interface IHSBuyerCommand
+    public interface IBuyerCommand
     {
         Task<SuperHSBuyer> Create(SuperHSBuyer buyer);
 
@@ -18,11 +18,11 @@ namespace Headstart.Common.Commands
         Task<SuperHSBuyer> Update(string buyerID, SuperHSBuyer buyer);
     }
 
-    public class HSBuyerCommand : IHSBuyerCommand
+    public class BuyerCommand : IBuyerCommand
     {
         private readonly IOrderCloudClient oc;
 
-        public HSBuyerCommand(IOrderCloudClient oc)
+        public BuyerCommand(IOrderCloudClient oc)
         {
             this.oc = oc;
         }

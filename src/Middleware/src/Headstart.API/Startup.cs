@@ -37,6 +37,7 @@ using OrderCloud.Integrations.Library;
 using OrderCloud.Integrations.Library.Cosmos;
 using OrderCloud.Integrations.Library.cosmos_repo;
 using OrderCloud.Integrations.Library.Interfaces;
+using OrderCloud.Integrations.RMAs.Commands;
 using OrderCloud.Integrations.RMAs.Repositories;
 using OrderCloud.Integrations.SendGrid;
 using OrderCloud.Integrations.Smarty;
@@ -242,7 +243,8 @@ namespace Headstart.API
                 .AddSingleton<IEmailServiceProvider, SendGridService>()
                 .AddSingleton<ISendGridClient>(x => new SendGridClient(settings.SendgridSettings.ApiKey))
                 .AddSingleton<IFlurlClientFactory>(x => flurlClientFactory)
-                .AddSingleton<DownloadReportCommand>()
+                .AddSingleton<IDownloadReportCommand, DownloadReportCommand>()
+                .AddSingleton<IRMACommand, RMACommand>()
                 .Inject<IRMARepo>()
                 .Inject<IZohoClient>()
                 .AddSingleton<IOMSService>(z => new ZohoService(

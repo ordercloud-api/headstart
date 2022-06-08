@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Headstart.API.Commands;
 using Headstart.Common.Models;
@@ -13,21 +12,21 @@ namespace Headstart.Common.Controllers
     [Route("support")]
     public class SupportController : CatalystController
     {
-        private static ICheckoutIntegrationCommand checkoutIntegrationCommand;
-        private static IPostSubmitCommand postSubmitCommand;
+        private readonly ICheckoutIntegrationCommand checkoutIntegrationCommand;
+        private readonly IPostSubmitCommand postSubmitCommand;
         private readonly IOrderCloudClient oc;
         private readonly IEmailServiceProvider emailServiceProvider;
 
         public SupportController(ICheckoutIntegrationCommand checkoutIntegrationCommand, IPostSubmitCommand postSubmitCommand, IOrderCloudClient oc, IEmailServiceProvider emailServiceProvider)
         {
-            SupportController.checkoutIntegrationCommand = checkoutIntegrationCommand;
-            SupportController.postSubmitCommand = postSubmitCommand;
+            this.checkoutIntegrationCommand = checkoutIntegrationCommand;
+            this.postSubmitCommand = postSubmitCommand;
             this.oc = oc;
             this.emailServiceProvider = emailServiceProvider;
         }
 
         [HttpGet, Route("shipping")]
-        public async Task<ShipEstimateResponse> GetShippingRates([FromBody] ShipmentTestModel model)
+        public async Task<ShipEstimateResponse> GetShippingRates([FromBody] ShipmentTestRequest model)
         {
             var payload = new HSOrderCalculatePayload()
             {
@@ -75,12 +74,5 @@ namespace Headstart.Common.Controllers
         {
             await emailServiceProvider.EmailGeneralSupportQueue(supportCase);
         }
-    }
-
-    public class ShipmentTestModel
-    {
-        public HSOrder Order { get; set; }
-
-        public List<HSLineItem> LineItems { get; set; }
     }
 }

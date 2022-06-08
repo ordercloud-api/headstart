@@ -14,13 +14,11 @@ namespace Headstart.API.Controllers
     [Route("payments")]
     public class PaymentController : CatalystController
     {
-        private readonly IPaymentCommand command;
-        private readonly AppSettings settings;
+        private readonly IPaymentCommand paymentCommand;
 
-        public PaymentController(IPaymentCommand command, AppSettings settings)
+        public PaymentController(IPaymentCommand paymentCommand)
         {
-            this.command = command;
-            this.settings = settings;
+            this.paymentCommand = paymentCommand;
         }
 
         /// <summary>
@@ -29,7 +27,7 @@ namespace Headstart.API.Controllers
         [HttpPut, Route("{orderID}/update"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<IList<HSPayment>> SavePayments(string orderID, [FromBody] PaymentUpdateRequest request)
         {
-            return await command.SavePayments(orderID, request.Payments, UserContext.AccessToken);
+            return await paymentCommand.SavePayments(orderID, request.Payments, UserContext.AccessToken);
         }
     }
 }

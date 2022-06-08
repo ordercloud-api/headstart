@@ -34,11 +34,11 @@ namespace Headstart.API.Controllers
     /// </summary>
     public class MeCreditCardAuthorizationController : CatalystController
     {
-        private readonly ICreditCardCommand card;
+        private readonly ICreditCardCommand creditCardCommand;
 
-        public MeCreditCardAuthorizationController(ICreditCardCommand card)
+        public MeCreditCardAuthorizationController(ICreditCardCommand creditCardCommand)
         {
-            this.card = card;
+            this.creditCardCommand = creditCardCommand;
         }
 
         /// <summary>
@@ -47,7 +47,7 @@ namespace Headstart.API.Controllers
         [HttpPost, Route("me/creditcards"), OrderCloudUserAuth(ApiRole.MeCreditCardAdmin, ApiRole.CreditCardAdmin)]
         public async Task<BuyerCreditCard> MePost([FromBody] CCToken card)
         {
-            return await this.card.MeTokenizeAndSave(card, UserContext);
+            return await this.creditCardCommand.MeTokenizeAndSave(card, UserContext);
         }
     }
 
@@ -56,11 +56,11 @@ namespace Headstart.API.Controllers
     /// </summary>
     public class CreditCardController : CatalystController
     {
-        private readonly ICreditCardCommand card;
+        private readonly ICreditCardCommand creditCardCommand;
 
-        public CreditCardController(ICreditCardCommand card)
+        public CreditCardController(ICreditCardCommand creditCardCommand)
         {
-            this.card = card;
+            this.creditCardCommand = creditCardCommand;
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace Headstart.API.Controllers
         [HttpPost, Route("buyers/{buyerID}/creditcards"), OrderCloudUserAuth(ApiRole.CreditCardAdmin)]
         public async Task<CreditCard> Post([FromBody] CCToken card, string buyerID)
         {
-            return await this.card.TokenizeAndSave(buyerID, card, UserContext);
+            return await this.creditCardCommand.TokenizeAndSave(buyerID, card, UserContext);
         }
     }
 }

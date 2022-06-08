@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Headstart.Common.Commands;
+using Microsoft.Extensions.DependencyInjection;
 using OrderCloud.SDK;
 using SmartyStreets;
 
@@ -17,7 +18,7 @@ namespace OrderCloud.Integrations.Smarty
             var smartyService = new SmartyStreetsService(settings, smartyStreetsUsClient);
 
             services
-                .AddSingleton<ISmartyStreetsCommand>(x => new SmartyStreetsCommand(settings, orderCloudClient, smartyService))
+                .AddSingleton<IAddressValidationCommand>(x => new SmartyStreetsCommand(settings, orderCloudClient, smartyService))
                 .AddSingleton<ISmartyStreetsService>(x => smartyService);
 
             return services;

@@ -32,7 +32,7 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
         private readonly OrderCloudSettings orderCloudSettings;
         private readonly IPortalService portal;
         private readonly IHSSupplierCommand supplierCommand;
-        private readonly IHSBuyerCommand buyerCommand;
+        private readonly IBuyerCommand buyerCommand;
         private readonly IHSBuyerLocationCommand buyerLocationCommand;
         private IOrderCloudClient oc;
 
@@ -41,7 +41,7 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
             OrderCloudSettings orderCloudSettings,
             IPortalService portal,
             IHSSupplierCommand supplierCommand,
-            IHSBuyerCommand buyerCommand,
+            IBuyerCommand buyerCommand,
             IHSBuyerLocationCommand buyerLocationCommand,
             IOrderCloudClient oc)
         {

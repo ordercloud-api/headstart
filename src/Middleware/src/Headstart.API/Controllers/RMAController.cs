@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Headstart.API.Commands;
+using Headstart.Models.Misc;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Library;
@@ -15,10 +16,6 @@ namespace Headstart.Common.Controllers
     [Route("rma")]
     public class RMAController : CatalystController
     {
-        private const string HSLocationViewAllOrders = "HSLocationViewAllOrders";
-        private const string HSOrderAdmin = "HSOrderAdmin";
-        private const string HSOrderReader = "HSOrderReader";
-        private const string HSShipmentAdmin = "HSShipmentAdmin";
         private readonly IRMACommand rmaCommand;
         private readonly ILineItemCommand lineItemCommand;
         private readonly IOrderCloudClient oc;
@@ -41,7 +38,7 @@ namespace Headstart.Common.Controllers
             return await rmaCommand.PostRMA(rma);
         }
 
-        [HttpPost, Route("list/buyer"), OrderCloudUserAuth(HSLocationViewAllOrders)]
+        [HttpPost, Route("list/buyer"), OrderCloudUserAuth(nameof(CustomRole.HSLocationViewAllOrders))]
         public async Task<CosmosListPage<RMA>> ListBuyerRMAs([FromBody] CosmosListOptions listOptions)
         {
             var me = await oc.Me.GetAsync(accessToken: UserContext.AccessToken);
@@ -49,19 +46,19 @@ namespace Headstart.Common.Controllers
         }
 
         // Seller/Supplier Routes
-        [HttpGet, OrderCloudUserAuth(HSOrderAdmin, HSOrderReader, HSShipmentAdmin)]
+        [HttpGet, OrderCloudUserAuth(nameof(CustomRole.HSOrderAdmin), nameof(CustomRole.HSOrderReader), nameof(CustomRole.HSShipmentAdmin))]
         public async Task<RMA> Get(ListArgs<RMA> args)
         {
             return await rmaCommand.Get(args, UserContext);
         }
 
-        [HttpGet, Route("{orderID}"), OrderCloudUserAuth(HSOrderAdmin, HSOrderReader, HSShipmentAdmin)]
+        [HttpGet, Route("{orderID}"), OrderCloudUserAuth(nameof(CustomRole.HSOrderAdmin), nameof(CustomRole.HSOrderReader), nameof(CustomRole.HSShipmentAdmin))]
         public async Task<CosmosListPage<RMA>> ListRMAsByOrderID(string orderID, CommerceRole commerceRole, MeUser me, bool accessAllRMAsOnOrder = false)
         {
             return await rmaCommand.ListRMAsByOrderID(orderID, commerceRole, me, accessAllRMAsOnOrder);
         }
 
-        [HttpPost, Route("list"), OrderCloudUserAuth(HSOrderAdmin, HSOrderReader, HSShipmentAdmin)]
+        [HttpPost, Route("list"), OrderCloudUserAuth(nameof(CustomRole.HSOrderAdmin), nameof(CustomRole.HSOrderReader), nameof(CustomRole.HSShipmentAdmin))]
         public async Task<CosmosListPage<RMA>> ListRMAs([FromBody] CosmosListOptions listOptions)
         {
             return await rmaCommand.ListRMAs(listOptions, UserContext);

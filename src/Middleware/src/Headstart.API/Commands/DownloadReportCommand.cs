@@ -14,7 +14,14 @@ using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
 {
-    public class DownloadReportCommand
+    public interface IDownloadReportCommand
+    {
+        Task<string> ExportToExcel(ReportTypeEnum reportType, List<string> reportHeaders, IEnumerable<object> data);
+
+        Task<string> GetSharedAccessSignature(string fileName);
+    }
+
+    public class DownloadReportCommand : IDownloadReportCommand
     {
         private readonly OrderCloudIntegrationsBlobService blob;
 

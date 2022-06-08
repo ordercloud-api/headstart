@@ -13,6 +13,7 @@ namespace Headstart.Models.Misc
         HSMeSupplierAdmin,
         HSMeSupplierUserAdmin,
         HSOrderAdmin,
+        HSOrderReader,
         HSProductAdmin,
         HSPromotionAdmin,
         HSReportAdmin,

@@ -14,14 +14,12 @@ namespace Headstart.Common.Controllers
     public class BuyerLocationController : CatalystController
     {
         private readonly IHSBuyerLocationCommand buyerLocationCommand;
-        private readonly IOrderCloudClient oc;
         private readonly ILocationPermissionCommand locationPermissionCommand;
 
-        public BuyerLocationController(ILocationPermissionCommand locationPermissionCommand, IHSBuyerLocationCommand buyerLocationCommand, IOrderCloudClient oc)
+        public BuyerLocationController(ILocationPermissionCommand locationPermissionCommand, IHSBuyerLocationCommand buyerLocationCommand)
         {
             this.buyerLocationCommand = buyerLocationCommand;
             this.locationPermissionCommand = locationPermissionCommand;
-            this.oc = oc;
         }
 
         /// <summary>
