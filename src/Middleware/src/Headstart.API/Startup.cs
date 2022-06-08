@@ -37,6 +37,7 @@ using OrderCloud.Integrations.Library;
 using OrderCloud.Integrations.Library.Cosmos;
 using OrderCloud.Integrations.Library.cosmos_repo;
 using OrderCloud.Integrations.Library.Interfaces;
+using OrderCloud.Integrations.Portal;
 using OrderCloud.Integrations.RMAs.Commands;
 using OrderCloud.Integrations.RMAs.Repositories;
 using OrderCloud.Integrations.SendGrid;

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Flurl" Version="3.0.2" />
     <PackageReference Include="ordercloud-dotnet-catalyst" Version="2.0.1" />
     <PackageReference Include="OrderCloud.SDK" Version="0.11.0" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
@@ -20,11 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Headstart.Common\Headstart.Common.csproj" />
-    <ProjectReference Include="..\OrderCloud.Integrations.Portal\OrderCloud.Integrations.Portal.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

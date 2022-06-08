@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
 using Flurl.Http;
 using Flurl.Http.Configuration;
-using Headstart.Common.Services.Portal.Models;
 using Headstart.Common.Settings;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Portal.Models;
 
-namespace Headstart.Common.Services
+namespace OrderCloud.Integrations.Portal
 {
     public interface IPortalService
     {

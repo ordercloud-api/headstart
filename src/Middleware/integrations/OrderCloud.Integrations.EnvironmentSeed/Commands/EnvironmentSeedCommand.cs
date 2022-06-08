@@ -6,12 +6,12 @@ using System.Net;
 using System.Threading.Tasks;
 using Headstart.Common.Commands;
 using Headstart.Common.Models;
-using Headstart.Common.Services;
-using Headstart.Common.Services.Portal.Models;
 using Headstart.Common.Settings;
 using Microsoft.WindowsAzure.Storage.Blob;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.Portal;
+using OrderCloud.Integrations.Portal.Models;
 using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.EnvironmentSeed.Commands

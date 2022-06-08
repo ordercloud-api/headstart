@@ -64,6 +64,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderCloud.Integrations.Env
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderCloud.Integrations.RMAs", "integrations\OrderCloud.Integrations.RMAs\OrderCloud.Integrations.RMAs.csproj", "{6764A56B-AE68-4E04-A742-BD796CE7D9CF}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderCloud.Integrations.Portal", "integrations\OrderCloud.Integrations.Portal\OrderCloud.Integrations.Portal.csproj", "{F72B0BC1-77B4-4A49-BFF8-125F3F3DF2DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -174,6 +176,10 @@ Global
 		{6764A56B-AE68-4E04-A742-BD796CE7D9CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6764A56B-AE68-4E04-A742-BD796CE7D9CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6764A56B-AE68-4E04-A742-BD796CE7D9CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F72B0BC1-77B4-4A49-BFF8-125F3F3DF2DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F72B0BC1-77B4-4A49-BFF8-125F3F3DF2DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F72B0BC1-77B4-4A49-BFF8-125F3F3DF2DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F72B0BC1-77B4-4A49-BFF8-125F3F3DF2DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -202,6 +208,7 @@ Global
 		{06F92F00-80BE-4257-9A5A-B7B71C97686B} = {CCAF8AD5-2FCC-46E0-82EF-2FCC0EEC8B16}
 		{D05A6B06-290A-49B1-90B9-52BF34B42586} = {0B969DE0-4342-474E-A83B-BF34DAF05600}
 		{6764A56B-AE68-4E04-A742-BD796CE7D9CF} = {CCAF8AD5-2FCC-46E0-82EF-2FCC0EEC8B16}
+		{F72B0BC1-77B4-4A49-BFF8-125F3F3DF2DC} = {CCAF8AD5-2FCC-46E0-82EF-2FCC0EEC8B16}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D28C7C46-780F-4A68-80B8-9789997A37F7}

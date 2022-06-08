@@ -1,6 +1,6 @@
 ﻿using Headstart.Common.Models;
 
-namespace Headstart.Common.Services.Portal.Models
+namespace OrderCloud.Integrations.Portal.Models
 {
     public class Marketplace
     {
