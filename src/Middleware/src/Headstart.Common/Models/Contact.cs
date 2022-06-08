@@ -1,4 +1,4 @@
-﻿namespace Headstart.Models.Headstart.Extended
+﻿namespace Headstart.Common.Models
 {
     public class Contact
     {

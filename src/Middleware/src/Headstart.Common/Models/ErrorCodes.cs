@@ -3,7 +3,7 @@ using System.Net;
 using Headstart.Models.Exceptions;
 using OrderCloud.Catalyst;
 
-namespace Headstart.Models
+namespace Headstart.Common.Models
 {
     public static class ErrorCodes
     {

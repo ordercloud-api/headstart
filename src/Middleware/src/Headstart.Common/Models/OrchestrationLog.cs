@@ -63,7 +63,7 @@ namespace Headstart.Common.Models
         public RecordType? RecordType { get; set; }
 
         [Sortable]
-        public Action? Action { get; set; }
+        public WorkItemAction? Action { get; set; }
 
         [DocIgnore]
         public JObject Current { get; set; }

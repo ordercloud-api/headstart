@@ -1,10 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Headstart.Common.Models;
-using Headstart.Common.Models.Misc;
-using Headstart.Models;
-using Headstart.Models.Headstart;
-using Headstart.Models.Misc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.WindowsAzure.Storage.Blob;
 using OrderCloud.SDK;

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Headstart.Models.Extended;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using OrderCloud.Integrations.Library.Attributes;
@@ -9,13 +8,6 @@ using OrderCloud.SDK;
 
 namespace Headstart.Common.Models
 {
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum ProductType
-    {
-        Standard,
-        Quote,
-    }
-
     public class SuperHSProduct : IHSObject
     {
         public string ID { get; set; }

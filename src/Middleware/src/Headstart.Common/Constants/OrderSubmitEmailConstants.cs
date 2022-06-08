@@ -1,6 +1,5 @@
 using System.Collections.Generic;
-using Headstart.Models;
-using Headstart.Models.Headstart;
+using Headstart.Common.Models;
 
 namespace Headstart.Common.Constants
 {

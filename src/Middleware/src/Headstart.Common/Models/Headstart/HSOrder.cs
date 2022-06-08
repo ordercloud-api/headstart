@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Headstart.Models.Extended;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using OrderCloud.SDK;

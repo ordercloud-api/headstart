@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Headstart.Common.Models;
-using Headstart.Models.Extended;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Emails;
 using OrderCloud.Integrations.Library;

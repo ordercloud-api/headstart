@@ -1,4 +1,4 @@
-﻿namespace Headstart.Models
+﻿namespace Headstart.Common.Models
 {
     public class EmailDisplayText
     {

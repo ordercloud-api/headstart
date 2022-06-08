@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using Headstart.Common.Models;
 using OrderCloud.SDK;
 
-namespace Headstart.Models.Misc
+namespace Headstart.Common.Models
 {
     public class MessageNotification<TEventBodyType>
     {

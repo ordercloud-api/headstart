@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Headstart.Common.Models.Misc
+namespace Headstart.Common.Models
 {
     public class SupportCase
     {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Headstart.Models.Extended
+namespace Headstart.Common.Models
 {
     public class QuoteOrderInfo
     {

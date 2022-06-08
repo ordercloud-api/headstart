@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Headstart.Common.Models;
-using Headstart.Models.Extended;
-using Headstart.Models.Headstart;
 using OrderCloud.SDK;
 using static OrderCloud.Integrations.SendGrid.SendGridModels;
 

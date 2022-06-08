@@ -9,7 +9,6 @@ using Headstart.Common.Models;
 using Headstart.Common.Services;
 using Headstart.Common.Services.Portal.Models;
 using Headstart.Common.Settings;
-using Headstart.Models.Misc;
 using Microsoft.WindowsAzure.Storage.Blob;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Library;

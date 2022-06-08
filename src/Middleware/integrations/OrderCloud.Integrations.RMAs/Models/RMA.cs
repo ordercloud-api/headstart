@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Headstart.Models.Headstart;
+using Headstart.Common.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using OrderCloud.Integrations.Library.Cosmos;

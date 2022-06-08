@@ -6,7 +6,6 @@ using Headstart.Common.Constants;
 using Headstart.Common.Models;
 using Headstart.Common.Services;
 using Headstart.Common.Utils;
-using Headstart.Models.Extended;
 using Newtonsoft.Json;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Emails;

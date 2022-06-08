@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Headstart.Common.Models;
-using Headstart.Models;
 using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.SendGrid

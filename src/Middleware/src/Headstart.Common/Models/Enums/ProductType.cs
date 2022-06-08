@@ -1,13 +1,12 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace Headstart.Models.Extended
+namespace Headstart.Common.Models
 {
     [JsonConverter(typeof(StringEnumConverter))]
-    public enum ClaimStatus
+    public enum ProductType
     {
-        NoClaim,
-        Pending,
-        Complete,
+        Standard,
+        Quote,
     }
 }

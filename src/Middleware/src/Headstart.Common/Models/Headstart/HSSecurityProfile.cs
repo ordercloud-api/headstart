@@ -1,5 +1,4 @@
-﻿using Headstart.Models.Misc;
-using OrderCloud.SDK;
+﻿using OrderCloud.SDK;
 
 namespace Headstart.Common.Models
 {

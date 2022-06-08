@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Headstart.Common.Models.Misc
+namespace Headstart.Common.Models
 {
     public class Error
     {
@@ -9,7 +9,7 @@ namespace Headstart.Common.Models.Misc
         public string StackTrace { get; set; }
     }
 
-    public class Shipment
+    public class CustomShipment
     {
         public string OrderID { get; set; }
 

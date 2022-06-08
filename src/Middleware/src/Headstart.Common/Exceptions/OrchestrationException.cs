@@ -82,7 +82,7 @@ namespace Headstart.Common.Exceptions
         public RecordType RecordType { get; set; }
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public Models.Action Action { get; set; }
+        public WorkItemAction Action { get; set; }
 
         public JObject Current { get; set; }
 

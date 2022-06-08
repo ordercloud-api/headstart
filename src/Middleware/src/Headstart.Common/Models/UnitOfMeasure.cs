@@ -1,4 +1,4 @@
-﻿namespace Headstart.Models.Extended
+﻿namespace Headstart.Common.Models
 {
     public class UnitOfMeasure
     {

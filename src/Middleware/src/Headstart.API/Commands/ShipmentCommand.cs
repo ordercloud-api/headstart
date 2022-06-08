@@ -7,13 +7,10 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Headstart.Common.Models;
-using Headstart.Models.Extended;
-using Headstart.Models.Headstart;
 using Microsoft.AspNetCore.Http;
 using Npoi.Mapper;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
-using Misc = Headstart.Common.Models.Misc;
 
 namespace Headstart.API.Commands
 {
@@ -46,7 +43,7 @@ namespace Headstart.API.Commands
     {
         public DocumentImportSummary Meta { get; set; }
 
-        public List<Misc.Shipment> Valid { get; set; } = new List<Misc.Shipment>();
+        public List<CustomShipment> Valid { get; set; } = new List<CustomShipment>();
 
         public List<DocumentRowError> Invalid { get; set; } = new List<DocumentRowError>();
     }
@@ -64,7 +61,7 @@ namespace Headstart.API.Commands
 
     public class BatchProcessFailure
     {
-        public Misc.Shipment Shipment { get; set; }
+        public CustomShipment Shipment { get; set; }
 
         public string Error { get; set; }
     }
@@ -92,15 +89,15 @@ namespace Headstart.API.Commands
             this.lineItemCommand = lineItemCommand;
         }
 
-        public static DocumentImportResult Validate(List<RowInfo<Misc.Shipment>> rows)
+        public static DocumentImportResult Validate(List<RowInfo<CustomShipment>> rows)
         {
             DocumentImportResult result = new DocumentImportResult()
             {
                 Invalid = new List<DocumentRowError>(),
-                Valid = new List<Misc.Shipment>(),
+                Valid = new List<CustomShipment>(),
             };
 
-            foreach (RowInfo<Misc.Shipment> row in rows)
+            foreach (RowInfo<CustomShipment> row in rows)
             {
                 if (row.ErrorColumnIndex > -1)
                 {
@@ -213,7 +210,7 @@ namespace Headstart.API.Commands
             return documentImportResult;
         }
 
-        private static bool ShouldIgnoreRow(Misc.Shipment value)
+        private static bool ShouldIgnoreRow(CustomShipment value)
         {
             string exampleSignifier = "//EXAMPLE//";
 
@@ -228,7 +225,7 @@ namespace Headstart.API.Commands
                 return true;
             }
 
-            PropertyInfo[] props = typeof(Misc.Shipment).GetProperties();
+            PropertyInfo[] props = typeof(CustomShipment).GetProperties();
 
             foreach (PropertyInfo prop in props)
             {
@@ -289,7 +286,7 @@ namespace Headstart.API.Commands
             }
 
             using Stream stream = file.OpenReadStream();
-            List<RowInfo<Misc.Shipment>> shipments = new Mapper(stream).Take<Misc.Shipment>(0, 1000).ToList();
+            List<RowInfo<CustomShipment>> shipments = new Mapper(stream).Take<CustomShipment>(0, 1000).ToList();
 
             if (shipments == null)
             {
@@ -318,7 +315,7 @@ namespace Headstart.API.Commands
                 return null;
             }
 
-            foreach (Misc.Shipment shipment in importResult.Valid)
+            foreach (CustomShipment shipment in importResult.Valid)
             {
                 try
                 {
@@ -370,7 +367,7 @@ namespace Headstart.API.Commands
             return true;
         }
 
-        private BatchProcessFailure CreateBatchProcessFailureItem(Misc.Shipment shipment, OrderCloudException ex)
+        private BatchProcessFailure CreateBatchProcessFailureItem(CustomShipment shipment, OrderCloudException ex)
         {
             BatchProcessFailure failure = new BatchProcessFailure();
             string errorMessage;
@@ -415,7 +412,7 @@ namespace Headstart.API.Commands
             await lineItemCommand.UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Outgoing, supplierOrderID, lineItemStatusChange, null);
         }
 
-        private async Task<bool> ProcessShipment(Misc.Shipment shipment, BatchProcessResult result, DecodedToken decodedToken)
+        private async Task<bool> ProcessShipment(CustomShipment shipment, BatchProcessResult result, DecodedToken decodedToken)
         {
             PartialShipment newShipment = null;
             Shipment ocShipment;
@@ -494,7 +491,7 @@ namespace Headstart.API.Commands
             }
         }
 
-        private void ValidateShipmentAmount(Misc.Shipment shipment, LineItem lineItem, Order ocOrder)
+        private void ValidateShipmentAmount(CustomShipment shipment, LineItem lineItem, Order ocOrder)
         {
             if (shipment == null || lineItem == null)
             {
@@ -509,7 +506,7 @@ namespace Headstart.API.Commands
             }
         }
 
-        private async Task<LineItem> GetOutgoingLineItem(Misc.Shipment shipment)
+        private async Task<LineItem> GetOutgoingLineItem(CustomShipment shipment)
         {
             if (shipment == null || shipment.LineItemID == null)
             {
@@ -526,7 +523,7 @@ namespace Headstart.API.Commands
             }
         }
 
-        private async Task<Order> GetOutgoingOrder(Misc.Shipment shipment)
+        private async Task<Order> GetOutgoingOrder(CustomShipment shipment)
         {
             if (shipment == null || shipment.OrderID == null)
             {
@@ -543,7 +540,7 @@ namespace Headstart.API.Commands
             }
         }
 
-        private async Task<LineItem> PatchPartialLineItemComment(Misc.Shipment shipment, string newShipmentId)
+        private async Task<LineItem> PatchPartialLineItemComment(CustomShipment shipment, string newShipmentId)
         {
             PartialLineItem partialLineItem;
             Dictionary<string, object> commentDictonary = new Dictionary<string, object>();
@@ -567,7 +564,7 @@ namespace Headstart.API.Commands
             return await oc.LineItems.PatchAsync(OrderDirection.Outgoing, shipment.OrderID, shipment.LineItemID, partialLineItem);
         }
 
-        private async Task<Shipment> GetShipmentByTrackingNumber(Misc.Shipment shipment, string accessToken)
+        private async Task<Shipment> GetShipmentByTrackingNumber(CustomShipment shipment, string accessToken)
         {
             Shipment shipmentResponse = null;
 
@@ -610,7 +607,7 @@ namespace Headstart.API.Commands
             return shipmentResponse;
         }
 
-        private PartialShipment PatchShipment(Shipment ocShipment, Misc.Shipment shipment)
+        private PartialShipment PatchShipment(Shipment ocShipment, CustomShipment shipment)
         {
             PartialShipment newShipment = new PartialShipment();
             bool isCreatingNew = false;

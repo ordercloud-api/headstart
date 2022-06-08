@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 using Headstart.API.Commands;
 using Headstart.Common.Models;
-using Headstart.Common.Models.Misc;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Emails;

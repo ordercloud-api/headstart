@@ -1,4 +1,4 @@
-namespace Headstart.Models.Misc
+namespace Headstart.Common.Models
 {
     public enum CustomRole
     {
