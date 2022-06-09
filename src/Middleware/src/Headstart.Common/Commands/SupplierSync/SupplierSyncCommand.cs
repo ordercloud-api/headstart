@@ -2,11 +2,11 @@ using System;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
+using Headstart.Common.Extensions;
 using Headstart.Common.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Commands

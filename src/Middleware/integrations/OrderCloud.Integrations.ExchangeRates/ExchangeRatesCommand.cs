@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Headstart.Common.Commands;
+using Headstart.Common.Extensions;
 using Headstart.Common.Models;
 using Headstart.Common.Services;
 using Newtonsoft.Json;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.AzureStorage;
 using OrderCloud.Integrations.ExchangeRates.Mappers;
-using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.ExchangeRates

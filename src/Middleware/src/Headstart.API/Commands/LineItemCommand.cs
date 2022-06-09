@@ -9,7 +9,6 @@ using Microsoft.ApplicationInsights;
 using Newtonsoft.Json;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Emails;
-using OrderCloud.Integrations.Library;
 using OrderCloud.Integrations.RMAs.Commands;
 using OrderCloud.Integrations.RMAs.Models;
 using OrderCloud.SDK;

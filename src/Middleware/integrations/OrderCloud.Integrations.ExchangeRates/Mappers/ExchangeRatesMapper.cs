@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Headstart.Common.Extensions;
 using Headstart.Common.Models;
 using OrderCloud.Integrations.ExchangeRates.Models;
-using OrderCloud.Integrations.Library;
 
 namespace OrderCloud.Integrations.ExchangeRates.Mappers
 {

@@ -7,7 +7,7 @@ using Headstart.API.Helpers;
 using Headstart.Common.Models;
 using Headstart.Integrations.CMS;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.Library.Cosmos;
+using OrderCloud.Integrations.CosmosDB;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Commands.Crud

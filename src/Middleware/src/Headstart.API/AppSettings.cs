@@ -1,7 +1,7 @@
 using Headstart.Common.Settings;
 using OrderCloud.Integrations.AzureStorage;
 using OrderCloud.Integrations.CardConnect;
-using OrderCloud.Integrations.Library.Cosmos;
+using OrderCloud.Integrations.CosmosDB;
 using OrderCloud.Integrations.SendGrid;
 using OrderCloud.Integrations.Smarty;
 using OrderCloud.Integrations.TaxJar;

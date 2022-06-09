@@ -1,6 +1,6 @@
 ﻿using Microsoft.Azure.Cosmos;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.CosmosDB;
 
 namespace Headstart.Jobs
 {

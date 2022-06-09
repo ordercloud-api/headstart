@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.NUnit3;
 using Headstart.API.Commands;
+using Headstart.Common.Extensions;
 using NSubstitute;
 using NUnit.Framework;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
 
 namespace Headstart.Tests

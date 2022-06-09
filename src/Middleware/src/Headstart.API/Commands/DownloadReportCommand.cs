@@ -4,12 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Headstart.Common.Models;
 using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json.Linq;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using OrderCloud.Integrations.AzureStorage;
+using OrderCloud.Integrations.Reporting.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Commands

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Headstart.Common.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using OrderCloud.Integrations.Library.Cosmos;
+using OrderCloud.Integrations.CosmosDB;
 
 namespace OrderCloud.Integrations.RMAs.Models
 {

@@ -3,7 +3,7 @@ using Headstart.API.Commands;
 using Headstart.Common.Models;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.CosmosDB;
 using OrderCloud.Integrations.RMAs.Commands;
 using OrderCloud.Integrations.RMAs.Models;
 using OrderCloud.SDK;

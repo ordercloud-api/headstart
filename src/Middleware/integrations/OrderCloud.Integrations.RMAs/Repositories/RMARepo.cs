@@ -1,5 +1,5 @@
 ﻿using Microsoft.Azure.Cosmos;
-using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.CosmosDB;
 using OrderCloud.Integrations.RMAs.Models;
 
 namespace OrderCloud.Integrations.RMAs.Repositories

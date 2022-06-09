@@ -32,11 +32,14 @@
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.AzureStorage\OrderCloud.Integrations.AzureStorage.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.CardConnect\OrderCloud.Integrations.CardConnect.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.CMS\OrderCloud.Integrations.CMS.csproj" />
+    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.CosmosDB\OrderCloud.Integrations.CosmosDB.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.EasyPost\OrderCloud.Integrations.EasyPost.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Emails\OrderCloud.Integrations.Emails.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.EnvironmentSeed\OrderCloud.Integrations.EnvironmentSeed.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.ExchangeRates\OrderCloud.Integrations.ExchangeRates.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Library\OrderCloud.Integrations.Library.csproj" />
+    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Orchestration\OrderCloud.Integrations.Orchestration.csproj" />
+    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Reporting\OrderCloud.Integrations.Reporting.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.RMAs\OrderCloud.Integrations.RMAs.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.SendGrid\OrderCloud.Integrations.SendGrid.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Smarty\OrderCloud.Integrations.Smarty.csproj" />

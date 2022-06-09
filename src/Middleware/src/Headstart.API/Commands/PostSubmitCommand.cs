@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Headstart.Common.Constants;
+using Headstart.Common.Extensions;
 using Headstart.Common.Models;
 using Headstart.Common.Services;
 using Headstart.Common.Utils;
 using Newtonsoft.Json;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Emails;
-using OrderCloud.Integrations.Library;
 using OrderCloud.SDK;
 using ITaxCalculator = OrderCloud.Integrations.Taxation.Interfaces.ITaxCalculator;
 

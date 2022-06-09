@@ -2,14 +2,14 @@
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Headstart.Common.Attributes;
 using Headstart.Common.Models;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using Npoi.Mapper;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.Library.Attributes;
 using OrderCloud.SDK;
-using IPartial = OrderCloud.Integrations.Library.Models.IPartial;
+using IPartial = Headstart.Common.Models.IPartial;
 
 namespace Headstart.Common.Commands
 {

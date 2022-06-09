@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Headstart.Common.Models;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.CosmosDB.Extensions;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Commands.Crud

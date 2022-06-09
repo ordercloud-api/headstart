@@ -2,10 +2,11 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Headstart.Common.Models;
-using Headstart.Common.Repositories;
 using Headstart.Jobs.Helpers;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.CosmosDB;
+using OrderCloud.Integrations.Reporting.Models;
+using OrderCloud.Integrations.Reporting.Repositories;
 using OrderCloud.SDK;
 
 namespace Headstart.Jobs

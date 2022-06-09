@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Headstart.Common.Attributes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using OrderCloud.Integrations.Library.Attributes;
 using OrderCloud.Integrations.Taxation.Interfaces;
 using OrderCloud.SDK;
 

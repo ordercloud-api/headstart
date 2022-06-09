@@ -10,8 +10,8 @@ using Headstart.API.Commands.Crud;
 using Headstart.API.Helpers;
 using Headstart.Common;
 using Headstart.Common.Commands;
+using Headstart.Common.Extensions;
 using Headstart.Common.Models;
-using Headstart.Common.Queries;
 using Headstart.Common.Services;
 using Headstart.Common.Settings;
 using Headstart.Integrations.CMS;
@@ -29,16 +29,19 @@ using OrderCloud.Integrations.Alerts;
 using OrderCloud.Integrations.Avalara;
 using OrderCloud.Integrations.AzureStorage;
 using OrderCloud.Integrations.CardConnect;
+using OrderCloud.Integrations.CosmosDB;
+using OrderCloud.Integrations.CosmosDB.Extensions;
 using OrderCloud.Integrations.EasyPost;
 using OrderCloud.Integrations.EasyPost.Models;
 using OrderCloud.Integrations.Emails;
 using OrderCloud.Integrations.EnvironmentSeed.Commands;
 using OrderCloud.Integrations.ExchangeRates;
-using OrderCloud.Integrations.Library;
-using OrderCloud.Integrations.Library.Cosmos;
-using OrderCloud.Integrations.Library.cosmos_repo;
 using OrderCloud.Integrations.Library.Interfaces;
+using OrderCloud.Integrations.Orchestration;
+using OrderCloud.Integrations.Orchestration.Models;
 using OrderCloud.Integrations.Portal;
+using OrderCloud.Integrations.Reporting.Models;
+using OrderCloud.Integrations.Reporting.Queries;
 using OrderCloud.Integrations.RMAs.Commands;
 using OrderCloud.Integrations.RMAs.Repositories;
 using OrderCloud.Integrations.SendGrid;
@@ -190,7 +193,7 @@ namespace Headstart.API
 
             services.AddMvc(o =>
              {
-                 o.Filters.Add(new OrderCloud.Integrations.Library.Attributes.ValidateModelAttribute());
+                 o.Filters.Add(new Headstart.Common.Attributes.ValidateModelAttribute());
                  o.EnableEndpointRouting = false;
              })
             .ConfigureApiBehaviorOptions(o => o.SuppressModelStateInvalidFilter = true)

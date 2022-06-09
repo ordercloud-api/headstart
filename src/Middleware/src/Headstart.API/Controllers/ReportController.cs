@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using Headstart.API.Commands;
 using Headstart.Common.Models;
-using Headstart.Common.Repositories.Models;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.Reporting.Models;
 using OrderCloud.Integrations.RMAs.Models;
 using OrderCloud.SDK;
 
