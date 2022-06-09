@@ -1,4 +1,4 @@
-﻿namespace OrderCloud.Integrations.Library
+﻿namespace Headstart.Common.Extensions
 {
     public static class DecimalExtensions
     {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using Headstart.Common.Models;
 using OrderCloud.Integrations.EasyPost.Models;
-using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.EasyPost.Mappers

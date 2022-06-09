@@ -2,12 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Flurl.Http;
+using Headstart.Common.Models;
+using Headstart.Common.Services;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.EasyPost.Exceptions;
 using OrderCloud.Integrations.EasyPost.Mappers;
 using OrderCloud.Integrations.EasyPost.Models;
-using OrderCloud.Integrations.Library.Interfaces;
-using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.EasyPost

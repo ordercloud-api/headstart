@@ -1,4 +1,4 @@
-﻿namespace OrderCloud.Integrations.Library.Models
+﻿namespace Headstart.Common.Models
 {
     public class InvalidHeaderError
     {

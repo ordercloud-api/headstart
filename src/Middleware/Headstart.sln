@@ -14,8 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 		nuget.config = nuget.config
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderCloud.Integrations.Library", "integrations\OrderCloud.Integrations.Library\OrderCloud.Integrations.Library.csproj", "{854B7782-2147-4820-9237-86AE4FE741D5}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderCloud.Integrations.ExchangeRates", "integrations\OrderCloud.Integrations.ExchangeRates\OrderCloud.Integrations.ExchangeRates.csproj", "{D1C77C25-FC09-4E94-BF8A-35D55967ABE9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderCloud.Integrations.CardConnect", "integrations\OrderCloud.Integrations.CardConnect\OrderCloud.Integrations.CardConnect.csproj", "{5C320131-2000-4FCB-BCF6-0F8E62D52BCF}"
@@ -90,10 +88,6 @@ Global
 		{BCC741E1-26B7-4AB3-9CA4-D74128C5EB10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCC741E1-26B7-4AB3-9CA4-D74128C5EB10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCC741E1-26B7-4AB3-9CA4-D74128C5EB10}.Release|Any CPU.Build.0 = Release|Any CPU
-		{854B7782-2147-4820-9237-86AE4FE741D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{854B7782-2147-4820-9237-86AE4FE741D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{854B7782-2147-4820-9237-86AE4FE741D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{854B7782-2147-4820-9237-86AE4FE741D5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D1C77C25-FC09-4E94-BF8A-35D55967ABE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D1C77C25-FC09-4E94-BF8A-35D55967ABE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1C77C25-FC09-4E94-BF8A-35D55967ABE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -215,7 +209,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{854B7782-2147-4820-9237-86AE4FE741D5} = {CCAF8AD5-2FCC-46E0-82EF-2FCC0EEC8B16}
 		{D1C77C25-FC09-4E94-BF8A-35D55967ABE9} = {CCAF8AD5-2FCC-46E0-82EF-2FCC0EEC8B16}
 		{5C320131-2000-4FCB-BCF6-0F8E62D52BCF} = {CCAF8AD5-2FCC-46E0-82EF-2FCC0EEC8B16}
 		{818EB883-B66B-4B88-8267-9CF196D05D8B} = {CCAF8AD5-2FCC-46E0-82EF-2FCC0EEC8B16}

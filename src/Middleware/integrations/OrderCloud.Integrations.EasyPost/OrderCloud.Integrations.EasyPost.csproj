@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Headstart.Common\Headstart.Common.csproj" />
-    <ProjectReference Include="..\OrderCloud.Integrations.Library\OrderCloud.Integrations.Library.csproj" />
   </ItemGroup>
 
 </Project>

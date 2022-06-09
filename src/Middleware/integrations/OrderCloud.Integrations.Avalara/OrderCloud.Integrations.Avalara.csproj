@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OrderCloud.Integrations.Library\OrderCloud.Integrations.Library.csproj" />
     <ProjectReference Include="..\OrderCloud.Integrations.Taxation\OrderCloud.Integrations.Taxation.csproj" />
   </ItemGroup>
 

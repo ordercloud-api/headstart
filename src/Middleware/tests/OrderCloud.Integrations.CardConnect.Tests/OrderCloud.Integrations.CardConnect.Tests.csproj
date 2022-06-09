@@ -23,7 +23,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.CardConnect\OrderCloud.Integrations.CardConnect.csproj" />
-    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Library\OrderCloud.Integrations.Library.csproj" />
   </ItemGroup>
 
 </Project>

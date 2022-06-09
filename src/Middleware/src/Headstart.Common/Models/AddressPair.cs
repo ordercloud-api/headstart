@@ -1,7 +1,7 @@
 ﻿using System;
 using OrderCloud.SDK;
 
-namespace OrderCloud.Integrations.Library.Models
+namespace Headstart.Common.Models
 {
     public class AddressPair : IEquatable<AddressPair>
     {
