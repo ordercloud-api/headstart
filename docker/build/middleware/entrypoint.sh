@@ -31,8 +31,7 @@ json -I -f appSettings.json \
 
 json -I -f appSettings.json \
       -e "this['CosmosSettings:DatabaseName']='$CosmosSettings_DatabaseName'" \
-      -e "this['CosmosSettings:CosmosSettings_EndpointUri']='$CosmosSettings_EndpointUri'" \
-      -e "this['CosmosSettings:EndpointUri']='$CosmosEndpointURI'" \
+      -e "this['CosmosSettings:EndpointUri']='$CosmosSettings_EndpointUri'" \
       -e "this['CosmosSettings:PrimaryKey']='$CosmosSettings_PrimaryKey'" \
       -e "this['CosmosSettings:RequestTimeoutInSeconds']='$CosmosSettings_RequestTimeoutInSeconds'"
 
