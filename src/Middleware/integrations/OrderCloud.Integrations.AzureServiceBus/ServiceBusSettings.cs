@@ -1,4 +1,4 @@
-﻿namespace Headstart.Common.Settings
+﻿namespace OrderCloud.Integrations.AzureServiceBus
 {
     public class ServiceBusSettings
     {

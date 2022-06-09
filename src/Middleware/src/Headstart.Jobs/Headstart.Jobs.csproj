@@ -21,6 +21,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.AzureServiceBus\OrderCloud.Integrations.AzureServiceBus.csproj" />
     <ProjectReference Include="..\Headstart.API\Headstart.API.csproj" />
     <ProjectReference Include="..\Headstart.Common\Headstart.Common.csproj" />
   </ItemGroup>

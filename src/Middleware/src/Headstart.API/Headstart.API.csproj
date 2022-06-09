@@ -29,6 +29,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Alerts\OrderCloud.Integrations.Alerts.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Avalara\OrderCloud.Integrations.Avalara.csproj" />
+    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.AzureServiceBus\OrderCloud.Integrations.AzureServiceBus.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.AzureStorage\OrderCloud.Integrations.AzureStorage.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.CardConnect\OrderCloud.Integrations.CardConnect.csproj" />
     <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.CMS\OrderCloud.Integrations.CMS.csproj" />

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Azure.Messaging.ServiceBus;
 using Headstart.Common.Models;
-using Headstart.Common.Services;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using OrderCloud.Catalyst;
+using OrderCloud.Integrations.AzureServiceBus;
 using OrderCloud.SDK;
 
 namespace Headstart.Jobs

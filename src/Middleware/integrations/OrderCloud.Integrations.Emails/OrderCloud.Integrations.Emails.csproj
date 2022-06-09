@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Headstart.Common\Headstart.Common.csproj" />
+    <ProjectReference Include="..\OrderCloud.Integrations.AzureStorage\OrderCloud.Integrations.AzureStorage.csproj" />
   </ItemGroup>
 
 </Project>

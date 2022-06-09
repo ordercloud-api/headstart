@@ -4,10 +4,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Azure.Messaging.ServiceBus;
-using Headstart.Common.Settings;
 using Newtonsoft.Json;
 
-namespace Headstart.Common.Services
+namespace OrderCloud.Integrations.AzureServiceBus
 {
     public interface IServiceBus
     {

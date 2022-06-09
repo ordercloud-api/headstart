@@ -72,6 +72,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderCloud.Integrations.Rep
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderCloud.Integrations.CosmosDB.Tests", "tests\OrderCloud.Integrations.CosmosDB.Tests\OrderCloud.Integrations.CosmosDB.Tests.csproj", "{DC4EC9CB-946F-42D4-A560-43CB0D082E9C}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrderCloud.Integrations.AzureServiceBus", "integrations\OrderCloud.Integrations.AzureServiceBus\OrderCloud.Integrations.AzureServiceBus.csproj", "{B06F0644-DBEB-4799-9415-B549BF630448}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -198,6 +200,10 @@ Global
 		{DC4EC9CB-946F-42D4-A560-43CB0D082E9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC4EC9CB-946F-42D4-A560-43CB0D082E9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC4EC9CB-946F-42D4-A560-43CB0D082E9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B06F0644-DBEB-4799-9415-B549BF630448}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B06F0644-DBEB-4799-9415-B549BF630448}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B06F0644-DBEB-4799-9415-B549BF630448}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B06F0644-DBEB-4799-9415-B549BF630448}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -230,6 +236,7 @@ Global
 		{05553762-2257-4959-B54E-1AD10FF43805} = {CCAF8AD5-2FCC-46E0-82EF-2FCC0EEC8B16}
 		{8B400B8B-05C3-41AA-9E39-36EE46603288} = {CCAF8AD5-2FCC-46E0-82EF-2FCC0EEC8B16}
 		{DC4EC9CB-946F-42D4-A560-43CB0D082E9C} = {0B969DE0-4342-474E-A83B-BF34DAF05600}
+		{B06F0644-DBEB-4799-9415-B549BF630448} = {CCAF8AD5-2FCC-46E0-82EF-2FCC0EEC8B16}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D28C7C46-780F-4A68-80B8-9789997A37F7}
