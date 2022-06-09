@@ -93,6 +93,7 @@ namespace Headstart.Jobs
             var flurlClientFactory = new PerBaseUrlFlurlClientFactory();
 
             FlurlHttp.Configure(settings => settings.HttpClientFactory = new PollyFactory(policy));
+            var sendgridClient = !string.IsNullOrEmpty(settings.SendgridSettings.ApiKey) && settings.SendgridSettings.Enabled ? new SendGridClient(settings.SendgridSettings.ApiKey) : null;
 
             builder.Services
                 .InjectOrderCloud<IOrderCloudClient>(new OrderCloudClientConfig()
@@ -128,7 +129,7 @@ namespace Headstart.Jobs
                 })
                 .Inject<IZohoClient>()
                 .Inject<IZohoCommand>()
-                .AddSingleton<ISendGridClient>(x => new SendGridClient(settings.SendgridSettings.ApiKey))
+                .AddSingleton<ISendGridClient>(x => sendgridClient)
                 .Inject<ISendgridService>()
                 .Inject<ISalesOrderDetailDataRepo>()
                 .Inject<IPurchaseOrderDetailDataRepo>()

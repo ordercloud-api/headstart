@@ -116,7 +116,7 @@ Detailed Steps:
 
 ### Sendgrid (Email) Configuration
 
-1. Ensure `SendgridSettings:ApiKey` and `SendgridSettings:FromEmail` are defined in your app settings
+1. Ensure `SendgridSettings:Enabled` is set to true and `SendgridSettings:ApiKey` and `SendgridSettings:FromEmail` are defined in your app settings
 2. Ensure for each email type that you want to send that `{emailtype}TemplateID` is defined in app settings. You can use [these default templates](./src/Middleware/src/Headstart.Common/Assets/EmailTemplates) as a starting point but will want to update the contact email and may want to add a company banner. See the table below for a description of each email type.
 3. Deploy your middleware application. Emails won't work until the first deployment because there needs to be a publicly accessible endpoint that OrderCloud can send event information to.
 
