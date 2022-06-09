@@ -1,4 +1,4 @@
-﻿using OrderCloud.Integrations.Taxation.Interfaces;
+﻿using Headstart.Common.Services;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Models

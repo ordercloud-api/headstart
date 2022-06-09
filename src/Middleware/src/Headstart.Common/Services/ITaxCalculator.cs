@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using OrderCloud.SDK;
 
-namespace OrderCloud.Integrations.Taxation.Interfaces
+namespace Headstart.Common.Services
 {
     /// <summary>
     /// An interface to define expected responses from tax calculation. Meant to be used in OrderCloud checkout integration event listeners.

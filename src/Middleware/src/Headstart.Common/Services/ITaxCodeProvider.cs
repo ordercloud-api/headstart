@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OrderCloud.Integrations.Taxation.Interfaces
+namespace Headstart.Common.Services
 {
     /// <summary>
     /// An interface to define tax categorization for products. Meant to be used as part of product create and edit.

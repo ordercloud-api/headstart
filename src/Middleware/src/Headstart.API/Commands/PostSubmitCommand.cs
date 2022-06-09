@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Emails;
 using OrderCloud.SDK;
-using ITaxCalculator = OrderCloud.Integrations.Taxation.Interfaces.ITaxCalculator;
+using ITaxCalculator = Headstart.Common.Services.ITaxCalculator;
 
 namespace Headstart.API.Commands
 {

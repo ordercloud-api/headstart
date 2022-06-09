@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OrderCloud.Integrations.Taxation\OrderCloud.Integrations.Taxation.csproj" />
+    <ProjectReference Include="..\..\src\Headstart.Common\Headstart.Common.csproj" />
   </ItemGroup>
 
 </Project>

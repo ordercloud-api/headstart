@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Headstart.Common.Attributes;
+using Headstart.Common.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using OrderCloud.Integrations.Taxation.Interfaces;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Models

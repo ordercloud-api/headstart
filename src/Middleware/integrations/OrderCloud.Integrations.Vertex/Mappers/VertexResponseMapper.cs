@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OrderCloud.Integrations.Taxation.Interfaces;
+using Headstart.Common.Services;
 using OrderCloud.Integrations.Vertex.Models;
 
 namespace OrderCloud.Integrations.Vertex.Mappers

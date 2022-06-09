@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Avalara.AvaTax.RestClient;
-using OrderCloud.Integrations.Taxation.Interfaces;
+using Headstart.Common.Services;
 
 namespace OrderCloud.Integrations.Avalara.Mappers
 {

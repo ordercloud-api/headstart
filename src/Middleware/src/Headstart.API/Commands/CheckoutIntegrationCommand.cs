@@ -11,7 +11,7 @@ using OrderCloud.Catalyst;
 using OrderCloud.Integrations.EasyPost;
 using OrderCloud.Integrations.EasyPost.Models;
 using OrderCloud.SDK;
-using ITaxCalculator = OrderCloud.Integrations.Taxation.Interfaces.ITaxCalculator;
+using ITaxCalculator = Headstart.Common.Services.ITaxCalculator;
 
 namespace Headstart.API.Commands
 {

@@ -22,7 +22,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup><PackageReference Include="ordercloud-dotnet-catalyst" Version="2.0.1" />
     <PackageReference Include="Azure.Messaging.ServiceBus" Version="7.3.0" />
     <PackageReference Include="CreditCardValidator" Version="1.4.6" />
     <PackageReference Include="CsvHelper" Version="15.0.5" />
@@ -31,6 +31,7 @@
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="1.8.3" />
     <PackageReference Include="NPOI" Version="2.4.1" />
     <PackageReference Include="Npoi.Mapper" Version="3.4.0" />
+    <PackageReference Include="ordercloud-dotnet-catalyst" Version="2.0.1" />
     <PackageReference Include="OrderCloud.SDK" Version="0.11.0" />
     <PackageReference Include="Polly" Version="7.2.1" />
     <PackageReference Include="Polly.Contrib.WaitAndRetry" Version="1.1.1" />
@@ -40,11 +41,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.0.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Avalara\OrderCloud.Integrations.Avalara.csproj" />
-    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.TaxJar\OrderCloud.Integrations.TaxJar.csproj" />
-    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Vertex\OrderCloud.Integrations.Vertex.csproj" />
   </ItemGroup>
 
   <ItemGroup>

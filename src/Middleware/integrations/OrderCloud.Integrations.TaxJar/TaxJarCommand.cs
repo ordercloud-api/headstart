@@ -5,10 +5,10 @@ using OrderCloud.Catalyst;
 using OrderCloud.Integrations.TaxJar.Mappers;
 using OrderCloud.SDK;
 using Taxjar;
-using ITaxCalculator = OrderCloud.Integrations.Taxation.Interfaces.ITaxCalculator;
-using ITaxCodesProvider = OrderCloud.Integrations.Taxation.Interfaces.ITaxCodesProvider;
-using OrderTaxCalculation = OrderCloud.Integrations.Taxation.Interfaces.OrderTaxCalculation;
-using TaxCategorizationResponse = OrderCloud.Integrations.Taxation.Interfaces.TaxCategorizationResponse;
+using ITaxCalculator = Headstart.Common.Services.ITaxCalculator;
+using ITaxCodesProvider = Headstart.Common.Services.ITaxCodesProvider;
+using OrderTaxCalculation = Headstart.Common.Services.OrderTaxCalculation;
+using TaxCategorizationResponse = Headstart.Common.Services.TaxCategorizationResponse;
 using TaxJarOrder = Taxjar.Order;
 
 namespace OrderCloud.Integrations.TaxJar

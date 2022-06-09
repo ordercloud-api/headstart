@@ -45,7 +45,6 @@ using OrderCloud.Integrations.RMAs.Commands;
 using OrderCloud.Integrations.RMAs.Repositories;
 using OrderCloud.Integrations.SendGrid;
 using OrderCloud.Integrations.Smarty;
-using OrderCloud.Integrations.Taxation.Interfaces;
 using OrderCloud.Integrations.TaxJar;
 using OrderCloud.Integrations.Vertex;
 using OrderCloud.Integrations.Zoho;
@@ -54,8 +53,8 @@ using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
 using SendGrid;
-using ITaxCalculator = OrderCloud.Integrations.Taxation.Interfaces.ITaxCalculator;
-using ITaxCodesProvider = OrderCloud.Integrations.Taxation.Interfaces.ITaxCodesProvider;
+using ITaxCalculator = Headstart.Common.Services.ITaxCalculator;
+using ITaxCodesProvider = Headstart.Common.Services.ITaxCodesProvider;
 
 namespace Headstart.API
 {
