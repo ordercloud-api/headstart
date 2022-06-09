@@ -80,9 +80,9 @@ jobs:
     displayName: Build Buyer
     steps:
     - task: NodeTool@0
-      displayName: 'Use Node 16.x'
+      displayName: 'Use Node 12.x'
       inputs:
-        versionSpec: 16.x
+        versionSpec: 12.x
 
     - task: Cache@2
       displayName: 'SDK Dependencies Cache'
@@ -131,9 +131,9 @@ jobs:
     displayName: Build Seller
     steps:
     - task: NodeTool@0
-      displayName: 'Use Node 16.x'
+      displayName: 'Use Node 12.x'
       inputs:
-        versionSpec: 16.x
+        versionSpec: 12.x
 
     - task: Cache@2
       displayName: 'SDK Dependencies Cache'
