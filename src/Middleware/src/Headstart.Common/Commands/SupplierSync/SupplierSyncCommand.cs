@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
+using Headstart.Common.Attributes;
 using Headstart.Common.Extensions;
 using Headstart.Common.Models;
 using Newtonsoft.Json;
@@ -11,11 +12,6 @@ using OrderCloud.SDK;
 
 namespace Headstart.Common.Commands
 {
-    public interface ISupplierSyncCommand
-    {
-        Task<JObject> GetOrderAsync(string id, OrderType orderType, DecodedToken decodedToken);
-    }
-
     public class SupplierSyncCommand : ISupplierSyncCommand
     {
         private readonly IOrderCloudClient oc;

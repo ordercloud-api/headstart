@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
-using Headstart.API.Helpers;
+using Headstart.Common.Helpers;
 using Headstart.Common.Models;
 using Headstart.Integrations.CMS;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.CosmosDB;
 using OrderCloud.SDK;
 
-namespace Headstart.API.Commands.Crud
+namespace Headstart.API.Commands
 {
     public interface IHSProductCommand
     {

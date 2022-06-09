@@ -26,16 +26,6 @@ namespace Headstart.Common.Extensions
             return true;
         }
 
-        public static bool HasItem<T>(this List<T> itemList)
-        {
-            if (itemList == null || itemList.Count == 0)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
         public static HSShipEstimate GetMatchingShipEstimate(this HSOrderWorksheet buyerWorksheet, string shipFromAddressID)
         {
             return buyerWorksheet?.ShipEstimateResponse?.ShipEstimates?.FirstOrDefault(e => e.xp.ShipFromAddressID == shipFromAddressID);

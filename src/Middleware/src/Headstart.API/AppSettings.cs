@@ -2,6 +2,7 @@ using Headstart.Common.Settings;
 using OrderCloud.Integrations.AzureStorage;
 using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.CosmosDB;
+using OrderCloud.Integrations.EasyPost;
 using OrderCloud.Integrations.SendGrid;
 using OrderCloud.Integrations.Smarty;
 using OrderCloud.Integrations.TaxJar;
@@ -63,21 +64,6 @@ namespace Headstart.API
         public int CompanyID { get; set; }
 
         public string LicenseKey { get; set; }
-    }
-
-    public class EasyPostSettings
-    {
-        public string APIKey { get; set; }
-
-        public string FedexAccountId { get; set; }
-
-        public int FreeShippingTransitDays { get; set; }
-
-        public decimal NoRatesFallbackCost { get; set; }
-
-        public int NoRatesFallbackTransitDays { get; set; }
-
-        public string USPSAccountId { get; set; }
     }
 
     public class FlurlSettings

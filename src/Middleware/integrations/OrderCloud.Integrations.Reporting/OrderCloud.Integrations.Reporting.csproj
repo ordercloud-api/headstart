@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Headstart.Common\Headstart.Common.csproj" />
+    <ProjectReference Include="..\OrderCloud.Integrations.AzureStorage\OrderCloud.Integrations.AzureStorage.csproj" />
     <ProjectReference Include="..\OrderCloud.Integrations.CosmosDB\OrderCloud.Integrations.CosmosDB.csproj" />
   </ItemGroup>
 

@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Headstart.API.Commands.Crud;
+using Headstart.Common.Commands;
 using Headstart.Common.Models;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
@@ -13,9 +13,9 @@ namespace Headstart.Common.Controllers
     [Route("buyers")]
     public class CatalogController : CatalystController
     {
-        private readonly IHSCatalogCommand catalogCommand;
+        private readonly ICatalogCommand catalogCommand;
 
-        public CatalogController(IHSCatalogCommand catalogCommand)
+        public CatalogController(ICatalogCommand catalogCommand)
         {
             this.catalogCommand = catalogCommand;
         }

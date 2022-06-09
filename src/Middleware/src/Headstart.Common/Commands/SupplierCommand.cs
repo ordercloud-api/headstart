@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using Headstart.API.Helpers;
 using Headstart.Common.Constants;
+using Headstart.Common.Helpers;
 using Headstart.Common.Models;
 using Headstart.Common.Settings;
 using OrderCloud.Catalyst;
@@ -11,25 +11,14 @@ using OrderCloud.SDK;
 
 namespace Headstart.Common.Commands
 {
-    public interface IHSSupplierCommand
-    {
-        Task<HSSupplier> Create(HSSupplier supplier, string accessToken, bool isSeedingEnvironment = false);
-
-        Task<HSSupplier> GetMySupplier(string supplierID, DecodedToken decodedToken);
-
-        Task<HSSupplier> UpdateSupplier(string supplierID, PartialSupplier supplier, DecodedToken decodedToken);
-
-        Task<HSSupplierOrderData> GetSupplierOrderData(string supplierOrderID, OrderType orderType, DecodedToken decodedToken);
-    }
-
-    public class HSSupplierCommand : IHSSupplierCommand
+    public class SupplierCommand : ISupplierCommand
     {
         private readonly IOrderCloudClient oc;
         private readonly ISupplierSyncCommand supplierSync;
         private readonly OrderCloudSettings orderCloudSettings;
         private readonly ISupplierApiClientHelper apiClientHelper;
 
-        public HSSupplierCommand(OrderCloudSettings orderCloudSettings, IOrderCloudClient oc, ISupplierApiClientHelper apiClientHelper, ISupplierSyncCommand supplierSync)
+        public SupplierCommand(OrderCloudSettings orderCloudSettings, IOrderCloudClient oc, ISupplierApiClientHelper apiClientHelper, ISupplierSyncCommand supplierSync)
         {
             this.orderCloudSettings = orderCloudSettings;
             this.oc = oc;

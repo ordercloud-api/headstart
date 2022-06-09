@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Headstart.Common.Commands
+namespace Headstart.Common.Attributes
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class SupplierSyncAttribute : Attribute

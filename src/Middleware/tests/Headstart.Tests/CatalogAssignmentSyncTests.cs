@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
-using Headstart.API.Commands.Crud;
+using Headstart.Common.Commands;
 using Headstart.Common.Models;
 using NSubstitute;
 using NUnit.Framework;
@@ -15,7 +15,7 @@ namespace Headstart.Tests
         [Test, AutoNSubstituteData]
         public async Task SyncUserCatalogAssignments_ShouldHandleBasicScenario(
             [Frozen] IOrderCloudClient oc,
-            HSCatalogCommand sut,
+            CatalogCommand sut,
             ListPage<UserGroupAssignment> groupAssignments,
             ListPage<HSLocationUserGroup> assignedGroups,
             ListPage<HSLocationUserGroup> existingCatalogs,
@@ -79,7 +79,7 @@ namespace Headstart.Tests
         [Test, AutoNSubstituteData]
         public async Task SyncUserCatalogAssignments_ShouldNotTryToAssignIfCatalogDoesNotExist(
             [Frozen] IOrderCloudClient oc,
-            HSCatalogCommand sut,
+            CatalogCommand sut,
             ListPage<UserGroupAssignment> groupAssignments,
             ListPage<HSLocationUserGroup> assignedGroups,
             ListPage<HSLocationUserGroup> existingCatalogs,

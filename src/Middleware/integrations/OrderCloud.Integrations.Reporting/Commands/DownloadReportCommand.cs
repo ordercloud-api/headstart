@@ -12,7 +12,7 @@ using OrderCloud.Integrations.AzureStorage;
 using OrderCloud.Integrations.Reporting.Models;
 using OrderCloud.SDK;
 
-namespace Headstart.API.Commands
+namespace OrderCloud.Integrations.Reporting.Commands
 {
     public interface IDownloadReportCommand
     {
@@ -25,11 +25,11 @@ namespace Headstart.API.Commands
     {
         private readonly CloudBlobService cloudBlobService;
 
-        public DownloadReportCommand(AppSettings settings)
+        public DownloadReportCommand(StorageAccountSettings storageAccountSettings)
         {
             cloudBlobService = new CloudBlobService(new CloudBlobServiceConfig()
             {
-                ConnectionString = settings.StorageAccountSettings.ConnectionString,
+                ConnectionString = storageAccountSettings.ConnectionString,
                 Container = "downloads",
                 AccessType = BlobContainerPublicAccessType.Off,
             });

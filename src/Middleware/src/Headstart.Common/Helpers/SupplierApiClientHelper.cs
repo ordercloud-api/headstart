@@ -2,7 +2,7 @@
 using Headstart.Common.Settings;
 using OrderCloud.SDK;
 
-namespace Headstart.API.Helpers
+namespace Headstart.Common.Helpers
 {
     public interface ISupplierApiClientHelper
     {

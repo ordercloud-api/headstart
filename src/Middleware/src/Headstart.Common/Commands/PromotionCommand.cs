@@ -5,13 +5,8 @@ using Headstart.Common.Extensions;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
-namespace Headstart.API.Commands
+namespace Headstart.Common.Commands
 {
-    public interface IPromotionCommand
-    {
-        Task AutoApplyPromotions(string orderID);
-    }
-
     public class PromotionCommand : IPromotionCommand
     {
         private readonly IOrderCloudClient oc;

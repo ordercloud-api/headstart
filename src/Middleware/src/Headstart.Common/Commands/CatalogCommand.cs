@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Headstart.Common.Extensions;
 using Headstart.Common.Models;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.CosmosDB.Extensions;
 using OrderCloud.SDK;
 
-namespace Headstart.API.Commands.Crud
+namespace Headstart.Common.Commands
 {
-    public interface IHSCatalogCommand
+    public interface ICatalogCommand
     {
         Task<ListPage<HSCatalog>> List(string buyerID, ListArgs<HSCatalog> args, DecodedToken decodedToken);
 
@@ -28,11 +28,11 @@ namespace Headstart.API.Commands.Crud
         Task SyncUserCatalogAssignments(string buyerID, string userID);
     }
 
-    public class HSCatalogCommand : IHSCatalogCommand
+    public class CatalogCommand : ICatalogCommand
     {
         private readonly IOrderCloudClient oc;
 
-        public HSCatalogCommand(AppSettings settings, IOrderCloudClient oc)
+        public CatalogCommand(IOrderCloudClient oc)
         {
             this.oc = oc;
         }

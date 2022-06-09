@@ -4,7 +4,7 @@ using System.Net;
 using Flurl.Http;
 using Flurl.Http.Configuration;
 using Headstart.API;
-using Headstart.API.Commands.Crud;
+using Headstart.API.Commands;
 using Headstart.Common;
 using Headstart.Common.Commands;
 using Headstart.Common.Extensions;
@@ -128,7 +128,7 @@ namespace Headstart.Jobs
                 .AddSingleton<IFlurlClientFactory, PerBaseUrlFlurlClientFactory>()
                 .AddSingleton<ICardConnectClient>(x => new CardConnectClient(settings.CardConnectSettings, settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))
                 .AddSingleton<ICreditCardProcessor, CardConnectService>()
-                .Inject<IHSCatalogCommand>()
+                .Inject<ICatalogCommand>()
                 .Inject<IHSBuyerLocationCommand>()
                 .AddSingleton<PaymentCaptureJob>()
                 .AddSingleton<SendRecentOrdersJob>()

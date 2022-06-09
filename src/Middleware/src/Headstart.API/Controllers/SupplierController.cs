@@ -13,10 +13,10 @@ namespace Headstart.API.Controllers
     [Route("supplier")]
     public class SupplierController : CatalystController
     {
-        private readonly IHSSupplierCommand supplierCommand;
+        private readonly ISupplierCommand supplierCommand;
         private readonly IOrderCloudClient oc;
 
-        public SupplierController(IHSSupplierCommand supplierCommand, IOrderCloudClient oc)
+        public SupplierController(ISupplierCommand supplierCommand, IOrderCloudClient oc)
         {
             this.supplierCommand = supplierCommand;
             this.oc = oc;

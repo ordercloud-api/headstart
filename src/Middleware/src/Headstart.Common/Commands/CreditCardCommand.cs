@@ -1,44 +1,27 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using Headstart.Common.Commands;
 using Headstart.Common.Extensions;
 using Headstart.Common.Models;
 using Headstart.Common.Services;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
-namespace Headstart.API.Commands
+namespace Headstart.Common.Commands
 {
-    public interface ICreditCardCommand
-    {
-        Task<BuyerCreditCard> MeTokenizeAndSave(CCToken card, DecodedToken decodedToken);
-
-        Task<CreditCard> TokenizeAndSave(string buyerID, CCToken card, DecodedToken decodedToken);
-
-        Task<Payment> AuthorizePayment(CCPayment payment, string userToken);
-
-        Task VoidTransactionAsync(HSPayment payment, HSOrder order, string userToken);
-
-        Task VoidPaymentAsync(string orderID, string userToken);
-    }
-
     public class CreditCardCommand : ICreditCardCommand
     {
         private readonly ICreditCardProcessor creditCardService;
         private readonly IOrderCloudClient oc;
         private readonly ICurrencyConversionCommand currencyConversionCommand;
-        private readonly AppSettings settings;
 
         public CreditCardCommand(
             ICreditCardProcessor creditCardService,
             IOrderCloudClient oc,
-            ICurrencyConversionCommand currencyConversionCommand,
-            AppSettings settings)
+            ICurrencyConversionCommand currencyConversionCommand)
         {
             this.creditCardService = creditCardService;
             this.oc = oc;
             this.currencyConversionCommand = currencyConversionCommand;
-            this.settings = settings;
         }
 
         public async Task<CreditCard> TokenizeAndSave(string buyerID, CCToken card, DecodedToken decodedToken)

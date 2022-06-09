@@ -6,11 +6,10 @@ using System.Net;
 using Flurl.Http;
 using Flurl.Http.Configuration;
 using Headstart.API.Commands;
-using Headstart.API.Commands.Crud;
-using Headstart.API.Helpers;
 using Headstart.Common;
 using Headstart.Common.Commands;
 using Headstart.Common.Extensions;
+using Headstart.Common.Helpers;
 using Headstart.Common.Models;
 using Headstart.Common.Services;
 using Headstart.Common.Settings;
@@ -39,6 +38,7 @@ using OrderCloud.Integrations.ExchangeRates;
 using OrderCloud.Integrations.Orchestration;
 using OrderCloud.Integrations.Orchestration.Models;
 using OrderCloud.Integrations.Portal;
+using OrderCloud.Integrations.Reporting.Commands;
 using OrderCloud.Integrations.Reporting.Models;
 using OrderCloud.Integrations.Reporting.Queries;
 using OrderCloud.Integrations.RMAs.Commands;
@@ -238,15 +238,15 @@ namespace Headstart.API
                 .Inject<ILineItemCommand>()
                 .Inject<IMeProductCommand>()
                 .Inject<IDiscountDistributionService>()
-                .Inject<IHSCatalogCommand>()
-                .Inject<IHSSupplierCommand>()
+                .Inject<ICatalogCommand>()
+                .Inject<ISupplierCommand>()
                 .Inject<ICreditCardCommand>()
                 .Inject<ISupportAlertService>()
                 .Inject<ISupplierApiClientHelper>()
                 .AddSingleton<IEmailServiceProvider, SendGridService>()
                 .AddSingleton<ISendGridClient>(x => new SendGridClient(settings.SendgridSettings.ApiKey))
                 .AddSingleton<IFlurlClientFactory>(x => flurlClientFactory)
-                .AddSingleton<IDownloadReportCommand, DownloadReportCommand>()
+                .AddSingleton<IDownloadReportCommand>(x => new DownloadReportCommand(settings.StorageAccountSettings))
                 .AddSingleton<IRMACommand, RMACommand>()
                 .Inject<IRMARepo>()
                 .Inject<IZohoClient>()
@@ -278,6 +278,7 @@ namespace Headstart.API
                         _ => avalaraCommand // Avalara is default
                     };
                 })
+                .AddSingleton<IShippingCommand, ShippingCommand>()
                 .AddSingleton<IShippingService>(provider =>
                 {
                     return settings.EnvironmentSettings.ShippingProvider switch
