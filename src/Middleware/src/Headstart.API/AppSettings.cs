@@ -1,4 +1,5 @@
 using Headstart.Common.Settings;
+using OrderCloud.Integrations.Avalara;
 using OrderCloud.Integrations.AzureServiceBus;
 using OrderCloud.Integrations.AzureStorage;
 using OrderCloud.Integrations.CardConnect;
@@ -16,7 +17,7 @@ namespace Headstart.API
     {
         public ApplicationInsightsSettings ApplicationInsightsSettings { get; set; } = new ApplicationInsightsSettings();
 
-        public AvalaraSettings AvalaraSettings { get; set; } = new AvalaraSettings();
+        public AvalaraConfig AvalaraSettings { get; set; } = new AvalaraConfig();
 
         public CosmosSettings CosmosSettings { get; set; } = new CosmosSettings();
 
@@ -25,8 +26,6 @@ namespace Headstart.API
         public EnvironmentSettings EnvironmentSettings { get; set; } = new EnvironmentSettings();
 
         public FlurlSettings FlurlSettings { get; set; } = new FlurlSettings();
-
-        public JobSettings JobSettings { get; set; } = new JobSettings();
 
         public OrderCloudSettings OrderCloudSettings { get; set; } = new OrderCloudSettings();
 
@@ -47,37 +46,5 @@ namespace Headstart.API
         public UI UI { get; set; }
 
         public ZohoConfig ZohoSettings { get; set; } = new ZohoConfig();
-    }
-
-    public class ApplicationInsightsSettings
-    {
-        public string InstrumentationKey { get; set; }
-    }
-
-    public class AvalaraSettings
-    {
-        public int AccountID { get; set; }
-
-        public string BaseApiUrl { get; set; }
-
-        public string CompanyCode { get; set; }
-
-        public int CompanyID { get; set; }
-
-        public string LicenseKey { get; set; }
-    }
-
-    public class FlurlSettings
-    {
-        public int TimeoutInSeconds { get; set; }
-    }
-
-    public class JobSettings
-    {
-        public string CaptureCreditCardsAfterDate { get; set; } // TODO: remove this once all orders have IsPaymentCaptured set
-
-        public bool ShouldCaptureCreditCardPayments { get; set; }
-
-        public bool ShouldRunZoho { get; set; }
     }
 }

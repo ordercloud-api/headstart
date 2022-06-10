@@ -1,6 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Headstart.API;
-using Headstart.Common.Services;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.Core;
 using Microsoft.Azure.WebJobs;
@@ -18,7 +16,6 @@ namespace Headstart.Jobs
         private readonly ReceiveRecentLineItemsJob receiveRecentLineItemsJob;
         private readonly ReceiveRecentOrdersAndShipmentsJob receiveRecentOrdersAndShipmentsJob;
         private readonly ReceiveProductDetailsJob receiveProductDetailsJob;
-        private readonly AppSettings settings;
 
         public Jobs(
             PaymentCaptureJob paymentCapture,
@@ -27,8 +24,7 @@ namespace Headstart.Jobs
             ReceiveRecentPurchaseOrdersJob receiveRecentPurchaseOrdersJob,
             ReceiveRecentLineItemsJob receiveRecentLineItemsJob,
             ReceiveRecentOrdersAndShipmentsJob receiveRecentOrdersAndShipmentsJob,
-            ReceiveProductDetailsJob receiveProductDetailsJob,
-            AppSettings settings)
+            ReceiveProductDetailsJob receiveProductDetailsJob)
         {
             this.paymentCapture = paymentCapture;
             this.sendRecentOrdersJob = sendRecentOrdersJob;
@@ -37,7 +33,6 @@ namespace Headstart.Jobs
             this.receiveRecentLineItemsJob = receiveRecentLineItemsJob;
             this.receiveRecentOrdersAndShipmentsJob = receiveRecentOrdersAndShipmentsJob;
             this.receiveProductDetailsJob = receiveProductDetailsJob;
-            this.settings = settings;
         }
 
         // Every day at 1:00AM CST (7:00AM UTC)

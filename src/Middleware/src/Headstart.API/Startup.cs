@@ -130,15 +130,6 @@ namespace Headstart.API
                 },
             };
 
-            var avalaraConfig = new AvalaraConfig()
-            {
-                BaseApiUrl = settings.AvalaraSettings.BaseApiUrl,
-                AccountID = settings.AvalaraSettings.AccountID,
-                LicenseKey = settings.AvalaraSettings.LicenseKey,
-                CompanyCode = settings.AvalaraSettings.CompanyCode,
-                CompanyID = settings.AvalaraSettings.CompanyID,
-            };
-
             var currencyConfig = new CloudBlobServiceConfig()
             {
                 ConnectionString = settings.StorageAccountSettings.ConnectionString,
@@ -167,7 +158,7 @@ namespace Headstart.API
             switch (settings.EnvironmentSettings.TaxProvider)
             {
                 case TaxProvider.Avalara:
-                    avalaraCommand = new AvalaraCommand(avalaraConfig, settings.EnvironmentSettings.Environment.ToString());
+                    avalaraCommand = new AvalaraCommand(settings.AvalaraSettings, settings.EnvironmentSettings.Environment.ToString());
                     break;
                 case TaxProvider.Taxjar:
                     taxJarCommand = new TaxJarCommand(settings.TaxJarSettings);
@@ -210,7 +201,6 @@ namespace Headstart.API
                 .AddSingleton(x => settings.EasyPostSettings)
                 .AddSingleton(x => settings.EnvironmentSettings)
                 .AddSingleton(x => settings.FlurlSettings)
-                .AddSingleton(x => settings.JobSettings)
                 .AddSingleton(x => settings.OrderCloudSettings)
                 .AddSingleton(x => settings.SendgridSettings)
                 .AddSingleton(x => settings.ServiceBusSettings)

@@ -3,12 +3,9 @@ using System.Collections.Generic;
 using System.Net;
 using Flurl.Http;
 using Flurl.Http.Configuration;
-using Headstart.API;
-using Headstart.API.Commands;
 using Headstart.Common;
 using Headstart.Common.Commands;
 using Headstart.Common.Extensions;
-using Headstart.Common.Services;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,17 +13,12 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.CosmosDB;
-using OrderCloud.Integrations.Emails;
 using OrderCloud.Integrations.Reporting.Repositories;
-using OrderCloud.Integrations.SendGrid;
-using OrderCloud.Integrations.Zoho;
 using OrderCloud.SDK;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
-using SendGrid;
 
 [assembly: FunctionsStartup(typeof(Headstart.Jobs.Startup))]
 
@@ -97,22 +89,14 @@ namespace Headstart.Jobs
 
             builder.Services
                 .AddSingleton(x => settings.ApplicationInsightsSettings)
-                .AddSingleton(x => settings.AvalaraSettings)
-                .AddSingleton(x => settings.CardConnectSettings)
                 .AddSingleton(x => settings.CosmosSettings)
-                .AddSingleton(x => settings.EasyPostSettings)
                 .AddSingleton(x => settings.EnvironmentSettings)
                 .AddSingleton(x => settings.FlurlSettings)
                 .AddSingleton(x => settings.JobSettings)
                 .AddSingleton(x => settings.OrderCloudSettings)
-                .AddSingleton(x => settings.SendgridSettings)
                 .AddSingleton(x => settings.ServiceBusSettings)
-                .AddSingleton(x => settings.SmartyStreetSettings)
                 .AddSingleton(x => settings.StorageAccountSettings)
-                .AddSingleton(x => settings.TaxJarSettings)
                 .AddSingleton(x => settings.UI)
-                .AddSingleton(x => settings.VertexSettings)
-                .AddSingleton(x => settings.ZohoSettings)
                 .InjectOrderCloud<IOrderCloudClient>(new OrderCloudClientConfig()
                 {
                     ApiUrl = settings.OrderCloudSettings.ApiUrl,
@@ -126,8 +110,6 @@ namespace Headstart.Jobs
                 })
                 .AddCosmosDb(settings.CosmosSettings.EndpointUri, settings.CosmosSettings.PrimaryKey, settings.CosmosSettings.DatabaseName, cosmosContainers)
                 .AddSingleton<IFlurlClientFactory, PerBaseUrlFlurlClientFactory>()
-                .AddSingleton<ICardConnectClient>(x => new CardConnectClient(settings.CardConnectSettings, settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))
-                .AddSingleton<ICreditCardProcessor, CardConnectService>()
                 .Inject<ICatalogCommand>()
                 .Inject<IHSBuyerLocationCommand>()
                 .AddSingleton<PaymentCaptureJob>()
@@ -137,10 +119,6 @@ namespace Headstart.Jobs
                 .AddSingleton<ReceiveRecentPurchaseOrdersJob>()
                 .AddSingleton<ReceiveRecentLineItemsJob>()
                 .AddSingleton<ReceiveRecentOrdersAndShipmentsJob>()
-                .Inject<IZohoClient>()
-                .AddSingleton<IOMSService, ZohoService>()
-                .AddSingleton<ISendGridClient>(x => new SendGridClient(settings.SendgridSettings.ApiKey))
-                .AddSingleton<IEmailServiceProvider, SendGridService>()
                 .Inject<ISalesOrderDetailDataRepo>()
                 .Inject<IPurchaseOrderDetailDataRepo>()
                 .Inject<ILineItemDetailDataRepo>()
