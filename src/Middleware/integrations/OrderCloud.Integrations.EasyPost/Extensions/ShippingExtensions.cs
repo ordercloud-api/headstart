@@ -1,7 +1,7 @@
 ﻿using Headstart.Common.Extensions;
 using OrderCloud.SDK;
 
-namespace OrderCloud.Integrations.EasyPost
+namespace OrderCloud.Integrations.EasyPost.Extensions
 {
     public static class ShippingExtensions
     {

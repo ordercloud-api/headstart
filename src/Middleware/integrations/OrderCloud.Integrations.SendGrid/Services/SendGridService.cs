@@ -20,16 +20,16 @@ namespace OrderCloud.Integrations.SendGrid
 {
     public class SendGridService : IEmailServiceProvider
     {
-        private readonly SendGridSettings sendgridSettings;
+        private readonly SendGridSettings sendGridSettings;
         private readonly UI uiSettings;
-        private readonly IOrderCloudClient oc;
-        private readonly ISendGridClient client;
+        private readonly IOrderCloudClient orderCloudClient;
+        private readonly ISendGridClient sendGridClient;
 
-        public SendGridService(SendGridSettings sendgridSettings, UI uiSettings, IOrderCloudClient ocClient, ISendGridClient client)
+        public SendGridService(SendGridSettings sendGridSettings, UI uiSettings, IOrderCloudClient orderCloudClient, ISendGridClient sendGridClient)
         {
-            oc = ocClient;
-            this.client = client;
-            this.sendgridSettings = sendgridSettings;
+            this.orderCloudClient = orderCloudClient;
+            this.sendGridClient = sendGridClient;
+            this.sendGridSettings = sendGridSettings;
             this.uiSettings = uiSettings;
         }
 
@@ -40,7 +40,7 @@ namespace OrderCloud.Integrations.SendGrid
                 Data = SendgridMappers.GetQuoteOrderTemplateData(order, new List<HSLineItem> { lineItem }),
                 Message = OrderSubmitEmailConstants.GetQuoteRequestConfirmationText(),
             };
-            await SendSingleTemplateEmail(sendgridSettings?.FromEmail, buyerEmail, sendgridSettings?.QuoteOrderSubmitTemplateID, buyerTemplateData);
+            await SendSingleTemplateEmail(sendGridSettings?.FromEmail, buyerEmail, sendGridSettings?.QuoteOrderSubmitTemplateID, buyerTemplateData);
         }
 
         public async Task SendQuotePriceConfirmationEmail(HSOrder order, HSLineItem lineItem, string buyerEmail)
@@ -50,7 +50,7 @@ namespace OrderCloud.Integrations.SendGrid
                 Data = SendgridMappers.GetQuoteOrderTemplateData(order, new List<HSLineItem> { lineItem }),
                 Message = OrderSubmitEmailConstants.GetQuotePriceConfirmationText(),
             };
-            await SendSingleTemplateEmail(sendgridSettings?.FromEmail, buyerEmail, sendgridSettings?.QuoteOrderSubmitTemplateID, buyerTemplateData);
+            await SendSingleTemplateEmail(sendGridSettings?.FromEmail, buyerEmail, sendGridSettings?.QuoteOrderSubmitTemplateID, buyerTemplateData);
         }
 
         public virtual async Task SendSingleTemplateEmail(string from, string to, string templateID, object templateData)
@@ -60,7 +60,7 @@ namespace OrderCloud.Integrations.SendGrid
                 var fromEmail = new EmailAddress(from);
                 var toEmail = new EmailAddress(to);
                 var msg = MailHelper.CreateSingleTemplateEmail(fromEmail, toEmail, templateID, templateData);
-                var response = await client.SendEmailAsync(msg);
+                var response = await sendGridClient.SendEmailAsync(msg);
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new Exception("Error sending sendgrid email");
@@ -75,7 +75,7 @@ namespace OrderCloud.Integrations.SendGrid
                 var fromEmail = new EmailAddress(from);
                 var toEmails = tos.Select(email => new EmailAddress(email)).ToList();
                 var msg = MailHelper.CreateSingleTemplateEmailToMultipleRecipients(fromEmail, toEmails, templateID, templateData);
-                var response = await client.SendEmailAsync(msg);
+                var response = await sendGridClient.SendEmailAsync(msg);
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new Exception("Error sending sendgrid email");
@@ -95,7 +95,7 @@ namespace OrderCloud.Integrations.SendGrid
                     await msg.AddAttachmentAsync(fileName, stream);
                 }
 
-                var response = await client.SendEmailAsync(msg);
+                var response = await sendGridClient.SendEmailAsync(msg);
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new Exception("Error sending sendgrid email");
@@ -118,7 +118,7 @@ namespace OrderCloud.Integrations.SendGrid
                     }
                 }
 
-                var response = await client.SendEmailAsync(msg);
+                var response = await sendGridClient.SendEmailAsync(msg);
                 if (!response.IsSuccessStatusCode)
                 {
                     throw new Exception("Error sending sendgrid email");
@@ -140,7 +140,7 @@ namespace OrderCloud.Integrations.SendGrid
                     PasswordRenewalUrl = messageNotification?.EventBody?.PasswordRenewalUrl,
                 },
             };
-            await SendSingleTemplateEmail(sendgridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendgridSettings?.PasswordResetTemplateID, templateData);
+            await SendSingleTemplateEmail(sendGridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendGridSettings?.PasswordResetTemplateID, templateData);
         }
 
         public async Task SendLineItemStatusChangeEmail(HSOrder order, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItems, string firstName, string lastName, string email, EmailDisplayText lineItemEmailDisplayText)
@@ -165,7 +165,7 @@ namespace OrderCloud.Integrations.SendGrid
                     DynamicText2 = lineItemEmailDisplayText?.DynamicText2,
                 },
             };
-            await SendSingleTemplateEmail(sendgridSettings?.FromEmail, email, sendgridSettings?.LineItemStatusChangeTemplateID, templateData);
+            await SendSingleTemplateEmail(sendGridSettings?.FromEmail, email, sendGridSettings?.LineItemStatusChangeTemplateID, templateData);
         }
 
         public async Task SendLineItemStatusChangeEmailMultipleRcpts(HSOrder order, LineItemStatusChanges lineItemStatusChanges, List<HSLineItem> lineItems, List<string> tos, EmailDisplayText lineItemEmailDisplayText)
@@ -189,7 +189,7 @@ namespace OrderCloud.Integrations.SendGrid
                     DynamicText2 = lineItemEmailDisplayText?.DynamicText2,
                 },
             };
-            await SendSingleTemplateEmailMultipleRcpts(sendgridSettings?.FromEmail, tos, sendgridSettings?.LineItemStatusChangeTemplateID, templateData);
+            await SendSingleTemplateEmailMultipleRcpts(sendGridSettings?.FromEmail, tos, sendGridSettings?.LineItemStatusChangeTemplateID, templateData);
         }
 
         public async Task SendOrderSubmittedForApprovalEmail(MessageNotification<OrderSubmitEventBody> messageNotification)
@@ -200,7 +200,7 @@ namespace OrderCloud.Integrations.SendGrid
                 Data = SendgridMappers.GetOrderTemplateData(order, messageNotification.EventBody.LineItems),
                 Message = OrderSubmitEmailConstants.GetRequestedApprovalText(),
             };
-            await SendSingleTemplateEmail(sendgridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendgridSettings?.OrderApprovalTemplateID, templateData);
+            await SendSingleTemplateEmail(sendGridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendGridSettings?.OrderApprovalTemplateID, templateData);
         }
 
         public async Task SendOrderRequiresApprovalEmail(MessageNotification<OrderSubmitEventBody> messageNotification)
@@ -211,7 +211,7 @@ namespace OrderCloud.Integrations.SendGrid
                 Data = SendgridMappers.GetOrderTemplateData(order, messageNotification.EventBody.LineItems),
                 Message = OrderSubmitEmailConstants.GetOrderRequiresApprovalText(),
             };
-            await SendSingleTemplateEmail(sendgridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendgridSettings?.OrderApprovalTemplateID, templateData);
+            await SendSingleTemplateEmail(sendGridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendGridSettings?.OrderApprovalTemplateID, templateData);
         }
 
         public async Task SendNewUserEmail(MessageNotification<PasswordResetEventBody> messageNotification)
@@ -227,7 +227,7 @@ namespace OrderCloud.Integrations.SendGrid
                     Username = messageNotification?.EventBody?.Username,
                 },
             };
-            await SendSingleTemplateEmail(sendgridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendgridSettings?.NewUserTemplateID, templateData);
+            await SendSingleTemplateEmail(sendGridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendGridSettings?.NewUserTemplateID, templateData);
         }
 
         public async Task SendOrderApprovedEmail(MessageNotification<OrderSubmitEventBody> messageNotification)
@@ -240,7 +240,7 @@ namespace OrderCloud.Integrations.SendGrid
                 Message = OrderSubmitEmailConstants.GetOrderApprovedText(),
             };
             templateData.Data.Comments = approval.Comments;
-            await SendSingleTemplateEmail(sendgridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendgridSettings?.OrderApprovalTemplateID, templateData);
+            await SendSingleTemplateEmail(sendGridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendGridSettings?.OrderApprovalTemplateID, templateData);
         }
 
         public async Task SendOrderDeclinedEmail(MessageNotification<OrderSubmitEventBody> messageNotification)
@@ -254,7 +254,7 @@ namespace OrderCloud.Integrations.SendGrid
             };
 
             templateData.Data.Comments = approval.Comments;
-            await SendSingleTemplateEmail(sendgridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendgridSettings?.OrderApprovalTemplateID, templateData);
+            await SendSingleTemplateEmail(sendGridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendGridSettings?.OrderApprovalTemplateID, templateData);
         }
 
         public async Task SendOrderSubmitEmail(HSOrderWorksheet orderWorksheet)
@@ -279,8 +279,8 @@ namespace OrderCloud.Integrations.SendGrid
                 var sellerEmailList = await GetSellerEmails();
 
                 // send emails
-                await SendSingleTemplateEmailMultipleRcpts(sendgridSettings?.FromEmail, sellerEmailList, sendgridSettings?.OrderSubmitTemplateID, sellerTemplateData);
-                await SendSingleTemplateEmail(sendgridSettings?.FromEmail, orderWorksheet.Order.FromUser.Email, sendgridSettings?.OrderSubmitTemplateID, buyerTemplateData);
+                await SendSingleTemplateEmailMultipleRcpts(sendGridSettings?.FromEmail, sellerEmailList, sendGridSettings?.OrderSubmitTemplateID, sellerTemplateData);
+                await SendSingleTemplateEmail(sendGridSettings?.FromEmail, orderWorksheet.Order.FromUser.Email, sendGridSettings?.OrderSubmitTemplateID, buyerTemplateData);
                 await SendSupplierOrderSubmitEmails(orderWorksheet);
             }
             else if (orderWorksheet.Order.xp.OrderType == OrderType.Quote)
@@ -299,8 +299,8 @@ namespace OrderCloud.Integrations.SendGrid
                 };
 
                 // send emails
-                await SendSingleTemplateEmailMultipleRcpts(sendgridSettings?.FromEmail, supplierEmailList, sendgridSettings?.QuoteOrderSubmitTemplateID, supplierTemplateData);
-                await SendSingleTemplateEmail(sendgridSettings?.FromEmail, orderWorksheet.Order.FromUser.Email, sendgridSettings?.QuoteOrderSubmitTemplateID, buyerTemplateData);
+                await SendSingleTemplateEmailMultipleRcpts(sendGridSettings?.FromEmail, supplierEmailList, sendGridSettings?.QuoteOrderSubmitTemplateID, supplierTemplateData);
+                await SendSingleTemplateEmail(sendGridSettings?.FromEmail, orderWorksheet.Order.FromUser.Email, sendGridSettings?.QuoteOrderSubmitTemplateID, buyerTemplateData);
             }
         }
 
@@ -323,12 +323,12 @@ namespace OrderCloud.Integrations.SendGrid
                     DynamicText2 = lineItemEmailDisplayText?.DynamicText2,
                 },
             };
-            await SendSingleTemplateEmail(sendgridSettings?.FromEmail, email, sendgridSettings?.LineItemStatusChangeTemplateID, templateData);
+            await SendSingleTemplateEmail(sendGridSettings?.FromEmail, email, sendGridSettings?.LineItemStatusChangeTemplateID, templateData);
         }
 
         public async Task SendContactSupplierAboutProductEmail(ContactSupplierBody template)
         {
-            var supplier = await oc.Suppliers.GetAsync<HSSupplier>(template.Product.DefaultSupplierID);
+            var supplier = await orderCloudClient.Suppliers.GetAsync<HSSupplier>(template.Product.DefaultSupplierID);
             var supplierEmail = supplier.xp.SupportContact.Email;
             var templateData = new EmailTemplate<ProductInformationRequestData>()
             {
@@ -344,16 +344,16 @@ namespace OrderCloud.Integrations.SendGrid
                     Note = template?.BuyerRequest?.Comments,
                 },
             };
-            await SendSingleTemplateEmail(sendgridSettings?.FromEmail, supplierEmail, sendgridSettings?.ProductInformationRequestTemplateID, templateData);
-            var sellerUsers = await oc.AdminUsers.ListAllAsync<HSUser>(filters: $"xp.RequestInfoEmails=true");
+            await SendSingleTemplateEmail(sendGridSettings?.FromEmail, supplierEmail, sendGridSettings?.ProductInformationRequestTemplateID, templateData);
+            var sellerUsers = await orderCloudClient.AdminUsers.ListAllAsync<HSUser>(filters: $"xp.RequestInfoEmails=true");
             foreach (var sellerUser in sellerUsers)
             {
-                await SendSingleTemplateEmail(sendgridSettings?.FromEmail, sellerUser.Email, sendgridSettings?.ProductInformationRequestTemplateID, templateData);
+                await SendSingleTemplateEmail(sendGridSettings?.FromEmail, sellerUser.Email, sendGridSettings?.ProductInformationRequestTemplateID, templateData);
                 if (sellerUser.xp.AddtlRcpts.Any())
                 {
                     foreach (var rcpt in sellerUser.xp.AddtlRcpts)
                     {
-                        await SendSingleTemplateEmail(sendgridSettings?.FromEmail, rcpt, sendgridSettings?.ProductInformationRequestTemplateID, templateData);
+                        await SendSingleTemplateEmail(sendGridSettings?.FromEmail, rcpt, sendGridSettings?.ProductInformationRequestTemplateID, templateData);
                     }
                 }
             }
@@ -383,9 +383,9 @@ namespace OrderCloud.Integrations.SendGrid
                 },
             };
 
-            var supportEmails = sendgridSettings?.CriticalSupportEmails.Split(",")?.ToList();
+            var supportEmails = sendGridSettings?.CriticalSupportEmails.Split(",")?.ToList();
 
-            await SendSingleTemplateEmailMultipleRcpts(sendgridSettings?.FromEmail, supportEmails, sendgridSettings?.CriticalSupportTemplateID, templateData);
+            await SendSingleTemplateEmailMultipleRcpts(sendGridSettings?.FromEmail, supportEmails, sendGridSettings?.CriticalSupportTemplateID, templateData);
         }
 
         public async Task EmailGeneralSupportQueue(SupportCase supportCase)
@@ -409,8 +409,8 @@ namespace OrderCloud.Integrations.SendGrid
                     DynamicText = supportCase.Message,
                 },
             };
-            var recipient = SendgridMappers.DetermineRecipient(sendgridSettings, supportCase.Subject);
-            await SendSingleTemplateEmailSingleRcptAttachment(sendgridSettings?.FromEmail, recipient, sendgridSettings?.CriticalSupportTemplateID, templateData, supportCase.File);
+            var recipient = SendgridMappers.DetermineRecipient(sendGridSettings, supportCase.Subject);
+            await SendSingleTemplateEmailSingleRcptAttachment(sendGridSettings?.FromEmail, recipient, sendGridSettings?.CriticalSupportTemplateID, templateData, supportCase.File);
         }
 
         private List<LineItemProductData> CreateTemplateProductList(List<HSLineItem> lineItems, LineItemStatusChanges lineItemStatusChanges)
@@ -433,7 +433,7 @@ namespace OrderCloud.Integrations.SendGrid
             if (orderWorksheet.Order.xp.SupplierIDs != null)
             {
                 var filterString = string.Join("|", orderWorksheet.Order.xp.SupplierIDs);
-                suppliers = await oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={filterString}");
+                suppliers = await orderCloudClient.Suppliers.ListAsync<HSSupplier>(filters: $"ID={filterString}");
             }
 
             foreach (var supplier in suppliers.Items)
@@ -448,14 +448,14 @@ namespace OrderCloud.Integrations.SendGrid
                         Message = OrderSubmitEmailConstants.GetOrderSubmitText(orderWorksheet.Order.ID, supplierOrderWorksheet.Order.FromUser.FirstName, supplierOrderWorksheet.Order.FromUser.LastName, VerifiedUserType.supplier),
                     };
 
-                    await SendSingleTemplateEmailMultipleRcpts(sendgridSettings?.FromEmail, supplier.xp.NotificationRcpts, sendgridSettings?.OrderSubmitTemplateID, supplierTemplateData);
+                    await SendSingleTemplateEmailMultipleRcpts(sendGridSettings?.FromEmail, supplier.xp.NotificationRcpts, sendGridSettings?.OrderSubmitTemplateID, supplierTemplateData);
                 }
             }
         }
 
         private async Task<HSOrderWorksheet> BuildSupplierOrderWorksheet(HSOrderWorksheet orderWorksheet, string supplierID)
         {
-            var supplierOrderWorksheet = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, $"{orderWorksheet.Order.ID}-{supplierID}");
+            var supplierOrderWorksheet = await orderCloudClient.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Outgoing, $"{orderWorksheet.Order.ID}-{supplierID}");
             supplierOrderWorksheet.Order.BillingAddress = orderWorksheet.Order.BillingAddress;
             supplierOrderWorksheet.Order.FromUser = orderWorksheet.Order.FromUser;
             return supplierOrderWorksheet;
@@ -467,7 +467,7 @@ namespace OrderCloud.Integrations.SendGrid
             if (orderWorksheet.Order.xp.SupplierIDs != null)
             {
                 var filterString = string.Join("|", orderWorksheet.Order.xp.SupplierIDs);
-                suppliers = await oc.Suppliers.ListAsync<HSSupplier>(filters: $"ID={filterString}");
+                suppliers = await orderCloudClient.Suppliers.ListAsync<HSSupplier>(filters: $"ID={filterString}");
             }
 
             var supplierTos = new List<string>();
@@ -484,7 +484,7 @@ namespace OrderCloud.Integrations.SendGrid
 
         private async Task<List<string>> GetSellerEmails()
         {
-            var sellerUsers = await oc.AdminUsers.ListAsync<HSSellerUser>();
+            var sellerUsers = await orderCloudClient.AdminUsers.ListAsync<HSSellerUser>();
             var sellerTos = new List<string>();
 
             foreach (var seller in sellerUsers.Items)

@@ -1,6 +1,6 @@
 ﻿using OrderCloud.Integrations.CardConnect.Models;
 
-namespace OrderCloud.Integrations.CardConnect
+namespace OrderCloud.Integrations.CardConnect.Extensions
 {
     public static class Extensions
     {

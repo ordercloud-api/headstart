@@ -1,11 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Flurl.Http;
 using Headstart.Common.Models;
 using Headstart.Common.Services;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.EasyPost.Exceptions;
 using OrderCloud.Integrations.EasyPost.Mappers;
 using OrderCloud.Integrations.EasyPost.Models;
 using OrderCloud.SDK;
@@ -19,14 +17,14 @@ namespace OrderCloud.Integrations.EasyPost
 
     public class EasyPostShippingService : IEasyPostShippingService
     {
-        public const string FreeShipping = "FREE_SHIPPING";
-        private const string BaseUrl = "https://api.easypost.com/v2";
-        private readonly EasyPostConfig config;
+        private readonly EasyPostSettings easyPostSettings;
+        private readonly EasyPostClient easyPostClient;
 
-        public EasyPostShippingService(EasyPostConfig config, string carrierAccountId)
+        public EasyPostShippingService(EasyPostSettings easyPostSettings, EasyPostClient easyPostClient)
         {
-            this.config = config;
-            Profiles = new HSShippingProfiles(carrierAccountId);
+            this.easyPostSettings = easyPostSettings;
+            Profiles = new HSShippingProfiles(easyPostSettings.FedexAccountId);
+            this.easyPostClient = easyPostClient;
         }
 
         public HSShippingProfiles Profiles { get; }
@@ -47,7 +45,7 @@ namespace OrderCloud.Integrations.EasyPost
             var postShipments = easyPostShipments;
             foreach (var shipment in postShipments)
             {
-                var response = await Throttler.RunAsync(shipment, 200, 10, PostShipment);
+                var response = await Throttler.RunAsync(shipment, 200, 10, easyPostClient.PostShipment);
                 easyPostResponses.Add(response.ToArray());
             }
 
@@ -85,12 +83,12 @@ namespace OrderCloud.Integrations.EasyPost
             var firstLi = lineItems.First();
             return new ShipEstimate
             {
-                ID = FreeShipping + $"_{firstLi.SupplierID}",
+                ID = $"FREE_SHIPPING_{firstLi.SupplierID}",
                 ShipMethods = new List<ShipMethod>
                 {
                     new ShipMethod
                     {
-                        ID = FreeShipping + $"_{firstLi.SupplierID}",
+                        ID = $"FREE_SHIPPING_{firstLi.SupplierID}",
                         Cost = 0,
                         Name = "FREE",
                         EstimatedTransitDays = 1, // Can be overwritten by app settings
@@ -103,23 +101,6 @@ namespace OrderCloud.Integrations.EasyPost
                     ShipFromAddressID = firstLi.ShipFromAddressID, // This will help with forwarding the supplier order
                 },
             };
-        }
-
-        private async Task<EasyPostShipment> PostShipment(EasyPostShipment shipment)
-        {
-            try
-            {
-                return await BaseUrl
-                    .WithBasicAuth(config.APIKey, string.Empty)
-                    .AppendPathSegment("shipments")
-                    .PostJsonAsync(new { shipment })
-                    .ReceiveJson<EasyPostShipment>();
-            }
-            catch (FlurlHttpException ex)
-            {
-                var error = await ex.GetResponseJsonAsync<EasyPostApiError>();
-                throw new EasyPostException(error);
-            }
         }
     }
 }

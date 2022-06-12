@@ -23,7 +23,7 @@ namespace OrderCloud.Integrations.ExchangeRates
             flurl = flurlFactory.Get($"https://api.exchangeratesapi.io/");
         }
 
-        public async Task<ExchangeRatesBase> Get(CurrencyCode currencyCode)
+        public virtual async Task<ExchangeRatesBase> Get(CurrencyCode currencyCode)
         {
             return await this.Request("latest")
                 .SetQueryParam("base", currencyCode)

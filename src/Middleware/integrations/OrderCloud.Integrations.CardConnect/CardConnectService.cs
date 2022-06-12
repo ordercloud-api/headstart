@@ -4,6 +4,7 @@ using Headstart.Common.Models;
 using Headstart.Common.Services;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Alerts;
+using OrderCloud.Integrations.CardConnect.Exceptions;
 using OrderCloud.Integrations.CardConnect.Mappers;
 using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.SDK;

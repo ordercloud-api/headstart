@@ -1,6 +1,5 @@
 using Headstart.Common.Settings;
 using OrderCloud.Integrations.Avalara;
-using OrderCloud.Integrations.AzureServiceBus;
 using OrderCloud.Integrations.AzureStorage;
 using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.CosmosDB;
@@ -19,6 +18,8 @@ namespace Headstart.API
 
         public AvalaraConfig AvalaraSettings { get; set; } = new AvalaraConfig();
 
+        public CardConnectConfig CardConnectSettings { get; set; } = new CardConnectConfig();
+
         public CosmosSettings CosmosSettings { get; set; } = new CosmosSettings();
 
         public EasyPostSettings EasyPostSettings { get; set; } = new EasyPostSettings();
@@ -29,19 +30,15 @@ namespace Headstart.API
 
         public OrderCloudSettings OrderCloudSettings { get; set; } = new OrderCloudSettings();
 
-        public CardConnectConfig CardConnectSettings { get; set; } = new CardConnectConfig();
-
         public SendGridSettings SendgridSettings { get; set; } = new SendGridSettings();
 
-        public ServiceBusSettings ServiceBusSettings { get; set; } = new ServiceBusSettings();
-
         public SmartyStreetsConfig SmartyStreetSettings { get; set; } = new SmartyStreetsConfig();
+
+        public StorageAccountSettings StorageAccountSettings { get; set; } = new StorageAccountSettings();
 
         public VertexConfig VertexSettings { get; set; } = new VertexConfig();
 
         public TaxJarConfig TaxJarSettings { get; set; } = new TaxJarConfig();
-
-        public StorageAccountSettings StorageAccountSettings { get; set; } = new StorageAccountSettings();
 
         public UI UI { get; set; }
 

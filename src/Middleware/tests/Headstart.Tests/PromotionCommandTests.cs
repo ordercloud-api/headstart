@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.NUnit3;
-using Headstart.API.Commands;
 using Headstart.Common.Commands;
 using Headstart.Common.Extensions;
 using NSubstitute;

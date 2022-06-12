@@ -2,7 +2,7 @@
 {
     public class EasyPostSettings
     {
-        public string APIKey { get; set; }
+        public string ApiKey { get; set; }
 
         public string FedexAccountId { get; set; }
 

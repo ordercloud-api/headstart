@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using Flurl.Http.Configuration;
 using Flurl.Http.Testing;
 using NUnit.Framework;
+using OrderCloud.Integrations.CardConnect.Exceptions;
+using OrderCloud.Integrations.CardConnect.Extensions;
 using OrderCloud.Integrations.CardConnect.Mappers;
 using OrderCloud.Integrations.CardConnect.Models;
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
+using Flurl.Http.Configuration;
 using Flurl.Http.Testing;
 using Headstart.Common.Commands;
 using Headstart.Common.Models;
@@ -11,6 +12,7 @@ using NSubstitute;
 using NUnit.Framework;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.AzureStorage;
+using OrderCloud.Integrations.ExchangeRates.Models;
 using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.ExchangeRates.Tests
@@ -30,10 +32,14 @@ namespace OrderCloud.Integrations.ExchangeRates.Tests
             http = new HttpTest();
             http.RespondWith(@"{'rates':{'CAD':1.5231,'HKD':8.3693,'ISK':157.5,'PHP':54.778,'DKK':7.4576,'HUF':354.7,'CZK':27.589,'AUD':1.6805,'RON':4.84,'SEK':10.6695,'IDR':16127.82,'INR':81.9885,'BRL':6.3172,'RUB':79.6208,'HRK':7.5693,'JPY':115.53,'THB':34.656,'CHF':1.0513,'SGD':1.5397,'PLN':4.565,'BGN':1.9558,'TRY':7.4689,'CNY':7.6759,'NOK':11.0568,'NZD':1.8145,'ZAR':20.0761,'USD':1.0798,'MXN':25.8966,'ILS':3.8178,'GBP':0.88738,'KRW':1332.6,'MYR':4.6982},'base':'EUR','date':'2020-05-15'}");
 
-            // _http.RespondWith(@"{'rates':{'MYR':4.6982},'base':'EUR','date':'2020-05-15'}");
             oc = Substitute.For<IOrderCloudClient>();
             cloudBlobService = Substitute.For<ICloudBlobService>();
-            currencyConversionService = Substitute.For<ICurrencyConversionService>();
+            var exchangeRatesClient = Substitute.For<ExchangeRatesClient>(Substitute.For<IFlurlClientFactory>());
+            exchangeRatesClient.Get(default).ReturnsForAnyArgs(Task.FromResult(new ExchangeRatesBase
+            {
+                rates = new ExchangeRatesValues(),
+            }));
+            currencyConversionService = Substitute.For<ExchangeRatesService>(exchangeRatesClient);
             simpleCache = Substitute.For<ISimpleCache>();
             command = new ExchangeRatesCommand(oc, cloudBlobService, currencyConversionService, simpleCache);
         }

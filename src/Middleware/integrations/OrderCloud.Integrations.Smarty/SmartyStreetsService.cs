@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Flurl;
 using Flurl.Http;
 using OrderCloud.Integrations.Smarty.Models;
+using SmartyStreets;
 using SmartyStreets.USStreetApi;
 
 namespace OrderCloud.Integrations.Smarty
@@ -19,18 +20,18 @@ namespace OrderCloud.Integrations.Smarty
     public class SmartyStreetsService : ISmartyStreetsService
     {
         private readonly SmartyStreetsConfig config;
-        private readonly Client smartyStreetsClients;
+        private readonly Client smartyStreetsClient;
         private readonly string autoCompleteBaseUrl = "https://us-autocomplete-pro.api.smartystreets.com";
 
-        public SmartyStreetsService(SmartyStreetsConfig config, Client smartyStreetsClients)
+        public SmartyStreetsService(SmartyStreetsConfig config)
         {
             this.config = config;
-            this.smartyStreetsClients = smartyStreetsClients;
+            this.smartyStreetsClient = new ClientBuilder(config.AuthID, config.AuthToken).BuildUsStreetApiClient();
         }
 
         public async Task<List<Candidate>> ValidateSingleUSAddress(Lookup lookup)
         {
-            smartyStreetsClients.Send(lookup);
+            smartyStreetsClient.Send(lookup);
             return await Task.FromResult(lookup.Result);
         }
 

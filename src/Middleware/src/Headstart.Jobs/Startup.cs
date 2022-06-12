@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using OrderCloud.Integrations.CosmosDB;
+using OrderCloud.Integrations.CosmosDB.Extensions;
 using OrderCloud.Integrations.Reporting.Repositories;
 using OrderCloud.SDK;
 using Polly;
@@ -88,26 +89,10 @@ namespace Headstart.Jobs
             FlurlHttp.Configure(settings => settings.HttpClientFactory = new PollyFactory(policy));
 
             builder.Services
-                .AddSingleton(x => settings.ApplicationInsightsSettings)
-                .AddSingleton(x => settings.CosmosSettings)
-                .AddSingleton(x => settings.EnvironmentSettings)
-                .AddSingleton(x => settings.FlurlSettings)
-                .AddSingleton(x => settings.JobSettings)
                 .AddSingleton(x => settings.OrderCloudSettings)
                 .AddSingleton(x => settings.ServiceBusSettings)
                 .AddSingleton(x => settings.StorageAccountSettings)
-                .AddSingleton(x => settings.UI)
-                .InjectOrderCloud<IOrderCloudClient>(new OrderCloudClientConfig()
-                {
-                    ApiUrl = settings.OrderCloudSettings.ApiUrl,
-                    AuthUrl = settings.OrderCloudSettings.ApiUrl,
-                    ClientId = settings.OrderCloudSettings.MiddlewareClientID,
-                    ClientSecret = settings.OrderCloudSettings.MiddlewareClientSecret,
-                    Roles = new[]
-                    {
-                        ApiRole.FullAccess,
-                    },
-                })
+                .InjectOrderCloud<IOrderCloudClient>(settings.OrderCloudSettings)
                 .AddCosmosDb(settings.CosmosSettings.EndpointUri, settings.CosmosSettings.PrimaryKey, settings.CosmosSettings.DatabaseName, cosmosContainers)
                 .AddSingleton<IFlurlClientFactory, PerBaseUrlFlurlClientFactory>()
                 .Inject<ICatalogCommand>()

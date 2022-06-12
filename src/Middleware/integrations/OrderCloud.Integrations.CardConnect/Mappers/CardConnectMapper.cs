@@ -1,6 +1,7 @@
 ﻿using System;
 using Headstart.Common.Extensions;
 using Headstart.Common.Models;
+using OrderCloud.Integrations.CardConnect.Extensions;
 using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.SDK;
 

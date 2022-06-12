@@ -28,17 +28,11 @@ namespace OrderCloud.Integrations.TaxJar
 
     public class TaxJarCommand : ITaxJarCommand, ITaxCalculator, ITaxCodesProvider
     {
-        private readonly TaxjarApi client;
+        private readonly TaxjarApi taxJarClient;
 
-        public TaxJarCommand(TaxJarConfig config)
+        public TaxJarCommand(TaxjarApi taxJarClient)
         {
-            if (string.IsNullOrWhiteSpace(config.ApiKey))
-            {
-                return;
-            }
-
-            var apiUrl = config.Environment == TaxJarEnvironment.Production ? TaxjarConstants.DefaultApiUrl : TaxjarConstants.SandboxApiUrl;
-            client = new TaxjarApi(config.ApiKey, new { apiUrl });
+            this.taxJarClient = taxJarClient;
         }
 
         /// <summary>
@@ -63,7 +57,7 @@ namespace OrderCloud.Integrations.TaxJar
                 response.request.SalesTax = response.response.TaxableAmount;
             }
 
-            await Throttler.RunAsync(orders, 100, 8, async order => await MakeRequest(() => client.CreateOrderAsync(order)));
+            await Throttler.RunAsync(orders, 100, 8, async order => await MakeRequest(() => taxJarClient.CreateOrderAsync(order)));
 
             var orderTaxCalculation = orders.ToOrderTaxCalculation();
             return orderTaxCalculation;
@@ -71,7 +65,7 @@ namespace OrderCloud.Integrations.TaxJar
 
         public async Task<TaxCategorizationResponse> ListTaxCodesAsync(string searchTerm)
         {
-            var categories = await MakeRequest(() => client.CategoriesAsync());
+            var categories = await MakeRequest(() => taxJarClient.CategoriesAsync());
             var taxCategorizations = categories.ToTaxCategorization(searchTerm);
             return taxCategorizations;
         }
@@ -81,7 +75,7 @@ namespace OrderCloud.Integrations.TaxJar
             var orders = orderWorksheet.ToTaxJarOrders();
             var responses = await Throttler.RunAsync(orders, 100, 8, async order =>
             {
-                var tax = await MakeRequest(() => client.TaxForOrderAsync(order));
+                var tax = await MakeRequest(() => taxJarClient.TaxForOrderAsync(order));
                 return (order, tax);
             });
             return responses;

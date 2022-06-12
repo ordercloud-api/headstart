@@ -2,7 +2,7 @@
 using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.SDK;
 
-namespace OrderCloud.Integrations.CardConnect
+namespace OrderCloud.Integrations.CardConnect.Exceptions
 {
     public class CreditCardAuthorizationException : Exception
     {

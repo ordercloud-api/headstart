@@ -7,19 +7,6 @@
         Production,
     }
 
-    public enum ShippingProvider
-    {
-        EasyPost,
-        Custom,
-    }
-
-    public enum TaxProvider
-    {
-        Avalara,
-        Vertex,
-        Taxjar,
-    }
-
     public class EnvironmentSettings
     {
         public string BuildNumber { get; set; } // set during deploy
@@ -30,8 +17,18 @@
 
         public string MiddlewareBaseUrl { get; set; }
 
-        public ShippingProvider ShippingProvider { get; set; } = ShippingProvider.EasyPost;
+        public string AddressValidationProvider { get; set; }
 
-        public TaxProvider TaxProvider { get; set; } = TaxProvider.Avalara;
+        public string CMSProvider { get; set; }
+
+        public string CurrencyConversionProvider { get; set; }
+
+        public string EmailServiceProvider { get; set; }
+
+        public string OMSProvider { get; set; }
+
+        public string ShippingProvider { get; set; }
+
+        public string TaxProvider { get; set; }
     }
 }

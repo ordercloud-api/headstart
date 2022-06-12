@@ -25,12 +25,6 @@ namespace OrderCloud.Integrations.Smarty
         public async Task<AddressValidation> ValidateAddress(Address address)
         {
             var response = new AddressValidation(address);
-            if (!settings.SmartyEnabled)
-            {
-                response.ValidAddress = address;
-                return response;
-            }
-
             if (address.Country == "US")
             {
                 var lookup = AddressMapper.MapToUSStreetLookup(address);
@@ -68,12 +62,6 @@ namespace OrderCloud.Integrations.Smarty
         public async Task<BuyerAddressValidation> ValidateAddress(BuyerAddress address)
         {
             var response = new BuyerAddressValidation(address);
-            if (!settings.SmartyEnabled)
-            {
-                response.ValidAddress = address;
-                return response;
-            }
-
             if (address.Country == "US")
             {
                 var lookup = BuyerAddressMapper.MapToUSStreetLookup(address);

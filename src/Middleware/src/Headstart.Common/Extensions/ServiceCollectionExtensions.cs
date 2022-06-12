@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using Headstart.Common.Commands;
+using Headstart.Common.Services;
+using Headstart.Common.Settings;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Extensions
@@ -35,9 +39,39 @@ namespace Headstart.Common.Extensions
             return services;
         }
 
+        public static IServiceCollection InjectOrderCloud<T>(this IServiceCollection services, OrderCloudSettings orderCloudSettings)
+        {
+            services.AddSingleton<IOrderCloudClient>(provider => new OrderCloudClient(new OrderCloudClientConfig
+            {
+                ApiUrl = orderCloudSettings.ApiUrl,
+                AuthUrl = orderCloudSettings.ApiUrl,
+                ClientId = orderCloudSettings.MiddlewareClientID,
+                ClientSecret = orderCloudSettings.MiddlewareClientSecret,
+                Roles = new[] { ApiRole.FullAccess },
+            }));
+
+            return services;
+        }
+
         public static IServiceCollection InjectOrderCloud<T>(this IServiceCollection services, OrderCloudClientConfig config)
         {
             services.AddSingleton<IOrderCloudClient>(provider => new OrderCloudClient(config));
+            return services;
+        }
+
+        public static IServiceCollection AddDefaultShippingProvider(this IServiceCollection services)
+        {
+            services.TryAddSingleton<IShippingCommand, ShippingCommand>();
+            services.TryAddSingleton<IShippingService, DefaultShippingService>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddDefaultTaxProvider(this IServiceCollection services)
+        {
+            services.TryAddSingleton<ITaxCodesProvider, DefaultTaxService>();
+            services.TryAddSingleton<ITaxCalculator, DefaultTaxService>();
+
             return services;
         }
     }

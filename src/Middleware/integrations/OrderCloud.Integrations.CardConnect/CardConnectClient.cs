@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Flurl.Http;
 using Flurl.Http.Configuration;
 using Newtonsoft.Json;
+using OrderCloud.Integrations.CardConnect.Exceptions;
+using OrderCloud.Integrations.CardConnect.Extensions;
 using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.SDK;
 

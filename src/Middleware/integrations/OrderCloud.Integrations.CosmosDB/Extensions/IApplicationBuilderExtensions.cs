@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace OrderCloud.Integrations.CosmosDB
+namespace OrderCloud.Integrations.CosmosDB.Extensions
 {
     /// <summary>
     /// Extension methods for IApplicationBuilder.

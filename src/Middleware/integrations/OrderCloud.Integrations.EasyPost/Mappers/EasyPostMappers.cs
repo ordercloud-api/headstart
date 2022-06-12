@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Headstart.Common.Models;
+using OrderCloud.Integrations.EasyPost.Extensions;
 using OrderCloud.Integrations.EasyPost.Models;
 using OrderCloud.SDK;
 

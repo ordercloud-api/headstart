@@ -8,8 +8,6 @@ namespace Headstart.Jobs
 {
     public class AppSettings
     {
-        public ApplicationInsightsSettings ApplicationInsightsSettings { get; set; } = new ApplicationInsightsSettings();
-
         public CosmosSettings CosmosSettings { get; set; } = new CosmosSettings();
 
         public EnvironmentSettings EnvironmentSettings { get; set; } = new EnvironmentSettings();
@@ -23,7 +21,5 @@ namespace Headstart.Jobs
         public ServiceBusSettings ServiceBusSettings { get; set; } = new ServiceBusSettings();
 
         public StorageAccountSettings StorageAccountSettings { get; set; } = new StorageAccountSettings();
-
-        public UI UI { get; set; }
     }
 }
