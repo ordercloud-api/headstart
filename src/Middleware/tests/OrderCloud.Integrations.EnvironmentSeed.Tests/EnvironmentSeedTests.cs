@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using NUnit.Framework;
-using OrderCloud.Integrations.EnvironmentSeed;
+using OrderCloud.Integrations.EnvironmentSeed.Models;
 
 namespace Headstart.Tests
 {
@@ -16,18 +16,24 @@ namespace Headstart.Tests
         public void InitialAdminPassword_DoesNotMeetMinimumRequirements_FailsValidation(string password)
         {
             // Arrange
-            var seed = new EnvironmentSeedConfig()
+            var seed = new EnvironmentSeedRequest
             {
-                InitialAdminPassword = password,
+                Marketplace = new MarketplaceSettings
+                {
+                    InitialAdmin = new AccountCredentials
+                    {
+                        Password = password,
+                    },
+                },
             };
 
-            var ctx = new ValidationContext(seed)
+            var ctx = new ValidationContext(seed.Marketplace.InitialAdmin)
             {
-                MemberName = nameof(seed.InitialAdminPassword),
+                MemberName = nameof(seed.Marketplace.InitialAdmin.Password),
             };
 
             // Act
-            var result = Validator.TryValidateProperty(seed.InitialAdminPassword, ctx, null);
+            var result = Validator.TryValidateProperty(seed.Marketplace.InitialAdmin.Password, ctx, null);
 
             // Assert
             Assert.IsFalse(result);
@@ -38,18 +44,24 @@ namespace Headstart.Tests
         public void InitialAdminPassword_MeetsMinimumRequirements_PassesValidation(string password)
         {
             // Arrange
-            var seed = new EnvironmentSeedConfig()
+            var seed = new EnvironmentSeedRequest
             {
-                InitialAdminPassword = password,
+                Marketplace = new MarketplaceSettings
+                {
+                    InitialAdmin = new AccountCredentials
+                    {
+                        Password = password,
+                    },
+                },
             };
 
-            var ctx = new ValidationContext(seed)
+            var ctx = new ValidationContext(seed.Marketplace.InitialAdmin)
             {
-                MemberName = nameof(seed.InitialAdminPassword),
+                MemberName = nameof(seed.Marketplace.InitialAdmin.Password),
             };
 
             // Act
-            var result = Validator.TryValidateProperty(seed.InitialAdminPassword, ctx, null);
+            var result = Validator.TryValidateProperty(seed.Marketplace.InitialAdmin.Password, ctx, null);
 
             // Assert
             Assert.IsTrue(result);
@@ -60,18 +72,21 @@ namespace Headstart.Tests
         public void Region_NotInValueRange_FailsValidation(string region)
         {
             // Arrange
-            var seed = new EnvironmentSeedConfig()
+            var seed = new EnvironmentSeedRequest
             {
-                OrderCloudSeedSettings = new OrderCloudSeedSettings() { Region = region },
+                Marketplace = new MarketplaceSettings
+                {
+                    Region = region,
+                },
             };
 
-            var ctx = new ValidationContext(seed.OrderCloudSeedSettings)
+            var ctx = new ValidationContext(seed.Marketplace)
             {
-                MemberName = nameof(seed.OrderCloudSeedSettings.Region),
+                MemberName = nameof(seed.Marketplace.Region),
             };
 
             // Act
-            var result = Validator.TryValidateProperty(seed.OrderCloudSeedSettings.Region, ctx, null);
+            var result = Validator.TryValidateProperty(seed.Marketplace.Region, ctx, null);
 
             // Assert
             Assert.IsFalse(result);
@@ -88,18 +103,21 @@ namespace Headstart.Tests
         public void Region_InValueRange_PassesValidation(string region)
         {
             // Arrange
-            var seed = new EnvironmentSeedConfig()
+            var seed = new EnvironmentSeedRequest
             {
-                OrderCloudSeedSettings = new OrderCloudSeedSettings() { Region = region },
+                Marketplace = new MarketplaceSettings
+                {
+                    Region = region,
+                },
             };
 
-            var ctx = new ValidationContext(seed.OrderCloudSeedSettings)
+            var ctx = new ValidationContext(seed.Marketplace)
             {
-                MemberName = nameof(seed.OrderCloudSeedSettings.Region),
+                MemberName = nameof(seed.Marketplace.Region),
             };
 
             // Act
-            var result = Validator.TryValidateProperty(seed.OrderCloudSeedSettings.Region, ctx, null);
+            var result = Validator.TryValidateProperty(seed.Marketplace.Region, ctx, null);
 
             // Assert
             Assert.IsTrue(result);

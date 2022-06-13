@@ -151,7 +151,7 @@ namespace Headstart.Common.Commands
             // assign to message sender
             await oc.MessageSenders.SaveAssignmentAsync(new MessageSenderAssignment
             {
-                MessageSenderID = "SupplierEmails",
+                MessageSenderID = MessageSenderConstants.SupplierEmails,
                 SupplierID = ocSupplierID,
             });
             return supplier;

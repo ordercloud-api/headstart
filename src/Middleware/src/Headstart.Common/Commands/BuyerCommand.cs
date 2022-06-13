@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Headstart.Common.Constants;
 using Headstart.Common.Models;
 using OrderCloud.SDK;
 
@@ -93,7 +94,7 @@ namespace Headstart.Common.Commands
             await ocClient.MessageSenders.SaveAssignmentAsync(
                 new MessageSenderAssignment
                 {
-                    MessageSenderID = "BuyerEmails",
+                    MessageSenderID = MessageSenderConstants.BuyerEmails,
                     BuyerID = ocBuyerID,
                 }, token);
 

@@ -1,16 +1,27 @@
 {
-  "PortalUsername": "",
-  "PortalPassword": "",
-  "InitialAdminUsername": "",
-  "InitialAdminPassword": "",
-  "MiddlewareBaseUrl": "",
-  "MarketplaceID": "",
-  "OrderCloudSeedSettings": {
+  "Portal": {
+    "Username": "",
+    "Password": ""
+  },
+  "Marketplace": {
     "Environment": "sandbox",
     "Region": "Us-West",
-    "WebhookHashKey": ""
+    "ID": "",
+    "Name": "",
+    "InitialAdmin": {
+      "Username": "",
+      "Password": ""
+    },
+    "EnableAnonymousShopping": true,
+    "AnonymousShoppingBuyerID": true,
+    "MiddlewareBaseUrl": "",
+    "WebhookHashKey": "",
+    "Suppliers": [],
+    "Buyers": []
   },
   "StorageAccountSettings": {
-    "ConnectionString": ""
+    "ConnectionString": "",
+    "ContainerNameTranslations": "",
+    "ContainerNameDownloads": ""
   }
 }

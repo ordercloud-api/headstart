@@ -107,7 +107,7 @@ Detailed Steps:
 3. Find your marketplace and save the unique identifier this is your MarketplaceID in step 6.
 4. Follow the instructions [here](./src/Middleware/README.md) to start your server locally.
 5. Download and open [Postman](https://www.postman.com/downloads/) so that you can make API calls to your local server.
-6. Make a POST to `/seed` endpoint with [this template body](./assets/templates/SeedTemplate.json). For a description of the properties please refer to [the definition](./src/Middleware/src/Headstart.Common/Models/Misc/EnvironmentSeed.cs).
+6. Make a POST to `/seed` endpoint with [this template body](./assets/templates/SeedTemplate.json). For a description of the properties please refer to [the definition](./src/Middleware/integrations/OrderCloud.Integrations.EnvironmentSeed/Models/EnvironmentSeedRequest.cs).
 7. A successful response will include:
    1. The middleware clientID and secret. Save these two values in your app configuration under `OrderCloudSettings:MiddlewareClientID` and `OrderCloudSettings:MiddlewareClientSecret`.
    2. The buyer clientID. Follow the instructions in [frontend configuration](#frontend-configuration) and set it in the buyer config `clientID`.
