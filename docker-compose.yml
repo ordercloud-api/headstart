@@ -147,7 +147,7 @@ services:
       context: .
       dockerfile: docker/build/UI/Dockerfile
       args:
-        BASE_IMAGE: node:16.15-alpine3.15
+        BASE_IMAGE: node:12.16.3-alpine
         ROLE: Seller
     labels:
       - "traefik.enable=true"
@@ -174,7 +174,7 @@ services:
       context: .
       dockerfile: docker/build/UI/Dockerfile
       args:
-        BASE_IMAGE: node:16.15-alpine3.15
+        BASE_IMAGE: node:12.16.3-alpine
         ROLE: Buyer
     labels:
       - "traefik.enable=true"
