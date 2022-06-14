@@ -22,6 +22,6 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Models
         /// If none are provided the seeding funciton will not create a translation file or downloads file
         /// Provide a valid ConnectionString to have the seeding function generate your translation file.
         /// </summary>
-        public StorageAccountSeedSettings StorageAccountSettings { get; set; }
+        public StorageAccountSeedSettings StorageAccount { get; set; }
     }
 }

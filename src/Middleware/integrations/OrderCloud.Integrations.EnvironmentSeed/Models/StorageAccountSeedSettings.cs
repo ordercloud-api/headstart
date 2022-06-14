@@ -8,7 +8,5 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Models
         public string ConnectionString { get; set; }
 
         public string ContainerNameTranslations { get; set; } = "ngx-translate";
-
-        public string ContainerNameDownloads { get; set; } = "downloads";
     }
 }

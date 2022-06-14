@@ -34,10 +34,10 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Models
         public string Name { get; set; }
 
         /// <summary>
-        /// <see cref="AccountCredentials"/> for initial admin user.
+        /// <see cref="AdminAccountCredentials"/> for initial admin user.
         /// </summary>
         [Required]
-        public AccountCredentials InitialAdmin { get; set; }
+        public AdminAccountCredentials InitialAdmin { get; set; }
 
         /// <summary>
         /// Defaults to true

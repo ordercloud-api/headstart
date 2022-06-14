@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace OrderCloud.Integrations.EnvironmentSeed.Models
 {
@@ -15,5 +16,7 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Models
         public Dictionary<string, dynamic> ApiClients { get; set; }
 
         public bool Success { get; set; } = true;
+
+        public Exception Exception { get; set; }
     }
 }

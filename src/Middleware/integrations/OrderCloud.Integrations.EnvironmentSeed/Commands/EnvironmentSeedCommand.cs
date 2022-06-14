@@ -105,9 +105,9 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
 
                 await CreateOrUpdateProductFacets(marketplaceToken);
 
-                if (seed?.StorageAccountSettings?.ConnectionString != null && seed?.StorageAccountSettings?.ContainerNameTranslations != null)
+                if (seed?.StorageAccount?.ConnectionString != null && seed?.StorageAccount?.ContainerNameTranslations != null)
                 {
-                    await UpdateTranslations(seed.StorageAccountSettings.ConnectionString, seed.StorageAccountSettings.ContainerNameTranslations);
+                    await UpdateTranslations(seed.StorageAccount.ConnectionString, seed.StorageAccount.ContainerNameTranslations);
                 }
 
                 var apiClients = await GetApiClients(marketplaceToken);
@@ -136,19 +136,12 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
                     },
                 };
             }
-            catch (CatalystBaseException ex)
-            {
-                return new EnvironmentSeedResponse
-                {
-                    Comments = $"Error! Environment seeding failed. The marketplace may be partially seeded with incomplete data. Please see the following exception message for details.\n{ex.Errors[0].Message}",
-                    Success = false,
-                };
-            }
             catch (Exception ex)
             {
                 return new EnvironmentSeedResponse
                 {
-                    Comments = $"Error! Environment seeding failed. The marketplace may be partially seeded with incomplete data. Please see the following exception message for details.\n{ex.Message}",
+                    Comments = $"Error! Environment seeding failed. The marketplace may be partially seeded with incomplete data. Please see Exception for details.",
+                    Exception = ex,
                     Success = false,
                 };
             }
@@ -178,7 +171,7 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
                 // the portal API no longer allows us to create a production marketplace outside of portal
                 // though its possible to create on sandbox - for consistency sake we'll require its created before seeding
                 Console.WriteLine(e.Message);
-                throw new Exception("Failed to retrieve marketplace with MarketplaceID. The marketplace must exist before it can be seeded");
+                throw new Exception($"Failed to retrieve marketplace with ID '{marketplaceID}'. The marketplace must exist before it can be seeded");
             }
         }
 

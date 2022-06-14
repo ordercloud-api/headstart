@@ -13,15 +13,14 @@
       "Password": ""
     },
     "EnableAnonymousShopping": true,
-    "AnonymousShoppingBuyerID": true,
+    "AnonymousShoppingBuyerID": "",
     "MiddlewareBaseUrl": "",
     "WebhookHashKey": "",
     "Suppliers": [],
     "Buyers": []
   },
-  "StorageAccountSettings": {
+  "StorageAccount": {
     "ConnectionString": "",
-    "ContainerNameTranslations": "",
-    "ContainerNameDownloads": ""
+    "ContainerNameTranslations": "ngx-translate"
   }
 }
