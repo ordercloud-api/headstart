@@ -199,6 +199,7 @@ namespace Headstart.API
 
                 // Address Validation Providers
                 .AddSmartyAddressValidationProvider(settings.EnvironmentSettings, settings.SmartyStreetSettings)
+                .AddDefaultAddressProvider()
 
                 // Currency Conversion Providers
                 .AddExchangeRatesCurrencyConversionProvider(settings.EnvironmentSettings, settings.StorageAccountSettings)

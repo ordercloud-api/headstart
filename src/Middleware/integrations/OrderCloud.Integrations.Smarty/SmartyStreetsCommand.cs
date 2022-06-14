@@ -9,7 +9,7 @@ using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.Smarty
 {
-    public class SmartyStreetsCommand : IAddressValidationCommand
+    public class SmartyStreetsCommand : IAddressValidationCommand, IAddressCommand
     {
         private readonly ISmartyStreetsService service;
         private readonly IOrderCloudClient oc;

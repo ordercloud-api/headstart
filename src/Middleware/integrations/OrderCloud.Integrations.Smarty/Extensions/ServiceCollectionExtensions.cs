@@ -17,6 +17,7 @@ namespace OrderCloud.Integrations.Smarty.Extensions
             services
                 .AddSingleton(x => smartySettings)
                 .AddSingleton<ISmartyStreetsService, SmartyStreetsService>()
+                .AddSingleton<IAddressCommand, SmartyStreetsCommand>()
                 .AddSingleton<IAddressValidationCommand, SmartyStreetsCommand>();
 
             return services;

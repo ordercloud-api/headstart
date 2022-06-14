@@ -74,5 +74,20 @@ namespace Headstart.Common.Extensions
 
             return services;
         }
+
+        public static IServiceCollection AddMockCreditCardProcessor(this IServiceCollection services)
+        {
+            services.TryAddSingleton<ICreditCardProcessor, MockCreditCardProcessor>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddDefaultAddressProvider(this IServiceCollection services)
+        {
+            services.TryAddSingleton<IAddressCommand, AddressCommand>();
+            services.TryAddSingleton<IAddressValidationCommand, AddressValidationCommand>();
+
+            return services;
+        }
     }
 }
