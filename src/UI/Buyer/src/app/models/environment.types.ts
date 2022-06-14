@@ -153,11 +153,11 @@ export class AppConfig {
    */
   storefrontName?: string
   /**
-   *  See https://moosend.com/
+   *  See https://www.sitecore.com/products/send
    */
   useSitecoreSend?: boolean
   /**
-   *  Get a website ID - https://help.moosend.com/hc/en-us/articles/115002945125-How-can-I-connect-my-website-to-Moosend-
+   *  Get a website ID - https://doc.sitecore.com/send/en/users/sitecore-send/enable-website-tracking.html
    */
   sitecoreSendWebsiteID?: string
   /**
