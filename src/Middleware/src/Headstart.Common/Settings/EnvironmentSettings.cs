@@ -27,6 +27,8 @@
 
         public string OMSProvider { get; set; }
 
+        public string PaymentProvider { get; set; }
+
         public string ShippingProvider { get; set; }
 
         public string TaxProvider { get; set; }

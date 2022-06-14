@@ -10,7 +10,7 @@ namespace OrderCloud.Integrations.CardConnect.Extensions
     {
         public static IServiceCollection AddCardConnectCreditCartProcessor(this IServiceCollection services, EnvironmentSettings environmentSettings, CardConnectConfig cardConnectSettings)
         {
-            if (!environmentSettings.ShippingProvider.Equals("EasyPost", StringComparison.OrdinalIgnoreCase))
+            if (!environmentSettings.PaymentProvider.Equals("CardConnect", StringComparison.OrdinalIgnoreCase))
             {
                 return services;
             }

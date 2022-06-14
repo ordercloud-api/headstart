@@ -7,7 +7,7 @@ namespace Headstart.Common.Services
     {
         Task<HSCreditCard> Tokenize(CCToken card, CurrencyCode userCurrency);
 
-        Task<HSPayment> AuthWithoutCapture(HSPayment ocPayment, HSBuyerCreditCard cc, HSOrder order, CCPayment payment, string userToken, decimal ccAmount);
+        Task<HSPayment> AuthWithoutCapture(HSPayment payment, HSBuyerCreditCard buyerCreditCard, HSOrder order, CCPayment ccPayment, string userToken, decimal ccAmount);
 
         Task VoidAuthorization(HSOrder order, HSPayment payment, HSPaymentTransaction paymentTransaction, decimal? refundAmount = null);
 

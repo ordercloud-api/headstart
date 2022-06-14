@@ -38,6 +38,7 @@
 |     EnvironmentSettings:CurrencyConversionProvider    | Which currency conversion provider should be used for currency conversion. Options include: "ExchangeRates". Otherwise not handled. |
 |        EnvironmentSettings:EmailServiceProvider       | Which email service provider should be used for emails. Options include: "SendGrid". Otherwise no emails will be sent. |
 |             EnvironmentSettings:OMSProvider           | Which order management service provider should be used for exporting orders to. Options include: "Zoho". Otherwise not handled. |
+|          EnvironmentSettings:PaymentProvider          | Which payment service provider should be used for payments. Options include: "CardConnect". Otherwise all payments and transactions are mocked. |
 |          EnvironmentSettings:ShippingProvider         | Which shipping service provider should be used for shipping methods and fees calculation. Options include: "EasyPost". Otherwise not handled. |
 |            EnvironmentSettings:TaxProvider            | Which tax service should be used for tax calculation. Options include: "Avalara", "Taxjar", or "Vertex". Otherwise mock responses are returned from the DefaultTaxProvider implementation. |
 |            FlurlSettings:TimeoutInSeconds             | Timeout in seconds until Flurl (http client) will timeout                                                                                                                                                                   |
@@ -67,7 +68,6 @@
 |      SendgridSettings:CriticalSupportTemplateID       | (Optional) but required to send CriticalSupport emails) ID for template to be used for CriticalSupport emails                                                                                                               |
 |          ServiceBusSettings:ConnectionString          | Service bus client connection string |
 |            ServiceBusSettings:ZohoQueueName           | Intended for Zoho integration (Not used at this time) |
-|          SmartyStreetSettings:SmartyEnabled           | If disabled, the Smarty address validation will not be triggered for US addresses. |
 |              SmartyStreetSettings:AuthID              | Authentication ID used to connect with SmartyStreet |
 |            SmartyStreetSettings:AuthToken             | Authorization token used to connect with SmartyStreet |
 |           SmartyStreetSettings:RefererHost            | HTTP Header to a hostname/IP address listed with the Website Key [SmartyStreet Docs](https://smartystreets.com/docs/cloud/authentication) |

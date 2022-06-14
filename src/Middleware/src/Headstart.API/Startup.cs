@@ -136,18 +136,26 @@ namespace Headstart.API
             });
 
             services
+                .AddCors(o => o.AddPolicy("integrationcors", builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }))
+                .AddSingleton<ISimpleCache, LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
+                .AddSingleton<IFlurlClientFactory, PerBaseUrlFlurlClientFactory>()
+
+                // Settings
                 .AddSingleton(x => settings.EnvironmentSettings)
                 .AddSingleton(x => settings.OrderCloudSettings)
                 .AddSingleton(x => settings.StorageAccountSettings)
-                .AddCors(o => o.AddPolicy("integrationcors", builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }))
-                .AddSingleton<ISimpleCache, LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
+
+                // Configure OrderCloud
                 .InjectOrderCloud<IOrderCloudClient>(settings.OrderCloudSettings)
                 .AddOrderCloudUserAuth(opts => opts.AddValidClientIDs(clientIDs))
                 .AddOrderCloudWebhookAuth(opts => opts.HashKey = settings.OrderCloudSettings.WebhookHashKey)
+
+                // Configure Cosmos
                 .InjectCosmosStore<LogQuery, OrchestrationLog>(cosmosConfig)
                 .InjectCosmosStore<ReportTemplateQuery, ReportTemplate>(cosmosConfig)
                 .AddCosmosDb(settings.CosmosSettings.EndpointUri, settings.CosmosSettings.PrimaryKey, settings.CosmosSettings.DatabaseName, cosmosContainers)
-                .Inject<IPortalService>()
+
+                // Commands
                 .Inject<ICheckoutIntegrationCommand>()
                 .Inject<IShipmentCommand>()
                 .Inject<IOrderCommand>()
@@ -157,28 +165,51 @@ namespace Headstart.API
                 .Inject<IHSProductCommand>()
                 .Inject<ILineItemCommand>()
                 .Inject<IMeProductCommand>()
-                .Inject<IDiscountDistributionService>()
                 .Inject<ICatalogCommand>()
                 .Inject<ISupplierCommand>()
                 .Inject<ICreditCardCommand>()
+                .AddSingleton<IDownloadReportCommand, DownloadReportCommand>()
+
+                // Services
+                .Inject<IPortalService>()
+                .Inject<IDiscountDistributionService>()
                 .Inject<ISupportAlertService>()
                 .Inject<ISupplierApiClientHelper>()
-                .AddSingleton<IFlurlClientFactory, PerBaseUrlFlurlClientFactory>()
-                .AddSingleton<IDownloadReportCommand, DownloadReportCommand>()
+
+                // Tax Providers
                 .AddAvalaraTaxProvider(settings.EnvironmentSettings, settings.AvalaraSettings)
                 .AddTaxJarTaxProvider(settings.EnvironmentSettings, settings.TaxJarSettings)
                 .AddVertexTaxProvider(settings.EnvironmentSettings, settings.VertexSettings)
                 .AddDefaultTaxProvider()
+
+                // CMS Providers
                 .AddDefaultCMSProvider(settings.EnvironmentSettings, settings.StorageAccountSettings)
+
+                // Email Providers
                 .AddSendGridEmailServiceProvider(settings.EnvironmentSettings, settings.SendgridSettings, settings.UI)
                 .AddDefaultEmailServiceProvider(settings.EnvironmentSettings)
+
+                // Shipping Providers
                 .AddEasyPostShippingProvider(settings.EnvironmentSettings, settings.EasyPostSettings)
                 .AddDefaultShippingProvider()
+
+                // Payment Providers
                 .AddCardConnectCreditCartProcessor(settings.EnvironmentSettings, settings.CardConnectSettings)
+                .AddMockCreditCardProcessor()
+
+                // Address Validation Providers
                 .AddSmartyAddressValidationProvider(settings.EnvironmentSettings, settings.SmartyStreetSettings)
+
+                // Currency Conversion Providers
                 .AddExchangeRatesCurrencyConversionProvider(settings.EnvironmentSettings, settings.StorageAccountSettings)
+
+                // RMA Providers
                 .AddDefaultRMAsProvider(settings.EnvironmentSettings)
+
+                // OMS Providers
                 .AddZohoOMSProvider(settings.EnvironmentSettings, settings.ZohoSettings)
+
+                // Documentation
                 .AddSwaggerGen(c =>
                 {
                     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Headstart Middleware API Documentation", Version = "v1" });

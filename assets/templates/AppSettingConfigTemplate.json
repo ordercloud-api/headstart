@@ -37,6 +37,7 @@
   "EnvironmentSettings:CurrencyConversionProvider": "ExchangeRates",
   "EnvironmentSettings:EmailServiceProvider": "SendGrid",
   "EnvironmentSettings:OMSProvider": "Zoho",
+  "EnvironmentSettings:PaymentProvider": "CardConnect",
   "EnvironmentSettings:ShippingProvider": "EasyPost",
   "EnvironmentSettings:TaxProvider": "Avalara",
   "FlurlSettings:TimeoutInSeconds": "40",
