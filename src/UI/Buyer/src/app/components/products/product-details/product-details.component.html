@@ -382,11 +382,10 @@
       </ocm-modal>
     </div>
   </div>
-  <ng-container *ngIf="relatedProducts$ | async; let relatedProducts">
+  <ng-container *ngIf="selectedRelatedProducts?.length">
     <ocm-product-carousel
-      *ngIf="relatedProducts?.length > 0"
-      displayTitle="Related Products"
-      [products]="relatedProducts"
+      [displayTitle]="'Related Products'"
+      [products]="selectedRelatedProducts"
     >
     </ocm-product-carousel>
   </ng-container>

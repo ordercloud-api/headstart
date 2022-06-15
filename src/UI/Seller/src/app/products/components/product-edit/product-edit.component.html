@@ -942,6 +942,18 @@
         </ng-template>
       </li>
       <!-- /Buyer Visibility -->
+      <!-- Related Products -->
+      <li [ngbNavItem]="7" id="7">
+        <a class="text-muted" ngbNavLink translate>Related Products</a>
+        <ng-template ngbNavContent>
+          <related-products-component
+            *ngIf="_superHSProductStatic?.Product?.ID"
+            [product]="_superHSProductStatic.Product"
+          >
+          </related-products-component>
+        </ng-template>
+      </li>
+      <!-- /Related Products -->
       <!-- Description -->
       <li [ngbNavItem]="2" id="2">
         <a class="text-muted" ngbNavLink translate

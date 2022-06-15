@@ -16,6 +16,7 @@ import {
 import { Observable } from 'rxjs'
 import { SpecFormService } from '../spec-form/spec-form.service'
 import { SuperHSProduct } from '@ordercloud/headstart-sdk'
+import { Product, Products, Me } from 'ordercloud-javascript-sdk'
 import { FormGroup } from '@angular/forms'
 import { ProductDetailService } from './product-detail.service'
 import { ToastrService } from 'ngx-toastr'
@@ -50,6 +51,7 @@ export class OCMProductDetails implements OnInit {
   price: number
   percentSavings: number
   relatedProducts$: Observable<HSMeProduct[]>
+  selectedRelatedProducts: HSMeProduct[] = []
   favoriteProducts: string[] = []
   qtyValid = true
   supplierNote: string
@@ -102,15 +104,26 @@ export class OCMProductDetails implements OnInit {
     this.send.viewProduct(superProduct.Product)
     this.isQuoteAnonUser =
       this.isQuoteProduct() && this.context.currentUser.isAnonymous()
+
+    if (superProduct?.Product?.xp?.RelatedProducts?.length) {
+      this.setRelatedProducts(superProduct?.Product?.xp?.RelatedProducts)
+    }
   }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.calculatePrice()
     this.currentUser = this.context.currentUser.get()
     this.userCurrency = this.currentUser.Currency
     this.context.currentUser.onChange(
       (user) => (this.favoriteProducts = user.FavoriteProductIDs)
     )
+  }
+
+  async setRelatedProducts(relatedProducts: string[]): Promise<void> {
+    const selectedProducts = await Me.ListProducts({
+      filters: { ID: relatedProducts.join('|') },
+    })
+    this.selectedRelatedProducts = selectedProducts.Items
   }
 
   async setSupplier(supplierID: string): Promise<void> {

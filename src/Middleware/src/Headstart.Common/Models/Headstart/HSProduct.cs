@@ -80,6 +80,8 @@ namespace Headstart.Common.Models
         public List<ImageAsset> Images { get; set; }
 
         public List<DocumentAsset> Documents { get; set; }
+
+        public List<string> RelatedProducts { get; set; }
     }
 
     public class ImageAsset
