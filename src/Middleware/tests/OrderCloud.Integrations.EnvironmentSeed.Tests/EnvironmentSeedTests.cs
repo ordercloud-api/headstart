@@ -20,7 +20,7 @@ namespace Headstart.Tests
             {
                 Marketplace = new MarketplaceSettings
                 {
-                    InitialAdmin = new AccountCredentials
+                    InitialAdmin = new AdminAccountCredentials
                     {
                         Password = password,
                     },
@@ -48,7 +48,7 @@ namespace Headstart.Tests
             {
                 Marketplace = new MarketplaceSettings
                 {
-                    InitialAdmin = new AccountCredentials
+                    InitialAdmin = new AdminAccountCredentials
                     {
                         Password = password,
                     },
