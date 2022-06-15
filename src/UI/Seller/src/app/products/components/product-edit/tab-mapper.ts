@@ -19,4 +19,5 @@ export const TabIndexMapper = {
   4: 'filters',
   5: 'variants',
   6: 'images-and-documents',
+  7: 'related-products',
 }
