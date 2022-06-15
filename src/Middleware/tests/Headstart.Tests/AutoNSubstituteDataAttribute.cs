@@ -2,9 +2,7 @@
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Models;
-using Headstart.Models.Headstart;
+using Headstart.Common.Models;
 
 namespace Headstart.Tests
 {

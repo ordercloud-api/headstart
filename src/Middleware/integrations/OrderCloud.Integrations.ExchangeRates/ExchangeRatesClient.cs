@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Flurl.Http;
 using Flurl.Http.Configuration;
+using Headstart.Common.Models;
 using OrderCloud.Integrations.ExchangeRates.Models;
-using OrderCloud.Integrations.Library.Models;
 
 namespace OrderCloud.Integrations.ExchangeRates
 {
@@ -23,7 +23,7 @@ namespace OrderCloud.Integrations.ExchangeRates
             flurl = flurlFactory.Get($"https://api.exchangeratesapi.io/");
         }
 
-        public async Task<ExchangeRatesBase> Get(CurrencyCode currencyCode)
+        public virtual async Task<ExchangeRatesBase> Get(CurrencyCode currencyCode)
         {
             return await this.Request("latest")
                 .SetQueryParam("base", currencyCode)

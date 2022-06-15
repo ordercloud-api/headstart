@@ -129,7 +129,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OrderCloud.Integrations.Library\OrderCloud.Integrations.Library.csproj" />
+    <ProjectReference Include="..\..\src\Headstart.Common\Headstart.Common.csproj" />
+    <ProjectReference Include="..\OrderCloud.Integrations.AzureStorage\OrderCloud.Integrations.AzureStorage.csproj" />
   </ItemGroup>
 
 </Project>

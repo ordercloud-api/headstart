@@ -2,13 +2,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Headstart.API.Commands;
 using Headstart.Common.Models;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Models;
-using Headstart.Models.Headstart;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.CardConnect.Models;
-using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.CosmosDB;
+using OrderCloud.Integrations.RMAs.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Controllers
@@ -19,14 +16,14 @@ namespace Headstart.Common.Controllers
     [Route("order")]
     public class OrderController : CatalystController
     {
-        private readonly IOrderCommand command;
+        private readonly IOrderCommand orderCommand;
         private readonly IOrderSubmitCommand orderSubmitCommand;
         private readonly ILineItemCommand lineItemCommand;
         private readonly IOrderCloudClient oc;
 
-        public OrderController(IOrderCommand command, ILineItemCommand lineItemCommand, IOrderSubmitCommand orderSubmitCommand, IOrderCloudClient oc)
+        public OrderController(IOrderCommand orderCommand, ILineItemCommand lineItemCommand, IOrderSubmitCommand orderSubmitCommand, IOrderCloudClient oc)
         {
-            this.command = command;
+            this.orderCommand = orderCommand;
             this.lineItemCommand = lineItemCommand;
             this.orderSubmitCommand = orderSubmitCommand;
             this.oc = oc;
@@ -36,7 +33,7 @@ namespace Headstart.Common.Controllers
         /// Submit Order. Performs validation, submits credit card payment and finally submits order via OrderCloud.
         /// </summary>
         [HttpPost, Route("{direction}/{orderID}/submit"), OrderCloudUserAuth(ApiRole.Shopper)]
-        public async Task<HSOrder> Submit(OrderDirection direction, string orderID, [FromBody] OrderCloudIntegrationsCreditCardPayment payment)
+        public async Task<HSOrder> Submit(OrderDirection direction, string orderID, [FromBody] CCPayment payment)
         {
             return await orderSubmitCommand.SubmitOrderAsync(orderID, direction, payment, UserContext.AccessToken);
         }
@@ -47,7 +44,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, Route("acknowledgequote/{orderID}"), OrderCloudUserAuth(ApiRole.OrderAdmin)]
         public async Task<Order> AcknowledgeQuoteOrder(string orderID)
         {
-            return await command.AcknowledgeQuoteOrder(orderID);
+            return await orderCommand.AcknowledgeQuoteOrder(orderID);
         }
 
         /// <summary>
@@ -56,7 +53,7 @@ namespace Headstart.Common.Controllers
         [HttpGet, Route("location/{locationID}"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<ListPage<HSOrder>> ListLocationOrders(string locationID, ListArgs<HSOrder> listArgs)
         {
-            return await command.ListOrdersForLocation(locationID, listArgs, UserContext);
+            return await orderCommand.ListOrdersForLocation(locationID, listArgs, UserContext);
         }
 
         /// <summary>
@@ -65,7 +62,7 @@ namespace Headstart.Common.Controllers
         [HttpGet, Route("{orderID}/details"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<OrderDetails> GetOrderDetails(string orderID)
         {
-            return await command.GetOrderDetails(orderID, UserContext);
+            return await orderCommand.GetOrderDetails(orderID, UserContext);
         }
 
         /// <summary>
@@ -74,13 +71,13 @@ namespace Headstart.Common.Controllers
         [HttpGet, Route("{orderID}/shipmentswithitems"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<List<HSShipmentWithItems>> ListShipmentsWithItems(string orderID)
         {
-            return await command.ListHSShipmentWithItems(orderID, UserContext);
+            return await orderCommand.ListHSShipmentWithItems(orderID, UserContext);
         }
 
         [HttpGet, Route("rma/list/{orderID}"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<CosmosListPage<RMA>> ListRMAsForOrder(string orderID)
         {
-            return await command.ListRMAsForOrder(orderID, UserContext);
+            return await orderCommand.ListRMAsForOrder(orderID, UserContext);
         }
 
         [HttpPut, Route("{orderID}/lineitems"), OrderCloudUserAuth(ApiRole.Shopper)]
@@ -104,7 +101,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, Route("{orderID}/promotions/{promoCode}")]
         public async Task<HSOrder> AddPromotion(string orderID, string promoCode)
         {
-            return await command.AddPromotion(orderID, promoCode, UserContext);
+            return await orderCommand.AddPromotion(orderID, promoCode, UserContext);
         }
 
         /// <summary>
@@ -131,7 +128,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, Route("{orderID}/applypromotions")]
         public async Task<HSOrder> ApplyAutomaticPromotions(string orderID)
         {
-            return await command.ApplyAutomaticPromotions(orderID);
+            return await orderCommand.ApplyAutomaticPromotions(orderID);
         }
 
         /// <summary>
@@ -140,7 +137,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, Route("submitquoterequest/{orderID}/{lineItemID}"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<HSLineItem> SendQuoteRequestToSupplier(string orderID, string lineItemID)
         {
-            return await command.SendQuoteRequestToSupplier(orderID, lineItemID);
+            return await orderCommand.SendQuoteRequestToSupplier(orderID, lineItemID);
         }
 
         /// <summary>
@@ -149,7 +146,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, Route("overridequote/{orderID}/{lineItemID}"), OrderCloudUserAuth(ApiRole.OrderAdmin)]
         public async Task<HSLineItem> OverrideQuotePrice(string orderID, string lineItemID, [FromBody] decimal quotePrice)
         {
-            return await command.OverrideQuotePrice(orderID, lineItemID, quotePrice);
+            return await orderCommand.OverrideQuotePrice(orderID, lineItemID, quotePrice);
         }
 
         /// <summary>
@@ -159,7 +156,7 @@ namespace Headstart.Common.Controllers
         public async Task<ListPage<HSOrder>> ListQuoteOrders(QuoteStatus quoteStatus)
         {
             var me = await oc.Me.GetAsync(accessToken: UserContext.AccessToken);
-            return await command.ListQuoteOrders(me, quoteStatus);
+            return await orderCommand.ListQuoteOrders(me, quoteStatus);
         }
 
         /// <summary>
@@ -169,7 +166,7 @@ namespace Headstart.Common.Controllers
         public async Task<HSOrder> GetQuoteOrder(string orderID)
         {
             var me = await oc.Me.GetAsync(accessToken: UserContext.AccessToken);
-            return await command.GetQuoteOrder(me, orderID);
+            return await orderCommand.GetQuoteOrder(me, orderID);
         }
     }
 }

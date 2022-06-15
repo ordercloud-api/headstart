@@ -4,15 +4,14 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Headstart.Common.Models;
-using Headstart.Common.Queries;
-using Headstart.Common.Repositories;
-using Headstart.Common.Repositories.Models;
-using Headstart.Models;
-using Headstart.Models.Headstart;
-using Headstart.Models.Misc;
 using Microsoft.Azure.Cosmos;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.CosmosDB;
+using OrderCloud.Integrations.Reporting.Models;
+using OrderCloud.Integrations.Reporting.Queries;
+using OrderCloud.Integrations.Reporting.Repositories;
+using OrderCloud.Integrations.RMAs.Models;
+using OrderCloud.Integrations.RMAs.Repositories;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
@@ -114,8 +113,7 @@ namespace Headstart.API.Commands
             foreach (var buyerID in template.Filters.BuyerID)
             {
                 // For every buyer included in the template filters, grab all buyer locations (exceeding 100 maximum)
-                var buyerLocations = await oc.Addresses.ListAllAsync<Address>(
-                    buyerID);
+                var buyerLocations = await oc.Addresses.ListAllAsync<Address>(buyerID);
                 allBuyerLocations.AddRange(buyerLocations);
             }
 

@@ -1,17 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Headstart.API;
 using Headstart.API.Commands;
-using Headstart.Common;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Models;
-using Headstart.Models.Headstart;
+using Headstart.Common.Commands;
+using Headstart.Common.Models;
+using Headstart.Common.Settings;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.CardConnect;
-using OrderCloud.Integrations.CardConnect.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.Tests
@@ -28,7 +27,7 @@ namespace Headstart.Tests
         {
             oc = Substitute.For<IOrderCloudClient>();
             settings = Substitute.For<AppSettings>();
-            settings.CardConnectSettings = new OrderCloudIntegrationsCardConnectConfig
+            settings.CardConnectSettings = new CardConnectConfig
             {
                 UsdMerchantID = "mockUsdMerchantID",
                 CadMerchantID = "mockCadMerchantID",
@@ -36,13 +35,13 @@ namespace Headstart.Tests
             };
             settings.OrderCloudSettings = new OrderCloudSettings
             {
-                IncrementorPrefix = "SEB",
+                IncrementorPrefix = "HS",
             };
             card = Substitute.For<ICreditCardCommand>();
-            card.AuthorizePayment(Arg.Any<OrderCloudIntegrationsCreditCardPayment>(), "mockUserToken", Arg.Any<string>())
+            card.AuthorizePayment(Arg.Any<CCPayment>(), "mockUserToken")
                     .Returns(Task.FromResult(new Payment { }));
 
-            oc.Orders.PatchAsync(OrderDirection.Incoming, "mockOrderID", Arg.Any<PartialOrder>()).Returns(Task.FromResult(new Order { ID = "SEB12345" }));
+            oc.Orders.PatchAsync(OrderDirection.Incoming, "mockOrderID", Arg.Any<PartialOrder>()).Returns(Task.FromResult(new Order { ID = "HS12345" }));
             oc.AuthenticateAsync().Returns(Task.FromResult(new TokenResponse { AccessToken = "mockToken" }));
             oc.Orders.SubmitAsync<HSOrder>(Arg.Any<OrderDirection>(), Arg.Any<string>(), Arg.Any<string>()).Returns(Task.FromResult(new HSOrder { ID = "submittedorderid" }));
             sut = new OrderSubmitCommand(oc, settings, card); // sut is subject under test
@@ -54,11 +53,11 @@ namespace Headstart.Tests
             // Arrange
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, "mockOrderID").Returns(Task.FromResult(new HSOrderWorksheet
             {
-                Order = new Models.HSOrder { ID = "mockOrderID", IsSubmitted = true },
+                Order = new HSOrder { ID = "mockOrderID", IsSubmitted = true },
             }));
 
             // Act
-            var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => await sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new OrderCloudIntegrationsCreditCardPayment { }, "mockUserToken"));
+            var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => await sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new CCPayment { }, "mockUserToken"));
 
             // Assert
             Assert.AreEqual("OrderSubmit.AlreadySubmitted", ex.Errors[0].ErrorCode);
@@ -88,7 +87,7 @@ namespace Headstart.Tests
             }));
 
             // Act
-            var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => await sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new OrderCloudIntegrationsCreditCardPayment { }, "mockUserToken"));
+            var ex = Assert.ThrowsAsync<CatalystBaseException>(async () => await sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new CCPayment { }, "mockUserToken"));
 
             // Assert
             Assert.AreEqual("OrderSubmit.MissingShippingSelections", ex.Errors[0].ErrorCode);
@@ -166,7 +165,7 @@ namespace Headstart.Tests
             }));
 
             // Act
-            await sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new OrderCloudIntegrationsCreditCardPayment(), "mockUserToken");
+            await sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new CCPayment(), "mockUserToken");
 
             // Assert
             await oc.Orders.DidNotReceive().PatchAsync(OrderDirection.Incoming, "mockOrderID", Arg.Any<PartialOrder>());
@@ -205,7 +204,7 @@ namespace Headstart.Tests
             }));
 
             // Act
-            await sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new OrderCloudIntegrationsCreditCardPayment(), "mockUserToken");
+            await sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new CCPayment(), "mockUserToken");
 
             // Assert
             await oc.Orders.Received().PatchAsync(OrderDirection.Incoming, "mockOrderID", Arg.Any<PartialOrder>());
@@ -244,10 +243,10 @@ namespace Headstart.Tests
             }));
 
             // Act
-            await sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new OrderCloudIntegrationsCreditCardPayment() { CreditCardID = "mockCreditCardID" }, "mockUserToken");
+            await sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new CCPayment() { CreditCardID = "mockCreditCardID" }, "mockUserToken");
 
             // Assert
-            await card.Received().AuthorizePayment(Arg.Any<OrderCloudIntegrationsCreditCardPayment>(), "mockUserToken", Arg.Any<string>());
+            await card.Received().AuthorizePayment(Arg.Any<CCPayment>(), "mockUserToken");
         }
 
         [Test]
@@ -285,11 +284,11 @@ namespace Headstart.Tests
             }));
 
             // Act
-            Assert.ThrowsAsync<Exception>(async () => await sut.SubmitOrderAsync("mockOrderID", OrderDirection.Outgoing, new OrderCloudIntegrationsCreditCardPayment() { CreditCardID = "mockCreditCardID" }, "mockUserToken"));
+            Assert.ThrowsAsync<Exception>(async () => await sut.SubmitOrderAsync("mockOrderID", OrderDirection.Outgoing, new CCPayment() { CreditCardID = "mockCreditCardID" }, "mockUserToken"));
 
             // Assert
-            await card.Received().AuthorizePayment(Arg.Any<OrderCloudIntegrationsCreditCardPayment>(), "mockUserToken", Arg.Any<string>());
-            await card.Received().VoidPaymentAsync("SEB12345", "mockUserToken");
+            await card.Received().AuthorizePayment(Arg.Any<CCPayment>(), "mockUserToken");
+            await card.Received().VoidPaymentAsync("HS12345", "mockUserToken");
         }
 
         [Test]
@@ -325,10 +324,10 @@ namespace Headstart.Tests
             }));
 
             // Act
-            await sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new OrderCloudIntegrationsCreditCardPayment { Currency = "USD", CreditCardID = "mockCreditCardID" }, "mockUserToken");
+            await sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new CCPayment { Currency = "USD", CreditCardID = "mockCreditCardID" }, "mockUserToken");
 
             // Assert
-            await card.Received().AuthorizePayment(Arg.Any<OrderCloudIntegrationsCreditCardPayment>(), "mockUserToken", "mockUsdMerchantID");
+            await card.Received().AuthorizePayment(Arg.Any<CCPayment>(), "mockUserToken");
         }
 
         [Test]
@@ -364,10 +363,10 @@ namespace Headstart.Tests
             }));
 
             // Act
-            await sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new OrderCloudIntegrationsCreditCardPayment { Currency = "CAD", CreditCardID = "mockCreditCardID" }, "mockUserToken");
+            await sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new CCPayment { Currency = "CAD", CreditCardID = "mockCreditCardID" }, "mockUserToken");
 
             // Assert
-            await card.Received().AuthorizePayment(Arg.Any<OrderCloudIntegrationsCreditCardPayment>(), "mockUserToken", "mockCadMerchantID");
+            await card.Received().AuthorizePayment(Arg.Any<CCPayment>(), "mockUserToken");
         }
 
         [Test]
@@ -405,10 +404,10 @@ namespace Headstart.Tests
             }));
 
             // Act
-            await sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new OrderCloudIntegrationsCreditCardPayment { Currency = "MXN", CreditCardID = "mockCreditCardID" }, "mockUserToken");
+            await sut.SubmitOrderAsync("mockOrderID",  OrderDirection.Outgoing, new CCPayment { Currency = "MXN", CreditCardID = "mockCreditCardID" }, "mockUserToken");
 
             // Assert
-            await card.Received().AuthorizePayment(Arg.Any<OrderCloudIntegrationsCreditCardPayment>(), "mockUserToken", "mockEurMerchantID");
+            await card.Received().AuthorizePayment(Arg.Any<CCPayment>(), "mockUserToken");
         }
 
         [Test]
@@ -444,7 +443,7 @@ namespace Headstart.Tests
             }));
 
             // Act
-            await sut.SubmitOrderAsync("mockOrderID", OrderDirection.Outgoing, new OrderCloudIntegrationsCreditCardPayment { }, "mockUserToken");
+            await sut.SubmitOrderAsync("mockOrderID", OrderDirection.Outgoing, new CCPayment { }, "mockUserToken");
 
             // Assert
             await oc.Orders.Received().SubmitAsync<HSOrder>(OrderDirection.Outgoing, Arg.Any<string>(), Arg.Any<string>());
@@ -485,7 +484,7 @@ namespace Headstart.Tests
             }));
 
             // Act
-            await sut.SubmitOrderAsync("mockOrderID", OrderDirection.Incoming, new OrderCloudIntegrationsCreditCardPayment { }, "mockUserToken");
+            await sut.SubmitOrderAsync("mockOrderID", OrderDirection.Incoming, new CCPayment { }, "mockUserToken");
 
             // Assert
             await oc.Orders.Received().SubmitAsync<HSOrder>(OrderDirection.Incoming, Arg.Any<string>(), Arg.Any<string>());

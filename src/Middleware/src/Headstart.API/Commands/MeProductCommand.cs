@@ -2,14 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Headstart.Common;
-using Headstart.Common.Services;
-using Headstart.Models;
-using Headstart.Models.Misc;
+using Headstart.Common.Commands;
+using Headstart.Common.Models;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.ExchangeRates;
-using OrderCloud.Integrations.ExchangeRates.Models;
-using OrderCloud.Integrations.Library.Models;
+using OrderCloud.Integrations.Emails;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
@@ -26,25 +22,25 @@ namespace Headstart.API.Commands
     public class MeProductCommand : IMeProductCommand
     {
         private readonly IOrderCloudClient oc;
-        private readonly IHSBuyerCommand hsBuyerCommand;
-        private readonly ISendgridService sendgridService;
+        private readonly IBuyerCommand hsBuyerCommand;
+        private readonly IEmailServiceProvider emailServiceProvider;
         private readonly ISimpleCache cache;
-        private readonly IExchangeRatesCommand exchangeRatesCommand;
+        private readonly ICurrencyConversionCommand currencyConversionCommand;
         private readonly AppSettings settings;
 
         public MeProductCommand(
             IOrderCloudClient elevatedOc,
-            IHSBuyerCommand hsBuyerCommand,
-            ISendgridService sendgridService,
+            IBuyerCommand hsBuyerCommand,
+            IEmailServiceProvider emailServiceProvider,
             ISimpleCache cache,
-            IExchangeRatesCommand exchangeRatesCommand,
+            ICurrencyConversionCommand currencyConversionCommand,
             AppSettings settings)
         {
             oc = elevatedOc;
             this.hsBuyerCommand = hsBuyerCommand;
-            this.sendgridService = sendgridService;
+            this.emailServiceProvider = emailServiceProvider;
             this.cache = cache;
-            this.exchangeRatesCommand = exchangeRatesCommand;
+            this.currencyConversionCommand = currencyConversionCommand;
             this.settings = settings;
         }
 
@@ -92,7 +88,7 @@ namespace Headstart.API.Commands
 
         public async Task RequestProductInfo(ContactSupplierBody template)
         {
-            await sendgridService.SendContactSupplierAboutProductEmail(template);
+            await emailServiceProvider.SendContactSupplierAboutProductEmail(template);
         }
 
         private async Task<SuperHSMeProduct> ApplyBuyerPricing(SuperHSMeProduct superHsProduct, DecodedToken decodedToken)
@@ -198,7 +194,7 @@ namespace Headstart.API.Commands
         private async Task<List<ConversionRate>> GetExchangeRatesForUser(string userToken)
         {
             var currency = await GetCurrencyForUser(userToken);
-            var exchangeRates = await exchangeRatesCommand.Get(new ListArgs<ConversionRate>() { }, currency);
+            var exchangeRates = await currencyConversionCommand.Get(new ListArgs<ConversionRate>() { }, currency);
             return exchangeRates.Items.ToList();
         }
     }

@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Headstart.API.Commands;
-using Headstart.Models;
-using Headstart.Models.Headstart;
+using Headstart.Common.Models;
 using NSubstitute;
 using NUnit.Framework;
 using OrderCloud.SDK;

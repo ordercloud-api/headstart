@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
-using Headstart.API.Commands.Crud;
+using Headstart.Common.Commands;
 using Headstart.Common.Models;
-using Headstart.Models;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
@@ -14,11 +13,11 @@ namespace Headstart.Common.Controllers
     [Route("buyers")]
     public class CatalogController : CatalystController
     {
-        private readonly IHSCatalogCommand command;
+        private readonly ICatalogCommand catalogCommand;
 
-        public CatalogController(IHSCatalogCommand command)
+        public CatalogController(ICatalogCommand catalogCommand)
         {
-            this.command = command;
+            this.catalogCommand = catalogCommand;
         }
 
         /// <summary>
@@ -27,7 +26,7 @@ namespace Headstart.Common.Controllers
         [HttpGet, Route("{buyerID}/catalogs"), OrderCloudUserAuth(ApiRole.ProductAdmin, ApiRole.ProductReader)]
         public async Task<ListPage<HSCatalog>> List(ListArgs<HSCatalog> args, string buyerID)
         {
-            return await command.List(buyerID, args, UserContext);
+            return await catalogCommand.List(buyerID, args, UserContext);
         }
 
         /// <summary>
@@ -36,7 +35,7 @@ namespace Headstart.Common.Controllers
         [HttpGet, Route("{buyerID}/catalogs/{catalogID}"), OrderCloudUserAuth(ApiRole.ProductAdmin, ApiRole.ProductReader)]
         public async Task<HSCatalog> Get(string buyerID, string catalogID)
         {
-            return await command.Get(buyerID, catalogID, UserContext);
+            return await catalogCommand.Get(buyerID, catalogID, UserContext);
         }
 
         /// <summary>
@@ -45,7 +44,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, Route("{buyerID}/catalogs"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
         public async Task<HSCatalog> Post([FromBody] HSCatalog obj, string buyerID)
         {
-            return await command.Post(buyerID, obj, UserContext);
+            return await catalogCommand.Post(buyerID, obj, UserContext);
         }
 
         /// <summary>
@@ -54,7 +53,7 @@ namespace Headstart.Common.Controllers
         [HttpGet, Route("{buyerID}/catalogs/assignments"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
         public async Task<ListPage<HSCatalogAssignmentResponse>> GetAssignments(string buyerID, [FromQuery(Name = "catalogID")] string catalogID = "", [FromQuery(Name = "locationID")] string locationID = "")
         {
-            return await command.GetAssignments(buyerID, locationID, UserContext);
+            return await catalogCommand.GetAssignments(buyerID, locationID, UserContext);
         }
 
         /// <summary>
@@ -63,7 +62,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, Route("{buyerID}/{locationID}/catalogs/assignments"), OrderCloudUserAuth(ApiRole.UserGroupAdmin)]
         public async Task SetAssignments(string buyerID, string locationID, [FromBody] HSCatalogAssignmentRequest assignmentRequest)
         {
-            await command.SetAssignments(buyerID, locationID, assignmentRequest.CatalogIDs, UserContext.AccessToken);
+            await catalogCommand.SetAssignments(buyerID, locationID, assignmentRequest.CatalogIDs, UserContext.AccessToken);
         }
 
         /// <summary>
@@ -72,7 +71,7 @@ namespace Headstart.Common.Controllers
         [HttpPut, Route("{buyerID}/catalogs/{catalogID}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
         public async Task<HSCatalog> Put([FromBody] HSCatalog obj, string buyerID, string catalogID)
         {
-            return await command.Put(buyerID, catalogID, obj, UserContext);
+            return await catalogCommand.Put(buyerID, catalogID, obj, UserContext);
         }
 
         /// <summary>
@@ -81,7 +80,7 @@ namespace Headstart.Common.Controllers
         [HttpDelete, Route("{buyerID}/catalogs/{catalogID}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
         public async Task Delete(string buyerID, string catalogID)
         {
-            await command.Delete(buyerID, catalogID, UserContext);
+            await catalogCommand.Delete(buyerID, catalogID, UserContext);
         }
 
         /// <summary>
@@ -90,7 +89,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, Route("{buyerID}/catalogs/user/{userID}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
         public async Task SyncOnRemoveFromLocation(string buyerID, string userID)
         {
-            await command.SyncUserCatalogAssignments(buyerID, userID);
+            await catalogCommand.SyncUserCatalogAssignments(buyerID, userID);
         }
     }
 }

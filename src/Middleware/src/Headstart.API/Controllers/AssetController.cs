@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Headstart.Common.Services.CMS;
-using Headstart.Common.Services.CMS.Models;
-using Headstart.Models;
+using Headstart.Common.Models;
+using Headstart.Integrations.CMS;
+using Headstart.Integrations.CMS.Models;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
 

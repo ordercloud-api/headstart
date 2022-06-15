@@ -47,6 +47,13 @@ json -I -f appSettings.json \
       -e "this['EnvironmentSettings:BuildNumber']='$EnvironmentSettings_BuildNumber'" \
       -e "this['EnvironmentSettings:Commit']='$EnvironmentSettings_Commit'" \
       -e "this['EnvironmentSettings:Environment']='$EnvironmentSettings_Environment'" \
+      -e "this['EnvironmentSettings:AddressValidationProvider']='$EnvironmentSettings_AddressValidationProvider'" \
+      -e "this['EnvironmentSettings:CMSProvider']='$EnvironmentSettings_CMSProvider'" \
+      -e "this['EnvironmentSettings:CurrencyConversionProvider']='$EnvironmentSettings_CurrencyConversionProvider'" \
+      -e "this['EnvironmentSettings:EmailServiceProvider']='$EnvironmentSettings_EmailServiceProvider'" \
+      -e "this['EnvironmentSettings:OMSProvider']='$EnvironmentSettings_OMSProvider'" \
+      -e "this['EnvironmentSettings:PaymentProvider']='$EnvironmentSettings_PaymentProvider'" \
+      -e "this['EnvironmentSettings:ShippingProvider']='$EnvironmentSettings_ShippingProvider'" \
       -e "this['EnvironmentSettings:TaxProvider']='$EnvironmentSettings_TaxProvider'"
 
 json -I -f appSettings.json \
@@ -68,8 +75,7 @@ json -I -f appSettings.json \
       -e "this['OrderCloudSettings:WebhookHashKey']='$OrderCloudSettings_WebhookHashKey'"
 
 json -I -f appSettings.json \
-      -e "this['SendgridSettings:Enabled']='$SendgridSettings_Enabled'" \
-      -e "this['SendgridSettings:ApiKey']='$SendgridSettings_ApiKey'" \
+      -e "this['SendGridSettings:ApiKey']='$SendGridSettings_ApiKey'" \
       -e "this['SendgridSettings:BillingEmail']='$SendgridSettings_BillingEmail'" \
       -e "this['SendgridSettings:CriticalSupportEmails']='$SendgridSettings_CriticalSupportEmails'" \
       -e "this['SendgridSettings:CriticalSupportTemplateID']='$SendgridSettings_CriticalSupportTemplateID'"
@@ -108,9 +114,10 @@ json -I -f appSettings.json \
 
 json -I -f appSettings.json \
       -e "this['ZohoSettings:AccessToken']='$ZohoSettings_AccessToken'" \
+      -e "this['ZohoSettings:ApiUrl']='$ZohoSettings_ApiUrl'" \
       -e "this['ZohoSettings:ClientId']='$ZohoSettings_ClientId'" \
       -e "this['ZohoSettings:ClientSecret']='$ZohoSettings_ClientSecret'" \
-      -e "this['ZohoSettings:OrgID']='$ZohoSettings_OrgID'" \
+      -e "this['ZohoSettings:OrganizationID']='$ZohoSettings_OrganizationID'" \
       -e "this['ZohoSettings:PerformOrderSubmitTasks']='$ZohoSettings_PerformOrderSubmitTasks'"
 
 echo "Run Middleware"

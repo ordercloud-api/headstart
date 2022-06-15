@@ -64,6 +64,13 @@ services:
       EnvironmentSettings_Commit: "${EnvironmentSettings_Commit}"
       EnvironmentSettings_Environment: "${EnvironmentSettings_Environment}"
       EnvironmentSettings_MiddlewareBaseUrl: "${API_HOST}"
+      EnvironmentSettings_AddressValidationProvider: "${EnvironmentSettings_AddressValidationProvider}"
+      EnvironmentSettings_CMSProvider: "${EnvironmentSettings_CMSProvider}"
+      EnvironmentSettings_CurrencyConversionProvider: "${EnvironmentSettings_CurrencyConversionProvider}"
+      EnvironmentSettings_EmailServiceProvider: "${EnvironmentSettings_EmailServiceProvider}"
+      EnvironmentSettings_OMSProvider: "${EnvironmentSettings_OMSProvider}"
+      EnvironmentSettings_PaymentProvider: "${EnvironmentSettings_PaymentProvider}"
+      EnvironmentSettings_ShippingProvider: "${EnvironmentSettings_ShippingProvider}"
       EnvironmentSettings_TaxProvider: "${EnvironmentSettings_TaxProvider}"
       
       FlurlSettings_TimeoutInSeconds: "${FlurlSettings_TimeoutInSeconds}"
@@ -81,8 +88,7 @@ services:
       OrderCloudSettings_MiddlewareClientSecret: "${OrderCloudSettings_MiddlewareClientSecret}"
       OrderCloudSettings_WebhookHashKey: "${OrderCloudSettings_WebhookHashKey}"
 
-      SendgridSettings_Enabled: "${SendgridSettings_Enabled}"
-      SendgridSettings_ApiKey: "${SendgridSettings_ApiKey}"
+      SendGridSettings_ApiKey: "${SendGridSettings_ApiKey}"
       SendgridSettings_BillingEmail: "${SendgridSettings_BillingEmail}"
       SendgridSettings_CriticalSupportEmails: "${SendgridSettings_CriticalSupportEmails}"
       SendgridSettings_CriticalSupportTemplateID: "${SendgridSettings_CriticalSupportTemplateID}"
@@ -116,9 +122,10 @@ services:
       UI_BaseAdminUrl: "http://${SELLER_HOST}"
 
       ZohoSettings_AccessToken: "${ZohoSettings_AccessToken}"
+      ZohoSettings_ApiUrl: "${ZohoSettings_ApiUrl}"
       ZohoSettings_ClientId: "${ZohoSettings_ClientId}"
       ZohoSettings_ClientSecret: "${ZohoSettings_ClientSecret}"
-      ZohoSettings_OrgID: "${ZohoSettings_OrgID}"
+      ZohoSettings_OrganizationID: "${ZohoSettings_OrganizationID}"
       ZohoSettings_PerformOrderSubmitTasks: "${ZohoSettings_PerformOrderSubmitTasks}"
     depends_on:
       cosmos:

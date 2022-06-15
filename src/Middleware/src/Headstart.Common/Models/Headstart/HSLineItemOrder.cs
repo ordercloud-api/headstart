@@ -1,4 +1,4 @@
-﻿namespace Headstart.Models.Headstart
+﻿namespace Headstart.Common.Models
 {
     public class HSLineItemOrder
     {

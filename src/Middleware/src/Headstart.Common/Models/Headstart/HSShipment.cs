@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using Headstart.Models;
 using OrderCloud.SDK;
 
-namespace Headstart.Common.Services.ShippingIntegration.Models
+namespace Headstart.Common.Models
 {
     public class SuperHSShipment
     {

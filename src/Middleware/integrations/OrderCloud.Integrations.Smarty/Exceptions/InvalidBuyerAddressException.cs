@@ -1,5 +1,5 @@
-﻿using OrderCloud.Catalyst;
-using OrderCloud.Integrations.Smarty.Models;
+﻿using Headstart.Common.Models;
+using OrderCloud.Catalyst;
 
 namespace OrderCloud.Integrations.Smarty.Exceptions
 {

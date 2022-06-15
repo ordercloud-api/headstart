@@ -1,8 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Headstart.API.Commands;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Models;
-using Headstart.Models.Headstart;
+using Headstart.Common.Commands;
+using Headstart.Common.Models;
 using Headstart.Tests.Mocks;
 using NSubstitute;
 using NUnit.Framework;
@@ -29,7 +28,7 @@ namespace Headstart.Tests
             // oc
             oc = Substitute.For<IOrderCloudClient>();
             oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, mockOrderID)
-                    .Returns(Task.FromResult(new HSOrderWorksheet { Order = new Models.HSOrder { ID = mockOrderID, Total = 20 } }));
+                    .Returns(Task.FromResult(new HSOrderWorksheet { Order = new HSOrder { ID = mockOrderID, Total = 20 } }));
             oc.Payments.CreateAsync<HSPayment>(OrderDirection.Incoming, mockOrderID, Arg.Any<HSPayment>())
                 .Returns(Task.FromResult(PaymentMocks.CCPayment(creditcard1, 20)));
 

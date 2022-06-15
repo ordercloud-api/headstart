@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.12" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.ServiceBus" Version="4.2.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.AzureAppConfiguration" Version="4.5.0" />
@@ -21,7 +22,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Headstart.API\Headstart.API.csproj" />
+    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.AzureServiceBus\OrderCloud.Integrations.AzureServiceBus.csproj" />
+    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.CosmosDB\OrderCloud.Integrations.CosmosDB.csproj" />
+    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.Reporting\OrderCloud.Integrations.Reporting.csproj" />
+    <ProjectReference Include="..\..\integrations\OrderCloud.Integrations.RMAs\OrderCloud.Integrations.RMAs.csproj" />
     <ProjectReference Include="..\Headstart.Common\Headstart.Common.csproj" />
   </ItemGroup>
   <ItemGroup>

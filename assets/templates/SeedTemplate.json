@@ -1,0 +1,26 @@
+{
+  "Portal": {
+    "Username": "",
+    "Password": ""
+  },
+  "Marketplace": {
+    "Environment": "sandbox",
+    "Region": "Us-West",
+    "ID": "",
+    "Name": "",
+    "InitialAdmin": {
+      "Username": "",
+      "Password": ""
+    },
+    "EnableAnonymousShopping": true,
+    "AnonymousShoppingBuyerID": "",
+    "MiddlewareBaseUrl": "",
+    "WebhookHashKey": "",
+    "Suppliers": [],
+    "Buyers": []
+  },
+  "StorageAccount": {
+    "ConnectionString": "",
+    "ContainerNameTranslations": "ngx-translate"
+  }
+}

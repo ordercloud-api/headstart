@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 
-namespace Headstart.Models
+namespace Headstart.Common.Models
 {
     public class HSBuyerLocation
     {

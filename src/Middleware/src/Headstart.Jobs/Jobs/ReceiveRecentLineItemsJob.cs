@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Headstart.Common.Models;
-using Headstart.Common.Repositories;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Models;
-using Headstart.Models.Headstart;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.CosmosDB;
+using OrderCloud.Integrations.Reporting.Models;
+using OrderCloud.Integrations.Reporting.Repositories;
 using OrderCloud.SDK;
 
 namespace Headstart.Jobs

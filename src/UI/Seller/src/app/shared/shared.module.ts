@@ -51,6 +51,7 @@ import { ActionMenuComponent } from './components/action-menu/action-menu.compon
 import { TranslateModule } from '@ngx-translate/core'
 import { ResourceBreadcrumbsComponent } from './components/resource-breadcrumbs/resource-breadcrumbs.component'
 import { ProductVisibilityAssignments } from './components/buyer-visibility/product-visibility-assignments/product-visibility-assignments.component'
+import { RelatedProductsComponent } from './components/related-products/related-products.component'
 import { BuyerVisibilityConfiguration } from './components/buyer-visibility/buyer-visibility-configuration/buyer-visibility-configuration.component'
 import { ProductCategoryAssignment } from './components/buyer-visibility/product-category-assignment/product-category-assignment.component'
 import { ResourceListMeta } from './components/resource-list-meta/resource-list-meta.component'
@@ -128,6 +129,7 @@ import { RouterModule } from '@angular/router'
     TranslateModule,
     ResourceBreadcrumbsComponent,
     ProductVisibilityAssignments,
+    RelatedProductsComponent,
     BuyerVisibilityConfiguration,
     ProductCategoryAssignment,
     ResourceListMeta,
@@ -158,6 +160,7 @@ import { RouterModule } from '@angular/router'
     ActionMenuComponent,
     UserGroupAssignments,
     ProductVisibilityAssignments,
+    RelatedProductsComponent,
     BuyerVisibilityConfiguration,
     ProductCategoryAssignment,
     ResourceListMeta,

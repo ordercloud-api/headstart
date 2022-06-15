@@ -1,0 +1,13 @@
+﻿namespace Headstart.Integrations.CMS.Models
+{
+    public class Document<T>
+    {
+        public string ID { get; set; }
+
+        public T Doc { get; set; }
+
+        public string SchemaSpecUrl { get; set; }
+
+        public History History { get; set; }
+    }
+}

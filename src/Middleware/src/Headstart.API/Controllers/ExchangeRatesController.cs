@@ -1,9 +1,8 @@
 ﻿using System.Threading.Tasks;
+using Headstart.Common.Commands;
+using Headstart.Common.Models;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.ExchangeRates;
-using OrderCloud.Integrations.ExchangeRates.Models;
-using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Controllers
@@ -14,24 +13,23 @@ namespace Headstart.Common.Controllers
     [Route("exchangerates")]
     public class ExchangeRatesController : CatalystController
     {
-        private readonly IExchangeRatesCommand command;
+        private readonly ICurrencyConversionCommand currencyConversionCommand;
 
-        public ExchangeRatesController(IExchangeRatesCommand command)
+        public ExchangeRatesController(ICurrencyConversionCommand currencyConversionCommand)
         {
-            this.command = command;
+            this.currencyConversionCommand = currencyConversionCommand;
         }
 
         [HttpGet, Route("{currency}")]
         public async Task<ListPage<ConversionRate>> Get(ListArgs<ConversionRate> rateArgs, CurrencyCode currency)
         {
-            return await command.Get(rateArgs, currency);
+            return await currencyConversionCommand.Get(rateArgs, currency);
         }
 
         [HttpGet, Route("supportedrates")]
         public async Task<ListPage<ConversionRate>> GetRateList()
         {
-            var list = await command.GetRateList();
-            return list;
+            return await currencyConversionCommand.GetRateList();
         }
     }
 }

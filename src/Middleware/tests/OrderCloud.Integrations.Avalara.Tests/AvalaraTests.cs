@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Avalara.AvaTax.RestClient;
+using NSubstitute;
 using NUnit.Framework;
 using OrderCloud.SDK;
 
@@ -17,7 +19,9 @@ namespace OrderCloud.Integrations.Avalara.Tests
                 LicenseKey = null,
                 BaseApiUrl = "http://www.supersweeturi.com",
             };
-            command = new AvalaraCommand(avalaraConfig,  AppEnvironment.Test.ToString());
+
+            var avalaraClient = Substitute.For<AvaTaxClient>(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<string>(), Arg.Any<AvaTaxEnvironment>());
+            command = new AvalaraCommand(avalaraClient, avalaraConfig, AppEnvironment.Test.ToString());
         }
 
         [Test]

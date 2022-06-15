@@ -61,7 +61,7 @@ This solution relies on various third-party services and credentials for those s
 2. [CardConnect](https://cardconnect.com/signup) - Credit card payment processor - If account isn't provided, responses will be mocked in Test and UAT. An account is still needed for Production
 3. [EasyPost](https://www.easypost.com/signup) - Shipping estimates
 4. [SmartyStreets](https://smartystreets.com/pricing) - Address validation **(Optional by setting SmartyStreetSettings.SmartyEnabled=false)**
-5. [Sendgrid](https://signup.sendgrid.com/) - Transactional emails **(Optional but emails won't work until set up)**
+5. [SendGrid](https://signup.sendgrid.com/) - Transactional emails **(Optional but emails won't work until set up)**
 6. [Sitecore Send](./src/UI/Buyer/src/app/services/sitecore-send) - Automated email campaigns  **(Optional. AKA Moosend)**
 7. [Sitecore CDP](./src/UI/Buyer/src/app/services/sitecore-cdp) - Customer Tracking and Data Platform **(Optional. AKA Boxever)**
 8. [Vertex](./src/Middleware/integrations/ordercloud.integrations.vertex) - Tax calculation **(Optional tax alternative. Switch with EnvironmentSettings:TaxProvider)**
@@ -78,19 +78,19 @@ This solution relies on various third-party services and credentials for those s
 
 [Storage Account](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal) - Provides all of azure data storage objects. Used to store currency conversions and translation tables. You will need a storage account for each environment (we recommend three environments: Test, UAT, and Production)
 
-[Azure App Configuration](https://docs.microsoft.com/en-us/azure/azure-app-configuration/overview) - Used to store sensitive app settings that are consumed by the backend middleware application. We've defined [a template for you](./src/Middleware/src/Headstart.Common/AppSettingConfigTemplate.json) with the settings that are used in this application. You can fill out the template and then use Azure's import functionality to easily import it into your app configuration resource. For more detail on what each setting means check out [our readme](./src/Middleware/src/Headstart.Common/AppSettingsReadme.md).
+[Azure App Configuration](https://docs.microsoft.com/en-us/azure/azure-app-configuration/overview) - Used to store sensitive app settings that are consumed by the backend middleware application. We've defined [a template for you](./assets/templates/AppSettingConfigTemplate.json) with the settings that are used in this application. You can fill out the template and then use Azure's import functionality to easily import it into your app configuration resource. For more detail on what each setting means check out [our readme](./src/Middleware/src/Headstart.API/AppSettingsReadme.md).
 
-![application configuration import](./src/Middleware/src/Headstart.Common/Assets/Images/app-configuration-import.png)
+![application configuration import](./assets/images/app-configuration-import.png)
 
 You will need an azure app configuration for each environment (we recommend three environments: Test, UAT, and Production)
 
 In order for you application to consume the settings, you'll need to define the environment variable `APP_CONFIG_CONNECTION` whose value should be the connection string (read-only) to your azure app configuration.
 
 - For **local** development - In Visual Studio right-click the Headstart.API project and go to Properties -> Debug -> Environment Variables.
-![local app settings](./src/Middleware/src/Headstart.Common/Assets/Images/local-app-settings.png)
+![local app settings](./assets/images/local-app-settings.png)
 
 - For **hosted** apps - In Azure navigate to your app service. Go to the correct deployment slot, and go to Settings -> Configuration -> New application setting
-![hosted app settings](./src/Middleware/src/Headstart.Common/Assets/Images/remote-app-settings.png)
+![hosted app settings](./assets/images/remote-app-settings.png)
 
 It is also possible to consume app settings from a JSON file while developing locally. Simply add an `appSettings.json` file to the root of the Headstart.API project. Settings defined here are applied after and override any settings in the azure app configuration.
 
@@ -107,17 +107,17 @@ Detailed Steps:
 3. Find your marketplace and save the unique identifier this is your MarketplaceID in step 6.
 4. Follow the instructions [here](./src/Middleware/README.md) to start your server locally.
 5. Download and open [Postman](https://www.postman.com/downloads/) so that you can make API calls to your local server.
-6. Make a POST to `/seed` endpoint with [this template body](./src/Middleware/src/Headstart.Common/Assets/SeedTemplate.json). For a description of the properties please refer to [the definition](./src/Middleware/src/Headstart.Common/Models/Misc/EnvironmentSeed.cs).
+6. Make a POST to `/seed` endpoint with [this template body](./assets/templates/SeedTemplate.json). For a description of the properties please refer to [the definition](./src/Middleware/integrations/OrderCloud.Integrations.EnvironmentSeed/Models/EnvironmentSeedRequest.cs).
 7. A successful response will include:
    1. The middleware clientID and secret. Save these two values in your app configuration under `OrderCloudSettings:MiddlewareClientID` and `OrderCloudSettings:MiddlewareClientSecret`.
    2. The buyer clientID. Follow the instructions in [frontend configuration](#frontend-configuration) and set it in the buyer config `clientID`.
    3. The seller clientID. Follow the instructions in [frontend-configuration](#frontend-configuration) and set it in the seller config `clientID`.
 8. Add the `clientID`s for both the buyer and seller from the `/seed` response to the `OrderCloudSettings:ClientIDsWithAPIAccess`, along with the `clientID` of a secondary buyer API Client ("*Default HeadStart Buyer UI LOCAL*"), which can be found using the OrderCloud portal.
 
-### Sendgrid (Email) Configuration
+### SendGrid (Email) Configuration
 
-1. Ensure `SendgridSettings:Enabled` is set to true and `SendgridSettings:ApiKey` and `SendgridSettings:FromEmail` are defined in your app settings
-2. Ensure for each email type that you want to send that `{emailtype}TemplateID` is defined in app settings. You can use [these default templates](./src/Middleware/src/Headstart.Common/Assets/EmailTemplates) as a starting point but will want to update the contact email and may want to add a company banner. See the table below for a description of each email type.
+1. Ensure `SendgridSettings:ApiKey` and `SendgridSettings:FromEmail` are defined in your app settings
+2. Ensure for each email type that you want to send that `{emailtype}TemplateID` is defined in app settings. You can use [these default templates](./assets/templates/email) as a starting point but will want to update the contact email and may want to add a company banner. See the table below for a description of each email type.
 3. Deploy your middleware application. Emails won't work until the first deployment because there needs to be a publicly accessible endpoint that OrderCloud can send event information to.
 
 |        Email Type         | Description                                                                                                                     |
@@ -132,13 +132,13 @@ Detailed Steps:
 |     QuoteOrderSubmit      | sent to the buyer user when their quote is submitted                                                                            |
 |                           |                                                                                                                                 |
 
-### Moosend
+### Sitecore Send
 
-Moosend is a platform for sending automated email campaigns. It is integrated into the storefront in order to capture events like view product, add to cart and purchase. This data can provide intelligence for abandonded cart emails, user segmentation for peronsonalized marketing and user-history-based product recomendations.
+Sitecore Send is a platform for sending automated email campaigns. It is integrated into the storefront in order to capture events like view product, add to cart and purchase. This data can provide intelligence for abandonded cart emails, user segmentation for personalized marketing and user-history-based product recomendations.
 
-Usage is optional and controlled with the buyer setting `useMoosend`. To connect moosend [get a website ID](https://help.moosend.com/hc/en-us/articles/115002945125-How-can-I-connect-my-website-to-Moosend-) and add it to buyer settings.
+Usage is optional and controlled with the buyer setting `useSitecoreSend`. To connect Sitecore Send [get a website ID](https://doc.sitecore.com/send/en/users/sitecore-send/enable-website-tracking.html) and add it to buyer settings.
 
-Moosend and Ordercloud are both owned by Sitecore. You can expect the two products to be more integrated over time. Sendgrid will be replaced by Moosend once transactional email feature are ready.
+Sitecore Send and Ordercloud are both owned by Sitecore. You can expect the two products to be more integrated over time. SendGrid will be replaced by Sitecore Send once transactional email features are ready.
 
 ### Frontend Configuration
 
@@ -157,7 +157,7 @@ First, deploy the applications or run them locally:
 - [Seller](./src/UI/Seller/README.md)
 - [Buyer](./src/UI/Buyer/README.md)
 
-The goal of this section is to show what steps are required to create a buyer experience on the buyer application. IE allowing a buyer user to browse and shop products and add them to their cart.
+The goal of this section is to show what steps are required to create a buyer experience on the buyer application, i.e. allowing a buyer user to browse and shop products and add them to their cart.
 
 Overview of what we will accomplish
 

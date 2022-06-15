@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using OrderCloud.Integrations.Library.Models;
+using Headstart.Common.Models;
 
 namespace OrderCloud.Integrations.ExchangeRates.Models
 {

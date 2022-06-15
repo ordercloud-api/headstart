@@ -13,4 +13,5 @@ export interface ProductXp {
     FreeShippingMessage?: string
     Images?: ImageAsset[]
     Documents?: DocumentAsset[]
+    RelatedProducts?: string[]
 }

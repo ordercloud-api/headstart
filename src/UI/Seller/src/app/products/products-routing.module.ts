@@ -21,6 +21,12 @@ const routes: Routes = [
     canActivate: [IsSellerGuard],
   },
   {
+    path: ':productID/related-products',
+    component: ProductTableComponent,
+    pathMatch: 'full',
+    canActivate: [IsSellerGuard],
+  },
+  {
     path: ':productID/description',
     component: ProductTableComponent,
     pathMatch: 'full',

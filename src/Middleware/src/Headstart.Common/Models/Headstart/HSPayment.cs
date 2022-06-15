@@ -1,7 +1,6 @@
-﻿using OrderCloud.Integrations.CardConnect.Models;
-using OrderCloud.SDK;
+﻿using OrderCloud.SDK;
 
-namespace Headstart.Models.Headstart
+namespace Headstart.Common.Models
 {
     public class HSPayment : Payment<PaymentXP, HSPaymentTransaction>
     {
@@ -20,7 +19,7 @@ namespace Headstart.Models.Headstart
 
     public class TransactionXP
     {
-        public CardConnectAuthorizationResponse CardConnectResponse { get; set; }
+        public CCTransactionResult CCTransactionResult { get; set; }
 
         public RMADetails RMADetails { get; set; }
     }

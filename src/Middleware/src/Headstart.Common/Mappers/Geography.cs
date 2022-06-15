@@ -1,5 +1,5 @@
 ﻿using System;
-using OrderCloud.Integrations.Library.Models;
+using Headstart.Common.Models;
 
 namespace Headstart.Common.Mappers
 {

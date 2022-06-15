@@ -2,12 +2,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Headstart.API.Commands;
 using Headstart.Common.Models;
-using Headstart.Models.Headstart;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
-namespace Headstart.Common.Controllers
+namespace Headstart.API.Controllers
 {
     /// <summary>
     /// Payment commands in Headstart.
@@ -15,13 +14,11 @@ namespace Headstart.Common.Controllers
     [Route("payments")]
     public class PaymentController : CatalystController
     {
-        private readonly IPaymentCommand command;
-        private readonly AppSettings settings;
+        private readonly IPaymentCommand paymentCommand;
 
-        public PaymentController(IPaymentCommand command, AppSettings settings)
+        public PaymentController(IPaymentCommand paymentCommand)
         {
-            this.command = command;
-            this.settings = settings;
+            this.paymentCommand = paymentCommand;
         }
 
         /// <summary>
@@ -30,7 +27,7 @@ namespace Headstart.Common.Controllers
         [HttpPut, Route("{orderID}/update"), OrderCloudUserAuth(ApiRole.Shopper)]
         public async Task<IList<HSPayment>> SavePayments(string orderID, [FromBody] PaymentUpdateRequest request)
         {
-            return await command.SavePayments(orderID, request.Payments, UserContext.AccessToken);
+            return await paymentCommand.SavePayments(orderID, request.Payments, UserContext.AccessToken);
         }
     }
 }

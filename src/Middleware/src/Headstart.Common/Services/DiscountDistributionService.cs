@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Models.Headstart;
+using Headstart.Common.Models;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 

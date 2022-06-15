@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
-using Headstart.API.Commands;
-using Headstart.Models;
+using Headstart.Common.Commands;
+using Headstart.Common.Models;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
@@ -13,13 +13,11 @@ namespace Headstart.Common.Controllers
     [Route("buyer")]
     public class BuyerController : CatalystController
     {
-        private readonly IHSBuyerCommand command;
-        private readonly IOrderCloudClient oc;
+        private readonly IBuyerCommand buyerCommand;
 
-        public BuyerController(IHSBuyerCommand command, IOrderCloudClient oc)
+        public BuyerController(IBuyerCommand buyerCommand)
         {
-            this.command = command;
-            this.oc = oc;
+            this.buyerCommand = buyerCommand;
         }
 
         /// <summary>
@@ -28,7 +26,7 @@ namespace Headstart.Common.Controllers
         [HttpPost, OrderCloudUserAuth(ApiRole.BuyerAdmin)]
         public async Task<SuperHSBuyer> Create([FromBody] SuperHSBuyer buyer)
         {
-            return await command.Create(buyer);
+            return await buyerCommand.Create(buyer);
         }
 
         /// <summary>
@@ -37,7 +35,7 @@ namespace Headstart.Common.Controllers
         [HttpPut, Route("{buyerID}"), OrderCloudUserAuth(ApiRole.BuyerAdmin)]
         public async Task<SuperHSBuyer> Put([FromBody] SuperHSBuyer superBuyer, string buyerID)
         {
-            return await command.Update(buyerID, superBuyer);
+            return await buyerCommand.Update(buyerID, superBuyer);
         }
 
         /// <summary>
@@ -46,7 +44,7 @@ namespace Headstart.Common.Controllers
         [HttpGet, Route("{buyerID}"), OrderCloudUserAuth(ApiRole.BuyerAdmin)]
         public async Task<SuperHSBuyer> Get(string buyerID)
         {
-            return await command.Get(buyerID);
+            return await buyerCommand.Get(buyerID);
         }
     }
 }

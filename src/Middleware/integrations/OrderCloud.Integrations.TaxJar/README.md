@@ -1,7 +1,7 @@
 ﻿# Taxjar Integration For OrderCloud Headstart
 
 ## Scope of this integration
-This integration calculates sales tax for an Order using the TaxJar API. It is part of the open source Headstart project, which provides a complete, opinionated OrderCloud solution. It conforms to the [ITaxCalculator](../ordercloud.integrations.library/interfaces/ITaxCalculator.cs) interface. 
+This integration calculates sales tax for an Order using the TaxJar API. It is part of the open source Headstart project, which provides a complete, opinionated OrderCloud solution. It conforms to the [ITaxCalculator](../OrderCloud.Integrations.Taxation/Interfaces/ITaxCalculator.cs) interface. 
 
 Use Cases:
 - Sales Tax Estimate

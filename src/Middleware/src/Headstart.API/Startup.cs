@@ -6,46 +6,47 @@ using System.Net;
 using Flurl.Http;
 using Flurl.Http.Configuration;
 using Headstart.API.Commands;
-using Headstart.API.Commands.Crud;
-using Headstart.API.Commands.Zoho;
 using Headstart.Common;
+using Headstart.Common.Commands;
+using Headstart.Common.Extensions;
 using Headstart.Common.Helpers;
 using Headstart.Common.Models;
-using Headstart.Common.Queries;
-using Headstart.Common.Repositories;
 using Headstart.Common.Services;
-using Headstart.Common.Services.CMS;
-using Headstart.Common.Services.Zoho;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using Microsoft.WindowsAzure.Storage.Blob;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.Avalara;
-using OrderCloud.Integrations.CardConnect;
-using OrderCloud.Integrations.EasyPost;
-using OrderCloud.Integrations.EasyPost.Models;
-using OrderCloud.Integrations.ExchangeRates;
-using OrderCloud.Integrations.Library;
-using OrderCloud.Integrations.Library.Cosmos;
-using OrderCloud.Integrations.Library.cosmos_repo;
-using OrderCloud.Integrations.Library.Interfaces;
-using OrderCloud.Integrations.Smarty;
-using OrderCloud.Integrations.TaxJar;
-using OrderCloud.Integrations.Vertex;
+using OrderCloud.Integrations.Alerts;
+using OrderCloud.Integrations.Avalara.Extensions;
+using OrderCloud.Integrations.CardConnect.Extensions;
+using OrderCloud.Integrations.CMS.Extensions;
+using OrderCloud.Integrations.CosmosDB;
+using OrderCloud.Integrations.CosmosDB.Extensions;
+using OrderCloud.Integrations.EasyPost.Extensions;
+using OrderCloud.Integrations.Emails.Extensions;
+using OrderCloud.Integrations.EnvironmentSeed.Commands;
+using OrderCloud.Integrations.ExchangeRates.Extensions;
+using OrderCloud.Integrations.Orchestration;
+using OrderCloud.Integrations.Orchestration.Models;
+using OrderCloud.Integrations.Portal;
+using OrderCloud.Integrations.Reporting.Commands;
+using OrderCloud.Integrations.Reporting.Models;
+using OrderCloud.Integrations.Reporting.Queries;
+using OrderCloud.Integrations.RMAs.Extensions;
+using OrderCloud.Integrations.SendGrid.Extensions;
+using OrderCloud.Integrations.Smarty.Extensions;
+using OrderCloud.Integrations.TaxJar.Extensions;
+using OrderCloud.Integrations.Vertex.Extensions;
+using OrderCloud.Integrations.Zoho.Extensions;
 using OrderCloud.SDK;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
-using SendGrid;
-using SmartyStreets;
-using ITaxCalculator = OrderCloud.Integrations.Library.Interfaces.ITaxCalculator;
-using ITaxCodesProvider = OrderCloud.Integrations.Library.Interfaces.ITaxCodesProvider;
 
 namespace Headstart.API
 {
@@ -121,71 +122,9 @@ namespace Headstart.API
                 },
             };
 
-            var avalaraConfig = new AvalaraConfig()
-            {
-                BaseApiUrl = settings.AvalaraSettings.BaseApiUrl,
-                AccountID = settings.AvalaraSettings.AccountID,
-                LicenseKey = settings.AvalaraSettings.LicenseKey,
-                CompanyCode = settings.AvalaraSettings.CompanyCode,
-                CompanyID = settings.AvalaraSettings.CompanyID,
-            };
-
-            var currencyConfig = new BlobServiceConfig()
-            {
-                ConnectionString = settings.StorageAccountSettings.ConnectionString,
-                Container = settings.StorageAccountSettings.BlobContainerNameExchangeRates,
-            };
-            var assetConfig = new BlobServiceConfig()
-            {
-                ConnectionString = settings.StorageAccountSettings.ConnectionString,
-                Container = "assets",
-                AccessType = BlobContainerPublicAccessType.Container,
-            };
-
-            var flurlClientFactory = new PerBaseUrlFlurlClientFactory();
-            var smartyStreetsUsClient = new ClientBuilder(settings.SmartyStreetSettings.AuthID, settings.SmartyStreetSettings.AuthToken).BuildUsStreetApiClient();
-            var orderCloudClient = new OrderCloudClient(new OrderCloudClientConfig
-            {
-                ApiUrl = settings.OrderCloudSettings.ApiUrl,
-                AuthUrl = settings.OrderCloudSettings.ApiUrl,
-                ClientId = settings.OrderCloudSettings.MiddlewareClientID,
-                ClientSecret = settings.OrderCloudSettings.MiddlewareClientSecret,
-                Roles = new[] { ApiRole.FullAccess },
-            });
-
-            AvalaraCommand avalaraCommand = null;
-            VertexCommand vertexCommand = null;
-            TaxJarCommand taxJarCommand = null;
-            switch (settings.EnvironmentSettings.TaxProvider)
-            {
-                case TaxProvider.Avalara:
-                    avalaraCommand = new AvalaraCommand(avalaraConfig, settings.EnvironmentSettings.Environment.ToString());
-                    break;
-                case TaxProvider.Taxjar:
-                    taxJarCommand = new TaxJarCommand(settings.TaxJarSettings);
-                    break;
-                case TaxProvider.Vertex:
-                    vertexCommand = new VertexCommand(settings.VertexSettings);
-                    break;
-                default:
-                    break;
-            }
-
-            IEasyPostShippingService easyPostShippingService = null;
-            switch (settings.EnvironmentSettings.ShippingProvider)
-            {
-                case ShippingProvider.Custom:
-                    break;
-                default:
-                    easyPostShippingService = new EasyPostShippingService(new EasyPostConfig() { APIKey = settings.EasyPostSettings.APIKey }, settings.EasyPostSettings.FedexAccountId);
-                    break;
-            }
-
-            var smartyService = new SmartyStreetsService(settings.SmartyStreetSettings, smartyStreetsUsClient);
-
             services.AddMvc(o =>
              {
-                 o.Filters.Add(new OrderCloud.Integrations.Library.Attributes.ValidateModelAttribute());
+                 o.Filters.Add(new Headstart.Common.Attributes.ValidateModelAttribute());
                  o.EnableEndpointRouting = false;
              })
             .ConfigureApiBehaviorOptions(o => o.SuppressModelStateInvalidFilter = true)
@@ -196,18 +135,27 @@ namespace Headstart.API
                 options.SerializerSettings.Converters.Add(new StringEnumConverter());
             });
 
-            var sendgridClient = !string.IsNullOrEmpty(settings.SendgridSettings.ApiKey) && settings.SendgridSettings.Enabled ? new SendGridClient(settings.SendgridSettings.ApiKey) : null;
-
             services
                 .AddCors(o => o.AddPolicy("integrationcors", builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }))
                 .AddSingleton<ISimpleCache, LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
+                .AddSingleton<IFlurlClientFactory, PerBaseUrlFlurlClientFactory>()
+
+                // Settings
+                .AddSingleton(x => settings.EnvironmentSettings)
+                .AddSingleton(x => settings.OrderCloudSettings)
+                .AddSingleton(x => settings.StorageAccountSettings)
+
+                // Configure OrderCloud
+                .InjectOrderCloud<IOrderCloudClient>(settings.OrderCloudSettings)
                 .AddOrderCloudUserAuth(opts => opts.AddValidClientIDs(clientIDs))
                 .AddOrderCloudWebhookAuth(opts => opts.HashKey = settings.OrderCloudSettings.WebhookHashKey)
+
+                // Configure Cosmos
                 .InjectCosmosStore<LogQuery, OrchestrationLog>(cosmosConfig)
                 .InjectCosmosStore<ReportTemplateQuery, ReportTemplate>(cosmosConfig)
                 .AddCosmosDb(settings.CosmosSettings.EndpointUri, settings.CosmosSettings.PrimaryKey, settings.CosmosSettings.DatabaseName, cosmosContainers)
-                .Inject<IPortalService>()
-                .AddSingleton<ISmartyStreetsCommand>(x => new SmartyStreetsCommand(settings.SmartyStreetSettings, orderCloudClient, smartyService))
+
+                // Commands
                 .Inject<ICheckoutIntegrationCommand>()
                 .Inject<IShipmentCommand>()
                 .Inject<IOrderCommand>()
@@ -217,62 +165,52 @@ namespace Headstart.API
                 .Inject<IHSProductCommand>()
                 .Inject<ILineItemCommand>()
                 .Inject<IMeProductCommand>()
-                .Inject<IDiscountDistributionService>()
-                .Inject<IHSCatalogCommand>()
-                .Inject<ISendgridService>()
-                .Inject<IHSSupplierCommand>()
+                .Inject<ICatalogCommand>()
+                .Inject<ISupplierCommand>()
                 .Inject<ICreditCardCommand>()
+                .AddSingleton<IDownloadReportCommand, DownloadReportCommand>()
+
+                // Services
+                .Inject<IPortalService>()
+                .Inject<IDiscountDistributionService>()
                 .Inject<ISupportAlertService>()
                 .Inject<ISupplierApiClientHelper>()
-                .AddSingleton<ISendGridClient>(x => sendgridClient)
-                .AddSingleton<IFlurlClientFactory>(x => flurlClientFactory)
-                .AddSingleton<DownloadReportCommand>()
-                .Inject<IRMARepo>()
-                .Inject<IZohoClient>()
-                .AddSingleton<IZohoCommand>(z => new ZohoCommand(
-                    new ZohoClient(
-                        new ZohoClientConfig()
-                        {
-                            ApiUrl = "https://books.zoho.com/api/v3",
-                            AccessToken = settings.ZohoSettings.AccessToken,
-                            ClientId = settings.ZohoSettings.ClientId,
-                            ClientSecret = settings.ZohoSettings.ClientSecret,
-                            OrganizationID = settings.ZohoSettings.OrgID,
-                        }, flurlClientFactory),
-                    orderCloudClient))
-                .AddSingleton<IExchangeRatesClient, ExchangeRatesClient>()
-                .AddSingleton<IAssetClient>(provider => new AssetClient(new OrderCloudIntegrationsBlobService(assetConfig), settings))
-                .AddSingleton<IExchangeRatesCommand>(provider => new ExchangeRatesCommand(new OrderCloudIntegrationsBlobService(currencyConfig), flurlClientFactory, provider.GetService<ISimpleCache>()))
-                .AddSingleton<ITaxCodesProvider>(provider =>
-                {
-                    return settings.EnvironmentSettings.TaxProvider switch
-                    {
-                        TaxProvider.Avalara => avalaraCommand,
-                        TaxProvider.Taxjar => taxJarCommand,
-                        TaxProvider.Vertex => new NotImplementedTaxCodesProvider(),
-                        _ => avalaraCommand // Avalara is default
-                    };
-                })
-                .AddSingleton<ITaxCalculator>(provider =>
-                {
-                    return settings.EnvironmentSettings.TaxProvider switch
-                    {
-                        TaxProvider.Avalara => avalaraCommand,
-                        TaxProvider.Vertex => vertexCommand,
-                        TaxProvider.Taxjar => taxJarCommand,
-                        _ => avalaraCommand // Avalara is default
-                    };
-                })
-                .AddSingleton<IShippingService>(provider =>
-                {
-                    return settings.EnvironmentSettings.ShippingProvider switch
-                    {
-                        _ => easyPostShippingService // EasyPost is default
-                    };
-                })
-                .AddSingleton<ISmartyStreetsService>(x => smartyService)
-                .AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(settings.CardConnectSettings, settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))
-                .AddSingleton<IOrderCloudClient>(provider => orderCloudClient)
+
+                // Tax Providers
+                .AddAvalaraTaxProvider(settings.EnvironmentSettings, settings.AvalaraSettings)
+                .AddTaxJarTaxProvider(settings.EnvironmentSettings, settings.TaxJarSettings)
+                .AddVertexTaxProvider(settings.EnvironmentSettings, settings.VertexSettings)
+                .AddMockTaxProvider()
+
+                // CMS Providers
+                .AddDefaultCMSProvider(settings.EnvironmentSettings, settings.StorageAccountSettings)
+
+                // Email Providers
+                .AddSendGridEmailServiceProvider(settings.EnvironmentSettings, settings.SendgridSettings, settings.UI)
+                .AddDefaultEmailServiceProvider(settings.EnvironmentSettings)
+
+                // Shipping Providers
+                .AddEasyPostShippingProvider(settings.EnvironmentSettings, settings.EasyPostSettings)
+                .AddMockShippingProvider()
+
+                // Payment Providers
+                .AddCardConnectCreditCartProcessor(settings.EnvironmentSettings, settings.CardConnectSettings)
+                .AddMockCreditCardProcessor()
+
+                // Address Validation Providers
+                .AddSmartyAddressValidationProvider(settings.EnvironmentSettings, settings.SmartyStreetSettings)
+                .AddDefaultAddressProvider()
+
+                // Currency Conversion Providers
+                .AddExchangeRatesCurrencyConversionProvider(settings.EnvironmentSettings, settings.StorageAccountSettings)
+
+                // RMA Providers
+                .AddDefaultRMAsProvider(settings.EnvironmentSettings)
+
+                // OMS Providers
+                .AddZohoOMSProvider(settings.EnvironmentSettings, settings.ZohoSettings)
+
+                // Documentation
                 .AddSwaggerGen(c =>
                 {
                     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Headstart Middleware API Documentation", Version = "v1" });

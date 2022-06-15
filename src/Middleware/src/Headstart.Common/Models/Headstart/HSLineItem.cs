@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using Headstart.Models.Extended;
 using OrderCloud.SDK;
 
-namespace Headstart.Models.Headstart
+namespace Headstart.Common.Models
 {
     public class HSLineItem : LineItem<LineItemXp, HSLineItemProduct, LineItemVariant, HSAddressBuyer, HSAddressSupplier>
     {

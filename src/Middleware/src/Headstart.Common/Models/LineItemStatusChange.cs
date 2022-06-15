@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Models.Extended;
 
-namespace Headstart.Models.Headstart
+namespace Headstart.Common.Models
 {
     // a line item status change always changes lineitems to one status as the change triggers an email related to that change
     // changing to multiple different statuses can be done in multiple calls which will trigger multiple emails

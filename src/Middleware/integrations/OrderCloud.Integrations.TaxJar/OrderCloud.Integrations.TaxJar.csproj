@@ -10,15 +10,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OrderCloud.Integrations.Library\OrderCloud.Integrations.Library.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="TaxJar" Version="3.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Headstart.Common\Headstart.Common.csproj" />
   </ItemGroup>
 
 </Project>

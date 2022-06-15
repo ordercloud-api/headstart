@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Models;
-using Headstart.Models.Headstart;
+using Headstart.Common.Models;
 
 namespace Headstart.Common.Extensions
 {
@@ -28,16 +26,6 @@ namespace Headstart.Common.Extensions
             return true;
         }
 
-        public static bool HasItem<T>(this List<T> itemList)
-        {
-            if (itemList == null || itemList.Count == 0)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
         public static HSShipEstimate GetMatchingShipEstimate(this HSOrderWorksheet buyerWorksheet, string shipFromAddressID)
         {
             return buyerWorksheet?.ShipEstimateResponse?.ShipEstimates?.FirstOrDefault(e => e.xp.ShipFromAddressID == shipFromAddressID);
@@ -51,6 +39,13 @@ namespace Headstart.Common.Extensions
         public static IEnumerable<HSLineItem> GetLineItemsByProductType(this HSOrderWorksheet buyerWorksheet, ProductType type)
         {
             return buyerWorksheet?.LineItems.Where(li => li.Product.xp.ProductType == type);
+        }
+
+        public static bool IsValidCvv(this CCPayment payment, HSBuyerCreditCard cc)
+        {
+            // if credit card is direct without using a saved card then consider it a ME card and should enforce CVV
+            // saved credit cards for ME just require CVV
+            return (payment.CreditCardDetails == null || payment.CVV != null) && (!cc.Editable || payment.CVV != null);
         }
     }
 }

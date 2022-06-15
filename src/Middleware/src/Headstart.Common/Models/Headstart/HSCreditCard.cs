@@ -1,12 +1,12 @@
 ﻿using OrderCloud.SDK;
 
-namespace Headstart.Models.Headstart
+namespace Headstart.Common.Models
 {
-    public class HSCreditCard : CreditCard<HSCreditCardXP>
+    public class HSCreditCard : CreditCard<HSCreditCardXP>, IHSCreditCard
     {
     }
 
-    public class HSBuyerCreditCard : BuyerCreditCard<HSCreditCardXP>
+    public class HSBuyerCreditCard : BuyerCreditCard<HSCreditCardXP>, IHSCreditCard
     {
     }
 

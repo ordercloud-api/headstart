@@ -1,0 +1,131 @@
+<div class="container-fluid resource-edit">
+  <form>
+    <!-- Related Products -->
+    <div class="row pt-3 mt-2 border-top">
+      <div class="col-md-5">
+        <h5>Related Products</h5>
+        <p
+          class="font-italic text-dark"
+          *ngIf="!selectedRelatedProducts?.length && !isLoading"
+        >
+          Related products will show up on the product details page in the
+          related products section
+        </p>
+      </div>
+      <div class="col-md-7" style="display: flex; justify-content: flex-end">
+        <button
+          class="btn btn-outline-primary"
+          style="max-height: 50px"
+          (click)="openModal(modalContent)"
+        >
+          Add product to related items
+        </button>
+      </div>
+    </div>
+    <table
+      class="table table-striped table-bordered table-hover bg-light mt-5"
+      *ngIf="selectedRelatedProducts?.length && !isLoading"
+    >
+      <thead>
+        <tr>
+          <td></td>
+          <td>ID</td>
+          <td>Name</td>
+          <td></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let relatedProduct of selectedRelatedProducts">
+          <td>
+            <img
+              class="avatar rounded-circle"
+              style="max-width: 50px"
+              src="{{
+                relatedProduct.xp?.Images?.length
+                  ? relatedProduct.xp.Images[0].ThumbnailUrl
+                  : 'https://via.placeholder.com/300x300'
+              }}"
+              alt=""
+            />
+          </td>
+          <td>{{ relatedProduct.ID }}</td>
+          <td>{{ relatedProduct.Name }}</td>
+          <td>
+            <fa-icon
+              [icon]="faTrash"
+              class="text-danger"
+              (click)="removeProductFromRelatedGroup(relatedProduct.ID)"
+            ></fa-icon>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </form>
+  <ng-template #modalContent let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">Add products to related items</h4>
+    </div>
+    <div class="modal-body">
+      <search-component
+        placeholderText="Search products..."
+        [searchTermInput]="searchTerm"
+        (searched)="searchedRelatedProducts($event)"
+      >
+      </search-component>
+      <table class="table table-hover">
+        <tbody>
+          <tr
+            *ngFor="let product of relatedProducts"
+            (click)="toggleStagedRelatedProducts(product.ID)"
+            [ngClass]="{
+              selected: stagedRelatedProducts?.indexOf(product.ID) > -1
+            }"
+          >
+            <td>
+              <div class="d-flex flex-row">
+                <div class="p-2 align-self-center">
+                  <img
+                    class="avatar rounded-circle"
+                    style="max-width: 50px"
+                    src="{{
+                      product.xp?.Images?.length
+                        ? product.xp.Images[0].ThumbnailUrl
+                        : 'https://via.placeholder.com/300x300'
+                    }}"
+                    alt=""
+                  />
+                </div>
+                <div class="p-2">
+                  <span class="d-flex flex-column">
+                    <h6>{{ product.Name }}</h6>
+                    <div>{{ product.ID }}</div>
+                  </span>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div
+      class="
+        modal-footer
+        w-100
+        d-flex
+        justify-content-space-between justify-content-between
+      "
+    >
+      <button type="button" class="btn btn-outline-dark" (click)="cancel()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        [disabled]="!stagedRelatedProducts?.length"
+        (click)="addSelectedRelatedProducts()"
+      >
+        Add selected products
+      </button>
+    </div>
+  </ng-template>
+</div>

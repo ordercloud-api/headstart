@@ -3,14 +3,9 @@ using System.Collections.Generic;
 using System.Net;
 using Flurl.Http;
 using Flurl.Http.Configuration;
-using Headstart.API.Commands;
-using Headstart.API.Commands.Crud;
-using Headstart.API.Commands.Zoho;
 using Headstart.Common;
-using Headstart.Common.Repositories;
-using Headstart.Common.Services;
-using Headstart.Common.Services.Zoho;
-using Headstart.Jobs;
+using Headstart.Common.Commands;
+using Headstart.Common.Extensions;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,16 +13,15 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
-using OrderCloud.Integrations.CardConnect;
-using OrderCloud.Integrations.Library;
-using OrderCloud.Integrations.Library.Cosmos;
+using OrderCloud.Integrations.CosmosDB;
+using OrderCloud.Integrations.CosmosDB.Extensions;
+using OrderCloud.Integrations.Reporting.Repositories;
 using OrderCloud.SDK;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
 using Polly.Extensions.Http;
-using SendGrid;
 
-[assembly: FunctionsStartup(typeof(Startup))]
+[assembly: FunctionsStartup(typeof(Headstart.Jobs.Startup))]
 
 namespace Headstart.Jobs
 {
@@ -93,24 +87,15 @@ namespace Headstart.Jobs
             var flurlClientFactory = new PerBaseUrlFlurlClientFactory();
 
             FlurlHttp.Configure(settings => settings.HttpClientFactory = new PollyFactory(policy));
-            var sendgridClient = !string.IsNullOrEmpty(settings.SendgridSettings.ApiKey) && settings.SendgridSettings.Enabled ? new SendGridClient(settings.SendgridSettings.ApiKey) : null;
 
             builder.Services
-                .InjectOrderCloud<IOrderCloudClient>(new OrderCloudClientConfig()
-                {
-                    ApiUrl = settings.OrderCloudSettings.ApiUrl,
-                    AuthUrl = settings.OrderCloudSettings.ApiUrl,
-                    ClientId = settings.OrderCloudSettings.MiddlewareClientID,
-                    ClientSecret = settings.OrderCloudSettings.MiddlewareClientSecret,
-                    Roles = new[]
-                    {
-                        ApiRole.FullAccess,
-                    },
-                })
+                .AddSingleton(x => settings.OrderCloudSettings)
+                .AddSingleton(x => settings.ServiceBusSettings)
+                .AddSingleton(x => settings.StorageAccountSettings)
+                .InjectOrderCloud<IOrderCloudClient>(settings.OrderCloudSettings)
                 .AddCosmosDb(settings.CosmosSettings.EndpointUri, settings.CosmosSettings.PrimaryKey, settings.CosmosSettings.DatabaseName, cosmosContainers)
                 .AddSingleton<IFlurlClientFactory, PerBaseUrlFlurlClientFactory>()
-                .AddSingleton<IOrderCloudIntegrationsCardConnectService>(x => new OrderCloudIntegrationsCardConnectService(settings.CardConnectSettings, settings.EnvironmentSettings.Environment.ToString(), flurlClientFactory))
-                .Inject<IHSCatalogCommand>()
+                .Inject<ICatalogCommand>()
                 .Inject<IHSBuyerLocationCommand>()
                 .AddSingleton<PaymentCaptureJob>()
                 .AddSingleton<SendRecentOrdersJob>()
@@ -119,18 +104,6 @@ namespace Headstart.Jobs
                 .AddSingleton<ReceiveRecentPurchaseOrdersJob>()
                 .AddSingleton<ReceiveRecentLineItemsJob>()
                 .AddSingleton<ReceiveRecentOrdersAndShipmentsJob>()
-                .AddSingleton(x => new ZohoClientConfig
-                {
-                    ApiUrl = "https://books.zoho.com/api/v3",
-                    AccessToken = settings.ZohoSettings.AccessToken,
-                    ClientId = settings.ZohoSettings.ClientId,
-                    ClientSecret = settings.ZohoSettings.ClientSecret,
-                    OrganizationID = settings.ZohoSettings.OrgID,
-                })
-                .Inject<IZohoClient>()
-                .Inject<IZohoCommand>()
-                .AddSingleton<ISendGridClient>(x => sendgridClient)
-                .Inject<ISendgridService>()
                 .Inject<ISalesOrderDetailDataRepo>()
                 .Inject<IPurchaseOrderDetailDataRepo>()
                 .Inject<ILineItemDetailDataRepo>()

@@ -2,21 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Flurl.Http;
-using Headstart.API.Commands.Zoho;
-using Headstart.Common;
 using Headstart.Common.Constants;
-using Headstart.Common.Exceptions;
+using Headstart.Common.Extensions;
+using Headstart.Common.Models;
 using Headstart.Common.Services;
-using Headstart.Common.Services.ShippingIntegration.Models;
-using Headstart.Models;
-using Headstart.Models.Extended;
-using Headstart.Models.Headstart;
+using Headstart.Common.Utils;
 using Newtonsoft.Json;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.Library;
+using OrderCloud.Integrations.Emails;
 using OrderCloud.SDK;
-using ITaxCalculator = OrderCloud.Integrations.Library.Interfaces.ITaxCalculator;
+using ITaxCalculator = Headstart.Common.Services.ITaxCalculator;
 
 namespace Headstart.API.Commands
 {
@@ -24,7 +19,7 @@ namespace Headstart.API.Commands
     {
         Task<OrderSubmitResponse> HandleBuyerOrderSubmit(HSOrderWorksheet order);
 
-        Task<OrderSubmitResponse> HandleZohoRetry(string orderID);
+        Task<OrderSubmitResponse> ExportOrder(string orderID);
 
         Task<OrderSubmitResponse> HandleShippingValidate(string orderID, DecodedToken decodedToken);
     }
@@ -32,24 +27,24 @@ namespace Headstart.API.Commands
     public class PostSubmitCommand : IPostSubmitCommand
     {
         private readonly IOrderCloudClient oc;
-        private readonly IZohoCommand zoho;
+        private readonly IOMSService omsService;
         private readonly ITaxCalculator taxCalculator;
-        private readonly ISendgridService sendgridService;
+        private readonly IEmailServiceProvider emailServiceProvider;
         private readonly ILineItemCommand lineItemCommand;
         private readonly AppSettings settings;
 
         public PostSubmitCommand(
-            ISendgridService sendgridService,
+            IEmailServiceProvider emailServiceProvider,
             ITaxCalculator taxCalculator,
             IOrderCloudClient oc,
-            IZohoCommand zoho,
+            IOMSService omsService,
             ILineItemCommand lineItemCommand,
             AppSettings settings)
         {
             this.oc = oc;
             this.taxCalculator = taxCalculator;
-            this.zoho = zoho;
-            this.sendgridService = sendgridService;
+            this.omsService = omsService;
+            this.emailServiceProvider = emailServiceProvider;
             this.lineItemCommand = lineItemCommand;
             this.settings = settings;
         }
@@ -65,7 +60,7 @@ namespace Headstart.API.Commands
                         Type = ProcessType.Accounting,
                         Activity = new List<ProcessResultAction>()
                         {
-                            await ProcessActivityCall(
+                            await ProcessAction.Execute(
                                 ProcessType.Shipping,
                                 "Validate Shipping",
                                 ValidateShipping(worksheet)),
@@ -75,7 +70,7 @@ namespace Headstart.API.Commands
                 new List<HSOrder> { worksheet.Order });
         }
 
-        public async Task<OrderSubmitResponse> HandleZohoRetry(string orderID)
+        public async Task<OrderSubmitResponse> ExportOrder(string orderID)
         {
             var worksheet = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderID);
             var supplierOrders = await Throttler.RunAsync(worksheet.LineItems.GroupBy(g => g.SupplierID).Select(s => s.Key), 100, 10, item => oc.Orders.GetAsync<HSOrder>(
@@ -83,7 +78,7 @@ namespace Headstart.API.Commands
                 $"{worksheet.Order.ID}-{item}"));
 
             return await CreateOrderSubmitResponse(
-                new List<ProcessResult>() { await this.PerformZohoTasks(worksheet, supplierOrders) },
+                new List<ProcessResult>() { await omsService.ExportOrder(worksheet, supplierOrders, false) },
                 new List<HSOrder> { worksheet.Order });
         }
 
@@ -206,131 +201,15 @@ namespace Headstart.API.Commands
             await Task.CompletedTask;
         }
 
-        private static async Task<ProcessResultAction> ProcessActivityCall(ProcessType type, string description, Task func)
-        {
-            try
-            {
-                await func;
-                return new ProcessResultAction()
-                {
-                    ProcessType = type,
-                    Description = description,
-                    Success = true,
-                };
-            }
-            catch (CatalystBaseException integrationEx)
-            {
-                return new ProcessResultAction()
-                {
-                    Description = description,
-                    ProcessType = type,
-                    Success = false,
-                    Exception = new ProcessResultException(integrationEx),
-                };
-            }
-            catch (FlurlHttpException flurlEx)
-            {
-                return new ProcessResultAction()
-                {
-                    Description = description,
-                    ProcessType = type,
-                    Success = false,
-                    Exception = new ProcessResultException(flurlEx),
-                };
-            }
-            catch (Exception ex)
-            {
-                return new ProcessResultAction()
-                {
-                    Description = description,
-                    ProcessType = type,
-                    Success = false,
-                    Exception = new ProcessResultException(ex),
-                };
-            }
-        }
-
-        private static async Task<Tuple<ProcessResultAction, T>> ProcessActivityCall<T>(ProcessType type, string description, Task<T> func) where T : class, new()
-        {
-            // T must be a class and be newable so the error response can be handled.
-            try
-            {
-                return new Tuple<ProcessResultAction, T>(
-                    new ProcessResultAction()
-                    {
-                        ProcessType = type,
-                        Description = description,
-                        Success = true,
-                    },
-                    await func);
-            }
-            catch (CatalystBaseException integrationEx)
-            {
-                return new Tuple<ProcessResultAction, T>(
-                    new ProcessResultAction()
-                    {
-                        Description = description,
-                        ProcessType = type,
-                        Success = false,
-                        Exception = new ProcessResultException(integrationEx),
-                    }, new T());
-            }
-            catch (FlurlHttpException flurlEx)
-            {
-                return new Tuple<ProcessResultAction, T>(
-                    new ProcessResultAction()
-                    {
-                        Description = description,
-                        ProcessType = type,
-                        Success = false,
-                        Exception = new ProcessResultException(flurlEx),
-                    }, new T());
-            }
-            catch (Exception ex)
-            {
-                return new Tuple<ProcessResultAction, T>(
-                    new ProcessResultAction()
-                    {
-                        Description = description,
-                        ProcessType = type,
-                        Success = false,
-                        Exception = new ProcessResultException(ex),
-                    }, new T());
-            }
-        }
-
-        private async Task<ProcessResult> PerformZohoTasks(HSOrderWorksheet worksheet, IList<HSOrder> supplierOrders)
-        {
-            var (salesAction, zohoSalesOrder) = await ProcessActivityCall(
-                ProcessType.Accounting,
-                "Create Zoho Sales Order",
-                zoho.CreateSalesOrder(worksheet));
-
-            var (poAction, zohoPurchaseOrder) = await ProcessActivityCall(
-                ProcessType.Accounting,
-                "Create Zoho Purchase Order",
-                zoho.CreateOrUpdatePurchaseOrder(zohoSalesOrder, supplierOrders.ToList()));
-
-            var (shippingAction, zohoShippingOrder) = await ProcessActivityCall(
-                ProcessType.Accounting,
-                "Create Zoho Shipping Purchase Order",
-                zoho.CreateShippingPurchaseOrder(zohoSalesOrder, worksheet));
-            return new ProcessResult()
-            {
-                Type = ProcessType.Accounting,
-                Activity = new List<ProcessResultAction>() { salesAction, poAction, shippingAction },
-            };
-        }
-
         private async Task<List<ProcessResult>> HandleIntegrations(List<HSOrder> supplierOrders, HSOrderWorksheet orderWorksheet)
         {
             // STEP 1: SendGrid notifications
             var results = new List<ProcessResult>();
 
-            var notifications = await ProcessActivityCall(
+            var notifications = await ProcessAction.Execute(
                 ProcessType.Notification,
                 "Sending Order Submit Emails",
-                sendgridService.SendOrderSubmitEmail(orderWorksheet));
+                emailServiceProvider.SendOrderSubmitEmail(orderWorksheet));
             results.Add(new ProcessResult()
             {
                 Type = ProcessType.Notification,
@@ -343,7 +222,7 @@ namespace Headstart.API.Commands
             }
 
             // STEP 2: Tax transaction
-            var tax = await ProcessActivityCall(
+            var tax = await ProcessAction.Execute(
                 ProcessType.Tax,
                 "Creating Tax Transaction",
                 HandleTaxTransactionCreationAsync(orderWorksheet.Reserialize<OrderWorksheet>()));
@@ -353,14 +232,15 @@ namespace Headstart.API.Commands
                 Activity = new List<ProcessResultAction>() { tax },
             });
 
-            // STEP 3: Zoho orders
-            if (settings.ZohoSettings.PerformOrderSubmitTasks)
+            // STEP 3: export order
+            var exportedOrderResult = await omsService.ExportOrder(orderWorksheet, supplierOrders);
+            if (exportedOrderResult != null)
             {
-                results.Add(await this.PerformZohoTasks(orderWorksheet, supplierOrders));
+                results.Add(exportedOrderResult);
             }
 
             // STEP 4: Validate shipping
-            var shipping = await ProcessActivityCall(
+            var shipping = await ProcessAction.Execute(
                 ProcessType.Shipping,
                 "Validate Shipping",
                 ValidateShipping(orderWorksheet));
@@ -380,7 +260,7 @@ namespace Headstart.API.Commands
                 if (processResults.All(i => i.Activity.All(a => a.Success)))
                 {
                     await UpdateOrderNeedingAttention(ordersRelatingToProcess, false);
-                    return new OrderSubmitResponse()
+                    return new HSOrderSubmitResponse()
                     {
                         HttpStatusCode = 200,
                         xp = new OrderSubmitResponseXp()
@@ -391,7 +271,7 @@ namespace Headstart.API.Commands
                 }
 
                 await UpdateOrderNeedingAttention(ordersRelatingToProcess, true);
-                return new OrderSubmitResponse()
+                return new HSOrderSubmitResponse()
                 {
                     HttpStatusCode = 500,
                     xp = new OrderSubmitResponseXp()
@@ -402,7 +282,7 @@ namespace Headstart.API.Commands
             }
             catch (OrderCloudException ex)
             {
-                return new OrderSubmitResponse()
+                return new HSOrderSubmitResponse()
                 {
                     HttpStatusCode = 500,
                     UnhandledErrorBody = JsonConvert.SerializeObject(ex.Errors),
@@ -429,7 +309,7 @@ namespace Headstart.API.Commands
             var activities = new List<ProcessResultAction>();
 
             // forwarding
-            var (forwardAction, forwardedOrders) = await ProcessActivityCall(
+            var (forwardAction, forwardedOrders) = await ProcessAction.Execute(
                 ProcessType.Forwarding,
                 "OrderCloud API Order.ForwardAsync",
                 oc.Orders.ForwardAsync(OrderDirection.Incoming, orderWorksheet.Order.ID));
@@ -439,14 +319,14 @@ namespace Headstart.API.Commands
 
             // creating relationship between the buyer order and the supplier order
             // no relationship exists currently in the platform
-            var (updateAction, hsOrders) = await ProcessActivityCall(
+            var (updateAction, hsOrders) = await ProcessAction.Execute(
                 ProcessType.Forwarding,
                 "Create Order Relationships And Transfer XP",
                 CreateOrderRelationshipsAndTransferXP(orderWorksheet, supplierOrders));
             activities.Add(updateAction);
 
             // need to get fresh order worksheet because this process has changed things about the worksheet
-            var (getAction, hsOrderWorksheet) = await ProcessActivityCall(
+            var (getAction, hsOrderWorksheet) = await ProcessAction.Execute(
                 ProcessType.Forwarding,
                 "Get Updated Order Worksheet",
                 oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.Incoming, orderWorksheet.Order.ID));

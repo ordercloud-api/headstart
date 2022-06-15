@@ -1,12 +1,12 @@
 ﻿using OrderCloud.SDK;
 
-namespace Headstart.Models
+namespace Headstart.Common.Models
 {
-    public class HSAddressBuyer : Address<BuyerAddressXP>, IHSObject
+    public class HSAddressBuyer : Address<BuyerAddressXP>, IHSObject, IHSAddress
     {
     }
 
-    public class HSAddressMeBuyer : BuyerAddress<BuyerAddressXP>, IHSObject
+    public class HSAddressMeBuyer : BuyerAddress<BuyerAddressXP>, IHSObject, IHSAddress
     {
     }
 

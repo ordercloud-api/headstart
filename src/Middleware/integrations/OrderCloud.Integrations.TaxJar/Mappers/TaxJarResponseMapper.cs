@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OrderCloud.Integrations.Library.Interfaces;
+using Headstart.Common.Services;
 using Taxjar;
 using TaxJarOrder = Taxjar.Order;
 

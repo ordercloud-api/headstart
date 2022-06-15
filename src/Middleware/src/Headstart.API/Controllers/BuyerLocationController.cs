@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Headstart.API.Commands;
-using Headstart.Models;
-using Headstart.Models.Misc;
+using Headstart.Common.Commands;
+using Headstart.Common.Models;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
@@ -13,14 +12,12 @@ namespace Headstart.Common.Controllers
     public class BuyerLocationController : CatalystController
     {
         private readonly IHSBuyerLocationCommand buyerLocationCommand;
-        private readonly IOrderCloudClient oc;
         private readonly ILocationPermissionCommand locationPermissionCommand;
 
-        public BuyerLocationController(ILocationPermissionCommand locationPermissionCommand, IHSBuyerLocationCommand buyerLocationCommand, IOrderCloudClient oc)
+        public BuyerLocationController(ILocationPermissionCommand locationPermissionCommand, IHSBuyerLocationCommand buyerLocationCommand)
         {
             this.buyerLocationCommand = buyerLocationCommand;
             this.locationPermissionCommand = locationPermissionCommand;
-            this.oc = oc;
         }
 
         /// <summary>

@@ -21,12 +21,17 @@ declare let Boxever: any
   providedIn: 'root',
 })
 export class SitecoreCDPTrackingService {
+  private isCdpEnabled = false
+
   constructor(
     private appConfig: AppConfig,
     private userService: CurrentUserService,
     private routeService: RouteService
   ) {
-    if (!appConfig.useSitecoreCDP) {
+    // Boxever javascript is included in index.html via post-deploy script scripts/inject-css if appConfig.useSitecoreCDP is enabled
+    this.isCdpEnabled =
+      appConfig.useSitecoreCDP && typeof Boxever !== 'undefined'
+    if (!this.isCdpEnabled) {
       return
     }
     this.routeService.onUrlChange((_) => {
@@ -38,7 +43,7 @@ export class SitecoreCDPTrackingService {
    * Capture IDENTITY events wherever in the site that the guest provides data that might help identify them. It is common for a single browser session to have multiple IDENTITY events.
    * */
   identify(): void {
-    if (!this.appConfig.useSitecoreCDP) {
+    if (!this.isCdpEnabled) {
       return
     }
     const event = this.buildBaseEvent('IDENTITY') as SitecoreCDPIdentifyEvent
@@ -60,7 +65,7 @@ export class SitecoreCDPTrackingService {
    * The ADD event captures the product details when a user adds the product(s) to their online cart.
    */
   addToCart(lineItem: HSLineItem): void {
-    if (!this.appConfig.useSitecoreCDP) {
+    if (!this.isCdpEnabled) {
       return
     }
     const event = this.buildBaseEvent('ADD') as SitecoreCDPAddEvent
@@ -86,7 +91,7 @@ export class SitecoreCDPTrackingService {
    *  https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/send-a-view-event-to-the-sitecore-cdp.html
    */
   newPageViewed(): void {
-    if (!this.appConfig.useSitecoreCDP) {
+    if (!this.isCdpEnabled) {
       return
     }
     const event = this.buildBaseEvent('VIEW')
@@ -97,7 +102,7 @@ export class SitecoreCDPTrackingService {
    * The SEARCH event captures the user's action of searching for a product.
    */
   productSearched(searchTerm: string): void {
-    if (!this.appConfig.useSitecoreCDP) {
+    if (!this.isCdpEnabled) {
       return
     }
     const event = this.buildBaseEvent('SEARCH') as SitecoreCDPSearchEvent
@@ -109,7 +114,7 @@ export class SitecoreCDPTrackingService {
   }
 
   orderPlaced(order: HSOrder, lineItems: HSLineItem[]): void {
-    if (!this.appConfig.useSitecoreCDP) {
+    if (!this.isCdpEnabled) {
       return
     }
     const event = this.buildBaseEvent(
@@ -142,7 +147,7 @@ export class SitecoreCDPTrackingService {
    * https://doc.sitecore.com/cdp/en/developers/sitecore-customer-data-platform--data-model-2-1/send-a-clear-cart-event-to-sitecore-cdp.html
    */
   clearCart(): void {
-    if (!this.appConfig.useSitecoreCDP) {
+    if (!this.isCdpEnabled) {
       return
     }
     const event = this.buildBaseEvent('CLEAR_CART')

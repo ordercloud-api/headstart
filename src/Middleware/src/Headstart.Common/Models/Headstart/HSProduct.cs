@@ -1,23 +1,13 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Headstart.Models.Extended;
+using Headstart.Common.Attributes;
+using Headstart.Common.Services;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using OrderCloud.Integrations.EasyPost.Mappers;
-using OrderCloud.Integrations.Library.Attributes;
-using OrderCloud.Integrations.Library.Interfaces;
-using OrderCloud.Integrations.Library.Models;
 using OrderCloud.SDK;
 
-namespace Headstart.Models
+namespace Headstart.Common.Models
 {
-    [JsonConverter(typeof(StringEnumConverter))]
-    public enum ProductType
-    {
-        Standard,
-        Quote,
-    }
-
     public class SuperHSProduct : IHSObject
     {
         public string ID { get; set; }
@@ -90,6 +80,8 @@ namespace Headstart.Models
         public List<ImageAsset> Images { get; set; }
 
         public List<DocumentAsset> Documents { get; set; }
+
+        public List<string> RelatedProducts { get; set; }
     }
 
     public class ImageAsset

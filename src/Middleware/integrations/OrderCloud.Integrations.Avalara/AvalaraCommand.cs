@@ -6,11 +6,11 @@ using Avalara.AvaTax.RestClient;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Avalara.Mappers;
 using OrderCloud.SDK;
-using ITaxCalculator = OrderCloud.Integrations.Library.Interfaces.ITaxCalculator;
-using ITaxCodesProvider = OrderCloud.Integrations.Library.Interfaces.ITaxCodesProvider;
-using OrderTaxCalculation = OrderCloud.Integrations.Library.Interfaces.OrderTaxCalculation;
-using TaxCategorization = OrderCloud.Integrations.Library.Interfaces.TaxCategorization;
-using TaxCategorizationResponse = OrderCloud.Integrations.Library.Interfaces.TaxCategorizationResponse;
+using ITaxCalculator = Headstart.Common.Services.ITaxCalculator;
+using ITaxCodesProvider = Headstart.Common.Services.ITaxCodesProvider;
+using OrderTaxCalculation = Headstart.Common.Services.OrderTaxCalculation;
+using TaxCategorization = Headstart.Common.Services.TaxCategorization;
+using TaxCategorizationResponse = Headstart.Common.Services.TaxCategorizationResponse;
 
 namespace OrderCloud.Integrations.Avalara
 {
@@ -39,13 +39,13 @@ namespace OrderCloud.Integrations.Avalara
     public class AvalaraCommand : IAvalaraCommand, ITaxCalculator, ITaxCodesProvider
     {
         private readonly AvalaraConfig settings;
-        private readonly AvaTaxClient avaTax;
+        private readonly AvaTaxClient avaTaxClient;
         private readonly string companyCode;
         private readonly string baseUrl;
         private bool hasAccountCredentials;
         private AppEnvironment appEnvironment;
 
-        public AvalaraCommand(AvalaraConfig settings, string environment)
+        public AvalaraCommand(AvaTaxClient avaTaxClient, AvalaraConfig settings, string environment)
         {
             this.settings = settings;
             appEnvironment = (AppEnvironment)Enum.Parse(typeof(AppEnvironment), environment);
@@ -54,10 +54,7 @@ namespace OrderCloud.Integrations.Avalara
 
             companyCode = this.settings.CompanyCode;
             baseUrl = this.settings.BaseApiUrl;
-            if (hasAccountCredentials)
-            {
-                avaTax = new AvaTaxClient("sitecore_headstart", "v1", "sitecore_headstart", new Uri(settings.BaseApiUrl)).WithSecurity(settings.AccountID, settings.LicenseKey);
-            }
+            this.avaTaxClient = avaTaxClient;
         }
 
         public async Task<OrderTaxCalculation> CalculateEstimateAsync(OrderWorksheet orderWorksheet, List<OrderPromotion> promotions)
@@ -90,7 +87,7 @@ namespace OrderCloud.Integrations.Avalara
             }
 
             var model = new CommitTransactionModel() { commit = true };
-            var transaction = await avaTax.CommitTransactionAsync(companyCode, transactionCode, DocumentType.SalesInvoice, string.Empty, model);
+            var transaction = await avaTaxClient.CommitTransactionAsync(companyCode, transactionCode, DocumentType.SalesInvoice, string.Empty, model);
             return transaction.ToOrderTaxCalculation();
         }
 
@@ -102,7 +99,7 @@ namespace OrderCloud.Integrations.Avalara
             }
 
             var search = TaxCodeMapper.MapSearchString(searchTerm);
-            var avataxCodes = await avaTax.ListTaxCodesAsync(search, null, null, null);
+            var avataxCodes = await avaTaxClient.ListTaxCodesAsync(search, null, null, null);
             var codeList = TaxCodeMapper.MapTaxCodes(avataxCodes);
             return new TaxCategorizationResponse() { Categories = codeList, ProductsShouldHaveTaxCodes = true };
         }
@@ -135,8 +132,8 @@ namespace OrderCloud.Integrations.Avalara
                 {
                     new TaxCategorization()
                     {
-                        Code = "Headstart Tax Code",
-                        Description = "Mock Tax Code for Headstart",
+                        Code = "Headstart Avalara Tax Code",
+                        Description = "Mock Avalara Tax Code for Headstart",
                         LongDescription = "This is a mock tax categorization",
                     },
                 },
@@ -156,7 +153,7 @@ namespace OrderCloud.Integrations.Avalara
                     }
 
                     var createTransactionModel = orderWorksheet.ToAvalaraTransactionModel(companyCode, docType, promotions);
-                    var transaction = await avaTax.CreateTransactionAsync(string.Empty, createTransactionModel);
+                    var transaction = await avaTaxClient.CreateTransactionAsync(string.Empty, createTransactionModel);
                     return transaction.ToOrderTaxCalculation();
                 }
                 catch (AvaTaxError e)

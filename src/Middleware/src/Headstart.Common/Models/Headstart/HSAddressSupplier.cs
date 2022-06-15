@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using OrderCloud.SDK;
+﻿using OrderCloud.SDK;
 
-namespace Headstart.Models
+namespace Headstart.Common.Models
 {
-    public class HSAddressSupplier : Address<SupplierAddressXP>, IHSObject
+    public class HSAddressSupplier : Address<SupplierAddressXP>, IHSObject, IHSAddress
     {
     }
 
