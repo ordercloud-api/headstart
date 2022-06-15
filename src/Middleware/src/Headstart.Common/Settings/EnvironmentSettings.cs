@@ -17,20 +17,20 @@
 
         public string MiddlewareBaseUrl { get; set; }
 
-        public string AddressValidationProvider { get; set; }
+        public string AddressValidationProvider { get; set; } = string.Empty;
 
-        public string CMSProvider { get; set; }
+        public string CMSProvider { get; set; } = string.Empty;
 
-        public string CurrencyConversionProvider { get; set; }
+        public string CurrencyConversionProvider { get; set; } = string.Empty;
 
-        public string EmailServiceProvider { get; set; }
+        public string EmailServiceProvider { get; set; } = string.Empty;
 
-        public string OMSProvider { get; set; }
+        public string OMSProvider { get; set; } = string.Empty;
 
-        public string PaymentProvider { get; set; }
+        public string PaymentProvider { get; set; } = string.Empty;
 
-        public string ShippingProvider { get; set; }
+        public string ShippingProvider { get; set; } = string.Empty;
 
-        public string TaxProvider { get; set; }
+        public string TaxProvider { get; set; } = string.Empty;
     }
 }
