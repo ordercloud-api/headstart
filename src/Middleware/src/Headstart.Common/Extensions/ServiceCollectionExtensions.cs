@@ -59,9 +59,9 @@ namespace Headstart.Common.Extensions
             return services;
         }
 
-        public static IServiceCollection AddDefaultShippingProvider(this IServiceCollection services)
+        public static IServiceCollection AddMockShippingProvider(this IServiceCollection services)
         {
-            services.TryAddSingleton<IShippingCommand, ShippingCommand>();
+            services.TryAddSingleton<IShippingCommand, MockShippingCommand>();
             services.TryAddSingleton<IShippingService, DefaultShippingService>();
 
             return services;

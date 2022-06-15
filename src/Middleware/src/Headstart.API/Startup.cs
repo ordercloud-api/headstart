@@ -191,7 +191,7 @@ namespace Headstart.API
 
                 // Shipping Providers
                 .AddEasyPostShippingProvider(settings.EnvironmentSettings, settings.EasyPostSettings)
-                .AddDefaultShippingProvider()
+                .AddMockShippingProvider()
 
                 // Payment Providers
                 .AddCardConnectCreditCartProcessor(settings.EnvironmentSettings, settings.CardConnectSettings)

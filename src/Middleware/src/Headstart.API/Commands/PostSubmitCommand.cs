@@ -260,7 +260,7 @@ namespace Headstart.API.Commands
                 if (processResults.All(i => i.Activity.All(a => a.Success)))
                 {
                     await UpdateOrderNeedingAttention(ordersRelatingToProcess, false);
-                    return new OrderSubmitResponse()
+                    return new HSOrderSubmitResponse()
                     {
                         HttpStatusCode = 200,
                         xp = new OrderSubmitResponseXp()
@@ -271,7 +271,7 @@ namespace Headstart.API.Commands
                 }
 
                 await UpdateOrderNeedingAttention(ordersRelatingToProcess, true);
-                return new OrderSubmitResponse()
+                return new HSOrderSubmitResponse()
                 {
                     HttpStatusCode = 500,
                     xp = new OrderSubmitResponseXp()
@@ -282,7 +282,7 @@ namespace Headstart.API.Commands
             }
             catch (OrderCloudException ex)
             {
-                return new OrderSubmitResponse()
+                return new HSOrderSubmitResponse()
                 {
                     HttpStatusCode = 500,
                     UnhandledErrorBody = JsonConvert.SerializeObject(ex.Errors),

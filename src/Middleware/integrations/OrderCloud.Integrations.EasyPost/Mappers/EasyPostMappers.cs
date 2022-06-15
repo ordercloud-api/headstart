@@ -41,7 +41,7 @@ namespace OrderCloud.Integrations.EasyPost.Mappers
         // length = aggregateLength
         // };
         // }
-        public static IList<ShipMethod> MapRates(EasyPostShipment[] shipments)
+        public static IList<HSShipMethod> MapRates(EasyPostShipment[] shipments)
         {
             return shipments
                 .SelectMany(shipment => shipment.rates)
@@ -54,7 +54,7 @@ namespace OrderCloud.Integrations.EasyPost.Mappers
                     var deliveryDays = group.Max(rate => rate.delivery_days ?? rate.est_delivery_days ?? 10);
                     var guaranteedDeliveryDays = group.Max(rate => rate.delivery_date_guaranteed);
 
-                    return new ShipMethod()
+                    return new HSShipMethod()
                     {
                         ID = first.id,
                         Name = group.Key.service,
