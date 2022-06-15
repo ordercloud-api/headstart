@@ -47,6 +47,13 @@ json -I -f appSettings.json \
       -e "this['EnvironmentSettings:BuildNumber']='$EnvironmentSettings_BuildNumber'" \
       -e "this['EnvironmentSettings:Commit']='$EnvironmentSettings_Commit'" \
       -e "this['EnvironmentSettings:Environment']='$EnvironmentSettings_Environment'" \
+      -e "this['EnvironmentSettings:AddressValidationProvider']='$EnvironmentSettings_AddressValidationProvider'" \
+      -e "this['EnvironmentSettings:CMSProvider']='$EnvironmentSettings_CMSProvider'" \
+      -e "this['EnvironmentSettings:CurrencyConversionProvider']='$EnvironmentSettings_CurrencyConversionProvider'" \
+      -e "this['EnvironmentSettings:EmailServiceProvider']='$EnvironmentSettings_EmailServiceProvider'" \
+      -e "this['EnvironmentSettings:OMSProvider']='$EnvironmentSettings_OMSProvider'" \
+      -e "this['EnvironmentSettings:PaymentProvider']='$EnvironmentSettings_PaymentProvider'" \
+      -e "this['EnvironmentSettings:ShippingProvider']='$EnvironmentSettings_ShippingProvider'" \
       -e "this['EnvironmentSettings:TaxProvider']='$EnvironmentSettings_TaxProvider'"
 
 json -I -f appSettings.json \

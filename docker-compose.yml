@@ -64,6 +64,13 @@ services:
       EnvironmentSettings_Commit: "${EnvironmentSettings_Commit}"
       EnvironmentSettings_Environment: "${EnvironmentSettings_Environment}"
       EnvironmentSettings_MiddlewareBaseUrl: "${API_HOST}"
+      EnvironmentSettings_AddressValidationProvider: "${EnvironmentSettings_AddressValidationProvider}"
+      EnvironmentSettings_CMSProvider: "${EnvironmentSettings_CMSProvider}"
+      EnvironmentSettings_CurrencyConversionProvider: "${EnvironmentSettings_CurrencyConversionProvider}"
+      EnvironmentSettings_EmailServiceProvider: "${EnvironmentSettings_EmailServiceProvider}"
+      EnvironmentSettings_OMSProvider: "${EnvironmentSettings_OMSProvider}"
+      EnvironmentSettings_PaymentProvider: "${EnvironmentSettings_PaymentProvider}"
+      EnvironmentSettings_ShippingProvider: "${EnvironmentSettings_ShippingProvider}"
       EnvironmentSettings_TaxProvider: "${EnvironmentSettings_TaxProvider}"
       
       FlurlSettings_TimeoutInSeconds: "${FlurlSettings_TimeoutInSeconds}"
