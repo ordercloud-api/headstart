@@ -18,7 +18,7 @@ namespace OrderCloud.Integrations.SendGrid.Extensions
             services
                 .AddSingleton(x => sendGridSettings)
                 .AddSingleton(x => uiSettings)
-                .AddSingleton(x => new SendGridClient(sendGridSettings.ApiKey))
+                .AddSingleton<ISendGridClient>(x => new SendGridClient(sendGridSettings.ApiKey))
                 .AddSingleton<IEmailServiceProvider, SendGridService>();
 
             return services;

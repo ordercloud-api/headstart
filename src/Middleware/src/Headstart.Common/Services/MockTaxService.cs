@@ -4,7 +4,7 @@ using OrderCloud.SDK;
 
 namespace Headstart.Common.Services
 {
-    public class DefaultTaxService : ITaxCodesProvider, ITaxCalculator
+    public class MockTaxService : ITaxCodesProvider, ITaxCalculator
     {
         public Task<OrderTaxCalculation> CalculateEstimateAsync(OrderWorksheet orderWorksheet, List<OrderPromotion> promotions)
         {

@@ -20,7 +20,8 @@ namespace OrderCloud.Integrations.EasyPost.Extensions
                 .AddSingleton(x => easyPostSettings)
                 .AddSingleton(x => new EasyPostClient(easyPostSettings.ApiKey))
                 .AddSingleton<IShippingCommand, EasyPostShippingCommand>()
-                .AddSingleton<IShippingService, EasyPostShippingService>();
+                .AddSingleton<IShippingService, EasyPostShippingService>()
+                .AddSingleton<IEasyPostShippingService, EasyPostShippingService>();
 
             return services;
         }

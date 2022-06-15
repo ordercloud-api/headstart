@@ -180,7 +180,7 @@ namespace Headstart.API
                 .AddAvalaraTaxProvider(settings.EnvironmentSettings, settings.AvalaraSettings)
                 .AddTaxJarTaxProvider(settings.EnvironmentSettings, settings.TaxJarSettings)
                 .AddVertexTaxProvider(settings.EnvironmentSettings, settings.VertexSettings)
-                .AddDefaultTaxProvider()
+                .AddMockTaxProvider()
 
                 // CMS Providers
                 .AddDefaultCMSProvider(settings.EnvironmentSettings, settings.StorageAccountSettings)

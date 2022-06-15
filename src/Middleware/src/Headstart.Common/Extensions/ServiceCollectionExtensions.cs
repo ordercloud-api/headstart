@@ -67,10 +67,10 @@ namespace Headstart.Common.Extensions
             return services;
         }
 
-        public static IServiceCollection AddDefaultTaxProvider(this IServiceCollection services)
+        public static IServiceCollection AddMockTaxProvider(this IServiceCollection services)
         {
-            services.TryAddSingleton<ITaxCodesProvider, DefaultTaxService>();
-            services.TryAddSingleton<ITaxCalculator, DefaultTaxService>();
+            services.TryAddSingleton<ITaxCodesProvider, MockTaxService>();
+            services.TryAddSingleton<ITaxCalculator, MockTaxService>();
 
             return services;
         }

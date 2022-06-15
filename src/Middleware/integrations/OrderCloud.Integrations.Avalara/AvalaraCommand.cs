@@ -132,8 +132,8 @@ namespace OrderCloud.Integrations.Avalara
                 {
                     new TaxCategorization()
                     {
-                        Code = "Headstart Tax Code",
-                        Description = "Mock Tax Code for Headstart",
+                        Code = "Headstart Avalara Tax Code",
+                        Description = "Mock Avalara Tax Code for Headstart",
                         LongDescription = "This is a mock tax categorization",
                     },
                 },
