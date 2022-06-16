@@ -40,6 +40,8 @@ export class HeaderComponent implements OnInit {
   headerConfig: HSRoute[]
   hasProfileImg = false
   currentUserInitials: string
+  selectedLanguage: string
+  languages: string[]
 
   constructor(
     private ocTokenService: OcTokenService,
@@ -61,6 +63,8 @@ export class HeaderComponent implements OnInit {
     await this.getCurrentUser()
     this.setCurrentUserInitials(this.user)
     this.urlChange(this.router.url)
+    this.languages = this.translate.getLangs()
+    this.selectedLanguage = this.translate.currentLang;
   }
 
   async getCurrentUser() {
@@ -114,6 +118,7 @@ export class HeaderComponent implements OnInit {
 
   setLanguage(language: string): void {
     this.translate.use(language);
+    this.selectedLanguage = this.translate.currentLang;
   }
 
   toNotifications(): void {

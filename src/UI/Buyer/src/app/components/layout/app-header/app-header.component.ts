@@ -85,6 +85,8 @@ export class OCMAppHeader implements OnInit {
   flagIcon: string
   hasSuppliers = false;
   currentSupplierList: ListPage<Supplier>
+  selectedLanguage: string
+  languages: string[]
 
   constructor(
     public context: ShopperContextService,
@@ -116,6 +118,8 @@ export class OCMAppHeader implements OnInit {
     this.flagIcon = this.getCurrencyFlag()
     this.currentSupplierList = await this.getCurrentSupplierList()
     this.hasSuppliers = this.currentSupplierList.Meta.TotalCount > 0
+    this.languages = this.translate.getLangs()
+    this.selectedLanguage = this.translate.currentLang;
   }
 
   getCurrencyFlag(): string {
@@ -254,5 +258,6 @@ export class OCMAppHeader implements OnInit {
 
   setLanguage(language: string): void {
     this.translate.use(language);
+    this.selectedLanguage = this.translate.currentLang;
   }
 }
