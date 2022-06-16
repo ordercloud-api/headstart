@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
+using Headstart.Common.Models;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.EnvironmentSeed.Commands;
-using OrderCloud.Integrations.EnvironmentSeed.Models;
 
 namespace Headstart.API.Controllers
 {
@@ -17,12 +17,21 @@ namespace Headstart.API.Controllers
         }
 
         /// <summary>
-        /// Call this endpoint to upload translation files from source.
+        /// Uploads translation files from the 'wwwroot/i18n' folder.
         /// </summary>
         [HttpPut, Route("translations")]
-        public async Task UploadTranslations([FromForm] UploadTranslationsRequest translationsRequest)
+        public async Task UploadTranslations()
         {
-            await command.UploadTranslationsFile(translationsRequest);
+            await command.UploadTranslationsFiles();
+        }
+
+        /// <summary>
+        /// Uploads a translation file.
+        /// </summary>
+        [HttpPut, Route("translations/{languageCode}")]
+        public async Task UploadTranslations([FromForm] FileUploadRequest fileUploadRequest, string languageCode)
+        {
+            await command.UploadTranslationsFile(languageCode, fileUploadRequest.File);
         }
     }
 }

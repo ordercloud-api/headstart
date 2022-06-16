@@ -1,8 +1,8 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using OrderCloud.Integrations.AzureStorage;
-using OrderCloud.Integrations.EnvironmentSeed.Models;
 
 namespace OrderCloud.Integrations.EnvironmentSeed.Commands
 {
@@ -10,7 +10,7 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
     {
         Task UploadTranslationsFiles();
 
-        Task UploadTranslationsFile(UploadTranslationsRequest translationsRequest);
+        Task UploadTranslationsFile(string languageCode, IFormFile translationsFile);
     }
 
     public class UploadTranslationsCommand : IUploadTranslationsCommand
@@ -33,9 +33,9 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
             }
         }
 
-        public async Task UploadTranslationsFile(UploadTranslationsRequest translationsRequest)
+        public async Task UploadTranslationsFile(string languageCode, IFormFile translationsFile)
         {
-            await cloudBlobService.Save($"i18n/{translationsRequest.LanguageCode}.json", translationsRequest.TranslationsFile);
+            await cloudBlobService.Save($"i18n/{languageCode}.json", translationsFile);
         }
     }
 }
