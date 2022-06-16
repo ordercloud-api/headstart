@@ -23,6 +23,7 @@ import { AppConfig } from 'src/app/models/environment.types'
 import { ProductFilters } from 'src/app/models/filter-config.types'
 import { RouteConfig } from 'src/app/models/shared.types'
 import { SitecoreCDPTrackingService } from 'src/app/services/sitecore-cdp/sitecore-cdp-tracking.service'
+import { TranslateService } from '@ngx-translate/core'
 
 @Component({
   templateUrl: './app-header.component.html',
@@ -88,7 +89,8 @@ export class OCMAppHeader implements OnInit {
   constructor(
     public context: ShopperContextService,
     public appConfig: AppConfig,
-    private cdp: SitecoreCDPTrackingService
+    private cdp: SitecoreCDPTrackingService,
+    private translate: TranslateService
   ) {
     this.profileRoutes = context.router.getProfileRoutes()
     this.orderRoutes = context.router.getOrderRoutes()
@@ -248,5 +250,9 @@ export class OCMAppHeader implements OnInit {
 
   toggleCollapsed(): void {
     this.isCollapsed = !this.isCollapsed
+  }
+
+  setLanguage(language: string): void {
+    this.translate.use(language);
   }
 }

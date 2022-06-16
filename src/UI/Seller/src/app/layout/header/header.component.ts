@@ -16,6 +16,7 @@ import { AppConfig, AppStateService, HSRoute } from '@app-seller/shared'
 import { getHeaderConfig } from './header.config'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
+import { TranslateService } from '@ngx-translate/core'
 
 @Component({
   selector: 'layout-header',
@@ -46,6 +47,7 @@ export class HeaderComponent implements OnInit {
     private appStateService: AppStateService,
     private appAuthService: AppAuthService,
     private currentUserService: CurrentUserService,
+    private translate: TranslateService,
     @Inject(applicationConfiguration) protected appConfig: AppConfig
   ) {
     this.setUpSubs()
@@ -108,6 +110,10 @@ export class HeaderComponent implements OnInit {
 
   toAccount(): void {
     this.router.navigate(['account'])
+  }
+
+  setLanguage(language: string): void {
+    this.translate.use(language);
   }
 
   toNotifications(): void {

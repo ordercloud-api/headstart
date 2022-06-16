@@ -433,8 +433,9 @@ export class AppModule {
         prefix: `${this.appConfig.appID}buyer`.toLowerCase(),
       },
     })
-    translate.setDefaultLang('en')
-    translate.use('en')
+    translate.addLangs(this.appConfig.supportedLanguages)
+    translate.setDefaultLang(this.appConfig.defaultLanguage)
+    translate.use(this.appConfig.defaultLanguage)
 
     library.add(
       faCcDiscover,

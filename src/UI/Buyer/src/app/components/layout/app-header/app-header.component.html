@@ -41,6 +41,35 @@
           (click)="isCollapsed = !isCollapsed; context.router.toRegister()" translate>LAYOUT.APP_HEADER.REGISTER</a>
       </div>
 
+      <!-- Language Selector -->
+      <ul class="navbar-nav" *ngIf="screenSize !== 'xs' && screenSize !== 'sm'">
+        <li class="nav-item dropdown cursor-pointer" ngbDropdown placement="bottom-right">
+          <div class="nav-link dropdown-toggle text-nowrap" id="language-dropdown" ngbDropdownToggle>
+            <span class="d-none d-md-inline fa-layers-envelope" placement="bottom-right"
+              popoverClass="language-selector-popover bg-info" triggers="manual" translate>
+              Select Language
+            </span>
+          </div>
+          <div class="dropdown-menu language-dropdown-alignment" aria-labelledby="language-dropdown" ngbDropdownMenu>
+            <ng-container *ngFor="let orderRoute of orderRoutes">
+              <span>
+                <a class="nav-item dropdown-item cursor-pointer"
+                  (click)="setLanguage('en')" translate>English</a>
+              </span>
+              <span>
+                <a class="nav-item dropdown-item cursor-pointer"
+                  (click)="setLanguage('fr')" translate>French</a>
+              </span>
+              <span>
+                <a class="nav-item dropdown-item cursor-pointer"
+                  (click)="setLanguage('jp')" translate>Japanese</a>
+              </span>
+            </ng-container>
+          </div>
+        </li>
+      </ul>
+      <!-- Language Selector -->
+
       <!-- Order -->
       <ul class="navbar-nav" *ngIf="!isAnonymous && screenSize !== 'xs' && screenSize !== 'sm'">
         <li class="nav-item dropdown cursor-pointer" ngbDropdown placement="bottom-right">

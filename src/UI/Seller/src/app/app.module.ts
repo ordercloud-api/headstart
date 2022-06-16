@@ -115,8 +115,9 @@ export class AppModule {
     @Inject(applicationConfiguration) private appConfig: AppConfig,
     public translate: TranslateService
   ) {
-    translate.setDefaultLang('en')
-    translate.use('en')
+    translate.addLangs(this.appConfig.supportedLanguages)
+    translate.setDefaultLang(this.appConfig.defaultLanguage)
+    translate.use(this.appConfig.defaultLanguage)
     HeadstartConfiguration.Set({
       baseApiUrl: this.appConfig.middlewareUrl,
       orderCloudApiUrl: this.appConfig.orderCloudApiUrl,

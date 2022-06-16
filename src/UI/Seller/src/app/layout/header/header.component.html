@@ -88,7 +88,34 @@
       </li>
     </ul>
   </div>
-
+  <div class="nav-item dropdown cursor-pointer" ngbDropdown>
+    <div>
+      <a
+        class="nav-link navbarDropdown"
+        data-toggle="dropdown"
+        ngbDropdownToggle
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <span>Select Language</span>
+      </a>
+    </div>
+    <div
+      class="dropdown-menu"
+      aria-labelledby="user-dropdown"
+      ngbDropdownMenu
+    >
+      <a class="dropdown-item" (click)="setLanguage('en')" translate>
+        English
+      </a>
+      <a class="dropdown-item" (click)="setLanguage('fr')" translate>
+        French
+      </a>
+      <a class="dropdown-item" (click)="setLanguage('jp')" translate>
+        Japanese
+      </a>
+    </div>
+  </div>
   <div class="nav-item dropdown cursor-pointer current-user" ngbDropdown>
     <div>
       <a

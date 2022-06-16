@@ -8,6 +8,8 @@ export interface EnvironmentConfig {
   middlewareUrl: string
   appname: string
   translateBlobUrl: string
+  supportedLanguages: string[]
+  defaultLanguage: string
   blobStorageUrl: string
   orderCloudApiUrl: string
 }
@@ -49,6 +51,8 @@ export interface AppConfig {
   * Optional base url to provide for OrderCloud CMS management. Note: this is a deprecated feature
   */
   translateBlobUrl: string
+  supportedLanguages: string[]
+  defaultLanguage: string
   blobStorageUrl: string
 
   // marketplaceName is being hard-coded until this is available to store in OrderCloud
