@@ -13,6 +13,7 @@ import {
   AccessTokenBasic,
 } from 'ordercloud-javascript-sdk'
 import { CookieService } from 'ngx-cookie'
+import { TranslateService } from '@ngx-translate/core'
 import { CurrentUserService } from '../current-user/current-user.service'
 import { CurrentOrderService } from '../order/order.service'
 import { HeadStartSDK } from '@ordercloud/headstart-sdk'
@@ -38,8 +39,13 @@ export class AuthService {
 
   appInsightsService: ApplicationInsightsService;
 
+  private languageCookieName = `${this.appConfig.appname
+    .replace(/ /g, '_')
+    .toLowerCase()}_selectedLang`
+
   constructor(
     private cookieService: CookieService,
+    private translate: TranslateService,
     private router: Router,
     private currentOrder: CurrentOrderService,
     private currentUser: CurrentUserService,
@@ -134,6 +140,16 @@ export class AuthService {
       false,
       rememberMe
     )
+
+    let user = await Me.Get({ accessToken: creds.access_token })
+    if (user.xp?.Language) {
+      this.cookieService.putObject(this.languageCookieName, user.xp?.Language)
+      this.translate.use(user.xp?.Language);
+    } else {
+      this.cookieService.remove(this.languageCookieName)
+      this.translate.use(this.translate.defaultLang);
+    }
+
     const urlParams = this.activatedRoute.snapshot.queryParams
     if (urlParams.redirect) {
       void this.router.navigate([`/${urlParams.redirect}`])

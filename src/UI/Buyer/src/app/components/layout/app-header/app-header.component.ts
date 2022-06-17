@@ -125,6 +125,11 @@ export class OCMAppHeader implements OnInit {
     this.hasSuppliers = this.currentSupplierList.Meta.TotalCount > 0
     this.languages = this.translate.getLangs()
     this.selectedLanguage = this.translate.currentLang;
+    this.translate.onLangChange.subscribe((event) => {
+      this.cookieService.putObject(this.languageCookieName, event.lang)
+      this.selectedLanguage = event.lang;
+      this.context.currentUser.patch({ xp: { Language: event.lang } })
+    })
   }
 
   getCurrencyFlag(): string {
@@ -262,8 +267,6 @@ export class OCMAppHeader implements OnInit {
   }
 
   setLanguage(language: string): void {
-    this.cookieService.putObject(this.languageCookieName, language)
     this.translate.use(language);
-    this.selectedLanguage = language;
   }
 }

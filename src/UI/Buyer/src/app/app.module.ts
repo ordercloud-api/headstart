@@ -550,21 +550,22 @@ export class AppModule {
     
     this.translate.addLangs(this.appConfig.supportedLanguages)
     const languages = this.translate.getLangs()
-    const selectedLang = this.cookieService.getObject(this.languageCookieName)
-    if (selectedLang && languages.includes(selectedLang.toString())) {
-      this.translate.setDefaultLang(selectedLang.toString());
-    } else if (languages.includes(browserCultureLang)) {
-      this.translate.setDefaultLang(browserCultureLang);
-    } else if (languages.includes(browserLang)) {
-      this.translate.setDefaultLang(browserLang);
-    } else if (languages.includes(this.appConfig.defaultLanguage)) {
+
+    if (languages.includes(this.appConfig.defaultLanguage)) {
       this.translate.setDefaultLang(this.appConfig.defaultLanguage)
-    } else if (languages.length > 0) {
-      this.translate.setDefaultLang(languages[0])
     }
 
-    if (this.translate.defaultLang) {
-      this.translate.use(this.translate.defaultLang)
+    const selectedLang = this.cookieService.getObject(this.languageCookieName)
+    if (selectedLang && languages.includes(selectedLang.toString())) {
+      this.translate.use(selectedLang.toString());
+    } else if (languages.includes(browserCultureLang)) {
+      this.translate.use(browserCultureLang);
+    } else if (languages.includes(browserLang)) {
+      this.translate.use(browserLang);
+    } else if (languages.includes(this.appConfig.defaultLanguage)) {
+      this.translate.use(this.appConfig.defaultLanguage)
+    } else if (languages.length > 0) {
+      this.translate.use(languages[0])
     }
   }
 
