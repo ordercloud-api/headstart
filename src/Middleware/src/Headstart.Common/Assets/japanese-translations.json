@@ -54,6 +54,7 @@
       "NO_CHANGES": "変更なし",
       "CONFIRM": "確定",
       "CREATE": "作成",
+      "UPDATE": "アップデート",
       "CANCEL": "キャンセル"
     },
     "DELETE": {
@@ -392,7 +393,11 @@
       "WHICH_LOCATION_SHIP": "この商品はどのロケーションから発送されますか？",
       "WIDTH": "幅",
       "WITHIN_THIS_BUYER": "この購入者の中で、商品が表示されるカテゴリーやカタログ、購入者が支払う価格を選択します。",
-      "YOU_MAY_ASSIGN": "このレベルで商品を割り当てることもできますし、サブカテゴリでより詳細な情報を得ることができます。"
+      "YOU_MAY_ASSIGN": "このレベルで商品を割り当てることもできますし、サブカテゴリでより詳細な情報を得ることができます。",
+      "BUNDLED_PRODUCTS": "バンドル製品",
+      "BUNDLES_MUST_HAVE_ONE_PRODUCT": "バンドルには少なくとも1つの製品が含まれている必要があります",
+      "ADD_PRODUCTS_TO_BUNDLE": "バンドルする製品を追加する",
+      "ADD_SELECTED_PRODUCTS": "選択した製品を追加する"
     },
     "PROMOTIONS": {
       "ACTIVE": "有効",

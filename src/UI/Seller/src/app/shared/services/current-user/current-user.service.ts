@@ -10,7 +10,7 @@ import {
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { AppStateService } from '../app-state/app-state.service'
-import { HeadStartSDK, ImageAsset } from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, HSSupplier, ImageAsset } from '@ordercloud/headstart-sdk'
 import { Tokens } from 'ordercloud-javascript-sdk'
 import { BehaviorSubject } from 'rxjs'
 import { AppConfig } from '@app-seller/models/environment.types'
@@ -22,9 +22,7 @@ import { UserContext } from '@app-seller/models/user.types'
 export class CurrentUserService {
   me: MeUser
   mySupplier: Supplier
-  public userSubject: BehaviorSubject<MeUser<any>> = new BehaviorSubject<
-    MeUser<any>
-  >({})
+  public userSubject: BehaviorSubject<MeUser> = new BehaviorSubject<MeUser>({})
   public profileImgSubject: BehaviorSubject<ImageAsset> =
     new BehaviorSubject<ImageAsset>({})
   constructor(
@@ -37,7 +35,11 @@ export class CurrentUserService {
     private ocSupplierService: OcSupplierService
   ) {}
 
-  async login(username: string, password: string, rememberMe: boolean) {
+  async login(
+    username: string,
+    password: string,
+    rememberMe: boolean
+  ): Promise<void> {
     const accessToken = await this.ocAuthService
       .Login(username, password, this.appConfig.clientID, this.appConfig.scope)
       .toPromise()
@@ -80,7 +82,7 @@ export class CurrentUserService {
     return this.me
   }
 
-  async getMySupplier(): Promise<Supplier> {
+  async getMySupplier(): Promise<HSSupplier> {
     const me = await this.getUser()
     if (!me.Supplier) return
     return this.mySupplier && this.mySupplier.ID === me.Supplier.ID
@@ -88,8 +90,8 @@ export class CurrentUserService {
       : await this.refreshSupplier(me.Supplier.ID)
   }
 
-  async refreshSupplier(supplierID): Promise<Supplier> {
-    const token = await this.ocTokenService.GetAccess()
+  async refreshSupplier(supplierID: string): Promise<HSSupplier> {
+    const token = this.ocTokenService.GetAccess()
     this.mySupplier = await HeadStartSDK.Suppliers.GetMySupplier(
       supplierID,
       token
@@ -104,8 +106,8 @@ export class CurrentUserService {
 
   async constructUserContext(): Promise<UserContext> {
     const me: MeUser = await this.getUser()
-    const userType = await this.appAuthService.getOrdercloudUserType()
-    const userRoles = await this.appAuthService.getUserRoles()
+    const userType = this.appAuthService.getOrdercloudUserType()
+    const userRoles = this.appAuthService.getUserRoles()
     return {
       Me: me,
       UserType: userType,
@@ -113,9 +115,9 @@ export class CurrentUserService {
     }
   }
 
-  async isSupplierUser() {
+  async isSupplierUser(): Promise<boolean> {
     const me = await this.getUser()
-    return me.Supplier ? true : false
+    return Boolean(me.Supplier)
   }
 
   onChange(callback: (user: MeUser) => void): void {

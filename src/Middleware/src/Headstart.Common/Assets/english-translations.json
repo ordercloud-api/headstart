@@ -54,6 +54,7 @@
       "NO_CHANGES": "No Changes",
       "CONFIRM": "Confirm",
       "CREATE": "Create",
+      "UPDATE": "Update",
       "CANCEL": "Cancel"
     },
     "DELETE": {
@@ -398,7 +399,11 @@
       "WHICH_LOCATION_SHIP": "Which location will this product ship from?",
       "WIDTH": "Width",
       "WITHIN_THIS_BUYER": "Within this buyer, select the categories and catalogs in which the product will appear, and the price buyers will pay.",
-      "YOU_MAY_ASSIGN": "You may assign the product at this level or get more specific with subcategories"
+      "YOU_MAY_ASSIGN": "You may assign the product at this level or get more specific with subcategories",
+      "BUNDLED_PRODUCTS": "Bundled products",
+      "BUNDLES_MUST_HAVE_ONE_PRODUCT": "Bundles must have at least one product",
+      "ADD_PRODUCTS_TO_BUNDLE": "Add products to bundle",
+      "ADD_SELECTED_PRODUCTS": "Add selected products"
     },
     "PROMOTIONS": {
       "ACTIVE": "Active",

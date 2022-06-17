@@ -211,7 +211,7 @@ export class ResourceTableComponent
     this.availableProductTypes =
       formattedSupplierProductTypes.length > 0
         ? formattedSupplierProductTypes
-        : this.mapProductTypes(['Standard', 'Quote'])
+        : this.mapProductTypes(['Standard', 'Quote', 'Bundle'])
   }
 
   getTitle(

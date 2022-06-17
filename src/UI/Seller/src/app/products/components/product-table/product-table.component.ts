@@ -5,7 +5,6 @@ import { Router, ActivatedRoute } from '@angular/router'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { ProductService } from '@app-seller/products/product.service'
 import { UserContext } from '@app-seller/models/user.types'
-import { HSProduct } from '@ordercloud/headstart-sdk'
 
 @Component({
   selector: 'app-product-table',
@@ -14,11 +13,13 @@ import { HSProduct } from '@ordercloud/headstart-sdk'
 })
 export class ProductTableComponent
   extends ResourceCrudComponent<Product>
-  implements OnInit {
+  implements OnInit
+{
   userContext: UserContext
   filterConfig: any
+  isViewingBundle: boolean
   constructor(
-    private productService: ProductService,
+    protected productService: ProductService,
     private currentUserService: CurrentUserService,
     private ocSupplierService: OcSupplierService,
     changeDetectorRef: ChangeDetectorRef,
@@ -27,12 +28,16 @@ export class ProductTableComponent
     ngZone: NgZone
   ) {
     super(changeDetectorRef, productService, router, activatedRoute, ngZone)
+    this.isViewingBundle = this.router.url.includes('/products/new/bundle')
+  }
+
+  async ngOnInit(): Promise<void> {
+    this.userContext = await this.currentUserService.getUserContext()
     this.buildFilterConfig()
+    super.ngOnInit() // call parent component ngOnInit
   }
 
   async buildFilterConfig(): Promise<void> {
-    this.userContext = await this.currentUserService.getUserContext()
-
     const filters = []
     if (
       this.userContext.UserRoles.includes('SupplierReader') ||
@@ -75,10 +80,12 @@ export class ProductTableComponent
       Type: 'Dropdown',
     }
   }
-  
+
   updateResourceInList(product: Product): void {
-    const index = this.resourceList?.Items?.findIndex(item => item.ID === product.ID) 
-    if(index !== -1) {
+    const index = this.resourceList?.Items?.findIndex(
+      (item) => item.ID === product.ID
+    )
+    if (index !== -1) {
       this.resourceList.Items[index] = product
     }
   }

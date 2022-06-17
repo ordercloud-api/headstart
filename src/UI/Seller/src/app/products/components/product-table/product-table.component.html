@@ -17,16 +17,32 @@
   [labelSingular]="'ADMIN.NAV.PRODUCT'"
   [labelPlural]="'ADMIN.NAV.PRODUCTS'"
 >
-  <!-- <app-product-view *ngIf="userContext?.UserType === 'SELLER'"
-                    class="resource-edit"
-                    [orderCloudProduct]="resourceInSelection">
-  </app-product-view> -->
   <app-product-edit
+    *ngIf="
+      userContext &&
+      !isViewingBundle &&
+      (!resourceInSelection?.xp?.ProductType?.length ||
+        resourceInSelection.xp.ProductType.indexOf('Bundle') === -1)
+    "
     class="resource-edit"
+    [userContext]="userContext"
     [dataIsSaving]="dataIsSaving"
-    [addresses]="addresses"
-    [orderCloudProduct]="resourceInSelection"
+    [product]="resourceInSelection"
     (updateList)="updateResourceInList($event)"
   >
   </app-product-edit>
+  <app-product-bundle-edit
+    *ngIf="
+      userContext &&
+      (isViewingBundle ||
+        (resourceInSelection?.xp?.ProductType?.length &&
+          resourceInSelection.xp.ProductType.indexOf('Bundle') > -1))
+    "
+    [userContext]="userContext"
+    class="resource-edit"
+    [dataIsSaving]="dataIsSaving"
+    [product]="resourceInSelection"
+    (updateList)="updateResourceInList($event)"
+  >
+  </app-product-bundle-edit>
 </resource-table-component>

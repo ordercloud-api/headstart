@@ -1,0 +1,259 @@
+<div class="container-fluid resource-edit">
+  <form [formGroup]="form">
+    <div class="form-group">
+      <label for="Active" translate>ADMIN.PRODUCT_EDIT.ACTIVE</label>
+      <label class="d-block switch mb-0">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          formControlName="Active"
+          name="Active"
+          (input)="updateProductModel($event)"
+        />
+        <span class="slider round"></span>
+      </label>
+    </div>
+    <div class="form-group">
+      <label for="Name" translate
+        >ADMIN.PRODUCT_EDIT.NAME <span class="text-danger">*</span></label
+      >
+      <input
+        required
+        type="text"
+        class="form-control"
+        id="Name"
+        name="Name"
+        showErrors
+        aria-describedby="Name"
+        formControlName="Name"
+        placeholder="Enter Product Name"
+        (input)="updateProductModel($event)"
+      />
+    </div>
+    <div class="form-group">
+      <label for="SKU" translate>ADMIN.PRODUCT_EDIT.PRODUCT_SKU</label>
+      <input
+        type="text"
+        class="form-control"
+        [disabled]="!isCreatingNew"
+        id="SKU"
+        name="SKU"
+        showErrors
+        aria-describedby="SKU"
+        maxlength="100"
+        formControlName="ID"
+        placeholder="Enter Product SKU"
+        (input)="updateProductModel($event)"
+      />
+    </div>
+
+    <!-- Product Images -->
+    <div class="row pt-3 mt-5 border-top">
+      <div class="col-md-5">
+        <h5 translate>ADMIN.PRODUCT_EDIT.PRODUCT_IMAGES</h5>
+        <p class="font-italic" translate>
+          ADMIN.PRODUCT_EDIT.PRODUCT_IMAGES_DESC
+        </p>
+      </div>
+      <div class="col-md-7">
+        <app-product-image-upload
+          [images]="product?.xp?.Images"
+          [stagedImages]="stagedImages"
+          (stagedImagesChange)="onStagedImagesChange($event)"
+          (deleteImage)="onDeleteFile($event)"
+        ></app-product-image-upload>
+      </div>
+    </div>
+
+    <!-- Product Documents -->
+    <div class="row pt-3 mt-5 border-top">
+      <div class="col-md-5">
+        <h5 translate>ADMIN.PRODUCT_EDIT.DOCUMENTS_PRODUCTS</h5>
+        <p class="font-italic" translate>ADMIN.PRODUCT_EDIT.DOCUMENTS_DESC</p>
+      </div>
+      <div class="col-md-7">
+        <app-product-document-upload
+          [documents]="product?.xp?.Documents"
+          [stagedDocuments]="stagedDocuments"
+          (stagedDocumentsChange)="onStagedDocumentsChange($event)"
+          (deleteDocument)="onDeleteFile($event)"
+        >
+        </app-product-document-upload>
+      </div>
+    </div>
+
+    <!-- Bundled Products -->
+    <div class="row pt-3 mt-2 border-top">
+      <div class="col-md-5">
+        <h5 translate>ADMIN.PRODUCT_EDIT.BUNDLED_PRODUCTS</h5>
+        <p
+          class="font-italic text-danger"
+          *ngIf="!selectedBundledProducts?.length"
+          translate
+        >
+          ADMIN.PRODUCT_EDIT.BUNDLES_MUST_HAVE_ONE_PRODUCT
+        </p>
+      </div>
+      <div class="col-md-7" style="display: flex; justify-content: flex-end">
+        <button
+          class="btn btn-outline-primary"
+          style="max-height: 50px"
+          (click)="openModal(bundleModal)"
+        >
+          ADMIN.PRODUCT_EDIT.ADD_PRODUCTS_TO_BUNDLE
+        </button>
+      </div>
+    </div>
+
+    <table
+      class="table table-striped table-bordered table-hover bg-light mt-5"
+      *ngIf="selectedBundledProducts?.length"
+    >
+      <thead>
+        <tr>
+          <td></td>
+          <td translate>ADMIN.PRODUCT_EDIT.PRODUCT_SKU</td>
+          <td translate>ADMIN.PRODUCT_EDIT.NAME</td>
+          <td></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let bundledProduct of selectedBundledProducts">
+          <td>
+            <img
+              class="avatar rounded-circle"
+              style="max-width: 50px"
+              src="{{
+                bundledProduct?.xp?.Images?.length
+                  ? bundledProduct?.xp?.Images[0].ThumbnailUrl
+                  : PLACEHOLDER_PRODUCT_IMAGE
+              }}"
+              alt=""
+            />
+          </td>
+          <td>{{ bundledProduct.ID }}</td>
+          <td>{{ bundledProduct.Name }}</td>
+          <td>
+            <fa-icon
+              [icon]="faTrash"
+              class="text-danger"
+              (click)="removeProductFromBundle(bundledProduct.ID)"
+            >
+            </fa-icon>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div
+      class="
+        d-flex
+        justify-content-between
+        align-items-center
+        py-2
+        product-edit-actions
+      "
+    >
+      <delete-confirm-modal-component
+        *ngIf="!isCreatingNew"
+        buttonText="ADMIN.NAV.PRODUCT"
+        (deleteConfirmed)="deleteProduct()"
+      >
+      </delete-confirm-modal-component>
+      <div>
+        <button
+          [disabled]="form.invalid || !product?.xp?.BundledProducts?.length"
+          class="btn btn-primary mt-5"
+          *ngIf="isCreatingNew"
+          (click)="createProduct()"
+          translate
+        >
+          COMMON.CREATE
+        </button>
+        <button
+          [disabled]="form.invalid || !product?.xp?.BundledProducts?.length"
+          class="btn btn-primary mt-5"
+          *ngIf="areChanges && !isCreatingNew"
+          (click)="updateProduct()"
+        >
+          COMMON.UPDATE
+        </button>
+        <button
+          class="btn btn-primary mt-5 ml-3"
+          (click)="handleDiscardChanges()"
+          *ngIf="areChanges && !isCreatingNew"
+          translate
+        >
+          COMMON.DISCARD_CHANGES
+        </button>
+      </div>
+    </div>
+  </form>
+  <ng-template #bundleModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">ADMIN.PRODUCT_EDIT.ADD_PRODUCTS_TO_BUNDLE</h4>
+    </div>
+    <div class="modal-body">
+      <search-component
+        placeholderText="Search products..."
+        [searchTermInput]="searchTerm"
+        (searched)="searchedBundledProducts($event)"
+      >
+      </search-component>
+      <table class="table table-hover">
+        <tbody>
+          <tr
+            *ngFor="let product of bundledProducts"
+            (click)="toggleStagedBundledProducts(product.ID)"
+            [ngClass]="{
+              selected: stagedBundledProducts?.indexOf(product.ID) > -1
+            }"
+          >
+            <td>
+              <div class="d-flex flex-row">
+                <div class="p-2 align-self-center">
+                  <img
+                    class="avatar rounded-circle"
+                    style="max-width: 50px"
+                    src="{{
+                      product?.xp?.Images?.length
+                        ? product.xp.Images[0].ThumbnailUrl
+                        : PLACEHOLDER_PRODUCT_IMAGE
+                    }}"
+                    alt=""
+                  />
+                </div>
+                <div class="p-2">
+                  <span class="d-flex flex-column">
+                    <h6>{{ product.Name }}</h6>
+                    <div>{{ product.ID }}</div>
+                  </span>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div
+      class="
+        modal-footer
+        w-100
+        d-flex
+        justify-content-space-between justify-content-between
+      "
+    >
+      <button type="button" class="btn btn-outline-dark" (click)="cancel()">
+        COMMON.CANCEL
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        [disabled]="!stagedBundledProducts?.length"
+        (click)="addSelectedProductsToBundle()"
+        translate
+      >
+        ADMIN.PRODUCT_EDIT.ADD_SELECTED_PRODUCTS
+      </button>
+    </div>
+  </ng-template>
+</div>
