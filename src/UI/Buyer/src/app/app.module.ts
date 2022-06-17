@@ -15,7 +15,7 @@ import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
 import { createCustomElement } from '@angular/elements'
 import { isPlatformBrowser, DatePipe } from '@angular/common'
-import { CookieModule } from 'ngx-cookie'
+import { CookieModule, CookieService } from 'ngx-cookie'
 import { ToastrModule } from 'ngx-toastr'
 import {
   TranslateModule,
@@ -411,10 +411,15 @@ const components = [
   bootstrap: [AppComponent],
 })
 export class AppModule {
+  private languageCookieName = `${this.appConfig.appname
+    .replace(/ /g, '_')
+    .toLowerCase()}_selectedLang`
+
   constructor(
     private injector: Injector,
     @Inject(PLATFORM_ID) private platformId: any,
     public translate: TranslateService,
+    private cookieService: CookieService,
     private appConfig: AppConfig
   ) {
     HeadstartConfiguration.Set({
@@ -433,9 +438,8 @@ export class AppModule {
         prefix: `${this.appConfig.appID}buyer`.toLowerCase(),
       },
     })
-    translate.addLangs(this.appConfig.supportedLanguages)
-    translate.setDefaultLang(this.appConfig.defaultLanguage)
-    translate.use(this.appConfig.defaultLanguage)
+    
+    this.configureTranslationService()
 
     library.add(
       faCcDiscover,
@@ -538,6 +542,30 @@ export class AppModule {
     this.buildWebComponent(ConfirmModal, 'confirm-modal')
     this.buildWebComponent(OCMLocationListItem, 'ocm-location-list-item')
     this.buildWebComponent(OCMLocationManagement, 'ocm-location-management')
+  }
+
+  configureTranslationService(): void {
+    const browserCultureLang = this.translate.getBrowserCultureLang();
+    const browserLang = this.translate.getBrowserLang();
+    
+    this.translate.addLangs(this.appConfig.supportedLanguages)
+    const languages = this.translate.getLangs()
+    const selectedLang = this.cookieService.getObject(this.languageCookieName)
+    if (selectedLang && languages.includes(selectedLang.toString())) {
+      this.translate.setDefaultLang(selectedLang.toString());
+    } else if (languages.includes(browserCultureLang)) {
+      this.translate.setDefaultLang(browserCultureLang);
+    } else if (languages.includes(browserLang)) {
+      this.translate.setDefaultLang(browserLang);
+    } else if (languages.includes(this.appConfig.defaultLanguage)) {
+      this.translate.setDefaultLang(this.appConfig.defaultLanguage)
+    } else if (languages.length > 0) {
+      this.translate.setDefaultLang(languages[0])
+    }
+
+    if (this.translate.defaultLang) {
+      this.translate.use(this.translate.defaultLang)
+    }
   }
 
   buildWebComponent(angularComponent: any, htmlTagName: string): void {

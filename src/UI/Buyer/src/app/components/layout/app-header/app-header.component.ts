@@ -24,6 +24,7 @@ import { ProductFilters } from 'src/app/models/filter-config.types'
 import { RouteConfig } from 'src/app/models/shared.types'
 import { SitecoreCDPTrackingService } from 'src/app/services/sitecore-cdp/sitecore-cdp-tracking.service'
 import { TranslateService } from '@ngx-translate/core'
+import { CookieService } from 'ngx-cookie'
 
 @Component({
   templateUrl: './app-header.component.html',
@@ -87,12 +88,16 @@ export class OCMAppHeader implements OnInit {
   currentSupplierList: ListPage<Supplier>
   selectedLanguage: string
   languages: string[]
+  private languageCookieName = `${this.appConfig.appname
+    .replace(/ /g, '_')
+    .toLowerCase()}_selectedLang`
 
   constructor(
     public context: ShopperContextService,
     public appConfig: AppConfig,
     private cdp: SitecoreCDPTrackingService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private cookieService: CookieService
   ) {
     this.profileRoutes = context.router.getProfileRoutes()
     this.orderRoutes = context.router.getOrderRoutes()
@@ -257,7 +262,8 @@ export class OCMAppHeader implements OnInit {
   }
 
   setLanguage(language: string): void {
+    this.cookieService.putObject(this.languageCookieName, language)
     this.translate.use(language);
-    this.selectedLanguage = this.translate.currentLang;
+    this.selectedLanguage = language;
   }
 }

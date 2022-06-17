@@ -17,6 +17,7 @@ import { getHeaderConfig } from './header.config'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { TranslateService } from '@ngx-translate/core'
+import { CookieService } from 'ngx-cookie'
 
 @Component({
   selector: 'layout-header',
@@ -42,6 +43,9 @@ export class HeaderComponent implements OnInit {
   currentUserInitials: string
   selectedLanguage: string
   languages: string[]
+  private languageCookieName = `${this.appConfig.appname
+    .replace(/ /g, '_')
+    .toLowerCase()}_selectedLang`
 
   constructor(
     private ocTokenService: OcTokenService,
@@ -50,6 +54,7 @@ export class HeaderComponent implements OnInit {
     private appAuthService: AppAuthService,
     private currentUserService: CurrentUserService,
     private translate: TranslateService,
+    private cookieService: CookieService,
     @Inject(applicationConfiguration) protected appConfig: AppConfig
   ) {
     this.setUpSubs()
@@ -117,8 +122,9 @@ export class HeaderComponent implements OnInit {
   }
 
   setLanguage(language: string): void {
+    this.cookieService.putObject(this.languageCookieName, language)
     this.translate.use(language);
-    this.selectedLanguage = this.translate.currentLang;
+    this.selectedLanguage = language;
   }
 
   toNotifications(): void {

@@ -7,7 +7,7 @@ import { HttpClientModule, HttpClient } from '@angular/common/http'
 // 3rd party
 import { OrderCloudModule, Configuration } from '@ordercloud/angular-sdk'
 import { OcSDKConfig } from '@app-seller/config/ordercloud-sdk.config'
-import { CookieModule } from 'ngx-cookie'
+import { CookieModule, CookieService } from 'ngx-cookie'
 import { ToastrModule } from 'ngx-toastr'
 import { NgProgressModule } from '@ngx-progressbar/core'
 import { NgProgressHttpModule } from '@ngx-progressbar/http'
@@ -111,13 +111,15 @@ export enum OrdercloudEnv {
   bootstrap: [AppComponent],
 })
 export class AppModule {
+  private languageCookieName = `${this.appConfig.appname
+    .replace(/ /g, '_')
+    .toLowerCase()}_selectedLang`
+
   constructor(
     @Inject(applicationConfiguration) private appConfig: AppConfig,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private cookieService: CookieService
   ) {
-    translate.addLangs(this.appConfig.supportedLanguages)
-    translate.setDefaultLang(this.appConfig.defaultLanguage)
-    translate.use(this.appConfig.defaultLanguage)
     HeadstartConfiguration.Set({
       baseApiUrl: this.appConfig.middlewareUrl,
       orderCloudApiUrl: this.appConfig.orderCloudApiUrl,
@@ -134,5 +136,31 @@ export class AppModule {
         prefix: this.appConfig.appname.replace(/ /g, '_').toLowerCase(),
       },
     })
+
+    this.configureTranslationService()
+  }
+
+  configureTranslationService(): void {
+    const browserCultureLang = this.translate.getBrowserCultureLang();
+    const browserLang = this.translate.getBrowserLang();
+    
+    this.translate.addLangs(this.appConfig.supportedLanguages)
+    const languages = this.translate.getLangs()
+    const selectedLang = this.cookieService.getObject(this.languageCookieName)
+    if (selectedLang && languages.includes(selectedLang.toString())) {
+      this.translate.setDefaultLang(selectedLang.toString());
+    } else if (languages.includes(browserCultureLang)) {
+      this.translate.setDefaultLang(browserCultureLang);
+    } else if (languages.includes(browserLang)) {
+      this.translate.setDefaultLang(browserLang);
+    } else if (languages.includes(this.appConfig.defaultLanguage)) {
+      this.translate.setDefaultLang(this.appConfig.defaultLanguage)
+    } else if (languages.length > 0) {
+      this.translate.setDefaultLang(languages[0])
+    }
+
+    if (this.translate.defaultLang) {
+      this.translate.use(this.translate.defaultLang)
+    }
   }
 }
