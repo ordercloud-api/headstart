@@ -121,7 +121,7 @@ export class OCMAppHeader implements OnInit {
     this.currentSupplierList = await this.getCurrentSupplierList()
     this.hasSuppliers = this.currentSupplierList.Meta.TotalCount > 0
     this.languages = this.translate.getLangs()
-    this.selectedLanguage = this.translate.currentLang;
+    this.selectedLanguage = this.translate.currentLang
     this.translate.onLangChange.subscribe((event) => {
       this.selectedLanguage = event.lang;
     })

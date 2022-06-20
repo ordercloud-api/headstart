@@ -7,7 +7,7 @@ import { HttpClientModule, HttpClient } from '@angular/common/http'
 // 3rd party
 import { OrderCloudModule, Configuration } from '@ordercloud/angular-sdk'
 import { OcSDKConfig } from '@app-seller/config/ordercloud-sdk.config'
-import { CookieModule, CookieService } from 'ngx-cookie'
+import { CookieModule } from 'ngx-cookie'
 import { ToastrModule } from 'ngx-toastr'
 import { NgProgressModule } from '@ngx-progressbar/core'
 import { NgProgressHttpModule } from '@ngx-progressbar/http'
@@ -44,6 +44,7 @@ import { AutoAppendTokenInterceptor } from './auth/interceptors/auto-append-toke
 import { RefreshTokenInterceptor } from './auth/interceptors/refresh-token/refresh-token.interceptor'
 import { AppRoutingModule } from './app-routing.module'
 import { RouterModule } from '@angular/router'
+import { LanguageSelectorService } from 'src/app/shared/services/language-selector/language-selector.service'
 
 export function HttpLoaderFactory(
   http: HttpClient,
@@ -111,14 +112,10 @@ export enum OrdercloudEnv {
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  private languageCookieName = `${this.appConfig.appname
-    .replace(/ /g, '_')
-    .toLowerCase()}_selectedLang`
-
   constructor(
     @Inject(applicationConfiguration) private appConfig: AppConfig,
     public translate: TranslateService,
-    private cookieService: CookieService
+    private languageService: LanguageSelectorService
   ) {
     HeadstartConfiguration.Set({
       baseApiUrl: this.appConfig.middlewareUrl,
@@ -141,26 +138,19 @@ export class AppModule {
   }
 
   configureTranslationService(): void {
-    const browserCultureLang = this.translate.getBrowserCultureLang();
-    const browserLang = this.translate.getBrowserLang();
-    
+    if (this.appConfig.supportedLanguages && this.appConfig.supportedLanguages.length === 0){
+      throw new Error('supportedLanguages not defined in appConfig.')
+    }
     this.translate.addLangs(this.appConfig.supportedLanguages)
     const languages = this.translate.getLangs()
-    const selectedLang = this.cookieService.getObject(this.languageCookieName)
-    if (selectedLang && languages.includes(selectedLang.toString())) {
-      this.translate.setDefaultLang(selectedLang.toString());
-    } else if (languages.includes(browserCultureLang)) {
-      this.translate.setDefaultLang(browserCultureLang);
-    } else if (languages.includes(browserLang)) {
-      this.translate.setDefaultLang(browserLang);
-    } else if (languages.includes(this.appConfig.defaultLanguage)) {
+
+    if (!this.appConfig.defaultLanguage) {
+      throw new Error('defaultLanguage not defined in appConfig.')
+    }
+    if (languages.includes(this.appConfig.defaultLanguage)) {
       this.translate.setDefaultLang(this.appConfig.defaultLanguage)
-    } else if (languages.length > 0) {
-      this.translate.setDefaultLang(languages[0])
     }
 
-    if (this.translate.defaultLang) {
-      this.translate.use(this.translate.defaultLang)
-    }
+    this.languageService.SetTranslateLanguage()
   }
 }

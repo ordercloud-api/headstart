@@ -15,7 +15,7 @@ import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
 import { createCustomElement } from '@angular/elements'
 import { isPlatformBrowser, DatePipe } from '@angular/common'
-import { CookieModule, CookieService } from 'ngx-cookie'
+import { CookieModule } from 'ngx-cookie'
 import { ToastrModule } from 'ngx-toastr'
 import {
   TranslateModule,

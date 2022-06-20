@@ -17,7 +17,7 @@ import { getHeaderConfig } from './header.config'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { TranslateService } from '@ngx-translate/core'
-import { CookieService } from 'ngx-cookie'
+import { LanguageSelectorService } from 'src/app/shared/services/language-selector/language-selector.service'
 
 @Component({
   selector: 'layout-header',
@@ -43,9 +43,6 @@ export class HeaderComponent implements OnInit {
   currentUserInitials: string
   selectedLanguage: string
   languages: string[]
-  private languageCookieName = `${this.appConfig.appname
-    .replace(/ /g, '_')
-    .toLowerCase()}_selectedLang`
 
   constructor(
     private ocTokenService: OcTokenService,
@@ -54,7 +51,7 @@ export class HeaderComponent implements OnInit {
     private appAuthService: AppAuthService,
     private currentUserService: CurrentUserService,
     private translate: TranslateService,
-    private cookieService: CookieService,
+    private languageService: LanguageSelectorService,
     @Inject(applicationConfiguration) protected appConfig: AppConfig
   ) {
     this.setUpSubs()
@@ -69,7 +66,10 @@ export class HeaderComponent implements OnInit {
     this.setCurrentUserInitials(this.user)
     this.urlChange(this.router.url)
     this.languages = this.translate.getLangs()
-    this.selectedLanguage = this.translate.currentLang;
+    this.selectedLanguage = this.translate.currentLang
+    this.translate.onLangChange.subscribe((event) => {
+      this.selectedLanguage = event.lang;
+    })
   }
 
   async getCurrentUser() {
@@ -121,10 +121,9 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['account'])
   }
 
-  setLanguage(language: string): void {
-    this.cookieService.putObject(this.languageCookieName, language)
-    this.translate.use(language);
-    this.selectedLanguage = language;
+  async setLanguage(language: string) {
+    const user = await this.currentUserService.getUser()
+    await this.languageService.SetLanguage(language, user)
   }
 
   toNotifications(): void {

@@ -17,6 +17,7 @@ import { BehaviorSubject, Observable, of, throwError } from 'rxjs'
 import { tap, catchError, finalize, map } from 'rxjs/operators'
 import * as jwtDecode from 'jwt-decode'
 import { keys as _keys } from 'lodash'
+import { LanguageSelectorService } from 'src/app/shared/services/language-selector/language-selector.service'
 
 export const TokenRefreshAttemptNotPossible =
   'Token refresh attempt not possible'
@@ -37,6 +38,7 @@ export class AppAuthService {
     private cookieService: CookieService,
     private router: Router,
     private appStateService: AppStateService,
+    private languageService: LanguageSelectorService,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {
     this.refreshToken = new BehaviorSubject<string>('')
@@ -135,6 +137,7 @@ export class AppAuthService {
       }
     })
     this.appStateService.isLoggedIn.next(false)
+    this.languageService.SetTranslateLanguage()
     return of(this.router.navigate(['/login']))
   }
 
