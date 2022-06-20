@@ -23,7 +23,7 @@ import { AppConfig } from 'src/app/models/environment.types'
 import { ProductFilters } from 'src/app/models/filter-config.types'
 import { RouteConfig } from 'src/app/models/shared.types'
 import { SitecoreCDPTrackingService } from 'src/app/services/sitecore-cdp/sitecore-cdp-tracking.service'
-import { LanguageSelectorService } from 'src/app/services/translation/language-selector.service'
+import { LanguageSelectorService } from 'src/app/services/language-selector/language-selector.service'
 import { TranslateService } from '@ngx-translate/core'
 
 @Component({
@@ -88,9 +88,6 @@ export class OCMAppHeader implements OnInit {
   currentSupplierList: ListPage<Supplier>
   selectedLanguage: string
   languages: string[]
-  private languageCookieName = `${this.appConfig.appname
-    .replace(/ /g, '_')
-    .toLowerCase()}_selectedLang`
 
   constructor(
     public context: ShopperContextService,
@@ -125,8 +122,7 @@ export class OCMAppHeader implements OnInit {
     this.hasSuppliers = this.currentSupplierList.Meta.TotalCount > 0
     this.languages = this.translate.getLangs()
     this.selectedLanguage = this.translate.currentLang;
-    this.translate.onLangChange.subscribe(async (event) => {
-      await this.languageService.SetLanguage(event.lang, this.context.currentUser.get())
+    this.translate.onLangChange.subscribe((event) => {
       this.selectedLanguage = event.lang;
     })
   }
@@ -265,7 +261,7 @@ export class OCMAppHeader implements OnInit {
     this.isCollapsed = !this.isCollapsed
   }
 
-  setLanguage(language: string): void {
-    this.translate.use(language);
+  async setLanguage(language: string) {
+    await this.languageService.SetLanguage(language, this.context.currentUser.get())
   }
 }

@@ -21,7 +21,7 @@ import { ApplicationInsightsService } from '../application-insights/application-
 import { TokenHelperService } from '../token-helper/token-helper.service'
 import { AppConfig } from 'src/app/models/environment.types'
 import { BaseResolveService } from '../base-resolve/base-resolve.service'
-import { LanguageSelectorService } from 'src/app/services/translation/language-selector.service'
+import { LanguageSelectorService } from 'src/app/services/language-selector/language-selector.service'
 
 @Injectable({
   providedIn: 'root',
@@ -172,11 +172,13 @@ export class AuthService {
     try {
       const anonToken = await this.getAnonymousToken()
       this.setToken(anonToken.access_token)
+      await this.languageService.SetTranslateLanguage()
       return anonToken
     } catch (err) {
       let retryLogin = !(err?.errors?.error === 'invalid_grant' &&
           err?.errors?.error_description === 'Default context user required for client credentials grant')
       void this.logout(retryLogin)
+      await this.languageService.SetTranslateLanguage()
       throw new Error(err)
     }
   }
@@ -199,6 +201,7 @@ export class AuthService {
         await this.baseResolveService.resolve()
       })
     } else {
+      await this.languageService.SetTranslateLanguage()
       void this.router.navigate(['/login'])
     }
   }

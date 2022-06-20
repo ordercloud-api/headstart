@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
+import { TokenHelperService } from '../token-helper/token-helper.service'
 import { CookieService } from 'ngx-cookie'
 import { MeUser, Me, Tokens } from 'ordercloud-javascript-sdk'
 import { AppConfig } from 'src/app/models/environment.types'
@@ -19,6 +20,7 @@ export class LanguageSelectorService {
   constructor(
     private cookieService: CookieService,
     private translate: TranslateService,
+    private tokenHelper: TokenHelperService,
     private appConfig: AppConfig
   ) {
     this.SetLanguage = this.SetLanguage.bind(this)
@@ -26,12 +28,19 @@ export class LanguageSelectorService {
   }
 
   public async SetLanguage(language: string, user?: MeUser): Promise<void> {
-    if (user?.xp?.Language == language) {
-      return
-    }
+    if (!this.tokenHelper.isTokenAnonymous()) {
+      if (user?.xp?.Language == language) {
+        return
+      }
 
-    user.xp.Language = language
-    await Me.Patch(user)
+      user.xp.Language = language
+      await Me.Patch(user)
+    } else {
+      const selectedLang = this.cookieService.getObject(this.languageCookieName)?.toString()
+      if (selectedLang == language) {
+        return
+      }
+    }
 
     this.cookieService.putObject(this.languageCookieName, language)
     this.SetTranslateLanguage()
@@ -44,18 +53,19 @@ export class LanguageSelectorService {
     const browserCultureLang = this.translate.getBrowserCultureLang();
     const browserLang = this.translate.getBrowserLang();
     const languages = this.translate.getLangs()
-    const selectedLang = this.cookieService.getObject(this.languageCookieName).toString()
+    const selectedLang = this.cookieService.getObject(this.languageCookieName)?.toString()
     const accessToken = Tokens.GetAccessToken()
+    const isAnonymousUser = this.tokenHelper.isTokenAnonymous()
     let xpLang
       
-    if (accessToken){
+    if (!isAnonymousUser && accessToken){
       const user = await Me.Get({ accessToken: accessToken })
       xpLang = user?.xp?.Language
     }
     if (xpLang) {
       this.translate.use(xpLang);
-    } else if (selectedLang && languages.includes(selectedLang.toString())) {
-      this.translate.use(selectedLang.toString());
+    } else if (selectedLang && languages.includes(selectedLang)) {
+      this.translate.use(selectedLang);
     } else if (languages.includes(browserCultureLang)) {
       this.translate.use(browserCultureLang);
     } else if (languages.includes(browserLang)) {

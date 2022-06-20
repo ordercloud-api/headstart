@@ -206,7 +206,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 import { faCreditCard } from '@fortawesome/free-solid-svg-icons'
 import { ProductPriceDisplayComponent } from './components/products/product-price-display/product-price-display.component'
-import { LanguageSelectorService } from 'src/app/services/translation/language-selector.service'
+import { LanguageSelectorService } from 'src/app/services/language-selector/language-selector.service'
 
 export function HttpLoaderFactory(
   http: HttpClient,
