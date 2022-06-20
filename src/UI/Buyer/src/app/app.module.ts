@@ -206,6 +206,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 import { faCreditCard } from '@fortawesome/free-solid-svg-icons'
 import { ProductPriceDisplayComponent } from './components/products/product-price-display/product-price-display.component'
+import { LanguageSelectorService } from 'src/app/services/translation/language-selector.service'
 
 export function HttpLoaderFactory(
   http: HttpClient,
@@ -411,16 +412,12 @@ const components = [
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  private languageCookieName = `${this.appConfig.appname
-    .replace(/ /g, '_')
-    .toLowerCase()}_selectedLang`
-
   constructor(
     private injector: Injector,
     @Inject(PLATFORM_ID) private platformId: any,
     public translate: TranslateService,
-    private cookieService: CookieService,
-    private appConfig: AppConfig
+    private appConfig: AppConfig,
+    private languageService: LanguageSelectorService
   ) {
     HeadstartConfiguration.Set({
       baseApiUrl: this.appConfig.middlewareUrl,
@@ -545,28 +542,20 @@ export class AppModule {
   }
 
   configureTranslationService(): void {
-    const browserCultureLang = this.translate.getBrowserCultureLang();
-    const browserLang = this.translate.getBrowserLang();
-    
+    if (this.appConfig.supportedLanguages && this.appConfig.supportedLanguages.length === 0){
+      throw new Error('supportedLanguages not defined in appConfig.')
+    }
     this.translate.addLangs(this.appConfig.supportedLanguages)
     const languages = this.translate.getLangs()
 
+    if (!this.appConfig.defaultLanguage) {
+      throw new Error('defaultLanguage not defined in appConfig.')
+    }
     if (languages.includes(this.appConfig.defaultLanguage)) {
       this.translate.setDefaultLang(this.appConfig.defaultLanguage)
     }
 
-    const selectedLang = this.cookieService.getObject(this.languageCookieName)
-    if (selectedLang && languages.includes(selectedLang.toString())) {
-      this.translate.use(selectedLang.toString());
-    } else if (languages.includes(browserCultureLang)) {
-      this.translate.use(browserCultureLang);
-    } else if (languages.includes(browserLang)) {
-      this.translate.use(browserLang);
-    } else if (languages.includes(this.appConfig.defaultLanguage)) {
-      this.translate.use(this.appConfig.defaultLanguage)
-    } else if (languages.length > 0) {
-      this.translate.use(languages[0])
-    }
+    this.languageService.SetTranslateLanguage()
   }
 
   buildWebComponent(angularComponent: any, htmlTagName: string): void {

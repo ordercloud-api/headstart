@@ -13,7 +13,6 @@ import {
   AccessTokenBasic,
 } from 'ordercloud-javascript-sdk'
 import { CookieService } from 'ngx-cookie'
-import { TranslateService } from '@ngx-translate/core'
 import { CurrentUserService } from '../current-user/current-user.service'
 import { CurrentOrderService } from '../order/order.service'
 import { HeadStartSDK } from '@ordercloud/headstart-sdk'
@@ -22,6 +21,7 @@ import { ApplicationInsightsService } from '../application-insights/application-
 import { TokenHelperService } from '../token-helper/token-helper.service'
 import { AppConfig } from 'src/app/models/environment.types'
 import { BaseResolveService } from '../base-resolve/base-resolve.service'
+import { LanguageSelectorService } from 'src/app/services/translation/language-selector.service'
 
 @Injectable({
   providedIn: 'root',
@@ -39,13 +39,9 @@ export class AuthService {
 
   appInsightsService: ApplicationInsightsService;
 
-  private languageCookieName = `${this.appConfig.appname
-    .replace(/ /g, '_')
-    .toLowerCase()}_selectedLang`
-
   constructor(
     private cookieService: CookieService,
-    private translate: TranslateService,
+    private languageService: LanguageSelectorService,
     private router: Router,
     private currentOrder: CurrentOrderService,
     private currentUser: CurrentUserService,
@@ -141,14 +137,7 @@ export class AuthService {
       rememberMe
     )
 
-    let user = await Me.Get({ accessToken: creds.access_token })
-    if (user.xp?.Language) {
-      this.cookieService.putObject(this.languageCookieName, user.xp?.Language)
-      this.translate.use(user.xp?.Language);
-    } else {
-      this.cookieService.remove(this.languageCookieName)
-      this.translate.use(this.translate.defaultLang);
-    }
+    await this.languageService.SetTranslateLanguage()
 
     const urlParams = this.activatedRoute.snapshot.queryParams
     if (urlParams.redirect) {

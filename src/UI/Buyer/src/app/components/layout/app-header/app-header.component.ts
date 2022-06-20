@@ -23,8 +23,8 @@ import { AppConfig } from 'src/app/models/environment.types'
 import { ProductFilters } from 'src/app/models/filter-config.types'
 import { RouteConfig } from 'src/app/models/shared.types'
 import { SitecoreCDPTrackingService } from 'src/app/services/sitecore-cdp/sitecore-cdp-tracking.service'
+import { LanguageSelectorService } from 'src/app/services/translation/language-selector.service'
 import { TranslateService } from '@ngx-translate/core'
-import { CookieService } from 'ngx-cookie'
 
 @Component({
   templateUrl: './app-header.component.html',
@@ -97,7 +97,7 @@ export class OCMAppHeader implements OnInit {
     public appConfig: AppConfig,
     private cdp: SitecoreCDPTrackingService,
     private translate: TranslateService,
-    private cookieService: CookieService
+    private languageService: LanguageSelectorService
   ) {
     this.profileRoutes = context.router.getProfileRoutes()
     this.orderRoutes = context.router.getOrderRoutes()
@@ -125,10 +125,9 @@ export class OCMAppHeader implements OnInit {
     this.hasSuppliers = this.currentSupplierList.Meta.TotalCount > 0
     this.languages = this.translate.getLangs()
     this.selectedLanguage = this.translate.currentLang;
-    this.translate.onLangChange.subscribe((event) => {
-      this.cookieService.putObject(this.languageCookieName, event.lang)
+    this.translate.onLangChange.subscribe(async (event) => {
+      await this.languageService.SetLanguage(event.lang, this.context.currentUser.get())
       this.selectedLanguage = event.lang;
-      this.context.currentUser.patch({ xp: { Language: event.lang } })
     })
   }
 
