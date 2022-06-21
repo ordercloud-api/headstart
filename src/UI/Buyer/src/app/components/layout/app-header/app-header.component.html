@@ -5,6 +5,9 @@
     <a class="navbar-brand clickable cursor-pointer" (click)="context.router.toHome()">
       <img class="logo" [src]="appConfig.theme.logoSrc" height="40" />
     </a>
+    <button class="navbar-toggler" type="button" (click)="isCollapsed = !isCollapsed" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
     <!-- /Brand Logo -->
     <!-- Inline Nav Items -->
     <div [ngClass]="{ collapse: isCollapsed, 'navbar-collapse': true }" id="navbarSupportedContent">
@@ -15,37 +18,29 @@
           </a>
         </li>
         <li *ngIf="hasSuppliers" class="nav-item clickable cursor-pointer">
-          <a class="nav-link" id="suppliers-link" [ngClass]="{ active: activePath === '/suppliers' }" (click)="
-              isCollapsed = !isCollapsed; context.router.toSupplierList()
-            " translate>ALIAS.SUPPLIERS</a>
+          <a class="nav-link" id="suppliers-link" [ngClass]="{ active: activePath === '/suppliers' }"
+            (click)="isCollapsed = !isCollapsed; context.router.toSupplierList()"
+            translate>ALIAS.SUPPLIERS</a>
         </li>
         <li class="nav-item clickable cursor-pointer" *ngFor="let page of staticPages">
           <a class="nav-link" [ngClass]="{ active: activePath === '/' + page.Doc.Url }"
-            (click)="isCollapsed = !isCollapsed" routerLink="{{ '/' + page.Doc.Url }}">{{ page.Doc.NavigationTitle
-            }}</a>
+            (click)="isCollapsed = !isCollapsed" routerLink="{{ '/' + page.Doc.Url }}">{{ page.Doc.NavigationTitle}}</a>
         </li>
-        <!-- Mobile Profile Menu Items -->
-        <div *ngIf="screenSize === 'xs' || screenSize === 'sm'">
-          <div class="dropdown-divider"></div>
-          <li class="nav-item clickable cursor-pointer">
-            <a class="nav-link" [ngClass]="{ active: activePath?.indexOf('/profile') === 0 }"
-              (click)="isCollapsed = !isCollapsed; context.router.toMyProfile()" translate>LAYOUT.APP_HEADER.PROFILE</a>
-          </li>
-        </div>
         <!-- /Mobile Profile Menu Items -->
       </ul>
       <div class="form-inline" *ngIf="isAnonymous">
         <a class="btn btn-sm btn-outline-dark" (click)="isCollapsed = !isCollapsed; context.router.toLogin()"
           translate>COMMON.LOGIN</a>
-        <a class="btn btn-sm btn-primary d-none d-sm-block ml-2"
-          (click)="isCollapsed = !isCollapsed; context.router.toRegister()" translate>LAYOUT.APP_HEADER.REGISTER</a>
+        <a class="btn btn-sm btn-primary d-sm-block ml-2"
+          (click)="isCollapsed = !isCollapsed; context.router.toRegister()"
+          translate>LAYOUT.APP_HEADER.REGISTER</a>
       </div>
 
       <!-- Language Selector -->
-      <ul class="navbar-nav" *ngIf="screenSize !== 'xs' && screenSize !== 'sm'">
+      <ul class="navbar-nav">
         <li class="nav-item dropdown cursor-pointer" ngbDropdown placement="bottom-right">
           <div class="nav-link dropdown-toggle text-nowrap" id="language-dropdown" ngbDropdownToggle>
-            <span class="d-none d-md-inline fa-layers-envelope" placement="bottom-right"
+            <span class="d-md-inline fa-layers-envelope" placement="bottom-right"
               popoverClass="language-selector-popover bg-info" triggers="manual">
               {{selectedLanguage}}
             </span>
@@ -67,10 +62,10 @@
       <!-- Language Selector -->
 
       <!-- Order -->
-      <ul class="navbar-nav" *ngIf="!isAnonymous && screenSize !== 'xs' && screenSize !== 'sm'">
+      <ul class="navbar-nav" *ngIf="!isAnonymous">
         <li class="nav-item dropdown cursor-pointer" ngbDropdown placement="bottom-right">
           <div class="nav-link dropdown-toggle text-nowrap" id="account-dropdown" ngbDropdownToggle>
-            <span class="d-none d-md-inline fa-layers-envelope" [ngbPopover]="OrdersToApproveContent"
+            <span class="d-md-inline fa-layers-envelope" [ngbPopover]="OrdersToApproveContent"
               #ordersToApprovePopover="ngbPopover" placement="bottom-right"
               popoverClass="orders-awaiting-approval-popover bg-info" triggers="manual" translate>
               LAYOUT.APP_HEADER.ORDERS
@@ -125,10 +120,10 @@
       <!-- Order -->
 
       <!-- Profile -->
-      <ul class="navbar-nav" *ngIf="!isAnonymous && screenSize !== 'xs' && screenSize !== 'sm'">
+      <ul class="navbar-nav" *ngIf="!isAnonymous">
         <li class="nav-item dropdown cursor-pointer" ngbDropdown placement="bottom-right">
           <div class="nav-link dropdown-toggle text-nowrap" id="accountDropdown" ngbDropdownToggle>
-            <span class="d-none d-md-inline" translate>
+            <span class="d-md-inline" translate>
               LAYOUT.APP_HEADER.ACCOUNT
             </span>
             <fa-icon [icon]="faUserCircle"></fa-icon>
