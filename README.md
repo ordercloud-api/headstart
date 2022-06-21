@@ -134,7 +134,7 @@ Detailed Steps:
 
 ### Sitecore Send
 
-Sitecore Send is a platform for sending automated email campaigns. It is integrated into the storefront in order to capture events like view product, add to cart and purchase. This data can provide intelligence for abandonded cart emails, user segmentation for personalized marketing and user-history-based product recomendations.
+Sitecore Send is a platform for sending automated email campaigns. It is integrated into the storefront in order to capture events like view product, add to cart and purchase. This data can provide intelligence for abandoned cart emails, user segmentation for personalized marketing and user-history-based product recommendations.
 
 Usage is optional and controlled with the buyer setting `useSitecoreSend`. To connect Sitecore Send [get a website ID](https://doc.sitecore.com/send/en/users/sitecore-send/enable-website-tracking.html) and add it to buyer settings.
 
