@@ -17,7 +17,7 @@ import { BehaviorSubject, Observable, of, throwError } from 'rxjs'
 import { tap, catchError, finalize, map } from 'rxjs/operators'
 import * as jwtDecode from 'jwt-decode'
 import { keys as _keys } from 'lodash'
-import { LanguageSelectorService } from 'src/app/shared/services/language-selector/language-selector.service'
+import { LanguageSelectorService } from '@app-seller/shared'
 
 export const TokenRefreshAttemptNotPossible =
   'Token refresh attempt not possible'

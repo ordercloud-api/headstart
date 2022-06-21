@@ -44,7 +44,7 @@ import { AutoAppendTokenInterceptor } from './auth/interceptors/auto-append-toke
 import { RefreshTokenInterceptor } from './auth/interceptors/refresh-token/refresh-token.interceptor'
 import { AppRoutingModule } from './app-routing.module'
 import { RouterModule } from '@angular/router'
-import { LanguageSelectorService } from 'src/app/shared/services/language-selector/language-selector.service'
+import { LanguageSelectorService } from '@app-seller/shared'
 
 export function HttpLoaderFactory(
   http: HttpClient,

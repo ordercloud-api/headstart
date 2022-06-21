@@ -15,7 +15,7 @@ import { Tokens } from 'ordercloud-javascript-sdk'
 import { BehaviorSubject } from 'rxjs'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { UserContext } from '@app-seller/models/user.types'
-import { LanguageSelectorService } from 'src/app/shared/services/language-selector/language-selector.service'
+import { LanguageSelectorService } from '@app-seller/shared'
 
 @Injectable({
   providedIn: 'root',

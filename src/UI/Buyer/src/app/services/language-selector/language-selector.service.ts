@@ -33,8 +33,13 @@ export class LanguageSelectorService {
         return
       }
 
-      user.xp.Language = language
-      await Me.Patch(user)
+      const accessToken = Tokens.GetAccessToken()
+      const patchLangXp = {
+        xp: {
+          Language: language
+        }
+      }
+      await Me.Patch(patchLangXp, { accessToken: accessToken })
     } else {
       const selectedLang = this.cookieService.getObject(this.languageCookieName)?.toString()
       if (selectedLang == language) {

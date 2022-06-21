@@ -17,7 +17,7 @@ import { getHeaderConfig } from './header.config'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { TranslateService } from '@ngx-translate/core'
-import { LanguageSelectorService } from 'src/app/shared/services/language-selector/language-selector.service'
+import { LanguageSelectorService } from '@app-seller/shared'
 
 @Component({
   selector: 'layout-header',
@@ -122,7 +122,7 @@ export class HeaderComponent implements OnInit {
   }
 
   async setLanguage(language: string) {
-    const user = await this.currentUserService.getUser()
+    const user = await this.currentUserService.refreshUser()
     await this.languageService.SetLanguage(language, user)
   }
 

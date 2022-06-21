@@ -1,8 +1,10 @@
-import { Injectable } from '@angular/core'
+import { Inject, Injectable } from '@angular/core'
+import { applicationConfiguration } from '@app-seller/config/app.config'
 import { TranslateService } from '@ngx-translate/core'
 import { CookieService } from 'ngx-cookie'
-import { MeUser, Me, Tokens } from 'ordercloud-javascript-sdk'
-import { AppConfig } from 'src/app/models/environment.types'
+import { MeUser, Me } from 'ordercloud-javascript-sdk'
+import { AppConfig } from '@app-seller/models/environment.types'
+import { OcTokenService } from '@ordercloud/angular-sdk'
 
 @Injectable({
   providedIn: 'root',
@@ -17,9 +19,10 @@ export class LanguageSelectorService {
    * not part of public api, don't include in generated docs
    */
   constructor(
+    private ocTokenService: OcTokenService,
     private cookieService: CookieService,
     private translate: TranslateService,
-    private appConfig: AppConfig
+    @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {
     this.SetLanguage = this.SetLanguage.bind(this)
     this.SetTranslateLanguage = this.SetTranslateLanguage.bind(this)
@@ -30,8 +33,13 @@ export class LanguageSelectorService {
       return
     }
 
-    user.xp.Language = language
-    await Me.Patch(user)
+    const accessToken = this.ocTokenService.GetAccess()
+    const patchLangXp = {
+      xp: {
+        Language: language
+      }
+    }
+    await Me.Patch(patchLangXp, { accessToken: accessToken })
 
     this.cookieService.putObject(this.languageCookieName, language)
     this.SetTranslateLanguage()
@@ -45,7 +53,7 @@ export class LanguageSelectorService {
     const browserLang = this.translate.getBrowserLang();
     const languages = this.translate.getLangs()
     const selectedLang = this.cookieService.getObject(this.languageCookieName)?.toString()
-    const accessToken = Tokens.GetAccessToken()
+    const accessToken = this.ocTokenService.GetAccess()
     let xpLang
       
     if (accessToken){
