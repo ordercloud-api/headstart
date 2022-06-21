@@ -96,9 +96,7 @@ json -I -f appSettings.json \
 json -I -f appSettings.json \
       -e "this['SmartyStreetSettings:AuthID']='$SmartyStreetSettings_AuthID'" \
       -e "this['SmartyStreetSettings:AuthToken']='$SmartyStreetSettings_AuthToken'" \
-      -e "this['SmartyStreetSettings:RefererHost']='$SmartyStreetSettings_RefererHost'" \
-      -e "this['SmartyStreetSettings:Enabled']='$SmartyStreetSettings_SmartyEnabled'" \
-      -e "this['SmartyStreetSettings:WebsiteKey']='$SmartyStreetSettings_WebsiteKey'"
+      -e "this['SmartyStreetSettings:Enabled']='$SmartyStreetSettings_SmartyEnabled'"
 
 json -I -f appSettings.json \
       -e "this['StorageAccountSettings:ConnectionString']='$StorageAccountSettings_ConnectionString'" \

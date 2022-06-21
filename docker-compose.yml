@@ -107,9 +107,7 @@ services:
       
       SmartyStreetSettings_AuthID: "${SmartyStreetSettings_AuthID}"
       SmartyStreetSettings_AuthToken: "${SmartyStreetSettings_AuthToken}"
-      SmartyStreetSettings_RefererHost: "${SmartyStreetSettings_RefererHost}"
       SmartyStreetSettings_SmartyEnabled: "${SmartyStreetSettings_SmartyEnabled}"
-      SmartyStreetSettings_WebsiteKey: "${SmartyStreetSettings_WebsiteKey}"
 
       StorageAccountSettings_ConnectionString: "${StorageAccountSettings_ConnectionString}"
       StorageAccountSettings_HostUrl: "${StorageAccountSettings_HostUrl}"
