@@ -46,15 +46,17 @@ namespace Headstart.API.Commands
 
         public async Task<SuperHSMeProduct> Get(string id, DecodedToken decodedToken)
         {
-            var product = oc.Me.GetProductAsync<HSMeProduct>(id, sellerID: settings.OrderCloudSettings.MarketplaceID, accessToken: decodedToken.AccessToken);
+            var product = await oc.Me.GetProductAsync<HSMeProduct>(id, sellerID: settings.OrderCloudSettings.MarketplaceID, accessToken: decodedToken.AccessToken);
+            var bundledProducts = product?.xp?.BundledProducts != null ? oc.Me.ListProductsByIDAsync<HSMeProduct>(product.xp.BundledProducts, sellerID: settings.OrderCloudSettings.MarketplaceID, accessToken: decodedToken.AccessToken) : Task.FromResult(new List<HSMeProduct> { });
             var specs = oc.Me.ListSpecsAsync(id, null, null, decodedToken.AccessToken);
             var variants = oc.Products.ListVariantsAsync<HSVariant>(id, null, null, null, 1, 100, null);
             var unconvertedSuperHsProduct = new SuperHSMeProduct
             {
-                Product = await product,
-                PriceSchedule = (await product).PriceSchedule,
+                Product = product,
+                PriceSchedule = product.PriceSchedule,
                 Specs = (await specs).Items,
                 Variants = (await variants).Items,
+                BundledProducts = await bundledProducts,
             };
             return await ApplyBuyerPricing(unconvertedSuperHsProduct, decodedToken);
         }
@@ -101,10 +103,12 @@ namespace Headstart.API.Commands
             var exchangeRates = await exchangeRatesRequest;
 
             var markedupProduct = ApplyBuyerProductPricing(superHsProduct.Product, defaultMarkupMultiplier, exchangeRates);
+            var markedupBundles = superHsProduct.BundledProducts.Select(product => ApplyBuyerProductPricing(product, defaultMarkupMultiplier, exchangeRates));
             var productCurrency = superHsProduct.Product.xp.Currency ?? CurrencyCode.USD;
             var markedupSpecs = ApplySpecMarkups(superHsProduct.Specs.ToList(), productCurrency, exchangeRates);
 
             superHsProduct.Product = markedupProduct;
+            superHsProduct.BundledProducts = markedupBundles.ToList();
             superHsProduct.Specs = markedupSpecs;
             return superHsProduct;
         }

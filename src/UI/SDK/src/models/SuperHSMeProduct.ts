@@ -6,6 +6,7 @@ import { HSVariant } from './HSVariant';
 export interface SuperHSMeProduct {
     ID?: string
     Product?: HSMeProduct
+    BundledProducts?: HSMeProduct[]
     PriceSchedule?: PriceSchedule
     Specs?: Spec[]
     Variants?: HSVariant[]

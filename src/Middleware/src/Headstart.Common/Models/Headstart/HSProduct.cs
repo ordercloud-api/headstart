@@ -27,6 +27,8 @@ namespace Headstart.Common.Models
 
         public HSMeProduct Product { get; set; }
 
+        public List<HSMeProduct> BundledProducts { get; set; }
+
         public PriceSchedule PriceSchedule { get; set; }
 
         public IList<Spec> Specs { get; set; }

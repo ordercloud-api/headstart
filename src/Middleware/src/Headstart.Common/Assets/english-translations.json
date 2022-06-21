@@ -699,6 +699,7 @@
     }
   },
   "COMMON": {
+    "CREATE":  "Create",
     "CANCEL": "Cancel",
     "CONFIRM_PASSWORD": "Confirm Password",
     "DISCARD_CHANGES": "Discard Changes",

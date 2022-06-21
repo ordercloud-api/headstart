@@ -112,7 +112,11 @@ export class ProductBundleEditComponent implements OnInit, OnChanges {
   }
 
   async searchedBundledProducts(searchTerm?: string): Promise<void> {
-    const result = await Products.List({ search: searchTerm, pageSize: 5 })
+    const result = await Products.List({
+      search: searchTerm,
+      pageSize: 5,
+      filters: { SpecCount: '0', 'xp.ProductType': 'Standard' },
+    })
     this.bundledProducts = result.Items
   }
 

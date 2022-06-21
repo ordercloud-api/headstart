@@ -22,7 +22,7 @@
       userContext &&
       !isViewingBundle &&
       (!resourceInSelection?.xp?.ProductType?.length ||
-        resourceInSelection.xp.ProductType.indexOf('Bundle') === -1)
+        resourceInSelection.xp.ProductType !== 'Bundle')
     "
     class="resource-edit"
     [userContext]="userContext"
@@ -36,7 +36,7 @@
       userContext &&
       (isViewingBundle ||
         (resourceInSelection?.xp?.ProductType?.length &&
-          resourceInSelection.xp.ProductType.indexOf('Bundle') > -1))
+          resourceInSelection.xp.ProductType === 'Bundle'))
     "
     [userContext]="userContext"
     class="resource-edit"
