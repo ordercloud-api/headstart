@@ -158,6 +158,7 @@
       "ALL_BUYERS": "Tous les acheteurs",
       "ALL_PRODUCTS": "Tous les produits",
       "ALL_SUPPLIERS": "Tous les fournisseurs",
+      "ALL_STOREFRONTS": "Toutes les vitrines",
       "APPROVAL": "Approbation",
       "APPROVAL_RULES": "Règles d’approbation",
       "APPROVALS": "Approbations",
@@ -199,6 +200,7 @@
       "SELLER_USERS": "Utilisateurs vendeurs",
       "SHIPPED_ORDERS": "Commandes expédiées",
       "STOREFRONTS": "Vitrines",
+      "SUBMIT_CASE": "Soumettre un cas",
       "SUPPLIERS": "Fournisseurs",
       "TEMPLATE": "Modèle",
       "TEMPLATES": "Modèles",
@@ -526,6 +528,9 @@
     "PERMISSIONS": {
       "LOCATION_APPROVAL_TOOLTIP": "Aucune règle d’approbation dans ce groupe d’acheteurs. Définissez une règle d’approbation avant d’accorder des autorisations OrderApprover."
     },
+    "RESOURCES": {
+      "CREATE_NEW": "Créer un nouveau"
+    },
     "RMAS": {
       "ALL_REQUESTED_QUANTITIES": "Toutes les quantités demandées pour ce poste seront refusées.",
       "AMOUNT_REFUNDED": "Montant remboursé",
@@ -735,9 +740,14 @@
       "LOGOUT": "Déconnexion",
       "NEEDS_ATTENTION": "Les commandes ont besoin d’attention",
       "ORDERS": "Ordres",
+      "ORDERS_PLACED_BY_ME": "Placé par moi",
+      "ORDERS_QUOTES": "Devis",
+      "ORDERS_PLACED_IN_MY_LOCATIONS": "Placé dans Mes positions",
+      "ORDERS_AWAITING_MY_APPROVAL": "En attente de mon approbation",
       "PRODUCTS": "Produits",
       "PROFILE": "Mon profil",
       "REGISTER": "Registre",
+      "SHOP": "Boutique",
       "SUPPLIERS": "Fournisseurs"
     },
     "GENERIC_LIST": {

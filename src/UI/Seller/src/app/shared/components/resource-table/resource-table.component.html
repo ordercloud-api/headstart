@@ -84,7 +84,7 @@
         }}/new"
         [disabled]="isCreatingNew"
       >
-        Create New {{ labelSingular | translate }}
+        {{ 'ADMIN.RESOURCES.CREATE_NEW' | translate }} {{ labelSingular | translate }}
       </button>
 
       <div
@@ -97,7 +97,7 @@
           class="btn btn-block btn-outline-red text-left"
           [disabled]="isCreatingNew"
         >
-          Create New {{ labelSingular | translate }}
+          {{ 'ADMIN.RESOURCES.CREATE_NEW' | translate }} {{ labelSingular | translate }}
         </button>
         <div ngbDropdownMenu>
           <button

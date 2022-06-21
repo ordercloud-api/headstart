@@ -158,6 +158,7 @@
       "ALL_BUYERS": "All Buyers",
       "ALL_PRODUCTS": "All Products",
       "ALL_SUPPLIERS": "All Suppliers",
+      "ALL_STOREFRONTS": "All Storefronts",
       "APPROVAL": "Approval",
       "APPROVAL_RULES": "Approval Rules",
       "APPROVALS": "Approvals",
@@ -199,6 +200,7 @@
       "SELLER_USERS": "Seller Users",
       "SHIPPED_ORDERS": "Shipped Orders",
       "STOREFRONTS": "Storefronts",
+      "SUBMIT_CASE": "Submit a Case",
       "SUPPLIERS": "Suppliers",
       "TEMPLATE": "Template",
       "TEMPLATES": "Templates",
@@ -526,6 +528,9 @@
     "PERMISSIONS": {
       "LOCATION_APPROVAL_TOOLTIP": "No approval rules in this buyer group. Set an approval rule before granting OrderApprover permissions."
     },
+    "RESOURCES": {
+      "CREATE_NEW": "Create New"
+    },
     "RMAS": {
       "ALL_REQUESTED_QUANTITIES": "All requested quantities for this line item will be denied.",
       "AMOUNT_REFUNDED": "Amount Refunded",
@@ -735,9 +740,14 @@
       "LOGOUT": "Logout",
       "NEEDS_ATTENTION": "Orders Need Attention",
       "ORDERS": "Orders",
+      "ORDERS_PLACED_BY_ME": "Placed by Me",
+      "ORDERS_QUOTES": "Quotes",
+      "ORDERS_PLACED_IN_MY_LOCATIONS": "Placed in My Locations",
+      "ORDERS_AWAITING_MY_APPROVAL": "Awaiting My Approval",
       "PRODUCTS": "Products",
       "PROFILE": "My Profile",
       "REGISTER": "Register",
+      "SHOP": "Shop",
       "SUPPLIERS": "Suppliers"
     },
     "GENERIC_LIST": {

@@ -158,6 +158,7 @@
       "ALL_BUYERS": "全ての購入者",
       "ALL_PRODUCTS": "全ての商品",
       "ALL_SUPPLIERS": "全てのサプライヤー",
+      "ALL_STOREFRONTS": "すべてのストアフロント",
       "APPROVAL": "承認",
       "APPROVAL_RULES": "承認結果",
       "APPROVALS": "承認",
@@ -199,6 +200,7 @@
       "SELLER_USERS": "販売者ユーザー",
       "SHIPPED_ORDERS": "発送済みの注文",
       "STOREFRONTS": "Storefront",
+      "SUBMIT_CASE": "ケースを送信する",
       "SUPPLIERS": "サプライヤー",
       "TEMPLATE": "テンプレート",
       "TEMPLATES": "テンプレート",
@@ -520,6 +522,9 @@
     "PERMISSIONS": {
       "LOCATION_APPROVAL_TOOLTIP": "この購入者グループには承認ルールがありません。OrderApprover権限を付与する前に、承認ルールを設定してください。"
     },
+    "RESOURCES": {
+      "CREATE_NEW": "新しく作る"
+    },
     "RMAS": {
       "ALL_REQUESTED_QUANTITIES": "この品目に対して要求されたすべての数量は拒否されます。",
       "AMOUNT_REFUNDED": "返金金額",
@@ -729,9 +734,14 @@
       "LOGOUT": "ログアウト",
       "NEEDS_ATTENTION": "注文には注意が必要です。",
       "ORDERS": "注文",
+      "ORDERS_PLACED_BY_ME": "私が配置",
+      "ORDERS_QUOTES": "引用",
+      "ORDERS_PLACED_IN_MY_LOCATIONS": "私の場所に配置",
+      "ORDERS_AWAITING_MY_APPROVAL": "私の承認を待っています",
       "PRODUCTS": "商品",
       "PROFILE": "マイ プロフィール",
       "REGISTER": "登録",
+      "SHOP": "店",
       "SUPPLIERS": "サプライヤー"
     },
     "GENERIC_LIST": {
