@@ -94,9 +94,7 @@
         </span>
       </ng-container>
       <!--DISPLAY SHORT SPEC FORM -->
-      <ng-container
-        *ngIf="specs?.length < 4 && !showGrid"
-      >
+      <ng-container *ngIf="specs?.length < 4 && !showGrid">
         <ocm-spec-form
           *ngIf="isOrderable && specs?.length > 0"
           [superProduct]="_superProduct"
@@ -127,7 +125,42 @@
             translate
             >PRODUCTS.DETAILS.QUANTITY</small
           >
-          <div class="d-flex flex-row">
+          <div *ngIf="isBundle" class="d-flex flex-row">
+            <div class="form-group mb-0 mr-3">
+              <label for="quantity" class="sr-only" translate
+                >PRODUCTS.QTY_INPUT.QTY</label
+              >
+              <input
+                id="quantity"
+                type="number"
+                class="form-control text-center input-width"
+                placeholder="0"
+                value="1"
+                (input)="
+                  qtyChange({
+                    qty: $event?.target?.value,
+                    valid: true
+                  })
+                "
+                aria-label="Quantity Input
+              Selector"
+                aria-describedby="quantity"
+              />
+            </div>
+            <button
+              class="btn btn-block btn-primary mb-3"
+              type="submit"
+              [disabled]="isAddingToCart"
+              (click)="addToCart()"
+            >
+              <div>
+                <span translate>PRODUCTS.DETAILS.ADD_TO_CART</span>
+                &nbsp;&nbsp;|&nbsp;&nbsp;
+                {{ price | currency: userCurrency }}
+              </div>
+            </button>
+          </div>
+          <div *ngIf="!isBundle" class="d-flex flex-row">
             <ocm-quantity-input
               class="d-inline-block mb-3 mr-3 flex-shrink-0"
               (qtyChange)="qtyChange($event.detail)"
@@ -163,6 +196,37 @@
         </div>
         <div *ngIf="!isOrderable" class="alert alert-info" translate>
           PRODUCTS.DETAILS.VIEW_ONLY
+        </div>
+      </ng-container>
+      <ng-container *ngIf="isBundle">
+        <h5>Included in Bundle: </h5>
+        <div class="container">
+          <div class="row">
+            <div
+              *ngFor="let bundledProduct of _bundledProducts"
+              class="col-md-6"
+            >
+              <h6>
+                <app-product-price-display
+                  class="card-text mb-0"
+                  *ngIf="bundledProduct?.PriceSchedule?.PriceBreaks?.length"
+                  [priceSchedule]="bundledProduct.PriceSchedule"
+                  [quantity]="1"
+                  [specs]="[]"
+                  [specForm]="null"
+                ></app-product-price-display>
+                <span class="text-muted">{{ bundledProduct | UofM }}</span>
+              </h6>
+              <h6 class="h6 my-0">
+                {{ bundledProduct.Name }}
+              </h6>
+              <img
+                [src]="bundledProduct.xp.Images[0].Url"
+                class="img-thumbnail w-100 rounded mx-auto d-block"
+                alt="Product Image"
+              />
+            </div>
+          </div>
         </div>
       </ng-container>
       <ocm-modal

@@ -12,11 +12,12 @@ import {
   HSMeProduct,
   HSSupplier,
   DocumentAsset,
+  SuperHSMeProduct,
+  HSOrder,
 } from '@ordercloud/headstart-sdk'
 import { Observable } from 'rxjs'
 import { SpecFormService } from '../spec-form/spec-form.service'
-import { SuperHSProduct } from '@ordercloud/headstart-sdk'
-import { Product, Products, Me } from 'ordercloud-javascript-sdk'
+import { Me } from 'ordercloud-javascript-sdk'
 import { FormGroup } from '@angular/forms'
 import { ProductDetailService } from './product-detail.service'
 import { ToastrService } from 'ngx-toastr'
@@ -29,6 +30,7 @@ import { SitecoreSendTrackingService } from 'src/app/services/sitecore-send/site
 import { OrderType } from 'src/app/models/order.types'
 import { TranslateService } from '@ngx-translate/core'
 import { AppConfig } from 'src/app/models/environment.types'
+import { sum } from 'lodash'
 
 @Component({
   templateUrl: './product-details.component.html',
@@ -40,15 +42,15 @@ export class OCMProductDetails implements OnInit {
   faListUl = faListUl
   faTimes = faTimes
 
-  _superProduct: SuperHSProduct
+  _superProduct: SuperHSMeProduct
   specs: Spec[]
   _product: HSMeProduct
+  _bundledProducts: HSMeProduct[]
   priceSchedule: PriceSchedule
   priceBreaks: PriceBreak[]
   attachments: DocumentAsset[] = []
   isOrderable = false
   quantity: number
-  price: number
   percentSavings: number
   relatedProducts$: Observable<HSMeProduct[]>
   selectedRelatedProducts: HSMeProduct[] = []
@@ -61,7 +63,7 @@ export class OCMProductDetails implements OnInit {
   currentUser: CurrentUser
   showRequestSubmittedMessage = false
   showContactSupplierFormSubmittedMessage = false
-  submittedQuoteOrder: any
+  submittedQuoteOrder: HSOrder
   showGrid = false
   isAddingToCart = false
   contactRequest: ContactSupplierBody
@@ -72,7 +74,10 @@ export class OCMProductDetails implements OnInit {
   variantInventory: number
   _productSupplier: HSSupplier
   isQuoteAnonUser = false
+  isBundle = false
   quoteContactEmail = ''
+  price: number
+
   constructor(
     private specFormService: SpecFormService,
     private context: ShopperContextService,
@@ -83,12 +88,17 @@ export class OCMProductDetails implements OnInit {
     private appConfig: AppConfig
   ) {}
 
-  @Input() set product(superProduct: SuperHSProduct) {
+  @Input() set product(superProduct: SuperHSMeProduct) {
     this._superProduct = superProduct
     this._product = superProduct.Product
+    this._bundledProducts = superProduct.BundledProducts
+    this.isBundle =
+      this._product.xp.ProductType === 'Bundle' &&
+      this._bundledProducts?.length > 0
+    this.calculatePrice()
     this.attachments = superProduct?.Product?.xp?.Documents
     this.priceBreaks = superProduct.PriceSchedule?.PriceBreaks
-    this.isOrderable = !!superProduct.PriceSchedule
+    this.isOrderable = Boolean(superProduct.PriceSchedule) || this.isBundle
     this.supplierNote = this._product.xp && this._product.xp.Note
     this.specs = superProduct.Specs
     if (this._product.DefaultSupplierID !== null) {
@@ -110,7 +120,7 @@ export class OCMProductDetails implements OnInit {
     }
   }
 
-  async ngOnInit(): Promise<void> {
+  ngOnInit(): void {
     this.calculatePrice()
     this.currentUser = this.context.currentUser.get()
     this.userCurrency = this.currentUser.Currency
@@ -184,7 +194,7 @@ export class OCMProductDetails implements OnInit {
     this.isInactiveVariant = event
   }
 
-  populateInactiveVariants(superProduct: SuperHSProduct): void {
+  populateInactiveVariants(superProduct: SuperHSMeProduct): void {
     this._disabledVariants = []
     superProduct.Variants?.forEach((variant) => {
       if (!variant.Active) {
@@ -200,19 +210,25 @@ export class OCMProductDetails implements OnInit {
   qtyChange(event: QtyChangeEvent): void {
     this.qtyValid = event.valid
     if (event.valid) {
-      this.quantity = event.qty
+      this.quantity =
+        typeof event.qty === 'string' ? parseInt(event.qty) : event.qty
       this.calculatePrice()
     }
   }
 
   calculatePrice(): void {
-    this.price = this.productDetailService.getProductPrice(
-      this._product?.PriceSchedule,
-      this.quantity,
-      this.specs,
-      this.specForm,
-      this._product?.PriceSchedule?.IsOnSale
-    )
+    if (!this._product) {
+      return
+    }
+    this.price = this.isBundle
+      ? this.getBundlePrice()
+      : this.productDetailService.getProductPrice(
+          this._product?.PriceSchedule,
+          this.quantity,
+          this.specs,
+          this.specForm,
+          this._product?.PriceSchedule?.IsOnSale
+        )
     if (this.priceBreaks?.length) {
       const basePrice = this.quantity * this.priceBreaks[0].Price
       this.percentSavings = this.productDetailService.getPercentSavings(
@@ -222,10 +238,43 @@ export class OCMProductDetails implements OnInit {
     }
   }
 
+  getBundlePrice(): number {
+    if (!this._bundledProducts?.length) {
+      return 0
+    }
+    const prices = this._bundledProducts.map((productBundle) =>
+      this.productDetailService.getProductPrice(
+        productBundle.PriceSchedule,
+        this.quantity || 1,
+        [], // we don't (yet) support bundles to have specs/variants
+        null,
+        productBundle.PriceSchedule.IsOnSale
+      )
+    )
+    return sum(prices)
+  }
+
   async addToCart(): Promise<void> {
     this.isAddingToCart = true
     try {
       const currentOrder = this.context.order.get()
+      if (this.isBundle) {
+        await this.context.order.cart.addMany(
+          this._bundledProducts.map((bundledProduct) => ({
+            ProductID: bundledProduct.ID,
+            Quantity: this.quantity || 1,
+            xp: {
+              ImageUrl: this.specFormService.getLineItemImageUrl(
+                bundledProduct.xp?.Images,
+                [],
+                null
+              ),
+            },
+          }))
+        )
+        return
+      }
+
       if (this._product.xp.ProductType === 'Quote') {
         if (
           currentOrder?.xp?.OrderType == 'Standard' &&
@@ -233,7 +282,7 @@ export class OCMProductDetails implements OnInit {
         ) {
           const existingCartQuoteError = this.translate.instant(
             'PRODUCTS.DETAILS.QUOTE_EXISTING_CART_ERROR'
-          )
+          ) as string
           this.toastrService.error(existingCartQuoteError)
           this.isAddingToCart = false
           return
@@ -276,9 +325,6 @@ export class OCMProductDetails implements OnInit {
           ),
         },
       })
-    } catch (err) {
-      this.toastrService.error('Something went wrong')
-      console.log(err)
     } finally {
       this.isAddingToCart = false
     }
