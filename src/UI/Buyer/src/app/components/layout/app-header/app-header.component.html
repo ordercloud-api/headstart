@@ -2,7 +2,7 @@
 <nav class="navbar navbar-expand-md navbar-light bg-white">
   <div class="container">
     <!-- Brand Logo -->
-    <a class="navbar-brand clickable cursor-pointer" (click)="context.router.toHome()">
+    <a class="navbar-brand clickable cursor-pointer" (click)="isCollapsed = 'false'; context.router.toHome()">
       <img class="logo" [src]="appConfig.theme.logoSrc" height="40" />
     </a>
     <button class="navbar-toggler" type="button" (click)="isCollapsed = !isCollapsed" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -13,26 +13,26 @@
     <div [ngClass]="{ collapse: isCollapsed, 'navbar-collapse': true }" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item clickable cursor-pointer" [ngClass]="{ active: activePath === '/products' }">
-          <a class="nav-link" (click)="isCollapsed = !isCollapsed; context.router.toProductList()" translate>
+          <a class="nav-link" (click)="isCollapsed = 'false'; context.router.toProductList()" translate>
             LAYOUT.APP_HEADER.PRODUCTS
           </a>
         </li>
         <li *ngIf="hasSuppliers" class="nav-item clickable cursor-pointer">
           <a class="nav-link" id="suppliers-link" [ngClass]="{ active: activePath === '/suppliers' }"
-            (click)="isCollapsed = !isCollapsed; context.router.toSupplierList()"
+            (click)="isCollapsed = 'false'; context.router.toSupplierList()"
             translate>ALIAS.SUPPLIERS</a>
         </li>
         <li class="nav-item clickable cursor-pointer" *ngFor="let page of staticPages">
           <a class="nav-link" [ngClass]="{ active: activePath === '/' + page.Doc.Url }"
-            (click)="isCollapsed = !isCollapsed" routerLink="{{ '/' + page.Doc.Url }}">{{ page.Doc.NavigationTitle}}</a>
+            (click)="isCollapsed = 'false'" routerLink="{{ '/' + page.Doc.Url }}">{{ page.Doc.NavigationTitle}}</a>
         </li>
         <!-- /Mobile Profile Menu Items -->
       </ul>
       <div class="form-inline" *ngIf="isAnonymous">
-        <a class="btn btn-sm btn-outline-dark" (click)="isCollapsed = !isCollapsed; context.router.toLogin()"
+        <a class="btn btn-sm btn-outline-dark" (click)="isCollapsed = 'false'; context.router.toLogin()"
           translate>COMMON.LOGIN</a>
         <a class="btn btn-sm btn-primary d-sm-block ml-2"
-          (click)="isCollapsed = !isCollapsed; context.router.toRegister()"
+          (click)="isCollapsed = 'false'; context.router.toRegister()"
           translate>LAYOUT.APP_HEADER.REGISTER</a>
       </div>
 
@@ -50,7 +50,7 @@
               <a
                 *ngFor="let lang of languages"
                 class="nav-item dropdown-item cursor-pointer"
-                (click)="setLanguage(lang)"
+                (click)="isCollapsed = 'false'; setLanguage(lang)"
                 translate
               >
                 {{lang}}
@@ -71,7 +71,7 @@
               LAYOUT.APP_HEADER.ORDERS
             </span>
             <ng-template #OrdersToApproveContent>
-              <div (click)="routeToOrdersToApprove($event)" class="card">
+              <div (click)="isCollapsed = 'false'; routeToOrdersToApprove($event)" class="card">
                 <div class="card-body p-0">
                   <h5 class="card-header p-2 mb-3" translate>
                     <ocm-order-status-icon status="AwaitingApproval"></ocm-order-status-icon>
@@ -97,12 +97,12 @@
               <span *ngIf="orderRoute.routerCall !== 'toOrdersToApprove'">
                 <a *ngIf="orderRoute.showInDropdown" class="nav-item dropdown-item cursor-pointer"
                   [ngClass]="{ active: activePath === orderRoute.url }"
-                  (click)="context.router[orderRoute.routerCall]()" translate>{{ orderRoute.displayText }}</a>
+                  (click)="isCollapsed = 'false'; context.router[orderRoute.routerCall]()" translate>{{ orderRoute.displayText }}</a>
               </span>
               <span *ngIf="orderRoute.routerCall === 'toOrdersToApprove'">
                 <a *ngIf="orderRoute.showInDropdown" class="nav-item dropdown-item cursor-pointer"
                   [ngClass]="{ active: activePath === orderRoute.url }"
-                  (click)="context.router[orderRoute.routerCall]()">
+                  (click)="isCollapsed = 'false'; context.router[orderRoute.routerCall]()">
                   <span translate>
                     {{ orderRoute.displayText }}
                   </span>
@@ -137,11 +137,11 @@
               <span *ngIf="profileRoute.routerCall !== 'toOrdersToApprove'">
                 <a *ngIf="profileRoute.showInDropdown" class="nav-item dropdown-item cursor-pointer"
                   [ngClass]="{ active: isRouteActive(profileRoute.url) }"
-                  (click)="context.router[profileRoute.routerCall]()">{{ profileRoute.displayText }}</a>
+                  (click)="isCollapsed = 'false'; context.router[profileRoute.routerCall]()">{{ profileRoute.displayText }}</a>
               </span>
             </ng-container>
             <div *ngIf="!isSSO" class="dropdown-divider"></div>
-            <a class="nav-item dropdown-item cursor-pointer" *ngIf="!isSSO" (click)="logout()" translate>
+            <a class="nav-item dropdown-item cursor-pointer" *ngIf="!isSSO" (click)="isCollapsed = 'false'; logout()" translate>
               <fa-icon [icon]="faSignOutAlt"></fa-icon> LAYOUT.APP_HEADER.LOGOUT
             </a>
           </div>

@@ -262,6 +262,6 @@ export class OCMAppHeader implements OnInit {
   }
 
   async setLanguage(language: string) {
-    await this.languageService.SetLanguage(language, this.context.currentUser.get())
+    await this.languageService.SetLanguage(language)
   }
 }

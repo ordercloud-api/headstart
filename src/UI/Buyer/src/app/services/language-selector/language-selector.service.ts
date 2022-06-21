@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core'
 import { TranslateService } from '@ngx-translate/core'
 import { TokenHelperService } from '../token-helper/token-helper.service'
 import { CookieService } from 'ngx-cookie'
-import { MeUser, Me, Tokens } from 'ordercloud-javascript-sdk'
 import { AppConfig } from 'src/app/models/environment.types'
+import { CurrentUserService } from '../current-user/current-user.service'
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +18,7 @@ export class LanguageSelectorService {
    * not part of public api, don't include in generated docs
    */
   constructor(
+    private currentUserService: CurrentUserService,
     private cookieService: CookieService,
     private translate: TranslateService,
     private tokenHelper: TokenHelperService,
@@ -27,19 +28,19 @@ export class LanguageSelectorService {
     this.SetTranslateLanguage = this.SetTranslateLanguage.bind(this)
   }
 
-  public async SetLanguage(language: string, user?: MeUser): Promise<void> {
+  public async SetLanguage(language: string): Promise<void> {
     if (!this.tokenHelper.isTokenAnonymous()) {
+      const user = this.currentUserService.get()
       if (user?.xp?.Language == language) {
         return
       }
 
-      const accessToken = Tokens.GetAccessToken()
       const patchLangXp = {
         xp: {
           Language: language
         }
       }
-      await Me.Patch(patchLangXp, { accessToken: accessToken })
+      await this.currentUserService.patch(patchLangXp)
     } else {
       const selectedLang = this.cookieService.getObject(this.languageCookieName)?.toString()
       if (selectedLang == language) {
@@ -59,12 +60,11 @@ export class LanguageSelectorService {
     const browserLang = this.translate.getBrowserLang();
     const languages = this.translate.getLangs()
     const selectedLang = this.cookieService.getObject(this.languageCookieName)?.toString()
-    const accessToken = Tokens.GetAccessToken()
     const isAnonymousUser = this.tokenHelper.isTokenAnonymous()
     let xpLang
       
-    if (!isAnonymousUser && accessToken){
-      const user = await Me.Get({ accessToken: accessToken })
+    if (!isAnonymousUser){
+      const user = this.currentUserService.get()
       xpLang = user?.xp?.Language
     }
     if (xpLang) {
