@@ -8,18 +8,24 @@ import {
   SimpleChanges,
 } from '@angular/core'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
-import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap'
+import {
+  NgbModal,
+  NgbModalRef,
+  NgbNavChangeEvent,
+} from '@ng-bootstrap/ng-bootstrap'
 import { Product, Products } from 'ordercloud-javascript-sdk'
 import { cloneDeep, isEqual, set, uniq } from 'lodash'
 import { Router } from '@angular/router'
 import { HSProduct } from '@ordercloud/headstart-sdk'
 import { FormBuilder, Validators } from '@angular/forms'
 import { TypedFormGroup } from 'ngx-forms-typed'
-import { FileHandle } from '@app-seller/shared'
+import { FileHandle, UserContext } from '@app-seller/shared'
 import { DeleteFileEvent } from '../product-image-upload/product-image-upload.component'
 import { AssetService } from '@app-seller/shared/services/assets/asset.service'
 import { ValidateNoSpecialCharactersAndSpaces } from '@app-seller/validators/validators'
 import { PLACEHOLDER_PRODUCT_IMAGE } from '@app-seller/shared/services/assets/asset.helper'
+import { TabIndexMapper } from '../product-edit/tab-mapper'
+import { Location } from '@angular/common'
 
 type ProductBundleFormValue = {
   Active: boolean
@@ -36,6 +42,7 @@ export class ProductBundleEditComponent implements OnInit, OnChanges {
   PLACEHOLDER_PRODUCT_IMAGE = PLACEHOLDER_PRODUCT_IMAGE
   @Input() product: HSProduct
   @Input() dataIsSaving: boolean
+  @Input() userContext: UserContext
   @Output() updateList = new EventEmitter<Product>()
   productOriginal: HSProduct
   form: ProductBundleForm
@@ -48,8 +55,10 @@ export class ProductBundleEditComponent implements OnInit, OnChanges {
   isCreatingNew: boolean
   modalInstance: NgbModalRef
   areChanges: boolean
+  active = 0
 
   constructor(
+    private location: Location,
     private modalService: NgbModal,
     private router: Router,
     private formBuilder: FormBuilder,
@@ -76,6 +85,16 @@ export class ProductBundleEditComponent implements OnInit, OnChanges {
       this.form = this.createForm(this.product)
       this.productOriginal = cloneDeep(this.product) // use as a reference for discarding changes
     }
+  }
+
+  tabChanged(event: NgbNavChangeEvent, productID: string): void {
+    const nextIndex = Number(event.nextId)
+    if (productID === null || this.isCreatingNew) return
+    const newLocation =
+      nextIndex === 0
+        ? `products/${productID}`
+        : `products/${productID}/${TabIndexMapper[nextIndex] as string}`
+    this.location.replaceState(newLocation)
   }
 
   updateProductModel(event: Event): void {
@@ -211,6 +230,7 @@ export class ProductBundleEditComponent implements OnInit, OnChanges {
     this.selectedBundledProducts = selectedProducts.Items
     this.stagedBundledProducts = []
     this.modalInstance.close()
+    this.checkForChanges()
   }
 
   async createProduct(): Promise<void> {

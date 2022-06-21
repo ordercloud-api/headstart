@@ -61,6 +61,7 @@ import { getProductMediumImageUrl } from '@app-seller/shared/services/assets/ass
 import { TranslateService } from '@ngx-translate/core'
 import { DeleteFileEvent } from '../product-image-upload/product-image-upload.component'
 import { ProductType } from '@ordercloud/headstart-sdk/dist/models/ProductType'
+import { NgbNavChangeEvent } from '@ng-bootstrap/ng-bootstrap'
 
 @Component({
   selector: 'app-product-edit',
@@ -85,7 +86,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   @Input() isCreatingNew: boolean
   @Input() dataIsSaving = false
   @Input() userContext: UserContext
-  sellerView: boolean
   addresses: ListPage<Address>
   isSellerUser = false
   images: ImageAsset[] = []
@@ -165,13 +165,13 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     this.active = setProductEditTab(productDetailSection)
   }
 
-  tabChanged(event: any, productID: string): void {
+  tabChanged(event: NgbNavChangeEvent, productID: string): void {
     const nextIndex = Number(event.nextId)
     if (productID === null || this.isCreatingNew) return
     const newLocation =
       nextIndex === 0
         ? `products/${productID}`
-        : `products/${productID}/${TabIndexMapper[nextIndex]}`
+        : `products/${productID}/${TabIndexMapper[nextIndex] as string}`
     this.location.replaceState(newLocation)
   }
 
@@ -234,7 +234,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
 
   createProductForm(superHSProduct: SuperHSProduct): void {
     if (superHSProduct.Product) {
-      this.sellerView = this.userContext?.UserType === 'SELLER'
       this.productForm = new FormGroup(
         {
           Active: new FormControl(superHSProduct.Product.Active),

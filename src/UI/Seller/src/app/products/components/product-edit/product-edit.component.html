@@ -929,7 +929,7 @@
       </li>
       <!-- /Product Details -->
       <!-- Buyer Visibility -->
-      <li [ngbNavItem]="1" *ngIf="sellerView" id="1">
+      <li [ngbNavItem]="1" *ngIf="userContext?.UserType === 'SELLER'" id="1">
         <a class="text-muted" ngbNavLink translate
           >ADMIN.PRODUCT_EDIT.BUYER_VISIBILITY</a
         >
