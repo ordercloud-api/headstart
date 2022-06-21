@@ -39,9 +39,9 @@ namespace OrderCloud.Integrations.Smarty
         {
             var suggestions = await autoCompleteBaseUrl
                 .AppendPathSegment("lookup")
-                .SetQueryParam("key", config.WebsiteKey)
+                .SetQueryParam("auth-id", config.AuthID)
+                .SetQueryParam("auth-token", config.AuthToken)
                 .SetQueryParam("search", search)
-                .WithHeader("Referer", config.RefererHost)
                 .GetJsonAsync<AutoCompleteResponse>();
 
             return suggestions;

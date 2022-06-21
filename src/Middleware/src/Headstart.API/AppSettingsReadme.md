@@ -70,8 +70,6 @@
 |            ServiceBusSettings:ZohoQueueName           | Intended for Zoho integration (Not used at this time) |
 |              SmartyStreetSettings:AuthID              | Authentication ID used to connect with SmartyStreet |
 |            SmartyStreetSettings:AuthToken             | Authorization token used to connect with SmartyStreet |
-|           SmartyStreetSettings:RefererHost            | HTTP Header to a hostname/IP address listed with the Website Key [SmartyStreet Docs](https://smartystreets.com/docs/cloud/authentication) |
-|            SmartyStreetSettings:WebsiteKey            | A unique key that can be associated with one or more hostnames. [SmartyStreet Docs](https://smartystreets.com/docs/cloud/authentication) |
 |               TaxJarSettings:Environment              | (Optional) The TaxJar environment, "Sandbox" or "Production" |
 |                 TaxJarSettings:ApiKey                 | (Optional) The TaxJar API key |
 |                    UI:BaseAdminUrl                    | URL to the admin app used                                                                                                                                                                                                   |
