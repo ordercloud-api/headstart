@@ -1,28 +1,11 @@
 {
-  "ALIAS": {
-    "ALL_BUYERS": "All Buyers",
-    "ALL_SUPPLIERS": "All Suppliers",
-    "BUYER": "Buyer",
-    "BUYER_LOCATION": "Buyer Group",
-    "BUYER_LOCATIONS": "Buyer Groups",
-    "BUYERS": "Buyers",
-    "SELLER": "Seller",
-    "SELLER_ADMIN": "Seller Admin",
-    "SELLER_LOCATION": "Seller Address",
-    "SELLER_LOCATIONS": "Seller Addresses",
-    "SELLERS": "Sellers",
-    "SUPPLIER": "Supplier",
-    "SUPPLIER_PROFILE": "Supplier Profile",
-    "SUPPLIER_LOCATION": "Supplier Address",
-    "SUPPLIER_LOCATIONS": "Supplier Addresses",
-    "SUPPLIERS": "Suppliers"
-  },
   "ADMIN": {
+    "BILLING_NUMBER": "Billing Number",
     "BUYER_GROUPS": {
       "APPROVALS": {
-        "HEADER": "Order Approval Rule",
         "DESCRIPTION": "Enable order approvals and set an order value threshold. Only buyers with 'ApprovalNeeded' permission will be subject to this rule.",
         "ENABLE_LABEL": "Enable Approvals",
+        "HEADER": "Order Approval Rule",
         "THRESHOLD_LABEL": "Order Total Threshold"
       }
     },
@@ -31,7 +14,11 @@
     },
     "COMMON": {
       "ACCOUNT_LOGIN": "Account Login",
+      "CANCEL": "Cancel",
+      "CONFIRM": "Confirm",
       "CONFIRM_PASSWORD": "Confirm Password",
+      "CREATE": "Create",
+      "DISCARD_CHANGES": "Discard Changes",
       "EMAIL": "Email",
       "FIRST": "First Name",
       "FORGOT_PASSWORD": "Forgot Password",
@@ -41,20 +28,16 @@
       "LOGOUT": "Logout",
       "MY_ACCOUNT": "My Account",
       "NEW": "New",
+      "NOTIFICATIONS": "Notifications",
+      "NO_CHANGES": "No Changes",
       "PASSWORD": "Password",
       "PHONE": "Phone Number",
       "REMEMBER_ME": "Remember Me",
-      "SEARCH": "Search",
-      "SUBMIT": "Submit",
-      "USERNAME": "Username",
-      "NOTIFICATIONS": "Notifications",
       "SAVE_CHANGES": "Save Changes",
       "SAVING": "Saving",
-      "DISCARD_CHANGES": "Discard Changes",
-      "NO_CHANGES": "No Changes",
-      "CONFIRM": "Confirm",
-      "CREATE": "Create",
-      "CANCEL": "Cancel"
+      "SEARCH": "Search",
+      "SUBMIT": "Submit",
+      "USERNAME": "Username"
     },
     "DELETE": {
       "ARE_YOU_SURE": "Are you sure you want to delete this?",
@@ -79,14 +62,32 @@
       "PRODUCT_FACET_INFO": "Product Facet Information",
       "WHAT_OPTIONS_AVAILABLE": "What options are available for this facet? Limit 25."
     },
+    "FILTERS": {
+      "ACTION": "Action",
+      "ACTIVE": "Active",
+      "APPLICATION": "Application",
+      "APPLIES_TO": "Applies To",
+      "FROM_DATE": "From Date",
+      "HAS_CLAIMS": "Has Claims",
+      "LOGS_ON_BEFORE": "Logs On/Before",
+      "RECORD_TYPE": "Record Type",
+      "RESULT": "Result",
+      "SELLER_OWNED_PRODUCTS": "Has Seller Owned Products",
+      "STATUS": "Status",
+      "SUPPLIER": "Supplier",
+      "TO_DATE": "To Date"
+    },
     "FILTER_OPTIONS": {
+      "AUTOMATIC": "Automatic",
       "AWAITING_APPROVAL": "Awaiting Approval",
       "CANCELED": "Canceled",
       "CATALOG": "Catalog",
+      "CODE": "Code",
       "COMPLETED": "Completed",
       "CREATE": "Create",
       "DECLINED": "Declined",
       "DELETE": "Delete",
+      "ENTIRE_ORDER": "Entire Order",
       "ERROR": "Error",
       "GET": "Get",
       "IGNORE": "Ignore",
@@ -96,47 +97,30 @@
       "PRODUCT": "Product",
       "PRODUCT_FACET": "Product Facet",
       "SPEC": "Spec",
+      "SPECIFIC_SKUS": "Specific SKUs",
+      "SPECIFIC_SUPPLIER": "Specific Supplier",
       "SPEC_OPTION": "Spec Option",
       "SPEC_PRODUCT_ASSIGNMENT": "Spec Product Assignment",
       "SUCCESS": "Success",
       "UPDATE": "Update",
       "USER": "User",
       "WARN": "Warn",
-      "YES": "Yes",
-      "AUTOMATIC": "Automatic",
-      "CODE": "Code",
-      "ENTIRE_ORDER": "Entire Order",
-      "SPECIFIC_SUPPLIER": "Specific Supplier",
-      "SPECIFIC_SKUS": "Specific SKUs"
-    },
-    "FILTERS": {
-      "ACTION": "Action",
-      "FROM_DATE": "From Date",
-      "HAS_CLAIMS": "Has Claims",
-      "LOGS_ON_BEFORE": "Logs On/Before",
-      "RECORD_TYPE": "Record Type",
-      "RESULT": "Result",
-      "STATUS": "Status",
-      "SUPPLIER": "Supplier",
-      "SELLER_OWNED_PRODUCTS": "Has Seller Owned Products",
-      "TO_DATE": "To Date",
-      "APPLIES_TO": "Applies To",
-      "APPLICATION": "Application",
-      "ACTIVE": "Active"
+      "YES": "Yes"
     },
     "HEADERS": {
       "ACTION": "Action",
       "ACTIVE": "Active",
       "ADDRESS_NAME": "Address Name",
       "APPROVAL_RULE_ID": "Approval Rule ID",
-      "CARD_TYPE": "Card Type",
       "CARDHOLDER_NAME": "Cardholder Name",
+      "CARD_TYPE": "Card Type",
       "CODE": "Code",
       "COMMENTS": "Comments",
       "COPY": "Copy",
       "DESCRIPTION": "Description",
-      "FROM_USER_USERNAME": "From User Username",
+      "EXPIRATION_DATE": "Expiration Date",
       "FROM_COMPANY_ID": "From Company ID",
+      "FROM_USER_USERNAME": "From User Username",
       "HAS_CLAIMS": "Has Claims",
       "ID": "ID",
       "NAME": "Name",
@@ -145,23 +129,22 @@
       "RECORD_TYPE": "Record Type",
       "RESULT": "Result",
       "RETURN_COMMENT": "Return Comment",
-      "STATUS": "Status",
       "SELLER_OWNED_PRODUCTS": "Has Seller Owned Products",
+      "START_DATE": "Start Date",
+      "STATUS": "Status",
       "TIME_STAMP": "Time Stamp",
       "TIME_SUBMITTED": "Time Submitted",
       "TOTAL_AMOUNT": "Total Amount",
-      "USERNAME": "Username",
-      "START_DATE": "Start Date",
-      "EXPIRATION_DATE": "Expiration Date"
+      "USERNAME": "Username"
     },
     "NAV": {
       "ALL_BUYERS": "All Buyers",
       "ALL_PRODUCTS": "All Products",
-      "ALL_SUPPLIERS": "All Suppliers",
       "ALL_STOREFRONTS": "All Storefronts",
+      "ALL_SUPPLIERS": "All Suppliers",
       "APPROVAL": "Approval",
-      "APPROVAL_RULES": "Approval Rules",
       "APPROVALS": "Approvals",
+      "APPROVAL_RULES": "Approval Rules",
       "AWAITING_APPROVAL_ORDERS": "Awaiting Approval Orders",
       "BUYERS": "Buyers",
       "CANCELLED_ORDERS": "Cancelled Orders",
@@ -182,8 +165,8 @@
       "ORDERS": "Orders",
       "ORDERS_BATCH": "Upload Shipments",
       "PAYMENT": "Payment",
-      "PAYMENT_METHODS": "Payment Methods",
       "PAYMENTS": "Payments",
+      "PAYMENT_METHODS": "Payment Methods",
       "PENDING_PRODUCTS": "Pending Products",
       "PROCESS_REPORTS": "Process Reports",
       "PRODUCT": "Product",
@@ -192,8 +175,8 @@
       "PROMOTIONS": "Promotions",
       "PURCHASE_ORDERS": "Purchase Orders",
       "QUOTE_ORDERS": "Quote Orders",
-      "REPORT_TEMPLATES": "Report Templates",
       "REPORTS": "Reports",
+      "REPORT_TEMPLATES": "Report Templates",
       "RMA": "RMA",
       "RMAS": "RMAs",
       "SALES_ORDERS": "Sales Orders",
@@ -207,10 +190,6 @@
       "USER": "User",
       "USERS": "Users"
     },
-    "PIPES": {
-      "NO": "No",
-      "YES": "Yes"
-    },
     "ORDERS": {
       "CANCEL_PRICING": "Cancel Pricing",
       "QUOTE_PRICE_EXPLANATION": {
@@ -220,16 +199,22 @@
       "SAVE_AND_NOTIFY": "Save and Notify Buyer",
       "SET_QUOTE_PRICE": "Set Quote Price"
     },
-    "BILLING_NUMBER": "Billing Number",
+    "PERMISSIONS": {
+      "LOCATION_APPROVAL_TOOLTIP": "No approval rules in this buyer group. Set an approval rule before granting OrderApprover permissions."
+    },
+    "PIPES": {
+      "NO": "No",
+      "YES": "Yes"
+    },
     "PRODUCT_EDIT": {
       "ACTIVE": "Active",
       "ADD": "Add",
       "ADD_ASSIGNMENT": "Add Assignment",
       "ADD_NEW_BREAK": "Add New Break",
       "ADD_VARIATION": "Add Variation",
-      "APPLY_INFO_TEXT": "In order to apply price breaks across variations, the product must have at least 1 variation.",
       "APPLY_ACROSS_VARIATIONS": "Apply Price Breaks Across Variations",
       "APPLY_INDIVIDUAL_VARIATIONS": "Apply Price Breaks to Individual Variations",
+      "APPLY_INFO_TEXT": "In order to apply price breaks across variations, the product must have at least 1 variation.",
       "ARTWORK_REQUIRED": "This product uses a variable print template for fulfillment",
       "ARTWORK_REQUIRED_INFO": "The buyer will personalize this product, entering information in a variable print template.",
       "BROWSE_SUBCATEGORIES": "Browse Subcategories",
@@ -238,9 +223,9 @@
       "BUYER_VISIBILITY": "Buyer Visibility",
       "CANCEL_OVERRIDE": "Cancel Override",
       "CATALOG": "Catalog",
-      "CATALOG_ASSIGNMENT": "Catalog Assignment",
       "CATALOGS": "Catalogs",
       "CATALOGS_LOWERCASE": "catalogs",
+      "CATALOG_ASSIGNMENT": "Catalog Assignment",
       "CATEGORIES": "Categories",
       "CHARACTERS": "Characters",
       "CHOOSE_AN_ADDRESS": "Choose an address",
@@ -262,8 +247,8 @@
       "DIGITAL_GOODS": "Digital Goods",
       "DISCARD_CHANGES": "Discard Changes",
       "DOCUMENTS": "Documents",
-      "DOCUMENTS_PRODUCTS": "Product Documents",
       "DOCUMENTS_DESC": "Name and upload your product documents to display and dowload on the buyer site.",
+      "DOCUMENTS_PRODUCTS": "Product Documents",
       "DOES_YOUR_PRODUCT": "Does your product come in different varieties? Add the options here.",
       "DONE": "Done",
       "DOWNLOAD": "Download",
@@ -282,8 +267,8 @@
       "ENTIRE_ORDER": "Entire Order",
       "FETCHING_VISIBILITY": "Fetching Visibility...",
       "FILTER": "Filter",
-      "FILTER_OPTIONS": "Filter Options",
       "FILTERS": "Filters",
+      "FILTER_OPTIONS": "Filter Options",
       "FIRST_SELECT_CATEGORY": "First, select a tax category",
       "FREE_SHIPPING": "This product has free shipping",
       "FREE_SHIPPING_MESSAGE": "Free shipping message",
@@ -298,6 +283,7 @@
       "INVENTORY": "Inventory",
       "INVENTORY_TRACKING": "Inventory Tracking",
       "LENGTH": "Length",
+      "LENGTH_BY_WIDTH_BY_HEIGHT": "Length x Width x Height",
       "LOW_LEVEL_CATEGORY": "Low-Level Category",
       "MARKUP": "Markup",
       "MAX_QUANTITY": "Max Quantity",
@@ -307,13 +293,13 @@
       "MIN_QUANTITY": "Min Quantity",
       "NAME": "Name",
       "NAME_THE_VARIATION": "Name the variation",
+      "NOTE": "Note",
+      "NOT_VISIBLE": "Not Visible",
       "NO_CATALOGS": "There are no catalogs for this buyer currently.",
       "NO_CATEGORIES": "There are no categories for this buyer currently.",
       "NO_DESCRIPTION": "This product has no description",
-      "NO_PROVIDED_SKU": "If you do not provide a SKU, you cannot create variants and a SKU will be generated for you.",
-      "NOT_VISIBLE": "Not Visible",
       "NO_NOTE": "This product has no note.",
-      "NOTE": "Note",
+      "NO_PROVIDED_SKU": "If you do not provide a SKU, you cannot create variants and a SKU will be generated for you.",
       "OPTION": "Option",
       "ORDER_CAN_EXCEED": "Order can exceed inventory",
       "ORDER_LIMITATIONS": "Order Limitations",
@@ -321,13 +307,13 @@
       "OVERRIDE_FILTERS": "Override Filters",
       "PENDING_VARIATION_CHANGES": "Pending Variation Changes...",
       "PRICE": "Price",
-      "PRICE_BREAK_APPLICATION": "Price Break Application",
-      "PRICE_BREAKS": "Price Breaks",
-      "PRICE_MARKUP": "Price Markup",
-      "PRICE_SCHEDULE_REQUIRED": "Quote products must have a default price (minimum value of 0).",
       "PRICES_BELOW_1": "Prices shown below are after the buyer markup and are in the supplier's currency of",
       "PRICES_BELOW_2": "which has an exchange rate of",
       "PRICES_BELOW_3": "with the seller currency",
+      "PRICE_BREAKS": "Price Breaks",
+      "PRICE_BREAK_APPLICATION": "Price Break Application",
+      "PRICE_MARKUP": "Price Markup",
+      "PRICE_SCHEDULE_REQUIRED": "Quote products must have a default price (minimum value of 0).",
       "PRICING": "Pricing",
       "PRICING_OVERRIDE": "Pricing Override",
       "PRIMARY": "Primary",
@@ -363,14 +349,13 @@
       "SERVICES": "Services",
       "SHIPPING": "Shipping",
       "SHIPPING_DIMENSIONS": "Shipping Dimensions",
-      "LENGTH_BY_WIDTH_BY_HEIGHT": "Length x Width x Height",
       "SHIP_HEIGHT": "Height",
       "SHIP_LENGTH": "Length",
       "SHIP_WEIGHT": "Weight",
       "SHIP_WIDTH": "Width",
-      "SIZE_TIER_LABEL": "Size Tier",
       "SIZE_TIER_CHOOSE": "Choose Size Tier",
       "SIZE_TIER_INFO": "Choose approximately how many units of this product fit in a 22inch x 22inch x22inch box.",
+      "SIZE_TIER_LABEL": "Size Tier",
       "SKU": "SKU",
       "SKUS_VARY": "SKUs vary based on this variation",
       "SPEC_ISSUE": "Every variation must have at least one option.",
@@ -411,22 +396,23 @@
       "ALL_PROMOTIONS_ELIGIBLE": "All promotions are eligible to all buyers at this time.",
       "APPLIES_TO": "Applies To",
       "APPLIES_TO_RATES": "Applies to shipping rates under",
+      "AUTOMATIC": "Automatic",
+      "AUTOMATIC_PROMO_CODE_EXPLANATION": "Discount Code is just for identification purposes. This promotion will automatically be applied at checkout.",
+      "AUTO_APPLY": "Automatically apply promotion",
       "BUYER_ELIGIBILITY": "Buyer Eligibility",
       "CAN_BE_COMBINED": "Can be combined with other promotions",
       "CLONE": "Clone",
-      "AUTOMATIC": "Automatic",
-      "AUTO_APPLY": "Automatically apply promotion",
       "DISCARD_CHANGES": "Discard Changes",
       "DISCOUNT_CODE": "Discount Code",
       "DISPLAY": {
         "DATE": {
-          "VALID_FROM": "Valid from",
+          "TO": "to",
           "TODAY_TO": "today to",
-          "TO": "to"
+          "VALID_FROM": "Valid from"
         },
         "ELIGIBILITY": {
-          "FOR": "For",
           "ALL_BUYERS": "all buyers",
+          "FOR": "For",
           "SELECTED_BUYERS": "selected buyers"
         },
         "USAGE": {
@@ -436,13 +422,13 @@
           "USES": "uses"
         },
         "VALUE": {
-          "OFF_ENTIRE": "off entire",
-          "OFF_SELECT_PRODUCTS": "off select products",
-          "PRODUCTS_ORDER": "products order",
-          "OFF_ENTIRE_ORDER": "off entire order",
           "FREE_SHIPPING_ENTIRE_ORDER": "Free shipping on entire order",
+          "ITEMS": "items",
+          "OFF_ENTIRE": "off entire",
+          "OFF_ENTIRE_ORDER": "off entire order",
+          "OFF_SELECT_PRODUCTS": "off select products",
           "OVER": "over",
-          "ITEMS": "items"
+          "PRODUCTS_ORDER": "products order"
         }
       },
       "ENTIRE_ORDER": "Entire Order",
@@ -466,19 +452,18 @@
       "MINIMUM_REQUIREMENTS_EXPLANATION": "You can only select one minimum requirement at this time.",
       "MORE_PROMOTIONS": "More Promotions",
       "NAME": "Name",
+      "NONE": "None",
       "NO_INFO_ENTERED": "No information entered yet.",
       "NO_RESULTS": "No results. Broaden your search and try again.",
-      "NONE": "None",
       "PERCENTAGE": "Percentage",
       "PERFORMANCE": "Performance",
       "PROMO_CODE_EXAMPLE": "e.g. SPRINGSALE20",
       "PROMO_CODE_EXPLANATION": "Buyer users will use this code at checkout.",
-      "AUTOMATIC_PROMO_CODE_EXPLANATION": "Discount Code is just for identification purposes. This promotion will automatically be applied at checkout.",
       "REQUIREMENT_SCOPE": "Requirement Scope",
       "SET_EXPIRATION_DATE": "Set Expiration Date",
       "SHIPPING": "Shipping",
-      "SPECIFIC_BUYER_GROUPS": "Specific buyer groups",
       "SPECIFIC_BUYERS": "Specific buyers",
+      "SPECIFIC_BUYER_GROUPS": "Specific buyer groups",
       "SPECIFIC_SUPPLIER": "Specific Supplier",
       "START_DATE_TIME": "Start Date & Time (UTC) ",
       "SUMMARY": "Summary",
@@ -489,44 +474,41 @@
       "VALUE": "Value"
     },
     "REPORTS": {
-      "REPORT_DETAILS": "Report Details",
-      "REPORT_DETAILS_DESC": "Provide a name and description for this template.",
+      "ALL_VALUES": "All Values",
       "AVAILABLE_TO": "Available To",
-      "TEMPLATE_NAME": "Template Name",
-      "TEMPLATE_DESC": "Template Description",
-      "ENTER_TEMPLATE_NAME": "Enter template name",
+      "BUYER_OPTIONAL": "Buyer (Optional)",
+      "CHOOSE_REPORT_TYPE": "Choose the report type and template to process",
+      "DESCRIPTION": "Description",
+      "DOWNLOADING": "Downloading...",
+      "DOWNLOAD_REPORT": "Download Report",
       "ENTER_TEMPLATE_DESC": "Optional: Enter a template description",
-      "TEMPLATE_DESC_EXPLANATION": "Optional: Enter a short description to help explain what data is expected from this report, limit 300 characters",
+      "ENTER_TEMPLATE_NAME": "Enter template name",
+      "FETCHING_PREVIEW": "Fetching Preview...",
+      "FILTERS": "Filters",
       "HEADERS": "Headers",
       "HEADERS_DESC": "Select which fields to display as headers.",
-      "SELECT_ALL": "Select All",
-      "UNSELECT_ALL": "Unselect All",
-      "FILTERS": "Filters",
-      "SELECT_WHICH_VALUES": "Select which values are allowed to display on a report.",
       "IF_NO_FILTERS": "If no filters are selected for a field, all values will be included.",
-      "INCLUDE_ALL_VALUES": "Include All Values",
-      "REPORT_SELECTION": "Report Selection",
-      "CHOOSE_REPORT_TYPE": "Choose the report type and template to process",
-      "REPORT_TYPE": "Report Type",
-      "SELECT_REPORT_TYPE": "Select a report type",
-      "REPORT_TEMPLATE": "Report Template",
-      "SELECT_REPORT_TEMPLATE": "Select a report template",
-      "DESCRIPTION": "Description",
-      "NAME": "Name",
-      "VALUES": "Values",
       "INCLUDE_ALL": "Include All",
-      "SUPPLIER_OPTIONAL": "Supplier (Optional)",
-      "BUYER_OPTIONAL": "Buyer (Optional)",
-      "ALL_VALUES": "All Values",
+      "INCLUDE_ALL_VALUES": "Include All Values",
+      "NAME": "Name",
       "PREVIEW_REPORT": "Preview Report",
-      "FETCHING_PREVIEW": "Fetching Preview...",
-      "DOWNLOAD_REPORT": "Download Report",
-      "DOWNLOADING": "Downloading...",
+      "PREVIEW_THE_REPORT": "Preview the report data in a table, or download the file.",
+      "REPORT_DETAILS": "Report Details",
+      "REPORT_DETAILS_DESC": "Provide a name and description for this template.",
       "REPORT_PROCESSING": "Report Processing",
-      "PREVIEW_THE_REPORT": "Preview the report data in a table, or download the file."
-    },
-    "PERMISSIONS": {
-      "LOCATION_APPROVAL_TOOLTIP": "No approval rules in this buyer group. Set an approval rule before granting OrderApprover permissions."
+      "REPORT_SELECTION": "Report Selection",
+      "REPORT_TEMPLATE": "Report Template",
+      "REPORT_TYPE": "Report Type",
+      "SELECT_ALL": "Select All",
+      "SELECT_REPORT_TEMPLATE": "Select a report template",
+      "SELECT_REPORT_TYPE": "Select a report type",
+      "SELECT_WHICH_VALUES": "Select which values are allowed to display on a report.",
+      "SUPPLIER_OPTIONAL": "Supplier (Optional)",
+      "TEMPLATE_DESC": "Template Description",
+      "TEMPLATE_DESC_EXPLANATION": "Optional: Enter a short description to help explain what data is expected from this report, limit 300 characters",
+      "TEMPLATE_NAME": "Template Name",
+      "UNSELECT_ALL": "Unselect All",
+      "VALUES": "Values"
     },
     "RESOURCES": {
       "CREATE_NEW": "Create New"
@@ -553,20 +535,20 @@
       "OVERRIDE_PERCENT": "Override Percent to Refund",
       "PARTIAL_REFUND_PERCENT": "Partial Refund %",
       "PRICE": "Price",
+      "PROCESSED": "Processed",
+      "PROCESSED_BY": "Processed By",
       "PROCESS_OPTION": "Process Option",
       "PROCESS_REFUND": "Process Refund",
       "PROCESS_REQUEST": "Process Request",
       "PROCESS_RMA": "Process RMA",
-      "PROCESSED": "Processed",
-      "PROCESSED_BY": "Processed By",
       "PRODUCT": "Product",
       "PURCHASE_ORDER_EXPLANATION": "Because of how this purchase order item is paid for, you may manage its RMA status, but a credit card refund will not be issued.",
       "QUANTITY": "Quantity",
       "QUANTITY_TO_PROCESS": "Quantity to Process",
       "REASON": "Reason",
       "REASON_FOR": "Reason for",
-      "REFUND_ISSUED": "Refund Issued",
       "REFUNDED": "Refunded",
+      "REFUND_ISSUED": "Refund Issued",
       "REQUESTED": "Requested",
       "REQUESTED_QUANTITY": "Requested Quantity",
       "RMA_ITEMS": "RMA Items",
@@ -580,12 +562,30 @@
       "VIEW_ORDER_DETAILS": "View Order Details"
     },
     "STOREFRONTS": {
-      "SUMMARY": "A storefront represents a hosted buyer application. Simply creating a storefront in this admin interface will not create a buyer application - that process still needs to be performed manually by a developer but once that is done certain pieces about the storefront can be managed here",
       "ACCESS_TOKEN_TOOLTIP": "Determines how long (in minutes) a user can stay logged in before they will need to re-enter their credentials and log back in. Minimum value is 10, Maximum value is 600.",
-      "REFRESH_TOKEN_TOOLTIP": "Determines how long (in minutes) a refresh token can be used to keep a user logged in. Minimum value is 0, Maximum value is 43,200.",
       "ANON_BUYER_TOOLTIP": "The buyer organization that contains the user that should be used as the default context user for anonymous shopping. All pricing, permissions, and visibility will be based on this user",
-      "ANON_USERNAME_TOOLTIP": "The buyer user that will be used as the default context user for anonymous shopping. All pricing, permissions, and visibility will be based on this user"
+      "ANON_USERNAME_TOOLTIP": "The buyer user that will be used as the default context user for anonymous shopping. All pricing, permissions, and visibility will be based on this user",
+      "REFRESH_TOKEN_TOOLTIP": "Determines how long (in minutes) a refresh token can be used to keep a user logged in. Minimum value is 0, Maximum value is 43,200.",
+      "SUMMARY": "A storefront represents a hosted buyer application. Simply creating a storefront in this admin interface will not create a buyer application - that process still needs to be performed manually by a developer but once that is done certain pieces about the storefront can be managed here"
     }
+  },
+  "ALIAS": {
+    "ALL_BUYERS": "All Buyers",
+    "ALL_SUPPLIERS": "All Suppliers",
+    "BUYER": "Buyer",
+    "BUYERS": "Buyers",
+    "BUYER_LOCATION": "Buyer Group",
+    "BUYER_LOCATIONS": "Buyer Groups",
+    "SELLER": "Seller",
+    "SELLERS": "Sellers",
+    "SELLER_ADMIN": "Seller Admin",
+    "SELLER_LOCATION": "Seller Address",
+    "SELLER_LOCATIONS": "Seller Addresses",
+    "SUPPLIER": "Supplier",
+    "SUPPLIERS": "Suppliers",
+    "SUPPLIER_LOCATION": "Supplier Address",
+    "SUPPLIER_LOCATIONS": "Supplier Addresses",
+    "SUPPLIER_PROFILE": "Supplier Profile"
   },
   "AUTHENTICATION": {
     "FORGOT_PASSWORD": {
@@ -614,22 +614,36 @@
       "SET_PASSWORD": "Set New Password"
     }
   },
+  "BUYER": {
+    "HELPERMESSAGES": {
+      "BUYERGROUP": {
+        "ACTION": "Set Buyer Groups now.",
+        "MESSAGE": "Looks like this Buyer has no Buyer Groups.",
+        "WARNING": "There are no supplier addresses for this user's Home Country."
+      },
+      "CATALOG": {
+        "ACTION": "Set Catalogs now.",
+        "MESSAGE": "Looks like this buyer has no Catalogs",
+        "WARNING": "No Catalogs available for this buyer."
+      }
+    }
+  },
   "CART": {
     "CART": {
       "CART_IS_EMPTY": "You do not have any items in your cart",
-      "INVALID_ITEMS_NOTICE": "The following will be removed from your cart. Please review your updated cart before checking out.",
       "CHECKOUT": "CHECKOUT",
       "CONTINUE_SHOPPING": "Continue Shopping",
       "EMPTY_CART": "Empty Cart",
+      "INVALID_ITEMS_NOTICE": "The following will be removed from your cart. Please review your updated cart before checking out.",
       "SHOPPING_CART": "Shopping Cart",
-      "VIEW_CART": "View Cart",
-      "SUBMIT_QUOTE": "Submit Quote"
+      "SUBMIT_QUOTE": "Submit Quote",
+      "VIEW_CART": "View Cart"
     },
     "LINEITEM_TABLE": {
       "PRICE": "Price",
       "QTY": "Qty",
-      "QTY_RETURNED": "Returned",
       "QTY_CANCELED": "Canceled",
+      "QTY_RETURNED": "Returned",
       "REFUND_AMOUNT": "Refund Amount",
       "REMOVE_ITEM": "Remove Item",
       "RETURNED": "Returned:",
@@ -652,15 +666,15 @@
   },
   "CHECKOUT": {
     "CHECKOUT": {
+      "CHANGE_ADDRESS": "Change Shipping Address",
       "CHECKOUT": "Checkout",
-      "ORDERREFERENCE": "Order Reference Number",
       "CONFIRM": "Order Review",
       "CREATE_ACCOUNT": "Create Account",
       "GUEST_CHECKOUT": "Checkout as Guest",
+      "ORDERREFERENCE": "Order Reference Number",
       "PAYMENT": "Payment & Promotions",
       "SHIPPING_ADDRESS": "Shipping Address",
-      "SHIPPING_SELECTION": "Shipping Selection",
-      "CHANGE_ADDRESS": "Change Shipping Address"
+      "SHIPPING_SELECTION": "Shipping Selection"
     },
     "CHECKOUT_ADDRESS": {
       "BUYER_LOCATION": "Select Location for this order",
@@ -693,8 +707,8 @@
       "DAY": "day",
       "DELIVERY_OPTIONS": "Delivery Options",
       "HOW_FAST": "How fast should this ship?",
-      "SHIPPING_SPEED": "Shipping Speed",
       "NO_RATES_RETURNED_MESSAGE": "No rates returned - shipping will be calculated after the order is placed",
+      "SHIPPING_SPEED": "Shipping Speed",
       "SHIP_ESTIMATES_BASED_ON_DELIVERY": "Shipping estimates are based on delivery speed after items have been shipped by the carrier. Items requiring customization could take longer to ship."
     }
   },
@@ -714,22 +728,52 @@
     "USERNAME": "Username",
     "YES_DELETE": "Yes, Delete"
   },
+  "ERRORS": {
+    "ALREADY_SUBMITTED": {
+      "BUTTONTEXT": "Back to Home",
+      "TITLE": "This order has already been submitted"
+    },
+    "CREDIT_CARD_AUTH": {
+      "BUTTONTEXT": "Back to Payment Section",
+      "MESSAGE_PART1": "The authorization for your payment was declined by the processor due to:",
+      "MESSAGE_PART2": "Please reenter your information or use a different card",
+      "TITLE": "There was an error processing your payment"
+    },
+    "FAILED_TO_VOID_AUTHORIZATION": {
+      "BUTTONTEXT": "Go to Payment Selection",
+      "MESSAGE": "Critical error occurred. Please contact support and avoid submitting order again until you have been helped",
+      "TITLE": "An Error Occured"
+    },
+    "INSUFFICIENT": {
+      "BUTTONTEXT": "Back to Cart",
+      "MESSAGE_PART1": "Insufficient inventory for product",
+      "MESSAGE_PART2": "Quantity Available",
+      "TITLE": "Insufficient Inventory"
+    },
+    "MISSING_SHIPPING_SELECTIONS": {
+      "BUTTONTEXT": "Go to Shipping",
+      "MESSAGE": "Please update your shipping selections",
+      "TITLE": "This order has been changed"
+    },
+    "ORDER_NOT_ACCESSABLE": "You no longer have access to this order",
+    "UNKNOWN": "An unknown error has occurred"
+  },
   "LAYOUT": {
     "ADDRESS_SUGGESTIONS": "Did you mean...",
     "APP_FOOTER": {
       "CREATED_BY": "Created by Four51, Inc.",
+      "EMAIL": "support@my-company.com",
+      "EMAIL_LABEL": "Write:",
       "FAQ": "FAQ",
-      "SUPPORT": "Support",
-      "TERMS_CONDITIONS": "Terms & Conditions",
-      "QUESTIONS_COMMENTS": "Questions or comments?",
       "PHONE": {
-        "LABEL": "Ring:",
         "AREACODE": "555",
+        "LABEL": "Ring:",
         "PREFIX": "555",
         "SUFFIX": "5555"
       },
-      "EMAIL": "support@my-company.com",
-      "EMAIL_LABEL": "Write:"
+      "QUESTIONS_COMMENTS": "Questions or comments?",
+      "SUPPORT": "Support",
+      "TERMS_CONDITIONS": "Terms & Conditions"
     },
     "APP_HEADER": {
       "ACCOUNT": "Account",
@@ -740,10 +784,10 @@
       "LOGOUT": "Logout",
       "NEEDS_ATTENTION": "Orders Need Attention",
       "ORDERS": "Orders",
-      "ORDERS_PLACED_BY_ME": "Placed by Me",
-      "ORDERS_QUOTES": "Quotes",
-      "ORDERS_PLACED_IN_MY_LOCATIONS": "Placed in My Locations",
       "ORDERS_AWAITING_MY_APPROVAL": "Awaiting My Approval",
+      "ORDERS_PLACED_BY_ME": "Placed by Me",
+      "ORDERS_PLACED_IN_MY_LOCATIONS": "Placed in My Locations",
+      "ORDERS_QUOTES": "Quotes",
       "PRODUCTS": "Products",
       "PROFILE": "My Profile",
       "REGISTER": "Register",
@@ -755,20 +799,6 @@
       "NO": "No",
       "OF": "of",
       "RESULTS": "results"
-    }
-  },
-  "BUYER": {
-    "HELPERMESSAGES": {
-      "CATALOG": {
-        "WARNING": "No Catalogs available for this buyer.",
-        "MESSAGE": "Looks like this buyer has no Catalogs",
-        "ACTION": "Set Catalogs now."
-      },
-      "BUYERGROUP": {
-        "WARNING": "There are no supplier addresses for this user's Home Country.",
-        "MESSAGE": "Looks like this Buyer has no Buyer Groups.",
-        "ACTION": "Set Buyer Groups now."
-      }
     }
   },
   "ORDERS": {
@@ -788,18 +818,18 @@
       "ADD_TO_CART": "Add Valid Items to Cart",
       "ALL": "All Orders",
       "CANCEL": "Cancel",
-      "DISCARD_RETURN_REQUEST": "Discard Return Request",
-      "DISCARD_CANCEL_REQUEST": "Discard Cancel Request",
-      "DOWNLOAD_AS_PDF": "Download as PDF",
       "CLAIM_STATUS": "Claim Status",
       "DETAILS": "Details",
+      "DISCARD_CANCEL_REQUEST": "Discard Cancel Request",
+      "DISCARD_RETURN_REQUEST": "Discard Return Request",
+      "DOWNLOAD_AS_PDF": "Download as PDF",
       "FAVORITE": "Favorite",
       "MOVE_TO_CART": "Move Order to Cart",
       "ORDER": "Order",
       "REASON": "Reason",
       "REORDER": "Reorder",
-      "REQUEST_A_RETURN": "Request a Return",
       "REQUEST_A_CANCEL": "Request a Cancellation",
+      "REQUEST_A_RETURN": "Request a Return",
       "RMAS": "Returns & Cancellations",
       "SHIPMENTS": "Shipments",
       "SHIPPING_STATUS": "Shipping Status",
@@ -809,22 +839,22 @@
       "WARNING": "You order will be placed back into your cart. You will lose any items currently in your cart."
     },
     "HISTORICAL": {
+      "ACCEPT_QUOTE": "Accept Quote",
       "BILLING_ADDRESS": "Billing Address",
       "BUYER": "Buyer",
       "BUYER_LOCATION": "Buyer Location",
       "COMMENTS": "Comments",
+      "CONTACT_SUPPLIER": "Contact Supplier",
       "ON": "on",
       "PROMO": "Promo Discount",
+      "QUOTE_ACCEPTED_MESSAGE": "Once the order is accepted the quote request will be deleted and the items will be added to your cart so that you may checkout.",
+      "QUOTE_ACTIONS": "Quote Actions",
       "SHIPPING": "Shipping",
       "SHIPPING_ADDRESS": "Shipping Address",
       "SUBMITTED_BY": "Submitted By",
       "SUBTOTAL": "Subtotal",
       "TAX": "Tax",
-      "TOTAL": "Total",
-      "ACCEPT_QUOTE": "Accept Quote",
-      "CONTACT_SUPPLIER": "Contact Supplier",
-      "QUOTE_ACTIONS": "Quote Actions",
-      "QUOTE_ACCEPTED_MESSAGE": "Once the order is accepted the quote request will be deleted and the items will be added to your cart so that you may checkout."
+      "TOTAL": "Total"
     },
     "HISTORY": {
       "FAVORITES": "Favorites",
@@ -842,33 +872,33 @@
       "TOTAL": "Total"
     },
     "RETURNS": {
+      "CANCELED": "Canceled",
+      "CANCEL_REASON": "Cancel Reason",
       "ORDERED": "Ordered",
       "PRICE": "Price",
       "PRODUCT_DETAILS": "Product Details",
-      "QTY_TO_RETURN": "Qty to Return",
       "QTY_TO_CANCEL": "Qty to Cancel",
-      "RETURN_REASON": "Return Reason",
-      "CANCEL_REASON": "Cancel Reason",
+      "QTY_TO_RETURN": "Qty to Return",
       "RETURNED": "Returned",
-      "CANCELED": "Canceled",
-      "SELECT_RETURN_REASON": "Select return reason",
-      "SELECT_CANCEL_REASON": "Select cancel reason"
+      "RETURN_REASON": "Return Reason",
+      "SELECT_CANCEL_REASON": "Select cancel reason",
+      "SELECT_RETURN_REASON": "Select return reason"
     },
     "RETURN_REASONS": {
       "DISCOUNT_NOT_APPLIED": "Discount was not applied",
+      "FOUND_DIFFERENT_PRODUCT": "Found a different product I lliked better",
+      "FULFILLMENT_TOO_LONG": "Product took too long to fulfill",
       "INCORRECT_PRODUCT_SHIPPED": "Incorrect product or size shipped",
       "PRODUCT_ARRIVED_LATE": "Product arrived too late",
       "PRODUCT_DEFECTIVE": "Product is defective/damaged",
       "PRODUCT_MATCH_DESCRIPTION": "Product does not match description",
       "PRODUCT_MISSING": "Product is missing from shipment",
       "PRODUCT_NOT_NEEDED": "Product is no longer needed",
-      "PURCHASE_NOT_APPROVED": "Purchase was not approved",
       "PURCHASED_BY_MISTAKE": "Purchased by mistake",
       "PURCHASED_INCORRECT_SIZE": "Purchased incorrect size/style",
+      "PURCHASE_NOT_APPROVED": "Purchase was not approved",
       "RECEIVED_EXTRA_PRODUCT": "Received extra product that I didn’t buy",
-      "SHIPPING_BOX_DAMAGED": "Shipping box is damaged",
-      "FOUND_DIFFERENT_PRODUCT": "Found a different product I lliked better",
-      "FULFILLMENT_TOO_LONG": "Product took too long to fulfill"
+      "SHIPPING_BOX_DAMAGED": "Shipping box is damaged"
     },
     "SHIPMENTS": {
       "DATE_SHIPPED": "Date Shipped",
@@ -937,15 +967,15 @@
       "TO_CART": "to Cart"
     },
     "CONTACT_SUPPLIER": {
-      "PLEASE_VERIFY": "Please verify your contact information and submit a comment/question about this product.",
-      "FIRST": "First Name",
-      "LAST": "Last Name",
-      "FOR_LOCATION": "For Location",
-      "EMAIL": "Email",
-      "PHONE": "Phone",
+      "CANCEL": "Cancel",
       "COMMENTS": "Comments/Questions",
-      "SUBMIT": "Submit",
-      "CANCEL": "Cancel"
+      "EMAIL": "Email",
+      "FIRST": "First Name",
+      "FOR_LOCATION": "For Location",
+      "LAST": "Last Name",
+      "PHONE": "Phone",
+      "PLEASE_VERIFY": "Please verify your contact information and submit a comment/question about this product.",
+      "SUBMIT": "Submit"
     },
     "DETAILS": {
       "ADD_TO_CART": "Add to Cart",
@@ -953,8 +983,11 @@
       "CONTACT_PART_TWO": " about this product",
       "DESCRIPTION": "Description",
       "DOCS": "Documents",
+      "LOGIN_FOR_QUOTE": "You must login before you can place a request for Quote.",
       "NOTE": "Note",
       "QUANTITY": "Quantity",
+      "QUOTE_EXISTING_CART_ERROR": "Cannot add Quote Request to existing cart.",
+      "QUOTE_STANDARD_EXISTING_CART_ERROR": "Cannot add Standard items to existing cart.",
       "REQ_QUOTE": "Request Quote",
       "SAVINGS": "You save",
       "SUCCESS": "Your quote request was successfully submitted",
@@ -962,10 +995,7 @@
       "TIERED_PRICE_DESC": "For select items, the more you order - the more you save! Details listed below. Pricing excludes additional charges for sizes and modifications.",
       "TIERED_PRICE_HEAD": "Tiered Pricing",
       "VIEW_ONLY": "This is a view-only product and cannot be ordered",
-      "VIEW_QUOTE": "View quote request",
-      "LOGIN_FOR_QUOTE": "You must login before you can place a request for Quote.",
-      "QUOTE_EXISTING_CART_ERROR": "Cannot add Quote Request to existing cart.",
-      "QUOTE_STANDARD_EXISTING_CART_ERROR": "Cannot add Standard items to existing cart."
+      "VIEW_QUOTE": "View quote request"
     },
     "FACETS": "Show All",
     "GRID": {
@@ -1077,8 +1107,9 @@
   "USERS": {
     "USER_MGMT": {
       "ALL_ORDERS": "All Orders Require Approval",
-      "CAN_APPROVE": "Can Approve Orders",
+      "APPROVAL_ENABLED": "Approval Enabled",
       "CANCEL": "Cancel",
+      "CAN_APPROVE": "Can Approve Orders",
       "CONFIRM": "Confirm",
       "NEEDS_APPROVAL": "Orders Need Approval",
       "NO_CHANGES": "No Changes",
@@ -1092,40 +1123,9 @@
       "SET_THRESHOLD": "You have the ability to set an order total above which orders will require approval for the users indicated above.",
       "SOME_ORDERS": "Only Orders Over Threshold",
       "THRESHOLD": "Order Approval Threshold",
-      "APPROVAL_ENABLED": "Approval Enabled",
       "USER": "User",
       "USER_IS_ADMINISTRATOR": "You are an approval rule administrator but you are not currently a part of any locations. When you join a location you can assign approval permissions here.",
       "WARNING": "This is a potentially destructive action that affects order approvals."
     }
-  },
-  "ERRORS": {
-    "FAILED_TO_VOID_AUTHORIZATION": {
-      "TITLE": "An Error Occured",
-      "MESSAGE": "Critical error occurred. Please contact support and avoid submitting order again until you have been helped",
-      "BUTTONTEXT": "Go to Payment Selection"
-    },
-    "INSUFFICIENT": {
-      "TITLE": "Insufficient Inventory",
-      "MESSAGE_PART1": "Insufficient inventory for product",
-      "MESSAGE_PART2": "Quantity Available",
-      "BUTTONTEXT": "Back to Cart"
-    },
-    "ALREADY_SUBMITTED": {
-      "TITLE": "This order has already been submitted",
-      "BUTTONTEXT": "Back to Home"
-    },
-    "MISSING_SHIPPING_SELECTIONS": {
-      "TITLE": "This order has been changed",
-      "MESSAGE": "Please update your shipping selections",
-      "BUTTONTEXT": "Go to Shipping"
-    },
-    "CREDIT_CARD_AUTH": {
-      "TITLE": "There was an error processing your payment",
-      "MESSAGE_PART1": "The authorization for your payment was declined by the processor due to:",
-      "MESSAGE_PART2": "Please reenter your information or use a different card",
-      "BUTTONTEXT": "Back to Payment Section"
-    },
-    "ORDER_NOT_ACCESSABLE": "You no longer have access to this order",
-    "UNKNOWN": "An unknown error has occurred"
   }
 }

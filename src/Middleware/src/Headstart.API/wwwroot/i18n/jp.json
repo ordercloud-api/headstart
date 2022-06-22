@@ -1,28 +1,11 @@
 {
-  "ALIAS": {
-    "ALL_BUYERS": "全ての購入者",
-    "ALL_SUPPLIERS": "全てのサプライヤー",
-    "BUYER": "購入者",
-    "BUYER_LOCATION": "購入者グループ",
-    "BUYER_LOCATIONS": "購入者グループ",
-    "BUYERS": "購入者",
-    "SELLER": "販売者",
-    "SELLER_ADMIN": "販売者管理者",
-    "SELLER_LOCATION": "販売者住所",
-    "SELLER_LOCATIONS": "販売者住所",
-    "SELLERS": "販売者",
-    "SUPPLIER": "サプライヤー",
-    "SUPPLIER_PROFILE": "サプライヤー プロファイル",
-    "SUPPLIER_LOCATION": "サプライヤー住所",
-    "SUPPLIER_LOCATIONS": "サプライヤー住所",
-    "SUPPLIERS": "サプライヤー"
-  },
   "ADMIN": {
+    "BILLING_NUMBER": "請求番号",
     "BUYER_GROUPS": {
       "APPROVALS": {
-        "HEADER": "注文承認ルール",
         "DESCRIPTION": "注文の承認を有効にし、注文金額の閾値を設定します。 'ApprovalNeeded' 権限を持つ購入者のみがこのルールの対象となります。",
         "ENABLE_LABEL": "承認の有効化",
+        "HEADER": "注文承認ルール",
         "THRESHOLD_LABEL": "注文合計の閾値"
       }
     },
@@ -31,7 +14,11 @@
     },
     "COMMON": {
       "ACCOUNT_LOGIN": "ログイン アカウント",
+      "CANCEL": "キャンセル",
+      "CONFIRM": "確定",
       "CONFIRM_PASSWORD": "パスワードの確認",
+      "CREATE": "作成",
+      "DISCARD_CHANGES": "変更を破棄",
       "EMAIL": "Email",
       "FIRST": "名",
       "FORGOT_PASSWORD": "パスワードを忘れた場合",
@@ -41,20 +28,16 @@
       "LOGOUT": "ログアウト",
       "MY_ACCOUNT": "マイ アカウント",
       "NEW": "New",
+      "NOTIFICATIONS": "通知",
+      "NO_CHANGES": "変更なし",
       "PASSWORD": "パスワード",
       "PHONE": "電話番号",
       "REMEMBER_ME": "ログイン状態を保存する",
-      "SEARCH": "検索",
-      "SUBMIT": "送信",
-      "USERNAME": "ユーザー名",
-      "NOTIFICATIONS": "通知",
       "SAVE_CHANGES": "変更を保存",
       "SAVING": "保存中",
-      "DISCARD_CHANGES": "変更を破棄",
-      "NO_CHANGES": "変更なし",
-      "CONFIRM": "確定",
-      "CREATE": "作成",
-      "CANCEL": "キャンセル"
+      "SEARCH": "検索",
+      "SUBMIT": "送信",
+      "USERNAME": "ユーザー名"
     },
     "DELETE": {
       "ARE_YOU_SURE": "削除してもよろしいですか？",
@@ -79,14 +62,32 @@
       "PRODUCT_FACET_INFO": "商品ファセット情報",
       "WHAT_OPTIONS_AVAILABLE": "このファセットにはどのようなオプションがありますか？上限25個。"
     },
+    "FILTERS": {
+      "ACTION": "操作",
+      "ACTIVE": "アクティブ",
+      "APPLICATION": "アプリケーション",
+      "APPLIES_TO": "適用範囲",
+      "FROM_DATE": "開始日",
+      "HAS_CLAIMS": "要求あり",
+      "LOGS_ON_BEFORE": "ログオン/前",
+      "RECORD_TYPE": "レコードの種類",
+      "RESULT": "結果",
+      "SELLER_OWNED_PRODUCTS": "販売者所有商品あり",
+      "STATUS": "ステータス",
+      "SUPPLIER": "サプライヤー",
+      "TO_DATE": "終了日"
+    },
     "FILTER_OPTIONS": {
+      "AUTOMATIC": "自動",
       "AWAITING_APPROVAL": "承認待ち",
       "CANCELED": "キャンセル",
       "CATALOG": "カタログ",
+      "CODE": "コード",
       "COMPLETED": "完了",
       "CREATE": "作成",
       "DECLINED": "拒否",
       "DELETE": "削除",
+      "ENTIRE_ORDER": "ご注文内容",
       "ERROR": "エラー",
       "GET": "取得",
       "IGNORE": "無視",
@@ -96,47 +97,30 @@
       "PRODUCT": "商品",
       "PRODUCT_FACET": "商品ファセット",
       "SPEC": "スペック",
+      "SPECIFIC_SKUS": "特定の SKUs",
+      "SPECIFIC_SUPPLIER": "特定サプライヤー",
       "SPEC_OPTION": "スペック オプション",
       "SPEC_PRODUCT_ASSIGNMENT": "スペック商品割り当て",
       "SUCCESS": "成功",
       "UPDATE": "更新",
       "USER": "ユーザー",
       "WARN": "警告",
-      "YES": "はい",
-      "AUTOMATIC": "自動",
-      "CODE": "コード",
-      "ENTIRE_ORDER": "ご注文内容",
-      "SPECIFIC_SUPPLIER": "特定サプライヤー",
-      "SPECIFIC_SKUS": "特定の SKUs"
-    },
-    "FILTERS": {
-      "ACTION": "操作",
-      "FROM_DATE": "開始日",
-      "HAS_CLAIMS": "要求あり",
-      "LOGS_ON_BEFORE": "ログオン/前",
-      "RECORD_TYPE": "レコードの種類",
-      "RESULT": "結果",
-      "STATUS": "ステータス",
-      "SUPPLIER": "サプライヤー",
-      "SELLER_OWNED_PRODUCTS": "販売者所有商品あり",
-      "TO_DATE": "終了日",
-      "APPLIES_TO": "適用範囲",
-      "APPLICATION": "アプリケーション",
-      "ACTIVE": "アクティブ"
+      "YES": "はい"
     },
     "HEADERS": {
       "ACTION": "操作",
       "ACTIVE": "有効",
       "ADDRESS_NAME": "アドレス名",
       "APPROVAL_RULE_ID": "承認ルールID",
-      "CARD_TYPE": "カードの種類",
       "CARDHOLDER_NAME": "クレジットカード名義人氏名",
+      "CARD_TYPE": "カードの種類",
       "CODE": "コード",
       "COMMENTS": "コメント",
       "COPY": "コピー",
       "DESCRIPTION": "説明",
-      "FROM_USER_USERNAME": "ユーザー ユーザー名から",
+      "EXPIRATION_DATE": "有効期限",
       "FROM_COMPANY_ID": "会社IDから",
+      "FROM_USER_USERNAME": "ユーザー ユーザー名から",
       "HAS_CLAIMS": "要求あり",
       "ID": "ID",
       "NAME": "名前",
@@ -145,23 +129,22 @@
       "RECORD_TYPE": "レコードの種類",
       "RESULT": "結果",
       "RETURN_COMMENT": "コメントを返す",
-      "STATUS": "ステータス",
       "SELLER_OWNED_PRODUCTS": "販売者所有商品あり",
+      "START_DATE": "開始日",
+      "STATUS": "ステータス",
       "TIME_STAMP": "タイムスタンプ",
       "TIME_SUBMITTED": "送信時刻",
       "TOTAL_AMOUNT": "合計金額",
-      "USERNAME": "ユーザー名",
-      "START_DATE": "開始日",
-      "EXPIRATION_DATE": "有効期限"
+      "USERNAME": "ユーザー名"
     },
     "NAV": {
       "ALL_BUYERS": "全ての購入者",
       "ALL_PRODUCTS": "全ての商品",
-      "ALL_SUPPLIERS": "全てのサプライヤー",
       "ALL_STOREFRONTS": "すべてのストアフロント",
+      "ALL_SUPPLIERS": "全てのサプライヤー",
       "APPROVAL": "承認",
-      "APPROVAL_RULES": "承認結果",
       "APPROVALS": "承認",
+      "APPROVAL_RULES": "承認結果",
       "AWAITING_APPROVAL_ORDERS": "承認待ちの注文",
       "BUYERS": "購入者",
       "CANCELLED_ORDERS": "キャンセル済みの注文",
@@ -182,8 +165,8 @@
       "ORDERS": "注文",
       "ORDERS_BATCH": "発送を更新",
       "PAYMENT": "支払い",
-      "PAYMENT_METHODS": "支払方法",
       "PAYMENTS": "支払い",
+      "PAYMENT_METHODS": "支払方法",
       "PENDING_PRODUCTS": "保留中の商品",
       "PROCESS_REPORTS": "処理レポート",
       "PRODUCT": "商品",
@@ -192,8 +175,8 @@
       "PROMOTIONS": "プロモーション",
       "PURCHASE_ORDERS": "発注書",
       "QUOTE_ORDERS": "見積り依頼",
-      "REPORT_TEMPLATES": "レポート テンプレート",
       "REPORTS": "レポート",
+      "REPORT_TEMPLATES": "レポート テンプレート",
       "RMA": "返品保証",
       "RMAS": "返品保証",
       "SALES_ORDERS": "販売注文",
@@ -207,10 +190,6 @@
       "USER": "ユーザー",
       "USERS": "ユーザー"
     },
-    "PIPES": {
-      "NO": "いいえ",
-      "YES": "はい"
-    },
     "ORDERS": {
       "CANCEL_PRICING": "Cancel Pricing",
       "QUOTE_PRICE_EXPLANATION": {
@@ -220,16 +199,22 @@
       "SAVE_AND_NOTIFY": "Save and Notify Buyer",
       "SET_QUOTE_PRICE": "Set Quote Price"
     },
-    "BILLING_NUMBER": "請求番号",
+    "PERMISSIONS": {
+      "LOCATION_APPROVAL_TOOLTIP": "この購入者グループには承認ルールがありません。OrderApprover権限を付与する前に、承認ルールを設定してください。"
+    },
+    "PIPES": {
+      "NO": "いいえ",
+      "YES": "はい"
+    },
     "PRODUCT_EDIT": {
       "ACTIVE": "有効",
       "ADD": "追加",
       "ADD_ASSIGNMENT": "割り当てを追加",
       "ADD_NEW_BREAK": "新規の値下げを追加",
       "ADD_VARIATION": "バリエーションを追加",
-      "APPLY_INFO_TEXT": "バリエーション間で値下げを適用するには、製品に少なくとも1つのバリエーションが必要です。",
       "APPLY_ACROSS_VARIATIONS": "バリエーション間で値下げを適用",
       "APPLY_INDIVIDUAL_VARIATIONS": "個別のバリエーションに値下げを適用",
+      "APPLY_INFO_TEXT": "バリエーション間で値下げを適用するには、製品に少なくとも1つのバリエーションが必要です。",
       "ARTWORK_REQUIRED": "この商品は、フルフィルメントにバリアブル印刷テンプレートを使用します。",
       "ARTWORK_REQUIRED_INFO": "購入者は、バリアブル印刷テンプレートに情報を入力して、この商品をパーソナライズします。",
       "BROWSE_SUBCATEGORIES": "サブカテゴリーを閲覧",
@@ -238,9 +223,9 @@
       "BUYER_VISIBILITY": "購入者の表示",
       "CANCEL_OVERRIDE": "上書きをキャンセル",
       "CATALOG": "カタログ",
-      "CATALOG_ASSIGNMENT": "カタログの割り当て",
       "CATALOGS": "カタログ",
       "CATALOGS_LOWERCASE": "カタログ",
+      "CATALOG_ASSIGNMENT": "カタログの割り当て",
       "CATEGORIES": "カテゴリー",
       "CHARACTERS": "文字数",
       "CHOOSE_AN_ADDRESS": "住所を選択",
@@ -262,8 +247,8 @@
       "DIGITAL_GOODS": "デジタル商品",
       "DISCARD_CHANGES": "変更を破棄",
       "DOCUMENTS": "ドキュメント",
-      "DOCUMENTS_PRODUCTS": "製品ドキュメント",
       "DOCUMENTS_DESC": "購入者サイトでの表示およびダウンロード用に、製品ドキュメントに名前を付けてアップロードします。",
+      "DOCUMENTS_PRODUCTS": "製品ドキュメント",
       "DOES_YOUR_PRODUCT": "商品にさまざまな種類がありますか？ここでオプションを追加します。",
       "DONE": "完了",
       "DOWNLOAD": "ダウンロード",
@@ -282,8 +267,8 @@
       "ENTIRE_ORDER": "全注文",
       "FETCHING_VISIBILITY": "表示を取得中...",
       "FILTER": "フィルター",
-      "FILTER_OPTIONS": "フィルター オプション",
       "FILTERS": "フィルター",
+      "FILTER_OPTIONS": "フィルター オプション",
       "FIRST_SELECT_CATEGORY": "まず、税区分を選択します。",
       "FREE_SHIPPING": "この商品は送料無料です。",
       "FREE_SHIPPING_MESSAGE": "送料無料メッセージ",
@@ -298,6 +283,7 @@
       "INVENTORY": "在庫",
       "INVENTORY_TRACKING": "在庫追跡",
       "LENGTH": "長さ",
+      "LENGTH_BY_WIDTH_BY_HEIGHT": "長さ x 幅 x 高さ",
       "LOW_LEVEL_CATEGORY": "低レベル カテゴリー",
       "MARKUP": "マークアップ",
       "MAX_QUANTITY": "最大数量",
@@ -307,13 +293,13 @@
       "MIN_QUANTITY": "最小数量",
       "NAME": "名前",
       "NAME_THE_VARIATION": "バリエーションの名前を設定",
+      "NOTE": "注意事項",
+      "NOT_VISIBLE": "非表示",
       "NO_CATALOGS": "現在、この購入者のカタログはありません。",
       "NO_CATEGORIES": "現在、この購入者のカテゴリーはありません。",
       "NO_DESCRIPTION": "この商品には説明がありません。",
-      "NO_PROVIDED_SKU": "SKUを指定しない場合、バリアントを作成することはできず、SKUが生成されます。",
-      "NOT_VISIBLE": "非表示",
       "NO_NOTE": "この商品には注意事項はありません。",
-      "NOTE": "注意事項",
+      "NO_PROVIDED_SKU": "SKUを指定しない場合、バリアントを作成することはできず、SKUが生成されます。",
       "OPTION": "オプション",
       "ORDER_CAN_EXCEED": "注文が在庫を超える可能性があります。",
       "ORDER_LIMITATIONS": "注文の制限",
@@ -321,13 +307,13 @@
       "OVERRIDE_FILTERS": "フィルターを上書き",
       "PENDING_VARIATION_CHANGES": "保留中のバリエーションの変更...",
       "PRICE": "価格",
-      "PRICE_BREAK_APPLICATION": "値下げの適用",
-      "PRICE_BREAKS": "値下げ",
-      "PRICE_MARKUP": "価格マークアップ",
-      "PRICE_SCHEDULE_REQUIRED": "見積もり商品にはデフォルト価格（最小値0）が必要です。",
       "PRICES_BELOW_1": "以下に示す価格は、購入者マークアップ後のものであり、販売者の通貨との",
       "PRICES_BELOW_2": "為替レートを持つ",
       "PRICES_BELOW_3": "サプライヤーの通貨で表示されます。",
+      "PRICE_BREAKS": "値下げ",
+      "PRICE_BREAK_APPLICATION": "値下げの適用",
+      "PRICE_MARKUP": "価格マークアップ",
+      "PRICE_SCHEDULE_REQUIRED": "見積もり商品にはデフォルト価格（最小値0）が必要です。",
       "PRICING": "価格設定",
       "PRICING_OVERRIDE": "価格の上書き",
       "PRIMARY": "プライマリ",
@@ -357,14 +343,13 @@
       "SERVICES": "サービス",
       "SHIPPING": "出荷",
       "SHIPPING_DIMENSIONS": "出荷寸法",
-      "LENGTH_BY_WIDTH_BY_HEIGHT": "長さ x 幅 x 高さ",
       "SHIP_HEIGHT": "高さ",
       "SHIP_LENGTH": "長さ",
       "SHIP_WEIGHT": "重量",
       "SHIP_WIDTH": "幅",
-      "SIZE_TIER_LABEL": "サイズ名",
       "SIZE_TIER_CHOOSE": "サイズ名を選択",
       "SIZE_TIER_INFO": "22インチ x 22インチ x 22インチのボックスに収まるこの商品のおおよそのユニット数を選択します。",
+      "SIZE_TIER_LABEL": "サイズ名",
       "SKU": "SKU",
       "SKUS_VARY": "SKUはこのバリエーションによって異なります。",
       "SPEC_ISSUE": "すべてのバリエーションには、少なくとも1つのオプションが必要です。",
@@ -405,22 +390,23 @@
       "ALL_PROMOTIONS_ELIGIBLE": "現時点では、すべてのプロモーションがすべての購入者に適用されます。",
       "APPLIES_TO": "適用対象",
       "APPLIES_TO_RATES": "以下の配送料に適用されます。",
+      "AUTOMATIC": "自動",
+      "AUTOMATIC_PROMO_CODE_EXPLANATION": "割引コードは識別のためのものです。本プロモーションは、チェックアウト時に自動的に適用されます。",
+      "AUTO_APPLY": "自動的にプロモーションを適用",
       "BUYER_ELIGIBILITY": "購入者の適格性",
       "CAN_BE_COMBINED": "他のプロモーションとの併用が可能",
       "CLONE": "Clone",
-      "AUTOMATIC": "自動",
-      "AUTO_APPLY": "自動的にプロモーションを適用",
       "DISCARD_CHANGES": "変更を破棄",
       "DISCOUNT_CODE": "割引コード",
       "DISPLAY": {
         "DATE": {
-          "VALID_FROM": "有効期間",
+          "TO": "まで",
           "TODAY_TO": "今日から",
-          "TO": "まで"
+          "VALID_FROM": "有効期間"
         },
         "ELIGIBILITY": {
-          "FOR": "に対して",
           "ALL_BUYERS": "全ての購入者",
+          "FOR": "に対して",
           "SELECTED_BUYERS": "selected buyers"
         },
         "USAGE": {
@@ -430,13 +416,13 @@
           "USES": "使用"
         },
         "VALUE": {
-          "OFF_ENTIRE": "全体をオフ",
-          "OFF_SELECT_PRODUCTS": "一部の商品をオフ",
-          "PRODUCTS_ORDER": "商品の注文",
-          "OFF_ENTIRE_ORDER": "注文全体をオフ",
           "FREE_SHIPPING_ENTIRE_ORDER": "1回の注文で送料無料",
+          "ITEMS": "商品",
+          "OFF_ENTIRE": "全体をオフ",
+          "OFF_ENTIRE_ORDER": "注文全体をオフ",
+          "OFF_SELECT_PRODUCTS": "一部の商品をオフ",
           "OVER": "以上",
-          "ITEMS": "商品"
+          "PRODUCTS_ORDER": "商品の注文"
         }
       },
       "ENTIRE_ORDER": "注文全体",
@@ -460,19 +446,18 @@
       "MINIMUM_REQUIREMENTS_EXPLANATION": "現時点では、最低要件は1つしか選択できません。",
       "MORE_PROMOTIONS": "その他のプロモーション",
       "NAME": "名前",
+      "NONE": "なし",
       "NO_INFO_ENTERED": "まだ情報が入力されていません。",
       "NO_RESULTS": "No results. Broaden your search and try again.",
-      "NONE": "なし",
       "PERCENTAGE": "パーセンテージ",
       "PERFORMANCE": "パフォーマンス",
       "PROMO_CODE_EXAMPLE": "例: SPRINGSALE20",
       "PROMO_CODE_EXPLANATION": "購入者ユーザーは、チェックアウト時にこのコードを使用します。",
-      "AUTOMATIC_PROMO_CODE_EXPLANATION": "割引コードは識別のためのものです。本プロモーションは、チェックアウト時に自動的に適用されます。",
       "REQUIREMENT_SCOPE": "要件範囲",
       "SET_EXPIRATION_DATE": "有効期限を設定",
       "SHIPPING": "発送",
-      "SPECIFIC_BUYER_GROUPS": "特定の購入者グループ",
       "SPECIFIC_BUYERS": "特定の購入者",
+      "SPECIFIC_BUYER_GROUPS": "特定の購入者グループ",
       "SPECIFIC_SUPPLIER": "特定のサプライヤー",
       "START_DATE_TIME": "開始日時 (UTC) ",
       "SUMMARY": "概要",
@@ -483,44 +468,41 @@
       "VALUE": "金額"
     },
     "REPORTS": {
-      "REPORT_DETAILS": "レポートの詳細",
-      "REPORT_DETAILS_DESC": "このテンプレートの名前と説明を入力します。",
+      "ALL_VALUES": "全ての値",
       "AVAILABLE_TO": "利用可能",
-      "TEMPLATE_NAME": "テンプレート名",
-      "TEMPLATE_DESC": "テンプレートの説明",
-      "ENTER_TEMPLATE_NAME": "テンプレート名を入力",
+      "BUYER_OPTIONAL": "Buyer (Optional)",
+      "CHOOSE_REPORT_TYPE": "処理するレポートの種類とテンプレートを選択",
+      "DESCRIPTION": "説明",
+      "DOWNLOADING": "ダウンロード中...",
+      "DOWNLOAD_REPORT": "レポートをダウンロード",
       "ENTER_TEMPLATE_DESC": "任意: テンプレートの説明を入力",
-      "TEMPLATE_DESC_EXPLANATION": "任意: このレポートで期待されるデータを説明する簡単な説明を入力します（300文字以内）",
+      "ENTER_TEMPLATE_NAME": "テンプレート名を入力",
+      "FETCHING_PREVIEW": "プレビューを取得中...",
+      "FILTERS": "フィルター",
       "HEADERS": "ヘッダー",
       "HEADERS_DESC": "ヘッダーとして表示するフィールドを選択します。",
-      "SELECT_ALL": "全てを選択",
-      "UNSELECT_ALL": "全てを選択解除",
-      "FILTERS": "フィルター",
-      "SELECT_WHICH_VALUES": "レポートに表示する値を選択します。",
       "IF_NO_FILTERS": "フィールドにフィルターが選択されていない場合、全ての値が含まれます。",
-      "INCLUDE_ALL_VALUES": "全ての値を含める",
-      "REPORT_SELECTION": "レポートの選択",
-      "CHOOSE_REPORT_TYPE": "処理するレポートの種類とテンプレートを選択",
-      "REPORT_TYPE": "レポートの種類",
-      "SELECT_REPORT_TYPE": "レポートの種類を選択",
-      "REPORT_TEMPLATE": "レポート テンプレート",
-      "SELECT_REPORT_TEMPLATE": "レポート テンプレートを選択",
-      "DESCRIPTION": "説明",
-      "NAME": "名前",
-      "VALUES": "値",
-      "ALL_VALUES": "全ての値",
       "INCLUDE_ALL": "Include All",
-      "SUPPLIER_OPTIONAL": "Supplier (Optional)",
-      "BUYER_OPTIONAL": "Buyer (Optional)",
+      "INCLUDE_ALL_VALUES": "全ての値を含める",
+      "NAME": "名前",
       "PREVIEW_REPORT": "レポートのプレビュー",
-      "FETCHING_PREVIEW": "プレビューを取得中...",
-      "DOWNLOAD_REPORT": "レポートをダウンロード",
-      "DOWNLOADING": "ダウンロード中...",
+      "PREVIEW_THE_REPORT": "レポートデータを表形式でプレビューする、またはファイルをダウンロードします。",
+      "REPORT_DETAILS": "レポートの詳細",
+      "REPORT_DETAILS_DESC": "このテンプレートの名前と説明を入力します。",
       "REPORT_PROCESSING": "レポート処理",
-      "PREVIEW_THE_REPORT": "レポートデータを表形式でプレビューする、またはファイルをダウンロードします。"
-    },
-    "PERMISSIONS": {
-      "LOCATION_APPROVAL_TOOLTIP": "この購入者グループには承認ルールがありません。OrderApprover権限を付与する前に、承認ルールを設定してください。"
+      "REPORT_SELECTION": "レポートの選択",
+      "REPORT_TEMPLATE": "レポート テンプレート",
+      "REPORT_TYPE": "レポートの種類",
+      "SELECT_ALL": "全てを選択",
+      "SELECT_REPORT_TEMPLATE": "レポート テンプレートを選択",
+      "SELECT_REPORT_TYPE": "レポートの種類を選択",
+      "SELECT_WHICH_VALUES": "レポートに表示する値を選択します。",
+      "SUPPLIER_OPTIONAL": "Supplier (Optional)",
+      "TEMPLATE_DESC": "テンプレートの説明",
+      "TEMPLATE_DESC_EXPLANATION": "任意: このレポートで期待されるデータを説明する簡単な説明を入力します（300文字以内）",
+      "TEMPLATE_NAME": "テンプレート名",
+      "UNSELECT_ALL": "全てを選択解除",
+      "VALUES": "値"
     },
     "RESOURCES": {
       "CREATE_NEW": "新しく作る"
@@ -547,20 +529,20 @@
       "OVERRIDE_PERCENT": "パーセントを上書きして返金",
       "PARTIAL_REFUND_PERCENT": "一部返金の割合",
       "PRICE": "価格",
+      "PROCESSED": "処理済み",
+      "PROCESSED_BY": "処理担当者",
       "PROCESS_OPTION": "オプションを処理",
       "PROCESS_REFUND": "返金を処理",
       "PROCESS_REQUEST": "要求を処理",
       "PROCESS_RMA": "返品保証を処理",
-      "PROCESSED": "処理済み",
-      "PROCESSED_BY": "処理担当者",
       "PRODUCT": "商品",
       "PURCHASE_ORDER_EXPLANATION": "この購入注文商品の支払い方法により、返品保証ステータスを管理することはできますが、クレジットカードによる返金はできません。",
       "QUANTITY": "数量",
       "QUANTITY_TO_PROCESS": "処理数量",
       "REASON": "理由",
       "REASON_FOR": "理由",
-      "REFUND_ISSUED": "返金完了",
       "REFUNDED": "返金済み",
+      "REFUND_ISSUED": "返金完了",
       "REQUESTED": "要求済み",
       "REQUESTED_QUANTITY": "要求数量",
       "RMA_ITEMS": "返品保証の商品",
@@ -574,12 +556,30 @@
       "VIEW_ORDER_DETAILS": "注文の詳細を表示"
     },
     "STOREFRONTS": {
-      "SUMMARY": "ストアフロントは、ホストされた購入者アプリケーションを表します。この管理インターフェースでストアフロントを作成しただけでは、購入者アプリケーションは作成されません。このプロセスは開発者が手動で実行する必要がありますが、いったん作成されると、ストアフロントの特定の箇所はここで管理することができます。",
       "ACCESS_TOKEN_TOOLTIP": "認証情報を再入力してログインし直すまで、ユーザーがログインしたままの状態でいることができる時間を分単位で指定します。最小値は10、最大値は600です。",
-      "REFRESH_TOKEN_TOOLTIP": "更新トークンを使用してユーザーのログインを維持できる時間を分単位で指定します。最小値は0、最大値は43,200です。",
       "ANON_BUYER_TOOLTIP": "匿名ショッピングのデフォルトのコンテキストユーザーとして使用されるべきユーザーを含む購入者組織です。すべての価格設定、権限、および表示は、このユーザーに基づいて行われます。",
-      "ANON_USERNAME_TOOLTIP": "匿名ショッピングのデフォルトのコンテキストユーザーとして使用される購入者ユーザーです。すべての価格設定、権限、および表示は、このユーザーに基づいて行われます。"
+      "ANON_USERNAME_TOOLTIP": "匿名ショッピングのデフォルトのコンテキストユーザーとして使用される購入者ユーザーです。すべての価格設定、権限、および表示は、このユーザーに基づいて行われます。",
+      "REFRESH_TOKEN_TOOLTIP": "更新トークンを使用してユーザーのログインを維持できる時間を分単位で指定します。最小値は0、最大値は43,200です。",
+      "SUMMARY": "ストアフロントは、ホストされた購入者アプリケーションを表します。この管理インターフェースでストアフロントを作成しただけでは、購入者アプリケーションは作成されません。このプロセスは開発者が手動で実行する必要がありますが、いったん作成されると、ストアフロントの特定の箇所はここで管理することができます。"
     }
+  },
+  "ALIAS": {
+    "ALL_BUYERS": "全ての購入者",
+    "ALL_SUPPLIERS": "全てのサプライヤー",
+    "BUYER": "購入者",
+    "BUYERS": "購入者",
+    "BUYER_LOCATION": "購入者グループ",
+    "BUYER_LOCATIONS": "購入者グループ",
+    "SELLER": "販売者",
+    "SELLERS": "販売者",
+    "SELLER_ADMIN": "販売者管理者",
+    "SELLER_LOCATION": "販売者住所",
+    "SELLER_LOCATIONS": "販売者住所",
+    "SUPPLIER": "サプライヤー",
+    "SUPPLIERS": "サプライヤー",
+    "SUPPLIER_LOCATION": "サプライヤー住所",
+    "SUPPLIER_LOCATIONS": "サプライヤー住所",
+    "SUPPLIER_PROFILE": "サプライヤー プロファイル"
   },
   "AUTHENTICATION": {
     "FORGOT_PASSWORD": {
@@ -608,30 +608,44 @@
       "SET_PASSWORD": "新しいパスワードを設定"
     }
   },
+  "BUYER": {
+    "HELPERMESSAGES": {
+      "BUYERGROUP": {
+        "ACTION": "今すぐ購入者グループを設定してください。",
+        "MESSAGE": "この購入者には購入者グループがないようです。",
+        "WARNING": "このユーザーの国（自宅）には、サプライヤーの住所がありません。"
+      },
+      "CATALOG": {
+        "ACTION": "今すぐカタログを設定してください。",
+        "MESSAGE": "この購入者にはカタログがないようです。",
+        "WARNING": "この購入者が利用できるカタログはありません。"
+      }
+    }
+  },
   "CART": {
     "CART": {
       "CART_IS_EMPTY": "カートに商品がありません。",
-      "INVALID_ITEMS_NOTICE": "以下はカートから削除されます。チェックアウトする前に、更新されたカートを確認してください。",
       "CHECKOUT": "チェックアウト",
       "CONTINUE_SHOPPING": "ショッピングを続ける",
       "EMPTY_CART": "カートを空にする",
+      "INVALID_ITEMS_NOTICE": "以下はカートから削除されます。チェックアウトする前に、更新されたカートを確認してください。",
       "SHOPPING_CART": "ショッピングカート",
-      "VIEW_CART": "カートを見る",
-      "SUBMIT_QUOTE": "Submit Quote"
+      "SUBMIT_QUOTE": "Submit Quote",
+      "VIEW_CART": "カートを見る"
     },
     "LINEITEM_TABLE": {
       "PRICE": "価格",
       "QTY": "数量",
-      "QTY_RETURNED": "返品済み",
       "QTY_CANCELED": "キャンセル済み",
+      "QTY_RETURNED": "返品済み",
       "REFUND_AMOUNT": "返金金額",
       "REMOVE_ITEM": "商品を削除",
       "RETURNED": "返品済み:",
       "RMA_COMMENT": "コメント",
       "SELLER_COMMENT": "販売者コメント",
-      "SHIPPING_REFUND":  "送料の返金",
+      "SHIPPING_REFUND": "送料の返金",
       "TOTAL": "合計",
-      "TOTAL_REFUND":  "返金合計",
+      "TOTAL_REFUND": "返金合計",
       "UNIT_PRICE": "単価"
     },
     "MINI_CART": {
@@ -646,15 +660,15 @@
   },
   "CHECKOUT": {
     "CHECKOUT": {
+      "CHANGE_ADDRESS": "配送先を変更",
       "CHECKOUT": "チェックアウト",
-      "ORDERREFERENCE": "注文番号",
       "CONFIRM": "注文レビュー",
       "CREATE_ACCOUNT": "アカウントを作成",
       "GUEST_CHECKOUT": "ゲストとしてチェックアウト",
+      "ORDERREFERENCE": "注文番号",
       "PAYMENT": "支払い & プロモーション",
       "SHIPPING_ADDRESS": "配送先住所",
-      "SHIPPING_SELECTION": "配送の選択",
-      "CHANGE_ADDRESS": "配送先を変更"
+      "SHIPPING_SELECTION": "配送の選択"
     },
     "CHECKOUT_ADDRESS": {
       "BUYER_LOCATION": "この注文のロケーションを選択",
@@ -677,7 +691,7 @@
       "PAYMENT_METHOD": "支払方法",
       "PROMOTIONS": "プロモーション",
       "REMOVE": "削除",
-      "USE_A_PROMO":  "プロモーション コードを使用"
+      "USE_A_PROMO": "プロモーション コードを使用"
     },
     "CHECKOUT_SHIPPING": {
       "SAVE_CONTINUE": "保存して続行",
@@ -687,8 +701,8 @@
       "DAY": "日",
       "DELIVERY_OPTIONS": "配送オプション",
       "HOW_FAST": "この発送のスピードは？",
-      "SHIPPING_SPEED": "配送スピード",
       "NO_RATES_RETURNED_MESSAGE": "料金は返金されません。送料は注文後に計算されます。",
+      "SHIPPING_SPEED": "配送スピード",
       "SHIP_ESTIMATES_BASED_ON_DELIVERY": "発送の目安は、商品が運送業者により出荷された後の配送スピードに基づいています。カスタマイズが必要な商品は、発送までに時間がかかる場合があります。"
     }
   },
@@ -708,22 +722,52 @@
     "USERNAME": "ユーザー名",
     "YES_DELETE": "はい、削除します。"
   },
+  "ERRORS": {
+    "ALREADY_SUBMITTED": {
+      "BUTTONTEXT": "ホームに戻る",
+      "TITLE": "この注文はすでに送信されています。"
+    },
+    "CREDIT_CARD_AUTH": {
+      "BUTTONTEXT": "お支払い方法の選択に戻る",
+      "MESSAGE_PART1": "お支払いの承認は、次の理由により処理者によって拒否されました: ",
+      "MESSAGE_PART2": "情報を再入力するか、別のカードをご利用ください。",
+      "TITLE": "決済処理中にエラーが発生しました。"
+    },
+    "FAILED_TO_VOID_AUTHORIZATION": {
+      "BUTTONTEXT": "お支払い方法の選択に進む",
+      "MESSAGE": "重大なエラーが発生しました。サポート窓口に連絡し、問題が解決するまで注文をやり直さないでください。",
+      "TITLE": "エラーが発生しました。"
+    },
+    "INSUFFICIENT": {
+      "BUTTONTEXT": "カートに戻る",
+      "MESSAGE_PART1": "商品の在庫不足",
+      "MESSAGE_PART2": "有効数量",
+      "TITLE": "在庫不足"
+    },
+    "MISSING_SHIPPING_SELECTIONS": {
+      "BUTTONTEXT": "配送に進む",
+      "MESSAGE": "配送方法の選択を更新してください。",
+      "TITLE": "この注文は変更されました。"
+    },
+    "ORDER_NOT_ACCESSABLE": "この注文にアクセスできなくなりました。",
+    "UNKNOWN": "不明なエラーが発生しました"
+  },
   "LAYOUT": {
     "ADDRESS_SUGGESTIONS": "もしかして...",
     "APP_FOOTER": {
       "CREATED_BY": "Created by Four51, Inc.",
+      "EMAIL": "support@my-company.com",
+      "EMAIL_LABEL": "メール:",
       "FAQ": "よくある質問",
-      "SUPPORT": "サポート",
-      "TERMS_CONDITIONS": "利用規約",
-      "QUESTIONS_COMMENTS" : "ご質問やご意見はございませんか？",
       "PHONE": {
-        "LABEL": "電話:",
         "AREACODE": "555",
+        "LABEL": "電話:",
         "PREFIX": "555",
         "SUFFIX": "5555"
       },
-      "EMAIL": "support@my-company.com",
-      "EMAIL_LABEL" : "メール:"
+      "QUESTIONS_COMMENTS": "ご質問やご意見はございませんか？",
+      "SUPPORT": "サポート",
+      "TERMS_CONDITIONS": "利用規約"
     },
     "APP_HEADER": {
       "ACCOUNT": "アカウント",
@@ -734,10 +778,10 @@
       "LOGOUT": "ログアウト",
       "NEEDS_ATTENTION": "注文には注意が必要です。",
       "ORDERS": "注文",
-      "ORDERS_PLACED_BY_ME": "私が配置",
-      "ORDERS_QUOTES": "引用",
-      "ORDERS_PLACED_IN_MY_LOCATIONS": "私の場所に配置",
       "ORDERS_AWAITING_MY_APPROVAL": "私の承認を待っています",
+      "ORDERS_PLACED_BY_ME": "私が配置",
+      "ORDERS_PLACED_IN_MY_LOCATIONS": "私の場所に配置",
+      "ORDERS_QUOTES": "引用",
       "PRODUCTS": "商品",
       "PROFILE": "マイ プロフィール",
       "REGISTER": "登録",
@@ -749,20 +793,6 @@
       "NO": "いいえ",
       "OF": "の",
       "RESULTS": "結果"
-    }
-  },
-  "BUYER": {
-    "HELPERMESSAGES": {
-      "CATALOG": {
-        "WARNING": "この購入者が利用できるカタログはありません。",
-        "MESSAGE": "この購入者にはカタログがないようです。",
-        "ACTION": "今すぐカタログを設定してください。"
-      },
-      "BUYERGROUP": {
-        "WARNING": "このユーザーの国（自宅）には、サプライヤーの住所がありません。",
-        "MESSAGE": "この購入者には購入者グループがないようです。",
-        "ACTION": "今すぐ購入者グループを設定してください。"
-      }
     }
   },
   "ORDERS": {
@@ -782,18 +812,18 @@
       "ADD_TO_CART": "カートに有効な商品を追加",
       "ALL": "全ての注文",
       "CANCEL": "キャンセル",
-      "DISCARD_RETURN_REQUEST": "返品リクエストを破棄",
-      "DISCARD_CANCEL_REQUEST": "キャンセル リクエストを破棄",
-      "DOWNLOAD_AS_PDF": "PDFとしてダウンロード",
       "CLAIM_STATUS": "請求ステータス",
       "DETAILS": "詳細",
+      "DISCARD_CANCEL_REQUEST": "キャンセル リクエストを破棄",
+      "DISCARD_RETURN_REQUEST": "返品リクエストを破棄",
+      "DOWNLOAD_AS_PDF": "PDFとしてダウンロード",
       "FAVORITE": "お気に入り",
       "MOVE_TO_CART": "注文をカートに移動",
       "ORDER": "注文",
-      "REASON":  "理由",
+      "REASON": "理由",
       "REORDER": "再注文",
-      "REQUEST_A_RETURN": "返品をリクエスト",
       "REQUEST_A_CANCEL": "キャンセルをリクエスト",
+      "REQUEST_A_RETURN": "返品をリクエスト",
       "RMAS": "返品 & キャンセル",
       "SHIPMENTS": "発送",
       "SHIPPING_STATUS": "発送ステータス",
@@ -803,22 +833,22 @@
       "WARNING": "ご注文はカートに戻されます。現在カートに入っている商品はすべて失われます。"
     },
     "HISTORICAL": {
+      "ACCEPT_QUOTE": "Accept Quote",
       "BILLING_ADDRESS": "請求書送付先",
       "BUYER": "購入者",
       "BUYER_LOCATION": "購入者ロケーション",
       "COMMENTS": "コメント",
+      "CONTACT_SUPPLIER": "Contact Supplier",
       "ON": "についての",
       "PROMO": "プロモーション割引",
+      "QUOTE_ACCEPTED_MESSAGE": "Once the order is accepted the quote request will be deleted and the items will be added to your cart so that you may checkout.",
+      "QUOTE_ACTIONS": "Quote Actions",
       "SHIPPING": "発送",
       "SHIPPING_ADDRESS": "配送先住所",
       "SUBMITTED_BY": "送信者",
       "SUBTOTAL": "小計",
       "TAX": "税金",
-      "TOTAL": "合計",
-      "ACCEPT_QUOTE": "Accept Quote",
-      "CONTACT_SUPPLIER": "Contact Supplier",
-      "QUOTE_ACTIONS": "Quote Actions",
-      "QUOTE_ACCEPTED_MESSAGE": "Once the order is accepted the quote request will be deleted and the items will be added to your cart so that you may checkout."
+      "TOTAL": "合計"
     },
     "HISTORY": {
       "FAVORITES": "お気に入り",
@@ -836,33 +866,33 @@
       "TOTAL": "合計"
     },
     "RETURNS": {
+      "CANCELED": "キャンセル済み",
+      "CANCEL_REASON": "キャンセルの理由",
       "ORDERED": "注文済み",
       "PRICE": "価格",
       "PRODUCT_DETAILS": "商品詳細",
-      "QTY_TO_RETURN": "返品数量",
       "QTY_TO_CANCEL": "キャンセル数量",
-      "RETURN_REASON": "返品の理由",
-      "CANCEL_REASON": "キャンセルの理由",
+      "QTY_TO_RETURN": "返品数量",
       "RETURNED": "返品済み",
-      "CANCELED": "キャンセル済み",
-      "SELECT_RETURN_REASON": "返品理由を選択",
-      "SELECT_CANCEL_REASON": "キャンセル理由を選択"
+      "RETURN_REASON": "返品の理由",
+      "SELECT_CANCEL_REASON": "キャンセル理由を選択",
+      "SELECT_RETURN_REASON": "返品理由を選択"
     },
     "RETURN_REASONS": {
       "DISCOUNT_NOT_APPLIED": "割引は適用されませんでした。",
+      "FOUND_DIFFERENT_PRODUCT": "他に気に入った商品が見つかった。",
+      "FULFILLMENT_TOO_LONG": "商品が届くまでに時間がかかった。",
       "INCORRECT_PRODUCT_SHIPPED": "発送された商品やサイズが間違っている。",
       "PRODUCT_ARRIVED_LATE": "商品の到着が遅すぎた。",
       "PRODUCT_DEFECTIVE": "商品に欠陥や破損がある。",
       "PRODUCT_MATCH_DESCRIPTION": "商品が説明と異なる。",
       "PRODUCT_MISSING": "発送品の中に足りない商品がある。",
       "PRODUCT_NOT_NEEDED": "商品が不要になった。",
-      "PURCHASE_NOT_APPROVED": "購入が承認されなかった。",
       "PURCHASED_BY_MISTAKE": "誤って購入した。",
       "PURCHASED_INCORRECT_SIZE": "サイズやスタイルを間違って購入した。",
+      "PURCHASE_NOT_APPROVED": "購入が承認されなかった。",
       "RECEIVED_EXTRA_PRODUCT": "購入していない商品が含まれていた。",
-      "SHIPPING_BOX_DAMAGED": "梱包が破損している。",
-      "FOUND_DIFFERENT_PRODUCT": "他に気に入った商品が見つかった。",
-      "FULFILLMENT_TOO_LONG": "商品が届くまでに時間がかかった。"
+      "SHIPPING_BOX_DAMAGED": "梱包が破損している。"
     },
     "SHIPMENTS": {
       "DATE_SHIPPED": "発送日",
@@ -931,15 +961,15 @@
       "TO_CART": "カートへ"
     },
     "CONTACT_SUPPLIER": {
-      "PLEASE_VERIFY": "お客様の連絡先をご確認の上、本商品についてのご意見・ご質問をお送りください。",
-      "FIRST": "名",
-      "LAST": "姓",
-      "FOR_LOCATION": "ロケーション",
-      "EMAIL": "Email",
-      "PHONE": "電話番号",
+      "CANCEL": "キャンセル",
       "COMMENTS": "ご意見・ご質問",
-      "SUBMIT": "送信",
-      "CANCEL": "キャンセル"
+      "EMAIL": "Email",
+      "FIRST": "名",
+      "FOR_LOCATION": "ロケーション",
+      "LAST": "姓",
+      "PHONE": "電話番号",
+      "PLEASE_VERIFY": "お客様の連絡先をご確認の上、本商品についてのご意見・ご質問をお送りください。",
+      "SUBMIT": "送信"
     },
     "DETAILS": {
       "ADD_TO_CART": "カートに追加",
@@ -947,8 +977,11 @@
       "CONTACT_PART_TWO": "本商品について",
       "DESCRIPTION": "説明",
       "DOCS": "ドキュメント",
+      "LOGIN_FOR_QUOTE": "You must login before you can place a request for Quote.",
       "NOTE": "注意事項",
       "QUANTITY": "数量",
+      "QUOTE_EXISTING_CART_ERROR": "Cannot add Quote Request to existing cart.",
+      "QUOTE_STANDARD_EXISTING_CART_ERROR": "Cannot add Standard items to existing cart.",
       "REQ_QUOTE": "見積もりを依頼",
       "SAVINGS": "保存します",
       "SUCCESS": "見積もり依頼が正常に送信されました。",
@@ -956,10 +989,7 @@
       "TIERED_PRICE_DESC": "一部の商品では、ご注文数が多いほどお得になります。詳細は次の通りです。価格には、サイズや変更による追加料金は含まれていません。",
       "TIERED_PRICE_HEAD": "段階的価格設定",
       "VIEW_ONLY": "この商品は閲覧専用のため、ご注文いただけません。",
-      "VIEW_QUOTE": "見積もり依頼を表示",
-      "LOGIN_FOR_QUOTE": "You must login before you can place a request for Quote.",
-      "QUOTE_EXISTING_CART_ERROR": "Cannot add Quote Request to existing cart.",
-      "QUOTE_STANDARD_EXISTING_CART_ERROR": "Cannot add Standard items to existing cart."
+      "VIEW_QUOTE": "見積もり依頼を表示"
     },
     "FACETS": "全てを表示",
     "GRID": {
@@ -1071,8 +1101,9 @@
   "USERS": {
     "USER_MGMT": {
       "ALL_ORDERS": "全ての注文には承認が必要です。",
-      "CAN_APPROVE": "注文を承認できます。",
+      "APPROVAL_ENABLED": "承認が有効",
       "CANCEL": "キャンセル",
+      "CAN_APPROVE": "注文を承認できます。",
       "CONFIRM": "確定",
       "NEEDS_APPROVAL": "注文には承認が必要です。",
       "NO_CHANGES": "変更なし",
@@ -1086,40 +1117,9 @@
       "SET_THRESHOLD": "これを超えると上記のユーザーの承認が必要となる注文の合計金額を設定することができます。",
       "SOME_ORDERS": "閾値を超える注文のみ",
       "THRESHOLD": "注文承認閾値",
-      "APPROVAL_ENABLED": "承認が有効",
       "USER": "ユーザー",
       "USER_IS_ADMINISTRATOR": "あなたは承認ルール管理者ですが、現在どのロケーションにも所属していません。ロケーションに加わると、ここで承認権限を割り当てることができます。",
       "WARNING": "これは、注文の承認に影響を与える可能性のある破壊的な操作です。"
     }
-  },
-  "ERRORS": {
-    "FAILED_TO_VOID_AUTHORIZATION": {
-      "TITLE": "エラーが発生しました。",
-      "MESSAGE": "重大なエラーが発生しました。サポート窓口に連絡し、問題が解決するまで注文をやり直さないでください。",
-      "BUTTONTEXT": "お支払い方法の選択に進む"
-    },
-    "INSUFFICIENT": {
-      "TITLE": "在庫不足",
-      "MESSAGE_PART1": "商品の在庫不足",
-      "MESSAGE_PART2": "有効数量",
-      "BUTTONTEXT": "カートに戻る"
-    },
-    "ALREADY_SUBMITTED": {
-      "TITLE": "この注文はすでに送信されています。",
-      "BUTTONTEXT": "ホームに戻る"
-    },
-    "MISSING_SHIPPING_SELECTIONS": {
-      "TITLE": "この注文は変更されました。",
-      "MESSAGE": "配送方法の選択を更新してください。",
-      "BUTTONTEXT": "配送に進む"
-    },
-    "CREDIT_CARD_AUTH": {
-      "TITLE": "決済処理中にエラーが発生しました。",
-      "MESSAGE_PART1": "お支払いの承認は、次の理由により処理者によって拒否されました: ",
-      "MESSAGE_PART2": "情報を再入力するか、別のカードをご利用ください。",
-      "BUTTONTEXT": "お支払い方法の選択に戻る"
-    },
-    "ORDER_NOT_ACCESSABLE": "この注文にアクセスできなくなりました。",
-    "UNKNOWN": "不明なエラーが発生しました"
   }
 }
