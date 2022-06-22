@@ -299,7 +299,7 @@ You can run the project using Docker, sample docker-compose.yml file includes Bu
     - Note the `Middleware` container may take longer to start as it depends on the Cosmos emulator being healthy.
     - If you run into issues with @ordercloud/headstart-sdk not being found try running `docker-compose build --no-cache`
 5. Follow the steps to seed the initial data values listed in the [Seeding OrderCloud Data](https://github.com/ordercloud-api/headstart#seeding-ordercloud-data) section above.
-    - If you are building against a marketplace that has already been seeded you can instead open postman and call the endpoint PUT <http://headstart.api.localhost/updatetranslations> with an empty body to update your local azurite instance with the default english translation files.
+    - If you are building against a marketplace that has already been seeded you can instead open postman and call the endpoint PUT <http://headstart.api.localhost/devops/translations> to update your local azurite instance with the latest translation files.
 6. Open `.env` file and populate the rest of the variables in the `REQUIRED ENVIRONMENT VARIABLES` section:
     - The following values comes from from the `/seed` command response executed in previous step
         - SELLER_CLIENT_ID
