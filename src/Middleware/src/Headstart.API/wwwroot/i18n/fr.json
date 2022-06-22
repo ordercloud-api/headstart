@@ -1,28 +1,11 @@
 {
-  "ALIAS": {
-    "ALL_BUYERS": "Tous les acheteurs",
-    "ALL_SUPPLIERS": "Tous les fournisseurs",
-    "BUYER": "Acheteur",
-    "BUYER_LOCATION": "Groupe d’acheteurs",
-    "BUYER_LOCATIONS": "Groupes d’acheteurs",
-    "BUYERS": "Acheteurs",
-    "SELLER": "Vendeur",
-    "SELLER_ADMIN": "Administrateur vendeur",
-    "SELLER_LOCATION": "Adresse du vendeur",
-    "SELLER_LOCATIONS": "Adresses des vendeurs",
-    "SELLERS": "Vendeurs",
-    "SUPPLIER": "Fournisseur",
-    "SUPPLIER_PROFILE": "Profil du fournisseur",
-    "SUPPLIER_LOCATION": "Adresse du fournisseur",
-    "SUPPLIER_LOCATIONS": "Adresses des fournisseurs",
-    "SUPPLIERS": "Fournisseurs"
-  },
   "ADMIN": {
+    "BILLING_NUMBER": "Numéro de facturation",
     "BUYER_GROUPS": {
       "APPROVALS": {
-        "HEADER": "Règle d’approbation de commande",
         "DESCRIPTION": "Activez les approbations de commande et définissez un seuil de valeur de commande. Seuls les acheteurs disposant de l’autorisation « Approbation Nécessaire » seront soumis à cette règle.",
         "ENABLE_LABEL": "Activer les approbations",
+        "HEADER": "Règle d’approbation de commande",
         "THRESHOLD_LABEL": "Seuil total de commande"
       }
     },
@@ -31,7 +14,11 @@
     },
     "COMMON": {
       "ACCOUNT_LOGIN": "Connexion au compte",
+      "CANCEL": "Annuler",
+      "CONFIRM": "Confirmer",
       "CONFIRM_PASSWORD": "Confirmer le mot de passe",
+      "CREATE": "Créer",
+      "DISCARD_CHANGES": "Ignorer les modifications",
       "EMAIL": "Messagerie électronique",
       "FIRST": "Prénom",
       "FORGOT_PASSWORD": "Mot de passe oublié",
@@ -41,20 +28,16 @@
       "LOGOUT": "Déconnexion",
       "MY_ACCOUNT": "Mon compte",
       "NEW": "Nouveau",
+      "NOTIFICATIONS": "Notifications",
+      "NO_CHANGES": "Aucun changement",
       "PASSWORD": "Mot de passe",
       "PHONE": "Numéro de téléphone",
       "REMEMBER_ME": "Souvenez-vous de moi",
-      "SEARCH": "Rechercher",
-      "SUBMIT": "Envoyer",
-      "USERNAME": "Nom d’utilisateur",
-      "NOTIFICATIONS": "Notifications",
       "SAVE_CHANGES": "Enregistrer les modifications",
       "SAVING": "Épargne",
-      "DISCARD_CHANGES": "Ignorer les modifications",
-      "NO_CHANGES": "Aucun changement",
-      "CONFIRM": "Confirmer",
-      "CREATE": "Créer",
-      "CANCEL": "Annuler"
+      "SEARCH": "Rechercher",
+      "SUBMIT": "Envoyer",
+      "USERNAME": "Nom d’utilisateur"
     },
     "DELETE": {
       "ARE_YOU_SURE": "Êtes-vous sûr de vouloir le supprimer ?",
@@ -79,14 +62,32 @@
       "PRODUCT_FACET_INFO": "Informations sur les facettes du produit",
       "WHAT_OPTIONS_AVAILABLE": "Quelles sont les options disponibles pour cette facette ? Limite 25."
     },
+    "FILTERS": {
+      "ACTION": "Action",
+      "ACTIVE": "Actif",
+      "APPLICATION": "Application",
+      "APPLIES_TO": "S’applique à",
+      "FROM_DATE": "À partir de la date",
+      "HAS_CLAIMS": "A des réclamations",
+      "LOGS_ON_BEFORE": "Se connecter/Avant",
+      "RECORD_TYPE": "Type d’enregistrement",
+      "RESULT": "Résultat",
+      "SELLER_OWNED_PRODUCTS": "A des produits appartenant au vendeur",
+      "STATUS": "Statut",
+      "SUPPLIER": "Fournisseur",
+      "TO_DATE": "À ce jour"
+    },
     "FILTER_OPTIONS": {
+      "AUTOMATIC": "Automatique",
       "AWAITING_APPROVAL": "En attente d’approbation",
       "CANCELED": "Annulé",
       "CATALOG": "Catalogue",
+      "CODE": "Code",
       "COMPLETED": "Terminé",
       "CREATE": "Créer",
       "DECLINED": "Décliné",
       "DELETE": "Supprimer",
+      "ENTIRE_ORDER": "Commande entière",
       "ERROR": "Erreur",
       "GET": "Avoir",
       "IGNORE": "Ignorer",
@@ -96,47 +97,30 @@
       "PRODUCT": "Produit",
       "PRODUCT_FACET": "Facette du produit",
       "SPEC": "Spec",
+      "SPECIFIC_SKUS": "Références spécifiques",
+      "SPECIFIC_SUPPLIER": "Fournisseur spécifique",
       "SPEC_OPTION": "Option de spécification",
       "SPEC_PRODUCT_ASSIGNMENT": "Affectation de produit de spécification",
       "SUCCESS": "Succès",
       "UPDATE": "Mettre à jour",
       "USER": "Utilisateur",
       "WARN": "Avertir",
-      "YES": "Oui",
-      "AUTOMATIC": "Automatique",
-      "CODE": "Code",
-      "ENTIRE_ORDER": "Commande entière",
-      "SPECIFIC_SUPPLIER": "Fournisseur spécifique",
-      "SPECIFIC_SKUS": "Références spécifiques"
-    },
-    "FILTERS": {
-      "ACTION": "Action",
-      "FROM_DATE": "À partir de la date",
-      "HAS_CLAIMS": "A des réclamations",
-      "LOGS_ON_BEFORE": "Se connecter/Avant",
-      "RECORD_TYPE": "Type d’enregistrement",
-      "RESULT": "Résultat",
-      "STATUS": "Statut",
-      "SUPPLIER": "Fournisseur",
-      "SELLER_OWNED_PRODUCTS": "A des produits appartenant au vendeur",
-      "TO_DATE": "À ce jour",
-      "APPLIES_TO": "S’applique à",
-      "APPLICATION": "Application",
-      "ACTIVE": "Actif"
+      "YES": "Oui"
     },
     "HEADERS": {
       "ACTION": "Action",
       "ACTIVE": "Actif",
       "ADDRESS_NAME": "Nom de l’adresse",
       "APPROVAL_RULE_ID": "ID de règle d’approbation",
-      "CARD_TYPE": "Type de carte",
       "CARDHOLDER_NAME": "Nom du titulaire de la carte",
+      "CARD_TYPE": "Type de carte",
       "CODE": "Code",
       "COMMENTS": "Commentaires",
       "COPY": "Copier",
       "DESCRIPTION": "Description",
-      "FROM_USER_USERNAME": "À partir du nom d’utilisateur de l’utilisateur",
+      "EXPIRATION_DATE": "Échéance",
       "FROM_COMPANY_ID": "À partir de l’ID de l’entreprise",
+      "FROM_USER_USERNAME": "À partir du nom d’utilisateur de l’utilisateur",
       "HAS_CLAIMS": "A des réclamations",
       "ID": "ID",
       "NAME": "Nom",
@@ -145,23 +129,22 @@
       "RECORD_TYPE": "Type d’enregistrement",
       "RESULT": "Résultat",
       "RETURN_COMMENT": "Retour du commentaire",
-      "STATUS": "Statut",
       "SELLER_OWNED_PRODUCTS": "A des produits appartenant au vendeur",
+      "START_DATE": "Date de début",
+      "STATUS": "Statut",
       "TIME_STAMP": "Horodatage",
       "TIME_SUBMITTED": "Heure soumise",
       "TOTAL_AMOUNT": "Montant total",
-      "USERNAME": "Nom d’utilisateur",
-      "START_DATE": "Date de début",
-      "EXPIRATION_DATE": "Échéance"
+      "USERNAME": "Nom d’utilisateur"
     },
     "NAV": {
       "ALL_BUYERS": "Tous les acheteurs",
       "ALL_PRODUCTS": "Tous les produits",
-      "ALL_SUPPLIERS": "Tous les fournisseurs",
       "ALL_STOREFRONTS": "Toutes les vitrines",
+      "ALL_SUPPLIERS": "Tous les fournisseurs",
       "APPROVAL": "Approbation",
-      "APPROVAL_RULES": "Règles d’approbation",
       "APPROVALS": "Approbations",
+      "APPROVAL_RULES": "Règles d’approbation",
       "AWAITING_APPROVAL_ORDERS": "En attente d’ordres d’approbation",
       "BUYERS": "Acheteurs",
       "CANCELLED_ORDERS": "Commandes annulées",
@@ -182,8 +165,8 @@
       "ORDERS": "Ordres",
       "ORDERS_BATCH": "Télécharger des envois",
       "PAYMENT": "Paiement",
-      "PAYMENT_METHODS": "Modes de paiement",
       "PAYMENTS": "Paiements",
+      "PAYMENT_METHODS": "Modes de paiement",
       "PENDING_PRODUCTS": "Produits en attente",
       "PROCESS_REPORTS": "rapports Français",
       "PRODUCT": "Produit",
@@ -192,8 +175,8 @@
       "PROMOTIONS": "Promotions",
       "PURCHASE_ORDERS": "Bons de commande",
       "QUOTE_ORDERS": "Commandes de devis",
-      "REPORT_TEMPLATES": "Modèles de rapport",
       "REPORTS": "Rapports",
+      "REPORT_TEMPLATES": "Modèles de rapport",
       "RMA": "RMA",
       "RMAS": "RMA",
       "SALES_ORDERS": "Commandes client",
@@ -207,10 +190,6 @@
       "USER": "Utilisateur",
       "USERS": "Utilisateurs"
     },
-    "PIPES": {
-      "NO": "Non",
-      "YES": "Oui"
-    },
     "ORDERS": {
       "CANCEL_PRICING": "Annuler les prix",
       "QUOTE_PRICE_EXPLANATION": {
@@ -220,16 +199,22 @@
       "SAVE_AND_NOTIFY": "Enregistrer et avertir l’acheteur",
       "SET_QUOTE_PRICE": "Définir le prix du devis"
     },
-    "BILLING_NUMBER": "Numéro de facturation",
+    "PERMISSIONS": {
+      "LOCATION_APPROVAL_TOOLTIP": "Aucune règle d’approbation dans ce groupe d’acheteurs. Définissez une règle d’approbation avant d’accorder des autorisations OrderApprover."
+    },
+    "PIPES": {
+      "NO": "Non",
+      "YES": "Oui"
+    },
     "PRODUCT_EDIT": {
       "ACTIVE": "Actif",
       "ADD": "Ajouter",
       "ADD_ASSIGNMENT": "Ajouter une affectation",
       "ADD_NEW_BREAK": "Ajouter une nouvelle pause",
       "ADD_VARIATION": "Ajouter une variante",
-      "APPLY_INFO_TEXT": "Afin d’appliquer des différences de prix entre les variations, le produit doit avoir au moins 1 variation.",
       "APPLY_ACROSS_VARIATIONS": "Appliquer des écarts de prix entre les variations",
       "APPLY_INDIVIDUAL_VARIATIONS": "Appliquer des réductions de prix aux variations individuelles",
+      "APPLY_INFO_TEXT": "Afin d’appliquer des différences de prix entre les variations, le produit doit avoir au moins 1 variation.",
       "ARTWORK_REQUIRED": "Ce produit utilise un modèle d’impression variable pour l’exécution",
       "ARTWORK_REQUIRED_INFO": "L’acheteur personnalisera ce produit, en entrant des informations dans un modèle d’impression variable.",
       "BROWSE_SUBCATEGORIES": "Parcourir les sous-catégories",
@@ -238,9 +223,9 @@
       "BUYER_VISIBILITY": "Visibilité de l’acheteur",
       "CANCEL_OVERRIDE": "Annuler le remplacement",
       "CATALOG": "Catalogue",
-      "CATALOG_ASSIGNMENT": "Affectation de catalogue",
       "CATALOGS": "Catalogues",
       "CATALOGS_LOWERCASE": "catalogues",
+      "CATALOG_ASSIGNMENT": "Affectation de catalogue",
       "CATEGORIES": "Catégories",
       "CHARACTERS": "Caractères",
       "CHOOSE_AN_ADDRESS": "Choisissez une adresse",
@@ -262,8 +247,8 @@
       "DIGITAL_GOODS": "Biens numériques",
       "DISCARD_CHANGES": "Ignorer les modifications",
       "DOCUMENTS": "Documents",
-      "DOCUMENTS_PRODUCTS": "Documents sur les produits",
       "DOCUMENTS_DESC": "Nommez et téléchargez vos documents produits pour les afficher et les télécharger sur le site de l’acheteur.",
+      "DOCUMENTS_PRODUCTS": "Documents sur les produits",
       "DOES_YOUR_PRODUCT": "Votre produit est-il disponible en différentes variétés? Ajoutez les options ici.",
       "DONE": "Fait",
       "DOWNLOAD": "Télécharger",
@@ -282,8 +267,8 @@
       "ENTIRE_ORDER": "Commande entière",
       "FETCHING_VISIBILITY": "Récupération de la visibilité...",
       "FILTER": "Filtre",
-      "FILTER_OPTIONS": "Options de filtre",
       "FILTERS": "Filtres",
+      "FILTER_OPTIONS": "Options de filtre",
       "FIRST_SELECT_CATEGORY": "Tout d’abord, sélectionnez une catégorie de taxe",
       "FREE_SHIPPING": "Ce produit a la livraison gratuite",
       "FREE_SHIPPING_MESSAGE": "Message de livraison gratuite",
@@ -298,6 +283,7 @@
       "INVENTORY": "Inventaire",
       "INVENTORY_TRACKING": "Suivi des stocks",
       "LENGTH": "Longueur",
+      "LENGTH_BY_WIDTH_BY_HEIGHT": "Longueur x Largeur x Hauteur",
       "LOW_LEVEL_CATEGORY": "Catégorie de bas niveau",
       "MARKUP": "Balisage",
       "MAX_QUANTITY": "Quantité maximale",
@@ -307,13 +293,13 @@
       "MIN_QUANTITY": "Quantité min",
       "NAME": "Nom",
       "NAME_THE_VARIATION": "Nommez la variante",
+      "NOTE": "Note",
+      "NOT_VISIBLE": "Non visible",
       "NO_CATALOGS": "Il n’y a pas de catalogues pour cet acheteur actuellement.",
       "NO_CATEGORIES": "Il n’y a pas de catégories pour cet acheteur actuellement.",
       "NO_DESCRIPTION": "Ce produit n’a pas de description",
-      "NO_PROVIDED_SKU": "Si vous ne fournissez pas de référence SKU, vous ne pouvez pas créer de variantes et une SKU sera générée pour vous.",
-      "NOT_VISIBLE": "Non visible",
       "NO_NOTE": "Ce produit n’a pas de note.",
-      "NOTE": "Note",
+      "NO_PROVIDED_SKU": "Si vous ne fournissez pas de référence SKU, vous ne pouvez pas créer de variantes et une SKU sera générée pour vous.",
       "OPTION": "Option",
       "ORDER_CAN_EXCEED": "La commande peut dépasser l’inventaire",
       "ORDER_LIMITATIONS": "Limitations de commande",
@@ -321,13 +307,13 @@
       "OVERRIDE_FILTERS": "Remplacer les filtres",
       "PENDING_VARIATION_CHANGES": "Modifications de variation en attente...",
       "PRICE": "Prix",
-      "PRICE_BREAK_APPLICATION": "Demande de rupture de prix",
-      "PRICE_BREAKS": "Ruptures de prix",
-      "PRICE_MARKUP": "Majoration de prix",
-      "PRICE_SCHEDULE_REQUIRED": "Les produits de devis doivent avoir un prix par défaut (valeur minimale de 0).",
       "PRICES_BELOW_1": "Les prix indiqués ci-dessous sont après la majoration de l’acheteur et sont dans la devise du fournisseur de",
       "PRICES_BELOW_2": "dont le taux de change est de",
       "PRICES_BELOW_3": "avec la devise du vendeur",
+      "PRICE_BREAKS": "Ruptures de prix",
+      "PRICE_BREAK_APPLICATION": "Demande de rupture de prix",
+      "PRICE_MARKUP": "Majoration de prix",
+      "PRICE_SCHEDULE_REQUIRED": "Les produits de devis doivent avoir un prix par défaut (valeur minimale de 0).",
       "PRICING": "Prisée",
       "PRICING_OVERRIDE": "Remplacement de la tarification",
       "PRIMARY": "Primaire",
@@ -363,14 +349,13 @@
       "SERVICES": "Services",
       "SHIPPING": "Livraison",
       "SHIPPING_DIMENSIONS": "Dimensions d’expédition",
-      "LENGTH_BY_WIDTH_BY_HEIGHT": "Longueur x Largeur x Hauteur",
       "SHIP_HEIGHT": "Hauteur",
       "SHIP_LENGTH": "Longueur",
       "SHIP_WEIGHT": "Poids",
       "SHIP_WIDTH": "Largeur",
-      "SIZE_TIER_LABEL": "Niveau de taille",
       "SIZE_TIER_CHOOSE": "Choisissez le niveau de taille",
       "SIZE_TIER_INFO": "Choisissez approximativement combien d’unités de ce produit tiennent dans une boîte de 22 pouces x 22 pouces x 22 pouces.",
+      "SIZE_TIER_LABEL": "Niveau de taille",
       "SKU": "SKU",
       "SKUS_VARY": "Les références SKU varient en fonction de cette variation",
       "SPEC_ISSUE": "Chaque variante doit avoir au moins une option.",
@@ -411,22 +396,23 @@
       "ALL_PROMOTIONS_ELIGIBLE": "Toutes les promotions sont éligibles pour tous les acheteurs en ce moment.",
       "APPLIES_TO": "S’applique à",
       "APPLIES_TO_RATES": "S’applique aux tarifs d’expédition sous",
+      "AUTOMATIC": "Automatique",
+      "AUTOMATIC_PROMO_CODE_EXPLANATION": "Le code de réduction est juste à des fins d’identification. Cette promotion sera automatiquement appliquée à la caisse.",
+      "AUTO_APPLY": "Appliquer automatiquement la promotion",
       "BUYER_ELIGIBILITY": "Éligibilité de l’acheteur",
       "CAN_BE_COMBINED": "Peut être combiné avec d’autres promotions",
       "CLONE": "Clone",
-      "AUTOMATIC": "Automatique",
-      "AUTO_APPLY": "Appliquer automatiquement la promotion",
       "DISCARD_CHANGES": "Ignorer les modifications",
       "DISCOUNT_CODE": "Code de réduction",
       "DISPLAY": {
         "DATE": {
-          "VALID_FROM": "Valide à partir de",
+          "TO": "À",
           "TODAY_TO": "aujourd’hui à",
-          "TO": "À"
+          "VALID_FROM": "Valide à partir de"
         },
         "ELIGIBILITY": {
-          "FOR": "Pour",
           "ALL_BUYERS": "tous les acheteurs",
+          "FOR": "Pour",
           "SELECTED_BUYERS": "acheteurs sélectionnés"
         },
         "USAGE": {
@@ -436,13 +422,13 @@
           "USES": "Utilise"
         },
         "VALUE": {
-          "OFF_ENTIRE": "désactivé entier",
-          "OFF_SELECT_PRODUCTS": "hors de certains produits",
-          "PRODUCTS_ORDER": "commande de produits",
-          "OFF_ENTIRE_ORDER": "hors de la commande entière",
           "FREE_SHIPPING_ENTIRE_ORDER": "Livraison gratuite sur toute la commande",
+          "ITEMS": "Articles",
+          "OFF_ENTIRE": "désactivé entier",
+          "OFF_ENTIRE_ORDER": "hors de la commande entière",
+          "OFF_SELECT_PRODUCTS": "hors de certains produits",
           "OVER": "sur",
-          "ITEMS": "Articles"
+          "PRODUCTS_ORDER": "commande de produits"
         }
       },
       "ENTIRE_ORDER": "Commande entière",
@@ -466,19 +452,18 @@
       "MINIMUM_REQUIREMENTS_EXPLANATION": "Vous ne pouvez sélectionner qu’une seule exigence minimale pour le moment.",
       "MORE_PROMOTIONS": "Plus de promotions",
       "NAME": "Nom",
+      "NONE": "Aucun",
       "NO_INFO_ENTERED": "Aucune information n’a encore été saisie.",
       "NO_RESULTS": "Aucun résultat. Élargissez votre recherche et réessayez.",
-      "NONE": "Aucun",
       "PERCENTAGE": "Pourcentage",
       "PERFORMANCE": "Performance",
       "PROMO_CODE_EXAMPLE": "p. ex. SPRINGSALE20",
       "PROMO_CODE_EXPLANATION": "Les utilisateurs acheteurs utiliseront ce code lors du paiement.",
-      "AUTOMATIC_PROMO_CODE_EXPLANATION": "Le code de réduction est juste à des fins d’identification. Cette promotion sera automatiquement appliquée à la caisse.",
       "REQUIREMENT_SCOPE": "Portée des exigences",
       "SET_EXPIRATION_DATE": "Définir la date d’expiration",
       "SHIPPING": "Livraison",
-      "SPECIFIC_BUYER_GROUPS": "Groupes d’acheteurs spécifiques",
       "SPECIFIC_BUYERS": "Acheteurs spécifiques",
+      "SPECIFIC_BUYER_GROUPS": "Groupes d’acheteurs spécifiques",
       "SPECIFIC_SUPPLIER": "Fournisseur spécifique",
       "START_DATE_TIME": "Date et heure de début (UTC) ",
       "SUMMARY": "Résumé",
@@ -489,44 +474,41 @@
       "VALUE": "Valeur"
     },
     "REPORTS": {
-      "REPORT_DETAILS": "Détails du rapport",
-      "REPORT_DETAILS_DESC": "Fournissez un nom et une description pour ce modèle.",
+      "ALL_VALUES": "Toutes les valeurs",
       "AVAILABLE_TO": "Disponible pour",
-      "TEMPLATE_NAME": "Nom du modèle",
-      "TEMPLATE_DESC": "Description du modèle",
-      "ENTER_TEMPLATE_NAME": "Entrez le nom du modèle",
+      "BUYER_OPTIONAL": "Acheteur (Facultatif)",
+      "CHOOSE_REPORT_TYPE": "Choisissez le type de rapport et le modèle à traiter",
+      "DESCRIPTION": "Description",
+      "DOWNLOADING": "Téléchargement...",
+      "DOWNLOAD_REPORT": "Télécharger le rapport",
       "ENTER_TEMPLATE_DESC": "Facultatif : Entrez une description de modèle",
-      "TEMPLATE_DESC_EXPLANATION": "Facultatif : Entrez une brève description pour expliquer les données attendues de ce rapport, limitez 300 caractères",
+      "ENTER_TEMPLATE_NAME": "Entrez le nom du modèle",
+      "FETCHING_PREVIEW": "Récupération de l’aperçu...",
+      "FILTERS": "Filtres",
       "HEADERS": "En-têtes",
       "HEADERS_DESC": "Sélectionnez les champs à afficher en tant qu’en-têtes.",
-      "SELECT_ALL": "Sélectionner tout",
-      "UNSELECT_ALL": "Désélectionnez Tout",
-      "FILTERS": "Filtres",
-      "SELECT_WHICH_VALUES": "Sélectionnez les valeurs autorisées à s’afficher dans un rapport.",
       "IF_NO_FILTERS": "Si aucun filtre n’est sélectionné pour un champ, toutes les valeurs seront incluses.",
-      "INCLUDE_ALL_VALUES": "Inclure toutes les valeurs",
-      "REPORT_SELECTION": "Sélection des rapports",
-      "CHOOSE_REPORT_TYPE": "Choisissez le type de rapport et le modèle à traiter",
-      "REPORT_TYPE": "Type de rapport",
-      "SELECT_REPORT_TYPE": "Sélectionner un type de rapport",
-      "REPORT_TEMPLATE": "Modèle de rapport",
-      "SELECT_REPORT_TEMPLATE": "Sélectionner un modèle de rapport",
-      "DESCRIPTION": "Description",
-      "NAME": "Nom",
-      "VALUES": "Valeurs",
       "INCLUDE_ALL": "Inclure tout",
-      "SUPPLIER_OPTIONAL": "Fournisseur (facultatif)",
-      "BUYER_OPTIONAL": "Acheteur (Facultatif)",
-      "ALL_VALUES": "Toutes les valeurs",
+      "INCLUDE_ALL_VALUES": "Inclure toutes les valeurs",
+      "NAME": "Nom",
       "PREVIEW_REPORT": "Rapport d’aperçu",
-      "FETCHING_PREVIEW": "Récupération de l’aperçu...",
-      "DOWNLOAD_REPORT": "Télécharger le rapport",
-      "DOWNLOADING": "Téléchargement...",
+      "PREVIEW_THE_REPORT": "Prévisualisez les données du rapport dans une table ou téléchargez le fichier.",
+      "REPORT_DETAILS": "Détails du rapport",
+      "REPORT_DETAILS_DESC": "Fournissez un nom et une description pour ce modèle.",
       "REPORT_PROCESSING": "Traitement des rapports",
-      "PREVIEW_THE_REPORT": "Prévisualisez les données du rapport dans une table ou téléchargez le fichier."
-    },
-    "PERMISSIONS": {
-      "LOCATION_APPROVAL_TOOLTIP": "Aucune règle d’approbation dans ce groupe d’acheteurs. Définissez une règle d’approbation avant d’accorder des autorisations OrderApprover."
+      "REPORT_SELECTION": "Sélection des rapports",
+      "REPORT_TEMPLATE": "Modèle de rapport",
+      "REPORT_TYPE": "Type de rapport",
+      "SELECT_ALL": "Sélectionner tout",
+      "SELECT_REPORT_TEMPLATE": "Sélectionner un modèle de rapport",
+      "SELECT_REPORT_TYPE": "Sélectionner un type de rapport",
+      "SELECT_WHICH_VALUES": "Sélectionnez les valeurs autorisées à s’afficher dans un rapport.",
+      "SUPPLIER_OPTIONAL": "Fournisseur (facultatif)",
+      "TEMPLATE_DESC": "Description du modèle",
+      "TEMPLATE_DESC_EXPLANATION": "Facultatif : Entrez une brève description pour expliquer les données attendues de ce rapport, limitez 300 caractères",
+      "TEMPLATE_NAME": "Nom du modèle",
+      "UNSELECT_ALL": "Désélectionnez Tout",
+      "VALUES": "Valeurs"
     },
     "RESOURCES": {
       "CREATE_NEW": "Créer un nouveau"
@@ -553,20 +535,20 @@
       "OVERRIDE_PERCENT": "Remplacer le pourcentage de remboursement",
       "PARTIAL_REFUND_PERCENT": "Remboursement partiel %",
       "PRICE": "Prix",
+      "PROCESSED": "Traitées",
+      "PROCESSED_BY": "Traité par",
       "PROCESS_OPTION": "Option de processus",
       "PROCESS_REFUND": "Traiter le remboursement",
       "PROCESS_REQUEST": "Traiter la demande",
       "PROCESS_RMA": "Processus RMA",
-      "PROCESSED": "Traitées",
-      "PROCESSED_BY": "Traité par",
       "PRODUCT": "Produit",
       "PURCHASE_ORDER_EXPLANATION": "En raison de la façon dont cet article de bon de commande est payé, vous pouvez gérer son statut RMA, mais un remboursement par carte de crédit ne sera pas émis.",
       "QUANTITY": "Quantité",
       "QUANTITY_TO_PROCESS": "Quantité à traiter",
       "REASON": "Raison",
       "REASON_FOR": "Raison de",
-      "REFUND_ISSUED": "Remboursement émis",
       "REFUNDED": "Remboursé",
+      "REFUND_ISSUED": "Remboursement émis",
       "REQUESTED": "Demandé",
       "REQUESTED_QUANTITY": "Quantité demandée",
       "RMA_ITEMS": "Éléments RMA",
@@ -580,12 +562,30 @@
       "VIEW_ORDER_DETAILS": "Afficher les détails de la commande"
     },
     "STOREFRONTS": {
-      "SUMMARY": "Une vitrine représente une application d’acheteur hébergée. La simple création d’une vitrine dans cette interface d’administration ne créera pas d’application d’acheteur - ce processus doit toujours être effectué manuellement par un développeur, mais une fois que cela est fait, certains éléments de la vitrine peuvent être gérés ici",
       "ACCESS_TOKEN_TOOLTIP": "Détermine combien de temps (en minutes) un utilisateur peut rester connecté avant d’avoir besoin de saisir à nouveau ses informations d’identification et de se reconnecter. La valeur minimale est 10, la valeur maximale est 600.",
-      "REFRESH_TOKEN_TOOLTIP": "Détermine la durée (en minutes) pendant laquelle un jeton d’actualisation peut être utilisé pour garder un utilisateur connecté. La valeur minimale est 0, la valeur maximale est 43 200.",
       "ANON_BUYER_TOOLTIP": "Organisation d’acheteurs qui contient l’utilisateur qui doit être utilisé comme utilisateur de contexte par défaut pour les achats anonymes. Tous les prix, autorisations et visibilité seront basés sur cet utilisateur",
-      "ANON_USERNAME_TOOLTIP": "L’utilisateur acheteur qui sera utilisé comme utilisateur de contexte par défaut pour les achats anonymes. Tous les prix, autorisations et visibilité seront basés sur cet utilisateur"
+      "ANON_USERNAME_TOOLTIP": "L’utilisateur acheteur qui sera utilisé comme utilisateur de contexte par défaut pour les achats anonymes. Tous les prix, autorisations et visibilité seront basés sur cet utilisateur",
+      "REFRESH_TOKEN_TOOLTIP": "Détermine la durée (en minutes) pendant laquelle un jeton d’actualisation peut être utilisé pour garder un utilisateur connecté. La valeur minimale est 0, la valeur maximale est 43 200.",
+      "SUMMARY": "Une vitrine représente une application d’acheteur hébergée. La simple création d’une vitrine dans cette interface d’administration ne créera pas d’application d’acheteur - ce processus doit toujours être effectué manuellement par un développeur, mais une fois que cela est fait, certains éléments de la vitrine peuvent être gérés ici"
     }
+  },
+  "ALIAS": {
+    "ALL_BUYERS": "Tous les acheteurs",
+    "ALL_SUPPLIERS": "Tous les fournisseurs",
+    "BUYER": "Acheteur",
+    "BUYERS": "Acheteurs",
+    "BUYER_LOCATION": "Groupe d’acheteurs",
+    "BUYER_LOCATIONS": "Groupes d’acheteurs",
+    "SELLER": "Vendeur",
+    "SELLERS": "Vendeurs",
+    "SELLER_ADMIN": "Administrateur vendeur",
+    "SELLER_LOCATION": "Adresse du vendeur",
+    "SELLER_LOCATIONS": "Adresses des vendeurs",
+    "SUPPLIER": "Fournisseur",
+    "SUPPLIERS": "Fournisseurs",
+    "SUPPLIER_LOCATION": "Adresse du fournisseur",
+    "SUPPLIER_LOCATIONS": "Adresses des fournisseurs",
+    "SUPPLIER_PROFILE": "Profil du fournisseur"
   },
   "AUTHENTICATION": {
     "FORGOT_PASSWORD": {
@@ -614,22 +614,36 @@
       "SET_PASSWORD": "Définir un nouveau mot de passe"
     }
   },
+  "BUYER": {
+    "HELPERMESSAGES": {
+      "BUYERGROUP": {
+        "ACTION": "Définissez les groupes d’acheteurs maintenant.",
+        "MESSAGE": "On dirait que cet acheteur n’a pas de groupes d’acheteurs.",
+        "WARNING": "Il n’y a pas d’adresses de fournisseur pour le pays d’origine de cet utilisateur."
+      },
+      "CATALOG": {
+        "ACTION": "Définissez les catalogues maintenant.",
+        "MESSAGE": "On dirait que cet acheteur n’a pas de catalogues",
+        "WARNING": "Aucun catalogue disponible pour cet acheteur."
+      }
+    }
+  },
   "CART": {
     "CART": {
       "CART_IS_EMPTY": "Vous n’avez aucun article dans votre panier",
-      "INVALID_ITEMS_NOTICE": "Les éléments suivants seront supprimés de votre panier. Veuillez consulter votre panier mis à jour avant de passer à la caisse.",
       "CHECKOUT": "CAISSE",
       "CONTINUE_SHOPPING": "Continuer vos achats",
       "EMPTY_CART": "Panier vide",
+      "INVALID_ITEMS_NOTICE": "Les éléments suivants seront supprimés de votre panier. Veuillez consulter votre panier mis à jour avant de passer à la caisse.",
       "SHOPPING_CART": "Caddie",
-      "VIEW_CART": "Voir le panier",
-      "SUBMIT_QUOTE": "Soumettre un devis"
+      "SUBMIT_QUOTE": "Soumettre un devis",
+      "VIEW_CART": "Voir le panier"
     },
     "LINEITEM_TABLE": {
       "PRICE": "Prix",
       "QTY": "Qté",
-      "QTY_RETURNED": "Retourné",
       "QTY_CANCELED": "Annulé",
+      "QTY_RETURNED": "Retourné",
       "REFUND_AMOUNT": "Montant du remboursement",
       "REMOVE_ITEM": "Supprimer un élément",
       "RETURNED": "Retourné:",
@@ -652,15 +666,15 @@
   },
   "CHECKOUT": {
     "CHECKOUT": {
+      "CHANGE_ADDRESS": "Modifier l’adresse de livraison",
       "CHECKOUT": "Caisse",
-      "ORDERREFERENCE": "Numéro de référence de la commande",
       "CONFIRM": "Examen de la commande",
       "CREATE_ACCOUNT": "Créer un compte",
       "GUEST_CHECKOUT": "Passer à la caisse en tant qu’invité",
+      "ORDERREFERENCE": "Numéro de référence de la commande",
       "PAYMENT": "Paiement & Promotions",
       "SHIPPING_ADDRESS": "Adresse de livraison",
-      "SHIPPING_SELECTION": "Sélection d’expédition",
-      "CHANGE_ADDRESS": "Modifier l’adresse de livraison"
+      "SHIPPING_SELECTION": "Sélection d’expédition"
     },
     "CHECKOUT_ADDRESS": {
       "BUYER_LOCATION": "Sélectionnez l’emplacement pour cette commande",
@@ -693,8 +707,8 @@
       "DAY": "jour",
       "DELIVERY_OPTIONS": "Options de livraison",
       "HOW_FAST": "À quelle vitesse ce navire devrait-il être?",
-      "SHIPPING_SPEED": "Vitesse d’expédition",
       "NO_RATES_RETURNED_MESSAGE": "Aucun tarif retourné - l’expédition sera calculée après la commande",
+      "SHIPPING_SPEED": "Vitesse d’expédition",
       "SHIP_ESTIMATES_BASED_ON_DELIVERY": "Les estimations d’expédition sont basées sur la vitesse de livraison après l’expédition des articles par le transporteur. Les articles nécessitant une personnalisation peuvent prendre plus de temps à expédier."
     }
   },
@@ -714,22 +728,52 @@
     "USERNAME": "Nom d’utilisateur",
     "YES_DELETE": "Oui, Supprimer"
   },
+  "ERRORS": {
+    "ALREADY_SUBMITTED": {
+      "BUTTONTEXT": "Retour à la page d’accueil",
+      "TITLE": "Cette commande a déjà été soumise"
+    },
+    "CREDIT_CARD_AUTH": {
+      "BUTTONTEXT": "Retour à la section Paiement",
+      "MESSAGE_PART1": "L’autorisation de paiement a été refusée par le processeur en raison de :",
+      "MESSAGE_PART2": "Veuillez saisir à nouveau vos informations ou utiliser une autre carte",
+      "TITLE": "Une erreur s’est produite lors du traitement de votre paiement"
+    },
+    "FAILED_TO_VOID_AUTHORIZATION": {
+      "BUTTONTEXT": "Aller à Sélection de paiement",
+      "MESSAGE": "Une erreur critique s’est produite. Veuillez contacter le support et éviter de soumettre à nouveau la commande jusqu’à ce que vous ayez été aidé",
+      "TITLE": "Une erreur s’est produite"
+    },
+    "INSUFFICIENT": {
+      "BUTTONTEXT": "Retour au panier",
+      "MESSAGE_PART1": "Inventaire insuffisant pour le produit",
+      "MESSAGE_PART2": "Quantité disponible",
+      "TITLE": "Inventaire insuffisant"
+    },
+    "MISSING_SHIPPING_SELECTIONS": {
+      "BUTTONTEXT": "Aller à Expédition",
+      "MESSAGE": "Veuillez mettre à jour vos sélections d’expédition",
+      "TITLE": "Cet ordre a été modifié"
+    },
+    "ORDER_NOT_ACCESSABLE": "Vous n’avez plus accès à cette commande",
+    "UNKNOWN": "Une erreur inconnue s’est produite"
+  },
   "LAYOUT": {
     "ADDRESS_SUGGESTIONS": "Vouliez-vous dire...",
     "APP_FOOTER": {
       "CREATED_BY": "Créé par Four51, Inc.",
+      "EMAIL": "support@my-company.com",
+      "EMAIL_LABEL": "Écrire:",
       "FAQ": "FAQ",
-      "SUPPORT": "Soutien",
-      "TERMS_CONDITIONS": "Termes & Conditions",
-      "QUESTIONS_COMMENTS": "Des questions ou des commentaires?",
       "PHONE": {
-        "LABEL": "Bague:",
         "AREACODE": "555",
+        "LABEL": "Bague:",
         "PREFIX": "555",
         "SUFFIX": "5555"
       },
-      "EMAIL": "support@my-company.com",
-      "EMAIL_LABEL": "Écrire:"
+      "QUESTIONS_COMMENTS": "Des questions ou des commentaires?",
+      "SUPPORT": "Soutien",
+      "TERMS_CONDITIONS": "Termes & Conditions"
     },
     "APP_HEADER": {
       "ACCOUNT": "Compte",
@@ -740,10 +784,10 @@
       "LOGOUT": "Déconnexion",
       "NEEDS_ATTENTION": "Les commandes ont besoin d’attention",
       "ORDERS": "Ordres",
-      "ORDERS_PLACED_BY_ME": "Placé par moi",
-      "ORDERS_QUOTES": "Devis",
-      "ORDERS_PLACED_IN_MY_LOCATIONS": "Placé dans Mes positions",
       "ORDERS_AWAITING_MY_APPROVAL": "En attente de mon approbation",
+      "ORDERS_PLACED_BY_ME": "Placé par moi",
+      "ORDERS_PLACED_IN_MY_LOCATIONS": "Placé dans Mes positions",
+      "ORDERS_QUOTES": "Devis",
       "PRODUCTS": "Produits",
       "PROFILE": "Mon profil",
       "REGISTER": "Registre",
@@ -755,20 +799,6 @@
       "NO": "Non",
       "OF": "de",
       "RESULTS": "résultats"
-    }
-  },
-  "BUYER": {
-    "HELPERMESSAGES": {
-      "CATALOG": {
-        "WARNING": "Aucun catalogue disponible pour cet acheteur.",
-        "MESSAGE": "On dirait que cet acheteur n’a pas de catalogues",
-        "ACTION": "Définissez les catalogues maintenant."
-      },
-      "BUYERGROUP": {
-        "WARNING": "Il n’y a pas d’adresses de fournisseur pour le pays d’origine de cet utilisateur.",
-        "MESSAGE": "On dirait que cet acheteur n’a pas de groupes d’acheteurs.",
-        "ACTION": "Définissez les groupes d’acheteurs maintenant."
-      }
     }
   },
   "ORDERS": {
@@ -788,18 +818,18 @@
       "ADD_TO_CART": "Ajouter des articles valides au panier",
       "ALL": "Toutes les commandes",
       "CANCEL": "Annuler",
-      "DISCARD_RETURN_REQUEST": "Ignorer la demande de retour",
-      "DISCARD_CANCEL_REQUEST": "Ignorer la demande d’annulation",
-      "DOWNLOAD_AS_PDF": "Télécharger au format PDF",
       "CLAIM_STATUS": "État de la réclamation",
       "DETAILS": "Détails",
+      "DISCARD_CANCEL_REQUEST": "Ignorer la demande d’annulation",
+      "DISCARD_RETURN_REQUEST": "Ignorer la demande de retour",
+      "DOWNLOAD_AS_PDF": "Télécharger au format PDF",
       "FAVORITE": "Favori",
       "MOVE_TO_CART": "Déplacer la commande vers le panier",
       "ORDER": "Commande",
       "REASON": "Raison",
       "REORDER": "Réorganiser",
-      "REQUEST_A_RETURN": "Demander un retour",
       "REQUEST_A_CANCEL": "Demander une annulation",
+      "REQUEST_A_RETURN": "Demander un retour",
       "RMAS": "Retours et annulations",
       "SHIPMENTS": "Expéditions",
       "SHIPPING_STATUS": "Statut d’expédition",
@@ -809,22 +839,22 @@
       "WARNING": "Votre commande sera replacée dans votre panier. Vous perdrez tous les articles actuellement dans votre panier."
     },
     "HISTORICAL": {
+      "ACCEPT_QUOTE": "Accepter le devis",
       "BILLING_ADDRESS": "Adresse de facturation",
       "BUYER": "Acheteur",
       "BUYER_LOCATION": "Emplacement de l’acheteur",
       "COMMENTS": "Commentaires",
+      "CONTACT_SUPPLIER": "Contacter le fournisseur",
       "ON": "sur",
       "PROMO": "Promo Discount",
+      "QUOTE_ACCEPTED_MESSAGE": "Une fois la commande acceptée, la demande de devis sera supprimée et les articles seront ajoutés à votre panier afin que vous puissiez passer à la caisse.",
+      "QUOTE_ACTIONS": "Actions de devis",
       "SHIPPING": "Livraison",
       "SHIPPING_ADDRESS": "Adresse de livraison",
       "SUBMITTED_BY": "Soumis par",
       "SUBTOTAL": "Sous-total",
       "TAX": "Taxe",
-      "TOTAL": "Total",
-      "ACCEPT_QUOTE": "Accepter le devis",
-      "CONTACT_SUPPLIER": "Contacter le fournisseur",
-      "QUOTE_ACTIONS": "Actions de devis",
-      "QUOTE_ACCEPTED_MESSAGE": "Une fois la commande acceptée, la demande de devis sera supprimée et les articles seront ajoutés à votre panier afin que vous puissiez passer à la caisse."
+      "TOTAL": "Total"
     },
     "HISTORY": {
       "FAVORITES": "Favoris",
@@ -842,33 +872,33 @@
       "TOTAL": "Total"
     },
     "RETURNS": {
+      "CANCELED": "Annulé",
+      "CANCEL_REASON": "Raison d’annulation",
       "ORDERED": "Ordonné",
       "PRICE": "Prix",
       "PRODUCT_DETAILS": "Détails du produit",
-      "QTY_TO_RETURN": "Qté à retourner",
       "QTY_TO_CANCEL": "Qté à annuler",
-      "RETURN_REASON": "Raison du retour",
-      "CANCEL_REASON": "Raison d’annulation",
+      "QTY_TO_RETURN": "Qté à retourner",
       "RETURNED": "Retourné",
-      "CANCELED": "Annulé",
-      "SELECT_RETURN_REASON": "Sélectionnez la raison du retour",
-      "SELECT_CANCEL_REASON": "Sélectionnez annuler la raison"
+      "RETURN_REASON": "Raison du retour",
+      "SELECT_CANCEL_REASON": "Sélectionnez annuler la raison",
+      "SELECT_RETURN_REASON": "Sélectionnez la raison du retour"
     },
     "RETURN_REASONS": {
       "DISCOUNT_NOT_APPLIED": "La remise n’a pas été appliquée",
+      "FOUND_DIFFERENT_PRODUCT": "J’ai trouvé un produit différent que j’aimais mieux",
+      "FULFILLMENT_TOO_LONG": "Le produit a pris trop de temps à remplir",
       "INCORRECT_PRODUCT_SHIPPED": "Produit ou taille incorrecte expédié",
       "PRODUCT_ARRIVED_LATE": "Le produit est arrivé trop tard",
       "PRODUCT_DEFECTIVE": "Le produit est défectueux/endommagé",
       "PRODUCT_MATCH_DESCRIPTION": "Le produit ne correspond pas à la description",
       "PRODUCT_MISSING": "Le produit est absent de l’expédition",
       "PRODUCT_NOT_NEEDED": "Le produit n’est plus nécessaire",
-      "PURCHASE_NOT_APPROVED": "L’achat n’a pas été approuvé",
       "PURCHASED_BY_MISTAKE": "Acheté par erreur",
       "PURCHASED_INCORRECT_SIZE": "Taille/style incorrect acheté",
+      "PURCHASE_NOT_APPROVED": "L’achat n’a pas été approuvé",
       "RECEIVED_EXTRA_PRODUCT": "J’ai reçu un produit supplémentaire que je n’ai pas acheté",
-      "SHIPPING_BOX_DAMAGED": "La boîte d’expédition est endommagée",
-      "FOUND_DIFFERENT_PRODUCT": "J’ai trouvé un produit différent que j’aimais mieux",
-      "FULFILLMENT_TOO_LONG": "Le produit a pris trop de temps à remplir"
+      "SHIPPING_BOX_DAMAGED": "La boîte d’expédition est endommagée"
     },
     "SHIPMENTS": {
       "DATE_SHIPPED": "Date d’expédition",
@@ -937,15 +967,15 @@
       "TO_CART": "au panier"
     },
     "CONTACT_SUPPLIER": {
-      "PLEASE_VERIFY": "Veuillez vérifier vos coordonnées et soumettre un commentaire/une question sur ce produit.",
-      "FIRST": "Prénom",
-      "LAST": "Nom",
-      "FOR_LOCATION": "Pour l’emplacement",
-      "EMAIL": "Messagerie électronique",
-      "PHONE": "Téléphone",
+      "CANCEL": "Annuler",
       "COMMENTS": "Commentaires/Questions",
-      "SUBMIT": "Envoyer",
-      "CANCEL": "Annuler"
+      "EMAIL": "Messagerie électronique",
+      "FIRST": "Prénom",
+      "FOR_LOCATION": "Pour l’emplacement",
+      "LAST": "Nom",
+      "PHONE": "Téléphone",
+      "PLEASE_VERIFY": "Veuillez vérifier vos coordonnées et soumettre un commentaire/une question sur ce produit.",
+      "SUBMIT": "Envoyer"
     },
     "DETAILS": {
       "ADD_TO_CART": "Ajouter au panier",
@@ -953,8 +983,11 @@
       "CONTACT_PART_TWO": " à propos de ce produit",
       "DESCRIPTION": "Description",
       "DOCS": "Documents",
+      "LOGIN_FOR_QUOTE": "Vous devez vous connecter avant de pouvoir faire une demande de devis.",
       "NOTE": "Note",
       "QUANTITY": "Quantité",
+      "QUOTE_EXISTING_CART_ERROR": "Impossible d’ajouter une demande de devis au panier existant.",
+      "QUOTE_STANDARD_EXISTING_CART_ERROR": "Impossible d’ajouter des articles Standard au panier existant.",
       "REQ_QUOTE": "Demande de devis",
       "SAVINGS": "Vous économisez",
       "SUCCESS": "Votre demande de devis a été soumise avec succès",
@@ -962,10 +995,7 @@
       "TIERED_PRICE_DESC": "Pour certains articles, plus vous commandez - plus vous économisez! Détails énumérés ci-dessous. Le prix exclut les frais supplémentaires pour les tailles et les modifications.",
       "TIERED_PRICE_HEAD": "Tarification hiérarchisée",
       "VIEW_ONLY": "Il s’agit d’un produit en lecture seule et ne peut pas être commandé",
-      "VIEW_QUOTE": "Voir la demande de devis",
-      "LOGIN_FOR_QUOTE": "Vous devez vous connecter avant de pouvoir faire une demande de devis.",
-      "QUOTE_EXISTING_CART_ERROR": "Impossible d’ajouter une demande de devis au panier existant.",
-      "QUOTE_STANDARD_EXISTING_CART_ERROR": "Impossible d’ajouter des articles Standard au panier existant."
+      "VIEW_QUOTE": "Voir la demande de devis"
     },
     "FACETS": "Afficher tout",
     "GRID": {
@@ -1077,8 +1107,9 @@
   "USERS": {
     "USER_MGMT": {
       "ALL_ORDERS": "Toutes les commandes doivent être approuvées",
-      "CAN_APPROVE": "Peut approuver les commandes",
+      "APPROVAL_ENABLED": "Approbation activée",
       "CANCEL": "Annuler",
+      "CAN_APPROVE": "Peut approuver les commandes",
       "CONFIRM": "Confirmer",
       "NEEDS_APPROVAL": "Les commandes doivent être approuvées",
       "NO_CHANGES": "Aucun changement",
@@ -1092,40 +1123,9 @@
       "SET_THRESHOLD": "Vous avez la possibilité de définir un total de commande au-dessus duquel les commandes nécessiteront une approbation pour les utilisateurs indiqués ci-dessus.",
       "SOME_ORDERS": "Seules les commandes dépassent le seuil",
       "THRESHOLD": "Seuil d’approbation des commandes",
-      "APPROVAL_ENABLED": "Approbation activée",
       "USER": "Utilisateur",
       "USER_IS_ADMINISTRATOR": "Vous êtes un administrateur de règles d’approbation, mais vous ne faites actuellement partie d’aucun emplacement. Lorsque vous rejoignez un emplacement, vous pouvez attribuer des autorisations d’approbation ici.",
       "WARNING": "Il s’agit d’une action potentiellement destructrice qui affecte les approbations de commande."
     }
-  },
-  "ERRORS": {
-    "FAILED_TO_VOID_AUTHORIZATION": {
-      "TITLE": "Une erreur s’est produite",
-      "MESSAGE": "Une erreur critique s’est produite. Veuillez contacter le support et éviter de soumettre à nouveau la commande jusqu’à ce que vous ayez été aidé",
-      "BUTTONTEXT": "Aller à Sélection de paiement"
-    },
-    "INSUFFICIENT": {
-      "TITLE": "Inventaire insuffisant",
-      "MESSAGE_PART1": "Inventaire insuffisant pour le produit",
-      "MESSAGE_PART2": "Quantité disponible",
-      "BUTTONTEXT": "Retour au panier"
-    },
-    "ALREADY_SUBMITTED": {
-      "TITLE": "Cette commande a déjà été soumise",
-      "BUTTONTEXT": "Retour à la page d’accueil"
-    },
-    "MISSING_SHIPPING_SELECTIONS": {
-      "TITLE": "Cet ordre a été modifié",
-      "MESSAGE": "Veuillez mettre à jour vos sélections d’expédition",
-      "BUTTONTEXT": "Aller à Expédition"
-    },
-    "CREDIT_CARD_AUTH": {
-      "TITLE": "Une erreur s’est produite lors du traitement de votre paiement",
-      "MESSAGE_PART1": "L’autorisation de paiement a été refusée par le processeur en raison de :",
-      "MESSAGE_PART2": "Veuillez saisir à nouveau vos informations ou utiliser une autre carte",
-      "BUTTONTEXT": "Retour à la section Paiement"
-    },
-    "ORDER_NOT_ACCESSABLE": "Vous n’avez plus accès à cette commande",
-    "UNKNOWN": "Une erreur inconnue s’est produite"
   }
 }
