@@ -37,12 +37,14 @@ export class LanguageSelectorService {
 
       const patchLangXp = {
         xp: {
-          Language: language
-        }
+          Language: language,
+        },
       }
       await this.currentUserService.patch(patchLangXp)
     } else {
-      const selectedLang = this.cookieService.getObject(this.languageCookieName)?.toString()
+      const selectedLang = this.cookieService
+        .getObject(this.languageCookieName)
+        ?.toString()
       if (selectedLang == language) {
         return
       }
@@ -56,25 +58,27 @@ export class LanguageSelectorService {
    * Implicitly sets the language used by the translate service
    */
   public async SetTranslateLanguage(): Promise<void> {
-    const browserCultureLang = this.translate.getBrowserCultureLang();
-    const browserLang = this.translate.getBrowserLang();
+    const browserCultureLang = this.translate.getBrowserCultureLang()
+    const browserLang = this.translate.getBrowserLang()
     const languages = this.translate.getLangs()
-    const selectedLang = this.cookieService.getObject(this.languageCookieName)?.toString()
+    const selectedLang = this.cookieService
+      .getObject(this.languageCookieName)
+      ?.toString()
     const isAnonymousUser = this.tokenHelper.isTokenAnonymous()
     let xpLang
-      
-    if (!isAnonymousUser){
+
+    if (!isAnonymousUser) {
       const user = this.currentUserService.get()
       xpLang = user?.xp?.Language
     }
     if (xpLang) {
-      this.translate.use(xpLang);
+      this.translate.use(xpLang)
     } else if (selectedLang && languages.includes(selectedLang)) {
-      this.translate.use(selectedLang);
+      this.translate.use(selectedLang)
     } else if (languages.includes(browserCultureLang)) {
-      this.translate.use(browserCultureLang);
+      this.translate.use(browserCultureLang)
     } else if (languages.includes(browserLang)) {
-      this.translate.use(browserLang);
+      this.translate.use(browserLang)
     } else if (languages.includes(this.appConfig.defaultLanguage)) {
       this.translate.use(this.appConfig.defaultLanguage)
     } else if (languages.length > 0) {
