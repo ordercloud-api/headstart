@@ -3,13 +3,13 @@
     <!-- Related Products -->
     <div class="row pt-3 mt-2 border-top">
       <div class="col-md-5">
-        <h5>Related Products</h5>
+        <h5 translate>ADMIN.PRODUCT_EDIT.RELATED_PRODUCTS</h5>
         <p
           class="font-italic text-dark"
-          *ngIf="!selectedRelatedProducts?.length && !isLoading"
+          *ngIf="!selectedRelatedProducts?.length"
+          translate
         >
-          Related products will show up on the product details page in the
-          related products section
+          ADMIN.PRODUCT_EDIT.RELATED_PRODUCTS_DESCRIPTION
         </p>
       </div>
       <div class="col-md-7" style="display: flex; justify-content: flex-end">
@@ -17,14 +17,15 @@
           class="btn btn-outline-primary"
           style="max-height: 50px"
           (click)="openModal(modalContent)"
+          translate
         >
-          Add product to related items
+         ADMIN.PRODUCT_EDIT.ADD_PRODUCT_TO_RELATED_ITEMS
         </button>
       </div>
     </div>
     <table
       class="table table-striped table-bordered table-hover bg-light mt-5"
-      *ngIf="selectedRelatedProducts?.length && !isLoading"
+      *ngIf="selectedRelatedProducts?.length"
     >
       <thead>
         <tr>
@@ -63,7 +64,7 @@
   </form>
   <ng-template #modalContent let-modal>
     <div class="modal-header">
-      <h4 class="modal-title">Add products to related items</h4>
+      <h4 class="modal-title" translate>ADMIN.PRODUCT_EDIT.ADD_PRODUCT_TO_RELATED_ITEMS</h4>
     </div>
     <div class="modal-body">
       <search-component

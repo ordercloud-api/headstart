@@ -8,7 +8,7 @@
           type="button"
           class="sortButton"
           (click)="handleSort(header.path)"
-          ngbTooltip="Sort"
+          [ngbTooltip]="'ADMIN.FILTERS.SORT' | translate"
           placement="bottom"
         >
           <fa-icon [icon]="getSortArrowDirection(header.path)"></fa-icon>
