@@ -13,20 +13,13 @@ export class LanguageSelectorService {
     .replace(/ /g, '_')
     .toLowerCase()}_selectedLang`
 
-  /**
-   * @ignore
-   * not part of public api, don't include in generated docs
-   */
   constructor(
     private currentUserService: CurrentUserService,
     private cookieService: CookieService,
     private translate: TranslateService,
     private tokenHelper: TokenHelperService,
     private appConfig: AppConfig
-  ) {
-    this.SetLanguage = this.SetLanguage.bind(this)
-    this.SetTranslateLanguage = this.SetTranslateLanguage.bind(this)
-  }
+  ) {}
 
   public async SetLanguage(language: string): Promise<void> {
     if (!this.tokenHelper.isTokenAnonymous()) {
