@@ -1,5 +1,5 @@
 <form *ngIf="resourceForm" [formGroup]="resourceForm">
-  <span class="required-field">* required fields</span>
+  <span class="required-field" > * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span>
   <div class="card bg-white shadow-sm p-4 mt-3">
     <h4 class="mt-3" *ngIf="checkForParent()">
       Add a Sub-Category to {{ getParentID() }}

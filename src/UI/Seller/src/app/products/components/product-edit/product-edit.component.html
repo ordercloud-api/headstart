@@ -107,7 +107,7 @@
           <div class="container-fluid">
             <div class="row pt-3">
               <div class="col-md-8 form-group">
-                <span class="required-field">* required fields</span>
+                <span class="required-field" > * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span>
                 <div class="card bg-white shadow-sm p-4 mt-3">
                   <!-- Product Name -->
                   <div
@@ -944,7 +944,7 @@
       <!-- /Buyer Visibility -->
       <!-- Related Products -->
       <li [ngbNavItem]="7" id="7">
-        <a class="text-muted" ngbNavLink translate>Related Products</a>
+        <a class="text-muted" ngbNavLink translate>ADMIN.PRODUCT_EDIT.RELATED_PRODUCTS</a>
         <ng-template ngbNavContent>
           <related-products-component
             *ngIf="_superHSProductStatic?.Product?.ID"
