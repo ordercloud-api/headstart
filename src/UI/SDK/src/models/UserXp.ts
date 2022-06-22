@@ -4,4 +4,5 @@ export interface UserXp {
     OrderEmails?: string
     RequestInfoEmails?: string
     AddtlRcpts?: string[]
+    Language?: string
 }

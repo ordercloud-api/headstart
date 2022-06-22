@@ -68,11 +68,11 @@ export class HeaderComponent implements OnInit {
     this.languages = this.translate.getLangs()
     this.selectedLanguage = this.translate.currentLang
     this.translate.onLangChange.subscribe((event) => {
-      this.selectedLanguage = event.lang;
+      this.selectedLanguage = event.lang
     })
   }
 
-  async getCurrentUser() {
+  async getCurrentUser(): Promise<void> {
     this.isSupplierUser = await this.currentUserService.isSupplierUser()
     if (this.isSupplierUser) {
       this.getSupplierOrg()
@@ -81,7 +81,7 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-  async getSupplierOrg() {
+  async getSupplierOrg(): Promise<void> {
     const mySupplier = await this.currentUserService.getMySupplier()
     this.organizationName = mySupplier.Name
   }
@@ -101,7 +101,7 @@ export class HeaderComponent implements OnInit {
     })
   }
 
-  urlChange = (url: string) => {
+  urlChange = (url: string): void => {
     const activeNavGroup = this.headerConfig.find((grouping) => {
       return (
         (url.includes(grouping.route) && grouping.subRoutes) ||
@@ -111,7 +111,7 @@ export class HeaderComponent implements OnInit {
     this.activeTitle = activeNavGroup && activeNavGroup.title
   }
 
-  logout() {
+  logout(): void {
     this.ocTokenService.RemoveAccess()
     this.appStateService.isLoggedIn.next(false)
     this.router.navigate(['/login'])
@@ -121,7 +121,7 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['account'])
   }
 
-  async setLanguage(language: string) {
+  async setLanguage(language: string): Promise<void> {
     const user = await this.currentUserService.refreshUser()
     await this.languageService.SetLanguage(language, user)
   }

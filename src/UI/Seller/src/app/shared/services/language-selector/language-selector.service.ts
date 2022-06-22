@@ -2,9 +2,10 @@ import { Inject, Injectable } from '@angular/core'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { TranslateService } from '@ngx-translate/core'
 import { CookieService } from 'ngx-cookie'
-import { MeUser, Me } from 'ordercloud-javascript-sdk'
+import { Me } from 'ordercloud-javascript-sdk'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { OcTokenService } from '@ordercloud/angular-sdk'
+import { HSMeUser } from '@ordercloud/headstart-sdk'
 
 @Injectable({
   providedIn: 'root',
@@ -23,12 +24,9 @@ export class LanguageSelectorService {
     private cookieService: CookieService,
     private translate: TranslateService,
     @Inject(applicationConfiguration) private appConfig: AppConfig
-  ) {
-    this.SetLanguage = this.SetLanguage.bind(this)
-    this.SetTranslateLanguage = this.SetTranslateLanguage.bind(this)
-  }
+  ) {}
 
-  public async SetLanguage(language: string, user?: MeUser): Promise<void> {
+  public async SetLanguage(language: string, user?: HSMeUser): Promise<void> {
     if (user?.xp?.Language == language) {
       return
     }
@@ -59,7 +57,7 @@ export class LanguageSelectorService {
     let xpLang
 
     if (accessToken) {
-      const user = await Me.Get({ accessToken: accessToken })
+      const user = await Me.Get<HSMeUser>({ accessToken: accessToken })
       xpLang = user?.xp?.Language
     }
     if (xpLang) {
