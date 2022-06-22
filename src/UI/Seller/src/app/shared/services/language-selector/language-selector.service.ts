@@ -15,10 +15,6 @@ export class LanguageSelectorService {
     .replace(/ /g, '_')
     .toLowerCase()}_selectedLang`
 
-  /**
-   * @ignore
-   * not part of public api, don't include in generated docs
-   */
   constructor(
     private ocTokenService: OcTokenService,
     private cookieService: CookieService,
@@ -28,6 +24,7 @@ export class LanguageSelectorService {
 
   public async SetLanguage(language: string, user?: HSMeUser): Promise<void> {
     if (user?.xp?.Language == language) {
+      this.cookieService.put(this.languageCookieName, language)
       return
     }
 
@@ -39,7 +36,6 @@ export class LanguageSelectorService {
     }
     await Me.Patch(patchLangXp, { accessToken: accessToken })
 
-    this.cookieService.putObject(this.languageCookieName, language)
     this.SetTranslateLanguage()
   }
 
@@ -50,9 +46,7 @@ export class LanguageSelectorService {
     const browserCultureLang = this.translate.getBrowserCultureLang()
     const browserLang = this.translate.getBrowserLang()
     const languages = this.translate.getLangs()
-    const selectedLang = this.cookieService
-      .getObject(this.languageCookieName)
-      ?.toString()
+    const selectedLang = this.cookieService.get(this.languageCookieName)
     const accessToken = this.ocTokenService.GetAccess()
     let xpLang
 
@@ -61,19 +55,24 @@ export class LanguageSelectorService {
       xpLang = user?.xp?.Language
     }
     if (xpLang) {
-      this.translate.use(xpLang)
+      this.useLanguage(xpLang)
     } else if (selectedLang && languages.includes(selectedLang)) {
-      this.translate.use(selectedLang)
+      this.useLanguage(selectedLang)
     } else if (languages.includes(browserCultureLang)) {
-      this.translate.use(browserCultureLang)
+      this.useLanguage(browserCultureLang)
     } else if (languages.includes(browserLang)) {
-      this.translate.use(browserLang)
+      this.useLanguage(browserLang)
     } else if (languages.includes(this.appConfig.defaultLanguage)) {
-      this.translate.use(this.appConfig.defaultLanguage)
+      this.useLanguage(this.appConfig.defaultLanguage)
     } else if (languages.length > 0) {
-      this.translate.use(languages[0])
+      this.useLanguage(languages[0])
     } else {
       throw new Error('Cannot identify a language to use.')
     }
+  }
+
+  private useLanguage(language: string) {
+    this.translate.use(language)
+    this.cookieService.put(this.languageCookieName, language)
   }
 }
