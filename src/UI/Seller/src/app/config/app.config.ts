@@ -10,6 +10,8 @@ export const ocAppConfig: AppConfig = {
   middlewareUrl: environment.middlewareUrl,
   orderCloudApiUrl: environment.orderCloudApiUrl,
   translateBlobUrl: environment.translateBlobUrl,
+  supportedLanguages: environment.supportedLanguages,
+  defaultLanguage: environment.defaultLanguage,
   blobStorageUrl: environment.blobStorageUrl,
   // marketplaceName is being hard-coded until this is available to store in OrderCloud
   marketplaceName: environment.marketplaceName,

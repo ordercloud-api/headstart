@@ -14,15 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\english-translations.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Assets\english-translations.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Flurl" Version="3.0.2" />
     <PackageReference Include="Npoi.Mapper" Version="3.4.0" />
     <PackageReference Include="ordercloud-dotnet-catalyst" Version="2.0.1" />

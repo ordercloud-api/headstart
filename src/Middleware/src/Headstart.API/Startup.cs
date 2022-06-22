@@ -30,6 +30,7 @@ using OrderCloud.Integrations.CosmosDB.Extensions;
 using OrderCloud.Integrations.EasyPost.Extensions;
 using OrderCloud.Integrations.Emails.Extensions;
 using OrderCloud.Integrations.EnvironmentSeed.Commands;
+using OrderCloud.Integrations.EnvironmentSeed.Extensions;
 using OrderCloud.Integrations.ExchangeRates.Extensions;
 using OrderCloud.Integrations.Orchestration;
 using OrderCloud.Integrations.Orchestration.Models;
@@ -175,6 +176,9 @@ namespace Headstart.API
                 .Inject<IDiscountDistributionService>()
                 .Inject<ISupportAlertService>()
                 .Inject<ISupplierApiClientHelper>()
+
+                // Translations Provider
+                .AddDefaultTranslationsProvider(settings.StorageAccountSettings)
 
                 // Tax Providers
                 .AddAvalaraTaxProvider(settings.EnvironmentSettings, settings.AvalaraSettings)

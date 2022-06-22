@@ -206,6 +206,7 @@ import {
 } from '@fortawesome/free-brands-svg-icons'
 import { faCreditCard } from '@fortawesome/free-solid-svg-icons'
 import { ProductPriceDisplayComponent } from './components/products/product-price-display/product-price-display.component'
+import { LanguageSelectorService } from 'src/app/services/language-selector/language-selector.service'
 
 export function HttpLoaderFactory(
   http: HttpClient,
@@ -415,7 +416,8 @@ export class AppModule {
     private injector: Injector,
     @Inject(PLATFORM_ID) private platformId: any,
     public translate: TranslateService,
-    private appConfig: AppConfig
+    private appConfig: AppConfig,
+    private languageService: LanguageSelectorService
   ) {
     HeadstartConfiguration.Set({
       baseApiUrl: this.appConfig.middlewareUrl,
@@ -433,8 +435,8 @@ export class AppModule {
         prefix: `${this.appConfig.appID}buyer`.toLowerCase(),
       },
     })
-    translate.setDefaultLang('en')
-    translate.use('en')
+    
+    this.configureTranslationService()
 
     library.add(
       faCcDiscover,
@@ -537,6 +539,23 @@ export class AppModule {
     this.buildWebComponent(ConfirmModal, 'confirm-modal')
     this.buildWebComponent(OCMLocationListItem, 'ocm-location-list-item')
     this.buildWebComponent(OCMLocationManagement, 'ocm-location-management')
+  }
+
+  configureTranslationService(): void {
+    if (this.appConfig.supportedLanguages && this.appConfig.supportedLanguages.length === 0){
+      throw new Error('supportedLanguages not defined in appConfig.')
+    }
+    this.translate.addLangs(this.appConfig.supportedLanguages)
+    const languages = this.translate.getLangs()
+
+    if (!this.appConfig.defaultLanguage) {
+      throw new Error('defaultLanguage not defined in appConfig.')
+    }
+    if (languages.includes(this.appConfig.defaultLanguage)) {
+      this.translate.setDefaultLang(this.appConfig.defaultLanguage)
+    }
+
+    this.languageService.SetTranslateLanguage()
   }
 
   buildWebComponent(angularComponent: any, htmlTagName: string): void {

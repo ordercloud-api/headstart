@@ -23,6 +23,8 @@ import { AppConfig } from 'src/app/models/environment.types'
 import { ProductFilters } from 'src/app/models/filter-config.types'
 import { RouteConfig } from 'src/app/models/shared.types'
 import { SitecoreCDPTrackingService } from 'src/app/services/sitecore-cdp/sitecore-cdp-tracking.service'
+import { LanguageSelectorService } from 'src/app/services/language-selector/language-selector.service'
+import { TranslateService } from '@ngx-translate/core'
 
 @Component({
   templateUrl: './app-header.component.html',
@@ -84,11 +86,15 @@ export class OCMAppHeader implements OnInit {
   flagIcon: string
   hasSuppliers = false;
   currentSupplierList: ListPage<Supplier>
+  selectedLanguage: string
+  languages: string[]
 
   constructor(
     public context: ShopperContextService,
     public appConfig: AppConfig,
-    private cdp: SitecoreCDPTrackingService
+    private cdp: SitecoreCDPTrackingService,
+    private translate: TranslateService,
+    private languageService: LanguageSelectorService
   ) {
     this.profileRoutes = context.router.getProfileRoutes()
     this.orderRoutes = context.router.getOrderRoutes()
@@ -114,6 +120,11 @@ export class OCMAppHeader implements OnInit {
     this.flagIcon = this.getCurrencyFlag()
     this.currentSupplierList = await this.getCurrentSupplierList()
     this.hasSuppliers = this.currentSupplierList.Meta.TotalCount > 0
+    this.languages = this.translate.getLangs()
+    this.selectedLanguage = this.translate.currentLang
+    this.translate.onLangChange.subscribe((event) => {
+      this.selectedLanguage = event.lang;
+    })
   }
 
   getCurrencyFlag(): string {
@@ -248,5 +259,9 @@ export class OCMAppHeader implements OnInit {
 
   toggleCollapsed(): void {
     this.isCollapsed = !this.isCollapsed
+  }
+
+  async setLanguage(language: string) {
+    await this.languageService.SetLanguage(language)
   }
 }

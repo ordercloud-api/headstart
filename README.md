@@ -134,7 +134,7 @@ Detailed Steps:
 
 ### Sitecore Send
 
-Sitecore Send is a platform for sending automated email campaigns. It is integrated into the storefront in order to capture events like view product, add to cart and purchase. This data can provide intelligence for abandonded cart emails, user segmentation for personalized marketing and user-history-based product recomendations.
+Sitecore Send is a platform for sending automated email campaigns. It is integrated into the storefront in order to capture events like view product, add to cart and purchase. This data can provide intelligence for abandoned cart emails, user segmentation for personalized marketing and user-history-based product recommendations.
 
 Usage is optional and controlled with the buyer setting `useSitecoreSend`. To connect Sitecore Send [get a website ID](https://doc.sitecore.com/send/en/users/sitecore-send/enable-website-tracking.html) and add it to buyer settings.
 
@@ -299,7 +299,7 @@ You can run the project using Docker, sample docker-compose.yml file includes Bu
     - Note the `Middleware` container may take longer to start as it depends on the Cosmos emulator being healthy.
     - If you run into issues with @ordercloud/headstart-sdk not being found try running `docker-compose build --no-cache`
 5. Follow the steps to seed the initial data values listed in the [Seeding OrderCloud Data](https://github.com/ordercloud-api/headstart#seeding-ordercloud-data) section above.
-    - If you are building against a marketplace that has already been seeded you can instead open postman and call the endpoint PUT <http://headstart.api.localhost/updatetranslations> with an empty body to update your local azurite instance with the default english translation files.
+    - If you are building against a marketplace that has already been seeded you can instead open postman and call the endpoint PUT <http://headstart.api.localhost/devops/translations> to update your local azurite instance with the latest translation files.
 6. Open `.env` file and populate the rest of the variables in the `REQUIRED ENVIRONMENT VARIABLES` section:
     - The following values comes from from the `/seed` command response executed in previous step
         - SELLER_CLIENT_ID

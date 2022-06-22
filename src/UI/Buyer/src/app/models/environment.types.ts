@@ -54,6 +54,8 @@ export interface EnvironmentConfig {
   marketplaceID: string
   marketplaceName?: string
   translateBlobUrl: string
+  supportedLanguages: string[]
+  defaultLanguage: string
   orderCloudApiUrl: string
   theme?: Theme
   appInsightsInstrumentationKey?: string
@@ -109,8 +111,10 @@ export class AppConfig {
    * link to where the translation files for the application are hosted
    */
   translateBlobUrl: string
-  orderCloudApiUrl: string
+  supportedLanguages: string[]
+  defaultLanguage: string
 
+  orderCloudApiUrl: string
   middlewareUrl: string
   creditCardIframeUrl: string
 

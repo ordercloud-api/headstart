@@ -13,6 +13,8 @@ export const ocAppConfig: AppConfig = {
   marketplaceID: environment.marketplaceID,
   marketplaceName: environment.marketplaceName,
   translateBlobUrl: environment.translateBlobUrl,
+  supportedLanguages: environment.supportedLanguages,
+  defaultLanguage: environment.defaultLanguage,
   orderCloudApiUrl: environment.orderCloudApiUrl,
   theme: environment.theme,
   anonymousShoppingEnabled: environment.anonymousShoppingEnabled,

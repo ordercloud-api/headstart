@@ -88,7 +88,33 @@
       </li>
     </ul>
   </div>
-
+  <div class="nav-item dropdown cursor-pointer" ngbDropdown>
+    <div>
+      <a
+        class="nav-link navbarDropdown"
+        data-toggle="dropdown"
+        ngbDropdownToggle
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        <span>{{selectedLanguage}}</span>
+      </a>
+    </div>
+    <div
+      class="dropdown-menu"
+      aria-labelledby="language-dropdown"
+      ngbDropdownMenu
+    >
+      <a
+        *ngFor="let lang of languages"
+        class="dropdown-item"
+        (click)="setLanguage(lang)"
+        translate
+      >
+        {{lang}}
+      </a>
+    </div>
+  </div>
   <div class="nav-item dropdown cursor-pointer current-user" ngbDropdown>
     <div>
       <a

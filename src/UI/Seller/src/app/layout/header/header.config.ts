@@ -259,13 +259,13 @@ const SellerNavGrouping: HSRoute = {
 
 const AllStorefronts = {
   rolesWithAccess: [HSRoles.HSStorefrontAdmin],
-  title: 'All Storefronts',
+  title: 'ADMIN.NAV.ALL_STOREFRONTS',
   route: '/storefronts',
 }
 
 const StorefrontNavGrouping = {
   rolesWithAccess: [HSRoles.HSStorefrontAdmin],
-  title: 'Storefronts',
+  title: 'ADMIN.NAV.STOREFRONTS',
   route: '/storefronts',
   subRoutes: [AllStorefronts],
 }
@@ -291,7 +291,7 @@ const MySupplerUsers = {
 const Support = {
   rolesWithAccess: [],
   orderCloudUserTypesWithAccess: [SUPPLIER, SELLER],
-  title: 'Submit a Case',
+  title: 'ADMIN.NAV.SUBMIT_CASE',
   route: '/support',
 }
 

@@ -32,19 +32,6 @@ namespace Headstart.API.Controllers
             return await command.Seed(seed);
         }
 
-        /// <summary>
-        /// Call this endpoint to update translation files from source
-        /// useful if pulling in updates from repo and only want to update translation files
-        /// assumes storage account connection string is in settings.
-        /// </summary>
-        [HttpPut, Route("updatetranslations")]
-        public async Task UpdateTranslations()
-        {
-            await command.UpdateTranslations(
-                settings.StorageAccountSettings.ConnectionString,
-                settings.StorageAccountSettings.BlobContainerNameTranslations);
-        }
-
         [HttpPost, Route("post-staging-restore"), OrderCloudWebhookAuth]
         public async Task PostStagingRestore()
         {

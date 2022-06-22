@@ -44,6 +44,7 @@ import { AutoAppendTokenInterceptor } from './auth/interceptors/auto-append-toke
 import { RefreshTokenInterceptor } from './auth/interceptors/refresh-token/refresh-token.interceptor'
 import { AppRoutingModule } from './app-routing.module'
 import { RouterModule } from '@angular/router'
+import { LanguageSelectorService } from '@app-seller/shared'
 
 export function HttpLoaderFactory(
   http: HttpClient,
@@ -113,10 +114,9 @@ export enum OrdercloudEnv {
 export class AppModule {
   constructor(
     @Inject(applicationConfiguration) private appConfig: AppConfig,
-    public translate: TranslateService
+    public translate: TranslateService,
+    private languageService: LanguageSelectorService
   ) {
-    translate.setDefaultLang('en')
-    translate.use('en')
     HeadstartConfiguration.Set({
       baseApiUrl: this.appConfig.middlewareUrl,
       orderCloudApiUrl: this.appConfig.orderCloudApiUrl,
@@ -133,5 +133,24 @@ export class AppModule {
         prefix: this.appConfig.appname.replace(/ /g, '_').toLowerCase(),
       },
     })
+
+    this.configureTranslationService()
+  }
+
+  configureTranslationService(): void {
+    if (this.appConfig.supportedLanguages && this.appConfig.supportedLanguages.length === 0){
+      throw new Error('supportedLanguages not defined in appConfig.')
+    }
+    this.translate.addLangs(this.appConfig.supportedLanguages)
+    const languages = this.translate.getLangs()
+
+    if (!this.appConfig.defaultLanguage) {
+      throw new Error('defaultLanguage not defined in appConfig.')
+    }
+    if (languages.includes(this.appConfig.defaultLanguage)) {
+      this.translate.setDefaultLang(this.appConfig.defaultLanguage)
+    }
+
+    this.languageService.SetTranslateLanguage()
   }
 }
