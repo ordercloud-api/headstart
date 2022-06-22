@@ -26,6 +26,7 @@ export * from './HSLineItemOrder';
 export * from './HSLocationUserGroup';
 export * from './HSLocationUserGroupXp';
 export * from './HSMeProduct';
+export * from './HSMeUser';
 export * from './HSOrder';
 export * from './HSOrderLineItemData';
 export * from './HSPayment';
