@@ -15,14 +15,14 @@
       <b class="float-left" translate>ORDERS.SUMMARY.SHIPPING</b>
       <span *ngIf="!_orderSummaryMeta.ShippingAndTaxOverrideText" class="font-italic">{{ _orderSummaryMeta.ShippingCost
         | currency: _orderCurrency }}</span>
-      <span *ngIf="_orderSummaryMeta.ShippingAndTaxOverrideText" class="font-italic">{{
+      <span *ngIf="_orderSummaryMeta.ShippingAndTaxOverrideText" class="font-italic" translate>{{
         _orderSummaryMeta.ShippingAndTaxOverrideText }}</span>
     </div>
     <div class="text-right">
       <b class="float-left" translate>ORDERS.SUMMARY.TAX</b>
       <span *ngIf="!_orderSummaryMeta.ShippingAndTaxOverrideText" class="font-italic">{{ _orderSummaryMeta.TaxCost |
         currency: _orderCurrency }}</span>
-      <span *ngIf="_orderSummaryMeta.ShippingAndTaxOverrideText" class="font-italic">{{
+      <span *ngIf="_orderSummaryMeta.ShippingAndTaxOverrideText" class="font-italic" translate>{{
         _orderSummaryMeta.ShippingAndTaxOverrideText }}</span>
     </div>
     <div *ngIf="_orderSummaryMeta.DiscountTotal > 0" class="text-right text-danger">

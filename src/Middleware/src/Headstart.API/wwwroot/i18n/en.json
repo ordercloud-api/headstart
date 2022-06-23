@@ -648,6 +648,7 @@
       "VIEW_CART": "View Cart"
     },
     "LINEITEM_TABLE": {
+      "ADD_COMMENTS": "Add comments to this item",
       "PRICE": "Price",
       "QTY": "Qty",
       "QTY_CANCELED": "Canceled",
@@ -657,6 +658,7 @@
       "RETURNED": "Returned:",
       "RMA_COMMENT": "Comment",
       "SELLER_COMMENT": "Seller Comment",
+      "SHIP_FROM": "Ship From",
       "SHIPPING_REFUND": "Shipping Refund",
       "TOTAL": "Total",
       "TOTAL_REFUND": "Total Refund",
@@ -679,6 +681,7 @@
       "CONFIRM": "Order Review",
       "CREATE_ACCOUNT": "Create Account",
       "GUEST_CHECKOUT": "Checkout as Guest",
+      "LOADING_SHIPPING": "Loading Shipping Selections...",
       "ORDERREFERENCE": "Order Reference Number",
       "PAYMENT": "Payment & Promotions",
       "SHIPPING_ADDRESS": "Shipping Address",
@@ -696,15 +699,21 @@
     },
     "CHECKOUT_CONFIRM": {
       "BILL_TO": "Bill to",
+      "ORDER_COMMENTS": "Order Comments (Optional) - visible to all suppliers. If your request is for a specific supplier please indicate which one.",
       "SHIP_TO": "Ship to",
       "SUBMIT_ORDER": "Submit Order"
     },
     "CHECKOUT_PAYMENT": {
+      "ACCEPT": "Accept",
       "APPLY": "Apply",
+      "CONTINUE": "Continue",
       "DISCOUNTS_APPLIED": "Discounts Applied",
       "PAYMENT_METHOD": "Payment Method",
+      "PROMO_CODE": "Promo Code",
       "PROMOTIONS": "Promotions",
+      "PURCHASE_ORDER_SUMMARY": "The price reflected on this order includes an estimate for sales tax and shipping costs. Actual final cost may vary slightly as a result. By submitting this order, you accept these terms.",
       "REMOVE": "Remove",
+      "SAVE_CONTINUE": "Save and Continue",
       "USE_A_PROMO": "Use a Promo Code"
     },
     "CHECKOUT_SHIPPING": {
@@ -721,6 +730,21 @@
     }
   },
   "COMMON": {
+    "ADDRESS": {
+      "ADDRESS1": "Address 1",
+      "ADDRESS2": "Address 2",
+      "CANCEL": "Cancel",
+      "CITY": "City",
+      "COUNTRY": "Country",
+      "FIRST_NAME": "First Name",
+      "ID": "ID",
+      "LAST_NAME": "Last Name",
+      "PHONE": "Phone Number",
+      "SAVE": "Save Address",
+      "SAVE_ADDRESS": "Save Address for Future Use",
+      "STATE": "State",
+      "ZIP": "Zip"
+    },
     "CANCEL": "Cancel",
     "CONFIRM_PASSWORD": "Confirm Password",
     "DISCARD_CHANGES": "Discard Changes",
@@ -924,8 +948,10 @@
     },
     "STATUS_FILTER": "Status",
     "SUMMARY": {
+      "CALCULATED_AT_CHECKOUT": "Calculated during checkout",
       "DISCOUNT_TOTAL": "Discount Total",
       "ITEM_COUNT": "Item(s) in Your Cart",
+      "PENDING_SELECTIONS": "Pending selections",
       "POTAXANDSHIPPINGOVERRIDE": "Not calculated",
       "SHIPPING": "Shipping",
       "SUBTOTAL": "Subtotal",
@@ -977,6 +1003,9 @@
       "ADD": "Add",
       "QUANTITY": "Quantity",
       "TO_CART": "to Cart"
+    },
+    "CAROUSEL": {
+      "RELATED_PRODUCTS":  "Related Products"
     },
     "CONTACT_SUPPLIER": {
       "CANCEL": "Cancel",

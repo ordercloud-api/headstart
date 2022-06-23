@@ -648,6 +648,7 @@
       "VIEW_CART": "Voir le panier"
     },
     "LINEITEM_TABLE": {
+      "ADD_COMMENTS": "Ajouter des commentaires à cet élément",
       "PRICE": "Prix",
       "QTY": "Qté",
       "QTY_CANCELED": "Annulé",
@@ -657,6 +658,7 @@
       "RETURNED": "Retourné:",
       "RMA_COMMENT": "Commentaire",
       "SELLER_COMMENT": "Commentaire du vendeur",
+      "SHIP_FROM": "Expédier de",
       "SHIPPING_REFUND": "Remboursement de l’expédition",
       "TOTAL": "Total",
       "TOTAL_REFUND": "Remboursement total",
@@ -679,6 +681,7 @@
       "CONFIRM": "Examen de la commande",
       "CREATE_ACCOUNT": "Créer un compte",
       "GUEST_CHECKOUT": "Passer à la caisse en tant qu’invité",
+      "LOADING_SHIPPING": "Chargement des sélections d'expédition...",
       "ORDERREFERENCE": "Numéro de référence de la commande",
       "PAYMENT": "Paiement & Promotions",
       "SHIPPING_ADDRESS": "Adresse de livraison",
@@ -696,15 +699,21 @@
     },
     "CHECKOUT_CONFIRM": {
       "BILL_TO": "Facture à",
+      "ORDER_COMMENTS": "Commentaires de commande (facultatif) - visible par tous les fournisseurs. Si votre demande concerne un fournisseur spécifique, veuillez indiquer lequel.",
       "SHIP_TO": "Expédier à",
       "SUBMIT_ORDER": "Soumettre la commande"
     },
     "CHECKOUT_PAYMENT": {
+      "ACCEPT": "Accepter",
       "APPLY": "Appliquer",
+      "CONTINUE": "Continuer",
       "DISCOUNTS_APPLIED": "Réductions appliquées",
       "PAYMENT_METHOD": "Mode de paiement",
+      "PROMO_CODE": "Code promo",
       "PROMOTIONS": "Promotions",
+      "PURCHASE_ORDER_SUMMARY": "Le prix indiqué sur cette commande comprend une estimation de la taxe de vente et des frais d'expédition. Le coût final réel peut varier légèrement en conséquence. En soumettant cette commande, vous acceptez ces conditions.",
       "REMOVE": "Enlever",
+      "SAVE_CONTINUE": "Enregistrer et continuer",
       "USE_A_PROMO": "Utiliser un code promotionnel"
     },
     "CHECKOUT_SHIPPING": {
@@ -721,6 +730,21 @@
     }
   },
   "COMMON": {
+    "ADDRESS": {
+      "ADDRESS1": "Adresse 1",
+      "ADDRESS2": "Adresse 2",
+      "CANCEL": "Annuler",
+      "CITY": "Ville",
+      "COUNTRY": "Pays",
+      "FIRST_NAME": "Prénom",
+      "ID": "ID",
+      "LAST_NAME": "Nom",
+      "PHONE": "Numéro de téléphone",
+      "SAVE": "Enregistrer l’adresse",
+      "SAVE_ADDRESS": "Enregistrer l’adresse pour une utilisation ultérieure",
+      "STATE": "État",
+      "ZIP": "Fermeture éclair"
+    },
     "CANCEL": "Annuler",
     "CONFIRM_PASSWORD": "Confirmer le mot de passe",
     "DISCARD_CHANGES": "Ignorer les modifications",
@@ -924,8 +948,10 @@
     },
     "STATUS_FILTER": "Statut",
     "SUMMARY": {
+      "CALCULATED_AT_CHECKOUT": "Calculé lors du paiement",
       "DISCOUNT_TOTAL": "Total de la remise",
       "ITEM_COUNT": "Article(s) dans votre panier",
+      "PENDING_SELECTIONS": "Sélections en attente",
       "POTAXANDSHIPPINGOVERRIDE": "Non calculé",
       "SHIPPING": "Livraison",
       "SUBTOTAL": "Sous-total",
@@ -977,6 +1003,9 @@
       "ADD": "Ajouter",
       "QUANTITY": "Quantité",
       "TO_CART": "au panier"
+    },
+    "CAROUSEL": {
+      "RELATED_PRODUCTS": "Produits connexes"
     },
     "CONTACT_SUPPLIER": {
       "CANCEL": "Annuler",

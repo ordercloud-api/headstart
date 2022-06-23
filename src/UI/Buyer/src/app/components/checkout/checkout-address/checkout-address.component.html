@@ -6,7 +6,7 @@
     type="ball-spin-clockwise-fade"
     [fullScreen]="false"
   >
-    <small>Loading Shipping Selections...</small>
+    <small translate>CHECKOUT.CHECKOUT.LOADING_SHIPPING</small>
   </ngx-spinner>
 
   <div class="row">
@@ -18,7 +18,7 @@
         <input
           type="text"
           class="form-control"
-          placeholder="Promo Code"
+          placeholder="{{ 'CHECKOUT.CHECKOUT_PAYMENT.PROMO_CODE' | translate }}"
           [value]="promoCode"
           (input)="updatePromoCodeValue($event)"
           id="PromoCode"
@@ -123,7 +123,7 @@
       class="btn btn-outline-primary btn-sm mr-2 mt-3"
       translate
     >
-      Add New Address
+      CHECKOUT.CHECKOUT_ADDRESS.NEW_ADDRESS
     </button>
     <button
       type="submit"
@@ -142,7 +142,7 @@
     [suggestedAddresses]="suggestedAddresses"
     [showOptionToSave]="true"
     [homeCountry]="homeCountry"
-    [btnText]="'Save and Continue'"
+    [btnText]="'CHECKOUT.CHECKOUT_ADDRESS.SAVE_CONTINUE' | translate"
     [addressError]="_addressError"
     (formDismissed)="handleFormDismissed()"
     (formChanged)="addressFormChanged($event.detail)"

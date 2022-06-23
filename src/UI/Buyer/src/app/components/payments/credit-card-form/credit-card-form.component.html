@@ -45,7 +45,7 @@
   <div *ngIf="_showCVV" class="form-group d-flex justify-content-between mb-0">
     <div class="form-group card-name flex-fill">
       <label class="sr-only" for="CVV" translate>PAYMENTS.CC_FORM.CVV</label>
-      <input type="text" formControlName="cvv" class="form-control w-25" id="CVV" type="password" placeholder="CVV"
+      <input type="text" formControlName="cvv" class="form-control w-25" id="CVV" type="password" placeholder="{{'PAYMENTS.CC_FORM.CVV' | translate}}"
         autocomplete="off" showErrors />
     </div>
   </div>
@@ -106,7 +106,7 @@
   </div>
   <span placement="right" [openDelay]="200">
     <button type="submit" class="btn btn-sm btn-secondary mt-2" [disabled]="!cardForm.valid">
-      {{ submitText }}
+      {{ submitText | translate }}
     </button>
   </span>
   <button (click)="dismissForm()" *ngIf="!_showCVV" class="btn btn-link text-danger mt-2" type="button" translate>
