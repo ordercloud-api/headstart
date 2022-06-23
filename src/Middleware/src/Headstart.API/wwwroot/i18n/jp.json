@@ -642,6 +642,7 @@
       "VIEW_CART": "カートを見る"
     },
     "LINEITEM_TABLE": {
+      "ADD_COMMENTS": "このアイテムにコメントを追加する",
       "PRICE": "価格",
       "QTY": "数量",
       "QTY_CANCELED": "キャンセル済み",
@@ -650,6 +651,7 @@
       "REMOVE_ITEM": "商品を削除",
       "RETURNED": "返品済み:",
       "RMA_COMMENT": "コメント",
+      "SHIP_FROM": "発送元",
       "SELLER_COMMENT": "販売者コメント",
       "SHIPPING_REFUND": "送料の返金",
       "TOTAL": "合計",
@@ -673,6 +675,7 @@
       "CONFIRM": "注文レビュー",
       "CREATE_ACCOUNT": "アカウントを作成",
       "GUEST_CHECKOUT": "ゲストとしてチェックアウト",
+      "LOADING_SHIPPING": "配送セレクションを読み込んでいます...",
       "ORDERREFERENCE": "注文番号",
       "PAYMENT": "支払い & プロモーション",
       "SHIPPING_ADDRESS": "配送先住所",
@@ -690,15 +693,21 @@
     },
     "CHECKOUT_CONFIRM": {
       "BILL_TO": "請求書送付先",
+      "ORDER_COMMENTS": "コメントの注文（オプション）-すべてのサプライヤーに表示されます。特定のサプライヤーをリクエストする場合は、どれを指定してください。",
       "SHIP_TO": "配送先",
       "SUBMIT_ORDER": "注文を送信"
     },
     "CHECKOUT_PAYMENT": {
+      "ACCEPT": "承認",
       "APPLY": "適用",
+      "CONTINUE": "継続する",
       "DISCOUNTS_APPLIED": "適用される割引",
       "PAYMENT_METHOD": "支払方法",
+      "PROMO_CODE": "プロモーションコード",
       "PROMOTIONS": "プロモーション",
+      "PURCHASE_ORDER_SUMMARY": "この注文に反映される価格には、消費税と送料の見積もりが含まれています。その結果、実際の最終的な費用は若干異なる場合があります。この注文を送信すると、これらの条件に同意したことになります。",
       "REMOVE": "削除",
+      "SAVE_CONTINUE": "保存して続行",
       "USE_A_PROMO": "プロモーション コードを使用"
     },
     "CHECKOUT_SHIPPING": {
@@ -715,6 +724,21 @@
     }
   },
   "COMMON": {
+    "ADDRESS": {
+      "ADDRESS1": "住所 1",
+      "ADDRESS2": "住所 2",
+      "CANCEL": "キャンセル",
+      "CITY": "市区町村",
+      "COUNTRY": "国",
+      "FIRST_NAME": "名",
+      "ID": "ID",
+      "LAST_NAME": "姓",
+      "PHONE": "電話番号",
+      "SAVE": "住所を保存",
+      "SAVE_ADDRESS": "次回のために住所を保存",
+      "STATE": "都道府県",
+      "ZIP": "郵便番号"
+    },
     "CANCEL": "キャンセル",
     "CONFIRM_PASSWORD": "パスワードを確定",
     "DISCARD_CHANGES": "変更を破棄",
@@ -918,8 +942,10 @@
     },
     "STATUS_FILTER": "ステータス",
     "SUMMARY": {
+      "CALCULATED_AT_CHECKOUT": "チェックアウト時に計算",
       "DISCOUNT_TOTAL": "割引合計",
       "ITEM_COUNT": "カート内の商品",
+      "PENDING_SELECTIONS": "保留中の選択",
       "POTAXANDSHIPPINGOVERRIDE": "未計算",
       "SHIPPING": "発送",
       "SUBTOTAL": "小計",
@@ -971,6 +997,9 @@
       "ADD": "追加",
       "QUANTITY": "数量",
       "TO_CART": "カートへ"
+    },
+    "CAROUSEL": {
+      "RELATED_PRODUCTS": "関連製品"
     },
     "CONTACT_SUPPLIER": {
       "CANCEL": "キャンセル",

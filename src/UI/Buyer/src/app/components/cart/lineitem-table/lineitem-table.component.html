@@ -7,8 +7,8 @@
       <div class="row" *ngIf="suppliers?.length > 0 && suppliers[i]?.supplier">
         <div class="col-md">
           <h2 class="card-title h6 mb-0">
-            <span class="text-medium font-weight-light">Ship From: </span
-            >{{ suppliers[i].supplier.Name }}
+            <span class="text-medium font-weight-light">{{'CART.LINEITEM_TABLE.SHIP_FROM' | translate}}:</span
+            > {{ suppliers[i].supplier.Name }}
           </h2>
         </div>
         <div
@@ -292,7 +292,7 @@
               "
               (click)="showComments[li.ID] = true"
             >
-              <small>Add comments to this item</small>
+              <small translate>CART.LINEITEM_TABLE.ADD_COMMENTS</small>
             </a>
             <textarea
               *ngIf="showComments[li.ID] || li?.xp?.SupplierComments"
