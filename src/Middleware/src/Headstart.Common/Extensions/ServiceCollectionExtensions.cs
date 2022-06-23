@@ -89,5 +89,12 @@ namespace Headstart.Common.Extensions
 
             return services;
         }
+
+        public static IServiceCollection AddDefaultOMSProvider(this IServiceCollection services)
+        {
+            services.TryAddSingleton<IOMSService, DefaultOMSService>();
+
+            return services;
+        }
     }
 }
