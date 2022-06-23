@@ -213,6 +213,7 @@ namespace Headstart.API
 
                 // OMS Providers
                 .AddZohoOMSProvider(settings.EnvironmentSettings, settings.ZohoSettings)
+                .AddDefaultOMSProvider()
 
                 // Documentation
                 .AddSwaggerGen(c =>
