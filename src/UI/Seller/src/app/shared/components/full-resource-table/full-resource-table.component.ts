@@ -13,8 +13,16 @@ import { SortDirection } from './sort-direction.enum'
 import { Router, ActivatedRoute } from '@angular/router'
 import { ImpersonationService } from '@app-seller/shared/services/impersonation/impersonation.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
-import { AppConfig, ResourceRow } from '@app-seller/shared'
-import { getProductSmallImageUrl, getSupplierLogoSmallUrl } from '@app-seller/shared/services/assets/asset.helper'
+import {
+  AppConfig,
+  ResourceColumnConfiguration,
+  ResourceRow,
+} from '@app-seller/shared'
+import {
+  getProductSmallImageUrl,
+  getSupplierLogoSmallUrl,
+} from '@app-seller/shared/services/assets/asset.helper'
+import { get } from 'lodash'
 
 @Component({
   selector: 'full-resource-table-component',
@@ -66,9 +74,9 @@ export class FullResourceTableComponent {
   }
 
   getHeaders(): object[] {
-    return FULL_TABLE_RESOURCE_DICTIONARY[
-      this.resourceType
-    ].fields.filter((r) => this.isValidForDisplay(r))
+    return FULL_TABLE_RESOURCE_DICTIONARY[this.resourceType].fields.filter(
+      (r) => this.isValidForDisplay(r)
+    )
   }
 
   isValidForDisplay(field: any): boolean {
@@ -94,13 +102,10 @@ export class FullResourceTableComponent {
     const fields = resourceConfiguration.fields.filter((r) =>
       this.isValidForDisplay(r)
     )
-    const resourceCells = fields.map((fieldConfiguration) => {
+    const resourceCells = fields.map((columnConfiguration) => {
       return {
-        type: fieldConfiguration.type,
-        value: this.getValueOnExistingResource(
-          resource,
-          fieldConfiguration.path
-        ),
+        type: columnConfiguration.type,
+        value: this.getValueOnExistingResource(resource, columnConfiguration),
       }
     })
     return {
@@ -129,9 +134,9 @@ export class FullResourceTableComponent {
   }
 
   getImage(resource: any): string {
-    if(this.resourceType === 'products') {
+    if (this.resourceType === 'products') {
       return getProductSmallImageUrl(resource)
-    } else if(this.resourceType === 'suppliers') {
+    } else if (this.resourceType === 'suppliers') {
       return getSupplierLogoSmallUrl(resource)
     } else return ''
   }
@@ -140,14 +145,15 @@ export class FullResourceTableComponent {
     this.resourceSelected.emit(value)
   }
 
-  getValueOnExistingResource(value: any, path: string) {
-    const piecesOfPath = path.split('.')
-    if (path) {
-      let currentObject = value
-      piecesOfPath.forEach((piece) => {
-        currentObject = currentObject && currentObject[piece]
-      })
-      return currentObject
+  getValueOnExistingResource(
+    objectValue: unknown,
+    configuration: ResourceColumnConfiguration
+  ): string {
+    if (configuration.path) {
+      const value = get(objectValue, configuration.path) as string
+      return configuration.mappingFunction
+        ? configuration.mappingFunction(value)
+        : value
     } else {
       return ''
     }

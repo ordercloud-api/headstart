@@ -15,7 +15,9 @@
     <div class="col-md-8">
       <div class="card p-4 mt-3 bg-white">
         <div class="d-flex justify-content-between align-items-center">
-          <h6 class="font-weight-medium" translate>Customization</h6>
+          <h6 class="font-weight-medium" translate>
+            ADMIN.PRODUCT_EDIT.VARIANTS_CUSTOMIZATION
+          </h6>
           <div class="d-flex align-items-center">
             <small class="mr-2 font-weight-bolder">{{
               addVariableTextSpecs ? 'On' : 'Off'
@@ -37,8 +39,8 @@
         <p class="font-italic small mt-3 mb-0" translate>
           {{
             readonly
-              ? 'Open Text Specifications as defined by the supplier.'
-              : 'Do you need to collect customized input from the buyer to fulfill this product?  Shirt text? Sign verbiage? Configure the options here.'
+              ? 'ADMIN.PRODUCT_EDIT.VARIANTS_CUSTOMIZATION_ADMIN_MESSAGE'
+              : 'ADMIN.PRODUCT_EDIT.VARIANTS_CUSTOMIZATION_SUPPLIER_MESSAGE'
           }}
         </p>
         <table *ngIf="addVariableTextSpecs" class="table table-borderless">
@@ -315,7 +317,11 @@
                             "
                           />
                           <label
-                            class="custom-control-label small custom-label-height"
+                            class="
+                              custom-control-label
+                              small
+                              custom-label-height
+                            "
                             for="DefaultSpecOption_{{ opt.ID }}"
                             >Default
                           </label>
@@ -514,7 +520,8 @@
                     <div class="my-2">
                       <fa-icon
                         *ngIf="
-                          superProductEditable?.Product?.xp?.Images?.length && !readonly
+                          superProductEditable?.Product?.xp?.Images?.length &&
+                          !readonly
                         "
                         (click)="assignVariantImages = true"
                         [icon]="faPlusCircle"
@@ -532,7 +539,7 @@
                     <div class="form-row">
                       <div class="form-group col-3">
                         <label for="shipWidth" translate
-                          >ADMIN.PRODUCT_EDIT.SHIP_WIDTH</label
+                          >ADMIN.PRODUCT_EDIT.SHIPPING.WIDTH</label
                         >
                         <input
                           class="form-control input-sm"
@@ -547,13 +554,13 @@
                             )
                           "
                           placeholder="{{
-                            'ADMIN.PRODUCT_EDIT.WIDTH' | translate
+                            'ADMIN.PRODUCT_EDIT.SHIPPING.WIDTH' | translate
                           }}"
                         />
                       </div>
                       <div class="form-group col-3">
                         <label for="shipHeight" translate
-                          >ADMIN.PRODUCT_EDIT.SHIP_HEIGHT</label
+                          >ADMIN.PRODUCT_EDIT.SHIPPING.HEIGHT</label
                         >
                         <input
                           class="form-control input-sm"
@@ -568,13 +575,13 @@
                             )
                           "
                           placeholder="{{
-                            'ADMIN.PRODUCT_EDIT.HEIGHT' | translate
+                            'ADMIN.PRODUCT_EDIT.SHIPPING.HEIGHT' | translate
                           }}"
                         />
                       </div>
                       <div class="form-group col-3">
                         <label for="shipLength" translate
-                          >ADMIN.PRODUCT_EDIT.SHIP_LENGTH</label
+                          >ADMIN.PRODUCT_EDIT.SHIPPING.LENGTH</label
                         >
                         <input
                           class="form-control input-sm"
@@ -589,13 +596,13 @@
                             )
                           "
                           placeholder="{{
-                            'ADMIN.PRODUCT_EDIT.LENGTH' | translate
+                            'ADMIN.PRODUCT_EDIT.SHIPPING.LENGTH' | translate
                           }}"
                         />
                       </div>
                       <div class="form-group col-3">
                         <label for="shipWeight" translate
-                          >ADMIN.PRODUCT_EDIT.SHIP_WEIGHT</label
+                          >ADMIN.PRODUCT_EDIT.SHIPPING.SHIP_WEIGHT</label
                         >
                         <input
                           class="form-control input-sm"
@@ -610,7 +617,7 @@
                             )
                           "
                           placeholder="{{
-                            'ADMIN.PRODUCT_EDIT.WEIGHT' | translate
+                            'ADMIN.PRODUCT_EDIT.SHIPPING.WEIGHT' | translate
                           }}"
                         />
                       </div>

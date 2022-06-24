@@ -3,13 +3,30 @@ export const SizerTiers = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 export const SizerTiersDescriptionMap = [
   {
     Tier: 'G',
-    Description:
-      'Always ships in a package by itself (provide typical package dimensions)',
+    Description: 'ADMIN.PRODUCT_EDIT.SHIPPING.SIZE_TIER_G_DESCRIPTION',
   },
-  { Tier: 'A', Description: '2 - 5 units will fit' },
-  { Tier: 'B', Description: '6 - 15 units will fit' },
-  { Tier: 'C', Description: '16 - 49 units will fit' },
-  { Tier: 'D', Description: '50 - 99 units will fit' },
-  { Tier: 'E', Description: '100 - 999 units will fit' },
-  { Tier: 'F', Description: '1000+ units will fit' },
+  {
+    Tier: 'A',
+    Description: 'ADMIN.PRODUCT_EDIT.SHIPPING.SIZE_TIER_A_DESCRIPTION',
+  },
+  {
+    Tier: 'B',
+    Description: 'ADMIN.PRODUCT_EDIT.SHIPPING.SIZE_TIER_B_DESCRIPTION',
+  },
+  {
+    Tier: 'C',
+    Description: 'ADMIN.PRODUCT_EDIT.SHIPPING.SIZE_TIER_C_DESCRIPTION',
+  },
+  {
+    Tier: 'D',
+    Description: 'ADMIN.PRODUCT_EDIT.SHIPPING.SIZE_TIER_D_DESCRIPTION',
+  },
+  {
+    Tier: 'E',
+    Description: 'ADMIN.PRODUCT_EDIT.SHIPPING.SIZE_TIER_E_DESCRIPTION',
+  },
+  {
+    Tier: 'F',
+    Description: 'ADMIN.PRODUCT_EDIT.SHIPPING.SIZE_TIER_F_DESCRIPTION',
+  },
 ]

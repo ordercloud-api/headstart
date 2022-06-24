@@ -107,7 +107,9 @@
           <div class="container-fluid">
             <div class="row pt-3">
               <div class="col-md-8 form-group">
-                <span class="required-field" > * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span>
+                <span class="required-field">
+                  * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span
+                >
                 <div class="card bg-white shadow-sm p-4 mt-3">
                   <!-- Product Name -->
                   <div
@@ -555,7 +557,7 @@
                       class="d-flex justify-content-between align-items-center"
                     >
                       <h6 class="font-weight-medium" translate>
-                        ADMIN.PRODUCT_EDIT.SHIPPING
+                        ADMIN.PRODUCT_EDIT.SHIPPING.SHIPPING
                       </h6>
                       <ng-container
                         *ngIf="
@@ -591,7 +593,7 @@
                         class="custom-control-label"
                         for="FreeShipping"
                         translate
-                        >ADMIN.PRODUCT_EDIT.FREE_SHIPPING</label
+                        >ADMIN.PRODUCT_EDIT.SHIPPING.FREE_SHIPPING</label
                       >
                     </div>
                     <div
@@ -599,7 +601,7 @@
                       class="mb-3"
                     >
                       <label for="FreeShippingMessage" translate
-                        >ADMIN.PRODUCT_EDIT.FREE_SHIPPING_MESSAGE
+                        >ADMIN.PRODUCT_EDIT.SHIPPING.FREE_SHIPPING_MESSAGE
                       </label>
                       <input
                         [attr.disabled]="readonly ? true : null"
@@ -622,7 +624,7 @@
                           [icon]="faExclamationCircle"
                         ></fa-icon>
                         <span translate>
-                          ADMIN.PRODUCT_EDIT.FREE_SHIPPING_MESSAGE_INFO</span
+                          ADMIN.PRODUCT_EDIT.SHIPPING.FREE_SHIPPING_MESSAGE_INFO</span
                         >
                       </small>
                     </div>
@@ -680,12 +682,13 @@
                             )
                           "
                           placeholder="{{
-                            'ADMIN.PRODUCT_EDIT.ENTER_SHIP_WEIGHT' | translate
+                            'ADMIN.PRODUCT_EDIT.SHIPPING.ENTER_SHIP_WEIGHT'
+                              | translate
                           }}"
                         />
                         <div class="input-group-append">
-                          <span class="input-group-text rounded-right"
-                            >pounds</span
+                          <span class="input-group-text rounded-right" translate
+                            >ADMIN.PRODUCT_EDIT.SHIPPING.POUNDS</span
                           >
                         </div>
                       </div>
@@ -694,7 +697,7 @@
                   <hr />
                   <div class="form-group">
                     <label class="d-block" for="SizeTier" translate
-                      >ADMIN.PRODUCT_EDIT.SIZE_TIER_LABEL
+                      >ADMIN.PRODUCT_EDIT.SHIPPING.SIZE_TIER_LABEL
                       <span class="required-field">*</span></label
                     >
                     <select
@@ -709,7 +712,7 @@
                       "
                     >
                       <option [ngValue]="null" disabled translate>
-                        ADMIN.PRODUCT_EDIT.SIZE_TIER_CHOOSE
+                        ADMIN.PRODUCT_EDIT.SHIPPING.SIZE_TIER_CHOOSE
                       </option>
                       <option
                         *ngFor="let tier of availableSizeTiers"
@@ -718,7 +721,7 @@
                         "
                         value="{{ tier.Tier }}"
                       >
-                        {{ tier.Description }}
+                        {{ tier.Description | translate }}
                       </option>
                     </select>
                     <small>
@@ -726,7 +729,9 @@
                         class="color-beige"
                         [icon]="faExclamationCircle"
                       ></fa-icon>
-                      <span translate> ADMIN.PRODUCT_EDIT.SIZE_TIER_INFO</span>
+                      <span translate>
+                        ADMIN.PRODUCT_EDIT.SHIPPING.SIZE_TIER_INFO</span
+                      >
                     </small>
                   </div>
                   <ng-container
@@ -734,7 +739,7 @@
                   >
                     <div class="form-group mb-0">
                       <label for="ShipHeight" translate
-                        >ADMIN.PRODUCT_EDIT.LENGTH_BY_WIDTH_BY_HEIGHT
+                        >ADMIN.PRODUCT_EDIT.SHIPPING.LENGTH_BY_WIDTH_BY_HEIGHT
                       </label>
                     </div>
                     <div class="form-row">
@@ -756,7 +761,8 @@
                               )
                             "
                             placeholder="{{
-                              'ADMIN.PRODUCT_EDIT.ENTER_SHIP_LENGTH' | translate
+                              'ADMIN.PRODUCT_EDIT.SHIPPING.ENTER_SHIP_LENGTH'
+                                | translate
                             }}"
                           />
                           <div class="input-group-append">
@@ -784,7 +790,8 @@
                               )
                             "
                             placeholder="{{
-                              'ADMIN.PRODUCT_EDIT.ENTER_SHIP_WIDTH' | translate
+                              'ADMIN.PRODUCT_EDIT.SHIPPING.ENTER_SHIP_WIDTH'
+                                | translate
                             }}"
                           />
                           <div class="input-group-append">
@@ -812,7 +819,8 @@
                               )
                             "
                             placeholder="{{
-                              'ADMIN.PRODUCT_EDIT.ENTER_SHIP_HEIGHT' | translate
+                              'ADMIN.PRODUCT_EDIT.SHIPPING.ENTER_SHIP_HEIGHT'
+                                | translate
                             }}"
                           />
                           <div class="input-group-append">
@@ -944,7 +952,9 @@
       <!-- /Buyer Visibility -->
       <!-- Related Products -->
       <li [ngbNavItem]="7" id="7">
-        <a class="text-muted" ngbNavLink translate>ADMIN.PRODUCT_EDIT.RELATED_PRODUCTS</a>
+        <a class="text-muted" ngbNavLink translate
+          >ADMIN.PRODUCT_EDIT.RELATED_PRODUCTS</a
+        >
         <ng-template ngbNavContent>
           <related-products-component
             *ngIf="_superHSProductStatic?.Product?.ID"
@@ -1013,6 +1023,7 @@
                     </p>
                   </div>
                   <div
+                    *ngIf="productForm.controls['Description'].value"
                     [innerHtml]="
                       productForm.controls['Description'].value | safeHTML
                     "
@@ -1456,7 +1467,7 @@
           "
           (click)="handleSave()"
         >
-          {{ getSaveBtnText() }}
+          {{ getSaveBtnText() | translate }}
         </button>
         <button
           class="btn btn-primary ml-3"
