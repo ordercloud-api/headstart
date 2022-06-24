@@ -141,25 +141,25 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   ngOnChanges(): void {
     this.productsCollapsed =
       this._promotionEditable?.xp?.AppliesTo !== HSPromoEligibility.SpecificSKUs
-    this.currentDateTime = moment().format('YYYY-MM-DD[T]hh:mm')
+    this.currentDateTime = moment().format('YYYY-MM-DD[T]HH:mm')
   }
 
   refreshPromoData(promo: Promotion<PromotionXp>): void {
     this.productsCollapsed =
       promo?.xp?.AppliesTo !== HSPromoEligibility.SpecificSKUs
-    const now = moment(Date.now()).format('YYYY-MM-DD[T]hh:mm')
+    const now = moment(Date.now()).format('YYYY-MM-DD[T]HH:mm')
     this.isExpired = promo.ExpirationDate
       ? Date.parse(promo.ExpirationDate) < Date.parse(now)
       : false
     this.hasNotBegun = Date.parse(promo.StartDate) > Date.parse(now)
     // Modify the datetime to work with the UI
     if (promo.StartDate)
-      promo.StartDate = moment(promo.StartDate).format('YYYY-MM-DD[T]hh:mm')
+      promo.StartDate = moment(promo.StartDate).format('YYYY-MM-DD[T]HH:mm')
     if (promo.ExpirationDate) {
       this.hasExpiration = true
       promo.ExpirationDate = promo.ExpirationDate = moment(
         promo.ExpirationDate
-      ).format('YYYY-MM-DD[T]hh:mm')
+      ).format('YYYY-MM-DD[T]HH:mm')
     } else {
       this.hasExpiration = false
     }
@@ -760,6 +760,8 @@ export class PromotionEditComponent implements OnInit, OnChanges {
       this.dataIsSaving = true
       // Set promotion.Name to promotion.Code automatically
       promo.Name = promo.Code
+      const formattedStartDate = moment(promo.StartDate).format()
+      promo.StartDate = moment.utc(formattedStartDate).format()
       const newPromo = await this.ocPromotionService.Create(promo).toPromise()
       if (!promo.AllowAllBuyers) {
         await this.handlePromotionAssignments(newPromo)
@@ -852,6 +854,8 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   async updatePromotion(promo: Promotion<PromotionXp>): Promise<void> {
     try {
       this.dataIsSaving = true
+      const formattedStartDate = moment(promo.StartDate).format()
+      promo.StartDate = moment.utc(formattedStartDate).format()
       const updatedPromo = await this.ocPromotionService
         .Save(promo.ID, promo)
         .toPromise()
