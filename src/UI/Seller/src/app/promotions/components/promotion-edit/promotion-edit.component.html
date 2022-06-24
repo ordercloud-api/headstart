@@ -14,12 +14,15 @@
           >ADMIN.PROMOTIONS.ADJUST_FORM_DETAILS</span
         >
       </div>
-      <span class="required-field" > * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span>
+      <span class="required-field">
+        * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span
+      >
       <form [formGroup]="resourceForm">
         <div class="card bg-white shadow-sm p-4 mt-3">
           <div class="d-flex justify-content-between align-items-center">
             <label for="discountCode" class="h6 mb-0" translate>
-              ADMIN.PROMOTIONS.DISCOUNT_CODE <span class="required-field">*</span>
+              ADMIN.PROMOTIONS.DISCOUNT_CODE
+              <span class="required-field">*</span>
             </label>
             <button
               type="button"
@@ -129,7 +132,7 @@
                 [checked]="promoTypeCheck('FreeShipping')"
               />
               <label class="form-check-label" for="FreeShipping" translate>
-                ADMIN.PROMOTIONS.FREE_SHIPPING
+                ADMIN.PROMOTIONS.SHIPPING.FREE_SHIPPING
               </label>
             </div>
             <div class="form-check">
@@ -688,7 +691,8 @@
           </h6>
           <div class="form-group">
             <label for="StartDate" translate
-              >ADMIN.PROMOTIONS.START_DATE_TIME <span class="required-field">*</span>&nbsp;
+              >ADMIN.PROMOTIONS.START_DATE_TIME
+              <span class="required-field">*</span>&nbsp;
               <fa-icon
                 [icon]="faQuestionCircle"
                 autoClose="outside"

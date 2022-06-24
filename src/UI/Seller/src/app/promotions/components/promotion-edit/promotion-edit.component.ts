@@ -607,7 +607,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
     }
     if (safeXp?.Type === HSPromoType.FreeShipping) {
       valueString = this.translate.instant(
-        'ADMIN.PROMOTIONS.DISPLAY.VALUE.FREE_SHIPPING_ENTIRE_ORDER'
+        'ADMIN.PROMOTIONS.DISPLAY.VALUE.SHIPPING.FREE_SHIPPING_ENTIRE_ORDER'
       )
     }
     if (
