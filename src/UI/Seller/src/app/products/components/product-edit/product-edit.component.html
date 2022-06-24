@@ -687,8 +687,8 @@
                           }}"
                         />
                         <div class="input-group-append">
-                          <span class="input-group-text rounded-right"
-                            >pounds</span
+                          <span class="input-group-text rounded-right" translate
+                            >ADMIN.PRODUCT_EDIT.SHIPPING.POUNDS</span
                           >
                         </div>
                       </div>
@@ -721,7 +721,7 @@
                         "
                         value="{{ tier.Tier }}"
                       >
-                        {{ tier.Description }}
+                        {{ tier.Description | translate }}
                       </option>
                     </select>
                     <small>
@@ -1023,6 +1023,7 @@
                     </p>
                   </div>
                   <div
+                    *ngIf="productForm.controls['Description'].value"
                     [innerHtml]="
                       productForm.controls['Description'].value | safeHTML
                     "
@@ -1466,7 +1467,7 @@
           "
           (click)="handleSave()"
         >
-          {{ getSaveBtnText() }}
+          {{ getSaveBtnText() | translate }}
         </button>
         <button
           class="btn btn-primary ml-3"

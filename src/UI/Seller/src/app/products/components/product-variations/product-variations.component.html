@@ -15,7 +15,9 @@
     <div class="col-md-8">
       <div class="card p-4 mt-3 bg-white">
         <div class="d-flex justify-content-between align-items-center">
-          <h6 class="font-weight-medium" translate>Customization</h6>
+          <h6 class="font-weight-medium" translate>
+            ADMIN.PRODUCT_EDIT.VARIANTS_CUSTOMIZATION
+          </h6>
           <div class="d-flex align-items-center">
             <small class="mr-2 font-weight-bolder">{{
               addVariableTextSpecs ? 'On' : 'Off'
@@ -37,8 +39,8 @@
         <p class="font-italic small mt-3 mb-0" translate>
           {{
             readonly
-              ? 'Open Text Specifications as defined by the supplier.'
-              : 'Do you need to collect customized input from the buyer to fulfill this product?  Shirt text? Sign verbiage? Configure the options here.'
+              ? 'ADMIN.PRODUCT_EDIT.VARIANTS_CUSTOMIZATION_ADMIN_MESSAGE'
+              : 'ADMIN.PRODUCT_EDIT.VARIANTS_CUSTOMIZATION_SUPPLIER_MESSAGE'
           }}
         </p>
         <table *ngIf="addVariableTextSpecs" class="table table-borderless">

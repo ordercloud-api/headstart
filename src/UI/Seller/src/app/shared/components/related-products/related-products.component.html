@@ -19,7 +19,7 @@
           (click)="openModal(modalContent)"
           translate
         >
-         ADMIN.PRODUCT_EDIT.ADD_PRODUCT_TO_RELATED_ITEMS
+          ADMIN.PRODUCT_EDIT.ADD_PRODUCT_TO_RELATED_ITEMS
         </button>
       </div>
     </div>
@@ -64,7 +64,9 @@
   </form>
   <ng-template #modalContent let-modal>
     <div class="modal-header">
-      <h4 class="modal-title" translate>ADMIN.PRODUCT_EDIT.ADD_PRODUCT_TO_RELATED_ITEMS</h4>
+      <h4 class="modal-title" translate>
+        ADMIN.PRODUCT_EDIT.ADD_PRODUCT_TO_RELATED_ITEMS
+      </h4>
     </div>
     <div class="modal-body">
       <search-component
@@ -116,16 +118,22 @@
         justify-content-space-between justify-content-between
       "
     >
-      <button type="button" class="btn btn-outline-dark" (click)="cancel()">
-        Cancel
+      <button
+        type="button"
+        class="btn btn-outline-dark"
+        (click)="cancel()"
+        translate
+      >
+        ADMIN.COMMON.CANCEL
       </button>
       <button
         type="button"
         class="btn btn-primary"
         [disabled]="!stagedRelatedProducts?.length"
         (click)="addSelectedRelatedProducts()"
+        translate
       >
-        Add selected products
+        ADMIN.PRODUCT_EDIT.ADD_SELECTED_PRODUCTS
       </button>
     </div>
   </ng-template>

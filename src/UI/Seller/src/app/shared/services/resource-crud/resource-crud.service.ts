@@ -538,10 +538,10 @@ export abstract class ResourceCrudService<ResourceType> {
     isCreatingNew: boolean,
     isError?: boolean
   ): string {
-    if (isError) return 'Re-submit'
-    if (dataIsSaving) return 'Saving...'
-    if (isCreatingNew) return 'Create'
-    if (!isCreatingNew) return 'Save Changes'
+    if (isError) return 'ADMIN.PRODUCT_EDIT.RESUBMIT'
+    if (dataIsSaving) return 'ADMIN.PRODUCT_EDIT.SAVING'
+    if (isCreatingNew) return 'ADMIN.COMMON.CREATE'
+    if (!isCreatingNew) return 'ADMIN.PRODUCT_EDIT.SAVE_CHANGES'
   }
 
   getParentIDParamName(): string {
