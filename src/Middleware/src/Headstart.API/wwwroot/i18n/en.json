@@ -709,6 +709,7 @@
       "USE_A_PROMO": "Use a Promo Code"
     },
     "CHECKOUT_SHIPPING": {
+      "NO_ESTIMATES": "We apologize for the inconvenience, we are currently unable to display your shipping estimates for this cart. Please try a different address or contact the supplier with further questions.",
       "SAVE_CONTINUE": "Save and Continue",
       "SHIPPING_SPEED": "Make Shipping Speed Selections To Continue"
     },

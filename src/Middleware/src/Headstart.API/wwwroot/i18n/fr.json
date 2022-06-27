@@ -708,6 +708,7 @@
       "USE_A_PROMO": "Utiliser un code promotionnel"
     },
     "CHECKOUT_SHIPPING": {
+      "NO_ESTIMATES": "Nous nous excusons pour la gêne occasionnée, nous ne sommes actuellement pas en mesure d'afficher vos estimations d'expédition pour ce panier. Veuillez essayer une autre adresse ou contacter le fournisseur si vous avez d'autres questions.",
       "SAVE_CONTINUE": "Enregistrer et continuer",
       "SHIPPING_SPEED": "Faites des sélections de vitesse d’expédition pour continuer"
     },
