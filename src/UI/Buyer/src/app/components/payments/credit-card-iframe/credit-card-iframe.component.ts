@@ -22,9 +22,16 @@ export class OCMCreditCardIframe implements OnInit {
     const component = this
     window.addEventListener(
       'message',
-      function (event: any) {
-        const response = JSON.parse(event.data)
-        component.ccEntered.emit(response)
+      function (event: MessageEvent) {
+        try {
+          if (typeof event.data === 'string') {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            const response = JSON.parse(event.data)
+            component.ccEntered.emit(response)
+          }
+        } catch (e) {
+          // handles event.data that is not supported. We only have limited control here.
+        }
       },
       false
     )
