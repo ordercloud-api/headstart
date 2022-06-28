@@ -5,21 +5,21 @@ import { RouteConfig } from "src/app/models/shared.types";
 export const OrderRoutes: RouteConfig[] = [
   {
     routerCall: 'toMyOrders',
-    displayText: 'Placed by Me',
+    displayText: 'LAYOUT.APP_HEADER.ORDERS_PLACED_BY_ME',
     url: '/orders',
     showInDropdown: true,
     context: OrderViewContext.MyOrders,
   },
   {
     routerCall: 'toMyQuotes',
-    displayText: 'Quotes',
+    displayText: 'LAYOUT.APP_HEADER.ORDERS_QUOTES',
     url: '/orders/quotes',
     showInDropdown: true,
     context: OrderViewContext.Quote,
   },
   {
     routerCall: 'toOrdersByLocation',
-    displayText: 'Placed in My Locations',
+    displayText: 'LAYOUT.APP_HEADER.ORDERS_PLACED_IN_MY_LOCATIONS',
     url: '/orders/location',
     rolesWithAccess: ['HSLocationViewAllOrders'],
     showInDropdown: true,
@@ -27,7 +27,7 @@ export const OrderRoutes: RouteConfig[] = [
   },
   {
     routerCall: 'toOrdersToApprove',
-    displayText: 'Awaiting My Approval',
+    displayText: 'LAYOUT.APP_HEADER.ORDERS_AWAITING_MY_APPROVAL',
     url: '/orders/approve',
     rolesWithAccess: ['HSLocationOrderApprover'],
     showInDropdown: true,

@@ -7,10 +7,10 @@ const getOverrideText = (checkoutPanel: string): string => {
    * we show that and calculate the order total differently */
   switch (checkoutPanel) {
     case 'cart':
-      return 'Calculated during checkout'
+      return 'ORDERS.SUMMARY.CALCULATED_AT_CHECKOUT'
     case 'shippingAddress':
     case 'shippingSelection':
-      return 'Pending selections'
+      return 'ORDERS.SUMMARY.PENDING_SELECTIONS'
     default:
       return ''
   }

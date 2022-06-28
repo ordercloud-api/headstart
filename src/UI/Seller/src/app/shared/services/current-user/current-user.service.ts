@@ -15,6 +15,7 @@ import { Tokens } from 'ordercloud-javascript-sdk'
 import { BehaviorSubject } from 'rxjs'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { UserContext } from '@app-seller/models/user.types'
+import { LanguageSelectorService } from '@app-seller/shared'
 
 @Injectable({
   providedIn: 'root',
@@ -30,6 +31,7 @@ export class CurrentUserService {
     private ocAuthService: OcAuthService,
     @Inject(applicationConfiguration) private appConfig: AppConfig,
     private ocTokenService: OcTokenService,
+    private languageService: LanguageSelectorService,
     private appAuthService: AppAuthService,
     private appStateService: AppStateService,
     private ocSupplierService: OcSupplierService
@@ -58,6 +60,7 @@ export class CurrentUserService {
     this.appStateService.isLoggedIn.next(true)
     this.me = await this.ocMeService.Get().toPromise()
     this.userSubject.next(this.me)
+    await this.languageService.SetTranslateLanguage()
     if (this.me?.Supplier) {
       this.mySupplier = await HeadStartSDK.Suppliers.GetMySupplier(
         this.me?.Supplier?.ID

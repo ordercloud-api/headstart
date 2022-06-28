@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Headstart.API.Commands;
 using Headstart.Common.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
@@ -39,14 +38,9 @@ namespace Headstart.Common.Controllers
         /// </summary>
         [HttpPost, Route("batch/uploadshipment"), OrderCloudUserAuth(ApiRole.ShipmentAdmin)]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<BatchProcessResult> UploadShipments([FromForm] FileUpload fileRequest)
+        public async Task<BatchProcessResult> UploadShipments([FromForm] FileUploadRequest fileRequest)
         {
             return await shipmentCommand.UploadShipments(fileRequest?.File, UserContext);
         }
-    }
-
-    public class FileUpload
-    {
-        public IFormFile File { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 <div class="container-fluid resource-edit">
   <form [formGroup]="resourceForm">
-    <span class="required-field">* required fields</span>
+    <span class="required-field" > * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span>
     <div class="row pt-3">
       <div class="col-md-5">
         <h5>{{ 'ALIAS.BUYER_LOCATION' | translate }} Details</h5>
@@ -335,7 +335,7 @@
           "
           (click)="handleSave()"
         >
-          {{ getSaveBtnText() }}
+          {{ getSaveBtnText() | translate }}
         </button>
         <button
           class="btn btn-primary ml-3"

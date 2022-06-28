@@ -19,7 +19,7 @@
   </ocm-lineitem-table>
   <form *ngIf="!isAnon" novalidate [formGroup]="form">
     <textarea type="text" maxlength="2000"
-      placeholder="Order Comments (Optional) - visible to all suppliers. If your request is for a specific supplier please indicate which one."
+      placeholder="{{ 'CHECKOUT.CHECKOUT_PAYMENT.PURCHASE_ORDER_SUMMARY' | translate }}"
       formControlName="comments" class="form-control">
     </textarea>
   </form>

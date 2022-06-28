@@ -16,12 +16,5 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Models
         /// </summary>
         [Required]
         public MarketplaceSettings Marketplace { get; set; }
-
-        /// <summary>
-        /// An optional object of <see cref="StorageAccountSeedSettings"/> for your translations container.
-        /// If none are provided the seeding funciton will not create a translation file or downloads file
-        /// Provide a valid ConnectionString to have the seeding function generate your translation file.
-        /// </summary>
-        public StorageAccountSeedSettings StorageAccount { get; set; }
     }
 }

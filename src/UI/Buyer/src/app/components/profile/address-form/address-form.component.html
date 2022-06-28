@@ -4,26 +4,26 @@
     <div class="row">
       <div [hidden]="true" class="col-md-6 form-group">
         <label class="sr-only" for="ID" translate
-          >PROFILE.ADDRESS_FORM.ID</label
+          >COMMON.ADDRESS.ID</label
         >
         <input
           type="text"
           formControlName="ID"
           class="form-control"
           id="ID"
-          placeholder="ID"
+          placeholder="{{ 'COMMON.ADDRESS.ID' | translate }}"
         />
       </div>
       <div class="col-md-6 form-group">
         <label class="sr-only" for="FirstName" translate
-          >PROFILE.ADDRESS_FORM.FIRST</label
+          >COMMON.ADDRESS.FIRST_NAME</label
         >
         <input
           type="text"
           formControlName="FirstName"
           class="form-control"
           id="FirstName"
-          placeholder="First Name"
+          placeholder="{{ 'COMMON.ADDRESS.FIRST_NAME' | translate }}"
           autofocus="true"
           autocomplete="off"
           showErrors
@@ -31,14 +31,14 @@
       </div>
       <div class="col-md-6 form-group">
         <label class="sr-only" for="LastName" translate
-          >PROFILE.ADDRESS_FORM.LAST</label
+          >COMMON.ADDRESS.LAST_NAME</label
         >
         <input
           type="text"
           formControlName="LastName"
           class="form-control"
           id="LastName"
-          placeholder="Last Name"
+          placeholder="{{ 'COMMON.ADDRESS.LAST_NAME' | translate }}"
           autocomplete="off"
           showErrors
         />
@@ -46,28 +46,28 @@
     </div>
     <div class="form-group">
       <label class="sr-only" for="Street1" translate
-        >PROFILE.ADDRESS_FORM.ADDRESS1</label
+        >COMMON.ADDRESS.ADDRESS1</label
       >
       <input
         type="text"
         formControlName="Street1"
         class="form-control"
         id="Street1"
-        placeholder="Address 1"
+        placeholder="{{ 'COMMON.ADDRESS.ADDRESS1' | translate }}"
         autocomplete="off"
         showErrors
       />
     </div>
     <div class="form-group">
       <label class="sr-only" for="Street2" translate
-        >PROFILE.ADDRESS_FORM.ADDRESS2</label
+        >COMMON.ADDRESS.ADDRESS2</label
       >
       <input
         type="text"
         formControlName="Street2"
         class="form-control"
         id="Street2"
-        placeholder="Address 2"
+        placeholder="{{ 'COMMON.ADDRESS.ADDRESS2' | translate }}"
         autocomplete="off"
         showErrors
       />
@@ -75,21 +75,21 @@
     <div class="row">
       <div class="col-md-5 form-group">
         <label class="sr-only" for="City" translate
-          >PROFILE.ADDRESS_FORM.CITY</label
+          >COMMON.ADDRESS.CITY</label
         >
         <input
           type="text"
           formControlName="City"
           class="form-control"
           id="City"
-          placeholder="City"
+          placeholder="{{ 'COMMON.ADDRESS.CITY' | translate }}"
           autocomplete="off"
           showErrors
         />
       </div>
       <div class="col-md-3 form-group">
         <label class="sr-only" for="State" translate
-          >PROFILE.ADDRESS_FORM.STATE</label
+          >COMMON.ADDRESS.STATE</label
         >
         <select
           *ngIf="stateOptions.length !== 0"
@@ -99,7 +99,7 @@
           showErrors
         >
           <option [ngValue]="null" disabled translate>
-            PROFILE.ADDRESS_FORM.STATE
+            COMMON.ADDRESS.STATE
           </option>
           <option *ngFor="let State of stateOptions" [value]="State">
             {{ State }}
@@ -117,14 +117,14 @@
       </div>
       <div class="col-md-4 form-group">
         <label class="sr-only" for="zipCode" translate
-          >PROFILE.ADDRESS_FORM.ZIP</label
+          >COMMON.ADDRESS.ZIP</label
         >
         <input
           type="text"
           formControlName="Zip"
           class="form-control"
           id="zipCode"
-          placeholder="Zip"
+          placeholder="{{ 'COMMON.ADDRESS.ZIP' | translate }}"
           autocomplete="off"
           showErrors
         />
@@ -138,7 +138,7 @@
         }} addresses."
       >
         <label class="sr-only" for="country" translate
-          >PROFILE.ADDRESS_FORM.COUNTRY</label
+          >COMMON.ADDRESS.COUNTRY</label
         >
         <select
           formControlName="Country"
@@ -155,14 +155,14 @@
       </div>
       <div class="col-md-6 form-group">
         <label class="sr-only" for="Phone" translate
-          >PROFILE.ADDRESS_FORM.PHONE</label
+          >COMMON.ADDRESS.PHONE</label
         >
         <input
           type="text"
           formControlName="Phone"
           class="form-control"
           id="Phone"
-          placeholder="Phone Number"
+          placeholder="{{ 'COMMON.ADDRESS.PHONE' | translate }}"
           autocomplete="off"
           showErrors
         />
@@ -180,7 +180,7 @@
               class="sr-only form-check-label"
               for="shouldSaveAddress"
               translate
-              >PROFILE.ADDRESS_FORM.SAVE</label
+              >COMMON.ADDRESS.SAVE</label
             >
             <input
               type="checkbox"
@@ -188,7 +188,7 @@
               class="form-check-input"
               id="shouldSaveAddress"
             />
-            <span translate>PROFILE.ADDRESS_FORM.SAVE_ADDRESS</span>
+            <span translate>COMMON.ADDRESS.SAVE_ADDRESS</span>
           </div>
         </form>
       </div>
@@ -216,7 +216,7 @@
       (click)="dismissForm()"
       translate
     >
-      PROFILE.ADDRESS_FORM.CANCEL
+      COMMON.ADDRESS.CANCEL
     </button>
   </div>
 </form>

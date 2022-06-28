@@ -187,13 +187,13 @@ export class ResourceTableComponent
 
   mapProductTypes(types: string[]): Params[] {
     if (types) {
-      const mappedTypes = types.map((pt) => {
-        const link = pt
+      const mappedTypes = types.map((type) => {
+        const link = type
           .match(/[A-Z][a-z]+/g)
           .map((t) => t.toLowerCase())
           .join('-')
         return {
-          Display: `${pt.match(/[A-Z][a-z]+/g).join(' ')} Product`,
+          Display: `COMMON.PRODUCT_TYPES.${type.toUpperCase()}`,
           Link: link,
         }
       })

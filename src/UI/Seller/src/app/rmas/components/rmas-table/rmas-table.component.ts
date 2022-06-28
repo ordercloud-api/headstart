@@ -41,23 +41,23 @@ export class RMATableComponent extends ResourceCrudComponent<RMA> {
   filterConfig = {
     Filters: [
       {
-        Display: 'Type',
+        Display: 'ADMIN.FILTERS.TYPE',
         Path: 'Type',
         Items: [
-          { Text: 'Cancellation', Value: 'Cancellation' },
-          { Text: 'Return', Value: 'Return' },
+          { Text: 'ADMIN.RMAS.CANCELLATION', Value: 'Cancellation' },
+          { Text: 'ADMIN.RMAS.RETURN', Value: 'Return' },
         ],
         Type: 'Dropdown',
       },
       {
-        Display: 'Status',
+        Display: 'ADMIN.FILTERS.STATUS',
         Path: 'Status',
         Items: [
-          { Text: 'Requested', Value: 'Requested' },
-          { Text: 'Processing', Value: 'Processing' },
-          { Text: 'Approved', Value: 'Approved' },
-          { Text: 'Complete', Value: 'Complete' },
-          { Text: 'Denied', Value: 'Denied' },
+          { Text: 'ADMIN.RMAS.REQUESTED', Value: 'Requested' },
+          { Text: 'ADMIN.RMAS.PROCESSING', Value: 'Processing' },
+          { Text: 'ADMIN.RMAS.APPROVED', Value: 'Approved' },
+          { Text: 'ADMIN.RMAS.COMPLETE', Value: 'Complete' },
+          { Text: 'ADMIN.RMAS.DENIED', Value: 'Denied' },
         ],
         Type: 'Dropdown',
       },

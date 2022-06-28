@@ -13,7 +13,7 @@ services:
       - "80:80"
       - "8079:8080"
     healthcheck:
-      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      test: [ "CMD", "traefik", "healthcheck", "--ping" ]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     networks:
@@ -72,7 +72,7 @@ services:
       EnvironmentSettings_PaymentProvider: "${EnvironmentSettings_PaymentProvider}"
       EnvironmentSettings_ShippingProvider: "${EnvironmentSettings_ShippingProvider}"
       EnvironmentSettings_TaxProvider: "${EnvironmentSettings_TaxProvider}"
-      
+
       FlurlSettings_TimeoutInSeconds: "${FlurlSettings_TimeoutInSeconds}"
 
       JobSettings_CaptureCreditCardsAfterDate: "${JobSettings_CaptureCreditCardsAfterDate}"
@@ -104,12 +104,9 @@ services:
 
       ServiceBusSettings_ConnectionString: "${ServiceBusSettings_ConnectionString}"
       ServiceBusSettings_ZohoQueueName: "${ServiceBusSettings_ZohoQueueName}"
-      
+
       SmartyStreetSettings_AuthID: "${SmartyStreetSettings_AuthID}"
       SmartyStreetSettings_AuthToken: "${SmartyStreetSettings_AuthToken}"
-      SmartyStreetSettings_RefererHost: "${SmartyStreetSettings_RefererHost}"
-      SmartyStreetSettings_SmartyEnabled: "${SmartyStreetSettings_SmartyEnabled}"
-      SmartyStreetSettings_WebsiteKey: "${SmartyStreetSettings_WebsiteKey}"
 
       StorageAccountSettings_ConnectionString: "${StorageAccountSettings_ConnectionString}"
       StorageAccountSettings_HostUrl: "${StorageAccountSettings_HostUrl}"
@@ -148,6 +145,8 @@ services:
       TRANSLATE_BLOB_URL: ${TRANSLATE_BLOB_URL}
       BLOB_STORAGE_URL: ${BLOB_STORAGE_URL}
       BUYER_CLIENT_ID: ${BUYER_CLIENT_ID}
+      SUPPORTED_LANGUAGES: ${SELLER_SUPPORTED_LANGUAGES}
+      DEFAULT_LANGUAGE: ${SELLER_DEFAULT_LANGUAGE}
     ports:
       - 43010:80
     build:
@@ -174,6 +173,8 @@ services:
       MARKETPLACE_ID: ${OrderCloudSettings_MarketplaceID}
       MARKETPLACE_NAME: ${OrderCloudSettings_MarketplaceName}
       TRANSLATE_BLOB_URL: ${TRANSLATE_BLOB_URL}
+      SUPPORTED_LANGUAGES: ${BUYER_SUPPORTED_LANGUAGES}
+      DEFAULT_LANGUAGE: ${BUYER_DEFAULT_LANGUAGE}
 
     ports:
       - 43015:80
@@ -205,6 +206,7 @@ services:
     networks:
       headstart:
 
+
   cosmos:
     image: ${REGISTRY}headstart-cosmos:${VERSION}-linux
     mem_limit: 3g
@@ -224,9 +226,14 @@ services:
       - 10253:10253
       - 10254:10254
     healthcheck:
-       test: ["CMD-SHELL", "curl -f -k https://localhost:8081/_explorer/emulator.pem || exit 1"]
+      test:
+        [
+          "CMD-SHELL",
+          "curl -f -k https://localhost:8081/_explorer/emulator.pem || exit 1"
+        ]
     networks:
       headstart:
+
 
 networks:
   headstart:

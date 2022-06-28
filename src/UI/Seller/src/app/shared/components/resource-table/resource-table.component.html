@@ -84,7 +84,7 @@
         }}/new"
         [disabled]="isCreatingNew"
       >
-        Create New {{ labelSingular | translate }}
+        {{ 'ADMIN.RESOURCES.CREATE_NEW' | translate }} {{ labelSingular | translate }}
       </button>
 
       <div
@@ -97,7 +97,7 @@
           class="btn btn-block btn-outline-red text-left"
           [disabled]="isCreatingNew"
         >
-          Create New {{ labelSingular | translate }}
+          {{ 'ADMIN.RESOURCES.CREATE_NEW' | translate }} {{ labelSingular | translate }}
         </button>
         <div ngbDropdownMenu>
           <button
@@ -109,7 +109,7 @@
               _ocService.secondaryResourceLevel
             }}/new/{{ type.Link }}"
           >
-            {{ type.Display }}
+            {{ type.Display | translate }}
           </button>
         </div>
       </div>
@@ -149,7 +149,7 @@
                   triggers="manual"
                   #popover="ngbPopover"
                   (click)="openPopover()"
-                  popoverTitle="Filter"
+                  [popoverTitle]="'ADMIN.FILTERS.FILTER' | translate"
                 >
                   <fa-layers class="fa-layers icon-wrapper">
                     <fa-icon [icon]="faFilter"> </fa-icon>
@@ -243,11 +243,12 @@
           <button
             (click)="closePopover()"
             class="btn btn-sm btn-link text-dark"
+            translate
           >
-            Cancel
+            COMMON.CANCEL
           </button>
-          <button (click)="handleApplyFilters()" class="btn btn-sm btn-primary">
-            Apply
+          <button (click)="handleApplyFilters()" class="btn btn-sm btn-primary" translate>
+            ADMIN.FILTERS.APPLY
           </button>
         </div>
       </ng-template>
@@ -473,7 +474,7 @@
                 "
                 (click)="handleSave()"
               >
-                {{ getSaveBtnText() }}
+                {{ getSaveBtnText() | translate }}
               </button>
               <button
                 class="btn btn-primary ml-3"

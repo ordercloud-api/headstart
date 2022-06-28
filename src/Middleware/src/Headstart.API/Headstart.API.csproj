@@ -63,4 +63,15 @@
       <DependentUpon>web.config</DependentUpon>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <Content Update="wwwroot\i18n\en.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\i18n\fr.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\i18n\jp.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

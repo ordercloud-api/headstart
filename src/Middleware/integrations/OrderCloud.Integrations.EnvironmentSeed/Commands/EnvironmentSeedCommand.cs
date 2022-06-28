@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -8,9 +7,7 @@ using Headstart.Common.Commands;
 using Headstart.Common.Constants;
 using Headstart.Common.Models;
 using Headstart.Common.Settings;
-using Microsoft.WindowsAzure.Storage.Blob;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.AzureStorage;
 using OrderCloud.Integrations.EnvironmentSeed.Helpers;
 using OrderCloud.Integrations.EnvironmentSeed.Models;
 using OrderCloud.Integrations.Portal;
@@ -23,8 +20,6 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
     {
         Task<EnvironmentSeedResponse> Seed(EnvironmentSeedRequest seed);
 
-        Task UpdateTranslations(string connectionString, string containerName);
-
         Task PostStagingRestore();
     }
 
@@ -36,6 +31,7 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
         private readonly ISupplierCommand supplierCommand;
         private readonly IBuyerCommand buyerCommand;
         private readonly IHSBuyerLocationCommand buyerLocationCommand;
+        private readonly IUploadTranslationsCommand uploadTranslationsCommand;
         private IOrderCloudClient oc;
 
         public EnvironmentSeedCommand(
@@ -45,6 +41,7 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
             ISupplierCommand supplierCommand,
             IBuyerCommand buyerCommand,
             IHSBuyerLocationCommand buyerLocationCommand,
+            IUploadTranslationsCommand uploadTranslationsCommand,
             IOrderCloudClient oc)
         {
             this.portal = portal;
@@ -54,6 +51,7 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
             this.oc = oc;
             this.environmentSettings = environmentSettings;
             this.orderCloudSettings = orderCloudSettings;
+            this.uploadTranslationsCommand = uploadTranslationsCommand;
         }
 
         /// <summary>
@@ -105,10 +103,7 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
 
                 await CreateOrUpdateProductFacets(marketplaceToken);
 
-                if (seed?.StorageAccount?.ConnectionString != null && seed?.StorageAccount?.ContainerNameTranslations != null)
-                {
-                    await UpdateTranslations(seed.StorageAccount.ConnectionString, seed.StorageAccount.ContainerNameTranslations);
-                }
+                await uploadTranslationsCommand.UploadTranslationsFiles();
 
                 var apiClients = await GetApiClients(marketplaceToken);
 
@@ -147,19 +142,6 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
             }
         }
 
-        public async Task UpdateTranslations(string connectionString, string containerName)
-        {
-            var englishTranslationsPath = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "Assets", "english-translations.json"));
-            var translationsConfig = new CloudBlobServiceConfig()
-            {
-                ConnectionString = connectionString,
-                Container = containerName,
-                AccessType = BlobContainerPublicAccessType.Container,
-            };
-            var translationsBlob = new CloudBlobService(translationsConfig);
-            await translationsBlob.Save("i18n/en.json", File.ReadAllText(englishTranslationsPath));
-        }
-
         public async Task<Marketplace> VerifyMarketplaceExists(string marketplaceID, string devToken)
         {
             try
@@ -177,7 +159,7 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
 
         public async Task<Marketplace> GetOrCreateMarketplace(string token, MarketplaceSettings marketplaceSettings)
         {
-            if (marketplaceSettings.ID != null)
+            if (!string.IsNullOrWhiteSpace(marketplaceSettings.ID))
             {
                 var existingMarketplace = await VerifyMarketplaceExists(marketplaceSettings.ID, token);
                 return existingMarketplace;

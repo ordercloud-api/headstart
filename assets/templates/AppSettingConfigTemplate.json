@@ -69,8 +69,6 @@
   "ServiceBusSettings:ZohoQueueName": "",
   "SmartyStreetSettings:AuthID": "",
   "SmartyStreetSettings:AuthToken": "",
-  "SmartyStreetSettings:RefererHost": "",
-  "SmartyStreetSettings:WebsiteKey": "",
   "TaxJarSettings:Environment": "Sandbox",
   "TaxJarSettings:ApiKey": "",
   "UI:BaseAdminUrl": "",

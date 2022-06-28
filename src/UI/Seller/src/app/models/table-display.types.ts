@@ -4,6 +4,7 @@ export interface ResourceColumnConfiguration {
   type: string
   sortable: boolean
   queryRestriction?: string
+  mappingFunction?: (value: string) => string
 }
 
 export interface ResourceConfiguration {

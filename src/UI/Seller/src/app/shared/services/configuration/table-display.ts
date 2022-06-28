@@ -421,27 +421,53 @@ export const FULL_TABLE_RESOURCE_DICTIONARY: ResourceConfigurationDictionary = {
     fields: [
       {
         path: 'RMANumber',
-        header: 'RMA Number',
+        header: 'ADMIN.RMAS.RMA_NUMBER',
         type: BASIC_STRING,
         sortable: false,
       },
       {
         path: 'DateCreated',
-        header: 'Date Created',
+        header: 'ADMIN.RMAS.DATE_CREATED',
         type: DATE_TIME,
         sortable: false,
       },
       {
         path: 'Type',
-        header: 'Type',
+        header: 'ADMIN.FILTERS.TYPE',
         type: BASIC_STRING,
         sortable: false,
+        mappingFunction: (value: string): string => {
+          // return translate key
+          if (value === 'Cancellation') {
+            return 'ADMIN.RMAS.CANCELLATION'
+          } else if (value === 'Return') {
+            return 'ADMIN.RMAS.RETURN'
+          } else {
+            return ''
+          }
+        },
       },
       {
         path: 'Status',
-        header: 'Status',
+        header: 'ADMIN.FILTERS.STATUS',
         type: BASIC_STRING,
         sortable: false,
+        mappingFunction: (value: string): string => {
+          // return translate key
+          if (value === 'Requested') {
+            return 'ADMIN.RMAS.REQUESTED'
+          } else if (value === 'Denied') {
+            return 'ADMIN.RMAS.DENIED'
+          } else if (value === 'Processing') {
+            return 'ADMIN.RMAS.PROCESSING'
+          } else if (value === 'Approved') {
+            return 'ADMIN.RMAS.APPROVED'
+          } else if (value === 'Complete') {
+            return 'ADMIN.RMAS.COMPLETE'
+          } else {
+            return ''
+          }
+        },
       },
     ],
     imgPath: '',

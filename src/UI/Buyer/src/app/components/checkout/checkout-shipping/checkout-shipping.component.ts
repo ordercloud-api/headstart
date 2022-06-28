@@ -31,10 +31,14 @@ export class OCMCheckoutShipping implements OnInit {
     this._areAllShippingSelectionsMade = this.areAllShippingSelectionsMade(
       value
     )
-    this._lineItemsByShipEstimate = value
+    if (value) {
+      this._lineItemsByShipEstimate = value
       .map((shipEstimate) => {
         return this.getLineItemsForShipEstimate(shipEstimate)
       })
+    } else {
+      this._lineItemsByShipEstimate = null
+    }
   }
   @Output() selectShipRate = new EventEmitter<ShipMethodSelection>()
   @Output() continue = new EventEmitter()
@@ -75,9 +79,12 @@ export class OCMCheckoutShipping implements OnInit {
   }
 
   areAllShippingSelectionsMade(shipEstimates: ShipEstimate[]): boolean {
-    return shipEstimates.every(
-      (shipEstimate) => shipEstimate.SelectedShipMethodID
-    )
+    if (shipEstimates) {
+      return shipEstimates.every(
+        (shipEstimate) => shipEstimate.SelectedShipMethodID
+      )
+    }
+    return false
   }
 
   getSupplierID(shipEstimate: ShipEstimate): string | undefined {
