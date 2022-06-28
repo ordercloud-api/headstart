@@ -1,0 +1,106 @@
+<div class="d-flex justify-content-start align-items-center flex-wrap">
+  <div class="input-group mb-3">
+    <input
+      type="text"
+      required
+      class="form-control"
+      value="{{ documentName }}"
+      placeholder="Document Name"
+      aria-label="Document Name"
+      (keyup)="getDocumentName($event)"
+      aria-describedby="document name"
+    />
+    <div class="input-group-append">
+      <label
+        *ngIf="documentName?.length"
+        class="btn btn-outline-primary"
+        for="documentUpload"
+        (files)="stageDocuments($event)"
+        translate
+      >
+        ADMIN.PRODUCT_EDIT.CHOOSE_FILE
+        <input
+          id="documentUpload"
+          class="d-none"
+          type="file"
+          (change)="uploadDocument($event, 'staticContent')"
+        />
+      </label>
+    </div>
+  </div>
+  <div
+    *ngFor="let document of stagedDocuments; let i = index"
+    class="product-img-wrapper mr-2"
+  >
+    <a class="text-link">{{ document.Filename }}</a>
+    <div *ngIf="!readonly" class="float-right float-middle">
+      <button
+        title="Un-stage document"
+        class="btn btn-light btn-group-item"
+        data-ui="action-btn"
+        data-action="unstageDocument"
+        (click)="unstageDocument(i, 'staticContent')"
+      >
+        <fa-icon [icon]="faTimes"></fa-icon>
+      </button>
+    </div>
+  </div>
+  <table class="table table-sm bg-light" *ngIf="documents?.length > 0">
+    <thead>
+      <tr>
+        <th translate>ADMIN.PRODUCT_EDIT.DOCUMENTS</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let document of documents">
+        <td>{{ document.FileName }}</td>
+        <td>
+          <a
+            class="btn-link"
+            href="{{ document.Url }}"
+            target="_blank"
+            download="document.FileName"
+            translate
+            >ADMIN.PRODUCT_EDIT.DOWNLOAD</a
+          >
+        </td>
+        <td>
+          <button
+            title="Delete document"
+            class="btn btn-light btn-group-item"
+            data-ui="action-btn"
+            data-action="delete"
+            type="button"
+            (click)="openDeleteConfirmModal(content)"
+          >
+            <fa-icon [icon]="faTrash"></fa-icon>
+          </button>
+        </td>
+        <ng-template #content let-modal class="confirm-modal">
+          <confirm-modal
+            modalTitle="Delete Document?"
+            description="Deleting this document cannot be reversed."
+          >
+            <button
+              type="button"
+              class="btn btn-link text-dark"
+              (click)="modal.dismiss()"
+              translate
+            >
+              COMMON.CANCEL
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary-dark"
+              (click)="removeDocument(document, 'document')"
+              (click)="modal.dismiss()"
+              translate
+            >
+              COMMON.YES_DELETE
+            </button>
+          </confirm-modal>
+        </ng-template>
+      </tr>
+    </tbody>
+  </table>
+</div>

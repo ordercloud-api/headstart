@@ -14,11 +14,13 @@ import { PriceBreakEditor } from './components/price-break-editor/price-break-ed
 import {
   NgbDateAdapter,
   NgbDateNativeAdapter,
-  NgbDateNativeUTCAdapter,
   NgbModule,
   NgbTooltipModule,
-} from '@ng-bootstrap/ng-bootstrap';
+} from '@ng-bootstrap/ng-bootstrap'
 import { PriceDisplayComponent } from './components/price-display/price-display.component'
+import { ProductBundleEditComponent } from './components/product-bundle-edit/product-bundle-edit.component';
+import { ProductImageUploadComponent } from './components/product-image-upload/product-image-upload.component';
+import { ProductDocumentUploadComponent } from './components/product-document-upload/product-document-upload.component'
 
 @NgModule({
   imports: [
@@ -39,6 +41,9 @@ import { PriceDisplayComponent } from './components/price-display/price-display.
     ProductVariations,
     ProductFilters,
     PriceDisplayComponent,
+    ProductBundleEditComponent,
+    ProductImageUploadComponent,
+    ProductDocumentUploadComponent,
   ],
 })
 export class ProductsModule {}

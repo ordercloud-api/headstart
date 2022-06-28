@@ -47,7 +47,7 @@
     "express": "^4.15.2",
     "lodash": "^4.17.21",
     "ngx-cookie": "^4.1.2",
-    "ordercloud-javascript-sdk": "4.5.4",
+    "ordercloud-javascript-sdk": "^4.9.9",
     "rxjs": "^6.5.4"
   },
   "peerDependencies": {

@@ -40,7 +40,7 @@ export class StorefrontEditComponent {
   @Input()
   filterConfig
   @Input()
-  set resourceInSelection(storefront: ApiClient) {
+  set resourceInSelection(storefront: HSApiClient) {
     this.selectedResource = storefront
     this.createStorefrontForm(storefront)
   }
@@ -48,7 +48,7 @@ export class StorefrontEditComponent {
   updateResource = new EventEmitter<ResourceUpdate>()
   isCreatingNew: boolean
   resourceForm: StoreFrontFormGroup
-  selectedResource: ApiClient
+  selectedResource: HSApiClient
   searchingBuyers = false
 
   constructor(

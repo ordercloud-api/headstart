@@ -27,6 +27,8 @@ namespace Headstart.Common.Models
 
         public HSMeProduct Product { get; set; }
 
+        public List<HSMeProduct> BundledProducts { get; set; }
+
         public PriceSchedule PriceSchedule { get; set; }
 
         public IList<Spec> Specs { get; set; }
@@ -81,7 +83,9 @@ namespace Headstart.Common.Models
 
         public List<DocumentAsset> Documents { get; set; }
 
-        public List<string> RelatedProducts { get; set; }
+        public List<string> RelatedProductIDs { get; set; }
+
+        public List<string> BundledProducts { get; set; }
     }
 
     public class ImageAsset

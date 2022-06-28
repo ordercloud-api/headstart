@@ -19,6 +19,7 @@ export class RelatedProductsComponent implements OnInit {
   @Input() product: Product
   @Input() dataIsSaving: boolean
   @Output() updateList = new EventEmitter<Product>()
+  PLACEHOLDER_PRODUCT_IMAGE
   faTrash = faTrash
   relatedProducts: Product[] = []
   selectedRelatedProducts: Product[] = []

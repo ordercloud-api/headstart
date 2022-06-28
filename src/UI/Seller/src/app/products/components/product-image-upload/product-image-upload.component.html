@@ -1,0 +1,95 @@
+<div class="d-flex justify-content-start align-items-center flex-wrap">
+  <div
+    *ngFor="let image of images; let i = index"
+    class="product-img-wrapper mr-2"
+  >
+    <div class="product-img">
+      <img
+        [id]="i"
+        src="{{ image.ThumbnailUrl }}"
+        width="auto"
+        height="100px"
+      />
+      <span
+        *ngIf="i === 0"
+        class="badge badge-primary primary-badge position-absolute mt-1 ml-1"
+        translate
+      >
+        ADMIN.PRODUCT_EDIT.PRIMARY
+      </span>
+    </div>
+    <div class="product-img-delete text-center">
+      <button
+        title="Delete photo"
+        class="btn btn-light btn-group-item"
+        data-ui="action-btn"
+        data-action="delete"
+        type="button"
+        (click)="openDeleteConfirmModal(content)"
+      >
+        <fa-icon [icon]="faTrash"></fa-icon>
+      </button>
+      <ng-template #content let-modal class="confirm-modal">
+        <confirm-modal
+          modalTitle="Delete Image?"
+          description="Deleting this image cannot be reversed.<br /><small class='font-italic'>If your product has no images, a fallback image will display on the buyer site.</small>"
+        >
+          <button
+            type="button"
+            class="btn btn-link text-dark"
+            (click)="modal.dismiss()"
+            translate
+          >
+            COMMON.CANCEL
+          </button>
+          <button
+            type="button"
+            class="btn btn-primary-dark"
+            (click)="removeImage(image)"
+            (click)="modal.dismiss()"
+            translate
+          >
+            COMMON.YES_DELETE
+          </button>
+        </confirm-modal>
+      </ng-template>
+    </div>
+  </div>
+  <div
+    *ngFor="let image of stagedImages; let i = index"
+    class="product-img-wrapper mr-2"
+  >
+    <img
+      class="product-img"
+      [id]="i"
+      [src]="image.URL"
+      width="auto"
+      height="100px"
+    />
+    <div class="product-img-delete text-center">
+      <button
+        title="Un-stage photo"
+        class="btn btn-light btn-group-item"
+        data-ui="action-btn"
+        data-action="unstageImage"
+        (click)="unstageImage(i)"
+      >
+        <fa-icon [icon]="faTimes"></fa-icon>
+      </button>
+    </div>
+  </div>
+  <label
+    class="rmpm dropzone"
+    for="imageUpload"
+    appDrag
+    (files)="stageImages($event)"
+  >
+  </label>
+  <input
+    class="d-none"
+    id="imageUpload"
+    type="file"
+    (change)="uploadImage($event)"
+    multiple
+  />
+</div>

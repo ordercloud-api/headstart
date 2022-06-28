@@ -8,6 +8,7 @@ const routes: Routes = [
   { path: '', component: ProductTableComponent, pathMatch: 'prefix' },
   { path: 'new/standard', component: ProductTableComponent, pathMatch: 'full' },
   { path: 'new/quote', component: ProductTableComponent, pathMatch: 'full' },
+  { path: 'new/bundle', component: ProductTableComponent, pathMatch: 'full' },
   {
     path: 'new/purchase-order',
     component: ProductTableComponent,

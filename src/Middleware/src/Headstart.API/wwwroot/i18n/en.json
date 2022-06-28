@@ -216,6 +216,7 @@
       "ADD": "Add",
       "ADD_ASSIGNMENT": "Add Assignment",
       "ADD_NEW_BREAK": "Add New Break",
+      "ADD_PRODUCTS_TO_BUNDLE": "Add products to bundle",
       "ADD_PRODUCT_TO_RELATED_ITEMS": "Add product to related items",
       "ADD_SELECTED_PRODUCTS": "Add selected products",
       "ADD_VARIATION": "Add Variation",
@@ -223,6 +224,8 @@
       "APPLY_INDIVIDUAL_VARIATIONS": "Apply Price Breaks to Individual Variations",
       "APPLY_INFO_TEXT": "In order to apply price breaks across variations, the product must have at least 1 variation.",
       "BROWSE_SUBCATEGORIES": "Browse Subcategories",
+      "BUNDLED_PRODUCTS": "Bundled products",
+      "BUNDLES_MUST_HAVE_ONE_PRODUCT": "Bundles must have at least one product",
       "BUYER_PRICING": "Buyer Pricing",
       "BUYER_PRICING_INSTRUCTION": "You may use default pricing based on the buyer markup percentage set on the buyer edit page or you can create a new price schedule in your currency.",
       "BUYER_VISIBILITY": "Buyer Visibility",
@@ -998,7 +1001,7 @@
       "TO_CART": "to Cart"
     },
     "CAROUSEL": {
-      "RELATED_PRODUCTS":  "Related Products"
+      "RELATED_PRODUCTS": "Related Products"
     },
     "CONTACT_SUPPLIER": {
       "CANCEL": "Cancel",

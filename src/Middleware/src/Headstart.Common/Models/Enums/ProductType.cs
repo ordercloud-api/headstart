@@ -8,5 +8,6 @@ namespace Headstart.Common.Models
     {
         Standard,
         Quote,
+        Bundle,
     }
 }

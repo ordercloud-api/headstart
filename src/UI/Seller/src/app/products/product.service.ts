@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import {
   Product,
-  OcPriceScheduleService,
-  OcCatalogService,
   ProductAssignment,
   OcCategoryService,
   CategoryProductAssignment,
@@ -11,7 +9,6 @@ import {
 import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { Products } from 'ordercloud-javascript-sdk'
-
 
 @Injectable({
   providedIn: 'root',
@@ -77,8 +74,6 @@ export class ProductService extends ResourceCrudService<Product> {
     router: Router,
     activatedRoute: ActivatedRoute,
     private ocCategoryService: OcCategoryService,
-    private ocPriceScheduleService: OcPriceScheduleService,
-    private ocCatalogService: OcCatalogService,
     public currentUserService: CurrentUserService
   ) {
     super(
