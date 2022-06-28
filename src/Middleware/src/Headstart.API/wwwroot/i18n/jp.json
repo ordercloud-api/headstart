@@ -608,6 +608,20 @@
     }
   },
   "BUYER": {
+    "BASIC_DETAILS": "の基本的な詳細",
+    "DETAILS": "詳細",
+    "EDIT_FORM": {
+      "ACTIVE": "アクティブ",
+      "ALLOW_IMPERSONATION": "なりすましを許可する",
+      "BUYER_SITE_CLIENT_ID": "バイヤーサイトクライアントID",
+      "BUYER_SITE_CLIENT_ID_PLACEHOLDER": "購入者サイトで使用されているクライアントIDを入力します",
+      "BUYER_SITE_URL": "バイヤーサイトのURL",
+      "BUYER_SITE_URL_PLACEHOLDER": "購入者サイトが使用するサイトのURLを入力します",
+      "NAME": "名前",
+      "NAME_PLACEHOLDER": "名前を入力",
+      "PRODUCT_MARKUP_PERCENT": "製品マークアップ率",
+      "PRODUCT_MARKUP_PERCENT_PLACEHOLDER": "マークアップを入力してください"
+    },
     "HELPERMESSAGES": {
       "BUYERGROUP": {
         "ACTION": "今すぐ購入者グループを設定してください。",

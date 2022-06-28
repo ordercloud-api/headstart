@@ -1,14 +1,23 @@
 <div *ngIf="resourceForm" class="container-fluid resource-edit">
   <form [formGroup]="resourceForm">
-    <span class="required-field" > * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span>
+    <span class="required-field">
+      * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span
+    >
     <div class="row pt-3">
       <div class="col-md-5">
-        <h5>{{ 'ALIAS.BUYER' | translate }} Details</h5>
-        <p>Basic details of the {{ 'ALIAS.BUYER' | translate | lowercase }}.</p>
+        <h5>
+          {{ 'ALIAS.BUYER' | translate }} <span translate>BUYER.DETAILS</span>
+        </h5>
+        <p>
+          {{ 'BUYER.BASIC_DETAILS' | translate }}
+          {{ 'ALIAS.BUYER' | translate | lowercase }}.
+        </p>
       </div>
       <div class="col-md-7 form-group">
         <div class="form-group">
-          <label for="Name">Name <span class="required-field">*</span></label>
+          <label for="Name" translate
+            >BUYER.EDIT_FORM.NAME <span class="required-field">*</span></label
+          >
           <input
             type="text"
             class="form-control"
@@ -19,11 +28,11 @@
             [resourceForm]="resourceForm"
             formControlName="Name"
             (input)="updateResourceFromEvent($event, 'Buyer.Name')"
-            placeholder="Enter Name"
+            [placeholder]="'BUYER.EDIT_FORM.NAME_PLACEHOLDER' | translate"
           />
         </div>
         <div class="form-group">
-          <p class="mb-1">Active</p>
+          <p class="mb-1" translate>BUYER.EDIT_FORM.ACTIVE</p>
           <label class="switch mb-0" for="Active">
             <input
               type="checkbox"
@@ -39,7 +48,9 @@
           </label>
         </div>
         <div class="form-group">
-          <label for="Markup">Product Markup Percent</label>
+          <label for="Markup" translate
+            >BUYER.EDIT_FORM.PRODUCT_MARKUP_PERCENT</label
+          >
           <input
             type="number"
             class="form-control"
@@ -50,11 +61,13 @@
             [resourceForm]="resourceForm"
             formControlName="Markup"
             (input)="updateResourceFromEvent($event, 'Buyer.xp.MarkupPercent')"
-            placeholder="Enter Markup"
+            [placeholder]="
+              'BUYER.EDIT_FORM.PRODUCT_MARKUP_PERCENT_PLACEHOLDER' | translate
+            "
           />
         </div>
         <div class="form-group">
-          <p class="mb-1">Allow Impersonation</p>
+          <p class="mb-1" translate>BUYER.EDIT_FORM.ALLOW_IMPERSONATION</p>
           <label class="switch mb-0" for="ImpersonatingEnabled">
             <input
               type="checkbox"
@@ -70,7 +83,7 @@
           </label>
         </div>
         <div class="form-group" *ngIf="showImpersonation">
-          <label for="Name">Buyer Site URL</label>
+          <label for="Name" translate>BUYER.EDIT_FORM.BUYER_SITE_URL</label>
           <input
             type="text"
             class="form-control"
@@ -81,11 +94,15 @@
             [resourceForm]="resourceForm"
             formControlName="URL"
             (input)="updateResourceFromEvent($event, 'Buyer.xp.URL')"
-            placeholder="Enter Url used by buyer site"
+            [placeholder]="
+              'BUYER.EDIT_FORM.BUYER_SITE_URL_PLACEHOLDER' | translate
+            "
           />
         </div>
         <div class="form-group" *ngIf="showImpersonation">
-          <label for="Name">Buyer Site Client ID</label>
+          <label for="Name" translate
+            >BUYER.EDIT_FORM.BUYER_SITE_CLIENT_ID</label
+          >
           <input
             type="text"
             class="form-control"
@@ -95,8 +112,12 @@
             maxlength="100"
             [resourceForm]="resourceForm"
             formControlName="ClientID"
-            (input)="updateResourceFromEvent($event, 'ImpersonationConfig.ClientID')"
-            placeholder="Enter client ID used by buyer site"
+            (input)="
+              updateResourceFromEvent($event, 'ImpersonationConfig.ClientID')
+            "
+            [placeholder]="
+              'BUYER.EDIT_FORM.BUYER_SITE_CLIENT_ID_PLACEHOLDER' | translate
+            "
           />
         </div>
       </div>
@@ -104,8 +125,8 @@
   </form>
   <div *ngIf="helperMessage" class="mb-4">
     <span class="font-italic" translate>
-      {{helperMessage}}
-      <a href="{{helperLink}}" translate>{{helperAction}}</a>
+      {{ helperMessage }}
+      <a href="{{ helperLink }}" translate>{{ helperAction }}</a>
     </span>
   </div>
   <action-menu-component

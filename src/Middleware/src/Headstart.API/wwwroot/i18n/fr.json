@@ -614,6 +614,20 @@
     }
   },
   "BUYER": {
+    "BASIC_DETAILS": "Détails de base de la",
+    "DETAILS": "Détails",
+    "EDIT_FORM": {
+      "ACTIVE": "Actif",
+      "ALLOW_IMPERSONATION": "Autoriser l'emprunt d'identité",
+      "BUYER_SITE_CLIENT_ID": "ID client du site de l'acheteur",
+      "BUYER_SITE_CLIENT_ID_PLACEHOLDER": "Saisissez l'ID client utilisé par le site de l'acheteur",
+      "BUYER_SITE_URL": "URL du site de l'acheteur",
+      "BUYER_SITE_URL_PLACEHOLDER": "Entrez l'URL du site utilisée par le site de l'acheteur",
+      "NAME": "Nom",
+      "NAME_PLACEHOLDER": "Entrez le nom",
+      "PRODUCT_MARKUP_PERCENT": "Pourcentage de majoration du produit",
+      "PRODUCT_MARKUP_PERCENT_PLACEHOLDER": "Entrez le balisage"
+    },
     "HELPERMESSAGES": {
       "BUYERGROUP": {
         "ACTION": "Définissez les groupes d’acheteurs maintenant.",

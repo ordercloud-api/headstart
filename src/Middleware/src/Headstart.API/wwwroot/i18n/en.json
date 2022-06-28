@@ -615,6 +615,20 @@
     }
   },
   "BUYER": {
+    "BASIC_DETAILS": "Basic details of the",
+    "DETAILS": "Details",
+    "EDIT_FORM": {
+      "ACTIVE": "Active",
+      "ALLOW_IMPERSONATION": "Allow Impersonation",
+      "BUYER_SITE_CLIENT_ID": "Buyer Site Client ID",
+      "BUYER_SITE_CLIENT_ID_PLACEHOLDER": "Enter client ID used by buyer site",
+      "BUYER_SITE_URL": "Buyer Site URL",
+      "BUYER_SITE_URL_PLACEHOLDER": "Enter site url used by buyer site",
+      "NAME": "Name",
+      "NAME_PLACEHOLDER": "Enter Name",
+      "PRODUCT_MARKUP_PERCENT": "Product Markup Percent",
+      "PRODUCT_MARKUP_PERCENT_PLACEHOLDER": "Enter Markup"
+    },
     "HELPERMESSAGES": {
       "BUYERGROUP": {
         "ACTION": "Set Buyer Groups now.",
@@ -998,7 +1012,7 @@
       "TO_CART": "to Cart"
     },
     "CAROUSEL": {
-      "RELATED_PRODUCTS":  "Related Products"
+      "RELATED_PRODUCTS": "Related Products"
     },
     "CONTACT_SUPPLIER": {
       "CANCEL": "Cancel",
