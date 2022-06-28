@@ -115,6 +115,9 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   buyProductsCollapsed = false
   getProductsCollapsed = true
   currentDateTime: string
+  private dateTimeFormat = 'YYYY-MM-DD[T]HH:mm'
+  private isLocalDateTime = false
+
   constructor(
     public promotionService: PromotionService,
     private ocPromotionService: OcPromotionService,
@@ -141,25 +144,45 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   ngOnChanges(): void {
     this.productsCollapsed =
       this._promotionEditable?.xp?.AppliesTo !== HSPromoEligibility.SpecificSKUs
-    this.currentDateTime = moment().format('YYYY-MM-DD[T]hh:mm')
+    this.currentDateTime = this.createDateTimeMoment().format(
+      this.dateTimeFormat
+    )
+  }
+
+  createDateTimeMoment(inp?: moment.MomentInput): moment.Moment {
+    if (this.isLocalDateTime) {
+      return moment(inp)
+    } else {
+      return moment.utc(inp)
+    }
+  }
+
+  toUTCString(inp?: moment.MomentInput): string {
+    if (this.isLocalDateTime) {
+      const parsedMoment = this.createDateTimeMoment(inp).format()
+      return moment.utc(parsedMoment).format()
+    }
+    return inp as string
   }
 
   refreshPromoData(promo: Promotion<PromotionXp>): void {
     this.productsCollapsed =
       promo?.xp?.AppliesTo !== HSPromoEligibility.SpecificSKUs
-    const now = moment(Date.now()).format('YYYY-MM-DD[T]hh:mm')
+    const now = this.createDateTimeMoment().format(this.dateTimeFormat)
     this.isExpired = promo.ExpirationDate
       ? Date.parse(promo.ExpirationDate) < Date.parse(now)
       : false
     this.hasNotBegun = Date.parse(promo.StartDate) > Date.parse(now)
     // Modify the datetime to work with the UI
     if (promo.StartDate)
-      promo.StartDate = moment(promo.StartDate).format('YYYY-MM-DD[T]hh:mm')
+      promo.StartDate = this.createDateTimeMoment(promo.StartDate).format(
+        this.dateTimeFormat
+      )
     if (promo.ExpirationDate) {
       this.hasExpiration = true
-      promo.ExpirationDate = promo.ExpirationDate = moment(
+      promo.ExpirationDate = promo.ExpirationDate = this.createDateTimeMoment(
         promo.ExpirationDate
-      ).format('YYYY-MM-DD[T]hh:mm')
+      ).format(this.dateTimeFormat)
     } else {
       this.hasExpiration = false
     }
@@ -636,16 +659,16 @@ export class PromotionEditComponent implements OnInit, OnChanges {
       'ADMIN.PROMOTIONS.DISPLAY.DATE.VALID_FROM'
     )
     const formattedStart =
-      this._promotionEditable.StartDate.substr(0, 4) === moment().format('YYYY')
-        ? moment(this._promotionEditable.StartDate).format('MMM Do')
-        : moment(this._promotionEditable.StartDate).format('MMM Do, YYYY')
+      this._promotionEditable.StartDate.substr(0, 4) === this.createDateTimeMoment().format('YYYY')
+        ? this.createDateTimeMoment(this._promotionEditable.StartDate).format('MMM Do')
+        : this.createDateTimeMoment(this._promotionEditable.StartDate).format('MMM Do, YYYY')
     const formattedExpiry =
       this._promotionEditable.ExpirationDate.substr(0, 4) ===
-      moment().format('YYYY')
-        ? moment(this._promotionEditable.ExpirationDate).format('MMM Do')
-        : moment(this._promotionEditable.ExpirationDate).format('MMM Do, YYYY')
-    moment(this._promotionEditable.StartDate).format('MM-DD-YYYY') ===
-    moment().format('MM-DD-YYYY')
+      this.createDateTimeMoment().format('YYYY')
+        ? this.createDateTimeMoment(this._promotionEditable.ExpirationDate).format('MMM Do')
+        : this.createDateTimeMoment(this._promotionEditable.ExpirationDate).format('MMM Do, YYYY')
+    this.createDateTimeMoment(this._promotionEditable.StartDate).format('MM-DD-YYYY') ===
+    this.createDateTimeMoment().format('MM-DD-YYYY')
       ? (dateRangeString = `${dateRangeString} ${this.translate.instant(
           'ADMIN.PROMOTIONS.DISPLAY.DATE.TODAY_TO'
         )} ${formattedExpiry}`)
@@ -747,11 +770,20 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   }
 
   async handleSave(): Promise<void> {
+    this._promotionEditable.StartDate = this.toUTCString(
+      this._promotionEditable.StartDate
+    )
+    if (this._promotionEditable.ExpirationDate) {
+      this._promotionEditable.ExpirationDate = this.toUTCString(
+        this._promotionEditable.ExpirationDate
+      )
+    }
     if (this.isCreatingNew) {
       this._promotionEditable.ID = null
       await this.createPromotion(this._promotionEditable)
     } else {
       await this.updatePromotion(this._promotionEditable)
+      this.cdr.detectChanges()
     }
   }
 
