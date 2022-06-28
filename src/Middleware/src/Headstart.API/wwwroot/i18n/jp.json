@@ -635,6 +635,28 @@
       }
     }
   },
+  "BUYER_USER": {
+    "ACCOUNT_INFORMATION_HEADER": "口座情報",
+    "ACCOUNT_INFORMATION_DESCRIPTION": "このユーザーのアカウントに関する情報。",
+    "NO_ASSIGNED_LOCATIONS_MESSAGE": "Unassign locations to change Home Country.",
+    "PERSONAL_INFORMATION_HEADER": "個人情報",
+    "PERSONAL_INFORMATION_DESCRIPTION": "このユーザーに関する情報。",
+    "EDIT_FORM": {
+      "ACTIVE": "アクティブ",
+      "EMAIL": "Eメール",
+      "EMAIL_INVALID_ERROR": "有効なメールアドレスを入力してください",
+      "EMAIL_PLACEHOLDER": "メールアドレスを入力して",
+      "FIRST_NAME": "ファーストネーム",
+      "FIRST_NAME_PLACEHOLDER": "名を入力してください",
+      "HOME_COUNTRY": "本国",
+      "HOME_COUNTRY_PLACEHOLDER": "国を選択",
+      "HOME_COUNTRY_CODE_PLACEHOLDER": "国コードを入力してください",
+      "LAST_NAME": "苗字",
+      "LAST_NAME_PLACEHOLDER": "姓を入力",
+      "USERNAME": "ユーザー名",
+      "USERNAME_PLACEHOLDER": "ユーザーネームを入力してください"
+    }
+  },
   "CART": {
     "CART": {
       "CART_IS_EMPTY": "カートに商品がありません。",

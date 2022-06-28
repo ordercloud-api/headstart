@@ -641,6 +641,28 @@
       }
     }
   },
+  "BUYER_USER": {
+    "ACCOUNT_INFORMATION_HEADER": "Information sur le compte",
+    "ACCOUNT_INFORMATION_DESCRIPTION": "Informations sur le compte de cet utilisateur.",
+    "NO_ASSIGNED_LOCATIONS_MESSAGE": "Unassign locations to change Home Country.",
+    "PERSONAL_INFORMATION_HEADER": "Renseignements personnels",
+    "PERSONAL_INFORMATION_DESCRIPTION": "Informations sur cet utilisateur.",
+    "EDIT_FORM": {
+      "ACTIVE": "Actif",
+      "EMAIL": "E-mail",
+      "EMAIL_INVALID_ERROR": "S'il vous plaît, mettez une adresse email valide",
+      "EMAIL_PLACEHOLDER": "Entrez l'e-mail",
+      "FIRST_NAME": "Prénom",
+      "FIRST_NAME_PLACEHOLDER": "Entrez votre prénom",
+      "HOME_COUNTRY": "Pays natal",
+      "HOME_COUNTRY_PLACEHOLDER": "Choisissez un pays",
+      "HOME_COUNTRY_CODE_PLACEHOLDER": "Entrez un code de pays",
+      "LAST_NAME": "Nom de famille",
+      "LAST_NAME_PLACEHOLDER": "Entrer le nom de famille",
+      "USERNAME": "Nom d'utilisateur",
+      "USERNAME_PLACEHOLDER": "Saisissez votre nom d'utilisateur"
+    }
+  },
   "CART": {
     "CART": {
       "CART_IS_EMPTY": "Vous n’avez aucun article dans votre panier",

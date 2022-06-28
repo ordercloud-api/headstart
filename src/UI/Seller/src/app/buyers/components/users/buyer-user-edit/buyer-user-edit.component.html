@@ -1,16 +1,18 @@
 <div class="container-fluid">
   <form *ngIf="resourceForm" [formGroup]="resourceForm">
-    <span class="required-field" > * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span>
+    <span class="required-field">
+      * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span
+    >
     <div class="row pt-3">
       <div class="col-md-5">
-        <h5>Account Information</h5>
-        <p class="font-italic">
-          Information about this user's Headstart account.
+        <h5 translate>BUYER_USER.ACCOUNT_INFORMATION_HEADER</h5>
+        <p class="font-italic" translate>
+          BUYER_USER.ACCOUNT_INFORMATION_DESCRIPTION
         </p>
       </div>
       <div class="col-md-7 form-group">
         <div class="form-group">
-          <p class="mb-1">Active</p>
+          <p class="mb-1" translate>BUYER_USER.EDIT_FORM.ACTIVE</p>
           <label class="switch mb-0" for="Active">
             <input
               type="checkbox"
@@ -27,7 +29,10 @@
         </div>
         <div class="form-row">
           <div class="form-group col-md-6">
-            <label for="Username">Username <span class="required-field">*</span></label>
+            <label for="Username" translate
+              >BUYER_USER.EDIT_FORM.USERNAME
+              <span class="required-field">*</span></label
+            >
             <input
               type="text"
               class="form-control"
@@ -37,11 +42,16 @@
               aria-describedby="Username"
               formControlName="Username"
               (input)="updateResourceFromEvent()"
-              placeholder="Enter Username"
+              [placeholder]="
+                'BUYER_USER.EDIT_FORM.USERNAME_PLACEHOLDER' | translate
+              "
             />
           </div>
           <div class="form-group col-md-6">
-            <label for="Email">Email <span class="required-field">*</span></label>
+            <label for="Email" translate
+              >BUYER_USER.EDIT_FORM.EMAIL
+              <span class="required-field">*</span></label
+            >
             <input
               type="text"
               class="form-control"
@@ -52,23 +62,31 @@
               aria-describedby="Email"
               formControlName="Email"
               (input)="updateResourceFromEvent()"
-              placeholder="Enter Email"
+              [placeholder]="
+                'BUYER_USER.EDIT_FORM.EMAIL_PLACEHOLDER' | translate
+              "
             />
-            <span *ngIf="hasValidEmailError()"
-            class="error-message">Please enter a valid email address</span>
+            <span *ngIf="hasValidEmailError()" class="error-message" translate
+              >BUYER_USER.EDIT_FORM.EMAIL_INVALID_ERROR</span
+            >
           </div>
         </div>
       </div>
     </div>
     <div class="row pt-3">
       <div class="col-md-5">
-        <h5>Personal Information</h5>
-        <p class="font-italic">Information about this user.</p>
+        <h5 translate>BUYER_USER.PERSONAL_INFORMATION_HEADER</h5>
+        <p class="font-italic" translate>
+          BUYER_USER.PERSONAL_INFORMATION_DESCRIPTION
+        </p>
       </div>
       <div class="col-md-7 form-group">
         <div class="form-row">
           <div class="form-group col-md-6">
-            <label for="FirstName">First Name <span class="required-field">*</span></label>
+            <label for="FirstName" translate
+              >BUYER_USER.EDIT_FORM.FIRST_NAME
+              <span class="required-field">*</span></label
+            >
             <input
               type="text"
               class="form-control"
@@ -78,11 +96,16 @@
               aria-describedby="FirstName"
               formControlName="FirstName"
               (input)="updateResourceFromEvent()"
-              placeholder="Enter First Name"
+              [placeholder]="
+                'BUYER_USER.EDIT_FORM.FIRST_NAME_PLACEHOLDER' | translate
+              "
             />
           </div>
           <div class="form-group col-md-6">
-            <label for="LastName">Last Name <span class="required-field">*</span></label>
+            <label for="LastName" translate
+              >BUYER_USER.EDIT_FORM.LAST_NAME
+              <span class="required-field">*</span></label
+            >
             <input
               type="text"
               class="form-control"
@@ -92,13 +115,18 @@
               aria-describedby="LastName"
               formControlName="LastName"
               (input)="updateResourceFromEvent()"
-              placeholder="Enter Last Name"
+              [placeholder]="
+                'BUYER_USER.EDIT_FORM.LAST_NAME_PLACEHOLDER' | translate
+              "
             />
           </div>
         </div>
         <div class="form-row">
           <div class="form-group col-md-6">
-            <label for="Country">Home Country <span class="required-field">*</span></label>
+            <label for="Country" translate
+              >BUYER_USER.EDIT_FORM.HOME_COUNTRY
+              <span class="required-field">*</span></label
+            >
             <select
               *ngIf="countryOptions.length"
               type="dropdown"
@@ -109,7 +137,9 @@
               aria-describedby="Country"
               (change)="updateResourceFromEvent()"
             >
-              <option [ngValue]="''" disabled>Select a Country</option>
+              <option [ngValue]="''" disabled translate>
+                BUYER_USER.EDIT_FORM.HOME_COUNTRY_PLACEHOLDER
+              </option>
               <option
                 *ngFor="let country of countryOptions"
                 [value]="country.abbreviation"
@@ -128,13 +158,16 @@
               [resourceForm]="resourceForm"
               formControlName="Country"
               (input)="updateResourceFromEvent()"
-              placeholder="Enter Country Code"
+              [placeholder]="
+                'BUYER_USER.EDIT_FORM.HOME_COUNTRY_CODE_PLACEHOLDER' | translate
+              "
             />
             <p
               *ngIf="isUserAssignedToGroups"
               class="mt-2 font-italic text-muted"
+              translate
             >
-              Unassign locations to change Home Country.
+              BUYER_USER.EDIT_FORM.NO_ASSIGNED_LOCATIONS_MESSAGE
             </p>
           </div>
         </div>

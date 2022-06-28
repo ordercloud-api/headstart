@@ -642,6 +642,28 @@
       }
     }
   },
+  "BUYER_USER": {
+    "ACCOUNT_INFORMATION_HEADER": "Account Information",
+    "ACCOUNT_INFORMATION_DESCRIPTION": "Information about this user's account.",
+    "NO_ASSIGNED_LOCATIONS_MESSAGE": "Unassign locations to change Home Country.",
+    "PERSONAL_INFORMATION_HEADER": "Personal Information",
+    "PERSONAL_INFORMATION_DESCRIPTION": "Information about this user.",
+    "EDIT_FORM": {
+      "ACTIVE": "Active",
+      "EMAIL": "Email",
+      "EMAIL_INVALID_ERROR": "Please enter a valid email address",
+      "EMAIL_PLACEHOLDER": "Enter Email",
+      "FIRST_NAME": "First Name",
+      "FIRST_NAME_PLACEHOLDER": "Enter First Name",
+      "HOME_COUNTRY": "Home Country",
+      "HOME_COUNTRY_PLACEHOLDER": "Select a Country",
+      "HOME_COUNTRY_CODE_PLACEHOLDER": "Enter a Country Code",
+      "LAST_NAME": "Last Name",
+      "LAST_NAME_PLACEHOLDER": "Enter Last Name",
+      "USERNAME": "Username",
+      "USERNAME_PLACEHOLDER": "Enter Username"
+    }
+  },
   "CART": {
     "CART": {
       "CART_IS_EMPTY": "You do not have any items in your cart",
