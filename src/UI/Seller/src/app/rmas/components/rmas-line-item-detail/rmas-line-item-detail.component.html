@@ -49,13 +49,13 @@
           {{ getRMALineItem(li)?.QuantityProcessed }}
         </td>
         <td class="align-middle text-center">
-          {{ getRefundStatus(getRMALineItem(li)) }}
+          {{ getRefundStatus(getRMALineItem(li)) | translate }}
         </td>
         <td class="align-middle">
-          {{ getValueSplitByCapitalLetter(getRMALineItem(li)?.Reason) }}
+          {{ getRMALineItem(li)?.Reason | rmaReturnReason | translate }}
         </td>
         <td class="align-middle">
-          {{ getValueSplitByCapitalLetter(getRMALineItem(li)?.Status) }}
+          {{ getRMALineItem(li)?.Status | rmaStatus | translate }}
         </td>
         <td class="align-middle">
           {{

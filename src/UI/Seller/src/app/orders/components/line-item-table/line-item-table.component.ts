@@ -6,6 +6,8 @@ import { MeUser, OcOrderService } from '@ordercloud/angular-sdk'
 import { LineItem, LineItemSpec } from 'ordercloud-javascript-sdk'
 import { AppConfig, RegexService } from '@app-seller/shared'
 import { getPrimaryLineItemImage } from '@app-seller/shared/services/assets/asset.helper'
+import { LineItemStatusPipe } from '@app-seller/shared/pipes/lineitem-status.pipe'
+import { TranslateService } from '@ngx-translate/core'
 
 @Component({
   selector: 'app-line-item-table',
@@ -38,6 +40,8 @@ export class LineItemTableComponent {
   constructor(
     private ocOrderService: OcOrderService,
     private regexService: RegexService,
+    private lineitemStatusPipe: LineItemStatusPipe,
+    private translateService: TranslateService,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {}
 
@@ -89,15 +93,16 @@ export class LineItemTableComponent {
     li?.Specs?.filter((s) => s.OptionID === null)
 
   getLineItemStatusDisplay(lineItem: HSLineItem): string {
-    if(!lineItem?.xp?.StatusByQuantity) {
+    if (!lineItem?.xp?.StatusByQuantity) {
       // If StatusByQuantity is missing this generally means that something failed during post submit (that's where those values are initialized)
       return 'N/A'
     }
     return Object.entries(lineItem.xp.StatusByQuantity)
       .filter(([, quantity]) => quantity)
       .map(([status, quantity]) => {
-        const readableStatus =
-          this.regexService.getStatusSplitByCapitalLetter(status)
+        const readableStatus = this.translateService.instant(
+          this.lineitemStatusPipe.transform(status)
+        ) as string
         return `${quantity} ${readableStatus}`
       })
       .join(', ')

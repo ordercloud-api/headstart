@@ -1,4 +1,6 @@
-<h5 class="mb-3 font-weight-bold">{{ rma?.Type }} Approval</h5>
+<h5 class="mb-3 font-weight-bold">
+  {{ rma?.Type | rmaType | translate }} {{ 'ADMIN.RMAS.APPROVAL' | translate }}
+</h5>
 <form [formGroup]="rmaLineItemForm" name="RMALineItemForm">
   <div
     *ngFor="let li of relatedLineItems; let i = index"
@@ -22,13 +24,22 @@
           </div>
           <div class="col-sm-3">
             <div>
-              <h6 translate>ADMIN.RMAS.REQUESTED_QUANTITY</h6>
+              <h6 translate>
+                <strong
+                  >{{ 'ADMIN.RMAS.REQUESTED_QUANTITY' | translate }}:</strong
+                >
+              </h6>
               <span>{{ getRMALineItem(li)?.QuantityRequested }}</span>
             </div>
             <div class="mt-5">
-              <h6>Reason for {{ rma?.Type }}</h6>
+              <h6>
+                <strong>
+                  {{ 'ADMIN.RMAS.REASON_FOR' | translate }}
+                  {{ rma?.Type | rmaType | translate }}:
+                </strong>
+              </h6>
               <span>{{
-                getValueSplitByCapitalLetter(getRMALineItem(li)?.Reason)
+                getRMALineItem(li)?.Reason | rmaReturnReason | translate
               }}</span>
             </div>
           </div>

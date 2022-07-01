@@ -7,8 +7,10 @@
       <div class="row" *ngIf="suppliers?.length > 0 && suppliers[i]?.supplier">
         <div class="col-md">
           <h2 class="card-title h6 mb-0">
-            <span class="text-medium font-weight-light">{{'CART.LINEITEM_TABLE.SHIP_FROM' | translate}}:</span
-            > {{ suppliers[i].supplier.Name }}
+            <span class="text-medium font-weight-light"
+              >{{ 'CART.LINEITEM_TABLE.SHIP_FROM' | translate }}:</span
+            >
+            {{ suppliers[i].supplier.Name }}
           </h2>
         </div>
         <div
@@ -37,9 +39,7 @@
     </div>
     <div class="card-body pt-sm-2">
       <!-- Line Item Labels: Start -->
-      <div
-        class="d-none d-sm-block border-bottom border-light pb-2"
-      >
+      <div class="d-none d-sm-block border-bottom border-light pb-2">
         <div class="row">
           <div class="col-md-6"></div>
           <div class="col-md-6">
@@ -110,10 +110,7 @@
           <div class="col-md-6" *ngIf="li">
             <div class="row align-items-sm-center">
               <div class="col-md-3 col-sm-6 pr-md-3">
-                <a
-                  class="d-block"
-                  (click)="toProductDetails(li.Product.ID)"
-                >
+                <a class="d-block" (click)="toProductDetails(li.Product.ID)">
                   <img
                     class="img-thumbnail w-100"
                     [src]="li.xp?.ImageUrl || getImageUrl(li.ID)"
@@ -126,10 +123,17 @@
                   (click)="toProductDetails(li.Product.ID)"
                   class="text-dark font-weight-medium line-height-1"
                 >
-                  {{ li | productNameWithSpecs }} 
-                  <span *ngIf="li?.Product?.xp?.ProductType === 'Quote'" 
-                        class="small badge badge-pill badge-warning ml-2 order-type-text">
-                        {{ li?.Product?.xp?.ProductType }}
+                  {{ li | productNameWithSpecs }}
+                  <span
+                    *ngIf="li?.Product?.xp?.ProductType === 'Quote'"
+                    class="
+                      small
+                      badge badge-pill badge-warning
+                      ml-2
+                      order-type-text
+                    "
+                  >
+                    {{ li?.Product?.xp?.ProductType }}
                   </span>
                 </a>
                 <small class="text-muted d-block">{{ li.Product.ID }}</small>
@@ -140,7 +144,9 @@
                 >
                   CART.LINEITEM_TABLE.RETURNED
                   <span class="text-muted" translate>{{
-                    getReturnReason(li.xp?.LineItemReturnInfo?.ReturnReason)
+                    li.xp?.LineItemReturnInfo?.ReturnReason
+                      | rmaReturnReason
+                      | translate
                   }}</span>
                 </small>
                 <small *ngIf="li.xp?.LineItemReturnInfo?.Comment">
@@ -168,7 +174,7 @@
                 </div>
                 <div *ngIf="rma">
                   <span translate>ORDERS.DETAIL.REASON</span>:
-                  {{ getRMALineItemReason(li) | splitByCapitalLetter }}
+                  {{ getRMALineItemReason(li) | rmaReturnReason | translate }}
                 </div>
 
                 <div *ngIf="rma">

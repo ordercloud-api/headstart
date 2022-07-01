@@ -244,7 +244,9 @@ export class OrderDetailsComponent {
   }
 
   getQuotePriceButtonText() {
-    return this.isSettingQuotePrice ? 'Cancel Pricing' : 'Set Quote Price'
+    return this.isSettingQuotePrice
+      ? 'ADMIN.ORDERS.CANCEL_PRICING'
+      : 'ADMIN.ORDERS.SET_QUOTE_PRICE'
   }
 
   toggleSetQuotePrice() {

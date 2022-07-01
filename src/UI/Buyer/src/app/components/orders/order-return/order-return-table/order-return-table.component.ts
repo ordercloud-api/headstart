@@ -81,13 +81,6 @@ export class OCMOrderReturnTable {
     this.context.router.toProductDetails(productID)
   }
 
-  getReasonCode(reason: CancelReturnReason): string {
-    const reasonCode = Object.keys(CancelReturnReason).find(
-      (key) => CancelReturnReason[key] === reason
-    )
-    return reasonCode
-  }
-
   /** Whether the number of selected elements matches the total number of enabled rows. */
   isAllEnabledSelected(): boolean {
     let numEnabledRows = 0

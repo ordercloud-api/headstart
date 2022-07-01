@@ -1,8 +1,8 @@
 <!-- User Permissions -->
 <div class="row pt-3 mt-3 bg-white shadow-sm card-highlight-border">
   <div class="col-md-5">
-    <h5>{{ displayText.Title }}</h5>
-    <p class="font-italic">{{ displayText.InfoText }}</p>
+    <h5>{{ displayText.Title | translate }}</h5>
+    <p class="font-italic">{{ displayText.InfoText | translate }}</p>
   </div>
   <div class="col-md-7">
     <!-- TO-DO - May want to look into transclusion for this section (toggles/search). -->
@@ -18,7 +18,7 @@
         (click)="toggleUserGroupAssignmentView(false)"
         translate
       >
-        View All
+        ADMIN.USERGROUP_ASSIGNMENTS.VIEW_ALL
       </button>
       <button
         type="button"
@@ -27,7 +27,7 @@
         (click)="toggleUserGroupAssignmentView(true)"
         translate
       >
-        View Assigned
+        ADMIN.USERGROUP_ASSIGNMENTS.VIEW_ASSIGNED
       </button>
     </div>
     <search-component
@@ -51,11 +51,11 @@
       <table *ngIf="userGroups?.Meta" class="table table-hover">
         <thead>
           <tr>
-            <th scope="col">Assigned</th>
-            <th scope="col">{{ displayText.Column2 }}</th>
+            <th scope="col" translate>ADMIN.USERGROUP_ASSIGNMENTS.ASSIGNED</th>
+            <th scope="col">{{ displayText.Column2 | translate }}</th>
             <th scope="col">ID</th>
             <th scope="col" *ngIf="userGroupType === 'UserPermissions'">
-              Description
+              ADMIN.USERGROUP_ASSIGNMENTS.DESCRIPTION
             </th>
           </tr>
         </thead>
@@ -85,8 +85,12 @@
           <tr *ngIf="!userGroups?.Items?.length">
             <td>
               <span *ngIf="searchTermInput" class="font-italic"
-                >Your search for "{{ searchTermInput }}" yielded no
-                results.</span
+                >{{
+                  'ADMIN.USERGROUP_ASSIGNMENTS.YOUR_SEARCH_FOR' | translate
+                }}
+                "{{ searchTermInput }}"{{
+                  'ADMIN.USERGROUP_ASSIGNMENTS.YIELDED_NO_RESULTS' | translate
+                }}</span
               >
               <span
                 *ngIf="!searchTermInput && viewAssignedUserGroups"
@@ -127,7 +131,7 @@
         class="btn btn-link"
         (click)="discardUserUserGroupAssignmentChanges()"
       >
-        {{ areChanges ? 'Cancel' : 'No Changes' }}
+        {{ areChanges ? 'ADMIN.COMMON.CANCEL' : 'ADMIN.COMMON.NO_CHANGES' }}
       </button>
       <button
         *ngIf="areChanges && !requestedUserConfirmation"
@@ -143,8 +147,9 @@
         *ngIf="requestedUserConfirmation && areChanges"
         class="btn btn-primary"
         (click)="executeUserUserGroupAssignmentRequests()"
+        translate
       >
-        Confirm
+        ADMIN.COMMON.CONFIRM
       </button>
       <div
         *ngIf="areChanges && requestedUserConfirmation"
@@ -159,9 +164,9 @@
             <p class="mb-0 d-flex flex-column">
               <small class="font-weight-bold"
                 >This is a potentially destructive action that affects
-                {{ displayText.Title }}.</small
+                {{ displayText.Title | translate }}.</small
               >
-              {{ displayText.ConfirmText }}
+              {{ displayText.ConfirmText | translate }}
             </p>
           </div>
         </div>

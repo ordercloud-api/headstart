@@ -1,5 +1,5 @@
 // angular
-import { NgModule, ModuleWithProviders } from '@angular/core'
+import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
 import { HttpClientModule } from '@angular/common/http'
 import { ReactiveFormsModule, FormsModule } from '@angular/forms'
@@ -57,6 +57,11 @@ import { ProductCategoryAssignment } from './components/buyer-visibility/product
 import { ResourceListMeta } from './components/resource-list-meta/resource-list-meta.component'
 import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
 import { RouterModule } from '@angular/router'
+import { RmaStatusPipe } from './pipes/rma-status.pipe'
+import { RmaTypePipe } from './pipes/rma-type.pipe'
+import { SubmittedOrderStatusPipe } from './pipes/submitted-order-status.pipe'
+import { LineItemStatusPipe } from './pipes/lineitem-status.pipe'
+import { RmaReturnReasonPipe } from './pipes/rma-return-reason.pipe'
 
 @NgModule({
   imports: [
@@ -119,6 +124,11 @@ import { RouterModule } from '@angular/router'
     DeleteConfirmModal,
     ReturnForm,
     PhoneFormatPipe,
+    RmaStatusPipe,
+    RmaTypePipe,
+    SubmittedOrderStatusPipe,
+    LineItemStatusPipe,
+    RmaReturnReasonPipe,
     YesNoFormatPipe,
     SafeHTMLPipe,
     ProductNameWithSpecsPipe,
@@ -166,18 +176,16 @@ import { RouterModule } from '@angular/router'
     ResourceListMeta,
     // Pipes
     PhoneFormatPipe,
+    RmaStatusPipe,
+    RmaTypePipe,
+    SubmittedOrderStatusPipe,
+    LineItemStatusPipe,
+    RmaReturnReasonPipe,
     YesNoFormatPipe,
     ResourceBreadcrumbsComponent,
     SafeHTMLPipe,
     ProductNameWithSpecsPipe,
-    UnCamelPipe
+    UnCamelPipe,
   ],
 })
-export class SharedModule {
-  static forRoot(): ModuleWithProviders<SharedModule> {
-    return {
-      ngModule: SharedModule,
-      providers: [],
-    }
-  }
-}
+export class SharedModule {}

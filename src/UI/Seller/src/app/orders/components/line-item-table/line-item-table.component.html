@@ -6,8 +6,8 @@
     <div class="card-header py-2 px-3">
       <div class="row">
         <div class="col">
-          <small class="font-weight-bolder text-uppercase text-muted"
-            >Ship From</small
+          <small class="font-weight-bolder text-uppercase text-muted" translate
+            >ADMIN.LINE_ITEMS.SHIP_FROM</small
           >
           <h5 class="card-title mb-0">
             {{
@@ -30,8 +30,8 @@
           </h5>
         </div>
         <div class="col text-right">
-          <small class="font-weight-bolder text-uppercase text-muted"
-            >Ship Method</small
+          <small class="font-weight-bolder text-uppercase text-muted" translate
+            >ADMIN.LINE_ITEMS.SHIP_METHOD</small
           >
           <h5 class="card-title mb-0">{{ getShipMethodString(liGroup[0]) }}</h5>
         </div>
@@ -44,12 +44,12 @@
       >
         <thead>
           <tr>
-            <th>Product</th>
-            <th>Description</th>
-            <th>Quantity</th>
-            <th>Comments</th>
-            <th>Status</th>
-            <th>Total</th>
+            <th translate>ADMIN.LINE_ITEMS.PRODUCT</th>
+            <th translate>ADMIN.LINE_ITEMS.DESCRIPTION</th>
+            <th translate>ADMIN.LINE_ITEMS.QUANTITY</th>
+            <th translate>ADMIN.LINE_ITEMS.COMMENTS</th>
+            <th translate>ADMIN.LINE_ITEMS.STATUS</th>
+            <th translate>ADMIN.LINE_ITEMS.TOTAL</th>
           </tr>
         </thead>
         <tbody>
@@ -97,22 +97,22 @@
                 <!-- Possible TO-DO: If a line item would have multiple returns/cancellations on it, a UI to support a better return view may be needed. -->
                 <div class="d-flex flex-column">
                   <small *ngIf="li.xp.Returns[0]?.Reason"
-                    >Return Reason:
-                    {{
-                      getReturnOrCancelReason(li.xp.Returns[0].Reason)
-                    }}</small
+                    >{{ 'ADMIN.LINE_ITEMS.RETURN_REASON' | translate }}:
+                    {{ getReturnOrCancelReason() }}</small
                   >
                   <small *ngIf="li.xp.Returns[0]?.Comment"
-                    >Comment: {{ li.xp.Returns[0].Comment }}</small
+                    >{{ 'ADMIN.LINE_ITEMS.COMMENT' | translate }}:
+                    {{ li.xp.Returns[0].Comment }}</small
                   >
                   <small *ngIf="li.xp.Cancelations[0]?.Reason"
-                    >Cancel Reason:
+                    >{{ 'ADMIN.LINE_ITEMS.CANCEL_REASON' | translate }}:
                     {{
-                      getReturnOrCancelReason(li.xp.Cancelations[0].Reason)
+                      li.xp.Cancelations[0].Reason | rmaReturnReason | translate
                     }}</small
                   >
                   <small *ngIf="li.xp.Cancelations[0]?.Comment"
-                    >Comment: {{ li.xp.Cancelations[0].Comment }}</small
+                    >{{ 'ADMIN.LINE_ITEMS.COMMENT' | translate }}:
+                    {{ li.xp.Cancelations[0].Comment }}</small
                   >
                 </div>
               </div>

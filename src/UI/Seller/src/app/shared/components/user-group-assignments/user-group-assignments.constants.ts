@@ -1,24 +1,30 @@
-export const UserGroupTypes = {
-  UserPermissions: 'UserPermissions',
-  BuyerLocation: 'BuyerLocation',
+export interface UserGroupDisplayText {
+  Title: string
+  InfoText: string
+  ConfirmText: string
+  Column2: string
 }
 
 const MapToUserGroupDisplayText = {
   UserPermissions: {
-    Title: 'User Permissions',
-    InfoText: 'Select which permissions to grant this user.',
-    ConfirmText:
-      "Please confirm that you wish to alter this user's permissions.",
-    Column2: 'Permission',
+    Title: 'ADMIN.LOCATIONS.USER_PERMISSIONS',
+    InfoText: 'ADMIN.LOCATIONS.SELECT_PERMISSIONS_TO_GRANT',
+    ConfirmText: 'ADMIN.LOCATIONS.CONFIRM_PERMISSION_CHANGES',
+    Column2: 'ADMIN.LOCATIONS.PERMISSION',
   },
   BuyerLocation: {
-    Title: 'Locations',
-    InfoText: `Select this user's locations.`,
-    ConfirmText: "Please confirm that you wish to alter this user's locations.",
-    Column2: 'Location',
+    Title: 'ADMIN.LOCATIONS.LOCATIONS',
+    InfoText: `ADMIN.LOCATIONS.SELECT_USERS_LOCATIONS`,
+    ConfirmText: 'ADMIN.LOCATIONS.CONFIRM_PERMISSION_CHANGES',
+    Column2: 'ADMIN.LOCATIONS.LOCATION',
   },
 }
 
-export const GetDisplayText = (userGroupType: string): string => {
-  return MapToUserGroupDisplayText[userGroupType]
+export const GetDisplayText = (userGroupType: string): UserGroupDisplayText => {
+  return MapToUserGroupDisplayText[userGroupType] as UserGroupDisplayText
+}
+
+export const UserGroupTypes = {
+  UserPermissions: 'UserPermissions',
+  BuyerLocation: 'BuyerLocation',
 }

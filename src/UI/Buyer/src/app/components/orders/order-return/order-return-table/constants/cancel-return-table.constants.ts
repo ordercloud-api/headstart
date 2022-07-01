@@ -26,7 +26,7 @@ export const cancelHeaders: CancelReturnTableHeaders = {
 
 export const returnReasons: CancelReturnReason[] = [
   CancelReturnReason.IncorrectSizeOrStyle,
-  CancelReturnReason.IncorrectShipment,
+  CancelReturnReason.IncorrectProductShipped,
   CancelReturnReason.DoesNotMatchDescription,
   CancelReturnReason.ProductDefective,
   CancelReturnReason.PackagingDamaged,
