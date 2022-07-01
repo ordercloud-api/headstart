@@ -129,11 +129,11 @@
             {{ translationData?.Headers?.selectReason }}
           </option>
           <option
-            *ngFor="let reason of translationData.AvailableReasons"
-            [value]="getReasonCode(reason)"
+            *ngFor="let reasonCode of translationData.AvailableReasons"
+            [value]="reasonCode"
             translate
           >
-            {{ reason }}
+            {{ reasonCode | rmaReturnReason | translate }}
           </option>
         </select>
         <input

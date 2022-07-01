@@ -1,9 +1,16 @@
 import { SummaryResourceInfoPathsDictionary } from '@app-seller/models/shared.types'
 import { ResourceConfigurationDictionary } from '@app-seller/models/table-display.types'
+import { RmaStatusPipe } from '@app-seller/shared/pipes/rma-status.pipe'
+import { RmaTypePipe } from '@app-seller/shared/pipes/rma-type.pipe'
+import { SubmittedOrderStatusPipe } from '@app-seller/shared/pipes/submitted-order-status.pipe'
 import {
   PRODUCT_IMAGE_PATH_STRATEGY,
   SUPPLIER_LOGO_PATH_STRATEGY,
 } from '@app-seller/shared/services/assets/asset.helper'
+
+const rmaTypePipe = new RmaTypePipe()
+const submittedOrderStatusPipe = new SubmittedOrderStatusPipe()
+const rmaStatusPipe = new RmaStatusPipe()
 
 export const SUMMARY_RESOURCE_INFO_PATHS_DICTIONARY: SummaryResourceInfoPathsDictionary =
   {
@@ -387,6 +394,9 @@ export const FULL_TABLE_RESOURCE_DICTIONARY: ResourceConfigurationDictionary = {
         header: 'ADMIN.HEADERS.STATUS',
         type: BASIC_STRING,
         sortable: false,
+        mappingFunction: (value: string): string => {
+          return submittedOrderStatusPipe.transform(value)
+        },
       },
       {
         path: 'Comments',
@@ -437,14 +447,7 @@ export const FULL_TABLE_RESOURCE_DICTIONARY: ResourceConfigurationDictionary = {
         type: BASIC_STRING,
         sortable: false,
         mappingFunction: (value: string): string => {
-          // return translate key
-          if (value === 'Cancellation') {
-            return 'ADMIN.RMAS.CANCELLATION'
-          } else if (value === 'Return') {
-            return 'ADMIN.RMAS.RETURN'
-          } else {
-            return ''
-          }
+          return rmaTypePipe.transform(value)
         },
       },
       {
@@ -453,20 +456,7 @@ export const FULL_TABLE_RESOURCE_DICTIONARY: ResourceConfigurationDictionary = {
         type: BASIC_STRING,
         sortable: false,
         mappingFunction: (value: string): string => {
-          // return translate key
-          if (value === 'Requested') {
-            return 'ADMIN.RMAS.REQUESTED'
-          } else if (value === 'Denied') {
-            return 'ADMIN.RMAS.DENIED'
-          } else if (value === 'Processing') {
-            return 'ADMIN.RMAS.PROCESSING'
-          } else if (value === 'Approved') {
-            return 'ADMIN.RMAS.APPROVED'
-          } else if (value === 'Complete') {
-            return 'ADMIN.RMAS.COMPLETE'
-          } else {
-            return ''
-          }
+          return rmaStatusPipe.transform(value)
         },
       },
     ],

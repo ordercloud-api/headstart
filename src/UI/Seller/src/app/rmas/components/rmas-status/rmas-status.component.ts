@@ -17,7 +17,7 @@ export class RMAStatusComponent {
   @Input() buyerOrderData: Order
   @Input() supplierOrderData: Order
   rmaProgress: OrderProgress = {
-    StatusDisplay: 'Processing',
+    StatusDisplay: RMAStatus.Processing,
     Value: 25,
     ProgressBarType: 'primary',
     Striped: false,

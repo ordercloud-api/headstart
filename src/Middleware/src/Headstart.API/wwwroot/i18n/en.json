@@ -10,6 +10,7 @@
       }
     },
     "BUYER_USERS": {
+      "IMPERSONATE": "Imiter",
       "NO_ADDRESS_ASSIGNMENT": "This user has not been assigned to any buyer addresses."
     },
     "COMMON": {
@@ -22,6 +23,7 @@
       "EMAIL": "Email",
       "FIRST": "First Name",
       "FORGOT_PASSWORD": "Forgot Password",
+      "HIDE": "Hide",
       "LAST": "Last Name",
       "LOADING": "Loading...",
       "LOGIN": "Login",
@@ -37,6 +39,7 @@
       "SAVE_CHANGES": "Save Changes",
       "SAVING": "Saving",
       "SEARCH": "Search",
+      "SHOW": "Show",
       "SUBMIT": "Submit",
       "USERNAME": "Username"
     },
@@ -142,6 +145,27 @@
       "TOTAL_AMOUNT": "Total Amount",
       "USERNAME": "Username"
     },
+    "LINE_ITEMS": {
+      "CANCEL_REASON": "Cancel Reason",
+      "COMMENT": "Comment",
+      "DESCRIPTION": "Description",
+      "PRODUCT": "Product",
+      "QUANTITY": "Quantity",
+      "RETURN_REASON": "Return Reason",
+      "SHIP_FROM": "Ship From",
+      "SHIP_METHOD": "Ship Method",
+      "STATUS": "Status",
+      "TOTAL": "Total"
+    },
+    "LOCATIONS": {
+      "CONFIRM_PERMISSION_CHANGES": "Please confirm that you wish to alter this user's permissions.",
+      "LOCATION": "Location",
+      "LOCATIONS": "Locations",
+      "PERMISSION": "Permission",
+      "SELECT_PERMISSIONS_TO_GRANT": "Select which permissions to grant this user",
+      "SELECT_USERS_LOCATIONS": "Select this user's locations.",
+      "USER_PERMISSIONS": "User Permissions"
+    },
     "NAV": {
       "ALL_BUYERS": "All Buyers",
       "ALL_PRODUCTS": "All Products",
@@ -196,16 +220,37 @@
       "USERS": "Users"
     },
     "ORDERS": {
+      "BILL_TO": "Bill To",
       "CANCEL_PRICING": "Cancel Pricing",
+      "COMMENTS": "Comments",
+      "DOWNLOAD_INVOICE": "Download Order Invoice PDF",
+      "ENDING_IN": "Ending In",
+      "LOCATION_ID": "Location ID",
+      "ORDER": "Order",
+      "ORDER_PLACED": "Order Placed",
+      "PROMOTION_DISCOUNT": "Promotion Discount",
       "QUOTE_PRICE_EXPLANATION": {
         "A_QUOTED_PRICE": "A quoted price of",
         "IS_PENDING_BUYER": "is pending buyer review."
       },
+      "RMAS_ON_ORDER": "RMAs on Order",
       "SAVE_AND_NOTIFY": "Save and Notify Buyer",
-      "SET_QUOTE_PRICE": "Set Quote Price"
+      "SET_QUOTE_PRICE": "Set Quote Price",
+      "SUBTOTAL": "Subtotal",
+      "SHIPPING": "Shipping",
+      "SHIP_TO": "Ship To",
+      "SPENDING_ACCOUNT": "Spending Account",
+      "TAX": "Tax",
+      "TOTAL": "Total"
     },
     "PERMISSIONS": {
-      "LOCATION_APPROVAL_TOOLTIP": "No approval rules in this buyer group. Set an approval rule before granting OrderApprover permissions."
+      "ADDRESS_ADMIN": "Address Admin",
+      "CREDIT_CARD_ADMIN": "Credit Card Admin",
+      "LOCATION_APPROVAL_TOOLTIP": "No approval rules in this buyer group. Set an approval rule before granting OrderApprover permissions.",
+      "NEEDS_APPROVAL": "Needs Approval",
+      "ORDER_APPROVER": "Order Approver",
+      "PERMISSION_ADMIN": "Permission Admin",
+      "VIEW_ALL_ORDERS": "View All Orders"
     },
     "PIPES": {
       "NO": "No",
@@ -398,6 +443,7 @@
       "AUTO_APPLY": "Automatically apply promotion",
       "BUYER_ELIGIBILITY": "Buyer Eligibility",
       "CAN_BE_COMBINED": "Can be combined with other promotions",
+      "CHANGE_PRODUCT": "Change Product",
       "CLONE": "Clone",
       "DISCARD_CHANGES": "Discard Changes",
       "DISCOUNT_CODE": "Discount Code",
@@ -535,6 +581,7 @@
       "OVERRIDE_PERCENT": "Override Percent to Refund",
       "PARTIAL_REFUND_PERCENT": "Partial Refund %",
       "PRICE": "Price",
+      "PROCESS": "Process",
       "PROCESSED": "Processed",
       "PROCESSING": "Processing",
       "PROCESSED_BY": "Processed By",
@@ -570,6 +617,14 @@
       "ANON_USERNAME_TOOLTIP": "The buyer user that will be used as the default context user for anonymous shopping. All pricing, permissions, and visibility will be based on this user",
       "REFRESH_TOKEN_TOOLTIP": "Determines how long (in minutes) a refresh token can be used to keep a user logged in. Minimum value is 0, Maximum value is 43,200.",
       "SUMMARY": "A storefront represents a hosted buyer application. Simply creating a storefront in this admin interface will not create a buyer application - that process still needs to be performed manually by a developer but once that is done certain pieces about the storefront can be managed here"
+    },
+    "USERGROUP_ASSIGNMENTS": {
+      "ASSIGNED": "Assigned",
+      "DESCRIPTION": "Description",
+      "VIEW_ALL": "View All",
+      "VIEW_ASSIGNED": "View Assigned",
+      "YIELDED_NO_RESULTS": "yielded no results.",
+      "YOUR_SEARCH_FOR": "Your search for"
     }
   },
   "ALIAS": {
@@ -618,6 +673,20 @@
     }
   },
   "BUYER": {
+    "BASIC_DETAILS": "Basic details of the",
+    "DETAILS": "Details",
+    "EDIT_FORM": {
+      "ACTIVE": "Active",
+      "ALLOW_IMPERSONATION": "Allow Impersonation",
+      "BUYER_SITE_CLIENT_ID": "Buyer Site Client ID",
+      "BUYER_SITE_CLIENT_ID_PLACEHOLDER": "Enter client ID used by buyer site",
+      "BUYER_SITE_URL": "Buyer Site URL",
+      "BUYER_SITE_URL_PLACEHOLDER": "Enter site url used by buyer site",
+      "NAME": "Name",
+      "NAME_PLACEHOLDER": "Enter Name",
+      "PRODUCT_MARKUP_PERCENT": "Product Markup Percent",
+      "PRODUCT_MARKUP_PERCENT_PLACEHOLDER": "Enter Markup"
+    },
     "HELPERMESSAGES": {
       "BUYERGROUP": {
         "ACTION": "Set Buyer Groups now.",
@@ -629,6 +698,28 @@
         "MESSAGE": "Looks like this buyer has no Catalogs",
         "WARNING": "No Catalogs available for this buyer."
       }
+    }
+  },
+  "BUYER_USER": {
+    "ACCOUNT_INFORMATION_HEADER": "Account Information",
+    "ACCOUNT_INFORMATION_DESCRIPTION": "Information about this user's account.",
+    "NO_ASSIGNED_LOCATIONS_MESSAGE": "Unassign locations to change Home Country.",
+    "PERSONAL_INFORMATION_HEADER": "Personal Information",
+    "PERSONAL_INFORMATION_DESCRIPTION": "Information about this user.",
+    "EDIT_FORM": {
+      "ACTIVE": "Active",
+      "EMAIL": "Email",
+      "EMAIL_INVALID_ERROR": "Please enter a valid email address",
+      "EMAIL_PLACEHOLDER": "Enter Email",
+      "FIRST_NAME": "First Name",
+      "FIRST_NAME_PLACEHOLDER": "Enter First Name",
+      "HOME_COUNTRY": "Home Country",
+      "HOME_COUNTRY_PLACEHOLDER": "Select a Country",
+      "HOME_COUNTRY_CODE_PLACEHOLDER": "Enter a Country Code",
+      "LAST_NAME": "Last Name",
+      "LAST_NAME_PLACEHOLDER": "Enter Last Name",
+      "USERNAME": "Username",
+      "USERNAME_PLACEHOLDER": "Enter Username"
     }
   },
   "CART": {
@@ -747,6 +838,18 @@
     "EMAIL": "Email",
     "FIRST": "First Name",
     "LAST": "Last Name",
+    "LINE_ITEM_STATUS": {
+      "COMPLETE": "Complete",
+      "SUBMITTED": "Submitted",
+      "OPEN": "Open",
+      "BACK_ORDERED": "Backordered",
+      "CANCELED": "Canceled",
+      "CANCEL_REQUESTED": "Cancel Requested",
+      "CANCEL_DENIED": "Cancel Denied",
+      "RETURNED": "Returned",
+      "RETURN_REQUESTED": "Return Requested",
+      "RETURN_DENIED": "Return Denied"
+    },
     "LOGIN": "Login",
     "PASSWORD": "Password",
     "PHONE": "Phone Number",
@@ -756,6 +859,11 @@
     },
     "SEARCH": "Search",
     "SUBMIT": "Submit",
+    "SUBMITTED_ORDER_STATUS": {
+      "OPEN": "Open",
+      "COMPLETED": "Completed",
+      "CANCELED": "Canceled"
+    },
     "USER": "User",
     "USERNAME": "Username",
     "YES_DELETE": "Yes, Delete"
@@ -917,20 +1025,20 @@
       "SELECT_RETURN_REASON": "Select return reason"
     },
     "RETURN_REASONS": {
-      "DISCOUNT_NOT_APPLIED": "Discount was not applied",
+      "ARRIVED_LATE": "Product arrived too late",
+      "DEFECTIVE": "Product is defective/damaged",
+      "DOES_NOT_MATCH_DESCRIPTION": "Product does not match description",
       "FOUND_DIFFERENT_PRODUCT": "Found a different product I lliked better",
       "FULFILLMENT_TOO_LONG": "Product took too long to fulfill",
       "INCORRECT_PRODUCT_SHIPPED": "Incorrect product or size shipped",
-      "PRODUCT_ARRIVED_LATE": "Product arrived too late",
-      "PRODUCT_DEFECTIVE": "Product is defective/damaged",
-      "PRODUCT_MATCH_DESCRIPTION": "Product does not match description",
+      "INCORRECT_SIZE_OR_STYLE": "Purchased incorrect size/style",
+      "NOT_APPROVED": "Purchase was not approved",
+      "NOT_NEEDED": "Product is no longer needed",
+      "PACKAGING_DAMAGED": "Shipping box is damaged",
       "PRODUCT_MISSING": "Product is missing from shipment",
-      "PRODUCT_NOT_NEEDED": "Product is no longer needed",
-      "PURCHASED_BY_MISTAKE": "Purchased by mistake",
-      "PURCHASED_INCORRECT_SIZE": "Purchased incorrect size/style",
-      "PURCHASE_NOT_APPROVED": "Purchase was not approved",
+      "PURCHASE_MISTAKE": "Purchased by mistake",
       "RECEIVED_EXTRA_PRODUCT": "Received extra product that I didn’t buy",
-      "SHIPPING_BOX_DAMAGED": "Shipping box is damaged"
+      "UNAPPLIED_DISCOUNTS": "Discount was not applied"
     },
     "SHIPMENTS": {
       "DATE_SHIPPED": "Date Shipped",

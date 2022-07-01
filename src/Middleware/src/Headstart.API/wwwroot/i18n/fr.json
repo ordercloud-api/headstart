@@ -10,6 +10,7 @@
       }
     },
     "BUYER_USERS": {
+      "IMPERSONATE": "Impersonate",
       "NO_ADDRESS_ASSIGNMENT": "Cet utilisateur n’a été affecté à aucune adresse d’acheteur."
     },
     "COMMON": {
@@ -22,6 +23,7 @@
       "EMAIL": "Messagerie électronique",
       "FIRST": "Prénom",
       "FORGOT_PASSWORD": "Mot de passe oublié",
+      "HIDE": "Cacher",
       "LAST": "Nom",
       "LOADING": "Chargement...",
       "LOGIN": "Connectez-vous",
@@ -37,6 +39,7 @@
       "SAVE_CHANGES": "Enregistrer les modifications",
       "SAVING": "Épargne",
       "SEARCH": "Rechercher",
+      "SHOW": "Voir",
       "SUBMIT": "Envoyer",
       "USERNAME": "Nom d’utilisateur"
     },
@@ -142,6 +145,27 @@
       "TOTAL_AMOUNT": "Montant total",
       "USERNAME": "Nom d’utilisateur"
     },
+    "LINE_ITEMS": {
+      "CANCEL_REASON": "Raison d'annulation",
+      "COMMENT": "Commentaire",
+      "DESCRIPTION": "La description",
+      "PRODUCT": "Produit",
+      "QUANTITY": "Quantité",
+      "RETURN_REASON": "Raison du retour",
+      "SHIP_FROM": "Expédier de",
+      "SHIP_METHOD": "Méthode d'expédition",
+      "STATUS": "Statut",
+      "TOTAL": "Total"
+    },
+    "LOCATIONS": {
+      "CONFIRM_PERMISSION_CHANGES": "Veuillez confirmer que vous souhaitez modifier les autorisations de cet utilisateur.",
+      "LOCATION": "Emplacement",
+      "LOCATIONS": "Emplacements",
+      "PERMISSION": "Autorisation",
+      "SELECT_PERMISSIONS_TO_GRANT": "Sélectionnez les autorisations à accorder à cet utilisateur",
+      "SELECT_USERS_LOCATIONS": "Sélectionnez les emplacements de cet utilisateur.",
+      "USER_PERMISSIONS": "Autorisations utilisateur"
+    },
     "NAV": {
       "ALL_BUYERS": "Tous les acheteurs",
       "ALL_PRODUCTS": "Tous les produits",
@@ -182,8 +206,8 @@
       "QUOTE_ORDERS": "Commandes de devis",
       "REPORTS": "Rapports",
       "REPORT_TEMPLATES": "Modèles de rapport",
-      "RMA": "RMA",
-      "RMAS": "RMA",
+      "RMA": "Retour",
+      "RMAS": "Retour",
       "SALES_ORDERS": "Commandes client",
       "SELLER_USERS": "Utilisateurs vendeurs",
       "SHIPPED_ORDERS": "Commandes expédiées",
@@ -196,16 +220,37 @@
       "USERS": "Utilisateurs"
     },
     "ORDERS": {
+      "BILL_TO": "Facturer",
       "CANCEL_PRICING": "Annuler les prix",
+      "COMMENTS": "Commentaires",
+      "DOWNLOAD_INVOICE": "Télécharger la facture de commande PDF",
+      "ENDING_IN": "Se terminant en",
+      "LOCATION_ID": "Identifiant de l'emplacement",
+      "ORDER": "Commande",
+      "ORDER_PLACED": "Commande passée",
+      "PROMOTION_DISCOUNT": "Remise promotionnelle",
       "QUOTE_PRICE_EXPLANATION": {
         "A_QUOTED_PRICE": "Un prix indiqué de",
         "IS_PENDING_BUYER": "est en attente de l’examen de l’acheteur."
       },
+      "RMAS_ON_ORDER": "Retours sur commande",
       "SAVE_AND_NOTIFY": "Enregistrer et avertir l’acheteur",
-      "SET_QUOTE_PRICE": "Définir le prix du devis"
+      "SET_QUOTE_PRICE": "Définir le prix du devis",
+      "SUBTOTAL": "Sous-total",
+      "SHIPPING": "Expédition",
+      "SHIP_TO": "Envoyez à",
+      "SPENDING_ACCOUNT": "Compte de dépenses",
+      "TAX": "Impôt",
+      "TOTAL": "Total"
     },
     "PERMISSIONS": {
-      "LOCATION_APPROVAL_TOOLTIP": "Aucune règle d’approbation dans ce groupe d’acheteurs. Définissez une règle d’approbation avant d’accorder des autorisations OrderApprover."
+      "ADDRESS_ADMIN": "Administrateur de l'adresse",
+      "CREDIT_CARD_ADMIN": "Administrateur de carte de crédit",
+      "LOCATION_APPROVAL_TOOLTIP": "Aucune règle d’approbation dans ce groupe d’acheteurs. Définissez une règle d’approbation avant d’accorder des autorisations OrderApprover.",
+      "NEEDS_APPROVAL": "Approbation requise",
+      "ORDER_APPROVER": "Approbateur de commande",
+      "PERMISSION_ADMIN": "Administrateur des autorisations",
+      "VIEW_ALL_ORDERS": "Afficher toutes les commandes"
     },
     "PIPES": {
       "NO": "Non",
@@ -534,15 +579,16 @@
       "OVERRIDE_PERCENT": "Remplacer le pourcentage de remboursement",
       "PARTIAL_REFUND_PERCENT": "Remboursement partiel %",
       "PRICE": "Prix",
+      "PROCESS": "Traiter",
       "PROCESSED": "Traitées",
       "PROCESSING": "Traitement",
       "PROCESSED_BY": "Traité par",
       "PROCESS_OPTION": "Option de processus",
       "PROCESS_REFUND": "Traiter le remboursement",
       "PROCESS_REQUEST": "Traiter la demande",
-      "PROCESS_RMA": "Processus RMA",
+      "PROCESS_RMA": "Traiter les retours",
       "PRODUCT": "Produit",
-      "PURCHASE_ORDER_EXPLANATION": "En raison de la façon dont cet article de bon de commande est payé, vous pouvez gérer son statut RMA, mais un remboursement par carte de crédit ne sera pas émis.",
+      "PURCHASE_ORDER_EXPLANATION": "En raison du mode de paiement de cet article de bon de commande, vous pouvez gérer son statut de retour, mais aucun remboursement par carte de crédit ne sera effectué.",
       "QUANTITY": "Quantité",
       "QUANTITY_TO_PROCESS": "Quantité à traiter",
       "REASON": "Raison",
@@ -569,6 +615,14 @@
       "ANON_USERNAME_TOOLTIP": "L’utilisateur acheteur qui sera utilisé comme utilisateur de contexte par défaut pour les achats anonymes. Tous les prix, autorisations et visibilité seront basés sur cet utilisateur",
       "REFRESH_TOKEN_TOOLTIP": "Détermine la durée (en minutes) pendant laquelle un jeton d’actualisation peut être utilisé pour garder un utilisateur connecté. La valeur minimale est 0, la valeur maximale est 43 200.",
       "SUMMARY": "Une vitrine représente une application d’acheteur hébergée. La simple création d’une vitrine dans cette interface d’administration ne créera pas d’application d’acheteur - ce processus doit toujours être effectué manuellement par un développeur, mais une fois que cela est fait, certains éléments de la vitrine peuvent être gérés ici"
+    },
+    "USERGROUP_ASSIGNMENTS": {
+      "ASSIGNED": "Attribué",
+      "DESCRIPTION": "La description",
+      "VIEW_ALL": "Voir tout",
+      "VIEW_ASSIGNED": "Afficher attribué",
+      "YIELDED_NO_RESULTS": "n'a donné aucun résultat",
+      "YOUR_SEARCH_FOR": "Votre recherche de"
     }
   },
   "ALIAS": {
@@ -617,6 +671,20 @@
     }
   },
   "BUYER": {
+    "BASIC_DETAILS": "Détails de base de la",
+    "DETAILS": "Détails",
+    "EDIT_FORM": {
+      "ACTIVE": "Actif",
+      "ALLOW_IMPERSONATION": "Autoriser l'emprunt d'identité",
+      "BUYER_SITE_CLIENT_ID": "ID client du site de l'acheteur",
+      "BUYER_SITE_CLIENT_ID_PLACEHOLDER": "Saisissez l'ID client utilisé par le site de l'acheteur",
+      "BUYER_SITE_URL": "URL du site de l'acheteur",
+      "BUYER_SITE_URL_PLACEHOLDER": "Entrez l'URL du site utilisée par le site de l'acheteur",
+      "NAME": "Nom",
+      "NAME_PLACEHOLDER": "Entrez le nom",
+      "PRODUCT_MARKUP_PERCENT": "Pourcentage de majoration du produit",
+      "PRODUCT_MARKUP_PERCENT_PLACEHOLDER": "Entrez le balisage"
+    },
     "HELPERMESSAGES": {
       "BUYERGROUP": {
         "ACTION": "Définissez les groupes d’acheteurs maintenant.",
@@ -628,6 +696,28 @@
         "MESSAGE": "On dirait que cet acheteur n’a pas de catalogues",
         "WARNING": "Aucun catalogue disponible pour cet acheteur."
       }
+    }
+  },
+  "BUYER_USER": {
+    "ACCOUNT_INFORMATION_HEADER": "Information sur le compte",
+    "ACCOUNT_INFORMATION_DESCRIPTION": "Informations sur le compte de cet utilisateur.",
+    "NO_ASSIGNED_LOCATIONS_MESSAGE": "Unassign locations to change Home Country.",
+    "PERSONAL_INFORMATION_HEADER": "Renseignements personnels",
+    "PERSONAL_INFORMATION_DESCRIPTION": "Informations sur cet utilisateur.",
+    "EDIT_FORM": {
+      "ACTIVE": "Actif",
+      "EMAIL": "E-mail",
+      "EMAIL_INVALID_ERROR": "S'il vous plaît, mettez une adresse email valide",
+      "EMAIL_PLACEHOLDER": "Entrez l'e-mail",
+      "FIRST_NAME": "Prénom",
+      "FIRST_NAME_PLACEHOLDER": "Entrez votre prénom",
+      "HOME_COUNTRY": "Pays natal",
+      "HOME_COUNTRY_PLACEHOLDER": "Choisissez un pays",
+      "HOME_COUNTRY_CODE_PLACEHOLDER": "Entrez un code de pays",
+      "LAST_NAME": "Nom de famille",
+      "LAST_NAME_PLACEHOLDER": "Entrer le nom de famille",
+      "USERNAME": "Nom d'utilisateur",
+      "USERNAME_PLACEHOLDER": "Saisissez votre nom d'utilisateur"
     }
   },
   "CART": {
@@ -746,6 +836,18 @@
     "EMAIL": "Messagerie électronique",
     "FIRST": "Prénom",
     "LAST": "Nom",
+    "LINE_ITEM_STATUS": {
+      "COMPLETE": "Complet",
+      "SUBMITTED": "Soumis",
+      "OPEN": "Ouvert",
+      "BACK_ORDERED": "En rupture de stock",
+      "CANCELED": "Annulé",
+      "CANCEL_REQUESTED": "Annulation demandée",
+      "CANCEL_DENIED": "Annuler refusé",
+      "RETURNED": "Revenu",
+      "RETURN_REQUESTED": "Retour demandé",
+      "RETURN_DENIED": "Retour refusé"
+    },
     "LOGIN": "Connectez-vous",
     "PASSWORD": "Mot de passe",
     "PHONE": "Numéro de téléphone",
@@ -755,6 +857,11 @@
     },
     "SEARCH": "Rechercher",
     "SUBMIT": "Envoyer",
+    "SUBMITTED_ORDER_STATUS": {
+      "OPEN": "Ouvert",
+      "COMPLETED": "Complété",
+      "CANCELED": "Annulé"
+    },
     "USER": "Utilisateur",
     "USERNAME": "Nom d’utilisateur",
     "YES_DELETE": "Oui, Supprimer"
@@ -916,20 +1023,20 @@
       "SELECT_RETURN_REASON": "Sélectionnez la raison du retour"
     },
     "RETURN_REASONS": {
-      "DISCOUNT_NOT_APPLIED": "La remise n’a pas été appliquée",
-      "FOUND_DIFFERENT_PRODUCT": "J’ai trouvé un produit différent que j’aimais mieux",
+      "ARRIVED_LATE": "Produit arrivé trop tard",
+      "DEFECTIVE": "Le produit est défectueux/endommagé",
+      "DOES_NOT_MATCH_DESCRIPTION": "Le produit ne correspond pas à la description",
+      "FOUND_DIFFERENT_PRODUCT": "J'ai trouvé un autre produit que j'aimais mieux",
       "FULFILLMENT_TOO_LONG": "Le produit a pris trop de temps à remplir",
-      "INCORRECT_PRODUCT_SHIPPED": "Produit ou taille incorrecte expédié",
-      "PRODUCT_ARRIVED_LATE": "Le produit est arrivé trop tard",
-      "PRODUCT_DEFECTIVE": "Le produit est défectueux/endommagé",
-      "PRODUCT_MATCH_DESCRIPTION": "Le produit ne correspond pas à la description",
-      "PRODUCT_MISSING": "Le produit est absent de l’expédition",
-      "PRODUCT_NOT_NEEDED": "Le produit n’est plus nécessaire",
-      "PURCHASED_BY_MISTAKE": "Acheté par erreur",
-      "PURCHASED_INCORRECT_SIZE": "Taille/style incorrect acheté",
-      "PURCHASE_NOT_APPROVED": "L’achat n’a pas été approuvé",
-      "RECEIVED_EXTRA_PRODUCT": "J’ai reçu un produit supplémentaire que je n’ai pas acheté",
-      "SHIPPING_BOX_DAMAGED": "La boîte d’expédition est endommagée"
+      "INCORRECT_PRODUCT_SHIPPED": "Mauvais produit ou taille expédié",
+      "INCORRECT_SIZE_OR_STYLE": "Acheté taille/style incorrect",
+      "NOT_APPROVED": "L'achat n'a pas été approuvé",
+      "NOT_NEEDED": "Le produit n'est plus nécessaire",
+      "PACKAGING_DAMAGED": "La boîte d'expédition est endommagée",
+      "PRODUCT_MISSING": "Le produit est manquant dans l'expédition",
+      "PURCHASE_MISTAKE": "Acheté par erreur",
+      "RECEIVED_EXTRA_PRODUCT": "J'ai reçu un produit supplémentaire que je n'ai pas acheté",
+      "UNAPPLIED_DISCOUNTS": "La réduction n'a pas été appliquée"
     },
     "SHIPMENTS": {
       "DATE_SHIPPED": "Date d’expédition",

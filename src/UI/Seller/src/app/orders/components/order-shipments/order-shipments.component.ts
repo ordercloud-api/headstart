@@ -288,16 +288,12 @@ export class OrderShipmentsComponent implements OnChanges {
   }
 
   getCreateButtonAction(): string {
-    return this.createShipment ? 'Cancel' : 'Create'
-  }
-
-  getViewButtonAction(): string {
-    return this.viewShipments ? 'Hide' : 'View'
+    return this.createShipment ? 'ADMIN.COMMON.CANCEL' : 'ADMIN.COMMON.CREATE'
   }
 
   // TO-DO - Use commented code for Ship From Address POST
   // getEditShipFromAddressButtonAction() {
-  //   return this.editShipFromAddress ? 'Cancel' : 'Edit Ship From Address';
+  //   return this.editShipFromAddress ? 'ADMIN.COMMON.CANCEL' : 'Edit Ship From Address';
   // }
 
   getCreateButtonIcon(): IconDefinition {

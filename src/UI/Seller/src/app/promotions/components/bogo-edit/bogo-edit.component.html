@@ -21,7 +21,11 @@
         class="btn btn-sm btn-outline-primary"
         (click)="toggleBOGOProductsCollapse('buy')"
       >
-        {{ buyProductsCollapsed ? 'Change Product' : 'Cancel' }}
+        {{
+          buyProductsCollapsed
+            ? 'ADMIN.PROMOTIONS.CHANGE_PRODUCT'
+            : 'ADMIN.COMMON.CANCEL'
+        }}
       </button>
     </div>
     <!-- BUYONE PRODUCT SELECT AND SEARCH -->
@@ -94,7 +98,11 @@
         class="btn btn-sm btn-outline-primary"
         (click)="toggleBOGOProductsCollapse('get')"
       >
-        {{ getProductsCollapsed ? 'Change Product' : 'Cancel' }}
+        {{
+          getProductsCollapsed
+            ? 'ADMIN.PROMOTIONS.CHANGE_PRODUCT'
+            : 'ADMIN.COMMON.CANCEL'
+        }}
       </button>
     </div>
     <!-- GETONE PRODUCT SELECT AND SEARCH -->

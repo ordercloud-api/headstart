@@ -3,7 +3,6 @@ import { faTimes, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import { groupBy as _groupBy, isEqual, uniqWith } from 'lodash'
 import { HSLineItem, RMA, RMALineItem } from '@ordercloud/headstart-sdk'
 import { getPrimaryLineItemImage } from 'src/app/services/images.helpers'
-import { CancelReturnReason } from '../../orders/order-return/order-return-table/models/cancel-return-translations.enum'
 import { NgxSpinnerService } from 'ngx-spinner'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 import { OrderType } from 'src/app/models/order.types'
@@ -123,9 +122,7 @@ export abstract class OCMParentTableComponent implements OnInit {
       .finally(() => delete this.deletingLineItem[lineItemID])
   }
 
-  toProductDetails(
-    productID: string
-  ): void {
+  toProductDetails(productID: string): void {
     if (!this.invalidItem) {
       this.context.router.toProductDetails(productID)
     }
@@ -189,10 +186,6 @@ export abstract class OCMParentTableComponent implements OnInit {
 
   hasCancelInfo(): boolean {
     return this._lineItems.some((li) => !!(li.xp as any)?.LineItemCancelInfo)
-  }
-
-  getReturnReason(reasonCode: string): string {
-    return CancelReturnReason[reasonCode] as string
   }
 
   getRMALineItemComment(li: HSLineItem): string {

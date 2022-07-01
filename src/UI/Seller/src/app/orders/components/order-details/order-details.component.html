@@ -12,7 +12,9 @@
   </p>
   <div class="d-flex justify-content-between align-items-center mb-3">
     <h3 class="d-flex justify-content-start align-items-center mb-0">
-      <span class="d-print-none">Order&nbsp;</span>#{{ _order?.ID }}
+      <span class="d-print-none"
+        >{{ 'ADMIN.ORDERS.ORDER' | translate }}&nbsp;</span
+      >#{{ _order?.ID }}
       <span
         *ngIf="_order?.xp?.OrderType === 'Quote'"
         class="small badge badge-pill badge-warning ml-2 order-type-text"
@@ -24,12 +26,14 @@
       class="btn btn-outline-primary d-print-none"
       (click)="createAndSavePDF()"
     >
-      <fa-icon [icon]="faDownload"></fa-icon> Download Order Invoice PDF
+      <fa-icon [icon]="faDownload"></fa-icon>
+      {{ 'ADMIN.ORDERS.DOWNLOAD_INVOICE' | translate }}
     </button>
   </div>
   <div class="d-block text-right mb-2">
     <span class="font-weight-bold">
-      Order Placed: {{ getOrderDate() | date: 'medium' }}
+      {{ 'ADMIN.ORDERS.ORDER_PLACED' | translate }}:
+      {{ getOrderDate() | date: 'medium' }}
     </span>
   </div>
   <div class="card card--order-details py-2 px-3 bg-white mb-2">
@@ -58,7 +62,9 @@
             {{ _buyerOrder?.FromUser?.Email }}
           </p>
           <p class="mb-0" *ngIf="_buyerOrder?.BillingAddress?.xp?.LocationID">
-            <span class="font-weight-bold">Location ID</span><span>: </span>
+            <span class="font-weight-bold" translate
+              >ADMIN.ORDERS.LOCATION_ID</span
+            ><span>: </span>
             {{ _buyerOrder?.BillingAddress?.xp?.LocationID }}
           </p>
         </div>
@@ -77,7 +83,9 @@
             {{ _order.xp?.QuoteOrderInfo?.BuyerLocation }}
           </p>
           <p class="mb-0" *ngIf="_buyerOrder?.BillingAddress?.xp?.LocationID">
-            <span class="font-weight-bold">Location ID</span><span>: </span>
+            <span class="font-weight-bold" translate
+              >ADMIN.ORDERS.LOCATION_ID</span
+            ><span>: </span>
             {{ _buyerOrder?.BillingAddress?.xp?.LocationID }}
           </p>
         </div>
@@ -87,8 +95,10 @@
           *ngIf="_supplierOrder?.FromUser && !isQuoteOrder(_order)"
           class="mr-3"
         >
-          <small class="font-weight-bolder text-muted text-uppercase d-block"
-            >Bill To</small
+          <small
+            class="font-weight-bolder text-muted text-uppercase d-block"
+            translate
+            >ADMIN.ORDERS.BILL_TO</small
           >
           <small class="mb-0 text-capitalize d-block font-weight-bold"
             >{{ _supplierOrder.FromUser?.FirstName }}
@@ -103,8 +113,10 @@
           }}</small>
         </div>
         <div *ngIf="_lineItems[0]?.ShippingAddress && !isQuoteOrder(_order)">
-          <small class="font-weight-bolder text-muted text-uppercase d-block"
-            >Ship To</small
+          <small
+            class="font-weight-bolder text-muted text-uppercase d-block"
+            translate
+            >ADMIN.ORDERS.SHIP_TO</small
           >
           <small class="mb-0 text-capitalize d-block font-weight-bold">{{
             _lineItems[0]?.ShippingAddress?.CompanyName
@@ -138,8 +150,10 @@
           *ngIf="_order?.BillingAddress && !isQuoteOrder(_order)"
           class="pl-4 ml-4 border-left"
         >
-          <small class="font-weight-bolder text-muted text-uppercase d-block"
-            >Bill To</small
+          <small
+            class="font-weight-bolder text-muted text-uppercase d-block"
+            translate
+            >ADMIN.ORDERS.BILL_TO</small
           >
           <small class="mb-0 text-capitalize d-block font-weight-bold">{{
             _order?.BillingAddress?.CompanyName
@@ -169,8 +183,10 @@
         </div>
       </div>
       <div *ngIf="_buyerQuoteAddress" class="d-block text-right">
-        <small class="font-weight-bolder text-muted text-uppercase d-block"
-          >Ship To</small
+        <small
+          class="font-weight-bolder text-muted text-uppercase d-block"
+          translate
+          >ADMIN.ORDERS.SHIP_TO</small
         >
         <small class="mb-0 text-capitalize d-block font-weight-bold">{{
           _buyerQuoteAddress.CompanyName
@@ -197,13 +213,15 @@
       "
       class="alert alert-secondary small mt-3"
     >
-      <strong>Comments: </strong> {{ _order.xp?.QuoteOrderInfo?.Comments }}
+      <strong>{{ 'ADMIN.ORDERS.COMMENTS' | translate }}: </strong>
+      {{ _order.xp?.QuoteOrderInfo?.Comments }}
     </div>
     <div
       *ngIf="!isQuoteOrder(_order) && _buyerOrder?.Comments"
       class="alert alert-secondary small mt-3"
     >
-      <strong>Comments: </strong> {{ _buyerOrder.Comments }}
+      <strong>{{ 'ADMIN.ORDERS.COMMENTS' | translate }}: </strong>
+      {{ _buyerOrder.Comments }}
     </div>
 
     <!-- QUOTE EDIT START -->
@@ -239,7 +257,7 @@
       class="btn btn-outline-primary d-print-none w-25"
       (click)="toggleSetQuotePrice()"
     >
-      {{ getQuotePriceButtonText() }}
+      {{ getQuotePriceButtonText() | translate }}
     </button>
 
     <div *ngIf="isSettingQuotePrice" class="mt-3">
@@ -276,7 +294,7 @@
     </div>
     <!-- QUOTE EDIT END -->
 
-    <h5 *ngIf="rmas?.length > 0">RMAs on Order</h5>
+    <h5 *ngIf="rmas?.length > 0" translate>ADMIN.ORDERS.RMAS_ON_ORDER</h5>
     <div *ngFor="let rma of rmas">
       <a [routerLink]="buildOrderDetailsRoute(rma)" class="nav-link p-1">
         {{ rma?.RMANumber }} - {{ rma?.Type }}
@@ -309,13 +327,17 @@
         <ng-container *ngIf="!isQuoteOrder(_order)">
           <div *ngIf="orderDirection === 'Incoming'">
             <div class="d-flex justify-content-between align-items-center mb-1">
-              <p class="font-weight-bolder mb-0 text-muted">Subtotal</p>
+              <p class="font-weight-bolder mb-0 text-muted" translate>
+                ADMIN.ORDERS.SUBTOTAL
+              </p>
               <p class="mb-0">
                 {{ _order?.Subtotal | currency: _order?.xp?.Currency }}
               </p>
             </div>
             <div class="d-flex justify-content-between align-items-center mb-1">
-              <p class="font-weight-bolder mb-0 text-muted">Shipping</p>
+              <p class="font-weight-bolder mb-0 text-muted" translate>
+                ADMIN.ORDERS.SHIPPING
+              </p>
               <p class="mb-0">
                 {{ _order.ShippingCost | currency: _order?.xp?.Currency }}
               </p>
@@ -330,7 +352,9 @@
               class="d-flex justify-content-between align-items-center mb-1"
               *ngIf="_order.PromotionDiscount"
             >
-              <p class="font-weight-bolder mb-0 text-muted">Promo Discount</p>
+              <p class="font-weight-bolder mb-0 text-muted" translate>
+                ADMIN.ORDERS.PROMOTION_DISCOUNT
+              </p>
               <p class="font-weight-bolder mb-0 text-success">
                 -{{
                   _order?.PromotionDiscount | currency: _order?.xp?.Currency
@@ -351,11 +375,12 @@
             class="d-flex justify-content-between align-items-center"
           >
             <p *ngIf="payment.Type === 'CreditCard'" class="font-italic">
-              {{ setCardType(payment) }} ending in
+              {{ setCardType(payment) }}
+              {{ 'ADMIN.ORDERS.ENDING_IN' | translate }}
               {{ payment.xp.partialAccountNumber }}
             </p>
             <p *ngIf="payment.Type === 'SpendingAccount'" class="font-italic">
-              Spending Account: {{ payment.Details.Name }}
+              {{ 'ADMIN.ORDERS.SPENDING_ACCOUNT' }}: {{ payment.Details.Name }}
             </p>
             <p class="text-danger">
               -{{ _order?.xp?.Currency

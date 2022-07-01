@@ -10,6 +10,7 @@
       }
     },
     "BUYER_USERS": {
+      "IMPERSONATE": "なりすまし",
       "NO_ADDRESS_ASSIGNMENT": "このユーザーは、どの購入者住所にも割り当てられていません。"
     },
     "COMMON": {
@@ -19,15 +20,16 @@
       "CONFIRM_PASSWORD": "パスワードの確認",
       "CREATE": "作成",
       "DISCARD_CHANGES": "変更を破棄",
-      "EMAIL": "Email",
+      "EMAIL": "Eメール",
       "FIRST": "名",
       "FORGOT_PASSWORD": "パスワードを忘れた場合",
+      "HIDE": "隠れる",
       "LAST": "姓",
-      "LOADING": "Loading...",
+      "LOADING": "読み込み中...",
       "LOGIN": "ログイン",
       "LOGOUT": "ログアウト",
       "MY_ACCOUNT": "マイ アカウント",
-      "NEW": "New",
+      "NEW": "新しい",
       "NOTIFICATIONS": "通知",
       "NO_CHANGES": "変更なし",
       "PASSWORD": "パスワード",
@@ -37,6 +39,7 @@
       "SAVE_CHANGES": "変更を保存",
       "SAVING": "保存中",
       "SEARCH": "検索",
+      "SHOW": "見せる",
       "SUBMIT": "送信",
       "USERNAME": "ユーザー名"
     },
@@ -142,6 +145,27 @@
       "TOTAL_AMOUNT": "合計金額",
       "USERNAME": "ユーザー名"
     },
+    "LINE_ITEMS": {
+      "CANCEL_REASON": "理由をキャンセル",
+      "COMMENT": "コメント",
+      "DESCRIPTION": "説明",
+      "PRODUCT": "製品",
+      "QUANTITY": "量",
+      "RETURN_REASON": "返品理由",
+      "SHIP_FROM": "発送元",
+      "SHIP_METHOD": "発送方法",
+      "STATUS": "状態",
+      "TOTAL": "合計"
+    },
+    "LOCATIONS": {
+      "CONFIRM_PERMISSION_CHANGES": "このユーザーの権限を変更することを確認してください。",
+      "LOCATION": "位置",
+      "LOCATIONS": "場所",
+      "PERMISSION": "許可",
+      "SELECT_PERMISSIONS_TO_GRANT": "このユーザーに付与する権限を選択します",
+      "SELECT_USERS_LOCATIONS": "このユーザーの場所を選択します。",
+      "USER_PERMISSIONS": "ユーザー権限"
+    },
     "NAV": {
       "ALL_BUYERS": "全ての購入者",
       "ALL_PRODUCTS": "全ての商品",
@@ -182,8 +206,8 @@
       "QUOTE_ORDERS": "見積り依頼",
       "REPORTS": "レポート",
       "REPORT_TEMPLATES": "レポート テンプレート",
-      "RMA": "返品保証",
-      "RMAS": "返品保証",
+      "RMA": "戻る",
+      "RMAS": "戻り値",
       "SALES_ORDERS": "販売注文",
       "SELLER_USERS": "販売者ユーザー",
       "SHIPPED_ORDERS": "発送済みの注文",
@@ -196,16 +220,37 @@
       "USERS": "ユーザー"
     },
     "ORDERS": {
-      "CANCEL_PRICING": "Cancel Pricing",
+      "BILL_TO": "請求書送付先",
+      "CANCEL_PRICING": "価格をキャンセルする",
+      "COMMENTS": "コメントコメント",
+      "DOWNLOAD_INVOICE": "注文請求書のPDFをダウンロード",
+      "ENDING_IN": "で終わります",
+      "LOCATION_ID": "ロケーションID",
+      "ORDER": "注文",
+      "ORDER_PLACED": "注文済み",
+      "PROMOTION_DISCOUNT": "プロモーション割引",
       "QUOTE_PRICE_EXPLANATION": {
-        "A_QUOTED_PRICE": "A quoted price of",
-        "IS_PENDING_BUYER": "is pending buyer review."
+        "A_QUOTED_PRICE": "の見積もり価格",
+        "IS_PENDING_BUYER": "購入者のレビューは保留中です。"
       },
-      "SAVE_AND_NOTIFY": "Save and Notify Buyer",
-      "SET_QUOTE_PRICE": "Set Quote Price"
+      "RMAS_ON_ORDER": "注文に応じて返品",
+      "SAVE_AND_NOTIFY": "保存して購入者に通知",
+      "SET_QUOTE_PRICE": "見積もり価格を設定する",
+      "SUBTOTAL": "小計",
+      "SHIPPING": "運送",
+      "SHIP_TO": "送り先",
+      "SPENDING_ACCOUNT": "支出口座",
+      "TAX": "税",
+      "TOTAL": "合計"
     },
     "PERMISSIONS": {
-      "LOCATION_APPROVAL_TOOLTIP": "この購入者グループには承認ルールがありません。OrderApprover権限を付与する前に、承認ルールを設定してください。"
+      "ADDRESS_ADMIN": "アドレス管理者",
+      "CREDIT_CARD_ADMIN": "クレジットカード管理者",
+      "LOCATION_APPROVAL_TOOLTIP": "この購入者グループには承認ルールがありません。OrderApprover権限を付与する前に、承認ルールを設定してください。",
+      "NEEDS_APPROVAL": "承認が必要",
+      "ORDER_APPROVER": "注文承認者",
+      "PERMISSION_ADMIN": "権限管理者",
+      "VIEW_ALL_ORDERS": "すべての注文を表示"
     },
     "PIPES": {
       "NO": "いいえ",
@@ -528,6 +573,7 @@
       "OVERRIDE_PERCENT": "パーセントを上書きして返金",
       "PARTIAL_REFUND_PERCENT": "一部返金の割合",
       "PRICE": "価格",
+      "PROCESS": "プロセス",
       "PROCESSED": "処理済み",
       "PROCESSING": "処理",
       "PROCESSED_BY": "処理担当者",
@@ -536,7 +582,7 @@
       "PROCESS_REQUEST": "要求を処理",
       "PROCESS_RMA": "返品保証を処理",
       "PRODUCT": "商品",
-      "PURCHASE_ORDER_EXPLANATION": "この購入注文商品の支払い方法により、返品保証ステータスを管理することはできますが、クレジットカードによる返金はできません。",
+      "PURCHASE_ORDER_EXPLANATION": "この発注書アイテムの支払い方法により、返品ステータスを管理できますが、クレジットカードの払い戻しは行われません。",
       "QUANTITY": "数量",
       "QUANTITY_TO_PROCESS": "処理数量",
       "REASON": "理由",
@@ -563,6 +609,14 @@
       "ANON_USERNAME_TOOLTIP": "匿名ショッピングのデフォルトのコンテキストユーザーとして使用される購入者ユーザーです。すべての価格設定、権限、および表示は、このユーザーに基づいて行われます。",
       "REFRESH_TOKEN_TOOLTIP": "更新トークンを使用してユーザーのログインを維持できる時間を分単位で指定します。最小値は0、最大値は43,200です。",
       "SUMMARY": "ストアフロントは、ホストされた購入者アプリケーションを表します。この管理インターフェースでストアフロントを作成しただけでは、購入者アプリケーションは作成されません。このプロセスは開発者が手動で実行する必要がありますが、いったん作成されると、ストアフロントの特定の箇所はここで管理することができます。"
+    },
+    "USERGROUP_ASSIGNMENTS": {
+      "ASSIGNED": "割り当てられた",
+      "DESCRIPTION": "説明",
+      "VIEW_ALL": "すべて表示",
+      "VIEW_ASSIGNED": "割り当てられたビュー",
+      "YIELDED_NO_RESULTS": "結果は得られなかった",
+      "YOUR_SEARCH_FOR": "の検索"
     }
   },
   "ALIAS": {
@@ -611,6 +665,20 @@
     }
   },
   "BUYER": {
+    "BASIC_DETAILS": "の基本的な詳細",
+    "DETAILS": "詳細",
+    "EDIT_FORM": {
+      "ACTIVE": "アクティブ",
+      "ALLOW_IMPERSONATION": "なりすましを許可する",
+      "BUYER_SITE_CLIENT_ID": "バイヤーサイトクライアントID",
+      "BUYER_SITE_CLIENT_ID_PLACEHOLDER": "購入者サイトで使用されているクライアントIDを入力します",
+      "BUYER_SITE_URL": "バイヤーサイトのURL",
+      "BUYER_SITE_URL_PLACEHOLDER": "購入者サイトが使用するサイトのURLを入力します",
+      "NAME": "名前",
+      "NAME_PLACEHOLDER": "名前を入力",
+      "PRODUCT_MARKUP_PERCENT": "製品マークアップ率",
+      "PRODUCT_MARKUP_PERCENT_PLACEHOLDER": "マークアップを入力してください"
+    },
     "HELPERMESSAGES": {
       "BUYERGROUP": {
         "ACTION": "今すぐ購入者グループを設定してください。",
@@ -622,6 +690,28 @@
         "MESSAGE": "この購入者にはカタログがないようです。",
         "WARNING": "この購入者が利用できるカタログはありません。"
       }
+    }
+  },
+  "BUYER_USER": {
+    "ACCOUNT_INFORMATION_HEADER": "口座情報",
+    "ACCOUNT_INFORMATION_DESCRIPTION": "このユーザーのアカウントに関する情報。",
+    "NO_ASSIGNED_LOCATIONS_MESSAGE": "Unassign locations to change Home Country.",
+    "PERSONAL_INFORMATION_HEADER": "個人情報",
+    "PERSONAL_INFORMATION_DESCRIPTION": "このユーザーに関する情報。",
+    "EDIT_FORM": {
+      "ACTIVE": "アクティブ",
+      "EMAIL": "Eメール",
+      "EMAIL_INVALID_ERROR": "有効なメールアドレスを入力してください",
+      "EMAIL_PLACEHOLDER": "メールアドレスを入力して",
+      "FIRST_NAME": "ファーストネーム",
+      "FIRST_NAME_PLACEHOLDER": "名を入力してください",
+      "HOME_COUNTRY": "本国",
+      "HOME_COUNTRY_PLACEHOLDER": "国を選択",
+      "HOME_COUNTRY_CODE_PLACEHOLDER": "国コードを入力してください",
+      "LAST_NAME": "苗字",
+      "LAST_NAME_PLACEHOLDER": "姓を入力",
+      "USERNAME": "ユーザー名",
+      "USERNAME_PLACEHOLDER": "ユーザーネームを入力してください"
     }
   },
   "CART": {
@@ -740,6 +830,18 @@
     "EMAIL": "Email",
     "FIRST": "名",
     "LAST": "姓",
+    "LINE_ITEM_STATUS": {
+      "COMPLETE": "完了",
+      "SUBMITTED": "提出済み",
+      "OPEN": "開ける",
+      "BACK_ORDERED": "入荷待ち",
+      "CANCELED": "キャンセル",
+      "CANCEL_REQUESTED": "キャンセルリクエスト",
+      "CANCEL_DENIED": "キャンセル拒否",
+      "RETURNED": "戻ってきた",
+      "RETURN_REQUESTED": "返品をリクエスト",
+      "RETURN_DENIED": "返品拒否"
+    },
     "LOGIN": "ログイン",
     "PASSWORD": "パスワード",
     "PHONE": "電話番号",
@@ -749,6 +851,11 @@
     },
     "SEARCH": "検索",
     "SUBMIT": "送信",
+    "SUBMITTED_ORDER_STATUS": {
+      "OPEN": "開ける",
+      "COMPLETED": "完了",
+      "CANCELED": "キャンセル"
+    },
     "USER": "ユーザー",
     "USERNAME": "ユーザー名",
     "YES_DELETE": "はい、削除します。"
@@ -910,20 +1017,20 @@
       "SELECT_RETURN_REASON": "返品理由を選択"
     },
     "RETURN_REASONS": {
-      "DISCOUNT_NOT_APPLIED": "割引は適用されませんでした。",
-      "FOUND_DIFFERENT_PRODUCT": "他に気に入った商品が見つかった。",
-      "FULFILLMENT_TOO_LONG": "商品が届くまでに時間がかかった。",
-      "INCORRECT_PRODUCT_SHIPPED": "発送された商品やサイズが間違っている。",
-      "PRODUCT_ARRIVED_LATE": "商品の到着が遅すぎた。",
-      "PRODUCT_DEFECTIVE": "商品に欠陥や破損がある。",
-      "PRODUCT_MATCH_DESCRIPTION": "商品が説明と異なる。",
-      "PRODUCT_MISSING": "発送品の中に足りない商品がある。",
-      "PRODUCT_NOT_NEEDED": "商品が不要になった。",
-      "PURCHASED_BY_MISTAKE": "誤って購入した。",
-      "PURCHASED_INCORRECT_SIZE": "サイズやスタイルを間違って購入した。",
-      "PURCHASE_NOT_APPROVED": "購入が承認されなかった。",
-      "RECEIVED_EXTRA_PRODUCT": "購入していない商品が含まれていた。",
-      "SHIPPING_BOX_DAMAGED": "梱包が破損している。"
+      "ARRIVED_LATE": "商品の到着が遅すぎた",
+      "DEFECTIVE": "製品に欠陥/損傷がある",
+      "DOES_NOT_MATCH_DESCRIPTION": "商品が説明と一致しません",
+      "FOUND_DIFFERENT_PRODUCT": "私がもっと好きだった別の製品を見つけました",
+      "FULFILLMENT_TOO_LONG": "製品の履行に時間がかかりすぎた",
+      "INCORRECT_PRODUCT_SHIPPED": "間違った商品またはサイズが発送されました",
+      "INCORRECT_SIZE_OR_STYLE": "間違ったサイズ/スタイルを購入した",
+      "NOT_APPROVED": "購入は承認されませんでした",
+      "NOT_NEEDED": "製品はもう必要ありません",
+      "PACKAGING_DAMAGED": "配送ボックスが破損している",
+      "PRODUCT_MISSING": "製品が出荷に含まれていません",
+      "PURCHASE_MISTAKE": "誤って購入した",
+      "RECEIVED_EXTRA_PRODUCT": "購入しなかった追加の商品を受け取りました",
+      "UNAPPLIED_DISCOUNTS": "割引は適用されませんでした"
     },
     "SHIPMENTS": {
       "DATE_SHIPPED": "発送日",

@@ -207,6 +207,7 @@ import {
 import { faCreditCard } from '@fortawesome/free-solid-svg-icons'
 import { ProductPriceDisplayComponent } from './components/products/product-price-display/product-price-display.component'
 import { LanguageSelectorService } from 'src/app/services/language-selector/language-selector.service'
+import { RmaReturnReasonPipe } from './pipes/rma-return-reason.pipe'
 
 export function HttpLoaderFactory(
   http: HttpClient,
@@ -329,6 +330,7 @@ const components = [
     CreditCardInputDirective,
     SpecFieldDirective,
     ProductNameWithSpecsPipe,
+    RmaReturnReasonPipe,
     ShipMethodNameMapperPipe,
     OrderStatusDisplayPipe,
     SplitByCapitalLetterPipe,

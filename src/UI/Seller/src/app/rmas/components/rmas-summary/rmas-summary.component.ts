@@ -144,7 +144,7 @@ export class RMASummaryComponent implements OnChanges {
   }
 
   getRMAProcessingAction(): string {
-    return this.processingLineItems ? 'Cancel Process' : 'Process'
+    return this.processingLineItems ? 'ADMIN.RMAS.CANCEL' : 'ADMIN.RMAS.PROCESS'
   }
 
   async processRefund(): Promise<void> {
@@ -208,9 +208,9 @@ export class RMASummaryComponent implements OnChanges {
     if (
       this._rma?.LineItems?.some((li) => li?.RefundableViaCreditCard === false)
     ) {
-      return 'Complete RMA'
+      return 'ADMIN.RMAS.COMPLETE'
     } else {
-      return 'Process Refund'
+      return 'ADMIN.RMAS.PROCESS_REFUND'
     }
   }
 }

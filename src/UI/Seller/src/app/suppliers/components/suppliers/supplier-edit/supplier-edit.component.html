@@ -1,11 +1,13 @@
 <div class="container-fluid resource-edit">
   <form [formGroup]="resourceForm">
-    <span class="required-field" > * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span>
+    <span class="required-field">
+      * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span
+    >
     <div class="row pt-3">
       <div class="col-md-5">
         <h5>{{ 'ALIAS.SUPPLIER' | translate }} Details</h5>
         <p>
-          These are the basic details of the
+          {{ 'BUYER.BASIC_DETAILS' | translate }}
           {{ 'ALIAS.SUPPLIER' | translate | lowercase }}.
         </p>
       </div>
@@ -13,32 +15,76 @@
         <div class="form-group">
           <p class="mb-1">Active</p>
           <label class="switch mb-0" for="Active">
-            <input type="checkbox" class="form-check-input" id="Active" showErrors aria-describedby="Active"
-              formControlName="Active" (input)="updateResourceFromEvent($event, 'Active')" />
+            <input
+              type="checkbox"
+              class="form-check-input"
+              id="Active"
+              showErrors
+              aria-describedby="Active"
+              formControlName="Active"
+              (input)="updateResourceFromEvent($event, 'Active')"
+            />
             <span class="slider round cursor-pointer"></span>
           </label>
         </div>
         <div class="form-group">
           <label for="Name">Name <span class="required-field">*</span></label>
-          <input type="text" class="form-control" id="Name" showErrors aria-describedby="Name" maxlength="100"
-            formControlName="Name" (input)="updateResourceFromEvent($event, 'Name')" placeholder="Enter Name" />
+          <input
+            type="text"
+            class="form-control"
+            id="Name"
+            showErrors
+            aria-describedby="Name"
+            maxlength="100"
+            formControlName="Name"
+            (input)="updateResourceFromEvent($event, 'Name')"
+            placeholder="Enter Name"
+          />
         </div>
         <div class="form-group" *ngIf="!logoLoading">
-          <label class="d-block" for="logo"><span translate>ALIAS.SUPPLIER</span> Logo
+          <label class="d-block" for="logo"
+            ><span translate>ALIAS.SUPPLIER</span> Logo
           </label>
           <div *ngIf="hasLogo">
-            <img class="d-block" id="supplier-logo" [src]="stagedLogoUrl || _supplierEditable?.xp?.Image?.ThumbnailUrl"
-              width="auto" height="100px" />
+            <img
+              class="d-block"
+              id="supplier-logo"
+              [src]="
+                stagedLogoUrl || _supplierEditable?.xp?.Image?.ThumbnailUrl
+              "
+              width="auto"
+              height="100px"
+            />
             <div class="mt-3">
-              <label for="imageUpload" *ngIf="hasLogo" class="btn btn-sm btn-outline-secondary mb-0">Update Logo</label>
-              <button *ngIf="!isCreatingNew" (click)="removeLogo()" class="btn btn-sm btn-link">
+              <label
+                for="imageUpload"
+                *ngIf="hasLogo"
+                class="btn btn-sm btn-outline-secondary mb-0"
+                >Update Logo</label
+              >
+              <button
+                *ngIf="!isCreatingNew"
+                (click)="removeLogo()"
+                class="btn btn-sm btn-link"
+              >
                 Remove Logo
               </button>
             </div>
           </div>
-          <label *ngIf="!hasLogo" class="rmpm dropzone" for="imageUpload" appDrag (files)="dropFileUpload($event)">
+          <label
+            *ngIf="!hasLogo"
+            class="rmpm dropzone"
+            for="imageUpload"
+            appDrag
+            (files)="dropFileUpload($event)"
+          >
           </label>
-          <input class="d-none" id="imageUpload" type="file" (change)="manualFileUpload($event)" />
+          <input
+            class="d-none"
+            id="imageUpload"
+            type="file"
+            (change)="manualFileUpload($event)"
+          />
         </div>
         <div *ngIf="logoLoading" class="ml-auto p-2 align-self-center">
           <div class="spinner-border" role="status">
@@ -47,24 +93,38 @@
         </div>
         <div class="form-group">
           <label for="Description">Description</label>
-          <reactive-quill-editor-component [resourceInSelection]="resourceInSelection"
-            [formControlForText]="resourceForm?.controls.Description" resourceField="Description"
-            pathOnResource="xp.Description" (resourceUpdated)="updateResource.emit($event)">
+          <reactive-quill-editor-component
+            [resourceInSelection]="resourceInSelection"
+            [formControlForText]="resourceForm?.controls.Description"
+            resourceField="Description"
+            pathOnResource="xp.Description"
+            (resourceUpdated)="updateResource.emit($event)"
+          >
           </reactive-quill-editor-component>
         </div>
         <div class="form-row">
           <div class="form-group col-md-6">
-            <label for="Currency">Currency <span class="required-field">*</span></label>
-            <select class="form-control" id="Currency" formControlName="Currency"
-              (change)="updateResourceFromEvent($event, 'xp.Currency')">
-              <option *ngFor="let currency of availableCurrencies" [value]="currency.Currency">
+            <label for="Currency"
+              >Currency <span class="required-field">*</span></label
+            >
+            <select
+              class="form-control"
+              id="Currency"
+              formControlName="Currency"
+              (change)="updateResourceFromEvent($event, 'xp.Currency')"
+            >
+              <option
+                *ngFor="let currency of availableCurrencies"
+                [value]="currency.Currency"
+              >
                 <img [src]="currency.Icon" /> {{ currency.Name }}
               </option>
             </select>
           </div>
 
           <div class="form-group col-md-12" formGroupName="ProductTypes">
-            <label>Product Types <span class="required-field">*</span>
+            <label
+              >Product Types <span class="required-field">*</span>
               <small id="productTypesHelp" class="form-text text-muted">
                 What types of products is this supplier able to sell? Check at
                 least one.
@@ -72,21 +132,35 @@
             </label>
             <div class="d-flex justify-content-start align-items-center">
               <div class="custom-control custom-checkbox mr-3">
-                <input type="checkbox" class="custom-control-input" formControlName="Standard" (change)="
+                <input
+                  type="checkbox"
+                  class="custom-control-input"
+                  formControlName="Standard"
+                  (change)="
                     updateResourceFromEvent(
                       { target: { value: $event.checked } },
                       'xp.ProductTypes.Standard'
                     )
-                  " id="Standard" />
-                <label class="custom-control-label" for="Standard">Standard</label>
+                  "
+                  id="Standard"
+                />
+                <label class="custom-control-label" for="Standard"
+                  >Standard</label
+                >
               </div>
               <div class="custom-control custom-checkbox mr-3">
-                <input type="checkbox" class="custom-control-input" formControlName="Quote" (change)="
+                <input
+                  type="checkbox"
+                  class="custom-control-input"
+                  formControlName="Quote"
+                  (change)="
                     updateResourceFromEvent(
                       { target: { value: $event.checked } },
                       'xp.ProductTypes.Quote'
                     )
-                  " id="Quote" />
+                  "
+                  id="Quote"
+                />
                 <label class="custom-control-label" for="Quote">Quote</label>
               </div>
             </div>
@@ -94,19 +168,32 @@
           <div class="form-group">
             <label>Free Shipping</label>
             <div class="custom-control custom-checkbox">
-              <input type="checkbox" class="custom-control-input" formControlName="FreeShippingEnabled"
-                aria-describedby="FreeShippingEnabled" (input)="
+              <input
+                type="checkbox"
+                class="custom-control-input"
+                formControlName="FreeShippingEnabled"
+                aria-describedby="FreeShippingEnabled"
+                (input)="
                   updateResourceFromEvent($event, 'xp.FreeShippingThreshold')
-                " id="Enabled" />
+                "
+                id="Enabled"
+              />
               <label class="custom-control-label" for="Enabled">Enabled</label>
             </div>
             <div *ngIf="_supplierEditable?.xp?.FreeShippingThreshold != null">
               <label for="Threshold">Order Subtotal Threshold</label>
-              <input type="number" class="form-control" id="Threshold"
-                [value]="_supplierEditable?.xp?.FreeShippingThreshold" min="0" [resourceForm]="resourceForm"
-                formControlName="FreeShippingThreshold" (input)="
+              <input
+                type="number"
+                class="form-control"
+                id="Threshold"
+                [value]="_supplierEditable?.xp?.FreeShippingThreshold"
+                min="0"
+                [resourceForm]="resourceForm"
+                formControlName="FreeShippingThreshold"
+                (input)="
                   updateResourceFromEvent($event, 'xp.FreeShippingThreshold')
-                " />
+                "
+              />
               <small id="thresholdHelp" class="form-text text-muted">
                 What is the minimum order subtotal required to receive free
                 shipping?
@@ -114,16 +201,27 @@
             </div>
           </div>
 
-          <div *ngIf="countriesServicingOptions.length" [formGroup]="countriesServicingForm"
-            class="form-group col-md-12">
+          <div
+            *ngIf="countriesServicingOptions.length"
+            [formGroup]="countriesServicingForm"
+            class="form-group col-md-12"
+          >
             <label>Countries to Service</label>
             <div class="d-flex justify-content-start align-items-center">
-              <div *ngFor="let country of countriesServicingOptions" class="mr-3 custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" [formControlName]="country.Value"
-                  (change)="updateCountriesServicing($event, country.Value)" id="{{ country.Value }}" />
+              <div
+                *ngFor="let country of countriesServicingOptions"
+                class="mr-3 custom-control custom-checkbox"
+              >
+                <input
+                  type="checkbox"
+                  class="custom-control-input"
+                  [formControlName]="country.Value"
+                  (change)="updateCountriesServicing($event, country.Value)"
+                  id="{{ country.Value }}"
+                />
                 <label class="custom-control-label" for="{{ country.Value }}">{{
                   country.Text
-                  }}</label>
+                }}</label>
               </div>
             </div>
             <small id="productTypesHelp" class="form-text text-muted">
@@ -154,14 +252,23 @@
           <tbody>
             <tr *ngIf="!supplierUsers?.Items?.length">
               <td>
-                <span class="font-italic">{{ _supplierEditable?.Name }} does not have any users.</span>
+                <span class="font-italic"
+                  >{{ _supplierEditable?.Name }} does not have any users.</span
+                >
               </td>
             </tr>
-            <tr class="cursor-pointer" *ngFor="let user of supplierUsers?.Items">
+            <tr
+              class="cursor-pointer"
+              *ngFor="let user of supplierUsers?.Items"
+            >
               <td class="d-flex justify-content-start align-items-center">
                 <label class="switch mb-0">
-                  <input class="form-check-input" type="checkbox" (click)="assignSupplierUser(user.Email)"
-                    [checked]="isAssigned(user.Email, 'NotificationRcpts')" />
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    (click)="assignSupplierUser(user.Email)"
+                    [checked]="isAssigned(user.Email, 'NotificationRcpts')"
+                  />
                   <span class="slider round"></span>
                 </label>
               </td>
@@ -192,15 +299,21 @@
           <tbody>
             <tr *ngIf="!buyers?.Items?.length">
               <td colspan="3">
-                <span class="font-italic">Could not find any
-                  {{ 'ALIAS.BUYERS' | translate | lowercase }}.</span>
+                <span class="font-italic"
+                  >Could not find any
+                  {{ 'ALIAS.BUYERS' | translate | lowercase }}.</span
+                >
               </td>
             </tr>
             <tr class="cursor-pointer" *ngFor="let buyer of buyers?.Items">
               <td class="d-flex justify-content-start align-items-center">
                 <label class="switch mb-0">
-                  <input class="form-check-input" type="checkbox" (click)="assignBuyer(buyer.ID)"
-                    [checked]="isAssigned(buyer.ID, 'BuyersServicing')" />
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    (click)="assignBuyer(buyer.ID)"
+                    [checked]="isAssigned(buyer.ID, 'BuyersServicing')"
+                  />
                   <span class="slider round"></span>
                 </label>
               </td>
@@ -222,26 +335,48 @@
       <div class="col-md-7 form-group">
         <div class="form-group">
           <label for="Support Contact Name">Support Contact Name</label>
-          <input type="text" class="form-control" id="Support Contact Name" showErrors
-            aria-describedby="Support Contact Name" formControlName="SupportContactName"
+          <input
+            type="text"
+            class="form-control"
+            id="Support Contact Name"
+            showErrors
+            aria-describedby="Support Contact Name"
+            formControlName="SupportContactName"
             (input)="updateResourceFromEvent($event, 'xp.SupportContact.Name')"
-            placeholder="Enter Support Contact Name" />
+            placeholder="Enter Support Contact Name"
+          />
         </div>
         <div class="form-row">
           <div class="form-group col-md-6">
             <label for="Support Contact Name">Support Contact Email</label>
-            <input type="text" class="form-control" id="Support Contact Email" showErrors
-              aria-describedby="Support Contact Email" formControlName="SupportContactEmail" (input)="
+            <input
+              type="text"
+              class="form-control"
+              id="Support Contact Email"
+              showErrors
+              aria-describedby="Support Contact Email"
+              formControlName="SupportContactEmail"
+              (input)="
                 updateResourceFromEvent($event, 'xp.SupportContact.Email')
-              " placeholder="Enter Support Contact Email" />
+              "
+              placeholder="Enter Support Contact Email"
+            />
           </div>
           <!-- no phone validation currently because this field has extraneous values that would break validation -->
           <div class="form-group col-md-6">
             <label for="Support Contact Phone">Support Contact Phone</label>
-            <input type="text" class="form-control" showErrors id="Support Contact Phone"
-              aria-describedby="Support Contact Phone" formControlName="SupportContactPhone" (input)="
+            <input
+              type="text"
+              class="form-control"
+              showErrors
+              id="Support Contact Phone"
+              aria-describedby="Support Contact Phone"
+              formControlName="SupportContactPhone"
+              (input)="
                 updateResourceFromEvent($event, 'xp.SupportContact.Phone')
-              " placeholder="Enter Support Contact Phone" />
+              "
+              placeholder="Enter Support Contact Phone"
+            />
           </div>
         </div>
       </div>

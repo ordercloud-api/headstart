@@ -1,36 +1,28 @@
-import { PermissionType } from "@app-seller/shared"
-
-export const UserGroupTypes = {
-  UserPermissions: 'UserPermissions',
-  BuyerLocation: 'BuyerLocation',
-}
-
-const MapToUserGroupDisplayText = {
-  UserPermissions: {
-    Title: 'User Permissions',
-    InfoText: 'Select which permissions to grant this user.',
-    ConfirmText:
-      "Please confirm that you wish to alter this user's permissions.",
-    Column2: 'Permission',
-  },
-  BuyerLocation: {
-    Title: 'Locations',
-    InfoText: `Select this user's locations.`,
-    ConfirmText: "Please confirm that you wish to alter this user's locations.",
-    Column2: 'Location',
-  },
-}
-
-export const GetDisplayText = (userGroupType: string): string => {
-  return MapToUserGroupDisplayText[userGroupType]
-}
+import { PermissionType } from '@app-seller/shared'
 
 export const PermissionTypes: PermissionType[] = [
-  { UserGroupSuffix: 'PermissionAdmin', DisplayText: 'Permission Admin' },
-  { UserGroupSuffix: 'OrderApprover', DisplayText: 'Order Approver' },
-  { UserGroupSuffix: 'NeedsApproval', DisplayText: 'Needs Approval' },
-  { UserGroupSuffix: 'ViewAllOrders', DisplayText: 'View All Orders' },
-  { UserGroupSuffix: 'CreditCardAdmin', DisplayText: 'Credit Card Admin' },
-  { UserGroupSuffix: 'AddressAdmin', DisplayText: 'Address Admin' },
+  {
+    UserGroupSuffix: 'PermissionAdmin',
+    DisplayText: 'ADMIN.PERMISSIONS.PERMISSION_ADMIN',
+  },
+  {
+    UserGroupSuffix: 'OrderApprover',
+    DisplayText: 'ADMIN.PERMISSIONS.ORDER_APPROVER',
+  },
+  {
+    UserGroupSuffix: 'NeedsApproval',
+    DisplayText: 'ADMIN.PERMISSIONS.NEEDS_APPROVAL',
+  },
+  {
+    UserGroupSuffix: 'ViewAllOrders',
+    DisplayText: 'ADMIN.PERMISSIONS.VIEW_ALL_ORDERS',
+  },
+  {
+    UserGroupSuffix: 'CreditCardAdmin',
+    DisplayText: 'ADMIN.PERMISSIONS.CREDIT_CARD_ADMIN',
+  },
+  {
+    UserGroupSuffix: 'AddressAdmin',
+    DisplayText: 'ADMIN.PERMISSIONS.ADDRESS_ADMIN',
+  },
 ]
-

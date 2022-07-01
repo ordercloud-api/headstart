@@ -12,7 +12,7 @@
             <tr>
               <th scope="col">User</th>
               <th scope="col" *ngFor="let permissionType of permissionTypes">
-                {{ permissionType.DisplayText }}
+                {{ permissionType.DisplayText | translate }}
               </th>
             </tr>
           </thead>
@@ -63,7 +63,7 @@
           class="btn btn-link"
           (click)="discardUserUserGroupAssignmentChanges()"
         >
-          {{ areChanges ? 'Cancel' : 'No Changes' }}
+          {{ areChanges ? 'ADMIN.COMMON.CANCEL' : 'ADMIN.COMMON.NO_CHANGES' }}
         </button>
         <button
           *ngIf="areChanges && !requestedUserConfirmation"

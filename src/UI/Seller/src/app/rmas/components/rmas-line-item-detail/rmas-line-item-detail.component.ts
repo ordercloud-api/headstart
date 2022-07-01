@@ -28,7 +28,7 @@ export class RMALineItemDetailComponent {
     return rmaLineItem
   }
   getRefundStatus(rmaLineItem: RMALineItem): string {
-    return rmaLineItem?.IsRefunded ? 'Y' : 'N'
+    return rmaLineItem?.IsRefunded ? 'ADMIN.PIPES.YES' : 'ADMIN.PIPES.NO'
   }
   getValueSplitByCapitalLetter(value: string): string {
     return this.regexService.getStatusSplitByCapitalLetter(value)
