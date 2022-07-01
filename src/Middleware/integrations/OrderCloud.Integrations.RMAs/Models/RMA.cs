@@ -4,6 +4,7 @@ using Headstart.Common.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using OrderCloud.Integrations.CosmosDB;
+using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.RMAs.Models
 {
@@ -103,6 +104,7 @@ namespace OrderCloud.Integrations.RMAs.Models
         public decimal? AmountRefunded { get; set; }
 
         public string FromUserID { get; set; }
+        public CommerceRole FromUserType { get; set; }
     }
 
     public class RMARefundRequestBody
