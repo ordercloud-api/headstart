@@ -37,7 +37,7 @@ export class RMALogsComponent implements OnChanges {
       for (const log of this._rma?.Logs) {
         if (!this.usersFromLogs?.some((user) => user?.ID === log?.FromUserID)) {
           let user: User
-          if (log?.FromuserType === 'Supplier') {
+          if (log?.FromUserType === 'Supplier') {
             user = await SupplierUsers.Get(
               this._rma?.SupplierID,
               log?.FromUserID
