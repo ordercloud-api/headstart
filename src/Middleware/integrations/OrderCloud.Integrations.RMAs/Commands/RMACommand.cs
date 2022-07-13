@@ -174,7 +174,8 @@ namespace OrderCloud.Integrations.RMAs.Commands
             // If the status on the new RMA differs from the old RMA, create an RMALog
             if (rma.Status != currentRMA.Status)
             {
-                RMALog log = new RMALog() { Status = rma.Status, Date = DateTime.Now, FromUserID = me.ID };
+                var userType = me.Buyer?.ID != null ? CommerceRole.Buyer : me.Supplier?.ID != null ? CommerceRole.Supplier : CommerceRole.Seller;
+                RMALog log = new RMALog() { Status = rma.Status, Date = DateTime.Now, FromUserID = me.ID, FromUserType = userType };
                 rma.Logs.Insert(0, log);
             }
 

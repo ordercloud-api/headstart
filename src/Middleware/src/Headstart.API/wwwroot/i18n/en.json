@@ -10,7 +10,7 @@
       }
     },
     "BUYER_USERS": {
-      "IMPERSONATE": "Imiter",
+      "IMPERSONATE": "Impersonate",
       "NO_ADDRESS_ASSIGNMENT": "This user has not been assigned to any buyer addresses."
     },
     "COMMON": {

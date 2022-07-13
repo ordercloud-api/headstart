@@ -169,6 +169,7 @@ namespace Headstart.API
                 .Inject<ICatalogCommand>()
                 .Inject<ISupplierCommand>()
                 .Inject<ICreditCardCommand>()
+                .AddSingleton<ISupplierSyncCommand, GenericSupplierCommand>()
                 .AddSingleton<IDownloadReportCommand, DownloadReportCommand>()
 
                 // Services
