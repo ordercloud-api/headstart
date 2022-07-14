@@ -20,11 +20,12 @@
     >
       {{
         shipMethod.xp.FreeShippingApplied
-          ? 'FREE'
+          ? ('CHECKOUT.SHIPPING_SELECTION_FORM.FREE' | translate)
           : (shipMethod.Cost | currency: _orderCurrency)
       }}
-      - {{ shipMethod?.Name | shipMethodNameMapper }} est.
-      {{ getEstTransitDays(shipMethod) }}
+      - {{ shipMethod?.Name }}
+      <span translate>CHECKOUT.SHIPPING_SELECTION_FORM.ESTIMATED</span>
+      {{ shipMethod.EstimatedTransitDays }}
       <span translate>CHECKOUT.SHIPPING_SELECTION_FORM.DAY</span
       >{{ detectPlural(shipMethod) }}
     </option>

@@ -225,7 +225,7 @@ namespace Headstart.API.Commands
             var tax = await ProcessAction.Execute(
                 ProcessType.Tax,
                 "Creating Tax Transaction",
-                HandleTaxTransactionCreationAsync(orderWorksheet.Reserialize<OrderWorksheet>()));
+                HandleTaxTransactionCreationAsync(orderWorksheet.Reserialize<HSOrderWorksheet>()));
             results.Add(new ProcessResult()
             {
                 Type = ProcessType.Tax,
@@ -343,14 +343,14 @@ namespace Headstart.API.Commands
                 return new ShipMethodSupplierView()
                 {
                     EstimatedTransitDays = selected.EstimatedTransitDays,
-                    Name = selected.Name,
+                    Name = selected.GetServiceName(),
                     ShipFromAddressID = shipEstimate.xp.ShipFromAddressID,
                 };
             }).ToList();
             return selectedShipMethods;
         }
 
-        private async Task HandleTaxTransactionCreationAsync(OrderWorksheet orderWorksheet)
+        private async Task HandleTaxTransactionCreationAsync(HSOrderWorksheet orderWorksheet)
         {
             var promotions = await oc.Orders.ListAllPromotionsAsync(OrderDirection.All, orderWorksheet.Order.ID);
 

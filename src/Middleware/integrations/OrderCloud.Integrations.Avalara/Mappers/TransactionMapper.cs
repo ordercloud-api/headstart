@@ -2,17 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalara.AvaTax.RestClient;
+using Headstart.Common.Models;
 using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.Avalara.Mappers
 {
     public static class TransactionMapper
     {
-        public static CreateTransactionModel ToAvalaraTransactionModel(this OrderWorksheet order, string companyCode, DocumentType docType, List<OrderPromotion> promosOnOrder)
+        public static CreateTransactionModel ToAvalaraTransactionModel(this HSOrderWorksheet order, string companyCode, DocumentType docType, List<OrderPromotion> promosOnOrder)
         {
             var buyerLocationID = order.Order.BillingAddress.ID;
 
-            var standardLineItems = order.LineItems.Where(li => li.Product.xp.ProductType == "Standard")?.ToList();
+            var standardLineItems = order.LineItems.Where(li => li.Product.xp.ProductType == ProductType.Standard)?.ToList();
 
             var standardShipEstimates = order.ShipEstimateResponse?.ShipEstimates;
 
@@ -54,14 +55,14 @@ namespace OrderCloud.Integrations.Avalara.Mappers
             return line;
         }
 
-        private static LineItemModel ToLineItemModel(this ShipEstimate shipEstimate, Address shipFrom, Address shipTo)
+        private static LineItemModel ToLineItemModel(this HSShipEstimate shipEstimate, Address shipFrom, Address shipTo)
         {
             var method = shipEstimate.GetSelectedShippingMethod();
             return new LineItemModel()
             {
                 amount = method.Cost,
                 taxCode = "FR",
-                itemCode = method.Name,
+                itemCode = method?.GetServiceName(),
                 customerUsageType = null,
                 number = shipEstimate.ID,
                 addresses = ToAddressesModel(shipFrom, shipTo),

@@ -64,7 +64,7 @@ namespace OrderCloud.Integrations.EasyPost.Commands
                 return methods;
             }
 
-            var filtered_methods = methods.Where(s => profile.AllowedServiceFilter.Contains(s.Name)).Select(s => s).ToList();
+            var filtered_methods = methods.Where(s => profile.AllowedServiceFilter.Contains(s.xp.ServiceName)).Select(s => s).ToList();
             return filtered_methods.Any() ? filtered_methods : methods;
         }
     }

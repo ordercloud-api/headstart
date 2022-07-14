@@ -802,6 +802,8 @@
     "SHIPPING_SELECTION_FORM": {
       "DAY": "日",
       "DELIVERY_OPTIONS": "配送オプション",
+      "ESTIMATED": "は。",
+      "FREE": "自由",
       "HOW_FAST": "この発送のスピードは？",
       "NO_RATES_RETURNED_MESSAGE": "料金は返金されません。送料は注文後に計算されます。",
       "SHIPPING_SPEED": "配送スピード",

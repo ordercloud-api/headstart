@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Headstart.Common.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Services
 {
     public class MockTaxService : ITaxCodesProvider, ITaxCalculator
     {
-        public Task<OrderTaxCalculation> CalculateEstimateAsync(OrderWorksheet orderWorksheet, List<OrderPromotion> promotions)
+        public Task<OrderTaxCalculation> CalculateEstimateAsync(HSOrderWorksheet orderWorksheet, List<OrderPromotion> promotions)
         {
             return Task.FromResult(new OrderTaxCalculation()
             {
@@ -15,7 +16,7 @@ namespace Headstart.Common.Services
             });
         }
 
-        public Task<OrderTaxCalculation> CommitTransactionAsync(OrderWorksheet orderWorksheet, List<OrderPromotion> promotions)
+        public Task<OrderTaxCalculation> CommitTransactionAsync(HSOrderWorksheet orderWorksheet, List<OrderPromotion> promotions)
         {
             return Task.FromResult(new OrderTaxCalculation()
             {

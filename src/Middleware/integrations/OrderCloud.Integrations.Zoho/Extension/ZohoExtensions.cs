@@ -15,7 +15,7 @@ namespace OrderCloud.Integrations.Zoho
 
         public static string ShippingSku(this HSShipMethod method)
         {
-            return $"{method?.Name} {ShippingSuffix}";
+            return $"{method?.GetServiceName()} {ShippingSuffix}";
         }
     }
 }
