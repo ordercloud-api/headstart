@@ -35,9 +35,7 @@ using OrderCloud.Integrations.ExchangeRates.Extensions;
 using OrderCloud.Integrations.Orchestration;
 using OrderCloud.Integrations.Orchestration.Models;
 using OrderCloud.Integrations.Portal;
-using OrderCloud.Integrations.Reporting.Commands;
-using OrderCloud.Integrations.Reporting.Models;
-using OrderCloud.Integrations.Reporting.Queries;
+using OrderCloud.Integrations.Reporting.Extensions;
 using OrderCloud.Integrations.RMAs.Extensions;
 using OrderCloud.Integrations.SendGrid.Extensions;
 using OrderCloud.Integrations.Smarty.Extensions;
@@ -153,7 +151,6 @@ namespace Headstart.API
 
                 // Configure Cosmos
                 .InjectCosmosStore<LogQuery, OrchestrationLog>(cosmosConfig)
-                .InjectCosmosStore<ReportTemplateQuery, ReportTemplate>(cosmosConfig)
                 .AddCosmosDb(settings.CosmosSettings.EndpointUri, settings.CosmosSettings.PrimaryKey, settings.CosmosSettings.DatabaseName, cosmosContainers)
 
                 // Commands
@@ -170,7 +167,6 @@ namespace Headstart.API
                 .Inject<ISupplierCommand>()
                 .Inject<ICreditCardCommand>()
                 .AddSingleton<ISupplierSyncCommand, GenericSupplierCommand>()
-                .AddSingleton<IDownloadReportCommand, DownloadReportCommand>()
 
                 // Services
                 .Inject<IPortalService>()
@@ -215,6 +211,9 @@ namespace Headstart.API
                 // OMS Providers
                 .AddZohoOMSProvider(settings.EnvironmentSettings, settings.ZohoSettings)
                 .AddDefaultOMSProvider()
+
+                // Reporting Providers
+                .AddDefaultReportingProvider(settings.EnvironmentSettings, cosmosConfig)
 
                 // Documentation
                 .AddSwaggerGen(c =>

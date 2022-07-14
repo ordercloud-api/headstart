@@ -15,7 +15,7 @@ using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
 using OrderCloud.Integrations.CosmosDB;
 using OrderCloud.Integrations.CosmosDB.Extensions;
-using OrderCloud.Integrations.Reporting.Repositories;
+using OrderCloud.Integrations.Reporting.Extensions;
 using OrderCloud.SDK;
 using Polly;
 using Polly.Contrib.WaitAndRetry;
@@ -104,10 +104,7 @@ namespace Headstart.Jobs
                 .AddSingleton<ReceiveRecentPurchaseOrdersJob>()
                 .AddSingleton<ReceiveRecentLineItemsJob>()
                 .AddSingleton<ReceiveRecentOrdersAndShipmentsJob>()
-                .Inject<ISalesOrderDetailDataRepo>()
-                .Inject<IPurchaseOrderDetailDataRepo>()
-                .Inject<ILineItemDetailDataRepo>()
-                .Inject<IOrdersAndShipmentsDataRepo>()
+                .AddDefaultReportingRepositories()
                 .AddSingleton(settings)
                 .AddMvcCore().AddNewtonsoftJson(o =>
                 {
