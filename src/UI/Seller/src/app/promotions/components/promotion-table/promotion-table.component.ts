@@ -1,5 +1,5 @@
 import { Component, ChangeDetectorRef, NgZone } from '@angular/core'
-import { Promotion } from '@ordercloud/angular-sdk'
+import { Promotion } from 'ordercloud-javascript-sdk'
 import { ResourceCrudComponent } from '@app-seller/shared/components/resource-crud/resource-crud.component'
 import { Router, ActivatedRoute } from '@angular/router'
 import { PromotionService } from '@app-seller/promotions/promotion.service'

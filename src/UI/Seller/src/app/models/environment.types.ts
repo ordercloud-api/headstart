@@ -1,4 +1,4 @@
-import { ApiRole } from '@ordercloud/angular-sdk'
+import { ApiRole } from 'ordercloud-javascript-sdk'
 
 export interface EnvironmentConfig {
   hostedApp: boolean

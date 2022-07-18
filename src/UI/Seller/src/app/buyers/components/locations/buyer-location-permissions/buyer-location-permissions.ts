@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core'
-import { UserGroupAssignment, User, ListPage} from '@ordercloud/angular-sdk'
+import { UserGroupAssignment, User, ListPage } from 'ordercloud-javascript-sdk'
 import { BuyerLocationService } from '../buyer-location.service'
 import { REDIRECT_TO_FIRST_PARENT } from '@app-seller/layout/header/header.config'
 import { PermissionTypes } from '../buyer-location-permissions/buyer-location-permissions.constants'
@@ -41,12 +41,14 @@ export class BuyerLocationPermissions {
   }
   async updateLocationUsers(locationID: string, page?: number): Promise<void> {
     this.locationUsers = await this.buyerLocationService.getLocationUsers(
-      locationID, page
+      locationID,
+      page
     )
   }
 
   async updateUserPermissionAssignments(locationID: string): Promise<void> {
-    this.locationPermissionsAssigmentsEditable = await  this.buyerLocationService.getLocationPermissions(locationID)
+    this.locationPermissionsAssigmentsEditable =
+      await this.buyerLocationService.getLocationPermissions(locationID)
     this.locationPermissionsAssigmentsStatic = JSON.parse(
       JSON.stringify(this.locationPermissionsAssigmentsEditable)
     )
@@ -56,11 +58,12 @@ export class BuyerLocationPermissions {
   toggleUserUserGroupAssignment(userID: string, userGroupSuffix: string): void {
     const userGroupID = `${this._locationID}-${userGroupSuffix}`
     if (this.isAssigned(userID, userGroupSuffix)) {
-      this.locationPermissionsAssigmentsEditable = this.locationPermissionsAssigmentsEditable.filter(
-        (groupAssignment) =>
-          groupAssignment.UserGroupID !== userGroupID ||
-          groupAssignment.UserID !== userID
-      )
+      this.locationPermissionsAssigmentsEditable =
+        this.locationPermissionsAssigmentsEditable.filter(
+          (groupAssignment) =>
+            groupAssignment.UserGroupID !== userGroupID ||
+            groupAssignment.UserID !== userID
+        )
     } else {
       const newUserUserGroupAssignment = {
         UserID: userID,
@@ -81,7 +84,8 @@ export class BuyerLocationPermissions {
   }
 
   discardUserUserGroupAssignmentChanges(): void {
-    this.locationPermissionsAssigmentsEditable = this.locationPermissionsAssigmentsStatic
+    this.locationPermissionsAssigmentsEditable =
+      this.locationPermissionsAssigmentsStatic
     this.checkForUserUserGroupAssignmentChanges()
   }
 
@@ -116,7 +120,8 @@ export class BuyerLocationPermissions {
       this.add,
       this.del
     )
-    this.locationPermissionsAssigmentsStatic = this.locationPermissionsAssigmentsEditable
+    this.locationPermissionsAssigmentsStatic =
+      this.locationPermissionsAssigmentsEditable
     this.checkForUserUserGroupAssignmentChanges()
   }
 }

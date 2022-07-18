@@ -4,10 +4,10 @@ import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/r
 import {
   User,
   UserGroupAssignment,
-  OcSupplierUserGroupService,
+  SupplierUserGroups,
   ListPage,
   UserGroup,
-} from '@ordercloud/angular-sdk'
+} from 'ordercloud-javascript-sdk'
 import { SUPPLIER_SUB_RESOURCE_LIST } from '../suppliers/supplier.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { SupplierUsers } from 'ordercloud-javascript-sdk'
@@ -29,7 +29,6 @@ export class SupplierUserService extends ResourceCrudService<User> {
   constructor(
     router: Router,
     activatedRoute: ActivatedRoute,
-    private ocSupplierUserGroupService: OcSupplierUserGroupService,
     public currentUserService: CurrentUserService
   ) {
     super(
@@ -62,42 +61,34 @@ export class SupplierUserService extends ResourceCrudService<User> {
     supplierID: string,
     assignment: UserGroupAssignment
   ): Promise<void> {
-    return this.ocSupplierUserGroupService
-      .SaveUserAssignment(supplierID, {
-        UserID: assignment.UserID,
-        UserGroupID: assignment.UserGroupID,
-      })
-      .toPromise()
+    return SupplierUserGroups.SaveUserAssignment(supplierID, {
+      UserID: assignment.UserID,
+      UserGroupID: assignment.UserGroupID,
+    })
   }
 
   private removeSupplierUserUserGroupAssignment(
     supplierID: string,
     assignment: UserGroupAssignment
   ): Promise<void> {
-    return this.ocSupplierUserGroupService
-      .DeleteUserAssignment(
-        supplierID,
-        assignment.UserGroupID,
-        assignment.UserID
-      )
-      .toPromise()
+    return SupplierUserGroups.DeleteUserAssignment(
+      supplierID,
+      assignment.UserGroupID,
+      assignment.UserID
+    )
   }
 
   async getUserGroups(
     supplierID: string,
     options: ListArgs
   ): Promise<ListPage<UserGroup>> {
-    return await this.ocSupplierUserGroupService
-      .List(supplierID, options as any)
-      .toPromise()
+    return await SupplierUserGroups.List(supplierID, options as any)
   }
 
   async listUserAssignments(
     userID: string,
     supplierID: string
   ): Promise<ListPage<UserGroupAssignment>> {
-    return await this.ocSupplierUserGroupService
-      .ListUserAssignments(supplierID, { userID })
-      .toPromise()
+    return await SupplierUserGroups.ListUserAssignments(supplierID, { userID })
   }
 }

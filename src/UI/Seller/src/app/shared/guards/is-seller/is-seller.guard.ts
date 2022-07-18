@@ -1,23 +1,20 @@
 import { Injectable } from '@angular/core'
 import { CanActivate, Router } from '@angular/router'
 import * as jwtDecode from 'jwt-decode'
-import { of, Observable } from 'rxjs'
-import { OcTokenService } from '@ordercloud/angular-sdk'
 import { AppStateService } from '@app-seller/shared/services/app-state/app-state.service'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
-import { DecodedOrderCloudToken } from '@app-seller/shared'
+import { DecodedToken, Tokens } from 'ordercloud-javascript-sdk'
 
 @Injectable({
   providedIn: 'root',
 })
 export class IsSellerGuard implements CanActivate {
   constructor(
-    private ocTokenService: OcTokenService,
     private router: Router,
     private appAuthService: AppAuthService,
     private appStateService: AppStateService
   ) {}
-  canActivate(): Observable<boolean> {
+  canActivate(): boolean {
     /**
      * very simple test to make sure a token exists,
      * can be parsed and has a valid expiration time
@@ -34,19 +31,19 @@ export class IsSellerGuard implements CanActivate {
     }
 
     this.appStateService.isLoggedIn.next(isSeller)
-    return of(isSeller)
+    return isSeller
   }
 
   private isSeller(): boolean {
-    const token = this.ocTokenService.GetAccess()
+    const token = Tokens.GetAccessToken()
 
     if (!token) {
       return false
     }
 
-    let decodedToken: DecodedOrderCloudToken
+    let decodedToken: DecodedToken
     try {
-      decodedToken = jwtDecode(token)
+      decodedToken = jwtDecode(token) as DecodedToken
     } catch (e) {
       decodedToken = null
     }

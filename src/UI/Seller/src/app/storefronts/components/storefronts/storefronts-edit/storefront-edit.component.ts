@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core'
 import { Validators, FormBuilder } from '@angular/forms'
 import { StorefrontsService } from '../storefronts.service'
-import { ApiClient } from '@ordercloud/angular-sdk'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import {
   debounceTime,
@@ -15,7 +14,6 @@ import { from, OperatorFunction } from 'rxjs'
 import { Buyer, Buyers, Users } from 'ordercloud-javascript-sdk'
 import { Observable } from 'rxjs'
 import { HSApiClient } from '@ordercloud/headstart-sdk'
-import { conditionalValidator } from '@app-seller/shared/validators/conditional-validator'
 import { TypedFormGroup } from 'ngx-forms-typed'
 import { ResourceUpdate } from '@app-seller/shared'
 
@@ -79,19 +77,8 @@ export class StorefrontEditComponent {
       DefaultContextUserName: [
         storefront?.DefaultContextUserName,
         Validators.required,
-        // conditionalValidator(
-        //   () => this.resourceForm.controls.IsAnonBuyer.value,
-        //   Validators.required
-        // ),
       ],
-      ['xp.AnonBuyerID']: [
-        storefront?.xp?.AnonBuyerID,
-        Validators.required,
-        // conditionalValidator(
-        //   () => this.resourceForm.controls.IsAnonBuyer.value,
-        //   Validators.required
-        // ),
-      ],
+      ['xp.AnonBuyerID']: [storefront?.xp?.AnonBuyerID, Validators.required],
       ['xp.WebsiteUrl']: [storefront?.xp?.WebsiteUrl],
     }) as StoreFrontFormGroup
     // this.updateResource.emit({

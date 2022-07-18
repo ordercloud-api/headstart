@@ -14,7 +14,7 @@ import {
   RMA,
   RMALineItem,
 } from '@ordercloud/headstart-sdk'
-import { LineItem, LineItemSpec, Order } from '@ordercloud/angular-sdk'
+import { LineItem, LineItemSpec, Order } from 'ordercloud-javascript-sdk'
 import { AppConfig } from '@app-seller/shared'
 import { FormControl, FormGroup, Validators } from '@angular/forms'
 import { getPrimaryLineItemImage } from '@app-seller/shared/services/assets/asset.helper'

@@ -3,9 +3,9 @@ import { Router, ActivatedRoute } from '@angular/router'
 import {
   Product,
   ProductAssignment,
-  OcCategoryService,
+  Categories,
   CategoryProductAssignment,
-} from '@ordercloud/angular-sdk'
+} from 'ordercloud-javascript-sdk'
 import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { Products } from 'ordercloud-javascript-sdk'
@@ -73,7 +73,6 @@ export class ProductService extends ResourceCrudService<Product> {
   constructor(
     router: Router,
     activatedRoute: ActivatedRoute,
-    private ocCategoryService: OcCategoryService,
     public currentUserService: CurrentUserService
   ) {
     super(
@@ -113,18 +112,14 @@ export class ProductService extends ResourceCrudService<Product> {
     buyerID: string
   ): Promise<void> {
     const addRequests = add.map((newAssignment) =>
-      this.ocCategoryService
-        .SaveProductAssignment(buyerID, newAssignment)
-        .toPromise()
+      Categories.SaveProductAssignment(buyerID, newAssignment)
     )
     const deleteRequests = del.map((assignmentToRemove) =>
-      this.ocCategoryService
-        .DeleteProductAssignment(
-          buyerID,
-          assignmentToRemove.CategoryID,
-          assignmentToRemove.ProductID
-        )
-        .toPromise()
+      Categories.DeleteProductAssignment(
+        buyerID,
+        assignmentToRemove.CategoryID,
+        assignmentToRemove.ProductID
+      )
     )
     await Promise.all([...addRequests, ...deleteRequests])
   }

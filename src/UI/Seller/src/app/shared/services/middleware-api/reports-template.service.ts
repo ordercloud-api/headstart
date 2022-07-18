@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
 import { Inject, Injectable } from '@angular/core'
 import { applicationConfiguration } from '@app-seller/config/app.config'
-import { OcTokenService } from '@ordercloud/angular-sdk'
+import { Tokens } from 'ordercloud-javascript-sdk'
 import { Observable } from 'rxjs'
 import { ResourceCrudService } from '../resource-crud/resource-crud.service'
 import { Router, ActivatedRoute } from '@angular/router'
@@ -31,7 +31,6 @@ export class ReportsTemplateService extends ResourceCrudService<ReportTemplate> 
     router: Router,
     activatedRoute: ActivatedRoute,
     currentUserService: CurrentUserService,
-    private ocTokenService: OcTokenService,
     private http: HttpClient,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {
@@ -51,7 +50,7 @@ export class ReportsTemplateService extends ResourceCrudService<ReportTemplate> 
   private buildHeaders(): HttpHeaders {
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.ocTokenService.GetAccess()}`,
+      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
     })
   }
 

@@ -5,12 +5,7 @@ import {
   HSOrder,
   RMA,
 } from '@ordercloud/headstart-sdk'
-import {
-  MeUser,
-  OcLineItemService,
-  OcOrderService,
-  Order,
-} from '@ordercloud/angular-sdk'
+import { MeUser, LineItems, Orders, Order } from 'ordercloud-javascript-sdk'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { OrderType, SELLER } from '@app-seller/shared'
@@ -37,8 +32,6 @@ export class RMAEditComponent implements OnInit {
 
   constructor(
     private currentUserService: CurrentUserService,
-    private ocOrderService: OcOrderService,
-    private ocLineItemService: OcLineItemService,
     private appAuthService: AppAuthService
   ) {
     this.isSellerUser = this.appAuthService.getOrdercloudUserType() === SELLER
@@ -79,9 +72,7 @@ export class RMAEditComponent implements OnInit {
       this.supplierOrderData = fullOrderData.SupplierOrder.Order
       return this.supplierOrderData
     } else {
-      this.buyerOrderData = await this.ocOrderService
-        .Get('Incoming', relatedOrderID)
-        .toPromise()
+      this.buyerOrderData = await Orders.Get('Incoming', relatedOrderID)
       return this.buyerOrderData
     }
   }
@@ -89,9 +80,11 @@ export class RMAEditComponent implements OnInit {
   async getRelatedLineItems(rma: RMA): Promise<HSLineItem[]> {
     const matchingLineItems: HSLineItem[] = []
     for (const li of rma.LineItems) {
-      const ocLineItem = await this.ocLineItemService
-        .Get('Incoming', this._relatedOrder.ID, li.ID)
-        .toPromise()
+      const ocLineItem = await LineItems.Get(
+        'Incoming',
+        this._relatedOrder.ID,
+        li.ID
+      )
       matchingLineItems.push(ocLineItem)
     }
     return matchingLineItems

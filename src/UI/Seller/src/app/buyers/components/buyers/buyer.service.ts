@@ -13,7 +13,6 @@ export const BUYER_SUB_RESOURCE_LIST = [
   { route: 'categories', display: 'ADMIN.NAV.CATEGORIES' },
 ]
 
-
 @Injectable({
   providedIn: 'root',
 })

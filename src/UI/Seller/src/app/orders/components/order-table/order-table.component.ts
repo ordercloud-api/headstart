@@ -1,6 +1,6 @@
 import { Component, ChangeDetectorRef, NgZone } from '@angular/core'
 import { ResourceCrudComponent } from '@app-seller/shared/components/resource-crud/resource-crud.component'
-import { Order } from '@ordercloud/angular-sdk'
+import { Order } from 'ordercloud-javascript-sdk'
 import { Router, ActivatedRoute, Params } from '@angular/router'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { OrderService } from '@app-seller/orders/order.service'

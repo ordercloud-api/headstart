@@ -1,5 +1,5 @@
 import { Component, ChangeDetectorRef, NgZone, OnInit } from '@angular/core'
-import { Product, OcSupplierService } from '@ordercloud/angular-sdk'
+import { Product, Suppliers } from 'ordercloud-javascript-sdk'
 import { ResourceCrudComponent } from '@app-seller/shared/components/resource-crud/resource-crud.component'
 import { Router, ActivatedRoute } from '@angular/router'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
@@ -21,7 +21,6 @@ export class ProductTableComponent
   constructor(
     protected productService: ProductService,
     private currentUserService: CurrentUserService,
-    private ocSupplierService: OcSupplierService,
     changeDetectorRef: ChangeDetectorRef,
     router: Router,
     activatedRoute: ActivatedRoute,
@@ -52,20 +51,20 @@ export class ProductTableComponent
   }
 
   async buildSupplierFilter(): Promise<any> {
-    const supplierListPage = await this.ocSupplierService
-      .List({ pageSize: 100, sortBy: ['Name'], filters: { Active: 'true' } })
-      .toPromise()
+    const supplierListPage = await Suppliers.List({
+      pageSize: 100,
+      sortBy: ['Name'],
+      filters: { Active: 'true' },
+    })
     let suppliers = supplierListPage.Items
     if (supplierListPage.Meta.TotalPages > 1) {
       for (let i = 2; i <= supplierListPage.Meta.TotalPages; i++) {
-        const newSuppliers = await this.ocSupplierService
-          .List({
-            pageSize: 100,
-            sortBy: ['Name'],
-            filters: { Active: 'true' },
-            page: i,
-          })
-          .toPromise()
+        const newSuppliers = await Suppliers.List({
+          pageSize: 100,
+          sortBy: ['Name'],
+          filters: { Active: 'true' },
+          page: i,
+        })
         suppliers = suppliers.concat(newSuppliers.Items)
       }
     }

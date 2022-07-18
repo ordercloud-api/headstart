@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
-import { Promotion } from '@ordercloud/angular-sdk'
 import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
 import {
   HSPromoType,
@@ -10,7 +9,7 @@ import {
   HSBogoType,
 } from '@app-seller/models/promo-types'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
-import { Promotions } from 'ordercloud-javascript-sdk'
+import { Promotions, Promotion } from 'ordercloud-javascript-sdk'
 import { HSSupplier } from '@ordercloud/headstart-sdk'
 
 @Injectable({

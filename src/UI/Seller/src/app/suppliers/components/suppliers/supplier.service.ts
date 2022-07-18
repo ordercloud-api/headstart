@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
-import { Supplier, OcSupplierService } from '@ordercloud/angular-sdk'
+import { Supplier, Suppliers } from 'ordercloud-javascript-sdk'
 import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
 import { HeadStartSDK, HSSupplier, ListArgs } from '@ordercloud/headstart-sdk'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
-import { Suppliers } from 'ordercloud-javascript-sdk'
 
 export const SUPPLIER_SUB_RESOURCE_LIST = [
   { route: 'users', display: 'ADMIN.NAV.USERS' },
@@ -17,8 +16,6 @@ export const SUPPLIER_SUB_RESOURCE_LIST = [
   providedIn: 'root',
 })
 export class SupplierService extends ResourceCrudService<Supplier> {
-  ocSupplierService: OcSupplierService
-
   emptyResource = {
     Name: '',
     Active: true,

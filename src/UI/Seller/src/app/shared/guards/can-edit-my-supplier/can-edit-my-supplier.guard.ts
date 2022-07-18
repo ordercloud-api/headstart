@@ -2,17 +2,16 @@ import { Injectable } from '@angular/core'
 import { CanActivate, Router } from '@angular/router'
 import * as jwtDecode from 'jwt-decode'
 import { of, Observable } from 'rxjs'
-import { OcTokenService } from '@ordercloud/angular-sdk'
+import { Tokens } from 'ordercloud-javascript-sdk'
 import { AppStateService } from '@app-seller/shared/services/app-state/app-state.service'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
-import { DecodedOrderCloudToken } from '@app-seller/shared'
+import { DecodedToken } from 'ordercloud-javascript-sdk'
 
 @Injectable({
   providedIn: 'root',
 })
 export class CanEditMySupplierGuard implements CanActivate {
   constructor(
-    private ocTokenService: OcTokenService,
     private router: Router,
     private appAuthService: AppAuthService,
     private appStateService: AppStateService
@@ -38,15 +37,15 @@ export class CanEditMySupplierGuard implements CanActivate {
   }
 
   private canEditMySupplier(): boolean {
-    const token = this.ocTokenService.GetAccess()
+    const token = Tokens.GetAccessToken()
 
     if (!token) {
       return false
     }
 
-    let decodedToken: DecodedOrderCloudToken
+    let decodedToken: DecodedToken
     try {
-      decodedToken = jwtDecode(token)
+      decodedToken = jwtDecode(token) as DecodedToken
     } catch (e) {
       decodedToken = null
     }

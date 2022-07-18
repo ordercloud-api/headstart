@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
-import { Product } from '@ordercloud/angular-sdk'
+import { Component, Input, Output, EventEmitter } from '@angular/core'
+import { Product } from 'ordercloud-javascript-sdk'
 import {
   faTrashAlt,
   faUpload,

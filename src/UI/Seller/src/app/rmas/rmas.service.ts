@@ -7,7 +7,7 @@ import { CosmosListPage } from '@ordercloud/headstart-sdk/dist/models/CosmosList
 import { AppConfig, Options } from '@app-seller/shared'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { OcTokenService } from '@ordercloud/angular-sdk'
+import { Tokens } from 'ordercloud-javascript-sdk'
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +18,6 @@ export class RMAService extends ResourceCrudService<RMA> {
     activatedRoute: ActivatedRoute,
     currentUserService: CurrentUserService,
     private http: HttpClient,
-    private ocTokenService: OcTokenService,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {
     super(
@@ -35,12 +34,13 @@ export class RMAService extends ResourceCrudService<RMA> {
   private buildHeaders(): HttpHeaders {
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.ocTokenService.GetAccess()}`,
+      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
     })
   }
 
   public async updateResource(originalID: string, resource: RMA): Promise<RMA> {
     originalID = resource.RMANumber
+    debugger
     const processedRMA = await HeadStartSDK.RmAs.ProcessRMA(resource)
     this.updateResourceSubject(processedRMA)
     return processedRMA

@@ -26,8 +26,8 @@ import {
   productDetail as productDetailFilters,
   shipmentDetail as shipmentDetailFilters,
 } from '../models/filters'
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
-import { OcBuyerService, OcSupplierService } from '@ordercloud/angular-sdk'
+import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'    
+import { Suppliers } from 'ordercloud-javascript-sdk'
 import { cloneDeep } from 'lodash'
 import { GeographyConfig } from '@app-seller/shared/models/supported-countries.constant'
 import {
@@ -77,9 +77,7 @@ export class TemplateEditComponent implements OnChanges {
 
   constructor(
     private reportsTemplateService: ReportsTemplateService,
-    private geographyService: AppGeographyService,
-    private supplierService: OcSupplierService,
-    private ocBuyerService: OcBuyerService // DO NOT REMOVE THIS, its dynamically called at runtime
+    private geographyService: AppGeographyService
   ) {}
 
   ngOnChanges(changes: SimpleChanges) {
@@ -189,11 +187,8 @@ export class TemplateEditComponent implements OnChanges {
             ]
           }
           if (filter.name === 'Product Vendor') {
-            const supplierList = await this.supplierService
-              .List()
-              .subscribe((result) => {
-                filter.filterValues = result.Items
-              })
+            const supplierList = await Suppliers.List()
+            filter.filterValues = supplierList.Items
           }
       }
     }

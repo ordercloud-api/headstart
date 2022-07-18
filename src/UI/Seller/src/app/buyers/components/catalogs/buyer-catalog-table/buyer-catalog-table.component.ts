@@ -1,6 +1,6 @@
 import { Component, ChangeDetectorRef, NgZone } from '@angular/core'
 import { ResourceCrudComponent } from '@app-seller/shared/components/resource-crud/resource-crud.component'
-import { Category } from '@ordercloud/angular-sdk'
+import { Category } from 'ordercloud-javascript-sdk'
 import { Router, ActivatedRoute } from '@angular/router'
 import { BuyerService } from '../../buyers/buyer.service'
 import { BuyerCatalogService } from '../buyer-catalog.service'
@@ -26,6 +26,13 @@ export class BuyerCatalogTableComponent extends ResourceCrudComponent<Category> 
     private buyerService: BuyerService,
     ngZone: NgZone
   ) {
-    super(changeDetectorRef, buyerCatalogService, router, activatedroute, ngZone, createBuyerCatalogForm)
+    super(
+      changeDetectorRef,
+      buyerCatalogService,
+      router,
+      activatedroute,
+      ngZone,
+      createBuyerCatalogForm
+    )
   }
 }

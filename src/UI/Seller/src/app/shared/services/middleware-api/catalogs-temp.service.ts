@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Inject, Injectable } from '@angular/core'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppConfig } from '@app-seller/models/environment.types'
-import { OcTokenService, CatalogAssignment } from '@ordercloud/angular-sdk'
+import { Tokens, CatalogAssignment } from 'ordercloud-javascript-sdk'
 import {
   HSCatalog,
   ListPage,
@@ -17,14 +17,13 @@ import {
 })
 export class CatalogsTempService {
   constructor(
-    private ocTokenService: OcTokenService,
     private http: HttpClient,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {}
 
   private buildHeaders(): HttpHeaders {
     return new HttpHeaders({
-      Authorization: `Bearer ${this.ocTokenService.GetAccess()}`,
+      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
     })
   }
 

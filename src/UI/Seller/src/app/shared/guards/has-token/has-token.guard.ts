@@ -1,24 +1,21 @@
 import { Injectable } from '@angular/core'
 import { CanActivate, Router } from '@angular/router'
 import * as jwtDecode from 'jwt-decode'
-import { of, Observable } from 'rxjs'
-import { map } from 'rxjs/operators'
-import { OcTokenService } from '@ordercloud/angular-sdk'
+import { Me, Tokens } from 'ordercloud-javascript-sdk'
 import { AppStateService } from '@app-seller/shared/services/app-state/app-state.service'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
-import { DecodedOrderCloudToken } from '@app-seller/shared'
+import { DecodedToken } from 'ordercloud-javascript-sdk'
 
 @Injectable({
   providedIn: 'root',
 })
 export class HasTokenGuard implements CanActivate {
   constructor(
-    private ocTokenService: OcTokenService,
     private router: Router,
     private appAuthService: AppAuthService,
     private appStateService: AppStateService
   ) {}
-  canActivate(): Observable<boolean> {
+  async canActivate(): Promise<boolean> {
     /**
      * very simple test to make sure a token exists,
      * can be parsed and has a valid expiration time
@@ -29,10 +26,10 @@ export class HasTokenGuard implements CanActivate {
      */
     const isAccessTokenValid = this.isTokenValid()
     const refreshTokenExists =
-      this.ocTokenService.GetRefresh() &&
-      this.appAuthService.getRememberStatus()
+      Tokens.GetRefreshToken() && this.appAuthService.getRememberStatus()
     if (!isAccessTokenValid && refreshTokenExists) {
-      return this.appAuthService.refresh().pipe(map(() => true))
+      await Me.Get() // this will force access token to be refreshed (via the javascript sdk) and if it can't will log the user out
+      return true
     }
 
     if (!isAccessTokenValid) {
@@ -40,19 +37,19 @@ export class HasTokenGuard implements CanActivate {
     }
 
     this.appStateService.isLoggedIn.next(isAccessTokenValid)
-    return of(isAccessTokenValid)
+    return isAccessTokenValid
   }
 
   private isTokenValid(): boolean {
-    const token = this.ocTokenService.GetAccess()
+    const token = Tokens.GetAccessToken()
 
     if (!token) {
       return false
     }
 
-    let decodedToken: DecodedOrderCloudToken
+    let decodedToken: DecodedToken
     try {
-      decodedToken = jwtDecode(token)
+      decodedToken = jwtDecode(token) as DecodedToken
     } catch (e) {
       decodedToken = null
     }

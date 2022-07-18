@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core'
 import { get as _get } from 'lodash'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { UserGroupAssignment, User } from '@ordercloud/angular-sdk'
+import { UserGroupAssignment, User } from 'ordercloud-javascript-sdk'
 import { BuyerUserService } from '../buyer-user.service'
 import { ValidateEmail } from '@app-seller/validators/validators'
 import { GeographyConfig } from '@app-seller/shared/models/supported-countries.constant'

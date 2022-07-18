@@ -1,17 +1,9 @@
 import { Injectable, Inject } from '@angular/core'
-import {
-  Supplier,
-  OcMeService,
-  OcAuthService,
-  OcTokenService,
-  MeUser,
-  OcSupplierService,
-} from '@ordercloud/angular-sdk'
+import { Supplier, Me, Auth, Tokens, MeUser } from 'ordercloud-javascript-sdk'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { AppStateService } from '../app-state/app-state.service'
 import { HeadStartSDK, HSSupplier, ImageAsset } from '@ordercloud/headstart-sdk'
-import { Tokens } from 'ordercloud-javascript-sdk'
 import { BehaviorSubject } from 'rxjs'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { UserContext } from '@app-seller/models/user.types'
@@ -27,14 +19,10 @@ export class CurrentUserService {
   public profileImgSubject: BehaviorSubject<ImageAsset> =
     new BehaviorSubject<ImageAsset>({})
   constructor(
-    private ocMeService: OcMeService,
-    private ocAuthService: OcAuthService,
     @Inject(applicationConfiguration) private appConfig: AppConfig,
-    private ocTokenService: OcTokenService,
     private languageService: LanguageSelectorService,
     private appAuthService: AppAuthService,
-    private appStateService: AppStateService,
-    private ocSupplierService: OcSupplierService
+    private appStateService: AppStateService
   ) {}
 
   async login(
@@ -42,9 +30,12 @@ export class CurrentUserService {
     password: string,
     rememberMe: boolean
   ): Promise<void> {
-    const accessToken = await this.ocAuthService
-      .Login(username, password, this.appConfig.clientID, this.appConfig.scope)
-      .toPromise()
+    const accessToken = await Auth.Login(
+      username,
+      password,
+      this.appConfig.clientID,
+      this.appConfig.scope
+    )
 
     if (rememberMe && accessToken.refresh_token) {
       /**
@@ -52,13 +43,13 @@ export class CurrentUserService {
        * refresh tokens are configured per clientID and initially set to 0
        * a refresh token of 0 means no refresh token is returned in OAuth accessToken
        */
-      this.ocTokenService.SetRefresh(accessToken.refresh_token)
+      Tokens.SetRefreshToken(accessToken.refresh_token)
       this.appAuthService.setRememberStatus(true)
     }
     Tokens.SetAccessToken(accessToken.access_token)
-    this.ocTokenService.SetAccess(accessToken.access_token)
+    Tokens.SetAccessToken(accessToken.access_token)
     this.appStateService.isLoggedIn.next(true)
-    this.me = await this.ocMeService.Get().toPromise()
+    this.me = await Me.Get()
     this.userSubject.next(this.me)
     await this.languageService.SetTranslateLanguage()
     if (this.me?.Supplier) {
@@ -73,14 +64,14 @@ export class CurrentUserService {
   }
 
   async patchUser(patchObj: Partial<MeUser>): Promise<MeUser> {
-    const patchedUser = await this.ocMeService.Patch(patchObj).toPromise()
+    const patchedUser = await Me.Patch(patchObj)
     this.userSubject.next(patchedUser)
     this.me = patchedUser
     return this.me
   }
 
   async refreshUser(): Promise<MeUser> {
-    this.me = await this.ocMeService.Get().toPromise()
+    this.me = await Me.Get()
     this.userSubject.next(this.me)
     return this.me
   }
@@ -94,7 +85,7 @@ export class CurrentUserService {
   }
 
   async refreshSupplier(supplierID: string): Promise<HSSupplier> {
-    const token = this.ocTokenService.GetAccess()
+    const token = Tokens.GetAccessToken()
     this.mySupplier = await HeadStartSDK.Suppliers.GetMySupplier(
       supplierID,
       token

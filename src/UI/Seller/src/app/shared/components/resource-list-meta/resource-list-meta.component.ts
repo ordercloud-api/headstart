@@ -1,5 +1,5 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core'
-import { ListPage } from '@ordercloud/angular-sdk'
+import { ListPage } from 'ordercloud-javascript-sdk'
 
 @Component({
   selector: 'resource-list-meta',

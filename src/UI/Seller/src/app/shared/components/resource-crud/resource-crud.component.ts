@@ -1,4 +1,10 @@
-import { OnInit, OnDestroy, ChangeDetectorRef, NgZone, Directive } from '@angular/core'
+import {
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+  NgZone,
+  Directive,
+} from '@angular/core'
 import { takeWhile } from 'rxjs/operators'
 import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
 import { FormGroup } from '@angular/forms'
@@ -11,7 +17,8 @@ import OrderCloudError from 'ordercloud-javascript-sdk/dist/utils/OrderCloudErro
 
 @Directive()
 export abstract class ResourceCrudComponent<ResourceType>
-  implements OnInit, OnDestroy {
+  implements OnInit, OnDestroy
+{
   alive = true
   resourceList: ListPage<ResourceType> = { Meta: {}, Items: [] }
 
@@ -153,17 +160,19 @@ export abstract class ResourceCrudComponent<ResourceType>
   }
 
   async selectResource(resource: any): Promise<void> {
-    const [
-      newURL,
-      queryParams,
-    ] = await this.ocService.constructNewRouteInformation(
-      this.ocService.getResourceID(resource) || ''
-    )
+    const [newURL, queryParams] =
+      await this.ocService.constructNewRouteInformation(
+        this.ocService.getResourceID(resource) || ''
+      )
     this.navigate(newURL, { queryParams })
   }
 
   updateResource(resourceUpdate: ResourceUpdate): void {
-    this.updatedResource = this.ocService.getUpdatedEditableResource(resourceUpdate as ResourceUpdate, this.updatedResource)
+    debugger
+    this.updatedResource = this.ocService.getUpdatedEditableResource(
+      resourceUpdate,
+      this.updatedResource
+    )
     if (resourceUpdate.form) {
       this.resourceForm = resourceUpdate.form
     }

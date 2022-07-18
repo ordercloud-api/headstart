@@ -2,7 +2,7 @@ import { Component, Inject, Input } from '@angular/core'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { getPrimaryLineItemImage } from '@app-seller/shared/services/assets/asset.helper'
 import { AppConfig, RegexService } from '@app-seller/shared'
-import { LineItem, LineItemSpec } from '@ordercloud/angular-sdk'
+import { LineItem, LineItemSpec } from 'ordercloud-javascript-sdk'
 import { HSLineItem, RMA, RMALineItem } from '@ordercloud/headstart-sdk'
 
 @Component({

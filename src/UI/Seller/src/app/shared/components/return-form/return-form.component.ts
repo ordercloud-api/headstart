@@ -4,11 +4,11 @@ import { LineItemStatus } from '@app-seller/models/order.types'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import {
   LineItem,
-  OcLineItemService,
-  OcOrderService,
+  LineItems,
+  Orders,
   Order,
   OrderDirection,
-} from '@ordercloud/angular-sdk'
+} from 'ordercloud-javascript-sdk'
 
 @Component({
   selector: 'return-form',
@@ -21,11 +21,7 @@ export class ReturnForm implements OnInit {
   @Input() lineItem: LineItem
   @Output() lineItemUpdate = new EventEmitter()
 
-  constructor(
-    private modalService: NgbModal,
-    private ocOrderService: OcOrderService,
-    private ocLineItemService: OcLineItemService
-  ) {}
+  constructor(private modalService: NgbModal) {}
 
   ngOnInit() {
     this.setReturnForm()
@@ -59,19 +55,15 @@ export class ReturnForm implements OnInit {
       ? LineItemStatus.Returned
       : LineItemStatus.ReturnRequested
     const resolved = this.returnForm.value.Complete
-    await this.ocOrderService
-      .Patch(orderDirection, this.order.ID, {
-        xp: { OrderReturnInfo: { Resolved: resolved } },
-      })
-      .toPromise()
-    await this.ocLineItemService
-      .Patch(orderDirection, this.order.ID, this.lineItem.ID, {
-        xp: {
-          LineItemReturnInfo: { Resolved: resolved, Comment: comment },
-          LineItemStatus: status,
-        },
-      })
-      .toPromise()
+    await Orders.Patch(orderDirection, this.order.ID, {
+      xp: { OrderReturnInfo: { Resolved: resolved } },
+    })
+    await LineItems.Patch(orderDirection, this.order.ID, this.lineItem.ID, {
+      xp: {
+        LineItemReturnInfo: { Resolved: resolved, Comment: comment },
+        LineItemStatus: status,
+      },
+    })
     this.isSaving = false
     this.lineItemUpdate.emit()
   }

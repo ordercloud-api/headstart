@@ -1,9 +1,15 @@
 import { Router, ActivatedRoute } from '@angular/router'
-import { AfterViewChecked, ChangeDetectorRef, OnInit, Inject, Directive } from '@angular/core'
+import {
+  AfterViewChecked,
+  ChangeDetectorRef,
+  OnInit,
+  Inject,
+  Directive,
+} from '@angular/core'
 import { getPsHeight } from '@app-seller/shared/services/dom.helper'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
-import { MeUser } from '@ordercloud/angular-sdk'
+import { MeUser } from 'ordercloud-javascript-sdk'
 import { FormGroup, FormControl } from '@angular/forms'
 import { isEqual as _isEqual, set as _set, get as _get } from 'lodash'
 import { JDocument } from '@ordercloud/cms-sdk'
@@ -36,7 +42,7 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
     private changeDetectorRef: ChangeDetectorRef,
     @Inject(applicationConfiguration) private appConfig: AppConfig,
     private appAuthService: AppAuthService,
-    private currentUserService: CurrentUserService,
+    private currentUserService: CurrentUserService
   ) {
     this.setUpSubs()
   }
@@ -58,7 +64,8 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
     this.currentUserService.userSubject.subscribe((user) => {
       this.user = user
       this.setCurrentUserInitials(this.user)
-      this.hasProfileImg = user.xp?.Image?.ThumbnailUrl && user.xp?.Image?.ThumbnailUrl !== '' 
+      this.hasProfileImg =
+        user.xp?.Image?.ThumbnailUrl && user.xp?.Image?.ThumbnailUrl !== ''
     })
     // this.currentUserService.profileImgSubject.subscribe((img) => {
     //   this.hasProfileImg = Object.keys(img).length > 0
@@ -135,23 +142,25 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
 
   async manualFileUpload(event): Promise<void> {
     const file: File = event?.target?.files[0]
-    if(file) {
+    if (file) {
       this.profileImgLoading = true
-      if(this.user?.xp?.Image?.Url) {
-        await HeadStartSDK.Assets.Delete(getAssetIDFromUrl(this.user.xp.Image.Url))
+      if (this.user?.xp?.Image?.Url) {
+        await HeadStartSDK.Assets.Delete(
+          getAssetIDFromUrl(this.user.xp.Image.Url)
+        )
       }
       try {
         const data = new FormData()
         data.append('File', file)
         const imgUrls = await HeadStartSDK.Assets.CreateImage({
-          File: file
+          File: file,
         })
         const patchObj = {
           xp: {
-            Image: imgUrls
-          }
+            Image: imgUrls,
+          },
         }
-        await this.currentUserService.patchUser(patchObj);
+        await this.currentUserService.patchUser(patchObj)
       } catch (err) {
         this.hasProfileImg = false
         this.profileImgLoading = false
@@ -160,17 +169,19 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
         this.hasProfileImg = true
         this.profileImgLoading = false
       }
-    } 
+    }
   }
 
   async removeProfileImg(): Promise<void> {
     this.profileImgLoading = true
     try {
-      await HeadStartSDK.Assets.Delete(getAssetIDFromUrl(this.user?.xp?.Image?.Url))
+      await HeadStartSDK.Assets.Delete(
+        getAssetIDFromUrl(this.user?.xp?.Image?.Url)
+      )
       const patchObj = {
         xp: {
-          Image: null
-        }
+          Image: null,
+        },
       }
       await this.currentUserService.patchUser(patchObj)
     } catch (err) {

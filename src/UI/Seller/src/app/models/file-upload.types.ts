@@ -1,5 +1,5 @@
 import { SafeUrl } from '@angular/platform-browser'
-import { Shipment } from '@ordercloud/angular-sdk'
+import { Shipment } from 'ordercloud-javascript-sdk'
 
 export interface BatchProcessResult {
   ProcessFailureList: BatchProcessFailure[]

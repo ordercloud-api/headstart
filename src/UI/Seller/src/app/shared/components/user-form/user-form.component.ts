@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
-import { User } from '@ordercloud/angular-sdk'
+import { User } from 'ordercloud-javascript-sdk'
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
 import { AppFormErrorService } from '@app-seller/shared/services/form-error/form-error.service'
 import { RegexService } from '@app-seller/shared/services/regex/regex.service'

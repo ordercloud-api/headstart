@@ -20,16 +20,17 @@ import { FormGroup, Validators, FormControl } from '@angular/forms'
 import {
   LineItem,
   Shipment,
-  OcSupplierAddressService,
+  SupplierAddresses,
   Address,
-  OcShipmentService,
+  Shipments,
   ShipmentItem,
-  OcLineItemService,
-  OcOrderService,
+  LineItems,
+  Orders,
   Order,
   OrderDirection,
   ListPage,
-} from '@ordercloud/angular-sdk'
+  Tokens,
+} from 'ordercloud-javascript-sdk'
 import { getProductSmallImageUrl } from '@app-seller/shared/services/assets/asset.helper'
 import { HttpHeaders } from '@angular/common/http'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
@@ -86,10 +87,6 @@ export class OrderShipmentsComponent implements OnChanges {
 
   constructor(
     private orderService: OrderService,
-    private ocOrderService: OcOrderService,
-    private ocSupplierAddressService: OcSupplierAddressService,
-    private ocShipmentService: OcShipmentService,
-    private ocLineItemService: OcLineItemService,
     private middleware: MiddlewareAPIService,
     private appAuthService: AppAuthService,
     @Inject(applicationConfiguration) private appConfig: AppConfig
@@ -185,15 +182,11 @@ export class OrderShipmentsComponent implements OnChanges {
 
   async getShipments(orderID: string): Promise<void> {
     // TODO: Have to use as any bc sdk doesn't recognize 'Shipper' as a valid sort
-    const shipments = await this.ocOrderService
-      .ListShipments<any>(this.orderDirection, orderID, {
-        sortBy: ['!Shipper'] as any,
-      })
-      .toPromise()
+    const shipments = await Orders.ListShipments(this.orderDirection, orderID, {
+      sortBy: ['!Shipper'],
+    })
     shipments?.Items?.forEach(async (s: Shipment) => {
-      const shipmentItems = await this.ocShipmentService
-        .ListItems(s.ID)
-        .toPromise()
+      const shipmentItems = await Shipments.ListItems(s.ID)
       this.superShipments.push({
         Shipment: s,
         ShipmentItems: shipmentItems.Items,
@@ -208,9 +201,11 @@ export class OrderShipmentsComponent implements OnChanges {
       page: 1,
       pageSize: 100,
     }
-    const lineItemsResponse = await this.ocLineItemService
-      .List(this.orderDirection, orderID, listOptions)
-      .toPromise()
+    const lineItemsResponse = await LineItems.List(
+      this.orderDirection,
+      orderID,
+      listOptions
+    )
     allOrderLineItems = [
       ...allOrderLineItems,
       ...(lineItemsResponse.Items as HSLineItem[]),
@@ -229,9 +224,7 @@ export class OrderShipmentsComponent implements OnChanges {
         listOptions.page = page
         lineItemRequests = [
           ...lineItemRequests,
-          this.ocLineItemService
-            .List(this.orderDirection, orderID, listOptions)
-            .toPromise(),
+          LineItems.List(this.orderDirection, orderID, listOptions),
         ]
       }
       return await Promise.all(lineItemRequests).then((response) => {
@@ -260,11 +253,9 @@ export class OrderShipmentsComponent implements OnChanges {
         lineItemData[li.ID]?.Quantity === li.Quantity
       ) {
         lineItemsToPatch.push(
-          this.ocLineItemService
-            .Patch(this.orderDirection, this._order?.ID, li.ID, {
-              xp: { LineItemStatus: LineItemStatus.Complete },
-            })
-            .toPromise()
+          LineItems.Patch(this.orderDirection, this._order?.ID, li.ID, {
+            xp: { LineItemStatus: LineItemStatus.Complete },
+          })
         )
       }
     })
@@ -277,9 +268,7 @@ export class OrderShipmentsComponent implements OnChanges {
   }
 
   async getShipmentItems(shipmentID: string): Promise<void> {
-    this.shipmentItems = await this.ocShipmentService
-      .ListItems(shipmentID)
-      .toPromise()
+    this.shipmentItems = await Shipments.ListItems(shipmentID)
   }
 
   getImageUrl(lineItem: LineItem): string {
@@ -311,9 +300,9 @@ export class OrderShipmentsComponent implements OnChanges {
 
   async getSupplierAddresses(): Promise<void> {
     if (!this.supplierAddresses && !this.isSellerUser) {
-      this.supplierAddresses = await this.ocSupplierAddressService
-        .List(this._order?.ToCompanyID)
-        .toPromise()
+      this.supplierAddresses = await SupplierAddresses.List(
+        this._order?.ToCompanyID
+      )
     }
   }
 
@@ -369,7 +358,7 @@ export class OrderShipmentsComponent implements OnChanges {
     const shipment = this.shipmentForm.getRawValue()
     const shipDate = this.shipmentForm.value.ShipDate
     this.shipmentForm.value.ShipDate = null
-    const accessToken = await this.appAuthService.fetchToken().toPromise()
+    const accessToken = Tokens.GetAccessToken()
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
