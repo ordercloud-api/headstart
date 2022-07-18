@@ -3,24 +3,16 @@ import { Router } from '@angular/router'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppConfig } from '@app-seller/models/environment.types'
 import {
-  DecodedOrderCloudToken,
   OrderCloudUserType,
   SELLER,
   SUPPLIER,
 } from '@app-seller/models/user.types'
 import { AppStateService } from '@app-seller/shared/services/app-state/app-state.service'
-
-import { OcTokenService, OcAuthService } from '@ordercloud/angular-sdk'
-import { HeadStartSDK } from '@ordercloud/headstart-sdk'
 import { CookieService } from 'ngx-cookie'
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs'
-import { tap, catchError, finalize, map } from 'rxjs/operators'
 import * as jwtDecode from 'jwt-decode'
 import { keys as _keys } from 'lodash'
 import { LanguageSelectorService } from '@app-seller/shared'
-
-export const TokenRefreshAttemptNotPossible =
-  'Token refresh attempt not possible'
+import { DecodedToken, Tokens } from 'ordercloud-javascript-sdk'
 @Injectable({
   providedIn: 'root',
 })
@@ -28,50 +20,20 @@ export class AppAuthService {
   private rememberMeCookieName = `${this.appConfig.appname
     .replace(/ /g, '_')
     .toLowerCase()}_rememberMe`
-  fetchingRefreshToken = false
-  failedRefreshAttempt = false
-  refreshToken: BehaviorSubject<string>
 
   constructor(
-    private ocTokenService: OcTokenService,
-    private ocAuthService: OcAuthService,
     private cookieService: CookieService,
     private router: Router,
     private appStateService: AppStateService,
     private languageService: LanguageSelectorService,
     @Inject(applicationConfiguration) private appConfig: AppConfig
-  ) {
-    this.refreshToken = new BehaviorSubject<string>('')
-  }
+  ) {}
 
-  refresh(): Observable<void> {
-    this.fetchingRefreshToken = true
-    return this.fetchRefreshToken().pipe(
-      tap((token) => {
-        this.ocTokenService.SetAccess(token)
-        this.refreshToken.next(token)
-        this.appStateService.isLoggedIn.next(true)
-      }),
-      catchError(() => {
-        // ignore new refresh attempts if a refresh
-        // attempt failed within the last 3 seconds
-        this.failedRefreshAttempt = true
-        setTimeout(() => {
-          this.failedRefreshAttempt = false
-        }, 3000)
-        return this.logout()
-      }),
-      finalize(() => {
-        this.fetchingRefreshToken = false
-      })
-    )
-  }
-
-  getDecodedToken() {
-    const userToken = this.ocTokenService.GetAccess()
-    let decodedToken: DecodedOrderCloudToken
+  getDecodedToken(): DecodedToken {
+    const userToken = Tokens.GetAccessToken()
+    let decodedToken: DecodedToken
     try {
-      decodedToken = jwtDecode(userToken)
+      decodedToken = jwtDecode(userToken) as DecodedToken
     } catch (e) {
       decodedToken = null
     }
@@ -93,42 +55,18 @@ export class AppAuthService {
   }
 
   getRolesFromToken(): string[] {
-    const decodedToken: DecodedOrderCloudToken = this.getDecodedToken()
-    return decodedToken.role
+    const decodedToken: DecodedToken = this.getDecodedToken()
+    return typeof decodedToken.role === 'string'
+      ? [decodedToken.role]
+      : decodedToken.role
   }
 
   getUsrTypeFromToken(): string {
-    const decodedToken: DecodedOrderCloudToken = this.getDecodedToken()
+    const decodedToken: DecodedToken = this.getDecodedToken()
     return decodedToken.usrtype
   }
 
-  fetchToken(): Observable<string> {
-    const accessToken = this.ocTokenService.GetAccess()
-    if (accessToken) {
-      return of(accessToken)
-    }
-    return this.fetchRefreshToken()
-  }
-
-  fetchRefreshToken(): Observable<string> {
-    const refreshToken = this.ocTokenService.GetRefresh()
-    if (refreshToken) {
-      return this.ocAuthService
-        .RefreshToken(refreshToken, this.appConfig.clientID)
-        .pipe(
-          map((authResponse) => authResponse.access_token),
-          tap((token) => {
-            this.ocTokenService.SetAccess(token)
-          }),
-          catchError((error) => {
-            return throwError(error)
-          })
-        )
-    }
-    throwError(TokenRefreshAttemptNotPossible)
-  }
-
-  logout(): Observable<any> {
+  async logout(): Promise<void> {
     const cookiePrefix = this.appConfig.appname.replace(/ /g, '_').toLowerCase()
     const appCookieNames = _keys(this.cookieService.getAll())
     appCookieNames.forEach((cookieName) => {
@@ -138,7 +76,7 @@ export class AppAuthService {
     })
     this.appStateService.isLoggedIn.next(false)
     this.languageService.SetTranslateLanguage()
-    return of(this.router.navigate(['/login']))
+    await this.router.navigate(['/login'])
   }
 
   setRememberStatus(status: boolean): void {
