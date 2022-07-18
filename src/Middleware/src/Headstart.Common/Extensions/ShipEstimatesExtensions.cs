@@ -23,12 +23,13 @@ namespace Headstart.Common.Extensions
                         new HSShipMethod
                         {
                             ID = ShippingConstants.NoRatesID,
-                            Name = "No shipping rates",
+                            Name = string.Empty,
                             Cost = noRatesCost,
                             EstimatedTransitDays = noRatesTransitDays,
                             xp = new ShipMethodXP
                             {
                                 OriginalCost = noRatesCost,
+                                ServiceName = "No shipping rates",
                             },
                         },
                     };
@@ -133,7 +134,15 @@ namespace Headstart.Common.Extensions
 
         public static HSShipEstimate FilterDownFedexShippingRates(HSShipEstimate estimate)
         {
-            estimate.ShipMethods = estimate.ShipMethods.Where(method => (method.ID != null && method.ID.Contains("FREE_SHIPPING")) || method?.ID == ShippingConstants.NoRatesID || method?.xp?.Carrier == "USPS" || method.Name == "FEDEX_GROUND" || method.Name == "FEDEX_2_DAY" || method.Name == "STANDARD_OVERNIGHT").ToList();
+            estimate.ShipMethods =
+                estimate.ShipMethods.Where(method =>
+                    (method.ID != null && method.ID.Contains("FREE_SHIPPING"))
+                    || method?.ID == ShippingConstants.NoRatesID
+                    || method?.xp?.Carrier == "USPS"
+                    || method?.xp?.ServiceName == "FEDEX_GROUND"
+                    || method?.xp?.ServiceName == "FEDEX_2_DAY"
+                    || method?.xp?.ServiceName == "STANDARD_OVERNIGHT").ToList();
+
             return estimate;
         }
     }

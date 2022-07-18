@@ -8,6 +8,13 @@ namespace Headstart.Common.Models
         {
             xp = new ShipMethodXP();
         }
+
+        public string GetServiceName()
+        {
+            return !string.IsNullOrWhiteSpace(xp?.ServiceName)
+                ? xp.ServiceName
+                : Name;
+        }
     }
 
     public class ShipMethodXP
@@ -15,6 +22,8 @@ namespace Headstart.Common.Models
         public string Carrier { get; set; } // e.g. "Fedex"
 
         public string CarrierAccountID { get; set; }
+
+        public string ServiceName { get; set; }
 
         public decimal ListRate { get; set; }
 

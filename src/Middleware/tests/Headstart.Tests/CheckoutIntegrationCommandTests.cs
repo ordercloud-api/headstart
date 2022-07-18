@@ -105,7 +105,9 @@ namespace Headstart.Tests
                 Name = "STANDARD_OVERNIGHT",
                 EstimatedTransitDays = 1,
                 Cost = 150,
-                xp = new ShipMethodXP { },
+                xp = new ShipMethodXP {
+                    ServiceName = "STANDARD_OVERNIGHT",
+                },
             };
             var worksheet = BuildOrderWorksheet(new HSLineItem[] { line1 });
             var estimates = BuildEstimates(new[] { method1 }, new[] { shipItem1 });

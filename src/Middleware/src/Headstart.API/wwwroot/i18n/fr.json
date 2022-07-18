@@ -808,6 +808,8 @@
     "SHIPPING_SELECTION_FORM": {
       "DAY": "jour",
       "DELIVERY_OPTIONS": "Options de livraison",
+      "ESTIMATED": "est.",
+      "FREE": "LIBRE",
       "HOW_FAST": "À quelle vitesse ce navire devrait-il être?",
       "NO_RATES_RETURNED_MESSAGE": "Aucun tarif retourné - l’expédition sera calculée après la commande",
       "SHIPPING_SPEED": "Vitesse d’expédition",

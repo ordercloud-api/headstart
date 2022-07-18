@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Headstart.Common.Models;
 using OrderCloud.Integrations.Vertex.Models;
 using OrderCloud.SDK;
 
@@ -8,7 +9,7 @@ namespace OrderCloud.Integrations.Vertex.Mappers
 {
     public static class VertexRequestMapper
     {
-        public static VertexCalculateTaxRequest ToVertexCalculateTaxRequest(this OrderWorksheet order, List<OrderPromotion> promosOnOrder, string companyCode, VertexSaleMessageType type)
+        public static VertexCalculateTaxRequest ToVertexCalculateTaxRequest(this HSOrderWorksheet order, List<OrderPromotion> promosOnOrder, string companyCode, VertexSaleMessageType type)
         {
             var itemLines = order.LineItems.Select(li => ToVertexLineItem(li));
             var shippingLines = order.ShipEstimateResponse.ShipEstimates.Select(se =>
@@ -62,7 +63,7 @@ namespace OrderCloud.Integrations.Vertex.Mappers
             };
         }
 
-        public static VertexLineItem ToVertexLineItem(ShipEstimate shipEstimate, Address shipTo)
+        public static VertexLineItem ToVertexLineItem(HSShipEstimate shipEstimate, Address shipTo)
         {
             var selectedMethod = shipEstimate.ShipMethods.First(m => m.ID == shipEstimate.SelectedShipMethodID);
             return new VertexLineItem()
@@ -74,7 +75,7 @@ namespace OrderCloud.Integrations.Vertex.Mappers
                 product = new VertexProduct()
                 {
                     productClass = "shipping_code",
-                    value = selectedMethod.Name,
+                    value = selectedMethod.GetServiceName(),
                 },
                 quantity = new VertexMeasure()
                 {

@@ -9,6 +9,20 @@ namespace OrderCloud.Integrations.EasyPost.Mappers
 {
     public static class EasyPostMappers
     {
+        public static readonly Dictionary<string, string> ServiceNameMapper = new Dictionary<string, string>
+            {
+                { "Priority", "Priority" },
+                { "First", "Priority First" },
+                { "ParcelSelect", "Economical Ground" },
+                { "Express", "Priority Express" },
+                { "FIRST_OVERNIGHT", "First Overnight" },
+                { "PRIORITY_OVERNIGHT", "Priority First" },
+                { "STANDARD_OVERNIGHT", "Standard Overnight" },
+                { "FEDEX_2_DAY", "2 Day" },
+                { "FEDEX_GROUND", "Ground" },
+                { "FREE_SHIPPING", string.Empty },
+            };
+
         public static EasyPostAddress MapAddress(Address address)
         {
             return new EasyPostAddress()
@@ -51,19 +65,22 @@ namespace OrderCloud.Integrations.EasyPost.Mappers
                     var first = group.First();
                     var cost = group.Aggregate(0M, (sum, rate) => sum += decimal.Parse(rate.rate));
                     var listRate = group.Aggregate(0M, (sum, rate) => sum += decimal.Parse(rate.list_rate));
-                    var deliveryDays = group.Max(rate => rate.delivery_days ?? rate.est_delivery_days ?? 10);
+                    var deliveryDays = group.Key.service == "STANDED_OVERNIGHT"
+                        ? group.Max(rate => rate.delivery_days ?? rate.est_delivery_days ?? 10)
+                        : 1;
                     var guaranteedDeliveryDays = group.Max(rate => rate.delivery_date_guaranteed);
 
                     return new HSShipMethod()
                     {
                         ID = first.id,
-                        Name = group.Key.service,
+                        Name = GetFriendlyServiceName(group.Key.service),
                         Cost = cost,
                         EstimatedTransitDays = deliveryDays,
                         xp =
                         {
                             Carrier = group.Key.carrier,
                             CarrierAccountID = group.Key.carrier_account_id,
+                            ServiceName = group.Key.service,
                             ListRate = listRate,
                             Guaranteed = guaranteedDeliveryDays,
                             OriginalCost = cost,
@@ -126,6 +143,13 @@ namespace OrderCloud.Integrations.EasyPost.Mappers
                 weight = lineItem.ShipWeightOrDefault(Package.DefaultWeight),
             })
                 .ToList();
+        }
+
+        private static string GetFriendlyServiceName(string service)
+        {
+            ServiceNameMapper.TryGetValue(service, out var value);
+
+            return value;
         }
     }
 }

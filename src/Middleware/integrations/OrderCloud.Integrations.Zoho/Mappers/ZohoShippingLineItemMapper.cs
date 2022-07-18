@@ -10,13 +10,13 @@ namespace OrderCloud.Integrations.Zoho.Mappers
         {
             item.item_id = item.item_id;
             item.item_type = "sales_and_purchases";
-            item.name = $"Shipping: {method.Name}";
+            item.name = $"Shipping: {method.GetServiceName()}";
             item.rate = Math.Round(decimal.ToDouble(method.Cost), 2);
-            item.description = $"{method.Name} - {method.EstimatedTransitDays} days transit";
+            item.description = $"{method.GetServiceName()} - {method.EstimatedTransitDays} days transit";
             item.sku = item.sku;
             item.quantity = 1;
             item.unit = "each";
-            item.purchase_description = $"{method.Name} - {method.EstimatedTransitDays} days transit";
+            item.purchase_description = $"{method.GetServiceName()} - {method.EstimatedTransitDays} days transit";
             item.avatax_tax_code = "FR";
 
             return item;
@@ -29,11 +29,11 @@ namespace OrderCloud.Integrations.Zoho.Mappers
                 item_type = "sales_and_purchases",
                 sku = method.ShippingSku(),
                 rate = Math.Round(decimal.ToDouble(method.Cost), 2),
-                description = $"{method.Name} - {method.EstimatedTransitDays} days transit",
-                name = $"Shipping: {method.Name}",
+                description = $"{method.GetServiceName()} - {method.EstimatedTransitDays} days transit",
+                name = $"Shipping: {method.GetServiceName()}",
                 quantity = 1,
                 unit = "each",
-                purchase_description = $"{method.Name} - {method.EstimatedTransitDays} days transit",
+                purchase_description = $"{method.GetServiceName()} - {method.EstimatedTransitDays} days transit",
                 avatax_tax_code = "FR",
             };
 

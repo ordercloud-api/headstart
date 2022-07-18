@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using OrderCloud.SDK;
+using Headstart.Common.Models;
 using OCLineItem = OrderCloud.SDK.LineItem;
 using TaxJarLineItem = Taxjar.LineItem;
 using TaxJarOrder = Taxjar.Order;
@@ -12,7 +12,7 @@ namespace OrderCloud.Integrations.TaxJar.Mappers
         /// <summary>
         /// Returns a list of TaxJarOrders because each order has a single to and from address. They therefor coorespond to OrderCloud LineItems.
         /// </summary>
-        public static List<TaxJarOrder> ToTaxJarOrders(this OrderWorksheet order)
+        public static List<TaxJarOrder> ToTaxJarOrders(this HSOrderWorksheet order)
         {
             var itemLines = order.LineItems.Select(li => ToTaxJarOrders(li, order.Order.ID));
             var shippingLines = order.ShipEstimateResponse.ShipEstimates.Select(se =>
@@ -23,7 +23,7 @@ namespace OrderCloud.Integrations.TaxJar.Mappers
             return itemLines.Concat(shippingLines).ToList();
         }
 
-        private static TaxJarOrder ToTaxJarOrders(ShipEstimate shipEstimate, OCLineItem lineItem, string orderID)
+        private static TaxJarOrder ToTaxJarOrders(HSShipEstimate shipEstimate, OCLineItem lineItem, string orderID)
         {
             var selectedShipMethod = shipEstimate.ShipMethods.First(x => x.ID == shipEstimate.SelectedShipMethodID);
             return new TaxJarOrder()
@@ -50,7 +50,7 @@ namespace OrderCloud.Integrations.TaxJar.Mappers
                         Id = shipEstimate.ID,
                         Quantity = 1,
                         UnitPrice = selectedShipMethod.Cost,
-                        Description = selectedShipMethod.Name,
+                        Description = selectedShipMethod.GetServiceName(),
                         ProductIdentifier = "shipping_code",
                     },
                 },

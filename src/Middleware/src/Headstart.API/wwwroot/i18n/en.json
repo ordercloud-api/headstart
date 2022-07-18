@@ -810,6 +810,8 @@
     "SHIPPING_SELECTION_FORM": {
       "DAY": "day",
       "DELIVERY_OPTIONS": "Delivery Options",
+      "ESTIMATED": "est.",
+      "FREE": "FREE",
       "HOW_FAST": "How fast should this ship?",
       "NO_RATES_RETURNED_MESSAGE": "No rates returned - shipping will be calculated after the order is placed",
       "SHIPPING_SPEED": "Shipping Speed",
