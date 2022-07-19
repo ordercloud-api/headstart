@@ -51,7 +51,7 @@
         class="btn btn-link"
         (click)="discardChanges()"
       >
-        {{ areChanges ? 'ADMIN.COMMON.CANCEL' : 'ADMIN.COMMON.NO_CHANGES' }}
+        {{ (areChanges ? 'ADMIN.COMMON.CANCEL' : 'ADMIN.COMMON.NO_CHANGES') | translate }}
       </button>
       <button
         *ngIf="areChanges"

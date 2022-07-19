@@ -148,6 +148,7 @@
     "LINE_ITEMS": {
       "CANCEL_REASON": "Cancel Reason",
       "COMMENT": "Comment",
+      "COMMENTS": "Comments",
       "DESCRIPTION": "Description",
       "PRODUCT": "Product",
       "QUANTITY": "Quantity",
