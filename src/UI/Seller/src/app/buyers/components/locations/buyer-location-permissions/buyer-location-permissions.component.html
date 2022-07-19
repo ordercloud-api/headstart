@@ -63,7 +63,7 @@
           class="btn btn-link"
           (click)="discardUserUserGroupAssignmentChanges()"
         >
-          {{ areChanges ? 'ADMIN.COMMON.CANCEL' : 'ADMIN.COMMON.NO_CHANGES' }}
+          {{ (areChanges ? 'ADMIN.COMMON.CANCEL' : 'ADMIN.COMMON.NO_CHANGES') | translate }}
         </button>
         <button
           *ngIf="areChanges && !requestedUserConfirmation"
