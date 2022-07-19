@@ -1,11 +1,11 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core'
 import {
   Buyer,
-  OcBuyerService,
+  Buyers,
   ProductAssignment,
   ProductCatalogAssignment,
-  OcCatalogService,
-} from '@ordercloud/angular-sdk'
+  Catalogs,
+} from 'ordercloud-javascript-sdk'
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import { HSProduct } from '@ordercloud/headstart-sdk'
 
@@ -26,10 +26,7 @@ export class ProductVisibilityAssignments implements OnInit, OnChanges {
   requestedUserConfirmation = false
   faExclamationCircle = faExclamationCircle
 
-  constructor(
-    private ocBuyerService: OcBuyerService,
-    private ocCatalogService: OcCatalogService
-  ) {}
+  constructor() {}
 
   ngOnInit(): void {
     this.getBuyers()
@@ -45,16 +42,14 @@ export class ProductVisibilityAssignments implements OnInit, OnChanges {
   }
 
   async getBuyers(): Promise<void> {
-    const buyers = await this.ocBuyerService.List().toPromise()
+    const buyers = await Buyers.List()
     this.buyers = buyers.Items
   }
 
-  async getProductCatalogAssignments(
-    product: HSProduct
-  ): Promise<void> {
-    const productCatalogAssignments = await this.ocCatalogService
-      .ListProductAssignments({ productID: product && product.ID })
-      .toPromise()
+  async getProductCatalogAssignments(product: HSProduct): Promise<void> {
+    const productCatalogAssignments = await Catalogs.ListProductAssignments({
+      productID: product && product.ID,
+    })
     this._productCatalogAssignmentsStatic = productCatalogAssignments.Items
     this._productCatalogAssignmentsEditable = productCatalogAssignments.Items
   }
@@ -87,7 +82,8 @@ export class ProductVisibilityAssignments implements OnInit, OnChanges {
   }
 
   discardProductCatalogAssignmentChanges(): void {
-    this._productCatalogAssignmentsEditable = this._productCatalogAssignmentsStatic
+    this._productCatalogAssignmentsEditable =
+      this._productCatalogAssignmentsStatic
     this.checkForProductCatalogAssignmentChanges()
   }
 }

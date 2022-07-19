@@ -10,8 +10,9 @@ import {
   Variant,
   SpecOption,
   Spec,
-  OcSpecService,
-} from '@ordercloud/angular-sdk'
+  Specs,
+  Products,
+} from 'ordercloud-javascript-sdk'
 import {
   faExclamationCircle,
   faCog,
@@ -31,7 +32,6 @@ import {
   ImageAsset,
 } from '@ordercloud/headstart-sdk'
 import { BehaviorSubject } from 'rxjs'
-import { Products } from 'ordercloud-javascript-sdk'
 import { SupportedRates } from '@app-seller/shared'
 
 @Component({
@@ -46,10 +46,12 @@ export class ProductVariations implements OnChanges {
     this.variants.next(superProductEditable?.Variants)
     this.variantInSelection = {}
     this.canConfigureVariations = !!superProductEditable?.Product?.ID
-    this.addVariableTextSpecs = this.addVariableTextSpecs || superProductEditable?.Specs?.some(
-      (s) => s.AllowOpenText
-    )
-    this.editSpecs = this.editSpecs || superProductEditable?.Specs?.some((s) => !s.AllowOpenText)
+    this.addVariableTextSpecs =
+      this.addVariableTextSpecs ||
+      superProductEditable?.Specs?.some((s) => s.AllowOpenText)
+    this.editSpecs =
+      this.editSpecs ||
+      superProductEditable?.Specs?.some((s) => !s.AllowOpenText)
   }
   @Input()
   set superHSProductStatic(superProductStatic: SuperHSProduct) {
@@ -111,8 +113,7 @@ export class ProductVariations implements OnChanges {
 
   constructor(
     private productService: ProductService,
-    private toasterService: ToastrService,
-    private ocSpecService: OcSpecService,
+    private toasterService: ToastrService
   ) {
     this.variants = new BehaviorSubject<HSVariant[]>([])
   }
@@ -141,7 +142,9 @@ export class ProductVariations implements OnChanges {
         this.superProductEditable || this.productService.emptyResource
       )
       // Remove all specs that are *not* variable text specs
-      updateProductResourceCopy.Specs = updateProductResourceCopy.Specs.filter((s) => s.AllowOpenText)
+      updateProductResourceCopy.Specs = updateProductResourceCopy.Specs.filter(
+        (s) => s.AllowOpenText
+      )
       updateProductResourceCopy.Variants = []
       this.superProductEditable = updateProductResourceCopy
       this.productVariationsChanged.emit(this.superProductEditable)
@@ -149,7 +152,8 @@ export class ProductVariations implements OnChanges {
       this.superProductEditable.Variants = this.superProductStatic.Variants
       this.superProductEditable.Specs = [
         ...(this.superProductStatic?.Specs || []),
-        ...(this.superProductEditable?.Specs?.filter((s) => s.AllowOpenText) || []),
+        ...(this.superProductEditable?.Specs?.filter((s) => s.AllowOpenText) ||
+          []),
       ]
     }
     this.checkForSpecChanges()
@@ -218,9 +222,8 @@ export class ProductVariations implements OnChanges {
     const updateProductResourceCopy = this.productService.copyResource(
       this.superProductEditable || this.productService.emptyResource
     )
-    updateProductResourceCopy.Variants[
-      i
-    ].xp.NewID = $event.target.value.replace(/[^a-zA-Z0-9_-]/g, '')
+    updateProductResourceCopy.Variants[i].xp.NewID =
+      $event.target.value.replace(/[^a-zA-Z0-9_-]/g, '')
     this.superProductEditable = updateProductResourceCopy
     this.productVariationsChanged.emit(this.superProductEditable)
   }
@@ -305,9 +308,8 @@ export class ProductVariations implements OnChanges {
     ]
     input.value = ''
     charLimitInput.value = ''
-    updateProductResourceCopy.Specs = updateProductResourceCopy.Specs.concat(
-      newSpec
-    )
+    updateProductResourceCopy.Specs =
+      updateProductResourceCopy.Specs.concat(newSpec)
     this.superProductEditable = updateProductResourceCopy
     this.customizationRequired = true
     this.checkForSpecChanges()
@@ -339,9 +341,8 @@ export class ProductVariations implements OnChanges {
       },
     ]
     input.value = ''
-    updateProductResourceCopy.Specs = updateProductResourceCopy.Specs.concat(
-      newSpec
-    )
+    updateProductResourceCopy.Specs =
+      updateProductResourceCopy.Specs.concat(newSpec)
     this.superProductEditable = updateProductResourceCopy
     this.definesVariant = false
     this.checkForSpecChanges()
@@ -380,11 +381,8 @@ export class ProductVariations implements OnChanges {
     if (!updateProductResourceCopy.Specs[specIndex].DefaultOptionID)
       updateProductResourceCopy.Specs[specIndex].DefaultOptionID =
         updateProductResourceCopy.Specs[specIndex].Options[0].ID
-    updateProductResourceCopy.Specs[
-      specIndex
-    ].Options = updateProductResourceCopy.Specs[specIndex].Options.concat(
-      newOption
-    )
+    updateProductResourceCopy.Specs[specIndex].Options =
+      updateProductResourceCopy.Specs[specIndex].Options.concat(newOption)
     this.superProductEditable = updateProductResourceCopy
     this.productVariationsChanged.emit(this.superProductEditable)
     this.mockVariants()
@@ -520,8 +518,8 @@ export class ProductVariations implements OnChanges {
     return this.isCreatingNew
       ? false
       : !JSON.stringify(
-        this.superProductStatic?.Specs[specIndex]?.Options
-      )?.includes(JSON.stringify(option))
+          this.superProductStatic?.Specs[specIndex]?.Options
+        )?.includes(JSON.stringify(option))
   }
 
   stageDefaultSpecOption(specID: string, optionID: string): void {
@@ -540,9 +538,7 @@ export class ProductVariations implements OnChanges {
     )
     updateProductResourceCopy.Specs[specIndex].DefaultOptionID = optionID
     this.superProductEditable.Specs = updateProductResourceCopy.Specs
-    await this.ocSpecService
-      .Patch(specID, { DefaultOptionID: optionID })
-      .toPromise()
+    await Specs.Patch(specID, { DefaultOptionID: optionID })
   }
 
   isImageSelected(img: ImageAsset): boolean {
@@ -557,7 +553,7 @@ export class ProductVariations implements OnChanges {
     if (variantBehaviorSubjectValue !== null) {
       this.variantInSelection =
         variantBehaviorSubjectValue[
-        variantBehaviorSubjectValue?.indexOf(variant)
+          variantBehaviorSubjectValue?.indexOf(variant)
         ]
     }
   }
@@ -571,7 +567,10 @@ export class ProductVariations implements OnChanges {
     this.imageInSelection = img
     if (!this.imageInSelection.Tags) this.imageInSelection.Tags = []
     this.imageInSelection.Tags.includes(specCombo)
-      ? this.imageInSelection.Tags.splice(this.imageInSelection.Tags.indexOf(specCombo), 1)
+      ? this.imageInSelection.Tags.splice(
+          this.imageInSelection.Tags.indexOf(specCombo),
+          1
+        )
       : this.imageInSelection.Tags.push(specCombo)
   }
 
@@ -579,11 +578,14 @@ export class ProductVariations implements OnChanges {
     const images = this.superProductEditable.Product?.xp?.Images
     const patchObj = {
       xp: {
-        Images: images
-      }
+        Images: images,
+      },
     }
     await Products.Patch(this.superProductEditable.Product.ID, patchObj)
-    Object.assign(this.superProductStatic.Product, this.superProductEditable.Product)
+    Object.assign(
+      this.superProductStatic.Product,
+      this.superProductEditable.Product
+    )
     this.imageInSelection = {}
     this.assignVariantImages = false
   }
@@ -611,9 +613,9 @@ export class ProductVariations implements OnChanges {
       this.variantInSelection.ID,
       partial
     )
-    const variants = this.variants?.getValue();
+    const variants = this.variants?.getValue()
     if (variants !== null) {
-      const index = variants.findIndex(variant => variant.ID === variantID)
+      const index = variants.findIndex((variant) => variant.ID === variantID)
       variants[index] = JSON.parse(JSON.stringify(patchedVariant))
       this.variants.next(variants)
       this.variantInSelection = this.variants?.getValue()[index]

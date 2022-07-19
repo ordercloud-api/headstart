@@ -7,14 +7,9 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core'
-import { get as _get } from 'lodash'
 import { FormGroup, FormControl } from '@angular/forms'
 import { SupplierService } from '../supplier.service'
-import {
-  ListPage,
-  HSSupplier,
-  HeadStartSDK,
-} from '@ordercloud/headstart-sdk'
+import { ListPage, HSSupplier, HeadStartSDK } from '@ordercloud/headstart-sdk'
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser'
 import {
   faTimes,
@@ -22,7 +17,7 @@ import {
   faExclamationCircle,
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons'
-import { User, OcSupplierUserService, Buyer } from '@ordercloud/angular-sdk'
+import { User, SupplierUsers, Buyer } from 'ordercloud-javascript-sdk'
 import { Buyers, Supplier, Suppliers } from 'ordercloud-javascript-sdk'
 import { Router } from '@angular/router'
 import { FileHandle } from '@app-seller/models/file-upload.types'
@@ -69,8 +64,7 @@ export class SupplierEditComponent implements OnInit, OnChanges {
   constructor(
     public supplierService: SupplierService,
     private sanitizer: DomSanitizer,
-    private ocSupplierUserService: OcSupplierUserService,
-    private router: Router,
+    private router: Router
   ) {
     this.isCreatingNew = this.supplierService.checkIfCreatingNew()
   }
@@ -97,24 +91,24 @@ export class SupplierEditComponent implements OnInit, OnChanges {
 
   async handleSelectedSupplierChange(): Promise<void> {
     !this.isCreatingNew &&
-      (this.hasLogo = (this._supplierEditable?.xp as any)?.Image?.ThumbnailUrl && (this._supplierEditable?.xp as any)?.Image?.ThumbnailUrl !== '')
+      (this.hasLogo =
+        (this._supplierEditable?.xp as any)?.Image?.ThumbnailUrl &&
+        (this._supplierEditable?.xp as any)?.Image?.ThumbnailUrl !== '')
     !this.isCreatingNew &&
-      (this.supplierUsers = await this.ocSupplierUserService
-        .List(this._supplierEditable.ID)
-        .toPromise())
+      (this.supplierUsers = await SupplierUsers.List(this._supplierEditable.ID))
     !this.router.url.startsWith('/my-supplier') &&
       (this.buyers = await Buyers.List())
     this.setUpSupplierCountrySelectIfNeeded()
   }
 
   setUpSupplierCountrySelectIfNeeded(): void {
-    const indexOfCountriesServicingConfig = this.filterConfig.Filters?.findIndex(
-      (s) => s.Path === 'xp.CountriesServicing'
-    )
+    const indexOfCountriesServicingConfig =
+      this.filterConfig.Filters?.findIndex(
+        (s) => s.Path === 'xp.CountriesServicing'
+      )
     if (indexOfCountriesServicingConfig > -1) {
-      this.countriesServicingOptions = this.filterConfig.Filters[
-        indexOfCountriesServicingConfig
-      ].Items
+      this.countriesServicingOptions =
+        this.filterConfig.Filters[indexOfCountriesServicingConfig].Items
       const formGroupCountriesServicing = {}
       this.countriesServicingOptions.forEach((option) => {
         formGroupCountriesServicing[option.Value] = new FormControl(
@@ -206,7 +200,7 @@ export class SupplierEditComponent implements OnInit, OnChanges {
     } else {
       this.logoLoading = true
       const file: File = event?.target?.files[0]
-      if((this._supplierEditable?.xp as any)?.Image?.Url) {
+      if ((this._supplierEditable?.xp as any)?.Image?.Url) {
         await HeadStartSDK.Assets.Delete(
           getAssetIDFromUrl((this._supplierEditable?.xp as any)?.Image?.Url)
         )
@@ -227,12 +221,12 @@ export class SupplierEditComponent implements OnInit, OnChanges {
 
   async uploadAsset(file: File): Promise<void> {
     const imgUrls = await HeadStartSDK.Assets.CreateImage({
-      File: file
+      File: file,
     })
     const patchObj = {
       xp: {
-        Image: imgUrls
-      }
+        Image: imgUrls,
+      },
     }
     await this.PatchAndUpdateList(patchObj)
   }
@@ -240,12 +234,14 @@ export class SupplierEditComponent implements OnInit, OnChanges {
   async removeLogo(): Promise<void> {
     this.logoLoading = true
     try {
-      if((this._supplierEditable.xp as any)?.Image?.Url) {
-        await HeadStartSDK.Assets.Delete(getAssetIDFromUrl((this._supplierEditable.xp as any)?.Image?.Url))
+      if ((this._supplierEditable.xp as any)?.Image?.Url) {
+        await HeadStartSDK.Assets.Delete(
+          getAssetIDFromUrl((this._supplierEditable.xp as any)?.Image?.Url)
+        )
         const patchObj = {
           xp: {
-            Image: null
-          }
+            Image: null,
+          },
         }
         await this.PatchAndUpdateList(patchObj)
       }
@@ -258,9 +254,12 @@ export class SupplierEditComponent implements OnInit, OnChanges {
   }
 
   async PatchAndUpdateList(patchObj: Partial<Supplier>) {
-    const updatedSupplier = await Suppliers.Patch(this._supplierEditable?.ID, patchObj)
-    this.updateList.emit(updatedSupplier);
-    (this._supplierEditable.xp as any).Image = updatedSupplier.xp.Image; 
+    const updatedSupplier = await Suppliers.Patch(
+      this._supplierEditable?.ID,
+      patchObj
+    )
+    this.updateList.emit(updatedSupplier)
+    ;(this._supplierEditable.xp as any).Image = updatedSupplier.xp.Image
   }
 
   assignSupplierUser(email: string): void {

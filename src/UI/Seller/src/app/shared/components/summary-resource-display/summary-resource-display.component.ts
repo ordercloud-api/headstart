@@ -7,7 +7,7 @@ import {
 } from '@angular/core'
 import { singular } from 'pluralize'
 import { SUMMARY_RESOURCE_INFO_PATHS_DICTIONARY } from '@app-seller/shared/services/configuration/table-display'
-import { OcCategoryService } from '@ordercloud/angular-sdk'
+import { Categories } from 'ordercloud-javascript-sdk'
 import {
   faChevronDown,
   faChevronRight,
@@ -16,7 +16,13 @@ import {
 import { Router } from '@angular/router'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppConfig } from '@app-seller/shared'
-import { getProductSmallImageUrl, getSupplierLogoSmallUrl, PLACEHOLDER_URL, PRODUCT_IMAGE_PATH_STRATEGY, SUPPLIER_LOGO_PATH_STRATEGY } from '@app-seller/shared/services/assets/asset.helper'
+import {
+  getProductSmallImageUrl,
+  getSupplierLogoSmallUrl,
+  PLACEHOLDER_URL,
+  PRODUCT_IMAGE_PATH_STRATEGY,
+  SUPPLIER_LOGO_PATH_STRATEGY,
+} from '@app-seller/shared/services/assets/asset.helper'
 
 @Component({
   selector: 'summary-resource-display-component',
@@ -78,7 +84,6 @@ export class SummaryResourceDisplay implements OnChanges {
   }
 
   constructor(
-    private ocCategoryService: OcCategoryService,
     private router: Router,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {}
@@ -93,9 +98,8 @@ export class SummaryResourceDisplay implements OnChanges {
       resource,
       'toSecondaryHeader'
     )
-    this._shouldShowImage = !!SUMMARY_RESOURCE_INFO_PATHS_DICTIONARY[
-      this.resourceType
-    ].toImage
+    this._shouldShowImage =
+      !!SUMMARY_RESOURCE_INFO_PATHS_DICTIONARY[this.resourceType].toImage
     this._imgPath =
       this.getValueOnExistingResource(resource, 'toImage') || PLACEHOLDER_URL
     this._isExpandable = resource.ChildCount > 0
@@ -124,9 +128,8 @@ export class SummaryResourceDisplay implements OnChanges {
 
   setDisplayValuesForPlaceholder() {
     this._primaryHeader = this.getValueOnPlaceHolderResource('toPrimaryHeader')
-    this._secondaryHeader = this.getValueOnPlaceHolderResource(
-      'toSecondaryHeader'
-    )
+    this._secondaryHeader =
+      this.getValueOnPlaceHolderResource('toSecondaryHeader')
     this._imgPath = this.getValueOnPlaceHolderResource('toImage')
   }
 
@@ -171,9 +174,10 @@ export class SummaryResourceDisplay implements OnChanges {
       } else {
         this.isLoading = true
         const options = { filters: { ParentID: this._resource.ID } }
-        const categoryResponse = await this.ocCategoryService
-          .List(this._parentResourceID, options)
-          .toPromise()
+        const categoryResponse = await Categories.List(
+          this._parentResourceID,
+          options
+        )
         categoryResponse.Items.forEach((item) =>
           this._resourceList.splice(++index, 0, item)
         )

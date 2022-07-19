@@ -5,8 +5,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { HttpClientModule, HttpClient } from '@angular/common/http'
 
 // 3rd party
-import { OrderCloudModule, Configuration } from '@ordercloud/angular-sdk'
-import { OcSDKConfig } from '@app-seller/config/ordercloud-sdk.config'
 import { CookieModule } from 'ngx-cookie'
 import { ToastrModule } from 'ngx-toastr'
 import { NgProgressModule } from '@ngx-progressbar/core'
@@ -25,23 +23,12 @@ import { LayoutModule } from '@app-seller/layout/layout.module'
 // app component
 import { AppComponent } from '@app-seller/app.component'
 
-// interceptors
-import { HTTP_INTERCEPTORS } from '@angular/common/http'
-
-import { CacheInterceptor } from '@app-seller/auth/interceptors/cache/cache-interceptor'
-
 // error handler config
 import { AppErrorHandler } from './config/error-handling.config'
 import { Configuration as HeadstartConfiguration } from '@ordercloud/headstart-sdk'
-import {
-  Configuration as OcConfiguration,
-  SdkConfiguration,
-} from 'ordercloud-javascript-sdk'
+import { Configuration as OcConfiguration } from 'ordercloud-javascript-sdk'
 import { applicationConfiguration, ocAppConfig } from './config/app.config'
-import { CMSConfiguration } from '@ordercloud/cms-sdk'
 import { AuthModule } from './auth/auth.module'
-import { AutoAppendTokenInterceptor } from './auth/interceptors/auto-append-token/auto-append-token.interceptor'
-import { RefreshTokenInterceptor } from './auth/interceptors/refresh-token/refresh-token.interceptor'
 import { AppRoutingModule } from './app-routing.module'
 import { RouterModule } from '@angular/router'
 import { LanguageSelectorService } from '@app-seller/shared'
@@ -79,7 +66,6 @@ export enum OrdercloudEnv {
     HttpClientModule,
     NgProgressModule,
     NgProgressHttpModule,
-    OrderCloudModule.forRoot(OcSDKConfig),
     CookieModule.forRoot(),
     ToastrModule.forRoot(),
     TranslateModule.forRoot({
@@ -92,21 +78,6 @@ export enum OrdercloudEnv {
   ],
   providers: [
     { provide: ocAppConfig, useValue: ocAppConfig },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AutoAppendTokenInterceptor,
-      multi: true,
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: RefreshTokenInterceptor,
-      multi: true,
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: CacheInterceptor,
-      multi: true,
-    },
     { provide: ErrorHandler, useClass: AppErrorHandler },
   ],
   bootstrap: [AppComponent],
@@ -138,7 +109,10 @@ export class AppModule {
   }
 
   configureTranslationService(): void {
-    if (this.appConfig.supportedLanguages && this.appConfig.supportedLanguages.length === 0){
+    if (
+      this.appConfig.supportedLanguages &&
+      this.appConfig.supportedLanguages.length === 0
+    ) {
       throw new Error('supportedLanguages not defined in appConfig.')
     }
     this.translate.addLangs(this.appConfig.supportedLanguages)

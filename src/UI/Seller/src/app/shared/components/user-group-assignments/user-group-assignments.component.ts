@@ -12,9 +12,9 @@ import {
   User,
   UserGroup,
   UserGroupAssignment,
-  OcTokenService,
+  Tokens,
   ListPage,
-} from '@ordercloud/angular-sdk'
+} from 'ordercloud-javascript-sdk'
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
 import { REDIRECT_TO_FIRST_PARENT } from '@app-seller/layout/header/header.config'
 import {
@@ -70,7 +70,6 @@ export class UserGroupAssignments implements OnInit, OnChanges {
 
   constructor(
     private http: HttpClient,
-    private ocTokenService: OcTokenService,
     private router: Router,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {}
@@ -271,7 +270,7 @@ export class UserGroupAssignments implements OnInit, OnChanges {
   private buildHeaders(): HttpHeaders {
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.ocTokenService.GetAccess()}`,
+      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
     })
   }
 

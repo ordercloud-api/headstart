@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core'
 import { OrderProgress, RMAStatus } from '@app-seller/shared'
-import { Order } from '@ordercloud/angular-sdk'
+import { Order } from 'ordercloud-javascript-sdk'
 import { RMA } from '@ordercloud/headstart-sdk'
 
 @Component({

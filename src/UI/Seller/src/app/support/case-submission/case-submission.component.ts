@@ -5,7 +5,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppConfig, FileHandle } from '@app-seller/shared'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
-import { MeUser, OcSupplierService, Supplier } from '@ordercloud/angular-sdk'
+import { MeUser, Suppliers, Supplier } from 'ordercloud-javascript-sdk'
 import { ToastrService } from 'ngx-toastr'
 import { takeWhile } from 'rxjs/operators'
 import { faAsterisk } from '@fortawesome/free-solid-svg-icons'
@@ -45,7 +45,6 @@ export class CaseSubmissionComponent implements OnInit {
     private currentUserService: CurrentUserService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
-    private ocSupplierService: OcSupplierService,
     private sanitizer: DomSanitizer,
     private toastrService: ToastrService,
     @Inject(applicationConfiguration) private appConfig: AppConfig
@@ -57,9 +56,7 @@ export class CaseSubmissionComponent implements OnInit {
       .subscribe(async (user) => {
         this.user = user
         if (this.user?.Supplier?.ID) {
-          this.vendor = await this.ocSupplierService
-            .Get(this.user.Supplier.ID)
-            .toPromise()
+          this.vendor = await Suppliers.Get(this.user.Supplier.ID)
         }
         this.setForm()
       })

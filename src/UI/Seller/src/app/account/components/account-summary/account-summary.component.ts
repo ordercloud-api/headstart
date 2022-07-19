@@ -3,10 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AccountContent } from '@app-seller/shared/components/account-content/account-content.component'
-import { MeUser } from '@ordercloud/angular-sdk'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { AppConfig } from '@app-seller/models/environment.types'
+import { MeUser } from 'ordercloud-javascript-sdk'
 
 @Component({
   selector: 'account-summary',
@@ -23,7 +23,7 @@ export class AccountSummaryComponent extends AccountContent {
     changeDetectorRef: ChangeDetectorRef,
     currentUserService: CurrentUserService,
     @Inject(applicationConfiguration) appConfig: AppConfig,
-    appAuthService: AppAuthService,
+    appAuthService: AppAuthService
   ) {
     super(
       router,
@@ -31,7 +31,7 @@ export class AccountSummaryComponent extends AccountContent {
       changeDetectorRef,
       appConfig,
       appAuthService,
-      currentUserService,
+      currentUserService
     )
   }
 }

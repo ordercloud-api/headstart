@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import {
   BuyerAddress,
-  OcUserGroupService,
   UserGroupAssignment,
   User,
-  OcUserService,
-} from '@ordercloud/angular-sdk'
+  UserGroups,
+  Users,
+} from 'ordercloud-javascript-sdk'
 import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
 import { BUYER_SUB_RESOURCE_LIST } from '../buyers/buyer.service'
 import { HeadStartSDK } from '@ordercloud/headstart-sdk'
@@ -14,8 +14,6 @@ import { BuyerUserService } from '../users/buyer-user.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { Addresses, ListPage } from 'ordercloud-javascript-sdk'
 import { PermissionTypes } from './buyer-location-permissions/buyer-location-permissions.constants'
-
-
 
 // TODO - this service is only relevent if you're already on the supplier details page. How can we enforce/inidcate that?
 @Injectable({
@@ -55,8 +53,6 @@ export class BuyerLocationService extends ResourceCrudService<BuyerAddress> {
   constructor(
     router: Router,
     activatedRoute: ActivatedRoute,
-    private ocUserGroupService: OcUserGroupService,
-    private ocUserService: OcUserService,
     private buyerUserService: BuyerUserService,
     public currentUserService: CurrentUserService
   ) {
@@ -89,10 +85,11 @@ export class BuyerLocationService extends ResourceCrudService<BuyerAddress> {
 
   async createNewResource(resource: any): Promise<any> {
     const resourceID = await this.getParentResourceID()
-    const newResource = await HeadStartSDK.ValidatedAddresses.CreateBuyerAddress(
-      resourceID,
-      resource
-    )
+    const newResource =
+      await HeadStartSDK.ValidatedAddresses.CreateBuyerAddress(
+        resourceID,
+        resource
+      )
     this.resourceSubject.value.Items = [
       ...this.resourceSubject.value.Items,
       newResource,
@@ -107,22 +104,24 @@ export class BuyerLocationService extends ResourceCrudService<BuyerAddress> {
     const buyerID = locationID.split('-')[0]
     const requests = PermissionTypes.map((p) =>
       // todo accomodate over 100 users
-      this.ocUserGroupService
-        .ListUserAssignments(buyerID, {
-          userGroupID: `${locationID}-${p.UserGroupSuffix}`,
-          pageSize: 100,
-        })
-        .toPromise()
+      UserGroups.ListUserAssignments(buyerID, {
+        userGroupID: `${locationID}-${p.UserGroupSuffix}`,
+        pageSize: 100,
+      })
     )
     const responses = await Promise.all(requests)
     return responses.reduce((acc, value) => acc.concat(value.Items), [])
   }
 
-  async getLocationUsers(locationID: string, page?: number): Promise<ListPage<User>> {
+  async getLocationUsers(
+    locationID: string,
+    page?: number
+  ): Promise<ListPage<User>> {
     const buyerID = locationID.split('-')[0]
-    const userResponse = await this.ocUserService
-      .List(buyerID, { userGroupID: locationID, page: (page || 1) })
-      .toPromise()
+    const userResponse = await Users.List(buyerID, {
+      userGroupID: locationID,
+      page: page || 1,
+    })
     return userResponse
   }
 }

@@ -4,14 +4,14 @@ import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/r
 import {
   User,
   UserGroupAssignment,
-  OcUserGroupService,
+  UserGroups,
   ListPage,
   UserGroup,
-} from '@ordercloud/angular-sdk'
+  Users,
+} from 'ordercloud-javascript-sdk'
 import { BUYER_SUB_RESOURCE_LIST } from '../buyers/buyer.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/catalogs-temp.service'
-import { Users } from 'ordercloud-javascript-sdk'
 import { IUserPermissionsService } from '@app-seller/models/user.types'
 import { ListArgs } from '@ordercloud/headstart-sdk'
 import { BuyerTempService } from '@app-seller/shared/services/middleware-api/buyer-temp.service'
@@ -22,7 +22,8 @@ import { BuyerTempService } from '@app-seller/shared/services/middleware-api/buy
 })
 export class BuyerUserService
   extends ResourceCrudService<User>
-  implements IUserPermissionsService {
+  implements IUserPermissionsService
+{
   emptyResource = {
     Username: '',
     FirstName: '',
@@ -34,7 +35,6 @@ export class BuyerUserService
   constructor(
     router: Router,
     activatedRoute: ActivatedRoute,
-    private ocBuyerUserGroupService: OcUserGroupService,
     public currentUserService: CurrentUserService,
     private catalogsTempService: CatalogsTempService,
     private buyerTempService: BuyerTempService
@@ -54,25 +54,36 @@ export class BuyerUserService
   async updateBuyerPermissionGroupAssignments(
     buyerLocationID: string,
     add: UserGroupAssignment[],
-    del: UserGroupAssignment[],
+    del: UserGroupAssignment[]
   ): Promise<void> {
-    const buyerID = buyerLocationID.split("-")[0];
-    const addRequests = add.map((newAssignment) => 
-      this.addBuyerPermissionGroupAssignment(buyerID, buyerLocationID, newAssignment)
+    const buyerID = buyerLocationID.split('-')[0]
+    const addRequests = add.map((newAssignment) =>
+      this.addBuyerPermissionGroupAssignment(
+        buyerID,
+        buyerLocationID,
+        newAssignment
+      )
     )
     const deleteRequests = del.map((assignmentToRemove) =>
-      this.removeBuyerUserUserGroupAssignment(buyerID, assignmentToRemove,
-      )
+      this.removeBuyerUserUserGroupAssignment(buyerID, assignmentToRemove)
     )
     await Promise.all([...addRequests, ...deleteRequests])
   }
 
-  async addBuyerPermissionGroupAssignment(buyerID: string, buyerLocationID: string, assignment: UserGroupAssignment): Promise<void> {
+  async addBuyerPermissionGroupAssignment(
+    buyerID: string,
+    buyerLocationID: string,
+    assignment: UserGroupAssignment
+  ): Promise<void> {
     try {
-      await this.ocBuyerUserGroupService.SaveUserAssignment(buyerID, assignment).toPromise()
+      await UserGroups.SaveUserAssignment(buyerID, assignment)
     } catch (err) {
-      await this.buyerTempService.createPermissionGroup(buyerID, buyerLocationID, assignment.UserGroupID)
-      await this.ocBuyerUserGroupService.SaveUserAssignment(buyerID, assignment).toPromise()
+      await this.buyerTempService.createPermissionGroup(
+        buyerID,
+        buyerLocationID,
+        assignment.UserGroupID
+      )
+      await UserGroups.SaveUserAssignment(buyerID, assignment)
     }
   }
 
@@ -104,12 +115,10 @@ export class BuyerUserService
     assignment: UserGroupAssignment,
     shouldSyncUserCatalogAssignments = false
   ): Promise<void> {
-    await this.ocBuyerUserGroupService
-      .SaveUserAssignment(buyerID, {
-        UserID: assignment.UserID,
-        UserGroupID: assignment.UserGroupID,
-      })
-      .toPromise()
+    await UserGroups.SaveUserAssignment(buyerID, {
+      UserID: assignment.UserID,
+      UserGroupID: assignment.UserGroupID,
+    })
     if (shouldSyncUserCatalogAssignments) {
       await this.catalogsTempService.syncUserCatalogAssignments(
         buyerID,
@@ -123,9 +132,12 @@ export class BuyerUserService
     assignment: UserGroupAssignment,
     shouldSyncUserCatalogAssignments = false
   ): Promise<void> {
-    await this.ocBuyerUserGroupService
-      .DeleteUserAssignment(buyerID, assignment.UserGroupID, assignment.UserID)
-      .toPromise()
+    await UserGroups.DeleteUserAssignment(
+      buyerID,
+      assignment.UserGroupID,
+      assignment.UserID
+    )
+
     if (shouldSyncUserCatalogAssignments) {
       await this.catalogsTempService.syncUserCatalogAssignments(
         buyerID,
@@ -139,18 +151,14 @@ export class BuyerUserService
     options: ListArgs
   ): Promise<ListPage<UserGroup>> {
     // temporarily as any until changed to js sdk
-    return await this.ocBuyerUserGroupService
-      .List(buyerID, options as any)
-      .toPromise()
+    return await UserGroups.List(buyerID, options as any)
   }
 
   async listUserAssignments(
     userID: string,
     buyerID: string
   ): Promise<ListPage<UserGroupAssignment>> {
-    return await this.ocBuyerUserGroupService
-      .ListUserAssignments(buyerID, { userID })
-      .toPromise()
+    return await UserGroups.ListUserAssignments(buyerID, { userID })
   }
 
   async createNewResource(resource: User): Promise<any> {

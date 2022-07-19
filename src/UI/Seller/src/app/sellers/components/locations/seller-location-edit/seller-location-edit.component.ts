@@ -6,13 +6,10 @@ import {
   OnChanges,
 } from '@angular/core'
 import { FormGroup, Validators, FormControl } from '@angular/forms'
-import { Address, ListPage } from '@ordercloud/angular-sdk'
+import { Address, ListPage } from 'ordercloud-javascript-sdk'
 import { ActivatedRoute } from '@angular/router'
 import { GeographyConfig } from '@app-seller/shared/models/supported-countries.constant'
-import {
-  ValidateZip,
-  ValidatePhone,
-} from '@app-seller/validators/validators'
+import { ValidateZip, ValidatePhone } from '@app-seller/validators/validators'
 import { takeWhile } from 'rxjs/operators'
 import { SellerAddressService } from '../seller-address.service'
 import {
@@ -123,7 +120,7 @@ export class SellerLocationEditComponent implements OnChanges {
         this.flag = this.getFlagForCountry(currency)
         this.countryHasBeenSelected = code !== ''
         if (code !== null) zipControl.enable()
-        zipControl.setValidators(ValidateZip(code));
+        zipControl.setValidators(ValidateZip(code))
       })
   }
 
@@ -138,14 +135,18 @@ export class SellerLocationEditComponent implements OnChanges {
   }
 
   private async determineIfDeletable(locationID: string): Promise<void> {
-    const hasNoProducts = ((await HeadStartSDK.Suppliers.CanDeleteLocation(
+    const hasNoProducts = (await HeadStartSDK.Suppliers.CanDeleteLocation(
       locationID
-    )) as unknown) as boolean
+    )) as unknown as boolean
     this.canDelete.emit(hasNoProducts)
   }
 
   updateResourceFromEvent(event: any, field: string): void {
-    this.updateResource.emit({ value: event.target.value, field, form: this.resourceForm })
+    this.updateResource.emit({
+      value: event.target.value,
+      field,
+      form: this.resourceForm,
+    })
   }
 
   handleSellerAddressSelect(address: Address): void {

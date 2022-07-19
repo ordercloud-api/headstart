@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core'
-import { PriceSchedule, OcBuyerService } from '@ordercloud/angular-sdk'
+import { PriceSchedule, Buyers } from 'ordercloud-javascript-sdk'
 import { FormControl } from '@angular/forms'
 import { BuyerTempService } from '@app-seller/shared/services/middleware-api/buyer-temp.service'
 import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/catalogs-temp.service'
@@ -59,7 +59,6 @@ export class ProductPricingComponent {
   overridePriceScheduleStatic: PriceSchedule
 
   constructor(
-    private ocBuyerService: OcBuyerService,
     private catalogsTempService: CatalogsTempService,
     private buyerTempService: BuyerTempService
   ) {}
@@ -236,9 +235,7 @@ export class ProductPricingComponent {
       // Only admins should be able to view price markups or do buyer specific markups
       return
     }
-    const buyersResponse = await this.ocBuyerService
-      .List({ pageSize: 100 })
-      .toPromise()
+    const buyersResponse = await Buyers.List({ pageSize: 100 })
     this.buyers = buyersResponse.Items
     await this.selectBuyer(this.buyers[0])
   }

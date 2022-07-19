@@ -1,16 +1,15 @@
-import { Component, Input, Inject, OnInit } from '@angular/core'
+import { Component, Input, Inject } from '@angular/core'
 import { OrderService } from '@app-seller/orders/order.service'
 import {
   Address,
-  OcLineItemService,
-  OcPaymentService,
+  LineItems,
+  Payments,
   Order,
   Payment,
-  OcOrderService,
+  Orders,
   OrderDirection,
-  OcAddressService,
-  MeUser,
-} from '@ordercloud/angular-sdk'
+  Addresses,
+} from 'ordercloud-javascript-sdk'
 
 // temporarily any with sdk update
 // import { ProductImage } from '@ordercloud/headstart-sdk';
@@ -104,14 +103,10 @@ export class OrderDetailsComponent {
     }
   }
   constructor(
-    private ocLineItemService: OcLineItemService,
-    private ocOrderService: OcOrderService,
-    private ocPaymentService: OcPaymentService,
     private orderService: OrderService,
     private pdfService: PDFService,
     private middleware: MiddlewareAPIService,
     private appAuthService: AppAuthService,
-    private ocAddressService: OcAddressService,
     private rmaService: RMAService,
     private currentUserService: CurrentUserService,
     @Inject(applicationConfiguration) private appConfig: AppConfig
@@ -286,9 +281,10 @@ export class OrderDetailsComponent {
       }
       const buyerId = this._buyerOrder.FromCompanyID
       if (this._buyerOrder.ShippingAddressID) {
-        const address = await this.ocAddressService
-          .Get(buyerId, this._buyerOrder.ShippingAddressID)
-          .toPromise()
+        const address = await Addresses.Get(
+          buyerId,
+          this._buyerOrder.ShippingAddressID
+        )
         this._buyerQuoteAddress = address
       }
     }
@@ -314,9 +310,10 @@ export class OrderDetailsComponent {
         ).toUpperCase()}`
     this.setOrderProgress(order)
     if (this._order?.xp?.OrderType != OrderType.Quote) {
-      const paymentsResponse = await this.ocPaymentService
-        .List(this.orderDirection, order.ID)
-        .toPromise()
+      const paymentsResponse = await Payments.List(
+        this.orderDirection,
+        order.ID
+      )
       this._payments = paymentsResponse.Items
     }
   }
@@ -327,9 +324,11 @@ export class OrderDetailsComponent {
       page: 1,
       pageSize: 100,
     }
-    const lineItemsResponse = await this.ocLineItemService
-      .List(this.orderDirection, order.ID, listOptions)
-      .toPromise()
+    const lineItemsResponse = await LineItems.List(
+      this.orderDirection,
+      order.ID,
+      listOptions
+    )
     lineItems = [...lineItems, ...(lineItemsResponse.Items as HSLineItem[])]
     if (lineItemsResponse.Meta.TotalPages <= 1) {
       return lineItems
@@ -339,9 +338,7 @@ export class OrderDetailsComponent {
         listOptions.page = page
         lineItemRequests = [
           ...lineItemRequests,
-          this.ocLineItemService
-            .List(this.orderDirection, order.ID, listOptions)
-            .toPromise(),
+          LineItems.List(this.orderDirection, order.ID, listOptions),
         ]
       }
       return await Promise.all(lineItemRequests).then((response) => {
@@ -356,9 +353,7 @@ export class OrderDetailsComponent {
     if (this._order?.xp?.OrderType === OrderType.Quote) {
       order = await HeadStartSDK.Orders.GetQuoteOrder(this._order.ID)
     } else {
-      order = await this.ocOrderService
-        .Get(this.orderDirection, this._order.ID)
-        .toPromise()
+      order = await Orders.Get(this.orderDirection, this._order.ID)
     }
     this.handleSelectedOrderChange(order)
   }

@@ -13,7 +13,7 @@ import {
   shipmentDetail,
   productDetail,
 } from '../../reports-template/models/headers'
-import { OcBuyerService, OcSupplierService } from '@ordercloud/angular-sdk'
+import { Suppliers } from 'ordercloud-javascript-sdk'
 import { flatten as _flatten } from 'lodash'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { SELLER } from '@app-seller/models/user.types'
@@ -40,11 +40,8 @@ export class ReportsComponent implements OnInit {
   isSellerUser = false
 
   constructor(
-    private currentUserService: CurrentUserService,
     private reportsTemplateService: ReportsTemplateService,
     private reportsTypeService: ReportsTypeService,
-    private ocSupplierService: OcSupplierService,
-    private ocBuyerService: OcBuyerService,
     private appAuthService: AppAuthService
   ) {
     this.isSellerUser = this.appAuthService.getOrdercloudUserType() === SELLER
@@ -183,9 +180,7 @@ export class ReportsComponent implements OnInit {
       pageSize: 100,
       sortBy: ['Name'] as any,
     }
-    const suppliersResponse = await this.ocSupplierService
-      .List(listOptions)
-      .toPromise()
+    const suppliersResponse = await Suppliers.List(listOptions)
     suppliers = [...suppliers, ...(suppliersResponse.Items as HSSupplier[])]
     if (suppliersResponse.Meta.TotalPages <= 1) {
       return suppliers
@@ -193,10 +188,7 @@ export class ReportsComponent implements OnInit {
       let supplierRequests = []
       for (let page = 2; page <= suppliersResponse.Meta.TotalPages; page++) {
         listOptions.page = page
-        supplierRequests = [
-          ...supplierRequests,
-          this.ocSupplierService.List(listOptions).toPromise(),
-        ]
+        supplierRequests = [...supplierRequests, Suppliers.List(listOptions)]
       }
       return await Promise.all(supplierRequests).then((response) => {
         suppliers = [...suppliers, ..._flatten(response.map((r) => r.Items))]

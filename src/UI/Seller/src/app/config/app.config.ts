@@ -1,6 +1,6 @@
 import { InjectionToken } from '@angular/core'
 import { environment } from '../../environments/environment.local'
-import { ApiRole } from '@ordercloud/angular-sdk'
+import { ApiRole } from 'ordercloud-javascript-sdk'
 import { AppConfig } from '@app-seller/models/environment.types'
 
 export const ocAppConfig: AppConfig = {

@@ -1,5 +1,5 @@
 import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
-import { OcTokenService } from '@ordercloud/angular-sdk'
+import { Tokens } from 'ordercloud-javascript-sdk'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Component, Inject } from '@angular/core'
 import { applicationConfiguration } from '@app-seller/config/app.config'
@@ -26,8 +26,7 @@ export class UploadShipmentsComponent {
     @Inject(applicationConfiguration) private appConfig: AppConfig,
     private appAuthService: AppAuthService,
     private spinner: NgxSpinnerService,
-    private ocTokenService: OcTokenService,
-    private middleware: MiddlewareAPIService,
+    private middleware: MiddlewareAPIService
   ) {
     this.contentHeight = getPsHeight('base-layout-item')
   }
@@ -60,14 +59,14 @@ export class UploadShipmentsComponent {
   private buildHeaders(): HttpHeaders {
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.ocTokenService.GetAccess()}`,
+      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
     })
   }
   async manualFileUpload(event, fileType: string): Promise<void> {
     this.showUploadSummary = true
     this.showResults = false
     this.spinner.show()
-    const accessToken = await this.appAuthService.fetchToken().toPromise()
+    const accessToken = Tokens.GetAccessToken();
     let asset: AssetUpload = {}
 
     if (fileType === 'staticContent') {
@@ -125,38 +124,32 @@ export class UploadShipmentsComponent {
     file: FileHandle,
     assetType: AssetType
   ): Promise<any> {
-    if(assetType === 'image') {
+    if (assetType === 'image') {
       const [imageData, currentProduct] = await Promise.all([
         HeadStartSDK.Assets.CreateImage({
           File: file.File,
-          Filename: file.Filename
+          Filename: file.Filename,
         }),
-        Products.Get(productID)
+        Products.Get(productID),
       ])
       const patchObj = {
         xp: {
-          Images: [
-            ...(currentProduct?.xp?.Images || []),
-            imageData
-          ]
-        }
+          Images: [...(currentProduct?.xp?.Images || []), imageData],
+        },
       }
       return await Products.Patch(productID, patchObj)
     } else {
       const [documentData, currentProduct] = await Promise.all([
         HeadStartSDK.Assets.CreateDocument({
           File: file.File,
-          Filename: file.Filename
+          Filename: file.Filename,
         }),
-        Products.Get(productID)
+        Products.Get(productID),
       ])
       const patchObj = {
         xp: {
-          Documents: [
-            ...(currentProduct?.xp?.Documents || []),
-            documentData
-          ]
-        }
+          Documents: [...(currentProduct?.xp?.Documents || []), documentData],
+        },
       }
       return await Products.Patch(productID, patchObj)
     }

@@ -2,8 +2,12 @@ import { Component, Input, Inject, Output, EventEmitter } from '@angular/core'
 import { groupBy as _groupBy } from 'lodash'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { HSLineItem, HSOrder } from '@ordercloud/headstart-sdk'
-import { MeUser, OcOrderService } from '@ordercloud/angular-sdk'
-import { LineItem, LineItemSpec } from 'ordercloud-javascript-sdk'
+import {
+  LineItem,
+  LineItemSpec,
+  MeUser,
+  Orders,
+} from 'ordercloud-javascript-sdk'
 import { AppConfig, RegexService } from '@app-seller/shared'
 import { getPrimaryLineItemImage } from '@app-seller/shared/services/assets/asset.helper'
 import { LineItemStatusPipe } from '@app-seller/shared/pipes/lineitem-status.pipe'
@@ -38,7 +42,6 @@ export class LineItemTableComponent {
   }
 
   constructor(
-    private ocOrderService: OcOrderService,
     private regexService: RegexService,
     private lineitemStatusPipe: LineItemStatusPipe,
     private translateService: TranslateService,
@@ -78,11 +81,12 @@ export class LineItemTableComponent {
       const supplierOrderFilterString = order?.xp?.SupplierIDs?.map(
         (id) => `${order.ID}-${id}`
       ).join('|')
-      const supplierOrders = await this.ocOrderService
-        .List(this.orderDirection === 'Incoming' ? 'Outgoing' : 'Incoming', {
+      const supplierOrders = await Orders.List(
+        this.orderDirection === 'Incoming' ? 'Outgoing' : 'Incoming',
+        {
           filters: { ID: supplierOrderFilterString },
-        })
-        .toPromise()
+        }
+      )
       this._supplierOrders = supplierOrders.Items
     } else {
       this._supplierOrders = [order]

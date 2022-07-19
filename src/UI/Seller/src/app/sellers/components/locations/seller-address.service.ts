@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
-import { OcAdminAddressService, Address } from '@ordercloud/angular-sdk'
+import { AdminAddresses, Address } from 'ordercloud-javascript-sdk'
 import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
 import { HeadStartSDK } from '@ordercloud/headstart-sdk'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
-import { AdminAddresses } from 'ordercloud-javascript-sdk'
-
 @Injectable({
   providedIn: 'root',
 })
@@ -13,7 +11,6 @@ export class SellerAddressService extends ResourceCrudService<Address> {
   constructor(
     router: Router,
     activatedRoute: ActivatedRoute,
-    private ocAdminAddressService: OcAdminAddressService,
     public currentUserService: CurrentUserService
   ) {
     super(
@@ -30,9 +27,8 @@ export class SellerAddressService extends ResourceCrudService<Address> {
     const newID = '{sellerLocationIncrementor}'
     resource.ID = newID
 
-    const newResource = await HeadStartSDK.ValidatedAddresses.CreateAdminAddress(
-      resource
-    )
+    const newResource =
+      await HeadStartSDK.ValidatedAddresses.CreateAdminAddress(resource)
     this.resourceSubject.value.Items = [
       ...this.resourceSubject.value.Items,
       newResource,

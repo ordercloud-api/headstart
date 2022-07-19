@@ -1,10 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core'
-import { OcCategoryService, Category } from '@ordercloud/angular-sdk'
-import {
-  faTimes,
-  faAngleRight,
-  faTimesCircle,
-} from '@fortawesome/free-solid-svg-icons'
+import { Categories, Category } from 'ordercloud-javascript-sdk'
+import { faAngleRight, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 
 @Component({
   selector: 'product-category-assignment',
@@ -52,12 +48,13 @@ export class ProductCategoryAssignment {
   faAngleRight = faAngleRight
   faTimesCircle = faTimesCircle
 
-  constructor(private ocCategoryService: OcCategoryService) {}
+  constructor() {}
 
   async getTopLevelCategories(): Promise<void> {
-    const highLevelCategories = await this.ocCategoryService
-      .List(this._catalogID, { pageSize: 100, depth: '1' })
-      .toPromise()
+    const highLevelCategories = await Categories.List(this._catalogID, {
+      pageSize: 100,
+      depth: '1',
+    })
     this.highLevelOptions = highLevelCategories.Items
   }
 
@@ -68,13 +65,11 @@ export class ProductCategoryAssignment {
 
   async getSubcategories(categoryID: string): Promise<Category[]> {
     return (
-      await this.ocCategoryService
-        .List(this._catalogID, {
-          depth: '1',
-          pageSize: 100,
-          filters: { ParentID: categoryID },
-        })
-        .toPromise()
+      await Categories.List(this._catalogID, {
+        depth: '1',
+        pageSize: 100,
+        filters: { ParentID: categoryID },
+      })
     ).Items
   }
 

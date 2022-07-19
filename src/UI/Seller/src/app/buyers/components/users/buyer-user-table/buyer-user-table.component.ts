@@ -1,10 +1,10 @@
 import { Component, ChangeDetectorRef, NgZone } from '@angular/core'
 import { ResourceCrudComponent } from '@app-seller/shared/components/resource-crud/resource-crud.component'
-import { User, UserGroupAssignment } from '@ordercloud/angular-sdk'
+import { User, UserGroupAssignment } from 'ordercloud-javascript-sdk'
 import { Router, ActivatedRoute } from '@angular/router'
 import { BuyerUserService } from '../buyer-user.service'
 import { BuyerService } from '../../buyers/buyer.service'
-import { UserGroupTypes } from '@app-seller/shared/components/user-group-assignments/user-group-assignments.constants'
+
 @Component({
   selector: 'app-buyer-user-table',
   templateUrl: './buyer-user-table.component.html',
@@ -24,8 +24,6 @@ export class BuyerUserTableComponent extends ResourceCrudComponent<User> {
   ) {
     super(changeDetectorRef, buyerUserService, router, activatedroute, ngZone)
   }
-
-
 
   async createNewResource() {
     try {
@@ -63,14 +61,15 @@ export class BuyerUserTableComponent extends ResourceCrudComponent<User> {
   }
 
   updateResource($event: any): void {
-    const allValues = $event.getRawValue() 
+    const allValues = $event.getRawValue()
     this.locationUserGroupAssignments = allValues.BuyerGroupAssignments || []
-    this.permissionUserGroupAssignments = allValues.PermissionGroupAssignments || []
+    this.permissionUserGroupAssignments =
+      allValues.PermissionGroupAssignments || []
     const buyerUserForm = {
       ...allValues,
       ID: this.updatedResource.ID,
       xp: { Country: allValues.Country },
-    } 
+    }
     this.resourceForm = $event
     this.updatedResource = buyerUserForm
   }

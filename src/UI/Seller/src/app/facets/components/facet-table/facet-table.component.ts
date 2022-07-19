@@ -1,9 +1,8 @@
 import { Component, ChangeDetectorRef, NgZone, OnInit } from '@angular/core'
-import { ProductFacet } from '@ordercloud/angular-sdk'
+import { ProductFacet } from 'ordercloud-javascript-sdk'
 import { ResourceCrudComponent } from '@app-seller/shared/components/resource-crud/resource-crud.component'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FacetService } from '@app-seller/facets/facet.service'
-import { FormGroup, FormControl, Validators } from '@angular/forms'
 
 @Component({
   selector: 'app-facet-table',
@@ -12,7 +11,8 @@ import { FormGroup, FormControl, Validators } from '@angular/forms'
 })
 export class FacetTableComponent
   extends ResourceCrudComponent<ProductFacet>
-  implements OnInit {
+  implements OnInit
+{
   constructor(
     facetService: FacetService,
     changeDetectorRef: ChangeDetectorRef,

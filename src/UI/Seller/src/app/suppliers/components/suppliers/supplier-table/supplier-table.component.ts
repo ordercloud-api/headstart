@@ -1,10 +1,6 @@
-import { Component, ChangeDetectorRef, NgZone, Inject } from '@angular/core'
+import { Component, ChangeDetectorRef, NgZone } from '@angular/core'
 import { ResourceCrudComponent } from '@app-seller/shared/components/resource-crud/resource-crud.component'
-import {
-  Supplier,
-  OcSupplierUserService,
-  OcSupplierService,
-} from '@ordercloud/angular-sdk'
+import { Supplier, SupplierUsers, Suppliers } from 'ordercloud-javascript-sdk'
 import { Router, ActivatedRoute } from '@angular/router'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
 import { get as _get } from 'lodash'
@@ -14,15 +10,8 @@ import {
   RequireCheckboxesToBeChecked,
 } from '@app-seller/validators/validators'
 import { SupplierService } from '../supplier.service'
-import { applicationConfiguration } from '@app-seller/config/app.config'
-import {
-  HeadStartSDK,
-  HSSupplier,
-} from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, HSSupplier } from '@ordercloud/headstart-sdk'
 import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
-import { AppConfig } from '@app-seller/models/environment.types'
-import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
-import { Suppliers } from 'ordercloud-javascript-sdk'
 
 function createSupplierForm(supplier: HSSupplier) {
   return new FormGroup({
@@ -40,18 +29,18 @@ function createSupplierForm(supplier: HSSupplier) {
     SupportContactName: new FormControl(
       (_get(supplier, 'xp.SupportContact') &&
         _get(supplier, 'xp.SupportContact.Name')) ||
-      ''
+        ''
     ),
     SupportContactEmail: new FormControl(
       (_get(supplier, 'xp.SupportContact') &&
         _get(supplier, 'xp.SupportContact.Email')) ||
-      '',
+        '',
       ValidateEmail
     ),
     SupportContactPhone: new FormControl(
       (_get(supplier, 'xp.SupportContact') &&
         _get(supplier, 'xp.SupportContact.Phone')) ||
-      ''
+        ''
     ),
     Active: new FormControl({
       value: supplier.Active,
@@ -106,11 +95,7 @@ export class SupplierTableComponent extends ResourceCrudComponent<Supplier> {
     router: Router,
     activatedroute: ActivatedRoute,
     ngZone: NgZone,
-    private middleWareApiService: MiddlewareAPIService,
-    private appAuthService: AppAuthService,
-    @Inject(applicationConfiguration) private appConfig: AppConfig,
-    private ocSupplierUserService: OcSupplierUserService,
-    private ocSupplierService: OcSupplierService
+    private middleWareApiService: MiddlewareAPIService
   ) {
     super(
       changeDetectorRef,
@@ -133,7 +118,8 @@ export class SupplierTableComponent extends ResourceCrudComponent<Supplier> {
   }
 
   async buildFilterConfig(): Promise<void> {
-    const supplierFilterConfig = await this.middleWareApiService.getSupplierFilterConfig()
+    const supplierFilterConfig =
+      await this.middleWareApiService.getSupplierFilterConfig()
     const filterConfig = {
       Filters: supplierFilterConfig.Items.map((filter) => filter.Doc),
     }
@@ -144,27 +130,26 @@ export class SupplierTableComponent extends ResourceCrudComponent<Supplier> {
     try {
       this.dataIsSaving = true
       // Create Supplier
-      const supplier = await this.supplierService.createNewResource(
+      const supplier = (await this.supplierService.createNewResource(
         this.updatedResource
-      )
-      let patchObj: Partial<Supplier> = {
-        xp: {}
+      )) as HSSupplier
+      const patchObj: Partial<HSSupplier> = {
+        xp: {},
       }
       if (this.file) {
         // Upload their logo, if there is one.  Then, patch supplier xp
         const imgUrls = await HeadStartSDK.Assets.CreateImage({
-          File: this.file
+          File: this.file,
         })
         patchObj.xp.Image = imgUrls
       }
       // Default the NotificationRcpts to initial user
-      const users = await this.ocSupplierUserService
-        .List(supplier.ID)
-        .toPromise()
+      const users = await SupplierUsers.List(supplier.ID)
       patchObj.xp.NotificationRcpts = [users.Items[0].Email]
-      const patchedSupplier: HSSupplier = await this.ocSupplierService
-        .Patch(supplier.ID, patchObj)
-        .toPromise()
+      const patchedSupplier: HSSupplier = await Suppliers.Patch(
+        supplier.ID,
+        patchObj
+      )
       this.updateResourceInList(patchedSupplier)
       this.selectResource(patchedSupplier)
       this.dataIsSaving = false
@@ -175,7 +160,9 @@ export class SupplierTableComponent extends ResourceCrudComponent<Supplier> {
   }
 
   updateResourceInList(supplier: Supplier): void {
-    const index = this.resourceList?.Items?.findIndex(item => item.ID === supplier.ID)
+    const index = this.resourceList?.Items?.findIndex(
+      (item) => item.ID === supplier.ID
+    )
     if (index !== -1) {
       this.resourceList.Items[index] = supplier
     }

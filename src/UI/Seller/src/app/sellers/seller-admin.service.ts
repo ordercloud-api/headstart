@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
-import { User } from '@ordercloud/angular-sdk'
+import { User } from 'ordercloud-javascript-sdk'
 import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { AdminUsers } from 'ordercloud-javascript-sdk'

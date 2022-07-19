@@ -1,18 +1,18 @@
 import { Component, Input } from '@angular/core'
 import { faEyeSlash, faEye } from '@fortawesome/free-solid-svg-icons'
 import {
-  OcCatalogService,
-  OcCategoryService,
-  OcUserGroupService,
+  Catalogs,
+  Categories,
+  UserGroups,
   Category,
   UserGroup,
-  OcProductService,
+  Products,
   ProductAssignment,
   CategoryProductAssignment,
-} from '@ordercloud/angular-sdk'
+} from 'ordercloud-javascript-sdk'
 import { ProductService } from '@app-seller/products/product.service'
 import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/catalogs-temp.service'
-import { HeadStartSDK, HSBuyer, HSProduct } from '@ordercloud/headstart-sdk'
+import { HSBuyer, HSProduct } from '@ordercloud/headstart-sdk'
 
 @Component({
   selector: 'buyer-visibility-configuration-component',
@@ -61,10 +61,6 @@ export class BuyerVisibilityConfiguration {
   isAssignedToCatalog = false
 
   constructor(
-    private ocCategoryService: OcCategoryService,
-    private ocCatalogService: OcCatalogService,
-    private ocUserGroupService: OcUserGroupService,
-    private ocProductService: OcProductService,
     private productService: ProductService,
     public catalogsTempService: CatalogsTempService
   ) {}
@@ -144,32 +140,29 @@ export class BuyerVisibilityConfiguration {
   }
 
   async getCatalogAssignment(): Promise<void> {
-    const catalogAssignmentResponse = await this.ocCatalogService
-      .ListProductAssignments({
-        catalogID: this._buyer.ID,
-        productID: this._product.ID,
-      })
-      .toPromise()
+    const catalogAssignmentResponse = await Catalogs.ListProductAssignments({
+      catalogID: this._buyer.ID,
+      productID: this._product.ID,
+    })
     this.isAssignedToCatalog = catalogAssignmentResponse.Meta.TotalCount > 0
   }
 
   async getCatalogs(): Promise<void> {
-    const catalogsResponse = await this.ocUserGroupService
-      .List(this._buyer.ID, {
-        pageSize: 100,
-        filters: {
-          'xp.Type': 'Catalog',
-        },
-      })
-      .toPromise()
+    const catalogsResponse = await UserGroups.List(this._buyer.ID, {
+      pageSize: 100,
+      filters: {
+        'xp.Type': 'Catalog',
+      },
+    })
     this.catalogs = catalogsResponse.Items
   }
 
   async getCatalogAssignments(): Promise<void> {
     const catalogAssignmentRequests = this.catalogs.map((c) =>
-      this.ocProductService
-        .ListAssignments({ userGroupID: c.ID, productID: this._product.ID })
-        .toPromise()
+      Products.ListAssignments({
+        userGroupID: c.ID,
+        productID: this._product.ID,
+      })
     )
     const catalogAssignmentResponses = await Promise.all(
       catalogAssignmentRequests
@@ -182,11 +175,12 @@ export class BuyerVisibilityConfiguration {
   }
 
   async getCategoryAssignments(): Promise<void> {
-    const categoryResponse = await this.ocCategoryService
-      .ListProductAssignments(this._buyer.ID, {
+    const categoryResponse = await Categories.ListProductAssignments(
+      this._buyer.ID,
+      {
         productID: this._product.ID,
-      })
-      .toPromise()
+      }
+    )
     const categoryIDs = categoryResponse.Items.map((c) => c.CategoryID)
     const categoryAssignments = await this.getCategoryHierarchies(categoryIDs)
     this.resetCategoryAssignments(categoryAssignments)
@@ -203,9 +197,7 @@ export class BuyerVisibilityConfiguration {
   }
 
   async getCategoryHierarchy(categoryID: string): Promise<Category[]> {
-    const asssignedCategory = await this.ocCategoryService
-      .Get(this._buyer.ID, categoryID)
-      .toPromise()
+    const asssignedCategory = await Categories.Get(this._buyer.ID, categoryID)
     return await this.addToCategoryHierarchy([], asssignedCategory)
   }
 
@@ -218,9 +210,10 @@ export class BuyerVisibilityConfiguration {
     if (!category.ParentID) {
       return [category, ...currentTree]
     } else {
-      const parentCategory = await this.ocCategoryService
-        .Get(this._buyer.ID, category.ParentID)
-        .toPromise()
+      const parentCategory = await Categories.Get(
+        this._buyer.ID,
+        category.ParentID
+      )
       return await this.addToCategoryHierarchy(
         [category, ...currentTree],
         parentCategory
@@ -230,12 +223,10 @@ export class BuyerVisibilityConfiguration {
 
   async assignToCatalogIfNecessary(): Promise<void> {
     if (!this.isAssignedToCatalog) {
-      await this.ocCatalogService
-        .SaveProductAssignment({
-          CatalogID: this._buyer.ID,
-          ProductID: this._product.ID,
-        })
-        .toPromise()
+      await Catalogs.SaveProductAssignment({
+        CatalogID: this._buyer.ID,
+        ProductID: this._product.ID,
+      })
     }
   }
 

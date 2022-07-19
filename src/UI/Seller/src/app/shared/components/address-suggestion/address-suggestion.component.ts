@@ -1,6 +1,5 @@
-import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core'
-import { ListPage, BuyerAddress, Address } from '@ordercloud/angular-sdk'
-import { ResourceCrudComponent } from '../resource-crud/resource-crud.component'
+import { Component, EventEmitter, Input, Output } from '@angular/core'
+import { ListPage, BuyerAddress } from 'ordercloud-javascript-sdk'
 
 @Component({
   selector: 'address-suggestion',

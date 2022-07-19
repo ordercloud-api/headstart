@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
-import { Category } from '@ordercloud/angular-sdk'
 import { ResourceCrudService } from '../resource-crud/resource-crud.service'
 import { BUYER_SUB_RESOURCE_LIST } from '@app-seller/buyers/components/buyers/buyer.service'
 import { CurrentUserService } from '../current-user/current-user.service'
-import { Categories } from 'ordercloud-javascript-sdk'
+import { Categories, Category } from 'ordercloud-javascript-sdk'
 
 @Injectable({
   providedIn: 'root',

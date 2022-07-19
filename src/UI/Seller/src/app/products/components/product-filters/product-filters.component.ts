@@ -7,11 +7,11 @@ import {
   Inject,
 } from '@angular/core'
 import {
-  OcProductFacetService,
-  OcTokenService,
+  ProductFacets,
+  Tokens,
   Product,
   ProductFacet,
-} from '@ordercloud/angular-sdk'
+} from 'ordercloud-javascript-sdk'
 import { omit as _omit } from 'lodash'
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import { cloneDeep } from 'lodash'
@@ -43,8 +43,6 @@ export class ProductFilters implements OnInit {
   @Output() updatedFacets = new EventEmitter<any>()
 
   constructor(
-    private ocFacetService: OcProductFacetService,
-    private ocTokenService: OcTokenService,
     private http: HttpClient,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {}
@@ -54,15 +52,14 @@ export class ProductFilters implements OnInit {
   }
 
   async getFacets(): Promise<void> {
-    const facetsListPage = await this.ocFacetService
-      .List({ pageSize: 100 })
-      .toPromise()
+    const facetsListPage = await ProductFacets.List({ pageSize: 100 })
     let facets = facetsListPage.Items
     if (facetsListPage.Meta.TotalPages > 1) {
       for (let i = 2; i <= facetsListPage.Meta.TotalPages; i++) {
-        const additionalFacets = await this.ocFacetService
-          .List({ pageSize: 100, page: i })
-          .toPromise()
+        const additionalFacets = await ProductFacets.List({
+          pageSize: 100,
+          page: i,
+        })
         facets = facets.concat(additionalFacets.Items)
       }
     }
@@ -79,9 +76,8 @@ export class ProductFilters implements OnInit {
 
   isFacetOptionApplied(facet: ProductFacet, option: string): boolean {
     const productXpFacetKey = facet?.XpPath?.split('.')[1]
-    const facetOptionsOnProduct = this.facetsOnProductEditable[
-      productXpFacetKey
-    ]
+    const facetOptionsOnProduct =
+      this.facetsOnProductEditable[productXpFacetKey]
     const isFacetOptionApplied =
       facetOptionsOnProduct && facetOptionsOnProduct.includes(option)
     return isFacetOptionApplied
@@ -168,7 +164,7 @@ export class ProductFilters implements OnInit {
   private buildHeaders(): HttpHeaders {
     return new HttpHeaders({
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${this.ocTokenService.GetAccess()}`,
+      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
     })
   }
 }

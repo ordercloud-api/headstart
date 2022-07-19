@@ -7,7 +7,6 @@ import {
   ViewChild,
   ChangeDetectorRef,
   OnChanges,
-  ComponentFactoryResolver,
 } from '@angular/core'
 import { get as _get } from 'lodash'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
@@ -17,15 +16,6 @@ import {
   faExclamationCircle,
   faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons'
-import {
-  Promotion,
-  OcPromotionService,
-  OcSupplierService,
-  Product,
-  ListPage,
-  OcProductService,
-  OcBuyerService,
-} from '@ordercloud/angular-sdk'
 import { PromotionService } from '@app-seller/promotions/promotion.service'
 import {
   PromotionXp,
@@ -48,8 +38,11 @@ import {
   Products,
   Meta,
   Suppliers,
-  Supplier,
   Buyers,
+  Promotion,
+  Promotions,
+  Product,
+  ListPage,
 } from 'ordercloud-javascript-sdk'
 import { ToastrService } from 'ngx-toastr'
 import { BehaviorSubject } from 'rxjs'
@@ -120,10 +113,6 @@ export class PromotionEditComponent implements OnInit, OnChanges {
 
   constructor(
     public promotionService: PromotionService,
-    private ocPromotionService: OcPromotionService,
-    private ocSupplierService: OcSupplierService,
-    private ocProductService: OcProductService,
-    private ocBuyerService: OcBuyerService,
     private router: Router,
     private translate: TranslateService,
     private toastrService: ToastrService,
@@ -201,16 +190,17 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   }
 
   async setUpSuppliers(existingSupplierID?: string): Promise<void> {
-    const supplierResponse = await this.ocSupplierService
-      .List({ pageSize: 25, sortBy: ['Name'] })
-      .toPromise()
+    const supplierResponse = await Suppliers.List({
+      pageSize: 25,
+      sortBy: ['Name'],
+    })
     this.suppliers.next(supplierResponse.Items)
     this.supplierMeta = supplierResponse.Meta
     await this.selectSupplier(existingSupplierID || this.suppliers.value[0].ID)
   }
 
   async selectSupplier(supplierID: string): Promise<void> {
-    const s = await this.ocSupplierService.Get(supplierID).toPromise()
+    const s = await Suppliers.Get(supplierID)
     this.selectedSupplier = s
     if (
       this._promotionEditable?.xp?.AppliesTo ===
@@ -224,9 +214,10 @@ export class PromotionEditComponent implements OnInit, OnChanges {
     existingBuyProductID: string,
     existingGetProductID: string
   ): Promise<void> {
-    const productResponse = await this.ocProductService
-      .List({ pageSize: 25, sortBy: ['Name'] })
-      .toPromise()
+    const productResponse = await Products.List({
+      pageSize: 25,
+      sortBy: ['Name'],
+    })
     this.products.next(productResponse.Items)
     this.productMeta = productResponse.Meta
     await this.selectBuySKU(existingBuyProductID)
@@ -270,7 +261,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
       p = productInObservable
       this.selectedBuySKU = productInObservable
     } else {
-      p = await this.ocProductService.Get(productID).toPromise()
+      p = await Products.Get(productID)
       this.selectedBuySKU = p
     }
     this.handleUpdatePromo({ target: { value: p?.ID } }, 'xp.BOGO.BuySKU.SKU')
@@ -287,7 +278,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
       p = productInObservable
       this.selectedGetSKU = productInObservable
     } else {
-      p = await this.ocProductService.Get(productID).toPromise()
+      p = await Products.Get(productID)
       this.selectedGetSKU = p
     }
     this.handleUpdatePromo({ target: { value: p?.ID } }, 'xp.BOGO.GetSKU.SKU')
@@ -659,16 +650,26 @@ export class PromotionEditComponent implements OnInit, OnChanges {
       'ADMIN.PROMOTIONS.DISPLAY.DATE.VALID_FROM'
     )
     const formattedStart =
-      this._promotionEditable.StartDate.substr(0, 4) === this.createDateTimeMoment().format('YYYY')
-        ? this.createDateTimeMoment(this._promotionEditable.StartDate).format('MMM Do')
-        : this.createDateTimeMoment(this._promotionEditable.StartDate).format('MMM Do, YYYY')
+      this._promotionEditable.StartDate.substr(0, 4) ===
+      this.createDateTimeMoment().format('YYYY')
+        ? this.createDateTimeMoment(this._promotionEditable.StartDate).format(
+            'MMM Do'
+          )
+        : this.createDateTimeMoment(this._promotionEditable.StartDate).format(
+            'MMM Do, YYYY'
+          )
     const formattedExpiry =
       this._promotionEditable.ExpirationDate.substr(0, 4) ===
       this.createDateTimeMoment().format('YYYY')
-        ? this.createDateTimeMoment(this._promotionEditable.ExpirationDate).format('MMM Do')
-        : this.createDateTimeMoment(this._promotionEditable.ExpirationDate).format('MMM Do, YYYY')
-    this.createDateTimeMoment(this._promotionEditable.StartDate).format('MM-DD-YYYY') ===
-    this.createDateTimeMoment().format('MM-DD-YYYY')
+        ? this.createDateTimeMoment(
+            this._promotionEditable.ExpirationDate
+          ).format('MMM Do')
+        : this.createDateTimeMoment(
+            this._promotionEditable.ExpirationDate
+          ).format('MMM Do, YYYY')
+    this.createDateTimeMoment(this._promotionEditable.StartDate).format(
+      'MM-DD-YYYY'
+    ) === this.createDateTimeMoment().format('MM-DD-YYYY')
       ? (dateRangeString = `${dateRangeString} ${this.translate.instant(
           'ADMIN.PROMOTIONS.DISPLAY.DATE.TODAY_TO'
         )} ${formattedExpiry}`)
@@ -792,7 +793,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
       this.dataIsSaving = true
       // Set promotion.Name to promotion.Code automatically
       promo.Name = promo.Code
-      const newPromo = await this.ocPromotionService.Create(promo).toPromise()
+      const newPromo = await Promotions.Create(promo)
       if (!promo.AllowAllBuyers) {
         await this.handlePromotionAssignments(newPromo)
       }
@@ -815,9 +816,9 @@ export class PromotionEditComponent implements OnInit, OnChanges {
       pageSize: 100,
       promotionID: promo.ID,
     }
-    const currentPromotionAssignments = await this.ocPromotionService
-      .ListAssignments(listOptions)
-      .toPromise()
+    const currentPromotionAssignments = await Promotions.ListAssignments(
+      listOptions
+    )
     const assignmentsToDelete: string[] = []
     const assignmentsToAdd: string[] = []
 
@@ -852,12 +853,10 @@ export class PromotionEditComponent implements OnInit, OnChanges {
     if (assignmentsToAdd.length > 0) {
       for (const assignment of assignmentsToAdd) {
         assignmentsToAddRequests.push(
-          this.ocPromotionService
-            .SaveAssignment({
-              PromotionID: promo.ID,
-              BuyerID: assignment,
-            })
-            .toPromise()
+          Promotions.SaveAssignment({
+            PromotionID: promo.ID,
+            BuyerID: assignment,
+          })
         )
       }
     }
@@ -865,11 +864,9 @@ export class PromotionEditComponent implements OnInit, OnChanges {
     if (assignmentsToDelete.length > 0) {
       for (const assignment of assignmentsToDelete) {
         assignmentsToDeleteRequests.push(
-          this.ocPromotionService
-            .DeleteAssignment(promo.ID, {
-              buyerID: assignment,
-            })
-            .toPromise()
+          Promotions.DeleteAssignment(promo.ID, {
+            buyerID: assignment,
+          })
         )
       }
     }
@@ -884,9 +881,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   async updatePromotion(promo: Promotion<PromotionXp>): Promise<void> {
     try {
       this.dataIsSaving = true
-      const updatedPromo = await this.ocPromotionService
-        .Save(promo.ID, promo)
-        .toPromise()
+      const updatedPromo = await Promotions.Save(promo.ID, promo)
       await this.handlePromotionAssignments(updatedPromo)
       this.refreshPromoData(updatedPromo)
       this.dataIsSaving = false
@@ -897,7 +892,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   }
 
   async handleDelete(): Promise<void> {
-    await this.ocPromotionService.Delete(this._promotionStatic.ID).toPromise()
+    await Promotions.Delete(this._promotionStatic.ID)
     this.router.navigateByUrl('/promotions')
   }
 

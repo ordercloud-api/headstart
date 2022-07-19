@@ -7,14 +7,12 @@ import { Inject, Injectable } from '@angular/core'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { OrderType } from '@app-seller/shared'
-import { OcTokenService, Order } from '@ordercloud/angular-sdk'
+import { Tokens, Order } from 'ordercloud-javascript-sdk'
 import {
   ListPage,
   BatchProcessResult,
   SuperHSShipment,
   HSSupplier,
-  HSLineItem,
-  HSOrder,
 } from '@ordercloud/headstart-sdk'
 import { Observable } from 'rxjs'
 
@@ -25,11 +23,10 @@ import { Observable } from 'rxjs'
 export class MiddlewareAPIService {
   readonly headers = {
     headers: new HttpHeaders({
-      Authorization: `Bearer ${this.ocTokenService.GetAccess()}`,
+      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
     }),
   }
   constructor(
-    private ocTokenService: OcTokenService,
     private http: HttpClient,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {}

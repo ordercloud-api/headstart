@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core'
 import { FormGroup, Validators, FormControl } from '@angular/forms'
-import { Address, BuyerAddress } from '@ordercloud/angular-sdk'
 import { BuyerLocationService } from '../buyer-location.service'
 import { ValidatePhone, ValidateEmail } from '@app-seller/validators/validators'
 import { Router } from '@angular/router'
@@ -17,7 +16,12 @@ import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/
 import { REDIRECT_TO_FIRST_PARENT } from '@app-seller/layout/header/header.config'
 import { ResourceUpdate } from '@app-seller/models/shared.types'
 import { SupportedCountries } from '@app-seller/models/currency-geography.types'
-import { ApprovalRules, OrderApproval } from 'ordercloud-javascript-sdk'
+import {
+  ApprovalRules,
+  OrderApproval,
+  Address,
+  BuyerAddress,
+} from 'ordercloud-javascript-sdk'
 @Component({
   selector: 'app-buyer-location-edit',
   templateUrl: './buyer-location-edit.component.html',
@@ -112,9 +116,7 @@ export class BuyerLocationEditComponent implements OnInit {
         buyerLocation.UserGroup.xp.Currency,
         Validators.required
       ),
-      BillingNumber: new FormControl(
-        buyerLocation.Address.xp?.BillingNumber
-      ),
+      BillingNumber: new FormControl(buyerLocation.Address.xp?.BillingNumber),
       CatalogAssignments: new FormControl(
         undefined,
         this.isCreatingNew ? [Validators.required] : undefined
@@ -159,9 +161,12 @@ export class BuyerLocationEditComponent implements OnInit {
     try {
       this.dataIsSaving = true
       this.buyerLocationEditable.UserGroup.xp.Type = 'BuyerLocation'
-      this.buyerLocationEditable.Address.AddressName = this.buyerLocationEditable?.Address?.CompanyName
-      this.buyerLocationEditable.UserGroup.ID = this.buyerLocationEditable.Address.ID
-      this.buyerLocationEditable.UserGroup.xp.Country = this.buyerLocationEditable.Address.Country
+      this.buyerLocationEditable.Address.AddressName =
+        this.buyerLocationEditable?.Address?.CompanyName
+      this.buyerLocationEditable.UserGroup.ID =
+        this.buyerLocationEditable.Address.ID
+      this.buyerLocationEditable.UserGroup.xp.Country =
+        this.buyerLocationEditable.Address.Country
       const newBuyerLocation = await HeadStartSDK.BuyerLocations.Create(
         this.buyerID,
         this.buyerLocationEditable
@@ -186,9 +191,10 @@ export class BuyerLocationEditComponent implements OnInit {
   async updateBuyerLocation(): Promise<void> {
     try {
       this.dataIsSaving = true
-      this.buyerLocationEditable.UserGroup.xp.Country = this.buyerLocationEditable.Address.Country
-      const assignments = this.resourceForm.controls['CatalogAssignments']
-        ?.value
+      this.buyerLocationEditable.UserGroup.xp.Country =
+        this.buyerLocationEditable.Address.Country
+      const assignments =
+        this.resourceForm.controls['CatalogAssignments']?.value
       this.buyerLocationEditable.UserGroup.xp.CatalogAssignments =
         assignments?.CatalogIDs
       const updatedBuyerLocation = await HeadStartSDK.BuyerLocations.Save(
@@ -221,10 +227,11 @@ export class BuyerLocationEditComponent implements OnInit {
   updateBuyerLocationResource(buyerLocationUpdate: any): void {
     const resourceToEdit =
       this.buyerLocationEditable || this.buyerLocationService.emptyResource
-    this.buyerLocationEditable = this.buyerLocationService.getUpdatedEditableResource(
-      buyerLocationUpdate,
-      resourceToEdit
-    )
+    this.buyerLocationEditable =
+      this.buyerLocationService.getUpdatedEditableResource(
+        buyerLocationUpdate,
+        resourceToEdit
+      )
     this.areChanges = this.buyerLocationService.checkForChanges(
       this.buyerLocationEditable,
       this.buyerLocationStatic
@@ -247,7 +254,8 @@ export class BuyerLocationEditComponent implements OnInit {
       (country) => country.abbreviation === countryCode
     )
     this.resourceForm.controls.Currency.setValue(selectedCountry.currency)
-    this.buyerLocationEditable.UserGroup.xp.Currency = this.resourceForm.value.Currency
+    this.buyerLocationEditable.UserGroup.xp.Currency =
+      this.resourceForm.value.Currency
   }
 
   handleDiscardChanges(): void {

@@ -10,7 +10,7 @@ import {
   faUserCircle,
   faEnvelope,
 } from '@fortawesome/free-solid-svg-icons'
-import { MeUser, OcTokenService } from '@ordercloud/angular-sdk'
+import { MeUser, Tokens } from 'ordercloud-javascript-sdk'
 import { Router, NavigationEnd } from '@angular/router'
 import { AppConfig, AppStateService, HSRoute } from '@app-seller/shared'
 import { getHeaderConfig } from './header.config'
@@ -45,7 +45,6 @@ export class HeaderComponent implements OnInit {
   languages: string[]
 
   constructor(
-    private ocTokenService: OcTokenService,
     private router: Router,
     private appStateService: AppStateService,
     private appAuthService: AppAuthService,
@@ -112,7 +111,7 @@ export class HeaderComponent implements OnInit {
   }
 
   logout(): void {
-    this.ocTokenService.RemoveAccess()
+    Tokens.RemoveAccessToken();
     this.appStateService.isLoggedIn.next(false)
     this.router.navigate(['/login'])
   }

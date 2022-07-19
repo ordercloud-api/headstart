@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
-import { Order, OcOrderService } from '@ordercloud/angular-sdk'
 import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
-import { Orders } from 'ordercloud-javascript-sdk'
+import { Orders, Order } from 'ordercloud-javascript-sdk'
 import { OrderType } from '@app-seller/models/order.types'
-import { HeadStartSDK, HSOrder } from '@ordercloud/headstart-sdk'
+import { HeadStartSDK } from '@ordercloud/headstart-sdk'
 import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 
 @Injectable({

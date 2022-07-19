@@ -13,6 +13,8 @@ import {
   SupplierAddresses,
   AdminAddresses,
   SpecOption,
+  Product,
+  Tokens,
 } from 'ordercloud-javascript-sdk'
 import {
   FormGroup,
@@ -21,7 +23,6 @@ import {
   AbstractControl,
 } from '@angular/forms'
 import { Router } from '@angular/router'
-import { Product } from '@ordercloud/angular-sdk'
 import { SafeUrl } from '@angular/platform-browser'
 import {
   faCircle,
@@ -502,11 +503,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   }
 
   async handleDelete(): Promise<void> {
-    const accessToken = await this.appAuthService.fetchToken().toPromise()
-    await HeadStartSDK.Products.Delete(
-      this._superHSProductStatic.Product.ID,
-      accessToken
-    )
+    await HeadStartSDK.Products.Delete(this._superHSProductStatic.Product.ID)
     void this.router.navigateByUrl('/products')
   }
 
@@ -787,7 +784,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       (r) => r.Currency === currencyOnProduct
     )
     this.sellerCurrency = this._exchangeRates?.find((r) => r.Currency === 'USD')
-    const accessToken = await this.appAuthService.fetchToken().toPromise()
+    const accessToken = Tokens.GetAccessToken()
     const hsProduct = await HeadStartSDK.Products.Get(product.ID, accessToken)
     void this.refreshProductData(hsProduct)
   }

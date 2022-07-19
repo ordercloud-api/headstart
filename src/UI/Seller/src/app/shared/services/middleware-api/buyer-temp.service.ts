@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@angular/core'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { SuperHSBuyer } from '@ordercloud/headstart-sdk'
 import { AppConfig } from '@app-seller/models/environment.types'
-import { OcTokenService } from '@ordercloud/angular-sdk'
+import { Tokens } from 'ordercloud-javascript-sdk'
 
 // WHOPLE FILE TO BE REPLACED BY SDK
 
@@ -12,14 +12,13 @@ import { OcTokenService } from '@ordercloud/angular-sdk'
 })
 export class BuyerTempService {
   constructor(
-    private ocTokenService: OcTokenService,
     private http: HttpClient,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {}
 
   private buildHeaders(): HttpHeaders {
     return new HttpHeaders({
-      Authorization: `Bearer ${this.ocTokenService.GetAccess()}`,
+      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
     })
   }
 

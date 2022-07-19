@@ -4,8 +4,8 @@ import {
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import { ToastrService } from 'ngx-toastr'
-import { MeUser } from '@ordercloud/angular-sdk'
 import { FormGroup } from '@angular/forms'
+import { MeUser } from 'ordercloud-javascript-sdk'
 
 @Component({
   selector: 'seller-email-notifications',

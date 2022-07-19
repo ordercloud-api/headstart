@@ -1,7 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 import { FormGroup, FormBuilder, Validators } from '@angular/forms'
-
-import { BuyerAddress, Address } from '@ordercloud/angular-sdk'
+import { BuyerAddress, Address } from 'ordercloud-javascript-sdk'
 import { AppFormErrorService } from '@app-seller/shared/services/form-error/form-error.service'
 import { AppGeographyService } from '@app-seller/shared/services/geography/geography.service'
 import { RegexService } from '@app-seller/shared/services/regex/regex.service'

@@ -1,8 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core'
-import { get as _get } from 'lodash'
 import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { Router } from '@angular/router'
-import { UserGroupAssignment, User } from '@ordercloud/angular-sdk'
+import { UserGroupAssignment, User } from 'ordercloud-javascript-sdk'
 import { SupplierUserService } from '../supplier-user.service'
 import { ValidateEmail } from '@app-seller/validators/validators'
 @Component({
