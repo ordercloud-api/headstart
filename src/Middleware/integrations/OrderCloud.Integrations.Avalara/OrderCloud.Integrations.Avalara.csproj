@@ -4,7 +4,7 @@
     <TargetFrameworks>netcoreapp3.1</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>0.0.1</Version>
-    <Authors>Four51, Inc.</Authors>
+    <Authors>Sitecore</Authors>
   </PropertyGroup>
 
   <PropertyGroup>
