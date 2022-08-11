@@ -168,7 +168,6 @@ export abstract class ResourceCrudComponent<ResourceType>
   }
 
   updateResource(resourceUpdate: ResourceUpdate): void {
-    debugger
     this.updatedResource = this.ocService.getUpdatedEditableResource(
       resourceUpdate,
       this.updatedResource
