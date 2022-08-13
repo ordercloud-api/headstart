@@ -80,7 +80,7 @@ export class OCMImageGallery implements OnInit, OnChanges {
       // If no specs/tags match, grab primary image, or placeholder if no images exist
       this.images[0]
         ? this.select(this.images[0].Url)
-        : this.select('https://via.placeholder.com/500x500')
+        : this.select('https://via.placeholder.com/500')
     }
   }
 
