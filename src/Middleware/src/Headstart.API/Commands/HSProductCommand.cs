@@ -128,7 +128,7 @@ namespace Headstart.API.Commands
             var priceSchedule = new PriceSchedule();
             try
             {
-                priceSchedule = await oc.PriceSchedules.GetAsync<PriceSchedule>(product.ID, token);
+                priceSchedule = await oc.PriceSchedules.GetAsync<PriceSchedule>(product.DefaultPriceScheduleID, token);
             }
             catch
             {
