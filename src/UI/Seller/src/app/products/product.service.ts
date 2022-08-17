@@ -36,9 +36,9 @@ export class ProductService extends ResourceCrudService<Product> {
         Images: [],
         Note: '',
         Tax: {
-          Category: null, // SEB-827 default tax category to TPP
           Code: null,
           Description: null,
+          LongDescription: null,
         },
         UnitOfMeasure: {
           Unit: null,
