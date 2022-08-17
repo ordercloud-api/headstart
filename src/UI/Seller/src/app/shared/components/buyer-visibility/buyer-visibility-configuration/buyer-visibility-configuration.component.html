@@ -34,7 +34,7 @@
           <span
             >{{ catalogAssignmentsStatic.length }}/{{ catalogs.length }}</span
           >
-          &nbsp;<span>{{ 'ADMIN.PRODUCT_EDIT.CATALOGS' | lowercase }}</span>
+          &nbsp;<span>{{ 'ADMIN.PRODUCT_EDIT.CATALOGS' | translate | lowercase }}</span>
         </div>
       </ng-container>
       <ng-container *ngIf="catalogAssignmentsStatic.length === 0">
