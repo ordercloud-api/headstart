@@ -40,7 +40,6 @@ export class RMAService extends ResourceCrudService<RMA> {
 
   public async updateResource(originalID: string, resource: RMA): Promise<RMA> {
     originalID = resource.RMANumber
-    debugger
     const processedRMA = await HeadStartSDK.RmAs.ProcessRMA(resource)
     this.updateResourceSubject(processedRMA)
     return processedRMA
