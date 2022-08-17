@@ -1,4 +1,4 @@
-import { ImpersonationConfig } from '@ordercloud/angular-sdk';
+import { ImpersonationConfig } from 'ordercloud-javascript-sdk';
 import { HSBuyer } from './HSBuyer';
 
 export interface SuperHSBuyer {
