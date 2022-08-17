@@ -16,7 +16,7 @@
 		"format": "eslint **/*.ts --fix && eslint **/*.js --fix"
 	},
 	"keywords": [],
-	"author": "Four51",
+	"author": "Sitecore",
 	"license": "ISC",
 	"devDependencies": {
 		"@applitools/eyes-testcafe": "^1.11.1",
