@@ -858,7 +858,8 @@
     "PHONE": "Phone Number",
     "PRODUCT_TYPES": {
       "STANDARD": "Standard",
-      "QUOTE": "Quote"
+      "QUOTE": "Quote",
+      "BUNDLE": "Bundle"
     },
     "SEARCH": "Search",
     "SUBMIT": "Submit",

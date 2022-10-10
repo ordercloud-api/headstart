@@ -850,7 +850,8 @@
     "PHONE": "電話番号",
     "PRODUCT_TYPES": {
       "STANDARD": "標準",
-      "QUOTE": "見積もり"
+      "QUOTE": "見積もり",
+      "BUNDLE": "バンドル"
     },
     "SEARCH": "検索",
     "SUBMIT": "送信",
