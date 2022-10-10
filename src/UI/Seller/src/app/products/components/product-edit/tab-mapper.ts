@@ -1,19 +1,12 @@
+import { invert } from 'lodash'
+
 export function setProductEditTab(section: string): number {
-  const tabIndex = ProductEditTabMapper[section] as number | undefined
+  const map = invert(TabIndexMapper)
+  const tabIndex = parseInt(map[section])
   if (typeof tabIndex === 'undefined') {
     throw new Error(`Section ${section} has no tab index mapping defined`)
   }
   return tabIndex
-}
-
-export const ProductEditTabMapper = {
-  undefined: 0,
-  'catalog-assignments': 1,
-  description: 2,
-  price: 3,
-  filters: 4,
-  variants: 5,
-  'images-and-documents': 6,
 }
 
 export const TabIndexMapper = {

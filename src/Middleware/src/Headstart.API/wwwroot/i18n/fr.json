@@ -856,7 +856,8 @@
     "PHONE": "Numéro de téléphone",
     "PRODUCT_TYPES": {
       "STANDARD": "Standard",
-      "QUOTE": "Devis"
+      "QUOTE": "Devis",
+      "BUNDLE": "Bundle"
     },
     "SEARCH": "Rechercher",
     "SUBMIT": "Envoyer",
