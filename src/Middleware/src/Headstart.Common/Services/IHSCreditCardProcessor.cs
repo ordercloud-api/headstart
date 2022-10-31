@@ -3,7 +3,7 @@ using Headstart.Common.Models;
 
 namespace Headstart.Common.Services
 {
-    public interface ICreditCardProcessor
+    public interface IHSCreditCardProcessor
     {
         Task<HSCreditCard> Tokenize(CCToken card, CurrencyCode userCurrency);
 

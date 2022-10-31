@@ -19,7 +19,7 @@ namespace OrderCloud.Integrations.CardConnect.Extensions
                 .AddSingleton(x => cardConnectSettings)
                 .AddSingleton<ICardConnectClient>(provider =>
                     new CardConnectClient(cardConnectSettings, environmentSettings.Environment.ToString(), provider.GetService<IFlurlClientFactory>()))
-                .AddSingleton<ICreditCardProcessor, CardConnectService>();
+                .AddSingleton<IHSCreditCardProcessor, CardConnectService>();
 
             return services;
         }

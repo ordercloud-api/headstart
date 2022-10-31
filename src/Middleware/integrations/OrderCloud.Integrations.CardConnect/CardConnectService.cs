@@ -11,7 +11,7 @@ using OrderCloud.SDK;
 
 namespace OrderCloud.Integrations.CardConnect
 {
-    public class CardConnectService : ICreditCardProcessor
+    public class CardConnectService : IHSCreditCardProcessor
     {
         private readonly CardConnectConfig cardConnectConfig;
         private readonly ICardConnectClient cardConnectClient;

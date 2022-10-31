@@ -5,7 +5,7 @@ using OrderCloud.SDK;
 
 namespace Headstart.Common.Services
 {
-    public class MockCreditCardProcessor : ICreditCardProcessor
+    public class MockCreditCardProcessor : IHSCreditCardProcessor
     {
         private readonly IOrderCloudClient orderCloudClient;
 
