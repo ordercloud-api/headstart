@@ -10,7 +10,7 @@ namespace Headstart.Common.Models
         }
     }
 
-    public class HSOrderWorksheet : OrderWorksheet<HSOrder, HSLineItem, HSShipEstimateResponse, HSOrderCalculateResponse, OrderSubmitResponse, OrderSubmitForApprovalResponse, OrderApprovedResponse>
+    public class HSOrderWorksheet : OrderWorksheet<HSOrder, HSLineItem, HSOrderPromotion, HSShipEstimateResponse, HSOrderCalculateResponse, OrderSubmitResponse, OrderSubmitForApprovalResponse, OrderApprovedResponse>
     {
     }
 }
