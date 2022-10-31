@@ -11,12 +11,6 @@
 
   <ItemGroup>
     <PackageReference Include="NPOI" Version="2.4.1" />
-    <PackageReference Include="ordercloud-dotnet-catalyst" Version="2.0.1" />
-    <PackageReference Include="OrderCloud.SDK" Version="0.11.0" />
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

@@ -122,13 +122,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\src\Headstart.Common\Headstart.Common.csproj" />
     <ProjectReference Include="..\OrderCloud.Integrations.AzureStorage\OrderCloud.Integrations.AzureStorage.csproj" />
   </ItemGroup>

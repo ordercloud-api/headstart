@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Flurl" Version="3.0.2" />
+    <PackageReference Include="Flurl" Version="3.0.6" />
     <PackageReference Include="Npoi.Mapper" Version="3.4.0" />
     <PackageReference Include="ordercloud-dotnet-catalyst" Version="2.0.1" />
     <PackageReference Include="OrderCloud.SDK" Version="0.11.0" />
