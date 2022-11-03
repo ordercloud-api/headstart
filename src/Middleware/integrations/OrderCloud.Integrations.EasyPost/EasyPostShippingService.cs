@@ -23,7 +23,7 @@ namespace OrderCloud.Integrations.EasyPost
         public EasyPostShippingService(EasyPostSettings easyPostSettings, EasyPostClient easyPostClient)
         {
             this.easyPostSettings = easyPostSettings;
-            Profiles = new HSShippingProfiles(easyPostSettings.FedexAccountId);
+            Profiles = new HSShippingProfiles(easyPostSettings.CustomsSigner, easyPostSettings.FedexAccountId, easyPostSettings.USPSAccountId);
             this.easyPostClient = easyPostClient;
         }
 
