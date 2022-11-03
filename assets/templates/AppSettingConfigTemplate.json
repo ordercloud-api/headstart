@@ -23,6 +23,7 @@
   "CosmosSettings:PrimaryKey": "",
   "CosmosSettings:RequestTimeoutInSeconds": "15",
   "EasyPostSettings:APIKey": "",
+  "EasyPostSettings:CustomsSigner": "",
   "EasyPostSettings:FedexAccountId": "",
   "EasyPostSettings:FreeShippingTransitDays": "3",
   "EasyPostSettings:NoRatesFallbackCost": "20",
