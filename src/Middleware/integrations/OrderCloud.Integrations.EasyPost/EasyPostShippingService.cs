@@ -95,7 +95,7 @@ namespace OrderCloud.Integrations.EasyPost
                     },
                 },
                 ShipEstimateItems = lineItems.Select(li => new ShipEstimateItem() { LineItemID = li.ID, Quantity = li.Quantity }).ToList(),
-                xp =
+                xp = new ShipEstimateXP
                 {
                     SupplierID = firstLi.SupplierID, // This will help with forwarding the supplier order
                     ShipFromAddressID = firstLi.ShipFromAddressID, // This will help with forwarding the supplier order
