@@ -13,5 +13,10 @@
         public int NoRatesFallbackTransitDays { get; set; }
 
         public string USPSAccountId { get; set; }
+
+        /// <summary>
+        /// Name of person that is expected to sign for packages at customs (include both first and last name).
+        /// </summary>
+        public string CustomsSigner { get; set; }
     }
 }

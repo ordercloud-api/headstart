@@ -9,10 +9,20 @@ namespace OrderCloud.Integrations.EasyPost.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddEasyPostShippingProvider(this IServiceCollection services, EnvironmentSettings environmentSettings, EasyPostSettings easyPostSettings)
-        {
-            if (!environmentSettings.ShippingProvider.Equals("EasyPost", StringComparison.OrdinalIgnoreCase))
+        public static IServiceCollection AddEasyPostShippingProvider(this IServiceCollection services, EnvironmentSettings environmentSettings, EasyPostSettings easyPostSettings) {
+            if (!environmentSettings.ShippingProvider.Equals("EasyPost", StringComparison.OrdinalIgnoreCase) || string.IsNullOrEmpty(easyPostSettings.ApiKey)) {
+                return services;
+            }
+
+            if (string.IsNullOrEmpty(easyPostSettings.CustomsSigner))
             {
+                Console.WriteLine("Unable to use EasyPost as a shipping provider as required property EasyPostSettings:CustomSigner was not provided");
+                return services;
+            }
+
+            if (string.IsNullOrEmpty(easyPostSettings.USPSAccountId) || string.IsNullOrEmpty(easyPostSettings.FedexAccountId))
+            {
+                Console.WriteLine("Unable to use EasyPost as a shipping provider as neither UpsAccountId nor FedexAccountId were provided");
                 return services;
             }
 
