@@ -178,18 +178,17 @@ namespace Headstart.API.Commands
             var lineItems = oc.LineItems.ListAllAsync(OrderDirection.Incoming, orderID);
             var promotions = oc.Orders.ListAllPromotionsAsync(OrderDirection.Incoming, orderID);
             var payments = oc.Payments.ListAllAsync(OrderDirection.Incoming, order.ID);
+            var approvals = oc.Orders.ListAllApprovalsAsync(OrderDirection.Incoming, orderID);
 
-            // bug in catalyst tries to list all by ID but ID doesn't exist on approval rules
-            // https://github.com/ordercloud-api/ordercloud-dotnet-catalyst/issues/33
-            // var approvals = _oc.Orders.ListAllApprovalsAsync(OrderDirection.Incoming, orderID);
-            var approvals = await oc.Orders.ListApprovalsAsync(OrderDirection.Incoming, orderID, pageSize: 100);
+            await Task.WhenAll(lineItems, promotions, payments, approvals);
+
             return new OrderDetails
             {
                 Order = order,
                 LineItems = await lineItems,
                 Promotions = await promotions,
                 Payments = await payments,
-                Approvals = approvals.Items,
+                Approvals = await approvals,
             };
         }
 
