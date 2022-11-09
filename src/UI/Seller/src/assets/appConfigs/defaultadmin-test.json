@@ -6,7 +6,11 @@
   "clientID": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
   "middlewareUrl": "https://my-hosted-middleware.com",
   "translateBlobUrl": "https://MYSTORAGEACCOUNTNAME.blob.core.windows.net/ngx-translate/i18n/",
-  "supportedLanguages": ["en", "fr", "jp"],
+  "supportedLanguages": [
+    "en",
+    "fr",
+    "jp"
+  ],
   "defaultLanguage": "en",
   "blobStorageUrl": "https://MYSTORAGEACCOUNTNAME.blob.core.windows.net",
   "orderCloudApiUrl": "https://sandboxapi.ordercloud.io"

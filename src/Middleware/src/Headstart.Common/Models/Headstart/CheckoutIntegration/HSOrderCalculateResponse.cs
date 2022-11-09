@@ -3,7 +3,7 @@ using OrderCloud.SDK;
 
 namespace Headstart.Common.Models
 {
-    public class HSOrderCalculateResponse : OrderCalculateResponse<OrderCalculateResponseXp>
+    public class HSOrderCalculateResponse : OrderCalculateResponse<OrderCalculateResponseXp, HSLineItemOverride>
     {
     }
 
@@ -11,4 +11,10 @@ namespace Headstart.Common.Models
     {
         public OrderTaxCalculation TaxCalculation { get; set; }
     }
+
+    public class HSLineItemOverride : LineItemOverride<HSAdHocProduct> { }
+
+    public class HSAdHocProduct : AdHocProduct<AdHocProductXp> { }
+
+    public class AdHocProductXp { }
 }

@@ -38,11 +38,11 @@ namespace OrderCloud.Integrations.RMAs.Commands
     {
         private readonly IOrderCloudClient oc;
         private readonly IRMARepo rmaRepo;
-        private readonly ICreditCardProcessor creditCardService;
+        private readonly IHSCreditCardProcessor creditCardService;
         private readonly IEmailServiceProvider emailServiceProvider;
         private readonly OrderCloudSettings orderCloudSettings;
 
-        public RMACommand(IOrderCloudClient oc, IRMARepo rmaRepo, ICreditCardProcessor creditCardService, IEmailServiceProvider emailServiceProvider, OrderCloudSettings orderCloudSettings)
+        public RMACommand(IOrderCloudClient oc, IRMARepo rmaRepo, IHSCreditCardProcessor creditCardService, IEmailServiceProvider emailServiceProvider, OrderCloudSettings orderCloudSettings)
         {
             this.oc = oc;
             this.rmaRepo = rmaRepo;

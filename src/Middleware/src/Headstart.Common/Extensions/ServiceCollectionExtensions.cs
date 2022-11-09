@@ -77,7 +77,7 @@ namespace Headstart.Common.Extensions
 
         public static IServiceCollection AddMockCreditCardProcessor(this IServiceCollection services)
         {
-            services.TryAddSingleton<ICreditCardProcessor, MockCreditCardProcessor>();
+            services.TryAddSingleton<IHSCreditCardProcessor, MockCreditCardProcessor>();
 
             return services;
         }

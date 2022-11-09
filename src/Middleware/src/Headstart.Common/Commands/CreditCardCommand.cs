@@ -10,12 +10,12 @@ namespace Headstart.Common.Commands
 {
     public class CreditCardCommand : ICreditCardCommand
     {
-        private readonly ICreditCardProcessor creditCardService;
+        private readonly IHSCreditCardProcessor creditCardService;
         private readonly IOrderCloudClient oc;
         private readonly ICurrencyConversionCommand currencyConversionCommand;
 
         public CreditCardCommand(
-            ICreditCardProcessor creditCardService,
+            IHSCreditCardProcessor creditCardService,
             IOrderCloudClient oc,
             ICurrencyConversionCommand currencyConversionCommand)
         {

@@ -17,10 +17,10 @@ namespace Headstart.Jobs
     {
         private readonly AppSettings settings;
         private readonly IOrderCloudClient oc;
-        private readonly ICreditCardProcessor creditCardService;
+        private readonly IHSCreditCardProcessor creditCardService;
         private readonly IRMACommand rmaCommand;
 
-        public PaymentCaptureJob(AppSettings settings, IOrderCloudClient oc, ICreditCardProcessor creditCardService, IRMACommand rmaCommand)
+        public PaymentCaptureJob(AppSettings settings, IOrderCloudClient oc, IHSCreditCardProcessor creditCardService, IRMACommand rmaCommand)
         {
             this.settings = settings;
             this.oc = oc;
