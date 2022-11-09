@@ -37,6 +37,7 @@ json -I -f appSettings.json \
 
 json -I -f appSettings.json \
       -e "this['EasyPostSettings:APIKey']='$EasyPostSettings_APIKey'" \
+      -e "this['EasyPostSettings:CustomsSigner']='$EasyPostSettings_CustomsSigner'" \
       -e "this['EasyPostSettings:FedexAccountId']='$EasyPostSettings_FedexAccountId'" \
       -e "this['EasyPostSettings:FreeShippingTransitDays']='$EasyPostSettings_FreeShippingTransitDays'" \
       -e "this['EasyPostSettings:NoRatesFallbackCost']='$EasyPostSettings_NoRatesFallbackCost'" \
