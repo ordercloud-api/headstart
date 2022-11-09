@@ -1,5 +1,5 @@
 ﻿{
-  "ApplicationInsightsSettings:InstrumentationKey": "",
+  "ApplicationInsightsSettings:ConnectionString": "",
   "AvalaraSettings:AccountID": 0,
   "AvalaraSettings:CompanyCode": "",
   "AvalaraSettings:CompanyID": 0,

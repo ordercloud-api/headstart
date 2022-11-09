@@ -33,7 +33,7 @@ services:
         BUILD_CONFIGURATION: ${BUILD_CONFIGURATION}
     environment:
       ASPNETCORE_ENVIRONMENT: ${BUILD_CONFIGURATION}
-      ApplicationInsightsSettings_InstrumentationKey: "${ApplicationInsightsSettings_InstrumentationKey}"
+      ApplicationInsightsSettings_ConnectionString: "${ApplicationInsightsSettings_ConnectionString}"
 
       AvalaraSettings_AccountID: "${AvalaraSettings_AccountID}"
       AvalaraSettings_CompanyCode: "${AvalaraSettings_CompanyCode}"

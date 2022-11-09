@@ -231,7 +231,7 @@ namespace Headstart.API
                 .AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions
                 {
                     EnableAdaptiveSampling = false, // retain all data
-                    InstrumentationKey = settings.ApplicationInsightsSettings.InstrumentationKey,
+                    ConnectionString = settings.ApplicationInsightsSettings.ConnectionString,
                 });
 
             ServicePointManager.DefaultConnectionLimit = int.MaxValue;

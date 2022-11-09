@@ -12,7 +12,7 @@ touch appSettings.json
 echo '{}' > appSettings.json
 
 json -I -f appSettings.json \
-      -e "this['ApplicationInsightsSettings:InstrumentationKey']='$ApplicationInsightsSettings_InstrumentationKey'"
+      -e "this['ApplicationInsightsSettings:ConnectionString']='$ApplicationInsightsSettings_ConnectionString'"
 
 json -I -f appSettings.json \
       -e "this['AvalaraSettings:AccountID']='$AvalaraSettings_AccountID'" \
