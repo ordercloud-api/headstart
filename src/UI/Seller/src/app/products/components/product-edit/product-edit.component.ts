@@ -186,6 +186,20 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     }
   }
 
+  async getTaxCodes(searchTerm = ''): Promise<TaxCategorizationResponse> {
+    const taxCodes = await HeadStartSDK.TaxCategories.ListTaxCategories(
+      searchTerm
+    )
+    const taxCodeInput = this.productForm.controls.TaxCode
+    if (taxCodes.ProductsShouldHaveTaxCodes) {
+      taxCodeInput.setValidators([Validators.required])
+    } else {
+      taxCodeInput.setValidators(null)
+      taxCodeInput.updateValueAndValidity()
+    }
+    return taxCodes
+  }
+
   async refreshProductData(superProduct: SuperHSProduct): Promise<void> {
     // If a seller, and not editing the product, grab the currency from the product xp.
     this.supplierCurrency = this._exchangeRates?.find(
@@ -201,7 +215,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.taxCodes = await HeadStartSDK.TaxCategories.ListTaxCategories()
+    this.taxCodes = await this.getTaxCodes()
 
     this.documents = this._superHSProductEditable.Product?.xp.Documents
     this.images = this._superHSProductEditable.Product?.xp?.Images
@@ -302,8 +316,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
             _get(superHSProduct.Product, 'Inventory.OrderCanExceed')
           ),
           TaxCode: new FormControl(
-            _get(superHSProduct.Product, 'xp.Tax.Code', null),
-            Validators.required
+            _get(superHSProduct.Product, 'xp.Tax.Code', null)
           ),
           UnitOfMeasureUnit: new FormControl(
             _get(superHSProduct.Product, 'xp.UnitOfMeasure.Unit'),
@@ -327,6 +340,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         },
         { validators: ValidateMinMax }
       )
+      console.log('created form')
       this.setInventoryValidator()
       this.setVariantLevelTrackingDisabledSubscription()
       this.setSizeTierValidators()
@@ -666,7 +680,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         LongDescription: '',
       }
     }
-    this.taxCodes = await HeadStartSDK.TaxCategories.ListTaxCategories()
+    this.taxCodes = await this.getTaxCodes()
   }
 
   handleTaxCodeSelection(event: TaxCategorization): void {
@@ -678,9 +692,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   }
 
   async searchTaxCodes(searchTerm: string): Promise<void> {
-    this.taxCodes = await HeadStartSDK.TaxCategories.ListTaxCategories(
-      searchTerm ?? ''
-    )
+    this.taxCodes = await this.getTaxCodes(searchTerm)
   }
 
   getSaveBtnText(): string {

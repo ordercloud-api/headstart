@@ -543,6 +543,7 @@
                   [superHSProductEditable]="_superHSProductEditable"
                   [taxCodes]="taxCodes?.Categories"
                   [isCreatingNew]="isCreatingNew"
+                  [isRequired]="isRequired('TaxCode')"
                   (handleTaxCodeSelection)="
                     handleTaxCodeSelection($event.target.value)
                   "
