@@ -13,11 +13,14 @@ namespace OrderCloud.Integrations.ExchangeRates.Extensions
     {
         public static IServiceCollection AddExchangeRatesCurrencyConversionProvider(this IServiceCollection services, EnvironmentSettings environmentSettings, StorageAccountSettings storageAccountSettings)
         {
-            if (!environmentSettings.CurrencyConversionProvider.Equals("ExchangeRates", StringComparison.OrdinalIgnoreCase))
-            {
-                return services;
-            }
-
+            // Currently ExchangeRates is the only CurrencyConversionProvider and a setting with a value other than ExchangeRates will error
+            // when creating a product (among other places) because it isn't able to resolve a required service
+            // There is already some default functionality included whereby static 1:1 rates are returned
+            // so I am commenting out the following for now. If another provider is eventually included then this switch can be added back
+            // if (!environmentSettings.CurrencyConversionProvider.Equals("ExchangeRates", StringComparison.OrdinalIgnoreCase))
+            // {
+            //    return services;
+            // }
             var currencyConfig = new CloudBlobServiceConfig()
             {
                 ConnectionString = storageAccountSettings.ConnectionString,
