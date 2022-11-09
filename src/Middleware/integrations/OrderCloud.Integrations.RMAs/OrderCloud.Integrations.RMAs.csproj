@@ -10,6 +10,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Flurl" Version="3.0.6" />
+    <PackageReference Include="ordercloud-dotnet-catalyst" Version="2.3.1" />
+    <PackageReference Include="OrderCloud.SDK" Version="0.12.1" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\Headstart.Common\Headstart.Common.csproj" />
     <ProjectReference Include="..\OrderCloud.Integrations.CosmosDB\OrderCloud.Integrations.CosmosDB.csproj" />
     <ProjectReference Include="..\OrderCloud.Integrations.Emails\OrderCloud.Integrations.Emails.csproj" />
