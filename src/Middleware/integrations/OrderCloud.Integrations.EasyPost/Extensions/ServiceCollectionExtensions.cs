@@ -14,16 +14,14 @@ namespace OrderCloud.Integrations.EasyPost.Extensions
                 return services;
             }
 
-            if (string.IsNullOrEmpty(easyPostSettings.CustomsSigner))
+            if (string.IsNullOrWhiteSpace(easyPostSettings.ApiKey) || string.IsNullOrEmpty(easyPostSettings.CustomsSigner))
             {
-                Console.WriteLine("Unable to use EasyPost as a shipping provider as required property EasyPostSettings:CustomSigner was not provided");
-                return services;
+                throw new Exception("EnvironmentSettings:ShippingProvider is set to 'EasyPost' however missing required properties EasyPostSettings:ApiKey or EasyPostSettings:CustomsSigner. Please define these properties or set EnvironmentSettings:ShippingProvider to an empty string to use mocked shipping rates");
             }
 
             if (string.IsNullOrEmpty(easyPostSettings.USPSAccountId) || string.IsNullOrEmpty(easyPostSettings.FedexAccountId))
             {
-                Console.WriteLine("Unable to use EasyPost as a shipping provider as neither UpsAccountId nor FedexAccountId were provided");
-                return services;
+                throw new Exception("EnvironmentSettings:ShippingProvider is set to 'EasyPost' however at least one of EasyPostSettings:USPSAccountId or EasyPostSettingsFedexAccountId must be defined. Please define or set EnvironmentSettings:ShippingProvider to an empty string to use mocked shipping rates");
             }
 
             services
