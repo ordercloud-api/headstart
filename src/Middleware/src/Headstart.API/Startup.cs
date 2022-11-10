@@ -204,6 +204,7 @@ namespace Headstart.API
 
                 // Currency Conversion Providers
                 .AddExchangeRatesCurrencyConversionProvider(settings.EnvironmentSettings, settings.StorageAccountSettings)
+                .AddDefaultCurrencyConversionProvider()
 
                 // RMA Providers
                 .AddDefaultRMAsProvider(settings.EnvironmentSettings)

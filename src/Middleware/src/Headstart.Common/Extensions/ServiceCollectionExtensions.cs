@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Reflection;
 using Headstart.Common.Commands;
@@ -86,6 +86,14 @@ namespace Headstart.Common.Extensions
         {
             services.TryAddSingleton<IAddressCommand, AddressCommand>();
             services.TryAddSingleton<IAddressValidationCommand, AddressValidationCommand>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddDefaultCurrencyConversionProvider(this IServiceCollection services)
+        {
+            services.TryAddSingleton<ICurrencyConversionCommand, MockCurrencyConversionCommand>();
+            services.TryAddSingleton<ICurrencyConversionService, MockCurrencyConversionService>();
 
             return services;
         }
