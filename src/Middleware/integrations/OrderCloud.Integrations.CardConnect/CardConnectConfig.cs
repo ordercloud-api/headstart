@@ -6,9 +6,15 @@
 
         public string BaseUrl { get; set; }
 
+        /// <summary>
+        /// Authorization credentials for US currency.
+        /// </summary>
         public string Authorization { get; set; }
 
-        public string AuthorizationCad { get; set; } // we need a separate merchant account for canadian currency
+        /// <summary>
+        /// Authorization credentials for Canadian currency.
+        /// </summary>
+        public string AuthorizationCad { get; set; }
 
         public string UsdMerchantID { get; set; }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Cosmonaut;
 using Cosmonaut.Extensions.Microsoft.DependencyInjection;
@@ -47,21 +48,16 @@ namespace OrderCloud.Integrations.CosmosDB.Extensions
 
         public static IServiceCollection AddCosmosDb(
             this IServiceCollection services,
-            string endpointUrl,
-            string primaryKey,
-            string databaseName,
+            CosmosSettings settings,
             List<ContainerInfo> containers)
         {
-            if (endpointUrl == null || primaryKey == null || databaseName == null)
+            if (settings.EndpointUri == null || settings.PrimaryKey == null || settings.DatabaseName == null)
             {
-                // allow server to be started up without these settings
-                // in case they're just trying to seed their environment
-                // in the future we'll remove this in favor of centralized seeding capability
-                return services;
+                throw new Exception("Required properties CosmosSettings:EndpointUri, CosmosSettings:PrimaryKey, or CosmosSettings:DatabaseName are missing");
             }
 
-            CosmosClient client = new CosmosClient(endpointUrl, primaryKey);
-            var cosmosDbClientFactory = new CosmosDbContainerFactory(client, databaseName, containers);
+            CosmosClient client = new CosmosClient(settings.EndpointUri, settings.PrimaryKey);
+            var cosmosDbClientFactory = new CosmosDbContainerFactory(client, settings.DatabaseName, containers);
 
             services.AddSingleton<ICosmosDbContainerFactory>(cosmosDbClientFactory);
 

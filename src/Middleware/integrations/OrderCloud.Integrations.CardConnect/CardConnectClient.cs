@@ -40,15 +40,11 @@ namespace OrderCloud.Integrations.CardConnect
     public class CardConnectClient : ICardConnectClient
     {
         private readonly IFlurlClient flurl;
-        private bool noAccountCredentials;
         private AppEnvironment appEnvironment;
 
         public CardConnectClient(CardConnectConfig config, string environment, IFlurlClientFactory flurlFactory)
         {
             Config = config;
-
-            // if no credentials are provided in Test and UAT, responses will be mocked.
-            noAccountCredentials = string.IsNullOrEmpty(config?.Authorization) && string.IsNullOrEmpty(config?.AuthorizationCad);
             appEnvironment = (AppEnvironment)Enum.Parse(typeof(AppEnvironment), environment);
             flurl = flurlFactory.Get($"https://{Config?.Site}.{Config?.BaseUrl}/");
         }
@@ -57,15 +53,7 @@ namespace OrderCloud.Integrations.CardConnect
 
         public async Task<CardConnectAccountResponse> Tokenize(CardConnectAccountRequest request)
         {
-            if (ShouldMockCardConnectResponse())
-            {
-                // Returns a mocked account object (only in Test and UAT)
-                return MockCardConnectAccountResponse(request);
-            }
-            else
-            {
-                return await this.Request("cardsecure/api/v1/ccn/tokenize", request.currency).PostJsonAsync(request).ReceiveJson<CardConnectAccountResponse>();
-            }
+            return await this.Request("cardsecure/api/v1/ccn/tokenize", request.currency).PostJsonAsync(request).ReceiveJson<CardConnectAccountResponse>();
         }
 
         public async Task<CardConnectAuthorizationResponse> AuthWithoutCapture(CardConnectAuthorizationRequest request)
@@ -103,18 +91,10 @@ namespace OrderCloud.Integrations.CardConnect
         public async Task<CardConnectVoidResponse> VoidAuthorization(CardConnectVoidRequest request)
         {
             CardConnectVoidResponse attempt;
-            if (ShouldMockCardConnectResponse())
-            {
-                // Returns a mocked void object (only in Test and UAT)
-                attempt = MockCardConnectVoidResponse(request);
-            }
-            else
-            {
-                attempt = await this
-                               .Request("cardconnect/rest/void", request.currency)
-                               .PutJsonAsync(request)
-                               .ReceiveJson<CardConnectVoidResponse>();
-            }
+            attempt = await this
+                            .Request("cardconnect/rest/void", request.currency)
+                            .PutJsonAsync(request)
+                            .ReceiveJson<CardConnectVoidResponse>();
 
             if (attempt.WasSuccessful())
             {
@@ -192,70 +172,13 @@ namespace OrderCloud.Integrations.CardConnect
             }
         }
 
-        private bool ShouldMockCardConnectResponse()
-        {
-            // To give a bigger "headstart" in Test and UAT, Responses can be mocked by simply
-            // not providing CardConnect credentials. (They are still needed for Production)
-            return noAccountCredentials && appEnvironment != AppEnvironment.Production;
-        }
-
-        private CardConnectAccountResponse MockCardConnectAccountResponse(CardConnectAccountRequest request)
-        {
-            CardConnectAccountResponse response;
-            response = new CardConnectAccountResponse()
-            {
-                message = "Mock CardConnect account response",
-                token = string.Empty,
-            };
-            return response;
-        }
-
-        private CardConnectVoidResponse MockCardConnectVoidResponse(CardConnectVoidRequest request)
-        {
-            CardConnectVoidResponse response;
-
-            response = new CardConnectVoidResponse()
-            {
-                amount = 100000,
-                resptext = "Successful Mocked Response",
-                respstat = "A",
-                respcode = "0",
-            };
-
-            return response;
-        }
-
-        private CardConnectAuthorizationResponse MockCardConnectAuthorizationResponse(CardConnectAuthorizationRequest request)
-        {
-            CardConnectAuthorizationResponse response;
-
-            response = new CardConnectAuthorizationResponse()
-            {
-                amount = decimal.Parse(request.amount, CultureInfo.InvariantCulture),
-                resptext = "Success",
-                cvvresp = "U",
-                commcard = "Mock Response",
-                respstat = "A",
-                respcode = "0",
-            };
-
-            return response;
-        }
-
         private async Task<CardConnectAuthorizationResponse> PostAuthorizationAsync(CardConnectAuthorizationRequest request)
         {
             CardConnectAuthorizationResponse attempt = new CardConnectAuthorizationResponse();
-            if (ShouldMockCardConnectResponse())
-            {
-                attempt = MockCardConnectAuthorizationResponse(request);
-            }
-            else
-            {
-                attempt = await this
-                               .Request("cardconnect/rest/auth", request.currency)
-                               .PutJsonAsync(request)
-                               .ReceiveJson<CardConnectAuthorizationResponse>();
-            }
+            attempt = await this
+                            .Request("cardconnect/rest/auth", request.currency)
+                            .PutJsonAsync(request)
+                            .ReceiveJson<CardConnectAuthorizationResponse>();
 
             if (attempt.WasSuccessful())
             {

@@ -15,6 +15,11 @@ namespace OrderCloud.Integrations.SendGrid.Extensions
                 return services;
             }
 
+            if (string.IsNullOrEmpty(sendGridSettings.ApiKey) || string.IsNullOrEmpty(sendGridSettings.FromEmail))
+            {
+                throw new Exception("EnvironmentSettings:TaxProvider is set to 'Vertex' however missing required properties SendgridSettings:ApiKey or SendgridSettings:FromEmail. Please define these properties or set EnvironmentSettings:EmailServiceProvider to an empty string to skip transactional email sending");
+            }
+
             services
                 .AddSingleton(x => sendGridSettings)
                 .AddSingleton(x => uiSettings)

@@ -1,11 +1,6 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core'
+import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core'
 import { FormGroup } from '@angular/forms'
-
-import {
-  SuperHSProduct,
-  ListPage,
-  TaxCategorization,
-} from '@ordercloud/headstart-sdk'
+import { SuperHSProduct, TaxCategorization } from '@ordercloud/headstart-sdk'
 import {
   faTimesCircle,
   faCheckCircle,
@@ -18,22 +13,14 @@ import {
   styleUrls: ['./product-tax-code-select.component.scss'],
 })
 export class ProductTaxCodeSelect {
-  @Input()
-  productForm: FormGroup
-  @Input()
-  superHSProductEditable: SuperHSProduct
-  @Input()
-  taxCodes: TaxCategorization[]
-  @Output()
-  handleTaxCodeSelection = new EventEmitter<any>()
-  @Output()
-  handleTaxCodesSearched = new EventEmitter<string>()
-  @Input()
-  readonly = false
-  @Input()
-  isRequired: boolean
-  @Input()
-  isCreatingNew: boolean
+  @Input() productForm: FormGroup
+  @Input() superHSProductEditable: SuperHSProduct
+  @Input() taxCodes: TaxCategorization[]
+  @Output() handleTaxCodeSelection = new EventEmitter<any>()
+  @Output() handleTaxCodesSearched = new EventEmitter<string>()
+  @Input() readonly = false
+  @Input() isRequired: boolean
+  @Input() isCreatingNew: boolean
   faTimesCircle = faTimesCircle
   faCheckCircle = faCheckCircle
   faAsterisk = faAsterisk
@@ -47,15 +34,14 @@ export class ProductTaxCodeSelect {
     this.handleTaxCodeSelection.emit(event)
   }
 
-  onTaxCodesSearched(searchTerm: string) {
+  onTaxCodesSearched(searchTerm: string): void {
     this.handleTaxCodesSearched.emit(searchTerm)
   }
 
   taxSelectionsValid(): boolean {
-    return (
-      this.isCreatingNew &&
-      this.isRequired &&
-      this.productForm.controls['TaxCode'].valid
-    )
+    if (!this.isRequired) {
+      return true
+    }
+    return this.isCreatingNew && this.productForm.controls['TaxCode'].valid
   }
 }

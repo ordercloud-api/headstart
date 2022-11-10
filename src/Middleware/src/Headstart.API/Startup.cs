@@ -151,7 +151,7 @@ namespace Headstart.API
 
                 // Configure Cosmos
                 .InjectCosmosStore<LogQuery, OrchestrationLog>(cosmosConfig)
-                .AddCosmosDb(settings.CosmosSettings.EndpointUri, settings.CosmosSettings.PrimaryKey, settings.CosmosSettings.DatabaseName, cosmosContainers)
+                .AddCosmosDb(settings.CosmosSettings, cosmosContainers)
 
                 // Commands
                 .Inject<ICheckoutIntegrationCommand>()
@@ -231,7 +231,7 @@ namespace Headstart.API
                 .AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions
                 {
                     EnableAdaptiveSampling = false, // retain all data
-                    InstrumentationKey = settings.ApplicationInsightsSettings.InstrumentationKey,
+                    ConnectionString = settings.ApplicationInsightsSettings.ConnectionString,
                 });
 
             ServicePointManager.DefaultConnectionLimit = int.MaxValue;

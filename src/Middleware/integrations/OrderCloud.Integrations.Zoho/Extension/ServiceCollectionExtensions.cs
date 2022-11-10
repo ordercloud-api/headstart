@@ -15,6 +15,14 @@ namespace OrderCloud.Integrations.Zoho.Extensions
                 return services;
             }
 
+            if (string.IsNullOrEmpty(settings.AccessToken) ||
+                string.IsNullOrEmpty(settings.ClientId) ||
+                string.IsNullOrEmpty(settings.ClientSecret) ||
+                string.IsNullOrEmpty(settings.OrganizationID))
+            {
+                throw new Exception("EnvironmentSettings:OMSProvider is set to 'Zoho' however missing required properties ZohoSettings:AccessToken, ZohoSettings:ClientId, ZohoSettings:ClientSecret, or ZohoSettings:OrganizationID. Please define these properties or set EnvironmentSettings:OMSProvider to an empty string to skip OMS integration");
+            }
+
             services
                 .AddSingleton<IZohoClient>(provider => new ZohoClient(settings, provider.GetService<IFlurlClientFactory>()))
                 .AddSingleton<IOMSService, ZohoService>();

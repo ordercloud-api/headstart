@@ -93,7 +93,7 @@ namespace Headstart.Jobs
                 .AddSingleton(x => settings.ServiceBusSettings)
                 .AddSingleton(x => settings.StorageAccountSettings)
                 .InjectOrderCloud<IOrderCloudClient>(settings.OrderCloudSettings)
-                .AddCosmosDb(settings.CosmosSettings.EndpointUri, settings.CosmosSettings.PrimaryKey, settings.CosmosSettings.DatabaseName, cosmosContainers)
+                .AddCosmosDb(settings.CosmosSettings, cosmosContainers)
                 .AddSingleton<IFlurlClientFactory, PerBaseUrlFlurlClientFactory>()
                 .Inject<ICatalogCommand>()
                 .Inject<IHSBuyerLocationCommand>()

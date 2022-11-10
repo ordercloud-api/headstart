@@ -33,7 +33,7 @@ services:
         BUILD_CONFIGURATION: ${BUILD_CONFIGURATION}
     environment:
       ASPNETCORE_ENVIRONMENT: ${BUILD_CONFIGURATION}
-      ApplicationInsightsSettings_InstrumentationKey: "${ApplicationInsightsSettings_InstrumentationKey}"
+      ApplicationInsightsSettings_ConnectionString: "${ApplicationInsightsSettings_ConnectionString}"
 
       AvalaraSettings_AccountID: "${AvalaraSettings_AccountID}"
       AvalaraSettings_CompanyCode: "${AvalaraSettings_CompanyCode}"
@@ -54,6 +54,7 @@ services:
       CosmosSettings_RequestTimeoutInSeconds: "${CosmosSettings_RequestTimeoutInSeconds}"
 
       EasyPostSettings_APIKey: "${EasyPostSettings_APIKey}"
+      EasyPostSettings_CustomsSigner: ${EasyPostSettings_CustomsSigner}
       EasyPostSettings_FedexAccountId: "${EasyPostSettings_FedexAccountId}"
       EasyPostSettings_FreeShippingTransitDays: "${EasyPostSettings_FreeShippingTransitDays}"
       EasyPostSettings_NoRatesFallbackCost: "${EasyPostSettings_NoRatesFallbackCost}"

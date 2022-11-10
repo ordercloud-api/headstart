@@ -29,15 +29,10 @@ namespace Headstart.Common.Services
         {
             return Task.FromResult(new TaxCategorizationResponse()
             {
-                ProductsShouldHaveTaxCodes = true,
+                ProductsShouldHaveTaxCodes = false,
                 Categories = new List<TaxCategorization>()
                 {
-                    new TaxCategorization()
-                    {
-                        Code = "Headstart Tax Code",
-                        Description = "Mock Tax Code for Headstart",
-                        LongDescription = "This is a mock tax categorization",
-                    },
+                    new TaxCategorization(),
                 },
             });
         }
