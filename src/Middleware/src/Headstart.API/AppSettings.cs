@@ -4,6 +4,7 @@ using OrderCloud.Integrations.AzureStorage;
 using OrderCloud.Integrations.CardConnect;
 using OrderCloud.Integrations.CosmosDB;
 using OrderCloud.Integrations.EasyPost;
+using OrderCloud.Integrations.ExchangeRates;
 using OrderCloud.Integrations.SendGrid;
 using OrderCloud.Integrations.Smarty;
 using OrderCloud.Integrations.TaxJar;
@@ -25,6 +26,8 @@ namespace Headstart.API
         public EasyPostSettings EasyPostSettings { get; set; } = new EasyPostSettings();
 
         public EnvironmentSettings EnvironmentSettings { get; set; } = new EnvironmentSettings();
+
+        public ExchangeRateSettings ExchangeRateSettings { get; set; } = new ExchangeRateSettings();
 
         public FlurlSettings FlurlSettings { get; set; } = new FlurlSettings();
 

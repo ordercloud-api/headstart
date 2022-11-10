@@ -11,22 +11,25 @@ namespace OrderCloud.Integrations.ExchangeRates
     /// </summary>
     public interface IExchangeRatesClient
     {
-        Task<ExchangeRatesBase> Get(CurrencyCode currencyCode);
+        Task<ExchangeRatesBase> Get(CurrencyCode currency);
     }
 
     public class ExchangeRatesClient : IExchangeRatesClient
     {
         private readonly IFlurlClient flurl;
+        private readonly ExchangeRateSettings settings;
 
-        public ExchangeRatesClient(IFlurlClientFactory flurlFactory)
+        public ExchangeRatesClient(IFlurlClientFactory flurlFactory, ExchangeRateSettings settings)
         {
-            flurl = flurlFactory.Get($"https://api.exchangeratesapi.io/");
+            this.flurl = flurlFactory.Get($"https://api.apilayer.com/exchangerates_data");
+            this.settings = settings;
         }
 
-        public virtual async Task<ExchangeRatesBase> Get(CurrencyCode currencyCode)
+        public virtual async Task<ExchangeRatesBase> Get(CurrencyCode currency)
         {
             return await this.Request("latest")
-                .SetQueryParam("base", currencyCode)
+                .SetQueryParam("base", currency)
+                .WithHeader("apikey", settings.ApiKey)
                 .GetJsonAsync<ExchangeRatesBase>();
         }
 
