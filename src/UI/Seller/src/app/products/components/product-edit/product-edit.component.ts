@@ -340,7 +340,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         },
         { validators: ValidateMinMax }
       )
-      console.log('created form')
       this.setInventoryValidator()
       this.setVariantLevelTrackingDisabledSubscription()
       this.setSizeTierValidators()
