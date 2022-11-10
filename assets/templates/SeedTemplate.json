@@ -18,9 +18,5 @@
     "WebhookHashKey": "",
     "Suppliers": [],
     "Buyers": []
-  },
-  "StorageAccount": {
-    "ConnectionString": "",
-    "ContainerNameTranslations": "ngx-translate"
   }
 }
