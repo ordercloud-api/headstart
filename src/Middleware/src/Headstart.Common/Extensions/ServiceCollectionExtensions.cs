@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Reflection;
 using Headstart.Common.Commands;
@@ -62,7 +62,7 @@ namespace Headstart.Common.Extensions
         public static IServiceCollection AddMockShippingProvider(this IServiceCollection services)
         {
             services.TryAddSingleton<IShippingCommand, MockShippingCommand>();
-            services.TryAddSingleton<IShippingService, DefaultShippingService>();
+            services.TryAddSingleton<IShippingService, MockShippingService>();
 
             return services;
         }
@@ -92,7 +92,7 @@ namespace Headstart.Common.Extensions
 
         public static IServiceCollection AddDefaultOMSProvider(this IServiceCollection services)
         {
-            services.TryAddSingleton<IOMSService, DefaultOMSService>();
+            services.TryAddSingleton<IOMSService, MockOMSService>();
 
             return services;
         }
