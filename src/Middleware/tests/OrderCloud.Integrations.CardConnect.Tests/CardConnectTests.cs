@@ -84,30 +84,6 @@ namespace OrderCloud.Integrations.CardConnect.Tests
         }
 
         [Test]
-        public void AuthWithCapture_WithoutCredentials_ReturnsMockResponse()
-        {
-            // Arrange
-
-            // Act
-            var response = serviceNoConfig.AuthWithCapture(new CardConnectAuthorizationRequest() { amount = "10000" });
-
-            // Assert
-            Assert.AreEqual("Mock Response", response.Result.commcard);
-        }
-
-        [Test]
-        public void Tokenize_WithoutCredentials_ReturnsMockResponse()
-        {
-            // Arrange
-
-            // Act
-            var response = serviceNoConfig.Tokenize(new CardConnectAccountRequest() { account = "super_sweet_account" });
-
-            // Assert
-            Assert.AreEqual("Mock CardConnect account response", response.Result.message);
-        }
-
-        [Test]
         public async Task AuthWithoutCapture_WithCredentials_CallsConstructedUrl()
         {
             // Arrange
