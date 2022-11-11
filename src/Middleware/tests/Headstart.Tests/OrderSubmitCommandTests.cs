@@ -29,9 +29,7 @@ namespace Headstart.Tests
             settings = Substitute.For<AppSettings>();
             settings.CardConnectSettings = new CardConnectConfig
             {
-                UsdMerchantID = "mockUsdMerchantID",
-                CadMerchantID = "mockCadMerchantID",
-                EurMerchantID = "mockEurMerchantID",
+                MerchantID = "mockUsdMerchantID",
             };
             settings.OrderCloudSettings = new OrderCloudSettings
             {

@@ -37,46 +37,19 @@ Want to check out the features included in headstart without having to build and
 | Username | testbuyer                                             |
 | Password | Summer2021!                                           |
 
-### Credit Cards
-
-Our hosted instances are using a sandbox Cardconnect account and as such are operating in [Cardconnect's UAT environment](https://developer.cardpointe.com/guides/cardpointe-gateway#uat-test-card-data). You can use specific credit card numbers to test different types of responses or if you want to simply emulate a successfull credit card response you can use the following data:
-
-CardNumber: 4111111111111111
-
-CVV: 112
-
-Zip Code: 55224
-
 ## Initial Setup
 
 There are some tasks that must be completed before you can get an instance of Headstart running. This section will walk you through each of them.
-
-### Accounts
-
-This solution relies on various third-party services and credentials for those services. You should have a set of test credentials as well as production credentials. Start by creating an account for all of the services listed.
-
-> Note: Many of the accounts listed have been built to use a mocked response in the test environment to help you get started developing quicker. They will still require a valid production account prior to your first release. See details on each account to determine how to use mocked rates.
-
-1. [Avalara](./src/Middleware/integrations/ordercloud.integrations.avalara) - Tax calculation - If a License Key isn't provided, responses will be mocked in Test and UAT. A key is still needed for Production
-2. [CardConnect](https://cardconnect.com/signup) - Credit card payment processor - If account isn't provided, responses will be mocked in Test and UAT. An account is still needed for Production
-3. [EasyPost](https://www.easypost.com/signup) - Shipping estimates
-4. [SmartyStreets](https://smartystreets.com/pricing) - Address validation **(Optional)**
-5. [SendGrid](https://signup.sendgrid.com/) - Transactional emails **(Optional but emails won't work until set up)**
-6. [Sitecore Send](./src/UI/Buyer/src/app/services/sitecore-send) - Automated email campaigns  **(Optional. AKA Moosend)**
-7. [Sitecore CDP](./src/UI/Buyer/src/app/services/sitecore-cdp) - Customer Tracking and Data Platform **(Optional. AKA Boxever)**
-8. [Vertex](./src/Middleware/integrations/ordercloud.integrations.vertex) - Tax calculation **(Optional tax alternative. Switch with EnvironmentSettings:TaxProvider)**
-9. [TaxJar](./src/Middleware/integrations/ordercloud.integrations.taxjar) - Tax calculation **(Optional tax alternative. Switch with EnvironmentSettings:TaxProvider)**
-10. [Zoho](https://www.zoho.com/signup.html) - ERP **(Optional)**
 
 ### Provisioning Azure Resources
 
 [App Service](https://docs.microsoft.com/en-us/azure/app-service/overview) - you'll need at least one app service to host the middleware API. For simplicity, we also set up one for each Buyer & Seller application though since they are static sites you have a variety of options at your disposal for how to host those.
 
-[Azure Cosmos Database](https://docs.microsoft.com/en-us/azure/cosmos-db/introduction) - While we use the OrderCloud API to host all e-commerce data this is a complete solution that requires handling data that doesn't natively exist as part of OrderCloud API. Some examples are report templates and RMAs. To that end, we are using Cosmos as our DB of choice (Core SQL). You will need one database per environment (we recommend three environments: Test, UAT, and Production)
+[Azure Cosmos Database](https://docs.microsoft.com/en-us/azure/cosmos-db/introduction) - While we use the OrderCloud API to host all e-commerce data this is a complete solution that requires handling data that doesn't natively exist as part of OrderCloud API. Some examples are report templates and RMAs. To that end, we are using Cosmos as our DB of choice (Core SQL). You will need one database per environment (we recommend three environments: Test, UAT, and Production).
 
 [Application Insights](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview) - This is an optional but highly recommended addition and will actually show up as an option when adding an app service. There is some additional configuration if you want to track the frontend. Look at the frontend app configs to provide your `appInsightsInstrumentationKey`
 
-[Storage Account](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal) - Provides all of azure data storage objects. Used to store currency conversions and translation tables. You will need a storage account for each environment (we recommend three environments: Test, UAT, and Production)
+[Storage Account](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal) - Provides all of azure data storage objects. Used to store currency conversions and translation tables. You will need a storage account for each environment (we recommend three environments: Test, UAT, and Production).
 
 [Azure App Configuration](https://docs.microsoft.com/en-us/azure/azure-app-configuration/overview) - Used to store sensitive app settings that are consumed by the backend middleware application. We've defined [a template for you](./assets/templates/AppSettingConfigTemplate.json) with the settings that are used in this application. You can fill out the template and then use Azure's import functionality to easily import it into your app configuration resource. For more detail on what each setting means check out [our readme](./src/Middleware/src/Headstart.API/AppSettingsReadme.md).
 
@@ -98,47 +71,24 @@ It is also possible to consume app settings from a JSON file while developing lo
 
 This solution depends on a lot of data to be initialized in a particular way. To make it easy when starting a new project we've created an endpoint that does this for you. Just call it with some information, wait a few seconds, and presto: You'll have a marketplace that is seeded with all the right data to get you started immediately.
 
-> Note: Before starting this step make sure your azure app configuration is filled out almost completely. The only things that won't be filled out yet are: `OrderCloudSettings:MiddlewareClientID`, `OrderCloudSettings:MiddlewareClientSecret`, and `OrderCloudSettings:ClientIDsWithAPIAccess`. These will be returned on a successful seeding so that you can update your app settings.
-
 Detailed Steps:
 
-1. Sign in to the [OrderCloud portal](https://portal.ordercloud.io/).
-2. Create a new marketplace in the portal if you don't already have one.
-3. Find your marketplace and save the unique identifier this is your MarketplaceID in step 6.
-4. Follow the instructions [here](./src/Middleware/README.md) to start your server locally.
-5. Download and open [Postman](https://www.postman.com/downloads/) so that you can make API calls to your local server.
-6. Make a POST to `/seed` endpoint with [this template body](./assets/templates/SeedTemplate.json). For a description of the properties please refer to [the definition](./src/Middleware/integrations/OrderCloud.Integrations.EnvironmentSeed/Models/EnvironmentSeedRequest.cs).
-7. A successful response will include:
+1. Ensure the following settings are defined otherwise you will get errors on Startup:
+    - `CosmosSettings:EndpointUri`
+    - `CosmosSettings:PrimaryKey`
+    - `CosmosSettings:DatabaseName`
+    - `StorageAccountSettings:ConnectionString`
+2. Sign in to the [OrderCloud portal](https://portal.ordercloud.io/).
+3. Create a new marketplace in the portal if you don't already have one.
+4. Find your marketplace and save the unique identifier this is your MarketplaceID in step 6.
+5. Follow the instructions [here](./src/Middleware/README.md) to start your server locally.
+6. Download and open [Postman](https://www.postman.com/downloads/) so that you can make API calls to your local server.
+7. Make a POST to `/seed` endpoint with [this template body](./assets/templates/SeedTemplate.json). For a description of the properties please refer to [the definition](./src/Middleware/integrations/OrderCloud.Integrations.EnvironmentSeed/Models/EnvironmentSeedRequest.cs).
+8. A successful response will include:
    1. The middleware clientID and secret. Save these two values in your app configuration under `OrderCloudSettings:MiddlewareClientID` and `OrderCloudSettings:MiddlewareClientSecret`.
    2. The buyer clientID. Follow the instructions in [frontend configuration](#frontend-configuration) and set it in the buyer config `clientID`.
    3. The seller clientID. Follow the instructions in [frontend-configuration](#frontend-configuration) and set it in the seller config `clientID`.
 8. Add the `clientID`s for both the buyer and seller from the `/seed` response to the `OrderCloudSettings:ClientIDsWithAPIAccess`, along with the `clientID` of a secondary buyer API Client ("*Default HeadStart Buyer UI LOCAL*"), which can be found using the OrderCloud portal.
-
-### SendGrid (Email) Configuration
-
-1. Ensure `SendgridSettings:ApiKey` and `SendgridSettings:FromEmail` are defined in your app settings
-2. Ensure for each email type that you want to send that `{emailtype}TemplateID` is defined in app settings. You can use [these default templates](./assets/templates/email) as a starting point but will want to update the contact email and may want to add a company banner. See the table below for a description of each email type.
-3. Deploy your middleware application. Emails won't work until the first deployment because there needs to be a publicly accessible endpoint that OrderCloud can send event information to.
-
-|        Email Type         | Description                                                                                                                     |
-| :-----------------------: | ------------------------------------------------------------------------------------------------------------------------------- |
-|      CriticalSupport      | sent to support when criticial failures occur that require manual intervention                                                  |
-|   LineItemStatusChange    | sent to the buyer user, seller user, and relevant supplier user when the status for line items on an order change               |
-|          NewUser          | sent to the buyer user when their account is first created with username and instructions to set their password                 |
-|       OrderApproval       | sent to the approving buyer user when an order requires their approval                                                          |
-|        OrderSubmit        | sent to the buyer user when their order is submitted                                                                            |
-|       PasswordReset       | sent to the buyer user when requesting password reset                                                                           |
-| ProductInformationRequest | sent to the supplier (supplier.xp.SupportContact.Email) when a buyer user requests more information about one of their products |
-|     QuoteOrderSubmit      | sent to the buyer user when their quote is submitted                                                                            |
-|                           |                                                                                                                                 |
-
-### Sitecore Send
-
-Sitecore Send is a platform for sending automated email campaigns. It is integrated into the storefront in order to capture events like view product, add to cart and purchase. This data can provide intelligence for abandoned cart emails, user segmentation for personalized marketing and user-history-based product recommendations.
-
-Usage is optional and controlled with the buyer setting `useSitecoreSend`. To connect Sitecore Send [get a website ID](https://doc.sitecore.com/send/en/users/sitecore-send/enable-website-tracking.html) and add it to buyer settings.
-
-Sitecore Send and Ordercloud are both owned by Sitecore. You can expect the two products to be more integrated over time. SendGrid will be replaced by Sitecore Send once transactional email features are ready.
 
 ### Frontend Configuration
 
@@ -185,7 +135,7 @@ In the admin (seller) application:
    1. Fill in the required details and create the supplier
 4. From the supplier details page, click "Supplier Addresses"
 5. Click "Create New Supplier Address"
-   1. Fill in the details and create a new address. **Use an actual address or it will fail address validation**
+   1. Fill in the details and create a new address. **If AddressValidationProvider is enabled then use an actual address or it will fail address validation**
 6. Navigate back to the supplier detail page via the breadcrumbs (i.e. Suppliers > _\<supplier id>_)
 7. Click "Users" (*Note: There is already a user here with an ID that starts with `dev_` this user exists so that the middleware can act on behalf of it if needed to act as that supplier.* **Do not delete this user**)
 8. Click "Create New User"
@@ -206,7 +156,7 @@ In the admin (seller) application:
 5. Navigate back to the buyer detail page via the breadcrumbs (i.e. Buyers > _\<buyer id>_)
 6. Click "Buyer Groups"
 7. Click "Create New Buyer Group"
-    1. Fill in the details. **Use an actual address or it will fail address validation**
+    1. Fill in the details. **If AddressValidationProvider is enabled then use an actual address or it will fail address validation**
     2. Under "Catalogs", set "assigned"to true for the catalog
 8. Navigate back to the buyer detail page via the breadcrumbs (i.e. Buyers > _\<buyer id>_)
 9. Click "Users"
@@ -260,6 +210,31 @@ In the buyer application:
 
 Congrats! Hopefully you didn't get any errors and understand a little bit more about how everything is connected. If you did encounter errors please capture the details and submit an issue on Github.
 
+## Third party services and configuration
+
+### Service Providers
+
+In order to build a complete solution Headstart is integrated with various third-party services in many categories that we are defining as "Service Providers". By default, all of these service providers are _turned off_ and set to an empty string which indicates to the middleware to use a mocked service instead. This reduces friction when getting started however a production ready build will require some of these service providers to be enabled and credentials/configurations added to app settings, therefore we recommend getting those credentials and enabling these service providers early in the development process.
+
+| Provider                | App Setting Key                                | App Setting Values                                                                                                                                                                                                                                     | Required for production    |
+| ----------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------- |
+| Address Validation      | EnvironmentSettings:AddressValidationProvider  | [Smarty](./src/Middleware/integrations/OrderCloud.Integrations.Smarty/README.md)                                                                                                                                                                       | No                         |
+| CMS                     | EnvironmentSettings:CMSProvider                | [Azure](./src/Middleware//integrations/OrderCloud.Integrations.CMS/README.md)                                                                                                                                                                                                                                                  | Yes                        |
+| Currency Conversion     | EnvironmentSettings:CurrencyConversionProvider | [ExchangeRates](./src/Middleware/integrations/OrderCloud.Integrations.ExchangeRates/README.md)                                                                                                                                                                                                                                          | No                         |
+| Email                   | EnvironmentSettings:EmailServiceProvider       | [SendGrid](./src/Middleware/integrations/OrderCloud.Integrations.SendGrid/README.md)                                                                                                                                                                                                                                               | No, but highly recommended |
+| Order Management System | EnvironmentSettings:OMSProvider                | [Zoho](./src/Middleware/integrations/OrderCloud.Integrations.Zoho/README.md)                                                                                                                                                                                                                                                   | No                         |
+| Payment                 | EnvironmentSettings:PaymentProvider            | [CardConnect](./src/Middleware/integrations/OrderCloud.Integrations.CardConnect/README.md)                                                                                                                                                                                                                                            | Yes                        |
+| Shipping                | EnvironmentSettings:ShippingProvider           | EasyPost                                                                                                                                                                                                                                               | No                         |
+| Tax                     | EnvironmentSettings:TaxProvider                | [Avalara](./src/Middleware/integrations/OrderCloud.Integrations.Avalara/README.md), [TaxJar](./src/Middleware/integrations/OrderCloud.Integrations.TaxJar/README.md), [Vertex](./src/Middleware/integrations/OrderCloud.Integrations.Vertex/README.md) | No, but highly recommended |
+
+### Sitecore Send
+
+Sitecore Send is a platform for sending automated email campaigns. It is integrated into the storefront in order to capture events like view product, add to cart and purchase. This data can provide intelligence for abandoned cart emails, user segmentation for personalized marketing and user-history-based product recommendations.
+
+Usage is optional and controlled with the buyer setting `useSitecoreSend`. To connect Sitecore Send [get a website ID](https://doc.sitecore.com/send/en/users/sitecore-send/enable-website-tracking.html) and add it to buyer settings.
+
+Sitecore Send and Ordercloud are both owned by Sitecore. You can expect the two products to be more integrated over time. SendGrid will be replaced by Sitecore Send once transactional email features are ready.
+
 ## Deploying your application
 
 We recommend using [Azure Pipelines](https://docs.microsoft.com/en-us/azure/devops/pipelines/get-started/what-is-azure-pipelines?view=azure-devops) for building and releasing your code.
@@ -308,8 +283,6 @@ You can run the project using Docker, sample docker-compose.yml file includes Bu
         - OrderCloudSettings_MiddlewareClientSecret
         - OrderCloudSettings_ClientIDsWithAPIAccess (a comma delimited list of API clients that can access middleware - start with BUYER_CLIENT_ID and SELLER_CLIENT_ID)
         - SELLER_ID (This should be set to the `MarketplaceID`)
-    - The following values need to be obtained by create accounts with EasyPost & SmartyStreets
-        - EasyPostSettings_APIKey
 
 7. Restart your docker containers to make use of the new env vars by running `docker-compose down` followed by `docker-compose up -d`.
     - Note you can't run a `docker-compose restart` here as if the containers are already running then the Middleware app will restart before Cosmos is healthy.

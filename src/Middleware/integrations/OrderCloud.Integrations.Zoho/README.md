@@ -1,4 +1,10 @@
-﻿Steps to create Access Token for Zoho
+﻿### Zoho Integration for Headstart
+
+## Scope of this integration
+
+This integration is responsible for forwarding orders upon order submit to Zoho OMS for fulfillment
+
+### Steps to create access token for Zoho
 
 1. Log into your Zoho account
 2. Create API Client in Api Console: https://accounts.zoho.com/developerconsole
@@ -15,3 +21,12 @@
 4. Request oauth for long lived refresh token
 	a. POST: https://accounts.zoho.com/oauth/v2/token?client_id={client_id}&grant_type=authorization_code&client_secret={client_secret}&redirect_uri=https://ordercloud.io&code={code from step 3.b.2}&access_type=offline&response_type=code
 	b. Copy response "refresh_token". This is your long lived token that will be used to retrieve future access tokens in the Zoho SDK
+                                                                 
+## Enabling Integration
+
+1. Set `EnvironmentSettings:OMSProvider` to Zoho 
+2. Ensure the following settings are defined in app settings:
+	- `ZohoSettings:AccessToken`
+	- `ZohoSettings:ClientId`
+	- `ZohoSettings:ClientSecret`
+	- `ZohoSettings:OrganizationID`

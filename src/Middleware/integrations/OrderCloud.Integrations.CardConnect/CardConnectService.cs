@@ -149,9 +149,9 @@ namespace OrderCloud.Integrations.CardConnect
         {
             return userCurrency switch
             {
-                CurrencyCode.USD => cardConnectConfig.UsdMerchantID,
-                CurrencyCode.CAD => cardConnectConfig.CadMerchantID,
-                _ => cardConnectConfig.EurMerchantID
+                // CardConnect only supports one currency per merchantID
+                // If accepting payment from multiple currencies then you must set additional merchantIDs here
+                _ => cardConnectConfig.MerchantID
             };
         }
 

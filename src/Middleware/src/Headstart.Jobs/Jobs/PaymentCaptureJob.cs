@@ -34,9 +34,8 @@ namespace Headstart.Jobs
         {
             var filters = new Dictionary<string, object>
             {
-                ["DateSubmitted"] = $">{settings.JobSettings.CaptureCreditCardsAfterDate}", // limiting scope of orders until all past orders have been updated with xp.IsPaymentCaptured=true
                 ["xp.PaymentMethod"] = "Credit Card",
-                ["xp.IsPaymentCaptured"] = "false|!*", // TODO: once this is in place for a week set xp.IsPaymentCaptured to true on all past orders so this filter can be more performant
+                ["xp.IsPaymentCaptured"] = "false",
                 ["IsSubmitted"] = true,
                 ["xp.SubmittedOrderStatus"] = "!Canceled",
             };

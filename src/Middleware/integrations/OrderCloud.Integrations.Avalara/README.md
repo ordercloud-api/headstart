@@ -1,4 +1,4 @@
-﻿# Avalara Integration For OrderCloud Headstart
+﻿# Avalara Integration For Headstart
 
 ## Scope of this integration
 This integration calculates sales tax for an Order using the Avalara AvaTax API. It is part of the open source Headstart project, which provides a complete, opinionated OrderCloud solution. It conforms to the [ITaxCalculator](../OrderCloud.Integrations.Taxation/Interfaces/ITaxCalculator.cs) interface. 
