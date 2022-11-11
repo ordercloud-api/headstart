@@ -34,7 +34,8 @@ namespace OrderCloud.Integrations.ExchangeRates.Tests
 
             oc = Substitute.For<IOrderCloudClient>();
             cloudBlobService = Substitute.For<ICloudBlobService>();
-            var exchangeRatesClient = Substitute.For<ExchangeRatesClient>(Substitute.For<IFlurlClientFactory>());
+            var settings = new ExchangeRateSettings { ApiKey = "mockApiKey" };
+            var exchangeRatesClient = Substitute.For<ExchangeRatesClient>(Substitute.For<IFlurlClientFactory>(), settings);
             exchangeRatesClient.Get(default).ReturnsForAnyArgs(Task.FromResult(new ExchangeRatesBase
             {
                 rates = new ExchangeRatesValues(),

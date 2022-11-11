@@ -143,6 +143,7 @@ namespace Headstart.API
                 .AddSingleton(x => settings.EnvironmentSettings)
                 .AddSingleton(x => settings.OrderCloudSettings)
                 .AddSingleton(x => settings.StorageAccountSettings)
+                .AddSingleton(x => settings.ExchangeRateSettings)
 
                 // Configure OrderCloud
                 .InjectOrderCloud<IOrderCloudClient>(settings.OrderCloudSettings)
@@ -203,7 +204,7 @@ namespace Headstart.API
                 .AddDefaultAddressProvider()
 
                 // Currency Conversion Providers
-                .AddExchangeRatesCurrencyConversionProvider(settings.EnvironmentSettings, settings.StorageAccountSettings)
+                .AddExchangeRatesCurrencyConversionProvider(settings.EnvironmentSettings, settings.StorageAccountSettings, settings.ExchangeRateSettings)
                 .AddDefaultCurrencyConversionProvider()
 
                 // RMA Providers
