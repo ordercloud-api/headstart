@@ -25,4 +25,5 @@ export interface OrderXp {
     QuoteBuyerContactEmail?: string
     QuoteSubmittedDate?: string
     QuoteSupplierID?: string
+    IsPaymentCaptured?: boolean
 }

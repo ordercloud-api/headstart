@@ -35,6 +35,7 @@ export class OrderStateService {
   }
   private readonly DefaultOrder: HSOrder = {
     xp: {
+      IsPaymentCaptured: false,
       ExternalTaxTransactionID: '',
       OrderType: 'Standard',
       QuoteOrderInfo: null,

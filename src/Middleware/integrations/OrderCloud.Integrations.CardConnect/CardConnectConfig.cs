@@ -7,19 +7,10 @@
         public string BaseUrl { get; set; }
 
         /// <summary>
-        /// Authorization credentials for US currency.
+        /// Authorization credentials
         /// </summary>
         public string Authorization { get; set; }
 
-        /// <summary>
-        /// Authorization credentials for Canadian currency.
-        /// </summary>
-        public string AuthorizationCad { get; set; }
-
-        public string UsdMerchantID { get; set; }
-
-        public string CadMerchantID { get; set; }
-
-        public string EurMerchantID { get; set; }
+        public string MerchantID { get; set; }
     }
 }

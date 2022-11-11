@@ -15,9 +15,9 @@ namespace OrderCloud.Integrations.CardConnect.Extensions
                 return services;
             }
 
-            if (string.IsNullOrEmpty(cardConnectSettings.Authorization) || string.IsNullOrEmpty(cardConnectSettings.AuthorizationCad))
+            if (string.IsNullOrEmpty(cardConnectSettings.Authorization) || string.IsNullOrEmpty(cardConnectSettings.MerchantID))
             {
-                throw new Exception("EnvironmentSettings:PaymentProvider is set to 'CardConnect' however missing required properties CardConnectSettings::Authorization or CardConnectSettings::AuthorizationCad. Please define these properties or set EnvironmentSettings:PaymentProvider to an empty string to use mocked credit card payments");
+                throw new Exception("EnvironmentSettings:PaymentProvider is set to 'CardConnect' however missing required properties CardConnectSettings:Authorization or CardConnectSettings:MerchantID. Please define these properties or set EnvironmentSettings:PaymentProvider to an empty string to use mocked credit card payments");
             }
 
             services

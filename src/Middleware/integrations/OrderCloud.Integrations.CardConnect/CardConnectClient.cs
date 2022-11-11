@@ -154,7 +154,7 @@ namespace OrderCloud.Integrations.CardConnect
 
         private IFlurlRequest Request(string resource, string currency)
         {
-            return flurl.Request($"{resource}").WithHeader("Authorization", $"Basic {((currency == "USD") ? Config.Authorization : Config.AuthorizationCad)}");
+            return flurl.Request($"{resource}").WithHeader("Authorization", $"Basic {Config.Authorization}");
         }
 
         private CardConnectInquireResponse ExtractResponse(string body, string retref)
