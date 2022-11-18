@@ -16,6 +16,7 @@ export class ProductTableComponent
   implements OnInit
 {
   userContext: UserContext
+  userOrganizationID: string
   filterConfig: any
   isViewingBundle: boolean
   constructor(
@@ -32,8 +33,15 @@ export class ProductTableComponent
 
   async ngOnInit(): Promise<void> {
     this.userContext = await this.currentUserService.getUserContext()
+    this.userOrganizationID = this.getUserOrganizationID(this.userContext)
     this.buildFilterConfig()
     super.ngOnInit() // call parent component ngOnInit
+  }
+
+  getUserOrganizationID(userContext: UserContext): string {
+    return userContext?.UserType === 'SELLER'
+      ? userContext?.Me?.Seller?.ID
+      : userContext?.Me?.Supplier?.ID
   }
 
   async buildFilterConfig(): Promise<void> {
