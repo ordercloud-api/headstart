@@ -28,6 +28,7 @@
     [userContext]="userContext"
     [dataIsSaving]="dataIsSaving"
     [product]="resourceInSelection"
+    [readonly]="resourceInSelection?.OwnerID === userOrganizationID"
     (updateList)="updateResourceInList($event)"
   >
   </app-product-edit>

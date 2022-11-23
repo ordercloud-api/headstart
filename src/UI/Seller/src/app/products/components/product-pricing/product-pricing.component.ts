@@ -28,7 +28,7 @@ export class ProductPricingComponent {
   @Input()
   set superHSProductEditable(value: SuperHSProduct) {
     this.setData(value)
-    if (value && this.readonly) {
+    if ((value && this.readonly) || this.isSellerUser) {
       this.setUpBuyers()
       this.setUpExchangeRate()
       this.buyerMarkedUpSupplierPrices =

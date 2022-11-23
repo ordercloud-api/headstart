@@ -87,6 +87,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   @Input() isCreatingNew: boolean
   @Input() dataIsSaving = false
   @Input() userContext: UserContext
+  @Input() readonly
   addresses: ListPage<Address>
   isSellerUser = false
   images: ImageAsset[] = []
