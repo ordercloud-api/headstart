@@ -13,7 +13,7 @@ namespace Headstart.Common.Commands
         {
         }
 
-        public async Task<HSShipEstimateResponse> GetRatesAsync(HSOrderWorksheet worksheet, CheckoutIntegrationConfiguration config = null)
+        public async Task<HSShipEstimateResponse> GetRatesAsync(HSOrderWorksheet worksheet, dynamic config = null)
         {
             try
             {
@@ -68,7 +68,8 @@ namespace Headstart.Common.Commands
                     },
                 },
                 ShipEstimateItems = lineItems.Select(li => new ShipEstimateItem() { LineItemID = li.ID, Quantity = li.Quantity }).ToList(),
-                xp = new ShipEstimateXP {
+                xp = new ShipEstimateXP
+                {
                     SupplierID = firstLi.SupplierID, // This will help with forwarding the supplier order
                     ShipFromAddressID = firstLi.ShipFromAddressID, // This will help with forwarding the supplier order
                 },

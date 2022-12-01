@@ -36,7 +36,6 @@ using OrderCloud.Integrations.Orchestration;
 using OrderCloud.Integrations.Orchestration.Models;
 using OrderCloud.Integrations.Portal;
 using OrderCloud.Integrations.Reporting.Extensions;
-using OrderCloud.Integrations.RMAs.Extensions;
 using OrderCloud.Integrations.SendGrid.Extensions;
 using OrderCloud.Integrations.Smarty.Extensions;
 using OrderCloud.Integrations.TaxJar.Extensions;
@@ -106,11 +105,6 @@ namespace Headstart.API
                 },
                 new ContainerInfo()
                 {
-                    Name = "rmas",
-                    PartitionKey = "/PartitionKey",
-                },
-                new ContainerInfo()
-                {
                     Name = "shipmentdetail",
                     PartitionKey = "/PartitionKey",
                 },
@@ -132,6 +126,7 @@ namespace Headstart.API
             {
                 options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
                 options.SerializerSettings.Converters.Add(new StringEnumConverter());
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
             });
 
             services
@@ -156,8 +151,10 @@ namespace Headstart.API
 
                 // Commands
                 .Inject<ICheckoutIntegrationCommand>()
+                .Inject<IOrderReturnIntegrationEventCommand>()
                 .Inject<IShipmentCommand>()
                 .Inject<IOrderCommand>()
+                .Inject<IOrderReturnCommand>()
                 .Inject<IPaymentCommand>()
                 .Inject<IOrderSubmitCommand>()
                 .Inject<IEnvironmentSeedCommand>()
@@ -207,9 +204,6 @@ namespace Headstart.API
                 .AddExchangeRatesCurrencyConversionProvider(settings.EnvironmentSettings, settings.StorageAccountSettings, settings.ExchangeRateSettings)
                 .AddDefaultCurrencyConversionProvider()
 
-                // RMA Providers
-                .AddDefaultRMAsProvider(settings.EnvironmentSettings)
-
                 // OMS Providers
                 .AddZohoOMSProvider(settings.EnvironmentSettings, settings.ZohoSettings)
                 .AddDefaultOMSProvider()
@@ -254,7 +248,7 @@ namespace Headstart.API
 
             // Flurl setting for JSON serialization
             var jsonSettings = new JsonSerializerSettings();
-            jsonSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+            jsonSettings.Converters.Add(new StringEnumConverter());
 
             // Flurl setting for request timeout
             var timeout = TimeSpan.FromSeconds(settings.FlurlSettings.TimeoutInSeconds == 0 ? 30 : settings.FlurlSettings.TimeoutInSeconds);

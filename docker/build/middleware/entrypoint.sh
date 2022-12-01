@@ -79,7 +79,7 @@ json -I -f appSettings.json \
       -e "this['SendGridSettings:ApiKey']='$SendGridSettings_ApiKey'" \
       -e "this['SendgridSettings:BillingEmail']='$SendgridSettings_BillingEmail'" \
       -e "this['SendgridSettings:CriticalSupportEmails']='$SendgridSettings_CriticalSupportEmails'" \
-      -e "this['SendgridSettings:CriticalSupportTemplateID']='$SendgridSettings_CriticalSupportTemplateID'"
+      -e "this['SendgridSettings:CriticalSupportTemplateID']='$SendgridSettings_CriticalSupportTemplateID'" \
       -e "this['SendgridSettings:FromEmail']='$SendgridSettings_FromEmail'" \
       -e "this['SendgridSettings:LineItemStatusChangeTemplateID']='$SendgridSettings_LineItemStatusChangeTemplateID'" \
       -e "this['SendgridSettings:NewUserTemplateID']='$SendgridSettings_NewUserTemplateID'" \
@@ -88,7 +88,8 @@ json -I -f appSettings.json \
       -e "this['SendgridSettings:PasswordResetTemplateID']='$SendgridSettings_PasswordResetTemplateID'" \
       -e "this['SendgridSettings:ProductInformationRequestTemplateID']='$SendgridSettings_ProductInformationRequestTemplateID'" \
       -e "this['SendgridSettings:QuoteOrderSubmitTemplateID']='$SendgridSettings_QuoteOrderSubmitTemplateID'" \
-      -e "this['SendgridSettings:SupportCaseEmail']='$SendgridSettings_SupportCaseEmail'" \
+      -e "this['SendgridSettings:OrderSubmittedForApprovalTemplateID']='$SendgridSettings_OrderSubmittedForApprovalTemplateID'" \
+      -e "this['SendgridSettings:OrderReturnTemplateID']='$SendgridSettings_OrderReturnTemplateID'"
 
 json -I -f appSettings.json \
       -e "this['ServiceBusSettings:ConnectionString']='$ServiceBusSettings_ConnectionString'" \
@@ -96,7 +97,7 @@ json -I -f appSettings.json \
 
 json -I -f appSettings.json \
       -e "this['SmartyStreetSettings:AuthID']='$SmartyStreetSettings_AuthID'" \
-      -e "this['SmartyStreetSettings:AuthToken']='$SmartyStreetSettings_AuthToken'" \
+      -e "this['SmartyStreetSettings:AuthToken']='$SmartyStreetSettings_AuthToken'"
 
 json -I -f appSettings.json \
       -e "this['StorageAccountSettings:ConnectionString']='$StorageAccountSettings_ConnectionString'" \
@@ -105,7 +106,7 @@ json -I -f appSettings.json \
       -e "this['StorageAccountSettings:ContainerNameTranslations']='$StorageAccountSettings_ContainerNameTranslations'" \
       -e "this['StorageAccountSettings:ContainerNameQueue']='$StorageAccountSettings_ContainerNameQueue'" \
       -e "this['StorageAccountSettings:HostUrl']='$StorageAccountSettings_HostUrl'" \
-      -e "this['StorageAccountSettings:Key']='$StorageAccountSettings_Key'" \
+      -e "this['StorageAccountSettings:Key']='$StorageAccountSettings_Key'"
       
 json -I -f appSettings.json \
       -e "this['UI:BaseAdminUrl']='$UI_BaseAdminUrl'"

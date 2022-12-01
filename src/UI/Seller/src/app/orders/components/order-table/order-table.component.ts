@@ -98,13 +98,6 @@ export class OrderTableComponent extends ResourceCrudComponent<Order> {
         Type: 'Dropdown',
         QueryRestriction: 'OrderDirection=Incoming',
       },
-      {
-        Display: 'ADMIN.FILTERS.HAS_CLAIMS',
-        Path: 'xp.OrderReturnInfo.HasReturn',
-        Items: [{ Value: true }, { Value: false }],
-        Type: 'Dropdown',
-        QueryRestriction: 'OrderDirection=Incoming',
-      },
     ],
   }
 }

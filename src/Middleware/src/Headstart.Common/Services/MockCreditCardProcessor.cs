@@ -49,10 +49,28 @@ namespace Headstart.Common.Services
             });
         }
 
-        public async Task Refund(HSOrderWorksheet worksheet, HSPayment payment, HSPaymentTransaction paymentTransaction, decimal refundAmount)
+        public async Task Refund(HSOrder order, HSPayment payment, HSPaymentTransaction paymentTransaction, decimal refundAmount, string orderReturnId = "")
         {
-            var refundPayment = new HSPayment() { Amount = refundAmount };
-            await orderCloudClient.Payments.CreateTransactionAsync(OrderDirection.Incoming, worksheet.Order.ID, payment.ID, CreateMockTransaction(refundPayment, "CreditCardRefund"));
+            var refundPayment = new HSPayment() { Amount = refundAmount * -1 };
+            var newPaymentTransaction = CreateMockTransaction(refundPayment, "CreditCardRefund");
+            if (string.IsNullOrEmpty(orderReturnId))
+            {
+                // // This refund isn't part of an order return so just create a new transaction on the existing payment
+                await orderCloudClient.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, newPaymentTransaction);
+            }
+            else
+            {
+                // for order returns we must create a payment with a negative amount equal to the OrderReturn.RefundAmount for the order return to complete automatically
+                payment = await orderCloudClient.Payments.CreateAsync<HSPayment>(OrderDirection.Incoming, order.ID, new HSPayment
+                {
+                    Type = PaymentType.CreditCard,
+                    Amount = refundAmount * -1,
+                    Accepted = true,
+                    OrderReturnID = orderReturnId,
+                    xp = payment.xp,
+                });
+                await orderCloudClient.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, newPaymentTransaction);
+            }
         }
 
         public async Task<HSCreditCard> Tokenize(CCToken card, CurrencyCode userCurrency)
@@ -67,10 +85,28 @@ namespace Headstart.Common.Services
             });
         }
 
-        public async Task VoidAuthorization(HSOrder order, HSPayment payment, HSPaymentTransaction paymentTransaction, decimal? refundAmount = null)
+        public async Task VoidAuthorization(HSOrder order, HSPayment payment, HSPaymentTransaction paymentTransaction, decimal? refundAmount = null, string orderReturnId = null)
         {
-            var voidPayment = refundAmount == null ? payment : new HSPayment() { Amount = refundAmount };
-            await orderCloudClient.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CreateMockTransaction(voidPayment, "CreditCardVoidAuthorization"));
+            var voidPayment = refundAmount == null ? payment : new HSPayment() { Amount = refundAmount * -1 };
+            var newPaymentTransaction = CreateMockTransaction(voidPayment, "CreditCardVoidAuthorization");
+            if (string.IsNullOrEmpty(orderReturnId))
+            {
+                // // This refund isn't part of an order return so just create a new transaction on the existing payment
+                await orderCloudClient.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, newPaymentTransaction);
+            }
+            else
+            {
+                // for order returns we must create a payment with a negative amount equal to the OrderReturn.RefundAmount for the order return to complete automatically
+                payment = await orderCloudClient.Payments.CreateAsync<HSPayment>(OrderDirection.Incoming, order.ID, new HSPayment
+                {
+                    Type = PaymentType.CreditCard,
+                    Amount = refundAmount * -1,
+                    Accepted = true,
+                    OrderReturnID = orderReturnId,
+                    xp = payment.xp,
+                });
+                await orderCloudClient.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, newPaymentTransaction);
+            }
         }
 
         private PaymentTransaction CreateMockTransaction(HSPayment payment, string transactionType)

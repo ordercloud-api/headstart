@@ -1,0 +1,218 @@
+<div>
+  <order-return-status [orderReturn]="orderReturn" [order]="order">
+  </order-return-status>
+  <div class="card py-4 px-3 bg-white">
+    <order-return-overview
+      class="mb-4"
+      [orderReturn]="orderReturn"
+      [order]="order"
+    ></order-return-overview>
+    <div class="mb-3">
+      <button
+        *ngIf="orderReturn?.Status === 'AwaitingApproval'"
+        class="btn btn-primary mr-2"
+        (click)="openModal(approveReturnModal)"
+        translate
+      >
+        ADMIN.ORDER_RETURNS.APPROVE
+      </button>
+      <button
+        *ngIf="orderReturn?.Status === 'AwaitingApproval'"
+        class="btn btn-outline-danger mr-2"
+        (click)="openModal(declineReturnModal)"
+        translate
+      >
+        ADMIN.ORDER_RETURNS.DECLINE
+      </button>
+      <button
+        *ngIf="orderReturn?.Status === 'Open'"
+        class="btn btn-primary mr-2"
+        (click)="openModal(completeReturnModal)"
+        translate
+      >
+        ADMIN.ORDER_RETURNS.COMPLETE_RETURN
+      </button>
+    </div>
+    <div class="buyer-comments mb-3" *ngIf="orderReturn?.Comments">
+      <i><strong>Buyer Comments:</strong> {{ orderReturn?.Comments }}</i>
+    </div>
+    <order-return-lineitem-detail
+      [lineItems]="lineItems"
+      [orderReturn]="orderReturn"
+      [order]="order"
+      [loading]="dataIsSaving"
+      (lineItemRefundChange)="updateLineItemRefundAmount($event)"
+    >
+    </order-return-lineitem-detail>
+  </div>
+</div>
+<ng-template #completeReturnModal let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title" translate>
+      ADMIN.ORDER_RETURNS.COMPLETE_RETURN
+    </h4>
+  </div>
+  <div class="modal-body" translate>
+    ADMIN.ORDER_RETURNS.COMPLETE_DESCRIPTION
+  </div>
+  <div
+    class="
+      modal-footer
+      w-100
+      d-flex
+      justify-content-space-between justify-content-between
+    "
+  >
+    <button
+      type="button"
+      class="btn btn-link text-dark"
+      (click)="modal.dismiss()"
+      translate
+    >
+      ADMIN.ORDER_RETURNS.CANCEL
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="completeReturn()"
+      translate
+    >
+      ADMIN.ORDER_RETURNS.COMPLETE_RETURN
+    </button>
+  </div>
+</ng-template>
+<ng-template #approveReturnModal let-modal class="confirm-modal">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title" translate>
+      ADMIN.ORDER_RETURNS.APPROVE_RETURN
+    </h4>
+  </div>
+  <form class="modal-body" [formGroup]="approvalForm">
+    <h5 class="text-danger">
+      <strong>
+        <span translate>ADMIN.ORDER_RETURNS.REFUND_AMOUNT</span>
+        {{ orderReturn.RefundAmount | currency: order?.xp?.Currency }}</strong
+      >
+    </h5>
+    <div class="form-group mt-4">
+      <label for="approveCommentsInput" class="control-label" translate=""
+        >ADMIN.ORDER_RETURNS.COMMENTS</label
+      >
+      <textarea
+        ngbAutofocus
+        type="text"
+        class="form-control"
+        formControlName="Comments"
+        placeholder="Enter comment"
+        rows="3"
+        maxLength="2000"
+      ></textarea>
+    </div>
+    <div class="form-group">
+      <span translate>ADMIN.ORDER_RETURNS.REFUND_IMMEDIATELY</span>
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="radio"
+          id="RefundImmediatelyFalse"
+          formControlName="RefundImmediately"
+          [value]="false"
+        />
+        <label class="form-check-label" for="RefundImmediatelyFalse" translate>
+          ADMIN.ORDER_RETURNS.NO
+        </label>
+      </div>
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="radio"
+          id="RefundImmediatelyTrue"
+          formControlName="RefundImmediately"
+          [value]="true"
+        />
+        <label class="form-check-label" for="RefundImmediatelyTrue" translate>
+          ADMIN.ORDER_RETURNS.YES
+        </label>
+      </div>
+    </div>
+  </form>
+  <div
+    class="
+      modal-footer
+      w-100
+      d-flex
+      justify-content-space-between justify-content-between
+    "
+  >
+    <button
+      [disabled]="dataIsSaving"
+      type="button"
+      class="btn btn-link text-dark"
+      (click)="modal.dismiss()"
+      translate
+    >
+      ADMIN.ORDER_RETURNS.CANCEL
+    </button>
+    <button
+      [disabled]="dataIsSaving"
+      type="button"
+      class="btn btn-primary"
+      (click)="approveReturn()"
+      translate
+    >
+      ADMIN.ORDER_RETURNS.APPROVE
+    </button>
+  </div>
+</ng-template>
+<ng-template #declineReturnModal let-modal class="confirm-modal">
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title" translate>
+      ADMIN.ORDER_RETURNS.DECLINE_RETURN
+    </h4>
+  </div>
+  <form class="modal-body" [formGroup]="declineForm">
+    <p translate>ADMIN.ORDER_RETURNS.DECLINE_DESCRIPTION</p>
+    <div class="form-group">
+      <label for="declineCommentsInput" class="control-label" translate
+        >ADMIN.ORDER_RETURNS.COMMENTS</label
+      >
+      <textarea
+        ngbAutofocus
+        type="text"
+        class="form-control"
+        formControlName="Comments"
+        placeholder="Enter comment"
+        rows="3"
+        maxLength="2000"
+        id="declineCommentsInput"
+      ></textarea>
+    </div>
+  </form>
+  <div
+    class="
+      modal-footer
+      w-100
+      d-flex
+      justify-content-space-between justify-content-between
+    "
+  >
+    <button
+      [disabled]="dataIsSaving"
+      type="button"
+      class="btn btn-link text-dark"
+      (click)="modal.dismiss()"
+      translate
+    >
+      ADMIN.ORDER_RETURNS.CANCEL
+    </button>
+    <button
+      [disabled]="dataIsSaving"
+      type="button"
+      class="btn btn-outline-danger"
+      (click)="declineReturn()"
+      translate
+    >
+      ADMIN.ORDER_RETURNS.DECLINE
+    </button>
+  </div>
+</ng-template>

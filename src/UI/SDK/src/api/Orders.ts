@@ -8,7 +8,7 @@ import { RequiredDeep } from '../models/RequiredDeep';
 import { ListArgs } from '../models/ListArgs'
 import httpClient from '../utils/HttpClient';
 import { Order } from 'ordercloud-javascript-sdk';
-import { CosmosListPage, RMA } from '../models';
+import { CosmosListPage } from '../models';
 
 export default class Orders {
     private impersonating:boolean = false;
@@ -29,8 +29,8 @@ export default class Orders {
         this.ListShipmentsWithItems = this.ListShipmentsWithItems.bind(this);
         this.AcknowledgeQuoteOrder = this.AcknowledgeQuoteOrder.bind(this);
         this.ListLocationOrders = this.ListLocationOrders.bind(this);
-        this.ListRMAsForOrder = this.ListRMAsForOrder.bind(this);
         this.SendQuoteRequestToSupplier = this.SendQuoteRequestToSupplier.bind(this);
+        this.Cancel = this.Cancel.bind(this);
     }
 
    /**
@@ -131,21 +131,11 @@ export default class Orders {
         return await httpClient.get(`/order/${orderID}/shipmentswithitems`, { params: {  accessToken, impersonating } } );
     }
 
- /**
-    * @param orderID ID of the order.
-    * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
-    */
-  public async ListRMAsForOrder(orderID: string,  accessToken?: string ): Promise<RequiredDeep<CosmosListPage<RMA>>> {
-    const impersonating = this.impersonating;
-    this.impersonating = false;
-    return await httpClient.get(`/order/rma/list/${orderID}`, { params: {  accessToken, impersonating } } );
-}
-
    /**
     * @param orderID ID of the order.
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async AcknowledgeQuoteOrder(orderID: string, accessToken?: string ): Promise<RequiredDeep<Order>> {
+    public async AcknowledgeQuoteOrder(orderID: string, accessToken?: string ): Promise<RequiredDeep<HSOrder>> {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.post(`/order/acknowledgequote/${orderID}`, {}, { params: {  accessToken, impersonating } } );
@@ -167,7 +157,7 @@ export default class Orders {
      * @param quotePrice Proposed price of the quoted line item.
      * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
      */
-    public async OverrideQuoteUnitPrice(orderID: string, lineItemID: string, quotePrice: number, accessToken?: string ): Promise<RequiredDeep<Order>> {
+    public async OverrideQuoteUnitPrice(orderID: string, lineItemID: string, quotePrice: number, accessToken?: string ): Promise<RequiredDeep<HSOrder>> {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.post(`/order/overridequote/${orderID}/${lineItemID}`, quotePrice, { params: { accessToken, impersonating } } );
@@ -204,11 +194,22 @@ export default class Orders {
      * @param lineItemID ID of the line item.
      * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
      */
-     public async SendQuoteRequestToSupplier(orderID: string, lineItemID: string, accessToken?: string ): Promise<RequiredDeep<Order>> {
+     public async SendQuoteRequestToSupplier(orderID: string, lineItemID: string, accessToken?: string ): Promise<RequiredDeep<HSOrder>> {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.post(`/order/submitquoterequest/${orderID}/${lineItemID}`, {}, { params: { accessToken, impersonating } } );
     }
+
+    /**
+     * @param orderID ID of the order.
+     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
+     */
+     public async Cancel(orderID: string, accessToken?: string ): Promise<RequiredDeep<HSOrder>> {
+        const impersonating = this.impersonating;
+        this.impersonating = false;
+        return await httpClient.post(`/order/${orderID}/cancel`, {}, { params: { accessToken, impersonating } } );
+    }
+
 
     /**
      * @description 

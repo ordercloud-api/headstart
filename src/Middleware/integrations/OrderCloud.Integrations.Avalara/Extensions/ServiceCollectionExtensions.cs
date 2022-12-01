@@ -8,7 +8,8 @@ namespace OrderCloud.Integrations.Avalara.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddAvalaraTaxProvider(this IServiceCollection services, EnvironmentSettings environmentSettings, AvalaraConfig avalaraSettings) {
+        public static IServiceCollection AddAvalaraTaxProvider(this IServiceCollection services, EnvironmentSettings environmentSettings, AvalaraConfig avalaraSettings)
+        {
             if (!environmentSettings.TaxProvider.Equals("Avalara", StringComparison.OrdinalIgnoreCase))
             {
                 return services;

@@ -23,6 +23,7 @@ namespace Headstart.Common.Models
         HSStorefrontAdmin,
         HSSupplierAdmin,
         HSSupplierUserGroupAdmin,
+        HSOrderReturnApprover,
 
         // buyer
         HSBaseBuyer,

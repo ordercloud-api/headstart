@@ -60,10 +60,12 @@ export const ErrorCodes: ErrorTypes = {
 export function extractMiddlewareError(
   exception: AxiosError
 ): MiddlewareError | null {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unnecessary-type-assertion
+  const axiosErrorData = exception?.response?.data as any
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  if (exception?.response?.data?.Errors?.length) {
+  if (axiosErrorData?.Errors?.length) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    return exception.response.data.Errors[0] as MiddlewareError
+    return axiosErrorData.Errors[0] as MiddlewareError
   }
   return null
 }

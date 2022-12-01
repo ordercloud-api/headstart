@@ -16,6 +16,7 @@ export const HSRoles = {
   HSCategoryAdmin: 'HSCategoryAdmin',
   HSCategoryReader: 'HSCategoryReader',
   HSOrderAdmin: 'HSOrderAdmin',
+  HSOrderReturnApprover: 'HSOrderReturnApprover',
   HSOrderReader: 'HSOrderReader',
   HSShipmentAdmin: 'HSShipmentAdmin',
   HSBuyerAdmin: 'HSBuyerAdmin',

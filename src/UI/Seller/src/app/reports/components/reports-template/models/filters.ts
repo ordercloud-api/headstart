@@ -110,22 +110,6 @@ export const productDetail: FilterObject[] = [
     filterValues: [],
   },
 ]
-export const rmaDetail: FilterObject[] = [
-  {
-    name: 'RMA Type',
-    path: 'RMAType',
-    sourceType: 'model',
-    source: 'RMAType',
-    filterValues: [],
-  },
-  {
-    name: 'RMA Status',
-    path: 'RMAStatus',
-    sourceType: 'model',
-    source: 'RMAStatus',
-    filterValues: [],
-  },
-]
 
 export const shipmentDetail: FilterObject[] = [
   {

@@ -199,25 +199,7 @@ export const lineItemDetail = [
     value: 'Status Backordered',
     path: 'HSLineItem.xp.StatusByQuantity.Backordered',
   },
-  {
-    value: 'Status CancelRequested',
-    path: 'HSLineItem.xp.StatusByQuantity.CancelRequested',
-  },
-  {
-    value: 'Status CancelDenied',
-    path: 'HSLineItem.xp.StatusByQuantity.CancelDenied',
-  },
   { value: 'Status Complete', path: 'HSLineItem.xp.StatusByQuantity.Complete' },
-  {
-    value: 'Status ReturnRequested',
-    path: 'HSLineItem.xp.StatusByQuantity.ReturnRequested',
-  },
-  {
-    value: 'Status ReturnDenied',
-    path: 'HSLineItem.xp.StatusByQuantity.ReturnDenied',
-  },
-  { value: 'Status Returned', path: 'HSLineItem.xp.StatusByQuantity.Returned' },
-  { value: 'Status Canceled', path: 'HSLineItem.xp.StatusByQuantity.Canceled' },
   { value: 'Status Open', path: 'HSLineItem.xp.StatusByQuantity.Open' },
   { value: 'Promotion Discount', path: 'HSLineItem.PromotionDiscount' },
 ]
@@ -266,27 +248,6 @@ export const productDetail = [
   { value: '3 Month Order Total', path: 'ProductSales.ThreeMonthTotal' },
   { value: '6 Month Order Total', path: 'ProductSales.SixMonthTotal' },
   { value: '12 Month Order Total', path: 'ProductSales.TwelveMonthTotal' },
-]
-
-export const rmaDetail = [
-  { value: 'Order ID', path: 'RMA.SourceOrderID' },
-  { value: 'Supplier ID', path: 'RMA.SupplierID' },
-  { value: 'Supplier Name', path: 'RMA.SupplierName' },
-  { value: 'Date Created', path: 'RMA.DateCreated' },
-  { value: 'Date Completed', path: 'RMA.DateComplete' },
-  { value: 'RMA Number', path: 'RMA.RMANumber' },
-  { value: 'Type', path: 'RMA.Type' },
-  { value: 'RMA Status', path: 'RMA.Status' },
-  { value: 'Shipping Credited', path: 'RMA.ShippingCredited' },
-  { value: 'Total Credited', path: 'RMA.TotalCredited' },
-  { value: 'Line Item ID', path: 'RMALineItem.ID' },
-  { value: 'Reason', path: 'RMALineItem.Reason' },
-  { value: 'Quantity Processed', path: 'RMALineItem.QuantityProcessed' },
-  { value: 'Line Status', path: 'RMALineItem.Status' },
-  { value: 'Line Total Refund', path: 'RMALineItem.LineTotalRefund' },
-  { value: 'IsResolved', path: 'RMALineItem.IsResolved' },
-  { value: 'IsRefunded', path: 'RMALineItem.IsRefunded' },
-  { value: 'Comment', path: 'RMALineItem.Comment' },
 ]
 
 export const shipmentDetail = [

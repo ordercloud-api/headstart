@@ -32,7 +32,6 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar'
 import { ResourceSelectDropdown } from './components/resource-select-dropdown/resource-select-dropdown.component'
 import { SummaryResourceDisplay } from './components/summary-resource-display/summary-resource-display.component'
 import { DeleteConfirmModal } from './components/delete-confirm-modal/delete-confirm-modal.component'
-import { ReturnForm } from './components/return-form/return-form.component'
 import { ResourceEditComponent } from './components/resource-edit/resource-edit.component'
 import { FullResourceTableComponent } from './components/full-resource-table/full-resource-table.component'
 import { QuillModule } from 'ngx-quill'
@@ -57,11 +56,11 @@ import { ProductCategoryAssignment } from './components/buyer-visibility/product
 import { ResourceListMeta } from './components/resource-list-meta/resource-list-meta.component'
 import { ProductNameWithSpecsPipe } from './pipes/product-name-with-specs.pipe'
 import { RouterModule } from '@angular/router'
-import { RmaStatusPipe } from './pipes/rma-status.pipe'
-import { RmaTypePipe } from './pipes/rma-type.pipe'
+import { OrderReturnStatusPipe } from './pipes/order-return-status.pipe'
 import { SubmittedOrderStatusPipe } from './pipes/submitted-order-status.pipe'
 import { LineItemStatusPipe } from './pipes/lineitem-status.pipe'
-import { RmaReturnReasonPipe } from './pipes/rma-return-reason.pipe'
+import { OrderReturnReasonPipe } from './pipes/order-return-reason.pipe'
+import { CurrencySymbolPipe } from './pipes/currency-symbol.pipe'
 
 @NgModule({
   imports: [
@@ -122,13 +121,12 @@ import { RmaReturnReasonPipe } from './pipes/rma-return-reason.pipe'
     LocationIDInputDirective,
     DragDirective,
     DeleteConfirmModal,
-    ReturnForm,
+    CurrencySymbolPipe,
     PhoneFormatPipe,
-    RmaStatusPipe,
-    RmaTypePipe,
+    OrderReturnStatusPipe,
     SubmittedOrderStatusPipe,
     LineItemStatusPipe,
-    RmaReturnReasonPipe,
+    OrderReturnReasonPipe,
     YesNoFormatPipe,
     SafeHTMLPipe,
     ProductNameWithSpecsPipe,
@@ -158,7 +156,6 @@ import { RmaReturnReasonPipe } from './pipes/rma-return-reason.pipe'
     ResourceTableComponent,
     RequestStatus,
     DeleteConfirmModal,
-    ReturnForm,
     SummaryResourceDisplay,
     FullResourceTableComponent,
     ResourceEditComponent,
@@ -175,12 +172,12 @@ import { RmaReturnReasonPipe } from './pipes/rma-return-reason.pipe'
     ProductCategoryAssignment,
     ResourceListMeta,
     // Pipes
+    CurrencySymbolPipe,
     PhoneFormatPipe,
-    RmaStatusPipe,
-    RmaTypePipe,
+    OrderReturnStatusPipe,
     SubmittedOrderStatusPipe,
     LineItemStatusPipe,
-    RmaReturnReasonPipe,
+    OrderReturnReasonPipe,
     YesNoFormatPipe,
     ResourceBreadcrumbsComponent,
     SafeHTMLPipe,

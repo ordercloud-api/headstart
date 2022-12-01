@@ -5,7 +5,6 @@
     <p class="font-italic">{{ displayText.InfoText | translate }}</p>
   </div>
   <div class="col-md-7">
-    <!-- TO-DO - May want to look into transclusion for this section (toggles/search). -->
     <div
       *ngIf="userGroupType === 'BuyerLocation' && !isCreatingNew"
       class="actionBar btn-group w-50 mb-3"
@@ -53,8 +52,12 @@
           <tr>
             <th scope="col" translate>ADMIN.USERGROUP_ASSIGNMENTS.ASSIGNED</th>
             <th scope="col">{{ displayText.Column2 | translate }}</th>
-            <th scope="col">ID</th>
-            <th scope="col" *ngIf="userGroupType === 'UserPermissions'">
+            <th scope="col" *ngIf="userGroupType !== 'UserPermissions'">ID</th>
+            <th
+              scope="col"
+              *ngIf="userGroupType === 'UserPermissions'"
+              translate
+            >
               ADMIN.USERGROUP_ASSIGNMENTS.DESCRIPTION
             </th>
           </tr>
@@ -80,7 +83,7 @@
             <td *ngIf="userGroupType === 'UserPermissions'">
               {{ group.Description }}
             </td>
-            <td>{{ group.ID }}</td>
+            <td *ngIf="userGroupType !== 'UserPermissions'">{{ group.ID }}</td>
           </tr>
           <tr *ngIf="!userGroups?.Items?.length">
             <td>
@@ -131,7 +134,10 @@
         class="btn btn-link"
         (click)="discardUserUserGroupAssignmentChanges()"
       >
-        {{ (areChanges ? 'ADMIN.COMMON.CANCEL' : 'ADMIN.COMMON.NO_CHANGES') | translate }}
+        {{
+          (areChanges ? 'ADMIN.COMMON.CANCEL' : 'ADMIN.COMMON.NO_CHANGES')
+            | translate
+        }}
       </button>
       <button
         *ngIf="areChanges && !requestedUserConfirmation"

@@ -31,6 +31,11 @@ namespace Headstart.Common.Models
         public List<HSProduct> Products { get; set; }
     }
 
+    public class OrderReturnEventBody : OrderSubmitEventBody
+    {
+        public HSOrderReturn OrderReturn { get; set; }
+    }
+
     public class PasswordResetEventBody
     {
         public string Username { get; set; }

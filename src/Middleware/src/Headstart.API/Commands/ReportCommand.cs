@@ -10,8 +10,6 @@ using OrderCloud.Integrations.CosmosDB;
 using OrderCloud.Integrations.Reporting.Models;
 using OrderCloud.Integrations.Reporting.Queries;
 using OrderCloud.Integrations.Reporting.Repositories;
-using OrderCloud.Integrations.RMAs.Models;
-using OrderCloud.Integrations.RMAs.Repositories;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
@@ -29,8 +27,6 @@ namespace Headstart.API.Commands
         Task<List<HSLineItemOrder>> BuyerLineItemDetail(ListArgs<HSOrder> args, BuyerReportViewContext viewContext, string userID, string locationID, DecodedToken decodedToken);
 
         Task<List<HSLineItemOrder>> LineItemDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
-
-        Task<List<RMAWithRMALineItem>> RMADetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
 
         Task<List<OrderWithShipments>> ShipmentDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken);
 
@@ -55,18 +51,16 @@ namespace Headstart.API.Commands
         private readonly ISalesOrderDetailDataRepo salesOrderDetail;
         private readonly IPurchaseOrderDetailDataRepo purchaseOrderDetail;
         private readonly ILineItemDetailDataRepo lineItemDetail;
-        private readonly IRMARepo rmaDetail;
         private readonly IOrdersAndShipmentsDataRepo ordersAndShipments;
         private readonly IProductDetailDataRepo productDetailRepository;
         private readonly ReportTemplateQuery templateRepository;
 
-        public HSReportCommand(IOrderCloudClient oc, ISalesOrderDetailDataRepo salesOrderDetail, IPurchaseOrderDetailDataRepo purchaseOrderDetail, ILineItemDetailDataRepo lineItemDetail, IRMARepo rmaDetail, IOrdersAndShipmentsDataRepo ordersAndShipments, IProductDetailDataRepo productDetailRepository, ReportTemplateQuery template)
+        public HSReportCommand(IOrderCloudClient oc, ISalesOrderDetailDataRepo salesOrderDetail, IPurchaseOrderDetailDataRepo purchaseOrderDetail, ILineItemDetailDataRepo lineItemDetail, IOrdersAndShipmentsDataRepo ordersAndShipments, IProductDetailDataRepo productDetailRepository, ReportTemplateQuery template)
         {
             this.oc = oc;
             this.salesOrderDetail = salesOrderDetail;
             this.purchaseOrderDetail = purchaseOrderDetail;
             this.lineItemDetail = lineItemDetail;
-            this.rmaDetail = rmaDetail;
             this.ordersAndShipments = ordersAndShipments;
             this.productDetailRepository = productDetailRepository;
             this.templateRepository = template;
@@ -372,68 +366,6 @@ namespace Headstart.API.Commands
             }
 
             return lineItems;
-        }
-
-        public async Task<List<RMAWithRMALineItem>> RMADetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken)
-        {
-            IList<ListFilter> filters = await BuildFilters(templateID, args, decodedToken, "DateCreated", "SupplierID");
-
-            CosmosListOptions listOptions = new CosmosListOptions()
-            {
-                PageSize = -1,
-                Sort = "RMANumber",
-                SortDirection = SortDirection.ASC,
-                Filters = filters,
-            };
-
-            IQueryable<RMA> queryable = rmaDetail.GetQueryable()
-                .Where(order =>
-                order.PartitionKey == "PartitionValue");
-
-            QueryRequestOptions requestOptions = new QueryRequestOptions
-            {
-                MaxItemCount = listOptions.PageSize,
-                MaxConcurrency = -1,
-            };
-
-            CosmosListPage<RMA> rmaDataResponse = await rmaDetail.GetItemsAsync(queryable, requestOptions, listOptions);
-
-            List<RMA> rmaData = rmaDataResponse.Items;
-
-            listOptions.ContinuationToken = rmaDataResponse.Meta.ContinuationToken;
-
-            while (listOptions.ContinuationToken != null)
-            {
-                CosmosListPage<RMA> responseWithToken = await rmaDetail.GetItemsAsync(queryable, requestOptions, listOptions);
-                rmaData.AddRange(responseWithToken.Items);
-                listOptions.ContinuationToken = responseWithToken.Meta.ContinuationToken;
-            }
-
-            var rmas = new List<RMAWithRMALineItem>();
-
-            var supplierFilter = args.Filters.FirstOrDefault(filter => filter.PropertyName == "SupplierID");
-
-            var me = await oc.Me.GetAsync(decodedToken.AccessToken);
-
-            foreach (RMA detailData in rmaData)
-            {
-                if (supplierFilter == null || supplierFilter.FilterExpression == detailData.SupplierID)
-                {
-                    if (decodedToken.CommerceRole == CommerceRole.Seller || me.Supplier.ID == detailData.SupplierID)
-                    {
-                        foreach (RMALineItem rmaLineItem in detailData.LineItems)
-                        {
-                            rmas.Add(new RMAWithRMALineItem
-                            {
-                                RMA = detailData,
-                                RMALineItem = rmaLineItem,
-                            });
-                        }
-                    }
-                }
-            }
-
-            return rmas;
         }
 
         public async Task<List<ProductDetailData>> ProductDetail(string templateID, ListArgs<ReportAdHocFilters> args, DecodedToken decodedToken)

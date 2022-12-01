@@ -102,6 +102,7 @@ services:
       SendgridSettings_ProductInformationRequestTemplateID: "${SendgridSettings_ProductInformationRequestTemplateID}"
       SendgridSettings_QuoteOrderSubmitTemplateID: "${SendgridSettings_QuoteOrderSubmitTemplateID}"
       SendgridSettings_SupportCaseEmail: "${SendgridSettings_SupportCaseEmail}"
+      SendgridSettings_OrderReturnTemplateID: "${SendgridSettings_OrderReturnTemplateID}"
 
       ServiceBusSettings_ConnectionString: "${ServiceBusSettings_ConnectionString}"
       ServiceBusSettings_ZohoQueueName: "${ServiceBusSettings_ZohoQueueName}"

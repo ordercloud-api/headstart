@@ -138,14 +138,11 @@ const SupplierOrderNavGrouping: HSRoute = {
   subRoutes: [Orders, QuoteOrders, SupplierOrderBatchUpload],
 }
 
-const RMAs: HSRoute = {
-  rolesWithAccess: [
-    HSRoles.HSOrderAdmin,
-    HSRoles.HSOrderReader,
-    HSRoles.HSShipmentAdmin,
-  ],
-  title: 'ADMIN.NAV.RMAS',
-  route: '/rmas',
+const OrderReturns: HSRoute = {
+  rolesWithAccess: [HSRoles.HSOrderReturnApprover],
+  orderCloudUserTypesWithAccess: [SELLER],
+  title: 'ADMIN.NAV.ORDER_RETURNS',
+  route: '/order-returns',
 }
 
 // Buyers
@@ -299,7 +296,7 @@ const AllNavGroupings: HSRoute[] = [
   ProductNavGrouping,
   SupplierOrderNavGrouping,
   SellerOrderNavGrouping,
-  RMAs,
+  OrderReturns,
   BuyerNavGrouping,
   SupplierNavGrouping,
   ReportsNavGrouping,

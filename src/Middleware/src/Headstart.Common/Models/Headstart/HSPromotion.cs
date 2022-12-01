@@ -2,9 +2,15 @@
 
 namespace Headstart.Common.Models
 {
-    public class HSPromotion : Promotion<PromotionXp> { }
+    public class HSPromotion : Promotion<PromotionXp>
+    {
+    }
 
-    public class HSOrderPromotion : OrderPromotion<PromotionXp> { }
+    public class HSOrderPromotion : OrderPromotion<PromotionXp>
+    {
+    }
 
-    public class PromotionXp { }
+    public class PromotionXp
+    {
+    }
 }

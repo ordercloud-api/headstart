@@ -1,0 +1,64 @@
+<form class="table-responsive">
+  <table class="table table-sm table-bordered table-hover display-table mb-0">
+    <thead>
+      <tr>
+        <th translate>ADMIN.ORDER_RETURNS.PRODUCT</th>
+        <th translate>ADMIN.ORDER_RETURNS.DESCRIPTION</th>
+        <th translate>ADMIN.ORDER_RETURNS.REQUESTED</th>
+        <th translate>ADMIN.ORDER_RETURNS.REASON</th>
+        <th translate>ADMIN.ORDER_RETURNS.REFUND_AMOUNT</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let li of lineItems">
+        <td
+          class="align-middle d-flex justify-content-start align-items-center"
+        >
+          <img
+            [src]="li.xp?.ImageUrl || getImageUrl(li.ID)"
+            width="auto"
+            height="80px"
+            class="mr-2"
+          />
+          <h6>{{ li.ID }}</h6>
+        </td>
+        <td class="align-middle">
+          <div class="d-flex align-items-center">
+            <h6>
+              <span>{{ li | productNameWithSpecs }} </span>
+              <small class="text-muted d-block">{{
+                li.Variant?.ID || li.Product.ID
+              }}</small>
+              <p
+                class="mb-0 mt-2"
+                *ngFor="let spec of getVariableTextSpecs(li)"
+              >
+                {{ spec?.Name }}: {{ spec.Value }}
+              </p>
+            </h6>
+          </div>
+        </td>
+        <td class="align-middle text-center">
+          {{ getOrderReturnItem(li)?.Quantity }}
+        </td>
+        <td class="align-middle">
+          {{ getOrderReturnItem(li)?.Comments | orderReturnReason | translate }}
+        </td>
+        <td class="align-middle">
+          <span *ngIf="orderReturn.Status !== 'AwaitingApproval'">{{
+            getOrderReturnItem(li)?.RefundAmount | currency: order?.xp?.Currency
+          }}</span>
+          <order-return-refund-input
+            *ngIf="orderReturn.Status === 'AwaitingApproval'"
+            [lineItemRefundAmount]="getOrderReturnItem(li)?.RefundAmount"
+            [orderTotal]="order.Total"
+            [totalRefundAmount]="orderReturn.RefundAmount"
+            [lineItemId]="li.ID"
+            [disabled]="loading"
+            (refundAmountChange)="lineItemRefundChange.emit($event)"
+          ></order-return-refund-input>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>

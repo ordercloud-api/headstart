@@ -59,15 +59,15 @@ import { NgProgressModule } from '@ngx-progressbar/core'
 import { NgProgressHttpModule } from '@ngx-progressbar/http'
 import { OCMOrderApproval } from './components/orders/order-approval/order-approval.component'
 import { OCMOrderShipments } from './components/orders/order-shipments/order-shipments.component'
-import { OCMOrderRMAs } from './components/orders/order-rmas/order-rmas.component'
+import { OCMOrderReturns } from './components/orders/order-returns/order-returns.component'
 import {
   ShipperTrackingPipe,
   ShipperTrackingSupportedPipe,
 } from './pipes/shipperTracking.pipe'
 import { OCMOrderHistorical } from './components/orders/order-historical/order-historical.component'
 import { OCMOrderHistory } from './components/orders/order-history/order-history.component'
-import { OCMOrderReturn } from './components/orders/order-return/order-return.component'
-import { OCMOrderReturnTable } from './components/orders/order-return/order-return-table/order-return-table.component'
+import { OCMOrderReturnRequestForm } from './components/orders/order-return-request-form/order-return-request-form.component'
+import { OCMOrderReturnTable } from './components/orders/order-return-request-form/order-return-table/order-return-table.component'
 import { OCMAddressSuggestion } from './components/layout/address-suggestions/address-suggestion.component'
 import { SpecFieldDirective } from './components/products/spec-form/spec-field.directive'
 import { SpecFormCheckboxComponent } from './components/products/spec-form/spec-form-checkbox/spec-form-checkbox.component'
@@ -141,12 +141,6 @@ import { OCMContactSupplierForm } from './components/products/contact-supplier-f
 import { UnitOfMeasurePipe } from './pipes/unit-of-measure.pipe'
 import { OCMLocationListItem } from './components/profile/location-list-item/location-list-item.component'
 import { OCMLocationManagement } from './components/profile/location-management/location-management.component'
-import { MatListModule } from '@angular/material/list'
-import { MatButtonModule } from '@angular/material/button'
-import { MatCardModule } from '@angular/material/card'
-import { MatTableModule } from '@angular/material/table'
-import { MatCheckboxModule } from '@angular/material/checkbox'
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'
 import { OCMBuyerLocationPermissions } from './components/profile/buyer-location-permissions/buyer-location-permissions'
 import { OCMOrderAccessManagement } from './components/profile/order-approval-permissions/order-approval-permissions.component'
 import { SafeHTMLPipe } from './pipes/safe-html.pipe'
@@ -206,7 +200,9 @@ import {
 import { faCreditCard } from '@fortawesome/free-solid-svg-icons'
 import { ProductPriceDisplayComponent } from './components/products/product-price-display/product-price-display.component'
 import { LanguageSelectorService } from 'src/app/services/language-selector/language-selector.service'
-import { RmaReturnReasonPipe } from './pipes/rma-return-reason.pipe'
+import { OrderReturnReasonPipe } from './pipes/order-return-reason.pipe'
+import { OCMReturnsLineitemTable } from './components/orders/order-returns-lineitem-table/order-returns-lineitem-table'
+import { OrderReturnStatusPipe } from './pipes/order-return-status.pipe'
 
 export function HttpLoaderFactory(
   http: HttpClient,
@@ -246,6 +242,7 @@ const components = [
   OCMImageGallery,
   OCMSpecForm,
   OCMOrderSummary,
+  OCMReturnsLineitemTable,
   OCMLineitemTable,
   OCMCart,
   OCMHomePage,
@@ -294,11 +291,11 @@ const components = [
   OCMAppFooter,
   OCMOrderApproval,
   OCMOrderShipments,
-  OCMOrderRMAs,
+  OCMOrderReturns,
   OCMOrderAccessManagement,
   OCMOrderHistorical,
   OCMOrderHistory,
-  OCMOrderReturn,
+  OCMOrderReturnRequestForm,
   OCMOrderReturnTable,
   OCMAddressSuggestion,
   OCMAppFooter,
@@ -329,7 +326,8 @@ const components = [
     CreditCardInputDirective,
     SpecFieldDirective,
     ProductNameWithSpecsPipe,
-    RmaReturnReasonPipe,
+    OrderReturnReasonPipe,
+    OrderReturnStatusPipe,
     OrderStatusDisplayPipe,
     SplitByCapitalLetterPipe,
     PhoneFormatPipe,
@@ -359,12 +357,6 @@ const components = [
     NgxSpinnerModule,
     ReactiveFormsModule,
     FormsModule,
-    MatListModule,
-    MatCardModule,
-    MatTableModule,
-    MatCheckboxModule,
-    MatProgressSpinnerModule,
-    MatButtonModule,
     FontAwesomeModule,
     NgbCarouselModule,
     NgbCollapseModule,
@@ -435,7 +427,7 @@ export class AppModule {
         prefix: `${this.appConfig.appID}buyer`.toLowerCase(),
       },
     })
-    
+
     this.configureTranslationService()
 
     library.add(
@@ -456,6 +448,10 @@ export class AppModule {
     this.buildWebComponent(OCMImageGallery, 'ocm-image-gallery')
     this.buildWebComponent(OCMSpecForm, 'ocm-spec-form')
     this.buildWebComponent(OCMOrderSummary, 'ocm-order-summary')
+    this.buildWebComponent(
+      OCMReturnsLineitemTable,
+      'ocm-returns-lineitem-table'
+    )
     this.buildWebComponent(OCMLineitemTable, 'ocm-lineitem-table')
 
     this.buildWebComponent(OCMProductDetails, 'ocm-product-details')
@@ -521,10 +517,13 @@ export class AppModule {
     this.buildWebComponent(OCMAppFooter, 'ocm-app-footer')
     this.buildWebComponent(OCMOrderApproval, 'ocm-order-approval')
     this.buildWebComponent(OCMOrderShipments, 'ocm-order-shipments')
-    this.buildWebComponent(OCMOrderRMAs, 'ocm-order-rmas')
+    this.buildWebComponent(OCMOrderReturns, 'ocm-order-returns')
     this.buildWebComponent(OCMOrderHistorical, 'ocm-order-historical')
     this.buildWebComponent(OCMOrderHistory, 'ocm-order-history')
-    this.buildWebComponent(OCMOrderReturn, 'ocm-order-return')
+    this.buildWebComponent(
+      OCMOrderReturnRequestForm,
+      'ocm-order-return-request-form'
+    )
     this.buildWebComponent(OCMOrderReturnTable, 'ocm-order-return-table')
     this.buildWebComponent(
       OCMBuyerLocationPermissions,
@@ -542,7 +541,10 @@ export class AppModule {
   }
 
   configureTranslationService(): void {
-    if (this.appConfig.supportedLanguages && this.appConfig.supportedLanguages.length === 0){
+    if (
+      this.appConfig.supportedLanguages &&
+      this.appConfig.supportedLanguages.length === 0
+    ) {
       throw new Error('supportedLanguages not defined in appConfig.')
     }
     this.translate.addLangs(this.appConfig.supportedLanguages)

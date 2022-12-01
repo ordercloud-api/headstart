@@ -6,7 +6,7 @@ import { ListPage } from '@ordercloud/headstart-sdk'
   providedIn: 'root',
 })
 export class PaymentHelperService {
-  constructor() { }
+  constructor() {}
 
   async ListPaymentsOnOrder(
     orderID: string,
@@ -25,11 +25,11 @@ export class PaymentHelperService {
     includeDetails: boolean
   ): Promise<Payment> {
     if (includeDetails) {
-      const details = await this.getPaymentDetails(payment);
-      (payment as any).Details = details
+      const details = await this.getPaymentDetails(payment)
+      ;(payment as any).Details = details
       return payment
     } else {
-      (payment as any).Details = {}
+      ;(payment as any).Details = {}
       return payment
     }
   }

@@ -4,6 +4,6 @@
     {
         public HSOrderWorksheet OrderWorksheet { get; set; }
 
-        public CheckoutIntegrationConfiguration ConfigData { get; set; }
+        public dynamic ConfigData { get; set; }
     }
 }

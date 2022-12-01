@@ -61,13 +61,6 @@
               ></ocm-order-status-icon>
               {{ order.xp.ShippingStatus | orderStatusDisplay }}
             </li>
-            <li class="list-group-item">
-              <span translate>ORDERS.DETAIL.CLAIM_STATUS</span>:
-              <ocm-order-status-icon
-                [status]="order.xp.ClaimStatus"
-              ></ocm-order-status-icon>
-              {{ order.xp.ClaimStatus | orderStatusDisplay }}
-            </li>
           </ul>
         </div>
         <div
@@ -114,9 +107,8 @@
           </button>
           <button
             *ngIf="
-              !showRequestReturn &&
-              !showRequestCancel &&
               canRequestReturn() &&
+              !showRequestReturn &&
               !approvalVersion &&
               !isQuoteOrder(order)
             "
@@ -127,30 +119,12 @@
             ORDERS.DETAIL.REQUEST_A_RETURN
           </button>
           <button
-            *ngIf="
-              showRequestCancel &&
-              !isQuoteOrder(order) &&
-              order.Status !== 'Unsubmitted'
-            "
+            *ngIf="canCancelOrder()"
             class="btn btn-secondary d-print-none"
-            (click)="toggleRequestCancel()"
+            (click)="open(cancelModal)"
             translate
           >
-            ORDERS.DETAIL.DISCARD_CANCEL_REQUEST
-          </button>
-          <button
-            *ngIf="
-              !showRequestCancel &&
-              !showRequestReturn &&
-              canRequestCancel() &&
-              !approvalVersion &&
-              !isQuoteOrder(order)
-            "
-            class="btn btn-secondary d-print-none"
-            (click)="toggleRequestCancel()"
-            translate
-          >
-            ORDERS.DETAIL.REQUEST_A_CANCEL
+            ORDERS.DETAIL.CANCEL_ORDER
           </button>
           <button
             *ngIf="
@@ -177,6 +151,42 @@
           >
             ORDERS.DETAIL.UPDATE
           </button>
+          <ng-template #cancelModal let-modal class="confirm-modal">
+            <confirm-modal
+              modalTitle="{{ 'ORDERS.DETAIL.CANCEL_ORDER' | translate }}"
+              aria-labelledby="confirm-modal"
+            >
+              <div class="alert alert-warning">
+                <p translate>ORDERS.DETAIL.CANCEL_ORDER_WARNING</p>
+              </div>
+              <div
+                class="
+                  row
+                  d-flex
+                  justify-content-space-between justify-content-between
+                  mr-2
+                  ml-2
+                "
+              >
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  (click)="modal.dismiss()"
+                  translate
+                >
+                  ORDERS.DETAIL.CANCEL_ORDER_NO
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  (click)="cancelOrder(); modal.dismiss()"
+                  translate
+                >
+                  ORDERS.DETAIL.CANCEL_ORDER_YES
+                </button>
+              </div>
+            </confirm-modal>
+          </ng-template>
           <!-- TODO: refactor the reorder process to not be in a modal -->
           <ng-template #reorderModal let-modal class="confirm-modal">
             <confirm-modal
@@ -293,20 +303,19 @@
         </button>
       </li>
       <li class="nav-item">
-        <button class="btn btn-link nav-link" (click)="toRMAs()" translate>
+        <button
+          class="btn btn-link nav-link"
+          (click)="toOrderReturns()"
+          translate
+        >
           <fa-icon [icon]="faExchangeAlt"></fa-icon>
-          ORDERS.DETAIL.RMAS
+          ORDERS.DETAIL.ORDER_RETURNS
         </button>
       </li>
     </ul>
     <ocm-order-historical
       class="d-block p-3"
-      *ngIf="
-        orderDetails &&
-        showDetails() &&
-        !showRequestReturn &&
-        !showRequestCancel
-      "
+      *ngIf="orderDetails && showDetails() && !showRequestReturn"
       [isOrderToApprove]="isOrderToApprove"
       [orderDetails]="orderDetails"
     >
@@ -318,18 +327,16 @@
     [orderID]="order?.ID"
   >
   </ocm-order-shipments>
-  <ocm-order-rmas
-    *ngIf="showRMAs() && !showRequestReturn"
+  <ocm-order-returns
+    *ngIf="showOrderReturns() && !showRequestReturn"
     [orderDetails]="orderDetails"
   >
-  </ocm-order-rmas>
-  <ocm-order-return
+  </ocm-order-returns>
+  <ocm-order-return-request-form
     class="d-block p-3"
-    *ngIf="showRequestReturn || showRequestCancel"
-    (viewReturnFormEvent)="toggleShowRequestForm($event.detail)"
-    [isOrderToApprove]="isOrderToApprove"
+    *ngIf="showRequestReturn"
+    (returnCreated)="onReturnCreated($event)"
     [orderDetails]="orderDetails"
-    [action]="showRequestReturn ? 'return' : 'cancel'"
   >
-  </ocm-order-return>
+  </ocm-order-return-request-form>
 </div>

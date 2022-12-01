@@ -5,6 +5,6 @@ namespace Headstart.Common.Commands
 {
     public interface IShippingCommand
     {
-        Task<HSShipEstimateResponse> GetRatesAsync(HSOrderWorksheet worksheet, CheckoutIntegrationConfiguration config = null);
+        Task<HSShipEstimateResponse> GetRatesAsync(HSOrderWorksheet worksheet, dynamic config = null);
     }
 }

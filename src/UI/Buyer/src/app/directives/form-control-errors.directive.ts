@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Directive, Self, ElementRef, OnInit, Renderer2 } from '@angular/core'
 import { NgControl } from '@angular/forms'
 import { fromEvent } from 'rxjs'
@@ -31,14 +32,27 @@ export class FormControlErrorDirective implements OnInit {
 
   getErrorMsg(control: NgControl): string {
     if (!control.errors) return ''
+    if (control.pristine) return ''
     let controlErrors = Object.keys(control.errors)
     if (control.value)
       controlErrors = controlErrors.filter((x) => x !== 'required')
     if (controlErrors.length === 0) return ''
-    let error = ErrorDictionary[controlErrors[0]]
-    if (error === undefined) {
-      error = 'Error'
+    const firstError = controlErrors[0]
+    let message: string
+    message = ErrorDictionary[firstError as keyof typeof ErrorDictionary]
+    if (message) {
+      // enhance string message with additional validation information via string replacement
+      message = message.replace(
+        /\$minlength/g,
+        control?.errors?.minlength?.requiredLength
+      )
+      message = message.replace(
+        /\$maxlength/g,
+        control?.errors?.maxlength?.requiredLength
+      )
+      message = message.replace(/\$min/g, control?.errors?.min?.min)
+      message = message.replace(/\$max/g, control?.errors?.max?.max)
     }
-    return error
+    return message || ''
   }
 }

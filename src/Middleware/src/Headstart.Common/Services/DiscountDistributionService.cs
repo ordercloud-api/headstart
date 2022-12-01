@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Headstart.Common.Models;
-using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Services
@@ -11,33 +9,27 @@ namespace Headstart.Common.Services
     public interface IDiscountDistributionService
     {
         /// <summary>
-        /// Promotion discounts are distributed evenly accross line items. Proportional distribution is required for accurate partial returns.
+        /// Promotion discounts are distributed evenly across line items. Proportional distribution are required for accurate partial returns.
         /// </summary>
-        Task SetLineItemProportionalDiscount(HSOrderWorksheet order, List<OrderPromotion> promotions);
+        List<HSLineItem> GetLineItemsWithProportionalPromoDiscountApplied(HSOrderWorksheet worksheet);
     }
 
     /// <summary>
-    /// Promotion discounts are distributed evenly accross line items. Proportional distribution is required for accurate partial returns.
+    /// Promotion discounts are distributed evenly across line items. Proportional distribution are required for accurate partial returns.
     /// </summary>
     public class DiscountDistributionService : IDiscountDistributionService
     {
-        private readonly IOrderCloudClient oc;
-
-        public DiscountDistributionService(IOrderCloudClient oc)
-        {
-            this.oc = oc;
-        }
-
         /// <summary>
-        /// Promotion discounts are distributed evenly accross line items. Proportional distribution is required for accurate partial returns.
-        /// To solve this, set lineItem.xp.LineTotalWithProportionalDiscounts on all LineItems.
+        /// OrderCloud applies promotional discounts evenly across line items however proportional distribution is required for accurate partial returns.
+        /// To solve this, calculate and return the line items with what the actual line item total should be with proportional discounts applied.
         /// </summary>
-        public async Task SetLineItemProportionalDiscount(HSOrderWorksheet order, List<OrderPromotion> promotions)
+        public List<HSLineItem> GetLineItemsWithProportionalPromoDiscountApplied(HSOrderWorksheet worksheet)
         {
-            List<string> allLineItemIDsWithDiscounts = promotions
-                .Where(promo => promo.LineItemLevel)
-                .Select(promo => promo.LineItemID)
-                .Distinct().ToList(); // X001, X002...
+            var promotions = worksheet.OrderPromotions.ToList();
+            if (!promotions.Any(promo => promo.LineItemLevel))
+            {
+                return worksheet.LineItems.ToList();
+            }
 
             List<string> allLineItemLevelPromoCodes = promotions
                 .Where(promo => promo.LineItemLevel)
@@ -45,33 +37,29 @@ namespace Headstart.Common.Services
                 .Distinct().ToList(); // 25OFF, SAVE15...
 
             Dictionary<string, decimal> totalWeightedLineItemDiscounts = new Dictionary<string, decimal>();
-
-            foreach (string lineItemID in allLineItemIDsWithDiscounts)
+            foreach (HSLineItem lineItem in worksheet.LineItems)
             {
-                // Initialize discounts at 0.00
-                totalWeightedLineItemDiscounts.Add(lineItemID, 0M);
+                totalWeightedLineItemDiscounts.Add(lineItem.ID, 0M); // initialize all at 0.00
             }
 
             // Calculate discounts one promo code at a time
             foreach (string promoCode in allLineItemLevelPromoCodes)
             {
-                CalculateDiscountByPromoCode(promoCode, order, promotions, totalWeightedLineItemDiscounts);
+                CalculateDiscountByPromoCode(promoCode, worksheet, promotions, totalWeightedLineItemDiscounts);
             }
 
-            foreach (string lineItemID in allLineItemIDsWithDiscounts)
+            foreach (HSLineItem lineItem in worksheet.LineItems)
             {
-                var lineItemToUpdate = order.LineItems.FirstOrDefault(lineItem => lineItem.ID == lineItemID);
-                lineItemToUpdate.LineTotal = lineItemToUpdate.LineSubtotal - totalWeightedLineItemDiscounts[lineItemID];
+                if (totalWeightedLineItemDiscounts.TryGetValue(lineItem.ID, out var weightedPromoDiscount))
+                {
+                    lineItem.LineTotal = lineItem.LineSubtotal - weightedPromoDiscount;
+                }
             }
 
-            await Throttler.RunAsync(order.LineItems, 100, 8, async li =>
-            {
-                var patch = new HSPartialLineItem() { xp = new { LineTotalWithProportionalDiscounts = li.LineTotal } };
-                await oc.LineItems.PatchAsync(OrderDirection.All, order.Order.ID, li.ID, patch);
-            });
+            return worksheet.LineItems.ToList();
         }
 
-        private static void CalculateDiscountByPromoCode(string promoCode, HSOrderWorksheet order, List<OrderPromotion> promosOnOrder, Dictionary<string, decimal> totalWeightedLineItemDiscounts)
+        private static void CalculateDiscountByPromoCode(string promoCode, HSOrderWorksheet order, List<HSOrderPromotion> promosOnOrder, Dictionary<string, decimal> totalWeightedLineItemDiscounts)
         {
             // Total discounted from this code for all line items
             decimal totalDiscountedByOrderCloud = promosOnOrder

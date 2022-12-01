@@ -19,12 +19,12 @@ namespace OrderCloud.Integrations.TaxJar
         /// <summary>
         /// Calculates tax for an order without creating any records. Use this to display tax amount to user prior to order submit.
         /// </summary>
-        Task<OrderTaxCalculation> CalculateEstimateAsync(HSOrderWorksheet orderWorksheet, List<OrderPromotion> promotions);
+        Task<OrderTaxCalculation> CalculateEstimateAsync(HSOrderWorksheet orderWorksheet);
 
         /// <summary>
         /// Creates a tax transaction record in the calculating system. Use this once on purchase, payment capture, or fulfillment.
         /// </summary>
-        Task<OrderTaxCalculation> CommitTransactionAsync(HSOrderWorksheet orderWorksheet, List<OrderPromotion> promotions);
+        Task<OrderTaxCalculation> CommitTransactionAsync(HSOrderWorksheet orderWorksheet);
     }
 
     public class TaxJarCommand : ITaxJarCommand, ITaxCalculator, ITaxCodesProvider
@@ -39,7 +39,7 @@ namespace OrderCloud.Integrations.TaxJar
         /// <summary>
         /// Calculates tax for an order without creating any records. Use this to display tax amount to user prior to order submit.
         /// </summary>
-        public async Task<OrderTaxCalculation> CalculateEstimateAsync(HSOrderWorksheet orderWorksheet, List<OrderPromotion> promotions)
+        public async Task<OrderTaxCalculation> CalculateEstimateAsync(HSOrderWorksheet orderWorksheet)
         {
             var orders = await CalculateTax(orderWorksheet);
             var orderTaxCalculation = orders.ToOrderTaxCalculation();
@@ -49,7 +49,7 @@ namespace OrderCloud.Integrations.TaxJar
         /// <summary>
         /// Creates a tax transaction record in the calculating system. Use this once on purchase, payment capture, or fulfillment.
         /// </summary>
-        public async Task<OrderTaxCalculation> CommitTransactionAsync(HSOrderWorksheet orderWorksheet, List<OrderPromotion> promotions)
+        public async Task<OrderTaxCalculation> CommitTransactionAsync(HSOrderWorksheet orderWorksheet)
         {
             var orders = await CalculateTax(orderWorksheet);
             foreach (var response in orders)

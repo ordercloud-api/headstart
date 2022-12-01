@@ -1,0 +1,27 @@
+<p *ngIf="orderReturnProgress">
+  <ngb-progressbar
+    [animated]="orderReturnProgress.Animated"
+    [striped]="orderReturnProgress.Striped"
+    [type]="orderReturnProgress.ProgressBarType"
+    [value]="orderReturnProgress.Value"
+    height="25px"
+  >
+    {{ orderReturnProgress.StatusDisplay | orderReturnStatus | translate }}
+  </ngb-progressbar>
+</p>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-6">
+      <div class="d-block text-left mb-2">
+        <h4 translate>ADMIN.ORDER_RETURNS.ORDER_RETURN</h4>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <span class="d-block text-right mb-2">
+        <a routerLink="{{ '/orders/' + order.ID }}" class="nav-link" translate
+          >ADMIN.ORDER_RETURNS.VIEW_ORDER_DETAILS
+        </a>
+      </span>
+    </div>
+  </div>
+</div>

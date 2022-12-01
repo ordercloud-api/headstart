@@ -23,7 +23,7 @@ namespace OrderCloud.Integrations.EasyPost.Commands
             this.easyPostSettings = easyPostSettings;
         }
 
-        public async Task<HSShipEstimateResponse> GetRatesAsync(HSOrderWorksheet worksheet, CheckoutIntegrationConfiguration config = null)
+        public async Task<HSShipEstimateResponse> GetRatesAsync(HSOrderWorksheet worksheet, dynamic config = null)
         {
             var groupedLineItems = worksheet.LineItems.GroupBy(li => new AddressPair { ShipFrom = li.ShipFromAddress, ShipTo = li.ShippingAddress }).ToList();
 

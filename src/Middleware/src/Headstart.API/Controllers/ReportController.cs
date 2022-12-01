@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Reporting.Commands;
 using OrderCloud.Integrations.Reporting.Models;
-using OrderCloud.Integrations.RMAs.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Controllers
@@ -103,19 +102,6 @@ namespace Headstart.Common.Controllers
         {
             var reportData = await reportCommand.LineItemDetail(templateID, args, UserContext);
             return await downloadReportCommand.ExportToExcel(ReportTypeEnum.LineItemDetail, reportTemplate.Headers, reportData);
-        }
-
-        [HttpGet, Route("RMADetail/preview/{templateID}"), OrderCloudUserAuth(nameof(CustomRole.HSReportReader), nameof(CustomRole.HSReportAdmin))]
-        public async Task<List<RMAWithRMALineItem>> RMADetail(string templateID, ListArgs<ReportAdHocFilters> args)
-        {
-            return await reportCommand.RMADetail(templateID, args, UserContext);
-        }
-
-        [HttpPost, Route("RMADetail/download/{templateID}"), OrderCloudUserAuth(nameof(CustomRole.HSReportReader), nameof(CustomRole.HSReportAdmin))]
-        public async Task<string> DownloadRMADetail([FromBody] ReportTemplate reportTemplate, string templateID, ListArgs<ReportAdHocFilters> args)
-        {
-            var reportData = await reportCommand.RMADetail(templateID, args, UserContext);
-            return await downloadReportCommand.ExportToExcel(ReportTypeEnum.RMADetail, reportTemplate.Headers, reportData);
         }
 
         [HttpGet, Route("ShipmentDetail/preview/{templateID}"), OrderCloudUserAuth(nameof(CustomRole.HSReportReader), nameof(CustomRole.HSReportAdmin))]

@@ -13,7 +13,6 @@ namespace OrderCloud.Integrations.Reporting.Models
         SalesOrderDetail,
         PurchaseOrderDetail,
         LineItemDetail,
-        RMADetail,
         ShipmentDetail,
         ProductDetail,
     }
@@ -48,8 +47,6 @@ namespace OrderCloud.Integrations.Reporting.Models
             { "SubmittedOrderStatus", "xp.SubmittedOrderStatus" },
             { "OrderType", "xp.OrderType" },
             { "Country", "xp.ShippingAddress.Country" },
-            { "RMAStatus", "Status" },
-            { "RMAType", "Type" },
         };
 
         public List<string> BuyerID { get; set; }
@@ -61,10 +58,6 @@ namespace OrderCloud.Integrations.Reporting.Models
         public List<string> SubmittedOrderStatus { get; set; }
 
         public List<string> OrderType { get; set; }
-
-        public List<string> RMAType { get; set; }
-
-        public List<string> RMAStatus { get; set; }
 
         public List<string> ShippingStatus { get; set; }
 
@@ -143,13 +136,7 @@ namespace OrderCloud.Integrations.Reporting.Models
             "HSOrder.FromUser.Phone",
             "HSLineItem.xp.StatusByQuantity.Submitted",
             "HSLineItem.xp.StatusByQuantity.Backordered",
-            "HSLineItem.xp.StatusByQuantity.CancelRequested",
-            "HSLineItem.xp.StatusByQuantity.CancelDenied",
             "HSLineItem.xp.StatusByQuantity.Complete",
-            "HSLineItem.xp.StatusByQuantity.ReturnRequested",
-            "HSLineItem.xp.StatusByQuantity.ReturnDenied",
-            "HSLineItem.xp.StatusByQuantity.Returned",
-            "HSLineItem.xp.StatusByQuantity.Canceled",
             "HSLineItem.xp.StatusByQuantity.Open",
             "HSLineItem.PromotionDiscount",
         };

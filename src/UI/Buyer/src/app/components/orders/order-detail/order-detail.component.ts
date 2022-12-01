@@ -4,18 +4,22 @@ import {
   faExchangeAlt,
   faTruck,
 } from '@fortawesome/free-solid-svg-icons'
-import { HSOrder, OrderDetails, HSLineItem } from '@ordercloud/headstart-sdk'
+import {
+  HSOrder,
+  OrderDetails,
+  HSLineItem,
+  HeadStartSDK,
+} from '@ordercloud/headstart-sdk'
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import { isQuoteOrder } from '../../../services/orderType.helper'
-import {
-  CanReturnOrder,
-  CanCancelOrder,
-} from 'src/app/services/lineitem-status.helper'
+import { CanReturnOrder } from 'src/app/services/lineitem-status.helper'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 import {
   OrderReorderResponse,
   OrderViewContext,
 } from 'src/app/models/order.types'
+import { Orders } from 'ordercloud-javascript-sdk'
+import { ToastrService } from 'ngx-toastr'
 
 @Component({
   templateUrl: './order-detail.component.html',
@@ -28,16 +32,16 @@ export class OCMOrderDetails implements OnInit {
   faCube = faCube
   faTruck = faTruck
   faExchangeAlt = faExchangeAlt
-  subView: 'details' | 'shipments' | 'rmas' = 'details'
+  subView: 'details' | 'shipments' | 'order-returns' = 'details'
   reorderResponse: OrderReorderResponse
   message = { string: null, classType: null }
   showRequestReturn = false
-  showRequestCancel = false
   isAnon: boolean
   isQuoteOrder = isQuoteOrder
   constructor(
     private context: ShopperContextService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private toastrService: ToastrService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -82,12 +86,25 @@ export class OCMOrderDetails implements OnInit {
     }
   }
 
-  canRequestReturn(): boolean {
-    return CanReturnOrder(this.orderDetails.LineItems)
+  async cancelOrder(): Promise<void> {
+    await HeadStartSDK.Orders.Cancel(this.order.ID)
+    this.toastrService.success('Order cancelled')
+    this.ngOnInit()
   }
 
-  canRequestCancel(): boolean {
-    return CanCancelOrder(this.orderDetails.LineItems)
+  canRequestReturn(): boolean {
+    return CanReturnOrder(
+      this.orderDetails.LineItems,
+      this.orderDetails.OrderReturns
+    )
+  }
+
+  canCancelOrder(): boolean {
+    return (
+      !this.isQuoteOrder(this.order) &&
+      this.orderDetails.Order.Status === 'Open' &&
+      !this.orderDetails.LineItems.some((li) => li.QuantityShipped > 0)
+    )
   }
 
   toggleFavorite(order: HSOrder): void {
@@ -97,30 +114,18 @@ export class OCMOrderDetails implements OnInit {
 
   toggleRequestReturn(): void {
     this.showRequestReturn = !this.showRequestReturn
-    if (this.showRequestReturn) this.showRequestCancel = false
-  }
-
-  toggleRequestCancel(): void {
-    this.showRequestCancel = !this.showRequestCancel
-    if (this.showRequestCancel) this.showRequestReturn = false
   }
 
   toShipments(): void {
     this.subView = 'shipments'
-    if (this.showRequestCancel || this.showRequestReturn) {
-      this.toggleShowRequestForm(false)
-    }
   }
 
   toDetails(): void {
     this.subView = 'details'
-    if (this.showRequestCancel || this.showRequestReturn) {
-      this.toggleShowRequestForm(false)
-    }
   }
 
-  toRMAs(): void {
-    this.subView = 'rmas'
+  toOrderReturns(): void {
+    this.subView = 'order-returns'
   }
 
   toAllOrders(): void {
@@ -135,8 +140,8 @@ export class OCMOrderDetails implements OnInit {
     return this.subView === 'details'
   }
 
-  showRMAs(): boolean {
-    return this.subView === 'rmas'
+  showOrderReturns(): boolean {
+    return this.subView === 'order-returns'
   }
 
   updateMessage(response: OrderReorderResponse): void {
@@ -166,10 +171,10 @@ export class OCMOrderDetails implements OnInit {
     await this.context.order.cart.moveOrderToCart(this.order.ID)
   }
 
-  toggleShowRequestForm(showRequestReturn: boolean): void {
+  onReturnCreated(): void {
     this.ngOnInit()
-    this.showRequestReturn = showRequestReturn
-    this.showRequestCancel = showRequestReturn
+    this.showRequestReturn = false
+    this.showOrderReturns()
   }
 
   protected createAndSavePDF(): void {

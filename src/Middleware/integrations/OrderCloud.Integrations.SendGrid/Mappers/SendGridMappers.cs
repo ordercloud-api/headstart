@@ -79,6 +79,47 @@ namespace OrderCloud.Integrations.SendGrid
             };
         }
 
+        public static OrderReturnTemplateData GetOrderReturnTemplateData(HSOrder order, IList<HSLineItem> lineItems, HSOrderReturn orderReturn, IList<OrderApproval> orderApprovals)
+        {
+            var orderData = GetOrderTemplateData(order, lineItems);
+            var firstApproval = orderApprovals.FirstOrDefault();
+            return new OrderReturnTemplateData
+            {
+                // order data
+                FirstName = orderData.FirstName,
+                LastName = orderData.LastName,
+                OrderID = orderData.OrderID,
+                DateSubmitted = orderData.DateSubmitted,
+                ShippingAddressID = orderData.ShippingAddressID,
+                ShippingAddress = orderData.ShippingAddress,
+                BillingAddressID = orderData.BillingAddressID,
+                BillingAddress = orderData.BillingAddress,
+                BillTo = orderData.BillTo,
+                Products = orderData.Products,
+                Subtotal = orderData.Subtotal,
+                TaxCost = orderData.TaxCost,
+                ShippingCost = orderData.ShippingCost,
+                PromotionalDiscount = orderData.PromotionalDiscount,
+                Total = orderData.Total,
+                Currency = orderData.Currency,
+                Comments = orderData.Comments,
+
+                // order return data
+                OrderReturnID = orderReturn.ID,
+                OrderReturnRefundAmount = orderReturn.RefundAmount,
+                OrderReturnComments = orderReturn.Comments,
+                OrderReturnSellerComments = firstApproval?.Comments,
+                OrderReturnItemsToReturn = orderReturn.ItemsToReturn.Select(item => new EnhancedOrderReturnItem
+                {
+                    LineItemID = item.LineItemID,
+                    LineItem = lineItems.FirstOrDefault(li => li.ID == item.LineItemID),
+                    Quantity = item.Quantity,
+                    RefundAmount = item.RefundAmount,
+                    Comments = item.Comments,
+                }),
+            };
+        }
+
         public static string GetSpecCombo(IList<LineItemSpec> specs)
         {
             if (specs == null || !specs.Any())
@@ -105,51 +146,6 @@ namespace OrderCloud.Integrations.SendGrid
             }
         }
 
-        public static List<object> MapLineItemsToProducts(ListPage<HSLineItem> lineItems, string actionType)
-        {
-            List<object> products = new List<object>();
-
-            foreach (var lineItem in lineItems.Items)
-            {
-                if (lineItem.xp.Returns != null && actionType == "return")
-                {
-                    products.Add(MapReturnedLineItemToProduct(lineItem));
-                }
-                else if (lineItem.xp.Cancelations != null && actionType == "cancel")
-                {
-                    products.Add(MapCanceledLineItemToProduct(lineItem));
-                }
-                else
-                {
-                    products.Add(MapLineItemToProduct(lineItem));
-                }
-            }
-
-            return products;
-        }
-
-        public static LineItemProductData MapReturnedLineItemToProduct(HSLineItem lineItem) =>
-        lineItem == null ? null :
-            new LineItemProductData()
-            {
-                ProductName = lineItem?.Product?.Name,
-                ImageURL = lineItem?.xp?.ImageUrl,
-                ProductID = lineItem?.ProductID,
-                Quantity = lineItem?.Quantity,
-                LineTotal = lineItem?.LineTotal,
-            };
-
-        public static LineItemProductData MapCanceledLineItemToProduct(HSLineItem lineItem) =>
-        lineItem == null ? null :
-            new LineItemProductData()
-            {
-                ProductName = lineItem?.Product?.Name,
-                ImageURL = lineItem?.xp?.ImageUrl,
-                ProductID = lineItem?.ProductID,
-                Quantity = lineItem?.Quantity,
-                LineTotal = lineItem?.LineTotal,
-            };
-
         public static LineItemProductData MapLineItemToProduct(HSLineItem lineItem) =>
         lineItem == null ? null :
           new LineItemProductData()
@@ -174,27 +170,14 @@ namespace OrderCloud.Integrations.SendGrid
 
         public static LineItemProductData MapToTemplateProduct(HSLineItem lineItem, LineItemStatusChange lineItemStatusChange, LineItemStatus status)
         {
-            decimal lineTotal = 0M;
-            if (status == LineItemStatus.ReturnDenied || (status == LineItemStatus.CancelDenied && lineItemStatusChange.QuantityRequestedForRefund != lineItemStatusChange.Quantity))
-            {
-                int quantityApproved = lineItemStatusChange.QuantityRequestedForRefund - lineItemStatusChange.Quantity;
-                decimal costPerUnitAfterTaxes = (decimal)(lineItemStatusChange.Refund / quantityApproved);
-                lineTotal = Math.Round(costPerUnitAfterTaxes * lineItemStatusChange.Quantity, 2);
-            }
-            else
-            {
-                lineTotal = lineItemStatusChange.Refund ?? lineItem.LineTotal;
-            }
-
             return new LineItemProductData
             {
                 ProductName = lineItem?.Product?.Name,
                 ImageURL = lineItem?.xp?.ImageUrl,
                 ProductID = lineItem?.ProductID,
                 Quantity = lineItem?.Quantity,
-                LineTotal = lineTotal,
+                LineTotal = lineItem.LineTotal,
                 QuantityChanged = lineItemStatusChange?.Quantity,
-                MessageToBuyer = lineItemStatusChange.Comment,
             };
         }
     }

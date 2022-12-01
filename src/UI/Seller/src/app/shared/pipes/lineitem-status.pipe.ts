@@ -16,18 +16,6 @@ export class LineItemStatusPipe implements PipeTransform {
       return 'COMMON.LINE_ITEM_STATUS.OPEN'
     } else if (value === 'Backordered') {
       return 'COMMON.LINE_ITEM_STATUS.BACK_ORDERED'
-    } else if (value === 'Canceled') {
-      return 'COMMON.LINE_ITEM_STATUS.CANCELED'
-    } else if (value === 'CancelRequested') {
-      return 'COMMON.LINE_ITEM_STATUS.CANCEL_REQUESTED'
-    } else if (value === 'CancelDenied') {
-      return 'COMMON.LINE_ITEM_STATUS.CANCEL_DENIED'
-    } else if (value === 'Returned') {
-      return 'COMMON.LINE_ITEM_STATUS.RETURNED'
-    } else if (value === 'ReturnRequested') {
-      return 'COMMON.LINE_ITEM_STATUS.RETURN_REQUESTED'
-    } else if (value === 'ReturnDenied') {
-      return 'COMMON.LINE_ITEM_STATUS.RETURN_DENIED'
     } else {
       return value
     }

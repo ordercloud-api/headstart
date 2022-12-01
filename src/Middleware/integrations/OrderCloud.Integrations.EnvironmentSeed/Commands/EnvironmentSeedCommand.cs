@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Flurl.Http;
 using Headstart.Common.Commands;
 using Headstart.Common.Constants;
 using Headstart.Common.Models;
@@ -43,7 +44,7 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
             IHSBuyerLocationCommand buyerLocationCommand,
             IUploadTranslationsCommand uploadTranslationsCommand,
             IOrderCloudClient oc)
-        {
+            {
             this.portal = portal;
             this.supplierCommand = supplierCommand;
             this.buyerCommand = buyerCommand;
@@ -92,6 +93,8 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
                 await CreateOrUpdateMessageSendersAndAssignments(seed, marketplaceToken); // must be before CreateBuyers and CreateSuppliers
 
                 await CreateOrUpdateSecurityProfiles(marketplaceToken);
+                await CreateOrUpdateAdminPermissionGroups(marketplaceToken);
+                await CreateOrUpdateOrderReturnApprovalRule(marketplaceToken);
                 await CreateOnlyOnceBuyers(seed, marketplaceToken);
 
                 await CreateOnlyOnceApiClients(seed, marketplaceToken);
@@ -129,6 +132,24 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
                             ClientID = apiClients.BuyerUiApiClient.ID,
                         },
                     },
+                };
+            }
+            catch (OrderCloudException ex)
+            {
+                // the amount of data contained in an exception is overwhelming to try to simply serialize (200k+ lines) so instead extrapolating the most salient
+                var flurlException = ex.InnerException as FlurlHttpException;
+                return new EnvironmentSeedResponse
+                {
+                    Comments = $"Error! Environment seeding failed. The marketplace may be partially seeded with incomplete data. Please see Exception for details.",
+                    Exception = new
+                    {
+                        Message = ex.Message,
+                        Errors = ex.Errors,
+                        RequestMessage = flurlException.Message,
+                        RequestBody = flurlException.Call.RequestBody,
+                        RequestHeaders = flurlException.Call.Request.Headers,
+                    },
+                    Success = false,
                 };
             }
             catch (Exception ex)
@@ -256,6 +277,61 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
 
             var profileCreateRequests = profiles.Select(p => oc.SecurityProfiles.SaveAsync(p.ID, p, accessToken));
             await Task.WhenAll(profileCreateRequests);
+        }
+
+        public async Task CreateOrUpdateAdminPermissionGroups(string accessToken)
+        {
+            foreach (var userType in HSUserTypes.Admin())
+            {
+                var userGroupId = userType.UserGroupIDSuffix;
+                await oc.AdminUserGroups.SaveAsync(
+                    userGroupId,
+                    new UserGroup()
+                    {
+                        ID = userGroupId,
+                        Name = userType.UserGroupName,
+                        Description = userType.Description,
+                        xp = new
+                        {
+                            Type = "UserPermissions",
+                        },
+                    },
+                    accessToken);
+
+                foreach (var customRole in userType.CustomRoles)
+                {
+                    await oc.SecurityProfiles.SaveAssignmentAsync(
+                        new SecurityProfileAssignment()
+                        {
+                            UserGroupID = userGroupId,
+                            SecurityProfileID = customRole.ToString(),
+                        },
+                        accessToken);
+                }
+            }
+        }
+
+        public async Task CreateOrUpdateOrderReturnApprovalRule(string accessToken)
+        {
+            var userTypes = HSUserTypes.Admin();
+            var returnApprovalType = userTypes.FirstOrDefault(type => type.CustomRoles.Contains(CustomRole.HSOrderReturnApprover));
+            if (returnApprovalType == null)
+            {
+                throw new Exception("Missing user type definition for order returns");
+            }
+
+            var approvalRule = await oc.SellerApprovalRules.SaveAsync(
+                returnApprovalType.UserGroupIDSuffix,
+                new SellerApprovalRule
+                {
+                    ID = returnApprovalType.UserGroupIDSuffix,
+                    ApprovalType = ApprovalType.OrderReturn,
+                    ApprovingGroupID = returnApprovalType.UserGroupIDSuffix,
+                    Description = "Admin users in this group will be able to approve order returns submitted by buyer users",
+                    Name = "Order Return Approval",
+                    RuleExpression = "true", // require all orders to be approved
+                },
+                accessToken);
         }
 
         public async Task DeleteAllMessageSenders(string token)
@@ -442,7 +518,7 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
             return list.Items.Any();
         }
 
-        private async Task CreateOrUpdateDefaultSellerUser(EnvironmentSeedRequest seed, string token)
+        private async Task<User> CreateOrUpdateDefaultSellerUser(EnvironmentSeedRequest seed, string token)
         {
             // the middleware api client will use this user as the default context user
             var middlewareIntegrationsUser = SeedData.Users.MiddlewareIntegrationsUser();
@@ -450,7 +526,7 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
 
             // used to log in immediately after seeding the marketplace
             var initialAdminUser = SeedData.Users.IntialAdminUser(seed.Marketplace.InitialAdmin.Username, seed.Marketplace.InitialAdmin.Password);
-            await oc.AdminUsers.SaveAsync(initialAdminUser.ID, initialAdminUser, token);
+            return await oc.AdminUsers.SaveAsync(initialAdminUser.ID, initialAdminUser, token);
         }
 
         private async Task<SeededApiClients> GetApiClients(string token)
@@ -607,14 +683,23 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
             // this gets called by both the /seed command and the post-staging restore so we need to handle getting settings from two sources
             var middlewareBaseUrl = seed != null ? seed.Marketplace.MiddlewareBaseUrl : environmentSettings.MiddlewareBaseUrl;
             var webhookHashKey = seed != null ? seed.Marketplace.WebhookHashKey : orderCloudSettings.WebhookHashKey;
-            var checkoutEvent = SeedData.IntegrationEvents.CheckoutEvent(middlewareBaseUrl, webhookHashKey);
-            await oc.IntegrationEvents.SaveAsync(checkoutEvent.ID, checkoutEvent, token);
-            var localCheckoutEvent = SeedData.IntegrationEvents.LocalCheckoutEvent(webhookHashKey);
-            await oc.IntegrationEvents.SaveAsync(localCheckoutEvent.ID, localCheckoutEvent, token);
+            var checkoutIntegrationEvent = SeedData.IntegrationEvents.CheckoutEvent(middlewareBaseUrl, webhookHashKey);
+            await oc.IntegrationEvents.SaveAsync(checkoutIntegrationEvent.ID, checkoutIntegrationEvent, token);
+            var localCheckoutIntegrationEvent = SeedData.IntegrationEvents.LocalCheckoutEvent(webhookHashKey);
+            await oc.IntegrationEvents.SaveAsync(localCheckoutIntegrationEvent.ID, localCheckoutIntegrationEvent, token);
+            var returnIntegrationEvent = SeedData.IntegrationEvents.ReturnsEvent(middlewareBaseUrl, webhookHashKey);
+            await oc.IntegrationEvents.SaveAsync(returnIntegrationEvent.ID, returnIntegrationEvent, token);
 
-            await oc.ApiClients.PatchAsync(localBuyerClientID, new PartialApiClient { OrderCheckoutIntegrationEventID = "HeadStartCheckoutLOCAL" }, token);
+            await oc.ApiClients.PatchAsync(localBuyerClientID, new PartialApiClient { OrderCheckoutIntegrationEventID = localCheckoutIntegrationEvent.ID }, token);
             await Throttler.RunAsync(storefrontApiClientIDs, 500, 20, clientID =>
-                oc.ApiClients.PatchAsync(clientID, new PartialApiClient { OrderCheckoutIntegrationEventID = "HeadStartCheckout" }, token));
+                oc.ApiClients.PatchAsync(
+                        clientID,
+                        new PartialApiClient
+                        {
+                            OrderCheckoutIntegrationEventID = checkoutIntegrationEvent.ID,
+                            OrderReturnIntegrationEventID = returnIntegrationEvent.ID,
+                        },
+                        token));
         }
 
         private async Task ShutOffSupplierEmailsAsync(string token)

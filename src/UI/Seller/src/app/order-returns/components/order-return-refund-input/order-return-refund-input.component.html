@@ -1,0 +1,36 @@
+<form [formGroup]="form" class="mb-2">
+  <div class="input-group">
+    <div class="input-group-prepend">
+      <span class="input-group-text">{{
+        order?.xp?.Currency | currencySymbol
+      }}</span>
+    </div>
+    <label [for]="id" class="sr-only" translate
+      >ADMIN.ORDER_RETURNS.REFUND_INPUT_LABEL</label
+    >
+    <input
+      [id]="id"
+      type="number"
+      formControlName="refundAmount"
+      class="form-control text-center input-width"
+      placeholder="0"
+      step="0.01"
+    />
+  </div>
+</form>
+<small
+  *ngIf="form?.controls?.refundAmount?.errors?.max?.max"
+  class="alert alert-danger refund-amount-error"
+>
+  Max refund amount:
+  {{
+    form.controls.refundAmount.errors.max.max | currency: order?.xp?.Currency
+  }}
+  <br />
+</small>
+<small
+  *ngIf="form?.controls?.refundAmount?.errors?.min"
+  class="alert alert-danger refund-amount-error"
+>
+  Refund can not be less than {{ 0 | currency: order?.xp?.Currency }}
+</small>

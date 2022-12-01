@@ -32,8 +32,4 @@ export class OCMAppFooter {
   toFAQ(): void {
     this.context.router.toRoute('/faq')
   }
-
-  submitClaim(): ActiveToast<any> {
-    return this.toastrService.warning('Roadmap: navigate to claims page.')
-  }
 }

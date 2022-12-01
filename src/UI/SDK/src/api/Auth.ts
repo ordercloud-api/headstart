@@ -2,7 +2,7 @@ import axios, { CancelToken } from 'axios'
 import { AccessToken } from '../models/AccessToken'
 import Configuration from '../configuration'
 import { ApiRole } from 'ordercloud-javascript-sdk'
-import serialize from '../utils/paramsSerializer'
+import paramsSerializer from '../utils/paramsSerializer'
 import { RequiredDeep } from '../models/RequiredDeep'
 import OrderCloudError from '../utils/OrderCloudError'
 
@@ -57,7 +57,7 @@ class Auth {
     }
     const configuration = Configuration.Get()
     const response = await axios
-      .post(`${configuration.orderCloudApiUrl}/oauth/token`, serialize(body), {
+      .post(`${configuration.orderCloudApiUrl}/oauth/token`, paramsSerializer.serialize(body), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           Accept: 'application/json',
@@ -110,7 +110,7 @@ class Auth {
     }
     const configuration = Configuration.Get()
     const response = await axios
-      .post(`${configuration.orderCloudApiUrl}/oauth/token`, serialize(body), {
+      .post(`${configuration.orderCloudApiUrl}/oauth/token`, paramsSerializer.serialize(body), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           Accept: 'application/json',
@@ -157,7 +157,7 @@ class Auth {
     }
     const configuration = Configuration.Get()
     const response = await axios
-      .post(`${configuration.orderCloudApiUrl}/oauth/token`, serialize(body), {
+      .post(`${configuration.orderCloudApiUrl}/oauth/token`, paramsSerializer.serialize(body), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           Accept: 'application/json',
@@ -196,7 +196,7 @@ class Auth {
     }
     const configuration = Configuration.Get()
     const response = await axios
-      .post(`${configuration.orderCloudApiUrl}/oauth/token`, serialize(body), {
+      .post(`${configuration.orderCloudApiUrl}/oauth/token`, paramsSerializer.serialize(body), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           Accept: 'application/json',
@@ -238,7 +238,7 @@ class Auth {
     }
     const configuration = Configuration.Get()
     const response = await axios
-      .post(`${configuration.orderCloudApiUrl}/oauth/token`, serialize(body), {
+      .post(`${configuration.orderCloudApiUrl}/oauth/token`, paramsSerializer.serialize(body), {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
           Accept: 'application/json',

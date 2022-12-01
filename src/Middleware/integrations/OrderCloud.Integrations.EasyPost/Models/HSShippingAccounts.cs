@@ -7,8 +7,10 @@ namespace OrderCloud.Integrations.EasyPost.Models
     {
         public HSShippingProfiles(string customsSigner, string fedexAccountId, string upsAccountId)
         {
-            if (!string.IsNullOrEmpty(fedexAccountId)) {
-                this.ShippingProfiles.Add(new EasyPostShippingProfile() {
+            if (!string.IsNullOrEmpty(fedexAccountId))
+            {
+                this.ShippingProfiles.Add(new EasyPostShippingProfile()
+                {
                     ID = "FEDEX_CARRIER",
                     SupplierID = null,
                     CarrierAccountIDs = new List<string>() { fedexAccountId },
@@ -21,8 +23,10 @@ namespace OrderCloud.Integrations.EasyPost.Models
                 });
             }
 
-            if (!string.IsNullOrEmpty(upsAccountId)) {
-                this.ShippingProfiles.Add(new EasyPostShippingProfile() {
+            if (!string.IsNullOrEmpty(upsAccountId))
+            {
+                this.ShippingProfiles.Add(new EasyPostShippingProfile()
+                {
                     ID = "UPS_CARRIER",
                     SupplierID = null,
                     CarrierAccountIDs = new List<string>() { upsAccountId },
@@ -36,7 +40,8 @@ namespace OrderCloud.Integrations.EasyPost.Models
             }
         }
 
-        public override EasyPostShippingProfile FirstOrDefault(string id) {
+        public override EasyPostShippingProfile FirstOrDefault(string id)
+        {
             return ShippingProfiles.FirstOrDefault(p => p.SupplierID == id) ?? ShippingProfiles.First(p => p.ID == "SMG");
         }
     }

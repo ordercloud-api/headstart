@@ -1,0 +1,56 @@
+<div class="container mt-4">
+  <div
+    class="card bg-light p-3 flex-row justify-content-center"
+    *ngIf="_orderDetails?.OrderReturns?.length === 0"
+  >
+    <p class="mb-0" translate>There are currently no returns for this order.</p>
+  </div>
+  <div *ngIf="_orderDetails?.OrderReturns?.length">
+    <div
+      class="card p-4 mb-4"
+      *ngFor="let orderReturn of _orderDetails.OrderReturns; let i = index"
+    >
+      <div class="mb-4">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <h4>{{ orderReturn?.ID }}</h4>
+            <span>
+              <ocm-order-status-icon
+                [status]="orderReturn.Status"
+              ></ocm-order-status-icon>
+              {{ orderReturn.Status | orderReturnStatus | translate }}
+            </span>
+            <small *ngIf="orderReturn?.Status === 'Open'" class="text-danger">
+              (refund will be issued after items have been returned)
+            </small>
+            <small class="d-block mt-1"
+              ><span translate>ORDERS.DETAIL.SUBMITTED</span>
+              {{ orderReturn?.DateCreated | date: 'short' }}</small
+            >
+            <small *ngIf="orderReturn.Comments">
+              <p><strong>Buyer Comments: </strong>{{ orderReturn.Comments }}</p>
+            </small>
+          </div>
+          <div class="col-md-6 text-right">
+            <span
+              class="font-weight-bold"
+              *ngIf="_orderDetails.OrderReturns?.length > 1"
+              >{{ i + 1 }} of {{ _orderDetails.OrderReturns?.length }}</span
+            >
+          </div>
+        </div>
+
+        <ocm-returns-lineitem-table
+          *ngIf="lineItemMap?.entries()"
+          [lineItems]="lineItemMap?.get(orderReturn?.ID)"
+          [orderReturn]="orderReturn"
+        >
+        </ocm-returns-lineitem-table>
+        <span class="mt-3 float-right font-weight-bold">
+          <span translate>CART.LINEITEM_TABLE.TOTAL_REFUND</span>:
+          {{ orderReturn.RefundAmount || 0 | currency: orderCurrency }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

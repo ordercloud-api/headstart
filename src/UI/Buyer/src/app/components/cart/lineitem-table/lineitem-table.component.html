@@ -45,44 +45,27 @@
           <div class="col-md-6">
             <div class="row align-items-center">
               <div
-                *ngIf="!hasReturnInfo() && activePath === '/orders'"
+                *ngIf="activePath === '/orders'"
                 class="col-2 text-center text-medium"
               ></div>
               <div
-                *ngIf="!hasCancelInfo() && activePath === '/orders'"
+                *ngIf="activePath === '/orders'"
                 class="col-2 text-center text-medium"
               ></div>
               <div
-                *ngIf="rma"
-                class="col-8 text-left text-medium"
-                id="label_lineItemPrice"
-              >
-                <small translate>ALIAS.SUPPLIER</small>&nbsp;<small translate
-                  >CART.LINEITEM_TABLE.RMA_COMMENT</small
-                >
-              </div>
-              <div
-                *ngIf="!rma"
                 class="col-3 text-right text-medium"
                 id="label_lineItemPrice"
               >
                 <small translate>CART.LINEITEM_TABLE.PRICE</small>
               </div>
               <div
-                *ngIf="!rma"
                 class="col-5 text-right text-medium"
                 id="label_lineItemQty"
               >
                 <small translate>CART.LINEITEM_TABLE.QTY</small>
               </div>
               <div
-                *ngIf="hasReturnInfo() && activePath === '/orders'"
-                class="col text-center text-medium"
-              >
-                <small translate>CART.LINEITEM_TABLE.QTY_RETURNED</small>
-              </div>
-              <div
-                *ngIf="hasCancelInfo() && activePath === '/orders'"
+                *ngIf="activePath === '/orders'"
                 class="col text-center text-medium"
               >
                 <small translate>CART.LINEITEM_TABLE.QTY_CANCELED</small>
@@ -91,10 +74,7 @@
                 class="col-4 text-right text-medium"
                 id="label_lineItemTotal"
               >
-                <small *ngIf="!rma" translate>CART.LINEITEM_TABLE.TOTAL</small>
-                <small *ngIf="rma" translate
-                  >CART.LINEITEM_TABLE.REFUND_AMOUNT</small
-                >
+                <small translate>CART.LINEITEM_TABLE.TOTAL</small>
               </div>
             </div>
           </div>
@@ -137,26 +117,8 @@
                   </span>
                 </a>
                 <small class="text-muted d-block">{{ li.Product.ID }}</small>
-                <small
-                  *ngIf="li.xp?.LineItemReturnInfo?.ReturnReason"
-                  class="text-dark d-block"
-                  translate
-                >
-                  CART.LINEITEM_TABLE.RETURNED
-                  <span class="text-muted" translate>{{
-                    li.xp?.LineItemReturnInfo?.ReturnReason
-                      | rmaReturnReason
-                      | translate
-                  }}</span>
-                </small>
-                <small *ngIf="li.xp?.LineItemReturnInfo?.Comment">
-                  <span translate>CART.LINEITEM_TABLE.SELLER_COMMENT</span>:
-                  <span class="text-muted">{{
-                    li.xp?.LineItemReturnInfo?.Comment
-                  }}</span>
-                </small>
 
-                <div *ngIf="!rma && readOnly && !hideStatus">
+                <div *ngIf="readOnly && !hideStatus">
                   <span translate>ORDERS.DETAIL.STATUS</span>:
                   <span *ngFor="let entry of li.xp.StatusByQuantity | keyvalue">
                     <span *ngIf="entry.value">
@@ -171,18 +133,6 @@
                       </span>
                     </span>
                   </span>
-                </div>
-                <div *ngIf="rma">
-                  <span translate>ORDERS.DETAIL.REASON</span>:
-                  {{ getRMALineItemReason(li) | rmaReturnReason | translate }}
-                </div>
-
-                <div *ngIf="rma">
-                  <span translate>ORDERS.DETAIL.STATUS</span>:
-                  <ocm-order-status-icon
-                    [status]="getRMALineItemStatus(li)"
-                  ></ocm-order-status-icon>
-                  {{ getQuantityProcessedByStatus(li) }}
                 </div>
                 <div
                   *ngIf="
@@ -200,17 +150,14 @@
           <div class="col-md-6">
             <div class="row align-items-center pt-3 pt-sm-0">
               <div
-                *ngIf="!hasReturnInfo() && activePath === '/orders'"
+                *ngIf="activePath === '/orders'"
                 class="col-2 text-center"
               ></div>
               <div
-                *ngIf="!hasCancelInfo() && activePath === '/orders'"
+                *ngIf="activePath === '/orders'"
                 class="col-2 text-center"
               ></div>
-              <div *ngIf="rma" class="col-8 text-left" id="supplier_comment">
-                <span>{{ getRMALineItemComment(li) }}</span>
-              </div>
-              <div *ngIf="!rma" class="col-3 text-right" id="label_unitPrice">
+              <div class="col-3 text-right" id="label_unitPrice">
                 <small class="d-block d-sm-none white-space-pre" translate
                   >CART.LINEITEM_TABLE.UNIT_PRICE</small
                 >
@@ -219,7 +166,7 @@
                 }}</span>
               </div>
               <!-- Quantity Input -->
-              <div *ngIf="!rma" class="text-right col-5" id="colQuantityInput">
+              <div class="text-right col-5" id="colQuantityInput">
                 <small class="d-block d-sm-none" translate
                   >CART.LINEITEM_TABLE.QTY</small
                 >
@@ -238,32 +185,6 @@
                 </ocm-quantity-input>
                 <span *ngIf="readOnly">&times;{{ li.Quantity | number }}</span>
               </div>
-              <div
-                *ngIf="hasReturnInfo() && activePath === '/orders'"
-                class="col flex-grow-0 text-center"
-              >
-                <small class="d-block d-sm-none" translate
-                  >CART.LINEITEM_TABLE.QTY_RETURNED</small
-                >
-                <span class="text-nowrap" *ngIf="readOnly"
-                  >&times;{{
-                    (li.xp?.LineItemReturnInfo?.QuantityToReturn | number) || 0
-                  }}</span
-                >
-              </div>
-              <div
-                *ngIf="hasCancelInfo() && activePath === '/orders'"
-                class="col-2 text-center"
-              >
-                <small class="d-block d-sm-none" translate
-                  >CART.LINEITEM_TABLE.QTY_CANCELED</small
-                >
-                <span class="text-nowrap" *ngIf="readOnly"
-                  >&times;{{
-                    (li.xp?.LineItemCancelInfo?.QuantityToCancel | number) || 0
-                  }}</span
-                >
-              </div>
               <div class="col-4 text-right" id="col_lineItemTotal">
                 <ngx-spinner
                   *ngIf="isQtyChanging(li.ID)"
@@ -279,13 +200,10 @@
                   >CART.LINEITEM_TABLE.TOTAL</small
                 >
                 <span
-                  *ngIf="!isQtyChanging(li.ID) && !rma"
+                  *ngIf="!isQtyChanging(li.ID)"
                   class="text-nowrap"
                   >{{ li.LineTotal | currency: _orderCurrency }}</span
                 >
-                <span *ngIf="rma" class="text-nowrap">{{
-                  getRMALineItemRefundTotal(li) | currency: _orderCurrency
-                }}</span>
                 <span *ngIf="isQtyChanging(li.ID)" class="text-nowrap"> </span>
               </div>
             </div>
@@ -328,11 +246,6 @@
           ></fa-icon>
         </button>
       </div>
-      <!-- line item: End -->
-      <span *ngIf="rma" class="mt-3 float-right font-weight-bold">
-        <span translate>CART.LINEITEM_TABLE.TOTAL_REFUND</span>:
-        {{ rma?.TotalCredited | currency: _orderCurrency }}
-      </span>
     </div>
   </div>
 </div>

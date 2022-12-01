@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Headstart.Common.Commands;
 using Headstart.Common.Extensions;
@@ -26,10 +28,8 @@ namespace Headstart.API.Commands
         private readonly ITaxCalculator taxCalculator;
         private readonly ICurrencyConversionService currencyConversionService;
         private readonly IOrderCloudClient orderCloudClient;
-        private readonly IDiscountDistributionService discountDistribution;
 
         public CheckoutIntegrationCommand(
-            IDiscountDistributionService discountDistribution,
             ITaxCalculator taxCalculator,
             ICurrencyConversionService currencyConversionService,
             IOrderCloudClient orderCloudClient,
@@ -39,7 +39,6 @@ namespace Headstart.API.Commands
             this.currencyConversionService = currencyConversionService;
             this.orderCloudClient = orderCloudClient;
             this.shippingCommand = shippingCommand;
-            this.discountDistribution = discountDistribution;
         }
 
         public async Task<ShipEstimateResponse> GetRatesAsync(HSOrderCalculatePayload orderCalculatePayload)
@@ -80,12 +79,7 @@ namespace Headstart.API.Commands
             }
             else
             {
-                var promotions = await orderCloudClient.Orders.ListAllPromotionsAsync(OrderDirection.All, orderCalculatePayload.OrderWorksheet.Order.ID);
-                var promoCalculationTask = discountDistribution.SetLineItemProportionalDiscount(orderCalculatePayload.OrderWorksheet, promotions);
-                var taxCalculationTask = taxCalculator.CalculateEstimateAsync(orderCalculatePayload.OrderWorksheet.Reserialize<HSOrderWorksheet>(), promotions);
-                var taxCalculation = await taxCalculationTask;
-                await promoCalculationTask;
-
+                var taxCalculation = await taxCalculator.CalculateEstimateAsync(orderCalculatePayload.OrderWorksheet.Reserialize<HSOrderWorksheet>());
                 return new HSOrderCalculateResponse
                 {
                     TaxTotal = taxCalculation.TotalTax,

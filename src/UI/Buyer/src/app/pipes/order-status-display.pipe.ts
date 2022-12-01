@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core'
 import { LineItemStatus } from '../models/line-item.types'
-import { ClaimStatus, HeadstartOrderStatus } from '../models/order.types'
+import { HeadstartOrderStatus } from '../models/order.types'
 import { ShippingStatus } from '../models/shipping.types'
 
 @Pipe({
@@ -18,15 +18,8 @@ export class OrderStatusDisplayPipe implements PipeTransform {
     [ShippingStatus.Backordered]: 'Backordered',
     [ShippingStatus.Processing]: 'Processing',
     [ShippingStatus.PartiallyShipped]: 'Partially Shipped',
-    [LineItemStatus.ReturnRequested]: 'Return Requested',
-    [LineItemStatus.CancelRequested]: 'Cancel Requested',
-    [LineItemStatus.ReturnDenied]: 'Return Denied',
-    [LineItemStatus.CancelDenied]: 'Cancel Denied',
-    [LineItemStatus.Returned]: 'Returned',
     [LineItemStatus.Complete]: 'Complete',
     [LineItemStatus.Submitted]: 'Submitted',
-    [ClaimStatus.Pending]: 'Pending',
-    [ClaimStatus.NoClaim]: 'No Claim',
   }
 
   transform(status: HeadstartOrderStatus): string {

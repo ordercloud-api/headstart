@@ -102,5 +102,40 @@ namespace OrderCloud.Integrations.Emails
         {
             return Task.FromResult<object>(null);
         }
+
+        public Task SendOrderReturnApprovedEmail(MessageNotification<OrderReturnEventBody> messageNotification)
+        {
+            return Task.FromResult<object>(null);
+        }
+
+        public Task SendOrderReturnCompletedEmail(MessageNotification<OrderReturnEventBody> messageNotification)
+        {
+            return Task.FromResult<object>(null);
+        }
+
+        public Task SendOrderReturnDeclinedEmail(MessageNotification<OrderReturnEventBody> messageNotification)
+        {
+            return Task.FromResult<object>(null);
+        }
+
+        public Task SendOrderReturnSubmittedForApprovalEmail(MessageNotification<OrderReturnEventBody> messageNotification)
+        {
+            return Task.FromResult<object>(null);
+        }
+
+        public Task SendOrderReturnSubmittedForYourApprovalEmail(MessageNotification<OrderReturnEventBody> messageNotification)
+        {
+            return Task.FromResult<object>(null);
+        }
+
+        public Task SendOrderReturnSubmittedForYourApprovalHasBeenApprovedEmail(MessageNotification<OrderReturnEventBody> messageNotification)
+        {
+            return Task.FromResult<object>(null);
+        }
+
+        public Task SendOrderReturnSubmittedForYourApprovalHasBeenDeclinedEmail(MessageNotification<OrderReturnEventBody> messageNotification)
+        {
+            return Task.FromResult<object>(null);
+        }
     }
 }

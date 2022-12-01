@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core'
 import {
   Orders,
-  LineItems,
   Me,
   Suppliers,
   SupplierAddresses,
   Tokens,
-  LineItem,
 } from 'ordercloud-javascript-sdk'
 import { ReorderHelperService } from '../reorder/reorder.service'
 import { OrderFilterService } from './order-filter.service'
@@ -103,7 +101,16 @@ export class OrderHistoryService {
         )
         supplierItems.push({ supplier, shipFrom })
       } else {
-        supplierItems.push({ supplier, shipFrom: null })
+        // this handles seller owned products
+        supplierItems.push({
+          supplier: {
+            ID: this.appConfig.marketplaceID,
+            Name: this.appConfig.marketplaceName || 'Purchasing from Seller',
+          },
+          shipFrom: {
+            ID: line.ShipFromAddressID,
+          },
+        })
       }
     }
     return supplierItems
@@ -120,15 +127,5 @@ export class OrderHistoryService {
     return this.httpClient
       .get<HSShipmentWithItems[]>(url, { headers })
       .toPromise()
-  }
-
-  async submitCancelOrReturn(
-    orderID: string,
-    lineItemStatusChange: any
-  ): Promise<void> {
-    return HeadStartSDK.Orders.BuyerUpdateLineItemStatusesWithNotification(
-      orderID,
-      lineItemStatusChange
-    )
   }
 }

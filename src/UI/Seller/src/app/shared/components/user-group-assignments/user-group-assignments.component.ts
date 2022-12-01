@@ -74,7 +74,7 @@ export class UserGroupAssignments implements OnInit, OnChanges {
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     const url = this.router?.routerState?.snapshot?.url
     if (url && url.split('/').length) {
       this.buyerID = url.split('/')[2]
@@ -89,7 +89,7 @@ export class UserGroupAssignments implements OnInit, OnChanges {
     if (this.userOrgID !== REDIRECT_TO_FIRST_PARENT) {
       await this.getUserGroups(this.userOrgID)
     }
-    if (changes.user?.currentValue.ID && !this.userID) {
+    if (changes.user?.currentValue?.ID && !this.userID) {
       this.userID = this.user.ID
       if (this.userOrgID && this.userOrgID !== REDIRECT_TO_FIRST_PARENT) {
         this.getUserGroupAssignments(this.user.ID, this.userOrgID)

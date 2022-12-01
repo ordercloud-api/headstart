@@ -16,12 +16,6 @@ export enum LineItemStatus {
   Submitted = 'Submitted',
   Open = 'Open',
   Backordered = 'Backordered',
-  Canceled = 'Canceled',
-  CancelRequested = 'CancelRequested',
-  Returned = 'Returned',
-  ReturnRequested = 'ReturnRequested',
-  CancelDenied = 'CancelDenied',
-  ReturnDenied = 'ReturnDenied',
 }
 
 /**

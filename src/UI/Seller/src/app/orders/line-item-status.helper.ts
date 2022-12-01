@@ -3,21 +3,8 @@ import { HSLineItem } from '@ordercloud/headstart-sdk'
 
 const validPreviousStates = {
   Submitted: [],
-  Complete: [
-    LineItemStatus.Submitted,
-    LineItemStatus.Backordered,
-    LineItemStatus.CancelRequested,
-    LineItemStatus.CancelDenied,
-  ],
-  ReturnRequested: [LineItemStatus.Complete],
-  Returned: [LineItemStatus.ReturnRequested, LineItemStatus.Complete],
+  Complete: [LineItemStatus.Submitted, LineItemStatus.Backordered],
   Backordered: [LineItemStatus.Submitted],
-  CancelRequested: [LineItemStatus.Submitted, LineItemStatus.Backordered],
-  Canceled: [
-    LineItemStatus.CancelRequested,
-    LineItemStatus.Backordered,
-    LineItemStatus.Submitted,
-  ],
 }
 
 export function NumberCanChangeTo(

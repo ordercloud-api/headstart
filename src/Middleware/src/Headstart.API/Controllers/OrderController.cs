@@ -4,8 +4,6 @@ using Headstart.API.Commands;
 using Headstart.Common.Models;
 using Microsoft.AspNetCore.Mvc;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.CosmosDB;
-using OrderCloud.Integrations.RMAs.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.Common.Controllers
@@ -72,12 +70,6 @@ namespace Headstart.Common.Controllers
         public async Task<List<HSShipmentWithItems>> ListShipmentsWithItems(string orderID)
         {
             return await orderCommand.ListHSShipmentWithItems(orderID, UserContext);
-        }
-
-        [HttpGet, Route("rma/list/{orderID}"), OrderCloudUserAuth(ApiRole.Shopper)]
-        public async Task<CosmosListPage<RMA>> ListRMAsForOrder(string orderID)
-        {
-            return await orderCommand.ListRMAsForOrder(orderID, UserContext);
         }
 
         [HttpPut, Route("{orderID}/lineitems"), OrderCloudUserAuth(ApiRole.Shopper)]
@@ -167,6 +159,15 @@ namespace Headstart.Common.Controllers
         {
             var me = await oc.Me.GetAsync(accessToken: UserContext.AccessToken);
             return await orderCommand.GetQuoteOrder(me, orderID);
+        }
+
+        /// <summary>
+        /// Cancels and refunds an order (can only be called if order has not shipped).
+        /// </summary>
+        [HttpPost, Route("{orderId}/cancel"), OrderCloudUserAuth, UserTypeRestrictedTo(CommerceRole.Buyer)]
+        public async Task<HSOrder> CancelOrder(string orderID)
+        {
+            return await orderCommand.CancelOrder(orderID, UserContext);
         }
     }
 }

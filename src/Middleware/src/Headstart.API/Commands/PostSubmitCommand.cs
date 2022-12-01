@@ -133,7 +133,6 @@ namespace Headstart.API.Commands
                         OrderType = buyerOrder.Order.xp.OrderType,
                         QuoteOrderInfo = buyerOrder.Order.xp.QuoteOrderInfo,
                         Currency = supplier.xp.Currency,
-                        ClaimStatus = ClaimStatus.NoClaim,
                         ShippingStatus = ShippingStatus.Processing,
                         SubmittedOrderStatus = SubmittedOrderStatus.Open,
                         SelectedShipMethodsSupplierView = suppliersShipEstimates != null ? MapSelectedShipMethod(suppliersShipEstimates) : null,
@@ -171,7 +170,6 @@ namespace Headstart.API.Commands
                 {
                     ShipFromAddressIDs = shipFromAddressIDs,
                     SupplierIDs = supplierIDs,
-                    ClaimStatus = ClaimStatus.NoClaim,
                     ShippingStatus = ShippingStatus.Processing,
                     SubmittedOrderStatus = SubmittedOrderStatus.Open,
                     HasSellerProducts = buyerOrder.LineItems.Any(li => li.SupplierID == null),
@@ -352,9 +350,7 @@ namespace Headstart.API.Commands
 
         private async Task HandleTaxTransactionCreationAsync(HSOrderWorksheet orderWorksheet)
         {
-            var promotions = await oc.Orders.ListAllPromotionsAsync(OrderDirection.All, orderWorksheet.Order.ID);
-
-            var taxCalculation = await taxCalculator.CommitTransactionAsync(orderWorksheet, promotions);
+            var taxCalculation = await taxCalculator.CommitTransactionAsync(orderWorksheet);
             await oc.Orders.PatchAsync<HSOrder>(OrderDirection.Incoming, orderWorksheet.Order.ID, new PartialOrder()
             {
                 TaxCost = taxCalculation.TotalTax,  // Set this again just to make sure we have the most up to date info

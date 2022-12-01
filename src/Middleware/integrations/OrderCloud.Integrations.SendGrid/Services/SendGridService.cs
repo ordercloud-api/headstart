@@ -85,44 +85,49 @@ namespace OrderCloud.Integrations.SendGrid
 
         public async Task SendSingleTemplateEmailMultipleRcptsAttachment(string from, List<string> tos, string templateID, object templateData, CloudAppendBlob fileReference, string fileName)
         {
-            Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sendgrid template ID not configured in app settings", HttpStatusCode.NotImplemented));
+            if (string.IsNullOrEmpty(from) || string.IsNullOrEmpty(templateID) || tos == null || tos.Count == 0)
             {
-                var fromEmail = new EmailAddress(from);
-                var toEmails = tos.Select(email => new EmailAddress(email)).ToList();
-                var msg = MailHelper.CreateSingleTemplateEmailToMultipleRecipients(fromEmail, toEmails, templateID, templateData);
-                using (var stream = await fileReference.OpenReadAsync())
-                {
-                    await msg.AddAttachmentAsync(fileName, stream);
-                }
+                Console.WriteLine("\nSkipping email send, required variables not defined\n");
+            }
 
-                var response = await sendGridClient.SendEmailAsync(msg);
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new Exception("Error sending sendgrid email");
-                }
+            var fromEmail = new EmailAddress(from);
+            var toEmails = tos.Select(email => new EmailAddress(email)).ToList();
+            var msg = MailHelper.CreateSingleTemplateEmailToMultipleRecipients(fromEmail, toEmails, templateID, templateData);
+            using (var stream = await fileReference.OpenReadAsync())
+            {
+                await msg.AddAttachmentAsync(fileName, stream);
+            }
+
+            var response = await sendGridClient.SendEmailAsync(msg);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Error sending sendgrid email");
             }
         }
 
         public async Task SendSingleTemplateEmailSingleRcptAttachment(string from, string to, string templateID, object templateData, IFormFile fileReference)
         {
-            Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sendgrid template ID not configured in app settings", HttpStatusCode.NotImplemented));
+            if (string.IsNullOrEmpty(from) || string.IsNullOrEmpty(to) || string.IsNullOrEmpty(templateID))
             {
-                var fromEmail = new EmailAddress(from);
-                var toEmail = new EmailAddress(to);
-                var msg = MailHelper.CreateSingleTemplateEmail(fromEmail, toEmail, templateID, templateData);
-                if (fileReference != null)
-                {
-                    using (var stream = fileReference.OpenReadStream())
-                    {
-                        await msg.AddAttachmentAsync(fileReference.FileName, stream);
-                    }
-                }
+                Console.WriteLine("\nSkipping email send, required variables not defined\n");
+                return;
+            }
 
-                var response = await sendGridClient.SendEmailAsync(msg);
-                if (!response.IsSuccessStatusCode)
+            var fromEmail = new EmailAddress(from);
+            var toEmail = new EmailAddress(to);
+            var msg = MailHelper.CreateSingleTemplateEmail(fromEmail, toEmail, templateID, templateData);
+            if (fileReference != null)
+            {
+                using (var stream = fileReference.OpenReadStream())
                 {
-                    throw new Exception("Error sending sendgrid email");
+                    await msg.AddAttachmentAsync(fileReference.FileName, stream);
                 }
+            }
+
+            var response = await sendGridClient.SendEmailAsync(msg);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Error sending sendgrid email");
             }
         }
 
@@ -255,6 +260,110 @@ namespace OrderCloud.Integrations.SendGrid
 
             templateData.Data.Comments = approval.Comments;
             await SendSingleTemplateEmail(sendGridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendGridSettings?.OrderApprovalTemplateID, templateData);
+        }
+
+        public async Task SendOrderReturnApprovedEmail(MessageNotification<OrderReturnEventBody> messageNotification)
+        {
+            var templateData = new EmailTemplate<OrderTemplateData>()
+            {
+                Data = BuildOrderReturnData(messageNotification),
+                Message = new EmailDisplayText
+                {
+                    EmailSubject = "Your order return has been approved",
+                    DynamicText = "Your order return has been approved. Once the seller has received the return items they will process a refund for the approved amount.",
+                },
+            };
+            await SendSingleTemplateEmail(sendGridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendGridSettings?.OrderReturnTemplateID, templateData);
+        }
+
+        public async Task SendOrderReturnCompletedEmail(MessageNotification<OrderReturnEventBody> messageNotification)
+        {
+            var templateData = new EmailTemplate<OrderTemplateData>()
+            {
+                Data = BuildOrderReturnData(messageNotification),
+                Message = new EmailDisplayText
+                {
+                    EmailSubject = "Your order return is complete",
+                    DynamicText = "Your order return is now complete. A refund has been issued for the amount approved. It may take a few days to appear in your account.",
+                },
+            };
+            Console.WriteLine($"\nRECIPIENT: {messageNotification.Recipient?.Email}\n");
+            await SendSingleTemplateEmail(sendGridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendGridSettings?.OrderReturnTemplateID, templateData);
+        }
+
+        public async Task SendOrderReturnDeclinedEmail(MessageNotification<OrderReturnEventBody> messageNotification)
+        {
+            var templateData = new EmailTemplate<OrderTemplateData>()
+            {
+                Data = BuildOrderReturnData(messageNotification),
+                Message = new EmailDisplayText
+                {
+                    EmailSubject = "Your order return has been declined",
+                    DynamicText = "Your return has been declined. If you think this was done in error, please contact the seller before resubmitting.",
+                },
+            };
+            Console.WriteLine($"\nRECIPIENT: {messageNotification.Recipient?.Email}\n");
+            await SendSingleTemplateEmail(sendGridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendGridSettings?.OrderReturnTemplateID, templateData);
+        }
+
+        public async Task SendOrderReturnSubmittedForApprovalEmail(MessageNotification<OrderReturnEventBody> messageNotification)
+        {
+            var templateData = new EmailTemplate<OrderTemplateData>()
+            {
+                Data = BuildOrderReturnData(messageNotification),
+                Message = new EmailDisplayText
+                {
+                    EmailSubject = "Your order return has been submitted",
+                    DynamicText = "Your order return has been submitted and is now awaiting approval from the seller",
+                },
+            };
+            Console.WriteLine($"\nRECIPIENT: {messageNotification.Recipient?.Email}\n");
+            await SendSingleTemplateEmail(sendGridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendGridSettings?.OrderReturnTemplateID, templateData);
+        }
+
+        public async Task SendOrderReturnSubmittedForYourApprovalEmail(MessageNotification<OrderReturnEventBody> messageNotification)
+        {
+            var templateData = new EmailTemplate<OrderTemplateData>()
+            {
+                Data = BuildOrderReturnData(messageNotification),
+                Message = new EmailDisplayText
+                {
+                    EmailSubject = "An order return is awaiting your approval",
+                    DynamicText = "A buyer user has submitted a return that requires your approval. Please log into the admin application to approve, approve with changes, or decline the return.",
+                },
+            };
+            Console.WriteLine($"\nRECIPIENT: {messageNotification.Recipient?.Email}\n");
+            await SendSingleTemplateEmail(sendGridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendGridSettings?.OrderReturnTemplateID, templateData);
+        }
+
+        public async Task SendOrderReturnSubmittedForYourApprovalHasBeenApprovedEmail(MessageNotification<OrderReturnEventBody> messageNotification)
+        {
+            var templateData = new EmailTemplate<OrderTemplateData>()
+            {
+                Data = BuildOrderReturnData(messageNotification),
+                Message = new EmailDisplayText
+                {
+                    EmailSubject = "An order submitted for your approval has been approved",
+                    DynamicText = "An order that was previously awaiting your approval has been approved. This may have been completed by you or someone else in the approving group.",
+                },
+            };
+            Console.WriteLine($"\nRECIPIENT: {messageNotification.Recipient?.Email}\n");
+            await SendSingleTemplateEmail(sendGridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendGridSettings?.OrderReturnTemplateID, templateData);
+        }
+
+        public async Task SendOrderReturnSubmittedForYourApprovalHasBeenDeclinedEmail(MessageNotification<OrderReturnEventBody> messageNotification)
+        {
+            var templateData = new EmailTemplate<OrderTemplateData>()
+            {
+                Data = BuildOrderReturnData(messageNotification),
+                Message = new EmailDisplayText
+                {
+                    EmailSubject = "An order submitted for your approval has been declined",
+                    DynamicText = "An order that was previously awaiting your approval has been declined. This may have been completed by you or someone else in the approving group.",
+                },
+            };
+            Console.WriteLine($"\nRECIPIENT: {messageNotification.Recipient?.Email}\n");
+            await SendSingleTemplateEmail(sendGridSettings?.FromEmail, messageNotification?.Recipient?.Email, sendGridSettings?.OrderReturnTemplateID, templateData);
         }
 
         public async Task SendOrderSubmitEmail(HSOrderWorksheet orderWorksheet)
@@ -459,6 +568,16 @@ namespace OrderCloud.Integrations.SendGrid
             supplierOrderWorksheet.Order.BillingAddress = orderWorksheet.Order.BillingAddress;
             supplierOrderWorksheet.Order.FromUser = orderWorksheet.Order.FromUser;
             return supplierOrderWorksheet;
+        }
+
+        private OrderReturnTemplateData BuildOrderReturnData(MessageNotification<OrderReturnEventBody> messageNotification)
+        {
+            var order = messageNotification.EventBody.Order;
+            var lineitems = messageNotification.EventBody.LineItems;
+            var orderReturn = messageNotification.EventBody.OrderReturn;
+            var orderApprovals = messageNotification.EventBody.Approvals;
+            var data = SendgridMappers.GetOrderReturnTemplateData(order, lineitems, orderReturn, orderApprovals);
+            return data;
         }
 
         private async Task<List<string>> GetSupplierEmails(HSOrderWorksheet orderWorksheet)

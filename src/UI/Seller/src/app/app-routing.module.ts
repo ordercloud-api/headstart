@@ -36,9 +36,11 @@ const routes: Routes = [
           import('./orders/orders.module').then((m) => m.OrdersModule),
       },
       {
-        path: 'rmas',
+        path: 'order-returns',
         loadChildren: () =>
-          import('./rmas/rmas.module').then((m) => m.RMAModule),
+          import('./order-returns/order-returns.module').then(
+            (m) => m.OrderReturnModule
+          ),
       },
       {
         path: 'buyers',
@@ -93,4 +95,4 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
   exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

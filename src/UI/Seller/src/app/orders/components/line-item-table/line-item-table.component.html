@@ -93,37 +93,6 @@
             <td>{{ li.xp.SupplierComments }}</td>
             <td class="align-middle">
               {{ getLineItemStatusDisplay(li) }}
-              <div *ngIf="li.xp.Returns?.length || li.xp.Cancelations?.length">
-                <!-- Possible TO-DO: If a line item would have multiple returns/cancellations on it, a UI to support a better return view may be needed. -->
-                <div class="d-flex flex-column">
-                  <small *ngIf="li.xp.Returns[0]?.Reason"
-                    >{{ 'ADMIN.LINE_ITEMS.RETURN_REASON' | translate }}:
-                    {{ getReturnOrCancelReason() }}</small
-                  >
-                  <small *ngIf="li.xp.Returns[0]?.Comment"
-                    >{{ 'ADMIN.LINE_ITEMS.COMMENT' | translate }}:
-                    {{ li.xp.Returns[0].Comment }}</small
-                  >
-                  <small *ngIf="li.xp.Cancelations[0]?.Reason"
-                    >{{ 'ADMIN.LINE_ITEMS.CANCEL_REASON' | translate }}:
-                    {{
-                      li.xp.Cancelations[0].Reason | rmaReturnReason | translate
-                    }}</small
-                  >
-                  <small *ngIf="li.xp.Cancelations[0]?.Comment"
-                    >{{ 'ADMIN.LINE_ITEMS.COMMENT' | translate }}:
-                    {{ li.xp.Cancelations[0].Comment }}</small
-                  >
-                </div>
-              </div>
-              <return-form
-                *ngIf="
-                  li.xp.LineItemStatus === 'ReturnRequested' && isSellerUser
-                "
-                [order]="_order"
-                (lineItemUpdate)="handleLineItemUpdate()"
-                [lineItem]="li"
-              ></return-form>
             </td>
             <td class="align-middle">
               {{ li.LineTotal | currency: _order?.xp?.currency }}

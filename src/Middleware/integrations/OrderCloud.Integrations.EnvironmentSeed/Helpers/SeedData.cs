@@ -190,11 +190,19 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Helpers
                     Name = "HeadStart Checkout",
                     CustomImplementationUrl = middlewareBaseUrl,
                     HashKey = webhookHashKey,
-                    ConfigData = new
-                    {
-                        ExcludePOProductsFromShipping = false,
-                        ExcludePOProductsFromTax = true,
-                    },
+                };
+            }
+
+            public static IntegrationEvent ReturnsEvent(string middlewareBaseUrl, string webhookHashKey)
+            {
+                return new IntegrationEvent()
+                {
+                    ElevatedRoles = new[] { ApiRole.FullAccess },
+                    ID = "HeadStartReturns",
+                    EventType = IntegrationEventType.OrderReturn,
+                    Name = "HeadStart Order Returns",
+                    CustomImplementationUrl = middlewareBaseUrl,
+                    HashKey = webhookHashKey,
                 };
             }
 
@@ -312,11 +320,12 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Helpers
                     new HSSecurityProfile() { ID = CustomRole.HSPromotionAdmin, CustomRoles = new CustomRole[] { CustomRole.HSPromotionAdmin }, Roles = new ApiRole[] { ApiRole.PromotionAdmin } },
                     new HSSecurityProfile() { ID = CustomRole.HSReportAdmin, CustomRoles = new CustomRole[] { CustomRole.HSReportAdmin }, Roles = new ApiRole[] { } },
                     new HSSecurityProfile() { ID = CustomRole.HSReportReader, CustomRoles = new CustomRole[] { CustomRole.HSReportReader }, Roles = new ApiRole[] { } },
-                    new HSSecurityProfile() { ID = CustomRole.HSSellerAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSellerAdmin }, Roles = new ApiRole[] { ApiRole.AdminUserAdmin } },
+                    new HSSecurityProfile() { ID = CustomRole.HSSellerAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSellerAdmin }, Roles = new ApiRole[] { ApiRole.AdminUserAdmin, ApiRole.AdminUserGroupAdmin } },
                     new HSSecurityProfile() { ID = CustomRole.HSShipmentAdmin, CustomRoles = new CustomRole[] { CustomRole.HSShipmentAdmin }, Roles = new ApiRole[] { ApiRole.AddressReader, ApiRole.OrderReader, ApiRole.ShipmentAdmin } },
                     new HSSecurityProfile() { ID = CustomRole.HSStorefrontAdmin, CustomRoles = new CustomRole[] { CustomRole.HSStorefrontAdmin }, Roles = new ApiRole[] { ApiRole.ProductFacetAdmin, ApiRole.ProductFacetReader } },
                     new HSSecurityProfile() { ID = CustomRole.HSSupplierAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSupplierAdmin }, Roles = new ApiRole[] { ApiRole.SupplierAddressAdmin, ApiRole.SupplierAdmin, ApiRole.SupplierUserAdmin } },
                     new HSSecurityProfile() { ID = CustomRole.HSSupplierUserGroupAdmin, CustomRoles = new CustomRole[] { CustomRole.HSSupplierUserGroupAdmin }, Roles = new ApiRole[] { ApiRole.SupplierReader, ApiRole.SupplierUserGroupAdmin } },
+                    new HSSecurityProfile() { ID = CustomRole.HSOrderReturnApprover, CustomRoles = new CustomRole[] { CustomRole.HSOrderReturnApprover }, Roles = new ApiRole[] { ApiRole.OrderAdmin } },
 
                     // buyer - this is the only role needed for a buyer user to successfully check out
                     new HSSecurityProfile() { ID = CustomRole.HSBaseBuyer, CustomRoles = new CustomRole[] { CustomRole.HSBaseBuyer }, Roles = new ApiRole[] { ApiRole.MeAddressAdmin, ApiRole.MeAdmin, ApiRole.MeCreditCardAdmin, ApiRole.MeXpAdmin, ApiRole.ProductFacetReader, ApiRole.Shopper, ApiRole.SupplierAddressReader, ApiRole.SupplierReader } },

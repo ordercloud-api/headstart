@@ -44,5 +44,19 @@ namespace OrderCloud.Integrations.Emails
         Task SendQuotePriceConfirmationEmail(HSOrder order, HSLineItem lineItem, string buyerEmail);
 
         Task SendQuoteRequestConfirmationEmail(HSOrder order, HSLineItem lineItem, string buyerEmail);
+
+        Task SendOrderReturnApprovedEmail(MessageNotification<OrderReturnEventBody> messageNotification);
+
+        Task SendOrderReturnCompletedEmail(MessageNotification<OrderReturnEventBody> messageNotification);
+
+        Task SendOrderReturnDeclinedEmail(MessageNotification<OrderReturnEventBody> messageNotification);
+
+        Task SendOrderReturnSubmittedForApprovalEmail(MessageNotification<OrderReturnEventBody> messageNotification);
+
+        Task SendOrderReturnSubmittedForYourApprovalEmail(MessageNotification<OrderReturnEventBody> messageNotification);
+
+        Task SendOrderReturnSubmittedForYourApprovalHasBeenApprovedEmail(MessageNotification<OrderReturnEventBody> messageNotification);
+
+        Task SendOrderReturnSubmittedForYourApprovalHasBeenDeclinedEmail(MessageNotification<OrderReturnEventBody> messageNotification);
     }
 }

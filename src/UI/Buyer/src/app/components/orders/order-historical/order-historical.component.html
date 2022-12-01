@@ -22,7 +22,7 @@
           <small class="mt-1 d-block">
             <a href="tel:{{ lineItems[0].ShippingAddress.Phone }}">{{
               lineItems[0].ShippingAddress.Phone | phoneFormat
-              }}</a>
+            }}</a>
           </small>
         </address>
       </div>
@@ -51,27 +51,37 @@
     <strong translate>ORDERS.HISTORICAL.SUBTOTAL</strong>
     <span class="float-right">{{
       order.Subtotal | currency: _userCurrency
-      }}</span><br />
+    }}</span
+    ><br />
     <strong translate>ORDERS.HISTORICAL.SHIPPING</strong>
     <span class="float-right">{{
       order.ShippingCost | currency: _userCurrency
-      }}</span><br />
+    }}</span
+    ><br />
     <strong translate>ORDERS.HISTORICAL.TAX</strong>
     <span class="float-right">{{
       order.TaxCost | currency: _userCurrency
-      }}</span><br />
+    }}</span
+    ><br />
     <div *ngIf="order.PromotionDiscount">
       <strong class="text-danger" translate>ORDERS.HISTORICAL.PROMO</strong>
-      <span class="float-right text-danger">-{{ order.PromotionDiscount | currency: _userCurrency }}</span>
+      <span class="float-right text-danger"
+        >-{{ order.PromotionDiscount | currency: _userCurrency }}</span
+      >
     </div>
     <hr />
     <div class="text-right lead" translate>
-      <b class="float-left"><span translate>ORDERS.HISTORICAL.TOTAL</span>:</b><span class="order-total">{{
+      <b class="float-left"><span translate>ORDERS.HISTORICAL.TOTAL</span>:</b
+      ><span class="order-total">{{
         order.Total | currency: _userCurrency
-        }}</span>
+      }}</span>
     </div>
     <hr *ngIf="isOrderToApprove" />
-    <ocm-payment-list *ngIf="payments && !isOrderToApprove" [payments]="payments"></ocm-payment-list>
+    <ocm-payment-list
+      *ngIf="payments && !isOrderToApprove"
+      [order]="order"
+      [payments]="payments"
+    ></ocm-payment-list>
     <hr *ngIf="approvals?.length" />
     <ul>
       <li *ngFor="let approval of approvals" translate>
@@ -100,39 +110,52 @@
     <p>
       {{ order.xp?.QuoteOrderInfo?.BuyerLocation }}
     </p>
-    <div *ngIf="order?.xp?.QuoteOrderInfo?.Comments" class="alert alert-secondary small">
+    <div
+      *ngIf="order?.xp?.QuoteOrderInfo?.Comments"
+      class="alert alert-secondary small"
+    >
       <strong translate>ORDERS.HISTORICAL.COMMENTS </strong>:
       {{ order.xp?.QuoteOrderInfo?.Comments }}
     </div>
   </div>
 </div>
-<ocm-lineitem-table *ngIf="lineItems && lineItems.length" [lineItems]="lineItems" [orderType]="order?.xp?.OrderType"
-  [readOnly]="true">
+<ocm-lineitem-table
+  *ngIf="lineItems && lineItems.length"
+  [lineItems]="lineItems"
+  [orderType]="order?.xp?.OrderType"
+  [readOnly]="true"
+>
 </ocm-lineitem-table>
-<div class="card shadow mb-4" *ngIf="isQuoteOrder(order) && order?.xp?.QuoteStatus == 'NeedsBuyerReview'">
+<div
+  class="card shadow mb-4"
+  *ngIf="isQuoteOrder(order) && order?.xp?.QuoteStatus == 'NeedsBuyerReview'"
+>
   <div class="card">
-    <div class="card-header" translate>
-      ORDERS.HISTORICAL.QUOTE_ACTIONS
-    </div>
+    <div class="card-header" translate>ORDERS.HISTORICAL.QUOTE_ACTIONS</div>
     <div class="card-body">
       <div class="row">
         <div class="col-md">
-          <button class="btn btn-sm btn-danger" (click)="open(acceptQuoteModal)" translate>
+          <button
+            class="btn btn-sm btn-danger"
+            (click)="open(acceptQuoteModal)"
+            translate
+          >
             ORDERS.HISTORICAL.ACCEPT_QUOTE
           </button>
         </div>
-        <div class="col-md d-flex flex-column justify-content-end text-md-right">
-          <a [href]="supplierMail" target="_blank" translate>ORDERS.HISTORICAL.CONTACT_SUPPLIER</a>
+        <div
+          class="col-md d-flex flex-column justify-content-end text-md-right"
+        >
+          <a [href]="supplierMail" target="_blank" translate
+            >ORDERS.HISTORICAL.CONTACT_SUPPLIER</a
+          >
         </div>
       </div>
     </div>
   </div>
 </div>
 <ng-template #acceptQuoteModal let-modal class="confirm-modal">
-  <confirm-modal
-    [modalTitle]="'Accept Quote'"
-    aria-labelledby="confirm-modal"
-  >
+  <confirm-modal [modalTitle]="'Accept Quote'" aria-labelledby="confirm-modal">
     <div class="alert alert-warning">
       <p translate>ORDERS.HISTORICAL.QUOTE_ACCEPTED_MESSAGE</p>
     </div>
@@ -145,11 +168,7 @@
         ml-2
       "
     >
-      <button
-        type="button"
-        class="btn btn-secondary"
-        (click)="modal.dismiss()"
-      >
+      <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
         Cancel
       </button>
       <button

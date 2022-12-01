@@ -9,8 +9,10 @@ namespace OrderCloud.Integrations.EasyPost.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddEasyPostShippingProvider(this IServiceCollection services, EnvironmentSettings environmentSettings, EasyPostSettings easyPostSettings) {
-            if (!environmentSettings.ShippingProvider.Equals("EasyPost", StringComparison.OrdinalIgnoreCase) || string.IsNullOrEmpty(easyPostSettings.ApiKey)) {
+        public static IServiceCollection AddEasyPostShippingProvider(this IServiceCollection services, EnvironmentSettings environmentSettings, EasyPostSettings easyPostSettings)
+        {
+            if (!environmentSettings.ShippingProvider.Equals("EasyPost", StringComparison.OrdinalIgnoreCase) || string.IsNullOrEmpty(easyPostSettings.ApiKey))
+            {
                 return services;
             }
 

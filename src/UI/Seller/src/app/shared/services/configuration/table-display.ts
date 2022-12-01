@@ -1,16 +1,14 @@
 import { SummaryResourceInfoPathsDictionary } from '@app-seller/models/shared.types'
 import { ResourceConfigurationDictionary } from '@app-seller/models/table-display.types'
-import { RmaStatusPipe } from '@app-seller/shared/pipes/rma-status.pipe'
-import { RmaTypePipe } from '@app-seller/shared/pipes/rma-type.pipe'
+import { OrderReturnStatusPipe } from '@app-seller/shared/pipes/order-return-status.pipe'
 import { SubmittedOrderStatusPipe } from '@app-seller/shared/pipes/submitted-order-status.pipe'
 import {
   PRODUCT_IMAGE_PATH_STRATEGY,
   SUPPLIER_LOGO_PATH_STRATEGY,
 } from '@app-seller/shared/services/assets/asset.helper'
 
-const rmaTypePipe = new RmaTypePipe()
 const submittedOrderStatusPipe = new SubmittedOrderStatusPipe()
-const rmaStatusPipe = new RmaStatusPipe()
+const orderReturnStatusPipe = new OrderReturnStatusPipe()
 
 export const SUMMARY_RESOURCE_INFO_PATHS_DICTIONARY: SummaryResourceInfoPathsDictionary =
   {
@@ -86,8 +84,8 @@ export const SUMMARY_RESOURCE_INFO_PATHS_DICTIONARY: SummaryResourceInfoPathsDic
       toImage: '',
       toExpandable: false,
     },
-    rmas: {
-      toPrimaryHeader: 'RMANumber',
+    orderreturns: {
+      toPrimaryHeader: 'ID',
       toSecondaryHeader: 'Status',
       toImage: '',
       toExpandable: false,
@@ -405,50 +403,27 @@ export const FULL_TABLE_RESOURCE_DICTIONARY: ResourceConfigurationDictionary = {
         sortable: false,
       },
       {
-        path: 'xp.OrderReturnInfo.HasReturn',
-        header: 'ADMIN.HEADERS.HAS_CLAIMS',
-        type: BOOLEAN,
-        sortable: false,
-        queryRestriction: 'OrderDirection=Incoming',
-      },
-      {
         path: 'xp.HasSellerProducts',
         header: 'ADMIN.HEADERS.SELLER_OWNED_PRODUCTS',
         type: BOOLEAN,
         sortable: false,
       },
-      {
-        path: 'xp.OrderReturnInfo.Comment',
-        header: 'ADMIN.HEADERS.RETURN_COMMENT',
-        type: BASIC_STRING,
-        sortable: false,
-        queryRestriction: 'OrderDirection=Incoming',
-      },
     ],
     imgPath: '',
   },
-  rmas: {
+  orderreturns: {
     fields: [
       {
-        path: 'RMANumber',
-        header: 'ADMIN.RMAS.RMA_NUMBER',
+        path: 'ID',
+        header: 'ADMIN.HEADERS.ID',
         type: BASIC_STRING,
         sortable: false,
       },
       {
         path: 'DateCreated',
-        header: 'ADMIN.RMAS.DATE_CREATED',
+        header: 'ADMIN.ORDER_RETURNS.DATE_CREATED',
         type: DATE_TIME,
         sortable: false,
-      },
-      {
-        path: 'Type',
-        header: 'ADMIN.FILTERS.TYPE',
-        type: BASIC_STRING,
-        sortable: false,
-        mappingFunction: (value: string): string => {
-          return rmaTypePipe.transform(value)
-        },
       },
       {
         path: 'Status',
@@ -456,7 +431,7 @@ export const FULL_TABLE_RESOURCE_DICTIONARY: ResourceConfigurationDictionary = {
         type: BASIC_STRING,
         sortable: false,
         mappingFunction: (value: string): string => {
-          return rmaStatusPipe.transform(value)
+          return orderReturnStatusPipe.transform(value)
         },
       },
     ],

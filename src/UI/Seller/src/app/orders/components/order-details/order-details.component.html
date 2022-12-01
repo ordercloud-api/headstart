@@ -294,11 +294,13 @@
     </div>
     <!-- QUOTE EDIT END -->
 
-    <h5 *ngIf="rmas?.length > 0" translate>ADMIN.ORDERS.RMAS_ON_ORDER</h5>
-    <div *ngFor="let rma of rmas">
-      <a [routerLink]="buildOrderDetailsRoute(rma)" class="nav-link p-1">
-        {{ rma?.RMANumber }} - {{ rma?.Type }}
-        {{ rma?.Status }}
+    <h5 *ngIf="orderReturns?.length > 0" translate>
+      ADMIN.ORDERS.ORDER_RETURNS_ON_ORDER
+    </h5>
+    <div *ngFor="let orderReturn of orderReturns">
+      <a [routerLink]="buildOrderDetailsRoute(orderReturn)" class="nav-link p-1">
+        {{ orderReturn.ID }}
+        {{ orderReturn.Status }}
       </a>
     </div>
 
