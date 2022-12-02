@@ -43,7 +43,7 @@ namespace Headstart.API.Commands
 
         public async Task<ShipEstimateResponse> GetRatesAsync(HSOrderCalculatePayload orderCalculatePayload)
         {
-            var shipEstimateResponse = await shippingCommand.GetRatesAsync(orderCalculatePayload.OrderWorksheet, orderCalculatePayload.ConfigData);
+            var shipEstimateResponse = await shippingCommand.GetRatesAsync(orderCalculatePayload.OrderWorksheet);
             var buyerCurrency = orderCalculatePayload.OrderWorksheet.Order.xp.Currency ?? CurrencyCode.USD;
             await shipEstimateResponse.ShipEstimates.ConvertCurrency(CurrencyCode.USD, buyerCurrency, currencyConversionService);
 
