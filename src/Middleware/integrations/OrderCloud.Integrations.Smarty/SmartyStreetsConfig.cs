@@ -5,6 +5,5 @@
         public string AuthID { get; set; }
 
         public string AuthToken { get; set; }
-
     }
 }

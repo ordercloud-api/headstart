@@ -9,15 +9,16 @@ import { SellerUserService } from '@app-seller/sellers/seller-admin.service'
   styleUrls: ['./seller-user-edit.component.scss'],
 })
 export class SellerUserEditComponent {
-  @Input()
-  filterConfig
+  @Input() filterConfig
   @Input()
   set resourceInSelection(sellerUser: User) {
+    this.user = sellerUser
     this.createSellerUserForm(sellerUser)
   }
   @Output()
   updateResource = new EventEmitter<any>()
   @Output()
+  user: User;
   isCreatingNew: boolean
   resourceForm: FormGroup
   constructor(public sellerUserService: SellerUserService) {

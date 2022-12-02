@@ -34,6 +34,7 @@ export enum HeadstartOrderStatus {
   AwaitingApproval = 'AwaitingApproval',
   ChangesRequested = 'ChangesRequested',
   Open = 'Open',
+  Declined = 'Declined',
   Completed = 'Completed',
   Canceled = 'Canceled',
 }
@@ -55,17 +56,6 @@ export interface OrderFilters {
   location?: string
 }
 
-export enum RMAStatus {
-  Requested = 'Requested',
-  Denied = 'Denied',
-  Processing = 'Processing',
-  Approved = 'Approved',
-  Complete = 'Complete',
-  Canceled = 'Canceled',
-  PartialQtyApproved = 'PartialQtyApproved',
-  PartialQtyComplete = 'PartialQtyComplete',
-}
-
 export enum OrderViewContext {
   MyOrders = 'MyOrders',
   Approve = 'Approve',
@@ -76,12 +66,6 @@ export enum OrderViewContext {
 export interface OrderReorderResponse {
   ValidLi: Array<LineItem>
   InvalidLi: Array<LineItem>
-}
-
-export enum ClaimStatus {
-  NoClaim = 'NoClaim',
-  Pending = 'Pending',
-  Complete = 'Complete',
 }
 
 export type OrderListColumn =

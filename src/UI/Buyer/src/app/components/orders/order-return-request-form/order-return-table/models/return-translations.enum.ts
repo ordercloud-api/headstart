@@ -1,0 +1,30 @@
+export enum TableHeader {
+  productDetails = 'ORDERS.RETURNS.PRODUCT_DETAILS',
+  price = 'ORDERS.RETURNS.PRICE',
+  quantityOrdered = 'ORDERS.RETURNS.ORDERED',
+  quantityReturned = 'ORDERS.RETURNS.RETURNED',
+  quantityCanceled = 'ORDERS.RETURNS.CANCELED',
+  quantityToReturn = 'ORDERS.RETURNS.QTY_TO_RETURN',
+  quantityToCancel = 'ORDERS.RETURNS.QTY_TO_CANCEL',
+  returnReason = 'ORDERS.RETURNS.RETURN_REASON',
+  cancelReason = 'ORDERS.RETURNS.CANCEL_REASON',
+  selectReturnReason = 'ORDERS.RETURNS.SELECT_RETURN_REASON',
+  selectCancelReason = 'ORDERS.RETURNS.SELECT_CANCEL_REASON',
+}
+
+export enum ReturnReason {
+  IncorrectSizeOrStyle = 'IncorrectSizeOrStyle',
+  IncorrectProductShipped = 'IncorrectProductShipped',
+  DoesNotMatchDescription = 'DoesNotMatchDescription',
+  ProductDefective = 'ProductDefective',
+  PackagingDamaged = 'PackagingDamaged',
+  ReceivedExtraProduct = 'ReceivedExtraProduct',
+  ArrivedLate = 'ArrivedLate',
+  PurchaseMistake = 'PurchaseMistake',
+  NotNeeded = 'NotNeeded',
+  NotApproved = 'NotApproved',
+  UnappliedDiscount = 'UnappliedDiscount',
+  ProductMissing = 'ProductMissing',
+  FoundDifferentProduct = 'FoundDifferentProduct',
+  FulfillmentTooLong = 'FulfillmentTooLong',
+}

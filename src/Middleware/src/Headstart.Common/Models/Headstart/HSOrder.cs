@@ -57,8 +57,6 @@ namespace Headstart.Common.Models
 
         public ShippingStatus ShippingStatus { get; set; }
 
-        public ClaimStatus ClaimStatus { get; set; }
-
         public string PaymentMethod { get; set; }
 
         public HSAddressBuyer ShippingAddress { get; set; }
@@ -87,8 +85,6 @@ namespace Headstart.Common.Models
         public string Name { get; set; } // e.g. "Fedex PRIORITY_OVERNIGHT"
 
         public string ShipFromAddressID { get; set; }
-
-        // Do not include buyer's cost. That is none of the supplier's beeswax
     }
 
     public class OrderDetails
@@ -102,6 +98,8 @@ namespace Headstart.Common.Models
         public IList<Payment> Payments { get; set; }
 
         public IList<OrderApproval> Approvals { get; set; }
+
+        public IList<OrderReturn> OrderReturns { get; set; }
     }
 
     public class HSSupplierOrderData

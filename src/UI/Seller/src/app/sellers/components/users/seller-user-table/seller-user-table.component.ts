@@ -1,6 +1,6 @@
 import { Component, ChangeDetectorRef, NgZone } from '@angular/core'
 import { ResourceCrudComponent } from '@app-seller/shared/components/resource-crud/resource-crud.component'
-import { User } from 'ordercloud-javascript-sdk'
+import { User, UserGroupAssignment } from 'ordercloud-javascript-sdk'
 import { Router, ActivatedRoute } from '@angular/router'
 import { SellerUserService } from '@app-seller/sellers/seller-admin.service'
 @Component({
@@ -9,6 +9,7 @@ import { SellerUserService } from '@app-seller/sellers/seller-admin.service'
   styleUrls: ['./seller-user-table.component.scss'],
 })
 export class SellerUserTableComponent extends ResourceCrudComponent<User> {
+  userGroupAssignments: UserGroupAssignment[] = []
   constructor(
     sellerUserService: SellerUserService,
     changeDetectorRef: ChangeDetectorRef,

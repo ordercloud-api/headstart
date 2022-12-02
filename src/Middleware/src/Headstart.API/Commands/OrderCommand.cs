@@ -5,11 +5,10 @@ using System.Net;
 using System.Threading.Tasks;
 using Headstart.Common.Commands;
 using Headstart.Common.Models;
+using Headstart.Common.Services;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.CosmosDB;
 using OrderCloud.Integrations.Emails;
-using OrderCloud.Integrations.RMAs.Commands;
-using OrderCloud.Integrations.RMAs.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
@@ -24,8 +23,6 @@ namespace Headstart.API.Commands
 
         Task<List<HSShipmentWithItems>> ListHSShipmentWithItems(string orderID, DecodedToken decodedToken);
 
-        Task<CosmosListPage<RMA>> ListRMAsForOrder(string orderID, DecodedToken decodedToken);
-
         Task<HSOrder> AddPromotion(string orderID, string promoCode, DecodedToken decodedToken);
 
         Task<HSOrder> ApplyAutomaticPromotions(string orderID);
@@ -39,6 +36,8 @@ namespace Headstart.API.Commands
         Task<ListPage<HSOrder>> ListQuoteOrders(MeUser me, QuoteStatus quoteStatus);
 
         Task<HSOrder> GetQuoteOrder(MeUser me, string orderID);
+
+        Task<HSOrder> CancelOrder(string orderID, DecodedToken decodedToken);
     }
 
     public class OrderCommand : IOrderCommand
@@ -46,24 +45,24 @@ namespace Headstart.API.Commands
         private readonly IOrderCloudClient oc;
         private readonly ILocationPermissionCommand locationPermissionCommand;
         private readonly IPromotionCommand promotionCommand;
-        private readonly IRMACommand rmaCommand;
         private readonly AppSettings settings;
         private readonly IEmailServiceProvider emailServiceProvider;
+        private readonly IHSCreditCardProcessor creditCardService;
 
         public OrderCommand(
             ILocationPermissionCommand locationPermissionCommand,
             IOrderCloudClient oc,
             IPromotionCommand promotionCommand,
-            IRMACommand rmaCommand,
             AppSettings settings,
-            IEmailServiceProvider sendgridService)
+            IEmailServiceProvider sendgridService,
+            IHSCreditCardProcessor creditCardService)
         {
             this.oc = oc;
             this.locationPermissionCommand = locationPermissionCommand;
             this.promotionCommand = promotionCommand;
-            this.rmaCommand = rmaCommand;
             this.settings = settings;
             this.emailServiceProvider = sendgridService;
+            this.creditCardService = creditCardService;
         }
 
         public async Task<HSLineItem> SendQuoteRequestToSupplier(string orderID, string lineItemID)
@@ -154,7 +153,7 @@ namespace Headstart.API.Commands
 
         public async Task PatchOrderRequiresApprovalStatus(string orderID)
         {
-                await PatchOrderStatus(orderID, ShippingStatus.Processing, ClaimStatus.NoClaim);
+                await PatchOrderStatus(orderID, ShippingStatus.Processing);
         }
 
         public async Task<ListPage<HSOrder>> ListOrdersForLocation(string locationID, ListArgs<HSOrder> listArgs, DecodedToken decodedToken)
@@ -175,20 +174,36 @@ namespace Headstart.API.Commands
             var order = await oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
             await EnsureUserCanAccessOrder(order, decodedToken);
 
+            var payments = oc.Payments.ListAllAsync(OrderDirection.Incoming, order.ID);
+            var orderReturns = oc.OrderReturns.ListAllAsync(filters: new { OrderID = order.ID });
             var lineItems = oc.LineItems.ListAllAsync(OrderDirection.Incoming, orderID);
             var promotions = oc.Orders.ListAllPromotionsAsync(OrderDirection.Incoming, orderID);
-            var payments = oc.Payments.ListAllAsync(OrderDirection.Incoming, order.ID);
             var approvals = oc.Orders.ListAllApprovalsAsync(OrderDirection.Incoming, orderID);
 
-            await Task.WhenAll(lineItems, promotions, payments, approvals);
+            await Task.WhenAll(payments, orderReturns, lineItems, promotions, approvals);
+
+            // catalyst doesn't sort entities by DateCreated due to this issue  https://github.com/ordercloud-api/ordercloud-dotnet-catalyst/issues/117
+            // so we need to manually sort after retrieving results. If this issue gets fixed then remove these sort functions
+            var paymentsSorted = await payments;
+            paymentsSorted.Sort((a, b) => a.DateCreated.CompareTo(b.DateCreated));
+
+            var orderReturnsSorted = await orderReturns;
+            orderReturnsSorted.Sort((a, b) => Nullable.Compare(a.DateCreated, b.DateCreated));
+
+            var lineItemsSorted = await lineItems;
+            lineItemsSorted.Sort((a, b) => a.DateAdded.CompareTo(b.DateAdded));
+
+            var approvalsSorted = await approvals;
+            approvalsSorted.Sort((a, b) => a.DateCreated.CompareTo(b.DateCreated));
 
             return new OrderDetails
             {
                 Order = order,
-                LineItems = await lineItems,
+                Payments = paymentsSorted,
+                OrderReturns = orderReturnsSorted,
+                LineItems = lineItemsSorted,
                 Promotions = await promotions,
-                Payments = await payments,
-                Approvals = await approvals,
+                Approvals = approvalsSorted,
             };
         }
 
@@ -203,22 +218,9 @@ namespace Headstart.API.Commands
             return shipmentsWithItems.ToList();
         }
 
-        public async Task<CosmosListPage<RMA>> ListRMAsForOrder(string orderID, DecodedToken decodedToken)
-        {
-            var me = await oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
-            HSOrder order = await oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
-            await EnsureUserCanAccessOrder(order, decodedToken);
-
-            var listFilter = new ListFilter("SourceOrderID", orderID);
-            CosmosListOptions listOptions = new CosmosListOptions() { PageSize = 100, ContinuationToken = null, Filters = { listFilter } };
-
-            CosmosListPage<RMA> rmasOnOrder = await rmaCommand.ListBuyerRMAs(listOptions, me.Buyer.ID);
-            return rmasOnOrder;
-        }
-
         public async Task<HSOrder> AddPromotion(string orderID, string promoCode, DecodedToken decodedToken)
         {
-            var orderPromo = await oc.Orders.AddPromotionAsync(OrderDirection.Incoming, orderID, promoCode);
+            await oc.Orders.AddPromotionAsync(OrderDirection.Incoming, orderID, promoCode);
             return await oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
         }
 
@@ -228,9 +230,80 @@ namespace Headstart.API.Commands
             return await oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
         }
 
-        private async Task PatchOrderStatus(string orderID, ShippingStatus shippingStatus, ClaimStatus claimStatus)
+        public async Task<HSOrder> CancelOrder(string orderID, DecodedToken decodedToken)
         {
-            var partialOrder = new PartialOrder { xp = new { ShippingStatus = shippingStatus, ClaimStatus = claimStatus } };
+            var order = await oc.Orders.GetAsync<HSOrder>(OrderDirection.Incoming, orderID);
+            await EnsureUserCanAccessOrder(order, decodedToken);
+
+            if (order.Status != OrderStatus.Open)
+            {
+                throw new Exception("Can only cancel open orders");
+            }
+
+            if (order.xp.OrderType == OrderType.Quote)
+            {
+                throw new Exception("Can not cancel quote orders");
+            }
+
+            var lineItems = await oc.LineItems.ListAllAsync(OrderDirection.All, orderID);
+            if (lineItems.Any(li => li.QuantityShipped > 0))
+            {
+                // In headstart we are only allowing a wholesale cancel of the entire order see more info here
+                throw new Exception("Can not cancel an order that has already shipped");
+            }
+
+            // get payment to refund, there should only be one payment on the order in headstart
+            var paymentList = await oc.Payments.ListAsync<HSPayment>(OrderDirection.All, orderID);
+            var payment = paymentList.Items.FirstOrDefault();
+
+            if (payment.Type == PaymentType.CreditCard)
+            {
+                var creditCardPaymentTransaction = payment.Transactions
+                    .OrderBy(x => x.DateExecuted)
+                    .LastOrDefault(x => x.Type == "CreditCard" && x.Succeeded);
+
+                // make inquiry to determine the current capture capture state
+                var inquiryResult = await creditCardService.Inquire(order, creditCardPaymentTransaction);
+
+                // Transactions that are queued for capture can only be fully voided, and we are only allowing partial voids moving forward.
+                if (inquiryResult.PendingCapture)
+                {
+                    throw new CatalystBaseException(new ApiError
+                    {
+                        ErrorCode = "Payment.FailedToVoidAuthorization",
+                        Message = "This customer's credit card transaction is currently queued for capture and cannot be refunded at this time.  Please try again later.",
+                    });
+                }
+
+                // If voidable, but not refundable, void the refund amount off the original order total
+                if (inquiryResult.CanVoid)
+                {
+                    await creditCardService.VoidAuthorization(order, payment, creditCardPaymentTransaction, order.Total);
+                }
+
+                // If refundable, but not voidable, do a refund
+                if (inquiryResult.CanRefund)
+                {
+                    await creditCardService.Refund(order, payment, creditCardPaymentTransaction, order.Total);
+                }
+            }
+            else
+            {
+                await oc.Payments.CreateTransactionAsync(OrderDirection.All, orderID, payment.ID, new HSPaymentTransaction
+                {
+                    Amount = order.Total * -1,
+                    Succeeded = true,
+                    Type = "Refund",
+                });
+            }
+
+            await oc.Orders.CancelAsync<HSOrder>(OrderDirection.Incoming, orderID);
+            return await oc.Orders.PatchAsync<HSOrder>(OrderDirection.Incoming, orderID, new PartialOrder { xp = new { SubmittedOrderStatus = "Canceled" } });
+        }
+
+        private async Task PatchOrderStatus(string orderID, ShippingStatus shippingStatus)
+        {
+            var partialOrder = new PartialOrder { xp = new { ShippingStatus = shippingStatus } };
             await oc.Orders.PatchAsync(OrderDirection.Incoming, orderID, partialOrder);
         }
 

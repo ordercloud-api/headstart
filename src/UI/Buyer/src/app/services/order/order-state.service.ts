@@ -16,7 +16,6 @@ import {
 } from 'ordercloud-javascript-sdk'
 import { BehaviorSubject } from 'rxjs'
 import { AppConfig } from 'src/app/models/environment.types'
-import { ClaimStatus } from 'src/app/models/order.types'
 import { ShippingStatus } from 'src/app/models/shipping.types'
 import { CurrentUserService } from '../current-user/current-user.service'
 import { TokenHelperService } from '../token-helper/token-helper.service'
@@ -40,7 +39,6 @@ export class OrderStateService {
       OrderType: 'Standard',
       QuoteOrderInfo: null,
       Currency: 'USD', // Default value, overriden in reset() when app loads
-      ClaimStatus: ClaimStatus.NoClaim,
       ShippingStatus: ShippingStatus.Processing,
     },
   }

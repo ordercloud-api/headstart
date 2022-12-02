@@ -490,7 +490,7 @@ export class ResourceTableComponent
       resourceInSelection.Username ||
       resourceInSelection.AddressName ||
       resourceInSelection.AppName ||
-      resourceInSelection.RMANumber
+      resourceInSelection.ID
     )
   }
   showFilterBar(): boolean {

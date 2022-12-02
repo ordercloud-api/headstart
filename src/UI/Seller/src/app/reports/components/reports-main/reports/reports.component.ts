@@ -9,7 +9,6 @@ import {
   salesOrderDetail,
   purchaseOrderDetail,
   lineItemDetail,
-  rmaDetail,
   shipmentDetail,
   productDetail,
 } from '../../reports-template/models/headers'
@@ -163,9 +162,6 @@ export class ReportsComponent implements OnInit {
         return column?.value
       case 'ProductDetail':
         column = productDetail.find((c) => c.path === header)
-        return column?.value
-      case 'RMADetail':
-        column = rmaDetail.find((c) => c.path === header)
         return column?.value
       case 'ShipmentDetail':
         column = shipmentDetail.find((c) => c.path === header)

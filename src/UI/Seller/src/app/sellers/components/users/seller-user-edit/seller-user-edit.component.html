@@ -1,8 +1,12 @@
 <div class="container-fluid">
   <form *ngIf="resourceForm" [formGroup]="resourceForm">
-    <span class="required-field" > * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span>
+    <span class="required-field">
+      * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span
+    >
     <div class="form-group">
-      <label for="Username">Username <span class="required-field">*</span></label>
+      <label for="Username"
+        >Username <span class="required-field">*</span></label
+      >
       <input
         type="text"
         class="form-control"
@@ -13,7 +17,9 @@
         (input)="updateResourceFromEvent($event, 'Username')"
         placeholder="Enter Username"
       />
-      <label for="FirstName">First Name <span class="required-field">*</span></label>
+      <label for="FirstName"
+        >First Name <span class="required-field">*</span></label
+      >
       <input
         type="text"
         class="form-control"
@@ -24,7 +30,9 @@
         (input)="updateResourceFromEvent($event, 'FirstName')"
         placeholder="Enter FirstName"
       />
-      <label for="LastName">Last Name <span class="required-field">*</span></label>
+      <label for="LastName"
+        >Last Name <span class="required-field">*</span></label
+      >
       <input
         type="text"
         class="form-control"
@@ -68,4 +76,12 @@
       </div>
     </div>
   </form>
+  <user-group-assignments
+    *ngIf="!isCreatingNew"
+    [isCreatingNew]="isCreatingNew"
+    userGroupType="UserPermissions"
+    [user]="user"
+    [userPermissionsService]="sellerUserService"
+  >
+  </user-group-assignments>
 </div>

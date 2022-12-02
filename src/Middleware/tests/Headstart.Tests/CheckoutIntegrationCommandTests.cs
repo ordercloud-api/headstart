@@ -105,7 +105,8 @@ namespace Headstart.Tests
                 Name = "STANDARD_OVERNIGHT",
                 EstimatedTransitDays = 1,
                 Cost = 150,
-                xp = new ShipMethodXP {
+                xp = new ShipMethodXP
+                {
                     ServiceName = "STANDARD_OVERNIGHT",
                 },
             };

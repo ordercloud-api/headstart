@@ -62,15 +62,6 @@ namespace OrderCloud.Integrations.Reporting.Models
             },
             new ReportTypeResource
             {
-                ID = ReportTypeEnum.RMADetail,
-                Name = "RMA Detail Report",
-                ReportCategory = "RMA",
-                AvailableToSuppliers = true,
-                Value = "RMADetail",
-                AdHocFilters = new string[] { "DateLow", "DateHigh", "TimeLow", "TimeHigh", "SupplierID" },
-            },
-            new ReportTypeResource
-            {
                 ID = ReportTypeEnum.ShipmentDetail,
                 Name = "Shipment Detail Report",
                 ReportCategory = "Order",

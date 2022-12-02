@@ -11,5 +11,7 @@ namespace Headstart.Common.Models
         public UserGroupType UserGroupType { get; set; }
 
         public List<CustomRole> CustomRoles { get; set; }
+
+        public string Description { get; set; }
     }
 }

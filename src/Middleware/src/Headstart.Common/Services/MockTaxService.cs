@@ -7,7 +7,7 @@ namespace Headstart.Common.Services
 {
     public class MockTaxService : ITaxCodesProvider, ITaxCalculator
     {
-        public Task<OrderTaxCalculation> CalculateEstimateAsync(HSOrderWorksheet orderWorksheet, List<OrderPromotion> promotions)
+        public Task<OrderTaxCalculation> CalculateEstimateAsync(HSOrderWorksheet orderWorksheet)
         {
             return Task.FromResult(new OrderTaxCalculation()
             {
@@ -16,7 +16,7 @@ namespace Headstart.Common.Services
             });
         }
 
-        public Task<OrderTaxCalculation> CommitTransactionAsync(HSOrderWorksheet orderWorksheet, List<OrderPromotion> promotions)
+        public Task<OrderTaxCalculation> CommitTransactionAsync(HSOrderWorksheet orderWorksheet)
         {
             return Task.FromResult(new OrderTaxCalculation()
             {

@@ -1,8 +1,12 @@
+export default {
+  serialize: customSerializer
+}
+
 /**
  * @ignore
  * not part of public api, don't include in generated docs
  */
-export default function ParamSerializer(params: {
+function customSerializer(params: {
   [key: string]: any
 }): string {
   const valuesArray: string[] = []

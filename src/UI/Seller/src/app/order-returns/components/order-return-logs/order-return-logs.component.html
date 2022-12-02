@@ -1,0 +1,40 @@
+<div *ngIf="logs?.length">
+  <div class="d-block text-left mb-2 mt-5">
+    <h5 translate>ADMIN.ORDER_RETURNS.STATUS_LOGS</h5>
+  </div>
+  <div class="card py-4 px-3 bg-white mb-5">
+    <div class="table-responsive">
+      <table
+        class="table table-sm table-bordered table-hover display-table mb-0"
+      >
+        <thead>
+          <tr>
+            <th translate>ADMIN.ORDER_RETURNS.DATE</th>
+            <th translate>ADMIN.ORDER_RETURNS.ACTION</th>
+            <th translate>ADMIN.ORDER_RETURNS.REFUND_AMOUNT</th>
+            <th translate>ADMIN.ORDER_RETURNS.PROCESSED_BY</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of logs">
+            <td class="align-middle">
+              {{ log?.Date | date: 'medium' }}
+            </td>
+            <td class="align-middle">
+              {{ log?.Action }}
+            </td>
+            <td class="align-middle">
+              {{ log?.RefundAmount | currency: order?.xp?.Currency }}
+            </td>
+            <td class="align-middle">
+              <a *ngIf="getUserLink(log)" [routerLink]="getUserLink(log)">
+                {{ log.ProcessedByName }}
+              </a>
+              <span *ngIf="!getUserLink(log)">{{ log.ProcessedByName }}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

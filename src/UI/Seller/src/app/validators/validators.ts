@@ -12,8 +12,10 @@ export const ErrorDictionary = {
   DateError: 'Enter date of the form mm-dd-yyyy',
   date: 'Enter date of the form mm-dd-yyyy',
   required: 'This field is required',
-  min: 'Please enter a higher value',
-  max: 'Please enter a lower value',
+  min: 'Minimum value is $min',
+  max: 'Maximum value is $max',
+  minlength: 'This field requires a minimum of $minlength characters',
+  maxlength: 'This field has a maximum of $maxlength characters',
   email: 'Please enter a valid email',
   ocMatchFields: "Passwords don't match",
   minGreaterThanMax: 'Minimum value cannot be greater than maximum',
@@ -83,12 +85,15 @@ export function ValidateDate(
   return { date: true }
 }
 
-export function ValidateZip(countryCode: String): ValidatorFn {
+export function ValidateZip(countryCode: string): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
-    let isValid;
+    let isValid
     switch (countryCode) {
       case 'AU':
-        isValid = /^((0[289][0-9]{2})|([1345689][0-9]{3})|(2[0-8][0-9]{2})|(290[0-9])|(291[0-4])|(7[0-4][0-9]{2})|(7[8-9][0-9]{2}))$/.test(control.value)
+        isValid =
+          /^((0[289][0-9]{2})|([1345689][0-9]{3})|(2[0-8][0-9]{2})|(290[0-9])|(291[0-4])|(7[0-4][0-9]{2})|(7[8-9][0-9]{2}))$/.test(
+            control.value
+          )
         break
       case 'CA':
         isValid = /^[A-Za-z]\\d[A-Za-z][ -]?\\d[A-Za-z]\\d$/.test(control.value)

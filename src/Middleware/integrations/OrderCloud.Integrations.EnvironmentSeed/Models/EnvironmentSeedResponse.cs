@@ -17,6 +17,6 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Models
 
         public bool Success { get; set; } = true;
 
-        public Exception Exception { get; set; }
+        public dynamic Exception { get; set; }
     }
 }

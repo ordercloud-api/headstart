@@ -9,7 +9,7 @@ namespace OrderCloud.Integrations.Avalara.Mappers
 {
     public static class TransactionMapper
     {
-        public static CreateTransactionModel ToAvalaraTransactionModel(this HSOrderWorksheet order, string companyCode, DocumentType docType, List<OrderPromotion> promosOnOrder)
+        public static CreateTransactionModel ToAvalaraTransactionModel(this HSOrderWorksheet order, string companyCode, DocumentType docType, List<HSOrderPromotion> promosOnOrder)
         {
             var buyerLocationID = order.Order.BillingAddress.ID;
 
@@ -69,7 +69,7 @@ namespace OrderCloud.Integrations.Avalara.Mappers
             };
         }
 
-        private static decimal GetOrderOnlyTotalDiscount(List<OrderPromotion> promosOnOrder)
+        private static decimal GetOrderOnlyTotalDiscount(List<HSOrderPromotion> promosOnOrder)
         {
             return promosOnOrder
                 .Where(promo => promo.LineItemID == null && !promo.LineItemLevel)

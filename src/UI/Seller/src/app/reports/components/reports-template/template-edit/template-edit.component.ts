@@ -13,7 +13,6 @@ import {
   salesOrderDetail as salesOrderDetailHeaders,
   purchaseOrderDetail as purchaseOrderDetailHeaders,
   lineItemDetail as lineItemDetailHeaders,
-  rmaDetail as rmaDetailHeaders,
   productDetail as productDetailHeaders,
   shipmentDetail as shipmentDetailHeaders,
 } from '../models/headers'
@@ -22,7 +21,6 @@ import {
   salesOrderDetail as salesOrderDetailFilters,
   purchaseOrderDetail as purchaseOrderDetailFilters,
   lineItemDetail as lineItemDetailFilters,
-  rmaDetail as rmaDetailFilters,
   productDetail as productDetailFilters,
   shipmentDetail as shipmentDetailFilters,
 } from '../models/filters'
@@ -34,7 +32,6 @@ import {
   AppGeographyService,
   FilterObject,
   OrderType,
-  RMAType,
 } from '@app-seller/shared'
 import { ReportTemplate } from '@ordercloud/headstart-sdk'
 
@@ -131,10 +128,6 @@ export class TemplateEditComponent implements OnChanges {
         this.headers = productDetailHeaders
         this.filters = productDetailFilters
         break
-      case 'RMADetail':
-        this.headers = rmaDetailHeaders
-        this.filters = rmaDetailFilters
-        break
       case 'ShipmentDetail':
         this.headers = shipmentDetailHeaders
         this.filters = shipmentDetailFilters
@@ -164,18 +157,6 @@ export class TemplateEditComponent implements OnChanges {
           }
           if (filter.name === 'Submitted Order Status') {
             filter.filterValues = ['Open', 'Completed', 'Canceled']
-          }
-          if (filter.name === 'RMA Type') {
-            filter.filterValues = Object.values(RMAType)
-          }
-          if (filter.name === 'RMA Status') {
-            filter.filterValues = [
-              'Requested',
-              'Processing',
-              'Approved',
-              'Complete',
-              'Denied',
-            ]
           }
           if (filter.name === 'Shipping Status') {
             filter.filterValues = [

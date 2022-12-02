@@ -81,9 +81,9 @@ namespace OrderCloud.Integrations.CardConnect
             };
         }
 
-        public async Task VoidAuthorization(HSOrder order, HSPayment payment, HSPaymentTransaction paymentTransaction, decimal? refundAmount = null)
+        public async Task VoidAuthorization(HSOrder order, HSPayment payment, HSPaymentTransaction paymentTransaction, decimal? refundAmount = null, string orderReturnId = null)
         {
-            var voidPayment = refundAmount == null ? payment : new HSPayment() { Amount = refundAmount };
+            var voidPayment = refundAmount == null ? payment : new HSPayment() { Amount = refundAmount * -1 };
             try
             {
                 var response = await cardConnectClient.VoidAuthorization(new CardConnectVoidRequest
@@ -93,8 +93,41 @@ namespace OrderCloud.Integrations.CardConnect
                     retref = paymentTransaction.xp.CCTransactionResult.TransactionID,
                     amount = refundAmount?.ToString("F2"),
                 });
+                var newPaymentTransaction = CardConnectMapper.Map(voidPayment, response);
 
-                await orderCloudClient.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, CardConnectMapper.Map(voidPayment, response));
+                if (string.IsNullOrEmpty(orderReturnId))
+                {
+                    // This void  isn't part of an order return so just create a new transaction on the existing payment
+                    await orderCloudClient.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, newPaymentTransaction);
+                }
+                else
+                {
+                    // for order returns we must create a payment with a negative amount equal to the OrderReturn.RefundAmount for the order return to complete automatically
+                    // We're creating the payment only after we know the request has succeeded because currently even a payment that hasn't been accepted will complete an order return (possible bug)
+                    if (newPaymentTransaction.Succeeded)
+                    {
+                        payment = await orderCloudClient.Payments.CreateAsync<HSPayment>(OrderDirection.Incoming, order.ID, new HSPayment
+                        {
+                            Type = PaymentType.CreditCard,
+                            CreditCardID = payment.CreditCardID,
+                            Amount = refundAmount * -1,
+                            Accepted = true,
+                            OrderReturnID = orderReturnId,
+                            xp = payment.xp,
+                        });
+
+                        await orderCloudClient.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, newPaymentTransaction);
+                    }
+                    else
+                    {
+                        throw new CatalystBaseException(new ApiError
+                        {
+                            ErrorCode = "Payment.FailedToRefund",
+                            Message = newPaymentTransaction.ResultMessage,
+                            Data = response,
+                        });
+                    }
+                }
             }
             catch (CreditCardVoidException ex)
             {
@@ -108,20 +141,52 @@ namespace OrderCloud.Integrations.CardConnect
             }
         }
 
-        public async Task Refund(HSOrderWorksheet worksheet, HSPayment payment, HSPaymentTransaction paymentTransaction, decimal refundAmount)
+        public async Task Refund(HSOrder order, HSPayment payment, HSPaymentTransaction paymentTransaction, decimal refundAmount, string orderReturnId)
         {
             try
             {
                 var response = await cardConnectClient.Refund(new CardConnectRefundRequest
                 {
-                    currency = worksheet.Order.xp.Currency.ToString(),
+                    currency = order.xp.Currency.ToString(),
                     merchid = paymentTransaction.xp.CCTransactionResult.merchid,
                     retref = paymentTransaction.xp.CCTransactionResult.TransactionID,
                     amount = refundAmount.ToString("F2"),
                 });
+                var newPaymentTransaction = CardConnectMapper.Map(new HSPayment() { Amount = response.amount * -1 }, response);
 
-                var newPaymentTransaction = CardConnectMapper.Map(new HSPayment() { Amount = response.amount }, response);
-                await orderCloudClient.Payments.CreateTransactionAsync(OrderDirection.Incoming, worksheet.Order.ID, payment.ID, newPaymentTransaction);
+                if (string.IsNullOrEmpty(orderReturnId))
+                {
+                    // This refund isn't part of an order return so just create a new transaction on the existing payment
+                    await orderCloudClient.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, newPaymentTransaction);
+                }
+                else
+                {
+                    // for order returns we must create a payment with a negative amount equal to the OrderReturn.RefundAmount for the order return to complete automatically
+                    // We're creating the payment only after we know the request has succeeded because currently even a payment that hasn't been accepted will complete an order return (possible bug)
+                    if (newPaymentTransaction.Succeeded)
+                    {
+                        payment = await orderCloudClient.Payments.CreateAsync<HSPayment>(OrderDirection.Incoming, order.ID, new HSPayment
+                        {
+                            Type = PaymentType.CreditCard,
+                            CreditCardID = payment.CreditCardID,
+                            Amount = refundAmount * -1,
+                            Accepted = true,
+                            OrderReturnID = orderReturnId,
+                            xp = payment.xp,
+                        });
+
+                        await orderCloudClient.Payments.CreateTransactionAsync(OrderDirection.Incoming, order.ID, payment.ID, newPaymentTransaction);
+                    }
+                    else
+                    {
+                        throw new CatalystBaseException(new ApiError
+                        {
+                            ErrorCode = "Payment.FailedToRefund",
+                            Message = newPaymentTransaction.ResultMessage,
+                            Data = response,
+                        });
+                    }
+                }
             }
             catch (CreditCardRefundException ex)
             {

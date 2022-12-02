@@ -1,0 +1,140 @@
+<div *ngIf="liGroupedByShipFrom?.length > 0">
+  <div
+    class="card shadow mb-4"
+    *ngFor="let liGroup of liGroupedByShipFrom; index as i"
+  >
+    <div class="card-header p-3">
+      <div class="row" *ngIf="suppliers?.length > 0 && suppliers[i]?.supplier">
+        <div class="col-md">
+          <h2 class="card-title h6 mb-0">
+            <span class="text-medium font-weight-light"
+              >{{ 'CART.LINEITEM_TABLE.SHIP_FROM' | translate }}:</span
+            >
+            {{ suppliers[i].supplier.Name }}
+          </h2>
+        </div>
+        <div
+          class="col-md d-flex flex-column justify-content-end text-md-right"
+        >
+          <address
+            *ngIf="shouldDisplayAddress(suppliers[i]?.shipFrom)"
+            class="small text-muted mb-0"
+          >
+            {{ suppliers[i].shipFrom?.Street1 }} {{
+            suppliers[i].shipFrom?.Street2 }} | {{ suppliers[i].shipFrom?.City
+            }}, {{ suppliers[i].shipFrom?.State }}, {{
+            suppliers[i].shipFrom?.Zip }}
+          </address>
+          <address
+            class="small text-muted mb-0"
+            *ngIf="suppliers[i].supplier?.xp?.Contacts"
+          >
+            {{ suppliers[i].supplier.xp.Contacts[0]?.Phone | phoneFormat }} | {{
+            suppliers[i].supplier.xp.Contacts[0]?.Email }}
+          </address>
+        </div>
+      </div>
+      <ng-content></ng-content>
+    </div>
+    <div class="card-body pt-sm-2">
+      <!-- Line Item Labels: Start -->
+      <div class="d-none d-sm-block border-bottom border-light pb-2">
+        <div class="row">
+          <div class="col-md-6"></div>
+          <div class="col-md-6">
+            <div class="row align-items-center">
+              <div class="col-2 text-center text-medium"></div>
+              <div class="col text-center text-medium">
+                <small translate>CART.LINEITEM_TABLE.QTY_RETURNED</small>
+              </div>
+              <div
+                class="col-4 text-right text-medium"
+                id="label_lineItemTotal"
+              >
+                <small translate>CART.LINEITEM_TABLE.REFUND_AMOUNT</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Line Item Labels: End -->
+      <!-- line item: Start -->
+      <div
+        *ngFor="let li of liGroup; let i = index"
+        class="position-relative border-bottom border-light px-0"
+      >
+        <div class="row align-items-center my-3">
+          <div class="col-md-6" *ngIf="li">
+            <div class="row align-items-sm-center">
+              <div class="col-md-3 col-sm-6 pr-md-3">
+                <a class="d-block" (click)="toProductDetails(li.Product.ID)">
+                  <img
+                    class="img-thumbnail w-100"
+                    [src]="li.xp?.ImageUrl || getImageUrl(li.ID)"
+                    alt="{{ li.Product.ID }}"
+                  />
+                </a>
+              </div>
+              <div class="col-md-9 col-sm-6">
+                <a
+                  (click)="toProductDetails(li.Product.ID)"
+                  class="text-dark font-weight-medium line-height-1"
+                >
+                  {{ li | productNameWithSpecs }}
+                  <span
+                    *ngIf="li?.Product?.xp?.ProductType === 'Quote'"
+                    class="
+                      small
+                      badge badge-pill badge-warning
+                      ml-2
+                      order-type-text
+                    "
+                  >
+                    {{ li?.Product?.xp?.ProductType }}
+                  </span>
+                </a>
+                <small class="text-muted d-block">{{ li.Product.ID }}</small>
+                <div>
+                  <span translate>ORDERS.DETAIL.REASON</span>: {{
+                  getItemToReturnReason(li) | orderReturnReason | translate }}
+                </div>
+                <div
+                  *ngIf="
+                    displayShippingInfo &&
+                    li?.Product?.xp?.FreeShipping &&
+                    li?.Product?.xp?.FreeShippingMessage
+                  "
+                  class="badge badge-pill badge-warning text-uppercase"
+                >
+                  {{ li?.Product?.xp?.FreeShippingMessage }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row align-items-center pt-3 pt-sm-0">
+              <div class="col-2 text-center"></div>
+              <div class="col text-center">
+                <small class="d-block d-sm-none" translate
+                  >CART.LINEITEM_TABLE.QTY_RETURNED</small
+                >
+                <span class="text-nowrap">
+                  {{ getItemToReturnQuantity(li) }}</span
+                >
+              </div>
+              <div class="col-4 text-right" id="col_lineItemTotal">
+                <small class="d-block d-sm-none" translate
+                  >CART.LINEITEM_TABLE.REFUND_AMOUNT
+                </small>
+                <span class="text-nowrap">
+                  {{ getItemToReturnRefundTotal(li) | currency: orderCurrency
+                  }}</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

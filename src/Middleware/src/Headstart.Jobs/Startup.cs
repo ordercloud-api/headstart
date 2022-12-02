@@ -62,11 +62,6 @@ namespace Headstart.Jobs
                 },
                 new ContainerInfo()
                 {
-                    Name = "rmas",
-                    PartitionKey = "/PartitionKey",
-                },
-                new ContainerInfo()
-                {
                     Name = "shipmentdetail",
                     PartitionKey = "/PartitionKey",
                 },

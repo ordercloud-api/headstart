@@ -18,6 +18,5 @@
         public int NoRatesFallbackTransitDays { get; set; }
 
         public string USPSAccountId { get; set; }
-
     }
 }

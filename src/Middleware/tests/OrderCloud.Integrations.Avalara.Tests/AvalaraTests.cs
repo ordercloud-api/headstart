@@ -31,7 +31,7 @@ namespace OrderCloud.Integrations.Avalara.Tests
             // Arrange
 
             // Act
-            var response = await command.CalculateEstimateAsync(new HSOrderWorksheet(), new List<OrderPromotion>());
+            var response = await command.CalculateEstimateAsync(new HSOrderWorksheet());
 
             // Assert
             Assert.AreEqual(123.45, response.TotalTax);
@@ -44,7 +44,7 @@ namespace OrderCloud.Integrations.Avalara.Tests
             // Arrange
 
             // Act
-            var response = await command.CommitTransactionAsync(new HSOrderWorksheet(), new List<OrderPromotion>());
+            var response = await command.CommitTransactionAsync(new HSOrderWorksheet());
 
             // Assert
             Assert.AreEqual(123.45, response.TotalTax);

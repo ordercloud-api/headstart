@@ -26,6 +26,8 @@
 
         public string QuoteOrderSubmitTemplateID { get; set; } // (Optional but required to send QuoteOrderSubmit emails) ID for template to be used for QuoteOrderSubmit emails
 
+        public string OrderReturnTemplateID { get; set; } // (Optional) but required to send order return emails
+
         public string SupportCaseEmail { get; set; } // (Optional) Email to send support cases to
     }
 }

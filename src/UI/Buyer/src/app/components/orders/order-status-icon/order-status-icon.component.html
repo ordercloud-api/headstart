@@ -8,24 +8,15 @@
       status === 'Processing' ||
       status === 'Backordered' ||
       status === 'Pending' ||
-      status === 'ReturnRequested' ||
-      status === 'CancelRequested' ||
       status === 'PartiallyShipped' ||
       status === 'PartialQtyApproved' ||
       status === 'PartialQtyComplete',
     'text-info':
       status === 'Open' ||
       status === 'Requested' ||
-      status === 'NoClaim' ||
       status === 'Submitted' ||
       status === 'Approved',
-    'text-danger':
-      status === 'Declined' ||
-      status === 'Denied' ||
-      status === 'Canceled' ||
-      status === 'CancelDenied' ||
-      status === 'ReturnDenied' ||
-      status === 'Returned'
+    'text-danger': status === 'Declined' || status === 'Canceled'
   }"
   [icon]="statusIconMapping[status]"
 ></fa-icon>

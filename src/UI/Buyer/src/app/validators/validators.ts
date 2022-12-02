@@ -18,8 +18,10 @@ export const ErrorDictionary = {
     one uppercase letter, one lowercase letter, one number, and one special character.`,
   creditCardNumber: 'Card number is invalid',
   creditCardLength: 'Card length is invalid',
-  min: 'Please enter a higher value',
-  max: 'Please enter a lower value',
+  min: 'Minimum value is $min',
+  max: 'Maximum value is $max',
+  minlength: 'This field requires a minimum of $minlength characters',
+  maxlength: 'This field has a maximum of $maxlength characters',
   pattern:
     'Zip Code is invalid' /* Maybe change if another regex is utilized elsewhere? */,
 }

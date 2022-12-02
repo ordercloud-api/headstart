@@ -313,6 +313,10 @@ export class ProductEditComponent implements OnInit, OnDestroy {
             _get(superHSProduct.Product, 'Inventory.VariantLevelTracking'),
             null
           ),
+          Returnable: new FormControl(
+            _get(superHSProduct.Product, 'Returnable'),
+            []
+          ),
           OrderCanExceed: new FormControl(
             _get(superHSProduct.Product, 'Inventory.OrderCanExceed')
           ),
@@ -595,16 +599,17 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   }
 
   handleUpdateProduct(event: any, field: string, typeOfValue?: string): void {
-    const productFields: string[] = [
+    const booleanProductFields: string[] = [
       'Product.Active',
       'Product.Inventory.Enabled',
       'Product.Inventory.OrderCanExceed',
       'Product.Inventory.VariantLevelTracking',
       'Product.xp.FreeShipping',
+      'Product.Returnable',
     ]
     const productUpdate = {
       field,
-      value: productFields.includes(field)
+      value: booleanProductFields.includes(field)
         ? event.target.checked
         : typeOfValue === 'number'
         ? Number(event.target.value)

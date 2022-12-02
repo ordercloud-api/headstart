@@ -56,15 +56,11 @@ export const ocAppConfig: AppConfig = {
     'SupplierUserGroupAdmin',
     'SupplierAddressAdmin',
     'AdminUserAdmin',
+    'AdminUserGroupAdmin',
     'ProductFacetAdmin',
     'ProductFacetReader',
     'ShipmentAdmin',
     'UnsubmittedOrderReader',
-
-    // custom cms roles
-    'AssetAdmin',
-    'DocumentAdmin',
-    'SchemaAdmin',
 
     // custom roles used to conditionally display ui
     'HSMeProductAdmin',
@@ -89,6 +85,7 @@ export const ocAppConfig: AppConfig = {
     'HSMeSupplierUserAdmin',
     'HSSupplierUserGroupAdmin',
     'HSStorefrontAdmin',
+    'HSOrderReturnApprover',
   ] as ApiRole[],
   impersonatingBuyerScope: [
     'MeAddressAdmin',

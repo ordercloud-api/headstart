@@ -5,6 +5,24 @@ namespace Headstart.Common.Constants
 {
     public static class HSUserTypes
     {
+        public static List<HSUserType> Admin()
+        {
+            return new List<HSUserType>()
+            {
+                new HSUserType
+                {
+                    UserGroupName = "Order Return Approver",
+                    UserGroupType = UserGroupType.UserPermissions,
+                    UserGroupIDSuffix = "OrderReturnApprover",
+                    Description = "Allow user to approve order returns submitted by buyers",
+                    CustomRoles = new List<CustomRole>
+                    {
+                        CustomRole.HSOrderReturnApprover,
+                    },
+                },
+            };
+        }
+
         public static List<HSUserType> Supplier()
         {
             return new List<HSUserType>()
@@ -12,6 +30,7 @@ namespace Headstart.Common.Constants
                 new HSUserType
                 {
                     UserGroupName = "Order Admin",
+                    Description = "Allow user to manage orders",
                     UserGroupType = UserGroupType.UserPermissions,
                     UserGroupIDSuffix = "OrderAdmin",
                     CustomRoles = new List<CustomRole>
@@ -23,6 +42,7 @@ namespace Headstart.Common.Constants
                 new HSUserType
                 {
                     UserGroupName = "Account Admin",
+                    Description = "Allow user to manage addresses, users, and usergroups",
                     UserGroupType = UserGroupType.UserPermissions,
                     UserGroupIDSuffix = "AccountAdmin",
                     CustomRoles = new List<CustomRole>
@@ -36,6 +56,7 @@ namespace Headstart.Common.Constants
                 new HSUserType
                 {
                     UserGroupName = "Product Admin",
+                    Description = "Allow user to manage products",
                     UserGroupType = UserGroupType.UserPermissions,
                     UserGroupIDSuffix = "ProductAdmin",
                     CustomRoles = new List<CustomRole>
@@ -46,6 +67,7 @@ namespace Headstart.Common.Constants
                 new HSUserType
                 {
                     UserGroupName = "Report Reader",
+                    Description = "Allow user to view reports",
                     UserGroupType = UserGroupType.UserPermissions,
                     UserGroupIDSuffix = "ReportReader",
                     CustomRoles = new List<CustomRole>

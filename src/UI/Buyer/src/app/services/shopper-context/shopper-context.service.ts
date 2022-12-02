@@ -14,7 +14,6 @@ import { ExchangeRatesService } from '../exchange-rates/exchange-rates.service'
 import { TempSdk } from '../temp-sdk/temp-sdk.service'
 import { PDFService } from '../pdf-render/pdf-render.service'
 import { AppConfig } from 'src/app/models/environment.types'
-import { RMAService } from '../rmas/rma.service'
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +34,6 @@ export class ShopperContextService {
     public addresses: AddressService,
     public ordersToApprove: OrdersToApproveStateService,
     public tempSdk: TempSdk,
-    public pdfService: PDFService,
-    public rmaService: RMAService
+    public pdfService: PDFService
   ) {}
 }

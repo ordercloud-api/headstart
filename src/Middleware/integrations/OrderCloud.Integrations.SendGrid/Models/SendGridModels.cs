@@ -156,6 +156,32 @@ namespace OrderCloud.Integrations.SendGrid
             public string Comments { get; set; }
         }
 
+        public class OrderReturnTemplateData : OrderTemplateData
+        {
+            public string OrderReturnID { get; set; }
+
+            public decimal? OrderReturnRefundAmount { get; set; }
+
+            public string OrderReturnComments { get; set; }
+
+            public string OrderReturnSellerComments { get; set; }
+
+            public IEnumerable<EnhancedOrderReturnItem> OrderReturnItemsToReturn { get; set; }
+        }
+
+        public class EnhancedOrderReturnItem
+        {
+            public string LineItemID { get; set; }
+
+            public int Quantity { get; set; }
+
+            public decimal? RefundAmount { get; set; }
+
+            public string Comments { get; set; }
+
+            public HSLineItem LineItem { get; set; }
+        }
+
         public class QuoteOrderTemplateData
         {
             public string FirstName { get; set; }

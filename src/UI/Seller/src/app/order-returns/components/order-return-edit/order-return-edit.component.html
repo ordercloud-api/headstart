@@ -1,0 +1,16 @@
+<div *ngIf="lineItems.length" class="container float-left">
+  <order-return-summary
+    [orderReturn]="orderReturn"
+    [order]="order"
+    [lineItems]="lineItems"
+    (updateReturn)="updateReturn($event)"
+  >
+  </order-return-summary>
+  <order-return-comments
+    [orderReturnApproval]="orderReturnApproval"
+  ></order-return-comments>
+  <order-return-logs
+    [orderReturn]="orderReturn"
+    [order]="order"
+  ></order-return-logs>
+</div>

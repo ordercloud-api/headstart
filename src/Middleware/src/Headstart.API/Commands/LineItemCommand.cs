@@ -10,8 +10,6 @@ using Microsoft.ApplicationInsights;
 using Newtonsoft.Json;
 using OrderCloud.Catalyst;
 using OrderCloud.Integrations.Emails;
-using OrderCloud.Integrations.RMAs.Commands;
-using OrderCloud.Integrations.RMAs.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
@@ -27,8 +25,6 @@ namespace Headstart.API.Commands
         Task DeleteLineItem(string orderID, string lineItemID, DecodedToken decodedToken);
 
         Task<decimal> ValidateLineItemUnitCost(string orderID, SuperHSMeProduct product, List<HSLineItem> existingLineItems, HSLineItem li);
-
-        Task HandleRMALineItemStatusChanges(OrderDirection orderDirection, RMAWithLineItemStatusByQuantity rmaWithLineItemStatusByQuantity, DecodedToken decodedToken);
     }
 
     public class LineItemCommand : ILineItemCommand
@@ -37,17 +33,15 @@ namespace Headstart.API.Commands
         private readonly IEmailServiceProvider emailServiceProvider;
         private readonly IMeProductCommand meProductCommand;
         private readonly IPromotionCommand promotionCommand;
-        private readonly IRMACommand rmaCommand;
 
         private readonly TelemetryClient telemetry;
 
-        public LineItemCommand(IEmailServiceProvider emailServiceProvider, IOrderCloudClient oc, IMeProductCommand meProductCommand, IPromotionCommand promotionCommand, IRMACommand rmaCommand, TelemetryClient telemetry)
+        public LineItemCommand(IEmailServiceProvider emailServiceProvider, IOrderCloudClient oc, IMeProductCommand meProductCommand, IPromotionCommand promotionCommand, TelemetryClient telemetry)
         {
             this.oc = oc;
             this.emailServiceProvider = emailServiceProvider;
             this.meProductCommand = meProductCommand;
             this.promotionCommand = promotionCommand;
-            this.rmaCommand = rmaCommand;
             this.telemetry = telemetry;
         }
 
@@ -66,16 +60,8 @@ namespace Headstart.API.Commands
                             { LineItemStatus.Submitted, li.Quantity },
                             { LineItemStatus.Open, 0 },
                             { LineItemStatus.Backordered, 0 },
-                            { LineItemStatus.Canceled, 0 },
-                            { LineItemStatus.CancelRequested, 0 },
-                            { LineItemStatus.CancelDenied, 0 },
-                            { LineItemStatus.Returned, 0 },
-                            { LineItemStatus.ReturnRequested, 0 },
-                            { LineItemStatus.ReturnDenied, 0 },
                             { LineItemStatus.Complete, 0 },
                         },
-                        Returns = new List<LineItemClaim>(),
-                        Cancelations = new List<LineItemClaim>(),
                     },
                 };
                 return oc.LineItems.PatchAsync<HSLineItem>(OrderDirection.Incoming, buyerOrderID, li.ID, partial);
@@ -109,11 +95,6 @@ namespace Headstart.API.Commands
             var allLineItemsForOrder = await oc.LineItems.ListAllAsync<HSLineItem>(OrderDirection.Incoming, buyerOrderID);
             var lineItemsChanged = allLineItemsForOrder.Where(li => lineItemStatusChanges.Changes.Select(li => li.ID).Contains(li.ID)).ToList();
             var sellerIDsRelatingToChange = lineItemsChanged.Select(li => li.SupplierID).Distinct().ToList();
-
-            if (lineItemStatusChanges.Status == LineItemStatus.CancelRequested || lineItemStatusChanges.Status == LineItemStatus.ReturnRequested)
-            {
-                await rmaCommand.BuildRMA(buyerOrder, sellerIDsRelatingToChange, lineItemStatusChanges, lineItemsChanged, decodedToken);
-            }
 
             var supplierIDsRelatingToChange = sellerIDsRelatingToChange.Where(s => s != null).ToList(); // filter out MPO
             var relatedSupplierOrderIDs = (userType == "admin") ? null : supplierIDsRelatingToChange.Select(supplierID => supplierID == null ? supplierID : $"{buyerOrderID}-{supplierID}").ToList();
@@ -257,31 +238,6 @@ namespace Headstart.API.Commands
             }
         }
 
-        public async Task HandleRMALineItemStatusChanges(OrderDirection orderDirection, RMAWithLineItemStatusByQuantity rmaWithLineItemStatusByQuantity, DecodedToken decodedToken)
-        {
-            if (!rmaWithLineItemStatusByQuantity.LineItemStatusChangesList.Any())
-            {
-                return;
-            }
-
-            string orderID;
-            if (rmaWithLineItemStatusByQuantity.RMA.SupplierID == null)
-            {
-                // this is an MPO owned RMA
-                orderID = rmaWithLineItemStatusByQuantity.RMA.SourceOrderID;
-            }
-            else
-            {
-                // this is a suplier owned RMA and by convention orders are in the format {orderID}-{supplierID}
-                orderID = $"{rmaWithLineItemStatusByQuantity.RMA.SourceOrderID}-{rmaWithLineItemStatusByQuantity.RMA.SupplierID}";
-            }
-
-            foreach (var statusChange in rmaWithLineItemStatusByQuantity.LineItemStatusChangesList)
-            {
-                await UpdateLineItemStatusesAndNotifyIfApplicable(OrderDirection.Incoming, orderID, statusChange, decodedToken);
-            }
-        }
-
         private async Task SyncOrderStatuses(HSOrder buyerOrder, List<string> relatedSupplierOrderIDs, List<HSLineItem> allOrderLineItems)
         {
             await SyncOrderStatus(OrderDirection.Incoming, buyerOrder.ID, allOrderLineItems);
@@ -299,14 +255,13 @@ namespace Headstart.API.Commands
 
         private async Task SyncOrderStatus(OrderDirection orderDirection, string orderID, List<HSLineItem> changedLineItems)
         {
-            var (submittedOrderStatus, shippingStatus, claimStatus) = LineItemStatusConstants.GetOrderStatuses(changedLineItems);
+            var (submittedOrderStatus, shippingStatus) = LineItemStatusConstants.GetOrderStatuses(changedLineItems);
             var partialOrder = new PartialOrder()
             {
                 xp = new
                 {
                     submittedOrderStatus,
                     shippingStatus,
-                    claimStatus,
                 },
             };
             await oc.Orders.PatchAsync(orderDirection, orderID, partialOrder);
@@ -316,76 +271,13 @@ namespace Headstart.API.Commands
         {
             var existingLineItem = previousLineItemStates.First(li => li.ID == lineItemStatusChange.ID);
             var statusByQuantity = BuildNewLineItemStatusByQuantity(lineItemStatusChange, existingLineItem, newLineItemStatus);
-            if (newLineItemStatus == LineItemStatus.ReturnRequested || newLineItemStatus == LineItemStatus.Returned)
+            return new PartialLineItem()
             {
-                var returnRequests = existingLineItem.xp.Returns ?? new List<LineItemClaim>();
-                return new PartialLineItem()
+                xp = new
                 {
-                    xp = new
-                    {
-                        Returns = GetUpdatedChangeRequests(returnRequests, lineItemStatusChange, lineItemStatusChange.Quantity, newLineItemStatus, statusByQuantity),
-                        StatusByQuantity = statusByQuantity,
-                    },
-                };
-            }
-            else if (newLineItemStatus == LineItemStatus.CancelRequested || newLineItemStatus == LineItemStatus.Canceled)
-            {
-                var cancelRequests = existingLineItem.xp.Cancelations ?? new List<LineItemClaim>();
-                return new PartialLineItem()
-                {
-                    xp = new
-                    {
-                        Cancelations = GetUpdatedChangeRequests(cancelRequests, lineItemStatusChange, lineItemStatusChange.Quantity, newLineItemStatus, statusByQuantity),
-                        StatusByQuantity = statusByQuantity,
-                    },
-                };
-            }
-            else
-            {
-                return new PartialLineItem()
-                {
-                    xp = new
-                    {
-                        StatusByQuantity = statusByQuantity,
-                    },
-                };
-            }
-        }
-
-        private List<LineItemClaim> GetUpdatedChangeRequests(List<LineItemClaim> existinglineItemStatusChangeRequests, LineItemStatusChange lineItemStatusChange, int quantitySetting, LineItemStatus newLineItemStatus, Dictionary<LineItemStatus, int> lineItemStatuses)
-        {
-            if (newLineItemStatus == LineItemStatus.Returned || newLineItemStatus == LineItemStatus.Canceled)
-            {
-                // go through the return requests and resolve each request until there aren't enough returned or canceled items
-                // to resolve an additional request
-                var numberReturnedOrCanceled = lineItemStatuses[newLineItemStatus];
-                var currentClaimIndex = 0;
-                while (numberReturnedOrCanceled > 0 && currentClaimIndex < existinglineItemStatusChangeRequests.Count())
-                {
-                    if (existinglineItemStatusChangeRequests[currentClaimIndex].Quantity <= numberReturnedOrCanceled)
-                    {
-                        existinglineItemStatusChangeRequests[currentClaimIndex].IsResolved = true;
-                        numberReturnedOrCanceled -= existinglineItemStatusChangeRequests[currentClaimIndex].Quantity;
-                        currentClaimIndex++;
-                    }
-                    else
-                    {
-                        currentClaimIndex++;
-                    }
-                }
-            }
-            else
-            {
-                existinglineItemStatusChangeRequests.Add(new LineItemClaim()
-                {
-                    Comment = lineItemStatusChange.Comment,
-                    Reason = lineItemStatusChange.Reason,
-                    IsResolved = false,
-                    Quantity = quantitySetting,
-                });
-            }
-
-            return existinglineItemStatusChangeRequests;
+                    StatusByQuantity = statusByQuantity,
+                },
+            };
         }
 
         private Dictionary<LineItemStatus, int> BuildNewLineItemStatusByQuantity(LineItemStatusChange lineItemStatusChange, HSLineItem existingLineItem, LineItemStatus newLineItemStatus)

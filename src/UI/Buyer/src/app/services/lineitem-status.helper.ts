@@ -1,48 +1,40 @@
-import { HSLineItem } from '@ordercloud/headstart-sdk'
+import { HSLineItem, HSOrderReturn } from '@ordercloud/headstart-sdk'
+import { flatten, sum } from 'lodash'
 
-export function NumberCanReturn(lineItem: HSLineItem): number {
-  return lineItem?.xp?.StatusByQuantity
-    ? lineItem?.xp?.StatusByQuantity['Complete']
-    : 0
-}
-
-export function NumberCanCancel(lineItem: HSLineItem): number {
-  return lineItem?.xp?.StatusByQuantity
-    ? lineItem.xp.StatusByQuantity['Submitted'] +
-        lineItem.xp.StatusByQuantity['Backordered']
-    : 0
-}
-
-export function CanReturn(lineItem: HSLineItem): boolean {
-  return !!NumberCanReturn(lineItem)
-}
-
-export function CanCancel(lineItem: HSLineItem): boolean {
-  return !!NumberCanCancel(lineItem)
-}
-
-export function NumberCanCancelOrReturn(
+export function NumberCanReturn(
   lineItem: HSLineItem,
-  action: string
+  orderReturns: HSOrderReturn[] = []
 ): number {
-  if (action === 'return') {
-    return NumberCanReturn(lineItem)
-  } else {
-    return NumberCanCancel(lineItem)
+  if (!lineItem.Product.Returnable) {
+    return 0
   }
+  const alreadyReturnedItems = flatten(
+    orderReturns
+      .filter(
+        (orderReturn) =>
+          orderReturn.Status === 'Open' ||
+          orderReturn.Status === 'AwaitingApproval' ||
+          orderReturn.Status === 'Completed'
+      )
+      .map((orderReturn) => orderReturn.ItemsToReturn)
+  ).filter((item) => item.LineItemID === lineItem.ID)
+  const maxReturnable = lineItem.QuantityShipped
+  const quantityAlreadyRequested = sum(
+    alreadyReturnedItems.filter((li) => li.LineItemID).map((li) => li.Quantity)
+  )
+  return maxReturnable - quantityAlreadyRequested
 }
 
-export function CanReturnOrCancel(
+export function CanReturn(
   lineItem: HSLineItem,
-  action: string
+  orderReturns: HSOrderReturn[] = []
 ): boolean {
-  return !!NumberCanCancelOrReturn(lineItem, action)
+  return !!NumberCanReturn(lineItem, orderReturns)
 }
 
-export function CanReturnOrder(lineItems: HSLineItem[]): boolean {
-  return lineItems.some((li) => CanReturn(li))
-}
-
-export function CanCancelOrder(lineItems: HSLineItem[]): boolean {
-  return lineItems.some((li) => CanCancel(li))
+export function CanReturnOrder(
+  lineItems: HSLineItem[],
+  orderReturns: HSOrderReturn[] = []
+): boolean {
+  return lineItems.some((li) => CanReturn(li, orderReturns))
 }

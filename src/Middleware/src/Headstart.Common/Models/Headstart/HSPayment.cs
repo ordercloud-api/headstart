@@ -20,18 +20,5 @@ namespace Headstart.Common.Models
     public class TransactionXP
     {
         public CCTransactionResult CCTransactionResult { get; set; }
-
-        public RMADetails RMADetails { get; set; }
-    }
-
-    public class RMADetails
-    {
-        public string OrderRMANumber { get; set; }
-
-        public string RefundComment { get; set; }
-
-        public string FromSupplierID { get; set; }
-
-        public string FromUserID { get; set; }
     }
 }

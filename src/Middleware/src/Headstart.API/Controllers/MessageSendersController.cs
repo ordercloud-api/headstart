@@ -1,3 +1,4 @@
+using System;
 using Headstart.API.Commands;
 using Headstart.Common.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -32,28 +33,28 @@ namespace Headstart.Common.Controllers
             this.orderCommand = orderCommand;
         }
 
-        [HttpPost, Route("newuserinvitation")]
+        [HttpPost, Route("NewUserInvitation")]
         [OrderCloudWebhookAuth]
         public async void HandleNewUser([FromBody] MessageNotification<PasswordResetEventBody> payload)
         {
             await emailServiceProvider.SendNewUserEmail(payload);
         }
 
-        [HttpPost, Route("forgottenpassword")]
+        [HttpPost, Route("ForgottenPassword")]
         [OrderCloudWebhookAuth]
         public async void HandlePasswordReset([FromBody] MessageNotification<PasswordResetEventBody> payload)
         {
             await emailServiceProvider.SendPasswordResetEmail(payload);
         }
 
-        [HttpPost, Route("ordersubmittedforapproval")]
+        [HttpPost, Route("OrderSubmittedForApproval")]
         [OrderCloudWebhookAuth]
         public async void HandleOrderSubmittedForApproval([FromBody] MessageNotification<OrderSubmitEventBody> payload)
         {
             await emailServiceProvider.SendOrderSubmittedForApprovalEmail(payload);
         }
 
-        [HttpPost, Route("ordersubmittedforyourapproval")]
+        [HttpPost, Route("OrderSubmittedForYourApproval")]
         [OrderCloudWebhookAuth]
         public async void HandleOrderRequiresApproval([FromBody] MessageNotification<OrderSubmitEventBody> payload)
         {
@@ -68,11 +69,60 @@ namespace Headstart.Common.Controllers
             await emailServiceProvider.SendOrderApprovedEmail(payload);
         }
 
-        [HttpPost, Route("orderdeclined")]
+        [HttpPost, Route("OrderDeclined")]
         [OrderCloudWebhookAuth]
         public async void HandleOrderDeclined([FromBody] MessageNotification<OrderSubmitEventBody> payload)
         {
             await emailServiceProvider.SendOrderDeclinedEmail(payload);
+        }
+
+        [HttpPost, Route("OrderReturnApproved")]
+        [OrderCloudWebhookAuth]
+        public async void HandleOrderReturnApproved([FromBody] MessageNotification<OrderReturnEventBody> payload)
+        {
+            await emailServiceProvider.SendOrderReturnApprovedEmail(payload);
+        }
+
+        [HttpPost, Route("OrderReturnCompleted")]
+        [OrderCloudWebhookAuth]
+        public async void HandleOrderReturnCompleted([FromBody] MessageNotification<OrderReturnEventBody> payload)
+        {
+            await emailServiceProvider.SendOrderReturnCompletedEmail(payload);
+        }
+
+        [HttpPost, Route("OrderReturnDeclined")]
+        [OrderCloudWebhookAuth]
+        public async void HandleOrderReturnDeclined([FromBody] MessageNotification<OrderReturnEventBody> payload)
+        {
+            await emailServiceProvider.SendOrderReturnDeclinedEmail(payload);
+        }
+
+        [HttpPost, Route("OrderReturnSubmittedForApproval")]
+        [OrderCloudWebhookAuth]
+        public async void HandleOrderReturnSubmitted([FromBody] MessageNotification<OrderReturnEventBody> payload)
+        {
+            await emailServiceProvider.SendOrderReturnSubmittedForApprovalEmail(payload);
+        }
+
+        [HttpPost, Route("OrderReturnSubmittedForYourApproval")]
+        [OrderCloudWebhookAuth]
+        public async void HandleOrderReturnSubmittedForYourApproval([FromBody] MessageNotification<OrderReturnEventBody> payload)
+        {
+            await emailServiceProvider.SendOrderReturnSubmittedForYourApprovalEmail(payload);
+        }
+
+        [HttpPost, Route("OrderReturnSubmittedForYourApprovalHasBeenApproved")]
+        [OrderCloudWebhookAuth]
+        public async void HandleOrderReturnSubmittedForYourApprovalHasBeenApproved([FromBody] MessageNotification<OrderReturnEventBody> payload)
+        {
+            await emailServiceProvider.SendOrderReturnSubmittedForYourApprovalHasBeenApprovedEmail(payload);
+        }
+
+        [HttpPost, Route("OrderReturnSubmittedForYourApprovalHasBeenDeclined")]
+        [OrderCloudWebhookAuth]
+        public async void HandleOrderReturnSubmittedForYourApprovalHasBeenDeclined([FromBody] MessageNotification<OrderReturnEventBody> payload)
+        {
+            await emailServiceProvider.SendOrderReturnSubmittedForYourApprovalHasBeenDeclinedEmail(payload);
         }
     }
 }

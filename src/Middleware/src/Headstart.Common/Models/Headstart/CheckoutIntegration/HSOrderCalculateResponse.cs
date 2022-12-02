@@ -12,9 +12,15 @@ namespace Headstart.Common.Models
         public OrderTaxCalculation TaxCalculation { get; set; }
     }
 
-    public class HSLineItemOverride : LineItemOverride<HSAdHocProduct> { }
+    public class HSLineItemOverride : LineItemOverride<HSAdHocProduct>
+    {
+    }
 
-    public class HSAdHocProduct : AdHocProduct<AdHocProductXp> { }
+    public class HSAdHocProduct : AdHocProduct<AdHocProductXp>
+    {
+    }
 
-    public class AdHocProductXp { }
+    public class AdHocProductXp
+    {
+    }
 }

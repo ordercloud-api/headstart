@@ -14,7 +14,6 @@ export interface OrderXp {
     SubmittedOrderStatus?: 'Open' | 'Completed' | 'Canceled'
     ApprovalNeeded?: string
     ShippingStatus?: 'Shipped' | 'PartiallyShipped' | 'Canceled' | 'Processing' | 'Backordered'
-    ClaimStatus?: 'NoClaim' | 'Pending' | 'Complete'
     PaymentMethod?: string
     ShippingAddress?: HSAddressBuyer
     SelectedShipMethodsSupplierView?: ShipMethodSupplierView[]

@@ -9,7 +9,7 @@ namespace OrderCloud.Integrations.Vertex.Mappers
 {
     public static class VertexRequestMapper
     {
-        public static VertexCalculateTaxRequest ToVertexCalculateTaxRequest(this HSOrderWorksheet order, List<OrderPromotion> promosOnOrder, string companyCode, VertexSaleMessageType type)
+        public static VertexCalculateTaxRequest ToVertexCalculateTaxRequest(this HSOrderWorksheet order, List<HSOrderPromotion> promosOnOrder, string companyCode, VertexSaleMessageType type)
         {
             var itemLines = order.LineItems.Select(li => ToVertexLineItem(li));
             var shippingLines = order.ShipEstimateResponse.ShipEstimates.Select(se =>

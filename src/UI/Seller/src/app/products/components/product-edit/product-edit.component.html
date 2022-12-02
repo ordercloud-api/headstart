@@ -535,6 +535,42 @@
                   </ng-container>
                 </div>
                 <!-- /Inventory Tracking -->
+                <!-- Product Returnable -->
+                <div class="card bg-white shadow-sm p-4 mt-3">
+                  <h6 class="font-weight-medium" translate>
+                    ADMIN.PRODUCT_EDIT.PRODUCT_RETURNS.PRODUCT_RETURNS
+                  </h6>
+                  <div class="form-group">
+                    <div class="custom-control custom-checkbox">
+                      <input
+                        [attr.disabled]="readonly ? true : null"
+                        type="checkbox"
+                        class="custom-control-input"
+                        formControlName="Returnable"
+                        (input)="
+                          handleUpdateProduct($event, 'Product.Returnable')
+                        "
+                        id="returnableEnabled"
+                      />
+                      <label
+                        class="custom-control-label"
+                        for="returnableEnabled"
+                        translate
+                        >ADMIN.PRODUCT_EDIT.PRODUCT_RETURNS.IS_PRODUCT_RETURNABLE</label
+                      >
+                      <small class="d-block">
+                        <fa-icon
+                          class="color-beige"
+                          [icon]="faExclamationCircle"
+                        ></fa-icon>
+                        <span translate>
+                          ADMIN.PRODUCT_EDIT.PRODUCT_RETURNS.PRODUCT_RETURNABLE_WARNING</span
+                        >
+                      </small>
+                    </div>
+                  </div>
+                </div>
+                <!-- /Product Returnable -->
                 <!-- Tax Categorization -->
                 <product-tax-code-select-component
                   *ngIf="taxCodes?.ProductsShouldHaveTaxCodes"

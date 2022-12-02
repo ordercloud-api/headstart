@@ -7,8 +7,6 @@ using Headstart.Common.Services;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using OrderCloud.Catalyst;
-using OrderCloud.Integrations.RMAs.Commands;
-using OrderCloud.Integrations.RMAs.Models;
 using OrderCloud.SDK;
 
 namespace Headstart.Jobs
@@ -18,14 +16,12 @@ namespace Headstart.Jobs
         private readonly AppSettings settings;
         private readonly IOrderCloudClient oc;
         private readonly IHSCreditCardProcessor creditCardService;
-        private readonly IRMACommand rmaCommand;
 
-        public PaymentCaptureJob(AppSettings settings, IOrderCloudClient oc, IHSCreditCardProcessor creditCardService, IRMACommand rmaCommand)
+        public PaymentCaptureJob(AppSettings settings, IOrderCloudClient oc, IHSCreditCardProcessor creditCardService)
         {
             this.settings = settings;
             this.oc = oc;
             this.creditCardService = creditCardService;
-            this.rmaCommand = rmaCommand;
         }
 
         protected override bool ShouldRun => settings.JobSettings.ShouldCaptureCreditCardPayments;
@@ -50,10 +46,10 @@ namespace Headstart.Jobs
         {
             try
             {
-                var rmaList = await rmaCommand.ListRMAsByOrderID(order.ID, CommerceRole.Seller, new MeUser { });
-                if (rmaList.Items.Any(x => x.Status == RMAStatus.Complete))
+                var orderReturns = await oc.OrderReturns.ListAllAsync(filters: $"OrderID={order.ID}");
+                if (orderReturns.Any(x => x.Status == OrderStatus.Completed))
                 {
-                    LogSkip($"{order.ID} has been refunded - RMA process handles authorizing new partial amount if necessary");
+                    LogSkip($"{order.ID} has been refunded - Order return process handles authorizing new partial amount if necessary");
                     await oc.Orders.PatchAsync(OrderDirection.Incoming, order.ID, new PartialOrder { xp = new { IsPaymentCaptured = true } });
                     return;
                 }

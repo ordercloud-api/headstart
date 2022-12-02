@@ -9,6 +9,7 @@ import {
   Orders,
   OrderDirection,
   Addresses,
+  OrderReturns,
 } from 'ordercloud-javascript-sdk'
 
 // temporarily any with sdk update
@@ -28,23 +29,18 @@ import { ReturnReason } from '@app-seller/shared/models/return-reason.interface'
 import {
   HSLineItem,
   HSOrder,
-  RMA,
   HeadStartSDK,
+  HSOrderReturn,
 } from '@ordercloud/headstart-sdk'
 import { flatten as _flatten } from 'lodash'
 import { OrderProgress, OrderType } from '@app-seller/models/order.types'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { SELLER } from '@app-seller/models/user.types'
-import { RMAService } from '@app-seller/rmas/rmas.service'
 import { SupportedRates } from '@app-seller/shared'
 import { FormControl, FormGroup } from '@angular/forms'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 
-export type LineItemTableValue =
-  | 'Default'
-  | 'Canceled'
-  | 'Returned'
-  | 'Backordered'
+export type LineItemTableValue = 'Default' | 'Backordered'
 
 interface ILineItemTableStatus {
   [key: string]: LineItemTableValue
@@ -52,8 +48,6 @@ interface ILineItemTableStatus {
 
 export const LineItemTableStatus: ILineItemTableStatus = {
   Default: 'Default',
-  Canceled: 'Canceled',
-  Returned: 'Returned',
   Backordered: 'Backordered',
 }
 
@@ -93,7 +87,7 @@ export class OrderDetailsComponent {
     Animated: false,
   }
   orderAvatarInitials: string
-  rmas: RMA[]
+  orderReturns: HSOrderReturn[] = []
 
   @Input()
   set order(order: Order) {
@@ -107,7 +101,6 @@ export class OrderDetailsComponent {
     private pdfService: PDFService,
     private middleware: MiddlewareAPIService,
     private appAuthService: AppAuthService,
-    private rmaService: RMAService,
     private currentUserService: CurrentUserService,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {
@@ -153,15 +146,6 @@ export class OrderDetailsComponent {
           Animated: false,
         }
         break
-    }
-    if (order?.xp?.ClaimStatus === 'Pending') {
-      this.orderProgress = {
-        StatusDisplay: 'Needs Attention',
-        Value: 100,
-        ProgressBarType: 'danger',
-        Striped: true,
-        Animated: true,
-      }
     }
     if (order?.xp?.SubmittedOrderStatus === 'Canceled') {
       this.orderProgress = {
@@ -257,12 +241,13 @@ export class OrderDetailsComponent {
       (r) => r.Currency === order.xp?.Currency
     )
     const currentUser = await this.currentUserService.getUser()
-    const rmaListPage = await this.rmaService.listRMAsByOrderID(order.ID)
-    this.rmas = currentUser.Supplier
-      ? rmaListPage.Items.filter(
-          (rma) => rma.SupplierID === currentUser.Supplier.ID
-        )
-      : rmaListPage.Items
+    if (!currentUser.Supplier) {
+      // currently returns can only be viewed by admins
+      const orderReturnsList = await OrderReturns.List({
+        filters: { OrderID: order.ID },
+      })
+      this.orderReturns = orderReturnsList.Items
+    }
     if (this.isSupplierOrder(order.ID) || this.isQuoteOrder(order)) {
       const orderData = await HeadStartSDK.Suppliers.GetSupplierOrder(
         order.ID,
@@ -366,7 +351,7 @@ export class OrderDetailsComponent {
     this.pdfService.createAndSavePDF(this._order.ID)
   }
 
-  buildOrderDetailsRoute(rma: RMA): string {
-    return `/rmas/${rma.RMANumber}`
+  buildOrderDetailsRoute(orderReturn: HSOrderReturn): string {
+    return `/order-returns/${orderReturn.ID}`
   }
 }
