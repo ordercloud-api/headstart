@@ -42,7 +42,7 @@ namespace OrderCloud.Integrations.EasyPost.Models
 
         public override EasyPostShippingProfile FirstOrDefault(string id)
         {
-            return ShippingProfiles.FirstOrDefault(p => p.SupplierID == id) ?? ShippingProfiles.First(p => p.ID == "SMG");
+            return ShippingProfiles.FirstOrDefault(p => p.SupplierID == id) ?? ShippingProfiles.FirstOrDefault();
         }
     }
 }
