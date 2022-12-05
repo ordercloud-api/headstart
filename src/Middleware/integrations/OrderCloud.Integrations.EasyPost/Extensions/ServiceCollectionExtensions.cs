@@ -21,7 +21,7 @@ namespace OrderCloud.Integrations.EasyPost.Extensions
                 throw new Exception("EnvironmentSettings:ShippingProvider is set to 'EasyPost' however missing required properties EasyPostSettings:ApiKey or EasyPostSettings:CustomsSigner. Please define these properties or set EnvironmentSettings:ShippingProvider to an empty string to use mocked shipping rates");
             }
 
-            if (string.IsNullOrEmpty(easyPostSettings.USPSAccountId) || string.IsNullOrEmpty(easyPostSettings.FedexAccountId))
+            if (string.IsNullOrEmpty(easyPostSettings.USPSAccountId) && string.IsNullOrEmpty(easyPostSettings.FedexAccountId))
             {
                 throw new Exception("EnvironmentSettings:ShippingProvider is set to 'EasyPost' however at least one of EasyPostSettings:USPSAccountId or EasyPostSettingsFedexAccountId must be defined. Please define or set EnvironmentSettings:ShippingProvider to an empty string to use mocked shipping rates");
             }
