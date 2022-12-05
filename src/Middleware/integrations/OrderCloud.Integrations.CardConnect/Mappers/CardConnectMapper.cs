@@ -82,9 +82,9 @@ namespace OrderCloud.Integrations.CardConnect.Mappers
             return req;
         }
 
-        public static PaymentTransaction Map(Payment payment, CardConnectAuthorizationResponse response, Address ccBillingAddress = null)
+        public static HSPaymentTransaction Map(Payment payment, CardConnectAuthorizationResponse response, Address ccBillingAddress = null)
         {
-            var t = new PaymentTransaction()
+            var t = new HSPaymentTransaction()
             {
                 Amount = payment.Amount,
                 DateExecuted = DateTime.Now,
@@ -92,18 +92,27 @@ namespace OrderCloud.Integrations.CardConnect.Mappers
                 ResultMessage = response.resptext,
                 Succeeded = response.WasSuccessful(),
                 Type = "CreditCard",
-                xp = new
+                xp = new TransactionXP
                 {
-                    CardConnectResponse = response,
-                    CCBillingAddress = ccBillingAddress,
+                    CCTransactionResult = new CCTransactionResult
+                    {
+                        Succeeded = response.WasSuccessful(),
+                        Amount = payment.Amount ?? 0,
+                        TransactionID = response.retref, // retrieval reference number
+                        ResponseCode = response.respcode,
+                        AuthorizationCode = response.authcode,
+                        AVSResponseCode = response.avsresp,
+                        Message = response.resptext,
+                        merchid = response.merchid,
+                    },
                 },
             };
             return t;
         }
 
-        public static PaymentTransaction Map(Payment payment, CardConnectVoidResponse response)
+        public static HSPaymentTransaction Map(Payment payment, CardConnectVoidResponse response)
         {
-            var t = new PaymentTransaction()
+            var t = new HSPaymentTransaction()
             {
                 Amount = payment.Amount,
                 DateExecuted = DateTime.Now,
@@ -111,17 +120,27 @@ namespace OrderCloud.Integrations.CardConnect.Mappers
                 ResultMessage = response.resptext,
                 Succeeded = response.WasSuccessful(),
                 Type = "CreditCardVoidAuthorization",
-                xp = new
+                xp = new TransactionXP
                 {
-                    CardConnectResponse = response,
+                    CCTransactionResult = new CCTransactionResult
+                    {
+                        Succeeded = response.WasSuccessful(),
+                        Amount = payment.Amount ?? 0,
+                        TransactionID = response.retref, // retrieval reference number
+                        ResponseCode = response.respcode,
+                        AuthorizationCode = response.authcode,
+                        AVSResponseCode = null,
+                        Message = response.resptext,
+                        merchid = response.merchid,
+                    },
                 },
             };
             return t;
         }
 
-        public static PaymentTransaction Map(Payment payment, CardConnectRefundResponse response)
+        public static HSPaymentTransaction Map(Payment payment, CardConnectRefundResponse response)
         {
-            var t = new PaymentTransaction()
+            var t = new HSPaymentTransaction()
             {
                 Amount = payment.Amount,
                 DateExecuted = DateTime.Now,
@@ -129,17 +148,27 @@ namespace OrderCloud.Integrations.CardConnect.Mappers
                 ResultMessage = response.resptext,
                 Succeeded = response.WasSuccessful(),
                 Type = "CreditCardRefund",
-                xp = new
+                xp = new TransactionXP
                 {
-                    CardConnectResponse = response,
+                    CCTransactionResult = new CCTransactionResult
+                    {
+                        Succeeded = response.WasSuccessful(),
+                        Amount = payment.Amount ?? 0,
+                        TransactionID = response.retref, // retrieval reference number
+                        ResponseCode = response.respcode,
+                        AuthorizationCode = null,
+                        AVSResponseCode = null,
+                        Message = response.resptext,
+                        merchid = response.merchid,
+                    },
                 },
             };
             return t;
         }
 
-        public static PaymentTransaction Map(Payment payment, CardConnectCaptureResponse response)
+        public static HSPaymentTransaction Map(Payment payment, CardConnectCaptureResponse response)
         {
-            var t = new PaymentTransaction()
+            var t = new HSPaymentTransaction()
             {
                 Amount = payment.Amount,
                 DateExecuted = DateTime.Now,
@@ -147,9 +176,19 @@ namespace OrderCloud.Integrations.CardConnect.Mappers
                 ResultMessage = response.resptext,
                 Succeeded = response.WasSuccessful(),
                 Type = "CreditCardCapture",
-                xp = new
+                xp = new TransactionXP
                 {
-                    CardConnectResponse = response,
+                    CCTransactionResult = new CCTransactionResult
+                    {
+                        Succeeded = response.WasSuccessful(),
+                        Amount = payment.Amount ?? 0,
+                        TransactionID = response.retref, // retrieval reference number
+                        ResponseCode = response.respcode,
+                        AuthorizationCode = null,
+                        AVSResponseCode = null,
+                        Message = response.resptext,
+                        merchid = response.merchid,
+                    },
                 },
             };
             return t;

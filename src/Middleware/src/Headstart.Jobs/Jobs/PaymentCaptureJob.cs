@@ -111,7 +111,7 @@ namespace Headstart.Jobs
 
             if (transaction?.xp?.CCTransactionResult == null)
             {
-                throw new PaymentCaptureJobException("Missing transaction.xp.CardConnectResponse", orderID, payment.ID, transaction.ID);
+                throw new PaymentCaptureJobException("Missing transaction.xp.CCTransactionResult", orderID, payment.ID, transaction.ID);
             }
 
             var authHasBeenVoided = payment.Transactions.Any(t =>
