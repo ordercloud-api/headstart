@@ -338,8 +338,7 @@ export class OrderShipmentsComponent implements OnChanges {
         const quantityToShip =
           item.Quantity -
           item.QuantityShipped -
-          item.xp.StatusByQuantity['Backordered'] -
-          item.xp.StatusByQuantity['Canceled']
+          item.xp.StatusByQuantity['Backordered']
         if (quantityToShip) {
           this.shipmentForm.patchValue({
             LineItemData: {

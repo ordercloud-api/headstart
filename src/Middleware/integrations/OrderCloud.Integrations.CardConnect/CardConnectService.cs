@@ -109,7 +109,6 @@ namespace OrderCloud.Integrations.CardConnect
                         payment = await orderCloudClient.Payments.CreateAsync<HSPayment>(OrderDirection.Incoming, order.ID, new HSPayment
                         {
                             Type = PaymentType.CreditCard,
-                            CreditCardID = payment.CreditCardID,
                             Amount = refundAmount * -1,
                             Accepted = true,
                             OrderReturnID = orderReturnId,
