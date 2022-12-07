@@ -4,16 +4,12 @@ import {
   Address,
   LineItems,
   Payments,
-  Order,
   Payment,
   Orders,
   OrderDirection,
   Addresses,
   OrderReturns,
 } from 'ordercloud-javascript-sdk'
-
-// temporarily any with sdk update
-// import { ProductImage } from '@ordercloud/headstart-sdk';
 import { PDFService } from '@app-seller/orders/pdf-render.service'
 import {
   faDownload,
@@ -25,12 +21,12 @@ import {
 import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
-import { ReturnReason } from '@app-seller/shared/models/return-reason.interface'
 import {
   HSLineItem,
   HSOrder,
   HeadStartSDK,
   HSOrderReturn,
+  HSPayment,
 } from '@ordercloud/headstart-sdk'
 import { flatten as _flatten } from 'lodash'
 import { OrderProgress, OrderType } from '@app-seller/models/order.types'
@@ -39,6 +35,7 @@ import { SELLER } from '@app-seller/models/user.types'
 import { SupportedRates } from '@app-seller/shared'
 import { FormControl, FormGroup } from '@angular/forms'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
+import { CanReturnOrder } from '@app-seller/orders/line-item-status.helper'
 
 export type LineItemTableValue = 'Default' | 'Backordered'
 
@@ -62,13 +59,12 @@ export class OrderDetailsComponent {
   faExclamationTriangle = faExclamationTriangle
   faInfoCircle = faInfoCircle
   faUser = faUserAlt
-  _order: Order = {}
-  _buyerOrder: Order = {}
+  _order: HSOrder = {}
+  _buyerOrder: HSOrder = {}
   _buyerQuoteAddress: Address = null
-  _supplierOrder: Order = {}
+  _supplierOrder: HSOrder = {}
   _lineItems: HSLineItem[] = []
   _payments: Payment[] = []
-  images: any[] = []
   orderDirection: OrderDirection
   cardType: string
   createShipment: boolean
@@ -90,7 +86,7 @@ export class OrderDetailsComponent {
   orderReturns: HSOrderReturn[] = []
 
   @Input()
-  set order(order: Order) {
+  set order(order: HSOrder) {
     if (Object.keys(order).length) {
       this.createShipment = false
       this.handleSelectedOrderChange(order)
@@ -158,17 +154,13 @@ export class OrderDetailsComponent {
     }
   }
 
-  setCardType(payment): string {
+  setCardType(payment: HSPayment): string {
     if (!payment.xp.cardType || payment.xp.cardType === null) {
       return 'Card'
     }
     this.cardType =
       payment.xp.cardType.charAt(0).toUpperCase() + payment.xp.cardType.slice(1)
     return this.cardType
-  }
-
-  getReturnReason(reasonCode: string): string {
-    return ReturnReason[reasonCode]
   }
 
   getFullName(address: Address): string {
@@ -191,7 +183,7 @@ export class OrderDetailsComponent {
       .then((completedOrder) => this.handleSelectedOrderChange(completedOrder))
   }
 
-  isQuoteOrder(order: Order): boolean {
+  isQuoteOrder(order: HSOrder): boolean {
     return this.orderService.isQuoteOrder(order)
   }
 
@@ -206,7 +198,7 @@ export class OrderDetailsComponent {
   }
 
   async overrideQuoteUnitPrice(): Promise<void> {
-    const updatedLineItem = await HeadStartSDK.Orders.OverrideQuoteUnitPrice(
+    await HeadStartSDK.Orders.OverrideQuoteUnitPrice(
       this._order.ID,
       this._lineItems[0].ID,
       this.quotePricingForm.value.QuotePrice
@@ -222,18 +214,18 @@ export class OrderDetailsComponent {
       : this._order.DateSubmitted
   }
 
-  getQuotePriceButtonText() {
+  getQuotePriceButtonText(): string {
     return this.isSettingQuotePrice
       ? 'ADMIN.ORDERS.CANCEL_PRICING'
       : 'ADMIN.ORDERS.SET_QUOTE_PRICE'
   }
 
-  toggleSetQuotePrice() {
+  toggleSetQuotePrice(): void {
     this.isSettingQuotePrice = !this.isSettingQuotePrice
     this.setQuotePricingForm()
   }
 
-  async setData(order: Order): Promise<void> {
+  async setData(order: HSOrder): Promise<void> {
     this._buyerQuoteAddress = null
     this._order = order
     this.exchangeRates = (await HeadStartSDK.ExchangeRates.GetRateList()).Items
@@ -275,7 +267,13 @@ export class OrderDetailsComponent {
     }
   }
 
-  private async handleSelectedOrderChange(order: Order): Promise<void> {
+  canCreateReturn(): boolean {
+    return (
+      this.isSellerUser && CanReturnOrder(this._lineItems, this.orderReturns)
+    )
+  }
+
+  private async handleSelectedOrderChange(order: HSOrder): Promise<void> {
     this.setOrderDirection()
     await this.setData(order)
     this.orderAvatarInitials = !this.isQuoteOrder(order)
@@ -303,7 +301,7 @@ export class OrderDetailsComponent {
     }
   }
 
-  private async getAllLineItems(order) {
+  private async getAllLineItems(order): Promise<HSLineItem[]> {
     let lineItems = []
     const listOptions = {
       page: 1,
@@ -316,7 +314,7 @@ export class OrderDetailsComponent {
     )
     lineItems = [...lineItems, ...(lineItemsResponse.Items as HSLineItem[])]
     if (lineItemsResponse.Meta.TotalPages <= 1) {
-      return lineItems
+      return lineItems as HSLineItem[]
     } else {
       let lineItemRequests = []
       for (let page = 2; page <= lineItemsResponse.Meta.TotalPages; page++) {
@@ -326,10 +324,11 @@ export class OrderDetailsComponent {
           LineItems.List(this.orderDirection, order.ID, listOptions),
         ]
       }
-      return await Promise.all(lineItemRequests).then((response) => {
+      const response = await Promise.all(lineItemRequests).then((response) => {
         lineItems = [...lineItems, ..._flatten(response.map((r) => r.Items))]
         return lineItems
       })
+      return response as HSLineItem[]
     }
   }
 
