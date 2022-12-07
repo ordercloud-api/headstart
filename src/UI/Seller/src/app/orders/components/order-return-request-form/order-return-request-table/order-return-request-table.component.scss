@@ -1,0 +1,36 @@
+//Images with white backgrounds will be transparent
+img {
+  mix-blend-mode: multiply;
+}
+
+table {
+  width: 100%;
+}
+
+.mat-row {
+  height: auto;
+}
+
+.mat-quantityToReturn {
+  max-width: 100px;
+}
+
+.mat-header-cell {
+  font-size: .8em;
+  font-weight: normal;
+  white-space: nowrap;
+  padding: .75rem;
+  border-color: var(--gray);
+}
+
+.mat-cell {
+  padding: 1.25rem .75rem;
+  border-color: var(--gray);
+}
+
+.custom-control-label {
+  &::before,
+  &::after {
+    top: .1rem;
+  }
+}

@@ -8,6 +8,8 @@ import { LineItemTableComponent } from './components/line-item-table/line-item-t
 import { UploadShipmentsComponent } from './components/upload-shipments/upload-shipments.component'
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar'
 import { NgxSpinnerModule } from 'ngx-spinner'
+import { OrderReturnRequestTable } from './components/order-return-request-form/order-return-request-table/order-return-request-table.component'
+import { OrderReturnRequestForm } from './components/order-return-request-form/order-return-request-form.component'
 
 @NgModule({
   imports: [
@@ -22,6 +24,8 @@ import { NgxSpinnerModule } from 'ngx-spinner'
     OrderShipmentsComponent,
     LineItemTableComponent,
     UploadShipmentsComponent,
+    OrderReturnRequestForm,
+    OrderReturnRequestTable,
   ],
 })
 export class OrdersModule {}

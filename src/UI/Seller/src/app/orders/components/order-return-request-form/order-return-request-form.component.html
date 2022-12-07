@@ -1,0 +1,40 @@
+<div class="row mb-5">
+  <div class="col-12">
+    <h2 class="mb-5" translate>ORDERS.DETAIL.REQUEST_A_RETURN</h2>
+    <form [formGroup]="requestReturnForm">
+      <div
+        *ngFor="
+          let liGroupForm of requestReturnForm.controls.liGroups.controls;
+          index as i
+        "
+        class="mb-5"
+      >
+        <order-return-request-table
+          [lineItems]="liGroupedByShipFrom[i]"
+          [form]="liGroupForm"
+          [orderReturns]="orderReturns"
+        >
+        </order-return-request-table>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <textarea
+            formControlName="comments"
+            placeholder="Comments to the seller (optional)"
+            cols="6"
+            class="form-control"
+          ></textarea>
+        </div>
+      </div>
+    </form>
+    <div>
+      <button
+        (click)="onSubmit()"
+        class="btn btn-primary btn-block-xs mt-4 mr-2"
+        [disabled]="!requestReturnForm.valid || !isAnyRowSelected() || isSaving"
+      >
+        Submit Request
+      </button>
+    </div>
+  </div>
+</div>

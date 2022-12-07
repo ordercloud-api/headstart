@@ -1,0 +1,139 @@
+<div>
+  <form [formGroup]="form" *ngIf="form">
+    <h5 class="text-medium font-weight-light">{{ supplier?.Name }}</h5>
+    <table class="table table-hover bg-light">
+      <thead>
+        <tr>
+          <th>
+            <div class="custom-control custom-checkbox">
+              <input
+                id="group_{{ form.value.shipFromAddressID }}"
+                (click)="$event ? masterToggle() : null"
+                type="checkbox"
+                class="custom-control-input"
+                [checked]="isAllEnabledSelected()"
+              />
+              <label
+                class="custom-control-label"
+                for="group_{{ form.value.shipFromAddressID }}"
+                translate
+              ></label>
+            </div>
+          </th>
+          <th></th>
+          <th translate>{{ translationData?.Headers?.ProductDetails }}</th>
+          <th translate>{{ translationData?.Headers?.price }}</th>
+          <th translate>{{ translationData?.Headers?.quantityOrdered }}</th>
+          <th translate>{{ translationData?.Headers?.quantityReturned }}</th>
+          <th translate>{{ translationData?.Headers?.quantityToReturn }}</th>
+          <th translate>{{ translationData?.Headers?.returnReason }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of rows">
+          <td>
+            <form [formGroup]="row">
+              <!-- Select column -->
+              <div class="custom-control custom-checkbox">
+                <input
+                  (change)="$event ? toggle(row) : null"
+                  id="row_{{ form.value.shipFromAddressID }}_{{
+                    row.value.lineItem.ID
+                  }}"
+                  type="checkbox"
+                  class="custom-control-input"
+                  formControlName="selected"
+                />
+                <label
+                  class="custom-control-label"
+                  for="row_{{ form.value.shipFromAddressID }}_{{
+                    row.value.lineItem.ID
+                  }}"
+                  translate
+                ></label>
+              </div>
+            </form>
+          </td>
+          <!-- Product Image Column -->
+          <td>
+            <img
+              [id]="i"
+              [src]="
+                row.value.lineItem.xp.ImageUrl ||
+                getImageUrl(row.value.lineItem.ID)
+              "
+              width="auto"
+              height="100px"
+            />
+          </td>
+          <td>
+            <!-- Item ID Column -->
+            <a
+              [routerLink]="['/products/', row.value.ProductID]"
+              class="text-primary link"
+              >{{ row.value.lineItem | productNameWithSpecs }}</a
+            >
+            <small class="text-muted d-block">{{
+              row.value.lineItem.Product.ID
+            }}</small>
+          </td>
+          <td>
+            <!-- Price Column -->
+            {{ row.value.lineItem.UnitPrice | currency }}
+          </td>
+          <td>
+            <!-- Quantity Ordered Column -->
+            {{ row.value.lineItem.Quantity | number }}
+          </td>
+          <td>
+            <!-- Quantity Returned Column -->
+            {{ getQuantityCanReturn(row.value.lineItem) | number }}
+          </td>
+          <td>
+            <!-- Quantity to Return Column -->
+            <form [formGroup]="row">
+              <input
+                type="number"
+                class="form-control mat-quantityToReturn"
+                id="quantityToReturn"
+                formControlName="quantityToReturn"
+                showErrors
+              />
+            </form>
+          </td>
+          <td>
+            <!-- Return Reason Column -->
+            <form [formGroup]="row">
+              <select
+                *ngIf="translationData.AvailableReasons.length !== 0"
+                formControlName="returnReason"
+                class="form-control"
+                id="ReturnReason"
+                showErrors
+              >
+                <option [ngValue]="null" disabled translate>
+                  {{ translationData?.Headers?.selectReason }}
+                </option>
+                <option
+                  *ngFor="let reasonCode of translationData.AvailableReasons"
+                  [value]="reasonCode"
+                  translate
+                >
+                  {{ reasonCode | orderReturnReason | translate }}
+                </option>
+              </select>
+              <input
+                *ngIf="translationData.AvailableReasons.length === 0"
+                type="text"
+                formControlName="returnReason"
+                class="form-control"
+                id="ReturnReason"
+                showErrors
+              />
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </form>
+</div>
