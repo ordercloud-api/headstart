@@ -260,8 +260,8 @@ namespace Headstart.API.Commands
             {
                 xp = new
                 {
-                    submittedOrderStatus,
-                    shippingStatus,
+                    SubmittedOrderStatus = submittedOrderStatus,
+                    ShippingStatus = shippingStatus,
                 },
             };
             await oc.Orders.PatchAsync(orderDirection, orderID, partialOrder);

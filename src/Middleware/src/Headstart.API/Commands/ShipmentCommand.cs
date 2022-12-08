@@ -342,13 +342,6 @@ namespace Headstart.API.Commands
             return processResult;
         }
 
-        private async void PatchOrderStatus(Order ocOrder, ShippingStatus shippingStatus, OrderStatus orderStatus)
-        {
-            var partialOrder = new PartialOrder { xp = new { ShippingStatus = shippingStatus, SubmittedOrderStatus = orderStatus } };
-
-            await oc.Orders.PatchAsync(OrderDirection.Outgoing, ocOrder.ID, partialOrder);
-        }
-
         private bool ValidateLineItemCounts(ListPage<LineItem> lineItemList)
         {
             if (lineItemList == null || lineItemList?.Items?.Count < 1)
