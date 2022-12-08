@@ -848,9 +848,20 @@
     "SEARCH": "Search",
     "SUBMIT": "Submit",
     "SUBMITTED_ORDER_STATUS": {
-      "OPEN": "Open",
+      "ALL_SUBMITTED": "All Submitted",
+      "ALL_QUOTES": "All Quotes",
+      "AWAITING_APPROVAL": "Awaiting Approval",
+      "CANCELED": "Canceled",
+      "CHANGES_REQUESTED": "Changes Requested",
       "COMPLETED": "Completed",
-      "CANCELED": "Canceled"
+      "DECLINED": "Declined",
+      "OPEN": "Open"
+    },
+    "SHIPPING_STATUS": {
+      "SHIPPED": "Shipped",
+      "BACKORDERED": "Backordered",
+      "PROCESSING": "Processing",
+      "PARTIALLY_SHIPPED": "Partially shipped"
     },
     "USER": "User",
     "USERNAME": "Username",

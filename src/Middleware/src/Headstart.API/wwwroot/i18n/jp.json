@@ -840,9 +840,20 @@
     "SEARCH": "検索",
     "SUBMIT": "送信",
     "SUBMITTED_ORDER_STATUS": {
-      "OPEN": "開ける",
+      "ALL_SUBMITTED": "すべて提出済み",
+      "ALL_QUOTES": "すべての引用",
+      "AWAITING_APPROVAL": "承認待ち",
+      "CANCELED": "キャンセル",
+      "CHANGES_REQUESTED": "要求された変更",
       "COMPLETED": "完了",
-      "CANCELED": "キャンセル"
+      "DECLINED": "不承認",
+      "OPEN": "開ける"
+    },
+    "SHIPPING_STATUS": {
+      "SHIPPED": "発送済み",
+      "BACKORDERED": "入荷待ち",
+      "PROCESSING": "処理",
+      "PARTIALLY_SHIPPED": "一部出荷済み"
     },
     "USER": "ユーザー",
     "USERNAME": "ユーザー名",

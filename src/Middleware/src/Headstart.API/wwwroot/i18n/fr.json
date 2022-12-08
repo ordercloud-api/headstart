@@ -846,9 +846,20 @@
     "SEARCH": "Rechercher",
     "SUBMIT": "Envoyer",
     "SUBMITTED_ORDER_STATUS": {
-      "OPEN": "Ouvert",
+      "ALL_SUBMITTED": "Tous soumis",
+      "ALL_QUOTES": "Toutes les citations",
+      "AWAITING_APPROVAL": "En attente d'approbation",
+      "CANCELED": "Annulé",
+      "CHANGES_REQUESTED": "Modifications demandées",
       "COMPLETED": "Complété",
-      "CANCELED": "Annulé"
+      "DECLINED": "Diminué",
+      "OPEN": "Ouvert"
+    },
+    "SHIPPING_STATUS": {
+      "SHIPPED": "Expédié",
+      "BACKORDERED": "En rupture de stock",
+      "PROCESSING": "Traitement",
+      "PARTIALLY_SHIPPED": "Partiellement expédié"
     },
     "USER": "Utilisateur",
     "USERNAME": "Nom d’utilisateur",
