@@ -58,10 +58,7 @@
               >
                 <small translate>CART.LINEITEM_TABLE.PRICE</small>
               </div>
-              <div
-                class="col-5 text-right text-medium"
-                id="label_lineItemQty"
-              >
+              <div class="col-5 text-right text-medium" id="label_lineItemQty">
                 <small translate>CART.LINEITEM_TABLE.QTY</small>
               </div>
               <div
@@ -106,12 +103,7 @@
                   {{ li | productNameWithSpecs }}
                   <span
                     *ngIf="li?.Product?.xp?.ProductType === 'Quote'"
-                    class="
-                      small
-                      badge badge-pill badge-warning
-                      ml-2
-                      order-type-text
-                    "
+                    class="small badge badge-pill badge-warning ml-2 order-type-text"
                   >
                     {{ li?.Product?.xp?.ProductType }}
                   </span>
@@ -129,7 +121,7 @@
                         {{ entry.value }}
                       </span>
                       <span>
-                        {{ entry.key | orderStatusDisplay }}
+                        {{ entry.key | orderStatusDisplay | translate }}
                       </span>
                     </span>
                   </span>
@@ -162,7 +154,7 @@
                   >CART.LINEITEM_TABLE.UNIT_PRICE</small
                 >
                 <span class="text-nowrap">{{
-                  li.UnitPrice | currency: _orderCurrency
+                  li.UnitPrice | currency : _orderCurrency
                 }}</span>
               </div>
               <!-- Quantity Input -->
@@ -199,11 +191,9 @@
                 <small class="d-block d-sm-none" translate
                   >CART.LINEITEM_TABLE.TOTAL</small
                 >
-                <span
-                  *ngIf="!isQtyChanging(li.ID)"
-                  class="text-nowrap"
-                  >{{ li.LineTotal | currency: _orderCurrency }}</span
-                >
+                <span *ngIf="!isQtyChanging(li.ID)" class="text-nowrap">{{
+                  li.LineTotal | currency : _orderCurrency
+                }}</span>
                 <span *ngIf="isQtyChanging(li.ID)" class="text-nowrap"> </span>
               </div>
             </div>

@@ -59,7 +59,7 @@
               <ocm-order-status-icon
                 [status]="order.xp.ShippingStatus"
               ></ocm-order-status-icon>
-              {{ order.xp.ShippingStatus | orderStatusDisplay }}
+              {{ order.xp.ShippingStatus | orderStatusDisplay | translate }}
             </li>
           </ul>
         </div>
