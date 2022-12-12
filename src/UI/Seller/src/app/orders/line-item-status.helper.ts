@@ -1,5 +1,5 @@
 import { LineItemStatus } from '@app-seller/models/order.types'
-import { HSLineItem, HSOrderReturn } from '@ordercloud/headstart-sdk'
+import { HSLineItem, HSOrder, HSOrderReturn } from '@ordercloud/headstart-sdk'
 import { flatten, sum } from 'lodash'
 
 const validPreviousStates = {
@@ -53,6 +53,15 @@ export function NumberCanReturn(
   if (!lineItem.Product.Returnable) {
     return 0
   }
+  const maxReturnable = lineItem.QuantityShipped
+  const quantityAlreadyRequested = NumberHasReturned(lineItem, orderReturns)
+  return maxReturnable - quantityAlreadyRequested
+}
+
+export function NumberHasReturned(
+  lineItem: HSLineItem,
+  orderReturns: HSOrderReturn[]
+): number {
   const alreadyReturnedItems = flatten(
     orderReturns
       .filter(
@@ -63,11 +72,25 @@ export function NumberCanReturn(
       )
       .map((orderReturn) => orderReturn.ItemsToReturn)
   ).filter((item) => item.LineItemID === lineItem.ID)
-  const maxReturnable = lineItem.QuantityShipped
-  const quantityAlreadyRequested = sum(
-    alreadyReturnedItems.filter((li) => li.LineItemID).map((li) => li.Quantity)
+
+  return sum(alreadyReturnedItems.map((li) => li.Quantity))
+}
+
+export function AmountCanRefund(
+  order: HSOrder,
+  orderReturns: HSOrderReturn[] = []
+): number {
+  const alreadyRefunded = sum(
+    orderReturns
+      .filter(
+        (orderReturn) =>
+          orderReturn.Status === 'Open' ||
+          orderReturn.Status === 'AwaitingApproval' ||
+          orderReturn.Status === 'Completed'
+      )
+      .map((orderReturn) => orderReturn.RefundAmount || 0)
   )
-  return maxReturnable - quantityAlreadyRequested
+  return order.Total - alreadyRefunded
 }
 
 export function CanReturn(

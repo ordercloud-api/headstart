@@ -5,7 +5,10 @@
       <thead>
         <tr>
           <th>
-            <div class="custom-control custom-checkbox">
+            <div
+              class="custom-control custom-checkbox"
+              *ngIf="rows?.length > 1"
+            >
               <input
                 id="group_{{ form.value.shipFromAddressID }}"
                 (click)="$event ? masterToggle() : null"
@@ -87,14 +90,14 @@
           </td>
           <td>
             <!-- Quantity Returned Column -->
-            {{ getQuantityCanReturn(row.value.lineItem) | number }}
+            {{ getQuantityHasReturned(row.value.lineItem) | number }}
           </td>
           <td>
             <!-- Quantity to Return Column -->
             <form [formGroup]="row">
               <input
                 type="number"
-                class="form-control mat-quantityToReturn"
+                class="form-control"
                 id="quantityToReturn"
                 formControlName="quantityToReturn"
                 showErrors

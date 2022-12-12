@@ -12,6 +12,7 @@ import {
 import {
   CanReturn,
   NumberCanReturn,
+  NumberHasReturned,
 } from 'src/app/services/lineitem-status.helper'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 
@@ -75,8 +76,8 @@ export class OCMOrderReturnTable {
     return row.controls.selected.value as boolean
   }
 
-  getQuantityCanReturn(lineItem: HSLineItem): number {
-    return NumberCanReturn(lineItem, this.orderReturns)
+  getQuantityHasReturned(lineItem: HSLineItem): number {
+    return NumberHasReturned(lineItem, this.orderReturns)
   }
 
   selectRow(row: FormGroup): void {
