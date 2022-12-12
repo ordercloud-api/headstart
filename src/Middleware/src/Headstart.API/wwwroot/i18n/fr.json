@@ -251,6 +251,7 @@
       "APPROVAL_COMMENTS": "Commentaires d'approbation",
       "CANCEL": "Annuler",
       "COMMENTS": "Commentaires",
+      "COMMENTS_TO_BUYER_OPTIONAL": "Commentaires à l'acheteur (facultatif)",
       "COMPLETE": "Achevé",
       "COMPLETE_DESCRIPTION": "Une fois terminé, le montant sera remboursé (si payé avec une carte de crédit ou un compte de dépenses) et l'acheteur sera automatiquement informé.",
       "COMPLETE_RETURN": "Retour complet",

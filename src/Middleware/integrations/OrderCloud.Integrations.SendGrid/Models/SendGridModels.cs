@@ -162,7 +162,7 @@ namespace OrderCloud.Integrations.SendGrid
 
             public decimal? OrderReturnRefundAmount { get; set; }
 
-            public string OrderReturnComments { get; set; }
+            public string OrderReturnBuyerComments { get; set; }
 
             public string OrderReturnSellerComments { get; set; }
 

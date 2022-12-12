@@ -251,6 +251,7 @@
       "APPROVAL_COMMENTS": "Approval Comments",
       "CANCEL": "Cancel",
       "COMMENTS": "Comments",
+      "COMMENTS_TO_BUYER_OPTIONAL": "Comments to the buyer (optional)",
       "COMPLETE": "Complete",
       "COMPLETE_DESCRIPTION": "When completed, the amount will be refunded (if paid for with a credit card or spending account) and the buyer will be automatically notified.",
       "COMPLETE_RETURN": "Complete Return",

@@ -121,6 +121,7 @@ export class OrderReturnSummaryComponent implements OnInit {
     })
     const patchedReturn = await OrderReturns.Patch(this.orderReturn.ID, {
       xp: {
+        SellerComments: this.approvalForm.controls.Comments.value,
         ApprovedStatusDetails: {
           RefundAmount: approvedReturn.RefundAmount,
           ProcessedByUserId: this.currentUser.ID,
@@ -155,6 +156,7 @@ export class OrderReturnSummaryComponent implements OnInit {
     })
     const patchedReturn = await OrderReturns.Patch(this.orderReturn.ID, {
       xp: {
+        SellerComments: this.declineForm.controls.Comments.value,
         DeclinedStatusDetails: {
           RefundAmount: declinedReturn.RefundAmount,
           ProcessedByUserId: this.currentUser.ID,

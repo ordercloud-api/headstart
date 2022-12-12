@@ -251,6 +251,7 @@
       "APPROVAL_COMMENTS": "承認コメント",
       "CANCEL": "キャンセル",
       "COMMENTS": "コメント",
+      "COMMENTS_TO_BUYER_OPTIONAL": "購入者へのコメント (オプション)",
       "COMPLETE": "完了",
       "COMPLETE_DESCRIPTION": "完了すると、金額が払い戻され (クレジット カードまたは支出口座で支払われた場合)、購入者に自動的に通知されます。",
       "COMPLETE_RETURN": "完全返却",

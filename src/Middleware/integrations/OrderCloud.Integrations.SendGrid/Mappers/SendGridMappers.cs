@@ -82,7 +82,6 @@ namespace OrderCloud.Integrations.SendGrid
         public static OrderReturnTemplateData GetOrderReturnTemplateData(HSOrder order, IList<HSLineItem> lineItems, HSOrderReturn orderReturn, IList<OrderApproval> orderApprovals)
         {
             var orderData = GetOrderTemplateData(order, lineItems);
-            var firstApproval = orderApprovals.FirstOrDefault();
             return new OrderReturnTemplateData
             {
                 // order data
@@ -107,8 +106,8 @@ namespace OrderCloud.Integrations.SendGrid
                 // order return data
                 OrderReturnID = orderReturn.ID,
                 OrderReturnRefundAmount = orderReturn.RefundAmount,
-                OrderReturnComments = orderReturn.Comments,
-                OrderReturnSellerComments = firstApproval?.Comments,
+                OrderReturnBuyerComments = orderReturn.Comments,
+                OrderReturnSellerComments = orderReturn.xp?.SellerComments,
                 OrderReturnItemsToReturn = orderReturn.ItemsToReturn.Select(item => new EnhancedOrderReturnItem
                 {
                     LineItemID = item.LineItemID,

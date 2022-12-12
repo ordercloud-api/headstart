@@ -34,7 +34,7 @@
       </button>
     </div>
     <div class="buyer-comments mb-3" *ngIf="orderReturn?.Comments">
-      <i><strong>Buyer Comments:</strong> {{ orderReturn?.Comments }}</i>
+      <i><strong>Buyer Comments:</strong> {{ orderReturn.Comments }}</i>
     </div>
     <order-return-lineitem-detail
       [lineItems]="lineItems"
@@ -56,12 +56,7 @@
     ADMIN.ORDER_RETURNS.COMPLETE_DESCRIPTION
   </div>
   <div
-    class="
-      modal-footer
-      w-100
-      d-flex
-      justify-content-space-between justify-content-between
-    "
+    class="modal-footer w-100 d-flex justify-content-space-between justify-content-between"
   >
     <button
       type="button"
@@ -91,7 +86,7 @@
     <h5 class="text-danger">
       <strong>
         <span translate>ADMIN.ORDER_RETURNS.REFUND_AMOUNT</span>
-        {{ orderReturn.RefundAmount | currency: order?.xp?.Currency }}</strong
+        {{ orderReturn.RefundAmount | currency : order?.xp?.Currency }}</strong
       >
     </h5>
     <div class="form-group mt-4">
@@ -137,12 +132,7 @@
     </div>
   </form>
   <div
-    class="
-      modal-footer
-      w-100
-      d-flex
-      justify-content-space-between justify-content-between
-    "
+    class="modal-footer w-100 d-flex justify-content-space-between justify-content-between"
   >
     <button
       [disabled]="dataIsSaving"
@@ -189,12 +179,7 @@
     </div>
   </form>
   <div
-    class="
-      modal-footer
-      w-100
-      d-flex
-      justify-content-space-between justify-content-between
-    "
+    class="modal-footer w-100 d-flex justify-content-space-between justify-content-between"
   >
     <button
       [disabled]="dataIsSaving"
