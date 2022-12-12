@@ -1,0 +1,15 @@
+//Images with white backgrounds will be transparent
+img {
+  mix-blend-mode: multiply;
+}
+
+table {
+  width: 100%;
+}
+
+.custom-control-label {
+  &::before,
+  &::after {
+    top: .1rem;
+  }
+}

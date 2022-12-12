@@ -95,12 +95,21 @@ export class OCMOrderReturnRequestForm {
     const createdReturn = await OrderReturns.Create({
       OrderID: this.order.ID,
       ID: this.buildReturnId(this.order.ID, this.orderReturns),
-      ItemsToReturn: lineItemChanges, // used for logs
       Comments: this.requestReturnForm.controls.comments.value as string,
-    })
+      ItemsToReturn: lineItemChanges,
+      xp: {
+        SubmittedStatusDetails: {
+          ProcessedByName: `${this.order.FromUser.FirstName} ${this.order.FromUser.LastName}`,
+          ProcessedByCompanyId: this.order.FromCompanyID,
+          ProcessedByUserId: this.order.FromUserID,
+        },
+      },
+    } as HSOrderReturn)
     await OrderReturns.Patch(createdReturn.ID, {
       xp: {
-        InitialRefundAmount: createdReturn.RefundAmount,
+        SubmittedStatusDetails: {
+          RefundAmount: createdReturn.RefundAmount, // // this is a calculated value, get from created return to avoid chance for errors
+        },
       },
     } as HSOrderReturn)
     await OrderReturns.Submit(createdReturn.ID)

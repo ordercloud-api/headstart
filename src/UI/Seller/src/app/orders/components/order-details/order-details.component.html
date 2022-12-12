@@ -256,10 +256,10 @@
       <button
         *ngIf="canCreateReturn()"
         class="btn btn-outline-primary mr-3 mb-3 d-print-none"
-        (click)="(submitReturn)"
+        (click)="openReturnCreateModal()"
         translate
       >
-        ADMIN.ORDERS.ORDER_RETURNS.CREATE_RETURN
+        ADMIN.ORDER_RETURNS.CREATE_RETURN
       </button>
     </div>
 
@@ -374,8 +374,7 @@
           <div class="d-flex justify-content-between align-items-center my-2">
             <p class="font-weight-bolder mb-0">Total</p>
             <p class="font-weight-bolder mb-0">
-              {{ _order?.xp?.Currency
-              }}{{ _order?.Total | currency : _order?.xp?.Currency }}
+              {{ _order?.Total | currency : _order?.xp?.Currency }}
             </p>
           </div>
           <div
@@ -390,9 +389,33 @@
             <p *ngIf="payment.Type === 'SpendingAccount'" class="font-italic">
               {{ 'ADMIN.ORDERS.SPENDING_ACCOUNT' }}: {{ payment.Details.Name }}
             </p>
-            <p class="text-danger">
-              -{{ _order?.xp?.Currency
-              }}{{ payment.Amount | currency : _order?.xp?.Currency }}
+            <p
+              [ngClass]="{
+                'text-danger': payment.Amount >= 0,
+                'text-success': payment.Amount < 0
+              }"
+            >
+              {{ payment.Amount | currency : _order?.xp?.Currency }}
+            </p>
+          </div>
+          <div
+            class="d-flex justify-content-between align-items-center"
+            *ngIf="_payments.length && _order.Status === 'Canceled'"
+          >
+            <p *ngIf="_payments[0].Type === 'CreditCard'" class="font-italic">
+              {{ setCardType(_payments[0]) }}
+              {{ 'ADMIN.ORDERS.ENDING_IN' | translate }}
+              {{ _payments[0].xp.partialAccountNumber }}
+            </p>
+            <p
+              *ngIf="_payments[0].Type === 'SpendingAccount'"
+              class="font-italic"
+            >
+              {{ 'ADMIN.ORDERS.SPENDING_ACCOUNT' }}:
+              {{ _payments[0].Details.Name }}
+            </p>
+            <p class="text-success">
+              {{ _order.Total | currency : _order?.xp?.Currency }}
             </p>
           </div>
         </ng-container>

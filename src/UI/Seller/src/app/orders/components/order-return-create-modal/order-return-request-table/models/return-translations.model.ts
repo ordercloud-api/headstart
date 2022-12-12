@@ -8,6 +8,7 @@ export class ReturnTableHeaders {
   quantityToReturn: TableHeader
   returnReason: TableHeader
   selectReason: TableHeader
+  refundAmount: TableHeader
 }
 
 export class ReturnTranslations {

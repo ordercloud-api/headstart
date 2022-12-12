@@ -7,13 +7,14 @@ export class LineItemForm {
   id = new FormControl()
   selected = new FormControl()
   quantityToReturn = new FormControl()
+  refundAmount = new FormControl(null)
   returnReason = new FormControl()
-  lineItem: HSLineItem
+  lineItem = new FormControl()
 
   constructor(lineItem: HSLineItem, orderReturns: HSOrderReturn[]) {
     if (lineItem.ID) this.id.setValue(lineItem.ID)
     const amountCanBeReturned = NumberCanReturn(lineItem, orderReturns)
-    this.lineItem = lineItem
+    this.lineItem.setValue(lineItem)
     this.selected.setValue(false)
     if (!amountCanBeReturned) {
       this.selected.disable()

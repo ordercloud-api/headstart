@@ -12,6 +12,7 @@ import { getPrimaryLineItemImage } from '@app-seller/shared/services/assets/asse
 import {
   CanReturn,
   NumberCanReturn,
+  NumberHasReturned,
 } from '@app-seller/orders/line-item-status.helper'
 
 @Component({
@@ -65,8 +66,8 @@ export class OrderReturnRequestTable {
     return row.controls.selected.value as boolean
   }
 
-  getQuantityCanReturn(lineItem: HSLineItem): number {
-    return NumberCanReturn(lineItem, this.orderReturns)
+  getQuantityHasReturned(lineItem: HSLineItem): number {
+    return NumberHasReturned(lineItem, this.orderReturns)
   }
 
   selectRow(row: FormGroup): void {

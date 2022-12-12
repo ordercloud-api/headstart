@@ -10,6 +10,7 @@ export const returnHeaders: ReturnTableHeaders = {
   quantityToReturn: TableHeader.quantityToReturn,
   returnReason: TableHeader.returnReason,
   selectReason: TableHeader.selectReturnReason,
+  refundAmount: TableHeader.refundAmount,
 }
 
 export const returnReasons: ReturnReason[] = [

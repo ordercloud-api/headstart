@@ -10,6 +10,7 @@ export enum TableHeader {
   cancelReason = 'ORDERS.RETURNS.CANCEL_REASON',
   selectReturnReason = 'ORDERS.RETURNS.SELECT_RETURN_REASON',
   selectCancelReason = 'ORDERS.RETURNS.SELECT_CANCEL_REASON',
+  refundAmount = 'ADMIN.ORDER_RETURNS.REFUND_AMOUNT',
 }
 
 export enum ReturnReason {

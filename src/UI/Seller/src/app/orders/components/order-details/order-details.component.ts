@@ -19,7 +19,6 @@ import {
   faUserAlt,
 } from '@fortawesome/free-solid-svg-icons'
 import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
-import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import {
   HSLineItem,
@@ -30,12 +29,14 @@ import {
 } from '@ordercloud/headstart-sdk'
 import { flatten as _flatten } from 'lodash'
 import { OrderProgress, OrderType } from '@app-seller/models/order.types'
-import { AppConfig } from '@app-seller/models/environment.types'
 import { SELLER } from '@app-seller/models/user.types'
 import { SupportedRates } from '@app-seller/shared'
 import { FormControl, FormGroup } from '@angular/forms'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { CanReturnOrder } from '@app-seller/orders/line-item-status.helper'
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap'
+import { OrderReturnCreateModal } from '../order-return-create-modal/order-return-create-modal.component'
+import { Router } from '@angular/router'
 
 export type LineItemTableValue = 'Default' | 'Backordered'
 
@@ -84,6 +85,7 @@ export class OrderDetailsComponent {
   }
   orderAvatarInitials: string
   orderReturns: HSOrderReturn[] = []
+  modalReference: NgbModalRef
 
   @Input()
   set order(order: HSOrder) {
@@ -98,10 +100,30 @@ export class OrderDetailsComponent {
     private middleware: MiddlewareAPIService,
     private appAuthService: AppAuthService,
     private currentUserService: CurrentUserService,
-    @Inject(applicationConfiguration) private appConfig: AppConfig
+    private modalService: NgbModal,
+    private router: Router
   ) {
     this.isSellerUser = this.appAuthService.getOrdercloudUserType() === SELLER
     this.setOrderDirection()
+  }
+
+  async openReturnCreateModal(): Promise<void> {
+    try {
+      this.modalReference = this.modalService.open(OrderReturnCreateModal, {
+        size: 'xl',
+      })
+      const componentInstance = this.modalReference
+        .componentInstance as OrderReturnCreateModal
+      componentInstance.order = this._order
+      componentInstance.lineItems = this._lineItems
+      componentInstance.orderReturns = this.orderReturns
+
+      const orderReturnId = (await this.modalReference.result) as string
+
+      this.router.navigateByUrl(`order-returns/${orderReturnId}`)
+    } catch {
+      // modal was dismissed, this can be safely ignored
+    }
   }
 
   setOrderProgress(order: HSOrder): void {
