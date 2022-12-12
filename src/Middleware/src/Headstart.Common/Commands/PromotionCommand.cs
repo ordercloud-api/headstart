@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Headstart.Common.Extensions;
 using OrderCloud.Catalyst;
 using OrderCloud.SDK;
 

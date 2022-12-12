@@ -15,7 +15,6 @@ using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
 using Newtonsoft.Json.Linq;
-using OrderCloud.Integrations.CosmosDB.Extensions;
 
 namespace OrderCloud.Integrations.CosmosDB
 {
