@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core'
-import { getPrimaryLineItemImage } from 'src/app/services/images.helpers'
 import { Supplier } from 'ordercloud-javascript-sdk'
-import { HSOrderReturn } from '@ordercloud/headstart-sdk';
+import { HSOrderReturn } from '@ordercloud/headstart-sdk'
 import { HSLineItem } from '@ordercloud/headstart-sdk'
 import { FormGroup } from '@angular/forms'
 import { ReturnTranslations } from './models/return-translations.model'
@@ -9,18 +8,19 @@ import {
   returnHeaders,
   returnReasons,
 } from './constants/return-table.constants'
+import { getPrimaryLineItemImage } from '@app-seller/shared/services/assets/asset.helper'
 import {
   CanReturn,
   NumberCanReturn,
   NumberHasReturned,
-} from 'src/app/services/lineitem-status.helper'
-import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
+} from '@app-seller/orders/line-item-status.helper'
 
 @Component({
-  templateUrl: './order-return-table.component.html',
-  styleUrls: ['./order-return-table.component.scss'],
+  selector: 'order-return-request-table',
+  templateUrl: './order-return-request-table.component.html',
+  styleUrls: ['./order-return-request-table.component.scss'],
 })
-export class OCMOrderReturnTable {
+export class OrderReturnRequestTable {
   @Input() supplier: Supplier
   @Input() form: FormGroup
   @Input() lineItems: HSLineItem[]
@@ -39,18 +39,8 @@ export class OCMOrderReturnTable {
     return form.controls.lineItems.controls as FormGroup[]
   }
 
-  constructor(private context: ShopperContextService) {}
-
   getImageUrl(lineItemID: string): string {
-    return getPrimaryLineItemImage(
-      lineItemID,
-      this.lineItems,
-      this.context.currentUser.get()
-    )
-  }
-
-  toProductDetails(productID: string): void {
-    this.context.router.toProductDetails(productID)
+    return getPrimaryLineItemImage(lineItemID, this.lineItems)
   }
 
   /** Whether the number of selected elements matches the total number of enabled rows. */

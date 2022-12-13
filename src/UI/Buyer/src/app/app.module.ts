@@ -201,7 +201,7 @@ import { faCreditCard } from '@fortawesome/free-solid-svg-icons'
 import { ProductPriceDisplayComponent } from './components/products/product-price-display/product-price-display.component'
 import { LanguageSelectorService } from 'src/app/services/language-selector/language-selector.service'
 import { OrderReturnReasonPipe } from './pipes/order-return-reason.pipe'
-import { OCMReturnsLineitemTable } from './components/orders/order-returns-lineitem-table/order-returns-lineitem-table'
+import { OCMReturnsLineitemTable } from './components/orders/order-returns/order-returns-lineitem-table/order-returns-lineitem-table'
 import { OrderReturnStatusPipe } from './pipes/order-return-status.pipe'
 
 export function HttpLoaderFactory(

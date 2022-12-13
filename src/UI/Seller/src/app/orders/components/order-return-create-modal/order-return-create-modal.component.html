@@ -1,0 +1,154 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title" translate>
+    ADMIN.ORDER_RETURNS.CREATE_RETURN
+  </h4>
+</div>
+<div class="modal-body" translate>
+  <form [formGroup]="requestReturnForm">
+    <div
+      *ngFor="
+        let liGroupForm of requestReturnForm.controls.liGroups.controls;
+        index as i
+      "
+      class="mb-3"
+    >
+      <order-return-request-table
+        [lineItems]="liGroupedByShipFrom[i]"
+        [form]="liGroupForm"
+        [orderReturns]="orderReturns"
+      >
+      </order-return-request-table>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="refundAmount" translate
+            >ADMIN.ORDER_RETURNS.REFUND_AMOUNT
+            <fa-icon
+              [icon]="faQuestionCircle"
+              autoClose="outside"
+              ngbPopover="{{
+                'ADMIN.ORDER_RETURNS.REFUND_AMOUNT_TOOLTIP' | translate
+              }}"
+              triggers="hover"
+              #popover="ngbPopover"
+            >
+            </fa-icon>
+          </label>
+          <input
+            formControlName="refundAmount"
+            id="refundAmount"
+            type="number"
+            class="form-control"
+            (input)="unselectItems()"
+          />
+        </div>
+
+        <div class="form-group">
+          <span translate>ADMIN.ORDER_RETURNS.REFUND_IMMEDIATELY</span>
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="radio"
+              id="RefundImmediatelyFalse"
+              formControlName="refundImmediately"
+              [value]="false"
+            />
+            <label
+              class="form-check-label"
+              for="RefundImmediatelyFalse"
+              translate
+            >
+              ADMIN.ORDER_RETURNS.NO
+            </label>
+          </div>
+          <div class="form-check">
+            <input
+              class="form-check-input"
+              type="radio"
+              id="RefundImmediatelyTrue"
+              formControlName="refundImmediately"
+              [value]="true"
+            />
+            <label
+              class="form-check-label"
+              for="RefundImmediatelyTrue"
+              translate
+            >
+              ADMIN.ORDER_RETURNS.YES
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="orderReturnComments" translate
+            >ADMIN.ORDER_RETURNS.COMMENTS_TO_BUYER_OPTIONAL
+          </label>
+          <textarea
+            id="orderReturnComments"
+            formControlName="comments"
+            cols="6"
+            class="form-control"
+          ></textarea>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div
+    class="alert alert-danger mt-5"
+    *ngIf="
+      requestReturnForm?.controls?.liGroups?.errors?.maxRefund ||
+      requestReturnForm?.controls?.refundAmount?.errors?.max
+    "
+  >
+    The max available refund on this order return is
+    <span *ngIf="requestReturnForm?.controls?.liGroups?.errors?.maxRefund">{{
+      requestReturnForm.controls.liGroups.errors?.maxRefund.max
+        | currency : order?.xp?.currency
+    }}</span>
+    <span *ngIf="requestReturnForm?.controls?.refundAmount?.errors?.max">{{
+      requestReturnForm.controls.refundAmount.errors.max.max
+        | currency : order?.xp?.currency
+    }}</span>
+  </div>
+</div>
+<div
+  class="modal-footer w-100 d-flex justify-content-space-between justify-content-between"
+>
+  <button
+    [disabled]="isSaving"
+    type="button"
+    class="btn btn-link text-dark"
+    (click)="activeModal.dismiss()"
+    translate
+  >
+    ADMIN.ORDER_RETURNS.CANCEL
+  </button>
+  <div>
+    <button
+      [disabled]="isLoadingCalculate || !isAnyRowSelected()"
+      type="button"
+      class="btn btn-outline-teal"
+      (click)="calculateRefunds()"
+    >
+      <span translate *ngIf="!isLoadingCalculate"
+        >ADMIN.ORDER_RETURNS.CALCULATE_REFUND_AMOUNTS</span
+      >
+      <span translate *ngIf="isLoadingCalculate">ADMIN.COMMON.LOADING</span>
+    </button>
+    <button
+      [disabled]="
+        !requestReturnForm.valid ||
+        (!isAnyRowSelected() &&
+          !requestReturnForm.controls.refundAmount.value) ||
+        isLoadingCreate
+      "
+      type="button"
+      class="btn btn-primary"
+      (click)="onCreate()"
+    >
+      <span translate *ngIf="!isLoadingCreate">ADMIN.ORDER_RETURNS.CREATE</span>
+      <span translate *ngIf="isLoadingCreate">ADMIN.COMMON.LOADING</span>
+    </button>
+  </div>
+</div>

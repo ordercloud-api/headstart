@@ -11,7 +11,9 @@ namespace Headstart.Common.Models
 
     public class OrderReturnXp
     {
-        public decimal InitialRefundAmount { get; set; }
+        public string SellerComments { get; set; }
+
+        public ReturnEventDetails SubmittedStatusDetails { get; set; }
 
         public ReturnEventDetails ApprovedStatusDetails { get; set; }
 

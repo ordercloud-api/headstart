@@ -30,6 +30,7 @@
           <th translate>{{ translationData?.Headers?.quantityReturned }}</th>
           <th translate>{{ translationData?.Headers?.quantityToReturn }}</th>
           <th translate>{{ translationData?.Headers?.returnReason }}</th>
+          <th translate>{{ translationData?.Headers?.refundAmount }}</th>
         </tr>
       </thead>
       <tbody>
@@ -72,7 +73,7 @@
           <td>
             <!-- Item ID Column -->
             <a
-              (click)="toProductDetails(row.value.lineItem.Product.ID)"
+              [routerLink]="['/products/', row.value.ProductID]"
               class="text-primary link"
               >{{ row.value.lineItem | productNameWithSpecs }}</a
             >
@@ -131,6 +132,18 @@
                 formControlName="returnReason"
                 class="form-control"
                 id="ReturnReason"
+                showErrors
+              />
+            </form>
+          </td>
+          <td>
+            <!-- Refund Amount Column -->
+            <form [formGroup]="row">
+              <input
+                type="number"
+                class="form-control"
+                id="refundAmount"
+                formControlName="refundAmount"
                 showErrors
               />
             </form>

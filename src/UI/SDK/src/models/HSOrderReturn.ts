@@ -3,7 +3,8 @@ import { OrderReturn } from 'ordercloud-javascript-sdk'
 export interface HSOrderReturn extends OrderReturn<OrderReturnXp> {}
 
 export interface OrderReturnXp {
-    InitialRefundAmount?: number;
+    SellerComments?: string
+    SubmittedStatusDetails?: ReturnEventDetails
     ApprovedStatusDetails?: ReturnEventDetails
     DeclinedStatusDetails?: ReturnEventDetails
     CompletedStatusDetails?: ReturnEventDetails

@@ -8,6 +8,15 @@ export function NumberCanReturn(
   if (!lineItem.Product.Returnable) {
     return 0
   }
+  const maxReturnable = lineItem.QuantityShipped
+  const quantityAlreadyRequested = NumberHasReturned(lineItem, orderReturns)
+  return maxReturnable - quantityAlreadyRequested
+}
+
+export function NumberHasReturned(
+  lineItem: HSLineItem,
+  orderReturns: HSOrderReturn[]
+): number {
   const alreadyReturnedItems = flatten(
     orderReturns
       .filter(
@@ -18,11 +27,8 @@ export function NumberCanReturn(
       )
       .map((orderReturn) => orderReturn.ItemsToReturn)
   ).filter((item) => item.LineItemID === lineItem.ID)
-  const maxReturnable = lineItem.QuantityShipped
-  const quantityAlreadyRequested = sum(
-    alreadyReturnedItems.filter((li) => li.LineItemID).map((li) => li.Quantity)
-  )
-  return maxReturnable - quantityAlreadyRequested
+
+  return sum(alreadyReturnedItems.map((li) => li.Quantity))
 }
 
 export function CanReturn(

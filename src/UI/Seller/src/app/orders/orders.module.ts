@@ -8,6 +8,9 @@ import { LineItemTableComponent } from './components/line-item-table/line-item-t
 import { UploadShipmentsComponent } from './components/upload-shipments/upload-shipments.component'
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar'
 import { NgxSpinnerModule } from 'ngx-spinner'
+import { OrderReturnRequestTable } from './components/order-return-create-modal/order-return-request-table/order-return-request-table.component'
+import { OrderReturnCreateModal } from './components/order-return-create-modal/order-return-create-modal.component'
+import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap'
 
 @NgModule({
   imports: [
@@ -15,6 +18,7 @@ import { NgxSpinnerModule } from 'ngx-spinner'
     OrdersRoutingModule,
     PerfectScrollbarModule,
     NgxSpinnerModule,
+    NgbPopoverModule,
   ],
   declarations: [
     OrderTableComponent,
@@ -22,6 +26,8 @@ import { NgxSpinnerModule } from 'ngx-spinner'
     OrderShipmentsComponent,
     LineItemTableComponent,
     UploadShipmentsComponent,
+    OrderReturnCreateModal,
+    OrderReturnRequestTable,
   ],
 })
 export class OrdersModule {}

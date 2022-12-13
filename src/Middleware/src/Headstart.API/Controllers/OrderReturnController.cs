@@ -22,9 +22,17 @@ namespace Headstart.API.Controllers
         [Route("orderreturns/{orderReturnId}/complete")]
         [HttpPost]
         [OrderCloudUserAuth(ApiRole.OrderAdmin), UserTypeRestrictedTo(CommerceRole.Seller)]
-        public async Task<HSOrderReturn> CalculateOrderReturn(string orderReturnId)
+        public async Task<HSOrderReturn> CompleteReturn(string orderReturnId)
         {
             return await orderReturnCommand.CompleteReturn(orderReturnId);
+        }
+
+        [Route("orderreturns/{orderId}/calculate")]
+        [HttpPost]
+        [OrderCloudUserAuth(ApiRole.OrderAdmin), UserTypeRestrictedTo(CommerceRole.Seller)]
+        public async Task<IEnumerable<LineItemReturnCalculation>> CalculateReturn(string orderId, [FromBody] List<OrderReturnItem> itemsToReturn)
+        {
+            return await orderReturnCommand.CalculateOrderReturn(orderId, itemsToReturn);
         }
     }
 }

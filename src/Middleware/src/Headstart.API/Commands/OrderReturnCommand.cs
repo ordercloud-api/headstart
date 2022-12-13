@@ -12,17 +12,21 @@ namespace Headstart.API.Commands
     public interface IOrderReturnCommand
     {
         public Task<HSOrderReturn> CompleteReturn(string orderReturnId);
+
+        public Task<IEnumerable<LineItemReturnCalculation>> CalculateOrderReturn(string orderId, List<OrderReturnItem> itemsToReturn);
     }
 
     public class OrderReturnCommand : IOrderReturnCommand
     {
         private readonly IOrderCloudClient oc;
         private readonly IHSCreditCardProcessor creditCardService;
+        private readonly IOrderReturnIntegrationEventCommand orderReturnIntegrationEventCommand;
 
-        public OrderReturnCommand(IOrderCloudClient oc, IHSCreditCardProcessor creditCardService)
+        public OrderReturnCommand(IOrderCloudClient oc, IHSCreditCardProcessor creditCardService, IOrderReturnIntegrationEventCommand orderReturnIntegrationEventCommand)
         {
             this.oc = oc;
             this.creditCardService = creditCardService;
+            this.orderReturnIntegrationEventCommand = orderReturnIntegrationEventCommand;
         }
 
         public async Task<HSOrderReturn> CompleteReturn(string orderReturnId)
@@ -82,6 +86,19 @@ namespace Headstart.API.Commands
             }
 
             return await oc.OrderReturns.GetAsync<HSOrderReturn>(orderReturnId);
+        }
+
+        public async Task<IEnumerable<LineItemReturnCalculation>> CalculateOrderReturn(string orderId, List<OrderReturnItem> itemsToReturn)
+        {
+            var worksheet = await oc.IntegrationEvents.GetWorksheetAsync<HSOrderWorksheet>(OrderDirection.All, orderId);
+
+            // build a fake order return just so we can get calculations
+            var orderReturn = new HSOrderReturn
+            {
+                ItemsToReturn = itemsToReturn,
+            };
+            var result = await orderReturnIntegrationEventCommand.CalculateOrderReturn(worksheet, orderReturn);
+            return result.ItemsToReturnCalcs;
         }
     }
 }

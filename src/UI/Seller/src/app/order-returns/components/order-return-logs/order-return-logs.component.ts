@@ -24,32 +24,45 @@ export class OrderReturnLogsComponent implements OnChanges {
 
   private buildLogs(): void {
     this.logs = []
-    this.logs.push({
-      Action: 'Submitted',
-      Date: this.orderReturn.DateSubmitted,
-      RefundAmount: this.orderReturn.xp?.InitialRefundAmount,
-      ProcessedByName: `${this.order.FromUser.FirstName} ${this.order.FromUser.LastName}`,
-      ProcessedByUserId: this.order.FromUserID,
-      ProcessedByCompanyId: `${this.order.FromCompanyID}`,
-    })
-    if (this.orderReturn.DateApproved) {
-      const details = this.orderReturn.xp?.ApprovedStatusDetails
+    if (
+      this.orderReturn.DateSubmitted &&
+      this.orderReturn.xp?.SubmittedStatusDetails
+    ) {
+      const details = this.orderReturn.xp.SubmittedStatusDetails
+      this.logs.push({
+        Action: 'Submitted',
+        Date: this.orderReturn.DateSubmitted,
+        ...details,
+      })
+    }
+
+    if (
+      this.orderReturn.DateApproved &&
+      this.orderReturn.xp?.ApprovedStatusDetails
+    ) {
+      const details = this.orderReturn.xp.ApprovedStatusDetails
       this.logs.push({
         Action: 'Approved',
         Date: this.orderReturn.DateApproved,
         ...details,
       })
     }
-    if (this.orderReturn.DateDeclined) {
-      const details = this.orderReturn.xp?.DeclinedStatusDetails
+    if (
+      this.orderReturn.DateDeclined &&
+      this.orderReturn.xp?.DeclinedStatusDetails
+    ) {
+      const details = this.orderReturn.xp.DeclinedStatusDetails
       this.logs.push({
         Action: 'Declined',
         Date: this.orderReturn.DateDeclined,
         ...details,
       })
     }
-    if (this.orderReturn.DateCompleted) {
-      const details = this.orderReturn.xp?.CompletedStatusDetails
+    if (
+      this.orderReturn.DateCompleted &&
+      this.orderReturn.xp?.CompletedStatusDetails
+    ) {
+      const details = this.orderReturn.xp.CompletedStatusDetails
       this.logs.push({
         Action: 'Completed',
         Date: this.orderReturn.DateCompleted,
@@ -61,9 +74,6 @@ export class OrderReturnLogsComponent implements OnChanges {
   getUserLink(log: ReturnLog): string {
     if (!log?.ProcessedByUserId) {
       return ''
-    }
-    if (log.Action === 'Submitted') {
-      return `/buyers/${log.ProcessedByCompanyId}/users/${log.ProcessedByUserId}`
     }
     if (log.ProcessedByCompanyId) {
       return `/suppliers/${log.ProcessedByCompanyId}/users/${log.ProcessedByUserId}`
