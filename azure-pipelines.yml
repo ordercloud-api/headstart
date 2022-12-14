@@ -6,7 +6,7 @@ resources:
 jobs:
   - job: Build_MiddleWare
     pool:
-      vmImage: windows-2019
+      vmImage: windows-2022
     displayName: Build Middleware
     steps:
       - checkout: self
@@ -15,18 +15,6 @@ jobs:
         displayName: "Use NuGet "
       - task: NuGetCommand@2
         displayName: NuGet restore
-      - task: CmdLine@2
-        displayName: Azure Storage for tests
-        inputs:
-          script: >-
-            sqllocaldb create MSSQLLocalDB
-
-            sqllocaldb start MSSQLLocalDB
-
-            sqllocaldb info MSSQLLocalDB
-
-
-            "C:\Program Files (x86)\Microsoft SDKs\Azure\Storage Emulator\AzureStorageEmulator.exe" start
       - task: VSBuild@1
         displayName: Build solution src/Middleware/Headstart.sln
         inputs:
@@ -76,7 +64,7 @@ jobs:
           ArtifactName: jobs
   - job: Build_Buyer
     pool:
-        vmImage: windows-2019
+        vmImage: windows-2022
     displayName: Build Buyer
     steps:
     - task: NodeTool@0
@@ -127,7 +115,7 @@ jobs:
         ArtifactName: buyer
   - job: Build_Seller
     pool:
-          vmImage: windows-2019
+          vmImage: windows-2022
     displayName: Build Seller
     steps:
     - task: NodeTool@0
