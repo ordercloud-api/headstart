@@ -19,11 +19,11 @@ namespace OrderCloud.Integrations.Smarty
 
     public class SmartyStreetsService : ISmartyStreetsService
     {
-        private readonly SmartyStreetsConfig config;
+        private readonly SmartyStreetSettings config;
         private readonly Client smartyStreetsClient;
         private readonly string autoCompleteBaseUrl = "https://us-autocomplete-pro.api.smartystreets.com";
 
-        public SmartyStreetsService(SmartyStreetsConfig config)
+        public SmartyStreetsService(SmartyStreetSettings config)
         {
             this.config = config;
             this.smartyStreetsClient = new ClientBuilder(config.AuthID, config.AuthToken).BuildUsStreetApiClient();

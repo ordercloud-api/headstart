@@ -42,14 +42,14 @@ namespace OrderCloud.Integrations.CardConnect
         private readonly IFlurlClient flurl;
         private AppEnvironment appEnvironment;
 
-        public CardConnectClient(CardConnectConfig config, string environment, IFlurlClientFactory flurlFactory)
+        public CardConnectClient(CardConnectSettings config, string environment, IFlurlClientFactory flurlFactory)
         {
             Config = config;
             appEnvironment = (AppEnvironment)Enum.Parse(typeof(AppEnvironment), environment);
             flurl = flurlFactory.Get($"https://{Config?.Site}.{Config?.BaseUrl}/");
         }
 
-        public CardConnectConfig Config { get; }
+        public CardConnectSettings Config { get; }
 
         public async Task<CardConnectAccountResponse> Tokenize(CardConnectAccountRequest request)
         {

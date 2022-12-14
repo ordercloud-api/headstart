@@ -13,10 +13,8 @@ namespace OrderCloud.Integrations.Avalara.Tests
         private AvalaraCommand command;
 
         [SetUp]
-        public void Setup()
-        {
-            var avalaraConfig = new AvalaraConfig()
-            {
+        public void Setup() {
+            var avalaraConfig = new AvalaraSettings() {
                 LicenseKey = null,
                 BaseApiUrl = "http://www.supersweeturi.com",
             };
@@ -26,8 +24,7 @@ namespace OrderCloud.Integrations.Avalara.Tests
         }
 
         [Test]
-        public async Task CalculateEstimateAsync_WithoutCredentials_ReturnsMockResponse()
-        {
+        public async Task CalculateEstimateAsync_WithoutCredentials_ReturnsMockResponse() {
             // Arrange
 
             // Act
@@ -39,8 +36,7 @@ namespace OrderCloud.Integrations.Avalara.Tests
         }
 
         [Test]
-        public async Task CommitTransactionAsync_WithoutCredentials_ReturnsMockResponse()
-        {
+        public async Task CommitTransactionAsync_WithoutCredentials_ReturnsMockResponse() {
             // Arrange
 
             // Act

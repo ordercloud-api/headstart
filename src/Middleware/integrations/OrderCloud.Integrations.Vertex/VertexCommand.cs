@@ -25,9 +25,9 @@ namespace OrderCloud.Integrations.Vertex
     public class VertexCommand : IVertexCommand, ITaxCalculator
     {
         private readonly VertexClient vertexClient;
-        private readonly VertexConfig config;
+        private readonly VertexSettings config;
 
-        public VertexCommand(VertexConfig config, VertexClient vertexClient)
+        public VertexCommand(VertexSettings config, VertexClient vertexClient)
         {
             this.config = config;
             this.vertexClient = vertexClient;

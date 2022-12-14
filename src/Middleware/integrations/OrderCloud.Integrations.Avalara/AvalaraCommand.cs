@@ -39,15 +39,14 @@ namespace OrderCloud.Integrations.Avalara
 
     public class AvalaraCommand : IAvalaraCommand, ITaxCalculator, ITaxCodesProvider
     {
-        private readonly AvalaraConfig settings;
+        private readonly AvalaraSettings settings;
         private readonly AvaTaxClient avaTaxClient;
         private readonly string companyCode;
         private readonly string baseUrl;
         private bool hasAccountCredentials;
         private AppEnvironment appEnvironment;
 
-        public AvalaraCommand(AvaTaxClient avaTaxClient, AvalaraConfig settings, string environment)
-        {
+        public AvalaraCommand(AvaTaxClient avaTaxClient, AvalaraSettings settings, string environment) {
             this.settings = settings;
             appEnvironment = (AppEnvironment)Enum.Parse(typeof(AppEnvironment), environment);
 
@@ -58,10 +57,8 @@ namespace OrderCloud.Integrations.Avalara
             this.avaTaxClient = avaTaxClient;
         }
 
-        public async Task<OrderTaxCalculation> CalculateEstimateAsync(HSOrderWorksheet orderWorksheet)
-        {
-            if (ShouldMockAvalaraResponse())
-            {
+        public async Task<OrderTaxCalculation> CalculateEstimateAsync(HSOrderWorksheet orderWorksheet) {
+            if (ShouldMockAvalaraResponse()) {
                 return CreateMockTransactionModel();
             }
 
@@ -69,10 +66,8 @@ namespace OrderCloud.Integrations.Avalara
             return taxEstimate;
         }
 
-        public async Task<OrderTaxCalculation> CommitTransactionAsync(HSOrderWorksheet orderWorksheet)
-        {
-            if (ShouldMockAvalaraResponse())
-            {
+        public async Task<OrderTaxCalculation> CommitTransactionAsync(HSOrderWorksheet orderWorksheet) {
+            if (ShouldMockAvalaraResponse()) {
                 return CreateMockTransactionModel();
             }
 
@@ -80,10 +75,8 @@ namespace OrderCloud.Integrations.Avalara
             return transaction;
         }
 
-        public async Task<OrderTaxCalculation> CommitTransactionAsync(string transactionCode)
-        {
-            if (ShouldMockAvalaraResponse())
-            {
+        public async Task<OrderTaxCalculation> CommitTransactionAsync(string transactionCode) {
+            if (ShouldMockAvalaraResponse()) {
                 return CreateMockTransactionModel();
             }
 
@@ -92,10 +85,8 @@ namespace OrderCloud.Integrations.Avalara
             return transaction.ToOrderTaxCalculation();
         }
 
-        public async Task<TaxCategorizationResponse> ListTaxCodesAsync(string searchTerm)
-        {
-            if (ShouldMockAvalaraResponse())
-            {
+        public async Task<TaxCategorizationResponse> ListTaxCodesAsync(string searchTerm) {
+            if (ShouldMockAvalaraResponse()) {
                 return CreateMockTaxCategorizationResponseModel();
             }
 
@@ -105,17 +96,14 @@ namespace OrderCloud.Integrations.Avalara
             return new TaxCategorizationResponse() { Categories = codeList, ProductsShouldHaveTaxCodes = true };
         }
 
-        private bool ShouldMockAvalaraResponse()
-        {
+        private bool ShouldMockAvalaraResponse() {
             // To give a larger "headstart" in Test and UAT, Responses can be mocked by simply
             // not providing an Avalara License Key. (It is still needed for Production)
             return !hasAccountCredentials && appEnvironment != AppEnvironment.Production;
         }
 
-        private OrderTaxCalculation CreateMockTransactionModel()
-        {
-            TransactionModel result = new TransactionModel()
-            {
+        private OrderTaxCalculation CreateMockTransactionModel() {
+            TransactionModel result = new TransactionModel() {
                 totalTax = (decimal?)123.45,
                 code = "Mock Avalara Response for Headstart",
                 date = DateTime.Now,
@@ -124,10 +112,8 @@ namespace OrderCloud.Integrations.Avalara
             return result.ToOrderTaxCalculation();
         }
 
-        private TaxCategorizationResponse CreateMockTaxCategorizationResponseModel()
-        {
-            return new TaxCategorizationResponse()
-            {
+        private TaxCategorizationResponse CreateMockTaxCategorizationResponseModel() {
+            return new TaxCategorizationResponse() {
                 ProductsShouldHaveTaxCodes = true,
                 Categories = new List<TaxCategorization>()
                 {
@@ -141,16 +127,12 @@ namespace OrderCloud.Integrations.Avalara
             };
         }
 
-        private async Task<OrderTaxCalculation> CreateTransactionAsync(DocumentType docType, HSOrderWorksheet orderWorksheet)
-        {
+        private async Task<OrderTaxCalculation> CreateTransactionAsync(DocumentType docType, HSOrderWorksheet orderWorksheet) {
             var promotions = orderWorksheet.OrderPromotions.ToList();
             var standardLineItems = orderWorksheet.LineItems.Where(li => li.Product.xp.ProductType == ProductType.Standard)?.ToList();
-            if (standardLineItems.Any())
-            {
-                try
-                {
-                    if (ShouldMockAvalaraResponse())
-                    {
+            if (standardLineItems.Any()) {
+                try {
+                    if (ShouldMockAvalaraResponse()) {
                         return CreateMockTransactionModel();
                     }
 
@@ -158,15 +140,12 @@ namespace OrderCloud.Integrations.Avalara
                     var transaction = await avaTaxClient.CreateTransactionAsync(string.Empty, createTransactionModel);
                     return transaction.ToOrderTaxCalculation();
                 }
-                catch (AvaTaxError e)
-                {
+                catch (AvaTaxError e) {
                     throw new CatalystBaseException("AvalaraTaxError", e.error.error.message, e.error.error, 400);
                 }
             }
-            else
-            {
-                return new OrderTaxCalculation
-                {
+            else {
+                return new OrderTaxCalculation {
                     OrderID = orderWorksheet.Order.ID,
                     ExternalTransactionID = "NotTaxable",
                     TotalTax = 0,

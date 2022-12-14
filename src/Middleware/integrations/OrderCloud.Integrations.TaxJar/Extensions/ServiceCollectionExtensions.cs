@@ -8,7 +8,7 @@ namespace OrderCloud.Integrations.TaxJar.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddTaxJarTaxProvider(this IServiceCollection services, EnvironmentSettings environmentSettings, TaxJarConfig taxJarSettings)
+        public static IServiceCollection AddTaxJarTaxProvider(this IServiceCollection services, EnvironmentSettings environmentSettings, TaxJarSettings taxJarSettings)
         {
             if (!environmentSettings.TaxProvider.Equals("TaxJar", StringComparison.OrdinalIgnoreCase))
             {

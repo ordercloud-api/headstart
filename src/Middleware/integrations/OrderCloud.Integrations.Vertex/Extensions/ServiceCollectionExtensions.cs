@@ -7,7 +7,7 @@ namespace OrderCloud.Integrations.Vertex.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddVertexTaxProvider(this IServiceCollection services, EnvironmentSettings environmentSettings, VertexConfig vertexSettings)
+        public static IServiceCollection AddVertexTaxProvider(this IServiceCollection services, EnvironmentSettings environmentSettings, VertexSettings vertexSettings)
         {
             if (!environmentSettings.TaxProvider.Equals("Vertex", StringComparison.OrdinalIgnoreCase))
             {

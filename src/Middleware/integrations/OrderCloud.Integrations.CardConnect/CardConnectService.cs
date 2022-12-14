@@ -13,12 +13,12 @@ namespace OrderCloud.Integrations.CardConnect
 {
     public class CardConnectService : IHSCreditCardProcessor
     {
-        private readonly CardConnectConfig cardConnectConfig;
+        private readonly CardConnectSettings cardConnectConfig;
         private readonly ICardConnectClient cardConnectClient;
         private readonly IOrderCloudClient orderCloudClient;
         private readonly ISupportAlertService supportAlertsService;
 
-        public CardConnectService(CardConnectConfig cardConnectConfig, ICardConnectClient cardConnectClient, IOrderCloudClient orderCloudClient, ISupportAlertService supportAlertsService)
+        public CardConnectService(CardConnectSettings cardConnectConfig, ICardConnectClient cardConnectClient, IOrderCloudClient orderCloudClient, ISupportAlertService supportAlertsService)
         {
             this.cardConnectConfig = cardConnectConfig;
             this.cardConnectClient = cardConnectClient;

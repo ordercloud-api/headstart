@@ -27,7 +27,7 @@ namespace Headstart.Tests
         {
             oc = Substitute.For<IOrderCloudClient>();
             settings = Substitute.For<AppSettings>();
-            settings.CardConnectSettings = new CardConnectConfig
+            settings.CardConnectSettings = new CardConnectSettings
             {
                 MerchantID = "mockUsdMerchantID",
             };
