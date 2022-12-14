@@ -36,7 +36,7 @@ json -I -f appSettings.json \
       -e "this['CosmosSettings:RequestTimeoutInSeconds']='$CosmosSettings_RequestTimeoutInSeconds'"
 
 json -I -f appSettings.json \
-      -e "this['EasyPostSettings:APIKey']='$EasyPostSettings_APIKey'" \
+      -e "this['EasyPostSettings:ApiKey']='$EasyPostSettings_ApiKey'" \
       -e "this['EasyPostSettings:CustomsSigner']='$EasyPostSettings_CustomsSigner'" \
       -e "this['EasyPostSettings:FedexAccountId']='$EasyPostSettings_FedexAccountId'" \
       -e "this['EasyPostSettings:FreeShippingTransitDays']='$EasyPostSettings_FreeShippingTransitDays'" \

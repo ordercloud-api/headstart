@@ -1,4 +1,4 @@
-﻿{
+{
   "ApplicationInsightsSettings:ConnectionString": "",
   "AvalaraSettings:AccountID": 0,
   "AvalaraSettings:CompanyCode": "",
@@ -22,7 +22,7 @@
   "CosmosSettings:EndpointUri": "",
   "CosmosSettings:PrimaryKey": "",
   "CosmosSettings:RequestTimeoutInSeconds": "15",
-  "EasyPostSettings:APIKey": "",
+  "EasyPostSettings:ApiKey": "",
   "EasyPostSettings:CustomsSigner": "",
   "EasyPostSettings:FedexAccountId": "",
   "EasyPostSettings:FreeShippingTransitDays": "3",
