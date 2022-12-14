@@ -8,7 +8,7 @@ namespace OrderCloud.Integrations.Zoho.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddZohoOMSProvider(this IServiceCollection services, EnvironmentSettings environmentSettings, ZohoConfig settings)
+        public static IServiceCollection AddZohoOMSProvider(this IServiceCollection services, EnvironmentSettings environmentSettings, ZohoSettings settings)
         {
             if (!environmentSettings.OMSProvider.Equals("Zoho", StringComparison.OrdinalIgnoreCase))
             {

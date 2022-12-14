@@ -15,12 +15,10 @@ namespace OrderCloud.Integrations.CosmosDB.Extensions
             where TQuery : class
             where TModel : class
         {
-            if (config.DatabaseName == null || config.EndpointUri == null || config.PrimaryKey == null)
+            if (string.IsNullOrEmpty(config.DatabaseName) || string.IsNullOrEmpty(config.EndpointUri) || string.IsNullOrEmpty(config.PrimaryKey))
             {
-                // allow server to be started up without these settings
-                // in case they're just trying to seed their environment
-                // in the future we'll remove this in favor of centralized seeding capability
-                return services;
+                // CosmosDB is used to store data that doesn't belong in OrderCloud but is required for a complete solution, one example is reporting
+                throw new Exception($"Please provide the required app settings: CosmosSettings:DatabaseName, CosmosSettings:EndpointUri, and CosmosSettings:PrimaryKey");
             }
 
             var settings = new CosmosStoreSettings(
@@ -51,9 +49,10 @@ namespace OrderCloud.Integrations.CosmosDB.Extensions
             CosmosSettings settings,
             List<ContainerInfo> containers)
         {
-            if (settings.EndpointUri == null || settings.PrimaryKey == null || settings.DatabaseName == null)
+            if (string.IsNullOrEmpty(settings.DatabaseName) || string.IsNullOrEmpty(settings.EndpointUri) || string.IsNullOrEmpty(settings.PrimaryKey))
             {
-                throw new Exception("Required properties CosmosSettings:EndpointUri, CosmosSettings:PrimaryKey, or CosmosSettings:DatabaseName are missing");
+                // CosmosDB is used to store data that doesn't belong in OrderCloud but is required for a complete solution, one example is reporting
+                throw new Exception("Please provide the required app settings: CosmosSettings:EndpointUri, CosmosSettings:PrimaryKey, or CosmosSettings:DatabaseName");
             }
 
             CosmosClient client = new CosmosClient(settings.EndpointUri, settings.PrimaryKey);

@@ -16,7 +16,7 @@ This integration is responsible for sending transactional emails related to comm
 | PasswordReset             | sent to the buyer user when requesting password reset                                                                           |
 | ProductInformationRequest | sent to the supplier (supplier.xp.SupportContact.Email) when a buyer user requests more information about one of their products |
 | QuoteOrderSubmit          | sent to the buyer user when their quote is submitted                                                                            |
-
+| OrderReturn               | sent to buyer user and approving admin user as order return status changes                                                      |
 
 ### Managing Message Senders
 
@@ -24,7 +24,7 @@ This integration is using a combination of [OrderCloud Message Senders](https://
 
 ## Enabling Integration
 
-1. Set `EnvironmentSettings:EmailServiceProvider` to SendGrid
-2. Ensure `EnvironmentSettings:ApiKey` and `SendgridSettings:FromEmail` are defined in your app settings
-3. Ensure for each email type that you want to send that `{emailtype}TemplateID` is defined in app settings. You can use [these default templates](./assets/templates/email) as a starting point but will want to update the contact email and may want to add a company banner
-4. Deploy your middleware application. Emails won't work until the first deployment because there needs to be a publicly accessible endpoint that OrderCloud can send event information to.
+1.  Set `EnvironmentSettings:EmailServiceProvider` to SendGrid
+2.  Ensure `EnvironmentSettings:ApiKey` and `SendgridSettings:FromEmail` are defined in your app settings
+3.  Ensure for each email type that you want to send that `{emailtype}TemplateID` is defined in app settings. You can use [these default templates](./assets/templates/email) as a starting point but will want to update the contact email and may want to add a company banner
+4.  Deploy your middleware application. Emails won't work until the first deployment because there needs to be a publicly accessible endpoint that OrderCloud can send event information to.

@@ -8,7 +8,7 @@ namespace OrderCloud.Integrations.CardConnect.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddCardConnectCreditCartProcessor(this IServiceCollection services, EnvironmentSettings environmentSettings, CardConnectConfig cardConnectSettings)
+        public static IServiceCollection AddCardConnectCreditCartProcessor(this IServiceCollection services, EnvironmentSettings environmentSettings, CardConnectSettings cardConnectSettings)
         {
             if (!environmentSettings.PaymentProvider.Equals("CardConnect", StringComparison.OrdinalIgnoreCase))
             {

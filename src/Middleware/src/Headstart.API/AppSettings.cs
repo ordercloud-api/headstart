@@ -17,9 +17,9 @@ namespace Headstart.API
     {
         public ApplicationInsightsSettings ApplicationInsightsSettings { get; set; } = new ApplicationInsightsSettings();
 
-        public AvalaraConfig AvalaraSettings { get; set; } = new AvalaraConfig();
+        public AvalaraSettings AvalaraSettings { get; set; } = new AvalaraSettings();
 
-        public CardConnectConfig CardConnectSettings { get; set; } = new CardConnectConfig();
+        public CardConnectSettings CardConnectSettings { get; set; } = new CardConnectSettings();
 
         public CosmosSettings CosmosSettings { get; set; } = new CosmosSettings();
 
@@ -35,16 +35,16 @@ namespace Headstart.API
 
         public SendGridSettings SendgridSettings { get; set; } = new SendGridSettings();
 
-        public SmartyStreetsConfig SmartyStreetSettings { get; set; } = new SmartyStreetsConfig();
+        public SmartyStreetSettings SmartyStreetSettings { get; set; } = new SmartyStreetSettings();
 
         public StorageAccountSettings StorageAccountSettings { get; set; } = new StorageAccountSettings();
 
-        public VertexConfig VertexSettings { get; set; } = new VertexConfig();
+        public VertexSettings VertexSettings { get; set; } = new VertexSettings();
 
-        public TaxJarConfig TaxJarSettings { get; set; } = new TaxJarConfig();
+        public TaxJarSettings TaxJarSettings { get; set; } = new TaxJarSettings();
 
         public UI UI { get; set; }
 
-        public ZohoConfig ZohoSettings { get; set; } = new ZohoConfig();
+        public ZohoSettings ZohoSettings { get; set; } = new ZohoSettings();
     }
 }

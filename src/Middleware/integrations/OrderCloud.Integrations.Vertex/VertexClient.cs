@@ -10,10 +10,10 @@ namespace OrderCloud.Integrations.Vertex
     {
         private const string ApiUrl = "https://restconnect.vertexsmb.com";
         private const string AuthUrl = "https://auth.vertexsmb.com";
-        private readonly VertexConfig config;
+        private readonly VertexSettings config;
         private VertexTokenResponse token;
 
-        public VertexClient(VertexConfig config)
+        public VertexClient(VertexSettings config)
         {
             this.config = config;
         }
@@ -50,7 +50,7 @@ namespace OrderCloud.Integrations.Vertex
             return response.data;
         }
 
-        private async Task<VertexTokenResponse> GetToken(VertexConfig config)
+        private async Task<VertexTokenResponse> GetToken(VertexSettings config)
         {
             var body = new
             {

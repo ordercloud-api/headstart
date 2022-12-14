@@ -7,7 +7,7 @@ namespace OrderCloud.Integrations.Smarty.Extensions
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddSmartyAddressValidationProvider(this IServiceCollection services, EnvironmentSettings environmentSettings, SmartyStreetsConfig smartySettings)
+        public static IServiceCollection AddSmartyAddressValidationProvider(this IServiceCollection services, EnvironmentSettings environmentSettings, SmartyStreetSettings smartySettings)
         {
             if (!environmentSettings.AddressValidationProvider.Equals("Smarty", StringComparison.OrdinalIgnoreCase))
             {

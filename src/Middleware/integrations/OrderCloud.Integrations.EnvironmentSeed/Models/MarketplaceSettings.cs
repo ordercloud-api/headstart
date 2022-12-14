@@ -47,12 +47,6 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Models
         public bool EnableAnonymousShopping { get; set; } = true;
 
         /// <summary>
-        /// An optional string to specify a buyer which the anonymous buyer user will be assigned to
-        /// Otherwise we will assign the default buyer that is created in seeding.
-        /// </summary>
-        public string AnonymousShoppingBuyerID { get; set; }
-
-        /// <summary>
         /// The url to your hosted middleware endpoint
         /// needed for webhooks and message senders.
         /// </summary>
@@ -65,15 +59,5 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Models
         /// </summary>
         [Required, MaxLength(15)]
         public string WebhookHashKey { get; set; }
-
-        /// <summary>
-        /// An optional array of suppliers to create as part of the initial seeding.
-        /// </summary>
-        public List<HSSupplier> Suppliers { get; set; } = new List<HSSupplier> { };
-
-        /// <summary>
-        /// An optional array of buyers to create as part of the initial seeding.
-        /// </summary>
-        public List<HSBuyer> Buyers { get; set; } = new List<HSBuyer> { };
     }
 }

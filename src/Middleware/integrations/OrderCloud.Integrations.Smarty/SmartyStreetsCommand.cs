@@ -13,9 +13,9 @@ namespace OrderCloud.Integrations.Smarty
     {
         private readonly ISmartyStreetsService service;
         private readonly IOrderCloudClient oc;
-        private readonly SmartyStreetsConfig settings;
+        private readonly SmartyStreetSettings settings;
 
-        public SmartyStreetsCommand(SmartyStreetsConfig settings, IOrderCloudClient oc, ISmartyStreetsService service)
+        public SmartyStreetsCommand(SmartyStreetSettings settings, IOrderCloudClient oc, ISmartyStreetsService service)
         {
             this.settings = settings;
             this.service = service;
