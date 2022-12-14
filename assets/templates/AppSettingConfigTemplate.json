@@ -1,4 +1,4 @@
-{
+﻿{
   "ApplicationInsightsSettings:ConnectionString": "",
   "AvalaraSettings:AccountID": 0,
   "AvalaraSettings:CompanyCode": "",
@@ -63,6 +63,7 @@
   "SendgridSettings:LineItemStatusChangeTemplateID": "",
   "SendgridSettings:QuoteOrderSubmitTemplateID": "",
   "SendgridSettings:NewUserTemplateID": "",
+  "SendgridSettings:OrderReturnTemplateID": "",
   "SendgridSettings:ProductInformationRequestTemplateID": "",
   "SendgridSettings:PasswordResetTemplateID": "",
   "SendgridSettings:CriticalSupportTemplateID": "",
