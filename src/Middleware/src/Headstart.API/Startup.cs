@@ -158,7 +158,7 @@ namespace Headstart.API
                 .Inject<IPaymentCommand>()
                 .Inject<IOrderSubmitCommand>()
                 .Inject<IEnvironmentSeedCommand>()
-                .Inject<IHSProductCommand>()
+                .Inject<IProductCommand>()
                 .Inject<ILineItemCommand>()
                 .Inject<IMeProductCommand>()
                 .Inject<ICatalogCommand>()
