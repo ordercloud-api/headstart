@@ -1,12 +1,27 @@
-# Getting Started
-1. Open the Headstart.sln in Visual Studio
-2. Right click on the Headstart.API project and click on "Properties"
-3. Go to the "Debug" panel
-4. Create a new profile and call it "Test"
-5. Set Launch to Project
-6. Add a new Environment Variable called APP_CONFIG_CONNECTION who's value is the connection string to your [azure app configuration](https://docs.microsoft.com/en-us/azure/azure-app-configuration/overview)
-7. Repeat steps 4-6 for the other environments "UAT" and "Production"
-8. Save your profiles now you should be able to select it and run the project locally
+# Starting server for seeding
+1. Configure app settings, see instructions [here](../../docs/AZURE_APP_CONFIGURATION.md#local-development)
+2. Ensure at least the following settings are defined otherwise you will get errors on Startup:
+    - `CosmosSettings:EndpointUri`
+    - `CosmosSettings:PrimaryKey`
+    - `CosmosSettings:DatabaseName`
+    - `StorageAccountSettings:ConnectionString`
+    - `StorageAccountSettings:BlobPrimaryEndpoint`
+3. Start the application by selecting your profile from the dropdown (result of step #1)
+
+# Starting server for normal operations
+1. Configure app settings, see instructions [here](../../docs/AZURE_APP_CONFIGURATION.md#local-development)
+2. Ensure at least the following settings are defined otherwise you will get errors on Startup:
+    - `CosmosSettings:EndpointUri`
+    - `CosmosSettings:PrimaryKey`
+    - `CosmosSettings:DatabaseName`
+    - `StorageAccountSettings:ConnectionString`
+    - `StorageAccountSettings:BlobPrimaryEndpoint`
+3. Ensure the following settings are defined (are available after [seeding your marketplace](../../README.md#seeding-ordercloud-data))
+    - `OrderCloudSettings:MiddlewareClientID`
+    - `OrderCloudSettings:MiddlewareClientSecret`
+    - `OrderCloudSettings:ClientIDsWithAPIAccess` - ClientIDs of both the buyers and seller as a comma separated string
+    - `OrderCloudSettings:WebhookHashKey` - part of the seed *request*
+4. Start the application by selecting your debug profile from the dropdown (result of step #1)
 
 # Importing the Middleware API in Postman
 
