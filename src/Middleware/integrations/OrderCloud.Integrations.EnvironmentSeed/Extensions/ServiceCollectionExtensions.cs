@@ -10,9 +10,10 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Extensions
     {
         public static IServiceCollection AddDefaultTranslationsProvider(this IServiceCollection services, StorageAccountSettings storageAccountSettings)
         {
-            if (string.IsNullOrEmpty(storageAccountSettings.ConnectionString))
+            if (string.IsNullOrEmpty(storageAccountSettings.ConnectionString) || string.IsNullOrEmpty(storageAccountSettings.BlobPrimaryEndpoint))
             {
-                throw new Exception("Required property StorageAccountSettings:ConnectionString is missing");
+                // Storage account is used for saving files (product images, product documents, translations)
+                throw new Exception("Required app settings are missing: StorageAccountSettings:ConnectionString or StorageAccountSettings:BlobPrimaryEndpoint");
             }
 
             var translationsConfig = new CloudBlobServiceConfig()
