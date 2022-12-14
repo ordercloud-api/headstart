@@ -29,7 +29,6 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
         private readonly EnvironmentSettings environmentSettings;
         private readonly OrderCloudSettings orderCloudSettings;
         private readonly IPortalService portal;
-        private readonly ISupplierCommand supplierCommand;
         private readonly IBuyerCommand buyerCommand;
         private readonly IHSBuyerLocationCommand buyerLocationCommand;
         private readonly IUploadTranslationsCommand uploadTranslationsCommand;
@@ -39,14 +38,12 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
             EnvironmentSettings environmentSettings,
             OrderCloudSettings orderCloudSettings,
             IPortalService portal,
-            ISupplierCommand supplierCommand,
             IBuyerCommand buyerCommand,
             IHSBuyerLocationCommand buyerLocationCommand,
             IUploadTranslationsCommand uploadTranslationsCommand,
             IOrderCloudClient oc)
             {
             this.portal = portal;
-            this.supplierCommand = supplierCommand;
             this.buyerCommand = buyerCommand;
             this.buyerLocationCommand = buyerLocationCommand;
             this.oc = oc;
@@ -57,7 +54,7 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
 
         /// <summary>
         /// This seeding function can be used to initially seed an marketplace
-        /// it is also meant to be safe to call after an marketplace has been seeded (by including seed.MarketplaceID)
+        /// it is also meant to be safe to call after an marketplace has been seeded (by including seed.Marketplace.ID)
         /// If a method starts with CreateOrUpdate it will update the resource every time its called based on what has been defined in SeedConstants.cs
         /// If a method starts with CreateOnlyOnce it will only create the resource once and then ignore thereafter
         /// The CreateOnlyOnce resources are likely to change after initial creation so we ignore to avoid overwriting desired changes that happen outside of seeding.
@@ -88,22 +85,16 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
                 var marketplaceToken = await portal.GetMarketplaceToken(marketplace.Id, portalUserToken);
 
                 await CreateOrUpdateDefaultSellerUser(seed, marketplaceToken);
-
                 await CreateOnlyOnceIncrementors(marketplaceToken); // must be before CreateBuyers
                 await CreateOrUpdateMessageSendersAndAssignments(seed, marketplaceToken); // must be before CreateBuyers and CreateSuppliers
-
                 await CreateOrUpdateSecurityProfiles(marketplaceToken);
                 await CreateOrUpdateAdminPermissionGroups(marketplaceToken);
                 await CreateOrUpdateOrderReturnApprovalRule(marketplaceToken);
                 await CreateOnlyOnceBuyers(seed, marketplaceToken);
-
                 await CreateOnlyOnceApiClients(seed, marketplaceToken);
-                await CreateOrUpdateSecurityProfileAssignments(seed, marketplaceToken);
-
+                await CreateOrUpdateSecurityProfileAssignments(marketplaceToken);
                 await CreateOrUpdateXPIndices(marketplaceToken);
                 await CreateOrUpdateAndAssignIntegrationEvents(marketplaceToken, seed);
-                await CreateOrUpdateSuppliers(seed, marketplaceToken);
-
                 await CreateOrUpdateProductFacets(marketplaceToken);
 
                 await uploadTranslationsCommand.UploadTranslationsFiles();
@@ -171,8 +162,9 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
             }
             catch (Exception e)
             {
-                // the portal API no longer allows us to create a production marketplace outside of portal
-                // though its possible to create on sandbox - for consistency sake we'll require its created before seeding
+                // Although its technically possible to use the Portal API to create a sandbox marketplace
+                // It is not possible to do so with a production marketplace
+                // for consistency sake we'll require the marketplace is created before seeding
                 Console.WriteLine(e.Message);
                 throw new Exception($"Failed to retrieve marketplace with ID '{marketplaceID}'. The marketplace must exist before it can be seeded");
             }
@@ -374,20 +366,8 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
             await CreateOrGetApiClient(existingClients, SeedData.ApiClients.BuyerLocalClient(seed.Marketplace.EnableAnonymousShopping), token);
         }
 
-        private async Task CreateOrUpdateSecurityProfileAssignments(EnvironmentSeedRequest seed, string marketplaceToken)
+        private async Task CreateOrUpdateSecurityProfileAssignments(string marketplaceToken)
         {
-            // assign buyer security profiles
-            var buyerSecurityProfileAssignmentRequests = seed.Marketplace.Buyers.Select(b =>
-            {
-                return oc.SecurityProfiles.SaveAssignmentAsync(
-                    new SecurityProfileAssignment
-                    {
-                        BuyerID = b.ID,
-                        SecurityProfileID = CustomRole.HSBaseBuyer.ToString(),
-                    }, marketplaceToken);
-            });
-            await Task.WhenAll(buyerSecurityProfileAssignmentRequests);
-
             // assign seller security profiles to seller marketplace
             var sellerSecurityProfileAssignmentRequests = SeedData.CustomRoles.SellerHsRoles().Select(role =>
             {
@@ -428,57 +408,28 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
                 };
                 await buyerCommand.Create(superBuyer, token, oc);
             }
-
-            // create seed buyers if they don't exist
-            // seed buyers may not have ID defined, we are relying on Name instead
-            foreach (var buyer in seed.Marketplace.Buyers)
-            {
-                var seedBuyer = await GetBuyerByName(buyer.Name, token);
-                if (seedBuyer == null)
-                {
-                    var superBuyer = new SuperHSBuyer()
-                    {
-                        Buyer = buyer,
-                    };
-                    await buyerCommand.Create(superBuyer, token, oc);
-                }
-            }
         }
 
-        private async Task CreateOnlyOnceAnonBuyerConfig(EnvironmentSeedRequest seed, string token)
+        private async Task CreateOnlyOnceAnonBuyerConfig(string token)
         {
-            // validate AnonymousShoppingBuyerID or provide fallback if none is defined
-            var allBuyers = await oc.Buyers.ListAllAsync(accessToken: token);
-            if (!string.IsNullOrWhiteSpace(seed.Marketplace.AnonymousShoppingBuyerID))
-            {
-                if (!allBuyers.Select(b => b.ID).Contains(seed.Marketplace.AnonymousShoppingBuyerID))
-                {
-                    throw new Exception("The buyer defined by AnonymousShoppingBuyerID does not exist");
-                }
-            }
-            else
-            {
-                seed.Marketplace.AnonymousShoppingBuyerID = SeedData.Constants.DefaultBuyerID;
-            }
-
             // create and assign initial buyer location
             await buyerLocationCommand.Save(
-                seed.Marketplace.AnonymousShoppingBuyerID,
-                $"{seed.Marketplace.AnonymousShoppingBuyerID}-{SeedData.Constants.DefaultLocationID}",
+                SeedData.Constants.DefaultBuyerID,
+                $"{SeedData.Constants.DefaultBuyerID}-{SeedData.Constants.DefaultLocationID}",
                 SeedData.BuyerLocations.DefaultBuyerLocation(),
                 token,
                 oc);
 
             // create user
-            var anonBuyerUser = await oc.Users.SaveAsync(seed.Marketplace.AnonymousShoppingBuyerID, SeedData.Constants.AnonymousBuyerUserID, SeedData.Users.AnonymousBuyerUser(), token);
+            var anonBuyerUser = await oc.Users.SaveAsync(SeedData.Constants.DefaultBuyerID, SeedData.Constants.AnonymousBuyerUserID, SeedData.Users.AnonymousBuyerUser(), token);
 
             // save assignment between user and buyergroup (location)
             var assignment = new UserGroupAssignment()
             {
-                UserGroupID = $"{seed.Marketplace.AnonymousShoppingBuyerID}-{SeedData.Constants.DefaultLocationID}",
+                UserGroupID = $"{SeedData.Constants.DefaultBuyerID}-{SeedData.Constants.DefaultLocationID}",
                 UserID = anonBuyerUser.ID,
             };
-            await oc.UserGroups.SaveUserAssignmentAsync(seed.Marketplace.AnonymousShoppingBuyerID, assignment, accessToken: token);
+            await oc.UserGroups.SaveUserAssignmentAsync(SeedData.Constants.DefaultBuyerID, assignment, accessToken: token);
         }
 
         private async Task<HSBuyer> GetBuyerByName(string buyerName, string token)
@@ -491,19 +442,6 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
         {
             var list = await oc.Buyers.ListAsync<HSBuyer>(filters: new { ID = buyerID }, accessToken: token);
             return list.Items.ToList().FirstOrDefault();
-        }
-
-        private async Task CreateOrUpdateSuppliers(EnvironmentSeedRequest seed, string token)
-        {
-            // Create Suppliers and necessary user groups and security profile assignments
-            foreach (HSSupplier supplier in seed.Marketplace.Suppliers)
-            {
-                var exists = await SupplierExistsAsync(supplier.Name, token);
-                if (!exists)
-                {
-                    await supplierCommand.Create(supplier, token, isSeedingEnvironment: true);
-                }
-            }
         }
 
         private async Task CreateOrUpdateProductFacets(string token)
@@ -559,7 +497,7 @@ namespace OrderCloud.Integrations.EnvironmentSeed.Commands
             var match = existingClients.FirstOrDefault(c => c.AppName == client.AppName);
             if (match == null)
             {
-                await CreateOnlyOnceAnonBuyerConfig(seed, token);
+                await CreateOnlyOnceAnonBuyerConfig(token);
                 var apiClient = await oc.ApiClients.CreateAsync(client, token);
                 return apiClient;
             }

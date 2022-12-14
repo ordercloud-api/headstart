@@ -13,10 +13,7 @@
       "Password": ""
     },
     "EnableAnonymousShopping": true,
-    "AnonymousShoppingBuyerID": "",
     "MiddlewareBaseUrl": "",
-    "WebhookHashKey": "",
-    "Suppliers": [],
-    "Buyers": []
+    "WebhookHashKey": ""
   }
 }
