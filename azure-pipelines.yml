@@ -15,18 +15,6 @@ jobs:
         displayName: "Use NuGet "
       - task: NuGetCommand@2
         displayName: NuGet restore
-      - task: CmdLine@2
-        displayName: Azure Storage for tests
-        inputs:
-          script: >-
-            sqllocaldb create MSSQLLocalDB
-
-            sqllocaldb start MSSQLLocalDB
-
-            sqllocaldb info MSSQLLocalDB
-
-
-            "C:\Program Files (x86)\Microsoft SDKs\Azure\Storage Emulator\AzureStorageEmulator.exe" start
       - task: VSBuild@1
         displayName: Build solution src/Middleware/Headstart.sln
         inputs:
