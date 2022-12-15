@@ -421,15 +421,11 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   }
 
   setNonRequiredFields(): void {
-    const optionalFieldsArray = [
-      'TaxCode',
-      'ShipWeight',
-      'ShipFromAddressID',
-      'Price',
-    ]
+    const optionalFieldsArray = ['ShipWeight', 'ShipFromAddressID', 'Price']
     const optionalControls = optionalFieldsArray.map((item) =>
       this.productForm.get(item)
     )
+    const taxCodeInput = this.productForm.get('TaxCode')
     this.productForm
       .get('ProductType')
       .valueChanges.pipe(takeWhile(() => this.alive))
@@ -439,11 +435,23 @@ export class ProductEditComponent implements OnInit, OnDestroy {
             control.setValidators(null)
             control.updateValueAndValidity()
           })
+          taxCodeInput.setValue(null)
+          taxCodeInput.updateValueAndValidity()
         } else {
           optionalControls.forEach((control) => {
             control.setValidators(Validators.required)
             control.updateValueAndValidity()
           })
+
+          // Tax code is an exception because it may additionally be optional on standard products
+          // if and only if the tax integration is not set up to return tax codes
+          if (this.taxCodes?.ProductsShouldHaveTaxCodes) {
+            taxCodeInput.setValidators(Validators.required)
+            taxCodeInput.updateValueAndValidity()
+          } else {
+            taxCodeInput.setValidators(null)
+            taxCodeInput.updateValueAndValidity()
+          }
         }
       })
   }
