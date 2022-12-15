@@ -11,9 +11,9 @@ namespace Headstart.Common.Controllers
     [Route("products")]
     public class ProductController : CatalystController
     {
-        private readonly IHSProductCommand productCommand;
+        private readonly IProductCommand productCommand;
 
-        public ProductController(IHSProductCommand productCommand)
+        public ProductController(IProductCommand productCommand)
         {
             this.productCommand = productCommand;
         }

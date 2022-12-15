@@ -28,7 +28,8 @@ export class ProductPricingComponent {
   @Input()
   set superHSProductEditable(value: SuperHSProduct) {
     this.setData(value)
-    if ((value && this.readonly) || this.isSellerUser) {
+    if (this.isSellerUser) {
+      // only marketplace owners should be able to manage the pricing that buyer see
       this.setUpBuyers()
       this.setUpExchangeRate()
       this.buyerMarkedUpSupplierPrices =

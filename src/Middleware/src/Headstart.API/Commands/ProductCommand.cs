@@ -12,7 +12,7 @@ using OrderCloud.SDK;
 
 namespace Headstart.API.Commands
 {
-    public interface IHSProductCommand
+    public interface IProductCommand
     {
         Task<SuperHSProduct> Get(string id, string token);
 
@@ -42,14 +42,14 @@ namespace Headstart.API.Commands
         public string OptionID { get; set; }
     }
 
-    public class HSProductCommand : IHSProductCommand
+    public class ProductCommand : IProductCommand
     {
         private readonly IOrderCloudClient oc;
         private readonly AppSettings settings;
         private readonly ISupplierApiClientHelper apiClientHelper;
         private readonly IAssetClient assetClient;
 
-        public HSProductCommand(AppSettings settings, IOrderCloudClient elevatedOc, ISupplierApiClientHelper apiClientHelper, IAssetClient assetClient)
+        public ProductCommand(AppSettings settings, IOrderCloudClient elevatedOc, ISupplierApiClientHelper apiClientHelper, IAssetClient assetClient)
         {
             oc = elevatedOc;
             this.settings = settings;
