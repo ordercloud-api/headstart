@@ -6,10 +6,6 @@
     <LangVersion>8</LangVersion>
     <ApplicationInsightsResourceId>/subscriptions/736cd8bd-0185-4184-b3dd-8c372c076f3f/resourceGroups/Marketplace/providers/microsoft.insights/components/marketplace-middleware</ApplicationInsightsResourceId>
   </PropertyGroup>
-
-  <PropertyGroup>
-    <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
-  </PropertyGroup>
   
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -55,7 +51,7 @@
 
   <ItemGroup>
     <Compile Update="Program.cs">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -68,13 +64,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Update="wwwroot\i18n\en.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\i18n\fr.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Update="wwwroot\i18n\jp.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 </Project>

@@ -15,7 +15,6 @@ using Headstart.Common.Services;
 using Microsoft.ApplicationInsights.AspNetCore.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
@@ -64,7 +63,7 @@ namespace Headstart.API
             app.UseCatalystExceptionHandler();
             app.UseHttpsRedirection();
             app.UseRouting();
-            app.UseCors("integrationcors");
+            app.UseCors("middlewarecorspolicy");
             app.UseAuthorization();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
             app.UseSwagger();
@@ -121,7 +120,6 @@ namespace Headstart.API
                  o.EnableEndpointRouting = false;
              })
             .ConfigureApiBehaviorOptions(o => o.SuppressModelStateInvalidFilter = true)
-            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
             .AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
@@ -130,7 +128,7 @@ namespace Headstart.API
             });
 
             services
-                .AddCors(o => o.AddPolicy("integrationcors", builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }))
+                .AddCors(o => o.AddPolicy("middlewarecorspolicy", builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }))
                 .AddSingleton<ISimpleCache, LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
                 .AddSingleton<IFlurlClientFactory, PerBaseUrlFlurlClientFactory>()
 
@@ -220,10 +218,7 @@ namespace Headstart.API
                     List<string> xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml", SearchOption.TopDirectoryOnly).ToList();
                     xmlFiles.ForEach(xmlFile => c.IncludeXmlComments(xmlFile));
                 })
-                .AddSwaggerGenNewtonsoftSupport();
-
-            var serviceProvider = services.BuildServiceProvider();
-            services
+                .AddSwaggerGenNewtonsoftSupport()
                 .AddApplicationInsightsTelemetry(new ApplicationInsightsServiceOptions
                 {
                     EnableAdaptiveSampling = false, // retain all data
