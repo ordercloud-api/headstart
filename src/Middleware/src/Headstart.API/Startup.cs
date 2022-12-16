@@ -49,7 +49,6 @@ namespace Headstart.API
 {
     public class Startup
     {
-        private static string corsPolicyName = "middlewarecors";
         private readonly AppSettings settings;
 
         public Startup(AppSettings settings)
@@ -64,7 +63,7 @@ namespace Headstart.API
             app.UseCatalystExceptionHandler();
             app.UseHttpsRedirection();
             app.UseRouting();
-            app.UseCors(corsPolicyName);
+            app.UseCors("integrationcors");
             app.UseAuthorization();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
             app.UseSwagger();
@@ -129,7 +128,7 @@ namespace Headstart.API
             });
 
             services
-                .AddCors(o => o.AddPolicy(corsPolicyName, builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }))
+                .AddCors(o => o.AddPolicy("integrationcors", builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); }))
                 .AddSingleton<ISimpleCache, LazyCacheService>() // Replace LazyCacheService with RedisService if you have multiple server instances.
                 .AddSingleton<IFlurlClientFactory, PerBaseUrlFlurlClientFactory>()
 
