@@ -10,10 +10,6 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
-  </PropertyGroup>
-  
   <ItemGroup>
     <Compile Remove="CreditCardCommandTests.cs" />
   </ItemGroup>
