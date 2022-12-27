@@ -1,29 +1,29 @@
 @mixin ribbon-fold-bg($bg-color: $primary) {
   &.ribbon-bottom-left {
     &:after {
-      border-bottom-color: darken($bg-color, 10);
-      border-right-color: darken($bg-color, 10);
+      border-bottom-color: shade-color($bg-color, 10);
+      border-right-color: shade-color($bg-color, 10);
     }
   }
 
   &.ribbon-bottom-right {
     &:after {
-      border-bottom-color: darken($bg-color, 10);
-      border-left-color: darken($bg-color, 10);
+      border-bottom-color: shade-color($bg-color, 10);
+      border-left-color: shade-color($bg-color, 10);
     }
   }
 
   &.ribbon-top-left {
     &:after {
-      border-top-color: darken($bg-color, 10);
-      border-right-color: darken($bg-color, 10);
+      border-top-color: shade-color($bg-color, 10);
+      border-right-color: shade-color($bg-color, 10);
     }
   }
 
   &.ribbon-top-right {
     &:after {
-      border-top-color: darken($bg-color, 10);
-      border-left-color: darken($bg-color, 10);
+      border-top-color: shade-color($bg-color, 10);
+      border-left-color: shade-color($bg-color, 10);
     }
   }
 }
