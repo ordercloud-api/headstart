@@ -22,7 +22,7 @@
   <div
     class="custom-control custom-checkbox"
     *ngFor="
-      let checkbox of checkboxArray | slice: 0:visibleFacetLength;
+      let checkbox of checkboxArray | slice : 0 : visibleFacetLength;
       let i = index
     "
   >
@@ -47,7 +47,7 @@
   <a
     *ngIf="visibleFacetLength < checkboxArray.length"
     (click)="showAll()"
-    class="d-block text-right text-primary"
+    class="d-block text-right link-primary"
   >
     <small translate>PRODUCTS.FACETS</small>
   </a>
