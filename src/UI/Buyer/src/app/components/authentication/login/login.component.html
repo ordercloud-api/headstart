@@ -32,7 +32,9 @@
       novalidate
     >
       <div class="mb-3">
-        <label for="username" translate>COMMON.USERNAME</label>
+        <label for="username" class="form-label" translate
+          >COMMON.USERNAME</label
+        >
         <input
           formControlName="username"
           id="username"
@@ -44,7 +46,9 @@
         />
       </div>
       <div class="mb-3">
-        <label for="password" translate>COMMON.PASSWORD</label>
+        <label for="password" class="form-label" translate
+          >COMMON.PASSWORD</label
+        >
         <input
           formControlName="password"
           type="password"
@@ -54,14 +58,14 @@
         />
       </div>
       <div class="mb-3 text-center">
-        <div class="checkbox">
-          <label for="rememberMeId">
-            <input
-              formControlName="rememberMe"
-              type="checkbox"
-              id="rememberMeId"
-              class="mr-1"
-            />
+        <div class="form-check">
+          <input
+            formControlName="rememberMe"
+            type="checkbox"
+            id="rememberMeId"
+            class="form-check-input mr-1"
+          />
+          <label for="rememberMeId" class="form-check-label">
             <span translate>AUTHENTICATION.LOGIN.REMEMBER_ME</span>
           </label>
         </div>

@@ -66,7 +66,7 @@
   <hr />
 
   <div *ngIf="!isAnon" class="mb-3">
-    <label for="selectBuyerLocation" translate
+    <label for="selectBuyerLocation" class="form-label" translate
       >CHECKOUT.CHECKOUT_ADDRESS.BUYER_LOCATION</label
     >
     <fa-icon
@@ -100,7 +100,7 @@
     <br />
   </div>
   <div class="mb-3" *ngIf="!isAnon && selectedBuyerLocation">
-    <label for="selectAddress" translate
+    <label for="selectAddress" class="form-label" translate
       >CHECKOUT.CHECKOUT_ADDRESS.SHIPPING_ADDRESS</label
     >
     <select

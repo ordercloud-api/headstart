@@ -9,7 +9,9 @@
     <p class="lead" translate>PRODUCTS.CONTACT_SUPPLIER.PLEASE_VERIFY</p>
     <div class="row mt-4">
       <div class="mb-3 col-md-6">
-        <label for="FirstName" translate>PRODUCTS.CONTACT_SUPPLIER.FIRST</label>
+        <label for="FirstName" class="form-label" translate
+          >PRODUCTS.CONTACT_SUPPLIER.FIRST</label
+        >
         <input
           type="text"
           formControlName="FirstName"
@@ -22,7 +24,9 @@
         />
       </div>
       <div class="mb-3 col-md-6">
-        <label for="LastName" translate>PRODUCTS.CONTACT_SUPPLIER.LAST</label>
+        <label for="LastName" class="form-label" translate
+          >PRODUCTS.CONTACT_SUPPLIER.LAST</label
+        >
         <input
           type="text"
           formControlName="LastName"
@@ -35,7 +39,7 @@
       </div>
     </div>
     <div class="mb-3">
-      <label for="BuyerLocation" translate
+      <label for="BuyerLocation" class="form-label" translate
         >PRODUCTS.CONTACT_SUPPLIER.FOR_LOCATION</label
       >
       <select
@@ -53,7 +57,9 @@
     </div>
     <div class="row">
       <div class="mb-3 col-md-6">
-        <label for="Email" translate>PRODUCTS.CONTACT_SUPPLIER.EMAIL</label>
+        <label for="Email" class="form-label" translate
+          >PRODUCTS.CONTACT_SUPPLIER.EMAIL</label
+        >
         <input
           type="text"
           formControlName="Email"
@@ -65,7 +71,9 @@
         />
       </div>
       <div class="mb-3 col-md-6">
-        <label for="Phone" translate>PRODUCTS.CONTACT_SUPPLIER.PHONE</label>
+        <label for="Phone" class="form-label" translate
+          >PRODUCTS.CONTACT_SUPPLIER.PHONE</label
+        >
         <input
           type="text"
           formControlName="Phone"
@@ -79,7 +87,7 @@
     </div>
     <div class="mb-3">
       <form novalidate [formGroup]="contactSupplierForm">
-        <label for="Comments" translate
+        <label for="Comments" class="form-label" translate
           >PRODUCTS.CONTACT_SUPPLIER.COMMENTS</label
         >
         <textarea

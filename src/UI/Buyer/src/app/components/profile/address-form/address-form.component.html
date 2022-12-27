@@ -3,7 +3,9 @@
     <div *ngIf="addressError" class="text-danger">{{ addressError }}</div>
     <div class="row">
       <div [hidden]="true" class="col-md-6 mb-3">
-        <label class="sr-only" for="ID" translate>COMMON.ADDRESS.ID</label>
+        <label class="sr-only form-label" for="ID" translate
+          >COMMON.ADDRESS.ID</label
+        >
         <input
           type="text"
           formControlName="ID"
@@ -13,7 +15,7 @@
         />
       </div>
       <div class="col-md-6 mb-3">
-        <label class="sr-only" for="FirstName" translate
+        <label class="sr-only form-label" for="FirstName" translate
           >COMMON.ADDRESS.FIRST_NAME</label
         >
         <input
@@ -28,7 +30,7 @@
         />
       </div>
       <div class="col-md-6 mb-3">
-        <label class="sr-only" for="LastName" translate
+        <label class="sr-only form-label" for="LastName" translate
           >COMMON.ADDRESS.LAST_NAME</label
         >
         <input
@@ -43,7 +45,7 @@
       </div>
     </div>
     <div class="mb-3">
-      <label class="sr-only" for="Street1" translate
+      <label class="sr-only form-label" for="Street1" translate
         >COMMON.ADDRESS.ADDRESS1</label
       >
       <input
@@ -57,7 +59,7 @@
       />
     </div>
     <div class="mb-3">
-      <label class="sr-only" for="Street2" translate
+      <label class="sr-only form-label" for="Street2" translate
         >COMMON.ADDRESS.ADDRESS2</label
       >
       <input
@@ -72,7 +74,9 @@
     </div>
     <div class="row">
       <div class="col-md-5 mb-3">
-        <label class="sr-only" for="City" translate>COMMON.ADDRESS.CITY</label>
+        <label class="sr-only form-label" for="City" translate
+          >COMMON.ADDRESS.CITY</label
+        >
         <input
           type="text"
           formControlName="City"
@@ -84,7 +88,7 @@
         />
       </div>
       <div class="col-md-3 mb-3">
-        <label class="sr-only" for="State" translate
+        <label class="sr-only form-label" for="State" translate
           >COMMON.ADDRESS.STATE</label
         >
         <select
@@ -112,7 +116,7 @@
         />
       </div>
       <div class="col-md-4 mb-3">
-        <label class="sr-only" for="zipCode" translate
+        <label class="sr-only form-label" for="zipCode" translate
           >COMMON.ADDRESS.ZIP</label
         >
         <input
@@ -133,7 +137,7 @@
           getCountryName(homeCountry)
         }} addresses."
       >
-        <label class="sr-only" for="country" translate
+        <label class="sr-only form-label" for="Country" translate
           >COMMON.ADDRESS.COUNTRY</label
         >
         <select
@@ -150,7 +154,7 @@
         </select>
       </div>
       <div class="col-md-6 mb-3">
-        <label class="sr-only" for="Phone" translate
+        <label class="sr-only form-label" for="Phone" translate
           >COMMON.ADDRESS.PHONE</label
         >
         <input
@@ -172,18 +176,18 @@
           name="RegisterForm"
         >
           <div *ngIf="showOptionToSave && addressForm.dirty" class="form-check">
-            <label
-              class="sr-only form-check-label"
-              for="shouldSaveAddress"
-              translate
-              >COMMON.ADDRESS.SAVE</label
-            >
             <input
               type="checkbox"
               formControlName="shouldSaveAddress"
               class="form-check-input"
               id="shouldSaveAddress"
             />
+            <label
+              class="sr-only form-check-label"
+              for="shouldSaveAddress"
+              translate
+              >COMMON.ADDRESS.SAVE</label
+            >
             <span translate>COMMON.ADDRESS.SAVE_ADDRESS</span>
           </div>
         </form>

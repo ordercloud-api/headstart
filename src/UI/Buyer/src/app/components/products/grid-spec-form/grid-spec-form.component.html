@@ -20,7 +20,7 @@
         ></ocm-quantity-input>
       </td>
       <td>
-        <label for="{{ spec }}">{{ spec }}</label>
+        <label for="{{ spec }}" class="form-label">{{ spec }}</label>
       </td>
       <td>{{ unitPrices[i] | currency }}</td>
       <td>{{ lineTotals[i] | currency }}</td>
@@ -38,7 +38,7 @@
 </table>
 <div class="d-flex justify-content-between align-items-center">
   <h4 class="font-weight-bold">
-    {{ totalPrice | currency: product?.xp?.Currency }}
+    {{ totalPrice | currency : product?.xp?.Currency }}
   </h4>
   <p class="text-muted ml-3 float-right">{{ product | UofM }}</p>
 </div>

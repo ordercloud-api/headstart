@@ -35,7 +35,7 @@
     </div>
     <div class="mb-3 d-flex justify-content-between mb-0">
       <div class="mb-3 flex-fill">
-        <label class="sr-only" for="name" translate
+        <label class="sr-only form-label" for="name" translate
           >PAYMENTS.CC_FORM.NAME</label
         >
         <input
@@ -51,7 +51,9 @@
     </div>
     <div class="mb-3 d-flex justify-content-between mb-0">
       <div class="mb-3 card-number mr-2 flex-fill">
-        <label for="cardNumber" translate>PAYMENTS.CC_FORM.NUMBER</label>
+        <label for="cardNumber" class="form-label" translate
+          >PAYMENTS.CC_FORM.NUMBER</label
+        >
         <input type="hidden" formControlName="token" />
         <ocm-credit-card-iframe
           (ccEntered)="ccEntered($event.detail)"
@@ -59,7 +61,7 @@
         <span *ngIf="cardError" class="error">{{ cardError }}</span>
       </div>
       <div class="mb-3 mr-2 flex-fill">
-        <label class="sr-only" for="month" translate
+        <label class="sr-only form-label" for="month" translate
           >PAYMENTS.CC_FORM.EXP_MONTH</label
         >
         <select formControlName="month" class="form-select" id="state">
@@ -69,7 +71,7 @@
         </select>
       </div>
       <div class="mb-3 flex-fill">
-        <label class="sr-only" for="year" translate
+        <label class="sr-only form-label" for="year" translate
           >PAYMENTS.CC_FORM.EXP_YEAR</label
         >
         <select formControlName="year" class="form-select" id="state">
@@ -82,7 +84,9 @@
   </div>
   <div *ngIf="_showCVV" class="mb-3 d-flex justify-content-between mb-0">
     <div class="mb-3 card-name flex-fill">
-      <label class="sr-only" for="CVV" translate>PAYMENTS.CC_FORM.CVV</label>
+      <label class="sr-only form-label" for="CVV" translate
+        >PAYMENTS.CC_FORM.CVV</label
+      >
       <input
         type="text"
         formControlName="cvv"
@@ -121,7 +125,7 @@
     </div>
     <div class="mb-3 d-flex justify-content-between mb-0">
       <div class="mb-3 w-100">
-        <label class="sr-only" for="Street1" translate
+        <label class="sr-only form-label" for="Street1" translate
           >PAYMENTS.CC_FORM.STREET</label
         >
         <input
@@ -137,7 +141,7 @@
     </div>
     <div class="mb-3 d-flex justify-content-between mb-0">
       <div class="mb-3 mr-2 flex-fill">
-        <label class="sr-only" for="City" translate
+        <label class="sr-only form-label" for="City" translate
           >PAYMENTS.CC_FORM.CITY</label
         >
         <input
@@ -151,7 +155,7 @@
         />
       </div>
       <div class="mb-3 w-25 mr-2 flex-fill">
-        <label class="sr-only" for="State" translate
+        <label class="sr-only form-label" for="State" translate
           >PAYMENTS.CC_FORM.STATE</label
         >
         <select
@@ -179,7 +183,7 @@
         />
       </div>
       <div class="mb-3 flex-fill zip-input">
-        <label class="sr-only" for="zipCode" translate
+        <label class="sr-only form-label" for="zipCode" translate
           >PAYMENTS.CC_FORM.ZIP</label
         >
         <input
@@ -194,7 +198,7 @@
       </div>
     </div>
     <div class="mb-3 d-flex justify-content-between mb-0">
-      <label class="sr-only" for="country" translate
+      <label class="sr-only form-label" for="country" translate
         >PAYMENTS.CC_FORM.COUNTRY</label
       >
       <select

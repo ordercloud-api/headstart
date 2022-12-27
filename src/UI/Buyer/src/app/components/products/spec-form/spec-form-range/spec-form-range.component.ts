@@ -8,8 +8,14 @@ import { specErrors } from '../errors'
   template: `
     <div [formGroup]="group">
       <div class="form-input" [class.row]="compact">
-        <label [class.col-3]="compact">{{ config.label }}</label>
+        <label
+          [for]="config.label"
+          [class.col-3]="compact"
+          class="form-label"
+          >{{ config.label }}</label
+        >
         <input
+          [id]="config.label"
           type="number"
           [attr.min]="config.min"
           [attr.max]="config.max"
@@ -51,8 +57,6 @@ export class SpecFormRangeComponent implements Field, OnInit {
   ctrls: FormArray
   index: number
   errorMsgs = specErrors
-
-  constructor() {}
 
   ngOnInit(): void {
     this.ctrls = this.group.get('ctrls') as FormArray

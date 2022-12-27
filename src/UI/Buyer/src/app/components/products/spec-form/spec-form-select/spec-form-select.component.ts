@@ -12,7 +12,7 @@ import { Field, FieldConfig } from 'src/app/models/product.types'
         [class.row]="compact"
       >
         <label
-          class="text-uppercase font-weight-bolder small text-muted mb-0 d-flex align-items-center"
+          class="form-label text-uppercase font-weight-bolder small text-muted mb-0 d-flex align-items-center"
           [class.col-3]="compact"
           for="{{ config.name }}"
           >{{ config.label }}
@@ -46,8 +46,6 @@ export class SpecFormSelectComponent implements Field, OnInit {
   index: number
   compact?: boolean
   ctrls: FormArray
-
-  constructor() {}
 
   ngOnInit(): void {
     this.ctrls = this.group.get('ctrls') as FormArray

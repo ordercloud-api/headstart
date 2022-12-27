@@ -1,6 +1,8 @@
 <form [formGroup]="form">
   <div class="mb-3">
-    <label for="selectedLocationID" translate>Locations</label>
+    <label for="selectedLocationID" class="form-label" translate
+      >Locations</label
+    >
     <select
       id="selectedLocationID"
       (change)="selectLocation()"

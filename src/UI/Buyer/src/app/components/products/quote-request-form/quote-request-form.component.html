@@ -8,7 +8,9 @@
   <div [formGroup]="quoteRequestForm">
     <div class="row">
       <div class="mb-3 col-md-6">
-        <label for="FirstName" translate>PRODUCTS.QUOTE_REQ.FIRST</label>
+        <label for="FirstName" class="form-label" translate
+          >PRODUCTS.QUOTE_REQ.FIRST</label
+        >
         <input
           type="text"
           formControlName="FirstName"
@@ -21,7 +23,9 @@
         />
       </div>
       <div class="mb-3 col-md-6">
-        <label for="LastName" translate>PRODUCTS.QUOTE_REQ.LAST</label>
+        <label for="LastName" class="form-label" translate
+          >PRODUCTS.QUOTE_REQ.LAST</label
+        >
         <input
           type="text"
           formControlName="LastName"
@@ -34,7 +38,9 @@
       </div>
     </div>
     <div *ngIf="myBuyerLocations.length > 0 && !isAnon" class="mb-3">
-      <label for="BuyerLocation" translate>For Location</label>
+      <label for="BuyerLocation" class="form-label" translate
+        >For Location</label
+      >
       <select
         #LocationDropdown
         id="BuyerLocation"
@@ -53,7 +59,9 @@
     </div>
     <div class="row">
       <div class="mb-3 col-md-6">
-        <label for="Phone" translate>PRODUCTS.QUOTE_REQ.PHONE</label>
+        <label for="Phone" class="form-label" translate
+          >PRODUCTS.QUOTE_REQ.PHONE</label
+        >
         <input
           type="text"
           formControlName="Phone"
@@ -65,7 +73,9 @@
         />
       </div>
       <div class="mb-3 col-md-6">
-        <label for="Email" translate>PRODUCTS.QUOTE_REQ.EMAIL</label>
+        <label for="Email" class="form-label" translate
+          >PRODUCTS.QUOTE_REQ.EMAIL</label
+        >
         <input
           type="text"
           formControlName="Email"
@@ -78,7 +88,9 @@
       </div>
     </div>
     <div class="mb-3">
-      <label for="Comments" translate>PRODUCTS.QUOTE_REQ.COMMENTS</label>
+      <label for="Comments" class="form-label" translate
+        >PRODUCTS.QUOTE_REQ.COMMENTS</label
+      >
       <textarea
         type="text"
         formControlName="Comments"

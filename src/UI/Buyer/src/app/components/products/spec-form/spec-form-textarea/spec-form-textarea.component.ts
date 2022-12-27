@@ -8,8 +8,11 @@ import { specErrors } from '../errors'
   template: `
     <div [formGroup]="group">
       <div class="form-input" [class.row]="compact">
-        <label [class.col-3]="compact">{{ config.label }}</label>
+        <label [for]="config.name" class="form-label" [class.col-3]="compact">{{
+          config.label
+        }}</label>
         <textarea
+          id="config.name"
           type="text"
           [formControlName]="config.name"
           class="form-control form-control-sm text-area"
@@ -39,8 +42,6 @@ export class SpecFormTextAreaComponent implements Field, OnInit {
   ctrls: FormArray
   index: number
   errorMsgs = specErrors
-
-  constructor() {}
 
   ngOnInit(): void {
     this.ctrls = this.group.get('ctrls') as FormArray
