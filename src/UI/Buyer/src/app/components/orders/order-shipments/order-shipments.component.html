@@ -3,13 +3,15 @@
     <div class="col-lg-5">
       <ul class="nav flex-column nav-pills">
         <li *ngFor="let shipment of shipments; let i = index" class="nav-item">
-          <button
-            class="btn btn-link btn-block nav-link text-left"
-            (click)="selectShipment(shipment)"
-            [ngClass]="{ active: selectedShipment.ID === shipment.ID }"
-          >
-            Shipment {{ i + 1 }}
-          </button>
+          <div class="d-grid">
+            <button
+              class="btn btn-link btn-block nav-link text-left"
+              (click)="selectShipment(shipment)"
+              [ngClass]="{ active: selectedShipment.ID === shipment.ID }"
+            >
+              Shipment {{ i + 1 }}
+            </button>
+          </div>
         </li>
       </ul>
     </div>
@@ -35,7 +37,7 @@
                 <a
                   href="{{
                     selectedShipment.TrackingNumber
-                      | shipperTracking: selectedShipment.Shipper
+                      | shipperTracking : selectedShipment.Shipper
                   }}"
                   target="_blank"
                   >{{ selectedShipment.TrackingNumber }}</a
@@ -43,7 +45,7 @@
               </li>
               <li>
                 <b><span translate>ORDERS.SHIPMENTS.DATE_SHIPPED</span>:</b>
-                {{ selectedShipment.DateShipped | date: 'shortDate':'UTC' }}
+                {{ selectedShipment.DateShipped | date : 'shortDate' : 'UTC' }}
               </li>
             </ul>
           </div>

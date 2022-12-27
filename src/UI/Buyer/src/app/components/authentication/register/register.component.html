@@ -122,22 +122,26 @@
           showErrors
         />
       </div>
+      <div class="d-grid">
+        <button
+          [disabled]="loading || form.status === 'INVALID'"
+          type="submit"
+          class="btn btn-primary btn-lg mt-4"
+          translate
+        >
+          AUTHENTICATION.REGISTER.REGISTER
+        </button>
+      </div>
+    </form>
+    <div class="d-grid">
       <button
-        [disabled]="loading || form.status === 'INVALID'"
-        type="submit"
-        class="btn btn-primary btn-lg btn-block mt-4"
+        type="button"
+        class="btn btn-link"
+        routerLink="/forgot-password"
         translate
       >
-        AUTHENTICATION.REGISTER.REGISTER
+        AUTHENTICATION.REGISTER.FORGOT_PASS
       </button>
-    </form>
-    <button
-      type="button"
-      class="btn btn-link btn-block"
-      routerLink="/forgot-password"
-      translate
-    >
-      AUTHENTICATION.REGISTER.FORGOT_PASS
-    </button>
+    </div>
   </div>
 </div>

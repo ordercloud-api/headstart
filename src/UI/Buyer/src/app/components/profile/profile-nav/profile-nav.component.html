@@ -1,12 +1,14 @@
 <div class="d-md-none" ngbDropdown>
-  <button
-    class="btn btn-block btn-outline-light mb-2"
-    id="myProfileNav"
-    ngbDropdownToggle
-    translate
-  >
-    PROFILE.PROFILE_NAV.ACC_SELECTIONS
-  </button>
+  <div class="d-grid">
+    <button
+      class="btn btn-outline-light mb-2"
+      id="myProfileNav"
+      ngbDropdownToggle
+      translate
+    >
+      PROFILE.PROFILE_NAV.ACC_SELECTIONS
+    </button>
+  </div>
   <div ngbDropdownMenu aria-labelledby="myProfileNav" class="w-100 text-center">
     <button
       *ngFor="let profileRoute of profileRoutes"

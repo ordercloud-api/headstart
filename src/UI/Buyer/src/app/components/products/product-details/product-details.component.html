@@ -147,18 +147,20 @@
                 aria-describedby="quantity"
               />
             </div>
-            <button
-              class="btn btn-block btn-primary mb-3"
-              type="submit"
-              [disabled]="isAddingToCart"
-              (click)="addToCart()"
-            >
-              <div>
-                <span translate>PRODUCTS.DETAILS.ADD_TO_CART</span>
-                &nbsp;&nbsp;|&nbsp;&nbsp;
-                {{ price | currency : userCurrency }}
-              </div>
-            </button>
+            <div class="d-grid">
+              <button
+                class="btn btn-primary mb-3"
+                type="submit"
+                [disabled]="isAddingToCart"
+                (click)="addToCart()"
+              >
+                <div>
+                  <span translate>PRODUCTS.DETAILS.ADD_TO_CART</span>
+                  &nbsp;&nbsp;|&nbsp;&nbsp;
+                  {{ price | currency : userCurrency }}
+                </div>
+              </button>
+            </div>
           </div>
           <div *ngIf="!isBundle" class="d-flex flex-row">
             <ocm-quantity-input
@@ -172,26 +174,28 @@
               [isAddingToCart]="isAddingToCart"
             >
             </ocm-quantity-input>
-            <button
-              class="btn btn-block btn-primary mb-3"
-              type="submit"
-              [disabled]="
-                isAddingToCart ||
-                (specForm && !specForm?.valid) ||
-                !qtyValid ||
-                isInactiveVariant
-              "
-              (click)="addToCart()"
-            >
-              <div *ngIf="_product?.xp?.ProductType !== 'Quote'">
-                <span translate>PRODUCTS.DETAILS.ADD_TO_CART</span>
-                &nbsp;&nbsp;|&nbsp;&nbsp;
-                {{ price | currency : userCurrency }}
-              </div>
-              <span *ngIf="_product?.xp?.ProductType === 'Quote'">
-                Request Quote
-              </span>
-            </button>
+            <div class="d-grid">
+              <button
+                class="btn btn-primary mb-3"
+                type="submit"
+                [disabled]="
+                  isAddingToCart ||
+                  (specForm && !specForm?.valid) ||
+                  !qtyValid ||
+                  isInactiveVariant
+                "
+                (click)="addToCart()"
+              >
+                <div *ngIf="_product?.xp?.ProductType !== 'Quote'">
+                  <span translate>PRODUCTS.DETAILS.ADD_TO_CART</span>
+                  &nbsp;&nbsp;|&nbsp;&nbsp;
+                  {{ price | currency : userCurrency }}
+                </div>
+                <span *ngIf="_product?.xp?.ProductType === 'Quote'">
+                  Request Quote
+                </span>
+              </button>
+            </div>
           </div>
         </div>
         <div *ngIf="!isOrderable" class="alert alert-info" translate>
@@ -401,28 +405,30 @@
             [variantInventory]="variantInventory"
           >
           </ocm-quantity-input>
-          <button
-            *ngIf="isQuoteProduct()"
-            class="btn btn-block btn-primary mb-3"
-            type="submit"
-            [disabled]="(specForm && !specForm?.valid) || !qtyValid"
-            (click)="openQuoteForm()"
-            translate
-          >
-            PRODUCTS.DETAILS.REQ_QUOTE
-          </button>
-          <button
-            *ngIf="!isQuoteProduct()"
-            class="btn btn-block btn-primary"
-            type="submit"
-            [disabled]="
-              isAddingToCart || (specForm && !specForm?.valid) || !qtyValid
-            "
-            (click)="addToCart($event)"
-            translate
-          >
-            PRODUCTS.DETAILS.ADD_TO_CART
-          </button>
+          <div class="d-grid">
+            <button
+              *ngIf="isQuoteProduct()"
+              class="btn btn-primary mb-3"
+              type="submit"
+              [disabled]="(specForm && !specForm?.valid) || !qtyValid"
+              (click)="openQuoteForm()"
+              translate
+            >
+              PRODUCTS.DETAILS.REQ_QUOTE
+            </button>
+            <button
+              *ngIf="!isQuoteProduct()"
+              class="btn btn-primary"
+              type="submit"
+              [disabled]="
+                isAddingToCart || (specForm && !specForm?.valid) || !qtyValid
+              "
+              (click)="addToCart($event)"
+              translate
+            >
+              PRODUCTS.DETAILS.ADD_TO_CART
+            </button>
+          </div>
         </div>
       </div>
       <ocm-modal [state]="quoteFormModal" [modalTitle]="'Request Quote'">

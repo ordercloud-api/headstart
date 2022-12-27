@@ -30,16 +30,18 @@
     <div class="col-xs-6">
       <div (click)="toggleFilterByFavorites()">
         <label translate>PRODUCTS.LIST.REFINE</label>
-        <button
-          class="btn btn-block btn-default btn-outline-dark mb-2"
-          for="favorite"
-          translate
-        >
-          <ocm-toggle-favorite
-            [favorite]="showingFavoritesOnly"
-          ></ocm-toggle-favorite>
-          PRODUCTS.LIST.FAVORITES
-        </button>
+        <div class="d-grid">
+          <button
+            class="btn btn-default btn-outline-dark mb-2"
+            for="favorite"
+            translate
+          >
+            <ocm-toggle-favorite
+              [favorite]="showingFavoritesOnly"
+            ></ocm-toggle-favorite>
+            PRODUCTS.LIST.FAVORITES
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -50,15 +52,17 @@
           <h2 class="h5 card-title mb-0" translate>PRODUCTS.LIST.REFINE</h2>
         </div>
         <div class="p-3">
-          <button
-            *ngIf="hasFilters"
-            class="btn btn-block btn-sm btn-light mb-4"
-            type="button"
-            (click)="clearAllFilters()"
-            translate
-          >
-            PRODUCTS.LIST.CLEAR_FILTERS
-          </button>
+          <div class="d-grid">
+            <button
+              *ngIf="hasFilters"
+              class="btn btn-sm btn-light mb-4"
+              type="button"
+              (click)="clearAllFilters()"
+              translate
+            >
+              PRODUCTS.LIST.CLEAR_FILTERS
+            </button>
+          </div>
           <ocm-product-facet-list
             *ngIf="products?.Meta?.Facets?.length"
             [facetList]="products.Meta.Facets"
@@ -90,15 +94,17 @@
           </div>
         </div>
         <div class="col-12 d-md-none mb-2">
-          <button
-            *ngIf="hasFilters"
-            class="btn btn-block btn-default btn-outline-dark mb-2"
-            type="button"
-            (click)="clearAllFilters()"
-            translate
-          >
-            PRODUCTS.LIST.CLEAR_FILTERS
-          </button>
+          <div class="d-grid">
+            <button
+              *ngIf="hasFilters"
+              class="btn btn-default btn-outline-dark mb-2"
+              type="button"
+              (click)="clearAllFilters()"
+              translate
+            >
+              PRODUCTS.LIST.CLEAR_FILTERS
+            </button>
+          </div>
         </div>
         <div class="col-12 col-md-auto">
           <ocm-product-sort></ocm-product-sort>

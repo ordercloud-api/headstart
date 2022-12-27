@@ -1,21 +1,23 @@
 <!-- Facet Name -->
-<button
-  type="button"
-  class="btn btn-block p-0 d-flex align-items-center justify-content-between"
-  (click)="toggleCollapsed()"
->
-  <h3 *ngIf="_facet?.Name === 'Supplier'" class="h6 mb-0" translate>
-    ALIAS.SUPPLIER
-  </h3>
-  <h3 *ngIf="_facet?.Name !== 'Supplier'" class="h6 mb-0">
-    {{ _facet?.Name | titlecase }}
-  </h3>
-  <fa-icon
-    class="text-muted"
-    [icon]="isCollapsed ? faPlusSquare : faMinusSquare"
-    pull="right"
-  ></fa-icon>
-</button>
+<div class="d-grid">
+  <button
+    type="button"
+    class="btn p-0 d-flex align-items-center justify-content-between"
+    (click)="toggleCollapsed()"
+  >
+    <h3 *ngIf="_facet?.Name === 'Supplier'" class="h6 mb-0" translate>
+      ALIAS.SUPPLIER
+    </h3>
+    <h3 *ngIf="_facet?.Name !== 'Supplier'" class="h6 mb-0">
+      {{ _facet?.Name | titlecase }}
+    </h3>
+    <fa-icon
+      class="text-muted"
+      [icon]="isCollapsed ? faPlusSquare : faMinusSquare"
+      pull="right"
+    ></fa-icon>
+  </button>
+</div>
 
 <!-- Facet Values -->
 <form id="facetValues" class="ml-3 mt-2" [ngbCollapse]="isCollapsed">

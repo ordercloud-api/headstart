@@ -58,27 +58,29 @@
         />
       </div>
       <div class="mb-3 text-center">
-        <div class="form-check">
+        <div class="form-check d-flex justify-content-center">
           <input
             formControlName="rememberMe"
             type="checkbox"
             id="rememberMeId"
-            class="form-check-input mr-1"
+            class="form-check-input me-1"
           />
           <label for="rememberMeId" class="form-check-label">
             <span translate>AUTHENTICATION.LOGIN.REMEMBER_ME</span>
           </label>
         </div>
       </div>
-      <button
-        id="submitBtn"
-        type="submit"
-        [disabled]="!form.valid"
-        class="btn btn-primary btn-lg btn-block"
-        translate
-      >
-        COMMON.SUBMIT
-      </button>
+      <div class="d-grid">
+        <button
+          id="submitBtn"
+          type="submit"
+          [disabled]="!form.valid"
+          class="btn btn-primary btn-lg"
+          translate
+        >
+          COMMON.SUBMIT
+        </button>
+      </div>
     </form>
     <button
       type="button"

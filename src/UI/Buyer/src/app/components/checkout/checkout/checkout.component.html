@@ -61,32 +61,38 @@
             <ng-template ngbPanelContent>
               <div class="row">
                 <div class="col-4">
-                  <button
-                    class="btn btn-block btn-primary"
+                  <div class="d-grid">
+                    <button
+                    class="btn btn-primary"
                     [routerLink]="['/login']"
                     [queryParams]="{ redirect: 'checkout' }"
                     translate
                   >
                     COMMON.LOGIN
                   </button>
+                  </div>
                 </div>
                 <div class="col-4">
-                  <button
-                    class="btn btn-block btn-primary"
+                  <div class="d-grid">
+                    <button
+                    class="btn btn-primary"
                     routerLink="/register"
                     translate
                   >
                     CHECKOUT.CHECKOUT.CREATE_ACCOUNT
                   </button>
+                  </div>
                 </div>
                 <div class="col-4">
-                  <button
-                    class="btn btn-block btn-primary"
+                  <div class="d-grid">
+                    <button
+                    class="btn btn-primary"
                     (click)="toSection('shippingAddress')"
                     translate
                   >
                     CHECKOUT.CHECKOUT.GUEST_CHECKOUT
                   </button>
+                  </div>
                 </div>
               </div>
             </ng-template>
