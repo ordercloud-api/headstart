@@ -20,7 +20,7 @@ import { Field, FieldConfig } from 'src/app/models/product.types'
         <select
           [formControlName]="config.name"
           id="{{ config.name }}"
-          class="custom-select"
+          class="form-select"
           [class.col-7]="compact"
           value="{{ config.value }}"
         >

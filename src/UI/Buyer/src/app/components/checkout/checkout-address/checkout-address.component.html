@@ -39,12 +39,19 @@
             {{ promo.Code }}
           </p>
           <small>{{ promo.Description }}</small>
-          <p translate *ngIf="isShippingPromo(promo)" class="white-space-pre mt-1 mb-0 text-danger font-weight-bolder">
+          <p
+            translate
+            *ngIf="isShippingPromo(promo)"
+            class="white-space-pre mt-1 mb-0 text-danger font-weight-bolder"
+          >
             CHECKOUT.CHECKOUT_ADDRESS.SHIPPING_DISCOUNT_TEXT
           </p>
-          <p *ngIf="!isShippingPromo(promo)" class="white-space-pre mt-1 mb-0 text-danger font-weight-bolder">
+          <p
+            *ngIf="!isShippingPromo(promo)"
+            class="white-space-pre mt-1 mb-0 text-danger font-weight-bolder"
+          >
             -
-            {{ getPromoDiscountTotal(promo.ID) | currency: _orderCurrency }}
+            {{ getPromoDiscountTotal(promo.ID) | currency : _orderCurrency }}
           </p>
           <button
             translate
@@ -74,7 +81,7 @@
     <select
       [ngModel]="selectedBuyerLocation?.ID"
       (ngModelChange)="onBuyerLocationChange($event)"
-      class="custom-select"
+      class="form-select"
       id="selectBuyerLocation"
     >
       <option [ngValue]="null" default disabled translate>
@@ -101,7 +108,7 @@
     <select
       [ngModel]="selectedShippingAddress?.ID"
       (ngModelChange)="onShippingAddressChange($event)"
-      class="custom-select"
+      class="form-select"
       id="selectAddress"
     >
       <option [ngValue]="null" default disabled translate>

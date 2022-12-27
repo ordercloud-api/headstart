@@ -7,7 +7,7 @@
     >
   </small>
   <select
-    class="custom-select"
+    class="form-select"
     formControlName="ShipMethodID"
     (change)="onFormChanges()"
   >
@@ -21,7 +21,7 @@
       {{
         shipMethod.xp.FreeShippingApplied
           ? ('CHECKOUT.SHIPPING_SELECTION_FORM.FREE' | translate)
-          : (shipMethod.Cost | currency: _orderCurrency)
+          : (shipMethod.Cost | currency : _orderCurrency)
       }}
       - {{ shipMethod?.Name }}
       <span translate>CHECKOUT.SHIPPING_SELECTION_FORM.ESTIMATED</span>

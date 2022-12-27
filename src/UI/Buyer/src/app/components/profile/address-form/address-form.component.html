@@ -3,9 +3,7 @@
     <div *ngIf="addressError" class="text-danger">{{ addressError }}</div>
     <div class="row">
       <div [hidden]="true" class="col-md-6 form-group">
-        <label class="sr-only" for="ID" translate
-          >COMMON.ADDRESS.ID</label
-        >
+        <label class="sr-only" for="ID" translate>COMMON.ADDRESS.ID</label>
         <input
           type="text"
           formControlName="ID"
@@ -74,9 +72,7 @@
     </div>
     <div class="row">
       <div class="col-md-5 form-group">
-        <label class="sr-only" for="City" translate
-          >COMMON.ADDRESS.CITY</label
-        >
+        <label class="sr-only" for="City" translate>COMMON.ADDRESS.CITY</label>
         <input
           type="text"
           formControlName="City"
@@ -94,7 +90,7 @@
         <select
           *ngIf="stateOptions.length !== 0"
           formControlName="State"
-          class="custom-select"
+          class="form-select"
           id="State"
           showErrors
         >
@@ -142,7 +138,7 @@
         >
         <select
           formControlName="Country"
-          class="custom-select"
+          class="form-select"
           id="Country"
           showErrors
           disabled

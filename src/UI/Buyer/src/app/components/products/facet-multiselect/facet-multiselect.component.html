@@ -20,7 +20,7 @@
 <!-- Facet Values -->
 <form id="facetValues" class="ml-3 mt-2" [ngbCollapse]="isCollapsed">
   <div
-    class="custom-control custom-checkbox"
+    class="form-check"
     *ngFor="
       let checkbox of checkboxArray | slice : 0 : visibleFacetLength;
       let i = index
@@ -30,13 +30,13 @@
       (click)="handleCheckBoxClick(checkbox.facet.Value)"
       [ngModel]="checkbox.checked"
       type="checkbox"
-      class="custom-control-input my-1"
+      class="form-check-input my-1"
       name="{{ _facet.Name }}facetCheckbox{{ i }}"
       id="{{ _facet.Name }}facetCheckbox{{ i }}"
     />
     <label
       for="{{ _facet.Name }}facetCheckbox{{ i }}"
-      class="custom-control-label text-capitalize"
+      class="form-check-label text-capitalize"
       >{{ checkbox.facet.Value
       }}<small
         class="text-secondary font-weight-bold ml-2 badge badge-pill badge-light"
