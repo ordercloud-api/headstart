@@ -9,6 +9,7 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
   NO_ERRORS_SCHEMA,
   ErrorHandler,
+  ModuleWithProviders,
 } from '@angular/core'
 
 import { AppRoutingModule } from './app-routing.module'
@@ -344,8 +345,8 @@ const components = [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    CookieModule.forRoot(),
-    ToastrModule.forRoot(),
+    CookieModule.forRoot() as ModuleWithProviders<CookieModule>, // TODO: possibly remove this type casting in future versions, but for now typescript is complaining
+    ToastrModule.forRoot() as ModuleWithProviders<ToastrModule>, // TODO: possibly remove this type casting in future versions, but for now typescript is complaining
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -397,10 +398,9 @@ const components = [
     { provide: AppConfig, useValue: ocAppConfig },
     { provide: NgbDateAdapter, useClass: NgbDateNativeAdapter },
     { provide: ErrorHandler, useClass: AppErrorHandler },
-    DatePipe, // allows us to use in class as injectable (date filter component)
+    DatePipe,
     CreditCardFormatPipe,
   ],
-  entryComponents: components,
   bootstrap: [AppComponent],
 })
 export class AppModule {

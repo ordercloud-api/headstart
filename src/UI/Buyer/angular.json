@@ -109,11 +109,7 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "headstart:build",
-            "sourceMap": {
-              "scripts": true,
-              "vendor": true
-            }
+            "browserTarget": "headstart:build"
           },
           "configurations": {
             "dev": {
@@ -147,19 +143,6 @@
               "src/styles/main.scss"
             ],
             "scripts": []
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json",
-              "e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
           }
         },
         "e2e": {
