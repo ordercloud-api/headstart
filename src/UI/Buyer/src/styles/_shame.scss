@@ -138,7 +138,7 @@ ng-progress {
 
 // hide the zendesk popover message on mobile
 .zsiq_cnt {
-  @include media-breakpoint-down(sm) {
+  @include media-breakpoint-down(md) {
     display: none !important;
   }
 }
