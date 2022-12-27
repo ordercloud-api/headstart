@@ -7,7 +7,7 @@ import { Field, FieldConfig } from 'src/app/models/product.types'
   template: `
     <div class="container px-0">
       <div
-        class="form-group justify-content-center"
+        class="mb-3 justify-content-center"
         [formGroup]="group"
         [class.row]="compact"
       >
@@ -31,7 +31,7 @@ import { Field, FieldConfig } from 'src/app/models/product.types'
           >
             {{ option.Value }}
             <span *ngIf="option.PriceMarkup">
-              (+ {{ option.PriceMarkup | currency: config.currency }})</span
+              (+ {{ option.PriceMarkup | currency : config.currency }})</span
             >
           </option>
         </select>

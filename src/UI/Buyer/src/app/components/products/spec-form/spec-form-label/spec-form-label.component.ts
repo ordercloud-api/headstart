@@ -7,7 +7,7 @@ import { specErrors } from '../errors'
   selector: 'spec-form-label',
   template: `
     <div
-      class="form-group mb-0 justify-content-center"
+      class="mb-3 mb-0 justify-content-center"
       [formGroup]="group"
       [class.row]="compact"
     >

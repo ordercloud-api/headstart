@@ -1,4 +1,4 @@
-<form class="form-group" [formGroup]="form">
+<form class="mb-3" [formGroup]="form">
   <div *ngIf="paymentError" class="text-danger">{{ paymentError }}</div>
   <select
     *ngIf="!_noSavedCards"

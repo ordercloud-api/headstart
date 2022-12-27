@@ -4,7 +4,7 @@ import { Field, FieldConfig } from 'src/app/models/product.types'
 @Component({
   selector: 'spec-form-checkbox',
   template: `
-    <div class="form-group" [formGroup]="group">
+    <div class="mb-3" [formGroup]="group">
       <input
         type="checkbox"
         class="form-control form-control-sm"

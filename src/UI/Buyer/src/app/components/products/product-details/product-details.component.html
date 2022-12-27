@@ -126,7 +126,7 @@
             >PRODUCTS.DETAILS.QUANTITY</small
           >
           <div *ngIf="isBundle" class="d-flex flex-row">
-            <div class="form-group mb-0 mr-3">
+            <div class="mb-3 mb-0 mr-3">
               <label for="quantity" class="sr-only" translate
                 >PRODUCTS.QTY_INPUT.QTY</label
               >
@@ -156,7 +156,7 @@
               <div>
                 <span translate>PRODUCTS.DETAILS.ADD_TO_CART</span>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                {{ price | currency: userCurrency }}
+                {{ price | currency : userCurrency }}
               </div>
             </button>
           </div>
@@ -186,7 +186,7 @@
               <div *ngIf="_product?.xp?.ProductType !== 'Quote'">
                 <span translate>PRODUCTS.DETAILS.ADD_TO_CART</span>
                 &nbsp;&nbsp;|&nbsp;&nbsp;
-                {{ price | currency: userCurrency }}
+                {{ price | currency : userCurrency }}
               </div>
               <span *ngIf="_product?.xp?.ProductType === 'Quote'">
                 Request Quote
@@ -199,7 +199,7 @@
         </div>
       </ng-container>
       <ng-container *ngIf="isBundle">
-        <h5>Included in Bundle: </h5>
+        <h5>Included in Bundle:</h5>
         <div class="container">
           <div class="row">
             <div
@@ -264,7 +264,7 @@
             >
               {{ getPriceBreakRange(i) }}:
               <p class="font-weight-normal ml-1 mr-4">
-                {{ priceBreak?.Price | currency: userCurrency }}
+                {{ priceBreak?.Price | currency : userCurrency }}
               </p>
             </span>
           </div>

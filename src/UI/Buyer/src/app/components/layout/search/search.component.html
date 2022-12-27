@@ -1,6 +1,6 @@
 <form [formGroup]="form" #searchform>
-  <div class="form-group mb-0 position-relative">
-      <input
+  <div class="mb-3 mb-0 position-relative">
+    <input
       type="search"
       class="form-control"
       placeholder="{{
@@ -15,18 +15,19 @@
       (keyup.enter)="search()"
       autocomplete="off"
     />
-     <label for="search-addon" class="sr-only">{{
+    <label for="search-addon" class="sr-only">{{
       placeholderText || 'Search...'
     }}</label>
-      <button (click)="search()" title="Search"
-              class="btn btn-search btn-search--search">
-              <span class="sr-only">Search Button</span>
-              <fa-icon [icon]="faSearch" aria-hidden="true">
-        </fa-icon>
-      </button>
+    <button
+      (click)="search()"
+      title="Search"
+      class="btn btn-search btn-search--search"
+    >
+      <span class="sr-only">Search Button</span>
+      <fa-icon [icon]="faSearch" aria-hidden="true"> </fa-icon>
+    </button>
     <ng-container *ngIf="showClear()">
-      <button (click)="clear()"
-              class="btn btn-search btn-search--clear">
+      <button (click)="clear()" class="btn btn-search btn-search--clear">
         <fa-icon [icon]="faTimes">
           <span class="sr-only">Clear Your Search Term</span>
         </fa-icon>

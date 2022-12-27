@@ -7,7 +7,7 @@
 >
   <div [formGroup]="quoteRequestForm">
     <div class="form-row">
-      <div class="form-group col-md-6">
+      <div class="mb-3 col-md-6">
         <label for="FirstName" translate>PRODUCTS.QUOTE_REQ.FIRST</label>
         <input
           type="text"
@@ -20,7 +20,7 @@
           showErrors
         />
       </div>
-      <div class="form-group col-md-6">
+      <div class="mb-3 col-md-6">
         <label for="LastName" translate>PRODUCTS.QUOTE_REQ.LAST</label>
         <input
           type="text"
@@ -33,7 +33,7 @@
         />
       </div>
     </div>
-    <div *ngIf="myBuyerLocations.length > 0 && !isAnon" class="form-group">
+    <div *ngIf="myBuyerLocations.length > 0 && !isAnon" class="mb-3">
       <label for="BuyerLocation" translate>For Location</label>
       <select
         #LocationDropdown
@@ -52,7 +52,7 @@
       </select>
     </div>
     <div class="form-row">
-      <div class="form-group col-md-6">
+      <div class="mb-3 col-md-6">
         <label for="Phone" translate>PRODUCTS.QUOTE_REQ.PHONE</label>
         <input
           type="text"
@@ -64,7 +64,7 @@
           showErrors
         />
       </div>
-      <div class="form-group col-md-6">
+      <div class="mb-3 col-md-6">
         <label for="Email" translate>PRODUCTS.QUOTE_REQ.EMAIL</label>
         <input
           type="text"
@@ -77,7 +77,7 @@
         />
       </div>
     </div>
-    <div class="form-group">
+    <div class="mb-3">
       <label for="Comments" translate>PRODUCTS.QUOTE_REQ.COMMENTS</label>
       <textarea
         type="text"
