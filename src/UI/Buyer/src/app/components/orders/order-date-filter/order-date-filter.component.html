@@ -13,22 +13,20 @@
             id="dFrom"
             showErrors
           />
-          <div class="input-group-append">
-            <span
-              *ngIf="form.value.fromDate"
-              (click)="clearFromDate()"
-              class="input-group-text bg-white"
-            >
-              <fa-icon [icon]="faTimes"></fa-icon>
-            </span>
-            <button
-              class="btn btn-outline-secondary"
-              (click)="dFrom.toggle()"
-              type="button"
-            >
-              <fa-icon [icon]="faCalendar" id="calendar-addon-from"></fa-icon>
-            </button>
-          </div>
+          <span
+            *ngIf="form.value.fromDate"
+            (click)="clearFromDate()"
+            class="input-group-text bg-white"
+          >
+            <fa-icon [icon]="faTimes"></fa-icon>
+          </span>
+          <button
+            class="btn btn-outline-secondary"
+            (click)="dFrom.toggle()"
+            type="button"
+          >
+            <fa-icon [icon]="faCalendar" id="calendar-addon-from"></fa-icon>
+          </button>
         </div>
       </div>
     </div>
@@ -46,22 +44,20 @@
             showErrors
             id="dTo"
           />
-          <div class="input-group-append">
-            <span
-              *ngIf="form.value.toDate"
-              (click)="clearToDate()"
-              class="input-group-text bg-white"
-            >
-              <fa-icon [icon]="faTimes"></fa-icon>
-            </span>
-            <button
-              class="btn btn-outline-secondary"
-              (click)="dTo.toggle()"
-              type="button"
-            >
-              <fa-icon [icon]="faCalendar" id="calendar-addon-to"></fa-icon>
-            </button>
-          </div>
+          <span
+            *ngIf="form.value.toDate"
+            (click)="clearToDate()"
+            class="input-group-text bg-white"
+          >
+            <fa-icon [icon]="faTimes"></fa-icon>
+          </span>
+          <button
+            class="btn btn-outline-secondary"
+            (click)="dTo.toggle()"
+            type="button"
+          >
+            <fa-icon [icon]="faCalendar" id="calendar-addon-to"></fa-icon>
+          </button>
         </div>
       </div>
     </div>
