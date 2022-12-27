@@ -63,7 +63,10 @@
         </li>
         <!-- /Mobile Profile Menu Items -->
       </ul>
-      <div class="form-inline" *ngIf="isAnonymous">
+      <div
+        class="d-flex flex-row align-items-center flex-wrap"
+        *ngIf="isAnonymous"
+      >
         <a
           class="btn btn-sm btn-outline-dark"
           (click)="isCollapsed = 'false'; context.router.toLogin()"
