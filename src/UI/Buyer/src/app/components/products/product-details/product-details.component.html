@@ -83,13 +83,13 @@
         </h4>
         <span
           *ngIf="_product?.xp?.ProductType === 'Quote'"
-          class="small badge badge-pill badge-warning"
+          class="small badge badge-pill bg-warning"
         >
           Quote Product</span
         >
         <!-- TODO: Plug in unit of measure when data is in OC. -->
         <p class="text-muted">{{ _product | UofM }}</p>
-        <span class="badge badge-pill badge-warning" *ngIf="percentSavings > 0">
+        <span class="badge badge-pill bg-warning" *ngIf="percentSavings > 0">
           <span translate>PRODUCTS.DETAILS.SAVINGS</span> {{ percentSavings }}%!
         </span>
       </ng-container>
@@ -370,10 +370,7 @@
     <div class="col-md-3" *ngIf="specs?.length > 3">
       <div *ngIf="!showGrid" class="p-3 border border-medium rounded">
         <div class="d-flex justify-content-between align-items-center">
-          <span
-            class="badge badge-pill badge-warning"
-            *ngIf="percentSavings > 0"
-          >
+          <span class="badge badge-pill bg-warning" *ngIf="percentSavings > 0">
             <span translate>PRODUCTS.DETAILS.SAVINGS</span>
             {{ percentSavings }}%!
           </span>

@@ -83,12 +83,7 @@
                   {{ li | productNameWithSpecs }}
                   <span
                     *ngIf="li?.Product?.xp?.ProductType === 'Quote'"
-                    class="
-                      small
-                      badge badge-pill badge-warning
-                      ml-2
-                      order-type-text
-                    "
+                    class="small badge badge-pill bg-warning ml-2 order-type-text"
                   >
                     {{ li?.Product?.xp?.ProductType }}
                   </span>
@@ -104,7 +99,7 @@
                     li?.Product?.xp?.FreeShipping &&
                     li?.Product?.xp?.FreeShippingMessage
                   "
-                  class="badge badge-pill badge-warning text-uppercase"
+                  class="badge badge-pill bg-warning text-uppercase"
                 >
                   {{ li?.Product?.xp?.FreeShippingMessage }}
                 </div>

@@ -80,7 +80,7 @@
           {{ order.ID }}
           <span
             *ngIf="order.xp.OrderType === 'Quote'"
-            class="badge badge-pill badge-secondary ml-2"
+            class="badge badge-pill bg-secondary ml-2"
             >{{ order.xp.OrderType }}</span
           >
         </td>
@@ -90,11 +90,19 @@
           ></ocm-order-status-icon>
           {{ getOrderStatus(order) }}
         </td>
-        <td *ngIf="columns.includes('DateSubmitted') && order.xp.OrderType !== 'Quote'">
-          {{ order.DateSubmitted | date: 'short' || 'N/A' }}
+        <td
+          *ngIf="
+            columns.includes('DateSubmitted') && order.xp.OrderType !== 'Quote'
+          "
+        >
+          {{ order.DateSubmitted | date : 'short' || 'N/A' }}
         </td>
-        <td *ngIf="columns.includes('DateSubmitted') && order.xp.OrderType === 'Quote'">
-          {{ order.xp.QuoteSubmittedDate | date: 'short' || 'N/A' }}
+        <td
+          *ngIf="
+            columns.includes('DateSubmitted') && order.xp.OrderType === 'Quote'
+          "
+        >
+          {{ order.xp.QuoteSubmittedDate | date : 'short' || 'N/A' }}
         </td>
         <td *ngIf="columns.includes('SubmittedBy')">
           {{ order.FromUser.FirstName }} {{ order.FromUser.LastName }}
@@ -103,7 +111,7 @@
           {{
             isQuoteOrder(order)
               ? 'N/A'
-              : (order.Total | currency: _userCurrency)
+              : (order.Total | currency : _userCurrency)
           }}
         </td>
       </tr>

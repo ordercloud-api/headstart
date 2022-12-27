@@ -8,15 +8,7 @@
         <a class="breadcrumb-item" aria-current="page">{{ order.ID }}</a>
       </nav>
       <div
-        class="
-          d-flex
-          flex-wrap
-          align-items-center
-          justify-content-between
-          pb-2
-          mt-4
-          mb-2
-        "
+        class="d-flex flex-wrap align-items-center justify-content-between pb-2 mt-4 mb-2"
       >
         <h2>
           <span class="text-muted"
@@ -25,7 +17,7 @@
           {{ order.ID }}
           <span
             *ngIf="order.xp.OrderType === 'Quote'"
-            class="badge badge-pill badge-primary ml-2"
+            class="badge badge-pill bg-primary ml-2"
             >{{ order.xp.OrderType }}</span
           >
         </h2>
@@ -44,7 +36,7 @@
         <div class="col-md-4">
           <span class="text-muted small">
             <span translate> ORDERS.DETAIL.SUBMITTED</span>
-            {{ order.DateSubmitted | date: 'short' }}</span
+            {{ order.DateSubmitted | date : 'short' }}</span
           >
           <ul class="list-group mt-2">
             <li class="list-group-item">
@@ -64,15 +56,7 @@
           </ul>
         </div>
         <div
-          class="
-            col-md-8
-            mt-3 mt-md-0
-            d-flex
-            flex-wrap
-            gap-2
-            align-items-end
-            justify-content-end
-          "
+          class="col-md-8 mt-3 mt-md-0 d-flex flex-wrap gap-2 align-items-end justify-content-end"
         >
           <ocm-order-approval
             *ngIf="approvalVersion"
@@ -160,13 +144,7 @@
                 <p translate>ORDERS.DETAIL.CANCEL_ORDER_WARNING</p>
               </div>
               <div
-                class="
-                  row
-                  d-flex
-                  justify-content-space-between justify-content-between
-                  mr-2
-                  ml-2
-                "
+                class="row d-flex justify-content-space-between justify-content-between mr-2 ml-2"
               >
                 <button
                   type="button"
@@ -211,13 +189,7 @@
               >
               </ocm-lineitem-table>
               <div
-                class="
-                  row
-                  d-flex
-                  justify-content-space-between justify-content-between
-                  mr-2
-                  ml-2
-                "
+                class="row d-flex justify-content-space-between justify-content-between mr-2 ml-2"
               >
                 <button
                   type="button"
@@ -248,13 +220,7 @@
                 <p translate>ORDERS.DETAIL.WARNING</p>
               </div>
               <div
-                class="
-                  row
-                  d-flex
-                  justify-content-space-between justify-content-between
-                  mr-2
-                  ml-2
-                "
+                class="row d-flex justify-content-space-between justify-content-between mr-2 ml-2"
               >
                 <button
                   type="button"
