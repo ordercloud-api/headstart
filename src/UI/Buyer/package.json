@@ -42,7 +42,7 @@
     "@tinymce/tinymce-angular": "^4.1.0",
     "@types/lodash": "^4.14.149",
     "axios": "^1.2.0",
-    "bootstrap": "^4.6.0",
+    "bootstrap": "^5.2.3",
     "case": "^1.6.3",
     "dom-to-image": "^2.6.0",
     "html2canvas": "^1.0.0-rc.7",
