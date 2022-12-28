@@ -1,8 +1,7 @@
 <div class="container py-3">
   <h1 class="mb-0" translate>CHECKOUT.CHECKOUT.CHECKOUT</h1>
   <p *ngIf="order.ID">
-    <span class="font-weight-bold" translate
-      >CHECKOUT.CHECKOUT.ORDERREFERENCE</span
+    <span class="fw-bold" translate>CHECKOUT.CHECKOUT.ORDERREFERENCE</span
     ><span>{{ ': ' }}</span
     >{{ order.ID }}
   </p>
@@ -11,7 +10,7 @@
   <div *ngIf="order">
     <ocm-modal [state]="orderErrorModal">
       <div class="text-center">
-        <h4 class="font-weight-bold">{{ orderErrorTitle }}</h4>
+        <h4 class="fw-bold">{{ orderErrorTitle }}</h4>
         <p *ngIf="orderErrorMessage">{{ orderErrorMessage }}</p>
         <button
           class="btn btn-primary align-self-center"

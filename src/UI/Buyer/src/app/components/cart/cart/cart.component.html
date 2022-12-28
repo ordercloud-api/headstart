@@ -31,7 +31,7 @@
     [state]="orderErrorModal"
     [modalTitle]="orderError"
   >
-    <h4 class="font-weight-bold">{{ modalTitle }}</h4>
+    <h4 class="fw-bold">{{ modalTitle }}</h4>
     <span translate>CART.CART.INVALID_ITEMS_NOTICE</span>
     <div class="card-body mt-3 pt-sm-2">
       <div
@@ -72,7 +72,7 @@
                 </span>
               </div>
               <div class="col-md-9 col-sm-6">
-                <span class="text-dark font-weight-medium line-height-1">
+                <span class="text-dark fw-medium line-height-1">
                   {{ li | productNameWithSpecs }}
                 </span>
                 <small class="text-muted d-block">{{ li.Product.ID }}</small>
@@ -136,7 +136,7 @@
         <div class="d-grid">
           <button
             [disabled]="!_isCartValid"
-            class="btn btn-lg btn-primary my-4 font-weight-bold"
+            class="btn btn-lg btn-primary my-4 fw-bold"
             (click)="toCheckout()"
             *ngIf="_order?.xp?.OrderType == 'Standard'"
             translate
@@ -145,7 +145,7 @@
           </button>
           <button
             [disabled]="!_isCartValid"
-            class="btn btn-lg btn-primary my-4 font-weight-bold"
+            class="btn btn-lg btn-primary my-4 fw-bold"
             (click)="submitQuote()"
             *ngIf="_order?.xp?.OrderType == 'Quote'"
             translate

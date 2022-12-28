@@ -18,9 +18,7 @@
       ><span translate>PAYMENTS.PAYMENT_LIST.SPENDING_ACC</span> :
       {{ payment.Details.Name }}
     </span>
-    <span class="font-weight-bold">{{
-      payment.Amount | currency: _userCurrency
-    }}</span>
+    <span class="fw-bold">{{ payment.Amount | currency : _userCurrency }}</span>
   </div>
   <div class="my-3" *ngIf="order.Status === 'Canceled'">
     <ocm-credit-card-icon
@@ -43,8 +41,8 @@
       ><span translate>PAYMENTS.PAYMENT_LIST.SPENDING_ACC</span> :
       {{ payments[0].Details.Name }}
     </span>
-    <span class="font-weight-bold">{{
-      payments[0].Amount * -1 | currency: _userCurrency
+    <span class="fw-bold">{{
+      payments[0].Amount * -1 | currency : _userCurrency
     }}</span>
   </div>
 </div>

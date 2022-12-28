@@ -7,7 +7,7 @@
       <div class="row" *ngIf="suppliers?.length > 0 && suppliers[i]?.supplier">
         <div class="col-md">
           <h2 class="card-title h6 mb-0">
-            <span class="text-medium font-weight-light"
+            <span class="text-medium fw-light"
               >{{ 'CART.LINEITEM_TABLE.SHIP_FROM' | translate }}:</span
             >
             {{ suppliers[i].supplier.Name }}
@@ -75,7 +75,7 @@
               <div class="col-md-9 col-sm-6">
                 <a
                   (click)="toProductDetails(li.Product.ID)"
-                  class="link-dark font-weight-medium line-height-1"
+                  class="link-dark fw-medium line-height-1"
                 >
                   {{ li | productNameWithSpecs }}
                   <span

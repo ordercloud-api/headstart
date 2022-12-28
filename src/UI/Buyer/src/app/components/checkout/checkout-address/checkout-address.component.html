@@ -11,7 +11,7 @@
 
   <div class="row">
     <div class="col-sm-6">
-      <span class="font-weight-bold" translate
+      <span class="fw-bold" translate
         >CHECKOUT.CHECKOUT_PAYMENT.USE_A_PROMO</span
       >
       <div class="input-group input-group-sm mt-2">
@@ -40,13 +40,13 @@
           <p
             translate
             *ngIf="isShippingPromo(promo)"
-            class="white-space-pre mt-1 mb-0 text-danger font-weight-bolder"
+            class="white-space-pre mt-1 mb-0 text-danger fw-bolder"
           >
             CHECKOUT.CHECKOUT_ADDRESS.SHIPPING_DISCOUNT_TEXT
           </p>
           <p
             *ngIf="!isShippingPromo(promo)"
-            class="white-space-pre mt-1 mb-0 text-danger font-weight-bolder"
+            class="white-space-pre mt-1 mb-0 text-danger fw-bolder"
           >
             -
             {{ getPromoDiscountTotal(promo.ID) | currency : _orderCurrency }}
@@ -116,7 +116,7 @@
         *ngFor="let address of existingShippingAddresses?.Items"
         [ngValue]="address.ID"
       >
-        <span class="font-weight-bold"
+        <span class="fw-bold"
           >{{ address.Street1
           }}<span *ngIf="address.Street2"> {{ address.Street2 }}</span
           >, {{ address.City }} {{ address.State }} {{ address.Zip }}

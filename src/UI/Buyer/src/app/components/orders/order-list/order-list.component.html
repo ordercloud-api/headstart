@@ -7,7 +7,7 @@
       <tr>
         <th *ngIf="columns.includes('Favorite')"></th>
         <th (click)="updateSort('ID')" *ngIf="columns.includes('ID')">
-          <button class="btn btn-link font-weight-bold" translate>
+          <button class="btn btn-link fw-bold" translate>
             ORDERS.LIST.ID
             <fa-icon
               *ngIf="sortBy === 'ID' || sortBy === '!ID'"
@@ -16,7 +16,7 @@
           </button>
         </th>
         <th (click)="updateSort('Status')" *ngIf="columns.includes('Status')">
-          <button class="btn btn-link font-weight-bold" translate>
+          <button class="btn btn-link fw-bold" translate>
             ORDERS.LIST.STATUS
             <fa-icon
               *ngIf="
@@ -35,7 +35,7 @@
           (click)="updateSort('DateSubmitted')"
           *ngIf="columns.includes('DateSubmitted')"
         >
-          <button class="btn btn-link font-weight-bold" translate>
+          <button class="btn btn-link fw-bold" translate>
             ORDERS.LIST.DATE_SUBMITTED
             <fa-icon
               *ngIf="sortBy === 'DateSubmitted' || sortBy === '!DateSubmitted'"
@@ -44,12 +44,12 @@
           </button>
         </th>
         <th *ngIf="columns.includes('SubmittedBy')">
-          <button class="btn btn-link font-weight-bold" translate>
+          <button class="btn btn-link fw-bold" translate>
             ORDERS.LIST.SUBMITTED_BY
           </button>
         </th>
         <th (click)="updateSort('Total')" *ngIf="columns.includes('Total')">
-          <button class="btn btn-link font-weight-bold" translate>
+          <button class="btn btn-link fw-bold" translate>
             ORDERS.LIST.TOTAL
             <fa-icon
               *ngIf="sortBy === 'Total' || sortBy === '!Total'"

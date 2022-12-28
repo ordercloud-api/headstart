@@ -12,7 +12,7 @@ import { specErrors } from '../errors'
       [class.row]="compact"
     >
       <label
-        class="form-label text-uppercase font-weight-bolder small text-muted d-flex align-items-center"
+        class="form-label text-uppercase fw-bolder small text-muted d-flex align-items-center"
         [class.col-3]="compact"
         for="{{ config.name }}-readonly"
         >{{ config.label }}

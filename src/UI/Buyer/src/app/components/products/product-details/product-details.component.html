@@ -68,7 +68,7 @@
         <span translate>PRODUCTS.DETAILS.NOTE</span>: {{ supplierNote }}
       </div>
       <ng-container *ngIf="!showGrid">
-        <h4 class="font-weight-bold">
+        <h4 class="fw-bold">
           <app-product-price-display
             class="card-text mb-0"
             *ngIf="
@@ -120,9 +120,7 @@
           class="d-flex flex-column mb-3"
           *ngIf="isOrderable && !isQuoteAnonUser"
         >
-          <small
-            class="text-uppercase font-weight-bolder text-muted mb-2"
-            translate
+          <small class="text-uppercase fw-bolder text-muted mb-2" translate
             >PRODUCTS.DETAILS.QUANTITY</small
           >
           <div *ngIf="isBundle" class="d-flex flex-row">
@@ -256,7 +254,7 @@
         </ocm-grid-spec-form>
       </ng-container>
       <ng-container *ngIf="priceBreaks && priceBreaks.length > 1">
-        <h3 class="small font-weight-bolder text-muted" translate>
+        <h3 class="small fw-bolder text-muted" translate>
           PRODUCTS.DETAILS.TIERED_PRICE_HEAD
         </h3>
         <div class="border-bottom border-medium mb-3 pb-3">
@@ -264,10 +262,10 @@
           <div class="d-flex flex-row flex-wrap">
             <span
               *ngFor="let priceBreak of priceBreaks; let i = index"
-              class="font-weight-bold d-flex mt-2"
+              class="fw-bold d-flex mt-2"
             >
               {{ getPriceBreakRange(i) }}:
-              <p class="font-weight-normal ms-1 me-4">
+              <p class="fw-normal ms-1 me-4">
                 {{ priceBreak?.Price | currency : userCurrency }}
               </p>
             </span>
@@ -327,7 +325,7 @@
         <small class="text-medium"> Product Ships From Canada </small>
       </div>
       <!-- PRODUCT DESCRIPTION -->
-      <h3 class="small font-weight-bolder text-muted" translate>
+      <h3 class="small fw-bolder text-muted" translate>
         PRODUCTS.DETAILS.DESCRIPTION
       </h3>
       <p
@@ -337,7 +335,7 @@
       ></p>
       <!-- PRODUCT DOCS -->
       <ng-container *ngIf="attachments?.length > 0">
-        <h3 class="small font-weight-bolder text-muted" translate>
+        <h3 class="small fw-bolder text-muted" translate>
           PRODUCTS.DETAILS.DOCS
         </h3>
         <div class="list-group list-group-flush my-2">
