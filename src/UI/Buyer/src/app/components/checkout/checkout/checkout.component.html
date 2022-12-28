@@ -53,7 +53,7 @@
                 COMMON.LOGIN
               </h2>
               <fa-icon
-                class="float-right text-success"
+                class="float-end text-success"
                 *ngIf="getValidation('login')"
                 [icon]="faCheck"
               ></fa-icon>
@@ -63,35 +63,35 @@
                 <div class="col-4">
                   <div class="d-grid">
                     <button
-                    class="btn btn-primary"
-                    [routerLink]="['/login']"
-                    [queryParams]="{ redirect: 'checkout' }"
-                    translate
-                  >
-                    COMMON.LOGIN
-                  </button>
+                      class="btn btn-primary"
+                      [routerLink]="['/login']"
+                      [queryParams]="{ redirect: 'checkout' }"
+                      translate
+                    >
+                      COMMON.LOGIN
+                    </button>
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="d-grid">
                     <button
-                    class="btn btn-primary"
-                    routerLink="/register"
-                    translate
-                  >
-                    CHECKOUT.CHECKOUT.CREATE_ACCOUNT
-                  </button>
+                      class="btn btn-primary"
+                      routerLink="/register"
+                      translate
+                    >
+                      CHECKOUT.CHECKOUT.CREATE_ACCOUNT
+                    </button>
                   </div>
                 </div>
                 <div class="col-4">
                   <div class="d-grid">
                     <button
-                    class="btn btn-primary"
-                    (click)="toSection('shippingAddress')"
-                    translate
-                  >
-                    CHECKOUT.CHECKOUT.GUEST_CHECKOUT
-                  </button>
+                      class="btn btn-primary"
+                      (click)="toSection('shippingAddress')"
+                      translate
+                    >
+                      CHECKOUT.CHECKOUT.GUEST_CHECKOUT
+                    </button>
                   </div>
                 </div>
               </div>
@@ -174,7 +174,7 @@
                 CHECKOUT.CHECKOUT.PAYMENT
               </h2>
               <fa-icon
-                class="float-right text-success"
+                class="float-end text-success"
                 *ngIf="
                   getValidation('payment') &&
                   (!isLoading || currentPanel !== 'payment')

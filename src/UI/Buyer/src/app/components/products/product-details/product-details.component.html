@@ -41,7 +41,7 @@
         <small class="d-block">SKU: {{ _product?.ID }}</small>
         <!-- TODO: Uncomment when grid bugs are fixed -->
         <div
-          class="btn-group float-right"
+          class="btn-group float-end"
           *ngIf="
             specs?.length > 0 &&
             hasNoOpenTextSpecs() &&
@@ -361,7 +361,7 @@
       >
         <button
           type="button"
-          class="btn btn-link p-0 mt-3 float-right"
+          class="btn btn-link p-0 mt-3 float-end"
           (click)="openContactSupplierForm()"
         >
           <span translate>PRODUCTS.DETAILS.CONTACT_PART_ONE</span>

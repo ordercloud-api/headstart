@@ -12,7 +12,7 @@
   </ocm-search>
   <div *ngIf="meta?.TotalPages > 1" class="my-2 row">
     <div class="col-12">
-      <div class="float-right">
+      <div class="float-end">
         {{ (meta.Page - 1) * meta.PageSize + 1 }} -
         {{ meta.Page * meta.PageSize }}
         <span translate>LAYOUT.GENERIC_LIST.OF</span> {{ meta?.TotalCount }}

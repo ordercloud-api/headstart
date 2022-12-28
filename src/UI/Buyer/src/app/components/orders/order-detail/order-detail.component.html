@@ -60,13 +60,13 @@
         >
           <ocm-order-approval
             *ngIf="approvalVersion"
-            class="float-right"
+            class="float-end"
             [orderID]="order?.ID"
           ></ocm-order-approval>
 
           <button
             *ngIf="!approvalVersion && !isAnon"
-            class="btn btn-outline-secondary float-right d-print-none"
+            class="btn btn-outline-secondary float-end d-print-none"
             (click)="toggleFavorite(order)"
             translate
           >

@@ -49,23 +49,21 @@
     </div>
     <hr />
     <strong translate>ORDERS.HISTORICAL.SUBTOTAL</strong>
-    <span class="float-right">{{
+    <span class="float-end">{{
       order.Subtotal | currency : _userCurrency
     }}</span
     ><br />
     <strong translate>ORDERS.HISTORICAL.SHIPPING</strong>
-    <span class="float-right">{{
+    <span class="float-end">{{
       order.ShippingCost | currency : _userCurrency
     }}</span
     ><br />
     <strong translate>ORDERS.HISTORICAL.TAX</strong>
-    <span class="float-right">{{
-      order.TaxCost | currency : _userCurrency
-    }}</span
+    <span class="float-end">{{ order.TaxCost | currency : _userCurrency }}</span
     ><br />
     <div *ngIf="order.PromotionDiscount">
       <strong class="text-danger" translate>ORDERS.HISTORICAL.PROMO</strong>
-      <span class="float-right text-danger"
+      <span class="float-end text-danger"
         >-{{ order.PromotionDiscount | currency : _userCurrency }}</span
       >
     </div>
