@@ -9,7 +9,7 @@
   &__menu {
     position: relative;
     height: calc(100vh - 122px); // DESIGN: Magic Number, Nav height
-    background: var(--light);
+    background: var(--bs-light);
     margin: 0;
     padding-left: 0;
     list-style: none;
@@ -28,7 +28,7 @@
         &:hover::before {
           content: '';
           position: absolute;
-          background: var(--primary);
+          background: var(--bs-primary);
           opacity: 0.15;
           height: 100%;
           width: 100%;
@@ -36,7 +36,7 @@
 
         &__parent {
           &:hover>a {
-            border-left: 5px solid var(--primary);
+            border-left: 5px solid var(--bs-primary);
           }
 
           &::before {
@@ -68,7 +68,7 @@
 
         &:hover {
           text-decoration: none;
-          border-left: 5px solid var(--primary);
+          border-left: 5px solid var(--bs-primary);
         }
       }
 
@@ -86,7 +86,7 @@
 
         &:hover {
           text-decoration: none;
-          border-left: 5px solid var(--primary);
+          border-left: 5px solid var(--bs-primary);
         }
       }
     }
@@ -104,7 +104,7 @@
       color: #474747;
 
       &>fa-icon {
-        color: var(--gray-light);
+        color: var(--bs-gray);
         margin-left: 0.25rem;
       }
     }
@@ -112,7 +112,7 @@
     & li.level-top {
       &>a {
         &.menu-active {
-          color: var(--dark);
+          color: var(--bs-dark);
           background: white;
         }
 
@@ -148,7 +148,7 @@
 
 .mobile-sidebar-menu {
   position: relative;
-  background: var(--light);
+  background: var(--bs-light);
   margin: 0;
   padding-left: 0;
   list-style: none;
@@ -169,15 +169,15 @@
   letter-spacing: .5px;
   text-transform: uppercase;
   position: relative;
-  color: var(--gray-dark, #474747);
+  color: var(--bs-gray-dark, #474747);
 
   &>fa-icon,
   &::after {
-    color: var(--gray-light);
+    color: var(--bs-gray);
     margin-left: 0.25rem;
   }
   &--active {
-    color: var(--dark);
+    color: var(--bs-dark);
     background: white;
   }
 }

@@ -1,7 +1,7 @@
 .card-img-top {
   margin: 0;
   height: 344px;
-  background: var(--white);
+  background: var(--bs-white);
   color: var(--medium);
   display: flex;
   @media (min-width: 768px) {
@@ -29,7 +29,7 @@
 .card-title {
   font-size: 1.1rem;
   margin-bottom: .25rem;
-  color: var(--dark);
+  color: var(--bs-dark);
   flex: 1 1 auto;
 }
 .card-text {
@@ -37,7 +37,7 @@
 }
 
 .card-price {
-  color: var(--secondary);
+  color: var(--bs-secondary);
   font-weight: bold;
 }
 

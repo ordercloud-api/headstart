@@ -15,9 +15,10 @@
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   background-color: unset;
+  color: unset;
 
   &.active {
-    background-color: var(--light);
+    background-color: var(--bs-light);
     border-bottom: #dee2e6;
   }
 

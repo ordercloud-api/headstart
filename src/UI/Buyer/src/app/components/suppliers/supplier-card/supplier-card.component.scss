@@ -11,13 +11,13 @@
     transition: 200ms all ease;
     color: var(--medium);
     &:hover {
-      color: var(--dark);
+      color: var(--bs-dark);
       text-decoration: underline;
     }
   }
 
   &:hover {
-    border-top: 8px solid var(--primary);
+    border-top: 8px solid var(--bs-primary);
     box-shadow: 0 4px 12px -1px rgba(0, 0, 0, 0.1), 0 2px 8px -1px rgba(0, 0, 0, 0.06);
   }
 }

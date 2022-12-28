@@ -84,7 +84,7 @@ export class OCMAppHeader implements OnInit {
   faTimes = faTimes
   faBoxOpen = faBoxOpen
   flagIcon: string
-  hasSuppliers = false;
+  hasSuppliers = false
   currentSupplierList: ListPage<Supplier>
   selectedLanguage: string
   languages: string[]
@@ -123,7 +123,7 @@ export class OCMAppHeader implements OnInit {
     this.languages = this.translate.getLangs()
     this.selectedLanguage = this.translate.currentLang
     this.translate.onLangChange.subscribe((event) => {
-      this.selectedLanguage = event.lang;
+      this.selectedLanguage = event.lang
     })
   }
 
@@ -135,10 +135,11 @@ export class OCMAppHeader implements OnInit {
   }
 
   async getCurrentSupplierList() {
-    this.setBuyerFilterIfNeeded();
-    const supplierList: ListPage<Supplier> = await this.context.supplierFilters.listSuppliers()
+    this.setBuyerFilterIfNeeded()
+    const supplierList: ListPage<Supplier> =
+      await this.context.supplierFilters.listSuppliers()
 
-    return supplierList;
+    return supplierList
   }
 
   private setBuyerFilterIfNeeded(): void {
@@ -230,15 +231,12 @@ export class OCMAppHeader implements OnInit {
   }
   searchProducts(searchStr: string): void {
     this.searchTermForProducts = searchStr
-    this.cdp.productSearched(searchStr); 
+    this.cdp.productSearched(searchStr)
     this.context.router.toProductList({ search: searchStr })
   }
 
   isRouteActive(url: string): boolean {
-    return (
-      this.activePath === url ||
-      (this.activePath === '/profile' && url === '/profile/details')
-    )
+    return this.activePath === url || this.activePath === '/profile'
   }
 
   logout(): void {
