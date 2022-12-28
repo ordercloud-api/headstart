@@ -5,7 +5,7 @@
         <li *ngFor="let shipment of shipments; let i = index" class="nav-item">
           <div class="d-grid">
             <button
-              class="btn btn-link btn-block nav-link text-left"
+              class="btn btn-link btn-block nav-link text-start"
               (click)="selectShipment(shipment)"
               [ngClass]="{ active: selectedShipment.ID === shipment.ID }"
             >
