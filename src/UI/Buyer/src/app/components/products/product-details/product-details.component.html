@@ -126,7 +126,7 @@
             >PRODUCTS.DETAILS.QUANTITY</small
           >
           <div *ngIf="isBundle" class="d-flex flex-row">
-            <div class="mb-3 mb-0 mr-3">
+            <div class="mb-3 mb-0 me-3">
               <label for="quantity" class="form-label" class="sr-only" translate
                 >PRODUCTS.QTY_INPUT.QTY</label
               >
@@ -164,7 +164,7 @@
           </div>
           <div *ngIf="!isBundle" class="d-flex flex-row">
             <ocm-quantity-input
-              class="d-inline-block mb-3 mr-3 flex-shrink-0"
+              class="d-inline-block mb-3 me-3 flex-shrink-0"
               (qtyChange)="qtyChange($event.detail)"
               [product]="_product"
               [priceSchedule]="_product.PriceSchedule"
@@ -267,7 +267,7 @@
               class="font-weight-bold d-flex mt-2"
             >
               {{ getPriceBreakRange(i) }}:
-              <p class="font-weight-normal ml-1 mr-4">
+              <p class="font-weight-normal ml-1 me-4">
                 {{ priceBreak?.Price | currency : userCurrency }}
               </p>
             </span>
@@ -311,7 +311,7 @@
         <svg
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden="true"
-          class="mr-1"
+          class="me-1"
           viewBox="0 0 512 512"
           width="15px"
         >

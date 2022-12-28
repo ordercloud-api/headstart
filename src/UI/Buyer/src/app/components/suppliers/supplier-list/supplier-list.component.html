@@ -7,7 +7,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <form class="d-flex">
           <ocm-search
-            class="mr-3 w-100"
+            class="me-3 w-100"
             [placeholderText]="'ALIAS.SUPPLIERS'"
             [searchTermInput]="searchTermForSuppliers"
             (searched)="searchSuppliers($event.detail)"
@@ -63,7 +63,7 @@
           </ng-template>
           <div
             *ngIf="hasFiltersAvailable()"
-            class="btn btn-light mr-2"
+            class="btn btn-light me-2"
             placement="bottom"
             [ngbPopover]="filters"
             autoClose="outside"

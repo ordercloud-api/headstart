@@ -26,7 +26,7 @@
       [ngClass]="{ collapse: isCollapsed, 'navbar-collapse': true }"
       id="navbarSupportedContent"
     >
-      <ul class="navbar-nav mr-auto">
+      <ul class="navbar-nav me-auto">
         <li
           class="nav-item clickable cursor-pointer"
           [ngClass]="{ active: activePath === '/products' }"
@@ -313,7 +313,7 @@
     >
 
     <ocm-search
-      class="ml-3 mr-3 w-100"
+      class="ml-3 me-3 w-100"
       [placeholderText]="'LAYOUT.APP_HEADER.PRODUCTS'"
       [searchTermInput]="searchTermForProducts"
       (searched)="searchProducts($event.detail)"

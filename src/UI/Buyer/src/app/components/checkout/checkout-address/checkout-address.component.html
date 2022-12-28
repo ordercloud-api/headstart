@@ -33,7 +33,7 @@
         <p translate>CHECKOUT.CHECKOUT_PAYMENT.DISCOUNTS_APPLIED</p>
         <div class="card p-2 mb-3" *ngFor="let promo of _uniqueOrderPromos">
           <p class="mb-0 lead">
-            <fa-icon class="text-success mr-2" [icon]="faCheckCircle"></fa-icon>
+            <fa-icon class="text-success me-2" [icon]="faCheckCircle"></fa-icon>
             {{ promo.Code }}
           </p>
           <small>{{ promo.Description }}</small>
@@ -125,7 +125,7 @@
     </select>
     <button
       (click)="showNewAddress()"
-      class="btn btn-outline-primary btn-sm mr-2 mt-3"
+      class="btn btn-outline-primary btn-sm me-2 mt-3"
       translate
     >
       CHECKOUT.CHECKOUT_ADDRESS.NEW_ADDRESS
@@ -135,7 +135,7 @@
       *ngIf="!showNewAddressForm"
       [disabled]="!selectedShippingAddress"
       (click)="saveAddressesAndContinue()"
-      class="btn btn-secondary btn-sm mr-2 mt-3"
+      class="btn btn-secondary btn-sm me-2 mt-3"
       translate
     >
       CHECKOUT.CHECKOUT_ADDRESS.SAVE_CONTINUE

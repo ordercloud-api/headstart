@@ -41,7 +41,7 @@
           [disabled]="POTermsAccepted"
           type="submit"
           (click)="acceptPOTerms()"
-          class="btn btn-info mr-2"
+          class="btn btn-info me-2"
           translate
         >
           CHECKOUT.CHECKOUT_PAYMENT.ACCEPT
@@ -59,7 +59,7 @@
       type="submit"
       (click)="onContinue()"
       *ngIf="selectedPaymentMethod === 'PurchaseOrder'"
-      class="btn btn-primary mt-4 mr-2"
+      class="btn btn-primary mt-4 me-2"
       [disabled]="orderSummaryMeta.LineItemCount && !POTermsAccepted"
       translate
     >

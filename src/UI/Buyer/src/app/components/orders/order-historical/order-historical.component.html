@@ -50,30 +50,30 @@
     <hr />
     <strong translate>ORDERS.HISTORICAL.SUBTOTAL</strong>
     <span class="float-right">{{
-      order.Subtotal | currency: _userCurrency
+      order.Subtotal | currency : _userCurrency
     }}</span
     ><br />
     <strong translate>ORDERS.HISTORICAL.SHIPPING</strong>
     <span class="float-right">{{
-      order.ShippingCost | currency: _userCurrency
+      order.ShippingCost | currency : _userCurrency
     }}</span
     ><br />
     <strong translate>ORDERS.HISTORICAL.TAX</strong>
     <span class="float-right">{{
-      order.TaxCost | currency: _userCurrency
+      order.TaxCost | currency : _userCurrency
     }}</span
     ><br />
     <div *ngIf="order.PromotionDiscount">
       <strong class="text-danger" translate>ORDERS.HISTORICAL.PROMO</strong>
       <span class="float-right text-danger"
-        >-{{ order.PromotionDiscount | currency: _userCurrency }}</span
+        >-{{ order.PromotionDiscount | currency : _userCurrency }}</span
       >
     </div>
     <hr />
     <div class="text-right lead" translate>
       <b class="float-left"><span translate>ORDERS.HISTORICAL.TOTAL</span>:</b
       ><span class="order-total">{{
-        order.Total | currency: _userCurrency
+        order.Total | currency : _userCurrency
       }}</span>
     </div>
     <hr *ngIf="isOrderToApprove" />
@@ -86,7 +86,7 @@
     <ul>
       <li *ngFor="let approval of approvals" translate>
         {{ approval.Approver.FirstName }} {{ approval.Approver.LastName }}
-        {{ approval.Status }} - {{ approval.DateCreated | date: 'short' }}
+        {{ approval.Status }} - {{ approval.DateCreated | date : 'short' }}
         <div>
           <small *ngIf="approval.Comments">"{{ approval.Comments }}"</small>
         </div>
@@ -160,13 +160,7 @@
       <p translate>ORDERS.HISTORICAL.QUOTE_ACCEPTED_MESSAGE</p>
     </div>
     <div
-      class="
-        row
-        d-flex
-        justify-content-space-between justify-content-between
-        mr-2
-        ml-2
-      "
+      class="row d-flex justify-content-space-between justify-content-between me-2 ml-2"
     >
       <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
         Cancel
