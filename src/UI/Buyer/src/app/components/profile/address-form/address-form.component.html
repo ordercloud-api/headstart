@@ -3,7 +3,7 @@
     <div *ngIf="addressError" class="text-danger">{{ addressError }}</div>
     <div class="row">
       <div [hidden]="true" class="col-md-6 mb-3">
-        <label class="sr-only form-label" for="ID" translate
+        <label class="visually-hidden form-label" for="ID" translate
           >COMMON.ADDRESS.ID</label
         >
         <input
@@ -15,7 +15,7 @@
         />
       </div>
       <div class="col-md-6 mb-3">
-        <label class="sr-only form-label" for="FirstName" translate
+        <label class="visually-hidden form-label" for="FirstName" translate
           >COMMON.ADDRESS.FIRST_NAME</label
         >
         <input
@@ -30,7 +30,7 @@
         />
       </div>
       <div class="col-md-6 mb-3">
-        <label class="sr-only form-label" for="LastName" translate
+        <label class="visually-hidden form-label" for="LastName" translate
           >COMMON.ADDRESS.LAST_NAME</label
         >
         <input
@@ -45,7 +45,7 @@
       </div>
     </div>
     <div class="mb-3">
-      <label class="sr-only form-label" for="Street1" translate
+      <label class="visually-hidden form-label" for="Street1" translate
         >COMMON.ADDRESS.ADDRESS1</label
       >
       <input
@@ -59,7 +59,7 @@
       />
     </div>
     <div class="mb-3">
-      <label class="sr-only form-label" for="Street2" translate
+      <label class="visually-hidden form-label" for="Street2" translate
         >COMMON.ADDRESS.ADDRESS2</label
       >
       <input
@@ -74,7 +74,7 @@
     </div>
     <div class="row">
       <div class="col-md-5 mb-3">
-        <label class="sr-only form-label" for="City" translate
+        <label class="visually-hidden form-label" for="City" translate
           >COMMON.ADDRESS.CITY</label
         >
         <input
@@ -88,7 +88,7 @@
         />
       </div>
       <div class="col-md-3 mb-3">
-        <label class="sr-only form-label" for="State" translate
+        <label class="visually-hidden form-label" for="State" translate
           >COMMON.ADDRESS.STATE</label
         >
         <select
@@ -116,7 +116,7 @@
         />
       </div>
       <div class="col-md-4 mb-3">
-        <label class="sr-only form-label" for="zipCode" translate
+        <label class="visually-hidden form-label" for="zipCode" translate
           >COMMON.ADDRESS.ZIP</label
         >
         <input
@@ -137,7 +137,7 @@
           getCountryName(homeCountry)
         }} addresses."
       >
-        <label class="sr-only form-label" for="Country" translate
+        <label class="visually-hidden form-label" for="Country" translate
           >COMMON.ADDRESS.COUNTRY</label
         >
         <select
@@ -154,7 +154,7 @@
         </select>
       </div>
       <div class="col-md-6 mb-3">
-        <label class="sr-only form-label" for="Phone" translate
+        <label class="visually-hidden form-label" for="Phone" translate
           >COMMON.ADDRESS.PHONE</label
         >
         <input
@@ -183,7 +183,7 @@
               id="shouldSaveAddress"
             />
             <label
-              class="sr-only form-check-label"
+              class="visually-hidden form-check-label"
               for="shouldSaveAddress"
               translate
               >COMMON.ADDRESS.SAVE</label

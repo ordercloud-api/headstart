@@ -69,7 +69,9 @@
           >
           </ocm-product-facet-list>
           <div *ngIf="!isAnon" (click)="toggleFilterByFavorites()">
-            <span class="sr-only" translate>PRODUCTS.LIST.SORT_BY_FAV</span>
+            <span class="visually-hidden" translate
+              >PRODUCTS.LIST.SORT_BY_FAV</span
+            >
             <ocm-toggle-favorite
               [favorite]="showingFavoritesOnly"
             ></ocm-toggle-favorite>

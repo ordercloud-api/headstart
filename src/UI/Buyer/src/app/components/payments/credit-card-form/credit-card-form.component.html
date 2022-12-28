@@ -33,7 +33,7 @@
     </div>
     <div class="mb-3 d-flex justify-content-between mb-0">
       <div class="mb-3 flex-fill">
-        <label class="sr-only form-label" for="name" translate
+        <label class="visually-hidden form-label" for="name" translate
           >PAYMENTS.CC_FORM.NAME</label
         >
         <input
@@ -59,7 +59,7 @@
         <span *ngIf="cardError" class="error">{{ cardError }}</span>
       </div>
       <div class="mb-3 me-2 flex-fill">
-        <label class="sr-only form-label" for="month" translate
+        <label class="visually-hidden form-label" for="month" translate
           >PAYMENTS.CC_FORM.EXP_MONTH</label
         >
         <select formControlName="month" class="form-select" id="state">
@@ -69,7 +69,7 @@
         </select>
       </div>
       <div class="mb-3 flex-fill">
-        <label class="sr-only form-label" for="year" translate
+        <label class="visually-hidden form-label" for="year" translate
           >PAYMENTS.CC_FORM.EXP_YEAR</label
         >
         <select formControlName="year" class="form-select" id="state">
@@ -82,7 +82,7 @@
   </div>
   <div *ngIf="_showCVV" class="mb-3 d-flex justify-content-between mb-0">
     <div class="mb-3 card-name flex-fill">
-      <label class="sr-only form-label" for="CVV" translate
+      <label class="visually-hidden form-label" for="CVV" translate
         >PAYMENTS.CC_FORM.CVV</label
       >
       <input
@@ -123,7 +123,7 @@
     </div>
     <div class="mb-3 d-flex justify-content-between mb-0">
       <div class="mb-3 w-100">
-        <label class="sr-only form-label" for="Street1" translate
+        <label class="visually-hidden form-label" for="Street1" translate
           >PAYMENTS.CC_FORM.STREET</label
         >
         <input
@@ -139,7 +139,7 @@
     </div>
     <div class="mb-3 d-flex justify-content-between mb-0">
       <div class="mb-3 me-2 flex-fill">
-        <label class="sr-only form-label" for="City" translate
+        <label class="visually-hidden form-label" for="City" translate
           >PAYMENTS.CC_FORM.CITY</label
         >
         <input
@@ -153,7 +153,7 @@
         />
       </div>
       <div class="mb-3 w-25 me-2 flex-fill">
-        <label class="sr-only form-label" for="State" translate
+        <label class="visually-hidden form-label" for="State" translate
           >PAYMENTS.CC_FORM.STATE</label
         >
         <select
@@ -181,7 +181,7 @@
         />
       </div>
       <div class="mb-3 flex-fill zip-input">
-        <label class="sr-only form-label" for="zipCode" translate
+        <label class="visually-hidden form-label" for="zipCode" translate
           >PAYMENTS.CC_FORM.ZIP</label
         >
         <input
@@ -196,7 +196,7 @@
       </div>
     </div>
     <div class="mb-3 d-flex justify-content-between mb-0">
-      <label class="sr-only form-label" for="country" translate
+      <label class="visually-hidden form-label" for="country" translate
         >PAYMENTS.CC_FORM.COUNTRY</label
       >
       <select
