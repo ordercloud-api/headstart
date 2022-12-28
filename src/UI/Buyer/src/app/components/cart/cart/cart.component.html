@@ -42,19 +42,13 @@
           <div class="col-md-6"></div>
           <div class="col-md-6">
             <div class="row align-items-center">
-              <div
-                class="col-3 text-right text-medium"
-                id="label_lineItemPrice"
-              >
+              <div class="col-3 text-end text-medium" id="label_lineItemPrice">
                 <small translate>CART.LINEITEM_TABLE.PRICE</small>
               </div>
-              <div class="col-5 text-right text-medium" id="label_lineItemQty">
+              <div class="col-5 text-end text-medium" id="label_lineItemQty">
                 <small translate>CART.LINEITEM_TABLE.QTY</small>
               </div>
-              <div
-                class="col-4 text-right text-medium"
-                id="label_lineItemTotal"
-              >
+              <div class="col-4 text-end text-medium" id="label_lineItemTotal">
                 <small translate>CART.LINEITEM_TABLE.TOTAL</small>
               </div>
             </div>
@@ -90,7 +84,7 @@
               class="row align-items-center pt-3 pt-sm-0"
               *ngIf="orderType !== 'Quote'"
             >
-              <div class="col-3 text-right" id="label_unitPrice">
+              <div class="col-3 text-end" id="label_unitPrice">
                 <small class="d-block d-sm-none white-space-pre" translate
                   >CART.LINEITEM_TABLE.UNIT_PRICE</small
                 >
@@ -98,13 +92,13 @@
                   li.UnitPrice | currency : _orderCurrency
                 }}</span>
               </div>
-              <div class="text-right col-5">
+              <div class="text-end col-5">
                 <small class="d-block d-sm-none" translate
                   >CART.LINEITEM_TABLE.QTY</small
                 >
                 <span>{{ li.Quantity }}</span>
               </div>
-              <div class="col-4 text-right" id="col_lineItemTotal">
+              <div class="col-4 text-end" id="col_lineItemTotal">
                 <small class="d-block d-sm-none" translate
                   >CART.LINEITEM_TABLE.TOTAL</small
                 >
