@@ -41,6 +41,7 @@ import {
   NgbDatepickerModule,
   NgbAccordionModule,
   NgbDateAdapter,
+  NgbNavModule,
   NgbModule,
 } from '@ng-bootstrap/ng-bootstrap'
 import { FormControlErrorDirective } from './directives/form-control-errors.directive'
@@ -367,6 +368,7 @@ const components = [
     NgbDropdownModule,
     NgbDatepickerModule,
     NgbAccordionModule,
+    NgbNavModule,
     NgProgressModule,
     NgProgressHttpModule,
     BrowserAnimationsModule,
