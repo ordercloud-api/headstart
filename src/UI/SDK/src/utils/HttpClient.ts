@@ -149,14 +149,16 @@ class HttpClient {
   private _buildRequestConfig(
     config?: OcRequestConfig
   ): Promise<OcRequestConfig> {
+    const defaultHeaders = {
+      'Content-Type': 'application/json',
+    }
+    const configuredHeaders = config?.headers ? config.headers : defaultHeaders
     const sdkConfig = Configuration.Get()
     const requestConfig = {
       ...config,
       paramsSerializer,
       timeout: sdkConfig.timeoutInMilliseconds,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: configuredHeaders
     }
     return this._addTokenToConfig(requestConfig)
   }

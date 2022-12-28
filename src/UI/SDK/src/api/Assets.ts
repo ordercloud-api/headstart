@@ -18,11 +18,11 @@ export default class Assets {
     * @param assetData required: File
     */
     public async CreateImage(assetData: FileData): Promise<RequiredDeep<ImageAsset>> {
-        return await httpClient.post('/assets/image', this.mapFileToFormData(assetData), { params: {} })
+        return await httpClient.post('/assets/image', this.mapFileToFormData(assetData), { headers: {'Content-Type': 'multipart/form-data'}})
     }
 
     public async CreateDocument(assetData: FileData): Promise<RequiredDeep<DocumentAsset>> {
-        return await httpClient.post('/assets/document', this.mapFileToFormData(assetData), { params: {} })
+        return await httpClient.post('/assets/document', this.mapFileToFormData(assetData), { headers: {'Content-Type': 'multipart/form-data'}})
     }
 
     /**
