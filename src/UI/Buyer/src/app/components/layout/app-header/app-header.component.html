@@ -74,7 +74,7 @@
           >COMMON.LOGIN</a
         >
         <a
-          class="btn btn-sm btn-primary d-sm-block ml-2"
+          class="btn btn-sm btn-primary d-sm-block ms-2"
           (click)="isCollapsed = 'false'; context.router.toRegister()"
           translate
           >LAYOUT.APP_HEADER.REGISTER</a
@@ -207,7 +207,7 @@
                   <span translate>
                     {{ orderRoute.displayText }}
                   </span>
-                  <fa-layers class="fa-fw ml-n3">
+                  <fa-layers class="fa-fw ms-n3">
                     <fa-layers-counter
                       *ngIf="numberOfOrdersToApprove"
                       class="badge__counter--large"
@@ -308,12 +308,12 @@
         [icon]="faTimes"
       ></fa-icon>
     </button>
-    <small class="ml-1 font-weight-bold text-uppercase" translate
+    <small class="ms-1 font-weight-bold text-uppercase" translate
       >LAYOUT.APP_HEADER.SHOP</small
     >
 
     <ocm-search
-      class="ml-3 me-3 w-100"
+      class="ms-3 me-3 w-100"
       [placeholderText]="'LAYOUT.APP_HEADER.PRODUCTS'"
       [searchTermInput]="searchTermForProducts"
       (searched)="searchProducts($event.detail)"
