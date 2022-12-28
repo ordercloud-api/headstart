@@ -96,19 +96,17 @@
       (qtyChange)="setQuantity($event.detail)"
     >
     </ocm-quantity-input>
-    <div class="d-grid">
-      <button
-        (click)="$event.stopPropagation(); addToCart()"
-        [disabled]="isAddingToCart || !qtyValid"
-        class="btn btn-outline-secondary btn-sm"
-        type="submit"
-        translate
+    <button
+      (click)="$event.stopPropagation(); addToCart()"
+      [disabled]="isAddingToCart || !qtyValid"
+      class="btn btn-outline-secondary btn-sm"
+      type="submit"
+      translate
+    >
+      PRODUCTS.CARD.ADD
+      <span class="d-md-none d-lg-inline" translate>
+        PRODUCTS.CARD.TO_CART</span
       >
-        PRODUCTS.CARD.ADD
-        <span class="d-md-none d-lg-inline" translate>
-          PRODUCTS.CARD.TO_CART</span
-        >
-      </button>
-    </div>
+    </button>
   </div>
 </div>

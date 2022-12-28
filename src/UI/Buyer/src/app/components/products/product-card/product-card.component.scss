@@ -52,8 +52,8 @@
 }
 
 .card-footer {
-  display: inline-flex;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: .5rem;
   ocm-quantity-input {
     // DESIGN: this is bootstrap's .form-control-sm
