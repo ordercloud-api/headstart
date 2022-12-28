@@ -31,6 +31,7 @@ import { ShopperContextService } from 'src/app/services/shopper-context/shopper-
 import {
   AcceptedPaymentTypes,
   CheckoutSection,
+  CheckoutSectionName,
 } from 'src/app/models/checkout.types'
 import {
   HSBuyerCreditCard,
@@ -61,7 +62,8 @@ export class OCMCheckout implements OnInit {
   cards: ListPage<BuyerCreditCard>
   selectedCard: SelectedCreditCard
   shipEstimates: ShipEstimate[] = []
-  currentPanel: string
+  currentPanel: CheckoutSectionName
+  loadingPanel: CheckoutSectionName
   paymentError: string
   orderErrorTitle: string
   orderErrorMessage: string
@@ -101,7 +103,7 @@ export class OCMCheckout implements OnInit {
     private router: Router,
     private translate: TranslateService,
     private send: SitecoreSendTrackingService,
-    private cdp: SitecoreCDPTrackingService,
+    private cdp: SitecoreCDPTrackingService
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -114,8 +116,8 @@ export class OCMCheckout implements OnInit {
     this.lineItems = this.context.order.cart.get()
     this.orderPromotions = this.context.order.promos.get()?.Items
     this.isAnon = this.context.currentUser.isAnonymous()
-    this.currentPanel = this.isAnon ? 'login' : 'shippingAddressLoading'
-    this.initLoadingIndicator()
+    this.currentPanel = this.isAnon ? 'login' : 'shippingAddress'
+    this.showLoadingIndicator(this.currentPanel)
     this.updateOrderMeta()
     this.setValidation('login', !this.isAnon)
     await this.context.order.promos.applyAutomaticPromos()
@@ -126,7 +128,7 @@ export class OCMCheckout implements OnInit {
       void this.router.navigate(['/cart'])
     } else {
       await this.reIDLineItems()
-      this.destoryLoadingIndicator(this.isAnon ? 'login' : 'shippingAddress')
+      this.hideLoadingIndicator()
     }
   }
 
@@ -136,10 +138,15 @@ export class OCMCheckout implements OnInit {
   }
 
   async doneWithShipToAddress(): Promise<void> {
-    this.initLoadingIndicator()
-    const orderWorksheet = await this.checkout.estimateShipping()
-    this.shipEstimates = orderWorksheet.ShipEstimateResponse.ShipEstimates
-    this.destoryLoadingIndicator('shippingSelection')
+    try {
+      this.showLoadingIndicator('shippingAddress')
+      const orderWorksheet = await this.checkout.estimateShipping()
+      this.shipEstimates = orderWorksheet.ShipEstimateResponse.ShipEstimates
+      this.hideLoadingIndicator()
+      this.toSection('shippingSelection')
+    } finally {
+      this.hideLoadingIndicator()
+    }
   }
 
   async selectShipMethod(selection: ShipMethodSelection): Promise<void> {
@@ -148,18 +155,23 @@ export class OCMCheckout implements OnInit {
   }
 
   async doneWithShippingRates(): Promise<void> {
-    this.initLoadingIndicator('shippingSelectionLoading')
-    await this.checkout.calculateOrder()
-    this.cards = await this.context.currentUser.cards.List(this.isAnon)
-    this.order = this.context.order.get()
-    if (this.orderPromotions?.length) {
-      await this.context.order.promos.refresh()
+    try {
+      this.showLoadingIndicator('shippingSelection')
+      await this.checkout.calculateOrder()
+      this.cards = await this.context.currentUser.cards.List(this.isAnon)
+      this.order = this.context.order.get()
+      if (this.orderPromotions?.length) {
+        await this.context.order.promos.refresh()
+      }
+      if (this.order.IsSubmitted) {
+        this.handleOrderError(ErrorCodes.AlreadySubmitted)
+      }
+      this.lineItems = this.context.order.cart.get()
+      this.hideLoadingIndicator()
+      this.toSection('payment')
+    } finally {
+      this.hideLoadingIndicator()
     }
-    if (this.order.IsSubmitted) {
-      await this.handleOrderError(ErrorCodes.AlreadySubmitted)
-    }
-    this.lineItems = this.context.order.cart.get()
-    this.destoryLoadingIndicator('payment')
   }
 
   navigateBackToAddress(): void {
@@ -205,7 +217,7 @@ export class OCMCheckout implements OnInit {
   }
 
   async onCardSelected(output: SelectedCreditCard): Promise<void> {
-    this.initLoadingIndicator('paymentLoading')
+    this.showLoadingIndicator('payment')
     const payments: HSPayment[] = []
     this.selectedCard = output
     if (!output.SavedCard) {
@@ -219,8 +231,10 @@ export class OCMCheckout implements OnInit {
         Payments: payments,
       })
       this.payments = await this.checkout.listPayments()
-      this.destoryLoadingIndicator('confirm')
+      this.hideLoadingIndicator()
+      this.toSection('confirm')
     } catch (exception) {
+      this.hideLoadingIndicator()
       this.setValidation('payment', false)
       await this.handleSubmitError(exception)
     }
@@ -261,7 +275,7 @@ export class OCMCheckout implements OnInit {
       this.isLoading = false
       void this.router.navigate(['/cart'])
     } else {
-      this.initLoadingIndicator('submitLoading')
+      this.showLoadingIndicator('confirm')
       try {
         const payment =
           this.payments?.Items?.[0]?.Type === AcceptedPaymentTypes.CreditCard
@@ -271,9 +285,12 @@ export class OCMCheckout implements OnInit {
           'Outgoing',
           this.order.ID,
           payment
-        );
-        this.send.purchase(this.context.order.getLineItems().Items);
-        this.cdp.orderPlaced(this.context.order.get(), this.context.order.getLineItems().Items);
+        )
+        this.send.purchase(this.context.order.getLineItems().Items)
+        this.cdp.orderPlaced(
+          this.context.order.get(),
+          this.context.order.getLineItems().Items
+        )
         //  Do all patching of order XP values in the OrderSubmit integration event
         //  Patching order XP before order is submitted will clear out order worksheet data
         await this.checkout.patch({ Comments: comment }, order.ID)
@@ -419,7 +436,7 @@ export class OCMCheckout implements OnInit {
     this.sections.find((x) => x.id === id).valid = value
   }
 
-  toSection(id: string): void {
+  toSection(id: CheckoutSectionName): void {
     this.orderPromotions = this.context.order.promos.get()?.Items
     this.updateOrderMeta(id)
     const prevIdx = Math.max(this.sections.findIndex((x) => x.id === id) - 1, 0)
@@ -448,7 +465,7 @@ export class OCMCheckout implements OnInit {
         return $event.preventDefault()
       }
     }
-    this.currentPanel = $event.panelId
+    this.currentPanel = $event.panelId as CheckoutSectionName
   }
 
   async refreshOrderUpdateMeta(): Promise<void> {
@@ -467,17 +484,14 @@ export class OCMCheckout implements OnInit {
     )
   }
 
-  initLoadingIndicator(toSection?: string): void {
+  showLoadingIndicator(section: CheckoutSectionName): void {
+    this.loadingPanel = section
     this.isLoading = true
-    if (toSection) {
-      this.currentPanel = toSection
-    }
     this.spinner.show()
   }
 
-  destoryLoadingIndicator(toSection: string): void {
+  hideLoadingIndicator(): void {
     this.isLoading = false
-    this.currentPanel = toSection
-    this.toSection(toSection)
+    this.loadingPanel = undefined
   }
 }

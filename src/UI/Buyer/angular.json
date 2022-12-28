@@ -40,7 +40,8 @@
               "src/web.config"
             ],
             "styles": [
-              "src/styles/themes/defaultbuyer/_main.scss"
+              "src/styles/themes/defaultbuyer/_main.scss",
+              "node_modules/ngx-spinner/animations/ball-spin-clockwise-fade.css"
             ],
             "scripts": [],
             "vendorChunk": true,
@@ -82,6 +83,10 @@
                   "input": "src/styles/themes/defaultbuyer/_main.scss",
                   "bundleName": "defaultbuyer",
                   "inject": false
+                },
+                {
+                  "input": "node_modules/ngx-spinner/animations/ball-spin-clockwise-fade.css",
+                  "inject": true
                 }
               ],
               "optimization": true,
@@ -139,8 +144,8 @@
               "src/web.config"
             ],
             "styles": [
-              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/styles/main.scss"
+              "src/styles/main.scss",
+              "node_modules/ngx-spinner/animations/ball-spin-clockwise-fade.css"
             ],
             "scripts": []
           }

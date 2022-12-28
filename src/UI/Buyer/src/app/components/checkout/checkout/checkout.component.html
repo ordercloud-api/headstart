@@ -30,11 +30,13 @@
       </div>
       <div class="col-lg-9 my-md-0 my-3">
         <ngx-spinner
-          *ngIf="isLoading && currentPanel === 'shippingAddressLoading'"
+          *ngIf="
+            (isLoading && currentPanel === 'shippingAddress') ||
+            currentPanel === 'login'
+          "
           bdColor="null"
           color="var(--primary)"
           size="small"
-          bdColor="null"
           [fullScreen]="false"
           type="ball-spin-clockwise-fade"
         >
@@ -108,22 +110,22 @@
                   (!isLoading || currentPanel !== 'shippingAddress')
                 "
                 [icon]="faCheck"
-                ><span class="visually-hidden"
-                  >Shipping Address Confirmed</span
-                ></fa-icon
+                ><span>Shipping Address Confirmed</span></fa-icon
               >
             </ng-template>
             <ng-template ngbPanelContent>
-              <ocm-checkout-address
-                [isAnon]="isAnon"
-                [order]="order"
-                [lineItems]="lineItems"
-                (continue)="doneWithShipToAddress()"
-                (promosChanged)="updateOrderMeta($event)"
-                (handleOrderError)="handleOrderError($event.detail)"
-                (handleDismissal)="handleAddressDismissal()"
-              >
-              </ocm-checkout-address>
+              <div class="position-relative">
+                <ocm-checkout-address
+                  [isAnon]="isAnon"
+                  [order]="order"
+                  [lineItems]="lineItems"
+                  (continue)="doneWithShipToAddress()"
+                  (promosChanged)="updateOrderMeta($event)"
+                  (handleOrderError)="handleOrderError($event.detail)"
+                  (handleDismissal)="handleAddressDismissal()"
+                >
+                </ocm-checkout-address>
+              </div>
             </ng-template>
           </ngb-panel>
           <ngb-panel id="shippingSelection">
@@ -138,35 +140,32 @@
                   (!isLoading || currentPanel !== 'shippingSelection')
                 "
                 [icon]="faCheck"
-                ><span class="visually-hidden"
-                  >Shipping Address Confirmed</span
-                ></fa-icon
+                ><span>Shipping Address Confirmed</span></fa-icon
               >
-              <ngx-spinner
-                *ngIf="isLoading && currentPanel === 'shippingSelectionLoading'"
-                bdColor="null"
-                color="var(--primary)"
-                size="small"
-                bdColor="null"
-                [fullScreen]="false"
-                type="ball-spin-clockwise-fade"
-              >
-                <small class="visually-hidden"
-                  >Confirming shipping selections</small
-                >
-              </ngx-spinner>
             </ng-template>
             <ng-template ngbPanelContent>
-              <ocm-checkout-shipping
-                [order]="order"
-                [lineItems]="lineItems"
-                [orderPromos]="orderPromotions"
-                [shipEstimates]="shipEstimates"
-                (selectShipRate)="selectShipMethod($event.detail)"
-                (continue)="doneWithShippingRates()"
-                (backToAddress)="navigateBackToAddress()"
-              >
-              </ocm-checkout-shipping>
+              <div class="position-relative">
+                <ngx-spinner
+                  *ngIf="isLoading && currentPanel === 'shippingSelection'"
+                  bdColor="rgba(255, 255, 255, 0.9)"
+                  color="var(--primary)"
+                  size="small"
+                  [fullScreen]="false"
+                  type="ball-spin-clockwise-fade"
+                >
+                  <small>Confirming shipping selections...</small>
+                </ngx-spinner>
+                <ocm-checkout-shipping
+                  [order]="order"
+                  [lineItems]="lineItems"
+                  [orderPromos]="orderPromotions"
+                  [shipEstimates]="shipEstimates"
+                  (selectShipRate)="selectShipMethod($event.detail)"
+                  (continue)="doneWithShippingRates()"
+                  (backToAddress)="navigateBackToAddress()"
+                >
+                </ocm-checkout-shipping>
+              </div>
             </ng-template>
           </ngb-panel>
           <ngb-panel id="payment">
@@ -183,29 +182,30 @@
                 [icon]="faCheck"
               >
               </fa-icon>
-              <ngx-spinner
-                *ngIf="isLoading && currentPanel === 'paymentLoading'"
-                bdColor="null"
-                color="var(--primary)"
-                size="small"
-                bdColor="null"
-                [fullScreen]="false"
-                type="ball-spin-clockwise-fade"
-              >
-                <small class="visually-hidden">Capturing payment</small>
-              </ngx-spinner>
             </ng-template>
             <ng-template ngbPanelContent>
-              <ocm-checkout-payment
-                [isAnon]="isAnon"
-                [order]="order"
-                [cards]="cards"
-                [orderSummaryMeta]="orderSummaryMeta"
-                [paymentError]="paymentError"
-                (cardSelected)="onCardSelected($event.detail)"
-                (continue)="onAcknowledgePurchaseOrder()"
-              >
-              </ocm-checkout-payment>
+              <div class="position-relative">
+                <ngx-spinner
+                  *ngIf="isLoading && currentPanel === 'payment'"
+                  bdColor="rgba(255, 255, 255, 0.9)"
+                  color="var(--primary)"
+                  size="small"
+                  [fullScreen]="false"
+                  type="ball-spin-clockwise-fade"
+                >
+                  <small>Capturing payment...</small>
+                </ngx-spinner>
+                <ocm-checkout-payment
+                  [isAnon]="isAnon"
+                  [order]="order"
+                  [cards]="cards"
+                  [orderSummaryMeta]="orderSummaryMeta"
+                  [paymentError]="paymentError"
+                  (cardSelected)="onCardSelected($event.detail)"
+                  (continue)="onAcknowledgePurchaseOrder()"
+                >
+                </ocm-checkout-payment>
+              </div>
             </ng-template>
           </ngb-panel>
           <ngb-panel id="confirm">
@@ -213,28 +213,33 @@
               <h2 class="h5 mb-0 py-2 text-secondary" translate>
                 CHECKOUT.CHECKOUT.CONFIRM
               </h2>
-              <ngx-spinner
-                *ngIf="isLoading && currentPanel === 'submitLoading'"
-                bdColor="null"
-                color="var(--primary)"
-                size="small"
-                bdColor="null"
-                [fullScreen]="false"
-                type="ball-spin-clockwise-fade"
-              >
-                <small class="visually-hidden">Submitting order</small>
-              </ngx-spinner>
             </ng-template>
             <ng-template ngbPanelContent>
-              <ocm-checkout-confirm
-                [isAnon]="isAnon"
-                [order]="order"
-                [orderPromos]="orderPromotions"
-                [lineItems]="lineItems"
-                [payments]="payments"
-                (submitOrderWithComment)="submitOrderWithComment($event.detail)"
-              >
-              </ocm-checkout-confirm>
+              <div class="position-relative">
+                <ngx-spinner
+                  *ngIf="isLoading && currentPanel === 'confirm'"
+                  bdColor="rgba(255, 255, 255, 0.9)"
+                  color="var(--primary)"
+                  size="small"
+                  [fullScreen]="false"
+                  type="ball-spin-clockwise-fade"
+                >
+                  <small
+                    >Submitting order. Please don't refresh your page</small
+                  >
+                </ngx-spinner>
+                <ocm-checkout-confirm
+                  [isAnon]="isAnon"
+                  [order]="order"
+                  [orderPromos]="orderPromotions"
+                  [lineItems]="lineItems"
+                  [payments]="payments"
+                  (submitOrderWithComment)="
+                    submitOrderWithComment($event.detail)
+                  "
+                >
+                </ocm-checkout-confirm>
+              </div>
             </ng-template>
           </ngb-panel>
         </ngb-accordion>
