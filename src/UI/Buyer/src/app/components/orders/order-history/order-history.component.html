@@ -8,7 +8,7 @@
   </div>
   <ocm-search
     *ngIf="viewContext !== 'Quote'"
-    placeholderText="Orders"
+    [placeholderText]="'ORDERS.HISTORY.ORDERS'"
     [searchTermInput]="searchTerm"
     (searched)="filterBySearch($event.detail)"
   >
