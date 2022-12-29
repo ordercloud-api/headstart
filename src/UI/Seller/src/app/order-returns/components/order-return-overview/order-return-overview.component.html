@@ -32,7 +32,7 @@
         *ngIf="
           orderReturn?.Status === 'Completed' && orderReturn?.RefundAmount > 0
         "
-        class="d-block text-right mb-2"
+        class="d-block text-end mb-2"
       >
         <small
           *ngIf="orderReturn?.xp?.ShippingCredited > 0"
@@ -57,7 +57,7 @@
       </div>
     </div>
     <div class="col-sm-2">
-      <div class="d-block text-right mb-2">
+      <div class="d-block text-end mb-2">
         <small
           class="font-weight-bolder text-muted text-uppercase d-block"
           translate

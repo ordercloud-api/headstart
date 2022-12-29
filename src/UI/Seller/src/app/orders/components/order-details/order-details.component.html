@@ -30,7 +30,7 @@
       {{ 'ADMIN.ORDERS.DOWNLOAD_INVOICE' | translate }}
     </button>
   </div>
-  <div class="d-block text-right mb-2">
+  <div class="d-block text-end mb-2">
     <span class="font-weight-bold">
       {{ 'ADMIN.ORDERS.ORDER_PLACED' | translate }}:
       {{ getOrderDate() | date : 'medium' }}
@@ -182,7 +182,7 @@
           </small>
         </div>
       </div>
-      <div *ngIf="_buyerQuoteAddress" class="d-block text-right">
+      <div *ngIf="_buyerQuoteAddress" class="d-block text-end">
         <small
           class="font-weight-bolder text-muted text-uppercase d-block"
           translate
