@@ -49,7 +49,7 @@
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.21",
     "moment": "^2.20.0",
-    "ngx-cookie": "^6.0.0",
+    "ngx-cookie": "6.0.0",
     "ngx-perfect-scrollbar": "^10.1.1",
     "ngx-progressbar": "^7.0.0",
     "ngx-quill": "^16.0.0",

@@ -7,8 +7,8 @@ import { HttpClientModule, HttpClient } from '@angular/common/http'
 // 3rd party
 import { CookieModule } from 'ngx-cookie'
 import { ToastrModule } from 'ngx-toastr'
-import { NgProgressModule } from '@ngx-progressbar'
-import { NgProgressHttpModule } from '@ngx-progressbar/http'
+import { NgProgressModule } from 'ngx-progressbar'
+import { NgProgressHttpModule } from 'ngx-progressbar/http'
 import {
   TranslateModule,
   TranslateLoader,
