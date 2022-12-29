@@ -182,12 +182,7 @@
             >ADMIN.PROMOTIONS.VALUE</label
           >
           <div class="input-group w-25 mt-3">
-            <div
-              *ngIf="_promotionEditable?.xp?.Type === 'FixedAmount'"
-              class="input-group-prepend"
-            >
-              <span class="input-group-text">$</span>
-            </div>
+            <span *ngIf="_promotionEditable?.xp?.Type === 'FixedAmount'" class="input-group-text">$</span>
             <input
               type="number"
               class="form-control"
@@ -410,9 +405,7 @@
             "
             class="input-group w-25"
           >
-            <div class="input-group-prepend">
-              <span class="input-group-text">$</span>
-            </div>
+            <span class="input-group-text">$</span>
             <label
               for="inputMinReqInt"
               class="sr-only"
@@ -483,9 +476,7 @@
               >
             </div>
             <div [hidden]="!capShipCost" class="input-group w-25">
-              <div class="input-group-prepend">
-                <span class="input-group-text">$</span>
-              </div>
+              <span class="input-group-text">$</span>
               <input
                 class="form-control"
                 type="number"

@@ -192,12 +192,11 @@
         </div>
       </div>
       <div class="input-group w-25">
-        <div
+        <span
           *ngIf="_promotionEditable?.xp?.BOGO?.Type === 'FixedAmount'"
-          class="input-group-prepend"
+          class="input-group-text"
+          >$</span
         >
-          <span class="input-group-text">$</span>
-        </div>
         <input
           type="number"
           class="form-control"

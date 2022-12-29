@@ -258,11 +258,9 @@
         <div class="row">
           <form *ngIf="quotePricingForm" [formGroup]="quotePricingForm">
             <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">{{
-                  supplierCurrency?.Symbol
-                }}</span>
-              </div>
+              <span class="input-group-text">{{
+                supplierCurrency?.Symbol
+              }}</span>
               <input
                 type="number"
                 class="form-control currency"
