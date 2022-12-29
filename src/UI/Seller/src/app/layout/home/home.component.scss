@@ -10,7 +10,7 @@
     line-height: 1;
     font-size: clamp(3rem, 10vw, 8rem);
     text-transform: uppercase;
-    color: var(--primary);
+    color: var(--bs-primary);
     text-align: center;
     animation: float-in .5s .5s ease-in-out backwards;
   }
