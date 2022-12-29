@@ -8,7 +8,7 @@
     &.ribbon-bottom-left {
         &:after {
             border-bottom-color: darken($bg-color, 10);
-            border-right-color: darken($bg-color, 10);
+            border-end-color: darken($bg-color, 10);
         }
     }
 
@@ -22,7 +22,7 @@
     &.ribbon-top-left {
         &:after {
             border-top-color: darken($bg-color, 10);
-            border-right-color: darken($bg-color, 10);
+            border-end-color: darken($bg-color, 10);
         }
     }
 
