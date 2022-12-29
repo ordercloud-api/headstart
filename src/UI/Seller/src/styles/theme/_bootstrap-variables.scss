@@ -41,6 +41,12 @@ $danger:            #E7534B;  // @SC-Theme-Tomato: Dark
 $theme-colors: (
   'primary':        $primary,        
   'secondary':      $secondary,
+  'success':        $green,
+  'info':           $blue,
+  'warning':        $yellow,
+  'danger':         $red,
+  'light':          $light,
+  'dark':           $dark,
   'medium':         $medium,
   'primary-dark':   $primary-dark,
   'primary-light':  $primary-light,

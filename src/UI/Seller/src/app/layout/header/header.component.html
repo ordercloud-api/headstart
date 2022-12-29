@@ -1,166 +1,168 @@
 <nav class="navbar navbar-dark navbar-expand-lg bg-dark base-layout-item">
-  <!-- Brand Logo -->
-  <a class="navbar-brand clickable cursor-pointer">
-    <img
-      class="nav-link navbar-brand"
-      routerLink="/home"
-      width="175px"
-      src="assets/svg/Sitecore_logo_RGB_dark.svg"
-    />
-  </a>
-  <!-- /Brand Logo -->
-  <!-- Mobile Menu Toggle -->
-  <button
-    class="navbar-toggler"
-    type="button"
-    data-toggle="collapse"
-    data-target="#navbarSupportedContent"
-    aria-controls="navbarSupportedContent"
-    aria-label="Toggle navigation"
-    [attr.aria-expanded]="!isCollapsed"
-    (click)="isCollapsed = !isCollapsed"
-  >
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <!-- /Mobile Menu Toggle -->
-  <!-- Collapsible Navbar Menu -->
-  <div
-    [ngClass]="{ collapse: isCollapsed, 'navbar-collapse': true }"
-    id="navbarSupportedContent"
-  >
-    <ul class="navbar-nav me-auto">
-      <li
-        *ngFor="let nav of headerConfig"
-        class="nav-item clickable cursor-pointer"
-        [ngClass]="{
-          'active-nav-group': nav.title === activeTitle,
-          dropdown: nav.subRoutes
-        }"
-      >
-        <!-- [routerLink]="nav.route" -->
-        <div
-          ngbDropdown
-          *ngIf="nav.subRoutes"
-          role="button"
-          [ngClass]="{ active: nav.title === activeTitle }"
+  <div class="container-fluid">
+    <!-- Brand Logo -->
+    <a class="navbar-brand clickable cursor-pointer">
+      <img
+        class="nav-link navbar-brand"
+        routerLink="/home"
+        width="175px"
+        src="assets/svg/Sitecore_logo_RGB_dark.svg"
+      />
+    </a>
+    <!-- /Brand Logo -->
+    <!-- Mobile Menu Toggle -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-label="Toggle navigation"
+      [attr.aria-expanded]="!isCollapsed"
+      (click)="isCollapsed = !isCollapsed"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- /Mobile Menu Toggle -->
+    <!-- Collapsible Navbar Menu -->
+    <div
+      [ngClass]="{ collapse: isCollapsed, 'navbar-collapse': true }"
+      id="navbarSupportedContent"
+    >
+      <ul class="navbar-nav me-auto">
+        <li
+          *ngFor="let nav of headerConfig"
+          class="nav-item clickable cursor-pointer"
+          [ngClass]="{
+            'active-nav-group': nav.title === activeTitle,
+            dropdown: nav.subRoutes
+          }"
         >
+          <!-- [routerLink]="nav.route" -->
+          <div
+            ngbDropdown
+            *ngIf="nav.subRoutes"
+            role="button"
+            [ngClass]="{ active: nav.title === activeTitle }"
+          >
+            <a
+              class="nav-link navbarDropdown"
+              data-toggle="dropdown"
+              ngbDropdownToggle
+              aria-haspopup="true"
+              aria-expanded="false"
+              translate
+              >{{ nav.title }}
+            </a>
+            <!-- Nav Item Dropdown -->
+            <div
+              ngbDropdownMenu
+              *ngIf="nav.subRoutes"
+              class="dropdown-menu"
+              aria-labelledby="navbarDropdown"
+            >
+              <a
+                [routerLink]="route.route"
+                [queryParams]="route.queryParams"
+                (click)="isCollapsed = !isCollapsed"
+                class="dropdown-item"
+                *ngFor="let route of nav.subRoutes"
+                translate
+                >{{ route.title }}</a
+              >
+            </div>
+            <!-- /Nav Item Dropdown -->
+          </div>
+
+          <!-- Single Level Nav Items -->
           <a
-            class="nav-link navbarDropdown"
-            data-toggle="dropdown"
-            ngbDropdownToggle
-            aria-haspopup="true"
-            aria-expanded="false"
+            *ngIf="!nav.subRoutes"
+            [routerLink]="nav.route"
+            [queryParams]="nav.queryParams"
+            (click)="isCollapsed = !isCollapsed"
+            [ngClass]="{ active: nav.title === activeTitle }"
+            class="nav-link"
             translate
             >{{ nav.title }}
           </a>
-          <!-- Nav Item Dropdown -->
-          <div
-            ngbDropdownMenu
-            *ngIf="nav.subRoutes"
-            class="dropdown-menu"
-            aria-labelledby="navbarDropdown"
-          >
-            <a
-              [routerLink]="route.route"
-              [queryParams]="route.queryParams"
-              (click)="isCollapsed = !isCollapsed"
-              class="dropdown-item"
-              *ngFor="let route of nav.subRoutes"
-              translate
-              >{{ route.title }}</a
-            >
-          </div>
-          <!-- /Nav Item Dropdown -->
-        </div>
-
-        <!-- Single Level Nav Items -->
+          <!-- /Single Level Nav Items -->
+        </li>
+      </ul>
+    </div>
+    <div class="nav-item dropdown cursor-pointer" ngbDropdown>
+      <div>
         <a
-          *ngIf="!nav.subRoutes"
-          [routerLink]="nav.route"
-          [queryParams]="nav.queryParams"
-          (click)="isCollapsed = !isCollapsed"
-          [ngClass]="{ active: nav.title === activeTitle }"
-          class="nav-link"
-          translate
-          >{{ nav.title }}
+          class="nav-link navbarDropdown language-dropdown"
+          data-toggle="dropdown"
+          ngbDropdownToggle
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <span>{{ selectedLanguage }}</span>
         </a>
-        <!-- /Single Level Nav Items -->
-      </li>
-    </ul>
-  </div>
-  <div class="nav-item dropdown cursor-pointer" ngbDropdown>
-    <div>
-      <a
-        class="nav-link navbarDropdown"
-        data-toggle="dropdown"
-        ngbDropdownToggle
-        aria-haspopup="true"
-        aria-expanded="false"
+      </div>
+      <div
+        class="dropdown-menu"
+        aria-labelledby="language-dropdown"
+        ngbDropdownMenu
       >
-        <span>{{ selectedLanguage }}</span>
-      </a>
+        <a
+          *ngFor="let lang of languages"
+          class="dropdown-item"
+          (click)="setLanguage(lang)"
+          translate
+        >
+          {{ lang }}
+        </a>
+      </div>
     </div>
-    <div
-      class="dropdown-menu"
-      aria-labelledby="language-dropdown"
-      ngbDropdownMenu
-    >
-      <a
-        *ngFor="let lang of languages"
-        class="dropdown-item"
-        (click)="setLanguage(lang)"
-        translate
+    <div class="nav-item dropdown cursor-pointer current-user" ngbDropdown>
+      <div>
+        <a
+          class="nav-link navbarDropdown nav-link__user"
+          data-toggle="dropdown"
+          ngbDropdownToggle
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <span>
+            {{ user?.FirstName }} {{ user?.LastName }}
+            <small class="d-block">{{ organizationName }}</small>
+          </span>
+          <img
+            *ngIf="user?.xp?.Image?.ThumbnailUrl"
+            class="avatar ms-2"
+            [src]="user?.xp?.Image?.ThumbnailUrl"
+            alt="ProfileImg"
+            id="ProfileImgThumb"
+          />
+          <div
+            *ngIf="
+              !user?.xp?.Image?.ThumbnailUrl &&
+              currentUserInitials !== 'undefinedundefined'
+            "
+            [attr.data-letters]="currentUserInitials"
+            class="avatar avatar-sm ms-2"
+          ></div>
+        </a>
+      </div>
+      <div
+        class="dropdown-menu account-dropdown-alignment"
+        aria-labelledby="user-dropdown"
+        ngbDropdownMenu
       >
-        {{ lang }}
-      </a>
-    </div>
-  </div>
-  <div class="nav-item dropdown cursor-pointer current-user" ngbDropdown>
-    <div>
-      <a
-        class="nav-link navbarDropdown nav-link__user"
-        data-toggle="dropdown"
-        ngbDropdownToggle
-        aria-haspopup="true"
-        aria-expanded="false"
-      >
-        <span>
-          {{ user?.FirstName }} {{ user?.LastName }}
-          <small class="d-block">{{ organizationName }}</small>
-        </span>
-        <img
-          *ngIf="user?.xp?.Image?.ThumbnailUrl"
-          class="avatar ms-2"
-          [src]="user?.xp?.Image?.ThumbnailUrl"
-          alt="ProfileImg"
-          id="ProfileImgThumb"
-        />
-        <div
-          *ngIf="
-            !user?.xp?.Image?.ThumbnailUrl &&
-            currentUserInitials !== 'undefinedundefined'
-          "
-          [attr.data-letters]="currentUserInitials"
-          class="avatar avatar-sm ms-2"
-        ></div>
-      </a>
-    </div>
-    <div
-      class="dropdown-menu account-dropdown-alignment"
-      aria-labelledby="user-dropdown"
-      ngbDropdownMenu
-    >
-      <!-- <h6 class="dropdown-header">{{ organizationName }}</h6> -->
-      <a class="dropdown-item" (click)="toAccount()" translate>
-        <fa-icon [icon]="faUserCircle"></fa-icon> ADMIN.COMMON.MY_ACCOUNT
-      </a>
-      <a class="dropdown-item" (click)="toNotifications()" translate>
-        <fa-icon [icon]="faEnvelope"></fa-icon> ADMIN.COMMON.NOTIFICATIONS
-      </a>
-      <div class="dropdown-divider"></div>
-      <a class="dropdown-item" (click)="logout()" href="/login" translate>
-        <fa-icon [icon]="faSignOutAlt"></fa-icon> ADMIN.COMMON.LOGOUT
-      </a>
+        <!-- <h6 class="dropdown-header">{{ organizationName }}</h6> -->
+        <a class="dropdown-item" (click)="toAccount()" translate>
+          <fa-icon [icon]="faUserCircle"></fa-icon> ADMIN.COMMON.MY_ACCOUNT
+        </a>
+        <a class="dropdown-item" (click)="toNotifications()" translate>
+          <fa-icon [icon]="faEnvelope"></fa-icon> ADMIN.COMMON.NOTIFICATIONS
+        </a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" (click)="logout()" href="/login" translate>
+          <fa-icon [icon]="faSignOutAlt"></fa-icon> ADMIN.COMMON.LOGOUT
+        </a>
+      </div>
     </div>
   </div>
 </nav>

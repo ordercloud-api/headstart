@@ -1,6 +1,7 @@
 @import "../../.././styles/main.scss";
 
 .nav-link {
+    padding: 0.5rem 1rem;
     text-align:right;
     &__user {
         color: white;
@@ -19,6 +20,14 @@
         display: none;
     }
 }
+
+.language-dropdown {
+    color: $primary;
+    &:hover {
+        color: shade-color($primary, 30%)
+    }
+}
+
 .resource-nav-link-container{
     width: 800px;
     margin-left: 100px;
