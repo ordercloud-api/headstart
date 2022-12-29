@@ -1,5 +1,5 @@
 .confirm-modal {
-  @include media-breakpoint-down(sm) {
+  @include media-breakpoint-down(md) {
     // Mobile Modal Styles
     max-width: 100%;
     position: fixed;
