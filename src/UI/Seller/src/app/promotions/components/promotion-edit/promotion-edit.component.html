@@ -196,12 +196,7 @@
               (input)="handleUpdatePromo($event, 'xp.Value', 'number')"
               id="Value"
             />
-            <div
-              *ngIf="_promotionEditable?.xp?.Type === 'Percentage'"
-              class="input-group-append"
-            >
-              <span class="input-group-text">%</span>
-            </div>
+            <span *ngIf="_promotionEditable?.xp?.Type === 'Percentage'" class="input-group-text">%</span>
           </div>
           <hr />
           <h6 class="mb-0" translate>ADMIN.PROMOTIONS.APPLIES_TO</h6>
@@ -468,11 +463,9 @@
               id="inputMinItemQty"
               placeholder="0"
             />
-            <div class="input-group-append">
-              <span class="input-group-text" translate
+            <span class="input-group-text" translate
                 >ADMIN.PROMOTIONS.ITEMS</span
               >
-            </div>
           </div>
           <ng-container *ngIf="_promotionEditable?.xp?.Type === 'FreeShipping'">
             <hr />

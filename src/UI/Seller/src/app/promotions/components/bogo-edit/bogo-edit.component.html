@@ -206,12 +206,7 @@
           (input)="handleUpdatePromo($event, 'xp.BOGO.Value', 'number')"
           id="Value"
         />
-        <div
-          *ngIf="_promotionEditable?.xp?.BOGO?.Type === 'Percentage'"
-          class="input-group-append"
-        >
-          <span class="input-group-text">%</span>
-        </div>
+        <span class="input-group-text">%</span>
       </div>
       <h5 class="text-uppercase fw-bold text-muted mb-0 mt-2">
         Off

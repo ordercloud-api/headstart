@@ -10,23 +10,21 @@
       (keyup)="getDocumentName($event)"
       aria-describedby="document name"
     />
-    <div class="input-group-append">
-      <label
-        *ngIf="documentName?.length"
-        class="btn btn-outline-primary"
-        for="documentUpload"
-        (files)="stageDocuments($event)"
-        translate
-      >
-        ADMIN.PRODUCT_EDIT.CHOOSE_FILE
-        <input
-          id="documentUpload"
-          class="d-none"
-          type="file"
-          (change)="uploadDocument($event, 'staticContent')"
-        />
-      </label>
-    </div>
+    <label
+      *ngIf="documentName?.length"
+      class="btn btn-outline-primary input-group-text"
+      for="documentUpload"
+      (files)="stageDocuments($event)"
+      translate
+    >
+      ADMIN.PRODUCT_EDIT.CHOOSE_FILE
+      <input
+        id="documentUpload"
+        class="d-none"
+        type="file"
+        (change)="uploadDocument($event, 'staticContent')"
+      />
+    </label>
   </div>
   <div
     *ngFor="let document of stagedDocuments; let i = index"

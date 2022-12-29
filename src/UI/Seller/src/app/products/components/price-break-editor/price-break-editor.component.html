@@ -229,8 +229,7 @@
                 ngbDatepicker
                 #saleStartDatePicker="ngbDatepicker"
               />
-              <div class="input-group-append">
-                <button
+              <button
                   [disabled]="readonly"
                   class="btn btn-outline-primary calendar"
                   (click)="saleStartDatePicker.toggle()"
@@ -238,7 +237,6 @@
                 >
                   <fa-icon [icon]="faCalendar"></fa-icon>
                 </button>
-              </div>
             </div>
             <div class="input-group col-md-6">
               <ngb-timepicker
@@ -281,8 +279,7 @@
                 ngbDatepicker
                 #saleEndDatePicker="ngbDatepicker"
               />
-              <div class="input-group-append">
-                <button
+              <button
                   class="btn btn-outline-primary calendar"
                   [disabled]="readonly"
                   (click)="saleEndDatePicker.toggle()"
@@ -290,7 +287,6 @@
                 >
                   <fa-icon [icon]="faCalendar"></fa-icon>
                 </button>
-              </div>
             </div>
             <div class="input-group col-md-6">
               <ngb-timepicker

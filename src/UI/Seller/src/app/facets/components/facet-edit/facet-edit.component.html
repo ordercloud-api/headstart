@@ -69,8 +69,7 @@
               placeholder="{{ 'ADMIN.FACETS.ADD_FACET_OPTION' | translate }}"
               id="newFacetOption"
             />
-            <div class="input-group-append">
-              <button
+            <button
                 class="btn btn-dark"
                 type="submit"
                 [disabled]="facetOptionLimitReached()"
@@ -86,7 +85,6 @@
               >
                 ADMIN.FACETS.ADD
               </button>
-            </div>
           </div>
         </div>
         <div class="chip" *ngFor="let option of _facetEditable?.xp?.Options">
