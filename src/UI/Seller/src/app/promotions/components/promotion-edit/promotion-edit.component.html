@@ -52,15 +52,15 @@
               >ADMIN.PROMOTIONS.PROMO_CODE_EXPLANATION</small
             >
           </div>
-          <div class="custom-control custom-checkbox">
+          <div class="form-check">
             <input
               type="checkbox"
-              class="custom-control-input"
+              class="form-check-input"
               formControlName="Automatic"
               (input)="handleUpdatePromo($event, 'xp.Automatic')"
               id="Automatic"
             />
-            <label class="custom-control-label" for="Automatic" translate
+            <label class="form-check-label" for="Automatic" translate
               >ADMIN.PROMOTIONS.AUTO_APPLY</label
             >
           </div>
@@ -477,15 +477,15 @@
           <ng-container *ngIf="_promotionEditable?.xp?.Type === 'FreeShipping'">
             <hr />
             <h6 class="mb-0" translate>ADMIN.PROMOTIONS.SHIPPING</h6>
-            <div class="custom-control custom-checkbox">
+            <div class="form-check">
               <input
                 type="checkbox"
-                class="custom-control-input"
+                class="form-check-input"
                 (input)="toggleCapShipCost()"
                 [checked]="capShipCost"
                 id="MaxShipCost"
               />
-              <label class="custom-control-label" for="MaxShipCost" translate
+              <label class="form-check-label" for="MaxShipCost" translate
                 >ADMIN.PROMOTIONS.EXCLUDE_SHIPPING_RATES</label
               >
             </div>
@@ -614,18 +614,15 @@
         </div>
         <div class="card bg-white shadow-sm p-4 mt-3">
           <h6 class="fw-medium" translate>ADMIN.PROMOTIONS.USAGE_LIMITS</h6>
-          <div class="custom-control custom-checkbox">
+          <div class="form-check">
             <input
               type="checkbox"
-              class="custom-control-input"
+              class="form-check-input"
               [checked]="hasRedemptionLimit"
               (input)="toggleHasRedemptionLimit()"
               id="HasRedemptionLimit"
             />
-            <label
-              class="custom-control-label"
-              for="HasRedemptionLimit"
-              translate
+            <label class="form-check-label" for="HasRedemptionLimit" translate
               >ADMIN.PROMOTIONS.LIMIT_TIMES_DISCOUNT</label
             >
           </div>
@@ -639,15 +636,15 @@
             formControlName="RedemptionLimit"
             name="RedemptionLimit"
           />
-          <div class="custom-control custom-checkbox">
+          <div class="form-check">
             <input
               type="checkbox"
-              class="custom-control-input"
+              class="form-check-input"
               [checked]="limitPerUser"
               (input)="toggleLimitPerUser()"
               id="LimitPerUser"
             />
-            <label class="custom-control-label" for="LimitPerUser" translate
+            <label class="form-check-label" for="LimitPerUser" translate
               >ADMIN.PROMOTIONS.LIMIT_TIMES_REDEEM</label
             >
           </div>
@@ -692,16 +689,16 @@
               [min]="getMinDate()"
             />
           </div>
-          <div class="custom-control custom-checkbox">
+          <div class="form-check">
             <input
               aria-labeledby="HasExpiration"
               type="checkbox"
-              class="custom-control-input"
+              class="form-check-input"
               (input)="toggleHasExpiration()"
               [checked]="hasExpiration"
               id="HasExpiration"
             />
-            <label class="custom-control-label" for="HasExpiration" translate
+            <label class="form-check-label" for="HasExpiration" translate
               >ADMIN.PROMOTIONS.SET_EXPIRATION_DATE</label
             >
           </div>

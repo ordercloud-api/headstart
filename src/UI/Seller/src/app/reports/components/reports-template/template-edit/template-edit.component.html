@@ -119,10 +119,10 @@
           <div *ngIf="filters?.length" class="form-group col-md-12">
             <ng-container *ngFor="let filter of filters; index as i">
               <h6 class="mt-3">{{ filter.name }}</h6>
-              <div class="custom-control custom-checkbox me-3">
+              <div class="form-check me-3">
                 <input
                   type="checkbox"
-                  class="custom-control-input"
+                  class="form-check-input"
                   (change)="
                     toggleIncludeAllValues($event.target.checked, filter)
                   "
@@ -130,7 +130,7 @@
                   [checked]="filter?.path && !checkForChipDisplay(filter)"
                 />
                 <label
-                  class="custom-control-label"
+                  class="form-check-label"
                   for="{{ filter.name }}"
                   translate
                   >ADMIN.REPORTS.INCLUDE_ALL_VALUES</label

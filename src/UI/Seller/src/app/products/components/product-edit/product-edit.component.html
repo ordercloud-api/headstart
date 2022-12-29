@@ -381,11 +381,11 @@
                     ADMIN.PRODUCT_EDIT.INVENTORY_TRACKING
                   </h6>
                   <div class="form-group">
-                    <div class="custom-control custom-checkbox">
+                    <div class="form-check">
                       <input
                         [attr.disabled]="readonly ? true : null"
                         type="checkbox"
-                        class="custom-control-input"
+                        class="form-check-input"
                         formControlName="InventoryEnabled"
                         (input)="
                           handleUpdateProduct(
@@ -396,7 +396,7 @@
                         id="InventoryEnabled"
                       />
                       <label
-                        class="custom-control-label"
+                        class="form-check-label"
                         for="InventoryEnabled"
                         translate
                         >ADMIN.PRODUCT_EDIT.ENABLE_INVENTORY_TRACKING</label
@@ -407,10 +407,10 @@
                     *ngIf="_superHSProductEditable?.Product?.Inventory?.Enabled"
                     class="form-group"
                   >
-                    <div class="custom-control custom-checkbox">
+                    <div class="form-check">
                       <input
                         type="checkbox"
-                        class="custom-control-input"
+                        class="form-check-input"
                         formControlName="OrderCanExceed"
                         (input)="
                           handleUpdateProduct(
@@ -421,7 +421,7 @@
                         id="OrderCanExceed"
                       />
                       <label
-                        class="custom-control-label"
+                        class="form-check-label"
                         for="OrderCanExceed"
                         translate
                         >ADMIN.PRODUCT_EDIT.ORDER_CAN_EXCEED</label
@@ -438,10 +438,10 @@
                     *ngIf="_superHSProductEditable?.Product?.Inventory?.Enabled"
                     class="form-group"
                   >
-                    <div class="custom-control custom-checkbox">
+                    <div class="form-check">
                       <input
                         type="checkbox"
-                        class="custom-control-input"
+                        class="form-check-input"
                         formControlName="VariantLevelTracking"
                         (input)="
                           handleUpdateProduct(
@@ -452,7 +452,7 @@
                         id="VariantLevelTracking"
                       />
                       <label
-                        class="custom-control-label"
+                        class="form-check-label"
                         for="VariantLevelTracking"
                         translate
                         >Track inventory for each individual variation</label
@@ -527,11 +527,11 @@
                     ADMIN.PRODUCT_EDIT.PRODUCT_RETURNS.PRODUCT_RETURNS
                   </h6>
                   <div class="form-group">
-                    <div class="custom-control custom-checkbox">
+                    <div class="form-check">
                       <input
                         [attr.disabled]="readonly ? true : null"
                         type="checkbox"
-                        class="custom-control-input"
+                        class="form-check-input"
                         formControlName="Returnable"
                         (input)="
                           handleUpdateProduct($event, 'Product.Returnable')
@@ -539,7 +539,7 @@
                         id="returnableEnabled"
                       />
                       <label
-                        class="custom-control-label"
+                        class="form-check-label"
                         for="returnableEnabled"
                         translate
                         >ADMIN.PRODUCT_EDIT.PRODUCT_RETURNS.IS_PRODUCT_RETURNABLE</label
@@ -601,11 +601,11 @@
                         </fa-icon>
                       </ng-container>
                     </div>
-                    <div class="custom-control custom-checkbox mb-3">
+                    <div class="form-check mb-3">
                       <input
                         type="checkbox"
                         [attr.disabled]="readonly ? true : null"
-                        class="custom-control-input"
+                        class="form-check-input"
                         formControlName="FreeShipping"
                         (input)="
                           handleUpdateProduct($event, 'Product.xp.FreeShipping')
@@ -613,7 +613,7 @@
                         id="FreeShipping"
                       />
                       <label
-                        class="custom-control-label"
+                        class="form-check-label"
                         for="FreeShipping"
                         translate
                         >ADMIN.PRODUCT_EDIT.SHIPPING.FREE_SHIPPING</label

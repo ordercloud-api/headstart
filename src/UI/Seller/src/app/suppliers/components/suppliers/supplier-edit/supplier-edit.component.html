@@ -131,10 +131,10 @@
               </small>
             </label>
             <div class="d-flex justify-content-start align-items-center">
-              <div class="custom-control custom-checkbox me-3">
+              <div class="form-check me-3">
                 <input
                   type="checkbox"
-                  class="custom-control-input"
+                  class="form-check-input"
                   formControlName="Standard"
                   (change)="
                     updateResourceFromEvent(
@@ -144,14 +144,12 @@
                   "
                   id="Standard"
                 />
-                <label class="custom-control-label" for="Standard"
-                  >Standard</label
-                >
+                <label class="form-check-label" for="Standard">Standard</label>
               </div>
-              <div class="custom-control custom-checkbox me-3">
+              <div class="form-check me-3">
                 <input
                   type="checkbox"
-                  class="custom-control-input"
+                  class="form-check-input"
                   formControlName="Quote"
                   (change)="
                     updateResourceFromEvent(
@@ -161,16 +159,16 @@
                   "
                   id="Quote"
                 />
-                <label class="custom-control-label" for="Quote">Quote</label>
+                <label class="form-check-label" for="Quote">Quote</label>
               </div>
             </div>
           </div>
           <div class="form-group">
             <label>Free Shipping</label>
-            <div class="custom-control custom-checkbox">
+            <div class="form-check">
               <input
                 type="checkbox"
-                class="custom-control-input"
+                class="form-check-input"
                 formControlName="FreeShippingEnabled"
                 aria-describedby="FreeShippingEnabled"
                 (input)="
@@ -178,7 +176,7 @@
                 "
                 id="Enabled"
               />
-              <label class="custom-control-label" for="Enabled">Enabled</label>
+              <label class="form-check-label" for="Enabled">Enabled</label>
             </div>
             <div *ngIf="_supplierEditable?.xp?.FreeShippingThreshold != null">
               <label for="Threshold">Order Subtotal Threshold</label>
@@ -210,16 +208,16 @@
             <div class="d-flex justify-content-start align-items-center">
               <div
                 *ngFor="let country of countriesServicingOptions"
-                class="me-3 custom-control custom-checkbox"
+                class="me-3 form-check"
               >
                 <input
                   type="checkbox"
-                  class="custom-control-input"
+                  class="form-check-input"
                   [formControlName]="country.Value"
                   (change)="updateCountriesServicing($event, country.Value)"
                   id="{{ country.Value }}"
                 />
-                <label class="custom-control-label" for="{{ country.Value }}">{{
+                <label class="form-check-label" for="{{ country.Value }}">{{
                   country.Text
                 }}</label>
               </div>

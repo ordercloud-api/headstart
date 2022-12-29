@@ -86,17 +86,17 @@
                     'Back of shirt, Sign, Line 1 etc' | translate
                   }}"
                 />
-                <div class="custom-control custom-checkbox mt-3">
+                <div class="form-check mt-3">
                   <input
                     type="checkbox"
                     [checked]="!customizationRequired"
                     [disabled]="readonly"
                     (change)="customizationRequired = !customizationRequired"
-                    class="custom-control-input"
+                    class="form-check-input"
                     id="optionalCustomizationCheckbox"
                   />
                   <label
-                    class="custom-control-label small custom-label-height"
+                    class="form-check-label small custom-label-height"
                     for="optionalCustomizationCheckbox"
                     >This customization is optional</label
                   >
@@ -187,7 +187,7 @@
                 }}"
               />
 
-              <div class="custom-control custom-checkbox mt-3">
+              <div class="form-check mt-3">
                 <input
                   type="checkbox"
                   [checked]="shouldDefinesVariantBeChecked()"
@@ -197,11 +197,11 @@
                     variants?.getValue()?.length === 100 ||
                     readonly
                   "
-                  class="custom-control-input"
+                  class="form-check-input"
                   id="skuVariationCheckbox"
                 />
                 <label
-                  class="custom-control-label small custom-label-height"
+                  class="form-check-label small custom-label-height"
                   for="skuVariationCheckbox"
                   translate
                   >ADMIN.PRODUCT_EDIT.SKUS_VARY</label
@@ -296,10 +296,10 @@
                     >
                       <td class="vertical-align-middle">{{ opt.Value }}</td>
                       <td class="vertical-align-middle">
-                        <div class="custom-control custom-checkbox">
+                        <div class="form-check">
                           <input
                             type="checkbox"
-                            class="custom-control-input"
+                            class="form-check-input"
                             [checked]="isDefaultSpecOption(spec.ID, opt.ID)"
                             (change)="
                               isCreatingNew
@@ -315,7 +315,7 @@
                             "
                           />
                           <label
-                            class="custom-control-label small custom-label-height"
+                            class="form-check-label small custom-label-height"
                             for="DefaultSpecOption_{{ opt.ID }}"
                             >Default
                           </label>

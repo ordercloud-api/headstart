@@ -3,39 +3,39 @@
     Choose which email notifications you would like to receive.
   </h6>
   <form *ngIf="sellerUserForm" [formGroup]="sellerUserForm">
-    <div class="custom-control custom-checkbox">
+    <div class="form-check">
       <input
         type="checkbox"
-        class="custom-control-input"
+        class="form-check-input"
         formControlName="RequestInfoEmails"
         (click)="toggleRequestInfoEmails($event)"
         id="RequestInfoEmails"
       />
-      <label class="custom-control-label" for="RequestInfoEmails" translate
+      <label class="form-check-label" for="RequestInfoEmails" translate
         >Product Information Requests</label
       >
     </div>
-    <div class="custom-control custom-checkbox">
+    <div class="form-check">
       <input
         type="checkbox"
-        class="custom-control-input"
+        class="form-check-input"
         formControlName="OrderEmails"
         (click)="toggleOrderEmails($event)"
         id="OrderEmails"
       />
-      <label class="custom-control-label" for="OrderEmails" translate
+      <label class="form-check-label" for="OrderEmails" translate
         >Order Updates (line item, etc)</label
       >
     </div>
-    <div class="custom-control custom-checkbox">
+    <div class="form-check">
       <input
         type="checkbox"
-        class="custom-control-input"
+        class="form-check-input"
         formControlName="ProductEmails"
         (click)="toggleProductEmails($event)"
         id="ProductEmails"
       />
-      <label class="custom-control-label" for="ProductEmails" translate
+      <label class="form-check-label" for="ProductEmails" translate
         >Product Updates</label
       >
     </div>
