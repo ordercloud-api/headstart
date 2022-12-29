@@ -29,13 +29,17 @@
       </div>
     </form>
     <div>
-      <button
-        (click)="onSubmit()"
-        class="btn btn-primary btn-block-xs mt-4 mr-2"
-        [disabled]="!requestReturnForm.valid || !isAnyRowSelected() || isSaving"
-      >
-        Submit Request
-      </button>
+      <div class="d-grid">
+        <button
+          (click)="onSubmit()"
+          class="btn btn-primary mt-4 me-2"
+          [disabled]="
+            !requestReturnForm.valid || !isAnyRowSelected() || isSaving
+          "
+        >
+          Submit Request
+        </button>
+      </div>
     </div>
   </div>
 </div>

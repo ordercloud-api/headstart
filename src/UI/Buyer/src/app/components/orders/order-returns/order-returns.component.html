@@ -37,10 +37,8 @@
               </p>
             </small>
           </div>
-          <div class="col-md-6 text-right">
-            <span
-              class="font-weight-bold"
-              *ngIf="_orderDetails.OrderReturns?.length > 1"
+          <div class="col-md-6 text-end">
+            <span class="fw-bold" *ngIf="_orderDetails.OrderReturns?.length > 1"
               >{{ i + 1 }} of {{ _orderDetails.OrderReturns?.length }}</span
             >
           </div>
@@ -52,7 +50,7 @@
           [orderReturn]="orderReturn"
         >
         </ocm-returns-lineitem-table>
-        <span class="mt-3 float-right font-weight-bold">
+        <span class="mt-3 float-end fw-bold">
           <span translate>CART.LINEITEM_TABLE.TOTAL_REFUND</span>:
           {{ orderReturn.RefundAmount || 0 | currency : orderCurrency }}
         </span>

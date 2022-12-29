@@ -1,23 +1,20 @@
 <div>
   <form [formGroup]="form" *ngIf="form">
-    <h5 class="text-medium font-weight-light">{{ supplier?.Name }}</h5>
+    <h5 class="text-medium fw-light">{{ supplier?.Name }}</h5>
     <table class="table table-hover bg-light">
       <thead>
         <tr>
           <th>
-            <div
-              class="custom-control custom-checkbox"
-              *ngIf="rows?.length > 1"
-            >
+            <div class="form-check" *ngIf="rows?.length > 1">
               <input
                 id="group_{{ form.value.shipFromAddressID }}"
                 (click)="$event ? masterToggle() : null"
                 type="checkbox"
-                class="custom-control-input"
+                class="form-check-input"
                 [checked]="isAllEnabledSelected()"
               />
               <label
-                class="custom-control-label"
+                class="form-check-label"
                 for="group_{{ form.value.shipFromAddressID }}"
                 translate
               ></label>
@@ -37,18 +34,18 @@
           <td>
             <form [formGroup]="row">
               <!-- Select column -->
-              <div class="custom-control custom-checkbox">
+              <div class="form-check">
                 <input
                   (change)="$event ? toggle(row) : null"
                   id="row_{{ form.value.shipFromAddressID }}_{{
                     row.value.lineItem.ID
                   }}"
                   type="checkbox"
-                  class="custom-control-input"
+                  class="form-check-input"
                   formControlName="selected"
                 />
                 <label
-                  class="custom-control-label"
+                  class="form-check-label"
                   for="row_{{ form.value.shipFromAddressID }}_{{
                     row.value.lineItem.ID
                   }}"
@@ -73,7 +70,7 @@
             <!-- Item ID Column -->
             <a
               (click)="toProductDetails(row.value.lineItem.Product.ID)"
-              class="text-primary link"
+              class="link-primary link"
               >{{ row.value.lineItem | productNameWithSpecs }}</a
             >
             <small class="text-muted d-block">{{

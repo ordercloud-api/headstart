@@ -7,9 +7,11 @@
 >
   <div [formGroup]="contactSupplierForm">
     <p class="lead" translate>PRODUCTS.CONTACT_SUPPLIER.PLEASE_VERIFY</p>
-    <div class="form-row mt-4">
-      <div class="form-group col-md-6">
-        <label for="FirstName" translate>PRODUCTS.CONTACT_SUPPLIER.FIRST</label>
+    <div class="row mt-4">
+      <div class="mb-3 col-md-6">
+        <label for="FirstName" class="form-label" translate
+          >PRODUCTS.CONTACT_SUPPLIER.FIRST</label
+        >
         <input
           type="text"
           formControlName="FirstName"
@@ -21,8 +23,10 @@
           showErrors
         />
       </div>
-      <div class="form-group col-md-6">
-        <label for="LastName" translate>PRODUCTS.CONTACT_SUPPLIER.LAST</label>
+      <div class="mb-3 col-md-6">
+        <label for="LastName" class="form-label" translate
+          >PRODUCTS.CONTACT_SUPPLIER.LAST</label
+        >
         <input
           type="text"
           formControlName="LastName"
@@ -34,13 +38,13 @@
         />
       </div>
     </div>
-    <div class="form-group">
-      <label for="BuyerLocation" translate
+    <div class="mb-3">
+      <label for="BuyerLocation" class="form-label" translate
         >PRODUCTS.CONTACT_SUPPLIER.FOR_LOCATION</label
       >
       <select
         id="BuyerLocation"
-        class="custom-select custom-select-sm"
+        class="form-select form-select-sm"
         formControlName="BuyerLocation"
       >
         <option
@@ -51,9 +55,11 @@
         </option>
       </select>
     </div>
-    <div class="form-row">
-      <div class="form-group col-md-6">
-        <label for="Email" translate>PRODUCTS.CONTACT_SUPPLIER.EMAIL</label>
+    <div class="row">
+      <div class="mb-3 col-md-6">
+        <label for="Email" class="form-label" translate
+          >PRODUCTS.CONTACT_SUPPLIER.EMAIL</label
+        >
         <input
           type="text"
           formControlName="Email"
@@ -64,8 +70,10 @@
           showErrors
         />
       </div>
-      <div class="form-group col-md-6">
-        <label for="Phone" translate>PRODUCTS.CONTACT_SUPPLIER.PHONE</label>
+      <div class="mb-3 col-md-6">
+        <label for="Phone" class="form-label" translate
+          >PRODUCTS.CONTACT_SUPPLIER.PHONE</label
+        >
         <input
           type="text"
           formControlName="Phone"
@@ -77,9 +85,9 @@
         />
       </div>
     </div>
-    <div class="form-group">
+    <div class="mb-3">
       <form novalidate [formGroup]="contactSupplierForm">
-        <label for="Comments" translate
+        <label for="Comments" class="form-label" translate
           >PRODUCTS.CONTACT_SUPPLIER.COMMENTS</label
         >
         <textarea
@@ -98,7 +106,7 @@
     </div>
   </div>
   <div class="d-flex justify-content-space-between align-items-center">
-    <button type="submit" class="btn btn-primary mr-2" translate>
+    <button type="submit" class="btn btn-primary me-2" translate>
       PRODUCTS.CONTACT_SUPPLIER.SUBMIT
     </button>
     <button

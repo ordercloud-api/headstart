@@ -30,7 +30,7 @@
             PROFILE.ADDRESS_LIST.DELETE
           </button>
           <button
-            class="btn btn-sm float-right"
+            class="btn btn-sm float-end"
             (click)="closeAreYouSure()"
             translate
           >
@@ -105,7 +105,7 @@
         </div>
         <!-- Display the Address Form on Desktop View (lg+) -->
         <div
-          class="col-lg-6 d-none d-lg-block border-left"
+          class="col-lg-6 d-none d-lg-block border-start"
           *ngIf="showCreateAddressForm"
         >
           <ocm-address-form

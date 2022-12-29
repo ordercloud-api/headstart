@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container mt-3">
   <div class="row">
     <div class="col-md-12">
       <div>
@@ -7,7 +7,7 @@
       <div class="d-flex justify-content-between align-items-center">
         <form class="d-flex">
           <ocm-search
-            class="mr-3 w-100"
+            class="me-3 w-100"
             [placeholderText]="'ALIAS.SUPPLIERS'"
             [searchTermInput]="searchTermForSuppliers"
             (searched)="searchSuppliers($event.detail)"
@@ -25,7 +25,7 @@
                       class="group"
                     >
                       <select
-                        class="custom-select input-sm"
+                        class="form-select input-sm"
                         type="select"
                         required
                         [formControlName]="filter.Path"
@@ -63,7 +63,7 @@
           </ng-template>
           <div
             *ngIf="hasFiltersAvailable()"
-            class="btn btn-light mr-2"
+            class="btn btn-light me-2"
             placement="bottom"
             [ngbPopover]="filters"
             autoClose="outside"

@@ -1,57 +1,60 @@
 <div class="container mt-3">
-  <div class="row no-gutters w-100 border-bottom mb-4">
+  <div class="row g-0 w-100 border-bottom mb-4">
     <h1 class="page-heading col-3" translate>
       <!-- <ng-container *ngIf="orderRoutes.length > 1; else myOrders" translate> -->
       <ng-container translate> ORDERS.HISTORY.ORDERS </ng-container>
       <ng-template #myOrders translate>ORDERS.HISTORY.MY_ORDERS</ng-template>
     </h1>
   </div>
-    <ocm-search
-      *ngIf="viewContext !== 'Quote'"
-      placeholderText="Orders"
-      [searchTermInput]="searchTerm"
-      (searched)="filterBySearch($event.detail)"
+  <ocm-search
+    *ngIf="viewContext !== 'Quote'"
+    [placeholderText]="'ORDERS.HISTORY.ORDERS'"
+    [searchTermInput]="searchTerm"
+    (searched)="filterBySearch($event.detail)"
+  >
+  </ocm-search>
+  <div class="row mt-4">
+    <div *ngIf="viewContext === 'Location'" class="col-3">
+      <ocm-order-location-filter></ocm-order-location-filter>
+    </div>
+    <div
+      class="col-sm-3"
+      *ngIf="viewContext !== 'Approve' && viewContext !== 'Quote'"
     >
-    </ocm-search>
-    <div class="row mt-4">
-      <div *ngIf="viewContext === 'Location'" class="col-3">
-        <ocm-order-location-filter></ocm-order-location-filter>
-      </div>
-      <div class="col-sm-3" *ngIf="viewContext !== 'Approve' && viewContext !== 'Quote'">
-        <ocm-order-status-filter></ocm-order-status-filter>
-      </div>
-      <div class="col-sm-6" *ngIf="viewContext !== 'Quote'">
-        <ocm-order-date-filter></ocm-order-date-filter>
-      </div>
+      <ocm-order-status-filter></ocm-order-status-filter>
     </div>
-    <div class="row mt-4">
-      <div class="col-12">
-        <ul class="nav nav-tabs" role="tablist">
-          <li class="nav-item" *ngFor="let orderRoute of orderRoutes">
-            <button
-              class="nav-link py-3"
-              [ngClass]="{ active: orderRoute.context === viewContext }"
-              (click)="context.router[orderRoute.routerCall]()"
-              type="button"
-              translate
-            >
-              {{ orderRoute.displayText }}
-            </button>
-          </li>
-          <li
-            class="text-secondary align-self-center ml-auto"
-            *ngIf="columns.includes('Favorite')"
+    <div class="col-sm-6" *ngIf="viewContext !== 'Quote'">
+      <ocm-order-date-filter></ocm-order-date-filter>
+    </div>
+  </div>
+  <div class="row mt-4">
+    <div class="col-12">
+      <ul class="nav navbar-expand-lg nav-tabs" role="tablist">
+        <li class="nav-item" *ngFor="let orderRoute of orderRoutes">
+          <button
+            class="nav-link py-3"
+            [ngClass]="{ active: orderRoute.context === viewContext }"
+            (click)="context.router[orderRoute.routerCall]()"
+            type="button"
+            translate
           >
-            <ocm-toggle-favorite
-              [favorite]="showOnlyFavorites"
-              (favoriteChanged)="filterByFavorite($event.detail)"
-            >
-            </ocm-toggle-favorite>
-            <span class="pl-2" translate>ORDERS.HISTORY.FAVORITES</span>
-          </li>
-        </ul>
-      </div>
+            {{ orderRoute.displayText }}
+          </button>
+        </li>
+        <li
+          class="text-secondary align-self-center ms-auto"
+          *ngIf="columns.includes('Favorite')"
+        >
+          <ocm-toggle-favorite
+            [favorite]="showOnlyFavorites"
+            (favoriteChanged)="filterByFavorite($event.detail)"
+          >
+          </ocm-toggle-favorite>
+          <span class="ps-2" translate>ORDERS.HISTORY.FAVORITES</span>
+        </li>
+      </ul>
     </div>
+  </div>
   <ocm-order-list
     *ngIf="orders"
     [orders]="orders"

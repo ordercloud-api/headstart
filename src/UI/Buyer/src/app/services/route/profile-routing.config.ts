@@ -4,7 +4,7 @@ export const ProfileRoutes: RouteConfig[] = [
   {
     routerCall: 'toMyProfile',
     displayText: 'My Profile',
-    url: '/profile/details',
+    url: '/profile',
     showInDropdown: true,
   },
   {
@@ -28,7 +28,7 @@ export const ProfileRoutes: RouteConfig[] = [
   {
     routerCall: 'toChangePassword',
     displayText: 'Change Password',
-    url: '/profile/details',
+    url: '/profile',
     showInDropdown: false,
   },
 ]

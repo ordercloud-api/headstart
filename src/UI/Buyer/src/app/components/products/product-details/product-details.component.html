@@ -41,7 +41,7 @@
         <small class="d-block">SKU: {{ _product?.ID }}</small>
         <!-- TODO: Uncomment when grid bugs are fixed -->
         <div
-          class="btn-group float-right"
+          class="btn-group float-end"
           *ngIf="
             specs?.length > 0 &&
             hasNoOpenTextSpecs() &&
@@ -68,7 +68,7 @@
         <span translate>PRODUCTS.DETAILS.NOTE</span>: {{ supplierNote }}
       </div>
       <ng-container *ngIf="!showGrid">
-        <h4 class="font-weight-bold">
+        <h4 class="fw-bold">
           <app-product-price-display
             class="card-text mb-0"
             *ngIf="
@@ -83,13 +83,13 @@
         </h4>
         <span
           *ngIf="_product?.xp?.ProductType === 'Quote'"
-          class="small badge badge-pill badge-warning"
+          class="small badge rounded-pill bg-warning"
         >
           Quote Product</span
         >
         <!-- TODO: Plug in unit of measure when data is in OC. -->
         <p class="text-muted">{{ _product | UofM }}</p>
-        <span class="badge badge-pill badge-warning" *ngIf="percentSavings > 0">
+        <span class="badge rounded-pill bg-warning" *ngIf="percentSavings > 0">
           <span translate>PRODUCTS.DETAILS.SAVINGS</span> {{ percentSavings }}%!
         </span>
       </ng-container>
@@ -120,14 +120,16 @@
           class="d-flex flex-column mb-3"
           *ngIf="isOrderable && !isQuoteAnonUser"
         >
-          <small
-            class="text-uppercase font-weight-bolder text-muted mb-2"
-            translate
+          <small class="text-uppercase fw-bolder text-muted mb-2" translate
             >PRODUCTS.DETAILS.QUANTITY</small
           >
           <div *ngIf="isBundle" class="d-flex flex-row">
-            <div class="form-group mb-0 mr-3">
-              <label for="quantity" class="sr-only" translate
+            <div class="mb-0 me-3">
+              <label
+                for="quantity"
+                class="form-label"
+                class="visually-hidden"
+                translate
                 >PRODUCTS.QTY_INPUT.QTY</label
               >
               <input
@@ -147,22 +149,24 @@
                 aria-describedby="quantity"
               />
             </div>
-            <button
-              class="btn btn-block btn-primary mb-3"
-              type="submit"
-              [disabled]="isAddingToCart"
-              (click)="addToCart()"
-            >
-              <div>
-                <span translate>PRODUCTS.DETAILS.ADD_TO_CART</span>
-                &nbsp;&nbsp;|&nbsp;&nbsp;
-                {{ price | currency: userCurrency }}
-              </div>
-            </button>
+            <div class="d-grid">
+              <button
+                class="btn btn-primary mb-3"
+                type="submit"
+                [disabled]="isAddingToCart"
+                (click)="addToCart()"
+              >
+                <div>
+                  <span translate>PRODUCTS.DETAILS.ADD_TO_CART</span>
+                  &nbsp;&nbsp;|&nbsp;&nbsp;
+                  {{ price | currency : userCurrency }}
+                </div>
+              </button>
+            </div>
           </div>
           <div *ngIf="!isBundle" class="d-flex flex-row">
             <ocm-quantity-input
-              class="d-inline-block mb-3 mr-3 flex-shrink-0"
+              class="d-inline-block mb-3 me-3 flex-shrink-0"
               (qtyChange)="qtyChange($event.detail)"
               [product]="_product"
               [priceSchedule]="_product.PriceSchedule"
@@ -172,26 +176,28 @@
               [isAddingToCart]="isAddingToCart"
             >
             </ocm-quantity-input>
-            <button
-              class="btn btn-block btn-primary mb-3"
-              type="submit"
-              [disabled]="
-                isAddingToCart ||
-                (specForm && !specForm?.valid) ||
-                !qtyValid ||
-                isInactiveVariant
-              "
-              (click)="addToCart()"
-            >
-              <div *ngIf="_product?.xp?.ProductType !== 'Quote'">
-                <span translate>PRODUCTS.DETAILS.ADD_TO_CART</span>
-                &nbsp;&nbsp;|&nbsp;&nbsp;
-                {{ price | currency: userCurrency }}
-              </div>
-              <span *ngIf="_product?.xp?.ProductType === 'Quote'">
-                Request Quote
-              </span>
-            </button>
+            <div class="d-grid">
+              <button
+                class="btn btn-primary mb-3"
+                type="submit"
+                [disabled]="
+                  isAddingToCart ||
+                  (specForm && !specForm?.valid) ||
+                  !qtyValid ||
+                  isInactiveVariant
+                "
+                (click)="addToCart()"
+              >
+                <div *ngIf="_product?.xp?.ProductType !== 'Quote'">
+                  <span translate>PRODUCTS.DETAILS.ADD_TO_CART</span>
+                  &nbsp;&nbsp;|&nbsp;&nbsp;
+                  {{ price | currency : userCurrency }}
+                </div>
+                <span *ngIf="_product?.xp?.ProductType === 'Quote'">
+                  Request Quote
+                </span>
+              </button>
+            </div>
           </div>
         </div>
         <div *ngIf="!isOrderable" class="alert alert-info" translate>
@@ -199,7 +205,7 @@
         </div>
       </ng-container>
       <ng-container *ngIf="isBundle">
-        <h5>Included in Bundle: </h5>
+        <h5>Included in Bundle:</h5>
         <div class="container">
           <div class="row">
             <div
@@ -252,7 +258,7 @@
         </ocm-grid-spec-form>
       </ng-container>
       <ng-container *ngIf="priceBreaks && priceBreaks.length > 1">
-        <h3 class="small font-weight-bolder text-muted" translate>
+        <h3 class="small fw-bolder text-muted" translate>
           PRODUCTS.DETAILS.TIERED_PRICE_HEAD
         </h3>
         <div class="border-bottom border-medium mb-3 pb-3">
@@ -260,11 +266,11 @@
           <div class="d-flex flex-row flex-wrap">
             <span
               *ngFor="let priceBreak of priceBreaks; let i = index"
-              class="font-weight-bold d-flex mt-2"
+              class="fw-bold d-flex mt-2"
             >
               {{ getPriceBreakRange(i) }}:
-              <p class="font-weight-normal ml-1 mr-4">
-                {{ priceBreak?.Price | currency: userCurrency }}
+              <p class="fw-normal ms-1 me-4">
+                {{ priceBreak?.Price | currency : userCurrency }}
               </p>
             </span>
           </div>
@@ -307,7 +313,7 @@
         <svg
           xmlns="http://www.w3.org/2000/svg"
           aria-hidden="true"
-          class="mr-1"
+          class="me-1"
           viewBox="0 0 512 512"
           width="15px"
         >
@@ -323,7 +329,7 @@
         <small class="text-medium"> Product Ships From Canada </small>
       </div>
       <!-- PRODUCT DESCRIPTION -->
-      <h3 class="small font-weight-bolder text-muted" translate>
+      <h3 class="small fw-bolder text-muted" translate>
         PRODUCTS.DETAILS.DESCRIPTION
       </h3>
       <p
@@ -333,7 +339,7 @@
       ></p>
       <!-- PRODUCT DOCS -->
       <ng-container *ngIf="attachments?.length > 0">
-        <h3 class="small font-weight-bolder text-muted" translate>
+        <h3 class="small fw-bolder text-muted" translate>
           PRODUCTS.DETAILS.DOCS
         </h3>
         <div class="list-group list-group-flush my-2">
@@ -357,7 +363,7 @@
       >
         <button
           type="button"
-          class="btn btn-link p-0 mt-3 float-right"
+          class="btn btn-link p-0 mt-3 float-end"
           (click)="openContactSupplierForm()"
         >
           <span translate>PRODUCTS.DETAILS.CONTACT_PART_ONE</span>
@@ -371,7 +377,7 @@
       <div *ngIf="!showGrid" class="p-3 border border-medium rounded">
         <div class="d-flex justify-content-between align-items-center">
           <span
-            class="badge badge-pill badge-warning"
+            class="badge rounded-pill bg-warning"
             *ngIf="percentSavings > 0"
           >
             <span translate>PRODUCTS.DETAILS.SAVINGS</span>
@@ -401,28 +407,30 @@
             [variantInventory]="variantInventory"
           >
           </ocm-quantity-input>
-          <button
-            *ngIf="isQuoteProduct()"
-            class="btn btn-block btn-primary mb-3"
-            type="submit"
-            [disabled]="(specForm && !specForm?.valid) || !qtyValid"
-            (click)="openQuoteForm()"
-            translate
-          >
-            PRODUCTS.DETAILS.REQ_QUOTE
-          </button>
-          <button
-            *ngIf="!isQuoteProduct()"
-            class="btn btn-block btn-primary"
-            type="submit"
-            [disabled]="
-              isAddingToCart || (specForm && !specForm?.valid) || !qtyValid
-            "
-            (click)="addToCart($event)"
-            translate
-          >
-            PRODUCTS.DETAILS.ADD_TO_CART
-          </button>
+          <div class="d-grid">
+            <button
+              *ngIf="isQuoteProduct()"
+              class="btn btn-primary mb-3"
+              type="submit"
+              [disabled]="(specForm && !specForm?.valid) || !qtyValid"
+              (click)="openQuoteForm()"
+              translate
+            >
+              PRODUCTS.DETAILS.REQ_QUOTE
+            </button>
+            <button
+              *ngIf="!isQuoteProduct()"
+              class="btn btn-primary"
+              type="submit"
+              [disabled]="
+                isAddingToCart || (specForm && !specForm?.valid) || !qtyValid
+              "
+              (click)="addToCart($event)"
+              translate
+            >
+              PRODUCTS.DETAILS.ADD_TO_CART
+            </button>
+          </div>
         </div>
       </div>
       <ocm-modal [state]="quoteFormModal" [modalTitle]="'Request Quote'">

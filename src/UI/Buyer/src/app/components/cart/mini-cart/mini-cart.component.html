@@ -5,7 +5,7 @@
   <div class="list-group list-group-flush">
     <div
       class="list-group-item"
-      *ngFor="let li of lineItems | slice: 0:maxLines"
+      *ngFor="let li of lineItems | slice : 0 : maxLines"
     >
       <a href="javascript:;" (click)="toProductDetails(li.Product.ID)">{{
         li | productNameWithSpecs
@@ -17,7 +17,7 @@
         >
         <small
           ><span class="text-muted" translate>CART.MINI_CART.UNIT_PRICE</span>:
-          {{ li.UnitPrice || 0 | currency: _orderCurrency }}</small
+          {{ li.UnitPrice || 0 | currency : _orderCurrency }}</small
         >
       </div>
     </div>
@@ -25,9 +25,9 @@
       <fa-icon [icon]="faEllipsisH"></fa-icon>
     </h4>
     <div class="list-group-item">
-      <div class="d-flex justify-content-between font-weight-bold">
+      <div class="d-flex justify-content-between fw-bold">
         <small translate>CART.MINI_CART.SUBTOTAL</small>
-        <small>{{ order?.Subtotal | currency: _orderCurrency }}</small>
+        <small>{{ order?.Subtotal | currency : _orderCurrency }}</small>
       </div>
     </div>
   </div>
@@ -41,7 +41,12 @@
     <button class="btn btn-sm btn-link" (click)="toFullCart()" translate>
       CART.MINI_CART.EDIT_CART
     </button>
-    <button class="btn btn-sm btn-primary" (click)="toCheckout()" *ngIf="!isQuoteOrder()" translate>
+    <button
+      class="btn btn-sm btn-primary"
+      (click)="toCheckout()"
+      *ngIf="!isQuoteOrder()"
+      translate
+    >
       CART.MINI_CART.CHECKOUT
     </button>
   </div>

@@ -1,12 +1,14 @@
 <div class="d-md-none" ngbDropdown>
-  <button
-    class="btn btn-block btn-outline-light mb-2"
-    id="myProfileNav"
-    ngbDropdownToggle
-    translate
-  >
-    PROFILE.PROFILE_NAV.ACC_SELECTIONS
-  </button>
+  <div class="d-grid">
+    <button
+      class="btn btn-outline-light mb-2"
+      id="myProfileNav"
+      ngbDropdownToggle
+      translate
+    >
+      PROFILE.PROFILE_NAV.ACC_SELECTIONS
+    </button>
+  </div>
   <div ngbDropdownMenu aria-labelledby="myProfileNav" class="w-100 text-center">
     <button
       *ngFor="let profileRoute of profileRoutes"
@@ -18,15 +20,16 @@
   </div>
 </div>
 
-<ul class="nav nav-fill flex-column d-none d-md-flex gap-2">
+<ul class="nav navbar-expand-lg nav-fill flex-column d-none d-md-flex gap-2">
   <li
     *ngFor="let profileRoute of profileRoutes"
-    class="nav-item cursor-pointer text-left"
+    class="nav-item cursor-pointer text-start"
   >
     <a
       class="nav-link"
-      [ngClass]="{ active: activePath === profileRoute }"
-      (click)="context.router[profileRoute.routerCall]()"
+      [routerLink]="profileRoute.url"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
       >{{ profileRoute.displayText }}</a
     >
   </li>

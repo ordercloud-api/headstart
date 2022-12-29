@@ -8,15 +8,7 @@
         <a class="breadcrumb-item" aria-current="page">{{ order.ID }}</a>
       </nav>
       <div
-        class="
-          d-flex
-          flex-wrap
-          align-items-center
-          justify-content-between
-          pb-2
-          mt-4
-          mb-2
-        "
+        class="d-flex flex-wrap align-items-center justify-content-between pb-2 mt-4 mb-2"
       >
         <h2>
           <span class="text-muted"
@@ -25,7 +17,7 @@
           {{ order.ID }}
           <span
             *ngIf="order.xp.OrderType === 'Quote'"
-            class="badge badge-pill badge-primary ml-2"
+            class="badge rounded-pill bg-primary ms-2"
             >{{ order.xp.OrderType }}</span
           >
         </h2>
@@ -44,7 +36,7 @@
         <div class="col-md-4">
           <span class="text-muted small">
             <span translate> ORDERS.DETAIL.SUBMITTED</span>
-            {{ order.DateSubmitted | date: 'short' }}</span
+            {{ order.DateSubmitted | date : 'short' }}</span
           >
           <ul class="list-group mt-2">
             <li class="list-group-item">
@@ -64,25 +56,17 @@
           </ul>
         </div>
         <div
-          class="
-            col-md-8
-            mt-3 mt-md-0
-            d-flex
-            flex-wrap
-            gap-2
-            align-items-end
-            justify-content-end
-          "
+          class="col-md-8 mt-3 mt-md-0 d-flex flex-wrap gap-2 align-items-end justify-content-end"
         >
           <ocm-order-approval
             *ngIf="approvalVersion"
-            class="float-right"
+            class="float-end"
             [orderID]="order?.ID"
           ></ocm-order-approval>
 
           <button
             *ngIf="!approvalVersion && !isAnon"
-            class="btn btn-outline-secondary float-right d-print-none"
+            class="btn btn-outline-secondary float-end d-print-none"
             (click)="toggleFavorite(order)"
             translate
           >
@@ -160,13 +144,7 @@
                 <p translate>ORDERS.DETAIL.CANCEL_ORDER_WARNING</p>
               </div>
               <div
-                class="
-                  row
-                  d-flex
-                  justify-content-space-between justify-content-between
-                  mr-2
-                  ml-2
-                "
+                class="row d-flex justify-content-space-between justify-content-between me-2 ms-2"
               >
                 <button
                   type="button"
@@ -211,13 +189,7 @@
               >
               </ocm-lineitem-table>
               <div
-                class="
-                  row
-                  d-flex
-                  justify-content-space-between justify-content-between
-                  mr-2
-                  ml-2
-                "
+                class="row d-flex justify-content-space-between justify-content-between me-2 ms-2"
               >
                 <button
                   type="button"
@@ -248,13 +220,7 @@
                 <p translate>ORDERS.DETAIL.WARNING</p>
               </div>
               <div
-                class="
-                  row
-                  d-flex
-                  justify-content-space-between justify-content-between
-                  mr-2
-                  ml-2
-                "
+                class="row d-flex justify-content-space-between justify-content-between me-2 ms-2"
               >
                 <button
                   type="button"
@@ -277,66 +243,58 @@
         </div>
       </div>
     </div>
-    <ul *ngIf="!approvalVersion" class="nav nav-tabs mb-2 mt-4 d-print-none">
-      <li class="nav-item">
-        <button
-          type="button"
-          class="btn btn-link nav-link"
-          [ngClass]="{ active: subView == 'details' }"
-          (click)="toDetails()"
-          translate
+    <ul
+      ngbNav
+      #nav="ngbNav"
+      [hidden]="approvalVersion || showRequestReturn"
+      [(activeId)]="activeTab"
+      class="nav-tabs"
+    >
+      <li [ngbNavItem]="0" id="0">
+        <a ngbNavLink translate
+          ><fa-icon [icon]="faCube"></fa-icon> ORDERS.DETAIL.DETAILS</a
         >
-          <fa-icon [icon]="faCube"></fa-icon>
-          ORDERS.DETAIL.DETAILS
-        </button>
+        <ng-template ngbNavContent>
+          <ocm-order-historical
+            class="d-block p-3"
+            *ngIf="orderDetails"
+            [isOrderToApprove]="isOrderToApprove"
+            [orderDetails]="orderDetails"
+          >
+          </ocm-order-historical>
+        </ng-template>
       </li>
-      <li class="nav-item">
-        <button
-          type="button"
-          class="btn btn-link nav-link"
-          [ngClass]="{ active: subView == 'shipments' }"
-          (click)="toShipments()"
-          translate
+      <li [ngbNavItem]="1" id="1">
+        <a ngbNavLink translate
+          ><fa-icon [icon]="faTruck"></fa-icon> ORDERS.DETAIL.SHIPMENTS</a
         >
-          <fa-icon [icon]="faTruck"></fa-icon>
-          ORDERS.DETAIL.SHIPMENTS
-        </button>
+        <ng-template ngbNavContent>
+          <ocm-order-shipments class="d-block p-3" [orderID]="order?.ID">
+          </ocm-order-shipments>
+        </ng-template>
       </li>
-      <li class="nav-item">
-        <button
-          class="btn btn-link nav-link"
-          (click)="toOrderReturns()"
-          translate
+      <li [ngbNavItem]="2" id="2">
+        <a ngbNavLink translate
+          ><fa-icon [icon]="faExchangeAlt"></fa-icon>
+          ORDERS.DETAIL.ORDER_RETURNS</a
         >
-          <fa-icon [icon]="faExchangeAlt"></fa-icon>
-          ORDERS.DETAIL.ORDER_RETURNS
-        </button>
+        <ng-template ngbNavContent>
+          <ocm-order-returns [orderDetails]="orderDetails"> </ocm-order-returns>
+        </ng-template>
       </li>
     </ul>
-    <ocm-order-historical
+    <div
+      [ngbNavOutlet]="nav"
+      [hidden]="approvalVersion || showRequestReturn"
+      class="mt-2"
+    ></div>
+
+    <ocm-order-return-request-form
       class="d-block p-3"
-      *ngIf="orderDetails && showDetails() && !showRequestReturn"
-      [isOrderToApprove]="isOrderToApprove"
+      *ngIf="showRequestReturn"
+      (returnCreated)="onReturnCreated($event)"
       [orderDetails]="orderDetails"
     >
-    </ocm-order-historical>
+    </ocm-order-return-request-form>
   </div>
-  <ocm-order-shipments
-    class="d-block p-3"
-    *ngIf="showShipments() && !showRequestReturn"
-    [orderID]="order?.ID"
-  >
-  </ocm-order-shipments>
-  <ocm-order-returns
-    *ngIf="showOrderReturns() && !showRequestReturn"
-    [orderDetails]="orderDetails"
-  >
-  </ocm-order-returns>
-  <ocm-order-return-request-form
-    class="d-block p-3"
-    *ngIf="showRequestReturn"
-    (returnCreated)="onReturnCreated($event)"
-    [orderDetails]="orderDetails"
-  >
-  </ocm-order-return-request-form>
 </div>

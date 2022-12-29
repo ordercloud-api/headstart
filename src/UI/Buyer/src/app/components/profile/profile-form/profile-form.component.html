@@ -4,9 +4,11 @@
   [formGroup]="profileForm"
   name="ProfileForm"
 >
-  <div class="form-row">
-    <div class="form-group col-md-6">
-      <label for="FirstName" translate>PROFILE.PROFILE_FORM.FIRST</label>
+  <div class="row">
+    <div class="mb-3 col-md-6">
+      <label for="FirstName" class="form-label" translate
+        >PROFILE.PROFILE_FORM.FIRST</label
+      >
       <input
         type="text"
         formControlName="FirstName"
@@ -17,8 +19,10 @@
         showErrors
       />
     </div>
-    <div class="form-group col-md-6">
-      <label for="LastName" translate>PROFILE.PROFILE_FORM.LAST</label>
+    <div class="mb-3 col-md-6">
+      <label for="LastName" class="form-label" translate
+        >PROFILE.PROFILE_FORM.LAST</label
+      >
       <input
         type="text"
         formControlName="LastName"
@@ -30,8 +34,10 @@
       />
     </div>
   </div>
-  <div class="form-group">
-    <label for="Username" translate>PROFILE.PROFILE_FORM.USERNAME</label>
+  <div class="mb-3">
+    <label for="Username" class="form-label" translate
+      >PROFILE.PROFILE_FORM.USERNAME</label
+    >
     <input
       type="text"
       formControlName="Username"
@@ -43,8 +49,10 @@
       showErrors
     />
   </div>
-  <div class="form-group">
-    <label for="Email" translate>PROFILE.PROFILE_FORM.EMAIL</label>
+  <div class="mb-3">
+    <label for="Email" class="form-label" translate
+      >PROFILE.PROFILE_FORM.EMAIL</label
+    >
     <input
       type="email"
       formControlName="Email"
@@ -55,8 +63,8 @@
       showErrors
     />
   </div>
-  <div class="form-group">
-    <label for="Phone" translate>PROFILE.PROFILE_FORM.PHONE</label>
+  <div class="mb-3">
+    <label for="Phone" class="form-label" translate>PROFILE.PROFILE_FORM.PHONE</label>
     <input
       type="text"
       formControlName="Phone"

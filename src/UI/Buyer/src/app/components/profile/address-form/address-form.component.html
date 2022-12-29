@@ -2,8 +2,8 @@
   <div [hidden]="suggestedAddresses && suggestedAddresses.length">
     <div *ngIf="addressError" class="text-danger">{{ addressError }}</div>
     <div class="row">
-      <div [hidden]="true" class="col-md-6 form-group">
-        <label class="sr-only" for="ID" translate
+      <div [hidden]="true" class="col-md-6 mb-3">
+        <label class="visually-hidden form-label" for="ID" translate
           >COMMON.ADDRESS.ID</label
         >
         <input
@@ -14,8 +14,8 @@
           placeholder="{{ 'COMMON.ADDRESS.ID' | translate }}"
         />
       </div>
-      <div class="col-md-6 form-group">
-        <label class="sr-only" for="FirstName" translate
+      <div class="col-md-6 mb-3">
+        <label class="visually-hidden form-label" for="FirstName" translate
           >COMMON.ADDRESS.FIRST_NAME</label
         >
         <input
@@ -29,8 +29,8 @@
           showErrors
         />
       </div>
-      <div class="col-md-6 form-group">
-        <label class="sr-only" for="LastName" translate
+      <div class="col-md-6 mb-3">
+        <label class="visually-hidden form-label" for="LastName" translate
           >COMMON.ADDRESS.LAST_NAME</label
         >
         <input
@@ -44,8 +44,8 @@
         />
       </div>
     </div>
-    <div class="form-group">
-      <label class="sr-only" for="Street1" translate
+    <div class="mb-3">
+      <label class="visually-hidden form-label" for="Street1" translate
         >COMMON.ADDRESS.ADDRESS1</label
       >
       <input
@@ -58,8 +58,8 @@
         showErrors
       />
     </div>
-    <div class="form-group">
-      <label class="sr-only" for="Street2" translate
+    <div class="mb-3">
+      <label class="visually-hidden form-label" for="Street2" translate
         >COMMON.ADDRESS.ADDRESS2</label
       >
       <input
@@ -73,8 +73,8 @@
       />
     </div>
     <div class="row">
-      <div class="col-md-5 form-group">
-        <label class="sr-only" for="City" translate
+      <div class="col-md-5 mb-3">
+        <label class="visually-hidden form-label" for="City" translate
           >COMMON.ADDRESS.CITY</label
         >
         <input
@@ -87,14 +87,14 @@
           showErrors
         />
       </div>
-      <div class="col-md-3 form-group">
-        <label class="sr-only" for="State" translate
+      <div class="col-md-3 mb-3">
+        <label class="visually-hidden form-label" for="State" translate
           >COMMON.ADDRESS.STATE</label
         >
         <select
           *ngIf="stateOptions.length !== 0"
           formControlName="State"
-          class="custom-select"
+          class="form-select"
           id="State"
           showErrors
         >
@@ -115,8 +115,8 @@
           showErrors
         />
       </div>
-      <div class="col-md-4 form-group">
-        <label class="sr-only" for="zipCode" translate
+      <div class="col-md-4 mb-3">
+        <label class="visually-hidden form-label" for="zipCode" translate
           >COMMON.ADDRESS.ZIP</label
         >
         <input
@@ -132,17 +132,17 @@
     </div>
     <div class="row">
       <div
-        class="col-md-6 form-group"
+        class="col-md-6 mb-3"
         ngbTooltip="You are only able to ship to {{
           getCountryName(homeCountry)
         }} addresses."
       >
-        <label class="sr-only" for="country" translate
+        <label class="visually-hidden form-label" for="Country" translate
           >COMMON.ADDRESS.COUNTRY</label
         >
         <select
           formControlName="Country"
-          class="custom-select"
+          class="form-select"
           id="Country"
           showErrors
           disabled
@@ -153,8 +153,8 @@
           </option>
         </select>
       </div>
-      <div class="col-md-6 form-group">
-        <label class="sr-only" for="Phone" translate
+      <div class="col-md-6 mb-3">
+        <label class="visually-hidden form-label" for="Phone" translate
           >COMMON.ADDRESS.PHONE</label
         >
         <input
@@ -176,18 +176,18 @@
           name="RegisterForm"
         >
           <div *ngIf="showOptionToSave && addressForm.dirty" class="form-check">
-            <label
-              class="sr-only form-check-label"
-              for="shouldSaveAddress"
-              translate
-              >COMMON.ADDRESS.SAVE</label
-            >
             <input
               type="checkbox"
               formControlName="shouldSaveAddress"
               class="form-check-input"
               id="shouldSaveAddress"
             />
+            <label
+              class="visually-hidden form-check-label"
+              for="shouldSaveAddress"
+              translate
+              >COMMON.ADDRESS.SAVE</label
+            >
             <span translate>COMMON.ADDRESS.SAVE_ADDRESS</span>
           </div>
         </form>
@@ -206,7 +206,7 @@
       (click)="onSubmit()"
       [disabled]="!addressForm.valid"
       id="address-save-button"
-      class="btn btn-secondary btn-sm mr-2"
+      class="btn btn-secondary btn-sm me-2"
     >
       {{ btnText }}
     </button>

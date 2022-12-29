@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component } from '@angular/core'
 import { FormGroup } from '@angular/forms'
 import { Field, FieldConfig } from 'src/app/models/product.types'
 import { specErrors } from '../errors'
@@ -7,12 +7,12 @@ import { specErrors } from '../errors'
   selector: 'spec-form-label',
   template: `
     <div
-      class="form-group mb-0 justify-content-center"
+      class="mb-0 justify-content-center"
       [formGroup]="group"
       [class.row]="compact"
     >
       <label
-        class="text-uppercase font-weight-bolder small text-muted d-flex align-items-center"
+        class="form-label text-uppercase fw-bolder small text-muted d-flex align-items-center"
         [class.col-3]="compact"
         for="{{ config.name }}-readonly"
         >{{ config.label }}
@@ -23,19 +23,16 @@ import { specErrors } from '../errors'
         type="text"
         readonly
         placeholder="{{ config.options[0] }}"
+        id="{{ config.name }}-readonly"
       />
     </div>
   `,
   styleUrls: ['./spec-form-label.component.scss'],
 })
-export class SpecFormLabelComponent implements Field, OnInit {
+export class SpecFormLabelComponent implements Field {
   config: FieldConfig
   group: FormGroup
   index: number
   compact?: boolean
   errorMsgs = specErrors
-
-  constructor() {}
-
-  ngOnInit(): void {}
 }

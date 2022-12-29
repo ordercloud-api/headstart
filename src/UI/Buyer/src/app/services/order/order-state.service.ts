@@ -164,7 +164,7 @@ export class OrderStateService {
         ...(this.DefaultOrder as Order),
       }
     } else {
-      this.createAndSetOrder(this.DefaultOrder)
+      await this.createAndSetOrder(this.DefaultOrder)
     }
   }
 
@@ -217,7 +217,7 @@ export class OrderStateService {
       filters: {
         DateDeclined: '!*',
         status: 'Unsubmitted',
-        'xp.QuoteStatus': '!*'
+        'xp.QuoteStatus': '!*',
       },
     })
     return orders

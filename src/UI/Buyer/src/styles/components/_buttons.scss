@@ -24,9 +24,9 @@
   color: $danger;
   font-size: .65rem;
   &:hover {
-    color: darken($danger, 10%);
+    color: shade-color($danger, 10%);
   }
-  @include media-breakpoint-down(sm) {
+  @include media-breakpoint-down(md) {
     font-size: 0.875rem;
     position: relative;
     padding: .5rem 0;

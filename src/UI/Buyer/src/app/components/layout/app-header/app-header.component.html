@@ -1,51 +1,112 @@
 <!-- Primary Nav -->
-<nav class="navbar navbar-expand-md navbar-light bg-white">
+<nav class="navbar navbar-expand-lg navbar-light bg-white">
   <div class="container">
     <!-- Brand Logo -->
-    <a class="navbar-brand clickable cursor-pointer" (click)="isCollapsed = 'false'; context.router.toHome()">
+    <a
+      class="navbar-brand clickable cursor-pointer"
+      (click)="isCollapsed = 'false'; context.router.toHome()"
+    >
       <img class="logo" [src]="appConfig.theme.logoSrc" height="40" />
     </a>
-    <button class="navbar-toggler" type="button" (click)="isCollapsed = !isCollapsed" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button
+      class="navbar-toggler"
+      type="button"
+      (click)="isCollapsed = !isCollapsed"
+      data-bs-toggle="collapse"
+      data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
     <!-- /Brand Logo -->
     <!-- Inline Nav Items -->
-    <div [ngClass]="{ collapse: isCollapsed, 'navbar-collapse': true }" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-        <li class="nav-item clickable cursor-pointer" [ngClass]="{ active: activePath === '/products' }">
-          <a class="nav-link" (click)="isCollapsed = 'false'; context.router.toProductList()" translate>
+    <div
+      [ngClass]="{ collapse: isCollapsed, 'navbar-collapse': true }"
+      id="navbarSupportedContent"
+    >
+      <ul class="navbar-nav me-auto">
+        <li
+          class="nav-item clickable cursor-pointer"
+          [ngClass]="{ active: activePath === '/products' }"
+        >
+          <a
+            class="nav-link"
+            (click)="isCollapsed = 'false'; context.router.toProductList()"
+            translate
+          >
             LAYOUT.APP_HEADER.PRODUCTS
           </a>
         </li>
         <li *ngIf="hasSuppliers" class="nav-item clickable cursor-pointer">
-          <a class="nav-link" id="suppliers-link" [ngClass]="{ active: activePath === '/suppliers' }"
+          <a
+            class="nav-link"
+            id="suppliers-link"
+            [ngClass]="{ active: activePath === '/suppliers' }"
             (click)="isCollapsed = 'false'; context.router.toSupplierList()"
-            translate>ALIAS.SUPPLIERS</a>
+            translate
+            >ALIAS.SUPPLIERS</a
+          >
         </li>
-        <li class="nav-item clickable cursor-pointer" *ngFor="let page of staticPages">
-          <a class="nav-link" [ngClass]="{ active: activePath === '/' + page.Doc.Url }"
-            (click)="isCollapsed = 'false'" routerLink="{{ '/' + page.Doc.Url }}">{{ page.Doc.NavigationTitle}}</a>
+        <li
+          class="nav-item clickable cursor-pointer"
+          *ngFor="let page of staticPages"
+        >
+          <a
+            class="nav-link"
+            [ngClass]="{ active: activePath === '/' + page.Doc.Url }"
+            (click)="isCollapsed = 'false'"
+            routerLink="{{ '/' + page.Doc.Url }}"
+            >{{ page.Doc.NavigationTitle }}</a
+          >
         </li>
         <!-- /Mobile Profile Menu Items -->
       </ul>
-      <div class="form-inline" *ngIf="isAnonymous">
-        <a class="btn btn-sm btn-outline-dark" (click)="isCollapsed = 'false'; context.router.toLogin()"
-          translate>COMMON.LOGIN</a>
-        <a class="btn btn-sm btn-primary d-sm-block ml-2"
+      <div
+        class="d-flex flex-row align-items-center flex-wrap"
+        *ngIf="isAnonymous"
+      >
+        <a
+          class="btn btn-sm btn-outline-dark"
+          (click)="isCollapsed = 'false'; context.router.toLogin()"
+          translate
+          >COMMON.LOGIN</a
+        >
+        <a
+          class="btn btn-sm btn-primary d-sm-block ms-2"
           (click)="isCollapsed = 'false'; context.router.toRegister()"
-          translate>LAYOUT.APP_HEADER.REGISTER</a>
+          translate
+          >LAYOUT.APP_HEADER.REGISTER</a
+        >
       </div>
 
       <!-- Language Selector -->
       <ul class="navbar-nav">
-        <li class="nav-item dropdown cursor-pointer" ngbDropdown placement="bottom-right">
-          <div class="nav-link dropdown-toggle text-nowrap" id="language-dropdown" ngbDropdownToggle>
-            <span class="d-md-inline fa-layers-envelope" placement="bottom-right"
-              popoverClass="language-selector-popover bg-info" triggers="manual">
-              {{selectedLanguage}}
+        <li
+          class="nav-item dropdown cursor-pointer"
+          ngbDropdown
+          placement="bottom-right"
+        >
+          <div
+            class="nav-link dropdown-toggle text-nowrap"
+            id="language-dropdown"
+            ngbDropdownToggle
+          >
+            <span
+              class="d-md-inline fa-layers-envelope"
+              placement="bottom-right"
+              popoverClass="language-selector-popover bg-info"
+              triggers="manual"
+            >
+              {{ selectedLanguage }}
             </span>
           </div>
-          <div class="dropdown-menu language-dropdown-alignment" aria-labelledby="language-dropdown" ngbDropdownMenu>
+          <div
+            class="dropdown-menu language-dropdown-alignment"
+            aria-labelledby="language-dropdown"
+            ngbDropdownMenu
+          >
             <span>
               <a
                 *ngFor="let lang of languages"
@@ -53,7 +114,7 @@
                 (click)="isCollapsed = 'false'; setLanguage(lang)"
                 translate
               >
-                {{lang}}
+                {{ lang }}
               </a>
             </span>
           </div>
@@ -63,18 +124,37 @@
 
       <!-- Order -->
       <ul class="navbar-nav" *ngIf="!isAnonymous">
-        <li class="nav-item dropdown cursor-pointer" ngbDropdown placement="bottom-right">
-          <div class="nav-link dropdown-toggle text-nowrap" id="account-dropdown" ngbDropdownToggle>
-            <span class="d-md-inline fa-layers-envelope" [ngbPopover]="OrdersToApproveContent"
-              #ordersToApprovePopover="ngbPopover" placement="bottom-right"
-              popoverClass="orders-awaiting-approval-popover bg-info" triggers="manual" translate>
+        <li
+          class="nav-item dropdown cursor-pointer"
+          ngbDropdown
+          placement="bottom-right"
+        >
+          <div
+            class="nav-link dropdown-toggle text-nowrap"
+            id="account-dropdown"
+            ngbDropdownToggle
+          >
+            <span
+              class="d-md-inline fa-layers-envelope"
+              [ngbPopover]="OrdersToApproveContent"
+              #ordersToApprovePopover="ngbPopover"
+              placement="bottom-right"
+              popoverClass="orders-awaiting-approval-popover bg-info"
+              triggers="manual"
+              translate
+            >
               LAYOUT.APP_HEADER.ORDERS
             </span>
             <ng-template #OrdersToApproveContent>
-              <div (click)="isCollapsed = 'false'; routeToOrdersToApprove($event)" class="card">
+              <div
+                (click)="isCollapsed = 'false'; routeToOrdersToApprove($event)"
+                class="card"
+              >
                 <div class="card-body p-0">
                   <h5 class="card-header p-2 mb-3" translate>
-                    <ocm-order-status-icon status="AwaitingApproval"></ocm-order-status-icon>
+                    <ocm-order-status-icon
+                      status="AwaitingApproval"
+                    ></ocm-order-status-icon>
                     LAYOUT.APP_HEADER.NEEDS_ATTENTION
                   </h5>
                   <h4 class="card-subtitle mb-2 text-muted p-2">
@@ -87,28 +167,52 @@
             </ng-template>
             <fa-layers class="fa-fw">
               <fa-icon [icon]="faBoxOpen"></fa-icon>
-              <fa-layers-counter *ngIf="numberOfOrdersToApprove" class="badge__counter--large"
-                [content]="numberOfOrdersToApprove">
+              <fa-layers-counter
+                *ngIf="numberOfOrdersToApprove"
+                class="badge__counter--large"
+                [content]="numberOfOrdersToApprove"
+              >
               </fa-layers-counter>
             </fa-layers>
           </div>
-          <div class="dropdown-menu account-dropdown-alignment" aria-labelledby="account-dropdown" ngbDropdownMenu>
+          <div
+            class="dropdown-menu account-dropdown-alignment"
+            aria-labelledby="account-dropdown"
+            ngbDropdownMenu
+          >
             <ng-container *ngFor="let orderRoute of orderRoutes">
               <span *ngIf="orderRoute.routerCall !== 'toOrdersToApprove'">
-                <a *ngIf="orderRoute.showInDropdown" class="nav-item dropdown-item cursor-pointer"
+                <a
+                  *ngIf="orderRoute.showInDropdown"
+                  class="nav-item dropdown-item cursor-pointer"
                   [ngClass]="{ active: activePath === orderRoute.url }"
-                  (click)="isCollapsed = 'false'; context.router[orderRoute.routerCall]()" translate>{{ orderRoute.displayText }}</a>
+                  (click)="
+                    isCollapsed = 'false';
+                    context.router[orderRoute.routerCall]()
+                  "
+                  translate
+                  >{{ orderRoute.displayText }}</a
+                >
               </span>
               <span *ngIf="orderRoute.routerCall === 'toOrdersToApprove'">
-                <a *ngIf="orderRoute.showInDropdown" class="nav-item dropdown-item cursor-pointer"
+                <a
+                  *ngIf="orderRoute.showInDropdown"
+                  class="nav-item dropdown-item cursor-pointer"
                   [ngClass]="{ active: activePath === orderRoute.url }"
-                  (click)="isCollapsed = 'false'; context.router[orderRoute.routerCall]()">
+                  (click)="
+                    isCollapsed = 'false';
+                    context.router[orderRoute.routerCall]()
+                  "
+                >
                   <span translate>
                     {{ orderRoute.displayText }}
                   </span>
-                  <fa-layers class="fa-fw ml-n3">
-                    <fa-layers-counter *ngIf="numberOfOrdersToApprove" class="badge__counter--large"
-                      [content]="numberOfOrdersToApprove">
+                  <fa-layers class="fa-fw ms-n3">
+                    <fa-layers-counter
+                      *ngIf="numberOfOrdersToApprove"
+                      class="badge__counter--large"
+                      [content]="numberOfOrdersToApprove"
+                    >
                     </fa-layers-counter>
                   </fa-layers>
                 </a>
@@ -121,27 +225,51 @@
 
       <!-- Profile -->
       <ul class="navbar-nav" *ngIf="!isAnonymous">
-        <li class="nav-item dropdown cursor-pointer" ngbDropdown placement="bottom-right">
-          <div class="nav-link dropdown-toggle text-nowrap" id="accountDropdown" ngbDropdownToggle>
+        <li
+          class="nav-item dropdown cursor-pointer"
+          ngbDropdown
+          placement="bottom-right"
+        >
+          <div
+            class="nav-link dropdown-toggle text-nowrap"
+            id="accountDropdown"
+            ngbDropdownToggle
+          >
             <span class="d-md-inline" translate>
               LAYOUT.APP_HEADER.ACCOUNT
             </span>
             <fa-icon [icon]="faUserCircle"></fa-icon>
           </div>
-          <div class="dropdown-menu account-dropdown-alignment" aria-labelledby="accountDropdown" ngbDropdownMenu>
+          <div
+            class="dropdown-menu account-dropdown-alignment"
+            aria-labelledby="accountDropdown"
+            ngbDropdownMenu
+          >
             <h4 class="dropdown-header">
               <span translate>LAYOUT.APP_HEADER.GREETING</span>,
               {{ user?.FirstName }}!
             </h4>
             <ng-container *ngFor="let profileRoute of profileRoutes">
               <span *ngIf="profileRoute.routerCall !== 'toOrdersToApprove'">
-                <a *ngIf="profileRoute.showInDropdown" class="nav-item dropdown-item cursor-pointer"
+                <a
+                  *ngIf="profileRoute.showInDropdown"
+                  class="nav-item dropdown-item cursor-pointer"
                   [ngClass]="{ active: isRouteActive(profileRoute.url) }"
-                  (click)="isCollapsed = 'false'; context.router[profileRoute.routerCall]()">{{ profileRoute.displayText }}</a>
+                  (click)="
+                    isCollapsed = 'false';
+                    context.router[profileRoute.routerCall]()
+                  "
+                  >{{ profileRoute.displayText }}</a
+                >
               </span>
             </ng-container>
             <div *ngIf="!isSSO" class="dropdown-divider"></div>
-            <a class="nav-item dropdown-item cursor-pointer" *ngIf="!isSSO" (click)="isCollapsed = 'false'; logout()" translate>
+            <a
+              class="nav-item dropdown-item cursor-pointer"
+              *ngIf="!isSSO"
+              (click)="isCollapsed = 'false'; logout()"
+              translate
+            >
               <fa-icon [icon]="faSignOutAlt"></fa-icon> LAYOUT.APP_HEADER.LOGOUT
             </a>
           </div>
@@ -157,35 +285,80 @@
 </nav>
 <!-- /Primary Nav -->
 <!-- Search / Cart Nav -->
-<nav class="navbar navbar-expand navbar-light bg-light shadow-sm">
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
   <div class="container">
-    <button class="btn category-toggle cursor-pointer" (click)="toggleCategoryDropdown($event.detail)" type="button">
-      <fa-icon *ngIf="!showCategoryDropdown" placement="right" ngbTooltip="Categories" [openDelay]="500"
-        [icon]="faBars"></fa-icon>
-      <fa-icon *ngIf="showCategoryDropdown" class="category-toggle__active" placement="right" ngbTooltip="Categories"
-        [openDelay]="500" [icon]="faTimes"></fa-icon>
+    <button
+      class="btn category-toggle cursor-pointer"
+      (click)="toggleCategoryDropdown($event.detail)"
+      type="button"
+    >
+      <fa-icon
+        *ngIf="!showCategoryDropdown"
+        placement="right"
+        ngbTooltip="Categories"
+        [openDelay]="500"
+        [icon]="faBars"
+      ></fa-icon>
+      <fa-icon
+        *ngIf="showCategoryDropdown"
+        class="category-toggle__active"
+        placement="right"
+        ngbTooltip="Categories"
+        [openDelay]="500"
+        [icon]="faTimes"
+      ></fa-icon>
     </button>
-    <small class="ml-1 font-weight-bold text-uppercase" translate>LAYOUT.APP_HEADER.SHOP</small>
+    <small class="ms-1 fw-bold text-uppercase" translate
+      >LAYOUT.APP_HEADER.SHOP</small
+    >
 
-    <ocm-search class="ml-3 mr-3 w-100" [placeholderText]="'LAYOUT.APP_HEADER.PRODUCTS'" [searchTermInput]="searchTermForProducts"
-      (searched)="searchProducts($event.detail)">
+    <ocm-search
+      class="ms-3 me-3 w-100"
+      [placeholderText]="'LAYOUT.APP_HEADER.PRODUCTS'"
+      [searchTermInput]="searchTermForProducts"
+      (searched)="searchProducts($event.detail)"
+    >
     </ocm-search>
-    <ul class="navbar-nav" #cartIcon (mouseleave)="closeMiniCart($event, popover)">
-      <li class="nav-item cursor-pointer" [ngbPopover]="CartHoverContent" #popover="ngbPopover"
-        triggers="mouseenter:click" placement="bottom-right" popoverClass="mini-cart-popover" [autoClose]="'outside'">
+    <ul
+      class="navbar-nav"
+      #cartIcon
+      (mouseleave)="closeMiniCart($event, popover)"
+    >
+      <li
+        class="nav-item cursor-pointer"
+        [ngbPopover]="CartHoverContent"
+        #popover="ngbPopover"
+        triggers="mouseenter:click"
+        placement="bottom-right"
+        popoverClass="mini-cart-popover"
+        [autoClose]="'outside'"
+      >
         <ng-template #CartHoverContent>
-          <ocm-mini-cart (mouseleave)="popover.close()" (navigate)="popover.close()">
+          <ocm-mini-cart
+            (mouseleave)="popover.close()"
+            (navigate)="popover.close()"
+          >
           </ocm-mini-cart>
         </ng-template>
-        <a class="nav-link text-nowrap clickable" [ngClass]="{ active: activePath === '/cart' }"
-          (click)="context.router.toCart()" ngbPopover="Item(s) Added to Cart" placement="bottom" triggers="manual"
-          #addToCartPopover="ngbPopover">
-          <span class="d-none d-lg-inline" translate>LAYOUT.APP_HEADER.CART
+        <a
+          class="nav-link text-nowrap clickable"
+          [ngClass]="{ active: activePath === '/cart' }"
+          (click)="context.router.toCart()"
+          ngbPopover="Item(s) Added to Cart"
+          placement="bottom"
+          triggers="manual"
+          #addToCartPopover="ngbPopover"
+        >
+          <span class="d-none d-lg-inline" translate
+            >LAYOUT.APP_HEADER.CART
           </span>
           <fa-layers class="fa-fw">
             <fa-icon [icon]="faShoppingCart"></fa-icon>
-            <fa-layers-counter *ngIf="order && order.LineItemCount" class="badge__counter--large"
-              [content]="order.LineItemCount">
+            <fa-layers-counter
+              *ngIf="order && order.LineItemCount"
+              class="badge__counter--large"
+              [content]="order.LineItemCount"
+            >
             </fa-layers-counter>
           </fa-layers>
         </a>
@@ -194,8 +367,13 @@
   </div>
 </nav>
 
-<ocm-category-dropdown (closeDropdown)="toggleCategoryDropdown($event.detail)"
-  (window:mouseup)="clickOutsideCategoryDropdown($event)" [@inOutAnimation]="toggleCategoryDropdown"
-  class="dropdown-position" [categories]="categories" *ngIf="showCategoryDropdown">
+<ocm-category-dropdown
+  (closeDropdown)="toggleCategoryDropdown($event.detail)"
+  (window:mouseup)="clickOutsideCategoryDropdown($event)"
+  [@inOutAnimation]="toggleCategoryDropdown"
+  class="dropdown-position"
+  [categories]="categories"
+  *ngIf="showCategoryDropdown"
+>
 </ocm-category-dropdown>
 <!-- /Search / Cart Nav -->

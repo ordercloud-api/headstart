@@ -132,19 +132,20 @@ ng-progress {
 // override zendesk chat bubble background color
 .zsiq_float {
   .zsiq_flt_rel {
-    background-color: var(--secondary) !important;
+    background-color: var(--bs-secondary) !important;
   }
 }
 
 // hide the zendesk popover message on mobile
 .zsiq_cnt {
-  @include media-breakpoint-down(sm) {
+  @include media-breakpoint-down(md) {
     display: none !important;
   }
 }
 
 // where should breadcrumb styles live?
 .breadcrumb {
+  padding: .75rem 1rem;
   background-color: $light;
   margin-top: 1rem;
   .breadcrumb-item {

@@ -1,6 +1,6 @@
 <form [formGroup]="form">
-  <div class="form-group mb-0">
-    <label for="quantity" class="sr-only" translate
+  <div class="mb-0">
+    <label for="quantity" class="visually-hidden form-label" translate
       >PRODUCTS.QTY_INPUT.QTY</label
     >
     <input
@@ -18,7 +18,7 @@
     />
     <select
       *ngIf="isQtyRestricted"
-      class="custom-select text-center input-width"
+      class="form-select text-center input-width"
       [attr.disabled]="disabled ? '' : null"
       formControlName="quantity"
       id="quantity"

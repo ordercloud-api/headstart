@@ -1,10 +1,10 @@
 <form [formGroup]="form">
-  <div class="form-group">
-    <label for="status" translate>ORDERS.STATUS_FILTER</label>
+  <div class="mb-3">
+    <label for="status" class="form-label" translate>ORDERS.STATUS_FILTER</label>
     <select
       id="status"
       (change)="selectStatus()"
-      class="custom-select"
+      class="form-select"
       formControlName="status"
     >
       <option *ngFor="let status of statuses" [ngValue]="status || ''">

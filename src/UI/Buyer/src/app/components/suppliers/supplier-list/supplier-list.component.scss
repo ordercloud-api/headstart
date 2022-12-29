@@ -33,7 +33,7 @@ select:valid ~ label {
   padding-right: 0.25rem;
   background-color: white;
   font-size: 10px;
-  color: var(--dark);
+  color: var(--bs-dark);
   font-weight: bold;
 }
 
@@ -56,7 +56,7 @@ select:focus ~ .highlight {
 /* ANIMATIONS ================ */
 @keyframes selectHighlighter {
   from {
-    background: var(--primary);
+    background: var(--bs-primary);
   }
   to {
     width: 0;
@@ -71,7 +71,7 @@ select:focus ~ .highlight {
       top: -10px;
       right: -12px;
       font-size: 45px;
-      background-color: var(--primary);
+      background-color: var(--bs-primary);
     }
   }
 }

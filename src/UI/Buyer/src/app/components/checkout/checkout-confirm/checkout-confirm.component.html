@@ -1,11 +1,13 @@
-<button
-  class="btn btn-block btn-primary mb-4"
-  [disabled]="isSubmittingOrder"
-  (click)="saveCommentsAndSubmitOrder()"
-  translate
->
-  CHECKOUT.CHECKOUT_CONFIRM.SUBMIT_ORDER
-</button>
+<div class="d-grid">
+  <button
+    class="btn btn-primary mb-4"
+    [disabled]="isSubmittingOrder"
+    (click)="saveCommentsAndSubmitOrder()"
+    translate
+  >
+    CHECKOUT.CHECKOUT_CONFIRM.SUBMIT_ORDER
+  </button>
+</div>
 
 <div *ngIf="lineItems">
   <!-- Currently, payments are not created until submit. This will likely change in the future. -->
@@ -16,7 +18,7 @@
   ></ocm-payment-list>
   <div class="row mb-4">
     <div class="col-sm-12">
-      <small class="font-weight-bold text-muted text-uppercase"
+      <small class="fw-bold text-muted text-uppercase"
         ><span translate>CHECKOUT.CHECKOUT_CONFIRM.SHIP_TO</span>:</small
       >
       <ocm-address-card

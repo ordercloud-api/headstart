@@ -1,7 +1,14 @@
-import { OrderPromotion } from "ordercloud-javascript-sdk";
+import { OrderPromotion } from 'ordercloud-javascript-sdk'
+
+export type CheckoutSectionName =
+  | 'login'
+  | 'shippingAddress'
+  | 'shippingSelection'
+  | 'payment'
+  | 'confirm'
 
 export interface CheckoutSection {
-  id: string
+  id: CheckoutSectionName
   valid: boolean
 }
 

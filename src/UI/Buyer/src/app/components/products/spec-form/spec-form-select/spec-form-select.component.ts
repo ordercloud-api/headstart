@@ -7,12 +7,12 @@ import { Field, FieldConfig } from 'src/app/models/product.types'
   template: `
     <div class="container px-0">
       <div
-        class="form-group justify-content-center"
+        class="mb-3 justify-content-center"
         [formGroup]="group"
         [class.row]="compact"
       >
         <label
-          class="text-uppercase font-weight-bolder small text-muted mb-0 d-flex align-items-center"
+          class="form-label text-uppercase fw-bolder small text-muted mb-0 d-flex align-items-center"
           [class.col-3]="compact"
           for="{{ config.name }}"
           >{{ config.label }}
@@ -20,7 +20,7 @@ import { Field, FieldConfig } from 'src/app/models/product.types'
         <select
           [formControlName]="config.name"
           id="{{ config.name }}"
-          class="custom-select"
+          class="form-select"
           [class.col-7]="compact"
           value="{{ config.value }}"
         >
@@ -31,7 +31,7 @@ import { Field, FieldConfig } from 'src/app/models/product.types'
           >
             {{ option.Value }}
             <span *ngIf="option.PriceMarkup">
-              (+ {{ option.PriceMarkup | currency: config.currency }})</span
+              (+ {{ option.PriceMarkup | currency : config.currency }})</span
             >
           </option>
         </select>
@@ -46,8 +46,6 @@ export class SpecFormSelectComponent implements Field, OnInit {
   index: number
   compact?: boolean
   ctrls: FormArray
-
-  constructor() {}
 
   ngOnInit(): void {
     this.ctrls = this.group.get('ctrls') as FormArray

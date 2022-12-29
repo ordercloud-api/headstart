@@ -1,18 +1,27 @@
-// target the button links generated from the ngb-accordion
+@import '~bootstrap/scss/_mixins.scss';
+@import '~bootstrap/scss/_functions.scss';
+@import '~bootstrap/scss/_variables.scss';
 
+// Target ng bootstrap accordion used in checkout
 :host::ng-deep ngb-accordion {
-  .btn.btn-link {
-    padding: 0;
-    margin: 0;
+
+  // add spacing betwen accordion text and success icons
+  .accordion-button {
     display: flex;
     flex-flow: row wrap;
     align-items: center;
     justify-content: space-between;
     width: 100%;
-    &:hover,
-    &:focus {
-      text-decoration-color: var(--primary);
-    }
+  }
+
+  // hide accordion chevron
+  .accordion-button::after {
+    display: none;
+  }
+
+  // make the active button background same as card background (light gray)
+  .accordion-button {
+    background-color: $card-cap-bg;
   }
 }
 

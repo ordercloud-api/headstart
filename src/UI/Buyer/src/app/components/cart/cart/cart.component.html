@@ -3,52 +3,76 @@
 </div>
 <div class="container">
   <div class="my-3 d-flex justify-content-between">
-    <button class="btn btn-sm btn-outline-secondary" (click)="toProductList()" translate>
+    <button
+      class="btn btn-sm btn-outline-secondary"
+      (click)="toProductList()"
+      translate
+    >
       CART.CART.CONTINUE_SHOPPING
     </button>
-    <button class="btn btn-sm btn-outline-danger" *ngIf="_order?.LineItemCount" (click)="emptyCart()"
-      [disabled]="isEmptyingCart" translate>
+    <button
+      class="btn btn-sm btn-outline-danger"
+      *ngIf="_order?.LineItemCount"
+      (click)="emptyCart()"
+      [disabled]="isEmptyingCart"
+      translate
+    >
       CART.CART.EMPTY_CART
     </button>
   </div>
-  <div class="card bg-light p-3 flex-row justify-content-center rounded-0" *ngIf="!_order?.LineItemCount">
+  <div
+    class="card bg-light p-3 flex-row justify-content-center rounded-0"
+    *ngIf="!_order?.LineItemCount"
+  >
     <p class="mb-0" translate>CART.CART.CART_IS_EMPTY</p>
   </div>
-  <ocm-modal *ngIf="_invalidLineItems && orderError" [state]="orderErrorModal" [modalTitle]="orderError">
-    <h4 class="font-weight-bold">{{ modalTitle }}</h4>
+  <ocm-modal
+    *ngIf="_invalidLineItems && orderError"
+    [state]="orderErrorModal"
+    [modalTitle]="orderError"
+  >
+    <h4 class="fw-bold">{{ modalTitle }}</h4>
     <span translate>CART.CART.INVALID_ITEMS_NOTICE</span>
     <div class="card-body mt-3 pt-sm-2">
-      <div class="d-none d-sm-block border-bottom border-light pb-2" *ngIf="orderType !== 'Quote'">
+      <div
+        class="d-none d-sm-block border-bottom border-light pb-2"
+        *ngIf="orderType !== 'Quote'"
+      >
         <div class="row">
           <div class="col-md-6"></div>
           <div class="col-md-6">
             <div class="row align-items-center">
-              <div class="col-3 text-right text-medium" id="label_lineItemPrice">
+              <div class="col-3 text-end text-medium" id="label_lineItemPrice">
                 <small translate>CART.LINEITEM_TABLE.PRICE</small>
               </div>
-              <div class="col-5 text-right text-medium" id="label_lineItemQty">
+              <div class="col-5 text-end text-medium" id="label_lineItemQty">
                 <small translate>CART.LINEITEM_TABLE.QTY</small>
               </div>
-              <div class="col-4 text-right text-medium" id="label_lineItemTotal">
+              <div class="col-4 text-end text-medium" id="label_lineItemTotal">
                 <small translate>CART.LINEITEM_TABLE.TOTAL</small>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div *ngFor="let li of _invalidLineItems; let i = index"
-        class="position-relative border-bottom border-light px-0">
+      <div
+        *ngFor="let li of _invalidLineItems; let i = index"
+        class="position-relative border-bottom border-light px-0"
+      >
         <div class="row align-items-center my-3">
           <div class="col-md-6" *ngIf="li">
             <div class="row align-items-sm-center">
-              <div class="col-md-3 col-sm-6 pr-md-3">
+              <div class="col-md-3 col-sm-6 pe-md-3">
                 <span class="d-block">
-                  <img class="img-thumbnail w-100" [src]="li.xp?.ImageUrl || getImageUrl(li.ID)"
-                    alt="{{ li.Product.ID }}" />
+                  <img
+                    class="img-thumbnail w-100"
+                    [src]="li.xp?.ImageUrl || getImageUrl(li.ID)"
+                    alt="{{ li.Product.ID }}"
+                  />
                 </span>
               </div>
               <div class="col-md-9 col-sm-6">
-                <span class="text-dark font-weight-medium line-height-1">
+                <span class="text-dark fw-medium line-height-1">
                   {{ li | productNameWithSpecs }}
                 </span>
                 <small class="text-muted d-block">{{ li.Product.ID }}</small>
@@ -56,22 +80,31 @@
             </div>
           </div>
           <div class="col-md-6">
-            <div class="row align-items-center pt-3 pt-sm-0" *ngIf="orderType !== 'Quote'">
-              <div class="col-3 text-right" id="label_unitPrice">
-                <small class="d-block d-sm-none white-space-pre" translate>CART.LINEITEM_TABLE.UNIT_PRICE</small>
+            <div
+              class="row align-items-center pt-3 pt-sm-0"
+              *ngIf="orderType !== 'Quote'"
+            >
+              <div class="col-3 text-end" id="label_unitPrice">
+                <small class="d-block d-sm-none white-space-pre" translate
+                  >CART.LINEITEM_TABLE.UNIT_PRICE</small
+                >
                 <span class="text-nowrap">{{
-                  li.UnitPrice | currency: _orderCurrency
-                  }}</span>
+                  li.UnitPrice | currency : _orderCurrency
+                }}</span>
               </div>
-              <div class="text-right col-5">
-                <small class="d-block d-sm-none" translate>CART.LINEITEM_TABLE.QTY</small>
+              <div class="text-end col-5">
+                <small class="d-block d-sm-none" translate
+                  >CART.LINEITEM_TABLE.QTY</small
+                >
                 <span>{{ li.Quantity }}</span>
               </div>
-              <div class="col-4 text-right" id="col_lineItemTotal">
-                <small class="d-block d-sm-none" translate>CART.LINEITEM_TABLE.TOTAL</small>
+              <div class="col-4 text-end" id="col_lineItemTotal">
+                <small class="d-block d-sm-none" translate
+                  >CART.LINEITEM_TABLE.TOTAL</small
+                >
                 <span class="text-nowrap">{{
-                  li.LineTotal | currency: _orderCurrency
-                  }}</span>
+                  li.LineTotal | currency : _orderCurrency
+                }}</span>
               </div>
             </div>
           </div>
@@ -79,24 +112,47 @@
       </div>
     </div>
     <div class="text-center">
-      <button class="btn btn-primary" type="button" (click)="removeInvalidLineItems()" translate>
+      <button
+        class="btn btn-primary"
+        type="button"
+        (click)="removeInvalidLineItems()"
+        translate
+      >
         CART.CART.VIEW_CART
-        <fa-icon class="fa-xs" aria-hidden="true" [icon]="faShoppingCart"></fa-icon>
+        <fa-icon
+          class="fa-xs"
+          aria-hidden="true"
+          [icon]="faShoppingCart"
+        ></fa-icon>
       </button>
     </div>
   </ocm-modal>
   <div class="row flex-lg-row-reverse" *ngIf="_order?.LineItemCount">
     <div class="col-lg-4">
       <div class="sticky-top order-summary">
-        <ocm-order-summary [orderSummaryMeta]="orderSummaryMeta"></ocm-order-summary>
-        <button [disabled]="!_isCartValid" class="btn btn-lg btn-primary btn-block my-4 font-weight-bold"
-          (click)="toCheckout()" *ngIf="_order?.xp?.OrderType == 'Standard'" translate>
-          CART.CART.CHECKOUT
-        </button>
-        <button [disabled]="!_isCartValid" class="btn btn-lg btn-primary btn-block my-4 font-weight-bold"
-          (click)="submitQuote()" *ngIf="_order?.xp?.OrderType == 'Quote'" translate>
-          CART.CART.SUBMIT_QUOTE
-        </button>
+        <ocm-order-summary
+          [orderSummaryMeta]="orderSummaryMeta"
+        ></ocm-order-summary>
+        <div class="d-grid">
+          <button
+            [disabled]="!_isCartValid"
+            class="btn btn-lg btn-primary my-4 fw-bold"
+            (click)="toCheckout()"
+            *ngIf="_order?.xp?.OrderType == 'Standard'"
+            translate
+          >
+            CART.CART.CHECKOUT
+          </button>
+          <button
+            [disabled]="!_isCartValid"
+            class="btn btn-lg btn-primary my-4 fw-bold"
+            (click)="submitQuote()"
+            *ngIf="_order?.xp?.OrderType == 'Quote'"
+            translate
+          >
+            CART.CART.SUBMIT_QUOTE
+          </button>
+        </div>
       </div>
     </div>
     <div class="col-lg-8" *ngIf="_lineItems?.Items">

@@ -1,10 +1,12 @@
 <form [formGroup]="form">
-  <div class="form-group">
-    <label for="selectedLocationID" translate>Locations</label>
+  <div class="mb-3">
+    <label for="selectedLocationID" class="form-label" translate
+      >Locations</label
+    >
     <select
       id="selectedLocationID"
       (change)="selectLocation()"
-      class="custom-select"
+      class="form-select"
       formControlName="selectedLocationID"
     >
       <option *ngFor="let location of locations" [ngValue]="location.ID || ''">

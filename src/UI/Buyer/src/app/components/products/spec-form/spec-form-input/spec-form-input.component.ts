@@ -8,8 +8,11 @@ import { specErrors } from '../errors'
   template: `
     <div [formGroup]="group" [class.row]="compact">
       <div class="form-input">
-        <label>{{ config.label }}</label>
+        <label [for]="config.label" class="form-label">{{
+          config.label
+        }}</label>
         <input
+          [id]="config.label"
           type="text"
           class="form-control form-control-sm"
           [attr.placeholder]="config.placeholder"

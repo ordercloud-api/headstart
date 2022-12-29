@@ -23,8 +23,10 @@
       [formGroup]="form"
       name="RegisterForm"
     >
-      <div class="form-group">
-        <label class="sr-only" for="Username" translate>COMMON.USERNAME</label>
+      <div class="mb-3">
+        <label class="visually-hidden form-label" for="Username" translate
+          >COMMON.USERNAME</label
+        >
         <input
           type="text"
           formControlName="Username"
@@ -36,8 +38,10 @@
           showErrors
         />
       </div>
-      <div class="form-group">
-        <label class="sr-only" for="FirstName" translate>COMMON.FIRST</label>
+      <div class="mb-3">
+        <label class="visually-hidden form-label" for="FirstName" translate
+          >COMMON.FIRST</label
+        >
         <input
           type="text"
           formControlName="FirstName"
@@ -48,8 +52,10 @@
           showErrors
         />
       </div>
-      <div class="form-group">
-        <label class="sr-only" for="LastName" translate>COMMON.LAST</label>
+      <div class="mb-3">
+        <label class="visually-hidden form-label" for="LastName" translate
+          >COMMON.LAST</label
+        >
         <input
           type="text"
           formControlName="LastName"
@@ -60,8 +66,10 @@
           showErrors
         />
       </div>
-      <div class="form-group">
-        <label class="sr-only" for="Email" translate>COMMON.EMAIL</label>
+      <div class="mb-3">
+        <label class="visually-hidden form-label" for="Email" translate
+          >COMMON.EMAIL</label
+        >
         <input
           type="email"
           formControlName="Email"
@@ -72,8 +80,10 @@
           showErrors
         />
       </div>
-      <div class="form-group">
-        <label class="sr-only" for="Phone" translate>COMMON.PHONE</label>
+      <div class="mb-3">
+        <label class="visually-hidden form-label" for="Phone" translate
+          >COMMON.PHONE</label
+        >
         <input
           type="text"
           formControlName="Phone"
@@ -84,8 +94,10 @@
           showErrors
         />
       </div>
-      <div class="form-group">
-        <label class="sr-only" for="Password" translate>COMMON.PASSWORD</label>
+      <div class="mb-3">
+        <label class="visually-hidden form-label" for="Password" translate
+          >COMMON.PASSWORD</label
+        >
         <input
           type="password"
           formControlName="Password"
@@ -96,8 +108,11 @@
           showErrors
         />
       </div>
-      <div class="form-group">
-        <label class="sr-only" for="ConfirmPassword" translate
+      <div class="mb-3">
+        <label
+          class="visually-hidden form-label"
+          for="ConfirmPassword"
+          translate
           >COMMON.CONFIRM_PASSWORD</label
         >
         <input
@@ -110,22 +125,26 @@
           showErrors
         />
       </div>
+      <div class="d-grid">
+        <button
+          [disabled]="loading || form.status === 'INVALID'"
+          type="submit"
+          class="btn btn-primary btn-lg mt-4"
+          translate
+        >
+          AUTHENTICATION.REGISTER.REGISTER
+        </button>
+      </div>
+    </form>
+    <div class="d-grid">
       <button
-        [disabled]="loading || form.status === 'INVALID'"
-        type="submit"
-        class="btn btn-primary btn-lg btn-block mt-4"
+        type="button"
+        class="btn btn-link"
+        routerLink="/forgot-password"
         translate
       >
-        AUTHENTICATION.REGISTER.REGISTER
+        AUTHENTICATION.REGISTER.FORGOT_PASS
       </button>
-    </form>
-    <button
-      type="button"
-      class="btn btn-link btn-block"
-      routerLink="/forgot-password"
-      translate
-    >
-      AUTHENTICATION.REGISTER.FORGOT_PASS
-    </button>
+    </div>
   </div>
 </div>

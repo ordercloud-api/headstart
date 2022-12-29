@@ -7,7 +7,7 @@
       <div class="row" *ngIf="suppliers?.length > 0 && suppliers[i]?.supplier">
         <div class="col-md">
           <h2 class="card-title h6 mb-0">
-            <span class="text-medium font-weight-light"
+            <span class="text-medium fw-light"
               >{{ 'CART.LINEITEM_TABLE.SHIP_FROM' | translate }}:</span
             >
             {{ suppliers[i].supplier.Name }}
@@ -52,13 +52,10 @@
                 *ngIf="activePath === '/orders'"
                 class="col-2 text-center text-medium"
               ></div>
-              <div
-                class="col-3 text-right text-medium"
-                id="label_lineItemPrice"
-              >
+              <div class="col-3 text-end text-medium" id="label_lineItemPrice">
                 <small translate>CART.LINEITEM_TABLE.PRICE</small>
               </div>
-              <div class="col-5 text-right text-medium" id="label_lineItemQty">
+              <div class="col-5 text-end text-medium" id="label_lineItemQty">
                 <small translate>CART.LINEITEM_TABLE.QTY</small>
               </div>
               <div
@@ -67,10 +64,7 @@
               >
                 <small translate>CART.LINEITEM_TABLE.QTY_CANCELED</small>
               </div>
-              <div
-                class="col-4 text-right text-medium"
-                id="label_lineItemTotal"
-              >
+              <div class="col-4 text-end text-medium" id="label_lineItemTotal">
                 <small translate>CART.LINEITEM_TABLE.TOTAL</small>
               </div>
             </div>
@@ -86,7 +80,7 @@
         <div class="row align-items-center my-3">
           <div class="col-md-6" *ngIf="li">
             <div class="row align-items-sm-center">
-              <div class="col-md-3 col-sm-6 pr-md-3">
+              <div class="col-md-3 col-sm-6 pe-md-3">
                 <a class="d-block" (click)="toProductDetails(li.Product.ID)">
                   <img
                     class="img-thumbnail w-100"
@@ -98,12 +92,12 @@
               <div class="col-md-9 col-sm-6">
                 <a
                   (click)="toProductDetails(li.Product.ID)"
-                  class="text-dark font-weight-medium line-height-1"
+                  class="link-dark fw-medium line-height-1"
                 >
                   {{ li | productNameWithSpecs }}
                   <span
                     *ngIf="li?.Product?.xp?.ProductType === 'Quote'"
-                    class="small badge badge-pill badge-warning ml-2 order-type-text"
+                    class="small badge rounded-pill bg-warning ms-2 order-type-text"
                   >
                     {{ li?.Product?.xp?.ProductType }}
                   </span>
@@ -132,7 +126,7 @@
                     li?.Product?.xp?.FreeShipping &&
                     li?.Product?.xp?.FreeShippingMessage
                   "
-                  class="badge badge-pill badge-warning text-uppercase"
+                  class="badge rounded-pill bg-warning text-uppercase"
                 >
                   {{ li?.Product?.xp?.FreeShippingMessage }}
                 </div>
@@ -149,7 +143,7 @@
                 *ngIf="activePath === '/orders'"
                 class="col-2 text-center"
               ></div>
-              <div class="col-3 text-right" id="label_unitPrice">
+              <div class="col-3 text-end" id="label_unitPrice">
                 <small class="d-block d-sm-none white-space-pre" translate
                   >CART.LINEITEM_TABLE.UNIT_PRICE</small
                 >
@@ -158,7 +152,7 @@
                 }}</span>
               </div>
               <!-- Quantity Input -->
-              <div class="text-right col-5" id="colQuantityInput">
+              <div class="text-end col-5" id="colQuantityInput">
                 <small class="d-block d-sm-none" translate
                   >CART.LINEITEM_TABLE.QTY</small
                 >
@@ -177,16 +171,16 @@
                 </ocm-quantity-input>
                 <span *ngIf="readOnly">&times;{{ li.Quantity | number }}</span>
               </div>
-              <div class="col-4 text-right" id="col_lineItemTotal">
+              <div class="col-4 text-end" id="col_lineItemTotal">
                 <ngx-spinner
                   *ngIf="isQtyChanging(li.ID)"
                   bdColor="null"
                   size="small"
-                  color="var(--secondary)"
+                  color="var(--bs-secondary)"
                   type="ball-scale-ripple-multiple"
                   [fullScreen]="false"
                 >
-                  <small class="sr-only">Calculating New Total</small>
+                  <small class="visually-hidden">Calculating New Total</small>
                 </ngx-spinner>
                 <small class="d-block d-sm-none" translate
                   >CART.LINEITEM_TABLE.TOTAL</small

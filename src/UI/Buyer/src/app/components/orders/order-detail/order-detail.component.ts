@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core'
+import { Component, OnInit, ViewChild } from '@angular/core'
 import {
   faCube,
   faExchangeAlt,
@@ -10,7 +10,7 @@ import {
   HSLineItem,
   HeadStartSDK,
 } from '@ordercloud/headstart-sdk'
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap'
+import { NgbModal, NgbNav } from '@ng-bootstrap/ng-bootstrap'
 import { isQuoteOrder } from '../../../services/orderType.helper'
 import { CanReturnOrder } from 'src/app/services/lineitem-status.helper'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
@@ -18,9 +18,9 @@ import {
   OrderReorderResponse,
   OrderViewContext,
 } from 'src/app/models/order.types'
-import { Orders } from 'ordercloud-javascript-sdk'
 import { ToastrService } from 'ngx-toastr'
 
+type OrderDetailsTab = 'details' | 'shipments' | 'orderreturns'
 @Component({
   templateUrl: './order-detail.component.html',
   styleUrls: ['./order-detail.component.scss'],
@@ -32,12 +32,14 @@ export class OCMOrderDetails implements OnInit {
   faCube = faCube
   faTruck = faTruck
   faExchangeAlt = faExchangeAlt
-  subView: 'details' | 'shipments' | 'order-returns' = 'details'
+  activeTab = 0
   reorderResponse: OrderReorderResponse
   message = { string: null, classType: null }
   showRequestReturn = false
   isAnon: boolean
   isQuoteOrder = isQuoteOrder
+  @ViewChild('nav') orderDetailsNav: NgbNav
+
   constructor(
     private context: ShopperContextService,
     private modalService: NgbModal,
@@ -116,32 +118,17 @@ export class OCMOrderDetails implements OnInit {
     this.showRequestReturn = !this.showRequestReturn
   }
 
-  toShipments(): void {
-    this.subView = 'shipments'
-  }
-
-  toDetails(): void {
-    this.subView = 'details'
-  }
-
-  toOrderReturns(): void {
-    this.subView = 'order-returns'
-  }
-
   toAllOrders(): void {
     this.context.router.toMyOrders()
   }
 
-  showShipments(): boolean {
-    return this.subView === 'shipments'
-  }
-
-  showDetails(): boolean {
-    return this.subView === 'details'
-  }
-
-  showOrderReturns(): boolean {
-    return this.subView === 'order-returns'
+  openNavItem(tab: OrderDetailsTab): void {
+    const tabMap = {
+      details: 0,
+      shipments: 1,
+      orderreturns: 2,
+    }
+    this.orderDetailsNav.select(tabMap[tab])
   }
 
   updateMessage(response: OrderReorderResponse): void {
@@ -174,7 +161,7 @@ export class OCMOrderDetails implements OnInit {
   onReturnCreated(): void {
     this.ngOnInit()
     this.showRequestReturn = false
-    this.showOrderReturns()
+    this.openNavItem('orderreturns')
   }
 
   protected createAndSavePDF(): void {

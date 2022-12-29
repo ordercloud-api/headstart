@@ -1,7 +1,7 @@
 <div [ngClass]="{ 'bg-light': highlight }">
   <div class="d-flex justify-content-between align-items-center">
     <div>
-      <p class="mb-0 text-capitalize font-weight-bold">
+      <p class="mb-0 text-capitalize fw-bold">
         XXXX-XXXX-XXXX-{{ creditCard?.PartialAccountNumber }}
       </p>
       <div>
@@ -9,7 +9,7 @@
           >{{ creditCard?.CardholderName
           }}<span>
             | Expires
-            {{ creditCard?.ExpirationDate | date: 'MM/yy':'UTC' }}</span
+            {{ creditCard?.ExpirationDate | date : 'MM/yy' : 'UTC' }}</span
           ></small
         >
       </div>
