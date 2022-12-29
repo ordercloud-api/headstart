@@ -4,7 +4,7 @@ import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/r
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { Orders, Order } from 'ordercloud-javascript-sdk'
 import { OrderType } from '@app-seller/models/order.types'
-import { HeadStartSDK } from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, HSOrder } from '@ordercloud/headstart-sdk'
 import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 
 @Injectable({
@@ -26,23 +26,20 @@ export class OrderService extends ResourceCrudService<Order> {
       'orders'
     )
   }
-  setOrderDirection(orderDirection: 'Incoming' | 'Outgoing') {
+  setOrderDirection(orderDirection: 'Incoming' | 'Outgoing'): void {
     this.patchFilterState({ OrderDirection: orderDirection })
   }
-  isQuoteOrder(order: Order) {
+  isQuoteOrder(order: HSOrder): boolean {
     return order?.xp?.OrderType === OrderType.Quote
   }
 
-  isSupplierOrder(orderID: string) {
+  isSupplierOrder(orderID: string): boolean {
     return orderID.split('-').length > 1
   }
 
   async list(args: any[]): Promise<any> {
-    const filters = args.find((arg) => arg?.filters != null)
     if (this.router.url.includes('xp.OrderType=Quote')) {
-      return await HeadStartSDK.Orders.ListQuoteOrders(
-        filters?.filters['xp.QuoteStatus']
-      )
+      return await HeadStartSDK.Orders.ListQuoteOrders(args[1])
     }
     return await super.list(args)
   }

@@ -33,7 +33,7 @@ namespace Headstart.API.Commands
 
         Task<HSLineItem> OverrideQuotePrice(string orderID, string lineItemID, decimal quotePrice);
 
-        Task<ListPage<HSOrder>> ListQuoteOrders(MeUser me, QuoteStatus quoteStatus);
+        Task<ListPage<HSOrder>> ListQuoteOrders(MeUser me, ListArgs<HSOrder> args);
 
         Task<HSOrder> GetQuoteOrder(MeUser me, string orderID);
 
@@ -87,30 +87,35 @@ namespace Headstart.API.Commands
             return updatedLineItem;
         }
 
-        public async Task<ListPage<HSOrder>> ListQuoteOrders(MeUser me, QuoteStatus quoteStatus)
+        public async Task<ListPage<HSOrder>> ListQuoteOrders(MeUser me, ListArgs<HSOrder> args)
         {
-            var supplierID = me.Supplier?.ID;
             var filters = new Dictionary<string, object>
             {
-                ["xp.QuoteSupplierID"] = supplierID != null ? supplierID : "*",
                 ["IsSubmitted"] = false,
                 ["xp.OrderType"] = OrderType.Quote,
-                ["xp.QuoteStatus"] = quoteStatus,
             };
-            var quoteOrders = await oc.Orders.ListAllAsync<HSOrder>(OrderDirection.Incoming, filters: filters);
-            var quoteOrdersList = new ListPage<HSOrder>()
+
+            var quoteStatusFilter = args.Filters.FirstOrDefault(f => f.PropertyName == "xp.QuoteStatus");
+            var quoteStatus = quoteStatusFilter == null ? null : quoteStatusFilter.FilterExpression;
+            if (!string.IsNullOrEmpty(quoteStatus))
             {
-                Meta = new ListPageMeta()
-                {
-                    Page = 1,
-                    PageSize = 1,
-                    TotalCount = quoteOrders.Count,
-                    TotalPages = 1,
-                    ItemRange = new[] { 1, quoteOrders.Count },
-                },
-                Items = quoteOrders,
-            };
-            return quoteOrdersList;
+                filters["xp.QuoteStatus"] = quoteStatus;
+            }
+
+            var supplierID = me.Supplier?.ID;
+            if (!string.IsNullOrEmpty(supplierID))
+            {
+                filters["xp.QuoteSupplierID"] = supplierID;
+            }
+
+            return await oc.Orders.ListAsync<HSOrder>(
+                OrderDirection.Incoming,
+                filters: filters,
+                search: args.Search,
+                searchType: SearchType.ExactPhrasePrefix,
+                sortBy: args.SortBy.FirstOrDefault(),
+                pageSize: args.PageSize,
+                page: args.Page);
         }
 
         public async Task<HSOrder> GetQuoteOrder(MeUser me, string orderID)

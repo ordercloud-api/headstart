@@ -311,6 +311,13 @@ export class OCMProductDetails implements OnInit {
           this.toastrService.error(existingCartStandardError)
           this.isAddingToCart = false
           return
+        } else {
+          currentOrder.xp.OrderType = OrderType.Standard
+          currentOrder.xp.QuoteBuyerContactEmail = ''
+          currentOrder.xp.QuoteSellerContactEmail = ''
+          currentOrder.xp.QuoteSupplierID = ''
+          currentOrder.xp.QuoteOrderInfo = null
+          await this.context.order.patch(currentOrder)
         }
       }
       await this.context.order.cart.add({
