@@ -1,102 +1,109 @@
 <form *ngIf="resourceForm" [formGroup]="resourceForm">
-  <span class="required-field" > * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span>
+  <span class="required-field">
+    * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span
+  >
   <div class="card bg-white shadow-sm p-4 mt-3">
     <h4 class="mt-3" *ngIf="checkForParent()">
       Add a Sub-Category to {{ getParentID() }}
     </h4>
     <ng-container *ngFor="let field of _categoryFields">
-    <div
-      *ngIf="field.type === 'string' && field.field === 'ParentID' && _params"
-      class="form-group"
-    >
-      <label for="{{ field.field }}"
-        >{{ field.field | uncamel }} {{ getOptionalText(field.field) }}</label
+      <div
+        *ngIf="field.type === 'string' && field.field === 'ParentID' && _params"
+        class="mb-3"
       >
-      <input
-        maxlength="100"
-        type="text"
-        class="form-control"
-        id="{{ field.field }}"
-        aria-describedby="{{ field.field }}"
-        [resourceForm]="resourceForm"
-        formControlName="{{ field.field }}"
-        (input)="handleUpdateCategory($event)"
-        [placeholder]="getParentID()"
-        readonly
-      />
-    </div>
-    <div
-      *ngIf="field.type === 'string' && field.field === 'ParentID' && !_params"
-      class="form-group"
-    >
-      <label for="{{ field.field }}"
-        >{{ field.field | uncamel }} {{ getOptionalText(field.field) }}</label
-      >
-      <input
-        maxlength="100"
-        type="text"
-        class="form-control"
-        id="{{ field.field }}"
-        aria-describedby="{{ field.field }}"
-        formControlName="{{ field.field }}"
-        (input)="handleUpdateCategory($event)"
-        placeholder="Enter {{ field.field }}"
-      />
-    </div>
-
-    <div
-      *ngIf="field.type === 'string' && field.field === 'Description'"
-      class="form-group"
-    >
-      <label for="{{ field.field }}">{{ field.field | uncamel }}</label>
-      <input
-        maxlength="200"
-        type="text"
-        class="form-control"
-        id="{{ field.field }}"
-        aria-describedby="{{ field.field }}"
-        formControlName="{{ field.field }}"
-        (input)="handleUpdateCategory($event)"
-        placeholder="Enter {{ field.field }}"
-      />
-    </div>
-
-    <div
-      *ngIf="
-        field.type === 'string' &&
-        field.field !== 'ParentID' &&
-        field.field !== 'Description'
-      "
-      class="form-group"
-    >
-      <label for="field.field"
-        >{{ field.field | uncamel }} {{ getOptionalText(field.field) }} <span *ngIf="field.field === 'Name'" class="required-field">*</span></label
-      >
-      <input
-        maxlength="100"
-        type="text"
-        class="form-control"
-        id="{{ field.field }}"
-        aria-describedby="field.field"
-        formControlName="{{ field.field }}"
-        (input)="handleUpdateCategory($event)"
-        placeholder="Enter {{ field.field }}"
-      />
-    </div>
-
-    <div *ngIf="field.type === 'boolean'" class="form-group">
-      <p class="mb-1">{{ field.field | uncamel }}</p>
-      <label class="switch mb-0" for="{{ field.field }}">
+        <label for="{{ field.field }}"
+          >{{ field.field | uncamel }} {{ getOptionalText(field.field) }}</label
+        >
         <input
-          type="checkbox"
-          class="form-check-input"
+          maxlength="100"
+          type="text"
+          class="form-control"
           id="{{ field.field }}"
-          formControlName="Active"
-          (input)="handleUpdateCategory($event, 'boolean')"
+          aria-describedby="{{ field.field }}"
+          [resourceForm]="resourceForm"
+          formControlName="{{ field.field }}"
+          (input)="handleUpdateCategory($event)"
+          [placeholder]="getParentID()"
+          readonly
         />
-        <span class="slider round cursor-pointer"></span>
-      </label>
-    </div>
-  </ng-container>
-</div>
+      </div>
+      <div
+        *ngIf="
+          field.type === 'string' && field.field === 'ParentID' && !_params
+        "
+        class="mb-3"
+      >
+        <label for="{{ field.field }}"
+          >{{ field.field | uncamel }} {{ getOptionalText(field.field) }}</label
+        >
+        <input
+          maxlength="100"
+          type="text"
+          class="form-control"
+          id="{{ field.field }}"
+          aria-describedby="{{ field.field }}"
+          formControlName="{{ field.field }}"
+          (input)="handleUpdateCategory($event)"
+          placeholder="Enter {{ field.field }}"
+        />
+      </div>
+
+      <div
+        *ngIf="field.type === 'string' && field.field === 'Description'"
+        class="mb-3"
+      >
+        <label for="{{ field.field }}">{{ field.field | uncamel }}</label>
+        <input
+          maxlength="200"
+          type="text"
+          class="form-control"
+          id="{{ field.field }}"
+          aria-describedby="{{ field.field }}"
+          formControlName="{{ field.field }}"
+          (input)="handleUpdateCategory($event)"
+          placeholder="Enter {{ field.field }}"
+        />
+      </div>
+
+      <div
+        *ngIf="
+          field.type === 'string' &&
+          field.field !== 'ParentID' &&
+          field.field !== 'Description'
+        "
+        class="mb-3"
+      >
+        <label for="field.field"
+          >{{ field.field | uncamel }} {{ getOptionalText(field.field) }}
+          <span *ngIf="field.field === 'Name'" class="required-field"
+            >*</span
+          ></label
+        >
+        <input
+          maxlength="100"
+          type="text"
+          class="form-control"
+          id="{{ field.field }}"
+          aria-describedby="field.field"
+          formControlName="{{ field.field }}"
+          (input)="handleUpdateCategory($event)"
+          placeholder="Enter {{ field.field }}"
+        />
+      </div>
+
+      <div *ngIf="field.type === 'boolean'" class="mb-3">
+        <p class="mb-1">{{ field.field | uncamel }}</p>
+        <label class="switch mb-0" for="{{ field.field }}">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            id="{{ field.field }}"
+            formControlName="Active"
+            (input)="handleUpdateCategory($event, 'boolean')"
+          />
+          <span class="slider round cursor-pointer"></span>
+        </label>
+      </div>
+    </ng-container>
+  </div>
 </form>

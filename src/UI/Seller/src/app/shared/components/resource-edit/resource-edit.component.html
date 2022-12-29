@@ -1,6 +1,6 @@
 <form *ngIf="resourceForm" [formGroup]="resourceForm">
   <div *ngFor="let field of _resourceFields">
-    <div *ngIf="field.type === 'string'" class="form-group">
+    <div *ngIf="field.type === 'string'" class="mb-3">
       <label for="{{ field.field }}">{{ field.field | uncamel }}</label>
       <input
         type="text"
@@ -14,7 +14,7 @@
         placeholder="Enter {{ field.field }}"
       />
     </div>
-    <div *ngIf="field.type === 'number'" class="form-group">
+    <div *ngIf="field.type === 'number'" class="mb-3">
       <label for="{{ field.field }}">{{ field.field | uncamel }}</label>
       <input
         *ngIf="field.type === 'number'"
@@ -28,7 +28,7 @@
         placeholder="Enter {{ field.field }}"
       />
     </div>
-    <div *ngIf="field.type === 'date'" class="form-group">
+    <div *ngIf="field.type === 'date'" class="mb-3">
       <label for="{{ field.field }}">{{ field.field | uncamel }}</label>
       <input
         *ngIf="field.type === 'date'"

@@ -82,7 +82,7 @@
                   <h6 class="fw-medium" translate>Personal Details</h6>
                   <form *ngIf="userForm" [formGroup]="userForm">
                     <div class="form-row">
-                      <div class="form-group col-md-6">
+                      <div class="mb-3 col-md-6">
                         <label for="FirstName">First Name</label>
                         <input
                           class="form-control"
@@ -94,7 +94,7 @@
                           (input)="updateUserFromEvent($event, 'FirstName')"
                         />
                       </div>
-                      <div class="form-group col-md-6">
+                      <div class="mb-3 col-md-6">
                         <label for="LastName">Last Name</label>
                         <input
                           class="form-control"
@@ -108,7 +108,7 @@
                       </div>
                     </div>
                     <div class="form-row">
-                      <div class="form-group col-md-6">
+                      <div class="mb-3 col-md-6">
                         <label for="Email">Email</label>
                         <input
                           class="form-control"
@@ -120,7 +120,7 @@
                           (input)="updateUserFromEvent($event, 'Email')"
                         />
                       </div>
-                      <div class="form-group col-md-6">
+                      <div class="mb-3 col-md-6">
                         <label for="Username">Username</label>
                         <input
                           class="form-control"

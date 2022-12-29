@@ -75,7 +75,7 @@
           </tr>
           <tr *ngIf="isAddingPriceBreak">
             <td>
-              <div class="form-group">
+              <div class="mb-3">
                 <div class="input-group">
                   <input
                     [attr.disabled]="readonly ? true : null"
@@ -92,7 +92,7 @@
               </div>
             </td>
             <td>
-              <div class="form-group">
+              <div class="mb-3">
                 <div class="input-group">
                   <span class="input-group-text">{{ currency?.Symbol }}</span>
                   <input
@@ -111,7 +111,7 @@
               </div>
             </td>
             <td>
-              <div class="form-group">
+              <div class="mb-3">
                 <div class="input-group">
                   <span class="input-group-text">{{ currency?.Symbol }}</span>
                   <input
@@ -154,7 +154,7 @@
           </tr>
         </tbody>
       </table>
-      <div class="form-group mt-3">
+      <div class="mb-3 mt-3">
         <label for="UseCumulativeQuantity" translate
           >ADMIN.PRODUCT_EDIT.PRICE_BREAK_APPLICATION</label
         >
@@ -193,7 +193,7 @@
         </select>
       </div>
       <form [formGroup]="salePriceForm" *ngIf="salePriceForm">
-        <div class="form-group mt-3">
+        <div class="mb-3 mt-3">
           <label for="SaleStart" translate
             >ADMIN.PRODUCT_EDIT.SALE_START
             <fa-icon
@@ -222,13 +222,13 @@
                 #saleStartDatePicker="ngbDatepicker"
               />
               <button
-                  [disabled]="readonly"
-                  class="btn btn-outline-primary calendar"
-                  (click)="saleStartDatePicker.toggle()"
-                  type="button"
-                >
-                  <fa-icon [icon]="faCalendar"></fa-icon>
-                </button>
+                [disabled]="readonly"
+                class="btn btn-outline-primary calendar"
+                (click)="saleStartDatePicker.toggle()"
+                type="button"
+              >
+                <fa-icon [icon]="faCalendar"></fa-icon>
+              </button>
             </div>
             <div class="input-group col-md-6">
               <ngb-timepicker
@@ -243,7 +243,7 @@
             </div>
           </div>
         </div>
-        <div class="form-group mt-3">
+        <div class="mb-3 mt-3">
           <label for="SaleEnd" translate
             >ADMIN.PRODUCT_EDIT.SALE_END
             <fa-icon
@@ -272,13 +272,13 @@
                 #saleEndDatePicker="ngbDatepicker"
               />
               <button
-                  class="btn btn-outline-primary calendar"
-                  [disabled]="readonly"
-                  (click)="saleEndDatePicker.toggle()"
-                  type="button"
-                >
-                  <fa-icon [icon]="faCalendar"></fa-icon>
-                </button>
+                class="btn btn-outline-primary calendar"
+                [disabled]="readonly"
+                (click)="saleEndDatePicker.toggle()"
+                type="button"
+              >
+                <fa-icon [icon]="faCalendar"></fa-icon>
+              </button>
             </div>
             <div class="input-group col-md-6">
               <ngb-timepicker

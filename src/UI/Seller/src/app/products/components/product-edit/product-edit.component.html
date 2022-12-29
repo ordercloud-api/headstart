@@ -94,7 +94,7 @@
         <ng-template ngbNavContent>
           <div class="container-fluid">
             <div class="row pt-3">
-              <div class="col-md-8 form-group">
+              <div class="col-md-8 mb-3">
                 <span class="required-field">
                   * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span
                 >
@@ -128,7 +128,7 @@
                     </fa-icon>
                   </div>
                   <div class="form-row">
-                    <div class="form-group col-md-6">
+                    <div class="mb-3 col-md-6">
                       <label for="Name" translate
                         >ADMIN.PRODUCT_EDIT.NAME
                         <span class="required-field">*</span></label
@@ -154,7 +154,7 @@
                         >ADMIN.PRODUCT_EDIT.NAME_MAX_LENGTH</small
                       >
                     </div>
-                    <div [hidden]="isCreatingNew" class="form-group col-md-6">
+                    <div [hidden]="isCreatingNew" class="mb-3 col-md-6">
                       <label for="ProductType" translate
                         >ADMIN.PRODUCT_EDIT.PRODUCT_TYPE
                         <span class="required-field">*</span></label
@@ -195,7 +195,7 @@
                       <span translate> ADMIN.PRODUCT_EDIT.NO_PROVIDED_SKU</span>
                     </small>
                   </h6>
-                  <div class="form-group w-50" *ngIf="isCreatingNew">
+                  <div class="mb-3 w-50" *ngIf="isCreatingNew">
                     <input
                       type="text"
                       class="form-control"
@@ -211,7 +211,7 @@
                     />
                   </div>
                   <div
-                    class="form-group w-50"
+                    class="mb-3 w-50"
                     *ngIf="!isCreatingNew && _superHSProductStatic"
                   >
                     <label for="ID" translate
@@ -225,7 +225,7 @@
                   </div>
                   <div
                     *ngIf="productInReviewNotifications?.length <= 0"
-                    class="form-group"
+                    class="mb-3"
                   >
                     <label for="Active" translate
                       >ADMIN.PRODUCT_EDIT.ACTIVE</label
@@ -264,7 +264,7 @@
                     </fa-icon>
                   </div>
                   <div class="form-row">
-                    <div class="form-group col-md-6">
+                    <div class="mb-3 col-md-6">
                       <label for="UnitOfMeasureQty" translate
                         >ADMIN.PRODUCT_EDIT.QUANTITY_PER_UNIT
                         <span class="required-field">*</span>
@@ -288,7 +288,7 @@
                         }}"
                       />
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="mb-3 col-md-6">
                       <label for="UnitOfMeasureUnit" translate
                         >ADMIN.PRODUCT_EDIT.UNIT_OF_MEASURE
                         <span class="required-field">*</span>
@@ -320,7 +320,7 @@
                     ADMIN.PRODUCT_EDIT.ORDER_LIMITATIONS
                   </h6>
                   <div class="form-row">
-                    <div class="form-group col-md-6">
+                    <div class="mb-3 col-md-6">
                       <label for="MinQuantity" translate
                         >ADMIN.PRODUCT_EDIT.MIN_QUANTITY</label
                       >
@@ -346,7 +346,7 @@
                         }}"
                       />
                     </div>
-                    <div class="form-group col-md-6">
+                    <div class="mb-3 col-md-6">
                       <label for="MaxQuantity" translate
                         >ADMIN.PRODUCT_EDIT.MAX_QUANTITY</label
                       >
@@ -380,7 +380,7 @@
                   <h6 class="fw-medium" translate>
                     ADMIN.PRODUCT_EDIT.INVENTORY_TRACKING
                   </h6>
-                  <div class="form-group">
+                  <div class="mb-3">
                     <div class="form-check">
                       <input
                         [attr.disabled]="readonly ? true : null"
@@ -405,7 +405,7 @@
                   </div>
                   <div
                     *ngIf="_superHSProductEditable?.Product?.Inventory?.Enabled"
-                    class="form-group"
+                    class="mb-3"
                   >
                     <div class="form-check">
                       <input
@@ -436,7 +436,7 @@
                     "
                     placement="bottom-left"
                     *ngIf="_superHSProductEditable?.Product?.Inventory?.Enabled"
-                    class="form-group"
+                    class="mb-3"
                   >
                     <div class="form-check">
                       <input
@@ -465,7 +465,7 @@
                       !_superHSProductEditable?.Product?.Inventory
                         ?.VariantLevelTracking
                     "
-                    class="form-group w-50"
+                    class="mb-3 w-50"
                   >
                     <label for="QuantityAvailable" translate
                       >ADMIN.PRODUCT_EDIT.QUANTITY_AVAILABLE</label
@@ -524,7 +524,7 @@
                   <h6 class="fw-medium" translate>
                     ADMIN.PRODUCT_EDIT.PRODUCT_RETURNS.PRODUCT_RETURNS
                   </h6>
-                  <div class="form-group">
+                  <div class="mb-3">
                     <div class="form-check">
                       <input
                         [attr.disabled]="readonly ? true : null"
@@ -573,7 +573,7 @@
                 <!-- /Tax Categorization -->
                 <!-- Shipping Information -->
                 <div class="card bg-white shadow-sm p-4 mt-3">
-                  <div class="form-group">
+                  <div class="mb-3">
                     <div
                       class="d-flex justify-content-between align-items-center"
                     >
@@ -685,7 +685,7 @@
                     </label>
                   </div>
                   <div class="form-row">
-                    <div class="form-group col-md-12">
+                    <div class="mb-3 col-md-12">
                       <div class="input-group w-50">
                         <input
                           [attr.disabled]="readonly ? true : null"
@@ -708,13 +708,13 @@
                           }}"
                         />
                         <span class="input-group-text rounded-end" translate
-                            >ADMIN.PRODUCT_EDIT.SHIPPING.POUNDS</span
-                          >
+                          >ADMIN.PRODUCT_EDIT.SHIPPING.POUNDS</span
+                        >
                       </div>
                     </div>
                   </div>
                   <hr />
-                  <div class="form-group">
+                  <div class="mb-3">
                     <label class="d-block" for="SizeTier" translate
                       >ADMIN.PRODUCT_EDIT.SHIPPING.SIZE_TIER_LABEL
                       <span class="required-field">*</span></label
@@ -756,13 +756,13 @@
                   <ng-container
                     *ngIf="productForm.controls['SizeTier'].value === 'G'"
                   >
-                    <div class="form-group mb-0">
+                    <div class="mb-3 mb-0">
                       <label for="ShipHeight" translate
                         >ADMIN.PRODUCT_EDIT.SHIPPING.LENGTH_BY_WIDTH_BY_HEIGHT
                       </label>
                     </div>
                     <div class="form-row">
-                      <div class="form-group col-md-4">
+                      <div class="mb-3 col-md-4">
                         <div class="input-group">
                           <input
                             [attr.disabled]="readonly ? true : null"
@@ -785,11 +785,11 @@
                             }}"
                           />
                           <span class="input-group-text rounded-end"
-                              >inches</span
-                            >
+                            >inches</span
+                          >
                         </div>
                       </div>
-                      <div class="form-group col-md-4">
+                      <div class="mb-3 col-md-4">
                         <div class="input-group">
                           <input
                             [attr.disabled]="readonly ? true : null"
@@ -812,11 +812,11 @@
                             }}"
                           />
                           <span class="input-group-text rounded-end"
-                              >inches</span
-                            >
+                            >inches</span
+                          >
                         </div>
                       </div>
-                      <div class="form-group col-md-4">
+                      <div class="mb-3 col-md-4">
                         <div class="input-group">
                           <input
                             [attr.disabled]="readonly ? true : null"
@@ -839,8 +839,8 @@
                             }}"
                           />
                           <span class="input-group-text rounded-end"
-                              >inches</span
-                            >
+                            >inches</span
+                          >
                         </div>
                       </div>
                     </div>
@@ -977,7 +977,7 @@
                     "
                   >
                   </reactive-quill-editor-component>
-                  <div class="form-group mt-3">
+                  <div class="mb-3 mt-3">
                     <label for="Note" translate
                       >ADMIN.PRODUCT_EDIT.PRODUCT_MESSAGE</label
                     >

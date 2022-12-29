@@ -7,9 +7,9 @@
   </div>
   <div class="col-md-7">
     <form [formGroup]="approvalForm">
-      <div class="form-group">
+      <div class="mb-3">
         <div class="form-row">
-          <div class="form-group col-md-4">
+          <div class="mb-3 col-md-4">
             <div class="form-check">
               <input
                 id="Enabled"
@@ -23,7 +23,7 @@
               </label>
             </div>
           </div>
-          <div *ngIf="approvalEnabled" class="form-group col-md-8">
+          <div *ngIf="approvalEnabled" class="mb-3 col-md-8">
             <label for="OrderThreshold" translate
               >ADMIN.BUYER_GROUPS.APPROVALS.THRESHOLD_LABEL</label
             >

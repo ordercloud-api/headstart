@@ -4,7 +4,7 @@
     <p translate>ADMIN.REPORTS.CHOOSE_REPORT_TYPE</p>
   </div>
   <div class="col-md-7 form-row">
-    <div class="form-group col-md-6">
+    <div class="mb-3 col-md-6">
       <form [formGroup]="reportSelectionForm">
         <label for="ReportType" translate>ADMIN.REPORTS.REPORT_TYPE</label>
         <select
@@ -27,7 +27,7 @@
         </select>
       </form>
     </div>
-    <div class="form-group col-md-6">
+    <div class="mb-3 col-md-6">
       <form [formGroup]="reportSelectionForm">
         <label for="ReportTemplate" translate
           >ADMIN.REPORTS.REPORT_TEMPLATE</label
@@ -54,7 +54,7 @@
       </form>
     </div>
     <ng-container *ngIf="selectedTemplate?.TemplateID && adHocFilters?.length">
-      <div *ngFor="let filter of adHocFilters" class="form-group col-md-6">
+      <div *ngFor="let filter of adHocFilters" class="mb-3 col-md-6">
         <form [formGroup]="reportSelectionForm">
           <div *ngIf="getFilterType(filter) === 'date'">
             <label for="{{ filter }}"

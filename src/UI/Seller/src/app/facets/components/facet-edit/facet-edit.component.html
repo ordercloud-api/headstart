@@ -8,8 +8,8 @@
         <h5 translate>ADMIN.FACETS.PRODUCT_FACET_INFO</h5>
         <p class="font-italic" translate>ADMIN.FACETS.INFO_ABOUT_FACET</p>
       </div>
-      <div class="col-md-7 form-group">
-        <div class="form-group" *ngIf="isCreatingNew">
+      <div class="col-md-7 mb-3">
+        <div class="mb-3" *ngIf="isCreatingNew">
           <label for="ID" translate
             >ADMIN.FACETS.FACET_ID <span class="required-field">*</span></label
           >
@@ -26,13 +26,13 @@
             placeholder="{{ 'ADMIN.FACETS.ENTER_FACET_ID' | translate }}"
           />
         </div>
-        <div class="form-group" *ngIf="!isCreatingNew">
+        <div class="mb-3" *ngIf="!isCreatingNew">
           <label for="ID" translate
             >ADMIN.FACETS.FACET_ID <span class="required-field">*</span></label
           >
           <input class="form-control" formControlName="ID" disabled />
         </div>
-        <div class="form-group">
+        <div class="mb-3">
           <label for="Name" translate
             >ADMIN.FACETS.NAME <span class="required-field">*</span></label
           >
@@ -54,8 +54,8 @@
         <h5 translate>ADMIN.FACETS.FACET_OPTIONS</h5>
         <p class="font-italic" translate>ADMIN.FACETS.WHAT_OPTIONS_AVAILABLE</p>
       </div>
-      <div class="col-md-7 form-group">
-        <div class="form-group">
+      <div class="col-md-7 mb-3">
+        <div class="mb-3">
           <label
             [ngClass]="{ 'fw-bold': facetOptionLimitReached() }"
             for="addFacetOption"
@@ -70,21 +70,21 @@
               id="newFacetOption"
             />
             <button
-                class="btn btn-dark"
-                type="submit"
-                [disabled]="facetOptionLimitReached()"
-                (click)="addFacetOption()"
-                [attr.title]="
-                  facetOptionLimitReached()
-                    ? ('ADMIN.FACETS.LIMIT_OF_25' | translate)
-                    : null
-                "
-                data-toggle="tooltip"
-                data-placement="bottom"
-                translate
-              >
-                ADMIN.FACETS.ADD
-              </button>
+              class="btn btn-dark"
+              type="submit"
+              [disabled]="facetOptionLimitReached()"
+              (click)="addFacetOption()"
+              [attr.title]="
+                facetOptionLimitReached()
+                  ? ('ADMIN.FACETS.LIMIT_OF_25' | translate)
+                  : null
+              "
+              data-toggle="tooltip"
+              data-placement="bottom"
+              translate
+            >
+              ADMIN.FACETS.ADD
+            </button>
           </div>
         </div>
         <div class="chip" *ngFor="let option of _facetEditable?.xp?.Options">

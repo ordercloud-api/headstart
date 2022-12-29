@@ -11,9 +11,9 @@
           {{ 'ALIAS.BUYER_LOCATION' | translate | lowercase }}.
         </p>
       </div>
-      <div class="col-md-7 form-group">
+      <div class="col-md-7 mb-3">
         <div class="form-row">
-          <div class="form-group col-md-12" *ngIf="isCreatingNew">
+          <div class="mb-3 col-md-12" *ngIf="isCreatingNew">
             <label for="ID">Headstart ID (Optional)</label>
             <div class="input-group">
               <span class="input-group-text">{{ buyerID }}-</span>
@@ -33,7 +33,7 @@
             </div>
           </div>
           <div
-            class="form-group col-md-12"
+            class="mb-3 col-md-12"
             *ngIf="!isCreatingNew && buyerLocationEditable"
           >
             <label for="ID">Headstart ID</label>
@@ -45,7 +45,7 @@
           </div>
         </div>
         <div class="form-row">
-          <div class="form-group col-md-6">
+          <div class="mb-3 col-md-6">
             <label for="LocationName"
               >{{ 'ALIAS.BUYER_LOCATION' | translate }} Name
               <span class="required-field">*</span></label
@@ -63,7 +63,7 @@
               placeholder="Enter {{ 'ALIAS.BUYER_LOCATION' | translate }} Name"
             />
           </div>
-          <div class="form-group col-md-6">
+          <div class="mb-3 col-md-6">
             <label for="Company Name"
               >Company Name <span class="required-field">*</span></label
             >
@@ -92,7 +92,7 @@
         </p>
       </div>
       <div
-        class="col-md-7 form-group"
+        class="col-md-7 mb-3"
         *ngIf="suggestedAddresses && suggestedAddresses.length > 0"
       >
         <address-suggestion
@@ -101,10 +101,10 @@
         ></address-suggestion>
       </div>
       <div
-        class="col-md-7 form-group"
+        class="col-md-7 mb-3"
         *ngIf="!suggestedAddresses || suggestedAddresses.length === 0"
       >
-        <div class="form-group">
+        <div class="mb-3">
           <label for="Street 1"
             >Street 1 <span class="required-field">*</span></label
           >
@@ -121,7 +121,7 @@
             placeholder="Enter Street 1"
           />
         </div>
-        <div class="form-group">
+        <div class="mb-3">
           <label for="Street2">Street 2</label>
           <input
             type="text"
@@ -137,7 +137,7 @@
           />
         </div>
         <div class="form-row">
-          <div class="form-group col-md-5">
+          <div class="mb-3 col-md-5">
             <label for="City">City <span class="required-field">*</span></label>
             <input
               type="text"
@@ -152,7 +152,7 @@
               placeholder="Enter City"
             />
           </div>
-          <div class="form-group col-md-3">
+          <div class="mb-3 col-md-3">
             <label for="State"
               >State <span class="required-field">*</span></label
             >
@@ -169,7 +169,7 @@
               placeholder="Enter State"
             />
           </div>
-          <div class="form-group col-md-4">
+          <div class="mb-3 col-md-4">
             <label for="Zip">Zip <span class="required-field">*</span></label>
             <input
               type="text"
@@ -186,7 +186,7 @@
           </div>
         </div>
         <div class="form-row">
-          <div class="form-group col-md-6">
+          <div class="mb-3 col-md-6">
             <label for="Country"
               >Country <span class="required-field">*</span></label
             >
@@ -222,7 +222,7 @@
               placeholder="Enter Country Code"
             />
           </div>
-          <div class="form-group col-md-6">
+          <div class="mb-3 col-md-6">
             <label for="Currency"
               >Currency <span class="required-field">*</span></label
             >
@@ -239,7 +239,7 @@
           </div>
         </div>
         <div class="form-row">
-          <div class="form-group col-md-6">
+          <div class="mb-3 col-md-6">
             <label for="Phone">Phone</label>
             <input
               type="tel"
@@ -253,7 +253,7 @@
               placeholder="Contact Phone Number"
             />
           </div>
-          <div class="form-group col-md-6">
+          <div class="mb-3 col-md-6">
             <label for="Email">Email</label>
             <input
               type="email"
@@ -269,7 +269,7 @@
           </div>
         </div>
         <div class="form-row">
-          <div class="form-group col-md-6">
+          <div class="mb-3 col-md-6">
             <label for="LocationID"
               >{{ 'ALIAS.BUYER_LOCATION' | translate }} ID</label
             >
@@ -288,7 +288,7 @@
               placeholder="Enter {{ 'ALIAS.BUYER_LOCATION' | translate }} ID"
             />
           </div>
-          <div class="form-group col-md-6">
+          <div class="mb-3 col-md-6">
             <label for="LocationID">{{
               'ADMIN.BILLING_NUMBER' | translate
             }}</label>

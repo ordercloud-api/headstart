@@ -11,8 +11,8 @@
           {{ 'ALIAS.SUPPLIER' | translate | lowercase }}.
         </p>
       </div>
-      <div class="col-md-7 form-group">
-        <div class="form-group">
+      <div class="col-md-7 mb-3">
+        <div class="mb-3">
           <p class="mb-1">Active</p>
           <label class="switch mb-0" for="Active">
             <input
@@ -27,7 +27,7 @@
             <span class="slider round cursor-pointer"></span>
           </label>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
           <label for="Name">Name <span class="required-field">*</span></label>
           <input
             type="text"
@@ -41,7 +41,7 @@
             placeholder="Enter Name"
           />
         </div>
-        <div class="form-group" *ngIf="!logoLoading">
+        <div class="mb-3" *ngIf="!logoLoading">
           <label class="d-block" for="logo"
             ><span translate>ALIAS.SUPPLIER</span> Logo
           </label>
@@ -91,7 +91,7 @@
             <span class="sr-only" translate>ADMIN.COMMON.LOADING</span>
           </div>
         </div>
-        <div class="form-group">
+        <div class="mb-3">
           <label for="Description">Description</label>
           <reactive-quill-editor-component
             [resourceInSelection]="resourceInSelection"
@@ -103,7 +103,7 @@
           </reactive-quill-editor-component>
         </div>
         <div class="form-row">
-          <div class="form-group col-md-6">
+          <div class="mb-3 col-md-6">
             <label for="Currency"
               >Currency <span class="required-field">*</span></label
             >
@@ -122,7 +122,7 @@
             </select>
           </div>
 
-          <div class="form-group col-md-12" formGroupName="ProductTypes">
+          <div class="mb-3 col-md-12" formGroupName="ProductTypes">
             <label
               >Product Types <span class="required-field">*</span>
               <small id="productTypesHelp" class="form-text text-muted">
@@ -163,7 +163,7 @@
               </div>
             </div>
           </div>
-          <div class="form-group">
+          <div class="mb-3">
             <label>Free Shipping</label>
             <div class="form-check">
               <input
@@ -202,7 +202,7 @@
           <div
             *ngIf="countriesServicingOptions.length"
             [formGroup]="countriesServicingForm"
-            class="form-group col-md-12"
+            class="mb-3 col-md-12"
           >
             <label>Countries to Service</label>
             <div class="d-flex justify-content-start align-items-center">
@@ -238,7 +238,7 @@
           users.
         </p>
       </div>
-      <div class="col-md-7 form-group">
+      <div class="col-md-7 mb-3">
         <table class="table table-hover">
           <thead>
             <tr>
@@ -285,7 +285,7 @@
           {{ 'ALIAS.SUPPLIER' | translate | lowercase }} will supply.
         </p>
       </div>
-      <div class="col-md-7 form-group">
+      <div class="col-md-7 mb-3">
         <table class="table table-hover">
           <thead>
             <tr>
@@ -330,8 +330,8 @@
           from end buyers.
         </p>
       </div>
-      <div class="col-md-7 form-group">
-        <div class="form-group">
+      <div class="col-md-7 mb-3">
+        <div class="mb-3">
           <label for="Support Contact Name">Support Contact Name</label>
           <input
             type="text"
@@ -345,7 +345,7 @@
           />
         </div>
         <div class="form-row">
-          <div class="form-group col-md-6">
+          <div class="mb-3 col-md-6">
             <label for="Support Contact Name">Support Contact Email</label>
             <input
               type="text"
@@ -361,7 +361,7 @@
             />
           </div>
           <!-- no phone validation currently because this field has extraneous values that would break validation -->
-          <div class="form-group col-md-6">
+          <div class="mb-3 col-md-6">
             <label for="Support Contact Phone">Support Contact Phone</label>
             <input
               type="text"

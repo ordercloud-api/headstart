@@ -4,7 +4,7 @@
   [formGroup]="productForm"
   name="ProductForm"
 >
-  <div class="form-group row">
+  <div class="mb-3 row">
     <label for="ID" class="col-sm-3 control-label fw-bold mt-1"
       >Product ID</label
     >
@@ -21,7 +21,7 @@
   <span *ngIf="hasPatternError('ID')" class="error-message"
     >ID can only contain characters Aa-Zz 0-9 - _ (no spaces)</span
   >
-  <div class="form-group row">
+  <div class="mb-3 row">
     <label for="name" class="col-sm-3 control-label fw-bold mt-1"
       >Product Name</label
     >
@@ -40,7 +40,7 @@
   <span *ngIf="hasRequiredError('Name')" class="error-message"
     >Name is Required</span
   >
-  <div class="form-group row">
+  <div class="mb-3 row">
     <label for="description" class="col-sm-3 control-label fw-bold mt-1"
       >Product Description</label
     >
@@ -54,7 +54,7 @@
       ></textarea>
     </div>
   </div>
-  <div class="form-group">
+  <div class="mb-3">
     <div class="col-sm-9 offset-sm-3">
       <input
         type="checkbox"
@@ -65,7 +65,7 @@
       <label for="active">Active</label>
     </div>
   </div>
-  <div class="form-group">
+  <div class="mb-3">
     <div class="col-sm-9 offset-sm-3">
       <input
         type="checkbox"

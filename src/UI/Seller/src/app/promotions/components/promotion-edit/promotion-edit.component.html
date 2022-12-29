@@ -88,7 +88,7 @@
         </div>
         <div class="card bg-white shadow-sm p-4 mt-3">
           <h6 class="mb-0" translate>ADMIN.PROMOTIONS.TYPE</h6>
-          <div class="form-group mt-3 mb-0">
+          <div class="mb-3 mt-3 mb-0">
             <div class="form-check">
               <input
                 id="promoType"
@@ -182,7 +182,11 @@
             >ADMIN.PROMOTIONS.VALUE</label
           >
           <div class="input-group w-25 mt-3">
-            <span *ngIf="_promotionEditable?.xp?.Type === 'FixedAmount'" class="input-group-text">$</span>
+            <span
+              *ngIf="_promotionEditable?.xp?.Type === 'FixedAmount'"
+              class="input-group-text"
+              >$</span
+            >
             <input
               type="number"
               class="form-control"
@@ -191,13 +195,17 @@
               (input)="handleUpdatePromo($event, 'xp.Value', 'number')"
               id="Value"
             />
-            <span *ngIf="_promotionEditable?.xp?.Type === 'Percentage'" class="input-group-text">%</span>
+            <span
+              *ngIf="_promotionEditable?.xp?.Type === 'Percentage'"
+              class="input-group-text"
+              >%</span
+            >
           </div>
           <hr />
           <h6 class="mb-0" translate>ADMIN.PROMOTIONS.APPLIES_TO</h6>
           <div class="row mt-3">
             <div class="col-md-4">
-              <div class="form-group mb-0">
+              <div class="mb-3 mb-0">
                 <div class="form-check">
                   <input
                     class="form-check-input"
@@ -457,8 +465,8 @@
               placeholder="0"
             />
             <span class="input-group-text" translate
-                >ADMIN.PROMOTIONS.ITEMS</span
-              >
+              >ADMIN.PROMOTIONS.ITEMS</span
+            >
           </div>
           <ng-container *ngIf="_promotionEditable?.xp?.Type === 'FreeShipping'">
             <hr />
@@ -493,7 +501,7 @@
           <h6 class="mb-0" translate>ADMIN.PROMOTIONS.BUYER_ELIGIBILITY</h6>
           <div class="row mt-3">
             <div class="col-md-4">
-              <div class="form-group mb-0">
+              <div class="mb-3 mb-0">
                 <div class="form-check">
                   <input
                     class="form-check-input"
@@ -647,7 +655,7 @@
         </div>
         <div class="card bg-white shadow-sm p-4 mt-3">
           <h6 class="fw-medium" translate>ADMIN.PROMOTIONS.ACTIVE_DATES</h6>
-          <div class="form-group">
+          <div class="mb-3">
             <label for="StartDate" translate
               >ADMIN.PROMOTIONS.START_DATE_TIME
               <span class="required-field">*</span>&nbsp;
@@ -686,7 +694,7 @@
               >ADMIN.PROMOTIONS.SET_EXPIRATION_DATE</label
             >
           </div>
-          <div *ngIf="hasExpiration" class="form-group mt-3">
+          <div *ngIf="hasExpiration" class="mb-3 mt-3">
             <label for="StartDate" translate
               >ADMIN.PROMOTIONS.EXPIRATION_DATE_TIME<small>
                 <fa-icon
