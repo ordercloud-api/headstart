@@ -93,7 +93,7 @@
       <div class="d-flex justify-content-end align-items-start">
         <div
           *ngIf="_supplierOrder?.FromUser && !isQuoteOrder(_order)"
-          class="mr-3"
+          class="me-3"
         >
           <small
             class="font-weight-bolder text-muted text-uppercase d-block"
@@ -248,14 +248,14 @@
           _order?.xp?.OrderType === 'Quote' &&
           _order?.xp?.QuoteStatus === 'NeedsSellerReview'
         "
-        class="btn btn-outline-primary mr-3 mb-3 d-print-none"
+        class="btn btn-outline-primary me-3 mb-3 d-print-none"
         (click)="toggleSetQuotePrice()"
       >
         {{ getQuotePriceButtonText() | translate }}
       </button>
       <button
         *ngIf="canCreateReturn()"
-        class="btn btn-outline-primary mr-3 mb-3 d-print-none"
+        class="btn btn-outline-primary me-3 mb-3 d-print-none"
         (click)="openReturnCreateModal()"
         translate
       >

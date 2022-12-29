@@ -7,7 +7,9 @@
     }}
   </h4>
   <span *ngIf="!isRequired">- Optional</span>
-  <span class="required-field" *ngIf="isRequired" translate>ADMIN.COMMON.REQUIRED_FIELDS</span>
+  <span class="required-field" *ngIf="isRequired" translate
+    >ADMIN.COMMON.REQUIRED_FIELDS</span
+  >
 
   <div class="d-block">
     <div
@@ -15,17 +17,10 @@
         superProduct?.Product?.xp?.ProductType === 'Quote' &&
         superProduct?.PriceSchedule?.PriceBreaks.length === 1
       "
-      class="
-        alert alert-info
-        d-inline-block
-        justify-content-start
-        align-items-center
-        mt-3
-        set-to-top
-      "
+      class="alert alert-info d-inline-block justify-content-start align-items-center mt-3 set-to-top"
     >
       <p class="mb-0" translate>
-        <fa-icon [icon]="faExclamationCircle" class="mr-3"> </fa-icon>
+        <fa-icon [icon]="faExclamationCircle" class="me-3"> </fa-icon>
         ADMIN.PRODUCT_EDIT.PRICE_SCHEDULE_REQUIRED
       </p>
     </div>

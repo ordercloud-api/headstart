@@ -10,7 +10,7 @@
     <div class="mb-3">
       <button
         *ngIf="orderReturn?.Status === 'AwaitingApproval'"
-        class="btn btn-primary mr-2"
+        class="btn btn-primary me-2"
         (click)="openModal(approveReturnModal)"
         translate
       >
@@ -18,7 +18,7 @@
       </button>
       <button
         *ngIf="orderReturn?.Status === 'AwaitingApproval'"
-        class="btn btn-outline-danger mr-2"
+        class="btn btn-outline-danger me-2"
         (click)="openModal(declineReturnModal)"
         translate
       >
@@ -26,7 +26,7 @@
       </button>
       <button
         *ngIf="orderReturn?.Status === 'Open'"
-        class="btn btn-primary mr-2"
+        class="btn btn-primary me-2"
         (click)="openModal(completeReturnModal)"
         translate
       >

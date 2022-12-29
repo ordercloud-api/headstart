@@ -32,7 +32,7 @@
     >
       <!-- parent resource dropdown -->
       <resource-select-dropdown-component
-        class="btn-block resource-btn mr-1 mb-1"
+        class="btn-block resource-btn me-1 mb-1"
         [parentService]="parentResourceService"
         [ocService]="_ocService"
       >
@@ -124,7 +124,7 @@
       }"
     >
       <!-- Resource Search -->
-      <div class="mr-2">
+      <div class="me-2">
         <div class="row">
           <div class="col-md-5 d-flex align-items-center">
             <search-component
@@ -138,7 +138,7 @@
           </div>
           <!-- Facet Popover -->
           <ng-container *ngIf="_filterConfig?.Filters?.length > 0">
-            <div class="col-md-1 d-flex align-items-center mr-md-auto">
+            <div class="col-md-1 d-flex align-items-center me-md-auto">
               <div class="d-flex justify-content-start align-items-center">
                 <div
                   *ngIf="filterForm"

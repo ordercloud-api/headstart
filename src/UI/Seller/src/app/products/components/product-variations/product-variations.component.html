@@ -19,7 +19,7 @@
             ADMIN.PRODUCT_EDIT.VARIANTS_CUSTOMIZATION
           </h6>
           <div class="d-flex align-items-center">
-            <small class="mr-2 font-weight-bolder">{{
+            <small class="me-2 font-weight-bolder">{{
               addVariableTextSpecs ? 'On' : 'Off'
             }}</small>
             <label class="switch mb-0" for="AddVariableTextSpecs">
@@ -132,7 +132,7 @@
             ADMIN.PRODUCT_EDIT.PRODUCT_VARIATIONS
           </h6>
           <div class="d-flex align-items-center">
-            <small class="mr-2 font-weight-bolder">{{
+            <small class="me-2 font-weight-bolder">{{
               editSpecs ? 'On' : 'Off'
             }}</small>
             <label class="switch mb-0" for="ConfigureVariations">
@@ -317,11 +317,7 @@
                             "
                           />
                           <label
-                            class="
-                              custom-control-label
-                              small
-                              custom-label-height
-                            "
+                            class="custom-control-label small custom-label-height"
                             for="DefaultSpecOption_{{ opt.ID }}"
                             >Default
                           </label>
@@ -329,7 +325,7 @@
                       </td>
                       <td class="vertical-align-middle">
                         {{
-                          getPriceMarkup(opt) | currency: myCurrency?.Currency
+                          getPriceMarkup(opt) | currency : myCurrency?.Currency
                         }}
                       </td>
                       <td class="vertical-align-middle">
@@ -447,7 +443,7 @@
                     {{ specValue.SpecOptionValue }}
                     <span class="font-weight-bold" *ngIf="specValue.PriceMarkup"
                       >(+{{
-                        specValue.PriceMarkup | currency: myCurrency?.Currency
+                        specValue.PriceMarkup | currency : myCurrency?.Currency
                       }})</span
                     >
                   </td>
@@ -504,7 +500,7 @@
                   <td>
                     {{
                       getTotalMarkup(variant.xp?.SpecValues)
-                        | currency: myCurrency?.Currency
+                        | currency : myCurrency?.Currency
                     }}
                   </td>
                 </tr>
@@ -525,7 +521,7 @@
                         "
                         (click)="assignVariantImages = true"
                         [icon]="faPlusCircle"
-                        class="mr-2"
+                        class="me-2"
                         size="lg"
                       >
                       </fa-icon>
@@ -649,7 +645,9 @@
                 <td>{{ spec.Name }}</td>
                 <td>{{ option.Value }}</td>
                 <td>
-                  {{ option.PriceMarkup || 0 | currency: myCurrency?.Currency }}
+                  {{
+                    option.PriceMarkup || 0 | currency : myCurrency?.Currency
+                  }}
                 </td>
               </tr>
             </tbody>

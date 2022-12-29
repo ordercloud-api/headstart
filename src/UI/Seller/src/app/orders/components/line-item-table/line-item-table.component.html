@@ -55,19 +55,14 @@
         <tbody>
           <tr *ngFor="let li of liGroup; let lineItemIndex = index">
             <td
-              class="
-                align-middle
-                d-flex
-                justify-content-start
-                align-items-center
-              "
+              class="align-middle d-flex justify-content-start align-items-center"
             >
               <img
                 [id]="i"
                 [src]="li.xp?.ImageUrl || getImageUrl(li.ID)"
                 width="auto"
                 height="80px"
-                class="mr-2"
+                class="me-2"
               />
               <h6>{{ li.ID }}</h6>
             </td>
@@ -95,7 +90,7 @@
               {{ getLineItemStatusDisplay(li) }}
             </td>
             <td class="align-middle">
-              {{ li.LineTotal | currency: _order?.xp?.currency }}
+              {{ li.LineTotal | currency : _order?.xp?.currency }}
             </td>
           </tr>
         </tbody>
