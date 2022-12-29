@@ -42,14 +42,14 @@
       </div>
       <div class="d-flex justify-content-between align-items-start">
         <div class="d-flex flex-column">
-          <small class="mb-0 text-uppercase text-muted font-weight-bolder"
+          <small class="mb-0 text-uppercase text-muted fw-bolder"
             >Previous Value</small
           >
           <pre><code>{{notification?.Doc?.Product?.PreviousValue | json}}</code></pre>
         </div>
         <div class="d-flex justify-content-between align-items-center">
           <div class="d-flex flex-column">
-            <small class="mb-0 text-uppercase text-muted font-weight-bolder"
+            <small class="mb-0 text-uppercase text-muted fw-bolder"
               >New Value</small
             >
             <pre>{{ notification?.Doc?.Product?.CurrentValue | json }}</pre>
@@ -103,7 +103,7 @@
                   <div
                     class="d-flex justify-content-between align-items-center"
                   >
-                    <h6 class="font-weight-medium" translate>
+                    <h6 class="fw-medium" translate>
                       ADMIN.PRODUCT_EDIT.DETAILS
                     </h6>
                     <fa-icon
@@ -185,7 +185,7 @@
                   </div>
                   <!-- /Product Name -->
                   <hr />
-                  <h6 class="font-weight-medium" translate>
+                  <h6 class="fw-medium" translate>
                     ADMIN.PRODUCT_EDIT.PRODUCT_SKU
                     <small *ngIf="isCreatingNew" class="d-block">
                       <fa-icon
@@ -247,7 +247,7 @@
                   <div
                     class="d-flex justify-content-between align-items-center"
                   >
-                    <h6 class="font-weight-medium" translate>
+                    <h6 class="fw-medium" translate>
                       ADMIN.PRODUCT_EDIT.UNIT_OF_MEASURE
                     </h6>
                     <fa-icon
@@ -316,7 +316,7 @@
                 <!-- /Unit Of Measure -->
                 <!-- Order Limitations -->
                 <div class="card bg-white shadow-sm p-4 mt-3">
-                  <h6 class="font-weight-medium" translate>
+                  <h6 class="fw-medium" translate>
                     ADMIN.PRODUCT_EDIT.ORDER_LIMITATIONS
                   </h6>
                   <div class="form-row">
@@ -377,7 +377,7 @@
                 <!-- /Order Limitations -->
                 <!-- Inventory Tracking -->
                 <div class="card bg-white shadow-sm p-4 mt-3">
-                  <h6 class="font-weight-medium" translate>
+                  <h6 class="fw-medium" translate>
                     ADMIN.PRODUCT_EDIT.INVENTORY_TRACKING
                   </h6>
                   <div class="form-group">
@@ -523,7 +523,7 @@
                 <!-- /Inventory Tracking -->
                 <!-- Product Returnable -->
                 <div class="card bg-white shadow-sm p-4 mt-3">
-                  <h6 class="font-weight-medium" translate>
+                  <h6 class="fw-medium" translate>
                     ADMIN.PRODUCT_EDIT.PRODUCT_RETURNS.PRODUCT_RETURNS
                   </h6>
                   <div class="form-group">
@@ -579,7 +579,7 @@
                     <div
                       class="d-flex justify-content-between align-items-center"
                     >
-                      <h6 class="font-weight-medium" translate>
+                      <h6 class="fw-medium" translate>
                         ADMIN.PRODUCT_EDIT.SHIPPING.SHIPPING
                       </h6>
                       <ng-container
@@ -863,7 +863,7 @@
                 <div
                   class="card py-2 px-3 bg-white sticky-top product-preview-card"
                 >
-                  <p class="text-center font-weight-bold" translate>
+                  <p class="text-center fw-bold" translate>
                     ADMIN.PRODUCT_EDIT.PRODUCT_PREVIEW
                   </p>
                   <div
@@ -973,7 +973,7 @@
             <div class="row pt-3">
               <div class="col-md-7">
                 <div class="card py-2 px-3 bg-white">
-                  <h6 class="font-weight-medium" translate>
+                  <h6 class="fw-medium" translate>
                     ADMIN.PRODUCT_EDIT.DESCRIPTION
                   </h6>
                   <reactive-quill-editor-component
@@ -1010,7 +1010,7 @@
               </div>
               <div class="col-md-5">
                 <div class="card py-2 px-3 bg-white">
-                  <h6 class="font-weight-medium" translate>
+                  <h6 class="fw-medium" translate>
                     ADMIN.PRODUCT_EDIT.DESCRIPTION_PREVIEW
                   </h6>
                   <div>
@@ -1028,7 +1028,7 @@
                     "
                   ></div>
                   <hr />
-                  <h6 class="font-weight-medium" translate>
+                  <h6 class="fw-medium" translate>
                     ADMIN.PRODUCT_EDIT.MESSAGE_PREVIEW
                   </h6>
                   <div>

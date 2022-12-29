@@ -1,10 +1,12 @@
 <div class="container-fluid">
   <form *ngIf="resourceForm" [formGroup]="resourceForm">
-    <span class="required-field" > * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span>
+    <span class="required-field">
+      * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span
+    >
     <div class="row pt-3">
       <div class="col-md-7">
         <div class="card py-2 px-3 bg-white">
-          <h6 class="font-weight-medium">Storefront Details</h6>
+          <h6 class="fw-medium">Storefront Details</h6>
           <a
             *ngIf="selectedResource?.xp?.WebsiteUrl"
             class="btn btn-primary"
@@ -29,7 +31,9 @@
             </label>
           </div>
           <div class="form-group">
-            <label for="AppName">Name <span class="required-field">*</span></label>
+            <label for="AppName"
+              >Name <span class="required-field">*</span></label
+            >
             <input
               type="text"
               class="form-control"
@@ -57,7 +61,8 @@
           <div class="form-row">
             <div class="form-group col-md-6">
               <label for="AccessTokenDuration"
-                >Access Token Duration <span class="required-field">*</span>&nbsp;
+                >Access Token Duration
+                <span class="required-field">*</span>&nbsp;
                 <small>
                   <fa-icon
                     [icon]="faQuestionCircle"
@@ -84,7 +89,8 @@
             </div>
             <div class="form-group col-md-6">
               <label for="RefreshTokenDuration"
-                >Refresh Token Duration <span class="required-field">*</span>&nbsp;
+                >Refresh Token Duration
+                <span class="required-field">*</span>&nbsp;
                 <small>
                   <fa-icon
                     [icon]="faQuestionCircle"
@@ -112,7 +118,7 @@
           </div>
         </div>
         <div class="card py-2 px-3 mt-3 bg-white">
-          <h6 class="font-weight-medium">Anonymous Shopping</h6>
+          <h6 class="fw-medium">Anonymous Shopping</h6>
           <!-- TODO: this will require additional consideration (see notes in component ts file) -->
           <!-- <div class="form-group">
             <p class="mb-1">Enable Anonymous Shopping</p>
@@ -197,7 +203,7 @@
 
       <div class="col-md-5">
         <div class="card py-2 px-3 bg-white">
-          <h6 class="font-weight-medium">Summary</h6>
+          <h6 class="fw-medium">Summary</h6>
           <p translate>ADMIN.STOREFRONTS.SUMMARY</p>
         </div>
       </div>

@@ -4,7 +4,7 @@
       <div class="card bg-white shadow-sm p-4 mt-3">
         <small class="d-block mb-0" *ngIf="variableTextSpecs"
           ><span translate>ADMIN.PRODUCT_EDIT.THIS_PRODUCT_HAS </span>
-          <span class="font-weight-bold">{{ variableTextSpecs?.length }}</span>
+          <span class="fw-bold">{{ variableTextSpecs?.length }}</span>
           options for customization.
         </small>
       </div>
@@ -15,11 +15,11 @@
     <div class="col-md-8">
       <div class="card p-4 mt-3 bg-white">
         <div class="d-flex justify-content-between align-items-center">
-          <h6 class="font-weight-medium" translate>
+          <h6 class="fw-medium" translate>
             ADMIN.PRODUCT_EDIT.VARIANTS_CUSTOMIZATION
           </h6>
           <div class="d-flex align-items-center">
-            <small class="me-2 font-weight-bolder">{{
+            <small class="me-2 fw-bolder">{{
               addVariableTextSpecs ? 'On' : 'Off'
             }}</small>
             <label class="switch mb-0" for="AddVariableTextSpecs">
@@ -128,13 +128,11 @@
       <!-- Product Variations -->
       <div class="card p-4 mt-3 bg-white">
         <div class="d-flex justify-content-between align-items-center">
-          <h6 class="font-weight-medium" translate>
+          <h6 class="fw-medium" translate>
             ADMIN.PRODUCT_EDIT.PRODUCT_VARIATIONS
           </h6>
           <div class="d-flex align-items-center">
-            <small class="me-2 font-weight-bolder">{{
-              editSpecs ? 'On' : 'Off'
-            }}</small>
+            <small class="me-2 fw-bolder">{{ editSpecs ? 'On' : 'Off' }}</small>
             <label class="switch mb-0" for="ConfigureVariations">
               <input
                 type="checkbox"
@@ -160,7 +158,7 @@
               ><span translate>ADMIN.PRODUCT_EDIT.THIS_PRODUCT_HAS </span>
               <span
                 [ngClass]="{ 'text-danger': !variantsValid }"
-                class="font-weight-bold"
+                class="fw-bold"
                 >{{ variants?.getValue()?.length }}</span
               >
               <span translate>
@@ -441,7 +439,7 @@
                     *ngFor="let specValue of variant.xp?.SpecValues"
                   >
                     {{ specValue.SpecOptionValue }}
-                    <span class="font-weight-bold" *ngIf="specValue.PriceMarkup"
+                    <span class="fw-bold" *ngIf="specValue.PriceMarkup"
                       >(+{{
                         specValue.PriceMarkup | currency : myCurrency?.Currency
                       }})</span
