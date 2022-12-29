@@ -744,21 +744,21 @@
             >
               <span
                 *ngIf="_promotionEditable?.xp?.Automatic"
-                class="badge badge-pill bg-warning me-1"
+                class="badge rounded-pill bg-warning me-1"
                 translate
               >
                 ADMIN.PROMOTIONS.AUTOMATIC
               </span>
               <span
                 *ngIf="!isCreatingNew && !isExpired && !hasNotBegun"
-                class="badge badge-pill bg-success"
+                class="badge rounded-pill bg-success"
                 translate
               >
                 ADMIN.PROMOTIONS.ACTIVE
               </span>
               <span
                 *ngIf="!isCreatingNew && isExpired"
-                class="badge badge-pill badge-light"
+                class="badge rounded-pill bg-light"
                 translate
               >
                 ADMIN.PROMOTIONS.EXPIRED
