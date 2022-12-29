@@ -14,7 +14,7 @@
       <div class="col-md-7 mb-3">
         <div class="row">
           <div class="mb-3 col-md-12" *ngIf="isCreatingNew">
-            <label for="ID">Headstart ID (Optional)</label>
+            <label for="ID" class="form-label">Headstart ID (Optional)</label>
             <div class="input-group">
               <span class="input-group-text">{{ buyerID }}-</span>
               <input
@@ -36,7 +36,7 @@
             class="mb-3 col-md-12"
             *ngIf="!isCreatingNew && buyerLocationEditable"
           >
-            <label for="ID">Headstart ID</label>
+            <label for="ID" class="form-label">Headstart ID</label>
             <input
               class="form-control"
               value="{{ buyerLocationEditable.Address.ID }}"
@@ -46,7 +46,7 @@
         </div>
         <div class="row">
           <div class="mb-3 col-md-6">
-            <label for="LocationName"
+            <label for="LocationName" class="form-label"
               >{{ 'ALIAS.BUYER_LOCATION' | translate }} Name
               <span class="required-field">*</span></label
             >
@@ -64,7 +64,7 @@
             />
           </div>
           <div class="mb-3 col-md-6">
-            <label for="Company Name"
+            <label for="Company Name" class="form-label"
               >Company Name <span class="required-field">*</span></label
             >
             <input
@@ -105,7 +105,7 @@
         *ngIf="!suggestedAddresses || suggestedAddresses.length === 0"
       >
         <div class="mb-3">
-          <label for="Street 1"
+          <label for="Street 1" class="form-label"
             >Street 1 <span class="required-field">*</span></label
           >
           <input
@@ -122,7 +122,7 @@
           />
         </div>
         <div class="mb-3">
-          <label for="Street2">Street 2</label>
+          <label for="Street2" class="form-label">Street 2</label>
           <input
             type="text"
             class="form-control"
@@ -138,7 +138,9 @@
         </div>
         <div class="row">
           <div class="mb-3 col-md-5">
-            <label for="City">City <span class="required-field">*</span></label>
+            <label for="City" class="form-label"
+              >City <span class="required-field">*</span></label
+            >
             <input
               type="text"
               class="form-control"
@@ -153,7 +155,7 @@
             />
           </div>
           <div class="mb-3 col-md-3">
-            <label for="State"
+            <label for="State" class="form-label"
               >State <span class="required-field">*</span></label
             >
             <input
@@ -170,7 +172,9 @@
             />
           </div>
           <div class="mb-3 col-md-4">
-            <label for="Zip">Zip <span class="required-field">*</span></label>
+            <label for="Zip" class="form-label"
+              >Zip <span class="required-field">*</span></label
+            >
             <input
               type="text"
               class="form-control"
@@ -187,7 +191,7 @@
         </div>
         <div class="row">
           <div class="mb-3 col-md-6">
-            <label for="Country"
+            <label for="Country" class="form-label"
               >Country <span class="required-field">*</span></label
             >
             <select
@@ -223,7 +227,7 @@
             />
           </div>
           <div class="mb-3 col-md-6">
-            <label for="Currency"
+            <label for="Currency" class="form-label"
               >Currency <span class="required-field">*</span></label
             >
             <input
@@ -240,7 +244,7 @@
         </div>
         <div class="row">
           <div class="mb-3 col-md-6">
-            <label for="Phone">Phone</label>
+            <label for="Phone" class="form-label">Phone</label>
             <input
               type="tel"
               class="form-control"
@@ -254,7 +258,7 @@
             />
           </div>
           <div class="mb-3 col-md-6">
-            <label for="Email">Email</label>
+            <label for="Email" class="form-label">Email</label>
             <input
               type="email"
               class="form-control"
@@ -270,7 +274,7 @@
         </div>
         <div class="row">
           <div class="mb-3 col-md-6">
-            <label for="LocationID"
+            <label for="LocationID" class="form-label"
               >{{ 'ALIAS.BUYER_LOCATION' | translate }} ID</label
             >
             <input
@@ -289,7 +293,7 @@
             />
           </div>
           <div class="mb-3 col-md-6">
-            <label for="LocationID">{{
+            <label for="LocationID" class="form-label">{{
               'ADMIN.BILLING_NUMBER' | translate
             }}</label>
             <input

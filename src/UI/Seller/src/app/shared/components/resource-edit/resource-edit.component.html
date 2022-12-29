@@ -15,7 +15,7 @@
       />
     </div>
     <div *ngIf="field.type === 'number'" class="mb-3">
-      <label for="{{ field.field }}">{{ field.field | uncamel }}</label>
+      <label for="{{ field.field }}" class="form-label">{{ field.field | uncamel }}</label>
       <input
         *ngIf="field.type === 'number'"
         type="number"
@@ -29,7 +29,7 @@
       />
     </div>
     <div *ngIf="field.type === 'date'" class="mb-3">
-      <label for="{{ field.field }}">{{ field.field | uncamel }}</label>
+      <label for="{{ field.field }}" class="form-label">{{ field.field | uncamel }}</label>
       <input
         *ngIf="field.type === 'date'"
         type="date"

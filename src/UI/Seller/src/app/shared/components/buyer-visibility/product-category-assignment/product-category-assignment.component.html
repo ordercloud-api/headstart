@@ -12,10 +12,13 @@
       <div class="col-md-5">
         <div class="row">
           <div class="col-md-6">
-            <label translate>ADMIN.PRODUCT_EDIT.HIGH_LEVEL_CATEGORY</label>
+            <label for="highLevelCategoryInput" translate class="form-label"
+              >ADMIN.PRODUCT_EDIT.HIGH_LEVEL_CATEGORY</label
+            >
             <select
               class="form-control"
               (change)="selectHighLevelCategory($event)"
+              id="highLevelCategoryInput"
             >
               <option selected disabled [ngValue]="null">Select</option>
               <option
@@ -40,10 +43,13 @@
               </button>
             </ng-container>
             <div *ngIf="showMidLevel">
-              <label translate>ADMIN.PRODUCT_EDIT.MID_LEVEL_CATEGORY</label>
+              <label for="midLevelCategory" class="form-label" translate
+                >ADMIN.PRODUCT_EDIT.MID_LEVEL_CATEGORY</label
+              >
               <select
                 class="form-control"
                 (change)="selectMidLevelCategory($event)"
+                id="midLevelCategory"
               >
                 <option selected disabled [ngValue]="null">Select</option>
                 <option
@@ -69,10 +75,13 @@
               </button>
             </ng-container>
             <div *ngIf="showLowLevel">
-              <label translate>ADMIN.PRODUCT_EDIT.LOW_LEVEL_CATEGORY</label>
+              <label for="lowLevelCategory" class="form-label" translate
+                >ADMIN.PRODUCT_EDIT.LOW_LEVEL_CATEGORY</label
+              >
               <select
                 class="form-control"
                 (change)="selectLowLevelCategory($event)"
+                id="lowLevelCategory"
               >
                 <option selected disabled [ngValue]="null">Select</option>
                 <option

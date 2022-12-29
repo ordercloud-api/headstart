@@ -11,7 +11,7 @@
           </h6>
           <div class="row">
             <div class="mb-3 col-md-6">
-              <label for="AddressName"
+              <label for="AddressName" class="form-label"
                 >{{ 'ALIAS.SELLER_LOCATION' | translate | titlecase }} Name
                 <span class="required-field">*</span></label
               >
@@ -31,7 +31,7 @@
               />
             </div>
             <div class="mb-3 col-md-6">
-              <label for="Company Name"
+              <label for="Company Name" class="form-label"
                 >Company Name <span class="required-field">*</span></label
               >
               <input
@@ -49,7 +49,7 @@
             </div>
           </div>
           <div class="mb-3">
-            <label for="Country"
+            <label for="Country" class="form-label"
               >Country <span class="required-field">*</span></label
             >
             <select
@@ -81,7 +81,7 @@
           </p>
           <ng-container *ngIf="countryHasBeenSelected">
             <div class="mb-3">
-              <label for="Street 1"
+              <label for="Street 1" class="form-label"
                 >{{
                   getControlValue('Country') === 'CA'
                     ? 'Civic Address'
@@ -107,7 +107,7 @@
               />
             </div>
             <div *ngIf="getControlValue('Country') !== 'CA'" class="mb-3">
-              <label for="Street2">Street 2</label>
+              <label for="Street2" class="form-label">Street 2</label>
               <input
                 type="text"
                 class="form-control"
@@ -122,7 +122,7 @@
               />
             </div>
             <div class="mb-3">
-              <label for="City"
+              <label for="City" class="form-label"
                 >{{
                   getControlValue('Country') === 'CA' ? 'Municipality' : 'City'
                 }}
@@ -146,7 +146,7 @@
               />
             </div>
             <div class="mb-3">
-              <label for="State"
+              <label for="State" class="form-label"
                 >{{
                   getControlValue('Country') === 'CA' ? 'Province' : 'State'
                 }}
@@ -170,7 +170,7 @@
               />
             </div>
             <div class="mb-3">
-              <label for="Zip"
+              <label for="Zip" class="form-label"
                 >{{
                   getControlValue('Country') === 'CA' ? 'Postal Code' : 'Zip'
                 }}

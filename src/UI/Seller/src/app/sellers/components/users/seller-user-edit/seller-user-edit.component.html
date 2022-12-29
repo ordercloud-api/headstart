@@ -4,7 +4,7 @@
       * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span
     >
     <div class="mb-3">
-      <label for="Username"
+      <label for="Username" class="form-label"
         >Username <span class="required-field">*</span></label
       >
       <input
@@ -17,7 +17,7 @@
         (input)="updateResourceFromEvent($event, 'Username')"
         placeholder="Enter Username"
       />
-      <label for="FirstName"
+      <label for="FirstName" class="form-label"
         >First Name <span class="required-field">*</span></label
       >
       <input
@@ -30,7 +30,7 @@
         (input)="updateResourceFromEvent($event, 'FirstName')"
         placeholder="Enter FirstName"
       />
-      <label for="LastName"
+      <label for="LastName" class="form-label"
         >Last Name <span class="required-field">*</span></label
       >
       <input
@@ -44,7 +44,9 @@
         placeholder="Enter LastName"
       />
       <div class="mb-3">
-        <label for="Email">Email <span class="required-field">*</span></label>
+        <label for="Email" class="form-label"
+          >Email <span class="required-field">*</span></label
+        >
         <input
           type="text"
           class="form-control"

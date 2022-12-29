@@ -10,7 +10,7 @@
       </div>
       <div class="col-md-7 mb-3">
         <div class="mb-3" *ngIf="isCreatingNew">
-          <label for="ID" translate
+          <label for="ID" class="form-label" translate
             >ADMIN.FACETS.FACET_ID <span class="required-field">*</span></label
           >
           <input
@@ -27,13 +27,13 @@
           />
         </div>
         <div class="mb-3" *ngIf="!isCreatingNew">
-          <label for="ID" translate
+          <label for="ID" class="form-label" translate
             >ADMIN.FACETS.FACET_ID <span class="required-field">*</span></label
           >
           <input class="form-control" formControlName="ID" disabled />
         </div>
         <div class="mb-3">
-          <label for="Name" translate
+          <label for="Name" class="form-label" translate
             >ADMIN.FACETS.NAME <span class="required-field">*</span></label
           >
           <input
@@ -59,6 +59,7 @@
           <label
             [ngClass]="{ 'fw-bold': facetOptionLimitReached() }"
             for="addFacetOption"
+            class="form-label"
             >{{ _facetEditable?.xp?.Options?.length || 0 }} / 25
             {{ 'ADMIN.FACETS.OPTIONS' | translate }}</label
           >

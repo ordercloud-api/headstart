@@ -15,7 +15,7 @@
         <div class="card bg-white shadow-sm p-4 mt-3">
           <div class="row">
             <div class="mb-3 col-md-6">
-              <label for="firstName">
+              <label for="firstName" class="form-label">
                 First Name
                 <sup *ngIf="isRequired('FirstName')">
                   <fa-icon
@@ -37,7 +37,7 @@
               />
             </div>
             <div class="mb-3 col-md-6">
-              <label for="lastName">
+              <label for="lastName" class="form-label">
                 Last Name
                 <sup *ngIf="isRequired('LastName')">
                   <fa-icon
@@ -61,7 +61,7 @@
           </div>
           <div class="row">
             <div class="mb-3 col-md-6">
-              <label for="email">
+              <label for="email" class="form-label">
                 Email Address
                 <sup *ngIf="isRequired('Email')">
                   <fa-icon
@@ -83,7 +83,7 @@
               />
             </div>
             <div class="mb-3 col-md-6">
-              <label for="vendor">
+              <label for="vendor" class="form-label">
                 Vendor Name
                 <sup *ngIf="isRequired('Vendor')">
                   <fa-icon
@@ -108,7 +108,7 @@
           </div>
           <div class="row">
             <div class="mb-3 col-md-4">
-              <label for="subject">
+              <label for="subject" class="form-label">
                 Subject
                 <sup *ngIf="isRequired('Subject')">
                   <fa-icon
@@ -137,7 +137,7 @@
           </div>
           <div class="row">
             <div class="mb-3 col-md-10">
-              <label for="message">
+              <label for="message" class="form-label">
                 Message
                 <sup *ngIf="isRequired('Message')">
                   <fa-icon
@@ -157,13 +157,13 @@
           </div>
           <div class="row">
             <div class="mb-3 col-md-10">
-              <label for="attachment" class="d-block">
+              <label for="attachment" class="d-block form-label">
                 Attachment
                 <small>(Optional)</small>
               </label>
               <div *ngIf="!attachmentFile">
                 <label
-                  class="rmpm dropzone"
+                  class="rmpm dropzone form-label"
                   for="attachmentUpload"
                   appDrag
                   (files)="onAttachmentDrop($event)"

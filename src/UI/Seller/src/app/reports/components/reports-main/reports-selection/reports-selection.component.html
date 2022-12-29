@@ -6,7 +6,9 @@
   <div class="col-md-7 row">
     <div class="mb-3 col-md-6">
       <form [formGroup]="reportSelectionForm">
-        <label for="ReportType" translate>ADMIN.REPORTS.REPORT_TYPE</label>
+        <label for="ReportType" class="form-label" translate
+          >ADMIN.REPORTS.REPORT_TYPE</label
+        >
         <select
           class="form-control"
           type="dropdown"
@@ -29,7 +31,7 @@
     </div>
     <div class="mb-3 col-md-6">
       <form [formGroup]="reportSelectionForm">
-        <label for="ReportTemplate" translate
+        <label for="ReportTemplate" class="form-label" translate
           >ADMIN.REPORTS.REPORT_TEMPLATE</label
         >
         <select
@@ -57,7 +59,7 @@
       <div *ngFor="let filter of adHocFilters" class="mb-3 col-md-6">
         <form [formGroup]="reportSelectionForm">
           <div *ngIf="getFilterType(filter) === 'date'">
-            <label for="{{ filter }}"
+            <label for="{{ filter }}" class="form-label"
               >{{ getFilterNameDisplay(filter) }}
               <small class="text-danger fw-bolder">*</small></label
             >
@@ -71,7 +73,9 @@
             />
           </div>
           <div *ngIf="getFilterType(filter) === 'time'">
-            <label for="{{ filter }}">{{ getFilterNameDisplay(filter) }}</label>
+            <label for="{{ filter }}" class="form-label">{{
+              getFilterNameDisplay(filter)
+            }}</label>
             <input
               class="form-control"
               type="time"
@@ -81,7 +85,7 @@
             />
           </div>
           <div *ngIf="filter === 'SupplierID' && suppliers?.length">
-            <label for="{{ filter }}" translate
+            <label for="{{ filter }}" class="form-label" translate
               >ADMIN.REPORTS.SUPPLIER_OPTIONAL</label
             >
             <select
@@ -100,7 +104,7 @@
             </select>
           </div>
           <div *ngIf="filter === 'BrandID' && buyers?.length">
-            <label for="{{ filter }}" translate
+            <label for="{{ filter }}" class="form-label" translate
               >ADMIN.REPORTS.BUYER_OPTIONAL</label
             >
             <select

@@ -28,7 +28,7 @@
           </label>
         </div>
         <div class="mb-3">
-          <label for="Name">Name <span class="required-field">*</span></label>
+          <label for="Name" class="form-label">Name <span class="required-field">*</span></label>
           <input
             type="text"
             class="form-control"
@@ -42,7 +42,7 @@
           />
         </div>
         <div class="mb-3" *ngIf="!logoLoading">
-          <label class="d-block" for="logo"
+          <label for="logo" class="form-label d-block" 
             ><span translate>ALIAS.SUPPLIER</span> Logo
           </label>
           <div *ngIf="hasLogo">
@@ -59,7 +59,7 @@
               <label
                 for="imageUpload"
                 *ngIf="hasLogo"
-                class="btn btn-sm btn-outline-secondary mb-0"
+                class="btn btn-sm btn-outline-secondary mb-0 form-label"
                 >Update Logo</label
               >
               <button
@@ -73,7 +73,7 @@
           </div>
           <label
             *ngIf="!hasLogo"
-            class="rmpm dropzone"
+            class="rmpm dropzone form-label"
             for="imageUpload"
             appDrag
             (files)="dropFileUpload($event)"
@@ -92,7 +92,7 @@
           </div>
         </div>
         <div class="mb-3">
-          <label for="Description">Description</label>
+          <label for="Description" class="form-label">Description</label>
           <reactive-quill-editor-component
             [resourceInSelection]="resourceInSelection"
             [formControlForText]="resourceForm?.controls.Description"
@@ -104,7 +104,7 @@
         </div>
         <div class="row">
           <div class="mb-3 col-md-6">
-            <label for="Currency"
+            <label for="Currency" class="form-label"
               >Currency <span class="required-field">*</span></label
             >
             <select
@@ -123,7 +123,7 @@
           </div>
 
           <div class="mb-3 col-md-12" formGroupName="ProductTypes">
-            <label
+            <label 
               >Product Types <span class="required-field">*</span>
               <small id="productTypesHelp" class="form-text text-muted">
                 What types of products is this supplier able to sell? Check at
@@ -164,7 +164,7 @@
             </div>
           </div>
           <div class="mb-3">
-            <label>Free Shipping</label>
+            <label for="Enabled" class="form-label">Free Shipping</label>
             <div class="form-check">
               <input
                 type="checkbox"
@@ -179,7 +179,7 @@
               <label class="form-check-label" for="Enabled">Enabled</label>
             </div>
             <div *ngIf="_supplierEditable?.xp?.FreeShippingThreshold != null">
-              <label for="Threshold">Order Subtotal Threshold</label>
+              <label for="Threshold" class="form-label">Order Subtotal Threshold</label>
               <input
                 type="number"
                 class="form-control"
@@ -332,7 +332,7 @@
       </div>
       <div class="col-md-7 mb-3">
         <div class="mb-3">
-          <label for="Support Contact Name">Support Contact Name</label>
+          <label for="SupportContactName" class="form-label">Support Contact Name</label>
           <input
             type="text"
             class="form-control"
@@ -346,7 +346,7 @@
         </div>
         <div class="row">
           <div class="mb-3 col-md-6">
-            <label for="Support Contact Name">Support Contact Email</label>
+            <label for="SupportContactEmail" class="form-label">Support Contact Email</label>
             <input
               type="text"
               class="form-control"
@@ -362,7 +362,7 @@
           </div>
           <!-- no phone validation currently because this field has extraneous values that would break validation -->
           <div class="mb-3 col-md-6">
-            <label for="Support Contact Phone">Support Contact Phone</label>
+            <label for="SupportContactPhone" class="form-label">Support Contact Phone</label>
             <input
               type="text"
               class="form-control"

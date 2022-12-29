@@ -129,7 +129,7 @@
                   </div>
                   <div class="row">
                     <div class="mb-3 col-md-6">
-                      <label for="Name" translate
+                      <label for="Name" class="form-label" translate
                         >ADMIN.PRODUCT_EDIT.NAME
                         <span class="required-field">*</span></label
                       >
@@ -155,7 +155,7 @@
                       >
                     </div>
                     <div [hidden]="isCreatingNew" class="mb-3 col-md-6">
-                      <label for="ProductType" translate
+                      <label for="ProductType" class="form-label" translate
                         >ADMIN.PRODUCT_EDIT.PRODUCT_TYPE
                         <span class="required-field">*</span></label
                       >
@@ -214,7 +214,7 @@
                     class="mb-3 w-50"
                     *ngIf="!isCreatingNew && _superHSProductStatic"
                   >
-                    <label for="ID" translate
+                    <label for="ID" class="form-label" translate
                       >ADMIN.PRODUCT_EDIT.PRODUCT_ID</label
                     >
                     <input
@@ -227,7 +227,7 @@
                     *ngIf="productInReviewNotifications?.length <= 0"
                     class="mb-3"
                   >
-                    <label for="Active" translate
+                    <label for="Active" class="form-label" translate
                       >ADMIN.PRODUCT_EDIT.ACTIVE</label
                     >
                     <label class="d-block switch mb-0">
@@ -265,7 +265,7 @@
                   </div>
                   <div class="row">
                     <div class="mb-3 col-md-6">
-                      <label for="UnitOfMeasureQty" translate
+                      <label for="UnitOfMeasureQty" class="form-label" translate
                         >ADMIN.PRODUCT_EDIT.QUANTITY_PER_UNIT
                         <span class="required-field">*</span>
                       </label>
@@ -289,7 +289,7 @@
                       />
                     </div>
                     <div class="mb-3 col-md-6">
-                      <label for="UnitOfMeasureUnit" translate
+                      <label for="UnitOfMeasureUnit" class="form-label" translate
                         >ADMIN.PRODUCT_EDIT.UNIT_OF_MEASURE
                         <span class="required-field">*</span>
                       </label>
@@ -321,7 +321,7 @@
                   </h6>
                   <div class="row">
                     <div class="mb-3 col-md-6">
-                      <label for="MinQuantity" translate
+                      <label for="MinQuantity" class="form-label" translate
                         >ADMIN.PRODUCT_EDIT.MIN_QUANTITY</label
                       >
                       <input
@@ -347,7 +347,7 @@
                       />
                     </div>
                     <div class="mb-3 col-md-6">
-                      <label for="MaxQuantity" translate
+                      <label for="MaxQuantity" class="form-label" translate
                         >ADMIN.PRODUCT_EDIT.MAX_QUANTITY</label
                       >
                       <input
@@ -467,7 +467,7 @@
                     "
                     class="mb-3 w-50"
                   >
-                    <label for="QuantityAvailable" translate
+                    <label for="QuantityAvailable" class="form-label" translate
                       >ADMIN.PRODUCT_EDIT.QUANTITY_AVAILABLE</label
                     >
                     <div class="input-group">
@@ -621,7 +621,7 @@
                       *ngIf="_superHSProductEditable?.Product?.xp?.FreeShipping"
                       class="mb-3"
                     >
-                      <label for="FreeShippingMessage" translate
+                      <label for="FreeShippingMessage" class="form-label" translate
                         >ADMIN.PRODUCT_EDIT.SHIPPING.FREE_SHIPPING_MESSAGE
                       </label>
                       <input
@@ -649,7 +649,7 @@
                         >
                       </small>
                     </div>
-                    <label for="ShipFromAddressID" translate
+                    <label for="ShipFromAddressID" class="form-label" translate
                       >ADMIN.PRODUCT_EDIT.WHICH_LOCATION_SHIP
                       <span class="required-field">*</span>
                     </label>
@@ -679,7 +679,7 @@
                   <div
                     class="d-flex justify-content-between align-items-center"
                   >
-                    <label for="ShipWeight" translate>
+                    <label for="ShipWeight" class="form-label" translate>
                       ADMIN.PRODUCT_EDIT.WEIGHT_PER_QTY
                       <span class="required-field">*</span>
                     </label>
@@ -715,7 +715,7 @@
                   </div>
                   <hr />
                   <div class="mb-3">
-                    <label class="d-block" for="SizeTier" translate
+                    <label class="d-block form-label" for="SizeTier" translate
                       >ADMIN.PRODUCT_EDIT.SHIPPING.SIZE_TIER_LABEL
                       <span class="required-field">*</span></label
                     >
@@ -757,7 +757,7 @@
                     *ngIf="productForm.controls['SizeTier'].value === 'G'"
                   >
                     <div class="mb-3 mb-0">
-                      <label for="ShipHeight" translate
+                      <label for="ShipHeight" class="form-label" translate
                         >ADMIN.PRODUCT_EDIT.SHIPPING.LENGTH_BY_WIDTH_BY_HEIGHT
                       </label>
                     </div>
@@ -978,7 +978,7 @@
                   >
                   </reactive-quill-editor-component>
                   <div class="mb-3 mt-3">
-                    <label for="Note" translate
+                    <label for="Note" class="form-label" translate
                       >ADMIN.PRODUCT_EDIT.PRODUCT_MESSAGE</label
                     >
                     <input
