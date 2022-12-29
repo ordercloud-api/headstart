@@ -142,13 +142,15 @@ export default class Orders {
     }
 
     /**
-     * @param quoteStatus Status of the quote order 
+     * 
+     * @param options the list args, same as would be passed to ordercloud list
      * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
+     * @returns 
      */
-    public async ListQuoteOrders(quoteStatus: string, accessToken?: string ): Promise<RequiredDeep<ListPage<HSOrder>>> {
+    public async ListQuoteOrders( options: ListArgs<HSOrder> = {}, accessToken?: string ): Promise<RequiredDeep<ListPage<HSOrder>>> {
         const impersonating = this.impersonating;
         this.impersonating = false;
-        return await httpClient.get(`/order/listquoteorders/${quoteStatus}`, { params: { accessToken, impersonating } });
+        return await httpClient.get(`/order/listquoteorders`, { params: { ...options,  filters: options.filters, accessToken, impersonating } } );
     }
 
     /**

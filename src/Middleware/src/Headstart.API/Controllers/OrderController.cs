@@ -144,11 +144,11 @@ namespace Headstart.Common.Controllers
         /// <summary>
         /// Lists quote orders, which are in an unsubmitted status.
         /// </summary>
-        [HttpGet, Route("listquoteorders/{quoteStatus}"), OrderCloudUserAuth(ApiRole.OrderReader, ApiRole.OrderAdmin)]
-        public async Task<ListPage<HSOrder>> ListQuoteOrders(QuoteStatus quoteStatus)
+        [HttpGet, Route("listquoteorders"), OrderCloudUserAuth(ApiRole.OrderReader, ApiRole.OrderAdmin)]
+        public async Task<ListPage<HSOrder>> ListQuoteOrders(ListArgs<HSOrder> args)
         {
             var me = await oc.Me.GetAsync(accessToken: UserContext.AccessToken);
-            return await orderCommand.ListQuoteOrders(me, quoteStatus);
+            return await orderCommand.ListQuoteOrders(me, args);
         }
 
         /// <summary>
