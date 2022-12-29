@@ -4,13 +4,7 @@
       productInReviewNotifications?.length > 0 &&
       userContext?.UserType === 'SUPPLIER'
     "
-    class="
-      alert alert-warning
-      d-flex
-      justify-content-start
-      align-items-center
-      set-to-top
-    "
+    class="alert alert-warning d-flex justify-content-start align-items-center set-to-top"
   >
     <fa-icon [icon]="faExclamationCircle" class="mr-3"></fa-icon>
     <p class="mb-0">
@@ -26,13 +20,7 @@
       class="alert alert-warning set-to-top"
     >
       <div
-        class="
-          pb-3
-          border-bottom
-          d-flex
-          justify-content-between
-          align-items-center
-        "
+        class="pb-3 border-bottom d-flex justify-content-between align-items-center"
       >
         <div class="d-flex justify-content-start align-items-center">
           <fa-icon [icon]="faExclamationCircle" class="mr-3"></fa-icon>
@@ -503,9 +491,7 @@
                         }}"
                       />
                       <div class="input-group-append">
-                        <span class="input-group-text rounded-right"
-                          >units</span
-                        >
+                        <span class="input-group-text rounded-end">units</span>
                       </div>
                     </div>
                   </div>
@@ -724,7 +710,7 @@
                           }}"
                         />
                         <div class="input-group-append">
-                          <span class="input-group-text rounded-right" translate
+                          <span class="input-group-text rounded-end" translate
                             >ADMIN.PRODUCT_EDIT.SHIPPING.POUNDS</span
                           >
                         </div>
@@ -803,7 +789,7 @@
                             }}"
                           />
                           <div class="input-group-append">
-                            <span class="input-group-text rounded-right"
+                            <span class="input-group-text rounded-end"
                               >inches</span
                             >
                           </div>
@@ -832,7 +818,7 @@
                             }}"
                           />
                           <div class="input-group-append">
-                            <span class="input-group-text rounded-right"
+                            <span class="input-group-text rounded-end"
                               >inches</span
                             >
                           </div>
@@ -861,7 +847,7 @@
                             }}"
                           />
                           <div class="input-group-append">
-                            <span class="input-group-text rounded-right"
+                            <span class="input-group-text rounded-end"
                               >inches</span
                             >
                           </div>
@@ -875,26 +861,13 @@
               <!-- Product Preview -->
               <div class="col-md-4">
                 <div
-                  class="
-                    card
-                    py-2
-                    px-3
-                    bg-white
-                    sticky-top
-                    product-preview-card
-                  "
+                  class="card py-2 px-3 bg-white sticky-top product-preview-card"
                 >
                   <p class="text-center font-weight-bold" translate>
                     ADMIN.PRODUCT_EDIT.PRODUCT_PREVIEW
                   </p>
                   <div
-                    class="
-                      card
-                      product-preview
-                      w-100
-                      border-hover
-                      cursor-pointer
-                    "
+                    class="card product-preview w-100 border-hover cursor-pointer"
                   >
                     <div class="ribbon ribbon-top-right bg-light">
                       <fa-icon
@@ -909,13 +882,7 @@
                         [alt]="_superHSProductEditable?.Product?.Name"
                       />
                       <div
-                        class="
-                          card-body
-                          d-flex
-                          flex-column
-                          justify-content-between
-                          bg-light
-                        "
+                        class="card-body d-flex flex-column justify-content-between bg-light"
                       >
                         <h5
                           class="card-title"
@@ -935,12 +902,7 @@
                           }}
                         </p>
                         <div
-                          class="
-                            d-flex
-                            flex-wrap
-                            justify-content-between
-                            align-items-center
-                          "
+                          class="d-flex flex-wrap justify-content-between align-items-center"
                         >
                           <app-price-display
                             class="card-text mb-0"
@@ -1252,13 +1214,7 @@
   </form>
   <!-- TODO: 2/2 Abstract into component to be used anywhere using inputs and outputs -->
   <div
-    class="
-      d-flex
-      justify-content-between
-      align-items-center
-      py-2
-      product-edit-actions
-    "
+    class="d-flex justify-content-between align-items-center py-2 product-edit-actions"
   >
     <delete-confirm-modal-component
       *ngIf="!isCreatingNew"
