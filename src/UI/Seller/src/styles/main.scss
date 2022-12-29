@@ -7,9 +7,7 @@
 // Third party libraries
 @import 'oc-theme/oc-bootstrap-variables';
 @import 'vendor/bootstrap';
-
-// bs4 alert styled design (uses bs4 variables)
-@import '~ngx-toastr/toastr-bs4-alert';
+@import 'vendor/ngx-toastr';
 
 // Base styles
 @import 'base/base';

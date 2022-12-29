@@ -12,7 +12,6 @@ import { applicationConfiguration } from '@app-seller/config/app.config'
 import { MeUser } from 'ordercloud-javascript-sdk'
 import { FormGroup, FormControl } from '@angular/forms'
 import { isEqual as _isEqual, set as _set, get as _get } from 'lodash'
-import { JDocument } from '@ordercloud/cms-sdk'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { UserContext } from '@app-seller/models/user.types'
 import { AppConfig } from '@app-seller/models/environment.types'
@@ -34,7 +33,7 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
   userForm: FormGroup
   userStatic: MeUser
   userEditable: MeUser
-  notificationsToReview: JDocument[]
+  notificationsToReview: any[]
 
   constructor(
     private router: Router,
