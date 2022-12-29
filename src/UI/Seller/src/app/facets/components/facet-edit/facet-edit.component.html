@@ -1,5 +1,7 @@
 <div class="container-fluid">
-  <span class="required-field" > * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span>
+  <span class="required-field">
+    * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span
+  >
   <form *ngIf="resourceForm" [formGroup]="resourceForm">
     <div class="row pt-3">
       <div class="col-md-5">
@@ -8,7 +10,9 @@
       </div>
       <div class="col-md-7 form-group">
         <div class="form-group" *ngIf="isCreatingNew">
-          <label for="ID" translate>ADMIN.FACETS.FACET_ID <span class="required-field">*</span></label>
+          <label for="ID" translate
+            >ADMIN.FACETS.FACET_ID <span class="required-field">*</span></label
+          >
           <input
             type="text"
             class="form-control"
@@ -23,11 +27,15 @@
           />
         </div>
         <div class="form-group" *ngIf="!isCreatingNew">
-          <label for="ID" translate>ADMIN.FACETS.FACET_ID <span class="required-field">*</span></label>
+          <label for="ID" translate
+            >ADMIN.FACETS.FACET_ID <span class="required-field">*</span></label
+          >
           <input class="form-control" formControlName="ID" disabled />
         </div>
         <div class="form-group">
-          <label for="Name" translate>ADMIN.FACETS.NAME <span class="required-field">*</span></label>
+          <label for="Name" translate
+            >ADMIN.FACETS.NAME <span class="required-field">*</span></label
+          >
           <input
             type="text"
             class="form-control"
@@ -111,7 +119,7 @@
         {{ getSaveBtnText() | translate }}
       </button>
       <button
-        class="btn btn-primary ml-3"
+        class="btn btn-primary ms-3"
         (click)="handleDiscardChanges()"
         *ngIf="areChanges && !isCreatingNew"
         translate

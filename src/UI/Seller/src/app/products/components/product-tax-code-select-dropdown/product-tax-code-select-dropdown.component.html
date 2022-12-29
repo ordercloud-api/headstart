@@ -8,9 +8,7 @@
     <span
       class="product-tax-code-dropdown-toggle-text"
       *ngIf="superHSProductEditable?.Product?.xp?.Tax?.Description"
-      >{{
-        superHSProductEditable?.Product?.xp?.Tax?.Description
-      }}</span
+      >{{ superHSProductEditable?.Product?.xp?.Tax?.Description }}</span
     >
     <span
       class="product-tax-code-dropdown-toggle-text"
@@ -40,11 +38,9 @@
         disabled
       >
         <div class="d-flex text-wrap">
-          <span class="ml-3 d-flex flex-column justify-content-center">
+          <span class="ms-3 d-flex flex-column justify-content-center">
             <div class="h6">
-              {{
-                superHSProductEditable?.Product?.xp?.Tax?.Description
-              }}
+              {{ superHSProductEditable?.Product?.xp?.Tax?.Description }}
             </div>
             <div>
               {{ superHSProductEditable?.Product?.xp?.Tax?.Code }}
@@ -58,7 +54,7 @@
         (click)="selectTaxCode(taxCode)"
       >
         <div class="d-flex text-wrap">
-          <span class="ml-3 d-flex flex-column justify-content-center">
+          <span class="ms-3 d-flex flex-column justify-content-center">
             <div class="h6">{{ taxCode?.Description }}</div>
             <div>{{ taxCode?.Code }}</div>
           </span>

@@ -17,7 +17,7 @@
       >#{{ _order?.ID }}
       <span
         *ngIf="_order?.xp?.OrderType === 'Quote'"
-        class="small badge badge-pill badge-warning ml-2 order-type-text"
+        class="small badge badge-pill badge-warning ms-2 order-type-text"
         >{{ _order?.xp?.OrderType }}</span
       >
     </h3>
@@ -50,7 +50,7 @@
         >
           <fa-icon [icon]="faUser"></fa-icon>
         </div>
-        <div class="ml-2" *ngIf="!isQuoteOrder(_order)">
+        <div class="ms-2" *ngIf="!isQuoteOrder(_order)">
           <p class="h5 mb-0 text-capitalize font-weight-bold">
             {{ _buyerOrder?.FromUser?.FirstName }}
             {{ _buyerOrder?.FromUser?.LastName }}
@@ -68,7 +68,7 @@
             {{ _buyerOrder?.BillingAddress?.xp?.LocationID }}
           </p>
         </div>
-        <div class="ml-2" *ngIf="isQuoteOrder(_order)">
+        <div class="ms-2" *ngIf="isQuoteOrder(_order)">
           <p class="h5 mb-0 text-capitalize font-weight-bold">
             {{ _order.xp?.QuoteOrderInfo?.FirstName }}
             {{ _order.xp?.QuoteOrderInfo?.LastName }}
@@ -148,7 +148,7 @@
         </div>
         <div
           *ngIf="_order?.BillingAddress && !isQuoteOrder(_order)"
-          class="pl-4 ml-4 border-start"
+          class="pl-4 ms-4 border-start"
         >
           <small
             class="font-weight-bolder text-muted text-uppercase d-block"
@@ -284,7 +284,7 @@
                 step="0.01"
               />
               <button
-                class="btn btn-primary d-print-none ml-3"
+                class="btn btn-primary d-print-none ms-3"
                 (click)="overrideQuoteUnitPrice()"
                 translate
               >

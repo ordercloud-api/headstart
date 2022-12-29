@@ -279,12 +279,7 @@
                   >
                   </search-component>
                   <perfect-scrollbar
-                    class="
-                      dropdown-ps
-                      product-search-area
-                      border border-light
-                      shadow-sm
-                    "
+                    class="dropdown-ps product-search-area border border-light shadow-sm"
                     (psYReachEnd)="handleScrollEnd($event)"
                   >
                     <button
@@ -339,11 +334,7 @@
                 >
                   <button
                     type="button"
-                    class="
-                      resource-btn
-                      btn btn-block btn-outline-medium
-                      text-left
-                    "
+                    class="resource-btn btn btn-block btn-outline-medium text-left"
                     id="supplierSelectDropdown"
                     ngbDropdownToggle
                   >
@@ -351,12 +342,7 @@
                   </button>
                   <div ngbDropdownMenu class="dropdown-inline shadow-sm mt-2">
                     <perfect-scrollbar
-                      class="
-                        dropdown-ps
-                        product-search-area
-                        border border-light
-                        shadow-sm
-                      "
+                      class="dropdown-ps product-search-area border border-light shadow-sm"
                       (psYReachEnd)="handleScrollEnd($event)"
                     >
                       <button
@@ -579,12 +565,7 @@
                   >
                   </search-component>
                   <perfect-scrollbar
-                    class="
-                      dropdown-ps
-                      product-search-area
-                      border border-light
-                      shadow-sm
-                    "
+                    class="dropdown-ps product-search-area border border-light shadow-sm"
                     (psYReachEnd)="handleScrollEnd($event)"
                   >
                     <button
@@ -762,7 +743,7 @@
             translate
           >
             <fa-icon [icon]="faExclamationCircle" class="mr-3"></fa-icon>
-            Begins {{ _promotionEditable?.StartDate | date: 'medium' }} UTC
+            Begins {{ _promotionEditable?.StartDate | date : 'medium' }} UTC
           </div>
           <div class="d-flex justify-content-between align-items-center">
             <h5 class="font-weight-bold my-2">
@@ -863,7 +844,7 @@
             {{ getSaveBtnText() | translate }}
           </button>
           <button
-            class="btn brand-button ml-3"
+            class="btn brand-button ms-3"
             (click)="handleDiscardChanges()"
             *ngIf="areChanges && !isCreatingNew"
             translate

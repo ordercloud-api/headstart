@@ -37,7 +37,7 @@
           </button>
           <!-- TODO: Reinstate the rejected button once functionality can handle the repercussions. -->
           <!-- <button (click)="reviewMonitoredFieldChange('REJECTED')"
-                  class="btn btn-outline-danger ml-2">Reject</button> -->
+                  class="btn btn-outline-danger ms-2">Reject</button> -->
         </div>
       </div>
       <div class="d-flex justify-content-between align-items-start">
@@ -79,13 +79,13 @@
           translate
           >ADMIN.PRODUCT_EDIT.PRODUCT
           <fa-icon
-            class="tab-status-icon text-danger ml-1"
+            class="tab-status-icon text-danger ms-1"
             [icon]="faExclamationCircle"
             *ngIf="isCreatingNew && !productDetailsTabIsValid()"
           >
           </fa-icon>
           <fa-icon
-            class="tab-status-icon text-success ml-1"
+            class="tab-status-icon text-success ms-1"
             [icon]="faCheckCircle"
             *ngIf="isCreatingNew && productDetailsTabIsValid()"
           >
@@ -1064,7 +1064,7 @@
           ADMIN.PRODUCT_EDIT.PRICING
           <!-- Validity Status Indicators -->
           <fa-icon
-            class="tab-status-icon text-danger ml-1"
+            class="tab-status-icon text-danger ms-1"
             [icon]="faExclamationCircle"
             *ngIf="
               isCreatingNew &&
@@ -1074,7 +1074,7 @@
           >
           </fa-icon>
           <fa-icon
-            class="tab-status-icon text-success ml-1"
+            class="tab-status-icon text-success ms-1"
             [icon]="faCheckCircle"
             *ngIf="
               isCreatingNew &&
@@ -1245,7 +1245,7 @@
           {{ getSaveBtnText() | translate }}
         </button>
         <button
-          class="btn btn-primary ml-3"
+          class="btn btn-primary ms-3"
           (click)="handleDiscardChanges()"
           *ngIf="areChanges && !isCreatingNew"
           translate

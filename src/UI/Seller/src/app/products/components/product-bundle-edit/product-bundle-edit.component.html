@@ -212,12 +212,7 @@
               </table>
             </div>
             <div
-              class="
-                modal-footer
-                w-100
-                d-flex
-                justify-content-space-between justify-content-between
-              "
+              class="modal-footer w-100 d-flex justify-content-space-between justify-content-between"
             >
               <button
                 type="button"
@@ -260,13 +255,7 @@
     </ul>
     <div [ngbNavOutlet]="nav"></div>
     <div
-      class="
-        d-flex
-        justify-content-between
-        align-items-center
-        py-2
-        product-edit-actions
-      "
+      class="d-flex justify-content-between align-items-center py-2 product-edit-actions"
     >
       <delete-confirm-modal-component
         *ngIf="!isCreatingNew"
@@ -293,7 +282,7 @@
           COMMON.UPDATE
         </button>
         <button
-          class="btn btn-primary mt-5 ml-3"
+          class="btn btn-primary mt-5 ms-3"
           (click)="handleDiscardChanges()"
           *ngIf="areChanges && !isCreatingNew"
           translate

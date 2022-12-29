@@ -17,7 +17,7 @@
           class="spinner-grow spinner-grow-sm text-medium"
           role="status"
         ></div>
-        <span class="text-muted font-italic ml-2" translate
+        <span class="text-muted font-italic ms-2" translate
           >ADMIN.PRODUCT_EDIT.FETCHING_VISIBILITY</span
         >
       </div>
@@ -34,7 +34,9 @@
           <span
             >{{ catalogAssignmentsStatic.length }}/{{ catalogs.length }}</span
           >
-          &nbsp;<span>{{ 'ADMIN.PRODUCT_EDIT.CATALOGS' | translate | lowercase }}</span>
+          &nbsp;<span>{{
+            'ADMIN.PRODUCT_EDIT.CATALOGS' | translate | lowercase
+          }}</span>
         </div>
       </ng-container>
       <ng-container *ngIf="catalogAssignmentsStatic.length === 0">
@@ -125,7 +127,7 @@
     </button>
     <button
       *ngIf="areChanges"
-      class="btn btn-link text-danger ml-3"
+      class="btn btn-link text-danger ms-3"
       (click)="handleDiscardChanges()"
       translate
     >

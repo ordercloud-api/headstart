@@ -13,7 +13,7 @@
         >
           <fa-icon [icon]="faUser"></fa-icon>
         </div>
-        <div class="ml-2">
+        <div class="ms-2">
           <p class="h5 mb-0 text-capitalize font-weight-bold">
             {{ order?.FromUser?.FirstName }}
             {{ order?.FromUser?.LastName }}
@@ -44,7 +44,7 @@
           *ngIf="orderReturn?.xp?.ShippingCredited > 0"
           class="mb-3 text-capitalize d-block font-weight-bold"
         >
-          {{ orderReturn.xp.ShippingCredited | currency: order?.xp?.Currency }}
+          {{ orderReturn.xp.ShippingCredited | currency : order?.xp?.Currency }}
         </small>
         <small
           class="font-weight-bolder text-muted text-uppercase d-block"
@@ -52,7 +52,7 @@
           >ADMIN.ORDER_RETURNS.TOTAL_REFUNDED</small
         >
         <small class="text-capitalize d-block font-weight-bold">
-          {{ orderReturn?.RefundAmount | currency: order?.xp?.Currency }}
+          {{ orderReturn?.RefundAmount | currency : order?.xp?.Currency }}
         </small>
       </div>
     </div>
@@ -64,7 +64,7 @@
           >ADMIN.ORDER_RETURNS.DATE_CREATED</small
         >
         <small class="mb-0 text-capitalize d-block font-weight-bold">
-          {{ orderReturn?.DateCreated | date: 'medium' }}
+          {{ orderReturn?.DateCreated | date : 'medium' }}
         </small>
         <small
           *ngIf="orderReturn?.DateCompleted"
@@ -73,7 +73,7 @@
           >ADMIN.ORDER_RETURNS.DATE_COMPLETED</small
         >
         <small class="mb-0 text-capitalize d-block font-weight-bold">
-          {{ orderReturn?.DateCompleted | date: 'medium' }}
+          {{ orderReturn?.DateCompleted | date : 'medium' }}
         </small>
       </div>
     </div>

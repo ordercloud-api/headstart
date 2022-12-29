@@ -22,7 +22,7 @@
                     Save Changes
                   </button>
                   <button
-                    class="btn btn-outline-teal btn-sm ml-2"
+                    class="btn btn-outline-teal btn-sm ms-2"
                     *ngIf="areChanges"
                     (click)="discardChanges()"
                   >
@@ -59,7 +59,7 @@
                   </div>
                   <label
                     for="imageUpload"
-                    class="btn btn-outline-teal ml-2 mb-0"
+                    class="btn btn-outline-teal ms-2 mb-0"
                     >{{
                       hasProfileImg ? 'Update Photo' : 'Upload Photo'
                     }}</label
@@ -67,7 +67,7 @@
                   <button
                     *ngIf="hasProfileImg"
                     (click)="removeProfileImg()"
-                    class="btn btn-outline-dark ml-2"
+                    class="btn btn-outline-dark ms-2"
                   >
                     Remove Photo
                   </button>

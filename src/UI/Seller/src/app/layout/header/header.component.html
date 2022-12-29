@@ -97,7 +97,7 @@
         aria-haspopup="true"
         aria-expanded="false"
       >
-        <span>{{selectedLanguage}}</span>
+        <span>{{ selectedLanguage }}</span>
       </a>
     </div>
     <div
@@ -111,7 +111,7 @@
         (click)="setLanguage(lang)"
         translate
       >
-        {{lang}}
+        {{ lang }}
       </a>
     </div>
   </div>
@@ -130,7 +130,7 @@
         </span>
         <img
           *ngIf="user?.xp?.Image?.ThumbnailUrl"
-          class="avatar ml-2"
+          class="avatar ms-2"
           [src]="user?.xp?.Image?.ThumbnailUrl"
           alt="ProfileImg"
           id="ProfileImgThumb"
@@ -141,7 +141,7 @@
             currentUserInitials !== 'undefinedundefined'
           "
           [attr.data-letters]="currentUserInitials"
-          class="avatar avatar-sm ml-2"
+          class="avatar avatar-sm ms-2"
         ></div>
       </a>
     </div>

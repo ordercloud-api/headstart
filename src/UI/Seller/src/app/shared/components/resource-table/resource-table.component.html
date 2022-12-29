@@ -378,14 +378,7 @@
         <div class="col-md-9 col-sm-12 bg-light contents">
           <div
             *ngIf="shouldShowTitleContainer"
-            class="
-              py-1
-              d-flex
-              flex-row
-              justify-content-between
-              resource-title-container
-              additional-item-edit-resource
-            "
+            class="py-1 d-flex flex-row justify-content-between resource-title-container additional-item-edit-resource"
           >
             <span
               class="d-flex flex-row justify-content-start align-items-center"
@@ -398,11 +391,11 @@
                   <fa-icon class="text-dark" [icon]="faChevronLeft"> </fa-icon>
                 </div>
               </div>
-              <h2 *ngIf="isCreatingNew" class="h3 d-inline-block ml-1 mb-0">
+              <h2 *ngIf="isCreatingNew" class="h3 d-inline-block ms-1 mb-0">
                 New {{ resourceType | titlecase }}
                 {{ labelSingular | translate }}
               </h2>
-              <h2 *ngIf="!isCreatingNew" class="h3 d-inline-block ml-1 mb-0">
+              <h2 *ngIf="!isCreatingNew" class="h3 d-inline-block ms-1 mb-0">
                 {{ getHeaderText(_resourceInSelection) }}
               </h2>
             </span>
@@ -424,7 +417,7 @@
               "
             >
               <a
-                class="btn btn-outline-info ml-3"
+                class="btn btn-outline-info ms-3"
                 *ngFor="let subResource of _ocService.subResourceList"
                 [routerLink]="[subResource.route]"
               >
@@ -458,13 +451,7 @@
           <!-- TODO: 1/2 Abstract into component to be used anywhere using inputs and outputs -->
           <div
             *ngIf="shouldShowResourceActions"
-            class="
-              d-flex
-              justify-content-between
-              align-items-center
-              py-2
-              additional-item-edit-resource
-            "
+            class="d-flex justify-content-between align-items-center py-2 additional-item-edit-resource"
           >
             <delete-confirm-modal-component
               *ngIf="!isCreatingNew && !isMyResource && canBeDeleted"
@@ -497,7 +484,7 @@
                 {{ getSaveBtnText() | translate }}
               </button>
               <button
-                class="btn btn-primary ml-3"
+                class="btn btn-primary ms-3"
                 (click)="handleDiscardChanges()"
                 *ngIf="areChanges && !isCreatingNew"
               >
