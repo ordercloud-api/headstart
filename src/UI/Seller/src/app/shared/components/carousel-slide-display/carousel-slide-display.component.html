@@ -1,13 +1,13 @@
 <div class="border p-3 m-3 shadow-sm">
   <fa-icon
     (click)="deleteSlide()"
-    class="float-right icon-button--hover-reactive text-danger mb-2 pl-3"
+    class="float-end icon-button--hover-reactive text-danger mb-2 pl-3"
     [icon]="faTrash"
   ></fa-icon>
   <fa-icon
     (click)="textChanges()"
     [ngClass]="{ disabled: saveDisabled() }"
-    class="float-right icon-button--hover-reactive mb-2 text-primary"
+    class="float-end icon-button--hover-reactive mb-2 text-primary"
     [icon]="faSave"
   ></fa-icon>
   <div class="row">
