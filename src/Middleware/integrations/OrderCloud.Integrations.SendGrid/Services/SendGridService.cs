@@ -55,31 +55,37 @@ namespace OrderCloud.Integrations.SendGrid
 
         public virtual async Task SendSingleTemplateEmail(string from, string to, string templateID, object templateData)
         {
-            Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sendgrid template ID not configured in app settings", HttpStatusCode.NotImplemented));
+            if (string.IsNullOrEmpty(templateID))
             {
-                var fromEmail = new EmailAddress(from);
-                var toEmail = new EmailAddress(to);
-                var msg = MailHelper.CreateSingleTemplateEmail(fromEmail, toEmail, templateID, templateData);
-                var response = await sendGridClient.SendEmailAsync(msg);
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new Exception("Error sending sendgrid email");
-                }
+                Console.WriteLine("Skipped email as required template ID was not provided");
+                return;
+            }
+
+            var fromEmail = new EmailAddress(from);
+            var toEmail = new EmailAddress(to);
+            var msg = MailHelper.CreateSingleTemplateEmail(fromEmail, toEmail, templateID, templateData);
+            var response = await sendGridClient.SendEmailAsync(msg);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Error sending sendgrid email");
             }
         }
 
         public virtual async Task SendSingleTemplateEmailMultipleRcpts(string from, List<string> tos, string templateID, object templateData)
         {
-            Require.That(templateID != null, new ErrorCode("SendgridError", "Required Sendgrid template ID not configured in app settings", HttpStatusCode.NotImplemented));
+            if (string.IsNullOrEmpty(templateID))
             {
-                var fromEmail = new EmailAddress(from);
-                var toEmails = tos.Select(email => new EmailAddress(email)).ToList();
-                var msg = MailHelper.CreateSingleTemplateEmailToMultipleRecipients(fromEmail, toEmails, templateID, templateData);
-                var response = await sendGridClient.SendEmailAsync(msg);
-                if (!response.IsSuccessStatusCode)
-                {
-                    throw new Exception("Error sending sendgrid email");
-                }
+                Console.WriteLine("Skipped email as required template ID was not provided");
+                return;
+            }
+
+            var fromEmail = new EmailAddress(from);
+            var toEmails = tos.Select(email => new EmailAddress(email)).ToList();
+            var msg = MailHelper.CreateSingleTemplateEmailToMultipleRecipients(fromEmail, toEmails, templateID, templateData);
+            var response = await sendGridClient.SendEmailAsync(msg);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception("Error sending sendgrid email");
             }
         }
 
