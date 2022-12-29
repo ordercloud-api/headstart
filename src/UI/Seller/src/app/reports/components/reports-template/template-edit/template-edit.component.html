@@ -6,7 +6,7 @@
         <p translate>ADMIN.REPORTS.REPORT_DETAILS_DESC</p>
       </div>
       <div class="col-md-7 mb-3">
-        <div *ngIf="reportType !== 'SalesOrderDetail'" class="form-row">
+        <div *ngIf="reportType !== 'SalesOrderDetail'" class="row">
           <div class="mb-3 col-md-12">
             <p class="mb-1" translate>
               ADMIN.REPORTS.AVAILABLE_TO
@@ -29,7 +29,7 @@
             </label>
           </div>
         </div>
-        <div class="form-row">
+        <div class="row">
           <div class="mb-3 col-md-12">
             <label for="Name" translate>ADMIN.REPORTS.TEMPLATE_NAME</label>
             <input
@@ -47,7 +47,7 @@
             />
           </div>
         </div>
-        <div class="form-row">
+        <div class="row">
           <div class="mb-3 col-md-12">
             <label for="Description" translate
               >ADMIN.REPORTS.TEMPLATE_DESC</label
@@ -74,7 +74,7 @@
         <p translate>ADMIN.REPORTS.HEADERS_DESC</p>
       </div>
       <div class="col-md-7 mb-3">
-        <div class="form-row">
+        <div class="row">
           <div *ngIf="headers?.length" class="mb-3 col-md-12">
             <div class="d-block">
               <button
@@ -115,7 +115,7 @@
         <p class="font-italic" translate>ADMIN.REPORTS.IF_NO_FILTERS</p>
       </div>
       <div class="col-md-7 mb-3">
-        <div class="form-row">
+        <div class="row">
           <div *ngIf="filters?.length" class="mb-3 col-md-12">
             <ng-container *ngFor="let filter of filters; index as i">
               <h6 class="mt-3">{{ filter.name }}</h6>
