@@ -289,7 +289,10 @@
                       />
                     </div>
                     <div class="mb-3 col-md-6">
-                      <label for="UnitOfMeasureUnit" class="form-label" translate
+                      <label
+                        for="UnitOfMeasureUnit"
+                        class="form-label"
+                        translate
                         >ADMIN.PRODUCT_EDIT.UNIT_OF_MEASURE
                         <span class="required-field">*</span>
                       </label>
@@ -621,7 +624,10 @@
                       *ngIf="_superHSProductEditable?.Product?.xp?.FreeShipping"
                       class="mb-3"
                     >
-                      <label for="FreeShippingMessage" class="form-label" translate
+                      <label
+                        for="FreeShippingMessage"
+                        class="form-label"
+                        translate
                         >ADMIN.PRODUCT_EDIT.SHIPPING.FREE_SHIPPING_MESSAGE
                       </label>
                       <input
@@ -1117,7 +1123,7 @@
       <li *ngIf="!_superHSProductEditable?.Product?.ID" [ngbNavItem]="5" id="5">
         <a class="text-muted nav-link" (click)="showVariantToastr()" translate>
           ADMIN.PRODUCT_EDIT.VARIANTS
-          <span class="badge badge-pill badge-primary-light">{{
+          <span class="badge badge-pill bg-primary-light">{{
             _superHSProductEditable?.Variants?.length || 0
           }}</span>
         </a>
@@ -1125,7 +1131,7 @@
       <li *ngIf="_superHSProductEditable?.Product?.ID" [ngbNavItem]="5" id="5">
         <a class="text-muted" ngbNavLink translate>
           ADMIN.PRODUCT_EDIT.VARIANTS
-          <span class="badge badge-pill badge-primary-light">{{
+          <span class="badge badge-pill bg-primary-light">{{
             _superHSProductEditable?.Variants?.length || 0
           }}</span>
         </a>
@@ -1153,7 +1159,7 @@
       <li [ngbNavItem]="6" id="6">
         <a class="text-muted" ngbNavLink translate
           >ADMIN.PRODUCT_EDIT.IMAGES_AND_DOCUMENTS
-          <span class="badge badge-pill badge-primary-light">{{
+          <span class="badge badge-pill bg-primary-light">{{
             _superHSProductEditable?.Product?.xp?.Images?.length +
               _superHSProductEditable?.Product?.xp.Documents?.length +
               stagedImages?.length +

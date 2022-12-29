@@ -178,7 +178,7 @@
           "
           class="card bg-white shadow-sm p-4 mt-3"
         >
-          <label for="Value" class="form-label mb-0"  translate
+          <label for="Value" class="form-label mb-0" translate
             >ADMIN.PROMOTIONS.VALUE</label
           >
           <div class="input-group w-25 mt-3">
@@ -744,14 +744,14 @@
             >
               <span
                 *ngIf="_promotionEditable?.xp?.Automatic"
-                class="badge badge-pill badge-warning me-1"
+                class="badge badge-pill bg-warning me-1"
                 translate
               >
                 ADMIN.PROMOTIONS.AUTOMATIC
               </span>
               <span
                 *ngIf="!isCreatingNew && !isExpired && !hasNotBegun"
-                class="badge badge-pill badge-success"
+                class="badge badge-pill bg-success"
                 translate
               >
                 ADMIN.PROMOTIONS.ACTIVE
