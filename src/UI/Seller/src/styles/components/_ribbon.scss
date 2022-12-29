@@ -1,7 +1,7 @@
 // Favorite ribbon
 .ribbon.ribbon-top-right:after {
     border-top-color: $dark;
-    border-left-color: $dark;
+    border-start-color: $dark;
 }
 
 @mixin ribbon-fold-bg($bg-color: $primary) {
@@ -15,7 +15,7 @@
     &.ribbon-bottom-right {
         &:after {
             border-bottom-color: darken($bg-color, 10);
-            border-left-color: darken($bg-color, 10);
+            border-start-color: darken($bg-color, 10);
         }
     }
 
@@ -29,7 +29,7 @@
     &.ribbon-top-right {
         &:after {
             border-top-color: darken($bg-color, 10);
-            border-left-color: darken($bg-color, 10);
+            border-start-color: darken($bg-color, 10);
         }
     }
 }
