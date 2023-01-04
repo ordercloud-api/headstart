@@ -2,25 +2,30 @@
   <div class="order-detail-pdf-range">
     <div *ngIf="order">
       <nav *ngIf="!isAnon" class="breadcrumb" aria-label="breadcrumb">
-        <a class="breadcrumb-item" (click)="toAllOrders()" translate
-          >ORDERS.DETAIL.ALL</a
-        >
+        <a class="breadcrumb-item" (click)="toAllOrders()" translate>
+          ORDERS.DETAIL.ALL
+        </a>
+
         <a class="breadcrumb-item" aria-current="page">{{ order.ID }}</a>
       </nav>
+
       <div
         class="d-flex flex-wrap align-items-center justify-content-between pb-2 mt-4 mb-2"
       >
         <h2>
-          <span class="text-muted"
-            ><span translate>ORDERS.DETAIL.ORDER</span> #:</span
-          >
+          <span class="text-muted">
+            <span translate>ORDERS.DETAIL.ORDER</span>
+            #:
+          </span>
           {{ order.ID }}
           <span
             *ngIf="order.xp.OrderType === 'Quote'"
             class="badge rounded-pill bg-primary ms-2"
-            >{{ order.xp.OrderType }}</span
           >
+            {{ order.xp.OrderType }}
+          </span>
         </h2>
+
         <ng-container *ngIf="subView === 'details'">
           <button
             class="btn btn-sm btn-outline-primary d-print-none"
@@ -32,22 +37,27 @@
           </button>
         </ng-container>
       </div>
+
       <div class="row my-3">
         <div class="col-md-4">
           <span class="text-muted small">
             <span translate> ORDERS.DETAIL.SUBMITTED</span>
-            {{ order.DateSubmitted | date : 'short' }}</span
-          >
+            {{ order.DateSubmitted | date : 'short' }}
+          </span>
+
           <ul class="list-group mt-2">
             <li class="list-group-item">
-              <span translate>ORDERS.DETAIL.STATUS</span>:
+              <span translate>ORDERS.DETAIL.STATUS</span>
+              :
               <ocm-order-status-icon
                 [status]="getOrderStatus()"
               ></ocm-order-status-icon>
               {{ getOrderStatus() }}
             </li>
+
             <li class="list-group-item">
-              <span translate>ORDERS.DETAIL.SHIPPING_STATUS</span>:
+              <span translate>ORDERS.DETAIL.SHIPPING_STATUS</span>
+              :
               <ocm-order-status-icon
                 [status]="order.xp.ShippingStatus"
               ></ocm-order-status-icon>
@@ -55,6 +65,7 @@
             </li>
           </ul>
         </div>
+
         <div
           class="col-md-8 mt-3 mt-md-0 d-flex flex-wrap gap-2 align-items-end justify-content-end"
         >
@@ -77,6 +88,7 @@
             >
             </ocm-toggle-favorite>
           </button>
+
           <button
             *ngIf="
               !approvalVersion &&
@@ -89,6 +101,7 @@
           >
             ORDERS.DETAIL.REORDER
           </button>
+
           <button
             *ngIf="
               canRequestReturn() &&
@@ -102,6 +115,7 @@
           >
             ORDERS.DETAIL.REQUEST_A_RETURN
           </button>
+
           <button
             *ngIf="canCancelOrder()"
             class="btn btn-secondary d-print-none"
@@ -110,6 +124,7 @@
           >
             ORDERS.DETAIL.CANCEL_ORDER
           </button>
+
           <button
             *ngIf="
               showRequestReturn &&
@@ -135,6 +150,7 @@
           >
             ORDERS.DETAIL.UPDATE
           </button>
+
           <ng-template #cancelModal let-modal class="confirm-modal">
             <confirm-modal
               modalTitle="{{ 'ORDERS.DETAIL.CANCEL_ORDER' | translate }}"
@@ -143,6 +159,7 @@
               <div class="alert alert-warning">
                 <p translate>ORDERS.DETAIL.CANCEL_ORDER_WARNING</p>
               </div>
+
               <div
                 class="row d-flex justify-content-space-between justify-content-between me-2 ms-2"
               >
@@ -154,6 +171,7 @@
                 >
                   ORDERS.DETAIL.CANCEL_ORDER_NO
                 </button>
+
                 <button
                   type="button"
                   class="btn btn-primary"
@@ -165,7 +183,9 @@
               </div>
             </confirm-modal>
           </ng-template>
+
           <!-- TODO: refactor the reorder process to not be in a modal -->
+
           <ng-template #reorderModal let-modal class="confirm-modal">
             <confirm-modal
               [modalTitle]="'Reorder'"
@@ -181,6 +201,7 @@
               >
                 <p [innerHTML]="message.string"></p>
               </div>
+
               <ocm-lineitem-table
                 *ngIf="reorderResponse.InvalidLi.length"
                 [lineItems]="reorderResponse.InvalidLi"
@@ -188,6 +209,7 @@
                 [invalidItem]="true"
               >
               </ocm-lineitem-table>
+
               <div
                 class="row d-flex justify-content-space-between justify-content-between me-2 ms-2"
               >
@@ -199,6 +221,7 @@
                 >
                   ORDERS.DETAIL.CANCEL
                 </button>
+
                 <button
                   type="button"
                   class="btn btn-primary"
@@ -211,6 +234,7 @@
               </div>
             </confirm-modal>
           </ng-template>
+
           <ng-template #updateOrderModal let-modal class="confirm-modal">
             <confirm-modal
               [modalTitle]="'Update Order'"
@@ -219,6 +243,7 @@
               <div class="alert alert-warning">
                 <p translate>ORDERS.DETAIL.WARNING</p>
               </div>
+
               <div
                 class="row d-flex justify-content-space-between justify-content-between me-2 ms-2"
               >
@@ -229,6 +254,7 @@
                 >
                   Cancel
                 </button>
+
                 <button
                   type="button"
                   class="btn btn-primary"
@@ -243,6 +269,7 @@
         </div>
       </div>
     </div>
+
     <ul
       ngbNav
       #nav="ngbNav"
@@ -251,9 +278,11 @@
       class="nav-tabs"
     >
       <li [ngbNavItem]="0" id="0">
-        <a ngbNavLink translate
-          ><fa-icon [icon]="faCube"></fa-icon> ORDERS.DETAIL.DETAILS</a
-        >
+        <a ngbNavLink translate>
+          <fa-icon [icon]="faCube"></fa-icon>
+          ORDERS.DETAIL.DETAILS
+        </a>
+
         <ng-template ngbNavContent>
           <ocm-order-historical
             class="d-block p-3"
@@ -264,31 +293,45 @@
           </ocm-order-historical>
         </ng-template>
       </li>
+
       <li [ngbNavItem]="1" id="1">
-        <a ngbNavLink translate
-          ><fa-icon [icon]="faTruck"></fa-icon> ORDERS.DETAIL.SHIPMENTS</a
-        >
+        <a ngbNavLink translate>
+          <fa-icon [icon]="faTruck"></fa-icon>
+          ORDERS.DETAIL.SHIPMENTS
+        </a>
+
         <ng-template ngbNavContent>
           <ocm-order-shipments class="d-block p-3" [orderID]="order?.ID">
           </ocm-order-shipments>
         </ng-template>
       </li>
+
       <li [ngbNavItem]="2" id="2">
-        <a ngbNavLink translate
-          ><fa-icon [icon]="faExchangeAlt"></fa-icon>
-          ORDERS.DETAIL.ORDER_RETURNS</a
-        >
+        <a ngbNavLink translate>
+          <fa-icon [icon]="faExchangeAlt"></fa-icon>
+          ORDERS.DETAIL.ORDER_RETURNS
+        </a>
+
         <ng-template ngbNavContent>
           <ocm-order-returns [orderDetails]="orderDetails"> </ocm-order-returns>
         </ng-template>
       </li>
     </ul>
+
     <div
       [ngbNavOutlet]="nav"
       [hidden]="approvalVersion || showRequestReturn"
       class="mt-2"
     ></div>
 
+    <!-- Need this to display on its own for Orders Awaiting Approval page -->
+    <ocm-order-historical
+      class="d-block p-3"
+      *ngIf="orderDetails && order?.Status === 'AwaitingApproval'"
+      [isOrderToApprove]="isOrderToApprove"
+      [orderDetails]="orderDetails"
+    >
+    </ocm-order-historical>
     <ocm-order-return-request-form
       class="d-block p-3"
       *ngIf="showRequestReturn"
