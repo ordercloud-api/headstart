@@ -28,8 +28,8 @@ services:
       context: .
       dockerfile: docker/build/middleware/Dockerfile
       args:
-        BUILD_IMAGE: mcr.microsoft.com/dotnet/sdk:3.1-alpine
-        BASE_IMAGE: mcr.microsoft.com/dotnet/aspnet:3.1-alpine
+        BUILD_IMAGE: mcr.microsoft.com/dotnet/sdk:6.0-alpine3.14
+        BASE_IMAGE: mcr.microsoft.com/dotnet/aspnet:6.0-alpine3.14
         BUILD_CONFIGURATION: ${BUILD_CONFIGURATION}
     environment:
       ASPNETCORE_ENVIRONMENT: ${BUILD_CONFIGURATION}
@@ -117,6 +117,7 @@ services:
       StorageAccountSettings_ContainerNameCache: "${StorageAccountSettings_ContainerNameCache}"
       StorageAccountSettings_BlobContainerNameExchangeRates: "${StorageAccountSettings_ContainerNameExchangeRates}"
       StorageAccountSettings_ContainerNameTranslations: "${StorageAccountSettings_ContainerNameTranslations}"
+      StorageAccountSettings_BlobPrimaryEndpoint: "${StorageAccountSettings_BlobPrimaryEndpoint}"
 
       UI_BaseAdminUrl: "http://${SELLER_HOST}"
 
@@ -155,7 +156,7 @@ services:
       context: .
       dockerfile: docker/build/UI/Dockerfile
       args:
-        BASE_IMAGE: node:12.16.3-alpine
+        BASE_IMAGE: node:12.20.0-alpine
         ROLE: Seller
     labels:
       - "traefik.enable=true"
@@ -184,7 +185,7 @@ services:
       context: .
       dockerfile: docker/build/UI/Dockerfile
       args:
-        BASE_IMAGE: node:12.16.3-alpine
+        BASE_IMAGE: node:12.20.0-alpine
         ROLE: Buyer
     labels:
       - "traefik.enable=true"

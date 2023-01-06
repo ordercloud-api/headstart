@@ -24,6 +24,9 @@ RUN npm install -g json
 
 RUN apk add --no-cache --upgrade bash curl dos2unix
 
+# this will support multilingual
+RUN apk add --no-cache icu-libs
+
 WORKDIR /app
 
 COPY --from=build /out/middleware .
