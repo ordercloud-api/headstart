@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ChangeDetectorRef } from '@angular/core'
 import { takeWhile } from 'rxjs/operators'
 import { HSAddressBuyer } from '@ordercloud/headstart-sdk'
-import { FormControl, FormGroup } from '@angular/forms'
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 import { OrderFilters } from 'src/app/models/order.types'
 
@@ -11,7 +11,7 @@ import { OrderFilters } from 'src/app/models/order.types'
 })
 export class OCMOrderLocationFilter implements OnInit, OnDestroy {
   alive = true
-  form: FormGroup
+  form: UntypedFormGroup
   locations: HSAddressBuyer[] = []
 
   constructor(
@@ -20,8 +20,8 @@ export class OCMOrderLocationFilter implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.form = new FormGroup({
-      selectedLocationID: new FormControl(''),
+    this.form = new UntypedFormGroup({
+      selectedLocationID: new UntypedFormControl(''),
     })
     this.context.orderHistory.filters.activeFiltersSubject
       .pipe(takeWhile(() => this.alive))

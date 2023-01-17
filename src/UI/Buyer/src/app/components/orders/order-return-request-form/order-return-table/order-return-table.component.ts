@@ -3,7 +3,7 @@ import { getPrimaryLineItemImage } from 'src/app/services/images.helpers'
 import { Supplier } from 'ordercloud-javascript-sdk'
 import { HSOrderReturn } from '@ordercloud/headstart-sdk';
 import { HSLineItem } from '@ordercloud/headstart-sdk'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 import { ReturnTranslations } from './models/return-translations.model'
 import {
   returnHeaders,
@@ -22,7 +22,7 @@ import { ShopperContextService } from 'src/app/services/shopper-context/shopper-
 })
 export class OCMOrderReturnTable {
   @Input() supplier: Supplier
-  @Input() form: FormGroup
+  @Input() form: UntypedFormGroup
   @Input() lineItems: HSLineItem[]
   @Input() orderReturns: HSOrderReturn[]
   @Output() quantitiesToReturnEvent = new EventEmitter<number>()
@@ -32,11 +32,11 @@ export class OCMOrderReturnTable {
     AvailableReasons: returnReasons,
   }
 
-  get rows(): FormGroup[] {
+  get rows(): UntypedFormGroup[] {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const form = this.form as any
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    return form.controls.lineItems.controls as FormGroup[]
+    return form.controls.lineItems.controls as UntypedFormGroup[]
   }
 
   constructor(private context: ShopperContextService) {}
@@ -68,11 +68,11 @@ export class OCMOrderReturnTable {
     return numEnabledRows === numSelectedRows
   }
 
-  isRowEnabled(row: FormGroup): boolean {
+  isRowEnabled(row: UntypedFormGroup): boolean {
     return CanReturn(row.controls.lineItem.value, this.orderReturns)
   }
 
-  isRowSelected(row: FormGroup): boolean {
+  isRowSelected(row: UntypedFormGroup): boolean {
     return row.controls.selected.value as boolean
   }
 
@@ -80,13 +80,13 @@ export class OCMOrderReturnTable {
     return NumberHasReturned(lineItem, this.orderReturns)
   }
 
-  selectRow(row: FormGroup): void {
+  selectRow(row: UntypedFormGroup): void {
     row.controls.quantityToReturn.enable()
     row.controls.returnReason.enable()
     row.controls.selected.setValue(true)
   }
 
-  deselectRow(row: FormGroup): void {
+  deselectRow(row: UntypedFormGroup): void {
     row.controls.quantityToReturn.disable()
     row.controls.returnReason.disable()
     row.controls.selected.setValue(false)
@@ -109,7 +109,7 @@ export class OCMOrderReturnTable {
     }
   }
 
-  toggle(row?: FormGroup): void {
+  toggle(row?: UntypedFormGroup): void {
     if (row.controls.selected.value) {
       // was deselected, now wants to select
       this.selectRow(row)

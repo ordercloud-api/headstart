@@ -7,7 +7,7 @@ import {
   OnChanges,
   SimpleChanges,
 } from '@angular/core'
-import { FormGroup, Validators, FormControl } from '@angular/forms'
+import { UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms'
 import { PriceSchedule } from 'ordercloud-javascript-sdk'
 import { Router } from '@angular/router'
 import {
@@ -39,7 +39,7 @@ export class OCMQuantityInput implements OnInit, OnChanges {
   @Input() resetGridQtyFields
   @Output() qtyChange = new EventEmitter<QtyChangeEvent>()
   // TODO - replace with real product info
-  form: FormGroup
+  form: UntypedFormGroup
   isQtyRestricted = false
   restrictedQuantities: number[] = []
   errorMsg = ''
@@ -57,15 +57,15 @@ export class OCMQuantityInput implements OnInit, OnChanges {
     const splitUrl = routeUrl.split('/')
     const endUrl = splitUrl[splitUrl.length - 1]
     if (endUrl.includes('cart')) {
-      this.form = new FormGroup({
-        quantity: new FormControl(1, {
+      this.form = new UntypedFormGroup({
+        quantity: new UntypedFormControl(1, {
           validators: Validators.required,
           updateOn: 'blur',
         }),
       })
     } else {
-      this.form = new FormGroup({
-        quantity: new FormControl(1, {
+      this.form = new UntypedFormGroup({
+        quantity: new UntypedFormControl(1, {
           validators: Validators.required,
         }),
       })

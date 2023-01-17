@@ -8,7 +8,7 @@ import {
   SimpleChanges,
   OnDestroy,
 } from '@angular/core'
-import { FormGroup, Validators, FormControl } from '@angular/forms'
+import { UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms'
 
 // 3rd party
 import { BuyerAddress, Address } from 'ordercloud-javascript-sdk'
@@ -47,8 +47,8 @@ export class OCMAddressForm implements OnInit, OnChanges, OnDestroy {
   }
   stateOptions: string[] = []
   countryOptions: { label: string; abbreviation: string }[]
-  addressForm: FormGroup
-  shouldSaveAddressForm: FormGroup
+  addressForm: UntypedFormGroup
+  shouldSaveAddressForm: UntypedFormGroup
   selectedAddress: BuyerAddress
   alive = true
   private ExistingAddress: BuyerAddress = {}
@@ -70,35 +70,35 @@ export class OCMAddressForm implements OnInit, OnChanges, OnDestroy {
   }
 
   setForms(): void {
-    this.addressForm = new FormGroup({
-      FirstName: new FormControl(this.ExistingAddress.FirstName || '', [
+    this.addressForm = new UntypedFormGroup({
+      FirstName: new UntypedFormControl(this.ExistingAddress.FirstName || '', [
         Validators.required,
         ValidateName,
       ]),
-      LastName: new FormControl(this.ExistingAddress.LastName || '', [
+      LastName: new UntypedFormControl(this.ExistingAddress.LastName || '', [
         Validators.required,
         ValidateName,
       ]),
-      Street1: new FormControl(
+      Street1: new UntypedFormControl(
         this.ExistingAddress.Street1 || '',
         Validators.required
       ),
-      Street2: new FormControl(this.ExistingAddress.Street2 || ''),
-      City: new FormControl(this.ExistingAddress.City || ''),
-      State: new FormControl(
+      Street2: new UntypedFormControl(this.ExistingAddress.Street2 || ''),
+      City: new UntypedFormControl(this.ExistingAddress.City || ''),
+      State: new UntypedFormControl(
         this.ExistingAddress.State || null,
         Validators.required
       ),
-      Zip: new FormControl(this.ExistingAddress.Zip || '', [
+      Zip: new UntypedFormControl(this.ExistingAddress.Zip || '', [
         Validators.pattern(getZip(this.homeCountry)),
         Validators.required,
       ]),
-      Phone: new FormControl(this.ExistingAddress.Phone || '', ValidatePhone),
-      Country: new FormControl(this.homeCountry || '', Validators.required),
-      ID: new FormControl(this.ExistingAddress.ID || ''),
+      Phone: new UntypedFormControl(this.ExistingAddress.Phone || '', ValidatePhone),
+      Country: new UntypedFormControl(this.homeCountry || '', Validators.required),
+      ID: new UntypedFormControl(this.ExistingAddress.ID || ''),
     })
-    this.shouldSaveAddressForm = new FormGroup({
-      shouldSaveAddress: new FormControl(false),
+    this.shouldSaveAddressForm = new UntypedFormGroup({
+      shouldSaveAddress: new UntypedFormControl(false),
     })
   }
 

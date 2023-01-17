@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 import { ShipEstimate, ShipMethodSelection } from 'ordercloud-javascript-sdk'
-import { FormGroup, FormControl } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms'
 import {
   faExclamationTriangle,
   faQuestionCircle,
@@ -24,13 +24,13 @@ export class OCMShippingSelectionForm implements OnInit {
   faExclamationTriangle = faExclamationTriangle
   _shipEstimate: ShipEstimate
   _orderCurrency: string
-  form: FormGroup
+  form: UntypedFormGroup
 
   constructor(private context: ShopperContextService) {}
 
   ngOnInit(): void {
-    this.form = new FormGroup({ rateID: new FormControl(null) })
-    this.form = new FormGroup({ ShipMethodID: new FormControl(null) })
+    this.form = new UntypedFormGroup({ rateID: new UntypedFormControl(null) })
+    this.form = new UntypedFormGroup({ ShipMethodID: new UntypedFormControl(null) })
     this._orderCurrency = this.context.currentUser.get().Currency
   }
 

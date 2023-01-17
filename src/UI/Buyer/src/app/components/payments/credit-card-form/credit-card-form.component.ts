@@ -6,7 +6,7 @@ import {
   OnChanges,
   OnInit
 } from '@angular/core'
-import { FormGroup, Validators, FormControl } from '@angular/forms'
+import { UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms'
 import { CreditCardFormatPipe } from 'src/app/pipes/credit-card-format.pipe'
 import { ValidateCreditCard } from 'src/app/validators/validators'
 import { OrderCloudIntegrationsCreditCardToken } from '@ordercloud/headstart-sdk'
@@ -40,7 +40,7 @@ export class OCMCreditCardForm implements OnChanges, OnInit {
   _showCardDetails: boolean
   _showCVV: boolean
   cardError?: string
-  cardForm = new FormGroup({}) as TypedFormGroup<CreditCard>
+  cardForm = new UntypedFormGroup({}) as TypedFormGroup<CreditCard>
   monthOptions = [
     '01',
     '02',
@@ -163,7 +163,7 @@ export class OCMCreditCardForm implements OnChanges, OnInit {
   }
 
   private buildCVVForm(): void {
-    this.cardForm.addControl('cvv', new FormControl('', Validators.required))
+    this.cardForm.addControl('cvv', new UntypedFormControl('', Validators.required))
   }
 
   private removeCVVForm(): void {
@@ -190,42 +190,42 @@ export class OCMCreditCardForm implements OnChanges, OnInit {
 
     this.cardForm.addControl(
       'token',
-      new FormControl(form.token, [Validators.required, ValidateCreditCard])
+      new UntypedFormControl(form.token, [Validators.required, ValidateCreditCard])
     )
-    this.cardForm.addControl('name', new FormControl(name, Validators.required))
+    this.cardForm.addControl('name', new UntypedFormControl(name, Validators.required))
     this.cardForm.addControl(
       'month',
-      new FormControl(form.month, Validators.required)
+      new UntypedFormControl(form.month, Validators.required)
     )
     this.cardForm.addControl(
       'year',
-      new FormControl(form.year, Validators.required)
+      new UntypedFormControl(form.year, Validators.required)
     )
     this.cardForm.addControl(
       'street',
-      new FormControl(form.street, Validators.required)
+      new UntypedFormControl(form.street, Validators.required)
     )
     this.cardForm.addControl(
       'city',
-      new FormControl(form.city, Validators.required)
+      new UntypedFormControl(form.city, Validators.required)
     )
     this.cardForm.addControl(
       'state',
-      new FormControl(form.state, Validators.required)
+      new UntypedFormControl(form.state, Validators.required)
     )
     this.cardForm.addControl(
       'zip',
-      new FormControl(form.zip, [
+      new UntypedFormControl(form.zip, [
         Validators.pattern(getZip(form.country)),
         Validators.required,
       ])
     )
     this.cardForm.addControl(
       'country',
-      new FormControl(form.country, Validators.required)
+      new UntypedFormControl(form.country, Validators.required)
     )
     if (this.shouldShowShippingOption) {
-      this.cardForm.addControl('useShippingAddress', new FormControl(false))
+      this.cardForm.addControl('useShippingAddress', new UntypedFormControl(false))
     }
   }
 

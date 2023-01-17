@@ -1,5 +1,5 @@
 import { Component } from '@angular/core'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 import { Field, FieldConfig } from 'src/app/models/product.types'
 import { specErrors } from '../errors'
 
@@ -31,7 +31,7 @@ import { specErrors } from '../errors'
 })
 export class SpecFormLabelComponent implements Field {
   config: FieldConfig
-  group: FormGroup
+  group: UntypedFormGroup
   index: number
   compact?: boolean
   errorMsgs = specErrors

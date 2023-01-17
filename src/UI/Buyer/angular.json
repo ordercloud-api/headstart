@@ -168,5 +168,7 @@
       }
     }
   },
-  "defaultProject": "headstart"
+  "cli": {
+    "analytics": false
+  }
 }

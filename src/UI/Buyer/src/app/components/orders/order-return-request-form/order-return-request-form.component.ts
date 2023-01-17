@@ -6,7 +6,7 @@ import {
   HSOrderReturn,
 } from '@ordercloud/headstart-sdk'
 import { groupBy as _groupBy, flatten as _flatten } from 'lodash'
-import { FormGroup, FormArray, FormBuilder } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormArray, UntypedFormBuilder } from '@angular/forms'
 import { ReturnRequestForm } from './order-return-table/models/return-request-form.model'
 import { CanReturn } from 'src/app/services/lineitem-status.helper'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
@@ -33,13 +33,13 @@ export class OCMOrderReturnRequestForm {
   suppliers: LineItemGroupSupplier[]
   liGroupedByShipFrom: HSLineItem[][]
   quantitiesToReturn: number[] = []
-  requestReturnForm: FormGroup
-  groupedLineItemsToReturn: FormArray
+  requestReturnForm: UntypedFormGroup
+  groupedLineItemsToReturn: UntypedFormArray
   isSaving = false
 
   constructor(
     private context: ShopperContextService,
-    private fb: FormBuilder
+    private fb: UntypedFormBuilder
   ) {}
 
   setData(): void {
@@ -53,7 +53,7 @@ export class OCMOrderReturnRequestForm {
   }
 
   isAnyRowSelected(): boolean {
-    const liGroups = this.requestReturnForm.controls.liGroups as FormArray
+    const liGroups = this.requestReturnForm.controls.liGroups as UntypedFormArray
     const selectedItem = liGroups.value.find((value) =>
       value.lineItems.find((lineItem) => lineItem.selected === true)
     )

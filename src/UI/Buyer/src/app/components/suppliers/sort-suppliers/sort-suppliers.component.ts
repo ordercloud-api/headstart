@@ -5,7 +5,7 @@ import {
   EventEmitter,
   OnDestroy,
 } from '@angular/core'
-import { FormGroup, FormControl } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms'
 import { takeWhile } from 'rxjs/operators'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 
@@ -15,7 +15,7 @@ import { ShopperContextService } from 'src/app/services/shopper-context/shopper-
 })
 export class OCMSupplierSort implements OnInit, OnDestroy {
   alive = true
-  form: FormGroup
+  form: UntypedFormGroup
   options = [
     { value: 'Name', label: 'A to Z' },
     { value: '!Name', label: 'Z to A' },
@@ -25,7 +25,7 @@ export class OCMSupplierSort implements OnInit, OnDestroy {
   constructor(private context: ShopperContextService) {}
 
   ngOnInit(): void {
-    this.form = new FormGroup({ sortBy: new FormControl(null) })
+    this.form = new UntypedFormGroup({ sortBy: new UntypedFormControl(null) })
     this.context.supplierFilters.activeFiltersSubject
       .pipe(takeWhile(() => this.alive))
       .subscribe((filters) => {

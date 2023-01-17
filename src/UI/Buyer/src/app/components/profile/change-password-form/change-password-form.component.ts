@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
-import { FormGroup, Validators, FormControl } from '@angular/forms'
+import { UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms'
 import { MeUser } from 'ordercloud-javascript-sdk'
 import {
   ValidateStrongPassword,
@@ -14,7 +14,7 @@ import { ShopperContextService } from 'src/app/services/shopper-context/shopper-
   styleUrls: ['./change-password-form.component.scss'],
 })
 export class OCMChangePasswordForm implements OnInit {
-  form: FormGroup
+  form: UntypedFormGroup
   me: MeUser
   faTimes = faTimes
 
@@ -28,13 +28,13 @@ export class OCMChangePasswordForm implements OnInit {
   }
 
   setForm(): void {
-    this.form = new FormGroup({
-      currentPassword: new FormControl('', Validators.required),
-      newPassword: new FormControl('', [
+    this.form = new UntypedFormGroup({
+      currentPassword: new UntypedFormControl('', Validators.required),
+      newPassword: new UntypedFormControl('', [
         Validators.required,
         ValidateStrongPassword,
       ]),
-      confirmNewPassword: new FormControl('', [
+      confirmNewPassword: new UntypedFormControl('', [
         ValidateFieldMatches('newPassword'),
         Validators.required,
       ]),

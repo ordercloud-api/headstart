@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core'
-import { FormGroup, FormControl } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms'
 import { takeWhile } from 'rxjs/operators'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
 
@@ -9,7 +9,7 @@ import { ShopperContextService } from 'src/app/services/shopper-context/shopper-
 })
 export class OCMProductSort implements OnInit, OnDestroy {
   alive = true
-  form: FormGroup
+  form: UntypedFormGroup
   options = [
     { value: 'ID', label: 'ID: A to Z' },
     { value: '!ID', label: 'ID: Z to A' },
@@ -20,7 +20,7 @@ export class OCMProductSort implements OnInit, OnDestroy {
   constructor(private context: ShopperContextService) {}
 
   ngOnInit(): void {
-    this.form = new FormGroup({ sortBy: new FormControl(null) })
+    this.form = new UntypedFormGroup({ sortBy: new UntypedFormControl(null) })
     this.context.productFilters.activeFiltersSubject
       .pipe(takeWhile(() => this.alive))
       .subscribe((filters) => {
