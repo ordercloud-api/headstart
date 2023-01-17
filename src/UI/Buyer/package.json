@@ -32,7 +32,7 @@
     "@gorniv/ngx-universal": "^2.0.1",
     "@microsoft/applicationinsights-web": "^2.5.9",
     "@ng-bootstrap/ng-bootstrap": "^12.0.0",
-    "@nguniversal/express-engine": "^12.1.0",
+    "@nguniversal/express-engine": "^13.1.1",
     "@ngx-progressbar/core": "^5.2.1",
     "@ngx-progressbar/http": "^5.2.1",
     "@ngx-translate/core": "^12.1.2",
