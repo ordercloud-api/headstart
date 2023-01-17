@@ -1,13 +1,13 @@
-import { FormControl, Validators } from '@angular/forms'
+import { UntypedFormControl, Validators } from '@angular/forms'
 import { HSLineItem } from '@ordercloud/headstart-sdk'
 import { HSOrderReturn } from '@ordercloud/headstart-sdk'
 import { NumberCanReturn } from 'src/app/services/lineitem-status.helper'
 
 export class LineItemForm {
-  id = new FormControl()
-  selected = new FormControl()
-  quantityToReturn = new FormControl()
-  returnReason = new FormControl()
+  id = new UntypedFormControl()
+  selected = new UntypedFormControl()
+  quantityToReturn = new UntypedFormControl()
+  returnReason = new UntypedFormControl()
   lineItem: HSLineItem
 
   constructor(lineItem: HSLineItem, orderReturns: HSOrderReturn[]) {

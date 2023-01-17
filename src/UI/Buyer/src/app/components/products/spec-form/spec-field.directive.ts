@@ -7,7 +7,7 @@ import {
   ComponentRef,
   OnChanges,
 } from '@angular/core'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 import { Field, FieldConfig } from 'src/app/models/product.types'
 import { specFormComponents } from './components'
 
@@ -16,7 +16,7 @@ import { specFormComponents } from './components'
 })
 export class SpecFieldDirective implements Field, OnChanges, OnInit {
   @Input() config: FieldConfig
-  @Input() group: FormGroup
+  @Input() group: UntypedFormGroup
   @Input() index: number
   @Input() compact?: boolean = false
   component: ComponentRef<Field>

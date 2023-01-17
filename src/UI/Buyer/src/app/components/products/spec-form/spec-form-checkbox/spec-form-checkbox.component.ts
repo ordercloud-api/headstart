@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { FormGroup, FormArray, AbstractControl } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormArray, AbstractControl } from '@angular/forms'
 import { Field, FieldConfig } from 'src/app/models/product.types'
 @Component({
   selector: 'spec-form-checkbox',
@@ -20,12 +20,12 @@ import { Field, FieldConfig } from 'src/app/models/product.types'
 })
 export class SpecFormCheckboxComponent implements Field, OnInit {
   config: FieldConfig
-  group: FormGroup
+  group: UntypedFormGroup
   index: number
-  ctrls: FormArray
+  ctrls: UntypedFormArray
 
   ngOnInit(): void {
-    this.ctrls = this.group.get('ctrls') as FormArray
+    this.ctrls = this.group.get('ctrls') as UntypedFormArray
   }
 
   byIndex(index: number): AbstractControl {

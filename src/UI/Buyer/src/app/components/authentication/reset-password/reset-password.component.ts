@@ -1,6 +1,6 @@
 // angular
 import { Component, OnInit } from '@angular/core'
-import { FormGroup, Validators, FormControl } from '@angular/forms'
+import { UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms'
 // angular libs
 
 // ordercloud
@@ -19,7 +19,7 @@ import { AppConfig } from 'src/app/models/environment.types'
   styleUrls: ['./reset-password.component.scss'],
 })
 export class OCMResetPassword implements OnInit {
-  form: FormGroup
+  form: UntypedFormGroup
   username: string
   code: string
   appName: string
@@ -36,13 +36,13 @@ export class OCMResetPassword implements OnInit {
     this.code = urlParams['code'] as string
     this.username = urlParams['username'] as string
     this.appName = this.context.appSettings.appname
-    this.form = new FormGroup({
-      username: new FormControl(this.username),
-      password: new FormControl('', [
+    this.form = new UntypedFormGroup({
+      username: new UntypedFormControl(this.username),
+      password: new UntypedFormControl('', [
         Validators.required,
         ValidateStrongPassword,
       ]),
-      passwordConfirm: new FormControl('', [
+      passwordConfirm: new UntypedFormControl('', [
         Validators.required,
         ValidateFieldMatches('password'),
       ]),

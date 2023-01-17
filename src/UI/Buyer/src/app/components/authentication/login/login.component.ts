@@ -1,6 +1,6 @@
 // angular
 import { Component, OnInit } from '@angular/core'
-import { FormGroup, FormControl } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms'
 import { ToastrService } from 'ngx-toastr'
 import { AppConfig } from 'src/app/models/environment.types'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
@@ -11,7 +11,7 @@ import { faInfoCircle } from '@fortawesome/free-solid-svg-icons'
   styleUrls: ['./login.component.scss'],
 })
 export class OCMLogin implements OnInit {
-  form: FormGroup
+  form: UntypedFormGroup
   appName: string
   faInfoCircle = faInfoCircle
 
@@ -23,10 +23,10 @@ export class OCMLogin implements OnInit {
 
   ngOnInit(): void {
     this.appName = this.context.appSettings.appname
-    this.form = new FormGroup({
-      username: new FormControl(''),
-      password: new FormControl(''),
-      rememberMe: new FormControl(false),
+    this.form = new UntypedFormGroup({
+      username: new UntypedFormControl(''),
+      password: new UntypedFormControl(''),
+      rememberMe: new UntypedFormControl(false),
     })
   }
 

@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core'
-import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
 import {
   ValidateEmail,
   ValidateName,
@@ -14,7 +14,7 @@ import { CurrentUser } from 'src/app/models/profile.types'
   styleUrls: ['./contact-supplier-form.component.scss'],
 })
 export class OCMContactSupplierForm implements OnInit {
-  contactSupplierForm: FormGroup
+  contactSupplierForm: UntypedFormGroup
   myBuyerLocations: HSAddressBuyer[]
   requestOptions: {
     pageSize?: number
@@ -42,28 +42,28 @@ export class OCMContactSupplierForm implements OnInit {
   }
 
   setForms(): void {
-    this.contactSupplierForm = new FormGroup({
-      FirstName: new FormControl(this.currentUser?.FirstName || '', [
+    this.contactSupplierForm = new UntypedFormGroup({
+      FirstName: new UntypedFormControl(this.currentUser?.FirstName || '', [
         Validators.required,
         ValidateName,
       ]),
-      LastName: new FormControl(this.currentUser?.LastName || '', [
+      LastName: new UntypedFormControl(this.currentUser?.LastName || '', [
         Validators.required,
         ValidateName,
       ]),
-      BuyerLocation: new FormControl(
+      BuyerLocation: new UntypedFormControl(
         this.myBuyerLocations[0]?.AddressName || '',
         [Validators.required]
       ),
-      Email: new FormControl(this.currentUser?.Email || '', [
+      Email: new UntypedFormControl(this.currentUser?.Email || '', [
         Validators.required,
         ValidateEmail,
       ]),
-      Phone: new FormControl(this.currentUser?.Phone || '', [
+      Phone: new UntypedFormControl(this.currentUser?.Phone || '', [
         Validators.required,
         ValidatePhone,
       ]),
-      Comments: new FormControl('', Validators.required),
+      Comments: new UntypedFormControl('', Validators.required),
     })
   }
 

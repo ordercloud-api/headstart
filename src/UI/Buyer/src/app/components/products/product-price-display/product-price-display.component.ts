@@ -5,7 +5,7 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 import { PriceSchedule, Spec } from 'ordercloud-javascript-sdk'
 import { ProductDetailService } from '../product-details/product-detail.service'
 
@@ -18,7 +18,7 @@ export class ProductPriceDisplayComponent implements OnChanges, OnInit {
   @Input() priceSchedule: PriceSchedule
   @Input() quantity = 1
   @Input() specs?: Spec[] = []
-  @Input() specForm?: FormGroup
+  @Input() specForm?: UntypedFormGroup
   isOnSale: boolean
   price: number
   salePrice: number

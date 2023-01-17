@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { FormGroup, FormArray, AbstractControl } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormArray, AbstractControl } from '@angular/forms'
 import { Field, FieldConfig } from 'src/app/models/product.types'
 import { specErrors } from '../errors'
 
@@ -41,18 +41,18 @@ import { specErrors } from '../errors'
 })
 export class SpecFormInputComponent implements Field, OnInit {
   config: FieldConfig
-  group: FormGroup
-  ctrls: FormArray
+  group: UntypedFormGroup
+  ctrls: UntypedFormArray
   index: number
   errorMsgs = specErrors
 
   constructor() {}
 
   ngOnInit(): void {
-    this.ctrls = this.group.get('ctrls') as FormArray
+    this.ctrls = this.group.get('ctrls') as UntypedFormArray
   }
 
   byIndex(index: number): AbstractControl {
-    return (this.group.get('ctrls') as FormArray).at(index)
+    return (this.group.get('ctrls') as UntypedFormArray).at(index)
   }
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core'
 import { faCalendar, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { FormGroup, FormControl } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms'
 import { debounceTime, takeWhile } from 'rxjs/operators'
 import { DateValidator } from '../../../validators/validators'
 import { DatePipe } from '@angular/common'
@@ -15,7 +15,7 @@ export class OCMOrderDateFilter implements OnInit, OnDestroy {
   alive = true
   faCalendar = faCalendar
   faTimes = faTimes
-  form: FormGroup
+  form: UntypedFormGroup
 
   constructor(
     private datePipe: DatePipe,
@@ -23,9 +23,9 @@ export class OCMOrderDateFilter implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.form = new FormGroup({
-      fromDate: new FormControl(null as Date, DateValidator),
-      toDate: new FormControl(null as Date, DateValidator),
+    this.form = new UntypedFormGroup({
+      fromDate: new UntypedFormControl(null as Date, DateValidator),
+      toDate: new UntypedFormControl(null as Date, DateValidator),
     })
     this.onFormChanges()
     this.context.orderHistory.filters.activeFiltersSubject

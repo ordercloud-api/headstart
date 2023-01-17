@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 import { PriceBreak, PriceSchedule, Spec } from 'ordercloud-javascript-sdk'
 import { minBy as _minBy } from 'lodash'
 import { SpecFormService } from '../spec-form/spec-form.service'
@@ -15,7 +15,7 @@ export class ProductDetailService {
     priceSchedule: PriceSchedule,
     quantity: number,
     specs: Spec[],
-    specForm: FormGroup,
+    specForm: UntypedFormGroup,
     isOnSale: boolean
   ): number {
     const unitPrice = this.getProductUnitPrice(
@@ -32,7 +32,7 @@ export class ProductDetailService {
     priceSchedule: PriceSchedule,
     specs: Spec[],
     quantity: number,
-    specForm: FormGroup,
+    specForm: UntypedFormGroup,
     isOnSale: boolean
   ): number {
     // In OC, the price per item can depend on the quantity ordered. This info is stored on the PriceSchedule as a list of PriceBreaks.

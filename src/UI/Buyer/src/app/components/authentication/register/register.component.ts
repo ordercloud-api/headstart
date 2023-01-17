@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { FormGroup, Validators, FormControl } from '@angular/forms'
+import { UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms'
 import { MeUser } from 'ordercloud-javascript-sdk'
 import { AppConfig } from 'src/app/models/environment.types'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
@@ -16,7 +16,7 @@ import {
   styleUrls: ['./register.component.scss'],
 })
 export class OCMRegister implements OnInit {
-  form: FormGroup
+  form: UntypedFormGroup
   appName: string
   loading = false
 
@@ -28,17 +28,17 @@ export class OCMRegister implements OnInit {
   // TODO: validation isn't working
   ngOnInit(): void {
     this.appName = this.context.appSettings.appname
-    this.form = new FormGroup({
-      Username: new FormControl('', Validators.required),
-      FirstName: new FormControl('', [Validators.required, ValidateName]),
-      LastName: new FormControl('', [Validators.required, ValidateName]),
-      Email: new FormControl('', [Validators.required, ValidateEmail]),
-      Phone: new FormControl('', ValidatePhone),
-      Password: new FormControl('', [
+    this.form = new UntypedFormGroup({
+      Username: new UntypedFormControl('', Validators.required),
+      FirstName: new UntypedFormControl('', [Validators.required, ValidateName]),
+      LastName: new UntypedFormControl('', [Validators.required, ValidateName]),
+      Email: new UntypedFormControl('', [Validators.required, ValidateEmail]),
+      Phone: new UntypedFormControl('', ValidatePhone),
+      Password: new UntypedFormControl('', [
         Validators.required,
         ValidateStrongPassword,
       ]),
-      ConfirmPassword: new FormControl('', [
+      ConfirmPassword: new UntypedFormControl('', [
         Validators.required,
         ValidateFieldMatches('Password'),
       ]),

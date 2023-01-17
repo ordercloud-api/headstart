@@ -1,6 +1,6 @@
 import { HSVariant } from '@ordercloud/headstart-sdk'
 import { ValidatorFn } from '@angular/forms'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 import { LineItemSpec, SpecOption } from 'ordercloud-javascript-sdk'
 
 export interface QtyChangeEvent {
@@ -27,13 +27,13 @@ export interface FieldConfig {
 
 export interface Field {
   config: FieldConfig
-  group: FormGroup
+  group: UntypedFormGroup
   index: number
   compact?: boolean
 }
 
 export interface SpecFormEvent {
-  form: FormGroup
+  form: UntypedFormGroup
 }
 
 export interface GridSpecOption {

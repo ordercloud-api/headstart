@@ -4,7 +4,7 @@
 // ====================================================================
 const brand = Brand.DEFAULT_BUYER
 const appEnvironment = Environment.TEST
-const useLocalMiddleware = true
+const useLocalMiddleware = false
 const useLocalBuyerApiClient = false // set to true for running integration events locally
 const localMiddlewareURL = 'https://localhost:5001'
 const localBuyerApiClient = '800EFEC0-43A5-4EB6-9150-C3BBE628214C'

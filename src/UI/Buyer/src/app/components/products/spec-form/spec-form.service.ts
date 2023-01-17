@@ -7,7 +7,7 @@ import {
 } from 'ordercloud-javascript-sdk'
 import { Injectable } from '@angular/core'
 import { ImageAsset } from '@ordercloud/headstart-sdk'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 import { GridSpecOption } from 'src/app/models/product.types'
 
 @Injectable({
@@ -20,7 +20,7 @@ export class SpecFormService {
     specs: Spec[],
     selectedBreak: PriceBreak,
     qty: number,
-    specForm: FormGroup
+    specForm: UntypedFormGroup
   ): number {
     const formValues = specForm.value || undefined
     const markups: Array<number> = new Array<number>()
@@ -39,7 +39,7 @@ export class SpecFormService {
 
   public getLineItemSpecs(
     buyerSpecs: Spec[],
-    specForm: FormGroup
+    specForm: UntypedFormGroup
   ): Array<LineItemSpec> {
     const formValues = specForm ? specForm.value : undefined
     const specs: Array<LineItemSpec> = new Array<LineItemSpec>()
@@ -68,7 +68,7 @@ export class SpecFormService {
   public getLineItemImageUrl(
     images: ImageAsset[],
     specs: Spec[],
-    specForm?: FormGroup
+    specForm?: UntypedFormGroup
   ): string {
     if (!images || images === null) {
       images = []
@@ -87,7 +87,7 @@ export class SpecFormService {
   private isImageMatchingSpecs(
     image: ImageAsset,
     specs: Spec[],
-    specForm: FormGroup
+    specForm: UntypedFormGroup
   ): boolean {
     // Examine all specs, and find the image tag that matches all specs, removing spaces where needed on the spec to find that match.
     const liSpecs = this.getLineItemSpecs(specs, specForm)

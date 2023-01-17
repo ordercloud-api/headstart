@@ -7,7 +7,7 @@ import {
 } from '@angular/core'
 import { Supplier, ListPage } from 'ordercloud-javascript-sdk'
 import { faTimes, faFilter } from '@fortawesome/free-solid-svg-icons'
-import { FormControl, FormGroup } from '@angular/forms'
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms'
 import { NgbPopover } from '@ng-bootstrap/ng-bootstrap'
 import { takeWhile } from 'rxjs/operators'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
@@ -26,7 +26,7 @@ export class OCMSupplierList implements OnChanges, OnDestroy {
   @ViewChild('popover', { static: false }) public popover: NgbPopover
   alive = true
   searchTermForSuppliers: string = null
-  filterForm: FormGroup
+  filterForm: UntypedFormGroup
   faTimes = faTimes
   faFilter = faFilter
   serviceCategory = ''
@@ -53,10 +53,10 @@ export class OCMSupplierList implements OnChanges, OnDestroy {
     const formGroup = {}
     this._supplierFilterConfig.forEach((filterConfig) => {
       if (filterConfig.BuyerAppFilterType === BuyerAppFilterType.SelectOption) {
-        formGroup[filterConfig.Path] = new FormControl('')
+        formGroup[filterConfig.Path] = new UntypedFormControl('')
       }
     })
-    this.filterForm = new FormGroup(formGroup)
+    this.filterForm = new UntypedFormGroup(formGroup)
   }
 
   searchSuppliers(searchStr: string): void {

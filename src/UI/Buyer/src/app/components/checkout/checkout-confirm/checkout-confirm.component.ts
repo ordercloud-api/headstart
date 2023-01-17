@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core'
 import { Payment, ListPage } from 'ordercloud-javascript-sdk'
-import { FormGroup, FormControl } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms'
 import {
   HSOrder,
   HSLineItem,
@@ -11,7 +11,7 @@ import {
   styleUrls: ['./checkout-confirm.component.scss'],
 })
 export class OCMCheckoutConfirm implements OnInit {
-  form: FormGroup
+  form: UntypedFormGroup
   isSubmittingOrder = false // prevent double-click submits
 
   @Input() isAnon: boolean
@@ -23,7 +23,7 @@ export class OCMCheckoutConfirm implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    this.form = new FormGroup({ comments: new FormControl('') })
+    this.form = new UntypedFormGroup({ comments: new UntypedFormControl('') })
   }
 
   saveCommentsAndSubmitOrder(): void {

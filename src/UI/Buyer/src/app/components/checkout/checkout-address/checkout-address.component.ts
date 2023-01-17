@@ -26,7 +26,7 @@ import { TranslateService } from '@ngx-translate/core'
 // and instead have it use inputs and outputs to interact with the CheckoutComponent.
 // Goal is to get all the checkout logic and state into one component.
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
-import { FormControl, FormGroup } from '@angular/forms'
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms'
 import { ToastrService } from 'ngx-toastr'
 import { CheckoutService } from 'src/app/services/order/checkout.service'
 
@@ -56,7 +56,7 @@ export class OCMCheckoutAddress implements OnInit {
   _orderPromos: OrderPromotion[]
   _uniqueOrderPromos: OrderPromotion[]
   _groupedOrderPromos: IGroupedOrderPromo
-  promoForm: FormGroup
+  promoForm: UntypedFormGroup
   promoCode = ''
   faCheckCircle = faCheckCircle
   checkout: CheckoutService = this.context.order.checkout
@@ -86,8 +86,8 @@ export class OCMCheckoutAddress implements OnInit {
   }
 
   createPromoForm(promoCode: string): void {
-    this.promoForm = new FormGroup({
-      PromoCode: new FormControl(promoCode),
+    this.promoForm = new UntypedFormGroup({
+      PromoCode: new UntypedFormControl(promoCode),
     })
   }
 

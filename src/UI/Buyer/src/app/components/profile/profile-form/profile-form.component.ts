@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
-import { FormGroup, Validators, FormControl } from '@angular/forms'
+import { UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms'
 // 3rd party
 import { MeUser } from 'ordercloud-javascript-sdk'
 import {
@@ -16,7 +16,7 @@ export class OCMProfileForm implements OnInit {
   @Output() formDismissed = new EventEmitter()
   @Output()
   formSubmitted = new EventEmitter<{ me: MeUser }>()
-  profileForm: FormGroup
+  profileForm: UntypedFormGroup
 
   private _me: MeUser = {}
 
@@ -31,18 +31,18 @@ export class OCMProfileForm implements OnInit {
   }
 
   setForm(): void {
-    this.profileForm = new FormGroup({
-      FirstName: new FormControl(this._me.FirstName || '', [
+    this.profileForm = new UntypedFormGroup({
+      FirstName: new UntypedFormControl(this._me.FirstName || '', [
         Validators.required,
         ValidateName,
       ]),
-      LastName: new FormControl(this._me.LastName || '', [
+      LastName: new UntypedFormControl(this._me.LastName || '', [
         Validators.required,
         ValidateName,
       ]),
-      Username: new FormControl(this._me.Username || '', Validators.required),
-      Email: new FormControl(this._me.Email || '', ValidateEmail),
-      Phone: new FormControl(this._me.Phone || '', ValidatePhone),
+      Username: new UntypedFormControl(this._me.Username || '', Validators.required),
+      Email: new UntypedFormControl(this._me.Email || '', ValidateEmail),
+      Phone: new UntypedFormControl(this._me.Phone || '', ValidatePhone),
     })
   }
 
