@@ -70,6 +70,7 @@
             _product?.xp?.ProductType !== 'Quote'
           "
           [priceSchedule]="_product.PriceSchedule"
+          [userCurrency]="_userCurrency"
         ></app-product-price-display>
         <small class="card-text text-muted">{{ _product | UofM }}</small>
         <label for="quantity" class="visually-hidden" translate
