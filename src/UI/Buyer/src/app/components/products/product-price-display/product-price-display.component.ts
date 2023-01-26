@@ -19,6 +19,7 @@ export class ProductPriceDisplayComponent implements OnChanges, OnInit {
   @Input() quantity = 1
   @Input() specs?: Spec[] = []
   @Input() specForm?: UntypedFormGroup
+  @Input() userCurrency: string
   isOnSale: boolean
   price: number
   salePrice: number
