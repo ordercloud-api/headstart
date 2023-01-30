@@ -64,9 +64,9 @@
               <td class="vertical-align-middle">
                 {{ spec?.xp?.CharacterLimit || 'No Limit' }}
               </td>
-              <td class="vertical-align-middle">
+              <td class="vertical-align-middle d-grid">
                 <button
-                  class="btn btn-sm btn-block btn-link text-muted"
+                  class="btn btn-sm btn-link text-muted"
                   (click)="removeSpec(spec)"
                   [disabled]="readonly"
                   translate
@@ -110,9 +110,9 @@
                   id="CharacterLimit"
                 />
               </td>
-              <td class="py-3 px-2">
+              <td class="py-3 px-2 d-grid">
                 <button
-                  class="btn btn-sm btn-block btn-outline-dark"
+                  class="btn btn-sm btn-outline-dark"
                   [disabled]="readonly"
                   (click)="addVariableTextSpec()"
                   translate
@@ -279,9 +279,9 @@
                           }}"
                         />
                       </td>
-                      <td class="py-3 px-2">
+                      <td class="py-3 px-2 d-grid">
                         <button
-                          class="btn btn-sm btn-block btn-outline-dark"
+                          class="btn btn-sm btn-outline-dark"
                           [disabled]="shouldDisableAddSpecOptBtn(spec)"
                           (click)="addSpecOption(spec)"
                           translate
@@ -326,9 +326,9 @@
                           getPriceMarkup(opt) | currency : myCurrency?.Currency
                         }}
                       </td>
-                      <td class="vertical-align-middle">
+                      <td class="vertical-align-middle d-grid">
                         <button
-                          class="btn btn-sm btn-block btn-link text-muted"
+                          class="btn btn-sm btn-link text-muted"
                           (click)="removeSpecOption(spec, optionIndex)"
                           translate
                         >

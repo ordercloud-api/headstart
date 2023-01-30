@@ -58,23 +58,27 @@
           </label>
         </div>
       </div>
+      <div class="d-grid">
+        <button
+          id="submitBtn"
+          type="submit"
+          [disabled]="!form.valid"
+          class="btn btn-primary btn-lg"
+          translate
+        >
+          ADMIN.COMMON.SUBMIT
+        </button>
+      </div>
+    </form>
+    <div class="d-grid">
       <button
-        id="submitBtn"
-        type="submit"
-        [disabled]="!form.valid"
-        class="btn btn-primary btn-lg btn-block"
+        type="button"
+        class="btn btn-link text-center"
+        routerLink="/forgot-password"
         translate
       >
-        ADMIN.COMMON.SUBMIT
+        ADMIN.COMMON.FORGOT_PASSWORD
       </button>
-    </form>
-    <button
-      type="button"
-      class="btn btn-link btn-block text-center"
-      routerLink="/forgot-password"
-      translate
-    >
-      ADMIN.COMMON.FORGOT_PASSWORD
-    </button>
+    </div>
   </div>
 </section>

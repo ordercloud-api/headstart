@@ -22,18 +22,20 @@
   <form [formGroup]="productForm">
     <div class="row">
       <div class="mb-3 col-6">
-        <product-tax-code-select-dropdown
-          [readonly]="readonly"
-          class="btn-block resource-btn me-1 mb-1"
-          [taxCodes]="taxCodes"
-          [productForm]="productForm"
-          [superHSProductEditable]="superHSProductEditable"
-          [isRequired]="isRequired"
-          [isCreatingNew]="isCreatingNew"
-          (taxCodesSearched)="onTaxCodesSearched($event)"
-          (onSelectTaxCode)="handleSelectTaxCode($event)"
-        >
-        </product-tax-code-select-dropdown>
+        <div class="d-grid">
+          <product-tax-code-select-dropdown
+            [readonly]="readonly"
+            class="resource-btn me-1 mb-1"
+            [taxCodes]="taxCodes"
+            [productForm]="productForm"
+            [superHSProductEditable]="superHSProductEditable"
+            [isRequired]="isRequired"
+            [isCreatingNew]="isCreatingNew"
+            (taxCodesSearched)="onTaxCodesSearched($event)"
+            (onSelectTaxCode)="handleSelectTaxCode($event)"
+          >
+          </product-tax-code-select-dropdown>
+        </div>
       </div>
     </div>
   </form>

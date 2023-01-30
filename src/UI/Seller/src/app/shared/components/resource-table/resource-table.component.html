@@ -24,34 +24,40 @@
       (!isMyResource || _currentResourceNamePlural !== 'suppliers') &&
       !excludeFromFilterBar
     "
-    class="row additional-item-edit-resource additional-item-table pb-4"
+    class="d-flex flex-wrap align-items-center gap-4 additional-item-edit-resource additional-item-table pb-4"
   >
+    <!-- class="col-lg-3 col-md-4 col-sm-5 parent-resources" -->
     <div
       *ngIf="parentResourceService && !isMyResource"
-      class="col-lg-3 col-md-4 col-sm-5 parent-resources"
+      class="flex-0 parent-resources"
     >
       <!-- parent resource dropdown -->
-      <resource-select-dropdown-component
-        class="btn-block resource-btn me-1 mb-1"
-        [parentService]="parentResourceService"
-        [ocService]="_ocService"
-      >
-      </resource-select-dropdown-component>
+      <div class="d-grid">
+        <resource-select-dropdown-component
+          class="resource-btn me-1 mb-1"
+          [parentService]="parentResourceService"
+          [ocService]="_ocService"
+        >
+        </resource-select-dropdown-component>
+      </div>
+
       <!-- /parent resource dropdown -->
       <!-- sub resource dropdown -->
       <div
         *ngIf="!excludeFromSubResourceView"
         ngbDropdown
-        class="d-inline-block parent-resource-dropdown btn-block mt-0 mb-1"
+        class="d-inline-block parent-resource-dropdown mt-0 mb-1"
       >
         <!-- change to currently selected option  -->
-        <button
-          class="btn btn-block btn-outline-dark"
-          id="parentresourcedropdown"
-          ngbDropdownToggle
-        >
-          {{ labelPlural | translate }}
-        </button>
+        <div class="d-grid">
+          <button
+            class="btn btn-outline-dark"
+            id="parentresourcedropdown"
+            ngbDropdownToggle
+          >
+            {{ labelPlural | translate }}
+          </button>
+        </div>
         <div
           ngbDropdownMenu
           aria-labelledby="parent resource dropdown"
@@ -69,14 +75,11 @@
       </div>
       <!-- /sub resource dropdown -->
     </div>
-    <div
-      class="col-sm d-flex justify-content-start align-items-center"
-      *ngIf="shouldShowCreateNew"
-    >
+    <ng-container *ngIf="shouldShowCreateNew">
       <!-- route accidentally works for both subresoures and first level resources because the extra / are ignored by the router it appears-->
       <button
         *ngIf="_currentResourceNamePlural !== 'products'"
-        class="btn btn-block btn-primary"
+        class="btn btn-primary"
         routerLink="/{{
           isMyResource ? _ocService.myRoute : _ocService.route
         }}/{{ selectedParentResourceID }}/{{
@@ -95,7 +98,7 @@
       >
         <button
           ngbDropdownToggle
-          class="btn btn-block btn-outline-red text-start"
+          class="btn btn-outline-red text-start"
           [disabled]="isCreatingNew"
         >
           {{ 'ADMIN.RESOURCES.CREATE_NEW' | translate }}
@@ -115,78 +118,63 @@
           </button>
         </div>
       </div>
-    </div>
-    <div
-      [ngClass]="{
-        'col-lg-7 col-md-7': parentResourceService,
-        'col-lg-9': !parentResourceService && shouldShowCreateNew,
-        'col-lg-12': !parentResourceService && !shouldShowCreateNew
-      }"
-    >
+    </ng-container>
+    <div class="d-flex gap-4 align-items-center">
       <!-- Resource Search -->
-      <div class="me-2">
-        <div class="row">
-          <div class="col-md-5 d-flex align-items-center">
-            <search-component
-              class="w-100"
-              id="product-search"
-              [placeholderText]="labelPlural"
-              [searchTermInput]="searchTerm"
-              (searched)="searchedResources($event)"
+      <search-component
+        id="product-search"
+        [placeholderText]="labelPlural"
+        [searchTermInput]="searchTerm"
+        (searched)="searchedResources($event)"
+      >
+      </search-component>
+      <!-- Facet Popover -->
+      <ng-container *ngIf="_filterConfig?.Filters?.length > 0">
+        <div
+          *ngIf="filterForm"
+          class="icon-button ripple shadow-sm"
+          placement="{{
+            screenSize === 'xs' && 'sm' && 'md' ? 'left' : 'bottom'
+          }}"
+          [ngbPopover]="filters"
+          autoClose="outside"
+          triggers="manual"
+          #popover="ngbPopover"
+          (click)="openPopover()"
+          [popoverTitle]="'ADMIN.FILTERS.FILTER' | translate"
+        >
+          <fa-layers class="fa-layers icon-wrapper">
+            <fa-icon [icon]="faFilter"> </fa-icon>
+            <fa-layers-counter
+              *ngIf="activeFilterCount && activeFilterCount > 0"
+              class="badge__counter--large layers-background"
+              [content]="activeFilterCount"
             >
-            </search-component>
-          </div>
-          <!-- Facet Popover -->
-          <ng-container *ngIf="_filterConfig?.Filters?.length > 0">
-            <div class="col-md-1 d-flex align-items-center me-md-auto">
-              <div class="d-flex justify-content-start align-items-center">
-                <div
-                  *ngIf="filterForm"
-                  class="icon-button ripple shadow-sm"
-                  placement="{{
-                    screenSize === 'xs' && 'sm' && 'md' ? 'left' : 'bottom'
-                  }}"
-                  [ngbPopover]="filters"
-                  autoClose="outside"
-                  triggers="manual"
-                  #popover="ngbPopover"
-                  (click)="openPopover()"
-                  [popoverTitle]="'ADMIN.FILTERS.FILTER' | translate"
-                >
-                  <fa-layers class="fa-layers icon-wrapper">
-                    <fa-icon [icon]="faFilter"> </fa-icon>
-                    <fa-layers-counter
-                      *ngIf="activeFilterCount && activeFilterCount > 0"
-                      class="badge__counter--large layers-background"
-                      [content]="activeFilterCount"
-                    >
-                    </fa-layers-counter>
-                  </fa-layers>
-                </div>
-                <div
-                  *ngIf="filterForm && activeFilterCount > 0"
-                  class="icon-button ripple"
-                  (click)="clearAllFilters()"
-                >
-                  <div class="icon-wrapper">
-                    <fa-icon [icon]="faTimes"></fa-icon>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="col-md d-flex align-items-center justify-content-end">
-              <ng-content select=".actionBar"></ng-content>
-            </div>
-          </ng-container>
+            </fa-layers-counter>
+          </fa-layers>
         </div>
-      </div>
+        <div
+          *ngIf="filterForm && activeFilterCount > 0"
+          class="icon-button ripple"
+          (click)="clearAllFilters()"
+        >
+          <div class="icon-wrapper">
+            <fa-icon [icon]="faTimes"></fa-icon>
+          </div>
+        </div>
+        <div class="col-md d-flex align-items-center justify-content-end">
+          <ng-content select=".actionBar"></ng-content>
+        </div>
+      </ng-container>
       <!-- ngContent for filters popover -->
       <ng-template #filters>
         <!-- filter component -->
         <form class="d-flex flex-column filters" [formGroup]="filterForm">
           <div *ngFor="let filter of _filterConfig?.Filters" class="group mt-2">
             <div *ngIf="shouldFilterDisplay(filter)">
-              <label for="filterComponent" class="form-label" translate>{{ filter.Display }}</label>
+              <label for="filterComponent" class="form-label" translate>{{
+                filter.Display
+              }}</label>
               <select
                 class="form-control input-sm"
                 *ngIf="

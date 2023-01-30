@@ -1,14 +1,16 @@
 <div class="container-fluid mt-3">
   <div class="row">
     <div class="col-md-7">
-      <button
-        *ngIf="!isCreatingNew && !isCloning"
-        class="btn btn-block btn-primary w-25 mb-3"
-        routerLink="/promotions/clone/{{ _promotionEditable?.ID }}"
-        translate
-      >
-        ADMIN.PROMOTIONS.CLONE
-      </button>
+      <div class="d-grid">
+        <button
+          *ngIf="!isCreatingNew && !isCloning"
+          class="btn btn-primary w-25 mb-3"
+          routerLink="/promotions/clone/{{ _promotionEditable?.ID }}"
+          translate
+        >
+          ADMIN.PROMOTIONS.CLONE
+        </button>
+      </div>
       <div *ngIf="isCloning" class="mb-3">
         <span *ngIf="isCloning" class="font-italic" translate
           >ADMIN.PROMOTIONS.ADJUST_FORM_DETAILS</span
@@ -330,14 +332,17 @@
                   *ngIf="suppliers?.value?.length && selectedSupplier"
                   class="w-100"
                 >
-                  <button
-                    type="button"
-                    class="resource-btn btn btn-block btn-outline-medium text-start"
-                    id="supplierSelectDropdown"
-                    ngbDropdownToggle
-                  >
-                    {{ selectedSupplier.Name }}
-                  </button>
+                  <div class="d-grid">
+                    <button
+                      type="button"
+                      class="resource-btn btn btn-outline-medium text-start"
+                      id="supplierSelectDropdown"
+                      ngbDropdownToggle
+                    >
+                      {{ selectedSupplier.Name }}
+                    </button>
+                  </div>
+
                   <div ngbDropdownMenu class="dropdown-inline shadow-sm mt-2">
                     <perfect-scrollbar
                       class="dropdown-ps product-search-area border border-light shadow-sm"

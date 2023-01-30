@@ -94,18 +94,20 @@
             </div>
           </div>
           <div class="col-md-6">
-            <button
-              class="btn btn-block btn-outline-primary mt-3 mt-md-0"
-              type="submit"
-              (click)="addAssignment()"
-              [disabled]="!highLevelSelection"
-              translate
-            >
-              ADMIN.PRODUCT_EDIT.ADD_ASSIGNMENT
-            </button>
-            <small class="d-block font-italic mt-2" translate>
-              ADMIN.PRODUCT_EDIT.YOU_MAY_ASSIGN
-            </small>
+            <div class="d-grid">
+              <button
+                class="btn btn-outline-primary mt-3 mt-md-0"
+                type="submit"
+                (click)="addAssignment()"
+                [disabled]="!highLevelSelection"
+                translate
+              >
+                ADMIN.PRODUCT_EDIT.ADD_ASSIGNMENT
+              </button>
+              <small class="d-block font-italic mt-2" translate>
+                ADMIN.PRODUCT_EDIT.YOU_MAY_ASSIGN
+              </small>
+            </div>
           </div>
         </div>
       </div>
