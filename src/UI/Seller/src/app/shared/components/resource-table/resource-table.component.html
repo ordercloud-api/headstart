@@ -24,40 +24,34 @@
       (!isMyResource || _currentResourceNamePlural !== 'suppliers') &&
       !excludeFromFilterBar
     "
-    class="d-flex flex-wrap align-items-center gap-4 additional-item-edit-resource additional-item-table pb-4"
+    class="row additional-item-edit-resource additional-item-table pb-4"
   >
-    <!-- class="col-lg-3 col-md-4 col-sm-5 parent-resources" -->
     <div
       *ngIf="parentResourceService && !isMyResource"
-      class="flex-0 parent-resources"
+      class="col-lg-3 col-md-4 col-sm-5 parent-resources gap-3"
     >
       <!-- parent resource dropdown -->
-      <div class="d-grid">
-        <resource-select-dropdown-component
-          class="resource-btn me-1 mb-1"
-          [parentService]="parentResourceService"
-          [ocService]="_ocService"
-        >
-        </resource-select-dropdown-component>
-      </div>
-
+      <resource-select-dropdown-component
+        class="w-100 resource-btn mr-1 mb-1"
+        [parentService]="parentResourceService"
+        [ocService]="_ocService"
+      >
+      </resource-select-dropdown-component>
       <!-- /parent resource dropdown -->
       <!-- sub resource dropdown -->
       <div
         *ngIf="!excludeFromSubResourceView"
         ngbDropdown
-        class="d-inline-block parent-resource-dropdown mt-0 mb-1"
+        class="d-inline-block parent-resource-dropdown w-100 mt-0 mb-1"
       >
         <!-- change to currently selected option  -->
-        <div class="d-grid">
-          <button
-            class="btn btn-outline-dark"
-            id="parentresourcedropdown"
-            ngbDropdownToggle
-          >
-            {{ labelPlural | translate }}
-          </button>
-        </div>
+        <button
+          class="btn w-100 btn-outline-dark"
+          id="parentresourcedropdown"
+          ngbDropdownToggle
+        >
+          {{ labelPlural | translate }}
+        </button>
         <div
           ngbDropdownMenu
           aria-labelledby="parent resource dropdown"
@@ -75,11 +69,14 @@
       </div>
       <!-- /sub resource dropdown -->
     </div>
-    <ng-container *ngIf="shouldShowCreateNew">
+    <div
+      class="col-sm d-flex justify-content-start align-items-center"
+      *ngIf="shouldShowCreateNew"
+    >
       <!-- route accidentally works for both subresoures and first level resources because the extra / are ignored by the router it appears-->
       <button
         *ngIf="_currentResourceNamePlural !== 'products'"
-        class="btn btn-primary"
+        class="btn w-100 btn-primary"
         routerLink="/{{
           isMyResource ? _ocService.myRoute : _ocService.route
         }}/{{ selectedParentResourceID }}/{{
@@ -98,7 +95,7 @@
       >
         <button
           ngbDropdownToggle
-          class="btn btn-outline-red text-start"
+          class="btn w-100 btn-outline-red text-left"
           [disabled]="isCreatingNew"
         >
           {{ 'ADMIN.RESOURCES.CREATE_NEW' | translate }}
@@ -118,63 +115,78 @@
           </button>
         </div>
       </div>
-    </ng-container>
-    <div class="d-flex gap-4 align-items-center">
+    </div>
+    <div
+      [ngClass]="{
+        'col-lg-7 col-md-7': parentResourceService,
+        'col-lg-9': !parentResourceService && shouldShowCreateNew,
+        'col-lg-12': !parentResourceService && !shouldShowCreateNew
+      }"
+    >
       <!-- Resource Search -->
-      <search-component
-        id="product-search"
-        [placeholderText]="labelPlural"
-        [searchTermInput]="searchTerm"
-        (searched)="searchedResources($event)"
-      >
-      </search-component>
-      <!-- Facet Popover -->
-      <ng-container *ngIf="_filterConfig?.Filters?.length > 0">
-        <div
-          *ngIf="filterForm"
-          class="icon-button ripple shadow-sm"
-          placement="{{
-            screenSize === 'xs' && 'sm' && 'md' ? 'left' : 'bottom'
-          }}"
-          [ngbPopover]="filters"
-          autoClose="outside"
-          triggers="manual"
-          #popover="ngbPopover"
-          (click)="openPopover()"
-          [popoverTitle]="'ADMIN.FILTERS.FILTER' | translate"
-        >
-          <fa-layers class="fa-layers icon-wrapper">
-            <fa-icon [icon]="faFilter"> </fa-icon>
-            <fa-layers-counter
-              *ngIf="activeFilterCount && activeFilterCount > 0"
-              class="badge__counter--large layers-background"
-              [content]="activeFilterCount"
+      <div class="mr-2">
+        <div class="row">
+          <div class="col-md-5 d-flex align-items-center">
+            <search-component
+              class="w-100"
+              id="product-search"
+              [placeholderText]="labelPlural"
+              [searchTermInput]="searchTerm"
+              (searched)="searchedResources($event)"
             >
-            </fa-layers-counter>
-          </fa-layers>
-        </div>
-        <div
-          *ngIf="filterForm && activeFilterCount > 0"
-          class="icon-button ripple"
-          (click)="clearAllFilters()"
-        >
-          <div class="icon-wrapper">
-            <fa-icon [icon]="faTimes"></fa-icon>
+            </search-component>
           </div>
+          <!-- Facet Popover -->
+          <ng-container *ngIf="_filterConfig?.Filters?.length > 0">
+            <div class="col-md-1 d-flex align-items-center mr-md-auto">
+              <div class="d-flex justify-content-start align-items-center">
+                <div
+                  *ngIf="filterForm"
+                  class="icon-button ripple shadow-sm"
+                  placement="{{
+                    screenSize === 'xs' && 'sm' && 'md' ? 'left' : 'bottom'
+                  }}"
+                  [ngbPopover]="filters"
+                  autoClose="outside"
+                  triggers="manual"
+                  #popover="ngbPopover"
+                  (click)="openPopover()"
+                  [popoverTitle]="'ADMIN.FILTERS.FILTER' | translate"
+                >
+                  <fa-layers class="fa-layers icon-wrapper">
+                    <fa-icon [icon]="faFilter"> </fa-icon>
+                    <fa-layers-counter
+                      *ngIf="activeFilterCount && activeFilterCount > 0"
+                      class="badge__counter--large layers-background"
+                      [content]="activeFilterCount"
+                    >
+                    </fa-layers-counter>
+                  </fa-layers>
+                </div>
+                <div
+                  *ngIf="filterForm && activeFilterCount > 0"
+                  class="icon-button ripple"
+                  (click)="clearAllFilters()"
+                >
+                  <div class="icon-wrapper">
+                    <fa-icon [icon]="faTimes"></fa-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md d-flex align-items-center justify-content-end">
+              <ng-content select=".actionBar"></ng-content>
+            </div>
+          </ng-container>
         </div>
-        <div class="col-md d-flex align-items-center justify-content-end">
-          <ng-content select=".actionBar"></ng-content>
-        </div>
-      </ng-container>
+      </div>
       <!-- ngContent for filters popover -->
       <ng-template #filters>
         <!-- filter component -->
         <form class="d-flex flex-column filters" [formGroup]="filterForm">
           <div *ngFor="let filter of _filterConfig?.Filters" class="group mt-2">
             <div *ngIf="shouldFilterDisplay(filter)">
-              <label for="filterComponent" class="form-label" translate>{{
-                filter.Display
-              }}</label>
+              <label translate>{{ filter.Display }}</label>
               <select
                 class="form-control input-sm"
                 *ngIf="
@@ -185,7 +197,6 @@
                 type="select"
                 required
                 [formControlName]="filter.Path"
-                id="filterComponent"
               >
                 <ng-container *ngFor="let option of filter.Items">
                   <option
@@ -214,16 +225,18 @@
                   ngbDatepicker
                   #d="ngbDatepicker"
                 />
-                <button
-                  class="btn btn-outline-primary calendar"
-                  (click)="d.toggle()"
-                  type="button"
-                >
-                  <fa-icon
-                    [icon]="faCalendar"
-                    id="calendar-addon-from"
-                  ></fa-icon>
-                </button>
+                <div class="input-group-append">
+                  <button
+                    class="btn btn-outline-primary calendar"
+                    (click)="d.toggle()"
+                    type="button"
+                  >
+                    <fa-icon
+                      [icon]="faCalendar"
+                      id="calendar-addon-from"
+                    ></fa-icon>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -378,11 +391,11 @@
                   <fa-icon class="text-dark" [icon]="faChevronLeft"> </fa-icon>
                 </div>
               </div>
-              <h2 *ngIf="isCreatingNew" class="h3 d-inline-block ms-1 mb-0">
+              <h2 *ngIf="isCreatingNew" class="h3 d-inline-block ml-1 mb-0">
                 New {{ resourceType | titlecase }}
                 {{ labelSingular | translate }}
               </h2>
-              <h2 *ngIf="!isCreatingNew" class="h3 d-inline-block ms-1 mb-0">
+              <h2 *ngIf="!isCreatingNew" class="h3 d-inline-block ml-1 mb-0">
                 {{ getHeaderText(_resourceInSelection) }}
               </h2>
             </span>
@@ -404,7 +417,7 @@
               "
             >
               <a
-                class="btn btn-outline-info ms-3"
+                class="btn btn-outline-info ml-3"
                 *ngFor="let subResource of _ocService.subResourceList"
                 [routerLink]="[subResource.route]"
               >
@@ -471,7 +484,7 @@
                 {{ getSaveBtnText() | translate }}
               </button>
               <button
-                class="btn btn-primary ms-3"
+                class="btn btn-primary ml-3"
                 (click)="handleDiscardChanges()"
                 *ngIf="areChanges && !isCreatingNew"
               >

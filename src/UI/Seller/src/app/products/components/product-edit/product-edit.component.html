@@ -1126,7 +1126,7 @@
       <li *ngIf="!_superHSProductEditable?.Product?.ID" [ngbNavItem]="5" id="5">
         <a class="text-muted nav-link" (click)="showVariantToastr()" translate>
           ADMIN.PRODUCT_EDIT.VARIANTS
-          <span class="badge rounded-pill bg-primary-light">{{
+          <span class="badge rounded-pill bg-primary-light text-dark">{{
             _superHSProductEditable?.Variants?.length || 0
           }}</span>
         </a>
@@ -1134,7 +1134,7 @@
       <li *ngIf="_superHSProductEditable?.Product?.ID" [ngbNavItem]="5" id="5">
         <a class="text-muted" ngbNavLink translate>
           ADMIN.PRODUCT_EDIT.VARIANTS
-          <span class="badge rounded-pill bg-primary-light">{{
+          <span class="badge rounded-pill bg-primary-light text-dark">{{
             _superHSProductEditable?.Variants?.length || 0
           }}</span>
         </a>
@@ -1162,7 +1162,7 @@
       <li [ngbNavItem]="6" id="6">
         <a class="text-muted" ngbNavLink translate
           >ADMIN.PRODUCT_EDIT.IMAGES_AND_DOCUMENTS
-          <span class="badge rounded-pill bg-primary-light">{{
+          <span class="badge rounded-pill bg-primary-light text-dark">{{
             _superHSProductEditable?.Product?.xp?.Images?.length +
               _superHSProductEditable?.Product?.xp.Documents?.length +
               stagedImages?.length +
