@@ -28,7 +28,9 @@
           </label>
         </div>
         <div class="mb-3">
-          <label for="Name" class="form-label">Name <span class="required-field">*</span></label>
+          <label for="Name" class="form-label"
+            >Name <span class="required-field">*</span></label
+          >
           <input
             type="text"
             class="form-control"
@@ -42,7 +44,7 @@
           />
         </div>
         <div class="mb-3" *ngIf="!logoLoading">
-          <label for="logo" class="form-label d-block" 
+          <label for="logo" class="form-label d-block"
             ><span translate>ALIAS.SUPPLIER</span> Logo
           </label>
           <div *ngIf="hasLogo">
@@ -88,7 +90,7 @@
         </div>
         <div *ngIf="logoLoading" class="ms-auto p-2 align-self-center">
           <div class="spinner-border" role="status">
-            <span class="sr-only" translate>ADMIN.COMMON.LOADING</span>
+            <span class="visually-hidden" translate>ADMIN.COMMON.LOADING</span>
           </div>
         </div>
         <div class="mb-3">
@@ -123,7 +125,7 @@
           </div>
 
           <div class="mb-3 col-md-12" formGroupName="ProductTypes">
-            <label 
+            <label
               >Product Types <span class="required-field">*</span>
               <small id="productTypesHelp" class="form-text text-muted">
                 What types of products is this supplier able to sell? Check at
@@ -179,7 +181,9 @@
               <label class="form-check-label" for="Enabled">Enabled</label>
             </div>
             <div *ngIf="_supplierEditable?.xp?.FreeShippingThreshold != null">
-              <label for="Threshold" class="form-label">Order Subtotal Threshold</label>
+              <label for="Threshold" class="form-label"
+                >Order Subtotal Threshold</label
+              >
               <input
                 type="number"
                 class="form-control"
@@ -332,7 +336,9 @@
       </div>
       <div class="col-md-7 mb-3">
         <div class="mb-3">
-          <label for="SupportContactName" class="form-label">Support Contact Name</label>
+          <label for="SupportContactName" class="form-label"
+            >Support Contact Name</label
+          >
           <input
             type="text"
             class="form-control"
@@ -346,7 +352,9 @@
         </div>
         <div class="row">
           <div class="mb-3 col-md-6">
-            <label for="SupportContactEmail" class="form-label">Support Contact Email</label>
+            <label for="SupportContactEmail" class="form-label"
+              >Support Contact Email</label
+            >
             <input
               type="text"
               class="form-control"
@@ -362,7 +370,9 @@
           </div>
           <!-- no phone validation currently because this field has extraneous values that would break validation -->
           <div class="mb-3 col-md-6">
-            <label for="SupportContactPhone" class="form-label">Support Contact Phone</label>
+            <label for="SupportContactPhone" class="form-label"
+              >Support Contact Phone</label
+            >
             <input
               type="text"
               class="form-control"
