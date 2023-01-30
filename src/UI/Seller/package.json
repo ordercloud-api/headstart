@@ -31,7 +31,6 @@
     "@fortawesome/free-regular-svg-icons": "^5.5.0",
     "@fortawesome/free-solid-svg-icons": "^5.5.0",
     "@ng-bootstrap/ng-bootstrap": "^12.0.0",
-    "@nguniversal/express-engine": "^12.1.0",
     "@ngx-translate/core": "^13.0.0",
     "@ngx-translate/http-loader": "^6.0.0",
     "@ordercloud/headstart-sdk": "file:../SDK",
