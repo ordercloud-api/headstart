@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core'
-import { FormGroup, Validators, FormControl } from '@angular/forms'
+import { UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms'
 import { BuyerLocationService } from '../buyer-location.service'
 import { ValidatePhone, ValidateEmail } from '@app-seller/validators/validators'
 import { Router } from '@angular/router'
@@ -39,7 +39,7 @@ export class BuyerLocationEditComponent implements OnInit {
     }
   }
   @Input()
-  resourceForm: FormGroup
+  resourceForm: UntypedFormGroup
   @Input()
   filterConfig
   @Input()
@@ -87,37 +87,37 @@ export class BuyerLocationEditComponent implements OnInit {
   }
 
   createBuyerLocationForm(buyerLocation: HSBuyerLocation): void {
-    this.resourceForm = new FormGroup({
-      ID: new FormControl(buyerLocation.Address.ID),
-      LocationName: new FormControl(
+    this.resourceForm = new UntypedFormGroup({
+      ID: new UntypedFormControl(buyerLocation.Address.ID),
+      LocationName: new UntypedFormControl(
         buyerLocation.UserGroup.Name,
         Validators.required
       ),
-      CompanyName: new FormControl(
+      CompanyName: new UntypedFormControl(
         buyerLocation.Address.CompanyName,
         Validators.required
       ),
-      Street1: new FormControl(
+      Street1: new UntypedFormControl(
         buyerLocation.Address.Street1,
         Validators.required
       ),
-      Street2: new FormControl(buyerLocation.Address.Street2),
-      City: new FormControl(buyerLocation.Address.City, Validators.required),
-      State: new FormControl(buyerLocation.Address.State, Validators.required),
-      Zip: new FormControl(buyerLocation.Address.Zip, [Validators.required]),
-      Country: new FormControl(
+      Street2: new UntypedFormControl(buyerLocation.Address.Street2),
+      City: new UntypedFormControl(buyerLocation.Address.City, Validators.required),
+      State: new UntypedFormControl(buyerLocation.Address.State, Validators.required),
+      Zip: new UntypedFormControl(buyerLocation.Address.Zip, [Validators.required]),
+      Country: new UntypedFormControl(
         buyerLocation.Address.Country,
         Validators.required
       ),
-      Phone: new FormControl(buyerLocation.Address.Phone, ValidatePhone),
-      Email: new FormControl(buyerLocation.Address.xp?.Email, ValidateEmail),
-      LocationID: new FormControl(buyerLocation.Address.xp?.LocationID),
-      Currency: new FormControl(
+      Phone: new UntypedFormControl(buyerLocation.Address.Phone, ValidatePhone),
+      Email: new UntypedFormControl(buyerLocation.Address.xp?.Email, ValidateEmail),
+      LocationID: new UntypedFormControl(buyerLocation.Address.xp?.LocationID),
+      Currency: new UntypedFormControl(
         buyerLocation.UserGroup.xp.Currency,
         Validators.required
       ),
-      BillingNumber: new FormControl(buyerLocation.Address.xp?.BillingNumber),
-      CatalogAssignments: new FormControl(
+      BillingNumber: new UntypedFormControl(buyerLocation.Address.xp?.BillingNumber),
+      CatalogAssignments: new UntypedFormControl(
         undefined,
         this.isCreatingNew ? [Validators.required] : undefined
       ),

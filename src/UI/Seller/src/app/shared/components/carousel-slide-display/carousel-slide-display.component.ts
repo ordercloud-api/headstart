@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
-import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms'
 import { faSave, faTrashAlt, faUpload } from '@fortawesome/free-solid-svg-icons'
 import { ToastrService } from 'ngx-toastr'
 import { RegexService } from '@app-seller/shared/services/regex/regex.service'
@@ -21,13 +21,13 @@ export class CarouselSlideDisplayComponent implements OnInit {
   save = new EventEmitter<CarouselSlideUpdate>()
   @Output()
   delete = new EventEmitter<CarouselSlideUpdate>()
-  carouselForm: FormGroup
+  carouselForm: UntypedFormGroup
   faSave = faSave
   faTrash = faTrashAlt
   faUpload = faUpload
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private toastrService: ToastrService,
     private formErrorService: AppFormErrorService,
     private regexService: RegexService

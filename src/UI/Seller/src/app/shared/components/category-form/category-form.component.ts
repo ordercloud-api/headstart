@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 import { Category } from 'ordercloud-javascript-sdk'
-import { FormGroup, FormBuilder, Validators } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms'
 import { AppFormErrorService } from '@app-seller/shared/services/form-error/form-error.service'
 import { RegexService } from '@app-seller/shared/services/regex/regex.service'
 
@@ -15,10 +15,10 @@ export class CategoryFormComponent implements OnInit {
   btnText: string
   @Output()
   formSubmitted = new EventEmitter()
-  categoryForm: FormGroup
+  categoryForm: UntypedFormGroup
 
   constructor(
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private formErrorService: AppFormErrorService,
     private regexService: RegexService
   ) {}

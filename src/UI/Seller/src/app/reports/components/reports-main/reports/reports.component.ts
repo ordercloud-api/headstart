@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
-import { FormGroup, FormControl, Validators } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms'
 import { ReportsTemplateService } from '@app-seller/shared/services/middleware-api/reports-template.service'
 import { HSBuyer, HSSupplier, ReportTemplate } from '@ordercloud/headstart-sdk'
 import { ReportsTypeService } from '@app-seller/shared/services/middleware-api/reports-type.service'
@@ -23,7 +23,7 @@ import { SELLER } from '@app-seller/models/user.types'
   styleUrls: ['./reports.component.scss'],
 })
 export class ReportsComponent implements OnInit {
-  reportSelectionForm: FormGroup
+  reportSelectionForm: UntypedFormGroup
   reportTypes: any
   reportTemplates: ReportTemplate[] = []
   selectedTemplateID: string
@@ -53,9 +53,9 @@ export class ReportsComponent implements OnInit {
   }
 
   createReportSelectionForm(): void {
-    this.reportSelectionForm = new FormGroup({
-      ReportType: new FormControl(null, Validators.required),
-      ReportTemplate: new FormControl(null, Validators.required),
+    this.reportSelectionForm = new UntypedFormGroup({
+      ReportType: new UntypedFormControl(null, Validators.required),
+      ReportTemplate: new UntypedFormControl(null, Validators.required),
     })
   }
 
@@ -68,7 +68,7 @@ export class ReportsComponent implements OnInit {
     this.adHocFilters = this.setAdHocFilters(this.selectedReportType)
     if (this.adHocFilters?.length) {
       this.adHocFilters.forEach(async (filter) => {
-        this.reportSelectionForm.addControl(filter, new FormControl(null))
+        this.reportSelectionForm.addControl(filter, new UntypedFormControl(null))
         if (filter.includes('Date')) {
           this.reportSelectionForm.controls[filter].setValidators(
             Validators.required

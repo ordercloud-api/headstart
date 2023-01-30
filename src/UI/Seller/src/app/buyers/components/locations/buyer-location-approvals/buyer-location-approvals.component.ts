@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core'
-import { FormControl, FormGroup } from '@angular/forms'
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms'
 import { HeadStartSDK, HSBuyerLocation } from '@ordercloud/headstart-sdk'
 import { ApprovalRule, ApprovalRules } from 'ordercloud-javascript-sdk'
 
@@ -11,7 +11,7 @@ export class BuyerLocationApprovals {
   _approvalRule: ApprovalRule
   _initialThreshold: number
   editedApproval: ApprovalRule
-  approvalForm: FormGroup
+  approvalForm: UntypedFormGroup
   approvalEnabled: boolean
   areChanges = false
   dataIsSaving = false
@@ -27,9 +27,9 @@ export class BuyerLocationApprovals {
 
   buildApprovalForm(approval?: ApprovalRule): void {
     this.approvalEnabled = this.locationHasApproval()
-    this.approvalForm = new FormGroup({
-      Enabled: new FormControl(this.approvalEnabled),
-      OrderThreshold: new FormControl(
+    this.approvalForm = new UntypedFormGroup({
+      Enabled: new UntypedFormControl(this.approvalEnabled),
+      OrderThreshold: new UntypedFormControl(
         this.getOrderThreshold(approval?.RuleExpression)
       ),
     })

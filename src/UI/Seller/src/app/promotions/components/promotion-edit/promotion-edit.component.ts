@@ -9,7 +9,7 @@ import {
   OnChanges,
 } from '@angular/core'
 import { get as _get } from 'lodash'
-import { FormGroup, FormControl, Validators } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms'
 import {
   faTimesCircle,
   faCalendar,
@@ -85,7 +85,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   selectedBuySKU: HSProduct
   selectedGetSKU: HSProduct
   selectedBuyer: HSBuyer
-  resourceForm: FormGroup
+  resourceForm: UntypedFormGroup
   _promotionEditable: Promotion<PromotionXp>
   _promotionStatic: Promotion<PromotionXp>
   hasRedemptionLimit = false
@@ -440,36 +440,36 @@ export class PromotionEditComponent implements OnInit, OnChanges {
       this._promotionEditable.Code = promotion.Code = null
       promotion.Name = 'Cloned Promotion'
     }
-    this.resourceForm = new FormGroup({
-      Code: new FormControl(promotion.Code, Validators.required),
-      Type: new FormControl(_get(promotion, 'xp.Type')),
-      BOGOType: new FormControl(_get(promotion, 'xp.BOGO.Type')),
-      BOGOValue: new FormControl(_get(promotion, 'xp.BOGO.Value')),
-      BOGOBuyQty: new FormControl(_get(promotion, 'xp.BOGO.BuySKU.Qty')),
-      BOGOGetQty: new FormControl(_get(promotion, 'xp.BOGO.GetSKU.Qty')),
-      Value: new FormControl(_get(promotion, 'xp.Value'), Validators.min(0)),
-      AppliesTo: new FormControl(_get(promotion, 'xp.AppliesTo')),
-      Supplier: new FormControl(_get(promotion, 'xp.Supplier')),
-      RedemptionLimit: new FormControl(
+    this.resourceForm = new UntypedFormGroup({
+      Code: new UntypedFormControl(promotion.Code, Validators.required),
+      Type: new UntypedFormControl(_get(promotion, 'xp.Type')),
+      BOGOType: new UntypedFormControl(_get(promotion, 'xp.BOGO.Type')),
+      BOGOValue: new UntypedFormControl(_get(promotion, 'xp.BOGO.Value')),
+      BOGOBuyQty: new UntypedFormControl(_get(promotion, 'xp.BOGO.BuySKU.Qty')),
+      BOGOGetQty: new UntypedFormControl(_get(promotion, 'xp.BOGO.GetSKU.Qty')),
+      Value: new UntypedFormControl(_get(promotion, 'xp.Value'), Validators.min(0)),
+      AppliesTo: new UntypedFormControl(_get(promotion, 'xp.AppliesTo')),
+      Supplier: new UntypedFormControl(_get(promotion, 'xp.Supplier')),
+      RedemptionLimit: new UntypedFormControl(
         promotion.RedemptionLimit,
         Validators.min(0)
       ),
-      RedemptionLimitPerUser: new FormControl(
+      RedemptionLimitPerUser: new UntypedFormControl(
         promotion.RedemptionLimitPerUser,
         Validators.min(0)
       ),
-      Description: new FormControl(promotion.Description),
-      FinePrint: new FormControl(promotion.FinePrint),
-      StartDate: new FormControl(promotion.StartDate, Validators.required),
-      ExpirationDate: new FormControl(promotion.ExpirationDate),
-      Automatic: new FormControl(_get(promotion, 'xp.Automatic')),
-      AllowAllBuyers: new FormControl(promotion.AllowAllBuyers),
-      MinReqType: new FormControl(_get(promotion, 'xp.MinReq.Type')),
-      MinReqInt: new FormControl(
+      Description: new UntypedFormControl(promotion.Description),
+      FinePrint: new UntypedFormControl(promotion.FinePrint),
+      StartDate: new UntypedFormControl(promotion.StartDate, Validators.required),
+      ExpirationDate: new UntypedFormControl(promotion.ExpirationDate),
+      Automatic: new UntypedFormControl(_get(promotion, 'xp.Automatic')),
+      AllowAllBuyers: new UntypedFormControl(promotion.AllowAllBuyers),
+      MinReqType: new UntypedFormControl(_get(promotion, 'xp.MinReq.Type')),
+      MinReqInt: new UntypedFormControl(
         _get(promotion, 'xp.MinReq.Int'),
         Validators.min(0)
       ),
-      MaxShipCost: new FormControl(
+      MaxShipCost: new UntypedFormControl(
         _get(promotion, 'xp.MaxShipCost'),
         Validators.min(0)
       ),

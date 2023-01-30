@@ -10,7 +10,7 @@ import { getPsHeight } from '@app-seller/shared/services/dom.helper'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { MeUser } from 'ordercloud-javascript-sdk'
-import { FormGroup, FormControl } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms'
 import { isEqual as _isEqual, set as _set, get as _get } from 'lodash'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { UserContext } from '@app-seller/models/user.types'
@@ -30,7 +30,7 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
   organizationName: string
   areChanges: boolean
   user: MeUser
-  userForm: FormGroup
+  userForm: UntypedFormGroup
   userStatic: MeUser
   userEditable: MeUser
   notificationsToReview: any[]
@@ -98,15 +98,15 @@ export abstract class AccountContent implements AfterViewChecked, OnInit {
   }
 
   createUserForm(me: MeUser): void {
-    this.userForm = new FormGroup({
-      FirstName: new FormControl(me.FirstName),
-      LastName: new FormControl(me.LastName),
-      Email: new FormControl({ value: me.Email, disabled: true }),
-      Username: new FormControl(me.Username),
-      RequestInfoEmails: new FormControl(_get(me, 'xp.RequestInfoEmails')),
-      OrderEmails: new FormControl(_get(me, 'xp.OrderEmails')),
-      ProductEmails: new FormControl(_get(me, 'xp.ProductEmails')),
-      AddtlRcpts: new FormControl(_get(me, 'xp.AddtlRcpts')),
+    this.userForm = new UntypedFormGroup({
+      FirstName: new UntypedFormControl(me.FirstName),
+      LastName: new UntypedFormControl(me.LastName),
+      Email: new UntypedFormControl({ value: me.Email, disabled: true }),
+      Username: new UntypedFormControl(me.Username),
+      RequestInfoEmails: new UntypedFormControl(_get(me, 'xp.RequestInfoEmails')),
+      OrderEmails: new UntypedFormControl(_get(me, 'xp.OrderEmails')),
+      ProductEmails: new UntypedFormControl(_get(me, 'xp.ProductEmails')),
+      AddtlRcpts: new UntypedFormControl(_get(me, 'xp.AddtlRcpts')),
     })
   }
 

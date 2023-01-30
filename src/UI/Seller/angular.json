@@ -111,7 +111,6 @@
       }
     }
   },
-  "defaultProject": "headstart-seller",
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",

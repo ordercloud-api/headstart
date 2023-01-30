@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
-import { FormGroup, FormBuilder, Validators } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormBuilder, Validators } from '@angular/forms'
 import { BuyerAddress, Address } from 'ordercloud-javascript-sdk'
 import { AppFormErrorService } from '@app-seller/shared/services/form-error/form-error.service'
 import { AppGeographyService } from '@app-seller/shared/services/geography/geography.service'
@@ -18,11 +18,11 @@ export class AddressFormComponent implements OnInit {
   formSubmitted = new EventEmitter<{ address: Address; prevID: string }>()
   stateOptions: string[] = []
   countryOptions: { label: string; abbreviation: string }[]
-  addressForm: FormGroup
+  addressForm: UntypedFormGroup
 
   constructor(
     private geographyService: AppGeographyService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private formErrorService: AppFormErrorService,
     private regexService: RegexService
   ) {

@@ -17,8 +17,8 @@ import {
   Tokens,
 } from 'ordercloud-javascript-sdk'
 import {
-  FormGroup,
-  FormControl,
+  UntypedFormGroup,
+  UntypedFormControl,
   Validators,
   AbstractControl,
 } from '@angular/forms'
@@ -80,7 +80,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       this._superHSProductStatic = this.productService.emptyResource
     }
   }
-  @Input() productForm: FormGroup
+  @Input() productForm: UntypedFormGroup
   @Input() filterConfig
   @Output() updateResource = new EventEmitter<any>()
   @Output() updateList = new EventEmitter<Product>()
@@ -250,95 +250,95 @@ export class ProductEditComponent implements OnInit, OnDestroy {
 
   createProductForm(superHSProduct: SuperHSProduct): void {
     if (superHSProduct.Product) {
-      this.productForm = new FormGroup(
+      this.productForm = new UntypedFormGroup(
         {
-          Active: new FormControl(superHSProduct.Product.Active),
-          Name: new FormControl(superHSProduct.Product.Name, [
+          Active: new UntypedFormControl(superHSProduct.Product.Active),
+          Name: new UntypedFormControl(superHSProduct.Product.Name, [
             Validators.required,
             Validators.maxLength(100),
           ]),
-          ID: new FormControl(
+          ID: new UntypedFormControl(
             superHSProduct.Product.ID,
             ValidateNoSpecialCharactersAndSpaces
           ),
-          Description: new FormControl(
+          Description: new UntypedFormControl(
             superHSProduct.Product.Description,
             Validators.maxLength(2000)
           ),
-          QuantityMultiplier: new FormControl(
+          QuantityMultiplier: new UntypedFormControl(
             superHSProduct.Product.QuantityMultiplier
           ),
-          ShipFromAddressID: new FormControl(
+          ShipFromAddressID: new UntypedFormControl(
             superHSProduct.Product.ShipFromAddressID,
             Validators.required
           ),
-          ShipHeight: new FormControl(superHSProduct.Product.ShipHeight),
-          ShipWidth: new FormControl(superHSProduct.Product.ShipWidth),
-          ShipLength: new FormControl(superHSProduct.Product.ShipLength),
-          ShipWeight: new FormControl(superHSProduct.Product.ShipWeight, [
+          ShipHeight: new UntypedFormControl(superHSProduct.Product.ShipHeight),
+          ShipWidth: new UntypedFormControl(superHSProduct.Product.ShipWidth),
+          ShipLength: new UntypedFormControl(superHSProduct.Product.ShipLength),
+          ShipWeight: new UntypedFormControl(superHSProduct.Product.ShipWeight, [
             Validators.required,
             Validators.min(0),
           ]),
-          Price: new FormControl(
+          Price: new UntypedFormControl(
             _get(superHSProduct.PriceSchedule, 'PriceBreaks[0].Price', null),
             Validators.required
           ),
-          MinQuantity: new FormControl(
+          MinQuantity: new UntypedFormControl(
             superHSProduct.PriceSchedule?.MinQuantity,
             Validators.min(1)
           ),
-          MaxQuantity: new FormControl(
+          MaxQuantity: new UntypedFormControl(
             superHSProduct.PriceSchedule?.MaxQuantity,
             Validators.min(1)
           ),
-          UseCumulativeQuantity: new FormControl(
+          UseCumulativeQuantity: new UntypedFormControl(
             superHSProduct.PriceSchedule?.UseCumulativeQuantity
           ),
-          Note: new FormControl(
+          Note: new UntypedFormControl(
             _get(superHSProduct.Product, 'xp.Note'),
             Validators.maxLength(140)
           ),
-          ProductType: new FormControl(
+          ProductType: new UntypedFormControl(
             _get(superHSProduct.Product, 'xp.ProductType'),
             Validators.required
           ),
-          QuantityAvailable: new FormControl(
+          QuantityAvailable: new UntypedFormControl(
             superHSProduct.Product?.Inventory?.QuantityAvailable,
             null
           ),
-          InventoryEnabled: new FormControl(
+          InventoryEnabled: new UntypedFormControl(
             _get(superHSProduct.Product, 'Inventory.Enabled')
           ),
-          VariantLevelTracking: new FormControl(
+          VariantLevelTracking: new UntypedFormControl(
             _get(superHSProduct.Product, 'Inventory.VariantLevelTracking'),
             null
           ),
-          Returnable: new FormControl(
+          Returnable: new UntypedFormControl(
             _get(superHSProduct.Product, 'Returnable'),
             []
           ),
-          OrderCanExceed: new FormControl(
+          OrderCanExceed: new UntypedFormControl(
             _get(superHSProduct.Product, 'Inventory.OrderCanExceed')
           ),
-          TaxCode: new FormControl(
+          TaxCode: new UntypedFormControl(
             _get(superHSProduct.Product, 'xp.Tax.Code', null)
           ),
-          UnitOfMeasureUnit: new FormControl(
+          UnitOfMeasureUnit: new UntypedFormControl(
             _get(superHSProduct.Product, 'xp.UnitOfMeasure.Unit'),
             Validators.required
           ),
-          SizeTier: new FormControl(
+          SizeTier: new UntypedFormControl(
             _get(superHSProduct.Product, 'xp.SizeTier'),
             Validators.required
           ),
-          UnitOfMeasureQty: new FormControl(
+          UnitOfMeasureQty: new UntypedFormControl(
             _get(superHSProduct.Product, 'xp.UnitOfMeasure.Qty'),
             Validators.required
           ),
-          FreeShipping: new FormControl(
+          FreeShipping: new UntypedFormControl(
             _get(superHSProduct.Product, 'xp.FreeShipping')
           ),
-          FreeShippingMessage: new FormControl(
+          FreeShippingMessage: new UntypedFormControl(
             _get(superHSProduct.Product, 'xp.FreeShippingMessage') ||
               'Free Shipping'
           ),

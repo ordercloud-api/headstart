@@ -6,7 +6,7 @@ import {
   HeadStartSDK,
 } from '@ordercloud/headstart-sdk'
 import { flatten, groupBy } from 'lodash'
-import { FormGroup, FormArray, FormBuilder } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormArray, UntypedFormBuilder } from '@angular/forms'
 import { ReturnRequestForm } from './order-return-request-table/models/return-request-form.model'
 import {
   MeUser,
@@ -34,14 +34,14 @@ export class OrderReturnCreateModal implements OnInit {
   currentUser: MeUser
   liGroupedByShipFrom: HSLineItem[][]
   quantitiesToReturn: number[] = []
-  requestReturnForm: FormGroup
-  groupedLineItemsToReturn: FormArray
+  requestReturnForm: UntypedFormGroup
+  groupedLineItemsToReturn: UntypedFormArray
   isLoadingCalculate = false
   isLoadingCreate = false
   faQuestionCircle = faQuestionCircle
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private activeModal: NgbActiveModal,
     private currentUserService: CurrentUserService
   ) {}

@@ -8,7 +8,7 @@ import {
   EventEmitter,
   OnDestroy,
 } from '@angular/core'
-import { FormBuilder, ValidatorFn, Validators } from '@angular/forms'
+import { UntypedFormBuilder, ValidatorFn, Validators } from '@angular/forms'
 import {
   debounceTime,
   distinctUntilChanged,
@@ -40,7 +40,7 @@ export class OrderReturnRefundInputComponent
   @Output() refundAmountChange = new EventEmitter<RefundInputChange>()
   alive = true
   form: RefundInputForm
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(private formBuilder: UntypedFormBuilder) {}
 
   ngOnInit(): void {
     this.buildForm()

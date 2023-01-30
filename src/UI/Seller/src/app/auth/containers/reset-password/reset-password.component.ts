@@ -1,7 +1,7 @@
 import { ForgottenPassword } from 'ordercloud-javascript-sdk'
 // angular
 import { Component, Inject, OnInit } from '@angular/core'
-import { FormGroup, FormControl, Validators } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 
 // angular libs
@@ -42,15 +42,15 @@ export class ResetPasswordComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.resetPasswordForm = new FormGroup({
-      username: new FormControl(
+    this.resetPasswordForm = new UntypedFormGroup({
+      username: new UntypedFormControl(
         this.activatedRoute.snapshot.queryParams.username as string
       ),
-      password: new FormControl('', [
+      password: new UntypedFormControl('', [
         Validators.required,
         ValidateStrongPassword,
       ]),
-      passwordConfirm: new FormControl('', [
+      passwordConfirm: new UntypedFormControl('', [
         Validators.required,
         ValidateFieldMatches('password'),
       ]),

@@ -31,7 +31,7 @@ import { flatten as _flatten } from 'lodash'
 import { OrderProgress, OrderType } from '@app-seller/models/order.types'
 import { SELLER } from '@app-seller/models/user.types'
 import { SupportedRates } from '@app-seller/shared'
-import { FormControl, FormGroup } from '@angular/forms'
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { CanReturnOrder } from '@app-seller/orders/line-item-status.helper'
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap'
@@ -71,7 +71,7 @@ export class OrderDetailsComponent {
   createShipment: boolean
   exchangeRates: SupportedRates[]
   supplierCurrency: SupportedRates
-  quotePricingForm: FormGroup
+  quotePricingForm: UntypedFormGroup
   isSellerUser = false
   isSaving = false
   isSettingQuotePrice = false
@@ -214,8 +214,8 @@ export class OrderDetailsComponent {
   }
 
   setQuotePricingForm(): void {
-    this.quotePricingForm = new FormGroup({
-      QuotePrice: new FormControl(this._lineItems[0]?.UnitPrice),
+    this.quotePricingForm = new UntypedFormGroup({
+      QuotePrice: new UntypedFormControl(this._lineItems[0]?.UnitPrice),
     })
   }
 

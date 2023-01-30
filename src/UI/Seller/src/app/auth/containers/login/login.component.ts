@@ -1,6 +1,6 @@
 // angular
 import { Component, OnInit, Inject } from '@angular/core'
-import { FormBuilder, FormGroup } from '@angular/forms'
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms'
 import { Router } from '@angular/router'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
@@ -13,13 +13,13 @@ import { AppConfig } from '@app-seller/models/environment.types'
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  form: FormGroup
+  form: UntypedFormGroup
   isAnon: boolean
 
   constructor(
     private currentUserService: CurrentUserService,
     private router: Router,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private toasterService: ToastrService,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {}

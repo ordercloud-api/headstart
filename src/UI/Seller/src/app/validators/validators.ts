@@ -2,7 +2,7 @@ import {
   AbstractControl,
   ValidationErrors,
   ValidatorFn,
-  FormGroup,
+  UntypedFormGroup,
 } from '@angular/forms'
 
 export const ErrorDictionary = {
@@ -142,7 +142,7 @@ export function ValidateFieldMatches(fieldToMatch: string): ValidatorFn {
 }
 
 export const ValidateMinMax: ValidatorFn = (
-  control: FormGroup
+  control: UntypedFormGroup
 ): ValidationErrors | null => {
   const min = control.get('MinQuantity')
   const max = control.get('MaxQuantity')
@@ -198,7 +198,7 @@ export function ValidateRichTextDescription(
 }
 
 export function RequireCheckboxesToBeChecked(minRequired = 1): ValidatorFn {
-  return function validate(formGroup: FormGroup): ValidationErrors | null {
+  return function validate(formGroup: UntypedFormGroup): ValidationErrors | null {
     let checked = 0
 
     Object.keys(formGroup.controls).forEach((key) => {

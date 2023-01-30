@@ -5,7 +5,7 @@ import {
   EventEmitter,
   OnDestroy,
 } from '@angular/core'
-import { FormGroup, FormControl, Validators } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms'
 import { BuyerTempService } from '@app-seller/shared/services/middleware-api/buyer-temp.service'
 import { HSBuyer, SuperHSBuyer } from '@ordercloud/headstart-sdk'
 import { BuyerService } from '../buyer.service'
@@ -22,7 +22,7 @@ import { Addresses } from 'ordercloud-javascript-sdk'
   styleUrls: ['./buyer-edit.component.scss'],
 })
 export class BuyerEditComponent implements OnDestroy {
-  resourceForm: FormGroup
+  resourceForm: UntypedFormGroup
   showImpersonation: boolean
   isCreatingNew = false
   areChanges = false
@@ -113,13 +113,13 @@ export class BuyerEditComponent implements OnDestroy {
     const { Buyer, ImpersonationConfig } = superBuyer
     this.showImpersonation = ImpersonationConfig && ImpersonationConfig !== null
 
-    this.resourceForm = new FormGroup({
-      Name: new FormControl(Buyer.Name, Validators.required),
-      Active: new FormControl(Buyer.Active),
-      Markup: new FormControl(Buyer.xp.MarkupPercent),
-      ImpersonatingEnabled: new FormControl(this.showImpersonation),
-      URL: new FormControl(Buyer.xp.URL),
-      ClientID: new FormControl(ImpersonationConfig?.ClientID),
+    this.resourceForm = new UntypedFormGroup({
+      Name: new UntypedFormControl(Buyer.Name, Validators.required),
+      Active: new UntypedFormControl(Buyer.Active),
+      Markup: new UntypedFormControl(Buyer.xp.MarkupPercent),
+      ImpersonatingEnabled: new UntypedFormControl(this.showImpersonation),
+      URL: new UntypedFormControl(Buyer.xp.URL),
+      ClientID: new UntypedFormControl(ImpersonationConfig?.ClientID),
     })
     this.setImpersonationValidator()
   }

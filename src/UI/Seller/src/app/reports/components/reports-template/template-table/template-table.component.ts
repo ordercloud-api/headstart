@@ -3,21 +3,21 @@ import { ResourceCrudComponent } from '@app-seller/shared/components/resource-cr
 import { ReportsTemplateService } from '@app-seller/shared/services/middleware-api/reports-template.service'
 import { Router, ActivatedRoute } from '@angular/router'
 import { ReportsTypeService } from '@app-seller/shared/services/middleware-api/reports-type.service'
-import { FormGroup, FormControl, Validators } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms'
 import { ValidateRichTextDescription } from '@app-seller/validators/validators'
 import { ReportTemplate } from '@ordercloud/headstart-sdk'
 
-function createTemplateForm(template: ReportTemplate): FormGroup {
-  const resourceForm = new FormGroup({
-    ReportType: new FormControl(template?.ReportType),
-    Name: new FormControl(template?.Name, Validators.required),
-    Description: new FormControl(
+function createTemplateForm(template: ReportTemplate): UntypedFormGroup {
+  const resourceForm = new UntypedFormGroup({
+    ReportType: new UntypedFormControl(template?.ReportType),
+    Name: new UntypedFormControl(template?.Name, Validators.required),
+    Description: new UntypedFormControl(
       template?.Description,
       ValidateRichTextDescription
     ),
-    AvailableToSuppliers: new FormControl(template?.AvailableToSuppliers),
-    Headers: new FormControl(template?.Headers || [], Validators.required),
-    Filters: new FormControl(template?.Filters || {}),
+    AvailableToSuppliers: new UntypedFormControl(template?.AvailableToSuppliers),
+    Headers: new UntypedFormControl(template?.Headers || [], Validators.required),
+    Filters: new UntypedFormControl(template?.Filters || {}),
   })
   return resourceForm
 }

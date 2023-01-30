@@ -10,7 +10,7 @@ import {
   SwaggerSpecProperty,
 } from '@app-seller/models/shared.types'
 import { schemas } from './swagger-spec'
-import { FormControl, FormGroup } from '@angular/forms'
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms'
 
 @Component({
   selector: 'resource-edit-component',
@@ -21,7 +21,7 @@ export class ResourceEditComponent {
   _resource: any
   _resourceFields: SwaggerSpecProperty[]
   _resourceType: string
-  resourceForm: FormGroup
+  resourceForm: UntypedFormGroup
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {}
 
@@ -50,12 +50,12 @@ export class ResourceEditComponent {
     this.updateResource.emit(resourceupdate)
   }
 
-  buildForm(resource: any): FormGroup {
-    const formGroup = new FormGroup({})
+  buildForm(resource: any): UntypedFormGroup {
+    const formGroup = new UntypedFormGroup({})
     Object.entries(schemas[this._resourceType]?.properties).forEach(
       ([key, value]) => {
         if (key !== 'xp') {
-          const control = new FormControl(resource[key], value['validators'])
+          const control = new UntypedFormControl(resource[key], value['validators'])
           formGroup.addControl(key, control)
         }
       }

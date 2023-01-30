@@ -17,7 +17,7 @@ import { Product, Products } from 'ordercloud-javascript-sdk'
 import { cloneDeep, isEqual, set, uniq } from 'lodash'
 import { Router } from '@angular/router'
 import { HSProduct } from '@ordercloud/headstart-sdk'
-import { FormBuilder, Validators } from '@angular/forms'
+import { UntypedFormBuilder, Validators } from '@angular/forms'
 import { TypedFormGroup } from 'ngx-forms-typed'
 import { FileHandle, UserContext } from '@app-seller/shared'
 import { DeleteFileEvent } from '../product-image-upload/product-image-upload.component'
@@ -61,7 +61,7 @@ export class ProductBundleEditComponent implements OnInit, OnChanges {
     private location: Location,
     private modalService: NgbModal,
     private router: Router,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private assetService: AssetService
   ) {}
 

@@ -4,11 +4,11 @@ import { Category } from 'ordercloud-javascript-sdk'
 import { Router, ActivatedRoute } from '@angular/router'
 import { BuyerService } from '../../buyers/buyer.service'
 import { BuyerCatalogService } from '../buyer-catalog.service'
-import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
 
 function createBuyerCatalogForm(userGroup: any) {
-  return new FormGroup({
-    Name: new FormControl(userGroup?.Name, Validators.required),
+  return new UntypedFormGroup({
+    Name: new UntypedFormControl(userGroup?.Name, Validators.required),
   })
 }
 

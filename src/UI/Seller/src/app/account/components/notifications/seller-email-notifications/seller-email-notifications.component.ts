@@ -4,7 +4,7 @@ import {
   faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons'
 import { ToastrService } from 'ngx-toastr'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 import { MeUser } from 'ordercloud-javascript-sdk'
 
 @Component({
@@ -20,7 +20,7 @@ export class SellerEmailNotifications {
   @Input()
   user: MeUser
   @Input()
-  sellerUserForm: FormGroup
+  sellerUserForm: UntypedFormGroup
   // Event Outputs
   @Output()
   toggleReceiveOrderEmails = new EventEmitter<boolean>()

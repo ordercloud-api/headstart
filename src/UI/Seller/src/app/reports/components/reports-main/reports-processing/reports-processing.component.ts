@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 
 @Component({
   selector: 'reports-processing-component',
@@ -14,7 +14,7 @@ export class ReportsProcessingComponent {
   @Input()
   fetchingPreview: boolean
   @Input()
-  reportSelectionForm: FormGroup
+  reportSelectionForm: UntypedFormGroup
   @Input()
   adHocFilters: string[]
   @Output()

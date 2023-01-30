@@ -7,7 +7,7 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core'
-import { FormGroup, FormControl } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms'
 import { SupplierService } from '../supplier.service'
 import { ListPage, HSSupplier, HeadStartSDK } from '@ordercloud/headstart-sdk'
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser'
@@ -33,7 +33,7 @@ import { getAssetIDFromUrl } from '@app-seller/shared/services/assets/asset.help
 })
 export class SupplierEditComponent implements OnInit, OnChanges {
   @Input()
-  resourceForm: FormGroup
+  resourceForm: UntypedFormGroup
   @Input()
   filterConfig
   @Output()
@@ -51,7 +51,7 @@ export class SupplierEditComponent implements OnInit, OnChanges {
   availableCurrencies: SupportedRates[] = []
   isCreatingNew: boolean
   countriesServicingOptions = []
-  countriesServicingForm: FormGroup
+  countriesServicingForm: UntypedFormGroup
   hasLogo = false
   logoUrl = ''
   stagedLogoUrl: SafeUrl = null
@@ -111,13 +111,13 @@ export class SupplierEditComponent implements OnInit, OnChanges {
         this.filterConfig.Filters[indexOfCountriesServicingConfig].Items
       const formGroupCountriesServicing = {}
       this.countriesServicingOptions.forEach((option) => {
-        formGroupCountriesServicing[option.Value] = new FormControl(
+        formGroupCountriesServicing[option.Value] = new UntypedFormControl(
           (this._supplierEditable as any).xp?.CountriesServicing?.includes(
             option.Value
           ) || false
         )
       })
-      this.countriesServicingForm = new FormGroup(formGroupCountriesServicing)
+      this.countriesServicingForm = new UntypedFormGroup(formGroupCountriesServicing)
     }
   }
 

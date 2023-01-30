@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core'
 import { HSBuyer, HSSupplier, ReportTemplate } from '@ordercloud/headstart-sdk'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 
 @Component({
   selector: 'reports-selection-component',
@@ -13,7 +13,7 @@ export class ReportsSelectionComponent {
   @Input()
   reportTemplates: ReportTemplate[]
   @Input()
-  reportSelectionForm: FormGroup
+  reportSelectionForm: UntypedFormGroup
   @Input()
   displayHeaders: string[]
   @Input()

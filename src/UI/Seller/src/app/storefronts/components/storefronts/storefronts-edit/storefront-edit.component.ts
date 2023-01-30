@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core'
-import { Validators, FormBuilder } from '@angular/forms'
+import { Validators, UntypedFormBuilder } from '@angular/forms'
 import { StorefrontsService } from '../storefronts.service'
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
 import {
@@ -51,7 +51,7 @@ export class StorefrontEditComponent {
 
   constructor(
     public storefrontsService: StorefrontsService,
-    private formBuilder: FormBuilder
+    private formBuilder: UntypedFormBuilder
   ) {
     this.isCreatingNew = this.storefrontsService.checkIfCreatingNew()
   }

@@ -16,7 +16,7 @@ import {
   faExclamationCircle,
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
-import { FormGroup, Validators, FormControl } from '@angular/forms'
+import { UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms'
 import {
   LineItem,
   Shipment,
@@ -61,7 +61,7 @@ export class OrderShipmentsComponent implements OnChanges {
   createShipment = false
   viewShipments = true
   editShipFromAddress = false // TO-DO - Use for editing Ship From address.
-  shipmentForm: FormGroup
+  shipmentForm: UntypedFormGroup
   // TODO: Get middleware route for listing super shipments
   superShipments: SuperHSShipment[] = []
   shipments: ListPage<Shipment>
@@ -110,24 +110,24 @@ export class OrderShipmentsComponent implements OnChanges {
   }
 
   setShipmentForm(): void {
-    this.shipmentForm = new FormGroup({
-      TrackingNumber: new FormControl(''),
-      ShipDate: new FormControl(this.getCurrentDate(), Validators.required),
-      Cost: new FormControl(''),
+    this.shipmentForm = new UntypedFormGroup({
+      TrackingNumber: new UntypedFormControl(''),
+      ShipDate: new UntypedFormControl(this.getCurrentDate(), Validators.required),
+      Cost: new UntypedFormControl(''),
       // TO-DO: Use below line of code when it's possible to POST a supplier's address ID
       // FromAddressID: new FormControl(''),
-      Shipper: new FormControl(''),
-      Service: new FormControl(''),
-      Comment: new FormControl(''),
-      LineItemData: new FormGroup({}),
+      Shipper: new UntypedFormControl(''),
+      Service: new UntypedFormControl(''),
+      Comment: new UntypedFormControl(''),
+      LineItemData: new UntypedFormGroup({}),
     })
-    const LineItemGroup = this.shipmentForm.get('LineItemData') as FormGroup
+    const LineItemGroup = this.shipmentForm.get('LineItemData') as UntypedFormGroup
     this.lineItems.forEach((item) => {
       LineItemGroup.addControl(
         item.ID,
-        new FormGroup({
-          Quantity: new FormControl(0),
-          Comment: new FormControl(''),
+        new UntypedFormGroup({
+          Quantity: new UntypedFormControl(0),
+          Comment: new UntypedFormControl(''),
         })
       )
     })
@@ -396,7 +396,7 @@ export class OrderShipmentsComponent implements OnChanges {
     this.shipmentCreated.emit()
   }
 
-  shouldDisableSave(shipment: FormGroup): boolean {
+  shouldDisableSave(shipment: UntypedFormGroup): boolean {
     if (shipment.value.TrackingNumber === '') return true
     if (shipment.value.ShipDate === '') return true
     if (shipment.value.Shipper === '') return true

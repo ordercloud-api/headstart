@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core'
 import { PriceSchedule, Buyers } from 'ordercloud-javascript-sdk'
-import { FormControl } from '@angular/forms'
+import { UntypedFormControl } from '@angular/forms'
 import { BuyerTempService } from '@app-seller/shared/services/middleware-api/buyer-temp.service'
 import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/catalogs-temp.service'
 import {
@@ -20,7 +20,7 @@ import { SupportedRates } from '@app-seller/models/currency-geography.types'
 })
 export class ProductPricingComponent {
   @Input() readonly = false
-  @Input() productForm: FormControl
+  @Input() productForm: UntypedFormControl
   @Input() supplierCurrency: SupportedRates
   @Input() sellerCurrency: SupportedRates
   @Input() isRequired: boolean

@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http'
 import { Component, Inject, OnInit } from '@angular/core'
-import { AbstractControl, FormBuilder, Validators } from '@angular/forms'
+import { AbstractControl, UntypedFormBuilder, Validators } from '@angular/forms'
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppConfig, FileHandle } from '@app-seller/shared'
@@ -43,7 +43,7 @@ export class CaseSubmissionComponent implements OnInit {
 
   constructor(
     private currentUserService: CurrentUserService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private http: HttpClient,
     private sanitizer: DomSanitizer,
     private toastrService: ToastrService,
