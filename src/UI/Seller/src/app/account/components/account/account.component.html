@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-2 bg-white border-right">
+    <div class="col-md-2 bg-white border-end">
       <account-menu></account-menu>
     </div>
     <div class="col-md-10 bg-light">
@@ -22,7 +22,7 @@
                     Save Changes
                   </button>
                   <button
-                    class="btn btn-outline-teal btn-sm ml-2"
+                    class="btn btn-outline-teal btn-sm ms-2"
                     *ngIf="areChanges"
                     (click)="discardChanges()"
                   >
@@ -55,11 +55,13 @@
                     class="spinner-border"
                     role="status"
                   >
-                    <span class="sr-only" translate>ADMIN.COMMON.LOADING</span>
+                    <span class="visually-hidden" translate
+                      >ADMIN.COMMON.LOADING</span
+                    >
                   </div>
                   <label
                     for="imageUpload"
-                    class="btn btn-outline-teal ml-2 mb-0"
+                    class="btn btn-outline-teal ms-2 mb-0"
                     >{{
                       hasProfileImg ? 'Update Photo' : 'Upload Photo'
                     }}</label
@@ -67,7 +69,7 @@
                   <button
                     *ngIf="hasProfileImg"
                     (click)="removeProfileImg()"
-                    class="btn btn-outline-dark ml-2"
+                    class="btn btn-outline-dark ms-2"
                   >
                     Remove Photo
                   </button>
@@ -79,11 +81,13 @@
                   />
                 </div>
                 <div class="card-body py-2 px-3">
-                  <h6 class="font-weight-medium" translate>Personal Details</h6>
+                  <h6 class="fw-medium" translate>Personal Details</h6>
                   <form *ngIf="userForm" [formGroup]="userForm">
-                    <div class="form-row">
-                      <div class="form-group col-md-6">
-                        <label for="FirstName">First Name</label>
+                    <div class="row">
+                      <div class="mb-3 col-md-6">
+                        <label for="FirstName" class="form-label"
+                          >First Name</label
+                        >
                         <input
                           class="form-control"
                           type="text"
@@ -94,8 +98,10 @@
                           (input)="updateUserFromEvent($event, 'FirstName')"
                         />
                       </div>
-                      <div class="form-group col-md-6">
-                        <label for="LastName">Last Name</label>
+                      <div class="mb-3 col-md-6">
+                        <label for="LastName" class="form-label"
+                          >Last Name</label
+                        >
                         <input
                           class="form-control"
                           type="text"
@@ -107,9 +113,9 @@
                         />
                       </div>
                     </div>
-                    <div class="form-row">
-                      <div class="form-group col-md-6">
-                        <label for="Email">Email</label>
+                    <div class="row">
+                      <div class="mb-3 col-md-6">
+                        <label for="Email" class="form-label">Email</label>
                         <input
                           class="form-control"
                           type="text"
@@ -120,8 +126,10 @@
                           (input)="updateUserFromEvent($event, 'Email')"
                         />
                       </div>
-                      <div class="form-group col-md-6">
-                        <label for="Username">Username</label>
+                      <div class="mb-3 col-md-6">
+                        <label for="Username" class="form-label"
+                          >Username</label
+                        >
                         <input
                           class="form-control"
                           type="text"

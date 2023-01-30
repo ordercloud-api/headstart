@@ -10,30 +10,28 @@
       (keyup)="getDocumentName($event)"
       aria-describedby="document name"
     />
-    <div class="input-group-append">
-      <label
-        *ngIf="documentName?.length"
-        class="btn btn-outline-primary"
-        for="documentUpload"
-        (files)="stageDocuments($event)"
-        translate
-      >
-        ADMIN.PRODUCT_EDIT.CHOOSE_FILE
-        <input
-          id="documentUpload"
-          class="d-none"
-          type="file"
-          (change)="uploadDocument($event, 'staticContent')"
-        />
-      </label>
-    </div>
+    <label
+      *ngIf="documentName?.length"
+      class="btn btn-outline-primary input-group-text form-label"
+      for="documentUpload"
+      (files)="stageDocuments($event)"
+      translate
+    >
+      ADMIN.PRODUCT_EDIT.CHOOSE_FILE
+      <input
+        id="documentUpload"
+        class="d-none"
+        type="file"
+        (change)="uploadDocument($event, 'staticContent')"
+      />
+    </label>
   </div>
   <div
     *ngFor="let document of stagedDocuments; let i = index"
-    class="product-img-wrapper mr-2"
+    class="product-img-wrapper me-2"
   >
     <a class="text-link">{{ document.Filename }}</a>
-    <div *ngIf="!readonly" class="float-right float-middle">
+    <div *ngIf="!readonly" class="float-end float-middle">
       <button
         title="Un-stage document"
         class="btn btn-light btn-group-item"

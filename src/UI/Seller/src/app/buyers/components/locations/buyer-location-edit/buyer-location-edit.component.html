@@ -1,6 +1,8 @@
 <div class="container-fluid resource-edit">
   <form [formGroup]="resourceForm">
-    <span class="required-field" > * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span>
+    <span class="required-field">
+      * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span
+    >
     <div class="row pt-3">
       <div class="col-md-5">
         <h5>{{ 'ALIAS.BUYER_LOCATION' | translate }} Details</h5>
@@ -9,14 +11,12 @@
           {{ 'ALIAS.BUYER_LOCATION' | translate | lowercase }}.
         </p>
       </div>
-      <div class="col-md-7 form-group">
-        <div class="form-row">
-          <div class="form-group col-md-12" *ngIf="isCreatingNew">
-            <label for="ID">Headstart ID (Optional)</label>
+      <div class="col-md-7 mb-3">
+        <div class="row">
+          <div class="mb-3 col-md-12" *ngIf="isCreatingNew">
+            <label for="ID" class="form-label">Headstart ID (Optional)</label>
             <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">{{ buyerID }}-</span>
-              </div>
+              <span class="input-group-text">{{ buyerID }}-</span>
               <input
                 type="text"
                 class="form-control"
@@ -33,10 +33,10 @@
             </div>
           </div>
           <div
-            class="form-group col-md-12"
+            class="mb-3 col-md-12"
             *ngIf="!isCreatingNew && buyerLocationEditable"
           >
-            <label for="ID">Headstart ID</label>
+            <label for="ID" class="form-label">Headstart ID</label>
             <input
               class="form-control"
               value="{{ buyerLocationEditable.Address.ID }}"
@@ -44,10 +44,11 @@
             />
           </div>
         </div>
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="LocationName"
-              >{{ 'ALIAS.BUYER_LOCATION' | translate }} Name <span class="required-field">*</span></label
+        <div class="row">
+          <div class="mb-3 col-md-6">
+            <label for="LocationName" class="form-label"
+              >{{ 'ALIAS.BUYER_LOCATION' | translate }} Name
+              <span class="required-field">*</span></label
             >
             <input
               type="text"
@@ -62,8 +63,10 @@
               placeholder="Enter {{ 'ALIAS.BUYER_LOCATION' | translate }} Name"
             />
           </div>
-          <div class="form-group col-md-6">
-            <label for="Company Name">Company Name <span class="required-field">*</span></label>
+          <div class="mb-3 col-md-6">
+            <label for="Company Name" class="form-label"
+              >Company Name <span class="required-field">*</span></label
+            >
             <input
               type="text"
               class="form-control"
@@ -89,7 +92,7 @@
         </p>
       </div>
       <div
-        class="col-md-7 form-group"
+        class="col-md-7 mb-3"
         *ngIf="suggestedAddresses && suggestedAddresses.length > 0"
       >
         <address-suggestion
@@ -98,11 +101,13 @@
         ></address-suggestion>
       </div>
       <div
-        class="col-md-7 form-group"
+        class="col-md-7 mb-3"
         *ngIf="!suggestedAddresses || suggestedAddresses.length === 0"
       >
-        <div class="form-group">
-          <label for="Street 1">Street 1 <span class="required-field">*</span></label>
+        <div class="mb-3">
+          <label for="Street 1" class="form-label"
+            >Street 1 <span class="required-field">*</span></label
+          >
           <input
             type="text"
             class="form-control"
@@ -116,8 +121,8 @@
             placeholder="Enter Street 1"
           />
         </div>
-        <div class="form-group">
-          <label for="Street2">Street 2</label>
+        <div class="mb-3">
+          <label for="Street2" class="form-label">Street 2</label>
           <input
             type="text"
             class="form-control"
@@ -131,9 +136,11 @@
             placeholder="Enter Street 2"
           />
         </div>
-        <div class="form-row">
-          <div class="form-group col-md-5">
-            <label for="City">City <span class="required-field">*</span></label>
+        <div class="row">
+          <div class="mb-3 col-md-5">
+            <label for="City" class="form-label"
+              >City <span class="required-field">*</span></label
+            >
             <input
               type="text"
               class="form-control"
@@ -147,8 +154,10 @@
               placeholder="Enter City"
             />
           </div>
-          <div class="form-group col-md-3">
-            <label for="State">State <span class="required-field">*</span></label>
+          <div class="mb-3 col-md-3">
+            <label for="State" class="form-label"
+              >State <span class="required-field">*</span></label
+            >
             <input
               type="text"
               class="form-control"
@@ -162,8 +171,10 @@
               placeholder="Enter State"
             />
           </div>
-          <div class="form-group col-md-4">
-            <label for="Zip">Zip <span class="required-field">*</span></label>
+          <div class="mb-3 col-md-4">
+            <label for="Zip" class="form-label"
+              >Zip <span class="required-field">*</span></label
+            >
             <input
               type="text"
               class="form-control"
@@ -178,9 +189,11 @@
             />
           </div>
         </div>
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="Country">Country <span class="required-field">*</span></label>
+        <div class="row">
+          <div class="mb-3 col-md-6">
+            <label for="Country" class="form-label"
+              >Country <span class="required-field">*</span></label
+            >
             <select
               *ngIf="countryOptions.length !== 0"
               type="dropdown"
@@ -213,8 +226,10 @@
               placeholder="Enter Country Code"
             />
           </div>
-          <div class="form-group col-md-6">
-            <label for="Currency">Currency <span class="required-field">*</span></label>
+          <div class="mb-3 col-md-6">
+            <label for="Currency" class="form-label"
+              >Currency <span class="required-field">*</span></label
+            >
             <input
               type="text"
               class="form-control"
@@ -227,9 +242,9 @@
             />
           </div>
         </div>
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="Phone">Phone</label>
+        <div class="row">
+          <div class="mb-3 col-md-6">
+            <label for="Phone" class="form-label">Phone</label>
             <input
               type="tel"
               class="form-control"
@@ -242,8 +257,8 @@
               placeholder="Contact Phone Number"
             />
           </div>
-          <div class="form-group col-md-6">
-            <label for="Email">Email</label>
+          <div class="mb-3 col-md-6">
+            <label for="Email" class="form-label">Email</label>
             <input
               type="email"
               class="form-control"
@@ -257,9 +272,9 @@
             />
           </div>
         </div>
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="LocationID"
+        <div class="row">
+          <div class="mb-3 col-md-6">
+            <label for="LocationID" class="form-label"
               >{{ 'ALIAS.BUYER_LOCATION' | translate }} ID</label
             >
             <input
@@ -277,8 +292,8 @@
               placeholder="Enter {{ 'ALIAS.BUYER_LOCATION' | translate }} ID"
             />
           </div>
-          <div class="form-group col-md-6">
-            <label for="LocationID">{{
+          <div class="mb-3 col-md-6">
+            <label for="LocationID" class="form-label">{{
               'ADMIN.BILLING_NUMBER' | translate
             }}</label>
             <input
@@ -338,7 +353,7 @@
           {{ getSaveBtnText() | translate }}
         </button>
         <button
-          class="btn btn-primary ml-3"
+          class="btn btn-primary ms-3"
           (click)="handleDiscardChanges()"
           *ngIf="areChanges && !isCreatingNew"
         >

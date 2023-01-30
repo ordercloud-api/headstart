@@ -13,9 +13,9 @@
           {{ 'ALIAS.BUYER' | translate | lowercase }}.
         </p>
       </div>
-      <div class="col-md-7 form-group">
-        <div class="form-group">
-          <label for="Name" translate
+      <div class="col-md-7 mb-3">
+        <div class="mb-3">
+          <label for="Name" class="form-label" translate
             >BUYER.EDIT_FORM.NAME <span class="required-field">*</span></label
           >
           <input
@@ -31,9 +31,9 @@
             [placeholder]="'BUYER.EDIT_FORM.NAME_PLACEHOLDER' | translate"
           />
         </div>
-        <div class="form-group">
+        <div class="mb-3">
           <p class="mb-1" translate>BUYER.EDIT_FORM.ACTIVE</p>
-          <label class="switch mb-0" for="Active">
+          <label for="Active" class="switch mb-0 form-label">
             <input
               type="checkbox"
               class="form-check-input"
@@ -47,8 +47,8 @@
             <span class="slider round cursor-pointer"></span>
           </label>
         </div>
-        <div class="form-group">
-          <label for="Markup" translate
+        <div class="mb-3">
+          <label for="Markup" class="form-label" translate
             >BUYER.EDIT_FORM.PRODUCT_MARKUP_PERCENT</label
           >
           <input
@@ -66,9 +66,9 @@
             "
           />
         </div>
-        <div class="form-group">
+        <div class="mb-3">
           <p class="mb-1" translate>BUYER.EDIT_FORM.ALLOW_IMPERSONATION</p>
-          <label class="switch mb-0" for="ImpersonatingEnabled">
+          <label for="ImpersonatingEnabled" class="switch mb-0">
             <input
               type="checkbox"
               class="form-check-input"
@@ -82,8 +82,10 @@
             <span class="slider round cursor-pointer"></span>
           </label>
         </div>
-        <div class="form-group" *ngIf="showImpersonation">
-          <label for="Name" translate>BUYER.EDIT_FORM.BUYER_SITE_URL</label>
+        <div class="mb-3" *ngIf="showImpersonation">
+          <label for="Name" class="form-label" translate
+            >BUYER.EDIT_FORM.BUYER_SITE_URL</label
+          >
           <input
             type="text"
             class="form-control"
@@ -99,8 +101,8 @@
             "
           />
         </div>
-        <div class="form-group" *ngIf="showImpersonation">
-          <label for="Name" translate
+        <div class="mb-3" *ngIf="showImpersonation">
+          <label for="Name" class="form-label" translate
             >BUYER.EDIT_FORM.BUYER_SITE_CLIENT_ID</label
           >
           <input

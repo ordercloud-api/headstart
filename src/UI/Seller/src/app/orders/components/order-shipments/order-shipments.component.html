@@ -1,79 +1,147 @@
 <div class="mb-3">
   <div class="d-print-none mt-3">
-    <button *ngIf="!this.isQuoteOrder(_order) && canShipLineItems()" class="btn btn-outline-dark mr-2"
-      (click)="toggleCreateShipment()">
+    <button
+      *ngIf="!this.isQuoteOrder(_order) && canShipLineItems()"
+      class="btn btn-outline-dark me-2"
+      (click)="toggleCreateShipment()"
+    >
       <fa-icon [icon]="getCreateButtonIcon()"></fa-icon>
       {{ getCreateButtonAction() | translate }} Shipment
     </button>
   </div>
   <div class="mt-3">
-    <div *ngIf="createShipment && canShipLineItems()" class="p-3 mt-3 mb-2 border bg-light text-dark">
-      <h5 class="mb-3 font-weight-bold">1) Enter Shipment Data</h5>
-      <div *ngIf="currentUser?.mySupplier?.xp?.SyncFreightPop"
-        class="alert alert-info d-flex justify-content-start align-items-center set-to-top">
-        <fa-icon [icon]="faExclamationCircle" class="mr-3"> </fa-icon>
+    <div
+      *ngIf="createShipment && canShipLineItems()"
+      class="p-3 mt-3 mb-2 border bg-light text-dark"
+    >
+      <h5 class="mb-3 fw-bold">1) Enter Shipment Data</h5>
+      <div
+        *ngIf="currentUser?.mySupplier?.xp?.SyncFreightPop"
+        class="alert alert-info d-flex justify-content-start align-items-center set-to-top"
+      >
+        <fa-icon [icon]="faExclamationCircle" class="me-3"> </fa-icon>
         <p class="mb-0">
           Use FedEx Account Number 303197303 to create your shipment.
         </p>
       </div>
-      <form (ngSubmit)="onSubmit()" novalidate [formGroup]="shipmentForm" name="ShipmentForm">
-        <span class="required-field" > * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span>
-        <div class="form-group row">
+      <form
+        (ngSubmit)="onSubmit()"
+        novalidate
+        [formGroup]="shipmentForm"
+        name="ShipmentForm"
+      >
+        <span class="required-field">
+          * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span
+        >
+        <div class="mb-3 row">
           <div class="col-sm-12">
-            <label for="TrackingNumber" class="control-label font-weight-bold mt-1">Tracking Number <span class="required-field">*</span></label>
-            <input type="text" required showErrors formControlName="TrackingNumber" class="form-control"
-              id="trackingNumber" placeholder="Enter tracking number" />
+            <label for="TrackingNumber" class="form-label fw-bold mt-1"
+              >Tracking Number <span class="required-field">*</span></label
+            >
+            <input
+              type="text"
+              required
+              showErrors
+              formControlName="TrackingNumber"
+              class="form-control"
+              id="trackingNumber"
+              placeholder="Enter tracking number"
+            />
           </div>
         </div>
-        <div class="form-group row">
+        <div class="mb-3 row">
           <div class="col-sm-6">
-            <label for="Ship Date" class="control-label font-weight-bold mt-1">Ship Date <span class="required-field">*</span></label>
-            <input type="date" required showErrors formControlName="ShipDate" class="form-control" id="shipDate"
-              placeholder="Enter ship date" />
+            <label for="Ship Date" class="form-label fw-bold mt-1"
+              >Ship Date <span class="required-field">*</span></label
+            >
+            <input
+              type="date"
+              required
+              showErrors
+              formControlName="ShipDate"
+              class="form-control"
+              id="shipDate"
+              placeholder="Enter ship date"
+            />
           </div>
           <div class="col-sm-6">
-            <label for="Cost" class="control-label font-weight-bold mt-1">Cost</label>
+            <label for="Cost" class="form-label fw-bold mt-1">Cost</label>
             <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">$</span>
-              </div>
-              <input type="number" formControlName="Cost" class="form-control" id="cost"
-                placeholder="Enter shipping cost" />
+              <span class="input-group-text">$</span>
+              <input
+                type="number"
+                formControlName="Cost"
+                class="form-control"
+                id="cost"
+                placeholder="Enter shipping cost"
+              />
             </div>
           </div>
         </div>
-        <div class="form-group row">
+        <div class="mb-3 row">
           <div class="col-sm-6">
-            <label for="Shipper" class="control-label font-weight-bold mt-1">Carrier <span class="required-field">*</span></label>
-            <input type="text" required showErrors formControlName="Shipper" class="form-control" id="Shipper"
-              placeholder="Enter carrier name" />
+            <label for="Shipper" class="form-label fw-bold mt-1"
+              >Carrier <span class="required-field">*</span></label
+            >
+            <input
+              type="text"
+              required
+              showErrors
+              formControlName="Shipper"
+              class="form-control"
+              id="Shipper"
+              placeholder="Enter carrier name"
+            />
           </div>
           <div class="col-sm-6">
-            <label for="Service" class="control-label font-weight-bold mt-1">Shipping Service</label>
-            <input type="text" formControlName="Service" class="form-control" id="Service"
-              placeholder="Enter shipping service" />
+            <label for="Service" class="form-label fw-bold mt-1"
+              >Shipping Service</label
+            >
+            <input
+              type="text"
+              formControlName="Service"
+              class="form-control"
+              id="Service"
+              placeholder="Enter shipping service"
+            />
           </div>
         </div>
-        <div class="form-group row">
+        <div class="mb-3 row">
           <div class="col-sm-12">
-            <label for="Comment" class="control-label font-weight-bold mt-1">Comment</label>
-            <textarea type="text" class="form-control" formControlName="Comment" placeholder="Enter comment" rows="3"
-              maxLength="300"></textarea>
+            <label for="Comment" class="form-label fw-bold mt-1"
+              >Comment</label
+            >
+            <textarea
+              type="text"
+              class="form-control"
+              formControlName="Comment"
+              placeholder="Enter comment"
+              rows="3"
+              maxLength="300"
+            ></textarea>
           </div>
         </div>
-        <div class="form-group row mb-5">
+        <div class="mb-3 row mb-5">
           <div *ngIf="!editShipFromAddress" class="col-sm-6">
-            <span class="font-weight-bold d-block">Ship From</span>
-            <span *ngIf="lineItems[0].ShipFromAddress?.CompanyName" class="d-block">{{
-              lineItems[0].ShipFromAddress.CompanyName }}</span>
+            <span class="fw-bold d-block">Ship From</span>
+            <span
+              *ngIf="lineItems[0].ShipFromAddress?.CompanyName"
+              class="d-block"
+              >{{ lineItems[0].ShipFromAddress.CompanyName }}</span
+            >
             <span class="d-block">{{
               lineItems[0].ShipFromAddress.Street1
-              }}</span>
-            <span *ngIf="lineItems[0].ShipFromAddress?.Street2" class="d-block">{{ lineItems[0].ShipFromAddress.Street2
-              }}</span>
-            <span class="d-block">{{ lineItems[0].ShipFromAddress.City }},
+            }}</span>
+            <span
+              *ngIf="lineItems[0].ShipFromAddress?.Street2"
+              class="d-block"
+              >{{ lineItems[0].ShipFromAddress.Street2 }}</span
+            >
+            <span class="d-block"
+              >{{ lineItems[0].ShipFromAddress.City }},
               {{ lineItems[0].ShipFromAddress.State }}
-              {{ lineItems[0].ShipFromAddress.Zip }}</span>
+              {{ lineItems[0].ShipFromAddress.Zip }}</span
+            >
 
             <!-- TO-DO: Code to change the Ship From address on a shipment.  Waiting for platform issue to be resolved to allow post of supplier FromAddressID. -->
             <!-- <button class="d-block mt-3 btn btn-outline-dark"
@@ -84,7 +152,7 @@
 
           <!-- TO-DO: Code to change the Ship From address on a shipment.  Waiting for platform issue to be resolved to allow post of supplier FromAddressID. -->
           <!-- <div *ngIf="editShipFromAddress" class="col-sm-6">
-        <span class="font-weight-bold d-block">Ship From</span>
+        <span class="fw-bold d-block">Ship From</span>
             <select type="dropdown"
                     class="form-control"
                     formControlName="FromAddressID" 
@@ -99,22 +167,30 @@
                     <fa-icon [icon]="getEditShipFromAddressButtonIcon()"></fa-icon> {{getEditShipFromAddressButtonAction()}}
             </button>
             <button (click)="saveSupplierAddress()"
-                    class="ml-3 btn btn-primary">Save</button>
+                    class="ms-3 btn btn-primary">Save</button>
         </div>
     </div> -->
 
           <div *ngIf="!editShipToAddress" class="col-sm-6">
-            <span class="font-weight-bold d-block">Ship To</span>
-            <span *ngIf="lineItems[0].ShippingAddress?.CompanyName" class="d-block">{{
-              lineItems[0].ShippingAddress.CompanyName }}</span>
+            <span class="fw-bold d-block">Ship To</span>
+            <span
+              *ngIf="lineItems[0].ShippingAddress?.CompanyName"
+              class="d-block"
+              >{{ lineItems[0].ShippingAddress.CompanyName }}</span
+            >
             <span class="d-block">{{
               lineItems[0].ShippingAddress?.Street1
-              }}</span>
-            <span *ngIf="lineItems[0].ShippingAddress?.Street2" class="d-block">{{ lineItems[0].ShippingAddress.Street2
-              }}</span>
-            <span class="d-block">{{ lineItems[0].ShippingAddress?.City }},
+            }}</span>
+            <span
+              *ngIf="lineItems[0].ShippingAddress?.Street2"
+              class="d-block"
+              >{{ lineItems[0].ShippingAddress.Street2 }}</span
+            >
+            <span class="d-block"
+              >{{ lineItems[0].ShippingAddress?.City }},
               {{ lineItems[0].ShippingAddress?.State }}
-              {{ lineItems[0].ShippingAddress?.Zip }}</span>
+              {{ lineItems[0].ShippingAddress?.Zip }}</span
+            >
 
             <!-- TO-DO: Some starting code to allow a supplier to override the Ship To address, but we need a way to identify the buyer of the order. -->
             <!-- <button class="d-block mt-3 btn btn-outline-dark"
@@ -125,7 +201,7 @@
 
           <!-- TO-DO: Some starting code to allow a supplier to override the Ship To address, but we need a way to identify the buyer of the order. -->
           <!-- <div *ngIf="editShipToAddress" class="col-sm-6">
-        <span class="font-weight-bold d-block">Ship To</span>
+        <span class="fw-bold d-block">Ship To</span>
             <select type="dropdown"
                     class="form-control"
                     formControlName="ToAddressID" 
@@ -140,49 +216,85 @@
                         <fa-icon [icon]="getEditShipToAddressButtonIcon()"></fa-icon> {{getEditShipToAddressButtonAction()}}
                 </button>
                 <button (click)="saveSupplierAddress()"
-                        class="ml-3 btn btn-primary">Save</button>
+                        class="ms-3 btn btn-primary">Save</button>
             </div>
     </div> -->
         </div>
         <hr />
-        <h5 class="mt-4 mb-3 font-weight-bold inline-header">
-          2) Set Quantity to Ship
-        </h5>
-        <div class="custom-control custom-checkbox align-right">
-          <input type="checkbox" class="custom-control-input" id="shipAllItems" [checked]="shipAllItems"
-            aria-describedby="shipAllItems" (input)="toggleShipAllItems()" />
-          <label class="custom-control-label" for="shipAllItems">Ship All Items</label>
+        <h5 class="mt-4 mb-3 fw-bold inline-header">2) Set Quantity to Ship</h5>
+        <div class="form-check align-right">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            id="shipAllItems"
+            [checked]="shipAllItems"
+            aria-describedby="shipAllItems"
+            (input)="toggleShipAllItems()"
+          />
+          <label class="form-check-label" for="shipAllItems"
+            >Ship All Items</label
+          >
         </div>
         <div formGroupName="LineItemData">
-          <div *ngFor="let li of lineItems; let i = index" formGroupName="{{ li.ID }}">
-            <div *ngIf="li.Quantity !== li.QuantityShipped" class="mt-5 row align-items-center">
+          <div
+            *ngFor="let li of lineItems; let i = index"
+            formGroupName="{{ li.ID }}"
+          >
+            <div
+              *ngIf="li.Quantity !== li.QuantityShipped"
+              class="mt-5 row align-items-center"
+            >
               <div class="col-sm-12">
                 <div class="row align-top">
                   <div class="col-sm-5">
-                    <div class="ml-3">
+                    <div class="ms-3">
                       <h6>
-                        <span>{{ li.Product.Name }}
-                          <span *ngIf="li.Variant?.xp?.SpecCombo">({{ li.Variant.xp.SpecCombo }})</span>
+                        <span
+                          >{{ li.Product.Name }}
+                          <span *ngIf="li.Variant?.xp?.SpecCombo"
+                            >({{ li.Variant.xp.SpecCombo }})</span
+                          >
                         </span>
                         <small class="text-muted d-block">{{
                           li.Variant?.ID || li.Product.ID
-                          }}</small>
+                        }}</small>
                       </h6>
-                      <img [id]="i" [src]="getImageUrl(li)" width="auto" height="100px" class="d-print-none" />
+                      <img
+                        [id]="i"
+                        [src]="getImageUrl(li)"
+                        width="auto"
+                        height="100px"
+                        class="d-print-none"
+                      />
                     </div>
                   </div>
                   <div class="col-sm-4">
                     <h6>Comment</h6>
-                    <textarea type="text" id="LineItemComment" class="form-control" formControlName="Comment"
-                      placeholder="Enter comment" rows="4" maxLength="300"></textarea>
+                    <textarea
+                      type="text"
+                      id="LineItemComment"
+                      class="form-control"
+                      formControlName="Comment"
+                      placeholder="Enter comment"
+                      rows="4"
+                      maxLength="300"
+                    ></textarea>
                   </div>
                   <div class="col-sm-3">
-                    <div class="float-right mr-2">
+                    <div class="float-end me-2">
                       <h6>Quantity</h6>
-                      <select type="dropdown" [attr.disabled]="shipAllItems ? true : null" class="form-control"
-                        formControlName="Quantity" id="{{ li.ID }}">
+                      <select
+                        type="dropdown"
+                        [attr.disabled]="shipAllItems ? true : null"
+                        class="form-control"
+                        formControlName="Quantity"
+                        id="{{ li.ID }}"
+                      >
                         <option [value]="0">Do Not Ship</option>
-                        <option *ngFor="let j of getQuantityDropdown(li)" [value]="j">
+                        <option
+                          *ngFor="let j of getQuantityDropdown(li)"
+                          [value]="j"
+                        >
                           {{ j }}
                         </option>
                       </select>
@@ -193,47 +305,75 @@
             </div>
           </div>
         </div>
-        <button type="submit" id="submitBtn" [disabled]="shouldDisableSave(shipmentForm)"
-          class="btn btn-primary mt-4 w-100">
+        <button
+          type="submit"
+          id="submitBtn"
+          [disabled]="shouldDisableSave(shipmentForm)"
+          class="btn btn-primary mt-4 w-100"
+        >
           Create Shipment
         </button>
       </form>
     </div>
-    <div *ngIf="createShipment && !canShipLineItems()"
-      class="p-3 mt-3 mb-2 border bg-light text-dark d-flex justify-content-center">
-      <span class="text-align-center">All items have been shipped for this order.</span>
+    <div
+      *ngIf="createShipment && !canShipLineItems()"
+      class="p-3 mt-3 mb-2 border bg-light text-dark d-flex justify-content-center"
+    >
+      <span class="text-align-center"
+        >All items have been shipped for this order.</span
+      >
     </div>
     <h5 *ngIf="superShipments?.length > 0">Shipments</h5>
-    <div *ngFor="let superShipment of superShipments; let i = index" class="pb-3"
-      [ngClass]="{ 'border-top': i !== 0, 'mt-3': i !== 0, 'pt-3': i !== 0 }">
+    <div
+      *ngFor="let superShipment of superShipments; let i = index"
+      class="pb-3"
+      [ngClass]="{ 'border-top': i !== 0, 'mt-3': i !== 0, 'pt-3': i !== 0 }"
+    >
       <div class="row">
         <div class="col-md-5">
-          <small class="font-weight-bolder text-uppercase text-muted mb-0">
+          <small class="fw-bolder text-uppercase text-muted mb-0">
             Shipped via {{ superShipment?.Shipment?.Shipper }}
             {{ superShipment?.Shipment?.xp?.Service }} on
-            {{ superShipment?.Shipment.DateShipped | date: 'shortDate':'UTC' }}
+            {{
+              superShipment?.Shipment.DateShipped | date : 'shortDate' : 'UTC'
+            }}
           </small>
           <h6>Tracking #{{ superShipment?.Shipment?.TrackingNumber }}</h6>
-          <div class="my-1" *ngFor="let li of superShipment?.ShipmentItems; let i = index">
+          <div
+            class="my-1"
+            *ngFor="let li of superShipment?.ShipmentItems; let i = index"
+          >
             <div class="d-flex justify-content-start align-items-center">
-              <h6 class="mb-0 mr-3">{{ li.QuantityShipped }}x</h6>
+              <h6 class="mb-0 me-3">{{ li.QuantityShipped }}x</h6>
               <div class="d-flex justify-content-start align-items-center">
-                <img [id]="i" [src]="getImageUrl(li)" width="33px" height="33px"
-                  class="d-print-none avatar rounded-circle mr-2" />
+                <img
+                  [id]="i"
+                  [src]="getImageUrl(li)"
+                  width="33px"
+                  height="33px"
+                  class="d-print-none avatar rounded-circle me-2"
+                />
                 <h6 class="mb-0">
-                  <span>{{ li.Product.Name }}
-                    <span *ngIf="li.Variant?.xp?.SpecCombo">({{ li.Variant.xp.SpecCombo }})</span>
+                  <span
+                    >{{ li.Product.Name }}
+                    <span *ngIf="li.Variant?.xp?.SpecCombo"
+                      >({{ li.Variant.xp.SpecCombo }})</span
+                    >
                   </span>
                   <small class="text-muted d-block">{{
                     li.Variant?.ID || li.Product.ID
-                    }}</small>
-                  <small class="d-block" *ngIf="
+                  }}</small>
+                  <small
+                    class="d-block"
+                    *ngIf="
                       li.xp?.Comments &&
                       li.xp?.Comments[superShipment?.Shipment?.ID]
-                    ">
+                    "
+                  >
                     {{
-                    'Comments: ' + li.xp.Comments[superShipment.Shipment.ID]
-                    }}</small>
+                      'Comments: ' + li.xp.Comments[superShipment.Shipment.ID]
+                    }}</small
+                  >
                 </h6>
               </div>
             </div>
@@ -244,10 +384,12 @@
             Comments: {{ superShipment?.Shipment?.xp?.Comment }}
           </p>
         </div>
-        <div class="col-md-2 text-right">
-          <small class="font-weight-bolder text-uppercase text-muted mb-0">Shipping Cost</small>
+        <div class="col-md-2 text-end">
+          <small class="fw-bolder text-uppercase text-muted mb-0"
+            >Shipping Cost</small
+          >
           <p *ngIf="superShipment?.Shipment.Cost">
-            {{ superShipment?.Shipment.Cost | currency: _order?.xp?.Currency }}
+            {{ superShipment?.Shipment.Cost | currency : _order?.xp?.Currency }}
           </p>
         </div>
         <!-- TO-DO: Work on formatting for this once we can update Ship From/Ship To address in the Portal -->

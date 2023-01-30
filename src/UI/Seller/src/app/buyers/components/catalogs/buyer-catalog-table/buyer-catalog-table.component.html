@@ -18,9 +18,13 @@
 >
   <div class="resource-edit">
     <form *ngIf="resourceForm" [formGroup]="resourceForm">
-      <span class="required-field" > * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span>
-      <div class="form-group">
-        <label for="Name">Name <span class="required-field">*</span></label>
+      <span class="required-field">
+        * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span
+      >
+      <div class="mb-3">
+        <label for="Name" class="form-label"
+          >Name <span class="required-field">*</span></label
+        >
         <input
           type="text"
           class="form-control"

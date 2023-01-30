@@ -8,8 +8,6 @@ import {
 import { DomSanitizer } from '@angular/platform-browser'
 import { FileHandle } from '@app-seller/models/file-upload.types'
 
-
-
 @Directive({
   selector: '[appDrag]',
 })
@@ -53,7 +51,7 @@ export class DragDirective {
 
     const files: FileHandle[] = []
     Array.from(evt.dataTransfer.files).map((file) => {
-      const File = file
+      const File = file as any
       const URL = this.sanitizer.bypassSecurityTrustUrl(
         window.URL.createObjectURL(File)
       )

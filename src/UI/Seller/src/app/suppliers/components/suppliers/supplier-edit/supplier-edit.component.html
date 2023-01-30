@@ -11,8 +11,8 @@
           {{ 'ALIAS.SUPPLIER' | translate | lowercase }}.
         </p>
       </div>
-      <div class="col-md-7 form-group">
-        <div class="form-group">
+      <div class="col-md-7 mb-3">
+        <div class="mb-3">
           <p class="mb-1">Active</p>
           <label class="switch mb-0" for="Active">
             <input
@@ -27,8 +27,10 @@
             <span class="slider round cursor-pointer"></span>
           </label>
         </div>
-        <div class="form-group">
-          <label for="Name">Name <span class="required-field">*</span></label>
+        <div class="mb-3">
+          <label for="Name" class="form-label"
+            >Name <span class="required-field">*</span></label
+          >
           <input
             type="text"
             class="form-control"
@@ -41,8 +43,8 @@
             placeholder="Enter Name"
           />
         </div>
-        <div class="form-group" *ngIf="!logoLoading">
-          <label class="d-block" for="logo"
+        <div class="mb-3" *ngIf="!logoLoading">
+          <label for="logo" class="form-label d-block"
             ><span translate>ALIAS.SUPPLIER</span> Logo
           </label>
           <div *ngIf="hasLogo">
@@ -59,7 +61,7 @@
               <label
                 for="imageUpload"
                 *ngIf="hasLogo"
-                class="btn btn-sm btn-outline-secondary mb-0"
+                class="btn btn-sm btn-outline-secondary mb-0 form-label"
                 >Update Logo</label
               >
               <button
@@ -73,7 +75,7 @@
           </div>
           <label
             *ngIf="!hasLogo"
-            class="rmpm dropzone"
+            class="rmpm dropzone form-label"
             for="imageUpload"
             appDrag
             (files)="dropFileUpload($event)"
@@ -86,13 +88,13 @@
             (change)="manualFileUpload($event)"
           />
         </div>
-        <div *ngIf="logoLoading" class="ml-auto p-2 align-self-center">
+        <div *ngIf="logoLoading" class="ms-auto p-2 align-self-center">
           <div class="spinner-border" role="status">
-            <span class="sr-only" translate>ADMIN.COMMON.LOADING</span>
+            <span class="visually-hidden" translate>ADMIN.COMMON.LOADING</span>
           </div>
         </div>
-        <div class="form-group">
-          <label for="Description">Description</label>
+        <div class="mb-3">
+          <label for="Description" class="form-label">Description</label>
           <reactive-quill-editor-component
             [resourceInSelection]="resourceInSelection"
             [formControlForText]="resourceForm?.controls.Description"
@@ -102,9 +104,9 @@
           >
           </reactive-quill-editor-component>
         </div>
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="Currency"
+        <div class="row">
+          <div class="mb-3 col-md-6">
+            <label for="Currency" class="form-label"
               >Currency <span class="required-field">*</span></label
             >
             <select
@@ -122,7 +124,7 @@
             </select>
           </div>
 
-          <div class="form-group col-md-12" formGroupName="ProductTypes">
+          <div class="mb-3 col-md-12" formGroupName="ProductTypes">
             <label
               >Product Types <span class="required-field">*</span>
               <small id="productTypesHelp" class="form-text text-muted">
@@ -131,10 +133,10 @@
               </small>
             </label>
             <div class="d-flex justify-content-start align-items-center">
-              <div class="custom-control custom-checkbox mr-3">
+              <div class="form-check me-3">
                 <input
                   type="checkbox"
-                  class="custom-control-input"
+                  class="form-check-input"
                   formControlName="Standard"
                   (change)="
                     updateResourceFromEvent(
@@ -144,14 +146,12 @@
                   "
                   id="Standard"
                 />
-                <label class="custom-control-label" for="Standard"
-                  >Standard</label
-                >
+                <label class="form-check-label" for="Standard">Standard</label>
               </div>
-              <div class="custom-control custom-checkbox mr-3">
+              <div class="form-check me-3">
                 <input
                   type="checkbox"
-                  class="custom-control-input"
+                  class="form-check-input"
                   formControlName="Quote"
                   (change)="
                     updateResourceFromEvent(
@@ -161,16 +161,16 @@
                   "
                   id="Quote"
                 />
-                <label class="custom-control-label" for="Quote">Quote</label>
+                <label class="form-check-label" for="Quote">Quote</label>
               </div>
             </div>
           </div>
-          <div class="form-group">
-            <label>Free Shipping</label>
-            <div class="custom-control custom-checkbox">
+          <div class="mb-3">
+            <label for="Enabled" class="form-label">Free Shipping</label>
+            <div class="form-check">
               <input
                 type="checkbox"
-                class="custom-control-input"
+                class="form-check-input"
                 formControlName="FreeShippingEnabled"
                 aria-describedby="FreeShippingEnabled"
                 (input)="
@@ -178,10 +178,12 @@
                 "
                 id="Enabled"
               />
-              <label class="custom-control-label" for="Enabled">Enabled</label>
+              <label class="form-check-label" for="Enabled">Enabled</label>
             </div>
             <div *ngIf="_supplierEditable?.xp?.FreeShippingThreshold != null">
-              <label for="Threshold">Order Subtotal Threshold</label>
+              <label for="Threshold" class="form-label"
+                >Order Subtotal Threshold</label
+              >
               <input
                 type="number"
                 class="form-control"
@@ -204,22 +206,22 @@
           <div
             *ngIf="countriesServicingOptions.length"
             [formGroup]="countriesServicingForm"
-            class="form-group col-md-12"
+            class="mb-3 col-md-12"
           >
             <label>Countries to Service</label>
             <div class="d-flex justify-content-start align-items-center">
               <div
                 *ngFor="let country of countriesServicingOptions"
-                class="mr-3 custom-control custom-checkbox"
+                class="me-3 form-check"
               >
                 <input
                   type="checkbox"
-                  class="custom-control-input"
+                  class="form-check-input"
                   [formControlName]="country.Value"
                   (change)="updateCountriesServicing($event, country.Value)"
                   id="{{ country.Value }}"
                 />
-                <label class="custom-control-label" for="{{ country.Value }}">{{
+                <label class="form-check-label" for="{{ country.Value }}">{{
                   country.Text
                 }}</label>
               </div>
@@ -240,7 +242,7 @@
           users.
         </p>
       </div>
-      <div class="col-md-7 form-group">
+      <div class="col-md-7 mb-3">
         <table class="table table-hover">
           <thead>
             <tr>
@@ -287,7 +289,7 @@
           {{ 'ALIAS.SUPPLIER' | translate | lowercase }} will supply.
         </p>
       </div>
-      <div class="col-md-7 form-group">
+      <div class="col-md-7 mb-3">
         <table class="table table-hover">
           <thead>
             <tr>
@@ -332,9 +334,11 @@
           from end buyers.
         </p>
       </div>
-      <div class="col-md-7 form-group">
-        <div class="form-group">
-          <label for="Support Contact Name">Support Contact Name</label>
+      <div class="col-md-7 mb-3">
+        <div class="mb-3">
+          <label for="SupportContactName" class="form-label"
+            >Support Contact Name</label
+          >
           <input
             type="text"
             class="form-control"
@@ -346,9 +350,11 @@
             placeholder="Enter Support Contact Name"
           />
         </div>
-        <div class="form-row">
-          <div class="form-group col-md-6">
-            <label for="Support Contact Name">Support Contact Email</label>
+        <div class="row">
+          <div class="mb-3 col-md-6">
+            <label for="SupportContactEmail" class="form-label"
+              >Support Contact Email</label
+            >
             <input
               type="text"
               class="form-control"
@@ -363,8 +369,10 @@
             />
           </div>
           <!-- no phone validation currently because this field has extraneous values that would break validation -->
-          <div class="form-group col-md-6">
-            <label for="Support Contact Phone">Support Contact Phone</label>
+          <div class="mb-3 col-md-6">
+            <label for="SupportContactPhone" class="form-label"
+              >Support Contact Phone</label
+            >
             <input
               type="text"
               class="form-control"

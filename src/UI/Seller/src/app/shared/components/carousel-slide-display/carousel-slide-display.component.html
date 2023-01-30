@@ -1,13 +1,13 @@
 <div class="border p-3 m-3 shadow-sm">
   <fa-icon
     (click)="deleteSlide()"
-    class="float-right icon-button--hover-reactive text-danger mb-2 pl-3"
+    class="float-end icon-button--hover-reactive text-danger mb-2 ps-3"
     [icon]="faTrash"
   ></fa-icon>
   <fa-icon
     (click)="textChanges()"
     [ngClass]="{ disabled: saveDisabled() }"
-    class="float-right icon-button--hover-reactive mb-2 text-primary"
+    class="float-end icon-button--hover-reactive mb-2 text-primary"
     [icon]="faSave"
   ></fa-icon>
   <div class="row">
@@ -21,7 +21,7 @@
         name="CarouselForm"
         class="pt-3"
       >
-        <div [hidden]="true" class="form-group">
+        <div [hidden]="true" class="mb-3">
           <input
             type="text"
             formControlName="URL"
@@ -30,7 +30,7 @@
             placeholder="ID"
           />
         </div>
-        <div class="form-group">
+        <div class="mb-3">
           <input
             type="text"
             formControlName="headerText"
@@ -41,7 +41,7 @@
             >Max 100 characters</span
           >
         </div>
-        <div class="form-group">
+        <div class="mb-3">
           <input
             type="text"
             formControlName="bodyText"
@@ -61,7 +61,7 @@
           (change)="fileChange($event)"
           placeholder="Upload file"
         />
-        <label for="carsousel-image" class="btn btn-primary">
+        <label for="carsousel-image" class="form-label btn btn-primary">
           <fa-icon [icon]="faUpload"></fa-icon> Change Image
         </label>
       </form>

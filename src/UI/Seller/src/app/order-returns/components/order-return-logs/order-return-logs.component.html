@@ -1,5 +1,5 @@
 <div *ngIf="logs?.length">
-  <div class="d-block text-left mb-2 mt-5">
+  <div class="d-block text-start mb-2 mt-5">
     <h5 translate>ADMIN.ORDER_RETURNS.STATUS_LOGS</h5>
   </div>
   <div class="card py-4 px-3 bg-white mb-5">
@@ -18,13 +18,13 @@
         <tbody>
           <tr *ngFor="let log of logs">
             <td class="align-middle">
-              {{ log?.Date | date: 'medium' }}
+              {{ log?.Date | date : 'medium' }}
             </td>
             <td class="align-middle">
               {{ log?.Action }}
             </td>
             <td class="align-middle">
-              {{ log?.RefundAmount | currency: order?.xp?.Currency }}
+              {{ log?.RefundAmount | currency : order?.xp?.Currency }}
             </td>
             <td class="align-middle">
               <a *ngIf="getUserLink(log)" [routerLink]="getUserLink(log)">

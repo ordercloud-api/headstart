@@ -20,8 +20,8 @@
       novalidate
       class="mt-4"
     >
-      <div class="form-group">
-        <label class="small" for="username" translate
+      <div class="mb-3">
+        <label for="username" class="form-label small" translate
           >ADMIN.COMMON.USERNAME</label
         >
         <input
@@ -34,8 +34,8 @@
           autofocus
         />
       </div>
-      <div class="form-group">
-        <label class="small" for="password" translate
+      <div class="mb-3">
+        <label for="password" class="form-label small" translate
           >ADMIN.COMMON.PASSWORD</label
         >
         <input
@@ -46,9 +46,9 @@
           id="password"
         />
       </div>
-      <div class="form-group text-center">
+      <div class="mb-3 text-center">
         <div class="checkbox">
-          <label for="rememberMeId" translate>
+          <label for="rememberMeId" class="form-label" translate>
             <input
               formControlName="rememberMe"
               type="checkbox"
@@ -58,23 +58,27 @@
           </label>
         </div>
       </div>
+      <div class="d-grid">
+        <button
+          id="submitBtn"
+          type="submit"
+          [disabled]="!form.valid"
+          class="btn btn-primary btn-lg"
+          translate
+        >
+          ADMIN.COMMON.SUBMIT
+        </button>
+      </div>
+    </form>
+    <div class="d-grid">
       <button
-        id="submitBtn"
-        type="submit"
-        [disabled]="!form.valid"
-        class="btn btn-primary btn-lg btn-block"
+        type="button"
+        class="btn btn-link text-center"
+        routerLink="/forgot-password"
         translate
       >
-        ADMIN.COMMON.SUBMIT
+        ADMIN.COMMON.FORGOT_PASSWORD
       </button>
-    </form>
-    <button
-      type="button"
-      class="btn btn-link btn-block text-center"
-      routerLink="/forgot-password"
-      translate
-    >
-      ADMIN.COMMON.FORGOT_PASSWORD
-    </button>
+    </div>
   </div>
 </section>

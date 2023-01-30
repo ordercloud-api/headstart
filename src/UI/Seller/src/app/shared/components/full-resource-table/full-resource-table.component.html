@@ -38,10 +38,10 @@
           {{ cell.value }}
         </span>
         <span *ngIf="cell.type === 'DATE_TIME'">
-          {{ cell.value | date: 'short' }}
+          {{ cell.value | date : 'short' }}
         </span>
         <span *ngIf="cell.type === 'CURRENCY'">
-          {{ cell.value | currency: 'USD' }}
+          {{ cell.value | currency : 'USD' }}
         </span>
         <div class="d-flex" *ngIf="cell.type === 'STRING_WITH_IMAGE'">
           <img
@@ -50,7 +50,7 @@
             src="{{ row.imgPath }}"
             alt=""
           />
-          <span class="ml-3 d-flex flex-column justify-content-center">
+          <span class="ms-3 d-flex flex-column justify-content-center">
             <div class="h6">{{ cell.value }}</div>
           </span>
         </div>

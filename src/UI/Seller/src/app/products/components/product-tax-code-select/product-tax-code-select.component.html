@@ -1,6 +1,6 @@
 <div class="card bg-white shadow-sm p-4 mt-3">
   <div class="d-flex justify-content-between align-items-center">
-    <h6 class="font-weight-medium" translate>
+    <h6 class="fw-medium" translate>
       ADMIN.PRODUCT_EDIT.TAX_CATEGORIZATION
       <span class="required-field">*</span>
     </h6>
@@ -20,20 +20,22 @@
     </fa-icon>
   </div>
   <form [formGroup]="productForm">
-    <div class="form-row">
-      <div class="form-group col-6">
-        <product-tax-code-select-dropdown
-          [readonly]="readonly"
-          class="btn-block resource-btn mr-1 mb-1"
-          [taxCodes]="taxCodes"
-          [productForm]="productForm"
-          [superHSProductEditable]="superHSProductEditable"
-          [isRequired]="isRequired"
-          [isCreatingNew]="isCreatingNew"
-          (taxCodesSearched)="onTaxCodesSearched($event)"
-          (onSelectTaxCode)="handleSelectTaxCode($event)"
-        >
-        </product-tax-code-select-dropdown>
+    <div class="row">
+      <div class="mb-3 col-6">
+        <div class="d-grid">
+          <product-tax-code-select-dropdown
+            [readonly]="readonly"
+            class="resource-btn me-1 mb-1"
+            [taxCodes]="taxCodes"
+            [productForm]="productForm"
+            [superHSProductEditable]="superHSProductEditable"
+            [isRequired]="isRequired"
+            [isCreatingNew]="isCreatingNew"
+            (taxCodesSearched)="onTaxCodesSearched($event)"
+            (onSelectTaxCode)="handleSelectTaxCode($event)"
+          >
+          </product-tax-code-select-dropdown>
+        </div>
       </div>
     </div>
   </form>

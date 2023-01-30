@@ -41,6 +41,12 @@ $danger:            #E7534B;  // @SC-Theme-Tomato: Dark
 $theme-colors: (
   'primary':        $primary,        
   'secondary':      $secondary,
+  'success':        $green,
+  'info':           $blue,
+  'warning':        $yellow,
+  'danger':         $red,
+  'light':          $light,
+  'dark':           $dark,
   'medium':         $medium,
   'primary-dark':   $primary-dark,
   'primary-light':  $primary-light,
@@ -52,7 +58,7 @@ $theme-colors: (
 // Settings for the `<body>` element.
 
 $body-bg:           white;
-$body-color:          $gray-800;
+$body-color:        $gray-800;
 
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap');
 

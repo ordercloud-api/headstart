@@ -6,7 +6,7 @@
     (change)="addImage($event)"
     placeholder="Upload file"
   />
-  <label for="carsousel-image" class="btn btn-primary">
+  <label for="carsousel-image" class="form-label btn btn-primary">
     <fa-icon [icon]="faUpload"></fa-icon> Add Image</label
   >
 </form>
@@ -20,13 +20,13 @@
       <div class="card-body bg-light">
         <button
           *ngIf="i !== 0"
-          class="btn btn-primary btn-sm float-left"
+          class="btn btn-primary btn-sm float-start"
           (click)="setPrimaryImage(url, i)"
         >
           Make Primary
         </button>
         <button
-          class="btn btn-danger btn-sm float-right"
+          class="btn btn-danger btn-sm float-end"
           (click)="deleteImage(i)"
         >
           <fa-icon [icon]="faTrash"></fa-icon> Delete

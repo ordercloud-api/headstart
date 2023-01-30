@@ -1,14 +1,18 @@
 <div class="container-fluid">
-  <span class="required-field" > * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span>
+  <span class="required-field">
+    * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span
+  >
   <form *ngIf="resourceForm" [formGroup]="resourceForm">
     <div class="row pt-3">
       <div class="col-md-5">
         <h5 translate>ADMIN.FACETS.PRODUCT_FACET_INFO</h5>
         <p class="font-italic" translate>ADMIN.FACETS.INFO_ABOUT_FACET</p>
       </div>
-      <div class="col-md-7 form-group">
-        <div class="form-group" *ngIf="isCreatingNew">
-          <label for="ID" translate>ADMIN.FACETS.FACET_ID <span class="required-field">*</span></label>
+      <div class="col-md-7 mb-3">
+        <div class="mb-3" *ngIf="isCreatingNew">
+          <label for="ID" class="form-label" translate
+            >ADMIN.FACETS.FACET_ID <span class="required-field">*</span></label
+          >
           <input
             type="text"
             class="form-control"
@@ -22,12 +26,16 @@
             placeholder="{{ 'ADMIN.FACETS.ENTER_FACET_ID' | translate }}"
           />
         </div>
-        <div class="form-group" *ngIf="!isCreatingNew">
-          <label for="ID" translate>ADMIN.FACETS.FACET_ID <span class="required-field">*</span></label>
+        <div class="mb-3" *ngIf="!isCreatingNew">
+          <label for="ID" class="form-label" translate
+            >ADMIN.FACETS.FACET_ID <span class="required-field">*</span></label
+          >
           <input class="form-control" formControlName="ID" disabled />
         </div>
-        <div class="form-group">
-          <label for="Name" translate>ADMIN.FACETS.NAME <span class="required-field">*</span></label>
+        <div class="mb-3">
+          <label for="Name" class="form-label" translate
+            >ADMIN.FACETS.NAME <span class="required-field">*</span></label
+          >
           <input
             type="text"
             class="form-control"
@@ -46,11 +54,12 @@
         <h5 translate>ADMIN.FACETS.FACET_OPTIONS</h5>
         <p class="font-italic" translate>ADMIN.FACETS.WHAT_OPTIONS_AVAILABLE</p>
       </div>
-      <div class="col-md-7 form-group">
-        <div class="form-group">
+      <div class="col-md-7 mb-3">
+        <div class="mb-3">
           <label
-            [ngClass]="{ 'font-weight-bold': facetOptionLimitReached() }"
+            [ngClass]="{ 'fw-bold': facetOptionLimitReached() }"
             for="addFacetOption"
+            class="form-label"
             >{{ _facetEditable?.xp?.Options?.length || 0 }} / 25
             {{ 'ADMIN.FACETS.OPTIONS' | translate }}</label
           >
@@ -61,24 +70,22 @@
               placeholder="{{ 'ADMIN.FACETS.ADD_FACET_OPTION' | translate }}"
               id="newFacetOption"
             />
-            <div class="input-group-append">
-              <button
-                class="btn btn-dark"
-                type="submit"
-                [disabled]="facetOptionLimitReached()"
-                (click)="addFacetOption()"
-                [attr.title]="
-                  facetOptionLimitReached()
-                    ? ('ADMIN.FACETS.LIMIT_OF_25' | translate)
-                    : null
-                "
-                data-toggle="tooltip"
-                data-placement="bottom"
-                translate
-              >
-                ADMIN.FACETS.ADD
-              </button>
-            </div>
+            <button
+              class="btn btn-dark"
+              type="submit"
+              [disabled]="facetOptionLimitReached()"
+              (click)="addFacetOption()"
+              [attr.title]="
+                facetOptionLimitReached()
+                  ? ('ADMIN.FACETS.LIMIT_OF_25' | translate)
+                  : null
+              "
+              data-bs-toggle="tooltip"
+              data-placement="bottom"
+              translate
+            >
+              ADMIN.FACETS.ADD
+            </button>
           </div>
         </div>
         <div class="chip" *ngFor="let option of _facetEditable?.xp?.Options">
@@ -111,7 +118,7 @@
         {{ getSaveBtnText() | translate }}
       </button>
       <button
-        class="btn btn-primary ml-3"
+        class="btn btn-primary ms-3"
         (click)="handleDiscardChanges()"
         *ngIf="areChanges && !isCreatingNew"
         translate

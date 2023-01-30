@@ -1,4 +1,4 @@
-@import '../../../../styles/main.scss';
+@import '../../../../styles/abstracts/all.scss';
 
 .product-img-wrapper {
     position: relative;
@@ -15,7 +15,7 @@
         }
     }
     .product-img-delete {
-        @include media-breakpoint-down(sm) {
+        @include media-breakpoint-down(md) {
             // Display action buttons on mobile
             opacity: 1;
           }

@@ -1,5 +1,5 @@
 <!-- TODO: Componentize into smaller chunks (Order Details, Address, Payment, Line Item) -->
-<div class="container float-left order-detail-pdf-range">
+<div class="container float-start order-detail-pdf-range">
   <p>
     <ngb-progressbar
       [animated]="orderProgress?.Animated"
@@ -17,7 +17,7 @@
       >#{{ _order?.ID }}
       <span
         *ngIf="_order?.xp?.OrderType === 'Quote'"
-        class="small badge badge-pill badge-warning ml-2 order-type-text"
+        class="small badge rounded-pill bg-warning ms-2 order-type-text"
         >{{ _order?.xp?.OrderType }}</span
       >
     </h3>
@@ -30,8 +30,8 @@
       {{ 'ADMIN.ORDERS.DOWNLOAD_INVOICE' | translate }}
     </button>
   </div>
-  <div class="d-block text-right mb-2">
-    <span class="font-weight-bold">
+  <div class="d-block text-end mb-2">
+    <span class="fw-bold">
       {{ 'ADMIN.ORDERS.ORDER_PLACED' | translate }}:
       {{ getOrderDate() | date : 'medium' }}
     </span>
@@ -50,8 +50,8 @@
         >
           <fa-icon [icon]="faUser"></fa-icon>
         </div>
-        <div class="ml-2" *ngIf="!isQuoteOrder(_order)">
-          <p class="h5 mb-0 text-capitalize font-weight-bold">
+        <div class="ms-2" *ngIf="!isQuoteOrder(_order)">
+          <p class="h5 mb-0 text-capitalize fw-bold">
             {{ _buyerOrder?.FromUser?.FirstName }}
             {{ _buyerOrder?.FromUser?.LastName }}
           </p>
@@ -62,14 +62,13 @@
             {{ _buyerOrder?.FromUser?.Email }}
           </p>
           <p class="mb-0" *ngIf="_buyerOrder?.BillingAddress?.xp?.LocationID">
-            <span class="font-weight-bold" translate
-              >ADMIN.ORDERS.LOCATION_ID</span
+            <span class="fw-bold" translate>ADMIN.ORDERS.LOCATION_ID</span
             ><span>: </span>
             {{ _buyerOrder?.BillingAddress?.xp?.LocationID }}
           </p>
         </div>
-        <div class="ml-2" *ngIf="isQuoteOrder(_order)">
-          <p class="h5 mb-0 text-capitalize font-weight-bold">
+        <div class="ms-2" *ngIf="isQuoteOrder(_order)">
+          <p class="h5 mb-0 text-capitalize fw-bold">
             {{ _order.xp?.QuoteOrderInfo?.FirstName }}
             {{ _order.xp?.QuoteOrderInfo?.LastName }}
           </p>
@@ -83,8 +82,7 @@
             {{ _order.xp?.QuoteOrderInfo?.BuyerLocation }}
           </p>
           <p class="mb-0" *ngIf="_buyerOrder?.BillingAddress?.xp?.LocationID">
-            <span class="font-weight-bold" translate
-              >ADMIN.ORDERS.LOCATION_ID</span
+            <span class="fw-bold" translate>ADMIN.ORDERS.LOCATION_ID</span
             ><span>: </span>
             {{ _buyerOrder?.BillingAddress?.xp?.LocationID }}
           </p>
@@ -93,14 +91,12 @@
       <div class="d-flex justify-content-end align-items-start">
         <div
           *ngIf="_supplierOrder?.FromUser && !isQuoteOrder(_order)"
-          class="mr-3"
+          class="me-3"
         >
-          <small
-            class="font-weight-bolder text-muted text-uppercase d-block"
-            translate
+          <small class="fw-bolder text-muted text-uppercase d-block" translate
             >ADMIN.ORDERS.BILL_TO</small
           >
-          <small class="mb-0 text-capitalize d-block font-weight-bold"
+          <small class="mb-0 text-capitalize d-block fw-bold"
             >{{ _supplierOrder.FromUser?.FirstName }}
             {{ _supplierOrder.FromUser?.LastName }}</small
           >
@@ -113,12 +109,10 @@
           }}</small>
         </div>
         <div *ngIf="_lineItems[0]?.ShippingAddress && !isQuoteOrder(_order)">
-          <small
-            class="font-weight-bolder text-muted text-uppercase d-block"
-            translate
+          <small class="fw-bolder text-muted text-uppercase d-block" translate
             >ADMIN.ORDERS.SHIP_TO</small
           >
-          <small class="mb-0 text-capitalize d-block font-weight-bold">{{
+          <small class="mb-0 text-capitalize d-block fw-bold">{{
             _lineItems[0]?.ShippingAddress?.CompanyName
           }}</small>
           <small class="mb-0 text-capitalize d-block"
@@ -148,14 +142,12 @@
         </div>
         <div
           *ngIf="_order?.BillingAddress && !isQuoteOrder(_order)"
-          class="pl-4 ml-4 border-left"
+          class="ps-4 ms-4 border-start"
         >
-          <small
-            class="font-weight-bolder text-muted text-uppercase d-block"
-            translate
+          <small class="fw-bolder text-muted text-uppercase d-block" translate
             >ADMIN.ORDERS.BILL_TO</small
           >
-          <small class="mb-0 text-capitalize d-block font-weight-bold">{{
+          <small class="mb-0 text-capitalize d-block fw-bold">{{
             _order?.BillingAddress?.CompanyName
           }}</small>
           <small class="mb-0 text-capitalize d-block"
@@ -182,13 +174,11 @@
           </small>
         </div>
       </div>
-      <div *ngIf="_buyerQuoteAddress" class="d-block text-right">
-        <small
-          class="font-weight-bolder text-muted text-uppercase d-block"
-          translate
+      <div *ngIf="_buyerQuoteAddress" class="d-block text-end">
+        <small class="fw-bolder text-muted text-uppercase d-block" translate
           >ADMIN.ORDERS.SHIP_TO</small
         >
-        <small class="mb-0 text-capitalize d-block font-weight-bold">{{
+        <small class="mb-0 text-capitalize d-block fw-bold">{{
           _buyerQuoteAddress.CompanyName
         }}</small>
         <small class="mb-0 text-capitalize d-block"
@@ -227,7 +217,7 @@
     <!-- QUOTE EDIT START -->
     <div
       *ngIf="quotedPrice > 0 && _order?.xp?.QuoteStatus === 'NeedsBuyerReview'"
-      class="d-block text-left"
+      class="d-block text-start"
     >
       <small
         class="mt-3 alert alert-info d-inline-block justify-content-start align-items-center set-to-top"
@@ -248,14 +238,14 @@
           _order?.xp?.OrderType === 'Quote' &&
           _order?.xp?.QuoteStatus === 'NeedsSellerReview'
         "
-        class="btn btn-outline-primary mr-3 mb-3 d-print-none"
+        class="btn btn-outline-primary me-3 mb-3 d-print-none"
         (click)="toggleSetQuotePrice()"
       >
         {{ getQuotePriceButtonText() | translate }}
       </button>
       <button
         *ngIf="canCreateReturn()"
-        class="btn btn-outline-primary mr-3 mb-3 d-print-none"
+        class="btn btn-outline-primary me-3 mb-3 d-print-none"
         (click)="openReturnCreateModal()"
         translate
       >
@@ -268,11 +258,9 @@
         <div class="row">
           <form *ngIf="quotePricingForm" [formGroup]="quotePricingForm">
             <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">{{
-                  supplierCurrency?.Symbol
-                }}</span>
-              </div>
+              <span class="input-group-text">{{
+                supplierCurrency?.Symbol
+              }}</span>
               <input
                 type="number"
                 class="form-control currency"
@@ -284,7 +272,7 @@
                 step="0.01"
               />
               <button
-                class="btn btn-primary d-print-none ml-3"
+                class="btn btn-primary d-print-none ms-3"
                 (click)="overrideQuoteUnitPrice()"
                 translate
               >
@@ -335,7 +323,7 @@
         <ng-container *ngIf="!isQuoteOrder(_order)">
           <div *ngIf="orderDirection === 'Incoming'">
             <div class="d-flex justify-content-between align-items-center mb-1">
-              <p class="font-weight-bolder mb-0 text-muted" translate>
+              <p class="fw-bolder mb-0 text-muted" translate>
                 ADMIN.ORDERS.SUBTOTAL
               </p>
               <p class="mb-0">
@@ -343,7 +331,7 @@
               </p>
             </div>
             <div class="d-flex justify-content-between align-items-center mb-1">
-              <p class="font-weight-bolder mb-0 text-muted" translate>
+              <p class="fw-bolder mb-0 text-muted" translate>
                 ADMIN.ORDERS.SHIPPING
               </p>
               <p class="mb-0">
@@ -351,7 +339,7 @@
               </p>
             </div>
             <div class="d-flex justify-content-between align-items-center mb-1">
-              <p class="font-weight-bolder mb-0 text-muted">Tax</p>
+              <p class="fw-bolder mb-0 text-muted">Tax</p>
               <p class="mb-0">
                 {{ _order.TaxCost | currency : _order?.xp?.Currency }}
               </p>
@@ -360,10 +348,10 @@
               class="d-flex justify-content-between align-items-center mb-1"
               *ngIf="_order.PromotionDiscount"
             >
-              <p class="font-weight-bolder mb-0 text-muted" translate>
+              <p class="fw-bolder mb-0 text-muted" translate>
                 ADMIN.ORDERS.PROMOTION_DISCOUNT
               </p>
-              <p class="font-weight-bolder mb-0 text-success">
+              <p class="fw-bolder mb-0 text-success">
                 -{{
                   _order?.PromotionDiscount | currency : _order?.xp?.Currency
                 }}
@@ -372,8 +360,8 @@
           </div>
           <hr class="my-2" />
           <div class="d-flex justify-content-between align-items-center my-2">
-            <p class="font-weight-bolder mb-0">Total</p>
-            <p class="font-weight-bolder mb-0">
+            <p class="fw-bolder mb-0">Total</p>
+            <p class="fw-bolder mb-0">
               {{ _order?.Total | currency : _order?.xp?.Currency }}
             </p>
           </div>

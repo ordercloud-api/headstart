@@ -1,4 +1,4 @@
-<div class="row pt-3 mt-3 bg-white shadow-sm card-highlight-border w-100 pl-3">
+<div class="row pt-3 mt-3 bg-white shadow-sm card-highlight-border w-100 ps-3">
   <div class="w-100">
     <h5>User Permissions</h5>
     <p class="font-italic">
@@ -63,7 +63,10 @@
           class="btn btn-link"
           (click)="discardUserUserGroupAssignmentChanges()"
         >
-          {{ (areChanges ? 'ADMIN.COMMON.CANCEL' : 'ADMIN.COMMON.NO_CHANGES') | translate }}
+          {{
+            (areChanges ? 'ADMIN.COMMON.CANCEL' : 'ADMIN.COMMON.NO_CHANGES')
+              | translate
+          }}
         </button>
         <button
           *ngIf="areChanges && !requestedUserConfirmation"

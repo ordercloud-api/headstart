@@ -1,4 +1,4 @@
-<div class="row pt-3 mt-3 bg-white shadow-sm card-highlight-border w-100 pl-3">
+<div class="row pt-3 mt-3 bg-white shadow-sm card-highlight-border w-100 ps-3">
   <div class="col-md-5">
     <h5 translate>ADMIN.BUYER_GROUPS.APPROVALS.HEADER</h5>
     <p class="font-italic" translate>
@@ -7,30 +7,28 @@
   </div>
   <div class="col-md-7">
     <form [formGroup]="approvalForm">
-      <div class="form-group">
-        <div class="form-row">
-          <div class="form-group col-md-4">
-            <div class="custom-control custom-checkbox">
+      <div class="mb-3">
+        <div class="row">
+          <div class="mb-3 col-md-4">
+            <div class="form-check">
               <input
                 id="Enabled"
                 type="checkbox"
                 formControlName="Enabled"
                 (click)="handleToggle($event)"
-                class="custom-control-input"
+                class="form-check-input"
               />
-              <label class="custom-control-label" for="Enabled" translate>
+              <label class="form-check-label" for="Enabled" translate>
                 ADMIN.BUYER_GROUPS.APPROVALS.ENABLE_LABEL
               </label>
             </div>
           </div>
-          <div *ngIf="approvalEnabled" class="form-group col-md-8">
-            <label for="OrderThreshold" translate
+          <div *ngIf="approvalEnabled" class="mb-3 col-md-8">
+            <label for="OrderThreshold" class="form-label" translate
               >ADMIN.BUYER_GROUPS.APPROVALS.THRESHOLD_LABEL</label
             >
             <div class="input-group">
-              <div class="input-group-prepend">
-                <span class="input-group-text">{{ '$' }}</span>
-              </div>
+              <span class="input-group-text">{{ '$' }}</span>
               <input
                 id="OrderThreshold"
                 type="number"
@@ -44,7 +42,7 @@
         </div>
       </div>
     </form>
-    <div class="pb-3 float-right">
+    <div class="pb-3 float-end">
       <button
         [disabled]="!areChanges"
         class="btn btn-link"

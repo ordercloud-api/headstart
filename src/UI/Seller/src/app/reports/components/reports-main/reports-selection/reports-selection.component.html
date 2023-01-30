@@ -3,10 +3,12 @@
     <h5 translate>ADMIN.REPORTS.REPORT_SELECTION</h5>
     <p translate>ADMIN.REPORTS.CHOOSE_REPORT_TYPE</p>
   </div>
-  <div class="col-md-7 form-row">
-    <div class="form-group col-md-6">
+  <div class="col-md-7 row">
+    <div class="mb-3 col-md-6">
       <form [formGroup]="reportSelectionForm">
-        <label for="ReportType" translate>ADMIN.REPORTS.REPORT_TYPE</label>
+        <label for="ReportType" class="form-label" translate
+          >ADMIN.REPORTS.REPORT_TYPE</label
+        >
         <select
           class="form-control"
           type="dropdown"
@@ -27,9 +29,9 @@
         </select>
       </form>
     </div>
-    <div class="form-group col-md-6">
+    <div class="mb-3 col-md-6">
       <form [formGroup]="reportSelectionForm">
-        <label for="ReportTemplate" translate
+        <label for="ReportTemplate" class="form-label" translate
           >ADMIN.REPORTS.REPORT_TEMPLATE</label
         >
         <select
@@ -54,12 +56,12 @@
       </form>
     </div>
     <ng-container *ngIf="selectedTemplate?.TemplateID && adHocFilters?.length">
-      <div *ngFor="let filter of adHocFilters" class="form-group col-md-6">
+      <div *ngFor="let filter of adHocFilters" class="mb-3 col-md-6">
         <form [formGroup]="reportSelectionForm">
           <div *ngIf="getFilterType(filter) === 'date'">
-            <label for="{{ filter }}"
+            <label for="{{ filter }}" class="form-label"
               >{{ getFilterNameDisplay(filter) }}
-              <small class="text-danger font-weight-bolder">*</small></label
+              <small class="text-danger fw-bolder">*</small></label
             >
             <input
               class="form-control"
@@ -71,7 +73,9 @@
             />
           </div>
           <div *ngIf="getFilterType(filter) === 'time'">
-            <label for="{{ filter }}">{{ getFilterNameDisplay(filter) }}</label>
+            <label for="{{ filter }}" class="form-label">{{
+              getFilterNameDisplay(filter)
+            }}</label>
             <input
               class="form-control"
               type="time"
@@ -81,7 +85,7 @@
             />
           </div>
           <div *ngIf="filter === 'SupplierID' && suppliers?.length">
-            <label for="{{ filter }}" translate
+            <label for="{{ filter }}" class="form-label" translate
               >ADMIN.REPORTS.SUPPLIER_OPTIONAL</label
             >
             <select
@@ -100,7 +104,7 @@
             </select>
           </div>
           <div *ngIf="filter === 'BrandID' && buyers?.length">
-            <label for="{{ filter }}" translate
+            <label for="{{ filter }}" class="form-label" translate
               >ADMIN.REPORTS.BUYER_OPTIONAL</label
             >
             <select
@@ -129,7 +133,7 @@
         <h6 translate>ADMIN.REPORTS.DESCRIPTION</h6>
         <p>{{ selectedTemplate.Description }}</p>
       </div>
-      <div class="form-row">
+      <div class="row">
         <div class="col-md-12">
           <button
             class="btn btn-link text-info"

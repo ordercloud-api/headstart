@@ -1,69 +1,71 @@
 <!-- product tax code select dropdown -->
-<div ngbDropdown class="product-tax-code-dropdown btn-block w-100">
-  <button
-    class="product-tax-code-dropdown-toggle w-100 d-flex justify-content-between align-items-center resource-btn btn btn-outline-dark"
-    id="productTaxCodeDropdown"
-    ngbDropdownToggle
-  >
-    <span
-      class="product-tax-code-dropdown-toggle-text"
-      *ngIf="superHSProductEditable?.Product?.xp?.Tax?.Description"
-      >{{
-        superHSProductEditable?.Product?.xp?.Tax?.Description
-      }}</span
+<div class="d-grid">
+  <div ngbDropdown class="product-tax-code-dropdown w-100">
+    <button
+      class="product-tax-code-dropdown-toggle w-100 d-flex justify-content-between align-items-center resource-btn btn btn-outline-dark"
+      id="productTaxCodeDropdown"
+      ngbDropdownToggle
     >
-    <span
-      class="product-tax-code-dropdown-toggle-text"
-      *ngIf="!superHSProductEditable?.Product?.xp?.Tax?.Code"
-      translate
-      >ADMIN.PRODUCT_EDIT.SELECT_TAX_CODE</span
-    >
-  </button>
-  <div ngbDropdownMenu aria-labelledby="tax code select dropdown" class="w-100">
-    <search-component
-      class="mr-3 w-100"
-      id="tax-code-search"
-      [placeholderText]="''"
-      [searchTermInput]="searchTerm"
-      (searched)="searchedTaxCodes($event)"
-    >
-    </search-component>
-    <perfect-scrollbar
-      class="dropdown-ps"
-      (psYReachEnd)="handleScrollEnd($event)"
-      [ngStyle]="{ 'height.px': productTaxCodeSelectDropdownHeight }"
-    >
-      <button
-        class="bg-light"
-        *ngIf="superHSProductEditable?.Product?.xp?.Tax?.Code"
-        ngbDropdownItem
-        disabled
+      <span
+        class="product-tax-code-dropdown-toggle-text"
+        *ngIf="superHSProductEditable?.Product?.xp?.Tax?.Description"
+        >{{ superHSProductEditable?.Product?.xp?.Tax?.Description }}</span
       >
-        <div class="d-flex text-wrap">
-          <span class="ml-3 d-flex flex-column justify-content-center">
-            <div class="h6">
-              {{
-                superHSProductEditable?.Product?.xp?.Tax?.Description
-              }}
-            </div>
-            <div>
-              {{ superHSProductEditable?.Product?.xp?.Tax?.Code }}
-            </div>
-          </span>
-        </div>
-      </button>
-      <button
-        ngbDropdownItem
-        *ngFor="let taxCode of taxCodes"
-        (click)="selectTaxCode(taxCode)"
+      <span
+        class="product-tax-code-dropdown-toggle-text"
+        *ngIf="!superHSProductEditable?.Product?.xp?.Tax?.Code"
+        translate
+        >ADMIN.PRODUCT_EDIT.SELECT_TAX_CODE</span
       >
-        <div class="d-flex text-wrap">
-          <span class="ml-3 d-flex flex-column justify-content-center">
-            <div class="h6">{{ taxCode?.Description }}</div>
-            <div>{{ taxCode?.Code }}</div>
-          </span>
-        </div>
-      </button>
-    </perfect-scrollbar>
+    </button>
+    <div
+      ngbDropdownMenu
+      aria-labelledby="tax code select dropdown"
+      class="w-100"
+    >
+      <search-component
+        class="me-3 w-100"
+        id="tax-code-search"
+        [placeholderText]="''"
+        [searchTermInput]="searchTerm"
+        (searched)="searchedTaxCodes($event)"
+      >
+      </search-component>
+      <perfect-scrollbar
+        class="dropdown-ps"
+        (psYReachEnd)="handleScrollEnd($event)"
+        [ngStyle]="{ 'height.px': productTaxCodeSelectDropdownHeight }"
+      >
+        <button
+          class="bg-light"
+          *ngIf="superHSProductEditable?.Product?.xp?.Tax?.Code"
+          ngbDropdownItem
+          disabled
+        >
+          <div class="d-flex text-wrap">
+            <span class="ms-3 d-flex flex-column justify-content-center">
+              <div class="h6">
+                {{ superHSProductEditable?.Product?.xp?.Tax?.Description }}
+              </div>
+              <div>
+                {{ superHSProductEditable?.Product?.xp?.Tax?.Code }}
+              </div>
+            </span>
+          </div>
+        </button>
+        <button
+          ngbDropdownItem
+          *ngFor="let taxCode of taxCodes"
+          (click)="selectTaxCode(taxCode)"
+        >
+          <div class="d-flex text-wrap">
+            <span class="ms-3 d-flex flex-column justify-content-center">
+              <div class="h6">{{ taxCode?.Description }}</div>
+              <div>{{ taxCode?.Code }}</div>
+            </span>
+          </div>
+        </button>
+      </perfect-scrollbar>
+    </div>
   </div>
 </div>

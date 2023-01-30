@@ -13,8 +13,8 @@
         >
           <fa-icon [icon]="faUser"></fa-icon>
         </div>
-        <div class="ml-2">
-          <p class="h5 mb-0 text-capitalize font-weight-bold">
+        <div class="ms-2">
+          <p class="h5 mb-0 text-capitalize fw-bold">
             {{ order?.FromUser?.FirstName }}
             {{ order?.FromUser?.LastName }}
           </p>
@@ -32,48 +32,44 @@
         *ngIf="
           orderReturn?.Status === 'Completed' && orderReturn?.RefundAmount > 0
         "
-        class="d-block text-right mb-2"
+        class="d-block text-end mb-2"
       >
         <small
           *ngIf="orderReturn?.xp?.ShippingCredited > 0"
-          class="font-weight-bolder text-muted text-uppercase d-block"
+          class="fw-bolder text-muted text-uppercase d-block"
           translate
           >ADMIN.ORDER_RETURNS.SHIPPING_REFUNDED</small
         >
         <small
           *ngIf="orderReturn?.xp?.ShippingCredited > 0"
-          class="mb-3 text-capitalize d-block font-weight-bold"
+          class="mb-3 text-capitalize d-block fw-bold"
         >
-          {{ orderReturn.xp.ShippingCredited | currency: order?.xp?.Currency }}
+          {{ orderReturn.xp.ShippingCredited | currency : order?.xp?.Currency }}
         </small>
-        <small
-          class="font-weight-bolder text-muted text-uppercase d-block"
-          translate
+        <small class="fw-bolder text-muted text-uppercase d-block" translate
           >ADMIN.ORDER_RETURNS.TOTAL_REFUNDED</small
         >
-        <small class="text-capitalize d-block font-weight-bold">
-          {{ orderReturn?.RefundAmount | currency: order?.xp?.Currency }}
+        <small class="text-capitalize d-block fw-bold">
+          {{ orderReturn?.RefundAmount | currency : order?.xp?.Currency }}
         </small>
       </div>
     </div>
     <div class="col-sm-2">
-      <div class="d-block text-right mb-2">
-        <small
-          class="font-weight-bolder text-muted text-uppercase d-block"
-          translate
+      <div class="d-block text-end mb-2">
+        <small class="fw-bolder text-muted text-uppercase d-block" translate
           >ADMIN.ORDER_RETURNS.DATE_CREATED</small
         >
-        <small class="mb-0 text-capitalize d-block font-weight-bold">
-          {{ orderReturn?.DateCreated | date: 'medium' }}
+        <small class="mb-0 text-capitalize d-block fw-bold">
+          {{ orderReturn?.DateCreated | date : 'medium' }}
         </small>
         <small
           *ngIf="orderReturn?.DateCompleted"
-          class="mt-3 font-weight-bolder text-muted text-uppercase d-block"
+          class="mt-3 fw-bolder text-muted text-uppercase d-block"
           translate
           >ADMIN.ORDER_RETURNS.DATE_COMPLETED</small
         >
-        <small class="mb-0 text-capitalize d-block font-weight-bold">
-          {{ orderReturn?.DateCompleted | date: 'medium' }}
+        <small class="mb-0 text-capitalize d-block fw-bold">
+          {{ orderReturn?.DateCompleted | date : 'medium' }}
         </small>
       </div>
     </div>

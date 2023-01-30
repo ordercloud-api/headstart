@@ -1,11 +1,9 @@
 <form [formGroup]="form" class="mb-2">
   <div class="input-group">
-    <div class="input-group-prepend">
-      <span class="input-group-text">{{
-        order?.xp?.Currency | currencySymbol
-      }}</span>
-    </div>
-    <label [for]="id" class="sr-only" translate
+    <span class="input-group-text">{{
+      order?.xp?.Currency | currencySymbol
+    }}</span>
+    <label [for]="id" class="visually-hidden form-label" translate
       >ADMIN.ORDER_RETURNS.REFUND_INPUT_LABEL</label
     >
     <input
@@ -24,7 +22,7 @@
 >
   Max refund amount:
   {{
-    form.controls.refundAmount.errors.max.max | currency: order?.xp?.Currency
+    form.controls.refundAmount.errors.max.max | currency : order?.xp?.Currency
   }}
   <br />
 </small>
@@ -32,5 +30,5 @@
   *ngIf="form?.controls?.refundAmount?.errors?.min"
   class="alert alert-danger refund-amount-error"
 >
-  Refund can not be less than {{ 0 | currency: order?.xp?.Currency }}
+  Refund can not be less than {{ 0 | currency : order?.xp?.Currency }}
 </small>

@@ -1,17 +1,17 @@
 <!-- parent resource dropdown -->
-<div ngbDropdown class="parent-resource-dropdown btn-block">
+<div ngbDropdown class="parent-resource-dropdown d-grid">
   <button
     class="resource-btn btn btn-outline-dark additional-item-resource-select-dropdown"
     id="parentresourcedropdown"
     ngbDropdownToggle
   >
     <!--Limit display length to keep elements from overlapping -->
-    {{ selectedParentResourceName | slice: 0:34 }}
+    {{ selectedParentResourceName | slice : 0 : 34 }}
     <span *ngIf="selectedParentResourceName.length > 35"> ...</span>
   </button>
   <div ngbDropdownMenu aria-labelledby="parent resource dropdown">
     <search-component
-      class="mr-3 w-100 additional-item-resource-select-dropdown"
+      class="me-3 w-100 additional-item-resource-select-dropdown"
       id="resource-search"
       [placeholderText]="''"
       [searchTermInput]="searchTerm"

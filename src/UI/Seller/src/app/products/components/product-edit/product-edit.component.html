@@ -4,15 +4,9 @@
       productInReviewNotifications?.length > 0 &&
       userContext?.UserType === 'SUPPLIER'
     "
-    class="
-      alert alert-warning
-      d-flex
-      justify-content-start
-      align-items-center
-      set-to-top
-    "
+    class="alert alert-warning d-flex justify-content-start align-items-center set-to-top"
   >
-    <fa-icon [icon]="faExclamationCircle" class="mr-3"></fa-icon>
+    <fa-icon [icon]="faExclamationCircle" class="me-3"></fa-icon>
     <p class="mb-0">
       A monitored field on this product has been edited and is pending seller
       review. Until a seller approves the changes, the product is inactive, and
@@ -26,16 +20,10 @@
       class="alert alert-warning set-to-top"
     >
       <div
-        class="
-          pb-3
-          border-bottom
-          d-flex
-          justify-content-between
-          align-items-center
-        "
+        class="pb-3 border-bottom d-flex justify-content-between align-items-center"
       >
         <div class="d-flex justify-content-start align-items-center">
-          <fa-icon [icon]="faExclamationCircle" class="mr-3"></fa-icon>
+          <fa-icon [icon]="faExclamationCircle" class="me-3"></fa-icon>
           <p class="mb-0">
             {{ notification?.Doc?.Product?.FieldModified }} has been edited.
           </p>
@@ -49,19 +37,19 @@
           </button>
           <!-- TODO: Reinstate the rejected button once functionality can handle the repercussions. -->
           <!-- <button (click)="reviewMonitoredFieldChange('REJECTED')"
-                  class="btn btn-outline-danger ml-2">Reject</button> -->
+                  class="btn btn-outline-danger ms-2">Reject</button> -->
         </div>
       </div>
       <div class="d-flex justify-content-between align-items-start">
         <div class="d-flex flex-column">
-          <small class="mb-0 text-uppercase text-muted font-weight-bolder"
+          <small class="mb-0 text-uppercase text-muted fw-bolder"
             >Previous Value</small
           >
           <pre><code>{{notification?.Doc?.Product?.PreviousValue | json}}</code></pre>
         </div>
         <div class="d-flex justify-content-between align-items-center">
           <div class="d-flex flex-column">
-            <small class="mb-0 text-uppercase text-muted font-weight-bolder"
+            <small class="mb-0 text-uppercase text-muted fw-bolder"
               >New Value</small
             >
             <pre>{{ notification?.Doc?.Product?.CurrentValue | json }}</pre>
@@ -91,13 +79,13 @@
           translate
           >ADMIN.PRODUCT_EDIT.PRODUCT
           <fa-icon
-            class="tab-status-icon text-danger ml-1"
+            class="tab-status-icon text-danger ms-1"
             [icon]="faExclamationCircle"
             *ngIf="isCreatingNew && !productDetailsTabIsValid()"
           >
           </fa-icon>
           <fa-icon
-            class="tab-status-icon text-success ml-1"
+            class="tab-status-icon text-success ms-1"
             [icon]="faCheckCircle"
             *ngIf="isCreatingNew && productDetailsTabIsValid()"
           >
@@ -106,7 +94,7 @@
         <ng-template ngbNavContent>
           <div class="container-fluid">
             <div class="row pt-3">
-              <div class="col-md-8 form-group">
+              <div class="col-md-8 mb-3">
                 <span class="required-field">
                   * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span
                 >
@@ -115,7 +103,7 @@
                   <div
                     class="d-flex justify-content-between align-items-center"
                   >
-                    <h6 class="font-weight-medium" translate>
+                    <h6 class="fw-medium" translate>
                       ADMIN.PRODUCT_EDIT.DETAILS
                     </h6>
                     <fa-icon
@@ -139,9 +127,9 @@
                     >
                     </fa-icon>
                   </div>
-                  <div class="form-row">
-                    <div class="form-group col-md-6">
-                      <label for="Name" translate
+                  <div class="row">
+                    <div class="mb-3 col-md-6">
+                      <label for="Name" class="form-label" translate
                         >ADMIN.PRODUCT_EDIT.NAME
                         <span class="required-field">*</span></label
                       >
@@ -166,8 +154,8 @@
                         >ADMIN.PRODUCT_EDIT.NAME_MAX_LENGTH</small
                       >
                     </div>
-                    <div [hidden]="isCreatingNew" class="form-group col-md-6">
-                      <label for="ProductType" translate
+                    <div [hidden]="isCreatingNew" class="mb-3 col-md-6">
+                      <label for="ProductType" class="form-label" translate
                         >ADMIN.PRODUCT_EDIT.PRODUCT_TYPE
                         <span class="required-field">*</span></label
                       >
@@ -197,7 +185,7 @@
                   </div>
                   <!-- /Product Name -->
                   <hr />
-                  <h6 class="font-weight-medium" translate>
+                  <h6 class="fw-medium" translate>
                     ADMIN.PRODUCT_EDIT.PRODUCT_SKU
                     <small *ngIf="isCreatingNew" class="d-block">
                       <fa-icon
@@ -207,7 +195,7 @@
                       <span translate> ADMIN.PRODUCT_EDIT.NO_PROVIDED_SKU</span>
                     </small>
                   </h6>
-                  <div class="form-group w-50" *ngIf="isCreatingNew">
+                  <div class="mb-3 w-50" *ngIf="isCreatingNew">
                     <input
                       type="text"
                       class="form-control"
@@ -223,10 +211,10 @@
                     />
                   </div>
                   <div
-                    class="form-group w-50"
+                    class="mb-3 w-50"
                     *ngIf="!isCreatingNew && _superHSProductStatic"
                   >
-                    <label for="ID" translate
+                    <label for="ID" class="form-label" translate
                       >ADMIN.PRODUCT_EDIT.PRODUCT_ID</label
                     >
                     <input
@@ -237,9 +225,9 @@
                   </div>
                   <div
                     *ngIf="productInReviewNotifications?.length <= 0"
-                    class="form-group"
+                    class="mb-3"
                   >
-                    <label for="Active" translate
+                    <label for="Active" class="form-label" translate
                       >ADMIN.PRODUCT_EDIT.ACTIVE</label
                     >
                     <label class="d-block switch mb-0">
@@ -259,7 +247,7 @@
                   <div
                     class="d-flex justify-content-between align-items-center"
                   >
-                    <h6 class="font-weight-medium" translate>
+                    <h6 class="fw-medium" translate>
                       ADMIN.PRODUCT_EDIT.UNIT_OF_MEASURE
                     </h6>
                     <fa-icon
@@ -275,9 +263,9 @@
                     >
                     </fa-icon>
                   </div>
-                  <div class="form-row">
-                    <div class="form-group col-md-6">
-                      <label for="UnitOfMeasureQty" translate
+                  <div class="row">
+                    <div class="mb-3 col-md-6">
+                      <label for="UnitOfMeasureQty" class="form-label" translate
                         >ADMIN.PRODUCT_EDIT.QUANTITY_PER_UNIT
                         <span class="required-field">*</span>
                       </label>
@@ -300,8 +288,11 @@
                         }}"
                       />
                     </div>
-                    <div class="form-group col-md-6">
-                      <label for="UnitOfMeasureUnit" translate
+                    <div class="mb-3 col-md-6">
+                      <label
+                        for="UnitOfMeasureUnit"
+                        class="form-label"
+                        translate
                         >ADMIN.PRODUCT_EDIT.UNIT_OF_MEASURE
                         <span class="required-field">*</span>
                       </label>
@@ -328,12 +319,12 @@
                 <!-- /Unit Of Measure -->
                 <!-- Order Limitations -->
                 <div class="card bg-white shadow-sm p-4 mt-3">
-                  <h6 class="font-weight-medium" translate>
+                  <h6 class="fw-medium" translate>
                     ADMIN.PRODUCT_EDIT.ORDER_LIMITATIONS
                   </h6>
-                  <div class="form-row">
-                    <div class="form-group col-md-6">
-                      <label for="MinQuantity" translate
+                  <div class="row">
+                    <div class="mb-3 col-md-6">
+                      <label for="MinQuantity" class="form-label" translate
                         >ADMIN.PRODUCT_EDIT.MIN_QUANTITY</label
                       >
                       <input
@@ -358,8 +349,8 @@
                         }}"
                       />
                     </div>
-                    <div class="form-group col-md-6">
-                      <label for="MaxQuantity" translate
+                    <div class="mb-3 col-md-6">
+                      <label for="MaxQuantity" class="form-label" translate
                         >ADMIN.PRODUCT_EDIT.MAX_QUANTITY</label
                       >
                       <input
@@ -389,15 +380,15 @@
                 <!-- /Order Limitations -->
                 <!-- Inventory Tracking -->
                 <div class="card bg-white shadow-sm p-4 mt-3">
-                  <h6 class="font-weight-medium" translate>
+                  <h6 class="fw-medium" translate>
                     ADMIN.PRODUCT_EDIT.INVENTORY_TRACKING
                   </h6>
-                  <div class="form-group">
-                    <div class="custom-control custom-checkbox">
+                  <div class="mb-3">
+                    <div class="form-check">
                       <input
                         [attr.disabled]="readonly ? true : null"
                         type="checkbox"
-                        class="custom-control-input"
+                        class="form-check-input"
                         formControlName="InventoryEnabled"
                         (input)="
                           handleUpdateProduct(
@@ -408,7 +399,7 @@
                         id="InventoryEnabled"
                       />
                       <label
-                        class="custom-control-label"
+                        class="form-check-label"
                         for="InventoryEnabled"
                         translate
                         >ADMIN.PRODUCT_EDIT.ENABLE_INVENTORY_TRACKING</label
@@ -417,12 +408,12 @@
                   </div>
                   <div
                     *ngIf="_superHSProductEditable?.Product?.Inventory?.Enabled"
-                    class="form-group"
+                    class="mb-3"
                   >
-                    <div class="custom-control custom-checkbox">
+                    <div class="form-check">
                       <input
                         type="checkbox"
-                        class="custom-control-input"
+                        class="form-check-input"
                         formControlName="OrderCanExceed"
                         (input)="
                           handleUpdateProduct(
@@ -433,7 +424,7 @@
                         id="OrderCanExceed"
                       />
                       <label
-                        class="custom-control-label"
+                        class="form-check-label"
                         for="OrderCanExceed"
                         translate
                         >ADMIN.PRODUCT_EDIT.ORDER_CAN_EXCEED</label
@@ -448,12 +439,12 @@
                     "
                     placement="bottom-left"
                     *ngIf="_superHSProductEditable?.Product?.Inventory?.Enabled"
-                    class="form-group"
+                    class="mb-3"
                   >
-                    <div class="custom-control custom-checkbox">
+                    <div class="form-check">
                       <input
                         type="checkbox"
-                        class="custom-control-input"
+                        class="form-check-input"
                         formControlName="VariantLevelTracking"
                         (input)="
                           handleUpdateProduct(
@@ -464,7 +455,7 @@
                         id="VariantLevelTracking"
                       />
                       <label
-                        class="custom-control-label"
+                        class="form-check-label"
                         for="VariantLevelTracking"
                         translate
                         >Track inventory for each individual variation</label
@@ -477,9 +468,9 @@
                       !_superHSProductEditable?.Product?.Inventory
                         ?.VariantLevelTracking
                     "
-                    class="form-group w-50"
+                    class="mb-3 w-50"
                   >
-                    <label for="QuantityAvailable" translate
+                    <label for="QuantityAvailable" class="form-label" translate
                       >ADMIN.PRODUCT_EDIT.QUANTITY_AVAILABLE</label
                     >
                     <div class="input-group">
@@ -502,11 +493,7 @@
                             | translate
                         }}"
                       />
-                      <div class="input-group-append">
-                        <span class="input-group-text rounded-right"
-                          >units</span
-                        >
-                      </div>
+                      <span class="input-group-text rounded-end">units</span>
                     </div>
                   </div>
                   <ng-container
@@ -537,15 +524,15 @@
                 <!-- /Inventory Tracking -->
                 <!-- Product Returnable -->
                 <div class="card bg-white shadow-sm p-4 mt-3">
-                  <h6 class="font-weight-medium" translate>
+                  <h6 class="fw-medium" translate>
                     ADMIN.PRODUCT_EDIT.PRODUCT_RETURNS.PRODUCT_RETURNS
                   </h6>
-                  <div class="form-group">
-                    <div class="custom-control custom-checkbox">
+                  <div class="mb-3">
+                    <div class="form-check">
                       <input
                         [attr.disabled]="readonly ? true : null"
                         type="checkbox"
-                        class="custom-control-input"
+                        class="form-check-input"
                         formControlName="Returnable"
                         (input)="
                           handleUpdateProduct($event, 'Product.Returnable')
@@ -553,7 +540,7 @@
                         id="returnableEnabled"
                       />
                       <label
-                        class="custom-control-label"
+                        class="form-check-label"
                         for="returnableEnabled"
                         translate
                         >ADMIN.PRODUCT_EDIT.PRODUCT_RETURNS.IS_PRODUCT_RETURNABLE</label
@@ -589,11 +576,11 @@
                 <!-- /Tax Categorization -->
                 <!-- Shipping Information -->
                 <div class="card bg-white shadow-sm p-4 mt-3">
-                  <div class="form-group">
+                  <div class="mb-3">
                     <div
                       class="d-flex justify-content-between align-items-center"
                     >
-                      <h6 class="font-weight-medium" translate>
+                      <h6 class="fw-medium" translate>
                         ADMIN.PRODUCT_EDIT.SHIPPING.SHIPPING
                       </h6>
                       <ng-container
@@ -615,11 +602,11 @@
                         </fa-icon>
                       </ng-container>
                     </div>
-                    <div class="custom-control custom-checkbox mb-3">
+                    <div class="form-check mb-3">
                       <input
                         type="checkbox"
                         [attr.disabled]="readonly ? true : null"
-                        class="custom-control-input"
+                        class="form-check-input"
                         formControlName="FreeShipping"
                         (input)="
                           handleUpdateProduct($event, 'Product.xp.FreeShipping')
@@ -627,7 +614,7 @@
                         id="FreeShipping"
                       />
                       <label
-                        class="custom-control-label"
+                        class="form-check-label"
                         for="FreeShipping"
                         translate
                         >ADMIN.PRODUCT_EDIT.SHIPPING.FREE_SHIPPING</label
@@ -637,7 +624,10 @@
                       *ngIf="_superHSProductEditable?.Product?.xp?.FreeShipping"
                       class="mb-3"
                     >
-                      <label for="FreeShippingMessage" translate
+                      <label
+                        for="FreeShippingMessage"
+                        class="form-label"
+                        translate
                         >ADMIN.PRODUCT_EDIT.SHIPPING.FREE_SHIPPING_MESSAGE
                       </label>
                       <input
@@ -665,7 +655,7 @@
                         >
                       </small>
                     </div>
-                    <label for="ShipFromAddressID" translate
+                    <label for="ShipFromAddressID" class="form-label" translate
                       >ADMIN.PRODUCT_EDIT.WHICH_LOCATION_SHIP
                       <span class="required-field">*</span>
                     </label>
@@ -695,13 +685,13 @@
                   <div
                     class="d-flex justify-content-between align-items-center"
                   >
-                    <label for="ShipWeight" translate>
+                    <label for="ShipWeight" class="form-label" translate>
                       ADMIN.PRODUCT_EDIT.WEIGHT_PER_QTY
                       <span class="required-field">*</span>
                     </label>
                   </div>
-                  <div class="form-row">
-                    <div class="form-group col-md-12">
+                  <div class="row">
+                    <div class="mb-3 col-md-12">
                       <div class="input-group w-50">
                         <input
                           [attr.disabled]="readonly ? true : null"
@@ -723,17 +713,15 @@
                               | translate
                           }}"
                         />
-                        <div class="input-group-append">
-                          <span class="input-group-text rounded-right" translate
-                            >ADMIN.PRODUCT_EDIT.SHIPPING.POUNDS</span
-                          >
-                        </div>
+                        <span class="input-group-text rounded-end" translate
+                          >ADMIN.PRODUCT_EDIT.SHIPPING.POUNDS</span
+                        >
                       </div>
                     </div>
                   </div>
                   <hr />
-                  <div class="form-group">
-                    <label class="d-block" for="SizeTier" translate
+                  <div class="mb-3">
+                    <label class="d-block form-label" for="SizeTier" translate
                       >ADMIN.PRODUCT_EDIT.SHIPPING.SIZE_TIER_LABEL
                       <span class="required-field">*</span></label
                     >
@@ -774,13 +762,13 @@
                   <ng-container
                     *ngIf="productForm.controls['SizeTier'].value === 'G'"
                   >
-                    <div class="form-group mb-0">
-                      <label for="ShipHeight" translate
+                    <div class="mb-3 mb-0">
+                      <label for="ShipHeight" class="form-label" translate
                         >ADMIN.PRODUCT_EDIT.SHIPPING.LENGTH_BY_WIDTH_BY_HEIGHT
                       </label>
                     </div>
-                    <div class="form-row">
-                      <div class="form-group col-md-4">
+                    <div class="row">
+                      <div class="mb-3 col-md-4">
                         <div class="input-group">
                           <input
                             [attr.disabled]="readonly ? true : null"
@@ -802,14 +790,12 @@
                                 | translate
                             }}"
                           />
-                          <div class="input-group-append">
-                            <span class="input-group-text rounded-right"
-                              >inches</span
-                            >
-                          </div>
+                          <span class="input-group-text rounded-end"
+                            >inches</span
+                          >
                         </div>
                       </div>
-                      <div class="form-group col-md-4">
+                      <div class="mb-3 col-md-4">
                         <div class="input-group">
                           <input
                             [attr.disabled]="readonly ? true : null"
@@ -831,14 +817,12 @@
                                 | translate
                             }}"
                           />
-                          <div class="input-group-append">
-                            <span class="input-group-text rounded-right"
-                              >inches</span
-                            >
-                          </div>
+                          <span class="input-group-text rounded-end"
+                            >inches</span
+                          >
                         </div>
                       </div>
-                      <div class="form-group col-md-4">
+                      <div class="mb-3 col-md-4">
                         <div class="input-group">
                           <input
                             [attr.disabled]="readonly ? true : null"
@@ -860,11 +844,9 @@
                                 | translate
                             }}"
                           />
-                          <div class="input-group-append">
-                            <span class="input-group-text rounded-right"
-                              >inches</span
-                            >
-                          </div>
+                          <span class="input-group-text rounded-end"
+                            >inches</span
+                          >
                         </div>
                       </div>
                     </div>
@@ -875,26 +857,13 @@
               <!-- Product Preview -->
               <div class="col-md-4">
                 <div
-                  class="
-                    card
-                    py-2
-                    px-3
-                    bg-white
-                    sticky-top
-                    product-preview-card
-                  "
+                  class="card py-2 px-3 bg-white sticky-top product-preview-card"
                 >
-                  <p class="text-center font-weight-bold" translate>
+                  <p class="text-center fw-bold" translate>
                     ADMIN.PRODUCT_EDIT.PRODUCT_PREVIEW
                   </p>
                   <div
-                    class="
-                      card
-                      product-preview
-                      w-100
-                      border-hover
-                      cursor-pointer
-                    "
+                    class="card product-preview w-100 border-hover cursor-pointer"
                   >
                     <div class="ribbon ribbon-top-right bg-light">
                       <fa-icon
@@ -909,13 +878,7 @@
                         [alt]="_superHSProductEditable?.Product?.Name"
                       />
                       <div
-                        class="
-                          card-body
-                          d-flex
-                          flex-column
-                          justify-content-between
-                          bg-light
-                        "
+                        class="card-body d-flex flex-column justify-content-between bg-light"
                       >
                         <h5
                           class="card-title"
@@ -935,12 +898,7 @@
                           }}
                         </p>
                         <div
-                          class="
-                            d-flex
-                            flex-wrap
-                            justify-content-between
-                            align-items-center
-                          "
+                          class="d-flex flex-wrap justify-content-between align-items-center"
                         >
                           <app-price-display
                             class="card-text mb-0"
@@ -958,7 +916,10 @@
                               _superHSProductEditable?.Product?.xp
                                 ?.UnitOfMeasure?.Unit
                             }}</small
-                          ><label class="sr-only" for="quantity" translate
+                          ><label
+                            class="visually-hidden"
+                            for="quantity"
+                            translate
                             >ADMIN.PRODUCT_EDIT.QUANTITY</label
                           >
                         </div>
@@ -1011,7 +972,7 @@
             <div class="row pt-3">
               <div class="col-md-7">
                 <div class="card py-2 px-3 bg-white">
-                  <h6 class="font-weight-medium" translate>
+                  <h6 class="fw-medium" translate>
                     ADMIN.PRODUCT_EDIT.DESCRIPTION
                   </h6>
                   <reactive-quill-editor-component
@@ -1025,8 +986,8 @@
                     "
                   >
                   </reactive-quill-editor-component>
-                  <div class="form-group mt-3">
-                    <label for="Note" translate
+                  <div class="mb-3 mt-3">
+                    <label for="Note" class="form-label" translate
                       >ADMIN.PRODUCT_EDIT.PRODUCT_MESSAGE</label
                     >
                     <input
@@ -1048,7 +1009,7 @@
               </div>
               <div class="col-md-5">
                 <div class="card py-2 px-3 bg-white">
-                  <h6 class="font-weight-medium" translate>
+                  <h6 class="fw-medium" translate>
                     ADMIN.PRODUCT_EDIT.DESCRIPTION_PREVIEW
                   </h6>
                   <div>
@@ -1066,7 +1027,7 @@
                     "
                   ></div>
                   <hr />
-                  <h6 class="font-weight-medium" translate>
+                  <h6 class="fw-medium" translate>
                     ADMIN.PRODUCT_EDIT.MESSAGE_PREVIEW
                   </h6>
                   <div>
@@ -1102,7 +1063,7 @@
           ADMIN.PRODUCT_EDIT.PRICING
           <!-- Validity Status Indicators -->
           <fa-icon
-            class="tab-status-icon text-danger ml-1"
+            class="tab-status-icon text-danger ms-1"
             [icon]="faExclamationCircle"
             *ngIf="
               isCreatingNew &&
@@ -1112,7 +1073,7 @@
           >
           </fa-icon>
           <fa-icon
-            class="tab-status-icon text-success ml-1"
+            class="tab-status-icon text-success ms-1"
             [icon]="faCheckCircle"
             *ngIf="
               isCreatingNew &&
@@ -1165,7 +1126,7 @@
       <li *ngIf="!_superHSProductEditable?.Product?.ID" [ngbNavItem]="5" id="5">
         <a class="text-muted nav-link" (click)="showVariantToastr()" translate>
           ADMIN.PRODUCT_EDIT.VARIANTS
-          <span class="badge badge-pill badge-primary-light">{{
+          <span class="badge rounded-pill bg-primary-light text-dark">{{
             _superHSProductEditable?.Variants?.length || 0
           }}</span>
         </a>
@@ -1173,7 +1134,7 @@
       <li *ngIf="_superHSProductEditable?.Product?.ID" [ngbNavItem]="5" id="5">
         <a class="text-muted" ngbNavLink translate>
           ADMIN.PRODUCT_EDIT.VARIANTS
-          <span class="badge badge-pill badge-primary-light">{{
+          <span class="badge rounded-pill bg-primary-light text-dark">{{
             _superHSProductEditable?.Variants?.length || 0
           }}</span>
         </a>
@@ -1201,7 +1162,7 @@
       <li [ngbNavItem]="6" id="6">
         <a class="text-muted" ngbNavLink translate
           >ADMIN.PRODUCT_EDIT.IMAGES_AND_DOCUMENTS
-          <span class="badge badge-pill badge-primary-light">{{
+          <span class="badge rounded-pill bg-primary-light text-dark">{{
             _superHSProductEditable?.Product?.xp?.Images?.length +
               _superHSProductEditable?.Product?.xp.Documents?.length +
               stagedImages?.length +
@@ -1252,13 +1213,7 @@
   </form>
   <!-- TODO: 2/2 Abstract into component to be used anywhere using inputs and outputs -->
   <div
-    class="
-      d-flex
-      justify-content-between
-      align-items-center
-      py-2
-      product-edit-actions
-    "
+    class="d-flex justify-content-between align-items-center py-2 product-edit-actions"
   >
     <delete-confirm-modal-component
       *ngIf="!isCreatingNew"
@@ -1289,7 +1244,7 @@
           {{ getSaveBtnText() | translate }}
         </button>
         <button
-          class="btn btn-primary ml-3"
+          class="btn btn-primary ms-3"
           (click)="handleDiscardChanges()"
           *ngIf="areChanges && !isCreatingNew"
           translate

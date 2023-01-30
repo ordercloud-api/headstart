@@ -32,9 +32,7 @@
             <td>{{ getPriceBreakRange(i) }}</td>
             <td>
               <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">{{ currency?.Symbol }}</span>
-                </div>
+                <span class="input-group-text">{{ currency?.Symbol }}</span>
                 <input
                   [attr.disabled]="readonly ? true : null"
                   type="number"
@@ -51,9 +49,7 @@
             </td>
             <td>
               <div class="input-group">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">{{ currency?.Symbol }}</span>
-                </div>
+                <span class="input-group-text">{{ currency?.Symbol }}</span>
                 <input
                   [attr.disabled]="readonly ? true : null"
                   type="number"
@@ -79,7 +75,7 @@
           </tr>
           <tr *ngIf="isAddingPriceBreak">
             <td>
-              <div class="form-group">
+              <div class="mb-3">
                 <div class="input-group">
                   <input
                     [attr.disabled]="readonly ? true : null"
@@ -96,11 +92,9 @@
               </div>
             </td>
             <td>
-              <div class="form-group">
+              <div class="mb-3">
                 <div class="input-group">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">{{ currency?.Symbol }}</span>
-                  </div>
+                  <span class="input-group-text">{{ currency?.Symbol }}</span>
                   <input
                     [attr.disabled]="readonly ? true : null"
                     type="number"
@@ -117,11 +111,9 @@
               </div>
             </td>
             <td>
-              <div class="form-group">
+              <div class="mb-3">
                 <div class="input-group">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">{{ currency?.Symbol }}</span>
-                  </div>
+                  <span class="input-group-text">{{ currency?.Symbol }}</span>
                   <input
                     [attr.disabled]="readonly ? true : null"
                     type="number"
@@ -162,8 +154,8 @@
           </tr>
         </tbody>
       </table>
-      <div class="form-group mt-3">
-        <label for="UseCumulativeQuantity" translate
+      <div class="mb-3 mt-3">
+        <label for="UseCumulativeQuantity" class="form-label" translate
           >ADMIN.PRODUCT_EDIT.PRICE_BREAK_APPLICATION</label
         >
         <div
@@ -171,7 +163,7 @@
           class="d-flex align-items-center mb-2"
         >
           <fa-icon [icon]="faExclamationCircle"></fa-icon
-          ><small class="ml-2" translate=""
+          ><small class="ms-2" translate=""
             >ADMIN.PRODUCT_EDIT.APPLY_INFO_TEXT</small
           >
         </div>
@@ -201,8 +193,8 @@
         </select>
       </div>
       <form [formGroup]="salePriceForm" *ngIf="salePriceForm">
-        <div class="form-group mt-3">
-          <label for="SaleStart" translate
+        <div class="mb-3 mt-3">
+          <label for="SaleStart" class="form-label" translate
             >ADMIN.PRODUCT_EDIT.SALE_START
             <fa-icon
               [icon]="faQuestionCircle"
@@ -216,7 +208,7 @@
             >
             </fa-icon>
           </label>
-          <div class="form-row">
+          <div class="row">
             <div class="input-group col-md-6">
               <input
                 type="text"
@@ -229,16 +221,14 @@
                 ngbDatepicker
                 #saleStartDatePicker="ngbDatepicker"
               />
-              <div class="input-group-append">
-                <button
-                  [disabled]="readonly"
-                  class="btn btn-outline-primary calendar"
-                  (click)="saleStartDatePicker.toggle()"
-                  type="button"
-                >
-                  <fa-icon [icon]="faCalendar"></fa-icon>
-                </button>
-              </div>
+              <button
+                [disabled]="readonly"
+                class="btn btn-outline-primary calendar"
+                (click)="saleStartDatePicker.toggle()"
+                type="button"
+              >
+                <fa-icon [icon]="faCalendar"></fa-icon>
+              </button>
             </div>
             <div class="input-group col-md-6">
               <ngb-timepicker
@@ -253,8 +243,8 @@
             </div>
           </div>
         </div>
-        <div class="form-group mt-3">
-          <label for="SaleEnd" translate
+        <div class="mb-3 mt-3">
+          <label for="SaleEnd" class="form-label" translate
             >ADMIN.PRODUCT_EDIT.SALE_END
             <fa-icon
               [icon]="faQuestionCircle"
@@ -268,7 +258,7 @@
             >
             </fa-icon>
           </label>
-          <div class="form-row">
+          <div class="row">
             <div class="input-group col-md-6">
               <input
                 type="text"
@@ -281,16 +271,14 @@
                 ngbDatepicker
                 #saleEndDatePicker="ngbDatepicker"
               />
-              <div class="input-group-append">
-                <button
-                  class="btn btn-outline-primary calendar"
-                  [disabled]="readonly"
-                  (click)="saleEndDatePicker.toggle()"
-                  type="button"
-                >
-                  <fa-icon [icon]="faCalendar"></fa-icon>
-                </button>
-              </div>
+              <button
+                class="btn btn-outline-primary calendar"
+                [disabled]="readonly"
+                (click)="saleEndDatePicker.toggle()"
+                type="button"
+              >
+                <fa-icon [icon]="faCalendar"></fa-icon>
+              </button>
             </div>
             <div class="input-group col-md-6">
               <ngb-timepicker

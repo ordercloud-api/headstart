@@ -1,12 +1,10 @@
 <form [formGroup]="form" #searchform>
-  <label for="search-addon" class="sr-only">{{
+  <label for="search-addon" class="visually-hidden form-label">{{
     ('ADMIN.COMMON.SEARCH' | translate) + placeholderText
   }}</label>
   <div class="input-group">
-    <div class="input-group-prepend">
-      <div class="input-group-text search-input-icon">
-        <fa-icon [icon]="faSearch"></fa-icon>
-      </div>
+    <div class="input-group-text search-input-icon">
+      <fa-icon [icon]="faSearch"></fa-icon>
     </div>
     <input
       type="search"

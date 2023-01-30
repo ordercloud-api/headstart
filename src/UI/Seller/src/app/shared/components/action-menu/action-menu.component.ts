@@ -1,5 +1,4 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core'
-import { getSupportedInputTypes } from '@angular/cdk/platform'
 
 @Component({
   selector: 'action-menu-component',

@@ -31,7 +31,7 @@
     </div>
     <search-component
       *ngIf="userGroupType === 'BuyerLocation'"
-      class="mr-3 w-100 additional-item-resource-select-dropdown"
+      class="me-3 w-100 additional-item-resource-select-dropdown"
       id="resource-search"
       [placeholderText]="''"
       [searchTermInput]="searchTermInput"
@@ -43,7 +43,7 @@
       *ngIf="(!userGroups?.Items?.length && !userGroups?.Meta) || searching"
     >
       <div class="spinner-border mb-3" role="status">
-        <span class="sr-only" translate>ADMIN.COMMON.LOADING</span>
+        <span class="visually-hidden" translate>ADMIN.COMMON.LOADING</span>
       </div>
     </div>
     <perfect-scrollbar>
@@ -165,10 +165,10 @@
           <div class="d-flex justify-content-start align-items-center">
             <fa-icon
               [icon]="faExclamationCircle"
-              class="alert-icon mr-3"
+              class="alert-icon me-3"
             ></fa-icon>
             <p class="mb-0 d-flex flex-column">
-              <small class="font-weight-bold"
+              <small class="fw-bold"
                 >This is a potentially destructive action that affects
                 {{ displayText.Title | translate }}.</small
               >

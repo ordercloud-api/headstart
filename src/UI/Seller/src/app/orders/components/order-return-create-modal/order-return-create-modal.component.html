@@ -21,8 +21,8 @@
     </div>
     <div class="row">
       <div class="col-md-6">
-        <div class="form-group">
-          <label for="refundAmount" translate
+        <div class="mb-3">
+          <label for="refundAmount" class="form-label" translate
             >ADMIN.ORDER_RETURNS.REFUND_AMOUNT
             <fa-icon
               [icon]="faQuestionCircle"
@@ -44,7 +44,7 @@
           />
         </div>
 
-        <div class="form-group">
+        <div class="mb-3">
           <span translate>ADMIN.ORDER_RETURNS.REFUND_IMMEDIATELY</span>
           <div class="form-check">
             <input
@@ -80,8 +80,8 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="orderReturnComments" translate
+        <div class="mb-3">
+          <label for="orderReturnComments" class="form-label" translate
             >ADMIN.ORDER_RETURNS.COMMENTS_TO_BUYER_OPTIONAL
           </label>
           <textarea
@@ -128,7 +128,7 @@
     <button
       [disabled]="isLoadingCalculate || !isAnyRowSelected()"
       type="button"
-      class="btn btn-outline-teal"
+      class="btn btn-outline-teal me-3"
       (click)="calculateRefunds()"
     >
       <span translate *ngIf="!isLoadingCalculate"

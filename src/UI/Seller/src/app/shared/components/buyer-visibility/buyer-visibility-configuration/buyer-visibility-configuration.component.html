@@ -1,4 +1,4 @@
-<div class="row no-gutters align-items-center">
+<div class="row g-0 align-items-center">
   <div class="col-sm">
     <h4 class="mb-0">
       {{ _buyer.Name }}
@@ -17,7 +17,7 @@
           class="spinner-grow spinner-grow-sm text-medium"
           role="status"
         ></div>
-        <span class="text-muted font-italic ml-2" translate
+        <span class="text-muted font-italic ms-2" translate
           >ADMIN.PRODUCT_EDIT.FETCHING_VISIBILITY</span
         >
       </div>
@@ -27,21 +27,23 @@
         <div class="d-flex align-items-center">
           <fa-icon
             [icon]="faEye"
-            class="text-success mr-2"
+            class="text-success me-2"
             aria-hidden="true"
           ></fa-icon>
           <span translate>ADMIN.PRODUCT_EDIT.VISIBLE_IN</span>&nbsp;
           <span
             >{{ catalogAssignmentsStatic.length }}/{{ catalogs.length }}</span
           >
-          &nbsp;<span>{{ 'ADMIN.PRODUCT_EDIT.CATALOGS' | translate | lowercase }}</span>
+          &nbsp;<span>{{
+            'ADMIN.PRODUCT_EDIT.CATALOGS' | translate | lowercase
+          }}</span>
         </div>
       </ng-container>
       <ng-container *ngIf="catalogAssignmentsStatic.length === 0">
         <div class="d-flex align-items-center">
           <fa-icon
             [icon]="faEyeSlash"
-            class="text-danger mr-2"
+            class="text-danger me-2"
             aria-hidden="true"
           ></fa-icon>
           <span translate> ADMIN.PRODUCT_EDIT.NOT_VISIBLE</span>
@@ -49,7 +51,7 @@
       </ng-container>
     </ng-container>
   </div>
-  <div class="col-sm text-right">
+  <div class="col-sm text-end">
     <ng-container *ngIf="!isEditing">
       <button type="button" class="btn btn-primary" (click)="edit()" translate>
         ADMIN.PRODUCT_EDIT.EDIT
@@ -102,7 +104,7 @@
   </div>
   <p
     *ngIf="!catalogs.length"
-    class="alert alert-info font-weight-bold mb-0 p-3 shadow-sm"
+    class="alert alert-info fw-bold mb-0 p-3 shadow-sm"
     translate
   >
     ADMIN.PRODUCT_EDIT.NO_CATALOGS
@@ -125,7 +127,7 @@
     </button>
     <button
       *ngIf="areChanges"
-      class="btn btn-link text-danger ml-3"
+      class="btn btn-link text-danger ms-3"
       (click)="handleDiscardChanges()"
       translate
     >

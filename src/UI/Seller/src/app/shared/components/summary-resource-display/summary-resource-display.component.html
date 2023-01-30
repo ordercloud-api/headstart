@@ -33,15 +33,15 @@
       aria-label="Toggle Resource"
     >
       <fa-icon *ngIf="!_isResourceExpanded" [icon]="faChevronRight"
-        ><span class="sr-only">Expand Resource</span></fa-icon
+        ><span class="visually-hidden">Expand Resource</span></fa-icon
       >
       <fa-icon *ngIf="_isResourceExpanded" [icon]="faChevronDown"
-        ><span class="sr-only">Collapse Resource</span></fa-icon
+        ><span class="visually-hidden">Collapse Resource</span></fa-icon
       >
     </button>
-    <div *ngIf="isLoading" class="ml-auto p-2 align-self-center">
+    <div *ngIf="isLoading" class="ms-auto p-2 align-self-center">
       <div class="spinner-border" role="status">
-        <span class="sr-only" translate>ADMIN.COMMON.LOADING</span>
+        <span class="visually-hidden" translate>ADMIN.COMMON.LOADING</span>
       </div>
     </div>
   </div>
@@ -56,7 +56,7 @@
     *ngIf="
       this._resource && resourceType === 'categories' && !isAtMaximumDepth()
     "
-    class="p-2 ml-auto align-self-center"
+    class="p-2 ms-auto align-self-center"
   >
     <button
       ngbDropdownItem
@@ -68,7 +68,7 @@
       <div class="icon-wrapper text-primary">
         <fa-icon [icon]="faPlus" aria-hidden="true"></fa-icon>
       </div>
-      <span class="sr-only">button to add a subcategory</span>
+      <span class="visually-hidden">button to add a subcategory</span>
     </button>
   </div>
 </div>

@@ -18,7 +18,7 @@
             [src]="li.xp?.ImageUrl || getImageUrl(li.ID)"
             width="auto"
             height="80px"
-            class="mr-2"
+            class="me-2"
           />
           <h6>{{ li.ID }}</h6>
         </td>
@@ -46,7 +46,8 @@
         </td>
         <td class="align-middle">
           <span *ngIf="orderReturn.Status !== 'AwaitingApproval'">{{
-            getOrderReturnItem(li)?.RefundAmount | currency: order?.xp?.Currency
+            getOrderReturnItem(li)?.RefundAmount
+              | currency : order?.xp?.Currency
           }}</span>
           <order-return-refund-input
             *ngIf="orderReturn.Status === 'AwaitingApproval'"

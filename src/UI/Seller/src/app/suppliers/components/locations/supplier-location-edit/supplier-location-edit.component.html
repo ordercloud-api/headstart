@@ -1,19 +1,19 @@
 <div class="container-fluid resource-edit">
   <form *ngIf="resourceForm" [formGroup]="resourceForm">
-    <span class="required-field" > * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span>
+    <span class="required-field">
+      * <span translate>ADMIN.COMMON.REQUIRED_FIELDS</span></span
+    >
     <div class="row pt-3">
       <div class="col-md-7">
         <div class="card py-2 px-3 bg-white">
-          <h6 class="font-weight-medium">
+          <h6 class="fw-medium">
             {{ 'ALIAS.SUPPLIER_LOCATION' | translate | titlecase }} Details
           </h6>
-          <div class="form-row">
-            <div class="form-group col-md-6">
-              <label for="AddressName"
-                >{{
-                  'ALIAS.SUPPLIER_LOCATION' | translate | titlecase
-                }}
-                Name <span class="required-field">*</span></label
+          <div class="row">
+            <div class="mb-3 col-md-6">
+              <label for="AddressName" class="form-label"
+                >{{ 'ALIAS.SUPPLIER_LOCATION' | translate | titlecase }} Name
+                <span class="required-field">*</span></label
               >
               <input
                 type="text"
@@ -30,8 +30,10 @@
                 }} Name"
               />
             </div>
-            <div class="form-group col-md-6">
-              <label for="Company Name">Company Name <span class="required-field">*</span></label>
+            <div class="mb-3 col-md-6">
+              <label for="Company Name" class="form-label"
+                >Company Name <span class="required-field">*</span></label
+              >
               <input
                 type="text"
                 class="form-control"
@@ -46,8 +48,10 @@
               />
             </div>
           </div>
-          <div class="form-group">
-            <label for="Country">Country <span class="required-field">*</span></label>
+          <div class="mb-3">
+            <label for="Country" class="form-label"
+              >Country <span class="required-field">*</span></label
+            >
             <select
               *ngIf="countryOptions.length"
               type="dropdown"
@@ -69,19 +73,22 @@
           </div>
         </div>
         <div class="card bg-white shadow-sm p-4 mt-3">
-          <h6 class="font-weight-medium">
+          <h6 class="fw-medium">
             {{ 'ALIAS.SUPPLIER_LOCATION' | translate | titlecase }}
           </h6>
           <p *ngIf="!countryHasBeenSelected" class="font-italic">
             Pending Country selection ...
           </p>
           <ng-container *ngIf="countryHasBeenSelected">
-            <div class="form-group">
-              <label for="Street 1">{{
-                getControlValue('Country') === 'CA'
-                  ? 'Civic Address'
-                  : 'Street 1'
-              }} <span class="required-field">*</span></label>
+            <div class="mb-3">
+              <label for="Street 1" class="form-label"
+                >{{
+                  getControlValue('Country') === 'CA'
+                    ? 'Civic Address'
+                    : 'Street 1'
+                }}
+                <span class="required-field">*</span></label
+              >
               <input
                 type="text"
                 class="form-control"
@@ -99,8 +106,8 @@
                 }}"
               />
             </div>
-            <div *ngIf="getControlValue('Country') !== 'CA'" class="form-group">
-              <label for="Street2">Street 2</label>
+            <div *ngIf="getControlValue('Country') !== 'CA'" class="mb-3">
+              <label for="Street2" class="form-label">Street 2</label>
               <input
                 type="text"
                 class="form-control"
@@ -114,10 +121,13 @@
                 placeholder="Enter Street 2"
               />
             </div>
-            <div class="form-group">
-              <label for="City">{{
-                getControlValue('Country') === 'CA' ? 'Municipality' : 'City'
-              }} <span class="required-field">*</span></label>
+            <div class="mb-3">
+              <label for="City" class="form-label"
+                >{{
+                  getControlValue('Country') === 'CA' ? 'Municipality' : 'City'
+                }}
+                <span class="required-field">*</span></label
+              >
               <input
                 type="text"
                 class="form-control"
@@ -135,10 +145,13 @@
                 }}"
               />
             </div>
-            <div class="form-group">
-              <label for="State">{{
-                getControlValue('Country') === 'CA' ? 'Province' : 'State'
-              }} <span class="required-field">*</span></label>
+            <div class="mb-3">
+              <label for="State" class="form-label"
+                >{{
+                  getControlValue('Country') === 'CA' ? 'Province' : 'State'
+                }}
+                <span class="required-field">*</span></label
+              >
               <input
                 type="text"
                 class="form-control"
@@ -156,10 +169,13 @@
                 }}"
               />
             </div>
-            <div class="form-group">
-              <label for="Zip">{{
-                getControlValue('Country') === 'CA' ? 'Postal Code' : 'Zip'
-              }} <span class="required-field">*</span></label>
+            <div class="mb-3">
+              <label for="Zip" class="form-label"
+                >{{
+                  getControlValue('Country') === 'CA' ? 'Postal Code' : 'Zip'
+                }}
+                <span class="required-field">*</span></label
+              >
               <input
                 type="text"
                 class="form-control"
@@ -182,7 +198,7 @@
       </div>
       <div class="col-md-5">
         <div class="card py-2 px-3 bg-white">
-          <h6 class="font-weight-medium">
+          <h6 class="fw-medium">
             {{ 'ALIAS.SUPPLIER_LOCATION' | translate | titlecase }} Summary
           </h6>
           <img *ngIf="flag !== undefined" [src]="flag" alt="Country flag" />
@@ -218,7 +234,7 @@
           suggested addresses or enter a valid address.
         </p>
       </div>
-      <div class="col-md-7 form-group">
+      <div class="col-md-7 mb-3">
         <address-suggestion
           (selectedAddress)="handleAddressSelect($event)"
           [suggestedAddresses]="suggestedAddresses"
