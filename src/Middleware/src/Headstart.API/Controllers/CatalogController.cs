@@ -42,9 +42,9 @@ namespace Headstart.Common.Controllers
         /// Create a new Catalog.
         /// </summary>
         [HttpPost, Route("{buyerID}/catalogs"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
-        public async Task<HSCatalog> Post([FromBody] HSCatalog obj, string buyerID)
+        public async Task<HSCatalog> Create([FromBody] HSCatalog obj, string buyerID)
         {
-            return await catalogCommand.Post(buyerID, obj, UserContext);
+            return await catalogCommand.Create(buyerID, obj, UserContext);
         }
 
         /// <summary>
@@ -66,12 +66,12 @@ namespace Headstart.Common.Controllers
         }
 
         /// <summary>
-        /// PUT Catalog.
+        /// Save Catalog.
         /// </summary>
         [HttpPut, Route("{buyerID}/catalogs/{catalogID}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
-        public async Task<HSCatalog> Put([FromBody] HSCatalog obj, string buyerID, string catalogID)
+        public async Task<HSCatalog> Save([FromBody] HSCatalog obj, string buyerID, string catalogID)
         {
-            return await catalogCommand.Put(buyerID, catalogID, obj, UserContext);
+            return await catalogCommand.Save(buyerID, catalogID, obj, UserContext);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace Headstart.Common.Controllers
         /// SYNC User Catalogs Assignments.
         /// </summary>
         [HttpPost, Route("{buyerID}/catalogs/user/{userID}"), OrderCloudUserAuth(ApiRole.ProductAdmin)]
-        public async Task SyncOnRemoveFromLocation(string buyerID, string userID)
+        public async Task SyncUserCatalogAssignments(string buyerID, string userID)
         {
             await catalogCommand.SyncUserCatalogAssignments(buyerID, userID);
         }

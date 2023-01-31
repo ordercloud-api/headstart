@@ -5,15 +5,18 @@ import {
   EventEmitter,
   OnDestroy,
 } from '@angular/core'
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms'
+import {
+  UntypedFormGroup,
+  UntypedFormControl,
+  Validators,
+} from '@angular/forms'
 import { BuyerTempService } from '@app-seller/shared/services/middleware-api/buyer-temp.service'
-import { HSBuyer, SuperHSBuyer } from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, HSBuyer, SuperHSBuyer } from '@ordercloud/headstart-sdk'
 import { BuyerService } from '../buyer.service'
 import { Router } from '@angular/router'
 import { isEqual as _isEqual } from 'lodash'
 import { Subscription } from 'rxjs'
 import { ResourceUpdate } from '@app-seller/shared'
-import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/catalogs-temp.service'
 import { TranslateService } from '@ngx-translate/core'
 import { Addresses } from 'ordercloud-javascript-sdk'
 @Component({
@@ -54,13 +57,12 @@ export class BuyerEditComponent implements OnDestroy {
     private buyerService: BuyerService,
     private router: Router,
     private translate: TranslateService,
-    private buyerTempService: BuyerTempService,
-    private hsCatalogService: CatalogsTempService
+    private buyerTempService: BuyerTempService
   ) {}
 
   async getBuyerData(buyerID: string): Promise<void> {
     const [catalogs, addresses] = await Promise.all([
-      this.hsCatalogService.list(buyerID),
+      HeadStartSDK.Catalogs.List(buyerID),
       Addresses.List(buyerID),
     ])
     if (!catalogs?.Items || catalogs.Items?.length === 0) {
@@ -102,10 +104,11 @@ export class BuyerEditComponent implements OnDestroy {
         form: this.resourceForm,
       }
     }
-    this._superBuyerEditable = this.buyerService.getUpdatedEditableResource<SuperHSBuyer>(
-      resourceUpdate,
-      this._superBuyerEditable
-    )
+    this._superBuyerEditable =
+      this.buyerService.getUpdatedEditableResource<SuperHSBuyer>(
+        resourceUpdate,
+        this._superBuyerEditable
+      )
     this.checkForChanges()
   }
 

@@ -13,7 +13,7 @@ namespace Headstart.Common.Commands
     {
         Task<ListPage<HSCatalog>> List(string buyerID, ListArgs<HSCatalog> args, DecodedToken decodedToken);
 
-        Task<HSCatalog> Post(string buyerID, HSCatalog catalog, DecodedToken decodedToken);
+        Task<HSCatalog> Create(string buyerID, HSCatalog catalog, DecodedToken decodedToken);
 
         Task<ListPage<HSCatalogAssignmentResponse>> GetAssignments(string buyerID, string locationID, DecodedToken decodedToken);
 
@@ -21,7 +21,7 @@ namespace Headstart.Common.Commands
 
         Task<HSCatalog> Get(string buyerID, string catalogID, DecodedToken decodedToken);
 
-        Task<HSCatalog> Put(string buyerID, string catalogID, HSCatalog catalog, DecodedToken decodedToken);
+        Task<HSCatalog> Save(string buyerID, string catalogID, HSCatalog catalog, DecodedToken decodedToken);
 
         Task Delete(string buyerID, string catalogID, DecodedToken decodedToken);
 
@@ -114,12 +114,12 @@ namespace Headstart.Common.Commands
             });
         }
 
-        public async Task<HSCatalog> Post(string buyerID, HSCatalog catalog, DecodedToken decodedToken)
+        public async Task<HSCatalog> Create(string buyerID, HSCatalog catalog, DecodedToken decodedToken)
         {
             return await oc.UserGroups.CreateAsync<HSCatalog>(buyerID, catalog, decodedToken.AccessToken);
         }
 
-        public async Task<HSCatalog> Put(string buyerID, string catalogID, HSCatalog catalog, DecodedToken decodedToken)
+        public async Task<HSCatalog> Save(string buyerID, string catalogID, HSCatalog catalog, DecodedToken decodedToken)
         {
             return await oc.UserGroups.SaveAsync<HSCatalog>(buyerID, catalogID, catalog, decodedToken.AccessToken);
         }

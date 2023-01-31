@@ -16,13 +16,12 @@ export default class Catalogs {
     constructor() {
         this.SetAssignments = this.SetAssignments.bind(this);
         this.List = this.List.bind(this);
-        this.Post = this.Post.bind(this);
+        this.Create = this.Create.bind(this);
         this.Get = this.Get.bind(this);
-        this.Put = this.Put.bind(this);
+        this.Save = this.Save.bind(this);
         this.Delete = this.Delete.bind(this);
         this.GetAssignments = this.GetAssignments.bind(this);
-        this.SyncOnAddToLocation = this.SyncOnAddToLocation.bind(this);
-        this.SyncOnRemoveFromLocation = this.SyncOnRemoveFromLocation.bind(this);
+        this.SyncUserCatalogAssignments = this.SyncUserCatalogAssignments.bind(this);
     }
 
    /**
@@ -58,7 +57,7 @@ export default class Catalogs {
     * @param hSCatalog Required fields: Name
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async Post(buyerID: string, hSCatalog: HSCatalog, accessToken?: string ): Promise<RequiredDeep<HSCatalog>> {
+    public async Create(buyerID: string, hSCatalog: HSCatalog, accessToken?: string ): Promise<RequiredDeep<HSCatalog>> {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.post(`/buyers/${buyerID}/catalogs`, hSCatalog, { params: {  accessToken, impersonating } } );
@@ -81,7 +80,7 @@ export default class Catalogs {
     * @param hSCatalog Required fields: Name
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async Put(buyerID: string, catalogID: string, hSCatalog: HSCatalog, accessToken?: string ): Promise<RequiredDeep<HSCatalog>> {
+    public async Save(buyerID: string, catalogID: string, hSCatalog: HSCatalog, accessToken?: string ): Promise<RequiredDeep<HSCatalog>> {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.put(`/buyers/${buyerID}/catalogs/${catalogID}`, hSCatalog, { params: {  accessToken, impersonating } } );
@@ -116,22 +115,10 @@ export default class Catalogs {
     * @param locationID ID of the location.
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async SyncOnAddToLocation(buyerID: string, userID: string, locationID: string,  accessToken?: string ): Promise<void> {
+    public async SyncUserCatalogAssignments(buyerID: string, userID: string,  accessToken?: string ): Promise<void> {
         const impersonating = this.impersonating;
         this.impersonating = false;
-        return await httpClient.post(`/buyers/${buyerID}/catalogs/user/${userID}/location/${locationID}/Add`, {}, { params: {  accessToken, impersonating } } );
-    }
-
-   /**
-    * @param buyerID ID of the buyer.
-    * @param userID ID of the user.
-    * @param locationID ID of the location.
-    * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
-    */
-    public async SyncOnRemoveFromLocation(buyerID: string, userID: string, locationID: string,  accessToken?: string ): Promise<void> {
-        const impersonating = this.impersonating;
-        this.impersonating = false;
-        return await httpClient.post(`/buyers/${buyerID}/catalogs/user/${userID}/location/${locationID}/Remove`, {}, { params: {  accessToken, impersonating } } );
+        return await httpClient.post(`/buyers/${buyerID}/catalogs/user/${userID}`, {}, { params: {  accessToken, impersonating } } );
     }
 
     /**

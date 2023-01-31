@@ -1,10 +1,10 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core'
 import {
+  HeadStartSDK,
   HSCatalog,
   HSCatalogAssignmentRequest,
 } from '@ordercloud/headstart-sdk'
 import { Router } from '@angular/router'
-import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/catalogs-temp.service'
 
 @Component({
   selector: 'app-buyer-location-catalogs',
@@ -37,14 +37,11 @@ export class BuyerLocationCatalogs implements OnInit {
   areChanges = false
   dataIsSaving = false
 
-  constructor(
-    private router: Router,
-    private hsCatalogService: CatalogsTempService
-  ) {}
+  constructor(private router: Router) {}
 
   ngOnInit() {
     var url = this.router?.routerState?.snapshot?.url
-    if(url && url.split('/').length) {
+    if (url && url.split('/').length) {
       this.buyerID = url.split('/')[2]
     }
   }
@@ -56,14 +53,16 @@ export class BuyerLocationCatalogs implements OnInit {
   }
 
   checkForChanges(): void {
-    this.addLocationCatalogAssignments = this.locationCatalogAssignmentsEditable.filter(
-      (l) => !this.locationCatalogAssignmentsStatic.includes(l)
-    )
-    this.delLocationCatalogAssignments = this.locationCatalogAssignmentsStatic.filter(
-      (l) => !this.locationCatalogAssignmentsEditable.includes(l)
-    )
+    this.addLocationCatalogAssignments =
+      this.locationCatalogAssignmentsEditable.filter(
+        (l) => !this.locationCatalogAssignmentsStatic.includes(l)
+      )
+    this.delLocationCatalogAssignments =
+      this.locationCatalogAssignmentsStatic.filter(
+        (l) => !this.locationCatalogAssignmentsEditable.includes(l)
+      )
     this.catalogAssignments.CatalogIDs = this.locationCatalogAssignmentsEditable
-    if(this.addLocationCatalogAssignments.length) {
+    if (this.addLocationCatalogAssignments.length) {
       this.assignmentsToAdd.emit(this.catalogAssignments)
     }
     this.areChanges =
@@ -77,9 +76,8 @@ export class BuyerLocationCatalogs implements OnInit {
 
   toggleAssignment(catalog: HSCatalog): void {
     if (this.isAssigned(catalog)) {
-      this.locationCatalogAssignmentsEditable = this.locationCatalogAssignmentsEditable.filter(
-        (c) => c !== catalog.ID
-      )
+      this.locationCatalogAssignmentsEditable =
+        this.locationCatalogAssignmentsEditable.filter((c) => c !== catalog.ID)
     } else {
       this.locationCatalogAssignmentsEditable = [
         ...this.locationCatalogAssignmentsEditable,
@@ -95,10 +93,8 @@ export class BuyerLocationCatalogs implements OnInit {
 
   async saveChanges(): Promise<void> {
     this.resetAssignments(this.locationCatalogAssignmentsEditable)
-    await this.hsCatalogService.setLocationAssignments(
-      this.buyerID,
-      this.locationID,
-      this.locationCatalogAssignmentsEditable
-    )
+    await HeadStartSDK.Catalogs.SetAssignments(this.buyerID, this.locationID, {
+      CatalogIDs: this.locationCatalogAssignmentsEditable,
+    })
   }
 }
