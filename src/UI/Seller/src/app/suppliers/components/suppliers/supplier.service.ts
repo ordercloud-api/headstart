@@ -4,7 +4,6 @@ import { Supplier, Suppliers } from 'ordercloud-javascript-sdk'
 import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
 import { HeadStartSDK, HSSupplier, ListArgs } from '@ordercloud/headstart-sdk'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
-import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 
 export const SUPPLIER_SUB_RESOURCE_LIST = [
   { route: 'users', display: 'ADMIN.NAV.USERS' },
@@ -31,8 +30,7 @@ export class SupplierService extends ResourceCrudService<Supplier> {
   constructor(
     router: Router,
     activatedRoute: ActivatedRoute,
-    public currentUserService: CurrentUserService,
-    private middleware: MiddlewareAPIService
+    public currentUserService: CurrentUserService
   ) {
     super(
       router,
@@ -62,10 +60,7 @@ export class SupplierService extends ResourceCrudService<Supplier> {
     resource: HSSupplier
   ): Promise<HSSupplier> {
     //  if supplier user updating supplier need to call route in middleware because they dont have required role.
-    const newResource = await this.middleware.updateSupplier(
-      originalID,
-      resource
-    )
+    const newResource = await HeadStartSDK.Suppliers.Patch(originalID, resource)
     this.updateResourceSubject(newResource)
     return newResource
   }

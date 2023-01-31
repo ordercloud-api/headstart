@@ -2,7 +2,11 @@ import { Component, ChangeDetectorRef, NgZone } from '@angular/core'
 import { ResourceCrudComponent } from '@app-seller/shared/components/resource-crud/resource-crud.component'
 import { Supplier, SupplierUsers, Suppliers } from 'ordercloud-javascript-sdk'
 import { Router, ActivatedRoute } from '@angular/router'
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms'
+import {
+  UntypedFormGroup,
+  UntypedFormControl,
+  Validators,
+} from '@angular/forms'
 import { get as _get } from 'lodash'
 import {
   ValidateRichTextDescription,
@@ -11,7 +15,6 @@ import {
 } from '@app-seller/validators/validators'
 import { SupplierService } from '../supplier.service'
 import { HeadStartSDK, HSSupplier } from '@ordercloud/headstart-sdk'
-import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 
 function createSupplierForm(supplier: HSSupplier) {
   return new UntypedFormGroup({
@@ -73,7 +76,9 @@ function createSupplierForm(supplier: HSSupplier) {
     FreeShippingEnabled: new UntypedFormControl(
       supplier.xp?.FreeShippingThreshold != null
     ),
-    FreeShippingThreshold: new UntypedFormControl(supplier.xp?.FreeShippingThreshold),
+    FreeShippingThreshold: new UntypedFormControl(
+      supplier.xp?.FreeShippingThreshold
+    ),
     Categories: new UntypedFormControl({
       value: _get(supplier, 'xp.Categories', []),
       disabled: this.isSupplierUser,
@@ -94,8 +99,7 @@ export class SupplierTableComponent extends ResourceCrudComponent<Supplier> {
     changeDetectorRef: ChangeDetectorRef,
     router: Router,
     activatedroute: ActivatedRoute,
-    ngZone: NgZone,
-    private middleWareApiService: MiddlewareAPIService
+    ngZone: NgZone
   ) {
     super(
       changeDetectorRef,
@@ -119,7 +123,7 @@ export class SupplierTableComponent extends ResourceCrudComponent<Supplier> {
 
   async buildFilterConfig(): Promise<void> {
     const supplierFilterConfig =
-      await this.middleWareApiService.getSupplierFilterConfig()
+      await HeadStartSDK.Suppliers.GetSupplierFilterConfig()
     const filterConfig = {
       Filters: supplierFilterConfig.Items.map((filter) => filter.Doc),
     }

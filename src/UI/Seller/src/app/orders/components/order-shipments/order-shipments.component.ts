@@ -1,4 +1,3 @@
-import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 import {
   Component,
   Inject,
@@ -16,7 +15,11 @@ import {
   faExclamationCircle,
   IconDefinition,
 } from '@fortawesome/free-solid-svg-icons'
-import { UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms'
+import {
+  UntypedFormGroup,
+  Validators,
+  UntypedFormControl,
+} from '@angular/forms'
 import {
   LineItem,
   Shipment,
@@ -29,10 +32,8 @@ import {
   Order,
   OrderDirection,
   ListPage,
-  Tokens,
 } from 'ordercloud-javascript-sdk'
 import { getProductSmallImageUrl } from '@app-seller/shared/services/assets/asset.helper'
-import { HttpHeaders } from '@angular/common/http'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { OrderService } from '@app-seller/orders/order.service'
@@ -41,7 +42,11 @@ import {
   NumberCanChangeTo,
   SellerOrderCanShip,
 } from '@app-seller/orders/line-item-status.helper'
-import { HSLineItem, SuperHSShipment } from '@ordercloud/headstart-sdk'
+import {
+  HeadStartSDK,
+  HSLineItem,
+  SuperHSShipment,
+} from '@ordercloud/headstart-sdk'
 import { flatten as _flatten } from 'lodash'
 import { AppConfig } from '@app-seller/models/environment.types'
 import { LineItemStatus, OrderType } from '@app-seller/models/order.types'
@@ -87,7 +92,6 @@ export class OrderShipmentsComponent implements OnChanges {
 
   constructor(
     private orderService: OrderService,
-    private middleware: MiddlewareAPIService,
     private appAuthService: AppAuthService,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {
@@ -112,7 +116,10 @@ export class OrderShipmentsComponent implements OnChanges {
   setShipmentForm(): void {
     this.shipmentForm = new UntypedFormGroup({
       TrackingNumber: new UntypedFormControl(''),
-      ShipDate: new UntypedFormControl(this.getCurrentDate(), Validators.required),
+      ShipDate: new UntypedFormControl(
+        this.getCurrentDate(),
+        Validators.required
+      ),
       Cost: new UntypedFormControl(''),
       // TO-DO: Use below line of code when it's possible to POST a supplier's address ID
       // FromAddressID: new FormControl(''),
@@ -121,7 +128,9 @@ export class OrderShipmentsComponent implements OnChanges {
       Comment: new UntypedFormControl(''),
       LineItemData: new UntypedFormGroup({}),
     })
-    const LineItemGroup = this.shipmentForm.get('LineItemData') as UntypedFormGroup
+    const LineItemGroup = this.shipmentForm.get(
+      'LineItemData'
+    ) as UntypedFormGroup
     this.lineItems.forEach((item) => {
       LineItemGroup.addControl(
         item.ID,
@@ -357,13 +366,6 @@ export class OrderShipmentsComponent implements OnChanges {
     const shipment = this.shipmentForm.getRawValue()
     const shipDate = this.shipmentForm.value.ShipDate
     this.shipmentForm.value.ShipDate = null
-    const accessToken = Tokens.GetAccessToken()
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + accessToken,
-      }),
-    }
     const superShipment = {
       Shipment: {
         TrackingNumber: shipment.TrackingNumber,
@@ -390,7 +392,7 @@ export class OrderShipmentsComponent implements OnChanges {
         .filter((li) => li !== undefined),
     }
     await this.patchLineItems()
-    await this.middleware.patchLineItems(superShipment, httpOptions.headers)
+    await HeadStartSDK.Shipments.Create(superShipment)
     this.isSaving = false
     this.createOrViewShipmentEvent.emit(false)
     this.shipmentCreated.emit()

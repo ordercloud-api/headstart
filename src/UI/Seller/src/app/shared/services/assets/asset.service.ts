@@ -4,45 +4,45 @@ import {
   AssetType,
   DocumentAsset,
   HeadStartSDK,
-  HSProduct, ImageAsset,
+  HSProduct,
+  ImageAsset,
 } from '@ordercloud/headstart-sdk'
 import { Products, Product } from 'ordercloud-javascript-sdk'
-import { MiddlewareAPIService } from '../middleware-api/middleware-api.service'
 import { getAssetIDFromUrl } from './asset.helper'
 
 @Injectable({
   providedIn: 'root',
 })
 export class AssetService {
-  constructor(
-  ) { }
+  constructor() {}
 
   async uploadImageFiles(files: FileHandle[]): Promise<ImageAsset[]> {
     return await Promise.all(
-      files.map(file => {
+      files.map((file) => {
         return HeadStartSDK.Assets.CreateImage({
           File: file.File,
-          Filename: file.Filename
+          Filename: file.Filename,
         })
       })
-    );
+    )
   }
 
   async uploadDocumentFiles(files: FileHandle[]): Promise<DocumentAsset[]> {
     return await Promise.all(
-      files.map(file => {
+      files.map((file) => {
         return HeadStartSDK.Assets.CreateDocument({
           File: file.File,
-          Filename: file.Filename
+          Filename: file.Filename,
         })
       })
-    );
+    )
   }
 
   async deleteAssetUpdateProduct(
     product: HSProduct,
     fileUrl: string,
-    assetType: AssetType): Promise<HSProduct> {
+    assetType: AssetType
+  ): Promise<HSProduct> {
     const assetID = getAssetIDFromUrl(fileUrl)
     try {
       await HeadStartSDK.Assets.Delete(assetID)
@@ -60,26 +60,28 @@ export class AssetService {
   async removeAssetFromProduct(
     product: any,
     assetID: string,
-    assetType: AssetType): Promise<Product> {
+    assetType: AssetType
+  ): Promise<Product> {
     let patchObj: Partial<Product>
     if (assetType === 'image') {
-      const newImages = product?.xp?.Images
-        .filter(image => getAssetIDFromUrl(image.Url) !== assetID);
+      const newImages = product?.xp?.Images.filter(
+        (image) => getAssetIDFromUrl(image.Url) !== assetID
+      )
       patchObj = {
         xp: {
-          Images: newImages
-        }
+          Images: newImages,
+        },
       }
     } else {
-      const newDocuments = product?.xp?.Documents
-        .filter(doc => getAssetIDFromUrl(doc.Url) !== assetID);
+      const newDocuments = product?.xp?.Documents.filter(
+        (doc) => getAssetIDFromUrl(doc.Url) !== assetID
+      )
       patchObj = {
         xp: {
-          Documents: newDocuments
-        }
+          Documents: newDocuments,
+        },
       }
     }
     return await Products.Patch(product.ID, patchObj)
   }
 }
-

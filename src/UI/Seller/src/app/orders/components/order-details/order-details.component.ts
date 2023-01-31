@@ -18,7 +18,6 @@ import {
   faInfoCircle,
   faUserAlt,
 } from '@fortawesome/free-solid-svg-icons'
-import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
 import {
   HSLineItem,
@@ -97,7 +96,6 @@ export class OrderDetailsComponent {
   constructor(
     private orderService: OrderService,
     private pdfService: PDFService,
-    private middleware: MiddlewareAPIService,
     private appAuthService: AppAuthService,
     private currentUserService: CurrentUserService,
     private modalService: NgbModal,
@@ -200,9 +198,10 @@ export class OrderDetailsComponent {
   }
 
   async setOrderStatus(): Promise<void> {
-    await this.middleware
-      .acknowledgeQuoteOrder(this._order.ID)
-      .then((completedOrder) => this.handleSelectedOrderChange(completedOrder))
+    const completedOrder = await HeadStartSDK.Orders.AcknowledgeQuoteOrder(
+      this.order.ID
+    )
+    this.handleSelectedOrderChange(completedOrder)
   }
 
   isQuoteOrder(order: HSOrder): boolean {
