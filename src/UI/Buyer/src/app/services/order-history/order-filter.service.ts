@@ -2,12 +2,11 @@ import { Injectable } from '@angular/core'
 import { BehaviorSubject } from 'rxjs'
 import { Router, Params, ActivatedRoute } from '@angular/router'
 import { CurrentUserService } from '../current-user/current-user.service'
-import { Me, Sortable, Tokens } from 'ordercloud-javascript-sdk'
+import { Me, Sortable } from 'ordercloud-javascript-sdk'
 import { filter } from 'rxjs/operators'
 import { HeadStartSDK, ListPage, HSOrder } from '@ordercloud/headstart-sdk'
 import { ListArgs } from '@ordercloud/headstart-sdk'
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
-import { AppConfig } from 'src/app/models/environment.types'
+import { HttpParams } from '@angular/common/http'
 import {
   OrderFilters,
   OrderViewContext,
@@ -27,18 +26,10 @@ export class OrderFilterService {
     private currentUser: CurrentUserService,
     private activatedRoute: ActivatedRoute,
     private router: Router,
-    private http: HttpClient,
-    private appConfig: AppConfig
   ) {
     this.activatedRoute.queryParams
       .pipe(filter(() => this.router.url.startsWith('/orders')))
       .subscribe(this.readFromUrlQueryParams)
-  }
-
-  buildHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
-    })
   }
 
   createHttpParams(args: ListArgs): HttpParams {
@@ -139,17 +130,10 @@ export class OrderFilterService {
 
   async ListLocationOrders(): Promise<ListPage<HSOrder>> {
     const locationID = this.activeFiltersSubject.value.location
-    // Changed middleware route, awaiting next SDK bump (1.10.5?)
-    // return await HeadStartSDK.Orders.ListLocationOrders(locationID, this.createListOptions() as any);
-    const url = `${this.appConfig.middlewareUrl}/order/location/${locationID}`
-    const args = this.createListOptions()
-    const params = this.createHttpParams(args)
-    return await this.http
-      .get<ListPage<HSOrder>>(url, {
-        headers: this.buildHeaders(),
-        params,
-      })
-      .toPromise()
+    return await HeadStartSDK.Orders.ListLocationOrders(
+      locationID,
+      this.createListOptions()
+    )
   }
 
   async listApprovableOrders(): Promise<ListPage<HSOrder>> {

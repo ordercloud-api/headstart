@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core'
 import { BehaviorSubject } from 'rxjs'
-import { MeUser, Me, User, UserGroup, Tokens } from 'ordercloud-javascript-sdk'
+import { MeUser, Me, UserGroup } from 'ordercloud-javascript-sdk'
 import { TokenHelperService } from '../token-helper/token-helper.service'
 import { CreditCardService } from './credit-card.service'
-import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { CurrentUser } from 'src/app/models/profile.types'
-import { AppConfig } from 'src/app/models/environment.types'
 import { ContactSupplierBody } from 'src/app/models/buyer.types'
 import { SitecoreSendTrackingService } from '../sitecore-send/sitecore-send-tracking.service'
+import { HeadStartSDK } from '@ordercloud/headstart-sdk'
 
 @Injectable({
   providedIn: 'root',
@@ -28,8 +27,6 @@ export class CurrentUserService {
   constructor(
     private tokenHelper: TokenHelperService,
     public cards: CreditCardService,
-    public http: HttpClient,
-    private appConfig: AppConfig,
     private send: SitecoreSendTrackingService
   ) {
     this.isAnonSubject = new BehaviorSubject(true)
@@ -96,11 +93,7 @@ export class CurrentUserService {
   async submitContactSupplierForm(
     contactRequest: ContactSupplierBody
   ): Promise<void> {
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
-    })
-    const url = `${this.appConfig.middlewareUrl}/me/products/requestinfo`
-    await this.http.post<void>(url, contactRequest, { headers }).toPromise()
+    await HeadStartSDK.Mes.RequestProductInfo(contactRequest)
   }
 
   private async MapToCurrentUser(user: MeUser): Promise<CurrentUser> {

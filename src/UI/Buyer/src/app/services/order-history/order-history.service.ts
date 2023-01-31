@@ -4,7 +4,6 @@ import {
   Me,
   Suppliers,
   SupplierAddresses,
-  Tokens,
 } from 'ordercloud-javascript-sdk'
 import { ReorderHelperService } from '../reorder/reorder.service'
 import { OrderFilterService } from './order-filter.service'
@@ -16,7 +15,6 @@ import {
   HSShipmentWithItems,
   HeadStartSDK,
 } from '@ordercloud/headstart-sdk'
-import { HttpHeaders, HttpClient } from '@angular/common/http'
 import { AppConfig } from 'src/app/models/environment.types'
 import { LineItemGroupSupplier } from 'src/app/models/line-item.types'
 import { OrderReorderResponse } from 'src/app/models/order.types'
@@ -30,7 +28,6 @@ export class OrderHistoryService {
   constructor(
     public filters: OrderFilterService,
     private reorderHelper: ReorderHelperService,
-    private httpClient: HttpClient,
     private appConfig: AppConfig
   ) {}
 
@@ -119,13 +116,6 @@ export class OrderHistoryService {
   async listShipments(
     orderID: string = this.activeOrderID
   ): Promise<HSShipmentWithItems[]> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
-    })
-    const url = `${this.appConfig.middlewareUrl}/order/${orderID}/shipmentswithitems`
-    return this.httpClient
-      .get<HSShipmentWithItems[]>(url, { headers })
-      .toPromise()
+    return HeadStartSDK.Orders.ListShipmentsWithItems(orderID)
   }
 }

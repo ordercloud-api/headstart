@@ -8,7 +8,7 @@ import { RequiredDeep } from '../models/RequiredDeep';
 import { ListArgs } from '../models/ListArgs'
 import httpClient from '../utils/HttpClient';
 import { Order } from 'ordercloud-javascript-sdk';
-import { CosmosListPage } from '../models';
+import { CosmosListPage, HSShipmentWithItems } from '../models';
 
 export default class Orders {
     private impersonating:boolean = false;
@@ -125,7 +125,7 @@ export default class Orders {
     * @param orderID ID of the order.
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async ListShipmentsWithItems(orderID: string,  accessToken?: string ): Promise<void> {
+    public async ListShipmentsWithItems(orderID: string,  accessToken?: string ): Promise<HSShipmentWithItems> {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.get(`/order/${orderID}/shipmentswithitems`, { params: {  accessToken, impersonating } } );

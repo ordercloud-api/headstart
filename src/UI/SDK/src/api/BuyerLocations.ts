@@ -7,6 +7,7 @@ import { HSLocationUserGroup } from '../models/HSLocationUserGroup';
 import { RequiredDeep } from '../models/RequiredDeep';
 import { ListArgs } from '../models/ListArgs'
 import httpClient from '../utils/HttpClient';
+import { UserGroupAssignment } from 'ordercloud-javascript-sdk';
 
 export default class BuyerLocations {
     private impersonating:boolean = false;
@@ -83,7 +84,7 @@ export default class BuyerLocations {
     * @param buyerLocationID ID of the buyer location.
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async ListLocationApprovalPermissionAsssignments(buyerID: string, buyerLocationID: string,  accessToken?: string ): Promise<void> {
+    public async ListLocationApprovalPermissionAsssignments(buyerID: string, buyerLocationID: string,  accessToken?: string ): Promise<UserGroupAssignment[]> {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.get(`/buyerlocations/${buyerID}/${buyerLocationID}/approvalpermissions`, { params: {  accessToken, impersonating } } );
@@ -94,7 +95,7 @@ export default class BuyerLocations {
     * @param buyerLocationID ID of the buyer location.
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async GetApprovalThreshold(buyerID: string, buyerLocationID: string,  accessToken?: string ): Promise<void> {
+    public async GetApprovalThreshold(buyerID: string, buyerLocationID: string,  accessToken?: string ): Promise<number> {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.get(`/buyerlocations/${buyerID}/${buyerLocationID}/approvalthreshold`, { params: {  accessToken, impersonating } } );
@@ -117,7 +118,7 @@ export default class BuyerLocations {
     * @param buyerLocationID ID of the buyer location.
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async ListLocationPermissionUserGroups(buyerID: string, buyerLocationID: string,  accessToken?: string ): Promise<void> {
+    public async ListLocationPermissionUserGroups(buyerID: string, buyerLocationID: string,  accessToken?: string ): Promise<UserGroupAssignment[]> {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.get(`/buyerlocations/${buyerID}/${buyerLocationID}/permissions`, { params: {  accessToken, impersonating } } );
