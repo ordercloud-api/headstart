@@ -2,6 +2,10 @@ import { ReportTemplate } from '../models/ReportTemplate';
 import { RequiredDeep } from '../models/RequiredDeep';
 import { ListArgs } from '../models/ListArgs'
 import httpClient from '../utils/HttpClient';
+import { ReportTypeResource } from '../models/ReportTypeResource';
+import { ListPage } from 'ordercloud-javascript-sdk';
+import { HSBuyer } from '../models';
+import { ReportType } from '../models/ReportType';
 
 export default class Reports {
     private impersonating:boolean = false;
@@ -26,16 +30,29 @@ export default class Reports {
         this.PurchaseOrderDetail = this.PurchaseOrderDetail.bind(this);
         this.DownloadSalesOrderDetail = this.DownloadSalesOrderDetail.bind(this);
         this.SalesOrderDetail = this.SalesOrderDetail.bind(this);
+        this.DownloadReport = this.DownloadReport.bind(this);
+        this.PreviewReport = this.PreviewReport.bind(this)
+        this.GetBuyerFilterValues = this.GetBuyerFilterValues.bind(this)
     }
 
    /**
     * @param id Id of the report template.
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async GetReportTemplate(id: string,  accessToken?: string ): Promise<void> {
+    public async GetReportTemplate(id: string,  accessToken?: string ): Promise<any> {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.get(`/reports/${id}`, { params: {  accessToken, impersonating } } );
+    }
+
+    /**
+     * 
+     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
+     */
+    public async GetBuyerFilterValues(accessToken?: string): Promise<HSBuyer[]> {
+        const impersonating = this.impersonating;
+        this.impersonating = false;
+        return await httpClient.get(`/reports/filters/buyers`, { params: {  accessToken, impersonating } } );
     }
 
    /**
@@ -43,7 +60,7 @@ export default class Reports {
     * @param reportTemplate 
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async UpdateReportTemplate(id: string, reportTemplate: ReportTemplate, accessToken?: string ): Promise<void> {
+    public async UpdateReportTemplate(id: string, reportTemplate: ReportTemplate, accessToken?: string ): Promise<ReportTemplate> {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.put(`/reports/${id}`, reportTemplate, { params: {  accessToken, impersonating } } );
@@ -64,7 +81,7 @@ export default class Reports {
     * @param reportTemplate 
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async PostReportTemplate(reportType: 'BuyerLocation' | 'SalesOrderDetail' | 'PurchaseOrderDetail' | 'LineItemDetail', reportTemplate: ReportTemplate, accessToken?: string ): Promise<void> {
+    public async PostReportTemplate(reportType: ReportType, reportTemplate: ReportTemplate, accessToken?: string ): Promise<ReportTemplate> {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.post(`/reports/${reportType}`, reportTemplate, { params: {  accessToken, impersonating } } );
@@ -74,10 +91,34 @@ export default class Reports {
     * @param reportType Report type of the report template. Possible values: BuyerLocation, SalesOrderDetail, PurchaseOrderDetail, LineItemDetail.
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async ListReportTemplatesByReportType(reportType: 'BuyerLocation' | 'SalesOrderDetail' | 'PurchaseOrderDetail' | 'LineItemDetail',  accessToken?: string ): Promise<void> {
+    public async ListReportTemplatesByReportType(reportType: ReportType,  accessToken?: string ): Promise<ReportTemplate[]> {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.get(`/reports/${reportType}/listtemplates`, { params: {  accessToken, impersonating } } );
+    }
+
+    /**
+    * @param reportType type of report
+    * @param templateID ID of the template.
+    * @param reportTemplate 
+    * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
+    */
+    public async DownloadReport(reportType: string, templateID: string, accessToken?: string ): Promise<string> {
+        const impersonating = this.impersonating;
+        this.impersonating = false;
+        return await httpClient.post(`/reports/${reportType}/download/${templateID}`, {}, { params: {  accessToken, impersonating } } );
+    }
+
+    /**
+    * @param reportType type of report
+    * @param templateID ID of the template.
+    * @param reportTemplate 
+    * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
+    */
+    public async PreviewReport(reportType: string, templateID: string, accessToken?: string ): Promise<any> {
+        const impersonating = this.impersonating;
+        this.impersonating = false;
+        return await httpClient.post(`/reports/${reportType}/preview/${templateID}`, {}, { params: {  accessToken, impersonating } } );
     }
 
    /**
@@ -105,7 +146,7 @@ export default class Reports {
     * @param fileName File name of the string.
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async GetSharedAccessSignature(fileName: string,  accessToken?: string ): Promise<void> {
+    public async GetSharedAccessSignature(fileName: string,  accessToken?: string ): Promise<string> {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.get(`/reports/download-shared-access/${fileName}`, { params: {  accessToken, impersonating } } );
@@ -114,7 +155,7 @@ export default class Reports {
    /**
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async FetchAllReportTypes( accessToken?: string ): Promise<void> {
+    public async FetchAllReportTypes( accessToken?: string ): Promise<RequiredDeep<ListPage<ReportTypeResource>>> {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.get(`/reports/fetchAllReportTypes`, { params: {  accessToken, impersonating } } );

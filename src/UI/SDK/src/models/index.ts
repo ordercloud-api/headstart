@@ -72,6 +72,7 @@ export * from './QuoteOrderInfo';
 export * from './ReportAdHocFilters';
 export * from './ReportFilters';
 export * from './ReportTemplate';
+export * from './ReportType'
 export * from './ReportTypeResource';
 export * from './ShipEstimateXP';
 export * from './ShipmentItem';

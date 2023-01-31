@@ -1,8 +1,16 @@
 import { Component, OnInit } from '@angular/core'
-import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
-import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms'
-import { ReportsTemplateService } from '@app-seller/shared/services/middleware-api/reports-template.service'
-import { HSBuyer, HSSupplier, ReportTemplate } from '@ordercloud/headstart-sdk'
+import {
+  UntypedFormGroup,
+  UntypedFormControl,
+  Validators,
+} from '@angular/forms'
+import {
+  HeadStartSDK,
+  HSBuyer,
+  HSSupplier,
+  ReportTemplate,
+  ReportType,
+} from '@ordercloud/headstart-sdk'
 import { ReportsTypeService } from '@app-seller/shared/services/middleware-api/reports-type.service'
 import {
   buyerLocation,
@@ -39,7 +47,6 @@ export class ReportsComponent implements OnInit {
   isSellerUser = false
 
   constructor(
-    private reportsTemplateService: ReportsTemplateService,
     private reportsTypeService: ReportsTypeService,
     private appAuthService: AppAuthService
   ) {
@@ -68,7 +75,10 @@ export class ReportsComponent implements OnInit {
     this.adHocFilters = this.setAdHocFilters(this.selectedReportType)
     if (this.adHocFilters?.length) {
       this.adHocFilters.forEach(async (filter) => {
-        this.reportSelectionForm.addControl(filter, new UntypedFormControl(null))
+        this.reportSelectionForm.addControl(
+          filter,
+          new UntypedFormControl(null)
+        )
         if (filter.includes('Date')) {
           this.reportSelectionForm.controls[filter].setValidators(
             Validators.required
@@ -83,8 +93,8 @@ export class ReportsComponent implements OnInit {
       })
     }
     this.reportTemplates =
-      await this.reportsTemplateService.listReportTemplatesByReportType(
-        this.selectedReportType
+      await HeadStartSDK.Reports.ListReportTemplatesByReportType(
+        this.selectedReportType as ReportType
       )
   }
 
@@ -129,18 +139,18 @@ export class ReportsComponent implements OnInit {
 
   async handlePreviewReport(reportRequestBody: any): Promise<void> {
     this.fetchingPreview = true
-    this.reportData = await this.reportsTemplateService.previewReport(
-      this.selectedTemplate,
-      reportRequestBody
+    this.reportData = await HeadStartSDK.Reports.PreviewReport(
+      this.selectedTemplate.ReportType,
+      this.selectedTemplate.TemplateID
     )
     this.fetchingPreview = false
   }
 
-  async handleDownloadReport(reportRequestBody: any): Promise<void> {
+  async handleDownloadReport(request: any): Promise<void> {
     this.reportDownloading = true
-    await this.reportsTemplateService.downloadReport(
-      this.selectedTemplate,
-      reportRequestBody
+    await HeadStartSDK.Reports.DownloadReport(
+      this.selectedTemplate.ReportType,
+      this.selectedTemplate.TemplateID
     )
     this.reportDownloading = false
   }

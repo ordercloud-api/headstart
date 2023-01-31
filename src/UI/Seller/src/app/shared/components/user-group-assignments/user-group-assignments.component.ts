@@ -5,14 +5,12 @@ import {
   EventEmitter,
   OnChanges,
   SimpleChanges,
-  Inject,
   OnInit,
 } from '@angular/core'
 import {
   User,
   UserGroup,
   UserGroupAssignment,
-  Tokens,
   ListPage,
 } from 'ordercloud-javascript-sdk'
 import { faExclamationCircle } from '@fortawesome/free-solid-svg-icons'
@@ -21,8 +19,6 @@ import {
   GetDisplayText,
   UserGroupDisplayText,
 } from './user-group-assignments.constants'
-import { applicationConfiguration } from '@app-seller/config/app.config'
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
 import {
   HeadStartSDK,
   HSLocationUserGroup,
@@ -32,7 +28,6 @@ import {
   AssignmentsToAddUpdate,
   IUserPermissionsService,
 } from '@app-seller/models/user.types'
-import { AppConfig } from '@app-seller/shared'
 import { Router } from '@angular/router'
 
 @Component({
@@ -68,11 +63,7 @@ export class UserGroupAssignments implements OnInit, OnChanges {
   args: ListArgs = { pageSize: 100, filters: { assigned: 'false' } }
   retrievingAssignments: boolean
 
-  constructor(
-    private http: HttpClient,
-    private router: Router,
-    @Inject(applicationConfiguration) private appConfig: AppConfig
-  ) {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
     const url = this.router?.routerState?.snapshot?.url
@@ -129,29 +120,30 @@ export class UserGroupAssignments implements OnInit, OnChanges {
       )
       this.userGroups = groups
     } else {
-      const url = `${this.appConfig.middlewareUrl}/buyerlocations/${ID}/${this.homeCountry}/usergroups`
-      //TO-DO - Replace with SDK
-      this.userGroups = await this.http
-        .get<ListPage<HSLocationUserGroup>>(url, {
-          headers: this.buildHeaders(),
-          params: this.createHttpParams(this.args),
-        })
-        .toPromise()
+      this.userGroups =
+        await HeadStartSDK.BuyerLocations.ListUserGroupsForNewUser(
+          ID,
+          this.homeCountry
+        )
     }
   }
 
-  async getUserGroupAssignments(userID: any, userOrgID: any): Promise<void> {
+  async getUserGroupAssignments(
+    userID: string,
+    userOrgID: string
+  ): Promise<void> {
     let userGroupAssignments
     if (this.userGroupType === 'UserPermissions') {
-      userGroupAssignments = await (
+      userGroupAssignments = (
         await this.userPermissionsService.listUserAssignments(userID, userOrgID)
       ).Items
     } else {
-      const url = `${this.appConfig.middlewareUrl}/buyerlocations/${this.userGroupType}/${userOrgID}/usergroupassignments/${userID}`
-      //TO-DO - Replace with SDK (1.8.4 or later for updated arguments)
-      userGroupAssignments = await this.http
-        .get<UserGroupAssignment[]>(url, { headers: this.buildHeaders() })
-        .toPromise()
+      userGroupAssignments =
+        await HeadStartSDK.BuyerLocations.ListUserUserGroupAssignments(
+          this.userGroupType,
+          userOrgID,
+          userID
+        )
     }
     this._userUserGroupAssignmentsStatic = userGroupAssignments
     this._userUserGroupAssignmentsEditable = userGroupAssignments
@@ -265,26 +257,6 @@ export class UserGroupAssignments implements OnInit, OnChanges {
       a.Name > b.Name ? 1 : b.Name > a.Name ? -1 : 0
     )
     return userGroups
-  }
-
-  private buildHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
-    })
-  }
-
-  private createHttpParams(args: ListArgs): HttpParams {
-    let params = new HttpParams()
-    Object.entries(args).forEach(([key, value]) => {
-      if (key !== 'filters' && value) {
-        params = params.append(key, value.toString())
-      }
-    })
-    Object.entries(args.filters).forEach(([key, value]) => {
-      params = params.append(key, value.toString())
-    })
-    return params
   }
 
   async changePage(page: number): Promise<void> {

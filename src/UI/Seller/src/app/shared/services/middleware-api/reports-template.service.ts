@@ -1,12 +1,14 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http'
 import { Inject, Injectable } from '@angular/core'
 import { applicationConfiguration } from '@app-seller/config/app.config'
-import { Tokens } from 'ordercloud-javascript-sdk'
-import { Observable } from 'rxjs'
 import { ResourceCrudService } from '../resource-crud/resource-crud.service'
 import { Router, ActivatedRoute } from '@angular/router'
 import { CurrentUserService } from '../current-user/current-user.service'
-import { ListArgs, ListPage, ReportTemplate } from '@ordercloud/headstart-sdk'
+import {
+  HeadStartSDK,
+  ListArgs,
+  ListPage,
+  ReportTemplate,
+} from '@ordercloud/headstart-sdk'
 import { AppConfig } from '@app-seller/models/environment.types'
 
 @Injectable({
@@ -31,7 +33,6 @@ export class ReportsTemplateService extends ResourceCrudService<ReportTemplate> 
     router: Router,
     activatedRoute: ActivatedRoute,
     currentUserService: CurrentUserService,
-    private http: HttpClient,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {
     super(
@@ -47,18 +48,8 @@ export class ReportsTemplateService extends ResourceCrudService<ReportTemplate> 
     this.ocService = this
   }
 
-  private buildHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
-    })
-  }
-
   async getResourceById(resourceID: string): Promise<ReportTemplate> {
-    const url = `${this.appConfig.middlewareUrl}/reports/${resourceID}`
-    return await this.http
-      .get<ReportTemplate>(url, { headers: this.buildHeaders() })
-      .toPromise()
+    return await HeadStartSDK.Reports.GetReportTemplate(resourceID)
   }
 
   async list(args: any[]): Promise<ListPage<ReportTemplate>> {
@@ -77,20 +68,18 @@ export class ReportsTemplateService extends ResourceCrudService<ReportTemplate> 
     return listPage
   }
 
-  async deleteResource(templateID: string): Promise<null> {
-    const url = `${this.appConfig.middlewareUrl}/reports/${templateID}`
-    return await this.http
-      .delete<null>(url, { headers: this.buildHeaders() })
-      .toPromise()
+  async deleteResource(templateID: string): Promise<void> {
+    return await HeadStartSDK.Reports.DeleteReportTemplate(templateID)
   }
 
   async createNewResource(template: ReportTemplate): Promise<ReportTemplate> {
     const routeUrl = this.router.routerState.snapshot.url.split('/')
-    const reportType = routeUrl[2]
-    const url = `${this.appConfig.middlewareUrl}/reports/${reportType}`
-    return await this.http
-      .post<ReportTemplate>(url, template, { headers: this.buildHeaders() })
-      .toPromise()
+    const reportType = routeUrl[2] as
+      | 'BuyerLocation'
+      | 'SalesOrderDetail'
+      | 'PurchaseOrderDetail'
+      | 'LineItemDetail'
+    return await HeadStartSDK.Reports.PostReportTemplate(reportType, template)
   }
 
   async updateResource(
@@ -98,67 +87,45 @@ export class ReportsTemplateService extends ResourceCrudService<ReportTemplate> 
     resource: any
   ): Promise<ReportTemplate> {
     originalID = resource.TemplateID
-    const url = `${this.appConfig.middlewareUrl}/reports/${originalID}`
-    const newResource = await this.http
-      .put<ReportTemplate>(url, resource, { headers: this.buildHeaders() })
-      .toPromise()
-    this.updateResourceSubject(newResource)
-    return newResource
+    return await HeadStartSDK.Reports.UpdateReportTemplate(originalID, resource)
   }
 
-  async listReportTemplatesByReportType(reportType: string): Promise<any[]> {
-    const url = `${this.appConfig.middlewareUrl}/reports/${reportType}/listtemplates`
-    return await this.http
-      .get<any[]>(url, { headers: this.buildHeaders() })
-      .toPromise()
+  async listReportTemplatesByReportType(
+    reportType: string
+  ): Promise<ReportTemplate[]> {
+    return await HeadStartSDK.Reports.ListReportTemplatesByReportType(
+      reportType as
+        | 'BuyerLocation'
+        | 'SalesOrderDetail'
+        | 'PurchaseOrderDetail'
+        | 'LineItemDetail'
+    )
   }
 
   async previewReport(
     template: any,
     reportRequestBody: any
   ): Promise<object[]> {
-    const url = `${this.appConfig.middlewareUrl}/reports/${template.ReportType}/preview/${template.TemplateID}`
-    return await this.http
-      .get<object[]>(url, {
-        headers: this.buildHeaders(),
-        params: this.createHttpParams(reportRequestBody.filterDictionary),
-      })
-      .toPromise()
-  }
-
-  private createHttpParams(args: ListArgs): HttpParams {
-    let params = new HttpParams()
-    Object.entries(args).forEach(([key, value]) => {
-      if (key !== 'filters' && value) {
-        params = params.append(key, value.toString())
-      }
-    })
-    return params
+    return await HeadStartSDK.Reports.PreviewReport(
+      template.ReportType,
+      template.TemplateID
+    )
   }
 
   async downloadReport(template: any, reportRequestBody: any): Promise<void> {
-    const url = `${this.appConfig.middlewareUrl}/reports/${template.ReportType}/download/${template.TemplateID}`
-    const file = await this.http
-      .post<string>(url, template, {
-        headers: this.buildHeaders(),
-        params: this.createHttpParams(reportRequestBody.filterDictionary),
-      })
-      .toPromise()
-    this.getSharedAccessSignature(file).subscribe((sharedAccessSignature) => {
-      const uri = `${this.appConfig.blobStorageUrl}/downloads/${file}${sharedAccessSignature}`
-      const link = document.createElement('a')
-      link.download = file
-      link.href = uri
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-    })
-  }
-
-  private getSharedAccessSignature(fileName: string): Observable<string> {
-    return this.http.get<string>(
-      `${this.appConfig.middlewareUrl}/reports/download-shared-access/${fileName}`
+    const fileName = await HeadStartSDK.Reports.DownloadReport(
+      template.ReportType,
+      template.TemplateID
     )
+    const sharedAccessSignature =
+      await HeadStartSDK.Reports.GetSharedAccessSignature(fileName)
+    const uri = `${this.appConfig.blobStorageUrl}/downloads/${fileName}${sharedAccessSignature}`
+    const link = document.createElement('a')
+    link.download = fileName
+    link.href = uri
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   public getParentOrSecondaryIDParamName(): string {

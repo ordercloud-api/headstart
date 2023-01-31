@@ -1,0 +1,1 @@
+export type ReportType = 'BuyerLocation' | 'SalesOrderDetail' | 'PurchaseOrderDetail' | 'LineItemDetail'

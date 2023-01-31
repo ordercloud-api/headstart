@@ -1,16 +1,14 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { Inject, Injectable } from '@angular/core'
-import { applicationConfiguration } from '@app-seller/config/app.config'
-import { Tokens, Suppliers } from 'ordercloud-javascript-sdk'
+import { Injectable } from '@angular/core'
+import { Suppliers } from 'ordercloud-javascript-sdk'
 import { ResourceCrudService } from '../resource-crud/resource-crud.service'
 import { Router, ActivatedRoute } from '@angular/router'
 import { CurrentUserService } from '../current-user/current-user.service'
 import {
+  HeadStartSDK,
   HSBuyer,
   ListPage,
   ReportTypeResource,
 } from '@ordercloud/headstart-sdk'
-import { AppConfig } from '@app-seller/models/environment.types'
 
 export const REPORTS_SUB_RESOURCE_LIST = [
   { route: 'reports', display: 'Reports' },
@@ -24,9 +22,7 @@ export class ReportsTypeService extends ResourceCrudService<ReportTypeResource> 
   constructor(
     router: Router,
     activatedRoute: ActivatedRoute,
-    currentUserService: CurrentUserService,
-    private http: HttpClient,
-    @Inject(applicationConfiguration) private appConfig: AppConfig
+    currentUserService: CurrentUserService
   ) {
     super(
       router,
@@ -39,25 +35,12 @@ export class ReportsTypeService extends ResourceCrudService<ReportTypeResource> 
     )
   }
 
-  private buildHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
-    })
-  }
-
   async list(): Promise<ListPage<ReportTypeResource>> {
-    const url = `${this.appConfig.middlewareUrl}/reports/fetchAllReportTypes`
-    return await this.http
-      .get<ListPage<ReportTypeResource>>(url, { headers: this.buildHeaders() })
-      .toPromise()
+    return await HeadStartSDK.Reports.FetchAllReportTypes()
   }
 
   async getBuyerFilterValues(): Promise<HSBuyer[]> {
-    const url = `${this.appConfig.middlewareUrl}/reports/filters/buyers`
-    return await this.http
-      .get<HSBuyer[]>(url, { headers: this.buildHeaders() })
-      .toPromise()
+    return await HeadStartSDK.Reports.GetBuyerFilterValues()
   }
 
   public getParentIDParamName(): string {
