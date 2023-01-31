@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core'
-import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
 import {
   ValidateEmail,
   ValidateName,
@@ -17,7 +17,7 @@ import { CurrentUser } from 'src/app/models/profile.types'
   styleUrls: ['./quote-request-form.component.scss'],
 })
 export class OCMQuoteRequestForm implements OnInit {
-  quoteRequestForm: FormGroup
+  quoteRequestForm: UntypedFormGroup
   requestOptions: {
     pageSize?: number
   } = {
@@ -53,29 +53,29 @@ export class OCMQuoteRequestForm implements OnInit {
   }
 
   setForms(): void {
-    this.quoteRequestForm = new FormGroup({
-      FirstName: new FormControl(this.getAttribute('FirstName'), [
+    this.quoteRequestForm = new UntypedFormGroup({
+      FirstName: new UntypedFormControl(this.getAttribute('FirstName'), [
         Validators.required,
         ValidateName,
       ]),
-      LastName: new FormControl(this.getAttribute('LastName'), [
+      LastName: new UntypedFormControl(this.getAttribute('LastName'), [
         Validators.required,
         ValidateName,
       ]),
-      BuyerLocation: new FormControl(
+      BuyerLocation: new UntypedFormControl(
         this.myBuyerLocations[0]?.AddressName || '',
         !this.isAnon ? [Validators.required] : null
       ),
-      Phone: new FormControl(this.getAttribute('Phone') || '', [
+      Phone: new UntypedFormControl(this.getAttribute('Phone') || '', [
         Validators.required,
         ValidatePhone,
       ]),
-      Email: new FormControl(this.getAttribute('Email') || '', [
+      Email: new UntypedFormControl(this.getAttribute('Email') || '', [
         Validators.required,
         ValidateEmail,
       ]),
-      Comments: new FormControl(''),
-      ShippingAddressId: new FormControl(this.myBuyerLocations[0]?.ID || '')
+      Comments: new UntypedFormControl(''),
+      ShippingAddressId: new UntypedFormControl(this.myBuyerLocations[0]?.ID || '')
     })
   }
 

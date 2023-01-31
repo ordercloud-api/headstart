@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core'
-import { FormGroup, FormControl } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms'
 import { ToastrService } from 'ngx-toastr'
 import { IntegrationEvents } from 'ordercloud-javascript-sdk'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
@@ -10,7 +10,7 @@ import { ShopperContextService } from 'src/app/services/shopper-context/shopper-
 })
 export class OCMOrderApproval implements OnInit {
   approved: boolean
-  form: FormGroup
+  form: UntypedFormGroup
   @Input() orderID: string
   requestedConfirmation = false
 
@@ -20,7 +20,7 @@ export class OCMOrderApproval implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.form = new FormGroup({ comments: new FormControl('') })
+    this.form = new UntypedFormGroup({ comments: new UntypedFormControl('') })
   }
 
   openConfirmation(approved: boolean): void {

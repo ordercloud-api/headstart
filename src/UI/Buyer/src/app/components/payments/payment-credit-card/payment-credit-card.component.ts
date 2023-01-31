@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core'
 import { BuyerCreditCard, ListPage } from 'ordercloud-javascript-sdk'
-import { FormGroup, FormControl, Validators } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms'
 import { CreditCardFormOutput, SelectedCreditCard } from 'src/app/models/credit-card.types'
 
 @Component({
@@ -25,9 +25,9 @@ export class OCMPaymentCreditCard implements OnInit {
   _showNewCCForm: boolean
   _noSavedCards: boolean
 
-  form = new FormGroup({
-    cardID: new FormControl(null, Validators.required),
-    cvv: new FormControl('', Validators.required),
+  form = new UntypedFormGroup({
+    cardID: new UntypedFormControl(null, Validators.required),
+    cvv: new UntypedFormControl('', Validators.required),
   })
 
   constructor() { }

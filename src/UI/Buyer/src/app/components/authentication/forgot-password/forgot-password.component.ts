@@ -1,6 +1,6 @@
 // angular
 import { Component, OnInit } from '@angular/core'
-import { FormGroup, FormControl } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms'
 import { Router } from '@angular/router'
 import { ToastrService } from 'ngx-toastr'
 import { ForgottenPassword } from 'ordercloud-javascript-sdk'
@@ -12,7 +12,7 @@ import { ShopperContextService } from 'src/app/services/shopper-context/shopper-
   styleUrls: ['./forgot-password.component.scss'],
 })
 export class OCMForgotPassword implements OnInit {
-  form: FormGroup
+  form: UntypedFormGroup
   appName: string
 
   constructor(
@@ -24,9 +24,9 @@ export class OCMForgotPassword implements OnInit {
 
   ngOnInit(): void {
     this.appName = this.context.appSettings.appname
-    this.form = new FormGroup({
-      email: new FormControl(''),
-      username: new FormControl(''),
+    this.form = new UntypedFormGroup({
+      email: new UntypedFormControl(''),
+      username: new UntypedFormControl(''),
     })
   }
 

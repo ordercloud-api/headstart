@@ -9,7 +9,7 @@ import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { fromEvent } from 'rxjs'
 import { ImageAsset } from '@ordercloud/headstart-sdk'
 import { SpecFormService } from '../spec-form/spec-form.service'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 import { LineItemSpec, Spec } from 'ordercloud-javascript-sdk'
 
 @Component({
@@ -19,7 +19,7 @@ import { LineItemSpec, Spec } from 'ordercloud-javascript-sdk'
 export class OCMImageGallery implements OnInit, OnChanges {
   @Input() images: ImageAsset[] = []
   @Input() specs: Spec[] = []
-  @Input() specForm: FormGroup
+  @Input() specForm: UntypedFormGroup
   imgUrls: string[] = []
 
   // gallerySize can be changed and the component logic + behavior will all work. However, the UI may look wonky.

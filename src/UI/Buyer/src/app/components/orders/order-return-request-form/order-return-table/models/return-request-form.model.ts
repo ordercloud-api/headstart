@@ -1,14 +1,14 @@
-import { FormArray, FormControl, FormBuilder, Validators } from '@angular/forms'
+import { UntypedFormArray, UntypedFormControl, UntypedFormBuilder, Validators } from '@angular/forms'
 import { HSLineItem, HSOrderReturn } from '@ordercloud/headstart-sdk'
 import { LineItemGroupForm } from './line-item-group-form.model'
 
 export class ReturnRequestForm {
-  orderID = new FormControl()
-  comments = new FormControl('', [Validators.maxLength(2000)])
-  liGroups = new FormArray([])
+  orderID = new UntypedFormControl()
+  comments = new UntypedFormControl('', [Validators.maxLength(2000)])
+  liGroups = new UntypedFormArray([])
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     orderID: string,
     liGroups: HSLineItem[][],
     orderReturns: HSOrderReturn[]

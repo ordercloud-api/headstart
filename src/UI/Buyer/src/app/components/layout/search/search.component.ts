@@ -7,7 +7,7 @@ import {
   OnChanges,
   OnInit,
 } from '@angular/core'
-import { FormGroup, FormControl } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl } from '@angular/forms'
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { debounceTime, takeWhile, filter } from 'rxjs/operators'
 
@@ -23,7 +23,7 @@ export class OCMSearch implements OnInit, OnChanges, OnDestroy {
   alive = true
   faSearch = faSearch
   faTimes = faTimes
-  form: FormGroup
+  form: UntypedFormGroup
   previousSearchTerm = ''
 
   ngOnInit(): void {
@@ -37,7 +37,7 @@ export class OCMSearch implements OnInit, OnChanges, OnDestroy {
   }
 
   buildForm(): void {
-    this.form = new FormGroup({ search: new FormControl('') })
+    this.form = new UntypedFormGroup({ search: new UntypedFormControl('') })
     this.onFormChanges()
   }
 

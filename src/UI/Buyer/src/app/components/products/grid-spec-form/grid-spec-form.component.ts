@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 import {
   HSLineItem,
   HSMeProduct,
@@ -17,7 +17,7 @@ import { QtyChangeEvent, GridSpecOption } from 'src/app/models/product.types'
 })
 export class OCMGridSpecForm {
   _specs: Spec[]
-  _specForm: FormGroup
+  _specForm: UntypedFormGroup
   _superProduct: SuperHSProduct
   product: HSMeProduct
   specOptions: string[]
@@ -50,7 +50,7 @@ export class OCMGridSpecForm {
     this._specs = value
     this.getSpecOptions(value)
   }
-  @Input() set specForm(value: FormGroup) {
+  @Input() set specForm(value: UntypedFormGroup) {
     this._specForm = value
   }
 

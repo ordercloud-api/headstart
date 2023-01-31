@@ -7,8 +7,8 @@ import {
   OnChanges,
   SimpleChanges,
 } from '@angular/core'
-import { FormControl, FormBuilder } from '@angular/forms'
-import { FormGroup, Validators } from '@angular/forms'
+import { UntypedFormControl, UntypedFormBuilder } from '@angular/forms'
+import { UntypedFormGroup, Validators } from '@angular/forms'
 import { map as _map, find as _find } from 'lodash'
 import { SpecOption, Spec } from 'ordercloud-javascript-sdk'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
@@ -36,7 +36,7 @@ export class OCMSpecForm implements OnChanges {
   @Output()
   isSelectionInactive: EventEmitter<boolean> = new EventEmitter<boolean>()
   config: FieldConfig[] = []
-  form: FormGroup
+  form: UntypedFormGroup
   isValidAvailability: boolean
   controlInactive: boolean
 
@@ -46,7 +46,7 @@ export class OCMSpecForm implements OnChanges {
   @Input() specs: Spec[]
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private context: ShopperContextService
   ) {}
 
@@ -66,7 +66,7 @@ export class OCMSpecForm implements OnChanges {
     this.handleChange()
   }
 
-  createGroup(): FormGroup {
+  createGroup(): UntypedFormGroup {
     const group = this.fb.group({
       ctrls: this.fb.array([]),
     })
@@ -101,9 +101,9 @@ export class OCMSpecForm implements OnChanges {
     return c
   }
 
-  createControl(config: FieldConfig): FormControl {
+  createControl(config: FieldConfig): UntypedFormControl {
     const { disabled, validation, value } = config
-    return new FormControl({ disabled, value }, validation)
+    return new UntypedFormControl({ disabled, value }, validation)
   }
 
   handleChange(): void {
@@ -114,7 +114,7 @@ export class OCMSpecForm implements OnChanges {
   }
 
   validateChangeAvailability(
-    form: FormGroup,
+    form: UntypedFormGroup,
     disabledVariants: HSVariant[]
   ): void {
     let controlInactive = false

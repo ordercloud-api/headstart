@@ -18,7 +18,7 @@ import {
 import { Observable } from 'rxjs'
 import { SpecFormService } from '../spec-form/spec-form.service'
 import { Me } from 'ordercloud-javascript-sdk'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 import { ProductDetailService } from './product-detail.service'
 import { ToastrService } from 'ngx-toastr'
 import { ShopperContextService } from 'src/app/services/shopper-context/shopper-context.service'
@@ -67,7 +67,7 @@ export class OCMProductDetails implements OnInit {
   showGrid = false
   isAddingToCart = false
   contactRequest: ContactSupplierBody
-  specForm: FormGroup
+  specForm: UntypedFormGroup
   isInactiveVariant: boolean
   _disabledVariants: HSVariant[]
   variant: HSVariant
