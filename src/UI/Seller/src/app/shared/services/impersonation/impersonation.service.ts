@@ -2,20 +2,16 @@ import { Injectable, Inject } from '@angular/core'
 import { Users } from 'ordercloud-javascript-sdk'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppConfig } from '@app-seller/models/environment.types'
-import { BuyerTempService } from '../middleware-api/buyer-temp.service'
-import { HSUser } from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, HSUser } from '@ordercloud/headstart-sdk'
 
 @Injectable({
   providedIn: 'root',
 })
 export class ImpersonationService {
-  constructor(
-    private buyerTempService: BuyerTempService,
-    @Inject(applicationConfiguration) private appConfig: AppConfig
-  ) {}
+  constructor(@Inject(applicationConfiguration) private appConfig: AppConfig) {}
 
   async impersonateUser(networkID: string, user: HSUser): Promise<void> {
-    const superBuyer = await this.buyerTempService.get(networkID)
+    const superBuyer = await HeadStartSDK.Buyers.Get(networkID)
     const { Buyer, ImpersonationConfig } = superBuyer
     if (
       !Buyer?.xp?.URL ||

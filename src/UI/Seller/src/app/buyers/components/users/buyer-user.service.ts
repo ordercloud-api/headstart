@@ -13,7 +13,6 @@ import { BUYER_SUB_RESOURCE_LIST } from '../buyers/buyer.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
 import { IUserPermissionsService } from '@app-seller/models/user.types'
 import { HeadStartSDK, ListArgs } from '@ordercloud/headstart-sdk'
-import { BuyerTempService } from '@app-seller/shared/services/middleware-api/buyer-temp.service'
 
 // TODO - this service is only relevent if you're already on the buyer details page. How can we enforce/inidcate that?
 @Injectable({
@@ -35,7 +34,6 @@ export class BuyerUserService
     router: Router,
     activatedRoute: ActivatedRoute,
     public currentUserService: CurrentUserService,
-    private buyerTempService: BuyerTempService
   ) {
     super(
       router,
@@ -76,7 +74,7 @@ export class BuyerUserService
     try {
       await UserGroups.SaveUserAssignment(buyerID, assignment)
     } catch (err) {
-      await this.buyerTempService.createPermissionGroup(
+      await HeadStartSDK.BuyerLocations.CreateSinglePermissionGroup(
         buyerID,
         buyerLocationID,
         assignment.UserGroupID

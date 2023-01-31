@@ -10,7 +10,6 @@ import {
   UntypedFormControl,
   Validators,
 } from '@angular/forms'
-import { BuyerTempService } from '@app-seller/shared/services/middleware-api/buyer-temp.service'
 import { HeadStartSDK, HSBuyer, SuperHSBuyer } from '@ordercloud/headstart-sdk'
 import { BuyerService } from '../buyer.service'
 import { Router } from '@angular/router'
@@ -57,7 +56,6 @@ export class BuyerEditComponent implements OnDestroy {
     private buyerService: BuyerService,
     private router: Router,
     private translate: TranslateService,
-    private buyerTempService: BuyerTempService
   ) {}
 
   async getBuyerData(buyerID: string): Promise<void> {
@@ -144,7 +142,7 @@ export class BuyerEditComponent implements OnDestroy {
   }
 
   async handleSelectedBuyerChange(buyer: HSBuyer): Promise<void> {
-    const superHSBuyer = await this.buyerTempService.get(buyer.ID)
+    const superHSBuyer = await HeadStartSDK.Buyers.Get(buyer.ID)
     this.refreshBuyerData(superHSBuyer)
   }
 
@@ -178,7 +176,7 @@ export class BuyerEditComponent implements OnDestroy {
   async createNewBuyer(): Promise<void> {
     try {
       this.dataIsSaving = true
-      const newSuperBuyer = await this.buyerTempService.create(
+      const newSuperBuyer = await HeadStartSDK.Buyers.Create(
         this._superBuyerEditable
       )
       this.router.navigateByUrl(`/buyers/${newSuperBuyer.Buyer.ID}`)
@@ -192,7 +190,7 @@ export class BuyerEditComponent implements OnDestroy {
   async updateBuyer(): Promise<void> {
     try {
       this.dataIsSaving = true
-      const updatedBuyer = await this.buyerTempService.save(
+      const updatedBuyer = await HeadStartSDK.Buyers.Save(
         this._superBuyerEditable.Buyer.ID,
         this._superBuyerEditable
       )

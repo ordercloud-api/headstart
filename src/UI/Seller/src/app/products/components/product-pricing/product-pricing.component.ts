@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core'
 import { PriceSchedule, Buyers } from 'ordercloud-javascript-sdk'
 import { UntypedFormControl } from '@angular/forms'
-import { BuyerTempService } from '@app-seller/shared/services/middleware-api/buyer-temp.service'
 import {
   SuperHSProduct,
   HSBuyer,
@@ -57,8 +56,6 @@ export class ProductPricingComponent {
   isSavedOverride = false
   overridePriceScheduleEditable: PriceSchedule
   overridePriceScheduleStatic: PriceSchedule
-
-  constructor(private buyerTempService: BuyerTempService) {}
 
   setData(value: SuperHSProduct): void {
     this.superProduct = value
@@ -238,7 +235,7 @@ export class ProductPricingComponent {
   }
 
   async selectBuyer(buyer: HSBuyer): Promise<void> {
-    const superBuyer = await this.buyerTempService.get(buyer.ID)
+    const superBuyer = await HeadStartSDK.Buyers.Get(buyer.ID)
     this.selectedSuperHSBuyer = superBuyer
     this.buyerMarkedUpSupplierPrices =
       this.getBuyerDisplayOfSupplierPriceSchedule()

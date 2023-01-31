@@ -13,7 +13,7 @@ export default class Buyers {
     constructor() {
         this.Create = this.Create.bind(this);
         this.Get = this.Get.bind(this);
-        this.Put = this.Put.bind(this);
+        this.Save = this.Save.bind(this);
     }
 
    /**
@@ -41,7 +41,7 @@ export default class Buyers {
     * @param superHSBuyer 
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async Put(buyerID: string, superHSBuyer: SuperHSBuyer, accessToken?: string ): Promise<RequiredDeep<SuperHSBuyer>> {
+    public async Save(buyerID: string, superHSBuyer: SuperHSBuyer, accessToken?: string ): Promise<RequiredDeep<SuperHSBuyer>> {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.put(`/buyer/${buyerID}`, superHSBuyer, { params: {  accessToken, impersonating } } );
