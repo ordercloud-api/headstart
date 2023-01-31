@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core'
 import { Orders, OrderPromotion } from 'ordercloud-javascript-sdk'
 import { Subject } from 'rxjs'
 import { OrderStateService } from './order-state.service'
-import { HSOrder, ListPage } from '@ordercloud/headstart-sdk'
-import { TempSdk } from '../temp-sdk/temp-sdk.service'
+import { HeadStartSDK, HSOrder, ListPage } from '@ordercloud/headstart-sdk'
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +14,7 @@ export class PromoService {
   ) => void
   private initializingOrder = false
 
-  constructor(private state: OrderStateService, private tempsdk: TempSdk) {
+  constructor(private state: OrderStateService) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.onChange = this.state.onPromosChange.bind(this.state)
   }
@@ -53,7 +52,7 @@ export class PromoService {
 
   public async applyAutomaticPromos(): Promise<void> {
     try {
-      await this.tempsdk.applyAutomaticPromotionsToOrder(this.order.ID)
+      await HeadStartSDK.Orders.ApplyAutomaticPromotions(this.order.ID)
     } finally {
       await this.state.reset()
     }

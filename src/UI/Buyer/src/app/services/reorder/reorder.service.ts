@@ -1,15 +1,18 @@
 import { Injectable } from '@angular/core'
 import { Me, Inventory, PriceSchedule } from 'ordercloud-javascript-sdk'
 import { partition as _partition } from 'lodash'
-import { HSLineItem, HSMeProduct, HSPriceSchedule } from '@ordercloud/headstart-sdk'
-import { TempSdk } from '../temp-sdk/temp-sdk.service'
+import {
+  HeadStartSDK,
+  HSLineItem,
+  HSMeProduct,
+  HSPriceSchedule,
+} from '@ordercloud/headstart-sdk'
 import { OrderReorderResponse } from 'src/app/models/order.types'
 
 @Injectable({
   providedIn: 'root',
 })
 export class ReorderHelperService {
-  constructor(private tempSdk: TempSdk) {}
 
   public async validateReorder(
     orderID: string,
@@ -26,13 +29,11 @@ export class ReorderHelperService {
     return { ValidLi: ValidLi as any, InvalidLi: InvalidLi as any }
   }
 
-  private async ListProducts(
-    items: HSLineItem[]
-  ): Promise<HSMeProduct[]> {
+  private async ListProducts(items: HSLineItem[]): Promise<HSMeProduct[]> {
     const productIds = items.map((item) => item.ProductID)
     // TODO - what if the url is too long?
     return (
-      await this.tempSdk.listMeProducts({
+      await HeadStartSDK.Mes.ListMeProducts({
         filters: { ID: productIds.join('|') },
       })
     ).Items

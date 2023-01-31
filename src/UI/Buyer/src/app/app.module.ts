@@ -188,7 +188,6 @@ import { ProductFilterService } from './services/product-filter/product-filter.s
 import { ReorderHelperService } from './services/reorder/reorder.service'
 import { RouteService } from './services/route/route.service'
 import { ShopperContextService } from './services/shopper-context/shopper-context.service'
-import { TempSdk } from './services/temp-sdk/temp-sdk.service'
 import { TokenHelperService } from './services/token-helper/token-helper.service'
 import { AppConfig } from './models/environment.types'
 import { BaseResolveService } from './services/base-resolve/base-resolve.service'
@@ -385,7 +384,6 @@ const components = [
     ExchangeRatesService,
     OrderHistoryService,
     OrdersToApproveStateService,
-    TempSdk,
     PaymentHelperService,
     PDFService,
     ProductFilterService,

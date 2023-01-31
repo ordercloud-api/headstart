@@ -3,22 +3,18 @@ import { BehaviorSubject } from 'rxjs'
 import { Router, Params, ActivatedRoute } from '@angular/router'
 import { transform as _transform, pickBy as _pickBy } from 'lodash'
 import { CurrentUserService } from '../current-user/current-user.service'
-import {
-  ListPageWithFacets,
-} from 'ordercloud-javascript-sdk'
+import { ListPageWithFacets } from 'ordercloud-javascript-sdk'
 import { ProductCategoriesService } from '../product-categories/product-categories.service'
-import { TempSdk } from '../temp-sdk/temp-sdk.service'
 import { ProductFilters } from 'src/app/models/filter-config.types'
-import { HSMeProduct } from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, HSMeProduct } from '@ordercloud/headstart-sdk'
 
 // TODO - this service is only relevent if you're already on the product details page. How can we enforce/inidcate that?
 @Injectable({
   providedIn: 'root',
 })
 export class ProductFilterService {
-  public activeFiltersSubject: BehaviorSubject<ProductFilters> = new BehaviorSubject<ProductFilters>(
-    this.getDefaultParms()
-  )
+  public activeFiltersSubject: BehaviorSubject<ProductFilters> =
+    new BehaviorSubject<ProductFilters>(this.getDefaultParms())
 
   // TODO - allow app devs to filter by custom xp that is not a facet. Create functions for this.
   private readonly nonFacetQueryParams = [
@@ -34,7 +30,6 @@ export class ProductFilterService {
     private currentUser: CurrentUserService,
     private activatedRoute: ActivatedRoute,
     private categories: ProductCategoriesService,
-    private tempSdk: TempSdk
   ) {
     this.activatedRoute.queryParams.subscribe((params) => {
       if (this.router.url.startsWith('/products')) {
@@ -69,7 +64,7 @@ export class ProductFilterService {
     )
     const favorites =
       this.currentUser.get().FavoriteProductIDs.join('|') || undefined
-    return await this.tempSdk.listMeProducts({
+    return await HeadStartSDK.Mes.ListMeProducts({
       page,
       search,
       sortBy,
@@ -77,7 +72,7 @@ export class ProductFilterService {
         categoryID,
         ...facets,
         ID: showOnlyFavorites ? favorites : undefined,
-      },
+      } as any,
     })
   }
 
