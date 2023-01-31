@@ -2,7 +2,11 @@ import { Component, ChangeDetectorRef, NgZone } from '@angular/core'
 import { ResourceCrudComponent } from '@app-seller/shared/components/resource-crud/resource-crud.component'
 import { Supplier, SupplierUsers, Suppliers } from 'ordercloud-javascript-sdk'
 import { Router, ActivatedRoute } from '@angular/router'
-import { FormGroup, FormControl, Validators } from '@angular/forms'
+import {
+  UntypedFormGroup,
+  UntypedFormControl,
+  Validators,
+} from '@angular/forms'
 import { get as _get } from 'lodash'
 import {
   ValidateRichTextDescription,
@@ -11,70 +15,71 @@ import {
 } from '@app-seller/validators/validators'
 import { SupplierService } from '../supplier.service'
 import { HeadStartSDK, HSSupplier } from '@ordercloud/headstart-sdk'
-import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 
 function createSupplierForm(supplier: HSSupplier) {
-  return new FormGroup({
-    ID: new FormControl({
+  return new UntypedFormGroup({
+    ID: new UntypedFormControl({
       value: supplier.ID,
       disabled: !this.isCreatingNew || this.isSupplierUser,
     }),
-    Name: new FormControl(supplier.Name, Validators.required),
-    Description: new FormControl(
+    Name: new UntypedFormControl(supplier.Name, Validators.required),
+    Description: new UntypedFormControl(
       _get(supplier, 'xp.Description'),
       ValidateRichTextDescription
     ),
     // need to figure out strucure of free string array
     // StaticContentLinks: new FormControl(_get(supplier, 'xp.StaticContentLinks'), Validators.required),
-    SupportContactName: new FormControl(
+    SupportContactName: new UntypedFormControl(
       (_get(supplier, 'xp.SupportContact') &&
         _get(supplier, 'xp.SupportContact.Name')) ||
         ''
     ),
-    SupportContactEmail: new FormControl(
+    SupportContactEmail: new UntypedFormControl(
       (_get(supplier, 'xp.SupportContact') &&
         _get(supplier, 'xp.SupportContact.Email')) ||
         '',
       ValidateEmail
     ),
-    SupportContactPhone: new FormControl(
+    SupportContactPhone: new UntypedFormControl(
       (_get(supplier, 'xp.SupportContact') &&
         _get(supplier, 'xp.SupportContact.Phone')) ||
         ''
     ),
-    Active: new FormControl({
+    Active: new UntypedFormControl({
       value: supplier.Active,
       disabled: this.isSupplierUser,
     }),
-    SyncFreightPop: new FormControl({
+    SyncFreightPop: new UntypedFormControl({
       value: supplier.xp?.SyncFreightPop || false,
       disabled: this.isSupplierUser,
     }),
-    Currency: new FormControl(
+    Currency: new UntypedFormControl(
       {
         value: _get(supplier, 'xp.Currency'),
         disabled: !this.isCreatingNew || this.isSupplierUser,
       },
       Validators.required
     ),
-    ProductTypes: new FormGroup(
+    ProductTypes: new UntypedFormGroup(
       {
-        Standard: new FormControl({
+        Standard: new UntypedFormControl({
           value: supplier.xp?.ProductTypes?.includes('Standard') || false,
           disabled: this.isSupplierUser,
         }),
-        Quote: new FormControl({
+        Quote: new UntypedFormControl({
           value: supplier.xp?.ProductTypes?.includes('Quote') || false,
           disabled: this.isSupplierUser,
         }),
       },
       RequireCheckboxesToBeChecked()
     ),
-    FreeShippingEnabled: new FormControl(
+    FreeShippingEnabled: new UntypedFormControl(
       supplier.xp?.FreeShippingThreshold != null
     ),
-    FreeShippingThreshold: new FormControl(supplier.xp?.FreeShippingThreshold),
-    Categories: new FormControl({
+    FreeShippingThreshold: new UntypedFormControl(
+      supplier.xp?.FreeShippingThreshold
+    ),
+    Categories: new UntypedFormControl({
       value: _get(supplier, 'xp.Categories', []),
       disabled: this.isSupplierUser,
     }),
@@ -94,8 +99,7 @@ export class SupplierTableComponent extends ResourceCrudComponent<Supplier> {
     changeDetectorRef: ChangeDetectorRef,
     router: Router,
     activatedroute: ActivatedRoute,
-    ngZone: NgZone,
-    private middleWareApiService: MiddlewareAPIService
+    ngZone: NgZone
   ) {
     super(
       changeDetectorRef,
@@ -119,7 +123,7 @@ export class SupplierTableComponent extends ResourceCrudComponent<Supplier> {
 
   async buildFilterConfig(): Promise<void> {
     const supplierFilterConfig =
-      await this.middleWareApiService.getSupplierFilterConfig()
+      await HeadStartSDK.Suppliers.GetSupplierFilterConfig()
     const filterConfig = {
       Filters: supplierFilterConfig.Items.map((filter) => filter.Doc),
     }

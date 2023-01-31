@@ -7,7 +7,7 @@ import {
   Renderer2,
   Input,
 } from '@angular/core'
-import { NgControl, FormGroup } from '@angular/forms'
+import { NgControl, UntypedFormGroup } from '@angular/forms'
 import { ErrorDictionary } from '../../../app/validators/validators'
 
 @Directive({
@@ -26,7 +26,7 @@ export class FormControlErrorDirective implements OnInit {
   // resourceForm needs to be passed in to remove error messages when resetting the form
   // without changing the inputs, could be a better way
   @Input()
-  set resourceForm(value: FormGroup) {
+  set resourceForm(value: UntypedFormGroup) {
     // need this to remove the error when the selected resource is changed
     if (this.errorSpan) {
       this.errorSpan.innerHTML = ''

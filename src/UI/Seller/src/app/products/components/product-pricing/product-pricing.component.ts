@@ -1,8 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core'
 import { PriceSchedule, Buyers } from 'ordercloud-javascript-sdk'
-import { FormControl } from '@angular/forms'
-import { BuyerTempService } from '@app-seller/shared/services/middleware-api/buyer-temp.service'
-import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/catalogs-temp.service'
+import { UntypedFormControl } from '@angular/forms'
 import {
   SuperHSProduct,
   HSBuyer,
@@ -20,7 +18,7 @@ import { SupportedRates } from '@app-seller/models/currency-geography.types'
 })
 export class ProductPricingComponent {
   @Input() readonly = false
-  @Input() productForm: FormControl
+  @Input() productForm: UntypedFormControl
   @Input() supplierCurrency: SupportedRates
   @Input() sellerCurrency: SupportedRates
   @Input() isRequired: boolean
@@ -58,11 +56,6 @@ export class ProductPricingComponent {
   isSavedOverride = false
   overridePriceScheduleEditable: PriceSchedule
   overridePriceScheduleStatic: PriceSchedule
-
-  constructor(
-    private catalogsTempService: CatalogsTempService,
-    private buyerTempService: BuyerTempService
-  ) {}
 
   setData(value: SuperHSProduct): void {
     this.superProduct = value
@@ -156,7 +149,7 @@ export class ProductPricingComponent {
       this.superProduct.Product.Name + ' Seller Override'
     if (!this.isSavedOverride && this.isUsingPriceOverride) {
       const newPriceSchedule =
-        await this.catalogsTempService.CreatePricingOverride(
+        await HeadStartSDK.Products.CreatePricingOverride(
           productID,
           buyerID,
           this.overridePriceScheduleEditable
@@ -164,12 +157,12 @@ export class ProductPricingComponent {
       this.isSavedOverride = true
       this.resetOverridePriceSchedules(newPriceSchedule)
     } else if (this.isSavedOverride && !this.isUsingPriceOverride) {
-      await this.catalogsTempService.DeletePricingOverride(productID, buyerID)
+      await HeadStartSDK.Products.DeletePricingOverride(productID, buyerID)
       this.isSavedOverride = false
       this.resetOverridePriceSchedules(this.emptyPriceSchedule)
     } else {
       const newPriceSchedule =
-        await this.catalogsTempService.UpdatePricingOverride(
+        await HeadStartSDK.Products.UpdatePricingOverride(
           productID,
           buyerID,
           this.overridePriceScheduleEditable
@@ -197,7 +190,7 @@ export class ProductPricingComponent {
 
   async getPriceScheduleOverrides(): Promise<void> {
     try {
-      const override = await this.catalogsTempService.GetPricingOverride(
+      const override = await HeadStartSDK.Products.GetPricingOverride(
         this.superProduct.Product.ID,
         this.selectedSuperHSBuyer.Buyer.ID
       )
@@ -242,7 +235,7 @@ export class ProductPricingComponent {
   }
 
   async selectBuyer(buyer: HSBuyer): Promise<void> {
-    const superBuyer = await this.buyerTempService.get(buyer.ID)
+    const superBuyer = await HeadStartSDK.Buyers.Get(buyer.ID)
     this.selectedSuperHSBuyer = superBuyer
     this.buyerMarkedUpSupplierPrices =
       this.getBuyerDisplayOfSupplierPriceSchedule()

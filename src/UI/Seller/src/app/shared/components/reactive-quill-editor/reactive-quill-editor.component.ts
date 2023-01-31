@@ -5,7 +5,7 @@ import {
   Output,
   ViewEncapsulation,
 } from '@angular/core'
-import { FormGroup, FormControl } from '@angular/forms'
+import { FormGroup, UntypedFormControl } from '@angular/forms'
 import { get as _get } from 'lodash'
 
 @Component({
@@ -16,7 +16,7 @@ import { get as _get } from 'lodash'
 })
 export class ReactiveQuillComponent {
   _updatedResource: any
-  _formControlForText: FormControl
+  _formControlForText: UntypedFormControl
   quillChangeSubscription: any
 
   @Input()
@@ -24,7 +24,7 @@ export class ReactiveQuillComponent {
   @Output()
   resourceUpdated = new EventEmitter()
   @Input()
-  set formControlForText(value: FormControl) {
+  set formControlForText(value: UntypedFormControl) {
     this._formControlForText = value
     this.setQuillChangeEvent()
   }

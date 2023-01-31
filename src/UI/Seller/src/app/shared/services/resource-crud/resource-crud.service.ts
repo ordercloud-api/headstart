@@ -290,7 +290,7 @@ export abstract class ResourceCrudService<ResourceType> {
     return i.ID === newResource.ID
   }
 
-  async deleteResource(resourceID: string): Promise<null> {
+  async deleteResource(resourceID: string): Promise<void> {
     const args = await this.createListArgs([resourceID])
     await this.ocService.Delete(...args)
     this.resourceSubject.value.Items = this.resourceSubject.value.Items.filter(

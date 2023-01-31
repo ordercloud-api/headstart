@@ -6,7 +6,7 @@ import {
   HSOrderReturn,
 } from '@ordercloud/headstart-sdk'
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap'
-import { FormBuilder } from '@angular/forms'
+import { UntypedFormBuilder } from '@angular/forms'
 import { TypedFormGroup } from 'ngx-forms-typed'
 import { MeUser, OrderReturns } from 'ordercloud-javascript-sdk'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
@@ -36,7 +36,7 @@ export class OrderReturnSummaryComponent implements OnInit {
 
   constructor(
     private modalService: NgbModal,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private currentUserService: CurrentUserService
   ) {}
 

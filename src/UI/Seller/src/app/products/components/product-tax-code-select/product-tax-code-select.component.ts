@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 import { SuperHSProduct, TaxCategorization } from '@ordercloud/headstart-sdk'
 import {
   faTimesCircle,
@@ -13,7 +13,7 @@ import {
   styleUrls: ['./product-tax-code-select.component.scss'],
 })
 export class ProductTaxCodeSelect {
-  @Input() productForm: FormGroup
+  @Input() productForm: UntypedFormGroup
   @Input() superHSProductEditable: SuperHSProduct
   @Input() taxCodes: TaxCategorization[]
   @Output() handleTaxCodeSelection = new EventEmitter<any>()

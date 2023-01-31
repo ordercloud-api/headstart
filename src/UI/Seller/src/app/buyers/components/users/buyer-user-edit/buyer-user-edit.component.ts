@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core'
 import { get as _get } from 'lodash'
-import { FormGroup, FormControl, Validators } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms'
 import { UserGroupAssignment, User } from 'ordercloud-javascript-sdk'
 import { BuyerUserService } from '../buyer-user.service'
 import { ValidateEmail } from '@app-seller/validators/validators'
@@ -21,11 +21,11 @@ export class BuyerUserEditComponent {
     this.createBuyerUserForm(buyerUser)
   }
   @Output()
-  updateResource = new EventEmitter<FormGroup>()
+  updateResource = new EventEmitter<UntypedFormGroup>()
   @Output()
   userGroupAssignments = new EventEmitter<UserGroupAssignment[]>()
   isCreatingNew: boolean
-  resourceForm: FormGroup
+  resourceForm: UntypedFormGroup
   selectedResource: User
   countryOptions: SupportedCountries[]
   isUserAssignedToGroups: boolean
@@ -38,15 +38,15 @@ export class BuyerUserEditComponent {
   }
 
   createBuyerUserForm(user: User) {
-    this.resourceForm = new FormGroup({
-      Active: new FormControl(user.Active || false),
-      Username: new FormControl(user.Username, Validators.required),
-      FirstName: new FormControl(user.FirstName, Validators.required),
-      LastName: new FormControl(user.LastName, Validators.required),
-      Email: new FormControl(user.Email, [Validators.required, ValidateEmail]),
-      Country: new FormControl(user.xp?.Country, Validators.required),
-      BuyerGroupAssignments: new FormControl(null, this.isCreatingNew ? [Validators.required] : null),
-      PermissionGroupAssignments: new FormControl()
+    this.resourceForm = new UntypedFormGroup({
+      Active: new UntypedFormControl(user.Active || false),
+      Username: new UntypedFormControl(user.Username, Validators.required),
+      FirstName: new UntypedFormControl(user.FirstName, Validators.required),
+      LastName: new UntypedFormControl(user.LastName, Validators.required),
+      Email: new UntypedFormControl(user.Email, [Validators.required, ValidateEmail]),
+      Country: new UntypedFormControl(user.xp?.Country, Validators.required),
+      BuyerGroupAssignments: new UntypedFormControl(null, this.isCreatingNew ? [Validators.required] : null),
+      PermissionGroupAssignments: new UntypedFormControl()
     });
   }
 

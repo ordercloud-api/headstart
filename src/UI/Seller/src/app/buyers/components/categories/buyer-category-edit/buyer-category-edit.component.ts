@@ -5,7 +5,7 @@ import {
   Output,
   EventEmitter,
 } from '@angular/core'
-import { FormControl, FormGroup, Validators } from '@angular/forms'
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms'
 import { Router } from '@angular/router'
 import { ResourceUpdate } from '@app-seller/shared'
 import { ValidateNoSpecialCharactersAndSpaces } from '@app-seller/validators/validators'
@@ -30,7 +30,7 @@ export class BuyerCategoryEditComponent {
     { field: 'Active', type: 'boolean' },
   ]
   _params: any
-  resourceForm: FormGroup
+  resourceForm: UntypedFormGroup
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
@@ -84,10 +84,10 @@ export class BuyerCategoryEditComponent {
     }
   }
 
-  buildForm(resource: Category): FormGroup {
-    const formGroup = new FormGroup({})
+  buildForm(resource: Category): UntypedFormGroup {
+    const formGroup = new UntypedFormGroup({})
     this._categoryFields?.forEach((item) => {
-      const control = new FormControl(
+      const control = new UntypedFormControl(
         resource[item.field] || '',
         item.validators
       )

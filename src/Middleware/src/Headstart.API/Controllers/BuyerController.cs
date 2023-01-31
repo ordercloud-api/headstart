@@ -33,9 +33,9 @@ namespace Headstart.Common.Controllers
         /// PUT Headstart Buyer.
         /// </summary>
         [HttpPut, Route("{buyerID}"), OrderCloudUserAuth(ApiRole.BuyerAdmin)]
-        public async Task<SuperHSBuyer> Put([FromBody] SuperHSBuyer superBuyer, string buyerID)
+        public async Task<SuperHSBuyer> Save([FromBody] SuperHSBuyer superBuyer, string buyerID)
         {
-            return await buyerCommand.Update(buyerID, superBuyer);
+            return await buyerCommand.Save(buyerID, superBuyer);
         }
 
         /// <summary>

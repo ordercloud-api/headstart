@@ -1,6 +1,7 @@
+import { ReportType } from "./ReportType"
 
 export interface ReportTypeResource {
-    ID?: 'BuyerLocation' | 'SalesOrderDetail' | 'PurchaseOrderDetail' | 'LineItemDetail'
+    ID?: ReportType
     Name?: string
     ReportCategory?: string
     AvailableToSuppliers?: boolean

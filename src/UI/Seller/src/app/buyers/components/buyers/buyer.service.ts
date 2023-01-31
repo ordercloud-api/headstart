@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core'
 import { Router, ActivatedRoute } from '@angular/router'
 import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
-import { BuyerTempService } from '@app-seller/shared/services/middleware-api/buyer-temp.service'
 import { Buyer, Buyers } from 'ordercloud-javascript-sdk'
 import { ListArgs } from '@ordercloud/headstart-sdk'
 
@@ -30,7 +29,6 @@ export class BuyerService extends ResourceCrudService<Buyer> {
     router: Router,
     activatedRoute: ActivatedRoute,
     currentUserService: CurrentUserService,
-    private buyerTempService: BuyerTempService
   ) {
     super(
       router,

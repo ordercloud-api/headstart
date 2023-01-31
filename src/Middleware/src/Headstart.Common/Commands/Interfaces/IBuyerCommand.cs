@@ -12,6 +12,6 @@ namespace Headstart.Common.Commands
 
         Task<SuperHSBuyer> Get(string buyerID);
 
-        Task<SuperHSBuyer> Update(string buyerID, SuperHSBuyer buyer);
+        Task<SuperHSBuyer> Save(string buyerID, SuperHSBuyer buyer);
     }
 }

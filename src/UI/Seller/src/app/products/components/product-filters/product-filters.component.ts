@@ -6,18 +6,11 @@ import {
   EventEmitter,
   Inject,
 } from '@angular/core'
-import {
-  ProductFacets,
-  Tokens,
-  Product,
-  ProductFacet,
-} from 'ordercloud-javascript-sdk'
-import { omit as _omit } from 'lodash'
+import { ProductFacets, ProductFacet } from 'ordercloud-javascript-sdk'
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons'
 import { cloneDeep } from 'lodash'
-import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { applicationConfiguration } from '@app-seller/config/app.config'
-import { HSProduct, SuperHSProduct } from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, HSProduct } from '@ordercloud/headstart-sdk'
 import { AppConfig } from '@app-seller/models/environment.types'
 
 @Component({
@@ -42,10 +35,7 @@ export class ProductFilters implements OnInit {
   @Input() superProduct: HSProduct
   @Output() updatedFacets = new EventEmitter<any>()
 
-  constructor(
-    private http: HttpClient,
-    @Inject(applicationConfiguration) private appConfig: AppConfig
-  ) {}
+  constructor(@Inject(applicationConfiguration) private appConfig: AppConfig) {}
 
   ngOnInit(): void {
     this.getFacets()
@@ -149,22 +139,14 @@ export class ProductFilters implements OnInit {
   async saveFilterOverrides(): Promise<void> {
     this.savingOverriddenFilters = true
     ;(this.superProduct.xp as any).Facets = this.facetsOnProductEditable
-    // TO-DO - replace with SDK
-    const url = `${this.appConfig.middlewareUrl}/products/filteroptionoverride/${this.superProduct.ID}`
-    const product = await this.http
-      .patch<Product>(url, this.superProduct, { headers: this.buildHeaders() })
-      .toPromise()
+    const product = await HeadStartSDK.Products.FilterOptionOverride(
+      this.superProduct.ID,
+      this.superProduct
+    )
     this.superProduct = product
     this.facetsOnProductStatic = cloneDeep(product.xp.Facets)
     this.facetsOnProductEditable = cloneDeep(product.xp.Facets)
     this.sellerFilterOverride = false
     this.savingOverriddenFilters = false
-  }
-
-  private buildHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
-    })
   }
 }

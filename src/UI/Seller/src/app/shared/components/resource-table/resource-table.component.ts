@@ -10,7 +10,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core'
-import { FormControl, FormGroup } from '@angular/forms'
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms'
 import { ActivatedRoute, Router, Params } from '@angular/router'
 import { REDIRECT_TO_FIRST_PARENT } from '@app-seller/layout/header/header.config'
 import {
@@ -79,7 +79,7 @@ export class ResourceTableComponent
   editResourceHeight = 450
   activeFilterCount = 0
   canImpersonateResource = false
-  filterForm: FormGroup
+  filterForm: UntypedFormGroup
   fromDate: string
   toDate: string
   resourceType: string | null = null
@@ -154,7 +154,7 @@ export class ResourceTableComponent
     }
   }
   @Input()
-  resourceForm: FormGroup
+  resourceForm: UntypedFormGroup
   @Input()
   shouldShowCreateNew = true
   @Input()
@@ -403,9 +403,9 @@ export class ResourceTableComponent
     if (this._filterConfig && this._filterConfig.Filters) {
       this._filterConfig.Filters.forEach((filter) => {
         const value = this.getSelectedFilterValue(filter.Path)
-        formGroup[filter.Path] = new FormControl(value)
+        formGroup[filter.Path] = new UntypedFormControl(value)
       })
-      this.filterForm = new FormGroup(formGroup)
+      this.filterForm = new UntypedFormGroup(formGroup)
     }
   }
 

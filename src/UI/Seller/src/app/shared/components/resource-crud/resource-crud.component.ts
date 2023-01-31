@@ -7,7 +7,7 @@ import {
 } from '@angular/core'
 import { takeWhile } from 'rxjs/operators'
 import { ResourceCrudService } from '@app-seller/shared/services/resource-crud/resource-crud.service'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 import { Router, ActivatedRoute } from '@angular/router'
 import { REDIRECT_TO_FIRST_PARENT } from '@app-seller/layout/header/header.config'
 import { ListPage } from '@ordercloud/headstart-sdk'
@@ -26,7 +26,7 @@ export abstract class ResourceCrudComponent<ResourceType>
   selectedResourceID = ''
   updatedResource = {} as ResourceType
   resourceInSelection = {} as ResourceType
-  resourceForm: FormGroup
+  resourceForm: UntypedFormGroup
   isMyResource = false
   isSupplierUser = false
   parentResourceID: string
@@ -34,7 +34,7 @@ export abstract class ResourceCrudComponent<ResourceType>
   submitError: OrderCloudError
 
   // form setting defined in component implementing this component
-  createForm: (resource: any) => FormGroup
+  createForm: (resource: any) => UntypedFormGroup
 
   ocService: ResourceCrudService<ResourceType>
   filterConfig: any = {}
@@ -48,7 +48,7 @@ export abstract class ResourceCrudComponent<ResourceType>
     router: Router,
     private activatedRoute: ActivatedRoute,
     private ngZone: NgZone,
-    createForm?: (resource: any) => FormGroup
+    createForm?: (resource: any) => UntypedFormGroup
   ) {
     this.ocService = ocService
     this.router = router

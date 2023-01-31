@@ -22,6 +22,7 @@ import Assets from './Assets';
 import Services from './Service';
 import ApprovalRules from './ApprovalRules';
 import OrderReturns from './OrderReturns';
+import Support from './Support';
 
 export { HeadStartSDK }
 
@@ -39,6 +40,7 @@ const HeadStartSDK: HeadStartSDK = {
     Mes : new Mes(),
     OrderReturns: new OrderReturns(),
     Reports : new Reports(),
+    Support: new Support(),
     TaxCategories : new TaxCategories(),
     MePayments : new MePayments(),
     MeCreditCardAuthorizations : new MeCreditCardAuthorizations(),
@@ -66,6 +68,7 @@ interface HeadStartSDK {
     Mes : Mes,
     OrderReturns: OrderReturns,
     Reports : Reports,
+    Support: Support,
     TaxCategories : TaxCategories,
     MePayments : MePayments,
     MeCreditCardAuthorizations : MeCreditCardAuthorizations,

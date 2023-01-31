@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core'
-import { FormGroup, FormControl, Validators } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms'
 import { User } from 'ordercloud-javascript-sdk'
 import { ValidateEmail } from '@app-seller/validators/validators'
 import { SellerUserService } from '@app-seller/sellers/seller-admin.service'
@@ -20,18 +20,18 @@ export class SellerUserEditComponent {
   @Output()
   user: User;
   isCreatingNew: boolean
-  resourceForm: FormGroup
+  resourceForm: UntypedFormGroup
   constructor(public sellerUserService: SellerUserService) {
     this.isCreatingNew = this.sellerUserService.checkIfCreatingNew()
   }
 
   createSellerUserForm(user: User) {
-    this.resourceForm = new FormGroup({
-      Active: new FormControl(user.Active),
-      Username: new FormControl(user.Username, Validators.required),
-      FirstName: new FormControl(user.FirstName, Validators.required),
-      LastName: new FormControl(user.LastName, Validators.required),
-      Email: new FormControl(user.Email, [Validators.required, ValidateEmail]),
+    this.resourceForm = new UntypedFormGroup({
+      Active: new UntypedFormControl(user.Active),
+      Username: new UntypedFormControl(user.Username, Validators.required),
+      FirstName: new UntypedFormControl(user.FirstName, Validators.required),
+      LastName: new UntypedFormControl(user.LastName, Validators.required),
+      Email: new UntypedFormControl(user.Email, [Validators.required, ValidateEmail]),
     })
   }
   updateResourceFromEvent(event: any, field: string): void {

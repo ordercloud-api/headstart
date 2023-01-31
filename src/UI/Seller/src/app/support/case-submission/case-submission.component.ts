@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http'
 import { Component, Inject, OnInit } from '@angular/core'
-import { AbstractControl, FormBuilder, Validators } from '@angular/forms'
+import { AbstractControl, UntypedFormBuilder, Validators } from '@angular/forms'
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser'
 import { applicationConfiguration } from '@app-seller/config/app.config'
 import { AppConfig, FileHandle } from '@app-seller/shared'
@@ -10,6 +10,7 @@ import { ToastrService } from 'ngx-toastr'
 import { takeWhile } from 'rxjs/operators'
 import { faAsterisk } from '@fortawesome/free-solid-svg-icons'
 import { TypedFormGroup } from 'ngx-forms-typed'
+import { HeadStartSDK } from '@ordercloud/headstart-sdk'
 
 interface CaseSubmissionForm {
   FirstName: string
@@ -43,7 +44,7 @@ export class CaseSubmissionComponent implements OnInit {
 
   constructor(
     private currentUserService: CurrentUserService,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private http: HttpClient,
     private sanitizer: DomSanitizer,
     private toastrService: ToastrService,
@@ -112,7 +113,7 @@ export class CaseSubmissionComponent implements OnInit {
     return validator && validator.required
   }
 
-  sendCaseSubmission(): void {
+  async sendCaseSubmission(): Promise<void> {
     this.submitBtnDisabled = true
     const form = new FormData()
     Object.keys(this.caseSubmissionForm.value).forEach((key) => {
@@ -122,23 +123,21 @@ export class CaseSubmissionComponent implements OnInit {
         form.append(key, this.caseSubmissionForm.value[key])
       }
     })
-    this.http
-      .post(`${this.appConfig.middlewareUrl}/support/submitcase`, form)
-      .subscribe(
-        () => {
-          this.toastrService.success('Support case sent', 'Success')
-          this.submitBtnDisabled = false
-          this.setForm()
-          this.removeAttachment()
-        },
-        () => {
-          this.toastrService.error(
-            'There was an issue sending your request',
-            'Error'
-          )
-          this.submitBtnDisabled = false
-        }
+
+    try {
+      await HeadStartSDK.Support.SubmitCase(form)
+      this.toastrService.success('Support case sent', 'Success')
+      this.submitBtnDisabled = false
+      this.setForm()
+      this.removeAttachment()
+    } catch {
+      this.toastrService.error(
+        'There was an issue sending your request',
+        'Error'
       )
+    } finally {
+      this.submitBtnDisabled = false
+    }
   }
 
   ngOnDestroy(): void {

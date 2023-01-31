@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core'
 import { get as _get } from 'lodash'
-import { FormGroup, FormControl, Validators } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms'
 import { FacetService } from '@app-seller/facets/facet.service'
 import { faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { ActiveToast, ToastrService } from 'ngx-toastr'
@@ -24,7 +24,7 @@ export class FacetEditComponent implements OnInit {
   updateResource = new EventEmitter<any>()
   _facetEditable: ProductFacet
   _facetStatic: ProductFacet
-  resourceForm: FormGroup
+  resourceForm: UntypedFormGroup
   areChanges = false
   isCreatingNew: boolean
   dataIsSaving = false
@@ -50,11 +50,11 @@ export class FacetEditComponent implements OnInit {
   }
 
   createProductFacetForm(facet: ProductFacet): void {
-    this.resourceForm = new FormGroup({
-      ID: new FormControl(facet.ID, Validators.required),
-      Name: new FormControl(facet.Name, Validators.required),
-      XpPath: new FormControl(facet.XpPath),
-      Options: new FormControl(facet?.xp?.Options),
+    this.resourceForm = new UntypedFormGroup({
+      ID: new UntypedFormControl(facet.ID, Validators.required),
+      Name: new UntypedFormControl(facet.Name, Validators.required),
+      XpPath: new UntypedFormControl(facet.XpPath),
+      Options: new UntypedFormControl(facet?.xp?.Options),
     })
   }
 

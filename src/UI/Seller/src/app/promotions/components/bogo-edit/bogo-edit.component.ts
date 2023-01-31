@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 import { HSBogoType, PromotionXp } from '@app-seller/shared'
 import { Product, Promotion } from 'ordercloud-javascript-sdk'
 import { BehaviorSubject } from 'rxjs'
@@ -16,7 +16,7 @@ export class BogoEditComponent {
   }
   @Input() buyProductsCollapsed: boolean
   @Input() getProductsCollapsed: boolean
-  @Input() formGroup: FormGroup
+  @Input() formGroup: UntypedFormGroup
   @Input() _products: BehaviorSubject<Product[]>
   @Input() selectedBuySKU: Product<ProductXp>
   @Input() selectedGetSKU: Product<ProductXp>

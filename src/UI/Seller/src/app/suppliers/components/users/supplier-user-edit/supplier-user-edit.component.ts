@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core'
-import { FormGroup, FormControl, Validators } from '@angular/forms'
+import { UntypedFormGroup, UntypedFormControl, Validators } from '@angular/forms'
 import { UserGroupAssignment, User } from 'ordercloud-javascript-sdk'
 import { SupplierUserService } from '../supplier-user.service'
 import { ValidateEmail } from '@app-seller/validators/validators'
@@ -22,17 +22,17 @@ export class SupplierUserEditComponent {
   userGroupAssignments = new EventEmitter<UserGroupAssignment[]>()
   isCreatingNew: boolean
   selectedResource: User
-  resourceForm: FormGroup
+  resourceForm: UntypedFormGroup
   constructor(public supplierUserService: SupplierUserService) {
     this.isCreatingNew = this.supplierUserService.checkIfCreatingNew()
   }
   createSupplierUserForm(user: User) {
-    this.resourceForm = new FormGroup({
-      Username: new FormControl(user.Username, Validators.required),
-      FirstName: new FormControl(user.FirstName, Validators.required),
-      LastName: new FormControl(user.LastName, Validators.required),
-      Email: new FormControl(user.Email, [Validators.required, ValidateEmail]),
-      Active: new FormControl(user.Active),
+    this.resourceForm = new UntypedFormGroup({
+      Username: new UntypedFormControl(user.Username, Validators.required),
+      FirstName: new UntypedFormControl(user.FirstName, Validators.required),
+      LastName: new UntypedFormControl(user.LastName, Validators.required),
+      Email: new UntypedFormControl(user.Email, [Validators.required, ValidateEmail]),
+      Active: new UntypedFormControl(user.Active),
     })
   }
   updateResourceFromEvent(event: any, field: string): void {

@@ -5,15 +5,17 @@ import {
   EventEmitter,
   OnDestroy,
 } from '@angular/core'
-import { FormGroup, FormControl, Validators } from '@angular/forms'
-import { BuyerTempService } from '@app-seller/shared/services/middleware-api/buyer-temp.service'
-import { HSBuyer, SuperHSBuyer } from '@ordercloud/headstart-sdk'
+import {
+  UntypedFormGroup,
+  UntypedFormControl,
+  Validators,
+} from '@angular/forms'
+import { HeadStartSDK, HSBuyer, SuperHSBuyer } from '@ordercloud/headstart-sdk'
 import { BuyerService } from '../buyer.service'
 import { Router } from '@angular/router'
 import { isEqual as _isEqual } from 'lodash'
 import { Subscription } from 'rxjs'
 import { ResourceUpdate } from '@app-seller/shared'
-import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/catalogs-temp.service'
 import { TranslateService } from '@ngx-translate/core'
 import { Addresses } from 'ordercloud-javascript-sdk'
 @Component({
@@ -22,7 +24,7 @@ import { Addresses } from 'ordercloud-javascript-sdk'
   styleUrls: ['./buyer-edit.component.scss'],
 })
 export class BuyerEditComponent implements OnDestroy {
-  resourceForm: FormGroup
+  resourceForm: UntypedFormGroup
   showImpersonation: boolean
   isCreatingNew = false
   areChanges = false
@@ -54,13 +56,11 @@ export class BuyerEditComponent implements OnDestroy {
     private buyerService: BuyerService,
     private router: Router,
     private translate: TranslateService,
-    private buyerTempService: BuyerTempService,
-    private hsCatalogService: CatalogsTempService
   ) {}
 
   async getBuyerData(buyerID: string): Promise<void> {
     const [catalogs, addresses] = await Promise.all([
-      this.hsCatalogService.list(buyerID),
+      HeadStartSDK.Catalogs.List(buyerID),
       Addresses.List(buyerID),
     ])
     if (!catalogs?.Items || catalogs.Items?.length === 0) {
@@ -102,10 +102,11 @@ export class BuyerEditComponent implements OnDestroy {
         form: this.resourceForm,
       }
     }
-    this._superBuyerEditable = this.buyerService.getUpdatedEditableResource<SuperHSBuyer>(
-      resourceUpdate,
-      this._superBuyerEditable
-    )
+    this._superBuyerEditable =
+      this.buyerService.getUpdatedEditableResource<SuperHSBuyer>(
+        resourceUpdate,
+        this._superBuyerEditable
+      )
     this.checkForChanges()
   }
 
@@ -113,13 +114,13 @@ export class BuyerEditComponent implements OnDestroy {
     const { Buyer, ImpersonationConfig } = superBuyer
     this.showImpersonation = ImpersonationConfig && ImpersonationConfig !== null
 
-    this.resourceForm = new FormGroup({
-      Name: new FormControl(Buyer.Name, Validators.required),
-      Active: new FormControl(Buyer.Active),
-      Markup: new FormControl(Buyer.xp.MarkupPercent),
-      ImpersonatingEnabled: new FormControl(this.showImpersonation),
-      URL: new FormControl(Buyer.xp.URL),
-      ClientID: new FormControl(ImpersonationConfig?.ClientID),
+    this.resourceForm = new UntypedFormGroup({
+      Name: new UntypedFormControl(Buyer.Name, Validators.required),
+      Active: new UntypedFormControl(Buyer.Active),
+      Markup: new UntypedFormControl(Buyer.xp.MarkupPercent),
+      ImpersonatingEnabled: new UntypedFormControl(this.showImpersonation),
+      URL: new UntypedFormControl(Buyer.xp.URL),
+      ClientID: new UntypedFormControl(ImpersonationConfig?.ClientID),
     })
     this.setImpersonationValidator()
   }
@@ -141,7 +142,7 @@ export class BuyerEditComponent implements OnDestroy {
   }
 
   async handleSelectedBuyerChange(buyer: HSBuyer): Promise<void> {
-    const superHSBuyer = await this.buyerTempService.get(buyer.ID)
+    const superHSBuyer = await HeadStartSDK.Buyers.Get(buyer.ID)
     this.refreshBuyerData(superHSBuyer)
   }
 
@@ -175,7 +176,7 @@ export class BuyerEditComponent implements OnDestroy {
   async createNewBuyer(): Promise<void> {
     try {
       this.dataIsSaving = true
-      const newSuperBuyer = await this.buyerTempService.create(
+      const newSuperBuyer = await HeadStartSDK.Buyers.Create(
         this._superBuyerEditable
       )
       this.router.navigateByUrl(`/buyers/${newSuperBuyer.Buyer.ID}`)
@@ -189,7 +190,7 @@ export class BuyerEditComponent implements OnDestroy {
   async updateBuyer(): Promise<void> {
     try {
       this.dataIsSaving = true
-      const updatedBuyer = await this.buyerTempService.save(
+      const updatedBuyer = await HeadStartSDK.Buyers.Save(
         this._superBuyerEditable.Buyer.ID,
         this._superBuyerEditable
       )

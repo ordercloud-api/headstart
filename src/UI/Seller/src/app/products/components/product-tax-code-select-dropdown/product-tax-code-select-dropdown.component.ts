@@ -14,7 +14,7 @@ import {
   TaxCategorization,
 } from '@ordercloud/headstart-sdk'
 import { faTimesCircle, faCheckCircle } from '@fortawesome/free-solid-svg-icons'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 
 @Component({
   selector: 'product-tax-code-select-dropdown',
@@ -23,7 +23,7 @@ import { FormGroup } from '@angular/forms'
 })
 export class ProductTaxCodeSelectDropdown implements OnChanges {
   @Input()
-  productForm: FormGroup
+  productForm: UntypedFormGroup
   @Input()
   taxCodes: TaxCategorization[]
   @Input()

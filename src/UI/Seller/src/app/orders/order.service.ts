@@ -5,7 +5,6 @@ import { CurrentUserService } from '@app-seller/shared/services/current-user/cur
 import { Orders, Order } from 'ordercloud-javascript-sdk'
 import { OrderType } from '@app-seller/models/order.types'
 import { HeadStartSDK, HSOrder } from '@ordercloud/headstart-sdk'
-import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
 
 @Injectable({
   providedIn: 'root',
@@ -14,8 +13,7 @@ export class OrderService extends ResourceCrudService<Order> {
   constructor(
     router: Router,
     activatedRoute: ActivatedRoute,
-    currentUserService: CurrentUserService,
-    private middleware: MiddlewareAPIService
+    currentUserService: CurrentUserService
   ) {
     super(
       router,

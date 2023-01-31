@@ -24,6 +24,7 @@ export default class BuyerLocations {
         this.GetApprovalThreshold = this.GetApprovalThreshold.bind(this);
         this.SetLocationApprovalThreshold = this.SetLocationApprovalThreshold.bind(this);
         this.ListLocationPermissionUserGroups = this.ListLocationPermissionUserGroups.bind(this);
+        this.CreateSinglePermissionGroup = this.CreateSinglePermissionGroup.bind(this)
         this.UpdateLocationPermissions = this.UpdateLocationPermissions.bind(this);
         this.ListLocationUsers = this.ListLocationUsers.bind(this);
         this.ListUserGroupsForNewUser = this.ListUserGroupsForNewUser.bind(this);
@@ -132,6 +133,18 @@ export default class BuyerLocations {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.post(`/buyerlocations/${buyerID}/${buyerLocationID}/permissions`, locationPermissionUpdate, { params: {  accessToken, impersonating } } );
+    }
+    
+    /**
+    * @param buyerID ID of the buyer.
+    * @param buyerLocationID ID of the buyer location.
+    * @param locationPermissionUpdate 
+    * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
+    */
+    public async CreateSinglePermissionGroup(buyerID: string, buyerLocationID: string, permissionGroupID: string, accessToken?: string ): Promise<void> {
+        const impersonating = this.impersonating;
+        this.impersonating = false;
+        return await httpClient.post(`/buyerlocations/${buyerID}/${buyerLocationID}/permissions/${permissionGroupID}`, {}, { params: {  accessToken, impersonating } } );
     }
 
    /**

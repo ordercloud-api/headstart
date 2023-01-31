@@ -11,8 +11,7 @@ import {
   CategoryProductAssignment,
 } from 'ordercloud-javascript-sdk'
 import { ProductService } from '@app-seller/products/product.service'
-import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/catalogs-temp.service'
-import { HSBuyer, HSProduct } from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, HSBuyer, HSProduct } from '@ordercloud/headstart-sdk'
 
 @Component({
   selector: 'buyer-visibility-configuration-component',
@@ -61,8 +60,7 @@ export class BuyerVisibilityConfiguration {
   isAssignedToCatalog = false
 
   constructor(
-    private productService: ProductService,
-    public catalogsTempService: CatalogsTempService
+    private productService: ProductService
   ) {}
 
   async fetchData(): Promise<void> {
@@ -257,7 +255,7 @@ export class BuyerVisibilityConfiguration {
     // assignments, we are ensuring that the assignment is done
     // with the price schedule if one is present
     try {
-      const priceSchedule = await this.catalogsTempService.GetPricingOverride(
+      const priceSchedule = await HeadStartSDK.Products.GetPricingOverride(
         this._product.ID,
         this._buyer.ID
       )

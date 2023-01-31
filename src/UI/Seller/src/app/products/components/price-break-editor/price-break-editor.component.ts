@@ -9,7 +9,7 @@ import {
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
 import { SupportedRates } from '@app-seller/models/currency-geography.types'
-import { FormBuilder } from '@angular/forms'
+import { UntypedFormBuilder } from '@angular/forms'
 import { TypedFormGroup } from 'ngx-forms-typed'
 import { NgbTimeStruct } from '@ng-bootstrap/ng-bootstrap'
 
@@ -76,7 +76,7 @@ export class PriceBreakEditor {
 
   constructor(
     private toasterService: ToastrService,
-    private formBuilder: FormBuilder
+    private formBuilder: UntypedFormBuilder
   ) {}
 
   getEmptyBreak(): PriceBreak {

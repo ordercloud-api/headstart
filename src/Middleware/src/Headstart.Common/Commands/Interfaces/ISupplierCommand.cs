@@ -11,7 +11,7 @@ namespace Headstart.Common.Commands
 
         Task<HSSupplier> GetMySupplier(string supplierID, DecodedToken decodedToken);
 
-        Task<HSSupplier> UpdateSupplier(string supplierID, PartialSupplier supplier, DecodedToken decodedToken);
+        Task<HSSupplier> Patch(string supplierID, PartialSupplier supplier, DecodedToken decodedToken);
 
         Task<HSSupplierOrderData> GetSupplierOrderData(string supplierOrderID, OrderType orderType, DecodedToken decodedToken);
     }

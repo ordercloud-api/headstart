@@ -37,7 +37,7 @@ namespace Headstart.Common.Commands
             };
         }
 
-        public async Task<SuperHSBuyer> Update(string buyerID, SuperHSBuyer superBuyer)
+        public async Task<SuperHSBuyer> Save(string buyerID, SuperHSBuyer superBuyer)
         {
             // to prevent changing buyerIDs
             superBuyer.Buyer.ID = buyerID;

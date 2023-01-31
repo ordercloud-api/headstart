@@ -1,6 +1,6 @@
 // angular
 import { Component, OnInit, Inject } from '@angular/core'
-import { FormBuilder, FormGroup } from '@angular/forms'
+import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms'
 import { Router } from '@angular/router'
 
 // angular libs
@@ -17,11 +17,11 @@ import { AppConfig } from '@app-seller/models/environment.types'
   styleUrls: ['./forgot-password.component.scss'],
 })
 export class ForgotPasswordComponent implements OnInit {
-  resetEmailForm: FormGroup
+  resetEmailForm: UntypedFormGroup
 
   constructor(
     private router: Router,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private toasterService: ToastrService,
     @Inject(applicationConfiguration) private appConfig: AppConfig
   ) {}

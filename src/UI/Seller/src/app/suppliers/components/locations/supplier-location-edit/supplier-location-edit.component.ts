@@ -5,7 +5,7 @@ import {
   Output,
   OnChanges,
 } from '@angular/core'
-import { FormGroup, Validators, FormControl } from '@angular/forms'
+import { UntypedFormGroup, Validators, UntypedFormControl } from '@angular/forms'
 import { Address, ListPage } from 'ordercloud-javascript-sdk'
 import { ActivatedRoute } from '@angular/router'
 import { GeographyConfig } from '@app-seller/shared/models/supported-countries.constant'
@@ -27,7 +27,7 @@ export class SupplierLocationEditComponent implements OnChanges {
   locationHasNoProducts: boolean
   countryOptions: SupportedCountries[]
   flag: string
-  resourceForm: FormGroup
+  resourceForm: UntypedFormGroup
   zipLabel = 'Zip Code'
   zipPlaceholder = 'Enter Zip'
   stateLabel = 'State'
@@ -79,25 +79,25 @@ export class SupplierLocationEditComponent implements OnChanges {
   }
 
   createSupplierLocationForm(supplierLocation: Address): void {
-    this.resourceForm = new FormGroup({
-      AddressName: new FormControl(
+    this.resourceForm = new UntypedFormGroup({
+      AddressName: new UntypedFormControl(
         supplierLocation.AddressName,
         Validators.required
       ),
-      CompanyName: new FormControl(
+      CompanyName: new UntypedFormControl(
         supplierLocation.CompanyName,
         Validators.required
       ),
-      Street1: new FormControl(supplierLocation.Street1, Validators.required),
-      Street2: new FormControl(supplierLocation.Street2),
-      City: new FormControl(supplierLocation.City, Validators.required),
-      State: new FormControl(supplierLocation.State, Validators.required),
-      Zip: new FormControl({ value: supplierLocation.Zip, disabled: true }, [
+      Street1: new UntypedFormControl(supplierLocation.Street1, Validators.required),
+      Street2: new UntypedFormControl(supplierLocation.Street2),
+      City: new UntypedFormControl(supplierLocation.City, Validators.required),
+      State: new UntypedFormControl(supplierLocation.State, Validators.required),
+      Zip: new UntypedFormControl({ value: supplierLocation.Zip, disabled: true }, [
         Validators.required,
         ValidateZip(supplierLocation.Zip),
       ]),
-      Country: new FormControl(supplierLocation.Country, Validators.required),
-      Phone: new FormControl(supplierLocation.Phone, ValidatePhone),
+      Country: new UntypedFormControl(supplierLocation.Country, Validators.required),
+      Phone: new UntypedFormControl(supplierLocation.Phone, ValidatePhone),
     })
     this.setZipValidator()
   }

@@ -7,7 +7,7 @@ import {
   SimpleChanges,
 } from '@angular/core'
 import { ReportsTemplateService } from '@app-seller/shared/services/middleware-api/reports-template.service'
-import { FormGroup } from '@angular/forms'
+import { UntypedFormGroup } from '@angular/forms'
 import {
   buyerLocation as buyerLocationHeaders,
   salesOrderDetail as salesOrderDetailHeaders,
@@ -42,7 +42,7 @@ import { ReportTemplate } from '@ordercloud/headstart-sdk'
 })
 export class TemplateEditComponent implements OnChanges {
   @Input()
-  resourceForm: FormGroup
+  resourceForm: UntypedFormGroup
   @Input()
   reportType: string
   @Input()

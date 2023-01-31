@@ -1,14 +1,14 @@
-import { FormArray, FormControl, FormBuilder } from '@angular/forms'
+import { UntypedFormArray, UntypedFormControl, UntypedFormBuilder } from '@angular/forms'
 import { HSLineItem, HSOrderReturn } from '@ordercloud/headstart-sdk'
 import { LineItemForm } from './line-item-form.model'
 
 export class LineItemGroupForm {
-  shipFromAddressID = new FormControl()
-  lineItems = new FormArray([])
+  shipFromAddressID = new UntypedFormControl()
+  lineItems = new UntypedFormArray([])
   liGroup: HSLineItem[]
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     liGroup: HSLineItem[],
     orderReturns: HSOrderReturn[]
   ) {

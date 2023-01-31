@@ -2,11 +2,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
-  FormArray,
-  FormControl,
-  FormBuilder,
+  UntypedFormArray,
+  UntypedFormControl,
+  UntypedFormBuilder,
   Validators,
-  FormGroup,
+  UntypedFormGroup,
   ValidationErrors,
 } from '@angular/forms'
 import { AmountCanRefund } from '@app-seller/orders/line-item-status.helper'
@@ -15,14 +15,14 @@ import { flatten, sum } from 'lodash'
 import { LineItemGroupForm } from './line-item-group-form.model'
 
 export class ReturnRequestForm {
-  orderID = new FormControl()
-  comments = new FormControl('', [Validators.maxLength(2000)])
-  refundAmount = new FormControl(null)
-  refundImmediately = new FormControl(false)
-  liGroups = new FormArray([])
+  orderID = new UntypedFormControl()
+  comments = new UntypedFormControl('', [Validators.maxLength(2000)])
+  refundAmount = new UntypedFormControl(null)
+  refundImmediately = new UntypedFormControl(false)
+  liGroups = new UntypedFormArray([])
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     order: HSOrder,
     liGroups: HSLineItem[][],
     orderReturns: HSOrderReturn[]
@@ -43,7 +43,7 @@ export class ReturnRequestForm {
 
 function maxRefundAmountValidator(
   maxRefundAmount: number
-): (form: FormGroup) => ValidationErrors | null {
+): (form: UntypedFormGroup) => ValidationErrors | null {
   return (form: any) => {
     // aggregate all of the refund amounts for each line item
     const requestedRefundAmount = sum(

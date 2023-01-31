@@ -1,18 +1,16 @@
-import { MiddlewareAPIService } from '@app-seller/shared/services/middleware-api/middleware-api.service'
-import { Tokens } from 'ordercloud-javascript-sdk'
-import { HttpClient, HttpHeaders } from '@angular/common/http'
+import { RequiredDeep, Tokens } from 'ordercloud-javascript-sdk'
 import { Component, Inject } from '@angular/core'
 import { applicationConfiguration } from '@app-seller/config/app.config'
-import { Observable } from 'rxjs'
-import { AppAuthService } from '@app-seller/auth/services/app-auth.service'
-import { AssetType, AssetUpload, HeadStartSDK } from '@ordercloud/headstart-sdk'
+import {
+  AssetType,
+  AssetUpload,
+  BatchProcessResult,
+  HeadStartSDK,
+} from '@ordercloud/headstart-sdk'
 import { getPsHeight } from '@app-seller/shared/services/dom.helper'
 import { NgxSpinnerService } from 'ngx-spinner'
 import { AppConfig } from '@app-seller/models/environment.types'
-import {
-  BatchProcessResult,
-  FileHandle,
-} from '@app-seller/models/file-upload.types'
+import { FileHandle } from '@app-seller/models/file-upload.types'
 import { Products } from 'ordercloud-javascript-sdk'
 
 @Component({
@@ -22,11 +20,8 @@ import { Products } from 'ordercloud-javascript-sdk'
 })
 export class UploadShipmentsComponent {
   constructor(
-    private http: HttpClient,
     @Inject(applicationConfiguration) private appConfig: AppConfig,
-    private appAuthService: AppAuthService,
-    private spinner: NgxSpinnerService,
-    private middleware: MiddlewareAPIService
+    private spinner: NgxSpinnerService
   ) {
     this.contentHeight = getPsHeight('base-layout-item')
   }
@@ -34,39 +29,30 @@ export class UploadShipmentsComponent {
   files: FileHandle[] = []
   contentHeight = 0
   showUploadSummary = false
-  batchProcessResult: BatchProcessResult
+  batchProcessResult: RequiredDeep<BatchProcessResult>
   showResults = false
 
-  downloadTemplate(): void {
+  async downloadTemplate(): Promise<void> {
     const file = 'Shipment_Import_Template.xlsx'
-    this.getSharedAccessSignature(file).subscribe((sharedAccessSignature) => {
-      const uri = `${this.appConfig.blobStorageUrl}/downloads/Shipment_Import_Template.xlsx${sharedAccessSignature}`
-      const link = document.createElement('a')
-      link.download = file
-      link.href = uri
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link)
-    })
+    const sharedAccessSignature = await this.getSharedAccessSignature(file)
+    const uri = `${this.appConfig.blobStorageUrl}/downloads/Shipment_Import_Template.xlsx${sharedAccessSignature}`
+    const link = document.createElement('a')
+    link.download = file
+    link.href = uri
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
-  private getSharedAccessSignature(fileName: string): Observable<string> {
-    return this.http.get<string>(
-      `${this.appConfig.middlewareUrl}/reports/download-shared-access/${fileName}`,
-      { headers: this.buildHeaders() }
-    )
+  private async getSharedAccessSignature(fileName: string): Promise<string> {
+    return await HeadStartSDK.Reports.GetSharedAccessSignature(fileName)
   }
-  private buildHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
-    })
-  }
+
   async manualFileUpload(event, fileType: string): Promise<void> {
     this.showUploadSummary = true
     this.showResults = false
     this.spinner.show()
-    const accessToken = Tokens.GetAccessToken();
+    const accessToken = Tokens.GetAccessToken()
     let asset: AssetUpload = {}
 
     if (fileType === 'staticContent') {
@@ -95,10 +81,6 @@ export class UploadShipmentsComponent {
         )
       }
 
-      const headers = new HttpHeaders({
-        Authorization: `Bearer ${accessToken}`,
-      })
-
       const formData = new FormData()
 
       for (const prop in asset) {
@@ -107,15 +89,12 @@ export class UploadShipmentsComponent {
         }
       }
 
-      ;(await this.middleware.batchShipmentUpload(formData, headers)).subscribe(
-        (result: BatchProcessResult) => {
-          if (result !== null) {
-            this.batchProcessResult = result
-            this.spinner.hide()
-            this.showResults = true
-          }
-        }
-      )
+      const result = await HeadStartSDK.Shipments.UploadShipments(formData)
+      if (result !== null) {
+        this.batchProcessResult = result
+        this.spinner.hide()
+        this.showResults = true
+      }
     }
   }
 

@@ -1,4 +1,4 @@
-import { FormGroup } from "@angular/forms";
+import { UntypedFormGroup } from "@angular/forms";
 
 export interface Route {
   title: string
@@ -24,7 +24,7 @@ export interface HSRoute {
 export interface ResourceUpdate<T = any> {
   field: string
   value: T
-  form: FormGroup
+  form: UntypedFormGroup
 }
 
 export interface SwaggerSpecProperty {

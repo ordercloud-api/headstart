@@ -11,10 +11,8 @@ import {
 } from 'ordercloud-javascript-sdk'
 import { BUYER_SUB_RESOURCE_LIST } from '../buyers/buyer.service'
 import { CurrentUserService } from '@app-seller/shared/services/current-user/current-user.service'
-import { CatalogsTempService } from '@app-seller/shared/services/middleware-api/catalogs-temp.service'
 import { IUserPermissionsService } from '@app-seller/models/user.types'
-import { ListArgs } from '@ordercloud/headstart-sdk'
-import { BuyerTempService } from '@app-seller/shared/services/middleware-api/buyer-temp.service'
+import { HeadStartSDK, ListArgs } from '@ordercloud/headstart-sdk'
 
 // TODO - this service is only relevent if you're already on the buyer details page. How can we enforce/inidcate that?
 @Injectable({
@@ -36,8 +34,6 @@ export class BuyerUserService
     router: Router,
     activatedRoute: ActivatedRoute,
     public currentUserService: CurrentUserService,
-    private catalogsTempService: CatalogsTempService,
-    private buyerTempService: BuyerTempService
   ) {
     super(
       router,
@@ -78,7 +74,7 @@ export class BuyerUserService
     try {
       await UserGroups.SaveUserAssignment(buyerID, assignment)
     } catch (err) {
-      await this.buyerTempService.createPermissionGroup(
+      await HeadStartSDK.BuyerLocations.CreateSinglePermissionGroup(
         buyerID,
         buyerLocationID,
         assignment.UserGroupID
@@ -120,7 +116,7 @@ export class BuyerUserService
       UserGroupID: assignment.UserGroupID,
     })
     if (shouldSyncUserCatalogAssignments) {
-      await this.catalogsTempService.syncUserCatalogAssignments(
+      HeadStartSDK.Catalogs.SyncUserCatalogAssignments(
         buyerID,
         assignment.UserID
       )
@@ -139,7 +135,7 @@ export class BuyerUserService
     )
 
     if (shouldSyncUserCatalogAssignments) {
-      await this.catalogsTempService.syncUserCatalogAssignments(
+      await HeadStartSDK.Catalogs.SyncUserCatalogAssignments(
         buyerID,
         assignment.UserID
       )

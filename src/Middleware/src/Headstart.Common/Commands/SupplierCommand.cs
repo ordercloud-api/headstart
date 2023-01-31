@@ -35,7 +35,7 @@ namespace Headstart.Common.Commands
             return await oc.Suppliers.GetAsync<HSSupplier>(supplierID);
         }
 
-        public async Task<HSSupplier> UpdateSupplier(string supplierID, PartialSupplier supplier, DecodedToken decodedToken)
+        public async Task<HSSupplier> Patch(string supplierID, PartialSupplier supplier, DecodedToken decodedToken)
         {
             var me = await oc.Me.GetAsync(accessToken: decodedToken.AccessToken);
             Require.That(decodedToken.CommerceRole == CommerceRole.Seller || supplierID == me.Supplier.ID, new ErrorCode("Unauthorized", $"You are not authorized to update supplier {supplierID}", HttpStatusCode.Unauthorized));

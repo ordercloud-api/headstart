@@ -54,9 +54,9 @@ namespace Headstart.API.Controllers
         /// PATCH Supplier.
         /// </summary>
         [HttpPatch, Route("{supplierID}"), OrderCloudUserAuth]
-        public async Task<HSSupplier> UpdateSupplier(string supplierID, [FromBody] PartialSupplier supplier)
+        public async Task<HSSupplier> Patch(string supplierID, [FromBody] PartialSupplier supplier)
         {
-            return await supplierCommand.UpdateSupplier(supplierID, supplier, UserContext);
+            return await supplierCommand.Patch(supplierID, supplier, UserContext);
         }
 
         /// <summary>
