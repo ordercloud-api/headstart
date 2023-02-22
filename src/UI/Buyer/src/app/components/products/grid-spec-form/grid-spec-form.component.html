@@ -10,14 +10,9 @@
   <tbody>
     <tr *ngFor="let spec of specOptions; let i = index">
       <td>
-        <ocm-quantity-input
-          [existingQty]="null"
-          [gridDisplay]="true"
-          [product]="product"
-          [priceSchedule]="priceSchedule"
-          [resetGridQtyFields]="resetGridQtyFields"
-          (qtyChange)="changeQuantity(specOptions[i], $event.detail)"
-        ></ocm-quantity-input>
+        <ocm-quantity-input [existingQty]="null" [gridDisplay]="true" [product]="product"
+          [priceSchedule]="priceSchedule" [resetGridQtyFields]="resetGridQtyFields"
+          (qtyChange)="changeQuantity(specOptions[i], $event.detail)"></ocm-quantity-input>
       </td>
       <td>
         <label for="{{ spec }}" class="form-label">{{ spec }}</label>
@@ -26,13 +21,12 @@
       <td>{{ lineTotals[i] | currency }}</td>
     </tr>
     <tr>
-      <small
-        *ngIf="errorMsg !== ''"
-        class="alert alert-danger error-message c-error-message text-center"
-      >
-        {{ errorMsg }}
+      <td colspan="4">
+        <small *ngIf="errorMsg !== ''" class="alert alert-danger error-message c-error-message text-center">
+          {{ errorMsg }}
+        </small>
         <br />
-      </small>
+      </td>
     </tr>
   </tbody>
 </table>
@@ -43,13 +37,8 @@
   <p class="text-muted ms-3 float-end">{{ product | UofM }}</p>
 </div>
 <div class="d-grid">
-  <button
-    class="btn btn-primary mb-3"
-    type="submit"
-    [disabled]="isAddingToCart || !qtyValid"
-    (click)="addToCart()"
-    translate
-  >
+  <button class="btn btn-primary mb-3" type="submit" [disabled]="isAddingToCart || !qtyValid" (click)="addToCart()"
+    translate>
     PRODUCTS.DETAILS.ADD_TO_CART
   </button>
 </div>

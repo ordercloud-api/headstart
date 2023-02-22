@@ -57,8 +57,8 @@ import { HttpClientModule, HttpClient } from '@angular/common/http'
 import { ComponentNgElementStrategyFactory } from 'src/lib/component-factory-strategy'
 import { NgbDateNativeAdapter } from './config/date-picker.config'
 import { AppErrorHandler } from './config/error-handling.config'
-import { NgProgressModule } from '@ngx-progressbar/core'
-import { NgProgressHttpModule } from '@ngx-progressbar/http'
+import { NgProgressModule } from 'ngx-progressbar'
+import { NgProgressHttpModule } from 'ngx-progressbar/http'
 import { OCMOrderApproval } from './components/orders/order-approval/order-approval.component'
 import { OCMOrderShipments } from './components/orders/order-shipments/order-shipments.component'
 import { OCMOrderReturns } from './components/orders/order-returns/order-returns.component'
@@ -345,8 +345,8 @@ const components = [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    CookieModule.forRoot() as ModuleWithProviders<CookieModule>, // TODO: possibly remove this type casting in future versions, but for now typescript is complaining
-    ToastrModule.forRoot() as ModuleWithProviders<ToastrModule>, // TODO: possibly remove this type casting in future versions, but for now typescript is complaining
+    CookieModule.forRoot(), // TODO: possibly remove this type casting in future versions, but for now typescript is complaining
+    ToastrModule.forRoot(), // TODO: possibly remove this type casting in future versions, but for now typescript is complaining
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

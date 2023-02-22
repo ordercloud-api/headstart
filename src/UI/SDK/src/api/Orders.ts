@@ -125,7 +125,7 @@ export default class Orders {
     * @param orderID ID of the order.
     * @param accessToken Provide an alternative token to the one stored in the sdk instance (useful for impersonation).
     */
-    public async ListShipmentsWithItems(orderID: string,  accessToken?: string ): Promise<HSShipmentWithItems> {
+    public async ListShipmentsWithItems(orderID: string,  accessToken?: string ): Promise<HSShipmentWithItems[]> {
         const impersonating = this.impersonating;
         this.impersonating = false;
         return await httpClient.get(`/order/${orderID}/shipmentswithitems`, { params: {  accessToken, impersonating } } );
