@@ -15,7 +15,12 @@ if (!appID) {
 const sourceDir = '.'
 const mainJs = fs
   .readdirSync(sourceDir)
-  .find((filename) => filename.startsWith('main') && filename.endsWith('.js'))
+  .find(
+    (filename) =>
+      filename !== 'main-original.js' &&
+      filename.startsWith('main') &&
+      filename.endsWith('.js')
+  )
 
 const appConfig = fs.readFileSync(
   `${sourceDir}/assets/appConfigs/${appID}.json`,
