@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { takeWhile } from 'rxjs/operators'
-import { ListPage } from '@ordercloud/headstart-sdk'
+import { HeadStartSDK, ListPage } from '@ordercloud/headstart-sdk'
 import { Supplier } from 'ordercloud-javascript-sdk'
 import { ShopperContextService } from '../services/shopper-context/shopper-context.service'
-import { TempSdk } from '../services/temp-sdk/temp-sdk.service'
 import { BuyerAppFilterType } from '../models/filter-config.types'
 
 @Component({
@@ -23,7 +22,6 @@ export class SupplierListWrapperComponent implements OnInit, OnDestroy {
   constructor(
     private activatedRoute: ActivatedRoute,
     public context: ShopperContextService,
-    private tempSdk: TempSdk
   ) {}
 
   ngOnInit(): void {
@@ -49,7 +47,8 @@ export class SupplierListWrapperComponent implements OnInit, OnDestroy {
   }
 
   private getSupplierCategories = async (): Promise<void> => {
-    const supplierFilterConfigResponse = await this.tempSdk.getSupplierFilterConfig()
+    const supplierFilterConfigResponse =
+      await HeadStartSDK.Suppliers.GetSupplierFilterConfig()
     this.supplierFilterConfig = supplierFilterConfigResponse.Items.map(
       (s) => s.Doc
     )

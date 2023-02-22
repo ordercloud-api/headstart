@@ -1,29 +1,13 @@
 import { Injectable } from '@angular/core'
-import {
-  UserGroup,
-  UserGroupAssignment,
-  Me,
-  Tokens,
-} from 'ordercloud-javascript-sdk'
+import { UserGroup, UserGroupAssignment, Me } from 'ordercloud-javascript-sdk'
 import { CurrentUserService } from '../current-user/current-user.service'
-import { HttpClient, HttpHeaders } from '@angular/common/http'
-import {
-  HSUser,
-  ListPage,
-  HeadStartSDK,
-} from '@ordercloud/headstart-sdk'
-import { AppConfig } from 'src/app/models/environment.types'
+import { HSUser, ListPage, HeadStartSDK } from '@ordercloud/headstart-sdk'
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserManagementService {
-  constructor(
-    public currentUserService: CurrentUserService,
-    // remove below when sdk is regenerated
-    private httpClient: HttpClient,
-    private appConfig: AppConfig
-  ) {}
+  constructor(public currentUserService: CurrentUserService) {}
 
   async getLocations(): Promise<UserGroup[]> {
     // todo accomodate more than 100 locations
@@ -34,9 +18,7 @@ export class UserManagementService {
     return loctions.Items
   }
 
-  async getLocationUsers(
-    locationID: string
-  ): Promise<ListPage<HSUser>> {
+  async getLocationUsers(locationID: string): Promise<ListPage<HSUser>> {
     const buyerID = this.currentUserService.get().Buyer.ID
     return await HeadStartSDK.BuyerLocations.ListLocationUsers(
       buyerID,
@@ -47,29 +29,21 @@ export class UserManagementService {
   async getLocationPermissions(
     locationID: string
   ): Promise<UserGroupAssignment[]> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
-    })
     const buyerID = locationID.split('-')[0]
-    const url = `${this.appConfig.middlewareUrl}/buyerlocations/${buyerID}/${locationID}/permissions`
-    return this.httpClient
-      .get<UserGroupAssignment[]>(url, { headers })
-      .toPromise()
+    return await HeadStartSDK.BuyerLocations.ListLocationPermissionUserGroups(
+      buyerID,
+      locationID
+    )
   }
 
   async getLocationApprovalPermissions(
     locationID: string
   ): Promise<UserGroupAssignment[]> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
-    })
     const buyerID = locationID.split('-')[0]
-    const url = `${this.appConfig.middlewareUrl}/buyerlocations/${buyerID}/${locationID}/approvalpermissions`
-    return this.httpClient
-      .get<UserGroupAssignment[]>(url, { headers })
-      .toPromise()
+    return HeadStartSDK.BuyerLocations.ListLocationApprovalPermissionAsssignments(
+      buyerID,
+      locationID
+    )
   }
 
   async updateUserUserGroupAssignments(
@@ -91,13 +65,6 @@ export class UserManagementService {
 
   async getLocationApprovalThreshold(locationID: string): Promise<number> {
     const buyerID = this.currentUserService.get().Buyer.ID
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${Tokens.GetAccessToken()}`,
-    })
-    const url = `${this.appConfig.middlewareUrl}/buyerlocations/${buyerID}/${locationID}/approvalthreshold`
-    return this.httpClient
-      .get<number>(url, { headers })
-      .toPromise()
+    return HeadStartSDK.BuyerLocations.GetApprovalThreshold(buyerID, locationID)
   }
 }

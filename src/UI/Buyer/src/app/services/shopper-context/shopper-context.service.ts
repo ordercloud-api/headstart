@@ -11,7 +11,6 @@ import { CurrentUserService } from '../current-user/current-user.service'
 import { UserManagementService } from '../user-management/user-management.service'
 import { OrdersToApproveStateService } from '../order-history/order-to-approve-state.service'
 import { ExchangeRatesService } from '../exchange-rates/exchange-rates.service'
-import { TempSdk } from '../temp-sdk/temp-sdk.service'
 import { PDFService } from '../pdf-render/pdf-render.service'
 import { AppConfig } from 'src/app/models/environment.types'
 
@@ -33,7 +32,6 @@ export class ShopperContextService {
     public userManagementService: UserManagementService,
     public addresses: AddressService,
     public ordersToApprove: OrdersToApproveStateService,
-    public tempSdk: TempSdk,
     public pdfService: PDFService
   ) {}
 }

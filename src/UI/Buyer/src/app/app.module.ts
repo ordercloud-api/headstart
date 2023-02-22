@@ -57,8 +57,8 @@ import { HttpClientModule, HttpClient } from '@angular/common/http'
 import { ComponentNgElementStrategyFactory } from 'src/lib/component-factory-strategy'
 import { NgbDateNativeAdapter } from './config/date-picker.config'
 import { AppErrorHandler } from './config/error-handling.config'
-import { NgProgressModule } from '@ngx-progressbar/core'
-import { NgProgressHttpModule } from '@ngx-progressbar/http'
+import { NgProgressModule } from 'ngx-progressbar'
+import { NgProgressHttpModule } from 'ngx-progressbar/http'
 import { OCMOrderApproval } from './components/orders/order-approval/order-approval.component'
 import { OCMOrderShipments } from './components/orders/order-shipments/order-shipments.component'
 import { OCMOrderReturns } from './components/orders/order-returns/order-returns.component'
@@ -188,7 +188,6 @@ import { ProductFilterService } from './services/product-filter/product-filter.s
 import { ReorderHelperService } from './services/reorder/reorder.service'
 import { RouteService } from './services/route/route.service'
 import { ShopperContextService } from './services/shopper-context/shopper-context.service'
-import { TempSdk } from './services/temp-sdk/temp-sdk.service'
 import { TokenHelperService } from './services/token-helper/token-helper.service'
 import { AppConfig } from './models/environment.types'
 import { BaseResolveService } from './services/base-resolve/base-resolve.service'
@@ -346,8 +345,8 @@ const components = [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    CookieModule.forRoot() as ModuleWithProviders<CookieModule>, // TODO: possibly remove this type casting in future versions, but for now typescript is complaining
-    ToastrModule.forRoot() as ModuleWithProviders<ToastrModule>, // TODO: possibly remove this type casting in future versions, but for now typescript is complaining
+    CookieModule.forRoot(), // TODO: possibly remove this type casting in future versions, but for now typescript is complaining
+    ToastrModule.forRoot(), // TODO: possibly remove this type casting in future versions, but for now typescript is complaining
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -385,7 +384,6 @@ const components = [
     ExchangeRatesService,
     OrderHistoryService,
     OrdersToApproveStateService,
-    TempSdk,
     PaymentHelperService,
     PDFService,
     ProductFilterService,
