@@ -29,15 +29,15 @@ jobs:
       - task: DotNetCoreCLI@2
         displayName: Build Jobs
         inputs:
-          projects: '**/Headstart.Jobs.csproj'
-          arguments: '--configuration Release'
+          projects: "**/Headstart.Jobs.csproj"
+          arguments: "--configuration Release"
       - task: DotNetCoreCLI@2
-        displayName: 'Publish Jobs'
+        displayName: "Publish Jobs"
         inputs:
           command: publish
           publishWebProjects: false
-          projects: '**/Headstart.Jobs.csproj'
-          arguments: '--configuration Release --output jobs'
+          projects: "**/Headstart.Jobs.csproj"
+          arguments: "--configuration Release --output jobs"
           zipAfterPublish: false
       - task: DotNetCoreCLI@2
         displayName: Build Middleware
@@ -58,109 +58,109 @@ jobs:
           PathtoPublish: middleware
           ArtifactName: middleware
       - task: PublishBuildArtifacts@1
-        displayName: 'Publish Jobs Artifacts'
+        displayName: "Publish Jobs Artifacts"
         inputs:
           PathtoPublish: jobs
           ArtifactName: jobs
   - job: Build_Buyer
     pool:
-        vmImage: windows-2022
+      vmImage: windows-2022
     displayName: Build Buyer
     steps:
-    - task: NodeTool@0
-      displayName: 'Use Node 14.x'
-      inputs:
-        versionSpec: 14.x
+      - task: NodeTool@0
+        displayName: "Use Node 18.x"
+        inputs:
+          versionSpec: 18.x
 
-    - task: Cache@2
-      displayName: 'SDK Dependencies Cache'
-      inputs:
-        key: 'npm | sdk | "$(Agent.OS)" | src/UI/SDK/package.json | v2'
-        path: 'src/UI/SDK/node_modules'
-        cacheHitVar: SDKCacheRestored
+      - task: Cache@2
+        displayName: "SDK Dependencies Cache"
+        inputs:
+          key: 'npm | sdk | "$(Agent.OS)" | src/UI/SDK/package.json'
+          path: "src/UI/SDK/node_modules"
+          cacheHitVar: SDKCacheRestored
 
-    - task: Npm@1
-      displayName: 'Install SDK Dependencies'
-      inputs:
-        workingDir: src/UI/SDK
-        verbose: false
-      condition: ne(variables['SDKCacheRestored'], 'true')
+      - task: Npm@1
+        displayName: "Install SDK Dependencies"
+        inputs:
+          workingDir: src/UI/SDK
+          verbose: false
+        condition: ne(variables['SDKCacheRestored'], 'true')
 
-    - script: 'npm run build'
-      workingDirectory: src/UI/SDK
-      displayName: 'Build SDK'
+      - script: "npm run build"
+        workingDirectory: src/UI/SDK
+        displayName: "Build SDK"
 
-    - task: Cache@2
-      displayName: 'Buyer Dependencies Cache'
-      inputs:
-        key: 'npm | buyer | "$(Agent.OS)" | src/UI/Buyer/package-lock.json | src/UI/Buyer/package.json | src/UI/SDK/files-changed-hash | v2'
-        path: 'src/UI/Buyer/node_modules'
-        cacheHitVar: BuyerCacheRestored
+      - task: Cache@2
+        displayName: "Buyer Dependencies Cache"
+        inputs:
+          key: 'npm | buyer | "$(Agent.OS)" | src/UI/Buyer/package-lock.json | src/UI/Buyer/package.json | src/UI/SDK/files-changed-hash | v2'
+          path: "src/UI/Buyer/node_modules"
+          cacheHitVar: BuyerCacheRestored
 
-    - task: Npm@1
-      displayName: 'Install Buyer Dependencies'
-      inputs:
-        workingDir: src/UI/Buyer
-        verbose: false
-      condition: ne(variables['BuyerCacheRestored'], 'true')
+      - task: Npm@1
+        displayName: "Install Buyer Dependencies"
+        inputs:
+          workingDir: src/UI/Buyer
+          verbose: false
+        condition: ne(variables['BuyerCacheRestored'], 'true')
 
-    - script: 'npm run preinstall && npm run build'
-      workingDirectory: src/UI/Buyer
-      displayName: 'Build Buyer'
+      - script: "npm run preinstall && npm run build"
+        workingDirectory: src/UI/Buyer
+        displayName: "Build Buyer"
 
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Buyer Artifacts'
-      inputs:
-        PathtoPublish: 'src/UI/Buyer/dist'
-        ArtifactName: buyer
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Buyer Artifacts"
+        inputs:
+          PathtoPublish: "src/UI/Buyer/dist"
+          ArtifactName: buyer
   - job: Build_Seller
     pool:
-          vmImage: windows-2022
+      vmImage: windows-2022
     displayName: Build Seller
     steps:
-    - task: NodeTool@0
-      displayName: 'Use Node 14.x'
-      inputs:
-        versionSpec: 14.x
+      - task: NodeTool@0
+        displayName: "Use Node 18.x"
+        inputs:
+          versionSpec: 18.x
 
-    - task: Cache@2
-      displayName: 'SDK Dependencies Cache'
-      inputs:
-        key: 'npm | sdk | "$(Agent.OS)" | src/UI/SDK/package.json | v1'
-        path: 'src/UI/SDK/node_modules'
-        cacheHitVar: SDKCacheRestored
+      - task: Cache@2
+        displayName: "SDK Dependencies Cache"
+        inputs:
+          key: 'npm | sdk | "$(Agent.OS)" | src/UI/SDK/package.json'
+          path: "src/UI/SDK/node_modules"
+          cacheHitVar: SDKCacheRestored
 
-    - task: Npm@1
-      displayName: 'Install SDK Dependencies'
-      inputs:
-        workingDir: src/UI/SDK
-        verbose: false
-      condition: ne(variables['SDKCacheRestored'], 'true')
+      - task: Npm@1
+        displayName: "Install SDK Dependencies"
+        inputs:
+          workingDir: src/UI/SDK
+          verbose: false
+        condition: ne(variables['SDKCacheRestored'], 'true')
 
-    - script: 'npm run build'
-      workingDirectory: src/UI/SDK
-      displayName: 'Build SDK'
+      - script: "npm run build"
+        workingDirectory: src/UI/SDK
+        displayName: "Build SDK"
 
-    - task: Cache@2
-      displayName: 'Seller Dependencies Cache'
-      inputs:
-        key: 'npm | seller | v2 | "$(Agent.OS)" | src/UI/Seller/package-lock.json | src/UI/Seller/package.json | src/UI/SDK/files-changed-hash | v1'
-        path: 'src/UI/Seller/node_modules'
-        cacheHitVar: SellerCacheRestoredV2
+      - task: Cache@2
+        displayName: "Seller Dependencies Cache"
+        inputs:
+          key: 'npm | seller | v2 | "$(Agent.OS)" | src/UI/Seller/package-lock.json | src/UI/Seller/package.json | src/UI/SDK/files-changed-hash'
+          path: "src/UI/Seller/node_modules"
+          cacheHitVar: SellerCacheRestoredV2
 
-    - task: Npm@1
-      displayName: 'Install Seller Dependencies'
-      inputs:
-        workingDir: src/UI/Seller
-        verbose: false
-      condition: ne(variables['SellerCacheRestoredV2'], 'true')
+      - task: Npm@1
+        displayName: "Install Seller Dependencies"
+        inputs:
+          workingDir: src/UI/Seller
+          verbose: false
+        condition: ne(variables['SellerCacheRestoredV2'], 'true')
 
-    - script: 'npm run build'
-      workingDirectory: src/UI/Seller
-      displayName: 'Build Seller'
+      - script: "npm run build"
+        workingDirectory: src/UI/Seller
+        displayName: "Build Seller"
 
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Seller Artifacts'
-      inputs:
-        PathtoPublish: src/UI/Seller/dist
-        ArtifactName: seller
+      - task: PublishBuildArtifacts@1
+        displayName: "Publish Seller Artifacts"
+        inputs:
+          PathtoPublish: src/UI/Seller/dist
+          ArtifactName: seller
