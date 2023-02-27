@@ -1,17 +1,5 @@
 {
   "hostedApp": true,
-  "marketplaceID": "T93pnzlE80Q23Fot",
-  "marketplaceName": "Headstart Demo Seller",
-  "appname": "Headstart Demo Admin",
-  "clientID": "3330614E-D468-4694-AE87-23DD53872E83",
-  "middlewareUrl": "https://headstartdemo-middleware-test.azurewebsites.net",
-  "translateBlobUrl": "https://headstartdemo.blob.core.windows.net/ngx-translate/i18n/",
-  "blobStorageUrl": "https://headstartdemo.blob.core.windows.net",
-  "orderCloudApiUrl": "https://sandboxapi.ordercloud.io",
-  "supportedLanguages": ["en", "fr", "jp"],
-  "defaultLanguage": "en"
-}{
-  "hostedApp": true,
   "marketplaceID": "my-seller-id",
   "marketplaceName": "Default Admin",
   "appname": "Default Admin",
@@ -27,10 +15,3 @@
   "blobStorageUrl": "https://MYSTORAGEACCOUNTNAME.blob.core.windows.net",
   "orderCloudApiUrl": "https://sandboxapi.ordercloud.io"
 }
-Footer
-© 2023 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
-Status
