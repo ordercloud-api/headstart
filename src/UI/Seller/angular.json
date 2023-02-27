@@ -75,24 +75,6 @@
           "options": {
             "browserTarget": "headstart-seller:build"
           }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "src/test.ts",
-            "karmaConfig": "karma.conf.js",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.spec.json",
-            "scripts": [],
-            "styles": [
-              "src/styles/main.scss",
-              "node_modules/ngx-spinner/animations/ball-spin-clockwise-fade.css"
-            ],
-            "assets": [
-              "src/web.config",
-              "src/assets"
-            ]
-          }
         }
       }
     },
@@ -114,10 +96,21 @@
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "app",
-      "style": "scss"
+      "style": "scss",
+      "skipTests": true
+    },
+    "@schematics/angular:class": {
+      "skipTests": true
     },
     "@schematics/angular:directive": {
-      "prefix": "app"
+      "prefix": "app",
+      "skipTests": true
+    },
+    "@schematics/angular:pipe": {
+      "skipTests": true
+    },
+    "@schematics/angular:service": {
+      "skipTests": true
     }
   }
 }
