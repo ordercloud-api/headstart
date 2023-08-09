@@ -30,7 +30,7 @@ export class AppErrorHandler extends ErrorHandler {
       ex = ex.rejection
     }
     if (ex?.error?.Errors?.length) {
-      const e = ex.error.Errors[0]
+      const e = ex.errors[0]
       if (e.Data && e.Data.WebhookName) {
         // webhook error
         message = e.Data.body

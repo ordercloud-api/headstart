@@ -341,7 +341,7 @@ export class PromotionEditComponent implements OnInit, OnChanges {
   }
 
   addResources(
-    resourceResponse: ListPage<Product>,
+    resourceResponse: ListPage<any>,
     buyerResourceResponse: ListPage<HSBuyer>
   ): void {
     if (

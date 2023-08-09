@@ -419,7 +419,7 @@ export abstract class ResourceCrudService<ResourceType> {
     if (ex?.Message === 'Address not valid') {
       return ex?.Data?.SuggestedAddresses
     }
-    for (const err of ex?.error?.Errors) {
+    for (const err of ex?.errors) {
       if (err.ErrorCode === 'blocked by web hook') {
         return err.Data?.Body?.SuggestedAddresses
       }

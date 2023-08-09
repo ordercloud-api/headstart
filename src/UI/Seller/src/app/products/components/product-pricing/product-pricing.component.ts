@@ -199,10 +199,7 @@ export class ProductPricingComponent {
       this.isUsingPriceOverride = true
     } catch (ex) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (
-        ex?.error?.Errors?.length &&
-        ex.error.Errors[0].ErrorCode === 'NotFound'
-      ) {
+      if (ex?.errors?.length && ex.errors[0].ErrorCode === 'NotFound') {
         this.isSavedOverride = false
         this.isUsingPriceOverride = false
         this.resetOverridePriceSchedules(this.emptyPriceSchedule)

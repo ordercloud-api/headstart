@@ -52,7 +52,7 @@
     "ngx-image-zoom": "^1.0.1",
     "ngx-spinner": "^14.0.0",
     "ngx-toastr": "^15.2.2",
-    "ordercloud-javascript-sdk": "^5.0.0-beta.3",
+    "ordercloud-javascript-sdk": "^5.0.9",
     "polyfill-array-includes": "^2.0.0",
     "rxjs": "^7.8.0",
     "tinymce": "^5.4.2",
