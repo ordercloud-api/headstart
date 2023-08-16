@@ -4,7 +4,7 @@ ARG BASE_IMAGE
 
 FROM ${BASE_IMAGE} as base
 
-RUN npm config set registry http://registry.npmjs.org/ --global
+RUN npm config set registry https://registry.npmjs.org/ --global
 
 RUN npm install -g json
 
