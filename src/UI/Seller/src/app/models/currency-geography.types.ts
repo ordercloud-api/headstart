@@ -14,6 +14,7 @@ export interface SupportedRates {
 export enum SupportedCurrencies {
   AUD = 'AUD',
   USD = 'USD',
+  JPY = 'JPN',
   CAD = 'CAD',
   EUR = 'EUR',
 }

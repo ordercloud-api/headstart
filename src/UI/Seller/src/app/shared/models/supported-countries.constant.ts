@@ -17,6 +17,7 @@ export class GeographyConfig {
       { label: 'Greece', abbreviation: 'GR', currency: 'EUR' },
       { label: 'Ireland', abbreviation: 'IE', currency: 'EUR' },
       { label: 'Italy', abbreviation: 'IT', currency: 'EUR' },
+      { label: 'Japan', abbreviation: 'JP', currency: 'JPY' },
       { label: 'Latvia', abbreviation: 'LV', currency: 'EUR' },
       { label: 'Lithuania', abbreviation: 'LT', currency: 'EUR' },
       { label: 'Luxembourg', abbreviation: 'LU', currency: 'EUR' },

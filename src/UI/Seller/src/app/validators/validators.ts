@@ -95,6 +95,9 @@ export function ValidateZip(countryCode: string): ValidatorFn {
             control.value
           )
         break
+      case 'JP':
+        isValid = /^[0-9]{7}(?:-[0-9]{4})?$/.test(control.value)
+        break
       case 'CA':
         isValid = /^[A-Za-z]\\d[A-Za-z][ -]?\\d[A-Za-z]\\d$/.test(control.value)
         break
