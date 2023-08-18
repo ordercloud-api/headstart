@@ -3,7 +3,7 @@
     "BILLING_NUMBER": "請求番号",
     "BUYER_GROUPS": {
       "APPROVALS": {
-        "DESCRIPTION": "注文の承認を有効にし、注文金額の閾値を設定します。 'ApprovalNeeded' 権限を持つ購入者のみがこのルールの対象となります。",
+        "DESCRIPTION": "注文の承認を有効にし、注文金額の閾値を設定します。 '承認が必要' 権限を持つ購入者のみがこのルールの対象となります。",
         "ENABLE_LABEL": "承認の有効化",
         "HEADER": "注文承認ルール",
         "THRESHOLD_LABEL": "注文合計の閾値"
@@ -102,7 +102,7 @@
       "NO": "いいえ",
       "OPEN": "開く",
       "PRICE_SCHEDULE": "価格表",
-      "PRODUCT": "商品",
+      "PRODUCT": "製品情報",
       "PRODUCT_FACET": "商品ファセット",
       "SPEC": "スペック",
       "SPECIFIC_SKUS": "特定の SKUs",
@@ -146,7 +146,7 @@
       "USERNAME": "ユーザー名"
     },
     "LINE_ITEMS": {
-      "CANCEL_REASON": "理由をキャンセル",
+      "CANCEL_REASON": "キャンセルの理由",
       "COMMENT": "コメント",
       "COMMENTS": "コメント",
       "DESCRIPTION": "説明",
@@ -212,7 +212,7 @@
       "SALES_ORDERS": "販売注文",
       "SELLER_USERS": "販売者ユーザー",
       "SHIPPED_ORDERS": "発送済みの注文",
-      "STOREFRONTS": "店先",
+      "STOREFRONTS": "ストアフロント",
       "SUBMIT_CASE": "ケースを送信する",
       "SUPPLIERS": "サプライヤー",
       "TEMPLATE": "テンプレート",
@@ -231,7 +231,7 @@
       "ORDER_PLACED": "注文済み",
       "PROMOTION_DISCOUNT": "プロモーション割引",
       "QUOTE_PRICE_EXPLANATION": {
-        "A_QUOTED_PRICE": "の見積もり価格",
+        "A_QUOTED_PRICE": "の見積り価格",
         "IS_PENDING_BUYER": "購入者の審査待ちです。"
       },
       "ORDER_RETURNS_ON_ORDER": "注文の返品",
@@ -286,8 +286,8 @@
         "OPEN": "承認済み",
         "UNSUBMITTED": "未提出"
       },
-      "TOTAL_REFUNDED": "Total Refunded",
-      "VIEW_ORDER_DETAILS": "View Order Details",
+      "TOTAL_REFUNDED": "返済額合計",
+      "VIEW_ORDER_DETAILS": "注文の詳細を見る",
       "YES": "はい"
     },
     "PERMISSIONS": {
@@ -388,7 +388,7 @@
       "PRICES_BELOW_1": "以下に示す価格は、購入者マークアップ後のものであり、販売者の通貨との",
       "PRICES_BELOW_2": "為替レートを持つ",
       "PRICES_BELOW_3": "サプライヤーの通貨で表示されます。",
-      "PRICE_BREAKS": "値下げ",
+      "PRICE_BREAKS": "価格変動",
       "PRICE_BREAK_APPLICATION": "値下げの適用",
       "PRICE_MARKUP": "価格マークアップ",
       "PRICE_SCHEDULE_REQUIRED": "見積もり商品にはデフォルト価格（最小値0）が必要です。",
@@ -414,10 +414,17 @@
       "QUANTITY": "数量",
       "QUANTITY_AVAILABLE": "有効数量",
       "QUANTITY_PER_UNIT": "ユニット当たりの数量",
-      "QUOTE": "見積もり",
+      "QUOTE": "見積り",
       "RELATED_PRODUCTS": "関連製品",
       "RELATED_PRODUCTS_DESCRIPTION": "関連商品は、関連商品セクションの商品詳細ページに表示されます",
       "REMOVE_OPTION": "オプションを削除",
+      "RESUBMIT": "再送信",
+      "SALE_END": "セール終了",
+      "SALE_END_POPOVER": "セール価格の有効期限",
+      "SALE_PRICE": "セール価格",
+      "SALE_PRICE_POPOVER": "セール開始日とセール終了日は、セール価格が適用される期間を定義します。",
+      "SALE_START": "セール開始",
+      "SALE_START_POPOVER": "セール価格をいつから有効にするか。セール終了が定義されている限り、セールを有効にする必要はありません。",
       "SAVE": "保存",
       "SAVE_CHANGES": "変更を保存",
       "SAVING": "保存中...",
@@ -477,7 +484,7 @@
     "PROMOTIONS": {
       "ACTIVE": "有効",
       "ACTIVE_DATES": "有効日",
-      "ADJUST_FORM_DETAILS": "Enter a new discount code and adjust any existing details to clone this promotion.",
+      "ADJUST_FORM_DETAILS": "新しい割引コードを入力し、既存の詳細を調整して、このプロモーションを複製します。",
       "ALL_BUYERS": "全ての購入者",
       "ALL_PROMOS_ORDERWIDE": "この時点では、すべてのプロモーションが全注文に適用されます。",
       "ALL_PROMOTIONS_ELIGIBLE": "現時点では、すべてのプロモーションがすべての購入者に適用されます。",
@@ -488,7 +495,8 @@
       "AUTO_APPLY": "自動的にプロモーションを適用",
       "BUYER_ELIGIBILITY": "購入者の適格性",
       "CAN_BE_COMBINED": "他のプロモーションとの併用が可能",
-      "CLONE": "Clone",
+      "CHANGE_PRODUCT": "製品の変更",
+      "CLONE": "クローン",
       "DISCARD_CHANGES": "変更を破棄",
       "DISCOUNT_CODE": "割引コード",
       "DISPLAY": {
@@ -499,8 +507,8 @@
         },
         "ELIGIBILITY": {
           "ALL_BUYERS": "全ての購入者",
-          "FOR": "に対して",
-          "SELECTED_BUYERS": "selected buyers"
+          "FOR": "対象者: ",
+          "SELECTED_BUYERS": "一部の購入者"
         },
         "USAGE": {
           "LIMIT_OF": "上限",
@@ -541,7 +549,7 @@
       "NAME": "名前",
       "NONE": "なし",
       "NO_INFO_ENTERED": "まだ情報が入力されていません。",
-      "NO_RESULTS": "No results. Broaden your search and try again.",
+      "NO_RESULTS": "結果がありません。検索範囲を広げて再検索してください。",
       "PERCENTAGE": "パーセンテージ",
       "PERFORMANCE": "パフォーマンス",
       "PROMO_CODE_EXAMPLE": "例: SPRINGSALE20",
@@ -563,7 +571,7 @@
     "REPORTS": {
       "ALL_VALUES": "全ての値",
       "AVAILABLE_TO": "利用可能",
-      "BUYER_OPTIONAL": "Buyer (Optional)",
+      "BUYER_OPTIONAL": "購入者 (オプション)",
       "CHOOSE_REPORT_TYPE": "処理するレポートの種類とテンプレートを選択",
       "DESCRIPTION": "説明",
       "DOWNLOADING": "ダウンロード中...",
@@ -598,7 +606,7 @@
       "VALUES": "値"
     },
     "RESOURCES": {
-      "CREATE_NEW": "新しく作る"
+      "CREATE_NEW": "新規作成"
     },
     "STOREFRONTS": {
       "ACCESS_TOKEN_TOOLTIP": "認証情報を再入力してログインし直すまで、ユーザーがログインしたままの状態でいることができる時間を分単位で指定します。最小値は10、最大値は600です。",
@@ -608,7 +616,7 @@
       "SUMMARY": "ストアフロントは、ホストされた購入者アプリケーションを表します。この管理インターフェースでストアフロントを作成しただけでは、購入者アプリケーションは作成されません。このプロセスは開発者が手動で実行する必要がありますが、いったん作成されると、ストアフロントの特定の箇所はここで管理することができます。"
     },
     "USERGROUP_ASSIGNMENTS": {
-      "ASSIGNED": "割り当てられた",
+      "ASSIGNED": "割り当て",
       "DESCRIPTION": "説明",
       "VIEW_ALL": "すべて表示",
       "VIEW_ASSIGNED": "割り当てられたビュー",
@@ -692,7 +700,7 @@
   "BUYER_USER": {
     "ACCOUNT_INFORMATION_HEADER": "口座情報",
     "ACCOUNT_INFORMATION_DESCRIPTION": "このユーザーのアカウントに関する情報。",
-    "NO_ASSIGNED_LOCATIONS_MESSAGE": "Unassign locations to change Home Country.",
+    "NO_ASSIGNED_LOCATIONS_MESSAGE": "ホームカントリーを変更するには、ロケーションの割り当てを解除します。",
     "PERSONAL_INFORMATION_HEADER": "個人情報",
     "PERSONAL_INFORMATION_DESCRIPTION": "このユーザーに関する情報。",
     "EDIT_FORM": {
@@ -719,7 +727,7 @@
       "EMPTY_CART": "カートを空にする",
       "INVALID_ITEMS_NOTICE": "以下はカートから削除されます。チェックアウトする前に、更新されたカートを確認してください。",
       "SHOPPING_CART": "ショッピングカート",
-      "SUBMIT_QUOTE": "Submit Quote",
+      "SUBMIT_QUOTE": "見積り依頼",
       "VIEW_CART": "カートを見る"
     },
     "LINEITEM_TABLE": {
@@ -769,7 +777,7 @@
       "SELECT_ADDRESS": "保存したアドレスから選択するか、新しいアドレスを入力することを選択します。",
       "SELECT_BUYER_LOCATION": "購入者のロケーションを選択して税金を決定します。",
       "SHIPPING_ADDRESS": "配送先住所",
-      "SHIPPING_DISCOUNT_TEXT": "Discount calculated after shipping"
+      "SHIPPING_DISCOUNT_TEXT": "割引は発送後に計算されます。"
     },
     "CHECKOUT_CONFIRM": {
       "BILL_TO": "請求書送付先",
@@ -839,14 +847,14 @@
     "PHONE": "電話番号",
     "PRODUCT_TYPES": {
       "STANDARD": "標準",
-      "QUOTE": "見積もり",
+      "QUOTE": "見積り",
       "BUNDLE": "バンドル"
     },
     "SEARCH": "検索",
     "SUBMIT": "送信",
     "SUBMITTED_ORDER_STATUS": {
       "ALL_SUBMITTED": "すべて提出済み",
-      "ALL_QUOTES": "すべての引用",
+      "ALL_QUOTES": "すべての見積り",
       "AWAITING_APPROVAL": "承認待ち",
       "CANCELED": "キャンセル",
       "CHANGES_REQUESTED": "要求された変更",
@@ -897,7 +905,7 @@
   "LAYOUT": {
     "ADDRESS_SUGGESTIONS": "もしかして...",
     "APP_FOOTER": {
-      "CREATED_BY": "サイトコアによって作成されました",
+      "CREATED_BY": "Created by Sitecore",
       "EMAIL": "support@my-company.com",
       "EMAIL_LABEL": "メール:",
       "FAQ": "よくある質問",
@@ -921,13 +929,13 @@
       "NEEDS_ATTENTION": "注文には注意が必要です。",
       "ORDERS": "注文",
       "ORDERS_AWAITING_MY_APPROVAL": "私の承認を待っています",
-      "ORDERS_PLACED_BY_ME": "私が配置",
+      "ORDERS_PLACED_BY_ME": "購入履歴",
       "ORDERS_PLACED_IN_MY_LOCATIONS": "私の場所に配置",
-      "ORDERS_QUOTES": "引用",
-      "PRODUCTS": "商品",
+      "ORDERS_QUOTES": "見積り",
+      "PRODUCTS": "製品情報",
       "PROFILE": "マイ プロフィール",
       "REGISTER": "登録",
-      "SHOP": "店",
+      "SHOP": "SHOP",
       "SUPPLIERS": "サプライヤー"
     },
     "GENERIC_LIST": {
@@ -960,7 +968,6 @@
       "CANCEL_ORDER_YES": "はい、注文をキャンセルします",
       "CLAIM_STATUS": "請求ステータス",
       "DETAILS": "詳細",
-      "DISCARD_CANCEL_REQUEST": "キャンセル リクエストを破棄",
       "DISCARD_RETURN_REQUEST": "返品リクエストを破棄",
       "DOWNLOAD_AS_PDF": "PDFとしてダウンロード",
       "FAVORITE": "お気に入り",
@@ -968,7 +975,6 @@
       "ORDER": "注文",
       "REASON": "理由",
       "REORDER": "再注文",
-      "REQUEST_A_CANCEL": "キャンセルをリクエスト",
       "REQUEST_A_RETURN": "返品をリクエスト",
       "ORDER_RETURNS": "注文の返品",
       "SHIPMENTS": "発送",
@@ -979,16 +985,16 @@
       "WARNING": "ご注文はカートに戻されます。現在カートに入っている商品はすべて失われます。"
     },
     "HISTORICAL": {
-      "ACCEPT_QUOTE": "Accept Quote",
+      "ACCEPT_QUOTE": "見積りの承認",
       "BILLING_ADDRESS": "請求書送付先",
       "BUYER": "購入者",
       "BUYER_LOCATION": "購入者ロケーション",
       "COMMENTS": "コメント",
-      "CONTACT_SUPPLIER": "Contact Supplier",
+      "CONTACT_SUPPLIER": "サプライヤー連絡先",
       "ON": "についての",
       "PROMO": "プロモーション割引",
-      "QUOTE_ACCEPTED_MESSAGE": "Once the order is accepted the quote request will be deleted and the items will be added to your cart so that you may checkout.",
-      "QUOTE_ACTIONS": "Quote Actions",
+      "QUOTE_ACCEPTED_MESSAGE": "注文が受理されると、見積もり依頼は削除され、商品はカートに追加され、チェックアウトすることができます。",
+      "QUOTE_ACTIONS": "見積りアクション",
       "SHIPPING": "発送",
       "SHIPPING_ADDRESS": "配送先住所",
       "SUBMITTED_BY": "送信者",
@@ -1128,11 +1134,11 @@
       "CONTACT_PART_TWO": "本商品について",
       "DESCRIPTION": "説明",
       "DOCS": "ドキュメント",
-      "LOGIN_FOR_QUOTE": "You must login before you can place a request for Quote.",
+      "LOGIN_FOR_QUOTE": "お見積もりをご依頼いただくには、ログインが必要です。",
       "NOTE": "注意事項",
       "QUANTITY": "数量",
-      "QUOTE_EXISTING_CART_ERROR": "Cannot add Quote Request to existing cart.",
-      "QUOTE_STANDARD_EXISTING_CART_ERROR": "Cannot add Standard items to existing cart.",
+      "QUOTE_EXISTING_CART_ERROR": "見積もり依頼を既存のカートに追加できません。",
+      "QUOTE_STANDARD_EXISTING_CART_ERROR": "標準アイテムを既存のカートに追加できません。",
       "REQ_QUOTE": "見積もりを依頼",
       "SAVINGS": "保存します",
       "SUCCESS": "見積もり依頼が正常に送信されました。",
@@ -1172,7 +1178,7 @@
       "FIRST": "名",
       "LAST": "姓",
       "PHONE": "電話番号",
-      "SUBMIT": "見積もりを依頼"
+      "SUBMIT": "見積りを依頼"
     },
     "SORT": {
       "BY": "並べ替え",
