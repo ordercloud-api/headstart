@@ -15,6 +15,11 @@ jobs:
         displayName: "Use NuGet "
       - task: NuGetCommand@2
         displayName: NuGet restore
+      - task: UseDotNet@2
+        inputs:
+          packageType: 'sdk'
+          version: '3.1.x'
+          installationPath: $(Agent.ToolsDirectory)/dotnet
       - task: VSBuild@1
         displayName: Build solution src/Middleware/Headstart.sln
         inputs:
@@ -26,11 +31,6 @@ jobs:
             **\*.tests.dll
 
             !**\obj\**
-      - task: UseDotNet@2
-        inputs:
-          packageType: 'sdk'
-          version: '3.1.x'
-          installationPath: $(Agent.ToolsDirectory)/dotnet
       - task: DotNetCoreCLI@2
         displayName: Build Jobs
         inputs:
