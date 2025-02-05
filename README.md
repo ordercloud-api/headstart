@@ -1,4 +1,7 @@
 # DEPRECATED
+This is no longer supported, please consider using our newer [accelerator](https://github.com/ordercloud-api/oc-accelerator)
+
+# Headstart
 
 Welcome! The purpose of this project is to give you and your business a "headstart" to building an e-commerce solution on OrderCloud. This is a complete and opinionated solution but is only meant to be a starting point to *your* complete solution, it is expected that you will need to make customizations to this project, after which the code is yours to own and maintain. This solution is composed of three main parts:
 
