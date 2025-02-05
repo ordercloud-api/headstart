@@ -1,4 +1,4 @@
-# DEPRECATED
+# ⛔️ DEPRECATED
 This is no longer maintained/supported, please consider using our new [OrderCloud accelerator](https://github.com/ordercloud-api/oc-accelerator) instead.
 
 # Headstart
