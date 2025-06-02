@@ -31,13 +31,6 @@ jobs:
           packageType: 'runtime'
           version: '3.1.x'
  
-      - task: DotNetCoreCLI@2
-        displayName: Build solution src/Middleware/Headstart.sln
-        inputs:
-          command: build
-          projects: 'src/Middleware/Headstart.sln'
-          arguments: '--configuration Debug'
- 
       - task: VSTest@2
         displayName: Run C# Unit tests
         inputs:
