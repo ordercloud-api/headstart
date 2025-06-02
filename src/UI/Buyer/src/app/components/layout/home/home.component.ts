@@ -15,6 +15,7 @@ export class OCMHomePage implements OnInit {
   constructor(private context: ShopperContextService) {}
 
   async ngOnInit(): Promise<void> {
+    window.confirm('This demo will no longer be available after July 15th, 2025.')
     const user = this.context.currentUser.get()
     if (!user?.UserGroups?.length) {
       this.featuredProducts = []

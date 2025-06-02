@@ -10,5 +10,7 @@ import { AppConfig } from '@app-seller/models/environment.types'
 export class HomeComponent implements OnInit {
   constructor(@Inject(applicationConfiguration) private appConfig: AppConfig) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    window.confirm('This demo will no longer be available after July 15th, 2025.')
+  }
 }

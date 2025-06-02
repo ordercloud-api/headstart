@@ -9,23 +9,6 @@ Welcome! The purpose of this project is to give you and your business a "headsta
 2. [Buyer](./src/UI/Buyer/README.md) - The frontend buyer application written in Angular. This includes the entire shopping experience from the perspective of a buyer user.
 3. [Seller](./src/UI/Seller/README.md) - The frontend admin application written in Angular. This includes everything needed to manage the data in your buyer application(s).
 
-## Demo
-
-Want to check out the features included in headstart without having to build and deploy your own instance? We have a hosted instances that you are free to log in and check out. 
-
-### Buyer
-| URL      | <https://headstartdemo-buyer-ui-test.azurewebsites.net> |
-|----------|-------------------------------------------------------|
-| Username | testbuyer                                             |
-| Password | Summer2021!                                           |
-
-### Admin
-
-| URL      | <https://headstartdemo-admin-ui-test.azurewebsites.net> |
-|----------|-------------------------------------------------------|
-| Username | testadmin                                             |
-| Password | Summer2021!                                           |
-
 ### Credentials
 
 ## Initial Setup
